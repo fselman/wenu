@@ -458,3 +458,14 @@ exact retrieved-byte SHA-256
 `1cf3b07e6ac9669c429ad7ce9e92d50dfd741422efcfffa3d1e0eeb5f901616f`.
 It keeps 50S.7D.1 bolometric semantics independent and authorizes no runtime,
 Moonlight, merge, or branch deletion.
+
+## 17. Accepted 50S.7D.2 spectral audit handoff
+
+Fernando accepted exact documentation-only candidate
+`0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe` on 2026-09-22. After audit
+merge, only the bounded offline TSIS-1 HSRS v2 native-grid implementation is
+authorized. Preserve accepted 50S.7D.1 bolometric semantics independently;
+forbid interpolation, extrapolation, and `1361 W m-2` renormalization; retain
+pointwise uncertainty and leave integrated uncertainty `not_evaluated`.
+External installation is required unless redistribution rights are
+established. Moonlight, runtime merge, and branch deletion remain separate.

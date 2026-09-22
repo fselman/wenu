@@ -2019,3 +2019,13 @@ and one digest-admitted TSIS-1 HSRS v2 resource. It preserves 25,281 native
 samples, pointwise uncertainty, exact resource identity, and native-grid
 energy integration without changing accepted bolometric 50S.7D.1. This is a
 documentation-only candidate; no runtime or 50S.7D.3+ work is authorized.
+
+## Accepted 50S.7D.2 spectral radiometry architecture
+
+Fernando accepted the documentation-only architecture at exact candidate
+`0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe` on 2026-09-22. It preserves
+accepted 50S.7D.1 bolometric semantics and authorizes, only after audit merge,
+one offline digest-bound TSIS-1 HSRS v2 native-grid implementation with
+pointwise uncertainty and no interpolation, extrapolation, renormalization, or
+implicit acquisition. The audit added no runtime or resource. 50S.7D.3 and
+later behavior remain unauthorized.

@@ -1,6 +1,6 @@
 # 50S.7D.2 spectral direct-Sun radiometry audit
 
-**Status:** Candidate documentation-only scientific, resource, and architectural audit
+**Status:** Accepted documentation-only scientific, resource, and architectural audit
 
 **Audit date:** 2026-09-22
 
@@ -186,3 +186,29 @@ CLI, planning, facility, scheduling, or unrelated refactoring.
 50S.7D.3 Moonlight, 50S.7D.4 direct-source closure, 50S.7E reflected fields,
 50S.7F bundling, 50S.8 brightness, 50S.9 detector effects, implementation,
 merge, and branch deletion remain separate explicit decisions.
+
+## 8. Accepted scientific and architectural decision
+
+Fernando scientifically and architecturally accepted this documentation-only
+audit at exact candidate
+`0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe` on 2026-09-22. The
+documentation/package gate passed all 225 tests; exact upstream equality and a
+clean worktree were confirmed. No runtime or spectral resource was added.
+
+The accepted bounded decisions are:
+
+- TSIS-1 HSRS v2 product `tsis1_hsrs_1nm`, with 1 nm FWHM resolution;
+- all 25,281 native samples at 0.1 nm spacing over 202-2730 nm;
+- no interpolation, extrapolation, or renormalization to `1361 W m-2`;
+- retained pointwise provider uncertainty, with integrated uncertainty
+  remaining `not_evaluated`; and
+- an external installed-resource workflow unless redistribution rights are
+  separately established.
+
+After this audit is merged, only the bounded offline 50S.7D.2 spectral
+direct-Sun implementation described above is authorized. It must preserve the
+accepted 50S.7D.1 bolometric model independently and must not vendor or acquire
+the spectral resource implicitly. 50S.7D.3 Moonlight, reflected fields,
+spacecraft response, brightness, visibility, detector effects, outputs,
+facility behavior, scheduling, PR merge, and branch deletion remain separate
+explicit decisions.

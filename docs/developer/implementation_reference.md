@@ -3658,3 +3658,15 @@ evaluator contracts over the exact TSIS-1 HSRS v2 native grid. Energy spectral
 irradiance is distinct from photon quantities; interpolation, extrapolation,
 renormalization, aggregate uncertainty, passband libraries, and runtime remain
 unauthorized pending separate acceptance.
+
+## Accepted 50S.7D.2 spectral API boundary
+
+Fernando accepted the proposed immutable resource identity, policy, result, and
+evaluator boundary at exact candidate
+`0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe` on 2026-09-22. After audit
+merge, the bounded implementation may expose only native-grid energy spectral
+irradiance and exact-grid energy integration for the externally installed
+TSIS-1 HSRS v2 resource. It must retain pointwise uncertainty and report
+integrated uncertainty as `not_evaluated`. No interpolation, extrapolation,
+renormalization, Moonlight, passband library, photon rate, or output API is
+authorized.

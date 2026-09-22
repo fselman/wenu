@@ -617,3 +617,12 @@ Spectral direct-Sun irradiance remains downstream of crossing and accepted
 illumination geometry. The audit adds no filtering, track, report, chart,
 planning, brightness, visibility, detector, facility, scheduling, or runtime
 meaning.
+
+## Accepted 50S.7D.2 spectral refinement
+
+Fernando accepted exact documentation-only candidate
+`0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe` on 2026-09-22. It changes no
+crossing semantics and added no runtime or resource. After audit merge, only
+the bounded offline spectral direct-Sun evaluator is authorized; filtering,
+tracks, reports, charts, planning, brightness, visibility, detector, facility,
+scheduling, and 50S.7D.3 remain outside this milestone.

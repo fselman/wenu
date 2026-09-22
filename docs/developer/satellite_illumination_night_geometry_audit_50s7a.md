@@ -717,3 +717,13 @@ The proposed TSIS-1 HSRS v2 evaluator consumes complete accepted 50S.7A
 geometry and applies the accepted distance and uniform-disk fraction without
 recomputing either. Wavelength-dependent limb darkening remains unevaluated.
 This documentation-only handoff authorizes no runtime or 50S.7D.3+ work.
+
+## 23. Accepted 50S.7D.2 spectral handoff
+
+Fernando accepted exact documentation-only candidate
+`0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe` on 2026-09-22. After audit
+merge, the bounded spectral evaluator must consume accepted 50S.7A geometry
+without recomputing distance or occultation, preserve achromatic uniform-disk
+scaling as an explicit approximation, and use the external installed TSIS-1
+HSRS v2 resource. This acceptance adds no runtime and does not authorize
+50S.7D.3 Moonlight.

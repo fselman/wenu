@@ -1218,3 +1218,13 @@ The proposed reference spectrum is TSIS-1 HSRS v2 over 202-2730 nm at 1 nm
 FWHM and 0.1 nm sampling. Bandwidth is resolution, not integration width;
 energy spectral irradiance is not photon flux, and the finite-domain integral
 is not bolometric TSI. The audit authorizes no runtime.
+
+## Accepted 50S.7D.2 spectral vocabulary
+
+Fernando accepted the exact TSIS-1 HSRS v2 `tsis1_hsrs_1nm` vocabulary at
+candidate `0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe` on 2026-09-22:
+1 nm FWHM resolution, 0.1 nm native sampling over 202-2730 nm, energy spectral
+irradiance, retained pointwise uncertainty, and integrated uncertainty
+`not_evaluated`. No interpolation, extrapolation, `1361 W m-2`
+renormalization, or numeric Moonlight is implied. The audit added no runtime or
+resource.
