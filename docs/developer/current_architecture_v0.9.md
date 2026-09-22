@@ -2084,3 +2084,16 @@ band radiometry in `satellites/radiometry.py`. It may not repurpose the lunar
 solar-occultor reservation or create a second ephemeris, coordinate, output, or
 rendering path. Only a separately accepted external LIME distribution preflight
 may follow this audit; 50S.7D.3 runtime remains blocked.
+
+## Accepted 50S.7D.3 Moonlight readiness architecture
+
+Fernando accepted exact documentation-only candidate `abbb1b78` on
+2026-09-22 after 230 documentation/package tests and clean repository checks.
+Preserve LIME as the preferred production candidate, GIRO/ROLO as comparison
+evidence, existing `not_evaluated` Moonlight, and the runtime stop gate.
+
+After audit merge, only a separately controlled external LIME distribution
+preflight is authorized. It must freeze version, bytes, license, bands,
+coefficients, geometry conventions, domain, uncertainty, and reference outputs.
+No acquisition or runtime begins under this acceptance; PR 188 merge and branch
+deletion remain separate decisions.
