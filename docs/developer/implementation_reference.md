@@ -3693,3 +3693,15 @@ This remains an unaccepted candidate. It supplies no acquisition API,
 Moonlight, passband response, photon rate, surface response, brightness,
 visibility, detector, report, chart, CLI, planning, facility, or scheduling
 API.
+
+## Verified candidate 50S.7D.2 spectral API
+
+Exact verified head `8f2ca825` retains the bounded executable API at
+`8e930db2`. The real-resource receipt, 132 expanded tests, 227
+documentation/package tests, clean diff, and complete 2,858-test suite passed.
+
+The API remains an unaccepted candidate: exact external-resource admission,
+native immutable energy samples, pointwise uncertainty, exact-grid integration,
+and integrated uncertainty `not_evaluated`. Acquisition, interpolation,
+extrapolation, renormalization, Moonlight, photon, output, and later APIs remain
+unauthorized.
