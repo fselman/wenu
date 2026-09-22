@@ -1427,7 +1427,10 @@ coefficient
 `8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691`.
 The full harness enters the network-denied sandbox before loading the bundled
 netCDF library. It executes that temporary app with a minimal environment,
-isolated home and temporary directory under the macOS rule `(deny network*)`.
+isolated home and temporary directory. The child inherits the harness's single
+macOS sandbox rule `(deny network*)`; a nested sandbox call failed with
+`sandbox_apply: Operation not permitted` on the first amended Mac attempt and
+was removed without changing the network rule.
 Proxy variables are also redirected to the local discard port. LIME's
 coefficient-update option is never called.
 

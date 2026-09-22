@@ -406,6 +406,37 @@ def test_lime_inspection_sandboxes_native_reader_and_excludes_parent_env(
     assert lime_environment["HOME"] == str(tmp_path)
 
 
+def test_lime_child_inherits_one_sandbox_without_reapplying_it(
+    monkeypatch, tmp_path
+):
+    inspection = load_lime_inspection_module()
+    executable = tmp_path / "expanded" / "LimeTBX.exe"
+    resources = tmp_path / "expanded" / "Resources"
+    resources.mkdir(parents=True)
+    home = tmp_path / "home"
+    home.mkdir()
+    log = tmp_path / "version.log"
+    commands = []
+
+    def capture(command, *, cwd, env, check):
+        commands.append(command)
+        assert cwd == resources
+        assert env["HOME"] == str(home)
+        assert check is False
+        return SimpleNamespace(returncode=0, stdout="version 1.4.2\n")
+
+    monkeypatch.setattr(inspection, "_run", capture)
+    with pytest.raises(AssertionError, match="enclosing sandbox"):
+        inspection._run_lime(executable, resources, home, ("-v",), log)
+
+    monkeypatch.setenv("WENU_LIME_INSPECTION_SANDBOX", "active")
+    assert inspection._run_lime(
+        executable, resources, home, ("-v",), log
+    ) == (str(executable), "-v")
+    assert commands == [(str(executable), "-v")]
+    assert log.read_text() == "version 1.4.2\n"
+
+
 def test_lime_inspection_serializes_nonfinite_external_values_as_strict_json():
     inspection = load_lime_inspection_module()
 

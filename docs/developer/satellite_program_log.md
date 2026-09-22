@@ -1577,3 +1577,10 @@ an amended protocol that retains the exact-byte and network-denied controls,
 records both unverified signature results, and never selects the installed app.
 The 258-test focused gate and complete 2,868-test Mac suite passed at original
 PR head `e4b540f0`; amended code needs its own gate and controlled receipt.
+
+The amended head `49e8fb38` passed 260 focused and all 2,870 plugin-disabled
+Mac tests. The first controlled attempt stopped at `-v`: a second
+`sandbox-exec` inside the already sandboxed harness failed with exit 71,
+`sandbox_apply: Operation not permitted`. No LIME executable started and no
+native output or manifest exists. Correct by inheriting the one enclosing
+sandbox, retain the partial evidence, and require a new directory and gates.

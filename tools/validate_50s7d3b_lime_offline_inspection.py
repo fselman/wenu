@@ -478,13 +478,11 @@ def _enter_network_sandbox():
 
 
 def _run_lime(executable, resources, home, arguments, log_path):
-    command = (
-        "/usr/bin/sandbox-exec",
-        "-p",
-        SANDBOX_PROFILE,
-        str(executable),
-        *arguments,
-    )
+    if os.environ.get("WENU_LIME_INSPECTION_SANDBOX") != "active":
+        raise AssertionError("LIME invocation requires the enclosing sandbox")
+    # Child processes inherit the sandbox of the already sandboxed harness.
+    # macOS refuses a second sandbox_apply inside that process.
+    command = (str(executable), *arguments)
     result = _run(
         command,
         cwd=resources,

@@ -86,11 +86,21 @@ harness. On macOS it:
    any other failure component;
 7. verifies the exact coefficient bytes inside that extracted app;
 8. runs only the extracted executable with a minimal environment, isolated
-   `HOME` and `TMPDIR`, under
-   macOS `sandbox-exec` profile
+   `HOME` and `TMPDIR`; the child inherits the harness's single macOS
+   `sandbox-exec` profile
    `(version 1) (allow default) (deny network*)`;
 9. poisons conventional proxy variables as defence in depth; and
 10. never invokes LIME's `-u`/`--update` route.
+
+The first amended Mac attempt at `49e8fb38` reached the extracted `-v` call
+after package, coefficient, and signature diagnostics, then exited 71 with
+`sandbox-exec: sandbox_apply: Operation not permitted`. The harness had entered
+the sandbox successfully but attempted to apply it again to LIME. No LIME
+process started, no native output or manifest was produced, and the partial
+evidence directory is retained unchanged. The correction removes the nested
+`sandbox-exec` call; the child inherits the enclosing sandbox. Invocation
+without that enclosing sandbox fails before starting the executable. A new
+evidence directory and fresh Mac gates are required for any later attempt.
 
 The harness writes only to one caller-selected new evidence directory and a
 temporary expansion that is deleted on exit. It never copies model resources

@@ -2097,3 +2097,11 @@ before loading any bundled native library; use only the temporary expanded
 app with a minimal environment. Do not weaken the sandbox or claim signature
 verification, Moonlight, or runtime acceptance. The amended static gates and
 controlled Mac receipt require separate review before PR acceptance.
+
+The first amended Mac attempt at `49e8fb38` stopped before executing LIME:
+the harness had successfully entered the network sandbox, but its nested
+`sandbox-exec` child failed `sandbox_apply: Operation not permitted` (exit 71).
+The bounded correction runs the extracted child directly from the already
+sandboxed harness; the child inherits that network restriction. Reject a child
+invocation outside the enclosing sandbox, preserve the original partial
+evidence, and use a new directory only after focused and complete Mac gates.

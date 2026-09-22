@@ -10137,6 +10137,7 @@ def test_50s7d3b_records_controlled_offline_lime_inspection():
         "Phase B is a later review",
         "preexisting_installation_present=true",
         "installed_by_inspection=false",
+        "sandbox_apply: Operation not permitted",
         "production_runtime_changed=false",
         "moonlight_status=not_evaluated",
     ):
