@@ -3718,3 +3718,18 @@ extrapolation, renormalization, aggregate uncertainty, Moonlight, photon
 conversion, surface response, brightness, visibility, detector, output,
 facility, and scheduling behavior. PR 187 merge and branch deletion remain
 separate decisions.
+
+## Candidate 50S.7D.3 Moonlight API readiness
+
+No Moonlight API is implemented or authorized. The candidate audit identifies
+the future separation between same-instant lunar source geometry in
+`satellites/illumination.py` and exact external model admission plus native-
+band irradiance in `satellites/radiometry.py`.
+
+The preferred LIME model remains blocked pending an exact versioned
+distribution, byte identities, license, native bands, coefficients, geometry
+conventions, supported domain, uncertainty, and authoritative reference
+outputs. Existing lunar `not_evaluated` semantics remain authoritative.
+No coefficient, loader, policy, result, evaluator, eclipse, occultation,
+passband, brightness, visibility, detector, output, facility, or scheduling API
+is added.
