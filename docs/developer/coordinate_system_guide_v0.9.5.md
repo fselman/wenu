@@ -4316,3 +4316,13 @@ geometry; the spectral evaluator does not recompute either.
 The coordinate-system guide was reviewed and remains current. Complete gates
 and acceptance are pending; 50S.7D.3 and later coordinate or radiometric
 behavior remain unauthorized.
+
+## Verified candidate 50S.7D.2 scalar coordinate gate
+
+Exact head `8f2ca825` passed the real-resource receipt, 132 expanded tests,
+227 documentation/package tests, and all 2,858 plugin-disabled tests. The
+evidence confirms scalar composition over retained accepted geometry without a
+new vector, frame, transform, time scale, observer, surface, or attitude.
+
+This guide remains current. Acceptance, merge, branch deletion, 50S.7D.3, and
+later coordinate or radiometric behavior remain unauthorized.
