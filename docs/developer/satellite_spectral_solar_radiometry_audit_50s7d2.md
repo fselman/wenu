@@ -229,3 +229,17 @@ declared `1e-9 W m-2` receipt tolerance. The 79-test focused gate passed.
 Complete repository gates and Fernando's separate scientific and
 architectural acceptance remain pending. 50S.7D.3, merge, and branch deletion
 remain unauthorized.
+
+## 10. Verified implementation candidate
+
+Exact branch head `8f2ca825fa799b171717fccd10ce50fab95255d7` retains
+executable candidate `8e930db200b922cc3a4f403cde50cd00c34d0a27`. The real
+external-resource receipt, 132-test expanded gate, 227-test
+documentation/package gate, clean diff, and all 2,858 plugin-disabled
+repository tests passed; exact upstream equality and a clean worktree were
+confirmed.
+
+This evidence verifies, but does not accept, the bounded implementation.
+Fernando's scientific and architectural acceptance, PR merge, branch deletion,
+50S.7D.3 Moonlight, and every later behavior remain separate explicit
+decisions.
