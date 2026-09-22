@@ -2914,3 +2914,14 @@ native-grid, scaling, uncertainty, zero-versus-unknown, and failure contracts.
 explicitly installed bytes and performs no download. The package initializer
 exports the intentional spectral contracts. No acquisition module, vendored
 resource, new dependency, or later illumination owner is added.
+
+## Verified candidate 50S.7D.2 source ownership
+
+Exact head `8f2ca825` verified the executable `radiometry.py` owner,
+dedicated durable tests, package exports, and offline validator at
+`8e930db2`. The 132-test expanded gate, 227-test documentation/package gate,
+complete 2,858-test suite, real-resource receipt, diff, upstream, and clean-tree
+checks passed.
+
+Ownership remains a verified but unaccepted candidate. No acquisition owner,
+vendored resource, second geometry path, or 50S.7D.3+ owner is admitted.
