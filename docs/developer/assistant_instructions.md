@@ -2025,3 +2025,13 @@ acceptance. Runtime requires a later accepted amendment freezing exact version,
 bytes, license, bands, coefficients, geometry conventions, domain,
 uncertainty, and authoritative outputs. Do not begin 50S.7D.4+ or later
 behavior.
+
+## Final accepted 50S.7D.3 audit verification boundary
+
+Exact acceptance-record head
+`0be116abfa6ce0172b94a0d3c15f4f61ed2c8f8b` passed all 231
+plugin-disabled documentation/package tests in 8.54 seconds plus diff,
+upstream, and clean-tree checks. Do not merge PR 188 or delete its branch
+without separate explicit instructions. After merge, only the separately
+controlled external LIME distribution preflight is authorized; resource
+retrieval, execution, and Moonlight runtime remain unauthorized.
