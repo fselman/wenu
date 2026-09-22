@@ -1242,3 +1242,14 @@ downloads nor vendors it. The finite-domain integral is not bolometric TSI,
 the 1 nm bandwidth is resolution rather than integration width, and no
 interpolation, extrapolation, 1361 W m-2 renormalization, photon conversion, or
 Moonlight is implied. The candidate is unaccepted.
+
+## Verified candidate 50S.7D.2 direct-Sun spectrum
+
+Exact head `8f2ca825` passed the installed external-resource receipt, 132
+expanded tests, 227 documentation/package tests, clean diff, and all 2,858
+plugin-disabled tests. The receipt independently reproduced the admitted bytes,
+native grid, resolution, integral, and production-loader result.
+
+The spectrum remains a verified but unaccepted reference-energy product. It is
+not bolometric TSI, Moonlight, spacecraft brightness, visibility, or detector
+response.
