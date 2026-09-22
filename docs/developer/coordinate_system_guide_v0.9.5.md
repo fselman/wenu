@@ -4350,3 +4350,15 @@ implemented behavior. A later Moonlight runtime proposal must update this guide
 and independently validate every model convention against direct SPICE
 evidence. LIME resource preflight and 50S.7D.3 implementation remain separate;
 numeric Moonlight stays unauthorized.
+
+## Accepted 50S.7D.3 lunar-coordinate readiness
+
+Fernando accepted exact documentation-only candidate `abbb1b78` on
+2026-09-22 after the 230-test documentation/package gate and clean repository
+checks. The guide remains current because no runtime coordinate behavior was
+added.
+
+After merge, only an external LIME distribution preflight may inspect and
+freeze the required phase and selenographic conventions. No lunar body-fixed
+runtime, transform, vector, distance, or numeric Moonlight is authorized.
+Runtime requires a later guide update and separate acceptance.
