@@ -2968,3 +2968,15 @@ Runtime, acquisition ownership, and 50S.7D.4+ remain unauthorized.
 Acceptance-record head `0be116ab` passed 231 documentation/package tests in
 8.54 seconds and clean repository checks. No source-tree ownership changed.
 Only the post-merge external LIME distribution preflight is authorized next.
+
+## Candidate 50S.7D.3A LIME preflight ownership
+
+The preflight adds one documentation record and changes no production or test
+ownership. It freezes external candidate identities but adds no resource,
+dependency, module, loader, or API. Future lunar geometry remains reserved to
+`satellites/illumination.py`; exact LIME admission and native-band radiometry
+remain reserved to `satellites/radiometry.py`.
+
+The LIME EO-CFI satellite route is outside Wenu ownership and must not become a
+second propagator. Installation, execution, runtime, and output integration
+remain unauthorized.

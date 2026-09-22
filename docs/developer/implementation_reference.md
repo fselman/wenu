@@ -3752,3 +3752,15 @@ Acceptance-record head `0be116ab` passed 231 documentation/package tests in
 8.54 seconds and clean repository checks. No Moonlight API exists or is
 authorized. Only the post-merge external LIME distribution preflight may
 proceed under separate controls.
+
+## Candidate 50S.7D.3A LIME distribution preflight
+
+No API is added. The receipt identifies LIME Toolbox `v1.4.2` tag commit
+`b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f`, macOS asset SHA-256
+`e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21`,
+and candidate coefficient SHA-256
+`8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691`.
+
+The future boundary would accept Wenu-owned direct selenographic geometry; it
+must not accept a TLE or delegate propagation to LIME's EO-CFI route. Resource,
+geometry, coefficient, irradiance, and uncertainty APIs remain unauthorized.

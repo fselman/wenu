@@ -2104,3 +2104,17 @@ Acceptance-record head `0be116ab` passed 231 documentation/package tests in
 8.54 seconds plus diff, upstream, and clean-tree checks. The accepted
 documentation changes no runtime architecture. Only the post-merge external
 LIME distribution preflight remains authorized next.
+
+## Candidate 50S.7D.3A LIME distribution-preflight architecture
+
+The preflight freezes LIME Toolbox `v1.4.2` at tag commit
+`b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f`, macOS asset SHA-256
+`e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21`,
+and candidate coefficient SHA-256
+`8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691`.
+
+No runtime owner changes. A future adapter must bypass LIME's EO-CFI satellite
+route and supply Wenu-owned same-instant direct selenographic inputs, preserving
+Wenu propagation and ephemeris authority. Coefficient schema/license, lunar
+conventions, and reference outputs remain blockers. LIME was not installed or
+executed and Moonlight remains `not_evaluated`.

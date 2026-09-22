@@ -2035,3 +2035,21 @@ upstream, and clean-tree checks. Do not merge PR 188 or delete its branch
 without separate explicit instructions. After merge, only the separately
 controlled external LIME distribution preflight is authorized; resource
 retrieval, execution, and Moonlight runtime remain unauthorized.
+
+## Candidate 50S.7D.3A external LIME preflight boundary
+
+Read `satellite_lime_distribution_preflight_50s7d3a.md` before any further
+LIME resource, geometry, or Moonlight work. Treat exact `v1.4.2`, its tag
+commit, macOS asset digest, and candidate coefficient digest as a
+documentation-and-receipt candidate only.
+
+The authorized retrieval completed without installation or execution. Do not
+install or execute LIME, vendor or redistribute resources, transcribe
+coefficients, add a dependency or API, or implement Moonlight. Forbid LIME's
+EO-CFI satellite route; a later adapter must consume Wenu-owned direct
+selenographic geometry.
+
+Coefficient schema and selection, data and third-party licenses, exact lunar
+conventions, and authoritative reference outputs remain unresolved. Do not
+begin offline Mac execution or 50S.7D.3 runtime before Fernando's separate
+acceptance, merge, and explicit authorization.
