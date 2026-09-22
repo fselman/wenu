@@ -3355,3 +3355,45 @@ external installed-resource workflow unless redistribution rights are
 established. No runtime or resource was added by the audit. 50S.7D.3
 Moonlight, later illumination, PR merge, and cleanup remain separate explicit
 decisions.
+
+## Candidate 50S.7D.2 — Spectral direct-Sun implementation
+
+Candidate `8e930db2` implements only the accepted offline TSIS-1 HSRS v2
+native-grid slice. It validates the exact external bytes, schema, 25,281 rows,
+202-2730 nm endpoints, 0.1 nm sampling, 1 nm FWHM bandwidth, finite
+non-negative values, and the native trapezoidal integral before returning
+science values. It provides inverse-square and achromatic visible-fraction
+scaling plus exact-native-endpoint energy integration.
+
+The independent receipt matched SHA-256
+`1cf3b07e6ac9669c429ad7ce9e92d50dfd741422efcfffa3d1e0eeb5f901616f`
+and production loading; 79 focused tests passed. Complete verification and
+Fernando's acceptance remain pending. No resource is vendored and no
+interpolation, extrapolation, renormalization, Moonlight, passband, photon,
+brightness, visibility, detector, output, facility, or scheduling behavior is
+added.
+
+## Verified candidate 50S.7D.2 implementation gate
+
+Exact branch head `8f2ca825` retains executable candidate `8e930db2` and
+passed the external TSIS-1 receipt, 132 expanded tests, 227
+documentation/package tests, the clean diff, and all 2,858 plugin-disabled
+repository tests in 238.38 seconds. Upstream equality and a clean worktree were
+also confirmed.
+
+Fernando's separate scientific and architectural acceptance is still required.
+Do not merge, delete the branch, begin 50S.7D.3, or add later radiometric,
+brightness, visibility, detector, output, facility, or scheduling behavior.
+
+## Accepted 50S.7D.2 — Spectral direct-Sun implementation
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`d1edeb46f4ea70c34121910c54758c331fe4293b` on 2026-09-22. Preserve the
+executable `8e930db2` boundary: exact external TSIS-1 HSRS v2 bytes, all
+25,281 native samples, pointwise uncertainty, inverse-square and accepted
+achromatic occultation scaling, exact-native-endpoint energy integration, and
+integrated uncertainty `not_evaluated`.
+
+Do not merge PR 187 or delete its branch without separate instruction.
+50S.7D.3 Moonlight and later illumination, brightness, visibility, detector,
+output, facility, and scheduling work remain unauthorized.

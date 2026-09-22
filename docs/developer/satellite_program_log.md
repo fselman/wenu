@@ -1445,3 +1445,41 @@ retain pointwise uncertainty while leaving integrated uncertainty
 redistribution rights are established. No runtime or resource was added.
 Implementation may begin only after audit merge; 50S.7D.3, merge, and branch
 deletion remain separate decisions.
+
+## 2026-09-22 — Candidate 50S.7D.2 spectral implementation
+
+Started the bounded implementation from accepted integration `b7f22611`.
+Executable candidate `8e930db2` adds the distinct offline radiometry owner,
+exact TSIS-1 HSRS v2 resource admission, immutable native-grid contracts,
+inverse-square and uniform-disk scaling, exact-grid energy integration, typed
+failures, focused tests, and a no-download independent validator.
+
+The real external CSV receipt matched the accepted byte count, SHA-256,
+schema, 25,281 samples, endpoints, sampling, resolution, and production loader.
+Its independently summed native integral was
+`1325.759295697934 W m-2`, within `9e-12 W m-2` of the audit value and the
+declared `1e-9 W m-2` tolerance. The 79-test focused gate passed. Complete
+gates, acceptance, PR merge, branch deletion, and 50S.7D.3 remain pending.
+
+## 2026-09-22 — Verified candidate 50S.7D.2 implementation
+
+Exact branch head `8f2ca825fa799b171717fccd10ce50fab95255d7` retained
+executable candidate `8e930db200b922cc3a4f403cde50cd00c34d0a27` and passed
+the real external-resource receipt, 132 expanded tests in 30.13 seconds, 227
+documentation/package tests in 11.05 seconds, and all 2,858 plugin-disabled
+tests in 238.38 seconds. Diff, exact upstream, and clean-tree checks passed.
+
+The candidate awaits Fernando's separate scientific and architectural
+acceptance. PR creation, merge, branch deletion, and 50S.7D.3 remain separate
+decisions.
+
+## 2026-09-22 — Accepted 50S.7D.2 implementation
+
+Fernando scientifically and architecturally accepted exact verified branch
+head `d1edeb46f4ea70c34121910c54758c331fe4293b`, retaining executable
+`8e930db200b922cc3a4f403cde50cd00c34d0a27`. The external-resource
+receipt, 132 expanded tests, all 2,858 plugin-disabled tests, final 228
+documentation/package tests, diff, upstream, and clean-tree checks passed.
+
+PR 187 remains draft and unmerged. Merge, branch deletion, and 50S.7D.3 are
+separate explicit decisions.

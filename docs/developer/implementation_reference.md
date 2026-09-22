@@ -3670,3 +3670,51 @@ TSIS-1 HSRS v2 resource. It must retain pointwise uncertainty and report
 integrated uncertainty as `not_evaluated`. No interpolation, extrapolation,
 renormalization, Moonlight, passband library, photon rate, or output API is
 authorized.
+
+## Candidate 50S.7D.2 spectral API implementation
+
+Executable `8e930db2` exports immutable
+`SolarSpectralIrradianceResourceIdentity`,
+`DirectSolarSpectralIrradiancePolicy`,
+`DirectSolarSpectralIrradiance`, and
+`DirectSolarSpectralIrradianceEvaluator` contracts plus the explicit offline
+`load_solar_spectral_irradiance_resource(path)` entry point.
+
+The loader admits only the accepted TSIS-1 HSRS v2 serialization by byte count
+and SHA-256, then validates UTF-8 CSV schema, native grid, values, bandwidth,
+and integral. The evaluator consumes one complete accepted
+`SatelliteIlluminationGeometry`, preserves native tuples, scales energy
+spectral irradiance and absolute pointwise uncertainty, and leaves integrated
+uncertainty `not_evaluated`. `integrate_energy()` accepts only exact native
+endpoints. Unsupported models, resources, geometry, interpolation,
+extrapolation, and renormalization fail closed.
+
+This remains an unaccepted candidate. It supplies no acquisition API,
+Moonlight, passband response, photon rate, surface response, brightness,
+visibility, detector, report, chart, CLI, planning, facility, or scheduling
+API.
+
+## Verified candidate 50S.7D.2 spectral API
+
+Exact verified head `8f2ca825` retains the bounded executable API at
+`8e930db2`. The real-resource receipt, 132 expanded tests, 227
+documentation/package tests, clean diff, and complete 2,858-test suite passed.
+
+The API remains an unaccepted candidate: exact external-resource admission,
+native immutable energy samples, pointwise uncertainty, exact-grid integration,
+and integrated uncertainty `not_evaluated`. Acquisition, interpolation,
+extrapolation, renormalization, Moonlight, photon, output, and later APIs remain
+unauthorized.
+
+## Accepted 50S.7D.2 spectral API implementation
+
+Fernando accepted exact verified candidate `d1edeb46` on 2026-09-22.
+Preserve the executable `8e930db2` immutable resource identity, policy,
+result, evaluator, offline loader, typed failures, native tuples, pointwise
+uncertainty, exact-grid energy integration, and deterministic identity.
+
+The API must continue to forbid implicit acquisition, interpolation,
+extrapolation, renormalization, aggregate uncertainty, Moonlight, photon
+conversion, surface response, brightness, visibility, detector, output,
+facility, and scheduling behavior. PR 187 merge and branch deletion remain
+separate decisions.

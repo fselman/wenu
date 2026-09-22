@@ -4304,3 +4304,35 @@ coordinate frame, transform, time scale, observer, or attitude meaning. The
 bounded later implementation must consume accepted same-instant geometry and
 must not interpolate, extrapolate, or renormalize the native spectrum.
 50S.7D.3 remains unauthorized.
+
+## Candidate 50S.7D.2 implemented scalar boundary
+
+Executable `8e930db2` adds scalar wavelength, energy spectral irradiance, and
+pointwise uncertainty values downstream of accepted same-instant geometry. It
+introduces no vector, frame, transform, time scale, observer, surface, or
+attitude. Sun-satellite distance and occultation remain owned by the accepted
+geometry; the spectral evaluator does not recompute either.
+
+The coordinate-system guide was reviewed and remains current. Complete gates
+and acceptance are pending; 50S.7D.3 and later coordinate or radiometric
+behavior remain unauthorized.
+
+## Verified candidate 50S.7D.2 scalar coordinate gate
+
+Exact head `8f2ca825` passed the real-resource receipt, 132 expanded tests,
+227 documentation/package tests, and all 2,858 plugin-disabled tests. The
+evidence confirms scalar composition over retained accepted geometry without a
+new vector, frame, transform, time scale, observer, surface, or attitude.
+
+This guide remains current. Acceptance, merge, branch deletion, 50S.7D.3, and
+later coordinate or radiometric behavior remain unauthorized.
+
+## Accepted 50S.7D.2 scalar coordinate behavior
+
+Fernando accepted exact verified candidate `d1edeb46` on 2026-09-22.
+Preserve scalar wavelength, energy spectral irradiance, and pointwise
+uncertainty composition over retained accepted geometry without any new
+vector, frame, transform, time scale, observer, surface, or attitude.
+
+This guide remains current. PR 187 merge, branch deletion, 50S.7D.3, and later
+coordinate or radiometric behavior remain separate explicit decisions.

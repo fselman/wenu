@@ -1942,3 +1942,51 @@ acquire the resource, alter accepted 50S.7D.1 bolometric semantics, or begin
 50S.7D.3 Moonlight, reflected fields, spacecraft response, brightness,
 visibility, detector, output, facility, scheduling, or unrelated work. PR
 merge and branch deletion remain separate explicit decisions.
+
+## Candidate 50S.7D.2 implementation boundary
+
+Treat executable `8e930db200b922cc3a4f403cde50cd00c34d0a27` plus later
+documentation-only evidence as an unaccepted bounded candidate. Preserve its
+exact external TSIS-1 HSRS v2 byte admission, immutable 25,281-sample native
+grid, pointwise uncertainty, inverse-square distance and accepted achromatic
+uniform-disk scaling, exact-native-endpoint trapezoidal energy integration,
+explicit integrated uncertainty `not_evaluated`, typed failures, and
+offline independent receipt.
+
+The 79-test focused gate and real-resource receipt passed. Before review
+require current-documentation and package-boundary gates, the expanded
+dependency gate, complete plugin-disabled Mac suite, diff check, exact
+upstream, and clean tree. Do not vendor or implicitly acquire the resource,
+alter 50S.7D.1 bolometric semantics, or add Moonlight, reflected fields,
+surface response, brightness, visibility, detector, output, facility,
+scheduling, or unrelated work. Merge and branch deletion remain separate
+explicit decisions.
+
+## Verified candidate 50S.7D.2 review state
+
+Treat exact branch head `8f2ca825fa799b171717fccd10ce50fab95255d7` as
+verified but unaccepted. Executable `8e930db2` passed the real TSIS-1
+external-resource receipt, 132-test expanded dependency gate, 227-test
+documentation/package gate, clean diff, and all 2,858 plugin-disabled
+repository tests in 238.38 seconds. Exact upstream equality and a clean
+worktree were confirmed.
+
+Do not merge, delete the feature branch, begin 50S.7D.3, vendor or implicitly
+acquire the resource, or add later radiometry, brightness, visibility,
+detector, output, facility, scheduling, or unrelated behavior without
+Fernando's separate explicit decision.
+
+## Accepted 50S.7D.2 implementation boundary
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`d1edeb46f4ea70c34121910c54758c331fe4293b` on 2026-09-22. Preserve
+executable `8e930db2`: exact external TSIS-1 HSRS v2 admission, immutable
+25,281-sample native grid, retained pointwise uncertainty, inverse-square
+distance and accepted achromatic uniform-disk scaling, exact-native-endpoint
+trapezoidal energy integration, integrated uncertainty `not_evaluated`,
+typed failures, and the offline independent receipt.
+
+Do not merge PR 187 or delete its feature branch without Fernando's separate
+explicit instruction. Do not begin 50S.7D.3 Moonlight, vendor or implicitly
+acquire the resource, or add reflected fields, surface response, brightness,
+visibility, detector, output, facility, scheduling, or unrelated behavior.

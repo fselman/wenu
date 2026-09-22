@@ -1228,3 +1228,40 @@ irradiance, retained pointwise uncertainty, and integrated uncertainty
 `not_evaluated`. No interpolation, extrapolation, `1361 W m-2`
 renormalization, or numeric Moonlight is implied. The audit added no runtime or
 resource.
+
+## Candidate 50S.7D.2 spectral direct-Sun implementation
+
+Candidate `8e930db2` adds an offline, output-neutral direct-Sun reference
+spectrum over the exact TSIS-1 HSRS v2 native grid. It preserves the complete
+accepted illumination geometry, applies inverse-square distance scaling and
+one achromatic uniform-disk visible fraction, retains pointwise provider
+uncertainty, and records that integrated uncertainty is `not_evaluated`.
+
+The CSV remains an explicitly installed external resource. Wenu neither
+downloads nor vendors it. The finite-domain integral is not bolometric TSI,
+the 1 nm bandwidth is resolution rather than integration width, and no
+interpolation, extrapolation, 1361 W m-2 renormalization, photon conversion, or
+Moonlight is implied. The candidate is unaccepted.
+
+## Verified candidate 50S.7D.2 direct-Sun spectrum
+
+Exact head `8f2ca825` passed the installed external-resource receipt, 132
+expanded tests, 227 documentation/package tests, clean diff, and all 2,858
+plugin-disabled tests. The receipt independently reproduced the admitted bytes,
+native grid, resolution, integral, and production-loader result.
+
+The spectrum remains a verified but unaccepted reference-energy product. It is
+not bolometric TSI, Moonlight, spacecraft brightness, visibility, or detector
+response.
+
+## Accepted 50S.7D.2 direct-Sun spectrum
+
+Fernando accepted exact verified candidate `d1edeb46` on 2026-09-22.
+Preserve the executable `8e930db2` TSIS-1 HSRS v2 native-grid energy
+spectrum, exact external-resource identity, pointwise uncertainty,
+inverse-square scaling, accepted achromatic visible fraction, exact-grid
+integration, and explicit integrated uncertainty `not_evaluated`.
+
+The product remains distinct from bolometric TSI, Moonlight, spacecraft
+brightness, visibility, and detector response. PR 187 merge and branch
+deletion remain separate.

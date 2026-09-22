@@ -2897,3 +2897,43 @@ exact candidate `0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe` on
 installed unless redistribution rights are established. Evaluation and import
 must remain offline; acquisition, Moonlight, and later runtime ownership remain
 separate.
+
+## Candidate 50S.7D.2 implementation ownership
+
+Executable `8e930db2` realizes the accepted distinct resource lifecycle in
+`src/wenu/satellites/radiometry.py`. The module owns the exact external
+TSIS-1 identity, offline byte and schema admission, immutable native spectral
+data, native-grid energy integration, spectral scaling policy/result/evaluator,
+and typed fail-closed errors. It depends downstream on accepted
+`SatelliteIlluminationGeometry`; `illumination.py` remains the geometry and
+50S.7D.1 bolometric owner.
+
+`tests/test_satellite_radiometry.py` owns the durable spectral-resource,
+native-grid, scaling, uncertainty, zero-versus-unknown, and failure contracts.
+`tools/validate_50s7d2_spectral_solar_radiometry.py` independently parses
+explicitly installed bytes and performs no download. The package initializer
+exports the intentional spectral contracts. No acquisition module, vendored
+resource, new dependency, or later illumination owner is added.
+
+## Verified candidate 50S.7D.2 source ownership
+
+Exact head `8f2ca825` verified the executable `radiometry.py` owner,
+dedicated durable tests, package exports, and offline validator at
+`8e930db2`. The 132-test expanded gate, 227-test documentation/package gate,
+complete 2,858-test suite, real-resource receipt, diff, upstream, and clean-tree
+checks passed.
+
+Ownership remains a verified but unaccepted candidate. No acquisition owner,
+vendored resource, second geometry path, or 50S.7D.3+ owner is admitted.
+
+## Accepted 50S.7D.2 implementation source ownership
+
+Fernando accepted exact verified candidate `d1edeb46` on 2026-09-22.
+Preserve `src/wenu/satellites/radiometry.py` as the distinct offline
+spectral-resource and spectral-composition owner, its dedicated durable tests,
+intentional package exports, and the no-download independent validator at
+executable `8e930db2`.
+
+`illumination.py` remains geometry and 50S.7D.1 bolometric owner. No
+acquisition owner, vendored resource, second geometry path, or 50S.7D.3+
+ownership is accepted. PR 187 merge and branch deletion remain separate.

@@ -2029,3 +2029,44 @@ one offline digest-bound TSIS-1 HSRS v2 native-grid implementation with
 pointwise uncertainty and no interpolation, extrapolation, renormalization, or
 implicit acquisition. The audit added no runtime or resource. 50S.7D.3 and
 later behavior remain unauthorized.
+
+## Candidate 50S.7D.2 spectral implementation architecture
+
+Executable candidate `8e930db2` adds the distinct offline
+`satellites/radiometry.py` owner accepted by the audit. It admits exactly one
+externally installed TSIS-1 HSRS v2 byte identity, preserves all 25,281 native
+samples and pointwise uncertainty as immutable tuples, and composes only the
+accepted Sun-satellite distance and uniform-disk visible fraction.
+
+The native-grid evaluator does not alter 50S.7D.1 bolometric semantics and
+adds no coordinate, rendering, output, or network pipeline. The high-level
+architecture diagram was reviewed and remains current because it does not
+enumerate satellite illumination submodules. The 79-test focused gate and the
+independent installed-resource receipt passed; complete gates and acceptance
+remain pending. 50S.7D.3 and later behavior remain unauthorized.
+
+## Verified candidate 50S.7D.2 implementation architecture
+
+Executable `8e930db2`, carried by exact verified branch head `8f2ca825`,
+passed the real-resource receipt, 132-test expanded dependency gate, 227-test
+documentation/package gate, clean diff, and all 2,858 plugin-disabled
+repository tests in 238.38 seconds. Exact upstream equality and a clean
+worktree were confirmed.
+
+This verifies the bounded distinct spectral-resource owner without changing
+the canonical geometry, rendering, output, or 50S.7D.1 bolometric
+architecture. The candidate remains unaccepted; merge, branch deletion,
+50S.7D.3, and all later behavior require separate decisions.
+
+## Accepted 50S.7D.2 implementation architecture
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`d1edeb46f4ea70c34121910c54758c331fe4293b` on 2026-09-22. Preserve the
+bounded executable architecture at `8e930db2`: one distinct offline spectral
+resource owner downstream of accepted geometry, exact TSIS-1 HSRS v2
+admission, immutable native-grid values, and no change to 50S.7D.1 bolometric
+or canonical chart architecture.
+
+The external-resource receipt, 132 expanded tests, all 2,858 plugin-disabled
+tests, and final 228 documentation/package tests passed. Do not merge PR 187,
+delete its branch, or begin 50S.7D.3+ without separate explicit authority.
