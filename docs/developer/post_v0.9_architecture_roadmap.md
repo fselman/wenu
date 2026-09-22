@@ -3355,3 +3355,20 @@ external installed-resource workflow unless redistribution rights are
 established. No runtime or resource was added by the audit. 50S.7D.3
 Moonlight, later illumination, PR merge, and cleanup remain separate explicit
 decisions.
+
+## Candidate 50S.7D.2 — Spectral direct-Sun implementation
+
+Candidate `8e930db2` implements only the accepted offline TSIS-1 HSRS v2
+native-grid slice. It validates the exact external bytes, schema, 25,281 rows,
+202-2730 nm endpoints, 0.1 nm sampling, 1 nm FWHM bandwidth, finite
+non-negative values, and the native trapezoidal integral before returning
+science values. It provides inverse-square and achromatic visible-fraction
+scaling plus exact-native-endpoint energy integration.
+
+The independent receipt matched SHA-256
+`1cf3b07e6ac9669c429ad7ce9e92d50dfd741422efcfffa3d1e0eeb5f901616f`
+and production loading; 79 focused tests passed. Complete verification and
+Fernando's acceptance remain pending. No resource is vendored and no
+interpolation, extrapolation, renormalization, Moonlight, passband, photon,
+brightness, visibility, detector, output, facility, or scheduling behavior is
+added.
