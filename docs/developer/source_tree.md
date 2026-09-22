@@ -2962,3 +2962,9 @@ After merge, only an external LIME distribution preflight may proceed under
 separate controls. The future ownership reservation remains illumination for
 geometry and radiometry for exact model resources and native-band values.
 Runtime, acquisition ownership, and 50S.7D.4+ remain unauthorized.
+
+## Final accepted 50S.7D.3 ownership verification
+
+Acceptance-record head `0be116ab` passed 231 documentation/package tests in
+8.54 seconds and clean repository checks. No source-tree ownership changed.
+Only the post-merge external LIME distribution preflight is authorized next.
