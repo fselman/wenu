@@ -2083,3 +2083,17 @@ update route, and preserve signed-phase/domain-edge native outputs plus exact
 digests. Successful execution is candidate external evidence only. Do not add
 a dependency or API, vendor or redistribute resources, claim Wenu/SPICE
 geometry equivalence, evaluate Moonlight, or begin 50S.7D.4+.
+
+## Authorized 50S.7D.3B signature-gate amendment
+
+On 2026-09-22, Fernando authorized a revised inspection protocol after the
+exact package returned `Status: no signature` and an installed v1.4.2 app
+failed strict codesign on `QtDataVisualization.framework`. Supersede only the
+installed-app rejection and signature-pass requirements above: record and
+ignore a preexisting installation, require exact package/coefficient digests,
+record the two exact known signature failures and reject different ones, and
+explicitly mark both signatures unverified. Enter the network-denied sandbox
+before loading any bundled native library; use only the temporary expanded
+app with a minimal environment. Do not weaken the sandbox or claim signature
+verification, Moonlight, or runtime acceptance. The amended static gates and
+controlled Mac receipt require separate review before PR acceptance.

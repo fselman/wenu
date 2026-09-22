@@ -434,19 +434,47 @@ def _netcdf_library(app: Path) -> Path:
 def _lime_environment(home: Path):
     temporary = home / "tmp"
     temporary.mkdir(exist_ok=True)
+    return {
+        "HOME": str(home),
+        "TMPDIR": str(temporary),
+        "PATH": "/usr/bin:/bin",
+        "LC_ALL": "C",
+        "NO_PROXY": "*",
+        "no_proxy": "*",
+        "HTTP_PROXY": "http://127.0.0.1:9",
+        "HTTPS_PROXY": "http://127.0.0.1:9",
+        "ALL_PROXY": "socks5://127.0.0.1:9",
+    }
+
+
+def _signature_receipt(command, path: Path, expected_failure: str):
+    result = _run(command, check=False)
+    _write_text(path, result.stdout)
+    if result.returncode == 0 or expected_failure not in result.stdout:
+        raise AssertionError(
+            f"unexpected signature result; inspect {path} "
+            f"(exit {result.returncode})"
+        )
+    return {"status": "known_unverified", "exit_code": result.returncode}
+
+
+def _enter_network_sandbox():
+    if os.environ.get("WENU_LIME_INSPECTION_SANDBOX") == "active":
+        return
     environment = dict(os.environ)
-    environment.update(
-        {
-            "HOME": str(home),
-            "TMPDIR": str(temporary),
-            "NO_PROXY": "*",
-            "no_proxy": "*",
-            "HTTP_PROXY": "http://127.0.0.1:9",
-            "HTTPS_PROXY": "http://127.0.0.1:9",
-            "ALL_PROXY": "socks5://127.0.0.1:9",
-        }
+    environment["WENU_LIME_INSPECTION_SANDBOX"] = "active"
+    os.execve(
+        str(REQUIRED_MACOS_TOOLS["sandbox-exec"]),
+        (
+            str(REQUIRED_MACOS_TOOLS["sandbox-exec"]),
+            "-p",
+            SANDBOX_PROFILE,
+            sys.executable,
+            str(Path(__file__).resolve()),
+            *sys.argv[1:],
+        ),
+        environment,
     )
-    return environment
 
 
 def _run_lime(executable, resources, home, arguments, log_path):
@@ -554,13 +582,12 @@ def main():
 
     if sys.platform != "darwin":
         raise AssertionError("50S.7D.3B must run on macOS")
+    if not REQUIRED_MACOS_TOOLS["sandbox-exec"].exists():
+        raise AssertionError("required macOS tool is unavailable: sandbox-exec")
+    _enter_network_sandbox()
     if arguments.output_directory.exists():
         raise AssertionError("output directory must not already exist")
-    if Path("/Applications/LimeTBX.app").exists():
-        raise AssertionError(
-            "an installed /Applications/LimeTBX.app would make resource "
-            "selection ambiguous; remove it before this isolated inspection"
-        )
+    preexisting_installation = Path("/Applications/LimeTBX.app").exists()
     for name, path in REQUIRED_MACOS_TOOLS.items():
         if not path.exists():
             raise AssertionError(f"required macOS tool is unavailable: {name}")
@@ -573,10 +600,11 @@ def main():
     with tempfile.TemporaryDirectory(prefix="wenu-lime-50s7d3b-") as temporary:
         temporary_path = Path(temporary)
         expanded = temporary_path / "expanded"
-        signature = _run(
-            (REQUIRED_MACOS_TOOLS["pkgutil"], "--check-signature", arguments.package)
+        package_signature = _signature_receipt(
+            (REQUIRED_MACOS_TOOLS["pkgutil"], "--check-signature", arguments.package),
+            output / "package-signature.txt",
+            "Status: no signature",
         )
-        _write_text(output / "package-signature.txt", signature.stdout)
         expansion = _run(
             (
                 REQUIRED_MACOS_TOOLS["pkgutil"],
@@ -592,7 +620,7 @@ def main():
         executable = app / "Contents" / "MacOS" / "LimeTBX.exe"
         if not executable.is_file() or not resources.is_dir():
             raise AssertionError("expanded LIME app layout is incomplete")
-        codesign = _run(
+        app_signature = _signature_receipt(
             (
                 REQUIRED_MACOS_TOOLS["codesign"],
                 "--verify",
@@ -600,9 +628,17 @@ def main():
                 "--strict",
                 "--verbose=2",
                 app,
-            )
+            ),
+            output / "app-codesign.txt",
+            "bundle format is ambiguous (could be app or framework)",
         )
-        _write_text(output / "app-codesign.txt", codesign.stdout)
+        app_receipt = (output / "app-codesign.txt").read_text(encoding="utf-8")
+        if not any(
+            line.startswith("In subcomponent: ")
+            and line.endswith("/Contents/Frameworks/QtDataVisualization.framework")
+            for line in app_receipt.splitlines()
+        ):
+            raise AssertionError("unexpected app signature failure component")
 
         coefficient = resources / "coeff_data" / "versions" / COEFFICIENT_FILENAME
         if coefficient.stat().st_size != COEFFICIENT_BYTES:
@@ -721,7 +757,11 @@ def main():
             "machine": platform.machine(),
             "python": platform.python_version(),
             "network_sandbox": SANDBOX_PROFILE,
-            "installed": False,
+            "network_access": False,
+            "package_signature": package_signature,
+            "app_signature": app_signature,
+            "preexisting_installation_present": preexisting_installation,
+            "installed_by_inspection": False,
             "package": {
                 "filename": arguments.package.name,
                 "byte_count": arguments.package.stat().st_size,
@@ -767,7 +807,8 @@ def main():
     print(f"coefficient_sha256={COEFFICIENT_SHA256}")
     print(f"case_count={len(CASES)}")
     print("network_access=false")
-    print("installed=false")
+    print(f"preexisting_installation_present={str(preexisting_installation).lower()}")
+    print("installed_by_inspection=false")
     print("production_runtime_changed=false")
     print("moonlight_status=not_evaluated")
 

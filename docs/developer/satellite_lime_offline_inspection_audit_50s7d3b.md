@@ -1,6 +1,6 @@
 # 50S.7D.3B offline LIME resource and reference-output inspection
 
-**Status:** Candidate controlled Mac inspection; no Moonlight runtime
+**Status:** Candidate controlled Mac inspection with explicit unsigned-package amendment; no Moonlight runtime
 
 **Inspection-plan date:** 2026-09-22
 
@@ -31,10 +31,28 @@ The exact inputs remain:
   and
 - coefficient selector `20251010_v1`.
 
-Any identity mismatch, missing macOS control, unexpected installation, resource
-ambiguity, output mismatch, or execution failure stops the inspection. It does
-not authorize a substitute package, coefficient, platform, rerun, network
-fallback, or production implementation.
+Any identity mismatch, missing macOS control, resource ambiguity, output
+mismatch, or execution failure stops the inspection. It does not authorize a
+substitute package, coefficient, platform, network fallback, or production
+implementation. A preexisting installed app is recorded and never selected.
+
+### 2026-09-22 signature and installation amendment
+
+On Fernando's Mac, the freshly downloaded exact-size, exact-SHA-256 package
+returned `Status: no signature` from `pkgutil --check-signature`. The separately
+installed v1.4.2 app returned `bundle format is ambiguous (could be app or
+framework)` for `QtDataVisualization.framework` under strict `codesign`; its
+selected coefficient matched the frozen digest. This is evidence of failed
+signature gates, not a successful signature verification or proof that the
+installed executable equals the accepted package. Fernando explicitly
+authorized a revised inspection protocol after these observations.
+
+The amended trust basis is the exact external package byte count and SHA-256
+frozen in 50S.7D.3A, plus an exact bundled coefficient digest. The tool
+records and admits only these two known signature results; any different
+signature result or failure component stops before execution. The package and
+app remain **unverified by signature**. The installed app is ignored, not
+removed or executed. Do not interpret the receipt as code-signing assurance.
 
 ## 2. Why execution is required
 
@@ -58,18 +76,21 @@ amendment establish compatibility.
 `tools/validate_50s7d3b_lime_offline_inspection.py` is the sole operator
 harness. On macOS it:
 
-1. rejects an existing `/Applications/LimeTBX.app`;
-2. verifies the exact package byte count and SHA-256;
-3. records `pkgutil --check-signature` output;
-4. uses `pkgutil --expand-full` in a temporary directory instead of running the
+1. enters the network-denied sandbox before parsing bundled native libraries;
+2. records, but never selects, any existing `/Applications/LimeTBX.app`;
+3. verifies the exact package byte count and SHA-256;
+4. records the exact unsigned result from `pkgutil --check-signature`;
+5. uses `pkgutil --expand-full` in a temporary directory instead of running the
    installer;
-5. verifies the expanded app with `codesign --verify --deep --strict`;
-6. verifies the exact coefficient bytes inside that extracted app;
-7. runs the extracted executable with an isolated `HOME` and `TMPDIR` under
+6. records the known strict `codesign` failure on the extracted app and rejects
+   any other failure component;
+7. verifies the exact coefficient bytes inside that extracted app;
+8. runs only the extracted executable with a minimal environment, isolated
+   `HOME` and `TMPDIR`, under
    macOS `sandbox-exec` profile
    `(version 1) (allow default) (deny network*)`;
-8. poisons conventional proxy variables as defence in depth; and
-9. never invokes LIME's `-u`/`--update` route.
+9. poisons conventional proxy variables as defence in depth; and
+10. never invokes LIME's `-u`/`--update` route.
 
 The harness writes only to one caller-selected new evidence directory and a
 temporary expansion that is deleted on exit. It never copies model resources
@@ -118,11 +139,12 @@ and domain flags. It then performs one uncertainty-enabled calculation.
 Non-finite external values are preserved as explicit JSON strings rather than
 emitted as non-standard JSON numbers.
 
-The evidence directory contains the input rows, package signature and app
-signature receipts, CLI version/help, coefficient schema, raw netCDF outputs,
+The evidence directory contains the input rows, failed package and app
+signature receipts with exit codes, CLI version/help, coefficient schema, raw netCDF outputs,
 native-value JSON projections, logs, and a manifest with byte counts and
 SHA-256 digests. The manifest explicitly records `network_access=false`,
-`installed=false`, `production_runtime_changed=false`, and
+`preexisting_installation_present=true` when applicable,
+`installed_by_inspection=false`, `production_runtime_changed=false`, and
 `moonlight_status=not_evaluated`.
 
 ## 6. Two-phase review
@@ -164,7 +186,7 @@ Before this candidate may be accepted, require:
 - exact branch/head, upstream, and clean-tree confirmation;
 - one controlled Mac Phase-A run against the exact package into a new external
   directory;
-- review of signatures, notices, coefficient schema, native outputs, logs,
+- review of the explicit signature failures, notices, coefficient schema, native outputs, logs,
   manifest, and every digest; and
 - explicit scientific and architectural acceptance by Fernando.
 
@@ -183,8 +205,8 @@ or 50S.7D.4+ behavior.
 
 ## 10. Recommendation
 
-Treat the harness and this plan as a candidate until its static repository
-gates and the single controlled Mac run are reviewed. If Phase A succeeds,
+Treat the amended harness and this plan as a candidate until its static
+repository gates and the single controlled Mac run are reviewed. If Phase A succeeds,
 preserve the returned evidence without modification and audit it before
 proposing the independent Wenu/SPICE geometry comparison. If it fails, stop
 and diagnose the exact failed control; do not weaken the sandbox, change the

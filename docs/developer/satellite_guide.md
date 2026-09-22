@@ -1413,18 +1413,23 @@ python tools/validate_50s7d3b_lime_offline_inspection.py \
 The output directory must not exist. The package must have the accepted
 `516220150` byte size and SHA-256
 `e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21`.
-The command also refuses to start if `/Applications/LimeTBX.app` exists,
-because an installed copy would make resource selection ambiguous.
+An existing `/Applications/LimeTBX.app` is recorded but never selected. Only
+the app expanded from the exact verified package is used.
 
 The command does not run Apple's installer. It expands the package into a
-temporary directory, records the package signature, verifies the expanded app
-signature, and verifies bundled coefficient
+temporary directory. The exact package has no installer signature, and strict
+code-signature verification of the bundled `QtDataVisualization.framework`
+fails with an ambiguous-bundle-format error. The harness records both failures
+and rejects any different signature result; **neither signature is verified**.
+Its admission relies on the frozen package size and SHA-256 and the bundled
+coefficient
 `LIME_MODEL_COEFS_20251010_V01.nc` at SHA-256
 `8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691`.
-It then executes that temporary app with an isolated home and temporary
-directory under the macOS sandbox rule `(deny network*)`. Proxy variables are
-also redirected to the local discard port. LIME's coefficient-update option is
-never called.
+The full harness enters the network-denied sandbox before loading the bundled
+netCDF library. It executes that temporary app with a minimal environment,
+isolated home and temporary directory under the macOS rule `(deny network*)`.
+Proxy variables are also redirected to the local discard port. LIME's
+coefficient-update option is never called.
 
 Ten direct-selenographic rows hold both distances and all longitudes/latitudes
 fixed while testing signed phase at `-90.001`, `-90`, `-15`, `-2`, `-1.999`,
@@ -1440,11 +1445,12 @@ netCDF files are retained alongside JSON projections of the native values and
 schema. Package/app receipts, notices, version/help output, logs, byte counts,
 and SHA-256 digests are collected into one manifest.
 
-Four negative statements are part of the evidence, not incidental prose:
+The environment and runtime statements are part of the evidence:
 
 ```text
 network_access=false
-installed=false
+preexisting_installation_present=true
+installed_by_inspection=false
 production_runtime_changed=false
 moonlight_status=not_evaluated
 ```

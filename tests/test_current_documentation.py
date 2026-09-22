@@ -10128,13 +10128,15 @@ def test_50s7d3b_records_controlled_offline_lime_inspection():
         read(INSTRUCTIONS),
     )
     for phrase in (
-        "Candidate controlled Mac inspection; no Moonlight runtime",
+        "Candidate controlled Mac inspection with explicit unsigned-package amendment; no Moonlight runtime",
         "c550da2e6c6ed5e17b489b09aaf4b95fe059f542",
         "pkgutil --expand-full",
         "(version 1) (allow default) (deny network*)",
         "never invokes LIME's `-u`/`--update` route",
         "2 <= abs(phase_angle) <= 90",
         "Phase B is a later review",
+        "preexisting_installation_present=true",
+        "installed_by_inspection=false",
         "production_runtime_changed=false",
         "moonlight_status=not_evaluated",
     ):

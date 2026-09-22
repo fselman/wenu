@@ -3461,8 +3461,15 @@ installation, execution, Moonlight runtime, or 50S.7D.4+ work is authorized.
 The next bounded candidate supplies a no-install, network-denied macOS harness
 for the exact accepted LIME package. It freezes ten signed-phase/domain-edge
 rows, exact coefficient selection, native CIMEL outputs, uncertainty output,
-repeatability evidence, notice inventory, package/app signatures, and a
+repeatability evidence, notice inventory, explicit unverified package/app
+signature receipts, and a
 digest-bound external manifest.
+
+The exact asset is unsigned and its bundled Qt framework fails strict
+codesign. Fernando authorized an amended, exact-byte, network-denied
+inspection that records these known failures and ignores the preexisting
+installed app. A different failure stops the run. This is candidate external
+evidence without code-signing assurance.
 
 One successful operator run remains unaccepted evidence pending review. A
 later independent Wenu/SPICE geometry comparison is a separate phase. Do not

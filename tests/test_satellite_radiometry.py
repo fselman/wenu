@@ -6,6 +6,7 @@ import importlib.util
 from io import StringIO
 import json
 from pathlib import Path
+from types import SimpleNamespace
 import sys
 
 import pytest
@@ -349,6 +350,60 @@ def test_lime_inspection_is_exact_no_install_and_network_denied():
     assert '"--update"' not in source
     assert '"-u"' not in source
     assert 'Path("/Applications/LimeTBX.app")' in source
+
+
+def test_lime_signature_receipts_admit_only_documented_failures(
+    monkeypatch, tmp_path
+):
+    inspection = load_lime_inspection_module()
+    receipt = tmp_path / "signature.txt"
+
+    monkeypatch.setattr(
+        inspection,
+        "_run",
+        lambda command, check: SimpleNamespace(
+            returncode=1, stdout="Package lime.pkg:\n   Status: no signature\n"
+        ),
+    )
+    assert inspection._signature_receipt(
+        ("pkgutil",), receipt, "Status: no signature"
+    ) == {"status": "known_unverified", "exit_code": 1}
+    assert "Status: no signature" in receipt.read_text()
+
+    for result in (
+        SimpleNamespace(returncode=0, stdout="Status: signed"),
+        SimpleNamespace(returncode=1, stdout="identity mismatch"),
+    ):
+        monkeypatch.setattr(
+            inspection, "_run", lambda command, check: result
+        )
+        with pytest.raises(AssertionError, match="unexpected signature result"):
+            inspection._signature_receipt(
+                ("pkgutil",), receipt, "Status: no signature"
+            )
+
+
+def test_lime_inspection_sandboxes_native_reader_and_excludes_parent_env(
+    monkeypatch, tmp_path
+):
+    inspection = load_lime_inspection_module()
+    monkeypatch.delenv("WENU_LIME_INSPECTION_SANDBOX", raising=False)
+    monkeypatch.setenv("DYLD_LIBRARY_PATH", "/untrusted")
+    monkeypatch.setenv("PYTHONPATH", "/untrusted")
+    monkeypatch.setattr(inspection.sys, "argv", ["inspection.py", "pkg", "out"])
+
+    def capture_exec(path, arguments, environment):
+        assert path == "/usr/bin/sandbox-exec"
+        assert arguments[1:3] == ("-p", inspection.SANDBOX_PROFILE)
+        assert arguments[-2:] == ("pkg", "out")
+        assert environment["WENU_LIME_INSPECTION_SANDBOX"] == "active"
+
+    monkeypatch.setattr(inspection.os, "execve", capture_exec)
+    inspection._enter_network_sandbox()
+    lime_environment = inspection._lime_environment(tmp_path)
+    assert "DYLD_LIBRARY_PATH" not in lime_environment
+    assert "PYTHONPATH" not in lime_environment
+    assert lime_environment["HOME"] == str(tmp_path)
 
 
 def test_lime_inspection_serializes_nonfinite_external_values_as_strict_json():

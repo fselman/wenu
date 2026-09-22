@@ -1569,3 +1569,11 @@ This is not LIME installation or Wenu Moonlight implementation. Static gates,
 one controlled Mac run, evidence review, and Fernando's separate scientific
 and architectural acceptance remain required. Independent Wenu/SPICE geometry
 comparison is a later phase; `moonlight` remains `not_evaluated`.
+
+The first Mac run could not begin: the exact-size and exact-digest `lime.pkg`
+reported `Status: no signature`, while the separately installed v1.4.2 app
+failed strict codesign on `QtDataVisualization.framework`. Fernando authorized
+an amended protocol that retains the exact-byte and network-denied controls,
+records both unverified signature results, and never selects the installed app.
+The 258-test focused gate and complete 2,868-test Mac suite passed at original
+PR head `e4b540f0`; amended code needs its own gate and controlled receipt.
