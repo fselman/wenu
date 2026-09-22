@@ -3397,3 +3397,18 @@ integrated uncertainty `not_evaluated`.
 Do not merge PR 187 or delete its branch without separate instruction.
 50S.7D.3 Moonlight and later illumination, brightness, visibility, detector,
 output, facility, and scheduling work remain unauthorized.
+
+## Candidate 50S.7D.3 — Direct-Moonlight readiness audit
+
+The documentation-only audit compares ROLO, GIRO, and LIME and selects LIME as
+the preferred publication-quality production candidate because of its
+SI-traceable scale and band-specific uncertainty. GIRO/ROLO remains independent
+comparison evidence.
+
+Implementation is not authorized. The exact LIME toolbox/resource version,
+bytes, license, native bands, coefficients, geometry conventions, domain,
+uncertainty, and reference outputs are not yet frozen. After separate
+acceptance and merge, only an explicitly authorized external distribution
+preflight may proceed. Moonlight must remain `not_evaluated`; 50S.7D.3
+runtime, 50S.7D.4, 50S.7E+, outputs, brightness, visibility, detector, facility,
+and scheduling behavior remain unauthorized.
