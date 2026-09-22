@@ -1483,3 +1483,18 @@ documentation/package tests, diff, upstream, and clean-tree checks passed.
 
 PR 187 remains draft and unmerged. Merge, branch deletion, and 50S.7D.3 are
 separate explicit decisions.
+
+## 2026-09-22 — Candidate 50S.7D.3 Moonlight readiness audit
+
+Started the documentation-only audit from exact merged integration head
+`5074358550051094c840bcab827760861fec101a`. The as-is review found no
+Moonlight geometry or model resource; the existing lunar-occultor field only
+reserves whether the Moon occults the Sun and cannot be repurposed.
+
+Primary-source comparison selects LIME as the preferred future production
+model, with GIRO/ROLO retained as comparison evidence. The audit records a stop
+gate because an exact versioned LIME distribution, byte identity, license,
+native bands, coefficients, complete domain, and reference outputs could not be
+frozen. It authorizes no acquisition or runtime. After separate acceptance and
+merge, only an explicitly authorized external LIME distribution preflight may
+proceed.
