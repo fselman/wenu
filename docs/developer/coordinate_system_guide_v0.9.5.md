@@ -4326,3 +4326,13 @@ new vector, frame, transform, time scale, observer, surface, or attitude.
 
 This guide remains current. Acceptance, merge, branch deletion, 50S.7D.3, and
 later coordinate or radiometric behavior remain unauthorized.
+
+## Accepted 50S.7D.2 scalar coordinate behavior
+
+Fernando accepted exact verified candidate `d1edeb46` on 2026-09-22.
+Preserve scalar wavelength, energy spectral irradiance, and pointwise
+uncertainty composition over retained accepted geometry without any new
+vector, frame, transform, time scale, observer, surface, or attitude.
+
+This guide remains current. PR 187 merge, branch deletion, 50S.7D.3, and later
+coordinate or radiometric behavior remain separate explicit decisions.
