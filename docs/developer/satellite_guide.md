@@ -1371,3 +1371,17 @@ and phase conventions, and authoritative executable reference outputs remain
 unresolved. The toolbox was neither installed nor executed. Moonlight remains
 `not_evaluated`; only a separately accepted offline Mac resource-and-reference-
 output inspection may follow.
+
+## Accepted 50S.7D.3A LIME preflight
+
+Fernando accepted the scientific and architectural conclusions at exact
+candidate `27e1ee1c9071b79387a2ad2b5dda4cb7fa263ffa` on 2026-09-22 after
+232 focused tests passed on the Mac in 11.95 seconds. The accepted conclusion
+is that LIME supplies lunar radiometry while Wenu supplies the complete direct
+selenographic geometry and retains orbit, time, frame, visibility, and output
+authority.
+
+Acceptance does not resolve coefficient/data licenses, exact netCDF schema,
+lunar conventions, or authoritative executable reference outputs. It
+authorizes no installation, execution, dependency, API, or Moonlight runtime.
+PR 189 merge and any later offline inspection remain separate decisions.

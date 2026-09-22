@@ -2822,6 +2822,13 @@ This candidate changes no runtime. 50S.7D.2+, 50S.7E+, resource acquisition,
 outputs, brightness, visibility, detector, facility, and scheduling ownership
 remain unauthorized.
 
+## Accepted 50S.7D.3A LIME preflight ownership
+
+Fernando accepted exact candidate `27e1ee1c` on 2026-09-22 after 232 focused
+tests in 11.95 seconds. No source-tree ownership changes: the accepted record
+adds no resource, loader, dependency, module, API, or runtime. PR 189 merge and
+any later offline execution remain separately controlled.
+
 ## Accepted 50S.7D source-ownership authority
 
 Fernando accepted the documentation-only 50S.7D source placement at exact

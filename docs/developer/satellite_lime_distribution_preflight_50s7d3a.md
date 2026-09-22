@@ -1,6 +1,6 @@
 # 50S.7D.3A external LIME distribution preflight
 
-**Status:** Candidate documentation-and-receipt preflight; no Moonlight runtime
+**Status:** Accepted documentation-and-receipt preflight; no Moonlight runtime
 
 **Preflight date:** 2026-09-22
 
@@ -177,7 +177,7 @@ or planning owner may import LIME directly.
 
 The coordinate-system guide remains current for implemented behavior. Runtime
 must add exact lunar orientation, longitude, phase-sign, time, distance, and
-correction conventions before acceptance.
+correction conventions before runtime acceptance.
 
 ## 12. Explicit non-goals
 
@@ -196,8 +196,25 @@ as the candidate distribution. Retain candidate coefficient
 `8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691`,
 subject to schema and license confirmation.
 
-Treat this record and the satellite-guide explanation as candidates for
-Fernando's scientific and architectural review. Do not install or execute
-LIME, begin Moonlight runtime, or authorize 50S.7D.4+. If accepted and merged,
-only a separately authorized offline Mac resource-and-reference-output
+This record and the satellite-guide explanation were submitted for Fernando's
+scientific and architectural review. Do not install or execute LIME, begin
+Moonlight runtime, or authorize 50S.7D.4+. Acceptance is recorded below; after
+merge, only a separately authorized offline Mac resource-and-reference-output
 inspection may follow.
+
+## 14. Acceptance
+
+Fernando accepted the scientific and architectural conclusions on 2026-09-22
+at exact candidate `27e1ee1c9071b79387a2ad2b5dda4cb7fa263ffa` after 232
+plugin-disabled current-documentation and package-boundary tests passed on the
+Mac in 11.95 seconds. The exact-head, diff, upstream, and clean-tree checks
+also passed.
+
+Acceptance freezes LIME Toolbox `v1.4.2`, its exact source and macOS asset
+identity, the candidate coefficient identity, the direct-selenographic-input
+architecture, and every unresolved blocker recorded above. It authorizes no
+installation, execution, vendoring, redistribution, dependency, API,
+Moonlight runtime, or 50S.7D.4+ work. PR 189 merge and branch deletion remain
+separate explicit decisions. Even after merge, an offline Mac
+resource-and-reference-output inspection requires separate explicit
+authorization.

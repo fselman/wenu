@@ -4381,3 +4381,11 @@ This preflight adds no implemented coordinate value. Exact lunar body-fixed
 orientation, longitude direction, phase sign, time/correction policy, and
 distance normalization remain unresolved and require direct SPICE comparison.
 The guide remains current for implemented behavior.
+
+## Accepted 50S.7D.3A LIME geometry boundary
+
+Fernando accepted exact candidate `27e1ee1c` on 2026-09-22. This freezes the
+future direct-selenographic-input boundary while leaving every lunar frame,
+longitude, phase-sign, time/correction, and distance-normalization convention
+unimplemented and unresolved. No coordinate runtime or LIME execution is
+authorized; PR 189 merge remains separate.

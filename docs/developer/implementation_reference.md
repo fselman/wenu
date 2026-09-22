@@ -3764,3 +3764,11 @@ and candidate coefficient SHA-256
 The future boundary would accept Wenu-owned direct selenographic geometry; it
 must not accept a TLE or delegate propagation to LIME's EO-CFI route. Resource,
 geometry, coefficient, irradiance, and uncertainty APIs remain unauthorized.
+
+## Accepted 50S.7D.3A LIME distribution preflight
+
+Fernando accepted exact candidate `27e1ee1c` on 2026-09-22 after 232
+plugin-disabled documentation/package tests passed in 11.95 seconds. This
+accepts only the frozen distribution receipt and future direct-selenographic
+adapter boundary. It adds no API, dependency, execution, or Moonlight result;
+PR 189 merge and later offline inspection require separate instructions.

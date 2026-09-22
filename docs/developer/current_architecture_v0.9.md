@@ -2118,3 +2118,12 @@ route and supply Wenu-owned same-instant direct selenographic inputs, preserving
 Wenu propagation and ephemeris authority. Coefficient schema/license, lunar
 conventions, and reference outputs remain blockers. LIME was not installed or
 executed and Moonlight remains `not_evaluated`.
+
+## Accepted 50S.7D.3A LIME preflight architecture
+
+Fernando accepted exact documentation-only candidate `27e1ee1c` on
+2026-09-22 after 232 focused tests in 11.95 seconds and clean repository
+checks. The accepted boundary preserves Wenu geometry authority and exact LIME
+resource identities but changes no runtime owner, API, dependency, or result.
+Moonlight remains `not_evaluated`; PR 189 merge and any execution remain
+separate explicit decisions.

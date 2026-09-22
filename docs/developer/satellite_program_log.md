@@ -1540,3 +1540,17 @@ redistribution terms remain unresolved. Exact bands, lunar conventions, and
 authoritative reference outputs also remain open. LIME must consume Wenu-owned
 direct selenographic geometry, not replace Wenu propagation with EO-CFI.
 Moonlight remains `not_evaluated`.
+
+## 2026-09-22 — Accepted 50S.7D.3A LIME preflight
+
+Fernando accepted exact candidate
+`27e1ee1c9071b79387a2ad2b5dda4cb7fa263ffa` after 232 plugin-disabled
+current-documentation and package-boundary tests passed on the Mac in 11.95
+seconds. Exact-head, diff, upstream, and clean-tree checks passed.
+
+The acceptance freezes the exact LIME distribution and coefficient candidate,
+the Wenu-owned direct-selenographic interface, and the unresolved blocker set.
+It authorizes no installation, execution, vendoring, dependency, API,
+Moonlight runtime, or 50S.7D.4+ work. PR 189 merge, branch deletion, and any
+offline resource/reference-output inspection remain separate explicit
+decisions.

@@ -10076,3 +10076,36 @@ def test_50s7d3a_records_exact_lime_distribution_preflight():
 
     index = read(DEVELOPER / "README.md")
     assert "satellite_lime_distribution_preflight_50s7d3a.md" in index
+
+
+def test_50s7d3a_records_scientific_and_architectural_acceptance():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_lime_distribution_preflight_50s7d3a.md"
+    ).split())
+    documents = (
+        read(DEVELOPER / "README.md"),
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+    )
+    for phrase in (
+        "Accepted documentation-and-receipt preflight",
+        "27e1ee1c9071b79387a2ad2b5dda4cb7fa263ffa",
+        "232 plugin-disabled current-documentation and package-boundary tests",
+        "11.95 seconds",
+        "PR 189 merge and branch deletion remain separate explicit decisions",
+        "authorizes no installation, execution",
+        "offline Mac resource-and-reference-output inspection requires separate",
+    ):
+        assert phrase in audit
+
+    for document in documents:
+        normalized = " ".join(document.split())
+        assert "Accepted 50S.7D.3A" in normalized
+        assert "27e1ee1c" in normalized
+        assert "runtime" in normalized.lower() or "execution" in normalized.lower()

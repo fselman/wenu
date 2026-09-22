@@ -137,3 +137,7 @@ in the same change.
   — candidate receipt for exact LIME Toolbox v1.4.2 source, release assets,
   coefficients, licensing, geometry interface, domain, and remaining runtime
   blockers; no installation, execution, or Moonlight runtime.
+
+Accepted 50S.7D.3A freezes exact candidate `27e1ee1c` and its documentation-
+only LIME identity and architecture boundary. It authorizes no installation,
+execution, or Moonlight runtime; PR 189 merge remains a separate decision.
