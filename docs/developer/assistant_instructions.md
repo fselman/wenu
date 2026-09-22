@@ -1826,3 +1826,42 @@ Do not merge PR 183 or delete its feature branch without Fernando's separate
 explicit instruction. Do not begin 50S.7D+, attach transitions to outputs, or
 add radiometry, reflected fields, brightness, visibility, detector, facility,
 scheduling, or unrelated work before a separately accepted bounded milestone.
+## Candidate 50S.7D direct-source radiometry audit boundary
+
+Read `satellite_direct_source_radiometry_audit_50s7d.md` before any incident
+solar or lunar radiometry work. Treat it as a documentation-only candidate.
+It retains both direct sources within 50S.7D but proposes only a bounded
+solar-first 50S.7D.1 implementation after separate acceptance: IAU 2015
+nominal bolometric normal-plane irradiance, inverse-square distance scaling,
+and the accepted uniform-disk visible fraction.
+
+Do not implement 50S.7D before Fernando's separate scientific and
+architectural acceptance. Do not describe the exact nominal constant as zero
+physical uncertainty, encode unknown Moonlight as zero, or add spectral
+resources, lunar coefficients, attitude, surfaces, BRDF, magnitude, outputs,
+visibility, detector, facility, scheduling, or unrelated behavior.
+
+The audit authorizes no runtime. 50S.7D.2+, 50S.7E+, merge, and branch deletion
+remain separate explicit decisions.
+
+## Accepted 50S.7D audit boundary
+
+Fernando scientifically and architecturally accepted the documentation-only
+50S.7D direct-source radiometry audit on 2026-09-21 at exact candidate
+`362199d04bd917741a8be88f20608967af75530e`. All 214 plugin-disabled
+current-documentation tests passed in 7.00 seconds, and diff, exact-head,
+upstream, and clean-tree checks passed.
+
+After this audit is merged, implement only the bounded 50S.7D.1 direct-Sun
+bolometric normal-plane irradiance slice in the existing illumination owner:
+the IAU 2015 nominal `1361 W m-2` value at 1 au, inverse-square
+Sun-satellite distance scaling, accepted uniform-disk visible fraction,
+immutable identity and provenance, explicit physical/model uncertainty
+`not_evaluated`, focused tests, and offline independent recomputation.
+
+Do not begin implementation before the audit is merged. Do not add spectral
+Sunlight, numeric Moonlight, Earth-reflected fields, component bundling,
+spacecraft attitude or surfaces, BRDF, magnitude, visibility, detector,
+report/chart/CLI/planning integration, facility behavior, scheduling, or
+unrelated refactoring. 50S.7D.2+, 50S.7E+, PR merge, and branch deletion
+remain separate explicit decisions.

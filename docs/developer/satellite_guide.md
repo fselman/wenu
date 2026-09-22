@@ -1139,3 +1139,35 @@ These transitions remain geometry only. They carry no observer-night,
 crossing, brightness, visibility, detector, facility, or scheduling meaning.
 PR 183 merge, branch deletion, transition attachment, and 50S.7D+ remain
 separate unauthorized work.
+## Candidate 50S.7D direct-source radiometry vocabulary
+
+Incident irradiance answers how much radiant power reaches a unit area normal
+to a source beam at the satellite. It is not the power intercepted by an
+oriented spacecraft surface and not the brightness seen by an observer.
+
+The first proposed 50S.7D.1 model is bolometric direct Sunlight:
+`1361 W m-2` at 1 au under the IAU nominal convention, scaled by inverse
+square Sun-satellite distance and by the accepted uniform-disk visible
+fraction. The word nominal identifies a convention; it does not mean the
+physical Sun has zero variability or uncertainty.
+
+Bolometric, spectral, and passband irradiance are different quantities.
+Moonlight requires a phase-, libration-, distance-, and wavelength-dependent
+model; unknown Moonlight is never numeric zero. This candidate adds no runtime
+and 50S.7D.2+, Earth-reflected fields, brightness, visibility, detector,
+facility, scheduling, and output behavior remain unauthorized.
+
+## Accepted 50S.7D direct-source radiometry vocabulary
+
+Fernando accepted the documentation-only 50S.7D vocabulary at exact candidate
+`362199d04bd917741a8be88f20608967af75530e` on 2026-09-21 after 214
+plugin-disabled current-documentation tests passed in 7.00 seconds and
+repository checks were clean.
+
+After merge, only the 50S.7D.1 bolometric normal-plane direct-Sun quantity may
+be implemented. Preserve `1361 W m-2` as an exact IAU nominal convention,
+not an instantaneous measurement or zero-uncertainty claim; preserve unknown
+Moonlight as not evaluated, never numeric zero. Spectral/passband Sunlight,
+Moonlight, reflected fields, spacecraft response, brightness, visibility,
+detector, output, facility, and scheduling vocabulary remain unauthorized.
+PR 184 merge and branch deletion remain separate explicit decisions.

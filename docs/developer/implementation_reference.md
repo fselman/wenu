@@ -3566,3 +3566,42 @@ The accepted API remains output-neutral and observer-independent. It adds no
 crossing, track, report, chart, CLI, planning, radiometric, brightness,
 visibility, detector, facility, or scheduling semantics. PR 183 merge, branch
 deletion, and any 50S.7D+ API remain separately authorized decisions.
+## Candidate 50S.7D radiometry API boundary
+
+No radiometry API is implemented by this documentation-only audit. It proposes
+for a later accepted 50S.7D.1 only immutable
+`DirectSolarIrradiancePolicy`, `DirectSolarIrradiance`, and
+`DirectSolarIrradianceEvaluator` contracts in the existing illumination
+owner.
+
+The evaluator would consume one accepted `SatelliteIlluminationGeometry` and
+return bolometric normal-plane clear and incident irradiance in `W m-2`,
+retaining distance, visible fraction, occultation class, complete geometry and
+model identity, convergence evidence, provenance, and explicit
+physical-uncertainty `not_evaluated`. It would perform no propagation,
+ephemeris query, occultation calculation, surface projection, or output work.
+
+The candidate authorizes no runtime. Spectral/passband Sunlight, numeric
+Moonlight, reflected fields, component bundles, magnitude, visibility,
+detector, report, chart, CLI, planning, facility, and scheduling APIs remain
+unauthorized.
+
+## Accepted 50S.7D radiometry API authority
+
+Fernando accepted the documentation-only 50S.7D API boundary at exact
+candidate `362199d04bd917741a8be88f20608967af75530e` on 2026-09-21 after
+214 plugin-disabled current-documentation tests passed in 7.00 seconds and
+repository checks were clean.
+
+After merge, a bounded 50S.7D.1 implementation may add only immutable
+`DirectSolarIrradiancePolicy`, `DirectSolarIrradiance`, and
+`DirectSolarIrradianceEvaluator` contracts in the existing illumination
+owner. The evaluator must consume accepted geometry, return bolometric
+normal-plane clear and incident irradiance, retain identity/provenance and
+convergence evidence, and leave physical/model uncertainty explicitly
+`not_evaluated`.
+
+Spectral/passband Sunlight, numeric Moonlight, reflected fields, component
+bundles, surface response, magnitude, visibility, detector, report, chart,
+CLI, planning, facility, and scheduling APIs remain unauthorized. PR 184
+merge, branch deletion, and 50S.7D.2+ remain separate decisions.

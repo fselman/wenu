@@ -3176,6 +3176,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_observatory_planning_adapter_audit_50s6h.md",
         "satellite_illumination_night_geometry_audit_50s7a.md",
         "satellite_shadow_transition_audit_50s7c.md",
+        "satellite_direct_source_radiometry_audit_50s7d.md",
         "satellite_delivery_audit_50s6g.md",
         "satellite_snapshot_preflight_audit_50s6g1b.md",
         "satellite_exact_crossing_report_audit_50s6g2a.md",
@@ -9352,3 +9353,133 @@ def test_50s7c_records_accepted_implementation_boundary():
         "does not authorize PR 183 merge or feature-branch deletion",
     ):
         assert phrase in normalized_audit
+
+
+def test_50s7d_records_candidate_direct_source_radiometry_audit():
+    audit = read(
+        DEVELOPER / "satellite_direct_source_radiometry_audit_50s7d.md"
+    )
+    normalized_audit = " ".join(audit.split())
+    for phrase in (
+        "Candidate documentation-only scientific and architectural audit",
+        "17a8dd37ab3c361084c240cc68f9f8c3a25e5e3d",
+        "50S.7D.1 — direct-Sun bolometric irradiance",
+        "bolometric normal-plane irradiance",
+        "S_sun^N = 1361 W m-2",
+        "E_clear",
+        "E_incident",
+        "unknown is never numeric zero",
+        "TSIS-1 HSRS v2",
+        "ROLO",
+        "LIME",
+        "authorizes no runtime",
+        "No new package dependency",
+        "coordinate-system guide was reviewed and remains current",
+    ):
+        assert phrase.lower() in normalized_audit.lower()
+
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+        read(
+            DEVELOPER
+            / "satellite_illumination_night_geometry_audit_50s7a.md"
+        ),
+    )
+    expected = (
+        "Candidate 50S.7D direct-source radiometry architecture",
+        "Candidate 50S.7D — Direct-source radiometry audit",
+        "Candidate 50S.7D radiometry API boundary",
+        "Candidate 50S.7D source ownership",
+        "Candidate 50S.7D coordinate and radiometric boundary",
+        "Candidate 50S.7D direct-source radiometry vocabulary",
+        "Candidate 50S.7D direct-source radiometry audit",
+        "Candidate 50S.7D direct-source radiometry audit boundary",
+        "Candidate 50S.7D refinement of illumination separation",
+        "Candidate 50S.7D direct-source radiometry handoff",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "50S.7D.1" in normalized
+        assert "no runtime" in normalized.lower()
+        assert "unauthorized" in normalized
+
+    index = read(DEVELOPER / "README.md")
+    assert "satellite_direct_source_radiometry_audit_50s7d.md" in index
+
+    implementation = read(
+        ROOT / "src" / "wenu" / "satellites" / "illumination.py"
+    )
+    assert "DirectSolarIrradiance" not in implementation
+
+
+def test_50s7d_records_accepted_direct_source_radiometry_audit():
+    audit = read(
+        DEVELOPER / "satellite_direct_source_radiometry_audit_50s7d.md"
+    )
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+        read(
+            DEVELOPER
+            / "satellite_illumination_night_geometry_audit_50s7a.md"
+        ),
+    )
+    expected = (
+        "Accepted 50S.7D direct-source radiometry audit architecture",
+        "Accepted 50S.7D — Direct-source radiometry audit",
+        "Accepted 50S.7D radiometry API authority",
+        "Accepted 50S.7D source-ownership authority",
+        "Accepted 50S.7D coordinate and radiometric boundary",
+        "Accepted 50S.7D direct-source radiometry vocabulary",
+        "Accepted 50S.7D direct-source radiometry audit",
+        "Accepted 50S.7D audit boundary",
+        "Accepted 50S.7D refinement of illumination separation",
+        "Accepted 50S.7D direct-source radiometry handoff",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "362199d04bd917741a8be88f20608967af75530e" in normalized
+        assert "214" in normalized
+        assert "7.00 seconds" in normalized
+        assert "50S.7D.1" in normalized
+        assert "separate" in normalized
+        assert "unauthorized" in normalized
+
+    normalized_audit = " ".join(audit.split())
+    for phrase in (
+        "Accepted 50S.7D audit and implementation authority",
+        "scientifically and architecturally accepted",
+        "362199d04bd917741a8be88f20608967af75530e",
+        "214 plugin-disabled tests in 7.00 seconds",
+        "exact local/upstream equality",
+        "only bounded 50S.7D.1",
+        "does not authorize PR 184 merge or branch deletion",
+    ):
+        assert phrase in normalized_audit
+
+    index = read(DEVELOPER / "README.md")
+    assert (
+        "accepted documentation-only contract for direct-source model "
+        "separation"
+    ) in " ".join(index.split())

@@ -1933,3 +1933,39 @@ deterministic identity, and typed terminal failure. Merge and branch deletion
 remain separate explicit decisions. 50S.7D+, transition attachment to outputs,
 radiometry, reflected fields, brightness, visibility, detector, facility,
 scheduling, and unrelated work remain unauthorized.
+## Candidate 50S.7D direct-source radiometry architecture
+
+The documentation-only audit separates incident irradiance from accepted
+illumination geometry and later 50S.8 spacecraft response. The full 50S.7D
+responsibility retains direct Sunlight and direct Moonlight, but proposes only
+a first 50S.7D.1 runtime slice: IAU 2015 nominal bolometric solar irradiance,
+inverse-square Sun-satellite distance scaling, and the accepted uniform-disk
+visible fraction.
+
+The result is normal-plane irradiance, not power intercepted by a spacecraft
+surface and not observer-directed brightness. Exact nominal identity is kept
+separate from physical/model uncertainty. Spectral TSIS-1 Sunlight, ROLO/LIME
+Moonlight, Earth-reflected fields, attitude, BRDF, outputs, and detector
+effects remain later separately reviewed work.
+
+This candidate changes no runtime. If separately accepted and merged, only
+bounded 50S.7D.1 implementation in the existing illumination owner may begin.
+All 50S.7D.2+, 50S.7E+, output integration, brightness, visibility, detector,
+facility, and scheduling behavior remain unauthorized.
+
+## Accepted 50S.7D direct-source radiometry audit architecture
+
+Fernando scientifically and architecturally accepted the documentation-only
+50S.7D audit at exact candidate
+`362199d04bd917741a8be88f20608967af75530e` on 2026-09-21. All 214
+plugin-disabled current-documentation tests passed in 7.00 seconds; diff,
+exact-head/upstream, and clean-tree checks passed.
+
+After merge, only bounded 50S.7D.1 implementation may extend the existing
+illumination owner with direct-Sun bolometric normal-plane irradiance from the
+IAU 2015 nominal constant, inverse-square distance scaling, and the accepted
+uniform-disk visible fraction. Preserve exact nominal identity separately from
+unevaluated physical/model uncertainty. 50S.7D.2+, 50S.7E+, spectral or lunar
+resources, surfaces, attitude, BRDF, output integration, brightness,
+visibility, detector, facility, and scheduling behavior remain unauthorized.
+PR 184 merge and branch deletion remain separate explicit decisions.
