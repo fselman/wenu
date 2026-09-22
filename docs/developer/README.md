@@ -133,3 +133,11 @@ in the same change.
   — accepted documentation-only comparison of ROLO, GIRO, and LIME; preferred
   LIME model family; required lunar geometry, uncertainty, resource, and
   licensing evidence; and an explicit runtime stop gate.
+- [50S.7D.3A external LIME distribution preflight](satellite_lime_distribution_preflight_50s7d3a.md)
+  — candidate receipt for exact LIME Toolbox v1.4.2 source, release assets,
+  coefficients, licensing, geometry interface, domain, and remaining runtime
+  blockers; no installation, execution, or Moonlight runtime.
+
+Accepted 50S.7D.3A freezes exact candidate `27e1ee1c` and its documentation-
+only LIME identity and architecture boundary. It authorizes no installation,
+execution, or Moonlight runtime; PR 189 merge remains a separate decision.

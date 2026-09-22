@@ -1519,3 +1519,38 @@ Exact acceptance-record head
 plugin-disabled documentation/package tests in 8.54 seconds. Diff, upstream,
 and clean-tree checks passed. PR 188 remains unmerged; after merge, only the
 separately controlled external LIME distribution preflight is authorized.
+
+## 2026-09-22 — Candidate 50S.7D.3A external LIME preflight
+
+Fernando requested that the LIME explanation be added to the satellite guide
+while proceeding with the accepted next step. From merged integration
+`801cc6e80eb4a59db12cbc6752ab7a90400ec83d`, the preflight followed the
+CEOS and University of Valladolid chain to official LIME Toolbox `v1.4.2`.
+
+The exact `516220150`-byte macOS installer was retrieved outside the repository
+without installation or execution. Its SHA-256
+`e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21`
+matched GitHub. The tag commit is
+`b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f`; candidate coefficient
+`LIME_MODEL_COEFS_20251010_V01.nc` has SHA-256
+`8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691`.
+
+Source declares `LGPL-3.0-only`, but coefficient/data and bundled third-party
+redistribution terms remain unresolved. Exact bands, lunar conventions, and
+authoritative reference outputs also remain open. LIME must consume Wenu-owned
+direct selenographic geometry, not replace Wenu propagation with EO-CFI.
+Moonlight remains `not_evaluated`.
+
+## 2026-09-22 — Accepted 50S.7D.3A LIME preflight
+
+Fernando accepted exact candidate
+`27e1ee1c9071b79387a2ad2b5dda4cb7fa263ffa` after 232 plugin-disabled
+current-documentation and package-boundary tests passed on the Mac in 11.95
+seconds. Exact-head, diff, upstream, and clean-tree checks passed.
+
+The acceptance freezes the exact LIME distribution and coefficient candidate,
+the Wenu-owned direct-selenographic interface, and the unresolved blocker set.
+It authorizes no installation, execution, vendoring, dependency, API,
+Moonlight runtime, or 50S.7D.4+ work. PR 189 merge, branch deletion, and any
+offline resource/reference-output inspection remain separate explicit
+decisions.

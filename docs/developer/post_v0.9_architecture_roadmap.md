@@ -3431,3 +3431,27 @@ Exact acceptance-record head `0be116ab` passed all 231 plugin-disabled
 documentation/package tests in 8.54 seconds and clean repository checks. Only
 the post-merge, separately controlled external LIME distribution preflight is
 authorized next; Moonlight runtime remains blocked.
+
+## Candidate 50S.7D.3A — External LIME distribution preflight
+
+The preflight identified official LIME Toolbox `v1.4.2`, tag commit
+`b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f`, macOS asset SHA-256
+`e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21`,
+and candidate coefficient SHA-256
+`8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691`.
+
+The toolbox was retrieved for archive inspection but neither installed nor
+executed. It must consume Wenu-owned direct selenographic geometry instead of
+becoming a second EO-CFI orbit authority. Coefficient schema and selection,
+complete resource licensing, lunar conventions, and authoritative reference
+outputs remain blockers. After acceptance and merge, only a separately
+authorized offline Mac resource-and-reference-output inspection may proceed;
+Moonlight runtime and 50S.7D.4+ remain unauthorized.
+
+## Accepted 50S.7D.3A — External LIME distribution preflight
+
+Fernando accepted exact candidate `27e1ee1c` on 2026-09-22 after 232 focused
+tests passed in 11.95 seconds with clean exact-head, diff, upstream, and tree
+checks. The accepted preflight freezes resource identity and the Wenu-owned
+direct-selenographic geometry boundary only. PR 189 merge is separate, and no
+installation, execution, Moonlight runtime, or 50S.7D.4+ work is authorized.

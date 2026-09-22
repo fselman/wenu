@@ -1298,3 +1298,90 @@ Acceptance-record head `0be116ab` passed 231 documentation/package tests in
 8.54 seconds and clean repository checks. Moonlight remains
 `not_evaluated`; only the post-merge external LIME distribution preflight is
 authorized next.
+
+## What LIME is, why Wenu needs it, and how Wenu would use it
+
+LIME is the **Lunar Irradiance Model of ESA**. It predicts irradiance from the
+whole apparent lunar disk for a specified Sun-Moon-observer geometry. It was
+fitted to SI-traceable lunar-radiometer observations and retains ROLO's phase-
+and libration-dependent structure while providing a newer absolute scale and
+band-specific uncertainty.
+
+For Wenu the physical path is:
+
+```text
+Sun spectrum -> lunar reflection -> irradiance at satellite
+             -> spacecraft surface and BRDF -> brightness toward observer
+```
+
+LIME addresses only lunar reflection. It does not determine whether Earth
+blocks the Moon, whether the Moon is eclipsed, spacecraft attitude, surface
+reflection, observer visibility, or detector response. Those remain separate
+Wenu responsibilities in 50S.7, 50S.8, and 50S.9.
+
+A constant lunar albedo multiplied by illuminated fraction is inadequate.
+Disk-integrated Moonlight changes with wavelength, phase, the nonlinear
+opposition effect near full Moon, libration-dependent maria/highland coverage,
+Sun-Moon distance, and Moon-observer distance. Phase alone does not uniquely
+determine lunar irradiance.
+
+The calculation has four conceptual stages:
+
+1. establish one reception instant and consistent Sun, Moon, and satellite
+   states;
+2. derive both distances, signed phase, and selenographic Sun and observer
+   coordinates;
+3. evaluate empirical lunar reflectance at admitted coefficient bands; and
+4. combine reflectance, solar irradiance, distance normalization, and model
+   uncertainty into normal-plane lunar irradiance at the satellite.
+
+The toolbox also offers spectral interpolation and arbitrary spectral-response
+integration. Those are additional models, not native observations. Wenu's
+first possible implementation remains narrower: admitted native coefficient
+bands only, with no interpolation, extrapolation, arbitrary passband, or
+covariance-free band combination.
+
+LIME Toolbox can propagate a satellite TLE through EO-CFI, but Wenu must not
+use that route. Wenu already owns validated OMM/SGP4/TEME, Earth-orientation,
+ephemeris, and topocentric state. A future adapter must use Wenu's same-instant
+geometry and supply direct selenographic inputs: Sun-Moon distance,
+Moon-satellite distance, observer selenographic latitude and longitude, solar
+selenographic longitude, and signed phase. LIME remains the radiometric model,
+not a second orbit or coordinate authority.
+
+A successful future result would retain toolbox and coefficient digests, input
+geometry, native band, unocculted and incident irradiance, expanded-uncertainty
+meaning, eclipse/occultation states, warnings, and provenance. Missing
+resources, unsupported geometry, eclipse outside the admitted model, or
+numerical failure remain `not_evaluated`, never zero.
+
+## Candidate 50S.7D.3A LIME distribution preflight
+
+The preflight found official public LIME Toolbox release `v1.4.2` at tag
+commit `b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f`. The independently
+retrieved macOS asset has `516220150` bytes and SHA-256
+`e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21`.
+The source declares `LGPL-3.0-only` and contains candidate coefficient
+`LIME_MODEL_COEFS_20251010_V01.nc` with SHA-256
+`8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691`.
+
+This is a candidate receipt, not runtime admission. Exact coefficient bands
+and covariance, per-resource and third-party redistribution terms, lunar frame
+and phase conventions, and authoritative executable reference outputs remain
+unresolved. The toolbox was neither installed nor executed. Moonlight remains
+`not_evaluated`; only a separately accepted offline Mac resource-and-reference-
+output inspection may follow.
+
+## Accepted 50S.7D.3A LIME preflight
+
+Fernando accepted the scientific and architectural conclusions at exact
+candidate `27e1ee1c9071b79387a2ad2b5dda4cb7fa263ffa` on 2026-09-22 after
+232 focused tests passed on the Mac in 11.95 seconds. The accepted conclusion
+is that LIME supplies lunar radiometry while Wenu supplies the complete direct
+selenographic geometry and retains orbit, time, frame, visibility, and output
+authority.
+
+Acceptance does not resolve coefficient/data licenses, exact netCDF schema,
+lunar conventions, or authoritative executable reference outputs. It
+authorizes no installation, execution, dependency, API, or Moonlight runtime.
+PR 189 merge and any later offline inspection remain separate decisions.

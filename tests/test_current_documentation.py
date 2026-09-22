@@ -3179,6 +3179,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
             "satellite_direct_source_radiometry_audit_50s7d.md",
             "satellite_spectral_solar_radiometry_audit_50s7d2.md",
             "satellite_moonlight_radiometry_audit_50s7d3.md",
+            "satellite_lime_distribution_preflight_50s7d3a.md",
         "satellite_delivery_audit_50s6g.md",
         "satellite_snapshot_preflight_audit_50s6g1b.md",
         "satellite_exact_crossing_report_audit_50s6g2a.md",
@@ -10031,3 +10032,80 @@ def test_50s7d3_records_scientific_and_architectural_acceptance():
         )
         assert "LIME" in normalized
         assert "runtime" in normalized.lower()
+
+
+def test_50s7d3a_records_exact_lime_distribution_preflight():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_lime_distribution_preflight_50s7d3a.md"
+    ).split())
+    documents = (
+        read(DEVELOPER / "README.md"),
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+    )
+    for phrase in (
+        "LIME Toolbox `v1.4.2`",
+        "b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f",
+        "516220150",
+        "e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21",
+        "LIME_MODEL_COEFS_20251010_V01.nc",
+        "8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691",
+        "LGPL-3.0-only",
+        "2 <= abs(phase_angle) <= 90",
+        "must not use that route in production",
+        "neither installed nor executed",
+        "Moonlight therefore remains `not_evaluated`",
+    ):
+        assert phrase in audit
+
+    for document in documents:
+        normalized = " ".join(document.split())
+        assert "50S.7D.3A" in normalized
+        assert "LIME" in normalized
+        assert "runtime" in normalized.lower() or "API" in normalized
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    assert "v1.4.2" in combined
+    assert "e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21" in combined
+
+    index = read(DEVELOPER / "README.md")
+    assert "satellite_lime_distribution_preflight_50s7d3a.md" in index
+
+
+def test_50s7d3a_records_scientific_and_architectural_acceptance():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_lime_distribution_preflight_50s7d3a.md"
+    ).split())
+    documents = (
+        read(DEVELOPER / "README.md"),
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+    )
+    for phrase in (
+        "Accepted documentation-and-receipt preflight",
+        "27e1ee1c9071b79387a2ad2b5dda4cb7fa263ffa",
+        "232 plugin-disabled current-documentation and package-boundary tests",
+        "11.95 seconds",
+        "PR 189 merge and branch deletion remain separate explicit decisions",
+        "authorizes no installation, execution",
+        "offline Mac resource-and-reference-output inspection requires separate",
+    ):
+        assert phrase in audit
+
+    for document in documents:
+        normalized = " ".join(document.split())
+        assert "Accepted 50S.7D.3A" in normalized
+        assert "27e1ee1c" in normalized
+        assert "runtime" in normalized.lower() or "execution" in normalized.lower()

@@ -2822,6 +2822,13 @@ This candidate changes no runtime. 50S.7D.2+, 50S.7E+, resource acquisition,
 outputs, brightness, visibility, detector, facility, and scheduling ownership
 remain unauthorized.
 
+## Accepted 50S.7D.3A LIME preflight ownership
+
+Fernando accepted exact candidate `27e1ee1c` on 2026-09-22 after 232 focused
+tests in 11.95 seconds. No source-tree ownership changes: the accepted record
+adds no resource, loader, dependency, module, API, or runtime. PR 189 merge and
+any later offline execution remain separately controlled.
+
 ## Accepted 50S.7D source-ownership authority
 
 Fernando accepted the documentation-only 50S.7D source placement at exact
@@ -2968,3 +2975,15 @@ Runtime, acquisition ownership, and 50S.7D.4+ remain unauthorized.
 Acceptance-record head `0be116ab` passed 231 documentation/package tests in
 8.54 seconds and clean repository checks. No source-tree ownership changed.
 Only the post-merge external LIME distribution preflight is authorized next.
+
+## Candidate 50S.7D.3A LIME preflight ownership
+
+The preflight adds one documentation record and changes no production or test
+ownership. It freezes external candidate identities but adds no resource,
+dependency, module, loader, or API. Future lunar geometry remains reserved to
+`satellites/illumination.py`; exact LIME admission and native-band radiometry
+remain reserved to `satellites/radiometry.py`.
+
+The LIME EO-CFI satellite route is outside Wenu ownership and must not become a
+second propagator. Installation, execution, runtime, and output integration
+remain unauthorized.
