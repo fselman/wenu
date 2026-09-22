@@ -36,6 +36,13 @@ from wenu.satellites.topocentric import (
 
 AU_KM: Final = 149_597_870.7
 IAU_NOMINAL_SOLAR_RADIUS_KM: Final = 695_700.0
+IAU_NOMINAL_TOTAL_SOLAR_IRRADIANCE_W_M2: Final = 1361.0
+DIRECT_SOLAR_IRRADIANCE_MODEL: Final = (
+    "iau-2015-nominal-tsi-uniform-disk-bolometric-v1"
+)
+DIRECT_SOLAR_IRRADIANCE_QUANTITY_KIND: Final = (
+    "bolometric_normal_plane_irradiance"
+)
 WGS84_EQUATORIAL_RADIUS_KM: Final = 6_378.137
 WGS84_POLAR_RADIUS_KM: Final = 6_356.752314245
 
@@ -382,6 +389,370 @@ class SatelliteIlluminationGeometry:
             raise TypeError("policy must be a SolarOccultationPolicy.")
         object.__setattr__(self, "provenance", tuple(self.provenance))
         object.__setattr__(self, "warnings", tuple(self.warnings))
+
+
+@dataclass(frozen=True)
+class DirectSolarIrradiancePolicy:
+    """Immutable IAU-nominal bolometric direct-Sun model policy."""
+
+    model: str = DIRECT_SOLAR_IRRADIANCE_MODEL
+    nominal_total_solar_irradiance_w_m2: float = (
+        IAU_NOMINAL_TOTAL_SOLAR_IRRADIANCE_W_M2
+    )
+    astronomical_unit_km: float = AU_KM
+    quantity_kind: str = DIRECT_SOLAR_IRRADIANCE_QUANTITY_KIND
+    compatible_occultation_model: str = (
+        "uniform-solar-disk-wgs84-vacuum-ray-quadrature-v1"
+    )
+    physical_model_uncertainty_status: str = "not_evaluated"
+    source_citations: tuple[str, ...] = (
+        "IAU 2015 Resolution B3 nominal total solar irradiance.",
+    )
+    exclusions: tuple[str, ...] = (
+        "Solar variability is not evaluated.",
+        "Solar limb darkening is not evaluated.",
+        "No spectral or passband irradiance is evaluated.",
+    )
+
+    def __post_init__(self):
+        for name in (
+            "model",
+            "quantity_kind",
+            "compatible_occultation_model",
+            "physical_model_uncertainty_status",
+        ):
+            value = getattr(self, name)
+            if not isinstance(value, str) or not value.strip():
+                raise ValueError(f"{name} must be non-empty.")
+        for name in (
+            "nominal_total_solar_irradiance_w_m2",
+            "astronomical_unit_km",
+        ):
+            value = _finite(getattr(self, name), name=name)
+            if value <= 0.0:
+                raise ValueError(f"{name} must be positive.")
+            object.__setattr__(self, name, value)
+        for name in ("source_citations", "exclusions"):
+            values = tuple(getattr(self, name))
+            if not values or any(
+                not isinstance(item, str) or not item.strip()
+                for item in values
+            ):
+                raise ValueError(f"{name} must contain non-empty strings.")
+            object.__setattr__(self, name, values)
+
+
+@dataclass(frozen=True)
+class DirectSolarIrradiance:
+    """Bolometric normal-plane direct-Sun irradiance for accepted geometry."""
+
+    geometry: SatelliteIlluminationGeometry
+    policy: DirectSolarIrradiancePolicy
+    satellite_to_sun_distance_km: float
+    satellite_to_sun_distance_au: float
+    visible_disk_fraction: float
+    occultation_class: SolarOccultationClass
+    unocculted_normal_irradiance_w_m2: float
+    incident_normal_irradiance_w_m2: float
+    coarse_incident_normal_irradiance_w_m2: float
+    numerical_convergence_absolute_difference_w_m2: float
+    component: str = "sunlight"
+    status: str = "evaluated"
+    physical_model_uncertainty_status: str = "not_evaluated"
+    provenance: tuple[str, ...] = field(default_factory=tuple)
+    warnings: tuple[str, ...] = field(default_factory=tuple)
+
+    def __post_init__(self):
+        if not isinstance(self.geometry, SatelliteIlluminationGeometry):
+            raise TypeError(
+                "geometry must be a SatelliteIlluminationGeometry."
+            )
+        if not isinstance(self.policy, DirectSolarIrradiancePolicy):
+            raise TypeError("policy must be a DirectSolarIrradiancePolicy.")
+        if self.component != "sunlight" or self.status != "evaluated":
+            raise ValueError(
+                "direct solar irradiance must be evaluated sunlight."
+            )
+        if (
+            self.physical_model_uncertainty_status
+            != self.policy.physical_model_uncertainty_status
+        ):
+            raise ValueError(
+                "physical-model uncertainty status must match policy."
+            )
+        for name in (
+            "satellite_to_sun_distance_km",
+            "satellite_to_sun_distance_au",
+            "visible_disk_fraction",
+            "unocculted_normal_irradiance_w_m2",
+            "incident_normal_irradiance_w_m2",
+            "coarse_incident_normal_irradiance_w_m2",
+            "numerical_convergence_absolute_difference_w_m2",
+        ):
+            object.__setattr__(
+                self,
+                name,
+                _finite(getattr(self, name), name=name),
+            )
+        if self.satellite_to_sun_distance_km <= 0.0:
+            raise ValueError("satellite_to_sun_distance_km must be positive.")
+        if self.satellite_to_sun_distance_au <= 0.0:
+            raise ValueError("satellite_to_sun_distance_au must be positive.")
+        if not 0.0 <= self.visible_disk_fraction <= 1.0:
+            raise ValueError("visible_disk_fraction must lie in [0, 1].")
+        if not isinstance(self.occultation_class, SolarOccultationClass):
+            raise TypeError(
+                "occultation_class must be a SolarOccultationClass."
+            )
+        if self.unocculted_normal_irradiance_w_m2 <= 0.0:
+            raise ValueError(
+                "unocculted_normal_irradiance_w_m2 must be positive."
+            )
+        if not (
+            0.0
+            <= self.incident_normal_irradiance_w_m2
+            <= self.unocculted_normal_irradiance_w_m2
+        ):
+            raise ValueError(
+                "incident irradiance must lie between zero and unocculted."
+            )
+        if not (
+            0.0
+            <= self.coarse_incident_normal_irradiance_w_m2
+            <= self.unocculted_normal_irradiance_w_m2
+        ):
+            raise ValueError(
+                "coarse incident irradiance must lie between zero and "
+                "unocculted."
+            )
+        if self.numerical_convergence_absolute_difference_w_m2 < 0.0:
+            raise ValueError(
+                "numerical convergence difference must be non-negative."
+            )
+        occultation = self.geometry.solar_occultation
+        expected_distance_au = (
+            self.satellite_to_sun_distance_km
+            / self.policy.astronomical_unit_km
+        )
+        expected_unocculted = (
+            self.policy.nominal_total_solar_irradiance_w_m2
+            / expected_distance_au**2
+        )
+        expected_incident = (
+            self.visible_disk_fraction * expected_unocculted
+        )
+        expected_coarse = (
+            occultation.coarse_visible_disk_fraction * expected_unocculted
+        )
+        expected_convergence = abs(expected_incident - expected_coarse)
+        pairs = (
+            (
+                self.satellite_to_sun_distance_km,
+                occultation.satellite_to_sun_distance_km,
+            ),
+            (self.satellite_to_sun_distance_au, expected_distance_au),
+            (self.visible_disk_fraction, occultation.visible_disk_fraction),
+            (
+                self.unocculted_normal_irradiance_w_m2,
+                expected_unocculted,
+            ),
+            (self.incident_normal_irradiance_w_m2, expected_incident),
+            (
+                self.coarse_incident_normal_irradiance_w_m2,
+                expected_coarse,
+            ),
+            (
+                self.numerical_convergence_absolute_difference_w_m2,
+                expected_convergence,
+            ),
+        )
+        if any(
+            abs(actual - expected)
+            > 1.0e-12 * max(1.0, abs(actual), abs(expected))
+            for actual, expected in pairs
+        ) or self.occultation_class is not occultation.occultation_class:
+            raise ValueError(
+                "direct solar irradiance must match its geometry and policy."
+            )
+        if (
+            self.incident_normal_irradiance_w_m2 == 0.0
+            and self.visible_disk_fraction != 0.0
+        ):
+            raise ValueError(
+                "numeric zero requires an evaluated zero visible fraction."
+            )
+        object.__setattr__(self, "provenance", tuple(self.provenance))
+        object.__setattr__(self, "warnings", tuple(self.warnings))
+
+    @property
+    def evaluation_utc(self):
+        """Return the canonical UTC identity inherited from geometry."""
+        return self.geometry.evaluation_utc
+
+    @property
+    def geometry_identity(self):
+        """Return the complete immutable accepted geometry identity."""
+        return self.geometry
+
+    @property
+    def identity(self):
+        """Return the complete immutable direct-Sun result identity."""
+        return (
+            self.geometry,
+            self.policy,
+            self.satellite_to_sun_distance_km,
+            self.satellite_to_sun_distance_au,
+            self.visible_disk_fraction,
+            self.occultation_class,
+            self.unocculted_normal_irradiance_w_m2,
+            self.incident_normal_irradiance_w_m2,
+            self.coarse_incident_normal_irradiance_w_m2,
+            self.numerical_convergence_absolute_difference_w_m2,
+            self.component,
+            self.status,
+            self.physical_model_uncertainty_status,
+        )
+
+
+class DirectSolarIrradianceEvaluator:
+    """Compose accepted illumination geometry into direct-Sun irradiance."""
+
+    def __init__(self, policy=None):
+        resolved = DirectSolarIrradiancePolicy() if policy is None else policy
+        if not isinstance(resolved, DirectSolarIrradiancePolicy):
+            raise TypeError("policy must be a DirectSolarIrradiancePolicy.")
+        self.policy = resolved
+
+    def evaluate(self, geometry):
+        """Evaluate only the accepted IAU-nominal uniform-disk model."""
+        if not isinstance(geometry, SatelliteIlluminationGeometry):
+            raise TypeError(
+                "geometry must be a SatelliteIlluminationGeometry."
+            )
+        policy = self.policy
+        if (
+            policy.model != DIRECT_SOLAR_IRRADIANCE_MODEL
+            or policy.nominal_total_solar_irradiance_w_m2
+            != IAU_NOMINAL_TOTAL_SOLAR_IRRADIANCE_W_M2
+            or policy.astronomical_unit_km != AU_KM
+            or policy.quantity_kind
+            != DIRECT_SOLAR_IRRADIANCE_QUANTITY_KIND
+            or policy.physical_model_uncertainty_status != "not_evaluated"
+        ):
+            raise SatelliteIlluminationGeometryError(
+                SatelliteIlluminationFailureCode.UNSUPPORTED_SOURCE_MODEL,
+                "unsupported direct-Sun irradiance model policy.",
+            )
+        if geometry.policy.model != policy.compatible_occultation_model:
+            raise SatelliteIlluminationGeometryError(
+                SatelliteIlluminationFailureCode.UNSUPPORTED_SOURCE_MODEL,
+                "direct-Sun irradiance requires compatible uniform-disk "
+                "occultation geometry.",
+            )
+        request = geometry.sun_ephemeris_state.request
+        if (
+            request.target.lower() != "sun"
+            or request.centre.lower() != "earth"
+            or request.frame != "icrf"
+            or geometry.sun_ephemeris_state.position_unit.lower() != "au"
+        ):
+            raise SatelliteIlluminationGeometryError(
+                SatelliteIlluminationFailureCode.UNSUPPORTED_SOURCE_MODEL,
+                "geometry does not retain the accepted geometric Sun model.",
+            )
+        if not (
+            geometry.evaluation_utc
+            == geometry.topocentric_state.teme_state.evaluation_utc
+            == request.instant
+        ):
+            raise SatelliteIlluminationGeometryError(
+                SatelliteIlluminationFailureCode.SOURCE_NOT_EVALUATED,
+                "direct-Sun geometry is not evaluated at one accepted instant.",
+            )
+        occultation = geometry.solar_occultation
+        distance = occultation.satellite_to_sun_distance_km
+        vector_distance = sqrt(
+            sum(value * value for value in geometry.satellite_to_sun_itrs_km)
+        )
+        if (
+            not isfinite(vector_distance)
+            or abs(vector_distance - distance)
+            > 1.0e-12 * max(vector_distance, distance)
+        ):
+            raise SatelliteIlluminationGeometryError(
+                SatelliteIlluminationFailureCode.NON_FINITE_GEOMETRY,
+                "retained satellite-to-Sun distance is inconsistent.",
+            )
+        fraction = occultation.visible_disk_fraction
+        valid_class_fraction = {
+            SolarOccultationClass.SUNLIT: fraction == 1.0,
+            SolarOccultationClass.UMBRA: fraction == 0.0,
+            SolarOccultationClass.PENUMBRA: 0.0 < fraction < 1.0,
+            SolarOccultationClass.ANTUMBRA: 0.0 < fraction < 1.0,
+        }
+        if not valid_class_fraction[occultation.occultation_class]:
+            raise SatelliteIlluminationGeometryError(
+                SatelliteIlluminationFailureCode.NON_FINITE_GEOMETRY,
+                "occultation class and visible fraction are inconsistent.",
+            )
+        distance_au = distance / policy.astronomical_unit_km
+        unocculted = (
+            policy.nominal_total_solar_irradiance_w_m2
+            * (policy.astronomical_unit_km / distance) ** 2
+        )
+        incident = fraction * unocculted
+        coarse_incident = (
+            occultation.coarse_visible_disk_fraction * unocculted
+        )
+        convergence = abs(incident - coarse_incident)
+        if (
+            not all(
+                isfinite(value)
+                for value in (
+                    distance_au,
+                    unocculted,
+                    incident,
+                    coarse_incident,
+                    convergence,
+                )
+            )
+            or unocculted <= 0.0
+            or (fraction > 0.0 and incident <= 0.0)
+        ):
+            raise SatelliteIlluminationGeometryError(
+                SatelliteIlluminationFailureCode.NON_FINITE_GEOMETRY,
+                "direct-Sun irradiance calculation is not finite and positive.",
+            )
+        return DirectSolarIrradiance(
+            geometry=geometry,
+            policy=policy,
+            satellite_to_sun_distance_km=distance,
+            satellite_to_sun_distance_au=distance_au,
+            visible_disk_fraction=fraction,
+            occultation_class=occultation.occultation_class,
+            unocculted_normal_irradiance_w_m2=unocculted,
+            incident_normal_irradiance_w_m2=incident,
+            coarse_incident_normal_irradiance_w_m2=coarse_incident,
+            numerical_convergence_absolute_difference_w_m2=convergence,
+            physical_model_uncertainty_status=(
+                policy.physical_model_uncertainty_status
+            ),
+            provenance=(
+                "IAU 2015 Resolution B3 exact nominal total solar "
+                "irradiance at exactly one astronomical unit.",
+                "Inverse-square Sun-satellite distance scaling.",
+                "Accepted uniform-solar-disk visible fraction composed "
+                "without occultation recomputation.",
+            ),
+            warnings=(
+                "Physical/model uncertainty is not evaluated: the nominal "
+                "model omits solar variability and limb darkening.",
+                "Numerical convergence evidence is not total physical "
+                "uncertainty.",
+                "Bolometric normal-plane irradiance is not spacecraft "
+                "surface irradiance, observer brightness, or visibility.",
+            ),
+        )
 
 
 def classify_observer_twilight(sun_altitude_deg):
