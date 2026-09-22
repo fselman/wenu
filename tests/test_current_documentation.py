@@ -9993,3 +9993,38 @@ def test_50s7d3_records_candidate_moonlight_readiness_audit():
     assert "satellite_moonlight_radiometry_audit_50s7d3.md" in read(
         DEVELOPER / "README.md"
     )
+
+def test_50s7d3_records_scientific_and_architectural_acceptance():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_moonlight_radiometry_audit_50s7d3.md"
+    ).split())
+    documents = (
+        read(DEVELOPER / "README.md"),
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+    )
+    expected = (
+        "Accepted 50S.7D.3 readiness audit",
+        "abbb1b78fbd272ef8b5553d515e9f2a896a0aa55",
+        "230 plugin-disabled tests",
+        "11.39 seconds",
+        "external LIME distribution preflight",
+        "authorizes no Moonlight runtime",
+        "PR 188 merge and branch deletion remain separate explicit decisions",
+    )
+    for phrase in expected:
+        assert phrase in audit
+    for document in documents:
+        normalized = " ".join(document.split())
+        assert "Accepted 50S.7D.3" in normalized or (
+            "accepted documentation-only comparison" in normalized
+        )
+        assert "LIME" in normalized
+        assert "runtime" in normalized.lower()
+
