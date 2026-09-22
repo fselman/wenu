@@ -1291,3 +1291,10 @@ After merge, only a separately controlled external LIME distribution preflight
 is authorized. It must freeze version, bytes, license, bands, coefficients,
 geometry, domain, uncertainty, and reference outputs. It authorizes no
 resource retrieval or runtime by itself.
+
+## Final accepted 50S.7D.3 readiness verification
+
+Acceptance-record head `0be116ab` passed 231 documentation/package tests in
+8.54 seconds and clean repository checks. Moonlight remains
+`not_evaluated`; only the post-merge external LIME distribution preflight is
+authorized next.
