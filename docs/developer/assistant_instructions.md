@@ -1975,3 +1975,18 @@ Do not merge, delete the feature branch, begin 50S.7D.3, vendor or implicitly
 acquire the resource, or add later radiometry, brightness, visibility,
 detector, output, facility, scheduling, or unrelated behavior without
 Fernando's separate explicit decision.
+
+## Accepted 50S.7D.2 implementation boundary
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`d1edeb46f4ea70c34121910c54758c331fe4293b` on 2026-09-22. Preserve
+executable `8e930db2`: exact external TSIS-1 HSRS v2 admission, immutable
+25,281-sample native grid, retained pointwise uncertainty, inverse-square
+distance and accepted achromatic uniform-disk scaling, exact-native-endpoint
+trapezoidal energy integration, integrated uncertainty `not_evaluated`,
+typed failures, and the offline independent receipt.
+
+Do not merge PR 187 or delete its feature branch without Fernando's separate
+explicit instruction. Do not begin 50S.7D.3 Moonlight, vendor or implicitly
+acquire the resource, or add reflected fields, surface response, brightness,
+visibility, detector, output, facility, scheduling, or unrelated behavior.
