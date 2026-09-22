@@ -10027,4 +10027,3 @@ def test_50s7d3_records_scientific_and_architectural_acceptance():
         )
         assert "LIME" in normalized
         assert "runtime" in normalized.lower()
-
