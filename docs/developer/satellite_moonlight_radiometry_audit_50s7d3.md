@@ -363,3 +363,13 @@ uncertainty, and authoritative reference outputs.
 Do not begin the preflight before merge. A later documentation amendment and
 Fernando's separate acceptance remain mandatory before any 50S.7D.3 runtime.
 PR 188 merge and branch deletion remain separate explicit decisions.
+
+## 14. Final accepted audit verification
+
+The acceptance-record head
+`0be116abfa6ce0172b94a0d3c15f4f61ed2c8f8b` passed all 231
+plugin-disabled current-documentation and package-boundary tests in 8.54
+seconds. The diff check, exact local/upstream equality, and clean worktree
+passed. This final evidence changes no scientific scope: only the post-merge,
+separately controlled external LIME distribution preflight is authorized next.
+PR 188 merge and branch deletion remain separate explicit decisions.
