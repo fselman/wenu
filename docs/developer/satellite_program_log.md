@@ -1422,3 +1422,26 @@ expanded tests in 24.79 seconds, all 2,832 plugin-disabled tests in 236.81
 seconds, and the final 223 documentation/package-boundary tests in 10.17
 seconds. PR 185 merge, branch deletion, 50S.7D.2+, and all later work remain
 separate explicit decisions.
+
+## 2026-09-22 — Candidate 50S.7D.2 spectral direct-Sun audit
+
+Started a documentation-only audit from accepted integration
+`c76525c4986faabff0a70e534d1706baa4f550e6`. It proposes the digest-bound
+TSIS-1 HSRS v2 `tsis1_hsrs_1nm` product, native-grid energy integration,
+pointwise uncertainty, offline evaluation, and fail-closed resource admission.
+Redistribution remains unresolved. No implementation or 50S.7D.3+ work is
+authorized.
+
+## 2026-09-22 — Accepted 50S.7D.2 spectral direct-Sun audit
+
+Fernando scientifically and architecturally accepted exact candidate
+`0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe`. All 225
+documentation/package tests passed; exact upstream equality and a clean
+worktree were confirmed. The accepted decisions select TSIS-1 HSRS v2
+`tsis1_hsrs_1nm`, 1 nm FWHM and native 0.1 nm sampling over 202-2730 nm,
+forbid interpolation, extrapolation, and `1361 W m-2` renormalization,
+retain pointwise uncertainty while leaving integrated uncertainty
+`not_evaluated`, and require an external installed resource unless
+redistribution rights are established. No runtime or resource was added.
+Implementation may begin only after audit merge; 50S.7D.3, merge, and branch
+deletion remain separate decisions.

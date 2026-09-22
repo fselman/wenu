@@ -3331,3 +3331,27 @@ The nine-case independent receipt, 308 expanded tests, all 2,832
 plugin-disabled repository tests, and the final 223 documentation/package-
 boundary tests passed. 50S.7D.2+, 50S.7E+, merge, and branch deletion remain
 separate explicit decisions.
+
+## Candidate 50S.7D.2 — Spectral direct-Sun radiometry audit
+
+The documentation-only candidate selects the TSIS-1 HSRS v2 1 nm-FWHM,
+0.1 nm-sampled product over 202-2730 nm, subject to exact digest admission and
+resolved redistribution or external-resource policy. It forbids silent
+interpolation, extrapolation, `1361 W m-2` renormalization, photon conversion,
+and covariance-free integrated uncertainty. It authorizes no runtime;
+50S.7D.3+, implementation, merge, and cleanup remain separate decisions.
+
+## Accepted 50S.7D.2 — Spectral direct-Sun radiometry audit
+
+Fernando scientifically and architecturally accepted exact candidate
+`0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe` on 2026-09-22 after all
+225 documentation/package tests passed and repository checks were clean.
+
+After merge, implement only the bounded offline TSIS-1 HSRS v2
+`tsis1_hsrs_1nm` slice: 1 nm FWHM, the native 0.1 nm grid over 202-2730 nm,
+no interpolation, extrapolation, or `1361 W m-2` renormalization, retained
+pointwise uncertainty, integrated uncertainty `not_evaluated`, and an
+external installed-resource workflow unless redistribution rights are
+established. No runtime or resource was added by the audit. 50S.7D.3
+Moonlight, later illumination, PR merge, and cleanup remain separate explicit
+decisions.

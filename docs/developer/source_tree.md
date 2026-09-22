@@ -2878,3 +2878,22 @@ The independent receipt, 308 expanded tests, all 2,832 plugin-disabled tests,
 and final 223 documentation/package-boundary tests passed. New 50S.7D.2+
 ownership, merge, and branch deletion remain unauthorized without separate
 decisions.
+
+## Candidate 50S.7D.2 resource ownership
+
+The distinct spectral-resource lifecycle provisionally justifies
+`src/wenu/satellites/radiometry.py` and `tests/test_satellite_radiometry.py`.
+An acquisition helper, if later authorized, is a separate network boundary;
+evaluation and import remain offline. No file, resource, or runtime is added by
+this audit.
+
+## Accepted 50S.7D.2 resource ownership
+
+Fernando accepted the proposed distinct offline spectral-resource owner at
+exact candidate `0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe` on
+2026-09-22. After audit merge, a bounded implementation may add
+`src/wenu/satellites/radiometry.py` and
+`tests/test_satellite_radiometry.py`. The resource remains externally
+installed unless redistribution rights are established. Evaluation and import
+must remain offline; acquisition, Moonlight, and later runtime ownership remain
+separate.

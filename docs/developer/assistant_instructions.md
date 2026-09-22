@@ -1913,3 +1913,32 @@ The zero-residual nine-case receipt, 308 expanded tests, all 2,832 plugin-
 disabled tests, and final 223 documentation/package-boundary tests passed. Do
 not merge PR 185 or delete its branch without Fernando's separate explicit
 instruction. Do not begin 50S.7D.2+ or later work without separate authority.
+
+## Candidate 50S.7D.2 audit boundary
+
+Read `satellite_spectral_solar_radiometry_audit_50s7d2.md` before spectral
+Sunlight work. Treat it as documentation only. Preserve exact TSIS-1 HSRS v2
+resource identity, the 202-2730 nm native grid, energy units, resolution versus
+sampling, no interpolation/extrapolation/renormalization, and explicit
+uncertainty limits. Do not implement, acquire, redistribute, merge, delete, or
+begin 50S.7D.3+ without separate authority.
+
+## Accepted 50S.7D.2 audit boundary
+
+Fernando scientifically and architecturally accepted exact documentation-only
+candidate `0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe` on 2026-09-22 after
+all 225 documentation/package tests passed and exact upstream equality plus a
+clean worktree were confirmed. No runtime or spectral resource was added.
+
+After this audit is merged, implement only the bounded offline direct-Sun
+spectral slice using TSIS-1 HSRS v2 `tsis1_hsrs_1nm`: 1 nm FWHM, all 25,281
+native 0.1 nm samples over 202-2730 nm, no interpolation, extrapolation, or
+`1361 W m-2` renormalization, retained pointwise uncertainty, and integrated
+uncertainty `not_evaluated`. Use an external installed-resource workflow
+unless redistribution rights are separately established.
+
+Do not implement before the audit is merged. Do not vendor or implicitly
+acquire the resource, alter accepted 50S.7D.1 bolometric semantics, or begin
+50S.7D.3 Moonlight, reflected fields, spacecraft response, brightness,
+visibility, detector, output, facility, scheduling, or unrelated work. PR
+merge and branch deletion remain separate explicit decisions.

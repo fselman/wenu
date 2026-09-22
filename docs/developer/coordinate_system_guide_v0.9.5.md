@@ -4287,3 +4287,20 @@ no vector, frame, transform, time scale, observer, or attitude.
 The nine-case receipt, 308 expanded tests, complete 2,832-test suite, and final
 223 documentation/package-boundary tests passed. This guide remains current;
 50S.7D.2+, merge, and branch deletion remain separate decisions.
+
+## Candidate 50S.7D.2 spectral scalar boundary
+
+Wavelength, spectral irradiance, and uncertainty are scalar resource axes and
+values, not celestial coordinates. Accepted same-instant geometry supplies
+distance and occultation. The audit adds no frame, transform, time scale,
+observer, surface, attitude, interpolation, runtime, or 50S.7D.3+ behavior.
+
+## Accepted 50S.7D.2 spectral scalar boundary
+
+Fernando accepted the spectral scalar boundary at exact candidate
+`0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe` on 2026-09-22. The guide
+remains current: wavelength, energy spectral irradiance, and uncertainty add no
+coordinate frame, transform, time scale, observer, or attitude meaning. The
+bounded later implementation must consume accepted same-instant geometry and
+must not interpolate, extrapolate, or renormalize the native spectrum.
+50S.7D.3 remains unauthorized.
