@@ -3637,3 +3637,16 @@ The API remains an unaccepted review candidate. Do not extend it with
 spectral/passband, Moonlight, reflected-field, spacecraft-response, brightness,
 visibility, detector, output, facility, or scheduling contracts. Merge and
 branch deletion remain separate decisions.
+
+## Accepted 50S.7D.1 direct-Sun irradiance API implementation
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. Preserve the
+immutable `DirectSolarIrradiancePolicy`, `DirectSolarIrradiance`, and
+`DirectSolarIrradianceEvaluator` contracts and their fail-closed geometry
+boundary.
+
+The independent receipt, 308 expanded tests, complete 2,832-test suite, and
+final 223-test documentation/package-boundary gate passed. The acceptance adds
+no 50S.7D.2+, output, brightness, visibility, detector, facility, or scheduling
+API; merge and branch deletion remain separate decisions.

@@ -597,3 +597,16 @@ crossing, report, chart, planning, observer-brightness, or detector meaning.
 The candidate is verified but unaccepted. Merge, branch deletion, 50S.7D.2+,
 50S.7E+, outputs, facilities, visibility, detector, and scheduling remain
 unauthorized.
+
+## Accepted 50S.7D.1 implementation refinement
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. The accepted
+radiometry remains downstream of crossing and accepted illumination geometry;
+it adds no crossing selection, reporting, charting, planning, observer-
+brightness, or detector meaning.
+
+The nine-case independent receipt, 308 expanded tests, all 2,832 plugin-
+disabled tests, and final 223 documentation/package-boundary tests passed.
+Merge, branch deletion, 50S.7D.2+, and later crossing behavior remain
+unauthorized.

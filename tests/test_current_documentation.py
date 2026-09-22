@@ -9616,3 +9616,60 @@ def test_50s7d1_records_verified_direct_solar_irradiance_candidate():
         "clean tree",
     ):
         assert phrase in combined
+
+
+def test_50s7d1_records_accepted_direct_solar_irradiance_implementation():
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+        read(
+            DEVELOPER
+            / "satellite_illumination_night_geometry_audit_50s7a.md"
+        ),
+        read(
+            DEVELOPER / "satellite_direct_source_radiometry_audit_50s7d.md"
+        ),
+    )
+    expected = (
+        "Accepted 50S.7D.1 implementation architecture",
+        "Accepted 50S.7D.1 — Direct-Sun bolometric irradiance "
+        "implementation",
+        "Accepted 50S.7D.1 direct-Sun irradiance API implementation",
+        "Accepted 50S.7D.1 implementation source ownership",
+        "Accepted 50S.7D.1 scalar coordinate boundary",
+        "Accepted 50S.7D.1 runtime vocabulary",
+        "Accepted 50S.7D.1 direct-Sun irradiance implementation",
+        "Accepted 50S.7D.1 implementation boundary",
+        "Accepted 50S.7D.1 implementation refinement",
+        "Accepted 50S.7D.1 implementation handoff",
+        "Accepted 50S.7D.1 implementation",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "f974b9996d2708ee0f2db7c747e45c481a457bb9" in normalized
+        assert "scientifically and architecturally accepted" in normalized
+        assert "223" in normalized
+        assert "50S.7D.2+" in normalized
+        assert "separate" in normalized or "unauthorized" in normalized
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    for phrase in (
+        "4b5f8e6925f88df38a2923c057f4d039328e3d2b",
+        "nine-case",
+        "308",
+        "2,832",
+        "10.17 seconds",
+        "PR 185",
+        "branch deletion",
+    ):
+        assert phrase in combined

@@ -1409,3 +1409,16 @@ plugin-disabled repository tests passed in 236.81 seconds. Diff,
 exact-head/upstream, and clean-tree checks passed. The candidate now awaits
 Fernando's separate scientific and architectural acceptance. Merge, branch
 deletion, 50S.7D.2+, and later work remain unauthorized.
+
+## 2026-09-22 — Accepted 50S.7D.1 direct-Sun irradiance implementation
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9`. The accepted implementation
+is the bounded direct-Sun bolometric normal-plane slice at executable commit
+`4b5f8e6925f88df38a2923c057f4d039328e3d2b`.
+
+Evidence comprised the zero-residual nine-case independent receipt, 308
+expanded tests in 24.79 seconds, all 2,832 plugin-disabled tests in 236.81
+seconds, and the final 223 documentation/package-boundary tests in 10.17
+seconds. PR 185 merge, branch deletion, 50S.7D.2+, and all later work remain
+separate explicit decisions.

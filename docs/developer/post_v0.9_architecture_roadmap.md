@@ -3318,3 +3318,16 @@ SHA-256 was
 The clean diff, exact upstream, and clean worktree were confirmed. The
 candidate now awaits Fernando's separate scientific and architectural review.
 Merge, branch deletion, 50S.7D.2+, and later work remain unauthorized.
+
+## Accepted 50S.7D.1 — Direct-Sun bolometric irradiance implementation
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. Its accepted
+scope is only IAU-nominal bolometric normal-plane direct-Sun irradiance,
+inverse-square Sun-satellite distance scaling, and accepted uniform-disk
+visible-fraction composition.
+
+The nine-case independent receipt, 308 expanded tests, all 2,832
+plugin-disabled repository tests, and the final 223 documentation/package-
+boundary tests passed. 50S.7D.2+, 50S.7E+, merge, and branch deletion remain
+separate explicit decisions.

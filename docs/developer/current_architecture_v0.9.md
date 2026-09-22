@@ -1999,3 +1999,15 @@ Diff, exact-head/upstream, and clean-tree checks passed. The bounded
 architecture is verified but not scientifically or architecturally accepted;
 merge, branch deletion, 50S.7D.2+, and all later behavior remain separate and
 unauthorized.
+
+## Accepted 50S.7D.1 implementation architecture
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. The accepted
+runtime remains the bounded direct-Sun bolometric normal-plane irradiance
+composition implemented at `4b5f8e6925f88df38a2923c057f4d039328e3d2b`.
+
+The independent nine-case receipt, 308-test expanded gate, complete 2,832-test
+plugin-disabled suite, and final 223-test documentation/package-boundary gate
+passed. Merge, branch deletion, 50S.7D.2+, and all later behavior remain
+separate and unauthorized.

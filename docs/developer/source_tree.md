@@ -2865,3 +2865,16 @@ Source placement remains limited to the accepted illumination owner, package
 exports, existing illumination test owner, offline validator, and governed
 documentation. It is verified but unaccepted; merge, branch deletion,
 50S.7D.2+, and later ownership remain unauthorized.
+
+## Accepted 50S.7D.1 implementation source ownership
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. Direct-Sun
+bolometric normal-plane irradiance remains owned by
+`src/wenu/satellites/illumination.py`, with package exports, existing-owner
+tests, and the offline validator in their recorded locations.
+
+The independent receipt, 308 expanded tests, all 2,832 plugin-disabled tests,
+and final 223 documentation/package-boundary tests passed. New 50S.7D.2+
+ownership, merge, and branch deletion remain unauthorized without separate
+decisions.

@@ -1899,3 +1899,17 @@ Do not merge or delete the feature branch without Fernando's separate explicit
 instruction. Do not begin 50S.7D.2+, reflected fields, spacecraft response,
 brightness, visibility, detector, output, facility, scheduling, or unrelated
 work before separate acceptance and authorization.
+
+## Accepted 50S.7D.1 implementation boundary
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. Preserve the
+bounded direct-Sun bolometric normal-plane implementation at executable commit
+`4b5f8e6925f88df38a2923c057f4d039328e3d2b`, its complete retained
+geometry, deterministic identity, provenance, numerical evidence, and explicit
+physical/model uncertainty `not_evaluated`.
+
+The zero-residual nine-case receipt, 308 expanded tests, all 2,832 plugin-
+disabled tests, and final 223 documentation/package-boundary tests passed. Do
+not merge PR 185 or delete its branch without Fernando's separate explicit
+instruction. Do not begin 50S.7D.2+ or later work without separate authority.

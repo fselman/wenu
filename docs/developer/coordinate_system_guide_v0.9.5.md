@@ -4276,3 +4276,14 @@ a new vector, frame, transform, time scale, observer, or attitude.
 The coordinate-system guide was reviewed and remains current. The candidate is
 verified but unaccepted; merge, branch deletion, 50S.7D.2+, and later
 coordinate or radiometric behavior remain unauthorized.
+
+## Accepted 50S.7D.1 scalar coordinate boundary
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. The accepted
+composition remains scalar over retained same-instant geometry and introduces
+no vector, frame, transform, time scale, observer, or attitude.
+
+The nine-case receipt, 308 expanded tests, complete 2,832-test suite, and final
+223 documentation/package-boundary tests passed. This guide remains current;
+50S.7D.2+, merge, and branch deletion remain separate decisions.

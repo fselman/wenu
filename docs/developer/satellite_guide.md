@@ -1199,3 +1199,15 @@ All 308 expanded tests and 2,832 complete plugin-disabled tests passed. This is
 verification evidence, not scientific or architectural acceptance. Spectral
 Sunlight, Moonlight, reflected fields, spacecraft response, brightness,
 visibility, detector, output, facility, and scheduling remain unauthorized.
+
+## Accepted 50S.7D.1 runtime vocabulary
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. Direct-Sun
+`clear` and `incident` continue to mean bolometric normal-plane irradiance;
+numeric zero remains restricted to evaluated umbra, while physical/model
+uncertainty remains `not_evaluated`.
+
+The independent receipt, 308 expanded tests, all 2,832 plugin-disabled tests,
+and final 223 documentation/package-boundary tests passed. 50S.7D.2+, merge,
+branch deletion, and later runtime vocabulary remain unauthorized.
