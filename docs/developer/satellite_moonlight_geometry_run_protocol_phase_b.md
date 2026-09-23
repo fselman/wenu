@@ -266,3 +266,17 @@ specimen. Keep the historical LIME DE421 kernel family in a separate kernel
 pool. Bundled `spicedmoon` implementation and phase sign remain unresolved.
 Downloading these resources does not authorize a geometry run or admit
 numerical Moonlight.
+
+### Independent Mac verification of the resource receipt
+
+At candidate branch head `6156c0a80eb631e33a5f6301941897aeff4eec11`,
+Fernando independently rehashed all four downloaded files, the installed
+`de440s.bsp`, and IERS-A and compared sizes/digests with the external
+`manifest.json`. The file inventory matched exactly; the FK text named
+`moon_pa_de440_200625.bpc`, `MOON_PA_DE440`, and
+`MOON_ME_DE440_ME421`. Manifest SHA-256 is
+`362787651c4438565c20b5e2f65a756f4be3d58c7b703e600a008c5a5c9cf24d`.
+The focused Mac documentation/package gate passed 236 tests in 9.90 seconds;
+exact head, ancestry, clean diff, and clean branch checks completed. No
+SPICE coverage query or geometry calculation was performed. The manifest
+stays on the Mac; only its digest and file identities are recorded in Git.
