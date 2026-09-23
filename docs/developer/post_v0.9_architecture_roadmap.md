@@ -3563,3 +3563,14 @@ that all eight DE421-family kernel files match the installed-app byte counts
 and SHA-256 hashes. This freezes the kernel *file identities* for the historical
 LIME distribution, while its active runtime configuration, `spicedmoon` sign
 rule, DE440 lunar resources and complete case matrix remain open.
+
+## Accepted Phase B — LIME source/specimen amendment
+
+Fernando accepted exact documentation-only candidate `682e447f` on
+2026-09-23 after 236 focused Mac documentation/package tests passed in 9.62
+seconds and repository checks were clean. The addendum establishes LIME's
+CLI longitude unit conversion, DE421-family historical kernel identities
+from exact `lime.pkg`, and synthetic HEO input design. No DE440 lunar kernel,
+exact signed-phase rule, complete case file, comparison execution, or
+Moonlight value is accepted. PR 193 merge, cleanup, resource acquisition and
+execution remain separate decisions.
