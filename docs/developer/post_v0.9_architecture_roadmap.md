@@ -38,6 +38,7 @@ architectural rationale and accepted boundaries.
 | 21 | 50S.6F | Implement the bounded multi-FoV coordinator after separate acceptance. |
 | 22 | 50S.6G | Admit representative scale and connect exact results to generic reports and chart tracks. |
 | 23 | 50S.6H | Audit Paranal, ELT, and other observatory planning adapters. |
+| 23a | 50S.6I | Add governed production catalogue refresh, automatic snapshot selection, and one exposure-query workflow; preserve exact per-run provenance. |
 | 24 | 50S.7 | Add Sunlight, solar Earthshine, Moonlight, Lunar-Earthshine, shadow-transition, and night geometry. |
 | 25 | 50S.8 | Add component-resolved brightness models with uncertainty and explicit unknowns. |
 | 26 | 50S.9 | Estimate detector-level trail contamination separately from apparent magnitude. |
@@ -2044,6 +2045,81 @@ HEALPix/time indexing remains optional. Add it only if medium/full-snapshot or
 many-pointing benchmarks show material benefit beyond the plane/phase filter
 cascade. Any pixel cover must enclose the complete swept trajectory tube, and
 every candidate still reaches the exact solver.
+
+### 50S.6I — Production catalogue and exposure-query workflow
+
+**Status:** Proposed on 2026-09-23 after Fernando clarified the observing
+goal. The scope and placement require a bounded audit before implementation;
+this proposal does not alter the completed 50S.6G/6H acceptance or authorize
+provider traffic, a runtime default change, or an observing-readiness claim.
+
+The ordinary observing input is a circular FoV or an oriented rectangular
+detector footprint on the sky, an observer, a UTC exposure start, and an
+exposure duration. A rectangle requires its centre, angular width and height,
+orientation, and declared sky-mapping convention (or a validated instrument
+WCS); physical detector dimensions alone do not determine its sky footprint.
+Wenu must return
+every crossing in the selected catalogue whose trajectory intersects that
+FoV during the exposure, including entry/exit or partial overlap, closest
+approach, path, duration, element age, and available illumination, brightness,
+and detector information. Unimplemented or scientifically unsupported fields
+remain explicit `unknown`/`not_evaluated` values. The result must state the
+catalogue population and coverage: no one source can establish completeness
+over every artificial object in orbit.
+
+The production path should use the existing provider-governed acquisition,
+canonical immutable snapshot, exact crossing solver, reports, and chart layers
+in five separately reviewable slices:
+
+1. **50S.6I.A — Contract and provider audit.** Define freshness/element-age
+   policy by orbit regime and exposure use, source population and identifier
+   coverage, historical versus future-date behavior, resource and provider
+   failure semantics, cache location, offline mode, and update cadence under
+   the provider's current terms. Measure representative single and multi-FoV
+   workloads; retain complete-scan equivalence. Audit the circular and
+   rectangular footprint contracts and exact spherical boundary convention.
+2. **50S.6I.B — Refresh and publication.** Recheck provider policy, acquire
+   only when an update is due or explicitly requested, validate the complete
+   response, and atomically publish a new content-addressed catalogue version.
+   Keep the prior valid version on failed refresh; report the failure and
+   freshness state. Never silently substitute synthetic records or mix
+   different catalogue versions in a single exposure result.
+3. **50S.6I.C — Rectangular detector footprints.** Extend the circular-only
+   crossing domain, conservative filters, exact solver, report and chart
+   tracks to an oriented rectangular sky footprint. Define its edges through
+   the declared sky mapping, not an RA/Dec bounding box. Verify rotations,
+   large fields, poles, RA wrap, grazing and corner touches, short exposures,
+   and zero false negatives against a complete scan. A distorted detector
+   footprint requires a validated WCS boundary and separate acceptance;
+   do not silently approximate it by an undistorted rectangle.
+4. **50S.6I.D — Selection and command.** Resolve a named provider and an
+   explicitly chosen or eligible locally published version for the requested
+   exposure. Admit each validated provider snapshot under a general audited
+   source/manifest policy rather than a source-code allowlist of particular
+   digests. Bind one selected digest to the complete query and reuse the
+   existing exact coordinator, atomic report publisher, and chart overlays.
+   Keep explicit pinned-version and offline modes for reproducibility and
+   historical runs. A normal exposure query must not require the observer to
+   hand-edit policy code or manually whitelist a newly refreshed digest.
+5. **50S.6I.E — Observing acceptance.** Exercise real provider snapshots at
+   useful scale for circular and oriented rectangular FoVs, observers, and
+   exposure durations; compare
+   with the full-scan oracle, test stale/absent/corrupt data and provider
+   failures, and inspect report and PNG/PDF/SVG chart outputs. Publish a
+   documented command only after the bounded workload and scientific gates
+   pass. Report selected snapshot, acquisition time, every contributing
+   element epoch/age, source population, software and EOP identities, and
+   completeness limitations with each result.
+
+Each production run freezes its *selected input version* for repeatability;
+the catalogue itself must be refreshable. The hard-coded external snapshot
+allowlist from 50S.6G.1B.2B remains useful for its exact test/evidence case,
+but it cannot be the normal production admission route. Exposure-overlap and
+geometric track delivery can be accepted before 50S.8 brightness and 50S.9
+detector modelling; the ordinary command must identify those gaps until the
+corresponding scientific milestones are accepted. Continue the already
+authorized 50S.7 Phase B work separately; complete this production gate
+before describing Wenu as ready for arbitrary supported observing requests.
 
 ### 50S.7 — Independent illumination and night geometry
 
