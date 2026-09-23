@@ -2177,3 +2177,15 @@ The signed-phase rule, exact bundled dependency, DE440 lunar/time resources
 and discriminating case states remain open. No acquisition, SPICE comparison,
 LIME execution, Moonlight runtime or later work is authorized by this
 acceptance. PR 193 merge and branch deletion are separate decisions.
+
+## Candidate Phase B DE440 resource receipt boundary
+
+Read the DE440 download receipt in
+`satellite_moonlight_geometry_run_protocol_phase_b.md`: Fernando obtained
+four NAIF lunar/time kernels outside the repository after requesting their
+retrieval. Preserve exact byte counts and SHA-256; do not substitute the
+historical LIME DE421 frame or treat an available file as proof of coverage,
+correct load order, phase sign or model admission. This receipt authorizes
+no geometry run, LIME rerun, production change, Moonlight value or later
+50S milestone. An independently verified resource/case preflight and
+separate explicit comparison authorization are still needed.
