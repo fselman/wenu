@@ -1752,6 +1752,11 @@ The first IERS probe stopped on an output-unpacking mistake after kernel
 checks; a corrected IERS-only probe returned final values at 2026-01-15
 (status 0) and predicted values at 2026-09-15 and 2027-01-15 (status 2)
 for both UT1-UTC and polar motion. Repository status stayed clean.
-The protocol records values and limitations. SPK centre chain, final epoch
-and Cartesian cases, predicted-EOP uncertainty, LIME phase sign and any
-scientific comparison remain open. No LIME or SPICE geometry ran.
+The protocol records values and limitations. At candidate head
+`4eee65bb90ebd7288566c346ceee1360bca1c4df`, Fernando's Mac
+passed 236 documentation/package tests in 10.21 seconds with a clean diff
+and branch. A subsequent read-only SPK descriptor scan found body-to-centre
+links `3->0`, `10->0`, `301->3`, and `399->3` in J2000 type-2
+segments covering all three sampled instants. Final epochs and Cartesian
+cases, kernel load-order behavior, predicted-EOP uncertainty, LIME phase
+sign and scientific comparison remain open. No LIME or SPICE geometry ran.
