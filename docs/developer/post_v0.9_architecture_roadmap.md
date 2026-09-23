@@ -3505,3 +3505,14 @@ radiance symmetry. This is a documentation-only candidate: no new
 kernel, LIME execution, production geometry, model admission, licensing
 decision, Moonlight result, or 50S.7D.4+ authority. A frozen-kernel
 comparison run requires a separate authorization and receipt.
+
+## Accepted Phase B — Independent Moonlight geometry audit plan
+
+Fernando accepted exact candidate `21873e59` on 2026-09-23 after 235
+focused and all 2,872 plugin-disabled Mac tests passed with clean repository
+checks, and requested PR 191 merge. The approved plan freezes the
+independence and convention-evidence requirements for a later SPICE geometry
+comparison. A separately reviewed frozen-kernel protocol and explicit
+execution authorization remain necessary. Moonlight stays
+`not_evaluated`; scientific model admission, licensing, production geometry,
+and 50S.7D.4+ are not authorized.

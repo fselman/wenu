@@ -1622,3 +1622,15 @@ and occultation paths, frozen kernels, diagnostic residuals, and
 fail-closed decision gates. The Phase-A symmetric outputs cannot fix the
 LIME phase sign. This is planning only; no geometry run, new resource,
 Moonlight implementation, or later work has been authorized.
+
+## 2026-09-23 — Accepted Phase B Moonlight geometry audit plan
+
+Fernando scientifically and architecturally accepted exact candidate
+`21873e591d1ae592718e64894141ff31fe17ceb1` and requested PR 191
+merge. Mac verification passed 235 focused documentation/package tests in
+12.30 seconds and all 2,872 plugin-disabled tests in 255.75 seconds,
+with clean diff, upstream and tree checks. The plan specifies independent
+SPICE reference geometry and a separate authoritative LIME-convention gate.
+Its acceptance authorizes preparation of a frozen-kernel comparison-run
+protocol for review, but no geometry execution, resource retrieval, LIME
+rerun, model admission, Moonlight runtime, or later 50S implementation.

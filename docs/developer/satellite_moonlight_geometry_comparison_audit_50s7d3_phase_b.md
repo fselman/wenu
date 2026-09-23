@@ -213,3 +213,18 @@ would require their own subsequent review and acceptance.
 - Official LIME Toolbox repository (pin the exact release/source commit
   before extracting a convention):
   https://github.com/LIME-ESA/lime_tbx
+
+## Accepted Phase B audit plan
+
+Fernando scientifically and architecturally accepted exact plan head
+`21873e591d1ae592718e64894141ff31fe17ceb1` on 2026-09-23 and
+explicitly requested PR 191 merge. At that head, 235 focused documentation
+and package tests passed on the Mac in 12.30 seconds, all 2,872
+plugin-disabled tests passed in 255.75 seconds, and diff, upstream and
+clean-tree checks passed. Preserve the distinction between independently
+recomputed geometry and proof of LIME's intended input convention: the
+accepted Phase-A scalar outputs do not resolve signed phase. The next
+proposal may freeze exact kernels and a controlled comparison-run protocol
+for review. This acceptance does not authorize that run, new resource
+acquisition, LIME execution, production Moonlight, licensing clearance, or
+50S.7D.4+ work. Merge is authorized; branch deletion is a separate decision.

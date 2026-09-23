@@ -2120,3 +2120,15 @@ This planning request authorizes no new resource acquisition, LIME
 execution, SPICE comparison run, production code, scientific model
 admission, Moonlight value, or 50S.7D.4+ work. A run needs a separate
 frozen-kernel protocol and explicit authorization.
+
+## Accepted Phase B Moonlight geometry plan boundary
+
+Fernando accepted exact documentation-only candidate
+`21873e591d1ae592718e64894141ff31fe17ceb1` and requested PR 191 merge
+on 2026-09-23. It passed 235 focused and all 2,872 plugin-disabled Mac
+tests; diff, upstream and clean-tree checks passed. The next separately
+reviewable step is a frozen-kernel protocol with discriminating case inputs,
+independent SPICE oracle and explicit LIME-convention evidence. Do not infer
+the LIME phase sign from symmetric native outputs. This plan acceptance and
+merge request authorize no new resource acquisition, SPICE comparison run,
+LIME rerun, production geometry, Moonlight result, or 50S.7D.4+.
