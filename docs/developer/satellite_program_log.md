@@ -1607,3 +1607,18 @@ resources are not committed to Wenu. This acceptance covers the bounded
 inspection evidence only. Independent Wenu/SPICE lunar geometry comparison,
 scientific model admission, Moonlight runtime, licensing, and any later 50S
 milestone remain separate decisions.
+
+## 2026-09-23 — Candidate Phase B independent Moonlight geometry audit
+
+After Fernando accepted and merged PR 190 at
+`6fbceedc9c8b075ace42db4e32fe7b7344f43457`, and the audit branch was
+deleted, he requested the Phase B audit plan. The proposed
+`satellite_moonlight_geometry_comparison_audit_50s7d3_phase_b.md`
+separates source-code/documentation proof of LIME's conventions from
+independent SPICE geometry recomputation and later Wenu comparison.
+It covers LEO/MEO/GEO/highly elliptical cases, named lunar PCK/FK
+orientation, longitude, phase sign, time/correction policy, eclipse
+and occultation paths, frozen kernels, diagnostic residuals, and
+fail-closed decision gates. The Phase-A symmetric outputs cannot fix the
+LIME phase sign. This is planning only; no geometry run, new resource,
+Moonlight implementation, or later work has been authorized.
