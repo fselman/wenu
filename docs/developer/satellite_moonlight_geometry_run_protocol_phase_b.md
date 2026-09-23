@@ -380,3 +380,23 @@ agreement with a separate Wenu implementation. The binary PCK/FK remain
 DE440-family and separate from LIME's historical DE421-family kernel pool.
 Final Cartesian rows, signed phase, predicted-EOP uncertainty and any
 comparison still require separate scientific review and authorization.
+
+### Accepted sampled resource coverage boundary
+
+Fernando scientifically and architecturally accepted the documentation-only
+coverage/EOP and SPK descriptor receipt at exact Mac-tested head
+`da499b4d748d1f4ffa4a86076630dafc075d108d` on 2026-09-23.
+The final 236-test plugin-disabled documentation/package gate passed in
+11.93 seconds; diff and clean tracking-branch checks passed. The earlier
+complete 2,873-test Mac suite remains applicable under the repository's
+documentation-only rule. Acceptance covers the recorded file identities,
+three sampled SPK/PCK coverage checks, the segment metadata centre links,
+and the exact final/predicted status of the frozen IERS-A file at those dates.
+
+Acceptance does not establish a complete frozen case matrix, runtime kernel
+load-order behavior, numerical state resolution, a policy for predicted EOP,
+a LIME signed-phase convention, or independent geometry agreement. The next
+bounded step is separately reviewable source/resource/case preflight.
+No SPICE/LIME geometry comparison, LIME rerun, production code, Moonlight
+value or later 50S milestone is authorized. PR 195 merge and branch cleanup
+require separate instructions.
