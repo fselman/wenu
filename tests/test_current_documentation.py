@@ -3180,6 +3180,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
             "satellite_spectral_solar_radiometry_audit_50s7d2.md",
             "satellite_moonlight_radiometry_audit_50s7d3.md",
             "satellite_lime_distribution_preflight_50s7d3a.md",
+            "satellite_lime_offline_inspection_audit_50s7d3b.md",
         "satellite_delivery_audit_50s6g.md",
         "satellite_snapshot_preflight_audit_50s6g1b.md",
         "satellite_exact_crossing_report_audit_50s6g2a.md",
@@ -10109,3 +10110,44 @@ def test_50s7d3a_records_scientific_and_architectural_acceptance():
         assert "Accepted 50S.7D.3A" in normalized
         assert "27e1ee1c" in normalized
         assert "runtime" in normalized.lower() or "execution" in normalized.lower()
+
+
+def test_50s7d3b_records_controlled_offline_lime_inspection():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_lime_offline_inspection_audit_50s7d3b.md"
+    ).split())
+    documents = (
+        read(DEVELOPER / "README.md"),
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+    )
+    for phrase in (
+        "Candidate controlled Mac inspection with explicit unsigned-package amendment; no Moonlight runtime",
+        "c550da2e6c6ed5e17b489b09aaf4b95fe059f542",
+        "pkgutil --expand-full",
+        "(version 1) (allow default) (deny network*)",
+        "never invokes LIME's `-u`/`--update` route",
+        "2 <= abs(phase_angle) <= 90",
+        "Phase B is a later review",
+        "preexisting_installation_present=true",
+        "installed_by_inspection=false",
+        "sandbox_apply: Operation not permitted",
+        "production_runtime_changed=false",
+        "moonlight_status=not_evaluated",
+    ):
+        assert phrase in audit
+
+    for document in documents:
+        normalized = " ".join(document.split())
+        assert "50S.7D.3B" in normalized
+        assert "LIME" in normalized
+
+    assert "satellite_lime_offline_inspection_audit_50s7d3b.md" in read(
+        DEVELOPER / "README.md"
+    )

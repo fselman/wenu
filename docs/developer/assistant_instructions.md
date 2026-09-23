@@ -2066,3 +2066,42 @@ ownership, and all unresolved blockers. Acceptance authorizes no installation,
 execution, vendoring, dependency, API, Moonlight runtime, or 50S.7D.4+ work.
 PR 189 merge, branch deletion, and any later offline execution require
 separate explicit instructions.
+
+## Candidate 50S.7D.3B offline LIME inspection boundary
+
+Read `satellite_lime_offline_inspection_audit_50s7d3b.md` before executing the
+accepted LIME asset. Fernando explicitly authorized this bounded next step on
+2026-09-22 after 50S.7D.3A merge and cleanup. Use only exact `v1.4.2` package
+SHA-256 `e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21`
+and coefficient SHA-256
+`8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691`.
+
+The candidate harness must expand rather than install the package, reject an
+installed `/Applications/LimeTBX.app`, deny all network access through the
+macOS sandbox, use isolated home and temporary directories, never call LIME's
+update route, and preserve signed-phase/domain-edge native outputs plus exact
+digests. Successful execution is candidate external evidence only. Do not add
+a dependency or API, vendor or redistribute resources, claim Wenu/SPICE
+geometry equivalence, evaluate Moonlight, or begin 50S.7D.4+.
+
+## Authorized 50S.7D.3B signature-gate amendment
+
+On 2026-09-22, Fernando authorized a revised inspection protocol after the
+exact package returned `Status: no signature` and an installed v1.4.2 app
+failed strict codesign on `QtDataVisualization.framework`. Supersede only the
+installed-app rejection and signature-pass requirements above: record and
+ignore a preexisting installation, require exact package/coefficient digests,
+record the two exact known signature failures and reject different ones, and
+explicitly mark both signatures unverified. Enter the network-denied sandbox
+before loading any bundled native library; use only the temporary expanded
+app with a minimal environment. Do not weaken the sandbox or claim signature
+verification, Moonlight, or runtime acceptance. The amended static gates and
+controlled Mac receipt require separate review before PR acceptance.
+
+The first amended Mac attempt at `49e8fb38` stopped before executing LIME:
+the harness had successfully entered the network sandbox, but its nested
+`sandbox-exec` child failed `sandbox_apply: Operation not permitted` (exit 71).
+The bounded correction runs the extracted child directly from the already
+sandboxed harness; the child inherits that network restriction. Reject a child
+invocation outside the enclosing sandbox, preserve the original partial
+evidence, and use a new directory only after focused and complete Mac gates.

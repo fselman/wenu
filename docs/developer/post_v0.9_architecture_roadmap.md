@@ -3455,3 +3455,36 @@ tests passed in 11.95 seconds with clean exact-head, diff, upstream, and tree
 checks. The accepted preflight freezes resource identity and the Wenu-owned
 direct-selenographic geometry boundary only. PR 189 merge is separate, and no
 installation, execution, Moonlight runtime, or 50S.7D.4+ work is authorized.
+
+## Candidate 50S.7D.3B — Offline LIME resource/output inspection
+
+The next bounded candidate supplies a no-install, network-denied macOS harness
+for the exact accepted LIME package. It freezes ten signed-phase/domain-edge
+rows, exact coefficient selection, native CIMEL outputs, uncertainty output,
+repeatability evidence, notice inventory, explicit unverified package/app
+signature receipts, and a
+digest-bound external manifest.
+
+The exact asset is unsigned and its bundled Qt framework fails strict
+codesign. Fernando authorized an amended, exact-byte, network-denied
+inspection that records these known failures and ignores the preexisting
+installed app. A different failure stops the run. This is candidate external
+evidence without code-signing assurance.
+
+One successful operator run remains unaccepted evidence pending review. A
+later independent Wenu/SPICE geometry comparison is a separate phase. Do not
+add Moonlight runtime, a LIME dependency/API, vendored resources, output
+integration, or 50S.7D.4+ behavior under this candidate.
+
+## Accepted 50S.7D.3B — Offline LIME inspection
+
+Fernando accepted exact inspected candidate `f91c233b` on 2026-09-23 and
+requested PR 190 merge. The controlled Mac run produced a digest-verified
+external manifest (`c394d91238ce6e0cdddf05e21212f8091d90fd9cdec48516ea936e3444163575`),
+ten domain-edge cases, selected-coefficient schema, and repeatable native
+central results. Its uncertainty run recorded two small correlation-matrix
+adjustments. Package and app signatures remain unverified, and the notice
+inventory does not establish license clearance. Keep the native outside-domain
+numbers excluded as predictions. This accepts the inspection evidence only;
+independent Wenu/SPICE geometry comparison, scientific model admission,
+Moonlight runtime, and 50S.7D.4+ remain unapproved.

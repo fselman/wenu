@@ -1554,3 +1554,56 @@ It authorizes no installation, execution, vendoring, dependency, API,
 Moonlight runtime, or 50S.7D.4+ work. PR 189 merge, branch deletion, and any
 offline resource/reference-output inspection remain separate explicit
 decisions.
+
+## 2026-09-22 — Candidate 50S.7D.3B offline LIME inspection
+
+After the accepted preflight was merged and cleaned, Fernando said “proceed,”
+explicitly authorizing the separately controlled offline Mac inspection. A
+candidate developer harness now verifies and temporarily expands the exact
+package, rejects installed-resource ambiguity, denies network access with the
+macOS sandbox, selects exact coefficient `20251010_v1`, and records coefficient
+schema, notices, signatures, ten signed-phase/domain-edge cases, native CIMEL
+outputs, uncertainty, repeatability, and digests.
+
+This is not LIME installation or Wenu Moonlight implementation. Static gates,
+one controlled Mac run, evidence review, and Fernando's separate scientific
+and architectural acceptance remain required. Independent Wenu/SPICE geometry
+comparison is a later phase; `moonlight` remains `not_evaluated`.
+
+The first Mac run could not begin: the exact-size and exact-digest `lime.pkg`
+reported `Status: no signature`, while the separately installed v1.4.2 app
+failed strict codesign on `QtDataVisualization.framework`. Fernando authorized
+an amended protocol that retains the exact-byte and network-denied controls,
+records both unverified signature results, and never selects the installed app.
+The 258-test focused gate and complete 2,868-test Mac suite passed at original
+PR head `e4b540f0`; amended code needs its own gate and controlled receipt.
+
+The amended head `49e8fb38` passed 260 focused and all 2,870 plugin-disabled
+Mac tests. The first controlled attempt stopped at `-v`: a second
+`sandbox-exec` inside the already sandboxed harness failed with exit 71,
+`sandbox_apply: Operation not permitted`. No LIME executable started and no
+native output or manifest exists. Correct by inheriting the one enclosing
+sandbox, retain the partial evidence, and require a new directory and gates.
+
+## 2026-09-23 — Accepted 50S.7D.3B offline LIME inspection
+
+Fernando scientifically and architecturally accepted exact inspected head
+`f91c233bc3a89013774deefc4eeaf2cf2163d4f8` and requested PR 190 merge.
+At that head, 261 focused and all 2,871 plugin-disabled Mac tests passed;
+the synchronized working tree and diff checks were clean. The controlled Mac
+run produced ten signed-phase cases and 15 output files whose sizes and
+SHA-256 digests were independently verified against manifest SHA-256
+`c394d91238ce6e0cdddf05e21212f8091d90fd9cdec48516ea936e3444163575`.
+LIME reports v1.4.2; six CIMEL wavelengths and the expected `2 <= abs(mpa)
+<= 90` domain flags were observed; deterministic central results repeated
+exactly. The uncertainty run emitted two correlation-matrix adjustment
+warnings, with maximum differences below `3.5e-13`. Outside-domain numeric
+rows remain invalid predictions. The exact package and coefficient digests
+were confirmed, while package and app signatures remain unverified. The
+preexisting installed app was ignored. The notice-path inventory does not
+establish license clearance. Preserve external evidence at
+`~/Downloads/wenu-lime-50s7d3b/evidence-f91c233b`; its raw outputs and model
+resources are not committed to Wenu. This acceptance covers the bounded
+inspection evidence only. Independent Wenu/SPICE lunar geometry comparison,
+scientific model admission, Moonlight runtime, licensing, and any later 50S
+milestone remain separate decisions.

@@ -141,3 +141,8 @@ in the same change.
 Accepted 50S.7D.3A freezes exact candidate `27e1ee1c` and its documentation-
 only LIME identity and architecture boundary. It authorizes no installation,
 execution, or Moonlight runtime; PR 189 merge remains a separate decision.
+
+- [50S.7D.3B offline LIME inspection](satellite_lime_offline_inspection_audit_50s7d3b.md)
+  — candidate no-install, network-denied Mac harness for coefficient-schema,
+  notice, native-output, domain-edge, uncertainty, and repeatability evidence;
+  no production runtime or numeric Wenu Moonlight.

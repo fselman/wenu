@@ -3772,3 +3772,17 @@ plugin-disabled documentation/package tests passed in 11.95 seconds. This
 accepts only the frozen distribution receipt and future direct-selenographic
 adapter boundary. It adds no API, dependency, execution, or Moonlight result;
 PR 189 merge and later offline inspection require separate instructions.
+
+## Candidate 50S.7D.3B offline-inspection interface
+
+No public or production API is added. The only new executable interface is the
+developer command
+`tools/validate_50s7d3b_lime_offline_inspection.py PACKAGE OUTPUT_DIRECTORY`.
+It accepts the exact external macOS package and a nonexistent external output
+directory, fails closed on identity or environment mismatch, and emits a
+digest-bound evidence set.
+
+The tool neither imports nor wraps LIME in Wenu. Geometry, resource, policy,
+result, evaluator, uncertainty, and numeric Moonlight APIs remain
+unauthorized. Its manifest must state `production_runtime_changed=false` and
+`moonlight_status=not_evaluated`.

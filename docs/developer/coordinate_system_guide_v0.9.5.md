@@ -4389,3 +4389,16 @@ future direct-selenographic-input boundary while leaving every lunar frame,
 longitude, phase-sign, time/correction, and distance-normalization convention
 unimplemented and unresolved. No coordinate runtime or LIME execution is
 authorized; PR 189 merge remains separate.
+
+## Candidate 50S.7D.3B scalar geometry evidence
+
+The offline-inspection harness passes frozen scalar direct-selenographic rows
+to LIME solely to characterize executable behavior. It preserves both phase
+signs, the exact `2` and `90` degree model edges, adjacent outside-domain
+values, and LIME's returned geometry fields. These rows are not computed from
+Wenu state and therefore establish no coordinate equivalence.
+
+No implemented coordinate value changes. A later phase must independently
+compare Wenu/SPICE geometry and freeze lunar orientation, longitude direction,
+signed-phase meaning, distance, light-time, and aberration conventions before
+any runtime acceptance.

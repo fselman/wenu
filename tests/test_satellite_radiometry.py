@@ -2,7 +2,12 @@
 
 from dataclasses import FrozenInstanceError, replace
 import csv
+import importlib.util
 from io import StringIO
+import json
+from pathlib import Path
+from types import SimpleNamespace
+import sys
 
 import pytest
 
@@ -26,6 +31,24 @@ from wenu.satellites.radiometry import (
     SolarSpectralRadiometryFailureCode,
     load_solar_spectral_irradiance_resource,
 )
+
+
+LIME_INSPECTION_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "tools"
+    / "validate_50s7d3b_lime_offline_inspection.py"
+)
+
+
+def load_lime_inspection_module():
+    specification = importlib.util.spec_from_file_location(
+        "validate_50s7d3b_lime_offline_inspection",
+        LIME_INSPECTION_PATH,
+    )
+    module = importlib.util.module_from_spec(specification)
+    sys.modules[specification.name] = module
+    specification.loader.exec_module(module)
+    return module
 
 
 def spectral_resource():
@@ -274,3 +297,153 @@ def test_resource_constructor_enforces_native_grid_invariants():
 
     with pytest.raises(ValueError, match="native-grid"):
         replace(resource, wavelength_nm=tuple(invalid))
+
+
+def test_lime_inspection_freezes_headerless_signed_domain_cases():
+    inspection = load_lime_inspection_module()
+
+    rows = list(csv.reader(StringIO(inspection._case_csv())))
+
+    assert len(rows) == 10
+    assert all(len(row) == 6 for row in rows)
+    assert [float(row[-1]) for row in rows] == [
+        -90.001,
+        -90.0,
+        -15.0,
+        -2.0,
+        -1.999,
+        1.999,
+        2.0,
+        15.0,
+        90.0,
+        90.001,
+    ]
+    assert [case.expected_outside_model_domain for case in inspection.CASES] == [
+        True,
+        False,
+        False,
+        False,
+        True,
+        True,
+        False,
+        False,
+        False,
+        True,
+    ]
+
+
+def test_lime_inspection_is_exact_no_install_and_network_denied():
+    inspection = load_lime_inspection_module()
+    source = LIME_INSPECTION_PATH.read_text(encoding="utf-8")
+
+    assert inspection.PACKAGE_BYTES == 516_220_150
+    assert inspection.PACKAGE_SHA256 == (
+        "e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21"
+    )
+    assert inspection.COEFFICIENT_SHA256 == (
+        "8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691"
+    )
+    assert inspection.SANDBOX_PROFILE == (
+        "(version 1) (allow default) (deny network*)"
+    )
+    assert '"--expand-full"' in source
+    assert '"--update"' not in source
+    assert '"-u"' not in source
+    assert 'Path("/Applications/LimeTBX.app")' in source
+
+
+def test_lime_signature_receipts_admit_only_documented_failures(
+    monkeypatch, tmp_path
+):
+    inspection = load_lime_inspection_module()
+    receipt = tmp_path / "signature.txt"
+
+    monkeypatch.setattr(
+        inspection,
+        "_run",
+        lambda command, check: SimpleNamespace(
+            returncode=1, stdout="Package lime.pkg:\n   Status: no signature\n"
+        ),
+    )
+    assert inspection._signature_receipt(
+        ("pkgutil",), receipt, "Status: no signature"
+    ) == {"status": "known_unverified", "exit_code": 1}
+    assert "Status: no signature" in receipt.read_text()
+
+    for result in (
+        SimpleNamespace(returncode=0, stdout="Status: signed"),
+        SimpleNamespace(returncode=1, stdout="identity mismatch"),
+    ):
+        monkeypatch.setattr(
+            inspection, "_run", lambda command, check: result
+        )
+        with pytest.raises(AssertionError, match="unexpected signature result"):
+            inspection._signature_receipt(
+                ("pkgutil",), receipt, "Status: no signature"
+            )
+
+
+def test_lime_inspection_sandboxes_native_reader_and_excludes_parent_env(
+    monkeypatch, tmp_path
+):
+    inspection = load_lime_inspection_module()
+    monkeypatch.delenv("WENU_LIME_INSPECTION_SANDBOX", raising=False)
+    monkeypatch.setenv("DYLD_LIBRARY_PATH", "/untrusted")
+    monkeypatch.setenv("PYTHONPATH", "/untrusted")
+    monkeypatch.setattr(inspection.sys, "argv", ["inspection.py", "pkg", "out"])
+
+    def capture_exec(path, arguments, environment):
+        assert path == "/usr/bin/sandbox-exec"
+        assert arguments[1:3] == ("-p", inspection.SANDBOX_PROFILE)
+        assert arguments[-2:] == ("pkg", "out")
+        assert environment["WENU_LIME_INSPECTION_SANDBOX"] == "active"
+
+    monkeypatch.setattr(inspection.os, "execve", capture_exec)
+    inspection._enter_network_sandbox()
+    lime_environment = inspection._lime_environment(tmp_path)
+    assert "DYLD_LIBRARY_PATH" not in lime_environment
+    assert "PYTHONPATH" not in lime_environment
+    assert lime_environment["HOME"] == str(tmp_path)
+
+
+def test_lime_child_inherits_one_sandbox_without_reapplying_it(
+    monkeypatch, tmp_path
+):
+    inspection = load_lime_inspection_module()
+    executable = tmp_path / "expanded" / "LimeTBX.exe"
+    resources = tmp_path / "expanded" / "Resources"
+    resources.mkdir(parents=True)
+    home = tmp_path / "home"
+    home.mkdir()
+    log = tmp_path / "version.log"
+    commands = []
+
+    def capture(command, *, cwd, env, check):
+        commands.append(command)
+        assert cwd == resources
+        assert env["HOME"] == str(home)
+        assert check is False
+        return SimpleNamespace(returncode=0, stdout="version 1.4.2\n")
+
+    monkeypatch.setattr(inspection, "_run", capture)
+    with pytest.raises(AssertionError, match="enclosing sandbox"):
+        inspection._run_lime(executable, resources, home, ("-v",), log)
+
+    monkeypatch.setenv("WENU_LIME_INSPECTION_SANDBOX", "active")
+    assert inspection._run_lime(
+        executable, resources, home, ("-v",), log
+    ) == (str(executable), "-v")
+    assert commands == [(str(executable), "-v")]
+    assert log.read_text() == "version 1.4.2\n"
+
+
+def test_lime_inspection_serializes_nonfinite_external_values_as_strict_json():
+    inspection = load_lime_inspection_module()
+
+    encoded = inspection._json_text(
+        {"values": [float("nan"), float("inf"), float("-inf")]}
+    )
+
+    assert json.loads(encoded) == {
+        "values": ["NaN", "Infinity", "-Infinity"]
+    }
