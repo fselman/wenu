@@ -1739,3 +1739,19 @@ documentation-only changes. Exact file availability is accepted; epoch
 coverage, load order, case states and LIME sign remain open. No geometry
 execution or Moonlight value is admitted. PR 194 merge and branch deletion
 are separate decisions.
+
+## 2026-09-23 — Candidate Phase B DE440 coverage sample
+
+After the accepted resource receipt merged at `0e8b9c9f`, Fernando ran
+read-only checks on his clean integration tree. All six SHA-256 resource
+identities and the external manifest matched their accepted receipts.
+CSPICE_N0067 found SPK IDs including Sun 10, Moon 301 and Earth 399 and
+binary PCK class ID 31008, with named FK frame IDs 31008 and 31009. All
+three sampled 2026/2027 ETs lie inside their reported object/frame windows.
+The first IERS probe stopped on an output-unpacking mistake after kernel
+checks; a corrected IERS-only probe returned final values at 2026-01-15
+(status 0) and predicted values at 2026-09-15 and 2027-01-15 (status 2)
+for both UT1-UTC and polar motion. Repository status stayed clean.
+The protocol records values and limitations. SPK centre chain, final epoch
+and Cartesian cases, predicted-EOP uncertainty, LIME phase sign and any
+scientific comparison remain open. No LIME or SPICE geometry ran.
