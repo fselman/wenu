@@ -280,3 +280,25 @@ The focused Mac documentation/package gate passed 236 tests in 9.90 seconds;
 exact head, ancestry, clean diff, and clean branch checks completed. No
 SPICE coverage query or geometry calculation was performed. The manifest
 stays on the Mac; only its digest and file identities are recorded in Git.
+
+### Accepted DE440 resource receipt boundary
+
+Fernando scientifically and architecturally accepted the documentation-only
+resource receipt at exact Mac-tested head
+`4395d44279c5f806f2bb59ed2aa15b371fefb99e` on 2026-09-23. All
+236 focused documentation/package tests passed in 9.04 seconds at that head;
+`git diff --check` and the tracking working tree were clean. The earlier
+independent verification rehashed four external NAIF files and the installed
+DE440s/IERS-A and matched the exact inventory in external manifest SHA-256
+`362787651c4438565c20b5e2f65a756f4be3d58c7b703e600a008c5a5c9cf24d`.
+The prior full 2,873-test Mac suite remains applicable under the
+repository's documentation-only verification rule.
+
+Acceptance covers the recorded file identities and availability of the four
+external resources. It does not establish kernel/SPK/PCK/LSK/EOP coverage at
+case epochs, frame/centre or load-order correctness, exact Cartesian case
+states, the bundled LIME signed-phase convention, or scientific agreement.
+No geometry comparison, LIME rerun, production code, Moonlight value or later
+50S milestone is authorized. An independently verified resource/case
+preflight and separate explicit comparison authorization remain necessary;
+PR 194 merge and branch cleanup require separate instructions.
