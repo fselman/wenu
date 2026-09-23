@@ -208,3 +208,20 @@ is not evidence that the dependency is absent. The package and temporary
 expansion remain outside Wenu; the temp directory was removed and the repo
 tree remained clean. Signed-phase, exact dependency implementation, DE440
 kernels and discriminating cases remain open gates.
+
+### Accepted source/specimen amendment boundary
+
+Fernando scientifically and architecturally accepted exact tested candidate
+`682e447fe4d872dfe93af63901516b644b9dcae5` on 2026-09-23.
+On the Mac, 236 focused documentation/package tests passed in 9.62 seconds;
+exact-head, ancestry, diff and clean-tree checks completed. The previously
+accepted 2,873-test plugin-disabled Mac suite remains applicable because
+this addendum changed developer documentation only, without executable code,
+fixtures, configuration or test collection. Acceptance covers the tagged
+LIME input/source trace, the distinction between DE421 historical geometry
+and the independent DE440 oracle, the exact-package identity of eight
+DE421-family kernel files, and the proposed synthetic specimen construction.
+It does **not** resolve the signed-phase rule, prove the bundled `spicedmoon`
+implementation, freeze DE440 lunar/time kernels or final case-state rows,
+authorize resource retrieval or geometry execution, or admit numerical
+Moonlight. PR 193 merge and branch deletion remain separate decisions.
