@@ -1691,3 +1691,16 @@ its exact implementation and phase-sign rule unresolved. Temporary files were
 removed; no new download or geometry run occurred. The updated branch
 `a8991b8d` passed 236 documentation/package tests in 10.19 seconds with
 clean diff and repository status before this documentation-only receipt.
+
+## 2026-09-23 — Accepted Phase B LIME source/specimen amendment
+
+Fernando scientifically and architecturally accepted exact tested head
+`682e447fe4d872dfe93af63901516b644b9dcae5`. Mac verification passed
+236 focused documentation/package tests in 9.62 seconds with exact-head,
+ancestry, diff and clean-tree checks. The earlier full 2,873-test gate remains
+valid for this documentation-only addition. The accepted scope is the
+source-backed CLI unit conversion, historical DE421-versus-DE440 distinction,
+exact-package identity for eight DE421-family kernel files and proposed
+synthetic HEO input construction. DE440 kernels, exact `spicedmoon` sign rule,
+final discriminating cases and any geometry run remain blocked. PR 193 merge
+and branch deletion require separate instructions.
