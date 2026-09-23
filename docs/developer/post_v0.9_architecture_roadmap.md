@@ -3552,3 +3552,8 @@ actual Cartesian row serialization, signed-phase/longitude discriminants,
 missing NAIF kernel bytes and exact bundled `spicedmoon` identity remain
 unfrozen. This addendum is documentation only. Resource acquisition and any
 comparison run still need their own explicit decisions.
+
+The installed LIME app's read-only receipt now identifies eight DE421-family
+kernels by SHA-256, with executable/coefficient hashes matching prior evidence.
+The exact `lime.pkg` kernel comparison, bundled dependency/sign rule, four
+DE440/time resource files and discriminating cases remain stop gates.
