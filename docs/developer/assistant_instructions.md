@@ -2205,3 +2205,16 @@ separately reviewed resource/case preflight may proceed next. Do not run a
 SPICE/LIME geometry comparison, rerun LIME, change production code or admit
 Moonlight without separate authorization. PR 194 merge and cleanup are
 separate decisions.
+
+## Candidate Phase B DE440 coverage preflight boundary
+
+A read-only Mac sample after merge `0e8b9c9f` reverified the exact six
+resource identities and external manifest and checked SPK/PCK coverage at
+three UTCs. The pinned IERS-A table provides final IERS-B EOP at 2026-01-15
+and predictions at 2026-09-15 and 2027-01-15; see the exact measurements in
+`satellite_moonlight_geometry_run_protocol_phase_b.md`. Do not equate
+object/frame coverage with complete SPK centre chains, an accepted case
+matrix or a solved LIME sign rule. Preserve the predicted-EOP status in
+synthetic-snapshot reasoning. Continue only bounded source/resource/case
+preflight; comparison execution, LIME rerun, production changes and
+Moonlight values require separate authorization.
