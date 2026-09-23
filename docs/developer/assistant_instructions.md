@@ -2143,3 +2143,14 @@ publisher-backed LIME convention remain to be frozen in a separately reviewed
 amendment. This candidate documents an independent SPICE reference method
 and strict stop gates; it authorizes no kernel download, geometry execution,
 LIME rerun, production implementation, Moonlight value or 50S.7D.4+ work.
+
+## Accepted Phase B protocol boundary
+
+Fernando accepted exact protocol head
+`0ad4c6e67e37d9eb96f4278913c5871735937d27` on 2026-09-23 after
+236 focused and 2,873 full plugin-disabled Mac tests passed. Preserve its
+independent SPICE geometry method and explicit missing-kernel, case-specimen
+and LIME-convention gates. Its acceptance does not authorize resource
+acquisition, a comparison run, a LIME rerun, numerical Moonlight, production
+code, or later 50S work. PR 192 merge and branch deletion require separate
+instructions.
