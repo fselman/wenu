@@ -2105,3 +2105,30 @@ The bounded correction runs the extracted child directly from the already
 sandboxed harness; the child inherits that network restriction. Reject a child
 invocation outside the enclosing sandbox, preserve the original partial
 evidence, and use a new directory only after focused and complete Mac gates.
+
+## Candidate Phase B Moonlight geometry audit boundary
+
+Read `satellite_moonlight_geometry_comparison_audit_50s7d3_phase_b.md`
+before any independent LIME/Wenu/SPICE lunar comparison. The accepted
+50S.7D.3B scalar rows show native output and domain behavior but
+cannot establish a lunar frame, orientation epoch, longitude direction,
+phase sign, distance definition, light-time, or aberration convention.
+Fernando requested a documentation-only Phase B plan on 2026-09-23.
+Freeze an independent named-frame SPICE method and a discriminating
+case matrix before proposing any run; keep LIME's EO-CFI route excluded.
+This planning request authorizes no new resource acquisition, LIME
+execution, SPICE comparison run, production code, scientific model
+admission, Moonlight value, or 50S.7D.4+ work. A run needs a separate
+frozen-kernel protocol and explicit authorization.
+
+## Accepted Phase B Moonlight geometry plan boundary
+
+Fernando accepted exact documentation-only candidate
+`21873e591d1ae592718e64894141ff31fe17ceb1` and requested PR 191 merge
+on 2026-09-23. It passed 235 focused and all 2,872 plugin-disabled Mac
+tests; diff, upstream and clean-tree checks passed. The next separately
+reviewable step is a frozen-kernel protocol with discriminating case inputs,
+independent SPICE oracle and explicit LIME-convention evidence. Do not infer
+the LIME phase sign from symmetric native outputs. This plan acceptance and
+merge request authorize no new resource acquisition, SPICE comparison run,
+LIME rerun, production geometry, Moonlight result, or 50S.7D.4+.

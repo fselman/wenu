@@ -3181,6 +3181,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
             "satellite_moonlight_radiometry_audit_50s7d3.md",
             "satellite_lime_distribution_preflight_50s7d3a.md",
             "satellite_lime_offline_inspection_audit_50s7d3b.md",
+            "satellite_moonlight_geometry_comparison_audit_50s7d3_phase_b.md",
         "satellite_delivery_audit_50s6g.md",
         "satellite_snapshot_preflight_audit_50s6g1b.md",
         "satellite_exact_crossing_report_audit_50s6g2a.md",
@@ -10151,3 +10152,28 @@ def test_50s7d3b_records_controlled_offline_lime_inspection():
     assert "satellite_lime_offline_inspection_audit_50s7d3b.md" in read(
         DEVELOPER / "README.md"
     )
+
+
+def test_phase_b_moonlight_geometry_plan_preserves_independent_stop_gates():
+    plan = " ".join(read(
+        DEVELOPER / "satellite_moonlight_geometry_comparison_audit_50s7d3_phase_b.md"
+    ).split())
+    for phrase in (
+        "documentation-only plan",
+        "6fbceedc9c8b075ace42db4e32fe7b7344f43457",
+        "signed_phase_unresolved",
+        "IAU_MOON",
+        "MOON_ME",
+        "MOON_PA",
+        "abcorr=NONE",
+        "LEO, MEO, GEO, and highly elliptical",
+        "source paths",
+        "No Wenu Moonlight value",
+        "separately approved frozen-kernel",
+    ):
+        assert phrase.lower() in plan.lower()
+
+    index = read(DEVELOPER / "README.md")
+    assert "satellite_moonlight_geometry_comparison_audit_50s7d3_phase_b.md" in index
+    for path in (FUTURE_ROADMAP, SATELLITE_PROGRAM_LOG, INSTRUCTIONS):
+        assert "Phase B" in read(path)

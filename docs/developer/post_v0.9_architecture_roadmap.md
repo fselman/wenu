@@ -3488,3 +3488,31 @@ inventory does not establish license clearance. Keep the native outside-domain
 numbers excluded as predictions. This accepts the inspection evidence only;
 independent Wenu/SPICE geometry comparison, scientific model admission,
 Moonlight runtime, and 50S.7D.4+ remain unapproved.
+
+## Candidate Phase B — Independent Moonlight geometry comparison
+
+After the accepted 50S.7D.3B scalar inspection, the next bounded proposal
+plans an independently recomputed Wenu/SPICE comparison of same-instant
+satellite-to-Moon and Moon-to-Sun vectors, distances, lunar body-fixed
+coordinates, phase magnitude/sign, orientation epoch, and explicit
+light-time/aberration variants. Read
+`satellite_moonlight_geometry_comparison_audit_50s7d3_phase_b.md`.
+The frozen LIME scalar rows establish native output and domain behavior,
+not the derivation of its inputs from an orbit. Positive and negative
+scalar phases returned identical central values, so the sign convention
+must be established from independent authoritative evidence rather than
+radiance symmetry. This is a documentation-only candidate: no new
+kernel, LIME execution, production geometry, model admission, licensing
+decision, Moonlight result, or 50S.7D.4+ authority. A frozen-kernel
+comparison run requires a separate authorization and receipt.
+
+## Accepted Phase B — Independent Moonlight geometry audit plan
+
+Fernando accepted exact candidate `21873e59` on 2026-09-23 after 235
+focused and all 2,872 plugin-disabled Mac tests passed with clean repository
+checks, and requested PR 191 merge. The approved plan freezes the
+independence and convention-evidence requirements for a later SPICE geometry
+comparison. A separately reviewed frozen-kernel protocol and explicit
+execution authorization remain necessary. Moonlight stays
+`not_evaluated`; scientific model admission, licensing, production geometry,
+and 50S.7D.4+ are not authorized.

@@ -143,6 +143,8 @@ only LIME identity and architecture boundary. It authorizes no installation,
 execution, or Moonlight runtime; PR 189 merge remains a separate decision.
 
 - [50S.7D.3B offline LIME inspection](satellite_lime_offline_inspection_audit_50s7d3b.md)
-  — candidate no-install, network-denied Mac harness for coefficient-schema,
-  notice, native-output, domain-edge, uncertainty, and repeatability evidence;
-  no production runtime or numeric Wenu Moonlight.
+  — accepted external evidence from a no-install, network-denied Mac inspection;
+  both signatures remain unverified and no numeric Wenu Moonlight exists.
+- [Phase B independent Moonlight geometry comparison audit](satellite_moonlight_geometry_comparison_audit_50s7d3_phase_b.md)
+  — candidate documentation-only plan for named lunar frames, signed phase,
+  frozen satellite states, direct SPICE oracles, and later comparison gates.
