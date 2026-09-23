@@ -189,3 +189,22 @@ from the filenames. A later read-only extraction of the already verified
 against the exact distribution without installing or executing LIME. A
 publisher-backed sign rule and separate DE440 kernel receipt remain required
 before any geometry execution.
+
+### Exact-package corroboration of the DE421 kernel set
+
+Fernando's 2026-09-23 Mac check reverified the original 516,220,150-byte
+`lime.pkg` SHA-256
+`e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21`,
+expanded it to an automatically removed temporary directory without installing
+or executing LIME, and separately hashed each of the eight kernels listed
+above inside that package. Every extracted size and SHA-256 equalled the
+read-only installed-app measurement (`MATCHES_INSTALLED_APP=True` eight times).
+The package therefore establishes **the exact listed DE421-family kernel
+bytes**, not just filename or installed-app evidence. It does not prove that
+the entire installed app matches the package or that `spicedmoon` loaded any
+particular subset at runtime. The extracted app path scan reported
+`SPICEDMOON_PATH_COUNT 0`; packed modules can evade a filename scan, so this
+is not evidence that the dependency is absent. The package and temporary
+expansion remain outside Wenu; the temp directory was removed and the repo
+tree remained clean. Signed-phase, exact dependency implementation, DE440
+kernels and discriminating cases remain open gates.
