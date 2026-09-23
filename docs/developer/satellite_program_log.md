@@ -1704,3 +1704,38 @@ exact-package identity for eight DE421-family kernel files and proposed
 synthetic HEO input construction. DE440 kernels, exact `spicedmoon` sign rule,
 final discriminating cases and any geometry run remain blocked. PR 193 merge
 and branch deletion require separate instructions.
+
+## 2026-09-23 — Candidate Phase B DE440 resource receipt
+
+After PR 193 merged at `a3ff88a58993aedb57c3c23e007b81d9191e577f`
+and its remote/local branch was deleted, Fernando requested the missing
+files and downloaded the NAIF DE440 lunar PCK/FK, LSK, and diagnostic text
+PCK into `~/Downloads/wenu-lime-50s7d3b/de440-kernels/`. The clean Mac
+command checked official HTTPS host, SPICE file headers, byte counts and
+SHA-256, wrote an external manifest and left the repository clean. The
+protocol records all four exact hashes. Their presence removes the earlier
+file-availability blocker only: coverage, LIME sign, final specimens and
+comparison execution remain unapproved. No kernels were vendored, no
+geometry was run and Moonlight remains `not_evaluated`.
+
+The independent Mac verification at `6156c0a8` matched all four downloaded
+files and both installed base resources to the documented sizes/hashes,
+confirmed the FK pairing, and recorded external manifest SHA-256
+`362787651c4438565c20b5e2f65a756f4be3d58c7b703e600a008c5a5c9cf24d`.
+All 236 documentation/package tests passed in 9.90 seconds, and diff and tree
+checks were clean. Coverage and scientific input conventions remain open.
+
+## 2026-09-23 — Accepted Phase B DE440 resource receipt
+
+Fernando accepted the documentation-only resource receipt at exact
+Mac-tested head `4395d44279c5f806f2bb59ed2aa15b371fefb99e`. The
+236-test focused documentation/package gate passed in 9.04 seconds; diff
+and clean tracking-branch checks passed. The prior independent rehash
+verified four external NAIF downloads, installed DE440s/IERS-A and the
+complete manifest inventory; manifest SHA-256 is
+`362787651c4438565c20b5e2f65a756f4be3d58c7b703e600a008c5a5c9cf24d`.
+The earlier complete 2,873-test Mac suite remains applicable to these
+documentation-only changes. Exact file availability is accepted; epoch
+coverage, load order, case states and LIME sign remain open. No geometry
+execution or Moonlight value is admitted. PR 194 merge and branch deletion
+are separate decisions.
