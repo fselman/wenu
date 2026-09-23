@@ -3615,3 +3615,16 @@ Read the receipt in `satellite_moonlight_geometry_run_protocol_phase_b.md`.
 The next separate step is a reviewed exact resource/case/convention
 amendment; execution still requires its own authorization. Moonlight remains
 `not_evaluated`.
+
+## Accepted Phase B — Sampled DE440 coverage and EOP preflight
+
+Fernando accepted the exact documentation-only head `da499b4d` on
+2026-09-23 after 236 focused Mac documentation/package tests passed in
+11.93 seconds with clean diff and tracking branch. The accepted receipt
+records three sampled SPK/PCK coverage checks, the SPK centre links and
+final-versus-predicted EOP statuses. It does not freeze Cartesian cases
+or establish runtime kernel order, predicted-EOP uncertainty policy, LIME's
+phase sign, a geometry comparison, or scientific Moonlight admission.
+Only bounded source/resource/case preflight may proceed next. Comparison
+execution requires separate explicit authorization; PR 195 merge and
+cleanup remain separate decisions. Moonlight remains `not_evaluated`.
