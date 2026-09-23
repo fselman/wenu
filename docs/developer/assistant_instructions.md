@@ -2166,3 +2166,14 @@ proposed analytic HEO fixtures and existing snapshot digest are candidate
 inputs, not a completed case file. Exact lunar kernels, bundled dependency,
 case states and separate authorization are still needed before any acquisition
 or comparison execution.
+
+## Accepted Phase B source/specimen amendment boundary
+
+Fernando accepted exact documentation-only source/specimen head
+`682e447fe4d872dfe93af63901516b644b9dcae5` on 2026-09-23 after
+236 focused Mac documentation/package tests passed. Preserve its exact
+DE421 kernel-file evidence and independent DE440 reference distinction.
+The signed-phase rule, exact bundled dependency, DE440 lunar/time resources
+and discriminating case states remain open. No acquisition, SPICE comparison,
+LIME execution, Moonlight runtime or later work is authorized by this
+acceptance. PR 193 merge and branch deletion are separate decisions.
