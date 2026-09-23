@@ -1760,3 +1760,17 @@ links `3->0`, `10->0`, `301->3`, and `399->3` in J2000 type-2
 segments covering all three sampled instants. Final epochs and Cartesian
 cases, kernel load-order behavior, predicted-EOP uncertainty, LIME phase
 sign and scientific comparison remain open. No LIME or SPICE geometry ran.
+
+## 2026-09-23 — Accepted Phase B DE440 coverage and EOP sample
+
+Fernando scientifically and architecturally accepted the documentation-only
+receipt at exact Mac-tested head `da499b4d748d1f4ffa4a86076630dafc075d108d`.
+All 236 focused documentation/package tests passed in 11.93 seconds; diff
+and clean branch checks passed. The accepted evidence covers exact resource
+identities, three sampled SPK/PCK coverage instants, SPK segment centre
+links and IERS final/predicted statuses. The earlier complete 2,873-test
+Mac suite remains applicable to these documentation-only edits.
+Final Cartesian cases, runtime kernel order, predicted-EOP uncertainty,
+LIME's signed-phase rule and any scientific comparison remain open.
+No geometry or LIME run, production change or Moonlight value is authorized.
+PR 195 merge and branch deletion require separate instructions.
