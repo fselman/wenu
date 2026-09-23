@@ -1681,3 +1681,13 @@ hashes matched the earlier Phase-A receipt, but no full app-to-package
 identity was established; the bounded scan printed no `spicedmoon` source
 or distribution metadata. The DE440 PCK/FK and requested LSK/text PCK still
 lack accepted bytes. No binary ran and no kernel was downloaded.
+
+The later exact-package check reverified the 516,220,150-byte `lime.pkg`
+SHA-256 `e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21`
+and temporarily expanded it without executing LIME. All eight extracted
+DE421-family kernel sizes and hashes matched the installed-app inventory.
+The filename scan found no separately named `spicedmoon` path, which leaves
+its exact implementation and phase-sign rule unresolved. Temporary files were
+removed; no new download or geometry run occurred. The updated branch
+`a8991b8d` passed 236 documentation/package tests in 10.19 seconds with
+clean diff and repository status before this documentation-only receipt.
