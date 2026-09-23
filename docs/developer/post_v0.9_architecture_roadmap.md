@@ -3597,3 +3597,34 @@ Next, independently preflight the resource chain and freeze discriminating
 case states and the LIME phase-sign rule in a separately reviewed step.
 Comparison execution requires separate explicit authorization. Moonlight
 remains `not_evaluated`; PR 194 merge and branch cleanup remain separate.
+
+## Candidate Phase B — DE440 coverage and EOP sample
+
+A read-only Mac preflight at merged base `0e8b9c9f` reverified all six
+resource identities and the external manifest, inventoried SPK/PCK object
+coverage with CSPICE_N0067, and read EOP at three sample dates. Sun, Moon,
+Earth and the DE440 PA PCK include each sampled instant. January 2026 has
+final IERS-B values; September 2026 and January 2027 have IERS-A predictions
+in the pinned table. These facts narrow the resource gate but do not freeze
+the final case matrix or establish runtime kernel order, signed phase, EOP uncertainty policy or
+a comparison result. A later descriptor-only inspection at candidate head
+`4eee65bb` found the sampled SPK centre chain (Moon/Earth -> 3 -> 0 and
+Sun -> 0), all in J2000 type-2 segments covering the three sampled ETs.
+The 236-test Mac documentation/package gate passed in 10.21 seconds.
+Read the receipt in `satellite_moonlight_geometry_run_protocol_phase_b.md`.
+The next separate step is a reviewed exact resource/case/convention
+amendment; execution still requires its own authorization. Moonlight remains
+`not_evaluated`.
+
+## Accepted Phase B — Sampled DE440 coverage and EOP preflight
+
+Fernando accepted the exact documentation-only head `da499b4d` on
+2026-09-23 after 236 focused Mac documentation/package tests passed in
+11.93 seconds with clean diff and tracking branch. The accepted receipt
+records three sampled SPK/PCK coverage checks, the SPK centre links and
+final-versus-predicted EOP statuses. It does not freeze Cartesian cases
+or establish runtime kernel order, predicted-EOP uncertainty policy, LIME's
+phase sign, a geometry comparison, or scientific Moonlight admission.
+Only bounded source/resource/case preflight may proceed next. Comparison
+execution requires separate explicit authorization; PR 195 merge and
+cleanup remain separate decisions. Moonlight remains `not_evaluated`.

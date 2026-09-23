@@ -1739,3 +1739,38 @@ documentation-only changes. Exact file availability is accepted; epoch
 coverage, load order, case states and LIME sign remain open. No geometry
 execution or Moonlight value is admitted. PR 194 merge and branch deletion
 are separate decisions.
+
+## 2026-09-23 — Candidate Phase B DE440 coverage sample
+
+After the accepted resource receipt merged at `0e8b9c9f`, Fernando ran
+read-only checks on his clean integration tree. All six SHA-256 resource
+identities and the external manifest matched their accepted receipts.
+CSPICE_N0067 found SPK IDs including Sun 10, Moon 301 and Earth 399 and
+binary PCK class ID 31008, with named FK frame IDs 31008 and 31009. All
+three sampled 2026/2027 ETs lie inside their reported object/frame windows.
+The first IERS probe stopped on an output-unpacking mistake after kernel
+checks; a corrected IERS-only probe returned final values at 2026-01-15
+(status 0) and predicted values at 2026-09-15 and 2027-01-15 (status 2)
+for both UT1-UTC and polar motion. Repository status stayed clean.
+The protocol records values and limitations. At candidate head
+`4eee65bb90ebd7288566c346ceee1360bca1c4df`, Fernando's Mac
+passed 236 documentation/package tests in 10.21 seconds with a clean diff
+and branch. A subsequent read-only SPK descriptor scan found body-to-centre
+links `3->0`, `10->0`, `301->3`, and `399->3` in J2000 type-2
+segments covering all three sampled instants. Final epochs and Cartesian
+cases, kernel load-order behavior, predicted-EOP uncertainty, LIME phase
+sign and scientific comparison remain open. No LIME or SPICE geometry ran.
+
+## 2026-09-23 — Accepted Phase B DE440 coverage and EOP sample
+
+Fernando scientifically and architecturally accepted the documentation-only
+receipt at exact Mac-tested head `da499b4d748d1f4ffa4a86076630dafc075d108d`.
+All 236 focused documentation/package tests passed in 11.93 seconds; diff
+and clean branch checks passed. The accepted evidence covers exact resource
+identities, three sampled SPK/PCK coverage instants, SPK segment centre
+links and IERS final/predicted statuses. The earlier complete 2,873-test
+Mac suite remains applicable to these documentation-only edits.
+Final Cartesian cases, runtime kernel order, predicted-EOP uncertainty,
+LIME's signed-phase rule and any scientific comparison remain open.
+No geometry or LIME run, production change or Moonlight value is authorized.
+PR 195 merge and branch deletion require separate instructions.

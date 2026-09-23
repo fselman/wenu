@@ -2205,3 +2205,30 @@ separately reviewed resource/case preflight may proceed next. Do not run a
 SPICE/LIME geometry comparison, rerun LIME, change production code or admit
 Moonlight without separate authorization. PR 194 merge and cleanup are
 separate decisions.
+
+## Candidate Phase B DE440 coverage preflight boundary
+
+A read-only Mac sample after merge `0e8b9c9f` reverified the exact six
+resource identities and external manifest and checked SPK/PCK coverage at
+three UTCs. The pinned IERS-A table provides final IERS-B EOP at 2026-01-15
+and predictions at 2026-09-15 and 2027-01-15; see the exact measurements in
+`satellite_moonlight_geometry_run_protocol_phase_b.md`. Do not equate
+object/frame coverage with complete SPK centre chains, an accepted case
+matrix or a solved LIME sign rule. Preserve the predicted-EOP status in
+synthetic-snapshot reasoning. Continue only bounded source/resource/case
+preflight; comparison execution, LIME rerun, production changes and
+Moonlight values require separate authorization.
+
+## Accepted Phase B sampled resource preflight boundary
+
+Fernando accepted exact documentation-only Mac-tested head
+`da499b4d748d1f4ffa4a86076630dafc075d108d` on 2026-09-23.
+The 236-test documentation/package gate passed in 11.93 seconds with
+clean diff and tracking branch. Preserve the exact six resource identities,
+external manifest, three sampled coverage/EOP statuses and SPK segment
+centre links in `satellite_moonlight_geometry_run_protocol_phase_b.md`.
+Predicted EOP at the synthetic OMM epoch is an explicit status, not an
+accepted uncertainty policy. Only a separately reviewed case/convention
+preflight may proceed next; do not run a geometry comparison or LIME,
+change production code or admit Moonlight without separate authorization.
+PR 195 merge and cleanup remain separate decisions.

@@ -302,3 +302,101 @@ No geometry comparison, LIME rerun, production code, Moonlight value or later
 50S milestone is authorized. An independently verified resource/case
 preflight and separate explicit comparison authorization remain necessary;
 PR 194 merge and branch cleanup require separate instructions.
+
+## Candidate Phase B DE440 coverage and EOP preflight (2026-09-23)
+
+After PR 194 merged at `0e8b9c9fd4754926d6ee63f94017a2f7f1915a42`,
+Fernando reported a clean, synchronized integration tree. A read-only Mac
+probe independently reverified the byte counts and SHA-256 of the six
+resources in the accepted ledger and the external manifest SHA-256
+`362787651c4438565c20b5e2f65a756f4be3d58c7b703e600a008c5a5c9cf24d`.
+The probe used CSPICE_N0067, the exact `naif0012.tls` to convert the sampled
+UTCs to ET, `spkobj`/`spkcov` on the installed DE440s SPK and
+`pckfrm`/`pckcov` on the downloaded binary lunar PCK. It did not request
+Sun/Moon positions, transform a vector or execute LIME.
+
+| Read-only metadata | Observed result |
+| --- | --- |
+| DE440s SPK objects | `1,2,3,4,5,6,7,8,9,10,199,299,301,399`; in particular Sun `10`, Moon `301` and Earth `399` appear. |
+| SPK object coverage | Each listed object reported one window, rendered through the selected LSK as `1849-12-25T23:59:18.816` to `2150-01-21T23:58:50.816`. |
+| Binary lunar PCK | One class ID `31008`; one window rendered as `1549-12-30T23:59:18.816` to `2650-01-24T23:58:50.816`. |
+| FK frame names | `MOON_PA_DE440 -> 31008`; `MOON_ME_DE440_ME421 -> 31009`. The derived ME frame is not a second segment in the binary PCK. |
+
+Both metadata windows include all **three sampled ETs**, converted from
+`2026-01-15T00:00:00`, `2026-09-15T00:00:00` and
+`2027-01-15T00:00:00` UTC with the selected LSK. Distant UTC endpoints above
+are display conversions, not independent proof that the LSK defines every
+historical or future civil-time offset. Object-level coverage alone did not prove the SPK segment-centre chain.
+A subsequent descriptor-only check of the exact SPK resolved that metadata
+for the three sampled dates, as recorded below; kernel load-order behavior,
+a numerical state request and lunar matrix transformation remain separate
+gates.
+
+The first probe failed *after* these kernel checks because its IERS
+`pm_xy(..., return_status=True)` return was unpacked as two values. A corrected
+read-only probe completed only the missing IERS portion from the same exact
+digest-verified `finals2000A.all`; the branch stayed clean.
+
+| Sampled UTC | UT1-UTC (s) | PM_x (arcsec) | PM_y (arcsec) | UT1 and PM status |
+| --- | ---: | ---: | ---: | --- |
+| 2026-01-15T00:00:00 | +0.0721413 | +0.098571 | +0.341277 | 0: final IERS-B |
+| 2026-09-15T00:00:00 | +0.0010857 | +0.190825 | +0.320711 | 2: IERS-A prediction |
+| 2027-01-15T00:00:00 | -0.0423752 | +0.045392 | +0.365412 | 2: IERS-A prediction |
+
+These are three point checks, not certification of a continuous date range,
+EOP accuracy, or the final discriminating case epochs. In particular the
+existing synthetic OMM epoch `2026-09-15T00:00:00Z` uses predicted EOP in
+this frozen table; any ITRS/inertial state transform must state that status
+and its uncertainty policy. A January 2026 final EOP sample is a candidate
+for a later synthetic Cartesian fixture, not an accepted phase/sign case.
+Next inspect kernel pool/load order, then choose exact UTCs and freeze raw
+states and an authoritative LIME sign rule. No geometry comparison, LIME
+rerun, model admission or Moonlight value is authorized by this receipt.
+
+### SPK descriptor-centre receipt
+
+At candidate head `4eee65bb90ebd7288566c346ceee1360bca1c4df`,
+Fernando's Mac passed 236 plugin-disabled documentation/package tests in
+10.21 seconds, with clean diff and tracking branch. In the same command
+group he then read SPK DAF segment descriptors using `dafopr`, `dafbfs`,
+`dafgs`, and `spkuds`; no `spkpos`, `spkezr`, `pxform`, LIME
+command, or position calculation was made. The relevant segments were all
+frame ID 1 (`J2000`), SPK type 2, each spanning the same reported window
+`1849-12-25T23:59:18.816` to `2150-01-21T23:58:50.816` when displayed
+as UTC through the selected LSK:
+
+| Body ID | SPK segment centre ID | Sampled 2026-01-15, 2026-09-15, 2027-01-15 ETs |
+| ---: | ---: | --- |
+| 3 (Earth-Moon barycentre) | 0 (solar-system barycentre) | All inside segment. |
+| 10 (Sun) | 0 (solar-system barycentre) | All inside segment. |
+| 301 (Moon) | 3 (Earth-Moon barycentre) | All inside segment. |
+| 399 (Earth) | 3 (Earth-Moon barycentre) | All inside segment. |
+
+This **metadata chain** supplies the required centre connections at these
+three sampled ETs: Moon and Earth share centre 3, and Sun and centre 3 share
+centre 0. It does not attest numerical SPICE state resolution, load-order
+precedence with additional kernels, a continuous final case interval, or
+agreement with a separate Wenu implementation. The binary PCK/FK remain
+DE440-family and separate from LIME's historical DE421-family kernel pool.
+Final Cartesian rows, signed phase, predicted-EOP uncertainty and any
+comparison still require separate scientific review and authorization.
+
+### Accepted sampled resource coverage boundary
+
+Fernando scientifically and architecturally accepted the documentation-only
+coverage/EOP and SPK descriptor receipt at exact Mac-tested head
+`da499b4d748d1f4ffa4a86076630dafc075d108d` on 2026-09-23.
+The final 236-test plugin-disabled documentation/package gate passed in
+11.93 seconds; diff and clean tracking-branch checks passed. The earlier
+complete 2,873-test Mac suite remains applicable under the repository's
+documentation-only rule. Acceptance covers the recorded file identities,
+three sampled SPK/PCK coverage checks, the segment metadata centre links,
+and the exact final/predicted status of the frozen IERS-A file at those dates.
+
+Acceptance does not establish a complete frozen case matrix, runtime kernel
+load-order behavior, numerical state resolution, a policy for predicted EOP,
+a LIME signed-phase convention, or independent geometry agreement. The next
+bounded step is separately reviewable source/resource/case preflight.
+No SPICE/LIME geometry comparison, LIME rerun, production code, Moonlight
+value or later 50S milestone is authorized. PR 195 merge and branch cleanup
+require separate instructions.
