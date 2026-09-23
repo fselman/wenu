@@ -3606,8 +3606,11 @@ coverage with CSPICE_N0067, and read EOP at three sample dates. Sun, Moon,
 Earth and the DE440 PA PCK include each sampled instant. January 2026 has
 final IERS-B values; September 2026 and January 2027 have IERS-A predictions
 in the pinned table. These facts narrow the resource gate but do not freeze
-the final case matrix or establish the SPK segment-centre chain, runtime
-kernel order, signed phase, EOP uncertainty policy or a comparison result.
+the final case matrix or establish runtime kernel order, signed phase, EOP uncertainty policy or
+a comparison result. A later descriptor-only inspection at candidate head
+`4eee65bb` found the sampled SPK centre chain (Moon/Earth -> 3 -> 0 and
+Sun -> 0), all in J2000 type-2 segments covering the three sampled ETs.
+The 236-test Mac documentation/package gate passed in 10.21 seconds.
 Read the receipt in `satellite_moonlight_geometry_run_protocol_phase_b.md`.
 The next separate step is a reviewed exact resource/case/convention
 amendment; execution still requires its own authorization. Moonlight remains
