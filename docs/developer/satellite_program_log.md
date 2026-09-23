@@ -1673,3 +1673,11 @@ which exact dependency binary is in the Mac app. Appended a candidate
 provenance trace and analytic synthetic HEO specimen design to the accepted
 protocol without retrieving resources or executing geometry. Required NAIF
 kernel bytes and the remaining discriminating case states remain blocked.
+
+The subsequent read-only installed-app inventory found the eight DE421-family
+kernel files named by the pinned LIME source and recorded their sizes and
+SHA-256 digests in the protocol. Its executable and selected-coefficient
+hashes matched the earlier Phase-A receipt, but no full app-to-package
+identity was established; the bounded scan printed no `spicedmoon` source
+or distribution metadata. The DE440 PCK/FK and requested LSK/text PCK still
+lack accepted bytes. No binary ran and no kernel was downloaded.
