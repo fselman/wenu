@@ -1724,3 +1724,18 @@ confirmed the FK pairing, and recorded external manifest SHA-256
 `362787651c4438565c20b5e2f65a756f4be3d58c7b703e600a008c5a5c9cf24d`.
 All 236 documentation/package tests passed in 9.90 seconds, and diff and tree
 checks were clean. Coverage and scientific input conventions remain open.
+
+## 2026-09-23 — Accepted Phase B DE440 resource receipt
+
+Fernando accepted the documentation-only resource receipt at exact
+Mac-tested head `4395d44279c5f806f2bb59ed2aa15b371fefb99e`. The
+236-test focused documentation/package gate passed in 9.04 seconds; diff
+and clean tracking-branch checks passed. The prior independent rehash
+verified four external NAIF downloads, installed DE440s/IERS-A and the
+complete manifest inventory; manifest SHA-256 is
+`362787651c4438565c20b5e2f65a756f4be3d58c7b703e600a008c5a5c9cf24d`.
+The earlier complete 2,873-test Mac suite remains applicable to these
+documentation-only changes. Exact file availability is accepted; epoch
+coverage, load order, case states and LIME sign remain open. No geometry
+execution or Moonlight value is admitted. PR 194 merge and branch deletion
+are separate decisions.
