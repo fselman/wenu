@@ -157,3 +157,35 @@ resources and controlled retrieval procedure for separate authorization;
 before execution, freeze every required byte and case input for scientific
 review. No geometry, LIME execution, kernel acquisition, dependency change,
 production value or Moonlight admission occurs under this addendum.
+
+### Read-only installed-app kernel receipt (2026-09-23)
+
+Fernando inventoried `/Applications/LimeTBX.app/Contents` without opening the
+app or invoking its executable. The installed executable was 15,074,016 bytes,
+SHA-256 `cfaa059102688faa551a4a459d19f90f88e7cc9e68728e21002decb9d25908e3`;
+the selected coefficient was 154,366 bytes, SHA-256
+`8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691`.
+Both match previously recorded Phase-A identities, **but this does not prove
+the entire installed app is byte-identical to the verified `lime.pkg`**.
+
+| Installed file under `Contents/Resources/kernels/` | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `de421.bsp` | 16,790,528 | `08b20db2ae22488650641c5a9033e5bfda4b1c4b440cfeaf20f621cfa18ecdb3` |
+| `earth_070425_370426_predict.bpc` | 5,751,808 | `0e5b9108a86c1d23894578cfd31c952e16c3b6712960208d1d3aa01d090f5062` |
+| `earth_assoc_itrf93.tf` | 7,522 | `aab7bbc19b8a69bad11988ee1b4812a3963812a03a029c2776863e680719b336` |
+| `earth_latest_high_prec.bpc` | 4,262,912 | `2b5bde55b5b34e172487cf1b984e92aa554a7c08fe326dd99cc759f937166b8f` |
+| `moon_080317.tf` | 21,437 | `78732477b96f9863e7b0d65bcee3c22b8707ca5ed0db56d1173319cb2e8c7993` |
+| `moon_pa_de421_1900-2050.bpc` | 1,770,496 | `656f90616403d75a75f0cd6c8830fc5b44f8cb4facb5ccb8915e752b397520cf` |
+| `naif0011.tls` | 5,086 | `cdbb9adc1addca89b8d14347c2ad13e1e4ade1798aa731ad015c1ffa9bc40463` |
+| `pck00010.tpc` | 126,143 | `59468328349aa730d18bf1f8d7e86efe6e40b75dfb921908f99321b3a7a701d2` |
+
+This bounded inventory found none of the four DE440/time candidate files and
+printed no `spicedmoon` Python-source or distribution metadata match. The
+absence of that metadata in the selected paths does not show that the
+packaged library is missing; it may be frozen or bytecode only. Do not infer
+its version, phase-sign algorithm, or actual runtime kernel-selection path
+from the filenames. A later read-only extraction of the already verified
+`lime.pkg`, with a fresh package digest gate, can compare these kernel bytes
+against the exact distribution without installing or executing LIME. A
+publisher-backed sign rule and separate DE440 kernel receipt remain required
+before any geometry execution.
