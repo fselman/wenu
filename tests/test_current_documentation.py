@@ -3182,6 +3182,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
             "satellite_lime_distribution_preflight_50s7d3a.md",
             "satellite_lime_offline_inspection_audit_50s7d3b.md",
             "satellite_moonlight_geometry_comparison_audit_50s7d3_phase_b.md",
+            "satellite_moonlight_geometry_run_protocol_phase_b.md",
         "satellite_delivery_audit_50s6g.md",
         "satellite_snapshot_preflight_audit_50s6g1b.md",
         "satellite_exact_crossing_report_audit_50s6g2a.md",
@@ -10177,3 +10178,22 @@ def test_phase_b_moonlight_geometry_plan_preserves_independent_stop_gates():
     assert "satellite_moonlight_geometry_comparison_audit_50s7d3_phase_b.md" in index
     for path in (FUTURE_ROADMAP, SATELLITE_PROGRAM_LOG, INSTRUCTIONS):
         assert "Phase B" in read(path)
+
+
+def test_phase_b_frozen_kernel_protocol_stops_on_missing_resources():
+    protocol = read(
+        DEVELOPER / "satellite_moonlight_geometry_run_protocol_phase_b.md"
+    )
+    for phrase in (
+        "moon_pa_de440_200625.bpc",
+        "moon_de440_220930.tf",
+        "naif0012.tls",
+        "NOT_FOUND",
+        "signed_phase_unresolved",
+        "not_evaluated",
+        "no comparison run",
+    ):
+        assert phrase.lower() in protocol.lower()
+    assert "satellite_moonlight_geometry_run_protocol_phase_b.md" in read(
+        DEVELOPER / "README.md"
+    )

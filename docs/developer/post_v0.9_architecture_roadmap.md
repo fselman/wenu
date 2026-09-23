@@ -3516,3 +3516,26 @@ comparison. A separately reviewed frozen-kernel protocol and explicit
 execution authorization remain necessary. Moonlight stays
 `not_evaluated`; scientific model admission, licensing, production geometry,
 and 50S.7D.4+ are not authorized.
+
+## Candidate Phase B — Frozen-kernel lunar geometry comparison protocol
+
+The documentation-only protocol in
+`satellite_moonlight_geometry_run_protocol_phase_b.md` inventories installed
+DE440s and IERS-A by exact SHA-256 and records missing DE440 lunar PCK/FK,
+LSK and diagnostic text PCK. It describes independent same-instant SPICE
+reference vectors and named-frame calculations and lists specimen and LIME
+convention gates. Its HEO and phase fixtures are not yet frozen, so this is
+not an executable run card. A separately reviewed resource/specimen/convention
+amendment and explicit execution authorization are required. No kernels were
+retrieved; Moonlight remains `not_evaluated`.
+
+## Accepted Phase B — Frozen-kernel lunar comparison protocol
+
+Fernando accepted exact documentation candidate `0ad4c6e6` on 2026-09-23
+after 236 focused and 2,873 full plugin-disabled Mac tests passed with clean
+repository checks. This acceptance freezes the independent reference method,
+installed-resource receipts and missing-kernel/specimen/convention stop gates;
+it does not admit an executable geometry run card. A later bounded amendment
+must freeze absent kernels, case states and authoritative LIME conventions
+before separately authorized execution. Moonlight remains `not_evaluated`.
+PR 192 merge and branch cleanup require separate instructions.

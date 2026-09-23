@@ -148,3 +148,7 @@ execution, or Moonlight runtime; PR 189 merge remains a separate decision.
 - [Phase B independent Moonlight geometry comparison audit](satellite_moonlight_geometry_comparison_audit_50s7d3_phase_b.md)
   — candidate documentation-only plan for named lunar frames, signed phase,
   frozen satellite states, direct SPICE oracles, and later comparison gates.
+
+- [Phase B frozen-kernel comparison protocol](satellite_moonlight_geometry_run_protocol_phase_b.md)
+  — candidate run specification with installed-resource digests, missing lunar
+  kernels and HEO/phase specimens, independent SPICE recipe, and stop gates.

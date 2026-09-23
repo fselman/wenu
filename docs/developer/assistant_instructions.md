@@ -2132,3 +2132,25 @@ independent SPICE oracle and explicit LIME-convention evidence. Do not infer
 the LIME phase sign from symmetric native outputs. This plan acceptance and
 merge request authorize no new resource acquisition, SPICE comparison run,
 LIME rerun, production geometry, Moonlight result, or 50S.7D.4+.
+
+## Candidate Phase B frozen-kernel protocol boundary
+
+Read `satellite_moonlight_geometry_run_protocol_phase_b.md` before proposing
+any controlled lunar comparison. The installed DE440s and IERS-A hashes are
+recorded; four lunar/time kernels were absent from Fernando's bounded Mac
+inventory. Exact HEO, signed-phase and longitude discriminant states and the
+publisher-backed LIME convention remain to be frozen in a separately reviewed
+amendment. This candidate documents an independent SPICE reference method
+and strict stop gates; it authorizes no kernel download, geometry execution,
+LIME rerun, production implementation, Moonlight value or 50S.7D.4+ work.
+
+## Accepted Phase B protocol boundary
+
+Fernando accepted exact protocol head
+`0ad4c6e67e37d9eb96f4278913c5871735937d27` on 2026-09-23 after
+236 focused and 2,873 full plugin-disabled Mac tests passed. Preserve its
+independent SPICE geometry method and explicit missing-kernel, case-specimen
+and LIME-convention gates. Its acceptance does not authorize resource
+acquisition, a comparison run, a LIME rerun, numerical Moonlight, production
+code, or later 50S work. PR 192 merge and branch deletion require separate
+instructions.
