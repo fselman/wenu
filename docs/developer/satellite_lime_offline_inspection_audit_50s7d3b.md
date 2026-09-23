@@ -221,3 +221,24 @@ preserve the returned evidence without modification and audit it before
 proposing the independent Wenu/SPICE geometry comparison. If it fails, stop
 and diagnose the exact failed control; do not weaken the sandbox, change the
 resource identity, install LIME, or retry with a different path implicitly.
+
+## 11. Accepted inspection evidence
+
+Fernando scientifically and architecturally accepted exact PR head
+`f91c233bc3a89013774deefc4eeaf2cf2163d4f8` on 2026-09-23 and asked to
+merge PR 190. The controlled run's external manifest SHA-256 is
+`c394d91238ce6e0cdddf05e21212f8091d90fd9cdec48516ea936e3444163575`;
+all 15 listed output byte counts and SHA-256 digests were independently
+checked. The exact package and coefficient bytes passed their frozen digests,
+while both signatures remain unverified. The preexisting installed app was
+ignored. LIME v1.4.2 returned six CIMEL wavelengths, expected ten signed-phase
+domain flags, and identical central results on two deterministic runs. The
+uncertainty run produced nonzero uncertainty fields and two warnings about
+positive-definiteness adjustments no larger than `3.5e-13`. Four flagged
+outside-domain rows have numeric outputs that are not valid model predictions.
+The 18 notice paths are an inventory, not license clearance. Exact head
+`f91c233b` passed 261 focused and all 2,871 plugin-disabled tests on the Mac;
+diff and clean-tree checks passed. Preserve the external evidence in
+`~/Downloads/wenu-lime-50s7d3b/evidence-f91c233b`. This acceptance closes
+the bounded Phase-A inspection, not the independent Phase-B Wenu/SPICE geometry
+comparison, model admission, license review, or Moonlight implementation.
