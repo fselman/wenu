@@ -225,3 +225,44 @@ It does **not** resolve the signed-phase rule, prove the bundled `spicedmoon`
 implementation, freeze DE440 lunar/time kernels or final case-state rows,
 authorize resource retrieval or geometry execution, or admit numerical
 Moonlight. PR 193 merge and branch deletion remain separate decisions.
+
+## Candidate Phase B DE440 kernel download receipt (2026-09-23)
+
+Fernando explicitly requested the missing files and retrieved them from the
+four official NAIF URLs listed above into
+`~/Downloads/wenu-lime-50s7d3b/de440-kernels/`, outside Git and outside the
+Python package. The one-time Mac command checked the clean integration head
+`a3ff88a58993aedb57c3c23e007b81d9191e577f`, refused an existing output
+directory, required HTTPS to `naif.jpl.nasa.gov` and HTTP 200, checked SPICE
+file headers, computed each SHA-256 while downloading, wrote an external
+`manifest.json`, and atomically moved the complete temporary directory into
+place. No LIME executable or SPICE geometry calculation was run.
+
+| Role and file | Bytes | SHA-256 |
+| --- | ---: | --- |
+| DE440 lunar orientation PCK, `moon_pa_de440_200625.bpc` | 12,863,488 | `60cd55aa401ea2ea97360636f567554bfe4e37bb829f901b4460a455dfaf783f` |
+| Paired lunar FK, `moon_de440_220930.tf` | 19,571 | `73eb6b216c06a27c3419c4cfeaded7ffce46a714e3d4f9f5142dda51c0710f76` |
+| Leap-seconds kernel, `naif0012.tls` | 5,257 | `678e32bdb5a744117a467cd9601cd6b373f0e9bc9bbde1371d5eee39600a039b` |
+| Optional `IAU_MOON` diagnostic text PCK, `pck00011.tpc` | 131,226 | `3dff7b1dbeceaa01f25467767d3fa25816051c85d162d1edf04acb310ee28bb1` |
+
+These hashes supersede the initial **NOT_FOUND availability status** in the
+historical 2026-09-23 inventory above. Keep the originally installed
+`de440s.bsp` SHA-256
+`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`
+and IERS-A SHA-256
+`d4bb5af084caf3e82621bc75aad902dc7ad9e38e785a97d3fcac0a23d89644fb`
+as separate, previously measured resource identities. NAIF's named DE440 FK
+explicitly pairs the downloaded lunar PCK; its `MOON_PA_DE440` and
+`MOON_ME_DE440_ME421` definitions are candidates for the independent
+reference. The generic text PCK supplies a separate `IAU_MOON` diagnostic;
+it cannot replace the binary PCK/FK pair.
+
+The new SHA-256 values are locally measured receipts of HTTPS downloads;
+no independent publisher checksum or scientific coverage verification has
+been recorded yet. Before comparison, independently rehash the files and
+manifest, verify SPK/PCK/LSK and IERS-A coverage at every frozen UTC/ET,
+inspect kernel names/frames/centres and load order, and freeze each Cartesian
+specimen. Keep the historical LIME DE421 kernel family in a separate kernel
+pool. Bundled `spicedmoon` implementation and phase sign remain unresolved.
+Downloading these resources does not authorize a geometry run or admit
+numerical Moonlight.
