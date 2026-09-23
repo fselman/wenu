@@ -3574,3 +3574,13 @@ from exact `lime.pkg`, and synthetic HEO input design. No DE440 lunar kernel,
 exact signed-phase rule, complete case file, comparison execution, or
 Moonlight value is accepted. PR 193 merge, cleanup, resource acquisition and
 execution remain separate decisions.
+
+## Candidate Phase B — DE440 kernel receipt
+
+At clean integration head `a3ff88a5`, Fernando downloaded the four missing
+NAIF lunar/time files into an external Mac directory and reported exact byte
+counts and SHA-256 digests. This supersedes the earlier NOT_FOUND inventory
+for resource availability; the accepted DE440s and IERS-A files retain their
+own identities. Frame/centre and epoch coverage, exact case states, LIME's
+signed-phase rule, and a separate execution authorization remain gates. No
+SPICE or LIME geometry run occurred.
