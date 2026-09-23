@@ -3528,3 +3528,14 @@ convention gates. Its HEO and phase fixtures are not yet frozen, so this is
 not an executable run card. A separately reviewed resource/specimen/convention
 amendment and explicit execution authorization are required. No kernels were
 retrieved; Moonlight remains `not_evaluated`.
+
+## Accepted Phase B — Frozen-kernel lunar comparison protocol
+
+Fernando accepted exact documentation candidate `0ad4c6e6` on 2026-09-23
+after 236 focused and 2,873 full plugin-disabled Mac tests passed with clean
+repository checks. This acceptance freezes the independent reference method,
+installed-resource receipts and missing-kernel/specimen/convention stop gates;
+it does not admit an executable geometry run card. A later bounded amendment
+must freeze absent kernels, case states and authoritative LIME conventions
+before separately authorized execution. Moonlight remains `not_evaluated`.
+PR 192 merge and branch cleanup require separate instructions.
