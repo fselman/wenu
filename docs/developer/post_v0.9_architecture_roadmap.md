@@ -3584,3 +3584,16 @@ for resource availability; the accepted DE440s and IERS-A files retain their
 own identities. Frame/centre and epoch coverage, exact case states, LIME's
 signed-phase rule, and a separate execution authorization remain gates. No
 SPICE or LIME geometry run occurred.
+
+## Accepted Phase B — DE440 kernel resource receipt
+
+Fernando accepted the exact documentation-only head `4395d442` on
+2026-09-23 after 236 focused Mac documentation/package tests passed in
+9.04 seconds and repository checks were clean. The external manifest SHA-256
+is `362787651c4438565c20b5e2f65a756f4be3d58c7b703e600a008c5a5c9cf24d`.
+Acceptance records exact identities and external availability of the four
+NAIF lunar/time resources, not scientific coverage or a valid comparison.
+Next, independently preflight the resource chain and freeze discriminating
+case states and the LIME phase-sign rule in a separately reviewed step.
+Comparison execution requires separate explicit authorization. Moonlight
+remains `not_evaluated`; PR 194 merge and branch cleanup remain separate.
