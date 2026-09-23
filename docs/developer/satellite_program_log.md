@@ -1648,3 +1648,15 @@ resource gates, a standalone direct SPICE recipe, specimen coverage gaps,
 and the unresolved source-backed LIME phase/frame mapping. It requests review
 before any acquisition, comparison execution, LIME rerun, runtime or model
 admission. Coordinate guide reviewed; current implemented contract unchanged.
+
+## 2026-09-23 — Accepted Phase B frozen-kernel protocol
+
+Fernando scientifically and architecturally accepted exact head
+`0ad4c6e67e37d9eb96f4278913c5871735937d27`. On his Mac, the
+236-test documentation/package gate passed in 10.67 seconds and the full
+2,873-test plugin-disabled suite in 249.24 seconds; exact-head, upstream,
+diff and clean-tree checks completed. The accepted documentation keeps missing
+lunar/time kernels, HEO/phase fixtures and source-backed LIME conventions as
+execution stop gates. No acquisition, comparison run, LIME rerun, Moonlight
+runtime, model admission or later milestone is accepted. PR 192 merge and
+branch deletion remain separate decisions.
