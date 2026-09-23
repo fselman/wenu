@@ -3597,3 +3597,18 @@ Next, independently preflight the resource chain and freeze discriminating
 case states and the LIME phase-sign rule in a separately reviewed step.
 Comparison execution requires separate explicit authorization. Moonlight
 remains `not_evaluated`; PR 194 merge and branch cleanup remain separate.
+
+## Candidate Phase B — DE440 coverage and EOP sample
+
+A read-only Mac preflight at merged base `0e8b9c9f` reverified all six
+resource identities and the external manifest, inventoried SPK/PCK object
+coverage with CSPICE_N0067, and read EOP at three sample dates. Sun, Moon,
+Earth and the DE440 PA PCK include each sampled instant. January 2026 has
+final IERS-B values; September 2026 and January 2027 have IERS-A predictions
+in the pinned table. These facts narrow the resource gate but do not freeze
+the final case matrix or establish the SPK segment-centre chain, runtime
+kernel order, signed phase, EOP uncertainty policy or a comparison result.
+Read the receipt in `satellite_moonlight_geometry_run_protocol_phase_b.md`.
+The next separate step is a reviewed exact resource/case/convention
+amendment; execution still requires its own authorization. Moonlight remains
+`not_evaluated`.
