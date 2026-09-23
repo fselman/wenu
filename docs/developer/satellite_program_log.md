@@ -1634,3 +1634,17 @@ SPICE reference geometry and a separate authoritative LIME-convention gate.
 Its acceptance authorizes preparation of a frozen-kernel comparison-run
 protocol for review, but no geometry execution, resource retrieval, LIME
 rerun, model admission, Moonlight runtime, or later 50S implementation.
+
+## 2026-09-23 — Candidate Phase B frozen-kernel protocol
+
+From clean integration base `29302ed65e04b9280a5cb31631985e41deb25c7c`,
+Fernando's read-only Mac inventory confirmed installed DE440s
+`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`
+and IERS-A
+`d4bb5af084caf3e82621bc75aad902dc7ad9e38e785a97d3fcac0a23d89644fb`.
+The DE440-compatible lunar orientation PCK, paired FK, LSK and diagnostic
+text PCK were not found in the bounded inventory. The protocol records these
+resource gates, a standalone direct SPICE recipe, specimen coverage gaps,
+and the unresolved source-backed LIME phase/frame mapping. It requests review
+before any acquisition, comparison execution, LIME rerun, runtime or model
+admission. Coordinate guide reviewed; current implemented contract unchanged.
