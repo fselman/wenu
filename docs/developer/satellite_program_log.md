@@ -1704,3 +1704,16 @@ exact-package identity for eight DE421-family kernel files and proposed
 synthetic HEO input construction. DE440 kernels, exact `spicedmoon` sign rule,
 final discriminating cases and any geometry run remain blocked. PR 193 merge
 and branch deletion require separate instructions.
+
+## 2026-09-23 — Candidate Phase B DE440 resource receipt
+
+After PR 193 merged at `a3ff88a58993aedb57c3c23e007b81d9191e577f`
+and its remote/local branch was deleted, Fernando requested the missing
+files and downloaded the NAIF DE440 lunar PCK/FK, LSK, and diagnostic text
+PCK into `~/Downloads/wenu-lime-50s7d3b/de440-kernels/`. The clean Mac
+command checked official HTTPS host, SPICE file headers, byte counts and
+SHA-256, wrote an external manifest and left the repository clean. The
+protocol records all four exact hashes. Their presence removes the earlier
+file-availability blocker only: coverage, LIME sign, final specimens and
+comparison execution remain unapproved. No kernels were vendored, no
+geometry was run and Moonlight remains `not_evaluated`.
