@@ -57,3 +57,16 @@ The precise v1.4.2 direct `-l` argument mapping, sign of the moon phase, lunar f
 For each authorized run, write an external-only manifest with exact code and input revision, execution command, fixed case IDs/Cartesian states, physical UTC and ET, kernel/version/load order, file size and SHA-256, EOP/LSK identities, frames, correction flags, raw vectors/matrices, all component values, domain/path statuses, warnings, and raw output file hashes. Compute Wenu-minus-SPICE signed and absolute residuals separately for each component, circular longitude residuals, plus regime/correction summaries. State tolerances and their conditioning and uncertainty basis **before** inspecting residuals. A missing resource, uncovered epoch, unsupported frame, mixed centre/correction policy, unresolved LIME mapping, or absent HEO/phase specimen stops the run. A later candidate Wenu evaluator must be compared only after it separately exists and is authorized.
 
 Geometry agreement alone does not admit LIME bands, uncertainties, license/redistribution, eclipse policy or Moonlight radiation. No dependency, runtime, command, coefficient, package, output, fixture, or model number is added in this milestone. The coordinate guide was reviewed; its implemented-coordinate explanations stay current because this protocol changes no runtime. The next decision is review of the resource/specimen/convention amendment, then a separate explicit authorization for a bounded controlled run. Moonlight remains `not_evaluated`.
+
+## Accepted Phase B protocol boundary
+
+Fernando scientifically and architecturally accepted exact tested candidate
+`0ad4c6e67e37d9eb96f4278913c5871735937d27` on 2026-09-23.
+On the Mac, 236 focused documentation/package tests passed in 10.67 seconds,
+and all 2,873 plugin-disabled tests passed in 249.24 seconds. The exact-head,
+ancestry, diff and clean-tree checks completed. This acceptance covers the
+reviewable documentation protocol and its missing-resource/specimen/convention
+stop gates. No lunar kernel download, SPICE comparison, LIME rerun, production
+geometry, numerical Moonlight, or 50S.7D.4+ is authorized. The frozen-resource
+amendment and controlled execution require separate review and authorization.
+PR 192 merge and branch deletion remain separate decisions.
