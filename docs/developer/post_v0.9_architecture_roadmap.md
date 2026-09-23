@@ -3557,3 +3557,9 @@ The installed LIME app's read-only receipt now identifies eight DE421-family
 kernels by SHA-256, with executable/coefficient hashes matching prior evidence.
 The exact `lime.pkg` kernel comparison, bundled dependency/sign rule, four
 DE440/time resource files and discriminating cases remain stop gates.
+
+A controlled read-only extraction of the already verified `lime.pkg` confirms
+that all eight DE421-family kernel files match the installed-app byte counts
+and SHA-256 hashes. This freezes the kernel *file identities* for the historical
+LIME distribution, while its active runtime configuration, `spicedmoon` sign
+rule, DE440 lunar resources and complete case matrix remain open.
