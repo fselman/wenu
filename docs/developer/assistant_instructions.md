@@ -2218,3 +2218,17 @@ matrix or a solved LIME sign rule. Preserve the predicted-EOP status in
 synthetic-snapshot reasoning. Continue only bounded source/resource/case
 preflight; comparison execution, LIME rerun, production changes and
 Moonlight values require separate authorization.
+
+## Accepted Phase B sampled resource preflight boundary
+
+Fernando accepted exact documentation-only Mac-tested head
+`da499b4d748d1f4ffa4a86076630dafc075d108d` on 2026-09-23.
+The 236-test documentation/package gate passed in 11.93 seconds with
+clean diff and tracking branch. Preserve the exact six resource identities,
+external manifest, three sampled coverage/EOP statuses and SPK segment
+centre links in `satellite_moonlight_geometry_run_protocol_phase_b.md`.
+Predicted EOP at the synthetic OMM epoch is an explicit status, not an
+accepted uncertainty policy. Only a separately reviewed case/convention
+preflight may proceed next; do not run a geometry comparison or LIME,
+change production code or admit Moonlight without separate authorization.
+PR 195 merge and cleanup remain separate decisions.
