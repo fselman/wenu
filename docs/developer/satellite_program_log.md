@@ -1660,3 +1660,16 @@ lunar/time kernels, HEO/phase fixtures and source-backed LIME conventions as
 execution stop gates. No acquisition, comparison run, LIME rerun, Moonlight
 runtime, model admission or later milestone is accepted. PR 192 merge and
 branch deletion remain separate decisions.
+
+## 2026-09-23 — Candidate Phase B source and specimen amendment
+
+From clean merged base `0e66f7683859b06d25d8c908852de12c8033e264`,
+reviewed the exact LIME v1.4.2 source commit
+`b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f`. Its CLI converts
+operator solar longitude from degrees to internal radians, and its separate
+satellite route calls `spicedmoon` with a DE421-family kernel list and
+`MOON_ME`. The upstream wrapper does not establish the sign equation or
+which exact dependency binary is in the Mac app. Appended a candidate
+provenance trace and analytic synthetic HEO specimen design to the accepted
+protocol without retrieving resources or executing geometry. Required NAIF
+kernel bytes and the remaining discriminating case states remain blocked.
