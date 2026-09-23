@@ -1717,3 +1717,10 @@ protocol records all four exact hashes. Their presence removes the earlier
 file-availability blocker only: coverage, LIME sign, final specimens and
 comparison execution remain unapproved. No kernels were vendored, no
 geometry was run and Moonlight remains `not_evaluated`.
+
+The independent Mac verification at `6156c0a8` matched all four downloaded
+files and both installed base resources to the documented sizes/hashes,
+confirmed the FK pairing, and recorded external manifest SHA-256
+`362787651c4438565c20b5e2f65a756f4be3d58c7b703e600a008c5a5c9cf24d`.
+All 236 documentation/package tests passed in 9.90 seconds, and diff and tree
+checks were clean. Coverage and scientific input conventions remain open.
