@@ -326,9 +326,11 @@ Both metadata windows include all **three sampled ETs**, converted from
 `2026-01-15T00:00:00`, `2026-09-15T00:00:00` and
 `2027-01-15T00:00:00` UTC with the selected LSK. Distant UTC endpoints above
 are display conversions, not independent proof that the LSK defines every
-historical or future civil-time offset. Object-level coverage alone does not
-prove the SPK segment-centre chain, kernel load-order behavior, a numerical
-state request or a lunar matrix transformation; those remain separate gates.
+historical or future civil-time offset. Object-level coverage alone did not prove the SPK segment-centre chain.
+A subsequent descriptor-only check of the exact SPK resolved that metadata
+for the three sampled dates, as recorded below; kernel load-order behavior,
+a numerical state request and lunar matrix transformation remain separate
+gates.
 
 The first probe failed *after* these kernel checks because its IERS
 `pm_xy(..., return_status=True)` return was unpacked as two values. A corrected
@@ -347,7 +349,34 @@ existing synthetic OMM epoch `2026-09-15T00:00:00Z` uses predicted EOP in
 this frozen table; any ITRS/inertial state transform must state that status
 and its uncertainty policy. A January 2026 final EOP sample is a candidate
 for a later synthetic Cartesian fixture, not an accepted phase/sign case.
-Next inspect SPK segment centres and the kernel pool/load order without
-requesting positions, then choose exact UTCs and freeze raw states and an
-authoritative LIME sign rule. No geometry comparison, LIME rerun, model
-admission or Moonlight value is authorized by this resource receipt.
+Next inspect kernel pool/load order, then choose exact UTCs and freeze raw
+states and an authoritative LIME sign rule. No geometry comparison, LIME
+rerun, model admission or Moonlight value is authorized by this receipt.
+
+### SPK descriptor-centre receipt
+
+At candidate head `4eee65bb90ebd7288566c346ceee1360bca1c4df`,
+Fernando's Mac passed 236 plugin-disabled documentation/package tests in
+10.21 seconds, with clean diff and tracking branch. In the same command
+group he then read SPK DAF segment descriptors using `dafopr`, `dafbfs`,
+`dafgs`, and `spkuds`; no `spkpos`, `spkezr`, `pxform`, LIME
+command, or position calculation was made. The relevant segments were all
+frame ID 1 (`J2000`), SPK type 2, each spanning the same reported window
+`1849-12-25T23:59:18.816` to `2150-01-21T23:58:50.816` when displayed
+as UTC through the selected LSK:
+
+| Body ID | SPK segment centre ID | Sampled 2026-01-15, 2026-09-15, 2027-01-15 ETs |
+| ---: | ---: | --- |
+| 3 (Earth-Moon barycentre) | 0 (solar-system barycentre) | All inside segment. |
+| 10 (Sun) | 0 (solar-system barycentre) | All inside segment. |
+| 301 (Moon) | 3 (Earth-Moon barycentre) | All inside segment. |
+| 399 (Earth) | 3 (Earth-Moon barycentre) | All inside segment. |
+
+This **metadata chain** supplies the required centre connections at these
+three sampled ETs: Moon and Earth share centre 3, and Sun and centre 3 share
+centre 0. It does not attest numerical SPICE state resolution, load-order
+precedence with additional kernels, a continuous final case interval, or
+agreement with a separate Wenu implementation. The binary PCK/FK remain
+DE440-family and separate from LIME's historical DE421-family kernel pool.
+Final Cartesian rows, signed phase, predicted-EOP uncertainty and any
+comparison still require separate scientific review and authorization.
