@@ -1660,3 +1660,47 @@ lunar/time kernels, HEO/phase fixtures and source-backed LIME conventions as
 execution stop gates. No acquisition, comparison run, LIME rerun, Moonlight
 runtime, model admission or later milestone is accepted. PR 192 merge and
 branch deletion remain separate decisions.
+
+## 2026-09-23 — Candidate Phase B source and specimen amendment
+
+From clean merged base `0e66f7683859b06d25d8c908852de12c8033e264`,
+reviewed the exact LIME v1.4.2 source commit
+`b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f`. Its CLI converts
+operator solar longitude from degrees to internal radians, and its separate
+satellite route calls `spicedmoon` with a DE421-family kernel list and
+`MOON_ME`. The upstream wrapper does not establish the sign equation or
+which exact dependency binary is in the Mac app. Appended a candidate
+provenance trace and analytic synthetic HEO specimen design to the accepted
+protocol without retrieving resources or executing geometry. Required NAIF
+kernel bytes and the remaining discriminating case states remain blocked.
+
+The subsequent read-only installed-app inventory found the eight DE421-family
+kernel files named by the pinned LIME source and recorded their sizes and
+SHA-256 digests in the protocol. Its executable and selected-coefficient
+hashes matched the earlier Phase-A receipt, but no full app-to-package
+identity was established; the bounded scan printed no `spicedmoon` source
+or distribution metadata. The DE440 PCK/FK and requested LSK/text PCK still
+lack accepted bytes. No binary ran and no kernel was downloaded.
+
+The later exact-package check reverified the 516,220,150-byte `lime.pkg`
+SHA-256 `e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21`
+and temporarily expanded it without executing LIME. All eight extracted
+DE421-family kernel sizes and hashes matched the installed-app inventory.
+The filename scan found no separately named `spicedmoon` path, which leaves
+its exact implementation and phase-sign rule unresolved. Temporary files were
+removed; no new download or geometry run occurred. The updated branch
+`a8991b8d` passed 236 documentation/package tests in 10.19 seconds with
+clean diff and repository status before this documentation-only receipt.
+
+## 2026-09-23 — Accepted Phase B LIME source/specimen amendment
+
+Fernando scientifically and architecturally accepted exact tested head
+`682e447fe4d872dfe93af63901516b644b9dcae5`. Mac verification passed
+236 focused documentation/package tests in 9.62 seconds with exact-head,
+ancestry, diff and clean-tree checks. The earlier full 2,873-test gate remains
+valid for this documentation-only addition. The accepted scope is the
+source-backed CLI unit conversion, historical DE421-versus-DE440 distinction,
+exact-package identity for eight DE421-family kernel files and proposed
+synthetic HEO input construction. DE440 kernels, exact `spicedmoon` sign rule,
+final discriminating cases and any geometry run remain blocked. PR 193 merge
+and branch deletion require separate instructions.

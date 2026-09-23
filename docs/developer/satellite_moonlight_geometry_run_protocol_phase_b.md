@@ -70,3 +70,158 @@ stop gates. No lunar kernel download, SPICE comparison, LIME rerun, production
 geometry, numerical Moonlight, or 50S.7D.4+ is authorized. The frozen-resource
 amendment and controlled execution require separate review and authorization.
 PR 192 merge and branch deletion remain separate decisions.
+
+## Candidate Phase B source and specimen amendment (2026-09-23)
+
+**Review status:** Source trace and deterministic specimen design only. The missing
+kernel bytes and input rows cannot yet be called frozen. This amendment does
+not supersede the accepted independent DE440 reference, authorize a download,
+or authorize a SPICE/LIME run.
+
+### Exact LIME source trace
+
+At the official LIME Toolbox v1.4.2 tag commit
+`b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f`:
+
+| Claim | Pinned source and conclusion |
+| --- | --- |
+| Direct-interface units | [User guide, selenographic input](https://github.com/LIME-ESA/lime_tbx/blob/b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f/docs/content/user_guide/simulations.md#simulation-using-selenographic-coordinates) specifies Sun-Moon distance in au, observer-Moon distance in km, observer latitude/longitude and solar longitude in decimal degrees, phase in degrees. [CLI `run_lunar_simulation`, lines 675–718](https://github.com/LIME-ESA/lime_tbx/blob/b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f/lime_tbx/presentation/cli/cli.py#L675-L718) converts *solar longitude* with `np.radians` and retains both `abs(phase)` and signed phase. [CSV reader, lines 611–655](https://github.com/LIME-ESA/lime_tbx/blob/b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f/lime_tbx/application/filedata/csv.py#L611-L655) makes the same conversion. The internal radians field and observational netCDF field are not the CLI's input unit. |
+| Orbit-derived geometry | [MoonDataFactory, lines 151–205](https://github.com/LIME-ESA/lime_tbx/blob/b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f/lime_tbx/application/simulation/moon_data_factory.py#L151-L205) sends satellite states through EOCFI and SPICE; [SPICEAdapter, lines 339–383](https://github.com/LIME-ESA/lime_tbx/blob/b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f/lime_tbx/business/spice_adapter/spice_adapter.py#L339-L383) calls the external `spicedmoon.get_moon_datas_xyzs` and enumerates `de421.bsp`, `moon_pa_de421_1900-2050.bpc`, `moon_080317.tf`, `pck00010.tpc`, `naif0011.tls` and Earth frame/orientation kernels. [Constants, line 12](https://github.com/LIME-ESA/lime_tbx/blob/b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f/lime_tbx/common/constants.py#L11-L12) names `MOON_ME`. This is a **DE421-family legacy path**, not evidence that direct `-l` inputs themselves specify a DE421 frame. Never execute the LIME satellite route for Wenu. |
+| Delegated signed phase | [SPICEAdapter, lines 339–366](https://github.com/LIME-ESA/lime_tbx/blob/b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f/lime_tbx/business/spice_adapter/spice_adapter.py#L339-L366) receives `md.mpa_deg` from `spicedmoon` and stores its absolute value separately. [LIME dependency declaration](https://github.com/LIME-ESA/lime_tbx/blob/b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f/pyproject.toml) specifies `spicedmoon~=1.1`, not the bundled exact version or the sign equation. The tagged LIME code examined here does not establish which sign is waxing. Retain `signed_phase_unresolved` until exact bundled dependency bytes/source and an independent sign discriminator are recorded. |
+
+The [spicedmoon publisher's package description](https://pypi.org/project/spicedmoon/)
+lists the DE421 kernel family and describes a signed phase returned for
+observer geometry, but does not itself pin LIME's bundled build or map the
+sign to waxing/waning. Treat this as provenance context rather than an
+independent orbit oracle.
+
+### Two comparison columns, never mixed
+
+| Column | Resource family and role | Stop condition |
+| --- | --- | --- |
+| Wenu reference | Installed `de440s.bsp` and separately verified DE440 lunar PCK/FK plus LSK/EOP; independent direct SPICE vectors and `MOON_PA_DE440`/`MOON_ME_DE440_ME421` diagnostics at one epoch with `NONE`. | Absent PCK/FK/LSK or out-of-coverage epoch; no silent substitution of DE421. |
+| Historical LIME geometry | Exact v1.4.2 `spicedmoon` dependency, its actual DE421 SPK/lunar PCK/FK/LSK/Earth kernel identities and frame selection; source-reading comparison only unless later separately authorized. | Bundled dependency version or kernel bytes unknown; source names do not prove which files the installed binary selected. |
+
+The *direct* `-l` call accepts six operator-supplied scalars; it does not
+derive them from an orbit. The comparison must first establish LIME's
+expected meaning of those scalars, then separately characterize DE421-vs-DE440
+frame/ephemeris differences if historical LIME geometry is used as evidence.
+Do not relabel a DE440 lunar vector as `MOON_ME` from the DE421 FK, and do not
+make a numerical residual disappear by altering longitude or sign.
+
+### Deterministic specimen construction
+
+Retain existing hand-authored, non-operational snapshot
+`synthetic_50s4b_v1` with `records.json` SHA-256
+`2e5288a6aad9fbe29cfe6d9a60e0045be28501859d8c739135fd302460ece5fe`
+and row IDs `300001`, `300002`, `300003` at their OMM epoch
+`2026-09-15T00:00:00Z`. The separately verified propagated TEME states,
+time/EOP conversion, frame and Earth-centre/units still have to be written
+as explicit immutable rows; these OMM records are not J2000 Cartesian states.
+
+Define *proposed* HEO-P/HEO-A synthetic Earth-centred inertial two-body
+fixtures with gravitational parameter `mu = 398600.4418 km^3/s^2`, perigee
+radius `rp = 7000 km`, apogee radius `ra = 42000 km`, semimajor axis
+`a = (rp+ra)/2 = 24500 km`, and `t0 = 2026-09-15T00:00:00Z`.
+HEO-P at `t0` has position `(rp,0,0) km` and velocity
+`(0,+sqrt(mu*(2/rp-1/a)),0) km/s`. HEO-A at
+`t0 + pi*sqrt(a^3/mu) seconds` has position `(-ra,0,0) km` and velocity
+`(0,-sqrt(mu*(2/ra-1/a)),0) km/s`. The specified inertial axes must be
+independently tied to SPICE `J2000` before reference comparison. These are
+analytic idealizations, not propagated real satellite observations or a
+general-perturbations OMM. Freeze an explicit timestamp, floating-point
+serialization, coverage, and independent vis-viva/specific-energy check in
+the future case file before using them.
+
+For signed-phase, longitude, latitude, libration, eclipse and occultation
+discriminants, freeze preselected UTCs and raw inertial state vectors in a
+separate digest-bound case file *after* checking the exact kernel and EOP
+coverage. Record a case-by-case requirement table before computing any
+residual or tuning an input. Until those files exist, the rows P1–P4, F1–F3
+and X1–X3 of the accepted protocol remain missing. No Phase-A opposite-sign
+central radiance value resolves this provenance gap.
+
+### Resource preflight to complete this amendment
+
+The 2026-09-23 Mac inventory did not find the DE440 lunar PCK/FK,
+`naif0012.tls`, or `pck00011.tpc` in its bounded paths. Their official
+candidate publisher locations are respectively
+[NAIF PCK](https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/moon_pa_de440_200625.bpc),
+[NAIF FK](https://naif.jpl.nasa.gov/pub/naif/pds/wgc/kernels/fk/moon_de440_220930.tf),
+[NAIF LSK](https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls),
+and [NAIF generic PCK](https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/pck00011.tpc).
+Read-only checks for already bundled or independently installed copies may
+fill the inventory; URLs alone cannot fill byte count, SHA-256, coverage,
+license or matching-frame proof. Before any acquisition, submit the exact
+resources and controlled retrieval procedure for separate authorization;
+before execution, freeze every required byte and case input for scientific
+review. No geometry, LIME execution, kernel acquisition, dependency change,
+production value or Moonlight admission occurs under this addendum.
+
+### Read-only installed-app kernel receipt (2026-09-23)
+
+Fernando inventoried `/Applications/LimeTBX.app/Contents` without opening the
+app or invoking its executable. The installed executable was 15,074,016 bytes,
+SHA-256 `cfaa059102688faa551a4a459d19f90f88e7cc9e68728e21002decb9d25908e3`;
+the selected coefficient was 154,366 bytes, SHA-256
+`8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691`.
+Both match previously recorded Phase-A identities, **but this does not prove
+the entire installed app is byte-identical to the verified `lime.pkg`**.
+
+| Installed file under `Contents/Resources/kernels/` | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `de421.bsp` | 16,790,528 | `08b20db2ae22488650641c5a9033e5bfda4b1c4b440cfeaf20f621cfa18ecdb3` |
+| `earth_070425_370426_predict.bpc` | 5,751,808 | `0e5b9108a86c1d23894578cfd31c952e16c3b6712960208d1d3aa01d090f5062` |
+| `earth_assoc_itrf93.tf` | 7,522 | `aab7bbc19b8a69bad11988ee1b4812a3963812a03a029c2776863e680719b336` |
+| `earth_latest_high_prec.bpc` | 4,262,912 | `2b5bde55b5b34e172487cf1b984e92aa554a7c08fe326dd99cc759f937166b8f` |
+| `moon_080317.tf` | 21,437 | `78732477b96f9863e7b0d65bcee3c22b8707ca5ed0db56d1173319cb2e8c7993` |
+| `moon_pa_de421_1900-2050.bpc` | 1,770,496 | `656f90616403d75a75f0cd6c8830fc5b44f8cb4facb5ccb8915e752b397520cf` |
+| `naif0011.tls` | 5,086 | `cdbb9adc1addca89b8d14347c2ad13e1e4ade1798aa731ad015c1ffa9bc40463` |
+| `pck00010.tpc` | 126,143 | `59468328349aa730d18bf1f8d7e86efe6e40b75dfb921908f99321b3a7a701d2` |
+
+This bounded inventory found none of the four DE440/time candidate files and
+printed no `spicedmoon` Python-source or distribution metadata match. The
+absence of that metadata in the selected paths does not show that the
+packaged library is missing; it may be frozen or bytecode only. Do not infer
+its version, phase-sign algorithm, or actual runtime kernel-selection path
+from the filenames. A later read-only extraction of the already verified
+`lime.pkg`, with a fresh package digest gate, can compare these kernel bytes
+against the exact distribution without installing or executing LIME. A
+publisher-backed sign rule and separate DE440 kernel receipt remain required
+before any geometry execution.
+
+### Exact-package corroboration of the DE421 kernel set
+
+Fernando's 2026-09-23 Mac check reverified the original 516,220,150-byte
+`lime.pkg` SHA-256
+`e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21`,
+expanded it to an automatically removed temporary directory without installing
+or executing LIME, and separately hashed each of the eight kernels listed
+above inside that package. Every extracted size and SHA-256 equalled the
+read-only installed-app measurement (`MATCHES_INSTALLED_APP=True` eight times).
+The package therefore establishes **the exact listed DE421-family kernel
+bytes**, not just filename or installed-app evidence. It does not prove that
+the entire installed app matches the package or that `spicedmoon` loaded any
+particular subset at runtime. The extracted app path scan reported
+`SPICEDMOON_PATH_COUNT 0`; packed modules can evade a filename scan, so this
+is not evidence that the dependency is absent. The package and temporary
+expansion remain outside Wenu; the temp directory was removed and the repo
+tree remained clean. Signed-phase, exact dependency implementation, DE440
+kernels and discriminating cases remain open gates.
+
+### Accepted source/specimen amendment boundary
+
+Fernando scientifically and architecturally accepted exact tested candidate
+`682e447fe4d872dfe93af63901516b644b9dcae5` on 2026-09-23.
+On the Mac, 236 focused documentation/package tests passed in 9.62 seconds;
+exact-head, ancestry, diff and clean-tree checks completed. The previously
+accepted 2,873-test plugin-disabled Mac suite remains applicable because
+this addendum changed developer documentation only, without executable code,
+fixtures, configuration or test collection. Acceptance covers the tagged
+LIME input/source trace, the distinction between DE421 historical geometry
+and the independent DE440 oracle, the exact-package identity of eight
+DE421-family kernel files, and the proposed synthetic specimen construction.
+It does **not** resolve the signed-phase rule, prove the bundled `spicedmoon`
+implementation, freeze DE440 lunar/time kernels or final case-state rows,
+authorize resource retrieval or geometry execution, or admit numerical
+Moonlight. PR 193 merge and branch deletion remain separate decisions.
