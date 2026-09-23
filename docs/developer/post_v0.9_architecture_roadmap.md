@@ -3539,3 +3539,16 @@ it does not admit an executable geometry run card. A later bounded amendment
 must freeze absent kernels, case states and authoritative LIME conventions
 before separately authorized execution. Moonlight remains `not_evaluated`.
 PR 192 merge and branch cleanup require separate instructions.
+
+## Candidate Phase B — LIME source and specimen amendment
+
+The accepted frozen-kernel protocol now has a separately reviewable source
+trace: LIME v1.4.2's direct `-l` route takes solar longitude in degrees and
+converts to radians internally, while its orbit-derived path delegates to
+`spicedmoon` and declares a DE421-family lunar frame/kernel list. These paths
+cannot be silently identified with Wenu's DE440 reference. The synthetic
+snapshot digest and analytic HEO perigee/apogee construction are proposed;
+actual Cartesian row serialization, signed-phase/longitude discriminants,
+missing NAIF kernel bytes and exact bundled `spicedmoon` identity remain
+unfrozen. This addendum is documentation only. Resource acquisition and any
+comparison run still need their own explicit decisions.
