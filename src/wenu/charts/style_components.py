@@ -50,6 +50,7 @@ class CanvasStyle:
     foreground_color: str = "white"
     label_fontsize: float = 10.0
     footer_color: str | None = None
+    title_color: str | None = None
 
 
 @dataclass(frozen=True)
@@ -316,6 +317,7 @@ class ChartStyle:
         return PublicationStyle(
             sky_color=canvas.sky_color,
             foreground_color=canvas.foreground_color,
+            title_color=canvas.title_color,
             star_color=stars.color,
             draw_bright_star_symbols=stars.draw_bright_symbols,
             bright_star_magnitude_limit=stars.bright_magnitude_limit,

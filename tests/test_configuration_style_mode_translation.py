@@ -34,9 +34,50 @@ def test_packaged_styles_translate_to_existing_immutable_contracts():
     assert defaults.polar_planisphere_palette == (
         PolarPlanisphereStylePalette()
     )
-
     with pytest.raises(FrozenInstanceError):
         defaults.atlas.canvas.sky_color = "red"
+
+
+@pytest.mark.parametrize("style_name", ["atlas", "cartoon"])
+@pytest.mark.parametrize("mode", ["print", "presentation"])
+def test_title_color_overlay_changes_only_the_title(tmp_path, style_name, mode):
+    import matplotlib.pyplot as plt
+    from matplotlib.colors import to_rgba
+    from wenu.configuration import load_configuration_defaults
+
+    baseline = load_configuration_defaults()
+    path = tmp_path / "title.toml"
+    path.write_text(
+        "schema_version = 2\n"
+        f"[styles.{style_name}.canvas]\n"
+        'title_color = "#0262AD"\n',
+        encoding="utf-8",
+    )
+    configured = load_configuration_defaults(path)
+    chart = RegionalChart(
+        center_alt_deg=45.0, center_az_deg=180.0,
+        field_width_deg=30.0, field_height_deg=20.0,
+    )
+    before = compose_chart(
+        chart, style=style_name, mode=mode, configuration=baseline,
+    ).style
+    after = compose_chart(
+        chart, style=style_name, mode=mode, configuration=configured,
+    ).style
+    assert replace(after, canvas=before.canvas) == before
+    assert replace(after.canvas, title_color=None) == before.canvas
+    for style, expected in (
+        (before, before.canvas.foreground_color),
+        (after, "#0262AD"),
+        (before, before.canvas.foreground_color),
+    ):
+        figure, ax = plt.subplots()
+        style.configure_axes(ax, title="La Ligua")
+        assert to_rgba(ax.title.get_color()) == to_rgba(expected)
+        assert ax.get_facecolor() == to_rgba(before.canvas.sky_color)
+        plt.close(figure)
+    assert load_configuration_defaults() == baseline
+
 
 
 def test_packaged_cartoon_mask_is_strong_but_retains_outside_context():
