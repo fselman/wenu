@@ -116,6 +116,12 @@ The optional dark night edition remains deferred until it receives physical
 review under red observing light. It must reuse the same geometry and product
 pipeline when undertaken.
 
+Constellation abbreviations have an optional independent font-size field in
+the existing grid-style and flat publication-style contracts. Configuration,
+output-mode scaling, and layer options carry it through the canonical renderer;
+the default canvas fallback preserves established output. This bounded
+appearance correction changes no geometry or coordinate ownership.
+
 ## Coordinate and temporal boundaries
 
 Every astronomical value must retain explicit frame, origin, epoch, observation

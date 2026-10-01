@@ -245,6 +245,8 @@ class GridStyle:
     horizon_alpha: float = 0.8
     horizon_zorder: float = 3.5
     equatorial_reference_linewidth: float | None = None
+    # None preserves the legacy canvas-size fallback.
+    constellation_label_fontsize: float | None = None
 
 
 @dataclass(frozen=True)
@@ -500,6 +502,7 @@ class ChartStyle:
             constellation_label_color=(
                 grids.constellation_label_color
             ),
+            constellation_label_fontsize=grids.constellation_label_fontsize,
             constellation_label_alpha=(
                 grids.constellation_label_alpha
             ),

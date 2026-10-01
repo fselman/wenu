@@ -1124,6 +1124,14 @@ indices, resource identity, and scalar evidence. No installed layer or public
 chart request consumes it in 49I.2D.1. Fernando accepted the scientific
 contract and installed-DE440 validation after all 1,929 tests passed.
 
+`GridStyle.constellation_label_fontsize` and the corresponding
+`PublicationStyle` field independently control constellation-label typography.
+`None` retains the legacy `CanvasStyle.label_fontsize` fallback. Schema-v2
+translation retains that fallback for equal canvas/constellation values and
+carries unequal `styles.<style>.constellation_labels.font_size` values through
+the ordinary atlas/cartoon mode scale and layer-options mapping. Coordinate
+labels, other objects, furniture, and geometry retain their own contracts.
+
 ## 8.1 Packaged configuration validation
 
 `wenu.configuration.load_packaged_defaults()` reads and strictly validates a

@@ -229,6 +229,11 @@ def cartoon_chart_style(
         constellation_linewidth=(
             style.grids.constellation_linewidth * line_scale
         ),
+        constellation_label_fontsize=(
+            None
+            if style.grids.constellation_label_fontsize is None
+            else style.grids.constellation_label_fontsize * font_scale
+        ),
         constellation_label_color=palette.constellation_labels,
         constellation_label_offset=style.constellation_label_offset,
         constellation_label_offsets=resolved_label_offsets,
