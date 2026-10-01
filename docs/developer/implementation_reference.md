@@ -396,6 +396,12 @@ coordinate, constellation set, or packaged group; and `ChartFrameRequest`
 holds optional framing overrides. Existing `SkyContentSelection`,
 `DetailOverrides`, `ChartFurnitureOptions`, and `ChartProductOptions` remain
 the corresponding content, detail, furniture, and output contracts.
+For planispheres, `ChartFrameRequest.mirror_ew` and the matching
+`get_chart_view(..., mirror_ew=True)` argument exchange east and west relative
+to the default chart. The CLI exposes this as `planisphere --flip-ew`.
+Resolution retains the flag on `ResolvedChartFrame`; preparation selects
+`FullSkyChart.flip_ew=False` for a mirrored view and `True` otherwise.
+The default is output-neutral, and other request families reject mirroring.
 For regional and binocular views, a named `orientation` is explicit and
 mutually exclusive with a literal `position_angle_deg`; zero therefore remains
 an ordinary angle. Regional framing may also carry a paired fixed horizontal
