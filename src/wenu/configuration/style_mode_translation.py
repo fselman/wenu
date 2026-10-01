@@ -295,6 +295,10 @@ def _style(table: Mapping[str, Any], style_type, *, style_name: str):
             foreground_color=canvas["foreground"],
             label_fontsize=canvas["label_font_size"],
             footer_color=_optional(canvas["footer_color"]),
+            title_color=(
+                None if canvas["title_color"] in {"none", "inherit_canvas"}
+                else canvas["title_color"]
+            ),
         ),
         stars=_stellar(table["stars"]),
         isophotes=_isophotes(table),

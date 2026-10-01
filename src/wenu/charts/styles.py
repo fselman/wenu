@@ -320,6 +320,7 @@ class PublicationStyle:
     horizon_zorder: float = 3.5
     equatorial_reference_linewidth: float | None = None
     constellation_label_fontsize: float | None = None
+    title_color: str | None = None
 
     def configure_axes(self, ax, *, title=None):
         """Apply chart-level axes styling."""
@@ -330,7 +331,10 @@ class PublicationStyle:
             title_artist = getattr(ax, "title", None)
             set_color = getattr(title_artist, "set_color", None)
             if callable(set_color):
-                set_color(self.foreground_color)
+                set_color(
+                    self.foreground_color if self.title_color is None
+                    else self.title_color
+                )
         ax.set_xticks([])
         ax.set_yticks([])
         ax.xaxis.set_visible(False)

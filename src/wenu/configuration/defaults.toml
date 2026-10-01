@@ -270,6 +270,7 @@ background = "white"
 foreground = "#505050"
 label_font_size = 8.5
 footer_color = "none"
+title_color = "none"
 
 [styles.atlas.stars]
 color = "#151515"
@@ -493,6 +494,7 @@ background = "#fffdf7"
 foreground = "#172238"
 label_font_size = 13.0
 footer_color = "none"
+title_color = "none"
 
 [styles.cartoon.stars]
 color = "#172238"

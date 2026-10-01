@@ -118,6 +118,22 @@ schema_version = 2
 font_size = 4.25
 ```
 
+The main chart title has an independent color in the style's canvas table:
+
+```toml
+schema_version = 2
+[styles.atlas.canvas]
+title_color = "#0262AD"
+```
+
+This makes the title match the default atlas presentation sky blue without
+changing other foreground elements. Use `[styles.cartoon.canvas]` for cartoon.
+The override is retained in both print and presentation modes. The default
+`title_color = "none"` (also `"inherit_canvas"`) inherits the effective
+foreground color, preserving existing titles. This is the main chart title,
+separate from legend titles. Combine this table with other tables in your
+existing TOML overlay and pass it with `--config`.
+
 Load the profile with `--config PATH`. This leaves the canvas, coordinate-grid,
 object, and legend font sizes unchanged. Both print and presentation modes
 apply their usual font scale to the constellation size. Use

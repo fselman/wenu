@@ -402,6 +402,12 @@ to the default chart. The CLI exposes this as `planisphere --flip-ew`.
 Resolution retains the flag on `ResolvedChartFrame`; preparation selects
 `FullSkyChart.flip_ew=False` for a mirrored view and `True` otherwise.
 The default is output-neutral, and other request families reject mirroring.
+The atlas and cartoon canvas tables accept `title_color` independently of
+`foreground`. Translation carries it through `CanvasStyle` and
+`PublicationStyle`, and mode adaptation retains explicit values. A missing
+override, `"none"`, or `"inherit_canvas"` uses the effective foreground,
+preserving legacy title colors. Cartoon's axes adapter respects the same
+title override while retaining its ordinary frame styling.
 For regional and binocular views, a named `orientation` is explicit and
 mutually exclusive with a literal `position_angle_deg`; zero therefore remains
 an ordinary angle. Regional framing may also carry a paired fixed horizontal
