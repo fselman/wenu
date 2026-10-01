@@ -49,6 +49,14 @@ python examples/planisphere.py \
 
 Regions wholly below the observer's horizon are omitted. A region crossing
 the horizon remains an opening clipped at the visible-sky boundary. Packaged
+The installed `wenu_chart planisphere` command accepts `--flip-ew` to exchange
+east and west relative to its default sky view. This mirrors the projected
+sky, including constellation figures, Milky Way and Cloud contours, and
+coordinate references, while keeping text readable. Add it to the same
+command and choose another output filename; all other options are retained.
+Omitting the flag preserves the existing orientation. This option belongs
+to planisphere geometry and does not alter a style or configuration profile.
+
 The installed planisphere command has no center operation and therefore no
 `--group` shortcut. Name every required mask opening explicitly with
 `--constellation-mask IAU,...`.

@@ -257,8 +257,11 @@ class ChartFrameRequest:
     center_azimuth_deg: float | None = None
     pole: str = "south"
     limiting_declination_deg: float | None = None
+    mirror_ew: bool = False
 
     def __post_init__(self):
+        if not isinstance(self.mirror_ew, bool):
+            raise TypeError("mirror_ew must be a bool.")
         width_pair = (
             self.field_width_deg is not None,
             self.field_height_deg is not None,
@@ -666,6 +669,8 @@ class ChartRequest:
                 "Named orientation is supported only by regional and "
                 "binocular charts."
             )
+        if self.frame.mirror_ew and family != "planisphere":
+            raise ValueError("mirror_ew is supported only by planisphere charts.")
         if family == "circumpolar" and self.frame.limiting_declination_deg is None:
             raise ValueError(
                 "A circumpolar request requires limiting_declination_deg."

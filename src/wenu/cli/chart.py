@@ -118,6 +118,10 @@ def parser():
 
     planisphere = commands.add_parser("planisphere", allow_abbrev=False)
     _add_common_arguments(planisphere, family="planisphere")
+    planisphere.add_argument(
+        "--flip-ew", dest="mirror_ew", action="store_true",
+        help="exchange east and west relative to the default sky view; keep text readable",
+    )
 
     regional = commands.add_parser("regional", allow_abbrev=False)
     _add_common_arguments(regional, family="regional")
@@ -658,6 +662,8 @@ def _view_arguments(arguments):
         "constellation_mask": mask,
         "constellation_system": arguments.constellation_system,
     }
+    if family == "planisphere":
+        return {**common, "mirror_ew": arguments.mirror_ew}
     if family == "regional":
         return {
             **common,
