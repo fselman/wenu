@@ -147,3 +147,44 @@ def test_unmigrated_independent_grid_width_reports_complete_path():
     with pytest.raises(ConfigurationError) as error:
         translate_style_mode_defaults(values)
     assert "styles.atlas.coordinate_grids.line_width" in str(error.value)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize("style_name", ["atlas", "cartoon"])
+@pytest.mark.parametrize("mode", ["print", "presentation"])
+def test_independent_constellation_size_preserves_other_style_fields(
+    tmp_path, style_name, mode,
+):
+    from wenu.configuration import load_configuration_defaults
+
+    baseline = load_configuration_defaults()
+    original = getattr(baseline.style_mode, style_name)
+    half_size = original.canvas.label_fontsize / 2.0
+    path = tmp_path / "labels.toml"
+    path.write_text(
+        "schema_version = 2\n"
+        f"[styles.{style_name}.constellation_labels]\n"
+        f"font_size = {half_size}\n",
+        encoding="utf-8",
+    )
+    configured = load_configuration_defaults(path)
+    chart = RegionalChart(
+        center_alt_deg=45.0, center_az_deg=180.0,
+        field_width_deg=30.0, field_height_deg=20.0,
+    )
+    before = compose_chart(
+        chart, style=style_name, mode=mode, configuration=baseline,
+    ).style
+    after = compose_chart(
+        chart, style=style_name, mode=mode, configuration=configured,
+    ).style
+    assert after.grids.constellation_label_fontsize == pytest.approx(
+        before.canvas.label_fontsize / 2.0
+    )
+    assert replace(
+        after.grids,
+        constellation_label_fontsize=before.grids.constellation_label_fontsize,
+    ) == before.grids
+    for name in ("canvas", "stars", "isophotes", "deep_sky", "legend"):
+        assert getattr(after, name) == getattr(before, name)
+    assert load_configuration_defaults() == baseline
