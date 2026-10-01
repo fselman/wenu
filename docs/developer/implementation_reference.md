@@ -363,6 +363,13 @@ Milky Way and Magellanic Cloud isophotes transform every loaded ring in one
 maximal vectorized operation and apply level choices afterward. Constellation
 boundaries do the same after native B1875 sampling; their cache key includes
 the sampling step so geometry quality cannot be reused accidentally.
+Milky Way rings also carry intrinsic filled-side and solid-angle metadata
+(`spherical_interior_left`, `spherical_interior_area_sr`). Projection-cap
+preparation uses these to anchor each ring's winding and restore any missing
+whole-cap winding with signed cap boundaries. It preserves compound holes
+without joining unrelated visible fragments or complementing an entire
+compound because one source ring winds around a pole. The renderer continues
+to consume ordinary compound projected polygons.
 Sampled extended-object outlines are cached once per observer, loaded source,
 source revision, sample count, and minimum displayed angular size. Identifier
 and supported magnitude selections then index that immutable maximal
