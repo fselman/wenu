@@ -1,7 +1,8 @@
 # Stellar Bayer/Flamsteed designation audit
 
-**Status:** Documentation-only candidate; implementation and catalogue admission
-remain pending separate acceptance.
+**Status:** Design accepted by Fernando on 2026-10-05, including the amended
+selection contract; documentation only. Implementation, catalogue admission
+and separately requested merge remain pending.
 **Date:** 2026-10-05
 **Exact as-is base:** `b929325aeb51fad75193d4216f0e5f8e383fa7ae` on
 clean synchronized `main`, as reported by Fernando.
@@ -11,17 +12,17 @@ redistribution, or Gaia integration.
 
 ## 1. Outcome and preserved boundaries
 
-Add optional Bayer/Flamsteed labels to the stars already realized for an
-ordinary `wenu_chart` request. Keep HIP as stable stellar identity and keep
+Add optional Bayer/Flamsteed labels and explicit name/Bayer stellar selection
+to an ordinary `wenu_chart` request. Keep HIP as stable stellar identity and keep
 the existing astrometry, celestial-state realization, projection, preparation,
 renderer and exporter. Designations are catalogue metadata; their spelling is
 not an astronomical coordinate or a new celestial object.
 
 The first implementation should support a declared, immutable HIP-linked
 resource and opt-in labels with deterministic text selection. Default charts
-retain labels off. Proper names, alias-based star selection, crowding
-optimization and Gaia cross-matching are later slices, not prerequisites for
-Bayer/Flamsteed display.
+retain labels off and unchanged inclusion. Explicit proper-name and Bayer
+selection/display are now included, with magnitude-limit bypass. Crowding
+optimization, variable/multiple curation and Gaia cross-matching remain later.
 
 ## 2. Verified as-is ownership
 
@@ -107,8 +108,9 @@ source Bayer token (Greek abbreviation or Latin letter), component/superscript,
 Flamsteed number, designation constellation, preferred/alternative status,
 source flags and record/reference provenance. Missing fields are explicit
 missing values, never fabricated empty identifiers or numeric zero. Proper
-names remain a separate future field family; do not choose the first historical
-name as a modern canonical proper name.
+names and reviewed aliases are a separately admitted field family; do not
+choose the first historical name as a modern canonical proper name. Validate
+name-to-HIP ambiguity and document preferred spellings.
 
 Preserve raw tokens alongside normalized/display forms. Use an explicit Greek
 abbreviation map; preserve Latin letters and case, component indices and the
@@ -134,41 +136,97 @@ arrays and keep a single immutable source revision.
 
 ## 5. Detail, style and ordinary CLI contract (proposed)
 
-All setting names below are proposals, not current CLI/API capabilities.
+The amended contract below was accepted on 2026-10-05; these are not yet
+implemented CLI/API capabilities.
 
-- Detail owns `star_label_mode`: `none` (default), `bayer`, `flamsteed`,
-  `bayer-or-flamsteed` (Bayer preferred, Flamsteed fallback), or `both`
-  (Bayer then Flamsteed in deterministic order). Include the catalogue's
-  constellation abbreviation in designation text. Missing requested fields
-  produce no label; they do not fall back to HIP or a proper name.
-- Detail also owns a label magnitude cap and optional HIP eligibility set.
-  Eligibility is the intersection of already drawn stars, admitted usable
-  designations and those explicit bounds. Label settings must not add/remove
-  stars or alter their magnitude selection. Existing content-label overrides
-  remain keyed by HIP and can replace text or suppress it with `None`.
-- `StellarStyle` owns colour, font size, alpha and offset for label appearance;
-  output mode continues to own physical scaling. Keep label font changes
-  independent of constellation-label fonts, title/furniture and star sizes.
-- Compose a value-semantic HIP-to-display-text formatter in the existing
-  detail application using the realized star metadata. The existing renderer
-  gets text or `None`; it must not look up HIP in a catalogue or understand
-  Bayer tokens. Suppress every ineligible/unmatched HIP explicitly, because
-  generic renderer precedence otherwise prints an ID. With labels left unset
-  on the stellar geometry, the renderer supplies HIP to this formatter; a
-  plain label-text lookup is insufficient if upstream labels are populated.
-- Reuse the existing star-render callable composition so normalized sizes,
-  variable/multiple overlays, detail overrides and explicit layer options
-  remain intact. Do not overwrite a callable with an uncomposed dictionary.
-  Respect current base/style → detail → explicit call-site precedence.
-- Proposed ordinary CLI opt-in: `--star-labels MODE`, with corresponding
-  typed detail/configuration settings. Resource-path admission is separate
-  from label mode. Use the existing strict schema/translation/default rules;
-  do not expose raw Python callables in TOML. No global automatic download.
+### Explicit selection and display
 
-Initial selection is deterministic and explicit. No new collision solver,
-nearest-neighbour matcher or promise that every dense chart is readable is
-included. Use the existing label offset/text path, record overlap limitations,
-and accept representative dense and sparse products visually.
+- Repeatable `--star-label-name 'Sco:Antares,Shaula'` resolves, includes and
+  labels the requested stars with their admitted proper names.
+- Repeatable `--star-label-bayer 'Sco:alpha,beta,gamma,delta,zeta,iota1'`
+  resolves, includes and labels stars with their Bayer designations.
+- Both selectors bypass the ordinary star magnitude limit, using the existing
+  extra-HIP selection machinery. Resolve identifiers before catalogue selection
+  and realization. Other stars remain governed by the ordinary magnitude limit.
+  Field, altitude, projection-domain and viewport clipping still apply.
+- Deduplicate by HIP. Name selection takes precedence over Bayer selection,
+  independent of argument order. Existing curated HIP text/suppression overrides
+  retain their higher priority. Only explicitly selected stars receive labels
+  from these options; neither enables global automatic labels.
+- Accept normalized Greek spellings/glyphs and explicit suffixes; preserve
+  Latin-letter case. Unknown, unmatched or ambiguous identifiers fail clearly,
+  rather than selecting an arbitrary record. No fuzzy or positional matching.
+  A resolved target missing from Hipparcos cannot be added by inventing a position.
+- `--show-full-bayer-designation` displays `α Sco` instead of `α`, and
+  `ι¹ Sco` instead of `ι¹`. Default false. It adds the designation
+  constellation abbreviation; proper names and independent constellation labels
+  are unaffected.
+
+Equivalent proposed TOML:
+
+```toml
+[detail.star_labels]
+names = ["Sco:Antares,Shaula"]
+bayer = ["Sco:alpha,beta,gamma,delta,zeta,iota1"]
+show_full_bayer_designation = false
+```
+
+CLI repeated values accumulate per selector. A CLI selector replaces its
+corresponding TOML list; an absent selector preserves that list. The boolean
+follows existing CLI/config override rules. Initial global Bayer/Flamsteed
+modes remain separate opt-in proposals; composition with explicit lists requires
+an explicit decision before implementation, not accidental automatic labels.
+
+### Ownership and rendering
+
+Detail owns resolved extra HIP IDs, label eligibility and requested text.
+Explicit targets must not be removed by an automatic label magnitude cap.
+Reuse existing inclusion/selection and cached astrometry; do not mutate a
+shared sphere catalogue for another chart's selection.
+
+`StellarStyle` owns colour, font size, alpha and offset; output mode owns
+physical scaling. Keep constellation/title fonts and star sizing independent.
+Compose a value-semantic HIP-to-text formatter in existing detail application.
+The renderer receives text or `None`, with no catalogue lookup.
+Never fall back to HIP numbers for unmatched labels. Leaving geometry labels
+unset lets the generic renderer supply HIP to the formatter.
+
+Preserve the existing star-render callable, normalized sizes, variable/multiple
+overlays and base/style → detail → explicit call-site precedence. Reuse strict
+schema/default/translator machinery. Resource admission is separate; no implicit
+provider queries or automatic download. No new collision solver is included.
+
+### Future variable and multiple curation
+
+Wenu already attaches Hipparcos `is_variable`, `is_multiple`, variability
+flags and component fields, with optional classification symbol overlays.
+Catalogue classification does not determine editorial notability.
+
+Keep inclusion, label text and curated symbol eligibility independent.
+A star can receive both classification marks and one label; name/Bayer selection
+does not automatically activate either mark. Future curated selectors are not
+implemented in this milestone.
+
+Use explicit per-chart reviewed lists with source evidence and a reason for
+inclusion. Candidate filters may consider visual amplitude, passband, time scale
+and pedagogical/historical interest for variables; separation, magnitude contrast,
+instrument context and scientific interest for doubles. No universal threshold
+or assumption that all stars qualify is adopted.
+
+Primary sources checked on 2026-10-05:
+[AAVSO VSX FAQ](https://vsx.aavso.org/index.php?view=about.faq) distinguishes
+photometric ranges, amplitudes and passbands;
+[USNO WDS description](https://crf.usno.navy.mil/wdstext) records components,
+separations, magnitudes and measurement epochs, and distinguishes physical,
+optical and unknown systems. These are future candidate sources, not acquired
+resources or new automated access routes.
+
+Preserve system and component-pair identity (AB, AC, etc.) separately from the
+HIP of a drawn point; do not assume a one-to-one HIP-to-pair mapping.
+Bayer superscripts such as `ι¹` are designation suffixes,
+not physical component A/B identities. Missing catalogue classification is
+not proof that a star is constant or single. Resolved component geometry,
+orbital propagation and time-varying brightness remain separate future science.
 
 ## 6. Schematic flow
 
@@ -177,7 +235,8 @@ flowchart TD
   H["Hipparcos astrometry and HIP"] --> S["Stars: attach by HIP"]
   K["Admitted designation snapshot"] --> S
   S --> G["Existing geometry and preparation"]
-  D["Detail eligibility and label mode"] --> F["Render-local label formatter"]
+  D["Detail selection and labels"] --> S
+  D --> F["Render-local label formatter"]
   A["Stellar label appearance"] --> F
   G --> F
   F --> R["Existing renderer and export"]
@@ -189,14 +248,17 @@ remain governed by the existing celestial realization.
 
 ## 7. Validation and delivery sequence
 
-1. Accept this audit and the record/preference, label and ownership contracts.
+1. Record Fernando's 2026-10-05 acceptance of the audit and amended
+   selection/display contract. Original head `e47e23e3` passed 240 Mac
+   documentation/package-boundary tests in 10.78 s; this amendment needs a fresh
+   focused documentation gate.
 2. Freeze usable source terms and exact data receipts for the selected resource
    distribution strategy. A local externally supplied snapshot is distinct
    from a bundled database. Close the conflict/coverage ledger before claiming
    real-catalogue completeness.
 3. Implement the bounded ingestion/attachment and ordinary label composition,
    preserving labels-off behavior and typed strict settings. No Gaia runtime
-   or proper-name display is included. Source-specific admission gates must
+   is included; explicit admitted proper-name display is included. Source gates must
    not be bypassed by bundling unverified bytes.
 4. Verify the new seams, complete Mac regression, scientific mapping review
    and PNG/PDF/SVG visual/print acceptance before closure.
@@ -219,9 +281,12 @@ Required evidence includes:
 - the same designation metadata on native and apparent routes after magnitude,
   altitude, projection-domain and clipping selection;
 - labels-off output equivalence and unchanged IDs, coordinates, magnitudes,
-  classifications, star inclusion and constellation vertices in every mode;
+  classifications and constellation vertices; inclusion stays unchanged without
+  selectors and is extended only by resolved explicit HIP targets;
 - every label mode, missing-field suppression, HIP-keyed curated overrides,
-  magnitude/ID eligibility and wrong setting rejection;
+  below-limit explicit inclusion, name precedence in either argument order,
+  repeated selectors, CLI/TOML list replacement, short/full Bayer text,
+  ambiguous token errors and ordinary clipping;
 - successive differently labelled charts sharing one sphere, with unchanged
   source metadata, style/detail settings and observer geometry cache;
 - independent source-backed verification of accepted HIP joins, including
@@ -245,5 +310,6 @@ and ambiguity/coverage status. This is not a universal one-to-one identity
 promise. Validate catalogue compatibility, components and missing matches;
 keep Gaia ID plus release separate from HIP and designation spelling. No Gaia
 query, cross-match, astrometric migration or new Gaia dependency belongs to
-the first Bayer/Flamsteed milestone. Proper-name and historical-alias products
-also require their own preference/source review.
+the first Bayer/Flamsteed milestone. Explicit proper-name selection/display is
+now included with reviewed preferences. Wider historical-alias products and
+variable/multiple curation remain later work.

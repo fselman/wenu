@@ -30,10 +30,12 @@ candidate-status statements in the historical milestone sections.
 The [Bayer/Flamsteed audit](stellar_designations_audit.md) records the
 source-verified as-is state at `b929325a`, HIP-linked resource/preference
 contract, metadata attachment, detail/style/CLI placement, label suppression,
-rights gates and acceptance sequence. It is a documentation-only candidate;
-no catalogue bytes, new runtime, proper-name display or Gaia integration are
-admitted. Bayer/Flamsteed remains the first bounded implementation direction,
-after separate audit acceptance and the applicable resource gates.
+rights gates and acceptance sequence. Fernando accepted the design and amended
+name/Bayer selectors on 2026-10-05: selected stars bypass the magnitude limit;
+proper names win; full Bayer text is optional; CLI and TOML agree. Future
+variable/multiple curation remains separate from labels and catalogue flags.
+Implementation, catalogue admission and merge remain pending. No Gaia runtime
+or unverified catalogue bytes are admitted.
 
 ### Minor-body pause and resumption
 
