@@ -8,7 +8,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import pytest
-from astropy.coordinates import AltAz, EarthLocation
+from astropy.coordinates import AltAz, EarthLocation, SkyCoord
+import astropy.units as u
+from matplotlib.path import Path
 from astropy.time import Time
 
 from wenu.coordinates import GENERIC_SPHERICAL_SPEC
@@ -19,6 +21,8 @@ from wenu.rendering import layers
 from wenu.rendering.matplotlib import MatplotlibRenderer
 from wenu.resources import milky_way_isophote_path
 from wenu.sky.milky_way import MilkyWayIsophotes
+from wenu.projections.stereographic import StereographicProjection
+from wenu.rendering.preparation import project_polygons_to_projection_cap
 
 
 class Observer:
@@ -26,6 +30,73 @@ class Observer:
         obstime=Time("2026-08-15 21:00"),
         location=EarthLocation.from_geodetic(-71.23, -32.45),
     )
+
+
+@pytest.mark.parametrize("hour", [0, 4, 6, 9, 12, 15, 18, 21])
+def test_ol1_rendered_fill_matches_native_sky_across_a_day(hour):
+    """Compare actual raster fill with native catalogue membership.
+
+    UTC 04:00 is the reported La Ligua 01:00 local inversion. The remaining
+    orientations also exercise fully visible rings and extra cap windings.
+    """
+    observer = Observer()
+    observer.altaz_frame = AltAz(
+        obstime=Time(f"2026-10-16T{hour:02d}:00:00"),
+        location=EarthLocation.from_geodetic(-71.230289, -32.443342, 52),
+    )
+    layer = MilkyWayIsophotes(observer, levels=("ol1",)).load()
+    projection = StereographicProjection()
+    ra, dec = np.meshgrid(np.arange(0, 360, 7.3), np.arange(-75, 80, 6.7))
+    ra, dec = ra.ravel(), dec.ravel()
+    x, y = projection.project_spherical(ra, dec)
+    native_samples = np.column_stack((x, y))
+    expected = np.zeros(len(ra), dtype=bool)
+    for polygon in layer.features["ol1"]:
+        inside = np.ones(len(ra), dtype=bool)
+        for index, ring in enumerate(polygon):
+            ring = np.asarray(ring)
+            x, y = projection.project_spherical(ring[:, 0], ring[:, 1])
+            contained = Path(np.column_stack((x, y))).contains_points(native_samples)
+            # The two principal OL1 rings enclose the unbounded side of
+            # their native north-pole outlines; small holes are bounded.
+            if index < 2:
+                contained = ~contained
+            inside &= contained if index == 0 else ~contained
+        expected |= inside
+    observed = SkyCoord(ra=ra * u.deg, dec=dec * u.deg).transform_to(
+        observer.altaz_frame
+    )
+    x, y = projection.project_spherical(observed.az.deg, observed.alt.deg)
+    projected = project_polygons_to_projection_cap(
+        layer.spherical_geometry(observer),
+        projection=projection,
+        angular_radius_deg=89.999,
+    )
+    figure = plt.figure(figsize=(10, 10), dpi=100, facecolor="black")
+    ax = figure.add_axes([0, 0, 1, 1], facecolor="black")
+    ax.set(xlim=(-2, 2), ylim=(-2, 2))
+    ax.set_axis_off()
+    MatplotlibRenderer(ax).draw(
+        projected, compound_by="compound_id",
+        polygon_fill_style={"facecolor": "white", "face_alpha": 1},
+    )
+    figure.canvas.draw()
+    pixels = np.asarray(figure.canvas.buffer_rgba())[:, :, 0]
+    sample_pixels = ax.transData.transform(np.column_stack((x, y)))
+    tested = 0
+    for index in np.flatnonzero(observed.alt.deg > 2):
+        col, row = np.floor(sample_pixels[index]).astype(int)
+        row = len(pixels) - 1 - row
+        window = pixels[row - 2:row + 3, col - 2:col + 3]
+        # Exclude only raster-edge samples; test both bright and dark sky.
+        if window.size != 25 or np.max(window) != np.min(window):
+            continue
+        assert bool(pixels[row, col] > 127) == bool(expected[index]), (
+            hour, ra[index], dec[index]
+        )
+        tested += 1
+    plt.close(figure)
+    assert tested > 450
 
 
 def _catalogue(path):

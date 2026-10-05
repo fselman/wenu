@@ -26,6 +26,7 @@ from wenu.charts.request_generation import (
     build_chart_request,
     export_prepared_chart,
     generate_chart_request,
+    _prepare_with_sphere,
 )
 from wenu.charts.request_resolver import resolve_chart_request
 from wenu.sky.maximal_sphere import CANONICAL_MAXIMAL_SPHERE_PROFILE
@@ -637,3 +638,87 @@ def test_generation_entry_points_reject_untyped_inputs():
         generate_chart_request(object())
     with pytest.raises(TypeError, match="PreparedChartRequest"):
         export_prepared_chart(SimpleNamespace(observer=object()), object())
+
+
+
+def test_build_close_removes_only_request_owned_satellite_layers():
+    removed = []
+    retained = object()
+    path = object()
+    events = object()
+    sky = SimpleNamespace(
+        observer=SimpleNamespace(close=lambda: None),
+        layers=[retained, path, events],
+        remove=lambda layer: (
+            removed.append(layer),
+            sky.layers.remove(layer),
+        )[-1],
+    )
+    build = ChartRequestBuild(
+        sky=sky,
+        prepared=SimpleNamespace(chart=object()),
+        request_satellite_track_layers=(path, events),
+    )
+
+    build.close()
+    build.close()
+
+    assert removed == [path, events]
+    assert sky.layers == [retained]
+
+
+def test_prepare_failure_removes_installed_satellite_layers(
+    monkeypatch, tmp_path
+):
+    request = _request(tmp_path)
+    layer = object()
+    removed = []
+    sky = SimpleNamespace(
+        observer=object(),
+        layers=[layer],
+        solar_system_bodies={},
+        remove=lambda value: removed.append(value),
+    )
+    resolved = SimpleNamespace(request=request, frame=None)
+
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.resolve_chart_request",
+        lambda actual, profile: resolved,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.configure_chart_request_grids",
+        lambda *args, **kwargs: None,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.configure_chart_request_horizon",
+        lambda *args, **kwargs: None,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.configure_chart_request_disks",
+        lambda *args, **kwargs: None,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_tracks.configure_chart_request_track",
+        lambda *args, **kwargs: None,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_satellite_tracks."
+        "configure_chart_request_satellite_tracks",
+        lambda actual, value: (layer,),
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.prepare_chart_request",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            RuntimeError("synthetic preparation failure")
+        ),
+    )
+
+    with pytest.raises(RuntimeError, match="synthetic preparation failure"):
+        _prepare_with_sphere(
+            request,
+            sky,
+            CANONICAL_MAXIMAL_SPHERE_PROFILE,
+            owns_observer=False,
+        )
+
+    assert removed == [layer]

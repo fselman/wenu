@@ -774,3 +774,34 @@ def test_complete_constellation_keeps_existing_anchor():
 
     np.testing.assert_array_equal(prepared.x, labels.x)
     np.testing.assert_array_equal(prepared.y, labels.y)
+
+
+@pytest.mark.visual
+@pytest.mark.parametrize("independent_size", [None, 4.25])
+def test_rendered_constellation_size_uses_independent_field_or_legacy_fallback(
+    independent_size,
+):
+    import matplotlib.pyplot as plt
+    from wenu import MatplotlibRenderer, PublicationStyle
+    from wenu.geometry.projected import ProjectedPoints
+
+    sky = m41c_cartoon_label_palette_repair_fake_sky()
+    style = PublicationStyle(
+        label_fontsize=8.5,
+        constellation_label_fontsize=independent_size,
+    )
+    figure, axes = plt.subplots()
+    try:
+        render = style.layer_options(sky)[sky.constellation_labels]["render"]
+        MatplotlibRenderer(axes).draw(
+            ProjectedPoints([0.0], [0.0], labels=["Cru"]), **render,
+        )
+        figure.canvas.draw()
+        assert len(axes.texts) == 1
+        assert axes.texts[0].get_fontsize() == (
+            8.5 if independent_size is None else independent_size
+        )
+        assert style.label_fontsize == 8.5
+        assert style.grid_label_fontsize == 6.0
+    finally:
+        plt.close(figure)

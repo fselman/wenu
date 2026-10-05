@@ -3158,3 +3158,1258 @@ UTC civil days and converts both boundaries to JD TDB before applying the SBDB
 perihelion-time constraint. Returned `tp` values retain their TDB identity;
 UTC dates in the human table are derived display values. No discovered row is
 an apparent direction, observer-relative state, or visibility prediction.
+
+## 13.2.41 50S.1 provider-neutral satellite crossing domain
+
+Accepted 50S.1 adds no TEME state, Earth-fixed transformation, topocentric
+satellite direction, or new coordinate frame. The initial closed circular
+satellite FoV retains an ordinary `CoordinateSpec`, so its spherical centre is
+never inferred from a provider payload or planar chart boundary. The separate
+`SatelliteObserver` retains site, vacuum-refraction default, and declared
+Earth-orientation policy while the `InclusiveTimeInterval` owns explicit UTC
+start and stop instants. This separation prevents one chart observation instant
+from being mistaken for a multi-instant satellite query.
+
+The accepted future chain remains OMM/TLE orbit solution through validated SGP4
+to explicit geometric TEME state, declared Earth-fixed transformation, observer
+subtraction, and topocentric direction. None of those stages is implemented or
+implied by the 50S.1 contracts. Fernando accepted this coordinate boundary on
+2026-09-15 after all 2,428 tests passed; PR #123 merged it as `23b851b`.
+SatChecker adaptation begins only in 50S.2.
+
+
+## 13.2.42 50S.2A SatChecker provider semantics review
+
+Accepted 50S.2A adds no coordinate transform or runtime behavior.
+It finds that SatChecker's public Julian-Date input does not fully state a time
+scale, while the reviewed 1.8.0 source interprets it as UT1. Any 50S.2B adapter
+must explicitly convert Wenu's inclusive UTC interval to UT1 under a declared
+Earth-orientation-data policy, preserve both representations, and forbid a
+hidden IERS download.
+
+The reviewed propagation source yields observer-relative geometric topocentric
+right ascension and declination on ICRF/ICRS-oriented axes, not
+observed/apparent directions. Its one-second sampling grid excludes the stop
+endpoint and its 1.2-radius selection is a candidate envelope. Those samples
+must not be relabelled as Wenu entry, closest-approach, or exit events. Exact
+TEME-to-observer realization remains later local-oracle work. Fernando accepted
+this scientific boundary on 2026-09-15, authorizing only the bounded 50S.2B
+cached-adapter implementation.
+
+
+## 13.2.43 50S.2B adapter realization (accepted)
+
+The candidate adapter implements the accepted 50S.2A time and coordinate
+boundary without adding a new coordinate frame. It accepts only geometric
+topocentric-direction ICRS field centres, records Wenu's inclusive UTC request,
+and transmits a separately recorded UT1 Julian date. Astropy IERS automatic
+download is disabled during conversion; absent or invalid local
+Earth-orientation data is an explicit failure.
+
+Returned provider Julian dates remain identified as UT1 and are explicitly
+converted back to UTC for ordered sample evidence. The samples remain
+source-inferred geometric topocentric ICRF/ICRS-oriented directions and retain
+the stop-exclusive, one-second, 1.2-radius candidate-envelope warnings. They
+are not observed/apparent coordinates, exact boundary events, or a new
+`SatelliteCrossingResult`. No TEME state, Earth-fixed realization,
+refraction, propagation, projection, or output behavior changes. Fernando
+accepted this boundary on 2026-09-15 after all 2,457 tests and the bounded live
+provider check passed.
+
+
+## 50S.3 sampled candidate presentation note
+
+50S.3 introduces no new astronomical frame or transformation. Accepted
+SatChecker samples remain geometric topocentric-direction ICRS observations.
+A drawable sampled-candidate layer must attach that identity to typed spherical
+geometry and use the existing coordinate service before projection.
+
+Connecting ordered provider samples is presentation, not propagation or proof
+of continuous FoV containment. It cannot create exact entry, exit, boundary
+touch, or closest-approach instants. UTC labels refer only to supplied sample
+instants. Rendering remains coordinate-neutral and performs no astronomy.
+
+
+## 50S.3B multi-instant sampled-track realization
+
+The candidate layer follows Wenu's existing fixed-product-frame track
+convention. Its native container declares geometric
+topocentric-direction ICRS without one false scalar instant; the ordered UTC
+and UT1 instants remain per-sample metadata. `CoordinateService` transforms
+the assembled geometry once into the fixed chart product frame using the
+request's `LayerRealizationContext`.
+
+This is coordinate representation of already supplied directions, not
+position generation. It does not interpolate between samples, recompute the
+observer, propagate an orbit, or prove continuous containment. The source
+query's exact coordinate identity is retained in the report, while the
+realized geometry carries the product `CoordinateSpec`.
+
+
+## 50S.4 TEME and topocentric transformation admission note
+
+The local satellite foundation introduces a new Cartesian frame boundary, not
+a shortcut through existing spherical coordinates. SGP4 returns geocentric
+geometric TEME position in kilometres and velocity in kilometres per second.
+TEME is retained explicitly until 50S.4D.
+
+The accepted candidate chain for later implementation is Astropy TEME at the
+evaluation UTC instant → geocentric ITRS → subtraction of the observer's
+WGS-84 geodetic ITRS position → topocentric Cartesian range/direction.
+Automatic IERS download is disabled, EOP identity and UT1−UTC are provenance,
+out-of-coverage time fails closed, and refraction remains off.
+
+An instantaneous topocentric geometric vector expressed in celestial axes is
+not automatically an ICRS astrometric position. 50S.4D must name and validate
+that convention before it can feed an ICRS-oriented field. Projection and
+rendering remain downstream and coordinate-neutral.
+
+
+### 50S.4B element data remains pre-coordinate
+
+The candidate immutable snapshot records `CENTER_NAME=EARTH`,
+`REF_FRAME=TEME`, `TIME_SYSTEM=UTC`, and
+`MEAN_ELEMENT_THEORY=SGP4` as validated element semantics. These declarations
+do not constitute a TEME Cartesian state or any coordinate transformation.
+The 50S.4B loader performs no propagation, Earth rotation, observer
+subtraction, angular conversion, or projection. The TEME-to-ITRS and
+topocentric convention remains entirely deferred to 50S.4D.
+
+
+### 50S.4C typed TEME state boundary
+
+`SatelliteTemeState` is explicitly geocentric, geometric, Cartesian TEME.
+Its position unit is kilometres and its velocity unit is kilometres per
+second. Its evaluation UTC and split Julian-date components describe one
+propagation instant; element age is provenance, not a coordinate correction.
+
+This state must not be labelled ICRS, GCRS, ITRS, apparent, astrometric,
+topocentric, RA/Dec, or AltAz. 50S.4C performs no Earth-orientation lookup and
+requires no IERS data. Only the separately gated 50S.4D chain may transform
+this state through ITRS and observer subtraction.
+
+
+### 50S.4C acceptance
+
+Fernando scientifically and architecturally accepted the typed geometric TEME boundary on 2026-09-15. TEME remains explicit; acceptance authorizes only the separately validated 50S.4D Earth-orientation and topocentric state chain.
+
+
+### 50S.4D topocentric Cartesian and GCRS-axis boundary (accepted)
+
+The candidate begins with geocentric geometric TEME position/velocity at one
+UTC instant. Astropy transforms that complete Cartesian state to geocentric
+ITRS using a specifically selected installed IERS-A table. Wenu constructs the
+observer from WGS-84 geodetic longitude, latitude, and ellipsoidal height and
+subtracts the observer ITRS position before converting the vector to angles.
+Range is the norm of that same observer-subtracted Cartesian vector.
+
+Vacuum AltAz is geometric observer-local direction: azimuth is measured from
+north through east and altitude from the ideal horizon. No atmospheric
+refraction is applied.
+
+The second angular representation is called **topocentric geometric direction
+expressed in GCRS axes**. The already observer-subtracted ITRS vector is rotated
+into GCRS axes at the same instant. This does not make it an ICRS catalogue
+position, a formal GCRS coordinate with geocentric origin, or an astrometric,
+apparent, or observed place. The `gcrs-axes` frame label preserves that
+distinction in `CoordinateSpec`.
+
+The coordinate guide was reviewed and updated for 50S.4D because the milestone
+adds Earth-orientation, observer-parallax, horizontal-direction, and
+celestial-axis semantics. The accepted inertial catalogue and generic
+coordinate-service meanings remain unchanged. Fernando scientifically accepted
+this coordinate meaning on 2026-09-15.
+
+### Accepted 50S.4E sampled-specimen coordinate identity
+
+The output is labelled **propagated sampled specimens — not verified crossings**.
+
+The 50S.4E developer output preserves each accepted geometric TEME state and
+the observer-relative vacuum direction from 50S.4D. Its celestial longitudes
+and latitudes remain a **topocentric geometric direction expressed in GCRS
+axes**; they are not ICRS/GCRS astrometric or apparent catalogue coordinates.
+The evaluation grid, observer, exact IERS-A identity, and interpolated
+Earth-orientation values remain explicit. Sampling creates no continuous path
+or verified field crossing.
+
+Fernando accepted this coordinate identity and the bounded 50S.4E specimen
+product on 2026-09-15. Sampling remains evidence, not a continuous crossing
+solution; exact boundary solving begins only in 50S.5.
+
+
+### Accepted 50S.5A crossing-coordinate contract
+
+The first local oracle will accept only a fixed closed circular field expressed
+as a topocentric geometric direction in GCRS axes, matching the accepted
+50S.4D trajectory. The field centre is one fixed unit vector over the inclusive
+query interval. Provider apparent ICRS, vacuum AltAz, projected chart
+coordinates, and mixed position statuses are not numerically interchangeable.
+
+Spherical containment uses clipped vector dot products, so longitude wrap,
+poles, and chart seams do not alter the predicate. A field coordinate-spec
+instant records the query reference instant; it does not rotate the field with
+each trajectory evaluation. This accepted review changes no runtime coordinate path. Only bounded 50S.5B
+implementation is authorized next; 50S.6 and later behavior remain
+unauthorized.
+
+### Accepted 50S.5B local crossing coordinates
+
+`LocalSatelliteCrossingQuery` accepts only a fixed closed circular field whose
+centre and every evaluated trajectory state are topocentric geometric
+directions expressed in GCRS axes. Vector dot products and clipped angular
+separation remove longitude-wrap and polar singularities. The field reference
+instant does not rotate the centre during the inclusive query interval.
+
+The solver obtains every final state through the accepted SGP4/TEME and
+installed-IERS-A topocentric chain. It does not compare apparent ICRS, AltAz,
+projected, refracted, or mixed-status coordinates and adds no alternate
+coordinate pipeline.
+
+Fernando scientifically and architecturally accepted this coordinate boundary
+on 2026-09-15. Only a documentation-first 50S.6 conservative-acceleration
+audit is authorized next.
+
+### Accepted 50S.6A acceleration coordinate boundary
+
+Conservative rejection must be derived in the same physical geometry as the
+accepted query: a fixed observer-origin closed circular field and topocentric
+geometric directions expressed in GCRS axes. A geocentric orbital-plane angle
+alone cannot reject a record because observer displacement, finite range, Earth
+rotation, and orbital-plane evolution alter the topocentric direction.
+
+The proposed shell/cone envelope must cover the complete inclusive UTC interval
+and all declared margins. Horizon and Earth occultation are visibility
+predicates, not coordinate accelerators for the accepted geometric crossing
+query, and therefore cannot remove results under 50S.6. Fernando scientifically and
+architecturally accepted this boundary on 2026-09-15. Only the first bounded
+cone/orbital-shell selector is authorized for 50S.6B.
+
+### Accepted 50S.6B cone-shell coordinate evidence
+
+The selector evaluates one accepted geometric topocentric GCRS-axis direction
+at the inclusive interval start. A relative-vector displacement ball with
+radius `relative_speed_bound × interval_seconds` subtends the recorded
+reachable angular cap. Only strict non-overlap of that cap, the closed field,
+the query angular tolerance, and a numerical margin permits rejection.
+
+The bound is admitted only for the installed synthetic snapshot and at most
+60 seconds. It does not use altitude, Earth occultation, apparent ICRS,
+projection, or refraction as a rejection predicate. Fernando scientifically
+and architecturally accepted this bounded coordinate evidence on 2026-09-16.
+
+### Accepted 50S.6C coordination coordinate boundary
+
+Coordination introduces no new coordinate system. Selection evidence, exhaustive
+evaluation, and accelerated exact evaluation must refer to the identical fixed
+closed circular field and topocentric geometric directions expressed in GCRS
+axes. The shared exact seam continues to obtain states only through the accepted
+SGP4/TEME and installed-IERS-A transformation chain.
+
+Fernando scientifically and architecturally accepted this unchanged coordinate
+boundary on 2026-09-16. Only bounded 50S.6D coordination is authorized next.
+
+Broader-domain evidence must preserve observer identity, inclusive UTC interval,
+field coordinate specification, IERS-A identity, and every outward angular
+margin. Horizon, Earth occultation, apparent ICRS, refraction, and projected
+coordinates remain inadmissible rejection predicates.
+
+
+### Accepted 50S.6D unchanged coordinate boundary
+
+The coordinator introduces no coordinate operation. The selector and both
+exact routes consume the identical fixed circular field and the same
+topocentric geometric directions expressed in GCRS axes. Exact evaluation
+continues to use only the accepted SGP4/TEME and installed-IERS-A state chain.
+
+The coordinate guide was reviewed for 50S.6D and remains scientifically
+current. Selection accounting, fallback, and shared-record orchestration do
+not change frame, origin, position status, instant, time scale, refraction, or
+Earth-orientation meaning. Horizon, occultation, apparent ICRS, refraction, and
+projected coordinates remain inadmissible rejection predicates.
+
+
+Fernando scientifically and architecturally accepted this unchanged 50S.6D
+coordinate boundary on 2026-09-16. The acceptance authorizes no new coordinate
+operation or rejection predicate.
+
+
+## Accepted 50S.6E multi-FoV coordinate boundary
+
+A future same-observer batch would preserve each field's independently framed
+centre, radius, interval, solver tolerance, and airmass-admission evidence. The
+initial admission policy transforms only the field centre to geometric vacuum
+AltAz and uses plane-parallel `X = sec(z)` only for
+`0 <= z < 90 degrees`, with configurable finite `X_max >= 1` defaulting to 2.
+The centre must satisfy the limit throughout the complete requested interval;
+the FoV radius does not enter airmass admission. Non-positive centre altitude
+or uncertain certification fails admission. This is an FoV accessibility
+constraint, not a satellite horizon, occultation, visibility, or crossing
+predicate, and it adds no civil-date or inferred-twilight boundary.
+Shared propagation or topocentric state must be keyed by observer, instant,
+snapshot, record, Earth-orientation, propagator, and software identity;
+field-specific separation is not a reusable physical state. JSON, ECSV, and
+VOTable reports must declare UTC, units, frame, airmass policy and evidence,
+and interpolation policy explicitly. The coordinate guide was reviewed for
+50S.6E; no implemented coordinate meaning changes. Fernando scientifically
+and architecturally accepted this boundary on 2026-09-16. Only bounded 50S.6F
+is authorized next.
+
+
+## Accepted 50S.6F field-centre airmass realization
+
+`SatelliteFieldCenterAltitudeEvaluator` treats the declared field-centre
+longitude and latitude only as one fixed topocentric geometric unit direction
+expressed in GCRS axes. At each requested UTC instant it rotates that vector
+into ITRS with the explicit installed IERS-A table and evaluates altitude
+against the observer's WGS-84 geodetic up direction. It applies no refraction,
+parallax, apparent-place correction, satellite horizon predicate, or FoV-radius
+adjustment.
+
+`FieldAirmassCertifier` uses plane-parallel `X = sec(z)`, configurable
+`X_max >= 1` defaulting to 2, and a declared conservative
+0.005-degree-per-second whole-interval sky-motion bound. Recursive midpoint
+certification may accept only when the complete segment lower bound remains at
+or above the threshold; an actual failure, unavailable Earth orientation, or
+unresolved numerical boundary fails atomically. The guide was reviewed for
+50S.6F. No existing crossing coordinate or satellite direction meaning changes.
+Fernando scientifically and architecturally accepted this realization on
+2026-09-17 after 2,577 plugin-disabled tests passed. Only a separately bounded
+50S.6G audit is authorized next.
+
+
+## Accepted 50S.6G delivery coordinate boundary
+
+The coordinate guide was reviewed for the documentation-only 50S.6G audit; no
+implemented coordinate meaning changes. Initial request files retain complete
+declared fixed geometric topocentric field centres in GCRS axes and inclusive
+UTC intervals. Centre-only airmass admission remains geometric vacuum AltAz.
+
+Future exact-track samples must retain their individual UTC instants, geometric
+topocentric direction in GCRS axes, range, Earth-orientation identity, and
+sampling-tolerance evidence before any transformation into one chart product
+frame. Renderers must not interpret TEME as a celestial chart frame, treat a
+three-event crossing summary as a certified curve, interpolate across visits
+or seams, or infer apparent visibility from geometric coordinates.
+Fernando scientifically and architecturally accepted this boundary on
+2026-09-17 after all 145 plugin-disabled current-documentation tests passed in
+4.36 seconds. Only bounded 50S.6G.1A external immutable snapshot loading is
+authorized next; no implemented coordinate meaning changes.
+
+
+## Accepted 50S.6G.1A coordinate review
+
+The coordinate guide was reviewed for the external immutable snapshot loader;
+no coordinate, origin, frame, time-scale, epoch, propagation, topocentric, FoV,
+or airmass meaning changes. The loader validates canonical OMM records only.
+TEME remains the SGP4 propagation frame and is not reinterpreted as ICRS,
+GCRS, an observer frame, or a chart product frame.
+Fernando scientifically and architecturally accepted this coordinate boundary
+on 2026-09-17 after the 164-test focused gate and all 2,583 plugin-disabled
+tests passed. Only the bounded 50S.6G.1B audit is authorized next.
+
+
+## Accepted 50S.6G.1B coordinate review
+
+The representative snapshot preflight/evidence audit changes no implemented
+coordinate, origin, frame, time-scale, epoch, propagation, topocentric, FoV,
+airmass, crossing, projection, or chart meaning. CelesTrak OMM-compatible CSV
+normalization must declare `EARTH`, `TEME`, `UTC`, and `SGP4` only as documented
+provider-format invariants when those redundant fields are omitted. Every
+record still enters the accepted typed OMM and WGS-72 SGP4/TEME chain.
+
+Representative evidence retains exact snapshot, Earth-orientation, observer,
+field, interval, and tolerance identities. It must not reinterpret provider
+population scope as coordinate completeness or infer visibility from geometric
+crossings.
+
+Fernando scientifically and architecturally accepted this unchanged coordinate
+boundary on 2026-09-17 after all 147 plugin-disabled current-documentation
+tests passed in 4.54 seconds. Only bounded 50S.6G.1B.1 fake-transport work is
+authorized next; no live provider access or coordinate change is authorized.
+
+The implemented 50S.6G.1B.1 offline builder preserves that boundary. It maps
+only `EARTH`, `TEME`, `UTC`, and `SGP4` provider-format invariants before using
+the existing typed OMM validator. It adds no coordinate transform, observer,
+horizon, visibility, crossing, illumination, or airmass meaning.
+
+Fernando accepted this unchanged coordinate boundary with 50S.6G.1B.1 on
+2026-09-17 after all 2,594 plugin-disabled tests passed.
+
+
+## Accepted 50S.6G.1B.2A coordinate review
+
+Digest-bound snapshot admission introduces no coordinate operation or
+scientific reinterpretation. TEME remains the SGP4 propagation frame; local
+crossings remain topocentric geometric directions expressed in GCRS axes with
+the accepted installed IERS-A chain. Observer, inclusive UTC interval, fixed
+field centre, tolerance, and centre-only geometric-vacuum airmass identities
+remain unchanged. The coordinate guide therefore remains current. Fernando scientifically and
+architecturally accepted this unchanged boundary on 2026-09-17 after all 150 plugin-disabled current-documentation tests passed in 3.84 seconds. Only
+bounded 50S.6G.1B.2B implementation is authorized next.
+
+
+## Accepted 50S.6G.1B.2B coordinate review
+
+The digest-admission token compares provenance and identity only. It performs
+no coordinate transformation and changes no origin, frame, position status,
+epoch, time scale, Earth-orientation resource, observer, FoV, airmass, or
+crossing meaning. TEME remains the propagation frame and local directions
+remain topocentric geometric directions expressed in GCRS axes. The coordinate
+guide remains scientifically current.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2B on
+2026-09-17 after 51 focused runtime tests, 151 current-documentation tests,
+and all 2,611 plugin-disabled tests passed; the complete suite took 215.89
+seconds. `git diff --check` and the working tree were clean. Only bounded
+50S.6G.1B.2C deterministic medium-specimen work is authorized next; 50S.6G.1B.2D
+matrix execution and later delivery remain separately unauthorized.
+
+
+## Accepted 50S.6G.1B.2C coordinate review
+
+The proposed medium selector reads canonical mean motion, inclination,
+eccentricity, BSTAR, NORAD identity, and UTC element epoch. Signed age uses the
+acquisition report's retrieval-stop UTC instant. It performs no propagation,
+frame transformation, observer calculation, crossing solve, or projection.
+The coordinate guide remains scientifically current.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2C on
+2026-09-17 after all 153 plugin-disabled current-documentation tests passed in
+4.58 seconds; `git diff --check` and the working tree were clean. Only bounded
+fake-data implementation is authorized next. The first real medium selection,
+50S.6G.1B.2D matrix execution, and later delivery remain separately
+unauthorized.
+
+### Candidate 50S.6G.1B.2C coordinate review
+
+The fake-data medium selector in `satellites/snapshot_evidence.py` reads only
+stored OMM scalar values, full NORAD identifiers, and signed UTC epoch age
+relative to the acquisition stop. It performs no propagation, TEME
+transformation, Earth-orientation interpolation, observer calculation,
+topocentric conversion, FoV evaluation, crossing solve, projection, or
+rendering. Therefore it changes no frame, origin, position-status, epoch, or
+time-scale meaning.
+
+The 2026-09-17 focused gate passed 30 plugin-disabled tests in 5.99 seconds.
+The candidate does not authorize real medium selection or 50S.6G.1B.2D matrix
+execution.
+
+### Accepted 50S.6G.1B.2C coordinate boundary
+
+Fernando accepted the no-coordinate-change finding on 2026-09-17 at
+`1d9d4e4`. The full plugin-disabled suite passed 2,622 tests in 225.75
+seconds and the focused gate passed 185 tests in 9.03 seconds. Selection still
+performs no propagation or coordinate transformation. Acceptance does not
+authorize real selection or 50S.6G.1B.2D.
+
+### Candidate real medium specimen coordinate finding
+
+The external specimen contains 256 records with canonical-record SHA-256
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`.
+Its canonical selection receipt has SHA-256
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`.
+It derives from the accepted 16,559-record parent
+`e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`
+using age reference `2026-09-17T15:52:23.000000Z`.
+
+Selection covered all 24 scalar bins, including the two future-epoch records,
+rare high-inclination and high-eccentricity domains, and six-digit NORAD
+identifiers. It performed no propagation or coordinate transformation.
+Consequently the real selection changes no frame, origin, position status,
+epoch, or time-scale meaning. Matrix execution remains unauthorized.
+
+### Accepted real 50S.6G.1B.2C coordinate finding
+
+Fernando accepted the exact external specimen and its no-coordinate-change
+finding on 2026-09-17 at `c4cd009`, after 157 plugin-disabled documentation
+tests passed in 4.66 seconds. The accepted digest is
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`;
+selection performed no propagation or coordinate transformation.
+50S.6G.1B.2D remains unauthorized.
+
+### Candidate 50S.6G.1B.2D coordinate review
+
+The proposed matrix introduces no coordinate operation. It constructs declared
+GCRS-axes, topocentric-direction, geometric FoVs through the accepted
+coordinate chain, then passes identical immutable queries to the existing
+exhaustive and accelerated services. The same La Ligua observer, UTC instants,
+vacuum policy, bundled Earth orientation, FoV geometry, and tolerances apply to
+both routes.
+
+Strict result equality is required after those services return. No frame,
+origin, position status, epoch, time scale, refraction, propagation, or
+transformation meaning changes.
+
+### Accepted 50S.6G.1B.2D coordinate finding
+
+Fernando accepted the no-new-coordinate-operation finding on 2026-09-17 at
+`6e7a8b9`, after 159 plugin-disabled documentation tests passed in 10.75
+seconds. Fake-data harness implementation may preserve and exercise the
+existing contracts; real matrix execution and any coordinate change remain
+unauthorized.
+
+### Candidate 50S.6G.1B.2D coordinate review
+
+The candidate fake-data matrix owner preserves each query's explicit observer,
+field coordinate specification, UTC interval, angular tolerance, and time
+tolerance in canonical request evidence. It performs no implicit frame change
+and requires atomic airmass admission before route execution.
+
+Candidate commit `19520f3` passed 2634 plugin-disabled full-suite tests in
+230.25 seconds on 2026-09-17. Verification used fake data only; it performed
+no propagation or coordinate transformation of the accepted real specimen and
+did not execute the real matrix. Scientific and architectural acceptance is
+required before that separately bounded step.
+
+### Accepted 50S.6G.1B.2D coordinate boundary
+
+Fernando scientifically and architecturally accepted the fake-data matrix
+coordinate contract on 2026-09-17 after 2634 plugin-disabled full-suite tests
+passed in 230.25 seconds at `19520f3` and 161 plugin-disabled
+current-documentation tests passed in 3.32 seconds at `3ef6a4d`. This
+acceptance performs and authorizes no real propagation, coordinate
+transformation, specimen read, or matrix execution. Only a separately bounded
+real-execution audit may proceed next.
+
+### Candidate real-matrix coordinate readiness finding
+
+The production ten-field coordinate fixture is not yet frozen. Before any real
+execution, a bounded implementation must materialize the accepted La Ligua
+observer, exact decimal GCRS-axes topocentric geometric centres, radii, UTC
+intervals, shared-interval control, time and angular tolerances, Earth-
+orientation evidence, and whole-interval airmass admissions as canonical
+evidence. The fresh-subprocess protocol and explicit offline developer command
+must preserve that same coordinate identity without reconstruction or implicit
+defaults. This audit at `9bdf301` performed no real propagation,
+transformation, airmass evaluation, specimen read, or matrix execution.
+
+### Accepted real-matrix coordinate readiness finding
+
+Fernando scientifically and architecturally accepted the fail-closed
+coordinate-readiness finding on 2026-09-17 after 163 plugin-disabled
+current-documentation tests passed in 3.80 seconds at `054ac39`. Only
+fake-data implementation of the frozen ten-field coordinate fixture,
+whole-interval airmass certifier, and identity-preserving subprocess protocol
+is authorized next. No real coordinate evaluation or matrix execution is
+authorized.\n
+
+### Candidate production matrix fixture review
+
+The frozen La Ligua fixture declares hour-angle and declination offsets at each
+interval midpoint and records the resulting decimal GCRS-axis geometric
+topocentric directions after one CIRS-to-GCRS transformation. It binds the
+generation Astropy version and IERS-A digest, uses UTC, vacuum refraction, and
+the accepted La Ligua geodetic position. Its ten fields use only 15- and
+60-second intervals; two distinct fields share one 15-second interval. Runtime
+airmass admission independently certifies every centre throughout its complete
+interval at maximum airmass 2 before any worker starts. No apparent, observed,
+or ICRS label is introduced.\n
+
+Candidate verification on Fernando's Mac completed at executable commit
+`81f9031`: the 14-test focused matrix gate passed in 9.35 seconds, the
+210-test immediate-boundary and documentation gate passed in 60.26 seconds,
+and all 2,645 plugin-disabled tests passed in 243.71 seconds. `git diff
+--check 5cd60fd...HEAD` and the working tree were clean. No accepted real
+specimen was accessed and no real matrix was executed. The candidate still
+requires Fernando's scientific and architectural acceptance.\n
+
+### Accepted production-path implementation
+
+Fernando scientifically and architecturally accepted the bounded fake-data
+production-path implementation on 2026-09-18. The executable evidence remains
+14 focused tests in 9.35 seconds, 210 immediate-boundary tests in 60.26
+seconds, and all 2,645 plugin-disabled tests in 243.71 seconds at `81f9031`.
+After documentation-only evidence recording, 164 current-documentation tests
+passed in 3.94 seconds at `602eed7`; the whitespace check and working tree
+were clean.
+
+Preserve the exact accepted-medium and receipt constraints, digest-frozen
+ten-field La Ligua fixture with only 15- and 60-second intervals, production
+whole-interval airmass certifier, canonical fresh-subprocess worker/executor,
+explicit offline command, and shortened fake-data test practice. This
+acceptance does not authorize accessing the accepted real specimen, executing
+the real matrix, publishing real evidence, making a performance claim, or
+advancing later delivery. Any real execution requires a separate explicit
+authorization.\n
+
+### Candidate first-real-execution coordinate boundary
+
+The proposed first run changes no coordinate contract. It uses the accepted
+digest-frozen ten-field La Ligua fixture, geometric topocentric directions in
+GCRS axes, UTC intervals of only 15 and 60 seconds, bundled-IERS-A evidence,
+vacuum refraction, and atomic complete-interval centre-only airmass admission
+at maximum airmass 2. No field, centre, interval, tolerance, frame, status,
+observer, or Earth-orientation policy may be changed for the run.\n
+
+### Accepted first-real-execution authorization
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2D.1 on
+2026-09-18 after all 165 plugin-disabled current-documentation tests passed in
+5.07 seconds at `af8044a`; the whitespace check and working tree were clean.
+
+This acceptance authorizes exactly one operator-started offline execution
+against the exact accepted 256-record medium, using the three frozen digests,
+exact acknowledgement, accepted ten-field 15/60-second fixture, one new empty
+external output root with at least 2 GiB free, the existing 3600-second
+per-subprocess timeout, and no retry or resume. It does not itself start the
+run. The exact absolute Mac paths must be resolved before the command is
+issued. Failure or interruption authorizes no restart. Successful evidence
+remains external and unaccepted pending an independent review; no performance
+claim or later 50S.6G delivery is authorized.\n
+
+### Candidate progress-display coordinate review
+
+The parent-process progress bar carries only field identifier, route, phase,
+count, percentage, and state. It does not serialize or reconstruct a
+coordinate, alter the frozen GCRS-axis field fixture, evaluate airmass, enter a
+worker request, or change any coordinate provenance. The coordinate guide
+therefore remains scientifically unchanged.
+
+## Candidate progress-display verification review
+
+The coordinate guide was reviewed for candidate `b0b4432` on 2026-09-18 and remains current. Verification comprised 180 focused plugin-disabled tests passing in 5.44 seconds, all 2647 plugin-disabled tests passing in 239.53 seconds, and a clean diff check. Parent-only progress reporting introduces no coordinate operation or scientific-semantic change.
+
+## Accepted progress-display coordinate review
+
+Fernando scientifically and architecturally accepted candidate `96b9ba0` on 2026-09-18. The reviewed coordinate guide remains current: the accepted parent-process display introduces no coordinate operation, transformation, tolerance, or scientific-semantic change.
+
+## Renewed real-run coordinate boundary
+
+The coordinate guide was reviewed after progress-display merge `9c4b808` and remains current. Fernando’s 2026-09-18 renewal authorizes exactly one bounded real matrix execution but no new coordinate operation, transformation, tolerance, frame, epoch, or scientific interpretation.
+
+## Accepted renewed real-run coordinate boundary
+
+Fernando scientifically and architecturally accepted candidate `dd71e01` on 2026-09-18 after 169 documentation tests passed in 4.29 seconds and integrity checks were clean. The coordinate guide remains current and the accepted authorization introduces no coordinate or scientific-semantic change.
+
+## Candidate first real-matrix coordinate finding
+
+The 2026-09-18 candidate report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` from `9d93113` exercised the accepted 10 fixed field/interval requests and introduced no new coordinate operation or tolerance. Exact route outputs agreed, but all fields had zero crossings. The coordinate guide remains current; the result must not be represented as positive real-crossing validation.
+
+## Accepted first real-matrix coordinate finding
+
+Fernando scientifically and architecturally accepted report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at `186e255` on 2026-09-18. The coordinate guide remains current. Exact empty-result route agreement was established, but all fields had zero crossings and therefore no positive real-crossing validation is claimed.
+
+
+## Candidate 50S.6G.1B closure coordinate review
+
+The coordinate guide was reviewed at integrated baseline `b010a6c` and
+remains current. The accepted ten-field real matrix used the frozen geometric
+topocentric GCRS-axes directions, UTC intervals, bundled Earth-orientation
+evidence, vacuum policy, and complete-interval centre-only airmass admission.
+All fields had zero crossings.
+
+The candidate closure introduces no coordinate operation, frame, origin,
+status, epoch, time scale, Earth-orientation policy, tolerance, or
+transformation. It does not convert empty-result agreement into positive
+real-crossing validation and authorizes no new execution. Pending separate
+acceptance, 50S.6G.2A remains unauthorized. Acceptance would authorize only
+a documentation audit, not implementation.
+
+
+## Accepted 50S.6G.1B closure coordinate review
+
+Fernando scientifically and architecturally accepted the bounded closure on
+2026-09-19 at `c62a451`, after 173 documentation tests passed in 3.82 seconds
+and clean repository checks. The coordinate guide remains current. All real
+fields had zero crossings, and no new coordinate meaning or positive
+real-crossing validation is claimed.
+
+Only a 50S.6G.2A documentation audit is authorized next; it must preserve the
+accepted coordinate identities and may not implement serialization.
+
+
+## Candidate 50S.6G.2A coordinate review
+
+The coordinate guide was reviewed at baseline `3f234cc` and remains current.
+The candidate report serializes each already accepted observer, field
+`CoordinateSpec`, inclusive UTC interval, event instant, tolerance, and
+Earth-orientation identity without transformation, inference, relabeling, or
+recomputation. JSON object order has no coordinate meaning; field and crossing
+array order remains semantic.
+
+The audit introduces no coordinate operation or scientific-semantic change.
+No implementation is authorized pending separate acceptance.
+
+
+## Accepted 50S.6G.2A coordinate boundary
+
+Fernando accepted the audit on 2026-09-19 at `835ddfe`, after 175
+documentation tests passed in 3.27 seconds and clean checks. The coordinate
+guide remains current. The bounded implementation may serialize retained
+coordinate identities only and may not transform, infer, relabel, or
+recalculate them.
+
+
+## Candidate 50S.6G.2A implementation coordinate review
+
+The implementation serializes and strictly reconstructs the already accepted
+`SatelliteObserver`, `CoordinateSpec`, `SatelliteFieldOfView`, and
+`InclusiveTimeInterval` values. It preserves field-array order, geometric
+topocentric GCRS-axes meaning, explicit UTC instants, vacuum/refraction policy,
+Earth-orientation identity, and existing angular and time tolerances. It does
+not transform, infer, relabel, or recompute a coordinate.
+
+The coordinate guide remains current. The candidate introduces no new frame,
+origin, position status, epoch, time scale, transformation, or numerical
+coordinate policy. Acceptance remains pending.
+
+
+## Accepted 50S.6G.2A coordinate finding
+
+Fernando scientifically and architecturally accepted the bounded 50S.6G.2A
+implementation on 2026-09-19. The executable candidate at `a65e5ac` passed
+all 2,676 plugin-disabled tests in 234.08 seconds; the final pre-acceptance
+documentation gate at `8af0d14` passed 179 tests in 5.05 seconds; diff and
+working-tree checks were clean.
+
+The coordinate guide remains current. Acceptance authorizes serialization and
+strict reconstruction of retained coordinate identities only; it introduces
+no coordinate transformation or new coordinate meaning.
+
+
+## Candidate 50S.6G.2B coordinate finding
+
+The proposed tabular encodings retain the accepted geometric topocentric
+GCRS-axes direction identity, UTC instants, vacuum/refraction policy, and
+Earth-orientation policy as explicit validated metadata. VOTable TIMESYS
+records UTC with topocentric reference position; it does not transform a
+direction or turn it into an astrometric position.
+
+Units and coordinate metadata are invariants of the shared reusable projection.
+A changed, missing, or contradictory unit, frame, origin, position status,
+time scale, refraction policy, Earth-orientation policy, or TIMESYS reference
+must fail decoding. The coordinate guide remains current; the audit introduces
+no new frame, origin, epoch, transformation, or numerical policy.
+
+## Accepted 50S.6G.2B coordinate finding
+
+Fernando scientifically and architecturally accepted the documentation-only
+audit on 2026-09-19 at `ef14bc1`, after 181 plugin-disabled documentation
+tests passed in 4.88 seconds and repository checks were clean.
+
+The coordinate guide remains current. The authorized tabular implementation
+may serialize and strictly reconstruct the already accepted coordinate and UTC
+metadata through one reusable projection, but it may not transform, infer, or
+change any frame, origin, epoch, time scale, refraction policy,
+Earth-orientation policy, or numerical coordinate rule.
+
+
+## Accepted complete 50S.6G.2B coordinate finding
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.6G.2B implementation on 2026-09-19. Executable commit `3bbd82f` passed
+208 focused tests in 6.68 seconds and all 2,689 plugin-disabled tests in
+215.15 seconds. Documentation evidence commit `ece80c7` passed all 186
+current-documentation tests in 4.60 seconds; diff checks and the clean,
+synchronized Mac working tree passed.
+
+ECSV and VOTable retain the accepted coordinate frame, origin, position
+status, time scale, observer, refraction, Earth-orientation, and TIMESYS
+identity. Canonical JSON and `report_identity_sha256` remain authoritative,
+and the VOTable `__is_null` fields carry no coordinate meaning. The adapters
+perform no coordinate generation or transformation and introduce no new frame,
+origin, epoch, equinox, time-scale, or position-status meaning. The coordinate
+guide remains current. No later coordinate or satellite milestone is
+authorized.
+
+## Candidate 50S.6G.2C coordinate finding
+
+The CLI/file protocol introduces no new frame, transformation, refraction,
+airmass definition, field geometry, or satellite-state meaning. Initial and
+validation JSON transport the accepted coordinate specification unchanged,
+and calculation delegates to the accepted centre-only complete-interval
+geometric-vacuum airmass validator. This guide was reviewed and remains
+scientifically current; the candidate is documentation only.
+
+## Accepted 50S.6G.2C coordinate finding
+
+Fernando accepted the audit after reviewing this guide. The authorized
+implementation transports existing coordinate documents and invokes the
+accepted geometric-vacuum centre-only complete-interval airmass contract; it
+must introduce no new frame, transformation, refraction, field geometry, or
+satellite-state interpretation.
+
+## Verified candidate 50S.6G.2C coordinate review
+
+The implementation adds no coordinate generation or transformation. The
+complete repository gate passed at `e08ebf5`; this guide remains scientifically
+current. Verification is not acceptance and authorizes no later milestone.
+
+## Accepted 50S.6G.2C coordinate closure
+
+Fernando accepted the implementation after review of this guide. It transports
+accepted coordinate documents and invokes existing validation/calculation
+owners without introducing a frame, transformation, refraction, field
+geometry, or satellite-state interpretation. The guide remains current.
+
+## Candidate 50S.6G.3A exact-track coordinate finding
+
+Exact local track samples are geometric topocentric direction unit vectors expressed in GCRS axes at individual retained UTC instants. The collection coordinate specification therefore has frame `gcrs-axes`, origin `topocentric-direction`, geometric position status, UTC time scale, and no single collection instant. This is not TEME-labelled sky longitude/latitude, a geocentric GCRS position, ICRS, observed AltAz, or a refracted direction. The candidate audit authorizes no coordinate implementation.
+
+## Accepted 50S.6G.3A coordinate boundary
+
+Fernando accepted the exact-track coordinate finding: each retained vertex is a geometric topocentric direction expressed in GCRS axes at its own UTC instant, while the collection has no single instant. The bounded implementation must preserve that meaning through evidence and layer realization. No apparent, refracted, TEME-labelled spherical, geocentric GCRS, ICRS, or observed AltAz reinterpretation is authorized.
+
+## Candidate 50S.6G.3A implemented coordinate representation
+
+Implementation preflight preserved the existing rule that a `CoordinateSpec` instant and time scale occur together. Because an exact track has no single instant, its collection specification is timeless geometric `gcrs-axes` / `topocentric-direction`; the evidence declares `sample_time_scale="utc"`, and each vertex retains its UTC instant.
+
+For direction-coordinate transformation only, `CoordinateService` maps `gcrs-axes` to the fixed GCRS/ICRS axis orientation. This is an axes statement, not a geocentric GCRS state, ICRS source direction, apparent correction, or common track epoch.
+
+## Verified candidate 50S.6G.3A coordinate representation
+
+The timeless collection plus evidence-level/per-sample UTC representation and fixed-axis coordinate-service seam passed the complete 2,728-test repository gate at `f0a4164`. This is verification, not acceptance, and changes no later coordinate authority.
+
+## Accepted 50S.6G.3A coordinate representation
+
+Fernando accepted the timeless geometric `gcrs-axes` / `topocentric-direction` collection, evidence-level `sample_time_scale="utc"`, and per-sample UTC instants. The coordinate-service seam means fixed axis orientation only and must never be described as a geocentric GCRS state, ICRS source place, apparent correction, or shared collection epoch.
+
+## Candidate 50S.6G.3B fixed product-frame finding
+
+For a static regional or binocular chart, every retained geometric topocentric direction remains tied to its own UTC sample instant in fixed GCRS axes, while the complete curve is transformed once into the horizontal product frame at the chart reference instant. The chart reference instant must equal the crossing FoV coordinate reference instant. This does not make samples simultaneous or recompute per-sample instantaneous AltAz. The candidate authorizes no coordinate implementation.
+
+## Accepted 50S.6G.3B coordinate boundary
+
+Fernando accepted the fixed-product-frame finding: admitted evidence keeps per-sample UTC directions in fixed GCRS axes, and the complete path is transformed once into the horizontal chart frame at the matching chart/FoV reference instant. Implementation must not recompute per-sample instantaneous AltAz or describe samples as simultaneous.
+
+## Candidate 50S.6G.3B implemented coordinate path
+
+Admission requires the chart observer's normalized longitude, latitude, elevation, and UTC instant to match the crossing field context, with vacuum refraction and the accepted Astropy/bundled-IERS Earth-orientation policies. The already-realized timeless GCRS-axis collection is transformed once into the chart's horizontal frame at that reference instant. Per-sample UTC remains evidence and is neither discarded nor reinterpreted as a series of instantaneous AltAz frames.
+
+## Candidate 50S.6G.4A fixed-axis polar finding
+
+A stereographic physical polar planisphere differs from the accepted 3B
+horizontal products. Its north and south faces are equatorial celestial disks.
+An exact local track therefore retains each sample's geometric topocentric
+direction in the fixed GCRS/ICRS axis orientation and is projected directly
+into each face's equatorial coordinates. It must not pass through AltAz,
+acquire apparent-place corrections, or be relabeled astrometric, apparent, or
+observed.
+
+The track remains observer- and UTC-interval-specific even though it is drawn
+against a rotating reusable celestial disk. The proposed product must identify
+itself as an event-specific non-recurring overlay. Face declination caps may
+clip presentation, but the physical horizon and pouch perform no satellite
+visibility filtering. This audit changes no coordinate calculation and
+authorizes no implementation.
+
+## Accepted 50S.6G.4A fixed-axis polar boundary
+
+Fernando accepted the direct fixed GCRS/ICRS-axis presentation for the paired
+stereographic polar planisphere. A bounded implementation may project the same
+geometric topocentric evidence independently on both equatorial faces while
+retaining per-sample UTC and event-specific non-recurrence. It must not pass
+through AltAz, apply apparent corrections, or let horizon furniture perform
+satellite visibility filtering.
+
+## Corrective 50S.6G.4A fixed AltAz planisphere finding
+
+The requested satellite planisphere is observer-horizontal, not a paired
+equatorial polar disk. Accepted exact samples remain geometric topocentric
+directions in fixed GCRS axes with per-sample UTC evidence. The existing
+ordinary request realization transforms the complete collection once into the
+chart observer's fixed AltAz product frame at the crossing field reference
+instant, exactly as accepted for regional and binocular 50S.6G.3B charts.
+
+FullSkyChart then applies only coordinate-neutral stereographic projection and
+horizon-boundary preparation. The horizon may clip presentation but never
+creates a scientific entry or exit event or a visibility claim. The earlier
+fixed-axis polar-face finding is superseded for 50S.6G.4B. The corrective audit
+changes no coordinate calculation and authorizes no implementation.
+
+## Accepted corrective 50S.6G.4A AltAz coordinate boundary
+
+Fernando accepted on 2026-09-20 the existing 50S.6G.3B fixed AltAz
+product-frame rule for the ordinary planisphere. The complete retained
+geometric topocentric GCRS-axis track is transformed once at the chart
+reference instant; sample UTC values remain evidence. FullSkyChart projection
+and horizon clipping are coordinate-neutral presentation and create no
+scientific event or visibility claim. No new coordinate calculation is
+authorized by 50S.6G.4B.
+
+## Verified candidate 50S.6G.4B AltAz behavior
+
+Candidate `91eafff5` changes no coordinate calculation. The complete retained
+geometric topocentric GCRS-axis track continues to be transformed once into
+the chart's fixed AltAz product frame at the request reference instant.
+Per-sample UTC remains evidence, and horizon clipping remains presentation
+without creating events or a visibility claim.
+
+## Accepted 50S.6G.4B AltAz coordinate behavior
+
+The implementation accepted at `f0730d8` changes no coordinate calculation.
+Each complete retained geometric topocentric GCRS-axis track is transformed
+once into the fixed AltAz product frame at chart reference time. Sample UTC
+values remain evidence. FullSkyChart projection and horizon clipping remain
+presentation operations and create no event, visibility, illumination, or
+brightness claim.
+## Accepted 50S.6H coordinate boundary
+
+The accepted observatory-planning adapter audit introduces no coordinate transform.
+Any later advisory consumes already accepted exact crossing results and binds
+caller-supplied planning units to an existing `field_id`. Observer identity,
+field geometry, UTC instants, and report identity must match exactly; a
+profile may not infer a site, transform a target, or reinterpret times.
+
+Illumination, Sun/Moon/night geometry, apparent brightness, and detector
+contamination remain deferred to 50S.7 through 50S.9.
+## Accepted 50S.6H implementation coordinate behavior
+
+The candidate performs no coordinate operation. It requires exact equality
+between the planning context's `SatelliteObserver` and the canonical report
+observer, binds units to existing report `field_id` values, and copies the
+accepted closest separation and field-geometry identity into advisory
+evidence. All calculations are UTC interval intersections only.
+
+The candidate neither transforms target coordinates nor infers a site,
+timescale, visibility, illumination, brightness, or detector effect.
+## Accepted complete 50S.6H coordinate evidence
+
+Positive and endpoint-touch zero-row specimens plus the complete test suite
+verify that revision `32dce675` performs UTC interval intersection only,
+requires exact observer/field binding, and adds no coordinate, propagation,
+visibility, illumination, brightness, or detector calculation. Fernando accepted this coordinate evidence on 2026-09-20.
+
+## Candidate 50S.7A illumination coordinate boundary
+
+One illumination state must place satellite, Earth, Sun, and Moon vectors in a
+single explicitly declared Cartesian frame at one physical instant before any
+subtraction. Public time remains canonical UTC; internal TDB ephemeris and UT1
+Earth rotation retain resource provenance. TEME, ITRS, GCRS, and ICRF
+three-vectors are never mixed by shape alone.
+
+The candidate first geometry uses the accepted satellite propagation and
+Earth-orientation route, installed ephemeris state, WGS-84 vacuum Earth limb,
+a finite uniform solar disk, and observer-centred geometric vacuum Sun
+altitude. Twilight thresholds are geometric `0`, `-6`, `-12`, and `-18`
+degrees under an explicit policy. This is not apparent sunrise, sky
+brightness, satellite visibility, or apparent magnitude. No coordinate or
+illumination runtime is authorized by the audit.
+
+## Accepted 50S.7A coordinate boundary
+
+Fernando accepted the 50S.7A coordinate finding on 2026-09-20. The audit
+introduces no coordinate type or transform. A later bounded 50S.7B must compose
+the accepted satellite and installed-ephemeris states at one physical instant,
+transform them explicitly into one common Cartesian frame before subtraction,
+and keep UTC, UT1, and TDB roles and resources in provenance.
+
+Only finite uniform-Sun/WGS-84 vacuum occultation, typed shadow state, and
+observer geometric twilight are authorized after merge. Mixed-frame vector
+subtraction, reflected fields, radiometry, apparent brightness, and detector
+effects remain unauthorized.
+## Candidate 50S.7B common-frame coordinate path
+
+The unaccepted implementation composes one accepted
+`SatelliteTopocentricState` and one same-instant geometric Earth-to-Sun
+`EphemerisState`. The public physical instant remains canonical UTC. The
+ephemeris adapter performs its internal TDB evaluation and retains the exact
+SPK resource; Earth rotation uses UT1/polar motion from the same installed
+IERS-A evidence already retained by the satellite transformation.
+
+The Earth-to-Sun state arrives in Earth-centred ICRF axes. Because ICRF/ICRS
+and GCRS axes are aligned for this geometric Cartesian composition, the
+accepted Astropy GCRS-axis-to-ITRS rotation is applied before subtraction.
+The satellite, observer, Earth, and Sun vectors used by the 50S.7B result are
+therefore all ITRS vectors at the same physical instant. TEME, ITRS, GCRS, and
+ICRF component arrays are never subtracted merely by shape.
+
+Observer solar altitude is the geometric vacuum angle between the
+observer-to-Sun ITRS vector and WGS-84 geodetic up. Its `0`, `-6`, `-12`,
+and `-18` degree thresholds are not apparent sunrise, refraction, sky
+brightness, satellite visibility, or detectability. This coordinate-guide
+update changes no general chart coordinate service.
+
+50S.7C shadow-transition search and all later satellite-light behavior remain
+unauthorized by this candidate.
+## Validated candidate 50S.7B coordinate evidence
+
+The controlled offline run at `51b935f` used installed DE440 file
+`de440s.bsp` with SHA-256
+`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`.
+Twenty full-light and five full-shadow same-instant states agreed with
+Skyfield, while the focused suite independently compared observer geometric
+Sun altitude with Astropy AltAz. Selected SPICE ellipsoid cases agreed across
+all four typed occultation classes. This evidence changes no coordinate
+owner and does not yet accept the candidate.
+
+## Verified candidate 50S.7B coordinate gate
+
+Executable `086e7da1` passed the independent installed-resource receipt,
+291-test expanded gate, 208-test documentation gate, clean diff, and all 2,796
+repository tests. The same-instant ITRS composition and geometric observer
+Sun-altitude boundary are therefore verified as a candidate. Fernando's
+separate acceptance is still required; 50S.7C and later coordinate behavior
+remain unauthorized.
+
+## Accepted 50S.7B coordinate behavior
+
+Fernando accepted the same-instant ITRS composition and geometric vacuum
+observer Sun-altitude boundary at `054ac53a` on 2026-09-21. Preserve
+canonical UTC identity, internal TDB ephemeris evaluation, UT1/polar-motion
+IERS evidence, ICRF/GCRS-aligned celestial axes, explicit ITRS rotation before
+subtraction, and WGS-84 geodetic up.
+
+These results remain illumination geometry, not apparent sunrise, sky
+brightness, visibility, or detectability. Merge remains separate; after merge
+only a documentation-first 50S.7C audit is authorized.
+
+## Candidate 50S.7C shadow-transition coordinate boundary
+
+A shadow event is observer-independent. A future search must propagate one
+selected immutable record at canonical UTC instants, transform the geocentric
+TEME state into ITRS through the existing installed-IERS-A Earth-orientation
+owner, rotate the same-instant geometric Earth-to-Sun state from aligned
+ICRF/GCRS axes into ITRS, and evaluate all contact geometry in that one frame.
+
+The candidate proposes a minimal shared geocentric Earth-fixed state seam in
+`satellites/topocentric.py`; it does not permit a dummy observer or a second
+TEME/EOP path. UTC remains public identity, UT1/polar motion remain explicit
+IERS evidence, and ephemeris TDB/SPK identity remains provenance.
+
+Certified transition brackets describe finite-Sun/WGS-84 vacuum contact, not
+apparent sunrise, atmospheric refraction, observer twilight transition,
+brightness, visibility, or detectability. This audit changes no coordinate
+runtime and authorizes no implementation before separate acceptance.
+
+## Accepted 50S.7C coordinate boundary
+
+Fernando accepted the observer-independent same-instant coordinate contract at
+`030a6322` on 2026-09-21. After merge, the bounded implementation may extract
+one shared geocentric TEME-to-ITRS state seam from the existing topocentric
+owner and compose the same installed-IERS-A evidence with the same-instant
+Earth-to-Sun ITRS vector.
+
+No dummy observer, second Earth-orientation path, mixed-frame subtraction,
+observer twilight-event search, apparent sunrise, refraction, brightness,
+visibility, or detectability is authorized. The coordinate-system guide was
+reviewed and this bounded extraction changes ownership reuse, not scientific
+frame meaning.
+
+## Candidate 50S.7C shared geocentric coordinate path
+
+At executable `69375fab`, the bounded candidate extracts
+`SatelliteGeocentricItrsState` and
+`SatelliteGeocentricItrsTransformer` from the already governed transform.
+Both the transition finder and `SatelliteTopocentricTransformer` compose the
+same `_geocentric_itrs_components(...)` implementation and retain the exact
+installed-IERS-A evidence. No dummy observer or second TEME/EOP route exists.
+
+At every transition evaluation, canonical UTC identifies the instant; SGP4
+supplies TEME; the shared owner supplies geocentric ITRS; and the geometric
+Earth-to-Sun ICRF/GCRS-axis state is rotated to ITRS using matching EOP
+evidence before contact geometry. The SPICE receipt uses explicitly pinned
+spherical special cases in J2000 solely as an independent event oracle;
+focused runtime tests cover WGS-84 orientations. No observer, twilight,
+refraction, brightness, or visibility meaning is added. Acceptance and later
+coordinate behavior remain unauthorized.
+
+## Verified candidate 50S.7C coordinate gate
+
+Exact candidate `bf877404` passed the 311-test expanded dependency gate in
+21.47 seconds, 212 documentation tests in 7.01 seconds, the clean diff, and all
+2,816 plugin-disabled repository tests in 218.58 seconds. The independent
+SPICE/Skyfield receipt also passed. This verifies reuse of one geocentric
+TEME-to-ITRS/EOP implementation by the observer and transition routes.
+
+The coordinate extraction remains an unaccepted candidate. Merge, branch
+deletion, new frame meaning, observer-event coupling, refraction, brightness,
+visibility, and 50S.7D+ behavior remain unauthorized.
+
+## Accepted 50S.7C shared geocentric coordinate behavior
+
+Fernando accepted the 50S.7C coordinate behavior at
+`eaeab6085b52bfed6136d37f3010c2f353e59f53` on 2026-09-21. Preserve
+canonical UTC event identity; split-JD SGP4 propagation; installed-IERS-A
+UT1/polar-motion evidence; the single shared TEME-to-ITRS seam; same-instant
+ICRF/GCRS-aligned Earth-to-Sun rotation into ITRS; and continuous
+finite-Sun/WGS-84 contact evaluation wholly in that Earth-fixed frame.
+
+The transition product remains observer-independent geometric evidence, not
+an apparent, brightness, visibility, or detector result. The coordinate-system
+guide was reviewed and remains current. PR 183 merge, branch deletion,
+50S.7D+, and any attachment to crossings or outputs require separate
+authorization.
+## Candidate 50S.7D coordinate and radiometric boundary
+
+The proposed 50S.7D.1 model introduces no coordinate transform, frame, time
+scale, or observer. It consumes the accepted same-instant Sun-satellite
+distance and uniform-disk visible fraction and returns a scalar bolometric
+normal-plane irradiance.
+
+Normal-plane is a radiometric reference surface perpendicular to the incoming
+beam, not a spacecraft frame or attitude. UTC remains result identity, while
+TDB ephemeris and UT1/EOP evidence remain inherited geometry provenance. The
+coordinate-system guide was reviewed and remains current.
+
+This documentation-only candidate authorizes no runtime. Spacecraft-frame
+projection, attitude, BRDF, observer flux, apparent magnitude, visibility,
+detector behavior, and all 50S.7D.2+ work remain unauthorized.
+
+## Accepted 50S.7D coordinate and radiometric boundary
+
+Fernando accepted the documentation-only 50S.7D coordinate boundary at
+`362199d04bd917741a8be88f20608967af75530e` on 2026-09-21 after 214
+plugin-disabled current-documentation tests passed in 7.00 seconds and
+repository checks were clean. The coordinate-system guide was reviewed and
+remains current.
+
+After merge, 50S.7D.1 may consume only the accepted same-instant
+Sun-satellite distance and uniform-disk visible fraction to produce scalar
+bolometric normal-plane irradiance. It introduces no coordinate transform,
+frame, time scale, observer, or spacecraft attitude. 50S.7D.2+, spacecraft
+projection, BRDF, observer flux, apparent magnitude, visibility, detector,
+output, facility, and scheduling behavior remain unauthorized. PR 184 merge
+and branch deletion remain separate explicit decisions.
+
+## Candidate 50S.7D.1 scalar radiometry boundary
+
+Executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` composes only the
+accepted same-instant Sun-satellite distance and uniform-disk visible fraction
+into scalar bolometric normal-plane irradiance. It introduces no vector,
+coordinate transform, frame, time scale, observer, or spacecraft attitude.
+
+UTC, TDB ephemeris resource, UT1/EOP, orbit, snapshot, and shadow-policy
+identity remain inherited through the complete immutable geometry. The
+coordinate-system guide was reviewed and remains current. This candidate is
+unaccepted; 50S.7D.2+, surface projection, brightness, visibility, detector,
+output, facility, and scheduling behavior remain unauthorized.
+
+## Verified candidate 50S.7D.1 scalar coordinate boundary
+
+Exact head `5bf5d52e81670f1a69af0476283195d12a3119bc` passed the nine-case
+installed-resource receipt, 308 expanded tests, and all 2,832 plugin-disabled
+tests. The evidence confirms scalar composition over retained geometry without
+a new vector, frame, transform, time scale, observer, or attitude.
+
+The coordinate-system guide was reviewed and remains current. The candidate is
+verified but unaccepted; merge, branch deletion, 50S.7D.2+, and later
+coordinate or radiometric behavior remain unauthorized.
+
+## Accepted 50S.7D.1 scalar coordinate boundary
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. The accepted
+composition remains scalar over retained same-instant geometry and introduces
+no vector, frame, transform, time scale, observer, or attitude.
+
+The nine-case receipt, 308 expanded tests, complete 2,832-test suite, and final
+223 documentation/package-boundary tests passed. This guide remains current;
+50S.7D.2+, merge, and branch deletion remain separate decisions.
+
+## Candidate 50S.7D.2 spectral scalar boundary
+
+Wavelength, spectral irradiance, and uncertainty are scalar resource axes and
+values, not celestial coordinates. Accepted same-instant geometry supplies
+distance and occultation. The audit adds no frame, transform, time scale,
+observer, surface, attitude, interpolation, runtime, or 50S.7D.3+ behavior.
+
+## Accepted 50S.7D.2 spectral scalar boundary
+
+Fernando accepted the spectral scalar boundary at exact candidate
+`0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe` on 2026-09-22. The guide
+remains current: wavelength, energy spectral irradiance, and uncertainty add no
+coordinate frame, transform, time scale, observer, or attitude meaning. The
+bounded later implementation must consume accepted same-instant geometry and
+must not interpolate, extrapolate, or renormalize the native spectrum.
+50S.7D.3 remains unauthorized.
+
+## Candidate 50S.7D.2 implemented scalar boundary
+
+Executable `8e930db2` adds scalar wavelength, energy spectral irradiance, and
+pointwise uncertainty values downstream of accepted same-instant geometry. It
+introduces no vector, frame, transform, time scale, observer, surface, or
+attitude. Sun-satellite distance and occultation remain owned by the accepted
+geometry; the spectral evaluator does not recompute either.
+
+The coordinate-system guide was reviewed and remains current. Complete gates
+and acceptance are pending; 50S.7D.3 and later coordinate or radiometric
+behavior remain unauthorized.
+
+## Verified candidate 50S.7D.2 scalar coordinate gate
+
+Exact head `8f2ca825` passed the real-resource receipt, 132 expanded tests,
+227 documentation/package tests, and all 2,858 plugin-disabled tests. The
+evidence confirms scalar composition over retained accepted geometry without a
+new vector, frame, transform, time scale, observer, surface, or attitude.
+
+This guide remains current. Acceptance, merge, branch deletion, 50S.7D.3, and
+later coordinate or radiometric behavior remain unauthorized.
+
+## Accepted 50S.7D.2 scalar coordinate behavior
+
+Fernando accepted exact verified candidate `d1edeb46` on 2026-09-22.
+Preserve scalar wavelength, energy spectral irradiance, and pointwise
+uncertainty composition over retained accepted geometry without any new
+vector, frame, transform, time scale, observer, surface, or attitude.
+
+This guide remains current. PR 187 merge, branch deletion, 50S.7D.3, and later
+coordinate or radiometric behavior remain separate explicit decisions.
+
+## Candidate 50S.7D.3 lunar-coordinate readiness
+
+The documentation-only audit identifies future geometry that implemented Wenu
+does not yet own: one exact lunar body-fixed orientation model, selenographic
+Sun and satellite-observer coordinates, longitude direction, signed phase
+convention, and same-instant Moon-to-Sun and Moon-to-satellite vectors and
+distances.
+
+No coordinate runtime changes. The guide was reviewed and remains current for
+implemented behavior. A later Moonlight runtime proposal must update this guide
+and independently validate every model convention against direct SPICE
+evidence. LIME resource preflight and 50S.7D.3 implementation remain separate;
+numeric Moonlight stays unauthorized.
+
+## Accepted 50S.7D.3 lunar-coordinate readiness
+
+Fernando accepted exact documentation-only candidate `abbb1b78` on
+2026-09-22 after the 230-test documentation/package gate and clean repository
+checks. The guide remains current because no runtime coordinate behavior was
+added.
+
+After merge, only an external LIME distribution preflight may inspect and
+freeze the required phase and selenographic conventions. No lunar body-fixed
+runtime, transform, vector, distance, or numeric Moonlight is authorized.
+Runtime requires a later guide update and separate acceptance.
+
+## Final accepted 50S.7D.3 coordinate-readiness verification
+
+Acceptance-record head `0be116ab` passed 231 documentation/package tests in
+8.54 seconds and clean repository checks. This guide remains current because
+the audit adds no runtime coordinate behavior. Only the post-merge external
+LIME distribution preflight is authorized next.
+
+## Candidate 50S.7D.3A LIME geometry-interface preflight
+
+The toolbox accepts direct Sun-Moon distance, observer-Moon distance, observer
+selenographic latitude and longitude, solar selenographic longitude, and signed
+phase. It also offers an EO-CFI satellite route, which Wenu must not use because
+accepted Wenu propagation and ephemeris services remain authoritative.
+
+This preflight adds no implemented coordinate value. Exact lunar body-fixed
+orientation, longitude direction, phase sign, time/correction policy, and
+distance normalization remain unresolved and require direct SPICE comparison.
+The guide remains current for implemented behavior.
+
+## Accepted 50S.7D.3A LIME geometry boundary
+
+Fernando accepted exact candidate `27e1ee1c` on 2026-09-22. This freezes the
+future direct-selenographic-input boundary while leaving every lunar frame,
+longitude, phase-sign, time/correction, and distance-normalization convention
+unimplemented and unresolved. No coordinate runtime or LIME execution is
+authorized; PR 189 merge remains separate.
+
+## Candidate 50S.7D.3B scalar geometry evidence
+
+The offline-inspection harness passes frozen scalar direct-selenographic rows
+to LIME solely to characterize executable behavior. It preserves both phase
+signs, the exact `2` and `90` degree model edges, adjacent outside-domain
+values, and LIME's returned geometry fields. These rows are not computed from
+Wenu state and therefore establish no coordinate equivalence.
+
+No implemented coordinate value changes. A later phase must independently
+compare Wenu/SPICE geometry and freeze lunar orientation, longitude direction,
+signed-phase meaning, distance, light-time, and aberration conventions before
+any runtime acceptance.

@@ -22,6 +22,7 @@ V09_ROADMAP = ARCHIVE / "migration_history/wenu_migration_0.8_to_0.9.md"
 FUTURE_ROADMAP = DEVELOPER / "post_v0.9_architecture_roadmap.md"
 V095_TARGET = DEVELOPER / "target_architecture_v0.9.5.md"
 COORDINATE_GUIDE = DEVELOPER / "coordinate_system_guide_v0.9.5.md"
+SATELLITE_PROGRAM_LOG = DEVELOPER / "satellite_program_log.md"
 PUBLIC_INTERFACE_AUDIT = DEVELOPER / "archive/audits/public_interface_audit_v0.9.5.md"
 SCENE_DEPENDENCY_AUDIT = (
     DEVELOPER / "archive/milestone_history/49d_scene/celestial_scene_dependency_audit_49d1.md"
@@ -3158,6 +3159,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
     } == {
         "README.md",
         "assistant_instructions.md",
+        "artificial_satellite_crossing_audit_50s0.md",
         "comet_discovery_and_reporting_audit_50a5d.md",
         "comet_photometry_revision_50a5d1b1.md",
         "configuration_schema_v2.md",
@@ -3165,6 +3167,36 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "current_architecture_v0.9.md",
         "implementation_reference.md",
         "post_v0.9_architecture_roadmap.md",
+        "satchecker_provider_contract_audit_50s2a.md",
+        "satellite_report_drawing_audit_50s3a.md",
+        "satellite_crossing_oracle_audit_50s5a.md",
+        "satellite_crossing_acceleration_audit_50s6a.md",
+        "satellite_crossing_coordination_audit_50s6c.md",
+        "satellite_multifov_interchange_audit_50s6e.md",
+        "satellite_observatory_planning_adapter_audit_50s6h.md",
+        "satellite_illumination_night_geometry_audit_50s7a.md",
+        "satellite_shadow_transition_audit_50s7c.md",
+            "satellite_direct_source_radiometry_audit_50s7d.md",
+            "satellite_spectral_solar_radiometry_audit_50s7d2.md",
+            "satellite_moonlight_radiometry_audit_50s7d3.md",
+            "satellite_lime_distribution_preflight_50s7d3a.md",
+            "satellite_lime_offline_inspection_audit_50s7d3b.md",
+            "satellite_moonlight_geometry_comparison_audit_50s7d3_phase_b.md",
+            "satellite_moonlight_geometry_run_protocol_phase_b.md",
+        "satellite_delivery_audit_50s6g.md",
+        "satellite_snapshot_preflight_audit_50s6g1b.md",
+        "satellite_exact_crossing_report_audit_50s6g2a.md",
+        "satellite_exact_local_track_audit_50s6g3a.md",
+        "satellite_binocular_regional_track_audit_50s6g3b.md",
+        "satellite_stereographic_planisphere_track_audit_50s6g4a.md",
+        "satellite_tabular_report_audit_50s6g2b.md",
+        "satellite_cli_file_protocol_audit_50s6g2c.md",
+        "satellite_snapshot_admission_audit_50s6g1b2a.md",
+        "satellite_medium_specimen_audit_50s6g1b2c.md",
+        "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+        "satellite_snapshot_propagation_audit_50s4a.md",
+        "satellite_guide.md",
+        "satellite_program_log.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
     }
@@ -3190,6 +3222,117 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         assert not (DEVELOPER / name).exists()
     assert TEST_PERFORMANCE_PROGRAM.is_file()
     assert not (DEVELOPER / "test_performance_and_future_program_49j_50.md").exists()
+
+
+def test_50s0_audits_satellite_crossing_search_and_photometry():
+    audit = " ".join(read(
+        DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    roadmap = " ".join(read(
+        DEVELOPER / "post_v0.9_architecture_roadmap.md"
+    ).split())
+
+    for phrase in (
+        "Accepted by Fernando on 2026-09-14",
+        "no runtime satellite, catalogue acquisition, or public crossing command",
+        "must not discard a true crossing",
+        "Adopt OMM as the canonical ingestion model",
+        "Never truncate a catalogue identifier to five digits",
+        "Adopt the Vallado-compatible SGP4 implementation",
+        "TEME is neither ICRS nor an observer frame",
+        "adaptive complete scan as the oracle",
+        "HEALPix plus time slabs remains the leading optional index",
+        "zero false negatives",
+        "Near-zenith intervals",
+        "empirical satellite-family magnitude distribution",
+        "A single standard magnitude is not a substitute for a phase function",
+        "Detector contamination remains later work",
+        "checked 2026-09-14",
+        "at most one supported bulk request",
+        "No per-object requests, polling loop, parallel downloads, or automatic retry",
+        "Space-Track is valuable as an authenticated independent source",
+        "SatChecker first as a bounded online crossing provider and external oracle",
+        "strict separation of crossing, illumination, apparent magnitude",
+        "The orbital-plane test is topocentric",
+        "small, geometrically representative immutable OMM snapshot",
+        "developer specimen builder",
+        "50S.0 through 50S.3 end with SatChecker reports/charts",
+    ):
+        assert phrase in audit
+
+    assert "artificial_satellite_crossing_audit_50s0.md" in index
+    for phrase in (
+        "50S.0 scientific and architectural decisions accepted by Fernando on 2026-09-14",
+        "50S.1 — Provider-neutral satellite crossing domain",
+        "50S.2 — SatChecker crossing adapter",
+        "50S.3A — Satellite report and drawing contract audit",
+        "50S.3B — SatChecker sampled-candidate reports and tracks",
+        "50S.4A — Snapshot and propagation contract audit",
+        "50S.4B — Immutable OMM element snapshot",
+        "50S.4C — Validated SGP4/TEME propagation",
+        "50S.4D — Earth-orientation and topocentric state",
+        "50S.4E — Propagated specimen builder and closure",
+        "50S.5 — Complete local FoV-crossing oracle",
+        "50S.6 — Conservative local crossing acceleration",
+        "50S.7 — Independent illumination and night geometry",
+        "50S.8 — Apparent-brightness estimation and validation",
+        "50S.9 — Detector-specific contamination",
+        "50S.10 — Night, season, and sky-position products and closure",
+    ):
+        assert phrase in roadmap
+
+
+def test_satellite_guide_preserves_50s_scientific_boundaries():
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    audit = " ".join(read(
+        DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+    ).split())
+
+    for phrase in (
+        "Living 50S work-in-progress guide",
+        "intentionally separate from `coordinate_system_guide_v0.9.5.md`",
+        "Acronyms and specialized abbreviations",
+        "OMM and TLE are not two competing propagation models",
+        "OMM — Orbit Mean-Elements Message",
+        "TLE — two-line element set",
+        "SGP4 — Simplified General Perturbations 4",
+        "TEME — True Equator, Mean Equinox",
+        "HEALPix — Hierarchical Equal Area isoLatitude Pixelization",
+        "EOP — Earth-orientation parameters",
+        "geometric crossing",
+        "illumination",
+        "apparent brightness",
+        "detector contamination",
+        "validated immutable OMM/TLE snapshot",
+        "No later stage may change the result of an earlier geometric crossing test",
+        "must not define the internal identity model",
+        "A snapshot is a frozen copy of the provider's orbit catalogue",
+        "It is not a set of satellite positions",
+        "one supported bulk request",
+        "TEME is not ICRS, GCRS, ITRS, or topocentric AltAz",
+        "A fixed sampling grid alone is not a completeness proof",
+        "omega = |rho x rho_dot| / |rho|^2",
+        "Near-zenith or otherwise singular intervals",
+        "zero false negatives",
+        "HEALPix is the leading pixelization candidate",
+        "orbital-plane/FoV-cone intersection",
+        "Testing only the angular distance to a geocentric orbital great circle is unsafe",
+        "provider data from cache wherever possible",
+        "small representative OMM snapshot",
+        "developer specimen builder",
+        "dense/adaptive brute-force reference path must remain independent",
+        "missing flare evidence produces `unknown`, never zero flare probability",
+        "A single standard magnitude does not replace a phase function",
+        "Measured maxima tune performance but never replace conservative bounds",
+        "must not duplicate Wenu's coordinate service",
+        "do not merge documents mechanically",
+    ):
+        assert phrase in guide
+
+    assert "satellite_guide.md" in index
+    assert "satellite_guide.md" in audit
 
     archived = {
         "archive/audits/coordinate_transformation_audit_09a2afd.md",
@@ -3402,6 +3545,19 @@ def test_49j3a_installs_reproducible_entry_and_new_test_admission_rules():
     assert "Which existing test is closest" in instructions
     assert "Which marker and gate" in instructions
     assert "Any required plugin must be explicitly loaded" in instructions
+    for phrase in (
+        "Layered post-change verification",
+        "smallest focused gate that covers every changed responsibility",
+        "Do not repeatedly run unrelated tests",
+        "once before presenting a bounded implementation milestone",
+        "before merging a milestone branch into its integration branch",
+        "before merging the integration branch into `main`",
+        "A previously passing full suite remains valid across a later documentation-only edit",
+        "or non-documentation test collection changed",
+        "Record the exact commit or remote tree covered by every focused and full-suite result",
+        "Do not create a marker or empty future test file merely to name a branch or milestone",
+    ):
+        assert phrase in instructions
     assert source_tree.count("PYTEST_DISABLE_PLUGIN_AUTOLOAD=1") >= 4
     assert "49J.3A implemented only" in roadmap
     assert "83 current-documentation tests in 2.43" in roadmap
@@ -4924,3 +5080,5281 @@ def test_assistant_instructions_govern_production_module_placement():
 
     assert "├── resources.py                installed-resource access" in source_tree
     assert "├── resources/                  installed-resource access" not in source_tree
+
+def test_50s1_documents_provider_neutral_satellite_crossing_domain():
+    roadmap = " ".join(read(
+        DEVELOPER / "post_v0.9_architecture_roadmap.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(
+        DEVELOPER / "coordinate_system_guide_v0.9.5.md"
+    ).split())
+
+    for phrase in (
+        "Accepted by Fernando on 2026-09-15; merged through PR #123",
+        "explicitly framed closed circular FoV",
+        "provider acquisition, propagation, charts, projection, rendering",
+        "Spherical rectangles, WCS/instrument footprints",
+        "SatChecker adaptation",
+    ):
+        assert phrase in roadmap
+
+    for phrase in (
+        "The 50S.1 admission review found no existing owner",
+        "satellite_crossings.py",
+        "SatelliteCrossingCandidate",
+        "one connected visit",
+        "accepts boundary touch",
+        "src/wenu/satellites/",
+    ):
+        assert phrase in guide
+
+    assert "advanced domain contracts" in reference
+    assert "include both endpoints" in reference
+    assert "Boundary touch is a valid zero-duration crossing" in reference
+    assert "50S.1 provider-neutral satellite-crossing ownership" in source_tree
+    assert "tests/test_satellite_crossings.py" in source_tree
+    assert "adds no TEME state" in coordinate_guide
+    assert "one chart observation instant" in coordinate_guide
+    assert "dormant `satellite_crossings.py` domain boundary" in architecture
+    assert "No satellite acquisition, orbit solution, propagation" in architecture
+    for text in (
+        roadmap,
+        guide,
+        architecture,
+        reference,
+        source_tree,
+        coordinate_guide,
+    ):
+        assert "2,428 tests" in text
+        assert "23b851b" in text
+
+
+def test_50s2a_audits_satchecker_provider_contract_before_adapter():
+    audit = " ".join(read(
+        DEVELOPER / "satchecker_provider_contract_audit_50s2a.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    roadmap = " ".join(read(
+        DEVELOPER / "post_v0.9_architecture_roadmap.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(
+        DEVELOPER / "coordinate_system_guide_v0.9.5.md"
+    ).split())
+
+    for phrase in (
+        "This audit changes no runtime code",
+        "normalize successful provider output only to `SatelliteCrossingCandidate`",
+        "It must not construct `SatelliteCrossingResult`",
+        "one-second grid with `numpy.arange`",
+        "exclude the computed stop endpoint",
+        "explicit UTC-to-UT1 conversion",
+        "never trigger a hidden IERS download",
+        "outside Wenu's closed requested FoV",
+        "no parallel submissions, no automatic retry, and no hidden polling loop",
+        "Corrupt, partial, mismatched, or obsolete-schema entries fail closed",
+        "must not be committed, packaged, or redistributed",
+        "Ordinary tests use synthetic source-shaped specimens",
+        "Accepted by Fernando on 2026-09-15",
+        "acceptance authorizes only the bounded 50S.2B cached-adapter implementation",
+    ):
+        assert phrase in audit
+
+    assert "satchecker_provider_contract_audit_50s2a.md" in index
+    assert "50S.2A — SatChecker provider-contract audit" in roadmap
+    assert "candidate envelope and sampled evidence" in guide
+    assert "50S.2A SatChecker provider-contract audit ownership (accepted)" in source_tree
+    assert "one-second sampling grid excludes the stop endpoint" in coordinate_guide
+    assert "Fernando accepted this scientific boundary on 2026-09-15" in coordinate_guide
+
+
+def test_50s2b_documents_cached_satchecker_adapter_candidate():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    audit = " ".join(read(
+        DEVELOPER / "satchecker_provider_contract_audit_50s2a.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "dormant `satchecker.py` provider boundary",
+        "one-shot `submit()` and `poll()` operations",
+        "does not create `SatelliteCrossingResult`",
+        "Only 50S.3 reporting and drawing is authorized next",
+    ):
+        assert phrase in architecture
+    for phrase in (
+        "50S.2B status:** Accepted by Fernando on 2026-09-15",
+        "content-addressed exact local cache",
+        "No waiter loop, automatic retry, CLI, live fixture",
+    ):
+        assert phrase in roadmap
+    for phrase in (
+        "SatChecker crossing candidates",
+        "Neither function retries, waits, loops, or runs concurrently",
+        "No exact `SatelliteCrossingResult` is synthesized",
+    ):
+        assert phrase in reference
+    assert "50S.2B SatChecker adapter ownership (accepted)" in (
+        source_tree
+    )
+    assert "tests/test_satchecker.py" in source_tree
+    assert "Astropy IERS automatic download is disabled" in coordinate_guide
+    assert "Candidate 50S.2B implementation" in audit
+    assert "accepted 50S.2B provider module is `satchecker.py`" in guide
+    assert "satchecker_provider_contract_audit_50s2a.md" in instructions
+
+
+def test_50s2b_records_bounded_live_provider_normalization():
+    audit = " ".join(read(
+        DEVELOPER / "satchecker_provider_contract_audit_50s2a.md"
+    ).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+
+    for phrase in (
+        "Bounded live transport evidence",
+        "failed before network access",
+        "degraded accuracy was not enabled",
+        "Exactly one versioned FOV submission returned HTTP 200 and PENDING",
+        "Two separate explicit polls returned the same PENDING message",
+        "No retry, replacement submission, concurrent access",
+        "A later third explicit poll reached SUCCESS",
+        "normalized 13 distinct NORAD identities and 26 ordered samples",
+        "without constructing an exact connected visit",
+    ):
+        assert phrase in audit
+    assert "SUCCESS receipt normalized to 13 candidates and 26 ordered samples" in (
+        roadmap
+    )
+    assert "normalized 13 candidates and 26 ordered samples" in guide
+
+
+def test_50s2b_records_accepted_implementation_and_gates():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    audit = " ".join(read(
+        DEVELOPER / "satchecker_provider_contract_audit_50s2a.md"
+    ).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+
+    for text in (
+        architecture,
+        roadmap,
+        reference,
+        coordinate_guide,
+        audit,
+        guide,
+    ):
+        assert "2026-09-15" in text
+    assert "all 2,457 tests in 88.48 seconds" in architecture
+    assert "accepted 50S.3A now authorizes only bounded 50S.3B" in roadmap
+    assert "accepted the bounded 50S.2B API and ownership" in reference
+    assert "50S.2B SatChecker adapter ownership (accepted)" in source_tree
+    assert "50S.2B acceptance" in audit
+    assert "This closes only the cached SatChecker adapter" in audit
+    assert "only the bounded 50S.3B implementation is authorized next" in guide
+
+
+
+def test_50s3a_audits_sampled_candidate_reports_and_shared_path_drawing():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_report_drawing_audit_50s3a.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+
+    for phrase in (
+        "This documentation-only audit",
+        "provider-sampled candidate evidence, not a verified connected FoV crossing",
+        "must not be used as a false type for provider samples",
+        "SatChecker sampled candidate evidence — not verified crossings",
+        "must not reparse provider JSON",
+        "Candidate ordering is by NORAD catalogue identifier",
+        "Two or more samples produce one open spherical polyline",
+        "One sample produces one point marker",
+        "No interpolation, extrapolation, smoothing, resampling",
+        "sky/artificial_satellites/satchecker_candidates/norad_<catalogue_id>/sampled_track",
+        "PNG, PDF, and SVG must all be produced by the same realized layer",
+        "adds no CLI acquisition workflow",
+        "authorizes only the bounded 50S.3B implementation",
+        "Accepted by Fernando on 2026-09-15",
+        "focused documentation gate passed all 126 tests",
+    ):
+        assert phrase in audit
+
+    assert "satellite_report_drawing_audit_50s3a.md" in index
+    assert "50S.3A — Satellite report and drawing contract audit" in roadmap
+    assert "50S.3B — SatChecker sampled-candidate reports and tracks" in roadmap
+    assert "only the bounded 50S.3B implementation is authorized next" in guide
+    assert "50S.3A satellite report and drawing contract audit ownership (accepted)" in source_tree
+    assert "Connecting ordered provider samples is presentation" in coordinate_guide
+
+
+
+def test_50s3b_documents_candidate_reports_and_shared_path_layers():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_report_drawing_audit_50s3a.md"
+    ).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "50S.3B sampled-candidate presentation boundary (accepted)",
+        "satellite_presentations.py",
+        "SatelliteCandidateTrackLayer",
+        "SatelliteCandidateSamplesLayer",
+        "No entry, exit, closest approach, interpolation",
+    ):
+        assert phrase in architecture
+    for phrase in (
+        "50S.3B — SatChecker sampled-candidate reports and tracks",
+        "Accepted by Fernando on 2026-09-15",
+        "shared PNG/PDF/SVG pipeline gate",
+        "does not synthesize exact crossing events",
+    ):
+        assert phrase in roadmap
+    for phrase in (
+        "SatChecker sampled-candidate presentations",
+        "SatChecker sampled candidate evidence — not verified crossings",
+        "SUCCESS evidence is sorted by full NORAD catalogue identifier",
+        "one sample becomes one",
+        "perform no network access",
+    ):
+        assert phrase in reference
+    assert "50S.3B satellite presentation ownership (accepted)" in source_tree
+    assert "tests/test_satellite_presentations.py" in source_tree
+    assert "fixed-product-frame track convention" in coordinate_guide
+    assert "position generation" in coordinate_guide
+    assert "Accepted 50S.3B implementation evidence" in audit
+    assert "expanded focused gate passed all 90 tests" in audit
+    assert "Accepted 50S.3B implementation" in guide
+    assert "There is no entry, exit, closest approach" in guide
+    assert "satellite_report_drawing_audit_50s3a.md" in instructions
+    assert "tools/validate_50s3b_satellite_presentations.py" in source_tree
+    assert "Fernando visually accepted" in architecture
+    assert "centered FoV chart across PNG" in roadmap
+    assert "four UTC annotations" in guide
+    assert "FoV was labelled explicitly" in audit
+    assert "all 217 tests" in architecture
+    assert "all 2,473 tests in 83.98 seconds" in architecture
+    assert "authorizes only 50S.4 next" in roadmap
+    assert "only the documentation-only 50S.4A audit is authorized next" in guide
+    assert "complete plugin-disabled suite passed all 2,473 tests" in audit
+    assert "accepted the bounded 50S.3B implementation on 2026-09-15" in audit
+    assert "Only 50S.4 is authorized next" in source_tree
+
+
+
+def test_50s4a_audits_snapshot_propagation_and_topocentric_contracts():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "This documentation-only audit",
+        "50S.4B — immutable OMM snapshot and element domain",
+        "50S.4C — validated SGP4/TEME propagation",
+        "50S.4D — Earth-orientation and topocentric state chain",
+        "50S.4E — developer specimen builder and closure",
+        "sgp4>=2.25,<3",
+        "Do not rely on Skyfield's transitive dependency",
+        "WGS-72 is mandatory",
+        "CCSDS 502.0-B-3",
+        "synthetic and non-operational",
+        "No live CelesTrak, Space-Track, or SatChecker response is committed",
+        "split Julian date parts",
+        "geocentric geometric TEME",
+        "Astropy IERS automatic download remains disabled",
+        "degraded accuracy is never enabled silently",
+        "aberration-bearing result “geometric ICRS”",
+        "Agreement between two paths using the same hidden inputs is not independent evidence",
+        "propagated sampled specimens — not verified crossings",
+        "It cannot emit",
+        "Acceptance closes 50S.4A and authorizes only 50S.4B immutable OMM element",
+    ):
+        assert phrase in audit
+
+    assert "satellite_snapshot_propagation_audit_50s4a.md" in index
+    assert "Accepted 50S.4A snapshot and propagation audit" in architecture
+    for phrase in (
+        "50S.4A — Snapshot and propagation contract audit",
+        "50S.4B — Immutable OMM element snapshot",
+        "50S.4C — Validated SGP4/TEME propagation",
+        "50S.4D — Earth-orientation and topocentric state",
+        "50S.4E — Propagated specimen builder and closure",
+    ):
+        assert phrase in roadmap
+    assert "50S.4 snapshot and propagation admission review" in guide
+    assert "only 50S.4B immutable OMM element and snapshot work is authorized next" in guide
+    assert "50S.4A snapshot and propagation contract audit ownership (accepted)" in source_tree
+    assert "TEME and topocentric transformation admission note" in coordinate_guide
+    assert "not automatically an ICRS astrometric position" in coordinate_guide
+    assert "satellite_snapshot_propagation_audit_50s4a.md" in instructions
+    assert "Accepted by Fernando on 2026-09-15" in audit
+    assert "focused documentation gate passed all 128 tests" in audit
+    assert "branch diff check was clean" in audit
+    assert "authorizes only 50S.4B immutable OMM element and snapshot work" in roadmap
+
+
+def test_50s4b_documents_immutable_omm_snapshot_boundary():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Accepted 50S.4B immutable element snapshot",
+        "canonical-byte and record-level SHA-256 verification",
+        "synthetic_50s4b_v1",
+        "adds no propagator construction",
+    ):
+        assert phrase in architecture
+    assert "50S.4B — Immutable OMM element snapshot" in roadmap
+    for phrase in (
+        "Local satellite elements and snapshots (50S.4B accepted)",
+        "SatelliteElementRecord",
+        "SatelliteSnapshotManifest",
+        "SatelliteElementSnapshot",
+        "load_snapshot",
+        "performs no network access and no propagation",
+    ):
+        assert phrase in reference
+    assert "50S.4B satellite element and snapshot ownership (accepted)" in source_tree
+    assert "tests/test_satellite_elements.py" in source_tree
+    assert "50S.4B element data remains pre-coordinate" in coordinate_guide
+    assert "performs no propagation" in coordinate_guide
+    assert "Candidate 50S.4B implementation evidence" in audit
+    assert "focused element, package-boundary, and packaged-configuration gate passed all 29 tests" in audit
+    assert "Accepted 50S.4B immutable OMM snapshot" in guide
+    assert "copies no live CelesTrak, Space-Track, SatChecker" in guide
+    assert "sgp4>=2.25,<3" in instructions
+
+def test_50s4b_records_complete_and_installed_wheel_evidence():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    assert "production commit `d3cb597`" in architecture
+    assert "expanded focused gate passed all 158 tests" in audit
+    assert "complete plugin-disabled suite passed all 2,483 tests" in audit
+    assert "isolated virtual environment" in audit
+    assert "installed `site-packages` tree" in audit
+    assert "b6ab95df3eb180b07694b1b9bafd47c2805b6cc7ebea8636490beec03cd71457" in audit
+    assert "ordered full identifiers 900001, 900002, and 900003" in audit
+    assert "Accepted by Fernando on 2026-09-15" in roadmap
+    assert "This closes 50S.4B and authorizes only 50S.4C" in audit
+    assert "only 50S.4C validated SGP4/TEME propagation is authorized next" in guide
+
+
+def test_50s4c_documents_validated_sgp4_teme_boundary():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Accepted 50S.4C validated SGP4/TEME propagation",
+        "separate Julian-day and fractional-day values",
+        "SatelliteTemeState",
+        "does not pass a hidden surrogate identity",
+    ):
+        assert phrase in architecture
+    assert "50S.4C — Validated SGP4/TEME propagation" in roadmap
+    for phrase in (
+        "Validated SGP4 geometric TEME propagation (50S.4C accepted)",
+        "split_julian_date",
+        "Sgp4TemePropagator",
+        "SatelliteTemeState",
+        "SatellitePropagationError",
+        "does not transform TEME",
+    ):
+        assert phrase in reference
+    assert "50S.4C SGP4/TEME propagation ownership (accepted)" in source_tree
+    assert "tests/test_satellite_sgp4.py" in source_tree
+    assert "50S.4C typed TEME state boundary" in coordinate_guide
+    assert "must not be labelled ICRS, GCRS, ITRS" in coordinate_guide
+    assert "Accepted 50S.4C implementation evidence" in audit
+    assert "upstream `Satrec` maximum 339999" in audit
+    assert "initial satellite element/SGP4 gate passed all 15 tests" in audit
+    assert "Accepted 50S.4C SGP4 and geometric TEME state" in guide
+    assert "300001–300003" in guide
+    assert "only the bounded 50S.4D" in instructions
+
+
+def test_50s4c_records_complete_and_installed_wheel_evidence():
+    architecture = " ".join(read(V09_CURRENT).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+
+    assert "production commit `e0d7c78`" in architecture
+    assert "expanded focused gate passed all 167 tests" in audit
+    assert "complete plugin-disabled suite passed all 2,492 tests" in audit
+    assert "isolated virtual environment" in audit
+    assert "loaded from `site-packages`" in audit
+    assert "2e5288a6aad9fbe29cfe6d9a60e0045be28501859d8c739135fd302460ece5fe" in audit
+    for identifier in ("300001", "300002", "300003"):
+        assert f"{identifier}: TEME/WGS-72/status 0" in audit
+    assert "finite position and velocity" in audit
+    assert "accepted 50S.4C on 2026-09-15" in guide
+    assert "final documentation gate passed all 132 tests" in audit
+    assert "branch diff check was clean" in audit
+    assert "This closes 50S.4C and" in audit
+    assert "authorizes only 50S.4D Earth-orientation and topocentric state work" in audit
+
+def test_50s4d_documents_accepted_topocentric_boundary():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Accepted 50S.4D Earth-orientation and topocentric state",
+        "topocentric geometric vector expressed in GCRS axes",
+        "Fernando scientifically and architecturally accepted 50S.4D on 2026-09-15",
+    ):
+        assert phrase in architecture
+    assert "Status:** Accepted by Fernando on 2026-09-15" in roadmap
+    assert "17-test dedicated and 89-test expanded Mac gates" in roadmap
+    assert "complete plugin-disabled suite of 2,511 tests in 95.10" in roadmap
+    for phrase in (
+        "SatelliteTopocentricTransformer().transform(teme_state, observer)",
+        "SatelliteEarthOrientationEvidence",
+        "SatelliteEarthOrientationError",
+        "gcrs-axes",
+        "50S.4D accepted",
+    ):
+        assert phrase in reference
+    assert "50S.4D Earth-orientation/topocentric ownership (accepted)" in source_tree
+    assert "tests/test_satellite_topocentric.py" in source_tree
+    assert "50S.4D topocentric Cartesian and GCRS-axis boundary (accepted)" in coordinate_guide
+    assert "does not make it an ICRS catalogue position" in coordinate_guide
+    assert "Accepted 50S.4D implementation evidence" in audit
+    assert "production-code commit `1c33f3`" in audit
+    assert "complete plugin-disabled suite passes all 2,511 tests" in audit
+    assert "observed near-zenith separation is 1.40 mas" in audit
+    assert "expanded element/SGP4/topocentric/crossing/SatChecker/coordinate gate" in audit
+    assert "Accepted 50S.4D local topocentric state" in guide
+    assert "exact IERS-A SHA-256 and coverage" in guide
+    assert "only the bounded 50S.4E propagated-specimen builder is authorized next" in instructions
+
+def test_50s4e_documents_accepted_propagated_specimen_boundary():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for text in (
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        audit,
+        guide,
+        instructions,
+    ):
+        assert "propagated sampled specimens — not verified crossings" in text
+    assert "tools/build_50s4_satellite_specimens.py" in architecture
+    assert "caller-selected output directory" in architecture
+    assert "Status:** Accepted by Fernando on 2026-09-15" in roadmap
+    assert "tests/test_satellite_specimens.py" in source_tree
+    assert "No new `src/wenu` module is admitted" in source_tree
+    assert "topocentric geometric direction expressed in GCRS axes" in (
+        coordinate_guide
+    )
+    assert "cannot emit `SatelliteCrossingResult`" in audit
+    assert "does not find a useful field automatically" in guide
+    assert "50S.5" in guide
+    assert "hidden 50S.5 crossing oracle" in instructions
+
+def test_50s4e_records_complete_and_accepted_gate_evidence():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+
+    for text in (architecture, roadmap, audit, guide):
+        assert "all 2,522 tests" in text
+        assert "105.38 seconds" in text
+        assert (
+            "16137e9380404dca03789532ab029c4159755c69dd2ab0ca5990a82cd9c42374"
+            in text
+        )
+        assert "accepted 50S.4E on 2026-09-15" in text
+    assert "dedicated builder gate passed all 10 tests in 10.58 seconds" in (
+        architecture
+    )
+    assert "expanded satellite/coordinate gate passed all 99 tests" in (
+        architecture
+    )
+    assert "documentation gate passed all 134 tests in 2.45 seconds" in (
+        architecture
+    )
+    assert "d4bb5af084caf3e82621bc75aad902dc7ad9e38e785a97d3fcac0a23d89644fb" in (
+        audit
+    )
+    assert "All three default tracks were below the La Ligua horizon" in audit
+    assert "git diff --check 243b75c...HEAD" in audit
+    assert "closing 50S.4 and authorizing only bounded" in roadmap
+    assert "50S.5 complete local FoV-crossing oracle work" in roadmap
+    assert "50S.6 acceleration" in guide
+    assert "remain unauthorized" in guide
+
+def test_50s5a_audits_complete_local_crossing_oracle_contract():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_crossing_oracle_audit_50s5a.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "documentation-only scientific and API audit",
+        "topocentric geometric vector expressed in GCRS axes",
+        "fixed unit vector expressed in GCRS axes",
+        "validated numerical completeness under the declared time and angular tolerances",
+        "It is not a formal interval-arithmetic proof",
+        "scans every valid record",
+        "SatelliteCrossingConvergenceError",
+        "A fixed sampling grid",
+        "bracket-preserving root method",
+        "detects tangency without requiring a sign change",
+        "Disconnected visits are separate results",
+        "One invalid record does not silently disappear",
+        "tests/test_satellite_crossing_oracle.py",
+        "Analytic trajectory tests exercise the solver independently",
+        "Acceptance of 50S.5A authorizes 50S.5B only",
+    ):
+        assert phrase in audit
+
+    assert "satellite_crossing_oracle_audit_50s5a.md" in index
+    assert "Accepted 50S.5A complete-oracle audit" in architecture
+    assert "50S.5A — Complete local crossing-oracle audit" in roadmap
+    assert "No callable local crossing oracle exists yet" in reference
+    assert "accepted audit specifies" in reference
+    assert "Accepted 50S.5A local crossing-oracle ownership" in source_tree
+    assert "closest existing `tests/test_satellite_crossings.py`" in source_tree
+    assert "Accepted 50S.5A crossing-coordinate contract" in coordinate_guide
+    assert "Accepted 50S.5A complete local crossing-oracle audit" in guide
+    assert "Uncertain numerical intervals must subdivide or fail closed" in (
+        instructions
+    )
+    assert "50S.6 and later behavior remain unauthorized" in guide
+    assert "focused plugin-disabled documentation gate passed all 136 tests" in (
+        audit
+    )
+    assert "3.27 seconds" in audit
+    assert "git diff --check 41978bc...HEAD" in audit
+    assert "adds no runtime, dependency, package data, or generated product" in (
+        audit
+    )
+    assert "final acceptance documentation gate passed all 136 tests" in audit
+    assert "3.00 seconds" in audit
+    assert "Fernando scientifically and architecturally accepted 50S.5A" in audit
+    assert "only bounded 50S.5B implementation" in audit
+    assert (
+        "50S.6 acceleration and all later satellite behavior remain unauthorized"
+        in audit
+    )
+
+
+def test_50s5b_documents_accepted_complete_local_crossing_oracle():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_crossing_oracle_audit_50s5a.md"
+    ).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    assert "Accepted 50S.5B complete local crossing oracle" in architecture
+    assert "50S.5B — Complete local crossing-oracle implementation" in roadmap
+    assert "LocalSatelliteCrossingQuery" in reference
+    assert "LocalSatelliteCrossingOracle" in reference
+    assert "SatelliteCrossingConvergenceError" in reference
+    assert "Accepted 50S.5B local crossing-oracle ownership" in source_tree
+    assert "Accepted 50S.5B local crossing coordinates" in coordinate_guide
+    assert "Accepted 50S.5B complete local crossing oracle" in guide
+    assert "Accepted 50S.5B implementation boundary" in instructions
+    for phrase in (
+        "recursive sampling certifies continuous containment within the declared time and angular tolerances",
+        "zero-duration boundary event",
+        "tests/test_satellite_crossing_oracle.py",
+        "Focused, complete-suite, documentation, and diff gates are complete",
+        "dedicated plugin-disabled oracle gate passed all 13 tests",
+        "expanded oracle, crossing, element, SGP4, topocentric, SatChecker",
+        "complete plugin-disabled suite passed all 2,538 tests in 163.36 seconds",
+        "git diff --check aa6f91a...HEAD",
+        "scientifically and architecturally accepted 50S.5B on 2026-09-15",
+        "Runtime acceleration and all later behavior remain unauthorized",
+    ):
+        assert phrase in audit
+    assert "documentation-first 50S.6 conservative local crossing acceleration audit" in roadmap
+    assert "Runtime acceleration and all later behavior remain unauthorized" in audit
+
+
+def test_50s6a_records_accepted_conservative_crossing_acceleration():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_crossing_acceleration_audit_50s6a.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "documentation-only scientific and API audit",
+        "LocalSatelliteCrossingOracle.solve(query)",
+        "tri-state: `reject`, `retain`, or `indeterminate`",
+        "validated zero false negatives",
+        "not a formal interval-arithmetic proof of SGP4",
+        "Topocentric cone versus bounded orbital shell",
+        "may not treat the epoch osculating plane as fixed",
+        "A geocentric great-circle distance alone is insufficient",
+        "Phase and reachable-arc rejection",
+        "Sampling alone proves nothing between samples",
+        "Horizon rejection",
+        "would therefore change result semantics",
+        "Earth-occultation rejection",
+        "HEALPix and time indexing",
+        "Every retained candidate reaches the accepted 50S.5",
+        "tests/test_satellite_crossing_acceleration.py",
+        "three-record synthetic snapshot proves composition, not useful speed",
+        "50S.6B first implementation",
+    ):
+        assert phrase in audit
+
+    assert "satellite_crossing_acceleration_audit_50s6a.md" in index
+    assert "Accepted 50S.6A conservative acceleration audit" in architecture
+    assert "50S.6A — Conservative local crossing acceleration audit" in roadmap
+    assert "No acceleration API exists yet" in reference
+    assert "Accepted 50S.6A acceleration ownership audit" in source_tree
+    assert "Accepted 50S.6A acceleration coordinate boundary" in coordinate_guide
+    assert "Accepted 50S.6A conservative crossing acceleration audit" in guide
+    assert "Accepted 50S.6A acceleration-audit boundary" in instructions
+    assert "creates neither future source nor acceleration test file" in source_tree
+    assert "Phase/reachable-arc filtering, coarse vectorized propagation" in roadmap
+    assert "passed all 138 plugin-disabled current-documentation tests" in audit
+    assert "3.99 seconds" in audit
+    assert "git diff --check cc454de...HEAD" in audit
+    assert "corrected branch diff check was clean" in roadmap
+    assert "scientifically and architecturally accepted 50S.6A on 2026-09-15" in audit
+    assert "authorizes only a bounded 50S.6B first implementation" in audit
+    assert "all later behavior would remain unauthorized" in audit
+
+
+def test_50s6b_documents_accepted_cone_shell_selector():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_crossing_acceleration_audit_50s6a.md"
+    ).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    assert "Accepted 50S.6B conservative cone-shell selector" in architecture
+    assert "50S.6B — First conservative cone-shell selector" in roadmap
+    assert "ConservativeConeShellSelector.select(query)" in reference
+    assert "Accepted 50S.6B selector ownership" in source_tree
+    assert "Accepted 50S.6B cone-shell coordinate evidence" in coordinate_guide
+    assert "Accepted 50S.6B cone-shell selector" in guide
+    assert "Accepted 50S.6B cone-shell selector boundary" in instructions
+    for phrase in (
+        "src/wenu/satellites/crossing_acceleration.py",
+        "synthetic_50s4b_v1",
+        "intervals no longer than 60 seconds",
+        "2.5 safety factor",
+        "0.6 km/s observer-speed allowance",
+        "strict antipodal rejection",
+        "exact-oracle absence for the rejected record",
+        "all three installed records across the complete admitted interval",
+        "dedicated gate passed all 9 tests in 34.58 seconds",
+        "passed all 78 tests in 99.99 seconds",
+        "Focused, complete-suite, documentation, and diff gates are complete",
+        "documentation gate passed all 139 tests in 4.72 seconds",
+        "complete plugin-disabled suite passed all 2,549 tests in 200.47 seconds",
+        "git diff --check d609322...HEAD",
+        "scientifically and architecturally accepted 50S.6B on 2026-09-16",
+    ):
+        assert phrase in audit
+    assert "does not coordinate an accelerated solve" in reference
+    assert "package exports expose the four selector contracts" in source_tree
+    assert "documentation-first 50S.6C audit" in roadmap
+    assert "Further runtime acceleration remains unauthorized" in roadmap
+
+
+def test_50s6c_audits_exact_solver_coordination_and_admission():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_crossing_coordination_audit_50s6c.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "documentation-only scientific and API audit",
+        "LocalSatelliteCrossingOracle.solve(query)",
+        "ConservativeConeShellSelector.select(query)",
+        "AcceleratedLocalSatelliteCrossingOracle",
+        "one shared exact record solver",
+        "No public caller may supply an arbitrary subset",
+        "Additional acceleration evidence may differ",
+        "fall back to the complete exhaustive route",
+        "Broader-domain admission",
+        "cannot justify production-catalogue admission",
+        "an instrumented proof that rejected records receive zero exact evaluations",
+        "Mocked speedup is not benchmark evidence",
+        "repeated cold and warm runs",
+        "an accelerated coordinator must remain opt-in",
+        "This audit creates no source, runtime test, benchmark tool",
+        "git diff --check 93a7d41...HEAD",
+        "bounded 50S.6D implementation",
+        "all later behavior would remain unauthorized",
+    ):
+        assert phrase in audit
+
+    assert "satellite_crossing_coordination_audit_50s6c.md" in index
+    assert "Accepted 50S.6C exact-solver coordination audit" in architecture
+    assert "50S.6C — Exact-solver coordination and admission audit" in roadmap
+    assert "Accepted accelerated coordination contract (50S.6C audit)" in reference
+    assert "Accepted 50S.6C coordination ownership audit" in source_tree
+    assert "Accepted 50S.6C coordination coordinate boundary" in coordinate_guide
+    assert "Accepted 50S.6C coordination and admission audit" in guide
+    assert "Accepted 50S.6C coordination-audit boundary" in instructions
+    assert "No accelerated crossing service exists" in reference
+    assert "three-record snapshot proves composition, not useful speed" in roadmap
+    assert "creates no source, runtime test, benchmark tool" in source_tree
+    assert "passed all 140 tests in 3.55 seconds" in audit
+    assert "Fernando scientifically and architecturally accepted 50S.6C" in audit
+    assert "only a bounded 50S.6D implementation" in audit
+    assert "only bounded 50S.6D" in roadmap
+    assert "bounded 50S.6D coordinator" in instructions
+
+
+
+def test_50s6d_documents_accepted_accelerated_coordinator():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_crossing_coordination_audit_50s6c.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    assert "accepted exact-solver coordination" in index
+    assert "Accepted 50S.6D bounded accelerated crossing coordinator" in (
+        architecture
+    )
+    assert "50S.6D — Bounded accelerated exact-solver coordination" in roadmap
+    assert "Accepted accelerated local crossing coordinator" in reference
+    assert "Accepted 50S.6D coordinator ownership" in source_tree
+    assert "Accepted 50S.6D unchanged coordinate boundary" in coordinate_guide
+    assert "Accepted 50S.6D bounded accelerated coordinator" in guide
+    assert "Accepted 50S.6D accelerated-coordinator boundary" in instructions
+    for phrase in (
+        "one package-internal exact-record seam",
+        "AcceleratedCrossingPolicy",
+        "AcceleratedCrossingEvidence",
+        "AcceleratedLocalSatelliteCrossingOracle",
+        "solve_with_evidence(query)",
+        "fallback_exhaustive",
+        "retain and indeterminate",
+        "three-record, 60-second domain",
+        "no useful-speed claim",
+        "adds no broader domain",
+    ):
+        assert phrase in " ".join(
+            (
+                audit,
+                architecture,
+                roadmap,
+                reference,
+                source_tree,
+                coordinate_guide,
+                guide,
+                instructions,
+            )
+        )
+    assert "The coordinate guide was reviewed for 50S.6D" in coordinate_guide
+    assert "No new production module or test file is admitted" in source_tree
+    assert "complete plugin-disabled suite" in audit
+    assert "Fernando's scientific and architectural review" in audit
+
+
+
+def test_50s6d_records_accepted_verification_evidence():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_crossing_coordination_audit_50s6c.md"
+    ).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for text in (audit, architecture, roadmap):
+        assert "commit `a7aecba`" in text
+        assert "2,566" in text
+    for phrase in (
+        "37-test dedicated acceleration/oracle gate in 116.58 seconds",
+        "93-test expanded acceleration, oracle, crossing-contract, element, SGP4",
+        "package-boundary gate in 128.74 seconds",
+        "141-test current-documentation gate in 4.36 seconds",
+        "complete 2,566-test suite in 213.87 seconds",
+        "No performance, broader-domain, default-enablement, or later acceleration claim",
+    ):
+        assert phrase in audit
+    assert "Fernando scientifically and architecturally accepted 50S.6D" in audit
+    assert "final pre-acceptance documentation gate passed all 142 tests" in audit
+    assert "branch diff check was clean" in audit
+    assert "working tree was clean" in audit
+    assert "No later acceleration milestone is authorized automatically" in roadmap
+    assert "separately accepted bounded milestone" in instructions
+
+
+def test_50s6e_audits_multifov_interchange_and_lunar_illumination():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_multifov_interchange_audit_50s6e.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "documentation-only scientific, API, performance, and interchange audit",
+        "not a documented multi-FoV batch API",
+        "any non-empty ordered number of circular FoV requests",
+        "Ten FoVs are the reference workload",
+        "not a hard-coded public cardinality",
+        "same-interval workload is a special research and optimization case",
+        "geometric vacuum AltAz",
+        "plane-parallel `X = sec(z)`",
+        "defaults to 2",
+        "transforms only the field centre",
+        "minimum centre altitude in this model",
+        "FoV radius does not enter airmass admission",
+        "complete interval must be conservatively certified",
+        "non-positive centre altitude or uncertain numerical certification fails closed",
+        "not a satellite horizon, Earth-occultation, illumination",
+        "no civil-date, time-zone, solar-altitude, or inferred-twilight boundary",
+        "disjoint, partially overlapping, and identical airmass-admissible intervals",
+        "exactly equivalent to the ordered collection of independent exhaustive",
+        "1, 2, 5, 10, 20, and, when practical, 50 FoVs",
+        "JSON as the canonical nested exchange",
+        "Astropy ECSV",
+        "IVOA VOTable",
+        "optional CCSDS OEM",
+        "Paranal, ELT, and at least one other observatory",
+        "direct Sunlight",
+        "solar Earthshine",
+        "direct Moonlight",
+        "Lunar-Earthshine",
+        "arXiv:2609.07057",
+        "Fluxes, never magnitudes, are summed",
+        "bounded 50S.6F implementation",
+    ):
+        assert phrase in audit
+
+    assert "satellite_multifov_interchange_audit_50s6e.md" in index
+    assert "Accepted 50S.6E multi-FoV and interchange direction" in architecture
+    assert "50S.6E — Same-observer, airmass-bounded multi-FoV" in roadmap
+    assert "Accepted multi-FoV and observatory interchange contract" in reference
+    assert "Accepted 50S.6E documentation ownership" in source_tree
+    assert "Accepted 50S.6E multi-FoV coordinate boundary" in coordinate_guide
+    assert "Accepted 50S.6E multi-FoV and delivery sequence" in guide
+    assert "Accepted 50S.6E boundary" in instructions
+    assert "50S.6G.3 may accept binocular and regional chart products" in audit
+    assert "50S.6G.4 may accept stereographic planisphere" in audit
+    assert "no runtime or output" in roadmap
+    assert "accepted 50S.6F implementation adds" in architecture
+    assert "scientifically and architecturally accepted this audit" in audit
+    assert "commit `f079d95`" in audit
+    assert "all 143 plugin-disabled current-documentation tests" in audit
+    assert "Only a bounded 50S.6F implementation is authorized next" in audit
+    assert "| 28 | 50B.0 |" in roadmap
+    assert "| 33 | 50B.5 |" in roadmap
+
+
+def test_50s6f_documents_candidate_atomic_multifov_coordinator():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_multifov_interchange_audit_50s6e.md"
+    ).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "atomic validation on 2026-09-16",
+        "collects every invalid field and reason in input order",
+        "raises before any crossing solve",
+        "returns no partial results",
+        "future invalid input file may produce a validation file",
+        "50S.6F neither reads nor writes that file",
+        "satellites/crossing_batch.py",
+        "ten-field execution chunk",
+        "no representative-scale, useful-speed, or shared-state-cache claim",
+    ):
+        assert phrase in audit
+
+    assert "accepted 50S.6F implementation" in architecture
+    assert "Accepted bounded implementation" in roadmap
+    assert "MultiFieldSatelliteCrossingCoordinator.solve(request)" in reference
+    assert "Accepted 50S.6F production ownership" in source_tree
+    assert "Accepted 50S.6F field-centre airmass realization" in (
+        coordinate_guide
+    )
+    assert "Accepted 50S.6F bounded batch implementation" in guide
+    assert "Accepted 50S.6F implementation boundary" in instructions
+    assert "No projection, rendering, report, CLI, or exporter owner changes" in (
+        source_tree
+    )
+    assert "no useful-speed or shared-physical-state-reuse claim" in roadmap
+    assert "adds no CLI, file input, validation-output file" in instructions
+    for document in (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        instructions,
+    ):
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-17" in document
+        assert "2,577 plugin-disabled tests passed" in document
+        assert "Only a separately bounded 50S.6G audit is authorized next" in (
+            document
+        )
+    assert "no 50S.6G implementation is authorized" in instructions
+
+
+def test_50s6g_audits_representative_delivery_reports_files_and_tracks():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_delivery_audit_50s6g.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "documentation-only architecture, API, performance, interchange, CLI/file, and chart-delivery audit",
+        "changes no executable behavior, public command",
+        "explicit caller-selected snapshot directory",
+        "at most one supported bulk request",
+        "1, 2, 5, 10, 20, and, when practical, 50",
+        "One canonical crossing information model",
+        "JSON is the canonical nested exchange",
+        "Astropy ECSV is a lossless unit-aware tabular encoding",
+        "IVOA VOTable is a lossless astronomical interoperability encoding",
+        "CCSDS OEM describes orbit ephemerides rather than Wenu crossing semantics",
+        "Python calls and direct CLI argument mode are atomic",
+        "File mode is also atomic",
+        "Supplying the validation-output file in a second explicit invocation",
+        "revalidates it against the current snapshot and policy",
+        "If no valid fields remain, the derived request is absent",
+        "ECSV and VOTable are output encodings, not initial request",
+        "those three values alone are not a sufficiently controlled plotted curve",
+        "Regional and binocular products are the first chart families",
+        "Stereographic planispheres require a separate audit",
+        "geometric crossings retained independently of illumination or brightness",
+        "50S.6G.1A — External immutable snapshot seam",
+        "50S.6G.4B — Stereographic planisphere tracks",
+        "Only bounded 50S.6G.1A external immutable snapshot loading",
+    ):
+        assert phrase in audit
+
+    assert "satellite_delivery_audit_50s6g.md" in index
+    assert "accepted 50S.6G delivery audit" in architecture
+    assert "50S.6G — Representative delivery, reports, files" in roadmap
+    assert "Accepted 50S.6G delivery direction" in reference
+    assert "Accepted 50S.6G delivery ownership" in source_tree
+    assert "Accepted 50S.6G delivery coordinate boundary" in coordinate_guide
+    assert "Accepted 50S.6G delivery sequence" in guide
+    assert "Accepted 50S.6G delivery-audit boundary" in instructions
+    assert "Accepted 50S.6G delivery refinement" in (
+        " ".join(read(
+            DEVELOPER / "satellite_multifov_interchange_audit_50s6e.md"
+        ).split())
+    )
+    for document in (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        instructions,
+    ):
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-17" in document
+        assert "145 plugin-disabled current-documentation tests passed" in (
+            document
+        )
+        assert "Only bounded 50S.6G.1A external immutable snapshot loading" in (
+            document
+        )
+
+
+def test_50s6g1a_documents_accepted_external_snapshot_loader():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_delivery_audit_50s6g.md"
+    ).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Accepted 50S.6G.1A implementation handoff",
+        "load_snapshot_directory(directory)",
+        "explicit local non-symlink directory",
+        "Directory names do not define snapshot identity",
+        "same immutable snapshot through the accepted complete schema",
+        "no discovery, acquisition, provider access, network",
+        "no new production or test file is added",
+        "Only a separately bounded 50S.6G.1B",
+        "not its implementation",
+    ):
+        assert phrase in audit
+
+    assert "accepted 50S.6G.1A implementation" in architecture
+    assert "Accepted bounded implementation" in roadmap
+    assert "Accepted explicit-directory satellite snapshot loader" in (
+        reference
+    )
+    assert "Accepted 50S.6G.1A production ownership" in source_tree
+    assert "Accepted 50S.6G.1A coordinate review" in coordinate_guide
+    assert "Accepted 50S.6G.1A external snapshot loading" in guide
+    assert "Accepted 50S.6G.1A external snapshot boundary" in instructions
+    assert "performs no network access, acquisition, publication" in reference
+    assert "does not admit an external snapshot to the 50S.6F coordinator" in (
+        roadmap
+    )
+    for document in (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        instructions,
+    ):
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-17" in document
+        assert "2,583 plugin-disabled tests passed" in document
+
+
+def test_50s6g1b_accepts_representative_snapshot_preflight_and_evidence():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_preflight_audit_50s6g1b.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    delivery = " ".join(read(
+        DEVELOPER / "satellite_delivery_audit_50s6g.md"
+    ).split())
+
+    for phrase in (
+        "Accepted documentation-only provider, acquisition, publication, admission, and performance-evidence audit",
+        "one explicit representative-scale population, not a complete resident-space-object catalogue",
+        "Policy review and data acquisition are separate explicit operations",
+        "exact SHA-256",
+        "not a generic `--yes` flag",
+        "at most one GP network request",
+        "accepts only a direct HTTPS 200 response",
+        "does not follow redirects and does not retry",
+        "GROUP=active&FORMAT=CSV",
+        "provider-defined active-satellite population",
+        "not the complete public resident-space-object population",
+        "CENTER_NAME = EARTH",
+        "REF_FRAME = TEME",
+        "TIME_SYSTEM = UTC",
+        "MEAN_ELEMENT_THEORY = SGP4",
+        "rejects duplicate NORAD identifiers",
+        "staged directory is reloaded through `load_snapshot_directory()`",
+        "Raw provider and policy bytes remain local evidence",
+        "Medium representative specimen",
+        "derived from one validated Active snapshot",
+        "admitted by exact canonical-record SHA-256",
+        "1, 2, 5, 10, 20, and, when practical, 50",
+        "at least La Ligua, Paranal, ELT, and one northern-site explicit observer",
+        "makes no useful-speed, shared-state-reuse, memory-bound, or production-capacity claim",
+        "50S.6G.1B.1 — Policy receipt and deterministic builder",
+        "50S.6G.1B.2 — Representative admission and evidence",
+        "does not authorize a live CelesTrak request",
+    ):
+        assert phrase in audit
+
+    assert "satellite_snapshot_preflight_audit_50s6g1b.md" in index
+    assert "accepted 50S.6G.1B audit" in architecture
+    assert "50S.6G.1B — Representative snapshot preflight" in roadmap
+    assert "Accepted representative snapshot preflight contract" in reference
+    assert "Accepted 50S.6G.1B acquisition and evidence ownership" in (
+        source_tree
+    )
+    assert "Accepted 50S.6G.1B coordinate review" in coordinate_guide
+    assert "Accepted 50S.6G.1B representative snapshot preflight" in guide
+    assert "Accepted 50S.6G.1B provider-policy and evidence boundary" in (
+        instructions
+    )
+    assert "Accepted 50S.6G.1B refinement" in delivery
+    for document in (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        instructions,
+        delivery,
+    ):
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-17" in document
+        assert "147 plugin-disabled current-documentation tests passed" in (
+            document
+        )
+    assert "no live CelesTrak request" in architecture
+    assert "fake-transport" in roadmap
+
+
+def test_50s6g1b1_documents_offline_snapshot_builder_boundary():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_preflight_audit_50s6g1b.md"
+    ).split())
+
+    assert "Implemented 50S.6G.1B.1 offline snapshot builder" in architecture
+    assert "mandatory injected transport" in roadmap
+    assert "offline developer command" in reference
+    assert "https://celestrak.org/usage-policy.php" in reference
+    assert "gp-data-formats.php" in reference
+    assert "snapshot_acquisition.py" in source_tree
+    assert "build_satellite_snapshot.py" in source_tree
+    assert "test_satellite_snapshot_acquisition.py" in source_tree
+    assert "adds no coordinate transform" in coordinate_guide
+    assert "preserves full NORAD identifiers" in guide
+    assert "Preserve the absence of a default or live network adapter" in (
+        instructions
+    )
+    assert "No live provider request or 50S.6G.1B.2 evidence" in audit
+    for document in (
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        instructions,
+        audit,
+    ):
+        assert "Fernando accepted" in document
+        assert "2026-09-17" in document
+        assert "2,594 plugin-disabled tests passed" in document
+    assert "175 focused plugin-disabled tests passed" in audit
+    assert "226.82 seconds" in audit
+    assert "does not authorize a live policy or GP request" in audit
+    for document in (architecture, reference, instructions, audit):
+        assert "2,595 plugin-disabled tests passed" in document
+    assert "https://celestrak.org/usage-policy.php" in architecture
+    assert "no GP request was performed" in architecture
+    assert "public, reliable, and genuinely independent" in guide
+    assert "rather than a redistribution of CelesTrak" in roadmap
+    assert "validation oracle" in guide
+    assert "never as silent fallback" in guide
+    for document in (
+        architecture, roadmap, reference, guide, instructions, audit
+    ):
+        assert "67bf0faa7e026a7cd49799069db9d3355f2a867894133afd39e130d6185724aa" in document
+        assert "10 focused tests" in document
+    assert "14,643-byte" in audit
+    assert "2.41 seconds" in audit
+    assert "226.25 seconds" in audit
+    assert "Explicit approval of this exact digest remains" in audit
+    for document in (
+        architecture, roadmap, reference, guide, instructions, audit
+    ):
+        assert "e54730e14b2097444c5e20bba6dd13d3e2d92f956797d49256ddb1a70ffe5014" in document
+        assert "e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347" in document
+        assert "16,559" in document
+        assert "2,600" in document
+    assert "YYYY-MM-DDTHH:MM:SS.ffffff" in audit
+    assert "text/plain; charset=UTF-8" in audit
+    assert "15 focused tests passed in 2.22 seconds" in audit
+    assert "2,600 plugin-disabled tests passed in 223.57 seconds" in audit
+    assert "No second provider request occurred" in audit
+    assert "50S.6G.1B.2 remain separately authorized" in audit
+
+
+def test_50s6g1b2a_accepts_exact_shared_external_admission():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_admission_audit_50s6g1b2a.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Accepted documentation-only audit",
+        "exact canonical-record SHA-256 plus validated manifest identity",
+        "never by directory name",
+        "Each present service admits by `snapshot_id`, independently",
+        "satellites/snapshot_admission.py",
+        "selector, accelerated coordinator, and multi-FoV batch",
+        "ordinary installed default remains `synthetic_50s4b_v1`",
+        "external token is explicit and evidence-only",
+        "same `snapshot_id` with another digest fails",
+        "50S.6G.1B.2B",
+        "50S.6G.1B.2C",
+        "50S.6G.1B.2D",
+        "draws no track itself",
+    ):
+        assert phrase in audit
+
+    assert "satellite_snapshot_admission_audit_50s6g1b2a.md" in index
+    assert "Accepted 50S.6G.1B.2A external admission audit" in architecture
+    assert "50S.6G.1B.2A — External snapshot admission audit" in roadmap
+    assert "Accepted proposed external snapshot admission contract" in reference
+    assert "Accepted 50S.6G.1B.2A admission ownership" in source_tree
+    assert "Accepted 50S.6G.1B.2A coordinate review" in coordinate_guide
+    assert "Accepted 50S.6G.1B.2A external admission" in guide
+    assert "Accepted 50S.6G.1B.2A digest-admission boundary" in instructions
+
+    for document in (
+        audit,
+        roadmap,
+        reference,
+        guide,
+        instructions,
+    ):
+        assert "evidence-only" in document
+    assert "no coordinate operation" in coordinate_guide
+    assert "changes no runtime" in roadmap
+    assert "No production or runtime test file is added" in source_tree
+
+
+def test_50s6g1b2a_records_acceptance_and_bounded_next_step():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_snapshot_admission_audit_50s6g1b2a.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            SATELLITE_PROGRAM_LOG,
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-17" in document
+        assert "150 plugin-disabled current-documentation tests passed" in document
+        assert "3.84 seconds" in document
+        assert "Only bounded 50S.6G.1B.2B" in document
+    audit = documents[0]
+    assert "does not authorize medium selection" in audit
+    assert "matrix execution" in audit
+    assert "chart integration" in audit
+    assert "another provider request" in audit
+
+
+def test_50s6g1b2b_documents_accepted_shared_digest_admission():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_admission_audit_50s6g1b2a.md"
+    ).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    assert "Accepted 50S.6G.1B.2B implementation record" in audit
+    assert "Accepted 50S.6G.1B.2B digest admission" in architecture
+    assert "50S.6G.1B.2B accepted implementation" in roadmap
+    assert "External snapshot admission API" in reference
+    assert "Accepted 50S.6G.1B.2B ownership" in source_tree
+    assert "Accepted 50S.6G.1B.2B coordinate review" in (
+        coordinate_guide
+    )
+    assert "Accepted 50S.6G.1B.2B admission" in guide
+    assert "Accepted 50S.6G.1B.2B admission boundary" in (
+        instructions
+    )
+    for document in (
+        audit,
+        architecture,
+        source_tree,
+        instructions,
+    ):
+        assert "snapshot_admission.py" in document
+    for document in (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        guide,
+    ):
+        assert "synthetic" in document
+    assert "schema version, snapshot ID, canonical-record SHA-256" in audit
+    assert "token contains no path" in architecture
+    assert "cannot be directly constructed" in reference
+    assert "before airmass or crossing work" in source_tree
+    assert "performs no coordinate transformation" in coordinate_guide
+    assert "No external snapshot is packaged, discovered" in guide
+    assert "50S.6G.1B.2C and 50S.6G.1B.2D remain separately bounded" in roadmap
+    assert "does not implement deterministic medium selection" in (
+        audit
+    )
+
+
+def test_50s6g1b2b_records_acceptance_and_authorizes_only_medium_work():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_snapshot_admission_audit_50s6g1b2a.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            SATELLITE_PROGRAM_LOG,
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted 50S.6G.1B.2B" in document
+        assert "2026-09-17" in document
+        assert "51 focused runtime tests" in document
+        assert "151 current-documentation tests" in document
+        assert "2,611 plugin-disabled tests passed" in document
+        assert "215.89 seconds" in document
+        assert "Only bounded 50S.6G.1B.2C" in document
+        assert "50S.6G.1B.2D matrix execution" in document
+        assert "separately unauthorized" in document
+
+
+def test_50s6g1b2c_accepts_deterministic_medium_specimen():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_medium_specimen_audit_50s6g1b2c.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Accepted documentation-only audit",
+        "not a statistical sample",
+        "retrieved_stopped_utc",
+        "geo_deep_like",
+        "meo_like",
+        "leo_like",
+        "e_over_0p25",
+        "bstar_zero",
+        "age_future",
+        "norad_more_than_five",
+        "default target is exactly **256 records**",
+        "first two distinct records",
+        "mandatory union exceeds the requested target",
+        "selection-receipt.json",
+        "two-per-non-empty-bin coverage rule",
+        "no-population-frequency statement",
+        "satellites/snapshot_evidence.py",
+        "tests/test_satellite_snapshot_evidence.py",
+        "does not run the matrix",
+        "first real medium artifact",
+    ):
+        assert phrase in audit
+
+    assert "satellite_medium_specimen_audit_50s6g1b2c.md" in index
+    assert "Accepted 50S.6G.1B.2C medium-specimen audit" in architecture
+    assert "50S.6G.1B.2C — Deterministic medium specimen" in roadmap
+    assert "Accepted proposed deterministic medium-specimen contract" in reference
+    assert "Accepted 50S.6G.1B.2C ownership" in source_tree
+    assert "Accepted 50S.6G.1B.2C coordinate review" in coordinate_guide
+    assert "Accepted 50S.6G.1B.2C medium specimen" in guide
+    assert "Accepted 50S.6G.1B.2C medium-specimen boundary" in instructions
+    assert "No source or runtime test file is added" in source_tree
+    assert "performs no propagation" in coordinate_guide
+    assert "first real subset operation" in roadmap
+    assert "matrix execution" in instructions
+
+
+def test_50s6g1b2c_records_acceptance_and_fake_data_only_authority():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_medium_specimen_audit_50s6g1b2c.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            SATELLITE_PROGRAM_LOG,
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-17" in document
+        assert "153 plugin-disabled current-documentation tests passed" in document
+        assert "4.58 seconds" in document
+        assert "Only bounded fake-data" in document
+        assert "first real medium selection" in document
+        assert "50S.6G.1B.2D matrix execution" in document
+        assert "separately unauthorized" in document
+
+def test_50s6g1b2c_documents_candidate_fake_data_implementation():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_medium_specimen_audit_50s6g1b2c.md"
+    ).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    assert "Candidate 50S.6G.1B.2C fake-data implementation" in audit
+    assert "Candidate 50S.6G.1B.2C deterministic medium evidence" in architecture
+    assert "50S.6G.1B.2C candidate implementation state" in roadmap
+    assert "Deterministic medium snapshot evidence API" in reference
+    assert "Candidate 50S.6G.1B.2C ownership" in source_tree
+    assert "Candidate 50S.6G.1B.2C coordinate review" in coordinate_guide
+    assert "Candidate 50S.6G.1B.2C medium specimen" in guide
+    assert "Candidate 50S.6G.1B.2C boundary" in instructions
+
+    for document in (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        instructions,
+    ):
+        assert "snapshot_evidence.py" in document
+        assert "30 plugin-disabled" in document
+        assert "5.99 seconds" in document
+        assert "real medium selection" in document
+        assert "50S.6G.1B.2D" in document
+
+    assert "captured provider-response bytes" in audit
+    assert "ordinary installed default remains `synthetic_50s4b_v1`" in architecture
+    assert "has no transport" in roadmap
+    assert "receipt contains no filesystem path" in reference
+    assert "authorization-only" in source_tree
+    assert "performs no propagation" in coordinate_guide
+    assert "not a statistical sample" in guide
+    assert "Do not run it on the real 16,559-record parent" in instructions
+
+def test_50s6g1b2c_records_accepted_fake_data_implementation_boundary():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_medium_specimen_audit_50s6g1b2c.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            SATELLITE_PROGRAM_LOG,
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "accepted" in document.lower()
+        assert "2026-09-17" in document
+        assert "1d9d4e4" in document
+        assert "2,622" in document
+        assert "225.75 seconds" in document
+        assert "185" in document
+        assert "9.03 seconds" in document
+        assert "real" in document.lower()
+        assert "separate" in document.lower()
+        assert "50S.6G.1B.2D" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Accepted fake-data implementation" in audit
+    assert "Accepted 50S.6G.1B.2C implementation" in architecture
+    assert "50S.6G.1B.2C accepted implementation" in roadmap
+    assert "Accepted medium-evidence implementation" in reference
+    assert "Accepted 50S.6G.1B.2C ownership" in source_tree
+    assert "Accepted 50S.6G.1B.2C coordinate boundary" in coordinates
+    assert "Accepted 50S.6G.1B.2C implementation" in guide
+    assert "Accepted 50S.6G.1B.2C implementation boundary" in instructions
+    assert "does not itself authorize executing `select-medium`" in audit
+    assert "requires separate authorization" in architecture
+    assert "requires no provider request" in roadmap
+    assert "evidence-only" in reference
+    assert "No real medium product was created" in source_tree
+    assert "no propagation or coordinate transformation" in coordinates
+    assert "No real medium snapshot has been produced" in guide
+    assert "Require Fernando's separate approval" in instructions
+
+def test_50s6g1b2c_documents_candidate_real_medium_evidence():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_medium_specimen_audit_50s6g1b2c.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            SATELLITE_PROGRAM_LOG,
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b" in document
+        assert "1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895" in document
+        assert "e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347" in document
+        assert "2026-09-17T15:52:23.000000Z" in document
+        assert "50S.6G.1B.2D" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Candidate real-selection closure" in audit
+    assert "Candidate real 50S.6G.1B.2C specimen evidence" in architecture
+    assert "50S.6G.1B.2C real-selection closure candidate" in roadmap
+    assert "Real medium specimen identity" in reference
+    assert "Candidate real-selection evidence ownership" in source_tree
+    assert "Candidate real medium specimen coordinate finding" in coordinates
+    assert "Candidate real medium specimen" in guide
+    assert "Candidate real 50S.6G.1B.2C artifact boundary" in instructions
+
+    for document in (audit, architecture, roadmap, reference, guide, instructions):
+        assert "48" in document
+        assert "208" in document
+        assert "24" in document
+
+    assert "byte-for-byte unchanged" in audit
+    assert "made no provider request" in audit
+    assert "not packaged, installed, discovered" in architecture
+    assert "remaining 50S.6G.1B.2C closure decision" in roadmap
+    assert "external, immutable, and evidence-only" in reference
+    assert "No repository source or data directory owns" in source_tree
+    assert "performed no propagation or coordinate transformation" in coordinates
+    assert "not a statistical sample" in guide
+    assert "candidate evidence record preceded acceptance" in instructions
+
+def test_50s6g1b2c_records_accepted_exact_real_specimen():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_medium_specimen_audit_50s6g1b2c.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            SATELLITE_PROGRAM_LOG,
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b" in document
+        assert "2026-09-17" in document
+        assert "c4cd009" in document
+        assert "157 plugin-disabled" in document
+        assert "4.66 seconds" in document
+        assert "50S.6G.1B.2D" in document
+        assert "unauthorized" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Accepted real-selection closure" in audit
+    assert "Accepted real 50S.6G.1B.2C specimen" in architecture
+    assert "50S.6G.1B.2C accepted real-selection closure" in roadmap
+    assert "Accepted real medium evidence" in reference
+    assert "Accepted real 50S.6G.1B.2C evidence" in source_tree
+    assert "Accepted real 50S.6G.1B.2C coordinate finding" in coordinates
+    assert "Accepted real 50S.6G.1B.2C specimen" in guide
+    assert "Accepted real 50S.6G.1B.2C artifact" in instructions
+
+    for document in (audit, architecture, roadmap, reference, source_tree, guide, instructions):
+        assert "1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895" in document
+
+    assert "closes 50S.6G.1B.2C" in audit
+    assert "installed synthetic default" in architecture
+    assert "Only a separately authorized 50S.6G.1B.2D matrix audit" in roadmap
+    assert "No other artifact is implied" in reference
+    assert "outside the repository and package" in source_tree
+    assert "no propagation or coordinate transformation" in coordinates
+    assert "external, immutable, and non-statistical" in guide
+    assert "Do not refresh, substitute, package, discover, or promote" in instructions
+
+def test_50s6g1b2d_proposes_exact_equivalence_resource_matrix():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Candidate documentation-only audit",
+        "2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b",
+        "1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895",
+        "exactly **10 fields**",
+        "same accepted 256-record snapshot",
+        "different intervals within one UTC night",
+        "one pair shares the same interval",
+        "time_tolerance_seconds = 0.01",
+        "angular_tolerance_deg = 1e-5",
+        "selector_failure_mode = \"fail_closed\"",
+        "Python result tuples must compare equal",
+        "canonical result bytes must be identical",
+        "no exhaustive fallback",
+        "at least one conservative rejection",
+        "three times after one unreported warm-up",
+        "fresh subprocesses",
+        "crossing_matrix.py",
+        "run-equivalence-matrix",
+        "tests/test_satellite_crossing_matrix.py",
+        "does not",
+    ):
+        assert phrase in audit
+
+    assert "satellite_equivalence_matrix_audit_50s6g1b2d.md" in index
+    assert "Candidate 50S.6G.1B.2D equivalence-matrix audit" in architecture
+    assert "50S.6G.1B.2D — Exact-equivalence and resource-matrix audit" in roadmap
+    assert "Proposed exact-equivalence matrix contract" in reference
+    assert "Candidate 50S.6G.1B.2D ownership" in source_tree
+    assert "Candidate 50S.6G.1B.2D coordinate review" in coordinate_guide
+    assert "Candidate 50S.6G.1B.2D equivalence matrix" in guide
+    assert "Candidate 50S.6G.1B.2D audit boundary" in instructions
+
+    for document in (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        instructions,
+    ):
+        assert "10" in document
+        assert "same-observer" in document
+        assert "matrix" in document.lower()
+
+    assert "no matrix is executed" in architecture.lower()
+    assert "real matrix execution requires separate authorization" in roadmap
+    assert "Neither the owner nor command exists yet" in reference
+    assert "No matrix runtime or evidence artifact exists yet" in source_tree
+    assert "introduces no coordinate operation" in coordinate_guide
+    assert "not a speed claim" in guide
+    assert "Do not implement or run the matrix" in instructions
+
+def test_50s6g1b2d_records_acceptance_and_fake_data_only_authority():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            SATELLITE_PROGRAM_LOG,
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "accepted" in document.lower()
+        assert "2026-09-17" in document
+        assert "6e7a8b9" in document
+        assert "159 plugin-disabled" in document
+        assert "10.75 seconds" in document
+        assert "fake-data" in document
+        assert "real" in document.lower()
+        assert "unauthorized" in document or "does not authorize" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Acceptance record" in audit
+    assert "Accepted 50S.6G.1B.2D matrix audit" in architecture
+    assert "50S.6G.1B.2D accepted audit" in roadmap
+    assert "Accepted 50S.6G.1B.2D matrix contract" in reference
+    assert "Accepted 50S.6G.1B.2D ownership proposal" in source_tree
+    assert "Accepted 50S.6G.1B.2D coordinate finding" in coordinates
+    assert "Accepted 50S.6G.1B.2D audit" in guide
+    assert "Accepted 50S.6G.1B.2D audit boundary" in instructions
+
+    assert "does not authorize execution" in audit
+    assert "Only bounded fake-data implementation" in architecture
+    assert "Only bounded fake-data matrix-harness implementation" in roadmap
+    assert "using fake data only" in reference
+    assert "No real matrix execution" in source_tree
+    assert "real matrix execution" in coordinates
+    assert "must not be executed" in guide
+    assert "Do not read or execute the accepted real 256-record specimen" in instructions
+
+def test_50s6g1b2d_documents_candidate_fake_data_implementation():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            SATELLITE_PROGRAM_LOG,
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "19520f3" in document
+        assert "2634 plugin-disabled" in document
+        assert "230.25 seconds" in document
+        assert "2026-09-17" in document
+        assert "fake data" in document.lower() or "fake-data" in document.lower()
+        assert "real" in document.lower()
+        assert "acceptance" in document.lower()
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Candidate fake-data implementation record" in audit
+    assert "Candidate 50S.6G.1B.2D fake-data matrix implementation" in architecture
+    assert "50S.6G.1B.2D candidate fake-data implementation state" in roadmap
+    assert "Candidate crossing equivalence matrix API" in reference
+    assert "Candidate 50S.6G.1B.2D implementation ownership" in source_tree
+    assert "Candidate 50S.6G.1B.2D coordinate review" in coordinates
+    assert "Candidate 50S.6G.1B.2D fake-data implementation" in guide
+    assert "Candidate 50S.6G.1B.2D implementation boundary" in instructions
+    assert "matrix-manifest.json" in reference
+    assert "No accepted real specimen was read" in architecture
+    assert "no real matrix was executed" in audit.lower()
+
+def test_50s6g1b2d_records_fake_data_implementation_acceptance():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            SATELLITE_PROGRAM_LOG,
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-17" in document
+        assert "2634 plugin-disabled" in document
+        assert "230.25 seconds" in document
+        assert "19520f3" in document
+        assert "161 plugin-disabled" in document
+        assert "3.32 seconds" in document
+        assert "3ef6a4d" in document
+        assert "separately bounded real-execution audit" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Accepted fake-data implementation closure" in audit
+    assert "Accepted 50S.6G.1B.2D fake-data matrix implementation" in architecture
+    assert "50S.6G.1B.2D accepted fake-data implementation" in roadmap
+    assert "Accepted crossing equivalence matrix boundary" in reference
+    assert "Accepted 50S.6G.1B.2D ownership" in source_tree
+    assert "Accepted 50S.6G.1B.2D coordinate boundary" in coordinates
+    assert "Accepted 50S.6G.1B.2D fake-data implementation" in guide
+    assert "Accepted 50S.6G.1B.2D implementation boundary" in instructions
+    assert "does not authorize" in audit
+    assert "real execution" in audit
+
+def test_50s6g1b2d_audits_real_execution_readiness_fail_closed():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            SATELLITE_PROGRAM_LOG,
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "9bdf301" in document
+        assert "real" in document.lower()
+        assert "fixture" in document.lower()
+        assert "airmass" in document.lower()
+        assert "subprocess" in document.lower()
+        assert "command" in document.lower()
+        assert "no" in document.lower() or "not" in document.lower()
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Candidate real-execution readiness audit" in audit
+    assert "not ready for real execution" in audit
+    assert "Candidate 50S.6G.1B.2D real-execution readiness finding" in architecture
+    assert "50S.6G.1B.2D real-execution readiness gate" in roadmap
+    assert "Proposed real-matrix execution surface" in reference
+    assert "Candidate real-execution readiness ownership" in source_tree
+    assert "Candidate real-matrix coordinate readiness finding" in coordinates
+    assert "Candidate real-execution readiness audit" in guide
+    assert "Candidate real-execution readiness boundary" in instructions
+    assert "24 nonempty bins" in audit
+    assert "48 mandatory representatives" in audit
+    assert "208 fill records" in audit
+    assert "run-equivalence-matrix" in audit
+    assert "separate explicit authorization" in audit
+    assert "do not attempt the real" in instructions.lower()
+
+def test_50s6g1b2d_records_accepted_real_execution_readiness_audit():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            SATELLITE_PROGRAM_LOG,
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-17" in document
+        assert "163 plugin-disabled" in document
+        assert "3.80 seconds" in document
+        assert "054ac39" in document
+        assert "fake-data" in document or "fake data" in document
+        assert "real" in document.lower()
+        assert "unauthorized" in document or "not be executed" in document or "no authority" in document.lower()
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Accepted real-execution readiness finding" in audit
+    assert "Accepted 50S.6G.1B.2D real-execution readiness finding" in architecture
+    assert "50S.6G.1B.2D accepted real-execution readiness finding" in roadmap
+    assert "Accepted real-execution readiness boundary" in reference
+    assert "Accepted real-execution readiness ownership" in source_tree
+    assert "Accepted real-matrix coordinate readiness finding" in coordinates
+    assert "Accepted real-execution readiness audit" in guide
+    assert "Accepted real-execution readiness boundary" in instructions
+    assert "real matrix is not yet ready to run" in audit
+    assert "does not authorize reading" in audit
+
+
+def test_50s6g1b2d1_documents_single_real_execution_authorization():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md"
+    ).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Candidate 50S.6G.1B.2D.1 first-real-execution authorization",
+        "authorize exactly one operator-started offline run",
+        "at most 80 fresh subprocess invocations",
+        "The existing worker timeout remains 3600 seconds per subprocess",
+        "There is no automatic retry",
+        "A successful command does not itself accept the evidence",
+        "Until Fernando explicitly accepts this audit",
+    ):
+        assert phrase in audit
+    for digest in (
+        "2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b",
+        "1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895",
+        "e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347",
+    ):
+        assert digest in audit
+    assert "Candidate first-real-execution authorization" in architecture
+    assert "Candidate first real run policy" in reference
+    assert "50S.6G.1B.2D.1 candidate first real execution" in roadmap
+    assert "Candidate first-real-execution ownership" in source_tree
+    assert "Candidate first-real-execution coordinate boundary" in coordinate_guide
+    assert "Candidate first real equivalence run" in guide
+    assert "Candidate first-real-execution authorization boundary" in instructions
+
+
+def test_50s6g1b2d2_documents_parent_only_progress_boundary():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md"
+    ).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Candidate parent-process matrix progress display",
+        "The authorized execution has not started",
+        "exactly 80 invocations",
+        "excluded from canonical scientific evidence",
+        "The real specimen must not be accessed",
+    ):
+        assert phrase in audit
+    assert "Candidate matrix execution progress display" in architecture
+    assert "Candidate matrix progress reporting" in reference
+    assert "50S.6G.1B.2D.2 candidate progress display" in roadmap
+    assert "Candidate matrix progress ownership" in source_tree
+    assert "Candidate progress-display coordinate review" in coordinate_guide
+    assert "Candidate equivalence-run progress display" in guide
+    assert "Candidate matrix progress boundary" in instructions
+
+
+def test_50s6g1b2d2_records_candidate_progress_verification():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            SATELLITE_PROGRAM_LOG,
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "b0b4432" in document
+        assert "2026-09-18" in document
+        assert "180" in document
+        assert "5.44 seconds" in document
+        assert "2647" in document
+        assert "239.53 seconds" in document
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "git diff --check 5aff265...HEAD` reported no errors" in audit
+    assert "Candidate 50S.6G.1B.2D.2 verification record" in audit
+    assert "Candidate 50S.6G.1B.2D.2 progress verification" in architecture
+    assert "50S.6G.1B.2D.2 candidate verification state" in roadmap
+    assert "Candidate matrix progress verification" in reference
+    assert "Candidate matrix progress verification ownership" in source_tree
+    assert "Candidate progress-display verification review" in coordinates
+    assert "Candidate equivalence-run progress verification" in guide
+    assert "Candidate matrix progress verification boundary" in instructions
+    assert "authorized execution has not started" in audit
+    assert "renewed authorization remain separate decisions" in audit
+    assert "real specimen was not accessed" in guide
+
+
+def test_50s6g1b2d2_records_progress_display_acceptance():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            SATELLITE_PROGRAM_LOG,
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "96b9ba0" in document
+        assert "2026-09-18" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Accepted 50S.6G.1B.2D.2 progress-display closure" in audit
+    assert "Accepted 50S.6G.1B.2D.2 progress display" in architecture
+    assert "50S.6G.1B.2D.2 accepted progress-display state" in roadmap
+    assert "Accepted matrix progress display" in reference
+    assert "Accepted matrix progress ownership" in source_tree
+    assert "Accepted progress-display coordinate review" in coordinates
+    assert "Accepted equivalence-run progress display" in guide
+    assert "Accepted matrix progress boundary" in instructions
+    assert "does not merge the feature branch" in audit
+    assert "does not itself authorize execution" in reference
+    assert "post-merge renewed authorization" in guide
+
+
+def test_50s6g1b2d3_records_renewed_single_real_run_authorization():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            SATELLITE_PROGRAM_LOG,
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "9c4b808" in document
+        assert "2026-09-18" in document
+        assert "renew" in document.lower()
+        assert "exactly one" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Renewed 50S.6G.1B.2D.3 one-run authorization" in audit
+    assert "Renewed 50S.6G.1B.2D.3 one-run authority" in architecture
+    assert "50S.6G.1B.2D.3 renewed single-run authorization" in roadmap
+    assert "Renewed single real-run contract" in reference
+    assert "Renewed real-run ownership" in source_tree
+    assert "Renewed real-run coordinate boundary" in coordinates
+    assert "Renewed single real equivalence run" in guide
+    assert "Renewed one-run matrix authority" in instructions
+    assert "at most 80 fresh subprocess invocations" in audit
+    assert "There is no automatic retry or resume" in audit
+    assert "consumes this authorization" in audit
+    assert "candidate evidence requiring independent review" in audit
+
+
+def test_50s6g1b2d3_records_acceptance_of_renewed_authorization():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            SATELLITE_PROGRAM_LOG,
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "dd71e01" in document
+        assert "2026-09-18" in document
+        assert "169" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "4.29 seconds" in audit
+    assert "Accepted 50S.6G.1B.2D.3 renewed authorization" in audit
+    assert "Accepted 50S.6G.1B.2D.3 renewed authority" in architecture
+    assert "50S.6G.1B.2D.3 accepted renewed authorization" in roadmap
+    assert "Accepted renewed real-run contract" in reference
+    assert "Accepted renewed real-run ownership" in source_tree
+    assert "Accepted renewed real-run coordinate boundary" in coordinates
+    assert "Accepted renewed single real run" in guide
+    assert "Accepted renewed one-run authority" in instructions
+    assert "run remains unstarted and unconsumed" in audit
+    assert "only after this record is merged" in audit
+    assert "external preflight" in audit
+
+
+def test_50s6g1b2d4_records_candidate_first_real_matrix_evidence():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            SATELLITE_PROGRAM_LOG,
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258" in document
+        assert "9d93113" in document
+        assert "2026-09-18" in document
+        assert "zero crossings" in document
+        assert "candidate" in document.lower()
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Candidate 50S.6G.1B.2D.4 first real-matrix evidence" in audit
+    assert "Candidate 50S.6G.1B.2D.4 real-matrix evidence" in architecture
+    assert "50S.6G.1B.2D.4 candidate real-matrix evidence" in roadmap
+    assert "Candidate first real-matrix evidence" in reference
+    assert "Candidate first real-matrix evidence ownership" in source_tree
+    assert "Candidate first real-matrix coordinate finding" in coordinates
+    assert "Candidate first real equivalence evidence" in guide
+    assert "Candidate first real-matrix evidence boundary" in instructions
+
+    for phrase in (
+        "0cad196ea850a26d7cb5a2b73e73d932f06b2ae1ba2e36d745a1c3f1b2beb26c",
+        "64b5b4f99ca09fc78cdabb4a487382425317bacf71075825d40b3f28d4adee72",
+        "2,455 reject, 101 indeterminate, and 4 retain",
+        "38,292.318 wall seconds",
+        "13,636.603 wall seconds",
+        "2.694 to 2.865",
+        "authorization is consumed",
+    ):
+        assert phrase in audit
+    assert "positive-crossing behavior remains covered by synthetic evidence" in audit
+    assert "no universal speed, capacity, memory, or hardware claim" in audit
+
+
+def test_50s6g1b2d4_records_acceptance_of_first_real_matrix_evidence():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            SATELLITE_PROGRAM_LOG,
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "186e255" in document
+        assert "d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258" in document
+        assert "2026-09-18" in document
+        assert "zero crossings" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Accepted 50S.6G.1B.2D.4 first real-matrix evidence" in audit
+    assert "Accepted 50S.6G.1B.2D.4 real-matrix evidence" in architecture
+    assert "50S.6G.1B.2D.4 accepted first real-matrix evidence" in roadmap
+    assert "Accepted first real-matrix evidence" in reference
+    assert "Accepted first real-matrix evidence ownership" in source_tree
+    assert "Accepted first real-matrix coordinate finding" in coordinates
+    assert "Accepted first real equivalence evidence" in guide
+    assert "Accepted first real-matrix evidence boundary" in instructions
+
+    assert "171 plugin-disabled documentation tests passing in 4.46 seconds" in audit
+    assert "deterministic empty-result equivalence" in audit
+    assert "does not establish positive real-crossing validation" in audit
+    assert "authorize another real run" in audit
+    assert "authorize parallelization or refactoring" in audit
+
+
+def test_50s6g1b_candidate_bounded_closure_preserves_limitations():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_snapshot_preflight_audit_50s6g1b.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            SATELLITE_PROGRAM_LOG,
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "b010a6c" in document
+        assert "zero crossings" in document
+        assert "50S.6G.2A" in document
+        assert "documentation audit" in document
+        assert "unauthorized" in document or "not authorized" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Candidate 50S.6G.1B bounded closure audit" in audit
+    assert "Candidate bounded 50S.6G.1B closure" in architecture
+    assert "50S.6G.1B candidate bounded closure state" in roadmap
+    assert "Candidate 50S.6G.1B closure boundary" in reference
+    assert "Candidate 50S.6G.1B closure ownership" in source_tree
+    assert "Candidate 50S.6G.1B closure coordinate review" in coordinates
+    assert "Candidate bounded 50S.6G.1B closure" in guide
+    assert "Candidate bounded 50S.6G.1B closure boundary" in instructions
+
+    for phrase in (
+        "d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258",
+        "60 measured observations",
+        "Positive-crossing behavior remains synthetic evidence",
+        "full 16,559-record matrix",
+        "FoV counts 1, 2, 5, 20, or 50",
+        "The consumed one-run authority is not renewed",
+        "changes no runtime",
+        "not report implementation",
+    ):
+        assert phrase in audit
+
+    assert "full-snapshot matrix" in roadmap
+    assert "No production ownership changes" in source_tree
+    assert "introduces no coordinate operation" in coordinates
+    assert "The one-run authority is consumed" in instructions
+
+
+def test_50s6g1b_records_accepted_bounded_closure():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_snapshot_preflight_audit_50s6g1b.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            SATELLITE_PROGRAM_LOG,
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-19" in document
+        assert "c62a451" in document
+        assert "173" in document
+        assert "3.82 seconds" in document
+        assert "50S.6G.2A documentation audit" in document
+        assert "zero crossings" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Accepted 50S.6G.1B bounded closure" in audit
+    assert "Accepted bounded 50S.6G.1B closure" in architecture
+    assert "50S.6G.1B accepted bounded closure" in roadmap
+    assert "Accepted 50S.6G.1B closure boundary" in reference
+    assert "Accepted 50S.6G.1B closure ownership" in source_tree
+    assert "Accepted 50S.6G.1B closure coordinate review" in coordinates
+    assert "Accepted bounded 50S.6G.1B closure" in guide
+    assert "Accepted bounded 50S.6G.1B closure boundary" in instructions
+
+    assert "The consumed execution authority is not renewed" in audit
+    assert "Implementation is not authorized" in roadmap
+    assert "No report API" in reference
+    assert "no new production module" in source_tree
+    assert "may not implement serialization" in coordinates
+    assert "The one-run authority remains consumed" in instructions
+
+def test_50s6g2a_candidate_exact_crossing_report_audit():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_exact_crossing_report_audit_50s6g2a.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            SATELLITE_PROGRAM_LOG,
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+        )
+    )
+
+    assert "satellite_exact_crossing_report_audit_50s6g2a.md" in index
+    for phrase in (
+        "wenu.artificial_satellite_exact_crossing_report",
+        "geometric exact local crossings — visibility not evaluated",
+        "validated field with zero crossings",
+        "satellite_presentations.py",
+        "caller-supplied immutable creation time",
+        "report_identity_sha256",
+        "additionalProperties: false",
+        "JSON Schema Draft 2020-12",
+        "duplicate object keys",
+        "from_json(report.to_json()) == report",
+        "tests/test_satellite_crossing_reports.py",
+        "future-science values must be JSON `null`",
+        "Atomic filesystem publication belongs to 50S.6G.2C",
+        "Until that acceptance, no 50S.6G.2A implementation is authorized",
+    ):
+        assert phrase in audit
+
+    for document in documents:
+        assert "50S.6G.2A" in document
+        assert "candidate" in document.lower()
+        assert "no runtime" in document.lower() or "no production" in document.lower() or "no implementation" in document.lower()
+
+    assert "distinct renderer-neutral exact-crossing logical model" in documents[0]
+    assert "No exact-report API exists" in documents[2]
+    assert "closest existing owner is `satellite_presentations.py`" in documents[3]
+    assert "introduces no coordinate operation" in documents[4]
+    assert "not a visibility forecast" in documents[5]
+    assert "Do not implement until Fernando separately accepts" in documents[6]
+    assert "Candidate 50S.6G.2A exact-report refinement" in documents[7]
+
+def test_satellite_guide_is_pedagogical_and_history_is_separate():
+    guide = read(DEVELOPER / "satellite_guide.md")
+    log = read(SATELLITE_PROGRAM_LOG)
+    index = read(DEVELOPER / "README.md")
+
+    for phrase in (
+        "Acronyms and specialized abbreviations",
+        "Canonical satellite flow",
+        "Propagation and reference systems",
+        "Field and crossing definitions",
+        "Complete-scan correctness oracle",
+        "Conservative high-performance search",
+        "Illumination",
+        "Apparent brightness",
+        "Validation hierarchy",
+        "Source ownership direction",
+        "Exact crossing reports",
+    ):
+        assert phrase in guide
+
+    assert "Candidate real-execution readiness audit" not in guide
+    assert "Accepted first real equivalence evidence" not in guide
+    assert "Candidate real-execution readiness audit" in log
+    assert "Accepted first real equivalence evidence" in log
+    assert "Accepted 50S.6G.2A exact-report audit" in log
+    assert "pedagogical artificial-satellite" in index
+    assert "chronological 50S" in index
+
+
+def test_satellite_guide_explains_orbital_elements_and_precession():
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+
+    for phrase in (
+        "Keplerian elements: osculating geometry and Wenu's mean-element input",
+        "instantaneous two-body conic",
+        "MEAN_ELEMENT_THEORY = SGP4",
+        "does **not** turn a GP record into osculating elements",
+        "dOmega/dt = -(3/2) J2 n (R_E / p)^2 cos(i)",
+        "domega/dt = (3/4) J2 n (R_E / p)^2 (5 cos(i)^2 - 1)",
+        "a^(-7/2)",
+        "(1 - e^2)^(-2)",
+        "critical inclinations near 63.4 and 116.6 degrees",
+        "+0.986 degree per day",
+        "GPS-like MEO",
+        "about -0.04 degree/day",
+        "SGP4 drag-like fit parameter",
+        "https://public.ccsds.org/Pubs/502x0b3e1.pdf",
+        "AIAA-2006-6753-Rev3.pdf",
+        "gp-data-formats.php",
+    ):
+        assert phrase in guide
+
+def test_50s6g2a_records_acceptance_and_bounded_implementation_authority():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_exact_crossing_report_audit_50s6g2a.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document or "Fernando accepted" in document
+        assert "2026-09-19" in document
+        assert "835ddfe" in document
+        assert "175" in document
+        assert "3.27 seconds" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, instructions, delivery, log = documents
+    assert "Accepted audit and handoff" in audit
+    assert "Accepted 50S.6G.2A exact-report audit" in architecture
+    assert "50S.6G.2A accepted audit state" in roadmap
+    assert "Accepted 50S.6G.2A implementation authorization" in reference
+    assert "Accepted 50S.6G.2A implementation ownership" in source_tree
+    assert "Accepted 50S.6G.2A coordinate boundary" in coordinates
+    assert "Accepted 50S.6G.2A implementation boundary" in instructions
+    assert "Accepted 50S.6G.2A audit handoff" in delivery
+    assert "Accepted 50S.6G.2A exact-report audit" in log
+    assert "50S.6G.2B and later work remain unauthorized" in roadmap
+    assert "Do not implement ECSV/VOTable" in instructions
+
+def test_50s6g2a_candidate_implementation_is_bounded_and_propagated():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, log = documents
+    assert "satellite_crossing_reports.py" in architecture
+    assert "50S.6G.2A candidate implementation state" in roadmap
+    assert "Candidate exact-crossing report API" in reference
+    assert "satellite_exact_crossing_report_v1.schema.json" in source_tree
+    assert "introduces no new frame" in coordinates
+    assert "Null means “not evaluated,” not false, dark, zero, or absent" in guide
+    assert "Do not add ECSV/VOTable" in instructions
+    assert "99 tests in 119.54 seconds" in log
+    assert "2,676 tests in 234.08 seconds" in log
+    assert "a65e5ac" in log
+    assert "ECSV/VOTable remains 50S.6G.2B" in roadmap
+    assert "CLI/files and atomic publication remain 50S.6G.2C" in roadmap
+    assert "exact tracks remain 50S.6G.3A" in roadmap
+
+def test_50s6g2a_records_accepted_implementation_boundary():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            INSTRUCTIONS,
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+    for document in documents:
+        assert (
+            "Fernando scientifically and architecturally accepted the bounded "
+            "50S.6G.2A implementation on 2026-09-19"
+        ) in document
+        assert "a65e5ac" in document
+        assert "2,676" in document
+        assert "234.08 seconds" in document
+        assert "8af0d14" in document
+        assert "179" in document
+        assert "5.05 seconds" in document
+
+    (
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinates,
+        instructions,
+        log,
+    ) = documents
+    assert "Accepted 50S.6G.2A exact-report implementation" in architecture
+    assert "50S.6G.2A accepted implementation" in roadmap
+    assert "Accepted 50S.6G.2A exact-report API" in reference
+    assert "Accepted 50S.6G.2A implementation ownership" in source_tree
+    assert "Accepted 50S.6G.2A coordinate finding" in coordinates
+    assert "Accepted 50S.6G.2A implementation boundary" in instructions
+    assert "Accepted 50S.6G.2A exact-report implementation" in log
+    assert "No later milestone is authorized by this acceptance" in roadmap
+
+
+def test_50s6g2b_candidate_tabular_audit_is_lossless_reusable_and_bounded():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    assert "satellite_tabular_report_audit_50s6g2b.md" in index
+    for phrase in (
+        "one shared reusable format-neutral tabular projection",
+        "thin format adapters",
+        "report_identity_sha256",
+        "validated field with zero crossings",
+        'serialize_method="data_mask"',
+        "VOTable 1.5",
+        "BINARY2",
+        'timescale="UTC"',
+        'refposition="TOPOCENTER"',
+        "from_ecsv(report.to_ecsv()) == report",
+        "from_votable(report.to_votable()) == report",
+        "Atomic filesystem publication belongs to 50S.6G.2C",
+        "no 50S.6G.2B implementation is authorized",
+    ):
+        assert phrase in audit
+
+    for document in documents:
+        assert "50S.6G.2B" in document
+        assert "reusable" in document
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "alternate lossless carriers" in architecture
+    assert "Candidate 50S.6G.2B tabular API" in reference
+    assert "exactly one format-neutral mapping" in source_tree
+    assert "introduces no new frame" in coordinates
+    assert "scientific flattening and validation are written once" in guide
+    assert "Do not implement 50S.6G.2B" in instructions
+    assert "authorizes no runtime work" in roadmap
+    assert "authorizes no implementation" in delivery
+    assert "candidate audit, not acceptance" in log
+
+
+def test_50s6g2b_records_candidate_verification_without_acceptance():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md"
+    ).split())
+    log = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+
+    for document in (audit, log):
+        assert "ef14bc1" in document
+        assert "181" in document
+        assert "4.88 seconds" in document
+        assert "57c8bec" in document
+        assert "clean" in document
+        assert "synchronized" in document
+
+    assert "documentation consistency only" in audit
+    assert "not scientific or architectural acceptance" in log
+
+
+def test_50s6g2b_records_scientific_and_architectural_acceptance():
+    documents = (
+        read(DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md"),
+        read(DEVELOPER / "assistant_instructions.md"),
+        read(DEVELOPER / "current_architecture_v0.9.md"),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "post_v0.9_architecture_roadmap.md"),
+        read(DEVELOPER / "coordinate_system_guide_v0.9.5.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(SATELLITE_PROGRAM_LOG),
+    )
+    normalized = tuple(" ".join(document.split()) for document in documents)
+
+    for document in normalized:
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-19" in document
+        assert "ef14bc1" in document
+        assert "181" in document
+        assert "4.88 seconds" in document
+        assert "reusable" in document
+
+    audit, instructions, architecture, reference, roadmap, coordinates, source_tree, log = normalized
+    assert "Only a bounded in-memory implementation is authorized next" in audit
+    assert "Implement only one reusable format-neutral" in instructions
+    assert "Canonical JSON and `report_identity_sha256` remain the logical authority" in architecture
+    assert "to_ecsv()" in reference
+    assert "50S.6G.2C filesystem/CLI publication" in roadmap
+    assert "coordinate guide remains current" in coordinates
+    assert "exactly one reusable format-neutral mapping" in source_tree
+    assert "new execution remain unauthorized" in log
+
+
+
+def test_50s6g2b_candidate_unicode_null_amendment_is_explicit_and_bounded():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md"
+    ).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for document in (audit, instructions):
+        assert "Astropy 7.1.0" in document
+        assert "BINARY2 null flags" in document
+        assert "__is_null" in document
+        assert "shared logical projection" in document
+        assert "report_identity_sha256" in document
+        assert "empty string as null" in document
+        assert "runtime" in document
+
+    assert "no further" in audit
+    assert "make further runtime changes" in instructions
+    assert "Astropy issue 8995" in audit
+    assert "Numeric and Boolean nulls continue to use BINARY2 null flags" in audit
+    assert "true indicator paired with a non-empty carrier" in audit
+    assert "does not introduce a private BINARY2 parser" in audit
+    assert "documentation-only and unaccepted" in instructions
+
+
+
+def test_50s6g2b_records_unicode_null_amendment_acceptance():
+    documents = (
+        read(DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md"),
+        read(INSTRUCTIONS),
+    )
+    for document in (" ".join(value.split()) for value in documents):
+        assert "scientifically and architecturally accepted" in document
+        assert "5038e4a" in document
+        assert "184" in document
+        assert "5.28 seconds" in document
+        assert "__is_null" in document
+        assert "shared logical projection" in document
+        assert "ECSV" in document
+        assert "canonical JSON" in document
+
+
+
+def test_50s6g2b_records_candidate_implementation_verification():
+    documents = (
+        read(DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md"),
+        read(INSTRUCTIONS),
+        read(SATELLITE_PROGRAM_LOG),
+    )
+    for document in (" ".join(value.split()) for value in documents):
+        assert "3bbd82f" in document
+        assert "208" in document
+        assert "6.68 seconds" in document
+        assert "2,689" in document
+        assert "215.15 seconds" in document
+        assert "canonical JSON" in document
+        assert "report_identity_sha256" in document
+        assert "__is_null" in document
+        assert "candidate" in document
+        assert "acceptance" in document
+        assert "50S.6G.2C" in document
+
+    audit = " ".join(documents[0].split())
+    assert "coordinate-system guide was reviewed and remains current" in audit
+    assert "verification evidence, not scientific or architectural acceptance" in audit
+
+
+
+def test_50s6g2b_records_complete_implementation_acceptance():
+    paths = (
+        DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md",
+        INSTRUCTIONS,
+        V09_CURRENT,
+        DEVELOPER / "implementation_reference.md",
+        DEVELOPER / "source_tree.md",
+        FUTURE_ROADMAP,
+        COORDINATE_GUIDE,
+        SATELLITE_PROGRAM_LOG,
+    )
+    documents = tuple(" ".join(read(path).split()) for path in paths)
+
+    for document in documents:
+        assert "scientifically and architecturally accepted the complete bounded" in document
+        assert "2026-09-19" in document
+        assert "3bbd82f" in document
+        assert "208" in document
+        assert "6.68 seconds" in document
+        assert "2,689" in document
+        assert "215.15 seconds" in document
+        assert "ece80c7" in document
+        assert "186" in document
+        assert "4.60 seconds" in document
+        assert "canonical json" in document.lower()
+        assert "report_identity_sha256" in document
+        assert "__is_null" in document
+        assert "no later" in document.lower()
+
+    audit, instructions, architecture, reference, source_tree, roadmap, coordinates, log = documents
+    assert "Accepted complete 50S.6G.2B implementation" in audit
+    assert "Accepted complete 50S.6G.2B implementation boundary" in instructions
+    assert "Accepted complete 50S.6G.2B in-memory interoperability" in architecture
+    assert "Accepted complete 50S.6G.2B tabular API" in reference
+    assert "Accepted complete 50S.6G.2B ownership" in source_tree
+    assert "50S.6G.2B complete implementation accepted" in roadmap
+    assert "Accepted complete 50S.6G.2B coordinate finding" in coordinates
+    assert "Accepted complete 50S.6G.2B in-memory interoperability" in log
+    assert "50S.6G.2C filesystem/CLI publication" in roadmap
+
+
+def test_50s6g2c_candidate_cli_file_protocol_is_atomic_explicit_and_bounded():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_cli_file_protocol_audit_50s6g2c.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    assert "satellite_cli_file_protocol_audit_50s6g2c.md" in index
+    for phrase in (
+        "wenu_satellite_crossings",
+        "direct arguments",
+        "--request PATH",
+        "--validated-request PATH",
+        "no FoV is solved",
+        "derived_request: null",
+        "report.json",
+        "report.ecsv",
+        "report.vot",
+        "manifest.json",
+        "manifest_identity_sha256",
+        "no-clobber failure",
+        "SIGINT/KeyboardInterrupt returns 130",
+        "SIGTERM",
+        "Filesystem atomicity is limited to one filesystem",
+        "invalid FoVs do not reach",
+        "This candidate authorizes no implementation",
+    ):
+        assert phrase in audit
+
+    for document in documents:
+        assert "50S.6G.2C" in document
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "dedicated CLI adapter" in architecture
+    assert "authorizes no implementation" in roadmap
+    assert "mutually exclusive" in reference
+    assert "No production module or test file is added" in source_tree
+    assert "introduces no new frame" in coordinates
+    assert "audit-preserving selection protocol" in guide
+    assert "Do not implement 50S.6G.2C" in instructions
+    assert "authorizes no implementation" in delivery
+    assert "candidate audit, not acceptance" in log
+
+
+def test_50s6g2c_records_acceptance_and_only_bounded_implementation_authority():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_cli_file_protocol_audit_50s6g2c.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "scientifically and architecturally accepted",
+        "bcac40453ae244348b9fc33447246db1c587d722",
+        "188 plugin-disabled",
+        "5.29 seconds",
+        "Implement only the bounded offline CLI/filesystem adapter",
+        "This acceptance does not authorize provider access",
+    ):
+        assert phrase in audit
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "Accepted 50S.6G.2C audit boundary" in architecture
+    assert "50S.6G.2C accepted audit and next authority" in roadmap
+    assert "Accepted 50S.6G.2C implementation authorization" in reference
+    assert "Accepted 50S.6G.2C implementation ownership" in source_tree
+    assert "Accepted 50S.6G.2C coordinate finding" in coordinates
+    assert "Accepted 50S.6G.2C reader boundary" in guide
+    assert "Accepted 50S.6G.2C audit boundary" in instructions
+    assert "Accepted 50S.6G.2C audit handoff" in delivery
+    assert "Accepted 50S.6G.2C audit" in log
+    assert "50S.6G.3A and all track, chart" in roadmap
+
+
+def test_50s6g2c_candidate_implementation_is_bounded_and_offline():
+    project = read(ROOT / "pyproject.toml")
+    cli = read(ROOT / "src/wenu/cli/satellite_crossings.py")
+    batch = read(ROOT / "src/wenu/satellites/crossing_batch.py")
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    assert (
+        'wenu_satellite_crossings = "wenu.cli.satellite_crossings:main"'
+        in project
+    )
+    assert "def validate(self, request):" in batch
+    assert "without solving any crossing" in batch
+    for phrase in (
+        "REQUEST_PRODUCT",
+        "VALIDATION_PRODUCT",
+        "MANIFEST_PRODUCT",
+        "RENAME_EXCL",
+        "RENAME_NOREPLACE",
+        "report.json",
+        "report.ecsv",
+        "report.vot",
+        "manifest.json",
+        "return 130",
+        "return 143",
+    ):
+        assert phrase in cli
+    for name in (
+        "satellite_crossing_request_v1.schema.json",
+        "satellite_crossing_validation_v1.schema.json",
+        "satellite_crossing_bundle_manifest_v1.schema.json",
+    ):
+        assert (ROOT / "src/wenu/data" / name).is_file()
+
+    assert "Candidate 50S.6G.2C implementation state" in architecture
+    assert "50S.6G.2C candidate implementation" in roadmap
+    assert "Candidate 50S.6G.2C executable API" in reference
+    assert "Candidate 50S.6G.2C implementation placement" in source_tree
+    assert "Candidate 50S.6G.2C implementation boundary" in instructions
+    assert "Do not merge or begin 50S.6G.3A" in instructions
+
+
+def test_50s6g2c_records_candidate_verification_without_acceptance():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_cli_file_protocol_audit_50s6g2c.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            INSTRUCTIONS,
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "e08ebf5e0061dbf1e69c8cc58a55a9696e785300",
+        "235-test immediate",
+        "7.63 seconds",
+        "2,709-test plugin-disabled suite",
+        "237.35 seconds",
+        "verified candidate awaiting",
+        "not acceptance",
+        "Do not merge or begin 50S.6G.3A",
+    ):
+        assert phrase in audit
+
+    (
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinates,
+        instructions,
+        log,
+    ) = documents
+    assert "Verified candidate 50S.6G.2C implementation" in architecture
+    assert "50S.6G.2C verified candidate state" in roadmap
+    assert "Verified candidate 50S.6G.2C API" in reference
+    assert "Verified candidate 50S.6G.2C placement" in source_tree
+    assert "Verified candidate 50S.6G.2C coordinate review" in coordinates
+    assert (
+        "Candidate 50S.6G.2C implementation verification boundary"
+        in instructions
+    )
+    assert "Verified candidate 50S.6G.2C implementation" in log
+    assert "Merge and 50S.6G.3A remain unauthorized" in roadmap
+
+
+def test_50s6g2c_records_accepted_implementation_and_next_audit_only():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_cli_file_protocol_audit_50s6g2c.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            INSTRUCTIONS,
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "scientifically and architecturally accepted",
+        "e08ebf5e0061dbf1e69c8cc58a55a9696e785300",
+        "f2bb49c6f44281428d546d5d2adbf35f74b7fc6d",
+        "2,709 plugin-disabled tests",
+        "191 current-documentation tests",
+        "Only a separately bounded documentation-first 50S.6G.3A",
+        "no track implementation is authorized",
+    ):
+        assert phrase in audit
+
+    architecture, roadmap, reference, source_tree, coordinates, instructions, log = documents
+    assert "Accepted 50S.6G.2C implementation" in architecture
+    assert "50S.6G.2C accepted implementation" in roadmap
+    assert "Accepted 50S.6G.2C executable API" in reference
+    assert "Accepted 50S.6G.2C ownership" in source_tree
+    assert "Accepted 50S.6G.2C coordinate closure" in coordinates
+    assert "Accepted 50S.6G.2C implementation boundary" in instructions
+    assert "Accepted 50S.6G.2C implementation" in log
+    assert "50S.6G.3A documentation audit is authorized next" in roadmap
+
+def test_50s6g3a_candidate_exact_local_track_audit_is_bounded():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_exact_local_track_audit_50s6g3a.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    assert "satellite_exact_local_track_audit_50s6g3a.md" in index
+    for phrase in (
+        "one accepted connected visit",
+        "entry, closest-approach, and exit",
+        "normalized spherical chord midpoint",
+        "maximum sample interval",
+        "It is not a proof of a global continuous maximum error",
+        "returns no partial track",
+        "track_identity_sha256",
+        "exact local connected-visit track",
+        "SatChecker sampled candidate evidence — not verified crossings",
+        "must not reuse `SolarSystemTrackResult`",
+        "report.json",
+        "This candidate authorizes no implementation",
+        "50S.6G.3B chart integration",
+        "50S.6G.4A/B planisphere work",
+    ):
+        assert phrase in audit
+
+    (
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinates,
+        guide,
+        instructions,
+        delivery,
+        log,
+    ) = documents
+    assert "Candidate 50S.6G.3A exact-local-track boundary" in architecture
+    assert "50S.6G.3A candidate audit state" in roadmap
+    assert "Candidate 50S.6G.3A exact-local-track API" in reference
+    assert "Candidate 50S.6G.3A ownership" in source_tree
+    assert "Candidate 50S.6G.3A exact-track coordinate finding" in coordinates
+    assert "Candidate exact local track evidence" in guide
+    assert "Candidate 50S.6G.3A audit boundary" in instructions
+    assert "50S.6G.3A candidate refinement" in delivery
+    assert "Candidate 50S.6G.3A exact-local-track audit" in log
+    assert "50S.6G.3B binocular/regional chart integration" in roadmap
+    assert "no implementation is yet authorized" in guide
+
+def test_50s6g3a_records_acceptance_and_only_bounded_implementation_authority():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_exact_local_track_audit_50s6g3a.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "scientifically and architecturally accepted",
+        "ce549715889c135e17b87749f3860855b1b54447",
+        "193 plugin-disabled current-documentation tests",
+        "5.73 seconds",
+        "Implement only the bounded 50S.6G.3A",
+        "This acceptance does not authorize 50S.6G.3B",
+        "implementation remains a candidate",
+    ):
+        assert phrase in audit
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "Accepted 50S.6G.3A audit boundary" in architecture
+    assert "50S.6G.3A accepted audit and next authority" in roadmap
+    assert "Accepted 50S.6G.3A implementation authorization" in reference
+    assert "Accepted 50S.6G.3A implementation ownership" in source_tree
+    assert "Accepted 50S.6G.3A coordinate boundary" in coordinates
+    assert "Accepted exact local track audit" in guide
+    assert "Accepted 50S.6G.3A audit boundary" in instructions
+    assert "Accepted 50S.6G.3A audit refinement" in delivery
+    assert "Accepted 50S.6G.3A audit" in log
+    assert "50S.6G.3B and 50S.6G.4A/B remain unauthorized" in roadmap
+
+def test_50s6g3a_candidate_implementation_is_exact_output_neutral_and_bounded():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_exact_local_track_audit_50s6g3a.md"
+    ).split())
+    source = read(ROOT / "src/wenu/satellites/exact_tracks.py")
+    layer = read(ROOT / "src/wenu/sky/satellite_exact_track_layer.py")
+    coordinate_service = read(ROOT / "src/wenu/coordinate_service.py")
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "Accepted implementation-preflight representation resolution",
+        "sample_time_scale",
+        "Candidate 50S.6G.3A implementation",
+        "98a756d4405ba60756e3899d9a0886029cfa8afd",
+        "69 tests in 75.58 seconds",
+        "not scientific or architectural implementation acceptance",
+    ):
+        assert phrase in audit
+    for phrase in (
+        "class ExactLocalTrackPolicy",
+        "class ExactLocalSatelliteTrackSample",
+        "class ExactLocalSatelliteTrack",
+        "class ExactLocalTrackError",
+        "class ExactLocalSatelliteTrackRealizer",
+        "track_identity_sha256",
+        "maximum_step_seconds",
+        "adaptive subdivision exceeded",
+    ):
+        assert phrase in source
+    assert "class SatelliteExactTrackLayer" in layer
+    assert "class SatelliteExactTrackEventsLayer" in layer
+    assert "recomputed" in layer
+    assert 'if frame == "gcrs-axes"' in coordinate_service
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "Candidate 50S.6G.3A implementation state" in architecture
+    assert "50S.6G.3A candidate implementation" in roadmap
+    assert "Candidate 50S.6G.3A executable API" in reference
+    assert "Candidate 50S.6G.3A implementation placement" in source_tree
+    assert "Candidate 50S.6G.3A implemented coordinate representation" in coordinates
+    assert "Candidate exact local track implementation" in guide
+    assert "Candidate 50S.6G.3A implementation boundary" in instructions
+    assert "50S.6G.3A candidate implementation state" in delivery
+    assert "Candidate 50S.6G.3A implementation" in log
+    assert "Do not merge or begin 50S.6G.3B" in instructions
+
+def test_50s6g3a_records_complete_candidate_verification_without_acceptance():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_exact_local_track_audit_50s6g3a.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            INSTRUCTIONS,
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "f0a41648dc5565e4a8deed5d7bb6640a3df4e2d1",
+        "2,728 plugin-disabled repository tests",
+        "222.01 seconds",
+        "195 tests in 5.86 seconds",
+        "not scientific or architectural implementation acceptance",
+        "Do not merge or begin 50S.6G.3B",
+    ):
+        assert phrase in audit
+
+    architecture, roadmap, reference, source_tree, coordinates, instructions, log = documents
+    assert "Verified candidate 50S.6G.3A implementation" in architecture
+    assert "50S.6G.3A verified candidate state" in roadmap
+    assert "Verified candidate 50S.6G.3A API" in reference
+    assert "Verified candidate 50S.6G.3A placement" in source_tree
+    assert "Verified candidate 50S.6G.3A coordinate representation" in coordinates
+    assert (
+        "Candidate 50S.6G.3A implementation verification boundary"
+        in instructions
+    )
+    assert "Verified candidate 50S.6G.3A implementation" in log
+    assert "Merge and 50S.6G.3B remain unauthorized" in roadmap
+
+def test_50s6g3a_records_accepted_implementation_and_next_audit_only():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_exact_local_track_audit_50s6g3a.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "scientifically and architecturally accepted",
+        "f0a41648dc5565e4a8deed5d7bb6640a3df4e2d1",
+        "0182224a5e41074f87ce6507d52b981eeeda5ed8",
+        "2,728 plugin-disabled repository tests",
+        "196 documentation tests",
+        "Only a separately bounded documentation-first 50S.6G.3B",
+        "No chart implementation",
+    ):
+        assert phrase in audit
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "Accepted 50S.6G.3A implementation" in architecture
+    assert "50S.6G.3A accepted implementation" in roadmap
+    assert "Accepted 50S.6G.3A API" in reference
+    assert "Accepted 50S.6G.3A ownership" in source_tree
+    assert "Accepted 50S.6G.3A coordinate representation" in coordinates
+    assert "Accepted exact local track implementation" in guide
+    assert "Accepted 50S.6G.3A implementation boundary" in instructions
+    assert "Accepted 50S.6G.3A implementation closure" in delivery
+    assert "Accepted complete 50S.6G.3A implementation" in log
+    assert "Chart implementation and 50S.6G.4A/B remain unauthorized" in roadmap
+
+def test_50s6g3b_candidate_chart_integration_audit_is_bounded():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_binocular_regional_track_audit_50s6g3b.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    assert "satellite_binocular_regional_track_audit_50s6g3b.md" in index
+    for phrase in (
+        "SatelliteExactTrackDisplayRequest",
+        "satellite_exact_tracks",
+        "regional",
+        "binocular",
+        "already-realized",
+        "draw_path",
+        "draw_events",
+        "label_events",
+        "Fixed product-frame meaning",
+        "chart observer UTC instant equals",
+        "does not reinterpret each vertex as simultaneous",
+        "request-build cleanup",
+        "track_identity_sha256",
+        "PNG, PDF, and semantic SVG",
+        "must not recursively serialize the full exact evidence object",
+        "No invalid or mismatched track is silently dropped",
+        "This candidate authorizes no implementation",
+        "50S.6G.4A/B planisphere work",
+    ):
+        assert phrase in audit
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "Candidate 50S.6G.3B binocular/regional chart boundary" in architecture
+    assert "50S.6G.3B candidate audit state" in roadmap
+    assert "Candidate 50S.6G.3B chart-request API" in reference
+    assert "Candidate 50S.6G.3B ownership" in source_tree
+    assert "Candidate 50S.6G.3B fixed product-frame finding" in coordinates
+    assert "Candidate binocular and regional exact-track charts" in guide
+    assert "Candidate 50S.6G.3B audit boundary" in instructions
+    assert "50S.6G.3B candidate refinement" in delivery
+    assert "Candidate 50S.6G.3B chart-integration audit" in log
+    assert "50S.6G.4A/B planisphere work" in roadmap
+
+def test_50s6g3b_records_acceptance_and_only_bounded_implementation_authority():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_binocular_regional_track_audit_50s6g3b.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "scientifically and architecturally accepted",
+        "ef58180f62b99423abbb92da56f9ef08dce8c173",
+        "198 plugin-disabled current-documentation tests",
+        "5.30 seconds",
+        "Implement only the bounded 50S.6G.3B",
+        "This acceptance does not authorize 50S.6G.4A/B",
+        "implementation remains a candidate",
+    ):
+        assert phrase in audit
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "Accepted 50S.6G.3B audit boundary" in architecture
+    assert "50S.6G.3B accepted audit and next authority" in roadmap
+    assert "Accepted 50S.6G.3B implementation authorization" in reference
+    assert "Accepted 50S.6G.3B implementation ownership" in source_tree
+    assert "Accepted 50S.6G.3B coordinate boundary" in coordinates
+    assert "Accepted binocular/regional chart audit" in guide
+    assert "Accepted 50S.6G.3B audit boundary" in instructions
+    assert "Accepted 50S.6G.3B audit refinement" in delivery
+    assert "Accepted 50S.6G.3B audit" in log
+    assert "50S.6G.4A/B and all later science remain unauthorized" in roadmap
+
+
+def test_50s6g4a_corrective_altaz_planisphere_audit_is_bounded():
+    audit = " ".join(read(
+        DEVELOPER
+        / "satellite_stereographic_planisphere_track_audit_50s6g4a.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    assert (
+        "satellite_stereographic_planisphere_track_audit_50s6g4a.md"
+        in index
+    )
+    for phrase in (
+        'ChartRequest(family="planisphere")',
+        "observer-horizontal planisphere",
+        "one FullSkyChart",
+        "zenith-centred stereographic projection",
+        "horizon as the chart boundary",
+        "SatelliteExactTrackDisplayRequest",
+        "fixed AltAz product frame",
+        "track_identity_sha256",
+        "No invalid or mismatched track is silently dropped",
+        "does not create a crossing entry or exit event",
+        "PNG, PDF, and semantic SVG",
+        "must not serialize samples",
+        "authorizes no implementation",
+    ):
+        assert phrase in audit
+
+    (
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinates,
+        guide,
+        instructions,
+        delivery,
+        log,
+    ) = documents
+    assert "Corrective 50S.6G.4A ordinary-planisphere boundary" in architecture
+    assert "50S.6G.4A corrective audit state" in roadmap
+    assert "Corrective 50S.6G.4A proposed request boundary" in reference
+    assert "Corrective 50S.6G.4A ownership" in source_tree
+    assert "Corrective 50S.6G.4A fixed AltAz planisphere finding" in coordinates
+    assert "Corrective ordinary AltAz planisphere audit" in guide
+    assert "Corrective 50S.6G.4A AltAz planisphere boundary" in instructions
+    assert "Corrective 50S.6G.4A delivery refinement" in delivery
+    assert "Corrective 50S.6G.4A AltAz planisphere audit" in log
+    assert "This candidate authorizes no implementation" in roadmap
+
+
+def test_50s6g4a_records_corrective_acceptance_and_bounded_authority():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_stereographic_planisphere_track_audit_50s6g4a.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "scientifically and architecturally accepted this corrective",
+        "80855938a8711b7cec05190b5c7d33557dace9a9",
+        "all 201 plugin-disabled current-documentation tests",
+        "6.14 seconds",
+        "Implement only the bounded corrected 50S.6G.4B",
+        "ordinary AltAz stereographic planisphere integration",
+        "This acceptance does not authorize paired polar disks",
+        "implementation remains a candidate",
+    ):
+        assert phrase in audit
+
+    (
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinates,
+        guide,
+        instructions,
+        delivery,
+        log,
+    ) = documents
+    assert (
+        "Accepted corrective 50S.6G.4A AltAz planisphere boundary"
+        in architecture
+    )
+    assert "50S.6G.4A corrective audit accepted and next authority" in roadmap
+    assert (
+        "Accepted corrective 50S.6G.4A implementation authorization"
+        in reference
+    )
+    assert (
+        "Accepted corrective 50S.6G.4A implementation ownership"
+        in source_tree
+    )
+    assert "Accepted corrective 50S.6G.4A AltAz coordinate boundary" in coordinates
+    assert "Accepted corrective AltAz planisphere audit" in guide
+    assert "Accepted corrective 50S.6G.4A boundary" in instructions
+    assert "Accepted corrective 50S.6G.4A refinement" in delivery
+    assert "Accepted corrective 50S.6G.4A audit" in log
+    assert "later satellite work remain unauthorized" in roadmap
+
+def test_50s6g4b_records_verified_altaz_planisphere_candidate():
+    audit = " ".join(read(
+        DEVELOPER
+        / "satellite_stereographic_planisphere_track_audit_50s6g4a.md"
+    ).split())
+    documents = tuple(
+        read(path)
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "50S.6G.4B verified candidate implementation record",
+        "91eafff5ca7f0069806f7f059d19f7bb9ca123aa",
+        "252-test focused gate passed in 7.08 seconds",
+        "2,744 plugin-disabled repository tests passed in 220.63 seconds",
+        "65 retained samples",
+        "3f526de147caae6832c7a56330d460948c4b8963c7cdbf753618682e70d4248a",
+        "non-blocking long specimen title",
+        "candidate remains unaccepted",
+    ):
+        assert phrase in audit
+
+    expected = (
+        "Verified candidate 50S.6G.4B ordinary-planisphere implementation",
+        "50S.6G.4B verified candidate state",
+        "Verified candidate 50S.6G.4B request behavior",
+        "Verified candidate 50S.6G.4B implementation placement",
+        "Verified candidate 50S.6G.4B AltAz behavior",
+        "Verified candidate ordinary-planisphere exact track",
+        "Verified candidate 50S.6G.4B implementation boundary",
+        "Verified candidate 50S.6G.4B delivery evidence",
+        "Verified candidate 50S.6G.4B implementation",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+
+def test_50s6g4b_records_acceptance_and_closes_50s6g():
+    audit = " ".join(read(
+        DEVELOPER
+        / "satellite_stereographic_planisphere_track_audit_50s6g4a.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "50S.6G.4B final implementation acceptance",
+        "PR 176 merged final candidate",
+        "6bc623bbabb356b1481b6e5e06e855eb79a560b7",
+        "f0730d80eb72c97837c75489a87d9faf1699e7d1",
+        "252 focused tests in 7.08 seconds",
+        "2,744 plugin-disabled repository tests in 220.63 seconds",
+        "202 final documentation tests in 5.19 seconds",
+        "50S.6G delivery is closed",
+        "documentation-first 50S.6H observatory-planning adapter audit",
+    ):
+        assert phrase in audit
+
+    expected = (
+        "Accepted complete 50S.6G.4B ordinary-planisphere implementation",
+        "50S.6G.4B accepted implementation and 50S.6G closure",
+        "Accepted 50S.6G.4B request behavior",
+        "Accepted 50S.6G.4B implementation placement",
+        "Accepted 50S.6G.4B AltAz coordinate behavior",
+        "Accepted ordinary-planisphere exact tracks",
+        "Accepted complete 50S.6G.4B implementation boundary",
+        "Accepted 50S.6G.4B delivery closure",
+        "Accepted complete 50S.6G.4B implementation",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+def test_50s6h_records_accepted_observatory_planning_adapter_audit():
+    audit = read(
+        DEVELOPER / "satellite_observatory_planning_adapter_audit_50s6h.md"
+    )
+    for phrase in (
+        "Accepted documentation-only architecture and interface audit",
+        "e37298db29af84bd92443287ae1574cf471b76e8",
+        "wenu.observatory-planning-advisory",
+        "source_report_identity_sha256",
+        "planning_advisory_identity_sha256",
+        "Touching endpoints do not overlap",
+        "A zero-row document is a valid, identified result",
+        "Paranal profile",
+        "ELT profile",
+        "unsupported_profile",
+        "Fernando's acceptance authorizes only",
+    ):
+        assert phrase in audit
+
+    documents = (
+        read(DEVELOPER / "README.md"),
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(INSTRUCTIONS),
+        read(DEVELOPER / "satellite_delivery_audit_50s6g.md"),
+        read(SATELLITE_PROGRAM_LOG),
+    )
+    expected = (
+        "50S.6H observatory-planning adapter audit",
+        "Accepted 50S.6H observatory-planning adapter audit",
+        "Accepted 50S.6H observatory-planning adapter decision",
+        "Accepted 50S.6H planning-advisory boundary",
+        "Accepted 50S.6H placement",
+        "Accepted 50S.6H coordinate boundary",
+        "Accepted 50S.6H observatory-planning interpretation",
+        "Accepted 50S.6H observatory-planning adapter boundary",
+        "50S.6H handoff boundary",
+        "Accepted 50S.6H observatory-planning adapter audit",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+def test_50s6h_records_accepted_offline_planning_advisory_implementation():
+    audit = read(
+        DEVELOPER / "satellite_observatory_planning_adapter_audit_50s6h.md"
+    )
+    source = read(ROOT / "src" / "wenu" / "satellite_planning_advisories.py")
+    public = read(ROOT / "src" / "wenu" / "__init__.py")
+    tests = read(ROOT / "tests" / "test_satellite_planning_advisories.py")
+    tool = read(
+        ROOT / "tools" / "validate_50s6h_offline_planning_advisory.py"
+    )
+
+    for phrase in (
+        "Accepted offline implementation record",
+        "PlanningObservationUnit",
+        "ObservatoryPlanningContext",
+        "PlanningAdvisoryValidationError",
+        "SatellitePlanningAdvisory",
+        "half-open interval intersection",
+        "planning_advisory_identity_sha256",
+        "HTTP dependency",
+        "Fernando scientifically and architecturally accepted",
+    ):
+        assert phrase in audit
+
+    for phrase in (
+        'PLANNING_ADVISORY_DOCUMENT_KIND = "wenu.observatory-planning-advisory"',
+        'GENERAL_PLANNING_PROFILE = "general"',
+        "class PlanningObservationUnit",
+        "class ObservatoryPlanningContext",
+        "class PlanningAdvisoryValidationError",
+        "class SatellitePlanningAdvisory",
+        "unsupported_profile",
+        "overlap_start >= overlap_stop",
+        "row_keys != sorted(row_keys)",
+        "planning_advisory_identity_sha256",
+    ):
+        assert phrase in source
+
+    for phrase in (
+        "50s6h-positive-advisory.json",
+        "50s6h-zero-row-advisory.json",
+        '"network_access": False',
+        "OFFLINE_ADVISORY=",
+    ):
+        assert phrase in tool
+
+    for name in (
+        "PlanningObservationUnit",
+        "ObservatoryPlanningContext",
+        "PlanningAdvisoryValidationError",
+        "SatellitePlanningAdvisory",
+    ):
+        assert f'"{name}"' in public
+        assert name in tests
+
+    for forbidden in (
+        "import requests",
+        "import urllib",
+        "import httpx",
+        "www.eso.org",
+        "createOB",
+        "saveOB",
+        "verifyOB",
+        "deleteOB",
+    ):
+        assert forbidden not in source
+
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(INSTRUCTIONS),
+        read(SATELLITE_PROGRAM_LOG),
+    )
+    expected = (
+        "Accepted 50S.6H offline planning-advisory implementation",
+        "Accepted 50S.6H offline implementation state",
+        "Accepted 50S.6H offline planning-advisory API",
+        "Accepted 50S.6H implementation placement",
+        "Accepted 50S.6H implementation coordinate behavior",
+        "Accepted offline satellite planning advisory",
+        "Accepted 50S.6H offline planning-advisory implementation boundary",
+        "Accepted 50S.6H offline planning-advisory implementation",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+
+    for phrase in (
+        "Accepted implementation evidence",
+        "32dce675e82ab9bdd806455a0c3e423a3e6f67b3",
+        "226 focused and",
+        "2,769 plugin-disabled repository",
+        "217.10 seconds",
+        "36899d514813784058a2ab887244b6dafbc371c78dec1111f0cc85dfdabaeba7",
+        "2e413ca5f5fe8f0b520424c159252f793fad7999baf54cbc8abfb869c3e81c38",
+        "a2a83fbf4bd15c3634a557f51802f41e1551e62e93dbce60c19b7326f73241ae",
+        "network_access: false",
+        "documentation-first 50S.7",
+    ):
+        assert phrase in audit
+
+    verified = (
+        "Accepted complete 50S.6H implementation state",
+        "Accepted complete 50S.6H gate",
+        "Accepted complete 50S.6H behavior",
+        "Accepted complete 50S.6H source evidence",
+        "Accepted complete 50S.6H coordinate evidence",
+        "Accepted advisory specimens",
+        "Accepted complete 50S.6H implementation boundary",
+        "Accepted complete 50S.6H implementation evidence",
+    )
+    for document, phrase in zip(documents, verified, strict=True):
+        assert phrase in document
+
+
+def test_50s7a_records_candidate_four_source_illumination_audit():
+    audit = read(
+        DEVELOPER / "satellite_illumination_night_geometry_audit_50s7a.md"
+    )
+
+    for phrase in (
+        "Accepted documentation-only scientific and architectural audit",
+        "2659b46ea9194a9d2e0e7cdad311a5fc68d51b4c",
+        "Sunlight",
+        "Earthshine",
+        "Moonlight",
+        "Lunar-Earthshine",
+        "extended directional radiance fields",
+        "uniform finite solar disk",
+        "vacuum WGS-84 ellipsoid",
+        "SatelliteIlluminationGeometry",
+        "SatelliteShadowTransition",
+        "Unknown is never encoded as numeric zero",
+        "50S.7B — direct-Sun and observer-night geometry",
+        "50S.8",
+        "authorizes no implementation",
+    ):
+        assert phrase in audit
+
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(INSTRUCTIONS),
+        read(SATELLITE_PROGRAM_LOG),
+        read(DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"),
+    )
+    expected = (
+        "Candidate 50S.7A illumination architecture",
+        "Candidate 50S.7A illumination and night-geometry audit",
+        "Candidate 50S.7A reserved illumination interfaces",
+        "Candidate 50S.7A source placement",
+        "Candidate 50S.7A illumination coordinate boundary",
+        "Candidate 50S.7A illumination vocabulary",
+        "Candidate 50S.7A illumination and night-geometry audit boundary",
+        "Candidate 50S.7A illumination and night-geometry audit",
+        "Candidate 50S.7A refinement of the illumination decision",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+
+
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    for phrase in (
+        "Order-of-magnitude illumination memory scale",
+        "roughly `3e-3 W m-2`",
+        "roughly `3e-4 W m-2`",
+        "quarter-Moon illumination is",
+        "about `0.091` of full Moon",
+        "V = 13.46",
+        "V = 12.98",
+        "about `0.48 mag`, or `1.55x` in total flux",
+        "Hainaut and Williams (2020)",
+        "more than `26,000` satellites",
+        "about `1,600` illuminated",
+        "about `85%` below `30 deg` elevation",
+        "below `1%`",
+        "about `3%`",
+        "`30-40%`",
+        "These ratios do not by themselves predict an observed satellite magnitude",
+    ):
+        assert phrase in guide
+
+    exports = read(ROOT / "src" / "wenu" / "satellites" / "__init__.py")
+    assert "SatelliteIlluminationGeometry" in exports
+    assert "SatelliteIlluminationGeometryEvaluator" in exports
+    assert "SatelliteShadowTransition" in exports
+
+
+def test_50s7a_records_acceptance_and_only_bounded_50s7b_authority():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_illumination_night_geometry_audit_50s7a.md"
+    ).split())
+    for phrase in (
+        "Accepted documentation-only scientific and architectural audit",
+        "scientifically and architecturally accepted",
+        "fdf7e005a41a5a4d45200f841e914815d37da870",
+        "206 plugin-disabled current-documentation tests",
+        "5.87 seconds",
+        "only the bounded 50S.7B direct-Sun and observer-night geometry implementation",
+        "50S.7C and later",
+        "PR merge and branch deletion still require separate explicit authorization",
+    ):
+        assert phrase in audit
+
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(INSTRUCTIONS),
+        read(SATELLITE_PROGRAM_LOG),
+        read(DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"),
+    )
+    expected = (
+        "Accepted 50S.7A illumination architecture",
+        "50S.7A accepted audit and next authority",
+        "Accepted 50S.7A implementation authorization",
+        "Accepted 50S.7A implementation placement",
+        "Accepted 50S.7A coordinate boundary",
+        "Accepted 50S.7A illumination vocabulary",
+        "Accepted 50S.7A illumination and night-geometry audit boundary",
+        "Accepted 50S.7A illumination and night-geometry audit",
+        "Accepted 50S.7A refinement of the illumination decision",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+
+    normalized = tuple(" ".join(document.split()) for document in documents)
+    for document in normalized:
+        assert "50S.7B" in document
+        assert "finite uniform-Sun/WGS-84 vacuum" in document
+        assert "geometric twilight" in document
+        assert "unauthorized" in document
+def test_50s7b_records_bounded_candidate_implementation():
+    audit = read(
+        DEVELOPER / "satellite_illumination_night_geometry_audit_50s7a.md"
+    )
+    architecture = read(V09_CURRENT)
+    roadmap = read(FUTURE_ROADMAP)
+    reference = read(DEVELOPER / "implementation_reference.md")
+    source_tree = read(DEVELOPER / "source_tree.md")
+    coordinate_guide = read(COORDINATE_GUIDE)
+    guide = read(DEVELOPER / "satellite_guide.md")
+    program_log = read(SATELLITE_PROGRAM_LOG)
+    instructions = read(INSTRUCTIONS)
+    foundation = read(
+        DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+    )
+    implementation = read(
+        ROOT / "src" / "wenu" / "satellites" / "illumination.py"
+    )
+    validator = read(
+        ROOT / "tools" / "validate_50s7b_illumination_geometry.py"
+    )
+
+    documents = (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        program_log,
+        instructions,
+        foundation,
+    )
+    expected = (
+        "Candidate 50S.7B implementation record",
+        "Candidate 50S.7B direct-Sun and observer-night architecture",
+        "Candidate 50S.7B — Direct-Sun and observer-night geometry",
+        "Candidate 50S.7B direct-Sun and observer-night API",
+        "Candidate 50S.7B source ownership",
+        "Candidate 50S.7B common-frame coordinate path",
+        "Candidate 50S.7B direct-Sun and night vocabulary",
+        "Candidate 50S.7B direct-Sun and observer-night geometry",
+        "Candidate 50S.7B implementation boundary",
+        "Candidate 50S.7B refinement of the illumination decision",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+
+    for phrase in (
+        "SatelliteIlluminationGeometry",
+        "SolarOccultationPolicy",
+        "uniform-solar-disk-wgs84-vacuum-ray-quadrature-v1",
+        "coarse_visible_disk_fraction",
+        "quadrature_absolute_difference",
+        "QUADRATURE_NOT_CONVERGED",
+        "ObserverTwilightClass",
+        "LunarOccultorStatus.NOT_EVALUATED",
+        "geocentric_gcrs_axis_position_to_itrs",
+    ):
+        assert phrase in implementation
+
+    for phrase in (
+        "spiceypy.surfpt",
+        "spiceypy.edlimb",
+        "is_sunlit",
+        "refusing download",
+        "Skyfield full-light matches",
+        "Skyfield full-shadow matches",
+    ):
+        assert phrase in validator
+
+    normalized = tuple(" ".join(document.split()) for document in documents)
+    for document in normalized:
+        assert "50S.7C" in document
+        assert "unauthorized" in document
+
+    receipt_documents = (
+        audit,
+        architecture,
+        roadmap,
+        coordinate_guide,
+        program_log,
+    )
+    for document in receipt_documents:
+        assert "51b935f" in document
+        assert "24" in document
+        assert "20" in document
+        assert "5" in document
+
+    for document in (audit, architecture, program_log):
+        assert "5.58 seconds" in document
+
+    for document in (
+        audit,
+        architecture,
+        coordinate_guide,
+        program_log,
+    ):
+        assert (
+            "c1c7feeab882263fc493a9d5a5b2ddd71"
+            "b54826cdf65d8d17a76126b260a49f2"
+        ) in document
+
+    gate_documents = (
+        audit,
+        architecture,
+        roadmap,
+        source_tree,
+        coordinate_guide,
+        program_log,
+        instructions,
+    )
+    for document in gate_documents:
+        assert "086e7da1" in document
+        assert "2,796" in document
+        assert "50S.7C" in document
+        assert "unauthorized" in document
+
+    for document in (audit, program_log):
+        assert "291" in document
+        assert "18.81 seconds" in document
+        assert "208" in document
+        assert "6.47 seconds" in document
+        assert "233.66 seconds" in document
+def test_50s7b_records_acceptance_and_next_audit_boundary():
+    audit = read(
+        DEVELOPER / "satellite_illumination_night_geometry_audit_50s7a.md"
+    )
+    documents = (
+        read(V09_CURRENT),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+    )
+    expected = (
+        "Accepted 50S.7B architecture",
+        "Accepted 50S.7B API boundary",
+        "Accepted 50S.7B source ownership",
+        "Accepted 50S.7B coordinate behavior",
+        "Accepted 50S.7B — Direct-Sun and observer-night geometry",
+        "Accepted 50S.7B geometry vocabulary",
+        "Accepted 50S.7B direct-Sun and observer-night geometry",
+        "Accepted 50S.7B implementation boundary",
+        "Accepted 50S.7B refinement of the crossing foundation",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+
+    normalized_audit = " ".join(audit.split())
+    for phrase in (
+        "Accepted 50S.7B implementation",
+        "scientifically and architecturally accepted",
+        "054ac53a1f2d50aca06c268cfc7ff5fb074c690f",
+        "2,796-test complete repository gate",
+        "208-test documentation gate in 4.19 seconds",
+        "merge of PR 181 only when Fernando gives a separate explicit",
+        "does not authorize branch deletion",
+        "documentation-first 50S.7C shadow-transition audit",
+    ):
+        assert phrase in normalized_audit
+
+    for document in documents:
+        normalized = " ".join(document.split())
+        assert "054ac53a" in normalized
+        assert "merge" in normalized.lower()
+        assert "separate" in normalized
+        assert "documentation-first 50S.7C" in normalized
+        assert "authorized" in normalized
+
+
+def test_50s7c_records_candidate_shadow_transition_audit():
+    audit = read(
+        DEVELOPER / "satellite_shadow_transition_audit_50s7c.md"
+    )
+    for phrase in (
+        "Candidate documentation-only scientific and architectural audit",
+        "f9aa2dd7e7d197f015b0df7667c1fd5804e99428",
+        "SatelliteShadowTransition",
+        "continuous signed contact geometry",
+        "visible fraction is not the root function",
+        "two transitions strictly between initial samples",
+        "observer-independent",
+        "certified closed UTC bracket",
+        "transition_search_exhausted",
+        "spice `gfoclt` or Orekit eclipse detector",
+        "authorizes no runtime",
+    ):
+        assert phrase.lower() in audit.lower()
+
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+        read(
+            DEVELOPER
+            / "satellite_illumination_night_geometry_audit_50s7a.md"
+        ),
+    )
+    expected = (
+        "Candidate 50S.7C shadow-transition architecture",
+        "Candidate 50S.7C — Complete shadow-transition audit",
+        "Candidate 50S.7C reserved transition API",
+        "Candidate 50S.7C source ownership",
+        "Candidate 50S.7C shadow-transition coordinate boundary",
+        "Candidate 50S.7C shadow-transition vocabulary",
+        "Candidate 50S.7C shadow-transition audit",
+        "Candidate 50S.7C shadow-transition audit boundary",
+        "Candidate 50S.7C refinement of shadow-event separation",
+        "Candidate 50S.7C shadow-transition audit handoff",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "unauthorized" in normalized
+        assert "no runtime" in normalized.lower()
+
+    index = read(DEVELOPER / "README.md")
+    assert "satellite_shadow_transition_audit_50s7c.md" in index
+
+    exports = read(ROOT / "src" / "wenu" / "satellites" / "__init__.py")
+    assert "SatelliteShadowTransition" in exports
+
+def test_50s7c_records_acceptance_and_bounded_implementation_authority():
+    audit = " ".join(
+        read(
+            DEVELOPER / "satellite_shadow_transition_audit_50s7c.md"
+        ).split()
+    )
+    for phrase in (
+        "Accepted 50S.7C audit and implementation authority",
+        "scientifically and architecturally accepted",
+        "030a632243349c34a1455743ae9bf40ced39e755",
+        "210 plugin-disabled tests in 5.81 seconds",
+        "only the bounded 50S.7C transition slice",
+        "Acceptance does not authorize PR 182 merge or branch deletion",
+    ):
+        assert phrase in audit
+
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+        read(
+            DEVELOPER
+            / "satellite_illumination_night_geometry_audit_50s7a.md"
+        ),
+    )
+    expected = (
+        "Accepted 50S.7C shadow-transition architecture",
+        "Accepted 50S.7C shadow-transition audit",
+        "Accepted 50S.7C transition API authorization",
+        "Accepted 50S.7C implementation placement",
+        "Accepted 50S.7C coordinate boundary",
+        "Accepted 50S.7C transition vocabulary",
+        "Accepted 50S.7C shadow-transition audit",
+        "Accepted 50S.7C audit boundary",
+        "Accepted 50S.7C refinement of shadow-event separation",
+        "Accepted 50S.7C audit handoff",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "030a6322" in normalized
+        assert "after merge" in normalized.lower()
+        assert "unauthorized" in normalized
+
+    index = read(DEVELOPER / "README.md")
+    assert "accepted documentation-only contract" in index
+
+
+def test_50s7c_records_bounded_candidate_implementation():
+    audit = read(
+        DEVELOPER / "satellite_shadow_transition_audit_50s7c.md"
+    )
+    architecture = read(V09_CURRENT)
+    roadmap = read(FUTURE_ROADMAP)
+    reference = read(DEVELOPER / "implementation_reference.md")
+    source_tree = read(DEVELOPER / "source_tree.md")
+    coordinate_guide = read(COORDINATE_GUIDE)
+    guide = read(DEVELOPER / "satellite_guide.md")
+    program_log = read(SATELLITE_PROGRAM_LOG)
+    instructions = read(INSTRUCTIONS)
+    foundation = read(
+        DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+    )
+    illumination_audit = read(
+        DEVELOPER / "satellite_illumination_night_geometry_audit_50s7a.md"
+    )
+    implementation = read(
+        ROOT / "src" / "wenu" / "satellites" / "illumination.py"
+    )
+    topocentric = read(
+        ROOT / "src" / "wenu" / "satellites" / "topocentric.py"
+    )
+    exports = read(ROOT / "src" / "wenu" / "satellites" / "__init__.py")
+    validator = read(
+        ROOT / "tools" / "validate_50s7c_shadow_transitions.py"
+    )
+
+    documents = (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        program_log,
+        instructions,
+        foundation,
+        illumination_audit,
+    )
+    expected = (
+        "Candidate 50S.7C implementation record",
+        "Candidate 50S.7C shadow-transition implementation architecture",
+        "Candidate 50S.7C — Shadow-transition implementation",
+        "Candidate 50S.7C transition API implementation",
+        "Candidate 50S.7C implementation source ownership",
+        "Candidate 50S.7C shared geocentric coordinate path",
+        "Candidate 50S.7C transition runtime vocabulary",
+        "Candidate 50S.7C shadow-transition implementation",
+        "Candidate 50S.7C implementation boundary",
+        "Candidate 50S.7C implementation refinement",
+        "Candidate 50S.7C shadow-transition implementation handoff",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "69375fab" in normalized
+        assert "unauthorized" in normalized
+
+    for phrase in (
+        "SatelliteShadowTransitionQuery",
+        "ShadowTransitionSearchPolicy",
+        "SolarOccultationContactGeometry",
+        "SatelliteShadowTransitionFinder",
+        "query_interval",
+        "def identity",
+        "TRANSITION_SEARCH_EXHAUSTED",
+        "DEGENERATE_SHADOW_TOPOLOGY",
+        "CONTACT_BRACKET_INCONSISTENT",
+        "visible-fraction quadrature is not a root function",
+    ):
+        assert phrase in implementation
+        assert phrase.split(".")[0] in exports or phrase in {
+            "query_interval",
+            "def identity",
+            "TRANSITION_SEARCH_EXHAUSTED",
+            "DEGENERATE_SHADOW_TOPOLOGY",
+            "CONTACT_BRACKET_INCONSISTENT",
+            "visible-fraction quadrature is not a root function",
+        }
+
+    for phrase in (
+        "SatelliteGeocentricItrsState",
+        "SatelliteGeocentricItrsTransformer",
+        "_geocentric_itrs_components",
+    ):
+        assert phrase in topocentric
+        if not phrase.startswith("_"):
+            assert phrase in exports
+
+    for phrase in (
+        "spiceypy.gfoclt",
+        "spiceypy.spkw09",
+        "spiceypy.gfstol",
+        "is_sunlit",
+        "refusing download",
+        "SPICE gfoclt",
+        "Skyfield full-light matches",
+        "Skyfield full-shadow matches",
+    ):
+        assert phrase in validator
+
+    receipt_documents = (
+        audit,
+        architecture,
+        roadmap,
+        program_log,
+        illumination_audit,
+    )
+    for document in receipt_documents:
+        normalized = " ".join(document.split())
+        assert "58" in normalized
+        assert "16.67 seconds" in normalized
+        assert "full" in normalized.lower()
+        assert "annular" in normalized.lower()
+        assert "20" in normalized
+        assert "5" in normalized
+
+    for document in (audit, program_log):
+        normalized = " ".join(document.split())
+        assert "SpiceyPy 6.0.3" in normalized
+        assert "CSPICE N0067" in normalized
+        assert "277" in normalized
+        assert "717" in normalized
+        assert (
+            "c1c7feeab882263fc493a9d5a5b2ddd71"
+            "b54826cdf65d8d17a76126b260a49f2"
+        ) in document
+
+    allowed = {
+        ROOT / "src" / "wenu" / "satellites" / "illumination.py",
+        ROOT / "src" / "wenu" / "satellites" / "__init__.py",
+    }
+    for path in (ROOT / "src" / "wenu").rglob("*.py"):
+        if path not in allowed:
+            assert "SatelliteShadowTransition" not in read(path)
+
+    gate_documents = (
+        audit,
+        architecture,
+        roadmap,
+        source_tree,
+        coordinate_guide,
+        program_log,
+        instructions,
+    )
+    for document in gate_documents:
+        normalized = " ".join(document.split())
+        assert "bf877404" in normalized
+        assert "311" in normalized
+        assert "21.47 seconds" in normalized
+        assert "212" in normalized
+        assert "7.01 seconds" in normalized
+        assert "2,816" in normalized
+        assert "218.58 seconds" in normalized
+        assert "unaccepted" in normalized
+        assert "unauthorized" in normalized
+
+def test_50s7c_records_accepted_implementation_boundary():
+    audit = read(
+        DEVELOPER / "satellite_shadow_transition_audit_50s7c.md"
+    )
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+        read(
+            DEVELOPER
+            / "satellite_illumination_night_geometry_audit_50s7a.md"
+        ),
+    )
+    expected = (
+        "Accepted 50S.7C implementation architecture",
+        "Accepted 50S.7C — Shadow-transition implementation",
+        "Accepted 50S.7C transition API implementation",
+        "Accepted 50S.7C implementation source ownership",
+        "Accepted 50S.7C shared geocentric coordinate behavior",
+        "Accepted 50S.7C transition runtime vocabulary",
+        "Accepted 50S.7C shadow-transition implementation",
+        "Accepted 50S.7C implementation boundary",
+        "Accepted 50S.7C implementation refinement",
+        "Accepted 50S.7C shadow-transition implementation handoff",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "eaeab608" in normalized
+        assert "separate" in normalized
+        assert "50S.7D+" in normalized
+        assert "unauthorized" in normalized
+
+    normalized_audit = " ".join(audit.split())
+    for phrase in (
+        "Accepted 50S.7C implementation",
+        "scientifically and architecturally accepted",
+        "eaeab6085b52bfed6136d37f3010c2f353e59f53",
+        "bf877404",
+        "311-test expanded gate in 21.47 seconds",
+        "212-test current-documentation gate in 7.01 seconds",
+        "2,816 plugin-disabled repository tests in 218.58 seconds",
+        "212 documentation tests in 4.72 seconds",
+        "does not authorize PR 183 merge or feature-branch deletion",
+    ):
+        assert phrase in normalized_audit
+
+
+def test_50s7d_records_candidate_direct_source_radiometry_audit():
+    audit = read(
+        DEVELOPER / "satellite_direct_source_radiometry_audit_50s7d.md"
+    )
+    normalized_audit = " ".join(audit.split())
+    for phrase in (
+        "Candidate documentation-only scientific and architectural audit",
+        "17a8dd37ab3c361084c240cc68f9f8c3a25e5e3d",
+        "50S.7D.1 — direct-Sun bolometric irradiance",
+        "bolometric normal-plane irradiance",
+        "S_sun^N = 1361 W m-2",
+        "E_clear",
+        "E_incident",
+        "unknown is never numeric zero",
+        "TSIS-1 HSRS v2",
+        "ROLO",
+        "LIME",
+        "authorizes no runtime",
+        "No new package dependency",
+        "coordinate-system guide was reviewed and remains current",
+    ):
+        assert phrase.lower() in normalized_audit.lower()
+
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+        read(
+            DEVELOPER
+            / "satellite_illumination_night_geometry_audit_50s7a.md"
+        ),
+    )
+    expected = (
+        "Candidate 50S.7D direct-source radiometry architecture",
+        "Candidate 50S.7D — Direct-source radiometry audit",
+        "Candidate 50S.7D radiometry API boundary",
+        "Candidate 50S.7D source ownership",
+        "Candidate 50S.7D coordinate and radiometric boundary",
+        "Candidate 50S.7D direct-source radiometry vocabulary",
+        "Candidate 50S.7D direct-source radiometry audit",
+        "Candidate 50S.7D direct-source radiometry audit boundary",
+        "Candidate 50S.7D refinement of illumination separation",
+        "Candidate 50S.7D direct-source radiometry handoff",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "50S.7D.1" in normalized
+        assert "no runtime" in normalized.lower()
+        assert "unauthorized" in normalized
+
+    index = read(DEVELOPER / "README.md")
+    assert "satellite_direct_source_radiometry_audit_50s7d.md" in index
+
+def test_50s7d_records_accepted_direct_source_radiometry_audit():
+    audit = read(
+        DEVELOPER / "satellite_direct_source_radiometry_audit_50s7d.md"
+    )
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+        read(
+            DEVELOPER
+            / "satellite_illumination_night_geometry_audit_50s7a.md"
+        ),
+    )
+    expected = (
+        "Accepted 50S.7D direct-source radiometry audit architecture",
+        "Accepted 50S.7D — Direct-source radiometry audit",
+        "Accepted 50S.7D radiometry API authority",
+        "Accepted 50S.7D source-ownership authority",
+        "Accepted 50S.7D coordinate and radiometric boundary",
+        "Accepted 50S.7D direct-source radiometry vocabulary",
+        "Accepted 50S.7D direct-source radiometry audit",
+        "Accepted 50S.7D audit boundary",
+        "Accepted 50S.7D refinement of illumination separation",
+        "Accepted 50S.7D direct-source radiometry handoff",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "362199d04bd917741a8be88f20608967af75530e" in normalized
+        assert "214" in normalized
+        assert "7.00 seconds" in normalized
+        assert "50S.7D.1" in normalized
+        assert "separate" in normalized
+        assert "unauthorized" in normalized
+
+    normalized_audit = " ".join(audit.split())
+    for phrase in (
+        "Accepted 50S.7D audit and implementation authority",
+        "scientifically and architecturally accepted",
+        "362199d04bd917741a8be88f20608967af75530e",
+        "214 plugin-disabled tests in 7.00 seconds",
+        "exact local/upstream equality",
+        "only bounded 50S.7D.1",
+        "does not authorize PR 184 merge or branch deletion",
+    ):
+        assert phrase in normalized_audit
+
+    index = read(DEVELOPER / "README.md")
+    assert (
+        "accepted documentation-only contract for direct-source model "
+        "separation"
+    ) in " ".join(index.split())
+
+
+def test_50s7d1_records_candidate_direct_solar_irradiance_implementation():
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+        read(
+            DEVELOPER
+            / "satellite_illumination_night_geometry_audit_50s7a.md"
+        ),
+        read(
+            DEVELOPER / "satellite_direct_source_radiometry_audit_50s7d.md"
+        ),
+    )
+    expected = (
+        "Candidate 50S.7D.1 implementation architecture",
+        "Candidate 50S.7D.1 — Direct-Sun bolometric irradiance "
+        "implementation",
+        "Candidate 50S.7D.1 direct-Sun irradiance API implementation",
+        "Candidate 50S.7D.1 implementation source ownership",
+        "Candidate 50S.7D.1 scalar radiometry boundary",
+        "Candidate 50S.7D.1 runtime vocabulary",
+        "Candidate 50S.7D.1 direct-Sun irradiance implementation",
+        "Candidate 50S.7D.1 implementation boundary",
+        "Candidate 50S.7D.1 implementation refinement",
+        "Candidate 50S.7D.1 implementation handoff",
+        "Candidate 50S.7D.1 implementation",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "4b5f8e6925f88df38a2923c057f4d039328e3d2b" in normalized
+        assert "50S.7D.1" in normalized
+        assert (
+            "unaccepted" in normalized.lower()
+            or "pending" in normalized.lower()
+        )
+        assert "unauthorized" in normalized
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    assert "bolometric normal-plane" in combined
+    assert "not_evaluated" in combined
+
+    implementation = read(
+        ROOT / "src" / "wenu" / "satellites" / "illumination.py"
+    )
+    exports = read(
+        ROOT / "src" / "wenu" / "satellites" / "__init__.py"
+    )
+    validator = read(
+        ROOT / "tools" / "validate_50s7d1_direct_solar_irradiance.py"
+    )
+    for name in (
+        "DirectSolarIrradiancePolicy",
+        "DirectSolarIrradiance",
+        "DirectSolarIrradianceEvaluator",
+    ):
+        assert name in implementation
+        assert name in exports
+    for phrase in (
+        "IAU 2015 Resolution B3 nominal total solar irradiance",
+        "INDEPENDENT_NOMINAL_IRRADIANCE_W_M2 = 1361.0",
+        "INDEPENDENT_AU_KM = 149_597_870.7",
+        "network_access=false",
+        "LEO",
+        "MEO",
+        "GEO",
+    ):
+        assert phrase in validator
+
+
+def test_50s7d1_records_verified_direct_solar_irradiance_candidate():
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+        read(
+            DEVELOPER
+            / "satellite_illumination_night_geometry_audit_50s7a.md"
+        ),
+        read(
+            DEVELOPER / "satellite_direct_source_radiometry_audit_50s7d.md"
+        ),
+    )
+    expected = (
+        "Verified candidate 50S.7D.1 implementation architecture",
+        "Verified candidate 50S.7D.1 implementation gate",
+        "Verified candidate 50S.7D.1 API implementation",
+        "Verified candidate 50S.7D.1 implementation source gate",
+        "Verified candidate 50S.7D.1 scalar coordinate boundary",
+        "Verified candidate 50S.7D.1 runtime evidence",
+        "Verified candidate 50S.7D.1 implementation",
+        "Verified candidate 50S.7D.1 review state",
+        "Verified candidate 50S.7D.1 implementation refinement",
+        "Verified candidate 50S.7D.1 implementation handoff",
+        "Verified candidate 50S.7D.1 implementation",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "5bf5d52e81670f1a69af0476283195d12a3119bc" in normalized
+        assert "308" in normalized
+        assert "2,832" in normalized
+        assert (
+            "unaccepted" in normalized.lower()
+            or "not accepted" in normalized.lower()
+            or "not scientifically or architecturally accepted"
+            in normalized.lower()
+        )
+        assert "unauthorized" in normalized
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    for phrase in (
+        "24.79 seconds",
+        "236.81 seconds",
+        "43037267cd841232dcffca05797a2d55dce3d90b9caf8b84fbf785b19129fc73",
+        "all nine",
+        "zero clear and incident irradiance residuals",
+        "exact upstream",
+        "clean tree",
+    ):
+        assert phrase in combined
+
+
+def test_50s7d1_records_accepted_direct_solar_irradiance_implementation():
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+        read(
+            DEVELOPER
+            / "satellite_illumination_night_geometry_audit_50s7a.md"
+        ),
+        read(
+            DEVELOPER / "satellite_direct_source_radiometry_audit_50s7d.md"
+        ),
+    )
+    expected = (
+        "Accepted 50S.7D.1 implementation architecture",
+        "Accepted 50S.7D.1 — Direct-Sun bolometric irradiance "
+        "implementation",
+        "Accepted 50S.7D.1 direct-Sun irradiance API implementation",
+        "Accepted 50S.7D.1 implementation source ownership",
+        "Accepted 50S.7D.1 scalar coordinate boundary",
+        "Accepted 50S.7D.1 runtime vocabulary",
+        "Accepted 50S.7D.1 direct-Sun irradiance implementation",
+        "Accepted 50S.7D.1 implementation boundary",
+        "Accepted 50S.7D.1 implementation refinement",
+        "Accepted 50S.7D.1 implementation handoff",
+        "Accepted 50S.7D.1 implementation",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "f974b9996d2708ee0f2db7c747e45c481a457bb9" in normalized
+        assert "scientifically and architecturally accepted" in normalized
+        assert "223" in normalized
+        assert "50S.7D.2+" in normalized
+        assert "separate" in normalized or "unauthorized" in normalized
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    for phrase in (
+        "4b5f8e6925f88df38a2923c057f4d039328e3d2b",
+        "nine-case",
+        "308",
+        "2,832",
+        "10.17 seconds",
+        "PR 185",
+        "branch deletion",
+    ):
+        assert phrase in combined
+
+
+def test_50s7d2_records_accepted_spectral_solar_radiometry_audit():
+    audit = read(
+        DEVELOPER / "satellite_spectral_solar_radiometry_audit_50s7d2.md"
+    )
+    normalized_audit = " ".join(audit.split())
+    for phrase in (
+        "Accepted documentation-only scientific, resource, and architectural audit",
+        "c76525c4986faabff0a70e534d1706baa4f550e6",
+        "10.25980/ta3f-7h90",
+        "tsis1_hsrs_1nm",
+        "25,281",
+        "202.0 through 2730.0 nm",
+        "0.1 nm coordinate spacing",
+        "1.0 nm bandwidth",
+        "1cf3b07e6ac9669c429ad7ce9e92d50dfd741422efcfffa3d1e0eeb5f901616f",
+        "1325.759295697943 W m-2",
+        "must not be renormalized",
+        "integrated uncertainty must remain `not_evaluated`",
+        "authorizes no implementation",
+        "50S.7D.3 Moonlight",
+    ):
+        assert phrase in normalized_audit
+
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"),
+        read(DEVELOPER / "satellite_illumination_night_geometry_audit_50s7a.md"),
+        read(DEVELOPER / "satellite_direct_source_radiometry_audit_50s7d.md"),
+    )
+    expected = (
+        "Candidate 50S.7D.2 spectral radiometry architecture",
+        "Candidate 50S.7D.2 — Spectral direct-Sun radiometry audit",
+        "Candidate 50S.7D.2 spectral API boundary",
+        "Candidate 50S.7D.2 resource ownership",
+        "Candidate 50S.7D.2 spectral scalar boundary",
+        "Candidate 50S.7D.2 spectral vocabulary",
+        "Candidate 50S.7D.2 spectral direct-Sun audit",
+        "Candidate 50S.7D.2 audit boundary",
+        "Candidate 50S.7D.2 spectral refinement",
+        "Candidate 50S.7D.2 spectral handoff",
+        "Candidate 50S.7D.2 spectral audit handoff",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "no runtime" in normalized.lower()
+        assert "50S.7D.2" in normalized
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    assert "50S.7D.3" in combined
+
+    index = read(DEVELOPER / "README.md")
+    assert "satellite_spectral_solar_radiometry_audit_50s7d2.md" in index
+
+
+def test_50s7d2_records_scientific_and_architectural_acceptance():
+    audit = read(
+        DEVELOPER / "satellite_spectral_solar_radiometry_audit_50s7d2.md"
+    )
+    normalized_audit = " ".join(audit.split())
+    for phrase in (
+        "Accepted scientific and architectural decision",
+        "0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe",
+        "225 tests",
+        "TSIS-1 HSRS v2 product",
+        "1 nm FWHM resolution",
+        "0.1 nm spacing over 202-2730 nm",
+        "no interpolation, extrapolation, or renormalization",
+        "integrated uncertainty remaining `not_evaluated`",
+        "external installed-resource workflow",
+        "50S.7D.3 Moonlight",
+    ):
+        assert phrase in normalized_audit
+
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"),
+        read(DEVELOPER / "satellite_illumination_night_geometry_audit_50s7a.md"),
+        read(DEVELOPER / "satellite_direct_source_radiometry_audit_50s7d.md"),
+    )
+    expected = (
+        "Accepted 50S.7D.2 spectral radiometry architecture",
+        "Accepted 50S.7D.2 — Spectral direct-Sun radiometry audit",
+        "Accepted 50S.7D.2 spectral API boundary",
+        "Accepted 50S.7D.2 resource ownership",
+        "Accepted 50S.7D.2 spectral scalar boundary",
+        "Accepted 50S.7D.2 spectral vocabulary",
+        "Accepted 50S.7D.2 spectral direct-Sun audit",
+        "Accepted 50S.7D.2 audit boundary",
+        "Accepted 50S.7D.2 spectral refinement",
+        "Accepted 50S.7D.2 spectral handoff",
+        "Accepted 50S.7D.2 spectral audit handoff",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe" in normalized
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    assert "50S.7D.3" in combined
+
+    index = read(DEVELOPER / "README.md")
+    assert "accepted documentation-only contract" in index
+
+def test_50s7d2_records_bounded_spectral_implementation_candidate():
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER
+            / "satellite_spectral_solar_radiometry_audit_50s7d2.md"
+        ),
+    )
+    expected = (
+        "Candidate 50S.7D.2 spectral implementation architecture",
+        "Candidate 50S.7D.2 — Spectral direct-Sun implementation",
+        "Candidate 50S.7D.2 spectral API implementation",
+        "Candidate 50S.7D.2 implementation ownership",
+        "Candidate 50S.7D.2 implemented scalar boundary",
+        "Candidate 50S.7D.2 spectral direct-Sun implementation",
+        "Candidate 50S.7D.2 spectral implementation",
+        "Candidate 50S.7D.2 implementation boundary",
+        "Candidate implementation evidence",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "8e930db2" in normalized
+        assert (
+            "unaccepted" in normalized.lower()
+            or "pending" in normalized.lower()
+        )
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    for phrase in (
+        "1cf3b07e6ac9669c429ad7ce9e92d50dfd741422efcfffa3d1e0eeb5f901616f",
+        "25,281",
+        "not_evaluated",
+        "50S.7D.3",
+    ):
+        assert phrase in combined
+
+    implementation = read(
+        ROOT / "src" / "wenu" / "satellites" / "radiometry.py"
+    )
+    exports = read(ROOT / "src" / "wenu" / "satellites" / "__init__.py")
+    validator = read(
+        ROOT
+        / "tools"
+        / "validate_50s7d2_spectral_solar_radiometry.py"
+    )
+    for name in (
+        "SolarSpectralIrradianceResourceIdentity",
+        "DirectSolarSpectralIrradiancePolicy",
+        "DirectSolarSpectralIrradiance",
+        "DirectSolarSpectralIrradianceEvaluator",
+        "load_solar_spectral_irradiance_resource",
+    ):
+        assert name in implementation
+        assert name in exports
+    for phrase in (
+        "TSIS1_HSRS_V2_BYTE_COUNT",
+        "TSIS1_HSRS_V2_SHA256",
+        "native_integral_w_m2",
+        "production_match=true",
+        "network_access=false",
+        "redistribution=false",
+    ):
+        assert phrase in validator
+
+def test_50s7d2_records_verified_spectral_implementation_candidate():
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER
+            / "satellite_spectral_solar_radiometry_audit_50s7d2.md"
+        ),
+    )
+    expected = (
+        "Verified candidate 50S.7D.2 implementation architecture",
+        "Verified candidate 50S.7D.2 implementation gate",
+        "Verified candidate 50S.7D.2 spectral API",
+        "Verified candidate 50S.7D.2 source ownership",
+        "Verified candidate 50S.7D.2 scalar coordinate gate",
+        "Verified candidate 50S.7D.2 direct-Sun spectrum",
+        "Verified candidate 50S.7D.2 implementation",
+        "Verified candidate 50S.7D.2 review state",
+        "Verified implementation candidate",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "8f2ca825" in normalized
+        assert "8e930db2" in normalized
+        assert "2,858" in normalized
+        assert (
+            "unaccepted" in normalized.lower()
+            or "acceptance" in normalized.lower()
+        )
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    for phrase in (
+        "132",
+        "227",
+        "238.38",
+        "50S.7D.3",
+    ):
+        assert phrase in combined
+
+def test_50s7d2_records_accepted_spectral_implementation():
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER
+            / "satellite_spectral_solar_radiometry_audit_50s7d2.md"
+        ),
+    )
+    expected = (
+        "Accepted 50S.7D.2 implementation architecture",
+        "Accepted 50S.7D.2 — Spectral direct-Sun implementation",
+        "Accepted 50S.7D.2 spectral API implementation",
+        "Accepted 50S.7D.2 implementation source ownership",
+        "Accepted 50S.7D.2 scalar coordinate behavior",
+        "Accepted 50S.7D.2 direct-Sun spectrum",
+        "Accepted 50S.7D.2 implementation",
+        "Accepted 50S.7D.2 implementation boundary",
+        "Accepted implementation decision",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "d1edeb46" in normalized
+        assert "8e930db2" in normalized
+        assert "PR 187" in normalized
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    for phrase in (
+        "2,858",
+        "228",
+        "50S.7D.3",
+        "separate",
+    ):
+        assert phrase in combined
+
+def test_50s7d3_records_candidate_moonlight_readiness_audit():
+    audit = read(
+        DEVELOPER / "satellite_moonlight_radiometry_audit_50s7d3.md"
+    )
+    normalized_audit = " ".join(audit.split())
+    documents = (
+        read(DEVELOPER / "README.md"),
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+    )
+    expected = (
+        "LIME is the preferred production candidate",
+        "50S.7D.3 runtime is not authorized",
+        "external LIME distribution preflight",
+        "GIRO",
+        "ROLO",
+        "not_evaluated",
+        "selenographic",
+        "Earth eclipse at the Moon",
+        "Earth occultation between Moon and satellite",
+        "no runtime coordinate value",
+    )
+    for phrase in expected:
+        assert phrase in normalized_audit
+    for document in documents:
+        normalized = " ".join(document.split())
+        assert "50S.7D.3" in normalized
+        assert "LIME" in normalized
+        assert "runtime" in normalized.lower()
+    assert "satellite_moonlight_radiometry_audit_50s7d3.md" in read(
+        DEVELOPER / "README.md"
+    )
+
+def test_50s7d3_records_scientific_and_architectural_acceptance():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_moonlight_radiometry_audit_50s7d3.md"
+    ).split())
+    documents = (
+        read(DEVELOPER / "README.md"),
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+    )
+    expected = (
+        "Accepted 50S.7D.3 readiness audit",
+        "abbb1b78fbd272ef8b5553d515e9f2a896a0aa55",
+        "230 plugin-disabled tests",
+        "11.39 seconds",
+        "external LIME distribution preflight",
+        "authorizes no Moonlight runtime",
+        "PR 188 merge and branch deletion remain separate explicit decisions",
+        "0be116abfa6ce0172b94a0d3c15f4f61ed2c8f8b",
+        "231 plugin-disabled current-documentation and package-boundary tests",
+        "8.54 seconds",
+        "Final accepted audit verification",
+    )
+    for phrase in expected:
+        assert phrase in audit
+    for document in documents:
+        normalized = " ".join(document.split())
+        assert "Accepted 50S.7D.3" in normalized or (
+            "accepted documentation-only comparison" in normalized
+        )
+        assert "LIME" in normalized
+        assert "runtime" in normalized.lower()
+
+
+def test_50s7d3a_records_exact_lime_distribution_preflight():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_lime_distribution_preflight_50s7d3a.md"
+    ).split())
+    documents = (
+        read(DEVELOPER / "README.md"),
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+    )
+    for phrase in (
+        "LIME Toolbox `v1.4.2`",
+        "b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f",
+        "516220150",
+        "e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21",
+        "LIME_MODEL_COEFS_20251010_V01.nc",
+        "8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691",
+        "LGPL-3.0-only",
+        "2 <= abs(phase_angle) <= 90",
+        "must not use that route in production",
+        "neither installed nor executed",
+        "Moonlight therefore remains `not_evaluated`",
+    ):
+        assert phrase in audit
+
+    for document in documents:
+        normalized = " ".join(document.split())
+        assert "50S.7D.3A" in normalized
+        assert "LIME" in normalized
+        assert "runtime" in normalized.lower() or "API" in normalized
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    assert "v1.4.2" in combined
+    assert "e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21" in combined
+
+    index = read(DEVELOPER / "README.md")
+    assert "satellite_lime_distribution_preflight_50s7d3a.md" in index
+
+
+def test_50s7d3a_records_scientific_and_architectural_acceptance():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_lime_distribution_preflight_50s7d3a.md"
+    ).split())
+    documents = (
+        read(DEVELOPER / "README.md"),
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+    )
+    for phrase in (
+        "Accepted documentation-and-receipt preflight",
+        "27e1ee1c9071b79387a2ad2b5dda4cb7fa263ffa",
+        "232 plugin-disabled current-documentation and package-boundary tests",
+        "11.95 seconds",
+        "PR 189 merge and branch deletion remain separate explicit decisions",
+        "authorizes no installation, execution",
+        "offline Mac resource-and-reference-output inspection requires separate",
+    ):
+        assert phrase in audit
+
+    for document in documents:
+        normalized = " ".join(document.split())
+        assert "Accepted 50S.7D.3A" in normalized
+        assert "27e1ee1c" in normalized
+        assert "runtime" in normalized.lower() or "execution" in normalized.lower()
+
+
+def test_50s7d3b_records_controlled_offline_lime_inspection():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_lime_offline_inspection_audit_50s7d3b.md"
+    ).split())
+    documents = (
+        read(DEVELOPER / "README.md"),
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+    )
+    for phrase in (
+        "Candidate controlled Mac inspection with explicit unsigned-package amendment; no Moonlight runtime",
+        "c550da2e6c6ed5e17b489b09aaf4b95fe059f542",
+        "pkgutil --expand-full",
+        "(version 1) (allow default) (deny network*)",
+        "never invokes LIME's `-u`/`--update` route",
+        "2 <= abs(phase_angle) <= 90",
+        "Phase B is a later review",
+        "preexisting_installation_present=true",
+        "installed_by_inspection=false",
+        "sandbox_apply: Operation not permitted",
+        "production_runtime_changed=false",
+        "moonlight_status=not_evaluated",
+    ):
+        assert phrase in audit
+
+    for document in documents:
+        normalized = " ".join(document.split())
+        assert "50S.7D.3B" in normalized
+        assert "LIME" in normalized
+
+    assert "satellite_lime_offline_inspection_audit_50s7d3b.md" in read(
+        DEVELOPER / "README.md"
+    )
+
+
+def test_phase_b_moonlight_geometry_plan_preserves_independent_stop_gates():
+    plan = " ".join(read(
+        DEVELOPER / "satellite_moonlight_geometry_comparison_audit_50s7d3_phase_b.md"
+    ).split())
+    for phrase in (
+        "documentation-only plan",
+        "6fbceedc9c8b075ace42db4e32fe7b7344f43457",
+        "signed_phase_unresolved",
+        "IAU_MOON",
+        "MOON_ME",
+        "MOON_PA",
+        "abcorr=NONE",
+        "LEO, MEO, GEO, and highly elliptical",
+        "source paths",
+        "No Wenu Moonlight value",
+        "separately approved frozen-kernel",
+    ):
+        assert phrase.lower() in plan.lower()
+
+    index = read(DEVELOPER / "README.md")
+    assert "satellite_moonlight_geometry_comparison_audit_50s7d3_phase_b.md" in index
+    for path in (FUTURE_ROADMAP, SATELLITE_PROGRAM_LOG, INSTRUCTIONS):
+        assert "Phase B" in read(path)
+
+
+def test_phase_b_frozen_kernel_protocol_stops_on_missing_resources():
+    protocol = read(
+        DEVELOPER / "satellite_moonlight_geometry_run_protocol_phase_b.md"
+    )
+    for phrase in (
+        "moon_pa_de440_200625.bpc",
+        "moon_de440_220930.tf",
+        "naif0012.tls",
+        "NOT_FOUND",
+        "signed_phase_unresolved",
+        "not_evaluated",
+        "no comparison run",
+    ):
+        assert phrase.lower() in protocol.lower()
+    assert "satellite_moonlight_geometry_run_protocol_phase_b.md" in read(
+        DEVELOPER / "README.md"
+    )

@@ -42,6 +42,17 @@ def product():
     )
 
 
+def test_mirror_ew_is_typed_and_limited_to_planisphere():
+    with pytest.raises(TypeError, match="mirror_ew"):
+        ChartFrameRequest(mirror_ew="false")
+    with pytest.raises(ValueError, match="only by planisphere"):
+        ChartRequest(
+            observer=observer(), family="all_sky", product=product(),
+            projection="mollweide", coordinate_frame="galactic",
+            frame=ChartFrameRequest(mirror_ew=True),
+        )
+
+
 def ceres_track():
     return SolarSystemTrackRequest(
         descriptor=CERES_BODY,

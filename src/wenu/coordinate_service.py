@@ -191,6 +191,10 @@ class CoordinateService:
         observation: ObservationContext | None,
     ):
         frame = spec.frame.replace("_", "-")
+        if frame == "gcrs-axes":
+            # Geometric direction components in the fixed GCRS/ICRS axis
+            # orientation; no geocentric state or collection instant implied.
+            return ICRS()
         if frame == "icrs":
             return ICRS()
         if frame == "galactic":

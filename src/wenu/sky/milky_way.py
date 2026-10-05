@@ -111,6 +111,8 @@ class MilkyWayIsophotes(SkyLayer):
         ring_indices = []
         holes = []
         projection_cap_topology_inversions = []
+        interior_left = []
+        interior_areas = []
         source_values = []
 
         selected_levels = (
@@ -161,6 +163,14 @@ class MilkyWayIsophotes(SkyLayer):
                         )))
                         >= 1
                     )
+                    left, area = _native_ring_interior(
+                        coordinates[:, :2],
+                        projection_cap_topology_inversions[-1],
+                    )
+                    # The equatorial and north/east/zenith horizontal
+                    # coordinate triples have opposite handedness.
+                    interior_left.append(not left)
+                    interior_areas.append(area)
                     source_values.append(self.sources[level])
 
         longitude, latitude = observed_polygon_arrays(
@@ -194,6 +204,12 @@ class MilkyWayIsophotes(SkyLayer):
                 "compound_id": np.asarray(compounds, dtype=object)[positions],
                 "ring_index": np.asarray(ring_indices, dtype=int)[positions],
                 "is_hole": np.asarray(holes, dtype=bool)[positions],
+                "spherical_interior_left": np.asarray(
+                    interior_left, dtype=bool
+                )[positions],
+                "spherical_interior_area_sr": np.asarray(
+                    interior_areas, dtype=float
+                )[positions],
                 "projection_cap_topology_inversion": np.asarray(
                     projection_cap_topology_inversions,
                     dtype=bool,
@@ -219,3 +235,29 @@ class MilkyWayIsophotes(SkyLayer):
             observer,
             provider="Milky Way isophotes",
         )
+
+
+def _native_ring_interior(coordinates, pole_winding):
+    """Resolve the catalogue's filled side and its spherical area.
+
+    Longitude-winding rings enclose the opposite side of their bounded
+    north-pole planar outline. Ordinary catalogue rings enclose that outline.
+    These are intrinsic ring properties, independent of the chart pole.
+    """
+    lon, lat = np.radians(coordinates).T
+    cosine = np.cos(lat)
+    vectors = np.column_stack((
+        cosine * np.cos(lon), cosine * np.sin(lon), np.sin(lat)
+    ))
+    x = -vectors[:, 1] / (1.0 + vectors[:, 2])
+    y = vectors[:, 0] / (1.0 + vectors[:, 2])
+    signed_outline = np.sum(x * np.roll(y, -1) - y * np.roll(x, -1))
+    left = bool(signed_outline > 0.0) != bool(pole_winding)
+    following = np.roll(vectors, -1, axis=0)
+    # Oriented triangle solid angles with the native north pole.
+    left_area = np.sum(2.0 * np.arctan2(
+        np.cross(vectors, following)[:, 2],
+        1.0 + vectors[:, 2] + following[:, 2]
+        + np.sum(vectors * following, axis=1),
+    )) % (4.0 * np.pi)
+    return left, float(left_area if left else 4.0 * np.pi - left_area)

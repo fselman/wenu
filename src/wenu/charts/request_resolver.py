@@ -56,6 +56,7 @@ class ResolvedChartFrame:
     limiting_declination_deg: float | None = None
     automatic_from_geometry: bool = False
     source: str = "request"
+    mirror_ew: bool = False
 
 
 def _resolve_frame(request, constellations):
@@ -201,5 +202,8 @@ def resolve_chart_request(request, profile):
         target=target,
         constellations=constellations,
         constellation_mask=request.constellation_mask,
-        frame=_resolve_frame(request, constellations),
+        frame=replace(
+            _resolve_frame(request, constellations),
+            mirror_ew=request.frame.mirror_ew,
+        ),
     )

@@ -15,26 +15,40 @@ architectural rationale and accepted boundaries.
 
 | Order | Milestone | Outcome |
 |---:|---|---|
-| 1 | 50A.5D.3 | Renderer-neutral text and JSON moving-object reports from already realized temporal results. |
-| 2 | 50A.5E.0 | Audit the distributable Wenu asteroid/comet database, scientific representation, provenance, coverage, and lifecycle. |
-| 3 | 50A.5E.1 | Build and verify a versioned distributable database, including important minor bodies and all governed dwarf planets. |
-| 4 | 50A.5E.2 | Add the `wenu-database` policy and default cache → provider → database resolution order. |
-| 5 | 50A.5E.3 | Add safe cache inspection, dry-run, pruning, and explicit minor-body cache flushing. |
-| 6 | 50A.6 | Close minor-body provenance, public interfaces, validation, documentation, and PNG/PDF/SVG acceptance. |
-| 7 | 50S.0 | Audit satellite catalogues, SGP4/TEME science, fast orbit-to-field literature, photometry, and performance workloads. |
-| 8 | 50S.1 | Implement and independently validate a frozen-snapshot artificial-satellite state provider. |
-| 9 | 50S.2 | Define exact field-crossing semantics and implement a complete-scan correctness oracle. |
-| 10 | 50S.3 | Add conservative high-performance candidate indexing with zero false negatives against the oracle. |
-| 11 | 50S.4A | Report geometric crossings, rates, trail lengths, range, phase, and illumination. |
-| 12 | 50S.4B | Estimate apparent brightness with explicit uncertainty and empirical photometric validation. |
-| 13 | Later 50S detector slice | Estimate detector-level trail signal and detectability separately from apparent magnitude. |
-| 14 | 50S.5 | Add selected drawable tracks through the shared pipeline and close the satellite program. |
-| 15 | 50B.0 | Review accepted publication, printing, typography, accessibility, and atlas practice. |
-| 16 | 50B.1 | Adopt Wenu physical-output profiles and numerical publication standards. |
-| 17 | 50B.2 | Measure representative products at declared physical dimensions. |
-| 18 | 50B.3 | Implement monochrome and limited-grayscale publication profiles. |
-| 19 | 50B.4 | Perform physical print, reduction, grayscale, and photocopy acceptance. |
-| 20 | 50B.5 | Close publication styles with accepted standards, examples, limitations, and evidence. |
+| 1 | 50A.5D.1B | Observer-dependent sampled Horizons comet model magnitude, explicitly not a visibility prediction. |
+| 2 | 50A.5D.3 | Renderer-neutral text and JSON moving-object reports from already realized temporal results. |
+| 3 | 50A.5E.0 | Audit the distributable Wenu asteroid/comet database, scientific representation, provenance, coverage, and lifecycle. |
+| 4 | 50A.5E.1 | Build and verify a versioned distributable database, including important minor bodies and all governed dwarf planets. |
+| 5 | 50A.5E.2 | Add the `wenu-database` policy and default cache → provider → database resolution order. |
+| 6 | 50A.5E.3 | Add safe cache inspection, dry-run, pruning, and explicit minor-body cache flushing. |
+| 7 | 50A.6 | Close minor-body provenance, public interfaces, validation, documentation, and PNG/PDF/SVG acceptance. |
+| 8 | 50S.0 | Accepted satellite catalogue, provider, crossing, acceleration, illumination, photometry, and validation decisions. |
+| 9 | 50S.1 | Define the provider-neutral satellite crossing domain. |
+| 10 | 50S.2 | Add the policy-compliant cached SatChecker crossing adapter. |
+| 11 | 50S.3A | Audit honest sampled-candidate reports, shared-path drawing, and semantic identity. |
+| 12 | 50S.3B | Implement deterministic reports and drawable sampled-candidate tracks. |
+| 13 | 50S.4A | Audit snapshot, dependency, propagation, Earth-orientation, validation, and specimen contracts. |
+| 14 | 50S.4B | Add canonical OMM elements and a small immutable synthetic snapshot. |
+| 15 | 50S.4C | Add Vallado-validated SGP4 propagation and typed geometric TEME state. |
+| 16 | 50S.4D | Add and independently validate the explicit topocentric transformation chain. |
+| 17 | 50S.4E | Add the network-free propagated-specimen builder and close 50S.4. |
+| 18 | 50S.5 | Implement the complete local FoV-crossing oracle. |
+| 19 | 50S.6A–D | Accepted conservative selection and bounded exact-solver coordination. |
+| 20 | 50S.6E | Audit same-observer, airmass-bounded multi-FoV reuse, interchange, and the remaining delivery sequence. |
+| 21 | 50S.6F | Implement the bounded multi-FoV coordinator after separate acceptance. |
+| 22 | 50S.6G | Admit representative scale and connect exact results to generic reports and chart tracks. |
+| 23 | 50S.6H | Audit Paranal, ELT, and other observatory planning adapters. |
+| 23a | 50S.6I | Add governed production catalogue refresh, automatic snapshot selection, and one exposure-query workflow; preserve exact per-run provenance. |
+| 24 | 50S.7 | Add Sunlight, solar Earthshine, Moonlight, Lunar-Earthshine, shadow-transition, and night geometry. |
+| 25 | 50S.8 | Add component-resolved brightness models with uncertainty and explicit unknowns. |
+| 26 | 50S.9 | Estimate detector-level trail contamination separately from apparent magnitude. |
+| 27 | 50S.10 | Produce night/season/sky-position statistics and close the satellite program. |
+| 28 | 50B.0 | Review accepted publication, printing, typography, accessibility, and atlas practice. |
+| 29 | 50B.1 | Adopt Wenu physical-output profiles and numerical publication standards. |
+| 30 | 50B.2 | Measure representative products at declared physical dimensions. |
+| 31 | 50B.3 | Implement monochrome and limited-grayscale publication profiles. |
+| 32 | 50B.4 | Perform physical print, reduction, grayscale, and photocopy acceptance. |
+| 33 | 50B.5 | Close publication styles with accepted standards, examples, limitations, and evidence. |
 
 ## 1. Purpose and authority
 
@@ -1784,7 +1798,8 @@ flushed cache data must be reacquired.
 ## Program 50S — Artificial-satellite crossings and contamination
 
 **Status:** Planned after 50A.6 minor-body closure and before Program 50B
-publication work; audit required before implementation.
+publication work; 50S.0 scientific and architectural decisions accepted by
+Fernando on 2026-09-14.
 
 This program must make field-crossing queries a first-class scientific product.
 Given an observer, an explicitly framed field of view and centre, a start and
@@ -1803,22 +1818,30 @@ Earth-orientation data, topocentric transformation, orbit-epoch freshness,
 Earth-shadow and illumination state, and prediction uncertainty must remain
 identified and reproducible.
 
-The required fast path is a conservative two-stage search:
+The online path begins with a provider-neutral query/result domain and a
+policy-compliant SatChecker adapter. The later local fast path is a
+conservative cascade:
 
-1. propagate catalogue batches with vectorized SGP4 at a declared coarse or
-   adaptive cadence and reject objects using conservative spatial-temporal
-   bounds;
-2. refine entry, exit, closest approach, and exposure overlap only for retained
+1. reject impossible candidates with topocentric orbital-plane/FoV-cone,
+   radial-shell, phase/reachable-arc, Earth-occultation, and horizon bounds;
+2. propagate retained catalogue batches with vectorized SGP4 and conservative
+   angular-motion/curvature bounds;
+3. refine entry, exit, closest approach, and exposure overlap only for retained
    candidates, without missing a true crossing.
 
-Repeated all-night or seasonal studies should be able to reuse an immutable
+Repeated all-night or seasonal studies may reuse an immutable HEALPix/time
 index keyed by orbit-catalogue digest, observer, Earth-orientation policy,
 night or bounded interval, cadence/bounding policy, and scientific software
-version. Index or cache policy must not enter propagation, coordinate,
-projection, or rendering ownership, and the unindexed complete calculation
-must remain available as a correctness oracle.
+version, but only if larger-snapshot benchmarks justify it. Index or cache
+policy must not enter propagation, coordinate, projection, or rendering
+ownership, and the unindexed complete calculation must remain available as a
+correctness oracle.
 
 ### 50S.0 — Scientific, catalogue, search, and photometry audit
+
+**Status:** Accepted by Fernando on 2026-09-14 and recorded in
+`artificial_satellite_crossing_audit_50s0.md` and the living
+`satellite_guide.md`.
 
 Review the scientific and technical literature before selecting either the
 catalogue-wide crossing algorithm or an apparent-brightness model. Record
@@ -1851,74 +1874,315 @@ communication, catalogue scale, and representative performance workloads.
 Characterize the maximum angular motion that the candidate filter must
 conservatively enclose. Add no visible satellite or public crossing command.
 
-### 50S.1 — Validated satellite state provider
+### 50S.1 — Provider-neutral satellite crossing domain
 
-Implement one frozen-snapshot OMM/TLE plus SGP4/TEME provider and validate a
-bounded set spanning low, medium, geosynchronous, and highly elliptical Earth
-orbits against an independent authoritative oracle. Transform through the
-accepted coordinate service into explicit observer-local or product-frame
-directions. Do not yet perform catalogue-wide field searches.
+**Status:** Accepted by Fernando on 2026-09-15; merged through PR #123.
 
-### 50S.2 — Exact field-crossing contract and reference implementation
+`satellite_crossings.py` defines immutable satellite identity, terrestrial
+observer/site, inclusive UTC interval, explicitly framed closed circular FoV,
+crossing candidate, and normalized connected-visit result contracts. Provider
+candidates retain source, optional orbit/snapshot evidence, provenance, and
+warnings; normalized results enforce ordered in-interval event instants and
+closed-boundary intersection semantics. The module imports only the shared
+`CoordinateSpec` vocabulary and remains independent of provider acquisition,
+propagation, charts, projection, rendering, and export.
 
-Define circular, rectangular, and WCS/instrument-footprint fields independently
-of chart drawing. A query owns observer, field frame and centre, footprint,
-inclusive time interval, exposure start times and durations when applicable,
-and boundary-touch semantics. First implement a complete catalogue scan as the
-scientific correctness oracle. Results must retain satellite identity, orbit
-snapshot and epoch, entry and exit instants, closest approach, time in field,
-angular rate, trail length per exposure, illumination/shadow state, and
-prediction-quality warnings.
+Spherical rectangles, WCS/instrument footprints, fixed Alt/Az and moving
+fields, SatChecker adaptation, propagation, exact crossing verification,
+illumination physics, reporting, and drawing remain later milestones.
 
-### 50S.3 — Conservative high-performance candidate index
+Fernando accepted 50S.1 after the focused Mac gate passed all 139 tests in
+3.07 seconds and the complete plugin-disabled suite passed all 2,428 tests in
+85.52 seconds. PR #123 merged the verified implementation into the satellite
+integration branch as commit `23b851b`.
 
-Add vectorized propagation, temporal batching, conservative swept-region
-bounds, and a spatial index only after 50S.2 is accepted. Prove zero false
-negatives against the complete-scan oracle over adversarial boundary, fast-LEO,
-zenith, horizon, and short-exposure cases. Measure cold construction, warm
-reuse, query latency, memory, index size, and scaling with catalogue size,
-duration, cadence, field size, and number of pointings. Performance acceptance
-must use representative current-catalogue workloads rather than a reduced test
-fixture alone.
+### 50S.2A — SatChecker provider-contract audit
 
-### 50S.4 — Observation-contamination reports
+**Status:** Accepted by Fernando on 2026-09-15.
 
-#### 50S.4A — Geometric and illumination reports
+The audit in `satchecker_provider_contract_audit_50s2a.md` reviews SatChecker
+1.8.0 at source commit `a638d72`. It records the versioned endpoints, explicit
+UTC-to-UT1 conversion boundary, source-inferred geometric topocentric
+ICRF/ICRS-oriented directions, one-second stop-exclusive sampling, 1.2-radius
+candidate envelope, async states, serial no-retry access, exact local cache,
+bounded failures, and unresolved response-data redistribution terms. It changes
+no runtime behavior. Fernando's acceptance authorizes only the bounded 50S.2B
+cached-adapter implementation.
 
-Expose human-readable and JSON results for planned observations and aggregate
-night-sky studies. Support crossing count, probability or rate with its stated
-estimator, occupied time, angular-speed and trail-length distributions, and
-maps or tables versus time, season, position, field size, and exposure
-duration. Preserve geometric intersection, range, phase angle, and
-illumination or shadow state without inferring brightness or detectability.
+### 50S.2 — SatChecker crossing adapter
 
-#### 50S.4B — Apparent-brightness estimation and validation
+**50S.2B status:** Accepted by Fernando on 2026-09-15.
 
-Implement only the photometric models accepted in 50S.0. Estimate apparent
-magnitude, passband when known, and an uncertainty or distribution appropriate
-to the available satellite metadata. The calculation must expose its range,
-phase function or reflectance model, projected-area and attitude assumptions,
-shadow state, atmospheric-extinction policy, and empirical calibration
-provenance. Unknown shape, attitude, tumbling, surface properties, or flare
-behavior must produce explicit limitations rather than false precision.
+`satchecker.py` provides the versioned geometric circular-field request,
+explicit no-download UTC-to-UT1 conversion, exact-byte receipt, one-shot
+submission and polling, explicit task states, provider-schema normalization,
+candidate/sample evidence, and content-addressed exact local cache. It
+serializes the complete Wenu request and Earth-orientation identity into the
+cache key and fails closed on HTTP, media, JSON, identity, count, task, sample,
+or cache drift.
 
-Validate bounded satellite classes and geometries against time-resolved
-published or newly acquired calibrated photometric observations. Characterize
-residuals before accepting tolerances. A later detector model may combine
-brightness, angular speed, exposure time, point-spread function, pixel scale,
-throughput, sky background, saturation, and sensor response to estimate trail
-signal or detectability; it must remain distinct from intrinsic apparent
-magnitude and geometric crossing probability.
+Successful output is only `SatelliteCrossingCandidate` plus ordered
+`SatCheckerSample` evidence. The implementation does not construct
+`SatelliteCrossingResult`: provider samples do not establish exact entry,
+closest approach, exit, or one connected visit. Synthetic source-shaped tests
+perform no network access. No waiter loop, automatic retry, CLI, live fixture,
+report, propagation, drawing, or export is added. The bounded live check
+confirmed fail-closed IERS coverage, real PENDING submission/poll receipts, and
+a later SUCCESS receipt normalized to 13 candidates and 26 ordered samples.
+The focused provider/domain gate passed 45 tests, the expanded focused gate
+passed 168 tests, and the complete suite passed all 2,457 tests. Acceptance
+closes 50S.2B; accepted 50S.3A now authorizes only bounded 50S.3B reporting and shared-path drawing.
 
-### 50S.5 — Drawable tracks and program closure
+### 50S.3A — Satellite report and drawing contract audit
 
-Only after the query science is accepted may selected crossings enter ordinary
-Wenu charts through the shared moving-body trajectory, projection,
-preparation, renderer, semantic SVG, and export machinery. Close with catalogue
-and provider provenance, numerical validation, complete-scan equivalence,
-performance evidence, PNG/PDF/SVG inspection, public documentation, and
-reproducible observer/night studies. Do not create a satellite-specific
-projection, renderer, exporter, or parallel sky pipeline.
+**Status:** Accepted by Fernando on 2026-09-15.
+
+Freeze honest human-readable/JSON reporting and shared-path drawing for
+provider-sampled candidate evidence. SatChecker samples are not exact connected
+crossings: 50S.3 must not invent entry, exit, closest approach, continuous
+containment, interpolation, propagation, illumination, or brightness. Reserve
+stable semantic identity by full NORAD catalogue identifier and require one
+normalized evidence source for every output.
+
+### 50S.3B — SatChecker sampled-candidate reports and tracks
+
+**Status:** Accepted by Fernando on 2026-09-15.
+
+Implement deterministic reports and an
+already-normalized-evidence sky layer. The layer emits typed spherical points
+and open polylines and then uses Wenu's shared coordinate, projection,
+preparation, renderer, semantic SVG, and PNG/PDF/SVG export paths. No CLI
+acquisition workflow, polling loop, exact crossing solver, or 50S.4 work is
+included.
+
+The candidate implementation adds deterministic text/JSON reports, open
+sampled-track or singleton-point geometry, optional UTC-labelled sample
+points, stable full-NORAD semantic paths, and a shared PNG/PDF/SVG pipeline
+gate. It remains network-free and does not synthesize exact crossing events.
+Fernando accepted the synthetic report and centered FoV chart across PNG,
+PDF, and semantic SVG on 2026-09-15. The final focused gate passed all 217 tests and the complete plugin-disabled
+suite passed all 2,473 tests in 83.98 seconds. Fernando accepted 50S.3B on 2026-09-15. Acceptance closes SatChecker sampled
+candidate reporting/drawing and authorizes only 50S.4 next.
+
+### 50S.4A — Snapshot and propagation contract audit
+
+**Status:** Accepted by Fernando on 2026-09-15.
+
+Freeze the direct SGP4 dependency, synthetic distributable snapshot, OMM
+element domain, content digest, Vallado validation, split-Julian-date,
+geometric TEME state, no-download Earth-orientation, topocentric oracle, and
+developer-specimen boundaries. This audit changes no runtime, dependency, or
+packaged data. The focused documentation gate passed all 128 tests and the
+branch diff check was clean. Acceptance closes 50S.4A and authorizes only
+50S.4B immutable OMM element and snapshot work; propagation remains
+unauthorized.
+
+### 50S.4B — Immutable OMM element snapshot
+
+**Status:** Accepted by Fernando on 2026-09-15.
+
+The candidate adds typed canonical GP/OMM records, manifest and content-digest
+validation, per-record digests, installed-resource loading, deterministic
+full-NORAD ordering, duplicate rejection, immutable lookup, and a three-record
+synthetic LEO/MEO/geosynchronous-like snapshot. It declares
+`sgp4>=2.25,<3` directly. No live provider record, TLE adapter, propagation,
+TEME state, Earth-orientation/topocentric transformation, or crossing result
+is included. The initial focused domain and packaging gate passed all 29 tests. At
+production commit `d3cb597`, the expanded gate passed all 158 tests and the
+complete plugin-disabled suite passed all 2,483 tests in 87.11 seconds. An
+isolated installed-wheel check loaded the snapshot from `site-packages`,
+verified its exact manifest digest, and returned all three ordered identifiers.
+Fernando accepted the scientific and architectural boundary on 2026-09-15.
+Acceptance closes 50S.4B and authorizes only 50S.4C validated SGP4/TEME
+propagation.
+
+### 50S.4C — Validated SGP4/TEME propagation
+
+**Status:** Accepted by Fernando on 2026-09-15.
+
+The candidate maps accepted OMM fields explicitly into the upstream
+Vallado-compatible propagator with WGS-72, split Julian dates, typed geometric
+TEME position/velocity, explicit errors, element age, and scalar/array parity.
+Pinned published near-Earth and deep-space reference vectors plus a terminal
+error case validate the wrapper. Preflight corrected the synthetic identifiers
+from unsupported 900001–900003 to valid six-digit 300001–300003 and regenerated
+all affected digests; no hidden surrogate identity is used. The initial element/SGP4 gate passed all 15 tests. At production commit
+`e0d7c78`, the expanded gate passed all 167 tests and the complete
+plugin-disabled suite passed all 2,492 tests in 86.88 seconds. An isolated
+installed-wheel check verified the corrected snapshot digest and successful
+TEME/WGS-72/status-zero propagation of all three records. No Earth-fixed or
+observer state is produced. Fernando accepted 50S.4C on 2026-09-15 after the
+15-test initial gate, 167-test expanded gate, all 2,492 tests, the 132-test
+documentation gate, and installed-wheel propagation check. Acceptance closes
+50S.4C and authorizes only 50S.4D Earth-orientation and topocentric state work.
+
+### 50S.4D — Earth-orientation and topocentric state
+
+**Status:** Accepted by Fernando on 2026-09-15.
+
+The candidate uses Astropy's declared TEME → ITRS → observer-subtracted
+Cartesian chain with automatic IERS download and degraded accuracy disabled,
+exact installed IERS-A SHA-256 and coverage, WGS-84 geodetic sites, vacuum
+horizontal directions, and a topocentric geometric direction expressed in
+GCRS axes. It fails closed outside local EOP coverage. Direct Cartesian
+evidence, independent Skyfield comparison, constructed zenith/horizon/wrap
+geometry, pathological sites, and installed LEO/MEO/GEO-like specimens pass
+the 17-test dedicated and 89-test expanded Mac gates. The 133-test
+documentation gate and complete plugin-disabled suite of 2,511 tests in 95.10
+seconds also pass, and the final branch diff check is clean. Fernando
+scientifically and architecturally accepted 50S.4D on 2026-09-15. Acceptance
+closes the Earth-orientation/topocentric boundary and authorizes only bounded
+50S.4E propagated-specimen builder work. No field-intersection solver is
+included.
+
+### 50S.4E — Propagated specimen builder and closure
+
+Add a deterministic network-free developer builder that consumes the installed
+synthetic snapshot and writes sampled propagated tracks/query inputs with full
+provenance. Outputs say **propagated sampled specimens — not verified
+crossings**. Exact crossing results and completeness claims remain 50S.5.
+Close 50S.4 only after package, numerical, focused, full-suite, and developer
+product acceptance.
+
+### 50S.5 — Complete local FoV-crossing oracle
+
+Implement a complete scan of every valid object in a selected snapshot with
+adaptive interval subdivision, conservative motion bounds, bracketed boundary
+roots, and closest-approach refinement. Boundary touch counts; disconnected
+visits remain separate. This slower implementation remains independently
+callable as the scientific oracle after optimization.
+
+### 50S.6 — Conservative local crossing acceleration
+
+Add, in order, topocentric orbital-plane/FoV-cone and radial-shell rejection,
+phase/reachable-arc rejection from epoch and mean motion, Earth-occultation and
+horizon rejection, then vectorized coarse SGP4 states with conservative motion
+and curvature bounds. Prove zero false negatives against 50S.5 over central,
+grazing, between-sample, zenith, horizon, seam, pole, short-exposure, and
+interval-end cases.
+
+HEALPix/time indexing remains optional. Add it only if medium/full-snapshot or
+many-pointing benchmarks show material benefit beyond the plane/phase filter
+cascade. Any pixel cover must enclose the complete swept trajectory tube, and
+every candidate still reaches the exact solver.
+
+### 50S.6I — Production catalogue and exposure-query workflow
+
+**Status:** Proposed on 2026-09-23 after Fernando clarified the observing
+goal. The scope and placement require a bounded audit before implementation;
+this proposal does not alter the completed 50S.6G/6H acceptance or authorize
+provider traffic, a runtime default change, or an observing-readiness claim.
+
+The ordinary observing input is a circular FoV or an oriented rectangular
+detector footprint on the sky, an observer, a UTC exposure start, and an
+exposure duration. A rectangle requires its centre, angular width and height,
+orientation, and declared sky-mapping convention (or a validated instrument
+WCS); physical detector dimensions alone do not determine its sky footprint.
+Wenu must return
+every crossing in the selected catalogue whose trajectory intersects that
+FoV during the exposure, including entry/exit or partial overlap, closest
+approach, path, duration, element age, and available illumination, brightness,
+and detector information. Unimplemented or scientifically unsupported fields
+remain explicit `unknown`/`not_evaluated` values. The result must state the
+catalogue population and coverage: no one source can establish completeness
+over every artificial object in orbit.
+
+The production path should use the existing provider-governed acquisition,
+canonical immutable snapshot, exact crossing solver, reports, and chart layers
+in five separately reviewable slices:
+
+1. **50S.6I.A — Contract and provider audit.** Define freshness/element-age
+   policy by orbit regime and exposure use, source population and identifier
+   coverage, historical versus future-date behavior, resource and provider
+   failure semantics, cache location, offline mode, and update cadence under
+   the provider's current terms. Measure representative single and multi-FoV
+   workloads; retain complete-scan equivalence. Audit the circular and
+   rectangular footprint contracts and exact spherical boundary convention.
+2. **50S.6I.B — Refresh and publication.** Recheck provider policy, acquire
+   only when an update is due or explicitly requested, validate the complete
+   response, and atomically publish a new content-addressed catalogue version.
+   Keep the prior valid version on failed refresh; report the failure and
+   freshness state. Never silently substitute synthetic records or mix
+   different catalogue versions in a single exposure result.
+3. **50S.6I.C — Rectangular detector footprints.** Extend the circular-only
+   crossing domain, conservative filters, exact solver, report and chart
+   tracks to an oriented rectangular sky footprint. Define its edges through
+   the declared sky mapping, not an RA/Dec bounding box. Verify rotations,
+   large fields, poles, RA wrap, grazing and corner touches, short exposures,
+   and zero false negatives against a complete scan. A distorted detector
+   footprint requires a validated WCS boundary and separate acceptance;
+   do not silently approximate it by an undistorted rectangle.
+4. **50S.6I.D — Selection and command.** Resolve a named provider and an
+   explicitly chosen or eligible locally published version for the requested
+   exposure. Admit each validated provider snapshot under a general audited
+   source/manifest policy rather than a source-code allowlist of particular
+   digests. Bind one selected digest to the complete query and reuse the
+   existing exact coordinator, atomic report publisher, and chart overlays.
+   Keep explicit pinned-version and offline modes for reproducibility and
+   historical runs. A normal exposure query must not require the observer to
+   hand-edit policy code or manually whitelist a newly refreshed digest.
+5. **50S.6I.E — Observing acceptance.** Exercise real provider snapshots at
+   useful scale for circular and oriented rectangular FoVs, observers, and
+   exposure durations; compare
+   with the full-scan oracle, test stale/absent/corrupt data and provider
+   failures, and inspect report and PNG/PDF/SVG chart outputs. Publish a
+   documented command only after the bounded workload and scientific gates
+   pass. Report selected snapshot, acquisition time, every contributing
+   element epoch/age, source population, software and EOP identities, and
+   completeness limitations with each result.
+
+Each production run freezes its *selected input version* for repeatability;
+the catalogue itself must be refreshable. The hard-coded external snapshot
+allowlist from 50S.6G.1B.2B remains useful for its exact test/evidence case,
+but it cannot be the normal production admission route. Exposure-overlap and
+geometric track delivery can be accepted before 50S.8 brightness and 50S.9
+detector modelling; the ordinary command must identify those gaps until the
+corresponding scientific milestones are accepted. Continue the already
+authorized 50S.7 Phase B work separately; complete this production gate
+before describing Wenu as ready for arbitrary supported observing requests.
+
+### 50S.7 — Independent illumination and night geometry
+
+Treat illumination as component-resolved geometry. Calculate direct Sunlight,
+solar Earthshine, direct Moonlight, and Lunar-Earthshine (Moonlight reflected
+by Earth), with finite Sun/Earth/Moon geometry, umbra, penumbra, lunar phase,
+visibility, incident directions, and shadow transitions recorded independently
+of crossing. Separately report Sun and Moon altitude and twilight/night state
+at the observer. Default results retain all geometric crossings and annotate
+each illumination component rather than silently erasing eclipsed crossings.
+Audit Caddy et al. (2026), arXiv:2609.07057, and its modified `lumos-sat`
+model before choosing any implementation.
+
+### 50S.8 — Apparent-brightness estimation and validation
+
+Use the strongest defensible model level for each of Sunlight, solar
+Earthshine, Moonlight, and Lunar-Earthshine: object-specific empirical models,
+satellite-family distributions, broader population distributions, or explicit
+`unknown`. Sum fluxes, never magnitudes. Retain passband, range normalization,
+solar/lunar phase dependence, Earth/lunar reflectance or BRDF, satellite
+surface and attitude assumptions, atmospheric extinction, model epoch,
+scatter, calibration provenance, validity domain, and limits. Treat ordinary
+brightness and specular glints separately; absent flare evidence is `unknown`,
+never zero probability. Validate materially different families and geometries
+against time-resolved calibrated observations before accepting tolerances.
+
+### 50S.9 — Detector-specific contamination
+
+Combine crossing geometry and brightness distributions with angular speed,
+exposure, optics, aperture, throughput, passband, defocus/PSF, pixel scale, sky
+background, saturation, blooming, shutter behavior, and detector response.
+Report assumptions and uncertainty. Do not reinterpret apparent magnitude as
+trail signal or detectability.
+
+### 50S.10 — Night, season, and sky-position products and closure
+
+Generate reproducible maps, tables, and distributions versus local night time,
+season, observer, pointing, FoV, and exposure duration. Close with provider and
+snapshot provenance, numerical validation, complete-scan equivalence,
+performance evidence over progressively larger snapshots, cached SatChecker
+comparisons, observed-trail specimens when available, PNG/PDF/SVG inspection,
+and public documentation. Do not create a satellite-specific projection,
+renderer, exporter, or parallel sky pipeline.
 
 ## Program 50B — Publication legibility and economical printing
 
@@ -2000,3 +2264,1463 @@ practical. Screen PNG review is not sufficient.
 
 Record accepted numerical standards, named profiles, examples, regression
 products, limitations, and the human print-acceptance record.
+
+### 50S.4E — Propagated specimen builder and closure (accepted)
+
+**Status:** Accepted by Fernando on 2026-09-15.
+
+The dedicated branch adds only
+`tools/build_50s4_satellite_specimens.py` and its durable focused tests. The
+tool composes accepted 50S.4B–D authorities into deterministic, network-free
+**propagated sampled specimens — not verified crossings**, written only to a
+caller-selected output directory. It records snapshot, grid, observer,
+Earth-orientation, propagator, and software identities.
+
+50S.4E does not emit `SatelliteCrossingResult`, search a complete catalogue,
+derive entry/exit or closest approach, select production solver tolerances, or
+authorize 50S.5. Closure still requires focused and full Mac gates, clean diff
+evidence, inspection of the generated JSON, and Fernando's scientific and
+architectural acceptance.
+
+#### Accepted 50S.4E measured gates
+
+The dedicated, expanded, and documentation Mac gates passed 10, 99, and 134
+tests respectively; the complete plugin-disabled suite passed all 2,522 tests
+in 105.38 seconds. The inspected generated specimen had SHA-256
+`16137e9380404dca03789532ab029c4159755c69dd2ab0ca5990a82cd9c42374`,
+preserved ordered identities 300001–300003, and declared the exact snapshot
+and bundled IERS-A digests. The branch and diff checks were clean. Fernando scientifically and architecturally
+accepted 50S.4E on 2026-09-15, closing 50S.4 and authorizing only bounded
+50S.5 complete local FoV-crossing oracle work.
+
+50S.6 acceleration, illumination, photometry, detector effects, CLI, reporting,
+and drawing remain unauthorized.
+
+
+### 50S.5A — Complete local crossing-oracle audit (accepted)
+
+**Status:** Accepted by Fernando on 2026-09-15.
+
+Freeze the coordinate compatibility, immutable query, declared tolerance,
+validated numerical completeness, adaptive subdivision, root/extremum,
+connected-visit, fail-closed, provenance, ownership, and independent
+analytic/adversarial validation contracts before runtime work.
+
+Acceptance authorizes only bounded 50S.5B implementation of the exhaustive
+three-record local oracle. It does not pre-accept numerical tolerances, close
+50S.5, or authorize 50S.6 acceleration, illumination, photometry, CLI,
+reporting, drawing, or additional footprint types.
+
+
+The candidate 50S.5A focused documentation gate passed all 136 tests in 3.27
+seconds and the corrected branch diff check was clean. The final acceptance
+documentation gate passed all 136 tests in 3.00 seconds. Fernando scientifically
+and architecturally accepted 50S.5A on 2026-09-15. Only bounded 50S.5B is
+authorized next; 50S.6 and later behavior remain unauthorized.
+
+### 50S.5B — Complete local crossing-oracle implementation (accepted)
+
+**Status:** Scientifically and architecturally accepted by Fernando on
+2026-09-15.
+
+The accepted implementation introduces the dedicated local numerical owner, immutable query,
+explicit convergence failure, exhaustive all-record scan, adaptive motion and
+curvature evidence, bracketed entry/exit refinement, bounded tangent detection,
+recursive tolerance-connected visit assembly, deterministic ordering, and
+complete SGP4/IERS/observer/solver provenance. It adds no 50S.6 acceleration or
+later satellite behavior.
+
+Mac verification passed the 13-test dedicated oracle gate in 60.62 seconds,
+the 108-test expanded gate in 70.80 seconds, the 137-test documentation gate
+in 3.33 seconds, and all 2,538 plugin-disabled tests in 163.36 seconds. The
+working tree was clean and `git diff --check aa6f91a...HEAD` passed. Acceptance
+closes 50S.5 and authorizes only a documentation-first 50S.6 conservative local
+crossing acceleration audit. Runtime acceleration, 50S.7, and all later
+satellite behavior remain unauthorized.
+
+### 50S.6A — Conservative local crossing acceleration audit (accepted)
+
+**Status:** Scientifically and architecturally accepted by Fernando on
+2026-09-15.
+
+The accepted audit preserves the independently callable 50S.5 exhaustive oracle and
+defines tri-state conservative selection, recorded rejection inequalities,
+topocentric cone/orbital-shell bounds, exact-oracle equivalence, stage isolation,
+and benchmark admission. It rejects horizon and Earth-occultation removal under
+the current geometric query semantics and defers phase, coarse vectorized
+states, and HEALPix/time indexing.
+
+Candidate verification passed all 138 plugin-disabled documentation tests in
+3.99 seconds on Fernando's Mac. The working tree and corrected branch diff
+check were clean.
+
+Acceptance authorizes only bounded 50S.6B implementation of the first
+topocentric cone/orbital-shell selector. Phase/reachable-arc filtering, coarse
+vectorized propagation, HEALPix/time indexing, horizon/occultation filtering,
+50S.7, and all later behavior remain unauthorized.
+
+### 50S.6B — First conservative cone-shell selector (accepted)
+
+**Status:** Scientifically and architecturally accepted by Fernando on
+2026-09-16.
+
+The accepted slice installs immutable policy, decision, and selection evidence plus
+one conservative selector. Its admitted domain is only the installed synthetic
+snapshot and intervals no longer than 60 seconds. It uses an accepted initial
+state and a deliberately outward relative-displacement bound; strict
+whole-interval non-overlap permits rejection and every uncertainty is
+`indeterminate`.
+
+The selector does not coordinate exact solving or change 50S.5. The dedicated
+gate passed all 9 tests in 34.58 seconds and the expanded
+acceleration/oracle/crossing/element/SGP4/topocentric/package gate passed all
+78 tests in 99.99 seconds. The documentation gate passed all 139 tests in 4.72
+seconds, the complete plugin-disabled suite passed all 2,549 tests in 200.47
+seconds, and `git diff --check d609322...HEAD` was clean. Acceptance authorizes only a
+documentation-first 50S.6C audit of exact-solver coordination, broader-domain
+evidence, and benchmark admission. Further runtime acceleration remains
+unauthorized.
+
+### 50S.6C — Exact-solver coordination and admission audit (accepted)
+
+**Status:** Accepted by Fernando on 2026-09-16.
+
+Freeze the shared exact-record seam, complete decision-coverage validation,
+fallback and fail-closed behavior, exhaustive-result equivalence,
+broader-domain evidence matrix, and reproducible benchmark-admission rules
+before runtime coordination.
+
+The accepted 50S.5 exhaustive route remains independently callable and default.
+The accepted 50S.6B selector remains restricted to
+`synthetic_50s4b_v1` and at most 60 seconds. The three-record snapshot proves
+composition, not useful speed. This audit adds no runtime coordinator, broader
+domain, benchmark product, new selector stage, or performance claim.
+
+Fernando scientifically and architecturally accepted 50S.6C on 2026-09-16.
+Acceptance authorizes only bounded 50S.6D exact-solver coordination with the
+existing selector and admitted domain. Broader-domain activation, benchmark
+claims, default enablement, phase/coarse/index stages, 50S.7, and later behavior
+remain unauthorized.
+
+
+### 50S.6D — Bounded accelerated exact-solver coordination (accepted)
+
+**Status:** Accepted by Fernando on 2026-09-16.
+
+Extract one unchanged package-internal exact-record seam from the exhaustive
+50S.5 oracle. Keep the exhaustive public route independently callable and
+default. Add one opt-in coordinator that validates complete ordered selector
+evidence, routes retain and indeterminate decisions through the shared seam,
+and omits only accepted reject decisions.
+
+Return exact crossing results separately from immutable acceleration evidence.
+Selector exceptions fall back to exhaustive solving by default or fail closed
+under explicit policy; malformed evidence and rejection outside the admitted
+three-record, 60-second domain fail closed. Require fake-selector invariant
+tests, instrumented exact-evaluation accounting, and real-selector equality
+with exhaustive results.
+
+This slice adds no broader domain, benchmark claim, default enablement,
+phase/coarse/index stage, illumination, photometry, CLI, reporting, drawing,
+or 50S.7 behavior.
+
+
+Candidate verification at commit `a7aecba` passed all 37 dedicated tests, 93
+expanded immediate-seam tests, 141 documentation tests, and the complete 2,566
+plugin-disabled tests. Fernando scientifically and architecturally accepted 50S.6D on 2026-09-16.
+No later acceleration milestone is authorized automatically.
+
+
+### 50S.6E — Same-observer, airmass-bounded multi-FoV and interchange audit
+
+**Status:** Accepted documentation-only audit.
+
+The audit in `satellite_multifov_interchange_audit_50s6e.md` defines one
+observer with any non-empty ordered number of independently timed circular
+FoVs. The centre of every field must satisfy a configurable airmass limit
+throughout its complete interval. The initial policy uses geometric vacuum
+AltAz and plane-parallel `X = sec(z)` above the horizon, with `X_max = 2` by
+default (exactly 30 degrees minimum centre altitude in this model). Only the
+centre is checked; the FoV radius does not enter airmass admission. It is an
+FoV admission condition, not a satellite horizon or occultation filter,
+and it imposes no civil-date or inferred-twilight boundary. Ten FoVs are the reference workload and proposed default
+internal processing chunk, never a hard-coded public limit. Identical intervals
+are a maximum-reuse research case rather than a public precondition.
+
+The audit separates bounded concurrency from genuine reduction in propagation
+and coordinate work, requires exact per-field equivalence to independent
+50S.5 calls, and defines 1/2/5/10/20/50-field evidence across disjoint,
+overlapping, and identical intervals. It places a bounded coordinator in
+50S.6F; representative catalogue admission, JSON/ECSV/VOTable reports, and
+exact binocular/regional/stereographic chart tracks in 50S.6G; observatory
+adapter auditing in 50S.6H; four-source Sunlight, solar Earthshine, Moonlight,
+and Lunar-Earthshine geometry in 50S.7; component-resolved brightness in
+50S.8; detector effects in 50S.9; and external-workflow validation in 50S.10.
+
+This audit changes no runtime or output. Fernando scientifically and
+architecturally accepted 50S.6E on 2026-09-16. Only a bounded 50S.6F
+implementation is authorized next; every later claim remains separately
+authorized.
+
+
+### 50S.6F — Bounded atomic multi-FoV coordinator
+
+**Status:** Accepted bounded implementation.
+
+The accepted implementation adds an immutable Python batch of complete
+`LocalSatelliteCrossingQuery` values. It requires one observer and snapshot,
+unique ordered field identities, centre-only complete-interval airmass
+admission, and at most 60 seconds per field in the installed synthetic domain.
+Ten is the default internal processing chunk, never a public cardinality
+limit. All fields validate before any crossing solve; every rejection is
+returned in one ordered typed exception and no partial result is produced.
+
+Valid batches compose the accepted 50S.6D single-field coordinator and preserve
+input order, exact result meaning, independent field intervals and tolerances,
+and separate airmass and acceleration evidence. This milestone establishes the
+batch contract but makes no useful-speed or shared-physical-state-reuse claim.
+CLI/file adapters, a validation-output file for a later second call, generic
+reports, chart tracks, representative catalogue admission, and all 50S.6G+
+behavior remain later.
+
+Fernando scientifically and architecturally accepted 50S.6F on 2026-09-17
+after 2,577 plugin-disabled tests passed. Only a separately bounded 50S.6G
+audit is authorized next. Representative-scale catalogue admission, generic
+reports, chart tracks, CLI/file adapters, and a validation-output file remain
+unimplemented and unauthorized pending that audit.
+
+
+### 50S.6G — Representative delivery, reports, files, and exact chart tracks
+
+**Status:** Accepted documentation-only audit.
+
+The accepted `satellite_delivery_audit_50s6g.md` decomposes delivery into an
+external immutable snapshot seam; a policy-governed representative builder and
+scale/equivalence matrix; one canonical exact-crossing model with deterministic
+JSON, ECSV, and VOTable encodings; an atomic direct CLI plus JSON two-call file
+protocol; certified exact local track evidence; binocular/regional products;
+and a separate stereographic-planisphere audit and implementation.
+
+File validation remains atomic. An invalid request file solves no fields and
+may write one versioned validation-output JSON that records every rejected FoV
+and embeds the ordered valid subset as a complete derived request. A second
+explicit invocation revalidates that derived request before calculation.
+
+All chart products reuse the canonical spherical-geometry, projection,
+preparation, rendering, semantic-SVG, and export flow. 50S.6G reports and
+tracks remain geometric: illumination, brightness, detector effects, direct
+observatory adapters, scheduling decisions, and observatory writes remain
+50S.6H–50S.10 work. This audit changes no runtime or output. Fernando
+scientifically and architecturally accepted it on 2026-09-17 after all 145
+plugin-disabled current-documentation tests passed in 4.36 seconds. Only
+bounded 50S.6G.1A external immutable snapshot loading is authorized next.
+
+
+#### 50S.6G.1A — External immutable snapshot seam
+
+**Status:** Accepted bounded implementation.
+
+The candidate adds an explicit local-directory loader beside the installed
+snapshot loader. It accepts no implicit location and derives scientific
+identity only from a completely validated manifest and canonical records
+digest. The selected directory, `manifest.json`, and declared records file
+must be real non-symlink filesystem objects. All accepted OMM semantics,
+full-NORAD ordering, record-count, epoch, provenance, warning, and digest
+checks remain shared with the installed route.
+
+This slice performs no acquisition or network access, packages no
+representative catalogue, and does not admit an external snapshot to the
+50S.6F coordinator. It adds no builder, policy preflight, benchmark, CLI,
+report, chart, track, illumination, or later 50S.6G behavior.
+
+Fernando scientifically and architecturally accepted 50S.6G.1A on 2026-09-17
+after the 164-test focused gate and all 2,583 plugin-disabled tests passed.
+Only a separately bounded 50S.6G.1B representative snapshot preflight and
+evidence audit is authorized next, not its implementation.
+
+
+#### 50S.6G.1B — Representative snapshot preflight and evidence
+
+**Status:** Accepted documentation-only audit.
+
+The candidate `satellite_snapshot_preflight_audit_50s6g1b.md` defines a
+two-phase CelesTrak policy receipt and human digest acknowledgement, one fixed
+Active-group OMM-compatible CSV request, deterministic fail-closed
+normalization, complete raw/canonical receipts, and atomic content-addressed
+external publication. The Active group is labeled representative-scale rather
+than complete population coverage; Space-Track, SupGP, multi-group unions, and
+redistribution remain outside the slice.
+
+Evidence retains synthetic, deterministic medium, and complete acquired Active
+tiers; 1/2/5/10/20/50 FoVs; disjoint/overlapping/identical intervals; declared
+geometry cases and observers; cold/warm resource measurements; selector and
+exact-evaluation counts; and independent exhaustive equality. External
+admission is digest-bound and evidence-only. No useful-speed, shared-state,
+capacity, runtime-default, live-request, report, CLI/file, track, or chart claim
+is made.
+
+Fernando scientifically and architecturally accepted 50S.6G.1B on 2026-09-17
+after all 147 plugin-disabled current-documentation tests passed in 4.54
+seconds. Only bounded 50S.6G.1B.1 fake-transport policy-receipt and
+deterministic-builder implementation is authorized next. A live provider
+request and 50S.6G.1B.2 admission/evidence remain separately authorized.
+
+**50S.6G.1B.1 implementation state.** The policy receipt, exact SHA-256
+acknowledgement, fixed Active CSV normalization, raw receipts, staged
+validation, and atomic external publication are implemented behind a mandatory
+injected transport. The developer command is offline and consumes explicit
+response files. A live CelesTrak transport/request remains a separate human
+policy checkpoint; 50S.6G.1B.2 representative admission and evidence remain
+future work.
+
+Fernando accepted the 50S.6G.1B.1 implementation on 2026-09-17 after 175
+focused plugin-disabled tests and all 2,594 plugin-disabled tests passed.
+No live CelesTrak request or 50S.6G.1B.2 work is thereby authorized.
+
+Any later second provider requires a separate audit and must be public,
+reliable, and genuinely independent rather than a redistribution of CelesTrak
+or Space-Track. Its first role is an explicit validation oracle; no automatic
+fallback or catalogue merge is implied.
+
+Fernando accepted the exact `non-HTTP 200` policy-clause compatibility
+correction on 2026-09-17 after 10 focused tests and all 2,595 plugin-disabled
+tests passed. The 14,643-byte policy receipt is bound to SHA-256
+`67bf0faa7e026a7cd49799069db9d3355f2a867894133afd39e130d6185724aa`. No GP request was performed, and digest approval remains a
+separate gate before the one authorized bulk request.
+
+**50S.6G.1B.1 live-evidence closure.** Fernando accepted the strict CelesTrak
+UTC-epoch normalization, exact captured HTTP media type, and the resulting
+16,559-record external Active snapshot on 2026-09-17 after 15 focused and 2,600
+complete plugin-disabled tests. The raw/canonical SHA-256 values are
+`e54730e14b2097444c5e20bba6dd13d3e2d92f956797d49256ddb1a70ffe5014` and `e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`. Only one provider request occurred. Representative
+admission, medium-tier selection, matrix evidence, and 50S.6G.1B.2 remain
+separately accepted future work.
+
+
+#### 50S.6G.1B.2A — External snapshot admission audit
+
+**Status:** Accepted documentation-only audit.
+
+The candidate isolates the first part of 50S.6G.1B.2: one explicit
+evidence-only token bound to exact canonical-record SHA-256 plus validated
+manifest identity. The selector, accelerated coordinator, and multi-FoV batch
+currently admit independently by logical snapshot ID; a later bounded
+50S.6G.1B.2B implementation would replace external ID-only authorization with
+one shared predicate while preserving the installed synthetic default.
+
+This slice changes no runtime. Deterministic medium selection is separately
+50S.6G.1B.2C, and the exact-equivalence/resource matrix is separately
+50S.6G.1B.2D. No report, CLI/file route, exact track, binocular/regional chart,
+stereographic planisphere, illumination, provider request, runtime-default
+change, or speed claim is authorized by this audit.
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2A on
+2026-09-17 after all 150 plugin-disabled current-documentation tests passed in
+3.84 seconds; `git diff --check` and the working tree were clean. Only bounded
+50S.6G.1B.2B digest-admission implementation is authorized next.
+
+
+**50S.6G.1B.2B accepted implementation.** The implementation provides one explicit
+digest-plus-manifest admission token in a dedicated satellite policy owner.
+The existing selector, accelerated coordinator, and multi-FoV batch consume
+that same token before external work; the batch passes it into its default
+single-field route. Ordinary synthetic defaults remain unchanged.
+
+The accepted CelesTrak identity constant is evidence metadata, not a path,
+loader, global allowlist, or automatic default. This implementation adds no
+medium specimen, evidence matrix, external fixture, network access, report,
+exact track, chart, illumination, provider fallback, or speed claim.
+50S.6G.1B.2C and 50S.6G.1B.2D remain separately bounded future work.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2B on
+2026-09-17 after 51 focused runtime tests, 151 current-documentation tests,
+and all 2,611 plugin-disabled tests passed; the complete suite took 215.89
+seconds. `git diff --check` and the working tree were clean. Only bounded
+50S.6G.1B.2C deterministic medium-specimen work is authorized next; 50S.6G.1B.2D
+matrix execution and later delivery remain separately unauthorized.
+
+
+#### 50S.6G.1B.2C — Deterministic medium specimen
+
+**Status:** Accepted documentation-only audit.
+
+The candidate derives one external medium evidence tier from the exact admitted
+Active parent without network access. It uses the acquisition stop instant for
+signed element age, independent declared scalar bins, two digest-ranked
+representatives per non-empty bin, deterministic fill to a configurable
+default target of 256, and a complete receipt. It makes no statistical,
+population-frequency, speed, capacity, or equivalence claim.
+
+A later bounded implementation would own only offline selection and atomic
+derived publication. The first real subset operation, 50S.6G.1B.2D matrix,
+reports, files, exact tracks, and charts remain separately unauthorized.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2C on
+2026-09-17 after all 153 plugin-disabled current-documentation tests passed in
+4.58 seconds; `git diff --check` and the working tree were clean. Only bounded
+fake-data implementation is authorized next. The first real medium selection,
+50S.6G.1B.2D matrix execution, and later delivery remain separately
+unauthorized.
+
+### 50S.6G.1B.2C candidate implementation state
+
+The bounded fake-data implementation is now a candidate. The dedicated
+`satellites/snapshot_evidence.py` owner performs admitted-parent validation,
+report and raw-response binding, deterministic independent-axis selection,
+canonical receipt construction, and atomic content-addressed publication. The
+offline `select-medium` developer command has no transport.
+
+The focused 2026-09-17 gate passed 30 plugin-disabled tests in 5.99 seconds.
+Scientific and architectural acceptance remains required before the first real
+medium selection. 50S.6G.1B.2D matrix execution remains separately
+unauthorized.
+
+### 50S.6G.1B.2C accepted implementation
+
+Fernando accepted the bounded fake-data implementation on 2026-09-17 at
+`1d9d4e4`, after 2,622 plugin-disabled tests passed in 225.75 seconds and the
+185-test focused gate passed in 9.03 seconds. The next possible step is one
+separately authorized offline selection from the already accepted
+16,559-record parent; it requires no provider request. This acceptance does not
+authorize that operation or 50S.6G.1B.2D matrix execution.
+
+### 50S.6G.1B.2C real-selection closure candidate
+
+The external specimen contains 256 records with canonical-record SHA-256
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`.
+Its canonical selection receipt has SHA-256
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`.
+It derives from the accepted 16,559-record parent
+`e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`
+using age reference `2026-09-17T15:52:23.000000Z`.
+
+The authorized offline operation covered all 24 bins with a 48-record mandatory
+union and 208-record deterministic fill. Parent bytes were unchanged and no
+provider request occurred. Acceptance of this exact external artifact is the
+remaining 50S.6G.1B.2C closure decision. 50S.6G.1B.2D remains separately
+unauthorized.
+
+### 50S.6G.1B.2C accepted real-selection closure
+
+Fernando accepted the exact 256-record external specimen on 2026-09-17 at
+`c4cd009`, after 157 plugin-disabled documentation tests passed in 4.66
+seconds. The accepted subset digest is
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`;
+the receipt digest is
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`.
+50S.6G.1B.2C is closed. Only a separately authorized 50S.6G.1B.2D matrix audit
+may proceed next.
+
+#### 50S.6G.1B.2D — Exact-equivalence and resource-matrix audit
+
+**Status:** Candidate documentation-only audit.
+
+The candidate binds the accepted 256-record medium and receipt identities to a
+10-field same-observer, same-night matrix. Exhaustive and accelerated results
+must be strictly equal as tuples, canonical bytes, per-field digests, and a
+whole-matrix digest. Accelerated evidence must partition all 256 identifiers,
+forbid fallback, and prove that no rejected record has an exhaustive crossing.
+
+Resource observations are isolated, repeated, and descriptive only. A later
+implementation would use fake data exclusively; real matrix execution requires
+separate authorization. No delivery, charting, illumination, provider access,
+or speed claim is authorized by this audit.
+
+### 50S.6G.1B.2D accepted audit
+
+Fernando accepted the exact-equivalence and resource-matrix audit on
+2026-09-17 at `6e7a8b9`; 159 plugin-disabled documentation tests passed in
+10.75 seconds. Only bounded fake-data matrix-harness implementation is
+authorized next. Execution on the real accepted medium specimen and every
+speed, capacity, delivery, track, chart, and illumination claim remain
+separately unauthorized.
+
+### 50S.6G.1B.2D candidate fake-data implementation state
+
+The bounded fake-data-only equivalence owner is implemented in
+`satellites/crossing_matrix.py` at candidate commit `19520f3`. Verification
+on 2026-09-17 completed 2634 plugin-disabled full-suite tests in 230.25
+seconds. The implementation creates strict canonical evidence and revalidates
+the complete published manifest, but it has not read the accepted real
+256-record specimen or executed the real ten-field matrix. Fernando's
+scientific and architectural acceptance is required before a separately
+bounded real-matrix execution may be authorized. Later 50S.6G delivery remains
+unauthorized.
+
+### 50S.6G.1B.2D accepted fake-data implementation
+
+Fernando scientifically and architecturally accepted this bounded
+implementation on 2026-09-17 after 2634 plugin-disabled full-suite tests passed
+in 230.25 seconds at `19520f3` and 161 plugin-disabled
+current-documentation tests passed in 3.32 seconds at `3ef6a4d`. The accepted
+scope remains fake data only. Reading the accepted real specimen and executing
+the real matrix remain unauthorized. Only a separately bounded real-execution
+audit may proceed next; later 50S.6G delivery remains future work.
+
+### 50S.6G.1B.2D real-execution readiness gate
+
+The candidate readiness audit at integrated baseline `9bdf301` finds the real
+matrix not ready to run. Before execution, Wenu still needs exact receipt
+constraint validation, the frozen ten-field La Ligua fixture, a production
+whole-interval airmass certifier, fresh-subprocess route workers, and the
+explicit offline `run-equivalence-matrix` developer command. Only that
+bounded production-path implementation and fake-data proof are authorized
+next. Reading the real specimen, running the matrix, making a performance
+claim, and advancing 50S.6G delivery remain separately unauthorized.
+
+### 50S.6G.1B.2D accepted real-execution readiness finding
+
+Fernando scientifically and architecturally accepted the not-ready finding on
+2026-09-17 after 163 plugin-disabled current-documentation tests passed in
+3.80 seconds at `054ac39`. The next authorized step is bounded fake-data
+implementation of the production execution path. Reading the accepted real
+specimen, executing the matrix, publishing real evidence, making performance
+claims, and advancing later 50S.6G delivery remain separately unauthorized.\n
+
+### 50S.6G.1B.2D candidate production execution path
+
+The bounded candidate adds the exact receipt gate, frozen La Ligua fixture,
+production airmass certifier, isolated worker protocol, and explicit offline
+developer command required by the accepted readiness finding. The fixture uses
+only 15- and 60-second intervals. Tests remain fake-data-only and are designed
+to avoid repeated scientific route execution. No real specimen access or real
+matrix execution is authorized before separate acceptance.\n
+
+Candidate verification on Fernando's Mac completed at executable commit
+`81f9031`: the 14-test focused matrix gate passed in 9.35 seconds, the
+210-test immediate-boundary and documentation gate passed in 60.26 seconds,
+and all 2,645 plugin-disabled tests passed in 243.71 seconds. `git diff
+--check 5cd60fd...HEAD` and the working tree were clean. No accepted real
+specimen was accessed and no real matrix was executed. The candidate still
+requires Fernando's scientific and architectural acceptance.\n
+
+### Accepted production-path implementation
+
+Fernando scientifically and architecturally accepted the bounded fake-data
+production-path implementation on 2026-09-18. The executable evidence remains
+14 focused tests in 9.35 seconds, 210 immediate-boundary tests in 60.26
+seconds, and all 2,645 plugin-disabled tests in 243.71 seconds at `81f9031`.
+After documentation-only evidence recording, 164 current-documentation tests
+passed in 3.94 seconds at `602eed7`; the whitespace check and working tree
+were clean.
+
+Preserve the exact accepted-medium and receipt constraints, digest-frozen
+ten-field La Ligua fixture with only 15- and 60-second intervals, production
+whole-interval airmass certifier, canonical fresh-subprocess worker/executor,
+explicit offline command, and shortened fake-data test practice. This
+acceptance does not authorize accessing the accepted real specimen, executing
+the real matrix, publishing real evidence, making a performance claim, or
+advancing later delivery. Any real execution requires a separate explicit
+authorization.\n
+
+### 50S.6G.1B.2D.1 candidate first real execution
+
+The next proposed step is not more implementation. It is one separately
+authorized offline execution against the exact accepted 256-record medium,
+using one new empty external output root, the accepted 15/60-second fixture,
+at most 80 fresh subprocess invocations, the existing timeout, and no retry.
+The resulting external evidence requires independent acceptance before any
+performance claim or later 50S.6G delivery.\n
+
+### Accepted first-real-execution authorization
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2D.1 on
+2026-09-18 after all 165 plugin-disabled current-documentation tests passed in
+5.07 seconds at `af8044a`; the whitespace check and working tree were clean.
+
+This acceptance authorizes exactly one operator-started offline execution
+against the exact accepted 256-record medium, using the three frozen digests,
+exact acknowledgement, accepted ten-field 15/60-second fixture, one new empty
+external output root with at least 2 GiB free, the existing 3600-second
+per-subprocess timeout, and no retry or resume. It does not itself start the
+run. The exact absolute Mac paths must be resolved before the command is
+issued. Failure or interruption authorizes no restart. Successful evidence
+remains external and unaccepted pending an independent review; no performance
+claim or later 50S.6G delivery is authorized.\n
+
+### 50S.6G.1B.2D.2 candidate progress display
+
+Before the authorized first real execution, add only parent-process progress
+visibility. Derive the total from the existing matrix policy, reuse the
+accepted worker sequence, and exclude display text from evidence and timing.
+Extend one existing fake protocol test; add no scientific run. The real run is
+paused pending acceptance, merge, and renewed authorization.
+
+## 50S.6G.1B.2D.2 candidate verification state
+
+Candidate commit `b0b4432` passed 180 focused plugin-disabled tests in 5.44 seconds and the complete 2647-test plugin-disabled suite in 239.53 seconds on 2026-09-18; its diff check was clean. This verifies the bounded progress-display implementation but does not accept or merge it and does not renew authority for the real run.
+
+## 50S.6G.1B.2D.2 accepted progress-display state
+
+Fernando scientifically and architecturally accepted candidate `96b9ba0` on 2026-09-18 with the recorded 180 focused, 2647 full-suite, and 167 final-documentation plugin-disabled test results and clean diff check. The next actions are a separately requested merge and, only afterward, explicit renewal of the single real-run authorization.
+
+## 50S.6G.1B.2D.3 renewed single-run authorization
+
+Fernando explicitly renewed authorization on 2026-09-18 for exactly one real matrix run after progress-display merge `9c4b808`. Once this record is merged, only that bounded run may proceed. Any failure, interruption, or pre-existing output root consumes the authority; successful output remains candidate evidence pending independent review.
+
+## 50S.6G.1B.2D.3 accepted renewed authorization
+
+Fernando scientifically and architecturally accepted the renewed single-run record at `dd71e01` on 2026-09-18, with 169 documentation tests passing in 4.29 seconds and clean integrity checks. Merge and repeated external preflight remain prerequisites to starting the one authorized run.
+
+## 50S.6G.1B.2D.4 candidate real-matrix evidence
+
+The consumed single run from `9d93113` produced candidate report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` on 2026-09-18. Ten fields and 60 measured observations passed exact equivalence with zero fallback. All fields had zero crossings; record that limitation explicitly before any closure decision. No retry, second run, optimization, or universal performance claim is authorized.
+
+## 50S.6G.1B.2D.4 accepted first real-matrix evidence
+
+Fernando scientifically and architecturally accepted candidate `186e255` and report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` on 2026-09-18. The closure establishes exact empty-result equivalence and partition integrity, explicitly not positive real-crossing validation because every field had zero crossings. Further serial closure review, refactoring, parallelization, or another real run requires separate authorization.
+
+
+## 50S.6G.1B candidate bounded closure state
+
+Integrated baseline `b010a6c` establishes the acquisition, immutable
+admission, deterministic medium-specimen, exact empty-result equivalence, and
+conservative partition foundation. The accepted real matrix had zero crossings
+in every field. It does not establish positive real-crossing validation, a
+full-snapshot matrix, the wider planned FoV-count matrix, comprehensive real
+crossing geometries, or universal performance, capacity, concurrency, or reuse
+claims.
+
+The candidate closure does not renew the consumed execution authority and
+changes no runtime. Missing scale/performance evidence is explicitly deferred
+behind a future bounded audit. Until separate acceptance, 50S.6G.1B remains
+open and 50S.6G.2A is unauthorized. Acceptance would authorize only a separate
+50S.6G.2A documentation audit for the immutable report model, versioned JSON
+Schema, deterministic JSON, and round trips—not implementation.
+
+
+## 50S.6G.1B accepted bounded closure
+
+Fernando scientifically and architecturally accepted the bounded closure on
+2026-09-19 at `c62a451`, after all 173 plugin-disabled documentation tests
+passed in 3.82 seconds with clean repository checks. 50S.6G.1B is closed only
+for the acquisition/admission/evidence foundation, with exact empty-result
+equivalence and conservative partition integrity. Every real field had zero
+crossings, and all stated scale and performance limitations remain explicit.
+
+The next authorized milestone is only the bounded 50S.6G.2A documentation
+audit for the canonical exact-crossing logical model, versioned JSON Schema,
+deterministic JSON, and round trips. Implementation is not authorized.
+
+
+## 50S.6G.2A candidate exact-report audit
+
+The candidate documentation audit defines one immutable canonical
+exact-crossing report, packaged Draft 2020-12 JSON Schema, deterministic UTF-8
+JSON, report identity digest, strict decoder, and typed/byte-identical round
+trips. It preserves exact-local scientific status separately from SatChecker
+sampled candidates and accepts validated zero-crossing fields as explicit
+results.
+
+This audit changes no runtime. ECSV/VOTable, CLI/files, tracks, charts,
+illumination, brightness, detector effects, provider access, and another real
+matrix run remain excluded. Implementation requires separate acceptance.
+
+
+## 50S.6G.2A accepted audit state
+
+Fernando scientifically and architecturally accepted the exact-report audit on
+2026-09-19 at `835ddfe`, after 175 documentation tests passed in 3.27 seconds
+with clean checks. The next authorized work is only the bounded immutable
+logical model, packaged JSON Schema, deterministic JSON encoder/decoder, and
+focused round-trip tests. 50S.6G.2B and later work remain unauthorized.
+
+
+## 50S.6G.2A candidate implementation state
+
+The bounded candidate implements only the accepted immutable exact-crossing
+logical report, packaged closed Draft 2020-12 schema, deterministic JSON,
+canonical report digest, strict typed decoder, and focused synthetic tests.
+It preserves explicit zero-crossing fields and null version-1 future-science
+values without recomputing any science.
+
+ECSV/VOTable remains 50S.6G.2B; CLI/files and atomic publication remain
+50S.6G.2C; exact tracks remain 50S.6G.3A. Charts, illumination, brightness,
+detector effects, scheduling adapters, provider access, and another real run
+remain unauthorized. Candidate verification and Fernando's separate
+scientific and architectural acceptance are required.
+
+
+## 50S.6G.2A accepted implementation
+
+Fernando scientifically and architecturally accepted the bounded 50S.6G.2A
+implementation on 2026-09-19. The executable candidate at `a65e5ac` passed
+all 2,676 plugin-disabled tests in 234.08 seconds; the final pre-acceptance
+documentation gate at `8af0d14` passed 179 tests in 5.05 seconds; diff and
+working-tree checks were clean.
+
+50S.6G.2A is complete within the audited JSON logical-model boundary.
+50S.6G.2B ECSV/VOTable, 50S.6G.2C CLI/files and atomic publication, and
+50S.6G.3A exact tracks remain separate future milestones. No later milestone
+is authorized by this acceptance.
+
+
+## 50S.6G.2B candidate audit state
+
+A documentation-only audit now proposes lossless ECSV and IVOA VOTable 1.5
+interoperability for the accepted exact report. The design uses one reusable
+format-neutral tabular projection with thin adapters, retains explicit
+zero-crossing fields, units, coordinate/time metadata, stable joins and order,
+and reconstructs byte-identical canonical JSON with the same logical digest.
+
+Candidate status authorizes no runtime work. Fernando's separate scientific and
+architectural acceptance is required before implementation. 50S.6G.2C
+CLI/files and atomic publication, 50S.6G.3A exact tracks, later visibility
+science, provider access, and another real run remain separate and
+unauthorized.
+
+## 50S.6G.2B accepted audit state
+
+Fernando scientifically and architecturally accepted the documentation-only
+audit on 2026-09-19 at `ef14bc1`, after 181 plugin-disabled documentation
+tests passed in 4.88 seconds and repository checks were clean.
+
+Only the bounded pure in-memory interoperability implementation is authorized:
+one reusable format-neutral tabular projection and thin ECSV/VOTable 1.5
+adapters with strict lossless reconstruction. 50S.6G.2C filesystem/CLI
+publication, 50S.6G.3A exact tracks, charts, visibility science, provider
+access, and another real run remain separate and unauthorized.
+
+
+## 50S.6G.2B complete implementation accepted
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.6G.2B implementation on 2026-09-19. Executable commit `3bbd82f` passed
+208 focused tests in 6.68 seconds and all 2,689 plugin-disabled tests in
+215.15 seconds. Documentation evidence commit `ece80c7` passed all 186
+current-documentation tests in 4.60 seconds; diff checks and the clean,
+synchronized Mac working tree passed.
+
+50S.6G.2B is complete within its accepted boundary: one reusable
+schema-derived projection, deterministic ECSV and VOTable 1.5/BINARY2
+carriers, strict reconstruction, canonical JSON identity and
+`report_identity_sha256`, and the Astropy 7.1.0 Unicode `__is_null`
+companion contract. No later milestone is authorized by this acceptance.
+50S.6G.2C filesystem/CLI publication and all track, chart, visibility,
+provider, and new-execution work require separate audit and authorization.
+
+## 50S.6G.2C candidate audit state
+
+A documentation-only candidate now specifies the direct atomic CLI route and
+the digest-bound two-call JSON file protocol. A first invalid file call solves
+no FoV and publishes one deterministic validation record containing every
+invalid FoV and the ordered valid subset. A second explicit call retains the
+invalid audit entries, revalidates and calculates only that subset, and
+publishes one no-clobber JSON/ECSV/VOTable bundle. This candidate authorizes no
+implementation. 50S.6G.3A and later track/chart work remain unauthorized.
+
+## 50S.6G.2C accepted audit and next authority
+
+Fernando accepted the documentation-only CLI/two-call file-protocol audit on
+2026-09-19 at `bcac404`. The next authorized step is only its bounded offline
+implementation: direct atomic calculation, closed initial and validation JSON,
+validated-subset second call, fixed digest-manifest bundle, safe no-clobber
+publication, exit/interruption contracts, and focused tests. 50S.6G.3A and all
+track, chart, provider, visibility, illumination, and brightness work remain
+separately unauthorized.
+
+## 50S.6G.2C candidate implementation
+
+The candidate implementation is confined to the accepted offline CLI/file
+protocol. It adds no later milestone. Verification and Fernando's separate
+scientific and architectural acceptance are required before merge or
+50S.6G.3A.
+
+## 50S.6G.2C verified candidate state
+
+The bounded implementation at `e08ebf5` is repository-verified but unaccepted.
+The immediate 235-test gate and complete 2,709-test plugin-disabled suite
+passed. Merge and 50S.6G.3A remain unauthorized pending Fernando's separate
+scientific and architectural acceptance.
+
+## 50S.6G.2C accepted implementation
+
+The bounded offline CLI/file implementation is accepted and closed. Preserve
+its explicit invalid-field audit record, validated-subset second call, fixed
+lossless report bundle, digest manifest, no-clobber/symlink contract, exit
+statuses, and interruption behavior. Only the bounded 50S.6G.3A documentation
+audit is authorized next; exact track runtime and chart work remain
+unauthorized.
+
+## 50S.6G.3A candidate audit state
+
+A documentation-only candidate now specifies immutable exact local track evidence for each accepted connected visit and a science-free output-neutral layer. It retains exact event anchors, per-sample UTC directions and range, declared coordinate identity, deterministic adaptive sampling, fail-closed limits, provenance, and a distinct track digest and semantic visit identity.
+
+This candidate authorizes no implementation. 50S.6G.3B binocular/regional chart integration, 50S.6G.4A/B planisphere work, report or CLI changes, provider access, and visibility/illumination/brightness work remain unauthorized.
+
+## 50S.6G.3A accepted audit and next authority
+
+Fernando accepted the documentation-only audit on 2026-09-19 at `ce54971`. The next authorized step is only the bounded exact connected-visit evidence realizer and output-neutral layer, including exact anchors, deterministic fail-closed sampling, track identity, coordinate/provenance retention, and focused tests. 50S.6G.3B and 50S.6G.4A/B remain unauthorized.
+
+## 50S.6G.3A candidate implementation
+
+The bounded candidate implements exact connected-visit evidence, deterministic anchored adaptive sampling, fail-closed limits, identity/provenance, and output-neutral path/event layers. The implementation-preflight correction keeps the collection coordinate specification timeless and places UTC on the evidence and every sample. The 69-test focused gate passed. Full-suite verification and Fernando's separate implementation acceptance are required before merge or 50S.6G.3B.
+
+## 50S.6G.3A verified candidate state
+
+The complete bounded candidate at `f0a4164` passed all 2,728 plugin-disabled repository tests in 222.01 seconds; documentation, diff, and clean-tree gates also passed. Merge and 50S.6G.3B remain unauthorized pending Fernando's separate scientific and architectural implementation acceptance.
+
+## 50S.6G.3A accepted implementation
+
+The bounded exact connected-visit evidence and output-neutral layer implementation is accepted and closed. Evidence is realized once through accepted local science and reused without recomputation. The executable candidate passed 69 focused tests and all 2,728 plugin-disabled tests; final documentation closure remains authoritative.
+
+Only the bounded documentation-first 50S.6G.3B binocular/regional chart-integration audit is authorized next. Chart implementation and 50S.6G.4A/B remain unauthorized.
+
+## 50S.6G.3B candidate audit state
+
+A documentation-only candidate now specifies explicit exact-track display requests for regional and binocular stereographic horizontal products. It freezes observer/reference-instant admission, fixed product-frame meaning, request-owned layer lifecycle, independent path/event/label controls, bounded provenance summaries, stable semantic SVG identity, and PNG/PDF/SVG acceptance specimens.
+
+This candidate authorizes no implementation. 50S.6G.4A/B planisphere work, all-sky/circumpolar satellite tracks, report/CLI changes, providers, visibility, illumination, brightness, and detector effects remain unauthorized.
+
+## 50S.6G.3B accepted audit and next authority
+
+Fernando accepted the documentation-only audit on 2026-09-19 at `ef58180`. The next authorized step is only the bounded binocular/regional ordinary-request integration, lifecycle, detail/style/semantic/export seams, focused tests, and PNG/PDF/semantic-SVG specimens described by the audit. 50S.6G.4A/B and all later science remain unauthorized.
+
+## 50S.6G.3B candidate implementation
+
+The bounded candidate now carries immutable exact connected-visit evidence through ordinary regional and binocular request preparation and PNG/PDF/semantic-SVG export. It adds strict admission, independent path/event/label controls, request-owned cleanup, exact-visit semantics, bounded provenance, focused tests, and deterministic offline specimens. Physically plausible complete-track specimens and canonical clipping tests are separate evidence rather than one distorted trajectory.
+
+Complete verification and Fernando's separate implementation acceptance are still required. 50S.6G.4A/B and all later science remain unauthorized.
+
+### 50S.6G.3B accepted implementation and next authority
+
+Fernando accepted the complete bounded binocular/regional exact-track implementation and authorized merge and cleanup on 2026-09-19. PR 172 merged it into `program/50s-crossing-foundation` at `05d4029` after 314 immediate, 2,741 complete, and 199 final documentation tests plus physical PNG/PDF/semantic-SVG review and clean repository checks.
+
+Only a documentation-first 50S.6G.4A planisphere exact-track audit is authorized next. 50S.6G.4A/B runtime work and all later satellite science remain unauthorized pending separate acceptance.
+
+## 50S.6G.4A candidate audit state
+
+A documentation-only candidate now distinguishes the paired physical polar
+planisphere from the ordinary horizontal full-sky planisphere and specifies
+only stereographic north/south faces. It freezes event-specific non-recurrence
+meaning, fixed GCRS/ICRS-axis projection, observer/reference admission,
+intentional overlap, declination-cap clipping, longitude continuity, existing
+horizon/mask/furniture separation, paired lifecycle cleanup, bounded
+provenance, and PNG/PDF/semantic-SVG acceptance evidence.
+
+This candidate authorizes no implementation. 50S.6G.4B, ordinary all-sky or
+circumpolar satellite tracks, equidistant polar tracks, report/CLI changes,
+providers, visibility, illumination, brightness, detector effects, scheduling
+adapters, and 50S.7/50S.8 remain unauthorized.
+
+## 50S.6G.4A accepted audit and next authority
+
+Fernando accepted the documentation-only audit on 2026-09-19 at `c1d9015`.
+The next authorized step is only the bounded 50S.6G.4B paired stereographic-
+planisphere integration, focused evidence, and physical north/south PNG, PDF,
+and semantic-SVG specimens described by the audit. Ordinary full-sky,
+circumpolar, equidistant-polar, combined-face, pouch-sheet, visibility,
+illumination, brightness, detector, scheduling, 50S.7, 50S.8, and later
+satellite work remain unauthorized.
+
+## 50S.6G.4B verified candidate state
+
+Candidate `91eafff5` implements only ordinary AltAz stereographic planisphere
+admission, focused evidence, and the physical La Ligua PNG/PDF/semantic-SVG
+review tool. Focused and full repository gates passed, and the generated chart
+was physically reviewed. Merge, acceptance, paired polar, circumpolar,
+Galactic all-sky, provider, report/CLI, visibility, illumination, brightness,
+detector, scheduling, 50S.7, and 50S.8 work remain unauthorized.
+
+## 50S.6G.4A corrective audit state
+
+Fernando rejected the unmerged 50S.6G.4B paired equatorial polar-planisphere
+candidate because the intended product is the ordinary AltAz stereographic
+planisphere. The 2026-09-19 paired-polar implementation authority is therefore
+superseded.
+
+A documentation-only corrective candidate now targets
+ChartRequest(family="planisphere"), which already resolves to one
+zenith-centred horizontal FullSkyChart with stereographic projection and a
+horizon boundary. It proposes only reuse of the accepted 3A evidence, 3B fixed
+AltAz product-frame rule, existing request lifecycle, FullSkyChart boundary,
+canonical render/export path, semantics, and bounded provenance.
+
+This candidate authorizes no implementation. Only after Fernando separately
+accepts the corrective audit may a bounded corrected 50S.6G.4B admit exact
+tracks on the ordinary planisphere and provide physical PNG, PDF, and semantic
+SVG evidence. Paired polar disks, circumpolar and Galactic all-sky tracks, and
+later satellite science remain unauthorized.
+
+## 50S.6G.4A corrective audit accepted and next authority
+
+Fernando scientifically and architecturally accepted the corrective
+documentation audit on 2026-09-20 at 80855938 after all 201 plugin-disabled
+current-documentation tests passed in 6.14 seconds and repository checks were
+clean.
+
+Only the bounded corrected 50S.6G.4B ordinary AltAz stereographic planisphere
+integration, focused evidence, and one physical La Ligua PNG, PDF, and semantic
+SVG specimen are authorized next. Paired polar disks, circumpolar and Galactic
+all-sky tracks, provider or report/CLI changes, visibility, illumination,
+brightness, detector effects, scheduling adapters, 50S.7, 50S.8, and later
+satellite work remain unauthorized.
+
+## 50S.6G.4B accepted implementation and 50S.6G closure
+
+Fernando accepted the corrected ordinary AltAz planisphere implementation and
+authorized merge on 2026-09-20. PR 176 merged final candidate `6bc623b` at
+`f0730d8` after 252 focused, 2,744 complete, and 202 final documentation
+tests, physical PNG/PDF/semantic-SVG review, and clean repository checks.
+
+This closes 50S.6G delivery: representative snapshot evidence, interoperable
+reports, the offline file protocol, exact connected-visit evidence, and exact
+regional, binocular, and ordinary stereographic planisphere tracks are
+accepted. Only a documentation-first 50S.6H Paranal, ELT, and general
+observatory-planning adapter audit is authorized next. Adapter runtime, writes
+to observatory systems, scheduling decisions, 50S.7 illumination, 50S.8
+brightness, and later behavior remain unauthorized.
+## Accepted 50S.6H observatory-planning adapter decision
+
+Fernando accepted on 2026-09-20 the documentation-only audit in
+`satellite_observatory_planning_adapter_audit_50s6h.md` proposes one bounded
+next implementation after acceptance: a deterministic, offline general
+planning-advisory JSON projection from the accepted exact crossing report.
+Temporal overlap uses half-open planned and crossing intervals and applies no
+brightness, illumination, severity, or scheduling policy.
+
+Paranal p2 is a state-changing external system, so the proposed first slice
+performs no network operation and no OB mutation. ELT remains a reserved,
+unsupported profile pending a stable official operations interface and a new
+audit. Only the bounded offline general planning-advisory implementation is
+authorized next. Facility network access or writes, scheduling decisions, ELT
+mapping, and 50S.7+ remain unauthorized.
+## Accepted 50S.6H offline implementation state
+
+The accepted bounded implementation provides the accepted general planning profile
+as a pure offline projection. Frozen observation units reference existing
+report `field_id` values and non-empty half-open UTC intervals. Output is
+strict deterministic JSON with complete context, advisory rows, source report
+and snapshot identities, scientific unknowns, and its own SHA-256 identity.
+
+The candidate includes no Paranal or ELT operational profile, network client,
+credentials, write behavior, scheduling policy, or 50S.7+ science. Acceptance followed the focused and complete test gates, offline specimens,
+and clean repository evidence on 2026-09-20.
+## Accepted complete 50S.6H gate
+
+Revision `32dce675` passed 226 focused/documentation tests in 8.86 seconds,
+2,769 complete tests in 217.10 seconds, offline positive and zero-row specimen
+review, and clean repository checks. The general profile remains the only
+admitted profile and performs no network access. Fernando accepted the complete verified candidate on 2026-09-20. After
+merge, only the documentation-first 50S.7 audit is authorized next.
+
+## Candidate 50S.7A illumination and night-geometry audit
+
+The documentation-only 50S.7A candidate decomposes satellite illumination
+into direct Sunlight, solar Earthshine, direct Moonlight, and
+Lunar-Earthshine. It keeps finite-source occultation and observer twilight in
+an output-neutral geometry owner, retains Earth-reflected terms as extended
+directional fields, and defers spacecraft attitude/BRDF and apparent
+brightness to 50S.8.
+
+The proposed sequence is 50S.7B direct-Sun plus geometric-night state, 50S.7C
+complete shadow-transition search, 50S.7D direct-source radiometry, 50S.7E
+solar/lunar Earth-reflected fields, and 50S.7F component-bundle closure. This
+candidate authorizes no runtime. Only 50S.7B may be considered after separate
+scientific and architectural acceptance.
+
+## 50S.7A accepted audit and next authority
+
+Fernando scientifically and architecturally accepted the documentation-only
+50S.7A audit on 2026-09-20 at `fdf7e005a41a5a4d45200f841e914815d37da870` after
+206 plugin-disabled current-documentation tests and clean repository checks.
+
+After merge, only the bounded 50S.7B direct-Sun and observer-night geometry
+implementation is authorized: immutable geometry, finite uniform-Sun/WGS-84
+vacuum occultation, typed shadow state, geometric twilight, provenance, and
+focused offline validation. 50S.7C and later radiometry or reflected-source
+work, 50S.8 brightness, 50S.9 detector effects, visibility, facility
+integration, scheduling, and unrelated refactoring remain unauthorized.
+## Candidate 50S.7B — Direct-Sun and observer-night geometry
+
+The bounded candidate implements the first accepted illumination slice in
+`satellites/illumination.py`: immutable same-instant ITRS geometry, uniform
+finite-Sun occultation by the vacuum WGS-84 ellipsoid, typed shadow state,
+geometric observer twilight, complete model/resource identity, and
+bounded adaptive quadrature convergence evidence.
+
+Focused unit evidence and an offline installed-DE440/Skyfield/SPICE validator
+belong to this slice. The candidate remains unaccepted pending controlled
+validation, complete repository gates, and Fernando's separate scientific and
+architectural review. 50S.7C transition search and every radiometric,
+reflected-source, brightness, detector, facility, visibility, and scheduling
+slice remain unauthorized.
+### Candidate 50S.7B validation progress
+
+The 24-test focused gate and offline installed-resource validator passed at
+`51b935f`. Selected SPICE classifications agree for sunlit, penumbra, umbra,
+and antumbra; pinned DE440/Skyfield comparison agrees for 20 full-light and 5
+full-shadow states. Complete-suite and final repository gates remain pending,
+and 50S.7C remains unauthorized.
+
+### Verified candidate 50S.7B gate
+
+Revision `086e7da1` passed 291 expanded tests, 208 documentation tests, the
+clean diff gate, and all 2,796 repository tests in 233.66 seconds, with exact
+upstream and a clean tree. The candidate is ready for separate scientific and
+architectural review. Merge, deletion, 50S.7C, and later work remain
+unauthorized.
+
+## Accepted 50S.7B — Direct-Sun and observer-night geometry
+
+Fernando scientifically and architecturally accepted candidate `054ac53a` on
+2026-09-21 after the complete numerical, repository, documentation, diff,
+upstream, and clean-tree gates. PR 181 merge remains a separate explicit
+decision.
+
+After merge, the next permissible work is a documentation-first 50S.7C
+shadow-transition audit. No transition solver implementation, radiometry,
+reflected-source field, brightness, visibility, detector, facility, or
+scheduling work is authorized by this acceptance.
+
+## Candidate 50S.7C — Complete shadow-transition audit
+
+The documentation-only candidate specifies one selected immutable snapshot
+record over one closed UTC interval. A future solver must return every admitted
+directed `sunlit`/`penumbra`/`umbra`/`antumbra` boundary with a
+certified bracket or fail closed. It must use continuous finite-Sun/WGS-84
+contact margins and conservative whole-interval exclusion, not visible-fraction
+quadrature, fixed-cadence sign scans, chart samples, or the 50S.5 empirical
+motion envelope.
+
+The event product is observer-independent and output-neutral. The proposed
+implementation remains in `satellites/illumination.py`, with only a minimal
+shared geocentric ITRS extraction in the existing topocentric owner. The audit
+authorizes no runtime. 50S.7D direct-source radiometry, reflected fields,
+brightness, detector, visibility, facility, and scheduling work remain
+unauthorized.
+
+## Accepted 50S.7C shadow-transition audit
+
+Fernando accepted the documentation-only audit at `030a6322` on 2026-09-21;
+210 plugin-disabled current-documentation tests passed in 5.81 seconds and the
+diff, upstream, and clean-tree checks passed.
+
+After merge, only the bounded 50S.7C implementation is authorized: one selected
+immutable record, one admitted closed UTC interval, continuous
+finite-Sun/WGS-84 contact geometry, every directed class boundary, certified
+brackets, deterministic identity, fail-closed budgets, a minimal shared
+geocentric ITRS seam, focused tests, and offline independent event validation.
+50S.7D+ and all report/chart/planning, brightness, visibility, detector,
+facility, and scheduling integration remain unauthorized.
+
+## Candidate 50S.7C — Shadow-transition implementation
+
+The feature branch now contains the bounded observer-independent service
+authorized by the accepted audit: shared geocentric ITRS state, continuous
+finite-Sun/WGS-84 contact evidence, complete bounded search, six directed
+adjacent transition kinds, certified UTC brackets, deterministic identity,
+and fail-closed limits.
+
+Executable `69375fab` passed 58 focused tests in 16.67 seconds. The offline
+no-download validator independently reproduced full and annular four-contact
+sequences with SPICE `gfoclt` and matched 20 full-light plus 5 full-shadow
+Skyfield states using the installed DE440 kernel. Documentation and complete
+repository gates remain next. The candidate is not accepted; 50S.7D+ and all
+report/chart/planning or later scientific integration remain unauthorized.
+
+## Verified candidate 50S.7C implementation gate
+
+At exact candidate `bf877404`, the 311-test expanded gate, 212-test
+documentation gate, clean diff, complete 2,816-test plugin-disabled suite,
+exact upstream check, and clean-tree check passed. The expanded gate took
+21.47 seconds, the documentation gate took 7.01 seconds, and the complete
+suite took 218.58 seconds. The independent SPICE/Skyfield event receipt also
+passed.
+
+50S.7C now awaits Fernando's separate scientific and architectural review.
+Merge, branch deletion, 50S.7D+, report/chart/planning integration, and all
+later light, brightness, visibility, detector, facility, or scheduling work
+remain unauthorized.
+
+## Accepted 50S.7C — Shadow-transition implementation
+
+Fernando scientifically and architecturally accepted the complete bounded
+implementation at `eaeab6085b52bfed6136d37f3010c2f353e59f53` on
+2026-09-21. Executable `bf877404` passed the SPICE/Skyfield receipt, 311
+expanded tests, 212 documentation tests, the clean diff, all 2,816
+plugin-disabled repository tests, exact upstream, and a clean tree. The final
+documentation clarification passed 212 tests in 4.72 seconds.
+
+PR 183 merge and feature-branch deletion remain separate explicit decisions.
+After merge, no 50S.7D+ work begins without a separately accepted bounded
+milestone. Report/chart/planning integration, radiometry, reflected fields,
+brightness, visibility, detector, facility, scheduling, and unrelated work
+remain unauthorized.
+## Candidate 50S.7D — Direct-source radiometry audit
+
+The documentation-only candidate retains direct Sunlight and Moonlight as the
+two 50S.7D components but decomposes their delivery by model maturity. The
+first proposed implementation, 50S.7D.1, is only bolometric normal-plane
+Sunlight from the IAU 2015 nominal `1361 W m-2` at 1 au, inverse-square
+Sun-satellite distance scaling, and the accepted finite-disk visible fraction.
+
+Spectral Sunlight requires a separately frozen TSIS-1 HSRS v2 resource.
+Moonlight requires a separately accepted ROLO/LIME-class phase, libration,
+distance, spectral, uncertainty, and licensing contract. Unknown Moonlight is
+not zero. The candidate adds no runtime and authorizes no implementation
+before Fernando's separate scientific and architectural acceptance.
+
+If accepted and merged, only bounded 50S.7D.1 may be implemented. 50S.7D.2+,
+50S.7E reflected fields, 50S.7F bundling, 50S.8 brightness, 50S.9 detector
+effects, outputs, facilities, visibility, and scheduling remain unauthorized.
+
+## Accepted 50S.7D — Direct-source radiometry audit
+
+Fernando scientifically and architecturally accepted exact documentation-only
+candidate `362199d04bd917741a8be88f20608967af75530e` on 2026-09-21. All
+214 plugin-disabled current-documentation tests passed in 7.00 seconds; the
+diff, exact-head/upstream, and clean-tree checks passed.
+
+After merge, only bounded 50S.7D.1 direct-Sun bolometric normal-plane
+irradiance may be implemented in the existing illumination owner: IAU 2015
+nominal `1361 W m-2` at 1 au, inverse-square Sun-satellite distance scaling,
+the accepted uniform-disk visible fraction, explicit nominal/model-uncertainty
+separation, deterministic identity, focused tests, and offline independent
+recomputation.
+
+50S.7D.2 spectral Sunlight, 50S.7D.3 Moonlight, 50S.7D.4 closure, 50S.7E
+reflected fields, 50S.7F bundling, 50S.8 brightness, 50S.9 detector effects,
+outputs, visibility, facilities, scheduling, and unrelated work remain
+unauthorized. PR 184 merge and branch deletion remain separate explicit
+decisions.
+
+## Candidate 50S.7D.1 — Direct-Sun bolometric irradiance implementation
+
+Executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` implements only the
+authorized IAU-nominal `1361 W m-2` at 1 au model, inverse-square
+Sun-satellite distance scaling, and accepted uniform-disk visible fraction.
+It returns bolometric normal-plane clear and incident irradiance with explicit
+`not_evaluated` physical/model uncertainty and independent numerical
+convergence evidence.
+
+The focused illumination/ephemeris gate passed 86 tests in 9.80 seconds.
+The installed-resource offline receipt, complete plugin-disabled gate, Mac
+verification, and Fernando's scientific and architectural acceptance remain
+pending. 50S.7D.2+, 50S.7E+, outputs, brightness, visibility, detector,
+facility, scheduling, merge, and branch deletion remain unauthorized.
+
+## Verified candidate 50S.7D.1 implementation gate
+
+At exact head `5bf5d52e81670f1a69af0476283195d12a3119bc`, the independent
+installed-resource receipt matched all nine LEO/MEO/GEO shadow cases with zero
+irradiance residual, the expanded 308-test gate passed in 24.79 seconds, and
+all 2,832 plugin-disabled repository tests passed in 236.81 seconds. Receipt
+SHA-256 was
+`43037267cd841232dcffca05797a2d55dce3d90b9caf8b84fbf785b19129fc73`.
+
+The clean diff, exact upstream, and clean worktree were confirmed. The
+candidate now awaits Fernando's separate scientific and architectural review.
+Merge, branch deletion, 50S.7D.2+, and later work remain unauthorized.
+
+## Accepted 50S.7D.1 — Direct-Sun bolometric irradiance implementation
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. Its accepted
+scope is only IAU-nominal bolometric normal-plane direct-Sun irradiance,
+inverse-square Sun-satellite distance scaling, and accepted uniform-disk
+visible-fraction composition.
+
+The nine-case independent receipt, 308 expanded tests, all 2,832
+plugin-disabled repository tests, and the final 223 documentation/package-
+boundary tests passed. 50S.7D.2+, 50S.7E+, merge, and branch deletion remain
+separate explicit decisions.
+
+## Candidate 50S.7D.2 — Spectral direct-Sun radiometry audit
+
+The documentation-only candidate selects the TSIS-1 HSRS v2 1 nm-FWHM,
+0.1 nm-sampled product over 202-2730 nm, subject to exact digest admission and
+resolved redistribution or external-resource policy. It forbids silent
+interpolation, extrapolation, `1361 W m-2` renormalization, photon conversion,
+and covariance-free integrated uncertainty. It authorizes no runtime;
+50S.7D.3+, implementation, merge, and cleanup remain separate decisions.
+
+## Accepted 50S.7D.2 — Spectral direct-Sun radiometry audit
+
+Fernando scientifically and architecturally accepted exact candidate
+`0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe` on 2026-09-22 after all
+225 documentation/package tests passed and repository checks were clean.
+
+After merge, implement only the bounded offline TSIS-1 HSRS v2
+`tsis1_hsrs_1nm` slice: 1 nm FWHM, the native 0.1 nm grid over 202-2730 nm,
+no interpolation, extrapolation, or `1361 W m-2` renormalization, retained
+pointwise uncertainty, integrated uncertainty `not_evaluated`, and an
+external installed-resource workflow unless redistribution rights are
+established. No runtime or resource was added by the audit. 50S.7D.3
+Moonlight, later illumination, PR merge, and cleanup remain separate explicit
+decisions.
+
+## Candidate 50S.7D.2 — Spectral direct-Sun implementation
+
+Candidate `8e930db2` implements only the accepted offline TSIS-1 HSRS v2
+native-grid slice. It validates the exact external bytes, schema, 25,281 rows,
+202-2730 nm endpoints, 0.1 nm sampling, 1 nm FWHM bandwidth, finite
+non-negative values, and the native trapezoidal integral before returning
+science values. It provides inverse-square and achromatic visible-fraction
+scaling plus exact-native-endpoint energy integration.
+
+The independent receipt matched SHA-256
+`1cf3b07e6ac9669c429ad7ce9e92d50dfd741422efcfffa3d1e0eeb5f901616f`
+and production loading; 79 focused tests passed. Complete verification and
+Fernando's acceptance remain pending. No resource is vendored and no
+interpolation, extrapolation, renormalization, Moonlight, passband, photon,
+brightness, visibility, detector, output, facility, or scheduling behavior is
+added.
+
+## Verified candidate 50S.7D.2 implementation gate
+
+Exact branch head `8f2ca825` retains executable candidate `8e930db2` and
+passed the external TSIS-1 receipt, 132 expanded tests, 227
+documentation/package tests, the clean diff, and all 2,858 plugin-disabled
+repository tests in 238.38 seconds. Upstream equality and a clean worktree were
+also confirmed.
+
+Fernando's separate scientific and architectural acceptance is still required.
+Do not merge, delete the branch, begin 50S.7D.3, or add later radiometric,
+brightness, visibility, detector, output, facility, or scheduling behavior.
+
+## Accepted 50S.7D.2 — Spectral direct-Sun implementation
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`d1edeb46f4ea70c34121910c54758c331fe4293b` on 2026-09-22. Preserve the
+executable `8e930db2` boundary: exact external TSIS-1 HSRS v2 bytes, all
+25,281 native samples, pointwise uncertainty, inverse-square and accepted
+achromatic occultation scaling, exact-native-endpoint energy integration, and
+integrated uncertainty `not_evaluated`.
+
+Do not merge PR 187 or delete its branch without separate instruction.
+50S.7D.3 Moonlight and later illumination, brightness, visibility, detector,
+output, facility, and scheduling work remain unauthorized.
+
+## Candidate 50S.7D.3 — Direct-Moonlight readiness audit
+
+The documentation-only audit compares ROLO, GIRO, and LIME and selects LIME as
+the preferred publication-quality production candidate because of its
+SI-traceable scale and band-specific uncertainty. GIRO/ROLO remains independent
+comparison evidence.
+
+Implementation is not authorized. The exact LIME toolbox/resource version,
+bytes, license, native bands, coefficients, geometry conventions, domain,
+uncertainty, and reference outputs are not yet frozen. After separate
+acceptance and merge, only an explicitly authorized external distribution
+preflight may proceed. Moonlight must remain `not_evaluated`; 50S.7D.3
+runtime, 50S.7D.4, 50S.7E+, outputs, brightness, visibility, detector, facility,
+and scheduling behavior remain unauthorized.
+
+## Accepted 50S.7D.3 — Direct-Moonlight readiness audit
+
+Fernando scientifically and architecturally accepted exact candidate
+`abbb1b78` on 2026-09-22. All 230 plugin-disabled documentation/package
+tests passed in 11.39 seconds, and diff, upstream, and clean-tree checks passed.
+
+After merge, perform only a separately controlled external LIME distribution
+preflight. Preserve LIME as the preferred candidate, GIRO/ROLO comparison
+evidence, and Moonlight `not_evaluated`. Do not retrieve or execute resources,
+implement 50S.7D.3, or begin 50S.7D.4+ without later explicit authority. PR
+merge and branch deletion remain separate.
+
+## Final accepted 50S.7D.3 audit gate
+
+Exact acceptance-record head `0be116ab` passed all 231 plugin-disabled
+documentation/package tests in 8.54 seconds and clean repository checks. Only
+the post-merge, separately controlled external LIME distribution preflight is
+authorized next; Moonlight runtime remains blocked.
+
+## Candidate 50S.7D.3A — External LIME distribution preflight
+
+The preflight identified official LIME Toolbox `v1.4.2`, tag commit
+`b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f`, macOS asset SHA-256
+`e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21`,
+and candidate coefficient SHA-256
+`8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691`.
+
+The toolbox was retrieved for archive inspection but neither installed nor
+executed. It must consume Wenu-owned direct selenographic geometry instead of
+becoming a second EO-CFI orbit authority. Coefficient schema and selection,
+complete resource licensing, lunar conventions, and authoritative reference
+outputs remain blockers. After acceptance and merge, only a separately
+authorized offline Mac resource-and-reference-output inspection may proceed;
+Moonlight runtime and 50S.7D.4+ remain unauthorized.
+
+## Accepted 50S.7D.3A — External LIME distribution preflight
+
+Fernando accepted exact candidate `27e1ee1c` on 2026-09-22 after 232 focused
+tests passed in 11.95 seconds with clean exact-head, diff, upstream, and tree
+checks. The accepted preflight freezes resource identity and the Wenu-owned
+direct-selenographic geometry boundary only. PR 189 merge is separate, and no
+installation, execution, Moonlight runtime, or 50S.7D.4+ work is authorized.
+
+## Candidate 50S.7D.3B — Offline LIME resource/output inspection
+
+The next bounded candidate supplies a no-install, network-denied macOS harness
+for the exact accepted LIME package. It freezes ten signed-phase/domain-edge
+rows, exact coefficient selection, native CIMEL outputs, uncertainty output,
+repeatability evidence, notice inventory, explicit unverified package/app
+signature receipts, and a
+digest-bound external manifest.
+
+The exact asset is unsigned and its bundled Qt framework fails strict
+codesign. Fernando authorized an amended, exact-byte, network-denied
+inspection that records these known failures and ignores the preexisting
+installed app. A different failure stops the run. This is candidate external
+evidence without code-signing assurance.
+
+One successful operator run remains unaccepted evidence pending review. A
+later independent Wenu/SPICE geometry comparison is a separate phase. Do not
+add Moonlight runtime, a LIME dependency/API, vendored resources, output
+integration, or 50S.7D.4+ behavior under this candidate.
+
+## Accepted 50S.7D.3B — Offline LIME inspection
+
+Fernando accepted exact inspected candidate `f91c233b` on 2026-09-23 and
+requested PR 190 merge. The controlled Mac run produced a digest-verified
+external manifest (`c394d91238ce6e0cdddf05e21212f8091d90fd9cdec48516ea936e3444163575`),
+ten domain-edge cases, selected-coefficient schema, and repeatable native
+central results. Its uncertainty run recorded two small correlation-matrix
+adjustments. Package and app signatures remain unverified, and the notice
+inventory does not establish license clearance. Keep the native outside-domain
+numbers excluded as predictions. This accepts the inspection evidence only;
+independent Wenu/SPICE geometry comparison, scientific model admission,
+Moonlight runtime, and 50S.7D.4+ remain unapproved.
+
+## Candidate Phase B — Independent Moonlight geometry comparison
+
+After the accepted 50S.7D.3B scalar inspection, the next bounded proposal
+plans an independently recomputed Wenu/SPICE comparison of same-instant
+satellite-to-Moon and Moon-to-Sun vectors, distances, lunar body-fixed
+coordinates, phase magnitude/sign, orientation epoch, and explicit
+light-time/aberration variants. Read
+`satellite_moonlight_geometry_comparison_audit_50s7d3_phase_b.md`.
+The frozen LIME scalar rows establish native output and domain behavior,
+not the derivation of its inputs from an orbit. Positive and negative
+scalar phases returned identical central values, so the sign convention
+must be established from independent authoritative evidence rather than
+radiance symmetry. This is a documentation-only candidate: no new
+kernel, LIME execution, production geometry, model admission, licensing
+decision, Moonlight result, or 50S.7D.4+ authority. A frozen-kernel
+comparison run requires a separate authorization and receipt.
+
+## Accepted Phase B — Independent Moonlight geometry audit plan
+
+Fernando accepted exact candidate `21873e59` on 2026-09-23 after 235
+focused and all 2,872 plugin-disabled Mac tests passed with clean repository
+checks, and requested PR 191 merge. The approved plan freezes the
+independence and convention-evidence requirements for a later SPICE geometry
+comparison. A separately reviewed frozen-kernel protocol and explicit
+execution authorization remain necessary. Moonlight stays
+`not_evaluated`; scientific model admission, licensing, production geometry,
+and 50S.7D.4+ are not authorized.
+
+## Candidate Phase B — Frozen-kernel lunar geometry comparison protocol
+
+The documentation-only protocol in
+`satellite_moonlight_geometry_run_protocol_phase_b.md` inventories installed
+DE440s and IERS-A by exact SHA-256 and records missing DE440 lunar PCK/FK,
+LSK and diagnostic text PCK. It describes independent same-instant SPICE
+reference vectors and named-frame calculations and lists specimen and LIME
+convention gates. Its HEO and phase fixtures are not yet frozen, so this is
+not an executable run card. A separately reviewed resource/specimen/convention
+amendment and explicit execution authorization are required. No kernels were
+retrieved; Moonlight remains `not_evaluated`.
+
+## Accepted Phase B — Frozen-kernel lunar comparison protocol
+
+Fernando accepted exact documentation candidate `0ad4c6e6` on 2026-09-23
+after 236 focused and 2,873 full plugin-disabled Mac tests passed with clean
+repository checks. This acceptance freezes the independent reference method,
+installed-resource receipts and missing-kernel/specimen/convention stop gates;
+it does not admit an executable geometry run card. A later bounded amendment
+must freeze absent kernels, case states and authoritative LIME conventions
+before separately authorized execution. Moonlight remains `not_evaluated`.
+PR 192 merge and branch cleanup require separate instructions.
+
+## Candidate Phase B — LIME source and specimen amendment
+
+The accepted frozen-kernel protocol now has a separately reviewable source
+trace: LIME v1.4.2's direct `-l` route takes solar longitude in degrees and
+converts to radians internally, while its orbit-derived path delegates to
+`spicedmoon` and declares a DE421-family lunar frame/kernel list. These paths
+cannot be silently identified with Wenu's DE440 reference. The synthetic
+snapshot digest and analytic HEO perigee/apogee construction are proposed;
+actual Cartesian row serialization, signed-phase/longitude discriminants,
+missing NAIF kernel bytes and exact bundled `spicedmoon` identity remain
+unfrozen. This addendum is documentation only. Resource acquisition and any
+comparison run still need their own explicit decisions.
+
+The installed LIME app's read-only receipt now identifies eight DE421-family
+kernels by SHA-256, with executable/coefficient hashes matching prior evidence.
+The exact `lime.pkg` kernel comparison, bundled dependency/sign rule, four
+DE440/time resource files and discriminating cases remain stop gates.
+
+A controlled read-only extraction of the already verified `lime.pkg` confirms
+that all eight DE421-family kernel files match the installed-app byte counts
+and SHA-256 hashes. This freezes the kernel *file identities* for the historical
+LIME distribution, while its active runtime configuration, `spicedmoon` sign
+rule, DE440 lunar resources and complete case matrix remain open.
+
+## Accepted Phase B — LIME source/specimen amendment
+
+Fernando accepted exact documentation-only candidate `682e447f` on
+2026-09-23 after 236 focused Mac documentation/package tests passed in 9.62
+seconds and repository checks were clean. The addendum establishes LIME's
+CLI longitude unit conversion, DE421-family historical kernel identities
+from exact `lime.pkg`, and synthetic HEO input design. No DE440 lunar kernel,
+exact signed-phase rule, complete case file, comparison execution, or
+Moonlight value is accepted. PR 193 merge, cleanup, resource acquisition and
+execution remain separate decisions.
+
+## Candidate Phase B — DE440 kernel receipt
+
+At clean integration head `a3ff88a5`, Fernando downloaded the four missing
+NAIF lunar/time files into an external Mac directory and reported exact byte
+counts and SHA-256 digests. This supersedes the earlier NOT_FOUND inventory
+for resource availability; the accepted DE440s and IERS-A files retain their
+own identities. Frame/centre and epoch coverage, exact case states, LIME's
+signed-phase rule, and a separate execution authorization remain gates. No
+SPICE or LIME geometry run occurred.
+
+## Accepted Phase B — DE440 kernel resource receipt
+
+Fernando accepted the exact documentation-only head `4395d442` on
+2026-09-23 after 236 focused Mac documentation/package tests passed in
+9.04 seconds and repository checks were clean. The external manifest SHA-256
+is `362787651c4438565c20b5e2f65a756f4be3d58c7b703e600a008c5a5c9cf24d`.
+Acceptance records exact identities and external availability of the four
+NAIF lunar/time resources, not scientific coverage or a valid comparison.
+Next, independently preflight the resource chain and freeze discriminating
+case states and the LIME phase-sign rule in a separately reviewed step.
+Comparison execution requires separate explicit authorization. Moonlight
+remains `not_evaluated`; PR 194 merge and branch cleanup remain separate.
+
+## Candidate Phase B — DE440 coverage and EOP sample
+
+A read-only Mac preflight at merged base `0e8b9c9f` reverified all six
+resource identities and the external manifest, inventoried SPK/PCK object
+coverage with CSPICE_N0067, and read EOP at three sample dates. Sun, Moon,
+Earth and the DE440 PA PCK include each sampled instant. January 2026 has
+final IERS-B values; September 2026 and January 2027 have IERS-A predictions
+in the pinned table. These facts narrow the resource gate but do not freeze
+the final case matrix or establish runtime kernel order, signed phase, EOP uncertainty policy or
+a comparison result. A later descriptor-only inspection at candidate head
+`4eee65bb` found the sampled SPK centre chain (Moon/Earth -> 3 -> 0 and
+Sun -> 0), all in J2000 type-2 segments covering the three sampled ETs.
+The 236-test Mac documentation/package gate passed in 10.21 seconds.
+Read the receipt in `satellite_moonlight_geometry_run_protocol_phase_b.md`.
+The next separate step is a reviewed exact resource/case/convention
+amendment; execution still requires its own authorization. Moonlight remains
+`not_evaluated`.
+
+## Accepted Phase B — Sampled DE440 coverage and EOP preflight
+
+Fernando accepted the exact documentation-only head `da499b4d` on
+2026-09-23 after 236 focused Mac documentation/package tests passed in
+11.93 seconds with clean diff and tracking branch. The accepted receipt
+records three sampled SPK/PCK coverage checks, the SPK centre links and
+final-versus-predicted EOP statuses. It does not freeze Cartesian cases
+or establish runtime kernel order, predicted-EOP uncertainty policy, LIME's
+phase sign, a geometry comparison, or scientific Moonlight admission.
+Only bounded source/resource/case preflight may proceed next. Comparison
+execution requires separate explicit authorization; PR 195 merge and
+cleanup remain separate decisions. Moonlight remains `not_evaluated`.

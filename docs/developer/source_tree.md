@@ -522,6 +522,12 @@ renderer dispatch, or mutation. Milestone 46D.4A adds one process-local cached
 packaged translation; named composition consumes that immutable authority
 through the existing style and mode adapters.
 
+Constellation font-size overlays now pass through the existing
+`style_mode_translation.py` owner into `GridStyle.constellation_label_fontsize`.
+`charts/atlas_modes.py` and `charts/cartoon_modes.py` scale it, and
+`charts/styles.py` supplies it to the canonical constellation-label renderer.
+The optional field retains the canvas fallback for legacy style callers.
+
 `src/wenu/configuration/translation.py` is the Milestone 46D.5A aggregate
 translation boundary. Together with the partial-overlay functions in
 `validation.py`, it loads an optional user TOML file over a fresh packaged
@@ -1618,3 +1624,1399 @@ owns deterministic contract coverage;
   request translation and acquire no data;
 - coordinate, state, temporal-component, projection, renderer, semantic,
   style, furniture, and export owners do not change in the audit.
+
+## 50S.1 provider-neutral satellite-crossing ownership (accepted)
+
+- `src/wenu/satellite_crossings.py` owns immutable satellite identity,
+  terrestrial observer/site, explicitly framed closed circular FoV, inclusive
+  UTC interval, provider candidate, and normalized connected-visit result
+  contracts;
+- `src/wenu/coordinates.py` remains the shared coordinate vocabulary owner;
+- `tests/test_satellite_crossings.py` owns the durable type, normalization,
+  immutability, inclusive-endpoint, closed-boundary, ordering, query-containment,
+  provenance, and invalid-input evidence;
+- `docs/developer/satellite_guide.md` remains the living satellite scientific,
+  provider-policy, equation, and evolving ownership guide;
+- no `src/wenu/satellites/` package is admitted until several collaborating
+  satellite production modules justify that boundary;
+- acquisition, OMM/TLE ingestion, SGP4/TEME state, observer transformation,
+  exact crossing solution, indexing, illumination, photometry, reports,
+  charts, projection, rendering, semantic SVG, and export remain unchanged;
+- Fernando accepted this ownership on 2026-09-15 after the focused 139-test
+  gate and complete suite of 2,428 tests passed; PR #123 merged it as `23b851b`.
+
+
+## 50S.2A SatChecker provider-contract audit ownership (accepted)
+
+- `docs/developer/satchecker_provider_contract_audit_50s2a.md` owns the reviewed
+  provider request, time-scale, coordinate, sampling, candidate-envelope,
+  async, cache, failure, and redistribution decisions;
+- `src/wenu/satellite_crossings.py` remains unchanged and retains the
+  provider-neutral 50S.1 domain;
+- no production adapter module is admitted by this documentation-only audit;
+- the closest future production owner is a distinct provider boundary rather
+  than coordinates, charts, rendering, or the provider-neutral domain module;
+- ordinary provider-contract tests will use synthetic source-shaped specimens;
+  no exact provider response may be committed until redistribution terms are
+  clarified.
+
+
+## 50S.2B SatChecker adapter ownership (accepted)
+
+- `src/wenu/satchecker.py` owns the SatChecker-specific request translation,
+  no-download UTC-to-UT1 boundary, exact receipts, one-shot submit/poll
+  transport, task-state parsing, provider-schema normalization, sampled
+  evidence, and exact local cache;
+- `src/wenu/satellite_crossings.py` remains unchanged and owns only the
+  provider-neutral candidate and exact-result domain;
+- `tests/test_satchecker.py` owns the durable provider request, schema drift,
+  identity/count consistency, sample containment, serial one-shot access,
+  exact-byte cache, corruption, and no-network evidence;
+- `tests/test_satellite_crossings.py` remains the independent 50S.1 domain
+  owner and is included in the focused gate;
+- no `src/wenu/satellites/` package is admitted by this second production
+  module; later collaborating propagation and catalogue modules must re-review
+  that package boundary;
+- chart, projection, renderer, export, local SGP4/TEME, illumination,
+  photometry, and detector-contamination owners remain unchanged.
+
+
+## 50S.3A satellite report and drawing contract audit ownership (accepted)
+
+- `docs/developer/satellite_report_drawing_audit_50s3a.md` owns the proposed
+  sampled-candidate report, drawing, semantic, and acceptance contract;
+- the audit changes no production module and admits no new runtime owner;
+- `src/wenu/satchecker.py` remains the completed provider evidence owner and
+  `src/wenu/satellite_crossings.py` remains the independent domain owner;
+- future report and layer code must consume already-normalized evidence and
+  must not reparse responses, access the network/cache, propagate, or synthesize
+  `SatelliteCrossingResult`;
+- existing coordinate, projection, preparation, renderer, semantic SVG, style,
+  furniture, and PNG/PDF/SVG export owners remain authoritative;
+- Fernando accepted the audit on 2026-09-15; only bounded 50S.3B report and sampled-candidate layer implementation is admitted next.
+
+
+## 50S.3B satellite presentation ownership (accepted)
+
+- `src/wenu/satellite_presentations.py` owns the terminal-response report
+  model and deterministic human-readable/JSON serialization;
+- `src/wenu/sky/satellite_candidate_layer.py` owns conversion of one
+  normalized candidate's ordered samples into an open track or singleton point
+  and optional supplied-sample points/UTC labels;
+- `src/wenu/sky/semantic_identity.py` owns stable full-NORAD paths for the
+  sampled track and samples;
+- `tools/validate_50s3b_satellite_presentations.py` builds the network-free
+  text/JSON and centered PNG/PDF/semantic-SVG acceptance products;
+- `tests/test_satellite_presentations.py` owns report determinism,
+  candidate-only wording, provenance, ordering, failure behavior, singleton
+  behavior, point identities, coordinate handoff, semantic identity, and
+  shared PNG/PDF/SVG pipeline evidence;
+- `src/wenu/satchecker.py` remains unchanged and owns provider
+  transport/cache/normalization; `src/wenu/satellite_crossings.py` remains
+  unchanged and owns provider-neutral candidates and exact connected results;
+- provider access, polling, cache reads, CLI orchestration, interpolation,
+  propagation, exact crossing events, illumination calculation, photometry,
+  and detector consequences are absent.
+
+
+Fernando accepted the 50S.3B ownership and bounded implementation on
+2026-09-15 after the 217-test focused gate, complete 2,473-test suite,
+127-test documentation gate, clean diff check, and PNG/PDF/semantic-SVG visual
+review passed. Only 50S.4 is authorized next.
+
+
+## 50S.4A snapshot and propagation contract audit ownership (accepted)
+
+- `docs/developer/satellite_snapshot_propagation_audit_50s4a.md` owns the
+  proposed dependency, canonical OMM element, immutable snapshot,
+  SGP4/geometric-TEME, Earth-orientation/topocentric, numerical validation, and
+  developer-specimen contracts;
+- the audit changes no production code, dependency, fixture, or package data;
+- no current module absorbs these responsibilities;
+- after acceptance, several collaborating modules justify the first
+  `src/wenu/satellites/` package, with distinct element, snapshot, SGP4, and
+  topocentric owners;
+- `satchecker.py`, `satellite_crossings.py`, `ephemeris.py`,
+  `coordinate_service.py`, presentation, chart, renderer, semantic, and
+  export ownership remain unchanged;
+- Fernando accepted 50S.4A on 2026-09-15 after the focused documentation
+  gate passed all 128 tests and the branch diff check was clean;
+- acceptance closes 50S.4A and authorizes only 50S.4B canonical elements and
+  the tiny synthetic installed snapshot, not propagation or observer
+  transformation.
+
+
+## 50S.4B satellite element and snapshot ownership (accepted)
+
+- `src/wenu/satellites/elements.py` owns the immutable canonical OMM/GP
+  record, strict value/semantic validation, canonical JSON encoding, and
+  source-record digest verification;
+- `src/wenu/satellites/snapshots.py` owns versioned manifest validation,
+  canonical-byte and snapshot-digest verification, deterministic full-NORAD
+  ordering, duplicate rejection, immutable lookup, and installed loading;
+- `src/wenu/data/satellites/snapshots/synthetic_50s4b_v1/` owns three
+  hand-authored non-operational LEO/MEO/geosynchronous-like resources and
+  their reviewed provenance;
+- `tests/test_satellite_elements.py` owns immutability, six-digit identity,
+  schema/semantic rejection, ordering/duplicate/count faults, installed
+  loading, canonical bytes, and record/snapshot digest failure evidence;
+- `pyproject.toml` declares `sgp4>=2.25,<3` directly and includes the
+  snapshot JSON and README as package data;
+- no SGP4 adapter, propagation, TEME state, Earth-orientation transformation,
+  observer direction, acquisition, crossing solver, presentation, or
+  rendering behavior is added.
+
+At production commit `d3cb597`, the 158-test expanded gate, 2,483-test
+complete suite, and isolated installed-wheel snapshot check passed. The
+installed resource digest was
+`b6ab95df3eb180b07694b1b9bafd47c2805b6cc7ebea8636490beec03cd71457`.
+Fernando accepted this ownership on 2026-09-15. This closes 50S.4B and
+authorizes only 50S.4C validated SGP4/TEME propagation.
+
+
+## 50S.4C SGP4/TEME propagation ownership (accepted)
+
+- `src/wenu/satellites/sgp4.py` owns canonical-OMM mapping, explicit WGS-72
+  initialization, UTC-to-split-Julian-date conversion, scalar/array execution,
+  upstream status translation, and immutable geometric TEME state provenance;
+- `tests/test_satellite_sgp4.py` owns pinned Vallado near-Earth/deep-space
+  wrapper vectors, terminal error behavior, split-date precision,
+  snapshot-identity propagation, immutability, and scalar/array parity;
+- the accepted synthetic snapshot now uses identifiers 300001–300003 because
+  the upstream `Satrec` limit is 339999; its record and content digests were
+  regenerated without hidden identity substitution;
+- `elements.py` and `snapshots.py` retain their accepted responsibilities;
+- TEME-to-ITRS transformation, EOP handling, observer subtraction,
+  topocentric coordinates, crossings, acquisition, presentation, and
+  rendering remain absent.
+
+At production commit `e0d7c78`, the 167-test expanded gate and 2,492-test
+complete suite passed. An isolated installed wheel verified snapshot digest
+`2e5288a6aad9fbe29cfe6d9a60e0045be28501859d8c739135fd302460ece5fe`
+and successful TEME/WGS-72/status-zero propagation for all three records.
+
+
+Fernando accepted this ownership on 2026-09-15 after all implementation, complete-suite, documentation, and installed-wheel gates passed. Only 50S.4D Earth-orientation and topocentric state work is authorized next.
+
+
+## 50S.4D Earth-orientation/topocentric ownership (accepted)
+
+- `src/wenu/satellites/topocentric.py` owns explicit installed-IERS-A
+  selection and identity, TEME → ITRS transformation, WGS-84 observer
+  subtraction, topocentric Cartesian/range state, vacuum AltAz, and the
+  carefully named GCRS-axis geometric direction;
+- `tests/test_satellite_topocentric.py` owns exact resource identity,
+  fail-closed coverage, independent Skyfield comparison, direct Cartesian
+  subtraction/range, constructed zenith/horizon/wrap geometry, pathological
+  sites, orbit-regime specimens, immutability, and policy rejection;
+- `satellites/sgp4.py` retains propagation ownership;
+- `satellite_crossings.py` retains query, candidate, and exact-result domain
+  ownership;
+- `coordinate_service.py` remains the spherical-geometry transform owner and
+  does not absorb satellite Cartesian Earth-orientation work;
+- crossing solution, field intersection, illumination, photometry,
+  presentation, rendering, export, and 50S.4E specimens remain absent.
+
+A new production module is justified because EOP resource provenance,
+terrestrial transformation, observer subtraction, and coverage failure form a
+distinct lifecycle and failure boundary from OMM snapshot loading, SGP4
+propagation, and generic spherical geometry transformation. Fernando accepted
+this ownership on 2026-09-15. Only 50S.4E specimen-builder work is authorized
+next.
+
+### Accepted 50S.4E developer specimen ownership
+
+- `tools/build_50s4_satellite_specimens.py` owns explicit, deterministic,
+  network-free composition of the installed synthetic snapshot with accepted
+  SGP4/TEME and topocentric services. It writes only **propagated sampled
+  specimens — not verified crossings** to a caller-selected directory.
+- `tests/test_satellite_specimens.py` owns the durable output-schema,
+  determinism, provenance, offline, explicit-destination, and no-crossing-claim
+  contract for that developer tool.
+- No new `src/wenu` module is admitted because 50S.4E adds no runtime
+  authority. Crossing construction and oracle ownership remain reserved for
+  50S.5.
+
+Fernando accepted this ownership boundary on 2026-09-15. The tool remains
+developer-only after 50S.4 closure; 50S.5 must establish its own durable runtime
+oracle ownership rather than expanding this specimen builder.
+
+
+### Accepted 50S.5A local crossing-oracle ownership
+
+- `src/wenu/satellite_crossings.py` continues to own provider-neutral
+  immutable crossing values; it does not own local numerical solving.
+- `src/wenu/satellites/crossing_oracle.py` will own the distinct
+  exhaustive trajectory-evaluation, adaptive convergence, root/extremum,
+  connected-visit, provenance, and fail-closed responsibility in bounded
+  50S.5B implementation.
+- `tests/test_satellite_crossing_oracle.py` will own independent
+  analytic/adversarial numerical-oracle evidence plus installed-snapshot
+  composition and provenance. The closest existing
+  `tests/test_satellite_crossings.py` remains focused on immutable value
+  contracts.
+- This audit creates neither future source nor test file and changes no
+  package boundary.
+
+Fernando scientifically and architecturally accepted this ownership contract
+on 2026-09-15. Only bounded 50S.5B implementation is authorized next; 50S.6
+and later behavior remain unauthorized.
+
+### Accepted 50S.5B local crossing-oracle ownership
+
+- `src/wenu/satellites/crossing_oracle.py` owns the immutable local query,
+  exhaustive adaptive evaluation, root/minimum refinement, tolerance-connected
+  visit assembly, deterministic ordering, provenance, and convergence failure;
+- `src/wenu/satellite_crossings.py` retains provider-neutral identity, field,
+  interval, candidate, and result value contracts;
+- `tests/test_satellite_crossing_oracle.py` owns analytic trajectories
+  independent of SGP4/Astropy plus installed-snapshot composition and resource
+  provenance;
+- `satellites/sgp4.py`, `satellites/topocentric.py`, and
+  `satellites/snapshots.py` retain their accepted lower-level ownership.
+
+The new production file is justified by its distinct numerical-convergence and
+fail-closed lifecycle. It adds no provider, cache, rendering, reporting,
+illumination, photometry, or 50S.6 responsibility. Fernando scientifically and
+architecturally accepted this ownership on 2026-09-15. Only a documentation-first
+50S.6 acceleration audit is authorized next.
+
+### Accepted 50S.6A acceleration ownership audit
+
+- `satellite_crossing_acceleration_audit_50s6a.md` owns the documentation-only
+  conservative-filter, validation, benchmark, failure, and ownership decision;
+- `src/wenu/satellites/crossing_oracle.py` remains the accepted exhaustive
+  exact owner and is unchanged;
+- a later `src/wenu/satellites/crossing_acceleration.py` may own only admitted
+  candidate selection, rejection evidence, and exact-oracle coordination;
+- a later `tests/test_satellite_crossing_acceleration.py` may own the durable
+  tri-state filter oracle and zero-false-negative equivalence matrix.
+
+This accepted audit creates neither future source nor acceleration test file
+and changes no package boundary. Only bounded 50S.6B implementation of the
+first cone/orbital-shell selector is authorized next.
+
+### Accepted 50S.6B selector ownership
+
+- `src/wenu/satellites/crossing_acceleration.py` owns immutable first-stage
+  policy, tri-state decision, selection, and conservative cap construction;
+- `src/wenu/satellites/crossing_oracle.py` remains unchanged and owns exact
+  trajectory solving and crossing results;
+- `tests/test_satellite_crossing_acceleration.py` owns the selector's durable
+  domain-bound, tri-state, ordering, fallback, and exact-oracle rejection
+  evidence;
+- package exports expose the four selector contracts but no accelerated search
+  service.
+
+No phase, coarse-state, horizon, occultation, indexing, coordinator, reporting,
+or rendering responsibility is added. Fernando accepted this ownership on
+2026-09-16; only a documentation-first 50S.6C audit is authorized next.
+
+### Accepted 50S.6C coordination ownership audit
+
+- `satellite_crossing_coordination_audit_50s6c.md` owns the documentation-only
+  coordinator, broader-domain, equivalence, failure, and benchmark-admission
+  decision;
+- `src/wenu/satellites/crossing_oracle.py` retains exact numerical solving and
+  would own one shared record-level seam used by both routes;
+- `src/wenu/satellites/crossing_acceleration.py` retains selector ownership
+  and may later own only admitted coordination, ordered-decision validation,
+  fallback, evaluation accounting, and acceleration evidence;
+- `tests/test_satellite_crossing_oracle.py` remains the independent exact
+  oracle suite, while `tests/test_satellite_crossing_acceleration.py` would
+  own coordination and equivalence evidence;
+- any later benchmark driver belongs under `tools/` and cannot become a
+  runtime dependency.
+
+This audit creates no source, runtime test, benchmark tool, fixture, dependency,
+or package export. Fernando accepted this ownership on 2026-09-16; only a
+bounded 50S.6D coordinator is authorized next.
+
+
+### Accepted 50S.6D coordinator ownership
+
+- `src/wenu/satellites/crossing_oracle.py` owns the unchanged exact numerical
+  algorithm and one package-internal record seam used by both public routes;
+- `src/wenu/satellites/crossing_acceleration.py` owns immutable coordinator
+  policy, ordered evidence validation, selection composition, fallback,
+  exact-evaluation accounting, and the opt-in accelerated service;
+- `src/wenu/satellites/__init__.py` exports the three accepted coordinator
+  contracts without changing the exhaustive default;
+- `tests/test_satellite_crossing_oracle.py` remains the independent exact
+  numerical authority;
+- `tests/test_satellite_crossing_acceleration.py` owns fake-selector
+  invariants, instrumented shared-seam accounting, fallback behavior, and
+  real-selector exhaustive equivalence.
+
+No new production module or test file is admitted: the new behavior has the
+same selector-coordination lifecycle and ownership as
+`crossing_acceleration.py`. No benchmark tool, fixture, dependency,
+coordinate service, CLI, report, renderer, or exporter changes.
+
+
+Fernando scientifically and architecturally accepted this 50S.6D ownership on
+2026-09-16. No broader selector domain, benchmark tool, default enablement, new
+filter stage, or later satellite behavior is authorized by this acceptance.
+
+
+## Accepted 50S.6E documentation ownership
+
+`satellite_multifov_interchange_audit_50s6e.md` owns the accepted
+same-observer, airmass-bounded multi-FoV, generic interchange, exact
+chart-track, observatory-adapter, and four-source illumination sequence. It creates no
+source owner, production module, runtime test, benchmark tool, or output.
+Existing single-FoV crossing, acceleration, sampled-track, coordinate,
+projection, rendering, and export owners remain unchanged. Fernando
+scientifically and architecturally accepted this ownership on 2026-09-16. No
+production owner exists yet; only bounded 50S.6F is authorized next.
+
+
+## Accepted 50S.6F production ownership
+
+`src/wenu/satellites/crossing_batch.py` owns immutable multi-field request,
+policy, centre-airmass evidence, ordered atomic validation failures, per-field
+result, and batch coordination. The closest prior owner is
+`crossing_acceleration.py`, but extending it would mix one-query conservative
+selection and exact coordination with a distinct many-query validation,
+ordering, chunking, and failure lifecycle.
+
+`SatelliteFieldCenterAltitudeEvaluator` extends
+`satellites/topocentric.py` because it owns the same installed-IERS-A,
+geometric vacuum, GCRS-axis-to-observer rotation boundary; it does not create a
+second coordinate service. `tests/test_satellite_crossing_batch.py` is a new
+stable test owner because atomic all-fields-before-work behavior, input-order
+preservation, independent intervals, and batch failure aggregation are a
+distinct public route and isolation obligation. Existing topocentric tests own
+the independent zenith-direction transformation check. No projection,
+rendering, report, CLI, or exporter owner changes.
+Fernando scientifically and architecturally accepted this ownership on
+2026-09-17 after 2,577 plugin-disabled tests passed. Only a separately bounded
+50S.6G audit is authorized next.
+
+
+## Accepted 50S.6G delivery ownership
+
+`satellite_delivery_audit_50s6g.md` proposes responsibilities but adds no
+production owner. `satellites/snapshots.py` remains the closest immutable
+snapshot validator; acquisition must remain a separate preflight owner.
+`satellite_presentations.py` is the closest presentation precedent, but exact
+crossing reports require a distinct logical model and pure encoders rather
+than altering SatChecker candidate semantics. `crossing_batch.py` remains a
+scientific coordinator and must not absorb CLI, filesystem, report, or chart
+responsibilities.
+
+Exact local track layers belong beside the existing satellite candidate
+layers while preserving distinct scientific status. Ordinary chart request
+and composition owners may later register already validated exact evidence;
+existing projection, preparation, renderer, semantic identity, and exporter
+owners remain unchanged. Every proposed production file requires a separate
+implementation-slice placement review.
+Fernando scientifically and architecturally accepted this ownership on
+2026-09-17 after all 145 plugin-disabled current-documentation tests passed in
+4.36 seconds. Only bounded 50S.6G.1A external immutable snapshot loading is
+authorized next.
+
+## Implemented 50S.6G.1B.1 ownership
+
+- `src/wenu/satellites/snapshot_acquisition.py` owns provider-policy receipts,
+  injected one-request transport, CelesTrak Active CSV normalization, evidence
+  receipts, staging, validation, and atomic external publication.
+- `tools/build_satellite_snapshot.py` is the thin offline developer command;
+  it consumes explicit response files and has no live transport.
+- `tests/test_satellite_snapshot_acquisition.py` owns the stable provider and
+  filesystem fault contract, including zero GP calls before exact digest
+  acknowledgement and no partial publication.
+
+`snapshots.py` remains the network-free immutable loader and
+`minor_body_acquisition.py` retains its scientifically distinct Horizons/SBDB
+ownership. No chart, runtime CLI, report, projection, or coordinate owner
+changes. Live CelesTrak access and 50S.6G.1B.2 remain unauthorized.
+
+Fernando accepted this ownership and implementation on 2026-09-17 after 175
+focused plugin-disabled tests and all 2,594 plugin-disabled tests passed.
+
+
+## Accepted 50S.6G.1A production ownership
+
+`src/wenu/satellites/snapshots.py` owns the candidate explicit-directory
+loader because installed and external immutable resources share the same
+manifest, canonical-byte, digest, OMM-record, ordering, and immutable-object
+lifecycle. A new production module would split one validation responsibility.
+
+`tests/test_satellite_elements.py` remains the stable test owner and now
+protects path/type failure, directory-name independence, complete validator
+reuse, symlink rejection, traversal rejection, digest mutation, and package
+export. No new test file or production owner is justified. Acquisition,
+builder, cache/publication, coordinator admission, CLI, report, and chart
+ownership remain unchanged.
+
+Fernando scientifically and architecturally accepted this ownership on
+2026-09-17 after the 164-test focused gate and all 2,583 plugin-disabled tests
+passed. Only a separately bounded 50S.6G.1B audit is authorized next.
+
+
+## Accepted 50S.6G.1B acquisition and evidence ownership
+
+Representative acquisition is a new durable provider/filesystem
+responsibility adjacent to `src/wenu/satellites/`, not an extension of
+`snapshots.py`. The latter remains an offline immutable loader. It also does
+not belong in `minor_body_acquisition.py`, whose Horizons/SBDB identity,
+coverage, SPK, and credential-free provider lifecycle is scientifically
+different.
+
+A later accepted implementation requires one dedicated satellite acquisition
+owner, one thin developer command, and a new stable test owner for policy
+receipts, no-network-before-acknowledgement, one-request enforcement, CelesTrak
+CSV normalization, raw provenance, atomic publication, and failure cleanup.
+The evidence runner remains a developer tool and writes outside the repository.
+No chart, projection, renderer, exporter, report, or ordinary CLI owner changes.
+
+Fernando scientifically and architecturally accepted this ownership on
+2026-09-17 after all 147 plugin-disabled current-documentation tests passed in
+4.54 seconds. Only bounded 50S.6G.1B.1 fake-transport implementation is
+authorized next.
+
+
+## Accepted 50S.6G.1B.2A admission ownership
+
+`satellite_snapshot_admission_audit_50s6g1b2a.md` proposes a distinct shared
+external-evidence authorization owner beside `satellites/snapshots.py`.
+The loader retains byte and manifest validation; the proposed admission owner
+would bind exact canonical-record SHA-256 plus validated manifest identity and
+supply one immutable token to the selector, accelerated coordinator, and
+multi-FoV batch. No production or runtime test file is added by this audit. Fernando
+scientifically and architecturally accepted this ownership on 2026-09-17 after
+all 150 plugin-disabled current-documentation tests passed in 3.84 seconds.
+Only bounded 50S.6G.1B.2B implementation is authorized next.
+
+
+## Accepted 50S.6G.1B.2B ownership
+
+- `src/wenu/satellites/snapshot_admission.py` owns exact external snapshot
+  identity, explicit finite admission policy, the opaque immutable token, and
+  the accepted CelesTrak Active identity constant.
+- `crossing_acceleration.py` consumes the token before external selector or
+  accelerated exact work while retaining its synthetic ID defaults.
+- `crossing_batch.py` validates the same token atomically before airmass or
+  crossing work and passes it into its default single-field service.
+- `tests/test_satellite_snapshot_admission.py` owns identity, policy,
+  immutability, forgery, digest/manifest substitution, cross-service,
+  before-work, and default-preservation evidence.
+- Existing snapshot, selector, oracle, batch, coordinate, presentation,
+  renderer, and exporter ownership remains unchanged.
+
+The new production module is justified because authorization has a distinct
+cross-service policy lifecycle and failure boundary from byte validation in
+`snapshots.py`. No provider bytes, snapshot directory, acquisition,
+medium-tier selector, matrix runner, report, or chart owner is added.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2B on
+2026-09-17 after 51 focused runtime tests, 151 current-documentation tests,
+and all 2,611 plugin-disabled tests passed; the complete suite took 215.89
+seconds. `git diff --check` and the working tree were clean. Only bounded
+50S.6G.1B.2C deterministic medium-specimen work is authorized next; 50S.6G.1B.2D
+matrix execution and later delivery remain separately unauthorized.
+
+
+## Accepted 50S.6G.1B.2C ownership
+
+`satellite_medium_specimen_audit_50s6g1b2c.md` proposes a later
+`src/wenu/satellites/snapshot_evidence.py` owner for deterministic
+stratification, receipt generation, and atomic derived-snapshot publication.
+A `select-medium` operation may extend the existing offline
+`tools/build_satellite_snapshot.py`; a new
+`tests/test_satellite_snapshot_evidence.py` would own the distinct
+stratification and publication fault model. No source or runtime test file is
+added by this audit.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2C on
+2026-09-17 after all 153 plugin-disabled current-documentation tests passed in
+4.58 seconds; `git diff --check` and the working tree were clean. Only bounded
+fake-data implementation is authorized next. The first real medium selection,
+50S.6G.1B.2D matrix execution, and later delivery remain separately
+unauthorized.
+
+### Candidate 50S.6G.1B.2C ownership
+
+- `src/wenu/satellites/snapshot_evidence.py` owns deterministic scalar
+  stratification, receipt construction, and atomic derived publication.
+- `tests/test_satellite_snapshot_evidence.py` owns hand-authored fake-data
+  parent binding, bin-boundary, determinism, exhaustion, tamper, and
+  revalidation gates.
+- `tools/build_satellite_snapshot.py select-medium` is the explicit offline
+  operator seam; it has no transport.
+- `snapshots.py` remains the generic validator, `snapshot_acquisition.py`
+  remains provider acquisition, and `snapshot_admission.py` remains
+  authorization-only.
+
+The 2026-09-17 candidate gate passed 30 plugin-disabled focused tests in 5.99
+seconds. No real medium selection or 50S.6G.1B.2D matrix execution is
+authorized.
+
+### Accepted 50S.6G.1B.2C ownership
+
+Fernando accepted the `snapshot_evidence.py`,
+`test_satellite_snapshot_evidence.py`, and offline `select-medium`
+ownership split on 2026-09-17 at `1d9d4e4`. The complete plugin-disabled
+suite passed 2,622 tests in 225.75 seconds and the focused gate passed 185 tests
+in 9.03 seconds. No real medium product was created; real selection and
+50S.6G.1B.2D remain separately unauthorized.
+
+### Candidate real-selection evidence ownership
+
+The external specimen contains 256 records with canonical-record SHA-256
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`.
+Its canonical selection receipt has SHA-256
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`.
+It derives from the accepted 16,559-record parent
+`e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`
+using age reference `2026-09-17T15:52:23.000000Z`.
+
+No repository source or data directory owns the external bytes.
+`snapshot_evidence.py` produced them through the accepted offline seam, while
+the canonical receipt and derived manifest carry the evidence bindings. The
+repository records identity and verification facts only. The parent remained
+unchanged, no provider request occurred, and 50S.6G.1B.2D is unauthorized.
+
+### Accepted real 50S.6G.1B.2C evidence
+
+Fernando accepted external subset
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`
+and receipt
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`
+on 2026-09-17 at `c4cd009`; 157 plugin-disabled documentation tests passed
+in 4.66 seconds. The bytes remain outside the repository and package.
+50S.6G.1B.2D remains unauthorized.
+
+### Candidate 50S.6G.1B.2D ownership
+
+A later bounded implementation may add:
+
+- `src/wenu/satellites/crossing_matrix.py` for matrix request identity,
+  canonical result/evidence mapping, strict equality, isolated resource
+  observations, and atomic external publication;
+- `tests/test_satellite_crossing_matrix.py` for fake-data-only matrix gates;
+- an offline `run-equivalence-matrix` developer subcommand.
+
+The exact oracle, conservative selector, accelerated coordinator, batch
+airmass certifier, snapshot loader, admission policy, and medium selector retain
+their current ownership. No matrix runtime or evidence artifact exists yet.
+
+### Accepted 50S.6G.1B.2D ownership proposal
+
+Fernando accepted the proposed `crossing_matrix.py`,
+`test_satellite_crossing_matrix.py`, and offline command ownership on
+2026-09-17 at `6e7a8b9`; 159 plugin-disabled documentation tests passed in
+10.75 seconds. Only fake-data implementation is authorized. No real matrix
+execution or evidence artifact is authorized.
+
+### Candidate 50S.6G.1B.2D implementation ownership
+
+`src/wenu/satellites/crossing_matrix.py` exclusively owns the candidate
+fake-data-tested matrix contract, canonical evidence assembly, strict
+equivalence checks, resource-observation records, atomic publication, and
+published-manifest revalidation. `tests/test_satellite_crossing_matrix.py`
+owns its fake-data-only behavioral proof.
+
+At candidate commit `19520f3`, 2634 plugin-disabled full-suite tests passed
+in 230.25 seconds on 2026-09-17. No repository data owner packages or discovers
+the accepted real specimen, and no real matrix was executed. The next
+real-execution boundary remains separately unauthorized pending Fernando's
+scientific and architectural acceptance.
+
+### Accepted 50S.6G.1B.2D ownership
+
+Fernando scientifically and architecturally accepted the fake-data-only
+ownership of `satellites/crossing_matrix.py` and
+`tests/test_satellite_crossing_matrix.py` on 2026-09-17. Acceptance follows
+2634 plugin-disabled full-suite tests in 230.25 seconds at `19520f3` and 161
+plugin-disabled current-documentation tests in 3.32 seconds at `3ef6a4d`.
+No source-tree owner may discover or read the accepted real specimen under this
+closure. Only a separately bounded real-execution audit is authorized next.
+
+### Candidate real-execution readiness ownership
+
+At integrated baseline `9bdf301`, `satellites/crossing_matrix.py` owns the
+accepted fake-data orchestration core, but no production subprocess worker,
+frozen real request fixture, production airmass adapter, or developer-command
+owner exists. The bounded next implementation may add those owners beside the
+existing matrix core and in `tools/build_satellite_snapshot.py`, with
+fake-data-only tests. No repository file may own, package, discover, or read
+the external real specimen, and real matrix execution remains unauthorized.
+
+### Accepted real-execution readiness ownership
+
+Fernando scientifically and architecturally accepted the missing-owner finding
+on 2026-09-17 after 163 plugin-disabled current-documentation tests passed in
+3.80 seconds at `054ac39`. Bounded fake-data additions for the fixture,
+certifier, subprocess worker, offline command, and tests are authorized next.
+No repository owner may access the accepted external specimen or execute the
+real matrix under this acceptance.\n
+
+### Candidate production matrix execution ownership
+
+`src/wenu/satellites/crossing_matrix_execution.py` owns the explicit offline
+production fixture, exact accepted-medium receipt constraints, production
+whole-interval airmass adapter, canonical fresh-subprocess protocol and worker,
+and isolated executor. `tools/build_satellite_snapshot.py` owns only the
+explicit `run-equivalence-matrix` developer-command surface. The existing
+`crossing_matrix.py` remains the scientific equivalence and atomic-publication
+owner. No owner discovers, downloads, refreshes, packages, or implicitly
+selects the external specimen. The candidate uses only 15- and 60-second
+fixture intervals and remains fake-data-tested pending acceptance.\n
+
+Candidate verification on Fernando's Mac completed at executable commit
+`81f9031`: the 14-test focused matrix gate passed in 9.35 seconds, the
+210-test immediate-boundary and documentation gate passed in 60.26 seconds,
+and all 2,645 plugin-disabled tests passed in 243.71 seconds. `git diff
+--check 5cd60fd...HEAD` and the working tree were clean. No accepted real
+specimen was accessed and no real matrix was executed. The candidate still
+requires Fernando's scientific and architectural acceptance.\n
+
+### Accepted production-path implementation
+
+Fernando scientifically and architecturally accepted the bounded fake-data
+production-path implementation on 2026-09-18. The executable evidence remains
+14 focused tests in 9.35 seconds, 210 immediate-boundary tests in 60.26
+seconds, and all 2,645 plugin-disabled tests in 243.71 seconds at `81f9031`.
+After documentation-only evidence recording, 164 current-documentation tests
+passed in 3.94 seconds at `602eed7`; the whitespace check and working tree
+were clean.
+
+Preserve the exact accepted-medium and receipt constraints, digest-frozen
+ten-field La Ligua fixture with only 15- and 60-second intervals, production
+whole-interval airmass certifier, canonical fresh-subprocess worker/executor,
+explicit offline command, and shortened fake-data test practice. This
+acceptance does not authorize accessing the accepted real specimen, executing
+the real matrix, publishing real evidence, making a performance claim, or
+advancing later delivery. Any real execution requires a separate explicit
+authorization.\n
+
+### Candidate first-real-execution ownership
+
+No new source owner is proposed. `crossing_matrix_execution.py` remains the
+fixture, receipt, airmass, worker-protocol, and isolated-executor owner;
+`crossing_matrix.py` remains the equivalence and atomic-publication owner;
+and `tools/build_satellite_snapshot.py` remains the explicit offline command
+surface. Candidate 50S.6G.1B.2D.1 authorizes no code change, alternate owner,
+network adapter, discovery path, retry owner, or evidence consumer.\n
+
+### Accepted first-real-execution authorization
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2D.1 on
+2026-09-18 after all 165 plugin-disabled current-documentation tests passed in
+5.07 seconds at `af8044a`; the whitespace check and working tree were clean.
+
+This acceptance authorizes exactly one operator-started offline execution
+against the exact accepted 256-record medium, using the three frozen digests,
+exact acknowledgement, accepted ten-field 15/60-second fixture, one new empty
+external output root with at least 2 GiB free, the existing 3600-second
+per-subprocess timeout, and no retry or resume. It does not itself start the
+run. The exact absolute Mac paths must be resolved before the command is
+issued. Failure or interruption authorizes no restart. Successful evidence
+remains external and unaccepted pending an independent review; no performance
+claim or later 50S.6G delivery is authorized.\n
+
+### Candidate matrix progress ownership
+
+`crossing_matrix_execution.py` owns the small parent-terminal progress
+adapter beside its isolated executor. No new module, package, dependency, or
+public export is introduced. The existing crossing-matrix test extends its
+fake subprocess protocol case; no new test file or repeated scientific route
+is justified.
+
+## Candidate matrix progress verification ownership
+
+The 50S.6G.1B.2D.2 changes at `b0b4432` passed 180 focused plugin-disabled tests in 5.44 seconds and the full 2647-test plugin-disabled suite in 239.53 seconds on 2026-09-18, with a clean diff check. Ownership remains in `crossing_matrix_execution.py`; no new production module or data owner was introduced.
+
+## Accepted matrix progress ownership
+
+Fernando scientifically and architecturally accepted the 50S.6G.1B.2D.2 ownership at `96b9ba0` on 2026-09-18. The accepted display remains in `crossing_matrix_execution.py`; no new production module or data owner was introduced. Merge and renewed execution authority remain separate.
+
+## Renewed real-run ownership
+
+Fernando explicitly renewed exactly one real matrix run on 2026-09-18 after merge `9c4b808`. `crossing_matrix_execution.py` continues to own parent orchestration and progress; workers own route execution; the external output root owns candidate evidence. No repository or package directory owns the real specimen or generated evidence.
+
+## Accepted renewed real-run ownership
+
+Fernando scientifically and architecturally accepted candidate `dd71e01` on 2026-09-18. Documentation verification passed 169 tests in 4.29 seconds with clean integrity checks. The run remains unstarted; ownership and external-artifact boundaries are unchanged.
+
+## Candidate first real-matrix evidence ownership
+
+The external immutable report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258`, produced from `9d93113` on 2026-09-18, is candidate evidence outside the repository and package. The repository owns only the implementation and this provenance record. Exact route equality passed, but all fields had zero crossings; no repository data directory may absorb or silently substitute the external evidence.
+
+## Accepted first real-matrix evidence ownership
+
+Fernando scientifically and architecturally accepted external report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at `186e255` on 2026-09-18. The repository records provenance and the zero-crossing limitation but does not own or package the external evidence. No new production owner, rerun authority, or parallel execution owner is implied.
+
+
+## Candidate 50S.6G.1B closure ownership
+
+No production ownership changes at integrated baseline `b010a6c`.
+`satellites/snapshots.py`, `snapshot_acquisition.py`,
+`snapshot_admission.py`, `snapshot_evidence.py`, `crossing_matrix.py`,
+and `crossing_matrix_execution.py` retain their accepted bounded
+responsibilities. External artifacts remain outside the package.
+
+The accepted real matrix has only empty crossing results. The candidate closure
+does not create a report owner, move code, authorize another real run, or claim
+positive real-crossing or general performance evidence. Pending separate
+acceptance, 50S.6G.2A remains unauthorized; acceptance would authorize only a
+documentation audit that must reassess the closest stable report owner before
+proposing any production module.
+
+
+## Accepted 50S.6G.1B closure ownership
+
+Fernando scientifically and architecturally accepted the bounded closure on
+2026-09-19 at `c62a451`, after 173 documentation tests passed in 3.82 seconds
+and clean repository checks. Existing production ownership remains unchanged
+and external artifacts remain outside the package.
+
+Only a bounded 50S.6G.2A documentation audit is authorized next. It must
+perform a fresh source-tree assessment before proposing a report owner; no new
+production module is authorized by this closure.
+
+
+## Candidate 50S.6G.2A exact-report ownership
+
+The closest existing owner is `satellite_presentations.py`, but it owns the
+scientifically distinct SatChecker sampled-candidate product. The candidate
+audit therefore proposes a dedicated adjacent exact-report module and, if
+implementation is later accepted, a new
+`tests/test_satellite_crossing_reports.py` stable-responsibility test owner.
+
+The candidate owner formats already retained values only. It does not own
+solving, propagation, coordinates, airmass, acceleration, acquisition,
+ECSV/VOTable, CLI/files, tracks, charts, or future illumination/brightness.
+No production or test file is authorized until audit acceptance.
+
+
+## Accepted 50S.6G.2A implementation ownership
+
+Fernando accepted the audit on 2026-09-19 at `835ddfe`, after 175
+documentation tests passed in 3.27 seconds and clean checks. A dedicated
+exact-report production owner adjacent to sampled-candidate presentation and a
+stable exact-report test file are authorized, subject to the implementation
+source-tree preflight. No other module or ownership change is authorized.
+
+
+## Candidate 50S.6G.2A implementation ownership
+
+`src/wenu/satellite_crossing_reports.py` is the dedicated exact-local logical
+report, identity, deterministic JSON, strict decoder, and typed semantic
+validation owner. It is adjacent to, but scientifically separate from,
+`satellite_presentations.py`, which continues to own SatChecker sampled
+candidate evidence.
+
+`src/wenu/data/satellite_exact_crossing_report_v1.schema.json` is the
+packaged closed Draft 2020-12 authority.
+`tests/test_satellite_crossing_reports.py` owns the stable exact-report
+logical-model, schema, corruption, isolation, determinism, and round-trip
+responsibility. Extending the sampled-presentation tests would mix different
+scientific products and failure contracts.
+
+No ownership moves. Existing crossing, coordinate, snapshot, acceleration,
+batch, presentation, rendering, and export owners remain unchanged. Candidate
+acceptance is pending.
+
+
+## Accepted 50S.6G.2A implementation ownership
+
+Fernando scientifically and architecturally accepted the bounded 50S.6G.2A
+implementation on 2026-09-19. The executable candidate at `a65e5ac` passed
+all 2,676 plugin-disabled tests in 234.08 seconds; the final pre-acceptance
+documentation gate at `8af0d14` passed 179 tests in 5.05 seconds; diff and
+working-tree checks were clean.
+
+The dedicated module, packaged schema, and stable-responsibility test file own
+the accepted boundary. No other owner moves, and SatChecker sampled-candidate
+presentation remains scientifically separate.
+
+
+## Candidate 50S.6G.2B ownership
+
+The candidate audit keeps `satellite_crossing_reports.py` as logical report,
+canonical JSON, identity, and typed reconstruction owner. A bounded future
+implementation may add one adjacent private tabular-interchange module when
+the implementation preflight confirms that separation materially improves
+reuse; otherwise focused private helpers remain in the existing owner.
+
+Whichever placement is accepted, there is exactly one format-neutral mapping
+for records, columns, units, masks, joins, ordering, reconstruction, and
+limits. ECSV and VOTable adapters are thin syntax owners. Filesystem and CLI
+publication remain 50S.6G.2C responsibilities. No source-tree change is
+authorized yet.
+
+## Accepted 50S.6G.2B ownership boundary
+
+Fernando scientifically and architecturally accepted the documentation-only
+audit on 2026-09-19 at `ef14bc1`, after 181 plugin-disabled documentation
+tests passed in 4.88 seconds and repository checks were clean.
+
+Implementation must provide exactly one reusable format-neutral mapping and
+thin ECSV/VOTable adapters adjacent to the accepted exact-report owner.
+Placement remains subject to the implementation preflight described above;
+the acceptance authorizes no duplicated mapping, filesystem/CLI owner, or
+unrelated ownership move.
+
+
+## Accepted complete 50S.6G.2B ownership
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.6G.2B implementation on 2026-09-19. Executable commit `3bbd82f` passed
+208 focused tests in 6.68 seconds and all 2,689 plugin-disabled tests in
+215.15 seconds. Documentation evidence commit `ece80c7` passed all 186
+current-documentation tests in 4.60 seconds; diff checks and the clean,
+synchronized Mac working tree passed.
+
+`src/wenu/_satellite_tabular_reports.py` owns exactly one reusable private
+schema-derived format-neutral projection plus thin in-memory ECSV and VOTable
+1.5 adapters. `src/wenu/satellite_crossing_reports.py` remains the logical
+exact-report owner and exposes only delegating methods. The adapter owns wire
+metadata, units, masks, joins, limits, TIMESYS, and nullable-Unicode
+`__is_null` fields; canonical JSON and `report_identity_sha256` remain
+authoritative. Tests remain in `tests/test_satellite_crossing_reports.py`.
+No later filesystem, CLI, provider, science, track, or chart ownership is
+authorized.
+
+## Candidate 50S.6G.2C ownership
+
+A future dedicated module under `wenu/cli/` may own only CLI parsing, the
+two-call request lifecycle, path validation, exit mapping, staging cleanup, and
+atomic report-bundle publication. `satellites/crossing_batch.py` continues to
+own scientific batch validation/solving; `satellite_crossing_reports.py` and
+`_satellite_tabular_reports.py` continue to own the logical report and exactly
+one reusable encoding projection. No production module or test file is added
+by this documentation audit.
+
+## Accepted 50S.6G.2C implementation ownership
+
+The accepted audit authorizes one bounded CLI/filesystem owner under
+`wenu/cli/`, its packaged protocol schemas, installed entry point, and focused
+durable protocol tests. It does not authorize production changes in crossing
+science, propagation, topocentric transformation, report identity, or the
+shared tabular projection except minimal intentional exports required by the
+accepted composition seam.
+
+## Candidate 50S.6G.2C implementation placement
+
+- `src/wenu/cli/satellite_crossings.py`: durable offline CLI, request and
+  validation lifecycle, path safety, exit mapping, staging, and publication.
+- `src/wenu/data/satellite_crossing_*_v1.schema.json`: closed packaged request,
+  validation-output, and bundle-manifest protocol descriptions.
+- `tests/test_satellite_crossing_cli.py`: durable protocol/path/publication
+  fault owner; it does not repeat orbital or report-format science.
+- `satellites/crossing_batch.py`: adds only public validation-only composition
+  of its existing `_validate` owner; the calculation route reuses it.
+
+## Verified candidate 50S.6G.2C placement
+
+The candidate source, schemas, entry point, and durable protocol tests at
+`e08ebf5` passed their immediate gate and the complete repository suite. No
+additional production owner or test file was introduced by verification.
+
+## Accepted 50S.6G.2C ownership
+
+The CLI module, three protocol schemas, entry point, validation-only batch seam,
+and durable CLI test owner are accepted. No crossing science, report identity,
+tabular projection, provider, track, chart, or visibility responsibility moved.
+
+## Candidate 50S.6G.3A ownership
+
+A future module adjacent to `satellites/crossing_oracle.py` may own immutable exact-local-track samples, sampling policy, identity, typed failure, and the realizer that composes accepted propagation and topocentric services. A future `sky/satellite_exact_track_layer.py` may own only evidence-to-geometry views, stable exact-visit semantics, and product-frame transformation.
+
+`sky/satellite_candidate_layer.py` remains the unverified SatChecker sampled candidate owner. `sky/solar_system_tracks.py`, accepted report/CLI modules, renderers, and exporters do not gain responsibility. No production placement is authorized by this documentation audit.
+
+## Accepted 50S.6G.3A implementation ownership
+
+The accepted audit authorizes one exact-track scientific owner adjacent to local satellite science, one evidence-only layer owner under `sky/`, and focused tests. Existing SatChecker candidate, crossing oracle, SGP4/TEME, topocentric, report, CLI, Solar-System track, chart, renderer, and exporter responsibilities remain in place. Final filenames may be chosen during implementation preflight without widening responsibility.
+
+## Candidate 50S.6G.3A implementation placement
+
+- `satellites/exact_tracks.py` owns policy, evaluation, immutable samples/evidence, digest identity, fail-closed adaptive sampling, and accepted-service composition.
+- `sky/satellite_exact_track_layer.py` owns evidence-only path and event geometry.
+- `coordinate_service.py` adds only fixed `gcrs-axes` orientation recognition.
+- `sky/semantic_identity.py` owns the sibling `sky/artificial_satellites/exact_local_tracks/<visit>/...` semantic family.
+- `tests/test_satellite_exact_tracks.py` owns the new durable evidence/layer boundary.
+
+No report, CLI, provider, chart registry, renderer, exporter, or SatChecker candidate owner changes.
+
+## Verified candidate 50S.6G.3A placement
+
+The exact-track science module, evidence-only layer module, narrow coordinate/semantic seams, and durable test owner at `f0a4164` passed focused, documentation, and complete repository gates. Verification introduced no additional owner and grants no merge or later-milestone authority.
+
+## Accepted 50S.6G.3A ownership
+
+`satellites/exact_tracks.py`, `sky/satellite_exact_track_layer.py`, the narrow coordinate/semantic seams, and `tests/test_satellite_exact_tracks.py` are the accepted owners. They do not absorb crossing, report, CLI, provider, chart, renderer, exporter, or SatChecker-candidate responsibilities.
+
+## Candidate 50S.6G.3B ownership
+
+A future `charts/request_satellite_tracks.py` may own display-request validation, admission, path/event layer installation, bounded provenance summaries, and cleanup. Existing chart request, detail, style, semantic SVG, projection, clipping, renderer, and exporter owners remain canonical. `satellites/exact_tracks.py` and `sky/satellite_exact_track_layer.py` retain all scientific evidence and view ownership. No production placement is authorized by this audit.
+
+## Accepted 50S.6G.3B implementation ownership
+
+The accepted audit authorizes one request-integration owner adjacent to existing chart-request track composition, minimal extensions to request/build cleanup, existing detail/style/semantic/export owners, focused tests, and specimen generation. Scientific evidence/layers and all canonical projection/render/export responsibilities remain where they are.
+
+## Candidate 50S.6G.3B implementation placement
+
+- charts/request_satellite_tracks.py owns the frozen display request, strict admission, request-owned installation, and bounded provenance summary.
+- charts/request.py owns only the new default-empty request field and invokes admission.
+- charts/request_generation.py owns installation timing, failure/success cleanup, and bounded export provenance composition.
+- charts/styles.py and charts/style_components.py own exact path, event-marker, and event-label appearance.
+- sky/satellite_exact_track_layer.py retains evidence-view ownership and now permits labels to be suppressed without changing marker geometry.
+- tests/test_satellite_exact_tracks.py, tests/test_request_generation.py, and tests/test_style_contracts.py cover the durable evidence-to-chart, lifecycle, and appearance seams.
+- tools/validate_50s6g3b_exact_satellite_charts.py creates deterministic offline PNG/PDF/semantic-SVG specimens.
+
+No satellite science, provider, report, CLI, planisphere, projection, renderer, or exporter owner changed.
+
+## Candidate 50S.6G.4A ownership
+
+The documentation-only audit proposes no new production file.
+`charts/request_satellite_tracks.py` remains the science-free display,
+validation, installation, cleanup, and bounded-summary owner;
+`charts/polar_planisphere.py` remains the typed equatorial projection and
+declination-cap-clipping owner; and `charts/polar_page_export.py` remains the
+paired lifecycle, page-provenance, furniture, and single-save owner.
+
+`sky/satellite_exact_track_layer.py`, existing exact-track style and semantic
+owners, renderers, and exporters retain their accepted responsibilities. No
+new projection, satellite-science, report, CLI, provider, renderer, exporter,
+or milestone-named runtime-test owner is authorized.
+
+## Accepted 50S.6G.4A implementation ownership
+
+The accepted audit authorizes only minimal extensions to the existing
+science-free request-track composition, polar-planisphere typed equatorial
+projection/cap clipping, and paired page-export lifecycle/provenance owners.
+Existing exact-evidence layers, styles, semantics, renderers, exporters, and
+durable exact-track and polar test files remain authoritative. No new
+projection, science, provider, report, CLI, renderer, exporter, or milestone-
+named runtime-test owner is authorized.
+
+## Corrective 50S.6G.4A ownership
+
+The requested planisphere track product belongs to existing ordinary owners:
+request_satellite_tracks.py for admission and installation,
+request_realization.py for one fixed AltAz product frame,
+request_generation.py for lifecycle and export, full_sky.py for the
+zenith-centred stereographic horizon-bounded chart, and
+satellite_exact_track_layer.py for retained path/event views.
+
+The earlier proposed polar_planisphere.py and polar_page_export.py ownership
+was based on the wrong paired equatorial product and is superseded for
+50S.6G.4B. This documentation-only correction adds no production file and
+authorizes no implementation.
+
+## Accepted corrective 50S.6G.4A implementation ownership
+
+After acceptance at 80855938, request_satellite_tracks.py remains the only
+production file expected to require behavior change: widening exact-track
+family admission to planisphere. Existing request realization, generation,
+FullSkyChart, exact-track layer, style, semantic, renderer, and exporter owners
+remain unchanged. A deterministic physical review tool may be added under
+tools/. No new production module is authorized.
+
+## Verified candidate 50S.6G.4B implementation placement
+
+- `charts/request_satellite_tracks.py` has the sole production behavior
+  change: ordinary `planisphere` joins the admitted exact-track families.
+- Existing request realization, generation, `FullSkyChart`, exact-track
+  layers, semantics, styles, renderers, and exporters remain unchanged.
+- `tests/test_satellite_exact_tracks.py` owns the added admission, rejection,
+  coordinate-policy, and empty-state evidence.
+- `tools/validate_50s6g4b_exact_satellite_planisphere.py` owns the physical
+  PNG, PDF, semantic-SVG, and digest-manifest review.
+
+No new production owner is introduced.
+
+## Accepted 50S.6G.4B implementation placement
+
+Merge `f0730d8` preserves the candidate placement:
+`charts/request_satellite_tracks.py` owns planisphere admission; existing
+request realization/generation, `FullSkyChart`, exact-track layers, semantics,
+styles, renderers, and exporters own all downstream behavior. The durable
+exact-track tests and physical validation tool remain the evidence owners. No
+new production module or responsibility boundary was introduced.
+## Accepted 50S.6H placement
+
+The accepted documentation-only 50S.6H audit reserves
+`satellite_planning_advisories.py` for a possible later pure, offline
+planning-context and advisory owner. That authorized next module will consume
+the existing canonical exact report and own only validation, half-open
+interval overlap, deterministic JSON, and advisory identity. It would not own
+propagation, coordinates, crossings, reports, charts, networking, credentials,
+observatory writes, or scheduling.
+
+No production file is added by the audit itself. The bounded offline module is
+authorized next. A Paranal network client and an ELT profile have no authorized
+source-tree placement.
+## Accepted 50S.6H implementation placement
+
+- `src/wenu/satellite_planning_advisories.py` owns frozen planning inputs,
+  strict validation, half-open overlap, canonical JSON, and advisory identity.
+- `src/wenu/__init__.py` exposes the bounded general-profile API and
+  constants.
+- `tests/test_satellite_planning_advisories.py` owns positive overlap,
+  zero-row boundaries, ordering, immutability, interchange equivalence,
+  malformed-input, mismatch, digest, and no-network evidence.
+
+No schema, HTTP client, credential owner, facility adapter, CLI/file protocol,
+scheduler, coordinate owner, propagator, renderer, or exporter is added.
+- `tools/validate_50s6h_offline_planning_advisory.py` owns the synthetic,
+  offline positive/zero-row JSON review specimen and digest manifest. It is
+  validation evidence, not a public file protocol or facility adapter.
+## Accepted complete 50S.6H source evidence
+
+At revision `32dce675`, the production module, public exports, focused tests,
+documentation tests, and offline validation tool passed 226 focused and 2,769
+complete tests. No HTTP dependency, endpoint, credential owner, facility
+adapter, or write owner was introduced. Fernando accepted this placement and evidence on 2026-09-20.
+
+## Candidate 50S.7A source placement
+
+The audit reserves `src/wenu/satellites/illumination.py` as the eventual sole
+production owner for illumination geometry, incident-source fields,
+shadow-transition search, component/model identity, and validation. It would
+compose existing snapshot, SGP4/TEME, topocentric/EOP, and installed-ephemeris
+owners; it would not own acquisition, crossing truth, reports, charts,
+planning, spacecraft BRDF, apparent brightness, or detector response.
+
+No source file is added by the audit. If the audit is separately accepted,
+the first admitted change is limited to direct finite-Sun/WGS-84 vacuum
+occultation and geometric observer twilight with focused offline tests.
+Reflected fields and radiometry require later authorization.
+
+## Accepted 50S.7A implementation placement
+
+After the accepted audit is merged, only
+`src/wenu/satellites/illumination.py` is authorized as the bounded 50S.7B
+owner for direct finite uniform-Sun/WGS-84 vacuum occultation, typed shadow
+state, observer geometric twilight, provenance, and offline validation.
+Existing propagation, ephemeris, Earth-orientation, topocentric, crossing,
+report, chart, and planning owners remain unchanged.
+
+No reflected-field, radiometric, BRDF, brightness, detector, facility, or
+scheduling owner is authorized. The audit itself adds no production file.
+## Candidate 50S.7B source ownership
+
+- `src/wenu/satellites/illumination.py` owns only immutable direct-Sun
+  occultation, observer geometric twilight, explicit model/numerical policy,
+  failures, and provenance.
+- `src/wenu/satellites/topocentric.py` remains the accepted
+  Earth-orientation owner and exposes the minimal
+  `geocentric_gcrs_axis_position_to_itrs(...)` composition seam. It requires
+  equality with the Earth-orientation evidence already retained by the
+  satellite state.
+- `src/wenu/ephemeris.py` and `src/wenu/skyfield_ephemeris.py` remain the
+  provider-neutral state contract and installed-SPK adapter owners.
+- `tests/test_satellite_illumination.py` is the enduring distinct scientific
+  and failure-boundary test file.
+- `tools/validate_50s7b_illumination_geometry.py` is the offline installed-
+  resource validation owner and refuses downloads.
+
+No propagation, crossing, transition-event, report, chart, planning,
+radiometry, brightness, visibility, detector, facility, or scheduling
+ownership moves into illumination. This is an unaccepted candidate.
+
+50S.7C shadow-transition search and all later satellite-light behavior remain
+unauthorized by this candidate.
+
+## Verified candidate 50S.7B source evidence
+
+At executable `086e7da1`, the new illumination module, minimal topocentric
+composition seam, enduring focused test file, exports, and offline validator
+passed 291 expanded tests, 208 documentation tests, a clean branch diff, and
+all 2,796 repository tests. Exact upstream equality and a clean working tree
+were confirmed. Ownership remains a review candidate; 50S.7C and later source
+changes remain unauthorized.
+
+## Accepted 50S.7B source ownership
+
+Fernando accepted the 50S.7B source placement at `054ac53a` on 2026-09-21.
+`satellites/illumination.py`, the minimal topocentric ITRS composition seam,
+`tests/test_satellite_illumination.py`, and the offline validator retain the
+bounded responsibilities documented above. Existing propagation, ephemeris,
+crossing, report, chart, and planning owners remain unchanged.
+
+Merge and branch deletion remain separate decisions. After merge only a
+documentation-first 50S.7C transition audit is authorized; no transition or
+later illumination runtime is authorized.
+
+## Candidate 50S.7C source ownership
+
+- `src/wenu/satellites/illumination.py` remains the closest and proposed
+  owner of continuous contact geometry, transition query/policy/result types,
+  complete bounded search, failure, identity, and provenance. Shared model,
+  dependency, lifecycle, and failure boundaries favor extension; file size
+  alone does not justify a new production module.
+- `src/wenu/satellites/topocentric.py` remains the TEME-to-ITRS and installed
+  Earth-orientation owner. A later implementation may extract only the
+  observer-independent geocentric Earth-fixed state seam so the existing
+  topocentric route and transition search share one transform.
+- `tests/test_satellite_illumination.py` remains the enduring scientific and
+  failure-boundary test owner.
+- A future `tools/validate_50s7c_shadow_transitions.py` may own offline
+  SPICE/Orekit event comparisons and must refuse downloads.
+- `docs/developer/satellite_shadow_transition_audit_50s7c.md` owns the
+  candidate scientific, completeness, identity, validation, and non-goal
+  contract.
+
+The audit adds no production owner. Crossing, track, report, chart, CLI,
+planning, renderer, exporter, brightness, visibility, detector, facility, and
+scheduling ownership remains unchanged. Runtime remains unauthorized.
+
+## Accepted 50S.7C implementation placement
+
+Fernando accepted the documentation-only placement at `030a6322` on
+2026-09-21. After merge, extend `satellites/illumination.py` for the bounded
+transition contracts and search; extract only the minimal shared geocentric
+TEME-to-ITRS state seam in `satellites/topocentric.py`; extend
+`tests/test_satellite_illumination.py`; and use one offline no-download
+independent event validator.
+
+Do not create a milestone-named production or test module. Existing
+propagation, ephemeris, crossing, track, report, chart, CLI, planning,
+renderer, exporter, brightness, visibility, detector, facility, and scheduling
+owners remain unchanged. PR merge and later source work remain separate.
+
+## Candidate 50S.7C implementation source ownership
+
+- `src/wenu/satellites/illumination.py` owns the immutable transition
+  contracts, continuous contact geometry, bounded search, identity, and typed
+  failures alongside the accepted direct-Sun model.
+- `src/wenu/satellites/topocentric.py` owns one shared internal TEME-to-ITRS
+  implementation composed by both `SatelliteGeocentricItrsTransformer` and
+  the existing observer route.
+- `tests/test_satellite_illumination.py` remains the enduring scientific,
+  topology, budget, identity, and orchestration test owner.
+- `tools/validate_50s7c_shadow_transitions.py` owns the offline no-download
+  SPICE `gfoclt` event and Skyfield binary-side receipt.
+
+At executable `69375fab`, 58 focused tests and the independent installed-
+resource receipt passed. No milestone-named production/test module or output
+integration was added. Complete gates and acceptance remain pending; merge,
+branch deletion, 50S.7D+, and later ownership changes remain unauthorized.
+
+## Verified candidate 50S.7C implementation source gate
+
+Exact candidate `bf877404` passed 311 expanded tests in 21.47 seconds, 212
+documentation tests in 7.01 seconds, a clean diff, and all 2,816
+plugin-disabled repository tests in 218.58 seconds. Exact upstream equality
+and a clean tree were confirmed. The production changes remain limited to the
+accepted illumination and topocentric owners, exports, enduring focused test,
+offline validator, and governed documentation.
+
+The source placement is verified but unaccepted. Merge, branch deletion,
+50S.7D+, output integration, and later ownership changes remain unauthorized.
+
+## Accepted 50S.7C implementation source ownership
+
+Fernando accepted the complete bounded source placement at
+`eaeab6085b52bfed6136d37f3010c2f353e59f53` on 2026-09-21. Preserve
+`satellites/illumination.py` as the transition-contract, contact-geometry,
+search, identity, provenance, and failure owner; `satellites/topocentric.py`
+as the shared TEME-to-ITRS/EOP owner; the existing illumination test file as
+the enduring scientific and failure-boundary owner; and the offline
+no-download validator as independent event evidence.
+
+Executable `bf877404` and its complete 311/212/2,816-test evidence are
+accepted. No new production or test owner is authorized. Merge, branch
+deletion, 50S.7D+, output integration, and later ownership changes remain
+separate and unauthorized.
+## Candidate 50S.7D source ownership
+
+The documentation-only audit proposes no source file. For a later accepted
+50S.7D.1, `src/wenu/satellites/illumination.py` remains the closest owner of
+the scalar direct-Sun bolometric composition because it consumes the geometry
+owned there, shares its lifecycle and failure boundary, and introduces no data
+resource or dependency. File size alone does not justify another module.
+
+`tests/test_satellite_illumination.py` remains the closest durable test owner.
+No new production or test file is proposed. A later TSIS-1 spectral or lunar
+model resource has a distinct lifecycle and requires another source-tree and
+resource-admission decision before any new module is created.
+
+This candidate changes no runtime. 50S.7D.2+, 50S.7E+, resource acquisition,
+outputs, brightness, visibility, detector, facility, and scheduling ownership
+remain unauthorized.
+
+## Accepted 50S.7D.3A LIME preflight ownership
+
+Fernando accepted exact candidate `27e1ee1c` on 2026-09-22 after 232 focused
+tests in 11.95 seconds. No source-tree ownership changes: the accepted record
+adds no resource, loader, dependency, module, API, or runtime. PR 189 merge and
+any later offline execution remain separately controlled.
+
+## Accepted 50S.7D source-ownership authority
+
+Fernando accepted the documentation-only 50S.7D source placement at exact
+candidate `362199d04bd917741a8be88f20608967af75530e` on 2026-09-21 after
+214 plugin-disabled current-documentation tests passed in 7.00 seconds and
+repository checks were clean.
+
+After merge, only bounded 50S.7D.1 implementation may extend
+`src/wenu/satellites/illumination.py` and
+`tests/test_satellite_illumination.py`. No new production or test file,
+dependency, resource, provider, network, cache, output, renderer, or exporter
+owner is authorized. Any spectral or lunar data lifecycle requires a separate
+source-tree and resource-admission audit. 50S.7D.2+, 50S.7E+, outputs,
+brightness, visibility, detector, facility, and scheduling ownership remain
+unauthorized. PR 184 merge and branch deletion remain separate explicit
+decisions.
+
+## Candidate 50S.7D.1 implementation source ownership
+
+Executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` extends only
+`src/wenu/satellites/illumination.py`, its intentional package exports, and
+the existing `tests/test_satellite_illumination.py` owner. The offline
+`tools/validate_50s7d1_direct_solar_irradiance.py` receipt independently
+recomputes the formula for installed-resource LEO, MEO, and GEO geometry.
+
+No new production or test module, dependency, resource, provider, network,
+cache, renderer, exporter, or output owner is introduced. The coordinate-
+system guide was reviewed and remains current. Independent receipt, complete
+gates, and acceptance remain pending; 50S.7D.2+ and later ownership remain
+unauthorized.
+
+## Verified candidate 50S.7D.1 implementation source gate
+
+Exact head `5bf5d52e81670f1a69af0476283195d12a3119bc` passed 308 expanded
+tests, all 2,832 plugin-disabled repository tests, the installed-resource
+independent receipt, clean diff, exact upstream, and clean-tree checks. The
+receipt file SHA-256 was
+`43037267cd841232dcffca05797a2d55dce3d90b9caf8b84fbf785b19129fc73`.
+
+Source placement remains limited to the accepted illumination owner, package
+exports, existing illumination test owner, offline validator, and governed
+documentation. It is verified but unaccepted; merge, branch deletion,
+50S.7D.2+, and later ownership remain unauthorized.
+
+## Accepted 50S.7D.1 implementation source ownership
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. Direct-Sun
+bolometric normal-plane irradiance remains owned by
+`src/wenu/satellites/illumination.py`, with package exports, existing-owner
+tests, and the offline validator in their recorded locations.
+
+The independent receipt, 308 expanded tests, all 2,832 plugin-disabled tests,
+and final 223 documentation/package-boundary tests passed. New 50S.7D.2+
+ownership, merge, and branch deletion remain unauthorized without separate
+decisions.
+
+## Candidate 50S.7D.2 resource ownership
+
+The distinct spectral-resource lifecycle provisionally justifies
+`src/wenu/satellites/radiometry.py` and `tests/test_satellite_radiometry.py`.
+An acquisition helper, if later authorized, is a separate network boundary;
+evaluation and import remain offline. No file, resource, or runtime is added by
+this audit.
+
+## Accepted 50S.7D.2 resource ownership
+
+Fernando accepted the proposed distinct offline spectral-resource owner at
+exact candidate `0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe` on
+2026-09-22. After audit merge, a bounded implementation may add
+`src/wenu/satellites/radiometry.py` and
+`tests/test_satellite_radiometry.py`. The resource remains externally
+installed unless redistribution rights are established. Evaluation and import
+must remain offline; acquisition, Moonlight, and later runtime ownership remain
+separate.
+
+## Candidate 50S.7D.2 implementation ownership
+
+Executable `8e930db2` realizes the accepted distinct resource lifecycle in
+`src/wenu/satellites/radiometry.py`. The module owns the exact external
+TSIS-1 identity, offline byte and schema admission, immutable native spectral
+data, native-grid energy integration, spectral scaling policy/result/evaluator,
+and typed fail-closed errors. It depends downstream on accepted
+`SatelliteIlluminationGeometry`; `illumination.py` remains the geometry and
+50S.7D.1 bolometric owner.
+
+`tests/test_satellite_radiometry.py` owns the durable spectral-resource,
+native-grid, scaling, uncertainty, zero-versus-unknown, and failure contracts.
+`tools/validate_50s7d2_spectral_solar_radiometry.py` independently parses
+explicitly installed bytes and performs no download. The package initializer
+exports the intentional spectral contracts. No acquisition module, vendored
+resource, new dependency, or later illumination owner is added.
+
+## Verified candidate 50S.7D.2 source ownership
+
+Exact head `8f2ca825` verified the executable `radiometry.py` owner,
+dedicated durable tests, package exports, and offline validator at
+`8e930db2`. The 132-test expanded gate, 227-test documentation/package gate,
+complete 2,858-test suite, real-resource receipt, diff, upstream, and clean-tree
+checks passed.
+
+Ownership remains a verified but unaccepted candidate. No acquisition owner,
+vendored resource, second geometry path, or 50S.7D.3+ owner is admitted.
+
+## Accepted 50S.7D.2 implementation source ownership
+
+Fernando accepted exact verified candidate `d1edeb46` on 2026-09-22.
+Preserve `src/wenu/satellites/radiometry.py` as the distinct offline
+spectral-resource and spectral-composition owner, its dedicated durable tests,
+intentional package exports, and the no-download independent validator at
+executable `8e930db2`.
+
+`illumination.py` remains geometry and 50S.7D.1 bolometric owner. No
+acquisition owner, vendored resource, second geometry path, or 50S.7D.3+
+ownership is accepted. PR 187 merge and branch deletion remain separate.
+
+## Candidate 50S.7D.3 Moonlight ownership audit
+
+The audit changes no production ownership. A future accepted slice would keep
+same-instant Moonlight geometry and typed eclipse/occultation states in
+`src/wenu/satellites/illumination.py`, while
+`src/wenu/satellites/radiometry.py` would own exact external LIME resource
+admission, native-band radiometry, uncertainty, and fail-closed model behavior.
+
+Existing illumination and radiometry test files remain the closest durable
+owners. No new module, test file, dependency, vendored resource, acquisition
+owner, or output integration is authorized. Only an external LIME distribution
+preflight may be proposed after separate acceptance and merge; runtime remains
+blocked.
+
+## Accepted 50S.7D.3 Moonlight readiness ownership
+
+Fernando accepted exact documentation-only candidate `abbb1b78` on
+2026-09-22 after 230 documentation/package tests and clean repository checks.
+No production owner, module, dependency, test file, or resource was added.
+
+After merge, only an external LIME distribution preflight may proceed under
+separate controls. The future ownership reservation remains illumination for
+geometry and radiometry for exact model resources and native-band values.
+Runtime, acquisition ownership, and 50S.7D.4+ remain unauthorized.
+
+## Final accepted 50S.7D.3 ownership verification
+
+Acceptance-record head `0be116ab` passed 231 documentation/package tests in
+8.54 seconds and clean repository checks. No source-tree ownership changed.
+Only the post-merge external LIME distribution preflight is authorized next.
+
+## Candidate 50S.7D.3A LIME preflight ownership
+
+The preflight adds one documentation record and changes no production or test
+ownership. It freezes external candidate identities but adds no resource,
+dependency, module, loader, or API. Future lunar geometry remains reserved to
+`satellites/illumination.py`; exact LIME admission and native-band radiometry
+remain reserved to `satellites/radiometry.py`.
+
+The LIME EO-CFI satellite route is outside Wenu ownership and must not become a
+second propagator. Installation, execution, runtime, and output integration
+remain unauthorized.
+
+## Candidate 50S.7D.3B offline-inspection ownership
+
+`tools/validate_50s7d3b_lime_offline_inspection.py` owns only the controlled
+developer receipt: exact package/coefficient verification, temporary package
+expansion, macOS network-denied execution, read-only netCDF inventory, frozen
+direct-selenographic cases, and external evidence manifest. It is not imported
+by `src/wenu` and adds no package resource or dependency.
+
+`docs/developer/satellite_lime_offline_inspection_audit_50s7d3b.md` owns the
+candidate scope and review gates. Existing production ownership reservations
+remain unchanged; no new production or domain-test file is admitted.
