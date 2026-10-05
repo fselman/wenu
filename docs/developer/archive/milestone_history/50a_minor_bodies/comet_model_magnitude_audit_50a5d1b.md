@@ -1,7 +1,7 @@
 # Observer-dependent comet model-magnitude audit (Milestone 50A.5D.1B)
 
-**Status:** Accepted by Fernando on 2026-09-14; documentation only. This audit
-authorizes only the bounded 50A.5D.1B implementation.
+**Status:** Audit and bounded implementation accepted by Fernando on
+2026-09-14. This record authorizes and closes only 50A.5D.1B.
 
 **Exact base:** `15c77d95653d24f37ef6140385eef52702f0720d`
 
@@ -205,3 +205,47 @@ Fernando accepted all five proposed decisions on 2026-09-14:
 This acceptance authorizes only the bounded 50A.5D.1B implementation described
 here. It does not authorize visibility prediction, chart integration, altered
 SPK acquisition, empirical activity correction, or any 50A.5D.3 report work.
+
+## 9. Accepted implementation
+
+The accepted implementation places the independent Horizons observer-table responsibility in
+`src/wenu/comet_photometry.py`; the existing `comet_discovery.py` remains the
+SBDB selection owner and `cli/comets.py` composes the two typed results. This
+placement follows the production-module admission rule because Horizons
+photometry has a distinct provider, observer geometry, request budget,
+provenance, and failure lifecycle.
+
+The implementation supplies `--observer-location NAME` and
+`--magnitude-step DURATION`, defaults to `1d`, samples both endpoints,
+limits requests before provider access, issues calls sequentially, validates
+the exact target and orbit solution, retains unknown values and provider
+notices, and publishes the brightest sampled total model magnitude separately
+from the nuclear model. The JSON form retains every sample and the complete
+observer, cadence, provider, request, retrieval, and raw-digest provenance.
+
+`tests/test_comet_discovery.py` extends the existing responsibility with a
+frozen Horizons response and covers provider drift, non-finite values, sample
+count, bounds, fail-whole behavior, serialization, and provenance. The
+candidate adds no chart, SPK cache, coordinate frame, projection, renderer,
+semantic, report, or export coupling. On 2026-09-14 Fernando captured the exact live McNaught response for a
+La Ligua topocentric request spanning 2007-01-12 at 12-hour cadence. The
+fixture preserves Horizons API version `1.2`, target
+`McNaught (C/2006 P1) {source: JPL#27}`, three endpoint-inclusive samples,
+and raw SHA-256
+`054f05bd5905997f4b1dd22de92417d51b8cfead345089f1d5dfb2b6f2dda7f0`.
+SBDB expressed the same orbit as `JPL 27`; normalization treats only the
+provider's `JPL 27` and `JPL#27` notations as equivalent. The fixture is
+byte-for-byte provider evidence rather than a constructed response.
+
+Fernando accepted the bounded implementation on 2026-09-14 after the focused
+136-test gate passed in 2.91 seconds and the complete 2,414-test suite passed
+in 83.35 seconds. The live McNaught table and JSON routes reproduced three
+12-hour samples from La Ligua, the exact `C/2006 P1` / `JPL 27` identity,
+brightest sampled `T-mag = -11.0`, separate `N-mag = 12.0`, UTC epochs,
+units, observer geometry, provider version, request provenance, and
+raw-response digest. The working tree was clean and `git diff --check`
+passed.
+
+This closes 50A.5D.1B without authorizing visibility prediction, chart
+integration, altered SPK acquisition, empirical activity correction, or
+50A.5D.3 report work.

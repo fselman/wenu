@@ -10,9 +10,11 @@ import math
 import re
 from typing import Callable
 from urllib.parse import urlencode
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 from astropy.time import Time
+
+from wenu import __version__
 
 
 SBDB_QUERY_API = "https://ssd-api.jpl.nasa.gov/sbdb_query.api"
@@ -134,7 +136,16 @@ def _fetch(
     url: str, parameters: dict[str, str], *, timeout: int = 120
 ) -> bytes:
     request_url = url + "?" + urlencode(parameters)
-    with urlopen(request_url, timeout=timeout) as response:
+    request = Request(
+        request_url,
+        headers={
+            "User-Agent": (
+                f"Wenu/{__version__} "
+                "(contact: https://github.com/fselman/wenu/issues)"
+            ),
+        },
+    )
+    with urlopen(request, timeout=timeout) as response:
         return response.read()
 
 
