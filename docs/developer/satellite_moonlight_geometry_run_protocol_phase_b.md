@@ -1,14 +1,33 @@
 # Phase B: frozen-kernel lunar geometry comparison protocol
 
-**Status:** Documentation-only candidate; resource and convention gates remain open. No comparison run or Moonlight runtime is authorized.
+**Status:** Accepted documentation-only protocol with later accepted resource
+and three-sample coverage receipts; final case and convention gates remain
+open. Program paused at 50S.7D.3 Phase B; no comparison run or Moonlight
+runtime is authorized.
 
 **Date:** 2026-09-23
 
 **As-is base:** `29302ed65e04b9280a5cb31631985e41deb25c7c` on `program/50s-crossing-foundation`; Fernando reported a clean, synchronized Mac tree.
 
-**Parent:** [Accepted Phase B geometry audit plan](satellite_moonlight_geometry_comparison_audit_50s7d3_phase_b.md). This protocol makes its input, independence and stop gates reviewable. It is **not yet an executable, fully frozen run card**: the four lunar/time kernels below were not found in the bounded Mac inventory, the HEO specimen is missing, and the precise LIME geometry convention has not been proven. Fill those gaps in a separate reviewed amendment before asking to run a comparison.
+**Parent:** [Accepted Phase B geometry audit plan](satellite_moonlight_geometry_comparison_audit_50s7d3_phase_b.md). This protocol makes its input, independence and stop gates reviewable. It is **not yet an executable, fully frozen run card**: the final Cartesian case matrix and precise LIME geometry convention remain open. The initial bounded Mac inventory lacked four lunar/time kernels; later accepted receipts below resolve their availability and three sampled coverage dates. Fill those gaps in a separate reviewed amendment before asking to run a comparison.
 
-## Resource ledger and stop gate
+## Current checkpoint (2026-10-05)
+
+The foundation is merged into `main`; the former integration branch no longer
+exists. [The current roadmap](post_v0.9_architecture_roadmap.md#satellite-pause-and-resumption)
+controls resumption after stellar designations, minor bodies and atlas work.
+The later accepted DE440 receipt below supersedes the initial NOT_FOUND rows:
+all four lunar/time files were downloaded and independently rehashed. The
+last accepted head `da499b4d748d1f4ffa4a86076630dafc075d108d`
+adds coverage/centre metadata and final/predicted EOP at three sample dates.
+Those receipts are not a complete frozen case matrix or geometry comparison.
+Final Cartesian specimens, runtime load order, predicted-EOP uncertainty and
+LIME signed phase remain open. External files must be reverified before any
+separately authorized use; no new resource acquisition or execution is implied.
+The original inventory and successive amendments below remain chronological
+provenance, with their original as-is dates and limitations.
+
+## Resource ledger and stop gate (historical initial inventory)
 
 The operator's read-only inventory on 2026-09-23 reported the following installed resources. Paths are local provenance, never download destinations or redistribution grants. Verify each size and hash afresh before an authorized run; reject a mismatch.
 

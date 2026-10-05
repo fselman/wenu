@@ -42,7 +42,8 @@ coordinate guide, contribution rules, and current work in progress.
   final performance closure;
 - `milestone_history/50a_minor_bodies/` contains completed 50A.0 through
   50A.5D.2C minor-body audits, implementations, validations, public-interface
-  contracts, and acceptance records, including 50A.5D.1B comet photometry;
+  contracts, and acceptance records, including 50A.5D.1B comet photometry and the 50A.5D.1B.1 operational
+  revision closed on 2026-10-05;
 - `pre_versioned/` contains the original unversioned architecture, roadmap,
   and UML material;
 - files directly under this directory are older records retained from the

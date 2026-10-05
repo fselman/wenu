@@ -9,46 +9,83 @@
 
 ## Current forward roadmap
 
-This is the single active sequence after merge commit `b877a74`. Completed
-milestone detail belongs in `archive/`; the historical sections below retain
-architectural rationale and accepted boundaries.
+**Resumption checkpoint:** 2026-10-05, clean synchronized `main` at
+`91f7841235d4ed49b20ae6bf5d6b3e678de4e5c5`.
+The satellite foundation merged through PR #201 at `8311bd08`; comet
+photometry merged through PR #121 at `91f78412`. Both development branches
+were then removed locally and remotely. Merge and branch deletion preserve
+accepted work and history; neither closes the unfinished 50A or 50S program.
+The current checkpoint and sequence below supersede earlier future-order and
+candidate-status statements in the historical milestone sections.
 
-| Order | Milestone | Outcome |
+| Order | Work | Next reviewable outcome |
 |---:|---|---|
-| 1 | 50A.5D.1B | Observer-dependent sampled Horizons comet model magnitude, explicitly not a visibility prediction. |
-| 2 | 50A.5D.3 | Renderer-neutral text and JSON moving-object reports from already realized temporal results. |
-| 3 | 50A.5E.0 | Audit the distributable Wenu asteroid/comet database, scientific representation, provenance, coverage, and lifecycle. |
-| 4 | 50A.5E.1 | Build and verify a versioned distributable database, including important minor bodies and all governed dwarf planets. |
-| 5 | 50A.5E.2 | Add the `wenu-database` policy and default cache → provider → database resolution order. |
-| 6 | 50A.5E.3 | Add safe cache inspection, dry-run, pruning, and explicit minor-body cache flushing. |
-| 7 | 50A.6 | Close minor-body provenance, public interfaces, validation, documentation, and PNG/PDF/SVG acceptance. |
-| 8 | 50S.0 | Accepted satellite catalogue, provider, crossing, acceleration, illumination, photometry, and validation decisions. |
-| 9 | 50S.1 | Define the provider-neutral satellite crossing domain. |
-| 10 | 50S.2 | Add the policy-compliant cached SatChecker crossing adapter. |
-| 11 | 50S.3A | Audit honest sampled-candidate reports, shared-path drawing, and semantic identity. |
-| 12 | 50S.3B | Implement deterministic reports and drawable sampled-candidate tracks. |
-| 13 | 50S.4A | Audit snapshot, dependency, propagation, Earth-orientation, validation, and specimen contracts. |
-| 14 | 50S.4B | Add canonical OMM elements and a small immutable synthetic snapshot. |
-| 15 | 50S.4C | Add Vallado-validated SGP4 propagation and typed geometric TEME state. |
-| 16 | 50S.4D | Add and independently validate the explicit topocentric transformation chain. |
-| 17 | 50S.4E | Add the network-free propagated-specimen builder and close 50S.4. |
-| 18 | 50S.5 | Implement the complete local FoV-crossing oracle. |
-| 19 | 50S.6A–D | Accepted conservative selection and bounded exact-solver coordination. |
-| 20 | 50S.6E | Audit same-observer, airmass-bounded multi-FoV reuse, interchange, and the remaining delivery sequence. |
-| 21 | 50S.6F | Implement the bounded multi-FoV coordinator after separate acceptance. |
-| 22 | 50S.6G | Admit representative scale and connect exact results to generic reports and chart tracks. |
-| 23 | 50S.6H | Audit Paranal, ELT, and other observatory planning adapters. |
-| 23a | 50S.6I | Add governed production catalogue refresh, automatic snapshot selection, and one exposure-query workflow; preserve exact per-run provenance. |
-| 24 | 50S.7 | Add Sunlight, solar Earthshine, Moonlight, Lunar-Earthshine, shadow-transition, and night geometry. |
-| 25 | 50S.8 | Add component-resolved brightness models with uncertainty and explicit unknowns. |
-| 26 | 50S.9 | Estimate detector-level trail contamination separately from apparent magnitude. |
-| 27 | 50S.10 | Produce night/season/sky-position statistics and close the satellite program. |
-| 28 | 50B.0 | Review accepted publication, printing, typography, accessibility, and atlas practice. |
-| 29 | 50B.1 | Adopt Wenu physical-output profiles and numerical publication standards. |
-| 30 | 50B.2 | Measure representative products at declared physical dimensions. |
-| 31 | 50B.3 | Implement monochrome and limited-grayscale publication profiles. |
-| 32 | 50B.4 | Perform physical print, reduction, grayscale, and photocopy acceptance. |
-| 33 | 50B.5 | Close publication styles with accepted standards, examples, limitations, and evidence. |
+| 1 | Bayer/Flamsteed stellar designations | Bounded as-is catalogue and label audit, then implementation using existing stellar metadata, detail/style and rendering machinery. Evaluate a frozen HIP cross-reference and source/redistribution terms before admitting catalogue bytes; no stellar implementation has begun. |
+| 2 | Minor-body completion (50A) | 50A.5D.3 reports → 50A.5E.0 database audit → 50A.5E.1 construction → 50A.5E.2 runtime policy → 50A.5E.3 cache lifecycle → 50A.6 final acceptance. |
+| 3 | Atlas output curation and publication (50B) | Select representative atlas products, review publication/print practice (50B.0), adopt output standards (50B.1), measure specimens (50B.2), implement monochrome/grayscale profiles (50B.3), accept physical prints (50B.4), and close evidence/docs (50B.5). |
+| 4 | Satellite resumption (50S) | Reopen the paused 50S.7D.3 Phase B preflight at its exact accepted boundary; later complete 50S.6I and the remaining illumination, brightness, detector and closure stages. |
+
+### Minor-body pause and resumption
+
+**Status:** Implemented partial program, paused; 50A.5D.1B.1 closed on
+2026-10-05. Numbered asteroids and comets already have descriptor-based
+points/tracks, object-centred charts, explicit offline resource collections,
+and installed-CLI identity/acquisition preflight with verified cache reuse.
+The Ceres/Apophis, Encke and second-comet validation evidence is retained;
+comet discovery and observer-dependent sampled Horizons model photometry are
+accepted. The [completed photometry revision](archive/milestone_history/50a_minor_bodies/comet_photometry_revision_50a5d1b1.md)
+records the final 2,923-test gate and live 214-comet/cache/error acceptance.
+
+| Remaining stage | Missing outcome and owner |
+|---|---|
+| 50A.5D.3 | Natural moving-object text/JSON reports from already realized temporal results, including apparent angular rates and driver-convention warnings. Start with a bounded as-is report/temporal ownership audit; do not calculate ephemerides again or add another renderer. |
+| 50A.5E.0–1 | Scientific/packaging audit and reproducible versioned distributable database: representation, identity, important-object/dwarf-planet inclusion policy, coverage, uncertainty, provenance, licensing and verification. No packaged database is implemented. |
+| 50A.5E.2 | Explicit `wenu-database` policy and governed cache → provider → database fallback at the existing verified resource-collection boundary. This planned third source must not be described as a current runtime fallback. |
+| 50A.5E.3 | Safe inspection, size/coverage reporting, dry-run pruning and explicitly confirmed cache flushing. This is future lifecycle work, not authority to remove resources now. |
+| 50A.6 | Final public-interface/provenance/docs audit, scientific regression and human PNG/PDF/SVG acceptance across the admitted minor-body scope. The program remains open. |
+
+Resume through `comet_discovery_and_reporting_audit_50a5d.md`, the current
+architecture/reference/source map, `cli/chart.py`, the existing minor-body
+identity/acquisition/resource owners, and temporal realization owners.
+Photometry remains in `comet_photometry.py`; it does not own natural-object
+reports or chart geometry. Physical coma/tail models, empirical activity and
+visibility are not implied by the accepted symbolic drawing or sampled model
+magnitudes.
+
+### Satellite pause and resumption
+
+**Status:** Implemented crossing foundation and direct-Sun radiometry;
+50S.7D.3 Moonlight validation paused. The last accepted scientific checkpoint
+is `da499b4d748d1f4ffa4a86076630dafc075d108d` (2026-09-23,
+PR #195): exact resource identities, three sampled SPK/PCK coverage instants,
+segment-centre metadata and final/predicted IERS statuses. It is not a lunar
+geometry comparison or numerical Moonlight acceptance.
+
+| Capability | Accepted boundary / remaining work |
+|---|---|
+| 50S.0–6G crossing foundation | Cached SatChecker sampled candidates; immutable OMM snapshots; Vallado-validated SGP4/TEME; explicit IERS-bound topocentric geometry; exhaustive circular-FoV oracle, conservative selection and multi-FoV coordination; exact reports/file protocol and shared-pipeline PNG/PDF/SVG tracks. Sampled candidates are not the exact local oracle. |
+| Representative scale evidence | The accepted 256-record, ten-FoV equivalence matrix had zero crossings. It establishes bounded equality and conservative partition evidence, not demonstrated acceleration on non-empty large production workloads. |
+| 50S.6H / 6I | Offline planning advisory and non-writing Paranal profile are accepted; ELT is reserved. Governed production refresh, automatic snapshot selection, rectangular detector footprints and one exposure-query workflow remain 50S.6I work. No operational observatory integration is implemented. |
+| 50S.7B–C / 7D.1–2 | Direct-Sun illumination, geometric observer night, certified shadow transitions, nominal bolometric incident irradiance and digest-bound native-grid TSIS-1 spectral irradiance are accepted. Incident light is not observer brightness or detector signal. |
+| 50S.7D.3 Phase B | LIME preflight and offline inspection are accepted. External resources and three coverage samples are recorded, but final Cartesian case rows, kernel load order/frame conventions, predicted-EOP uncertainty and the exact LIME signed-phase rule remain open. `moonlight` remains `not_evaluated`. |
+| Later closure | After independent lunar geometry/model/resource/licensing validation: 50S.7D.4 direct-source closure, 50S.7E solar/lunar Earth-reflected fields, 50S.7F component bundling, 50S.8 calibrated brightness/uncertainty, 50S.9 detector contamination and 50S.10 statistics, scale evidence and final program acceptance. |
+
+The first resumption slice is a separately reviewable source/resource/case
+preflight under the [Phase B run protocol](satellite_moonlight_geometry_run_protocol_phase_b.md).
+Rehash external LIME/package, coefficient, DE440 and IERS receipts on the Mac;
+files were deliberately not vendored and their continued presence is not
+assumed. The resource manifest digest is
+`362787651c4438565c20b5e2f65a756f4be3d58c7b703e600a008c5a5c9cf24d`.
+Do not infer coverage of final cases from three sample dates or combine the
+historical LIME DE421 pool with the independent DE440 pool. Freeze the
+scientific conventions and discriminating LEO/MEO/GEO/HEO cases before a
+separately authorized comparison. No SPICE geometry comparison, LIME rerun,
+new download or numerical Moonlight implementation is authorized by this
+checkpoint. Existing ownership remains `satellites/illumination.py` for
+geometry, `satellites/radiometry.py` for model-resource/native-band radiometry,
+and `satellites/topocentric.py` for Earth-orientation/state transformations.
+The [program log](satellite_program_log.md) preserves exact acceptances and
+the [satellite guide](satellite_guide.md) preserves scientific definitions.
 
 ## 1. Purpose and authority
 
@@ -1642,7 +1679,7 @@ sidecar reports require a new audit before implementation.
 ## Milestone 50A.5D — Comet discovery, acquisition, and moving-object reports
 
 **Status:** Audit, 50A.5D.1A, and 50A.5D.2A through 50A.5D.2C accepted;
-50A.5D.1B.1 operational revision in progress; 50A.5D.3 remains.
+50A.5D.1B.1 operational revision closed on 2026-10-05; 50A.5D.3 remains.
 
 50A.5D.1A accepted by Fernando on 2026-09-13.
 
@@ -1663,9 +1700,10 @@ workloads require `--max-photometry-comets`, discrete epochs use the official
 Horizons file API POST transport, and expected failures are concise unless
 `--debug` is present. A subsequent 270-comet live run accepted provider-compliant
 sequential access, terminal-aware stderr progress, and an atomic
-validated raw-response cache for repeated and interrupted workloads. The active revision record is
-`comet_photometry_revision_50a5d1b1.md`. PR #121 remains unaccepted until
-broad live trials and all gates pass.
+validated raw-response cache for repeated and interrupted workloads. The completed revision record is
+`archive/milestone_history/50a_minor_bodies/comet_photometry_revision_50a5d1b1.md`.
+PR #121 merged after Fernando accepted the 214-comet broad live trial,
+cache/error checks and complete 2,923-test Mac gate on 2026-10-05.
 
 The proposed audit separates an explicit `wenu_retrieve_comets` SBDB query,
 exact policy-governed comet preflight, and renderer-neutral natural moving-
@@ -1797,9 +1835,10 @@ flushed cache data must be reacquired.
 
 ## Program 50S — Artificial-satellite crossings and contamination
 
-**Status:** Planned after 50A.6 minor-body closure and before Program 50B
-publication work; 50S.0 scientific and architectural decisions accepted by
-Fernando on 2026-09-14.
+**Status:** Partially implemented and paused at 50S.7D.3 Phase B; resume
+after Bayer/Flamsteed, 50A closure and atlas/publication work. 50S.0 scientific
+and architectural decisions accepted by Fernando on 2026-09-14. See the
+current checkpoint above for implemented boundaries and remaining stages.
 
 This program must make field-crossing queries a first-class scientific product.
 Given an observer, an explicitly framed field of view and centre, a start and

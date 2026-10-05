@@ -1774,3 +1774,38 @@ Final Cartesian cases, runtime kernel order, predicted-EOP uncertainty,
 LIME's signed-phase rule and any scientific comparison remain open.
 No geometry or LIME run, production change or Moonlight value is authorized.
 PR 195 merge and branch deletion require separate instructions.
+
+## 2026-10-05 — Foundation consolidated; program paused
+
+PR #201 merged the accepted satellite foundation into `main` at
+`8311bd08bc39351ebf72c7770c52f4050d57913f`. PR #121 subsequently
+merged the accepted comet-photometry revision at
+`91f7841235d4ed49b20ae6bf5d6b3e678de4e5c5`. Fernando verified a
+clean synchronized Mac `main`, and removed both integration/development
+branches locally and remotely. This is integration and history cleanup,
+not closure of Program 50S or admission of any later scientific capability.
+
+The last satellite scientific acceptance remains the 2026-09-23 Phase B
+resource/coverage/EOP receipt at
+`da499b4d748d1f4ffa4a86076630dafc075d108d` (PR #195).
+The foundation includes exact local circular-FoV crossings and shared-pipeline
+reports/tracks, offline planning advice, direct-Sun geometry, certified shadow
+transitions, and bolometric/spectral incident solar irradiance. The accepted
+medium equivalence matrix has ten empty crossing results; broader non-empty
+scale/acceleration claims remain unproved. Numerical `moonlight` is still
+`not_evaluated`; no brightness, detectability or detector signal follows
+from incident irradiance alone.
+
+Resume 50S only after Bayer/Flamsteed, minor-body closure and atlas/publication
+curation, as recorded in the [current roadmap checkpoint](post_v0.9_architecture_roadmap.md#current-forward-roadmap).
+First prepare a bounded source/resource/case preflight under the Phase B run
+protocol: reverify external bytes/manifest, finish exact LEO/MEO/GEO/HEO
+Cartesian cases, kernel/frame/load-order conventions, predicted-EOP uncertainty
+and LIME signed phase. The last accepted three coverage dates are not final
+case certification. No new download, SPICE comparison, LIME rerun or numerical
+Moonlight runtime is authorized by consolidation. Keep DE421 historical LIME
+resources separate from the independent DE440 oracle. Later remaining work is
+50S.6I production refresh/query, 50S.7D.4/7E/7F light-component closure,
+50S.8 brightness validation, 50S.9 detector contamination and 50S.10 statistics
+and final scientific/operational acceptance. Old per-PR merge/deletion gates
+above describe their original historical state, not open merge requests now.
