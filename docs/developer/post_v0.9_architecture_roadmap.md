@@ -34,7 +34,10 @@ rights gates and acceptance sequence. Fernando accepted the design and amended
 name/Bayer selectors on 2026-10-05: selected stars bypass the magnitude limit;
 proper names win; full Bayer text is optional; CLI and TOML agree. Future
 variable/multiple curation remains separate from labels and catalogue flags.
-Implementation, catalogue admission and merge remain pending. No Gaia runtime
+The accepted design merged in PR #204 at `bf904a28`; implementation and
+catalogue admission remain pending. The 2026-10-05 source-policy supplement is
+under review: investigate CC0 structured metadata before choosing a catalogue,
+with scientific coverage and exact rights receipts required. No Gaia runtime
 or unverified catalogue bytes are admitted.
 
 ### Minor-body pause and resumption

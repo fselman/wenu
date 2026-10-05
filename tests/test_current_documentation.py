@@ -10410,6 +10410,10 @@ def test_stellar_designation_audit_preserves_identity_and_pipeline_boundaries():
         "[detail.star_labels]",
         "Keep inclusion, label text and curated symbol eligibility independent",
         "not physical component A/B identities",
+        "Source comparison and publication freedom",
+        "not yet a scientifically admitted snapshot",
+        "it is not a rights clearance for every existing",
+        "Do not silently backfill a CC0 resource",
     ):
         assert phrase in audit
     assert "star_designations.py" in audit

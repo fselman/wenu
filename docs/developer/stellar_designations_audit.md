@@ -313,3 +313,116 @@ query, cross-match, astrometric migration or new Gaia dependency belongs to
 the first Bayer/Flamsteed milestone. Explicit proper-name selection/display is
 now included with reviewed preferences. Wider historical-alias products and
 variable/multiple curation remain later work.
+
+## 9. Source comparison and publication freedom (2026-10-05)
+
+**Status:** Candidate source-policy supplement, requested after the accepted
+selection design; no real dataset is admitted by this comparison.
+**Exact comparison base:** `bf904a284d36a530c2d4ae84619f10a4b43c1f88`.
+**Requirement:** Fernando wants Wenu charts and atlas products to be publishable
+commercially or noncommercially without forced output relicensing, royalties,
+or case-by-case publication permission. Strictly condition-free reuse also
+excludes mandatory attribution; an attribution-only source is a distinct
+fallback to discuss, not assumed equivalent to CC0/public domain.
+
+Kostjuk is not mandatory. The internal HIP-linked resource, selection,
+precedence, CLI/TOML and renderer contracts are source-independent.
+Source permission, scientific adequacy and exact snapshot integrity are three
+separate admission checks.
+
+### Evidence matrix
+
+All URLs below were checked on 2026-10-05. These are documentation-level findings,
+not a complete acquired-data coverage or discrepancy study.
+
+| Candidate | Identity/designation suitability | Observed rights evidence | Current decision |
+|---|---|---|---|
+| Kostjuk IV/27A | Separate Bayer/Flamsteed fields, optional HIP and historical alternatives; suitable subject to conflict-ledger review. | ReadMe has no explicit redistribution grant; the linked CDS licence page could not be retrieved. | Keep as scientific reference/candidate, not admitted bundled data. |
+| Yale BSC V/50 | Bayer/Flamsteed in Name, HR/HD and multiplicity/variability fields; primary table lacks HIP, requiring a verified identity bridge. | Inspected CDS and HEASARC descriptions did not establish a dataset-specific unrestricted grant. | Do not infer public-domain status from mirrors, app descriptions, catalogue age or NASA hosting. |
+| HYG 4.1 | HIP, proper names and Bayer/Flamsteed; convenient compiled resource. | Maintainer explicitly declares CC BY-SA 4.0. | Not preferred for a condition-free bundled designation resource; a separate permission could change this. |
+| IAU/WGSN CSN | Preferred proper names, HIP and Bayer columns for named entries; does not cover all unnamed Bayer/Flamsteed stars. | Current catalog/download/imprint pages inspected did not establish a primary-source dataset licence; an archived third-party processor claims CC BY. | Scientific name authority; current payload terms still require confirmation. |
+| Wikidata structured items | HIP and catalog-qualified Bayer/Flamsteed statements exist; ranks, references, systems/components and completeness need review. | Wikidata's own policy releases structured data under CC0; this excludes Wikipedia prose/images and other non-structured content. | Preferred candidate to evaluate for condition-free metadata, not yet a scientifically admitted snapshot. |
+
+Sources:
+[Kostjuk ReadMe](https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/IV/27A?format=html&tex=true),
+[CDS linked licence page](https://cds.unistra.fr/vizier-org/licences_vizier.html),
+[Yale BSC ReadMe](https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/V/50?format=html&tex=true),
+[HEASARC BSC5P](https://heasarc.gsfc.nasa.gov/W3Browse/star-catalog/bsc5p.html),
+[HYG maintainer documentation](https://github.com/astronexus/HYG-Database/blob/main/hyg/README.md),
+[WGSN catalog](https://exopla.net/star-names/modern-iau-star-names/),
+[WGSN download index](https://exopla.net/iau-wgsn-catalogs/),
+[WGSN imprint](https://exopla.net/imprint/),
+[archived third-party processor](https://github.com/mirandadam/iau-starnames),
+[Wikidata copyright policy](https://www.wikidata.org/wiki/Wikidata:Copyright),
+[Wikidata licensing explanation](https://www.wikidata.org/wiki/Wikidata:Licensing).
+
+HYG also documents unofficial secondary names such as “Albireo B”.
+Do not promote these to IAU-preferred names. A software converter's MIT/CC0
+licence is not evidence that its input catalogue has the same terms.
+Likewise, a publicly downloadable table is not automatically public domain.
+
+### Data and chart rights are different questions
+
+The [CC BY-SA 4.0 legal code](https://creativecommons.org/licenses/by-sa/4.0/legalcode.en)
+covers licensed material, adaptations and applicable database rights.
+It does not automatically require every chart or enclosing book to be BY-SA.
+Whether a particular use triggers those rights is a separate question; do not
+claim blanket atlas relicensing, or blanket exemption for extracting a few
+columns. A derived distributed database can have different obligations from
+an original chart. Avoid relying on uncertain exceptions to meet this project
+requirement.
+
+[CC0's legal text](https://creativecommons.org/publicdomain/zero/1.0/legalcode.en)
+waives the affirmer's copyright and related/database rights to the extent
+possible, with fallback provisions. It does not grant rights a contributor does
+not own, clear trademarks, or guarantee correctness. Wikidata's policy expressly
+discusses uncertainty around third-party dataset claims; CC0 is not a means of
+laundering an entire restricted source compilation.
+
+Scientific attribution/provenance remains desirable even where not legally
+required. Credits can live in the resource manifest and atlas bibliography,
+without automatically placing a credit beside each star. This review concerns
+new designation metadata only; it is not a rights clearance for every existing
+Wenu catalogue, image, font, ephemeris or exported product.
+
+### Small scientific spot check
+
+The inspected structured items contain the following HIP/Bayer pairs:
+
+| Item | HIP statement | Bayer statement | Review limitation |
+|---|---|---|---|
+| [Antares Q12166](https://www.wikidata.org/wiki/Q12166) | 80763 | α Sco | Bayer reference is a Wikimedia import; its Flamsteed statement has no reference. |
+| [Lambda Scorpii Q13023](https://www.wikidata.org/wiki/Q13023) | 85927 | λ Sco | Includes system/component identifiers; Bayer reference is a Wikimedia import. |
+| [Iota1 Scorpii Q2711568](https://www.wikidata.org/wiki/Q2711568) | 87073 | ι¹ Sco | Bayer statement has no reference in the inspected page. |
+
+The WGSN primary table independently agrees on Antares and Shaula's HIP/Bayer
+identities. These checks establish plausibility, not measured all-sky coverage,
+exact release receipts or a parser oracle. No raw catalogue has been frozen,
+downloaded into Wenu or redistributed; no complete conflict counts are claimed.
+
+### Recommended next bounded step
+
+1. Evaluate a minimal Wikidata structured-data snapshot containing only required
+   identifiers, names/aliases and designation statements, keeping item revisions,
+   statement IDs, ranks, qualifiers and reference provenance.
+2. Before designing automated acquisition, inspect current Wikimedia API/access
+   policies; do not introduce requests during chart construction or assume a
+   permitted concurrency/cadence from this licensing review.
+3. Measure coverage against Wenu's HIP catalogue and the agreed selectors; report
+   missing HIPs/designations, duplicate or conflicting identities, physical
+   component ambiguity, Latin letters and Bayer superscripts. Check independently
+   against scientific authorities; do not copy their prose or entire compilations
+   into the CC0 resource.
+4. Separate reviewed preferred proper names from generic Wikidata labels/aliases.
+   Choose by a documented review decision, not “first English label”.
+5. If coverage/quality is inadequate, seek an explicit unrestricted grant for a
+   primary catalogue or propose a documented independently curated complement.
+   Do not silently backfill a CC0 resource from HYG/Kostjuk/Yale bytes.
+6. Freeze the selected raw payload and policy receipts with exact URLs, dates,
+   sizes, SHA-256 and transformation version before dataset admission.
+
+Recommendation: investigate CC0 structured metadata first; retain Kostjuk/Yale
+and WGSN as scientific comparison authorities while their exact distribution
+terms remain unresolved. HYG's clear licence is useful evidence but does not
+satisfy strict condition-free distribution. The accepted selectors, magnitude
+bypass, label precedence, HIP astrometry and future curation boundaries stand.
