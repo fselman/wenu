@@ -34,6 +34,12 @@ is the current status and resumption authority. Agreed order: Bayer/Flamsteed
 Historical candidate and merge-gate statements in retained milestone records
 must be read with their later acceptance entries.
 
+The [minor-body selection checkpoint](post_v0.9_architecture_roadmap.md#minor-body-selection-completion-pending-2026-10-05)
+adds the remaining automatic asteroid-name and unnumbered/provisional selection
+gaps. Explicit installed asteroid aliases and exact comet names/designations
+already work; these pending extensions must be closed before general 50A
+selection is claimed. They remain after the Bayer/Flamsteed work.
+
 - [`post_v0.9_architecture_roadmap.md`](post_v0.9_architecture_roadmap.md) —
   the single active forward roadmap for remaining minor-body work, artificial
   satellites, and publication output.

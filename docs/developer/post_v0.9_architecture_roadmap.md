@@ -21,7 +21,7 @@ candidate-status statements in the historical milestone sections.
 | Order | Work | Next reviewable outcome |
 |---:|---|---|
 | 1 | Bayer/Flamsteed stellar designations | Bounded as-is catalogue and label audit, then implementation using existing stellar metadata, detail/style and rendering machinery. Evaluate a frozen HIP cross-reference and source/redistribution terms before admitting catalogue bytes; no stellar implementation has begun. |
-| 2 | Minor-body completion (50A) | 50A.5D.3 reports → 50A.5E.0 database audit → 50A.5E.1 construction → 50A.5E.2 runtime policy → 50A.5E.3 cache lifecycle → 50A.6 final acceptance. |
+| 2 | Minor-body completion (50A) | Complete automatic asteroid names and unnumbered/provisional selections (bounded audits required) → 50A.5D.3 reports → 50A.5E.0 database audit → 50A.5E.1 construction → 50A.5E.2 runtime policy → 50A.5E.3 cache lifecycle → 50A.6 final acceptance. |
 | 3 | Atlas output curation and publication (50B) | Select representative atlas products, review publication/print practice (50B.0), adopt output standards (50B.1), measure specimens (50B.2), implement monochrome/grayscale profiles (50B.3), accept physical prints (50B.4), and close evidence/docs (50B.5). |
 | 4 | Satellite resumption (50S) | Reopen the paused 50S.7D.3 Phase B preflight at its exact accepted boundary; later complete 50S.6I and the remaining illumination, brightness, detector and closure stages. |
 
@@ -38,6 +38,7 @@ records the final 2,923-test gate and live 214-comet/cache/error acceptance.
 
 | Remaining stage | Missing outcome and owner |
 |---|---|
+| Selection completion | Automatic asteroid names and unnumbered/provisional designations remain pending; reuse exact typed identity and resource preflight. Installed asteroid aliases with an explicit resource directory and exact comet names/designations already work. See the selection checkpoint below. |
 | 50A.5D.3 | Natural moving-object text/JSON reports from already realized temporal results, including apparent angular rates and driver-convention warnings. Start with a bounded as-is report/temporal ownership audit; do not calculate ephemerides again or add another renderer. |
 | 50A.5E.0–1 | Scientific/packaging audit and reproducible versioned distributable database: representation, identity, important-object/dwarf-planet inclusion policy, coverage, uncertainty, provenance, licensing and verification. No packaged database is implemented. |
 | 50A.5E.2 | Explicit `wenu-database` policy and governed cache → provider → database fallback at the existing verified resource-collection boundary. This planned third source must not be described as a current runtime fallback. |
@@ -51,6 +52,52 @@ Photometry remains in `comet_photometry.py`; it does not own natural-object
 reports or chart geometry. Physical coma/tail models, empirical activity and
 visibility are not implied by the accepted symbolic drawing or sampled model
 magnitudes.
+
+### Minor-body selection completion (pending; 2026-10-05)
+
+Fernando confirmed that ordinary chart selection by number or name belongs
+to the remaining 50A completion scope. The source check at `2804afcf`
+found the following as-is boundary, shared by point, track and explicitly
+classed centre requests:
+
+| Selection | Implemented behavior / pending gap |
+|---|---|
+| Numbered asteroid, e.g. `--asteroid 79989` | Automatic verified-cache reuse or provider acquisition is implemented for positive permanent numbers, subject to identity and epoch coverage. |
+| Asteroid name, e.g. `--asteroid Ceres` | An exact installed name/alias works with an explicit `--minor-body-resource-directory`. Without that explicit directory, CLI preflight rejects nonnumeric asteroid selections before automatic cache lookup or provider identity resolution. Automatic name resolution/acquisition remains pending. |
+| Unnumbered asteroid provisional designation | Automatic CLI selection currently rejects nonnumeric asteroid identifiers. Supporting an unnumbered body requires a bounded identity, descriptor, SPK-target/record, acquisition and coverage audit; it is not just removal of the CLI guard. |
+| Comet designation/name, e.g. `10P`, `C/2006 P1`, `Tempel 2` | Exact designation or name resolution, class checking, cache reuse and acquisition are implemented. Partial, absent, ambiguous or fragment-ambiguous identities fail closed; a bare number such as `10` is not a comet designation. This existing capability must not be relisted as wholly unimplemented. |
+
+The first future slice is a fresh bounded as-is audit for automatic asteroid
+names, then separately reviewed implementation and acceptance. Audit
+unnumbered/provisional asteroid support as a separate bounded extension and
+complete both selection gaps before claiming general 50A chart selection or
+closing 50A.6. No new numeric milestone identifier or runtime change is
+admitted by this documentation amendment. Bayer/Flamsteed remains next in
+the agreed project sequence.
+
+Reuse `minor_body_identity.py` and its mandatory object-class constraint:
+the generic resolver already has a tested asteroid-name route (Hygiea), but
+ordinary CLI preflight does not admit it automatically. Keep request-level
+selection, deduplication and coverage composition in `cli/chart.py`, exact
+installed aliases in `minor_body_resources.py`, and verified immutable
+acquisition/publication in `minor_body_acquisition.py`. Extend the existing
+chart argument, centre, descriptor and resource seams only where the as-is
+audit demonstrates a gap. All names/designations must converge on one exact
+identity and one verified resource collection before ordinary chart
+construction; do not introduce a second geometry or drawing pipeline.
+
+Acceptance must cover point, track and centre requests across the supported
+chart families, name/number equivalence, case/whitespace normalization,
+absent/ambiguous/wrong-class selections, mixed asteroid/comet requests,
+adequate and inadequate epoch coverage, offline/warm-cache behavior, explicit
+resource authority and deliberate refresh. Preserve exact solution/target
+binding, provenance and independent numerical fixtures. No fuzzy guessing,
+silent orbit fallback or network access during realization/rendering is
+implied. Existing evidence owners are `tests/test_minor_body_identity.py`
+(`test_generic_boundary_can_resolve_an_asteroid_when_explicitly_requested`)
+and `tests/test_minor_body_acquisition.py`
+(`test_explicit_resource_directory_preserves_installed_name_selection` and
+`test_automatic_name_lookup_remains_outside_numbered_asteroid_slice`).
 
 ### Satellite pause and resumption
 
