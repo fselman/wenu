@@ -1,7 +1,8 @@
 # Wenu artificial-satellite scientific and implementation guide
 
-**Status:** Living 50S work-in-progress guide; 50S.0 decisions accepted by
-Fernando on 2026-09-14
+**Status:** Living 50S work-in-progress guide; foundation integrated into
+`main`, program paused at 50S.7D.3 Phase B on 2026-10-05.
+50S.0 decisions accepted by Fernando on 2026-09-14
 **Established:** 2026-09-14
 **Initial baseline:** `862acaa`
 **Current authority:** the accepted portions of this guide together with the
@@ -13,10 +14,15 @@ This guide keeps the scientific meaning, provider constraints, mathematical
 conventions, data flow, ownership boundaries, and validation plan for Wenu's
 artificial-satellite program in one place while 50S is developed.
 
-It is intentionally separate from `coordinate_system_guide_v0.9.5.md` during
-the 50S foundation branch. The two guides may be consolidated when the
-satellite foundation is merged, but only after checking that no satellite
-meaning, equation, provider rule, or validation obligation is lost.
+It remains intentionally separate from `coordinate_system_guide_v0.9.5.md` after the
+foundation merge to preserve the satellite-specific pedagogy. Any later
+consolidation must check that no scientific meaning, equation, provider rule,
+or validation obligation is lost. The [current roadmap checkpoint](post_v0.9_architecture_roadmap.md#satellite-pause-and-resumption)
+and [program log](satellite_program_log.md) state accepted capabilities and
+remaining work. Direct-Sun incident irradiance is implemented; numerical
+Moonlight, observer brightness and detector contamination remain incomplete.
+Older candidate/next-step sections retain their historical context and do not
+supersede the current pause or authorization boundaries.
 
 This document is not evidence that a described capability is implemented.
 Each section distinguishes accepted direction, proposed implementation, and

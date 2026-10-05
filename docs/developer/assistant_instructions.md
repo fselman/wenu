@@ -140,7 +140,7 @@ For current work, read and follow:
 - `archive/milestone_history/50a_minor_bodies/first_drawable_comet_audit_50a5a.md` for accepted 2P/Encke identity,
   explicit resource, symbolic nucleus, shared point/track, and coma/tail
   separation decisions;
-- `comet_photometry_revision_50a5d1b1.md` for the active accepted revision of
+- `archive/milestone_history/50a_minor_bodies/comet_photometry_revision_50a5d1b1.md` for the active accepted revision of
   per-comet perihelion sampling, workload authorization, Horizons file-API
   transport, and clean command failures;
 - `archive/milestone_history/50a_minor_bodies/solar_system_temporal_components_audit_50a5b1.md` before changing temporal
@@ -755,13 +755,17 @@ evaluation, direction realization, projection, rendering, or export to query a
 service. Do not add a silent orbital-element fallback. Keep artificial
 satellite OMM/TLE plus SGP4/TEME physics in a separate provider milestone.
 
-For the reopened 50A.5D.1B.1 operational revision, follow
-`comet_photometry_revision_50a5d1b1.md`. Keep discovery selection separate
+For the closed 50A.5D.1B.1 operational revision, preserve the contract in
+`archive/milestone_history/50a_minor_bodies/comet_photometry_revision_50a5d1b1.md`. Keep discovery selection separate
 from each comet's ±30-day perihelion photometry window, preserve explicit
 cadences or report their minimum usable replacement, require deliberate
 authorization above the default 50-comet workload, and use multiline discrete
-epochs through the Horizons file API POST route. Do not close or merge PR #121
-until broad live cases and the complete Mac gate pass.
+epochs through the Horizons file API POST route. 50A.5D.1B.1 is closed: Fernando accepted the broad live cases and complete
+Mac gate on 2026-10-05, and PR #121 merged at `91f78412`. The minor-body
+program remains open. Follow the current roadmap checkpoint: Bayer/Flamsteed,
+minor-body completion, atlas/publication curation, then satellite resumption.
+Historical milestone-specific next-step instructions below do not authorize
+resuming the paused satellite program ahead of that sequence.
 
 For 50B publication-style work, complete the print, typography, contrast,
 accessibility, cartographic, and astronomical-atlas practice review plus

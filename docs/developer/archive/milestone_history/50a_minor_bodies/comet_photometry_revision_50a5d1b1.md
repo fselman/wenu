@@ -1,7 +1,7 @@
 # Comet photometry operational revision (Milestone 50A.5D.1B.1)
 
 **Status:** Revised contract accepted by Fernando on 2026-09-14;
-implementation and operational acceptance pending.
+implementation and operational acceptance closed by Fernando on 2026-10-05.
 
 **Exact base:** `0563a03`
 
@@ -78,7 +78,7 @@ This revision adds no chart integration, SPK-cache coupling, empirical
 activity correction, visibility model, partial-result publication semantics,
 or 50A.5D.3 moving-object report behavior.
 
-## Required evidence before closure
+## Closure criteria (satisfied on 2026-10-05)
 
 - focused parser, sampling, transport, workload, CLI-error, serialization,
   and documentation tests on the exact final branch;
@@ -90,9 +90,10 @@ or 50A.5D.3 moving-object report behavior.
 - `--debug` traceback restoration;
 - clean working tree, `git diff --check`, and substantive diff inspection.
 
-The implementation must remain pending until Fernando accepts those live
-results. PR #121 must not be merged merely because the earlier narrow
-acceptance passed.
+The earlier narrow acceptance was insufficient. Fernando accepted the revised
+live results on 2026-10-05; [PR #121](https://github.com/fselman/wenu/pull/121)
+merged at `91f7841235d4ed49b20ae6bf5d6b3e678de4e5c5`.
+This closes 50A.5D.1B.1 only, not the minor-body program.
 
 ## Provider-policy recheck before live acceptance (2026-10-05)
 
@@ -115,3 +116,32 @@ formats can change, and offers no availability guarantee. This acceptance
 exercise performs no redistribution of provider responses. The coordinate
 guide was reviewed and remains current: headers change no scientific state,
 coordinate frame, provenance quantity, or chart pipeline.
+
+## Final acceptance evidence (2026-10-05)
+
+Exact accepted implementation: `5b9b8e11539d2d5550c84a2dcfe86de876af2a63`.
+The merge tree is identical to that tested head. The Mac focused gate passed
+262 tests in 10.44 seconds and the complete suite passed 2,923 tests in
+257.25 seconds. Diff and clean synchronized-tree checks passed.
+
+- McNaught from La Ligua: table and JSON routes, 121 samples every 12 hours
+  within its own ±30-day window, unchanged cache files, and preserved original
+  retrieval time and raw-response digest. The solution remained JPL 27.
+- The complete 2007 selection processed 214 comets with explicit workload
+  limit 250: 61 samples every day per comet, exact per-perihelion windows,
+  sequential POST, and identical photometry and provenance on cache reuse.
+  First execution took 117 seconds; the cached execution took 7 seconds.
+  C/2007 B4 remained bound to `SAO_2008`.
+- The 2007–2027 discovery returned 1,516 records; workload limit 300 rejected
+  the request before photometry. That interval was not a completed broad
+  photometry trial. The accepted operational trial was the 214-comet year.
+- Default limit 50 and explicit 1h cadence produced concise status-2 errors
+  with empty stdout; the latter reported minimum usable cadence 4h.
+  `--debug` restored the traceback and status 1.
+
+The local evidence directory was `/tmp/wenu-comet-review.ZM6hp0`; it is a
+transient receipt location, not an installed resource or durable archive.
+The sampled provider values remain models, not continuous minima, visibility,
+detectability, empirical coma brightness, or physical tail morphology.
+See the [current resumption checkpoint](../../../post_v0.9_architecture_roadmap.md#current-forward-roadmap)
+for reports, database/lifecycle work and final minor-body closure.

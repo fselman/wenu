@@ -3161,7 +3161,6 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "assistant_instructions.md",
         "artificial_satellite_crossing_audit_50s0.md",
         "comet_discovery_and_reporting_audit_50a5d.md",
-        "comet_photometry_revision_50a5d1b1.md",
         "configuration_schema_v2.md",
         "coordinate_system_guide_v0.9.5.md",
         "current_architecture_v0.9.md",
@@ -3217,6 +3216,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "comet_acquisition_audit_50a5d2b.md",
         "comet_cli_preflight_audit_50a5d2c.md",
         "comet_model_magnitude_audit_50a5d1b.md",
+        "comet_photometry_revision_50a5d1b1.md",
     ):
         assert (MINOR_BODY_HISTORY / name).is_file()
         assert not (DEVELOPER / name).exists()
@@ -4857,7 +4857,7 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
         ROOT / "docs/user_guide/comet_discovery.md"
     ).split())
     revision = " ".join(read(
-        DEVELOPER / "comet_photometry_revision_50a5d1b1.md"
+        MINOR_BODY_HISTORY / "comet_photometry_revision_50a5d1b1.md"
     ).split())
 
     for phrase in (
@@ -4959,7 +4959,7 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
 
     for phrase in (
         "Revised contract accepted by Fernando on 2026-09-14",
-        "implementation and operational acceptance pending",
+        "implementation and operational acceptance closed by Fernando on 2026-10-05",
         "±30 days around perihelion",
         "minimum usable cadence",
         "--max-photometry-comets COUNT",
@@ -4974,16 +4974,16 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
         "~/.cache/wenu/comet_photometry",
         "Cache corruption fails closed",
         "no generic Horizons client",
-        "PR #121 must not be merged",
+        "PR #121](https://github.com/fselman/wenu/pull/121)",
     ):
         assert phrase in revision
 
     for phrase in (
-        "50A.5D.1B.1 operational revision in progress",
+        "50A.5D.1B.1 operational revision closed on 2026-10-05",
         "each comet is sampled independently over ±30 days",
         "provider-compliant sequential access",
         "validated raw-response cache",
-        "PR #121 remains unaccepted",
+        "PR #121 merged after Fernando accepted",
     ):
         assert phrase in roadmap
 
@@ -4992,7 +4992,7 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
         "comet_photometry_revision_50a5d1b1.md",
         "each comet's ±30-day perihelion photometry window",
         "Horizons file API POST route",
-        "Do not close or merge PR #121",
+        "50A.5D.1B.1 is closed",
     ):
         assert phrase in instructions
 
@@ -6086,8 +6086,8 @@ def test_50s6e_audits_multifov_interchange_and_lunar_illumination():
     assert "commit `f079d95`" in audit
     assert "all 143 plugin-disabled current-documentation tests" in audit
     assert "Only a bounded 50S.6F implementation is authorized next" in audit
-    assert "| 28 | 50B.0 |" in roadmap
-    assert "| 33 | 50B.5 |" in roadmap
+    assert "review publication/print practice (50B.0)" in roadmap
+    assert "close evidence/docs (50B.5)" in roadmap
 
 
 def test_50s6f_documents_candidate_atomic_multifov_coordinator():
@@ -10358,3 +10358,31 @@ def test_phase_b_frozen_kernel_protocol_stops_on_missing_resources():
     assert "satellite_moonlight_geometry_run_protocol_phase_b.md" in read(
         DEVELOPER / "README.md"
     )
+
+
+def test_current_resumption_checkpoint_preserves_unfinished_programs():
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    current = roadmap.split("## 1. Purpose and authority", 1)[0]
+    assert current.index("| 1 | Bayer/Flamsteed") < current.index(
+        "| 2 | Minor-body completion"
+    ) < current.index("| 3 | Atlas output curation") < current.index(
+        "| 4 | Satellite resumption"
+    )
+    for phrase in (
+        "50A.5D.3", "50A.5E.0–1", "50A.5E.2", "50A.5E.3", "50A.6",
+        "No packaged database is implemented",
+        "ten-FoV equivalence matrix had zero crossings",
+        "`moonlight` remains `not_evaluated`",
+        "50S.6I", "50S.7D.4", "50S.7E", "50S.7F",
+        "50S.8", "50S.9", "50S.10",
+        "No SPICE geometry comparison, LIME rerun",
+    ):
+        assert phrase in current
+    protocol = " ".join(read(
+        DEVELOPER / "satellite_moonlight_geometry_run_protocol_phase_b.md"
+    ).split())
+    assert "supersedes the initial NOT_FOUND rows" in protocol
+    assert "not a complete frozen case matrix or geometry comparison" in protocol
+    log = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    assert "2026-10-05 — Foundation consolidated; program paused" in log
+    assert "not closure of Program 50S" in log
