@@ -26,6 +26,11 @@ migrations, milestone evidence, and superseded roadmaps are under
 
 ## Roadmap and current work
 
+- [Stellar Bayer/Flamsteed designation audit](stellar_designations_audit.md)
+  — documentation-only candidate for HIP-linked designation records,
+  source/rights admission, render-local label policy and existing pipeline
+  reuse. Gaia and proper-name display remain later work.
+
 **2026-10-05 checkpoint:** Both development branches are merged into clean
 `main` at `91f78412` and have been deleted; both programs remain incomplete.
 The [roadmap checkpoint](post_v0.9_architecture_roadmap.md#current-forward-roadmap)

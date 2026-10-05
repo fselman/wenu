@@ -25,6 +25,16 @@ candidate-status statements in the historical milestone sections.
 | 3 | Atlas output curation and publication (50B) | Select representative atlas products, review publication/print practice (50B.0), adopt output standards (50B.1), measure specimens (50B.2), implement monochrome/grayscale profiles (50B.3), accept physical prints (50B.4), and close evidence/docs (50B.5). |
 | 4 | Satellite resumption (50S) | Reopen the paused 50S.7D.3 Phase B preflight at its exact accepted boundary; later complete 50S.6I and the remaining illumination, brightness, detector and closure stages. |
 
+### Current stellar-designation audit
+
+The [Bayer/Flamsteed audit](stellar_designations_audit.md) records the
+source-verified as-is state at `b929325a`, HIP-linked resource/preference
+contract, metadata attachment, detail/style/CLI placement, label suppression,
+rights gates and acceptance sequence. It is a documentation-only candidate;
+no catalogue bytes, new runtime, proper-name display or Gaia integration are
+admitted. Bayer/Flamsteed remains the first bounded implementation direction,
+after separate audit acceptance and the applicable resource gates.
+
 ### Minor-body pause and resumption
 
 **Status:** Implemented partial program, paused; 50A.5D.1B.1 closed on
