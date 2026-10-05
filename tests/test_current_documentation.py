@@ -3196,6 +3196,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_snapshot_propagation_audit_50s4a.md",
         "satellite_guide.md",
         "satellite_program_log.md",
+        "stellar_designations_audit.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
     }
@@ -10386,3 +10387,31 @@ def test_current_resumption_checkpoint_preserves_unfinished_programs():
     log = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     assert "2026-10-05 — Foundation consolidated; program paused" in log
     assert "not closure of Program 50S" in log
+
+
+def test_stellar_designation_audit_preserves_identity_and_pipeline_boundaries():
+    audit = " ".join(read(DEVELOPER / "stellar_designations_audit.md").split())
+    for phrase in (
+        "Design accepted by Fernando",
+        "Keep HIP as stable stellar identity",
+        "Never fall back to HIP numbers",
+        "redistribution rights remain unverified",
+        "preserving order/count and original coordinates",
+    ):
+        assert phrase in audit
+    assert "No current public API is changed by this audit" in audit
+    assert "No Gaia query, cross-match" in audit
+    for phrase in (
+        "--star-label-name",
+        "--star-label-bayer",
+        "--show-full-bayer-designation",
+        "bypass the ordinary star magnitude limit",
+        "Name selection takes precedence over Bayer selection",
+        "[detail.star_labels]",
+        "Keep inclusion, label text and curated symbol eligibility independent",
+        "not physical component A/B identities",
+    ):
+        assert phrase in audit
+    assert "star_designations.py" in audit
+    for name in ("README.md", "post_v0.9_architecture_roadmap.md"):
+        assert "stellar_designations_audit.md" in read(DEVELOPER / name)
