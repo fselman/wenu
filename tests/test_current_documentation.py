@@ -10412,6 +10412,12 @@ def test_stellar_designation_audit_preserves_identity_and_pipeline_boundaries():
         "not physical component A/B identities",
         "Source comparison and publication freedom",
         "not yet a scientifically admitted snapshot",
+        "Full pairwise consistency comparison",
+        "agreement is **not an accuracy percentage**",
+        "HYG **4.4**",
+        "named component identity separate from the drawn HIP point",
+        "IAU/WGSN",
+        "Acquisition receipts and reproducibility boundary",
         "it is not a rights clearance for every existing",
         "Do not silently backfill a CC0 resource",
     ):

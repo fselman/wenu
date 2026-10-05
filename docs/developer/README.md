@@ -30,8 +30,9 @@ migrations, milestone evidence, and superseded roadmaps are under
   — accepted design amended for explicit name/Bayer selection beyond the
   magnitude limit, CLI/TOML parity and future curation boundaries.
   Implementation and resource admission remain pending; Gaia stays later.
-  The source-comparison supplement evaluates publication freedom and a CC0
-  metadata candidate; it does not admit a real dataset.
+  The expanded comparison measures licensing, coverage, identity discrepancies
+  and quality for Kostjuk, Yale BSC, current HYG 4.4, IAU/WGSN and Wikidata.
+  PR #205 remains under review; no real dataset is admitted.
 
 **2026-10-05 checkpoint:** Both development branches are merged into clean
 `main` at `91f78412` and have been deleted; both programs remain incomplete.

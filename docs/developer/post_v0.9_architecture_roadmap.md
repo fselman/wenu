@@ -35,10 +35,15 @@ name/Bayer selectors on 2026-10-05: selected stars bypass the magnitude limit;
 proper names win; full Bayer text is optional; CLI and TOML agree. Future
 variable/multiple curation remains separate from labels and catalogue flags.
 The accepted design merged in PR #204 at `bf904a28`; implementation and
-catalogue admission remain pending. The 2026-10-05 source-policy supplement is
-under review: investigate CC0 structured metadata before choosing a catalogue,
-with scientific coverage and exact rights receipts required. No Gaia runtime
-or unverified catalogue bytes are admitted.
+catalogue admission remain pending. The expanded 2026-10-05 comparison in PR #205
+is under review: measured coverage, pairwise disagreements, components, reference
+quality and exact acquisition receipts cover Kostjuk, Yale BSC, current HYG 4.4,
+IAU/WGSN and Wikidata. CC0 is the strongest established rights starting point,
+not a scientifically accepted default; current proper-name coverage and split
+component identities need curation. Origin-dependent Kostjuk/Yale commercial
+terms and the scope of IAU CC BY for the exopla-hosted payload remain unresolved.
+Choose and admit the exact resource only after those scientific/rights decisions.
+No Gaia runtime or unverified catalogue bytes are admitted.
 
 ### Minor-body pause and resumption
 
