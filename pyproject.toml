@@ -17,11 +17,12 @@ readme = "README.md"
 requires-python = ">=3.10"
 
 dependencies = [
-    "astropy",
+    "astropy>=7,<8",
     "matplotlib",
-    "numpy",
+    "numpy>=1.26,<2",
     "pandas",
     "skyfield",
+    "sgp4>=2.25,<3",
     "spiceypy>=6,<9",
     "tomli>=2; python_version < '3.11'",
 ]
@@ -31,6 +32,7 @@ wenu_chart = "wenu.cli.chart:main"
 wenu_retrieve_comets = "wenu.cli.comets:main"
 wenu_examples = "wenu.cli.examples:main"
 wenu_notebooks = "wenu.cli.notebooks:main"
+wenu_satellite_crossings = "wenu.cli.satellite_crossings:main"
 
 [tool.ruff]
 line-length = 79
@@ -54,6 +56,10 @@ markers = [
 [tool.setuptools.package-data]
 "wenu.configuration" = ["defaults.toml"]
 "wenu.data" = ["*.json", "*.geojson"]
+"wenu.data.satellites.snapshots.synthetic_50s4b_v1" = [
+    "*.json",
+    "README.md",
+]
 "wenu.data.isophotes.milky_way" = [
     "*.json", "*.geojson", "*.txt", "README.md",
 ]

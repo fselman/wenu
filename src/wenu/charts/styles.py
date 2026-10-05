@@ -240,6 +240,13 @@ class PublicationStyle:
     solar_system_track_linestyle: str = "-"
     solar_system_track_tick_linewidth: float = 1.0
     solar_system_track_label_fontsize: float = 9.0
+    satellite_exact_track_color: str = "#00D7FF"
+    satellite_exact_track_linewidth: float = 1.2
+    satellite_exact_track_linestyle: str = "-"
+    satellite_exact_event_marker: str = "x"
+    satellite_exact_event_symbol_size: float = 28.0
+    satellite_exact_event_linewidth: float = 1.0
+    satellite_exact_event_label_fontsize: float = 7.0
     moon_color: str = "#6f6f6f"
     moon_marker: str = "o"
     asteroid_color: str = "#8c5a00"
@@ -312,6 +319,8 @@ class PublicationStyle:
     horizon_alpha: float = 0.8
     horizon_zorder: float = 3.5
     equatorial_reference_linewidth: float | None = None
+    constellation_label_fontsize: float | None = None
+    title_color: str | None = None
 
     def configure_axes(self, ax, *, title=None):
         """Apply chart-level axes styling."""
@@ -322,7 +331,10 @@ class PublicationStyle:
             title_artist = getattr(ax, "title", None)
             set_color = getattr(title_artist, "set_color", None)
             if callable(set_color):
-                set_color(self.foreground_color)
+                set_color(
+                    self.foreground_color if self.title_color is None
+                    else self.title_color
+                )
         ax.set_xticks([])
         ax.set_yticks([])
         ax.xaxis.set_visible(False)
@@ -826,7 +838,11 @@ class PublicationStyle:
                             if self.constellation_label_color is None
                             else self.constellation_label_color
                         ),
-                        "fontsize": self.label_fontsize,
+                        "fontsize": (
+                            self.label_fontsize
+                            if self.constellation_label_fontsize is None
+                            else self.constellation_label_fontsize
+                        ),
                         "ha": self.constellation_label_ha,
                         "va": self.constellation_label_va,
                         "alpha": self.constellation_label_alpha,
@@ -874,6 +890,48 @@ class PublicationStyle:
                     layer,
                     minimum=horizon_altitude_deg,
                 )
+            elif getattr(layer, "layer_name", None) == "satellite_exact_track":
+                options[layer] = {
+                    "prepare": clip,
+                    "render": {
+                        "style": {
+                            "color": self.satellite_exact_track_color,
+                            "linewidth": self.satellite_exact_track_linewidth,
+                            "linestyle": self.satellite_exact_track_linestyle,
+                            "zorder": 38.0,
+                        },
+                        "draw_labels": False,
+                    },
+                }
+            elif (
+                getattr(layer, "layer_name", None)
+                == "satellite_exact_track_events"
+            ):
+                options[layer] = {
+                    "prepare": clip,
+                    "render": {
+                        "style": {
+                            "marker": self.satellite_exact_event_marker,
+                            "s": self.satellite_exact_event_symbol_size,
+                            "color": self.satellite_exact_track_color,
+                            "linewidths": self.satellite_exact_event_linewidth,
+                            "zorder": 38.1,
+                        },
+                        "draw_labels": getattr(
+                            layer, "label_events", False
+                        ),
+                        "label_style": {
+                            "color": self.satellite_exact_track_color,
+                            "fontsize": (
+                                self.satellite_exact_event_label_fontsize
+                            ),
+                            "ha": "left",
+                            "va": "bottom",
+                            "zorder": 38.2,
+                        },
+                        "label_offset": (0.01, 0.01),
+                    },
+                }
         horizon = getattr(sky, "horizon_reference", None)
         if horizon is not None:
             options[horizon] = {

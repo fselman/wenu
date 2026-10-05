@@ -50,6 +50,7 @@ class CanvasStyle:
     foreground_color: str = "white"
     label_fontsize: float = 10.0
     footer_color: str | None = None
+    title_color: str | None = None
 
 
 @dataclass(frozen=True)
@@ -194,6 +195,13 @@ class SolarSystemStyle:
     comet_alpha: float = 1.0
     comet_draw_label: bool = True
     comet_label_fontsize: float = 7.0
+    satellite_exact_track_color: str = "#00D7FF"
+    satellite_exact_track_linewidth: float = 1.2
+    satellite_exact_track_linestyle: str = "-"
+    satellite_exact_event_marker: str = "x"
+    satellite_exact_event_symbol_size: float = 28.0
+    satellite_exact_event_linewidth: float = 1.0
+    satellite_exact_event_label_fontsize: float = 7.0
 
 
 @dataclass(frozen=True)
@@ -238,6 +246,8 @@ class GridStyle:
     horizon_alpha: float = 0.8
     horizon_zorder: float = 3.5
     equatorial_reference_linewidth: float | None = None
+    # None preserves the legacy canvas-size fallback.
+    constellation_label_fontsize: float | None = None
 
 
 @dataclass(frozen=True)
@@ -307,6 +317,7 @@ class ChartStyle:
         return PublicationStyle(
             sky_color=canvas.sky_color,
             foreground_color=canvas.foreground_color,
+            title_color=canvas.title_color,
             star_color=stars.color,
             draw_bright_star_symbols=stars.draw_bright_symbols,
             bright_star_magnitude_limit=stars.bright_magnitude_limit,
@@ -446,6 +457,27 @@ class ChartStyle:
             comet_alpha=solar.comet_alpha,
             comet_draw_label=solar.comet_draw_label,
             comet_label_fontsize=solar.comet_label_fontsize,
+            satellite_exact_track_color=(
+                solar.satellite_exact_track_color
+            ),
+            satellite_exact_track_linewidth=(
+                solar.satellite_exact_track_linewidth
+            ),
+            satellite_exact_track_linestyle=(
+                solar.satellite_exact_track_linestyle
+            ),
+            satellite_exact_event_marker=(
+                solar.satellite_exact_event_marker
+            ),
+            satellite_exact_event_symbol_size=(
+                solar.satellite_exact_event_symbol_size
+            ),
+            satellite_exact_event_linewidth=(
+                solar.satellite_exact_event_linewidth
+            ),
+            satellite_exact_event_label_fontsize=(
+                solar.satellite_exact_event_label_fontsize
+            ),
             moon_color=solar.moon_color,
             moon_marker=solar.moon_marker,
             moon_symbol_size=solar.moon_symbol_size,
@@ -472,6 +504,7 @@ class ChartStyle:
             constellation_label_color=(
                 grids.constellation_label_color
             ),
+            constellation_label_fontsize=grids.constellation_label_fontsize,
             constellation_label_alpha=(
                 grids.constellation_label_alpha
             ),

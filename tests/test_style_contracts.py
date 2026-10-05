@@ -20,6 +20,7 @@ from wenu.charts.style_components import (
     GridStyle,
     IsophoteStyle,
     MaskStyle,
+    SolarSystemStyle,
     StellarStyle,
 )
 from wenu.geometry.projected import ProjectedCurve
@@ -1385,3 +1386,60 @@ def test_track_style_resolves_without_custom_stellar_sizing():
     assert render["component_styles"]["path"]["color"] == "#FFB000"
     assert render["component_styles"]["ticks"]["color"] == "#FFB000"
     assert render["label_style"]["color"] == "#FFB000"
+
+
+
+def test_exact_satellite_track_style_is_owned_by_composed_style():
+    solar = SolarSystemStyle(
+        satellite_exact_track_color="#123abc",
+        satellite_exact_track_linewidth=2.5,
+        satellite_exact_event_marker="+",
+        satellite_exact_event_symbol_size=31.0,
+    )
+    publication = ChartStyle(solar_system=solar).as_publication_style()
+
+    assert publication.satellite_exact_track_color == "#123abc"
+    assert publication.satellite_exact_track_linewidth == 2.5
+    assert publication.satellite_exact_event_marker == "+"
+    assert publication.satellite_exact_event_symbol_size == 31.0
+
+
+def test_exact_satellite_path_and_event_layers_receive_narrow_styles():
+    class Path:
+        layer_name = "satellite_exact_track"
+
+    class Events:
+        layer_name = "satellite_exact_track_events"
+        label_events = True
+
+    path = Path()
+    events = Events()
+    sky = SimpleNamespace(
+        stars=None,
+        nonstellar=None,
+        galaxies=None,
+        milky_way_isophotes=None,
+        globular_clusters=None,
+        open_clusters=None,
+        supernova_remnants=None,
+        planetary_nebulae=None,
+        constellation_lines=None,
+        constellation_labels=None,
+        constellation_boundaries=None,
+        points=None,
+        layers=(path, events),
+    )
+    options = PublicationStyle().layer_options(
+        sky, horizon_altitude_deg=-90.0
+    )
+
+    assert options[path]["render"]["draw_labels"] is False
+    assert (
+        options[path]["render"]["style"]["color"]
+        == PublicationStyle().satellite_exact_track_color
+    )
+    assert options[events]["render"]["draw_labels"] is True
+    assert (
+        options[events]["render"]["style"]["marker"]
+        == PublicationStyle().satellite_exact_event_marker
+    )

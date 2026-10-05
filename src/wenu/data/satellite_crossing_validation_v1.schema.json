@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wenu.dev/schema/satellite-crossing-validation-v1.json",
+  "title": "Wenu artificial-satellite validation output v1",
+  "type": "object",
+  "required": [
+    "product", "schema_version", "document_kind", "source_bytes_sha256",
+    "source_request_identity_sha256", "snapshot", "results",
+    "derived_request", "validation_identity_sha256"
+  ],
+  "properties": {
+    "product": {"const": "wenu.artificial_satellite_crossing_validation"},
+    "schema_version": {"const": 1},
+    "document_kind": {"const": "validation_output"},
+    "source_bytes_sha256": {"$ref": "#/$defs/digest"},
+    "source_request_identity_sha256": {"$ref": "#/$defs/digest"},
+    "snapshot": {"$ref": "#/$defs/snapshot"},
+    "results": {
+      "type": "array", "minItems": 1,
+      "items": {"$ref": "#/$defs/result"}
+    },
+    "derived_request": {
+      "oneOf": [
+        {"$ref": "satellite-crossing-request-v1.json"},
+        {"type": "null"}
+      ]
+    },
+    "validation_identity_sha256": {"$ref": "#/$defs/digest"}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "snapshot": {
+      "type": "object",
+      "required": ["directory", "snapshot_id", "content_sha256"],
+      "properties": {
+        "directory": {"type": "string", "minLength": 1},
+        "snapshot_id": {"type": "string", "minLength": 1},
+        "content_sha256": {"$ref": "#/$defs/digest"}
+      },
+      "additionalProperties": false
+    },
+    "result": {
+      "type": "object",
+      "required": ["field_id", "source_index", "status", "code", "detail"],
+      "properties": {
+        "field_id": {"type": "string", "minLength": 1},
+        "source_index": {"type": "integer", "minimum": 0},
+        "status": {"enum": ["valid", "invalid"]},
+        "code": {"type": ["string", "null"]},
+        "detail": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    }
+  }
+}

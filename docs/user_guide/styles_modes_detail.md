@@ -108,6 +108,38 @@ Explicit overrides apply after mode defaults and therefore take precedence:
 Colors use any value accepted by Matplotlib, such as `black`, `#ffcc33`, or
 `0.4`. These are appearance choices only.
 
+Constellation abbreviations have an independent font size in schema-v2
+profiles. For atlas labels at half the packaged size:
+
+```toml
+schema_version = 2
+
+[styles.atlas.constellation_labels]
+font_size = 4.25
+```
+
+The main chart title has an independent color in the style's canvas table:
+
+```toml
+schema_version = 2
+[styles.atlas.canvas]
+title_color = "#0262AD"
+```
+
+This makes the title match the default atlas presentation sky blue without
+changing other foreground elements. Use `[styles.cartoon.canvas]` for cartoon.
+The override is retained in both print and presentation modes. The default
+`title_color = "none"` (also `"inherit_canvas"`) inherits the effective
+foreground color, preserving existing titles. This is the main chart title,
+separate from legend titles. Combine this table with other tables in your
+existing TOML overlay and pass it with `--config`.
+
+Load the profile with `--config PATH`. This leaves the canvas, coordinate-grid,
+object, and legend font sizes unchanged. Both print and presentation modes
+apply their usual font scale to the constellation size. Use
+`--no-equatorial-grid --altaz-grid-labels` for a labeled AltAz grid without
+the default equatorial grid.
+
 ## Legends and counts
 
 ```text

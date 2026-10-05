@@ -363,6 +363,13 @@ Milky Way and Magellanic Cloud isophotes transform every loaded ring in one
 maximal vectorized operation and apply level choices afterward. Constellation
 boundaries do the same after native B1875 sampling; their cache key includes
 the sampling step so geometry quality cannot be reused accidentally.
+Milky Way rings also carry intrinsic filled-side and solid-angle metadata
+(`spherical_interior_left`, `spherical_interior_area_sr`). Projection-cap
+preparation uses these to anchor each ring's winding and restore any missing
+whole-cap winding with signed cap boundaries. It preserves compound holes
+without joining unrelated visible fragments or complementing an entire
+compound because one source ring winds around a pole. The renderer continues
+to consume ordinary compound projected polygons.
 Sampled extended-object outlines are cached once per observer, loaded source,
 source revision, sample count, and minimum displayed angular size. Identifier
 and supported magnitude selections then index that immutable maximal
@@ -389,6 +396,18 @@ coordinate, constellation set, or packaged group; and `ChartFrameRequest`
 holds optional framing overrides. Existing `SkyContentSelection`,
 `DetailOverrides`, `ChartFurnitureOptions`, and `ChartProductOptions` remain
 the corresponding content, detail, furniture, and output contracts.
+For planispheres, `ChartFrameRequest.mirror_ew` and the matching
+`get_chart_view(..., mirror_ew=True)` argument exchange east and west relative
+to the default chart. The CLI exposes this as `planisphere --flip-ew`.
+Resolution retains the flag on `ResolvedChartFrame`; preparation selects
+`FullSkyChart.flip_ew=False` for a mirrored view and `True` otherwise.
+The default is output-neutral, and other request families reject mirroring.
+The atlas and cartoon canvas tables accept `title_color` independently of
+`foreground`. Translation carries it through `CanvasStyle` and
+`PublicationStyle`, and mode adaptation retains explicit values. A missing
+override, `"none"`, or `"inherit_canvas"` uses the effective foreground,
+preserving legacy title colors. Cartoon's axes adapter respects the same
+title override while retaining its ordinary frame styling.
 For regional and binocular views, a named `orientation` is explicit and
 mutually exclusive with a literal `position_angle_deg`; zero therefore remains
 an ordinary angle. Regional framing may also carry a paired fixed horizontal
@@ -1123,6 +1142,14 @@ once for the fixed product frame. The result retains sample instants, exact tick
 indices, resource identity, and scalar evidence. No installed layer or public
 chart request consumes it in 49I.2D.1. Fernando accepted the scientific
 contract and installed-DE440 validation after all 1,929 tests passed.
+
+`GridStyle.constellation_label_fontsize` and the corresponding
+`PublicationStyle` field independently control constellation-label typography.
+`None` retains the legacy `CanvasStyle.label_fontsize` fallback. Schema-v2
+translation retains that fallback for equal canvas/constellation values and
+carries unequal `styles.<style>.constellation_labels.font_size` values through
+the ordinary atlas/cartoon mode scale and layer-options mapping. Coordinate
+labels, other objects, furniture, and geometry retain their own contracts.
 
 ## 8.1 Packaged configuration validation
 
@@ -2378,3 +2405,1411 @@ provenance.
 warm cache without network access or publishes a validated acquisition
 atomically under a per-identity lock. The 50A.5D.2C candidate connects that
 boundary to `wenu_chart` for exact comet and mixed asteroid/comet preflight.
+
+## Provider-neutral satellite crossing domain (Milestone 50S.1 accepted)
+
+`wenu.satellite_crossings` defines six frozen provider-neutral values:
+`SatelliteIdentity`, `SatelliteObserver`, `SatelliteFieldOfView`,
+`InclusiveTimeInterval`, `SatelliteCrossingCandidate`, and
+`SatelliteCrossingResult`. They are advanced domain contracts and are not yet
+exported from `wenu` or connected to a public command.
+
+The initial FoV is a closed circular region on the sphere. Its centre retains a
+shared `CoordinateSpec`; longitude wraps to [0, 360) degrees, latitude remains
+within [-90, 90] degrees, and angular radius is in (0, 180] degrees. Query
+intervals require explicit UTC instants and include both endpoints. Boundary
+touch is a valid zero-duration crossing.
+
+A candidate binds satellite identity, terrestrial site and coordinate policy,
+field, interval, source provider, optional orbit-solution/snapshot evidence,
+provenance, and warnings. A normalized result represents one connected field
+visit and retains ordered entry, closest-approach, and exit instants, closest
+angular separation, optional provider-derived range, angular rate,
+illumination, event identity, provenance, and warnings. It performs no
+acquisition, propagation, exact crossing solution, illumination calculation,
+charting, or rendering. Fernando accepted the contract on 2026-09-15 after
+all 2,428 tests passed; PR #123 merged it as `23b851b`.
+
+
+## SatChecker crossing candidates
+
+`SatCheckerQuery.from_domain(observer, field_of_view, interval,
+earth_orientation_identity=...)` accepts the 50S.1 observer, closed circular
+field, and inclusive UTC interval. The field must be geometric,
+topocentric-direction ICRS. The query records the explicit UTC-to-UT1 result,
+complete original Wenu semantics, versioned endpoint, transmitted parameters,
+Earth-orientation identity, and stable SHA-256 cache key.
+
+`submit(query, timeout=...)` makes one asynchronous provider submission.
+`poll(query, task_id, timeout=...)` makes one status request. Neither function
+retries, waits, loops, or runs concurrently. Tests inject the transport;
+ordinary tests perform no network access.
+
+`SatCheckerReceipt` retains the exact response bytes, SHA-256, resolved URL,
+retrieval instant, HTTP status, normalized media type, and headers.
+`parse_response()` recognizes only PENDING, PROGRESS, SUCCESS, FAILURE, and
+ERROR. SUCCESS becomes `SatCheckerCandidateEvidence`: one
+`SatelliteCrossingCandidate` and ordered `SatCheckerSample` values retaining
+UT1 Julian date, converted UTC instant, geometric topocentric RA/Dec, angular
+distance, and optional altitude, azimuth, range, and provider illumination.
+No exact `SatelliteCrossingResult` is synthesized.
+
+`SatCheckerCache(root)` atomically stores immutable content-addressed exact
+receipt bytes and a canonical manifest. `store(query, responses)` accepts
+only a terminal-success chain. `load(query)` is network-free and validates
+the request identity, adapter schema, every raw digest, receipt metadata, and
+normalized interpretation digest before reuse.
+
+
+Fernando accepted the bounded 50S.2B API and ownership on 2026-09-15 after the
+45-test provider/domain gate, 168-test expanded focused gate, 2,457-test
+complete suite, and terminal live SatChecker normalization all passed.
+
+
+## SatChecker sampled-candidate presentations (50S.3B accepted)
+
+`SatCheckerPresentation(query, response, cache_provenance=())` accepts a
+terminal `SatCheckerResponse`. `.document` returns the versioned,
+JSON-compatible report model; `.to_json()` returns deterministic sorted,
+indented JSON with a final newline; and `.to_text()` returns the deterministic
+human-readable projection of the same model. The first line is
+`SatChecker sampled candidate evidence — not verified crossings`. SUCCESS
+evidence is sorted by full NORAD catalogue identifier. FAILURE and ERROR
+responses report zero candidates. PENDING and PROGRESS are rejected.
+
+`SatelliteCandidateTrackLayer(evidence)` consumes one normalized
+`SatCheckerCandidateEvidence`. Two or more samples become one open
+`SphericalCurves`; one sample becomes one `SphericalPoints` value with no
+invented segment.
+
+`SatelliteCandidateSamplesLayer(evidence, label_times=True)` exposes the
+supplied ordered samples as `SphericalPoints`. Its labels are exact normalized
+UTC sample strings when enabled. Both layer types require a
+`LayerRealizationContext`, use `CoordinateService`, retain candidate-only
+metadata and provider illumination as evidence, and perform no network access,
+cache read, propagation, interpolation, or exact crossing construction.
+
+
+## Local satellite elements and snapshots (50S.4B accepted)
+
+`SatelliteElementRecord` is an immutable canonical OMM/GP-domain record. It
+retains full integer NORAD identity, UTC element epoch, OMM mean elements and
+source fields, fixed `EARTH`/`TEME`/`UTC`/`SGP4` declarations, exact
+source identity, record digest, and provenance. Construction rejects missing
+or unknown mapping fields, invalid semantics, non-finite or out-of-range
+values, and record-content digest mismatch.
+
+`SatelliteSnapshotManifest` identifies one schema-versioned resource,
+records file, canonical content SHA-256, record count, source and builder
+identity, provider-policy reference/check instant, provenance, and warnings.
+`SatelliteElementSnapshot` requires a non-empty tuple ordered by the complete
+NORAD catalogue identifier, rejects duplicates and count mismatch, and
+provides an immutable `by_norad_catalog_id` mapping.
+
+`load_snapshot(snapshot_id="synthetic_50s4b_v1")` reads installed resources
+with `importlib.resources`, requires the records bytes to equal Wenu's
+canonical sorted compact JSON representation, verifies the snapshot and every
+record digest, and then constructs the immutable domain. The default resource
+contains three explicitly synthetic non-operational LEO/MEO/geosynchronous-like
+records. It performs no network access and no propagation. Fernando accepted
+this API and ownership boundary on 2026-09-15; only 50S.4C propagation is
+authorized next.
+
+
+## Validated SGP4 geometric TEME propagation (50S.4C accepted)
+
+`split_julian_date(utc)` normalizes an ISO-8601 UTC instant and returns
+`(canonical_utc, julian_day, julian_fraction)`. The components remain separate
+when passed to SGP4 so modern Julian-date precision is not collapsed into one
+float.
+
+`Sgp4TemePropagator(record, snapshot_sha256=None)` maps the canonical OMM
+fields to `sgp4.omm.initialize()` with explicit `WGS72`. `.propagate(utc)`
+returns one immutable `SatelliteTemeState`; `.propagate_many(instants)`
+returns ordered states and uses `sgp4_array()` when the accelerated backend is
+available. Empty input returns an empty tuple.
+
+`SatelliteTemeState` is successful state evidence only: status zero,
+geocentric geometric `EARTH`/`TEME`, position kilometres, velocity
+kilometres per second, canonical UTC, split Julian date, element age, record
+and optional snapshot identity, upstream version/backend, WGS-72, improved
+mode, provenance, and warnings. `SatellitePropagationError` retains every
+non-zero upstream status code, message, satellite identifier, and instant.
+
+The synthetic snapshot now uses full identifiers 300001–300003 because the
+upstream `Satrec` interface rejects values above 339999. Record and snapshot
+digests were regenerated; there is no hidden propagator identifier. This API
+does not transform TEME or produce observer-relative directions.
+
+
+Fernando accepted the bounded 50S.4C API and ownership on 2026-09-15. Only 50S.4D Earth-orientation and topocentric state work is authorized next.
+
+
+## Satellite topocentric state chain (50S.4D accepted)
+
+`SatelliteTopocentricTransformer().transform(teme_state, observer)` accepts one
+successful `SatelliteTemeState` and one vacuum `SatelliteObserver`. It uses
+the installed `astropy-iers-data` IERS-A resource without network access,
+performs the Astropy TEME/ITRS transformation, subtracts the WGS-84 observer in
+ITRS Cartesian space, and returns `SatelliteTopocentricState`.
+
+`SatelliteEarthOrientationEvidence` records the exact source path and SHA-256,
+Astropy and `astropy-iers-data` versions, MJD coverage, UT1−UTC, x/y polar
+motion, and their interpolation statuses. `SatelliteEarthOrientationError`
+reports unavailable or out-of-coverage local EOP data.
+
+The returned state contains the source TEME state and observer, satellite and
+observer ITRS vectors, observer-subtracted position and velocity, range,
+geometric vacuum azimuth/altitude, and a geometric topocentric direction
+expressed in GCRS axes. Its two `CoordinateSpec` values distinguish
+`altaz`/observer from `gcrs-axes`/topocentric-direction. The latter is an
+axes representation, not an ICRS or GCRS catalogue/apparent coordinate.
+Fernando accepted this API and ownership on 2026-09-15; only the bounded
+50S.4E propagated-specimen builder is authorized next.
+
+### Propagated sampled specimen builder (accepted 50S.4E)
+
+Run the developer tool with an explicit output directory:
+
+```bash
+python tools/build_50s4_satellite_specimens.py \
+  --output-directory /explicit/developer/output
+```
+
+The fixed output `propagated-sampled-specimens.json` contains ordered samples
+for all three installed synthetic records and query inputs centered on each
+middle sampled topocentric direction. Defaults use La Ligua, the snapshot
+epoch, a three-instant five-minute grid, and a one-degree field radius. Every
+choice is recorded. The output is deterministic for the same installed
+software/resources and arguments, network-free, and labelled **propagated
+sampled specimens — not verified crossings**. It is input evidence for later
+50S.5 work, not a crossing result or completeness claim.
+
+Fernando scientifically and architecturally accepted this developer product on
+2026-09-15. It closes 50S.4 without promoting the tool into a runtime authority.
+
+
+### Accepted complete local crossing-oracle contract (50S.5A audit)
+
+No callable local crossing oracle exists yet. The accepted audit specifies an
+immutable query containing one installed snapshot, observer, compatible fixed
+geometric GCRS-axis circular field, inclusive UTC interval, and explicit
+positive time/angular tolerances. The proposed exhaustive oracle returns
+ordered existing `SatelliteCrossingResult` visits or raises an explicit
+convergence error; it never silently drops invalid records or unresolved
+intervals.
+
+`SatelliteCrossingResult` remains a value contract, not evidence that a
+continuous crossing has already been solved. 50S.4E sampled specimens remain
+non-oracular input evidence. Fernando accepted this contract on 2026-09-15;
+only bounded 50S.5B implementation is authorized next.
+
+### Complete local crossing oracle (50S.5B accepted)
+
+`LocalSatelliteCrossingQuery(snapshot, observer, field_of_view, interval,
+time_tolerance_seconds, angular_tolerance_deg)` is an immutable exhaustive
+request. `LocalSatelliteCrossingOracle(max_evaluations_per_record=20000)`
+returns a tuple of existing `SatelliteCrossingResult` visits ordered by full
+NORAD catalogue identifier and entry instant. It raises
+`SatelliteCrossingConvergenceError` instead of returning an incomplete set.
+
+The compatible field is a fixed closed circular geometric topocentric
+direction expressed in GCRS axes. Query endpoints are inclusive, boundary touch
+counts, a tangent is a zero-duration result, and adjacent numerical fragments
+merge only after recursive time/angular tolerance connectivity. Illumination
+remains `None`. Fernando scientifically and architecturally accepted this
+boundary on 2026-09-15. Only a documentation-first 50S.6 acceleration audit is
+authorized next.
+
+### Conservative crossing acceleration (50S.6A audit accepted)
+
+No acceleration API exists yet. The accepted
+`LocalSatelliteCrossingOracle.solve(query)` remains the exhaustive independent
+correctness route. The proposed later owner would emit immutable tri-state
+`reject`, `retain`, or `indeterminate` evidence and may remove work only for
+a proved conservative rejection. Retained candidates must use the accepted
+exact record solver, and no partial record set may be labelled exhaustive.
+
+The authorized 50S.6B implementation is limited to
+the topocentric field-cone versus bounded orbital-shell selector. Phase,
+coarse-state, HEALPix/time, horizon, and occultation filters remain outside that
+first slice.
+
+### Conservative cone-shell selector (50S.6B accepted)
+
+`ConeShellPolicy` declares the admitted snapshot, 60-second interval limit,
+element-domain limits, outward orbital-speed factor, observer-speed bound, and
+numerical margin. `ConservativeConeShellSelector.select(query)` returns one
+NORAD-ordered immutable `ConeShellDecision` per snapshot record inside a
+`ConeShellSelection`.
+
+A decision is `reject`, `retain`, or `indeterminate`.
+`exact_solver_norad_catalog_ids` contains both retained and indeterminate
+records. The selector never returns `SatelliteCrossingResult` and does not
+coordinate an accelerated solve. The accepted
+`LocalSatelliteCrossingOracle.solve(query)` API and implementation remain
+unchanged.
+
+Fernando scientifically and architecturally accepted this bounded selector on
+2026-09-16. No accelerated solve API exists.
+
+### Accepted accelerated coordination contract (50S.6C audit)
+
+No accelerated crossing service exists. The accepted audit authorizes a later
+`AcceleratedLocalSatelliteCrossingOracle` that would accept the unchanged
+`LocalSatelliteCrossingQuery`, validate complete NORAD-ordered selector
+evidence, and route every retain or indeterminate decision through the same
+exact record seam used by exhaustive `LocalSatelliteCrossingOracle.solve`.
+
+The underlying `SatelliteCrossingResult` tuple must remain exactly equivalent
+to exhaustive output. Acceleration evidence is separate. Selector failure must
+fall back to the exhaustive route or fail closed; it cannot produce an empty
+search. The accepted cone-shell selector's installed-snapshot, 60-second domain
+is unchanged, and no callable coordinator is authorized by this audit.
+
+
+### Accepted accelerated local crossing coordinator (50S.6D)
+
+`AcceleratedCrossingPolicy` freezes the admitted
+`synthetic_50s4b_v1`, 60-second coordinator domain and chooses either
+`fallback_exhaustive` or `fail_closed` selector-failure behavior.
+
+`AcceleratedLocalSatelliteCrossingOracle.solve(query)` returns the same
+ordered `SatelliteCrossingResult` tuple as the exhaustive public API.
+`solve_with_evidence(query)` returns that tuple together with immutable
+`AcceleratedCrossingEvidence`, which records the complete selector evidence,
+rejected identifiers, exact-solver identifiers, and any exhaustive fallback.
+
+Both routes use the same package-internal exact-record seam owned by
+`crossing_oracle.py`. The accelerated route validates query identity and
+complete NORAD-ordered coverage before solving. Retain and indeterminate
+records are evaluated exactly once; rejected records are not evaluated.
+Malformed evidence or an out-of-domain reject fails closed.
+
+
+## Accepted multi-FoV and observatory interchange contract
+
+The 50S.6E accepted audit specifies a same-observer batch containing any
+non-empty ordered
+number of independently timed FoVs. The centre of every field must satisfy the
+configured airmass limit throughout its complete interval. The initial policy
+uses geometric vacuum AltAz, plane-parallel `X = sec(z)`, and configurable
+`X_max` defaulting to 2. Only the centre is checked; the FoV radius does not
+enter airmass admission. This is field admission, not a satellite horizon or
+occultation filter. Ten is the reference workload, not a cardinality limit.
+Future JSON, ECSV, and VOTable encodings must represent
+one canonical lossless crossing model; any Paranal, ELT, or other observatory
+adapter remains outside the solver and requires a separate interface audit.
+
+The accepted bounded runtime API is:
+
+- `MultiFieldCrossingPolicy`: immutable synthetic-snapshot, 60-second,
+  centre-airmass, certification, and execution-chunk policy;
+- `MultiFieldCrossingRequest`: immutable non-empty ordered tuple of complete
+  `LocalSatelliteCrossingQuery` values with unique field identifiers;
+- `FieldAirmassCertifier`: conservative complete-interval field-centre
+  admission using the governed installed-IERS-A altitude evaluator;
+- `MultiFieldCrossingValidationError.failures`: every ordered field-specific
+  atomic validation failure;
+- `MultiFieldSatelliteCrossingCoordinator.solve(request)`: validate every
+  field before work, then return one `MultiFieldCrossingResult` per input field
+  in input order, with exact crossings plus separate airmass and 50S.6D
+  acceleration evidence.
+
+Chunk size changes execution only. No public cardinality maximum, partial
+result, shared-state speed claim, CLI, file adapter, report, or chart is
+implemented.
+Fernando scientifically and architecturally accepted this API on 2026-09-17
+after 2,577 plugin-disabled tests passed. Only a separately bounded 50S.6G
+audit is authorized next; representative-scale runtime and output remain
+unauthorized.
+
+## Accepted 50S.6G delivery direction
+
+No interface in this section is implemented. The candidate audit proposes an
+explicit-directory immutable snapshot loader; one canonical exact-crossing
+logical report; deterministic JSON plus lossless ECSV and VOTable encodings;
+an atomic direct CLI; and a versioned JSON file protocol.
+
+For file input, whole-batch validation precedes all crossing work. Any invalid
+field yields one separate validation-output JSON with ordered failures and an
+embedded complete request containing only the valid fields. Supplying that
+document explicitly in a second call causes the embedded request to be
+digest-bound revalidated and then calculated. It is a request/validation
+envelope, not a scientific crossing report.
+
+Exact drawable tracks require separately certified ordered samples linked to
+the accepted entry/closest/exit result. Ordinary chart requests may later gain
+a distinct artificial-satellite selection; they must not reuse the natural or
+minor-body `SolarSystemTrackRequest` contract.
+
+Fernando scientifically and architecturally accepted this direction on
+2026-09-17 after all 145 plugin-disabled current-documentation tests passed in
+4.36 seconds. Only bounded 50S.6G.1A external immutable snapshot loading is
+authorized next; every interface described above remains unimplemented.
+
+## Accepted explicit-directory satellite snapshot loader
+
+`load_snapshot_directory(directory) -> SatelliteElementSnapshot` loads one
+caller-selected local directory. `directory` accepts a string or path-like
+value and must identify a real non-symlink directory. `manifest.json` and its
+declared records file must be non-symlink regular files.
+
+The function reuses the installed route's complete manifest-schema, canonical
+records bytes, SHA-256 digest, record-count, full-NORAD uniqueness/order, OMM
+semantics, UTC epoch, provenance, and warning validation. The physical
+directory name is not compared with `manifest.snapshot_id`. Invalid type,
+path, manifest, records, canonicalization, digest, or record content fails
+before a snapshot is returned. The function performs no network access,
+acquisition, publication, fallback, or runtime admission.
+
+Fernando scientifically and architecturally accepted this interface on
+2026-09-17 after the 164-test focused gate and all 2,583 plugin-disabled tests
+passed. Only a separately bounded 50S.6G.1B audit is authorized next.
+
+## Accepted representative snapshot preflight contract
+
+No interface in this section is implemented. The audit proposes separate
+policy-receipt and acquisition operations. The first freezes the exact official
+CelesTrak policy response and its SHA-256 without requesting GP data. The
+second requires explicit acknowledgement of that exact digest before one fixed
+`GROUP=active&FORMAT=CSV` request. Every redirect, non-200 response, timeout,
+changed policy, malformed record, duplicate NORAD identity, or unsupported OMM
+value fails closed without retry or partial publication.
+
+The future builder preserves raw response bytes and receipts locally, maps only
+documented omitted constants, constructs every existing typed OMM record,
+canonicalizes by full NORAD order, reloads the staged result through
+`load_snapshot_directory()`, and atomically publishes a content-addressed
+external directory. Digest-bound evidence policies may evaluate it without
+changing ordinary synthetic defaults.
+
+Fernando scientifically and architecturally accepted this contract on
+2026-09-17 after all 147 plugin-disabled current-documentation tests passed in
+4.54 seconds. Only the bounded fake-transport 50S.6G.1B.1 implementation is
+authorized next; live provider access and 50S.6G.1B.2 remain unauthorized.
+
+### Implemented offline satellite snapshot acquisition seam
+
+Use `freeze_policy_receipt(..., transport=...)` and
+`acquire_active_snapshot(..., transport=...)` from
+`wenu.satellites.snapshot_acquisition`. A transport is mandatory and no
+stdlib, third-party, or implicit network implementation is supplied. The
+offline developer command `tools/build_satellite_snapshot.py` accepts only
+explicit response files. Its `build` operation requires the exact
+`--accept-policy-sha256` value and writes only beneath the explicit external
+snapshot root.
+
+The frozen direct policy endpoint is exactly
+`https://celestrak.org/usage-policy.php`. Do not substitute a documentation
+subdirectory, accept a redirect, or weaken the parsed documented-query marker
+from `gp-data-formats.php`.
+
+The six-file directory remains content-addressed by canonical `records.json`,
+retains full raw policy and provider bytes, and is validated before atomic
+rename. CelesTrak `GROUP=active` remains a representative provider population,
+not a complete resident-space-object catalogue.
+
+Fernando accepted this offline builder on 2026-09-17 after 175 focused tests
+and all 2,594 plugin-disabled tests passed. A real policy fetch, GP request,
+and exact policy-digest approval remain separately authorized operations.
+
+Fernando accepted the exact direct-policy-URL correction on 2026-09-17 after
+all 2,595 plugin-disabled tests passed. It changes no provider or acquisition
+authority.
+
+Fernando accepted the exact `non-HTTP 200` policy-clause compatibility
+correction on 2026-09-17 after 10 focused tests and all 2,595 plugin-disabled
+tests passed. The frozen 14,643-byte response and receipt share SHA-256
+`67bf0faa7e026a7cd49799069db9d3355f2a867894133afd39e130d6185724aa`. This does not approve the digest for GP access; that explicit
+human acknowledgement remains a separate operation.
+
+The accepted CelesTrak CSV adapter requires the observed suffix-free
+`YYYY-MM-DDTHH:MM:SS.ffffff` epoch form, applies the provider's declared UTC
+invariant, and stores canonical explicit-`Z` instants. The offline command
+requires the captured media type; it must not synthesize one. Fernando accepted
+this repair and the 16,559-record snapshot on 2026-09-17 after 15 focused and
+2,600 complete plugin-disabled tests. Raw SHA-256 is `e54730e14b2097444c5e20bba6dd13d3e2d92f956797d49256ddb1a70ffe5014`; canonical
+SHA-256 is `e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`. No second request or 50S.6G.1B.2 work is implied.
+
+
+## Accepted proposed external snapshot admission contract
+
+50S.6G.1B.2A proposes an explicit evidence-only admission token bound to exact
+canonical-record SHA-256 plus validated manifest identity. It is not yet a
+public or implemented API. A later bounded implementation would pass the same
+immutable token to the conservative selector, accelerated coordinator, and
+multi-FoV batch, while leaving `synthetic_50s4b_v1` as the ordinary default.
+Directory names, `snapshot_id` alone, acquisition-response digests, and
+policy digests are not runtime admission identities. Fernando scientifically
+and architecturally accepted this proposal on 2026-09-17 after all 150 plugin-disabled current-documentation tests passed in 3.84 seconds. Only
+bounded 50S.6G.1B.2B implementation is authorized next.
+
+
+## External snapshot admission API
+
+`ExternalSnapshotIdentity.from_snapshot(snapshot)` derives the exact
+six-field identity from an already validated `SatelliteElementSnapshot`.
+`ExternalSnapshotAdmissionPolicy(policy_identity, admitted_identities)`
+holds a non-empty immutable finite allowlist; `admit(snapshot)` returns an
+`ExternalSnapshotAdmission` only after complete equality. Admission tokens
+cannot be directly constructed and `require(snapshot)` rejects token/query
+substitution.
+
+`CELESTRAK_ACTIVE_20260917_IDENTITY` records the accepted 16,559-record
+snapshot identity and canonical digest. It does not load or enable the
+snapshot. `ConservativeConeShellSelector`,
+`AcceleratedLocalSatelliteCrossingOracle`, and
+`MultiFieldSatelliteCrossingCoordinator` accept optional
+`external_snapshot_admission`. Their ordinary synthetic defaults are
+unchanged; an external call must explicitly supply the matching token.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2B on
+2026-09-17 after 51 focused runtime tests, 151 current-documentation tests,
+and all 2,611 plugin-disabled tests passed; the complete suite took 215.89
+seconds. `git diff --check` and the working tree were clean. Only bounded
+50S.6G.1B.2C deterministic medium-specimen work is authorized next; 50S.6G.1B.2D
+matrix execution and later delivery remain separately unauthorized.
+
+
+## Accepted proposed deterministic medium-specimen contract
+
+50S.6G.1B.2C proposes an offline, explicit-parent operation that requires the
+accepted external admission token and matching acquisition report. It uses
+`retrieved_stopped_utc` as the signed element-age reference, requires two
+representatives per non-empty declared bin, fills deterministically to a
+default target of 256, and publishes a content-addressed derived snapshot plus
+`selection-receipt.json`. This is not yet an implemented API.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2C on
+2026-09-17 after all 153 plugin-disabled current-documentation tests passed in
+4.58 seconds; `git diff --check` and the working tree were clean. Only bounded
+fake-data implementation is authorized next. The first real medium selection,
+50S.6G.1B.2D matrix execution, and later delivery remain separately
+unauthorized.
+
+### Deterministic medium snapshot evidence API
+
+`select_medium_snapshot(parent_directory, output_root, *, admission,
+target_count=256)` is the candidate 50S.6G.1B.2C API in
+`satellites/snapshot_evidence.py`. It accepts no transport and no current
+time. The function requires an `ExternalSnapshotAdmission`, validates the
+parent snapshot, acquisition report, captured provider-response bytes and
+retrieval interval, and uses `retrieved_stopped_utc` as the signed-age
+reference.
+
+It publishes `manifest.json`, `records.json`, and
+`selection-receipt.json` beneath the subset canonical-record digest. Existing
+products are fully revalidated and never overwritten. The receipt contains no
+filesystem path. The 2026-09-17 fake-data gate passed 30 plugin-disabled tests
+in 5.99 seconds. Real medium selection and matrix execution remain
+unauthorized.
+
+### Accepted medium-evidence implementation
+
+The 50S.6G.1B.2C API and offline command were scientifically and
+architecturally accepted on 2026-09-17 at `1d9d4e4`. The full
+plugin-disabled suite passed 2,622 tests in 225.75 seconds; the focused gate
+passed 185 tests in 9.03 seconds. The implementation remains evidence-only:
+running `select-medium` on the accepted real parent requires separate
+authorization, and matrix execution remains outside this acceptance.
+
+### Real medium specimen identity
+
+The external specimen contains 256 records with canonical-record SHA-256
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`.
+Its canonical selection receipt has SHA-256
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`.
+It derives from the accepted 16,559-record parent
+`e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`
+using age reference `2026-09-17T15:52:23.000000Z`.
+
+The derived manifest binds the parent canonical digest, acquisition-report
+digest, and receipt digest. All 24 bins are populated; 48 records form the
+mandatory union and 208 are deterministic fill. The artifact is external,
+immutable, and evidence-only. It is not a runtime default or installed
+resource, and matrix execution remains unauthorized.
+
+### Accepted real medium evidence
+
+The accepted 50S.6G.1B.2C external artifact is exactly subset
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`
+with receipt
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`.
+Fernando accepted it on 2026-09-17 at `c4cd009` after 157 plugin-disabled
+documentation tests passed in 4.66 seconds. No other artifact is implied by
+this acceptance, and 50S.6G.1B.2D remains unauthorized.
+
+### Proposed exact-equivalence matrix contract
+
+Candidate 50S.6G.1B.2D assigns a future
+`satellites/crossing_matrix.py` owner to canonicalize and compare the existing
+`LocalSatelliteCrossingOracle` and
+`AcceleratedLocalSatelliteCrossingOracle`. It must consume one exact
+digest-admitted medium snapshot, atomically certify all 10 La Ligua fields,
+forbid exhaustive fallback, compare complete ordered result bytes and digests,
+capture isolated raw resource observations, and publish only fully revalidated
+external evidence.
+
+The proposed `run-equivalence-matrix` developer command is offline. Neither
+the owner nor command exists yet.
+
+### Accepted 50S.6G.1B.2D matrix contract
+
+Fernando accepted the proposed strict exhaustive/accelerated equivalence
+contract on 2026-09-17 at `6e7a8b9`, after 159 plugin-disabled documentation
+tests passed in 10.75 seconds. A later bounded implementation may add the
+dedicated matrix owner and offline command using fake data only. The real
+medium specimen must not be read or executed without separate authorization.
+
+### Candidate crossing equivalence matrix API
+
+`wenu.satellites.crossing_matrix.run_equivalence_matrix` is the candidate
+50S.6G.1B.2D fake-data-tested orchestration API. Its explicit inputs bind the
+snapshot directory, digest admission token, exact specimen identity, ordered
+queries, atomic airmass certifier, injected isolated-route executor, and matrix
+policy. It publishes canonical evidence atomically and revalidates both
+`equivalence-report.json` and `matrix-manifest.json` plus every bound file.
+
+Candidate commit `19520f3` passed 2634 plugin-disabled full-suite tests in
+230.25 seconds on 2026-09-17. Those tests used fake data only; the API has not
+read the accepted real specimen or executed the real matrix and makes no
+performance claim. Scientific and architectural acceptance remains required
+before separately authorizing real execution.
+
+### Accepted crossing equivalence matrix boundary
+
+Fernando scientifically and architecturally accepted
+`run_equivalence_matrix` as the bounded fake-data-tested 50S.6G.1B.2D API on
+2026-09-17. The evidence comprises 2634 plugin-disabled full-suite tests in
+230.25 seconds at `19520f3` and 161 plugin-disabled
+current-documentation tests in 3.32 seconds at `3ef6a4d`. This acceptance
+does not admit a real specimen or execute a real matrix. A separately bounded
+real-execution audit is the only authorized next step.
+
+### Proposed real-matrix execution surface
+
+The accepted `run_equivalence_matrix()` orchestration API at `9bdf301`
+requires injected executor and airmass-certifier objects and therefore is not
+an approved real-execution entry point. A bounded next implementation must add
+a frozen canonical ten-field request fixture, exact accepted-medium receipt
+constraints, a production whole-interval certifier, a fresh-subprocess
+canonical worker protocol, and an explicit offline
+`run-equivalence-matrix` developer command.
+
+The command must require explicit snapshot and output paths plus exact digest
+acknowledgements. It must perform no discovery, provider request, refresh,
+fallback, or implicit default selection. This candidate audit reads no real
+artifact and executes no matrix.
+
+### Accepted real-execution readiness boundary
+
+Fernando scientifically and architecturally accepted the fail-closed
+production-path finding on 2026-09-17 after 163 plugin-disabled
+current-documentation tests passed in 3.80 seconds at `054ac39`. The accepted
+next scope is fake-data implementation of the exact receipt validator, frozen
+fixture, production certifier, subprocess protocol and worker, explicit
+offline command, and tests. The acceptance grants no authority to read or run
+the external real specimen.\n
+
+### Candidate offline production matrix path
+
+`build_matrix_queries(snapshot)` materializes one digest-frozen ten-field La
+Ligua fixture containing only 15- and 60-second intervals.
+`ProductionMatrixAirmassCertifier` composes the accepted centre-only,
+whole-interval geometric vacuum policy at maximum airmass 2.
+`FreshSubprocessMatrixExecutor` runs one route/query/repetition per fresh
+Python process through a canonical private protocol and records exit status,
+environment, timing, allocation, request, result, evidence, and snapshot
+digests. `run_production_equivalence_matrix()` requires the exact accepted
+medium identity, receipt constraints, and operator acknowledgement before the
+existing equivalence owner runs. This candidate provides no discovery,
+network, refresh, fallback, concurrency, cache reuse, or implicit execution.\n
+
+Candidate verification on Fernando's Mac completed at executable commit
+`81f9031`: the 14-test focused matrix gate passed in 9.35 seconds, the
+210-test immediate-boundary and documentation gate passed in 60.26 seconds,
+and all 2,645 plugin-disabled tests passed in 243.71 seconds. `git diff
+--check 5cd60fd...HEAD` and the working tree were clean. No accepted real
+specimen was accessed and no real matrix was executed. The candidate still
+requires Fernando's scientific and architectural acceptance.\n
+
+### Accepted production-path implementation
+
+Fernando scientifically and architecturally accepted the bounded fake-data
+production-path implementation on 2026-09-18. The executable evidence remains
+14 focused tests in 9.35 seconds, 210 immediate-boundary tests in 60.26
+seconds, and all 2,645 plugin-disabled tests in 243.71 seconds at `81f9031`.
+After documentation-only evidence recording, 164 current-documentation tests
+passed in 3.94 seconds at `602eed7`; the whitespace check and working tree
+were clean.
+
+Preserve the exact accepted-medium and receipt constraints, digest-frozen
+ten-field La Ligua fixture with only 15- and 60-second intervals, production
+whole-interval airmass certifier, canonical fresh-subprocess worker/executor,
+explicit offline command, and shortened fake-data test practice. This
+acceptance does not authorize accessing the accepted real specimen, executing
+the real matrix, publishing real evidence, making a performance claim, or
+advancing later delivery. Any real execution requires a separate explicit
+authorization.\n
+
+### Candidate first real run policy
+
+The accepted `run-equivalence-matrix` command is unchanged. Candidate
+50S.6G.1B.2D.1 proposes one invocation only, using the exact accepted medium,
+receipt and parent digests, exact acknowledgement, explicit absolute paths,
+the existing 3600-second per-worker timeout, and a new empty external output
+root with at least 2 GiB free. There is no automatic retry or resume. Success
+publishes one external content-addressed evidence directory whose acceptance
+is a separate review.\n
+
+### Accepted first-real-execution authorization
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2D.1 on
+2026-09-18 after all 165 plugin-disabled current-documentation tests passed in
+5.07 seconds at `af8044a`; the whitespace check and working tree were clean.
+
+This acceptance authorizes exactly one operator-started offline execution
+against the exact accepted 256-record medium, using the three frozen digests,
+exact acknowledgement, accepted ten-field 15/60-second fixture, one new empty
+external output root with at least 2 GiB free, the existing 3600-second
+per-subprocess timeout, and no retry or resume. It does not itself start the
+run. The exact absolute Mac paths must be resolved before the command is
+issued. Failure or interruption authorizes no restart. Successful evidence
+remains external and unaccepted pending an independent review; no performance
+claim or later 50S.6G delivery is authorized.\n
+
+### Candidate matrix progress reporting
+
+When the production wrapper constructs its default
+`FreshSubprocessMatrixExecutor`, it supplies a policy-derived invocation total
+to `MatrixProgressBar`. The bar reports field, exhaustive/accelerated route,
+warm-up or measured repetition, completed count, and percentage on parent
+stderr. Injected executors remain quiet by default. Progress changes no worker
+input/output, timeout, result, evidence, or digest.
+
+## Candidate matrix progress verification
+
+At candidate commit `b0b4432`, the parent-process progress display passed 180 focused plugin-disabled tests in 5.44 seconds and all 2647 plugin-disabled tests in 239.53 seconds on 2026-09-18. The diff check was clean. This verification changes neither the callable contract nor canonical evidence and does not authorize execution.
+
+## Accepted matrix progress display
+
+Fernando scientifically and architecturally accepted the parent-process progress display at `96b9ba0` on 2026-09-18 after the recorded focused, full-suite, final-documentation, and diff verification. This acceptance changes no worker protocol or canonical evidence and does not itself authorize execution.
+
+## Renewed single real-run contract
+
+Following progress-display merge `9c4b808`, Fernando explicitly renewed authorization on 2026-09-18 for exactly one operator-started real matrix run. The accepted invocation contract, specimen identities, 10-field fixture, 15/60-second intervals, two routes, warm-up and repetition counts, 80-invocation ceiling, worker timeout, new-output-root rule, and no-retry/no-resume policy remain unchanged.
+
+## Accepted renewed real-run contract
+
+Fernando scientifically and architecturally accepted candidate `dd71e01` on 2026-09-18 after the 169-test documentation gate and clean repository checks. The accepted invocation contract remains inactive until this record is merged and external preflight succeeds.
+
+## Candidate first real-matrix evidence
+
+Report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` records the successful single run from `9d93113` on 2026-09-18: 10 fields, 60 measured observations, exact exhaustive/accelerated canonical equality, zero fallback, and zero rejected exhaustive crossings. Decision totals were 2,455 reject, 101 indeterminate, and 4 retain. All fields had zero crossings, so positive real-crossing behavior was not exercised. Resource observations are descriptive only.
+
+## Accepted first real-matrix evidence
+
+Fernando scientifically and architecturally accepted the first real-matrix report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at `186e255` on 2026-09-18 after the 171-test documentation gate. The accepted contract evidence is exact empty-result equivalence and complete conservative partitioning. All fields had zero crossings; no positive real-crossing or universal performance conclusion follows.
+
+
+## Candidate 50S.6G.1B closure boundary
+
+The integrated `b010a6c` runtime remains unchanged. Its external-snapshot,
+admission, medium-selection, matrix, and offline execution APIs retain their
+accepted fail-closed contracts. The one real report proves exact empty-result
+route equivalence and partition integrity for the accepted ten-field fixture;
+all fields had zero crossings.
+
+This candidate adds no report API or serialization. It claims no positive real
+crossing, full-snapshot matrix, broad FoV-count capacity, universal
+performance, concurrency, or reuse result and authorizes no further execution.
+Pending separate acceptance, 50S.6G.2A remains unauthorized. Acceptance would
+authorize only its documentation audit.
+
+
+## Accepted 50S.6G.1B closure boundary
+
+Fernando scientifically and architecturally accepted the bounded closure on
+2026-09-19 at `c62a451`, after 173 documentation tests passed in 3.82 seconds
+and repository checks were clean. Existing APIs remain unchanged; all real
+fields had zero crossings and no broader execution or performance claim is
+accepted.
+
+Only a 50S.6G.2A documentation audit is authorized next. No report API,
+schema, encoder, decoder, or round-trip implementation is authorized.
+
+
+## Candidate 50S.6G.2A exact-report boundary
+
+No exact-report API exists at baseline `3f234cc`. The candidate audit
+provisionally defines an immutable logical report constructor, JSON-compatible
+document, deterministic JSON encoder, and strict typed decoder in a dedicated
+owner adjacent to `satellite_presentations.py`. Creation time is explicit;
+serialization consults neither clock nor scientific services.
+
+The proposed schema is closed and versioned, future-science values are required
+nulls in version 1, and semantic plus digest validation is mandatory. These are
+candidate contracts only; no production API is authorized.
+
+
+## Accepted 50S.6G.2A implementation authorization
+
+Fernando accepted the documentation contract on 2026-09-19 at `835ddfe`,
+after 175 documentation tests passed in 3.27 seconds and clean repository
+checks. Only the audited exact-report model, schema, pure encoder/decoder, and
+focused tests are authorized; the candidate API names remain subject to the
+implementation as-is assessment.
+
+
+## Candidate exact-crossing report API
+
+`ExactSatelliteCrossingReport.from_results(...)` accepts an ordered non-empty
+sequence of existing `MultiFieldCrossingResult` values, one
+`MultiFieldCrossingPolicy`, an explicit UTC creation instant, Wenu version,
+and crossing-oracle, acceleration, and batch-coordinator implementation
+identities. It validates shared observer and snapshot identity, field
+uniqueness/order, exact crossing order and element identity, airmass and
+acceleration context, and complete snapshot partitions.
+
+`report.document` returns a detached JSON-compatible copy;
+`report.report_identity_sha256` returns canonical logical identity; and
+`report.to_json()` returns deterministic UTF-8-compatible JSON text.
+`ExactSatelliteCrossingReport.from_json(text_or_utf8_bytes)` applies the
+packaged closed schema, reconstructs existing immutable Wenu domain values,
+checks semantic invariants and digest identity, and supports typed and
+byte-identical canonical round trips.
+
+This candidate API performs no scientific calculation and exposes no path,
+overwrite, file-writing, CLI, ECSV, VOTable, track, chart, or future-science
+operation. Acceptance remains pending.
+
+
+## Accepted 50S.6G.2A exact-report API
+
+Fernando scientifically and architecturally accepted the bounded 50S.6G.2A
+implementation on 2026-09-19. The executable candidate at `a65e5ac` passed
+all 2,676 plugin-disabled tests in 234.08 seconds; the final pre-acceptance
+documentation gate at `8af0d14` passed 179 tests in 5.05 seconds; diff and
+working-tree checks were clean.
+
+The candidate API documented above is accepted within its bounded exclusions.
+No file, CLI, ECSV/VOTable, track, chart, illumination, brightness, detector,
+provider, scheduling, or execution API is implied.
+
+
+## Candidate 50S.6G.2B tabular API
+
+Subject to separate acceptance, the exact report may gain pure in-memory
+`to_ecsv()`, `from_ecsv(...)`, `to_votable()`, and
+`from_votable(...)` operations. ECSV returns text; VOTable returns bytes.
+Decoders return `ExactSatelliteCrossingReport` and must reproduce the same
+canonical JSON and `report_identity_sha256`.
+
+The public methods delegate to one private shared logical-to-tabular projection
+and thin format adapters. The shared mapping is reusable but is not prematurely
+public. These candidate APIs accept no path, file object, overwrite flag, or
+service and perform no scientific computation. Implementation remains
+unauthorized pending acceptance.
+
+## Accepted 50S.6G.2B tabular API boundary
+
+Fernando scientifically and architecturally accepted the documentation-only
+audit on 2026-09-19 at `ef14bc1`, after 181 plugin-disabled documentation
+tests passed in 4.88 seconds and repository checks were clean.
+
+A bounded implementation may add the pure in-memory `to_ecsv()`,
+`from_ecsv(...)`, `to_votable()`, and `from_votable(...)` operations
+described above. They must delegate to one reusable format-neutral projection,
+preserve canonical JSON and `report_identity_sha256`, and accept no path,
+file object, overwrite flag, service, or scientific-computation responsibility.
+
+
+## Accepted complete 50S.6G.2B tabular API
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.6G.2B implementation on 2026-09-19. Executable commit `3bbd82f` passed
+208 focused tests in 6.68 seconds and all 2,689 plugin-disabled tests in
+215.15 seconds. Documentation evidence commit `ece80c7` passed all 186
+current-documentation tests in 4.60 seconds; diff checks and the clean,
+synchronized Mac working tree passed.
+
+`ExactSatelliteCrossingReport.to_ecsv() -> str` and
+`ExactSatelliteCrossingReport.from_ecsv(text_or_utf8_bytes)` provide
+deterministic lossless ECSV interchange.
+`ExactSatelliteCrossingReport.to_votable() -> bytes` and
+`ExactSatelliteCrossingReport.from_votable(xml_or_utf8_bytes)` provide
+deterministic lossless VOTable 1.5/BINARY2 interchange. Both reconstruct the
+accepted exact report and verify canonical JSON identity through
+`report_identity_sha256`. The VOTable wire contract uses adjacent Boolean
+`__is_null` FIELDs for nullable Unicode values under Astropy 7.1.0.
+
+These methods accept and return values only, never paths or file-like objects.
+This acceptance authorizes no later filesystem, CLI, publication, track,
+chart, or API milestone.
+
+## Candidate 50S.6G.2C CLI/file API
+
+The proposed installed `wenu_satellite_crossings` command composes the accepted
+multi-FoV coordinator and exact-report encoders through mutually exclusive
+direct, `--request`, and `--validated-request` inputs. Initial requests,
+validation outputs, and bundle manifests are closed versioned JSON products
+with canonical SHA-256 identities. Publication is explicit, symlink-safe,
+atomic, and no-clobber; successful bundles contain fixed `report.json`,
+`report.ecsv`, `report.vot`, and `manifest.json` names. The detailed audit
+freezes failure and interruption behavior but exposes no API until separately
+accepted and implemented.
+
+## Accepted 50S.6G.2C implementation authorization
+
+After acceptance at `bcac404`, implementation may add only the documented
+`wenu_satellite_crossings` adapter, packaged closed request/validation/manifest
+schemas, installed entry point, filesystem publisher, and focused enduring
+CLI/file-protocol tests. It must compose the accepted batch and report APIs,
+retain the fixed exit/status and interruption contract, and add no scientific
+or format mapping of its own.
+
+## Candidate 50S.6G.2C executable API
+
+`MultiFieldSatelliteCrossingCoordinator.validate(request)` returns ordered
+admission evidence after the existing complete atomic validation and performs
+no crossing solve. The installed `wenu_satellite_crossings` entry point uses
+that seam for first-call partition evidence and uses `solve(request)` only for
+an all-valid initial/direct request or a revalidated second-call subset.
+
+The adapter owns strict protocol decoding, fixed exit statuses, safe paths,
+staging, atomic no-clobber publication, and manifest construction. It delegates
+all scientific validation, calculation, report identity, ECSV, and VOTable
+behavior to the accepted owners.
+
+## Verified candidate 50S.6G.2C API
+
+The candidate `validate()` seam and installed CLI at `e08ebf5` passed the
+immediate and complete repository gates. This verification changes no public
+authority: the API remains candidate until Fernando separately accepts the
+scientific and architectural implementation.
+
+## Accepted 50S.6G.2C executable API
+
+The accepted `validate(request)` seam performs only existing atomic scientific
+validation and returns ordered admissions; `solve(request)` remains the sole
+calculation route. The accepted CLI composes this seam with the immutable exact
+report encoders and fixed atomic bundle publisher. Preserve all closed-schema,
+identity, path, status, and interruption contracts.
+
+## Candidate 50S.6G.3A exact-local-track API
+
+A future frozen exact-track evidence value may bind one accepted `SatelliteCrossingResult` to ordered UTC samples, exact entry/closest/exit roles, geometric topocentric directions expressed in GCRS axes, range, sampling policy, provenance, and `track_identity_sha256`. A separate realizer would compose the accepted SGP4/TEME and topocentric services and fail closed rather than return partial evidence.
+
+A future output-neutral layer may consume only that evidence and return an open `SphericalCurves` path or a singleton `SphericalPoints`, plus event views that select retained vertices without recomputation. These are proposed APIs only; implementation requires separate acceptance.
+
+## Accepted 50S.6G.3A implementation authorization
+
+After acceptance at `ce54971`, implementation may add only the frozen exact-local-track evidence, sampling policy, typed failures, realizer, output-neutral path/event views, stable semantic identity, and focused offline tests described by the audit. It must compose existing crossing, propagation, topocentric, spherical-geometry, and coordinate-service owners and must not change report, CLI, provider, chart, renderer, or exporter APIs.
+
+## Candidate 50S.6G.3A executable API
+
+`ExactLocalTrackPolicy`, `ExactLocalTrackEvaluation`, `ExactLocalSatelliteTrackSample`, `ExactLocalSatelliteTrack`, `ExactLocalTrackError`, and `ExactLocalSatelliteTrackRealizer` provide the bounded evidence route. `SatelliteExactTrackLayer` and `SatelliteExactTrackEventsLayer` expose retained evidence as ordinary geometry without recomputation.
+
+The collection `CoordinateSpec` is timeless `gcrs-axes` / `topocentric-direction`; `sample_time_scale="utc"` and each sample instant carry time. `CoordinateService` treats `gcrs-axes` only as the fixed GCRS/ICRS axis orientation for direction transformations. These APIs remain candidate pending full verification and acceptance.
+
+## Verified candidate 50S.6G.3A API
+
+The candidate exact-track evidence, realizer, failure, path/event layer, coordinate-service, and semantic APIs at `f0a4164` passed the complete 2,728-test repository gate. They remain candidate APIs until Fernando separately accepts the implementation.
+
+## Accepted 50S.6G.3A API
+
+The exact-track policy, evaluation, sample, evidence, typed-error, realizer, path layer, event layer, semantic identity, and fixed-axis coordinate-service seam are accepted within their documented boundary. Preserve evidence-level/per-sample UTC and the timeless collection specification. No chart request or rendering API is accepted by this milestone.
+
+## Candidate 50S.6G.3B chart-request API
+
+A future frozen `SatelliteExactTrackDisplayRequest` may contain one already-realized `ExactLocalSatelliteTrack` plus `draw_path`, `draw_events`, and `label_events` controls. `ChartRequest.satellite_exact_tracks` would be an explicit default-empty ordered tuple, admitted only for regional or binocular stereographic horizontal products with matching observer and reference-instant identity.
+
+The chart path would install accepted evidence-only layers and emit bounded provenance summaries. These are proposed APIs only; implementation requires separate acceptance.
+
+## Accepted 50S.6G.3B implementation authorization
+
+After acceptance at `ef58180`, implementation may add only `SatelliteExactTrackDisplayRequest`, the default-empty `ChartRequest.satellite_exact_tracks` tuple, bounded admission/provenance/lifecycle composition, existing-owner appearance integration, focused tests, and required specimens. The chart route must consume accepted evidence and perform no orbital or crossing science.
+
+## Candidate 50S.6G.3B executable API
+
+SatelliteExactTrackDisplayRequest is a frozen value containing one accepted ExactLocalSatelliteTrack and boolean draw_path, draw_events, and label_events controls. ChartRequest.satellite_exact_tracks is an ordered default-empty tuple with duplicate-identity, family, frame, observer-policy, and reference-instant admission.
+
+configure_chart_request_satellite_tracks() installs only requested evidence views, while ChartRequestBuild records and removes those layers. satellite_exact_track_provenance() and chart_request_provenance_parameters() replace recursive evidence serialization with ordered bounded summaries. These APIs remain candidate pending complete verification and acceptance.
+
+## Candidate 50S.6G.4A paired stereographic planisphere API
+
+The proposed API reuses `SatelliteExactTrackDisplayRequest`; it introduces no
+polar-specific evidence or display value. A future bounded
+`export_polar_planisphere_pages(...)` may accept an explicit default-empty
+`satellite_exact_tracks` tuple, validate the complete tuple and resolved pair,
+install the accepted path/event layers once, export both stereographic faces,
+and clean up after success or failure.
+
+The typed equatorial projection seam must express native `gcrs-axes` as ICRS
+axes while preserving geometric topocentric origin, timeless collection
+meaning, per-sample UTC, and track identity. Existing observer-local layers
+retain their current transformation. North/south overlap is intentional, face
+cap clipping creates no event, and page provenance remains bounded. These are
+proposed APIs only; no implementation is authorized by the audit.
+
+## Accepted 50S.6G.4A implementation authorization
+
+After acceptance at `c1d9015`, implementation may add only the explicit
+default-empty `satellite_exact_tracks` input to the paired stereographic page
+export, complete pair/display admission, shared request-owned installation and
+cleanup, typed fixed-axis equatorial handling, bounded per-face provenance and
+validity furniture, focused tests, and required north/south PNG/PDF/semantic-
+SVG specimens. It must consume accepted evidence and perform no new satellite
+science.
+
+## Corrective 50S.6G.4A proposed request boundary
+
+ChartRequest already carries satellite_exact_tracks and requires
+projection="stereographic" plus coordinate_frame="horizontal" for every
+ordinary planisphere request. prepare_chart_request() resolves that family to
+FullSkyChart; chart_request_realization_context() supplies the fixed AltAz
+product frame; configure_chart_request_satellite_tracks() installs retained
+path/event views; ChartRequestBuild removes them; and ordinary export records
+bounded provenance.
+
+The corrective audit proposes no new API. A future accepted 50S.6G.4B may only
+extend validate_satellite_exact_track_requests() so family="planisphere" joins
+regional and binocular. all_sky and circumpolar remain rejected. The earlier
+paired stereographic planisphere API proposal is superseded and authorizes no
+runtime work.
+
+## Accepted corrective 50S.6G.4A implementation authorization
+
+After acceptance at 80855938, a bounded 50S.6G.4B may add planisphere to the
+families admitted by validate_satellite_exact_track_requests(). It must reuse
+the existing ChartRequest satellite_exact_tracks value,
+configure_chart_request_satellite_tracks(), ChartRequestBuild cleanup, fixed
+horizontal LayerRealizationContext, FullSkyChart, canonical rendering/export,
+and bounded provenance. No new public request type or projection, coordinate,
+layer, renderer, exporter, provider, CLI, or report API is authorized.
+
+## Verified candidate 50S.6G.4B request behavior
+
+At candidate `91eafff5`,
+`validate_satellite_exact_track_requests()` admits `planisphere`, `regional`,
+and `binocular` for non-empty tuples while retaining stereographic-horizontal,
+observer, coordinate-policy, reference-instant, UTC, type, display-control,
+and unique-identity validation. `all_sky` and `circumpolar` remain rejected.
+An empty tuple still returns before family admission and installs no layer.
+
+## Accepted 50S.6G.4B request behavior
+
+After merge `f0730d8`, non-empty
+`ChartRequest(family="planisphere")` values may include ordered
+`SatelliteExactTrackDisplayRequest` values under the same strict
+stereographic-horizontal, observer, coordinate-policy, reference-instant, UTC,
+display-control, and identity contracts as regional and binocular products.
+`all_sky` and `circumpolar` remain rejected; an empty tuple remains neutral.
+## Accepted 50S.6H planning-advisory boundary
+
+The accepted documentation-only 50S.6H audit authorizes the next bounded implementation of an immutable planning
+context and deterministic canonical JSON advisory downstream of
+`ExactSatelliteCrossingReport`. The report must first pass its existing
+strict decoder and digest verification. The adapter would only intersect
+caller-supplied half-open planned UTC intervals with accepted exact crossing
+intervals; it would not propagate, transform, filter by visibility, rank, or
+schedule.
+
+No such runtime is implemented yet. Only this offline projection is authorized
+next. Paranal p2 network/write operations and any ELT operational mapping
+remain outside the accepted implementation.
+## Accepted 50S.6H offline planning-advisory API
+
+The accepted implementation exports:
+
+- `PlanningObservationUnit` — one caller-owned non-empty half-open UTC
+  interval associated with an accepted report `field_id`;
+- `ObservatoryPlanningContext` — one frozen general-profile version 1
+  context with an exact `SatelliteObserver` and ordered unique units;
+- `PlanningAdvisoryValidationError` — one stable typed rejection with a
+  machine-readable `code`; and
+- `SatellitePlanningAdvisory` — the immutable strict JSON result with
+  `from_report()`, `from_json()`, `document`, `to_json()`, and
+  `planning_advisory_identity_sha256`.
+
+`from_report()` preserves input objects, rejects observer or field mismatch
+atomically, preserves planning-unit then report order, treats endpoint contact
+as no overlap, and permits identified zero-row output. Fernando accepted this public behavior on 2026-09-20; it becomes implemented
+on merge.
+The validation tool produces a positive advisory, an endpoint-touch zero-row
+advisory, their source exact report, and a SHA-256 manifest entirely offline.
+Its Paranal text is an opaque review label under the `general` profile and
+does not claim p2 compatibility.
+## Accepted complete 50S.6H behavior
+
+Candidate revision `32dce675` passed the focused and complete gates and
+produced independently identified positive and zero-row advisories from the
+same identified exact report. The evidence verifies deterministic strict JSON,
+half-open endpoint behavior, source immutability, report-interchange
+equivalence, atomic mismatch rejection, and absence of a network/write surface.
+Fernando accepted the API and evidence on 2026-09-20.
+
+## Candidate 50S.7A reserved illumination interfaces
+
+No 50S.7 API is implemented. The audit reserves immutable concepts for
+`SatelliteIlluminationGeometry`, `SatelliteShadowTransition`, and
+component-resolved incident-light fields. A geometry state would bind one UTC
+instant, satellite/orbit/snapshot identity, accepted propagated state,
+Sun/Earth/Moon geometry, direct-solar disk visibility, typed shadow class,
+observer solar altitude, twilight class, model resources, and numerical
+policy.
+
+Every component uses an explicit status such as `evaluated`,
+`not_evaluated`, `outside_model_domain`, or `unavailable_input`; unknown is
+never numeric zero. These names are audit vocabulary, not public exports.
+Acceptance of the audit may authorize only the direct-Sun/observer-night
+geometry slice, not radiometry, Earthshine, Moonlight, Lunar-Earthshine,
+brightness, or detector behavior.
+
+## Accepted 50S.7A implementation authorization
+
+No 50S.7 runtime API is implemented by the accepted audit. After merge, the
+only authorized implementation slice is 50S.7B: immutable direct-Sun and
+observer-night geometry with finite uniform-Sun/WGS-84 vacuum Earth
+occultation, typed shadow state, observer geometric twilight, provenance, and
+focused offline validation.
+
+The reserved component-status vocabulary remains output-neutral. Transition
+search, radiometry, solar Earthshine, Moonlight radiometry,
+Lunar-Earthshine, component summation, brightness, detector, facility, and
+scheduling APIs remain unauthorized.
+## Candidate 50S.7B direct-Sun and observer-night API
+
+`wenu.satellites.illumination` now exports an unaccepted candidate API:
+
+- `SolarOccultationPolicy` declares the uniform-Sun, WGS-84 vacuum,
+  bounded adaptive equal-solid-angle quadrature and contact tolerances;
+- `SolarOccultationGeometry` carries refined/coarse visible fractions,
+  convergence difference, typed class, angular radius, distance, and ray
+  counts;
+- `SatelliteIlluminationGeometryEvaluator.evaluate(topocentric_state)`
+  requests the exact same-instant Earth-to-Sun state from an injected
+  `EphemerisStateSource`, rotates it to ITRS with matching Earth-orientation
+  evidence, and returns immutable `SatelliteIlluminationGeometry`;
+- `SolarOccultationClass`, `ObserverTwilightClass`, and
+  `LunarOccultorStatus` provide stable semantic states; and
+- `SatelliteIlluminationGeometryError.code` uses the failure vocabulary
+  reserved by the accepted audit.
+
+`evaluate_solar_occultation(...)` is the frame-explicit numerical boundary
+for already-ITRS inputs. `classify_observer_twilight(...)` applies geometric
+Sun-centre thresholds `0`, `-6`, `-12`, and `-18` degrees exactly.
+Neither function makes a radiometric, apparent-brightness, visibility, or
+detectability claim. The API is a review candidate until Fernando separately
+accepts it.
+
+50S.7C shadow-transition search and all later satellite-light behavior remain
+unauthorized by this candidate.
+
+## Accepted 50S.7B API boundary
+
+Fernando accepted the immutable 50S.7B public contracts at `054ac53a` on
+2026-09-21: `SolarOccultationPolicy`, `SolarOccultationGeometry`,
+`SatelliteIlluminationGeometry`,
+`SatelliteIlluminationGeometryEvaluator`, typed occultation/twilight/lunar
+statuses, stable failure codes, and the frame-explicit numerical and twilight
+helpers.
+
+Preserve their output-neutral geometry meaning and complete provenance. Do not
+add transition events, radiometry, brightness, visibility, or scheduling
+semantics to these types. Merge remains separate; after merge only a
+documentation-first 50S.7C audit is authorized.
+
+## Candidate 50S.7C reserved transition API
+
+No transition API is implemented by this documentation-only audit. It reserves
+`SatelliteShadowTransitionQuery`, `ShadowTransitionSearchPolicy`, a closed
+directed transition-kind enum, and immutable
+`SatelliteShadowTransition` results.
+
+A future result would retain left/right `SolarOccultationClass` values, one
+canonical UTC midpoint, a certified closed UTC bracket no wider than the
+declared time tolerance, exact satellite/orbit/snapshot/resource identity,
+shadow/search policies, evaluation counts, provenance, and warnings. An empty
+tuple is valid only after the complete query interval is certified
+transition-free.
+
+Contact is an event, not another occultation class. Direct
+`sunlit <-> umbra`, `sunlit <-> antumbra`, and
+`umbra <-> antumbra` outputs are invalid. The candidate authorizes no runtime
+or public export before separate acceptance and adds no brightness, visibility,
+report, chart, CLI, planning, detector, facility, or scheduling API.
+
+## Accepted 50S.7C transition API authorization
+
+Fernando accepted the reserved transition API contract at `030a6322` on
+2026-09-21. After merge, a bounded implementation may add the immutable query,
+search policy, directed transition kinds, and
+`SatelliteShadowTransition` result described above.
+
+The implementation must retain certified closed UTC brackets, exact
+record/snapshot/resource/model/search identity, complete interval
+certification, deterministic ordering, and atomic fail-closed behavior. It
+must not add transition data to crossing, track, report, chart, CLI, or
+planning APIs, and it must not add radiometric, brightness, visibility,
+detector, facility, or scheduling semantics. Merge remains separate.
+
+## Candidate 50S.7C transition API implementation
+
+At executable `69375fab`, the unaccepted bounded API exports
+`ShadowTransitionSearchPolicy`,
+`SatelliteShadowTransitionQuery`, `SolarOccultationContactGeometry`,
+`SatelliteShadowTransition`, `ShadowTransitionKind`,
+`SatelliteShadowTransitionFinder`, and
+`evaluate_solar_occultation_contact`. The topocentric owner exports
+`SatelliteGeocentricItrsState` and `SatelliteGeocentricItrsTransformer`.
+
+One query binds an immutable snapshot, one full NORAD identifier, one closed
+UTC interval, and both occultation and search policies. Each result retains
+the exact record, snapshot, query interval, directed side classes, certified
+bracket, deterministic midpoint, achieved width, evaluation count, EOP and
+ephemeris identities, complete policies, implementation identifier,
+provenance, and warnings. `SatelliteShadowTransition.identity` exposes that
+immutable identity tuple.
+
+Stable failures include invalid/unsupported query, propagation, EOP,
+ephemeris, frame, non-finite geometry, degenerate topology, inconsistent
+bracket, and `transition_search_exhausted`. The candidate adds no output or
+later illumination API; complete gates and acceptance remain pending.
+
+## Accepted 50S.7C transition API implementation
+
+Fernando accepted the immutable 50S.7C transition API at
+`eaeab6085b52bfed6136d37f3010c2f353e59f53` on 2026-09-21. Preserve the
+single-record closed-interval query, explicit occultation and search policies,
+six directed adjacent transition kinds, certified brackets, deterministic
+midpoints, exact identity and provenance, ordered atomic results, and typed
+fail-closed errors implemented at executable `bf877404`.
+
+The accepted API remains output-neutral and observer-independent. It adds no
+crossing, track, report, chart, CLI, planning, radiometric, brightness,
+visibility, detector, facility, or scheduling semantics. PR 183 merge, branch
+deletion, and any 50S.7D+ API remain separately authorized decisions.
+## Candidate 50S.7D radiometry API boundary
+
+No radiometry API is implemented by this documentation-only audit. It proposes
+for a later accepted 50S.7D.1 only immutable
+`DirectSolarIrradiancePolicy`, `DirectSolarIrradiance`, and
+`DirectSolarIrradianceEvaluator` contracts in the existing illumination
+owner.
+
+The evaluator would consume one accepted `SatelliteIlluminationGeometry` and
+return bolometric normal-plane clear and incident irradiance in `W m-2`,
+retaining distance, visible fraction, occultation class, complete geometry and
+model identity, convergence evidence, provenance, and explicit
+physical-uncertainty `not_evaluated`. It would perform no propagation,
+ephemeris query, occultation calculation, surface projection, or output work.
+
+The candidate authorizes no runtime. Spectral/passband Sunlight, numeric
+Moonlight, reflected fields, component bundles, magnitude, visibility,
+detector, report, chart, CLI, planning, facility, and scheduling APIs remain
+unauthorized.
+
+## Accepted 50S.7D radiometry API authority
+
+Fernando accepted the documentation-only 50S.7D API boundary at exact
+candidate `362199d04bd917741a8be88f20608967af75530e` on 2026-09-21 after
+214 plugin-disabled current-documentation tests passed in 7.00 seconds and
+repository checks were clean.
+
+After merge, a bounded 50S.7D.1 implementation may add only immutable
+`DirectSolarIrradiancePolicy`, `DirectSolarIrradiance`, and
+`DirectSolarIrradianceEvaluator` contracts in the existing illumination
+owner. The evaluator must consume accepted geometry, return bolometric
+normal-plane clear and incident irradiance, retain identity/provenance and
+convergence evidence, and leave physical/model uncertainty explicitly
+`not_evaluated`.
+
+Spectral/passband Sunlight, numeric Moonlight, reflected fields, component
+bundles, surface response, magnitude, visibility, detector, report, chart,
+CLI, planning, facility, and scheduling APIs remain unauthorized. PR 184
+merge, branch deletion, and 50S.7D.2+ remain separate decisions.
+
+## Candidate 50S.7D.1 direct-Sun irradiance API implementation
+
+Executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` exports immutable
+`DirectSolarIrradiancePolicy`, `DirectSolarIrradiance`, and
+`DirectSolarIrradianceEvaluator` contracts. The evaluator accepts exactly one
+`SatelliteIlluminationGeometry` and implements
+`E_clear = 1361 * (au / r)^2` and
+`E_incident = visible_fraction * E_clear`.
+
+The result retains complete geometry identity, UTC, distance in kilometres and
+astronomical units, visible fraction, occultation class, clear/incident values,
+coarse value, convergence difference, policy, provenance, warnings, and
+physical/model uncertainty status `not_evaluated`. Unsupported model,
+incompatible uniform-disk geometry, inconsistent distance, and non-same-
+instant inputs fail closed through the accepted illumination failure boundary.
+The candidate adds no surface, passband, Moonlight, output, brightness,
+visibility, or detector API and is not yet accepted.
+
+## Verified candidate 50S.7D.1 API implementation
+
+The immutable API at exact branch head
+`5bf5d52e81670f1a69af0476283195d12a3119bc` passed its independent
+installed-resource formula receipt, 308-test expanded gate, and complete
+2,832-test plugin-disabled suite. The receipt independently recomputed the
+declared IAU nominal formula for sunlit, penumbral, and umbral LEO, MEO, and
+GEO geometry with zero residuals.
+
+The API remains an unaccepted review candidate. Do not extend it with
+spectral/passband, Moonlight, reflected-field, spacecraft-response, brightness,
+visibility, detector, output, facility, or scheduling contracts. Merge and
+branch deletion remain separate decisions.
+
+## Accepted 50S.7D.1 direct-Sun irradiance API implementation
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. Preserve the
+immutable `DirectSolarIrradiancePolicy`, `DirectSolarIrradiance`, and
+`DirectSolarIrradianceEvaluator` contracts and their fail-closed geometry
+boundary.
+
+The independent receipt, 308 expanded tests, complete 2,832-test suite, and
+final 223-test documentation/package-boundary gate passed. The acceptance adds
+no 50S.7D.2+, output, brightness, visibility, detector, facility, or scheduling
+API; merge and branch deletion remain separate decisions.
+
+## Candidate 50S.7D.2 spectral API boundary
+
+The audit proposes immutable spectral resource identity, policy, result, and
+evaluator contracts over the exact TSIS-1 HSRS v2 native grid. Energy spectral
+irradiance is distinct from photon quantities; interpolation, extrapolation,
+renormalization, aggregate uncertainty, passband libraries, and runtime remain
+unauthorized pending separate acceptance.
+
+## Accepted 50S.7D.2 spectral API boundary
+
+Fernando accepted the proposed immutable resource identity, policy, result, and
+evaluator boundary at exact candidate
+`0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe` on 2026-09-22. After audit
+merge, the bounded implementation may expose only native-grid energy spectral
+irradiance and exact-grid energy integration for the externally installed
+TSIS-1 HSRS v2 resource. It must retain pointwise uncertainty and report
+integrated uncertainty as `not_evaluated`. No interpolation, extrapolation,
+renormalization, Moonlight, passband library, photon rate, or output API is
+authorized.
+
+## Candidate 50S.7D.2 spectral API implementation
+
+Executable `8e930db2` exports immutable
+`SolarSpectralIrradianceResourceIdentity`,
+`DirectSolarSpectralIrradiancePolicy`,
+`DirectSolarSpectralIrradiance`, and
+`DirectSolarSpectralIrradianceEvaluator` contracts plus the explicit offline
+`load_solar_spectral_irradiance_resource(path)` entry point.
+
+The loader admits only the accepted TSIS-1 HSRS v2 serialization by byte count
+and SHA-256, then validates UTF-8 CSV schema, native grid, values, bandwidth,
+and integral. The evaluator consumes one complete accepted
+`SatelliteIlluminationGeometry`, preserves native tuples, scales energy
+spectral irradiance and absolute pointwise uncertainty, and leaves integrated
+uncertainty `not_evaluated`. `integrate_energy()` accepts only exact native
+endpoints. Unsupported models, resources, geometry, interpolation,
+extrapolation, and renormalization fail closed.
+
+This remains an unaccepted candidate. It supplies no acquisition API,
+Moonlight, passband response, photon rate, surface response, brightness,
+visibility, detector, report, chart, CLI, planning, facility, or scheduling
+API.
+
+## Verified candidate 50S.7D.2 spectral API
+
+Exact verified head `8f2ca825` retains the bounded executable API at
+`8e930db2`. The real-resource receipt, 132 expanded tests, 227
+documentation/package tests, clean diff, and complete 2,858-test suite passed.
+
+The API remains an unaccepted candidate: exact external-resource admission,
+native immutable energy samples, pointwise uncertainty, exact-grid integration,
+and integrated uncertainty `not_evaluated`. Acquisition, interpolation,
+extrapolation, renormalization, Moonlight, photon, output, and later APIs remain
+unauthorized.
+
+## Accepted 50S.7D.2 spectral API implementation
+
+Fernando accepted exact verified candidate `d1edeb46` on 2026-09-22.
+Preserve the executable `8e930db2` immutable resource identity, policy,
+result, evaluator, offline loader, typed failures, native tuples, pointwise
+uncertainty, exact-grid energy integration, and deterministic identity.
+
+The API must continue to forbid implicit acquisition, interpolation,
+extrapolation, renormalization, aggregate uncertainty, Moonlight, photon
+conversion, surface response, brightness, visibility, detector, output,
+facility, and scheduling behavior. PR 187 merge and branch deletion remain
+separate decisions.
+
+## Candidate 50S.7D.3 Moonlight API readiness
+
+No Moonlight API is implemented or authorized. The candidate audit identifies
+the future separation between same-instant lunar source geometry in
+`satellites/illumination.py` and exact external model admission plus native-
+band irradiance in `satellites/radiometry.py`.
+
+The preferred LIME model remains blocked pending an exact versioned
+distribution, byte identities, license, native bands, coefficients, geometry
+conventions, supported domain, uncertainty, and authoritative reference
+outputs. Existing lunar `not_evaluated` semantics remain authoritative.
+No coefficient, loader, policy, result, evaluator, eclipse, occultation,
+passband, brightness, visibility, detector, output, facility, or scheduling API
+is added.
+
+## Accepted 50S.7D.3 Moonlight API readiness
+
+Fernando accepted exact documentation-only candidate `abbb1b78` on
+2026-09-22 after the 230-test documentation/package gate and clean repository
+checks. No Moonlight API was added or authorized.
+
+After merge, only an external LIME distribution preflight may proceed under
+separate controls. Existing `not_evaluated` semantics remain authoritative.
+No resource retrieval, coefficient API, geometry API, loader, evaluator,
+numeric Moonlight, output, brightness, visibility, detector, facility, or
+scheduling behavior is authorized.
+
+## Final accepted 50S.7D.3 API-readiness verification
+
+Acceptance-record head `0be116ab` passed 231 documentation/package tests in
+8.54 seconds and clean repository checks. No Moonlight API exists or is
+authorized. Only the post-merge external LIME distribution preflight may
+proceed under separate controls.
+
+## Candidate 50S.7D.3A LIME distribution preflight
+
+No API is added. The receipt identifies LIME Toolbox `v1.4.2` tag commit
+`b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f`, macOS asset SHA-256
+`e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21`,
+and candidate coefficient SHA-256
+`8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691`.
+
+The future boundary would accept Wenu-owned direct selenographic geometry; it
+must not accept a TLE or delegate propagation to LIME's EO-CFI route. Resource,
+geometry, coefficient, irradiance, and uncertainty APIs remain unauthorized.
+
+## Accepted 50S.7D.3A LIME distribution preflight
+
+Fernando accepted exact candidate `27e1ee1c` on 2026-09-22 after 232
+plugin-disabled documentation/package tests passed in 11.95 seconds. This
+accepts only the frozen distribution receipt and future direct-selenographic
+adapter boundary. It adds no API, dependency, execution, or Moonlight result;
+PR 189 merge and later offline inspection require separate instructions.
+
+## Candidate 50S.7D.3B offline-inspection interface
+
+No public or production API is added. The only new executable interface is the
+developer command
+`tools/validate_50s7d3b_lime_offline_inspection.py PACKAGE OUTPUT_DIRECTORY`.
+It accepts the exact external macOS package and a nonexistent external output
+directory, fails closed on identity or environment mismatch, and emits a
+digest-bound evidence set.
+
+The tool neither imports nor wraps LIME in Wenu. Geometry, resource, policy,
+result, evaluator, uncertainty, and numeric Moonlight APIs remain
+unauthorized. Its manifest must state `production_runtime_changed=false` and
+`moonlight_status=not_evaluated`.

@@ -497,9 +497,17 @@ def project_polygons_to_projection_cap(
         )
 
     minimum_z = np.cos(np.radians(angular_radius_deg))
+    interior_left = spherical.metadata.get("spherical_interior_left")
+    interior_areas = spherical.metadata.get("spherical_interior_area_sr")
+    has_interior = interior_left is not None and interior_areas is not None
+    if has_interior and not (
+        np.shape(interior_left) == np.shape(interior_areas) == (len(spherical),)
+    ):
+        raise ValueError("Spherical interior metadata must contain one value per ring.")
     items = []
     source_indices = []
     source_latitudes = []
+    clipped_holes = []
     for index, (longitude, latitude) in enumerate(
         zip(spherical.lon_deg, spherical.lat_deg)
     ):
@@ -516,6 +524,23 @@ def project_polygons_to_projection_cap(
             minimum_z,
             return_source_latitudes=True,
         )
+        if has_interior:
+            pieces = _resolve_projection_cap_ring_interior(
+                clipped_result,
+                longitude,
+                latitude,
+                projection,
+                minimum_z,
+                interior_left=bool(interior_left[index]),
+                interior_area=float(interior_areas[index]),
+                is_hole=bool(spherical.metadata["is_hole"][index]),
+            )
+            for clipped, clipped_latitude, is_hole in pieces:
+                items.append(clipped)
+                source_indices.append(index)
+                source_latitudes.append(clipped_latitude)
+                clipped_holes.append(is_hole)
+            continue
         if clipped_result is not None:
             clipped, clipped_latitude = clipped_result
             items.append(clipped)
@@ -531,11 +556,67 @@ def project_polygons_to_projection_cap(
     metadata["projection_domain_clipped"] = True
     metadata["projection_cap_deg"] = angular_radius_deg
     metadata["projection_source_latitudes"] = tuple(source_latitudes)
+    if has_interior:
+        metadata["is_hole"] = np.asarray(clipped_holes, dtype=bool)
+        metadata["projection_cap_topology_inversion"] = np.zeros(
+            len(items), dtype=bool
+        )
+        return ProjectedPolygons(items=items, metadata=metadata)
     projected = ProjectedPolygons(items=items, metadata=metadata)
     projected = _stitch_projection_cap_winding_bands(projected)
     return _apply_projection_cap_topology_complements(
         projected, projection, minimum_z
     )
+
+
+def _resolve_projection_cap_ring_interior(
+    clipped_result, longitude, latitude, projection, minimum_z,
+    *, interior_left, interior_area, is_hole,
+):
+    """Preserve source winding throughout the cap, including its constant.
+
+    Clipping preserves winding differences across the retained boundary,
+    but can add or remove whole cap turns. Anchor the winding at the cap
+    centre using the source ring's spherical interior, then add signed cap
+    boundaries to restore that constant. No unrelated rings are joined.
+    """
+    lon, lat = _projection_aligned_coordinates(projection, longitude, latitude)
+    vectors = _unit_vectors(lon, lat)
+    following = np.roll(vectors, -1, axis=0)
+    spherical_winding = np.sum(np.arctan2(
+        np.cross(vectors, following)[:, 2],
+        np.sum(vectors * following, axis=1)
+        - vectors[:, 2] * following[:, 2],
+    ))
+    if abs(spherical_winding) > np.pi:
+        contains_centre = (spherical_winding > 0.0) == interior_left
+    else:
+        contains_centre = interior_area > 2.0 * np.pi
+    interior_sign = 1 if interior_left else -1
+    if not projection.flip_ew:
+        interior_sign = -interior_sign
+    role_sign = -1 if is_hole else 1
+    factor = interior_sign * role_sign
+    winding = 0
+    pieces = []
+    if clipped_result is not None:
+        polygon, source_latitude = clipped_result
+        angles = np.unwrap(np.arctan2(
+            np.r_[polygon.y, polygon.y[0]],
+            np.r_[polygon.x, polygon.x[0]],
+        ))
+        winding = int(np.round((angles[-1] - angles[0]) / (2.0 * np.pi)))
+        area = np.sum(
+            polygon.x * np.roll(polygon.y, -1)
+            - polygon.y * np.roll(polygon.x, -1)
+        )
+        pieces.append((polygon, source_latitude, (area > 0.0) != (factor > 0)))
+    offset = interior_sign * int(contains_centre) - winding
+    if offset:
+        boundary, source_latitude = _projection_cap_boundary(projection, minimum_z)
+        for _ in range(abs(offset)):
+            pieces.append((boundary, source_latitude, offset * factor < 0))
+    return pieces
 
 
 def _stitch_projection_cap_winding_bands(projected):

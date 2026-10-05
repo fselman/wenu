@@ -32,6 +32,43 @@ def test_parser_exposes_one_family_subcommand_set():
     assert set(subparsers.choices) == EXPECTED_COMMANDS
 
 
+def test_planisphere_flip_ew_reaches_projection_without_leaking(monkeypatch):
+    from wenu import CANONICAL_MAXIMAL_SPHERE_PROFILE, get_chart_view
+    from wenu.charts.request_chart import PreparedChartRequest, _chart_from_resolved
+
+    def prepare(sky, resolved, *, observer):
+        return PreparedChartRequest(
+            _chart_from_resolved(sky, resolved, observer), resolved
+        )
+
+    monkeypatch.setattr("wenu.charts.view.prepare_chart_request", prepare)
+    source = SimpleNamespace(load_profile=CANONICAL_MAXIMAL_SPHERE_PROFILE)
+    observer = SimpleNamespace(
+        utc_datetime=datetime(2026, 10, 16, 4, tzinfo=timezone.utc),
+        lat_deg=-32.443342, lon_deg=-71.230289, elevation_m=52,
+        timezone_name="America/Santiago",
+    )
+    points = []
+    for options, expected in (([], False), (["--flip-ew"], True), ([], False)):
+        arguments = chart.parser().parse_args([
+            "planisphere", "--constellation-system", "western", *options
+        ])
+        view = get_chart_view(
+            source, observer, family="planisphere", **chart._view_arguments(arguments)
+        )
+        assert view.frame.mirror_ew is expected
+        assert view.chart.flip_ew is not expected
+        points.append(view.chart.projection.project_spherical(90.0, 45.0))
+    assert points[1][0] == pytest.approx(-points[0][0])
+    assert points[1][1] == pytest.approx(points[0][1])
+    assert points[2] == pytest.approx(points[0])
+
+
+def test_flip_ew_is_not_advertised_for_other_families():
+    with pytest.raises(SystemExit):
+        chart.parser().parse_args(["all-sky", "--flip-ew"])
+
+
 def test_regional_accepts_one_named_center():
     one = chart.parser().parse_args([
         "regional", "--center-on", "constellation:Cru",

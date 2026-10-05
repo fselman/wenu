@@ -560,6 +560,54 @@ def test_inverted_cap_ring_closes_along_planisphere_horizon():
     assert np.max(np.linalg.norm(np.diff(horizon, axis=0), axis=1)) < 0.02
 
 
+@pytest.mark.parametrize("flip_ew", [False, True])
+@pytest.mark.parametrize("latitude", [-60.0, 60.0])
+@pytest.mark.parametrize("interior_left", [False, True])
+def test_intrinsic_ring_interior_preserves_cap_complements(latitude, flip_ew, interior_left):
+    longitude = np.arange(0.0, 360.0, 2.0)
+    # Eastward traversal leaves the north side on the left; choose its
+    # right-hand interior, which includes the projection antipode.
+    area = 2.0 * np.pi * (1.0 + np.sin(np.radians(latitude)))
+    if interior_left:
+        area = 4.0 * np.pi - area
+    spherical = SphericalPolygons(
+        coordinate_spec=GENERIC_SPHERICAL_SPEC,
+        lon_deg=(longitude,),
+        lat_deg=(np.full(len(longitude), latitude),),
+        metadata={
+            "compound_id": np.asarray(["ring"], dtype=object),
+            "is_hole": np.asarray([False]),
+            "spherical_interior_left": np.asarray([interior_left]),
+            "spherical_interior_area_sr": np.asarray([area]),
+        },
+    )
+    projection = StereographicProjection(flip_ew=flip_ew)
+    projected = project_polygons_to_projection_cap(
+        spherical, projection=projection, angular_radius_deg=80.0,
+    )
+    if latitude < 0 and not interior_left:
+        # A southern cap has no intersection with the northern chart cap.
+        assert len(projected) == 0
+    elif latitude > 0 and not interior_left:
+        # All source vertices are visible, but the filled region is the
+        # complement of the small central outline, reaching the chart edge.
+        assert len(projected) == 2
+        assert projected.metadata["is_hole"].tolist() == [True, False]
+        assert not np.any(projected.metadata["projection_cap_topology_inversion"])
+        radius = projection.projected_radius(80.0)
+        np.testing.assert_allclose(
+            np.hypot(projected[1].x, projected[1].y), radius,
+        )
+    else:
+        assert len(projected) == 1
+        assert projected.metadata["is_hole"].tolist() == [False]
+        angular_radius = 80.0 if latitude < 0 else 30.0
+        np.testing.assert_allclose(
+            np.hypot(projected[0].x, projected[0].y),
+            projection.projected_radius(angular_radius),
+        )
+
+
 def test_opposite_winding_boundaries_are_stitched_into_one_band():
     spherical = SphericalPolygons(
         coordinate_spec=GENERIC_SPHERICAL_SPEC,

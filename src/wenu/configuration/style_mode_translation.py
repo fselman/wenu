@@ -244,6 +244,11 @@ def _grids(style: Mapping[str, Any], *, style_name: str) -> GridStyle:
         constellation_linewidth=figures["line_width"],
         constellation_line_alpha=figures["opacity"],
         constellation_label_color=labels["color"],
+        constellation_label_fontsize=(
+            None
+            if labels["font_size"] == style["canvas"]["label_font_size"]
+            else labels["font_size"]
+        ),
         constellation_label_alpha=labels["opacity"],
         constellation_label_offset=tuple(labels["offset"]),
         constellation_label_ha=labels["horizontal_alignment"],
@@ -284,19 +289,16 @@ def _style(table: Mapping[str, Any], style_type, *, style_name: str):
     canvas = table["canvas"]
     mask = table["mask"]
     legend = table["legend"]
-    labels = table["constellation_labels"]
-    if labels["font_size"] != canvas["label_font_size"]:
-        raise ConfigurationError(
-            f"styles.{style_name}.constellation_labels.font_size: cannot "
-            "differ from canvas.label_font_size until Milestone 46D.4 "
-            "separates their runtime fields"
-        )
     return style_type(
         canvas=CanvasStyle(
             sky_color=canvas["background"],
             foreground_color=canvas["foreground"],
             label_fontsize=canvas["label_font_size"],
             footer_color=_optional(canvas["footer_color"]),
+            title_color=(
+                None if canvas["title_color"] in {"none", "inherit_canvas"}
+                else canvas["title_color"]
+            ),
         ),
         stars=_stellar(table["stars"]),
         isophotes=_isophotes(table),
