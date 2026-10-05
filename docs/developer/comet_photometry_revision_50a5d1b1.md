@@ -93,3 +93,25 @@ or 50A.5D.3 moving-object report behavior.
 The implementation must remain pending until Fernando accepts those live
 results. PR #121 must not be merged merely because the earlier narrow
 acceptance passed.
+
+## Provider-policy recheck before live acceptance (2026-10-05)
+
+Primary policy: <https://ssd-api.jpl.nasa.gov/doc/>; checked on 2026-10-05.
+Transport reference: <https://ssd-api.jpl.nasa.gov/doc/horizons_file.html>.
+
+The current policy requires an application-specific User-Agent containing
+the product name, version, and contact information. The comet SBDB GET and
+Horizons file-API POST transports now identify Wenu using its existing
+package version and the public project issue URL as a contact channel.
+This is confined to those two transport owners; no generic client or new
+module is introduced. The closest existing test file,
+`tests/test_comet_discovery.py`, adds a two-provider transport assertion for
+this newly verified external-provider contract.
+
+Sequential access, validated caching, and fail-whole behavior remain in
+force. Automated calls must stop after a service failure rather than retry
+repeatedly. The policy also prohibits website embedding, warns that API
+formats can change, and offers no availability guarantee. This acceptance
+exercise performs no redistribution of provider responses. The coordinate
+guide was reviewed and remains current: headers change no scientific state,
+coordinate frame, provenance quantity, or chart pipeline.

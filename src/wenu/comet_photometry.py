@@ -17,6 +17,7 @@ from urllib.request import Request, urlopen
 
 from astropy.time import Time
 
+from wenu import __version__
 from wenu.comet_designations import parse_comet_designation
 from wenu.comet_discovery import CometDiscoveryRecord, CometDiscoveryResult
 from wenu.observer import Observer
@@ -298,6 +299,10 @@ def _fetch(
         url,
         data=_multipart_body(parameters),
         headers={
+            "User-Agent": (
+                f"Wenu/{__version__} "
+                "(contact: https://github.com/fselman/wenu/issues)"
+            ),
             "Content-Type": (
                 "multipart/form-data; boundary=" + _MULTIPART_BOUNDARY
             )

@@ -351,6 +351,46 @@ def test_photometry_transport_posts_a_horizons_batch_file(monkeypatch):
     assert "?" not in request.full_url
 
 
+
+@pytest.mark.parametrize("provider", [comet_discovery, comet_photometry])
+def test_provider_transport_identifies_wenu_version_and_contact(
+    provider, monkeypatch
+):
+    from wenu import __version__
+
+    captured = {}
+
+    class Response:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *values):
+            return False
+
+        def read(self):
+            return b"provider response"
+
+    def open_request(request, timeout):
+        captured["request"] = request
+        captured["timeout"] = timeout
+        return Response()
+
+    monkeypatch.setattr(provider, "urlopen", open_request)
+    endpoint = (
+        comet_discovery.SBDB_QUERY_API
+        if provider is comet_discovery
+        else comet_photometry.HORIZONS_API
+    )
+    assert provider._fetch(endpoint, {"format": "json"}, timeout=7) == (
+        b"provider response"
+    )
+    assert captured["request"].get_header("User-agent") == (
+        f"Wenu/{__version__} "
+        "(contact: https://github.com/fselman/wenu/issues)"
+    )
+    assert captured["timeout"] == 7
+
+
 def test_frozen_horizons_photometry_preserves_unknowns_and_provenance():
     discovery = short_mcnaught_discovery()
     _, epochs = comet_photometry.magnitude_sample_epochs(
