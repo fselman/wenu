@@ -313,3 +313,50 @@ def test_auto_point_labels_avoid_neighbouring_symbols_and_labels_without_backgro
     np.testing.assert_allclose([text.get_position() for text in ax.texts], before)
     np.testing.assert_array_equal(points.x, [0, .025, .08])
     plt.close(fig)
+
+
+@pytest.mark.parametrize("angle", [0, 45, 90, 180, 270])
+@pytest.mark.parametrize("dpi", [100, 300])
+def test_auto_labels_keep_compact_ownership_after_rotation(angle, dpi):
+    fig, ax = plt.subplots(figsize=(3, 3), dpi=dpi)
+    ax.set_xlim(-1, 1)
+    ax.set_ylim(-1, 1)
+    ax.set_aspect("equal")
+    radians = np.deg2rad(angle)
+    rotation = np.array([[np.cos(radians), -np.sin(radians)],
+                         [np.sin(radians), np.cos(radians)]])
+    positions = np.array([[0, 0], [.04, .10], [-.08, -.12]]) @ rotation.T
+    points = ProjectedPoints(positions[:, 0], positions[:, 1], labels=["τ", "σ", "π"])
+    renderer = MatplotlibRenderer(ax)
+    renderer.draw(points, style={"s": [16, 16, 16]}, draw_labels=True,
+                  label_style={"fontsize": 9, "placement": "auto"})
+    fig.canvas.draw()
+    renderer.finalize_label_placement()
+    scale = dpi / 72
+    centres = ax.transData.transform(positions)
+    boxes = [artist.get_window_extent(fig.canvas.get_renderer()) for artist in ax.texts]
+    for index, box in enumerate(boxes):
+        distances = np.hypot(np.maximum(np.maximum(box.x0-centres[:, 0], centres[:, 0]-box.x1), 0),
+                             np.maximum(np.maximum(box.y0-centres[:, 1], centres[:, 1]-box.y1), 0))
+        assert distances[index] <= min(np.delete(distances, index)) + 1e-8
+        assert distances[index] / scale <= renderer._point_obstacles[index][2] + 2.25 + 1e-8
+    assert all(not first.overlaps(second) for i, first in enumerate(boxes) for second in boxes[i+1:])
+    np.testing.assert_array_equal(points.x, positions[:, 0])
+    np.testing.assert_array_equal(points.y, positions[:, 1])
+    plt.close(fig)
+
+
+def test_isolated_greek_label_prefers_vertical_alignment():
+    fig, ax = plt.subplots(figsize=(3, 3))
+    ax.set_xlim(-1, 1)
+    ax.set_ylim(-1, 1)
+    renderer = MatplotlibRenderer(ax)
+    renderer.draw(ProjectedPoints([0], [0], labels=["θ"]), style={"s": 16},
+                  draw_labels=True, label_style={"fontsize": 9, "placement": "auto"})
+    fig.canvas.draw()
+    renderer.finalize_label_placement()
+    anchor = ax.transData.transform((0, 0))
+    box = ax.texts[0].get_window_extent(fig.canvas.get_renderer())
+    assert (box.x0 + box.x1) / 2 == pytest.approx(anchor[0])
+    assert box.y0 > anchor[1]
+    plt.close(fig)

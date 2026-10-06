@@ -123,8 +123,11 @@ parallactic or meridian line.
 Greek Bayer labels omit the constellation abbreviation by default; numerical
 superscripts remain part of the designation. Use `--show-full-bayer-designation`
 when the abbreviation is wanted. `--star-label-placement auto` moves explicitly
-selected labels around nearby symbols and labels; placement remains best effort
-in crowded fields and does not suppress labels.
+selected labels using compact positions measured in physical points after the
+chart rotation and layout. Short labels prefer above/below alignment, with other
+positions available to avoid ambiguity and collisions. Association with the
+intended star takes priority over avoiding a constellation line. Placement
+remains best effort in crowded fields and does not suppress labels.
 
 `--stars-in-constellations Sco,Lib` restricts stellar symbols to the union of
 those IAU regions, using the catalogue's native ICRS coordinates. This is a

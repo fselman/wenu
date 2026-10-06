@@ -1162,53 +1162,107 @@ class MatplotlibRenderer:
         self.finalize_label_placement()
 
     def finalize_label_placement(self):
-        """Place opt-in point labels using final axes size and existing artists."""
+        """Place compact labels with visible ownership in final display space.
+
+        Association has priority over cosmetic line avoidance. Candidate
+        positions follow the rotated/projected markers, while text stays
+        upright. Coordinate descent revisits earlier choices as a group.
+        """
         if not self._auto_labels:
             return
         from matplotlib.transforms import Bbox
 
         renderer = self.ax.figure.canvas.get_renderer()
-        pixels_per_point = self.ax.figure.dpi / 72.0
-        obstacles = [(self.ax.transData.transform((x, y)), radius * pixels_per_point)
-                     for x, y, radius in self._point_obstacles]
+        scale = self.ax.figure.dpi / 72.0
+        centres = self.ax.transData.transform(
+            [(x, y) for x, y, _ in self._point_obstacles]
+        ) if self._point_obstacles else np.empty((0, 2))
+        radii = np.asarray([radius * scale for _, _, radius in self._point_obstacles])
         auto_artists = {artist for artist, _, _ in self._auto_labels}
-        occupied = [artist.get_window_extent(renderer) for artist in self.ax.texts
-                    if artist not in auto_artists and artist.get_visible() and artist.get_text()]
-        paths = [line.get_path().transformed(line.get_transform()) for line in self.ax.lines]
+        fixed = [artist.get_window_extent(renderer) for artist in self.ax.texts
+                 if artist not in auto_artists and artist.get_visible() and artist.get_text()]
+        paths = [line.get_path().transformed(line.get_transform())
+                 for line in self.ax.lines if line.get_visible()]
         bounds = self.ax.get_window_extent(renderer)
+
         def overlap(first, second):
-            return max(0.0, min(first.x1, second.x1) - max(first.x0, second.x0)) * max(0.0, min(first.y1, second.y1) - max(first.y0, second.y0))
-        def radius_at(x, y):
-            anchor = self.ax.transData.transform((x, y))
-            return max((radius for centre, radius in obstacles if np.linalg.norm(centre-anchor) < 1e-4), default=0.0)
-        # Bright, large symbols get first choice; ties retain catalogue order.
-        labels = sorted(self._auto_labels, key=lambda item: -radius_at(item[1], item[2]))
+            return (max(0.0, min(first.x1, second.x1) - max(first.x0, second.x0))
+                    * max(0.0, min(first.y1, second.y1) - max(first.y0, second.y0))) / scale**2
+
+        def distances(box, points):
+            return np.hypot(
+                np.maximum(np.maximum(box.x0 - points[:, 0], points[:, 0] - box.x1), 0),
+                np.maximum(np.maximum(box.y0 - points[:, 1], points[:, 1] - box.y1), 0),
+            )
+
+        def radius_at(anchor):
+            if not len(centres):
+                return 0.0
+            near = np.linalg.norm(centres - anchor, axis=1) < 1e-4
+            return np.max(radii[near], initial=0.0)
+
+        labels = sorted(self._auto_labels, key=lambda item: (
+            -radius_at(self.ax.transData.transform(item[1:])),
+            -len(item[0].get_text()),
+        ))
+        choices = []
         for artist, x, y in labels:
             anchor = self.ax.transData.transform((x, y))
-            clearance = radius_at(x, y) + 2.0 * pixels_per_point
-            width, height = artist.get_window_extent(renderer).size
-            candidates = []
-            for extra in (0.0, 4.0 * pixels_per_point, 8.0 * pixels_per_point):
-                for dx, dy in ((1, 1), (-1, 1), (1, -1), (-1, -1), (1, 0), (-1, 0), (0, 1), (0, -1)):
-                    distance = clearance + extra
-                    origin = anchor + np.asarray((dx, dy)) * distance
-                    left = origin[0] - (width if dx < 0 else width / 2.0 if dx == 0 else 0.0)
-                    bottom = origin[1] - (height if dy < 0 else height / 2.0 if dy == 0 else 0.0)
-                    box = Bbox.from_bounds(left, bottom, width, height)
-                    padded = box.expanded(1.05, 1.10)
-                    score = 100.0 * sum(overlap(padded, other) for other in occupied)
-                    score += 1000.0 * (box.width * box.height - overlap(box, bounds))
-                    score += 2.0 * sum(path.intersects_bbox(padded, filled=False) for path in paths)
-                    for centre, radius in obstacles:
-                        marker_box = Bbox.from_bounds(centre[0]-radius-1, centre[1]-radius-1, 2*radius+2, 2*radius+2)
-                        score += 100.0 * overlap(padded, marker_box)
-                    score += extra * 0.01
-                    candidates.append((score, box))
-            _, selected = min(candidates, key=lambda item: item[0])
+            radius = radius_at(anchor)
             artist.set_ha("left")
             artist.set_va("bottom")
-            artist.set_position(self.ax.transData.inverted().transform((selected.x0, selected.y0)))
-            occupied.append(selected.expanded(1.05, 1.10))
+            width, height = artist.get_window_extent(renderer).size
+            # Sub-resolution companions share a visible anchor, not an identity.
+            competitors = np.linalg.norm(centres - anchor, axis=1) > 0.25 * scale
+            candidates = []
+            directions = ((0, 1), (0, -1), (1, 1), (-1, 1),
+                          (1, -1), (-1, -1), (1, 0), (-1, 0))
+            for extra in (0.0, 0.75, 1.5):
+                clearance = radius + (0.75 + extra) * scale
+                for preference, (dx, dy) in enumerate(directions):
+                    offset = np.asarray((dx, dy), dtype=float)
+                    offset *= clearance / np.linalg.norm(offset)
+                    origin = anchor + offset
+                    left = origin[0] - (width if dx < 0 else width / 2 if dx == 0 else 0)
+                    bottom = origin[1] - (height if dy < 0 else height / 2 if dy == 0 else 0)
+                    box = Bbox.from_bounds(left, bottom, width, height)
+                    padded = box.padded(0.25 * scale)
+                    own_distance = distances(box, anchor.reshape(1, 2))[0]
+                    other_distances = distances(box, centres)
+                    ambiguous = np.maximum(own_distance - other_distances[competitors], 0).sum() / scale
+                    marker_conflict = np.maximum(radii + 0.25 * scale - distances(padded, centres), 0).sum() / scale
+                    fixed_conflict = sum(overlap(padded, other) for other in fixed)
+                    outside = box.width * box.height / scale**2 - overlap(box, bounds)
+                    cosmetic = (0.1 * sum(path.intersects_bbox(padded, filled=False) for path in paths)
+                                + 0.025 * preference + 0.05 * extra)
+                    candidates.append((box, padded, (ambiguous, marker_conflict,
+                                                      fixed_conflict, outside, cosmetic)))
+            choices.append(candidates)
+
+        selected = []
+        def score(index, candidate, assignments):
+            box, padded, static = choices[index][candidate]
+            collisions = sum(
+                overlap(padded, choices[other][value][1])
+                for other, value in enumerate(assignments) if other != index
+            )
+            return (static[0], static[1], static[2] + collisions, static[3], static[4])
+
+        for index, candidates in enumerate(choices):
+            selected.append(min(range(len(candidates)), key=lambda value: score(index, value, selected)))
+        # Revisiting the set avoids locking a later label out of a nearby slot.
+        for _ in range(8):
+            changed = False
+            for index, candidates in enumerate(choices):
+                best = min(range(len(candidates)), key=lambda value: score(index, value, selected))
+                if score(index, best, selected) < score(index, selected[index], selected):
+                    selected[index] = best
+                    changed = True
+            if not changed:
+                break
+        for index, (artist, _, _) in enumerate(labels):
+            box = choices[index][selected[index]][0]
+            artist.set_position(self.ax.transData.inverted().transform((box.x0, box.y0)))
 
     def _label(self, x, y, label, style, offset):
         style = dict(style)

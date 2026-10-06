@@ -1115,3 +1115,40 @@ This retains existing defaults and deliberate explicit-label inclusion.
 The final CLI/documentation gate has 357 passes. The core presentation full
 suite at the `10c26a9` source state has 2,977 passes and the four reproduced
 base failures; a final full run after this explicit CLI addition is separate.
+
+
+## Orientation-aware label association review (2026-10-06)
+
+Fernando's vertical Sco–Lib specimen showed that collision avoidance alone
+could make theta appear detached, pi/rho appear associated with one marker,
+and tau appear to label Antares. This is a display association defect, not
+an HIP/Bayer identity change. Cartographic literature distinguishes
+legibility from association: see [Label Placement Challenges in City
+Wayfinding Map Production](https://doi.org/10.1007/s41651-022-00115-z).
+Esri's [Remove ambiguous labels](https://doc.esri.com/en/arcgis-pro/latest/help/mapping/text/remove-ambiguous-labels.html)
+explicitly tests nearby features as well as the labelled feature.
+Bobák, Čmolík and Čadík's [From Top-Right to User-Right](https://arxiv.org/abs/2407.11996)
+reports a preference for above-point positions in a large user study. These
+are cartographic sources, not a proof of optimal astronomical labelling.
+
+The existing generic renderer now evaluates compact candidates in final
+screen space, including actual glyph bounds and physical marker radii.
+It prioritizes ownership before cosmetic line avoidance, prefers vertically
+aligned candidates, and revisits earlier assignments. Astronomical geometry,
+identity, selected labels and superscripts remain unchanged. Finite candidate
+sets cannot guarantee clarity in arbitrarily crowded fields; selected labels
+remain visible rather than being silently dropped.
+
+The active western `const_aug.fab` gains two separate two-vertex paths:
+sigma Sco (HIP 80112) to pi Sco (HIP 78265), and pi Sco to rho Sco (HIP 78104).
+Existing paths are retained verbatim to avoid introducing a bridge from a
+previous path's endpoint. The unused reference figure file is unchanged.
+
+The 75.44 mm wide transparent Sco–Lib review uses a 45 by 65 degree field,
+position angle -165.66607934, V < 5, and nineteen explicitly selected labels.
+PNG/PDF/SVG checks find zero label-box overlaps and every label closer to its
+own marker than to another resolvable marker. All 55 plotted stellar symbols
+are brighter than V=5; alpha is retained and visible ink is black. Requested
+line gaps remain one physical point beyond the marker disk. Rotation tests
+cover five angles and two print resolutions. This numerical evidence supports
+review of this specimen; Mac visual acceptance remains pending.
