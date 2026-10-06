@@ -1,0 +1,2934 @@
+{
+  "schema": "wenu-stellar-review/1",
+  "decision_owner": "Fernando",
+  "scope": "Five-source joined designation discrepancies; not all coverage gaps or all possible stellar errors.",
+  "cases": [
+    {
+      "case_id": "HIP-677-bayer",
+      "hip": 677,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "α And"
+        ],
+        "BSC": [
+          "α And"
+        ],
+        "HYG": [
+          "α And"
+        ],
+        "WGSN": [
+          "α And"
+        ],
+        "Wikidata": [
+          "α And",
+          "δ Peg"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          6
+        ],
+        "BSC": [
+          15
+        ],
+        "HYG": [
+          "676"
+        ],
+        "WGSN": [
+          594
+        ],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q13039-30137adf-43c3-f104-151f-e884103ee5b6",
+          "http://www.wikidata.org/entity/statement/Q13039-cb7d7c37-42a3-dece-d487-f2b23507b8f1"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-8832-bayer",
+      "hip": 8832,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "γ1 Ari"
+        ],
+        "BSC": [
+          "γ2 Ari"
+        ],
+        "HYG": [
+          "γ2 Ari"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "γ Ari"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          257
+        ],
+        "BSC": [
+          546
+        ],
+        "HYG": [
+          "8813"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q970572-480BB2F1-33BF-4987-B85A-3599261B4C97"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-9347-bayer",
+      "hip": 9347,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "υ Cet"
+        ],
+        "BSC": [
+          "υ Cet"
+        ],
+        "HYG": [
+          "υ Cet"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "υ1 Cet"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          282
+        ],
+        "BSC": [
+          585
+        ],
+        "HYG": [
+          "9328"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q2717978-E388D1E6-6FCA-45DB-BDF2-762DB77D035C"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-9640-bayer",
+      "hip": 9640,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "γ1 And"
+        ],
+        "BSC": [
+          "γ1 And"
+        ],
+        "HYG": [
+          "γ1 And"
+        ],
+        "WGSN": [
+          "γ And"
+        ],
+        "Wikidata": [
+          "γ And"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          294
+        ],
+        "BSC": [
+          603
+        ],
+        "HYG": [
+          "9618"
+        ],
+        "WGSN": [
+          525
+        ],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q66477099-5bec827a-4707-695b-a57e-79eccefb1882"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-12832-flam",
+      "hip": 12832,
+      "field": "flam",
+      "source_values": {
+        "Kostjuk": [
+          "38 Ari"
+        ],
+        "BSC": [
+          "38 Ari"
+        ],
+        "HYG": [
+          "38 Ari"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "38 Ari",
+          "88 Cet"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          405
+        ],
+        "BSC": [
+          812
+        ],
+        "HYG": [
+          "12799"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q2401163-ED357002-BEC8-4CD0-949D-6DA5BA09AE39",
+          "http://www.wikidata.org/entity/statement/Q2401163-563a6276-4fbe-3f1e-700d-8e55fcf28fd7"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-12843-flam",
+      "hip": 12843,
+      "field": "flam",
+      "source_values": {
+        "Kostjuk": [
+          "1 Eri"
+        ],
+        "BSC": [
+          "1 Eri"
+        ],
+        "HYG": [
+          "1 Eri"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "1 Eri",
+          "90 Cet"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          408
+        ],
+        "BSC": [
+          818
+        ],
+        "HYG": [
+          "12810"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q5174771-822bf46e-47f9-5cc2-a8da-a4bc2c7f0718",
+          "http://www.wikidata.org/entity/statement/Q5174771-1195dd75-42c7-cd9e-e390-e8ffd6693eaf"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-13702-bayer",
+      "hip": 13702,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "ρ Ari"
+        ],
+        "BSC": [
+          "ρ3 Ari"
+        ],
+        "HYG": [
+          "ρ3 Ari"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "ρ3 Ari"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          434
+        ],
+        "BSC": [
+          869
+        ],
+        "HYG": [
+          "13668"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q4405320-E6FC381A-822D-4D0F-B1FC-979E13E24E5F"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-13847-bayer",
+      "hip": 13847,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "θ1 Eri"
+        ],
+        "BSC": [
+          "θ1 Eri"
+        ],
+        "HYG": [
+          "θ1 Eri"
+        ],
+        "WGSN": [
+          "θ1 Eri"
+        ],
+        "Wikidata": [
+          "θ Eri"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          446
+        ],
+        "BSC": [
+          897
+        ],
+        "HYG": [
+          "13813"
+        ],
+        "WGSN": [
+          516
+        ],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q66477106-BB327895-0F66-417C-B9B0-8FF09F404FC0"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-15457-bayer",
+      "hip": 15457,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "κ Cet"
+        ],
+        "BSC": [
+          "κ1 Cet"
+        ],
+        "HYG": [
+          "κ1 Cet"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "κ1 Cet"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          490
+        ],
+        "BSC": [
+          996
+        ],
+        "HYG": [
+          "15419"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q1370413-B7B25DF0-D2F9-45B3-95BA-990522DCC5B5"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-15627-bayer",
+      "hip": 15627,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "τ Ari"
+        ],
+        "BSC": [
+          "τ1 Ari"
+        ],
+        "HYG": [
+          "τ1 Ari"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "τ1 Ari"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          494
+        ],
+        "BSC": [
+          1005
+        ],
+        "HYG": [
+          "15588"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q1096851-1C75EECD-B46B-4784-B3E3-082981AA94CF"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-19990-bayer",
+      "hip": 19990,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "ω Tau"
+        ],
+        "BSC": [
+          "ω2 Tau"
+        ],
+        "HYG": [
+          "ω2 Tau"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "ω2 Tau"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          619
+        ],
+        "BSC": [
+          1329
+        ],
+        "HYG": [
+          "19940"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q6050589-a1f311dd-4d8d-c09d-0f4a-7fd9b96421cf"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-20455-bayer",
+      "hip": 20455,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "δ Tau"
+        ],
+        "BSC": [
+          "δ1 Tau"
+        ],
+        "HYG": [
+          "δ1 Tau"
+        ],
+        "WGSN": [
+          "δ1 Tau"
+        ],
+        "Wikidata": [
+          "δ1 Tau"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          639
+        ],
+        "BSC": [
+          1373
+        ],
+        "HYG": [
+          "20405"
+        ],
+        "WGSN": [
+          365
+        ],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q42297791-27b0c66f-4f1b-8ca0-819c-0f1473307187"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-20535-bayer",
+      "hip": 20535,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "d Eri"
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [
+          "υ3 Eri"
+        ],
+        "Wikidata": [
+          "d Eri",
+          "υ3 Eri"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          652
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [
+          379
+        ],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q5174808-9271c61f-4d91-8527-a80b-cdb55c09f899",
+          "http://www.wikidata.org/entity/statement/Q5174808-159BCAD5-2398-4BB4-B670-A5426FC815CB"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-20635-bayer",
+      "hip": 20635,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "κ Tau"
+        ],
+        "BSC": [
+          "κ1 Tau"
+        ],
+        "HYG": [
+          "κ1 Tau"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "κ1 Tau"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          647
+        ],
+        "BSC": [
+          1387
+        ],
+        "HYG": [
+          "20583"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q66477261-1d118717-4840-2e22-e780-47c3b155577a"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-21589-bayer",
+      "hip": 21589,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "c1 Tau"
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [],
+        "Wikidata": [
+          "c Tau"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          689
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q247933-09AFA53C-DFA3-4D70-BA44-2383C660A740"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-23595-bayer",
+      "hip": 23595,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "γ Cae"
+        ],
+        "BSC": [
+          "γ1 Cae"
+        ],
+        "HYG": [
+          "γ1 Cae"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "γ1 Cae"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          763
+        ],
+        "BSC": [
+          1652
+        ],
+        "HYG": [
+          "23540"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q908730-8CE2C5E8-BF89-4465-BD90-09BDB92DB0E7"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-23596-bayer",
+      "hip": 23596,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "γ Cae"
+        ],
+        "BSC": [
+          "γ2 Cae"
+        ],
+        "HYG": [
+          "γ2 Cae"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "γ2 Cae"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          764
+        ],
+        "BSC": [
+          1653
+        ],
+        "HYG": [
+          "23541"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q1067487-5D2860A9-C244-4224-82EE-A6CAD7437B76"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-25428-bayer",
+      "hip": 25428,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "β Tau"
+        ],
+        "BSC": [
+          "β Tau"
+        ],
+        "HYG": [
+          "β Tau"
+        ],
+        "WGSN": [
+          "β Tau"
+        ],
+        "Wikidata": [
+          "β Tau",
+          "γ Aur"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          824
+        ],
+        "BSC": [
+          1791
+        ],
+        "HYG": [
+          "25364"
+        ],
+        "WGSN": [
+          544
+        ],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q13508-E2FB252D-9275-4031-90EC-57055A6B6CE6",
+          "http://www.wikidata.org/entity/statement/Q13508-1036e971-4fbe-0bd5-4db7-ade58d1098fa"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-25473-bayer",
+      "hip": 25473,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "ψ Ori"
+        ],
+        "BSC": [
+          "ψ2 Ori"
+        ],
+        "HYG": [
+          "ψ2 Ori"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "ψ2 Ori"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          831
+        ],
+        "BSC": [
+          1811
+        ],
+        "HYG": [
+          "25409"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q10355245-3b5726aa-4b39-649d-5cc9-a5c513bdcb2f"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-27949-flam",
+      "hip": 27949,
+      "field": "flam",
+      "source_values": {
+        "Kostjuk": [
+          "30 Aur"
+        ],
+        "BSC": [
+          "30 Aur"
+        ],
+        "HYG": [
+          "30 Aur"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "30 Aur",
+          "32 Cam"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          918
+        ],
+        "BSC": [
+          2029
+        ],
+        "HYG": [
+          "27880"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q2402952-7424dda0-4c43-4c90-68b7-22e2ed016b97",
+          "http://www.wikidata.org/entity/statement/Q2402952-52c776bc-4a18-0a97-215e-c35c9a712846"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-36363-bayer",
+      "hip": 36363,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "y Pup"
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [],
+        "Wikidata": [
+          "y1 Pup"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          1209
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q3781395-A394B3AB-7915-40B2-A9FD-574C8EFAD11D"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-37229-bayer",
+      "hip": 37229,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "κ1 Pup"
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [],
+        "Wikidata": [
+          "k Pup"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          1235
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q66477145-5F1F6FEA-41B5-4107-A1CE-C3245B0DFBBF"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-39191-bayer",
+      "hip": 39191,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "ω Cnc"
+        ],
+        "BSC": [
+          "ω1 Cnc"
+        ],
+        "HYG": [
+          "ω1 Cnc"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "ω1 Cnc"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          1295
+        ],
+        "BSC": [
+          3124
+        ],
+        "HYG": [
+          "39080"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q16931239-ADDB4541-A3D8-45B0-9779-E97599B3AD3F"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-39780-bayer",
+      "hip": 39780,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "μ Cnc"
+        ],
+        "BSC": [
+          "μ2 Cnc"
+        ],
+        "HYG": [
+          "μ2 Cnc"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "μ2 Cnc"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          1310
+        ],
+        "BSC": [
+          3176
+        ],
+        "HYG": [
+          "39667"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q5174140-83053778-CD92-4821-9CDB-802443B8B964"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-39953-bayer",
+      "hip": 39953,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "γ2 Vel"
+        ],
+        "BSC": [
+          "γ2 Vel"
+        ],
+        "HYG": [
+          "γ2 Vel"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "γ Vel"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          1322
+        ],
+        "BSC": [
+          3207
+        ],
+        "HYG": [
+          "39840"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q14235-71E89F5E-7E88-48CB-8A51-34B713433309"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-40023-bayer",
+      "hip": 40023,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "ψ Cnc"
+        ],
+        "BSC": [
+          "ψ Cnc"
+        ],
+        "HYG": [
+          "ψ Cnc"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "ψ2 Cnc"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          1316
+        ],
+        "BSC": [
+          3191
+        ],
+        "HYG": [
+          "39910"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q2403444-19C3F2AE-D4F0-4973-B318-43D684678EB9"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-40167-bayer",
+      "hip": 40167,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "ζ1 Cnc",
+          "ζ2 Cnc"
+        ],
+        "BSC": [
+          "ζ2 Cnc"
+        ],
+        "HYG": [
+          "ζ2 Cnc"
+        ],
+        "WGSN": [
+          "ζ Cnc"
+        ],
+        "Wikidata": [
+          "ζ Cnc"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          1320,
+          1321
+        ],
+        "BSC": [
+          3210
+        ],
+        "HYG": [
+          "40054"
+        ],
+        "WGSN": [
+          451
+        ],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q15708-F97A601C-9AE8-4378-B030-CD59FC7A3442"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-45410-bayer",
+      "hip": 45410,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "π Cnc"
+        ],
+        "BSC": [
+          "π2 Cnc"
+        ],
+        "HYG": [
+          "π2 Cnc"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "π2 Cnc"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          1504
+        ],
+        "BSC": [
+          3669
+        ],
+        "HYG": [
+          "45279"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q1749310-FDECFD1B-B754-432C-B6F3-7330C337076C"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-48552-flam",
+      "hip": 48552,
+      "field": "flam",
+      "source_values": {
+        "Kostjuk": [
+          "9 Sex"
+        ],
+        "BSC": [],
+        "HYG": [
+          "8 Sex"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "9 Sex"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          1615
+        ],
+        "BSC": [],
+        "HYG": [
+          "48416"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q66481576-8DCBE156-8530-41B9-8234-86AC6D882EE4"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-49065-bayer",
+      "hip": 49065,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "μ Cha"
+        ],
+        "BSC": [
+          "μ1 Cha"
+        ],
+        "HYG": [
+          "μ1 Cha"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "μ1 Cha"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          1634
+        ],
+        "BSC": [
+          3983
+        ],
+        "HYG": [
+          "48925"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q5098100-FD3AF56C-11DF-4AFF-81EC-A7E18AA0E273"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-50583-bayer",
+      "hip": 50583,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "γ1 Leo"
+        ],
+        "BSC": [
+          "γ1 Leo"
+        ],
+        "HYG": [
+          "γ1 Leo"
+        ],
+        "WGSN": [
+          "γ1 Leo"
+        ],
+        "Wikidata": [
+          "γ Leo"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          1661
+        ],
+        "BSC": [
+          4057
+        ],
+        "HYG": [
+          "50440"
+        ],
+        "WGSN": [
+          522
+        ],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q66477100-E5F278A8-0A4A-4265-9993-8513DBAE8C87"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-52085-bayer",
+      "hip": 52085,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "φ Hya"
+        ],
+        "BSC": [
+          "φ3 Hya"
+        ],
+        "HYG": [
+          "φ3 Hya"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "φ3 Hya"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          1716
+        ],
+        "BSC": [
+          4171
+        ],
+        "HYG": [
+          "51934"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q10349119-BDD38AD9-9DD6-4DAC-A0E3-AC5DA2B19A90"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-54301-bayer",
+      "hip": 54301,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "z Car"
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [],
+        "Wikidata": [
+          "z1 Car"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          1786
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q2403324-5C5B0084-0F41-49AC-B1F9-88E9D95E5E9B"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-60718-bayer",
+      "hip": 60718,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "α1 Cru"
+        ],
+        "BSC": [
+          "α1 Cru"
+        ],
+        "HYG": [
+          "α1 Cru"
+        ],
+        "WGSN": [
+          "α Cru"
+        ],
+        "Wikidata": [
+          "α Cru"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          1937
+        ],
+        "BSC": [
+          4730
+        ],
+        "HYG": [
+          "60530"
+        ],
+        "WGSN": [
+          517
+        ],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q13102-CA40D498-1761-4243-85C3-F48EBA17DA13"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-63462-flam",
+      "hip": 63462,
+      "field": "flam",
+      "source_values": {
+        "Kostjuk": [
+          "37 Com"
+        ],
+        "BSC": [
+          "37 Com"
+        ],
+        "HYG": [
+          "37 Com"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "13 CVn",
+          "37 Com"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2036
+        ],
+        "BSC": [
+          4924
+        ],
+        "HYG": [
+          "63259"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q4635849-38c530ba-4781-2285-1d9e-b4cef9848b68",
+          "http://www.wikidata.org/entity/statement/Q4635849-154CD821-9F8B-4340-AC00-183551F7CCF0"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-67627-flam",
+      "hip": 67627,
+      "field": "flam",
+      "source_values": {
+        "Kostjuk": [
+          "10 Dra"
+        ],
+        "BSC": [
+          "10 Dra"
+        ],
+        "HYG": [
+          "10 Dra"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "10 Dra",
+          "87 UMa"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2145
+        ],
+        "BSC": [
+          5226
+        ],
+        "HYG": [
+          "67414"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q135511-90864293-4758-2938-4b97-d9492208c002",
+          "http://www.wikidata.org/entity/statement/Q135511-716BBF19-9608-4334-BA1A-4848D6192594"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-69481-bayer",
+      "hip": 69481,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "κ1 Boo"
+        ],
+        "BSC": [
+          "κ1 Boo"
+        ],
+        "HYG": [
+          "κ1 Boo"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "κ Boo"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2178
+        ],
+        "BSC": [
+          5328
+        ],
+        "HYG": [
+          "69259"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q1728707-C112B0CF-C6F9-4EB7-884A-EE38FD473D3F"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-71500-bayer",
+      "hip": 71500,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "a Lup"
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [],
+        "Wikidata": [
+          "A Lup"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2216
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q9549339-8EA9F8E3-591C-4F16-ACC6-566CB9284164"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-71681-bayer",
+      "hip": 71681,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "α Cen"
+        ],
+        "BSC": [
+          "α2 Cen"
+        ],
+        "HYG": [
+          "α2 Cen"
+        ],
+        "WGSN": [
+          "α Cen"
+        ],
+        "Wikidata": [
+          "α2 Cen"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2220
+        ],
+        "BSC": [
+          5460
+        ],
+        "HYG": [
+          "71453"
+        ],
+        "WGSN": [
+          311
+        ],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q1052548-e476980f-4db4-f985-e79c-ff1eeb1f9450"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-71683-bayer",
+      "hip": 71683,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "α Cen"
+        ],
+        "BSC": [
+          "α1 Cen"
+        ],
+        "HYG": [
+          "α1 Cen"
+        ],
+        "WGSN": [
+          "α Cen"
+        ],
+        "Wikidata": [
+          "α Cen",
+          "α1 Cen"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2219
+        ],
+        "BSC": [
+          5459
+        ],
+        "HYG": [
+          "71456"
+        ],
+        "WGSN": [
+          417
+        ],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q2090157-450e9aa4-4cc1-4e3b-52b5-1e3dc9a5fad5",
+          "http://www.wikidata.org/entity/statement/Q2090157-2898d8e1-4241-f7c6-183e-43a5b33fee22"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-71762-bayer",
+      "hip": 71762,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "π1 Boo"
+        ],
+        "BSC": [
+          "π1 Boo"
+        ],
+        "HYG": [
+          "π1 Boo"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "π Boo"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2226
+        ],
+        "BSC": [
+          5475
+        ],
+        "HYG": [
+          "71536"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q5097291-023EBB42-724C-46FC-AE05-D3F904BD2FE9"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-71974-flam",
+      "hip": 71974,
+      "field": "flam",
+      "source_values": {
+        "Kostjuk": [
+          "4 Lib"
+        ],
+        "BSC": [
+          "4 Lib"
+        ],
+        "HYG": [
+          "4 Lib"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "4 Lib",
+          "53 Hya"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2232
+        ],
+        "BSC": [
+          5484
+        ],
+        "HYG": [
+          "71748"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q3599185-D28D8694-E608-46E6-BDE6-7248CAE839A8",
+          "http://www.wikidata.org/entity/statement/Q3599185-50d3e605-4d95-dd39-4ca4-e16198589dc0"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-72571-flam",
+      "hip": 72571,
+      "field": "flam",
+      "source_values": {
+        "Kostjuk": [
+          "58 Hya"
+        ],
+        "BSC": [
+          "58 Hya"
+        ],
+        "HYG": [
+          "58 Hya"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "58 Hya",
+          "6 Lib"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2250
+        ],
+        "BSC": [
+          5526
+        ],
+        "HYG": [
+          "72345"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q4640884-2C5FBDD3-60F8-4996-AE8D-098FA09D94DC",
+          "http://www.wikidata.org/entity/statement/Q4640884-08B01AA8-6659-4340-A046-5C2A5C2AB487"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-74392-bayer",
+      "hip": 74392,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "ι Lib"
+        ],
+        "BSC": [
+          "ι1 Lib"
+        ],
+        "HYG": [
+          "ι1 Lib"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "ι1 Lib"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2301
+        ],
+        "BSC": [
+          5652
+        ],
+        "HYG": [
+          "74164"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q611785-56BACE01-7863-4EB4-B4C7-418FE957AA13"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-75411-bayer",
+      "hip": 75411,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "μ1 Boo"
+        ],
+        "BSC": [
+          "μ1 Boo"
+        ],
+        "HYG": [
+          "μ1 Boo"
+        ],
+        "WGSN": [
+          "μ Boo"
+        ],
+        "Wikidata": [
+          "μ Boo"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2342
+        ],
+        "BSC": [
+          5733
+        ],
+        "HYG": [
+          "75182"
+        ],
+        "WGSN": [
+          460
+        ],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q1504634-9613E606-874A-4DEC-909A-3CC6EAEF931F"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-76126-bayer",
+      "hip": 76126,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "ζ Lib"
+        ],
+        "BSC": [
+          "ζ4 Lib"
+        ],
+        "HYG": [
+          "ζ4 Lib"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "ζ4 Lib"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2354
+        ],
+        "BSC": [
+          5764
+        ],
+        "HYG": [
+          "75894"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q4024300-CB34B011-FF95-4F0F-84E5-9DC850649795"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-76669-bayer",
+      "hip": 76669,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "ζ1 CrB",
+          "ζ2 CrB"
+        ],
+        "BSC": [
+          "ζ1 CrB"
+        ],
+        "HYG": [
+          "ζ1 CrB"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "ζ CrB",
+          "ζ2 CrB"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2386,
+          2387
+        ],
+        "BSC": [
+          5833
+        ],
+        "HYG": [
+          "76433"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q5098370-3F173BEF-52E0-4A18-BA26-3D9F5F9A3022",
+          "http://www.wikidata.org/entity/statement/Q5098368-61aa776d-426c-cade-d997-a31301db4a41"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-80463-flam",
+      "hip": 80463,
+      "field": "flam",
+      "source_values": {
+        "Kostjuk": [
+          "24 Her"
+        ],
+        "BSC": [
+          "24 Her"
+        ],
+        "HYG": [
+          "24 Her"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "24 Her",
+          "51 Ser"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2528
+        ],
+        "BSC": [
+          6117
+        ],
+        "HYG": [
+          "80221"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q1759003-9fceba90-450a-3c96-5cdd-20d1d7d616cc",
+          "http://www.wikidata.org/entity/statement/Q1759003-44468864-4c81-6ce2-7a12-940a187f7459"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-81007-flam",
+      "hip": 81007,
+      "field": "flam",
+      "source_values": {
+        "Kostjuk": [
+          "28 Her"
+        ],
+        "BSC": [
+          "28 Her"
+        ],
+        "HYG": [
+          "28 Her"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "11 Oph",
+          "28 Her"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2546
+        ],
+        "BSC": [
+          6158
+        ],
+        "HYG": [
+          "80761"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q6770293-FB00C371-A1E2-4391-8159-41416B928CEE",
+          "http://www.wikidata.org/entity/statement/Q6770293-aaf9da4d-4e71-eb90-b059-1c978684ee8b"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-81710-bayer",
+      "hip": 81710,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "η1 TrA"
+        ],
+        "BSC": [
+          "η1 TrA"
+        ],
+        "HYG": [
+          "η1 TrA"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "η TrA"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2556
+        ],
+        "BSC": [
+          6172
+        ],
+        "HYG": [
+          "81460"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q5178399-4DE1BFD8-64C2-47EF-B1E3-889D89076AC1"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-82073-flam",
+      "hip": 82073,
+      "field": "flam",
+      "source_values": {
+        "Kostjuk": [
+          "43 Her"
+        ],
+        "BSC": [
+          "43 Her"
+        ],
+        "HYG": [
+          "43 Her"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "17 Oph",
+          "43 Her"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2575
+        ],
+        "BSC": [
+          6228
+        ],
+        "HYG": [
+          "81823"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q9553034-d3052dca-4ca3-26c4-5b2e-834c0471694f",
+          "http://www.wikidata.org/entity/statement/Q9553034-8A49CF8C-A9DD-4875-AD14-BE841BE9C2EB"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-84345-bayer",
+      "hip": 84345,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "α1 Her"
+        ],
+        "BSC": [
+          "α1 Her"
+        ],
+        "HYG": [
+          "α1 Her"
+        ],
+        "WGSN": [
+          "α1 Her"
+        ],
+        "Wikidata": [
+          "α Her"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2631
+        ],
+        "BSC": [
+          6406
+        ],
+        "HYG": [
+          "84086"
+        ],
+        "WGSN": [
+          616
+        ],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q13177-273624E6-64AC-4E3B-94AD-A70096C9EAF1"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-86614-bayer",
+      "hip": 86614,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "ψ Dra"
+        ],
+        "BSC": [
+          "ψ1 Dra"
+        ],
+        "HYG": [
+          "ψ1 Dra"
+        ],
+        "WGSN": [
+          "ψ1 Dra"
+        ],
+        "Wikidata": []
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2709
+        ],
+        "BSC": [
+          6636
+        ],
+        "HYG": [
+          "86347"
+        ],
+        "WGSN": [
+          347
+        ],
+        "Wikidata": []
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-86620-bayer",
+      "hip": 86620,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "ψ Dra"
+        ],
+        "BSC": [
+          "ψ1 Dra"
+        ],
+        "HYG": [
+          "ψ1 Dra"
+        ],
+        "WGSN": [],
+        "Wikidata": []
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2710
+        ],
+        "BSC": [
+          6637
+        ],
+        "HYG": [
+          "86353"
+        ],
+        "WGSN": [],
+        "Wikidata": []
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-86974-bayer",
+      "hip": 86974,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "μ Her"
+        ],
+        "BSC": [
+          "μ Her"
+        ],
+        "HYG": [
+          "μ Her"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "μ1 Her"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2704
+        ],
+        "BSC": [
+          6623
+        ],
+        "HYG": [
+          "86705"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q1195626-89c9487f-43e7-6e0c-7279-53a919cc7525"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-87314-bayer",
+      "hip": 87314,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "υ1 Ara"
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [],
+        "Wikidata": [
+          "ν1 Ara"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2703
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q2607730-EAD59B10-E7DC-4219-844B-F350990D5456"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-87379-bayer",
+      "hip": 87379,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "υ2 Ara"
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [],
+        "Wikidata": [
+          "ν2 Ara"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2708
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q2607772-1F21EF7F-C903-4C00-870B-ACD5AD62A192"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-88635-bayer",
+      "hip": 88635,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "γ Sgr"
+        ],
+        "BSC": [
+          "γ2 Sgr"
+        ],
+        "HYG": [
+          "γ2 Sgr"
+        ],
+        "WGSN": [
+          "γ2 Sgr"
+        ],
+        "Wikidata": [
+          "γ2 Sgr"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2746
+        ],
+        "BSC": [
+          6746
+        ],
+        "HYG": [
+          "88361"
+        ],
+        "WGSN": [
+          461
+        ],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q10288214-A3B251C5-E211-47C5-BAE0-454FA67FB87B"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-89153-flam",
+      "hip": 89153,
+      "field": "flam",
+      "source_values": {
+        "Kostjuk": [
+          "11 Sgr"
+        ],
+        "BSC": [
+          "11 Sgr"
+        ],
+        "HYG": [
+          "1 Sgr"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "1 Sgr"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2762
+        ],
+        "BSC": [
+          6801
+        ],
+        "HYG": [
+          "88876"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q38210-12a5d680-48fb-5522-33b9-e42d510d8eb6"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-90968-bayer",
+      "hip": 90968,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "κ2 CrA"
+        ],
+        "BSC": [
+          "κ1 CrA"
+        ],
+        "HYG": [
+          "κ1 CrA"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "κ2 CrA"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2810
+        ],
+        "BSC": [
+          6952
+        ],
+        "HYG": [
+          "90688"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q5098317-9B4A83DE-AE53-4125-937D-4FB8C2C35726"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-90969-bayer",
+      "hip": 90969,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "κ1 CrA"
+        ],
+        "BSC": [
+          "κ2 CrA"
+        ],
+        "HYG": [
+          "κ2 CrA"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "κ1 CrA"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2809
+        ],
+        "BSC": [
+          6953
+        ],
+        "HYG": [
+          "90687"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q5098315-54A4C0E9-ADDE-453A-B4FA-B6CB6903BD67"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-91926-bayer",
+      "hip": 91926,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "ε2 Lyr"
+        ],
+        "BSC": [
+          "ε2 Lyr"
+        ],
+        "HYG": [
+          "ε2 Lyr"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "ε Lyr"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2832
+        ],
+        "BSC": [
+          7053
+        ],
+        "HYG": [
+          "91639"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q13355-47F65CEE-63AD-4037-A528-BA788936501D"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-92405-bayer",
+      "hip": 92405,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "ν Lyr"
+        ],
+        "BSC": [
+          "ν2 Lyr"
+        ],
+        "HYG": [
+          "ν2 Lyr"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "ν2 Lyr"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2850
+        ],
+        "BSC": [
+          7102
+        ],
+        "HYG": [
+          "92117"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q10338087-AA8E650F-449C-410A-9AB1-44DF9D513BF6"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-95853-bayer",
+      "hip": 95853,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "ι Cyg"
+        ],
+        "BSC": [
+          "ι2 Cyg"
+        ],
+        "HYG": [
+          "ι2 Cyg"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "ι2 Cyg"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2972
+        ],
+        "BSC": [
+          7420
+        ],
+        "HYG": [
+          "95554"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q5098502-456F901D-AEE3-4755-A582-00C6FF9084D8"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-95947-bayer",
+      "hip": 95947,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "β1 Cyg"
+        ],
+        "BSC": [
+          "β1 Cyg"
+        ],
+        "HYG": [
+          "β1 Cyg"
+        ],
+        "WGSN": [
+          "β Cyg"
+        ],
+        "Wikidata": []
+      },
+      "source_rows": {
+        "Kostjuk": [
+          2970
+        ],
+        "BSC": [
+          7417
+        ],
+        "HYG": [
+          "95648"
+        ],
+        "WGSN": [
+          520
+        ],
+        "Wikidata": []
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-98162-bayer",
+      "hip": 98162,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "b1 Sgr"
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [],
+        "Wikidata": [
+          "b Sgr"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          3042
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q1096776-AA059FD4-A119-4C67-AFB9-A7F16E1EA838"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-99572-bayer",
+      "hip": 99572,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "ξ Cap"
+        ],
+        "BSC": [
+          "ξ2 Cap"
+        ],
+        "HYG": [
+          "ξ2 Cap"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "ξ Cap",
+          "ξ2 Cap"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          3086
+        ],
+        "BSC": [
+          7715
+        ],
+        "HYG": [
+          "99254"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q2609555-86878c59-4251-885f-f7a0-d31f616afe0c",
+          "http://www.wikidata.org/entity/statement/Q2609555-F67E5D34-D8E0-49DB-ABD0-5D2B6440BB4B"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-100345-bayer",
+      "hip": 100345,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "β Cap"
+        ],
+        "BSC": [
+          "β Cap"
+        ],
+        "HYG": [
+          "β Cap"
+        ],
+        "WGSN": [
+          "β1 Cap"
+        ],
+        "Wikidata": []
+      },
+      "source_rows": {
+        "Kostjuk": [
+          3113
+        ],
+        "BSC": [
+          7776
+        ],
+        "HYG": [
+          "100020"
+        ],
+        "WGSN": [
+          471
+        ],
+        "Wikidata": []
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-101923-bayer",
+      "hip": 101923,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "τ Cap"
+        ],
+        "BSC": [
+          "τ Cap"
+        ],
+        "HYG": [
+          "τ Cap"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "τ2 Cap"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          3160
+        ],
+        "BSC": [
+          7889
+        ],
+        "HYG": [
+          "101594"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q5097355-5C2D6775-4944-4FC6-9009-B514CD81B690"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-107310-bayer",
+      "hip": 107310,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "μ1 Cyg"
+        ],
+        "BSC": [
+          "μ1 Cyg"
+        ],
+        "HYG": [
+          "μ1 Cyg"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "μ Cyg"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          3340
+        ],
+        "BSC": [
+          8309
+        ],
+        "HYG": [
+          "106967"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q5098524-F786128E-6C3F-4125-8AD5-4DA1A1FF7F17"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-107382-bayer",
+      "hip": 107382,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "c Cap"
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [],
+        "Wikidata": [
+          "c1 Cap"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          3342
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q2717876-249FB5B4-4F4B-4260-B564-7ED263B51322"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-108478-bayer",
+      "hip": 108478,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "κ Ind"
+        ],
+        "BSC": [
+          "κ1 Ind"
+        ],
+        "HYG": [
+          "κ1 Ind"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "κ1 Ind"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          3366
+        ],
+        "BSC": [
+          8369
+        ],
+        "HYG": [
+          "108133"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q10910460-B18FA1F7-084A-411B-AF96-75F10F949585"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-109081-bayer",
+      "hip": 109081,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "κ Ind"
+        ],
+        "BSC": [
+          "κ2 Ind"
+        ],
+        "HYG": [
+          "κ2 Ind"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "κ2 Ind"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          3383
+        ],
+        "BSC": [
+          8409
+        ],
+        "HYG": [
+          "108735"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q10313780-367B8363-4001-4B6F-8E9E-7F957DB08D22"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-109410-bayer",
+      "hip": 109410,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "π Peg"
+        ],
+        "BSC": [
+          "π2 Peg"
+        ],
+        "HYG": [
+          "π2 Peg"
+        ],
+        "WGSN": [
+          "π2 Peg"
+        ],
+        "Wikidata": [
+          "π2 Peg"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          3408
+        ],
+        "BSC": [
+          8454
+        ],
+        "HYG": [
+          "109064"
+        ],
+        "WGSN": [
+          30
+        ],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q2891610-5DA73F57-AF88-4267-805F-C2F14B46E069"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-110960-bayer",
+      "hip": 110960,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "ζ1 Aqr"
+        ],
+        "BSC": [
+          "ζ1 Aqr"
+        ],
+        "HYG": [
+          "ζ1 Aqr"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "ζ Aqr"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          3454
+        ],
+        "BSC": [
+          8558
+        ],
+        "HYG": [
+          "110614"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q13252-31343085-AC6A-40EB-8A5F-A9C76D9C1833"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-111056-bayer",
+      "hip": 111056,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "ρ Cep"
+        ],
+        "BSC": [
+          "ρ2 Cep"
+        ],
+        "HYG": [
+          "ρ2 Cep"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "ρ2 Cep"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          3475
+        ],
+        "BSC": [
+          8591
+        ],
+        "HYG": [
+          "110709"
+        ],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q310540-908D7C81-33D4-4EBC-B3AD-511CBF87F97B"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    },
+    {
+      "case_id": "HIP-112211-bayer",
+      "hip": 112211,
+      "field": "bayer",
+      "source_values": {
+        "Kostjuk": [
+          "g Aqr"
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [],
+        "Wikidata": [
+          "g1 Aqr"
+        ]
+      },
+      "source_rows": {
+        "Kostjuk": [
+          3499
+        ],
+        "BSC": [],
+        "HYG": [],
+        "WGSN": [],
+        "Wikidata": [
+          "http://www.wikidata.org/entity/statement/Q2607167-4D7B0788-A481-4285-8BB9-4490FE1E31CE"
+        ]
+      },
+      "status": "pending_fernando",
+      "decision": null,
+      "selman": null
+    }
+  ],
+  "baseline": "Wikidata (provisional)"
+}

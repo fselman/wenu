@@ -3197,6 +3197,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_guide.md",
         "satellite_program_log.md",
         "stellar_designations_audit.md",
+        "stellar_designation_review.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
     }
@@ -10410,8 +10411,38 @@ def test_stellar_designation_audit_preserves_identity_and_pipeline_boundaries():
         "[detail.star_labels]",
         "Keep inclusion, label text and curated symbol eligibility independent",
         "not physical component A/B identities",
+        "Source comparison and publication freedom",
+        "not yet a scientifically admitted snapshot",
+        "Full pairwise consistency comparison",
+        "agreement is **not an accuracy percentage**",
+        "HYG **4.4**",
+        "named component identity separate from the drawn HIP point",
+        "IAU/WGSN",
+        "Acquisition receipts and reproducibility boundary",
+        "it is not a rights clearance for every existing",
+        "Do not silently backfill a CC0 resource",
     ):
         assert phrase in audit
     assert "star_designations.py" in audit
     for name in ("README.md", "post_v0.9_architecture_roadmap.md"):
         assert "stellar_designations_audit.md" in read(DEVELOPER / name)
+
+
+def test_wikidata_resource_checkpoint_keeps_curation_and_cli_pending():
+    audit = read(DEVELOPER / 'stellar_designations_audit.md')
+    assert '## 10. Wikidata resource checkpoint (2026-10-06)' in audit
+    assert 'pending_fernando' in audit
+    assert 'No automatic label behavior is enabled' in audit
+    assert 'name/Bayer resolver and detail/CLI/TOML' in audit
+    ledger = json.loads(read(DEVELOPER / 'data/stellar_designations_review.json'))
+    assert len(ledger['cases']) == 77
+    assert all(c['status'] == 'pending_fernando' and c['decision'] is None
+               and c['selman'] is None
+               for c in ledger['cases'])
+    assert 'star_designations.py' in read(DEVELOPER / 'source_tree.md')
+
+    table = read(DEVELOPER / 'stellar_designation_review.md')
+    rows = [line for line in table.splitlines() if line.startswith('|')]
+    assert len(rows) == 79
+    assert rows[0].endswith(' Selman |')
+    assert all(line.split('|')[-2].strip() == '' for line in rows[2:])

@@ -179,3 +179,10 @@ def magellanic_cloud_isophotes_path(cloud):
             "tools/query_magellanic_clouds_gaia.py."
         )
     return resource
+
+
+def star_designations_manifest_path():
+    """Return the offline Wikidata designation manifest (not astrometry)."""
+    return (
+        files("wenu.data") / "catalogs" / "star_designations" / "manifest.json"
+    )

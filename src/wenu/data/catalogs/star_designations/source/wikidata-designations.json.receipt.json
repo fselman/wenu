@@ -1,0 +1,10 @@
+{
+  "url": "https://query.wikidata.org/sparql?query=SELECT+%3Fitem+%3Flabel+%3Fstatement+%3Fcode+%3Fcatalog+%3Frank+%3Fhipstatement+%3Fhip+%3Fhiprank+%3Freference+WHERE+%7B%0A+VALUES+%3Fcatalog+%7B+wd%3AQ105616+wd%3AQ111116+%7D%0A+%3Fitem+p%3AP528+%3Fstatement+.+%3Fstatement+ps%3AP528+%3Fcode%3B+pq%3AP972+%3Fcatalog%3B+wikibase%3Arank+%3Frank+.%0A+OPTIONAL+%7B+%3Fitem+p%3AP528+%3Fhipstatement+.+%3Fhipstatement+ps%3AP528+%3Fhip%3B+pq%3AP972+wd%3AQ537199%3B+wikibase%3Arank+%3Fhiprank+.+%7D%0A+OPTIONAL+%7B+%3Fstatement+prov%3AwasDerivedFrom+%3Freference+.+%7D%0A+OPTIONAL+%7B+%3Fitem+rdfs%3Alabel+%3Flabel+.+FILTER%28LANG%28%3Flabel%29%3D%22en%22%29+%7D%0A%7D&format=json",
+  "final_url": "https://query.wikidata.org/sparql?query=SELECT+%3Fitem+%3Flabel+%3Fstatement+%3Fcode+%3Fcatalog+%3Frank+%3Fhipstatement+%3Fhip+%3Fhiprank+%3Freference+WHERE+%7B%0A+VALUES+%3Fcatalog+%7B+wd%3AQ105616+wd%3AQ111116+%7D%0A+%3Fitem+p%3AP528+%3Fstatement+.+%3Fstatement+ps%3AP528+%3Fcode%3B+pq%3AP972+%3Fcatalog%3B+wikibase%3Arank+%3Frank+.%0A+OPTIONAL+%7B+%3Fitem+p%3AP528+%3Fhipstatement+.+%3Fhipstatement+ps%3AP528+%3Fhip%3B+pq%3AP972+wd%3AQ537199%3B+wikibase%3Arank+%3Fhiprank+.+%7D%0A+OPTIONAL+%7B+%3Fstatement+prov%3AwasDerivedFrom+%3Freference+.+%7D%0A+OPTIONAL+%7B+%3Fitem+rdfs%3Alabel+%3Flabel+.+FILTER%28LANG%28%3Flabel%29%3D%22en%22%29+%7D%0A%7D&format=json",
+  "retrieved_at_utc": "2026-10-05T22:58:45.513515+00:00",
+  "bytes": 5412191,
+  "sha256": "a341c42bb1dc4739c26634fc92f475ebd880254deb55851e0c4c12ee2b4a2697",
+  "content_type": "application/sparql-results+json;charset=utf-8",
+  "etag": null,
+  "last_modified": null
+}

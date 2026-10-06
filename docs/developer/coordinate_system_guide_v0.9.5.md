@@ -4413,3 +4413,16 @@ No implemented coordinate value changes. A later phase must independently
 compare Wenu/SPICE geometry and freeze lunar orientation, longitude direction,
 signed-phase meaning, distance, light-time, and aberration conventions before
 any runtime acceptance.
+
+
+### Wikidata designation provenance checkpoint (2026-10-06)
+
+HIP-linked Wikidata candidates are descriptive metadata, not a position
+provider, epoch propagation or coordinate correction. Native and observed
+stellar geometry preserve aligned `star_designations` plus scalar snapshot
+edition/SHA-256; `CoordinateSpec` provenance remains Hipparcos/Skyfield.
+Unjoined or component-ambiguous candidates never create points or alter
+astrometry. Source and curation details are in the
+[stellar resource checkpoint](stellar_designations_audit.md#10-wikidata-resource-checkpoint-2026-10-06).
+The canonical geometry flow and architecture diagrams remain applicable;
+this change adds a descriptive resource owner without new transformation edges.

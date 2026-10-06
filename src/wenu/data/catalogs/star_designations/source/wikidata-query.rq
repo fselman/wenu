@@ -1,0 +1,7 @@
+SELECT ?item ?label ?statement ?code ?catalog ?rank ?hipstatement ?hip ?hiprank ?reference WHERE {
+ VALUES ?catalog { wd:Q105616 wd:Q111116 }
+ ?item p:P528 ?statement . ?statement ps:P528 ?code; pq:P972 ?catalog; wikibase:rank ?rank .
+ OPTIONAL { ?item p:P528 ?hipstatement . ?hipstatement ps:P528 ?hip; pq:P972 wd:Q537199; wikibase:rank ?hiprank . }
+ OPTIONAL { ?statement prov:wasDerivedFrom ?reference . }
+ OPTIONAL { ?item rdfs:label ?label . FILTER(LANG(?label)="en") }
+}

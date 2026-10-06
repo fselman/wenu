@@ -29,7 +29,14 @@ migrations, milestone evidence, and superseded roadmaps are under
 - [Stellar Bayer/Flamsteed designation audit](stellar_designations_audit.md)
   — accepted design amended for explicit name/Bayer selection beyond the
   magnitude limit, CLI/TOML parity and future curation boundaries.
-  Implementation, resource admission and merge remain pending; Gaia stays later.
+  A Wikidata candidate snapshot and HIP metadata attachment
+  are implemented; explicit labels/CLI/TOML and scientific curation remain
+  pending. Gaia stays later.
+  The expanded comparison measures licensing, coverage, identity discrepancies
+  and quality for Kostjuk, Yale BSC, current HYG 4.4, IAU/WGSN and Wikidata.
+  PR #205 includes the source comparison and catalogue incorporation. See the [resource checkpoint](stellar_designations_audit.md#10-wikidata-resource-checkpoint-2026-10-06)
+  and [pending discrepancy table](stellar_designation_review.md)
+  and [machine-readable ledger](data/stellar_designations_review.json).
 
 **2026-10-05 checkpoint:** Both development branches are merged into clean
 `main` at `91f78412` and have been deleted; both programs remain incomplete.

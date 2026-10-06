@@ -17,6 +17,7 @@ from skyfield.data import hipparcos
 
 from wenu.objects.astronomical_object import AstronomicalObject
 from wenu.resources import catalog_path
+from wenu.star_designations import load_star_designations
 from wenu.geometry.spherical import SphericalPoints
 from wenu.sky.observed_cache import observer_geometry_key
 
@@ -159,6 +160,11 @@ class Stars(AstronomicalObject):
             getattr(self, "constellation_vertex_ids", frozenset())
         )
 
+        self.designation_catalogue = load_star_designations()
+        source["star_designations"] = [
+            self.designation_catalogue.get(int(hip)) for hip in source.index
+        ]
+
         self.source_catalog = source.copy()
         magnitude_mask = (
             source["magnitude"] <= self.magnitude_limit
@@ -195,10 +201,18 @@ class Stars(AstronomicalObject):
             "catalog": self.catalog_name,
             "coordinate_system": "icrs",
         }
-        for name in ("magnitude", *_HIPPARCOS_SEMANTIC_DEFAULTS):
+        for name in ("magnitude", "star_designations", *_HIPPARCOS_SEMANTIC_DEFAULTS):
             if name in self.catalog.columns:
                 metadata[name] = self.catalog[name].to_numpy(copy=True)
         provenance = ("ESA Hipparcos Catalogue I/239",)
+        if "star_designations" in self.catalog.columns:
+            metadata["star_designations_edition"] = (
+                self.designation_catalogue.edition
+            )
+            metadata["star_designations_sha256"] = (
+                self.designation_catalogue.source_sha256
+            )
+
         return SphericalPoints(
             lon_deg=self.catalog["ra_hours"].to_numpy(dtype=float) * 15.0,
             lat_deg=self.catalog["dec_degrees"].to_numpy(dtype=float),
@@ -361,6 +375,17 @@ class Stars(AstronomicalObject):
                     [default] * len(selected)
                 )
             metadata[name] = values
+
+        if "star_designations" in selected.columns:
+            metadata["star_designations"] = selected[
+                "star_designations"
+            ].to_numpy(copy=True)
+            metadata["star_designations_edition"] = (
+                self.designation_catalogue.edition
+            )
+            metadata["star_designations_sha256"] = (
+                self.designation_catalogue.source_sha256
+            )
 
         # Preserve colour information when supplied by a catalogue. The
         # bundled Hipparcos table does not currently provide such a column.
