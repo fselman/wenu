@@ -6,7 +6,9 @@ from dataclasses import dataclass
 from typing import Any, Mapping
 
 import numpy as np
-from wenu.star_designations import StarLabelSelection, resolve_star_labels
+from wenu.star_designations import (
+    StarLabelSelection, resolve_star_labels, load_effective_star_designations,
+)
 
 from .context import BoundaryKind
 from .detail import ResolvedDetail
@@ -316,9 +318,14 @@ def apply_resolved_detail(
     del reload_catalogues
 
     label_overrides = {}
+    selection = getattr(detail, "star_labels", StarLabelSelection())
+    catalogue = getattr(getattr(sky, "stars", None), "designation_catalogue", None)
+    if (selection.names or selection.bayer) and catalogue is not None:
+        if catalogue.curation_sha256 is None:
+            catalogue = load_effective_star_designations(catalogue)
     resolved_star_labels = resolve_star_labels(
-        getattr(detail, "star_labels", StarLabelSelection()),
-        catalogue=getattr(getattr(sky, "stars", None), "designation_catalogue", None),
+        selection,
+        catalogue=catalogue,
         constellations=getattr(detail, "stellar_label_constellations", ()),
     )
     if resolved_star_labels.labels:

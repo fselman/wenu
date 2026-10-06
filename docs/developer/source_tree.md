@@ -3065,3 +3065,7 @@ authored associations and the full pending coverage/variant inventory.
 `charts/stellar_report.py` adds their notes to already retained projected
 points. The source snapshot, compiler, 77-case dossier, astrometry, projection
 and rendering owners remain unchanged.
+
+`charts/detail_application.py` adapts the layer's raw catalogue to the
+effective identity view only for nonempty explicit labels. It keeps the
+persistent layer catalogue and astrometric metadata unchanged.

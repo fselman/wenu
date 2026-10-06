@@ -1036,3 +1036,8 @@ The β Sco system selector alias is explicitly registered for both component
 HIPs and validated against its active unjoined Wikidata claim. It creates no
 automatic family inheritance. Generic `Sco:beta` is ambiguous; explicit
 `Sco:beta1` and `Sco:beta2` retain their superscripts.
+
+A real CLI specimen exposed the layer-provided raw-catalogue label seam.
+The detail owner now adapts that catalogue only for nonempty selections;
+the existing render-isolation test exercises β¹/β² Sco through this route
+and verifies that persistent layer catalogue state remains raw and unchanged.
