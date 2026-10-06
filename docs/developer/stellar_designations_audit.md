@@ -1045,3 +1045,39 @@ and verifies that persistent layer catalogue state remains raw and unchanged.
 The readable [HIP coverage review](data/stellar_designation_research/hip-coverage-review.md)
 lists all added associations, pending gaps and existing-kind variants with
 a blank Selman column. It is separate from the original 77-case review.
+
+### Verified candidate receipt
+
+Executable/test/resource content at `f070939ce23a53a008f8be49f1f9530e54e89013`
+is unchanged by the later readable-review and evidence-only commits.
+
+- The 316-test focused identity/report/render-isolation/configuration and
+  documentation/package gate passed in 18.62 seconds at executable head
+  `f070939c`.
+- The complete plugin-disabled installed-metadata run passed **2,970 tests**
+  and failed **4 tests** in 227.14 seconds. It is not a fully green suite.
+  The same four failures were independently reproduced on exact PR #207
+  base `8aec3417`: inaccessible-centre airmass failure wording;
+  offline-planning validator subprocess; governed-GCRS zenith tolerance;
+  common SVG font-style representation. The isolated base comparison had
+  4 failures and 11 passes.
+- An initial uninstalled validation copy additionally lacked Wenu package
+  metadata. Restoring authentic existing installed metadata resolved the
+  version/specimen checks (11 tests passed); no source change was made for it.
+  Imports were verified to use the new source copy.
+- After the readable-review-only commit `a512e476`, 241 documentation/package
+  tests passed in 11.31 seconds. Final evidence wording is documentation-only
+  and receives the same gate separately.
+- All remote Git blobs matched the validation copy; original source snapshot,
+  compiler, ledger and 77-case dossier are unchanged. Whitespace and changed
+  source Ruff F checks passed.
+- Real cartoon/print Sco–Lib PNG and Markdown/JSON sidecars succeeded through
+  the installed CLI path. HIP 78820 displays β¹ Sco; HIP 78821 remains β² Sco
+  in the report with the shared 8 Sco association. Requesting both labels
+  shows their expected overlap at regional scale; no label suppression occurs.
+- A no-label/no-report regional PNG has byte-identical pixel values to exact
+  PR #207 base (1,677 × 1,809 pixels).
+
+The comparison environment uses Python 3.12, Astropy 7.2.2 and Matplotlib
+3.11.2; Fernando's Mac environment remains the independent acceptance gate.
+The new PR is stacked on PR #207's branch, not merged into main.
