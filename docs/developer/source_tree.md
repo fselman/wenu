@@ -38,6 +38,7 @@ src/wenu/
 ├── charts/                     chart types, composition, detail, styles,
 │                               legends, boundaries, and export workflow
 ├── rendering/                  preparation and Matplotlib backend
+├── star_designations.py        immutable offline HIP-linked designation candidates
 ├── resources.py                installed-resource access
 ├── cli/                        installed command adapters
 ├── example_scripts/            packaged canonical user examples
@@ -3020,3 +3021,15 @@ by `src/wenu` and adds no package resource or dependency.
 `docs/developer/satellite_lime_offline_inspection_audit_50s7d3b.md` owns the
 candidate scope and review gates. Existing production ownership reservations
 remain unchanged; no new production or domain-test file is admitted.
+
+
+## Wikidata designation resource (2026-10-06)
+
+`star_designations.py` owns immutable HIP-linked candidates and verified local
+snapshot loading, separate from stellar astrometry and chart policy.
+`data/catalogs/star_designations/` owns packaged Wikidata JSON, manifest,
+source responses, queries and receipts. `tools/build_wikidata_star_designations.py`
+rebuilds them offline. `objects/stars.py` attaches aligned candidate metadata
+before magnitude selection and preserves it in spherical geometry. Pending
+editorial discrepancies live in `docs/developer/data/stellar_designations_review.json`.
+No pipeline topology changes or renderer/CLI ownership transfers are introduced.

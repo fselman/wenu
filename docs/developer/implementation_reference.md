@@ -3832,3 +3832,20 @@ The tool neither imports nor wraps LIME in Wenu. Geometry, resource, policy,
 result, evaluator, uncertainty, and numeric Moonlight APIs remain
 unauthorized. Its manifest must state `production_runtime_changed=false` and
 `moonlight_status=not_evaluated`.
+
+
+## Offline stellar designation candidates (2026-10-06)
+
+`wenu.star_designations.load_star_designations(manifest_path=None)` loads the
+verified immutable Wikidata snapshot; `catalogue.get(hip)` returns a per-HIP
+candidate record or `None`. `record.candidates("bayer" | "flamsteed")` retains
+active alternatives without a preferred choice. `record.names` retains English
+label/alias evidence, not canonical proper names. `record.review_fields` marks
+known pending designation conflicts; `item_ids` preserves entity distinctions.
+
+`Stars.load()` attaches `star_designations` before magnitude filtering.
+`Stars.position()` and `Stars.spherical_geometry()` carry the aligned object
+array and scalar snapshot edition/digest. Coordinates and magnitudes remain
+Hipparcos data; chart defaults do not activate designation labels. The accepted
+name/Bayer CLI/TOML options are not yet implemented. See the
+[resource checkpoint](stellar_designations_audit.md#10-wikidata-resource-checkpoint-2026-10-06).

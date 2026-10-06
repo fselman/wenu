@@ -54,6 +54,9 @@ markers = [
 ]
 
 [tool.setuptools.package-data]
+"wenu.data.catalogs.star_designations" = [
+    "*.json", "README.md", "source/*.json.gz", "source/*.json", "source/*.rq",
+]
 "wenu.configuration" = ["defaults.toml"]
 "wenu.data" = ["*.json", "*.geojson"]
 "wenu.data.satellites.snapshots.synthetic_50s4b_v1" = [

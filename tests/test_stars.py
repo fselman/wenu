@@ -203,3 +203,35 @@ def test_stars_contains_no_projection_or_rendering_api():
         "sizes",
     ):
         assert not hasattr(stars, name)
+
+
+def test_loaded_designations_follow_hip_through_native_and_altitude_selection(monkeypatch, tmp_path):
+    from wenu.objects import stars as stars_module
+
+    stars, observer = make_stars()
+    source = stars.catalog.copy()
+    source.index = [677, 80763, 85927]
+    source['magnitude'] = [1.0, 9.0, 3.0]
+    monkeypatch.setattr(stars_module.hipparcos, 'load_dataframe', lambda stream: source.copy())
+    filename = tmp_path / 'hip.dat'
+    filename.write_bytes(b'')
+    stars.load(filename=filename)
+
+    assert list(stars.source_catalog.index) == [677, 80763, 85927]
+    assert list(stars.catalog.index) == [677, 85927]
+    assert stars.source_catalog.loc[80763, 'star_designations'].hip == 80763
+    native = stars.position()
+    np.testing.assert_array_equal(native.lon_deg, [15.0, 45.0])
+    np.testing.assert_array_equal(native.lat_deg, [-10.0, -30.0])
+    assert [r.hip for r in native.metadata['star_designations']] == list(native.ids)
+    assert 'Wikidata' not in str(native.coordinate_spec)
+
+    # Existing explicit-HIP machinery retains a faint candidate, without a
+    # new selection implementation in the designation catalogue.
+    retained = stars._render_catalog(magnitude_limit=2.0, include_ids=[80763, 85927])
+    assert list(retained.index) == [677, 80763, 85927]
+    geometry = stars.spherical_geometry(observer, magnitude_limit=10.0, alt_min=0.0)
+    assert list(geometry.ids) == [677, 85927]
+    assert [r.hip for r in geometry.metadata['star_designations']] == list(geometry.ids)
+    np.testing.assert_array_equal(geometry.metadata['magnitude'], [1.0, 3.0])
+    assert list(stars.catalog.index) == [677, 85927]

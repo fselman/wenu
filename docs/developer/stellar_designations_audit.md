@@ -2,11 +2,13 @@
 
 **Status:** Design accepted by Fernando on 2026-10-05, including the amended
 selection contract; design merged in PR #204. The expanded source comparison
-is under review in PR #205; implementation and catalogue admission remain pending.
+is recorded in PR #205 together with catalogue incorporation. The Wikidata candidate
+resource and HIP attachment are implemented on 2026-10-06 (section 10); labels, CLI/TOML
+and scientific curation remain pending.
 **Date:** 2026-10-05
 **Exact as-is base:** `b929325aeb51fad75193d4216f0e5f8e383fa7ae` on
 clean synchronized `main`, as reported by Fernando.
-**Scope authorized:** bounded as-is audit and proposal; no production changes,
+**Original audit scope:** bounded as-is audit and proposal; no production changes,
 provider requests during chart construction, catalogue installation or
 redistribution, or Gaia integration.
 
@@ -698,7 +700,97 @@ item revisions, qualifiers/component relationships and full provenance, and
 respect service deadlines, throttling and Retry-After instructions.
 
 This expanded comparison supersedes the preliminary spot-check-only source
-recommendation at `afec9729`; PR #205 remains open pending Fernando's review.
-Production, package ownership and coordinate-guide semantics are unchanged;
-the guide was reviewed and remains current. This documentation extends the
-closest existing stellar-audit contract, adding no new test file or runtime.
+recommendation at `afec9729`. At that comparison checkpoint PR #205 remained
+open pending Fernando’s review and changed no production ownership or runtime.
+Section 10 records the subsequent source choice, incorporation and merge
+authorization. The comparison itself extends the existing stellar-audit contract.
+
+
+## 10. Wikidata resource checkpoint (2026-10-06)
+
+Fernando selected Wikidata and authorized catalogue incorporation, retaining
+personal adjudication of discrepancies. He subsequently authorized integration
+and merge, using Wikidata provisionally while deferring the review. This
+checkpoint supersedes earlier pending resource-admission statements for this
+bounded candidate dataset. The implementation is delivered through PR #205.
+The exact implementation base is `dd079492164700d50beb7a7f87acbabb0690688f`.
+
+`star_designations.py` now owns immutable statement, HIP-link, name-candidate
+and per-HIP records; `resources.py` resolves a packaged local manifest.
+`data/catalogs/star_designations/` packages the CC0 structured Wikidata snapshot,
+losslessly compressed source responses, exact queries and acquisition receipts.
+The loader verifies SHA-256, schemas, counts, duplicates, ranks and safe HIP
+joins. It preserves item and statement identities, reference URLs, missing
+references and deprecated evidence. Deprecated claims are excluded from active
+candidates. Missing or ambiguous HIP links stay unjoined; no positional match
+or component preference is invented.
+
+The resource has 3,606 HIP-linked records and 4,864 distinct designation
+statements; 167 are unjoined. Name evidence consists of English labels/aliases
+for the 566 HIP targets of the audit, not an exhaustive or official proper-name
+catalogue. No generic title or alias is promoted automatically. Raw component
+suffixes and alternative strings survive; normalization and label resolution
+are still pending. Acquisition receipts pin query-response bytes, not entity
+revisions or a transactionally consistent Wikidata export.
+
+`Stars.load()` joins candidates to the full Hipparcos dataframe before selection.
+Native ICRS and observed AltAz geometries carry aligned `star_designations`
+arrays plus `star_designations_edition` and `star_designations_sha256`.
+Hipparcos/Skyfield coordinate provenance, original coordinates and magnitude
+selection stay under their existing owners. Geometry, projection, preparation,
+rendering and chart policy acquire no source-query responsibility.
+
+`data/stellar_designations_review.json` retains all 77 HIP/field five-source
+conflicts as `pending_fernando`, with no approved decision. Earlier draft
+preferences were not applied. Other-source values remain comparison evidence;
+none are copied into the Wikidata resource as corrections. This ledger is not
+an exhaustive name/coverage/error inventory. The offline compiler refuses to
+apply decisions; future approved preferences require an explicit curation layer.
+
+The human-readable [review table](stellar_designation_review.md) contains a
+blank **Selman** column for Fernando’s later designation decisions. The JSON
+ledger mirrors that empty field as `selman: null`. Pending review does not block
+loading the Wikidata baseline. Markdown entries are review evidence and will
+not silently become executable catalogue corrections.
+
+The next milestone is the accepted name/Bayer resolver and detail/CLI/TOML
+selection contract, using existing `include_ids` to bypass the magnitude cut.
+Then connect label preparation and appearance, verify clipping/horizon behavior,
+and review chart specimens. No automatic label behavior is enabled by this
+catalogue stage. Gaia, variable/multiple eligibility, minor-body completion and
+satellite resumption remain in their agreed later order.
+
+Focused tests verify digest/schema/unsafe-join rejection, preservation of
+alternatives and immutability, deterministic offline rebuilding, HIP alignment
+through magnitude/altitude selection, unchanged astrometry and package
+boundaries. Full repository regression is required before integration; visual acceptance
+will accompany the later label implementation.
+
+
+### Incorporation verification and retained baseline failures
+
+At candidate tree `0ee69e64aab68168cad897eb4890a938b8295b1d`, the focused
+catalogue/Stars/package/documentation gate passed 261 tests. The complete
+plugin-disabled suite ran: **2,933 passed, 4 failed**, without collection/setup
+errors. This is not a green full-suite result. The four failures were reproduced
+individually against exact pre-incorporation base
+`dd079492164700d50beb7a7f87acbabb0690688f` in the same Linux runtime
+(Python 3.12.14, NumPy 1.26.4, Astropy 7.2.2, Matplotlib 3.11.2,
+Skyfield 1.55). No satellite, airmass, topocentric or SVG owner changed here.
+
+- `test_satellite_crossing_batch.py::test_inaccessible_or_uncertain_centre_fails_closed`:
+  boundary airmass error wording differs at floating-point precision.
+- `test_satellite_planning_advisories.py::test_offline_validation_tool_writes_positive_zero_and_manifest`:
+  the existing boundary advisory specimen exits with an error.
+- `test_satellite_topocentric.py::test_field_center_altitude_uses_governed_gcrs_axis_rotation`:
+  computed zenith is 89.99999914622636 degrees versus a 1e-10-degree tolerance.
+- `test_svg_output.py::test_semantic_label_group_inherits_common_font_style`:
+  expected SVG group-level font shorthand is absent in this runtime.
+
+The final documentation-only verification record is added after that tree;
+resource bytes and executable code stay identical. These baseline limitations
+remain explicit for Mac regression and later work; they are not represented as
+new catalogue failures or silently fixed in this milestone. The cached official
+JPL DE440s dependency was populated deliberately for regression, with SHA-256
+`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`;
+no kernel or dependency change is included in the repository diff.
