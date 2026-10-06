@@ -209,6 +209,7 @@ def test_curated_hip_associations_preserve_raw_claims_and_numeric_identity():
     assert effective.get(78820).candidates("bayer") == ()
     assert [c.code for c in effective.get(78820).assignments("bayer")] == ["β¹ Sco"]
     assert effective.hips_for_designation("β² Sco") == {78821}
+    assert effective.hips_for_designation("β Sco") == {78820, 78821}
     assert effective.hips_for_designation("8 Sco", "flamsteed") == {78820, 78821}
     assert effective.get(677).statements is raw.get(677).statements
     assert effective.unjoined_statements is raw.unjoined_statements

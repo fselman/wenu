@@ -198,6 +198,12 @@ def resolve_star_labels(selection, *, catalogue=None, constellations=()):
             scopes.add(scope)
             if statement.kind == "bayer":
                 bayer_index.setdefault((scope, token), set()).add(hip)
+        for association in record.curated:
+            if association.kind != "bayer":
+                continue
+            for alias in association.selector_aliases:
+                token, scope, _ = designation_parts(alias)
+                bayer_index.setdefault((scope, token), set()).add(hip)
         for name in record.names:
             if name.language == "en":
                 for scope in scopes:
@@ -323,6 +329,7 @@ class CuratedDesignation:
     code: str
     basis: str
     evidence_json: str
+    selector_aliases: tuple[str, ...] = ()
 
     def evidence(self):
         return json.loads(self.evidence_json)
@@ -378,13 +385,15 @@ class StarDesignationCatalogue:
         matches = set()
         for hip, record in self.by_hip.items():
             for claim in record.assignments(kind):
-                try:
-                    parts = designation_parts(claim.code, kind)
-                except ValueError:
-                    # Preserve unsupported literal source spellings as evidence.
-                    continue
-                if parts == wanted:
-                    matches.add(hip)
+                codes = (claim.code, *getattr(claim, "selector_aliases", ()))
+                for candidate in codes:
+                    try:
+                        parts = designation_parts(candidate, kind)
+                    except ValueError:
+                        # Preserve unsupported literal source spellings as evidence.
+                        continue
+                    if parts == wanted:
+                        matches.add(hip)
         return frozenset(matches)
 
 
@@ -673,7 +682,7 @@ def _load_stellar_curation(payload, manifest_payload):
     seen = set()
     for entry in document["associations"]:
         _keys(entry, {"hip", "kind", "code", "basis", "source_values",
-                      "wikidata_items", "identity_scope"})
+                      "wikidata_items", "identity_scope", "selector_aliases"})
         hip, kind, code = entry["hip"], entry["kind"], entry["code"]
         _require(type(hip) is int and hip > 0
                  and kind in ("bayer", "flamsteed"),
@@ -692,10 +701,21 @@ def _load_stellar_curation(payload, manifest_payload):
         _require(isinstance(entry["source_values"], dict)
                  and bool(entry["source_values"]),
                  "Curated assignment requires source evidence")
+        aliases = entry["selector_aliases"]
+        _require(isinstance(aliases, list) and len(set(aliases)) == len(aliases),
+                 "Invalid curated selector aliases")
+        for alias in aliases:
+            designation_parts(alias, kind)
+            _require(any(s["kind"] == kind and s["code"] == alias
+                         and s["item"] in entry["wikidata_items"]
+                         and s["rank"] != "DeprecatedRank"
+                         for s in document["unjoined_statements"]),
+                     "Selector alias requires an active declared source claim")
         seen.add(key)
         frozen = json.dumps(entry, ensure_ascii=False, sort_keys=True)
         associations.append(CuratedDesignation(hip, kind, code,
-                                                entry["basis"], frozen))
+                                                entry["basis"], frozen,
+                                                tuple(aliases)))
         index[hip]["associations"].append(entry)
     expected = {(hip, g["kind"]) for hip, note in index.items()
                 for g in note["coverage_gaps"]

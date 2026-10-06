@@ -3913,3 +3913,8 @@ remains unchanged; existing report fields remain available and additional
 curation fields are additive. Astrometry metadata stays on the raw snapshot.
 Superscripts, geometry, point selection and existing explicit-label magnitude
 bypass are preserved. No automatic labels or spatial merging are added.
+
+The two β Sco records also retain an explicit system selector alias backed by
+the active unjoined Wikidata declaration. `Sco:beta` therefore fails as
+ambiguous with both HIPs; `Sco:beta1,beta2` selects them individually.
+Selector aliases do not replace component labels or source claims.

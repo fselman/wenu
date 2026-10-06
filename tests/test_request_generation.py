@@ -105,7 +105,7 @@ def test_stellar_report_uses_final_clip_boundary_and_retains_sources(tmp_path, f
     assert structured.read_bytes() == before
     assert entry["assignment_basis"].startswith("Requested constellation")
     projected_layer = export.rendering.rendering.layers[0]
-    for hip in (95947, 1):
+    for hip in (95947, 78820, 102431, 1):
         projected_layer.projected = ProjectedPoints(
             x=[0], y=[0], ids=[hip],
             metadata={"star_designations": np.array([load_star_designations().get(hip)], dtype=object)},
@@ -119,6 +119,17 @@ def test_stellar_report_uses_final_clip_boundary_and_retains_sources(tmp_path, f
             assert entry["effective_assignments"]["bayer"] == ["β¹ Cyg"]
             assert entry["assignment_basis"].startswith("Wenu curated HIP")
             assert entry["curation"]["associations"]
+        elif hip == 78820:
+            entry = report["objects"][0]
+            assert entry["assignment"] == "β¹ Sco"
+            assert entry["research"] is None
+            assert entry["curation"]["coverage_gaps"]
+            assert "authored associations, not Wikidata claims" in md.read_text()
+        elif hip == 102431:
+            entry = report["objects"][0]
+            assert entry["assignment"] is None
+            assert entry["curation"]["coverage_gaps"][0]["status"] == "pending"
+            assert "bayer: pending" in md.read_text()
         else:
             assert report["objects"] == []
             assert "No stars from the 77-case" in md.read_text()

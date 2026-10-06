@@ -1031,3 +1031,8 @@ reviewed; no coordinate contract changed.
 Verification results and the exact delivered head will be recorded after
 the focused, documentation/package and full regression gates. Scientific and
 visual Mac acceptance and merging remain separate review steps.
+
+The β Sco system selector alias is explicitly registered for both component
+HIPs and validated against its active unjoined Wikidata claim. It creates no
+automatic family inheritance. Generic `Sco:beta` is ambiguous; explicit
+`Sco:beta1` and `Sco:beta2` retain their superscripts.
