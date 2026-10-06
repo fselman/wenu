@@ -204,7 +204,7 @@ def test_curated_hip_associations_preserve_raw_claims_and_numeric_identity():
         StarLabelSelection, resolve_star_labels,
     )
     raw = load_star_designations()
-    effective = load_effective_star_designations()
+    effective = load_effective_star_designations(raw)
     assert raw.get(78820).candidates("bayer") == ()
     assert effective.get(78820).candidates("bayer") == ()
     assert [c.code for c in effective.get(78820).assignments("bayer")] == ["β¹ Sco"]
