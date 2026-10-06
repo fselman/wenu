@@ -2162,3 +2162,14 @@ or projection pass. It uses a cached HIP research index and emits authored
 comparison notes as Markdown/JSON beside each chart. The source dossier and
 ledger remain frozen. See [audit section 11](stellar_designations_audit.md#11-approved-handling-policy-and-labelreport-candidate-2026-10-06)
 for ownership, context/conflict rules and remaining acceptance gates.
+
+## HIP association curation candidate (2026-10-06)
+
+The designation owner now separates source claims from authored associations.
+The effective catalogue fills only absent kinds and preserves many-to-many
+identity relationships; it does not overwrite active Wikidata choices.
+Explicit labels and retained-point reports share that effective catalogue.
+Coordinate realization and point metadata remain on the original Hipparcos
+and Wikidata sources. Numerical superscripts identify catalogue components;
+they neither assert physical multiplicity nor trigger spatial merging.
+Case 1 visual simplification is deferred to the separate presentation stage.

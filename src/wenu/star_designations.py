@@ -10,8 +10,9 @@ import hashlib
 import json
 import re
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
+from importlib.resources import files
 from types import MappingProxyType
 from functools import lru_cache
 
@@ -129,7 +130,7 @@ class ResolvedStarLabels:
 @lru_cache(maxsize=1)
 def packaged_star_designations():
     """Reuse the immutable packaged catalogue for explicit resolution."""
-    return load_star_designations()
+    return load_effective_star_designations()
 
 
 def preferred_designation(record, kind, constellations=(), *, preferred=None):
@@ -138,7 +139,7 @@ def preferred_designation(record, kind, constellations=(), *, preferred=None):
     Same-constellation ambiguity never silently selects the first record.
     A unique PreferredRank claim may resolve an otherwise tied source set.
     """
-    claims = record.candidates(kind)
+    claims = record.assignments(kind)
     codes = sorted({claim.code for claim in claims})
     if not codes:
         return None
@@ -155,7 +156,7 @@ def preferred_designation(record, kind, constellations=(), *, preferred=None):
         if preferred not in codes:
             raise ValueError("Shared-star preference is absent from Wikidata")
         return preferred
-    ranked = {claim.code for claim in claims if claim.rank == "PreferredRank"}
+    ranked = {claim.code for claim in claims if getattr(claim, "rank", None) == "PreferredRank"}
     if len(ranked) == 1:
         return next(iter(ranked))
     raise ValueError(
@@ -185,8 +186,8 @@ def resolve_star_labels(selection, *, catalogue=None, constellations=()):
     bayer_index, name_index = {}, {}
     for hip, record in catalogue.by_hip.items():
         scopes = set()
-        for statement in record.statements:
-            if statement.rank == "DeprecatedRank":
+        for statement in (*record.statements, *record.curated):
+            if getattr(statement, "rank", None) == "DeprecatedRank":
                 continue
             try:
                 token, scope, component = designation_parts(
@@ -196,6 +197,12 @@ def resolve_star_labels(selection, *, catalogue=None, constellations=()):
                 continue
             scopes.add(scope)
             if statement.kind == "bayer":
+                bayer_index.setdefault((scope, token), set()).add(hip)
+        for association in record.curated:
+            if association.kind != "bayer":
+                continue
+            for alias in association.selector_aliases:
+                token, scope, _ = designation_parts(alias)
                 bayer_index.setdefault((scope, token), set()).add(hip)
         for name in record.names:
             if name.language == "en":
@@ -254,7 +261,7 @@ def resolve_star_labels(selection, *, catalogue=None, constellations=()):
                     else:
                         codes = {
                             s.code
-                            for s in record.candidates("bayer")
+                            for s in record.assignments("bayer")
                             if designation_parts(s.code)[0:2]
                             == (bayer_token(token), scope)
                         }
@@ -314,11 +321,32 @@ class NameCandidate:
 
 
 @dataclass(frozen=True)
+class CuratedDesignation:
+    """Authored HIP association, explicitly distinct from a Wikidata claim."""
+
+    hip: int
+    kind: str
+    code: str
+    basis: str
+    evidence_json: str
+    selector_aliases: tuple[str, ...] = ()
+
+    def evidence(self):
+        return json.loads(self.evidence_json)
+
+
+@dataclass(frozen=True)
 class StarDesignations:
     hip: int
     statements: tuple[DesignationStatement, ...]
     names: tuple[NameCandidate, ...]
     review_fields: tuple[str, ...]
+    curated: tuple[CuratedDesignation, ...] = ()
+
+    def assignments(self, kind):
+        """Prefer active Wikidata; use explicit curation only for absent kinds."""
+        source = self.candidates(kind)
+        return source or tuple(c for c in self.curated if c.kind == kind)
 
     def candidates(self, kind: str) -> tuple[DesignationStatement, ...]:
         """Return active source claims without choosing or normalizing one."""
@@ -346,9 +374,27 @@ class StarDesignationCatalogue:
     source_sha256: str
     by_hip: Mapping[int, StarDesignations]
     unjoined_statements: tuple[DesignationStatement, ...]
+    curation_sha256: str | None = None
 
     def get(self, hip: int) -> StarDesignations | None:
         return self.by_hip.get(hip)
+
+    def hips_for_designation(self, code, kind="bayer"):
+        """Return every matching HIP; a designation need not identify one star."""
+        wanted = designation_parts(code, kind)
+        matches = set()
+        for hip, record in self.by_hip.items():
+            for claim in record.assignments(kind):
+                codes = (claim.code, *getattr(claim, "selector_aliases", ()))
+                for candidate in codes:
+                    try:
+                        parts = designation_parts(candidate, kind)
+                    except ValueError:
+                        # Preserve unsupported literal source spellings as evidence.
+                        continue
+                    if parts == wanted:
+                        matches.add(hip)
+        return frozenset(matches)
 
 
 def _require(condition, message):
@@ -574,3 +620,132 @@ def load_star_designations(manifest_path=None) -> StarDesignationCatalogue:
     return StarDesignationCatalogue(
         _text(manifest["edition"]), digest, MappingProxyType(index), unjoined
     )
+
+@dataclass(frozen=True)
+class StellarCuration:
+    """Immutable associations and independent per-HIP review records."""
+
+    source_sha256: str
+    snapshot_sha256: str
+    associations: tuple[CuratedDesignation, ...]
+    by_hip: Mapping[int, str]
+
+    def get(self, hip):
+        value = self.by_hip.get(hip)
+        return None if value is None else json.loads(value)
+
+
+@lru_cache(maxsize=1)
+def load_stellar_curation():
+    """Admit the frozen authored cross-index table; never query a provider."""
+    root = files("wenu.data.catalogs.star_designations")
+    return _load_stellar_curation(
+        root.joinpath("curation.json").read_bytes(),
+        root.joinpath("curation_manifest.json").read_bytes(),
+    )
+
+
+def _load_stellar_curation(payload, manifest_payload):
+    """Pure byte admission shared by packaged loading and fault tests."""
+    manifest = _json(manifest_payload)
+    _keys(manifest, {"schema", "sha256", "snapshot_sha256"})
+    _require(manifest["schema"] == "wenu-stellar-curation-manifest/1",
+             "Invalid curation manifest")
+    digest = hashlib.sha256(payload).hexdigest()
+    _require(digest == manifest["sha256"], "Stellar curation digest mismatch")
+    document = _json(payload)
+    _keys(document, {
+        "schema", "baseline_commit", "snapshot_sha256", "policy", "sources",
+        "associations", "coverage_gaps", "variant_conflicts",
+        "unjoined_statements",
+    })
+    _require(document["schema"] == "wenu-stellar-curation/1",
+             "Invalid curation schema")
+    _require(document["snapshot_sha256"] == manifest["snapshot_sha256"],
+             "Curation snapshot binding mismatch")
+    index, associations, identities = {}, [], set()
+    for field in ("coverage_gaps", "variant_conflicts"):
+        _require(isinstance(document[field], list), "Invalid curation inventory")
+        for row in document[field]:
+            hip, kind = row["hip"], row["kind"]
+            _require(type(hip) is int and hip > 0
+                     and kind in ("bayer", "flamsteed"),
+                     "Invalid curation inventory identity")
+            key = hip, kind
+            _require(key not in identities, "Duplicate curation inventory identity")
+            identities.add(key)
+            note = index.setdefault(hip, {
+                "coverage_gaps": [], "variant_conflicts": [],
+                "associations": [], "sources": document["sources"],
+            })
+            note[field].append(row)
+    seen = set()
+    for entry in document["associations"]:
+        _keys(entry, {"hip", "kind", "code", "basis", "source_values",
+                      "wikidata_items", "identity_scope", "selector_aliases"})
+        hip, kind, code = entry["hip"], entry["kind"], entry["code"]
+        _require(type(hip) is int and hip > 0
+                 and kind in ("bayer", "flamsteed"),
+                 "Invalid curated HIP/kind")
+        designation_parts(code, kind)
+        key = hip, kind
+        _require(key in identities and key not in seen,
+                 "Missing or duplicate curated identity")
+        gap = next((g for g in index[hip]["coverage_gaps"]
+                    if g["kind"] == kind), None)
+        _require(gap is not None and gap["status"] == "cross_index_curated"
+                 and code in gap["candidate_codes"],
+                 "Curated assignment must resolve a declared coverage gap")
+        _text(entry["basis"])
+        _text(entry["identity_scope"])
+        _require(isinstance(entry["source_values"], dict)
+                 and bool(entry["source_values"]),
+                 "Curated assignment requires source evidence")
+        aliases = entry["selector_aliases"]
+        _require(isinstance(aliases, list) and len(set(aliases)) == len(aliases),
+                 "Invalid curated selector aliases")
+        for alias in aliases:
+            designation_parts(alias, kind)
+            _require(any(s["kind"] == kind and s["code"] == alias
+                         and s["item"] in entry["wikidata_items"]
+                         and s["rank"] != "DeprecatedRank"
+                         for s in document["unjoined_statements"]),
+                     "Selector alias requires an active declared source claim")
+        seen.add(key)
+        frozen = json.dumps(entry, ensure_ascii=False, sort_keys=True)
+        associations.append(CuratedDesignation(hip, kind, code,
+                                                entry["basis"], frozen,
+                                                tuple(aliases)))
+        index[hip]["associations"].append(entry)
+    expected = {(hip, g["kind"]) for hip, note in index.items()
+                for g in note["coverage_gaps"]
+                if g["status"] == "cross_index_curated"}
+    _require(seen == expected, "Incomplete curated gap coverage")
+    return StellarCuration(
+        digest, document["snapshot_sha256"], tuple(associations),
+        MappingProxyType({hip: json.dumps(note, ensure_ascii=False,
+                                         sort_keys=True)
+                          for hip, note in index.items()}),
+    )
+
+
+def load_effective_star_designations(catalogue=None, *, curation=None):
+    """Add authored missing-kind associations without altering source claims."""
+    catalogue = load_star_designations() if catalogue is None else catalogue
+    curation = load_stellar_curation() if curation is None else curation
+    _require(catalogue.source_sha256 == curation.snapshot_sha256,
+             "Curated associations require their exact Wikidata snapshot")
+    index = dict(catalogue.by_hip)
+    for association in curation.associations:
+        record = index.get(association.hip)
+        if record is None:
+            record = StarDesignations(association.hip, (), (), ())
+        _require(not record.candidates(association.kind),
+                 "Curation may not overwrite active Wikidata assignments")
+        _require(not any(c.kind == association.kind for c in record.curated),
+                 "Duplicate effective curated assignment")
+        index[association.hip] = replace(
+            record, curated=(*record.curated, association),
+        )
+    return replace(catalogue, by_hip=MappingProxyType(index),
+                   curation_sha256=curation.source_sha256)

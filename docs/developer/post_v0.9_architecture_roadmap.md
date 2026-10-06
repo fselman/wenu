@@ -3832,3 +3832,17 @@ phase sign, a geometry comparison, or scientific Moonlight admission.
 Only bounded source/resource/case preflight may proceed next. Comparison
 execution requires separate explicit authorization; PR 195 merge and
 cleanup remain separate decisions. Moonlight remains `not_evaluated`.
+
+## Stellar HIP-identification stage (candidate, 2026-10-06)
+
+Fernando approved separating HIP association from later visual superscript
+handling. On the PR #207 candidate base `8aec3417`, the next branch adds an
+authored, digest-bound missing-kind association table and reports pending
+coverage/variant questions without altering the original catalogue or dossier.
+Exact cross-index associations retain complete designations. Many-to-many
+lookup and ambiguous-selector failures remain explicit. Case 1 close pairs,
+case 2 singleton-index candidates and case 3 families of three or more indices
+are review categories, not automatic physical or rendering rules.
+Visual superscript removal, automatic grouping/labels and Flamsteed CLI
+selection remain outside this stage. Mac scientific/visual acceptance and
+both PR merges are separate decisions.

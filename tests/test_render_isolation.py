@@ -106,6 +106,20 @@ def test_explicit_stellar_labels_compose_with_sizing_overlays_and_callsite_optio
     second = compose_chart(chart, style="atlas").layer_options(sky).layer_options[sky.stars]
     assert "include_ids" not in second["geometry"]
     assert not second["render"](source, source).get("draw_labels", False)
+    from wenu.star_designations import load_star_designations
+    raw = load_star_designations()
+    sky.stars.designation_catalogue = raw
+    curated = compose_chart(chart, style="cartoon", detail_overrides=DetailOverrides(
+        star_magnitude_limit=0.0,
+        star_labels=StarLabelSelection(
+            bayer=("Sco:beta1,beta2",), show_full_bayer_designation=True,
+        ),
+    )).layer_options(sky).layer_options[sky.stars]
+    assert curated["geometry"]["include_ids"] == {78820, 78821}
+    formatter = curated["render"](source, source)["label_formatter"]
+    assert formatter(78820) == "β¹ Sco" and formatter(78821) == "β² Sco"
+    assert sky.stars.designation_catalogue is raw
+    assert raw.get(78820).curated == ()
     assert snapshot(sky) == before
 
 
