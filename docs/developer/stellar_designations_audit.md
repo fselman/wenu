@@ -1041,3 +1041,7 @@ A real CLI specimen exposed the layer-provided raw-catalogue label seam.
 The detail owner now adapts that catalogue only for nonempty selections;
 the existing render-isolation test exercises β¹/β² Sco through this route
 and verifies that persistent layer catalogue state remains raw and unchanged.
+
+The readable [HIP coverage review](data/stellar_designation_research/hip-coverage-review.md)
+lists all added associations, pending gaps and existing-kind variants with
+a blank Selman column. It is separate from the original 77-case review.
