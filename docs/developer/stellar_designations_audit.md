@@ -1096,7 +1096,7 @@ Publication validation evidence:
   viewport comparison is sensitive to a last-bit circular-boundary difference.
 - A default Sco–Lib render is pixel-identical to merged main (1,677 × 1,925).
 - The narrow-column specimen is approximately 75.44 mm wide, with 17 requested
-  labels and zero label-overlap pairs. All 50 drawn line endpoints match the
+  labels and zero label-overlap pairs. All 48 drawn line endpoints match the
   requested disk radius plus one point to within 3e-14 points. PNG alpha and
   PDF raster verification confirm transparent background and black ink only.
   SVG, PDF and PNG all render successfully.
@@ -1106,3 +1106,12 @@ Publication validation evidence:
   checks pass; Ruff F findings in touched files match the existing base.
 - No new production/test file, dependency or catalogue change is included.
   Mac print and visual acceptance remain pending.
+
+The magnitude audit found HIP 78400 (V = 5.47) retained by the existing
+cartoon vertex exception. CLI `--constellation-star-mode none` now exposes the
+existing detail policy explicitly; the supplied specimen disables vertex
+exceptions and verifies every rendered stellar magnitude is strictly below 5.
+This retains existing defaults and deliberate explicit-label inclusion.
+The final CLI/documentation gate has 357 passes. The core presentation full
+suite at the `10c26a9` source state has 2,977 passes and the four reproduced
+base failures; a final full run after this explicit CLI addition is separate.

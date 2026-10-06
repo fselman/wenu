@@ -335,6 +335,8 @@ def add_chart_content_arguments(parser):
     """Add shared astronomical-content arguments to ``parser``."""
     parser.add_argument("--stars-in-constellations", action="append", type=_constellation_selection,
                         metavar="IAU[,IAU...]", help="retain stars only inside the selected IAU regions")
+    parser.add_argument("--constellation-star-mode", choices=("none", "selected", "all"),
+                        default=None, help="retain line vertices beyond the magnitude cut")
     parser.add_argument("--star-label-placement", choices=("fixed", "auto"), default=None)
     parser.add_argument("--constellation-line-gap", type=float, default=None, metavar="POINTS")
     parser.add_argument("--star-label-name", action="append", metavar="IAU:NAME[,NAME]")
@@ -1064,7 +1066,8 @@ def chart_detail_overrides(
         disabled_layers=frozenset(optional_layers - additions),
         grid_label_layers=labels,
         constellation_star_mode=(
-            "selected" if content.constellation_lines else "none"
+            getattr(arguments, "constellation_star_mode", None)
+            or ("selected" if content.constellation_lines else "none")
         ),
     )
 

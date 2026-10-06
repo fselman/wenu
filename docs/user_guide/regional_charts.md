@@ -166,6 +166,7 @@ wenu_chart regional --config book.toml \
   --center-on constellation:Sco,Lib --field-width 45 --field-height 50 \
   --orientation celestial-north-up --style cartoon --mode print \
   --magnitude-limit 4.99 --constellation-lines Sco,Lib \
+  --constellation-star-mode none \
   --no-equatorial-grid --no-grid --no-center \
   --star-label-name Sco:Antares \
   --star-label-bayer Sco:beta1,delta,epsilon,theta,lambda,kappa,mu1,iota1,zeta2,pi,tau,sigma \
@@ -175,5 +176,7 @@ wenu_chart regional --config book.toml \
 
 This orientation puts Libra above Scorpius. Replace the output suffix with
 `.png` or `.pdf` as needed. The requested width is the figure canvas width in
-inches; tight export crops unused margins. Explicit labels and the existing
-cartoon vertex policy can retain stars fainter than the magnitude limit.
+inches; tight export crops unused margins. The example disables vertex exceptions with `--constellation-star-mode none`,
+so all its plotted stars are brighter than V = 5. Explicit labels can still
+force fainter stars if deliberately requested. Omitting this option retains
+the existing cartoon vertex policy.
