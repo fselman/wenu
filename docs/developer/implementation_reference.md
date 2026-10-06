@@ -3933,15 +3933,22 @@ renderer converts physical points to display lengths and recomputes trimming
 after aspect/layout settles. It leaves clipped intersections untouched and
 never changes astronomical curves. Opt-in automatic point-label placement
 uses final display bounds and existing markers, labels and lines. Each label
-has 24 candidates: eight directions at three clearances, 0.75–2.25 physical
-points beyond its marker radius. Above/below positions align the glyph box
-with the stellar centre. Candidates first minimize proximity to another
-resolvable marker relative to their own anchor, then symbol and label
-collisions, clipping and cosmetic preferences. Markers within 0.25 points of
-the anchor share a visible anchor for this display test; catalogue identities
-remain distinct. Up to eight coordinate-descent passes revisit the initially
-greedy assignment. This bounded heuristic preserves all selected labels and
-is best effort when no unambiguous collision-free candidate exists; it uses
+has eight directions at three clearances, 0.75–2.25 physical points beyond
+its marker radius. Above/below positions align the glyph box with the stellar
+centre. If the nearest other selected label anchor is within three glyph-box
+heights plus the marker radius and its vertical separation exceeds twice its
+horizontal separation, side positions are preferred. A long label (width
+more than three heights) in this situation also tries a 3-point clearance.
+
+Candidates first minimize interference with any stellar disk, then association
+ambiguity among explicitly labelled anchors, label collisions, clipping,
+local alignment and cosmetic line avoidance. Association uses the label-edge
+attachment point nearest its intended anchor and distances to visible marker
+disks; unrelated stars remain symbol obstacles. Anchors within 0.25 points
+share a visible anchor for this display test; catalogue identities remain
+distinct. Up to eight coordinate-descent passes revisit the initially greedy
+assignment. This bounded heuristic preserves all selected labels and is best
+effort when no unambiguous collision-free candidate exists; it uses
 no opaque halos. Export finalizes these display adjustments before save.
 
 Product controls govern transparency, axes frame and title. Transparent

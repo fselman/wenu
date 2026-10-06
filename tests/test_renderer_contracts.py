@@ -360,3 +360,31 @@ def test_isolated_greek_label_prefers_vertical_alignment():
     assert (box.x0 + box.x1) / 2 == pytest.approx(anchor[0])
     assert box.y0 > anchor[1]
     plt.close(fig)
+
+
+@pytest.mark.parametrize("dpi", [100, 300])
+@pytest.mark.parametrize("angle", [0, 180])
+def test_vertical_labelled_chain_prefers_side_alignment_without_hiding_faint_stars(dpi, angle):
+    fig, ax = plt.subplots(figsize=(3, 3), dpi=dpi)
+    ax.set_xlim(-1, 1)
+    ax.set_ylim(-1, 1)
+    factor = 1 if angle == 0 else -1
+    points = ProjectedPoints([0, 0, 0, -.06 * factor],
+                             [.12 * factor, 0, -.12 * factor, 0],
+                             labels=["σ", "Antares", "τ", None])
+    renderer = MatplotlibRenderer(ax)
+    renderer.draw(points, style={"s": [4, 36, 4, 1]}, draw_labels=True,
+                  label_style={"fontsize": 9, "placement": "auto"})
+    fig.canvas.draw()
+    renderer.finalize_label_placement()
+    boxes = []
+    for text, x, y in renderer._auto_labels:
+        anchor = ax.transData.transform((x, y))
+        box = text.get_window_extent(fig.canvas.get_renderer())
+        assert (box.y0 + box.y1) / 2 == pytest.approx(anchor[1])
+        assert box.x1 < anchor[0] or box.x0 > anchor[0]
+        for other_x, other_y, _ in renderer._point_obstacles:
+            assert not box.contains(*ax.transData.transform((other_x, other_y)))
+        boxes.append(box)
+    assert all(not a.overlaps(b) for i, a in enumerate(boxes) for b in boxes[i+1:])
+    plt.close(fig)

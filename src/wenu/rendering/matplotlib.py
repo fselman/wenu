@@ -1205,6 +1205,8 @@ class MatplotlibRenderer:
             -radius_at(self.ax.transData.transform(item[1:])),
             -len(item[0].get_text()),
         ))
+        label_anchors = self.ax.transData.transform([item[1:] for item in labels])
+        label_radii = np.asarray([radius_at(anchor) for anchor in label_anchors])
         choices = []
         for artist, x, y in labels:
             anchor = self.ax.transData.transform((x, y))
@@ -1213,11 +1215,20 @@ class MatplotlibRenderer:
             artist.set_va("bottom")
             width, height = artist.get_window_extent(renderer).size
             # Sub-resolution companions share a visible anchor, not an identity.
-            competitors = np.linalg.norm(centres - anchor, axis=1) > 0.25 * scale
+            competitors = np.linalg.norm(label_anchors - anchor, axis=1) > 0.25 * scale
+            offsets = label_anchors - anchor
+            separations = np.linalg.norm(offsets, axis=1)
+            neighbours = np.flatnonzero(separations > 0.25 * scale)
+            lateral = False
+            if len(neighbours):
+                nearest = neighbours[np.argmin(separations[neighbours])]
+                lateral = (separations[nearest] < 3 * height + radius
+                           and abs(offsets[nearest, 1]) > 2 * abs(offsets[nearest, 0]))
             candidates = []
             directions = ((0, 1), (0, -1), (1, 1), (-1, 1),
                           (1, -1), (-1, -1), (1, 0), (-1, 0))
-            for extra in (0.0, 0.75, 1.5):
+            extras = (0.0, 0.75, 1.5, 2.25) if lateral and width > 3 * height else (0.0, 0.75, 1.5)
+            for extra in extras:
                 clearance = radius + (0.75 + extra) * scale
                 for preference, (dx, dy) in enumerate(directions):
                     offset = np.asarray((dx, dy), dtype=float)
@@ -1228,15 +1239,18 @@ class MatplotlibRenderer:
                     box = Bbox.from_bounds(left, bottom, width, height)
                     padded = box.padded(0.25 * scale)
                     own_distance = distances(box, anchor.reshape(1, 2))[0]
-                    other_distances = distances(box, centres)
-                    ambiguous = np.maximum(own_distance - other_distances[competitors], 0).sum() / scale
+                    attachment = np.clip(anchor, (box.x0, box.y0), (box.x1, box.y1))
+                    own_gap = max(own_distance - radius, 0)
+                    other_gaps = np.maximum(np.linalg.norm(label_anchors - attachment, axis=1) - label_radii, 0)
+                    ambiguous = np.maximum(own_gap - other_gaps[competitors], 0).sum() / scale
                     marker_conflict = np.maximum(radii + 0.25 * scale - distances(padded, centres), 0).sum() / scale
                     fixed_conflict = sum(overlap(padded, other) for other in fixed)
                     outside = box.width * box.height / scale**2 - overlap(box, bounds)
+                    alignment = float(lateral and dy != 0)
                     cosmetic = (0.1 * sum(path.intersects_bbox(padded, filled=False) for path in paths)
                                 + 0.025 * preference + 0.05 * extra)
-                    candidates.append((box, padded, (ambiguous, marker_conflict,
-                                                      fixed_conflict, outside, cosmetic)))
+                    candidates.append((box, padded, (marker_conflict, ambiguous,
+                                                      fixed_conflict, outside, alignment, cosmetic)))
             choices.append(candidates)
 
         selected = []
@@ -1246,7 +1260,7 @@ class MatplotlibRenderer:
                 overlap(padded, choices[other][value][1])
                 for other, value in enumerate(assignments) if other != index
             )
-            return (static[0], static[1], static[2] + collisions, static[3], static[4])
+            return (static[0], static[1], static[2] + collisions, static[3], static[4], static[5])
 
         for index, candidates in enumerate(choices):
             selected.append(min(range(len(candidates)), key=lambda value: score(index, value, selected)))

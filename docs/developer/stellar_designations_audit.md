@@ -1152,3 +1152,32 @@ are brighter than V=5; alpha is retained and visible ink is black. Requested
 line gaps remain one physical point beyond the marker disk. Rotation tests
 cover five angles and two print resolutions. This numerical evidence supports
 review of this specimen; Mac visual acceptance remains pending.
+
+
+### Lateral alignment follow-up
+
+Fernando accepted the 324-test Mac gate at `20545d1a`, after recovering
+accidentally copied shell prompt redirections and synchronizing a clean tree.
+He requested horizontal alignment of sigma Sco, Antares and tau Sco. The
+renderer now recognizes close vertical chains of explicitly selected anchors
+in final screen space and prefers lateral slots. Isolated labels keep their
+above/below preference. Long labels in such a chain can use a fourth clearance
+of 3 physical points beyond the marker disk to clear neighbouring faint stars;
+short labels retain the previous 0.75–2.25 point choices.
+
+Association is measured from the nearest attachment point on the label edge
+to visible marker disks of explicitly labelled anchors. Every plotted stellar
+symbol remains an obstacle, including unlabelled faint stars. This avoids
+letting a distant part of a long name's bounding box dictate its ownership.
+Symbol avoidance precedes association and other visual preferences. This is
+an optical placement heuristic, not a catalogue or coordinate change.
+
+The vertical Sco–Lib PNG/PDF/SVG preview has sigma Sco on the right, Antares
+on the left, and tau Sco on the right, with zero vertical offset between each
+label box centre and its intended stellar centre. Nineteen labels remain,
+with zero label-box overlaps; the 55-star V < 5 cut, transparency and physical
+line gaps remain unchanged. Renderer tests exercise both print resolutions
+and reversed chain orientation, including a faint marker beside a long name.
+No production/test module or new public option is added. Scientific-coordinate
+ownership remains unchanged; the coordinate guide reviewed at the preceding
+checkpoint remains current. Mac visual acceptance is pending.
