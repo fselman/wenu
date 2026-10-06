@@ -216,6 +216,7 @@ def cartoon_chart_style(
     )
     stars = replace(
         style.stars,
+        label_fontsize=style.stars.label_fontsize * font_scale,
         color=palette.stars,
         area_scale=style.stars.area_scale * symbol_scale,
         draw_variable_symbols=False,

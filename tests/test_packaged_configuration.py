@@ -27,6 +27,7 @@ TOP_LEVEL_ORDER = (
     "masks",
     "families",
     "detail",
+    "reports",
     "styles",
     "modes",
     "grids_references",

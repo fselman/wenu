@@ -93,6 +93,10 @@ def _stellar(table: Mapping[str, Any]) -> StellarStyle:
     variable = table["variable_symbol"]
     multiple = table["multiple_symbol"]
     return StellarStyle(
+        label_color=_optional(table["labels"]["color"]),
+        label_fontsize=table["labels"]["font_size"],
+        label_alpha=table["labels"]["opacity"],
+        label_offset=tuple(table["labels"]["offset"]),
         color=table["color"],
         area_scale=table["area_scale"],
         magnitude_sizing=StellarMagnitudeSizing(

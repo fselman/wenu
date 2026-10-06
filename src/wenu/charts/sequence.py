@@ -41,6 +41,8 @@ class ObserverTimeChartSequenceRequest:
     def __post_init__(self):
         if not isinstance(self.chart, ChartRequest):
             raise TypeError("chart must be a ChartRequest.")
+        if self.chart.stellar_report:
+            raise ValueError("Stellar reports currently require a static chart request.")
         if not isinstance(self.timeline, TemporalTimeline):
             raise TypeError("timeline must be a TemporalTimeline.")
         if self.playback is not None:

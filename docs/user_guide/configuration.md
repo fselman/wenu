@@ -304,3 +304,10 @@ The ordinary observer time is the inclusive sequence start. Explicit
 restart arguments override these profile values. See
 [Observer-time chart sequences](temporal_sequences.md) for the complete
 physical-time and verified-resume contract.
+
+## Stellar selectors and reports
+
+See [explicit star labels and discrepancy reports](styles_modes_detail.md#explicit-star-labels-and-discrepancy-reports)
+for CLI/TOML examples and precedence. `[detail.star_labels]` owns selector
+lists; `[reports].stellar_designations` enables optional static-chart notes.
+`[styles.atlas.stars.labels]` and `[styles.cartoon.stars.labels]` own appearance.

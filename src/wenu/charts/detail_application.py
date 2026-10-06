@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import Any, Mapping
 
 import numpy as np
+from wenu.star_designations import StarLabelSelection, resolve_star_labels
 
 from .context import BoundaryKind
 from .detail import ResolvedDetail
@@ -84,15 +85,31 @@ class _LabelFormatter:
     """Value-semantic renderer adapter for curated object labels."""
 
     overrides: tuple[tuple[str, str | None], ...]
+    suppress_missing: bool = False
 
     def __call__(self, value):
-        return dict(self.overrides).get(str(value).casefold(), value)
+        return dict(self.overrides).get(
+            str(value).casefold(), None if self.suppress_missing else value
+        )
+
+
+@dataclass(frozen=True)
+class _RenderOverlay:
+    """Compose presentation options over an existing render callable."""
+
+    base: Any
+    overlay: Mapping
+
+    def __call__(self, spherical, projected):
+        return _merge_mapping(self.base(spherical, projected), self.overlay)
 
 
 def _merge_mapping(base, overlay):
     merged = dict(base)
     for key, value in overlay.items():
-        if (
+        if key == "render" and callable(merged.get(key)) and isinstance(value, Mapping):
+            merged[key] = _RenderOverlay(merged[key], value)
+        elif (
             key in merged
             and isinstance(merged[key], Mapping)
             and isinstance(value, Mapping)
@@ -299,6 +316,23 @@ def apply_resolved_detail(
     del reload_catalogues
 
     label_overrides = {}
+    resolved_star_labels = resolve_star_labels(
+        getattr(detail, "star_labels", StarLabelSelection()),
+        catalogue=getattr(getattr(sky, "stars", None), "designation_catalogue", None),
+        constellations=getattr(detail, "stellar_label_constellations", ()),
+    )
+    if resolved_star_labels.labels:
+        stars = getattr(sky, "stars", None)
+        source = getattr(stars, "source_catalog", None)
+        if source is None:
+            source = getattr(stars, "catalog", None)
+        if source is not None:
+            missing = resolved_star_labels.hip_ids - set(source.index)
+            if missing:
+                raise ValueError(f"Explicit stars absent from Hipparcos: {sorted(missing)}")
+        label_overrides["stars"] = {
+            str(hip): text for hip, text in resolved_star_labels.labels
+        }
     for family, identifier, label in getattr(
         detail, "content_label_overrides", ()
     ):
@@ -348,9 +382,12 @@ def apply_resolved_detail(
             if (
                 detail.constellation_star_mode is not None
                 or selected_stars is not None
+                or detail.extra_star_ids
+                or resolved_star_labels.hip_ids
             ):
                 geometry["include_ids"] = frozenset({
                     *detail.extra_star_ids,
+                    *resolved_star_labels.hip_ids,
                     *(int(value) for value in (selected_stars or ())),
                 })
             if detail.constellation_star_mode is not None:
@@ -391,9 +428,12 @@ def apply_resolved_detail(
             configured["render"] = {
                 **configured.get("render", {}),
                 "label_formatter": _LabelFormatter(
-                    tuple(sorted(overrides.items()))
+                    tuple(sorted(overrides.items())),
+                    suppress_missing=name == "stars",
                 ),
             }
+            if name == "stars":
+                configured["render"]["draw_labels"] = True
         selection = detail.content_selection
         if name == "constellation_lines":
             selected = selection.constellation_lines

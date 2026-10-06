@@ -34,6 +34,36 @@ def _parser():
     )
 
 
+def test_cli_stellar_selectors_replace_only_their_toml_list(monkeypatch, tmp_path):
+    path = tmp_path / "labels.toml"
+    path.write_text("schema_version = 2\n[detail.star_labels]\nnames = ['Sco:Antares']\nbayer = ['And:alpha']\nshow_full_bayer_designation = true\n[reports]\nstellar_designations = true\n")
+    arguments = _parser().parse_args([
+        "--config", str(path), "--star-label-bayer", "Peg:delta",
+        "--star-label-bayer", "Aur:gamma", "--no-stellar-report",
+    ])
+    view = SimpleNamespace(family="regional", configuration=chart_configuration(arguments))
+    calls = []
+    monkeypatch.setattr("wenu.charts.command_line.draw_chart_view", lambda *args, **kw: calls.append(kw))
+    draw_chart_view_from_arguments(view, arguments, stem="map")
+    selected = calls[0]["detail_overrides"].star_labels
+    assert selected.names == ("Sco:Antares",)
+    assert selected.bayer == ("Peg:delta", "Aur:gamma")
+    assert selected.show_full_bayer_designation
+    assert calls[0]["stellar_report"] is False
+
+
+@pytest.mark.parametrize("text", [
+    "[detail.star_labels]\nnames = [123]\n",
+    "[detail.star_labels]\nbayer = ['And:']\n",
+    "[detail.star_labels]\nbayer = ['And:unicorn']\n",
+    "[reports]\nstellar_designations = 'true'\n",
+    "[detail.star_labels]\nshow_full_bayer_designation = 1\n",
+])
+def test_stellar_settings_reject_malformed_inputs(tmp_path, text):
+    with pytest.raises((ConfigurationError, ValueError)):
+        _configuration(tmp_path, text)
+
+
 def test_composition_and_export_use_one_overlay_contract(tmp_path):
     configuration = _configuration(
         tmp_path,

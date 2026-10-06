@@ -16,6 +16,7 @@ from wenu.charts.detail import (
     ResolvedDetail,
 )
 from wenu.charts.style_components import StellarMagnitudeSizing
+from wenu.star_designations import StarLabelSelection
 from wenu.charts.view_defaults import ChartViewDefaults
 
 from .validation import load_packaged_defaults, validate_configuration
@@ -46,6 +47,7 @@ class GeometryDetailDefaults:
     binocular_globular_policy: FixedDetailPolicy
     binocular_other_policy: FixedDetailPolicy
     binocular_stellar_sizing: StellarMagnitudeSizing
+    star_labels: StarLabelSelection = StarLabelSelection()
 
 
 def _optional(value):
@@ -182,6 +184,11 @@ def translate_geometry_detail_defaults(
     }
     sizing = detail["binocular_stellar_sizing"]
     return GeometryDetailDefaults(
+        star_labels=StarLabelSelection(
+            names=tuple(detail["star_labels"]["names"]),
+            bayer=tuple(detail["star_labels"]["bayer"]),
+            show_full_bayer_designation=detail["star_labels"]["show_full_bayer_designation"],
+        ),
         view_defaults=_views(values),
         neutral_detail=_resolved_detail(detail["neutral"]),
         default_content_layers=default_content_layers,

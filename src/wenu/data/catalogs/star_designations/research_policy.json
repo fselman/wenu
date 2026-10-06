@@ -1,0 +1,80 @@
+{
+  "schema": "wenu-stellar-policy/1",
+  "approved_by": "Fernando Selman",
+  "approved_on": "2026-10-06",
+  "status": "Handling policy accepted; individual research questions remain open",
+  "shared_preferences": [
+    {
+      "hip": 677,
+      "kind": "bayer",
+      "designation": "α And",
+      "basis": "WGSN identifier"
+    },
+    {
+      "hip": 12832,
+      "kind": "flamsteed",
+      "designation": "38 Ari",
+      "basis": "Modern cross-index consensus (not WGSN arbitration); existing Wikidata alias only"
+    },
+    {
+      "hip": 12843,
+      "kind": "flamsteed",
+      "designation": "1 Eri",
+      "basis": "Modern cross-index consensus (not WGSN arbitration); existing Wikidata alias only"
+    },
+    {
+      "hip": 25428,
+      "kind": "bayer",
+      "designation": "β Tau",
+      "basis": "WGSN identifier"
+    },
+    {
+      "hip": 27949,
+      "kind": "flamsteed",
+      "designation": "30 Aur",
+      "basis": "Modern cross-index consensus (not WGSN arbitration); existing Wikidata alias only"
+    },
+    {
+      "hip": 63462,
+      "kind": "flamsteed",
+      "designation": "37 Com",
+      "basis": "Modern cross-index consensus (not WGSN arbitration); existing Wikidata alias only"
+    },
+    {
+      "hip": 67627,
+      "kind": "flamsteed",
+      "designation": "10 Dra",
+      "basis": "Modern cross-index consensus (not WGSN arbitration); existing Wikidata alias only"
+    },
+    {
+      "hip": 71974,
+      "kind": "flamsteed",
+      "designation": "4 Lib",
+      "basis": "Modern cross-index consensus (not WGSN arbitration); existing Wikidata alias only"
+    },
+    {
+      "hip": 72571,
+      "kind": "flamsteed",
+      "designation": "58 Hya",
+      "basis": "Modern cross-index consensus (not WGSN arbitration); existing Wikidata alias only"
+    },
+    {
+      "hip": 80463,
+      "kind": "flamsteed",
+      "designation": "24 Her",
+      "basis": "Modern cross-index consensus (not WGSN arbitration); existing Wikidata alias only"
+    },
+    {
+      "hip": 81007,
+      "kind": "flamsteed",
+      "designation": "28 Her",
+      "basis": "Modern cross-index consensus (not WGSN arbitration); existing Wikidata alias only"
+    },
+    {
+      "hip": 82073,
+      "kind": "flamsteed",
+      "designation": "43 Her",
+      "basis": "Modern cross-index consensus (not WGSN arbitration); existing Wikidata alias only"
+    }
+  ]
+}

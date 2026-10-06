@@ -333,6 +333,11 @@ class ChartLegendSelection:
 
 def add_chart_content_arguments(parser):
     """Add shared astronomical-content arguments to ``parser``."""
+    parser.add_argument("--star-label-name", action="append", metavar="IAU:NAME[,NAME]")
+    parser.add_argument("--star-label-bayer", action="append", metavar="IAU:TOKEN[,TOKEN]")
+    parser.add_argument("--show-full-bayer-designation", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--stellar-report", action=argparse.BooleanOptionalAction, default=None,
+                        help="write designation research notes as Markdown and JSON alongside each chart")
     parser.add_argument(
         "--reference-equinox",
         metavar="EQUINOX",

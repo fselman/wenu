@@ -163,3 +163,46 @@ context switches such as `--no-center`, `--no-grid`, `--location`, `--date`,
 and `--local-time`.
 
 Use `python examples/<name>.py --help` for the exact family-specific choices.
+
+## Explicit star labels and discrepancy reports
+
+Only requested stars receive labels. Selected stars bypass the magnitude limit
+but still obey the chart boundary. Exact names are English Wikidata labels or
+aliases; unavailable or ambiguous requests fail rather than guessing.
+
+```bash
+wenu_chart regional \
+  --center-icrs-ra 2.096916deg --center-icrs-dec 29.090431deg \
+  --field-width 25 --field-height 20 \
+  --observer-time 2026-10-16T01:00:00Z \
+  --star-label-bayer Peg:delta --show-full-bayer-designation \
+  --stellar-report --output alpheratz.png
+```
+
+Alpheratz displays `δ Peg` in Pegasus context and `α And` in Andromeda context;
+both contexts use the modern `α And` fallback. A repeated
+`--star-label-name 'Sco:Antares,Shaula'` requests exact names; names take priority
+over Bayer labels for the same HIP. Greek spellings/glyphs and suffixes such as
+`iota1` normalize; Latin-letter case remains significant.
+
+Equivalent optional configuration:
+
+```toml
+schema_version = 2
+
+[detail.star_labels]
+names = []
+bayer = ["Peg:delta"]
+show_full_bayer_designation = true
+
+[reports]
+stellar_designations = true
+```
+
+CLI lists replace their corresponding TOML lists. `--no-stellar-report`
+disables a configured report. Reports are `alpheratz.png.stars.md` and
+`alpheratz.png.stars.json`; they contain only retained stars from the 77-case
+research list, preserving historical and identity cautions and source links.
+Reports work without labels and do not claim general object-interest or
+visibility predictions. Both labels and reports default off. Sequence reports
+and global automatic labels remain later.

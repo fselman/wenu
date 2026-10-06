@@ -19,6 +19,7 @@ class ChartExportResult:
     furniture_rendering: object | None = None
     footer_rendering: object | None = None
     additional_furniture_rendering: object | None = None
+    report_outputs: tuple = ()
 
     def __iter__(self):
         """Preserve established ``rendering, output = export(...)`` use."""

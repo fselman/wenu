@@ -2147,3 +2147,18 @@ remains reserved to `satellites/illumination.py`, and future exact external
 model admission/native-band radiometry remains reserved to
 `satellites/radiometry.py`. `moonlight` remains `not_evaluated`; geometry
 equivalence, runtime, dependencies, APIs, and 50S.7D.4+ remain unauthorized.
+
+## Stellar label and report candidate (2026-10-06)
+
+At base `08690a09`, immutable Wikidata HIP metadata and the 77-case research are
+merged. The next review candidate resolves exact name/Bayer selectors before
+stellar selection, composes local label options with existing sizing/classification
+and curated overrides, and applies contextual shared-star choices under the
+approved policy. Identity and coordinate realization are unchanged.
+
+An optional report consumes retained projected stellar geometry after canonical
+render/export, including the final viewport/boundary, without another coordinate
+or projection pass. It uses a cached HIP research index and emits authored
+comparison notes as Markdown/JSON beside each chart. The source dossier and
+ledger remain frozen. See [audit section 11](stellar_designations_audit.md#11-approved-handling-policy-and-labelreport-candidate-2026-10-06)
+for ownership, context/conflict rules and remaining acceptance gates.

@@ -322,7 +322,10 @@ def compose_chart(
         else resolved_mode
     )
     resolved_detail = apply_detail_overrides(
-        policy.resolve(context, detail_mode),
+        replace(
+            policy.resolve(context, detail_mode),
+            star_labels=geometry_defaults.star_labels,
+        ) if detail is None else policy.resolve(context, detail_mode),
         detail_overrides,
         default_content_layers=(
             geometry_defaults.default_content_layers

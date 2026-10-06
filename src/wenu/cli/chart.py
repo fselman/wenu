@@ -771,7 +771,7 @@ def generate(arguments):
                 arguments,
                 **common_options,
             )
-            return tuple(result.output for result in results)
+            return tuple(path for result in results for path in (result.output, *getattr(result, "report_outputs", ())))
         requests = chart_view_requests_from_arguments(
             view,
             arguments,

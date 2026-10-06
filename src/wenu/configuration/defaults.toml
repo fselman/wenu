@@ -123,6 +123,14 @@ field_diameter = 6.5
 
 # Neutral detail contains no ceilings until a family/product policy supplies
 # them. Optional values use "none".
+[detail.star_labels]
+names = []
+bayer = []
+show_full_bayer_designation = false
+
+[reports]
+stellar_designations = false
+
 [detail.neutral]
 star_magnitude_limit = "none"
 galaxy_magnitude_limit = "none"
@@ -281,6 +289,12 @@ magnitude_scale = 1.5
 magnitude_exponent = 0.35
 minimum_area = 1.0
 maximum_area = "none"
+
+[styles.atlas.stars.labels]
+color = "none"
+font_size = 7.0
+opacity = 1.0
+offset = [0.01, 0.01]
 
 [styles.atlas.stars.variable_symbol]
 enabled = false
@@ -505,6 +519,12 @@ magnitude_scale = 1.5
 magnitude_exponent = 0.35
 minimum_area = 1.0
 maximum_area = "none"
+
+[styles.cartoon.stars.labels]
+color = "none"
+font_size = 7.0
+opacity = 1.0
+offset = [0.01, 0.01]
 
 [styles.cartoon.stars.variable_symbol]
 enabled = false

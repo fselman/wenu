@@ -3033,3 +3033,23 @@ rebuilds them offline. `objects/stars.py` attaches aligned candidate metadata
 before magnitude selection and preserves it in spherical geometry. Pending
 editorial discrepancies live in `docs/developer/data/stellar_designations_review.json`.
 No pipeline topology changes or renderer/CLI ownership transfers are introduced.
+
+## Stellar label and report candidate (2026-10-06)
+
+`star_designations.py` additionally owns exact selector normalization and
+HIP-based text resolution. `stellar_research.py` owns the independent authored
+77-case dossier, digest verification, cached immutable HIP index and accepted
+shared-star policy; its nearest existing owner is designation metadata, not
+astrometry. The packaged resource directory adds research, policy and their
+separate manifest without changing the original snapshot/compiler/ledger.
+
+`charts/detail.py` and `detail_application.py` own selection, curated precedence
+and callable render composition; configuration/CLI owners translate lists and
+booleans. Existing grouped/publication styles and modes own label appearance.
+`charts/stellar_report.py` owns deterministic report data/text and sidecar files;
+its nearest existing owner is request export, but prose/evidence selection is
+independent of request orchestration. `charts/spatial_selection.py` owns final
+projected-point containment. `request_generation.py` supplies constellation
+context and attaches report paths to existing export results. No astrometry,
+projection, renderer or exporter responsibility moves. Tests extend their
+existing nearest files; no new test module or dependency is admitted.

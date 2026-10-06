@@ -24,13 +24,14 @@ by these top-level tables in this exact order:
 6. `masks`
 7. `families`
 8. `detail`
-9. `styles`
-10. `modes`
-11. `grids_references`
-12. `coordinates`
-13. `furniture`
-14. `products`
-15. `export`
+9. `reports`
+10. `styles`
+11. `modes`
+12. `grids_references`
+13. `coordinates`
+14. `furniture`
+15. `products`
+16. `export`
 
 The packaged document is complete. A user document is a partial overlay but
 must still declare `schema_version`. Tables and keys are emitted in the order
@@ -321,3 +322,22 @@ Astropy-readable equinox/date or `of_date`. `of_date` is resolved from the
 declared chart observer time. This value controls reference representation,
 not catalogue position propagation. An explicit `--reference-equinox` command
 value overrides it.
+
+## Stellar selection/report extension (candidate)
+
+`detail.star_labels.names` and `.bayer` are string-list selectors with exact
+`IAU:token[,token]` syntax. `.show_full_bayer_designation` is boolean, default
+false. Lists default empty. Invalid types, unknown constellation abbreviations,
+empty tokens and unsupported Bayer spellings fail validation; absent or
+ambiguous catalogue matches fail during resolution before stellar selection.
+
+The new root `reports` table follows `detail` and precedes `styles`.
+`reports.stellar_designations` is boolean, default false, enabling per-static-
+chart Markdown/JSON discrepancy reports. Sequence requests reject true.
+
+`styles.atlas.stars.labels` and `styles.cartoon.stars.labels` have `color`
+(default `none`, inheriting star colour), `font_size` (number, default 7),
+`opacity` (number in [0,1], default 1), and `offset` (point, default [0.01,0.01]
+in existing projected chart units). Appearance never changes star inclusion.
+A CLI selector replaces only its corresponding TOML list; CLI boolean forms
+including `--no-stellar-report` override the translated TOML values.

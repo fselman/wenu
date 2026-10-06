@@ -111,3 +111,22 @@ Las próximas versiones de esta guía incluirán
 - etiquetas
 - capas personalizadas
 - creación de cartas astronómicas
+
+## Etiquetas estelares e informe de discrepancias
+
+El candidato permite seleccionar nombres exactos con
+`--star-label-name 'Sco:Antares,Shaula'` y designaciones con
+`--star-label-bayer Peg:delta`. `--show-full-bayer-designation` muestra
+`δ Peg` completo. Las estrellas solicitadas superan el límite de magnitud,
+pero respetan los límites geométricos de la carta. Los nombres son etiquetas
+o alias ingleses de Wikidata; una identidad ambigua o ausente produce un error.
+
+`--stellar-report` genera `<archivo de carta>.stars.md` y `.stars.json` con
+las discrepancias de las estrellas de la lista de 77 presentes en la carta.
+Conserva las notas históricas, cautelas y fuentes. Alpheratz usa `δ Peg` en
+contexto de Pegaso, `α And` en Andrómeda y `α And` si se solicitan ambos.
+La configuración equivalente usa `[detail.star_labels]` y
+`[reports].stellar_designations = true`. Ambas funciones están desactivadas
+por defecto; `--no-stellar-report` anula la configuración. El informe de
+secuencias y las etiquetas automáticas globales quedan para otro paso.
+Véase el [ejemplo completo](user_guide/styles_modes_detail.md#explicit-star-labels-and-discrepancy-reports).

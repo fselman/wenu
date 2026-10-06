@@ -135,3 +135,64 @@ def test_offline_rebuild_matches_installed_bytes(tmp_path):
         load_star_designations(tmp_path / "manifest.json").source_sha256
         == load_star_designations().source_sha256
     )
+
+
+@pytest.mark.parametrize("value,expected", [
+    ("alpha", "α"), ("IOTA1", "ι¹"), ("ι¹", "ι¹"),
+    ("i", "i"), ("I", "I"), ("k2", "k²"),
+])
+def test_bayer_normalization_preserves_latin_case_and_suffix(value, expected):
+    from wenu.star_designations import bayer_token
+    assert bayer_token(value) == expected
+
+
+@pytest.mark.parametrize("scopes,expected", [
+    (("Peg",), "δ Peg"), (("And",), "α And"),
+    (("And", "Peg"), "α And"), (("Peg", "And"), "α And"),
+    ((), "α And"),
+])
+def test_shared_star_context_and_conflict_are_order_independent(scopes, expected):
+    from wenu.star_designations import preferred_designation
+    from wenu.stellar_research import load_stellar_research
+    record = load_star_designations().get(677)
+    assert preferred_designation(record, "bayer", scopes, preferred=load_stellar_research().shared_preference(677, "bayer")) == expected
+
+
+def test_explicit_labels_deduplicate_and_names_take_precedence():
+    from wenu.star_designations import StarLabelSelection, resolve_star_labels
+    labels = resolve_star_labels(StarLabelSelection(
+        names=("Sco:Antares,Shaula",), bayer=("Sco:alpha,lambda",),
+    ))
+    assert labels.labels == ((80763, "Antares"), (85927, "Shaula"))
+    assert labels(1) is None
+    full = resolve_star_labels(StarLabelSelection(bayer=("Peg:delta",), show_full_bayer_designation=True))
+    assert full.labels == ((677, "δ Peg"),)
+    conflict = resolve_star_labels(StarLabelSelection(bayer=("Peg:delta", "And:alpha"), show_full_bayer_designation=True))
+    assert conflict.labels == ((677, "α And"),)
+
+
+@pytest.mark.parametrize("selector", ["Sco:unicorn", "Sco:iota", "Sco:beta"])
+def test_unknown_or_ambiguous_bayer_never_selects_arbitrary_hip(selector):
+    from wenu.star_designations import StarLabelSelection, resolve_star_labels
+    with pytest.raises(ValueError, match="stellar bayer|Unknown Greek spelling"):
+        resolve_star_labels(StarLabelSelection(bayer=(selector,)))
+
+
+def test_research_index_is_exact_frozen_dossier_and_does_not_mutate():
+    from wenu.stellar_research import load_stellar_research
+    index = load_stellar_research()
+    root = Path(__file__).parents[1]
+    original = root / "docs/developer/data/stellar_designation_research/wenu-77-case-research.json"
+    assert hashlib.sha256(original.read_bytes()).hexdigest() == index.source_sha256
+    assert len(index.by_hip) == 77 and 677 in index and 1 not in index
+    value = index.get(677)
+    value["research"]["assessment"] = "changed"
+    assert "genuine shared star" in index.get(677)["research"]["assessment"]
+    with pytest.raises(TypeError):
+        index.by_hip[677] = "changed"
+    catalogue = load_star_designations()
+    for (hip, kind), preferred in index.shared_preferences.items():
+        assert preferred in {s.code for s in catalogue.get(hip).candidates(kind)}
+    for hip in (86614, 86620, 95947, 100345):
+        record = catalogue.get(hip)
+        assert record is None or not record.candidates("bayer")

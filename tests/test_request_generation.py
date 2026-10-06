@@ -59,10 +59,72 @@ def _request(tmp_path, *, all_products=False, product_compositions=()):
     )
 
 
+@pytest.mark.parametrize("family", ["regional", "binocular", "all_sky"])
+def test_stellar_report_uses_final_clip_boundary_and_retains_sources(tmp_path, family):
+    import json
+    import numpy as np
+    from wenu import RegionalChart, BinocularChart, AllSkyChart
+    from wenu.geometry.projected import ProjectedPoints
+    from wenu.star_designations import load_star_designations
+    from wenu.charts.stellar_report import write_stellar_report
+    from wenu.charts.chart_legend_workflow import RenderedChartWithLegends
+
+    chart = {
+        "regional": RegionalChart(35, 210, 20, 15),
+        "binocular": BinocularChart(35, 210, 6.5),
+        "all_sky": AllSkyChart(),
+    }[family]
+    context = chart.chart_context
+    layer = type("StarLayer", (), {"layer_name": "stars"})()
+    # Alpheratz is at the centre; Elnath is outside the viewport; an unknown
+    # HIP and a nonfinite point must not acquire research notes.
+    points = ProjectedPoints(
+        x=[0, context.viewport.width * 2, 0, float("nan"), context.viewport.width * (2 if family == "regional" else .49)],
+        y=[0, 0, 0, 0, context.viewport.height * .49], ids=[677, 25428, 1, 95947, 12832],
+        metadata={"star_designations": np.array([
+            load_star_designations().get(hip) for hip in (677, 25428, 1, 95947, 12832)
+        ], dtype=object)},
+    )
+    export = ChartExportResult(
+        rendering=RenderedChartWithLegends(
+            rendering=SimpleNamespace(layers=(SimpleNamespace(layer=layer, projected=points, spherical=points),)),
+            legends=SimpleNamespace(artists=()),
+        ),
+        output=tmp_path / (family + ".png"), composition=SimpleNamespace(context=context),
+        layer_options={layer: {"render": {"draw_labels": False}}}, export_options=None,
+    )
+    md, structured = write_stellar_report(export, title="Synthetic retained-point fixture", constellations=("Peg",))
+    report = json.loads(structured.read_text())
+    assert [entry["hip"] for entry in report["objects"]] == [677]
+    entry = report["objects"][0]
+    assert entry["assignment"] == "δ Peg" and entry["displayed_label"] is None
+    assert entry["research"]["source_values"]["Wikidata"] == ["α And", "δ Peg"]
+    assert "Open question:" in md.read_text() and "e-rara" in md.read_text()
+    before = structured.read_bytes()
+    write_stellar_report(export, title="Synthetic retained-point fixture", constellations=("Peg",))
+    assert structured.read_bytes() == before
+    assert entry["assignment_basis"].startswith("Requested constellation")
+    projected_layer = export.rendering.rendering.layers[0]
+    for hip in (95947, 1):
+        projected_layer.projected = ProjectedPoints(
+            x=[0], y=[0], ids=[hip],
+            metadata={"star_designations": np.array([load_star_designations().get(hip)], dtype=object)},
+        )
+        write_stellar_report(export, title="Missing/zero case", constellations=())
+        report = json.loads(structured.read_text())
+        if hip == 95947:
+            assert report["objects"][0]["assignment"] is None
+            assert "No active Wikidata bayer" in report["objects"][0]["assignment_caution"]
+        else:
+            assert report["objects"] == []
+            assert "No stars from the 77-case" in md.read_text()
+
+
+@pytest.mark.parametrize("mask", [None, ("Peg",), ("And", "Peg")])
 def test_prepared_request_exports_the_shared_product_matrix_once(
-    monkeypatch, tmp_path, _request_realization_context
+    monkeypatch, tmp_path, _request_realization_context, mask
 ):
-    request = _request(tmp_path, all_products=True)
+    request = replace(_request(tmp_path, all_products=True), constellation_mask=mask)
     resolved = resolve_chart_request(
         request, CANONICAL_MAXIMAL_SPHERE_PROFILE
     )
@@ -94,6 +156,7 @@ def test_prepared_request_exports_the_shared_product_matrix_once(
         style_overrides, furniture, reference_policy,
     ):
         assert detail_overrides.content_selection == resolved.request.content
+        assert detail_overrides.stellar_label_constellations == tuple(sorted(mask or ()))
         assert reference_policy is resolved.request.reference_policy
         return SimpleNamespace(
             mode=SimpleNamespace(width_inches=8.0, height_inches=6.0),

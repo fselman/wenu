@@ -8,6 +8,7 @@ from typing import Protocol, runtime_checkable
 
 from .context import ChartContext
 from .modes import ResolvedMode
+from wenu.star_designations import StarLabelSelection, constellation_code
 
 
 COORDINATE_GRID_LAYERS = frozenset(
@@ -188,8 +189,15 @@ class ResolvedDetail:
     content_label_overrides: tuple[
         tuple[str, str, str | None], ...
     ] = ()
+    star_labels: StarLabelSelection = StarLabelSelection()
+    stellar_label_constellations: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
+        if not isinstance(self.star_labels, StarLabelSelection):
+            raise TypeError("star_labels must be StarLabelSelection")
+        object.__setattr__(self, "stellar_label_constellations", tuple(
+            sorted({constellation_code(value) for value in self.stellar_label_constellations})
+        ))
         numeric_names = (
             "star_magnitude_limit",
             "galaxy_magnitude_limit",
@@ -309,8 +317,12 @@ class DetailOverrides:
     extra_star_ids: frozenset[int] | None = None
     content_selection: SkyContentSelection | None = None
     equatorial_declination_step_deg: float | None = None
+    star_labels: StarLabelSelection | None = None
+    stellar_label_constellations: tuple[str, ...] | None = None
 
     def __post_init__(self):
+        if self.star_labels is not None and not isinstance(self.star_labels, StarLabelSelection):
+            raise TypeError("star_labels must be StarLabelSelection or None")
         for name in (
             "enabled_layers",
             "grid_label_layers",
