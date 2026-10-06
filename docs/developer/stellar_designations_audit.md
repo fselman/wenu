@@ -951,3 +951,83 @@ Repeat with `And:alpha` for `α And`, then both selectors for the modern
 conflict fallback. Inspect the PNG, Markdown and JSON and the intended printed
 label sizes before final acceptance. This candidate is delivered for review;
 no merge, release, global label curation or later stellar milestone is implied.
+
+## 12. HIP-identification curation stage (candidate, 2026-10-06)
+
+### Authorization and as-is assessment
+
+Fernando reviewed the full coverage audit before authorizing corrections. He
+approved separate stages: first HIP/Bayer/Flamsteed identity, then optional
+visual simplification for close stars. His Mac had already reported a clean,
+synchronized PR #207 head `8aec34175091b35d5da21e7d275dedf3477e4327`;
+the GitHub connector confirms that exact open, unmerged head as this base.
+No uncommitted Mac changes are imported.
+
+The snapshot contains 3,606 joined records and 167 unjoined declarations
+(166 active). The complete 118,218-HIP audit compared the original source
+bytes, verifying Git blob/SHA-256 identity and reparsing Kostjuk, BSC, HYG 4.4
+and WGSN rather than trusting derived tables. There are 92 Bayer-field and
+134 Flamsteed-field coverage candidates, plus 58 existing-kind variants.
+The strict V < 5.0 selection contains 1,608 HIP entries, 36 Bayer gaps and
+37 Flamsteed gaps across 55 distinct HIPs.
+
+### Authored associations and remaining questions
+
+The separate table contains 158 exact missing-kind associations: 64 Bayer
+and 94 Flamsteed. Each ordinary association has the same code and HIP in
+Kostjuk, BSC and HYG. This is cross-index agreement, not three independent
+physical identifications. The explicit ψ¹ Dra/HIP 86614 entry additionally
+uses indexed BSC/HYG/WGSN agreement while Kostjuk retains the generic system
+label. No runtime majority vote, family-based inheritance or spatial inference
+is used. Existing Wikidata assignments always remain authoritative.
+
+Thirty-two of the 36 bright Bayer gaps and 32 of the 37 bright Flamsteed gaps
+receive associations. Four bright Bayer candidates remain pending:
+G CMi, P Hya, P Cyg and υ¹ Cep. P Cyg requires variable-name classification.
+All 68 uncovered missing-kind candidates and all 58 existing-kind variants
+remain review evidence, with blank `selman` fields in coverage rows.
+Historical southern numeric identifiers are cross-index findings, not claims
+of original Flamsteed authorship or IAU arbitration.
+
+The original Wikidata snapshot, compiler and review ledger, unjoined source
+claims, 77-case dossier and its Selman cells are unchanged. Authored
+associations are separately typed and identified in reports. They do not
+pretend to be new Wikidata claims. Comparison catalogues are not vendored;
+the table records individual factual cross-links and source provenance.
+
+### Three review categories
+
+- **Case 1:** close components that overlap at regional-chart scale. The
+  measured bright subset has 15 HIP entries in 12 groups within about 3.5
+  arcminutes; overlap depends on physical chart scale and marker size.
+- **Case 2:** only one numeric index linked to HIP in the compared sources.
+  There are 14 initial candidates, 11 brighter than V=5. This does not establish
+  that the other indexed star is absent: Wikidata recovers α² Cru, α² Her,
+  γ² Leo, μ² Cyg, τ² Cap and ψ² Cnc; SIMBAD identifies γ¹ Vel without a HIP
+  in the consulted record. Only υ¹ Cep is among the bright Bayer coverage gaps.
+- **Case 3:** three or more distinct indices in a family. The combined source
+  evidence gives 22 families; ζ Lib includes 1–4 in Wikidata and ψ Aur 1–10.
+  β¹/β² Tuc are the bright coverage gaps; β³ Tuc has V=5.07. These categories
+  overlap and do not imply physical binding.
+
+### Architecture and verification contract
+
+Extend the existing designation and report owners; add no production module
+or test file. Raw `candidates()` retain source semantics; effective
+`assignments()` fill only absent kinds with separately typed curation.
+A designation may return several HIPs, including the fully indexed ψ¹ Psc.
+Existing explicit Bayer selectors preserve superscripts and fail on ambiguity.
+No automatic labels, brightest-component choice, superscript suppression,
+spatial merging, new astrometry or new Flamsteed selector is introduced.
+
+Tests extend the existing designation resource/identity fault owner and
+retained-point report seam. They protect snapshot immutability, curation
+digest/snapshot binding, duplicate identities, refusal to overwrite active
+claims, genuine many-to-many lookup, numeric β Sco selectors, named Acrab
+resolution, pending gaps and clipped report inclusion. Pure fault mutations
+must differ from their baseline. Active coordinate-system guidance was
+reviewed; no coordinate contract changed.
+
+Verification results and the exact delivered head will be recorded after
+the focused, documentation/package and full regression gates. Scientific and
+visual Mac acceptance and merging remain separate review steps.

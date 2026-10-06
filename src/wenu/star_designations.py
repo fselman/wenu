@@ -375,11 +375,17 @@ class StarDesignationCatalogue:
     def hips_for_designation(self, code, kind="bayer"):
         """Return every matching HIP; a designation need not identify one star."""
         wanted = designation_parts(code, kind)
-        return frozenset(
-            hip for hip, record in self.by_hip.items()
-            if any(designation_parts(c.code, kind) == wanted
-                   for c in record.assignments(kind))
-        )
+        matches = set()
+        for hip, record in self.by_hip.items():
+            for claim in record.assignments(kind):
+                try:
+                    parts = designation_parts(claim.code, kind)
+                except ValueError:
+                    # Preserve unsupported literal source spellings as evidence.
+                    continue
+                if parts == wanted:
+                    matches.add(hip)
+        return frozenset(matches)
 
 
 def _require(condition, message):

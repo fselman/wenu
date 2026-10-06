@@ -3881,3 +3881,35 @@ already projected/rendered geometry; they never realize coordinates again.
 Sequence reporting, automatic global labels and Flamsteed selectors are outside
 this milestone. `load_stellar_research()` exposes the cached digest-bound
 77-case HIP index and accepted shared preferences, independently of astrometry.
+
+## HIP curation and coverage review (candidate, 2026-10-06)
+
+`load_star_designations()` remains the unchanged Wikidata evidence API.
+`load_effective_star_designations()` adds only authored missing-kind
+associations from the digest-bound curation table.
+`record.candidates(kind)` still returns Wikidata claims;
+`record.assignments(kind)` returns those claims when present and otherwise
+the separately typed `CuratedDesignation` records. Curated associations do
+not acquire Wikidata statement IDs, entity IDs or ranks.
+
+`catalogue.hips_for_designation(code, kind)` returns a frozenset of all
+matching HIPs. The relationship is many-to-many: `8 Sco` resolves to HIP
+78820 and 78821; `β¹ Sco` and `β² Sco` distinguish them. Unsupported literal
+source spellings remain evidence and are not silently normalized into matches.
+Existing name/Bayer selectors use the effective catalogue. Ambiguous matches
+still fail; no brightest-component rule or new Flamsteed CLI is introduced.
+
+`load_stellar_curation()` exposes immutable association records and
+independent per-HIP coverage/variant review notes. It verifies a separate
+manifest and exact original-snapshot binding. The table adds 158 missing-kind
+associations (64 Bayer, 94 Flamsteed), preserves all 226 audited coverage gaps,
+58 variant discrepancies and 167 unjoined source statements. Of the bright
+V < 5 gaps, 32 Bayer and 32 Flamsteed receive cross-index associations.
+Agreement is evidence, not a claim of independent physical verification.
+
+Chart reports include original and effective assignments, authored provenance,
+pending gaps and variants for retained HIPs. The original 77-case dossier
+remains unchanged; existing report fields remain available and additional
+curation fields are additive. Astrometry metadata stays on the raw snapshot.
+Superscripts, geometry, point selection and existing explicit-label magnitude
+bypass are preserved. No automatic labels or spatial merging are added.

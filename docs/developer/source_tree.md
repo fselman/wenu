@@ -3053,3 +3053,15 @@ projected-point containment. `request_generation.py` supplies constellation
 context and attaches report paths to existing export results. No astrometry,
 projection, renderer or exporter responsibility moves. Tests extend their
 existing nearest files; no new test module or dependency is admitted.
+
+## HIP curation ownership (candidate, 2026-10-06)
+
+`star_designations.py` remains the owner of identity metadata, now including
+separately typed curated HIP associations, pure byte admission, raw/effective
+catalogue separation and many-to-many designation lookup. Extending this owner
+preserves its dependency and lifecycle boundary; no new production module is
+introduced. Packaged `curation.json` and `curation_manifest.json` retain
+authored associations and the full pending coverage/variant inventory.
+`charts/stellar_report.py` adds their notes to already retained projected
+points. The source snapshot, compiler, 77-case dossier, astrometry, projection
+and rendering owners remain unchanged.
