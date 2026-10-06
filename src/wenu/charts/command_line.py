@@ -360,6 +360,30 @@ def _chart_view_argument_plans(
         value.selection_key: value for value in minor_body_descriptors
     }
     detail_overrides = chart_detail_overrides(effective_arguments)
+    from dataclasses import replace
+    from wenu.star_designations import StarLabelSelection
+
+    defaults = (
+        StarLabelSelection() if configuration is None
+        else configuration.geometry_detail.star_labels
+    )
+    def selected(field, argument):
+        value = getattr(arguments, argument, None)
+        return getattr(defaults, field) if value is None else tuple(value)
+    full = getattr(arguments, "show_full_bayer_designation", None)
+    labels = StarLabelSelection(
+        names=selected("names", "star_label_name"),
+        bayer=selected("bayer", "star_label_bayer"),
+        show_full_bayer_designation=(defaults.show_full_bayer_designation if full is None else full),
+    )
+    if labels != StarLabelSelection() or any(
+        getattr(arguments, field, None) is not None
+        for field in ("star_label_name", "star_label_bayer", "show_full_bayer_designation")
+    ):
+        detail_overrides = replace(detail_overrides, star_labels=labels)
+    stellar_report = getattr(arguments, "stellar_report", None)
+    if stellar_report is None:
+        stellar_report = False if configuration is None else configuration.stellar_report
     content = chart_content_options(effective_arguments)
     parsed_tracks = chart_track_options(effective_arguments)
     track_requests = tuple(
@@ -427,6 +451,8 @@ def _chart_view_argument_plans(
     else:
         style_overrides = parsed_style
     if sequence:
+        if stellar_report:
+            raise ValueError("stellar reports currently require a static chart; disable --stellar-report for sequences")
         if options.all_products:
             raise ValueError("A chart sequence accepts one chart product.")
         if options.output_format is None:
@@ -454,6 +480,7 @@ def _chart_view_argument_plans(
                     details.get(product.style, detail),
                 ),
                 "detail_overrides": detail_overrides,
+                "stellar_report": stellar_report,
                 "horizon": content.horizon,
                 "horizon_mask": content.horizon_mask,
                 "furniture": furniture,

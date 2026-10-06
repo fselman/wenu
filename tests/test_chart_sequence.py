@@ -28,6 +28,12 @@ from wenu.output_policy import OutputFormat
 from wenu.temporal import PlaybackSpec, TemporalTimeline
 
 
+def test_sequence_rejects_stellar_reports_before_rendering(tmp_path):
+    request = replace(chart_request(tmp_path / "frames"), stellar_report=True)
+    with pytest.raises(ValueError, match="static chart"):
+        ObserverTimeChartSequenceRequest(chart=request, timeline=timeline())
+
+
 def chart_request(output: Path, **product_options):
     return ChartRequest(
         observer=ChartObserverRequest(

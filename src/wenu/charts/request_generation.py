@@ -35,7 +35,7 @@ class ChartRequestGeneration:
     @property
     def outputs(self):
         """Return the deterministic paths written by this request."""
-        return tuple(result.output for result in self.exports)
+        return tuple(path for result in self.exports for path in (result.output, *getattr(result, "report_outputs", ())))
 
 
 @dataclass
@@ -149,6 +149,18 @@ def export_prepared_chart(
         request.detail,
         content_selection=request.content,
     )
+    from wenu.star_designations import constellation_code
+
+    requested_constellations = set(detail.stellar_label_constellations or ())
+    requested_constellations.update(request.constellation_mask or ())
+    if prepared.resolved.constellations is not None:
+        requested_constellations.update(prepared.resolved.constellations.constellations)
+    for values in (request.content.constellation_lines, request.content.constellation_labels, request.content.constellation_boundaries):
+        for value in values or ():
+            if value in {"Ser1", "Ser2", "SerCap", "SerCau"}:
+                value = "Ser"
+            requested_constellations.add(constellation_code(value))
+    detail = replace(detail, stellar_label_constellations=tuple(sorted(requested_constellations)))
     furniture_options = {}
     if observer is not None:
         furniture_options["observer"] = resolved_observer
@@ -220,6 +232,16 @@ def export_prepared_chart(
             )
         finally:
             plt.close(figure)
+        if request.stellar_report:
+            from .stellar_report import write_stellar_report
+            from wenu.star_designations import parse_star_selector
+
+            report_context = set(requested_constellations)
+            for selector in (*composition.detail.star_labels.names, *composition.detail.star_labels.bayer):
+                report_context.add(parse_star_selector(selector)[0])
+            result = replace(result, report_outputs=write_stellar_report(
+                result, title=title, constellations=tuple(sorted(report_context)),
+            ))
         exports.append(result)
     return ChartRequestGeneration(exports=tuple(exports))
 

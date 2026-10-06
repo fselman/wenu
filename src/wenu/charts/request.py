@@ -367,6 +367,7 @@ class ChartRequest:
     constellation_system: str = "western"
     horizon: bool = False
     horizon_mask: bool = False
+    stellar_report: bool = False
     content: SkyContentSelection = SkyContentSelection()
     solar_system_tracks: tuple[SolarSystemTrackRequest, ...] = ()
     satellite_exact_tracks: tuple[SatelliteExactTrackDisplayRequest, ...] = ()
@@ -396,6 +397,8 @@ class ChartRequest:
     minor_body_descriptors: tuple = ()
 
     def __post_init__(self):
+        if not isinstance(self.stellar_report, bool):
+            raise TypeError("stellar_report must be boolean")
         constellation_system = str(self.constellation_system).strip().lower()
         if constellation_system != "western":
             raise ValueError("constellation_system must be 'western'.")

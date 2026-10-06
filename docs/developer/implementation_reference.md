@@ -3849,3 +3849,35 @@ array and scalar snapshot edition/digest. Coordinates and magnitudes remain
 Hipparcos data; chart defaults do not activate designation labels. The accepted
 name/Bayer CLI/TOML options are not yet implemented. See the
 [resource checkpoint](stellar_designations_audit.md#10-wikidata-resource-checkpoint-2026-10-06).
+
+## Explicit stellar labels and optional reports (candidate)
+
+```python
+from wenu.star_designations import StarLabelSelection, resolve_star_labels
+from wenu.charts.detail import DetailOverrides
+
+selection = StarLabelSelection(
+    bayer=("Peg:delta",), show_full_bayer_designation=True,
+)
+overrides = DetailOverrides(star_labels=selection)
+resolved = resolve_star_labels(selection, constellations=("Peg",))
+assert resolved(677) == "δ Peg"
+```
+
+`ResolvedDetail.star_labels` defaults empty; its
+`stellar_label_constellations` carries explicit IAU context. Normal composition
+and the CLI translate these through existing detail application; selected HIPs
+bypass magnitude limits but remain subject to geometry clipping. Exact English
+Wikidata names/aliases can be requested; ambiguous/unavailable selectors fail.
+This API does not declare all aliases official proper names.
+
+`ChartRequest.stellar_report` defaults false. Ordinary static
+`chart_view_request(..., stellar_report=True)` requests reports per exported
+product. `ChartExportResult.report_outputs` holds the Markdown and JSON paths;
+existing two-value unpacking is unchanged. `ChartRequestGeneration.outputs`
+includes chart and report paths. Reports are named `<chart filename>.stars.md`
+and `<chart filename>.stars.json`, including the chart extension. They consume
+already projected/rendered geometry; they never realize coordinates again.
+Sequence reporting, automatic global labels and Flamsteed selectors are outside
+this milestone. `load_stellar_research()` exposes the cached digest-bound
+77-case HIP index and accepted shared preferences, independently of astrometry.

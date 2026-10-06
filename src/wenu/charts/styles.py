@@ -136,6 +136,10 @@ class PublicationStyle:
     sky_color: str = "midnightblue"
     foreground_color: str = "white"
     star_color: str = "white"
+    star_label_color: str | None = None
+    star_label_fontsize: float = 7.0
+    star_label_alpha: float = 1.0
+    star_label_offset: tuple[float, float] = (0.01, 0.01)
     draw_bright_star_symbols: bool = False
     bright_star_magnitude_limit: float = 0.18
     bright_star_color: str | None = None
@@ -1030,6 +1034,13 @@ class PublicationStyle:
                 "zorder": layers.STARS,
             },
             "point_overlays": overlays,
+            "label_style": {
+                "color": self.star_color if self.star_label_color is None else self.star_label_color,
+                "fontsize": self.star_label_fontsize,
+                "alpha": self.star_label_alpha,
+                "zorder": layers.STARS + 0.1,
+            },
+            "label_offset": self.star_label_offset,
         }
 
     def _grid_options(self, layer, *, minimum=None):

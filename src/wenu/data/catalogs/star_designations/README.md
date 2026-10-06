@@ -56,6 +56,17 @@ proper names. Future decisions need an explicit separate curation layer.
 and the snapshot edition/digest. Hipparcos remains the position/magnitude
 provider. Missing designations yield `None`, not a guessed match.
 
-This stage does not activate labels or add CLI/TOML options. The accepted
-`--star-label-name`, `--star-label-bayer` and
-`--show-full-bayer-designation` remain the next implementation milestone.
+## Accepted policy and report resources
+
+The label/report candidate activates explicit name/Bayer selectors and optional
+reports; see developer audit section 11. `research.json` is byte-identical to
+the authored 77-case dossier merged in PR #206. `research_policy.json` records
+Fernando’s accepted handling policy and twelve explicit shared-star preferences.
+`research_manifest.json` binds both by SHA-256 and records their origin/base.
+This separate manifest does not alter the original Wikidata snapshot, compiler,
+review ledger or its digest. New research loading verifies those two resources
+once and exposes an immutable HIP index; report callers receive independent
+records. The compiler continues to rebuild only the frozen Wikidata resources.
+The research is authored commentary and comparison evidence, not installation
+of another astrometric catalogue. Source links and publication cautions remain
+in each case. Missing Wikidata assignments remain missing.

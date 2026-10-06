@@ -13,12 +13,280 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from types import MappingProxyType
+from functools import lru_cache
 
 from wenu.resources import star_designations_manifest_path
 
 _RANKS = frozenset(("NormalRank", "PreferredRank", "DeprecatedRank"))
 
+_CONSTELLATIONS = {
+    value.casefold(): value
+    for value in (
+        "And Ant Aps Aqr Aql Ara Ari Aur Boo Cae Cam Cnc CVn CMa CMi Cap Car "
+        "Cas Cen Cep Cet Cha Cir Col Com CrA CrB Crt Cru Crv Cyg Del Dor Dra "
+        "Equ Eri For Gem Gru Her Hor Hya Hyi Ind Lac Leo LMi Lep Lib Lup Lyn "
+        "Lyr Men Mic Mon Mus Nor Oct Oph Ori Pav Peg Per Phe Pic Psc PsA Pup "
+        "Pyx Ret Sge Sgr Sco Scl Sct Ser Sex Tau Tel Tri TrA Tuc UMa UMi Vel "
+        "Vir Vol Vul"
+    ).split()
+}
+_GREEK = dict(
+    zip(
+        "alpha beta gamma delta epsilon zeta eta theta iota kappa lambda mu nu "
+        "xi omicron pi rho sigma tau upsilon phi chi psi omega".split(),
+        "αβγδεζηθικλμνξοπρστυφχψω",
+    )
+)
+_DIGITS = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹", "0123456789")
+_SUPERSCRIPTS = str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹")
 
+
+def constellation_code(value):
+    """Normalize an explicit IAU abbreviation, never infer membership."""
+    try:
+        return _CONSTELLATIONS[value.strip().casefold()]
+    except (KeyError, AttributeError) as error:
+        raise ValueError(f"Unknown constellation: {value!r}") from error
+
+
+def bayer_token(value):
+    """Normalize Greek spellings/superscripts while preserving Latin case."""
+    token = value.strip().translate(_DIGITS)
+    match = re.fullmatch(r"([A-Za-z]+|[α-ω])([0-9]*)", token)
+    if match is None:
+        raise ValueError(f"Invalid Bayer token: {value!r}")
+    letter, suffix = match.groups()
+    if len(letter) > 1:
+        try:
+            letter = _GREEK[letter.casefold()]
+        except KeyError as error:
+            raise ValueError(f"Unknown Greek spelling: {letter!r}") from error
+    return letter + suffix.translate(_SUPERSCRIPTS)
+
+
+def designation_parts(code, kind="bayer"):
+    """Read supported source tokens; retain component suffixes separately."""
+    parts = code.split()
+    if len(parts) not in (2, 3):
+        raise ValueError(f"Unsupported designation: {code!r}")
+    token = bayer_token(parts[0]) if kind == "bayer" else parts[0]
+    if kind == "flamsteed" and not token.isdecimal():
+        raise ValueError(f"Invalid Flamsteed number: {code!r}")
+    if len(parts) == 3 and not re.fullmatch(r"[A-Z]+", parts[2]):
+        raise ValueError(f"Unsupported component suffix: {code!r}")
+    return token, constellation_code(parts[1]), tuple(parts[2:])
+
+
+@dataclass(frozen=True)
+class StarLabelSelection:
+    """Explicit source-backed name/Bayer targets; no automatic labels."""
+
+    names: tuple[str, ...] = ()
+    bayer: tuple[str, ...] = ()
+    show_full_bayer_designation: bool = False
+
+    def __post_init__(self):
+        for field in ("names", "bayer"):
+            values = getattr(self, field)
+            if isinstance(values, str):
+                raise TypeError(f"{field} must be a sequence of selectors")
+            values = tuple(values)
+            for value in values:
+                _, tokens = parse_star_selector(value)
+                if field == "bayer":
+                    for token in tokens:
+                        bayer_token(token)
+            object.__setattr__(self, field, values)
+        if not isinstance(self.show_full_bayer_designation, bool):
+            raise TypeError("show_full_bayer_designation must be boolean")
+
+
+def parse_star_selector(value):
+    if not isinstance(value, str) or value.count(":") != 1:
+        raise ValueError("Star selector must be 'IAU:token,token'")
+    scope, tokens = value.split(":")
+    scope = constellation_code(scope)
+    tokens = tuple(token.strip() for token in tokens.split(","))
+    if not tokens or any(not token for token in tokens):
+        raise ValueError("Star selector contains an empty token")
+    return scope, tokens
+
+
+@dataclass(frozen=True)
+class ResolvedStarLabels:
+    """HIP identity and requested text, independent of rendered geometry."""
+
+    labels: tuple[tuple[int, str], ...] = ()
+
+    @property
+    def hip_ids(self):
+        return frozenset(hip for hip, _ in self.labels)
+
+    def __call__(self, hip):
+        return dict(self.labels).get(int(hip))
+
+
+@lru_cache(maxsize=1)
+def packaged_star_designations():
+    """Reuse the immutable packaged catalogue for explicit resolution."""
+    return load_star_designations()
+
+
+def preferred_designation(record, kind, constellations=(), *, preferred=None):
+    """Choose an existing Wikidata claim using approved shared-star policy.
+
+    Same-constellation ambiguity never silently selects the first record.
+    A unique PreferredRank claim may resolve an otherwise tied source set.
+    """
+    claims = record.candidates(kind)
+    codes = sorted({claim.code for claim in claims})
+    if not codes:
+        return None
+    if len(codes) == 1:
+        return codes[0]
+    scopes = {constellation_code(value) for value in constellations}
+    matched = [
+        code for code in codes if designation_parts(code, kind)[1] in scopes
+    ]
+    if preferred is not None:
+        # Only reviewed shared cases receive context-dependent selection.
+        if len(matched) == 1:
+            return matched[0]
+        if preferred not in codes:
+            raise ValueError("Shared-star preference is absent from Wikidata")
+        return preferred
+    ranked = {claim.code for claim in claims if claim.rank == "PreferredRank"}
+    if len(ranked) == 1:
+        return next(iter(ranked))
+    raise ValueError(
+        f"Ambiguous Wikidata {kind} assignments for HIP {record.hip}: {codes}"
+    )
+
+
+def resolve_star_labels(selection, *, catalogue=None, constellations=()):
+    """Resolve exact identifiers before magnitude selection, deduplicating HIP.
+
+    Names are explicitly requested exact Wikidata English labels/aliases;
+    this does not promote every alias to an official proper name.
+    """
+    if not isinstance(selection, StarLabelSelection):
+        raise TypeError("selection must be StarLabelSelection")
+    if not selection.names and not selection.bayer:
+        return ResolvedStarLabels()
+    catalogue = (
+        packaged_star_designations() if catalogue is None else catalogue
+    )
+    from wenu.stellar_research import load_stellar_research
+
+    research = load_stellar_research()
+    contexts = set(constellations)
+    for selector in (*selection.names, *selection.bayer):
+        contexts.add(parse_star_selector(selector)[0])
+    bayer_index, name_index = {}, {}
+    for hip, record in catalogue.by_hip.items():
+        scopes = set()
+        for statement in record.statements:
+            if statement.rank == "DeprecatedRank":
+                continue
+            try:
+                token, scope, component = designation_parts(
+                    statement.code, statement.kind
+                )
+            except ValueError:
+                continue
+            scopes.add(scope)
+            if statement.kind == "bayer":
+                bayer_index.setdefault((scope, token), set()).add(hip)
+        for name in record.names:
+            if name.language == "en":
+                for scope in scopes:
+                    name_index.setdefault(
+                        (scope, name.value.casefold()), set()
+                    ).add((hip, name.value))
+    labels = {}
+    for kind, selectors in (
+        ("bayer", selection.bayer),
+        ("name", selection.names),
+    ):
+        for selector in selectors:
+            scope, tokens = parse_star_selector(selector)
+            for token in tokens:
+                matches = (
+                    bayer_index.get((scope, bayer_token(token)), set())
+                    if kind == "bayer"
+                    else {
+                        hip
+                        for hip, _ in name_index.get(
+                            (scope, token.casefold()), set()
+                        )
+                    }
+                )
+                if len(matches) != 1:
+                    adjective = (
+                        "Unknown or unavailable"
+                        if not matches
+                        else "Ambiguous"
+                    )
+                    raise ValueError(
+                        f"{adjective} stellar {kind}: {scope}:{token}; HIP matches {sorted(matches)}"
+                    )
+                hip = next(iter(matches))
+                if kind == "name":
+                    spellings = {
+                        name
+                        for match, name in name_index[
+                            (scope, token.casefold())
+                        ]
+                        if match == hip
+                    }
+                    if len(spellings) != 1:
+                        raise ValueError(
+                            f"Ambiguous source spelling for {scope}:{token}"
+                        )
+                    text = next(iter(spellings))
+                else:
+                    record = catalogue.get(hip)
+                    shared = research.shared_preference(hip, "bayer")
+                    if shared is not None:
+                        code = preferred_designation(
+                            record, "bayer", contexts, preferred=shared
+                        )
+                    else:
+                        codes = {
+                            s.code
+                            for s in record.candidates("bayer")
+                            if designation_parts(s.code)[0:2]
+                            == (bayer_token(token), scope)
+                        }
+                        if len(codes) != 1:
+                            raise ValueError(
+                                f"Ambiguous component scope for {scope}:{token}"
+                            )
+                        code = next(iter(codes))
+                    letter, constellation, component = designation_parts(code)
+                    text = " ".join(
+                        (
+                            letter,
+                            *(
+                                (constellation,)
+                                if selection.show_full_bayer_designation
+                                else ()
+                            ),
+                            *component,
+                        )
+                    )
+                if (
+                    hip in labels
+                    and labels[hip][0] == kind
+                    and labels[hip][1] != text
+                ):
+                    raise ValueError(
+                        f"Conflicting explicit {kind} labels for HIP {hip}"
+                    )
+                labels[hip] = (kind, text)
+    return ResolvedStarLabels(
+        tuple(sorted((hip, text) for hip, (_, text) in labels.items()))
+    )
 @dataclass(frozen=True)
 class HipLink:
     statement_id: str

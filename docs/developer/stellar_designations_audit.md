@@ -3,8 +3,10 @@
 **Status:** Design accepted by Fernando on 2026-10-05, including the amended
 selection contract; design merged in PR #204. The expanded source comparison
 is recorded in PR #205 together with catalogue incorporation. The Wikidata candidate
-resource and HIP attachment are implemented on 2026-10-06 (section 10); labels, CLI/TOML
-and scientific curation remain pending.
+resource and HIP attachment were merged in PR #205 (section 10). Fernando approved
+the 77-case handling policy after reviewing PR #206; explicit labels, CLI/TOML
+and optional chart reports are implemented as a review candidate (section 11).
+Scientific questions remain open without blocking this milestone.
 **Date:** 2026-10-05
 **Exact as-is base:** `b929325aeb51fad75193d4216f0e5f8e383fa7ae` on
 clean synchronized `main`, as reported by Fernando.
@@ -794,3 +796,158 @@ new catalogue failures or silently fixed in this milestone. The cached official
 JPL DE440s dependency was populated deliberately for regression, with SHA-256
 `c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`;
 no kernel or dependency change is included in the repository diff.
+
+## 11. Approved handling policy and label/report candidate (2026-10-06)
+
+**As-is base:** clean synchronized `main` at
+`08690a096789fbc55fdf3c8bb573aba367715d2a`, following the Mac fast-forward
+reported by Fernando. GitHub main and all 898 tracked blobs in the isolated
+validation copy were verified before editing. PR #205 supplies immutable
+Wikidata candidates; PR #206 supplies the individual 77-case dossier. Neither
+activates label selection or chart reports. Existing stellar geometry,
+classification overlays, callable sizing, generic point labels and export
+owners were inspected before implementation.
+
+Fernando reviewed the dossier and approved these decisions: use Wikidata
+for other discrepancies; report each relevant case in a chart containing that
+star; choose a shared star's designation in the requested constellation;
+resolve conflicting constellation context using the modern preferred label.
+This supersedes the runtime stop implied by earlier pending-review wording.
+The original ledger, blank Selman cells and dossier remain frozen evidence;
+they are not 77 outstanding implementation approvals. No scientific claim,
+component identity or original source value is silently rewritten.
+
+WGSN means the IAU Working Group on Star Names. Its catalogue identifies
+Alpheratz as `α And` and Elnath as `β Tau`; these resolve conflicts for the two
+shared Bayer cases. WGSN does not arbitrate all historical Flamsteed duplicates.
+For the ten shared Flamsteed cases, the explicit fallback is the modern
+cross-index consensus already present as a Wikidata alias, not an invented IAU
+ruling. The twelve exact preferences and their bases are recorded in
+`src/wenu/data/catalogs/star_designations/research_policy.json`.
+
+### Implemented contract
+
+- `StarLabelSelection` carries exact `IAU:name[,name]` and
+  `IAU:Bayer[,Bayer]` lists plus optional full Bayer text. Greek spelling,
+  glyph and numeric suffix normalize; Latin case and physical component
+  suffixes remain distinct. Names are explicitly requested English Wikidata
+  labels/aliases, not a complete catalogue of official proper names.
+- Resolve against immutable HIP candidates before magnitude selection.
+  Selected HIPs bypass that limit, but field, altitude, projection and final
+  boundary clipping still apply. Unknown, unavailable and ambiguous matches
+  fail clearly; no fuzzy, positional or arbitrary-first resolution occurs.
+  Four missing Bayer assignments (HIP 86614, 86620, 95947, 100345) remain
+  missing and are explained in reports, without comparison-catalogue backfill.
+- Shared-star context is the union of subject/content/mask constellations and
+  selector prefixes. Exactly one matching constellation wins. Both or neither
+  invokes the explicit modern preference, independent of argument order.
+  Explicit names win over Bayer labels; curated HIP overrides/suppression
+  retain higher priority. Unrequested stars never fall back to HIP labels.
+- `--star-label-name`, `--star-label-bayer`,
+  `--show-full-bayer-designation` and `[detail.star_labels]` share the same
+  owner. Repeated CLI lists replace the corresponding TOML list only.
+  Boolean positive/negative CLI forms override TOML. Stellar label colour,
+  font size, opacity and offset belong to `[styles.atlas.stars.labels]` and
+  `[styles.cartoon.stars.labels]`; modes scale only appearance.
+- `--stellar-report` / `[reports].stellar_designations = true` writes
+  `<chart filename>.stars.md` and `.stars.json` beside each static output.
+  Defaults leave labels/reports off. Sequence requests reject reports in this
+  bounded milestone. The report uses already projected retained star points,
+  the final viewport and sampled clip boundary, including canonical legend
+  wrappers; it performs no second astrometry/projection evaluation. Visual
+  masks remain overlays, not additional catalogue or visibility selections.
+- HIP membership is a cached dictionary lookup. Each report preserves all
+  source values, classification, assessment, open question, confidence,
+  evidence locators, links and publication caution, plus policy/research
+  digests, displayed label and chosen or missing/ambiguous assignment.
+  This is a discrepancy report, not a complete interesting-object report.
+
+### Module and test admission
+
+`star_designations.py` remains the nearest owner for exact designation
+resolution. New `stellar_research.py` owns digest-bound authored research and
+accepted policy separately from catalogue ingestion. New
+`charts/stellar_report.py` owns deterministic report selection/text beside the
+existing request/export owners; adding prose generation to request orchestration
+would mix responsibilities. Existing `spatial_selection.py` owns final-point
+containment. No facade, dependency, astrometric provider or catalogue row is
+added. Both new modules have independent bounded contracts; no new test file
+is needed. Resolver/resource tests extend `test_star_designations.py`, render
+precedence/isolation extends `test_render_isolation.py`, report clipping and
+legend-wrapper tests extend `test_request_generation.py`, and strict CLI/TOML
+checks extend existing configuration tests.
+
+The current architecture, source map, implementation reference, schema and
+roadmap were reviewed and updated. The coordinate guide remains current:
+identity, frame, origin, epoch/equinox, time scale and observer semantics are
+unchanged. Existing canonical architecture/coordinate diagrams still describe
+the same pipeline; no topology change requires regeneration.
+
+Mac scientific, print and visual acceptance and merge remain separate review
+steps. Global automatic labels, Flamsteed selectors, collision optimization,
+name coverage expansion, variable/multiple curation and Gaia remain later.
+
+### Candidate verification and Mac review
+
+The final plugin-disabled full suite reports **2962 passed, 4 failed** in
+209.03 seconds. The four failures were independently reproduced against the
+exact main executable/resource source tree (3.42 seconds):
+
+- `test_satellite_crossing_batch.py::test_inaccessible_or_uncertain_centre_fails_closed`
+  — pre-existing airmass failure wording;
+- `test_satellite_planning_advisories.py::test_offline_validation_tool_writes_positive_zero_and_manifest`
+  — pre-existing offline-validator subprocess failure in this environment;
+- `test_satellite_topocentric.py::test_field_center_altitude_uses_governed_gcrs_axis_rotation`
+  — pre-existing zenith precision/tolerance mismatch;
+- `test_svg_output.py::test_semantic_label_group_inherits_common_font_style`
+  — pre-existing SVG font-style representation expectation.
+
+No stellar/configuration/request regression remains. Focused policy,
+configuration, render-isolation, report-geometry, sequence and documentation
+gates pass; Ruff F checks on the domain/report/detail owners pass. The original
+ledger, dossier and Wikidata snapshot/manifest are unchanged. The existing
+DE440s cache was restored externally from the same verified dependency
+(SHA-256 `c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`);
+no dependency or ephemeris policy was added.
+
+Real PNG/PDF/SVG specimens cover regional, binocular, all-sky and ordinary
+planisphere exports, atlas/cartoon styles, celestial-north and zenith
+orientations and literal rotation. Exact SVG text preserves `α And`,
+`γ Aur` and `ι¹ Sco`; PDF text preserves Antares/Shaula. Those three named/
+suffix stars need not be in the 77-case list: reporting is independent of
+which labels are requested. Alpheratz contexts/conflicts and Elnath contexts
+produce the expected labels and source notes. A below-horizon Elnath field
+produces no entry. TOML conflict fallback, appearance, explicit negative CLI
+report override and all four product/report pairs pass. A labels/reports-off
+PNG is pixel-identical to the exact main baseline. All generated specimens
+remain external to the repository.
+
+The tested non-README `src/` blob manifest (sorted `path git-blob-sha` lines,
+with a final newline) has SHA-256 `6ed9b665ae952a99b9fa86c49da385be45e254c499e13b8255d5b552a3696566`.
+The uploaded executable/resources must match this tested manifest; final
+verification prose changes no executable bytes.
+
+Mac review starts on the dedicated candidate branch (use the branch named in
+the PR). From the repository root:
+
+```bash
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=src python -m pytest -q \
+  tests/test_star_designations.py tests/test_render_isolation.py \
+  tests/test_request_generation.py tests/test_chart_sequence.py \
+  tests/test_packaged_configuration.py \
+  tests/test_configuration_user_overlay_activation.py
+
+wenu_chart regional \
+  --center-icrs-ra 2.096916deg --center-icrs-dec 29.090431deg \
+  --field-width 25 --field-height 20 \
+  --observer-time 2026-10-16T01:00:00Z \
+  --magnitude-limit 1 --star-label-bayer Peg:delta \
+  --show-full-bayer-designation --stellar-report \
+  --output /tmp/wenu-stellar-review/alpheratz.png
+```
+
+Check `δ Peg`, the single HIP 677 entry and both historical source designations.
+Repeat with `And:alpha` for `α And`, then both selectors for the modern
+conflict fallback. Inspect the PNG, Markdown and JSON and the intended printed
+label sizes before final acceptance. This candidate is delivered for review;
+no merge, release, global label curation or later stellar milestone is implied.

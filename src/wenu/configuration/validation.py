@@ -78,6 +78,8 @@ _OPTIONAL_POINTS = frozenset({"grids_references.references.anchor"})
 _STRING_LISTS = frozenset(
     {
         "detail.neutral.grid_label_layers",
+        "detail.star_labels.names",
+        "detail.star_labels.bayer",
         "detail.polar_planisphere.enabled_layers",
     }
 )
@@ -94,6 +96,8 @@ _POINTS = frozenset(
     {
         "modes.cartoon.label_offset",
         "modes.cartoon.clearance",
+        "styles.atlas.stars.labels.offset",
+        "styles.cartoon.stars.labels.offset",
     }
 )
 _POSITIVE_NAMES = frozenset(

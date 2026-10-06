@@ -20,7 +20,7 @@ candidate-status statements in the historical milestone sections.
 
 | Order | Work | Next reviewable outcome |
 |---:|---|---|
-| 1 | Bayer/Flamsteed stellar designations | Bounded as-is catalogue and label audit, then implementation using existing stellar metadata, detail/style and rendering machinery. Wikidata candidate resource and HIP metadata attachment implemented, with integration authorized; next implement explicit name/Bayer resolution, detail/CLI/TOML and labels, with pending discrepancies decided by Fernando. |
+| 1 | Bayer/Flamsteed stellar designations | Bounded as-is catalogue and label audit, then implementation using existing stellar metadata, detail/style and rendering machinery. Wikidata candidate resource and HIP metadata attachment implemented, with integration authorized; explicit name/Bayer resolution, detail/CLI/TOML, labels and optional 77-case chart reports are now a review candidate under Fernando’s approved handling policy; next verify on the Mac and review the candidate. |
 | 2 | Minor-body completion (50A) | Complete automatic asteroid names and unnumbered/provisional selections (bounded audits required) → 50A.5D.3 reports → 50A.5E.0 database audit → 50A.5E.1 construction → 50A.5E.2 runtime policy → 50A.5E.3 cache lifecycle → 50A.6 final acceptance. |
 | 3 | Atlas output curation and publication (50B) | Select representative atlas products, review publication/print practice (50B.0), adopt output standards (50B.1), measure specimens (50B.2), implement monochrome/grayscale profiles (50B.3), accept physical prints (50B.4), and close evidence/docs (50B.5). |
 | 4 | Satellite resumption (50S) | Reopen the paused 50S.7D.3 Phase B preflight at its exact accepted boundary; later complete 50S.6I and the remaining illumination, brightness, detector and closure stages. |
@@ -40,9 +40,11 @@ candidate resource and metadata attachment are now implemented, with integration
 PR #205 includes the expanded source comparison and resource incorporation. Fernando chose Wikidata
 structured data (CC0) as the resource; Kostjuk, Yale BSC, HYG and IAU/WGSN remain
 comparison evidence, with no silent backfill. The 77 HIP/field discrepancies
-remain pending Fernando in the review ledger. Labels/aliases are candidates,
+retain their original pending cells in the frozen ledger, while Fernando’s
+approved handling policy unblocks development (audit section 11). Labels/aliases are candidates,
 not preferred proper names; limited name-query coverage and component identities
-still need curation. Explicit label selection and CLI/TOML are next. No Gaia
+still need curation. Explicit label selection, CLI/TOML and optional discrepancy
+reports are implemented for review; Mac acceptance is next. No Gaia
 runtime is added. This resource milestone does not close the stellar programme.
 
 ### Minor-body pause and resumption

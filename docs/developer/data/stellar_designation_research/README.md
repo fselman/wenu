@@ -36,3 +36,12 @@ to accepted catalogue decisions.
 | wenu-77-case-dossier.html | `d21536da1402bd83d3bb79824845a65d3ba536379ffc70131521590173245dfb` |
 | wenu-77-case-dossier.pdf | `c2d762fea965e0ea96df5396e6bfbe109ab67e6d63251cefc553fed71b3aae46` |
 | wenu-77-case-research.json | `5899a12c54f5a9842ec9692ab66dd395d8f61b695cbd63c63ca02b0695c9c3aa` |
+
+## Accepted handling policy
+
+After reviewing this dossier, Fernando approved contextual shared-star labels,
+Wikidata for other assignments and optional discrepancy reports for stars in
+each chart. [Audit section 11](../../stellar_designations_audit.md#11-approved-handling-policy-and-labelreport-candidate-2026-10-06)
+records the implementation candidate. These original research artifacts remain
+unchanged; unresolved historical questions and blank review cells are preserved
+as evidence rather than blocking development.

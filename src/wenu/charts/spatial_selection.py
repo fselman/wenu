@@ -20,6 +20,26 @@ FIELD_CATALOGUE_LAYERS = {
 }
 
 
+def projected_points_in_chart(points, context):
+    """Test already projected point centres against the export clip region.
+
+    This uses the same viewport and sampled boundary supplied to the renderer;
+    it performs no astronomical realization or projection.
+    """
+    visible = points.finite & np.asarray(
+        context.viewport.contains(points.x, points.y), dtype=bool
+    )
+    boundary = context.clip_boundary
+    if boundary is not None:
+        from matplotlib.path import Path
+
+        vertices = np.column_stack((boundary.x[boundary.finite], boundary.y[boundary.finite]))
+        visible &= Path(vertices).contains_points(
+            np.column_stack((points.x, points.y)), radius=1e-12
+        )
+    return visible
+
+
 def _visible_identifiers(sky, chart, layer, observer):
     centers = getattr(layer, "spherical_centers", None)
     geometry = (

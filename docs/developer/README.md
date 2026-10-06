@@ -30,8 +30,9 @@ migrations, milestone evidence, and superseded roadmaps are under
   — accepted design amended for explicit name/Bayer selection beyond the
   magnitude limit, CLI/TOML parity and future curation boundaries.
   A Wikidata candidate snapshot and HIP metadata attachment
-  are implemented; explicit labels/CLI/TOML and scientific curation remain
-  pending. Gaia stays later.
+  are merged; explicit labels/CLI/TOML and optional chart reports are a review
+  candidate under the [approved handling policy](stellar_designations_audit.md#11-approved-handling-policy-and-labelreport-candidate-2026-10-06).
+  Scientific curation and Gaia stay later.
   The expanded comparison measures licensing, coverage, identity discrepancies
   and quality for Kostjuk, Yale BSC, current HYG 4.4, IAU/WGSN and Wikidata.
   PR #205 includes the source comparison and catalogue incorporation. See the [resource checkpoint](stellar_designations_audit.md#10-wikidata-resource-checkpoint-2026-10-06)
@@ -39,7 +40,8 @@ migrations, milestone evidence, and superseded roadmaps are under
   and [machine-readable ledger](data/stellar_designations_review.json).
   The [individual investigation of all 77 cases](data/stellar_designation_research/README.md)
   retains historical context, identity and component cautions, sources, and
-  candidates for future optional chart reports; all Selman decisions remain pending.
+  evidence for optional chart reports. Fernando approved the handling policy;
+  the original blank Selman cells remain historical evidence, not blockers.
 
 **2026-10-05 checkpoint:** Both development branches are merged into clean
 `main` at `91f78412` and have been deleted; both programs remain incomplete.

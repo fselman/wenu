@@ -2305,3 +2305,17 @@ accepted uncertainty policy. Only a separately reviewed case/convention
 preflight may proceed next; do not run a geometry comparison or LIME,
 change production code or admit Moonlight without separate authorization.
 PR 195 merge and cleanup remain separate decisions.
+
+## Stellar handling-policy implementation checkpoint (2026-10-06)
+
+Fernando reviewed the merged 77-case dossier at synchronized `main` `08690a09`
+and approved Wikidata for other assignments, contextual shared-star labels,
+modern preferred conflict fallback and optional discrepancy reports for stars
+in each chart. He authorized the next label/CLI/TOML/report milestone. Earlier
+pending-review language does not require 77 individual decisions before
+implementation. Preserve the original dossier, blank Selman columns and
+compiler-bound ledger as historical evidence; the separate digest-bound policy
+records accepted runtime handling. WGSN identifies the two shared Bayer
+fallbacks; do not describe the ten modern cross-index Flamsteed fallbacks as
+IAU rulings. Audit section 11 is the current milestone contract. Deliver a
+verified dedicated branch/PR; Mac acceptance and merge remain separate.

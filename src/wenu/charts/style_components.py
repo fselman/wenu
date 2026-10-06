@@ -81,6 +81,10 @@ class StellarStyle:
     multiple_symbol_size: float = 28.0
     multiple_linewidth: float = 0.7
     multiple_alpha: float = 0.95
+    label_color: str | None = None
+    label_fontsize: float = 7.0
+    label_alpha: float = 1.0
+    label_offset: tuple[float, float] = (0.01, 0.01)
 
 
 @dataclass(frozen=True)
@@ -319,6 +323,10 @@ class ChartStyle:
             foreground_color=canvas.foreground_color,
             title_color=canvas.title_color,
             star_color=stars.color,
+            star_label_color=stars.label_color,
+            star_label_fontsize=stars.label_fontsize,
+            star_label_alpha=stars.label_alpha,
+            star_label_offset=stars.label_offset,
             draw_bright_star_symbols=stars.draw_bright_symbols,
             bright_star_magnitude_limit=stars.bright_magnitude_limit,
             bright_star_color=stars.bright_color,

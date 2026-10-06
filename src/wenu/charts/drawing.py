@@ -142,6 +142,7 @@ def chart_view_request(
     solar_system_disk_sequence=None,
     minor_body_resource_directory=None,
     minor_body_descriptors=(),
+    stellar_report=False,
 ):
     """Translate one prepared view and product into an immutable request."""
     if not isinstance(view, ChartView):
@@ -246,6 +247,7 @@ def chart_view_request(
             mode=product.mode,
         ),
         detail=overrides,
+        stellar_report=stellar_report,
         content=(
             _empty_sky_content() if frozen else (
                 view._prepared.resolved.request.content

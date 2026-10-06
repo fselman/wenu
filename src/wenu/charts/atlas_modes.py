@@ -92,6 +92,7 @@ def atlas_chart_style(
     )
     stars = replace(
         style.stars,
+        label_fontsize=style.stars.label_fontsize * font_scale,
         color=palette.stars,
         area_scale=style.stars.area_scale * symbol_scale,
         variable_color=palette.stars,

@@ -1,0 +1,7 @@
+{
+  "schema": "wenu-stellar-research-manifest/1",
+  "research_sha256": "5899a12c54f5a9842ec9692ab66dd395d8f61b695cbd63c63ca02b0695c9c3aa",
+  "policy_sha256": "ba386c2a7dc85de434f2aff781cff4e4c46af2c770c22150f9bab80205a0a59a",
+  "research_source": "docs/developer/data/stellar_designation_research/wenu-77-case-research.json",
+  "baseline_commit": "08690a096789fbc55fdf3c8bb573aba367715d2a"
+}

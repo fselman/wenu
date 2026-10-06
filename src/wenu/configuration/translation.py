@@ -36,6 +36,7 @@ class ConfigurationDefaults:
     moving_object_data_policy: str = "acquire-if-missing"
     constellation_system: str = "western"
     constellation_masks: Any = None
+    stellar_report: bool = False
 
 
 def translate_configuration_defaults(
@@ -48,6 +49,7 @@ def translate_configuration_defaults(
         "minor_body_resource_directory"
     ]
     return ConfigurationDefaults(
+        stellar_report=values["reports"]["stellar_designations"],
         style_mode=translate_style_mode_defaults(values),
         geometry_detail=translate_geometry_detail_defaults(values),
         furniture_product_export=(

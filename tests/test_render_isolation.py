@@ -77,6 +77,38 @@ def snapshot(sky):
     )
 
 
+def test_explicit_stellar_labels_compose_with_sizing_overlays_and_callsite_options():
+    import numpy as np
+    from wenu.star_designations import StarLabelSelection
+    from wenu.charts.detail import DetailOverrides
+
+    sky = fake_sky()
+    before = snapshot(sky)
+    chart = regional_chart()
+    source = SimpleNamespace(metadata={
+        "magnitude": np.array([2.0, 1.0]),
+        "is_multiple": np.array([True, False]),
+        "is_variable": np.array([False, False]),
+    })
+    first = compose_chart(chart, style="atlas", detail_overrides=DetailOverrides(
+        star_magnitude_limit=0.0,
+        star_labels=StarLabelSelection(bayer=("Peg:delta",), show_full_bayer_designation=True),
+    ))
+    options = first.layer_options(sky).layer_options[sky.stars]
+    assert options["geometry"]["include_ids"] == {677}
+    render = options["render"](source, source)
+    assert render["draw_labels"] and render["label_formatter"](677) == "δ Peg"
+    assert render["label_formatter"](999) is None
+    assert "s" in render["style"] and "point_overlays" in render
+    overridden = first.layer_options(sky, overrides={sky.stars: {"render": {"label_style": {"fontsize": 19}, "draw_labels": False}}}).layer_options[sky.stars]["render"](source, source)
+    assert overridden["label_style"]["fontsize"] == 19
+    assert not overridden["draw_labels"] and "s" in overridden["style"]
+    second = compose_chart(chart, style="atlas").layer_options(sky).layer_options[sky.stars]
+    assert "include_ids" not in second["geometry"]
+    assert not second["render"](source, source).get("draw_labels", False)
+    assert snapshot(sky) == before
+
+
 def test_print_presentation_print_does_not_change_sky_state():
     sky = fake_sky()
     before = snapshot(sky)
