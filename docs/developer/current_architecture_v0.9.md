@@ -2173,3 +2173,8 @@ Coordinate realization and point metadata remain on the original Hipparcos
 and Wikidata sources. Numerical superscripts identify catalogue components;
 they neither assert physical multiplicity nor trigger spatial merging.
 Case 1 visual simplification is deferred to the separate presentation stage.
+
+
+## Constellation publication checkpoint
+
+Publication controls remain in existing content, stellar-object, style, detail-application, renderer and product/export owners. The IAU-region cut uses native ICRS catalogue membership; physical gaps and optional automatic label placement operate only in display coordinates after layout. No scientific position-realization change, new dependency, production module or test module is admitted.

@@ -50,6 +50,8 @@ class ProductDefaults:
     language: str
     title: str | None
     extension: str
+    axes_frame: bool = True
+    show_title: bool = True
 
 
 @dataclass(frozen=True)
@@ -230,6 +232,8 @@ def translate_furniture_product_export_defaults(
             language=product["language"],
             title=_optional(product["title"]),
             extension=product["extension"],
+            axes_frame=product["axes_frame"],
+            show_title=product["show_title"],
         ),
         export_options=ExportOptions(
             dpi=export["dpi"],

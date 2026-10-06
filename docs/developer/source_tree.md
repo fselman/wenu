@@ -3069,3 +3069,8 @@ and rendering owners remain unchanged.
 `charts/detail_application.py` adapts the layer's raw catalogue to the
 effective identity view only for nonempty explicit labels. It keeps the
 persistent layer catalogue and astrometric metadata unchanged.
+
+
+## Constellation publication checkpoint
+
+The stellar-region cut extends `objects/stars.py` and `charts/detail.py`. `charts/detail_application.py` supplies generic endpoint clearances to `rendering/matplotlib.py`; `charts/export_workflow.py` finalizes layout before save. Existing style, product, request and configuration translation owners carry the controls. Existing renderer, isolation, CLI, product and configuration-overlay tests cover them. No new module or test-file owners are admitted.

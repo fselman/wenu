@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 from importlib.resources import as_file
+
+import astropy.units as u
+from astropy.coordinates import SkyCoord
 from io import BytesIO
 
 import numpy as np
@@ -165,6 +168,7 @@ class Stars(AstronomicalObject):
             self.designation_catalogue.get(int(hip)) for hip in source.index
         ]
 
+        self._constellation_membership = None
         self.source_catalog = source.copy()
         magnitude_mask = (
             source["magnitude"] <= self.magnitude_limit
@@ -312,6 +316,7 @@ class Stars(AstronomicalObject):
         magnitude_limit=None,
         include_ids=None,
         include_constellation_vertices=None,
+        constellations=None,
     ) -> SphericalPoints:
         """Return observer-dependent stellar positions as spherical points."""
         resolved_observer = self.observer if observer is None else observer
@@ -324,6 +329,7 @@ class Stars(AstronomicalObject):
                     magnitude_limit,
                     include_ids,
                     include_constellation_vertices,
+                    constellations,
                 )
             ):
                 raise RuntimeError(
@@ -337,6 +343,7 @@ class Stars(AstronomicalObject):
             selected = self.hip_df
         else:
             catalog = self._render_catalog(
+                constellations=constellations,
                 magnitude_limit=magnitude_limit,
                 include_ids=include_ids,
                 include_constellation_vertices=(
@@ -413,6 +420,7 @@ class Stars(AstronomicalObject):
         magnitude_limit=None,
         include_ids=None,
         include_constellation_vertices=None,
+        constellations=None,
     ):
         """Return one render's stellar selection without changing the layer."""
         if getattr(self, "source_catalog", None) is None:
@@ -423,6 +431,7 @@ class Stars(AstronomicalObject):
             magnitude_limit is None
             and include_ids is None
             and include_constellation_vertices is None
+            and constellations is None
         ):
             return self.catalog
         limit = (
@@ -445,6 +454,23 @@ class Stars(AstronomicalObject):
         keep |= source.index.isin(identifiers)
         if include_vertices:
             keep |= source["is_constellation_vertex"]
+        if constellations is not None:
+            from wenu.star_designations import constellation_code
+
+            names = frozenset(constellation_code(value) for value in constellations)
+            membership = getattr(self, "_constellation_membership", None)
+            if membership is None:
+                ra = source["ra_degrees"].to_numpy(dtype=float)
+                dec = source["dec_degrees"].to_numpy(dtype=float)
+                valid = np.isfinite(ra) & np.isfinite(dec)
+                membership = np.full(len(source), "", dtype=object)
+                membership[valid] = SkyCoord(
+                    ra=ra[valid] * u.deg, dec=dec[valid] * u.deg, frame="icrs",
+                ).get_constellation(short_name=True)
+                membership.setflags(write=False)
+                self._constellation_membership = membership
+            # The spatial cut is final, including explicit labels and vertices.
+            keep &= np.isin(membership, tuple(names))
         return source[keep].copy()
 
     def _catalog_altaz(self, catalog, observer, alt_min):

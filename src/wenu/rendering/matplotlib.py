@@ -38,6 +38,9 @@ class MatplotlibRenderer:
         self.ax = ax
         self._clip_patch = None
         self._viewport = None
+        self._point_obstacles = []
+        self._auto_labels = []
+        self._gapped_lines = []
 
     def set_axes_frame_visible(self, visible):
         """Show or hide the rectangular Matplotlib axes frame."""
@@ -534,6 +537,26 @@ class MatplotlibRenderer:
     ):
         finite = points.finite
         artists = []
+        label_style = dict(label_style)
+        placement = label_style.pop("placement", "fixed")
+        if placement not in {"fixed", "auto"}:
+            raise ValueError("point label placement must be fixed or auto")
+        if draw_markers:
+            areas = np.broadcast_to(np.asarray(style.get("s", 1.0)), (len(points),)).copy()
+            for index, entity_style in enumerate(self._entity_styles(styles, len(points))):
+                areas[index] = entity_style.get("s", areas[index])
+            for overlay in point_overlays or ():
+                if "mask" not in overlay:
+                    raise ValueError("Each point overlay must provide a mask.")
+                overlay_mask = np.asarray(overlay["mask"], dtype=bool)
+                if overlay_mask.shape != (len(points),):
+                    raise ValueError("Point overlay masks must match the point collection.")
+                overlay_areas = np.broadcast_to(np.asarray(overlay.get("style", {}).get("s", 1.0)), (len(points),))
+                areas = np.maximum(areas, np.where(overlay_mask, overlay_areas, 0.0))
+            self._point_obstacles.extend(
+                (float(points.x[index]), float(points.y[index]), float(np.sqrt(areas[index]) / 2.0))
+                for index in np.flatnonzero(finite)
+            )
         if draw_markers:
             if styles is None:
                 if np.any(finite):
@@ -615,6 +638,8 @@ class MatplotlibRenderer:
                         {**inherited, **label_style},
                         label_offset,
                     )
+                    if placement == "auto":
+                        self._auto_labels.append((label_artist, float(points.x[index]), float(points.y[index])))
                     self._attach_semantic_entity(
                         (label_artist,), points.metadata, index
                     )
@@ -631,9 +656,18 @@ class MatplotlibRenderer:
         label_offset,
         label_formatter,
     ):
+        style = dict(style)
+        original_curve = curve
+        clearances = style.pop("endpoint_clearance_points", None)
+        if clearances is not None:
+            curve = self._trim_curve_endpoints(curve, clearances)
+            if curve is None:
+                return []
         if not np.any(curve.finite):
             return []
         artists = [render_curve(self.ax, curve, **style)]
+        if clearances is not None:
+            self._gapped_lines.append((artists[0], original_curve, tuple(clearances)))
         label = curve.name
         if label is not None and label_formatter is not None:
             label = label_formatter(label)
@@ -1088,6 +1122,93 @@ class MatplotlibRenderer:
                 alpha=face_alpha,
             )
         return result
+
+    def _trim_curve_endpoints(self, curve, clearances):
+        """Trim visible graphical endpoints in physical points, never sky angles."""
+        clearances = np.asarray(clearances, dtype=float)
+        if clearances.shape != (2,) or np.any(~np.isfinite(clearances)) or np.any(clearances < 0.0):
+            raise ValueError("endpoint clearances must be two finite nonnegative point distances")
+        if curve.closed or not np.all(curve.finite) or len(curve.x) < 2:
+            return curve
+        xy = self.ax.transData.transform(np.column_stack((curve.x, curve.y)))
+        obstacles = self.ax.transData.transform([(x, y) for x, y, _ in self._point_obstacles]) if self._point_obstacles else np.empty((0, 2))
+        # A cap/viewport intersection is not a stellar endpoint; do not trim it.
+        for index, endpoint in enumerate((xy[0], xy[-1])):
+            if not len(obstacles) or np.min(np.linalg.norm(obstacles - endpoint, axis=1)) > 1e-4:
+                clearances[index] = 0.0
+        lengths = np.linalg.norm(np.diff(xy, axis=0), axis=1)
+        distance = np.concatenate(([0.0], np.cumsum(lengths)))
+        start, end = clearances * self.ax.figure.dpi / 72.0
+        finish = distance[-1] - end
+        if start >= finish:
+            return None
+        retained = (distance > start) & (distance < finish)
+        anchors = np.column_stack((np.interp([start, finish], distance, xy[:, 0]),
+                                   np.interp([start, finish], distance, xy[:, 1])))
+        result = self.ax.transData.inverted().transform(np.vstack((anchors[0], xy[retained], anchors[1])))
+        return ProjectedCurve(result[:, 0], result[:, 1], closed=curve.closed, name=curve.name)
+
+    def finalize_graphics(self):
+        """Resolve physical gaps and label positions after aspect/layout settles."""
+        if not self._gapped_lines and not self._auto_labels:
+            return
+        self.ax.figure.canvas.draw()
+        for line, curve, clearances in self._gapped_lines:
+            shortened = self._trim_curve_endpoints(curve, clearances)
+            if shortened is None:
+                line.set_visible(False)
+            else:
+                line.set_data(shortened.x, shortened.y)
+        self.finalize_label_placement()
+
+    def finalize_label_placement(self):
+        """Place opt-in point labels using final axes size and existing artists."""
+        if not self._auto_labels:
+            return
+        from matplotlib.transforms import Bbox
+
+        renderer = self.ax.figure.canvas.get_renderer()
+        pixels_per_point = self.ax.figure.dpi / 72.0
+        obstacles = [(self.ax.transData.transform((x, y)), radius * pixels_per_point)
+                     for x, y, radius in self._point_obstacles]
+        auto_artists = {artist for artist, _, _ in self._auto_labels}
+        occupied = [artist.get_window_extent(renderer) for artist in self.ax.texts
+                    if artist not in auto_artists and artist.get_visible() and artist.get_text()]
+        paths = [line.get_path().transformed(line.get_transform()) for line in self.ax.lines]
+        bounds = self.ax.get_window_extent(renderer)
+        def overlap(first, second):
+            return max(0.0, min(first.x1, second.x1) - max(first.x0, second.x0)) * max(0.0, min(first.y1, second.y1) - max(first.y0, second.y0))
+        def radius_at(x, y):
+            anchor = self.ax.transData.transform((x, y))
+            return max((radius for centre, radius in obstacles if np.linalg.norm(centre-anchor) < 1e-4), default=0.0)
+        # Bright, large symbols get first choice; ties retain catalogue order.
+        labels = sorted(self._auto_labels, key=lambda item: -radius_at(item[1], item[2]))
+        for artist, x, y in labels:
+            anchor = self.ax.transData.transform((x, y))
+            clearance = radius_at(x, y) + 2.0 * pixels_per_point
+            width, height = artist.get_window_extent(renderer).size
+            candidates = []
+            for extra in (0.0, 4.0 * pixels_per_point, 8.0 * pixels_per_point):
+                for dx, dy in ((1, 1), (-1, 1), (1, -1), (-1, -1), (1, 0), (-1, 0), (0, 1), (0, -1)):
+                    distance = clearance + extra
+                    origin = anchor + np.asarray((dx, dy)) * distance
+                    left = origin[0] - (width if dx < 0 else width / 2.0 if dx == 0 else 0.0)
+                    bottom = origin[1] - (height if dy < 0 else height / 2.0 if dy == 0 else 0.0)
+                    box = Bbox.from_bounds(left, bottom, width, height)
+                    padded = box.expanded(1.05, 1.10)
+                    score = 100.0 * sum(overlap(padded, other) for other in occupied)
+                    score += 1000.0 * (box.width * box.height - overlap(box, bounds))
+                    score += 2.0 * sum(path.intersects_bbox(padded, filled=False) for path in paths)
+                    for centre, radius in obstacles:
+                        marker_box = Bbox.from_bounds(centre[0]-radius-1, centre[1]-radius-1, 2*radius+2, 2*radius+2)
+                        score += 100.0 * overlap(padded, marker_box)
+                    score += extra * 0.01
+                    candidates.append((score, box))
+            _, selected = min(candidates, key=lambda item: item[0])
+            artist.set_ha("left")
+            artist.set_va("bottom")
+            artist.set_position(self.ax.transData.inverted().transform((selected.x0, selected.y0)))
+            occupied.append(selected.expanded(1.05, 1.10))
 
     def _label(self, x, y, label, style, offset):
         style = dict(style)

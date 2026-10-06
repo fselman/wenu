@@ -48,6 +48,7 @@ class GeometryDetailDefaults:
     binocular_other_policy: FixedDetailPolicy
     binocular_stellar_sizing: StellarMagnitudeSizing
     star_labels: StarLabelSelection = StarLabelSelection()
+    star_constellations: frozenset[str] | None = None
 
 
 def _optional(value):
@@ -184,6 +185,7 @@ def translate_geometry_detail_defaults(
     }
     sizing = detail["binocular_stellar_sizing"]
     return GeometryDetailDefaults(
+        star_constellations=(frozenset(content["star_constellations"]) if content["star_constellations"] else None),
         star_labels=StarLabelSelection(
             names=tuple(detail["star_labels"]["names"]),
             bayer=tuple(detail["star_labels"]["bayer"]),

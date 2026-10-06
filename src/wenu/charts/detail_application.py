@@ -382,6 +382,8 @@ def apply_resolved_detail(
         geometry = {}
         if name == "stars":
             selected_stars = detail.content_selection.stars
+            if detail.content_selection.star_constellations is not None:
+                geometry["constellations"] = detail.content_selection.star_constellations
             if detail.star_magnitude_limit is not None:
                 geometry["magnitude_limit"] = float(
                     detail.star_magnitude_limit
@@ -534,6 +536,38 @@ def composition_layer_options(
             base,
             {"stars": {"render": render_stars}},
         )
+    gap = getattr(getattr(composition.style, "grids", None), "constellation_line_gap_points", 0.0)
+    if gap > 0.0 and getattr(sky, "constellation_lines", None) is not None:
+        source = sky.stars._render_catalog(
+            magnitude_limit=composition.detail.star_magnitude_limit,
+            include_ids=frozenset(int(value) for value in composition.detail.content_selection.stars or ()) | composition.detail.extra_star_ids | resolve_star_labels(
+                composition.detail.star_labels,
+                catalogue=load_effective_star_designations(sky.stars.designation_catalogue),
+                constellations=composition.detail.stellar_label_constellations,
+            ).hip_ids,
+            include_constellation_vertices=(composition.detail.constellation_star_mode != "none"),
+            constellations=composition.detail.content_selection.star_constellations,
+        )
+        ordinary, highlighted, _ = configured_stellar_symbol_sizes(
+            source["magnitude"].to_numpy(), stars,
+            limiting_magnitude=composition.detail.star_magnitude_limit,
+        )
+        radii = dict(zip(source.index, np.sqrt(np.maximum(ordinary, highlighted)) / 2.0))
+        original = base.get(sky.constellation_lines, {}).get("render", {})
+
+        def render_gapped_lines(spherical, projected):
+            options = dict(original(spherical, projected) if callable(original) else original)
+            edges = projected.metadata.get("hip_edges", ())
+            options["styles"] = [
+                {"endpoint_clearance_points": tuple(
+                    float(radii[hip]) + gap if hip in radii else 0.0 for hip in edge
+                )} for edge in edges
+            ]
+            return options
+
+        base = merge_sky_layer_options(sky, base, {
+            "constellation_lines": {"render": render_gapped_lines},
+        })
     tracks = tuple(
         layer for layer in sky.layers
         if getattr(layer, "layer_name", None) == "solar_system_track"

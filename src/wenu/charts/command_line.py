@@ -481,6 +481,9 @@ def _chart_view_argument_plans(
                 ),
                 "detail_overrides": detail_overrides,
                 "stellar_report": stellar_report,
+                "transparent": options.transparent,
+                "axes_frame": options.axes_frame,
+                "show_title": options.show_title,
                 "horizon": content.horizon,
                 "horizon_mask": content.horizon_mask,
                 "furniture": furniture,
@@ -491,7 +494,14 @@ def _chart_view_argument_plans(
                 "reference_policy": chart_reference_policy(
                     arguments, default=configured_policy
                 ),
-                "content": chart_sky_content(effective_arguments),
+                "content": replace(
+                    chart_sky_content(effective_arguments),
+                    star_constellations=(
+                        configuration.geometry_detail.star_constellations
+                        if getattr(arguments, "stars_in_constellations", None) is None and configuration is not None
+                        else chart_sky_content(effective_arguments).star_constellations
+                    ),
+                ),
                 "minor_body_resource_directory": resource_directory,
                 "minor_body_descriptors": minor_body_descriptors,
                 "solar_system_tracks": track_requests,

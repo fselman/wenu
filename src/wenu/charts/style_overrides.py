@@ -27,8 +27,12 @@ class ChartStyleOverrides:
     stellar_magnitude_sizing: StellarMagnitudeSizing | None = None
     sky_color: str | None = None
     equatorial_reference_linewidth: float | None = None
+    constellation_line_gap_points: float | None = None
+    star_label_placement: str | None = None
 
     def __post_init__(self):
+        if self.star_label_placement not in {None, "fixed", "auto"}:
+            raise ValueError("star_label_placement must be fixed or auto")
         if self.constellation_label_offsets is not None:
             offsets = {}
             for label, value in self.constellation_label_offsets.items():
@@ -57,6 +61,7 @@ class ChartStyleOverrides:
             )
         for name in (
             "constellation_linewidth",
+            "constellation_line_gap_points",
             "boundary_linewidth",
             "equatorial_reference_linewidth",
             "ecliptic_linewidth",
@@ -86,6 +91,7 @@ class ChartStyleOverrides:
             name: getattr(self, name)
             for name in (
                 "constellation_linewidth",
+                "constellation_line_gap_points",
                 "constellation_line_color",
                 "constellation_label_color",
                 "constellation_label_offsets",
@@ -101,6 +107,10 @@ class ChartStyleOverrides:
         resolved = style if not changes else replace(
             style, grids=replace(grids, **changes)
         )
+        if self.star_label_placement is not None:
+            resolved = replace(resolved, stars=replace(
+                resolved.stars, label_placement=self.star_label_placement,
+            ))
         if self.sky_color is not None:
             canvas = getattr(resolved, "canvas", None)
             if canvas is None:

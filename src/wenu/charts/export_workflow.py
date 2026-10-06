@@ -183,6 +183,9 @@ def export_composed_chart(
             composition=composition,
             rendering=rendering,
         )
+    finalize_labels = getattr(renderer, "finalize_graphics", None)
+    if callable(finalize_labels):
+        finalize_labels()
     from wenu.chart_document import (
         assign_canvas_semantics,
         assign_furniture_semantics,
@@ -201,6 +204,8 @@ def export_composed_chart(
     )
     if svg_provenance is not None:
         options = replace(options, svg_provenance=svg_provenance)
+    if not getattr(renderer, "axes_frame_visible", True):
+        renderer.set_axes_frame_visible(False)
     output = options.save(figure, path)
     return ChartExportResult(
         rendering=rendering,

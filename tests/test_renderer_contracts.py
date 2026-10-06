@@ -1,3 +1,4 @@
+import pytest
 """Milestone 13 tests for the generic projected-geometry renderer."""
 
 import inspect
@@ -266,3 +267,49 @@ def test_unknown_geometry_is_rejected():
         raise AssertionError("Expected TypeError")
     finally:
         plt.close(figure)
+
+
+@pytest.mark.parametrize("dpi", [100, 300])
+def test_curve_endpoint_clearance_is_physical_and_does_not_trim_clipped_ends(dpi):
+    fig, ax = plt.subplots(figsize=(4, 2), dpi=dpi)
+    ax.set_xlim(0, 10); ax.set_ylim(-1, 1)
+    renderer = MatplotlibRenderer(ax)
+    renderer.draw(ProjectedPoints([0, 10], [0, 0]), style={"s": [16, 64]})
+    curve = ProjectedCurve([0, 4, 10], [0, 0, 0])
+    line = renderer.draw(curve, style={"endpoint_clearance_points": (3, 5)})[0]
+    original = ax.transData.transform([[0, 0], [10, 0]])
+    rendered = ax.transData.transform(np.column_stack(line.get_data()))
+    np.testing.assert_allclose(rendered[0]-original[0], [3*dpi/72, 0], atol=1e-9)
+    np.testing.assert_allclose(original[1]-rendered[-1], [5*dpi/72, 0], atol=1e-9)
+    np.testing.assert_array_equal(curve.x, [0, 4, 10])
+    clipped = renderer.draw(ProjectedCurve([2, 10], [0, 0]),
+                            style={"endpoint_clearance_points": (3, 5)})[0]
+    assert clipped.get_xdata()[0] == pytest.approx(2)
+    with pytest.raises(ValueError, match="clearances"):
+        renderer.draw(curve, style={"endpoint_clearance_points": (-1, 0)})
+    assert renderer.draw(curve, style={"endpoint_clearance_points": (10000, 10000)}) == []
+    plt.close(fig)
+
+
+def test_auto_point_labels_avoid_neighbouring_symbols_and_labels_without_background():
+    fig, ax = plt.subplots(figsize=(3, 3), dpi=100)
+    ax.set_xlim(-1, 1); ax.set_ylim(-1, 1)
+    renderer = MatplotlibRenderer(ax)
+    points = ProjectedPoints([0, 0.025, 0.08], [0, 0.025, 0.08], labels=["Antares", "σ", "τ"])
+    renderer.draw(points, style={"s": [100, 16, 16]}, draw_labels=True,
+                  label_style={"fontsize": 9, "placement": "auto"})
+    renderer.draw(ProjectedCurve([-1, 1], [-0.2, 0.2]), style={"linewidth": 1})
+    renderer.finalize_label_placement()
+    backend = fig.canvas.get_renderer()
+    boxes = [text.get_window_extent(backend) for text in ax.texts]
+    assert all(not first.overlaps(second) for index, first in enumerate(boxes) for second in boxes[index+1:])
+    for text, box in zip(ax.texts, boxes):
+        assert text.get_bbox_patch() is None
+        for x, y, radius in renderer._point_obstacles:
+            centre = ax.transData.transform((x,y))
+            assert not box.contains(*centre)
+    before = [text.get_position() for text in ax.texts]
+    renderer.finalize_label_placement()
+    np.testing.assert_allclose([text.get_position() for text in ax.texts], before)
+    np.testing.assert_array_equal(points.x, [0, .025, .08])
+    plt.close(fig)

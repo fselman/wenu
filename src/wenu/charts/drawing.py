@@ -143,6 +143,9 @@ def chart_view_request(
     minor_body_resource_directory=None,
     minor_body_descriptors=(),
     stellar_report=False,
+    transparent=None,
+    axes_frame=None,
+    show_title=None,
 ):
     """Translate one prepared view and product into an immutable request."""
     if not isinstance(view, ChartView):
@@ -245,6 +248,9 @@ def chart_view_request(
             output=destination,
             style=product.style,
             mode=product.mode,
+            transparent=transparent,
+            axes_frame=defaults.axes_frame if axes_frame is None else axes_frame,
+            show_title=defaults.show_title if show_title is None else show_title,
         ),
         detail=overrides,
         stellar_report=stellar_report,

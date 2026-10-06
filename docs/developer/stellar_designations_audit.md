@@ -1081,3 +1081,28 @@ is unchanged by the later readable-review and evidence-only commits.
 The comparison environment uses Python 3.12, Astropy 7.2.2 and Matplotlib
 3.11.2; Fernando's Mac environment remains the independent acceptance gate.
 The new PR is stacked on PR #207's branch, not merged into main.
+
+
+## Constellation publication checkpoint
+
+PRs #207 and #208 were merged after Fernando's clean Mac check of exact #208 head (316 focused tests passed) and visual confirmation. Main is `a39bd4a217e0f340913fe03989e3ba99c45180ff`; the preceding stacked-PR wording records the earlier review state. The next authorized stage adds an optional final IAU-region cut, physical gaps beyond stellar disks, opt-in placement of explicit labels, and transparent export without axes frame or title. Greek-only labels retain superscripts. HIP/Bayer/Flamsteed associations, source snapshots, compiler and dossier are unchanged. Sco–Lib specimens check alpha, black ink without white halos, endpoint clearance and label overlap. Mac visual acceptance remains pending.
+
+Publication validation evidence:
+
+- Initial focused gate: 385 passed; updated documentation/package gate: 256
+  passed. After restoring overlay-mask validation order, the expanded focused
+  gate has 404 passes and one intermittent FullSky legend failure. The same
+  gate on unchanged merged main has 397 passes and that same failure: exact
+  viewport comparison is sensitive to a last-bit circular-boundary difference.
+- A default Sco–Lib render is pixel-identical to merged main (1,677 × 1,925).
+- The narrow-column specimen is approximately 75.44 mm wide, with 17 requested
+  labels and zero label-overlap pairs. All 50 drawn line endpoints match the
+  requested disk radius plus one point to within 3e-14 points. PNG alpha and
+  PDF raster verification confirm transparent background and black ink only.
+  SVG, PDF and PNG all render successfully.
+- The four known full-suite failures were independently reproduced on merged
+  main: satellite centre certification wording, offline planning subprocess,
+  zenith rounding and SVG common-font inheritance. Changed-line whitespace
+  checks pass; Ruff F findings in touched files match the existing base.
+- No new production/test file, dependency or catalogue change is included.
+  Mac print and visual acceptance remain pending.

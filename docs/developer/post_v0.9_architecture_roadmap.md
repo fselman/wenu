@@ -3846,3 +3846,8 @@ are review categories, not automatic physical or rendering rules.
 Visual superscript removal, automatic grouping/labels and Flamsteed CLI
 selection remain outside this stage. Mac scientific/visual acceptance and
 both PR merges are separate decisions.
+
+
+## Constellation publication checkpoint
+
+Reviewed Alpheratz (#207) and HIP curation (#208) are merged into main at `a39bd4a217e0f340913fe03989e3ba99c45180ff`. The next separately reviewed stage adds optional IAU-region stellar filtering, physical line gaps, opt-in label placement and transparent furniture-free export for book figures. HIP associations and numerical superscripts are unchanged. Mac visual acceptance remains required before merging this stage. Existing minor-body priorities are unchanged.
