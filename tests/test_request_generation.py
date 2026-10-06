@@ -113,8 +113,12 @@ def test_stellar_report_uses_final_clip_boundary_and_retains_sources(tmp_path, f
         write_stellar_report(export, title="Missing/zero case", constellations=())
         report = json.loads(structured.read_text())
         if hip == 95947:
-            assert report["objects"][0]["assignment"] is None
-            assert "No active Wikidata bayer" in report["objects"][0]["assignment_caution"]
+            entry = report["objects"][0]
+            assert entry["assignment"] == "β¹ Cyg"
+            assert entry["source_assignments"]["bayer"] == []
+            assert entry["effective_assignments"]["bayer"] == ["β¹ Cyg"]
+            assert entry["assignment_basis"].startswith("Wenu curated HIP")
+            assert entry["curation"]["associations"]
         else:
             assert report["objects"] == []
             assert "No stars from the 77-case" in md.read_text()

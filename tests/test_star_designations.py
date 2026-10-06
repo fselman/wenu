@@ -196,3 +196,89 @@ def test_research_index_is_exact_frozen_dossier_and_does_not_mutate():
     for hip in (86614, 86620, 95947, 100345):
         record = catalogue.get(hip)
         assert record is None or not record.candidates("bayer")
+
+
+def test_curated_hip_associations_preserve_raw_claims_and_numeric_identity():
+    from wenu.star_designations import (
+        load_effective_star_designations, load_stellar_curation,
+        StarLabelSelection, resolve_star_labels,
+    )
+    raw = load_star_designations()
+    effective = load_effective_star_designations()
+    assert raw.get(78820).candidates("bayer") == ()
+    assert effective.get(78820).candidates("bayer") == ()
+    assert [c.code for c in effective.get(78820).assignments("bayer")] == ["β¹ Sco"]
+    assert effective.hips_for_designation("β² Sco") == {78821}
+    assert effective.hips_for_designation("8 Sco", "flamsteed") == {78820, 78821}
+    assert effective.get(677).statements is raw.get(677).statements
+    assert effective.unjoined_statements is raw.unjoined_statements
+    assert effective.source_sha256 == raw.source_sha256
+    assert effective.curation_sha256 == load_stellar_curation().source_sha256
+    labels = resolve_star_labels(StarLabelSelection(
+        bayer=("Sco:beta1,beta2",), show_full_bayer_designation=True,
+    ))
+    assert labels.labels == ((78820, "β¹ Sco"), (78821, "β² Sco"))
+    assert resolve_star_labels(StarLabelSelection(
+        names=("Sco:Acrab",),
+    )).labels == ((78820, "Acrab"),)
+
+
+def test_curated_multiple_designation_does_not_select_brightest_component():
+    from wenu.star_designations import StarLabelSelection, resolve_star_labels
+    with pytest.raises(ValueError, match="Ambiguous stellar bayer"):
+        resolve_star_labels(StarLabelSelection(bayer=("Psc:psi1",)))
+
+
+def test_curated_inventory_is_immutable_and_pending_gaps_remain_unassigned():
+    from wenu.star_designations import (
+        load_stellar_curation, load_effective_star_designations,
+    )
+    curation = load_stellar_curation()
+    assert len(curation.associations) == 158
+    note = curation.get(102431)
+    assert note["coverage_gaps"][0]["status"] == "pending"
+    note["coverage_gaps"][0]["status"] = "changed"
+    assert curation.get(102431)["coverage_gaps"][0]["status"] == "pending"
+    with pytest.raises(TypeError):
+        curation.by_hip[102431] = "changed"
+    record = load_effective_star_designations().get(102431)
+    assert record is None or not record.assignments("bayer")
+
+
+@pytest.mark.parametrize("fault", ["digest", "duplicate", "hip", "snapshot"])
+def test_curated_byte_admission_rejects_corruption_and_identity_faults(fault):
+    from importlib.resources import files
+    from wenu.star_designations import _load_stellar_curation
+    root = files("wenu.data.catalogs.star_designations")
+    payload = root.joinpath("curation.json").read_bytes()
+    manifest = json.loads(root.joinpath("curation_manifest.json").read_bytes())
+    if fault == "digest":
+        changed = payload + b" "
+    else:
+        document = json.loads(payload)
+        if fault == "duplicate":
+            document["associations"].append(document["associations"][0])
+        elif fault == "hip":
+            document["associations"][0]["hip"] = 0
+        else:
+            document["snapshot_sha256"] = "0" * 64
+        changed = json.dumps(document, ensure_ascii=False).encode()
+        manifest["sha256"] = hashlib.sha256(changed).hexdigest()
+    assert changed != payload
+    with pytest.raises(ValueError):
+        _load_stellar_curation(changed, json.dumps(manifest).encode())
+
+
+def test_curated_overlay_rejects_an_active_source_assignment():
+    from dataclasses import replace
+    from types import MappingProxyType
+    from wenu.star_designations import (
+        load_stellar_curation, load_effective_star_designations,
+    )
+    raw = load_star_designations()
+    index = dict(raw.by_hip)
+    index[78820] = replace(raw.get(677), hip=78820)
+    changed = replace(raw, by_hip=MappingProxyType(index))
+    assert changed.get(78820).candidates("bayer")
+    with pytest.raises(ValueError, match="may not overwrite"):
+        load_effective_star_designations(changed, curation=load_stellar_curation())
