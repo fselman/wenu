@@ -1,5 +1,15 @@
 # Wenu source organization
 
+The existing `charts/label_placement.py` also owns chart-family object-label
+orientation adaptation of render-local options, including deferred factories.
+The ordinary chart render owners and polar-planisphere owner apply that helper.
+`style_components.py`, `style_overrides.py`, and configuration translation own
+immutable appearance values and CLI/TOML precedence; `rendering/matplotlib.py`
+owns final display-space rotated-bound measurement and candidate placement.
+Track dates and reference tangents retain their existing owners. The user
+guide `docs/user_guide/labels.md` records implemented controls, proposed grid
+policies, and cartographic references. No production or test module is added.
+
 **Architecture version:** 0.9
 
 Milestone 46A extends the registered coordinate-grid family with native

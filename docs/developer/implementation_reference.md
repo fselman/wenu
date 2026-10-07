@@ -1,5 +1,19 @@
 # Wenu implementation reference
 
+## Object-label typography overrides
+
+`ChartStyleOverrides(labels_orientation="upright")` or
+`labels_orientation="up-away-from-cp"` overrides `CanvasStyle.labels_orientation`.
+`chart` retains the family default. Composed styles carry the value through
+`PublicationStyle.labels_orientation` to chart-local preparation. The CLI
+switches `--labels-upright` and `--labels-up-away-from-cp` are mutually
+exclusive; TOML uses `[styles.atlas.canvas]` or `[styles.cartoon.canvas]`.
+The away-from-pole policy requires a polar-planisphere chart. Neither
+switch changes reference-curve names, coordinate labels, track dates, or
+sequence annotations. `MatplotlibRenderer.finalize_label_placement()` keeps
+point-label rotation rules and evaluates actual rotated candidate bounds.
+See [label typography](../user_guide/labels.md) for limitations.
+
 **Architecture version:** 0.9
 **Status:** Implemented
 **Date:** 2026-08-28

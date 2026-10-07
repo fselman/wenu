@@ -38,6 +38,34 @@ def test_packaged_styles_translate_to_existing_immutable_contracts():
         defaults.atlas.canvas.sky_color = "red"
 
 
+@pytest.mark.parametrize("policy", ["chart", "upright", "up-away-from-cp"])
+def test_label_orientation_overlay_and_explicit_override(tmp_path, policy):
+    from wenu.configuration import load_configuration_defaults
+    from wenu.charts.style_overrides import ChartStyleOverrides
+
+    path = tmp_path / "labels.toml"
+    path.write_text('schema_version = 2\n[styles.atlas.canvas]\n'
+                    f'labels_orientation = "{policy}"\n')
+    configured = load_configuration_defaults(path)
+    style = configured.style_mode.atlas
+    assert style.canvas.labels_orientation == policy
+    assert style.as_publication_style().labels_orientation == policy
+    changed = ChartStyleOverrides(labels_orientation="upright").apply(style)
+    assert changed.canvas.labels_orientation == "upright"
+    assert style.canvas.labels_orientation == policy
+    assert replace(changed, canvas=style.canvas) == style
+
+
+def test_invalid_label_orientation_overlay_is_rejected(tmp_path):
+    from wenu.configuration import load_configuration_defaults
+
+    path = tmp_path / "labels.toml"
+    path.write_text('schema_version = 2\n[styles.atlas.canvas]\n'
+                    'labels_orientation = "radial"\n')
+    with pytest.raises(ConfigurationError):
+        load_configuration_defaults(path)
+
+
 @pytest.mark.parametrize("style_name", ["atlas", "cartoon"])
 @pytest.mark.parametrize("mode", ["print", "presentation"])
 def test_title_color_overlay_changes_only_the_title(tmp_path, style_name, mode):

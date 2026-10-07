@@ -9,6 +9,28 @@
 
 ## Current forward roadmap
 
+**Label-policy milestone (2026-10-07):** Fernando authorized chart-specific
+orientation overrides, preservation during collision avoidance, and a label
+guide with cartographic references. The bounded candidate extends existing
+chart preparation, style/configuration, and Matplotlib point-label placement.
+Polar labels keep up away from the pole; other charts stay upright. Track
+dates, grid labels, and reference tangents retain their existing paths.
+Joint constellation/curve relocation, annealing, unresolved-collision reports,
+exterior coordinate bands, configurable spokes, and density refinements remain
+later work. `ChartContext` and `AdaptiveDetailPolicy` already own scale/detail
+evidence; inspect those before admitting a new scale module. Grid cadence and
+limiting magnitude must remain independently overridable. See the
+[label guide](../user_guide/labels.md). The coordinate guide was reviewed and
+remains current: no scientific coordinates, frames, epochs, equations, or
+provenance changed. This candidate requires Mac full-suite and visual acceptance.
+
+**PR #210 closure (2026-10-07):** The constellation all/exclusion and Albireo
+work below merged into `main` at `948b90932748da5c4c140999142b0950fa2b92ef`.
+The final candidate `aec1dfe8` passed all 3,029 plugin-disabled Mac tests in
+273.66 seconds; diff check passed. The branch was deleted locally and remotely,
+and Fernando confirmed clean synchronized `main`. This supersedes the older
+pending-validation statements below, without closing the stellar programme.
+
 **Albireo name follow-up (2026-10-07):** Fernando requested the exact
 `Cyg:Albireo` name selector after visually checking the all-constellation chart.
 An authored association with HIP 95947 (β¹ Cyg; IAU component Aa) supplements

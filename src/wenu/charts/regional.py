@@ -17,6 +17,8 @@ from wenu.coordinates import (
     observer_altaz_spec,
 )
 from wenu.geometry.spherical import SphericalPoints
+from .label_placement import apply_object_label_orientation
+
 from wenu.charts.boundaries import (
     RectangularLabelAnchor,
     apply_coordinate_label_anchor,
@@ -605,6 +607,9 @@ class RegionalChart:
             options[sky.constellation_labels] = label_options
         if layer_options is not None:
             options.update(layer_options)
+        options = apply_object_label_orientation(
+            options, sky=sky, style=resolved_style,
+        )
         options = apply_coordinate_label_anchor(
             options,
             self.coordinate_label_anchor,

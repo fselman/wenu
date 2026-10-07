@@ -43,6 +43,22 @@ def test_complete_cli_contract_includes_context_and_credits():
     assert arguments.horizon_mask is False
 
 
+@pytest.mark.parametrize(("flag", "policy"), [
+    ("--labels-upright", "upright"),
+    ("--labels-up-away-from-cp", "up-away-from-cp"),
+])
+def test_cli_object_label_orientation_overrides(flag, policy):
+    from wenu.charts.chart_arguments import chart_style_overrides
+
+    assert chart_style_overrides(parser().parse_args([flag])).labels_orientation == policy
+    assert parser().parse_args([]).labels_orientation is None
+
+
+def test_cli_object_label_orientation_switches_are_mutually_exclusive():
+    with pytest.raises(SystemExit):
+        parser().parse_args(["--labels-upright", "--labels-up-away-from-cp"])
+
+
 @pytest.mark.parametrize(
     ("arguments", "horizon", "horizon_mask"),
     (

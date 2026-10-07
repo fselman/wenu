@@ -217,6 +217,121 @@ def test_renderer_resolves_callable_point_label_rotation():
         plt.close(figure)
 
 
+@pytest.mark.parametrize("polar", [False, True])
+@pytest.mark.parametrize("policy", ["chart", "upright", "up-away-from-cp"])
+def test_object_orientation_scope_and_deferred_render_isolation(polar, policy):
+    from wenu.charts.label_placement import apply_object_label_orientation
+
+    stars, constellations, body, track, grid = (object() for _ in range(5))
+    sky = SimpleNamespace(stars=stars, constellation_labels=constellations,
+                          solar_system_bodies={"planet": body})
+    style = SimpleNamespace(labels_orientation=policy)
+    render = {"label_style": {"fontsize": 7.0, "color": "red"}}
+    source = {stars: {"render": lambda spherical, projected: render},
+              constellations: {"render": render}, body: {"render": render},
+              track: {"render": render}, grid: {"render": render}}
+    if not polar and policy == "up-away-from-cp":
+        with pytest.raises(ValueError, match="require a polar-planisphere"):
+            apply_object_label_orientation(source, sky=sky, style=style)
+        return
+    resolved = apply_object_label_orientation(source, sky=sky, style=style, polar=polar)
+    assert resolved[track] is source[track]
+    assert resolved[grid] is source[grid]
+    assert "rotation" not in render["label_style"]
+    for layer in (stars, constellations, body):
+        configured = resolved[layer]["render"]
+        configured = configured(None, None) if callable(configured) else configured
+        labels = configured["label_style"]
+        assert labels["fontsize"] == 7.0
+        assert labels["color"] == "red"
+        if polar and policy != "upright":
+            assert labels["rotation"](0.0, -1.0) == pytest.approx(-180.0)
+        else:
+            assert labels["rotation"] == 0.0
+
+
+@pytest.mark.parametrize(("chart", "polar"), [
+    (FullSkyChart(), False),
+    (RegionalChart(center_alt_deg=45.0, center_az_deg=180.0,
+                   field_width_deg=30.0, field_height_deg=20.0), False),
+    (PolarPlanisphereChart(pole="north"), True),
+    (PolarPlanisphereChart(pole="south", flip_ew=True), True),
+])
+@pytest.mark.parametrize("policy", ["chart", "upright"])
+def test_chart_render_routes_apply_object_label_orientation(chart, polar, policy):
+    from wenu import CelestialSphere, PublicationStyle
+
+    layer = object()
+    class Sky(CelestialSphere):
+        def __init__(self):
+            super().__init__(object())
+            self.stars = layer
+
+        def draw_chart(self, **kwargs):
+            return kwargs["layer_options"]
+
+    class Renderer:
+        def set_clip_boundary(self, *args, **kwargs):
+            pass
+
+    result = chart.render(
+        Sky(), Renderer(), observer=object(),
+        style=PublicationStyle(labels_orientation=policy),
+        layer_options={layer: {"render": {"label_style": {"fontsize": 7.0}}}},
+    )
+    rotation = result[layer]["render"]["label_style"]["rotation"]
+    if polar and policy == "chart":
+        assert rotation(1.0, 0.0) == pytest.approx(-90.0)
+    else:
+        assert rotation == 0.0
+
+
+@pytest.mark.parametrize("policy", ["upright", "up-away-from-cp"])
+def test_auto_placement_retains_final_orientation_and_fixed_track_dates(policy):
+    from wenu.charts.label_placement import apply_object_label_orientation
+
+    layer = object()
+    options = apply_object_label_orientation(
+        {layer: {"render": {"label_style": {"fontsize": 7.0, "color": "red",
+                                             "placement": "auto"}}}},
+        sky=SimpleNamespace(stars=layer),
+        style=SimpleNamespace(labels_orientation=policy), polar=True,
+    )[layer]["render"]
+    figure, ax = plt.subplots(figsize=(4, 4))
+    try:
+        ax.set(xlim=(-2, 2), ylim=(-2, 2), aspect="equal")
+        renderer = MatplotlibRenderer(ax)
+        date = ax.text(0.0, -1.0, "15 Oct", rotation=37.0)
+        before = (date.get_position(), date.get_rotation(), date.get_ha(), date.get_va())
+        points = ProjectedPoints(np.asarray([0.0, 0.015]), np.asarray([-1.0, -1.01]),
+                                 labels=np.asarray(["Albireo", "beta2"], dtype=object))
+        artists = renderer.draw(points, style={"s": 12.0}, draw_labels=True, **options)
+        figure.canvas.draw()
+        renderer.finalize_label_placement()
+        labels = [artist for artist in artists if hasattr(artist, "get_text")]
+        assert len(labels) == 2
+        assert any(np.linalg.norm(np.asarray(text.get_position()) - np.asarray((0, -1))) > 0.02
+                   for text in labels)
+        for text in labels:
+            assert text.get_color() == "red"
+            assert text.get_fontsize() == 7.0
+            if policy == "upright":
+                assert text.get_rotation() == 0.0
+            else:
+                x, y = text.get_position()
+                angle = np.radians(text.get_rotation())
+                up = np.asarray([-np.sin(angle), np.cos(angle)])
+                np.testing.assert_allclose(up, np.asarray([x, y]) / np.hypot(x, y), atol=1e-12)
+        assert (date.get_position(), date.get_rotation(), date.get_ha(), date.get_va()) == before
+        final = [(text.get_position(), text.get_rotation()) for text in labels]
+        renderer.finalize_label_placement()
+        for text, (position, rotation) in zip(labels, final):
+            np.testing.assert_allclose(text.get_position(), position, atol=1e-12)
+            assert text.get_rotation() == pytest.approx(rotation, abs=1e-12)
+    finally:
+        plt.close(figure)
+
+
 def test_reference_policy_uses_one_shared_tangent_procedure():
     observer = SimpleNamespace(
         lat_deg=-32.0,

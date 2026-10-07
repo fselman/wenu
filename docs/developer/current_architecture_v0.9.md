@@ -1,5 +1,24 @@
 # Wenu current architecture v0.9
 
+## Object-label orientation candidate (2026-10-07)
+
+Based on clean `main` at `948b9093` (PR #210), existing chart preparation
+applies the chart-family typography rule: polar-planisphere labels have up
+away from their projected pole; other families keep object and constellation
+labels upright. A viewport containing a pole does not change its family.
+`ChartStyleOverrides.labels_orientation` and schema-v2 canvas configuration
+provide explicit mutually exclusive CLI overrides. The shared helper lives
+in `charts/label_placement.py`; immutable style translation and chart-local
+render factories preserve request isolation and curated polar adjustments.
+
+The existing Matplotlib point-label search measures rotated artist bounds
+and recomputes a position-dependent rotation after relocation. Reference
+names retain local tangent placement; grid labels and temporal track/sequence
+annotations are excluded from the override. No annealing, joint area/curve
+collision solver, grid-density policy, new production module, dependency,
+scientific transformation, or position source is added. See the
+[label guide](../user_guide/labels.md) for current limits and proposed work.
+
 **Status:** Implemented current architecture
 **Previous baseline:** `archive/architecture_history/current_architecture_v0.8.md`
 **Completed migration:** `archive/migration_history/wenu_migration_0.8_to_0.9.md`

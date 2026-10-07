@@ -153,6 +153,8 @@ _NONNEGATIVE_NAMES = frozenset(
 )
 _ENUMS = {
     "styles.atlas.stars.labels.placement": {"fixed", "auto"},
+    "styles.atlas.canvas.labels_orientation": {"chart", "upright", "up-away-from-cp"},
+    "styles.cartoon.canvas.labels_orientation": {"chart", "upright", "up-away-from-cp"},
     "styles.cartoon.stars.labels.placement": {"fixed", "auto"},
     "data.moving_object_policy": {
         "acquire-if-missing", "offline", "refresh",

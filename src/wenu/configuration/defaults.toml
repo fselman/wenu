@@ -285,6 +285,7 @@ maximum_area = 40.0
 
 # Atlas print is the semantic appearance baseline.
 [styles.atlas.canvas]
+labels_orientation = "chart"
 background = "white"
 foreground = "#505050"
 label_font_size = 8.5
@@ -517,6 +518,7 @@ text_color = "none"
 
 # Cartoon is a separate complete semantic base, not an inherited atlas delta.
 [styles.cartoon.canvas]
+labels_orientation = "chart"
 background = "#fffdf7"
 foreground = "#172238"
 label_font_size = 13.0

@@ -4,6 +4,63 @@ from __future__ import annotations
 
 from typing import Mapping
 
+import numpy as np
+
+from wenu.rendering.label_placement import rotation_with_down_toward
+
+
+def apply_object_label_orientation(options, *, sky, style=None, polar=False):
+    """Apply chart-specific point/area typography without touching tracks or grids.
+
+    A polar disk has one unambiguous projected pole at the origin. Other
+    families keep text upright, even when a celestial pole is in the viewport.
+    Both ordinary mappings and deferred render factories remain render-local.
+    """
+    policy = getattr(style, "labels_orientation", "chart")
+    if policy not in {"chart", "upright", "up-away-from-cp"}:
+        raise ValueError("unsupported labels_orientation")
+    if policy == "up-away-from-cp" and not polar:
+        raise ValueError("up-away-from-cp labels require a polar-planisphere chart")
+
+    def rotation(x, y):
+        return rotation_with_down_toward(
+            np.degrees(np.arctan2(y, x)) + 90.0, (x, y), (0.0, 0.0),
+        )
+
+    resolved_rotation = rotation if polar and policy != "upright" else 0.0
+
+    def orient(render):
+        render = dict(render)
+        render["label_style"] = {
+            **dict(render.get("label_style", {})),
+            "rotation": resolved_rotation,
+            "rotation_mode": "anchor",
+        }
+        return render
+
+    result = dict(options)
+    layers = [getattr(sky, name, None) for name in (
+        "stars", "constellation_labels", "nonstellar", "galaxies",
+        "open_clusters", "globular_clusters", "planetary_nebulae",
+        "supernova_remnants", "venus", "moon",
+    )]
+    layers.extend(getattr(sky, "solar_system_bodies", {}).values())
+    layers.extend(layer for layer in getattr(sky, "layers", ())
+                  if getattr(layer, "display_kind", None) == "symbolic_point")
+    for layer in dict.fromkeys(layers):
+        if layer is None or layer not in result:
+            continue
+        configured = dict(result[layer])
+        render = configured.get("render", {})
+        if callable(render):
+            def oriented(spherical, projected, factory=render):
+                return orient(factory(spherical, projected))
+            configured["render"] = oriented
+        else:
+            configured["render"] = orient(render)
+        result[layer] = configured
+    return result
+
 
 LABEL_POSITION_VECTORS = {
     "ul": (-1.0, 1.0),

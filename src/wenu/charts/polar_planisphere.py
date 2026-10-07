@@ -8,6 +8,8 @@ from typing import ClassVar
 
 import numpy as np
 
+from .label_placement import apply_object_label_orientation
+
 from wenu.charts.boundaries import (
     CircularGridLabelAnchor,
     apply_coordinate_label_anchor,
@@ -258,6 +260,9 @@ class PolarPlanisphereChart:
         if layer_options is not None:
             options.update(layer_options)
         options = self._inset_constellation_labels(sky, options)
+        options = apply_object_label_orientation(
+            options, sky=sky, style=resolved_style, polar=True,
+        )
         options = apply_coordinate_label_anchor(
             options, self.coordinate_label_anchor
         )
@@ -321,7 +326,7 @@ class PolarPlanisphereChart:
         )
 
     def _inset_constellation_labels(self, sky, options):
-        """Inset constellation labels and orient polar labels radially."""
+        """Inset constellation labels and retain reviewed polar curation."""
         layer = getattr(sky, "constellation_labels", None)
         result = dict(options)
         if layer is not None and layer in options:

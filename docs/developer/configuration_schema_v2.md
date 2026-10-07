@@ -201,6 +201,10 @@ appearance; neither inherits from the other. Their ordered subtables are
 Appearance leaves use the common scalar types. In particular:
 
 - canvas exposes background, foreground, label font, and footer color;
+  `labels_orientation` accepts `chart`, `upright`, or `up-away-from-cp`.
+  It controls object/constellation typography; grids, references, and track
+  dates retain separate policies. The away-from-pole override requires a
+  polar-planisphere chart; explicit CLI orientation replaces the TOML value.
 - stars expose color, magnitude sizing, area bounds, and variable/multiple
   symbol enablement, color, shape, size, edge width, and opacity;
 - fills expose `color` and `opacity`; every edge, contour, figure, boundary,

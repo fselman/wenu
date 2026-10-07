@@ -326,6 +326,7 @@ class PublicationStyle:
     constellation_label_fontsize: float | None = None
     title_color: str | None = None
     star_label_placement: str = "fixed"
+    labels_orientation: str = "chart"
 
     def configure_axes(self, ax, *, title=None):
         """Apply chart-level axes styling."""

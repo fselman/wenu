@@ -40,6 +40,7 @@ class MatplotlibRenderer:
         self._viewport = None
         self._point_obstacles = []
         self._auto_labels = []
+        self._label_rotations = {}
         self._gapped_lines = []
 
     def set_axes_frame_visible(self, visible):
@@ -1165,13 +1166,11 @@ class MatplotlibRenderer:
         """Place compact labels with visible ownership in final display space.
 
         Association has priority over cosmetic line avoidance. Candidate
-        positions follow the rotated/projected markers, while text stays
-        upright. Coordinate descent revisits earlier choices as a group.
+        positions follow the projected markers and retain their orientation
+        policy. Coordinate descent revisits earlier choices as a group.
         """
         if not self._auto_labels:
             return
-        from matplotlib.transforms import Bbox
-
         renderer = self.ax.figure.canvas.get_renderer()
         scale = self.ax.figure.dpi / 72.0
         centres = self.ax.transData.transform(
@@ -1213,6 +1212,9 @@ class MatplotlibRenderer:
             radius = radius_at(anchor)
             artist.set_ha("left")
             artist.set_va("bottom")
+            rotation = self._label_rotations.get(artist)
+            if rotation is not None:
+                artist.set_rotation(rotation(x, y))
             width, height = artist.get_window_extent(renderer).size
             # Sub-resolution companions share a visible anchor, not an identity.
             competitors = np.linalg.norm(label_anchors - anchor, axis=1) > 0.25 * scale
@@ -1236,7 +1238,25 @@ class MatplotlibRenderer:
                     origin = anchor + offset
                     left = origin[0] - (width if dx < 0 else width / 2 if dx == 0 else 0)
                     bottom = origin[1] - (height if dy < 0 else height / 2 if dy == 0 else 0)
-                    box = Bbox.from_bounds(left, bottom, width, height)
+                    # Measure the actual rotated artist at each candidate.
+                    # Re-evaluate position-dependent orientation after moving.
+                    position = np.asarray((left, bottom))
+                    rotation = self._label_rotations.get(artist)
+                    for _ in range(4):
+                        data_position = self.ax.transData.inverted().transform(position)
+                        artist.set_position(data_position)
+                        if rotation is not None:
+                            artist.set_rotation(rotation(*data_position))
+                        box = artist.get_window_extent(renderer)
+                        correction = np.asarray((left - box.x0, bottom - box.y0))
+                        if np.linalg.norm(correction) < 0.01:
+                            break
+                        position += correction
+                    data_position = self.ax.transData.inverted().transform(position)
+                    artist.set_position(data_position)
+                    if rotation is not None:
+                        artist.set_rotation(rotation(*data_position))
+                    box = artist.get_window_extent(renderer)
                     padded = box.padded(0.25 * scale)
                     own_distance = distances(box, anchor.reshape(1, 2))[0]
                     attachment = np.clip(anchor, (box.x0, box.y0), (box.x1, box.y1))
@@ -1250,12 +1270,13 @@ class MatplotlibRenderer:
                     cosmetic = (0.1 * sum(path.intersects_bbox(padded, filled=False) for path in paths)
                                 + 0.025 * preference + 0.05 * extra)
                     candidates.append((box, padded, (marker_conflict, ambiguous,
-                                                      fixed_conflict, outside, alignment, cosmetic)))
+                                                      fixed_conflict, outside, alignment, cosmetic),
+                                       tuple(data_position), artist.get_rotation()))
             choices.append(candidates)
 
         selected = []
         def score(index, candidate, assignments):
-            box, padded, static = choices[index][candidate]
+            box, padded, static, _, _ = choices[index][candidate]
             collisions = sum(
                 overlap(padded, choices[other][value][1])
                 for other, value in enumerate(assignments) if other != index
@@ -1275,27 +1296,31 @@ class MatplotlibRenderer:
             if not changed:
                 break
         for index, (artist, _, _) in enumerate(labels):
-            box = choices[index][selected[index]][0]
-            artist.set_position(self.ax.transData.inverted().transform((box.x0, box.y0)))
+            _, _, _, position, rotation = choices[index][selected[index]]
+            artist.set_position(position)
+            artist.set_rotation(rotation)
 
     def _label(self, x, y, label, style, offset):
         style = dict(style)
         rotation = style.get("rotation")
-        if callable(rotation):
-            style["rotation"] = rotation(x, y)
         if isinstance(offset, Mapping):
             offset = offset.get(
                 str(label),
                 offset.get("__default__", (0.0, 0.0)),
             )
         dx, dy = offset(x, y) if callable(offset) else offset
-        return render_text(
+        if callable(rotation):
+            style["rotation"] = rotation(x + dx, y + dy)
+        artist = render_text(
             self.ax,
             x + dx,
             y + dy,
             str(label),
             **style,
         )
+        if callable(rotation):
+            self._label_rotations[artist] = rotation
+        return artist
 
     @staticmethod
     def _entity_styles(styles, length):

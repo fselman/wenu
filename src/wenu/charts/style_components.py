@@ -51,6 +51,11 @@ class CanvasStyle:
     label_fontsize: float = 10.0
     footer_color: str | None = None
     title_color: str | None = None
+    labels_orientation: str = "chart"
+
+    def __post_init__(self):
+        if self.labels_orientation not in {"chart", "upright", "up-away-from-cp"}:
+            raise ValueError("unsupported labels_orientation")
 
 
 @dataclass(frozen=True)
@@ -336,6 +341,7 @@ class ChartStyle:
             sky_color=canvas.sky_color,
             foreground_color=canvas.foreground_color,
             title_color=canvas.title_color,
+            labels_orientation=canvas.labels_orientation,
             star_color=stars.color,
             star_label_color=stars.label_color,
             star_label_fontsize=stars.label_fontsize,

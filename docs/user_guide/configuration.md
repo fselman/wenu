@@ -1,5 +1,14 @@
 # Unified command and editable configuration
 
+Object-label orientation defaults to the chart family. The mutually exclusive
+`--labels-upright` and `--labels-up-away-from-cp` overrides leave grid labels,
+reference names, and track dates under their existing policies. The latter
+requires a polar-planisphere chart. TOML uses
+`styles.atlas.canvas.labels_orientation` (or `styles.cartoon.canvas`) with
+`chart`, `upright`, or `up-away-from-cp`; explicit CLI values take precedence.
+See the [label placement and typography guide](labels.md) for scope,
+limitations, proposed grid policy, and references.
+
 For one runnable command per chart family, begin with the
 [complete chart examples](chart_examples.md).
 

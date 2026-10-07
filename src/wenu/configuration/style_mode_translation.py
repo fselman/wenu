@@ -297,6 +297,7 @@ def _style(table: Mapping[str, Any], style_type, *, style_name: str):
     legend = table["legend"]
     return style_type(
         canvas=CanvasStyle(
+            labels_orientation=canvas["labels_orientation"],
             sky_color=canvas["background"],
             foreground_color=canvas["foreground"],
             label_fontsize=canvas["label_font_size"],

@@ -29,8 +29,11 @@ class ChartStyleOverrides:
     equatorial_reference_linewidth: float | None = None
     constellation_line_gap_points: float | None = None
     star_label_placement: str | None = None
+    labels_orientation: str | None = None
 
     def __post_init__(self):
+        if self.labels_orientation not in {None, "chart", "upright", "up-away-from-cp"}:
+            raise ValueError("unsupported labels_orientation")
         if self.star_label_placement not in {None, "fixed", "auto"}:
             raise ValueError("star_label_placement must be fixed or auto")
         if self.constellation_label_offsets is not None:
@@ -110,6 +113,10 @@ class ChartStyleOverrides:
         if self.star_label_placement is not None:
             resolved = replace(resolved, stars=replace(
                 resolved.stars, label_placement=self.star_label_placement,
+            ))
+        if self.labels_orientation is not None:
+            resolved = replace(resolved, canvas=replace(
+                resolved.canvas, labels_orientation=self.labels_orientation,
             ))
         if self.sky_color is not None:
             canvas = getattr(resolved, "canvas", None)

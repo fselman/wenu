@@ -6,6 +6,8 @@ from dataclasses import dataclass
 
 import numpy as np
 
+from .label_placement import apply_object_label_orientation
+
 from wenu.charts.boundaries import (
     CircularLabelAnchor,
     apply_coordinate_label_anchor,
@@ -214,6 +216,9 @@ class BinocularChart:
         )
         if layer_options is not None:
             options.update(layer_options)
+        options = apply_object_label_orientation(
+            options, sky=sky, style=resolved_style,
+        )
         options = apply_coordinate_label_anchor(
             options,
             (
