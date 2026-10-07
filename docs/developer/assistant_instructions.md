@@ -427,6 +427,19 @@ test data unless the milestone requires them.
 
 ## Git and delivery workflow
 
+### Versioned downloadable files
+
+Always give every downloadable file an explicit version number in its filename,
+for example `la_ligua_2026-10-15_v7.toml` and
+`La_Ligua_2026-10-15_2100_labels_review_v7.png`. Increment the version whenever
+its contents change; never rely on automatically appended `(counter)` suffixes
+to identify a revision. State the delivered version and ensure every accompanying
+command references the exact versioned filename, including its extension and
+intended Mac path. When a configuration and chart form a review pair, use the
+same revision number for both. If downloading changes the filename, resolve the
+actual local name before treating the resulting chart as evidence for that
+configuration. Do not overwrite a delivered revision with different contents.
+
 The normal Wenu workflow has four broad stages:
 
 1. Fernando and the assistant discuss and agree on the work, scope, non-goals,
