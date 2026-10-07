@@ -446,7 +446,7 @@ line_style = "dotted"
 opacity = 0.65
 
 [styles.atlas.constellation_figures]
-gap_points = 0.0
+gap_points = "none"
 color = "#686868"
 line_width = 0.35
 line_style = "solid"
@@ -487,8 +487,8 @@ opacity = 0.45
 [styles.atlas.coordinate_labels]
 enabled = true
 color = "none"
-font_size = 3.5
-opacity = 0.85
+font_size = 4.2
+opacity = 1.0
 
 [styles.atlas.horizon]
 altitude = 0.0
@@ -687,7 +687,7 @@ line_style = "dotted"
 opacity = 0.45
 
 [styles.cartoon.constellation_figures]
-gap_points = 0.0
+gap_points = "none"
 color = "#304f78"
 line_width = 1.15
 line_style = "solid"
@@ -728,7 +728,7 @@ opacity = 0.35
 [styles.cartoon.coordinate_labels]
 enabled = false
 color = "none"
-font_size = 4.0
+font_size = 4.8
 opacity = 0.75
 
 [styles.cartoon.horizon]

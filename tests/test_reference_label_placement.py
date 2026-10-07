@@ -256,6 +256,8 @@ def test_joint_labels_separate_companions_area_and_curve_while_tracks_stay_fixed
     renderer.finalize_graphics()
     backend = fig.canvas.get_renderer()
     boxes = [text.get_window_extent(backend) for text in ax.texts]
+    assert all(not a.padded(.7 * dpi / 72).overlaps(b.padded(.7 * dpi / 72))
+               for i, a in enumerate(boxes[:5]) for b in boxes[i + 1:5])
     assert all(not a.overlaps(b) for i, a in enumerate(boxes) for b in boxes[i + 1:])
     assert renderer.unresolved_label_collisions == ()
     assert (date.get_position(), date.get_rotation()) == date_before

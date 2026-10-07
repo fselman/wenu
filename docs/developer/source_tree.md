@@ -1,5 +1,20 @@
 # Wenu source organization
 
+The La Ligua v4 typography follow-up raises packaged coordinate-label
+sizes by 20% (atlas 4.2 points, cartoon 4.8 points). Marginal text is centred
+inside the 8.5-point content floor plus padding, within the measured v4 ring; ordinary enlarged
+labels fit without increasing band width. Oversized custom text still expands
+furniture rather than being clipped or shrunk. Opaque furniture paints over
+sky linework below coordinate text, while the real clip path remains active
+for deferred endpoint trimming. Automatic placement reserves 1.5 points
+between movable text bounds and adds size-aware inward area candidates.
+Visible IAU-region membership takes precedence when a contained candidate
+exists; a very narrow visible region permits a bounded inward fallback.
+Composition resolves an unspecified constellation gap to 1 point only for
+location planispheres and 0 elsewhere, after CLI/TOML overrides. Explicit
+zero remains zero. No scientific geometry, temporal anchors, orientation
+policy, module ownership, grid cadence or density policy changes.
+
 The exterior coordinate-label band is chart-owned furniture for non-polar
 planispheres, regional/constellation charts and binocular fields. Existing
 canvas style/configuration/CLI owners supply enabled, fill/frame colours,

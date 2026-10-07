@@ -66,9 +66,12 @@ The process is:
    candidates, and sampled positions on each reference curve.
 2. Require chart-boundary containment when a fitting candidate exists.
    Constellation text centres stay in their visible IAU regions when those
-   regions have been prepared; otherwise movement stays near the existing
-   curated anchor. No fitting candidate means best-effort placement.
-3. Prefer separating text, then clearing star symbols, retaining stellar
+   regions have been prepared and a contained fitting candidate exists. A
+   very narrow visible region permits bounded inward fallback placement;
+   otherwise movement stays near the existing curated anchor. No fitting
+   candidate means best-effort placement.
+3. Reserve 1.5 points between movable text bounds (0.75 point against fixed
+   text). Prefer separating text, then clearing star symbols, retaining stellar
    association, and minimizing displacement or crossings of other lines.
 4. Revisit assignments with coordinate descent and bounded simultaneous
    pair moves, allowing both conflicting labels to yield together.
@@ -99,8 +102,10 @@ inspection value, not a command-line report.
 
 For a location-centred planisphere, `--altaz-grid-labels` places azimuth
 labels upright outside the horizon. The exterior band uses
-measured text bounds and a 0.65 em gap, rather than a fixed fraction of chart
-radius. Export includes these unclipped marginal labels. Altitude labels
+measured text bounds rather than a fixed fraction of chart radius. With the
+band enabled, marginal labels are centred in its reserved physical width;
+without it they retain a 0.65 em gap. Export includes these unclipped marginal
+labels. Altitude labels
 remain upright inside the horizon along azimuths 0°, 90°, 180°, 270°.
 A requested altitude 90° label appears only once at the zenith. These anchors
 follow projection rotation, east/west reflection, and off-zenith centres.
@@ -117,8 +122,13 @@ have an opaque white exterior band with a black 0.8-point exterior frame by
 default. The sky boundary remains separate. Polar planispheres and Galactic
 all-sky charts retain their existing furniture.
 
-The renderer sizes the band from measured exterior label bounds plus
-2-point padding and half the frame width. Circular charts use an annulus;
+Packaged coordinate labels are 20% larger: atlas 4.2 points (previously 3.5),
+cartoon 4.8 points (previously 4.0). Atlas coordinate-label opacity is 1.0.
+The ordinary labels are centred in the existing band without increasing its
+width. The minimum reserved width is 8.5 points plus twice the configured
+2-point padding and half-frame allowance. Custom oversized text can still
+expand the measured surround; requested text is never shrunk or clipped to
+force it into a thin band. Circular charts use an annulus;
 regional charts use a rectangular surround. The band is a compound path with
 a genuine interior hole: it never fills the sky or alters viewport limits.
 The exterior furniture remains visible when the page background is transparent.
@@ -159,6 +169,28 @@ Python uses the corresponding `CanvasStyle.grid_label_band*` fields or
 `ChartStyleOverrides` (enabled, fill/frame colours and line width). Turning
 the band off restores the existing regional/binocular grid anchors. Fill and
 frame overrides do not change stars, tracks, scientific positions or density.
+
+## Constellation line clearance
+
+A location-centred planisphere defaults to a 1-point gap beyond each drawn
+stellar marker. Other families retain zero extra gap. Short connections thus
+retain more visible line than with a 2-point gap. CLI and TOML values override
+the family default; explicit zero disables extra endpoint clearance:
+
+```text
+--constellation-line-gap 1
+```
+
+```toml
+[styles.atlas.constellation_figures]
+gap_points = 1.0
+```
+
+The packaged value `gap_points = "none"` means inherit the chart-family
+choice. Remove an old explicit `--constellation-line-gap 2` to use the new
+default. Linework remains clipped at the inner sky boundary after final
+physical endpoint trimming. The opaque band covers low-order linework at
+that edge; a transparent band continues to rely on the real clip path.
 
 ## Remaining grid policies: proposed, not implemented by this milestone
 

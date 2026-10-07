@@ -92,8 +92,8 @@ class AtlasChartStyle(ChartStyle):
             coordinate_alpha=0.45,
             draw_coordinate_labels=True,
             coordinate_label_color=None,
-            coordinate_label_fontsize=3.5,
-            coordinate_label_alpha=0.85,
+            coordinate_label_fontsize=4.2,
+            coordinate_label_alpha=1.0,
         )
     )
     mask: MaskStyle = field(
@@ -191,7 +191,7 @@ class CartoonChartStyle(ChartStyle):
             coordinate_alpha=0.35,
             draw_coordinate_labels=False,
             coordinate_label_color=None,
-            coordinate_label_fontsize=4.0,
+            coordinate_label_fontsize=4.8,
             coordinate_label_alpha=0.75,
         )
     )

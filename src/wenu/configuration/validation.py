@@ -43,6 +43,8 @@ class ConfigurationError(ValueError):
 _OPTIONAL_NUMBERS = frozenset(
     {
         "observer.elevation",
+        "styles.atlas.constellation_figures.gap_points",
+        "styles.cartoon.constellation_figures.gap_points",
         "sequence.playback_duration",
         "sequence.frames_per_second",
         "families.regional_single.width",

@@ -367,7 +367,7 @@ The stellar presentation stage adds these optional schema-v2 keys:
 | --- | --- | --- |
 | `detail.content.star_constellations` | `[]` | Nonempty IAU-code list restricts stars to the union of those regions; empty configuration list leaves selection unrestricted. |
 | `styles.{atlas,cartoon}.stars.labels.placement` | `"fixed"` | `fixed` or `auto`; automatic placement affects only requested labels. |
-| `styles.{atlas,cartoon}.constellation_figures.gap_points` | `0.0` | Finite nonnegative physical clearance beyond the drawn disk. |
+| `styles.{atlas,cartoon}.constellation_figures.gap_points` | `"none"` | Inherit 1 point for a location planisphere, 0 elsewhere. A finite nonnegative number overrides this physical clearance beyond the drawn disk, including explicit zero. |
 | `products.default.axes_frame` | `true` | Draw the rectangular axes frame. |
 | `products.default.show_title` | `true` | Draw the title, retaining it in provenance. |
 

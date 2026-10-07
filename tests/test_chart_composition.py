@@ -182,3 +182,26 @@ def test_composition_contracts_do_not_import_matplotlib():
         for imported in imported_modules(directory / filename):
             assert imported != "matplotlib"
             assert not imported.startswith("matplotlib.")
+
+
+@pytest.mark.parametrize("style", ["atlas", "cartoon"])
+@pytest.mark.parametrize("gap", [None, 0.0, 2.0])
+def test_location_planisphere_gap_default_preserves_explicit_values(style, gap):
+    from wenu.charts.style_overrides import ChartStyleOverrides
+
+    overrides = ChartStyleOverrides(constellation_line_gap_points=gap)
+    full = compose_chart(FullSkyChart(), style=style, mode="print", style_overrides=overrides)
+    regional = compose_chart(regional_chart(), style=style, mode="print", style_overrides=overrides)
+    assert full.style.grids.constellation_line_gap_points == (1.0 if gap is None else gap)
+    assert (regional.style.grids.constellation_line_gap_points or 0.0) == (0.0 if gap is None else gap)
+
+
+@pytest.mark.parametrize("gap", [0.0, 1.25])
+def test_toml_planisphere_gap_overrides_family_default(tmp_path, gap):
+    from wenu.configuration import load_configuration_defaults
+
+    overlay = tmp_path / "gap.toml"
+    overlay.write_text(f'schema_version = 2\n[styles.atlas.constellation_figures]\ngap_points = {gap}\n')
+    configuration = load_configuration_defaults(overlay)
+    full = compose_chart(FullSkyChart(), style="atlas", mode="print", configuration=configuration)
+    assert full.style.grids.constellation_line_gap_points == gap

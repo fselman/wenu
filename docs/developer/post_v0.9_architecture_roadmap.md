@@ -9,6 +9,21 @@
 
 ## Current forward roadmap
 
+**La Ligua v4 typography follow-up (2026-10-07):** Exact head `385c1b13`
+passed all 3,080 Mac tests in 310.31 seconds with a clean synchronized tree.
+Fernando reviewed v4 and authorized 20% larger grid labels without a wider
+ring, a 1-point location-planisphere line-gap default, inward constellation
+names, stronger text clearance and containment of linework at the horizon.
+The candidate extends existing style/configuration, composition and final
+renderer owners. Ordinary marginal text is centred in the existing band;
+custom oversize text remains measurable and may enlarge furniture. Narrow
+visible-region names may use bounded inward fallback positions, preserving
+upright or polar orientation, colour and fixed temporal dates. Explicit CLI
+and TOML gaps, including zero, retain precedence. The coordinate guide and
+architecture diagrams were reviewed and remain current: scientific meaning,
+ownership and pipeline are unchanged. New focused/full and visual acceptance
+are required. PR #211 remains draft and unmerged; cleanup is unauthorized.
+
 **Exterior-band follow-up (2026-10-07):** Exact shared-placement head
 `bf0cdb8f` passed all 3,067 Mac tests in 280.23 seconds with clean diff and
 synchronized branch. La Ligua v3 separates companion/name collisions;

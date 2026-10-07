@@ -516,3 +516,68 @@ def test_vertical_labelled_chain_prefers_side_alignment_without_hiding_faint_sta
         boxes.append(box)
     assert all(not a.overlaps(b) for i, a in enumerate(boxes) for b in boxes[i+1:])
     plt.close(fig)
+
+
+@pytest.mark.parametrize("dpi", [100, 300])
+@pytest.mark.parametrize("circular", [False, True])
+def test_larger_marginal_grid_text_fits_without_widening_the_band(dpi, circular):
+    from wenu.charts.boundaries import circular_boundary
+    from wenu.charts.styles import PublicationStyle
+    from wenu.rendering.label_placement import CurveLabelPlacement
+
+    frames = []
+    for fontsize in (3.5, 4.2):
+        figure, ax = plt.subplots(figsize=(6, 6), dpi=dpi)
+        ax.set(xlim=(-1, 1), ylim=(-1, 1), aspect="equal")
+        boundary = circular_boundary(1) if circular else ProjectedCurve(
+            [-1, 1, 1, -1], [-1, -1, 1, 1], closed=True)
+        renderer = MatplotlibRenderer(ax)
+        renderer.set_clip_boundary(boundary, style={"facecolor": "none"})
+        renderer.set_grid_label_band(boundary, style=PublicationStyle().grid_label_band_style())
+        angles = np.radians(np.arange(0, 360, 30)) if circular else np.radians([0, 90, 180, 270])
+        for index, angle in enumerate(angles):
+            point = np.array([np.cos(angle), np.sin(angle)])
+            curve = ProjectedCurve([0, point[0]], [0, point[1]], name=f"{index * 30}°")
+            renderer.draw(ProjectedGrid({"coordinate": ProjectedCurves([curve])}),
+                          draw_labels=True, label_style={"fontsize": fontsize, "ha": "center", "va": "center"},
+                          label_anchor=lambda curve, ax, point=point: CurveLabelPlacement(
+                              *point, rotation_deg=0, normal_offset_em=.65, exterior_direction=tuple(point)))
+        renderer.finalize_graphics()
+        figure.canvas.draw()
+        outer = renderer._grid_label_band_frame.get_path().transformed(renderer._grid_label_band_frame.get_transform())
+        inner = renderer._clip_patch.get_path().transformed(renderer._clip_patch.get_transform())
+        for text in ax.texts:
+            box = text.get_window_extent(figure.canvas.get_renderer())
+            corners = [[box.x0, box.y0], [box.x0, box.y1], [box.x1, box.y0], [box.x1, box.y1]]
+            assert outer.contains_points(corners).all()
+            assert not inner.contains_points(corners).any()
+            assert text.get_fontsize() == fontsize
+        frames.append(renderer._grid_label_band_frame.get_path().vertices.copy())
+        plt.close(figure)
+    np.testing.assert_allclose(*frames, atol=1e-12)
+
+
+@pytest.mark.parametrize("dpi", [100, 300])
+def test_narrow_visible_region_names_move_inside_sky_and_preserve_clipped_lines(dpi):
+    from wenu.charts.boundaries import circular_boundary
+    from wenu.charts.styles import PublicationStyle
+
+    figure, ax = plt.subplots(figsize=(4, 4), dpi=dpi)
+    ax.set(xlim=(-2, 2), ylim=(-2, 2), aspect="equal")
+    renderer = MatplotlibRenderer(ax)
+    renderer.set_clip_boundary(circular_boundary(2), style={"facecolor": "none"})
+    renderer.set_grid_label_band(circular_boundary(2), style=PublicationStyle().grid_label_band_style())
+    region = ProjectedPolygon([1.975, 2, 2, 1.975], [-.1, -.1, .1, .1])
+    renderer.draw(ProjectedPoints([1.985], [0], labels=["Boo"], metadata={"label_regions": ((region,),)}),
+                  draw_markers=False, draw_labels=True,
+                  label_style={"fontsize": 9, "placement": "region", "ha": "center", "va": "center", "color": "gray"})
+    line = renderer.draw(ProjectedCurve([-3, 3], [0, 0]),
+                         style={"linewidth": 2, "zorder": 2, "endpoint_clearance_points": (1, 1)})[0]
+    renderer.finalize_graphics()
+    box = ax.texts[0].get_window_extent(figure.canvas.get_renderer())
+    boundary = renderer._clip_patch.get_path().transformed(renderer._clip_patch.get_transform())
+    assert boundary.contains_points([[box.x0, box.y0], [box.x0, box.y1], [box.x1, box.y0], [box.x1, box.y1]]).all()
+    assert ax.texts[0].get_color() == "gray" and ax.texts[0].get_rotation() == 0
+    assert line.get_clip_on() and line.get_clip_path() is not None
+    assert renderer._grid_label_band_artist.get_zorder() > line.get_zorder()
+    plt.close(figure)

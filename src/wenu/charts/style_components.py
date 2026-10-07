@@ -274,9 +274,11 @@ class GridStyle:
     constellation_label_fontsize: float | None = None
 
 
-    constellation_line_gap_points: float = 0.0
+    constellation_line_gap_points: float | None = None
 
     def __post_init__(self):
+        if self.constellation_line_gap_points is None:
+            return
         value = float(self.constellation_line_gap_points)
         if not isfinite(value) or value < 0.0:
             raise ValueError("constellation_line_gap_points must be finite and nonnegative")

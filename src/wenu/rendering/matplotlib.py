@@ -80,23 +80,45 @@ class MatplotlibRenderer:
                   if text.get_visible() and getattr(text, "_wenu_exterior_label", False)]
         for text in labels:
             text.set_color(style["label_color"])
+            text.set_zorder(max(text.get_zorder(), 4.0))
         boxes = [text.get_window_extent(renderer) for text in labels]
-        minimum = max([6.0, *(text.get_fontsize() for text in labels)]) * scale + 2.0 * padding
+        minimum = max([8.5, *(text.get_fontsize() for text in labels)]) * scale + 2.0 * padding
+        from matplotlib.transforms import ScaledTranslation
+        # Ordinary coordinate text remains below the reserved content sizing floor.
+        # Centre it in that reserved width instead of growing the band with
+        # its former font-dependent offset from the sky boundary.
+        for text in labels:
+            attachment = getattr(text, "_wenu_exterior_attachment", None)
+            if attachment is None:
+                continue
+            position, direction = attachment
+            origin = self.ax.transData.transform(position)
+            direction = self.ax.transData.transform(np.asarray(position) + direction) - origin
+            direction /= np.linalg.norm(direction)
+            shift = direction * minimum / (2.0 * self.ax.figure.dpi)
+            text.set_transform(self.ax.transData + ScaledTranslation(
+                *shift, self.ax.figure.dpi_scale_trans,
+            ))
+        boxes = [text.get_window_extent(renderer) for text in labels]
         radius = np.linalg.norm(inner - centre, axis=1)
         circular = len(inner) >= 16 and np.ptp(radius) < 1e-3 * np.mean(radius)
         if circular:
             outer_radius = float(np.max(radius)) + minimum
-            for box in boxes:
+            for text, box in zip(labels, boxes):
+                clearance = (style["linewidth"] / 2.0 * scale
+                             if hasattr(text, "_wenu_exterior_attachment") else padding)
                 corners = np.array([[box.x0, box.y0], [box.x0, box.y1],
                                     [box.x1, box.y0], [box.x1, box.y1]])
-                outer_radius = max(outer_radius, float(np.max(np.linalg.norm(corners - centre, axis=1))) + padding)
+                outer_radius = max(outer_radius, float(np.max(np.linalg.norm(corners - centre, axis=1))) + clearance)
             angle = np.linspace(0.0, 2.0 * np.pi, 721, endpoint=False)
             outer = centre + outer_radius * np.column_stack((np.cos(angle), np.sin(angle)))
         else:
             outer_low, outer_high = low - minimum, high + minimum
-            for box in boxes:
-                outer_low = np.minimum(outer_low, (box.x0 - padding, box.y0 - padding))
-                outer_high = np.maximum(outer_high, (box.x1 + padding, box.y1 + padding))
+            for text, box in zip(labels, boxes):
+                clearance = (style["linewidth"] / 2.0 * scale
+                             if hasattr(text, "_wenu_exterior_attachment") else padding)
+                outer_low = np.minimum(outer_low, (box.x0 - clearance, box.y0 - clearance))
+                outer_high = np.maximum(outer_high, (box.x1 + clearance, box.y1 + clearance))
             outer = np.array([outer_low, [outer_high[0], outer_low[1]],
                               outer_high, [outer_low[0], outer_high[1]]])
         # Opposite winding leaves the sky interior as a genuine transparent hole.
@@ -112,11 +134,11 @@ class MatplotlibRenderer:
         if self._grid_label_band_artist is not None:
             self._grid_label_band_artist.remove()
         patch = PathPatch(band_path, facecolor=style["fill_color"], edgecolor="none",
-                          clip_on=False, zorder=1.5)
+                          clip_on=False, zorder=3.75)
         self.ax.add_patch(patch)
         # The exterior stroke is separate: never redraw the inner sky boundary.
         frame = PathPatch(closed(outer), facecolor="none", edgecolor=style["frame_color"],
-                          linewidth=style["linewidth"], clip_on=False, zorder=1.6)
+                          linewidth=style["linewidth"], clip_on=False, zorder=3.85)
         previous = getattr(self, "_grid_label_band_frame", None)
         if previous is not None:
             previous.remove()
@@ -976,6 +998,10 @@ class MatplotlibRenderer:
                             ))
                             label_artist.set_clip_on(False)
                             setattr(label_artist, "_wenu_exterior_label", True)
+                            label_artist._wenu_exterior_attachment = (
+                                (anchor.x, anchor.y),
+                                np.asarray(anchor.exterior_direction, dtype=float),
+                            )
                         candidate_factory = getattr(label_anchor, "candidates", None)
                         if isinstance(anchor, CurveLabelPlacement) and callable(candidate_factory):
                             candidates = tuple(candidate_factory(named_curve, self.ax))
@@ -1307,6 +1333,7 @@ class MatplotlibRenderer:
                 line.set_visible(False)
             else:
                 line.set_data(shortened.x, shortened.y)
+                self._apply_clip_patch([line])
         self.finalize_label_placement()
         self._finalize_grid_label_band()
 
@@ -1422,7 +1449,7 @@ class MatplotlibRenderer:
                     if rotation is not None:
                         artist.set_rotation(rotation(*data_position))
                     box = artist.get_window_extent(renderer)
-                    padded = box.padded(0.25 * scale)
+                    padded = box.padded(0.75 * scale)
                     own_distance = distances(box, anchor.reshape(1, 2))[0]
                     attachment = np.clip(anchor, (box.x0, box.y0), (box.x1, box.y1))
                     own_gap = max(own_distance - radius, 0)
@@ -1432,7 +1459,7 @@ class MatplotlibRenderer:
                     fixed_conflict = sum(overlap(padded, other) for other in fixed)
                     outside = outside_boundary(padded)
                     alignment = float(lateral and dy != 0)
-                    cosmetic = (0.1 * sum(path.intersects_bbox(padded, filled=False) for path in paths)
+                    cosmetic = (0.35 * sum(path.intersects_bbox(padded, filled=False) for path in paths)
                                 + 0.025 * preference + 0.05 * extra)
                     candidates.append((box, padded, (marker_conflict, ambiguous,
                                                       fixed_conflict, outside, alignment, cosmetic),
@@ -1441,10 +1468,11 @@ class MatplotlibRenderer:
 
         def measured_choice(artist, *, movement=0.0, region_penalty=0.0):
             box = artist.get_window_extent(renderer)
-            padded = box.padded(0.25 * scale)
+            padded = box.padded(0.75 * scale)
             marker = np.maximum(radii + 0.25 * scale - distances(padded, centres), 0).sum() / scale
             static = (marker, 0.0, sum(overlap(padded, other) for other in fixed),
-                      outside_boundary(padded) + region_penalty, 0.0, movement)
+                      outside_boundary(padded) + region_penalty, 0.0,
+                      movement + .35 * sum(path.intersects_bbox(padded, filled=False) for path in paths))
             return (box, padded, static, artist.get_position(), artist.get_rotation(), artist.get_transform())
 
         for artist, x, y, regions in self._area_labels:
@@ -1460,6 +1488,17 @@ class MatplotlibRenderer:
             offsets = [(0.0, 0.0)] + [(dx * distance, dy * distance)
                 for distance in (0.75, 1.5, 2.5, 4.0)
                 for dx, dy in ((0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, 1), (1, -1), (-1, -1))]
+            # Add size-aware inward moves for anchors close to the rim.
+            # A sliver of an IAU region may be too narrow to contain a name;
+            # retain bounded fallback candidates rather than clip the text.
+            if boundary is not None:
+                inward = bounds.get_points().mean(axis=0) - origin
+                length = np.linalg.norm(inward)
+                if length > 0:
+                    box = artist.get_window_extent(renderer)
+                    reach = np.hypot(box.width, box.height) / step
+                    offsets.extend(tuple(inward / length * reach * fraction)
+                                   for fraction in (0.5, 1.0, 1.5))
             candidates = []
             for dx, dy in offsets:
                 position = self.ax.transData.inverted().transform(origin + step * np.asarray((dx, dy)))
@@ -1470,8 +1509,6 @@ class MatplotlibRenderer:
                 box = artist.get_window_extent(renderer)
                 centre = self.ax.transData.inverted().transform(((box.x0 + box.x1) / 2.0, (box.y0 + box.y1) / 2.0))
                 allowed = region_paths is None or any(path.contains_point(centre) for path in region_paths)
-                if not allowed and (dx or dy):
-                    continue
                 candidates.append(measured_choice(artist, movement=0.025 * np.hypot(dx, dy), region_penalty=float(not allowed)))
             choices.append(candidates)
 
