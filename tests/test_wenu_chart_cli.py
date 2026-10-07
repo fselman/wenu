@@ -115,10 +115,20 @@ def test_constellation_system_is_an_explicit_parameter_not_content():
     ])
 
     assert arguments.constellation_system == "western"
-    assert arguments.constellation_lines == []
-    assert arguments.constellation_labels == []
-    assert arguments.constellation_boundaries == []
+    # Omitted feature switches defer to TOML; vocabulary alone adds no content.
+    assert arguments.constellation_lines is None
+    assert arguments.constellation_labels is None
+    assert arguments.constellation_boundaries is None
     assert arguments.constellation_mask == []
+
+    from wenu.charts.chart_arguments import chart_detail_overrides, chart_sky_content
+
+    content = chart_sky_content(arguments)
+    detail = chart_detail_overrides(arguments)
+    for kind in ("lines", "labels", "boundaries"):
+        layer = f"constellation_{kind}"
+        assert getattr(content, layer) == frozenset()
+        assert layer in detail.disabled_layers
 
 
 def test_every_chart_family_exposes_solar_system_selectors():
