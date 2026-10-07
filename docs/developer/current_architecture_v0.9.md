@@ -13,11 +13,20 @@ render factories preserve request isolation and curated polar adjustments.
 
 The existing Matplotlib point-label search measures rotated artist bounds
 and recomputes a position-dependent rotation after relocation. Reference
-names retain local tangent placement; grid labels and temporal track/sequence
+names retain local tangent placement; temporal track/sequence
 annotations are excluded from the override. No annealing, joint area/curve
 collision solver, grid-density policy, new production module, dependency,
 scientific transformation, or position source is added. See the
 [label guide](../user_guide/labels.md) for current limits and proposed work.
+
+The horizon-grid correction extends `charts/boundaries.py` with native
+AltAz anchors: altitude on cardinal azimuth spokes and azimuth outside the
+projected horizon. The generic renderer supports multiple curve anchors and
+measured exterior text offsets. Automatic point candidates prefer complete
+containment in the actual clip path over collision preferences. Temporal
+labels and reference tangents retain their owners. Python spoke selection is
+available; CLI/TOML cadence, band fill, and other grid families remain later
+work. No astronomical geometry or coordinate convention changes.
 
 **Status:** Implemented current architecture
 **Previous baseline:** `archive/architecture_history/current_architecture_v0.8.md`

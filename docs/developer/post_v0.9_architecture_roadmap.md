@@ -14,9 +14,12 @@ orientation overrides, preservation during collision avoidance, and a label
 guide with cartographic references. The bounded candidate extends existing
 chart preparation, style/configuration, and Matplotlib point-label placement.
 Polar labels keep up away from the pole; other charts stay upright. Track
-dates, grid labels, and reference tangents retain their existing paths.
+dates and reference tangents retain their existing paths. The image-review
+correction adds actual-boundary point containment, exterior azimuth labels,
+and altitude labels on cardinal spokes for horizon planispheres.
 Joint constellation/curve relocation, annealing, unresolved-collision reports,
-exterior coordinate bands, configurable spokes, and density refinements remain
+other exterior coordinate bands, CLI/TOML spoke controls, coloured horizon
+bands, and density refinements remain
 later work. `ChartContext` and `AdaptiveDetailPolicy` already own scale/detail
 evidence; inspect those before admitting a new scale module. Grid cadence and
 limiting magnitude must remain independently overridable. See the

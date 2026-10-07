@@ -59,13 +59,17 @@ search and coordinate descent. It measures actual rotated text bounds and
 recomputes a position-dependent polar rotation at each candidate. It preserves
 star identity, font, colour, and the selected orientation. Upright labels
 remain upright when the chart geometry rotates. It does not hide requested
-labels or change scientific positions.
+labels or change scientific positions. Candidates are checked against the
+actual projected clip boundary, including text padding; a fitting interior
+candidate takes precedence over collision and cosmetic preferences. If none
+of the finite candidates fits, placement remains best effort. This applies
+to automatic point labels, not fixed constellation or track labels.
 
 This is not a guarantee of collision-free output. Constellation labels and
 reference-curve labels are currently fixed obstacles for this point-label
 pass; reference labels also have their existing boundary-aware anchor search.
 Joint constellation/point placement, curve-constrained relocation, stronger
-search, actual-boundary containment, and explicit unresolved-collision
+search and explicit unresolved-collision
 diagnostics remain later work. No simulated annealing is implemented here.
 
 The celestial equator, ecliptic, and Galactic equator retain their existing
@@ -74,11 +78,26 @@ slide them along their own curves, recomputing the tangent and preserving
 the offset. Prefer gently curving sections; excessive curvature makes text
 harder to read. Do not move a reference name into an unrelated empty patch.
 
-## Agreed grid-label direction: proposed, not implemented by this milestone
+## Implemented horizon-grid placement
+
+For a location-centred planisphere, `--altaz-grid-labels` places azimuth
+labels upright outside the horizon. The exterior transparent margin uses
+measured text bounds and a 0.65 em gap, rather than a fixed fraction of chart
+radius. Export includes these unclipped marginal labels. Altitude labels
+remain upright inside the horizon along azimuths 0°, 90°, 180°, 270°.
+A requested altitude 90° label appears only once at the zenith. These anchors
+follow projection rotation, east/west reflection, and off-zenith centres.
+
+Python callers can set `FullSkyChart(altitude_label_azimuths_deg=(45, 225))`.
+CLI/TOML spoke selection, a coloured annular background, and independent
+azimuth-label cadence remain proposed. Grid-line density is unchanged.
+Track dates, reference-plane labels, and other chart families keep their
+existing coordinate anchors.
+
+## Remaining grid policies: proposed, not implemented by this milestone
 
 | Chart | Coordinate-label policy |
 |---|---|
-| Horizon planisphere | Azimuth outside the horizon in a reserved annulus; altitude inside along azimuth spokes at 0°, 90°, 180°, 270°, configurable |
 | Pole-centred equatorial planisphere | RA in an exterior annulus, every 2h by default; declination inside along RA 0h, 6h, 12h, 18h, configurable |
 | Nonpolar rectangular regional/constellation chart | Prefer RA outside top/bottom, declination outside left/right; anchor to actual curve–edge crossings |
 | Regional/constellation chart containing a pole | Retain the chart's viewport; RA may use its whole perimeter, declination uses interior meridians |

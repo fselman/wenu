@@ -363,6 +363,37 @@ def test_isolated_greek_label_prefers_vertical_alignment():
 
 
 @pytest.mark.parametrize("dpi", [100, 300])
+def test_auto_labels_respect_the_actual_circular_boundary(dpi):
+    from wenu.charts.boundaries import circular_boundary
+
+    fig, ax = plt.subplots(figsize=(4, 4), dpi=dpi)
+    ax.set_xlim(-2, 2)
+    ax.set_ylim(-2, 2)
+    ax.set_aspect("equal")
+    renderer = MatplotlibRenderer(ax)
+    renderer.set_clip_boundary(circular_boundary(2))
+    angle = np.deg2rad(np.arange(0, 360, 45))
+    renderer.draw(
+        ProjectedPoints(1.97 * np.cos(angle), 1.97 * np.sin(angle),
+                        labels=["Canopus"] * len(angle)),
+        style={"s": 36}, draw_labels=True,
+        label_style={"fontsize": 9, "placement": "auto"},
+    )
+    renderer.finalize_label_placement()
+    boundary = renderer._clip_patch.get_path().transformed(renderer._clip_patch.get_transform())
+    for text in ax.texts:
+        box = text.get_window_extent(fig.canvas.get_renderer())
+        corners = [(box.x0, box.y0), (box.x0, box.y1),
+                   (box.x1, box.y0), (box.x1, box.y1)]
+        assert boundary.contains_points(corners).all()
+        assert text.get_rotation() == 0
+    before = [text.get_position() for text in ax.texts]
+    renderer.finalize_label_placement()
+    np.testing.assert_allclose([text.get_position() for text in ax.texts], before, atol=1e-12)
+    plt.close(fig)
+
+
+@pytest.mark.parametrize("dpi", [100, 300])
 @pytest.mark.parametrize("angle", [0, 180])
 def test_vertical_labelled_chain_prefers_side_alignment_without_hiding_faint_stars(dpi, angle):
     fig, ax = plt.subplots(figsize=(3, 3), dpi=dpi)

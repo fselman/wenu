@@ -28,3 +28,9 @@ def test_coordinate_anchor_replaces_grid_anchor_only():
     assert resolved[grid]["render"]["label_anchor"] is boundary_anchor
     assert resolved["solar_system_track"]["render"]["label_anchor"] is track_anchor
     assert resolved[track]["render"]["label_anchor"] is track_anchor
+    horizon_anchor = object()
+    options["altaz_grid"] = {"render": {"label_anchor": old_grid_anchor}}
+    resolved = apply_coordinate_label_anchor(options, boundary_anchor, altaz_anchor=horizon_anchor)
+    assert resolved["altaz_grid"]["render"]["label_anchor"] is horizon_anchor
+    assert resolved[grid]["render"]["label_anchor"] is boundary_anchor
+    assert resolved[track]["render"]["label_anchor"] is track_anchor

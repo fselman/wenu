@@ -12,6 +12,13 @@ The away-from-pole policy requires a polar-planisphere chart. Neither
 switch changes reference-curve names, coordinate labels, track dates, or
 sequence annotations. `MatplotlibRenderer.finalize_label_placement()` keeps
 point-label rotation rules and evaluates actual rotated candidate bounds.
+`FullSkyChart.altitude_label_azimuths_deg` defaults to `(0, 90, 180, 270)`.
+`HorizonGridLabelAnchor` applies only to its AltAz grid; other grids retain
+the existing circular anchor. A grid anchor may return a list of
+`CurveLabelPlacement` objects. `exterior_direction` requests an unclipped
+exterior label, displaced in physical units by measured text support plus
+`normal_offset_em` padding. Automatic point placement checks the actual clip
+path, while temporal dates remain fixed obstacles.
 See [label typography](../user_guide/labels.md) for limitations.
 
 **Architecture version:** 0.9

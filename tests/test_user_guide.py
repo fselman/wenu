@@ -46,6 +46,8 @@ def test_label_guide_distinguishes_implemented_controls_from_future_grid_policy(
     for value in ("--labels-upright", "--labels-up-away-from-cp",
                   'labels_orientation = "upright"',
                   "proposed, not implemented by this milestone",
+                  "Implemented horizon-grid placement",
+                  "altitude_label_azimuths_deg",
                   "No simulated annealing is implemented here.",
                   "track dates retain their established anchors",
                   "Literature and precedents"):

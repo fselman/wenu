@@ -363,7 +363,45 @@ class RectangularLabelAnchor:
         return float(x[index]), float(y[index])
 
 
-def apply_coordinate_label_anchor(layer_options, anchor):
+@dataclass(frozen=True)
+class HorizonGridLabelAnchor:
+    """Anchor azimuth outside the horizon and altitude on selected spokes."""
+
+    projection: object
+    boundary: ProjectedCurve
+    horizon_altitude_deg: float = 0.0
+    altitude_label_azimuths_deg: tuple[float, ...] = (0.0, 90.0, 180.0, 270.0)
+
+    def __call__(self, curve, ax=None):
+        name = str(curve.name or "")
+        if name.startswith("altitude_"):
+            altitude = float(name.removeprefix("altitude_"))
+            if altitude <= self.horizon_altitude_deg:
+                return None
+            spokes = (0.0,) if altitude == 90.0 else self.altitude_label_azimuths_deg
+            placements = []
+            for azimuth in spokes:
+                x, y = self.projection.project_spherical(azimuth, altitude)
+                if np.isfinite((x, y)).all():
+                    placements.append(_above_line(x, y))
+            return placements
+        if name.startswith("azimuth_"):
+            azimuth = float(name.removeprefix("azimuth_"))
+            x, y = self.projection.project_spherical(azimuth, self.horizon_altitude_deg)
+            finite = self.boundary.finite
+            bx, by = self.boundary.x[finite], self.boundary.y[finite]
+            # A stereographic small circle remains a circle even off zenith.
+            matrix = np.column_stack((2.0 * bx, 2.0 * by, np.ones(len(bx))))
+            cx, cy, _ = np.linalg.lstsq(matrix, bx**2 + by**2, rcond=None)[0]
+            return CurveLabelPlacement(
+                float(x), float(y), rotation_deg=0.0, normal_offset_em=0.65,
+                horizontal_alignment="center", vertical_alignment="center",
+                exterior_direction=(float(x - cx), float(y - cy)),
+            )
+        return None
+
+
+def apply_coordinate_label_anchor(layer_options, anchor, *, altaz_anchor=None):
     """Return layer options with grid label anchors replaced safely."""
     resolved = {
         layer: dict(options)
@@ -401,6 +439,10 @@ def apply_coordinate_label_anchor(layer_options, anchor):
         ):
             continue
         updated_render = dict(render)
-        updated_render["label_anchor"] = anchor
+        updated_render["label_anchor"] = (
+            altaz_anchor if altaz_anchor is not None and (
+                layer_name == "altaz_grid" or coordinate_system == "altaz"
+            ) else anchor
+        )
         options["render"] = updated_render
     return resolved

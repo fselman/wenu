@@ -247,6 +247,8 @@ class MatplotlibRenderer:
         for artist in artists:
             if isinstance(artist, (list, tuple)):
                 self._apply_clip_patch(artist)
+            elif getattr(artist, "_wenu_exterior_label", False):
+                artist.set_clip_on(False)
             elif callable(getattr(artist, "set_clip_path", None)):
                 artist.set_clip_on(True)
                 artist.set_clip_path(self._clip_patch)
@@ -790,70 +792,93 @@ class MatplotlibRenderer:
                     )
                     if anchor is None:
                         continue
-                    label_style_for_curve = {
-                        **label_style,
-                        **dict(component_label_styles.get(name, {})),
-                    }
-                    if isinstance(anchor, CurveLabelPlacement):
-                        position = (anchor.x, anchor.y)
-                        label_style_for_curve = dict(label_style)
-                        if anchor.horizontal_alignment is not None:
-                            label_style_for_curve["ha"] = (
-                                anchor.horizontal_alignment
-                            )
-                        if anchor.vertical_alignment is not None:
-                            label_style_for_curve["va"] = (
-                                anchor.vertical_alignment
-                            )
-                        if anchor.rotation_deg is not None:
-                            label_style_for_curve = {
-                                **label_style_for_curve,
-                                "rotation": anchor.rotation_deg,
-                                "rotation_mode": "anchor",
-                            }
-                            if anchor.normal_offset_em:
-                                from matplotlib.transforms import (
-                                    ScaledTranslation,
+                    anchors = anchor if isinstance(anchor, list) and all(
+                        isinstance(item, CurveLabelPlacement) for item in anchor
+                    ) else (anchor,)
+                    for anchor in anchors:
+                        label_style_for_curve = {
+                            **label_style,
+                            **dict(component_label_styles.get(name, {})),
+                        }
+                        if isinstance(anchor, CurveLabelPlacement):
+                            position = (anchor.x, anchor.y)
+                            if anchor.horizontal_alignment is not None:
+                                label_style_for_curve["ha"] = (
+                                    anchor.horizontal_alignment
                                 )
+                            if anchor.vertical_alignment is not None:
+                                label_style_for_curve["va"] = (
+                                    anchor.vertical_alignment
+                                )
+                            if anchor.rotation_deg is not None:
+                                label_style_for_curve = {
+                                    **label_style_for_curve,
+                                    "rotation": anchor.rotation_deg,
+                                    "rotation_mode": "anchor",
+                                }
+                                if anchor.normal_offset_em and anchor.exterior_direction is None:
+                                    from matplotlib.transforms import (
+                                        ScaledTranslation,
+                                    )
 
-                                fontsize = float(
-                                    label_style_for_curve.get(
-                                        "fontsize", 10.0
+                                    fontsize = float(
+                                        label_style_for_curve.get(
+                                            "fontsize", 10.0
+                                        )
                                     )
-                                )
-                                angle = np.radians(anchor.rotation_deg)
-                                distance = (
-                                    anchor.normal_offset_em * fontsize
-                                )
-                                dx = -np.sin(angle) * distance / 72.0
-                                dy = np.cos(angle) * distance / 72.0
-                                label_style_for_curve["transform"] = (
-                                    self.ax.transData
-                                    + ScaledTranslation(
-                                        dx,
-                                        dy,
-                                        self.ax.figure.dpi_scale_trans,
+                                    angle = np.radians(anchor.rotation_deg)
+                                    distance = (
+                                        anchor.normal_offset_em * fontsize
                                     )
-                                )
-                    else:
-                        position = anchor
-                    label = (
-                        curve_name
-                        if label_formatter is None
-                        else label_formatter(curve_name)
-                    )
-                    label_artist = self._label(
-                        *position,
-                        label,
-                        label_style_for_curve,
-                        label_offset,
-                    )
-                    setattr(
-                        label_artist,
-                        "_wenu_semantic_component",
-                        "labels",
-                    )
-                    artists.append(label_artist)
+                                    dx = -np.sin(angle) * distance / 72.0
+                                    dy = np.cos(angle) * distance / 72.0
+                                    label_style_for_curve["transform"] = (
+                                        self.ax.transData
+                                        + ScaledTranslation(
+                                            dx,
+                                            dy,
+                                            self.ax.figure.dpi_scale_trans,
+                                        )
+                                    )
+                        else:
+                            position = anchor
+                        label = (
+                            curve_name
+                            if label_formatter is None
+                            else label_formatter(curve_name)
+                        )
+                        label_artist = self._label(
+                            *position,
+                            label,
+                            label_style_for_curve,
+                            label_offset,
+                        )
+                        setattr(
+                            label_artist,
+                            "_wenu_semantic_component",
+                            "labels",
+                        )
+                        if isinstance(anchor, CurveLabelPlacement) and anchor.exterior_direction is not None:
+                            from matplotlib.transforms import ScaledTranslation
+
+                            self.ax.apply_aspect()
+                            direction = np.asarray(anchor.exterior_direction, dtype=float)
+                            origin = self.ax.transData.transform((anchor.x, anchor.y))
+                            direction = self.ax.transData.transform(
+                                np.asarray((anchor.x, anchor.y)) + direction
+                            ) - origin
+                            direction /= np.linalg.norm(direction)
+                            box = label_artist.get_window_extent(self.ax.figure.canvas.get_renderer())
+                            fontsize = label_artist.get_fontsize()
+                            distance = (abs(direction[0]) * box.width + abs(direction[1]) * box.height) / 2.0
+                            distance += anchor.normal_offset_em * fontsize * self.ax.figure.dpi / 72.0
+                            shift = direction * distance / self.ax.figure.dpi
+                            label_artist.set_transform(self.ax.transData + ScaledTranslation(
+                                *shift, self.ax.figure.dpi_scale_trans,
+                            ))
+                            label_artist.set_clip_on(False)
+                            setattr(label_artist, "_wenu_exterior_label", True)
+                        artists.append(label_artist)
         return artists
 
     def _draw_polygon(
@@ -1183,6 +1208,20 @@ class MatplotlibRenderer:
         paths = [line.get_path().transformed(line.get_transform())
                  for line in self.ax.lines if line.get_visible()]
         bounds = self.ax.get_window_extent(renderer)
+        boundary = (
+            None if self._clip_patch is None
+            else self._clip_patch.get_path().transformed(self._clip_patch.get_transform())
+        )
+
+        def outside_boundary(box):
+            outside = max(0.0, box.width * box.height / scale**2 - overlap(box, bounds))
+            if boundary is not None:
+                corners = np.asarray(((box.x0, box.y0), (box.x0, box.y1),
+                                      (box.x1, box.y0), (box.x1, box.y1)))
+                inside = boundary.contains_points(corners)
+                if not inside.all() or boundary.intersects_bbox(box, filled=False):
+                    outside += box.width * box.height / scale**2
+            return outside
 
         def overlap(first, second):
             return (max(0.0, min(first.x1, second.x1) - max(first.x0, second.x0))
@@ -1265,7 +1304,7 @@ class MatplotlibRenderer:
                     ambiguous = np.maximum(own_gap - other_gaps[competitors], 0).sum() / scale
                     marker_conflict = np.maximum(radii + 0.25 * scale - distances(padded, centres), 0).sum() / scale
                     fixed_conflict = sum(overlap(padded, other) for other in fixed)
-                    outside = box.width * box.height / scale**2 - overlap(box, bounds)
+                    outside = outside_boundary(padded)
                     alignment = float(lateral and dy != 0)
                     cosmetic = (0.1 * sum(path.intersects_bbox(padded, filled=False) for path in paths)
                                 + 0.025 * preference + 0.05 * extra)
@@ -1281,7 +1320,7 @@ class MatplotlibRenderer:
                 overlap(padded, choices[other][value][1])
                 for other, value in enumerate(assignments) if other != index
             )
-            return (static[0], static[1], static[2] + collisions, static[3], static[4], static[5])
+            return (static[3], static[0], static[1], static[2] + collisions, static[4], static[5])
 
         for index, candidates in enumerate(choices):
             selected.append(min(range(len(candidates)), key=lambda value: score(index, value, selected)))

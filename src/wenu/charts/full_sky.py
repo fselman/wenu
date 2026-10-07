@@ -10,6 +10,7 @@ from .label_placement import apply_object_label_orientation
 
 from wenu.charts.boundaries import (
     CircularGridLabelAnchor,
+    HorizonGridLabelAnchor,
     apply_coordinate_label_anchor,
 )
 from wenu.charts.constellation_label_placement import (
@@ -36,8 +37,16 @@ class FullSkyChart:
     horizon_color: str = "white"
     horizon_linewidth: float = 0.8
     outside_mask_constellations: tuple[str, ...] | None = None
+    altitude_label_azimuths_deg: tuple[float, ...] = (0.0, 90.0, 180.0, 270.0)
 
     def __post_init__(self):
+        spokes = tuple(float(value) for value in self.altitude_label_azimuths_deg)
+        if not spokes or not np.isfinite(spokes).all():
+            raise ValueError("altitude_label_azimuths_deg must contain finite azimuths.")
+        object.__setattr__(
+            self, "altitude_label_azimuths_deg",
+            tuple(dict.fromkeys(value % 360.0 for value in spokes)),
+        )
         values = np.asarray(
             (
                 self.center_alt_deg,
@@ -243,6 +252,10 @@ class FullSkyChart:
         options = apply_coordinate_label_anchor(
             options,
             self.coordinate_label_anchor,
+            altaz_anchor=HorizonGridLabelAnchor(
+                self.projection, self.horizon, self.horizon_altitude_deg,
+                self.altitude_label_azimuths_deg,
+            ),
         )
         options = apply_visible_constellation_label_anchors(
             options,

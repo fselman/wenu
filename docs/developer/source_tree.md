@@ -6,7 +6,11 @@ The ordinary chart render owners and polar-planisphere owner apply that helper.
 `style_components.py`, `style_overrides.py`, and configuration translation own
 immutable appearance values and CLI/TOML precedence; `rendering/matplotlib.py`
 owns final display-space rotated-bound measurement and candidate placement.
-Track dates and reference tangents retain their existing owners. The user
+`charts/boundaries.py` owns horizon-specific AltAz anchor selection;
+`rendering/label_placement.py` carries renderer-neutral multiple/exterior
+placement values, and the Matplotlib renderer measures the exterior margin
+and actual-boundary containment. Track dates and reference tangents retain
+their existing owners. The user
 guide `docs/user_guide/labels.md` records implemented controls, proposed grid
 policies, and cartographic references. No production or test module is added.
 
