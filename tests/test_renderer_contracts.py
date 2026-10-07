@@ -393,6 +393,45 @@ def test_auto_labels_respect_the_actual_circular_boundary(dpi):
     plt.close(fig)
 
 
+def test_unresolved_collisions_are_reported_without_moving_fixed_text():
+    fig, ax = plt.subplots(figsize=(3, 3))
+    ax.set_xlim(-1, 1)
+    ax.set_ylim(-1, 1)
+    fixed = ax.text(0, 0, "Fixed track date", fontsize=100, ha="center", va="center")
+    renderer = MatplotlibRenderer(ax)
+    renderer.draw(ProjectedPoints([0], [0], labels=["Albireo"]), draw_labels=True,
+                  label_style={"fontsize": 9, "placement": "auto"})
+    renderer.finalize_graphics()
+    assert ("Fixed track date", "Albireo") in renderer.unresolved_label_collisions
+    assert fixed.get_position() == (0, 0)
+    plt.close(fig)
+
+
+def test_pair_move_can_release_two_conflicting_region_slots():
+    fig, ax = plt.subplots(figsize=(3, 3), dpi=100)
+    ax.set_xlim(-1, 1)
+    ax.set_ylim(-1, 1)
+    fig.canvas.draw()
+    renderer = MatplotlibRenderer(ax)
+    scale = fig.dpi / 72
+    origin = ax.transData.transform((0, 0))
+    spacing = ax.transData.inverted().transform(origin + [0.75 * 9 * scale, 0])[0]
+    def slot(x):
+        return ProjectedPolygon([x - .001, x + .001, x + .001, x - .001],
+                                [-.001, -.001, .001, .001])
+    renderer.draw(ProjectedPoints([0, spacing], [0, 0], labels=["XX", "YY"],
+                  metadata={"label_regions": ((slot(0), slot(2 * spacing)),
+                                              (slot(spacing), slot(-spacing)))}),
+                  draw_markers=False, draw_labels=True,
+                  label_style={"fontsize": 9, "placement": "region", "ha": "center", "va": "center"})
+    renderer.finalize_graphics()
+    assert not ax.texts[0].get_window_extent(fig.canvas.get_renderer()).overlaps(
+        ax.texts[1].get_window_extent(fig.canvas.get_renderer()))
+    assert ax.texts[0].get_position()[0] > 0
+    assert ax.texts[1].get_position()[0] < 0
+    plt.close(fig)
+
+
 @pytest.mark.parametrize("dpi", [100, 300])
 @pytest.mark.parametrize("angle", [0, 180])
 def test_vertical_labelled_chain_prefers_side_alignment_without_hiding_faint_stars(dpi, angle):

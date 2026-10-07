@@ -17,7 +17,7 @@ Polar labels keep up away from the pole; other charts stay upright. Track
 dates and reference tangents retain their existing paths. The image-review
 correction adds actual-boundary point containment, exterior azimuth labels,
 and altitude labels on cardinal spokes for horizon planispheres.
-Joint constellation/curve relocation, annealing, unresolved-collision reports,
+Annealing, CLI unresolved-collision reports,
 other exterior coordinate bands, CLI/TOML spoke controls, coloured horizon
 bands, and density refinements remain
 later work. `ChartContext` and `AdaptiveDetailPolicy` already own scale/detail
@@ -26,6 +26,19 @@ limiting magnitude must remain independently overridable. See the
 [label guide](../user_guide/labels.md). The coordinate guide was reviewed and
 remains current: no scientific coordinates, frames, epochs, equations, or
 provenance changed. This candidate requires Mac full-suite and visual acceptance.
+
+**Shared collision follow-up (2026-10-07):** After exact head `3d950643`
+passed all 3,059 Mac tests in 277.66 seconds, Fernando's La Ligua image
+confirmed the horizon correction but retained companion/name and
+reference/star collisions. He authorized the shared candidate process.
+The candidate joins stellar, bounded constellation and curve-constrained
+reference alternatives under the existing automatic placement setting.
+Grid labels, explicit reference anchors and temporal dates remain fixed.
+Boundary and text separation precede marker/ownership/cosmetic preferences;
+deterministic coordinate descent and bounded pair moves preserve typography.
+No annealing or new module is added. The coordinate guide remains current.
+New focused/full Mac and visual acceptance are required; PR #211 remains
+unmerged, with no cleanup authorized for this branch.
 
 **PR #210 closure (2026-10-07):** The constellation all/exclusion and Albireo
 work below merged into `main` at `948b90932748da5c4c140999142b0950fa2b92ef`.

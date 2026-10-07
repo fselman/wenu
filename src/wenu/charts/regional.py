@@ -617,7 +617,9 @@ class RegionalChart:
         projection = self.projection
         viewport = self.viewport
         labels = getattr(sky, "constellation_labels", None)
-        if options.get(labels, {}).get("visible_regions", False):
+        if options.get(labels, {}).get("visible_regions", False) or (
+            labels is not None and getattr(resolved_style, "star_label_placement", "fixed") == "auto"
+        ):
             from .constellation_label_placement import (
                 apply_visible_constellation_label_anchors,
             )

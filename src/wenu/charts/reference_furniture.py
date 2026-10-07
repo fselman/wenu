@@ -104,7 +104,7 @@ class BoundaryAwareReferenceAnchor:
         if not 0.0 < float(self.inset) <= 1.0:
             raise ValueError("inset must be in the interval (0, 1].")
 
-    def __call__(self, curve, ax=None):
+    def candidates(self, curve, ax=None):
         finite = curve.finite
         if not np.any(finite):
             return None
@@ -172,8 +172,10 @@ class BoundaryAwareReferenceAnchor:
                 )
             )
             order = indices[np.argsort(edge_distance)]
-        for index in order:
-            anchor = float(x[index]), float(y[index])
+        return tuple((float(x[index]), float(y[index])) for index in order)
+
+    def __call__(self, curve, ax=None):
+        for anchor in self.candidates(curve, ax) or ():
             if self.reservations is None or self.reservations.claim(anchor):
                 return anchor
         return None
@@ -222,10 +224,11 @@ def _explicit_anchor(position, reservations=None):
 class _SingleReferenceLabelAnchor:
     """Return at most one successful anchor for a semantic reference."""
 
-    def __init__(self, delegate, *, down_toward=None):
+    def __init__(self, delegate, *, down_toward=None, movable=False):
         self.delegate = delegate
         self.down_toward = down_toward
         self.used = False
+        self.movable = movable
 
     def __call__(self, curve, ax=None):
         if self.used:
@@ -240,6 +243,17 @@ class _SingleReferenceLabelAnchor:
                 down_toward=self.down_toward,
             )
         return None
+
+    def candidates(self, curve, ax=None):
+        if not self.movable or not isinstance(self.delegate, BoundaryAwareReferenceAnchor):
+            return ()
+        positions = self.delegate.candidates(curve, ax) or ()
+        if len(positions) > 41:
+            indices = np.linspace(0, len(positions) - 1, 41, dtype=int)
+            positions = tuple(positions[index] for index in indices)
+        return tuple(tangent_label_placement(
+            curve, position, normal_offset_em=0.75, down_toward=self.down_toward,
+        ) for position in positions)
 
 
 def _occupied_legend_locations(composition):
@@ -260,6 +274,7 @@ def _label_anchor(
     reservations,
     *,
     down_toward=None,
+    movable=False,
 ):
     if annotation.anchor is not None:
         delegate = _explicit_anchor(annotation.anchor, reservations)
@@ -272,6 +287,7 @@ def _label_anchor(
     return _SingleReferenceLabelAnchor(
         delegate,
         down_toward=down_toward,
+        movable=movable,
     )
 
 
@@ -528,6 +544,7 @@ def _reference_layer_options(reference_sky, composition, chart):
             composition,
             reservations,
             down_toward=down_toward,
+            movable=style.star_label_placement == "auto",
         )
         label_style = dict(render["label_style"])
         label_style["zorder"] = layers.LABELS

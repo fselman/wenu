@@ -21,6 +21,17 @@ exterior label, displaced in physical units by measured text support plus
 path, while temporal dates remain fixed obstacles.
 See [label typography](../user_guide/labels.md) for limitations.
 
+With `star_label_placement="auto"`, constellation label styles carry internal
+`placement="region"`; prepared points may carry aligned `label_regions`
+metadata containing their projected visible IAU polygons. The renderer joins
+these bounded area candidates with stellar candidates and optional curve
+anchor `candidates(curve, ax)` values. Reference furniture supplies these
+values only for automatic anchors, preserving each local tangent and normal
+offset. Explicit reference anchors and all grid/temporal labels remain fixed.
+`MatplotlibRenderer.unresolved_label_collisions` exposes residual text pairs
+for inspection after finalization. Coordinate descent plus bounded pair moves
+is deterministic; no annealing or CLI diagnostic output is added.
+
 **Architecture version:** 0.9
 **Status:** Implemented
 **Date:** 2026-08-28

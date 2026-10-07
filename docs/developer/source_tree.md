@@ -14,6 +14,15 @@ their existing owners. The user
 guide `docs/user_guide/labels.md` records implemented controls, proposed grid
 policies, and cartographic references. No production or test module is added.
 
+Shared collision placement remains in `rendering/matplotlib.py`.
+`charts/constellation_label_placement.py` supplies renderer-neutral projected
+regions; `charts/styles.py` opts constellation names into area placement
+when stellar placement is automatic. `charts/reference_furniture.py` owns
+reference-curve alternatives and their tangent/offset policies. The renderer
+knows neither constellation identities nor astronomical reference systems.
+Existing placement tests own companion separation, region/curve constraints,
+orientation, determinism, fixed temporal annotations and residual overlaps.
+
 **Architecture version:** 0.9
 
 Milestone 46A extends the registered coordinate-grid family with native

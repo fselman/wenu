@@ -40,6 +40,9 @@ class MatplotlibRenderer:
         self._viewport = None
         self._point_obstacles = []
         self._auto_labels = []
+        self._area_labels = []
+        self._curve_labels = []
+        self.unresolved_label_collisions = ()
         self._label_rotations = {}
         self._gapped_lines = []
 
@@ -542,8 +545,8 @@ class MatplotlibRenderer:
         artists = []
         label_style = dict(label_style)
         placement = label_style.pop("placement", "fixed")
-        if placement not in {"fixed", "auto"}:
-            raise ValueError("point label placement must be fixed or auto")
+        if placement not in {"fixed", "auto", "region"}:
+            raise ValueError("point label placement must be fixed, auto, or region")
         if draw_markers:
             areas = np.broadcast_to(np.asarray(style.get("s", 1.0)), (len(points),)).copy()
             for index, entity_style in enumerate(self._entity_styles(styles, len(points))):
@@ -643,6 +646,12 @@ class MatplotlibRenderer:
                     )
                     if placement == "auto":
                         self._auto_labels.append((label_artist, float(points.x[index]), float(points.y[index])))
+                    elif placement == "region":
+                        regions = points.metadata.get("label_regions")
+                        self._area_labels.append((
+                            label_artist, *label_artist.get_position(),
+                            None if regions is None else regions[index],
+                        ))
                     self._attach_semantic_entity(
                         (label_artist,), points.metadata, index
                     )
@@ -878,8 +887,32 @@ class MatplotlibRenderer:
                             ))
                             label_artist.set_clip_on(False)
                             setattr(label_artist, "_wenu_exterior_label", True)
+                        candidate_factory = getattr(label_anchor, "candidates", None)
+                        if isinstance(anchor, CurveLabelPlacement) and callable(candidate_factory):
+                            candidates = tuple(candidate_factory(named_curve, self.ax))
+                            if candidates:
+                                self._curve_labels.append((label_artist, anchor, (anchor, *candidates)))
                         artists.append(label_artist)
         return artists
+
+    def _apply_curve_label_placement(self, artist, placement):
+        """Recompute a curve label's tangent and physical normal offset."""
+        from matplotlib.transforms import ScaledTranslation
+
+        artist.set_position((placement.x, placement.y))
+        if placement.rotation_deg is not None:
+            artist.set_rotation(placement.rotation_deg)
+            artist.set_rotation_mode("anchor")
+        if placement.horizontal_alignment is not None:
+            artist.set_ha(placement.horizontal_alignment)
+        if placement.vertical_alignment is not None:
+            artist.set_va(placement.vertical_alignment)
+        angle = np.radians(artist.get_rotation())
+        distance = placement.normal_offset_em * artist.get_fontsize() / 72.0
+        artist.set_transform(self.ax.transData + ScaledTranslation(
+            -np.sin(angle) * distance, np.cos(angle) * distance,
+            self.ax.figure.dpi_scale_trans,
+        ))
 
     def _draw_polygon(
         self,
@@ -1176,7 +1209,7 @@ class MatplotlibRenderer:
 
     def finalize_graphics(self):
         """Resolve physical gaps and label positions after aspect/layout settles."""
-        if not self._gapped_lines and not self._auto_labels:
+        if not (self._gapped_lines or self._auto_labels or self._area_labels or self._curve_labels):
             return
         self.ax.figure.canvas.draw()
         for line, curve, clearances in self._gapped_lines:
@@ -1190,19 +1223,21 @@ class MatplotlibRenderer:
     def finalize_label_placement(self):
         """Place compact labels with visible ownership in final display space.
 
-        Association has priority over cosmetic line avoidance. Candidate
-        positions follow the projected markers and retain their orientation
-        policy. Coordinate descent revisits earlier choices as a group.
+        Point, area and curve candidates preserve their attachment policies.
+        Boundary containment and text separation precede marker clearance,
+        point ownership and cosmetic preferences. Coordinate descent plus
+        bounded simultaneous pair moves revisit assignments as a group.
         """
-        if not self._auto_labels:
+        if not (self._auto_labels or self._area_labels or self._curve_labels):
             return
+        self.ax.figure.canvas.draw()
         renderer = self.ax.figure.canvas.get_renderer()
         scale = self.ax.figure.dpi / 72.0
         centres = self.ax.transData.transform(
             [(x, y) for x, y, _ in self._point_obstacles]
         ) if self._point_obstacles else np.empty((0, 2))
         radii = np.asarray([radius * scale for _, _, radius in self._point_obstacles])
-        auto_artists = {artist for artist, _, _ in self._auto_labels}
+        auto_artists = {item[0] for item in (*self._auto_labels, *self._area_labels, *self._curve_labels)}
         fixed = [artist.get_window_extent(renderer) for artist in self.ax.texts
                  if artist not in auto_artists and artist.get_visible() and artist.get_text()]
         paths = [line.get_path().transformed(line.get_transform())
@@ -1239,14 +1274,15 @@ class MatplotlibRenderer:
             near = np.linalg.norm(centres - anchor, axis=1) < 1e-4
             return np.max(radii[near], initial=0.0)
 
-        labels = sorted(self._auto_labels, key=lambda item: (
+        point_labels = sorted(self._auto_labels, key=lambda item: (
             -radius_at(self.ax.transData.transform(item[1:])),
             -len(item[0].get_text()),
         ))
-        label_anchors = self.ax.transData.transform([item[1:] for item in labels])
+        labels = list(point_labels)
+        label_anchors = self.ax.transData.transform([item[1:] for item in point_labels]) if point_labels else np.empty((0, 2))
         label_radii = np.asarray([radius_at(anchor) for anchor in label_anchors])
         choices = []
-        for artist, x, y in labels:
+        for artist, x, y in point_labels:
             anchor = self.ax.transData.transform((x, y))
             radius = radius_at(anchor)
             artist.set_ha("left")
@@ -1310,34 +1346,133 @@ class MatplotlibRenderer:
                                 + 0.025 * preference + 0.05 * extra)
                     candidates.append((box, padded, (marker_conflict, ambiguous,
                                                       fixed_conflict, outside, alignment, cosmetic),
-                                       tuple(data_position), artist.get_rotation()))
+                                       tuple(data_position), artist.get_rotation(), artist.get_transform()))
             choices.append(candidates)
 
-        selected = []
-        def score(index, candidate, assignments):
-            box, padded, static, _, _ = choices[index][candidate]
-            collisions = sum(
-                overlap(padded, choices[other][value][1])
-                for other, value in enumerate(assignments) if other != index
+        def measured_choice(artist, *, movement=0.0, region_penalty=0.0):
+            box = artist.get_window_extent(renderer)
+            padded = box.padded(0.25 * scale)
+            marker = np.maximum(radii + 0.25 * scale - distances(padded, centres), 0).sum() / scale
+            static = (marker, 0.0, sum(overlap(padded, other) for other in fixed),
+                      outside_boundary(padded) + region_penalty, 0.0, movement)
+            return (box, padded, static, artist.get_position(), artist.get_rotation(), artist.get_transform())
+
+        for artist, x, y, regions in self._area_labels:
+            from matplotlib.path import Path
+
+            labels.append((artist, x, y))
+            origin = self.ax.transData.transform((x, y))
+            region_paths = None if regions is None else tuple(
+                Path(np.vstack((np.column_stack((region.x, region.y)), (region.x[0], region.y[0]))))
+                for region in regions
             )
-            return (static[3], static[0], static[1], static[2] + collisions, static[4], static[5])
+            step = artist.get_fontsize() * scale
+            offsets = [(0.0, 0.0)] + [(dx * distance, dy * distance)
+                for distance in (0.75, 1.5, 2.5, 4.0)
+                for dx, dy in ((0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, 1), (1, -1), (-1, -1))]
+            candidates = []
+            for dx, dy in offsets:
+                position = self.ax.transData.inverted().transform(origin + step * np.asarray((dx, dy)))
+                artist.set_position(position)
+                rotation = self._label_rotations.get(artist)
+                if rotation is not None:
+                    artist.set_rotation(rotation(*position))
+                box = artist.get_window_extent(renderer)
+                centre = self.ax.transData.inverted().transform(((box.x0 + box.x1) / 2.0, (box.y0 + box.y1) / 2.0))
+                allowed = region_paths is None or any(path.contains_point(centre) for path in region_paths)
+                if not allowed and (dx or dy):
+                    continue
+                candidates.append(measured_choice(artist, movement=0.025 * np.hypot(dx, dy), region_penalty=float(not allowed)))
+            choices.append(candidates)
+
+        for artist, original, placements in self._curve_labels:
+            labels.append((artist, original.x, original.y))
+            origin = self.ax.transData.transform((original.x, original.y))
+            candidates = []
+            for placement in placements:
+                self._apply_curve_label_placement(artist, placement)
+                movement = np.linalg.norm(self.ax.transData.transform((placement.x, placement.y)) - origin) / scale
+                candidates.append(measured_choice(artist, movement=0.002 * movement))
+            choices.append(candidates)
+
+        candidate_bounds = [np.asarray([choice[1].extents for choice in candidates]) for candidates in choices]
+        pair_overlaps = {}
+
+        def pair_overlap(first, a, second, b):
+            if first > second:
+                return pair_overlap(second, b, first, a)
+            key = first, second
+            if key not in pair_overlaps:
+                left, right = candidate_bounds[first], candidate_bounds[second]
+                widths = np.maximum(0.0, np.minimum(left[:, None, 2], right[None, :, 2]) - np.maximum(left[:, None, 0], right[None, :, 0]))
+                heights = np.maximum(0.0, np.minimum(left[:, None, 3], right[None, :, 3]) - np.maximum(left[:, None, 1], right[None, :, 1]))
+                pair_overlaps[key] = widths * heights / scale**2
+            return pair_overlaps[key][a, b]
+
+        selected = []
+
+        def score(index, candidate, assignments, *, exclude=None):
+            static = choices[index][candidate][2]
+            collisions = sum(pair_overlap(index, candidate, other, value)
+                for other, value in enumerate(assignments) if other != index and other != exclude)
+            return (static[3], static[2] + collisions, static[0], static[1], static[4], static[5])
 
         for index, candidates in enumerate(choices):
             selected.append(min(range(len(candidates)), key=lambda value: score(index, value, selected)))
-        # Revisiting the set avoids locking a later label out of a nearby slot.
-        for _ in range(8):
+
+        def descend():
+            for _ in range(12):
+                changed = False
+                for index, candidates in enumerate(choices):
+                    best = min(range(len(candidates)), key=lambda value: score(index, value, selected))
+                    if score(index, best, selected) < score(index, selected[index], selected):
+                        selected[index] = best
+                        changed = True
+                if not changed:
+                    break
+
+        def pair_score(i, a, j, b):
+            left = score(i, a, selected, exclude=j)
+            right = score(j, b, selected, exclude=i)
+            combined = [x + y for x, y in zip(left, right)]
+            combined[1] += pair_overlap(i, a, j, b)
+            return tuple(combined)
+
+        descend()
+        # Simultaneous pair moves escape slots that a single-label move cannot.
+        for _ in range(3):
+            conflicts = sorted((-pair_overlap(i, selected[i], j, selected[j]), i, j)
+                for i in range(len(labels)) for j in range(i + 1, len(labels))
+                if pair_overlap(i, selected[i], j, selected[j]) > 1.0e-6)
             changed = False
-            for index, candidates in enumerate(choices):
-                best = min(range(len(candidates)), key=lambda value: score(index, value, selected))
-                if score(index, best, selected) < score(index, selected[index], selected):
-                    selected[index] = best
+            for _, i, j in conflicts[:64]:
+                old = pair_score(i, selected[i], j, selected[j])
+                left = np.asarray([score(i, a, selected, exclude=j) for a in range(len(choices[i]))])
+                right = np.asarray([score(j, b, selected, exclude=i) for b in range(len(choices[j]))])
+                combined = left[:, None, :] + right[None, :, :]
+                matrix = pair_overlaps[min(i, j), max(i, j)]
+                combined[:, :, 1] += matrix if i < j else matrix.T
+                flat = combined.reshape(-1, combined.shape[-1])
+                best = np.lexsort(tuple(flat[:, column] for column in range(5, -1, -1)))[0]
+                a, b = np.unravel_index(best, combined.shape[:2])
+                if pair_score(i, a, j, b) < old:
+                    selected[i], selected[j] = a, b
                     changed = True
             if not changed:
                 break
+            descend()
         for index, (artist, _, _) in enumerate(labels):
-            _, _, _, position, rotation = choices[index][selected[index]]
+            _, _, _, position, rotation, transform = choices[index][selected[index]]
             artist.set_position(position)
             artist.set_rotation(rotation)
+            artist.set_transform(transform)
+        all_text = [artist for artist in self.ax.texts if artist.get_visible() and artist.get_text()]
+        self.unresolved_label_collisions = tuple(
+            (first.get_text(), second.get_text())
+            for i, first in enumerate(all_text) for second in all_text[i + 1:]
+            if (first in auto_artists or second in auto_artists)
+            and overlap(first.get_window_extent(renderer), second.get_window_extent(renderer)) > 0.01
+        )
 
     def _label(self, x, y, label, style, offset):
         style = dict(style)

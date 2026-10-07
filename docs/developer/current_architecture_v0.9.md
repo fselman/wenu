@@ -14,8 +14,7 @@ render factories preserve request isolation and curated polar adjustments.
 The existing Matplotlib point-label search measures rotated artist bounds
 and recomputes a position-dependent rotation after relocation. Reference
 names retain local tangent placement; temporal track/sequence
-annotations are excluded from the override. No annealing, joint area/curve
-collision solver, grid-density policy, new production module, dependency,
+annotations are excluded from the override. No annealing, grid-density policy, new production module, dependency,
 scientific transformation, or position source is added. See the
 [label guide](../user_guide/labels.md) for current limits and proposed work.
 
@@ -27,6 +26,18 @@ containment in the actual clip path over collision preferences. Temporal
 labels and reference tangents retain their owners. Python spoke selection is
 available; CLI/TOML cadence, band fill, and other grid families remain later
 work. No astronomical geometry or coordinate convention changes.
+
+The shared collision follow-up extends the same renderer pass to
+constellation names and automatically anchored reference curves when stellar
+placement is `auto`. Visible-region preparation carries projected IAU polygons
+as aligned `label_regions` metadata. Constellation centres stay inside those
+regions where available; other curated anchors admit bounded local moves.
+Reference furniture supplies tangent candidates on its own contiguous curve,
+while explicit anchors, grid labels and temporal annotations remain fixed.
+The deterministic search prioritizes boundary containment and text separation,
+then marker clearance, ownership and appearance, using coordinate descent
+and bounded pair moves. Remaining text overlaps are retained for renderer
+inspection. No annealing or new module is introduced.
 
 **Status:** Implemented current architecture
 **Previous baseline:** `archive/architecture_history/current_architecture_v0.8.md`

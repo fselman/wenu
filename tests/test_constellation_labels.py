@@ -729,6 +729,8 @@ def test_partial_constellation_uses_visible_region_anchor():
 
     assert prepared.metadata["visible_region_anchors"] is True
     assert prepared.metadata["visible_region_anchor_inset"] == 0.94
+    assert len(prepared.metadata["label_regions"]) == 1
+    assert len(prepared.metadata["label_regions"][0]) == 1
     assert np.hypot(prepared.x[0], prepared.y[0]) < 0.94
     assert prepared.x[0] < projected_labels.x[0]
 

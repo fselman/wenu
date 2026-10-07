@@ -851,6 +851,9 @@ class PublicationStyle:
                         ),
                         "ha": self.constellation_label_ha,
                         "va": self.constellation_label_va,
+                        "placement": (
+                            "region" if self.star_label_placement == "auto" else "fixed"
+                        ),
                         "alpha": self.constellation_label_alpha,
                         "zorder": 5,
                     },

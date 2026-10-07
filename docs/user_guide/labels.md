@@ -54,29 +54,46 @@ orientation and act as fixed obstacles during automatic stellar placement.
 
 ## Collision avoidance: current implementation and next work
 
-`--star-label-placement auto` uses the existing final-display-space candidate
-search and coordinate descent. It measures actual rotated text bounds and
-recomputes a position-dependent polar rotation at each candidate. It preserves
-star identity, font, colour, and the selected orientation. Upright labels
-remain upright when the chart geometry rotates. It does not hide requested
-labels or change scientific positions. Candidates are checked against the
-actual projected clip boundary, including text padding; a fitting interior
-candidate takes precedence over collision and cosmetic preferences. If none
-of the finite candidates fits, placement remains best effort. This applies
-to automatic point labels, not fixed constellation or track labels.
+`--star-label-placement auto` enables a shared final-display-space search
+for stellar labels, constellation names and automatically anchored celestial
+reference names. The same TOML stellar-label placement setting enables it.
+The process preserves font size, colour, identity and the agreed orientation.
+It never hides requested labels or changes scientific positions.
 
-This is not a guarantee of collision-free output. Constellation labels and
-reference-curve labels are currently fixed obstacles for this point-label
-pass; reference labels also have their existing boundary-aware anchor search.
-Joint constellation/point placement, curve-constrained relocation, stronger
-search and explicit unresolved-collision
-diagnostics remain later work. No simulated annealing is implemented here.
+The process is:
 
-The celestial equator, ecliptic, and Galactic equator retain their existing
-local tangent orientation and small normal offset. Future avoidance should
-slide them along their own curves, recomputing the tangent and preserving
-the offset. Prefer gently curving sections; excessive curvature makes text
-harder to read. Do not move a reference name into an unrelated empty patch.
+1. Measure actual text bounds at nearby stellar candidates, constellation
+   candidates, and sampled positions on each reference curve.
+2. Require chart-boundary containment when a fitting candidate exists.
+   Constellation text centres stay in their visible IAU regions when those
+   regions have been prepared; otherwise movement stays near the existing
+   curated anchor. No fitting candidate means best-effort placement.
+3. Prefer separating text, then clearing star symbols, retaining stellar
+   association, and minimizing displacement or crossings of other lines.
+4. Revisit assignments with coordinate descent and bounded simultaneous
+   pair moves, allowing both conflicting labels to yield together.
+5. Preserve unresolved overlaps for inspection through the renderer's
+   `unresolved_label_collisions` tuple of text pairs.
+
+This is not a guarantee of collision-free output. Candidate counts and
+search rounds are finite, and rotated bounding rectangles conservatively
+estimate occupied space. No simulated annealing is implemented here.
+Sub-resolution companions may share a visible marker; separated names still
+retain their individual catalogue identities.
+
+The celestial equator, ecliptic and Galactic equator move only along the
+same contiguous projected curve segment, recomputing the local tangent and
+retaining the normal offset. Explicitly supplied reference anchors remain
+fixed. Coordinate-grid labels keep their agreed anchors and act as obstacles.
+Planet and small-body track dates retain their established anchors and
+orientation and remain fixed obstacles. Titles, legends and sequence
+annotations also stay fixed. Fixed stellar placement preserves the previous
+constellation and reference-label behavior.
+
+Further work includes grid-specific alternatives that respect their assigned
+spokes or margins, stronger search, curved glyph placement and CLI diagnostic
+integration. `unresolved_label_collisions` is currently a Python renderer
+inspection value, not a command-line report.
 
 ## Implemented horizon-grid placement
 
