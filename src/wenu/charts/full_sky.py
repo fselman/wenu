@@ -246,6 +246,7 @@ class FullSkyChart:
             viewport=self.viewport,
             boundary=self.horizon,
             observer=observer,
+            region_selection=self.outside_mask_constellations,
         )
 
         set_boundary = getattr(renderer, "set_clip_boundary", None)

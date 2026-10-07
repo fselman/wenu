@@ -10446,3 +10446,28 @@ def test_wikidata_resource_checkpoint_keeps_curation_and_cli_pending():
     assert len(rows) == 79
     assert rows[0].endswith(' Selman |')
     assert all(line.split('|')[-2].strip() == '' for line in rows[2:])
+
+
+def test_constellation_all_and_exclusions_have_cli_toml_documentation():
+    guide = read(ROOT / "docs/user_guide/configuration.md")
+    schema = read(DEVELOPER / "configuration_schema_v2.md")
+    for kind in ("labels", "lines", "boundaries"):
+        assert f"--constellation-{kind} all" in guide
+        assert f"--constellation-{kind}-exclude" in guide
+        assert f"{kind}_exclude" in guide
+        assert f".{kind}_exclude" in schema
+    assert "[detail.constellations]" in guide
+    assert "Exclusions win" in guide
+    assert "partial" in guide
+    assert "Serpens" in guide
+
+
+def test_albireo_name_curation_and_beta2_component_scope_are_documented():
+    guide = read(ROOT / "docs/user_guide/configuration.md")
+    reference = read(DEVELOPER / "implementation_reference.md")
+    assert "--star-label-name Cyg:Albireo --star-label-bayer Cyg:beta2" in guide
+    assert "HIP 95947" in guide and "HIP 95951" in guide
+    assert "component" in guide and "Aa" in guide
+    assert "StarDesignations.curated_names" in reference
+    assert "record.names" in reference
+    assert "Wikidata snapshot remain unchanged" in reference

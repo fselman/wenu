@@ -70,3 +70,17 @@ records. The compiler continues to rebuild only the frozen Wikidata resources.
 The research is authored commentary and comparison evidence, not installation
 of another astrometric catalogue. Source links and publication cautions remain
 in each case. Missing Wikidata assignments remain missing.
+## Authored name associations
+
+The optional `name_associations` collection in `curation.json` binds exact
+names to one HIP and canonical constellation, with matching Bayer identity,
+component scope, basis and source URLs. These are authored associations,
+separate from the immutable Wikidata snapshot and its labels/aliases.
+`StarDesignations.curated_names` retains their evidence; explicit selection
+uses them and the existing report note exposes their component scope.
+
+Albireo is associated with HIP 95947 (β¹ Cyg), verified against the IAU WGSN
+HR 7417 / Aa entry and SIMBAD HIP cross-identification on 2026-10-07.
+The Wikidata system item Q67622059 lists both HIP 95947 and HIP 95951, so it
+does not justify assigning this name to HIP 95951 (β² Cyg). The latter keeps
+its existing curated Bayer identity. No source claim or position is rewritten.

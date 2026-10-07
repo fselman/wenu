@@ -2177,4 +2177,16 @@ Case 1 visual simplification is deferred to the separate presentation stage.
 
 ## Constellation publication checkpoint
 
+The Albireo follow-up keeps authored component-aware names in the existing
+stellar curation admission/effective-catalogue boundary. `curated_names`
+supplement explicit name selection while raw Wikidata names and all positions
+remain unchanged. No runtime lookup, new module or provider is introduced.
+
+The follow-up `all`/exclusion candidate expands public IAU feature selectors
+in the existing constellation resolver, subtracts each independent exclusion,
+then adapts Serpens identities before immutable content selection. CLI/TOML
+translation remains upstream of composition. Chart-local label preparation
+uses existing projected official regions and clipping for partial visibility;
+geometry sources, coordinate realization and renderer ownership remain intact.
+
 Publication controls remain in existing content, stellar-object, style, detail-application, renderer and product/export owners. The IAU-region cut uses native ICRS catalogue membership; physical gaps and optional automatic label placement operate only in display coordinates after layout. No scientific position-realization change, new dependency, production module or test module is admitted.

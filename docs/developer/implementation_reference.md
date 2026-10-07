@@ -10,6 +10,16 @@ advanced use, but ordinary chart production uses a resolved composition.
 
 ## 1. Canonical public imports
 
+The CLI constellation feature selectors accept `all` independently for
+labels, lines and boundaries, with matching `--constellation-*-exclude`
+explicit IAU lists. Configuration parity lives in `[detail.constellations]`.
+Resolution expands/subtracts public identities before the existing layer
+adapters and `SkyContentSelection`; only automatic `all` label placement
+marks `visible_constellation_labels=True`. Render-local preparation uses
+official region/viewport intersection and preserves partially visible regions
+outside the usual typography inset. Explicit star labels are unchanged.
+
+
 ```python
 from wenu import (
     AdaptiveDetailPolicy,
@@ -3870,6 +3880,16 @@ and the CLI translate these through existing detail application; selected HIPs
 bypass magnitude limits but remain subject to geometry clipping. Exact English
 Wikidata names/aliases can be requested; ambiguous/unavailable selectors fail.
 This API does not declare all aliases official proper names.
+
+Digest-bound authored `name_associations` in the existing curation resource
+add `CuratedName` values to `StarDesignations.curated_names`. Source
+`record.names` and the Wikidata snapshot remain unchanged. Each name requires
+an exact HIP/Bayer association, canonical IAU scope and component/source
+evidence, retained in the existing per-HIP curation/report note. Explicit name
+selection indexes both collections; automatic catalogue name metadata remains
+on its original source. Albireo is associated only with HIP 95947 (β¹ Cyg,
+IAU component Aa); existing `Cyg:beta2` remains HIP 95951. Proper-name
+precedence, magnitude bypass and chart clipping follow the existing pipeline.
 
 `ChartRequest.stellar_report` defaults false. Ordinary static
 `chart_view_request(..., stellar_report=True)` requests reports per exported

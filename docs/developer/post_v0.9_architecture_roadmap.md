@@ -9,6 +9,26 @@
 
 ## Current forward roadmap
 
+**Albireo name follow-up (2026-10-07):** Fernando requested the exact
+`Cyg:Albireo` name selector after visually checking the all-constellation chart.
+An authored association with HIP 95947 (β¹ Cyg; IAU component Aa) supplements
+the frozen Wikidata candidates through existing curation. β² Cyg is already
+available as HIP 95951 and remains distinct. Full-suite receipt at `4af4973f`
+is 3,023 passing tests; the additional name candidate requires new focused and
+Mac full-suite validation before acceptance. The scientific coordinate guide
+was reviewed; astrometry, equations, frames and position sources are unchanged.
+
+**Constellation-selection follow-up (2026-10-07):** Based on synchronized
+`main` at `afe8e909` (PR #209), Fernando authorized independent `all` feature
+selection and chose the name `exclude` for per-feature subtraction. The
+bounded implementation is a review candidate on
+`feat/constellation-all-and-exclusions`: CLI/TOML parity, public Serpens
+adaptation and existing chart-local partial-region label preparation. Mac
+full-suite and visual acceptance remain pending; this does not close the
+stellar programme or alter the future-order table below. Scientific-guide
+review found no change to astronomical positions, frames, equations or data
+sources, so the canonical coordinate guide remains unchanged.
+
 **Resumption checkpoint:** 2026-10-05, clean synchronized `main` at
 `91f7841235d4ed49b20ae6bf5d6b3e678de4e5c5`.
 The satellite foundation merged through PR #201 at `8311bd08`; comet

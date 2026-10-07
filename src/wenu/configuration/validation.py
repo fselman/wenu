@@ -79,6 +79,12 @@ _STRING_LISTS = frozenset(
     {
         "detail.neutral.grid_label_layers",
         "detail.content.star_constellations",
+        "detail.constellations.labels",
+        "detail.constellations.lines",
+        "detail.constellations.boundaries",
+        "detail.constellations.labels_exclude",
+        "detail.constellations.lines_exclude",
+        "detail.constellations.boundaries_exclude",
         "detail.star_labels.names",
         "detail.star_labels.bayer",
         "detail.polar_planisphere.enabled_layers",
@@ -369,6 +375,17 @@ def _validate_color(value: Any, parts: tuple[str, ...]) -> None:
 
 
 def _validate_semantics(configuration: Mapping[str, Any]) -> None:
+    from wenu.charts.constellation_resolver import (
+        normalize_constellation_features,
+    )
+
+    for name, values in configuration["detail"]["constellations"].items():
+        try:
+            normalize_constellation_features(
+                values, allow_all=not name.endswith("_exclude")
+            )
+        except ValueError as error:
+            _error(f"detail.constellations.{name}", str(error))
     if configuration.get("schema_version") != SCHEMA_VERSION:
         _error(
             "schema_version",

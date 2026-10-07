@@ -448,6 +448,9 @@ def apply_resolved_detail(
             selected = selection.constellation_lines
             if selected is not None:
                 geometry["selected"] = selected
+        elif name == "constellation_labels":
+            if selection.visible_constellation_labels:
+                configured["visible_regions"] = True
         elif name == "constellation_boundaries":
             selected = selection.constellation_boundaries
             if selected is not None:

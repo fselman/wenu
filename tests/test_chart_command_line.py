@@ -449,3 +449,75 @@ def test_constellation_publication_cli_options_reach_the_common_drawing_plan(mon
     assert options["style_overrides"].star_label_placement == "auto"
     assert options["transparent"] and not options["axes_frame"] and not options["show_title"]
     assert not options["detail_overrides"].star_labels.show_full_bayer_designation
+
+
+@pytest.mark.parametrize('feature', ['labels', 'lines', 'boundaries'])
+def test_all_and_feature_exclusions_reach_existing_content(feature):
+    from wenu.charts.chart_arguments import chart_sky_content
+    a = parser().parse_args([f'--constellation-{feature}', 'all',
+                             f'--constellation-{feature}-exclude', 'Lib,Ser',
+                             f'--constellation-{feature}-exclude', 'Oct'])
+    content = chart_sky_content(a)
+    selected = getattr(content, f'constellation_{feature}')
+    assert 'Sco' in selected
+    assert not {'Lib', 'Oct', 'Ser1', 'Ser2', 'SerCap', 'SerCau'} & selected
+    for other in {'labels', 'lines', 'boundaries'} - {feature}:
+        assert getattr(content, f'constellation_{other}') == frozenset()
+    assert content.visible_constellation_labels == (feature == 'labels')
+
+
+def test_exclusions_do_not_enable_features_or_remove_stellar_labels():
+    from wenu.charts.chart_arguments import chart_sky_content
+    a = parser().parse_args(['--constellation-labels-exclude', 'Sco',
+                             '--star-label-name', 'Sco:Antares'])
+    content = chart_sky_content(a)
+    detail = chart_detail_overrides(a)
+    assert content.constellation_labels == frozenset()
+    assert 'constellation_labels' in detail.disabled_layers
+    assert a.star_label_name == ['Sco:Antares']
+    assert content.star_constellations is None
+
+
+@pytest.mark.parametrize('option,value', [('--constellation-labels', 'all,Sco'),
+    ('--constellation-lines-exclude', 'all'), ('--constellation-boundaries', 'xyz'),
+    ('--stars-in-constellations', 'all')])
+def test_all_is_reserved_for_feature_inclusion_lists(option, value):
+    with pytest.raises(SystemExit):
+        parser().parse_args([option, value])
+
+
+def test_toml_cli_feature_precedence_and_render_isolation(tmp_path, monkeypatch):
+    from wenu.configuration import load_configuration_defaults
+    config = tmp_path / 'features.toml'
+    config.write_text('schema_version = 2\n[detail.constellations]\n'
+                      'labels = ["all"]\nlines = ["Sco", "Lib"]\n'
+                      'labels_exclude = ["Ser", "Oct"]\nlines_exclude = ["Lib"]\n')
+    defaults = load_configuration_defaults(config)
+    view = type('View', (), {'family': 'planisphere', 'configuration': defaults})()
+    calls = []
+    monkeypatch.setattr('wenu.charts.command_line.draw_chart_view',
+                        lambda *args, **kwargs: calls.append(kwargs) or object())
+    a = parser().parse_args(['--constellation-labels-exclude', 'Sco'])
+    draw_chart_view_from_arguments(view, a, stem='one')
+    one = calls[-1]['content']
+    assert 'Sco' not in one.constellation_labels
+    assert {'SerCap', 'SerCau', 'Oct'} <= one.constellation_labels
+    assert one.constellation_lines == {'Sco'}
+    assert one.visible_constellation_labels
+    b = parser().parse_args(['--constellation-labels', 'Lib'])
+    draw_chart_view_from_arguments(view, b, stem='two')
+    assert calls[-1]['content'].constellation_labels == {'Lib'}
+    assert not calls[-1]['content'].visible_constellation_labels
+    draw_chart_view_from_arguments(view, parser().parse_args([]), stem='three')
+    assert 'Sco' in calls[-1]['content'].constellation_labels
+    assert 'Oct' not in calls[-1]['content'].constellation_labels
+    assert a.constellation_labels is None  # namespace was not modified
+
+
+def test_all_features_use_real_installed_line_identities():
+    from types import SimpleNamespace
+    from wenu.sky.constellation_lines import ConstellationLines
+    from wenu.charts.chart_arguments import chart_sky_content
+    content = chart_sky_content(parser().parse_args(['--constellation-lines', 'all']))
+    lines = ConstellationLines(SimpleNamespace(catalog=None))
+    assert lines.star_ids_for(content.constellation_lines) == lines.star_ids

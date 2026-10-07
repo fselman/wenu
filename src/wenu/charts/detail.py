@@ -126,8 +126,11 @@ class SkyContentSelection:
     smc_levels: frozenset[int] | None = None
     solar_system_objects: frozenset[str] | None = None
     star_constellations: frozenset[str] | None = None
+    visible_constellation_labels: bool = False
 
     def __post_init__(self):
+        if not isinstance(self.visible_constellation_labels, bool):
+            raise TypeError("visible_constellation_labels must be Boolean.")
         if self.star_constellations is not None:
             object.__setattr__(self, "star_constellations", frozenset(
                 constellation_code(value) for value in self.star_constellations

@@ -166,6 +166,12 @@ may state them for reproducibility but may not invent another pairing.
   enabled layers, grid-label layer list, optional constellation-star mode,
   and extra-star identifier list.
 - `content.default_layers` and `content.cartoon_layers`: string-list.
+- `constellations.labels`, `.lines`, and `.boundaries`: string-lists, empty
+  by default; either explicit canonicalizable IAU codes or the sole `all`
+  token. Matching `.labels_exclude`, `.lines_exclude`, and
+  `.boundaries_exclude` lists accept only explicit IAU codes, default empty,
+  and subtract independently without enabling layers. Explicit CLI lists
+  replace their corresponding configuration lists. The schema remains v2.
 - `cartoon`: `star_mode`, `bright_limit`, extra stars, `deep_sky`,
   `named_star_labels`, a galaxy magnitude ceiling, and minimum displayed
   sizes for open and globular clusters.

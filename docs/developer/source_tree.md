@@ -25,6 +25,16 @@ share the same geometry and rendering pipeline.
 
 ## Principal packages
 
+Authored stellar name associations are admitted and attached by
+`star_designations.py`, using the existing `catalogs/star_designations`
+curation resource and manifest. The existing stellar report retains per-HIP
+component evidence; no new catalogue module or label-rendering route is added.
+
+Constellation feature `all` and exclusions are owned by
+`charts/constellation_resolver.py` and the existing CLI/configuration adapters.
+`charts/constellation_label_placement.py` retains ownership of visible-region
+name anchors, including regional viewports. No package or module is added.
+
 ```text
 src/wenu/
 ├── coordinates.py              coordinate vocabulary and legacy conversion

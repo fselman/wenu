@@ -49,6 +49,7 @@ class GeometryDetailDefaults:
     binocular_stellar_sizing: StellarMagnitudeSizing
     star_labels: StarLabelSelection = StarLabelSelection()
     star_constellations: frozenset[str] | None = None
+    constellation_features: Mapping[str, tuple[str, ...]] | None = None
 
 
 def _optional(value):
@@ -185,6 +186,13 @@ def translate_geometry_detail_defaults(
     }
     sizing = detail["binocular_stellar_sizing"]
     return GeometryDetailDefaults(
+        constellation_features=MappingProxyType({
+            name: tuple(values["detail"]["constellations"][name])
+            for name in (
+                "labels", "lines", "boundaries",
+                "labels_exclude", "lines_exclude", "boundaries_exclude",
+            )
+        }),
         star_constellations=(frozenset(content["star_constellations"]) if content["star_constellations"] else None),
         star_labels=StarLabelSelection(
             names=tuple(detail["star_labels"]["names"]),
