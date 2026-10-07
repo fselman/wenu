@@ -167,7 +167,7 @@ def preferred_designation(record, kind, constellations=(), *, preferred=None):
 def resolve_star_labels(selection, *, catalogue=None, constellations=()):
     """Resolve exact identifiers before magnitude selection, deduplicating HIP.
 
-    Names are explicitly requested exact Wikidata English labels/aliases;
+    Names are explicitly requested exact Wikidata labels/aliases or curated names;
     this does not promote every alias to an official proper name.
     """
     if not isinstance(selection, StarLabelSelection):
@@ -204,9 +204,12 @@ def resolve_star_labels(selection, *, catalogue=None, constellations=()):
             for alias in association.selector_aliases:
                 token, scope, _ = designation_parts(alias)
                 bayer_index.setdefault((scope, token), set()).add(hip)
-        for name in record.names:
+        for name in (*record.names, *record.curated_names):
             if name.language == "en":
-                for scope in scopes:
+                name_scopes = (
+                    (name.constellation,) if isinstance(name, CuratedName) else scopes
+                )
+                for scope in name_scopes:
                     name_index.setdefault(
                         (scope, name.value.casefold()), set()
                     ).add((hip, name.value))
@@ -336,12 +339,28 @@ class CuratedDesignation:
 
 
 @dataclass(frozen=True)
+class CuratedName:
+    """Authored name-to-HIP association with explicit component evidence."""
+
+    hip: int
+    value: str
+    constellation: str
+    designation: str
+    evidence_json: str
+    language: str = "en"
+
+    def evidence(self):
+        return json.loads(self.evidence_json)
+
+
+@dataclass(frozen=True)
 class StarDesignations:
     hip: int
     statements: tuple[DesignationStatement, ...]
     names: tuple[NameCandidate, ...]
     review_fields: tuple[str, ...]
     curated: tuple[CuratedDesignation, ...] = ()
+    curated_names: tuple[CuratedName, ...] = ()
 
     def assignments(self, kind):
         """Prefer active Wikidata; use explicit curation only for absent kinds."""
@@ -629,6 +648,7 @@ class StellarCuration:
     snapshot_sha256: str
     associations: tuple[CuratedDesignation, ...]
     by_hip: Mapping[int, str]
+    names: tuple[CuratedName, ...] = ()
 
     def get(self, hip):
         value = self.by_hip.get(hip)
@@ -654,11 +674,14 @@ def _load_stellar_curation(payload, manifest_payload):
     digest = hashlib.sha256(payload).hexdigest()
     _require(digest == manifest["sha256"], "Stellar curation digest mismatch")
     document = _json(payload)
-    _keys(document, {
+    expected_fields = {
         "schema", "baseline_commit", "snapshot_sha256", "policy", "sources",
         "associations", "coverage_gaps", "variant_conflicts",
         "unjoined_statements",
-    })
+    }
+    if "name_associations" in document:
+        expected_fields.add("name_associations")
+    _keys(document, expected_fields)
     _require(document["schema"] == "wenu-stellar-curation/1",
              "Invalid curation schema")
     _require(document["snapshot_sha256"] == manifest["snapshot_sha256"],
@@ -721,16 +744,47 @@ def _load_stellar_curation(payload, manifest_payload):
                 for g in note["coverage_gaps"]
                 if g["status"] == "cross_index_curated"}
     _require(seen == expected, "Incomplete curated gap coverage")
+    names, name_keys = [], set()
+    name_entries = document.get("name_associations", [])
+    _require(isinstance(name_entries, list), "Invalid curated name collection")
+    for entry in name_entries:
+        _keys(entry, {"hip", "name", "constellation", "designation", "component",
+                      "identity_scope", "basis", "sources"})
+        hip, name = entry["hip"], _text(entry["name"])
+        _require(type(hip) is int and hip > 0, "Invalid curated name HIP")
+        scope, tokens = parse_star_selector(f"{entry['constellation']}:{name}")
+        _require(scope == entry["constellation"] and tokens == (name,),
+                 "Curated names require one exact name and canonical IAU scope")
+        _require(designation_parts(entry["designation"])[1] == scope,
+                 "Curated name designation scope mismatch")
+        for field in ("component", "identity_scope", "basis"):
+            _text(entry[field])
+        sources = entry["sources"]
+        _require(isinstance(sources, list) and bool(sources),
+                 "Curated name requires source evidence")
+        for source in sources:
+            _keys(source, {"url", "identity"})
+            _require(_text(source["url"]).startswith("https://"),
+                     "Curated name evidence requires HTTPS source URLs")
+            _text(source["identity"])
+        key = scope, name.casefold()
+        _require(key not in name_keys, "Duplicate curated name")
+        name_keys.add(key)
+        frozen = json.dumps(entry, ensure_ascii=False, sort_keys=True)
+        names.append(CuratedName(hip, name, scope, entry["designation"], frozen))
+        note = index.setdefault(hip, {"coverage_gaps": [], "variant_conflicts": [],
+                                      "associations": [], "sources": document["sources"]})
+        note.setdefault("name_associations", []).append(entry)
     return StellarCuration(
         digest, document["snapshot_sha256"], tuple(associations),
         MappingProxyType({hip: json.dumps(note, ensure_ascii=False,
                                          sort_keys=True)
-                          for hip, note in index.items()}),
+                          for hip, note in index.items()}), tuple(names),
     )
 
 
 def load_effective_star_designations(catalogue=None, *, curation=None):
-    """Add authored missing-kind associations without altering source claims."""
+    """Add authored designation/name associations without altering source claims."""
     catalogue = load_star_designations() if catalogue is None else catalogue
     curation = load_stellar_curation() if curation is None else curation
     _require(catalogue.source_sha256 == curation.snapshot_sha256,
@@ -747,5 +801,12 @@ def load_effective_star_designations(catalogue=None, *, curation=None):
         index[association.hip] = replace(
             record, curated=(*record.curated, association),
         )
+    for name in curation.names:
+        record = index.get(name.hip)
+        _require(record is not None and any(
+            designation_parts(assignment.code) == designation_parts(name.designation)
+            for assignment in record.assignments("bayer")
+        ), "Curated name requires a matching effective HIP/Bayer association")
+        index[name.hip] = replace(record, curated_names=(*record.curated_names, name))
     return replace(catalogue, by_hip=MappingProxyType(index),
                    curation_sha256=curation.source_sha256)

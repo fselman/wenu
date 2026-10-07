@@ -283,3 +283,50 @@ def test_curated_overlay_rejects_an_active_source_assignment():
     assert changed.get(78820).candidates("bayer")
     with pytest.raises(ValueError, match="may not overwrite"):
         load_effective_star_designations(changed, curation=load_stellar_curation())
+
+
+def test_albireo_curated_name_preserves_raw_names_and_beta2_identity():
+    from wenu.star_designations import (
+        load_effective_star_designations, load_stellar_curation,
+        resolve_star_labels, StarLabelSelection,
+    )
+    raw = load_star_designations()
+    effective = load_effective_star_designations(raw)
+    assert effective.get(95947).names == raw.get(95947).names
+    assert all(n.value != "Albireo" for n in raw.get(95947).names)
+    name = effective.get(95947).curated_names[0]
+    assert name.value == "Albireo"
+    assert name.evidence()["component"] == "Aa"
+    assert effective.get(95951).curated_names == ()
+    assert load_stellar_curation().get(95947)["name_associations"][0]["hip"] == 95947
+    labels = resolve_star_labels(StarLabelSelection(
+        names=("Cyg:Albireo",), bayer=("Cyg:beta1,beta2",),
+        show_full_bayer_designation=True,
+    ), catalogue=effective)
+    assert labels.labels == ((95947, "Albireo"), (95951, "β² Cyg"))
+    with pytest.raises(ValueError, match="Unknown or unavailable"):
+        resolve_star_labels(StarLabelSelection(names=("Lyr:Albireo",)), catalogue=effective)
+
+
+@pytest.mark.parametrize("fault", ["duplicate", "source", "scope", "hip"])
+def test_curated_names_reject_unsafe_component_associations(fault):
+    from wenu.star_designations import _load_stellar_curation, load_effective_star_designations
+    root = star_designations_manifest_path().parent
+    original = json.loads(root.joinpath("curation.json").read_bytes())
+    changed = json.loads(json.dumps(original))
+    entry = changed["name_associations"][0]
+    if fault == "duplicate":
+        changed["name_associations"].append(dict(entry))
+    elif fault == "source":
+        entry["sources"] = []
+    elif fault == "scope":
+        entry["constellation"] = "Lyr"
+    else:
+        entry["hip"] = 95951
+    assert changed != original
+    payload = json.dumps(changed).encode()
+    manifest = json.loads(root.joinpath("curation_manifest.json").read_bytes())
+    manifest["sha256"] = hashlib.sha256(payload).hexdigest()
+    with pytest.raises(ValueError):
+        curation = _load_stellar_curation(payload, json.dumps(manifest).encode())
+        load_effective_star_designations(curation=curation)

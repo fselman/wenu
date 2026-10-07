@@ -2177,6 +2177,11 @@ Case 1 visual simplification is deferred to the separate presentation stage.
 
 ## Constellation publication checkpoint
 
+The Albireo follow-up keeps authored component-aware names in the existing
+stellar curation admission/effective-catalogue boundary. `curated_names`
+supplement explicit name selection while raw Wikidata names and all positions
+remain unchanged. No runtime lookup, new module or provider is introduced.
+
 The follow-up `all`/exclusion candidate expands public IAU feature selectors
 in the existing constellation resolver, subtracts each independent exclusion,
 then adapts Serpens identities before immutable content selection. CLI/TOML

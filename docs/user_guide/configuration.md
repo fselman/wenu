@@ -344,6 +344,18 @@ physical-time and verified-resume contract.
 
 ## Stellar selectors and reports
 
+Albireo has an explicit curated name association with HIP 95947 (β¹ Cyg).
+To label Albireo and its β² companion independently, use:
+
+```text
+--star-label-name Cyg:Albireo --star-label-bayer Cyg:beta2
+```
+
+`Cyg:beta2` resolves to HIP 95951. The IAU name Albireo refers to component
+Aa of β¹ Cyg; Wenu attaches the requested label to the HIP 95947 catalogue
+entry and does not resolve its subcomponents. Exact curated names supplement
+the Wikidata name selectors without changing the frozen Wikidata snapshot.
+
 See [explicit star labels and discrepancy reports](styles_modes_detail.md#explicit-star-labels-and-discrepancy-reports)
 for CLI/TOML examples and precedence. `[detail.star_labels]` owns selector
 lists; `[reports].stellar_designations` enables optional static-chart notes.

@@ -9,6 +9,15 @@
 
 ## Current forward roadmap
 
+**Albireo name follow-up (2026-10-07):** Fernando requested the exact
+`Cyg:Albireo` name selector after visually checking the all-constellation chart.
+An authored association with HIP 95947 (β¹ Cyg; IAU component Aa) supplements
+the frozen Wikidata candidates through existing curation. β² Cyg is already
+available as HIP 95951 and remains distinct. Full-suite receipt at `4af4973f`
+is 3,023 passing tests; the additional name candidate requires new focused and
+Mac full-suite validation before acceptance. The scientific coordinate guide
+was reviewed; astrometry, equations, frames and position sources are unchanged.
+
 **Constellation-selection follow-up (2026-10-07):** Based on synchronized
 `main` at `afe8e909` (PR #209), Fernando authorized independent `all` feature
 selection and chose the name `exclude` for per-feature subtraction. The

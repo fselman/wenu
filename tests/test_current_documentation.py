@@ -10460,3 +10460,14 @@ def test_constellation_all_and_exclusions_have_cli_toml_documentation():
     assert "Exclusions win" in guide
     assert "partial" in guide
     assert "Serpens" in guide
+
+
+def test_albireo_name_curation_and_beta2_component_scope_are_documented():
+    guide = read(ROOT / "docs/user_guide/configuration.md")
+    reference = read(DEVELOPER / "implementation_reference.md")
+    assert "--star-label-name Cyg:Albireo --star-label-bayer Cyg:beta2" in guide
+    assert "HIP 95947" in guide and "HIP 95951" in guide
+    assert "component" in guide and "Aa" in guide
+    assert "StarDesignations.curated_names" in reference
+    assert "record.names" in reference
+    assert "Wikidata snapshot remain unchanged" in reference
