@@ -219,13 +219,16 @@ class BinocularChart:
         options = apply_object_label_orientation(
             options, sky=sky, style=resolved_style,
         )
+        from .boundaries import ExteriorGridLabelAnchor
+        marginal_anchor = (
+            self.coordinate_label_anchor if coordinate_label_anchor is None
+            else coordinate_label_anchor
+        )
+        if getattr(resolved_style, "grid_label_band", False):
+            marginal_anchor = ExteriorGridLabelAnchor(marginal_anchor, self.field_stop, circular=True)
         options = apply_coordinate_label_anchor(
             options,
-            (
-                self.coordinate_label_anchor
-                if coordinate_label_anchor is None
-                else coordinate_label_anchor
-            ),
+            marginal_anchor,
         )
         options = apply_visible_constellation_label_anchors(
             options,
@@ -244,6 +247,10 @@ class BinocularChart:
                 else dict(boundary_style)
             ),
         )
+        set_band = getattr(renderer, "set_grid_label_band", None)
+        band_style = getattr(resolved_style, "grid_label_band_style", None)
+        if callable(set_band):
+            set_band(self.field_stop, style=band_style() if callable(band_style) else None)
         set_frame_visible = getattr(
             renderer, "set_axes_frame_visible", None
         )

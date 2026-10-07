@@ -25,6 +25,64 @@ from wenu.geometry.viewport import Viewport
 from wenu.rendering.matplotlib import MatplotlibRenderer
 
 
+@pytest.mark.parametrize("circular", [True, False])
+@pytest.mark.parametrize("dpi", [100, 300])
+@pytest.mark.parametrize("fill", ["white", "none"])
+def test_exterior_grid_band_measures_labels_and_preserves_sky(circular, dpi, fill):
+    from wenu.charts.boundaries import circular_boundary
+    from wenu.charts.styles import PublicationStyle
+    from wenu.chart_document import assign_canvas_semantics
+    from matplotlib.colors import to_rgba
+
+    figure, ax = plt.subplots(figsize=(4, 4), dpi=dpi)
+    ax.set(xlim=(-1, 1), ylim=(-1, 1), aspect="equal", title="Chart title")
+    figure.canvas.draw()
+    boundary = circular_boundary(1) if circular else ProjectedCurve(
+        [-1, 1, 1, -1], [-1, -1, 1, 1], closed=True,
+    )
+    renderer = MatplotlibRenderer(ax)
+    renderer.set_clip_boundary(boundary, style={"facecolor": "none"})
+    style = PublicationStyle(grid_label_band_fill_color=fill, grid_label_band_linewidth=1.3)
+    renderer.set_grid_label_band(boundary, style=style.grid_label_band_style())
+    text = ax.text(0, 1.07, "Long exterior grid label", fontsize=9, color="white", ha="center", va="bottom", clip_on=False)
+    text._wenu_exterior_label = True
+    date = ax.text(.2, .1, "15 oct", rotation=37)
+    initial_date = (date.get_position(), date.get_rotation(), date.get_transform())
+    initial_view = (ax.get_xlim(), ax.get_ylim())
+    renderer.finalize_graphics()
+    figure.canvas.draw()
+    band = renderer._grid_label_band_artist
+    frame = renderer._grid_label_band_frame
+    assert text.get_color() == "black"
+    assert band.get_facecolor() == to_rgba(fill)
+    assert frame.get_edgecolor() == to_rgba("black")
+    assert frame.get_linewidth() == 1.3
+    assert not band.get_clip_on() and not frame.get_clip_on()
+    outer = frame.get_path().transformed(frame.get_transform())
+    assert len(outer.vertices) == (722 if circular else 5)
+    box = text.get_window_extent(figure.canvas.get_renderer())
+    assert outer.contains_points([[box.x0, box.y0], [box.x1, box.y1]]).all()
+    # Winding of the compound band leaves the original sky boundary as a hole.
+    path = band.get_path()
+    sections = np.split(path.vertices, np.flatnonzero(path.codes == 1)[1:])
+    areas = [np.sum(v[:, 0] * np.roll(v[:, 1], -1) - v[:, 1] * np.roll(v[:, 0], -1)) for v in sections]
+    assert areas[0] * areas[1] < 0
+    assert initial_view == (ax.get_xlim(), ax.get_ylim())
+    assert initial_date == (date.get_position(), date.get_rotation(), date.get_transform())
+    assert ax.title.get_window_extent(figure.canvas.get_renderer()).y0 > outer.vertices[:, 1].max()
+    assign_canvas_semantics(renderer)
+    assert band.get_gid() == "grid-label-band"
+    first = frame.get_path().vertices.copy()
+    patch_count = len(ax.patches)
+    renderer.finalize_graphics()
+    np.testing.assert_allclose(renderer._grid_label_band_frame.get_path().vertices, first)
+    assert len(ax.patches) == patch_count
+    renderer.set_grid_label_band(boundary, style=None)
+    assert renderer._grid_label_band_artist is None
+    assert renderer._grid_label_band_frame is None
+    plt.close(figure)
+
+
 def test_renderer_has_no_astronomical_or_projection_dependency():
     source = inspect.getsource(
         __import__(

@@ -1,5 +1,18 @@
 # Wenu current architecture v0.9
 
+The exterior coordinate-label band is chart-owned furniture for non-polar
+planispheres, regional/constellation charts and binocular fields. Existing
+canvas style/configuration/CLI owners supply enabled, fill/frame colours,
+physical line width and padding. The default is opaque white with a black
+0.8-point frame. `charts/boundaries.py::ExteriorGridLabelAnchor` selects real
+crossings near existing regional/binocular anchors; it does not add cadence
+or pole-specific policy. `MatplotlibRenderer.set_grid_label_band()` and final
+furniture measurement produce an annulus or rectangular compound path with
+an interior hole, preserve the viewport and fit exterior text in physical
+units. `chart_document.py` assigns separate style-editable SVG identities.
+Polar/calendar furniture, tracks and astronomical geometry are unchanged.
+No production module or test module is added. See the label guide for controls.
+
 ## Object-label orientation candidate (2026-10-07)
 
 Based on clean `main` at `948b9093` (PR #210), existing chart preparation
@@ -24,7 +37,7 @@ projected horizon. The generic renderer supports multiple curve anchors and
 measured exterior text offsets. Automatic point candidates prefer complete
 containment in the actual clip path over collision preferences. Temporal
 labels and reference tangents retain their owners. Python spoke selection is
-available; CLI/TOML cadence, band fill, and other grid families remain later
+available; CLI/TOML cadence and other grid refinements remain later
 work. No astronomical geometry or coordinate convention changes.
 
 The shared collision follow-up extends the same renderer pass to

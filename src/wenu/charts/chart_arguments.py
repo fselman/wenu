@@ -371,6 +371,11 @@ def add_chart_content_arguments(parser):
                         metavar="IAU[,IAU...]", help="retain stars only inside the selected IAU regions")
     parser.add_argument("--constellation-star-mode", choices=("none", "selected", "all"),
                         default=None, help="retain line vertices beyond the magnitude cut")
+    parser.add_argument("--grid-label-band", action=argparse.BooleanOptionalAction, default=None,
+                        help="draw the exterior grid-label band and frame")
+    parser.add_argument("--grid-label-band-fill-color", default=None, metavar="COLOR")
+    parser.add_argument("--grid-label-band-frame-color", default=None, metavar="COLOR")
+    parser.add_argument("--grid-label-band-line-width", type=float, default=None, metavar="POINTS")
     parser.add_argument("--star-label-placement", choices=("fixed", "auto"), default=None)
     orientations = parser.add_mutually_exclusive_group()
     orientations.add_argument(
@@ -1048,6 +1053,10 @@ def chart_style_overrides(
         constellation_line_gap_points=getattr(arguments, "constellation_line_gap", None),
         star_label_placement=getattr(arguments, "star_label_placement", None),
         labels_orientation=getattr(arguments, "labels_orientation", None),
+        grid_label_band=getattr(arguments, "grid_label_band", None),
+        grid_label_band_fill_color=getattr(arguments, "grid_label_band_fill_color", None),
+        grid_label_band_frame_color=getattr(arguments, "grid_label_band_frame_color", None),
+        grid_label_band_linewidth=getattr(arguments, "grid_label_band_line_width", None),
     )
 
 

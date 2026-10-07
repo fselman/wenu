@@ -38,6 +38,27 @@ def test_packaged_styles_translate_to_existing_immutable_contracts():
         defaults.atlas.canvas.sky_color = "red"
 
 
+@pytest.mark.parametrize("style_name", ["atlas", "cartoon"])
+def test_grid_band_overlay_preserves_translation_and_precedence(tmp_path, style_name):
+    from wenu.configuration import load_configuration_defaults
+    from wenu.charts.style_overrides import ChartStyleOverrides
+
+    path = tmp_path / "band.toml"
+    path.write_text(f'schema_version = 2\n[styles.{style_name}.canvas.grid_label_band]\n'
+                    'enabled = true\nfill_color = "none"\nframe_color = "navy"\n'
+                    'line_width = 1.2\npadding_points = 3.0\n')
+    style = getattr(load_configuration_defaults(path).style_mode, style_name)
+    assert style.canvas.grid_label_band_fill_color == "none"
+    flat = style.as_publication_style()
+    assert flat.grid_label_band_frame_color == "navy"
+    assert flat.grid_label_band_linewidth == 1.2
+    assert flat.grid_label_band_padding_points == 3
+    assert ChartStyleOverrides(grid_label_band=False).apply(style).as_publication_style().grid_label_band_style() is None
+    path.write_text(path.read_text().replace('line_width = 1.2', 'line_width = -1.0'))
+    with pytest.raises(ConfigurationError):
+        load_configuration_defaults(path)
+
+
 @pytest.mark.parametrize("policy", ["chart", "upright", "up-away-from-cp"])
 def test_label_orientation_overlay_and_explicit_override(tmp_path, policy):
     from wenu.configuration import load_configuration_defaults

@@ -9,6 +9,19 @@
 
 ## Current forward roadmap
 
+**Exterior-band follow-up (2026-10-07):** Exact shared-placement head
+`bf0cdb8f` passed all 3,067 Mac tests in 280.23 seconds with clean diff and
+synchronized branch. La Ligua v3 separates companion/name collisions;
+constellation rim clearance and linework interference remain review issues.
+Fernando authorized exterior coordinate bands for non-polar planisphere,
+regional/constellation and binocular charts, choosing opaque white and a black
+frame as defaults. The bounded candidate adds measured exterior furniture,
+colour/width controls and real-crossing marginal anchors under existing
+owners. Grid cadence, duplicate edge labels, pole-aware regional rules and
+remaining constellation collisions are not closed. The coordinate guide was
+reviewed and remains current: this changes appearance only. PR #211 stays
+unmerged pending new full-suite and visual acceptance; no cleanup authorized.
+
 **Label-policy milestone (2026-10-07):** Fernando authorized chart-specific
 orientation overrides, preservation during collision avoidance, and a label
 guide with cartographic references. The bounded candidate extends existing
@@ -18,8 +31,7 @@ dates and reference tangents retain their existing paths. The image-review
 correction adds actual-boundary point containment, exterior azimuth labels,
 and altitude labels on cardinal spokes for horizon planispheres.
 Annealing, CLI unresolved-collision reports,
-other exterior coordinate bands, CLI/TOML spoke controls, coloured horizon
-bands, and density refinements remain
+other exterior coordinate bands, CLI/TOML spoke controls and density refinements remain
 later work. `ChartContext` and `AdaptiveDetailPolicy` already own scale/detail
 evidence; inspect those before admitting a new scale module. Grid cadence and
 limiting magnitude must remain independently overridable. See the

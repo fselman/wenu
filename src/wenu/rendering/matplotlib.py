@@ -45,6 +45,95 @@ class MatplotlibRenderer:
         self.unresolved_label_collisions = ()
         self._label_rotations = {}
         self._gapped_lines = []
+        self._grid_label_band = None
+        self._grid_label_band_artist = None
+
+    def set_grid_label_band(self, boundary, *, style):
+        """Reserve exterior furniture around a chart-owned closed boundary."""
+        if self._grid_label_band_artist is not None:
+            self._grid_label_band_artist.remove()
+            self._grid_label_band_artist = None
+        previous = getattr(self, "_grid_label_band_frame", None)
+        if previous is not None:
+            previous.remove()
+            self._grid_label_band_frame = None
+        self._grid_label_band = None if style is None else (
+            self._closed_boundary_path(boundary), dict(style),
+        )
+
+    def _finalize_grid_label_band(self):
+        """Fit a circular or rectangular exterior band to physical text bounds."""
+        if self._grid_label_band is None:
+            return
+        from matplotlib.path import Path
+        from matplotlib.patches import PathPatch
+
+        self.ax.figure.canvas.draw()
+        renderer = self.ax.figure.canvas.get_renderer()
+        path, style = self._grid_label_band
+        inner = self.ax.transData.transform(path.vertices[:-1])
+        low, high = inner.min(axis=0), inner.max(axis=0)
+        centre = (low + high) / 2.0
+        scale = self.ax.figure.dpi / 72.0
+        padding = (style["padding_points"] + style["linewidth"] / 2.0) * scale
+        labels = [text for text in self.ax.texts
+                  if text.get_visible() and getattr(text, "_wenu_exterior_label", False)]
+        for text in labels:
+            text.set_color(style["label_color"])
+        boxes = [text.get_window_extent(renderer) for text in labels]
+        minimum = max([6.0, *(text.get_fontsize() for text in labels)]) * scale + 2.0 * padding
+        radius = np.linalg.norm(inner - centre, axis=1)
+        circular = len(inner) >= 16 and np.ptp(radius) < 1e-3 * np.mean(radius)
+        if circular:
+            outer_radius = float(np.max(radius)) + minimum
+            for box in boxes:
+                corners = np.array([[box.x0, box.y0], [box.x0, box.y1],
+                                    [box.x1, box.y0], [box.x1, box.y1]])
+                outer_radius = max(outer_radius, float(np.max(np.linalg.norm(corners - centre, axis=1))) + padding)
+            angle = np.linspace(0.0, 2.0 * np.pi, 721, endpoint=False)
+            outer = centre + outer_radius * np.column_stack((np.cos(angle), np.sin(angle)))
+        else:
+            outer_low, outer_high = low - minimum, high + minimum
+            for box in boxes:
+                outer_low = np.minimum(outer_low, (box.x0 - padding, box.y0 - padding))
+                outer_high = np.maximum(outer_high, (box.x1 + padding, box.y1 + padding))
+            outer = np.array([outer_low, [outer_high[0], outer_low[1]],
+                              outer_high, [outer_low[0], outer_high[1]]])
+        # Opposite winding leaves the sky interior as a genuine transparent hole.
+        def closed(vertices):
+            vertices = np.vstack((vertices, vertices[0]))
+            codes = np.full(len(vertices), Path.LINETO, dtype=np.uint8)
+            codes[0], codes[-1] = Path.MOVETO, Path.CLOSEPOLY
+            return Path(self.ax.transData.inverted().transform(vertices), codes)
+        signed_area = np.sum(inner[:, 0] * np.roll(inner[:, 1], -1)
+                             - inner[:, 1] * np.roll(inner[:, 0], -1))
+        hole = inner[::-1] if signed_area > 0 else inner
+        band_path = Path.make_compound_path(closed(outer), closed(hole))
+        if self._grid_label_band_artist is not None:
+            self._grid_label_band_artist.remove()
+        patch = PathPatch(band_path, facecolor=style["fill_color"], edgecolor="none",
+                          clip_on=False, zorder=1.5)
+        self.ax.add_patch(patch)
+        # The exterior stroke is separate: never redraw the inner sky boundary.
+        frame = PathPatch(closed(outer), facecolor="none", edgecolor=style["frame_color"],
+                          linewidth=style["linewidth"], clip_on=False, zorder=1.6)
+        previous = getattr(self, "_grid_label_band_frame", None)
+        if previous is not None:
+            previous.remove()
+        self.ax.add_patch(frame)
+        self._grid_label_band_artist = patch
+        self._grid_label_band_frame = frame
+        title = self.ax.title
+        if title.get_visible() and title.get_text():
+            from matplotlib.transforms import ScaledTranslation
+            original = getattr(title, "_wenu_band_original_transform", title.get_transform())
+            title._wenu_band_original_transform = original
+            title.set_transform(original)
+            box = title.get_window_extent(renderer)
+            offset = max(0.0, float(np.max(outer[:, 1])) + padding - box.y0)
+            title.set_transform(original + ScaledTranslation(
+                0.0, offset / self.ax.figure.dpi, self.ax.figure.dpi_scale_trans,
+            ))
 
     def set_axes_frame_visible(self, visible):
         """Show or hide the rectangular Matplotlib axes frame."""
@@ -1209,7 +1298,7 @@ class MatplotlibRenderer:
 
     def finalize_graphics(self):
         """Resolve physical gaps and label positions after aspect/layout settles."""
-        if not (self._gapped_lines or self._auto_labels or self._area_labels or self._curve_labels):
+        if not (self._gapped_lines or self._auto_labels or self._area_labels or self._curve_labels or self._grid_label_band):
             return
         self.ax.figure.canvas.draw()
         for line, curve, clearances in self._gapped_lines:
@@ -1219,6 +1308,7 @@ class MatplotlibRenderer:
             else:
                 line.set_data(shortened.x, shortened.y)
         self.finalize_label_placement()
+        self._finalize_grid_label_band()
 
     def finalize_label_placement(self):
         """Place compact labels with visible ownership in final display space.

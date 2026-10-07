@@ -1,5 +1,18 @@
 # Wenu implementation reference
 
+The exterior coordinate-label band is chart-owned furniture for non-polar
+planispheres, regional/constellation charts and binocular fields. Existing
+canvas style/configuration/CLI owners supply enabled, fill/frame colours,
+physical line width and padding. The default is opaque white with a black
+0.8-point frame. `charts/boundaries.py::ExteriorGridLabelAnchor` selects real
+crossings near existing regional/binocular anchors; it does not add cadence
+or pole-specific policy. `MatplotlibRenderer.set_grid_label_band()` and final
+furniture measurement produce an annulus or rectangular compound path with
+an interior hole, preserve the viewport and fit exterior text in physical
+units. `chart_document.py` assigns separate style-editable SVG identities.
+Polar/calendar furniture, tracks and astronomical geometry are unchanged.
+No production module or test module is added. See the label guide for controls.
+
 ## Object-label typography overrides
 
 `ChartStyleOverrides(labels_orientation="upright")` or

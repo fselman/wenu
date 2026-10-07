@@ -98,7 +98,7 @@ inspection value, not a command-line report.
 ## Implemented horizon-grid placement
 
 For a location-centred planisphere, `--altaz-grid-labels` places azimuth
-labels upright outside the horizon. The exterior transparent margin uses
+labels upright outside the horizon. The exterior band uses
 measured text bounds and a 0.65 em gap, rather than a fixed fraction of chart
 radius. Export includes these unclipped marginal labels. Altitude labels
 remain upright inside the horizon along azimuths 0°, 90°, 180°, 270°.
@@ -106,10 +106,59 @@ A requested altitude 90° label appears only once at the zenith. These anchors
 follow projection rotation, east/west reflection, and off-zenith centres.
 
 Python callers can set `FullSkyChart(altitude_label_azimuths_deg=(45, 225))`.
-CLI/TOML spoke selection, a coloured annular background, and independent
-azimuth-label cadence remain proposed. Grid-line density is unchanged.
-Track dates, reference-plane labels, and other chart families keep their
-existing coordinate anchors.
+CLI/TOML spoke selection and independent azimuth-label cadence remain proposed.
+Grid-line density is unchanged. Track dates and reference-plane labels retain
+their existing anchors.
+
+## Exterior grid-label band and frame
+
+Non-polar planispheres, regional/constellation charts and binocular charts
+have an opaque white exterior band with a black 0.8-point exterior frame by
+default. The sky boundary remains separate. Polar planispheres and Galactic
+all-sky charts retain their existing furniture.
+
+The renderer sizes the band from measured exterior label bounds plus
+2-point padding and half the frame width. Circular charts use an annulus;
+regional charts use a rectangular surround. The band is a compound path with
+a genuine interior hole: it never fills the sky or alters viewport limits.
+The exterior furniture remains visible when the page background is transparent.
+Exterior grid lettering defaults independently to black, including presentation
+mode; `label_color` configures it without changing interior or stellar text.
+Titles are cleared above the frame. Repeated finalization replaces furniture
+rather than accumulating patches. Semantic SVG identifies the band and frame
+separately for style editing.
+
+Regional and binocular coordinate labels use actual curve-boundary crossings
+near their existing selected anchors, with upright measured exterior offsets.
+Curves that do not cross the boundary have no marginal label. This does not
+implement new cadence, duplicate top/right labels, or pole-aware RA/Dec rules.
+Horizon-planisphere altitude labels remain on their interior cardinal spokes.
+
+```text
+--no-grid-label-band
+--grid-label-band-fill-color none
+--grid-label-band-frame-color black
+--grid-label-band-line-width 0.8
+```
+
+`none` selects transparent fill (or no frame colour); zero width suppresses
+the stroke. CLI values override TOML, which uses this table for either style:
+
+```toml
+schema_version = 2
+[styles.atlas.canvas.grid_label_band]
+enabled = true
+fill_color = "white"
+frame_color = "black"
+label_color = "black"
+line_width = 0.8
+padding_points = 2.0
+```
+
+Python uses the corresponding `CanvasStyle.grid_label_band*` fields or
+`ChartStyleOverrides` (enabled, fill/frame colours and line width). Turning
+the band off restores the existing regional/binocular grid anchors. Fill and
+frame overrides do not change stars, tracks, scientific positions or density.
 
 ## Remaining grid policies: proposed, not implemented by this milestone
 
@@ -129,8 +178,8 @@ and azimuth marginal scales are requested, use distinct bands and explicit
 units. Avoid duplicate 0h/24h labels at the same crossing.
 
 Reserve margins using measured text bounds, rotation, a consistent small
-gap from the border, and padding. Transparent is the preferred band fill;
-white or another configurable fill can aid contrast. Keep corners clear.
+gap from the border, and padding. Opaque white with a black exterior frame is the default band appearance;
+transparent or another configurable fill remains available. Keep corners clear.
 
 Automatic intervals should consider angular span, projection distortion,
 physical output size, and text width. RA 1h/2h and declination 10°/20° are

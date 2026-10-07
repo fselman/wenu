@@ -97,6 +97,17 @@ def assign_canvas_semantics(renderer):
                 style_role="chart_boundary",
             ),
         )
+    for attribute, name, display_name in (
+        ("_grid_label_band_artist", "grid_label_band", "Grid label band"),
+        ("_grid_label_band_frame", "grid_label_frame", "Grid label exterior frame"),
+    ):
+        artist = getattr(renderer, attribute, None)
+        if artist is not None and artist.get_visible():
+            assign((artist,), SemanticArtistIdentity(
+                name=name, svg_id=name.replace("_", "-"), edit_policy=EditPolicy.STYLE,
+                semantic_path=("chart", "coordinate_furniture", name),
+                display_name=display_name, presentation_order=82, style_role=name,
+            ))
     spines = tuple(
         spine
         for spine in getattr(ax, "spines", {}).values()

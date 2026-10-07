@@ -52,7 +52,8 @@ def test_label_guide_distinguishes_implemented_controls_from_future_grid_policy(
                   "altitude_label_azimuths_deg",
                   "No simulated annealing is implemented here.",
                   "track dates retain their established anchors",
-                  "Literature and precedents"):
+                  "Literature and precedents", "--no-grid-label-band",
+                  "Opaque white with a black exterior frame", "padding_points = 2.0"):
         assert value in text
 
 def png_dimensions(path):

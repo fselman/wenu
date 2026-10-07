@@ -139,6 +139,7 @@ _NONNEGATIVE_NAMES = frozenset(
     {
         "gap_points",
         "line_width",
+        "padding_points",
         "edge_width",
         "z_order",
         "padding",

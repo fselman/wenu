@@ -52,8 +52,17 @@ class CanvasStyle:
     footer_color: str | None = None
     title_color: str | None = None
     labels_orientation: str = "chart"
+    grid_label_band: bool = True
+    grid_label_band_fill_color: str = "white"
+    grid_label_band_frame_color: str = "black"
+    grid_label_band_label_color: str = "black"
+    grid_label_band_linewidth: float = 0.8
+    grid_label_band_padding_points: float = 2.0
 
     def __post_init__(self):
+        for name in ("grid_label_band_linewidth", "grid_label_band_padding_points"):
+            if not isfinite(float(getattr(self, name))) or getattr(self, name) < 0:
+                raise ValueError(f"{name} must be finite and nonnegative")
         if self.labels_orientation not in {"chart", "upright", "up-away-from-cp"}:
             raise ValueError("unsupported labels_orientation")
 
@@ -342,6 +351,12 @@ class ChartStyle:
             foreground_color=canvas.foreground_color,
             title_color=canvas.title_color,
             labels_orientation=canvas.labels_orientation,
+            grid_label_band=canvas.grid_label_band,
+            grid_label_band_fill_color=canvas.grid_label_band_fill_color,
+            grid_label_band_frame_color=canvas.grid_label_band_frame_color,
+            grid_label_band_label_color=canvas.grid_label_band_label_color,
+            grid_label_band_linewidth=canvas.grid_label_band_linewidth,
+            grid_label_band_padding_points=canvas.grid_label_band_padding_points,
             star_color=stars.color,
             star_label_color=stars.label_color,
             star_label_fontsize=stars.label_fontsize,

@@ -446,3 +446,61 @@ def apply_coordinate_label_anchor(layer_options, anchor, *, altaz_anchor=None):
         )
         options["render"] = updated_render
     return resolved
+
+
+@dataclass(frozen=True)
+class ExteriorGridLabelAnchor:
+    """Move an existing marginal grid anchor to a real boundary crossing."""
+
+    delegate: object
+    boundary: ProjectedCurve
+    circular: bool = False
+
+    def __call__(self, curve, ax):
+        anchor = self.delegate(curve, ax)
+        if anchor is None:
+            return None
+        target = np.array((anchor.x, anchor.y) if isinstance(anchor, CurveLabelPlacement) else anchor)
+        boundary = np.column_stack((self.boundary.x, self.boundary.y))
+        low, high = np.nanmin(boundary, axis=0), np.nanmax(boundary, axis=0)
+        centre = (low + high) / 2.0
+        radius = float(np.nanmedian(np.linalg.norm(boundary - centre, axis=1)))
+        points = np.column_stack((curve.x, curve.y))
+        crossings = []
+        for a, b in zip(points[:-1], points[1:]):
+            if not (np.all(np.isfinite(a)) and np.all(np.isfinite(b))):
+                continue
+            delta = b - a
+            if self.circular:
+                aa = np.dot(delta, delta)
+                if aa == 0:
+                    continue
+                bb = 2 * np.dot(a - centre, delta)
+                cc = np.dot(a - centre, a - centre) - radius ** 2
+                discriminant = bb ** 2 - 4 * aa * cc
+                if discriminant < 0:
+                    continue
+                for t in ((-bb - np.sqrt(discriminant)) / (2 * aa),
+                          (-bb + np.sqrt(discriminant)) / (2 * aa)):
+                    if -1e-8 <= t <= 1 + 1e-8:
+                        point = a + np.clip(t, 0, 1) * delta
+                        crossings.append((point, point - centre))
+            else:
+                for axis in (0, 1):
+                    if delta[axis] == 0:
+                        continue
+                    for edge, sign in ((low[axis], -1), (high[axis], 1)):
+                        t = (edge - a[axis]) / delta[axis]
+                        point = a + t * delta
+                        other = 1 - axis
+                        if -1e-8 <= t <= 1 + 1e-8 and low[other] - 1e-8 <= point[other] <= high[other] + 1e-8:
+                            direction = np.zeros(2); direction[axis] = sign
+                            crossings.append((point, direction))
+        if not crossings:
+            return None
+        point, direction = min(crossings, key=lambda item: np.linalg.norm(item[0] - target))
+        return CurveLabelPlacement(
+            *point, rotation_deg=0.0, normal_offset_em=0.65,
+            horizontal_alignment="center", vertical_alignment="center",
+            exterior_direction=tuple(direction),
+        )

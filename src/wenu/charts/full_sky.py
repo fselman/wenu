@@ -284,6 +284,10 @@ class FullSkyChart:
             self.horizon,
             style=boundary_style,
         )
+        set_band = getattr(renderer, "set_grid_label_band", None)
+        band_style = getattr(resolved_style, "grid_label_band_style", None)
+        if callable(set_band):
+            set_band(self.horizon, style=band_style() if callable(band_style) else None)
         set_frame_visible = getattr(
             renderer, "set_axes_frame_visible", None
         )

@@ -292,6 +292,14 @@ label_font_size = 8.5
 footer_color = "none"
 title_color = "none"
 
+[styles.atlas.canvas.grid_label_band]
+enabled = true
+fill_color = "white"
+frame_color = "black"
+label_color = "black"
+line_width = 0.8
+padding_points = 2.0
+
 [styles.atlas.stars]
 color = "#151515"
 area_scale = 0.85
@@ -524,6 +532,14 @@ foreground = "#172238"
 label_font_size = 13.0
 footer_color = "none"
 title_color = "none"
+
+[styles.cartoon.canvas.grid_label_band]
+enabled = true
+fill_color = "white"
+frame_color = "black"
+label_color = "black"
+line_width = 0.8
+padding_points = 2.0
 
 [styles.cartoon.stars]
 color = "#172238"

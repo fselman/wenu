@@ -11,6 +11,13 @@ versioned TOML configuration. It derives its public paths from
 `archive/audits/configuration_default_audit.md`. It specifies names, types, ordering, and
 validation without creating a runtime registry or changing current defaults.
 
+The atlas and cartoon canvas tables now contain `grid_label_band` with
+`enabled` (boolean), `fill_color`, `frame_color` and `label_color` (colour), `line_width`
+and `padding_points` (finite nonnegative points). Defaults are true, white,
+black, black, 0.8 and 2.0. Only non-polar planisphere, regional/constellation and
+binocular render owners use this furniture. Explicit shared CLI band controls
+have precedence; `none` selects transparent fill/frame colour.
+
 ## Document boundary
 
 The root is a TOML table containing the scalar `schema_version = 2`, followed

@@ -327,6 +327,24 @@ class PublicationStyle:
     title_color: str | None = None
     star_label_placement: str = "fixed"
     labels_orientation: str = "chart"
+    grid_label_band: bool = True
+    grid_label_band_fill_color: str = "white"
+    grid_label_band_frame_color: str = "black"
+    grid_label_band_label_color: str = "black"
+    grid_label_band_linewidth: float = 0.8
+    grid_label_band_padding_points: float = 2.0
+
+    def grid_label_band_style(self):
+        """Return exterior coordinate-furniture appearance, or disable it."""
+        if not self.grid_label_band:
+            return None
+        return {
+            "fill_color": self.grid_label_band_fill_color,
+            "frame_color": self.grid_label_band_frame_color,
+            "label_color": self.grid_label_band_label_color,
+            "linewidth": self.grid_label_band_linewidth,
+            "padding_points": self.grid_label_band_padding_points,
+        }
 
     def configure_axes(self, ax, *, title=None):
         """Apply chart-level axes styling."""
