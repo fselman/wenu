@@ -260,3 +260,29 @@ def test_nonstellar_magnitude_filter_uses_source_catalogue_locally():
 
     assert list(selected["identifier"]) == ["bright", "unknown"]
     assert list(layer.catalog["identifier"]) == list(before["identifier"])
+
+
+def test_constellation_region_cut_is_final_and_render_local():
+    """Independent known sky positions, including explicit out-of-region IDs."""
+    stars = Stars.__new__(Stars)
+    source = pd.DataFrame({
+        "magnitude": [1.0, 4.0, 8.0, 1.0],
+        "is_constellation_vertex": [False, True, False, True],
+        "ra_degrees": [247.35, 229.25, 241.35, 2.097],
+        "dec_degrees": [-26.43, -9.38, -19.81, 29.09],
+    }, index=[80763, 74785, 78820, 677])
+    stars.source_catalog = source.copy()
+    stars.catalog = source.iloc[[0]].copy()
+    stars.magnitude_limit = 2.0
+    stars.include_ids = frozenset()
+    stars.include_constellation_vertices = False
+    baseline = stars._render_catalog(magnitude_limit=5, include_ids={78820, 677})
+    assert baseline.index.tolist() == [80763, 74785, 78820, 677]
+    selected = stars._render_catalog(magnitude_limit=5, include_ids={78820, 677},
+                                    include_constellation_vertices=True, constellations={"Sco"})
+    assert selected.index.tolist() == [80763, 78820]
+    assert stars._render_catalog(magnitude_limit=5, constellations={"Lib"}).index.tolist() == [74785]
+    assert stars._render_catalog(magnitude_limit=5, constellations=set()).empty
+    assert not stars._constellation_membership.flags.writeable
+    pd.testing.assert_frame_equal(stars.source_catalog, source)
+    assert stars._render_catalog(magnitude_limit=5, include_ids={78820, 677}).equals(baseline)

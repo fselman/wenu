@@ -97,6 +97,7 @@ def _stellar(table: Mapping[str, Any]) -> StellarStyle:
         label_fontsize=table["labels"]["font_size"],
         label_alpha=table["labels"]["opacity"],
         label_offset=tuple(table["labels"]["offset"]),
+        label_placement=table["labels"]["placement"],
         color=table["color"],
         area_scale=table["area_scale"],
         magnitude_sizing=StellarMagnitudeSizing(
@@ -246,6 +247,7 @@ def _grids(style: Mapping[str, Any], *, style_name: str) -> GridStyle:
         boundary_alpha=boundary["opacity"],
         constellation_line_color=figures["color"],
         constellation_linewidth=figures["line_width"],
+        constellation_line_gap_points=figures["gap_points"],
         constellation_line_alpha=figures["opacity"],
         constellation_label_color=labels["color"],
         constellation_label_fontsize=(

@@ -125,8 +125,13 @@ class SkyContentSelection:
     lmc_levels: frozenset[int] | None = None
     smc_levels: frozenset[int] | None = None
     solar_system_objects: frozenset[str] | None = None
+    star_constellations: frozenset[str] | None = None
 
     def __post_init__(self):
+        if self.star_constellations is not None:
+            object.__setattr__(self, "star_constellations", frozenset(
+                constellation_code(value) for value in self.star_constellations
+            ))
         for name in (
             "stars",
             "constellation_lines",

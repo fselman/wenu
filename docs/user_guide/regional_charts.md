@@ -117,3 +117,70 @@ Wenu also resolves the pointwise parallactic angle and the tangent directions
 of celestial north and the local vertical at the chart centre. This milestone
 retains that backend-neutral geometry for later furniture; it draws no
 parallactic or meridian line.
+
+## Transparent constellation figures for a book
+
+Greek Bayer labels omit the constellation abbreviation by default; numerical
+superscripts remain part of the designation. Use `--show-full-bayer-designation`
+when the abbreviation is wanted. `--star-label-placement auto` moves explicitly
+selected labels using compact positions measured in physical points after the
+chart rotation and layout. Isolated labels prefer above/below alignment; nearly vertical chains of
+selected labels prefer side positions at the height of their stars. Other
+positions remain available to avoid ambiguity and collisions. Association with the
+intended star takes priority over avoiding a constellation line. Placement
+remains best effort in crowded fields and does not suppress labels.
+
+`--stars-in-constellations Sco,Lib` restricts stellar symbols to the union of
+those IAU regions, using the catalogue's native ICRS coordinates. This is a
+spatial restriction, not a restriction to constellation-line vertices. It also
+applies to explicitly selected stars and vertices. Existing magnitude and
+vertex inclusion policies remain in effect inside the selected regions.
+Constellation lines retain their selected geometry.
+
+`--constellation-line-gap 1` leaves one physical point beyond the stellar disk
+at each drawn stellar endpoint. Viewport intersections are not stellar
+endpoints. The default is zero, preserving existing line rendering.
+`--transparent --no-frame --no-title` removes the painted sky background, axes
+frame and title. PNG preserves alpha; PDF and SVG preserve an unpainted page
+background. They therefore retain the paper colour when placed in a book.
+Avoid opaque label boxes when extending the style.
+
+For a narrow-column Sco–Lib figure, save this overlay as `book.toml`:
+
+```toml
+schema_version = 2
+[detail.content]
+cartoon_layers = ["stars", "constellation_lines"]
+star_constellations = ["Sco", "Lib"]
+[styles.cartoon.constellation_figures]
+gap_points = 1.0
+[styles.cartoon.stars.labels]
+placement = "auto"
+[modes.base]
+width = 3.6
+[products.default]
+axes_frame = false
+show_title = false
+[export]
+transparent = true
+```
+
+```bash
+wenu_chart regional --config book.toml \
+  --center-on constellation:Sco,Lib --field-width 45 --field-height 50 \
+  --orientation celestial-north-up --style cartoon --mode print \
+  --magnitude-limit 4.99 --constellation-lines Sco,Lib \
+  --constellation-star-mode none \
+  --no-equatorial-grid --no-grid --no-center \
+  --star-label-name Sco:Antares \
+  --star-label-bayer Sco:beta1,delta,epsilon,theta,lambda,kappa,mu1,iota1,zeta2,pi,tau,sigma \
+  --star-label-bayer Lib:alpha2,beta,gamma,sigma \
+  --output sco-lib-book.svg
+```
+
+This orientation puts Libra above Scorpius. Replace the output suffix with
+`.png` or `.pdf` as needed. The requested width is the figure canvas width in
+inches; tight export crops unused margins. The example disables vertex exceptions with `--constellation-star-mode none`,
+so all its plotted stars are brighter than V = 5. Explicit labels can still
+force fainter stars if deliberately requested. Omitting this option retains
+the existing cartoon vertex policy.

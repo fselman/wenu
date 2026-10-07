@@ -1,3 +1,4 @@
+import pytest
 """Milestone 13 tests for the generic projected-geometry renderer."""
 
 import inspect
@@ -266,3 +267,124 @@ def test_unknown_geometry_is_rejected():
         raise AssertionError("Expected TypeError")
     finally:
         plt.close(figure)
+
+
+@pytest.mark.parametrize("dpi", [100, 300])
+def test_curve_endpoint_clearance_is_physical_and_does_not_trim_clipped_ends(dpi):
+    fig, ax = plt.subplots(figsize=(4, 2), dpi=dpi)
+    ax.set_xlim(0, 10); ax.set_ylim(-1, 1)
+    renderer = MatplotlibRenderer(ax)
+    renderer.draw(ProjectedPoints([0, 10], [0, 0]), style={"s": [16, 64]})
+    curve = ProjectedCurve([0, 4, 10], [0, 0, 0])
+    line = renderer.draw(curve, style={"endpoint_clearance_points": (3, 5)})[0]
+    original = ax.transData.transform([[0, 0], [10, 0]])
+    rendered = ax.transData.transform(np.column_stack(line.get_data()))
+    np.testing.assert_allclose(rendered[0]-original[0], [3*dpi/72, 0], atol=1e-9)
+    np.testing.assert_allclose(original[1]-rendered[-1], [5*dpi/72, 0], atol=1e-9)
+    np.testing.assert_array_equal(curve.x, [0, 4, 10])
+    clipped = renderer.draw(ProjectedCurve([2, 10], [0, 0]),
+                            style={"endpoint_clearance_points": (3, 5)})[0]
+    assert clipped.get_xdata()[0] == pytest.approx(2)
+    with pytest.raises(ValueError, match="clearances"):
+        renderer.draw(curve, style={"endpoint_clearance_points": (-1, 0)})
+    assert renderer.draw(curve, style={"endpoint_clearance_points": (10000, 10000)}) == []
+    plt.close(fig)
+
+
+def test_auto_point_labels_avoid_neighbouring_symbols_and_labels_without_background():
+    fig, ax = plt.subplots(figsize=(3, 3), dpi=100)
+    ax.set_xlim(-1, 1); ax.set_ylim(-1, 1)
+    renderer = MatplotlibRenderer(ax)
+    points = ProjectedPoints([0, 0.025, 0.08], [0, 0.025, 0.08], labels=["Antares", "σ", "τ"])
+    renderer.draw(points, style={"s": [100, 16, 16]}, draw_labels=True,
+                  label_style={"fontsize": 9, "placement": "auto"})
+    renderer.draw(ProjectedCurve([-1, 1], [-0.2, 0.2]), style={"linewidth": 1})
+    renderer.finalize_label_placement()
+    backend = fig.canvas.get_renderer()
+    boxes = [text.get_window_extent(backend) for text in ax.texts]
+    assert all(not first.overlaps(second) for index, first in enumerate(boxes) for second in boxes[index+1:])
+    for text, box in zip(ax.texts, boxes):
+        assert text.get_bbox_patch() is None
+        for x, y, radius in renderer._point_obstacles:
+            centre = ax.transData.transform((x,y))
+            assert not box.contains(*centre)
+    before = [text.get_position() for text in ax.texts]
+    renderer.finalize_label_placement()
+    np.testing.assert_allclose([text.get_position() for text in ax.texts], before)
+    np.testing.assert_array_equal(points.x, [0, .025, .08])
+    plt.close(fig)
+
+
+@pytest.mark.parametrize("angle", [0, 45, 90, 180, 270])
+@pytest.mark.parametrize("dpi", [100, 300])
+def test_auto_labels_keep_compact_ownership_after_rotation(angle, dpi):
+    fig, ax = plt.subplots(figsize=(3, 3), dpi=dpi)
+    ax.set_xlim(-1, 1)
+    ax.set_ylim(-1, 1)
+    ax.set_aspect("equal")
+    radians = np.deg2rad(angle)
+    rotation = np.array([[np.cos(radians), -np.sin(radians)],
+                         [np.sin(radians), np.cos(radians)]])
+    positions = np.array([[0, 0], [.04, .10], [-.08, -.12]]) @ rotation.T
+    points = ProjectedPoints(positions[:, 0], positions[:, 1], labels=["τ", "σ", "π"])
+    renderer = MatplotlibRenderer(ax)
+    renderer.draw(points, style={"s": [16, 16, 16]}, draw_labels=True,
+                  label_style={"fontsize": 9, "placement": "auto"})
+    fig.canvas.draw()
+    renderer.finalize_label_placement()
+    scale = dpi / 72
+    centres = ax.transData.transform(positions)
+    boxes = [artist.get_window_extent(fig.canvas.get_renderer()) for artist in ax.texts]
+    for index, box in enumerate(boxes):
+        distances = np.hypot(np.maximum(np.maximum(box.x0-centres[:, 0], centres[:, 0]-box.x1), 0),
+                             np.maximum(np.maximum(box.y0-centres[:, 1], centres[:, 1]-box.y1), 0))
+        assert distances[index] <= min(np.delete(distances, index)) + 1e-8
+        assert distances[index] / scale <= renderer._point_obstacles[index][2] + 2.25 + 1e-8
+    assert all(not first.overlaps(second) for i, first in enumerate(boxes) for second in boxes[i+1:])
+    np.testing.assert_array_equal(points.x, positions[:, 0])
+    np.testing.assert_array_equal(points.y, positions[:, 1])
+    plt.close(fig)
+
+
+def test_isolated_greek_label_prefers_vertical_alignment():
+    fig, ax = plt.subplots(figsize=(3, 3))
+    ax.set_xlim(-1, 1)
+    ax.set_ylim(-1, 1)
+    renderer = MatplotlibRenderer(ax)
+    renderer.draw(ProjectedPoints([0], [0], labels=["θ"]), style={"s": 16},
+                  draw_labels=True, label_style={"fontsize": 9, "placement": "auto"})
+    fig.canvas.draw()
+    renderer.finalize_label_placement()
+    anchor = ax.transData.transform((0, 0))
+    box = ax.texts[0].get_window_extent(fig.canvas.get_renderer())
+    assert (box.x0 + box.x1) / 2 == pytest.approx(anchor[0])
+    assert box.y0 > anchor[1]
+    plt.close(fig)
+
+
+@pytest.mark.parametrize("dpi", [100, 300])
+@pytest.mark.parametrize("angle", [0, 180])
+def test_vertical_labelled_chain_prefers_side_alignment_without_hiding_faint_stars(dpi, angle):
+    fig, ax = plt.subplots(figsize=(3, 3), dpi=dpi)
+    ax.set_xlim(-1, 1)
+    ax.set_ylim(-1, 1)
+    factor = 1 if angle == 0 else -1
+    points = ProjectedPoints([0, 0, 0, -.06 * factor],
+                             [.12 * factor, 0, -.12 * factor, 0],
+                             labels=["σ", "Antares", "τ", None])
+    renderer = MatplotlibRenderer(ax)
+    renderer.draw(points, style={"s": [4, 36, 4, 1]}, draw_labels=True,
+                  label_style={"fontsize": 9, "placement": "auto"})
+    fig.canvas.draw()
+    renderer.finalize_label_placement()
+    boxes = []
+    for text, x, y in renderer._auto_labels:
+        anchor = ax.transData.transform((x, y))
+        box = text.get_window_extent(fig.canvas.get_renderer())
+        assert (box.y0 + box.y1) / 2 == pytest.approx(anchor[1])
+        assert box.x1 < anchor[0] or box.x0 > anchor[0]
+        for other_x, other_y, _ in renderer._point_obstacles:
+            assert not box.contains(*ax.transData.transform((other_x, other_y)))
+        boxes.append(box)
+    assert all(not a.overlaps(b) for i, a in enumerate(boxes) for b in boxes[i+1:])
+    plt.close(fig)

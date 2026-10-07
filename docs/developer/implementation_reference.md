@@ -3918,3 +3918,41 @@ The two β Sco records also retain an explicit system selector alias backed by
 the active unjoined Wikidata declaration. `Sco:beta` therefore fails as
 ambiguous with both HIPs; `Sco:beta1,beta2` selects them individually.
 Selector aliases do not replace component labels or source claims.
+
+## Constellation publication presentation
+
+`SkyContentSelection.star_constellations` carries the optional stellar-region
+restriction. `Stars` caches IAU membership from its unchanged native ICRS
+source catalogue using Astropy's constellation resolver, and intersects this
+restriction after magnitude, explicit-star and vertex selection. Reloading
+the catalogue invalidates the cache; one request cannot restrict another.
+
+The detail application layer derives line endpoint clearance from the same
+resolved symbol areas used for stellar rendering. The generic Matplotlib
+renderer converts physical points to display lengths and recomputes trimming
+after aspect/layout settles. It leaves clipped intersections untouched and
+never changes astronomical curves. Opt-in automatic point-label placement
+uses final display bounds and existing markers, labels and lines. Each label
+has eight directions at three clearances, 0.75–2.25 physical points beyond
+its marker radius. Above/below positions align the glyph box with the stellar
+centre. If the nearest other selected label anchor is within three glyph-box
+heights plus the marker radius and its vertical separation exceeds twice its
+horizontal separation, side positions are preferred. A long label (width
+more than three heights) in this situation also tries a 3-point clearance.
+
+Candidates first minimize interference with any stellar disk, then association
+ambiguity among explicitly labelled anchors, label collisions, clipping,
+local alignment and cosmetic line avoidance. Association uses the label-edge
+attachment point nearest its intended anchor and distances to visible marker
+disks; unrelated stars remain symbol obstacles. Anchors within 0.25 points
+share a visible anchor for this display test; catalogue identities remain
+distinct. Up to eight coordinate-descent passes revisit the initially greedy
+assignment. This bounded heuristic preserves all selected labels and is best
+effort when no unambiguous collision-free candidate exists; it uses
+no opaque halos. Export finalizes these display adjustments before save.
+
+Product controls govern transparency, axes frame and title. Transparent
+requests use an unpainted canvas; source coordinates, projection, designations
+and catalogue associations are unchanged. Coordinate-guide review found no
+change to scientific position realization: region membership is catalogue
+classification, whereas display gaps and label placement are graphical.

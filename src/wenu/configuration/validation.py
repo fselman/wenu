@@ -78,6 +78,7 @@ _OPTIONAL_POINTS = frozenset({"grids_references.references.anchor"})
 _STRING_LISTS = frozenset(
     {
         "detail.neutral.grid_label_layers",
+        "detail.content.star_constellations",
         "detail.star_labels.names",
         "detail.star_labels.bayer",
         "detail.polar_planisphere.enabled_layers",
@@ -130,6 +131,7 @@ _POSITIVE_NAMES = frozenset(
 )
 _NONNEGATIVE_NAMES = frozenset(
     {
+        "gap_points",
         "line_width",
         "edge_width",
         "z_order",
@@ -144,6 +146,8 @@ _NONNEGATIVE_NAMES = frozenset(
     }
 )
 _ENUMS = {
+    "styles.atlas.stars.labels.placement": {"fixed", "auto"},
+    "styles.cartoon.stars.labels.placement": {"fixed", "auto"},
     "data.moving_object_policy": {
         "acquire-if-missing", "offline", "refresh",
     },

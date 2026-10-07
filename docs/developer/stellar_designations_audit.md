@@ -1081,3 +1081,103 @@ is unchanged by the later readable-review and evidence-only commits.
 The comparison environment uses Python 3.12, Astropy 7.2.2 and Matplotlib
 3.11.2; Fernando's Mac environment remains the independent acceptance gate.
 The new PR is stacked on PR #207's branch, not merged into main.
+
+
+## Constellation publication checkpoint
+
+PRs #207 and #208 were merged after Fernando's clean Mac check of exact #208 head (316 focused tests passed) and visual confirmation. Main is `a39bd4a217e0f340913fe03989e3ba99c45180ff`; the preceding stacked-PR wording records the earlier review state. The next authorized stage adds an optional final IAU-region cut, physical gaps beyond stellar disks, opt-in placement of explicit labels, and transparent export without axes frame or title. Greek-only labels retain superscripts. HIP/Bayer/Flamsteed associations, source snapshots, compiler and dossier are unchanged. Sco–Lib specimens check alpha, black ink without white halos, endpoint clearance and label overlap. Mac visual acceptance remains pending.
+
+Publication validation evidence:
+
+- Initial focused gate: 385 passed; updated documentation/package gate: 256
+  passed. After restoring overlay-mask validation order, the expanded focused
+  gate has 404 passes and one intermittent FullSky legend failure. The same
+  gate on unchanged merged main has 397 passes and that same failure: exact
+  viewport comparison is sensitive to a last-bit circular-boundary difference.
+- A default Sco–Lib render is pixel-identical to merged main (1,677 × 1,925).
+- The narrow-column specimen is approximately 75.44 mm wide, with 17 requested
+  labels and zero label-overlap pairs. All 48 drawn line endpoints match the
+  requested disk radius plus one point to within 3e-14 points. PNG alpha and
+  PDF raster verification confirm transparent background and black ink only.
+  SVG, PDF and PNG all render successfully.
+- The four known full-suite failures were independently reproduced on merged
+  main: satellite centre certification wording, offline planning subprocess,
+  zenith rounding and SVG common-font inheritance. Changed-line whitespace
+  checks pass; Ruff F findings in touched files match the existing base.
+- No new production/test file, dependency or catalogue change is included.
+  Mac print and visual acceptance remain pending.
+
+The magnitude audit found HIP 78400 (V = 5.47) retained by the existing
+cartoon vertex exception. CLI `--constellation-star-mode none` now exposes the
+existing detail policy explicitly; the supplied specimen disables vertex
+exceptions and verifies every rendered stellar magnitude is strictly below 5.
+This retains existing defaults and deliberate explicit-label inclusion.
+The final CLI/documentation gate has 357 passes. The core presentation full
+suite at the `10c26a9` source state has 2,977 passes and the four reproduced
+base failures; a final full run after this explicit CLI addition is separate.
+
+
+## Orientation-aware label association review (2026-10-06)
+
+Fernando's vertical Sco–Lib specimen showed that collision avoidance alone
+could make theta appear detached, pi/rho appear associated with one marker,
+and tau appear to label Antares. This is a display association defect, not
+an HIP/Bayer identity change. Cartographic literature distinguishes
+legibility from association: see [Label Placement Challenges in City
+Wayfinding Map Production](https://doi.org/10.1007/s41651-022-00115-z).
+Esri's [Remove ambiguous labels](https://doc.esri.com/en/arcgis-pro/latest/help/mapping/text/remove-ambiguous-labels.html)
+explicitly tests nearby features as well as the labelled feature.
+Bobák, Čmolík and Čadík's [From Top-Right to User-Right](https://arxiv.org/abs/2407.11996)
+reports a preference for above-point positions in a large user study. These
+are cartographic sources, not a proof of optimal astronomical labelling.
+
+The existing generic renderer now evaluates compact candidates in final
+screen space, including actual glyph bounds and physical marker radii.
+It prioritizes ownership before cosmetic line avoidance, prefers vertically
+aligned candidates, and revisits earlier assignments. Astronomical geometry,
+identity, selected labels and superscripts remain unchanged. Finite candidate
+sets cannot guarantee clarity in arbitrarily crowded fields; selected labels
+remain visible rather than being silently dropped.
+
+The active western `const_aug.fab` gains two separate two-vertex paths:
+sigma Sco (HIP 80112) to pi Sco (HIP 78265), and pi Sco to rho Sco (HIP 78104).
+Existing paths are retained verbatim to avoid introducing a bridge from a
+previous path's endpoint. The unused reference figure file is unchanged.
+
+The 75.44 mm wide transparent Sco–Lib review uses a 45 by 65 degree field,
+position angle -165.66607934, V < 5, and nineteen explicitly selected labels.
+PNG/PDF/SVG checks find zero label-box overlaps and every label closer to its
+own marker than to another resolvable marker. All 55 plotted stellar symbols
+are brighter than V=5; alpha is retained and visible ink is black. Requested
+line gaps remain one physical point beyond the marker disk. Rotation tests
+cover five angles and two print resolutions. This numerical evidence supports
+review of this specimen; Mac visual acceptance remains pending.
+
+
+### Lateral alignment follow-up
+
+Fernando accepted the 324-test Mac gate at `20545d1a`, after recovering
+accidentally copied shell prompt redirections and synchronizing a clean tree.
+He requested horizontal alignment of sigma Sco, Antares and tau Sco. The
+renderer now recognizes close vertical chains of explicitly selected anchors
+in final screen space and prefers lateral slots. Isolated labels keep their
+above/below preference. Long labels in such a chain can use a fourth clearance
+of 3 physical points beyond the marker disk to clear neighbouring faint stars;
+short labels retain the previous 0.75–2.25 point choices.
+
+Association is measured from the nearest attachment point on the label edge
+to visible marker disks of explicitly labelled anchors. Every plotted stellar
+symbol remains an obstacle, including unlabelled faint stars. This avoids
+letting a distant part of a long name's bounding box dictate its ownership.
+Symbol avoidance precedes association and other visual preferences. This is
+an optical placement heuristic, not a catalogue or coordinate change.
+
+The vertical Sco–Lib PNG/PDF/SVG preview has sigma Sco on the right, Antares
+on the left, and tau Sco on the right, with zero vertical offset between each
+label box centre and its intended stellar centre. Nineteen labels remain,
+with zero label-box overlaps; the 55-star V < 5 cut, transparency and physical
+line gaps remain unchanged. Renderer tests exercise both print resolutions
+and reversed chain orientation, including a faint marker beside a long name.
+No production/test module or new public option is added. Scientific-coordinate
+ownership remains unchanged; the coordinate guide reviewed at the preceding
+checkpoint remains current. Mac visual acceptance is pending.

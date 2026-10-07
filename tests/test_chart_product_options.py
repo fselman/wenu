@@ -143,3 +143,17 @@ def test_single_file_rejects_format_extension_contradiction():
 def test_output_parser_rejects_unknown_format():
     with pytest.raises(SystemExit):
         parser().parse_args(["--format", "jpeg"])
+
+
+
+def test_publication_product_switches_preserve_old_defaults():
+    import argparse
+    from wenu.charts.product_options import add_chart_product_arguments, chart_product_options
+    parser = argparse.ArgumentParser()
+    add_chart_product_arguments(parser, default_output="figure.png")
+    old = chart_product_options(parser.parse_args([]))
+    assert old.transparent is None and old.axes_frame and old.show_title
+    chosen = chart_product_options(parser.parse_args(["--transparent", "--no-frame", "--no-title"]))
+    assert chosen.transparent and not chosen.axes_frame and not chosen.show_title
+    opaque = chart_product_options(parser.parse_args(["--no-transparent"]))
+    assert opaque.transparent is False

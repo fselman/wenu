@@ -341,3 +341,22 @@ chart Markdown/JSON discrepancy reports. Sequence requests reject true.
 in existing projected chart units). Appearance never changes star inclusion.
 A CLI selector replaces only its corresponding TOML list; CLI boolean forms
 including `--no-stellar-report` override the translated TOML values.
+
+## Constellation publication controls
+
+The stellar presentation stage adds these optional schema-v2 keys:
+
+| Key | Default | Contract |
+| --- | --- | --- |
+| `detail.content.star_constellations` | `[]` | Nonempty IAU-code list restricts stars to the union of those regions; empty configuration list leaves selection unrestricted. |
+| `styles.{atlas,cartoon}.stars.labels.placement` | `"fixed"` | `fixed` or `auto`; automatic placement affects only requested labels. |
+| `styles.{atlas,cartoon}.constellation_figures.gap_points` | `0.0` | Finite nonnegative physical clearance beyond the drawn disk. |
+| `products.default.axes_frame` | `true` | Draw the rectangular axes frame. |
+| `products.default.show_title` | `true` | Draw the title, retaining it in provenance. |
+
+The existing `export.transparent` now reaches ordinary chart requests as well
+as the export configuration. CLI `--transparent`/`--no-transparent` overrides
+it; `--no-frame` and `--no-title` override product defaults. CLI equivalents
+for content/style are `--stars-in-constellations`,
+`--star-label-placement`, and `--constellation-line-gap`. Configuration and
+CLI feed the same immutable request contracts.

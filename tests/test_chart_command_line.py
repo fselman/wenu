@@ -427,3 +427,25 @@ def test_style_detail_and_family_style_overrides_are_composed(monkeypatch):
     assert calls[0]["style_overrides"].sky_color == "#1F699B"
     assert calls[0]["style_overrides"].constellation_line_color == "white"
     assert calls[0]["style_overrides"].stellar_magnitude_sizing is sizing
+
+
+
+def test_constellation_publication_cli_options_reach_the_common_drawing_plan(monkeypatch):
+    calls = []
+    monkeypatch.setattr("wenu.charts.command_line.draw_chart_view",
+                        lambda *args, **kwargs: calls.append(kwargs) or object())
+    arguments = parser().parse_args([
+        "--stars-in-constellations", "Sco,Lib", "--star-label-bayer", "Sco:beta1",
+        "--constellation-lines", "Sco,Lib", "--constellation-star-mode", "none",
+        "--star-label-placement", "auto", "--constellation-line-gap", "1.25",
+        "--transparent", "--no-frame", "--no-title",
+    ])
+    view = type("View", (), {"family": "regional"})()
+    draw_chart_view_from_arguments(view, arguments, stem="figure")
+    options = calls[0]
+    assert options["content"].star_constellations == {"Sco", "Lib"}
+    assert options["detail_overrides"].constellation_star_mode == "none"
+    assert options["style_overrides"].constellation_line_gap_points == 1.25
+    assert options["style_overrides"].star_label_placement == "auto"
+    assert options["transparent"] and not options["axes_frame"] and not options["show_title"]
+    assert not options["detail_overrides"].star_labels.show_full_bayer_designation

@@ -285,3 +285,29 @@ def test_canonical_configuration_fails_before_sphere_loading(monkeypatch):
         module.chart_view(module.parser().parse_args([]))
 
     assert loaded == []
+
+
+
+def test_constellation_publication_overlay_translates_into_existing_contracts(tmp_path):
+    from wenu.configuration import load_configuration_defaults
+    from wenu.charts.style_components import GridStyle, StellarStyle
+    from wenu.charts.style_overrides import ChartStyleOverrides
+    overlay = tmp_path / "figure.toml"
+    overlay.write_text('schema_version = 2\n[detail.content]\nstar_constellations = ["Sco", "Lib"]\n'
+                       '[styles.cartoon.constellation_figures]\ngap_points = 1.25\n'
+                       '[styles.cartoon.stars.labels]\nplacement = "auto"\n'
+                       '[products.default]\naxes_frame = false\nshow_title = false\n[export]\ntransparent = true\n')
+    defaults = load_configuration_defaults(overlay)
+    assert defaults.geometry_detail.star_constellations == {"Sco", "Lib"}
+    assert defaults.style_mode.cartoon.grids.constellation_line_gap_points == 1.25
+    assert defaults.style_mode.cartoon.stars.label_placement == "auto"
+    assert not defaults.furniture_product_export.product.axes_frame
+    assert not defaults.furniture_product_export.product.show_title
+    assert defaults.furniture_product_export.export_options.transparent
+    import pytest
+    for constructor, keyword, value in ((GridStyle, "constellation_line_gap_points", -1),
+                                        (GridStyle, "constellation_line_gap_points", float("nan")),
+                                        (StellarStyle, "label_placement", "invalid"),
+                                        (ChartStyleOverrides, "constellation_line_gap_points", -1)):
+        with pytest.raises(ValueError):
+            constructor(**{keyword: value})

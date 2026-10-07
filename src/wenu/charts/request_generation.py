@@ -153,6 +153,7 @@ def export_prepared_chart(
 
     requested_constellations = set(detail.stellar_label_constellations or ())
     requested_constellations.update(request.constellation_mask or ())
+    requested_constellations.update(request.content.star_constellations or ())
     if prepared.resolved.constellations is not None:
         requested_constellations.update(prepared.resolved.constellations.constellations)
     for values in (request.content.constellation_lines, request.content.constellation_labels, request.content.constellation_boundaries):
@@ -193,12 +194,21 @@ def export_prepared_chart(
         if configuration is not None:
             composition_options["configuration"] = configuration
         composition = compose_chart(chart, **composition_options)
+        transparent = request.product.transparent
+        if transparent is None and configuration is not None:
+            transparent = configuration.furniture_product_export.export_options.transparent or None
+        if transparent is not None:
+            composition = replace(composition, mode=replace(composition.mode, transparent=transparent))
+        if getattr(composition.mode, "transparent", False):
+            composition = replace(composition, style=replace(
+                composition.style, canvas=replace(composition.style.canvas, sky_color="none"),
+            ))
         figure, ax = plt.subplots(figsize=(
             composition.mode.width_inches,
             composition.mode.height_inches,
         ))
         try:
-            composition.style.configure_axes(ax, title=title)
+            composition.style.configure_axes(ax, title=title if request.product.show_title else None)
             export_options = {
                 "composition": composition,
                 "horizon_mask": request.horizon_mask,
@@ -224,9 +234,11 @@ def export_prepared_chart(
                 copyright=copyright_text,
             )
             export_options["svg_provenance"] = provenance
+            renderer = MatplotlibRenderer(ax)
+            renderer.axes_frame_visible = request.product.axes_frame
             result = chart.export(
                 sky,
-                MatplotlibRenderer(ax),
+                renderer,
                 output,
                 **export_options,
             )

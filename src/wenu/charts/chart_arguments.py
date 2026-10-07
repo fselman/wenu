@@ -333,6 +333,12 @@ class ChartLegendSelection:
 
 def add_chart_content_arguments(parser):
     """Add shared astronomical-content arguments to ``parser``."""
+    parser.add_argument("--stars-in-constellations", action="append", type=_constellation_selection,
+                        metavar="IAU[,IAU...]", help="retain stars only inside the selected IAU regions")
+    parser.add_argument("--constellation-star-mode", choices=("none", "selected", "all"),
+                        default=None, help="retain line vertices beyond the magnitude cut")
+    parser.add_argument("--star-label-placement", choices=("fixed", "auto"), default=None)
+    parser.add_argument("--constellation-line-gap", type=float, default=None, metavar="POINTS")
     parser.add_argument("--star-label-name", action="append", metavar="IAU:NAME[,NAME]")
     parser.add_argument("--star-label-bayer", action="append", metavar="IAU:TOKEN[,TOKEN]")
     parser.add_argument("--show-full-bayer-designation", action=argparse.BooleanOptionalAction, default=None)
@@ -993,6 +999,8 @@ def chart_style_overrides(
         constellation_label_color=arguments.constellation_label_color,
         boundary_linewidth=arguments.constellation_boundary_width,
         boundary_color=arguments.constellation_boundary_color,
+        constellation_line_gap_points=getattr(arguments, "constellation_line_gap", None),
+        star_label_placement=getattr(arguments, "star_label_placement", None),
     )
 
 
@@ -1058,7 +1066,8 @@ def chart_detail_overrides(
         disabled_layers=frozenset(optional_layers - additions),
         grid_label_layers=labels,
         constellation_star_mode=(
-            "selected" if content.constellation_lines else "none"
+            getattr(arguments, "constellation_star_mode", None)
+            or ("selected" if content.constellation_lines else "none")
         ),
     )
 
@@ -1087,6 +1096,9 @@ def chart_sky_content(arguments) -> SkyContentSelection:
         )
 
     return SkyContentSelection(
+        star_constellations=(None if getattr(arguments, "stars_in_constellations", None) is None else frozenset(
+            name for names in arguments.stars_in_constellations for name in names
+        )),
         constellation_lines=identities(
             content.constellation_lines, "line_constellations"
         ),

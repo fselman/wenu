@@ -146,6 +146,7 @@ constellation_star_mode = "none"
 extra_stars = []
 
 [detail.content]
+star_constellations = []
 default_layers = [
     "stars", "constellation_lines", "constellation_labels",
     "constellation_boundaries", "equatorial_grid", "ecliptic_grid",
@@ -291,6 +292,7 @@ minimum_area = 1.0
 maximum_area = "none"
 
 [styles.atlas.stars.labels]
+placement = "fixed"
 color = "none"
 font_size = 7.0
 opacity = 1.0
@@ -425,6 +427,7 @@ line_style = "dotted"
 opacity = 0.65
 
 [styles.atlas.constellation_figures]
+gap_points = 0.0
 color = "#686868"
 line_width = 0.35
 line_style = "solid"
@@ -521,6 +524,7 @@ minimum_area = 1.0
 maximum_area = "none"
 
 [styles.cartoon.stars.labels]
+placement = "fixed"
 color = "none"
 font_size = 7.0
 opacity = 1.0
@@ -655,6 +659,7 @@ line_style = "dotted"
 opacity = 0.45
 
 [styles.cartoon.constellation_figures]
+gap_points = 0.0
 color = "#304f78"
 line_width = 1.15
 line_style = "solid"
@@ -940,6 +945,8 @@ border_padding = 0.5
 z_order = 1000.0
 
 [products.default]
+axes_frame = true
+show_title = true
 style = "atlas"
 mode = "print"
 all_products = false

@@ -85,6 +85,12 @@ class StellarStyle:
     label_fontsize: float = 7.0
     label_alpha: float = 1.0
     label_offset: tuple[float, float] = (0.01, 0.01)
+    label_placement: str = "fixed"
+
+
+    def __post_init__(self):
+        if self.label_placement not in {"fixed", "auto"}:
+            raise ValueError("label_placement must be fixed or auto")
 
 
 @dataclass(frozen=True)
@@ -254,6 +260,14 @@ class GridStyle:
     constellation_label_fontsize: float | None = None
 
 
+    constellation_line_gap_points: float = 0.0
+
+    def __post_init__(self):
+        value = float(self.constellation_line_gap_points)
+        if not isfinite(value) or value < 0.0:
+            raise ValueError("constellation_line_gap_points must be finite and nonnegative")
+
+
 @dataclass(frozen=True)
 class MaskStyle:
     """Outside-region mask presentation."""
@@ -327,6 +341,7 @@ class ChartStyle:
             star_label_fontsize=stars.label_fontsize,
             star_label_alpha=stars.label_alpha,
             star_label_offset=stars.label_offset,
+            star_label_placement=stars.label_placement,
             draw_bright_star_symbols=stars.draw_bright_symbols,
             bright_star_magnitude_limit=stars.bright_magnitude_limit,
             bright_star_color=stars.bright_color,

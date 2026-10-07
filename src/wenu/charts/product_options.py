@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import argparse
 from pathlib import Path
 
 from wenu.output_policy import OutputFormat
@@ -62,9 +63,16 @@ class ChartProductOptions:
     mode: str = "print"
     all_products: bool = False
     output_format: OutputFormat | None = None
+    transparent: bool | None = None
+    axes_frame: bool = True
+    show_title: bool = True
 
     def __post_init__(self):
         product = ChartProduct(self.style, self.mode)
+        if self.transparent is not None and not isinstance(self.transparent, bool):
+            raise TypeError("transparent must be Boolean or None")
+        if not isinstance(self.axes_frame, bool) or not isinstance(self.show_title, bool):
+            raise TypeError("axes_frame and show_title must be Boolean")
         object.__setattr__(self, "output", Path(self.output))
         object.__setattr__(self, "style", product.style)
         object.__setattr__(self, "mode", product.mode)
@@ -175,6 +183,12 @@ def add_chart_product_arguments(parser, *, default_output):
         default=None,
         help="generate atlas/cartoon in print/presentation modes",
     )
+    parser.add_argument("--transparent", action=argparse.BooleanOptionalAction, default=None,
+                        help="export without a painted sky or paper background")
+    parser.add_argument("--no-frame", dest="axes_frame", action="store_false", default=None,
+                        help="omit the rectangular chart frame")
+    parser.add_argument("--no-title", dest="show_title", action="store_false", default=None,
+                        help="omit the chart title from the figure")
     return parser
 
 
@@ -196,4 +210,7 @@ def chart_product_options(arguments, *, defaults=None) -> ChartProductOptions:
             if arguments.all_products is None else arguments.all_products
         ),
         output_format=arguments.output_format,
+        transparent=getattr(arguments, "transparent", None),
+        axes_frame=(defaults.axes_frame if getattr(arguments, "axes_frame", None) is None else arguments.axes_frame),
+        show_title=(defaults.show_title if getattr(arguments, "show_title", None) is None else arguments.show_title),
     )

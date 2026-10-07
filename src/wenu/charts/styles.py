@@ -325,6 +325,7 @@ class PublicationStyle:
     equatorial_reference_linewidth: float | None = None
     constellation_label_fontsize: float | None = None
     title_color: str | None = None
+    star_label_placement: str = "fixed"
 
     def configure_axes(self, ax, *, title=None):
         """Apply chart-level axes styling."""
@@ -1039,6 +1040,7 @@ class PublicationStyle:
                 "fontsize": self.star_label_fontsize,
                 "alpha": self.star_label_alpha,
                 "zorder": layers.STARS + 0.1,
+                "placement": self.star_label_placement,
             },
             "label_offset": self.star_label_offset,
         }
