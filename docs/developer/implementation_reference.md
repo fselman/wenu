@@ -10,6 +10,16 @@ advanced use, but ordinary chart production uses a resolved composition.
 
 ## 1. Canonical public imports
 
+The CLI constellation feature selectors accept `all` independently for
+labels, lines and boundaries, with matching `--constellation-*-exclude`
+explicit IAU lists. Configuration parity lives in `[detail.constellations]`.
+Resolution expands/subtracts public identities before the existing layer
+adapters and `SkyContentSelection`; only automatic `all` label placement
+marks `visible_constellation_labels=True`. Render-local preparation uses
+official region/viewport intersection and preserves partially visible regions
+outside the usual typography inset. Explicit star labels are unchanged.
+
+
 ```python
 from wenu import (
     AdaptiveDetailPolicy,

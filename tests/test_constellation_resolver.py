@@ -87,3 +87,24 @@ def test_group_catalogue_is_packaged_and_provenance_controlled():
     provenance, groups = load_constellation_groups()
     assert "Wenu packaged" in provenance
     assert len(groups) == 2
+
+
+@pytest.mark.parametrize('kind', ['lines', 'labels', 'boundaries'])
+def test_all_features_expand_before_independent_iau_exclusions(kind):
+    from wenu.charts.constellation_resolver import resolve_constellation_features
+    all_names = resolve_constellation_features(['all'], kind=kind)
+    chosen = resolve_constellation_features(['all'], ['sEr', 'Lib'], kind=kind)
+    assert len(all_names) == (88 if kind == 'boundaries' else 89)
+    assert not {'Ser', 'Ser1', 'Ser2', 'SerCap', 'SerCau', 'Lib'} & set(chosen)
+    assert 'Sco' in chosen
+    assert resolve_constellation_features(['Sco', 'Lib'], ['Sco'], kind=kind) == ('Lib',)
+    assert resolve_constellation_features([], ['Sco'], kind=kind) == ()
+
+
+@pytest.mark.parametrize('values,allow_all', [(['all', 'Sco'], True), (['all'], False), (['xyz'], True), ([''], True)])
+def test_feature_vocabularies_fail_closed(values, allow_all):
+    from wenu.charts.constellation_resolver import normalize_constellation_features
+    with pytest.raises(ValueError):
+        normalize_constellation_features(values, allow_all=allow_all)
+    with pytest.raises(ValueError):
+        normalize_constellations(['all'])

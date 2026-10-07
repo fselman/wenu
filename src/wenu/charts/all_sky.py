@@ -182,6 +182,7 @@ class AllSkyChart:
             boundary=self.boundary,
             observer=resolved_observer,
             transform_spherical=transform,
+            region_selection=self.outside_mask_constellations,
         )
 
         set_boundary = getattr(renderer, "set_clip_boundary", None)

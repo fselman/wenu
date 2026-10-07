@@ -805,3 +805,50 @@ def test_rendered_constellation_size_uses_independent_field_or_legacy_fallback(
         assert style.grid_label_fontsize == 6.0
     finally:
         plt.close(figure)
+
+
+@pytest.mark.parametrize('vertices', [
+    ([.97, 1.5, 1.5, .97], [-.05, -.05, .05, .05]),
+    ([-2, 2, 2, -2], [-.1, -.1, .1, .1]),
+    ([-2, 2, 2, -2], [-2, -2, 2, 2]),
+])
+def test_all_labels_retain_thin_crossing_and_enclosing_regions(vertices):
+    label = object()
+    source = object()
+    class Projection:
+        def project_geometry(self, geometry):
+            assert geometry is source
+            return ProjectedPolygons(items=[ProjectedPolygon(*vertices, name='LIB')])
+    sky = SimpleNamespace(constellation_labels=label,
+        constellation_boundaries=SimpleNamespace(spherical_geometry=lambda observer: source),
+        observer=object())
+    options = apply_visible_constellation_label_anchors({label: {'visible_regions': True}},
+        sky=sky, projection=Projection(), viewport=Viewport.centered(width=2, height=2),
+        boundary=circular_boundary(1, samples=73))
+    points = ProjectedPoints([1.2], [0], labels=['Lib'])
+    prepared = options[label]['prepare'](object(), points)
+    assert np.isfinite(prepared.x).all()
+    assert np.hypot(prepared.x[0], prepared.y[0]) < 1
+    np.testing.assert_array_equal(points.x, [1.2])
+    assert 'visible_regions' not in options[label]
+
+
+def test_all_names_apply_mask_region_selection_before_anchoring():
+    label = object()
+    source = object()
+    seen = []
+    def regions(observer, *, selected):
+        seen.append(selected)
+        return source
+    class Projection:
+        def project_geometry(self, geometry):
+            return ProjectedPolygons(items=[ProjectedPolygon(
+                [-.2, .2, .2, -.2], [-.2, -.2, .2, .2], name='SCO')])
+    sky = SimpleNamespace(constellation_labels=label,
+        constellation_boundaries=SimpleNamespace(spherical_geometry=regions), observer=object())
+    options = apply_visible_constellation_label_anchors({label: {'visible_regions': True}},
+        sky=sky, projection=Projection(), viewport=Viewport.centered(width=2, height=2),
+        boundary=circular_boundary(1, samples=73), region_selection=('Sco',))
+    prepared = options[label]['prepare'](object(), ProjectedPoints([0, 0], [0, 0], labels=['Sco', 'Lib']))
+    assert seen == [('Sco',)]
+    assert np.isfinite(prepared.x[0]) and np.isnan(prepared.x[1])

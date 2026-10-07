@@ -52,6 +52,43 @@ packaged defaults.toml < --config TOML < explicit CLI arguments
 Without `--write`, `wenu_chart defaults` prints the same complete document to
 standard output.
 
+## All visible constellations and exclusions
+
+Each constellation feature accepts an explicit IAU list or `all`:
+
+```text
+--constellation-labels all --constellation-labels-exclude Oct,Hyi
+--constellation-lines all --constellation-lines-exclude Oct
+--constellation-boundaries all --constellation-boundaries-exclude Hyi
+```
+
+The three selections are independent. Exclusions win over both `all` and
+explicit inclusion, and never enable a feature. Options may be repeated;
+`all` must be the sole token in its comma-separated argument. Exclusions
+require explicit IAU codes. `Ser` includes or excludes both Serpens regions.
+Star-name and Bayer selections remain independent.
+
+`all` uses the existing chart projection and clipping, including partial
+constellation figures and regions. Automatic constellation-name anchors use
+the visible IAU region when the usual anchor falls outside the chart. A thin
+visible fragment still qualifies, though typography may be clipped at the
+edge. This feature does not change constellation subjects or mask syntax.
+
+The equivalent optional version-2 configuration is:
+
+```toml
+[detail.constellations]
+labels = ["all"]
+lines = ["all"]
+boundaries = []
+labels_exclude = ["Oct", "Hyi"]
+lines_exclude = ["Oct"]
+boundaries_exclude = []
+```
+
+All six lists default empty. An explicit CLI option replaces the corresponding
+configuration list; the other five lists retain their configured values.
+
 ## Valid line styles
 
 Every configurable line-bearing element independently declares `color`,

@@ -92,6 +92,39 @@ def _internal_identities(constellations):
     return tuple(lines), tuple(labels)
 
 
+def normalize_constellation_features(values, *, allow_all=True):
+    """Normalize a feature list; subjects and masks never accept ``all``."""
+    values = tuple(str(value).strip() for value in values)
+    if not values:
+        return ()
+    if any(value.casefold() == "all" for value in values):
+        if not allow_all or len(values) != 1:
+            raise ConstellationResolutionError(
+                "all must be the sole constellation feature selection; "
+                "exclusions require explicit IAU abbreviations."
+            )
+        return ("all",)
+    return normalize_constellations(values)
+
+
+def resolve_constellation_features(values, exclusions=(), *, kind):
+    """Expand all, subtract public IAU identities, then adapt layer aliases."""
+    names = normalize_constellation_features(values)
+    excluded = normalize_constellation_features(exclusions, allow_all=False)
+    selected = (
+        tuple(sorted(IAU_CONSTELLATIONS)) if names == ("all",) else names
+    )
+    selected = tuple(name for name in selected if name not in excluded)
+    if kind == "boundaries":
+        return selected
+    lines, labels = _internal_identities(selected)
+    if kind == "lines":
+        return lines
+    if kind == "labels":
+        return labels
+    raise ValueError(f"Unknown constellation feature kind: {kind!r}")
+
+
 def constellation_group_catalogue_path():
     """Return the packaged regional-group resource."""
     resource = files("wenu.data") / "constellation_groups.json"

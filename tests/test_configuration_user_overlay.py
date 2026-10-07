@@ -188,3 +188,13 @@ def test_sequence_overlay_rejects_incomplete_or_inconsistent_values(
         load_configuration_defaults(path)
 
     assert diagnostic in str(error.value)
+
+
+@pytest.mark.parametrize('key,value', [('lines', ['all', 'Sco']),
+    ('labels_exclude', ['all']), ('boundaries', ['NoSuchConstellation']),
+    ('lines_exclude', [1])])
+def test_constellation_feature_overlays_reject_invalid_lists(key, value):
+    from wenu.configuration.validation import merge_configuration_overlay, load_packaged_defaults
+    with pytest.raises(ValueError):
+        merge_configuration_overlay(load_packaged_defaults(), {
+            'schema_version': 2, 'detail': {'constellations': {key: value}}})

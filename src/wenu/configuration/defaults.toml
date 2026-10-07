@@ -145,8 +145,18 @@ grid_label_layers = []
 constellation_star_mode = "none"
 extra_stars = []
 
+# Independent feature requests. Use ["all"] or explicit IAU abbreviations.
+[detail.constellations]
+labels = []
+lines = []
+boundaries = []
+labels_exclude = []
+lines_exclude = []
+boundaries_exclude = []
+
 [detail.content]
 star_constellations = []
+
 default_layers = [
     "stars", "constellation_lines", "constellation_labels",
     "constellation_boundaries", "equatorial_grid", "ecliptic_grid",

@@ -25,6 +25,11 @@ share the same geometry and rendering pipeline.
 
 ## Principal packages
 
+Constellation feature `all` and exclusions are owned by
+`charts/constellation_resolver.py` and the existing CLI/configuration adapters.
+`charts/constellation_label_placement.py` retains ownership of visible-region
+name anchors, including regional viewports. No package or module is added.
+
 ```text
 src/wenu/
 ├── coordinates.py              coordinate vocabulary and legacy conversion

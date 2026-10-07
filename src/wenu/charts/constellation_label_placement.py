@@ -26,6 +26,7 @@ def apply_visible_constellation_label_anchors(
     inset=0.94,
     maximum_boundary_vertices=73,
     transform_spherical=None,
+    region_selection=None,
 ):
     """Use visible IAU regions to prepare labels at a chart boundary."""
     labels = getattr(sky, "constellation_labels", None)
@@ -38,6 +39,7 @@ def apply_visible_constellation_label_anchors(
         for layer, options in layer_options.items()
     }
     options = dict(resolved.get(labels, {}))
+    retain_partial = bool(options.pop("visible_regions", False))
     previous = options.get("prepare")
     safe_boundary = _simplified_inset_boundary(
         boundary,
@@ -58,7 +60,13 @@ def apply_visible_constellation_label_anchors(
         resolved_observer = getattr(sky, "observer", None) if observer is None else observer
         if resolved_observer is None:
             raise TypeError("constellation label placement requires an observer.")
-        region_spherical = regions.spherical_geometry(resolved_observer)
+        region_options = (
+            {"selected": region_selection}
+            if retain_partial and region_selection is not None else {}
+        )
+        region_spherical = regions.spherical_geometry(
+            resolved_observer, **region_options
+        )
         if transform_spherical is not None:
             region_spherical = transform_spherical(region_spherical)
         region_projected = project_geometry_for_viewport(
@@ -73,10 +81,15 @@ def apply_visible_constellation_label_anchors(
             clipped = clip_polygon_to_convex_boundary(
                 polygon, safe_boundary
             )
+            if clipped is None and retain_partial:
+                # The inset is a typography preference, not a visibility cut.
+                clipped = clip_polygon_to_convex_boundary(polygon, boundary)
             if clipped is None:
                 continue
             identifier = str(polygon.name or "").upper()
             area = _polygon_area(clipped)
+            if area <= 0.0:
+                continue
             if area > visible_area.get(identifier, -1.0):
                 visible[identifier] = polygon_centroid(clipped)
                 visible_area[identifier] = area

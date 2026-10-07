@@ -611,6 +611,23 @@ class RegionalChart:
         )
         projection = self.projection
         viewport = self.viewport
+        labels = getattr(sky, "constellation_labels", None)
+        if options.get(labels, {}).get("visible_regions", False):
+            from .constellation_label_placement import (
+                apply_visible_constellation_label_anchors,
+            )
+            from wenu.geometry.projected import ProjectedCurve
+
+            boundary = mask_boundary or ProjectedCurve(
+                [viewport.x_min, viewport.x_max, viewport.x_max, viewport.x_min],
+                [viewport.y_min, viewport.y_min, viewport.y_max, viewport.y_max],
+                closed=True,
+            )
+            options = apply_visible_constellation_label_anchors(
+                options, sky=sky, projection=projection, viewport=viewport,
+                boundary=boundary, observer=observer,
+                region_selection=self.outside_mask_constellations,
+            )
         result = sky.draw_chart(
             projection=projection,
             renderer=renderer,

@@ -9,6 +9,17 @@
 
 ## Current forward roadmap
 
+**Constellation-selection follow-up (2026-10-07):** Based on synchronized
+`main` at `afe8e909` (PR #209), Fernando authorized independent `all` feature
+selection and chose the name `exclude` for per-feature subtraction. The
+bounded implementation is a review candidate on
+`feat/constellation-all-and-exclusions`: CLI/TOML parity, public Serpens
+adaptation and existing chart-local partial-region label preparation. Mac
+full-suite and visual acceptance remain pending; this does not close the
+stellar programme or alter the future-order table below. Scientific-guide
+review found no change to astronomical positions, frames, equations or data
+sources, so the canonical coordinate guide remains unchanged.
+
 **Resumption checkpoint:** 2026-10-05, clean synchronized `main` at
 `91f7841235d4ed49b20ae6bf5d6b3e678de4e5c5`.
 The satellite foundation merged through PR #201 at `8311bd08`; comet

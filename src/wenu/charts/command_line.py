@@ -251,6 +251,17 @@ def _chart_view_argument_plans(
     values without discarding unrelated explicit switches.
     """
     configuration = getattr(view, "configuration", None)
+    arguments = copy(arguments)
+    feature_defaults = (
+        {} if configuration is None else
+        configuration.geometry_detail.constellation_features or {}
+    )
+    for kind in ("labels", "lines", "boundaries"):
+        for suffix in ("", "_exclude"):
+            name = f"constellation_{kind}{suffix}"
+            if getattr(arguments, name, None) is None:
+                configured = feature_defaults.get(f"{kind}{suffix}", ())
+                setattr(arguments, name, [configured] if configured else [])
     product_defaults = (
         None
         if configuration is None

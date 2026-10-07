@@ -229,6 +229,7 @@ class BinocularChart:
             viewport=self.viewport,
             boundary=self.field_stop,
             observer=observer,
+            region_selection=self.outside_mask_constellations,
         )
         renderer.set_clip_boundary(
             self.field_stop,
