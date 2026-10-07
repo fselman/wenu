@@ -101,7 +101,8 @@ class MatplotlibRenderer:
             text.set_transform(self.ax.transData)
             box = text.get_window_extent(renderer)
             support = (abs(direction[0]) * box.width + abs(direction[1]) * box.height) / 2.0
-            offset = support + 0.35 * scale
+            clearance = 1.5 if not circular and direction[1] < -0.9 else 0.35
+            offset = support + clearance * scale
             if circular:
                 # Fit the upright text box to the curved inner rim.
                 target = float(np.max(radius)) + 0.35 * scale

@@ -142,6 +142,8 @@ separately for style editing.
 
 Regional and binocular coordinate labels use actual curve-boundary crossings
 near their existing selected anchors, with upright measured exterior offsets.
+Bottom marginal text on rectangular charts keeps 1.5 points between its ink
+bounds and the inner viewport edge; other margins retain their closer placement.
 Curves that do not cross the boundary have no marginal label. This does not
 implement new cadence, duplicate top/right labels, or pole-aware RA/Dec rules.
 Horizon-planisphere altitude labels remain on their interior cardinal spokes.

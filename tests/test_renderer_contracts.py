@@ -557,6 +557,8 @@ def test_larger_marginal_grid_text_fits_without_widening_the_band(dpi, circular)
             assert outer.contains_points(corners).all()
             assert not inner.contains_points(corners).any()
             assert text.get_fontsize() == fontsize
+            if not circular and text.get_position()[1] < -.9:
+                assert inner.vertices[:, 1].min() - box.y1 >= 1.5 * dpi / 72.0 - 1e-6
         frames.append(renderer._grid_label_band_frame.get_path().vertices.copy())
         plt.close(figure)
     np.testing.assert_allclose(*frames, atol=1e-12)
