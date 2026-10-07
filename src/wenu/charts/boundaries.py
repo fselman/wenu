@@ -11,12 +11,12 @@ from wenu.geometry.viewport import Viewport
 from wenu.rendering.label_placement import CurveLabelPlacement
 
 
-def _above_line(x, y, *, horizontal_alignment=None):
+def _above_line(x, y, *, horizontal_alignment=None, normal_offset_em=0.65):
     return CurveLabelPlacement(
         float(x),
         float(y),
         rotation_deg=0.0,
-        normal_offset_em=0.65,
+        normal_offset_em=normal_offset_em,
         horizontal_alignment=horizontal_alignment,
     )
 
@@ -383,7 +383,9 @@ class HorizonGridLabelAnchor:
             for azimuth in spokes:
                 x, y = self.projection.project_spherical(azimuth, altitude)
                 if np.isfinite((x, y)).all():
-                    placements.append(_above_line(x, y))
+                    placements.append(_above_line(
+                        x, y, normal_offset_em=0.65 if altitude == 90.0 else 0.2,
+                    ))
             return placements
         if name.startswith("azimuth_"):
             azimuth = float(name.removeprefix("azimuth_"))

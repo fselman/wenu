@@ -1,19 +1,19 @@
 # Wenu implementation reference
 
-The La Ligua v4 typography follow-up raises packaged coordinate-label
-sizes by 20% (atlas 4.2 points, cartoon 4.8 points). Marginal text is centred
-inside the 8.5-point content floor plus padding, within the measured v4 ring; ordinary enlarged
-labels fit without increasing band width. Oversized custom text still expands
-furniture rather than being clipped or shrunk. Opaque furniture paints over
-sky linework below coordinate text, while the real clip path remains active
-for deferred endpoint trimming. Automatic placement reserves 1.5 points
-between movable text bounds and adds size-aware inward area candidates.
-Visible IAU-region membership takes precedence when a contained candidate
-exists; a very narrow visible region permits a bounded inward fallback.
-Composition resolves an unspecified constellation gap to 1 point only for
-location planispheres and 0 elsewhere, after CLI/TOML overrides. Explicit
-zero remains zero. No scientific geometry, temporal anchors, orientation
-policy, module ownership, grid cadence or density policy changes.
+The La Ligua v6 follow-up requires full constellation-text containment
+inside the prepared visible IAU region and sky boundary. Names with no fitting
+candidate are omitted, including fixed names; fixed candidates are not moved.
+The renderer exposes omitted names through `suppressed_region_labels`.
+Packaged coordinate fonts are atlas 5.04 points and cartoon 5.76 points.
+Marginal text sits near its coordinate crossing; ordinary cardinal labels
+retain the compact band. Oversized or dense diagonal text may expand furniture.
+Noncentral altitude labels use a 0.2-em offset; the zenith keeps 0.65 em.
+The shared deterministic search retains orientation, colour, reference-curve
+association and temporal anchors. Location planispheres default to a 1-point
+constellation gap, with explicit CLI/TOML values retaining precedence.
+The active authored Scorpius figure replaces sigma–delta with sigma–beta1
+(HIP 80112–78820); its remaining edges and segment count are unchanged.
+No module ownership, coordinate convention or grid cadence changes.
 
 The exterior coordinate-label band is chart-owned furniture for non-polar
 planispheres, regional/constellation charts and binocular fields. Existing

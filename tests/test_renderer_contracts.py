@@ -474,15 +474,20 @@ def test_pair_move_can_release_two_conflicting_region_slots():
     scale = fig.dpi / 72
     origin = ax.transData.transform((0, 0))
     spacing = ax.transData.inverted().transform(origin + [0.75 * 9 * scale, 0])[0]
+    probe = ax.text(0, 0, "XX", fontsize=9, family="monospace", ha="center", va="center")
+    box = probe.get_window_extent(fig.canvas.get_renderer()).padded(.3 * scale)
+    half = ax.transData.inverted().transform((box.x1, box.y1))
+    probe.remove()
     def slot(x):
-        return ProjectedPolygon([x - .001, x + .001, x + .001, x - .001],
-                                [-.001, -.001, .001, .001])
+        return ProjectedPolygon([x - half[0], x + half[0], x + half[0], x - half[0]],
+                                [-half[1], -half[1], half[1], half[1]])
     renderer.draw(ProjectedPoints([0, spacing], [0, 0], labels=["XX", "YY"],
                   metadata={"label_regions": ((slot(0), slot(2 * spacing)),
                                               (slot(spacing), slot(-spacing)))}),
                   draw_markers=False, draw_labels=True,
-                  label_style={"fontsize": 9, "placement": "region", "ha": "center", "va": "center"})
+                  label_style={"fontsize": 9, "family": "monospace", "placement": "region", "ha": "center", "va": "center"})
     renderer.finalize_graphics()
+    assert all(text.get_visible() for text in ax.texts)
     assert not ax.texts[0].get_window_extent(fig.canvas.get_renderer()).overlaps(
         ax.texts[1].get_window_extent(fig.canvas.get_renderer()))
     assert ax.texts[0].get_position()[0] > 0
@@ -526,7 +531,7 @@ def test_larger_marginal_grid_text_fits_without_widening_the_band(dpi, circular)
     from wenu.rendering.label_placement import CurveLabelPlacement
 
     frames = []
-    for fontsize in (3.5, 4.2):
+    for fontsize in (4.2, 5.04):
         figure, ax = plt.subplots(figsize=(6, 6), dpi=dpi)
         ax.set(xlim=(-1, 1), ylim=(-1, 1), aspect="equal")
         boundary = circular_boundary(1) if circular else ProjectedCurve(
@@ -534,10 +539,10 @@ def test_larger_marginal_grid_text_fits_without_widening_the_band(dpi, circular)
         renderer = MatplotlibRenderer(ax)
         renderer.set_clip_boundary(boundary, style={"facecolor": "none"})
         renderer.set_grid_label_band(boundary, style=PublicationStyle().grid_label_band_style())
-        angles = np.radians(np.arange(0, 360, 30)) if circular else np.radians([0, 90, 180, 270])
+        angles = np.radians([0, 90, 180, 270])
         for index, angle in enumerate(angles):
             point = np.array([np.cos(angle), np.sin(angle)])
-            curve = ProjectedCurve([0, point[0]], [0, point[1]], name=f"{index * 30}°")
+            curve = ProjectedCurve([0, point[0]], [0, point[1]], name=f"{index * 90}°")
             renderer.draw(ProjectedGrid({"coordinate": ProjectedCurves([curve])}),
                           draw_labels=True, label_style={"fontsize": fontsize, "ha": "center", "va": "center"},
                           label_anchor=lambda curve, ax, point=point: CurveLabelPlacement(
@@ -558,7 +563,8 @@ def test_larger_marginal_grid_text_fits_without_widening_the_band(dpi, circular)
 
 
 @pytest.mark.parametrize("dpi", [100, 300])
-def test_narrow_visible_region_names_move_inside_sky_and_preserve_clipped_lines(dpi):
+@pytest.mark.parametrize("placement", ["fixed", "region"])
+def test_narrow_visible_region_names_are_omitted_and_preserve_clipped_lines(dpi, placement):
     from wenu.charts.boundaries import circular_boundary
     from wenu.charts.styles import PublicationStyle
 
@@ -570,14 +576,42 @@ def test_narrow_visible_region_names_move_inside_sky_and_preserve_clipped_lines(
     region = ProjectedPolygon([1.975, 2, 2, 1.975], [-.1, -.1, .1, .1])
     renderer.draw(ProjectedPoints([1.985], [0], labels=["Boo"], metadata={"label_regions": ((region,),)}),
                   draw_markers=False, draw_labels=True,
-                  label_style={"fontsize": 9, "placement": "region", "ha": "center", "va": "center", "color": "gray"})
+                  label_style={"fontsize": 9, "placement": placement, "ha": "center", "va": "center", "color": "gray"})
     line = renderer.draw(ProjectedCurve([-3, 3], [0, 0]),
                          style={"linewidth": 2, "zorder": 2, "endpoint_clearance_points": (1, 1)})[0]
     renderer.finalize_graphics()
-    box = ax.texts[0].get_window_extent(figure.canvas.get_renderer())
-    boundary = renderer._clip_patch.get_path().transformed(renderer._clip_patch.get_transform())
-    assert boundary.contains_points([[box.x0, box.y0], [box.x0, box.y1], [box.x1, box.y0], [box.x1, box.y1]]).all()
+    assert not ax.texts[0].get_visible()
+    assert renderer.suppressed_region_labels == ("Boo",)
+    renderer.finalize_graphics()
+    assert not ax.texts[0].get_visible()
+    assert renderer.suppressed_region_labels == ("Boo",)
     assert ax.texts[0].get_color() == "gray" and ax.texts[0].get_rotation() == 0
     assert line.get_clip_on() and line.get_clip_path() is not None
     assert renderer._grid_label_band_artist.get_zorder() > line.get_zorder()
+    plt.close(figure)
+
+
+@pytest.mark.parametrize("dpi", [100, 300])
+@pytest.mark.parametrize("placement", ["fixed", "region"])
+def test_region_text_requires_whole_box_containment_in_its_own_visible_polygon(dpi, placement):
+    figure, ax = plt.subplots(figsize=(5, 5), dpi=dpi)
+    ax.set(xlim=(-1, 1), ylim=(-1, 1), aspect="equal")
+    renderer = MatplotlibRenderer(ax)
+    own = ProjectedPolygon([-.6, .6, .6, -.6], [-.6, -.6, .6, .6])
+    absent = ProjectedPolygon([1.1, 1.9, 1.9, 1.1], [-.6, -.6, .6, .6])
+    renderer.draw(ProjectedPoints([0, 0, 0], [0, 0, 0], labels=["Inside", "Outside", "Absent"],
+                  metadata={"label_regions": ((own,), (absent,), ())}),
+                  draw_markers=False, draw_labels=True,
+                  label_style={"fontsize": 9, "placement": placement, "ha": "center", "va": "center"})
+    renderer.finalize_graphics()
+    assert ax.texts[0].get_visible()
+    assert not ax.texts[1].get_visible() and not ax.texts[2].get_visible()
+    assert renderer.suppressed_region_labels == ("Outside", "Absent")
+    box = ax.texts[0].get_window_extent(figure.canvas.get_renderer())
+    from matplotlib.path import Path
+    region = Path(np.column_stack((own.x, own.y))).transformed(ax.transData)
+    assert region.contains_points([[box.x0, box.y0], [box.x0, box.y1], [box.x1, box.y0], [box.x1, box.y1]]).all()
+    position = ax.texts[0].get_position()
+    renderer.finalize_graphics()
+    assert ax.texts[0].get_position() == position and ax.texts[0].get_visible()
     plt.close(figure)

@@ -58,18 +58,18 @@ orientation and act as fixed obstacles during automatic stellar placement.
 for stellar labels, constellation names and automatically anchored celestial
 reference names. The same TOML stellar-label placement setting enables it.
 The process preserves font size, colour, identity and the agreed orientation.
-It never hides requested labels or changes scientific positions.
+Stellar and temporal labels retain their identities and scientific positions.
+Constellation names are omitted when no valid contained placement exists.
 
 The process is:
 
 1. Measure actual text bounds at nearby stellar candidates, constellation
    candidates, and sampled positions on each reference curve.
-2. Require chart-boundary containment when a fitting candidate exists.
-   Constellation text centres stay in their visible IAU regions when those
-   regions have been prepared and a contained fitting candidate exists. A
-   very narrow visible region permits bounded inward fallback placement;
-   otherwise movement stays near the existing curated anchor. No fitting
-   candidate means best-effort placement.
+2. Require the entire constellation text box to fit within its own prepared
+   visible IAU region and the sky boundary. Omit the name if no candidate fits;
+   never move it into another constellation. Fixed constellation names are
+   validated at their original anchor without movement. Other label families
+   retain best-effort containment when no fitting candidate exists.
 3. Reserve 1.5 points between movable text bounds (0.75 point against fixed
    text). Prefer separating text, then clearing star symbols, retaining stellar
    association, and minimizing displacement or crossings of other lines.
@@ -90,24 +90,26 @@ retaining the normal offset. Explicitly supplied reference anchors remain
 fixed. Coordinate-grid labels keep their agreed anchors and act as obstacles.
 Planet and small-body track dates retain their established anchors and
 orientation and remain fixed obstacles. Titles, legends and sequence
-annotations also stay fixed. Fixed stellar placement preserves the previous
-constellation and reference-label behavior.
+annotations also stay fixed. Fixed stellar placement keeps constellation anchors fixed but still validates
+contained text boxes. Reference-label behavior remains unchanged.
 
 Further work includes grid-specific alternatives that respect their assigned
 spokes or margins, stronger search, curved glyph placement and CLI diagnostic
 integration. `unresolved_label_collisions` is currently a Python renderer
-inspection value, not a command-line report.
+inspection value, not a command-line report. `suppressed_region_labels` lists
+omitted constellation names in the renderer.
 
 ## Implemented horizon-grid placement
 
 For a location-centred planisphere, `--altaz-grid-labels` places azimuth
 labels upright outside the horizon. The exterior band uses
 measured text bounds rather than a fixed fraction of chart radius. With the
-band enabled, marginal labels are centred in its reserved physical width;
+band enabled, marginal labels sit close to the boundary crossing;
 without it they retain a 0.65 em gap. Export includes these unclipped marginal
 labels. Altitude labels
 remain upright inside the horizon along azimuths 0°, 90°, 180°, 270°.
-A requested altitude 90° label appears only once at the zenith. These anchors
+Noncentral altitude labels use a 0.2 em normal offset; the zenith retains
+0.65 em. A requested altitude 90° label appears only once at the zenith. These anchors
 follow projection rotation, east/west reflection, and off-zenith centres.
 
 Python callers can set `FullSkyChart(altitude_label_azimuths_deg=(45, 225))`.
@@ -122,10 +124,10 @@ have an opaque white exterior band with a black 0.8-point exterior frame by
 default. The sky boundary remains separate. Polar planispheres and Galactic
 all-sky charts retain their existing furniture.
 
-Packaged coordinate labels are 20% larger: atlas 4.2 points (previously 3.5),
-cartoon 4.8 points (previously 4.0). Atlas coordinate-label opacity is 1.0.
-The ordinary labels are centred in the existing band without increasing its
-width. The minimum reserved width is 8.5 points plus twice the configured
+Packaged coordinate labels are another 20% larger: atlas 5.04 points
+(previously 4.2), cartoon 5.76 points (previously 4.8). Atlas coordinate-label opacity is 1.0.
+Ordinary cardinal labels fit in the existing band near their crossings.
+Dense diagonal labels may require additional measured width. The minimum reserved width is 8.5 points plus twice the configured
 2-point padding and half-frame allowance. Custom oversized text can still
 expand the measured surround; requested text is never shrunk or clipped to
 force it into a thin band. Circular charts use an annulus;
@@ -260,3 +262,6 @@ exact angular intervals.
 - Esri, [Graticules](https://doc.esri.com/en/arcgis-pro/latest/help/layouts/add-and-modify-graticules.html): independent lines/ticks/labels, scale-dependent intervals, edge selection, and offsets.
 - Olivier Hainaut, ESO, [Astrolabe Generator](https://www.eso.org/~ohainaut/astrolabe/manual.html): astronomical precedent for RA on the rim, declination on an interior meridian, and azimuth along the horizon.
 - Jon Christensen, Joe Marks, and Stuart Shieber (1995), [An empirical study of algorithms for point feature label placement](https://www.eecs.harvard.edu/~shieber/Biblio/Papers/label-algs-tog.pdf), *ACM Transactions on Graphics*, 14(3), 203–232: search algorithms, including simulated annealing. Annealing is a candidate search technique; admissible positions and design criteria still define acceptable typography.
+
+The authored Scorpius figure connects σ Sco to β¹ Sco (HIP 80112–78820),
+replacing σ Sco–δ Sco; all other figure connections remain unchanged.

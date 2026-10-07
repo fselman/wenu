@@ -633,9 +633,7 @@ class RegionalChart:
             )
             set_band(band_boundary, style=band_style() if callable(band_style) else None)
         labels = getattr(sky, "constellation_labels", None)
-        if options.get(labels, {}).get("visible_regions", False) or (
-            labels is not None and getattr(resolved_style, "star_label_placement", "fixed") == "auto"
-        ):
+        if labels is not None:
             from .constellation_label_placement import (
                 apply_visible_constellation_label_anchors,
             )

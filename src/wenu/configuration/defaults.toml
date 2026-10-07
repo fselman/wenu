@@ -487,7 +487,7 @@ opacity = 0.45
 [styles.atlas.coordinate_labels]
 enabled = true
 color = "none"
-font_size = 4.2
+font_size = 5.04
 opacity = 1.0
 
 [styles.atlas.horizon]
@@ -728,7 +728,7 @@ opacity = 0.35
 [styles.cartoon.coordinate_labels]
 enabled = false
 color = "none"
-font_size = 4.8
+font_size = 5.76
 opacity = 0.75
 
 [styles.cartoon.horizon]

@@ -43,6 +43,7 @@ class MatplotlibRenderer:
         self._area_labels = []
         self._curve_labels = []
         self.unresolved_label_collisions = ()
+        self.suppressed_region_labels = ()
         self._label_rotations = {}
         self._gapped_lines = []
         self._grid_label_band = None
@@ -83,10 +84,12 @@ class MatplotlibRenderer:
             text.set_zorder(max(text.get_zorder(), 4.0))
         boxes = [text.get_window_extent(renderer) for text in labels]
         minimum = max([8.5, *(text.get_fontsize() for text in labels)]) * scale + 2.0 * padding
+        radius = np.linalg.norm(inner - centre, axis=1)
+        circular = len(inner) >= 16 and np.ptp(radius) < 1e-3 * np.mean(radius)
         from matplotlib.transforms import ScaledTranslation
         # Ordinary coordinate text remains below the reserved content sizing floor.
-        # Centre it in that reserved width instead of growing the band with
-        # its former font-dependent offset from the sky boundary.
+        # Keep its inner edge close to the boundary coordinate, with a
+        # small physical clearance rather than half the ring width.
         for text in labels:
             attachment = getattr(text, "_wenu_exterior_attachment", None)
             if attachment is None:
@@ -95,13 +98,29 @@ class MatplotlibRenderer:
             origin = self.ax.transData.transform(position)
             direction = self.ax.transData.transform(np.asarray(position) + direction) - origin
             direction /= np.linalg.norm(direction)
-            shift = direction * minimum / (2.0 * self.ax.figure.dpi)
+            text.set_transform(self.ax.transData)
+            box = text.get_window_extent(renderer)
+            support = (abs(direction[0]) * box.width + abs(direction[1]) * box.height) / 2.0
+            offset = support + 0.35 * scale
+            if circular:
+                # Fit the upright text box to the curved inner rim.
+                target = float(np.max(radius)) + 0.35 * scale
+                lower, upper = 0.0, offset
+                for _ in range(32):
+                    trial = (lower + upper) / 2.0
+                    shifted_low = np.array([box.x0, box.y0]) + direction * trial
+                    shifted_high = np.array([box.x1, box.y1]) + direction * trial
+                    nearest = np.clip(centre, shifted_low, shifted_high)
+                    if np.linalg.norm(nearest - centre) < target:
+                        lower = trial
+                    else:
+                        upper = trial
+                offset = upper
+            shift = direction * offset / self.ax.figure.dpi
             text.set_transform(self.ax.transData + ScaledTranslation(
                 *shift, self.ax.figure.dpi_scale_trans,
             ))
         boxes = [text.get_window_extent(renderer) for text in labels]
-        radius = np.linalg.norm(inner - centre, axis=1)
-        circular = len(inner) >= 16 and np.ptp(radius) < 1e-3 * np.mean(radius)
         if circular:
             outer_radius = float(np.max(radius)) + minimum
             for text, box in zip(labels, boxes):
@@ -757,11 +776,12 @@ class MatplotlibRenderer:
                     )
                     if placement == "auto":
                         self._auto_labels.append((label_artist, float(points.x[index]), float(points.y[index])))
-                    elif placement == "region":
+                    elif placement == "region" or "label_regions" in points.metadata:
                         regions = points.metadata.get("label_regions")
                         self._area_labels.append((
                             label_artist, *label_artist.get_position(),
                             None if regions is None else regions[index],
+                            placement == "region",
                         ))
                     self._attach_semantic_entity(
                         (label_artist,), points.metadata, index
@@ -1466,32 +1486,37 @@ class MatplotlibRenderer:
                                        tuple(data_position), artist.get_rotation(), artist.get_transform()))
             choices.append(candidates)
 
-        def measured_choice(artist, *, movement=0.0, region_penalty=0.0):
+        def measured_choice(artist, *, movement=0.0):
             box = artist.get_window_extent(renderer)
             padded = box.padded(0.75 * scale)
             marker = np.maximum(radii + 0.25 * scale - distances(padded, centres), 0).sum() / scale
             static = (marker, 0.0, sum(overlap(padded, other) for other in fixed),
-                      outside_boundary(padded) + region_penalty, 0.0,
+                      outside_boundary(padded), 0.0,
                       movement + .35 * sum(path.intersects_bbox(padded, filled=False) for path in paths))
             return (box, padded, static, artist.get_position(), artist.get_rotation(), artist.get_transform())
 
-        for artist, x, y, regions in self._area_labels:
+        suppressed = []
+        for artist, x, y, regions, movable in self._area_labels:
             from matplotlib.path import Path
 
-            labels.append((artist, x, y))
+            artist.set_visible(True)
+            artist.set_position((x, y))
+            rotation = self._label_rotations.get(artist)
+            if rotation is not None:
+                artist.set_rotation(rotation(x, y))
             origin = self.ax.transData.transform((x, y))
             region_paths = None if regions is None else tuple(
-                Path(np.vstack((np.column_stack((region.x, region.y)), (region.x[0], region.y[0]))))
+                Path(np.vstack((np.column_stack((region.x, region.y)), (region.x[0], region.y[0])))).transformed(self.ax.transData)
                 for region in regions
             )
             step = artist.get_fontsize() * scale
             offsets = [(0.0, 0.0)] + [(dx * distance, dy * distance)
-                for distance in (0.75, 1.5, 2.5, 4.0)
+                for distance in ((0.75, 1.5, 2.5, 4.0) if movable else ())
                 for dx, dy in ((0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, 1), (1, -1), (-1, -1))]
             # Add size-aware inward moves for anchors close to the rim.
-            # A sliver of an IAU region may be too narrow to contain a name;
-            # retain bounded fallback candidates rather than clip the text.
-            if boundary is not None:
+            # Every candidate must fit its own region; narrow visible slivers
+            # suppress their names instead of moving them into a neighbour.
+            if boundary is not None and movable:
                 inward = bounds.get_points().mean(axis=0) - origin
                 length = np.linalg.norm(inward)
                 if length > 0:
@@ -1507,10 +1532,24 @@ class MatplotlibRenderer:
                 if rotation is not None:
                     artist.set_rotation(rotation(*position))
                 box = artist.get_window_extent(renderer)
-                centre = self.ax.transData.inverted().transform(((box.x0 + box.x1) / 2.0, (box.y0 + box.y1) / 2.0))
-                allowed = region_paths is None or any(path.contains_point(centre) for path in region_paths)
-                candidates.append(measured_choice(artist, movement=0.025 * np.hypot(dx, dy), region_penalty=float(not allowed)))
+                ink = box.padded(0.25 * scale)
+                corners = ((ink.x0, ink.y0), (ink.x0, ink.y1),
+                           (ink.x1, ink.y0), (ink.x1, ink.y1))
+                allowed = region_paths is None or any(
+                    path.contains_points(corners).all()
+                    and not path.intersects_bbox(ink, filled=False)
+                    for path in region_paths
+                )
+                if not allowed or outside_boundary(ink) > 1e-6:
+                    continue
+                candidates.append(measured_choice(artist, movement=0.025 * np.hypot(dx, dy)))
+            if not candidates:
+                artist.set_visible(False)
+                suppressed.append(artist.get_text())
+                continue
+            labels.append((artist, x, y))
             choices.append(candidates)
+        self.suppressed_region_labels = tuple(suppressed)
 
         for artist, original, placements in self._curve_labels:
             labels.append((artist, original.x, original.y))

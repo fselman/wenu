@@ -335,11 +335,13 @@ def test_coordinate_geometry_uses_observer_time(monkeypatch):
     )
 
 
-def test_active_western_scorpius_has_requested_sigma_pi_and_pi_rho_edges():
-    # HIP identities: sigma Sco 80112, pi Sco 78265, rho Sco 78104.
+def test_active_western_scorpius_has_requested_sigma_beta1_sigma_pi_and_pi_rho_edges():
+    # HIP identities: sigma 80112, beta1 78820, delta 78401, pi 78265, rho 78104.
     lines = ConstellationLines(SimpleNamespace(catalog=None), constellations={"Sco"})
     edges = [frozenset(edge) for edge in lines.edges_by_constellation["Sco"]]
     assert edges.count(frozenset((80112, 78265))) == 1
     assert edges.count(frozenset((78265, 78104))) == 1
+    assert edges.count(frozenset((80112, 78820))) == 1
+    assert frozenset((80112, 78401)) not in edges
     assert len(edges) == 28
     assert frozenset((85696, 80112)) not in edges

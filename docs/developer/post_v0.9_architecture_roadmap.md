@@ -9,6 +9,19 @@
 
 ## Current forward roadmap
 
+**La Ligua v6 containment follow-up (2026-10-07):** Parent `a811f55b`
+passed 3,094 Mac tests in 268.54 seconds with a clean synchronized branch.
+Fernando rejected narrow-region inward fallback: full constellation text must
+fit its own visible IAU region and sky boundary, otherwise omit the name.
+This supersedes the v4 fallback policy below. Coordinate fonts increase another
+20% to atlas 5.04 and cartoon 5.76 points, with smaller crossing offsets.
+Ordinary cardinal labels retain the compact band; dense diagonal text may
+expand measured furniture. The authored Scorpius figure replaces sigma–delta
+with sigma–beta1 without other edge changes. Existing renderer and resource
+owners implement these changes. Temporal anchors and orientation remain fixed.
+New candidate Mac/full and visual acceptance remain pending; PR #211 stays
+ draft and unmerged. No cleanup is authorized.
+
 **La Ligua v4 typography follow-up (2026-10-07):** Exact head `385c1b13`
 passed all 3,080 Mac tests in 310.31 seconds with a clean synchronized tree.
 Fernando reviewed v4 and authorized 20% larger grid labels without a wider
