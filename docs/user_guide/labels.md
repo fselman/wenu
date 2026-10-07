@@ -265,3 +265,7 @@ exact angular intervals.
 
 The authored Scorpius figure connects σ Sco to β¹ Sco (HIP 80112–78820),
 replacing σ Sco–δ Sco; all other figure connections remain unchanged.
+
+Scorpius connections are stored as independent edge records because the
+legacy reader connects consecutive identifiers. This prevents an unintended
+π Sco–β¹ Sco bridge when replacing σ Sco–δ Sco with σ Sco–β¹ Sco.

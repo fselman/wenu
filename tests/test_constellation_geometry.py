@@ -343,5 +343,18 @@ def test_active_western_scorpius_has_requested_sigma_beta1_sigma_pi_and_pi_rho_e
     assert edges.count(frozenset((78265, 78104))) == 1
     assert edges.count(frozenset((80112, 78820))) == 1
     assert frozenset((80112, 78401)) not in edges
+    # Validate the complete visible figure, not only the requested edge.
+    expected_visible = {
+        frozenset(pair) for pair in (
+            (78820, 78401), (78401, 78265), (78820, 80112),
+            (80112, 80763), (80763, 81266), (81266, 82396),
+            (82396, 82514), (82514, 82729), (82729, 84143),
+            (84143, 86228), (86228, 87073), (87073, 86670),
+            (86670, 85927), (85927, 85696), (78820, 79374),
+            (80112, 78265), (78265, 78104),
+        )
+    }
+    assert {edge for edge in edges if len(edge) == 2} == expected_visible
+    assert edges.count(frozenset((78401, 78265))) == 2
     assert len(edges) == 28
     assert frozenset((85696, 80112)) not in edges
