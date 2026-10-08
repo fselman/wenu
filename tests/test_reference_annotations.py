@@ -541,6 +541,42 @@ def test_reference_end_policy_accepts_backend_neutral_measurements():
         assert all(item.x * placement.x > 0 for item in candidates)
 
 
+@pytest.mark.parametrize("duplicate_endpoint", [False, True])
+def test_partial_closed_reference_ends_are_invariant_under_sampling_seam(duplicate_endpoint):
+    from wenu.charts.reference_furniture import _SingleReferenceLabelAnchor
+    from wenu.geometry.viewport import Viewport
+
+    angles = np.linspace(0, 2 * np.pi, 721, endpoint=False)
+    points = np.column_stack((np.cos(angles), 2 * np.sin(angles)))
+    context = SimpleNamespace(viewport=Viewport(.1, 1.1, -1, 1), clip_boundary=None)
+
+    def measure_curve(curve, **kwargs):
+        return (100 * np.column_stack((curve.x, curve.y)),
+                np.ones(len(curve.x), dtype=bool), 10.0, 1.0)
+
+    results = []
+    for shift in (0, 100, 350, 600):
+        sampled = np.roll(points, shift, axis=0)
+        if duplicate_endpoint:
+            sampled = np.vstack((sampled, sampled[0]))
+        curve = ProjectedCurve(sampled[:, 0], sampled[:, 1], closed=True)
+        anchor = _SingleReferenceLabelAnchor(
+            BoundaryAwareReferenceAnchor(context), near_ends=True,
+            label="Reference", font_size=6,
+        )
+        placements = anchor(curve, measure_curve=measure_curve)
+        assert len(placements) == 2
+        ordered = sorted(placements, key=lambda item: item.y)
+        assert ordered[0].y < -.8 and ordered[1].y > .8
+        for placement in placements:
+            candidates = anchor.candidates_for_anchor(curve, placement)
+            assert candidates
+            assert all(item.y * placement.y > .5 for item in candidates)
+        results.append([(item.x, item.y) for item in ordered])
+    for result in results[1:]:
+        np.testing.assert_allclose(result, results[0], atol=1e-12)
+
+
 def test_reference_policy_module_has_no_backend_import():
     from pathlib import Path
 

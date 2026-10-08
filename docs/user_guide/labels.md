@@ -291,6 +291,9 @@ not angular span or character count. Changing font size or output scale is
 therefore accounted for. Automatic endpoint search does not join disconnected
 curve fragments. Explicit anchors and polar-planisphere reference placement
 retain their previous behavior. Date annotations on tracks are unchanged.
+For a partially visible closed curve, visible samples across the 360°–0°
+array seam are joined before identifying its endpoints. The sampling origin
+is not a visible endpoint; changing it must not move the endpoint windows.
 Complete closed loops have no endpoints and retain one automatic label.
 
 Request `--declination-step 15` for the 70-degree Sco/Sgr/Oph regional chart.

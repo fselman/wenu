@@ -256,6 +256,10 @@ class _SingleReferenceLabelAnchor:
         if len(indices) < 2:
             return ()
         runs = np.split(indices, np.flatnonzero(np.diff(indices) > 1) + 1)
+        if curve.closed and inside[0] and inside[-1] and len(runs) > 1:
+            # The array seam is an ordinary edge of a closed curve. Join
+            # its visible tail and head before measuring the physical arc.
+            runs = [np.r_[runs[-1], runs[0]], *runs[1:-1]]
         runs = [run for run in runs if len(run) >= 2]
         if not runs:
             return ()
