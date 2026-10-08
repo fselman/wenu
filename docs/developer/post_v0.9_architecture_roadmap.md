@@ -9,6 +9,99 @@
 
 ## Current forward roadmap
 
+**Regional v10 reference and grid correction:**
+Regional v10 reference placement measures the visible contiguous curve and
+its rendered label width in final display units. Automatic names search near
+the curve ends; when length exceeds `label_repeat_length_factor` (default 5)
+times text width, independent end windows supply two labels. Full text must
+fit the sky boundary. Tangents, normal offsets, explicit anchors, polar
+reference policy and temporal annotations retain their existing owners.
+Schema-v2 `grids_references.references.label_repeat_length_factor` translates
+through furniture and survives CLI reference selection. Coordinate latitude
+lists now use symmetric multiples of their interval from zero; equatorial
+grids include zero declination even without a separately requested reference.
+The 70-degree regional review requests `--declination-step 15` explicitly.
+Automatic density thresholds remain unchanged; no new module is introduced.
+
+
+**La Ligua v6 containment follow-up (2026-10-07):** Parent `a811f55b`
+passed 3,094 Mac tests in 268.54 seconds with a clean synchronized branch.
+Fernando rejected narrow-region inward fallback: full constellation text must
+fit its own visible IAU region and sky boundary, otherwise omit the name.
+This supersedes the v4 fallback policy below. Coordinate fonts increase another
+20% to atlas 5.04 and cartoon 5.76 points, with smaller crossing offsets.
+Ordinary cardinal labels retain the compact band; dense diagonal text may
+expand measured furniture. The authored Scorpius figure replaces sigma–delta
+with sigma–beta1 without other edge changes. Existing renderer and resource
+owners implement these changes. Temporal anchors and orientation remain fixed.
+New candidate Mac/full and visual acceptance remain pending; PR #211 stays
+ draft and unmerged. No cleanup is authorized.
+
+**La Ligua v4 typography follow-up (2026-10-07):** Exact head `385c1b13`
+passed all 3,080 Mac tests in 310.31 seconds with a clean synchronized tree.
+Fernando reviewed v4 and authorized 20% larger grid labels without a wider
+ring, a 1-point location-planisphere line-gap default, inward constellation
+names, stronger text clearance and containment of linework at the horizon.
+The candidate extends existing style/configuration, composition and final
+renderer owners. Ordinary marginal text is centred in the existing band;
+custom oversize text remains measurable and may enlarge furniture. Narrow
+visible-region names may use bounded inward fallback positions, preserving
+upright or polar orientation, colour and fixed temporal dates. Explicit CLI
+and TOML gaps, including zero, retain precedence. The coordinate guide and
+architecture diagrams were reviewed and remain current: scientific meaning,
+ownership and pipeline are unchanged. New focused/full and visual acceptance
+are required. PR #211 remains draft and unmerged; cleanup is unauthorized.
+
+**Exterior-band follow-up (2026-10-07):** Exact shared-placement head
+`bf0cdb8f` passed all 3,067 Mac tests in 280.23 seconds with clean diff and
+synchronized branch. La Ligua v3 separates companion/name collisions;
+constellation rim clearance and linework interference remain review issues.
+Fernando authorized exterior coordinate bands for non-polar planisphere,
+regional/constellation and binocular charts, choosing opaque white and a black
+frame as defaults. The bounded candidate adds measured exterior furniture,
+colour/width controls and real-crossing marginal anchors under existing
+owners. Grid cadence, duplicate edge labels, pole-aware regional rules and
+remaining constellation collisions are not closed. The coordinate guide was
+reviewed and remains current: this changes appearance only. PR #211 stays
+unmerged pending new full-suite and visual acceptance; no cleanup authorized.
+
+**Label-policy milestone (2026-10-07):** Fernando authorized chart-specific
+orientation overrides, preservation during collision avoidance, and a label
+guide with cartographic references. The bounded candidate extends existing
+chart preparation, style/configuration, and Matplotlib point-label placement.
+Polar labels keep up away from the pole; other charts stay upright. Track
+dates and reference tangents retain their existing paths. The image-review
+correction adds actual-boundary point containment, exterior azimuth labels,
+and altitude labels on cardinal spokes for horizon planispheres.
+Annealing, CLI unresolved-collision reports,
+other exterior coordinate bands, CLI/TOML spoke controls and density refinements remain
+later work. `ChartContext` and `AdaptiveDetailPolicy` already own scale/detail
+evidence; inspect those before admitting a new scale module. Grid cadence and
+limiting magnitude must remain independently overridable. See the
+[label guide](../user_guide/labels.md). The coordinate guide was reviewed and
+remains current: no scientific coordinates, frames, epochs, equations, or
+provenance changed. This candidate requires Mac full-suite and visual acceptance.
+
+**Shared collision follow-up (2026-10-07):** After exact head `3d950643`
+passed all 3,059 Mac tests in 277.66 seconds, Fernando's La Ligua image
+confirmed the horizon correction but retained companion/name and
+reference/star collisions. He authorized the shared candidate process.
+The candidate joins stellar, bounded constellation and curve-constrained
+reference alternatives under the existing automatic placement setting.
+Grid labels, explicit reference anchors and temporal dates remain fixed.
+Boundary and text separation precede marker/ownership/cosmetic preferences;
+deterministic coordinate descent and bounded pair moves preserve typography.
+No annealing or new module is added. The coordinate guide remains current.
+New focused/full Mac and visual acceptance are required; PR #211 remains
+unmerged, with no cleanup authorized for this branch.
+
+**PR #210 closure (2026-10-07):** The constellation all/exclusion and Albireo
+work below merged into `main` at `948b90932748da5c4c140999142b0950fa2b92ef`.
+The final candidate `aec1dfe8` passed all 3,029 plugin-disabled Mac tests in
+273.66 seconds; diff check passed. The branch was deleted locally and remotely,
+and Fernando confirmed clean synchronized `main`. This supersedes the older
+pending-validation statements below, without closing the stellar programme.
+
 **Albireo name follow-up (2026-10-07):** Fernando requested the exact
 `Cyg:Albireo` name selector after visually checking the all-constellation chart.
 An authored association with HIP 95947 (β¹ Cyg; IAU component Aa) supplements

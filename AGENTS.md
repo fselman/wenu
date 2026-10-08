@@ -40,3 +40,7 @@ In particular:
 12. Whenever Fernando must run local shell commands, provide every command in
     complete, copy-and-paste-ready blocks through the chat. Never ask him to
     edit repository files manually or compose an error-prone command himself.
+13. Give every downloadable file an explicit version number in its filename.
+    Increment it when contents change, never rely on automatic `(counter)`
+    suffixes, and make accompanying commands reference the exact versioned
+    filename. Follow the versioned-file handoff rule in the governing instructions.

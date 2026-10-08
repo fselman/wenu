@@ -539,7 +539,7 @@ def composition_layer_options(
             base,
             {"stars": {"render": render_stars}},
         )
-    gap = getattr(getattr(composition.style, "grids", None), "constellation_line_gap_points", 0.0)
+    gap = getattr(getattr(composition.style, "grids", None), "constellation_line_gap_points", 0.0) or 0.0
     if gap > 0.0 and getattr(sky, "constellation_lines", None) is not None:
         source = sky.stars._render_catalog(
             magnitude_limit=composition.detail.star_magnitude_limit,

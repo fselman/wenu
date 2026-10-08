@@ -217,7 +217,188 @@ def test_renderer_resolves_callable_point_label_rotation():
         plt.close(figure)
 
 
-def test_reference_policy_uses_one_shared_tangent_procedure():
+@pytest.mark.parametrize("dpi", [100, 300])
+@pytest.mark.parametrize("polar", [False, True])
+def test_joint_labels_separate_companions_area_and_curve_while_tracks_stay_fixed(dpi, polar):
+    from wenu.charts.boundaries import circular_boundary
+    from wenu.geometry.projected import ProjectedPolygon
+    from wenu.rendering.label_placement import rotation_with_down_toward
+
+    fig, ax = plt.subplots(figsize=(7, 7), dpi=dpi)
+    ax.set_xlim(-2, 2)
+    ax.set_ylim(-2, 2)
+    ax.set_aspect("equal")
+    renderer = MatplotlibRenderer(ax)
+    renderer.set_clip_boundary(circular_boundary(2), style={"facecolor": "none", "edgecolor": "black"})
+    def rotation(x, y):
+        return rotation_with_down_toward(np.degrees(np.arctan2(y, x)) + 90, (x, y), (0, 0))
+    orientation = rotation if polar else 0.0
+    renderer.draw(ProjectedPoints([0, .5, .5001], [.8, .6, .6001], labels=["Deneb", "Albireo", "β² Cyg"]),
+                  style={"s": [100, 16, 4], "color": "black"}, draw_labels=True,
+                  label_style={"fontsize": 5.25, "color": "black", "placement": "auto", "rotation": orientation})
+    region = ProjectedPolygon([-0.4, .4, .4, -.4], [.4, .4, 1.4, 1.4])
+    renderer.draw(ProjectedPoints([0], [.8], labels=["Cyg"], metadata={"label_regions": ((region,),)}),
+                  draw_markers=False, draw_labels=True,
+                  label_style={"fontsize": 6.375, "color": "gray", "ha": "center", "va": "center", "placement": "region", "rotation": orientation})
+    curve = ProjectedCurve(np.linspace(-1.5, 1.5, 101), .12 * np.linspace(-1.5, 1.5, 101)**2 - .8, name="plane")
+    class Anchor:
+        def __call__(self, curve, ax=None):
+            return tangent_label_placement(curve, (0, -.8), normal_offset_em=.75)
+        def candidates(self, curve, ax=None):
+            return [tangent_label_placement(curve, (x, y), normal_offset_em=.75)
+                    for x, y in zip(curve.x[::5], curve.y[::5])]
+    renderer.draw(ProjectedGrid({"curve": ProjectedCurves([curve])}), draw_labels=True,
+                  label_anchor=Anchor(), label_style={"fontsize": 6, "color": "blue"},
+                  label_formatter=lambda name: "Plano galáctico")
+    renderer.draw(ProjectedPoints([0, .06, -.06], [-.74, -.73, -.75]), style={"s": 36, "color": "black"})
+    date = ax.text(-1.0, 1.2, "15 oct", rotation=37)
+    date_before = date.get_position(), date.get_rotation()
+    renderer.finalize_graphics()
+    backend = fig.canvas.get_renderer()
+    boxes = [text.get_window_extent(backend) for text in ax.texts]
+    assert all(not a.padded(.7 * dpi / 72).overlaps(b.padded(.7 * dpi / 72))
+               for i, a in enumerate(boxes[:5]) for b in boxes[i + 1:5])
+    assert all(not a.overlaps(b) for i, a in enumerate(boxes) for b in boxes[i + 1:])
+    assert renderer.unresolved_label_collisions == ()
+    assert (date.get_position(), date.get_rotation()) == date_before
+    area = next(text for text in ax.texts if text.get_text() == "Cyg")
+    box = area.get_window_extent(backend)
+    centre = ax.transData.inverted().transform(((box.x0 + box.x1) / 2, (box.y0 + box.y1) / 2))
+    assert -.4 < centre[0] < .4 and .4 < centre[1] < 1.4
+    for text in ax.texts[:4]:
+        assert text.get_rotation() == pytest.approx(rotation(*text.get_position()) % 360 if polar else 0)
+    plane = next(text for text in ax.texts if text.get_text() == "Plano galáctico")
+    x, y = plane.get_position()
+    assert y == pytest.approx(.12 * x**2 - .8)
+    expected = tangent_label_placement(curve, (x, y), normal_offset_em=.75)
+    assert plane.get_rotation() == pytest.approx(expected.rotation_deg % 360)
+    assert plane.get_color() == "blue" and plane.get_fontsize() == 6
+    before = [(text.get_position(), text.get_rotation()) for text in ax.texts]
+    renderer.finalize_graphics()
+    for text, (position, angle) in zip(ax.texts, before):
+        np.testing.assert_allclose(text.get_position(), position, atol=1e-12)
+        assert text.get_rotation() == pytest.approx(angle)
+    plt.close(fig)
+
+
+@pytest.mark.parametrize("polar", [False, True])
+@pytest.mark.parametrize("policy", ["chart", "upright", "up-away-from-cp"])
+def test_object_orientation_scope_and_deferred_render_isolation(polar, policy):
+    from wenu.charts.label_placement import apply_object_label_orientation
+
+    stars, constellations, body, track, grid = (object() for _ in range(5))
+    sky = SimpleNamespace(stars=stars, constellation_labels=constellations,
+                          solar_system_bodies={"planet": body})
+    style = SimpleNamespace(labels_orientation=policy)
+    render = {"label_style": {"fontsize": 7.0, "color": "red"}}
+    source = {stars: {"render": lambda spherical, projected: render},
+              constellations: {"render": render}, body: {"render": render},
+              track: {"render": render}, grid: {"render": render}}
+    if not polar and policy == "up-away-from-cp":
+        with pytest.raises(ValueError, match="require a polar-planisphere"):
+            apply_object_label_orientation(source, sky=sky, style=style)
+        return
+    resolved = apply_object_label_orientation(source, sky=sky, style=style, polar=polar)
+    assert resolved[track] is source[track]
+    assert resolved[grid] is source[grid]
+    assert "rotation" not in render["label_style"]
+    for layer in (stars, constellations, body):
+        configured = resolved[layer]["render"]
+        configured = configured(None, None) if callable(configured) else configured
+        labels = configured["label_style"]
+        assert labels["fontsize"] == 7.0
+        assert labels["color"] == "red"
+        if polar and policy != "upright":
+            assert labels["rotation"](0.0, -1.0) == pytest.approx(-180.0)
+        else:
+            assert labels["rotation"] == 0.0
+
+
+@pytest.mark.parametrize(("chart", "polar"), [
+    (FullSkyChart(), False),
+    (RegionalChart(center_alt_deg=45.0, center_az_deg=180.0,
+                   field_width_deg=30.0, field_height_deg=20.0), False),
+    (PolarPlanisphereChart(pole="north"), True),
+    (PolarPlanisphereChart(pole="south", flip_ew=True), True),
+])
+@pytest.mark.parametrize("policy", ["chart", "upright"])
+def test_chart_render_routes_apply_object_label_orientation(chart, polar, policy):
+    from wenu import CelestialSphere, PublicationStyle
+
+    layer = object()
+    class Sky(CelestialSphere):
+        def __init__(self):
+            super().__init__(object())
+            self.stars = layer
+
+        def draw_chart(self, **kwargs):
+            return kwargs["layer_options"]
+
+    class Renderer:
+        def set_clip_boundary(self, *args, **kwargs):
+            pass
+
+    result = chart.render(
+        Sky(), Renderer(), observer=object(),
+        style=PublicationStyle(labels_orientation=policy),
+        layer_options={layer: {"render": {"label_style": {"fontsize": 7.0}}}},
+    )
+    rotation = result[layer]["render"]["label_style"]["rotation"]
+    if polar and policy == "chart":
+        assert rotation(1.0, 0.0) == pytest.approx(-90.0)
+    else:
+        assert rotation == 0.0
+
+
+@pytest.mark.parametrize("policy", ["upright", "up-away-from-cp"])
+def test_auto_placement_retains_final_orientation_and_fixed_track_dates(policy):
+    from wenu.charts.label_placement import apply_object_label_orientation
+
+    layer = object()
+    options = apply_object_label_orientation(
+        {layer: {"render": {"label_style": {"fontsize": 7.0, "color": "red",
+                                             "placement": "auto"}}}},
+        sky=SimpleNamespace(stars=layer),
+        style=SimpleNamespace(labels_orientation=policy), polar=True,
+    )[layer]["render"]
+    figure, ax = plt.subplots(figsize=(4, 4))
+    try:
+        ax.set(xlim=(-2, 2), ylim=(-2, 2), aspect="equal")
+        renderer = MatplotlibRenderer(ax)
+        date = ax.text(0.0, -1.0, "15 Oct", rotation=37.0)
+        before = (date.get_position(), date.get_rotation(), date.get_ha(), date.get_va())
+        points = ProjectedPoints(np.asarray([0.0, 0.015]), np.asarray([-1.0, -1.01]),
+                                 labels=np.asarray(["Albireo", "beta2"], dtype=object))
+        artists = renderer.draw(points, style={"s": 12.0}, draw_labels=True, **options)
+        figure.canvas.draw()
+        renderer.finalize_label_placement()
+        labels = [artist for artist in artists if hasattr(artist, "get_text")]
+        assert len(labels) == 2
+        assert any(np.linalg.norm(np.asarray(text.get_position()) - np.asarray((0, -1))) > 0.02
+                   for text in labels)
+        for text in labels:
+            assert text.get_color() == "red"
+            assert text.get_fontsize() == 7.0
+            if policy == "upright":
+                assert text.get_rotation() == 0.0
+            else:
+                x, y = text.get_position()
+                angle = np.radians(text.get_rotation())
+                up = np.asarray([-np.sin(angle), np.cos(angle)])
+                np.testing.assert_allclose(up, np.asarray([x, y]) / np.hypot(x, y), atol=1e-12)
+        assert (date.get_position(), date.get_rotation(), date.get_ha(), date.get_va()) == before
+        final = [(text.get_position(), text.get_rotation()) for text in labels]
+        renderer.finalize_label_placement()
+        for text, (position, rotation) in zip(labels, final):
+            np.testing.assert_allclose(text.get_position(), position, atol=1e-12)
+            assert text.get_rotation() == pytest.approx(rotation, abs=1e-12)
+    finally:
+        plt.close(figure)
+
+
+@pytest.mark.parametrize("placement", ["fixed", "auto"])
+def test_reference_policy_uses_one_shared_tangent_procedure(placement):
+    from wenu.charts.style_overrides import ChartStyleOverrides
     observer = SimpleNamespace(
         lat_deg=-32.0,
         icrs_frame=ICRS(),
@@ -246,6 +427,7 @@ def test_reference_policy_uses_one_shared_tangent_procedure():
         composition = compose_chart(
             chart,
             style="atlas",
+            style_overrides=ChartStyleOverrides(star_label_placement=placement),
             furniture=ChartFurnitureOptions(
                 references=ReferenceAnnotations(
                     ecliptic=ReferencePlaneAnnotation(
@@ -278,9 +460,12 @@ def test_reference_policy_uses_one_shared_tangent_procedure():
             np.degrees(np.arctan2(1.0, 2.0))
         )
         assert placements[0].normal_offset_em == 0.75
+        assert all(not options[layer]["render"]["label_anchor"].candidates(curve) for layer in overlay.layers)
 
 
-def test_automatic_reference_labels_reserve_separated_positions():
+@pytest.mark.parametrize("placement", ["fixed", "auto"])
+def test_automatic_reference_labels_reserve_separated_positions(placement):
+    from wenu.charts.style_overrides import ChartStyleOverrides
     observer = SimpleNamespace(
         lat_deg=-32.0,
         icrs_frame=ICRS(),
@@ -299,6 +484,7 @@ def test_automatic_reference_labels_reserve_separated_positions():
         chart,
         style="atlas",
         mode="print",
+        style_overrides=ChartStyleOverrides(star_label_placement=placement),
         furniture=ChartFurnitureOptions(
             references=ReferenceAnnotations(
                 ecliptic=labeled("Ecliptic"),
@@ -330,6 +516,10 @@ def test_automatic_reference_labels_reserve_separated_positions():
         (placements[0].y - placements[1].y) / viewport.height,
     )
     assert separation >= 0.10 - 1.0e-12
+    for layer in overlay.layers:
+        candidates = options[layer]["render"]["label_anchor"].candidates(curve)
+        assert bool(candidates) == (placement == "auto")
+        assert all(item.normal_offset_em == .75 for item in candidates)
 
 
 def test_polar_reference_policy_uses_pole_down_orientation_exclusively():
@@ -466,3 +656,78 @@ def test_polar_declination_ticks_are_short_projected_furniture(
     assert all(len(curve.x) == 2 for curve in ticks)
     assert all(len(curve.y) == 2 for curve in ticks)
     assert all(curve.closed is False for curve in ticks)
+
+
+@pytest.mark.parametrize('dpi', [100, 300])
+@pytest.mark.parametrize('fontsize,factor,count', [(6, 5, 2), (12, 5, 1), (6, 20, 1)])
+def test_reference_end_labels_use_measured_length_and_stay_in_their_end_windows(dpi, fontsize, factor, count):
+    from wenu.charts.context import BoundaryKind
+    from wenu.charts.reference_furniture import BoundaryAwareReferenceAnchor, _SingleReferenceLabelAnchor
+    from wenu.geometry.viewport import Viewport
+
+    fig, ax = plt.subplots(figsize=(6, 4), dpi=dpi)
+    ax.set(xlim=(-1, 1), ylim=(-.6, .6), aspect='equal')
+    context = SimpleNamespace(viewport=Viewport(-1, 1, -.6, .6),
+                              boundary_kind=BoundaryKind.RECTANGULAR, clip_boundary=None)
+    curve = ProjectedCurve(np.linspace(-.98, .98, 301), np.zeros(301), name='Celestial equator')
+    anchor = _SingleReferenceLabelAnchor(BoundaryAwareReferenceAnchor(context),
+               near_ends=True, movable=True, label=curve.name, font_size=fontsize,
+               label_repeat_length_factor=factor)
+    renderer = MatplotlibRenderer(ax)
+    renderer.draw(ProjectedGrid({'parallel': ProjectedCurves([curve])}),
+                  draw_labels=True, label_anchor=anchor,
+                  label_style={'fontsize': fontsize, 'ha': 'center', 'va': 'center'})
+    renderer.finalize_graphics()
+    texts = [text for text in ax.texts if text.get_visible()]
+    assert len(texts) == count
+    assert texts[0].get_position()[0] < 0
+    if count == 2:
+        assert texts[0].get_position()[0] < -.5
+        assert texts[1].get_position()[0] > .5
+        assert not texts[0].get_window_extent(fig.canvas.get_renderer()).overlaps(
+            texts[1].get_window_extent(fig.canvas.get_renderer()))
+    for text in texts:
+        box = text.get_window_extent(fig.canvas.get_renderer())
+        viewport = ax.get_window_extent()
+        assert viewport.contains(box.x0, box.y0) and viewport.contains(box.x1, box.y1)
+        assert text.get_rotation() == 0
+    positions = [text.get_position() for text in texts]
+    renderer.finalize_graphics()
+    assert [text.get_position() for text in texts] == positions
+    plt.close(fig)
+
+
+def test_reference_end_search_never_measures_across_a_disconnected_gap():
+    from wenu.charts.context import BoundaryKind
+    from wenu.charts.reference_furniture import BoundaryAwareReferenceAnchor, _SingleReferenceLabelAnchor
+    from wenu.geometry.viewport import Viewport
+
+    fig, ax = plt.subplots(figsize=(6, 4))
+    ax.set(xlim=(-1, 1), ylim=(-1, 1))
+    context = SimpleNamespace(viewport=Viewport(-1, 1, -1, 1),
+                              boundary_kind=BoundaryKind.RECTANGULAR, clip_boundary=None)
+    x = np.r_[np.linspace(-.95, -.7, 20), np.nan, np.linspace(-.4, .95, 100)]
+    curve = ProjectedCurve(x, np.zeros_like(x), name='Reference')
+    anchor = _SingleReferenceLabelAnchor(BoundaryAwareReferenceAnchor(context),
+                                        near_ends=True, label=curve.name, font_size=6)
+    placements = anchor(curve, ax, measure_curve=MatplotlibRenderer(ax)._measure_curve_label)
+    assert placements
+    for placement in placements:
+        assert all(candidate.x >= -.4 for candidate in anchor.candidates_for_anchor(curve, placement, ax))
+    plt.close(fig)
+
+
+def test_complete_closed_reference_retains_one_anchor_instead_of_fake_ends():
+    from wenu.charts.context import BoundaryKind
+    from wenu.charts.reference_furniture import BoundaryAwareReferenceAnchor, _SingleReferenceLabelAnchor
+    from wenu.geometry.viewport import Viewport
+    fig, ax = plt.subplots()
+    ax.set(xlim=(-1, 1), ylim=(-1, 1), aspect='equal')
+    context = SimpleNamespace(viewport=Viewport(-1, 1, -1, 1),
+                              boundary_kind=BoundaryKind.RECTANGULAR, clip_boundary=None)
+    angles = np.linspace(0, 2 * np.pi, 101)
+    curve = ProjectedCurve(.6 * np.cos(angles), .6 * np.sin(angles), closed=True, name='Reference')
+    anchor = _SingleReferenceLabelAnchor(BoundaryAwareReferenceAnchor(context), near_ends=True, label=curve.name)
+    assert isinstance(anchor(curve, ax, measure_curve=MatplotlibRenderer(ax)._measure_curve_label), CurveLabelPlacement)
+    assert anchor(curve, ax) is None
+    plt.close(fig)

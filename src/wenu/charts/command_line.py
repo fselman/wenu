@@ -144,9 +144,15 @@ def chart_cli_furniture(
     references = chart_content_options(arguments).grid_references
 
     def reference(name):
+        annotation = {
+            "equatorial": base.references.celestial_equator,
+            "ecliptic": base.references.ecliptic,
+            "galactic": base.references.galactic_plane,
+        }[name]
         return ReferencePlaneAnnotation(
             state="labeled" if name in references else "none",
             label=labels[name],
+            label_repeat_length_factor=annotation.label_repeat_length_factor,
         )
 
     poles = (

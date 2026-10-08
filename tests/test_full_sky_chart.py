@@ -46,6 +46,45 @@ def test_tangent_point_and_horizon_are_independent():
     assert np.all(chart.horizon.finite)
 
 
+@pytest.mark.parametrize("center_alt,angle,flip", [(90, 0, True), (45, 37, False)])
+@pytest.mark.parametrize("dpi", [100, 300])
+def test_horizon_grid_labels_use_cardinal_spokes_and_an_exterior_margin(center_alt, angle, flip, dpi):
+    from wenu.charts.boundaries import HorizonGridLabelAnchor
+    from wenu.geometry.projected import ProjectedGrid
+
+    chart = FullSkyChart(center_alt_deg=center_alt, position_angle_deg=angle, flip_ew=flip)
+    anchor = HorizonGridLabelAnchor(chart.projection, chart.horizon)
+    fig, ax = plt.subplots(figsize=(4, 4), dpi=dpi)
+    ax.set_xlim(chart.viewport.xlim)
+    ax.set_ylim(chart.viewport.ylim)
+    ax.set_aspect("equal")
+    fig.canvas.draw()
+    renderer = MatplotlibRenderer(ax)
+    renderer.set_clip_boundary(chart.horizon)
+    curves = ProjectedCurves(items=[ProjectedCurve([0, 1], [0, 1], name=name)
+        for name in ["altitude_30", "altitude_60", "azimuth_0", "azimuth_90", "azimuth_180", "azimuth_270"]])
+    renderer.draw(ProjectedGrid(components={"parallels": curves}), draw_labels=True,
+                  label_anchor=anchor, label_style={"fontsize": 6},
+                  component_label_styles={"parallels": {"color": "red"}})
+    boundary = renderer._clip_patch.get_path().transformed(renderer._clip_patch.get_transform())
+    for altitude in (30, 60):
+        texts = [text for text in ax.texts if text.get_text() == f"altitude_{altitude}"]
+        assert len(texts) == 4
+        positions = [chart.projection.project_spherical(az, altitude) for az in (0, 90, 180, 270)]
+        np.testing.assert_allclose([text.get_position() for text in texts], positions)
+    for text in ax.texts:
+        assert text.get_rotation() == 0
+        assert text.get_color() == "red"
+        if text.get_text().startswith("azimuth_"):
+            box = text.get_window_extent(fig.canvas.get_renderer())
+            assert not boundary.intersects_bbox(box, filled=True)
+            assert not text.get_clip_on()
+    assert len(anchor(ProjectedCurve([0, 0], [0, 0], name="altitude_90"))) == 1
+    custom = HorizonGridLabelAnchor(chart.projection, chart.horizon, altitude_label_azimuths_deg=(45, 225))
+    assert len(custom(ProjectedCurve([0, 0], [0, 0], name="altitude_30"))) == 2
+    plt.close(fig)
+
+
 def test_tangent_point_must_not_expose_projection_antipode():
     with pytest.raises(ValueError, match="stereographic antipode"):
         FullSkyChart(center_alt_deg=0.0)
@@ -157,18 +196,25 @@ def test_render_delegates_with_chart_horizon():
     chart = FullSkyChart(
         center_alt_deg=60.0,
         horizon_altitude_deg=5.0,
+        altitude_label_azimuths_deg=(45.0, 225.0),
     )
     result = chart.render(
         Sky(),
         Renderer(),
         style=Style(),
-        layer_options={"override": {"render": {}}},
+        layer_options={
+            "override": {"render": {}},
+            "altaz_grid": {"render": {"label_anchor": None}},
+        },
     )
     assert result == "result"
     assert calls["minimum"] == 5.0
     assert calls["boundary"].closed
     assert "base" in calls["draw"]["layer_options"]
     assert "override" in calls["draw"]["layer_options"]
+    anchor = calls["draw"]["layer_options"]["altaz_grid"]["render"]["label_anchor"]
+    assert anchor.altitude_label_azimuths_deg == (45.0, 225.0)
+    assert anchor.horizon_altitude_deg == 5.0
 
 
 def test_full_sky_chart_can_draw_an_outside_constellation_mask(monkeypatch):

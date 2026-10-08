@@ -99,3 +99,28 @@ def test_unknown_family_legend_location_reports_complete_path():
         "furniture.legends.regional.objects_location: unsupported value"
         in str(error.value)
     )
+
+
+def test_reference_repeat_length_factor_translates_and_survives_cli_selection(tmp_path):
+    from wenu.configuration import load_configuration_defaults
+    from wenu.charts.command_line import chart_cli_furniture
+    from wenu.cli.chart import parser
+
+    path = tmp_path / 'reference-v10.toml'
+    path.write_text('schema_version = 2\n[grids_references.references]\nlabel_repeat_length_factor = 7.5\n')
+    config = load_configuration_defaults(path)
+    args = parser().parse_args(['regional', '--grid-references', 'all'])
+    furniture = chart_cli_furniture(args, configuration=config, family='regional')
+    for name in ('celestial_equator', 'ecliptic', 'galactic_plane'):
+        assert getattr(furniture.references, name).label_repeat_length_factor == 7.5
+
+
+@pytest.mark.parametrize('factor', [0.0, -1.0, float('nan'), float('inf')])
+def test_reference_repeat_length_factor_rejects_invalid_values(factor):
+    from wenu.charts.furniture import ReferencePlaneAnnotation
+    config = load_packaged_defaults()
+    config['grids_references']['references']['label_repeat_length_factor'] = factor
+    with pytest.raises(ConfigurationError):
+        validate_configuration(config)
+    with pytest.raises(ValueError, match='label_repeat_length_factor'):
+        ReferencePlaneAnnotation(label_repeat_length_factor=factor)

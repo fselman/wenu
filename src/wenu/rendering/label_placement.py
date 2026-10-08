@@ -11,7 +11,12 @@ from wenu.geometry.projected import ProjectedCurve
 
 @dataclass(frozen=True)
 class CurveLabelPlacement:
-    """A projected label position with an optional readable rotation."""
+    """A projected label position with optional rotation and border clearance.
+
+    ``exterior_direction`` is an outward vector in projected coordinates.
+    It requests unclipped text beyond the anchor's boundary tangent, with
+    measured text extent plus ``normal_offset_em`` physical padding.
+    """
 
     x: float
     y: float
@@ -19,8 +24,21 @@ class CurveLabelPlacement:
     normal_offset_em: float = 0.0
     horizontal_alignment: str | None = None
     vertical_alignment: str | None = None
+    exterior_direction: tuple[float, float] | None = None
 
     def __post_init__(self):
+        if self.exterior_direction is not None:
+            direction = np.asarray(self.exterior_direction, dtype=float)
+            if (
+                direction.shape != (2,)
+                or not np.isfinite(direction).all()
+                or not np.any(direction)
+            ):
+                raise ValueError(
+                    "exterior direction must contain two finite components "
+                    "forming a nonzero vector."
+                )
+            object.__setattr__(self, "exterior_direction", tuple(direction))
         if not np.isfinite((self.x, self.y)).all():
             raise ValueError("label position must be finite.")
         if self.rotation_deg is not None and not np.isfinite(

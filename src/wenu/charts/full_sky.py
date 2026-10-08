@@ -6,8 +6,11 @@ from dataclasses import dataclass
 
 import numpy as np
 
+from .label_placement import apply_object_label_orientation
+
 from wenu.charts.boundaries import (
     CircularGridLabelAnchor,
+    HorizonGridLabelAnchor,
     apply_coordinate_label_anchor,
 )
 from wenu.charts.constellation_label_placement import (
@@ -34,8 +37,16 @@ class FullSkyChart:
     horizon_color: str = "white"
     horizon_linewidth: float = 0.8
     outside_mask_constellations: tuple[str, ...] | None = None
+    altitude_label_azimuths_deg: tuple[float, ...] = (0.0, 90.0, 180.0, 270.0)
 
     def __post_init__(self):
+        spokes = tuple(float(value) for value in self.altitude_label_azimuths_deg)
+        if not spokes or not np.isfinite(spokes).all():
+            raise ValueError("altitude_label_azimuths_deg must contain finite azimuths.")
+        object.__setattr__(
+            self, "altitude_label_azimuths_deg",
+            tuple(dict.fromkeys(value % 360.0 for value in spokes)),
+        )
         values = np.asarray(
             (
                 self.center_alt_deg,
@@ -235,9 +246,16 @@ class FullSkyChart:
         )
         if layer_options is not None:
             options.update(layer_options)
+        options = apply_object_label_orientation(
+            options, sky=sky, style=resolved_style,
+        )
         options = apply_coordinate_label_anchor(
             options,
             self.coordinate_label_anchor,
+            altaz_anchor=HorizonGridLabelAnchor(
+                self.projection, self.horizon, self.horizon_altitude_deg,
+                self.altitude_label_azimuths_deg,
+            ),
         )
         options = apply_visible_constellation_label_anchors(
             options,
@@ -266,6 +284,10 @@ class FullSkyChart:
             self.horizon,
             style=boundary_style,
         )
+        set_band = getattr(renderer, "set_grid_label_band", None)
+        band_style = getattr(resolved_style, "grid_label_band_style", None)
+        if callable(set_band):
+            set_band(self.horizon, style=band_style() if callable(band_style) else None)
         set_frame_visible = getattr(
             renderer, "set_axes_frame_visible", None
         )

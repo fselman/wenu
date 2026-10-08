@@ -285,11 +285,20 @@ maximum_area = 40.0
 
 # Atlas print is the semantic appearance baseline.
 [styles.atlas.canvas]
+labels_orientation = "chart"
 background = "white"
 foreground = "#505050"
 label_font_size = 8.5
 footer_color = "none"
 title_color = "none"
+
+[styles.atlas.canvas.grid_label_band]
+enabled = true
+fill_color = "white"
+frame_color = "black"
+label_color = "black"
+line_width = 0.8
+padding_points = 2.0
 
 [styles.atlas.stars]
 color = "#151515"
@@ -437,7 +446,7 @@ line_style = "dotted"
 opacity = 0.65
 
 [styles.atlas.constellation_figures]
-gap_points = 0.0
+gap_points = "none"
 color = "#686868"
 line_width = 0.35
 line_style = "solid"
@@ -478,8 +487,8 @@ opacity = 0.45
 [styles.atlas.coordinate_labels]
 enabled = true
 color = "none"
-font_size = 3.5
-opacity = 0.85
+font_size = 5.04
+opacity = 1.0
 
 [styles.atlas.horizon]
 altitude = 0.0
@@ -517,11 +526,20 @@ text_color = "none"
 
 # Cartoon is a separate complete semantic base, not an inherited atlas delta.
 [styles.cartoon.canvas]
+labels_orientation = "chart"
 background = "#fffdf7"
 foreground = "#172238"
 label_font_size = 13.0
 footer_color = "none"
 title_color = "none"
+
+[styles.cartoon.canvas.grid_label_band]
+enabled = true
+fill_color = "white"
+frame_color = "black"
+label_color = "black"
+line_width = 0.8
+padding_points = 2.0
 
 [styles.cartoon.stars]
 color = "#172238"
@@ -669,7 +687,7 @@ line_style = "dotted"
 opacity = 0.45
 
 [styles.cartoon.constellation_figures]
-gap_points = 0.0
+gap_points = "none"
 color = "#304f78"
 line_width = 1.15
 line_style = "solid"
@@ -710,7 +728,7 @@ opacity = 0.35
 [styles.cartoon.coordinate_labels]
 enabled = false
 color = "none"
-font_size = 4.0
+font_size = 5.76
 opacity = 0.75
 
 [styles.cartoon.horizon]
@@ -873,6 +891,7 @@ equinox = "J2000"
 [grids_references.references]
 state = "none"
 anchor = "none"
+label_repeat_length_factor = 5.0
 equatorial_label = "Celestial equator"
 ecliptic_label = "Ecliptic"
 galactic_label = "Galactic plane"

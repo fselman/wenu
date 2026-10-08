@@ -25,6 +25,27 @@ def parser():
     )
 
 
+def test_cli_grid_band_overrides_are_independent():
+    from wenu.charts.chart_arguments import chart_style_overrides
+    from wenu.charts.presets import AtlasChartStyle
+
+    options = parser().parse_args([
+        "--grid-label-band-fill-color", "none",
+        "--grid-label-band-frame-color", "red",
+        "--grid-label-band-line-width", "1.4",
+    ])
+    original = AtlasChartStyle()
+    changed = chart_style_overrides(options).apply(original)
+    assert changed.canvas.grid_label_band_fill_color == "none"
+    assert changed.canvas.grid_label_band_frame_color == "red"
+    assert changed.canvas.grid_label_band_linewidth == 1.4
+    assert original.canvas.grid_label_band_fill_color == "white"
+    assert changed.grids == original.grids
+    assert chart_style_overrides(parser().parse_args(["--no-grid-label-band"])).grid_label_band is False
+    with pytest.raises(ValueError):
+        chart_style_overrides(parser().parse_args(["--grid-label-band-line-width", "-1"]))
+
+
 def test_complete_cli_contract_includes_context_and_credits():
     arguments = parser().parse_args([
         "--credits", "--no-center", "--no-grid",
@@ -41,6 +62,22 @@ def test_complete_cli_contract_includes_context_and_credits():
     assert arguments.equatorial_grid_labels is True
     assert arguments.horizon is False
     assert arguments.horizon_mask is False
+
+
+@pytest.mark.parametrize(("flag", "policy"), [
+    ("--labels-upright", "upright"),
+    ("--labels-up-away-from-cp", "up-away-from-cp"),
+])
+def test_cli_object_label_orientation_overrides(flag, policy):
+    from wenu.charts.chart_arguments import chart_style_overrides
+
+    assert chart_style_overrides(parser().parse_args([flag])).labels_orientation == policy
+    assert parser().parse_args([]).labels_orientation is None
+
+
+def test_cli_object_label_orientation_switches_are_mutually_exclusive():
+    with pytest.raises(SystemExit):
+        parser().parse_args(["--labels-upright", "--labels-up-away-from-cp"])
 
 
 @pytest.mark.parametrize(

@@ -43,6 +43,8 @@ class ConfigurationError(ValueError):
 _OPTIONAL_NUMBERS = frozenset(
     {
         "observer.elevation",
+        "styles.atlas.constellation_figures.gap_points",
+        "styles.cartoon.constellation_figures.gap_points",
         "sequence.playback_duration",
         "sequence.frames_per_second",
         "families.regional_single.width",
@@ -126,6 +128,7 @@ _POSITIVE_NAMES = frozenset(
         "minimum_area",
         "maximum_area",
         "label_density",
+        "label_repeat_length_factor",
         "font_scale",
         "line_scale",
         "symbol_scale",
@@ -139,6 +142,7 @@ _NONNEGATIVE_NAMES = frozenset(
     {
         "gap_points",
         "line_width",
+        "padding_points",
         "edge_width",
         "z_order",
         "padding",
@@ -153,6 +157,8 @@ _NONNEGATIVE_NAMES = frozenset(
 )
 _ENUMS = {
     "styles.atlas.stars.labels.placement": {"fixed", "auto"},
+    "styles.atlas.canvas.labels_orientation": {"chart", "upright", "up-away-from-cp"},
+    "styles.cartoon.canvas.labels_orientation": {"chart", "upright", "up-away-from-cp"},
     "styles.cartoon.stars.labels.placement": {"fixed", "auto"},
     "data.moving_object_policy": {
         "acquire-if-missing", "offline", "refresh",

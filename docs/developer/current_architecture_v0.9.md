@@ -1,5 +1,85 @@
 # Wenu current architecture v0.9
 
+Regional v10 reference placement measures the visible contiguous curve and
+its rendered label width in final display units. Automatic names search near
+the curve ends; when length exceeds `label_repeat_length_factor` (default 5)
+times text width, independent end windows supply two labels. Full text must
+fit the sky boundary. Tangents, normal offsets, explicit anchors, polar
+reference policy and temporal annotations retain their existing owners.
+Schema-v2 `grids_references.references.label_repeat_length_factor` translates
+through furniture and survives CLI reference selection. Coordinate latitude
+lists now use symmetric multiples of their interval from zero; equatorial
+grids include zero declination even without a separately requested reference.
+The 70-degree regional review requests `--declination-step 15` explicitly.
+Automatic density thresholds remain unchanged; no new module is introduced.
+
+The La Ligua v6 follow-up requires full constellation-text containment
+inside the prepared visible IAU region and sky boundary. Names with no fitting
+candidate are omitted, including fixed names; fixed candidates are not moved.
+The renderer exposes omitted names through `suppressed_region_labels`.
+Packaged coordinate fonts are atlas 5.04 points and cartoon 5.76 points.
+Marginal text sits near its coordinate crossing; ordinary cardinal labels
+retain the compact band. Oversized or dense diagonal text may expand furniture.
+Noncentral altitude labels use a 0.2-em offset; the zenith keeps 0.65 em.
+The shared deterministic search retains orientation, colour, reference-curve
+association and temporal anchors. Location planispheres default to a 1-point
+constellation gap, with explicit CLI/TOML values retaining precedence.
+The active authored Scorpius figure replaces sigma–delta with sigma–beta1
+(HIP 80112–78820); its remaining edges and segment count are unchanged.
+No module ownership, coordinate convention or grid cadence changes.
+
+The exterior coordinate-label band is chart-owned furniture for non-polar
+planispheres, regional/constellation charts and binocular fields. Existing
+canvas style/configuration/CLI owners supply enabled, fill/frame colours,
+physical line width and padding. The default is opaque white with a black
+0.8-point frame. `charts/boundaries.py::ExteriorGridLabelAnchor` selects real
+crossings near existing regional/binocular anchors; it does not add cadence
+or pole-specific policy. `MatplotlibRenderer.set_grid_label_band()` and final
+furniture measurement produce an annulus or rectangular compound path with
+an interior hole, preserve the viewport and fit exterior text in physical
+units. `chart_document.py` assigns separate style-editable SVG identities.
+Polar/calendar furniture, tracks and astronomical geometry are unchanged.
+No production module or test module is added. See the label guide for controls.
+
+## Object-label orientation candidate (2026-10-07)
+
+Based on clean `main` at `948b9093` (PR #210), existing chart preparation
+applies the chart-family typography rule: polar-planisphere labels have up
+away from their projected pole; other families keep object and constellation
+labels upright. A viewport containing a pole does not change its family.
+`ChartStyleOverrides.labels_orientation` and schema-v2 canvas configuration
+provide explicit mutually exclusive CLI overrides. The shared helper lives
+in `charts/label_placement.py`; immutable style translation and chart-local
+render factories preserve request isolation and curated polar adjustments.
+
+The existing Matplotlib point-label search measures rotated artist bounds
+and recomputes a position-dependent rotation after relocation. Reference
+names retain local tangent placement; temporal track/sequence
+annotations are excluded from the override. No annealing, grid-density policy, new production module, dependency,
+scientific transformation, or position source is added. See the
+[label guide](../user_guide/labels.md) for current limits and proposed work.
+
+The horizon-grid correction extends `charts/boundaries.py` with native
+AltAz anchors: altitude on cardinal azimuth spokes and azimuth outside the
+projected horizon. The generic renderer supports multiple curve anchors and
+measured exterior text offsets. Automatic point candidates prefer complete
+containment in the actual clip path over collision preferences. Temporal
+labels and reference tangents retain their owners. Python spoke selection is
+available; CLI/TOML cadence and other grid refinements remain later
+work. No astronomical geometry or coordinate convention changes.
+
+The shared collision follow-up extends the same renderer pass to
+constellation names and automatically anchored reference curves when stellar
+placement is `auto`. Visible-region preparation carries projected IAU polygons
+as aligned `label_regions` metadata. Whole constellation text boxes must fit inside those
+regions where available and inside the sky boundary, or the name is omitted.
+Reference furniture supplies tangent candidates on its own contiguous curve,
+while explicit anchors, grid labels and temporal annotations remain fixed.
+The deterministic search prioritizes boundary containment and text separation,
+then marker clearance, ownership and appearance, using coordinate descent
+and bounded pair moves. Remaining text overlaps are retained for renderer
+inspection. No annealing or new module is introduced.
+
 **Status:** Implemented current architecture
 **Previous baseline:** `archive/architecture_history/current_architecture_v0.8.md`
 **Completed migration:** `archive/migration_history/wenu_migration_0.8_to_0.9.md`

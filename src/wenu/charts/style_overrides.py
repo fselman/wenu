@@ -29,8 +29,15 @@ class ChartStyleOverrides:
     equatorial_reference_linewidth: float | None = None
     constellation_line_gap_points: float | None = None
     star_label_placement: str | None = None
+    labels_orientation: str | None = None
+    grid_label_band: bool | None = None
+    grid_label_band_fill_color: str | None = None
+    grid_label_band_frame_color: str | None = None
+    grid_label_band_linewidth: float | None = None
 
     def __post_init__(self):
+        if self.labels_orientation not in {None, "chart", "upright", "up-away-from-cp"}:
+            raise ValueError("unsupported labels_orientation")
         if self.star_label_placement not in {None, "fixed", "auto"}:
             raise ValueError("star_label_placement must be fixed or auto")
         if self.constellation_label_offsets is not None:
@@ -60,6 +67,7 @@ class ChartStyleOverrides:
                 "stellar_magnitude_sizing must be StellarMagnitudeSizing."
             )
         for name in (
+            "grid_label_band_linewidth",
             "constellation_linewidth",
             "constellation_line_gap_points",
             "boundary_linewidth",
@@ -73,6 +81,8 @@ class ChartStyleOverrides:
             if not isfinite(float(value)) or float(value) < 0.0:
                 raise ValueError(f"{name} must be finite and non-negative.")
         for name in (
+            "grid_label_band_fill_color",
+            "grid_label_band_frame_color",
             "constellation_line_color",
             "constellation_label_color",
             "boundary_color",
@@ -110,6 +120,16 @@ class ChartStyleOverrides:
         if self.star_label_placement is not None:
             resolved = replace(resolved, stars=replace(
                 resolved.stars, label_placement=self.star_label_placement,
+            ))
+        band_changes = {name: getattr(self, name) for name in (
+            "grid_label_band", "grid_label_band_fill_color",
+            "grid_label_band_frame_color", "grid_label_band_linewidth",
+        ) if getattr(self, name) is not None}
+        if band_changes:
+            resolved = replace(resolved, canvas=replace(resolved.canvas, **band_changes))
+        if self.labels_orientation is not None:
+            resolved = replace(resolved, canvas=replace(
+                resolved.canvas, labels_orientation=self.labels_orientation,
             ))
         if self.sky_color is not None:
             canvas = getattr(resolved, "canvas", None)

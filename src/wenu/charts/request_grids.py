@@ -27,7 +27,8 @@ def requested_coordinate_grids(detail):
 
 
 def _latitude_values(limit, step, *, include_zero=False):
-    values = set(range(-limit, limit + 1, step))
+    count = int(limit // step)
+    values = {index * step for index in range(-count, count + 1)}
     if include_zero:
         values.add(0)
     else:
@@ -89,16 +90,14 @@ def _grid_specifications(family, frame=None, detail=None, *, equinox="J2000"):
     declination_step = getattr(
         detail, "equatorial_declination_step_deg", None
     )
-    equatorial_latitudes = latitudes
-    if declination_step is not None:
-        equatorial_latitudes = _declination_values(
-            declination_step,
-            include_zero=family == "all_sky",
+    equatorial_latitudes = _declination_values(
+        step if declination_step is None else declination_step,
+        include_zero=True,
+    )
+    if family == "circumpolar" and frame is not None:
+        equatorial_latitudes = _circumpolar_declinations(
+            equatorial_latitudes, frame
         )
-        if family == "circumpolar" and frame is not None:
-            equatorial_latitudes = _circumpolar_declinations(
-                equatorial_latitudes, frame
-            )
     if family == "all_sky":
         galactic_longitudes = tuple(range(0, 360, 45))
         galactic_latitudes = tuple(range(-60, 61, 30))

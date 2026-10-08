@@ -40,7 +40,160 @@ class MatplotlibRenderer:
         self._viewport = None
         self._point_obstacles = []
         self._auto_labels = []
+        self._area_labels = []
+        self._curve_labels = []
+        self.unresolved_label_collisions = ()
+        self.suppressed_region_labels = ()
+        self._label_rotations = {}
         self._gapped_lines = []
+        self._grid_label_band = None
+        self._grid_label_band_artist = None
+
+    def _measure_curve_label(self, curve, *, boundary, label, font_size):
+        """Supply display measurements to a backend-neutral anchor policy."""
+        from matplotlib.font_manager import FontProperties
+        from matplotlib.path import Path
+
+        self.ax.apply_aspect()
+        points = np.column_stack((curve.x, curve.y))
+        inside = np.ones(len(points), dtype=bool)
+        if boundary is not None:
+            vertices = np.column_stack((boundary.x[boundary.finite],
+                                        boundary.y[boundary.finite]))
+            inside &= Path(np.vstack((vertices, vertices[0]))).contains_points(points)
+        width, _, _ = self.ax.figure.canvas.get_renderer().get_text_width_height_descent(
+            label, FontProperties(size=font_size), ismath=False,
+        )
+        return (self.ax.transData.transform(points), inside, width,
+                self.ax.figure.dpi / 72.0)
+
+    def set_grid_label_band(self, boundary, *, style):
+        """Reserve exterior furniture around a chart-owned closed boundary."""
+        if self._grid_label_band_artist is not None:
+            self._grid_label_band_artist.remove()
+            self._grid_label_band_artist = None
+        previous = getattr(self, "_grid_label_band_frame", None)
+        if previous is not None:
+            previous.remove()
+            self._grid_label_band_frame = None
+        self._grid_label_band = None if style is None else (
+            self._closed_boundary_path(boundary), dict(style),
+        )
+
+    def _finalize_grid_label_band(self):
+        """Fit a circular or rectangular exterior band to physical text bounds."""
+        if self._grid_label_band is None:
+            return
+        from matplotlib.path import Path
+        from matplotlib.patches import PathPatch
+
+        self.ax.figure.canvas.draw()
+        renderer = self.ax.figure.canvas.get_renderer()
+        path, style = self._grid_label_band
+        inner = self.ax.transData.transform(path.vertices[:-1])
+        low, high = inner.min(axis=0), inner.max(axis=0)
+        centre = (low + high) / 2.0
+        scale = self.ax.figure.dpi / 72.0
+        padding = (style["padding_points"] + style["linewidth"] / 2.0) * scale
+        labels = [text for text in self.ax.texts
+                  if text.get_visible() and getattr(text, "_wenu_exterior_label", False)]
+        for text in labels:
+            text.set_color(style["label_color"])
+            text.set_zorder(max(text.get_zorder(), 4.0))
+        boxes = [text.get_window_extent(renderer) for text in labels]
+        minimum = max([8.5, *(text.get_fontsize() for text in labels)]) * scale + 2.0 * padding
+        radius = np.linalg.norm(inner - centre, axis=1)
+        circular = len(inner) >= 16 and np.ptp(radius) < 1e-3 * np.mean(radius)
+        from matplotlib.transforms import ScaledTranslation
+        # Ordinary coordinate text remains below the reserved content sizing floor.
+        # Keep its inner edge close to the boundary coordinate, with a
+        # small physical clearance rather than half the ring width.
+        for text in labels:
+            attachment = getattr(text, "_wenu_exterior_attachment", None)
+            if attachment is None:
+                continue
+            position, direction = attachment
+            origin = self.ax.transData.transform(position)
+            direction = self.ax.transData.transform(np.asarray(position) + direction) - origin
+            direction /= np.linalg.norm(direction)
+            text.set_transform(self.ax.transData)
+            box = text.get_window_extent(renderer)
+            support = (abs(direction[0]) * box.width + abs(direction[1]) * box.height) / 2.0
+            clearance = 1.5 if not circular and direction[1] < -0.9 else 0.35
+            offset = support + clearance * scale
+            if circular:
+                # Fit the upright text box to the curved inner rim.
+                target = float(np.max(radius)) + 0.35 * scale
+                lower, upper = 0.0, offset
+                for _ in range(32):
+                    trial = (lower + upper) / 2.0
+                    shifted_low = np.array([box.x0, box.y0]) + direction * trial
+                    shifted_high = np.array([box.x1, box.y1]) + direction * trial
+                    nearest = np.clip(centre, shifted_low, shifted_high)
+                    if np.linalg.norm(nearest - centre) < target:
+                        lower = trial
+                    else:
+                        upper = trial
+                offset = upper
+            shift = direction * offset / self.ax.figure.dpi
+            text.set_transform(self.ax.transData + ScaledTranslation(
+                *shift, self.ax.figure.dpi_scale_trans,
+            ))
+        boxes = [text.get_window_extent(renderer) for text in labels]
+        if circular:
+            outer_radius = float(np.max(radius)) + minimum
+            for text, box in zip(labels, boxes):
+                clearance = (style["linewidth"] / 2.0 * scale
+                             if hasattr(text, "_wenu_exterior_attachment") else padding)
+                corners = np.array([[box.x0, box.y0], [box.x0, box.y1],
+                                    [box.x1, box.y0], [box.x1, box.y1]])
+                outer_radius = max(outer_radius, float(np.max(np.linalg.norm(corners - centre, axis=1))) + clearance)
+            angle = np.linspace(0.0, 2.0 * np.pi, 721, endpoint=False)
+            outer = centre + outer_radius * np.column_stack((np.cos(angle), np.sin(angle)))
+        else:
+            outer_low, outer_high = low - minimum, high + minimum
+            for text, box in zip(labels, boxes):
+                clearance = (style["linewidth"] / 2.0 * scale
+                             if hasattr(text, "_wenu_exterior_attachment") else padding)
+                outer_low = np.minimum(outer_low, (box.x0 - clearance, box.y0 - clearance))
+                outer_high = np.maximum(outer_high, (box.x1 + clearance, box.y1 + clearance))
+            outer = np.array([outer_low, [outer_high[0], outer_low[1]],
+                              outer_high, [outer_low[0], outer_high[1]]])
+        # Opposite winding leaves the sky interior as a genuine transparent hole.
+        def closed(vertices):
+            vertices = np.vstack((vertices, vertices[0]))
+            codes = np.full(len(vertices), Path.LINETO, dtype=np.uint8)
+            codes[0], codes[-1] = Path.MOVETO, Path.CLOSEPOLY
+            return Path(self.ax.transData.inverted().transform(vertices), codes)
+        signed_area = np.sum(inner[:, 0] * np.roll(inner[:, 1], -1)
+                             - inner[:, 1] * np.roll(inner[:, 0], -1))
+        hole = inner[::-1] if signed_area > 0 else inner
+        band_path = Path.make_compound_path(closed(outer), closed(hole))
+        if self._grid_label_band_artist is not None:
+            self._grid_label_band_artist.remove()
+        patch = PathPatch(band_path, facecolor=style["fill_color"], edgecolor="none",
+                          clip_on=False, zorder=3.75)
+        self.ax.add_patch(patch)
+        # The exterior stroke is separate: never redraw the inner sky boundary.
+        frame = PathPatch(closed(outer), facecolor="none", edgecolor=style["frame_color"],
+                          linewidth=style["linewidth"], clip_on=False, zorder=3.85)
+        previous = getattr(self, "_grid_label_band_frame", None)
+        if previous is not None:
+            previous.remove()
+        self.ax.add_patch(frame)
+        self._grid_label_band_artist = patch
+        self._grid_label_band_frame = frame
+        title = self.ax.title
+        if title.get_visible() and title.get_text():
+            from matplotlib.transforms import ScaledTranslation
+            original = getattr(title, "_wenu_band_original_transform", title.get_transform())
+            title._wenu_band_original_transform = original
+            title.set_transform(original)
+            box = title.get_window_extent(renderer)
+            offset = max(0.0, float(np.max(outer[:, 1])) + padding - box.y0)
+            title.set_transform(original + ScaledTranslation(
+                0.0, offset / self.ax.figure.dpi, self.ax.figure.dpi_scale_trans,
+            ))
 
     def set_axes_frame_visible(self, visible):
         """Show or hide the rectangular Matplotlib axes frame."""
@@ -246,6 +399,8 @@ class MatplotlibRenderer:
         for artist in artists:
             if isinstance(artist, (list, tuple)):
                 self._apply_clip_patch(artist)
+            elif getattr(artist, "_wenu_exterior_label", False):
+                artist.set_clip_on(False)
             elif callable(getattr(artist, "set_clip_path", None)):
                 artist.set_clip_on(True)
                 artist.set_clip_path(self._clip_patch)
@@ -539,8 +694,8 @@ class MatplotlibRenderer:
         artists = []
         label_style = dict(label_style)
         placement = label_style.pop("placement", "fixed")
-        if placement not in {"fixed", "auto"}:
-            raise ValueError("point label placement must be fixed or auto")
+        if placement not in {"fixed", "auto", "region"}:
+            raise ValueError("point label placement must be fixed, auto, or region")
         if draw_markers:
             areas = np.broadcast_to(np.asarray(style.get("s", 1.0)), (len(points),)).copy()
             for index, entity_style in enumerate(self._entity_styles(styles, len(points))):
@@ -640,6 +795,13 @@ class MatplotlibRenderer:
                     )
                     if placement == "auto":
                         self._auto_labels.append((label_artist, float(points.x[index]), float(points.y[index])))
+                    elif placement == "region" or "label_regions" in points.metadata:
+                        regions = points.metadata.get("label_regions")
+                        self._area_labels.append((
+                            label_artist, *label_artist.get_position(),
+                            None if regions is None else regions[index],
+                            placement == "region",
+                        ))
                     self._attach_semantic_entity(
                         (label_artist,), points.metadata, index
                     )
@@ -782,78 +944,137 @@ class MatplotlibRenderer:
                         closed=curve.closed,
                         name=curve_name,
                     )
-                    anchor = (
-                        self._anchor(curve.x, curve.y)
-                        if label_anchor is None
-                        else label_anchor(named_curve, self.ax)
-                    )
+                    if label_anchor is None:
+                        anchor = self._anchor(curve.x, curve.y)
+                    elif getattr(label_anchor, "near_ends", False):
+                        anchor = label_anchor(
+                            named_curve, self.ax, measure_curve=self._measure_curve_label,
+                        )
+                    else:
+                        anchor = label_anchor(named_curve, self.ax)
                     if anchor is None:
                         continue
-                    label_style_for_curve = {
-                        **label_style,
-                        **dict(component_label_styles.get(name, {})),
-                    }
-                    if isinstance(anchor, CurveLabelPlacement):
-                        position = (anchor.x, anchor.y)
-                        label_style_for_curve = dict(label_style)
-                        if anchor.horizontal_alignment is not None:
-                            label_style_for_curve["ha"] = (
-                                anchor.horizontal_alignment
-                            )
-                        if anchor.vertical_alignment is not None:
-                            label_style_for_curve["va"] = (
-                                anchor.vertical_alignment
-                            )
-                        if anchor.rotation_deg is not None:
-                            label_style_for_curve = {
-                                **label_style_for_curve,
-                                "rotation": anchor.rotation_deg,
-                                "rotation_mode": "anchor",
-                            }
-                            if anchor.normal_offset_em:
-                                from matplotlib.transforms import (
-                                    ScaledTranslation,
+                    anchors = anchor if isinstance(anchor, list) and all(
+                        isinstance(item, CurveLabelPlacement) for item in anchor
+                    ) else (anchor,)
+                    for anchor in anchors:
+                        label_style_for_curve = {
+                            **label_style,
+                            **dict(component_label_styles.get(name, {})),
+                        }
+                        if isinstance(anchor, CurveLabelPlacement):
+                            position = (anchor.x, anchor.y)
+                            if anchor.horizontal_alignment is not None:
+                                label_style_for_curve["ha"] = (
+                                    anchor.horizontal_alignment
                                 )
+                            if anchor.vertical_alignment is not None:
+                                label_style_for_curve["va"] = (
+                                    anchor.vertical_alignment
+                                )
+                            if anchor.rotation_deg is not None:
+                                label_style_for_curve = {
+                                    **label_style_for_curve,
+                                    "rotation": anchor.rotation_deg,
+                                    "rotation_mode": "anchor",
+                                }
+                                if anchor.normal_offset_em and anchor.exterior_direction is None:
+                                    from matplotlib.transforms import (
+                                        ScaledTranslation,
+                                    )
 
-                                fontsize = float(
-                                    label_style_for_curve.get(
-                                        "fontsize", 10.0
+                                    fontsize = float(
+                                        label_style_for_curve.get(
+                                            "fontsize", 10.0
+                                        )
                                     )
-                                )
-                                angle = np.radians(anchor.rotation_deg)
-                                distance = (
-                                    anchor.normal_offset_em * fontsize
-                                )
-                                dx = -np.sin(angle) * distance / 72.0
-                                dy = np.cos(angle) * distance / 72.0
-                                label_style_for_curve["transform"] = (
-                                    self.ax.transData
-                                    + ScaledTranslation(
-                                        dx,
-                                        dy,
-                                        self.ax.figure.dpi_scale_trans,
+                                    angle = np.radians(anchor.rotation_deg)
+                                    distance = (
+                                        anchor.normal_offset_em * fontsize
                                     )
-                                )
-                    else:
-                        position = anchor
-                    label = (
-                        curve_name
-                        if label_formatter is None
-                        else label_formatter(curve_name)
-                    )
-                    label_artist = self._label(
-                        *position,
-                        label,
-                        label_style_for_curve,
-                        label_offset,
-                    )
-                    setattr(
-                        label_artist,
-                        "_wenu_semantic_component",
-                        "labels",
-                    )
-                    artists.append(label_artist)
+                                    dx = -np.sin(angle) * distance / 72.0
+                                    dy = np.cos(angle) * distance / 72.0
+                                    label_style_for_curve["transform"] = (
+                                        self.ax.transData
+                                        + ScaledTranslation(
+                                            dx,
+                                            dy,
+                                            self.ax.figure.dpi_scale_trans,
+                                        )
+                                    )
+                        else:
+                            position = anchor
+                        label = (
+                            curve_name
+                            if label_formatter is None
+                            else label_formatter(curve_name)
+                        )
+                        label_artist = self._label(
+                            *position,
+                            label,
+                            label_style_for_curve,
+                            label_offset,
+                        )
+                        setattr(
+                            label_artist,
+                            "_wenu_semantic_component",
+                            "labels",
+                        )
+                        if isinstance(anchor, CurveLabelPlacement) and anchor.exterior_direction is not None:
+                            from matplotlib.transforms import ScaledTranslation
+
+                            self.ax.apply_aspect()
+                            direction = np.asarray(anchor.exterior_direction, dtype=float)
+                            origin = self.ax.transData.transform((anchor.x, anchor.y))
+                            direction = self.ax.transData.transform(
+                                np.asarray((anchor.x, anchor.y)) + direction
+                            ) - origin
+                            direction /= np.linalg.norm(direction)
+                            box = label_artist.get_window_extent(self.ax.figure.canvas.get_renderer())
+                            fontsize = label_artist.get_fontsize()
+                            distance = (abs(direction[0]) * box.width + abs(direction[1]) * box.height) / 2.0
+                            distance += anchor.normal_offset_em * fontsize * self.ax.figure.dpi / 72.0
+                            shift = direction * distance / self.ax.figure.dpi
+                            label_artist.set_transform(self.ax.transData + ScaledTranslation(
+                                *shift, self.ax.figure.dpi_scale_trans,
+                            ))
+                            label_artist.set_clip_on(False)
+                            setattr(label_artist, "_wenu_exterior_label", True)
+                            label_artist._wenu_exterior_attachment = (
+                                (anchor.x, anchor.y),
+                                np.asarray(anchor.exterior_direction, dtype=float),
+                            )
+                        candidate_factory = getattr(label_anchor, "candidates", None)
+                        if isinstance(anchor, CurveLabelPlacement) and callable(candidate_factory):
+                            per_anchor = getattr(label_anchor, "candidates_for_anchor", None)
+                            candidates = tuple(
+                                per_anchor(named_curve, anchor, self.ax) if callable(per_anchor)
+                                else candidate_factory(named_curve, self.ax)
+                            )
+                            if candidates:
+                                label_artist._wenu_reference_endpoint_label = bool(getattr(label_anchor, "near_ends", False))
+                                self._curve_labels.append((label_artist, anchor, (anchor, *candidates)))
+                        artists.append(label_artist)
         return artists
+
+    def _apply_curve_label_placement(self, artist, placement):
+        """Recompute a curve label's tangent and physical normal offset."""
+        from matplotlib.transforms import ScaledTranslation
+
+        artist.set_position((placement.x, placement.y))
+        if placement.rotation_deg is not None:
+            artist.set_rotation(placement.rotation_deg)
+            artist.set_rotation_mode("anchor")
+        if placement.horizontal_alignment is not None:
+            artist.set_ha(placement.horizontal_alignment)
+        if placement.vertical_alignment is not None:
+            artist.set_va(placement.vertical_alignment)
+        angle = np.radians(artist.get_rotation())
+        distance = placement.normal_offset_em * artist.get_fontsize() / 72.0
+        artist.set_transform(self.ax.transData + ScaledTranslation(
+            -np.sin(angle) * distance, np.cos(angle) * distance,
+            self.ax.figure.dpi_scale_trans,
+        ))
 
     def _draw_polygon(
         self,
@@ -1150,7 +1371,7 @@ class MatplotlibRenderer:
 
     def finalize_graphics(self):
         """Resolve physical gaps and label positions after aspect/layout settles."""
-        if not self._gapped_lines and not self._auto_labels:
+        if not (self._gapped_lines or self._auto_labels or self._area_labels or self._curve_labels or self._grid_label_band):
             return
         self.ax.figure.canvas.draw()
         for line, curve, clearances in self._gapped_lines:
@@ -1159,31 +1380,47 @@ class MatplotlibRenderer:
                 line.set_visible(False)
             else:
                 line.set_data(shortened.x, shortened.y)
+                self._apply_clip_patch([line])
         self.finalize_label_placement()
+        self._finalize_grid_label_band()
 
     def finalize_label_placement(self):
         """Place compact labels with visible ownership in final display space.
 
-        Association has priority over cosmetic line avoidance. Candidate
-        positions follow the rotated/projected markers, while text stays
-        upright. Coordinate descent revisits earlier choices as a group.
+        Point, area and curve candidates preserve their attachment policies.
+        Boundary containment and text separation precede marker clearance,
+        point ownership and cosmetic preferences. Coordinate descent plus
+        bounded simultaneous pair moves revisit assignments as a group.
         """
-        if not self._auto_labels:
+        if not (self._auto_labels or self._area_labels or self._curve_labels):
             return
-        from matplotlib.transforms import Bbox
-
+        self.ax.figure.canvas.draw()
         renderer = self.ax.figure.canvas.get_renderer()
         scale = self.ax.figure.dpi / 72.0
         centres = self.ax.transData.transform(
             [(x, y) for x, y, _ in self._point_obstacles]
         ) if self._point_obstacles else np.empty((0, 2))
         radii = np.asarray([radius * scale for _, _, radius in self._point_obstacles])
-        auto_artists = {artist for artist, _, _ in self._auto_labels}
+        auto_artists = {item[0] for item in (*self._auto_labels, *self._area_labels, *self._curve_labels)}
         fixed = [artist.get_window_extent(renderer) for artist in self.ax.texts
                  if artist not in auto_artists and artist.get_visible() and artist.get_text()]
         paths = [line.get_path().transformed(line.get_transform())
                  for line in self.ax.lines if line.get_visible()]
         bounds = self.ax.get_window_extent(renderer)
+        boundary = (
+            None if self._clip_patch is None
+            else self._clip_patch.get_path().transformed(self._clip_patch.get_transform())
+        )
+
+        def outside_boundary(box):
+            outside = max(0.0, box.width * box.height / scale**2 - overlap(box, bounds))
+            if boundary is not None:
+                corners = np.asarray(((box.x0, box.y0), (box.x0, box.y1),
+                                      (box.x1, box.y0), (box.x1, box.y1)))
+                inside = boundary.contains_points(corners)
+                if not inside.all() or boundary.intersects_bbox(box, filled=False):
+                    outside += box.width * box.height / scale**2
+            return outside
 
         def overlap(first, second):
             return (max(0.0, min(first.x1, second.x1) - max(first.x0, second.x0))
@@ -1201,18 +1438,22 @@ class MatplotlibRenderer:
             near = np.linalg.norm(centres - anchor, axis=1) < 1e-4
             return np.max(radii[near], initial=0.0)
 
-        labels = sorted(self._auto_labels, key=lambda item: (
+        point_labels = sorted(self._auto_labels, key=lambda item: (
             -radius_at(self.ax.transData.transform(item[1:])),
             -len(item[0].get_text()),
         ))
-        label_anchors = self.ax.transData.transform([item[1:] for item in labels])
+        labels = list(point_labels)
+        label_anchors = self.ax.transData.transform([item[1:] for item in point_labels]) if point_labels else np.empty((0, 2))
         label_radii = np.asarray([radius_at(anchor) for anchor in label_anchors])
         choices = []
-        for artist, x, y in labels:
+        for artist, x, y in point_labels:
             anchor = self.ax.transData.transform((x, y))
             radius = radius_at(anchor)
             artist.set_ha("left")
             artist.set_va("bottom")
+            rotation = self._label_rotations.get(artist)
+            if rotation is not None:
+                artist.set_rotation(rotation(x, y))
             width, height = artist.get_window_extent(renderer).size
             # Sub-resolution companions share a visible anchor, not an identity.
             competitors = np.linalg.norm(label_anchors - anchor, axis=1) > 0.25 * scale
@@ -1236,8 +1477,26 @@ class MatplotlibRenderer:
                     origin = anchor + offset
                     left = origin[0] - (width if dx < 0 else width / 2 if dx == 0 else 0)
                     bottom = origin[1] - (height if dy < 0 else height / 2 if dy == 0 else 0)
-                    box = Bbox.from_bounds(left, bottom, width, height)
-                    padded = box.padded(0.25 * scale)
+                    # Measure the actual rotated artist at each candidate.
+                    # Re-evaluate position-dependent orientation after moving.
+                    position = np.asarray((left, bottom))
+                    rotation = self._label_rotations.get(artist)
+                    for _ in range(4):
+                        data_position = self.ax.transData.inverted().transform(position)
+                        artist.set_position(data_position)
+                        if rotation is not None:
+                            artist.set_rotation(rotation(*data_position))
+                        box = artist.get_window_extent(renderer)
+                        correction = np.asarray((left - box.x0, bottom - box.y0))
+                        if np.linalg.norm(correction) < 0.01:
+                            break
+                        position += correction
+                    data_position = self.ax.transData.inverted().transform(position)
+                    artist.set_position(data_position)
+                    if rotation is not None:
+                        artist.set_rotation(rotation(*data_position))
+                    box = artist.get_window_extent(renderer)
+                    padded = box.padded(0.75 * scale)
                     own_distance = distances(box, anchor.reshape(1, 2))[0]
                     attachment = np.clip(anchor, (box.x0, box.y0), (box.x1, box.y1))
                     own_gap = max(own_distance - radius, 0)
@@ -1245,57 +1504,197 @@ class MatplotlibRenderer:
                     ambiguous = np.maximum(own_gap - other_gaps[competitors], 0).sum() / scale
                     marker_conflict = np.maximum(radii + 0.25 * scale - distances(padded, centres), 0).sum() / scale
                     fixed_conflict = sum(overlap(padded, other) for other in fixed)
-                    outside = box.width * box.height / scale**2 - overlap(box, bounds)
+                    outside = outside_boundary(padded)
                     alignment = float(lateral and dy != 0)
-                    cosmetic = (0.1 * sum(path.intersects_bbox(padded, filled=False) for path in paths)
+                    cosmetic = (0.35 * sum(path.intersects_bbox(padded, filled=False) for path in paths)
                                 + 0.025 * preference + 0.05 * extra)
                     candidates.append((box, padded, (marker_conflict, ambiguous,
-                                                      fixed_conflict, outside, alignment, cosmetic)))
+                                                      fixed_conflict, outside, alignment, cosmetic),
+                                       tuple(data_position), artist.get_rotation(), artist.get_transform()))
             choices.append(candidates)
 
-        selected = []
-        def score(index, candidate, assignments):
-            box, padded, static = choices[index][candidate]
-            collisions = sum(
-                overlap(padded, choices[other][value][1])
-                for other, value in enumerate(assignments) if other != index
+        def measured_choice(artist, *, movement=0.0):
+            box = artist.get_window_extent(renderer)
+            padded = box.padded(0.75 * scale)
+            marker = np.maximum(radii + 0.25 * scale - distances(padded, centres), 0).sum() / scale
+            static = (marker, 0.0, sum(overlap(padded, other) for other in fixed),
+                      outside_boundary(padded), 0.0,
+                      movement + .35 * sum(path.intersects_bbox(padded, filled=False) for path in paths))
+            return (box, padded, static, artist.get_position(), artist.get_rotation(), artist.get_transform())
+
+        suppressed = []
+        for artist, x, y, regions, movable in self._area_labels:
+            from matplotlib.path import Path
+
+            artist.set_visible(True)
+            artist.set_position((x, y))
+            rotation = self._label_rotations.get(artist)
+            if rotation is not None:
+                artist.set_rotation(rotation(x, y))
+            origin = self.ax.transData.transform((x, y))
+            region_paths = None if regions is None else tuple(
+                Path(np.vstack((np.column_stack((region.x, region.y)), (region.x[0], region.y[0])))).transformed(self.ax.transData)
+                for region in regions
             )
-            return (static[0], static[1], static[2] + collisions, static[3], static[4], static[5])
+            step = artist.get_fontsize() * scale
+            offsets = [(0.0, 0.0)] + [(dx * distance, dy * distance)
+                for distance in ((0.75, 1.5, 2.5, 4.0) if movable else ())
+                for dx, dy in ((0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, 1), (1, -1), (-1, -1))]
+            # Add size-aware inward moves for anchors close to the rim.
+            # Every candidate must fit its own region; narrow visible slivers
+            # suppress their names instead of moving them into a neighbour.
+            if boundary is not None and movable:
+                inward = bounds.get_points().mean(axis=0) - origin
+                length = np.linalg.norm(inward)
+                if length > 0:
+                    box = artist.get_window_extent(renderer)
+                    reach = np.hypot(box.width, box.height) / step
+                    offsets.extend(tuple(inward / length * reach * fraction)
+                                   for fraction in (0.5, 1.0, 1.5))
+            candidates = []
+            for dx, dy in offsets:
+                position = self.ax.transData.inverted().transform(origin + step * np.asarray((dx, dy)))
+                artist.set_position(position)
+                rotation = self._label_rotations.get(artist)
+                if rotation is not None:
+                    artist.set_rotation(rotation(*position))
+                box = artist.get_window_extent(renderer)
+                ink = box.padded(0.25 * scale)
+                corners = ((ink.x0, ink.y0), (ink.x0, ink.y1),
+                           (ink.x1, ink.y0), (ink.x1, ink.y1))
+                allowed = region_paths is None or any(
+                    path.contains_points(corners).all()
+                    and not path.intersects_bbox(ink, filled=False)
+                    for path in region_paths
+                )
+                if not allowed or outside_boundary(ink) > 1e-6:
+                    continue
+                candidates.append(measured_choice(artist, movement=0.025 * np.hypot(dx, dy)))
+            if not candidates:
+                artist.set_visible(False)
+                suppressed.append(artist.get_text())
+                continue
+            labels.append((artist, x, y))
+            choices.append(candidates)
+        self.suppressed_region_labels = tuple(suppressed)
+
+        for artist, original, placements in self._curve_labels:
+            artist.set_visible(True)
+            origin = self.ax.transData.transform((original.x, original.y))
+            candidates = []
+            for placement in placements:
+                self._apply_curve_label_placement(artist, placement)
+                if getattr(artist, "_wenu_reference_endpoint_label", False):
+                    if outside_boundary(artist.get_window_extent(renderer).padded(.25 * scale)) > 1e-6:
+                        continue
+                movement = np.linalg.norm(self.ax.transData.transform((placement.x, placement.y)) - origin) / scale
+                candidates.append(measured_choice(artist, movement=0.002 * movement))
+            if not candidates:
+                artist.set_visible(False)
+                continue
+            labels.append((artist, original.x, original.y))
+            choices.append(candidates)
+
+        candidate_bounds = [np.asarray([choice[1].extents for choice in candidates]) for candidates in choices]
+        pair_overlaps = {}
+
+        def pair_overlap(first, a, second, b):
+            if first > second:
+                return pair_overlap(second, b, first, a)
+            key = first, second
+            if key not in pair_overlaps:
+                left, right = candidate_bounds[first], candidate_bounds[second]
+                widths = np.maximum(0.0, np.minimum(left[:, None, 2], right[None, :, 2]) - np.maximum(left[:, None, 0], right[None, :, 0]))
+                heights = np.maximum(0.0, np.minimum(left[:, None, 3], right[None, :, 3]) - np.maximum(left[:, None, 1], right[None, :, 1]))
+                pair_overlaps[key] = widths * heights / scale**2
+            return pair_overlaps[key][a, b]
+
+        selected = []
+
+        def score(index, candidate, assignments, *, exclude=None):
+            static = choices[index][candidate][2]
+            collisions = sum(pair_overlap(index, candidate, other, value)
+                for other, value in enumerate(assignments) if other != index and other != exclude)
+            return (static[3], static[2] + collisions, static[0], static[1], static[4], static[5])
 
         for index, candidates in enumerate(choices):
             selected.append(min(range(len(candidates)), key=lambda value: score(index, value, selected)))
-        # Revisiting the set avoids locking a later label out of a nearby slot.
-        for _ in range(8):
+
+        def descend():
+            for _ in range(12):
+                changed = False
+                for index, candidates in enumerate(choices):
+                    best = min(range(len(candidates)), key=lambda value: score(index, value, selected))
+                    if score(index, best, selected) < score(index, selected[index], selected):
+                        selected[index] = best
+                        changed = True
+                if not changed:
+                    break
+
+        def pair_score(i, a, j, b):
+            left = score(i, a, selected, exclude=j)
+            right = score(j, b, selected, exclude=i)
+            combined = [x + y for x, y in zip(left, right)]
+            combined[1] += pair_overlap(i, a, j, b)
+            return tuple(combined)
+
+        descend()
+        # Simultaneous pair moves escape slots that a single-label move cannot.
+        for _ in range(3):
+            conflicts = sorted((-pair_overlap(i, selected[i], j, selected[j]), i, j)
+                for i in range(len(labels)) for j in range(i + 1, len(labels))
+                if pair_overlap(i, selected[i], j, selected[j]) > 1.0e-6)
             changed = False
-            for index, candidates in enumerate(choices):
-                best = min(range(len(candidates)), key=lambda value: score(index, value, selected))
-                if score(index, best, selected) < score(index, selected[index], selected):
-                    selected[index] = best
+            for _, i, j in conflicts[:64]:
+                old = pair_score(i, selected[i], j, selected[j])
+                left = np.asarray([score(i, a, selected, exclude=j) for a in range(len(choices[i]))])
+                right = np.asarray([score(j, b, selected, exclude=i) for b in range(len(choices[j]))])
+                combined = left[:, None, :] + right[None, :, :]
+                matrix = pair_overlaps[min(i, j), max(i, j)]
+                combined[:, :, 1] += matrix if i < j else matrix.T
+                flat = combined.reshape(-1, combined.shape[-1])
+                best = np.lexsort(tuple(flat[:, column] for column in range(5, -1, -1)))[0]
+                a, b = np.unravel_index(best, combined.shape[:2])
+                if pair_score(i, a, j, b) < old:
+                    selected[i], selected[j] = a, b
                     changed = True
             if not changed:
                 break
+            descend()
         for index, (artist, _, _) in enumerate(labels):
-            box = choices[index][selected[index]][0]
-            artist.set_position(self.ax.transData.inverted().transform((box.x0, box.y0)))
+            _, _, _, position, rotation, transform = choices[index][selected[index]]
+            artist.set_position(position)
+            artist.set_rotation(rotation)
+            artist.set_transform(transform)
+        all_text = [artist for artist in self.ax.texts if artist.get_visible() and artist.get_text()]
+        self.unresolved_label_collisions = tuple(
+            (first.get_text(), second.get_text())
+            for i, first in enumerate(all_text) for second in all_text[i + 1:]
+            if (first in auto_artists or second in auto_artists)
+            and overlap(first.get_window_extent(renderer), second.get_window_extent(renderer)) > 0.01
+        )
 
     def _label(self, x, y, label, style, offset):
         style = dict(style)
         rotation = style.get("rotation")
-        if callable(rotation):
-            style["rotation"] = rotation(x, y)
         if isinstance(offset, Mapping):
             offset = offset.get(
                 str(label),
                 offset.get("__default__", (0.0, 0.0)),
             )
         dx, dy = offset(x, y) if callable(offset) else offset
-        return render_text(
+        if callable(rotation):
+            style["rotation"] = rotation(x + dx, y + dy)
+        artist = render_text(
             self.ax,
             x + dx,
             y + dy,
             str(label),
             **style,
         )
+        if callable(rotation):
+            self._label_rotations[artist] = rotation
+        return artist
 
     @staticmethod
     def _entity_styles(styles, length):

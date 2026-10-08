@@ -304,6 +304,12 @@ def compose_chart(
                 "style_overrides must be a ChartStyleOverrides value."
             )
         resolved_style = style_overrides.apply(resolved_style)
+    if (type(chart).__name__ == "FullSkyChart"
+            and resolved_style.grids.constellation_line_gap_points is None):
+        resolved_style = replace(resolved_style, grids=replace(
+            resolved_style.grids,
+            constellation_line_gap_points=1.0,
+        ))
     family_atlas_default = False
     if detail is None and style_name == CARTOON_STYLE:
         policy = geometry_defaults.cartoon_policy

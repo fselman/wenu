@@ -11,6 +11,13 @@ versioned TOML configuration. It derives its public paths from
 `archive/audits/configuration_default_audit.md`. It specifies names, types, ordering, and
 validation without creating a runtime registry or changing current defaults.
 
+The atlas and cartoon canvas tables now contain `grid_label_band` with
+`enabled` (boolean), `fill_color`, `frame_color` and `label_color` (colour), `line_width`
+and `padding_points` (finite nonnegative points). Defaults are true, white,
+black, black, 0.8 and 2.0. Only non-polar planisphere, regional/constellation and
+binocular render owners use this furniture. Explicit shared CLI band controls
+have precedence; `none` selects transparent fill/frame colour.
+
 ## Document boundary
 
 The root is a TOML table containing the scalar `schema_version = 2`, followed
@@ -201,6 +208,10 @@ appearance; neither inherits from the other. Their ordered subtables are
 Appearance leaves use the common scalar types. In particular:
 
 - canvas exposes background, foreground, label font, and footer color;
+  `labels_orientation` accepts `chart`, `upright`, or `up-away-from-cp`.
+  It controls object/constellation typography; grids, references, and track
+  dates retain separate policies. The away-from-pole override requires a
+  polar-planisphere chart; explicit CLI orientation replaces the TOML value.
 - stars expose color, magnitude sizing, area bounds, and variable/multiple
   symbol enablement, color, shape, size, edge width, and opacity;
 - fills expose `color` and `opacity`; every edge, contour, figure, boundary,
@@ -356,7 +367,7 @@ The stellar presentation stage adds these optional schema-v2 keys:
 | --- | --- | --- |
 | `detail.content.star_constellations` | `[]` | Nonempty IAU-code list restricts stars to the union of those regions; empty configuration list leaves selection unrestricted. |
 | `styles.{atlas,cartoon}.stars.labels.placement` | `"fixed"` | `fixed` or `auto`; automatic placement affects only requested labels. |
-| `styles.{atlas,cartoon}.constellation_figures.gap_points` | `0.0` | Finite nonnegative physical clearance beyond the drawn disk. |
+| `styles.{atlas,cartoon}.constellation_figures.gap_points` | `"none"` | Inherit 1 point for a location planisphere, 0 elsewhere. A finite nonnegative number overrides this physical clearance beyond the drawn disk, including explicit zero. |
 | `products.default.axes_frame` | `true` | Draw the rectangular axes frame. |
 | `products.default.show_title` | `true` | Draw the title, retaining it in provenance. |
 
@@ -366,3 +377,9 @@ it; `--no-frame` and `--no-title` override product defaults. CLI equivalents
 for content/style are `--stars-in-constellations`,
 `--star-label-placement`, and `--constellation-line-gap`. Configuration and
 CLI feed the same immutable request contracts.
+
+Celestial-reference repetition uses the positive numeric setting
+`grids_references.references.label_repeat_length_factor`, default `5.0`.
+Automatic non-polar labels search near visible curve ends; repeat at both
+ends when the contiguous visible arc exceeds this many rendered text widths.
+Explicit anchors and polar reference furniture preserve their established policy.

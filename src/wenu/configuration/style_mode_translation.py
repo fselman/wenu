@@ -247,7 +247,7 @@ def _grids(style: Mapping[str, Any], *, style_name: str) -> GridStyle:
         boundary_alpha=boundary["opacity"],
         constellation_line_color=figures["color"],
         constellation_linewidth=figures["line_width"],
-        constellation_line_gap_points=figures["gap_points"],
+        constellation_line_gap_points=_optional(figures["gap_points"]),
         constellation_line_alpha=figures["opacity"],
         constellation_label_color=labels["color"],
         constellation_label_fontsize=(
@@ -297,6 +297,13 @@ def _style(table: Mapping[str, Any], style_type, *, style_name: str):
     legend = table["legend"]
     return style_type(
         canvas=CanvasStyle(
+            labels_orientation=canvas["labels_orientation"],
+            grid_label_band=canvas["grid_label_band"]["enabled"],
+            grid_label_band_fill_color=canvas["grid_label_band"]["fill_color"],
+            grid_label_band_frame_color=canvas["grid_label_band"]["frame_color"],
+            grid_label_band_label_color=canvas["grid_label_band"]["label_color"],
+            grid_label_band_linewidth=canvas["grid_label_band"]["line_width"],
+            grid_label_band_padding_points=canvas["grid_label_band"]["padding_points"],
             sky_color=canvas["background"],
             foreground_color=canvas["foreground"],
             label_fontsize=canvas["label_font_size"],

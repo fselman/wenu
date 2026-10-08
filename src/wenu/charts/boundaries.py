@@ -11,12 +11,12 @@ from wenu.geometry.viewport import Viewport
 from wenu.rendering.label_placement import CurveLabelPlacement
 
 
-def _above_line(x, y, *, horizontal_alignment=None):
+def _above_line(x, y, *, horizontal_alignment=None, normal_offset_em=0.65):
     return CurveLabelPlacement(
         float(x),
         float(y),
         rotation_deg=0.0,
-        normal_offset_em=0.65,
+        normal_offset_em=normal_offset_em,
         horizontal_alignment=horizontal_alignment,
     )
 
@@ -363,7 +363,47 @@ class RectangularLabelAnchor:
         return float(x[index]), float(y[index])
 
 
-def apply_coordinate_label_anchor(layer_options, anchor):
+@dataclass(frozen=True)
+class HorizonGridLabelAnchor:
+    """Anchor azimuth outside the horizon and altitude on selected spokes."""
+
+    projection: object
+    boundary: ProjectedCurve
+    horizon_altitude_deg: float = 0.0
+    altitude_label_azimuths_deg: tuple[float, ...] = (0.0, 90.0, 180.0, 270.0)
+
+    def __call__(self, curve, ax=None):
+        name = str(curve.name or "")
+        if name.startswith("altitude_"):
+            altitude = float(name.removeprefix("altitude_"))
+            if altitude <= self.horizon_altitude_deg:
+                return None
+            spokes = (0.0,) if altitude == 90.0 else self.altitude_label_azimuths_deg
+            placements = []
+            for azimuth in spokes:
+                x, y = self.projection.project_spherical(azimuth, altitude)
+                if np.isfinite((x, y)).all():
+                    placements.append(_above_line(
+                        x, y, normal_offset_em=0.65 if altitude == 90.0 else 0.2,
+                    ))
+            return placements
+        if name.startswith("azimuth_"):
+            azimuth = float(name.removeprefix("azimuth_"))
+            x, y = self.projection.project_spherical(azimuth, self.horizon_altitude_deg)
+            finite = self.boundary.finite
+            bx, by = self.boundary.x[finite], self.boundary.y[finite]
+            # A stereographic small circle remains a circle even off zenith.
+            matrix = np.column_stack((2.0 * bx, 2.0 * by, np.ones(len(bx))))
+            cx, cy, _ = np.linalg.lstsq(matrix, bx**2 + by**2, rcond=None)[0]
+            return CurveLabelPlacement(
+                float(x), float(y), rotation_deg=0.0, normal_offset_em=0.65,
+                horizontal_alignment="center", vertical_alignment="center",
+                exterior_direction=(float(x - cx), float(y - cy)),
+            )
+        return None
+
+
+def apply_coordinate_label_anchor(layer_options, anchor, *, altaz_anchor=None):
     """Return layer options with grid label anchors replaced safely."""
     resolved = {
         layer: dict(options)
@@ -401,6 +441,68 @@ def apply_coordinate_label_anchor(layer_options, anchor):
         ):
             continue
         updated_render = dict(render)
-        updated_render["label_anchor"] = anchor
+        updated_render["label_anchor"] = (
+            altaz_anchor if altaz_anchor is not None and (
+                layer_name == "altaz_grid" or coordinate_system == "altaz"
+            ) else anchor
+        )
         options["render"] = updated_render
     return resolved
+
+
+@dataclass(frozen=True)
+class ExteriorGridLabelAnchor:
+    """Move an existing marginal grid anchor to a real boundary crossing."""
+
+    delegate: object
+    boundary: ProjectedCurve
+    circular: bool = False
+
+    def __call__(self, curve, ax):
+        anchor = self.delegate(curve, ax)
+        if anchor is None:
+            return None
+        target = np.array((anchor.x, anchor.y) if isinstance(anchor, CurveLabelPlacement) else anchor)
+        boundary = np.column_stack((self.boundary.x, self.boundary.y))
+        low, high = np.nanmin(boundary, axis=0), np.nanmax(boundary, axis=0)
+        centre = (low + high) / 2.0
+        radius = float(np.nanmedian(np.linalg.norm(boundary - centre, axis=1)))
+        points = np.column_stack((curve.x, curve.y))
+        crossings = []
+        for a, b in zip(points[:-1], points[1:]):
+            if not (np.all(np.isfinite(a)) and np.all(np.isfinite(b))):
+                continue
+            delta = b - a
+            if self.circular:
+                aa = np.dot(delta, delta)
+                if aa == 0:
+                    continue
+                bb = 2 * np.dot(a - centre, delta)
+                cc = np.dot(a - centre, a - centre) - radius ** 2
+                discriminant = bb ** 2 - 4 * aa * cc
+                if discriminant < 0:
+                    continue
+                for t in ((-bb - np.sqrt(discriminant)) / (2 * aa),
+                          (-bb + np.sqrt(discriminant)) / (2 * aa)):
+                    if -1e-8 <= t <= 1 + 1e-8:
+                        point = a + np.clip(t, 0, 1) * delta
+                        crossings.append((point, point - centre))
+            else:
+                for axis in (0, 1):
+                    if delta[axis] == 0:
+                        continue
+                    for edge, sign in ((low[axis], -1), (high[axis], 1)):
+                        t = (edge - a[axis]) / delta[axis]
+                        point = a + t * delta
+                        other = 1 - axis
+                        if -1e-8 <= t <= 1 + 1e-8 and low[other] - 1e-8 <= point[other] <= high[other] + 1e-8:
+                            direction = np.zeros(2); direction[axis] = sign
+                            crossings.append((point, direction))
+        if not crossings:
+            return None
+        point, direction = min(crossings, key=lambda item: np.linalg.norm(item[0] - target))
+        return CurveLabelPlacement(
+            *point, rotation_deg=0.0, normal_offset_em=0.65,
+            horizontal_alignment="center", vertical_alignment="center",
+            exterior_direction=tuple(direction),
+        )

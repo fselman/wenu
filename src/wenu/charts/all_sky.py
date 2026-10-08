@@ -7,6 +7,8 @@ from typing import ClassVar
 
 import numpy as np
 
+from .label_placement import apply_object_label_orientation
+
 from wenu.charts.boundaries import (
     EllipticalGridLabelAnchor,
     apply_coordinate_label_anchor,
@@ -166,6 +168,9 @@ class AllSkyChart:
         )
         if layer_options is not None:
             options.update(layer_options)
+        options = apply_object_label_orientation(
+            options, sky=sky, style=resolved_style,
+        )
         options = apply_coordinate_label_anchor(
             options, self.coordinate_label_anchor
         )

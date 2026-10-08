@@ -24,7 +24,10 @@ GUIDE_PAGES = (
     "configuration.md",
     "svg_output.md",
     "temporal_sequences.md",
+    "labels.md",
 )
+
+
 EXAMPLES = (
     "all_sky.py",
     "planisphere.py",
@@ -34,6 +37,24 @@ EXAMPLES = (
     "binocular_object.py",
 )
 
+
+
+def test_label_guide_distinguishes_implemented_controls_from_future_grid_policy():
+    text = (GUIDE / "labels.md").read_text(encoding="utf-8")
+    index = (GUIDE / "index.md").read_text(encoding="utf-8")
+    assert "(labels.md)" in index
+    for value in ("--labels-upright", "--labels-up-away-from-cp",
+                  'labels_orientation = "upright"',
+                  "proposed, not implemented by this milestone",
+                  "Implemented horizon-grid placement",
+                  "bounded simultaneous",
+                  "unresolved_label_collisions",
+                  "altitude_label_azimuths_deg",
+                  "No simulated annealing is implemented here.",
+                  "track dates retain their established anchors",
+                  "Literature and precedents", "--no-grid-label-band",
+                  "Opaque white with a black exterior frame", "padding_points = 2.0"):
+        assert value in text
 
 def png_dimensions(path):
     data = path.read_bytes()

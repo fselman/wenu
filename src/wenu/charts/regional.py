@@ -17,6 +17,8 @@ from wenu.coordinates import (
     observer_altaz_spec,
 )
 from wenu.geometry.spherical import SphericalPoints
+from .label_placement import apply_object_label_orientation
+
 from wenu.charts.boundaries import (
     RectangularLabelAnchor,
     apply_coordinate_label_anchor,
@@ -605,14 +607,33 @@ class RegionalChart:
             options[sky.constellation_labels] = label_options
         if layer_options is not None:
             options.update(layer_options)
-        options = apply_coordinate_label_anchor(
-            options,
-            self.coordinate_label_anchor,
+        options = apply_object_label_orientation(
+            options, sky=sky, style=resolved_style,
         )
+        marginal_anchor = self.coordinate_label_anchor
+        if mask_boundary is None and getattr(resolved_style, "grid_label_band", False):
+            from .boundaries import ExteriorGridLabelAnchor
+            from wenu.geometry.projected import ProjectedCurve
+            view = self.viewport
+            marginal_anchor = ExteriorGridLabelAnchor(marginal_anchor, ProjectedCurve(
+                [view.x_min, view.x_max, view.x_max, view.x_min],
+                [view.y_min, view.y_min, view.y_max, view.y_max], closed=True,
+            ))
+        if mask_boundary is None:
+            options = apply_coordinate_label_anchor(options, marginal_anchor)
         projection = self.projection
         viewport = self.viewport
+        set_band = getattr(renderer, "set_grid_label_band", None)
+        band_style = getattr(resolved_style, "grid_label_band_style", None)
+        if mask_boundary is None and callable(set_band):
+            from wenu.geometry.projected import ProjectedCurve
+            band_boundary = ProjectedCurve(
+                [viewport.x_min, viewport.x_max, viewport.x_max, viewport.x_min],
+                [viewport.y_min, viewport.y_min, viewport.y_max, viewport.y_max], closed=True,
+            )
+            set_band(band_boundary, style=band_style() if callable(band_style) else None)
         labels = getattr(sky, "constellation_labels", None)
-        if options.get(labels, {}).get("visible_regions", False):
+        if labels is not None:
             from .constellation_label_placement import (
                 apply_visible_constellation_label_anchors,
             )

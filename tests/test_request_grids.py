@@ -318,3 +318,15 @@ def test_frozen_request_installs_fixed_frame_equatorial_grid():
 def test_grid_configuration_rejects_untyped_inputs():
     with pytest.raises(TypeError, match="ChartRequest"):
         configure_chart_request_grids(CelestialSphere(object()), object())
+
+
+@pytest.mark.parametrize('step', [None, 15.0])
+def test_regional_declination_grid_has_zero_and_uniform_multiples(step):
+    sky = CelestialSphere(object())
+    frame = SimpleNamespace(field_width_deg=70.0, field_height_deg=70.0)
+    grid = configure_chart_request_grids(sky, request('regional', detail=DetailOverrides(
+        enabled_layer_additions={'equatorial_grid'}, equatorial_declination_step_deg=step)), frame=frame)[0]
+    expected_step = 30.0 if step is None else step
+    assert 0.0 in grid.dec
+    assert [b - a for a, b in zip(grid.dec, grid.dec[1:])] == pytest.approx([expected_step] * (len(grid.dec) - 1))
+    assert all(value / expected_step == pytest.approx(round(value / expected_step)) for value in grid.dec)

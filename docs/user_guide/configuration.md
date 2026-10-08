@@ -1,5 +1,14 @@
 # Unified command and editable configuration
 
+Object-label orientation defaults to the chart family. The mutually exclusive
+`--labels-upright` and `--labels-up-away-from-cp` overrides leave grid labels,
+reference names, and track dates under their existing policies. The latter
+requires a polar-planisphere chart. TOML uses
+`styles.atlas.canvas.labels_orientation` (or `styles.cartoon.canvas`) with
+`chart`, `upright`, or `up-away-from-cp`; explicit CLI values take precedence.
+See the [label placement and typography guide](labels.md) for scope,
+limitations, proposed grid policy, and references.
+
 For one runnable command per chart family, begin with the
 [complete chart examples](chart_examples.md).
 
@@ -360,3 +369,9 @@ See [explicit star labels and discrepancy reports](styles_modes_detail.md#explic
 for CLI/TOML examples and precedence. `[detail.star_labels]` owns selector
 lists; `[reports].stellar_designations` enables optional static-chart notes.
 `[styles.atlas.stars.labels]` and `[styles.cartoon.stars.labels]` own appearance.
+
+Celestial-reference repetition uses the positive numeric setting
+`grids_references.references.label_repeat_length_factor`, default `5.0`.
+Automatic non-polar labels search near visible curve ends; repeat at both
+ends when the contiguous visible arc exceeds this many rendered text widths.
+Explicit anchors and polar reference furniture preserve their established policy.

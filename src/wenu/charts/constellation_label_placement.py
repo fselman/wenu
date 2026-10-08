@@ -76,6 +76,7 @@ def apply_visible_constellation_label_anchors(
         )
         visible = {}
         visible_area = {}
+        label_regions = {}
         complete = set()
         for polygon in region_projected:
             clipped = clip_polygon_to_convex_boundary(
@@ -90,6 +91,7 @@ def apply_visible_constellation_label_anchors(
             area = _polygon_area(clipped)
             if area <= 0.0:
                 continue
+            label_regions.setdefault(identifier, []).append(clipped)
             if area > visible_area.get(identifier, -1.0):
                 visible[identifier] = polygon_centroid(clipped)
                 visible_area[identifier] = area
@@ -123,6 +125,10 @@ def apply_visible_constellation_label_anchors(
         metadata = dict(prepared.metadata)
         metadata["visible_region_anchors"] = True
         metadata["visible_region_anchor_inset"] = float(inset)
+        metadata["label_regions"] = tuple(
+            tuple(label_regions.get(_BOUNDARY_IDS.get(str(name).upper(), str(name).upper()), ()))
+            for name in names
+        )
         return ProjectedPoints(
             x=x,
             y=y,
