@@ -4426,3 +4426,20 @@ astrometry. Source and curation details are in the
 [stellar resource checkpoint](stellar_designations_audit.md#10-wikidata-resource-checkpoint-2026-10-06).
 The canonical geometry flow and architecture diagrams remain applicable;
 this change adds a descriptive resource owner without new transformation edges.
+
+## Named observer heights: Chile catalogue v1
+
+New named-site reference coordinates remain WGS84 geographic latitude and
+longitude. NASADEM HGT V001 estimates physical elevation relative to EGM96;
+this is not an ellipsoidal height. The snapshot compiler applies
+`h = H + N`, with NGA/PROJ EGM96 15-minute bilinear geoid undulation, before
+passing `elevation_m` to the existing Skyfield and Astropy observer consumers.
+Table fields preserve the source estimate and reference separately from the
+ellipsoidal runtime value. These are approximate surface/site references,
+not surveyed instrument positions or guaranteed bare-earth heights.
+
+Legacy La Ligua/Papudo runtime heights remain 52/15 m with an explicitly
+unspecified historical reference; no conversion is retroactively claimed.
+Unknown named-site heights require an explicit override. Compilation owns
+DEM sampling and vertical-reference conversion; chart rendering owns neither.
+See [Named Chilean locations](../user_guide/locations.md).

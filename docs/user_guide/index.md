@@ -16,6 +16,8 @@ python examples/planisphere.py --style atlas --mode print
 ```
 
 Start with [runnable examples for every chart family](chart_examples.md).
+See [Named Chilean locations](locations.md) for municipal seats, observatories,
+qualified names, coordinate sources and elevation conventions.
 See [Label placement and chart typography](labels.md) for orientation controls,
 collision-avoidance scope, proposed coordinate labels, and design references.
 The canonical Python examples are:

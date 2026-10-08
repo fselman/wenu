@@ -375,3 +375,11 @@ Celestial-reference repetition uses the positive numeric setting
 Automatic non-polar labels search near visible curve ends; repeat at both
 ends when the contiguous visible arc exceeds this many rendered text widths.
 Explicit anchors and polar reference furniture preserve their established policy.
+
+## Named Chilean observers
+
+`--observer-location` and `[observer].location` accept a unique short name or
+`Country:Region:Province:Comune:City`, including unique contiguous suffixes. See
+[Named Chilean locations](locations.md) and the versioned CSV catalogue for
+municipal and observatory references, aliases, height conventions and
+regional timezone defaults. Explicit height and timezone overrides still win.
