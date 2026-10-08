@@ -710,7 +710,7 @@ def test_reference_end_search_never_measures_across_a_disconnected_gap():
     curve = ProjectedCurve(x, np.zeros_like(x), name='Reference')
     anchor = _SingleReferenceLabelAnchor(BoundaryAwareReferenceAnchor(context),
                                         near_ends=True, label=curve.name, font_size=6)
-    placements = anchor(curve, ax)
+    placements = anchor(curve, ax, measure_curve=MatplotlibRenderer(ax)._measure_curve_label)
     assert placements
     for placement in placements:
         assert all(candidate.x >= -.4 for candidate in anchor.candidates_for_anchor(curve, placement, ax))
@@ -728,6 +728,6 @@ def test_complete_closed_reference_retains_one_anchor_instead_of_fake_ends():
     angles = np.linspace(0, 2 * np.pi, 101)
     curve = ProjectedCurve(.6 * np.cos(angles), .6 * np.sin(angles), closed=True, name='Reference')
     anchor = _SingleReferenceLabelAnchor(BoundaryAwareReferenceAnchor(context), near_ends=True, label=curve.name)
-    assert isinstance(anchor(curve, ax), CurveLabelPlacement)
+    assert isinstance(anchor(curve, ax, measure_curve=MatplotlibRenderer(ax)._measure_curve_label), CurveLabelPlacement)
     assert anchor(curve, ax) is None
     plt.close(fig)

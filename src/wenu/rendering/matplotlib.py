@@ -49,6 +49,24 @@ class MatplotlibRenderer:
         self._grid_label_band = None
         self._grid_label_band_artist = None
 
+    def _measure_curve_label(self, curve, *, boundary, label, font_size):
+        """Supply display measurements to a backend-neutral anchor policy."""
+        from matplotlib.font_manager import FontProperties
+        from matplotlib.path import Path
+
+        self.ax.apply_aspect()
+        points = np.column_stack((curve.x, curve.y))
+        inside = np.ones(len(points), dtype=bool)
+        if boundary is not None:
+            vertices = np.column_stack((boundary.x[boundary.finite],
+                                        boundary.y[boundary.finite]))
+            inside &= Path(np.vstack((vertices, vertices[0]))).contains_points(points)
+        width, _, _ = self.ax.figure.canvas.get_renderer().get_text_width_height_descent(
+            label, FontProperties(size=font_size), ismath=False,
+        )
+        return (self.ax.transData.transform(points), inside, width,
+                self.ax.figure.dpi / 72.0)
+
     def set_grid_label_band(self, boundary, *, style):
         """Reserve exterior furniture around a chart-owned closed boundary."""
         if self._grid_label_band_artist is not None:
@@ -926,11 +944,14 @@ class MatplotlibRenderer:
                         closed=curve.closed,
                         name=curve_name,
                     )
-                    anchor = (
-                        self._anchor(curve.x, curve.y)
-                        if label_anchor is None
-                        else label_anchor(named_curve, self.ax)
-                    )
+                    if label_anchor is None:
+                        anchor = self._anchor(curve.x, curve.y)
+                    elif getattr(label_anchor, "near_ends", False):
+                        anchor = label_anchor(
+                            named_curve, self.ax, measure_curve=self._measure_curve_label,
+                        )
+                    else:
+                        anchor = label_anchor(named_curve, self.ax)
                     if anchor is None:
                         continue
                     anchors = anchor if isinstance(anchor, list) and all(

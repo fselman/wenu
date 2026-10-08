@@ -59,7 +59,11 @@ Shared collision placement remains in `rendering/matplotlib.py`.
 `charts/constellation_label_placement.py` supplies renderer-neutral projected
 regions; `charts/styles.py` opts constellation names into area placement
 when stellar placement is automatic. `charts/reference_furniture.py` owns
-reference-curve alternatives and their tangent/offset policies. The renderer
+reference-curve alternatives and their tangent/offset policies. Its end search
+consumes renderer-supplied display positions, boundary membership, text width
+and point scale; it imports no graphical backend. `rendering/matplotlib.py`
+owns those measurements and supplies them through a render-local callback.
+The renderer
 knows neither constellation identities nor astronomical reference systems.
 Existing placement tests own companion separation, region/curve constraints,
 orientation, determinism, fixed temporal annotations and residual overlaps.
