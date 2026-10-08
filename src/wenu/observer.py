@@ -2,9 +2,15 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
+import unicodedata
 import weakref
 from datetime import datetime, timezone
+from functools import lru_cache
+from importlib.resources import files
 from pathlib import Path
+from types import MappingProxyType
 from zoneinfo import ZoneInfo
 
 from astropy import units as u
@@ -19,6 +25,8 @@ DEFAULT_EPHEMERIS = "de440s.bsp"
 DEFAULT_DATA_DIRECTORY = Path.home() / ".cache" / "wenu"
 
 
+# Retained two-site compatibility constant; named lookup uses the versioned
+# packaged catalogue below, whose legacy entries are regression-checked.
 LOCATIONS = {
     "la ligua": {
         "name": "La Ligua",
@@ -35,6 +43,99 @@ LOCATIONS = {
         "timezone": "America/Santiago",
     },
 }
+
+
+def _location_token(value):
+    """Normalize spelling without weakening administrative qualification."""
+    decomposed = unicodedata.normalize("NFKD", value.casefold())
+    return " ".join(
+        "".join(
+            character for character in decomposed
+            if not unicodedata.combining(character)
+        ).replace("’", "'").split()
+    )
+
+
+@lru_cache(maxsize=1)
+def _registered_locations():
+    """Load the digest-verified, immutable, offline location snapshot."""
+    resource = files("wenu.data")
+    payload = resource.joinpath("chile_locations_v1.json").read_bytes()
+    manifest = json.loads(
+        resource.joinpath("chile_locations_manifest_v1.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    if hashlib.sha256(payload).hexdigest() != manifest["catalogue_sha256"]:
+        raise ValueError("Packaged Chile location catalogue digest mismatch.")
+    catalogue = json.loads(payload)
+    if catalogue.get("schema_version") != 1:
+        raise ValueError("Unsupported Chile location catalogue schema.")
+    records = []
+    identifiers = set()
+    for source in catalogue["locations"]:
+        record = dict(source)
+        if record["id"] in identifiers:
+            raise ValueError("Duplicate packaged location identifier.")
+        identifiers.add(record["id"])
+        record["aliases"] = tuple(record.get("aliases", ()))
+        record["region_aliases"] = tuple(record.get("region_aliases", ()))
+        record["qualified_name"] = ":".join(
+            record[field]
+            for field in ("country", "region", "province", "commune", "name")
+        )
+        records.append(MappingProxyType(record))
+    return tuple(records)
+
+
+def _resolve_registered_location(value):
+    """Resolve a unique name, stable ID or administrative suffix."""
+    tokens = tuple(_location_token(part) for part in value.split(":"))
+    if not 1 <= len(tokens) <= 5 or not all(tokens):
+        raise ValueError(
+            "Location must be a name or Country:Region:Province:Comune:City "
+            "(a unique shorter suffix is also accepted)."
+        )
+    matches = []
+    for site in _registered_locations():
+        names = (site["name"], *site["aliases"])
+        if len(tokens) == 1:
+            match = tokens[0] in {
+                _location_token(name) for name in (*names, site["id"])
+            }
+        else:
+            hierarchy = (
+                site["country"], site["region"],
+                site["province"], site["commune"]
+            )
+            prefixes = [hierarchy]
+            if len(tokens) >= 4:
+                prefixes.extend(
+                    (site["country"], region, site["province"], site["commune"])
+                    for region in site["region_aliases"]
+                )
+            match = any(
+                tokens == tuple(
+                    _location_token(part)
+                    for part in (*prefix, name)[-len(tokens):]
+                )
+                for prefix in prefixes for name in names
+            )
+        if match:
+            matches.append(site)
+    if not matches:
+        raise ValueError(
+            f"Unknown location {value!r}. See the versioned Chile "
+            "location table or use explicit latitude and longitude."
+        )
+    if len(matches) > 1:
+        alternatives = "; ".join(
+            sorted(site["qualified_name"] for site in matches)
+        )
+        raise ValueError(
+            f"Ambiguous location {value!r}. Use one of: {alternatives}"
+        )
+    return matches[0]
 
 
 class Observer:
@@ -181,20 +282,12 @@ class Observer:
                     "longitude, not both."
                 )
 
-            key = location.strip().casefold()
-
-            try:
-                site = LOCATIONS[key]
-            except KeyError as exc:
-                available = ", ".join(
-                    site["name"]
-                    for site in LOCATIONS.values()
-                )
-
+            site = _resolve_registered_location(location)
+            if elevation_m is None and site["elevation_m"] is None:
                 raise ValueError(
-                    f"Unknown location {location!r}. "
-                    f"Available locations: {available}"
-                ) from exc
+                    f"No usable height for {site['qualified_name']!r}; "
+                    "provide elevation_m or --observer-height explicitly."
+                )
 
             return (
                 float(site["lat_deg"]),

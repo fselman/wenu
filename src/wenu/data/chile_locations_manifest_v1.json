@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "catalogue_version": "1",
+  "compiled_date_utc": "2026-10-08",
+  "catalogue_sha256": "877fe38aca67e553467424692a163612dca32749dbe881432939f1f1896b76e2",
+  "csv_sha256": "7b4b2d841326e96799b123e1009242b49d0856878dd852097d6e5d92470cf603",
+  "height_receipt_sha256": "b636df791b3f7b2e29c6089d7b9e121812febc0d8d767d6631f6d8ccefc91e1a",
+  "municipal_count": 345,
+  "observatory_count": 14,
+  "hierarchy": [
+    "country",
+    "region",
+    "province",
+    "commune",
+    "name"
+  ],
+  "height_conversion": "h = H_EGM96 + N_EGM96; except two preserved legacy Wenu runtime heights",
+  "coverage_note": "345 municipal administrations; Antártica administered with Cabo de Hornos; observatory subset is not exhaustive",
+  "sources": [
+    {
+      "id": "mop-cut",
+      "role": "Administrative names and CUT crosswalk; no geometry redistributed",
+      "url": "https://rest-sit.mop.gob.cl/arcgis/rest/services/INTEROP/SERVICIO_DPA/MapServer/1",
+      "sha256": "e1b1ee3b09d8fafc87b447351e2c3abbdf601131cd77ee1bed0dc022944f73a6"
+    },
+    {
+      "id": "bcn-cabeceras",
+      "role": "Cross-check evidence only; no polygons redistributed",
+      "url": "https://arcgiswebad.bcn.cl/arcgis/rest/services/tematico/Comuna_Cab_areas/FeatureServer/0",
+      "sha256": "d844131b7c9685e1309ce13c831b1baae0579532821428785277193e3d0f42e1"
+    },
+    {
+      "id": "geonames",
+      "role": "Settlement and two observatory reference coordinates",
+      "licence": "CC-BY-4.0",
+      "attribution": "GeoNames, https://www.geonames.org/; spelling and administrative crosswalk adapted for Wenu",
+      "url": "https://download.geonames.org/export/dump/CL.zip",
+      "sha256": "809645ab5eeded3fa20d130602b39b06dc5b800271881e3464e2ada99fe2d2a8"
+    },
+    {
+      "id": "wikidata",
+      "role": "Twelve observatory/telescope references and separately reported heights",
+      "licence": "CC0-1.0",
+      "url": "https://www.wikidata.org/",
+      "snapshots": [
+        {
+          "file": "wikidata-observatories.json",
+          "sha256": "fcbd672e6c5c0cebd527fa28675801f8c6570810eb907e596eb807d502793bf7"
+        },
+        {
+          "file": "wikidata-extra-observatories.json",
+          "sha256": "3f0e758eacc3ca1524dfbc1c39dea4491b0e6e7a86f25dd85aa83ac1ab457b3d"
+        }
+      ]
+    },
+    {
+      "id": "nasadem-hgt-v001",
+      "role": "Radar surface height estimate relative to EGM96",
+      "attribution": "NASA/JPL NASADEM HGT V001; accessed through OpenTopography",
+      "url": "https://portal.opentopography.org/raster?opentopoID=OTNASADEM.032020.4326.1",
+      "horizontal_sampling": "1 arcsecond; not a vertical accuracy statement"
+    },
+    {
+      "id": "nga-egm96",
+      "role": "EGM96 geoid undulation for offline ellipsoidal conversion",
+      "licence": "Public domain",
+      "attribution": "NGA EGM96 15-minute grid, distributed by PROJ",
+      "url": "https://cdn.proj.org/us_nga_egm96_15.tif",
+      "sha256": "db493027562c9b004d7220fa881f5603adada4e1c5029b933fa7de4547b0e78d"
+    },
+    {
+      "id": "minciencia-36768",
+      "role": "Research cross-check only; raw 34-entry catalogue not redistributed",
+      "url": "https://geoportal.cl/observatorios/catalog/36768",
+      "sha256": "3b6e28d171ffbd1a4932ad79b19541f0ff9dd2810b963c356becf93e627d0e4d"
+    }
+  ]
+}

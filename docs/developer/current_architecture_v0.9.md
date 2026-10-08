@@ -2270,3 +2270,22 @@ uses existing projected official regions and clipping for partial visibility;
 geometry sources, coordinate realization and renderer ownership remain intact.
 
 Publication controls remain in existing content, stellar-object, style, detail-application, renderer and product/export owners. The IAU-region cut uses native ICRS catalogue membership; physical gaps and optional automatic label placement operate only in display coordinates after layout. No scientific position-realization change, new dependency, production module or test module is admitted.
+
+## Chile location catalogue v1
+
+The existing `observer.py` owner now resolves a digest-verified offline
+`data/chile_locations_v1.json` snapshot with 345 municipal reference points
+and 14 observatory/site references. `data/chile_locations_v1.csv` exposes
+stable IDs, Country:Region:Province:Comune:City names, coordinates, EGM96 elevation,
+ellipsoidal runtime height, timezone and provenance. No production module or
+chart/coordinate pipeline is added. Name matching is accent/case insensitive;
+only unique short names or qualified contiguous suffixes resolve. Ambiguity
+reports alternatives and missing named-site heights require an explicit
+override. Legacy La Ligua/Papudo coordinates and heights remain unchanged.
+
+New elevations are nearest-post NASADEM HGT V001 estimates, with offline
+bilinear EGM96 geoid conversion `h = H + N`; the historical two heights remain
+explicitly unclassified. `tzdata>=2025.2` supports the Coyhaique fallback.
+Coordinate references describe approximate settlements/sites, not surveyed
+instrument positions. Raw MinCiencia/BCN geometry and the full GeoNames
+country dump are not vendored. See [the location guide](../user_guide/locations.md).

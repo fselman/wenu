@@ -25,6 +25,7 @@ GUIDE_PAGES = (
     "svg_output.md",
     "temporal_sequences.md",
     "labels.md",
+    "locations.md",
 )
 
 

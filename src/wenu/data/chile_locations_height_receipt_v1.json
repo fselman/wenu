@@ -1,0 +1,2237 @@
+{
+  "schema_version": 1,
+  "sampling": "nearest NASADEM HGT post; EGM96 geoid undulation bilinear at pixel centres",
+  "geoid_grid_sha256": "db493027562c9b004d7220fa881f5603adada4e1c5029b933fa7de4547b0e78d",
+  "tiles": [
+    {
+      "tile": "s21w071",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s21w071.tif",
+      "header_sha256": "941f113a500ec293cd2c455767a74264df7d13487f86e3759d64fd28294e256b",
+      "sampled_blocks": [
+        {
+          "block": 13,
+          "offset": 1117419,
+          "bytes": 5804,
+          "sha256": "67d2ef53b2977aa4d8860c463ee260d94009a39879db613e41732d6595514e41"
+        },
+        {
+          "block": 14,
+          "offset": 1123231,
+          "bytes": 256239,
+          "sha256": "f97ab64547495ac20cc02e62eccbb4031825c80c58025986d03b12dce5f15b31"
+        }
+      ]
+    },
+    {
+      "tile": "s21w070",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s21w070.tif",
+      "header_sha256": "d650d6daaf40cd00c3c6a4afdc1a9d72855c1fbfb273084efb3fe1794e5559a8",
+      "sampled_blocks": [
+        {
+          "block": 9,
+          "offset": 6445800,
+          "bytes": 152027,
+          "sha256": "b3274a364bb0dd17513d5d397690af314e08ee10c581336ec4cc0e203e3de451"
+        },
+        {
+          "block": 28,
+          "offset": 9970530,
+          "bytes": 242797,
+          "sha256": "d33804b2418f9d68913fe96a276279db123e7fc039fbf65565db2cbc3145c5ca"
+        }
+      ]
+    },
+    {
+      "tile": "s20w070",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s20w070.tif",
+      "header_sha256": "93f6308cd5ded0970032badad5694ae4871bf098a290ef52369ecdea35170e45",
+      "sampled_blocks": [
+        {
+          "block": 20,
+          "offset": 9776345,
+          "bytes": 312706,
+          "sha256": "401fbd0213eb65b0cba69c7d2c6cc5078c1f1706d54d979c396eaa79d51be668"
+        },
+        {
+          "block": 57,
+          "offset": 17114827,
+          "bytes": 6964,
+          "sha256": "6ea69de5df1c8ef739dc70eab9462642542356061526754cfbb1933f98938ac5"
+        }
+      ]
+    },
+    {
+      "tile": "s20w069",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s20w069.tif",
+      "header_sha256": "eb15e7ac1a1e9d15a1aab0b65762c2ad9cd318b9afffad454cc59349b16e140c",
+      "sampled_blocks": [
+        {
+          "block": 10,
+          "offset": 6099365,
+          "bytes": 222443,
+          "sha256": "83df060f8177bb587ce508d029e8292738ec6e58f549c971e4527069326f8544"
+        }
+      ]
+    },
+    {
+      "tile": "s24w071",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s24w071.tif",
+      "header_sha256": "00dd4b8c516955c3595616893c2931b5ac3bd5becf183bf45f6649771183ea2b",
+      "sampled_blocks": [
+        {
+          "block": 36,
+          "offset": 6030577,
+          "bytes": 230120,
+          "sha256": "eedd68df178b9630dda0f44f2f5b9a13f005f774b42f84d8f47a0bf5b8505c9d"
+        },
+        {
+          "block": 3,
+          "offset": 2538184,
+          "bytes": 119642,
+          "sha256": "5eab9133c343d24a18c84642301bbdea0f925298a0c5ab4032c48a7bc3462ea3"
+        }
+      ]
+    },
+    {
+      "tile": "s24w070",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s24w070.tif",
+      "header_sha256": "41431092cee7f439ec0ddfe742ebc95bdc24cc9667c86ef909b1caef4eff6b4f",
+      "sampled_blocks": [
+        {
+          "block": 17,
+          "offset": 6961779,
+          "bytes": 195820,
+          "sha256": "029b78424d381ea5a82159ec3427a2788ce7372bf3c81dad060223d02a40285a"
+        }
+      ]
+    },
+    {
+      "tile": "s26w071",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s26w071.tif",
+      "header_sha256": "cb8bb1b197c223672c5a7f3d3041a0b9fd0c5916ac6152d1551bb4a416315dd9",
+      "sampled_blocks": [
+        {
+          "block": 19,
+          "offset": 4618158,
+          "bytes": 83763,
+          "sha256": "6a3d4c2f119d741c5ce4699f725a313de30369ac2ec377004856a2be2606ba64"
+        }
+      ]
+    },
+    {
+      "tile": "s23w069",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s23w069.tif",
+      "header_sha256": "0c7653595d213a86595beb5a7d4ab580e36e2df948ff0b004c1dfef3342ac716",
+      "sampled_blocks": [
+        {
+          "block": 24,
+          "offset": 9125385,
+          "bytes": 186993,
+          "sha256": "d4289229ed513beb408c43e74147a124761c2e5d7a959470c1373ee4c22c5771"
+        },
+        {
+          "block": 53,
+          "offset": 14416536,
+          "bytes": 164907,
+          "sha256": "da13660f71a0a9009ed0eaf2d385f44bfb6a1392c0d127467d36b158c0987f11"
+        }
+      ]
+    },
+    {
+      "tile": "s22w069",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s22w069.tif",
+      "header_sha256": "8392f074c004d48941d59b24db9c8eee0a99135de14c094b7369b3cc57c2c9d1",
+      "sampled_blocks": [
+        {
+          "block": 13,
+          "offset": 8297935,
+          "bytes": 184409,
+          "sha256": "ab976c1c72c586190a66ee3387e72858f6929aa4c9761b6bc7edc333f4784220"
+        }
+      ]
+    },
+    {
+      "tile": "s23w071",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s23w071.tif",
+      "header_sha256": "5804eb9eb7d776cca2fb35be687c3cb2a0dd3c497c8a726f15ab9731f2588b66",
+      "sampled_blocks": [
+        {
+          "block": 5,
+          "offset": 1418677,
+          "bytes": 142602,
+          "sha256": "9abcf29899f9a9a063ff1874bc1d43db769b97e13dd658aff6c83b6bc85b6508"
+        }
+      ]
+    },
+    {
+      "tile": "s23w070",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s23w070.tif",
+      "header_sha256": "ffd7679dc33857e72e35f5d6d96020212ce24d8eb857f3597b173ba162dea08f",
+      "sampled_blocks": [
+        {
+          "block": 18,
+          "offset": 6977406,
+          "bytes": 152688,
+          "sha256": "5bc097951560b724aeb01f3ce8563c3f6da134288e52370dd0e09ea227baa5ee"
+        }
+      ]
+    },
+    {
+      "tile": "s28w071",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s28w071.tif",
+      "header_sha256": "a20e923739701ccfa055c5f94fb0180554de8b88b0f20370c857749929e84510",
+      "sampled_blocks": [
+        {
+          "block": 20,
+          "offset": 8442365,
+          "bytes": 257414,
+          "sha256": "b69240cc76114de0a6cdfc2dadd62945a796ecf39b38500b7c8abadf0762170e"
+        },
+        {
+          "block": 1,
+          "offset": 4680843,
+          "bytes": 154151,
+          "sha256": "84da4d7ca5fd6d68a7cfeb8fd779741bb22dbc53a01c7f3205dd262a642e707d"
+        },
+        {
+          "block": 29,
+          "offset": 10236037,
+          "bytes": 292343,
+          "sha256": "d6d0694fa03ec2761d8c3b9fd1e4a70c3326d0afb5ca88ae00cbe5a684cacd2b"
+        }
+      ]
+    },
+    {
+      "tile": "s27w071",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s27w071.tif",
+      "header_sha256": "44fe2a1ac032740dff48d31bba4e4f3fa7f1d642fea1cc1f49ed39458f982fdd",
+      "sampled_blocks": [
+        {
+          "block": 18,
+          "offset": 5718770,
+          "bytes": 192675,
+          "sha256": "7711b26d70c28996277fa0defc5589a12099fa5b9b17a987a02adceef9af7499"
+        },
+        {
+          "block": 22,
+          "offset": 6709638,
+          "bytes": 203050,
+          "sha256": "1cd5cc56cc3fa3fef80af664c78fab2270d5b5477e7456b57552fcb9fdeba2de"
+        }
+      ]
+    },
+    {
+      "tile": "s29w071",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s29w071.tif",
+      "header_sha256": "1bcb41238ddceab16c5130ab3fc29533544d5c8676b27fbff07cf2f53ffe5c52",
+      "sampled_blocks": [
+        {
+          "block": 33,
+          "offset": 13451659,
+          "bytes": 223274,
+          "sha256": "bacfce76ca0179b5a2dc61fdb32db027ca42749641cc07a9ab7068dcc385e073"
+        },
+        {
+          "block": 43,
+          "offset": 16050422,
+          "bytes": 333344,
+          "sha256": "ceb8931897d133168ab01851bbc4a8f0bbd81bcccc47a9799d5673a3462e3381"
+        }
+      ]
+    },
+    {
+      "tile": "s29w072",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s29w072.tif",
+      "header_sha256": "dc9e249d06dc4218ed4cd375b2a53d2d4c42ddb917306237065b2a1a297c8e5c",
+      "sampled_blocks": [
+        {
+          "block": 30,
+          "offset": 2751125,
+          "bytes": 249508,
+          "sha256": "9474523bf9416d83ac73e7ca391f9739397e81d0f992f2c33c37202272aefa37"
+        },
+        {
+          "block": 29,
+          "offset": 2558543,
+          "bytes": 192574,
+          "sha256": "3f9d8dcd7fd118be7a13ca022558d1ab38b7113601bb5d2748e43f6aad519813"
+        }
+      ]
+    },
+    {
+      "tile": "s30w072",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s30w072.tif",
+      "header_sha256": "fdd6940d2bd225b1289485790d3b84f52c3616a22f27fe54533b89258a072259",
+      "sampled_blocks": [
+        {
+          "block": 53,
+          "offset": 6463162,
+          "bytes": 197307,
+          "sha256": "5a5becce668e5699ad65a1da0163b115c178a46e64997c26eeb9ed4bbe68e3cb"
+        },
+        {
+          "block": 52,
+          "offset": 6424106,
+          "bytes": 39048,
+          "sha256": "64e636de1f36dc4b4653852158de7a055a278c0e7052ff23116e2515f2a1252e"
+        },
+        {
+          "block": 29,
+          "offset": 4482786,
+          "bytes": 290673,
+          "sha256": "6b2a0903d9e74cec9847083eda99c232abf49feb6c8f035e022c276e29f384f0"
+        }
+      ]
+    },
+    {
+      "tile": "s31w072",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s31w072.tif",
+      "header_sha256": "7f819f85a63c35ba68697cd8e16c0c450a1ce385ddb67215d49b47c43732a02f",
+      "sampled_blocks": [
+        {
+          "block": 14,
+          "offset": 4427260,
+          "bytes": 289462,
+          "sha256": "db849bc846251ce0e08f481d78c11dc3e04ab68224ecf4462e64d8f46029b6cf"
+        },
+        {
+          "block": 37,
+          "offset": 7749519,
+          "bytes": 205971,
+          "sha256": "bae856b04fb1ca0584a9710f331490fd7664918537624b95a3528d141a94ef0b"
+        },
+        {
+          "block": 45,
+          "offset": 8909348,
+          "bytes": 280150,
+          "sha256": "cee0d4ca6891c88cdbcb27163d4c4385d05ad76704fd8404a6e2ad0863c7288c"
+        }
+      ]
+    },
+    {
+      "tile": "s31w071",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s31w071.tif",
+      "header_sha256": "8d76fbf1fcddb358eaeba9f61c2d27e5749c71a0d208e0c9ddf60aa1ec34b767",
+      "sampled_blocks": [
+        {
+          "block": 3,
+          "offset": 7116494,
+          "bytes": 366412,
+          "sha256": "1f3222fef442c7c6e44533fa151f930486cd2b4e4e15952cbdf83b7dbd6f194e"
+        },
+        {
+          "block": 2,
+          "offset": 6782039,
+          "bytes": 334447,
+          "sha256": "7faec814b669b3ad7ed3a6da774210a32815b89cabdb056b663833a48eb69010"
+        },
+        {
+          "block": 32,
+          "offset": 15633063,
+          "bytes": 298968,
+          "sha256": "ed646ba3b5b30f540cb547193b788890028d9969399552c0aa7be6efc0bd95fe"
+        },
+        {
+          "block": 16,
+          "offset": 10989573,
+          "bytes": 282877,
+          "sha256": "c2ad085e6505c4f8c5a1d82ee6cf34872dadf0941b4da0871881b9b6d38554a8"
+        },
+        {
+          "block": 9,
+          "offset": 8891431,
+          "bytes": 316536,
+          "sha256": "0acd3d624b64ca8ee8562c43a65f2aef6389447c7cd274b3f5bee0af668c2e57"
+        }
+      ]
+    },
+    {
+      "tile": "s32w072",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s32w072.tif",
+      "header_sha256": "d76741709509f1d3b9c265e0b9e940ed001d6820d561d3e0c5a1c93e6015c330",
+      "sampled_blocks": [
+        {
+          "block": 37,
+          "offset": 8837133,
+          "bytes": 286221,
+          "sha256": "a855dd036cbf17aed2370af91af544e865de215c53f572373fb33b42beee4fc8"
+        },
+        {
+          "block": 19,
+          "offset": 5918764,
+          "bytes": 269505,
+          "sha256": "9368a0281179d09a4afe5c74bcaf034646d86612a75a536d64d345a0f028fa25"
+        },
+        {
+          "block": 51,
+          "offset": 10494285,
+          "bytes": 146841,
+          "sha256": "2b5cb17c6249b77bf1b930b1a9e982152e5f51ee051ed7a1d8a0fd4de72fb3b3"
+        },
+        {
+          "block": 15,
+          "offset": 5813528,
+          "bytes": 13900,
+          "sha256": "6931246c21a1388983d0ba821e80d01749dc95764f13252e61dc630e48aa6767"
+        }
+      ]
+    },
+    {
+      "tile": "s32w071",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s32w071.tif",
+      "header_sha256": "29f7fbc34b643b846e9c902b0f5e8154a670ad78d545d7affa1b267a6948452a",
+      "sampled_blocks": [
+        {
+          "block": 40,
+          "offset": 17817442,
+          "bytes": 297113,
+          "sha256": "3068e4ff398c76663c2113d707a2b2e4e6e5c905458c22bba095f8db904d605f"
+        }
+      ]
+    },
+    {
+      "tile": "s34w072",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s34w072.tif",
+      "header_sha256": "07d954bfa6e9948c9ab3bcb400fb5568499cfbf303781e4ee27e194678855685",
+      "sampled_blocks": [
+        {
+          "block": 2,
+          "offset": 3506522,
+          "bytes": 160094,
+          "sha256": "af4bf93bd3f175c2884eb0cdf6b6a3dc416c5f4aac216baabee070e077ff77d4"
+        },
+        {
+          "block": 20,
+          "offset": 6396452,
+          "bytes": 226712,
+          "sha256": "0a00235cd4cc40b3b035bbef983526d2cdcd371e714089aa56cf11ecdd1a465e"
+        },
+        {
+          "block": 3,
+          "offset": 3666624,
+          "bytes": 231911,
+          "sha256": "958a98c4b1ad11c890ccce34db5dd51550ab43d6285447e957601a563069c1c3"
+        },
+        {
+          "block": 34,
+          "offset": 8275853,
+          "bytes": 91826,
+          "sha256": "72f7b99ee2db05e0d57e41bc86e8a8a61c963e5cc9d8e48780a91cc59800c48d"
+        },
+        {
+          "block": 18,
+          "offset": 6028946,
+          "bytes": 155945,
+          "sha256": "b67471110fe1c494d6e4e8a99bc29b53a5db8bc1741d471109d308b0e3ca8541"
+        },
+        {
+          "block": 26,
+          "offset": 7227454,
+          "bytes": 100090,
+          "sha256": "4bd757cf894d963a321242a9607915d9fe16f4c194bdba8b90992cf8f7d96ad0"
+        },
+        {
+          "block": 5,
+          "offset": 4128219,
+          "bytes": 263993,
+          "sha256": "043aacf3542f840d5eb69ce38753aba635665c00c6956bd5776804be1db1673e"
+        },
+        {
+          "block": 4,
+          "offset": 3898543,
+          "bytes": 229668,
+          "sha256": "933cb868ae30003ff0f2cf2c8d391f9f260a4a04406a8cc8f7794656040a184c"
+        },
+        {
+          "block": 49,
+          "offset": 10483211,
+          "bytes": 191703,
+          "sha256": "b98d3e7de564de91a335c3043830262876e64b99956a4b21a609931314e60a86"
+        },
+        {
+          "block": 37,
+          "offset": 8826523,
+          "bytes": 185365,
+          "sha256": "7e99e5670fea2e6ec5639da9d9f157b81633e70a7f01ba6313bfbdff8f5c5fb4"
+        },
+        {
+          "block": 22,
+          "offset": 6918124,
+          "bytes": 292892,
+          "sha256": "2eee1bc1f0d66079ce936bdc8a35cceee37222c2c1996db88646bb0669de1d6a"
+        },
+        {
+          "block": 30,
+          "offset": 8035975,
+          "bytes": 226167,
+          "sha256": "fbca65af9803fabfbebbce8034a60e1f9abea372b3d5be6a4693d63e7fe11f17"
+        },
+        {
+          "block": 51,
+          "offset": 10890061,
+          "bytes": 205036,
+          "sha256": "bb2ce65bfdf4f7688b65f3aabc939a7d9809aa0a6638a7e5b52db86d9ff3c6c9"
+        }
+      ]
+    },
+    {
+      "tile": "s33w072",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s33w072.tif",
+      "header_sha256": "e58a584f639eb753741e89d296291924913dbf62b0a0ab831cbdc3b344125a39",
+      "sampled_blocks": [
+        {
+          "block": 51,
+          "offset": 8398560,
+          "bytes": 152782,
+          "sha256": "9aa2270fbd828685cdee3790541a7ca9f8b722e10f0feb8a7644ee2fde8d288b"
+        },
+        {
+          "block": 44,
+          "offset": 7593883,
+          "bytes": 272202,
+          "sha256": "9a42e8b3eec4efde4ccfb36f67cdea859e02bc0c0ee9c8e5f13ed435b0d3f13d"
+        },
+        {
+          "block": 43,
+          "offset": 7485189,
+          "bytes": 108686,
+          "sha256": "292f97303c8b3eda81978d0b970569b02e7cbbc85cf2a54460023559d2464081"
+        },
+        {
+          "block": 29,
+          "offset": 5993307,
+          "bytes": 237637,
+          "sha256": "94865583c787cb5d5975356ba5e7fc7a383595eacb1c623e7258b644c5f2a74e"
+        },
+        {
+          "block": 30,
+          "offset": 6230952,
+          "bytes": 324696,
+          "sha256": "411e4a3f9345aeecbcb089cd0647a2c48166143f6e8d9385daa32114e69f8301"
+        },
+        {
+          "block": 27,
+          "offset": 5722772,
+          "bytes": 46197,
+          "sha256": "a6f8bd3bdcec237f2546c6dc3c2f972b0ba323eace8d230f9241a770cb2a7ba6"
+        },
+        {
+          "block": 53,
+          "offset": 8762320,
+          "bytes": 245639,
+          "sha256": "175c6b783c4dcfe83f6d0909dd4c71a5beeca441134994348e9412b50868c863"
+        },
+        {
+          "block": 45,
+          "offset": 7866093,
+          "bytes": 226241,
+          "sha256": "dbe91b4c83f9bd45ee50f3b0cf6e648ceec6801406ec681d48c16fafbb3318af"
+        },
+        {
+          "block": 46,
+          "offset": 8092342,
+          "bytes": 290743,
+          "sha256": "8a1fd8248458b1bd771481f36bcabc0a9aec2eaf753da321b4ad9642dc73f390"
+        },
+        {
+          "block": 61,
+          "offset": 9351512,
+          "bytes": 7240,
+          "sha256": "ac26993822469c65e7fae8baf59eea84617caaac968b3daa282d86a92ac8057f"
+        }
+      ]
+    },
+    {
+      "tile": "s34w079",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s34w079.tif",
+      "header_sha256": "458d7b0df7bd699b209a4f94fcd6190805757899dcccfe3299bdd510a1bb6c0f",
+      "sampled_blocks": [
+        {
+          "block": 33,
+          "offset": 110460,
+          "bytes": 52066,
+          "sha256": "ab114bf84546997186ffbf29f2c83c754827483be6169f0cdd4558f34bccf26a"
+        }
+      ]
+    },
+    {
+      "tile": "s28w110",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s28w110.tif",
+      "header_sha256": "eafeebbb51e094e69c57612ebee4724251ffe813f5dcd11511d93a1a1b723415",
+      "sampled_blocks": [
+        {
+          "block": 12,
+          "offset": 234203,
+          "bytes": 33619,
+          "sha256": "9b6a8777f5be05938c92f385c5537a8439b7796a1d7a60459bf71872caa2e6a9"
+        }
+      ]
+    },
+    {
+      "tile": "s33w071",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s33w071.tif",
+      "header_sha256": "0399400ec00bf9f4c58b2e9da6ab42c91c23192f259fbc1fc1561df31c1ae273",
+      "sampled_blocks": [
+        {
+          "block": 42,
+          "offset": 18125050,
+          "bytes": 171076,
+          "sha256": "cdf4ba1e17666e9123e9e64ab52b926302080c265ed77d0678c4316b27b886f7"
+        },
+        {
+          "block": 50,
+          "offset": 20255937,
+          "bytes": 275575,
+          "sha256": "46d48bd2ec53b480cf68d4c1212683589c165d8d7d5064713ab8efc088b069b1"
+        },
+        {
+          "block": 8,
+          "offset": 8415692,
+          "bytes": 314408,
+          "sha256": "6225d823de41b17bb96aaf2f57ae52824c7f1d6e7dff53ca99c234ab402ba5e8"
+        },
+        {
+          "block": 41,
+          "offset": 17857123,
+          "bytes": 267919,
+          "sha256": "568ad9cf3d5e9450f14c63e43d07b7645473eac9cef570fd3e35b5f35ecc153e"
+        },
+        {
+          "block": 40,
+          "offset": 17615268,
+          "bytes": 241847,
+          "sha256": "18fd5faeccaa9dd5c3066f600a2099ef20649343a611212a70ead14e965ee150"
+        },
+        {
+          "block": 33,
+          "offset": 15609200,
+          "bytes": 300039,
+          "sha256": "21091625f7af317ee1ebf4bc2a6cf020900f4a8b798f94c60ec1fe10cfbb087a"
+        }
+      ]
+    },
+    {
+      "tile": "s35w071",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s35w071.tif",
+      "header_sha256": "61809ffeeab79b3ba4db4d31373273ad5199a15503fa89a2005697bc99c7453b",
+      "sampled_blocks": [
+        {
+          "block": 9,
+          "offset": 8233619,
+          "bytes": 151881,
+          "sha256": "6b3c43f5f1aaa0adc287d78667b11334edcca4138674539e529b16dd8c4eb143"
+        },
+        {
+          "block": 2,
+          "offset": 6398561,
+          "bytes": 202742,
+          "sha256": "31bafc837d61a55814a263c3ed1b69019408a0803cca6df1db94b56b590a6a63"
+        },
+        {
+          "block": 8,
+          "offset": 7999714,
+          "bytes": 233897,
+          "sha256": "a323cecead2d759990943e8506eacfe5c01e88c2e52730aa4d96fa61e80e269f"
+        },
+        {
+          "block": 1,
+          "offset": 6186374,
+          "bytes": 212179,
+          "sha256": "191b4f681df70de42ec1944e3433a6d9c34435bd7b22b8b20a111cdc306229cf"
+        },
+        {
+          "block": 10,
+          "offset": 8385508,
+          "bytes": 243588,
+          "sha256": "4ab325e77fa690520abb6daa132725a93b1f8ffce4d55da2aa5b91bf8d97844a"
+        },
+        {
+          "block": 24,
+          "offset": 12089711,
+          "bytes": 199391,
+          "sha256": "e1721671adba81c89d437a45809cd99b56afd9505c6c08f80ea71a173ea8cbe8"
+        },
+        {
+          "block": 16,
+          "offset": 10002110,
+          "bytes": 153365,
+          "sha256": "dd365c1b36c2a7e93a80fa65548e44e9ecd0a8d16f8571dc9d78ababd72e7653"
+        },
+        {
+          "block": 17,
+          "offset": 10155483,
+          "bytes": 191602,
+          "sha256": "3ff9573595e9075eb9765e9283454dd3825d6345dc8a2c82795c78161aa53400"
+        },
+        {
+          "block": 32,
+          "offset": 14351755,
+          "bytes": 171221,
+          "sha256": "a657b454e76746f3fcae181baa2e6d724b31141a5a9aa5ec09dd222cea590985"
+        }
+      ]
+    },
+    {
+      "tile": "s35w072",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s35w072.tif",
+      "header_sha256": "3e0c5ecb4d07eb3cd15e345a01543b57fb706218d25cabcbd86d99a211da49eb",
+      "sampled_blocks": [
+        {
+          "block": 22,
+          "offset": 8556278,
+          "bytes": 184222,
+          "sha256": "f2fce404fa58072425d99c3ad97d77f18a627b69e39a9e80b882cc02abecf8e0"
+        },
+        {
+          "block": 20,
+          "offset": 8160683,
+          "bytes": 175702,
+          "sha256": "02a5f8dc38a6efd2685085fe061a93f1659c1e9e2500f36ebb67cb69b36bf6a4"
+        },
+        {
+          "block": 21,
+          "offset": 8336393,
+          "bytes": 219877,
+          "sha256": "d2a377ee247b4066d2d5d2c990c12d8f2585f13d9f703f124291f5a5d54ecd02"
+        },
+        {
+          "block": 30,
+          "offset": 9983809,
+          "bytes": 225680,
+          "sha256": "5c4507e18db92a90130db07b9fbd9d2698a8a5a64a05788422eb728730bc68eb"
+        },
+        {
+          "block": 16,
+          "offset": 7428346,
+          "bytes": 219725,
+          "sha256": "59526441319586c5204a00fa33fdcab688db836780b8d1e080e4614e88f72929"
+        },
+        {
+          "block": 10,
+          "offset": 6310108,
+          "bytes": 184389,
+          "sha256": "022c454518f5229c3b4bc0cb9a65837ec2a1bd553e33e621153336814620269c"
+        },
+        {
+          "block": 1,
+          "offset": 4483898,
+          "bytes": 202147,
+          "sha256": "7aa40325f51bb97a1f0bb463eb8915ca8610376c8db87deb40f4ae75ed046b13"
+        },
+        {
+          "block": 18,
+          "offset": 7870610,
+          "bytes": 141071,
+          "sha256": "598e8d46cf21e523eb483a877df87b19125dfca926d60a746e2a34328edcd1df"
+        },
+        {
+          "block": 32,
+          "offset": 10222063,
+          "bytes": 218217,
+          "sha256": "d120f2b4368337c9e1d6ae86d7351c3c80afa899b92f454b27b32b71eadcee19"
+        },
+        {
+          "block": 45,
+          "offset": 12857853,
+          "bytes": 186224,
+          "sha256": "708129f184a7662ac87264a91135ea91a84f8300a65ca2e14961da8ac6bec898"
+        },
+        {
+          "block": 46,
+          "offset": 13044085,
+          "bytes": 133245,
+          "sha256": "9901f4d1ed8491ff2c1a0cfc68bcc7e7589bab44bf9b07d30342c913195c1c4e"
+        },
+        {
+          "block": 42,
+          "offset": 12135948,
+          "bytes": 237551,
+          "sha256": "e6fe19c79799ea1d0758f3760f0588e6ddfd631f23bfa065627c3b35557d9572"
+        },
+        {
+          "block": 37,
+          "offset": 11297193,
+          "bytes": 203729,
+          "sha256": "d42cfab7a6676250f5cfbdcb4ad2a563e4798efc720bce0a3867413b5db2e47b"
+        },
+        {
+          "block": 36,
+          "offset": 11136480,
+          "bytes": 160705,
+          "sha256": "98547785e1f203f1186ac9545b87aba2bd512ef8a41e01c39ef1b73e3a95e249"
+        },
+        {
+          "block": 27,
+          "offset": 9421176,
+          "bytes": 184444,
+          "sha256": "1ca39a8ead2f87fcd44644715e6ee93dca07f5f98b18bdcabda5a1cd7e70fab4"
+        },
+        {
+          "block": 38,
+          "offset": 11500930,
+          "bytes": 203536,
+          "sha256": "8dad9ce5a301f60a3f10260d20b807ddec3d8b1252c4e5fd8c332bcd0da1d079"
+        },
+        {
+          "block": 34,
+          "offset": 10649564,
+          "bytes": 230227,
+          "sha256": "6d91334780402983cf4e598971f693a9f27456edf08cd54a017ec56e09104186"
+        },
+        {
+          "block": 53,
+          "offset": 14337859,
+          "bytes": 111224,
+          "sha256": "124853356e537f9d88e6f70390e907531d6599cc7445c6717735566528c05771"
+        },
+        {
+          "block": 49,
+          "offset": 13422110,
+          "bytes": 227364,
+          "sha256": "37b645562fa56b7ec2e0a53beaf86fac77041a84f023cd459bd0381a3dd65d1f"
+        },
+        {
+          "block": 48,
+          "offset": 13185370,
+          "bytes": 236732,
+          "sha256": "950d389e54159a97cc351d198d97720166cce28431bfb2017d76d1d18fd9dfa4"
+        },
+        {
+          "block": 52,
+          "offset": 14136019,
+          "bytes": 201832,
+          "sha256": "b9c52a7922572acd90ccc275b57694132269fae32cec9734207ec02948fe4c5f"
+        },
+        {
+          "block": 54,
+          "offset": 14449091,
+          "bytes": 132416,
+          "sha256": "a7cbab3788ee0be5a0538f18995cb79cfbe01ca2f36af84094e9601797b51308"
+        },
+        {
+          "block": 60,
+          "offset": 14629197,
+          "bytes": 4474,
+          "sha256": "85e256f4c4a301062da9ad9041e5426d4a6bde295a9f45cf178d1671c29328d1"
+        },
+        {
+          "block": 6,
+          "offset": 5600084,
+          "bytes": 280794,
+          "sha256": "0ba868f634cab14e5c31ea61286463aaa1f4e0db85e88d3e6547843ca09c0699"
+        }
+      ]
+    },
+    {
+      "tile": "s34w071",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s34w071.tif",
+      "header_sha256": "8129d73288a440cefa2c5d4672787fbeb866e07fa6f4ef7937262c37cf423c33",
+      "sampled_blocks": [
+        {
+          "block": 50,
+          "offset": 18184265,
+          "bytes": 236580,
+          "sha256": "b58df44a059f19c112ad7f5baac87e3a89be01e0920da040c30ecb9e48115787"
+        },
+        {
+          "block": 26,
+          "offset": 12292523,
+          "bytes": 133481,
+          "sha256": "02683252503c83aebacbb79b0fd711ccafc23b619bb981c538177b1fcc4e216d"
+        },
+        {
+          "block": 17,
+          "offset": 10176805,
+          "bytes": 113798,
+          "sha256": "ee013ce0e69dd1f5b72250a6faf53d3026963c0dc03f620134a16193e620bb64"
+        },
+        {
+          "block": 18,
+          "offset": 10290611,
+          "bytes": 228945,
+          "sha256": "be00508d275de76c9a5f07d1a63beecd3574828da73909ce32d4e5fc6e03a0b6"
+        },
+        {
+          "block": 27,
+          "offset": 12426012,
+          "bytes": 305112,
+          "sha256": "464ea41190c24bfe7705322ba5e7accc85cba21459b4eb909f368934ca88f990"
+        },
+        {
+          "block": 34,
+          "offset": 14151432,
+          "bytes": 156251,
+          "sha256": "3fc4f62a2c9c347845e31ffb3859c0b977c0eacdbff8e4d3ed05fd7b7cb8af29"
+        },
+        {
+          "block": 19,
+          "offset": 10519564,
+          "bytes": 284804,
+          "sha256": "ffac6e23dad0224b377c8ad286d4de2053c6c3c59e44c943a2786e33e98aef6c"
+        },
+        {
+          "block": 25,
+          "offset": 12140884,
+          "bytes": 151631,
+          "sha256": "4f7f1377cdb185f09258dd4e4a41f458ae972483dcdf78c094621d53a35ed653"
+        },
+        {
+          "block": 36,
+          "offset": 14580382,
+          "bytes": 336697,
+          "sha256": "0a5570400dc67355f88bf360db873745c0033a5730d10386cf0552e9b5188493"
+        },
+        {
+          "block": 10,
+          "offset": 8217485,
+          "bytes": 239643,
+          "sha256": "b49340eee0d9ef467e9a7b17f24d30573a5b85c12e7c943bb24cbfde848cc75c"
+        },
+        {
+          "block": 16,
+          "offset": 9890733,
+          "bytes": 286064,
+          "sha256": "198c09d3b6617c44ad2a008f9ce554f7de96a1641fe75e648fe0b8b079288240"
+        },
+        {
+          "block": 0,
+          "offset": 5582140,
+          "bytes": 283733,
+          "sha256": "d863b08fe017eec26637bfc14e72cf0c4360eb0f2721a5b49baaf0fa21594898"
+        },
+        {
+          "block": 41,
+          "offset": 15840205,
+          "bytes": 147081,
+          "sha256": "6969926d77746dbe069d937d15d11f9d10241b04970d85267ef357ded6064c2d"
+        },
+        {
+          "block": 33,
+          "offset": 13964578,
+          "bytes": 186846,
+          "sha256": "7896c65387f8d3c2ab777ba8e5ccc3c6c9ee14a0107039ca0b3ec8a121ecd6a5"
+        },
+        {
+          "block": 32,
+          "offset": 13774160,
+          "bytes": 190410,
+          "sha256": "05ebb5060c5f01b1b5a7315f38a03c1db353d70fe4a2964b231a77f32d9b2f46"
+        },
+        {
+          "block": 40,
+          "offset": 15608642,
+          "bytes": 231555,
+          "sha256": "9b7dbdf0118e9d7a042e08af461056106e7b6753238c3e2c6a82cb00e65ed8e3"
+        }
+      ]
+    },
+    {
+      "tile": "s36w072",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s36w072.tif",
+      "header_sha256": "5b8285505cf1a33b6abffd1e4484ba6c89a98a065b89dba98600762ae9aab243",
+      "sampled_blocks": [
+        {
+          "block": 18,
+          "offset": 7813321,
+          "bytes": 208634,
+          "sha256": "3a0a9584d12df62a692404139518e33da279472a03c1934b0c0256b74993d626"
+        },
+        {
+          "block": 26,
+          "offset": 9216097,
+          "bytes": 123064,
+          "sha256": "b025e6b02746b2c11ae69d7dcd3a8ba29bae976d3072f24a91a28d34390e6e99"
+        },
+        {
+          "block": 19,
+          "offset": 8021963,
+          "bytes": 126488,
+          "sha256": "a555769f8c7a0e29993a5071e668064170f916f6ce12e35de1bdc897d9ec7e46"
+        },
+        {
+          "block": 17,
+          "offset": 7620380,
+          "bytes": 192933,
+          "sha256": "b9786c78a21ad9727603139ce31a4adb4a501f2f6d34ad99f8ca6aff0534eab0"
+        },
+        {
+          "block": 21,
+          "offset": 8288514,
+          "bytes": 225337,
+          "sha256": "925478b9aa64e9dd919dae594db4464ad107dd59ac560388200406de509225f8"
+        },
+        {
+          "block": 27,
+          "offset": 9339169,
+          "bytes": 110113,
+          "sha256": "3b815ca38ece447293bab13b49a2a8396e373794fc7d2a13ce4b988af0a4dd62"
+        },
+        {
+          "block": 5,
+          "offset": 5436244,
+          "bytes": 118805,
+          "sha256": "9751cefe8a844f8901dc6ca31a24cf4d94242c59f930b8b7ae4370b53609c19d"
+        },
+        {
+          "block": 42,
+          "offset": 11884090,
+          "bytes": 118174,
+          "sha256": "ac7b699ceb4e03f032ff3b25bba2235c5a8ef930c051c949d76ae006f53bf39b"
+        },
+        {
+          "block": 36,
+          "offset": 10799267,
+          "bytes": 194178,
+          "sha256": "1b9bffc96359a993532579826d5751e86bb6eb1512473e666a1ed639b06ca4e8"
+        },
+        {
+          "block": 50,
+          "offset": 13275183,
+          "bytes": 120015,
+          "sha256": "8e71062239e885f5647ec02b8c9e0dc98b9d73f246fc07c19bb1e1e374ef2d50"
+        },
+        {
+          "block": 33,
+          "offset": 10400267,
+          "bytes": 168913,
+          "sha256": "7fc454ac809cfe94953ec1764b5e310f5a18dde978a4d7fda465959f6abe4187"
+        }
+      ]
+    },
+    {
+      "tile": "s36w073",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s36w073.tif",
+      "header_sha256": "9e8555a9b64ca6663f5e48ab6f93535b6a337b2be8aad3527aab88328d372a7a",
+      "sampled_blocks": [
+        {
+          "block": 20,
+          "offset": 3273825,
+          "bytes": 216410,
+          "sha256": "04ff4a03d06279ef5d4d9bd4d10b7211b038b4ea9f82b250a826901137395648"
+        },
+        {
+          "block": 6,
+          "offset": 2385619,
+          "bytes": 236633,
+          "sha256": "b370c9793188ded24e0439767cf4d1cdc775edff5d24274c5401d202011438a2"
+        },
+        {
+          "block": 37,
+          "offset": 5384630,
+          "bytes": 217456,
+          "sha256": "7efb11edf96b47103de32eac6b4181df601f664db55d500a4a71c72f1659cb18"
+        },
+        {
+          "block": 52,
+          "offset": 7127781,
+          "bytes": 183142,
+          "sha256": "16a2d7d8e74a189ca0c7cf69b676bba0d53d99c840613c4833ea3bc555f38e10"
+        },
+        {
+          "block": 43,
+          "offset": 5823182,
+          "bytes": 220582,
+          "sha256": "72dad614e85c75550ace9092e8167b3a5af045559cde85fcb8e8479c3009cdf9"
+        },
+        {
+          "block": 42,
+          "offset": 5798052,
+          "bytes": 25122,
+          "sha256": "0cb759760b2ae26f779048315f97e331a8868d04f2441ae85bdd1d62642fdd63"
+        }
+      ]
+    },
+    {
+      "tile": "s37w072",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s37w072.tif",
+      "header_sha256": "667cd2cff1f441d29d6e51d90e041f27519543f28b92f99132576c65c9cbf825",
+      "sampled_blocks": [
+        {
+          "block": 9,
+          "offset": 6663530,
+          "bytes": 111449,
+          "sha256": "21fa1b6460dac85cfcea07ef994cf322c4f862eb9d3bc5811f6b97e668078c1b"
+        },
+        {
+          "block": 1,
+          "offset": 5097581,
+          "bytes": 115456,
+          "sha256": "1e0504f261a1ccfc1e2f784d4e1c2307997be32dbcc99437818bbffe490a8422"
+        },
+        {
+          "block": 32,
+          "offset": 11564731,
+          "bytes": 122779,
+          "sha256": "f8dd0e8a6db18ec38ec3fc48a65a834a1ef0d8e270d992776c280b0ff3ce56af"
+        },
+        {
+          "block": 16,
+          "offset": 8116606,
+          "bytes": 104255,
+          "sha256": "18f010de5108d2553dfc23bc817851782317c9cdde2b116960ea2f607e092103"
+        },
+        {
+          "block": 33,
+          "offset": 11687518,
+          "bytes": 186784,
+          "sha256": "80a397c1293cfdadc0d39577e8424088e7caa8505e6fa84ec2e1fbaa0cbe6405"
+        },
+        {
+          "block": 26,
+          "offset": 10038408,
+          "bytes": 208533,
+          "sha256": "061acc8ab59c0942e6b8ce4b6748a0ec56ea9b9352de310ff232d9d119618b50"
+        }
+      ]
+    },
+    {
+      "tile": "s37w074",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s37w074.tif",
+      "header_sha256": "f31ce5ae4a85410250532d727584f65add12253338e45acca5a30cbe790cc5d5",
+      "sampled_blocks": [
+        {
+          "block": 46,
+          "offset": 339551,
+          "bytes": 119709,
+          "sha256": "9cba62d7485e6ef6ae905435122f986418bf374bf80822c11227d06d3e9521ad"
+        },
+        {
+          "block": 54,
+          "offset": 493234,
+          "bytes": 221079,
+          "sha256": "5fc7fa5f8ede29f245219307d9fadf712ec2ba893455d1619bf64696db080ab9"
+        }
+      ]
+    },
+    {
+      "tile": "s38w074",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s38w074.tif",
+      "header_sha256": "3f2c7ee07911faa836a3b9c1ec59a22c96939e4194a2c17ad8bead442e16ef4a",
+      "sampled_blocks": [
+        {
+          "block": 6,
+          "offset": 2691192,
+          "bytes": 262145,
+          "sha256": "224894a4728ce7c57f9182d4475f40d2b98511fe511bf4182d47152daf4ce828"
+        },
+        {
+          "block": 5,
+          "offset": 2661355,
+          "bytes": 29829,
+          "sha256": "0929ef279e5d3e73061915e95c6dfec10298329c08bde1d3466e31c89abeba9b"
+        },
+        {
+          "block": 34,
+          "offset": 5856490,
+          "bytes": 145374,
+          "sha256": "08cc8a1b58862cbe2b7fd521039b4dcdba3af06827baa91eb275b1b7e1c8cd8b"
+        },
+        {
+          "block": 12,
+          "offset": 3204926,
+          "bytes": 62011,
+          "sha256": "af820666fd0cf881507e1870b007c2a4db5fded3f7cbe28d6e1e404973840363"
+        },
+        {
+          "block": 44,
+          "offset": 7245989,
+          "bytes": 236037,
+          "sha256": "3f59b612305a076862c4cf644c58d39c70aa4ee37b4cdd3fe9c323f6d89025cc"
+        },
+        {
+          "block": 28,
+          "offset": 5088333,
+          "bytes": 218259,
+          "sha256": "6c52a2686fea206f8e6906a529c4da06bc27d3ebff28fd49aaedec2a7897aec9"
+        },
+        {
+          "block": 35,
+          "offset": 6001872,
+          "bytes": 215096,
+          "sha256": "b6112199c6916e99961e52f91859355974963ec8625e7ba1b1280d8ceadd48f4"
+        }
+      ]
+    },
+    {
+      "tile": "s37w073",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s37w073.tif",
+      "header_sha256": "9c092c065dc897f77be1acae364dfcc2df5b15006ca16e3dc390c6d8ad16c2e9",
+      "sampled_blocks": [
+        {
+          "block": 42,
+          "offset": 9838815,
+          "bytes": 205868,
+          "sha256": "e1a72a4f37c76eada9de769dc150fbe1bfaefeb28d1908194e4fd95803eb966b"
+        },
+        {
+          "block": 48,
+          "offset": 10658414,
+          "bytes": 235388,
+          "sha256": "c2424b8fbb4ff486a8e3eca615aad4d82049d177deda8b71718ee8ce961a4859"
+        },
+        {
+          "block": 40,
+          "offset": 9392652,
+          "bytes": 235599,
+          "sha256": "b319542ea35210e07600046b81d0a909feeb4e7d694c1ab0eb5be6415cb100c3"
+        },
+        {
+          "block": 32,
+          "offset": 8115217,
+          "bytes": 203812,
+          "sha256": "390171799435d26ea4235b4eb9439975b498fc8391e850155a30a74bbd3ca11d"
+        },
+        {
+          "block": 38,
+          "offset": 9252728,
+          "bytes": 132356,
+          "sha256": "a237827f8eb278e897b07f1a5833f60756cc22bb583d9d8e394d00bb542a8264"
+        },
+        {
+          "block": 44,
+          "offset": 10248349,
+          "bytes": 134005,
+          "sha256": "a21c8e73d77e3b44eac4cbb095d520098b9e6e7877c50ffb53b3a57386995179"
+        },
+        {
+          "block": 54,
+          "offset": 11749835,
+          "bytes": 146284,
+          "sha256": "f48cf14caf437e1c4ce7e3ed6b7b8d421d79a2e8527de679af0f5f87be41a5b0"
+        },
+        {
+          "block": 43,
+          "offset": 10044691,
+          "bytes": 203650,
+          "sha256": "cb1638e507e29fd97161ad73bc277de6dadc442d9c7cd287f55c2a28a92344c5"
+        },
+        {
+          "block": 46,
+          "offset": 10515737,
+          "bytes": 134824,
+          "sha256": "fd82d9460cedef3081234e676be4643278da93aa4d16f07fc93b97696c40b1e9"
+        },
+        {
+          "block": 11,
+          "offset": 5092558,
+          "bytes": 207961,
+          "sha256": "f09e8d0d901568e8098153e51804acf4b9a584d0b3fe05bb8e38d07f85f8578f"
+        },
+        {
+          "block": 1,
+          "offset": 3614153,
+          "bytes": 150713,
+          "sha256": "e902eb463be995635a27a5e8943b7545a50aba3c66904e03a78a165c4d97a616"
+        },
+        {
+          "block": 26,
+          "offset": 7306481,
+          "bytes": 202637,
+          "sha256": "725a770b33fe3b2f20006c6c1a1e0ba3637afa4c5327d3943e7da60fedc71aac"
+        },
+        {
+          "block": 20,
+          "offset": 6455157,
+          "bytes": 172140,
+          "sha256": "49af05021b7649152d20c3a2cf5e43f9556d3a656fd270d0ae37f7340ea2b3ce"
+        },
+        {
+          "block": 28,
+          "offset": 7706217,
+          "bytes": 165263,
+          "sha256": "76c1a99bb36f76d834fdc406a95012af5587107184c460d6e28f053b264b9434"
+        },
+        {
+          "block": 35,
+          "offset": 8736423,
+          "bytes": 217298,
+          "sha256": "e13c24d8c4e238a498afe360f9b8669305b858726a8fb463e4a9c6226ec84835"
+        },
+        {
+          "block": 29,
+          "offset": 7871488,
+          "bytes": 127457,
+          "sha256": "642119e52887ae1e11875a5aab5e3829a8902872b02f2526f038c6de90bc9903"
+        }
+      ]
+    },
+    {
+      "tile": "s38w073",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s38w073.tif",
+      "header_sha256": "dffec29ec667fe27ca70a7cfecc3e4050c7936c0d7679d92c510e74814a3282f",
+      "sampled_blocks": [
+        {
+          "block": 8,
+          "offset": 4994331,
+          "bytes": 211931,
+          "sha256": "90fc98d1376536dd2637c52b9760491804dc15aa73ad4b71033d3fc001a9754b"
+        },
+        {
+          "block": 28,
+          "offset": 7993177,
+          "bytes": 117107,
+          "sha256": "b93469139379630b40cb4e6f3a26192428046a1a5d1343c293b9afddfc31e415"
+        },
+        {
+          "block": 4,
+          "offset": 4602442,
+          "bytes": 121494,
+          "sha256": "43f5ef1dfb1e0b42a01d89a6e08e20db726666225472f522935e1caa6676dcd5"
+        },
+        {
+          "block": 10,
+          "offset": 5411153,
+          "bytes": 170247,
+          "sha256": "3fc980b0686db13f4fadd9d20884bb25b0cbef261f891e6698c3c928aa901593"
+        },
+        {
+          "block": 45,
+          "offset": 10673690,
+          "bytes": 152960,
+          "sha256": "788f9cde903d65ffa95cd072a5f7287f0d4f8d6dcf6de899b9dd99e1ae9f8875"
+        },
+        {
+          "block": 26,
+          "offset": 7715073,
+          "bytes": 168289,
+          "sha256": "b1d99a648270a1138c34d13f44306978ee29f033b1f37f657566745f1d25335b"
+        },
+        {
+          "block": 35,
+          "offset": 9100294,
+          "bytes": 123303,
+          "sha256": "7ea1538d27ce06b0d439f85315790364c2bee0c6826cf750f142f38e2037e08f"
+        },
+        {
+          "block": 9,
+          "offset": 5206270,
+          "bytes": 204875,
+          "sha256": "bead06ba5e9c66f2bd8eca8f0fab3a717ea7cefb81117146fe3ef4ccc0ea6919"
+        },
+        {
+          "block": 38,
+          "offset": 9507417,
+          "bytes": 155416,
+          "sha256": "d61d26dd27118b78b0ec1facd82113a9baf6d9a6f9192e0fdcd813a59d6e2148"
+        },
+        {
+          "block": 3,
+          "offset": 4470574,
+          "bytes": 131860,
+          "sha256": "5de258d7c61af03422b666df964483ea9e1b0a11244d2ec2f60ce9f8153deeb6"
+        },
+        {
+          "block": 41,
+          "offset": 9920236,
+          "bytes": 273249,
+          "sha256": "243b09e7f8e9599af319bf066a2efbd2c1961bb40bd763b49e6d83f973f7aa21"
+        },
+        {
+          "block": 51,
+          "offset": 11701549,
+          "bytes": 186738,
+          "sha256": "b762da54c947e5ce1a36fc17cf513ee28db1c9fc4724cb07a55362e7a3085e47"
+        },
+        {
+          "block": 49,
+          "offset": 11268393,
+          "bytes": 236585,
+          "sha256": "961bfcdd3b6c2f83ab41ac50f4bae24635e0ad69c84f6437b73ce0ba978daca2"
+        },
+        {
+          "block": 34,
+          "offset": 8907694,
+          "bytes": 192592,
+          "sha256": "86be5cced2f7214453419f2dd0c961788beed40a69ed08142bc196b089d6a8dd"
+        },
+        {
+          "block": 6,
+          "offset": 4846624,
+          "bytes": 138918,
+          "sha256": "79e6e7c32722ea2ab9e792bce5025a74b322e91ff1d66544af043d71eb417f51"
+        }
+      ]
+    },
+    {
+      "tile": "s39w074",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s39w074.tif",
+      "header_sha256": "6ea64c9cb3564c30124a5459308cce1e83a9a7b18cb715533d69e0eab95c777e",
+      "sampled_blocks": [
+        {
+          "block": 5,
+          "offset": 2485679,
+          "bytes": 272328,
+          "sha256": "6f9bf679d69d4e3714289c0a634153fb65ce68a8adb3b63099ac86295564b3cd"
+        },
+        {
+          "block": 19,
+          "offset": 3905274,
+          "bytes": 146990,
+          "sha256": "d7127292068ba31463e7089424610a75af59ba2c88f52e980702a4528e95ff84"
+        },
+        {
+          "block": 45,
+          "offset": 6690302,
+          "bytes": 210629,
+          "sha256": "0a84b4a2f6211b1c6e881e35138d8a6598ae8dbf636c7dda6902a8719c930d9f"
+        },
+        {
+          "block": 44,
+          "offset": 6548535,
+          "bytes": 141759,
+          "sha256": "5ed0e7869a399f27227d99ac55356ce6ceb6924f951d48dd5b64010eb88ce9d1"
+        },
+        {
+          "block": 54,
+          "offset": 7335979,
+          "bytes": 210322,
+          "sha256": "8aa7153211c5b5d123936dba1c2a8b1c751d62ccbbe9966bcf51bf389002bfbd"
+        },
+        {
+          "block": 6,
+          "offset": 2758015,
+          "bytes": 253023,
+          "sha256": "07eba39594c6abf7e48f714f581654fd7791b4ee76a66661e5a4d419f36b027e"
+        }
+      ]
+    },
+    {
+      "tile": "s38w072",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s38w072.tif",
+      "header_sha256": "9e98df6aede9cfea2cc966e4f56464482600aca55be0de74300e0547c8923173",
+      "sampled_blocks": [
+        {
+          "block": 18,
+          "offset": 9720869,
+          "bytes": 277733,
+          "sha256": "cddcdf27c50f4368f57094863e677569c9f2ee23f57022aa67dec29b26be119a"
+        },
+        {
+          "block": 32,
+          "offset": 13143074,
+          "bytes": 175186,
+          "sha256": "0d64c27944e696c1e3102965a2eb2c9483147ef7454908a133680768d36bf4c6"
+        },
+        {
+          "block": 24,
+          "offset": 11166753,
+          "bytes": 170637,
+          "sha256": "b5b5e1fd2afe66d7646d0a0b3feb61fcfe975126ca49f579548d50a4670eddd7"
+        },
+        {
+          "block": 8,
+          "offset": 7412614,
+          "bytes": 163359,
+          "sha256": "92069a14e7b3a9c9a1132886990a6e984bf9897a9a01b51a1517fe1ef8e7c69f"
+        },
+        {
+          "block": 50,
+          "offset": 17768067,
+          "bytes": 307482,
+          "sha256": "88ec1f99f17a9b31bcdf025d7c52101a46931f3bc1397bb635e9028bcc06f864"
+        }
+      ]
+    },
+    {
+      "tile": "s39w073",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s39w073.tif",
+      "header_sha256": "de58818225f34fe0608082dfed702aac094ec2d280cf74601035923b64ef2de2",
+      "sampled_blocks": [
+        {
+          "block": 42,
+          "offset": 10492839,
+          "bytes": 151282,
+          "sha256": "00bb2654ff6a61b317d5990562228d1639c6270fd271c3131178b2269a7dba38"
+        },
+        {
+          "block": 54,
+          "offset": 12371929,
+          "bytes": 194698,
+          "sha256": "165c13d97fe02e0c86822e489e40369da844ab78056f1e8b681df8114ed40406"
+        },
+        {
+          "block": 50,
+          "offset": 11736886,
+          "bytes": 124228,
+          "sha256": "f56878e96a1d3aeca6a09a730112bf716fd94f528826fd4959253d2789bef26b"
+        },
+        {
+          "block": 17,
+          "offset": 6714220,
+          "bytes": 199107,
+          "sha256": "47bd7008aec089e268d961cf0cfe472a1fb3c7d2501233f1f63c985d38a868fe"
+        },
+        {
+          "block": 27,
+          "offset": 8294910,
+          "bytes": 138334,
+          "sha256": "7fdf7a3af0c4e88aad81f54da720b5e3a323726e1234e8ab00e22aaeb87946a8"
+        },
+        {
+          "block": 40,
+          "offset": 10235847,
+          "bytes": 128631,
+          "sha256": "16b5f2b5c201b31a52a0aa0638ba73c6596814b7ec2241324ebbcc9895e7f770"
+        },
+        {
+          "block": 20,
+          "offset": 7201204,
+          "bytes": 119761,
+          "sha256": "1a246ef493bd573613733f45c7acdb70add4ed1cb6307dd2fc4df55b287ae95a"
+        },
+        {
+          "block": 37,
+          "offset": 9853363,
+          "bytes": 170935,
+          "sha256": "c4f7406f25aa43b7fc1cb34bcfe053fe3b6bb68b20a374168a8230990c322e31"
+        },
+        {
+          "block": 33,
+          "offset": 9098009,
+          "bytes": 165377,
+          "sha256": "e2d7ba58b6d8c7d6ac58751503cdeaa9835c91be83211c7f65516ed1c432650a"
+        },
+        {
+          "block": 4,
+          "offset": 4681141,
+          "bytes": 171308,
+          "sha256": "d135d3bcc1462f97c4c102c21133b900795d4ca4e7caaef765b302bb2d6c8e78"
+        },
+        {
+          "block": 8,
+          "offset": 5204422,
+          "bytes": 244412,
+          "sha256": "bfc6eb1e3018f67fed29fcc180ea8dc2014c41be8c32286f6bd628ae6bbccc83"
+        },
+        {
+          "block": 10,
+          "offset": 5652367,
+          "bytes": 152505,
+          "sha256": "fab63e9b8a53b6084e6f0af93d4929dc485f200c9d2a38a6acf05ab6f41ab3db"
+        },
+        {
+          "block": 12,
+          "offset": 5999979,
+          "bytes": 141100,
+          "sha256": "52a8250441993f073ca245718622001e91e219ddbe651795c414727786d2836f"
+        }
+      ]
+    },
+    {
+      "tile": "s40w072",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s40w072.tif",
+      "header_sha256": "c583c3f577c583263a3e48d535f08c8898e8692549ce58106fb6bc298ddad73f",
+      "sampled_blocks": [
+        {
+          "block": 18,
+          "offset": 9810620,
+          "bytes": 277162,
+          "sha256": "76aed110b354dab0c679f4ac78b06c0d3256230ed69372f0737c0d0aed375c3e"
+        },
+        {
+          "block": 8,
+          "offset": 7311704,
+          "bytes": 269660,
+          "sha256": "2fac7db7c4992d35c78fd2072b05ceeace3575de34756feac6eb346cf13ded9f"
+        }
+      ]
+    },
+    {
+      "tile": "s40w073",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s40w073.tif",
+      "header_sha256": "101239dadd89a078380295d837e369496f3a01b3d4883cfcb4d7c41c84421c9a",
+      "sampled_blocks": [
+        {
+          "block": 2,
+          "offset": 4807767,
+          "bytes": 163724,
+          "sha256": "612d960a2c9a8df4205ca4ca2c5ba9b9be669f539f92353707367111ae82c517"
+        },
+        {
+          "block": 18,
+          "offset": 7588233,
+          "bytes": 220682,
+          "sha256": "cbd44aec8b52f04278c3396367be9bdf20b48d3c1b408106fa5e40c5acd5d24a"
+        },
+        {
+          "block": 21,
+          "offset": 8189374,
+          "bytes": 199500,
+          "sha256": "a81ba4224cbfc576125d5cdf188195d46c7f277e864e9e881fa580412eddc300"
+        },
+        {
+          "block": 25,
+          "offset": 8772688,
+          "bytes": 206697,
+          "sha256": "2d6040df1ef91f66a3f32e6f6069ff3273900fc212a50de6430fc7ed8a943211"
+        },
+        {
+          "block": 49,
+          "offset": 13342671,
+          "bytes": 217692,
+          "sha256": "b4284af82e23658176e1a00a1ca56ee2cc83e98ed1938986c15142ce45453c26"
+        },
+        {
+          "block": 32,
+          "offset": 10000978,
+          "bytes": 167389,
+          "sha256": "832ca723aa77cc63dcafc25453fb00abdfdbc4fa3dc5f7a775b7720763d8794d"
+        },
+        {
+          "block": 24,
+          "offset": 8586944,
+          "bytes": 185736,
+          "sha256": "f852d5127cedb849e46952d383db43d74c6162ae56be2aabb185c53ac0cbc265"
+        },
+        {
+          "block": 36,
+          "offset": 10875099,
+          "bytes": 153906,
+          "sha256": "f5e739e39bde8eab1d2ef307a590b5b375c291e5582f9a70bc1885d3c408de18"
+        }
+      ]
+    },
+    {
+      "tile": "s39w072",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s39w072.tif",
+      "header_sha256": "15c689938a3a4b7017833c428fcb3d144c2123bcfe2a29265d555b9755b2659e",
+      "sampled_blocks": [
+        {
+          "block": 42,
+          "offset": 15756489,
+          "bytes": 271262,
+          "sha256": "77dbf9e714d6d5fd527b9bfff8987502a2e56cd844946a3635a324283a7c5f6b"
+        },
+        {
+          "block": 24,
+          "offset": 11562909,
+          "bytes": 215034,
+          "sha256": "1920ed9100cb15a7bf7f3e06400b3adb155ad257a9de51b6baeeba2bab5a9015"
+        },
+        {
+          "block": 28,
+          "offset": 12604691,
+          "bytes": 280661,
+          "sha256": "334590fb2cfbf285fa07dc5c0fd056588c82331b155c60d9926dcd2745aad0db"
+        }
+      ]
+    },
+    {
+      "tile": "s40w074",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s40w074.tif",
+      "header_sha256": "3d680758404be9a981fd41760296428212cf04a0875b05c5241f962ca5ab036d",
+      "sampled_blocks": [
+        {
+          "block": 13,
+          "offset": 1859242,
+          "bytes": 79956,
+          "sha256": "0e11883db3cf1675c91c67cbdeed873930597f6def17ca186d6172a2fde0ac81"
+        },
+        {
+          "block": 45,
+          "offset": 3692873,
+          "bytes": 191551,
+          "sha256": "debd0986d95ba44dfee1be447472e8582175595ebeb88a2d8fe04e4ccb7b1ae5"
+        },
+        {
+          "block": 52,
+          "offset": 4342505,
+          "bytes": 206616,
+          "sha256": "b298fa1c61d5627c0938f09612b72cd57a789e2a45d6007b242d8715b92d910c"
+        }
+      ]
+    },
+    {
+      "tile": "s42w073",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s42w073.tif",
+      "header_sha256": "4ec9980423dc08c127f17c49ebcf5a76e7cfcfc4ca54dc688beb4c74e4de509a",
+      "sampled_blocks": [
+        {
+          "block": 24,
+          "offset": 8687266,
+          "bytes": 73549,
+          "sha256": "3d339691e20c8dba085081f5f1dbdd1212802d3a90ef677d23321227e56e3f8c"
+        },
+        {
+          "block": 36,
+          "offset": 10979625,
+          "bytes": 212501,
+          "sha256": "7a34070b5aeffba9f010891798c0513d5a76eec0f55e9f571d7f0a708170ea43"
+        },
+        {
+          "block": 16,
+          "offset": 6855886,
+          "bytes": 106053,
+          "sha256": "30cb900a9a67b643d1975bb918e84cf8fddbf90dcd09cc483933689bf24c3c94"
+        },
+        {
+          "block": 51,
+          "offset": 13769170,
+          "bytes": 261640,
+          "sha256": "9cb9c1db300991ec82279307b580120001d35b26b4402cf35f5605236c64fbb6"
+        }
+      ]
+    },
+    {
+      "tile": "s42w074",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s42w074.tif",
+      "header_sha256": "6996f4b2ebcdb9590771ea07be3f1eafe47cc9000aaaadd268ed4b36b4eefbc1",
+      "sampled_blocks": [
+        {
+          "block": 46,
+          "offset": 7738958,
+          "bytes": 91682,
+          "sha256": "1ba28776ae235ae99a8004ee232b2032171e10de95ad924efb7ef96e5fbe3e39"
+        },
+        {
+          "block": 12,
+          "offset": 4601486,
+          "bytes": 129760,
+          "sha256": "2c89a53db21e60fdb36a48ce0d93791559a22822f65b97d04de9d41e913b5db7"
+        },
+        {
+          "block": 6,
+          "offset": 3752638,
+          "bytes": 113891,
+          "sha256": "acae57dbd0bd7d0068772a72c394e826770c935a03748152490b6d9768159af6"
+        },
+        {
+          "block": 19,
+          "offset": 5416501,
+          "bytes": 146804,
+          "sha256": "b42535a97ff6fe9282ce76b33e26599bb45726be31db5997f1a3dc665b2edc61"
+        },
+        {
+          "block": 14,
+          "offset": 4855543,
+          "bytes": 132767,
+          "sha256": "b021c4b3d62c1c1e06198e1eaeea7fb13f43ba2645cdd12245bdc4bb2d2156ff"
+        },
+        {
+          "block": 34,
+          "offset": 6817119,
+          "bytes": 75755,
+          "sha256": "cfc8ad374622b22200a2527c55d099828debf8e742904ddc667e633bb06f7216"
+        },
+        {
+          "block": 49,
+          "offset": 8014616,
+          "bytes": 136858,
+          "sha256": "9554935ccbb6b777a848a8eb5e71e177b531316787042dade8efc97b6a2f0861"
+        }
+      ]
+    },
+    {
+      "tile": "s43w074",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s43w074.tif",
+      "header_sha256": "496df1e1e415da29d9b8a9f96228bd226e03b562a6d077fd1478dd7e35720e18",
+      "sampled_blocks": [
+        {
+          "block": 25,
+          "offset": 4759638,
+          "bytes": 187844,
+          "sha256": "2ea645bbe1f7edea149068436bb48dcd929ecf4bf53072b5d060bddd86dcaa62"
+        },
+        {
+          "block": 33,
+          "offset": 5381640,
+          "bytes": 130048,
+          "sha256": "1685cff13a0941d793d8c2895bfc862a6eafd193c137e483cb43b1b779a26c95"
+        },
+        {
+          "block": 26,
+          "offset": 4947490,
+          "bytes": 113133,
+          "sha256": "e4a0e92d77bf70f7ef1005bae5ad6f226014936b9ca33b6506041bb361f17bd6"
+        },
+        {
+          "block": 18,
+          "offset": 4109748,
+          "bytes": 149055,
+          "sha256": "229c201b6e5e238ff1c4011aea62f8569731b11579703be34c211e8f8499cc07"
+        },
+        {
+          "block": 34,
+          "offset": 5511696,
+          "bytes": 104735,
+          "sha256": "99a8611262273b2c8ba4cf422b40308a818b3b52fb1cf323ff8b50986c987c66"
+        },
+        {
+          "block": 51,
+          "offset": 6815978,
+          "bytes": 104641,
+          "sha256": "50c1eb2d1decd191380ce019b81c67f8c8b62c19a9e2cde998caf40cd93934b0"
+        },
+        {
+          "block": 11,
+          "offset": 3395874,
+          "bytes": 150639,
+          "sha256": "df20e55980c80068aa0925fe4656540341ec6cbe615abfecc803548e1aac6cd0"
+        },
+        {
+          "block": 27,
+          "offset": 5060631,
+          "bytes": 76682,
+          "sha256": "016afc25edfa9a2b215d0a2f6e493b561da7c0e5dfb5ca378e77f889d2a71ae5"
+        }
+      ]
+    },
+    {
+      "tile": "s44w074",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s44w074.tif",
+      "header_sha256": "c1c4dd96d6ae5201bea8d5d0f650153a1ccbc3b6fb543bcb427731ea18c63c9a",
+      "sampled_blocks": [
+        {
+          "block": 2,
+          "offset": 1387622,
+          "bytes": 177011,
+          "sha256": "ba60d3fef4f78633082fe77d1a735fa7199f24152774eb31547fd898b22fec7a"
+        },
+        {
+          "block": 49,
+          "offset": 2834881,
+          "bytes": 102356,
+          "sha256": "32d454194b5215d8becfde333d3832476d53435629cda8385a221f79b6cf4b31"
+        }
+      ]
+    },
+    {
+      "tile": "s41w074",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s41w074.tif",
+      "header_sha256": "24a7e68ac8e33af086cdfc6b890eb869b512c964db1365891e89e7ff68e30703",
+      "sampled_blocks": [
+        {
+          "block": 38,
+          "offset": 9289433,
+          "bytes": 123604,
+          "sha256": "ed3ccf8c86654702b84ce62d3c6e45d78d516314dd903afe046ee1da7a351c5a"
+        },
+        {
+          "block": 53,
+          "offset": 11646512,
+          "bytes": 140798,
+          "sha256": "5b6ec074361e0198dab64a21acc16fbabb4ad136686540d3f6e77a8d252d4683"
+        },
+        {
+          "block": 45,
+          "offset": 10385881,
+          "bytes": 140395,
+          "sha256": "44eca77b0ade33755c5d990aff79bfc322528a030c6e094550f3d2d7abea580d"
+        },
+        {
+          "block": 35,
+          "offset": 8716931,
+          "bytes": 223224,
+          "sha256": "b08aa80ad878079639115ba1375697e39356c219eae5fc1d19c7b1a91a3d7496"
+        },
+        {
+          "block": 22,
+          "offset": 7091065,
+          "bytes": 137057,
+          "sha256": "ef00c53eea42c236f5a04ef8182af41a490774ef7793869a6afd31dbc373213a"
+        }
+      ]
+    },
+    {
+      "tile": "s41w073",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s41w073.tif",
+      "header_sha256": "1496535acd50883a39f5202f857c841f3e5039873eae92fd9d17d68284418a22",
+      "sampled_blocks": [
+        {
+          "block": 48,
+          "offset": 12002160,
+          "bytes": 127374,
+          "sha256": "02bc67f2f8dcb8d7fe8f8421d9efdc757f6a04b87c8a5db58839bba2f586e8f8"
+        },
+        {
+          "block": 34,
+          "offset": 9734470,
+          "bytes": 140864,
+          "sha256": "93390c9f1377fc1125aad47230c63ce454fbbaa2ae9648c5d2b52f567b5225e6"
+        },
+        {
+          "block": 0,
+          "offset": 4069838,
+          "bytes": 195495,
+          "sha256": "73f0600819e1f3d49ee64278551016b1965a81f7cbea2b935f02de1be2ac0643"
+        },
+        {
+          "block": 4,
+          "offset": 4748500,
+          "bytes": 262445,
+          "sha256": "1e4e13f7e09ed4998e8fc51f86baef43190753ee6d7c91ad7d0ebf1b4fe50eca"
+        },
+        {
+          "block": 19,
+          "offset": 7119629,
+          "bytes": 173886,
+          "sha256": "60c99c8cac862ee526a7b27445048eb7895e0b34108f7749c2a3484ffba9c678"
+        },
+        {
+          "block": 16,
+          "offset": 6730704,
+          "bytes": 121146,
+          "sha256": "e767f6cf44fb6ced35ea9e74ee38f488e21be2edb727d8163f3eb637ac75a684"
+        }
+      ]
+    },
+    {
+      "tile": "s43w073",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s43w073.tif",
+      "header_sha256": "6a2a2065e12cdab0c5066f8808b5b8f53c2c18fa469a87a1a46e7fecce56dfd0",
+      "sampled_blocks": [
+        {
+          "block": 50,
+          "offset": 14089926,
+          "bytes": 282576,
+          "sha256": "85695799270ec8ed39b4600718112ac6cb23bc85d77852954f60dc51c57d3dff"
+        }
+      ]
+    },
+    {
+      "tile": "s44w072",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s44w072.tif",
+      "header_sha256": "3ebca193150545c0365bf2659da069e4797e7e994e24f783d3ae9dfe03b380a5",
+      "sampled_blocks": [
+        {
+          "block": 8,
+          "offset": 6669102,
+          "bytes": 300543,
+          "sha256": "71c7c869f4efc603dfb83900a4917a8347f0a7c7cff79e6db83954ab33ae3ada"
+        },
+        {
+          "block": 33,
+          "offset": 12238102,
+          "bytes": 286884,
+          "sha256": "5a47479312907d3f0361a4546eb31d93794365228c41bab8c284fb82bc6bf48e"
+        }
+      ]
+    },
+    {
+      "tile": "s46w073",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s46w073.tif",
+      "header_sha256": "ddb0c25737bbe59b8c55ef62a5bc18068e2ef3a84866256f5cd13cb3588abb1b",
+      "sampled_blocks": [
+        {
+          "block": 38,
+          "offset": 15815207,
+          "bytes": 222438,
+          "sha256": "324b6ccd90ba7fb7c8dd15d80e87dc02ca8e673235d0d0541ddeaebac1fb2687"
+        },
+        {
+          "block": 18,
+          "offset": 10563921,
+          "bytes": 232371,
+          "sha256": "99a1dfa19349863832c97801fea41473aed6c547be356f93f1bc33e0c93bf536"
+        }
+      ]
+    },
+    {
+      "tile": "s45w072",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s45w072.tif",
+      "header_sha256": "39f84e0d493c69a29a444c604447feac89ad443171e876e01bcce8e1d8f5df25",
+      "sampled_blocks": [
+        {
+          "block": 9,
+          "offset": 6417535,
+          "bytes": 261389,
+          "sha256": "bd400035c18f2ab0bdc5159cfc6fab9c0ca84536d9b53550e0596d02628613fb"
+        }
+      ]
+    },
+    {
+      "tile": "s45w073",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s45w073.tif",
+      "header_sha256": "a027d38ab7e11040d3eebba8d0913a2e68c7563d7554215a41193f0bd8e51c3f",
+      "sampled_blocks": [
+        {
+          "block": 42,
+          "offset": 16385407,
+          "bytes": 273451,
+          "sha256": "feba5046fa17bda106c9815d295a10e573e2722f884256817b30f0aa7d58bb36"
+        }
+      ]
+    },
+    {
+      "tile": "s48w073",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s48w073.tif",
+      "header_sha256": "bad76f5fa0fbdcf5b835824eb3746a047716f960b5435e4fc27db09c2f161c95",
+      "sampled_blocks": [
+        {
+          "block": 11,
+          "offset": 8090123,
+          "bytes": 225309,
+          "sha256": "3044b5d0c172e45c70c37e1a4c0f5f8ec05b99f4710d81aea7842492991b2250"
+        }
+      ]
+    },
+    {
+      "tile": "s49w073",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s49w073.tif",
+      "header_sha256": "d51dc13acbdf8f0549b1e46e930550e4d0872a15321ff14e99c3e9c8d15c6643",
+      "sampled_blocks": [
+        {
+          "block": 27,
+          "offset": 11577617,
+          "bytes": 281479,
+          "sha256": "10e03c1a791e44a3981adfc118a11dd61a951f4ef79f786cee467deaf497e329"
+        }
+      ]
+    },
+    {
+      "tile": "s48w074",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s48w074.tif",
+      "header_sha256": "f791c29b8ee54d5104f2668faba0023ae76768e30bc3cdb776194fabecf43209",
+      "sampled_blocks": [
+        {
+          "block": 43,
+          "offset": 16173672,
+          "bytes": 273251,
+          "sha256": "89eefb9afd907440351d4a802beb1ffb6a4dff61a0437ba8a83e1fd155efc8b2"
+        }
+      ]
+    },
+    {
+      "tile": "s47w072",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s47w072.tif",
+      "header_sha256": "dfa482efdb8d93798da2d4c06b041d27ae8fb1ba2fe01a8b5a17e68fb94d4878",
+      "sampled_blocks": [
+        {
+          "block": 25,
+          "offset": 7273154,
+          "bytes": 107036,
+          "sha256": "394f4732beac099c8a273f300a75d5b898515df629dff964edea472eff60445d"
+        },
+        {
+          "block": 16,
+          "offset": 6323127,
+          "bytes": 184069,
+          "sha256": "d7c030866884590c99bccba4d46026053893ed23bcf9b62e4bcbdf81630a8012"
+        }
+      ]
+    },
+    {
+      "tile": "s54w071",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s54w071.tif",
+      "header_sha256": "6c42cd04a6050c0e6f149ca46d8720e16aa7d055a27e32a01adec36f035dc025",
+      "sampled_blocks": [
+        {
+          "block": 8,
+          "offset": 1969810,
+          "bytes": 73354,
+          "sha256": "4e36802255d52f58a2790970d40169b5552bacf2a14d1fa00ffd4bafa21d07bd"
+        },
+        {
+          "block": 20,
+          "offset": 2461576,
+          "bytes": 86871,
+          "sha256": "65c78182b332d1b2b36b6832385123f85c00cc21a2bc910890cdbc0a8a741522"
+        }
+      ]
+    },
+    {
+      "tile": "s53w072",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s53w072.tif",
+      "header_sha256": "52c10942cfa38f967e623d6e5c9bb2ac50e3b6efeaebf4546646c1bb6ff9fb09",
+      "sampled_blocks": [
+        {
+          "block": 28,
+          "offset": 5879676,
+          "bytes": 87836,
+          "sha256": "158327739551fc1c55a4f586599c45a932689086ef16bc17c0b332d60b8b8bae"
+        },
+        {
+          "block": 35,
+          "offset": 6233165,
+          "bytes": 80841,
+          "sha256": "d327ecab148364c10201c70c531518369476aa9be153565433eaac08b7845847"
+        }
+      ]
+    },
+    {
+      "tile": "s53w070",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s53w070.tif",
+      "header_sha256": "891eca42ee43c5b010c4ba0f1fe92be6650ed5c30e072dcb700fbb6c9df200db",
+      "sampled_blocks": [
+        {
+          "block": 18,
+          "offset": 3262406,
+          "bytes": 91021,
+          "sha256": "870dd660ec00cc85f6c8ee36e386c6e73e11fbc50260b9c326ae07916aee6af2"
+        },
+        {
+          "block": 44,
+          "offset": 4133980,
+          "bytes": 90404,
+          "sha256": "976cb26dc68116fac3af5157a4306dd43faf1f1bd2a41d716f7b101635067708"
+        }
+      ]
+    },
+    {
+      "tile": "s55w068",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s55w068.tif",
+      "header_sha256": "6f17f8d331ffe747f63d4bb3ade9f74a0b300fdc458fb16c96ee87f678d64dde",
+      "sampled_blocks": [
+        {
+          "block": 50,
+          "offset": 9719645,
+          "bytes": 149076,
+          "sha256": "7b45d5f7ee6a76352e479169ae11acdcd2dfc0d5b0073ace3a73fc3616553504"
+        }
+      ]
+    },
+    {
+      "tile": "s54w070",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s54w070.tif",
+      "header_sha256": "6a2cd911f6dc2da6268802aba7c37b92471bb033994d17b213c726e164107786",
+      "sampled_blocks": [
+        {
+          "block": 34,
+          "offset": 4950767,
+          "bytes": 63048,
+          "sha256": "1c8af587a3f5f909124c3c299b755c4a5ce42fde8e1bff6a45f88a26111fe7ef"
+        }
+      ]
+    },
+    {
+      "tile": "s52w073",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s52w073.tif",
+      "header_sha256": "f0f7aa5bf94d422471f62ea01f4f9afd6a6d5d4af1a247b04fb80763d06ae1a1",
+      "sampled_blocks": [
+        {
+          "block": 43,
+          "offset": 9927457,
+          "bytes": 62034,
+          "sha256": "db0c4801b6654b6ead6f57c8ac8e1a51281fbd4dc56fbcf11900c3fb093f8bf5"
+        },
+        {
+          "block": 12,
+          "offset": 5079044,
+          "bytes": 197823,
+          "sha256": "efc3ebbf7555282113b81e1747fe77f1476645ee5a76ccfa02484182ae0a4984"
+        }
+      ]
+    },
+    {
+      "tile": "s19w071",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s19w071.tif",
+      "header_sha256": "45c826cd3f5d0838d4c4f253910dc087748e0720c4cbe1429548815e744cd8a7",
+      "sampled_blocks": [
+        {
+          "block": 28,
+          "offset": 5034710,
+          "bytes": 58842,
+          "sha256": "0f96ef1f1b8508eba5438372cbf187e7d6624dfbd8510ef4b7a6bc02eee7db8d"
+        }
+      ]
+    },
+    {
+      "tile": "s20w071",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s20w071.tif",
+      "header_sha256": "6a377b25800057c61b3381b8e7d9f15e002c7ca8bed5ee71b4da516497543ed7",
+      "sampled_blocks": [
+        {
+          "block": 13,
+          "offset": 1627598,
+          "bytes": 259228,
+          "sha256": "a4dc4792495908c87483856684b49cee88765028332e95ddcb08c3ab023a3b33"
+        }
+      ]
+    },
+    {
+      "tile": "s19w070",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s19w070.tif",
+      "header_sha256": "700f51074b388cbfbc15f701c3b76c5d1209a23c24345c302478295209998677",
+      "sampled_blocks": [
+        {
+          "block": 11,
+          "offset": 8394089,
+          "bytes": 310291,
+          "sha256": "201edf95461086b72aacad9f72c9fb9d94dbf5e038b16e13a25734fde62fee61"
+        }
+      ]
+    },
+    {
+      "tile": "s18w070",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s18w070.tif",
+      "header_sha256": "9f09b1368a5142566eab855fae8683255a04597fa020a4ffb3ab7f7177c82164",
+      "sampled_blocks": [
+        {
+          "block": 35,
+          "offset": 12343436,
+          "bytes": 197982,
+          "sha256": "c3ba47b0e6244ca4e9a373c9002b69d260f0969dc13a7d3a72042307c335f510"
+        }
+      ]
+    },
+    {
+      "tile": "s24w068",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s24w068.tif",
+      "header_sha256": "e13f56623ad8c2d0c42e66af4f827be9c496af5258fdc1b4ae7ead2ce327c243",
+      "sampled_blocks": [
+        {
+          "block": 1,
+          "offset": 5128714,
+          "bytes": 268623,
+          "sha256": "0dd4509802d5cf97b0f9924ba4b4ffd22392df4a74d3044c03223ed7fcd49b79"
+        },
+        {
+          "block": 13,
+          "offset": 7737557,
+          "bytes": 181353,
+          "sha256": "d4999fa5a8934245d0aad9ca9f8b56b6b98061263967844facb24db7ed54dcdc"
+        }
+      ]
+    },
+    {
+      "tile": "s25w071",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s25w071.tif",
+      "header_sha256": "300ad83c0033c75a11bf30f525121af54feec232ce83687dfde2117992572e13",
+      "sampled_blocks": [
+        {
+          "block": 21,
+          "offset": 5441006,
+          "bytes": 279171,
+          "sha256": "30506fe92108dce2ca68654df50758bce728fcb33db144f88cc6c330540de2c9"
+        },
+        {
+          "block": 30,
+          "offset": 6795921,
+          "bytes": 287051,
+          "sha256": "5e732be740501d1c101bb3a2d3c86e3b87286c04d19468f6ad27fdc524933050"
+        },
+        {
+          "block": 37,
+          "offset": 7666111,
+          "bytes": 237713,
+          "sha256": "0e844aeada2e5599cea5065bbe654fde18cb4918a6b164a372d8ce3802695dae"
+        },
+        {
+          "block": 36,
+          "offset": 7412231,
+          "bytes": 253872,
+          "sha256": "5c69aafa6e01c3703be5d131bb24ab8e40fa0005acd81af7e2bacb532e273346"
+        }
+      ]
+    },
+    {
+      "tile": "s30w071",
+      "url": "https://opentopography.s3.sdsc.edu/raster/NASADEM/NASADEM_be/NASADEM_HGT_s30w071.tif",
+      "header_sha256": "2e603fc12d10b38054c6b507930cc74432b27b38c5c43a03b7f35aa3574fadde",
+      "sampled_blocks": [
+        {
+          "block": 2,
+          "offset": 6631648,
+          "bytes": 303447,
+          "sha256": "06c35b8f4895f8a58a9d85853b14d67cb8c4fbfd8a6bedd859e1bc87f3a07734"
+        },
+        {
+          "block": 9,
+          "offset": 8620343,
+          "bytes": 300910,
+          "sha256": "33015bd7146d716c7ccc4036a68eae93d97fc1275f1c208b5526a5cfbffac8d9"
+        }
+      ]
+    }
+  ]
+}
