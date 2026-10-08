@@ -43,6 +43,7 @@ class ReferencePlaneAnnotation:
     state: str = "none"
     label: str = ""
     anchor: tuple[float, float] | None = None
+    label_repeat_length_factor: float = 5.0
 
     def __post_init__(self):
         state = str(self.state).strip().lower()
@@ -56,6 +57,10 @@ class ReferencePlaneAnnotation:
             raise ValueError("A labeled reference plane requires text.")
         object.__setattr__(self, "state", state)
         object.__setattr__(self, "label", label)
+        factor = float(self.label_repeat_length_factor)
+        if not isfinite(factor) or factor <= 0.0:
+            raise ValueError("label_repeat_length_factor must be finite and positive.")
+        object.__setattr__(self, "label_repeat_length_factor", factor)
         object.__setattr__(
             self,
             "anchor",

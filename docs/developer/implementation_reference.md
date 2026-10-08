@@ -1,5 +1,18 @@
 # Wenu implementation reference
 
+Regional v10 reference placement measures the visible contiguous curve and
+its rendered label width in final display units. Automatic names search near
+the curve ends; when length exceeds `label_repeat_length_factor` (default 5)
+times text width, independent end windows supply two labels. Full text must
+fit the sky boundary. Tangents, normal offsets, explicit anchors, polar
+reference policy and temporal annotations retain their existing owners.
+Schema-v2 `grids_references.references.label_repeat_length_factor` translates
+through furniture and survives CLI reference selection. Coordinate latitude
+lists now use symmetric multiples of their interval from zero; equatorial
+grids include zero declination even without a separately requested reference.
+The 70-degree regional review requests `--declination-step 15` explicitly.
+Automatic density thresholds remain unchanged; no new module is introduced.
+
 The La Ligua v6 follow-up requires full constellation-text containment
 inside the prepared visible IAU region and sky boundary. Names with no fitting
 candidate are omitted, including fixed names; fixed candidates are not moved.

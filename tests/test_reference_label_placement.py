@@ -656,3 +656,78 @@ def test_polar_declination_ticks_are_short_projected_furniture(
     assert all(len(curve.x) == 2 for curve in ticks)
     assert all(len(curve.y) == 2 for curve in ticks)
     assert all(curve.closed is False for curve in ticks)
+
+
+@pytest.mark.parametrize('dpi', [100, 300])
+@pytest.mark.parametrize('fontsize,factor,count', [(6, 5, 2), (12, 5, 1), (6, 20, 1)])
+def test_reference_end_labels_use_measured_length_and_stay_in_their_end_windows(dpi, fontsize, factor, count):
+    from wenu.charts.context import BoundaryKind
+    from wenu.charts.reference_furniture import BoundaryAwareReferenceAnchor, _SingleReferenceLabelAnchor
+    from wenu.geometry.viewport import Viewport
+
+    fig, ax = plt.subplots(figsize=(6, 4), dpi=dpi)
+    ax.set(xlim=(-1, 1), ylim=(-.6, .6), aspect='equal')
+    context = SimpleNamespace(viewport=Viewport(-1, 1, -.6, .6),
+                              boundary_kind=BoundaryKind.RECTANGULAR, clip_boundary=None)
+    curve = ProjectedCurve(np.linspace(-.98, .98, 301), np.zeros(301), name='Celestial equator')
+    anchor = _SingleReferenceLabelAnchor(BoundaryAwareReferenceAnchor(context),
+               near_ends=True, movable=True, label=curve.name, font_size=fontsize,
+               label_repeat_length_factor=factor)
+    renderer = MatplotlibRenderer(ax)
+    renderer.draw(ProjectedGrid({'parallel': ProjectedCurves([curve])}),
+                  draw_labels=True, label_anchor=anchor,
+                  label_style={'fontsize': fontsize, 'ha': 'center', 'va': 'center'})
+    renderer.finalize_graphics()
+    texts = [text for text in ax.texts if text.get_visible()]
+    assert len(texts) == count
+    assert texts[0].get_position()[0] < 0
+    if count == 2:
+        assert texts[0].get_position()[0] < -.5
+        assert texts[1].get_position()[0] > .5
+        assert not texts[0].get_window_extent(fig.canvas.get_renderer()).overlaps(
+            texts[1].get_window_extent(fig.canvas.get_renderer()))
+    for text in texts:
+        box = text.get_window_extent(fig.canvas.get_renderer())
+        viewport = ax.get_window_extent()
+        assert viewport.contains(box.x0, box.y0) and viewport.contains(box.x1, box.y1)
+        assert text.get_rotation() == 0
+    positions = [text.get_position() for text in texts]
+    renderer.finalize_graphics()
+    assert [text.get_position() for text in texts] == positions
+    plt.close(fig)
+
+
+def test_reference_end_search_never_measures_across_a_disconnected_gap():
+    from wenu.charts.context import BoundaryKind
+    from wenu.charts.reference_furniture import BoundaryAwareReferenceAnchor, _SingleReferenceLabelAnchor
+    from wenu.geometry.viewport import Viewport
+
+    fig, ax = plt.subplots(figsize=(6, 4))
+    ax.set(xlim=(-1, 1), ylim=(-1, 1))
+    context = SimpleNamespace(viewport=Viewport(-1, 1, -1, 1),
+                              boundary_kind=BoundaryKind.RECTANGULAR, clip_boundary=None)
+    x = np.r_[np.linspace(-.95, -.7, 20), np.nan, np.linspace(-.4, .95, 100)]
+    curve = ProjectedCurve(x, np.zeros_like(x), name='Reference')
+    anchor = _SingleReferenceLabelAnchor(BoundaryAwareReferenceAnchor(context),
+                                        near_ends=True, label=curve.name, font_size=6)
+    placements = anchor(curve, ax)
+    assert placements
+    for placement in placements:
+        assert all(candidate.x >= -.4 for candidate in anchor.candidates_for_anchor(curve, placement, ax))
+    plt.close(fig)
+
+
+def test_complete_closed_reference_retains_one_anchor_instead_of_fake_ends():
+    from wenu.charts.context import BoundaryKind
+    from wenu.charts.reference_furniture import BoundaryAwareReferenceAnchor, _SingleReferenceLabelAnchor
+    from wenu.geometry.viewport import Viewport
+    fig, ax = plt.subplots()
+    ax.set(xlim=(-1, 1), ylim=(-1, 1), aspect='equal')
+    context = SimpleNamespace(viewport=Viewport(-1, 1, -1, 1),
+                              boundary_kind=BoundaryKind.RECTANGULAR, clip_boundary=None)
+    angles = np.linspace(0, 2 * np.pi, 101)
+    curve = ProjectedCurve(.6 * np.cos(angles), .6 * np.sin(angles), closed=True, name='Reference')
+    anchor = _SingleReferenceLabelAnchor(BoundaryAwareReferenceAnchor(context), near_ends=True, label=curve.name)
+    assert isinstance(anchor(curve, ax), CurveLabelPlacement)
+    assert anchor(curve, ax) is None
+    plt.close(fig)

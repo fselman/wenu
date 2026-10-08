@@ -86,12 +86,17 @@ retain their individual catalogue identities.
 
 The celestial equator, ecliptic and Galactic equator move only along the
 same contiguous projected curve segment, recomputing the local tangent and
-retaining the normal offset. Explicitly supplied reference anchors remain
+retaining the normal offset. On non-polar charts the search is restricted to
+windows near the visible curve ends. A curve longer than five rendered text
+widths gets a label near each end; shorter curves get one. Each copy stays
+within its own end window, and labels with no fully contained candidate are
+omitted. Explicitly supplied reference anchors remain
 fixed. Coordinate-grid labels keep their agreed anchors and act as obstacles.
 Planet and small-body track dates retain their established anchors and
 orientation and remain fixed obstacles. Titles, legends and sequence
 annotations also stay fixed. Fixed stellar placement keeps constellation anchors fixed but still validates
-contained text boxes. Reference-label behavior remains unchanged.
+contained text boxes. Automatic reference-end search also runs with fixed
+stellar placement; explicitly supplied reference anchors stay fixed.
 
 Further work includes grid-specific alternatives that respect their assigned
 spokes or margins, stronger search, curved glyph placement and CLI diagnostic
@@ -271,3 +276,24 @@ replacing σ Sco–δ Sco; all other figure connections remain unchanged.
 Scorpius connections are stored as independent edge records because the
 legacy reader connects consecutive identifiers. This prevents an unintended
 π Sco–β¹ Sco bridge when replacing σ Sco–δ Sco with σ Sco–β¹ Sco.
+
+## Reference repetition and uniform declination intervals
+
+The repetition factor is configurable in a schema-version-2 overlay:
+
+```toml
+[grids_references.references]
+label_repeat_length_factor = 5.0
+```
+
+The factor compares visible contiguous arc length with rendered text width,
+not angular span or character count. Changing font size or output scale is
+therefore accounted for. Automatic endpoint search does not join disconnected
+curve fragments. Explicit anchors and polar-planisphere reference placement
+retain their previous behavior. Date annotations on tracks are unchanged.
+Complete closed loops have no endpoints and retain one automatic label.
+
+Request `--declination-step 15` for the 70-degree Sco/Sgr/Oph regional chart.
+Equatorial grids include the celestial equator and use symmetric declination
+multiples from zero, so all adjacent parallels have the requested interval.
+A separately requested equator name remains reference furniture.

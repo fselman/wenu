@@ -222,17 +222,84 @@ def _explicit_anchor(position, reservations=None):
 
 
 class _SingleReferenceLabelAnchor:
-    """Return at most one successful anchor for a semantic reference."""
+    """Keep legacy explicit/polar anchors or search visible curve ends."""
 
-    def __init__(self, delegate, *, down_toward=None, movable=False):
+    def __init__(self, delegate, *, down_toward=None, movable=False,
+                 near_ends=False, label="", font_size=10.0,
+                 label_repeat_length_factor=5.0):
         self.delegate = delegate
         self.down_toward = down_toward
         self.used = False
         self.movable = movable
+        self.near_ends = near_ends
+        self.label = label
+        self.font_size = font_size
+        self.label_repeat_length_factor = label_repeat_length_factor
+        self._endpoint_candidates = ()
+
+    def _visible_end_candidates(self, curve, ax):
+        """Measure one contiguous visible arc and reserve independent ends."""
+        from matplotlib.font_manager import FontProperties
+        from matplotlib.path import Path
+
+        ax.apply_aspect()
+        context = self.delegate.context
+        viewport = context.viewport
+        points = np.column_stack((curve.x, curve.y))
+        inside = (curve.finite & (curve.x >= viewport.x_min)
+                  & (curve.x <= viewport.x_max) & (curve.y >= viewport.y_min)
+                  & (curve.y <= viewport.y_max))
+        boundary = context.clip_boundary
+        if boundary is not None:
+            vertices = np.column_stack((boundary.x[boundary.finite], boundary.y[boundary.finite]))
+            inside &= Path(np.vstack((vertices, vertices[0]))).contains_points(points)
+        if curve.closed and np.all(inside):
+            return None  # A complete closed loop has no visible endpoints.
+        indices = np.flatnonzero(inside)
+        if len(indices) < 2:
+            return ()
+        runs = np.split(indices, np.flatnonzero(np.diff(indices) > 1) + 1)
+        display = ax.transData.transform(points)
+        runs = [run for run in runs if len(run) >= 2]
+        if not runs:
+            return ()
+        run = max(runs, key=lambda run: np.linalg.norm(np.diff(display[run], axis=0), axis=1).sum())
+        distances = np.r_[0.0, np.cumsum(np.linalg.norm(np.diff(display[run], axis=0), axis=1))]
+        length = distances[-1]
+        width, _, _ = ax.figure.canvas.get_renderer().get_text_width_height_descent(
+            self.label, FontProperties(size=self.font_size), ismath=False,
+        )
+        if width <= 0.0 or length <= 0.0:
+            return ()
+        sides = (False, True) if length > self.label_repeat_length_factor * width else (False,)
+        groups = []
+        for reverse in sides:
+            from_end = length - distances if reverse else distances
+            lower = min(width * .65 + 2.0 * ax.figure.dpi / 72.0, length / 2.0)
+            upper = min(max(lower, width * 1.5), length * .25)
+            upper = max(lower, upper)
+            selected = []
+            for target in np.linspace(lower, upper, 25):
+                index = int(run[np.argmin(np.abs(from_end - target))])
+                if index not in selected:
+                    selected.append(index)
+            groups.append(tuple(tangent_label_placement(
+                curve, tuple(points[index]), normal_offset_em=.75,
+                down_toward=self.down_toward,
+            ) for index in selected))
+        return tuple(groups)
 
     def __call__(self, curve, ax=None):
         if self.used:
             return None
+        if self.near_ends and ax is not None:
+            groups = self._visible_end_candidates(curve, ax)
+            if groups is not None:
+                self._endpoint_candidates = groups
+                if not groups:
+                    return None
+                self.used = True
+                return [group[0] for group in groups]
         anchor = self.delegate(curve, ax)
         if anchor is not None:
             self.used = True
@@ -243,6 +310,13 @@ class _SingleReferenceLabelAnchor:
                 down_toward=self.down_toward,
             )
         return None
+
+    def candidates_for_anchor(self, curve, anchor, ax=None):
+        """Keep a repeated label within the search window of its own end."""
+        if self.near_ends and ax is not None and self._endpoint_candidates:
+            return min(self._endpoint_candidates, key=lambda group:
+                       np.hypot(group[0].x - anchor.x, group[0].y - anchor.y))
+        return self.candidates(curve, ax)
 
     def candidates(self, curve, ax=None):
         if not self.movable or not isinstance(self.delegate, BoundaryAwareReferenceAnchor):
@@ -275,6 +349,8 @@ def _label_anchor(
     *,
     down_toward=None,
     movable=False,
+    near_ends=False,
+    font_size=10.0,
 ):
     if annotation.anchor is not None:
         delegate = _explicit_anchor(annotation.anchor, reservations)
@@ -288,6 +364,10 @@ def _label_anchor(
         delegate,
         down_toward=down_toward,
         movable=movable,
+        near_ends=near_ends and annotation.anchor is None,
+        label=annotation.label,
+        font_size=font_size,
+        label_repeat_length_factor=annotation.label_repeat_length_factor,
     )
 
 
@@ -545,6 +625,8 @@ def _reference_layer_options(reference_sky, composition, chart):
             reservations,
             down_toward=down_toward,
             movable=style.star_label_placement == "auto",
+            near_ends=getattr(chart, "chart_type", None) != "polar_planisphere",
+            font_size=render["label_style"].get("fontsize", 10.0),
         )
         label_style = dict(render["label_style"])
         label_style["zorder"] = layers.LABELS

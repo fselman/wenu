@@ -369,3 +369,9 @@ See [explicit star labels and discrepancy reports](styles_modes_detail.md#explic
 for CLI/TOML examples and precedence. `[detail.star_labels]` owns selector
 lists; `[reports].stellar_designations` enables optional static-chart notes.
 `[styles.atlas.stars.labels]` and `[styles.cartoon.stars.labels]` own appearance.
+
+Celestial-reference repetition uses the positive numeric setting
+`grids_references.references.label_repeat_length_factor`, default `5.0`.
+Automatic non-polar labels search near visible curve ends; repeat at both
+ends when the contiguous visible arc exceeds this many rendered text widths.
+Explicit anchors and polar reference furniture preserve their established policy.

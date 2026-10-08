@@ -128,6 +128,7 @@ _POSITIVE_NAMES = frozenset(
         "minimum_area",
         "maximum_area",
         "label_density",
+        "label_repeat_length_factor",
         "font_scale",
         "line_scale",
         "symbol_scale",

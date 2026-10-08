@@ -377,3 +377,9 @@ it; `--no-frame` and `--no-title` override product defaults. CLI equivalents
 for content/style are `--stars-in-constellations`,
 `--star-label-placement`, and `--constellation-line-gap`. Configuration and
 CLI feed the same immutable request contracts.
+
+Celestial-reference repetition uses the positive numeric setting
+`grids_references.references.label_repeat_length_factor`, default `5.0`.
+Automatic non-polar labels search near visible curve ends; repeat at both
+ends when the contiguous visible arc exceeds this many rendered text widths.
+Explicit anchors and polar reference furniture preserve their established policy.

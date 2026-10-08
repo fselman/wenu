@@ -891,6 +891,7 @@ equinox = "J2000"
 [grids_references.references]
 state = "none"
 anchor = "none"
+label_repeat_length_factor = 5.0
 equatorial_label = "Celestial equator"
 ecliptic_label = "Ecliptic"
 galactic_label = "Galactic plane"

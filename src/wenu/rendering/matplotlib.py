@@ -1025,8 +1025,13 @@ class MatplotlibRenderer:
                             )
                         candidate_factory = getattr(label_anchor, "candidates", None)
                         if isinstance(anchor, CurveLabelPlacement) and callable(candidate_factory):
-                            candidates = tuple(candidate_factory(named_curve, self.ax))
+                            per_anchor = getattr(label_anchor, "candidates_for_anchor", None)
+                            candidates = tuple(
+                                per_anchor(named_curve, anchor, self.ax) if callable(per_anchor)
+                                else candidate_factory(named_curve, self.ax)
+                            )
                             if candidates:
+                                label_artist._wenu_reference_endpoint_label = bool(getattr(label_anchor, "near_ends", False))
                                 self._curve_labels.append((label_artist, anchor, (anchor, *candidates)))
                         artists.append(label_artist)
         return artists
@@ -1553,13 +1558,20 @@ class MatplotlibRenderer:
         self.suppressed_region_labels = tuple(suppressed)
 
         for artist, original, placements in self._curve_labels:
-            labels.append((artist, original.x, original.y))
+            artist.set_visible(True)
             origin = self.ax.transData.transform((original.x, original.y))
             candidates = []
             for placement in placements:
                 self._apply_curve_label_placement(artist, placement)
+                if getattr(artist, "_wenu_reference_endpoint_label", False):
+                    if outside_boundary(artist.get_window_extent(renderer).padded(.25 * scale)) > 1e-6:
+                        continue
                 movement = np.linalg.norm(self.ax.transData.transform((placement.x, placement.y)) - origin) / scale
                 candidates.append(measured_choice(artist, movement=0.002 * movement))
+            if not candidates:
+                artist.set_visible(False)
+                continue
+            labels.append((artist, original.x, original.y))
             choices.append(candidates)
 
         candidate_bounds = [np.asarray([choice[1].extents for choice in candidates]) for candidates in choices]

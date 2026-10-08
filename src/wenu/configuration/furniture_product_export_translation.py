@@ -113,16 +113,19 @@ def _references(configuration: Mapping[str, Any]) -> ReferenceAnnotations:
             state=table["state"],
             label=table["equatorial_label"],
             anchor=anchor,
+            label_repeat_length_factor=table["label_repeat_length_factor"],
         ),
         ecliptic=ReferencePlaneAnnotation(
             state=table["state"],
             label=table["ecliptic_label"],
             anchor=anchor,
+            label_repeat_length_factor=table["label_repeat_length_factor"],
         ),
         galactic_plane=ReferencePlaneAnnotation(
             state=table["state"],
             label=table["galactic_label"],
             anchor=anchor,
+            label_repeat_length_factor=table["label_repeat_length_factor"],
         ),
     )
 
