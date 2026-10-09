@@ -54,6 +54,105 @@ and bounded acceptance.
 
 
 
+### Atlas geometry contract candidate (2026-10-09)
+
+Fernando accepted workflow head `c49b908adecdf7219fc15223ed13c5511a66db66`
+and requested the next step. This is its documentation-only as-is audit and
+contract candidate. CLI flags, schema keys, projection choice and tiling
+algorithm remain proposed; no atlas command is installed. Workflow acceptance
+does not record Mac verification or a separate merge/deletion instruction.
+
+#### Implementation audit at the accepted head
+
+| Inspected owner | Existing capability | Consequence |
+|---|---|---|
+| `geometry/frame.py:SphericalFrame` | Spherical rotation/inverse | Reuse tangent bases; it does not transform astronomical frames |
+| `projections/stereographic.py:StereographicProjection` | Arbitrary tangent frame, inverse projection, angular/plane radius conversion | Derive footprints from exact plane rectangles |
+| `charts/projection_selection.py` and projection directory | Stereographic, Mollweide and polar azimuthal equidistant | Gnomonic is not installed/selectable; its comparison needs a later canonical projection extension |
+| `charts/regional.py:RegionalChart` | Rectangular stereographic viewport and export | Centres are Alt/Az; `from_coordinate` transforms through an observer. A fixed-equatorial sheet adapter is missing |
+| `charts/polar_planisphere.py:PolarPlanisphereChart` | Equatorial polar cap, stereographic option and canonical render | Reuse overview cap/projection; paired index composition and tiling borders need work |
+| `charts/request.py:ChartRequest`, `charts/request_generation.py` | Immutable requests, composition and export | Reuse canonical flow; current observer-backed API must not make atlas geometry depend on location/time |
+| `charts/regional.py:ExportOptions` | PNG/PDF/SVG with optional tight crop | Validate physical page dimensions; tight crop alone is not B4 page acceptance |
+| `charts/stellar_report.py:write_stellar_report` | Stellar Markdown/JSON sidecars | Reuse discrepancies/designations; general curated-object reports and facing-page typesetting are not implemented |
+| `pyproject.toml` | Existing entry points | No atlas CLI yet |
+
+The designer must require no catalogue, observer, ephemeris, renderer or network.
+Module placement for geometry orchestration requires review before runtime work.
+
+#### Proposed geometry request
+
+These are candidate field groups, not runnable flags or schema-v2 chart-overlay
+keys. Give atlas inputs a separate versioned schema.
+
+| Group | Content and convention |
+|---|---|
+| Version | Schema version, design identity/revision; reject unknown major versions and unknown keys |
+| Coordinates | Propose ICRS initially, RA/Dec in degrees in JSON; unit-aware hours only at input. ICRS is not FK5 J2000; source epoch is not equinox |
+| Paper | Width/height and top/bottom/inner/outer margins in mm; positive useful rectangle. Initial B4 landscape, right-page inner margin on left |
+| Projection | Explicit supported projection and scale convention; existing stereographic for first prototype, final choice unresolved |
+| Field | Full central horizontal angular span, not radius, diagonal or RA span. Convert half-width through projection, derive plane half-height from useful-paper aspect ratio, then inverse-convert angular height |
+| Coverage | Explicit neighbouring-sheet overlap specification; propose minimum angular overlap, with measurement/construction to compare in prototype. Degrees and percentages are different choices |
+| Orientation | Resolved position angle, handedness and meridian-based polar tangent orientation; pole RA alone is insufficient |
+| Overview | Common-meridian RA, total shared equatorial width W; symmetric limits −W/2 north and +W/2 south, proposed domain 0 ≤ W < 180° |
+| Ordering | Seed longitude and numbering policy; Orion is editorial, not catalogue centring. Band/RA ordering is a candidate |
+| Precision | Declared angular approximation/validation tolerances; reject non-finite values and unsupported precision claims |
+
+Preserve uniform physical scale. Do not derive angular height by multiplying
+angular width by paper aspect ratio: use the projected rectangle.
+Retain exact projection parameters and rectangle as authoritative footprint
+geometry; sampled spherical edges are approximations with an error bound.
+
+#### Proposed resolved JSON
+
+| Group | Resolved information |
+|---|---|
+| Identity/provenance | Schema, design ID/revision, generator version, generating request and input provenance |
+| Coordinates/page | Frame, units and handedness; paper, margins and useful rectangle |
+| Overview | Common meridian and total shared band, independent of figure placement |
+| Sheets | Internal ID, editorial number, polar/non-polar role, centre RA/Dec, tangent basis, projection parameters and exact plane viewport |
+| Footprints | Inverse-projection definition plus spherical boundary representation with declared approximation error |
+| Primary areas | Disjoint ownership regions covering the sphere; defining geometry and deterministic shared-boundary tie rule |
+| Navigation | Reciprocal neighbour references and overlap measures |
+| Verification | Method, tolerance, coverage/area/gap checks, overlap minima and status |
+
+Readers must reproduce footprints without rerunning tiling. Reject duplicate
+IDs/numbers, missing neighbours, invalid coordinates, inconsistent tangent bases
+and disagreements between exact geometry and derived boundaries.
+
+Every primary area must lie inside its sheet footprint. Nearest-centre/Voronoi
+ownership is only a candidate if containment is verified; rectangular footprints
+do not guarantee it. Handle RA wrap/poles as spherical geometry, not flat RA/Dec
+polygons. Sampling alone is not proof of gap-free coverage: declare a conservative
+error-bounded method and distinguish estimated coverage from certified acceptance.
+A design unable to meet tolerance remains unresolved.
+
+Identical deterministic inputs reproduce geometry, IDs and numbers. A structural
+redesign receives a new design revision and namespace; correspondence of IDs
+must not be assumed. Later editorial renumbering can preserve IDs for unchanged
+geometry with a separate order revision. Provenance timestamps must not change
+geometric identity.
+
+#### Next bounded runtime candidate
+
+Establish geometry records, validation and deterministic serialization using the
+existing stereographic projection before automatic all-sky tiling. An explicit-
+centre specimen may test the contract but must be identified as incomplete.
+Install `wenu_design_atlas` only once a real complete design is resolvable and
+validated; never emit a placeholder incomplete atlas as a final design.
+
+Check projection/inverse round trips at centres, rectangle edges/corners, RA wrap
+and both poles; handedness, position angle, aspect ratio and angular-height
+derivation; invalid values/schema/identities; deterministic output with no
+catalogue/observer/renderer/network dependency. Later coverage work checks primary
+containment, reciprocal neighbours, overlap and gap-free sphere coverage before
+production. Preserve existing charts and track-date placement.
+
+Architecture/reference/source-owner documents, diagram inventory and coordinate
+guide were reviewed. Their implemented ownership is unchanged: this candidate
+installs no runtime module or scientific transform. Contract details require
+review separately from the already accepted workflow.
+
+
 **Regional v10 reference and grid correction:**
 Regional v10 reference placement measures the visible contiguous curve and
 its rendered label width in final display units. Automatic names search near
