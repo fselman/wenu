@@ -4127,3 +4127,26 @@ explicitly unclassified. `tzdata>=2025.2` supports the Coyhaique fallback.
 Coordinate references describe approximate settlements/sites, not surveyed
 instrument positions. Raw MinCiencia/BCN geometry and the full GeoNames
 country dump are not vendored. See [the location guide](../user_guide/locations.md).
+
+
+## Atlas geometry specimen implementation checkpoint (2026-10-09)
+
+PR #214 contract audit was accepted, verified with 255 Mac documentary tests
+in 6.20 seconds, merged and cleaned at `154002166cd3eca11edf184437d193054823287b`.
+The next bounded candidate adds `wenu.atlas_design` with explicit-centre
+immutable records, page-aspect resolution, polar-meridian orientation,
+exact inverse-defined footprints and strict deterministic specimen JSON.
+It does not install an atlas CLI, choose automatic tiling or certify coverage.
+
+Module/test admission is recorded in the source responsibility map. One new
+production module and one new durable test file are added; no package export
+or dependency is changed. Canonical projection/frame/viewport are reused, with
+no observer, renderer, catalogue or coordinate-service changes. Track dates and
+existing charts are untouched. Current architecture, API reference, coordinate
+guide, user guide and diagram inspection view are updated for the new boundary.
+
+The specimen schema intentionally differs in document kind/status from the
+future complete atlas JSON. No neighbour/primary-region/report ownership is
+invented. Geometry-only output is reproducible and carries no generated time.
+Next work compares placement/overlap and validates all-sky coverage before any
+complete `wenu_design_atlas` output or paired index production.

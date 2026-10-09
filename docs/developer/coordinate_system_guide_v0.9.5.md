@@ -4443,3 +4443,16 @@ unspecified historical reference; no conversion is retroactively claimed.
 Unknown named-site heights require an explicit override. Compilation owns
 DEM sampling and vertical-reference conversion; chart rendering owns neither.
 See [Named Chilean locations](../user_guide/locations.md).
+
+
+## Atlas geometry specimens (candidate)
+
+The observer-independent atlas records in `wenu.atlas_design` declare ICRS
+RA/Dec in degrees. They do not label ICRS as FK5 J2000 and do not invent a
+stellar source epoch. `SphericalFrame` rotates the tangent basis;
+`StereographicProjection` maps/inverts that basis. Neither performs a new
+astronomical coordinate transformation. At a pole, RA=0 is canonical and an
+explicit meridian controls tangent orientation. The stored basis is checked
+against the resolved parameters on JSON reading. CoordinateService and all
+current provider/observer transformation ownership remain unchanged. Adapting
+these sheets to the observer-backed chart request API is a later milestone.

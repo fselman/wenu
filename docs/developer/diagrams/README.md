@@ -235,3 +235,25 @@ The current diagrams complement `../current_architecture_v0.9.md`,
 `../implementation_reference.md`, `../source_tree.md`, and
 `../archive/audits/coordinate_transformation_audit_09a2afd.md`; they do not replace the
 precise contracts in those documents.
+
+
+## Atlas geometry specimen inspection view (candidate)
+
+This source-backed view adds a geometry/persistence boundary; the existing
+coordinate and rendering SVGs remain valid because their owners are unchanged.
+There is no edge to a renderer, observer, catalogue or installed atlas command.
+
+```mermaid
+flowchart TD
+    A["AtlasGeometrySpecimen"] --> B["Page, overview and sheet records"]
+    B --> C["SphericalFrame and Viewport"]
+    B --> D["StereographicProjection"]
+    A --> E["Strict specimen JSON"]
+    E --> F["Revalidate exact geometry"]
+    F --> B
+```
+
+Implemented owners: `src/wenu/atlas_design.py`, `geometry/frame.py`,
+`geometry/viewport.py` and `projections/stereographic.py`.
+The specimen has unverified coverage. Automatic tiling, primary regions,
+paired overview composition and chart/report production remain future work.
