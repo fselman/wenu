@@ -2351,3 +2351,16 @@ The present authorisation is documentation; subsequent implementation requires
 its own bounded work and as-is audit. Preserve canonical pipeline owners,
 versioned user-facing files and the distinction between polar atlas sheets and
 hemispheric index views. Index formatting/layers must not alter tiling.
+
+
+## Atlas contract candidate boundary (2026-10-09)
+
+The accepted workflow is at `c49b908adecdf7219fc15223ed13c5511a66db66`.
+See [the geometry contract candidate](post_v0.9_architecture_roadmap.md#atlas-geometry-contract-candidate-2026-10-09).
+This is a documentation-only candidate, not frozen CLI/schema or tiling.
+Reuse stereographic projection/inverse and audit a fixed-equatorial adapter:
+current regional centres are observer-local Alt/Az. Validate primary-area
+containment; do not claim sampled coverage proves no gaps. The next runtime
+candidate is geometry records/validation/serialization, before automatic full
+atlas or report-page production. Workflow acceptance is not a Mac verification
+receipt or a separate merge/deletion request for PR #213.
