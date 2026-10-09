@@ -152,3 +152,55 @@ unknown JSON keys and disagreement between stored and recomputed geometry.
 Diagnostic edge samples do not prove full-sky coverage. Primary areas,
 neighbours and automatic placement come later. See the
 [specimen API reference](../developer/implementation_reference.md#atlas-geometry-specimen-api-candidate).
+
+
+## Band-coverage comparison API available for review
+
+This next Python prototype can resolve and validate a complete conservative
+band layout. The three command-line tools above remain planned. It does not
+produce an index picture or report pages.
+
+Prepare the physical page and margins, a horizontal field, a minimum angular
+overlap between sheets and a separate placement seed RA. The overview join RA
+and shared band remain independent. For example, the following is a Python
+API example, not the future CLI or TOML format:
+
+```python
+from wenu.atlas_design import (
+    AtlasPageGeometry, AtlasOverviewGeometry, design_band_atlas,
+)
+
+atlas = design_band_atlas(
+    "b4-trial", 1,
+    AtlasPageGeometry(353, 250, 10, 10, 20, 10),
+    AtlasOverviewGeometry(join_ra_deg=82.5, shared_band_width_deg=20),
+    field_width_deg=40, overlap_deg=2, seed_ra_deg=82.5,
+)
+atlas.write_json("atlas_band_trial_v1.json")
+print(atlas.validation())
+```
+
+With these page/margin/overlap inputs, 30°, 40° and 50° fields give
+**236, 128 and 80 sheets**. These are comparison cases, not accepted defaults.
+The conservative placement uses the cap inside the shorter side of each
+rectangle and therefore uses more sheets than a layout exploiting its full
+width. An equatorial row includes the selected seed centre; the number of
+sectors decreases toward the polar sheets. Numbering runs south to north,
+with increasing RA from the seed in each row.
+
+The JSON stores the resolved centres and primary ownership regions. Its
+reader revalidates the whole-sphere partition and containment without
+re-running placement. Primary regions partition the sky; full tangent-plane
+rectangles include overlap. Shared-boundary neighbours are reciprocal; the
+stored overlap is a conservative lower bound, not an actual intersection area.
+The coverage check is analytic with a numerical guard, not a sampled-sky
+claim or formal interval proof.
+
+Changing overview join/band geometry preserves sheet centres, coverage and
+IDs. Changing the page, field, overlap or placement seed requires a new
+design revision and a new identifier namespace. Keep each trial JSON under
+its own versioned filename and review coverage and sheet count before curation.
+The prototype accepts stereographic fields from 5° to 120°, a remaining
+inscribed cap of at least 1°, and at most 4,096 sheets; it fails explicitly
+if the request cannot fit these bounds. It does not support arbitrary moved
+centres or gnomonic tiling yet.

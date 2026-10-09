@@ -257,3 +257,23 @@ Implemented owners: `src/wenu/atlas_design.py`, `geometry/frame.py`,
 `geometry/viewport.py` and `projections/stereographic.py`.
 The specimen has unverified coverage. Automatic tiling, primary regions,
 paired overview composition and chart/report production remain future work.
+
+
+## Atlas band-coverage inspection view (candidate)
+
+The atlas owner additionally places band centres and stores a primary
+partition; its comparison reader validates the persisted cap-bound coverage.
+The chart/coordinate SVGs remain current: no astronomical transformation or
+renderer edge is introduced. Automatic band tiling and primary regions are now
+available as a bounded Python comparison API; paired index composition and
+chart/report production remain future work.
+
+```mermaid
+flowchart TD
+    A["Page, field, overlap and seed"] --> B["design_band_atlas"]
+    B --> C["Sheet rectangles and primary bands"]
+    C --> D["Analytic cap validation"]
+    D --> E["AtlasBandTiling JSON"]
+    E --> F["Reader revalidation"]
+    F --> D
+```
