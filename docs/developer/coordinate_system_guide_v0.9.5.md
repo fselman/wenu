@@ -4482,3 +4482,15 @@ unchanged. RA intervals may cross zero; display sampling retains their unwrapped
 span and the projection handles periodic longitude. Both polar primary caps use
 one circular edge. Coordinate ownership is unchanged; sampled outlines are
 display geometry, not coverage or scientific evidence.
+
+## Five-band rectangular primary-region validation
+
+The new comparison retains fixed ICRS centres, north-up interior tangent frames,
+existing stereographic projection/inverse and one useful page aspect/scale.
+Primary longitude sectors widen at high declination through actual rectangle
+containment, not a cos(declination) approximation used as a transform.
+Analytic extrema use closed unwrapped RA/Dec intervals and all contained
+stationary points; full-RA polar caps are included. Canonical frame basis
+vectors define the four spherical edge-circle halfspaces. Restricting primary
+directions to the tangent hemisphere excludes the projection antipode.
+No coordinate convention, observer, equinox or position-realization rule changes.

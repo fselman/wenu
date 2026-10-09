@@ -2328,3 +2328,15 @@ owner, installed command, dependency or chart pipeline changes. Two separate
 polar disks show primary ownership/numbers, optional sampled full footprints
 and the independent overview join/band. Composed paper overlap, astronomical
 layers and chart/report production remain later work.
+
+## Five-band rectangular coverage candidate
+
+The existing atlas geometry owner now supports an explicitly tagged
+rectangle-halfspace validation method alongside the unchanged cap method.
+`design_five_band_atlas` constructs five aligned interior bands and two polar
+sheets at one physical scale. Spherical linear extrema over closed primary
+sectors bound the four canonical stereographic edge circles and their angular
+clearance; no sampled coverage inference or new projection is introduced.
+The existing JSON reader dispatches only the two declared method tags and
+revalidates persisted evidence. The existing geometry-only plotter consumes
+both. No module, dependency, CLI, catalogue, observer or rendering owner changes.

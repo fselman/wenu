@@ -16,7 +16,128 @@ from wenu.atlas_design import (
     ANGULAR_GUARD_DEG,
     AtlasBandTiling,
     design_band_atlas,
+    design_five_band_atlas,
+    RECTANGULAR_TILING_METHOD,
+    _sector_linear_maximum,
 )
+
+
+@pytest.fixture
+def five_band_atlas(page):
+    return design_five_band_atlas(
+        "five-band", 1, page, AtlasOverviewGeometry(82.5, 20),
+        field_width_deg=50, overlap_deg=0.25, seed_ra_deg=82.5,
+        equatorial_half_height_deg=17, middle_boundary_dec_deg=45,
+    )
+
+
+@pytest.mark.parametrize("ra0,ra1,lo,hi,target_ra,target_dec", [
+    (350, 370, 10, 30, 0, 20),
+    (-5, 355, 75, 90, 82.5, 83),
+    (350, 710, -90, -70, 359.5, -81),
+])
+def test_sector_bound_includes_interior_extrema_and_wrapped_longitudes(
+        ra0, ra1, lo, hi, target_ra, target_dec):
+    ra, dec = np.radians((target_ra, target_dec))
+    vector = np.array((np.cos(dec) * np.cos(ra), np.cos(dec) * np.sin(ra), np.sin(dec)))
+    assert _sector_linear_maximum(vector, ra0, ra1, lo, hi) == pytest.approx(1, abs=1e-12)
+    # Corners alone would miss these extrema, including a polar-cap interior.
+    corner_values = [vector @ np.array((np.cos(d) * np.cos(r),
+                                       np.cos(d) * np.sin(r), np.sin(d)))
+                     for r in np.radians((ra0, ra1)) for d in np.radians((lo, hi))]
+    assert max(corner_values) < 1 - 1e-5
+
+
+def test_five_band_layout_reduces_ra_counts_without_changing_physical_scale(five_band_atlas, page):
+    atlas = five_band_atlas
+    assert [len(b.sheet_ids) for b in atlas.bands] == [1, 5, 7, 8, 7, 5, 1]
+    assert len(atlas.geometry.sheets) == 34
+    assert [b.sector_width_deg for b in atlas.bands[3:6]] == pytest.approx([45, 360 / 7, 72])
+    assert sum(b.area_sr for b in atlas.bands) == pytest.approx(4 * np.pi)
+    assert all(s.field_width_deg == 50 for s in atlas.geometry.sheets)
+    assert all(s.viewport(page).aspect_ratio == pytest.approx(323 / 230)
+               for s in atlas.geometry.sheets)
+    result = atlas.validation()
+    assert result["coverage_status"] == "validated_analytic_rectangle_bound"
+    assert result["shared_boundary_overlap_lower_bound_deg"] >= 0.25
+    assert result["shared_boundary_overlap_lower_bound_deg"] < 0.250001
+    with pytest.raises(ValueError):
+        replace(atlas, containment_method="latitude-bands-inscribed-cap-v1")
+
+
+@pytest.mark.parametrize("seed", [0, 82.5, 359.5])
+def test_five_band_rectangle_contains_primary_regions_and_boundary_neighbourhoods(page, seed):
+    atlas = design_five_band_atlas(
+        "five-band", 1, page, AtlasOverviewGeometry(82.5, 20),
+        field_width_deg=50, overlap_deg=.25, seed_ra_deg=seed,
+        equatorial_half_height_deg=17, middle_boundary_dec_deg=45,
+    )
+    by_id = {s.sheet_id: s for s in atlas.geometry.sheets}
+    for band in atlas.bands:
+        for i, identifier in enumerate(band.sheet_ids):
+            ra0 = band.ra_origin_deg + i * band.sector_width_deg
+            ra, dec = np.meshgrid(np.linspace(ra0, ra0 + band.sector_width_deg, 13),
+                                  np.linspace(band.dec_min_deg, band.dec_max_deg, 13))
+            sheet = by_id[identifier]
+            assert np.all(sheet.contains(page, ra, dec))
+            # An independent spherical perturbation tests the reserved overlap
+            # ball at all grid points. Sampling is an oracle, not the proof.
+            lon, lat = np.radians(ra.ravel()), np.radians(dec.ravel())
+            vectors = np.column_stack((np.cos(lat) * np.cos(lon),
+                                       np.cos(lat) * np.sin(lon), np.sin(lat)))
+            east = np.column_stack((-np.sin(lon), np.cos(lon), np.zeros(len(lon))))
+            north = np.cross(vectors, east)
+            distance = np.radians(.125)
+            for angle in np.linspace(0, 2 * np.pi, 8, endpoint=False):
+                moved = vectors * np.cos(distance) + (
+                    east * np.cos(angle) + north * np.sin(angle)) * np.sin(distance)
+                moved_ra = np.degrees(np.arctan2(moved[:, 1], moved[:, 0]))
+                moved_dec = np.degrees(np.arctan2(moved[:, 2], np.hypot(moved[:, 0], moved[:, 1])))
+                assert np.all(sheet.contains(page, moved_ra, moved_dec))
+
+
+def test_five_band_json_revalidates_without_replacing_the_legacy_method(five_band_atlas, monkeypatch, tmp_path):
+    import wenu.atlas_design as module
+    path = five_band_atlas.write_json(tmp_path / "five_band_v1.json")
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Reading must not regenerate placement")
+    monkeypatch.setattr(module, "design_five_band_atlas", forbidden)
+    assert AtlasBandTiling.read_json(path) == five_band_atlas
+    data = five_band_atlas.to_dict()
+    assert data["generator"] == RECTANGULAR_TILING_METHOD
+    data["validation"]["minimum_primary_clearance_deg"] += .01
+    with pytest.raises(ValueError):
+        AtlasBandTiling.from_dict(data)
+    with pytest.raises(ValueError):
+        replace(five_band_atlas, containment_method="unknown")
+    bands = list(five_band_atlas.bands)
+    bands[1] = replace(bands[1], dec_min_deg=bands[1].dec_min_deg + 1e-12)
+    with pytest.raises(ValueError):
+        replace(five_band_atlas, bands=tuple(bands))
+
+
+def test_five_band_infeasible_primary_profile_and_small_budget_fail(page):
+    options = dict(field_width_deg=50, overlap_deg=.25, seed_ra_deg=82.5,
+                   equatorial_half_height_deg=17, middle_boundary_dec_deg=45)
+    args = ("five-band", 1, page, AtlasOverviewGeometry(82.5, 20))
+    with pytest.raises(ValueError):
+        design_five_band_atlas(*args, **options, max_sheets=33)
+    with pytest.raises(ValueError):
+        design_five_band_atlas(*args, **{**options, "equatorial_half_height_deg": 30}, max_sheets=64)
+    with pytest.raises(ValueError):
+        design_five_band_atlas(*args, **{**options, "middle_boundary_dec_deg": 85})
+
+
+def test_five_band_overview_preserves_all_numbers_and_exports(five_band_atlas, overview_example, tmp_path, monkeypatch):
+    draw = overview_example._draw_face
+    numbers = set()
+    def inspected(ax, atlas, face, **kwargs):
+        draw(ax, atlas, face, **kwargs)
+        numbers.update(text.get_text() for text in ax.texts)
+    monkeypatch.setattr(overview_example, "_draw_face", inspected)
+    path = five_band_atlas.write_json(tmp_path / "five_band_v1.json")
+    overview_example.plot_overview(path, tmp_path / "five_band_overview_v1", footprints=True)
+    assert numbers == {str(i) for i in range(1, 35)}
 
 
 @pytest.fixture

@@ -3221,3 +3221,15 @@ There is no new production module, dependency or installed CLI. Extend
 faults, JSON-only plotting, number coverage, export and overwrite prevention.
 These remain part of the existing atlas persistence/geometry contract; no new
 test-file owner is admitted.
+
+## Five-band rectangle comparison ownership
+
+Extend `src/wenu/atlas_design.py` for continuous primary-sector extrema,
+four-edge rectangle clearance and the explicitly parameterized five-band
+comparison designer. Existing primary partition/navigation/JSON owners are
+shared; the legacy cap method remains the default. Extend
+`tests/test_atlas_design.py` for interior stationary extrema, exact layout,
+independent spherical overlap perturbations, method/evidence failures,
+budget/profile rejection and JSON-only visual export. The existing
+`tools/render_atlas_band_overview_v1.py` is reused unchanged. No new module,
+test file, dependency, coordinate service or rendering owner is admitted.

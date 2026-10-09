@@ -297,3 +297,14 @@ The developer example orchestrates these owners. Placement is not rerun;
 no new rendering or coordinate-service boundary is introduced. Disks are
 separate in this prototype. Composed overlap, celestial layers and report/chart
 page production remain later work.
+
+## Five-band rectangle comparison inspection
+
+The atlas geometry owner adds an alternate analytic rectangle-edge certificate
+before the unchanged resolved-JSON → polar projection → generic renderer →
+export route. Five interior ownership bands and two polar sheets replace the
+automatically chosen cap-based row count only for this explicitly tagged
+comparison. Canonical frame/projection/viewport remain the mathematical owners;
+no rendering, coordinate-service or source-tree boundary is added. Inspect
+the overview and full-footprint specimen together because minimum boundary
+clearance does not imply uniform overlap across the complete rectangles.
