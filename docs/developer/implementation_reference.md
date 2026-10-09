@@ -4247,3 +4247,24 @@ The existing polar projection, preparation and renderer handle both Clouds;
 no new coordinate or rendering pipeline is introduced. Current tests cover
 native selected rings/holes with a populated observed cache, both Clouds,
 legacy cache reuse, and end-to-end magnitude-4.5/OL1/Cloud exports from JSON.
+
+
+## Atlas designer request and command candidate (2026-10-09)
+
+`wenu.atlas_design.AtlasDesignRequest.from_dict(mapping)` accepts the closed
+version-1 atlas request documented in the [atlas guide](../user_guide/atlas.md#version-1-request-contract).
+The frozen request owns page/overview records, algorithm, field, overlap,
+seed, budget and optional five-band latitude profile. `resolve()` delegates
+to `design_five_band_atlas` or `design_band_atlas` and returns `AtlasBandTiling`.
+RA hours are admitted explicitly and converted once; resolved coordinates stay
+ICRS degrees. Unsupported schemas/keys/frames/projections fail closed.
+
+`wenu.cli.atlas.design_main(argv=None)` is the `wenu_design_atlas` entry point.
+Required flags are `--config` (TOML) and `--output` (new `.json` file). The
+adapter parses before resolution, serializes before publication and writes a
+same-directory temporary file, flushes/fsyncs it, then links it atomically to
+the destination without replacement. Finally it removes the temporary file.
+An existing destination, publication race or invalid/missing input exits 2;
+KeyboardInterrupt exits 130. Successful diagnostics use stderr and stdout is
+empty. The JSON is the existing band-tiling format and the developer plotter
+continues to read it unchanged. No source-TOML byte digest is claimed in output.

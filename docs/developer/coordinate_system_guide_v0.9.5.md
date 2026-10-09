@@ -4528,3 +4528,16 @@ all RAs and is not the paper lens. Two opposite-pole stereographic projections
 cannot align pointwise throughout that band; the composition does not claim
 such registration. Sheet-footprint overlap and the coverage certificate stay
 unchanged.
+
+
+## Atlas designer input-unit review (2026-10-09)
+
+The installed-designer candidate accepts explicit RA degrees or hours for the
+placement seed and overview join, converting hours by 15 degrees per hour.
+This is unit conversion, not an astronomical frame transform. Version 1
+requires fixed ICRS/stereographic geometry, preserves north-up/RA-left interior
+orientation and explicit polar meridians, and emits the unchanged degree-based
+band-tiling JSON. Neither FK5 J2000 nor a source epoch/observer/time is inferred.
+The existing atlas primary-containment/coverage methods and native catalogue
+index distinctions remain current; provider, coordinate-service and chart
+realization ownership are unchanged. General epoch propagation is not added.
