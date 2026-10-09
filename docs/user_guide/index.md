@@ -31,6 +31,12 @@ The canonical Python examples are:
 | Circumpolar field | `examples/circumpolar.py` | [Circumpolar charts](circumpolar_charts.md) |
 | Selected binocular object | `examples/binocular_object.py` | [Binocular charts](binocular_charts.md) |
 
+## Planned atlas workflow
+
+See [Creating a sky atlas](atlas.md) for the planned designer, index plotter
+and chart/report producer, their separate inputs, and user preparation steps.
+These atlas commands are not yet installed.
+
 ## Common request model
 
 Every example accepts:

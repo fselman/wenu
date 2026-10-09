@@ -26,6 +26,13 @@ migrations, milestone evidence, and superseded roadmaps are under
 
 ## Roadmap and current work
 
+**2026-10-09 current priority:** organise the atlas before general stellar and
+deep-sky curation. See the [atlas checkpoint](post_v0.9_architecture_roadmap.md#atlas-organisation-checkpoint-2026-10-09)
+and [user workflow](../user_guide/atlas.md). The three atlas commands remain
+planned. Earlier dated sequencing below is historical and is superseded by
+this checkpoint.
+
+
 - [Stellar Bayer/Flamsteed designation audit](stellar_designations_audit.md)
   — accepted design amended for explicit name/Bayer selection beyond the
   magnitude limit, CLI/TOML parity and future curation boundaries.

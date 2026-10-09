@@ -2332,3 +2332,22 @@ records accepted runtime handling. WGSN identifies the two shared Bayer
 fallbacks; do not describe the ten modern cross-index Flamsteed fallbacks as
 IAU rulings. Audit section 11 is the current milestone contract. Deliver a
 verified dedicated branch/PR; Mac acceptance and merge remain separate.
+
+
+## Atlas planning checkpoint (2026-10-09)
+
+Fernando has prioritised atlas organisation before general stellar curation
+(multiple/variable stars), deep-sky curation and individual chart/report review.
+This supersedes earlier next-work sequencing of minor bodies and satellites.
+See [the atlas workflow](../user_guide/atlas.md) and
+[the current atlas roadmap](post_v0.9_architecture_roadmap.md#atlas-organisation-checkpoint-2026-10-09).
+
+Keep the three planned responsibilities separate: `wenu_design_atlas` writes
+only resolved versioned JSON; `wenu_plot_atlas` renders that JSON with separate
+index presentation inputs; `wenu_create_atlas` produces chart/report pairs
+from that JSON and separate publication/curation inputs. Do not describe these
+commands or proposed input formats as installed/frozen until implemented.
+The present authorisation is documentation; subsequent implementation requires
+its own bounded work and as-is audit. Preserve canonical pipeline owners,
+versioned user-facing files and the distinction between polar atlas sheets and
+hemispheric index views. Index formatting/layers must not alter tiling.

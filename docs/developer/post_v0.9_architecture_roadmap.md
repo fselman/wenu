@@ -9,6 +9,51 @@
 
 ## Current forward roadmap
 
+## Atlas organisation checkpoint (2026-10-09)
+
+The label work (PR #211) and Chile location catalogue (PR #212) are merged.
+The current baseline is `7e71ae8c008d6b495dc57180f634524f8dd0879c`; Fernando's
+catalogue acceptance receipt records 3,123 passing tests and a clean branch.
+The agreed next priority is atlas organisation, then general stellar curation
+(including multiple and variable stars), deep-sky curation and individual
+chart/report review. This checkpoint supersedes the earlier sequencing of
+stellar designations, minor bodies, atlas publication and satellites below;
+those historical milestones remain evidence, not the current next-action list.
+
+The [atlas user guide](../user_guide/atlas.md) supplies the command/input
+diagram and the user preparation steps. All three atlas commands are planned,
+not installed: `wenu_design_atlas` produces **only resolved JSON**;
+`wenu_plot_atlas` consumes it with independent index presentation inputs;
+`wenu_create_atlas` consumes it with publication and curation inputs.
+This documentation checkpoint does not implement or freeze their CLI/schema.
+
+| Stage | Work | Acceptance gate |
+|---|---|---|
+| Contract and audit | Audit existing chart, projection, clipping, report and export owners; define versioned request/JSON boundaries | Physical useful rectangle, frame/equinox, identity, numbering and validation contracts reviewed |
+| Spherical coverage | Compare candidate field sizes/projections and resolve tangent-plane centres, including two polar sheets | Whole-sphere coverage with no gaps; overlap measured; primary areas and neighbours validated |
+| Designer | Implement `wenu_design_atlas` with common-meridian RA and total overview-band width | Deterministic resolved JSON only; no catalogue selection or figure |
+| Index plotter | Implement `wenu_plot_atlas`; compose the overlapping hemispheric polar views and optional astronomy layers | Same JSON supports different index presentations; primary borders exclude overlap; numbering is consistent |
+| Page producer | Implement `wenu_create_atlas` through the canonical chart pipeline | B4 landscape right chart/left report pairs; requested PNG/PDF/SVG exports; repeatable sample generation |
+| Reports and selection | Preserve catalogue entries while selecting/indexing plotted objects; classify observational interest | Naked-eye/binocular/amateur-telescope categories and pending curation remain explicit; overlap cross-references and extended-object membership reviewed |
+| Pilot curation | Review Orion and a contrasting region; establish star sizes, typography and report appearance | Sample pairs accepted before a complete atlas batch |
+| Atlas curation and publication | Stellar multiples/variables, deep-sky selection, individual charts, zoom subcharts and print organisation | Reviewed chart/report pairs, retained object index and reproducible publication revision |
+
+The initial physical target is ISO B4 landscape (353 × 250 mm), not a fixed
+angular tiling. Projection and field size remain decisions for comparison.
+Actual polar atlas sheets are distinct from hemispheric index views. Sheet
+overlap, the total shared equatorial band width and overlap on the printed
+index are independent parameters. Changing index styling never changes tiling;
+changing individual-sheet geometry requires a new resolved design.
+
+Authority review: this is planned orchestration, not an implemented architecture
+change. The current architecture, implementation reference, source responsibility
+map, diagram inventory and coordinate-system guide were reviewed; their runtime
+ownership remains unchanged. Coordinate-frame/equinox conventions remain distinct
+from stellar source epochs. Later implementation requires its own as-is audit
+and bounded acceptance.
+
+
+
 **Regional v10 reference and grid correction:**
 Regional v10 reference placement measures the visible contiguous curve and
 its rendered label width in final display units. Automatic names search near
