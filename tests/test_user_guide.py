@@ -26,6 +26,7 @@ GUIDE_PAGES = (
     "temporal_sequences.md",
     "labels.md",
     "locations.md",
+    "atlas.md",
 )
 
 
@@ -262,3 +263,18 @@ def test_temporal_sequence_guide_documents_cli_and_resume_contract():
     assert "(temporal_sequences.md)" in index
     assert "Observer-time sequence profiles" in configuration
     assert 'stop = "2026-08-22T03:00:00-04:00"' in configuration
+
+
+def test_atlas_guide_documents_planned_commands_and_separate_inputs():
+    text = (GUIDE / "atlas.md").read_text(encoding="utf-8")
+    index = (GUIDE / "index.md").read_text(encoding="utf-8")
+    assert "(atlas.md)" in index
+    assert "not an implemented CLI" in text
+    assert "```mermaid" in text
+    for command in ("wenu_design_atlas", "wenu_plot_atlas", "wenu_create_atlas"):
+        assert command in text
+    for filename in ("atlas_design_request_v1.toml", "atlas_design_v1.json",
+                     "atlas_index_style_v1.toml", "atlas_publication_v1.toml"):
+        assert filename in text
+    assert "**Only** a versioned, resolved atlas JSON" in text
+    assert "not runnable examples" in text
