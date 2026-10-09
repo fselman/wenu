@@ -21,6 +21,7 @@ from wenu.charts.projection_selection import ProjectionSelection
 from wenu.geometry.frame import SphericalFrame
 from wenu.geometry.projected import ProjectedPoints
 from wenu.geometry.spherical import SphericalPolygons
+from wenu.sky.realization import LayerRealizationContext
 from wenu.geometry.viewport import Viewport
 from wenu.rendering.preparation import (
     clip_to_latitude,
@@ -241,7 +242,11 @@ class PolarPlanisphereChart:
         resolved_observer = (
             getattr(sky, "observer", None) if observer is None else observer
         )
-        if resolved_observer is None:
+        native_icrs = (
+            isinstance(realization_context, LayerRealizationContext)
+            and realization_context.is_native_icrs
+        )
+        if resolved_observer is None and not native_icrs:
             raise TypeError(
                 "polar-planisphere rendering requires an observer."
             )
@@ -286,6 +291,8 @@ class PolarPlanisphereChart:
         projection = self.projection
 
         def project(spherical):
+            if native_icrs:
+                return self.project_equatorial_geometry(spherical)
             equatorial = CoordinateService().transform_observer_geometry(
                 spherical,
                 resolved_observer,

@@ -149,6 +149,99 @@ def overview_example():
     return module
 
 
+@pytest.mark.parametrize("join,width", [(0, 0), (82.5, 20), (359.5, 40)])
+def test_composed_index_registers_equator_and_preserves_own_hemispheres(overview_example, join, width):
+    import matplotlib.pyplot as plt
+    overview = AtlasOverviewGeometry(join, width)
+    figure = plt.figure(figsize=(14, 8))
+    try:
+        axes = overview_example.composed_axes(figure, overview)
+        locations = []
+        for ax, pole in zip(axes, ("north", "south")):
+            face = overview_example.overview_face(overview, pole)
+            ax.set_xlim(-face.boundary_radius, face.boundary_radius)
+            ax.set_ylim(-face.boundary_radius, face.boundary_radius)
+            ax.set_aspect("equal")
+            x,y = face.projection.project_spherical(join, 0)
+            locations.append(ax.transData.transform((x,y)))
+            ra,dec = np.meshgrid(np.linspace(0,360,73), np.linspace(0,90 if pole == "north" else -90,19))
+            x,y = face.projection.project_spherical(ra.ravel(), dec.ravel())
+            physical = figure.transFigure.inverted().transform(ax.transData.transform(np.column_stack((x,y))))
+            assert np.all(physical[:,0] <= .5 + 1e-12) if pole == "north" else np.all(physical[:,0] >= .5 - 1e-12)
+        np.testing.assert_allclose(locations[0], locations[1], atol=1e-10)
+        a,b = (ax.get_position() for ax in axes)
+        assert a.x1 >= b.x0 - 1e-12
+        assert a.x1 > b.x0 if width else a.x1 == pytest.approx(b.x0)
+    finally:
+        plt.close(figure)
+
+
+def test_join_clip_tracks_export_dpi_and_retains_both_contours(five_band_atlas, overview_example):
+    import matplotlib.pyplot as plt
+    figure = plt.figure(figsize=(14,8), dpi=100)
+    try:
+        axes = overview_example.composed_axes(figure, five_band_atlas.geometry.overview)
+        for ax,pole in zip(axes, ("north", "south")):
+            overview_example._draw_face(ax, five_band_atlas,
+                overview_example.overview_face(five_band_atlas.geometry.overview,pole), footprints=True)
+        overview_example._join_faces(figure, axes, five_band_atlas)
+        assert len(figure.artists) == 2
+        clips = [ax.lines[0].get_clip_box() for ax in axes]
+        before = [clip.extents.copy() for clip in clips]
+        figure.set_dpi(160)
+        for old,clip in zip(before,clips):
+            np.testing.assert_allclose(clip.extents, old * 1.6)
+    finally:
+        plt.close(figure)
+
+
+def test_astronomical_index_uses_json_and_native_canonical_pipeline(
+        five_band_atlas, overview_example, tmp_path, monkeypatch):
+    from wenu.sky.celestial_sphere import CelestialSphere
+    from wenu.coordinate_service import CoordinateService
+    import wenu.observer
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Index requested placement, observer or observed geometry")
+    path = five_band_atlas.write_json(tmp_path / "atlas_v1.json")
+    before = path.read_bytes()
+    monkeypatch.setattr("wenu.atlas_design.design_five_band_atlas", forbidden)
+    monkeypatch.setattr(wenu.observer.Observer, "__init__", forbidden)
+    monkeypatch.setattr(CoordinateService, "transform_observer_geometry", forbidden)
+    draw = CelestialSphere.draw_chart
+    results = []
+    def recording(self, **options):
+        result = draw(self, **options)
+        results.append(result)
+        return result
+    monkeypatch.setattr(CelestialSphere, "draw_chart", recording)
+    join = overview_example._join_faces
+    numbers = set()
+    def inspect_join(figure, axes, atlas):
+        join(figure, axes, atlas)
+        for ax in axes:
+            for artist in ax.texts:
+                if artist.get_text().isdigit():
+                    x,y = artist.get_transform().transform(artist.get_position())
+                    if artist.get_clip_box().contains(x,y):
+                        numbers.add(int(artist.get_text()))
+    monkeypatch.setattr(overview_example, "_join_faces", inspect_join)
+    outputs = overview_example.plot_overview(path, tmp_path / "joined_sky_v1",
+        joined=True, astronomy=True, footprints=True, star_magnitude_limit=5)
+    assert len(results) == 2
+    assert numbers == set(range(1,35))
+    assert [len(r.layers) for r in results] == [4,4]
+    for result in results:
+        assert {r.layer.layer_name for r in result.layers} == {
+            "stars", "constellation_lines", "constellation_labels", "milky_way_isophotes"}
+        assert all(r.spherical.coordinate_spec.frame == "icrs" for r in result.layers)
+        stars = next(r.spherical for r in result.layers if r.layer.layer_name == "stars")
+        assert np.max(stars.metadata["magnitude"]) <= 5
+        lines = next(r.spherical for r in result.layers if r.layer.layer_name == "constellation_lines")
+        assert not lines.metadata["unresolved_star_ids"]
+    assert all(p.exists() and p.stat().st_size > 1000 for p in outputs)
+    assert path.read_bytes() == before
+
+
 @pytest.mark.parametrize("join", [0, 82.5, 359.5])
 def test_overview_join_meridian_points_inward(overview_example, join):
     overview = AtlasOverviewGeometry(join, 20)

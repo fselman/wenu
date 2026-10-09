@@ -8,7 +8,7 @@ import astropy.units as u
 import numpy as np
 
 from wenu.coordinates import PositionStatus
-from wenu.coordinates import observer_altaz_spec
+from wenu.coordinates import observer_altaz_spec, icrs_catalogue_spec
 from astropy.coordinates import SkyCoord
 
 from wenu.sky.geometrical_object import GeometricalObject
@@ -50,12 +50,22 @@ class ConstellationLabels(GeometricalObject):
         self.boundaries = boundaries
         return boundaries
 
-    def spherical_geometry(
+    def realize(self, context, observer, **geometry_options):
+        """Compute the existing spherical-mean anchors in native ICRS."""
+        if context.is_native_icrs:
+            return self._spherical_geometry(observer, native_icrs=True, **geometry_options)
+        return self.spherical_geometry(observer, **geometry_options)
+
+    def spherical_geometry(self, observer, *, selected=None, min_stars=None):
+        return self._spherical_geometry(observer, selected=selected, min_stars=min_stars)
+
+    def _spherical_geometry(
         self,
         observer,
         *,
         selected=None,
         min_stars=None,
+        native_icrs=False,
     ) -> SphericalPoints:
         selected = (
             self.selected if selected is None else set(selected)
@@ -69,13 +79,13 @@ class ConstellationLabels(GeometricalObject):
             self.stars.hip_df,
         )
         if frame is None or len(frame) == 0:
-            return self._empty(observer)
+            return self._empty(observer, native_icrs=native_icrs)
 
         ra_deg = frame["ra_degrees"].to_numpy(dtype=float)
         dec_deg = frame["dec_degrees"].to_numpy(dtype=float)
         valid_coordinates = np.isfinite(ra_deg) & np.isfinite(dec_deg)
         if not np.any(valid_coordinates):
-            return self._empty(observer)
+            return self._empty(observer, native_icrs=native_icrs)
         coordinates = SkyCoord(
             ra=ra_deg[valid_coordinates] * u.deg,
             dec=dec_deg[valid_coordinates] * u.deg,
@@ -85,12 +95,14 @@ class ConstellationLabels(GeometricalObject):
             coordinates.get_constellation(short_name=True),
             dtype=object,
         )
-        apparent_lon_deg, apparent_lat_deg = icrs_point_arrays_to_altaz(
-            ra_deg[valid_coordinates],
-            dec_deg[valid_coordinates],
-            observer,
-            provider="wenu constellation labels",
-        )
+        if native_icrs:
+            apparent_lon_deg = ra_deg[valid_coordinates]
+            apparent_lat_deg = dec_deg[valid_coordinates]
+        else:
+            apparent_lon_deg, apparent_lat_deg = icrs_point_arrays_to_altaz(
+                ra_deg[valid_coordinates], dec_deg[valid_coordinates], observer,
+                provider="wenu constellation labels",
+            )
         groups = defaultdict(list)
         group_labels = np.asarray(abbreviations, dtype=object).copy()
         if self.boundaries is not None:
@@ -134,7 +146,8 @@ class ConstellationLabels(GeometricalObject):
         return SphericalPoints(
             lon_deg=np.asarray(lon_deg, dtype=float),
             lat_deg=np.asarray(lat_deg, dtype=float),
-            coordinate_spec=observer_altaz_spec(
+            coordinate_spec=icrs_catalogue_spec("Hipparcos constellation label anchors", epoch="J1991.25")
+            if native_icrs else observer_altaz_spec(
                 observer,
                 position_status=PositionStatus.APPARENT,
                 provider="astropy Hipparcos constellation labels"
@@ -172,11 +185,12 @@ class ConstellationLabels(GeometricalObject):
             float(np.degrees(np.arcsin(mean[2]))),
         )
 
-    def _empty(self, observer):
+    def _empty(self, observer, *, native_icrs=False):
         return SphericalPoints(
             lon_deg=np.asarray([], dtype=float),
             lat_deg=np.asarray([], dtype=float),
-            coordinate_spec=observer_altaz_spec(
+            coordinate_spec=icrs_catalogue_spec("Hipparcos constellation label anchors", epoch="J1991.25")
+            if native_icrs else observer_altaz_spec(
                 observer,
                 position_status=PositionStatus.APPARENT,
                 provider="astropy Hipparcos constellation labels"

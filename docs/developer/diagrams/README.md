@@ -308,3 +308,23 @@ comparison. Canonical frame/projection/viewport remain the mathematical owners;
 no rendering, coordinate-service or source-tree boundary is added. Inspect
 the overview and full-footprint specimen together because minimum boundary
 clearance does not imply uniform overlap across the complete rectangles.
+
+## Composed native-ICRS atlas index review (2026-10-09)
+
+Reviewed the current coordinate transformation, static-structure and runtime-
+sequence DOT/SVG views against the composed index candidate. Existing source,
+typed spherical geometry, alignment/projection, preparation, renderer and
+export owners remain authoritative. The 49D.1/49D.2 realization seam now admits
+four deliberately migrated static background layers under `NATIVE_ICRS_SPEC`;
+this adds a native source-to-existing-projection handoff without requiring an
+observer-local transformation. It is not a second astronomical or render flow.
+The retained v0.9.5 diagrams predate this optional realization branch; read this
+review with the current architecture and coordinate-guide candidate sections.
+
+The tool alone composes page contours and a bisector with export-DPI-aware clip
+boxes. Source layers own native Hipparcos epoch and morphology topology;
+`CelestialSphere.draw_chart()` owns closed native dispatch/identity checking;
+`PolarPlanisphereChart` owns cap/projection and the existing renderer/export
+owners draw and save. The full shared sky band cannot be pointwise registered
+in both polar projections. No tiling, observer, ephemeris, dependency or new
+production-module responsibility is assigned to the page composition.

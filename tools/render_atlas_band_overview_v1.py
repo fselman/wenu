@@ -1,8 +1,9 @@
-"""Geometry-only atlas review specimen; not the future atlas CLI.
+"""JSON-driven atlas review specimen; not the future atlas CLI.
 
 Read an already resolved band JSON. Canonical Wenu polar geometry,
 MatplotlibRenderer and ExportOptions own projection, clipping, drawing and
-export. No catalogue, observer or placement is invoked by the plotter.
+export. Optional native catalogue layers use the canonical sky pipeline.
+Placement is never invoked by the plotter.
 """
 
 from __future__ import annotations
@@ -12,12 +13,68 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
+from dataclasses import replace
+from matplotlib.lines import Line2D
+from matplotlib.transforms import Bbox, TransformedBbox
 
 from wenu.atlas_design import AtlasBandTiling
 from wenu.charts.polar_planisphere import PolarPlanisphereChart
 from wenu.charts.regional import ExportOptions
 from wenu.geometry.projected import ProjectedCurve, ProjectedPoints, ProjectedPolygon
 from wenu.rendering.matplotlib import MatplotlibRenderer
+from wenu.sky.realization import NATIVE_ICRS_SPEC
+from wenu.sky.realization import LayerRealizationContext
+from wenu.sky.celestial_sphere import CelestialSphere
+from wenu.charts.composition import compose_chart
+from wenu.charts.detail import DetailOverrides
+
+
+def index_sky(star_magnitude_limit):
+    """Load existing catalogue owners once, without an observer or ephemeris."""
+    sky = CelestialSphere(None)
+    sky.add_milky_way_isophotes()
+    sky.add_stars(magnitude_limit=star_magnitude_limit)
+    sky.add_constellations()
+    return sky
+
+
+def composed_axes(figure, overview):
+    """Same-scale disks, with their inward equatorial points coincident."""
+    north = overview_face(overview, "north")
+    radius = north.boundary_radius
+    equator_radius = north.projection.projected_radius(90)
+    # Equal square panels overlap by the excess cap beyond the equator.
+    # Sky-band width and this physical lens are distinct quantities.
+    ratio = equator_radius / radius
+    panel = min(0.94 / (1 + ratio), 0.70 * figure.get_figheight() / figure.get_figwidth())
+    height = panel * figure.get_figwidth() / figure.get_figheight()
+    bottom = 0.135 + (0.70 - height) / 2
+    left = (1 - panel * (1 + ratio)) / 2
+    axes = tuple(figure.add_axes((x, bottom, panel, height))
+                 for x in (left, left + panel * ratio))
+    return axes
+
+
+def _join_faces(figure, axes, atlas):
+    """Bisect the paper lens; retain both full contours as assembly guides.
+
+    Each own hemisphere is entirely on its assigned side of the join, so
+    clipping the lens does not remove sky coverage. This is a two-projection
+    index, not pointwise registration of the whole common sky band.
+    """
+    for ax, pole in zip(axes, ("north", "south"), strict=True):
+        # Keep this in figure coordinates: savefig changes DPI. A fixed
+        # display-pixel Bbox would silently clip different sky on export.
+        clip = TransformedBbox(Bbox.from_extents(
+            0 if pole == "north" else 0.5, 0,
+            0.5 if pole == "north" else 1, 1,
+        ), figure.transFigure)
+        for artist in (*ax.lines, *ax.patches, *ax.collections, *ax.texts):
+            artist.set_clip_box(clip)
+            artist.set_clip_on(True)
+        boundary = overview_face(atlas.geometry.overview, pole).boundary
+        figure.add_artist(Line2D(boundary.x, boundary.y, transform=ax.transData,
+                                color="#527089", linewidth=0.65, zorder=20))
 
 
 def overview_face(overview, pole):
@@ -67,19 +124,35 @@ def primary_outline(face, ra0, ra1, lower, upper):
     return ProjectedPolygon(x, y)
 
 
-def _draw_face(ax, atlas, face, *, footprints):
+def _draw_face(ax, atlas, face, *, footprints, sky=None, star_magnitude_limit=5.5):
     renderer = MatplotlibRenderer(ax)
     renderer.apply_viewport(face.viewport)
-    renderer.set_clip_boundary(face.boundary, style={"color": "#284b63", "linewidth": 1})
+    renderer.set_clip_boundary(face.boundary, style={"edgecolor": "#284b63", "facecolor": "none", "linewidth": 1})
     renderer.set_axes_frame_visible(False)
     ax.set_xticks([])
     ax.set_yticks([])
+    if sky is not None:
+        composition = compose_chart(
+            face, style="atlas", mode="print",
+            detail_overrides=DetailOverrides(
+                star_magnitude_limit=star_magnitude_limit,
+                enabled_layers=frozenset({"stars", "constellation_lines",
+                                          "constellation_labels", "milky_way"}),
+                constellation_star_mode="none",
+            ),
+        )
+        style = replace(composition.style,
+                        canvas=replace(composition.style.canvas, sky_color="none"))
+        options = composition.layer_options(sky).layer_options
+        face.render(sky, renderer, style=style, layer_options=options,
+                    realization_context=LayerRealizationContext(NATIVE_ICRS_SPEC),
+                    boundary_style={"edgecolor": "#284b63", "facecolor": "none", "linewidth": 1})
     highlight = atlas.primary_sheet_id(atlas.seed_ra_deg, 0)
     label_x, label_y, labels, ids = [], [], [], []
     for sheet, ra0, ra1, lower, upper in visible_regions(atlas, face):
         selected = sheet.sheet_id == highlight
         renderer.draw(primary_outline(face, ra0, ra1, lower, upper), style={
-            "facecolor": "#d0e9d8" if selected else
+            "facecolor": "none" if sky is not None else "#d0e9d8" if selected else
                          ("#edf3f8" if sheet.number % 2 else "#ffffff"),
             "edgecolor": "#276749" if selected else "#527089",
             "linewidth": 1.2 if selected else 0.45, "zorder": 1,
@@ -96,8 +169,12 @@ def _draw_face(ax, atlas, face, *, footprints):
     renderer.draw(ProjectedPoints(np.array(label_x), np.array(label_y),
                                  ids=np.array(ids), labels=np.array(labels)),
                   draw_markers=False, draw_labels=True,
-                  label_style={"fontsize": 7, "ha": "center", "va": "center",
-                               "color": "#183b56", "zorder": 4})
+                  label_style={"fontsize": 10 if sky is not None else 7,
+                               "fontweight": "bold" if sky is not None else "normal",
+                               "ha": "center", "va": "center",
+                               "color": "#183b56", "zorder": 25,
+                               "bbox": {"facecolor": "white", "edgecolor": "none",
+                                        "alpha": 0.85, "pad": 0.6}})
     ra = _samples(0, 360)
     for dec in (-atlas.geometry.overview.shared_band_width_deg / 2, 0,
                 atlas.geometry.overview.shared_band_width_deg / 2):
@@ -132,15 +209,25 @@ def _draw_face(ax, atlas, face, *, footprints):
                  fontsize=11, pad=12, color="#183b56")
 
 
-def plot_overview(design_path, output_prefix, *, footprints=False):
+def plot_overview(design_path, output_prefix, *, footprints=False, joined=False,
+                  astronomy=False, star_magnitude_limit=5.5):
     """Read/revalidate resolved JSON and write versioned PNG, PDF and SVG."""
     atlas = AtlasBandTiling.read_json(design_path)
+    if not np.isfinite(star_magnitude_limit) or not 0 < star_magnitude_limit <= 11:
+        raise ValueError("star_magnitude_limit must be finite and between 0 and 11.")
     prefix = Path(output_prefix)
     destinations = [prefix.with_suffix(suffix) for suffix in (".png", ".pdf", ".svg")]
     if any(path.exists() for path in destinations):
         raise FileExistsError("Choose a new versioned output prefix; existing products are preserved.")
-    figure, axes = plt.subplots(1, 2, figsize=(14, 8), facecolor="white")
-    figure.subplots_adjust(left=0.03, right=0.97, top=0.86, bottom=0.13, wspace=0.06)
+    sky = index_sky(star_magnitude_limit) if astronomy else None
+    figure = plt.figure(figsize=(14, 8), facecolor="white")
+    if joined:
+        axes = composed_axes(figure, atlas.geometry.overview)
+    else:
+        axes = figure.subplots(1, 2)
+        figure.subplots_adjust(left=0.03, right=0.97, top=0.86, bottom=0.13, wspace=0.06)
+    for ax in axes:
+        ax.set_facecolor("none")
     field = atlas.geometry.sheets[0].field_width_deg
     page = atlas.geometry.page
     paper = "B4" if (page.width_mm, page.height_mm) == (353, 250) else f"{page.width_mm:g} × {page.height_mm:g} mm"
@@ -150,7 +237,10 @@ def plot_overview(design_path, output_prefix, *, footprints=False):
                 ha="center", fontsize=11, color="#527089")
     try:
         for ax, pole in zip(axes, ("north", "south"), strict=True):
-            _draw_face(ax, atlas, overview_face(atlas.geometry.overview, pole), footprints=footprints)
+            _draw_face(ax, atlas, overview_face(atlas.geometry.overview, pole), footprints=footprints,
+                       sky=sky, star_magnitude_limit=star_magnitude_limit)
+        if joined:
+            _join_faces(figure, axes, atlas)
         highlighted = next(sheet.number for sheet in atlas.geometry.sheets
                            if sheet.sheet_id == atlas.primary_sheet_id(atlas.seed_ra_deg, 0))
         region_hint = " (cerca de Orión)" if atlas.seed_ra_deg == 82.5 else ""
@@ -158,7 +248,9 @@ def plot_overview(design_path, output_prefix, *, footprints=False):
                     ha="center", fontsize=10, color="#276749")
         figure.text(0.5, 0.041, f"Ocre: ecuador, límites de banda compartida ±{atlas.geometry.overview.shared_band_width_deg / 2:g}° y meridiano RA {atlas.geometry.overview.join_ra_deg / 15:g} h.",
                     ha="center", fontsize=9, color="#806025")
-        figure.text(0.5, 0.012, "Prototipo geométrico: discos separados; sin catálogos. " +
+        content = f"Estrellas hasta magnitud {star_magnitude_limit:g}, constelaciones y Vía Láctea. " if astronomy else "Sin catálogos. "
+        layout = "Contornos unidos; banda común con dos proyecciones. " if joined else "Discos separados. "
+        figure.text(0.5, 0.012, layout + content +
                     ("Magenta: huellas completas con solapamiento." if footprints else "Los bordes indican propiedad primaria, no la huella completa de cada hoja."),
                     ha="center", fontsize=9, color="#527089")
         options = ExportOptions(dpi=160, bbox_inches=None, facecolor="white",
@@ -173,8 +265,13 @@ def main():
     parser.add_argument("design", type=Path, help="Resolved band-tiling JSON")
     parser.add_argument("output_prefix", type=Path, help="New versioned filename without extension")
     parser.add_argument("--footprints", action="store_true", help="Overlay sampled complete rectangular footprints")
+    parser.add_argument("--joined", action="store_true", help="Compose overlapping disk contours at the inward equatorial point")
+    parser.add_argument("--astronomy", action="store_true", help="Add native ICRS catalogue stars, constellations and Milky Way")
+    parser.add_argument("--star-magnitude-limit", type=float, default=5.5)
     args = parser.parse_args()
-    for path in plot_overview(args.design, args.output_prefix, footprints=args.footprints):
+    for path in plot_overview(args.design, args.output_prefix, footprints=args.footprints,
+                              joined=args.joined, astronomy=args.astronomy,
+                              star_magnitude_limit=args.star_magnitude_limit):
         print(path)
 
 

@@ -114,7 +114,11 @@ class CelestialSphere:
         if project_geometry is not None and not callable(project_geometry):
             raise TypeError("project_geometry must be callable or None.")
         resolved_observer = self.observer if observer is None else observer
-        if resolved_observer is None:
+        native_icrs = (
+            isinstance(realization_context, LayerRealizationContext)
+            and realization_context.is_native_icrs
+        )
+        if resolved_observer is None and not native_icrs:
             raise TypeError("draw_chart requires an observer.")
         if (
             realization_context is not None
@@ -162,6 +166,12 @@ class CelestialSphere:
                     **geometry_options,
                 )
             )
+            if native_icrs:
+                spec = spherical.coordinate_spec
+                if (spec.frame != "icrs" or spec.origin != "solar-system-barycenter"
+                        or spec.position_status.value != "astrometric"
+                        or spec.instant is not None):
+                    raise ValueError("Native ICRS layers must return static barycentric astrometry.")
             project = (
                 projection.project_geometry
                 if project_geometry is None

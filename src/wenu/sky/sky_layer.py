@@ -23,6 +23,10 @@ class SkyLayer(ABC):
         **geometry_options: Any,
     ) -> Any:
         """Adapt an explicit realization context to the legacy layer call."""
+        from wenu.sky.realization import LayerRealizationContext
+
+        if isinstance(context, LayerRealizationContext) and context.is_native_icrs:
+            raise TypeError(f"{type(self).__name__} does not support native ICRS realization.")
         del context
         return self.spherical_geometry(observer, **geometry_options)
 

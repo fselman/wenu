@@ -92,6 +92,33 @@ def test_stars_is_concrete_astronomical_object():
     assert stars.layer_name == "stars"
 
 
+def test_native_icrs_selection_preserves_catalogue_and_ignores_bound_observer(monkeypatch):
+    from wenu.sky.realization import NATIVE_ICRS_SPEC
+    from wenu.sky.realization import LayerRealizationContext
+    stars, observer = make_stars()
+    stars.source_catalog = stars.catalog.copy()
+    stars.source_catalog["ra_degrees"] = [15., 30., 45.]
+    stars.catalog["ra_degrees"] = [15., 30., 45.]
+    before = stars.source_catalog.copy(deep=True)
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Native catalogue requested observer realization")
+    monkeypatch.setattr(stars, "observed_altaz", forbidden)
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    bright = stars.realize(context, None, magnitude_limit=1.5, alt_min=80)
+    deep = stars.realize(context, object(), magnitude_limit=3)
+    assert bright.ids.tolist() == [100]
+    assert deep.ids.tolist() == [100, 200, 300]
+    np.testing.assert_array_equal(deep.lon_deg, [15., 30., 45.])
+    np.testing.assert_array_equal(deep.lat_deg, [-10., -20., -30.])
+    assert len(bright.metadata["is_constellation_vertex"]) == 1
+    assert deep.coordinate_spec.frame == "icrs"
+    assert deep.coordinate_spec.position_status.value == "astrometric"
+    assert deep.coordinate_spec.instant is None
+    assert deep.coordinate_spec.epoch == "J1991.25"
+    pd.testing.assert_frame_equal(before, stars.source_catalog)
+    assert observer.skyfield.observe_calls == 0
+
+
 def test_stars_returns_aligned_spherical_points():
     stars, observer = make_stars()
 

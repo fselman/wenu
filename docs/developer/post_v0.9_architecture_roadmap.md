@@ -4297,3 +4297,44 @@ wrap/poles, all 34 numbers, strict persisted evidence, invalid profile/budget
 failures, old-format compatibility, regression and overview/footprint review.
 No installed command, astronomical layers, composed disk overlap or chart/report
 production is added. Existing source/coordinate/diagram owners remain intact.
+
+## Composed astronomical atlas index candidate (2026-10-09)
+
+Fernando accepted the five-band comparison and explicitly requested merge and
+cleanup. PRs #216, #217 and #218 are merged into `main` `cca31a82`; the Mac
+confirmed clean synchronization and deletion of all three remote/local branches.
+The accepted 34-sheet content is identical to the 383-focused/3,220-total
+Mac-tested head `6309234e`. Earlier pending/stacked statements above record
+the historical review states and do not block this next authorized milestone.
+
+Fernando requested a composed pair with an intersection area, plus stars,
+constellation lines/labels and Milky Way. As-is: the JSON-only tool already
+renders exact ownership intersections and sampled footprint boundaries using
+canonical polar projection/render/export owners; disks are separate. Background
+layers still realize observer-local geometry before the polar chart transforms
+it back to ICRS. The accepted 49D.1/49D.2 realization seam is the correct owner
+for a direct native catalogue product, rather than a dummy observer or separate
+astronomical drawing path.
+
+Extend the existing realization context and four background owners for explicit
+`NATIVE_ICRS_SPEC`, retaining native Hipparcos J1991.25 directions and morphology
+topology with no observation or epoch propagation. Permit missing observers only
+in this static product, reject unsupported layers and non-static/non-ICRS
+output, and preserve ordinary observer-backed calls. Reuse the existing sky
+loop, polar chart, detail/style, clipping, renderer and exporter.
+
+Compose equal-scale polar views by coinciding their inward equatorial points
+at the persisted join RA. Draw both full cap contours and bisect the paper lens
+for content. An own hemisphere lies wholly on its assigned side of that cut;
+all-sky coverage is preserved. The common RA-complete latitude band is not the
+page lens and cannot be pointwise registered across both stereographic views.
+Clip boxes must follow figure transforms when PNG/PDF/SVG export changes DPI.
+JSON, coverage certificate, sheet overlap and the five-band layout are unchanged.
+
+Admission: extend existing atlas tests for registration, own-hemisphere
+coverage, DPI clipping, all 34 visible numbers and canonical native-layer export;
+extend existing star/constellation/isophote/realization tests for native source
+oracles, metadata/topology, no observer transformations and closed failures.
+Do not create production modules, test files, dependencies, an installed atlas
+command, report pages, arbitrary epoch propagation or moving objects. Require
+focused and full regression, PNG/PDF/SVG review and exact-head Mac acceptance.
