@@ -2289,3 +2289,15 @@ explicitly unclassified. `tzdata>=2025.2` supports the Coyhaique fallback.
 Coordinate references describe approximate settlements/sites, not surveyed
 instrument positions. Raw MinCiencia/BCN geometry and the full GeoNames
 country dump are not vendored. See [the location guide](../user_guide/locations.md).
+
+
+## Atlas geometry specimen boundary (candidate)
+
+`wenu.atlas_design` adds observer-independent immutable page, overview and
+explicit-centre sheet records. It reuses `SphericalFrame`, `Viewport` and
+`StereographicProjection`; it supplies no coordinate conversion, catalogue,
+renderer or ephemeris. Exact footprints are inverse-projected rectangles.
+`AtlasGeometrySpecimen` writes/reads strict schema-v1 JSON with document kind
+`wenu-atlas-geometry-specimen` and coverage status `unverified`.
+This is not a complete atlas, automatic tiler, primary-area partition or CLI.
+All ordinary chart and track rendering owners remain unchanged.

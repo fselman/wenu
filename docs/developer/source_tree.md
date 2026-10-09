@@ -3171,3 +3171,28 @@ explicitly unclassified. `tzdata>=2025.2` supports the Coyhaique fallback.
 Coordinate references describe approximate settlements/sites, not surveyed
 instrument positions. Raw MinCiencia/BCN geometry and the full GeoNames
 country dump are not vendored. See [the location guide](../user_guide/locations.md).
+
+
+## Atlas geometry ownership (candidate)
+
+- `src/wenu/atlas_design.py`: immutable physical page and fixed-ICRS sheet
+  geometry, overview join geometry, diagnostic footprint samples/membership,
+  and strict versioned specimen serialization. Exact projection and rotation
+  remain in their existing geometry/projection packages. No top-level public
+  re-export, CLI or new subpackage is added.
+- `tests/test_atlas_design.py`: durable atlas specimen identity, page/aspect,
+  polar orientation, exact footprint and JSON failure/round-trip contracts.
+
+Module admission: the closest orchestration owner is `charts/regional.py`,
+whose observer-local drawing/export lifecycle differs from persistent atlas
+geometry. Extending coordinate-neutral `geometry/viewport.py` would mix paper,
+ICRS identity and JSON schema into a rectangle value; extending the projection
+would mix atlas persistence with coordinate-neutral mathematics. The new root
+module therefore depends inward on existing frame, viewport and projection
+owners, and owns only the atlas record/serialization lifecycle and failures.
+
+Test-file admission: the closest oracle file is
+`test_projection_and_clipping_contracts.py`. Atlas identity/version parsing,
+explicit incomplete status, page geometry and persistent-data corruption are a
+separate enduring responsibility; keeping them in `test_atlas_design.py`
+avoids mixing those failures into projection/clipping compatibility tests.

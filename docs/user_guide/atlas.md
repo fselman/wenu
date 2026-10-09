@@ -132,3 +132,23 @@ calls after an interface audit. There is no separate rendering pipeline planned.
 
 Implementation stages and acceptance gates are recorded in the
 [active developer roadmap](../developer/post_v0.9_architecture_roadmap.md#atlas-organisation-checkpoint-2026-10-09).
+
+
+## Geometry specimen API available for review
+
+The first implementation candidate supplies Python records in
+`wenu.atlas_design`, not the three atlas commands. Define a right-hand page
+with explicit margins, a common-meridian RA and total shared-band width, and
+an explicit list of sheet centres and horizontal field widths. Nonpolar sheets
+default to north up and increasing RA to the left; polar sheets require a
+meridian orientation. Angular height is derived from the useful paper rectangle
+through the projection. This lets us test physical scale without a star catalogue.
+
+`AtlasGeometrySpecimen` can write/read a versioned file such as
+`atlas_geometry_specimen_v1.json`. Its document kind explicitly says specimen
+and its coverage status is `unverified`; it must not be used as a finished
+whole-sky design. The API checks duplicate identities, invalid coordinates,
+unknown JSON keys and disagreement between stored and recomputed geometry.
+Diagnostic edge samples do not prove full-sky coverage. Primary areas,
+neighbours and automatic placement come later. See the
+[specimen API reference](../developer/implementation_reference.md#atlas-geometry-specimen-api-candidate).

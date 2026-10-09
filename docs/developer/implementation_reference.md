@@ -4068,3 +4068,39 @@ explicitly unclassified. `tzdata>=2025.2` supports the Coyhaique fallback.
 Coordinate references describe approximate settlements/sites, not surveyed
 instrument positions. Raw MinCiencia/BCN geometry and the full GeoNames
 country dump are not vendored. See [the location guide](../user_guide/locations.md).
+
+
+## Atlas geometry specimen API (candidate)
+
+Import from `wenu.atlas_design`; no atlas command is installed yet.
+
+- `AtlasPageGeometry(width_mm, height_mm, top_mm, bottom_mm, inner_mm, outer_mm)`
+  describes a right-hand page; dimensions are explicit and margins can be zero.
+- `AtlasOverviewGeometry(join_ra_deg, shared_band_width_deg)` describes only
+  celestial join geometry; north/south limits are minus/plus half the band.
+- `AtlasSheetGeometry(sheet_id, number, center_ra_deg, center_dec_deg,
+  field_width_deg, position_angle_deg=0, flip_ew=False,
+  pole_meridian_ra_deg=None, projection_radius=2)` describes fixed ICRS geometry.
+  Default nonpolar orientation is north up, increasing RA left. Angles follow
+  the existing frame policy; flipping reverses x. Polar centres use RA=0 and
+  require an explicit meridian: at zero position angle it points along +y.
+- `sheet.viewport(page)` preserves useful paper aspect in the projected plane;
+  `field_height_deg(page)` inverse-converts its half-height.
+- `sheet.boundary_samples(page, samples_per_edge=17)` returns diagnostic
+  RA/Dec degree pairs; these samples carry no coverage/error certification.
+  `sheet.contains(page, ra_deg, dec_deg)` tests projected-rectangle membership
+  with a small numerical boundary tolerance and excludes the projection antipode.
+- `AtlasGeometrySpecimen(design_id, revision, page, overview, sheets)` normalizes
+  sheets into immutable editorial-number order, rejecting repeated IDs/numbers.
+  Use `to_dict/to_json`, `from_dict/from_json`, `write_json(path)/read_json(path)`.
+
+Schema version 1 is specifically the specimen format, not the future complete
+atlas format. Kind `wenu-atlas-geometry-specimen`, fixed frame `icrs`, angular
+units `degrees` and status `unverified` are required. All nested keys are exact;
+unknown/missing keys, duplicate JSON keys, NaN/Infinity, numeric strings,
+booleans as numbers and inconsistent redundant plane/basis values fail closed.
+The reader recomputes resolved geometry using the existing projection. Output
+is deterministic UTF-8 JSON; no time/catalogue/observer provenance is invented.
+The caller owns destination directory creation and revision/filename selection.
+No full-sphere coverage, neighbour graph, primary areas or report ownership is
+claimed. Those belong to subsequent design implementation.
