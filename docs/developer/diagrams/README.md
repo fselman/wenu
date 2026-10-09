@@ -277,3 +277,23 @@ flowchart TD
     E --> F["Reader revalidation"]
     F --> D
 ```
+
+## Atlas visual specimen inspection view
+
+The first geometry-only index uses this existing-owner composition:
+
+```mermaid
+flowchart TD
+    J["Resolved band JSON"] --> V["Read and revalidate"]
+    V --> P["Polar chart projection and cap"]
+    V --> N["Primary regions and persisted numbers"]
+    P --> R["Generic MatplotlibRenderer"]
+    N --> R
+    R --> E["Existing ExportOptions"]
+    E --> O["PNG, PDF and SVG review specimens"]
+```
+
+The developer example orchestrates these owners. Placement is not rerun;
+no new rendering or coordinate-service boundary is introduced. Disks are
+separate in this prototype. Composed overlap, celestial layers and report/chart
+page production remain later work.

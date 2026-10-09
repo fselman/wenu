@@ -4151,3 +4151,22 @@ ID namespaces change with geometry inputs or design revision. Overview changes
 preserve sheets and IDs. Numbering is south-to-north, increasing RA from the
 seed in each row, with a separate polar sheet at each end. Changing centre
 count is a redesign; cross-edition IDs must not be assumed equivalent.
+
+## Atlas visual review helper (candidate)
+
+`examples/atlas_band_overview_v1.py DESIGN_JSON OUTPUT_PREFIX [--footprints]`
+reads `AtlasBandTiling.read_json` and writes three new products using
+`OUTPUT_PREFIX.png/.pdf/.svg`. An existing destination rejects the request
+before rendering. Use explicit versioned prefixes. The helper has no placement,
+catalogue, observer, final CLI/schema or report-page responsibility.
+
+`overview_face` returns the canonical stereographic polar chart with the join
+meridian directed inward. `visible_regions` intersects stored latitude/RA
+ownership regions with that chart's cap; `primary_outline` samples these
+regions only for rendering, retaining full-circle polar edges. Numbers use
+persisted sheet centres/IDs, with identical numbers in both views where visible.
+`plot_overview` revalidates JSON, draws through `MatplotlibRenderer`, finalizes
+graphics and exports through `ExportOptions`, closing its figure even on failure.
+Optional footprints are sampled for display, masked at the view latitude and
+clipped by the renderer's circular boundary. No analytic certificate is inferred
+from those samples. Paper composition and celestial layers remain future work.

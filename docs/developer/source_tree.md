@@ -3210,3 +3210,14 @@ is no new production module, test file, subpackage or dependency.
 Frame rotation, projection/inverse and viewport remain mathematical owners.
 Catalogue/observer construction, position realization, chart preparation,
 rendering, legends and export are not part of the tiler's lifecycle.
+
+## Atlas visual specimen ownership (candidate)
+
+`examples/atlas_band_overview_v1.py` is a developer orchestration specimen:
+resolved band JSON in, geometry-only index PNG/PDF/SVG out. It composes existing
+polar-chart projection/viewport/boundary, generic renderer and export owners.
+There is no new production module, dependency or installed CLI. Extend
+`tests/test_atlas_design.py` for primary-cap intersections, wrap/pole display
+faults, JSON-only plotting, number coverage, export and overwrite prevention.
+These remain part of the existing atlas persistence/geometry contract; no new
+test-file owner is admitted.
