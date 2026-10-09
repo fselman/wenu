@@ -32,6 +32,77 @@ class Observer:
     )
 
 
+@pytest.mark.parametrize("level", ["ol1", "ol2"])
+def test_native_icrs_isophotes_keep_source_rings_topology_and_cache(level, monkeypatch):
+    from wenu.sky.realization import NATIVE_ICRS_SPEC
+    from wenu.sky.realization import LayerRealizationContext
+    from wenu.sky.milky_way import _native_ring_interior
+    layer = MilkyWayIsophotes(Observer(), levels=(level,)).load()
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Native isophotes requested observer transformation")
+    monkeypatch.setattr(layer, "_transform_rings", forbidden)
+    geometry = layer.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None)
+    assert geometry.coordinate_spec.frame == "icrs"
+    assert geometry.metadata["coordinate_system"] == "icrs"
+    index = 0
+    for polygon in layer.features[level]:
+        for ring_index, ring in enumerate(polygon):
+            ring = np.array(ring, dtype=float)
+            if np.allclose(ring[0, :2], ring[-1, :2]):
+                ring = ring[:-1]
+            np.testing.assert_array_equal(geometry.lon_deg[index], ring[:, 0])
+            np.testing.assert_array_equal(geometry.lat_deg[index], ring[:, 1])
+            assert geometry.metadata["is_hole"][index] == (ring_index > 0)
+            winding = geometry.metadata["projection_cap_topology_inversion"][index]
+            left, area = _native_ring_interior(ring[:, :2], winding)
+            assert geometry.metadata["spherical_interior_left"][index] == left
+            assert geometry.metadata["spherical_interior_area_sr"][index] == pytest.approx(area)
+            index += 1
+    assert index == len(geometry)
+    assert not layer._observed_polygon_cache
+
+
+def test_native_polar_ol1_raster_matches_independent_source_membership():
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    layer = MilkyWayIsophotes(None, levels=("ol1",)).load()
+    projection = StereographicProjection()
+    ra,dec = np.meshgrid(np.arange(0,360,7.3), np.arange(5,80,6.7))
+    x,y = projection.project_spherical(ra.ravel(), dec.ravel())
+    samples = np.column_stack((x,y))
+    expected = np.zeros(len(samples), dtype=bool)
+    for polygon in layer.features["ol1"]:
+        inside = np.ones(len(samples), dtype=bool)
+        for index,ring in enumerate(polygon):
+            ring = np.array(ring)
+            px,py = projection.project_spherical(ring[:,0], ring[:,1])
+            contained = Path(np.column_stack((px,py))).contains_points(samples)
+            if index < 2:
+                contained = ~contained
+            inside &= contained if index == 0 else ~contained
+        expected |= inside
+    geometry = layer.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None)
+    projected = project_polygons_to_projection_cap(geometry, projection=projection, angular_radius_deg=100)
+    figure,ax = plt.subplots(figsize=(8,8), dpi=100, facecolor="black")
+    try:
+        ax.set_facecolor("black")
+        ax.set(xlim=(-2.4,2.4), ylim=(-2.4,2.4), aspect="equal")
+        ax.set_axis_off()
+        MatplotlibRenderer(ax).draw(projected, compound_by="compound_id",
+            polygon_fill_style={"facecolor":"white", "face_alpha":1})
+        figure.canvas.draw()
+        pixels = np.asarray(figure.canvas.buffer_rgba())[:,:,0]
+        tested = 0
+        for i,(col,row) in enumerate(ax.transData.transform(samples).astype(int)):
+            row = len(pixels)-1-row
+            window = pixels[row-2:row+3,col-2:col+3]
+            if window.size == 25 and (np.all(window < 5) or np.all(window > 250)):
+                assert bool(pixels[row,col] > 128) == expected[i]
+                tested += 1
+        assert tested > 350
+    finally:
+        plt.close(figure)
+
+
 @pytest.mark.parametrize("hour", [0, 4, 6, 9, 12, 15, 18, 21])
 def test_ol1_rendered_fill_matches_native_sky_across_a_day(hour):
     """Compare actual raster fill with native catalogue membership.

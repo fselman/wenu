@@ -4494,3 +4494,37 @@ stationary points; full-RA polar caps are included. Canonical frame basis
 vectors define the four spherical edge-circle halfspaces. Restricting primary
 directions to the tangent hemisphere excludes the projection antipode.
 No coordinate convention, observer, equinox or position-realization rule changes.
+
+## Native catalogue atlas index candidate (2026-10-09)
+
+The composed atlas index deliberately requests native catalogue ICRS through
+`LayerRealizationContext(NATIVE_ICRS_SPEC)`. It has no observer, location,
+evaluation time or requested propagation epoch. This advances the 49D.1/49D.2
+celestial-background realization seam; it does not replace current apparent
+observer charts or implement arbitrary native-frame rendering for every layer.
+
+ICRS describes the axes. A catalogue epoch describes the physical time of the
+reported stellar directions. Hipparcos native RA/Dec, constellation vertices
+and derived label anchors in this index carry epoch J1991.25. They are not
+propagated to J2000 or the present date. Milky Way morphology is fixed ICRS
+source geometry with no stellar epoch. The index is a catalogue orientation
+map, not an observer's current-date apparent sky. JSON chart centres and the
+atlas partition remain purely fixed ICRS geometry and do not acquire an
+observer or stellar epoch from these optional presentation layers.
+
+The four existing layer owners return their native typed spherical geometry
+before projection; the canonical sky loop verifies static barycentric ICRS
+astrometry. Unsupported layers fail closed. There is no dummy observer, AltAz
+round trip, ephemeris evaluation, chart-owned Astropy transformation or new
+coordinate authority. Native morphology keeps its ICRS interior handedness;
+the existing AltAz branch continues to reverse it for horizontal coordinates.
+
+The two polar views have equal physical projection scales. Their inward
+points at declination zero and the JSON join RA coincide on the page. Their
+extended cap contours intersect, with a page bisector selecting north/south
+content in that lens. Every complete own hemisphere remains visible, so this
+cut preserves the index's all-sky coverage. The shared declination band covers
+all RAs and is not the paper lens. Two opposite-pole stereographic projections
+cannot align pointwise throughout that band; the composition does not claim
+such registration. Sheet-footprint overlap and the coverage certificate stay
+unchanged.

@@ -4,7 +4,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from wenu.coordinates import CoordinateSpec, ObservationContext
+from wenu.coordinates import CoordinateSpec, ObservationContext, PositionStatus
+
+
+NATIVE_ICRS_SPEC = CoordinateSpec(
+    frame="icrs", origin="solar-system-barycenter",
+    position_status=PositionStatus.ASTROMETRIC,
+    provider="native catalogues", model="unpropagated catalogue directions",
+)
 
 
 def _optional_text(value, *, name):
@@ -32,6 +39,17 @@ class LayerRealizationContext:
     evaluation_instant: str | None = None
     evaluation_time_scale: str | None = None
     reference_equinox: str | None = None
+
+    @property
+    def is_native_icrs(self):
+        """Explicit static catalogue product, without observation or propagation."""
+        return (
+            self.product_coordinate_spec == NATIVE_ICRS_SPEC
+            and self.observation is None
+            and self.evaluation_instant is None
+            and self.evaluation_time_scale is None
+            and self.reference_equinox is None
+        )
 
     def __post_init__(self):
         if not isinstance(self.product_coordinate_spec, CoordinateSpec):

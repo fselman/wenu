@@ -292,3 +292,69 @@ python tools/render_atlas_band_overview_v1.py \
 
 The earlier cap-based comparison stays available. This alternative requires
 visual review before adopting its field, latitude boundaries or overlap.
+
+## Composed astronomical index candidate (2026-10-09)
+
+The geometry, separate-view plotter and five-band comparison were accepted,
+merged and Mac-cleaned through PRs #216–#218 at main `cca31a82`. The following
+candidate extends the same developer tool; the three proposed atlas commands
+are still not installed.
+
+```bash
+python tools/render_atlas_band_overview_v1.py \\
+  atlas_five_band_v1.json atlas_joined_overview_v1 \\
+  --joined --astronomy --star-magnitude-limit 5.5
+python tools/render_atlas_band_overview_v1.py \\
+  atlas_five_band_v1.json atlas_joined_footprints_v1 \\
+  --joined --astronomy --star-magnitude-limit 5.5 --footprints
+```
+
+Each invocation reads and revalidates the resolved JSON, then writes PNG, PDF
+and SVG under a new versioned prefix. Plotting does not rerun placement or
+modify the JSON. Omitting `--joined` retains separate disks; omitting
+`--astronomy` retains geometry-only review. The magnitude limit must be
+finite, positive and at most 11.
+
+The north disk is on the left and the south disk on the right. Equal physical
+projection scales put the inward equatorial point at the JSON's join RA at
+one common page position. Caps beyond the equator produce intersecting disk
+contours. A vertical bisector chooses north content on the left and south
+content on the right inside the paper lens. Each complete own hemisphere
+survives this cut, so the composition preserves all-sky coverage. Both full
+outer contours remain visible. A zero-width shared band gives tangent disks.
+
+The common sky band is an RA-complete declination band, not the small lens on
+the page. The two polar projections agree at the join point and cannot be
+registered point for point throughout that band. Shared objects and primary
+numbers can appear in both views. Sheet overlap, shared sky-band width and
+page-contour intersection remain different quantities.
+
+Optional astronomical content uses existing Hipparcos stars, western
+constellation figures/abbreviations and D3-Celestial Milky Way rings through
+`CelestialSphere.draw_chart()`. It uses native catalogue ICRS directions;
+there is no observer, time, ephemeris, apparent-place calculation or proper-
+motion propagation. Hipparcos coordinates/figure vertices/derived label
+anchors retain their native J1991.25 catalogue epoch; morphology carries no
+stellar epoch. This is an orientation index, with the existing catalogue and
+source provenance, not a current-date observing chart. Faint constellation
+vertices remain available to figures independently of the stellar marker cut.
+The filled Milky Way preserves source ring holes and handedness. Index
+appearance and density do not alter the B4 chart layout or coverage certificate.
+
+
+The accepted lower-density index can be reproduced with stars through magnitude
+4.5, the faint OL1 Milky Way envelope added to OL2–OL5, and both Magellanic
+Clouds. These are optional plotting choices; the default remains magnitude
+5.5 with OL2–OL5 and no Clouds. Use a new versioned output prefix:
+
+```bash
+python tools/render_atlas_band_overview_v1.py atlas_five_band_v1.json atlas_joined_overview_mag45_v2 --joined --astronomy --star-magnitude-limit 4.5 --include-lowest-mw-isophote --magellanic-clouds
+python tools/render_atlas_band_overview_v1.py atlas_five_band_v1.json atlas_joined_footprints_mag45_v2 --joined --astronomy --footprints --star-magnitude-limit 4.5 --include-lowest-mw-isophote --magellanic-clouds
+```
+
+`--include-lowest-mw-isophote` and `--magellanic-clouds` require `--astronomy`.
+The Clouds use all four levels from each existing Gaia-derived source snapshot,
+with their source rings, holes and compound grouping retained. Their native ICRS
+morphology is realized in the existing Magellanic Cloud layer, with no observer
+or assigned epoch; the usual observed rendering remains available. The same
+resolved JSON and its chart IDs, scale, primary regions and coverage are used.

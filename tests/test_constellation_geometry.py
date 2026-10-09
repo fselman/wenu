@@ -158,6 +158,42 @@ def test_constellation_lines_are_geometrical_objects(tmp_path):
     assert isinstance(lines, GeometricalObject)
 
 
+def test_native_constellation_vertices_and_mean_anchors_use_same_source(tmp_path, monkeypatch):
+    from wenu.sky.realization import NATIVE_ICRS_SPEC
+    from wenu.sky.realization import LayerRealizationContext
+    from wenu.sky.constellation_labels import ConstellationLabels
+    lines, observer = make_lines(tmp_path)
+    source = pd.DataFrame({"ra_degrees": [80., 82., 84.],
+                           "dec_degrees": [0., 1., 2.]}, index=[100, 200, 300])
+    # Faint vertices remain part of the figure even when their markers are
+    # excluded by the catalogue magnitude cut.
+    lines.stars.catalog = source.iloc[:1]
+    lines.stars.source_catalog = source
+    lines.stars.hip_df = source
+    lines.stars.skyfield_stars = None
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Native constellations requested AltAz")
+    lines.stars.observed_altaz = forbidden
+    monkeypatch.setattr("wenu.sky.constellation_labels.icrs_point_arrays_to_altaz", forbidden)
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    geometry = lines.realize(context, None)
+    np.testing.assert_array_equal(geometry.lon_deg[0], [80., 82.])
+    np.testing.assert_array_equal(geometry.lat_deg[1], [1., 2.])
+    assert geometry.metadata["hip_edges"] == ((100, 200), (200, 300))
+    labels = ConstellationLabels(lines.stars, min_stars=1)
+    anchor = labels.realize(context, None)
+    assert anchor.labels.tolist() == ["Ori"]
+    vectors = np.array([[np.cos(np.radians(d))*np.cos(np.radians(r)),
+                         np.cos(np.radians(d))*np.sin(np.radians(r)), np.sin(np.radians(d))]
+                        for r,d in zip([80.,82.,84.], [0.,1.,2.])])
+    mean = vectors.mean(axis=0); mean /= np.linalg.norm(mean)
+    assert anchor.lon_deg[0] == pytest.approx(np.degrees(np.arctan2(mean[1], mean[0])))
+    assert anchor.lat_deg[0] == pytest.approx(np.degrees(np.arcsin(mean[2])))
+    assert geometry.coordinate_spec.frame == anchor.coordinate_spec.frame == "icrs"
+    empty = labels.realize(context, None, selected={"Cru"})
+    assert len(empty) == 0 and empty.coordinate_spec.frame == "icrs"
+
+
 def test_lines_return_one_spherical_curve_per_hip_edge(tmp_path):
     lines, observer = make_lines(tmp_path)
     geometry = lines.spherical_geometry(observer)
@@ -240,7 +276,7 @@ from types import SimpleNamespace
 
 import numpy as np
 
-from wenu.coordinates import ICRS_ASTROMETRIC_SPEC
+from wenu.sky.realization import NATIVE_ICRS_SPEC
 from wenu.sky.coordinate_grids import (
     CoordinatesGrid,
     SphericalCoordinatesGrid,
@@ -253,7 +289,7 @@ class StubGrid(CoordinatesGrid):
     coordinate_system = "test"
 
     def _native_coordinate_spec(self):
-        return ICRS_ASTROMETRIC_SPEC
+        return NATIVE_ICRS_SPEC
 
 
 def observer(time):

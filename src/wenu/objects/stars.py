@@ -308,7 +308,23 @@ class Stars(AstronomicalObject):
 
         return alt_all[mask], az_all[mask]
 
+    def realize(self, context, observer, **geometry_options):
+        """Reuse render-local selection for static native catalogue astrometry."""
+        if context.is_native_icrs:
+            return self._spherical_geometry(observer, native_icrs=True, **geometry_options)
+        return self.spherical_geometry(observer, **geometry_options)
+
     def spherical_geometry(
+        self, observer, *, alt_min=-10.0, magnitude_limit=None,
+        include_ids=None, include_constellation_vertices=None, constellations=None,
+    ):
+        return self._spherical_geometry(
+            observer, alt_min=alt_min, magnitude_limit=magnitude_limit,
+            include_ids=include_ids, include_constellation_vertices=include_constellation_vertices,
+            constellations=constellations,
+        )
+
+    def _spherical_geometry(
         self,
         observer,
         *,
@@ -317,11 +333,14 @@ class Stars(AstronomicalObject):
         include_ids=None,
         include_constellation_vertices=None,
         constellations=None,
+        native_icrs=False,
     ) -> SphericalPoints:
         """Return observer-dependent stellar positions as spherical points."""
         resolved_observer = self.observer if observer is None else observer
-        if resolved_observer is None:
+        if resolved_observer is None and not native_icrs:
             raise RuntimeError("An Observer is required for stellar geometry.")
+        if native_icrs and getattr(self, "source_catalog", None) is None:
+            raise RuntimeError("Native ICRS realization requires a loaded source catalogue.")
         if getattr(self, "source_catalog", None) is None:
             if any(
                 value is not None
@@ -350,11 +369,14 @@ class Stars(AstronomicalObject):
                     include_constellation_vertices
                 ),
             )
-            selected, alt_deg, az_deg = self._catalog_altaz(
-                catalog,
-                observer,
-                alt_min,
-            )
+            if native_icrs:
+                selected = catalog
+                alt_deg = catalog["dec_degrees"].to_numpy(dtype=float)
+                az_deg = catalog["ra_degrees"].to_numpy(dtype=float)
+            else:
+                selected, alt_deg, az_deg = self._catalog_altaz(
+                    catalog, observer, alt_min,
+                )
 
         magnitudes = selected["magnitude"].to_numpy(copy=True)
         hip_ids = selected.index.to_numpy(copy=True)
@@ -363,7 +385,7 @@ class Stars(AstronomicalObject):
             "is_constellation_vertex"
         )
         if vertex_membership is None:
-            vertex_membership = np.zeros(len(self.hip_df), dtype=bool)
+            vertex_membership = np.zeros(len(selected), dtype=bool)
         else:
             vertex_membership = vertex_membership.to_numpy(
                 dtype=bool,
@@ -404,7 +426,11 @@ class Stars(AstronomicalObject):
         return SphericalPoints(
             lon_deg=az_deg,
             lat_deg=alt_deg,
-            coordinate_spec=observer_altaz_spec(
+            coordinate_spec=icrs_catalogue_spec(
+                f"{self.catalog_name} stellar catalogue",
+                epoch="J1991.25",
+                provenance=("ESA Hipparcos Catalogue I/239",),
+            ) if native_icrs else observer_altaz_spec(
                 resolved_observer,
                 position_status=PositionStatus.APPARENT,
                 provider="skyfield Hipparcos",

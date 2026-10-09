@@ -8,6 +8,7 @@ import numpy as np
 
 from wenu.coordinates import PositionStatus
 from wenu.coordinates import observer_altaz_spec
+from wenu.coordinates import icrs_catalogue_spec
 
 from wenu.geometry.spherical import SphericalPolygons
 from wenu.resources import magellanic_cloud_isophotes_path
@@ -142,12 +143,21 @@ class MagellanicCloudIsophotes(SkyLayer):
 
     def spherical_geometry(self, observer, *, levels=None):
         """Transform the selected ICRS isophote rings to observer Alt/Az."""
+        return self._spherical_geometry(observer, levels=levels)
+
+    def realize(self, context, observer, **geometry_options):
+        """Retain source ICRS directions for static catalogue views."""
+        if context.is_native_icrs:
+            return self._spherical_geometry(observer, native_icrs=True, **geometry_options)
+        return self.spherical_geometry(observer, **geometry_options)
+
+    def _spherical_geometry(self, observer, *, levels=None, native_icrs=False):
         if self.features is None:
             raise RuntimeError(
                 "The isophotes have not been loaded. Call load() first."
             )
         resolved = self.observer if observer is None else observer
-        if resolved is None or not hasattr(resolved, "altaz_frame"):
+        if not native_icrs and (resolved is None or not hasattr(resolved, "altaz_frame")):
             raise ValueError("An observer with an altaz_frame is required.")
 
         native_rings = []
@@ -192,19 +202,23 @@ class MagellanicCloudIsophotes(SkyLayer):
                     holes.append(ring_index > 0)
                     clouds.append(self.cloud)
 
-        longitude, latitude = observed_polygon_arrays(
-            self._observed_polygon_cache,
-            resolved,
-            source_key=(
-                self.layer_name,
-                self.cloud,
-                self.source,
-                self._source_revision,
-            ),
-            build=lambda: self._transform_rings(
-                native_rings, resolved
-            ),
-        )
+        if native_icrs:
+            longitude = tuple(ring[:, 0].copy() for ring in native_rings)
+            latitude = tuple(ring[:, 1].copy() for ring in native_rings)
+        else:
+            longitude, latitude = observed_polygon_arrays(
+                self._observed_polygon_cache,
+                resolved,
+                source_key=(
+                    self.layer_name,
+                    self.cloud,
+                    self.source,
+                    self._source_revision,
+                ),
+                build=lambda: self._transform_rings(
+                    native_rings, resolved
+                ),
+            )
         positions = [
             index
             for index, level in enumerate(level_values)
@@ -214,7 +228,8 @@ class MagellanicCloudIsophotes(SkyLayer):
         return SphericalPolygons(
             lon_deg=tuple(longitude[index] for index in positions),
             lat_deg=tuple(latitude[index] for index in positions),
-            coordinate_spec=observer_altaz_spec(
+            coordinate_spec=icrs_catalogue_spec("Gaia-derived Magellanic Cloud isophotes", epoch=None)
+            if native_icrs else observer_altaz_spec(
                 resolved,
                 position_status=PositionStatus.APPARENT,
                 provider="astropy Magellanic Cloud isophotes"
@@ -222,7 +237,7 @@ class MagellanicCloudIsophotes(SkyLayer):
             ids=[ids[index] for index in positions],
             metadata={
                 "source": self.source,
-                "coordinate_system": "altaz",
+                "coordinate_system": "icrs" if native_icrs else "altaz",
                 "cloud": np.asarray(clouds, dtype=object)[positions],
                 "level": np.asarray(level_values, dtype=int)[positions],
                 "fraction_of_peak": np.asarray(fractions, dtype=float)[positions],

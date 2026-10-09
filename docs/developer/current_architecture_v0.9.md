@@ -2340,3 +2340,43 @@ clearance; no sampled coverage inference or new projection is introduced.
 The existing JSON reader dispatches only the two declared method tags and
 revalidates persisted evidence. The existing geometry-only plotter consumes
 both. No module, dependency, CLI, catalogue, observer or rendering owner changes.
+
+## Native ICRS composed atlas index candidate (2026-10-09)
+
+The accepted atlas stack is merged at `cca31a82`. The next bounded candidate
+adds composed index contours and four static background layers. Extend the
+existing `LayerRealizationContext` with the explicit `NATIVE_ICRS_SPEC`
+product (no requested propagation epoch, observation, evaluation instant or
+reference equinox). Only that complete static context allows an absent
+observer in `CelestialSphere.draw_chart()` and `PolarPlanisphereChart.render()`.
+Unmigrated layers fail closed through the default realization adapter; realized
+native output must carry static barycentric ICRS astrometry before projection.
+Other contexts and ordinary observer paths keep their existing behavior.
+
+`Stars`, `ConstellationLines`, `ConstellationLabels` and
+`MilkyWayIsophotes` deliberately implement this context in their current
+owners. Selection, figure topology, spherical-mean anchors and ring metadata
+are shared with their existing implementations. No AltAz round trip or chart-
+owned astronomical transformation occurs. Hipparcos native epoch J1991.25 is
+retained; no proper motion or apparent-place evaluation is implied. Milky Way
+morphology has no stellar epoch, and native ring handedness is retained instead
+of applying the horizontal-path handedness reversal.
+
+The existing developer plotter loads these owners only when astronomy is
+requested, then uses the existing composition/detail/style, polar projection,
+cap clipping, canonical sky loop, renderer and exporter. It owns page layout:
+equal-scale overlapping axes, inward equatorial-point registration, a bisector
+in the physical lens, both full contours and export-DPI-aware clip boxes.
+Each complete own hemisphere remains visible; the common sky band is not
+pointwise registered across the two projections. Geometry JSON/IDs/numbers,
+coverage validation, ordinary charts, dependencies and installed CLI remain
+unchanged. No new production module or alternate pipeline is introduced.
+
+
+The accepted magnitude-4.5 index variant additionally admits native static
+LMC/SMC morphology through the existing `MagellanicCloudIsophotes.realize()`
+owner. Source rings, holes, level fractions and compounds share construction
+with the observer path; the native branch leaves the observed cache untouched
+and carries no epoch. Optional plot flags enable both Clouds and add MW OL1
+through existing detail selection. Default density and layer selection,
+resolved atlas geometry and canonical projection/rendering ownership remain.

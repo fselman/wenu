@@ -229,3 +229,43 @@ def test_level_selections_share_one_maximal_observed_geometry(
     assert complete.metadata["level"].tolist() == [1, 2, 3, 4]
     assert calls == [len(complete)]
     assert len(layer._observed_polygon_cache) == 1
+
+
+@pytest.mark.parametrize("cloud", ["lmc", "smc"])
+def test_native_clouds_preserve_source_rings_selection_and_observed_cache(cloud, tmp_path, monkeypatch):
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    # A hole exercises compound topology rather than testing only single rings.
+    path = _catalogue(tmp_path / f"{cloud}.json", cloud)
+    data = json.loads(path.read_text())
+    outer = data["features"][1]["geometry"]["coordinates"][0][0]
+    hole = [[77.2, -71.8], [77.2, -71.2], [77.8, -71.2], [77.8, -71.8], [77.2, -71.8]]
+    data["features"][1]["geometry"]["coordinates"][0].append(hole)
+    path.write_text(json.dumps(data))
+    layer = MagellanicCloudIsophotes(Observer(), cloud=cloud).load(path)
+    observed = layer.spherical_geometry(None)
+    cache = dict(layer._observed_polygon_cache)
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Native Cloud realization requested an observer transformation")
+    monkeypatch.setattr(layer, "_transform_rings", forbidden)
+    geometry = layer.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None, levels={2, 4})
+    assert geometry.coordinate_spec.frame == "icrs"
+    assert geometry.coordinate_spec.epoch is None
+    assert geometry.coordinate_spec.instant is None
+    assert geometry.coordinate_spec.origin == "solar-system-barycenter"
+    assert geometry.metadata["coordinate_system"] == "icrs"
+    assert geometry.metadata["level"].tolist() == [2, 2, 4]
+    assert geometry.metadata["cloud"].tolist() == [cloud] * 3
+    assert geometry.metadata["is_hole"].tolist() == [False, True, False]
+    assert geometry.metadata["ring_index"].tolist() == [0, 1, 0]
+    assert geometry.metadata["compound_id"][0] == geometry.metadata["compound_id"][1]
+    for index, ring in enumerate((outer, hole, data["features"][3]["geometry"]["coordinates"][0][0])):
+        np.testing.assert_array_equal(geometry.lon_deg[index], np.asarray(ring)[:-1, 0])
+        np.testing.assert_array_equal(geometry.lat_deg[index], np.asarray(ring)[:-1, 1])
+    assert layer.levels == layer.default_levels
+    assert layer._observed_polygon_cache.keys() == cache.keys()
+    for key in cache:
+        assert layer._observed_polygon_cache[key] is cache[key]
+    # The original observed path still returns its cached geometry.
+    again = layer.spherical_geometry(None)
+    for old, new in zip(observed.lon_deg, again.lon_deg):
+        np.testing.assert_array_equal(old, new)

@@ -4197,3 +4197,53 @@ profile and counts; changing overview geometry alone preserves identities.
 The default behaviour of `design_band_atlas` is unchanged. The new API is
 an explicitly parameterized comparison rather than a frozen final CLI or global
 optimization algorithm. The existing review tool renders either method.
+
+## Composed atlas index and native ICRS realization candidate (2026-10-09)
+
+`sky.realization.NATIVE_ICRS_SPEC` declares static unpropagated catalogue
+ICRS as the product frame without assigning a common physical catalogue epoch.
+`LayerRealizationContext(NATIVE_ICRS_SPEC)` is the exact observer-free
+realization request. `is_native_icrs` requires that spec and no observation,
+evaluation instant/time scale or reference equinox. The canonical sky loop
+rejects any native layer returning non-ICRS, non-barycentric, non-astrometric
+or time-evaluated geometry before projection. The default `SkyLayer.realize()`
+rejects this request for unmigrated layers. Legacy and other typed context
+calls retain the established observer-backed path.
+
+The four admitted native owners are `Stars`, `ConstellationLines`,
+`ConstellationLabels` and `MilkyWayIsophotes`. Their private shared geometry
+implementations preserve existing selection and semantic metadata. Native
+stars and figure vertices use Hipparcos J1991.25 coordinates without propagation;
+figure vertices use the finite maximal source independently of the magnitude-
+limited marker selection. Labels use the existing source grouping and spherical
+means. Morphology retains native ICRS rings, holes, compound IDs, areas and
+interior handedness, without entering the observed cache. Native polar rendering
+uses the existing equatorial cap/projection directly, without an AltAz round trip.
+
+`tools/render_atlas_band_overview_v1.py:plot_overview()` additionally accepts
+`joined=False`, `astronomy=False` and `star_magnitude_limit=5.5`.
+Corresponding tool flags are `--joined`, `--astronomy` and
+`--star-magnitude-limit`; the valid magnitude interval is (0,11]. Existing
+`--footprints`, three exports, JSON validation and destination protection
+remain. Separate geometry-only plotting is still available without catalogues.
+Joined layout registers the inward equatorial point at equal physical scales,
+retains both full contours and clips content at the page bisector with a
+`TransformedBbox` that follows export DPI. It preserves own-hemisphere
+coverage but does not register the whole shared sky band pointwise. No installed
+atlas command or schema change is claimed.
+
+
+The accepted magnitude-4.5 atlas index variant is implemented by optional
+`include_lowest_mw_isophote=False` and `magellanic_clouds=False` arguments to
+`plot_overview()`, corresponding to `--include-lowest-mw-isophote` and
+`--magellanic-clouds`. Both require astronomical rendering. OL1 augments the
+existing OL2–OL5 selection through `SkyContentSelection`; LMC and SMC use their
+four canonical levels. Default rendering and resolved geometry are unchanged.
+`MagellanicCloudIsophotes.realize()` now deliberately admits the existing
+static native ICRS context and shares ring construction/selection with the
+observed path. Native realization copies source directions, preserves holes,
+compound IDs and fractions, assigns no epoch and bypasses the observed cache.
+The existing polar projection, preparation and renderer handle both Clouds;
+no new coordinate or rendering pipeline is introduced. Current tests cover
+native selected rings/holes with a populated observed cache, both Clouds,
+legacy cache reuse, and end-to-end magnitude-4.5/OL1/Cloud exports from JSON.
