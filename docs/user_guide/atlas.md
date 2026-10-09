@@ -204,3 +204,41 @@ The prototype accepts stereographic fields from 5° to 120°, a remaining
 inscribed cap of at least 1°, and at most 4,096 sheets; it fails explicitly
 if the request cannot fit these bounds. It does not support arbitrary moved
 centres or gnomonic tiling yet.
+
+## First visual band-layout specimen (candidate)
+
+The developer example `tools/render_atlas_band_overview_v1.py` now reads a resolved
+`AtlasBandTiling` JSON and writes PNG, PDF and SVG. It is a geometry-only
+review helper, not the installed `wenu_plot_atlas` command or a finished index.
+For a JSON produced by the Python API above:
+
+```bash
+python tools/render_atlas_band_overview_v1.py \
+  atlas_band_trial_v1.json atlas_overview_40_v1
+python tools/render_atlas_band_overview_v1.py \
+  atlas_band_trial_v1.json atlas_footprints_40_v1 --footprints
+```
+
+Choose a new versioned output prefix on each changed review. Existing products
+are preserved. Plotting reads/revalidates the stored geometry; it does not
+regenerate placement or change the JSON. Presentation is separate from design.
+
+The two stereographic disks extend to the stored north/south limits. The join
+meridian points inward on both disks. Numbers are the persisted editorial
+numbers, placed at sheet centres visible in each view; a shared-band centre
+has the same number on both. Thin rim fragments of primary regions are drawn
+without moving an off-view centre's number onto the rim. Every sheet centre
+appears in at least one disk, including both actual polar sheets.
+
+Blue borders show primary ownership. Optional magenta outlines show sampled
+complete inverse-defined rectangular footprints, including overlap; green
+highlights the primary owner of the seed RA at declination zero. Ocher lines
+identify the equator, shared-band boundaries and join meridian. Display samples
+are not new coverage evidence; the JSON's analytic validation is authoritative.
+
+For this first comparison, disks remain separate so no sky area is concealed
+by paper composition. The intended overlapping/clipped index layout, optional
+astronomical layers and individual chart/report pages remain subsequent work.
+Review 30°, 40° and 50° specimens (236/128/80 sheets for the example geometry)
+before adopting a field. The conservative band algorithm remains a trial,
+not an optimized atlas layout.

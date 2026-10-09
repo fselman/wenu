@@ -4470,3 +4470,15 @@ The 1e-8-degree guard bounds numerical admission conservatively in the
 prototype domain; it is not an astrometric uncertainty or formal interval
 proof. CoordinateService, providers and existing frame-transform ownership
 remain unchanged.
+
+## Atlas geometry-only overview specimen
+
+The visual helper consumes the band's stored fixed ICRS RA/Dec directly through
+the existing `PolarPlanisphereChart` stereographic projection. It performs no
+observer/time realization or new astronomical transformation. North/south limits
+are the stored minus/plus half shared-band width. The common meridian points
+toward the opposite disk; sheet orientation, primary ownership and IDs remain
+unchanged. RA intervals may cross zero; display sampling retains their unwrapped
+span and the projection handles periodic longitude. Both polar primary caps use
+one circular edge. Coordinate ownership is unchanged; sampled outlines are
+display geometry, not coverage or scientific evidence.

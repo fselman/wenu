@@ -4222,3 +4222,34 @@ corruption rejection, deterministic identity and resource-budget failure
 cover the new fault model. Coordinate guide and existing diagrams are reviewed;
 only atlas planning/persistence ownership grows. Scientific position realization
 and the canonical chart/render/export owners remain unchanged.
+
+## Atlas first visual specimen candidate (2026-10-09)
+
+Fernando provisionally accepted PR #216's exact `9fd2ffb6` after 359 focused
+and all 3,200 plugin-disabled Mac tests passed (13.45/291.13 seconds), with
+clean diff and synchronized working tree. He requested continued work until
+the atlas can be visualized. This authorizes the next bounded visual specimen;
+PR #216 remains unmerged pending a separate explicit merge request.
+
+As-is: the band JSON has validated primary sectors, immutable numbers and exact
+rectangular sheet footprints, but no index picture. Canonical
+`PolarPlanisphereChart` already owns fixed-equatorial stereographic polar caps;
+`MatplotlibRenderer` owns generic projected geometry/clip paths and
+`ExportOptions` owns PNG/PDF/SVG saving. Compose these in a developer example,
+`tools/render_atlas_band_overview_v1.py`, with no new production module or rendering
+mathematics. Extend the existing atlas contract tests.
+
+The plotter only reads/revalidates resolved JSON. Primary sectors intersect the
+view's exact latitude interval before display sampling. Polar primary caps have
+circular boundaries without an invented radial seam. The same persisted numbers
+appear at visible centres, including both poles and duplicate shared-band
+centres. Optional sampled full rectangles show overlap and distinguish footprint
+from ownership. Seed-centre ownership is highlighted without selecting stars.
+
+Generate 30/40/50-degree B4 comparisons plus a 40-degree footprint overlay.
+Inspect PNG/PDF/SVG, clipping, wrap/poles, exact cap area, complete centre/number
+coverage, unchanged JSON and no placement during plotting. The initial disks
+remain separate: overlapping inner-contour paper composition and astronomical
+context are not claimed as implemented. Mac regression and visual review remain
+required. Keep this candidate stacked on `feat/atlas-band-coverage`; do not
+merge or delete either branch under provisional acceptance.

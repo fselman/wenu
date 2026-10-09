@@ -2317,3 +2317,14 @@ geometry without re-running placement. The original geometry-specimen schema
 remains unchanged and unverified in isolation. The numerical cap-bound method
 and bounded domain are recorded in the active roadmap. No CLI, catalogue,
 observer, frame-service, chart, renderer or exporter responsibility moves.
+
+## Atlas visual specimen boundary (candidate, 2026-10-09)
+
+A developer example reads the resolved band-tiling JSON and orchestrates
+`PolarPlanisphereChart` stereographic geometry, `MatplotlibRenderer` clipping
+and primitives, and existing `ExportOptions` PNG/PDF/SVG export. Plotting does
+not invoke placement, astronomical realization or catalogues. No production
+owner, installed command, dependency or chart pipeline changes. Two separate
+polar disks show primary ownership/numbers, optional sampled full footprints
+and the independent overview join/band. Composed paper overlap, astronomical
+layers and chart/report production remain later work.

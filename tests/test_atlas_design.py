@@ -2,6 +2,8 @@
 
 from dataclasses import replace
 import json
+import importlib.util
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -15,6 +17,103 @@ from wenu.atlas_design import (
     AtlasBandTiling,
     design_band_atlas,
 )
+
+
+@pytest.fixture
+def overview_example():
+    path = Path(__file__).resolve().parents[1] / "tools/render_atlas_band_overview_v1.py"
+    spec = importlib.util.spec_from_file_location("atlas_overview_example", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+@pytest.mark.parametrize("join", [0, 82.5, 359.5])
+def test_overview_join_meridian_points_inward(overview_example, join):
+    overview = AtlasOverviewGeometry(join, 20)
+    for pole, sign in (("north", 1), ("south", -1)):
+        face = overview_example.overview_face(overview, pole)
+        x, y = face.projection.project_spherical(join, 0)
+        assert x == pytest.approx(sign * 2)
+        assert y == pytest.approx(0, abs=1e-12)
+        assert face.projection.angular_radius_for_projected_radius(face.boundary_radius) == pytest.approx(100)
+
+
+@pytest.mark.parametrize("width", [30, 40, 50])
+def test_overview_sector_intersections_preserve_cap_area_and_sheet_identity(page, overview_example, width):
+    atlas = design_band_atlas("visual", 1, page, AtlasOverviewGeometry(359.5, 20),
+                             field_width_deg=width, overlap_deg=2, seed_ra_deg=82.5)
+    ids = set()
+    shared_ids = []
+    for pole in ("north", "south"):
+        face = overview_example.overview_face(atlas.geometry.overview, pole)
+        regions = list(overview_example.visible_regions(atlas, face))
+        area = sum(np.radians(ra1 - ra0) *
+                   (np.sin(np.radians(upper)) - np.sin(np.radians(lower)))
+                   for _, ra0, ra1, lower, upper in regions)
+        assert area == pytest.approx(2 * np.pi * (1 + np.sin(np.radians(10))))
+        labelled = {sheet.sheet_id for sheet, _, _, lower, upper in regions
+                    if lower <= sheet.center_dec_deg <= upper}
+        ids.update(labelled)
+        shared_ids.append(labelled)
+    assert ids == {sheet.sheet_id for sheet in atlas.geometry.sheets}
+    assert shared_ids[0] & shared_ids[1] == {
+        sheet.sheet_id for sheet in atlas.geometry.sheets if abs(sheet.center_dec_deg) <= 10
+    }
+
+
+@pytest.mark.parametrize("pole", ["north", "south"])
+def test_overview_polar_primary_cap_has_no_false_radial_border(overview_example, pole):
+    face = overview_example.overview_face(AtlasOverviewGeometry(82.5, 20), pole)
+    lower, upper = (80, 90) if pole == "north" else (-90, -80)
+    polygon = overview_example.primary_outline(face, 350, 710, lower, upper)
+    radius = face.projection.projected_radius(10)
+    np.testing.assert_allclose(np.hypot(polygon.x, polygon.y), radius, atol=1e-12)
+
+
+def test_overview_reads_json_without_placement_and_exports_all_formats(page, overview_example, tmp_path, monkeypatch):
+    import matplotlib.pyplot as plt
+    import wenu.atlas_design as design_module
+    from xml.etree import ElementTree
+
+    atlas = design_band_atlas("visual", 1, page, AtlasOverviewGeometry(82.5, 20),
+                             field_width_deg=40, overlap_deg=2, seed_ra_deg=82.5)
+    design_path = atlas.write_json(tmp_path / "design_v1.json")
+    original = design_path.read_bytes()
+    def forbidden_placement(*args, **kwargs):
+        raise AssertionError("Plotting must not regenerate placement")
+    monkeypatch.setattr(design_module, "design_band_atlas", forbidden_placement)
+    original_draw = overview_example._draw_face
+    seen = {}
+    def inspected_draw(ax, atlas, face, **kwargs):
+        original_draw(ax, atlas, face, **kwargs)
+        seen[face.pole] = {text.get_text() for text in ax.texts}
+        assert all(text.get_clip_on() for text in ax.texts)
+    monkeypatch.setattr(overview_example, "_draw_face", inspected_draw)
+    before = set(plt.get_fignums())
+    paths = overview_example.plot_overview(design_path, tmp_path / "index_v1", footprints=True)
+    assert {path.suffix for path in paths} == {".png", ".pdf", ".svg"}
+    assert all(path.stat().st_size > 1000 for path in paths)
+    assert ElementTree.parse(paths[2]).getroot().tag.endswith("svg")
+    assert seen["north"] | seen["south"] == {str(sheet.number) for sheet in atlas.geometry.sheets}
+    assert design_path.read_bytes() == original
+    assert set(plt.get_fignums()) == before
+    saved = paths[0].read_bytes()
+    with pytest.raises(FileExistsError):
+        overview_example.plot_overview(design_path, tmp_path / "index_v1")
+    assert paths[0].read_bytes() == saved
+
+
+def test_overview_rejects_corrupt_design_before_creating_output(page, overview_example, tmp_path):
+    atlas = design_band_atlas("visual", 1, page, AtlasOverviewGeometry(82.5, 20),
+                             field_width_deg=40, overlap_deg=2, seed_ra_deg=82.5)
+    data = atlas.to_dict()
+    data["validation"]["sheet_count"] += 1
+    path = tmp_path / "corrupt_v1.json"
+    path.write_text(json.dumps(data), encoding="utf-8")
+    with pytest.raises(ValueError):
+        overview_example.plot_overview(path, tmp_path / "rejected_v1")
+    assert not list(tmp_path.glob("rejected_v1.*"))
 
 
 @pytest.fixture
