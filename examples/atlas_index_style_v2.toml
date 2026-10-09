@@ -1,0 +1,36 @@
+schema_version = 1
+document_kind = "wenu-atlas-index-presentation"
+
+[layout]
+joined = true
+footprints = true
+width_mm = 355.6
+height_mm = 203.2
+
+[content]
+layers = ["stars", "constellation_lines", "constellation_labels", "milky_way", "magellanic_clouds"]
+star_magnitude_limit = 4.5
+milky_way_levels = ["ol1", "ol2", "ol3", "ol4", "ol5"]
+
+[typography]
+heading_size_pt = 18
+number_size_pt = 10
+text_size_pt = 9
+
+[colours]
+paper_color = "white"
+ink_color = "#183b56"
+border_color = "#527089"
+highlight_color = "#276749"
+guide_color = "#b7791f"
+footprint_color = "#8b3b65"
+
+[export]
+formats = ["png", "pdf", "svg"]
+dpi = 160
+transparent = false
+
+[veil]
+enabled = true
+color = "white"
+opacity = 0.55

@@ -4290,3 +4290,16 @@ failure, remove only this invocation's published inodes and staging directory.
 An unexpected process crash can leave a partial format batch; no transactional
 multi-file guarantee is asserted. Figures are closed on export failure.
 The developer tool delegates to the installed owner and keeps its old flags.
+
+
+### Index veil extension (2026-10-09)
+
+`AtlasIndexPresentation` accepts an optional closed `[veil]` table with
+`enabled`, `color` and finite `opacity` in [0,1]. Missing means disabled.
+The existing index owner draws a cap polygon through MatplotlibRenderer above
+all celestial artists, then places all index borders/footprints/guides/numbers
+above it. The existing joined clip applies to the polygon; the complete rim
+is retained. No domain membership, coordinate realization or catalogue changes.
+The authored style example is versioned as `atlas_index_style_v2.toml`; input
+schema remains compatible version 1. Extend existing CLI tests for admission,
+zero/full opacity, ordering/clipping and real SVG identities/JSON preservation.

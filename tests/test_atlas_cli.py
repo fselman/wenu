@@ -319,3 +319,75 @@ def test_plot_cli_example_and_closed_errors(request_data, tmp_path, capsys):
     with pytest.raises(SystemExit):
         cli.plot_main(arguments + ["--position-angle", "10"])
     assert not list(tmp_path.glob(".wenu-index-*"))
+
+
+@pytest.mark.parametrize("change", [
+    {"enabled": "true"}, {"color": "unknown-colour"}, {"opacity": True},
+    {"opacity": -0.1}, {"opacity": 1.1}, {"opacity": float("nan")},
+    {"extra": 1},
+])
+def test_veil_admission_is_closed_and_finite(index_data, change):
+    from wenu.charts.atlas_index import AtlasIndexPresentation
+    index_data["veil"] = {"enabled": True, "color": "white", "opacity": 0.55}
+    index_data["veil"].update(change)
+    with pytest.raises(ValueError):
+        AtlasIndexPresentation.from_dict(index_data)
+
+
+@pytest.mark.parametrize("enabled,opacity,expected", [(False, 0.55, False),
+    (True, 0, False), (True, 0.55, True), (True, 1, True)])
+def test_veil_is_between_native_objects_and_index_borders_and_numbers(
+        request_data, enabled, opacity, expected, monkeypatch):
+    from dataclasses import replace
+    from wenu.charts import atlas_index as index
+    from matplotlib.figure import Figure
+    from matplotlib.backends.backend_agg import FigureCanvasAgg
+    from matplotlib.colors import to_rgba
+    atlas = AtlasDesignRequest.from_dict(request_data).resolve()
+    figure = Figure(figsize=(14, 8))
+    FigureCanvasAgg(figure)
+    ax = figure.add_subplot()
+    celestial = []
+    original = index.PolarPlanisphereChart.render
+    def capture(self, sky, renderer, **kwargs):
+        result = original(self, sky, renderer, **kwargs)
+        celestial.extend((*ax.lines, *ax.patches, *ax.collections, *ax.texts))
+        return result
+    monkeypatch.setattr(index.PolarPlanisphereChart, "render", capture)
+    sky = index.index_sky(4.5, layers=("stars",))
+    presentation = replace(index.AtlasIndexPresentation(), layers=("stars",),
+        veil_enabled=enabled, veil_color="#ffeedd", veil_opacity=opacity)
+    face = index.overview_face(atlas.geometry.overview, "north")
+    index._draw_face(ax, atlas, face, footprints=True, sky=sky,
+                    presentation=presentation, star_magnitude_limit=4.5)
+    veils = [p for p in ax.patches if p.get_gid() == "atlas-index-veil-north"]
+    assert bool(veils) == expected
+    assert {int(t.get_text()) for t in ax.texts if t.get_text().isdigit()} >= {34}
+    if expected:
+        veil = veils[0]
+        assert veil.get_alpha() == opacity
+        assert veil.get_facecolor() == to_rgba("#ffeedd", opacity)
+        assert all(a.get_zorder() < veil.get_zorder() for a in celestial)
+        overlay = [a for a in (*ax.lines, *ax.patches, *ax.collections, *ax.texts)
+                   if a not in celestial and a is not veil]
+        assert overlay and all(a.get_zorder() > veil.get_zorder() for a in overlay)
+        index._join_faces(figure, (ax, figure.add_subplot()), atlas)
+        assert veil.get_clip_box() is not None
+
+
+def test_veil_example_exports_svg_without_modifying_design(request_data, tmp_path):
+    from wenu.charts.atlas_index import AtlasIndexPresentation
+    from xml.etree import ElementTree
+    old = cli.tomllib.loads((ROOT / "examples/atlas_index_style_v1.toml").read_text())
+    assert not AtlasIndexPresentation.from_dict(old).veil_enabled
+    config = ROOT / "examples/atlas_index_style_v2.toml"
+    data = cli.tomllib.loads(config.read_text())
+    assert AtlasIndexPresentation.from_dict(data).veil_opacity == 0.55
+    design = AtlasDesignRequest.from_dict(request_data).resolve().write_json(tmp_path / "design_v1.json")
+    before = design.read_bytes()
+    assert cli.plot_main(["--design", str(design), "--config", str(config),
+        "--output-prefix", str(tmp_path / "veiled_index_v2")]) == 0
+    svg = ElementTree.parse(tmp_path / "veiled_index_v2.svg")
+    ids = {e.get("id") for e in svg.getroot().iter()}
+    assert {"atlas-index-veil-north", "atlas-index-veil-south"} <= ids
+    assert design.read_bytes() == before

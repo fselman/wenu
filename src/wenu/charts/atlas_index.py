@@ -61,14 +61,18 @@ class AtlasIndexPresentation:
     formats: tuple[str, ...] = ("png", "pdf", "svg")
     dpi: int = 160
     transparent: bool = False
+    veil_enabled: bool = False
+    veil_color: str = "white"
+    veil_opacity: float = 0.55
 
     def __post_init__(self):
-        for name in ("joined", "footprints", "transparent"):
+        for name in ("joined", "footprints", "transparent", "veil_enabled"):
             if type(getattr(self, name)) is not bool:
                 raise ValueError(f"{name} must be a boolean.")
         for name, lo, hi in (("width_mm", 50, 1000), ("height_mm", 50, 1000),
                 ("star_magnitude_limit", -2, 11), ("heading_size_pt", 2, 72),
-                ("number_size_pt", 2, 72), ("text_size_pt", 2, 72)):
+                ("number_size_pt", 2, 72), ("text_size_pt", 2, 72),
+                ("veil_opacity", 0, 1)):
             value = _number(getattr(self, name), name)
             if not lo <= value <= hi:
                 raise ValueError(f"{name} must be between {lo} and {hi}.")
@@ -85,7 +89,7 @@ class AtlasIndexPresentation:
             object.__setattr__(self, name, tuple(values))
         if ("milky_way" in self.layers) != bool(self.milky_way_levels):
             raise ValueError("Select Milky Way levels exactly when its layer is enabled.")
-        for name in ("paper_color", "ink_color", "border_color", "highlight_color", "guide_color", "footprint_color"):
+        for name in ("paper_color", "ink_color", "border_color", "highlight_color", "guide_color", "footprint_color", "veil_color"):
             color = getattr(self, name)
             if type(color) is not str or not is_color_like(color):
                 raise ValueError(f"{name} must be a Matplotlib colour string.")
@@ -95,7 +99,7 @@ class AtlasIndexPresentation:
 
     @classmethod
     def from_dict(cls, data):
-        _keys(data, {"schema_version", "document_kind", "layout", "content", "typography", "colours", "export"}, "index presentation")
+        _keys(data, {"schema_version", "document_kind", "layout", "content", "typography", "colours", "export"} | ({"veil"} if isinstance(data, dict) and "veil" in data else set()), "index presentation")
         if type(data["schema_version"]) is not int or data["schema_version"] != 1:
             raise ValueError("Unsupported index presentation schema.")
         if data["document_kind"] != "wenu-atlas-index-presentation":
@@ -111,6 +115,11 @@ class AtlasIndexPresentation:
         for group, keys in groups.items():
             _keys(data[group], keys, group)
             values.update(data[group])
+        if "veil" in data:
+            _keys(data["veil"], {"enabled", "color", "opacity"}, "veil")
+            values.update(veil_enabled=data["veil"]["enabled"],
+                          veil_color=data["veil"]["color"],
+                          veil_opacity=data["veil"]["opacity"])
         return cls(**values)
 
 
@@ -253,6 +262,20 @@ def _draw_face(ax, atlas, face, *, footprints, sky=None, star_magnitude_limit=5.
         face.render(sky, renderer, style=style, layer_options=options,
                     realization_context=LayerRealizationContext(NATIVE_ICRS_SPEC),
                     boundary_style={"edgecolor": presentation.border_color, "facecolor": "none", "linewidth": 1})
+    index_z = 0
+    if sky is not None and presentation.veil_enabled and presentation.veil_opacity > 0:
+        # Paint above every celestial artist, then place index furniture above it.
+        # Use the projected cap, so outer paper and the joined lens stay clear.
+        celestial = (*ax.lines, *ax.patches, *ax.collections, *ax.texts)
+        index_z = max((artist.get_zorder() for artist in celestial), default=0) + 1
+        renderer.draw(ProjectedPolygon(face.boundary.x, face.boundary.y), style={
+            "facecolor": presentation.veil_color, "edgecolor": "none",
+            "alpha": presentation.veil_opacity, "zorder": index_z,
+        })
+        ax.patches[-1].set_gid(f"atlas-index-veil-{face.pole}")
+        renderer.draw(ProjectedCurve(face.boundary.x, face.boundary.y, closed=True), style={
+            "color": presentation.border_color, "linewidth": 1, "zorder": index_z + 4,
+        })
     highlight = atlas.primary_sheet_id(atlas.seed_ra_deg, 0)
     label_x, label_y, labels, ids = [], [], [], []
     for sheet, ra0, ra1, lower, upper in visible_regions(atlas, face):
@@ -261,7 +284,7 @@ def _draw_face(ax, atlas, face, *, footprints, sky=None, star_magnitude_limit=5.
             "facecolor": "none" if sky is not None else "#d0e9d8" if selected else
                          ("#edf3f8" if sheet.number % 2 else "#ffffff"),
             "edgecolor": presentation.highlight_color if selected else presentation.border_color,
-            "linewidth": 1.2 if selected else 0.45, "zorder": 1,
+            "linewidth": 1.2 if selected else 0.45, "zorder": index_z + 1,
         })
         # Thin rim fragments remain visible, but their number is placed only
         # where the actual centre is in this view. Every centre is in at least
@@ -278,7 +301,7 @@ def _draw_face(ax, atlas, face, *, footprints, sky=None, star_magnitude_limit=5.
                   label_style={"fontsize": presentation.number_size_pt,
                                "fontweight": "bold" if sky is not None else "normal",
                                "ha": "center", "va": "center",
-                               "color": presentation.ink_color, "zorder": 25,
+                               "color": presentation.ink_color, "zorder": index_z + 25,
                                "bbox": {"facecolor": presentation.paper_color, "edgecolor": "none",
                                         "alpha": 0.85, "pad": 0.6}})
     ra = _samples(0, 360)
@@ -290,11 +313,11 @@ def _draw_face(ax, atlas, face, *, footprints, sky=None, star_magnitude_limit=5.
         x, y = face.projection.project_spherical(ra, np.full(len(ra), dec))
         renderer.draw(ProjectedCurve(x, y, closed=True), style={
             "color": presentation.guide_color, "linewidth": 0.8,
-            "linestyle": "-" if dec == 0 else "--", "zorder": 3,
+            "linestyle": "-" if dec == 0 else "--", "zorder": index_z + 3,
         })
     dec = _samples(face.limiting_declination_deg, face.pole_declination_deg)
     x, y = face.projection.project_spherical(np.full(len(dec), atlas.geometry.overview.join_ra_deg), dec)
-    renderer.draw(ProjectedCurve(x, y), style={"color": presentation.guide_color, "linewidth": 0.8, "zorder": 3})
+    renderer.draw(ProjectedCurve(x, y), style={"color": presentation.guide_color, "linewidth": 0.8, "zorder": index_z + 3})
     if footprints:
         for sheet in atlas.geometry.sheets:
             boundary = np.array(sheet.boundary_samples(atlas.geometry.page, samples_per_edge=129))
@@ -308,7 +331,7 @@ def _draw_face(ax, atlas, face, *, footprints, sky=None, star_magnitude_limit=5.
                 "color": presentation.highlight_color if sheet.sheet_id == highlight else presentation.footprint_color,
                 "linewidth": 1.3 if sheet.sheet_id == highlight else 0.35,
                 "alpha": 1 if sheet.sheet_id == highlight else 0.4,
-                "zorder": 2,
+                "zorder": index_z + 2,
             })
     renderer.finalize_graphics()
     ax.set_title(f"{'Norte' if face.pole == 'north' else 'Sur'} · límite Dec {face.limiting_declination_deg:+g}°",

@@ -497,3 +497,21 @@ IAU constellation boundaries and moving/observer layers are not admitted by
 this first index presentation schema. They require their own coordinate seam.
 The earlier developer tool remains a compatibility adapter to this same owner.
 Chart/report-page production is the next separate milestone.
+
+
+### Configurable celestial veil
+
+The optional `[veil]` table contains exactly `enabled` (boolean), `color`
+(a Matplotlib colour string) and `opacity` (finite number from 0 to 1).
+Opacity 0 is completely transparent; 1 hides the celestial objects completely.
+Omitting this table disables the veil, preserving version-1 input compatibility.
+
+`examples/atlas_index_style_v2.toml` retains the preceding astronomical choices
+and adds a white veil with opacity 0.55. It remains a schema-version-1 input;
+`v2` versions this authored example and its changed appearance.
+
+The veil is drawn inside each projected cap above celestial objects and below
+primary borders, footprint overlays, guides and sheet numbers. It follows the
+joined-lens clipping and export DPI, leaving outer paper and explanatory text
+unchanged. It has no effect on geometry-only indices, disabled/zero-opacity
+views or the source JSON. Use a fresh output such as `atlas_index_v2`.

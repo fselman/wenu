@@ -4398,3 +4398,16 @@ real multi-format exports, DPI/physical dimensions, failure/race/interruption
 cleanup, legacy route and focused/full regression. Inspect the authored joined
 astronomical index in PNG/PDF/SVG, then obtain exact-head Mac acceptance.
 Merge/deletion remain separate. Next `wenu_create_atlas` and small pilot pairs.
+
+
+### Index veil review amendment (2026-10-09)
+
+Fernando's Mac verified plotter head `4422a127`: 442 focused and 3,299 full
+tests, installation and three exports passed, with source JSON SHA unchanged.
+The whitespace-only successor `c1ce670e` removes one trailing blank line.
+During visual review Fernando requested configurable colour/transparency over
+the celestial content to emphasize index borders/numbers. Extend this same
+pending plotter candidate with an optional compatible veil table and a version-2
+authored example. Keep the canonical renderer and joined clipping, raise index
+furniture above the veil, and require focused/full and PNG/PDF/SVG review.
+Plotter acceptance/merge remain pending; no page production is added.
