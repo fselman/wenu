@@ -269,9 +269,11 @@ def test_atlas_guide_documents_designer_and_separate_planned_inputs():
     text = (GUIDE / "atlas.md").read_text(encoding="utf-8")
     index = (GUIDE / "index.md").read_text(encoding="utf-8")
     assert "(atlas.md)" in index
-    assert "designer CLI implementation candidate" in text
+    assert "index plotter CLI implementation candidate" in text
     assert "wenu_design_atlas --config REQUEST_TOML --output NEW_JSON" in text
     assert "wenu-atlas-design-request" in text
+    assert "wenu-atlas-index-presentation" in text
+    assert "--output-prefix NEW_PREFIX" in text
     assert "join_ra_hours" in text
     assert "published atomically" in text
     assert "```mermaid" in text

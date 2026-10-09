@@ -4268,3 +4268,25 @@ An existing destination, publication race or invalid/missing input exits 2;
 KeyboardInterrupt exits 130. Successful diagnostics use stderr and stdout is
 empty. The JSON is the existing band-tiling format and the developer plotter
 continues to read it unchanged. No source-TOML byte digest is claimed in output.
+
+
+## Installed atlas plotter contract (2026-10-09)
+
+Designer PR #220 is accepted and merged at `0cbb06ba`; its exact Mac-tested head
+`2e50f4f5` passed 413 focused and 3,270 full tests plus installed 34-sheet output.
+
+`wenu_plot_atlas --design RESOLVED_JSON --config PRESENTATION_TOML --output-prefix NEW_PREFIX`
+uses `cli/atlas.py:plot_main` and `charts/atlas_index.py:AtlasIndexPresentation` /
+`plot_overview`. The version-1 `wenu-atlas-index-presentation` mapping has closed
+layout, content, typography, colours and export tables; see the atlas user guide
+and authored example for all required keys/units/ranges. Geometry-only and
+selective native layers use the same paired chart pipeline. Canonical astronomical
+styling remains separate from configurable index furniture.
+
+Both PNG/PDF/SVG staging and final publication occur beside the output prefix.
+Reject existing files/symlinks before catalogue loading; hard-link publication
+never overwrites a concurrent destination. On render/publication/interruption
+failure, remove only this invocation's published inodes and staging directory.
+An unexpected process crash can leave a partial format batch; no transactional
+multi-file guarantee is asserted. Figures are closed on export failure.
+The developer tool delegates to the installed owner and keeps its old flags.

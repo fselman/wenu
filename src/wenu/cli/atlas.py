@@ -1,4 +1,4 @@
-"""Installed atlas adapters: TOML request to validated geometry JSON."""
+"""Installed atlas adapters for geometry design and index presentation."""
 
 from __future__ import annotations
 
@@ -64,6 +64,29 @@ def design_main(argv=None):
         print("Atlas design interrupted.", file=sys.stderr)
         return 130
     print(f"Resolved {len(atlas.geometry.sheets)} sheets: {args.output}", file=sys.stderr)
+    return 0
+
+
+def plot_main(argv=None):
+    parser = argparse.ArgumentParser(prog="wenu_plot_atlas",
+        description="Render a resolved atlas JSON using independent presentation TOML.",
+        allow_abbrev=False)
+    parser.add_argument("--design", required=True, type=Path)
+    parser.add_argument("--config", required=True, type=Path)
+    parser.add_argument("--output-prefix", required=True, type=Path)
+    args = parser.parse_args(argv)
+    try:
+        from wenu.charts.atlas_index import AtlasIndexPresentation, plot_overview
+        with args.config.open("rb") as stream:
+            presentation = AtlasIndexPresentation.from_dict(tomllib.load(stream))
+        outputs = plot_overview(args.design, args.output_prefix, presentation=presentation)
+    except (ValueError, OSError, UnicodeError) as exc:
+        parser.error(str(exc))
+    except KeyboardInterrupt:
+        print("Atlas index interrupted.", file=sys.stderr)
+        return 130
+    for output in outputs:
+        print(output)
     return 0
 
 

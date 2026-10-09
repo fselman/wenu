@@ -2,8 +2,6 @@
 
 from dataclasses import replace
 import json
-import importlib.util
-from pathlib import Path
 
 import numpy as np
 import pytest
@@ -142,11 +140,8 @@ def test_five_band_overview_preserves_all_numbers_and_exports(five_band_atlas, o
 
 @pytest.fixture
 def overview_example():
-    path = Path(__file__).resolve().parents[1] / "tools/render_atlas_band_overview_v1.py"
-    spec = importlib.util.spec_from_file_location("atlas_overview_example", path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+    from wenu.charts import atlas_index
+    return atlas_index
 
 
 @pytest.mark.parametrize("join,width", [(0, 0), (82.5, 20), (359.5, 40)])

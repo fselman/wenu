@@ -21,8 +21,9 @@ stellar designations, minor bodies, atlas publication and satellites below;
 those historical milestones remain evidence, not the current next-action list.
 
 The [atlas user guide](../user_guide/atlas.md) supplies the command/input
-diagram and the user preparation steps. The designer CLI is now an implementation
-candidate (see the latest checkpoint): `wenu_design_atlas` produces **only resolved JSON**;
+diagram and the user preparation steps. The designer CLI is accepted and merged
+in PR #220; the installed index plotter is the current implementation candidate
+(see the latest checkpoint). `wenu_design_atlas` produces **only resolved JSON**;
 `wenu_plot_atlas` consumes it with independent index presentation inputs;
 `wenu_create_atlas` consumes it with publication and curation inputs.
 The original planning checkpoint did not implement or freeze their CLI/schema;
@@ -4370,3 +4371,30 @@ existing geometry oracles. Require focused/full regression and exact-head Mac
 verification before separate acceptance/merge. Next implement `wenu_plot_atlas`
 with independent presentation input; then `wenu_create_atlas` and pilot pairs.
 No merge or cleanup is authorized by this implementation request.
+
+
+## Installed atlas index candidate (2026-10-09)
+
+Fernando accepted and authorized merge of designer PR #220. Main `0cbb06ba`
+contains the exact `2e50f4f5` production content: 413 focused and 3,270 full Mac
+tests passed; installed designer emitted revalidated 34-sheet JSON; clean Mac
+main synchronization confirmed. This supersedes designer-pending checkpoints.
+Fernando authorized the next index-plotter milestone.
+
+As-is: the developer index tool already owns accepted composition and canonical
+native layer orchestration. Relocate it into `charts/atlas_index.py` rather than
+importing repository tools from an installed package or copying a second path.
+Admit independent closed presentation TOML for joined/separate layout, figure
+size, footprint display, selected native layers/levels/magnitude, index fonts,
+palette and fixed-size PNG/PDF/SVG export. Extend `cli/atlas.py` with installed
+`wenu_plot_atlas`; keep the old review tool as a thin compatibility adapter.
+Reuse geometry/persistence, projection, composition/detail, realization, renderer
+and export owners. No placement, observer, boundary-frame extension, report-page
+production, new dependency or catalogue curation belongs to this milestone.
+
+Admission gates: input closure and units, source JSON byte preservation,
+number/coverage consistency, selected native layers without observer transforms,
+real multi-format exports, DPI/physical dimensions, failure/race/interruption
+cleanup, legacy route and focused/full regression. Inspect the authored joined
+astronomical index in PNG/PDF/SVG, then obtain exact-head Mac acceptance.
+Merge/deletion remain separate. Next `wenu_create_atlas` and small pilot pairs.

@@ -160,3 +160,162 @@ def test_module_route_and_installed_entry_point(tmp_path):
     assert result.returncode == 0, result.stderr
     assert result.stdout == ""
     assert len(AtlasBandTiling.read_json(output).geometry.sheets) == 34
+
+
+@pytest.fixture
+def index_data():
+    return cli.tomllib.loads((ROOT / "examples/atlas_index_style_v1.toml").read_text())
+
+
+@pytest.mark.parametrize("group,key,value", [
+    (None, "schema_version", True), (None, "schema_version", 2),
+    (None, "document_kind", "chart"), (None, "unknown", 1),
+    ("layout", "joined", "true"), ("layout", "width_mm", 0),
+    ("layout", "height_mm", float("nan")), ("layout", "join_ra_hours", 5.5),
+    ("content", "layers", ["planets"]), ("content", "layers", ["stars", "stars"]),
+    ("content", "layers", ["constellation_boundaries"]),
+    ("content", "star_magnitude_limit", "4.5"),
+    ("content", "milky_way_levels", ["ol9"]),
+    ("typography", "number_size_pt", True),
+    ("colours", "ink_color", "not-a-colour"),
+    ("export", "formats", []), ("export", "formats", ["png", "png"]),
+    ("export", "formats", ["eps"]), ("export", "dpi", 160.5),
+    ("export", "transparent", 1),
+])
+def test_index_request_rejects_unsupported_inputs(index_data, group, key, value):
+    from wenu.charts.atlas_index import AtlasIndexPresentation
+    data = deepcopy(index_data)
+    (data if group is None else data[group])[key] = value
+    with pytest.raises(ValueError):
+        AtlasIndexPresentation.from_dict(data)
+
+
+def test_plot_cli_geometry_is_unchanged_and_exports_selected_formats(index_data, request_data, tmp_path, monkeypatch, capsys):
+    from wenu.charts import atlas_index as index
+    from dataclasses import replace
+    from PIL import Image
+    from xml.etree import ElementTree
+    import wenu.atlas_design as geometry
+    atlas = geometry.AtlasDesignRequest.from_dict(request_data).resolve()
+    design = atlas.write_json(tmp_path / "design_v1.json")
+    before = design.read_bytes()
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Plotter must not design, observe or load sky in geometry-only mode")
+    monkeypatch.setattr(geometry, "design_five_band_atlas", forbidden)
+    monkeypatch.setattr(geometry, "design_band_atlas", forbidden)
+    monkeypatch.setattr(index, "index_sky", forbidden)
+    presentation = replace(index.AtlasIndexPresentation.from_dict(index_data),
+        layers=(), milky_way_levels=(), transparent=True, number_size_pt=13,
+        ink_color="#551177", paper_color="#f0e0c0")
+    figures = []
+    original = index.ExportOptions.save
+    def capture(self, figure, path):
+        if not figures:
+            figures.append(figure)
+        return original(self, figure, path)
+    monkeypatch.setattr(index.ExportOptions, "save", capture)
+    paths = index.plot_overview(design, tmp_path / "index_v1", presentation=presentation)
+    assert {p.suffix for p in paths} == {".png", ".pdf", ".svg"}
+    with Image.open(paths[0]) as image:
+        assert image.size == (2240, 1280)
+        assert image.convert("RGBA").getpixel((0, 0))[3] == 0
+    svg = ElementTree.parse(paths[2]).getroot()
+    assert svg.get("width") == "1008pt"
+    assert paths[1].read_bytes().startswith(b"%PDF-")
+    number_labels = [t for ax in figures[0].axes for t in ax.texts if t.get_text().isdigit()]
+    assert {int(t.get_text()) for t in number_labels} == set(range(1, 35))
+    assert all(t.get_fontsize() == 13 and t.get_color() == "#551177" for t in number_labels)
+    assert design.read_bytes() == before
+    with pytest.raises(FileExistsError):
+        index.plot_overview(design, tmp_path / "index_v1", presentation=presentation)
+    assert not list(tmp_path.glob(".wenu-index-*"))
+    assert 'wenu_plot_atlas = "wenu.cli.atlas:plot_main"' in (ROOT / "pyproject.toml").read_text()
+
+
+@pytest.mark.parametrize("layers,levels", [
+    (("stars",), ()), (("milky_way",), ("ol3",)),
+    (("constellation_lines", "constellation_labels"), ()),
+    (("magellanic_clouds",), ()),
+])
+def test_index_selects_native_layers_without_observer(layers, levels, request_data, tmp_path, monkeypatch):
+    from dataclasses import replace
+    from wenu.charts import atlas_index as index
+    from wenu.observer import Observer
+    from wenu.coordinate_service import CoordinateService
+    atlas = AtlasDesignRequest.from_dict(request_data).resolve()
+    design = atlas.write_json(tmp_path / "design_v1.json")
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Native index requested observation or an observer")
+    monkeypatch.setattr(Observer, "__init__", forbidden)
+    monkeypatch.setattr(CoordinateService, "transform_observer_geometry", forbidden)
+    results = []
+    original = index.CelestialSphere.draw_chart
+    def capture(self, **kwargs):
+        result = original(self, **kwargs)
+        results.append(result)
+        return result
+    monkeypatch.setattr(index.CelestialSphere, "draw_chart", capture)
+    config = replace(index.AtlasIndexPresentation(), layers=layers,
+                     milky_way_levels=levels, formats=("svg",))
+    index.plot_overview(design, tmp_path / "native_v1", presentation=config)
+    assert len(results) == 2
+    expected = {"milky_way_isophotes" if v == "milky_way" else
+                "magellanic_cloud_isophotes" if v == "magellanic_clouds" else v for v in layers}
+    for result in results:
+        assert {r.layer.layer_name for r in result.layers} == expected
+        assert all(r.spherical.coordinate_spec.frame == "icrs" for r in result.layers)
+        for r in result.layers:
+            if r.layer.layer_name == "milky_way_isophotes":
+                assert set(r.spherical.metadata["level"]) == set(levels)
+
+
+@pytest.mark.parametrize("fault", ["render", "publication", "interrupt"])
+def test_index_failed_batch_removes_only_its_outputs(fault, request_data, tmp_path, monkeypatch):
+    from wenu.charts import atlas_index as index
+    atlas = AtlasDesignRequest.from_dict(request_data).resolve()
+    design = atlas.write_json(tmp_path / "design_v1.json")
+    save = index.ExportOptions.save
+    link = index.os.link
+    count = 0
+    def fail_save(self, figure, path):
+        nonlocal count
+        count += 1
+        if count == 2:
+            raise OSError("export failed")
+        return save(self, figure, path)
+    def fail_link(source, destination):
+        nonlocal count
+        count += 1
+        if count == 2:
+            if fault == "interrupt":
+                raise KeyboardInterrupt()
+            Path(destination).write_bytes(b"concurrent winner")
+            raise FileExistsError("concurrent winner")
+        return link(source, destination)
+    monkeypatch.setattr(index.ExportOptions, "save", fail_save if fault == "render" else save)
+    monkeypatch.setattr(index.os, "link", fail_link if fault != "render" else link)
+    with pytest.raises(KeyboardInterrupt if fault == "interrupt" else OSError):
+        index.plot_overview(design, tmp_path / "index_v1", presentation=index.AtlasIndexPresentation())
+    assert not (tmp_path / "index_v1.png").exists()
+    assert not (tmp_path / "index_v1.svg").exists()
+    if fault == "publication":
+        assert (tmp_path / "index_v1.pdf").read_bytes() == b"concurrent winner"
+    else:
+        assert not (tmp_path / "index_v1.pdf").exists()
+    assert not list(tmp_path.glob(".wenu-index-*"))
+
+
+def test_plot_cli_example_and_closed_errors(request_data, tmp_path, capsys):
+    atlas = AtlasDesignRequest.from_dict(request_data).resolve()
+    design = atlas.write_json(tmp_path / "design_v1.json")
+    config = ROOT / "examples/atlas_index_style_v1.toml"
+    arguments = ["--design", str(design), "--config", str(config),
+                 "--output-prefix", str(tmp_path / "index_v1")]
+    assert cli.plot_main(arguments) == 0
+    assert len(capsys.readouterr().out.splitlines()) == 3
+    with pytest.raises(SystemExit) as exc:
+        cli.plot_main(arguments)
+    assert exc.value.code == 2
+    with pytest.raises(SystemExit):
+        cli.plot_main(arguments + ["--position-angle", "10"])
+    assert not list(tmp_path.glob(".wenu-index-*"))
