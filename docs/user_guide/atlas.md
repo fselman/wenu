@@ -207,15 +207,15 @@ centres or gnomonic tiling yet.
 
 ## First visual band-layout specimen (candidate)
 
-The developer example `examples/atlas_band_overview_v1.py` now reads a resolved
+The developer example `tools/render_atlas_band_overview_v1.py` now reads a resolved
 `AtlasBandTiling` JSON and writes PNG, PDF and SVG. It is a geometry-only
 review helper, not the installed `wenu_plot_atlas` command or a finished index.
 For a JSON produced by the Python API above:
 
 ```bash
-python examples/atlas_band_overview_v1.py \
+python tools/render_atlas_band_overview_v1.py \
   atlas_band_trial_v1.json atlas_overview_40_v1
-python examples/atlas_band_overview_v1.py \
+python tools/render_atlas_band_overview_v1.py \
   atlas_band_trial_v1.json atlas_footprints_40_v1 --footprints
 ```
 

@@ -4236,7 +4236,7 @@ rectangular sheet footprints, but no index picture. Canonical
 `PolarPlanisphereChart` already owns fixed-equatorial stereographic polar caps;
 `MatplotlibRenderer` owns generic projected geometry/clip paths and
 `ExportOptions` owns PNG/PDF/SVG saving. Compose these in a developer example,
-`examples/atlas_band_overview_v1.py`, with no new production module or rendering
+`tools/render_atlas_band_overview_v1.py`, with no new production module or rendering
 mathematics. Extend the existing atlas contract tests.
 
 The plotter only reads/revalidates resolved JSON. Primary sectors intersect the

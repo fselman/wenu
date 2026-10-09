@@ -21,7 +21,7 @@ from wenu.atlas_design import (
 
 @pytest.fixture
 def overview_example():
-    path = Path(__file__).resolve().parents[1] / "examples/atlas_band_overview_v1.py"
+    path = Path(__file__).resolve().parents[1] / "tools/render_atlas_band_overview_v1.py"
     spec = importlib.util.spec_from_file_location("atlas_overview_example", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)

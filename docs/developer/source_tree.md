@@ -3213,7 +3213,7 @@ rendering, legends and export are not part of the tiler's lifecycle.
 
 ## Atlas visual specimen ownership (candidate)
 
-`examples/atlas_band_overview_v1.py` is a developer orchestration specimen:
+`tools/render_atlas_band_overview_v1.py` is a developer orchestration specimen:
 resolved band JSON in, geometry-only index PNG/PDF/SVG out. It composes existing
 polar-chart projection/viewport/boundary, generic renderer and export owners.
 There is no new production module, dependency or installed CLI. Extend

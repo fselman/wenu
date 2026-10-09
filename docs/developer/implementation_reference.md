@@ -4154,7 +4154,7 @@ count is a redesign; cross-edition IDs must not be assumed equivalent.
 
 ## Atlas visual review helper (candidate)
 
-`examples/atlas_band_overview_v1.py DESIGN_JSON OUTPUT_PREFIX [--footprints]`
+`tools/render_atlas_band_overview_v1.py DESIGN_JSON OUTPUT_PREFIX [--footprints]`
 reads `AtlasBandTiling.read_json` and writes three new products using
 `OUTPUT_PREFIX.png/.pdf/.svg`. An existing destination rejects the request
 before rendering. Use explicit versioned prefixes. The helper has no placement,
