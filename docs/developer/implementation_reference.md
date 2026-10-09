@@ -4104,3 +4104,50 @@ is deterministic UTF-8 JSON; no time/catalogue/observer provenance is invented.
 The caller owns destination directory creation and revision/filename selection.
 No full-sphere coverage, neighbour graph, primary areas or report ownership is
 claimed. Those belong to subsequent design implementation.
+
+
+## Atlas band-coverage comparison API (candidate)
+
+Import from `wenu.atlas_design`; the three atlas commands remain planned.
+
+- `design_band_atlas(design_id, revision, page, overview, *,
+  field_width_deg, overlap_deg, seed_ra_deg, max_sheets=4096)` constructs a
+  conservative complete stereographic comparison tiling. Angles are degrees.
+  The field is a full central horizontal span in [5,120]; the shorter
+  inscribed angular cap, after overlap reservation, must be at least 1°.
+  Physical aspect derives the height through the existing projection.
+  `overlap_deg` is a nonnegative minimum angular width near shared primary
+  boundaries, independent of the overview shared band. `seed_ra_deg` in
+  [0,360) places the first centre of every row and orients polar sheets.
+  It is independent of `overview.join_ra_deg`. The bounded sheet budget
+  fails explicitly rather than returning incomplete geometry.
+- `AtlasPrimaryBand(dec_min_deg, dec_max_deg, ra_origin_deg, sheet_ids)`
+  defines an exact latitude interval with equal RA sectors in the stored ID
+  order. Sheet rectangles are still defined by their inverse projection.
+- `AtlasBandTiling(geometry, bands, overlap_deg, seed_ra_deg)` validates
+  every sheet's primary cap containment, the contiguous band partition,
+  complete sector assignment and angular margin. One sheet owns each pole;
+  interior bands require at least three aligned sectors.
+- `validation()` returns method, status `validated_analytic_cap_bound`,
+  1e-8-degree numerical guard, primary area in steradians, minimum angular
+  primary clearance, shared-boundary overlap lower bound and sheet count.
+  It is a conservative analytic floating-point check, not formal interval
+  arithmetic or an optimized covering.
+- `primary_sheet_id(ra_deg, dec_deg)` returns one scalar owner. RA wraps,
+  latitude/longitude intervals are half-open, the upper band/sector wins a
+  boundary, +90 is retained and poles ignore RA.
+- `neighbours()` returns reciprocal tuples of IDs sharing a positive-length
+  primary edge. Corner-only contact is excluded. This graph does not enumerate
+  every pair of intersecting full rectangular footprints.
+- `to_dict/to_json/from_dict/from_json/write_json/read_json` use a separate
+  version-1 `wenu-atlas-band-tiling` protocol. Resolved sheet geometry, primary
+  bands, generator version, overlap/seed, evidence and neighbours are stored;
+  readers validate these records without regenerating placement. Embedded
+  legacy specimen status is unverified by itself; the envelope supplies the
+  whole-sphere validation. Unknown keys, unsupported versions, duplicate keys,
+  non-finite numbers and inconsistent evidence/navigation fail closed.
+
+ID namespaces change with geometry inputs or design revision. Overview changes
+preserve sheets and IDs. Numbering is south-to-north, increasing RA from the
+seed in each row, with a separate polar sheet at each end. Changing centre
+count is a redesign; cross-edition IDs must not be assumed equivalent.

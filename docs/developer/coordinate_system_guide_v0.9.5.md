@@ -4456,3 +4456,17 @@ explicit meridian controls tangent orientation. The stored basis is checked
 against the resolved parameters on JSON reading. CoordinateService and all
 current provider/observer transformation ownership remain unchanged. Adapting
 these sheets to the observer-backed chart request API is a later milestone.
+
+
+## Atlas band-coverage coordinate review
+
+Primary regions in the band comparison are ICRS latitude/longitude ownership
+sectors and polar caps. Full sheet coverage remains the inverse-defined
+stereographic tangent rectangle. The inscribed-cap bound is a geometric
+containment argument; it adds no astrometry, source epoch, equinox, observer
+state or physical visibility interpretation. Seed RA for centre placement and
+polar-sheet orientation is distinct from common-meridian RA for the overview.
+The 1e-8-degree guard bounds numerical admission conservatively in the
+prototype domain; it is not an astrometric uncertainty or formal interval
+proof. CoordinateService, providers and existing frame-transform ownership
+remain unchanged.

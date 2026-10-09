@@ -1,13 +1,15 @@
 """Observer-independent atlas geometry specimens and strict versioned JSON.
 
-This is not a tiler or a complete atlas. Exact footprints are defined by the
-existing stereographic inverse applied to each useful plane rectangle.
+Exact footprints are defined by the existing stereographic inverse applied to
+each useful plane rectangle. Band tilings are conservative comparison products,
+not the final atlas command or publication contract.
 """
 
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 import json
+import hashlib
 import math
 from numbers import Real
 from pathlib import Path
@@ -358,3 +360,377 @@ class AtlasGeometrySpecimen:
     @classmethod
     def read_json(cls, path):
         return cls.from_json(Path(path).read_text(encoding="utf-8"))
+
+
+# Keep the accepted specimen protocol unchanged. This separate comparison
+# protocol adds an analytic containment certificate and primary partition.
+TILING_KIND = "wenu-atlas-band-tiling"
+TILING_METHOD = "latitude-bands-inscribed-cap-v1"
+ANGULAR_GUARD_DEG = 1e-8
+MAX_TILING_SHEETS = 4096
+
+
+@dataclass(frozen=True)
+class AtlasPrimaryBand:
+    """Latitude band partitioned into equal, half-open RA sectors.
+
+    sheet_ids are in increasing RA order starting at ra_origin_deg.
+    The end latitude is excluded except at +90. A one-sheet polar band
+    owns all RAs, including the pole independently of its arbitrary RA.
+    """
+
+    dec_min_deg: float
+    dec_max_deg: float
+    ra_origin_deg: float
+    sheet_ids: tuple[str, ...]
+
+    def __post_init__(self):
+        for name in ("dec_min_deg", "dec_max_deg", "ra_origin_deg"):
+            object.__setattr__(self, name, _number(getattr(self, name), name))
+        if not -90 <= self.dec_min_deg < self.dec_max_deg <= 90:
+            raise ValueError("Invalid primary-band latitude interval.")
+        if not 0 <= self.ra_origin_deg < 360:
+            raise ValueError("Primary-band RA origin must be in [0, 360).")
+        if not isinstance(self.sheet_ids, (tuple, list)) or not self.sheet_ids:
+            raise ValueError("Primary band requires sheet IDs.")
+        for identifier in self.sheet_ids:
+            _identifier(identifier, "primary sheet_id")
+        if len(set(self.sheet_ids)) != len(self.sheet_ids):
+            raise ValueError("Duplicate primary sheet IDs.")
+        object.__setattr__(self, "sheet_ids", tuple(self.sheet_ids))
+
+    @property
+    def sector_width_deg(self):
+        return 360 / len(self.sheet_ids)
+
+    @property
+    def area_sr(self):
+        return 2 * math.pi * (
+            math.sin(math.radians(self.dec_max_deg))
+            - math.sin(math.radians(self.dec_min_deg))
+        )
+
+
+def _inscribed_radius_deg(sheet, page):
+    viewport = sheet.viewport(page)
+    return sheet.projection.angular_radius_for_projected_radius(
+        min(viewport.width, viewport.height) / 2
+    )
+
+
+def _sector_radius_deg(center_dec, dec_min, dec_max, half_ra):
+    """Maximum centre separation of an aligned sector (half_RA <= 60).
+
+    cos(distance) = sin(dc)*sin(d) + cos(dc)*cos(d)*cos(delta_RA).
+    Its minimum in RA is at either longitudinal edge. There cos(delta_RA)
+    is positive, so the only interior latitude stationary point is a maximum
+    of cos(distance); the minimum is at a latitude endpoint. This bounds the
+    entire closed sector, not just samples.
+    """
+    dc = math.radians(center_dec)
+    longitude = math.cos(math.radians(half_ra))
+    dots = [
+        math.sin(dc) * math.sin(math.radians(d))
+        + math.cos(dc) * math.cos(math.radians(d)) * longitude
+        for d in (dec_min, dec_max)
+    ]
+    return math.degrees(math.acos(max(-1.0, min(1.0, min(dots)))))
+
+
+def _longitude_intersection(a, b):
+    """Positive length of the intersection of two closed circular sectors."""
+    start_a, width_a = a
+    start_b, width_b = b
+    return sum(max(0.0, min(start_a + width_a, start_b + width_b + shift)
+                   - max(start_a, start_b + shift))
+               for shift in (-360, 0, 360))
+
+
+@dataclass(frozen=True)
+class AtlasBandTiling:
+    """Validated conservative whole-sphere partition and rectangle coverage.
+
+    Only aligned equal-sector latitude bands with one sheet at each pole are
+    admitted. Validation uses analytic cap bounds with a numerical guard,
+    not formal interval arithmetic or an optimized sheet-count claim.
+    """
+
+    geometry: AtlasGeometrySpecimen
+    bands: tuple[AtlasPrimaryBand, ...]
+    overlap_deg: float
+    seed_ra_deg: float
+
+    def __post_init__(self):
+        if not isinstance(self.geometry, AtlasGeometrySpecimen):
+            raise TypeError("geometry must be AtlasGeometrySpecimen.")
+        if not isinstance(self.bands, (tuple, list)) or not self.bands:
+            raise ValueError("A tiling requires primary bands.")
+        if not all(isinstance(b, AtlasPrimaryBand) for b in self.bands):
+            raise TypeError("bands must contain AtlasPrimaryBand records.")
+        object.__setattr__(self, "bands", tuple(self.bands))
+        for name in ("overlap_deg", "seed_ra_deg"):
+            object.__setattr__(self, name, _number(getattr(self, name), name))
+        if self.overlap_deg < 0 or not 0 <= self.seed_ra_deg < 360:
+            raise ValueError("Invalid overlap or seed RA.")
+        self.validation()
+
+    def validation(self):
+        """Recompute partition completeness and conservative angular margins."""
+        sheets = {s.sheet_id: s for s in self.geometry.sheets}
+        if len(sheets) > MAX_TILING_SHEETS:
+            raise ValueError("Tiling exceeds the sheet-count budget.")
+        assigned = [s for b in self.bands for s in b.sheet_ids]
+        if len(assigned) != len(set(assigned)) or set(assigned) != set(sheets):
+            raise ValueError("Primary bands must assign every sheet exactly once.")
+        if len(self.bands) < 3:
+            raise ValueError("Tiling requires two polar bands and an interior.")
+        if self.bands[0].dec_min_deg != -90 or self.bands[-1].dec_max_deg != 90:
+            raise ValueError("Primary bands must reach both poles.")
+        # Exact shared persisted endpoints avoid accepting small hidden holes.
+        if any(a.dec_max_deg != b.dec_min_deg
+               for a, b in zip(self.bands, self.bands[1:])):
+            raise ValueError("Primary latitude bands have gaps or overlap.")
+        margins = []
+        for index, band in enumerate(self.bands):
+            polar = index in (0, len(self.bands) - 1)
+            if polar and len(band.sheet_ids) != 1:
+                raise ValueError("Each polar band requires exactly one sheet.")
+            if not polar and len(band.sheet_ids) < 3:
+                raise ValueError("Interior bands require at least three sectors.")
+            for sector, identifier in enumerate(band.sheet_ids):
+                sheet = sheets[identifier]
+                if not 5 <= sheet.field_width_deg <= 120:
+                    raise ValueError("Band prototype requires fields in [5, 120] degrees.")
+                if polar:
+                    dec = -90 if index == 0 else 90
+                    if sheet.center_dec_deg != dec:
+                        raise ValueError("Polar band requires its polar sheet.")
+                    if sheet.pole_meridian_ra_deg != self.seed_ra_deg:
+                        raise ValueError("Polar meridian must match the tiling seed.")
+                    radius = (band.dec_max_deg + 90 if index == 0
+                              else 90 - band.dec_min_deg)
+                else:
+                    first_ra = (band.ra_origin_deg + band.sector_width_deg / 2) % 360
+                    seed_offset = (first_ra - self.seed_ra_deg + 180) % 360 - 180
+                    if abs(seed_offset) > 1e-10:
+                        raise ValueError("Primary-band phase must match the tiling seed.")
+                    expected_ra = (band.ra_origin_deg
+                                   + (sector + 0.5) * band.sector_width_deg) % 360
+                    offset = (sheet.center_ra_deg - expected_ra + 180) % 360 - 180
+                    if abs(offset) > 1e-10 or sheet.center_dec_deg != (
+                            band.dec_min_deg + band.dec_max_deg) / 2:
+                        raise ValueError("Interior centres must align with primary sectors.")
+                    radius = _sector_radius_deg(
+                        sheet.center_dec_deg, band.dec_min_deg,
+                        band.dec_max_deg, band.sector_width_deg / 2,
+                    )
+                clearance = _inscribed_radius_deg(sheet, self.geometry.page) - radius
+                if clearance < self.overlap_deg / 2 + ANGULAR_GUARD_DEG:
+                    raise ValueError("Primary area or overlap is outside the sheet cap.")
+                margins.append(clearance - ANGULAR_GUARD_DEG)
+        return {
+            "method": TILING_METHOD,
+            "coverage_status": "validated_analytic_cap_bound",
+            "angular_guard_deg": ANGULAR_GUARD_DEG,
+            "primary_area_sr": sum(b.area_sr for b in self.bands),
+            "minimum_primary_clearance_deg": min(margins),
+            "shared_boundary_overlap_lower_bound_deg": 2 * min(margins),
+            "sheet_count": len(sheets),
+        }
+
+    def primary_sheet_id(self, ra_deg, dec_deg):
+        """Unique scalar ownership: upper latitude/RA sector wins a shared edge."""
+        ra = _number(ra_deg, "ra_deg")
+        dec = _number(dec_deg, "dec_deg")
+        if not -90 <= dec <= 90:
+            raise ValueError("Declination outside [-90, 90].")
+        for band in self.bands:
+            if band.dec_min_deg <= dec < band.dec_max_deg or (
+                    dec == 90 and band.dec_max_deg == 90):
+                offset = (ra - band.ra_origin_deg) % 360
+                sector = min(int(offset / band.sector_width_deg),
+                             len(band.sheet_ids) - 1)
+                return band.sheet_ids[sector]
+        raise ValueError("Direction has no primary owner.")
+
+    def neighbours(self):
+        """Reciprocal shared-primary-edge graph; corner-only contacts excluded.
+
+        This is navigation topology, not a list of every rectangle intersection.
+        Each edge inherits the validated shared-boundary overlap lower bound.
+        """
+        graph = {s.sheet_id: set() for s in self.geometry.sheets}
+
+        def connect(a, b):
+            graph[a].add(b)
+            graph[b].add(a)
+
+        for band in self.bands:
+            if len(band.sheet_ids) > 1:
+                for a, b in zip(band.sheet_ids,
+                                band.sheet_ids[1:] + band.sheet_ids[:1]):
+                    connect(a, b)
+        for lower, upper in zip(self.bands, self.bands[1:]):
+            for i, a in enumerate(lower.sheet_ids):
+                interval_a = ((lower.ra_origin_deg
+                               + i * lower.sector_width_deg) % 360,
+                              lower.sector_width_deg)
+                for j, b in enumerate(upper.sheet_ids):
+                    interval_b = ((upper.ra_origin_deg
+                                   + j * upper.sector_width_deg) % 360,
+                                  upper.sector_width_deg)
+                    if _longitude_intersection(interval_a, interval_b) > 1e-10:
+                        connect(a, b)
+        return {s: tuple(sorted(v)) for s, v in sorted(graph.items())}
+
+    def to_dict(self):
+        return {
+            "schema_version": 1,
+            "document_kind": TILING_KIND,
+            "generator": TILING_METHOD,
+            "geometry": self.geometry.to_dict(),
+            "bands": [asdict(b) for b in self.bands],
+            "overlap_deg": self.overlap_deg,
+            "seed_ra_deg": self.seed_ra_deg,
+            "validation": self.validation(),
+            "neighbours": self.neighbours(),
+        }
+
+    def to_json(self):
+        return json.dumps(self.to_dict(), ensure_ascii=False, sort_keys=True,
+                          indent=2, allow_nan=False) + "\n"
+
+    def write_json(self, path):
+        destination = Path(path)
+        destination.write_text(self.to_json(), encoding="utf-8")
+        return destination
+
+    @classmethod
+    def from_dict(cls, data):
+        _keys(data, ("schema_version", "document_kind", "generator", "geometry",
+                    "bands", "overlap_deg", "seed_ra_deg", "validation",
+                    "neighbours"), "band tiling")
+        if type(data["schema_version"]) is not int or data["schema_version"] != 1:
+            raise ValueError("Unsupported band-tiling schema.")
+        if data["document_kind"] != TILING_KIND or data["generator"] != TILING_METHOD:
+            raise ValueError("Unsupported band-tiling method or kind.")
+        if not isinstance(data["bands"], list):
+            raise ValueError("bands must be an array.")
+        result = cls(
+            AtlasGeometrySpecimen.from_dict(data["geometry"]),
+            tuple(_record(AtlasPrimaryBand, b) for b in data["bands"]),
+            data["overlap_deg"], data["seed_ra_deg"],
+        )
+        # JSON comparison also rejects booleans masquerading as numbers.
+        for key in ("validation", "neighbours"):
+            expected = result.to_dict()[key]
+            if json.dumps(data[key], sort_keys=True, allow_nan=False) != json.dumps(
+                    expected, sort_keys=True, allow_nan=False):
+                raise ValueError(f"Inconsistent tiling {key}.")
+        return result
+
+    @classmethod
+    def from_json(cls, text):
+        def pairs(values):
+            result = {}
+            for key, value in values:
+                if key in result:
+                    raise ValueError(f"Duplicate JSON key: {key}.")
+                result[key] = value
+            return result
+
+        def constant(value):
+            raise ValueError(f"Non-finite JSON constant: {value}.")
+
+        return cls.from_dict(json.loads(text, object_pairs_hook=pairs,
+                                       parse_constant=constant))
+
+    @classmethod
+    def read_json(cls, path):
+        return cls.from_json(Path(path).read_text(encoding="utf-8"))
+
+
+def design_band_atlas(design_id, revision, page, overview, *,
+                      field_width_deg, overlap_deg, seed_ra_deg,
+                      max_sheets=MAX_TILING_SHEETS):
+    """Build a conservative stereographic comparison tiling without catalogues.
+
+    Fields in [5,120] degrees, north-up interior sheets, an equatorial row,
+    increasing-RA sectors and south-to-north numbering. The seed specifies
+    one centre per row independently of the overview join. overlap_deg is
+    a minimum angular width at shared primary boundaries, not a percentage.
+    """
+    _identifier(design_id, "design_id")
+    _integer(revision, "revision")
+    _integer(max_sheets, "max_sheets")
+    if max_sheets > MAX_TILING_SHEETS:
+        raise ValueError("max_sheets exceeds the prototype budget.")
+    if not isinstance(page, AtlasPageGeometry) or not isinstance(
+            overview, AtlasOverviewGeometry):
+        raise TypeError("page and overview require atlas geometry records.")
+    width = _number(field_width_deg, "field_width_deg")
+    overlap = _number(overlap_deg, "overlap_deg")
+    seed = _number(seed_ra_deg, "seed_ra_deg")
+    if not 5 <= width <= 120 or overlap < 0 or not 0 <= seed < 360:
+        raise ValueError("Invalid field, overlap or seed RA.")
+    trial = AtlasSheetGeometry("trial", 1, seed, 0, width)
+    # Additional guard keeps construction off the validation threshold.
+    radius = _inscribed_radius_deg(trial, page) - overlap / 2 - 2 * ANGULAR_GUARD_DEG
+    if radius < 1:
+        raise ValueError("Field/aspect/overlap leaves less than a 1-degree design cap.")
+    extent = 90 - radius
+    rows = max(1, math.ceil(2 * extent / (math.sqrt(2) * radius)))
+    if rows % 2 == 0:
+        rows += 1
+    if rows * 3 + 2 > max_sheets:
+        raise ValueError("Tiling exceeds the sheet-count budget.")
+    # Namespace changes on retiling, independent of overview presentation.
+    recipe = [TILING_METHOD, design_id, revision, asdict(page), width, overlap, seed]
+    digest = hashlib.sha256(json.dumps(recipe, sort_keys=True).encode()).hexdigest()
+    namespace = f"{design_id}:r{revision}:{digest}"
+    sheets, bands = [], []
+
+    def append_sheet(key, ra, dec):
+        identifier = f"{namespace}:{key}"
+        sheets.append(AtlasSheetGeometry(
+            identifier, len(sheets) + 1, ra, dec, width,
+            pole_meridian_ra_deg=seed if abs(dec) == 90 else None,
+        ))
+        return identifier
+
+    south = append_sheet("south", 0, -90)
+    bands.append(AtlasPrimaryBand(-90, -extent, 0, (south,)))
+    edges = [extent * (2 * i - rows) / rows for i in range(rows + 1)]
+    edges[0], edges[-1] = -extent, extent
+    for row in range(rows):
+        lo, hi = edges[row:row + 2]
+        dc = (lo + hi) / 2
+
+        def fits(count):
+            return _sector_radius_deg(dc, lo, hi, 180 / count) <= radius
+
+        count = 3
+        while not fits(count):
+            count *= 2
+            if count > max_sheets:
+                raise ValueError("Tiling exceeds the sheet-count budget.")
+        low, high = 3, count
+        while low < high:
+            mid = (low + high) // 2
+            if fits(mid):
+                high = mid
+            else:
+                low = mid + 1
+        count = low
+        if len(sheets) + count + 1 > max_sheets:
+            raise ValueError("Tiling exceeds the sheet-count budget.")
+        step = 360 / count
+        origin = (seed - step / 2) % 360
+        identifiers = tuple(append_sheet(f"band-{row + 1}-sector-{i + 1}",
+                                         (origin + (i + 0.5) * step) % 360, dc)
+                            for i in range(count))
+        bands.append(AtlasPrimaryBand(lo, hi, origin, identifiers))
+    north = append_sheet("north", 0, 90)
+    bands.append(AtlasPrimaryBand(extent, 90, 0, (north,)))
+    specimen = AtlasGeometrySpecimen(design_id, revision, page, overview, tuple(sheets))
+    return AtlasBandTiling(specimen, tuple(bands), overlap, seed)

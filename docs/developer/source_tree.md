@@ -3196,3 +3196,17 @@ Test-file admission: the closest oracle file is
 explicit incomplete status, page geometry and persistent-data corruption are a
 separate enduring responsibility; keeping them in `test_atlas_design.py`
 avoids mixing those failures into projection/clipping compatibility tests.
+
+
+## Atlas band-coverage ownership (candidate)
+
+Extend `src/wenu/atlas_design.py` for latitude-band placement, primary
+partition, analytic inscribed-cap containment, angular overlap lower bounds,
+reciprocal shared-edge navigation and separate comparison JSON. Extend
+`tests/test_atlas_design.py` for partition/certificate/persistence faults.
+These share the existing atlas record lifecycle and dependencies, so there
+is no new production module, test file, subpackage or dependency.
+
+Frame rotation, projection/inverse and viewport remain mathematical owners.
+Catalogue/observer construction, position realization, chart preparation,
+rendering, legends and export are not part of the tiler's lifecycle.

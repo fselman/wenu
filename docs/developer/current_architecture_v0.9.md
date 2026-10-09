@@ -2301,3 +2301,19 @@ renderer or ephemeris. Exact footprints are inverse-projected rectangles.
 `wenu-atlas-geometry-specimen` and coverage status `unverified`.
 This is not a complete atlas, automatic tiler, primary-area partition or CLI.
 All ordinary chart and track rendering owners remain unchanged.
+
+
+## Atlas band-coverage comparison boundary (candidate)
+
+`wenu.atlas_design` now also owns `AtlasPrimaryBand`, `AtlasBandTiling` and
+`design_band_atlas`: conservative observer-independent placement, primary
+partition, analytic cap containment, shared-boundary overlap bounds and
+reciprocal navigation. Exact sheet footprints still belong to the existing
+stereographic inverse and useful viewport. RA/declination sectors describe
+primary ownership only; they do not replace tangent-plane rectangles.
+
+The separate band-tiling comparison JSON revalidates persisted regions and
+geometry without re-running placement. The original geometry-specimen schema
+remains unchanged and unverified in isolation. The numerical cap-bound method
+and bounded domain are recorded in the active roadmap. No CLI, catalogue,
+observer, frame-service, chart, renderer or exporter responsibility moves.

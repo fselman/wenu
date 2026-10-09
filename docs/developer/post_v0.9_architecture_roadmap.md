@@ -4150,3 +4150,75 @@ future complete atlas JSON. No neighbour/primary-region/report ownership is
 invented. Geometry-only output is reproducible and carries no generated time.
 Next work compares placement/overlap and validates all-sky coverage before any
 complete `wenu_design_atlas` output or paired index production.
+
+
+## Atlas band-coverage candidate (2026-10-09)
+
+PR #215 was accepted after 332 focused and all 3,173 plugin-disabled Mac
+tests passed at `b702cdc6`; it merged at `740eeba72a01fa98615535e13389b30df5addb6e`.
+Fernando confirmed clean synchronized main and deleted its feature branch.
+He authorized the next bounded centre/coverage/overlap implementation.
+
+As-is: atlas records resolve exact stereographic rectangles but their specimen
+protocol deliberately carries unverified coverage. Frame, inverse projection
+and viewport are reusable; no primary partition, whole-sphere certificate,
+navigation graph or automatic placement existed. Extend `atlas_design.py`
+and `test_atlas_design.py`, their existing durable owners. Add no module,
+dependency, top-level export or rendering pipeline.
+
+The candidate Python API `design_band_atlas` constructs one sheet per pole,
+an odd number of equal-height interior latitude bands (including an equatorial
+row) and equal RA sectors within each band. All sheets retain the requested
+horizontal field and physical page scale. Seed RA sets a centre in every row
+and polar-sheet orientation; it is independent of the overview join RA.
+Numbering runs south to north and increasing RA from the seed within a row.
+IDs include a design/revision/geometry namespace; structural redesign must not
+silently preserve old identities. Index geometry does not change that namespace.
+
+**Containment argument:** the stereographic rectangle contains a circular
+spherical cap whose plane radius is its shorter half-side. Polar primary
+regions are caps. Interior primary regions are latitude/RA sectors, not sheet
+footprints. With at least three sectors, longitude half-width is at most 60°.
+For aligned sector centres, the minimum centre-direction dot product occurs
+at the longitudinal edges and latitude endpoints; interior latitude stationary
+points are maxima. Thus corner extrema bound the entire closed primary region.
+Reserve half the requested overlap plus a numerical angular guard inside the
+inscribed cap. Every point of a shared primary boundary then has a ball of at
+least that half-overlap in each adjacent sheet. Exact persisted band endpoints
+and complete equal-sector longitude partitions cover the whole sphere.
+Half-open sectors and latitude bands provide unique scalar ownership; the
+upper band/sector wins shared edges and each pole is RA-independent.
+
+This is conservative analytic validation in floating-point with a 1e-8-degree
+guard, not formal interval arithmetic, an optimum sheet count, or a certificate
+for arbitrary free-centre/gnomonic designs. Fields are bounded to 5–120°,
+the usable cap must be at least 1°, and the prototype budget is 4,096 sheets.
+Failure is explicit and atomic. No partial design is returned.
+
+`AtlasBandTiling` persists resolved geometry, primary bands, reciprocal
+shared-edge neighbours and recomputed validation under its own version-1
+`wenu-atlas-band-tiling` comparison protocol. The accepted specimen protocol
+is unchanged. Readers do not rerun placement. They revalidate primary
+containment, gap-free partition, angular overlap lower bounds and stored
+navigation/evidence. Unknown keys, duplicate JSON keys, false evidence and
+inconsistent geometry fail closed. Neighbours mean shared primary edges,
+excluding corner-only contact; they are not every intersecting footprint.
+Overlap is a conservative minimum width around shared boundaries, not the
+actual intersection area or uniform width of the full rectangles.
+
+Trial comparison: B4 353 × 250 mm, top/bottom/outer margins 10 mm, inner 20 mm,
+2° overlap, seed RA 82.5° gives 236/128/80 sheets at 30°/40°/50° horizontal
+fields. These are reproducible comparison inputs, not adopted defaults.
+No atlas command, overview figure, catalogue selection, facing-page report,
+gnomonic extension or fixed-equatorial rendering adapter is installed here.
+Next review the comparison/efficiency and schema before the designer CLI;
+index plotting remains a separate subsequent milestone.
+
+Verification admission: extend the existing atlas tests for the new
+partition/certificate/persistence seam; retain the existing rotation/projection
+oracles rather than duplicating them. Independent Cartesian corner bounds,
+diagnostic point membership, seam/pole ownership, reciprocal navigation,
+corruption rejection, deterministic identity and resource-budget failure
+cover the new fault model. Coordinate guide and existing diagrams are reviewed;
+only atlas planning/persistence ownership grows. Scientific position realization
+and the canonical chart/render/export owners remain unchanged.
