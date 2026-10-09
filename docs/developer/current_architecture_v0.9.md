@@ -2371,3 +2371,12 @@ Each complete own hemisphere remains visible; the common sky band is not
 pointwise registered across the two projections. Geometry JSON/IDs/numbers,
 coverage validation, ordinary charts, dependencies and installed CLI remain
 unchanged. No new production module or alternate pipeline is introduced.
+
+
+The accepted magnitude-4.5 index variant additionally admits native static
+LMC/SMC morphology through the existing `MagellanicCloudIsophotes.realize()`
+owner. Source rings, holes, level fractions and compounds share construction
+with the observer path; the native branch leaves the observed cache untouched
+and carries no epoch. Optional plot flags enable both Clouds and add MW OL1
+through existing detail selection. Default density and layer selection,
+resolved atlas geometry and canonical projection/rendering ownership remain.

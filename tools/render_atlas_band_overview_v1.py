@@ -27,12 +27,17 @@ from wenu.sky.realization import LayerRealizationContext
 from wenu.sky.celestial_sphere import CelestialSphere
 from wenu.charts.composition import compose_chart
 from wenu.charts.detail import DetailOverrides
+from wenu.charts.detail import SkyContentSelection
 
 
-def index_sky(star_magnitude_limit):
+def index_sky(star_magnitude_limit, *, include_lowest_mw_isophote=False, magellanic_clouds=False):
     """Load existing catalogue owners once, without an observer or ephemeris."""
     sky = CelestialSphere(None)
-    sky.add_milky_way_isophotes()
+    sky.add_milky_way_isophotes(levels=("ol1", "ol2", "ol3", "ol4", "ol5")
+                               if include_lowest_mw_isophote else None)
+    if magellanic_clouds:
+        sky.add_magellanic_cloud_isophotes("lmc")
+        sky.add_magellanic_cloud_isophotes("smc")
     sky.add_stars(magnitude_limit=star_magnitude_limit)
     sky.add_constellations()
     return sky
@@ -124,7 +129,8 @@ def primary_outline(face, ra0, ra1, lower, upper):
     return ProjectedPolygon(x, y)
 
 
-def _draw_face(ax, atlas, face, *, footprints, sky=None, star_magnitude_limit=5.5):
+def _draw_face(ax, atlas, face, *, footprints, sky=None, star_magnitude_limit=5.5,
+               include_lowest_mw_isophote=False, magellanic_clouds=False):
     renderer = MatplotlibRenderer(ax)
     renderer.apply_viewport(face.viewport)
     renderer.set_clip_boundary(face.boundary, style={"edgecolor": "#284b63", "facecolor": "none", "linewidth": 1})
@@ -137,7 +143,12 @@ def _draw_face(ax, atlas, face, *, footprints, sky=None, star_magnitude_limit=5.
             detail_overrides=DetailOverrides(
                 star_magnitude_limit=star_magnitude_limit,
                 enabled_layers=frozenset({"stars", "constellation_lines",
-                                          "constellation_labels", "milky_way"}),
+                                          "constellation_labels", "milky_way"}
+                                          | ({"magellanic_clouds"} if magellanic_clouds else set())),
+                content_selection=SkyContentSelection(
+                    milky_way_levels=frozenset({"ol1", "ol2", "ol3", "ol4", "ol5"})
+                    if include_lowest_mw_isophote else None,
+                ),
                 constellation_star_mode="none",
             ),
         )
@@ -210,8 +221,11 @@ def _draw_face(ax, atlas, face, *, footprints, sky=None, star_magnitude_limit=5.
 
 
 def plot_overview(design_path, output_prefix, *, footprints=False, joined=False,
-                  astronomy=False, star_magnitude_limit=5.5):
+                  astronomy=False, star_magnitude_limit=5.5,
+                  include_lowest_mw_isophote=False, magellanic_clouds=False):
     """Read/revalidate resolved JSON and write versioned PNG, PDF and SVG."""
+    if (include_lowest_mw_isophote or magellanic_clouds) and not astronomy:
+        raise ValueError("Milky Way and Cloud options require astronomy=True.")
     atlas = AtlasBandTiling.read_json(design_path)
     if not np.isfinite(star_magnitude_limit) or not 0 < star_magnitude_limit <= 11:
         raise ValueError("star_magnitude_limit must be finite and between 0 and 11.")
@@ -219,7 +233,9 @@ def plot_overview(design_path, output_prefix, *, footprints=False, joined=False,
     destinations = [prefix.with_suffix(suffix) for suffix in (".png", ".pdf", ".svg")]
     if any(path.exists() for path in destinations):
         raise FileExistsError("Choose a new versioned output prefix; existing products are preserved.")
-    sky = index_sky(star_magnitude_limit) if astronomy else None
+    sky = index_sky(star_magnitude_limit,
+                    include_lowest_mw_isophote=include_lowest_mw_isophote,
+                    magellanic_clouds=magellanic_clouds) if astronomy else None
     figure = plt.figure(figsize=(14, 8), facecolor="white")
     if joined:
         axes = composed_axes(figure, atlas.geometry.overview)
@@ -238,7 +254,9 @@ def plot_overview(design_path, output_prefix, *, footprints=False, joined=False,
     try:
         for ax, pole in zip(axes, ("north", "south"), strict=True):
             _draw_face(ax, atlas, overview_face(atlas.geometry.overview, pole), footprints=footprints,
-                       sky=sky, star_magnitude_limit=star_magnitude_limit)
+                       sky=sky, star_magnitude_limit=star_magnitude_limit,
+                       include_lowest_mw_isophote=include_lowest_mw_isophote,
+                       magellanic_clouds=magellanic_clouds)
         if joined:
             _join_faces(figure, axes, atlas)
         highlighted = next(sheet.number for sheet in atlas.geometry.sheets
@@ -249,9 +267,17 @@ def plot_overview(design_path, output_prefix, *, footprints=False, joined=False,
         figure.text(0.5, 0.041, f"Ocre: ecuador, límites de banda compartida ±{atlas.geometry.overview.shared_band_width_deg / 2:g}° y meridiano RA {atlas.geometry.overview.join_ra_deg / 15:g} h.",
                     ha="center", fontsize=9, color="#806025")
         content = f"Estrellas hasta magnitud {star_magnitude_limit:g}, constelaciones y Vía Láctea. " if astronomy else "Sin catálogos. "
+        if astronomy and (include_lowest_mw_isophote or magellanic_clouds):
+            content = f"Estrellas m ≤ {star_magnitude_limit:g} · constelaciones · "
+            content += "MW OL1–OL5 · " if include_lowest_mw_isophote else "Vía Láctea · "
+            if magellanic_clouds:
+                content += "LMC y SMC · "
         layout = "Contornos unidos; banda común con dos proyecciones. " if joined else "Discos separados. "
-        figure.text(0.5, 0.012, layout + content +
-                    ("Magenta: huellas completas con solapamiento." if footprints else "Los bordes indican propiedad primaria, no la huella completa de cada hoja."),
+        variant = astronomy and (include_lowest_mw_isophote or magellanic_clouds)
+        legend = ("Magenta: huellas completas." if footprints else "Bordes: propiedad primaria.") if variant else (
+            "Magenta: huellas completas con solapamiento." if footprints else
+            "Los bordes indican propiedad primaria, no la huella completa de cada hoja.")
+        figure.text(0.5, 0.012, layout + content + legend,
                     ha="center", fontsize=9, color="#527089")
         options = ExportOptions(dpi=160, bbox_inches=None, facecolor="white",
                                 metadata={"Title": prefix.name, "Creator": "Wenu"})
@@ -268,10 +294,16 @@ def main():
     parser.add_argument("--joined", action="store_true", help="Compose overlapping disk contours at the inward equatorial point")
     parser.add_argument("--astronomy", action="store_true", help="Add native ICRS catalogue stars, constellations and Milky Way")
     parser.add_argument("--star-magnitude-limit", type=float, default=5.5)
+    parser.add_argument("--include-lowest-mw-isophote", action="store_true",
+                        help="Add the faint OL1 envelope to OL2–OL5; requires --astronomy")
+    parser.add_argument("--magellanic-clouds", action="store_true",
+                        help="Add all four LMC and SMC isophotes; requires --astronomy")
     args = parser.parse_args()
     for path in plot_overview(args.design, args.output_prefix, footprints=args.footprints,
                               joined=args.joined, astronomy=args.astronomy,
-                              star_magnitude_limit=args.star_magnitude_limit):
+                              star_magnitude_limit=args.star_magnitude_limit,
+                              include_lowest_mw_isophote=args.include_lowest_mw_isophote,
+                              magellanic_clouds=args.magellanic_clouds):
         print(path)
 
 

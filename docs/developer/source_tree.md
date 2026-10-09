@@ -3257,3 +3257,14 @@ These changes use the accepted realization insertion point and canonical sky
 loop. Native layers retain source coordinate/epoch identity; no extra transform,
 provider, rendering/export owner or package export is introduced. The new
 observer-free path is limited to explicitly admitted static ICRS background.
+
+
+The accepted lower-density atlas index extends the same ownership map:
+- `sky/magellanic_clouds.py`: native static ICRS realization of existing LMC/SMC
+  morphology; source rings/holes/compounds share the observed implementation.
+- `tools/render_atlas_band_overview_v1.py`: optional OL1/Cloud choices through
+  existing composition/detail selection, with magnitude 4.5 passed explicitly.
+- `tests/test_magellanic_clouds.py` and `tests/test_atlas_design.py`: selected
+  native rings/holes and populated-cache isolation, plus real JSON exports
+  containing OL1 and both Clouds; the source JSON remains unchanged.
+No production module, test file, dependency or installed command is added.

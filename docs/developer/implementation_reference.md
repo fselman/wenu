@@ -4231,3 +4231,19 @@ retains both full contours and clips content at the page bisector with a
 `TransformedBbox` that follows export DPI. It preserves own-hemisphere
 coverage but does not register the whole shared sky band pointwise. No installed
 atlas command or schema change is claimed.
+
+
+The accepted magnitude-4.5 atlas index variant is implemented by optional
+`include_lowest_mw_isophote=False` and `magellanic_clouds=False` arguments to
+`plot_overview()`, corresponding to `--include-lowest-mw-isophote` and
+`--magellanic-clouds`. Both require astronomical rendering. OL1 augments the
+existing OL2–OL5 selection through `SkyContentSelection`; LMC and SMC use their
+four canonical levels. Default rendering and resolved geometry are unchanged.
+`MagellanicCloudIsophotes.realize()` now deliberately admits the existing
+static native ICRS context and shares ring construction/selection with the
+observed path. Native realization copies source directions, preserves holes,
+compound IDs and fractions, assigns no epoch and bypasses the observed cache.
+The existing polar projection, preparation and renderer handle both Clouds;
+no new coordinate or rendering pipeline is introduced. Current tests cover
+native selected rings/holes with a populated observed cache, both Clouds,
+legacy cache reuse, and end-to-end magnitude-4.5/OL1/Cloud exports from JSON.

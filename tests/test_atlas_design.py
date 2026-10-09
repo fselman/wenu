@@ -195,8 +195,9 @@ def test_join_clip_tracks_export_dpi_and_retains_both_contours(five_band_atlas, 
         plt.close(figure)
 
 
+@pytest.mark.parametrize("with_clouds", [False, True])
 def test_astronomical_index_uses_json_and_native_canonical_pipeline(
-        five_band_atlas, overview_example, tmp_path, monkeypatch):
+        five_band_atlas, overview_example, tmp_path, monkeypatch, with_clouds):
     from wenu.sky.celestial_sphere import CelestialSphere
     from wenu.coordinate_service import CoordinateService
     import wenu.observer
@@ -225,21 +226,38 @@ def test_astronomical_index_uses_json_and_native_canonical_pipeline(
                     if artist.get_clip_box().contains(x,y):
                         numbers.add(int(artist.get_text()))
     monkeypatch.setattr(overview_example, "_join_faces", inspect_join)
+    magnitude = 4.5 if with_clouds else 5
     outputs = overview_example.plot_overview(path, tmp_path / "joined_sky_v1",
-        joined=True, astronomy=True, footprints=True, star_magnitude_limit=5)
+        joined=True, astronomy=True, footprints=True, star_magnitude_limit=magnitude,
+        include_lowest_mw_isophote=with_clouds, magellanic_clouds=with_clouds)
     assert len(results) == 2
     assert numbers == set(range(1,35))
-    assert [len(r.layers) for r in results] == [4,4]
+    assert [len(r.layers) for r in results] == ([6, 6] if with_clouds else [4, 4])
     for result in results:
         assert {r.layer.layer_name for r in result.layers} == {
-            "stars", "constellation_lines", "constellation_labels", "milky_way_isophotes"}
+            "stars", "constellation_lines", "constellation_labels", "milky_way_isophotes"} | (
+                {"magellanic_cloud_isophotes"} if with_clouds else set())
         assert all(r.spherical.coordinate_spec.frame == "icrs" for r in result.layers)
         stars = next(r.spherical for r in result.layers if r.layer.layer_name == "stars")
-        assert np.max(stars.metadata["magnitude"]) <= 5
+        assert np.max(stars.metadata["magnitude"]) <= magnitude
+        mw = next(r.spherical for r in result.layers if r.layer.layer_name == "milky_way_isophotes")
+        assert set(mw.metadata["level"]) == ({"ol1", "ol2", "ol3", "ol4", "ol5"} if with_clouds else {"ol2", "ol3", "ol4", "ol5"})
+        if with_clouds:
+            clouds = [r for r in result.layers if r.layer.layer_name == "magellanic_cloud_isophotes"]
+            assert {r.layer.cloud for r in clouds} == {"lmc", "smc"}
+            for r in clouds:
+                assert set(r.spherical.metadata["level"]) == {1, 2, 3, 4}
+                assert not r.layer._observed_polygon_cache
         lines = next(r.spherical for r in result.layers if r.layer.layer_name == "constellation_lines")
         assert not lines.metadata["unresolved_star_ids"]
     assert all(p.exists() and p.stat().st_size > 1000 for p in outputs)
     assert path.read_bytes() == before
+    if with_clouds:
+        import xml.etree.ElementTree as ET
+        svg = next(p for p in outputs if p.suffix == ".svg")
+        identifiers = [element.get("id", "") for element in ET.parse(svg).getroot().iter()]
+        for required in ("isophote-ol1", "lmc-isophotes-isophote-1", "smc-isophotes-isophote-1"):
+            assert any(required in value for value in identifiers)
 
 
 @pytest.mark.parametrize("join", [0, 82.5, 359.5])
@@ -637,3 +655,9 @@ def test_band_design_does_not_construct_observational_state(page, monkeypatch):
     a = design_band_atlas("offline", 1, page, AtlasOverviewGeometry(82.5, 20),
                           field_width_deg=50, overlap_deg=2, seed_ra_deg=0)
     assert AtlasBandTiling.from_json(a.to_json()) == a
+
+
+@pytest.mark.parametrize("option", ["include_lowest_mw_isophote", "magellanic_clouds"])
+def test_extra_index_layers_require_astronomical_rendering(overview_example, tmp_path, option):
+    with pytest.raises(ValueError, match="require astronomy"):
+        overview_example.plot_overview(tmp_path / "unused.json", tmp_path / "unused", **{option: True})

@@ -340,3 +340,21 @@ source provenance, not a current-date observing chart. Faint constellation
 vertices remain available to figures independently of the stellar marker cut.
 The filled Milky Way preserves source ring holes and handedness. Index
 appearance and density do not alter the B4 chart layout or coverage certificate.
+
+
+The accepted lower-density index can be reproduced with stars through magnitude
+4.5, the faint OL1 Milky Way envelope added to OL2–OL5, and both Magellanic
+Clouds. These are optional plotting choices; the default remains magnitude
+5.5 with OL2–OL5 and no Clouds. Use a new versioned output prefix:
+
+```bash
+python tools/render_atlas_band_overview_v1.py atlas_five_band_v1.json atlas_joined_overview_mag45_v2 --joined --astronomy --star-magnitude-limit 4.5 --include-lowest-mw-isophote --magellanic-clouds
+python tools/render_atlas_band_overview_v1.py atlas_five_band_v1.json atlas_joined_footprints_mag45_v2 --joined --astronomy --footprints --star-magnitude-limit 4.5 --include-lowest-mw-isophote --magellanic-clouds
+```
+
+`--include-lowest-mw-isophote` and `--magellanic-clouds` require `--astronomy`.
+The Clouds use all four levels from each existing Gaia-derived source snapshot,
+with their source rings, holes and compound grouping retained. Their native ICRS
+morphology is realized in the existing Magellanic Cloud layer, with no observer
+or assigned epoch; the usual observed rendering remains available. The same
+resolved JSON and its chart IDs, scale, primary regions and coverage are used.
