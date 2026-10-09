@@ -366,6 +366,7 @@ class AtlasGeometrySpecimen:
 # protocol adds an analytic containment certificate and primary partition.
 TILING_KIND = "wenu-atlas-band-tiling"
 TILING_METHOD = "latitude-bands-inscribed-cap-v1"
+RECTANGULAR_TILING_METHOD = "latitude-bands-rectangle-halfspaces-v1"
 ANGULAR_GUARD_DEG = 1e-8
 MAX_TILING_SHEETS = 4096
 
@@ -446,12 +447,68 @@ def _longitude_intersection(a, b):
                for shift in (-360, 0, 360))
 
 
+def _sector_linear_maximum(vector, ra_min, ra_max, dec_min, dec_max):
+    """Maximum of vector dot unit direction over a closed RA/Dec sector.
+
+    cos(dec) is nonnegative, so maximize the horizontal sinusoid in RA first.
+    Its endpoints and any contained maximum give one horizontal coefficient.
+    Then check latitude endpoints and all contained stationary points. This
+    also handles unwrapped RA sectors and full-RA polar caps without sampling.
+    """
+    cx, cy, cz = vector
+    phase = math.degrees(math.atan2(cy, cx))
+    longitudes = [ra_min, ra_max]
+    first = math.ceil((ra_min - phase) / 360)
+    last = math.floor((ra_max - phase) / 360)
+    longitudes.extend(phase + 360 * k for k in range(first, last + 1))
+    horizontal = max(cx * math.cos(math.radians(ra))
+                     + cy * math.sin(math.radians(ra)) for ra in longitudes)
+    latitudes = [dec_min, dec_max]
+    phase = math.degrees(math.atan2(cz, horizontal))
+    for k in range(-2, 3):
+        latitude = phase + 180 * k
+        if dec_min <= latitude <= dec_max:
+            latitudes.append(latitude)
+    return max(horizontal * math.cos(math.radians(dec))
+               + cz * math.sin(math.radians(dec)) for dec in latitudes)
+
+
+def _rectangle_clearance_deg(sheet, page, ra_min, ra_max, dec_min, dec_max):
+    """Continuous minimum distance to the four stereographic edge circles.
+
+    With canonical tangent-frame coordinates u, plane x=r*u_y/(1+u_z)
+    and y=r*u_x/(1+u_z). Each rectangle edge is a spherical halfspace
+    (+/-u_axis - t*u_z) <= t, where t is its half-side divided by r.
+    For unit edge normal n and threshold b, the interior angular clearance
+    is asin(b)-asin(n dot direction). Its minimum uses the analytic sector
+    maximum above. Restrict the primary region to the tangent hemisphere to
+    exclude the stereographic antipode and keep the denominator positive.
+    """
+    matrix = sheet.frame.rotation_matrix
+    if _sector_linear_maximum(-matrix[2], ra_min, ra_max, dec_min, dec_max) >= 0:
+        raise ValueError("Rectangular primary region leaves the tangent hemisphere.")
+    viewport = sheet.viewport(page)
+    margins = []
+    for axis, half_side in ((matrix[1], viewport.width / 2),
+                            (matrix[0], viewport.height / 2)):
+        t = half_side / sheet.projection_radius
+        for sign in (-1, 1):
+            normal = sign * axis - t * matrix[2]
+            maximum = _sector_linear_maximum(
+                normal, ra_min, ra_max, dec_min, dec_max,
+            ) / float(np.linalg.norm(normal))
+            margins.append(math.degrees(math.atan(t) - math.asin(
+                max(-1.0, min(1.0, maximum))
+            )))
+    return min(margins)
+
+
 @dataclass(frozen=True)
 class AtlasBandTiling:
     """Validated conservative whole-sphere partition and rectangle coverage.
 
     Only aligned equal-sector latitude bands with one sheet at each pole are
-    admitted. Validation uses analytic cap bounds with a numerical guard,
+    admitted. Validation uses analytic cap or rectangle bounds with a numerical guard,
     not formal interval arithmetic or an optimized sheet-count claim.
     """
 
@@ -459,6 +516,7 @@ class AtlasBandTiling:
     bands: tuple[AtlasPrimaryBand, ...]
     overlap_deg: float
     seed_ra_deg: float
+    containment_method: str = TILING_METHOD
 
     def __post_init__(self):
         if not isinstance(self.geometry, AtlasGeometrySpecimen):
@@ -476,6 +534,9 @@ class AtlasBandTiling:
 
     def validation(self):
         """Recompute partition completeness and conservative angular margins."""
+        if not isinstance(self.containment_method, str) or self.containment_method not in (
+                TILING_METHOD, RECTANGULAR_TILING_METHOD):
+            raise ValueError("Unsupported band-tiling containment method.")
         sheets = {s.sheet_id: s for s in self.geometry.sheets}
         if len(sheets) > MAX_TILING_SHEETS:
             raise ValueError("Tiling exceeds the sheet-count budget.")
@@ -525,12 +586,22 @@ class AtlasBandTiling:
                         band.dec_max_deg, band.sector_width_deg / 2,
                     )
                 clearance = _inscribed_radius_deg(sheet, self.geometry.page) - radius
+                if self.containment_method == RECTANGULAR_TILING_METHOD:
+                    ra_min = band.ra_origin_deg + sector * band.sector_width_deg
+                    clearance = _rectangle_clearance_deg(
+                        sheet, self.geometry.page, ra_min,
+                        ra_min + band.sector_width_deg,
+                        band.dec_min_deg, band.dec_max_deg,
+                    )
                 if clearance < self.overlap_deg / 2 + ANGULAR_GUARD_DEG:
-                    raise ValueError("Primary area or overlap is outside the sheet cap.")
+                    boundary = "sheet cap" if self.containment_method == TILING_METHOD else "sheet rectangle"
+                    raise ValueError(f"Primary area or overlap is outside the {boundary}.")
                 margins.append(clearance - ANGULAR_GUARD_DEG)
         return {
-            "method": TILING_METHOD,
-            "coverage_status": "validated_analytic_cap_bound",
+            "method": self.containment_method,
+            "coverage_status": ("validated_analytic_cap_bound"
+                                if self.containment_method == TILING_METHOD
+                                else "validated_analytic_rectangle_bound"),
             "angular_guard_deg": ANGULAR_GUARD_DEG,
             "primary_area_sr": sum(b.area_sr for b in self.bands),
             "minimum_primary_clearance_deg": min(margins),
@@ -587,7 +658,7 @@ class AtlasBandTiling:
         return {
             "schema_version": 1,
             "document_kind": TILING_KIND,
-            "generator": TILING_METHOD,
+            "generator": self.containment_method,
             "geometry": self.geometry.to_dict(),
             "bands": [asdict(b) for b in self.bands],
             "overlap_deg": self.overlap_deg,
@@ -612,14 +683,15 @@ class AtlasBandTiling:
                     "neighbours"), "band tiling")
         if type(data["schema_version"]) is not int or data["schema_version"] != 1:
             raise ValueError("Unsupported band-tiling schema.")
-        if data["document_kind"] != TILING_KIND or data["generator"] != TILING_METHOD:
+        if data["document_kind"] != TILING_KIND or data["generator"] not in (
+                TILING_METHOD, RECTANGULAR_TILING_METHOD):
             raise ValueError("Unsupported band-tiling method or kind.")
         if not isinstance(data["bands"], list):
             raise ValueError("bands must be an array.")
         result = cls(
             AtlasGeometrySpecimen.from_dict(data["geometry"]),
             tuple(_record(AtlasPrimaryBand, b) for b in data["bands"]),
-            data["overlap_deg"], data["seed_ra_deg"],
+            data["overlap_deg"], data["seed_ra_deg"], data["generator"],
         )
         # JSON comparison also rejects booleans masquerading as numbers.
         for key in ("validation", "neighbours"):
@@ -734,3 +806,95 @@ def design_band_atlas(design_id, revision, page, overview, *,
     bands.append(AtlasPrimaryBand(extent, 90, 0, (north,)))
     specimen = AtlasGeometrySpecimen(design_id, revision, page, overview, tuple(sheets))
     return AtlasBandTiling(specimen, tuple(bands), overlap, seed)
+
+
+def design_five_band_atlas(design_id, revision, page, overview, *,
+                           field_width_deg, overlap_deg, seed_ra_deg,
+                           equatorial_half_height_deg,
+                           middle_boundary_dec_deg,
+                           max_sheets=MAX_TILING_SHEETS):
+    """Five interior latitude bands and exactly two polar sheets.
+
+    Equatorial/middle primary boundaries are explicit symmetric declinations.
+    The polar boundary is resolved from the polar rectangle's shorter side,
+    reserving half the requested angular overlap and a numerical guard.
+    Every row uses the smallest integer number of equal RA sectors admitted
+    by continuous four-edge rectangle containment. This exploits converging
+    meridians without substituting a cos(dec) approximation for projection.
+    All sheets retain one horizontal field and the B4/page physical scale.
+    This is a comparison layout, not a global minimum-sheet optimizer.
+    """
+    _identifier(design_id, "design_id")
+    _integer(revision, "revision")
+    _integer(max_sheets, "max_sheets")
+    if not 17 <= max_sheets <= MAX_TILING_SHEETS:
+        raise ValueError("Five-band sheet budget must be in [17, 4096].")
+    if not isinstance(page, AtlasPageGeometry) or not isinstance(overview, AtlasOverviewGeometry):
+        raise TypeError("page and overview require atlas geometry records.")
+    width = _number(field_width_deg, "field_width_deg")
+    overlap = _number(overlap_deg, "overlap_deg")
+    seed = _number(seed_ra_deg, "seed_ra_deg")
+    a = _number(equatorial_half_height_deg, "equatorial_half_height_deg")
+    b = _number(middle_boundary_dec_deg, "middle_boundary_dec_deg")
+    if not 5 <= width <= 120 or overlap < 0 or not 0 <= seed < 360:
+        raise ValueError("Invalid field, overlap or seed RA.")
+    margin = overlap / 2 + 2 * ANGULAR_GUARD_DEG
+    trial = AtlasSheetGeometry("trial", 1, seed, 0, width)
+    polar_radius = _inscribed_radius_deg(trial, page) - margin
+    c = 90 - polar_radius
+    if polar_radius < 1 or not 0 < a < b < c < 90:
+        raise ValueError("Invalid five-band primary boundaries or polar extent.")
+    edges = (-90, -c, -b, -a, a, b, c, 90)
+    counts = []
+    for lo, hi in zip(edges[1:-2], edges[2:-1]):
+        dc = (lo + hi) / 2
+        trial = AtlasSheetGeometry("trial", 1, seed, dc, width)
+
+        def fits(count):
+            return _rectangle_clearance_deg(
+                trial, page, seed - 180 / count, seed + 180 / count, lo, hi,
+            ) >= margin
+
+        count = 3
+        while not fits(count):
+            if count == max_sheets:
+                raise ValueError("Requested five-band geometry cannot fit the sheet budget.")
+            count = min(count * 2, max_sheets)
+        lower, upper = 3, count
+        while lower < upper:
+            middle = (lower + upper) // 2
+            if fits(middle):
+                upper = middle
+            else:
+                lower = middle + 1
+        counts.append(lower)
+    if sum(counts) + 2 > max_sheets:
+        raise ValueError("Tiling exceeds the sheet-count budget.")
+    recipe = [RECTANGULAR_TILING_METHOD, design_id, revision, asdict(page),
+              width, overlap, seed, edges, counts]
+    digest = hashlib.sha256(json.dumps(recipe, sort_keys=True).encode()).hexdigest()
+    namespace = f"{design_id}:r{revision}:{digest}"
+    sheets, bands = [], []
+
+    def append_sheet(key, ra, dec):
+        identifier = f"{namespace}:{key}"
+        sheets.append(AtlasSheetGeometry(
+            identifier, len(sheets) + 1, ra, dec, width,
+            pole_meridian_ra_deg=seed if abs(dec) == 90 else None,
+        ))
+        return identifier
+
+    south = append_sheet("south", 0, -90)
+    bands.append(AtlasPrimaryBand(-90, -c, 0, (south,)))
+    for row, (lo, hi, count) in enumerate(zip(edges[1:-2], edges[2:-1], counts)):
+        step = 360 / count
+        origin = (seed - step / 2) % 360
+        identifiers = tuple(append_sheet(
+            f"band-{row + 1}-sector-{sector + 1}",
+            (origin + (sector + 0.5) * step) % 360, (lo + hi) / 2,
+        ) for sector in range(count))
+        bands.append(AtlasPrimaryBand(lo, hi, origin, identifiers))
+    north = append_sheet("north", 0, 90)
+    bands.append(AtlasPrimaryBand(c, 90, 0, (north,)))
+    geometry = AtlasGeometrySpecimen(design_id, revision, page, overview, tuple(sheets))
+    return AtlasBandTiling(geometry, tuple(bands), overlap, seed, RECTANGULAR_TILING_METHOD)

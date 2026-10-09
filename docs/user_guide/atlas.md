@@ -242,3 +242,53 @@ astronomical layers and individual chart/report pages remain subsequent work.
 Review 30°, 40° and 50° specimens (236/128/80 sheets for the example geometry)
 before adopting a field. The conservative band algorithm remains a trial,
 not an optimized atlas layout.
+
+## Five-interior-band comparison (candidate)
+
+A second Python layout follows the requested structure: one equatorial band,
+two further bands per hemisphere, and one actual chart at each pole. It uses
+the full B4 rectangles rather than an inscribed cap for interior coverage:
+
+```python
+from wenu.atlas_design import (
+    AtlasPageGeometry, AtlasOverviewGeometry, design_five_band_atlas,
+)
+atlas = design_five_band_atlas(
+    "b4-five-band", 1,
+    AtlasPageGeometry(353, 250, 10, 10, 20, 10),
+    AtlasOverviewGeometry(82.5, 20),
+    field_width_deg=50, overlap_deg=0.25, seed_ra_deg=82.5,
+    equatorial_half_height_deg=17, middle_boundary_dec_deg=45,
+)
+atlas.write_json("atlas_five_band_v1.json")
+```
+
+This trial has **34 sheets**: 8 equatorial, 7 in each inner sub-equatorial
+band, 5 in each outer band and 2 polar. All useful rectangles are 323 × 230 mm
+and share the same 50° central horizontal field/physical scale. Primary RA
+intervals are 45°, 360/7° (about 51.43°) and 72°, respectively; these are
+ownership widths, not the complete footprint's RA span at every declination.
+The equatorial primary band runs from −17° to +17°, inner bands to ±45°,
+outer bands to about ±72.1833°, and polar ownership covers the remaining caps.
+These primary boundaries are not straight borders of the projected footprints.
+
+The requested 0.25° (15 arcminutes) is a **minimum** overlap near every shared
+primary boundary. Actual overlap varies across rectangular footprints and can
+be larger, including near corners and poles. It is not a uniform 0.25° strip
+everywhere. The new analytic check covers entire primary sectors and reserves
+their angular neighbourhoods inside all four rectangle edges; display samples
+do not establish the no-gap claim. Exactly contiguous bands and full RA
+partitions cover the sphere. This is a guarded floating-point argument,
+not formal interval arithmetic or a globally optimal tiling.
+
+Render the same JSON with the existing review tool:
+
+```bash
+python tools/render_atlas_band_overview_v1.py \
+  atlas_five_band_v1.json atlas_five_band_overview_v1
+python tools/render_atlas_band_overview_v1.py \
+  atlas_five_band_v1.json atlas_five_band_footprints_v1 --footprints
+```
+
+The earlier cap-based comparison stays available. This alternative requires
+visual review before adopting its field, latitude boundaries or overlap.

@@ -4170,3 +4170,30 @@ graphics and exports through `ExportOptions`, closing its figure even on failure
 Optional footprints are sampled for display, masked at the view latitude and
 clipped by the renderer's circular boundary. No analytic certificate is inferred
 from those samples. Paper composition and celestial layers remain future work.
+
+## Five-band rectangle comparison API (candidate)
+
+`design_five_band_atlas(design_id, revision, page, overview, *,
+field_width_deg, overlap_deg, seed_ra_deg, equatorial_half_height_deg,
+middle_boundary_dec_deg, max_sheets=4096)` requires two explicit positive
+symmetric primary latitude boundaries. The polar boundary derives from the
+shorter viewport half-side, reserving half the overlap plus numerical guards.
+Five interior rows have aligned midpoint centres and minimum feasible integer
+equal-RA sector counts; exactly one sheet owns each pole. Field bounds remain
+5–120°, positive polar cap at least 1°, and budgets 17–4096. Invalid geometry
+or exhausted budgets fail without returning an incomplete design.
+
+`AtlasBandTiling.containment_method` defaults to the legacy cap method.
+The additional `latitude-bands-rectangle-halfspaces-v1` tag returns
+`validated_analytic_rectangle_bound`; it checks complete primary regions
+against four spherical rectangle-edge halfspaces using analytic sinusoidal
+extrema and measures conservative angular clearance to those circles.
+The existing JSON key set/version remains unchanged; its generator string
+declares the method and the reader dispatches/revalidates only known tags.
+Old cap documents serialize unchanged. Unknown methods, changed evidence and
+even tiny partition gaps are rejected. Geometry namespaces include the resolved
+profile and counts; changing overview geometry alone preserves identities.
+
+The default behaviour of `design_band_atlas` is unchanged. The new API is
+an explicitly parameterized comparison rather than a frozen final CLI or global
+optimization algorithm. The existing review tool renders either method.

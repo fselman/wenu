@@ -4253,3 +4253,47 @@ remain separate: overlapping inner-contour paper composition and astronomical
 context are not claimed as implemented. Mac regression and visual review remain
 required. Keep this candidate stacked on `feat/atlas-band-coverage`; do not
 merge or delete either branch under provisional acceptance.
+
+## Five-band B4 comparison candidate (2026-10-09)
+
+Fernando requested a second overview/footprint comparison with one equatorial
+band, two sub-equatorial bands per hemisphere, two polar charts, increasing RA
+width toward high declination, small overlap and no missing sky. While this
+work began, he verified exact PR #217 head `5f71eb69`: 373 focused and all
+3,210 plugin-disabled Mac tests passed (16.29/336.48 seconds), with clean diff
+and synchronized branch. Verification is not acceptance or merge authority.
+Keep that candidate untouched and deliver the alternative on a stacked branch.
+
+As-is: cap-based containment wastes the long side of the B4 rectangle.
+Canonical frame/projection and the current primary-band records are reusable.
+Extend `atlas_design.py` and its existing tests with a separately tagged
+rectangle-edge analytic validator and a five-band designer. Preserve legacy
+JSON and the cap designer. Reuse the existing overview/footprint tool unchanged.
+
+For tangent-frame unit direction u, canonical plane coordinates are
+x=r*u_y/(1+u_z), y=r*u_x/(1+u_z). Each side is a spherical halfspace
+(±u_axis−t*u_z)≤t, with t=half-side/r. Require the complete primary region
+inside the tangent hemisphere. Maximize its horizontal RA sinusoid over the
+closed unwrapped RA interval, then its latitude sinusoid at endpoints and all
+contained stationary points. This bounds every edge over the entire sector,
+including interior extrema and full-RA polar caps. The angular distance to
+each edge circle is asin(t/||normal||)−asin(maximum/||normal||).
+Reserve half the requested overlap plus guards inside all four sides.
+Exact shared latitude endpoints and equal complete RA sectors cover the sphere;
+shared-boundary angular balls are in both charts. This is floating-point
+analytic validation with a guard, not a formal interval or sampled proof.
+
+The B4 trial fixes field=50°, minimum overlap=0.25°, seed RA=82.5°,
+equatorial boundary=±17° and middle boundary=±45°. The polar boundary is
+resolved from the shorter rectangle side with the same overlap reservation.
+Counts south-to-north are 1/5/7/8/7/5/1 (34 sheets); primary RA widths are
+72°, 360/7° and 45° outside-to-equator. Every sheet has the same physical
+scale. This is the minimum equal-sector count per chosen row/profile, not
+global atlas optimization. Actual footprint overlap is spatially variable
+and can exceed 0.25° substantially; inspect the footprint picture.
+
+Require continuous-extrema oracles, independent spherical overlap-ball tests,
+wrap/poles, all 34 numbers, strict persisted evidence, invalid profile/budget
+failures, old-format compatibility, regression and overview/footprint review.
+No installed command, astronomical layers, composed disk overlap or chart/report
+production is added. Existing source/coordinate/diagram owners remain intact.
