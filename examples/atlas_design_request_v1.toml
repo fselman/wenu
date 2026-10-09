@@ -1,0 +1,28 @@
+# Geometry request only; appearance and catalogue selection belong elsewhere.
+schema_version = 1
+document_kind = "wenu-atlas-design-request"
+design_id = "b4-five-band"
+revision = 1
+coordinate_frame = "icrs"
+projection = "stereographic"
+
+[page]
+width_mm = 353
+height_mm = 250
+top_mm = 10
+bottom_mm = 10
+inner_mm = 20
+outer_mm = 10
+
+[overview]
+join_ra_hours = 5.5
+shared_band_width_deg = 20
+
+[tiling]
+algorithm = "five_band"
+field_width_deg = 50
+overlap_deg = 0.25
+seed_ra_hours = 5.5
+equatorial_half_height_deg = 17
+middle_boundary_dec_deg = 45
+max_sheets = 4096

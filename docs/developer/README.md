@@ -28,8 +28,8 @@ migrations, milestone evidence, and superseded roadmaps are under
 
 **2026-10-09 current priority:** organise the atlas before general stellar and
 deep-sky curation. See the [atlas checkpoint](post_v0.9_architecture_roadmap.md#atlas-organisation-checkpoint-2026-10-09)
-and [user workflow](../user_guide/atlas.md). The three atlas commands remain
-planned. Earlier dated sequencing below is historical and is superseded by
+and [user workflow](../user_guide/atlas.md). The designer CLI candidate is now implemented; index plotter and page
+producer commands remain planned. See the latest roadmap checkpoint. Earlier dated sequencing below is historical and is superseded by
 this checkpoint.
 
 

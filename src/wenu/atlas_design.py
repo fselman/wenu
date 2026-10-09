@@ -898,3 +898,109 @@ def design_five_band_atlas(design_id, revision, page, overview, *,
     bands.append(AtlasPrimaryBand(c, 90, 0, (north,)))
     geometry = AtlasGeometrySpecimen(design_id, revision, page, overview, tuple(sheets))
     return AtlasBandTiling(geometry, tuple(bands), overlap, seed, RECTANGULAR_TILING_METHOD)
+
+
+@dataclass(frozen=True)
+class AtlasDesignRequest:
+    """Version-1 geometry request for the supported stereographic designers.
+
+    This is independent of schema-v2 chart configuration. Astronomical
+    selection and index presentation are not geometry-request inputs.
+    """
+
+    design_id: str
+    revision: int
+    page: AtlasPageGeometry
+    overview: AtlasOverviewGeometry
+    algorithm: str
+    field_width_deg: float
+    overlap_deg: float
+    seed_ra_deg: float
+    max_sheets: int = MAX_TILING_SHEETS
+    equatorial_half_height_deg: float | None = None
+    middle_boundary_dec_deg: float | None = None
+
+    def __post_init__(self):
+        _identifier(self.design_id, "design_id")
+        _integer(self.revision, "revision")
+        _integer(self.max_sheets, "max_sheets")
+        if self.max_sheets > MAX_TILING_SHEETS:
+            raise ValueError("max_sheets exceeds the 4096-sheet budget.")
+        if not isinstance(self.page, AtlasPageGeometry) or not isinstance(
+                self.overview, AtlasOverviewGeometry):
+            raise ValueError("page and overview require atlas geometry records.")
+        if self.algorithm not in ("five_band", "cap_bands"):
+            raise ValueError("algorithm must be five_band or cap_bands.")
+        for name in ("field_width_deg", "overlap_deg", "seed_ra_deg"):
+            object.__setattr__(self, name, _number(getattr(self, name), name))
+        if not 5 <= self.field_width_deg <= 120 or self.overlap_deg < 0:
+            raise ValueError("Invalid field width or minimum overlap.")
+        if not 0 <= self.seed_ra_deg < 360:
+            raise ValueError("seed_ra_deg must be in [0, 360).")
+        profile = ("equatorial_half_height_deg", "middle_boundary_dec_deg")
+        if self.algorithm == "five_band":
+            for name in profile:
+                object.__setattr__(self, name, _number(getattr(self, name), name))
+            if not 0 < self.equatorial_half_height_deg < self.middle_boundary_dec_deg < 90:
+                raise ValueError("Invalid five-band latitude boundaries.")
+        elif any(getattr(self, name) is not None for name in profile):
+            raise ValueError("Latitude profile is only supported by five_band.")
+
+    @classmethod
+    def from_dict(cls, data):
+        """Parse a closed request, with explicit degrees or hours for each RA."""
+        _keys(data, ("schema_version", "document_kind", "design_id", "revision",
+                     "coordinate_frame", "projection", "page", "overview",
+                     "tiling"), "atlas design request")
+        if type(data["schema_version"]) is not int or data["schema_version"] != 1:
+            raise ValueError("Unsupported atlas design request schema.")
+        if data["document_kind"] != "wenu-atlas-design-request":
+            raise ValueError("Unsupported atlas design request kind.")
+        if data["coordinate_frame"] != "icrs" or data["projection"] != "stereographic":
+            raise ValueError("Only icrs stereographic atlas designs are supported.")
+
+        def ra_record(record, prefix, required, optional=()):
+            if not isinstance(record, dict):
+                raise ValueError(f"{prefix} input must be a table.")
+            degrees, hours = prefix + "_deg", prefix + "_hours"
+            present = set(record) & {degrees, hours}
+            if len(present) != 1:
+                raise ValueError(f"Supply exactly one of {degrees} or {hours}.")
+            key = present.pop()
+            _keys(record, set(required) | {key} | (set(optional) & set(record)), prefix)
+            value = _number(record[key], key)
+            limit = 24 if key == hours else 360
+            if not 0 <= value < limit:
+                raise ValueError(f"{key} must be in [0, {limit}).")
+            return value * 15 if key == hours else value
+
+        overview = data["overview"]
+        join = ra_record(overview, "join_ra", ("shared_band_width_deg",))
+        tiling = data["tiling"]
+        if not isinstance(tiling, dict):
+            raise ValueError("tiling must be a table.")
+        required = {"algorithm", "field_width_deg", "overlap_deg"}
+        if tiling.get("algorithm") == "five_band":
+            required |= {"equatorial_half_height_deg", "middle_boundary_dec_deg"}
+        seed = ra_record(tiling, "seed_ra", required, ("max_sheets",))
+        return cls(
+            data["design_id"], data["revision"],
+            _record(AtlasPageGeometry, data["page"]),
+            AtlasOverviewGeometry(join, overview["shared_band_width_deg"]),
+            tiling["algorithm"], tiling["field_width_deg"], tiling["overlap_deg"],
+            seed, tiling.get("max_sheets", MAX_TILING_SHEETS),
+            tiling.get("equatorial_half_height_deg"),
+            tiling.get("middle_boundary_dec_deg"),
+        )
+
+    def resolve(self):
+        """Construct a complete validated layout through the existing owner."""
+        options = dict(field_width_deg=self.field_width_deg,
+                       overlap_deg=self.overlap_deg, seed_ra_deg=self.seed_ra_deg,
+                       max_sheets=self.max_sheets)
+        designer = design_band_atlas
+        if self.algorithm == "five_band":
+            designer = design_five_band_atlas
+            options.update(equatorial_half_height_deg=self.equatorial_half_height_deg,
+                           middle_boundary_dec_deg=self.middle_boundary_dec_deg)
+        return designer(self.design_id, self.revision, self.page, self.overview, **options)

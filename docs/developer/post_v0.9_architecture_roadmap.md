@@ -21,11 +21,12 @@ stellar designations, minor bodies, atlas publication and satellites below;
 those historical milestones remain evidence, not the current next-action list.
 
 The [atlas user guide](../user_guide/atlas.md) supplies the command/input
-diagram and the user preparation steps. All three atlas commands are planned,
-not installed: `wenu_design_atlas` produces **only resolved JSON**;
+diagram and the user preparation steps. The designer CLI is now an implementation
+candidate (see the latest checkpoint): `wenu_design_atlas` produces **only resolved JSON**;
 `wenu_plot_atlas` consumes it with independent index presentation inputs;
 `wenu_create_atlas` consumes it with publication and curation inputs.
-This documentation checkpoint does not implement or freeze their CLI/schema.
+The original planning checkpoint did not implement or freeze their CLI/schema;
+the later designer checkpoint specifies its bounded version-1 request.
 
 | Stage | Work | Acceptance gate |
 |---|---|---|
@@ -4338,3 +4339,34 @@ oracles, metadata/topology, no observer transformations and closed failures.
 Do not create production modules, test files, dependencies, an installed atlas
 command, report pages, arbitrary epoch propagation or moving objects. Require
 focused and full regression, PNG/PDF/SVG review and exact-head Mac acceptance.
+
+
+## Installed atlas designer candidate (2026-10-09)
+
+PR #219 is merged at clean Mac-confirmed main `2f09f4706b8468ab85e95bdd9a1684838f715efd`.
+Fernando requested the next roadmap milestone: the contract and installed
+`wenu_design_atlas` adapter. This supersedes earlier statements that all three
+commands are unimplemented, while retaining their independent responsibilities.
+
+As-is audit: existing `AtlasBandTiling` and the two designers supply complete
+geometry, coverage, navigation and deterministic JSON; the accepted index tool
+already reads it. Extend that geometry owner with immutable closed request
+admission, and admit a thin `cli/atlas.py` adapter plus durable CLI tests under
+the documented source-tree rationale. No new projection, domain module,
+dependency, top-level export or chart pipeline is required.
+
+The candidate accepts explicit version-1 TOML and publishes only the existing
+validated band-tiling JSON. Support fixed ICRS/stereographic five-band and cap
+layouts, explicit degree/hour RA, physical page/margins, field, overlap,
+independent overview/seed and bounded budget. Reject unknown keys, malformed
+units/values, infeasible layouts and existing outputs; publish complete bytes
+atomically with interruption cleanup. Fixed existing orientation/numbering
+remain explicit. The supplied B4 example reproduces all 34 accepted sheets.
+
+Coordinate guide, architecture/reference, source map and diagram inspection
+views are reviewed/updated. Extend current user-guide status checks; add only
+new request, public-route, isolation and publication fault evidence, reusing
+existing geometry oracles. Require focused/full regression and exact-head Mac
+verification before separate acceptance/merge. Next implement `wenu_plot_atlas`
+with independent presentation input; then `wenu_create_atlas` and pilot pairs.
+No merge or cleanup is authorized by this implementation request.

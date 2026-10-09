@@ -2380,3 +2380,17 @@ with the observer path; the native branch leaves the observed cache untouched
 and carries no epoch. Optional plot flags enable both Clouds and add MW OL1
 through existing detail selection. Default density and layer selection,
 resolved atlas geometry and canonical projection/rendering ownership remain.
+
+
+## Atlas designer CLI candidate (2026-10-09)
+
+`AtlasDesignRequest` extends the existing atlas geometry owner with closed
+version-1 user-request validation and degree/hour RA admission. It delegates
+to the accepted five-band rectangle or inscribed-cap designers without changing
+their scientific validation or resolved `wenu-atlas-band-tiling` schema.
+`cli/atlas.py` owns `wenu_design_atlas`: TOML/arguments, clean errors and atomic
+no-clobber publication of one complete JSON. It neither loads a catalogue nor
+constructs an observer/renderer. The supported request is fixed ICRS and
+stereographic with the existing orientation and numbering rules. No top-level
+export, dependency, chart/render pipeline or coordinate transformation changes.
+Index presentation and chart/report production remain separate later adapters.

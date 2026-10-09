@@ -3268,3 +3268,31 @@ The accepted lower-density atlas index extends the same ownership map:
   native rings/holes and populated-cache isolation, plus real JSON exports
   containing OL1 and both Clouds; the source JSON remains unchanged.
 No production module, test file, dependency or installed command is added.
+
+
+## Atlas designer CLI ownership (2026-10-09)
+
+As-is audit at `2f09f470`: `atlas_design.py` already owns complete band
+placement, analytic validation and strict resolved JSON. The developer overview
+tool already reads that JSON. No atlas entry point or closed user request exists.
+
+- Extend `src/wenu/atlas_design.py` with immutable `AtlasDesignRequest`, closed
+  version-1 mapping admission, explicit RA-unit conversion and delegation to
+  the two existing designers. This shares its geometry lifecycle and faults.
+- Admit `src/wenu/cli/atlas.py` for installed atlas adapters: TOML parsing,
+  arguments, stderr diagnostics and atomic no-clobber JSON publication. The
+  closest owner `cli/chart.py` handles observer-backed chart configuration and
+  execution; adding atlas filesystem/protocol work there would mix independent
+  public routes. Extending `atlas_design.py` with argparse/TOML/filesystem
+  publication would mix geometry with CLI lifecycle. Dependency points from
+  adapter to geometry; no new domain package, export or dependency is added.
+- Admit `tests/test_atlas_cli.py` for the durable installed request/publication
+  route. The closest `test_atlas_design.py` owns geometry/persistence oracles;
+  CLI exit status, TOML admission and publication races/interruption are a
+  distinct public/environmental failure boundary. Keep lower-level geometry
+  oracles there instead of repeating them in the adapter tests.
+- `examples/atlas_design_request_v1.toml` is an authored geometry input, not
+  generated data. `pyproject.toml` installs only `wenu_design_atlas` here.
+
+Projection, coordinate realization, catalogues, chart generation, renderer and
+exporter ownership remain unchanged. No user-facing figure is a designer output.

@@ -328,3 +328,21 @@ boxes. Source layers own native Hipparcos epoch and morphology topology;
 owners draw and save. The full shared sky band cannot be pointwise registered
 in both polar projections. No tiling, observer, ephemeris, dependency or new
 production-module responsibility is assigned to the page composition.
+
+
+## Installed atlas designer inspection view (2026-10-09)
+
+Reviewed the existing coordinate/static/runtime views: the new CLI adapter
+points inward to atlas geometry and adds no rendering or coordinate-service
+edge. Previous specimen views describe historical implementation stages.
+
+```mermaid
+flowchart TD
+    T["Version-1 request TOML"] --> C["cli/atlas.py admission"]
+    C --> G["AtlasDesignRequest and existing designers"]
+    G --> V["Existing analytic coverage validation"]
+    V --> J["Atomic resolved JSON publication"]
+```
+
+The separate overview tool consumes the same JSON; it does not run placement.
+The installed plotter and chart/report producer remain subsequent milestones.

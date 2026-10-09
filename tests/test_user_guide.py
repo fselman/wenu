@@ -265,11 +265,15 @@ def test_temporal_sequence_guide_documents_cli_and_resume_contract():
     assert 'stop = "2026-08-22T03:00:00-04:00"' in configuration
 
 
-def test_atlas_guide_documents_planned_commands_and_separate_inputs():
+def test_atlas_guide_documents_designer_and_separate_planned_inputs():
     text = (GUIDE / "atlas.md").read_text(encoding="utf-8")
     index = (GUIDE / "index.md").read_text(encoding="utf-8")
     assert "(atlas.md)" in index
-    assert "not an implemented CLI" in text
+    assert "designer CLI implementation candidate" in text
+    assert "wenu_design_atlas --config REQUEST_TOML --output NEW_JSON" in text
+    assert "wenu-atlas-design-request" in text
+    assert "join_ra_hours" in text
+    assert "published atomically" in text
     assert "```mermaid" in text
     for command in ("wenu_design_atlas", "wenu_plot_atlas", "wenu_create_atlas"):
         assert command in text
@@ -277,4 +281,4 @@ def test_atlas_guide_documents_planned_commands_and_separate_inputs():
                      "atlas_index_style_v1.toml", "atlas_publication_v1.toml"):
         assert filename in text
     assert "**Only** a versioned, resolved atlas JSON" in text
-    assert "not runnable examples" in text
+    assert "not runnable" in text
