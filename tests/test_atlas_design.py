@@ -176,9 +176,10 @@ def test_composed_index_registers_equator_and_preserves_own_hemispheres(overview
         plt.close(figure)
 
 
-def test_join_clip_tracks_export_dpi_and_retains_both_contours(five_band_atlas, overview_example):
+@pytest.mark.parametrize("initial_dpi", [100, 200])
+def test_join_clip_tracks_export_dpi_and_retains_both_contours(five_band_atlas, overview_example, initial_dpi):
     import matplotlib.pyplot as plt
-    figure = plt.figure(figsize=(14,8), dpi=100)
+    figure = plt.figure(figsize=(14,8), dpi=initial_dpi)
     try:
         axes = overview_example.composed_axes(figure, five_band_atlas.geometry.overview)
         for ax,pole in zip(axes, ("north", "south")):
@@ -188,9 +189,11 @@ def test_join_clip_tracks_export_dpi_and_retains_both_contours(five_band_atlas, 
         assert len(figure.artists) == 2
         clips = [ax.lines[0].get_clip_box() for ax in axes]
         before = [clip.extents.copy() for clip in clips]
+        # GUI canvases may already have scaled the requested DPI for Retina.
+        scale = 160 / figure.dpi
         figure.set_dpi(160)
         for old,clip in zip(before,clips):
-            np.testing.assert_allclose(clip.extents, old * 1.6)
+            np.testing.assert_allclose(clip.extents, old * scale)
     finally:
         plt.close(figure)
 
