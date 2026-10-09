@@ -30,6 +30,39 @@ POINTS_PER_INCH = 72.0
 MM_PER_INCH = 25.4
 
 
+def test_ordered_semantic_fragments_preserve_interleaved_artists(tmp_path):
+    from wenu.svg_document import attach_semantic_svg_metadata
+    figure, ax = plt.subplots()
+    try:
+        artists = [ax.plot([0, 1], [i / 5, i / 5], zorder=i)[0]
+                   for i in range(5)]
+        paths = ["chart/atlas_index/north/atlas_charts/chart_14/boundary",
+                 "chart/atlas_index/north/veil", None,
+                 "chart/atlas_index/north/atlas_charts/chart_14/number",
+                 "chart/atlas_index/north/veil"]
+        for i, (artist, path) in enumerate(zip(artists, paths, strict=True)):
+            artist.set_gid(f"ordered-{i}")
+            if path is not None:
+                parts = tuple(path.split("/"))
+                attach_semantic_svg_metadata(artist, layer="test", zorder=i,
+                    paint_role=None, edit_policy=EditPolicy.STYLE,
+                    semantic_path=parts, lock_owner_path=parts[:-1],
+                    display_name=parts[-1].capitalize(), presentation_order=100-i,
+                    style_role="test", preserve_paint_order=True)
+        destination = ExportOptions().save(figure, tmp_path / "ordered.svg")
+    finally:
+        plt.close(figure)
+    root = ET.parse(destination).getroot()
+    ids = [e.get("id") for e in root.iter() if e.get("id")]
+    assert [identifier for identifier in ids if identifier.startswith("ordered-")] == [
+        f"ordered-{i}" for i in range(5)]
+    assert len(ids) == len(set(ids))
+    fragments = [e for e in root.iter() if e.get("data-wenu-semantic-path") ==
+                 "chart/atlas_index/north/atlas_charts/chart_14"
+                 and "wenu-semantic-group" in e.get("class", "")]
+    assert len(fragments) == 2
+
+
 def _representative_figure(*, figsize=(4.0, 3.0)):
     figure, ax = plt.subplots(figsize=figsize)
     boundary = Circle((0.5, 0.5), 0.42, transform=ax.transAxes)

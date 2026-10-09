@@ -4303,3 +4303,17 @@ is retained. No domain membership, coordinate realization or catalogue changes.
 The authored style example is versioned as `atlas_index_style_v2.toml`; input
 schema remains compatible version 1. Extend existing CLI tests for admission,
 zero/full opacity, ordering/clipping and real SVG identities/JSON preservation.
+
+### Atlas SVG identity extension (2026-10-09)
+
+The index owner declares chart-number-based identities, custom data attributes,
+face-scoped native catalogue paths and furniture names before export. The
+renderer retains original point IDs alongside collection marker instances;
+the index supplies HIP display identities without changing symbol rendering.
+`attach_semantic_svg_metadata` optionally carries safe non-reserved data
+attributes, marker identities and `preserve_paint_order`. The shared SVG owner
+wraps contiguous semantic runs as uniquely numbered fragments, including
+non-semantic sibling gaps, and labels marker uses or inline paths from those
+supplied identities. No geometry, style, clipping or artist ordering changes.
+Existing callers retain their current hierarchy mode. Atlas groups do not
+consolidate boundaries or numbers beneath a veil.

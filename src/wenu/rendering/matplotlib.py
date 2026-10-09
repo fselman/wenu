@@ -715,14 +715,15 @@ class MatplotlibRenderer:
         if draw_markers:
             if styles is None:
                 if np.any(finite):
-                    artists.append(
-                        render_points(
+                    point_artist = render_points(
                             self.ax,
                             points.x[finite],
                             points.y[finite],
                             **self._mask_style(style, finite),
                         )
-                    )
+                    if points.ids is not None:
+                        point_artist._wenu_svg_point_source_ids = tuple(points.ids[finite])
+                    artists.append(point_artist)
             else:
                 entity_styles = self._entity_styles(
                     styles,
@@ -765,14 +766,15 @@ class MatplotlibRenderer:
                     )
                 selected = finite & mask
                 if np.any(selected):
-                    artists.append(
-                        render_points(
+                    point_artist = render_points(
                             self.ax,
                             points.x[selected],
                             points.y[selected],
                             **self._mask_style(overlay_style, selected),
                         )
-                    )
+                    if points.ids is not None:
+                        point_artist._wenu_svg_point_source_ids = tuple(points.ids[selected])
+                    artists.append(point_artist)
 
         if draw_labels:
             entity_styles = self._entity_styles(styles, len(points))

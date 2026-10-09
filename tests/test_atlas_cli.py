@@ -390,4 +390,27 @@ def test_veil_example_exports_svg_without_modifying_design(request_data, tmp_pat
     svg = ElementTree.parse(tmp_path / "veiled_index_v2.svg")
     ids = {e.get("id") for e in svg.getroot().iter()}
     assert {"atlas-index-veil-north", "atlas-index-veil-south"} <= ids
+    elements = list(svg.getroot().iter())
+    all_ids = [e.get("id") for e in elements if e.get("id")]
+    assert len(all_ids) == len(set(all_ids))
+    by_id = {e.get("id"): e for e in elements}
+    for pole in ("north", "south"):
+        veil_position = elements.index(by_id[f"atlas-index-veil-{pole}"])
+        numbers = [e for e in elements if e.get("data-role") == "number_label"
+                   and e.get("id", "").endswith(pole)]
+        boundaries = [e for e in elements if e.get("data-role") in {"primary_boundary", "footprint"}
+                      and e.get("id", "").endswith(pole)]
+        assert numbers and boundaries
+        assert all(elements.index(e) > veil_position for e in numbers + boundaries)
+        for e in numbers + boundaries:
+            number = int(e.get("data-chart-number"))
+            assert f"chart_{number:02d}" in e.get("data-wenu-semantic-path")
+        stars = [e for e in elements if e.get("id", "").startswith("star-hip-")
+                 and (e.get("id").endswith(pole) or f"-{pole}-overlay-" in e.get("id"))]
+        assert stars and all(elements.index(e) < veil_position for e in stars)
+        assert all(e.get("data-wenu-display-name", "").startswith("HIP ") for e in stars)
+    assert {int(e.get("data-chart-number")) for e in elements
+            if e.get("data-role") == "number_label"} == set(range(1, 35))
+    assert "chart-14-number-label-north" in ids
+    assert "chart-14-number-label-south" in ids
     assert design.read_bytes() == before

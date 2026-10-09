@@ -59,6 +59,9 @@ def attach_semantic_svg_metadata(
     path_display_names=(),
     presentation_order,
     style_role,
+    preserve_paint_order=False,
+    data_attributes=None,
+    point_entities=(),
 ):
     """Attach renderer-neutral values for the later SVG export boundary."""
     semantic_path = tuple(semantic_path)
@@ -89,6 +92,15 @@ def attach_semantic_svg_metadata(
         metadata["presentation_order"] = int(presentation_order)
     if paint_role is not None:
         metadata["paint_role"] = paint_role.name
+    if preserve_paint_order:
+        metadata["preserve_paint_order"] = True
+    if data_attributes:
+        if any(not re.fullmatch(r"data-[a-z][a-z0-9-]*", key)
+               or key.startswith("data-wenu-") for key in data_attributes):
+            raise ValueError("Custom SVG attributes must use non-Wenu data names.")
+        metadata["data_attributes"] = dict(data_attributes)
+    if point_entities:
+        metadata["point_entities"] = tuple(point_entities)
     setattr(artist, _METADATA_ATTRIBUTE, metadata)
 
 
@@ -135,6 +147,9 @@ def annotate_semantic_svg(path, figure, *, provenance=None):
                     metadata["presentation_order"]
                 )
             paint_role = metadata.get("paint_role")
+            if metadata.get("preserve_paint_order"):
+                attributes["data-wenu-preserve-paint-order"] = "true"
+            attributes.update(metadata.get("data_attributes", {}))
             if paint_role is not None:
                 classes.append(f"wenu-paint-{paint_role.replace('_', '-')}")
                 attributes["class"] = " ".join(classes)
@@ -163,6 +178,34 @@ def annotate_semantic_svg(path, figure, *, provenance=None):
                     f"Could not annotate Wenu SVG group {svg_id!r}."
                 )
         path.write_text(serialized, encoding="utf-8")
+        if any(metadata.get("point_entities") for _, metadata in records):
+            tree = ET.parse(path)
+            root = tree.getroot()
+            by_id = {element.get("id"): element for element in root.iter()}
+            for svg_id, metadata in records:
+                entities = metadata.get("point_entities", ())
+                group = by_id.get(svg_id)
+                if not entities or group is None:
+                    continue
+                def marker_instances(element):
+                    if element.tag == f"{{{_SVG_NAMESPACE}}}defs":
+                        return
+                    if element.tag in {f"{{{_SVG_NAMESPACE}}}use", f"{{{_SVG_NAMESPACE}}}path"}:
+                        yield element
+                    else:
+                        for child in element:
+                            yield from marker_instances(child)
+                markers = tuple(marker_instances(group))
+                if len(markers) != len(entities):
+                    raise ValueError("SVG marker instances must match supplied point identities.")
+                for element, (identifier, display_name) in zip(markers, entities, strict=True):
+                    if identifier in by_id:
+                        raise ValueError(f"Duplicate SVG point id {identifier!r}.")
+                    element.set("id", identifier)
+                    element.set(f"{{{_INKSCAPE_NAMESPACE}}}label", display_name)
+                    element.set("data-wenu-display-name", display_name)
+                    by_id[identifier] = element
+            tree.write(path, encoding="utf-8", xml_declaration=True)
         _group_semantics(path)
     if provenance is not None:
         _write_provenance(path, provenance)
@@ -354,8 +397,9 @@ def _group_semantics(path):
     if not candidates_by_parent:
         return path
 
+    fragments = {}
     for parent, candidates in candidates_by_parent.items():
-        _group_semantic_siblings(parent, candidates)
+        _group_semantic_siblings(parent, candidates, fragments=fragments)
     _consolidate_designer_hierarchy(root)
     _flatten_semantic_text_artists(root)
     _promote_common_label_typography(root)
@@ -364,9 +408,12 @@ def _group_semantics(path):
     return path
 
 
-def _group_semantic_siblings(parent, candidates):
+def _group_semantic_siblings(parent, candidates, *, fragments=None):
     """Group one sibling set while preserving its supplied root paths."""
     original_children = list(parent)
+    preserve = any(element.get("data-wenu-preserve-paint-order") == "true"
+                   for element in candidates)
+    fragments = {} if fragments is None else fragments
     insertion_index = min(
         original_children.index(element) for element in candidates
     )
@@ -472,10 +519,14 @@ def _group_semantic_siblings(parent, candidates):
                 return supplied
         return _default_path_display_name(path_parts[-1])
 
-    def build_group(path_parts):
+    def build_group(path_parts, elements=None):
         token = "-".join(path_parts)
+        group_id = f"wenu-group-{token}"
+        if preserve:
+            fragments[token] = fragments.get(token, 0) + 1
+            group_id += f"--{fragments[token]:04d}"
         attributes = {
-            "id": f"wenu-group-{token}",
+            "id": group_id,
             "class": (
                 "wenu-semantic-group "
                 f"wenu-group-{path_parts[-1].replace('_', '-')}"
@@ -495,6 +546,9 @@ def _group_semantic_siblings(parent, candidates):
                 "data-wenu-locked": "true",
             })
         group = ET.Element(f"{{{_SVG_NAMESPACE}}}g", attributes)
+        if elements is not None:
+            append_runs(group, elements, len(path_parts))
+            return group
         child_paths = sorted(
             children_by_parent.get(path_parts, ()),
             key=lambda item: (descendant_order(item), item),
@@ -510,6 +564,32 @@ def _group_semantic_siblings(parent, candidates):
         for element in by_path.get(path_parts, ()):
             group.append(element)
         return group
+
+    def append_runs(target, elements, depth):
+        # Wrap only contiguous semantic siblings: no artist changes paint position.
+        run, previous = [], None
+        def flush():
+            if not run:
+                return
+            if previous is None:
+                target.extend(run)
+            else:
+                target.append(build_group(previous, list(run)))
+            run.clear()
+        for element in elements:
+            raw = element.get("data-wenu-semantic-path", "")
+            parts = tuple(raw.split("/")) if element in candidates else ()
+            key = parts[:depth + 1] if len(parts) > depth else None
+            if key != previous:
+                flush()
+                previous = key
+            run.append(element)
+        flush()
+
+    if preserve:
+        parent[:] = []
+        append_runs(parent, original_children, 0)
+        return
 
     for element in candidates:
         parent.remove(element)

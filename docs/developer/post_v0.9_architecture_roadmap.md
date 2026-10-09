@@ -4411,3 +4411,17 @@ pending plotter candidate with an optional compatible veil table and a version-2
 authored example. Keep the canonical renderer and joined clipping, raise index
 furniture above the veil, and require focused/full and PNG/PDF/SVG review.
 Plotter acceptance/merge remain pending; no page production is added.
+
+### Atlas semantic SVG review amendment (2026-10-09)
+
+Exact veil candidate `653e4c51` passed 454 focused and all 3,311 Mac tests;
+installation, PNG/PDF/SVG, unchanged JSON, diff and clean synchronized branch
+checks passed. Fernando then authorized meaningful SVG hierarchy and atlas
+chart-number identities, explicitly retaining borders and numbers above the
+veil. Extend the same pending PR, using the existing semantic renderer/export
+ownership. Face-scope catalogue IDs, name furniture and guides, carry HIP
+marker identity, and use ordered logical-group fragments where consolidation
+would alter paint order. Extend the existing atlas and SVG test owners for
+unique IDs, all chart numbers, hierarchy and interleaving. The coordinate guide
+was reviewed and remains current: no coordinate operation or provenance changes.
+Acceptance, merge and chart/report production remain separate decisions.

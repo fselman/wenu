@@ -515,3 +515,23 @@ primary borders, footprint overlays, guides and sheet numbers. It follows the
 joined-lens clipping and export DPI, leaving outer paper and explanatory text
 unchanged. It has no effect on geometry-only indices, disabled/zero-opacity
 views or the source JSON. Use a fresh output such as `atlas_index_v2`.
+
+### Atlas SVG hierarchy
+
+The index declares semantic identities before export. Each hemisphere contains
+celestial content (existing catalogue layers, constellations and isophotes), a
+veil, atlas charts keyed by JSON chart number, guides and its heading. Global
+furniture names the title, subtitle and legends. For example,
+`chart-14-primary-boundary-north`, `chart-14-footprint-south` and
+`chart-14-number-label-north` carry `data-chart-number` and `data-role`.
+Star marker instances use catalogue HIP identifiers, such as
+`star-hip-24436-south`; repeated decorative marker overlays have distinct IDs.
+Constellation and morphology identities retain their canonical source keys
+with a hemisphere suffix. Every SVG ID is unique across the paired index.
+
+Editor groups expose the same logical semantic paths and descriptive labels.
+A logical chart may occupy several ordered fragments: combining its border,
+footprint and number into one physical group would change drawing order.
+Fragments have unique IDs and share `data-wenu-semantic-path`; grouping never
+moves an artist across the veil. Numbers and boundaries remain above it.
+Technical marker definitions and clip paths retain backend-owned identifiers.
