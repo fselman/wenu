@@ -415,4 +415,3 @@ def plot_overview(design_path, output_prefix, *, footprints=False, joined=False,
         return tuple(destinations)
     finally:
         plt.close(figure)
-
