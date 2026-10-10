@@ -676,3 +676,21 @@ and observer coordinates. Existing bundles are never overwritten; partial
 publication cannot be admitted without its final manifest. This API is the data
 layer milestone. Snapshot flags for the installed plotter, the installed atlas
 producer and parallel workers remain next steps.
+
+
+### Required complete-content coverage
+
+The tested native snapshot API is the accepted persistence foundation. The
+required final atlas bundle includes all object types Wenu currently supports:
+its deep-sky catalogues as well as the stellar/isophote content, official
+constellation boundaries, and supported major Solar-System bodies including
+the Moon. This expanded coverage is not yet implemented in v1. Existing v1
+bundles retain their declared limits and must not be described as comprehensive.
+
+Time-dependent Solar-System inputs require an explicit date/time and the
+appropriate observation and verified ephemeris context; they cannot become
+permanent positions in the static stellar background. Their component must
+reuse the saved celestial catalogues when time changes. Minor bodies and
+artificial satellites remain excluded by default; future support may admit
+explicit subsets. Index appearance and chart subsets must never determine
+which source records are saved.
