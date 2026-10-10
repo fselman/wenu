@@ -61,3 +61,23 @@ def test_make_curves_routes_native_geometry_through_coordinate_service(
     assert curves.names.tolist() == ["test_grid_curve"]
     assert curves.closed.tolist() == [True]
     assert curves.metadata["styles"] == ({"linewidth": 1.5},)
+
+
+def test_fixed_native_reference_grids_are_local_and_reject_observer_choices():
+    import pytest
+    from wenu.sky.coordinate_grids import EquatorialGrid, EclipticGrid, GalacticGrid, AltAzGrid
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    grids = (EquatorialGrid(None, frame="icrs", equinox="J2000", include_equator=True, samples=13),
+             EclipticGrid(None, equinox="J2000", include_ecliptic=True, samples=13),
+             GalacticGrid(None, include_plane=True, samples=13))
+    for grid in grids:
+        geometry = grid.realize(context, None)
+        assert geometry.coordinate_spec.frame == "icrs"
+        assert geometry.metadata["output_coordinate_system"] == "icrs"
+        assert "reference" in geometry.components
+        assert not hasattr(grid, "_native_realization")
+    with pytest.raises(ValueError, match="explicit fixed equinox"):
+        EclipticGrid(None).realize(context, None)
+    with pytest.raises(ValueError, match="observer-local"):
+        AltAzGrid(None).realize(context, None)

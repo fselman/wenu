@@ -177,5 +177,30 @@ class PlanetaryNebulae(NonStellar):
                     dtype=object,
                 )
         return metadata
+
+    def realize(self, context, observer, **options):
+        from wenu.sky.realization import LayerRealizationContext
+        from wenu.coordinates import icrs_catalogue_spec
+        if not isinstance(context, LayerRealizationContext) or not context.is_native_icrs:
+            return super().realize(context, observer, **options)
+        selected = options.pop("selected", None)
+        table = self._geometry_table(self.selected if selected is None else selected)
+        minimum = options.pop("minimum_size_arcmin", None)
+        if options:
+            raise TypeError(f"Unsupported native nebula options: {sorted(options)}")
+        if minimum is not None:
+            minimum = float(minimum)
+            if not np.isfinite(minimum) or minimum < 0:
+                raise ValueError("minimum_size_arcmin must be finite and non-negative.")
+            sizes = np.fmax(np.asarray(table["major_axis_arcmin"], dtype=float),
+                            np.asarray(table["minor_axis_arcmin"], dtype=float))
+            table = table[np.isfinite(sizes) & (sizes >= minimum)]
+        identifiers = np.asarray(table["identifier"], dtype=object)
+        metadata = self._point_metadata(table)
+        metadata["coordinate_system"] = "icrs"
+        return SphericalPoints(lon_deg=np.asarray(table["ra_deg"], dtype=float),
+            lat_deg=np.asarray(table["dec_deg"], dtype=float),
+            coordinate_spec=icrs_catalogue_spec("HASH planetary nebulae"),
+            ids=identifiers, names=identifiers, labels=identifiers, metadata=metadata)
 from wenu.coordinates import PositionStatus
 from wenu.coordinates import observer_altaz_spec

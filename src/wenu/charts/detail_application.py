@@ -327,6 +327,7 @@ def apply_resolved_detail(
         selection,
         catalogue=catalogue,
         constellations=getattr(detail, "stellar_label_constellations", ()),
+        research=getattr(sky, "stellar_research", None),
     )
     if resolved_star_labels.labels:
         stars = getattr(sky, "stars", None)
@@ -545,8 +546,11 @@ def composition_layer_options(
             magnitude_limit=composition.detail.star_magnitude_limit,
             include_ids=frozenset(int(value) for value in composition.detail.content_selection.stars or ()) | composition.detail.extra_star_ids | resolve_star_labels(
                 composition.detail.star_labels,
-                catalogue=load_effective_star_designations(sky.stars.designation_catalogue),
+                catalogue=(sky.stars.designation_catalogue
+                           if sky.stars.designation_catalogue.curation_sha256 is not None
+                           else load_effective_star_designations(sky.stars.designation_catalogue)),
                 constellations=composition.detail.stellar_label_constellations,
+                research=getattr(sky, "stellar_research", None),
             ).hip_ids,
             include_constellation_vertices=(composition.detail.constellation_star_mode != "none"),
             constellations=composition.detail.content_selection.star_constellations,

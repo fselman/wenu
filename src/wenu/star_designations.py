@@ -164,7 +164,7 @@ def preferred_designation(record, kind, constellations=(), *, preferred=None):
     )
 
 
-def resolve_star_labels(selection, *, catalogue=None, constellations=()):
+def resolve_star_labels(selection, *, catalogue=None, constellations=(), research=None):
     """Resolve exact identifiers before magnitude selection, deduplicating HIP.
 
     Names are explicitly requested exact Wikidata labels/aliases or curated names;
@@ -177,9 +177,11 @@ def resolve_star_labels(selection, *, catalogue=None, constellations=()):
     catalogue = (
         packaged_star_designations() if catalogue is None else catalogue
     )
-    from wenu.stellar_research import load_stellar_research
+    from wenu.stellar_research import StellarResearch, load_stellar_research
 
-    research = load_stellar_research()
+    research = load_stellar_research() if research is None else research
+    if not isinstance(research, StellarResearch):
+        raise TypeError("research must be a StellarResearch or None")
     contexts = set(constellations)
     for selector in (*selection.names, *selection.bayer):
         contexts.add(parse_star_selector(selector)[0])

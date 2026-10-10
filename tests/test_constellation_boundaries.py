@@ -190,3 +190,24 @@ def test_domain_layer_contains_no_projection_or_rendering_api():
         "horizon_altitude",
     ):
         assert not hasattr(boundaries, name)
+
+
+def test_native_boundary_realization_preserves_fk4_sources_and_matches_astropy():
+    from astropy.coordinates import SkyCoord, FK4
+    import astropy.units as u
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    boundary = ConstellationBoundaries(None)
+    before = {key: value.copy() for key, value in boundary.vertices.items()}
+    geometry = boundary.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None,
+                                selected=("Sco", "Ser1", "Ser2"))
+    assert geometry.coordinate_spec.frame == "icrs"
+    assert geometry.metadata["source_equinox"] == "B1875.0"
+    for i, key in enumerate(geometry.ids):
+        sampled = boundary.sampled_vertices[key]
+        expected = SkyCoord(ra=sampled[:, 0] * u.hourangle,
+                            dec=sampled[:, 1] * u.deg,
+                            frame=FK4(equinox=Time("B1875"))).icrs
+        np.testing.assert_allclose(geometry.lon_deg[i], expected.ra.deg, atol=1e-11, rtol=0)
+        np.testing.assert_allclose(geometry.lat_deg[i], expected.dec.deg, atol=1e-11, rtol=0)
+    for key, value in before.items():
+        np.testing.assert_array_equal(boundary.vertices[key], value)
