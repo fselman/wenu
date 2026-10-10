@@ -1,6 +1,8 @@
 """Atlas request-file admission, installed route and JSON publication."""
 
 from copy import deepcopy
+from dataclasses import FrozenInstanceError, replace
+import hashlib
 import os
 from pathlib import Path
 import subprocess
@@ -10,6 +12,7 @@ import pytest
 
 from wenu.atlas_design import AtlasBandTiling, AtlasDesignRequest
 from wenu.cli import atlas as cli
+from wenu.charts.atlas_publication import AtlasPublicationBatchRequest
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,6 +22,92 @@ EXAMPLE = ROOT / "examples/atlas_design_request_v1.toml"
 @pytest.fixture
 def request_data():
     return cli.tomllib.loads(EXAMPLE.read_text(encoding="utf-8"))
+
+
+def _batch_input(request_data):
+    atlas = AtlasDesignRequest.from_dict(request_data).resolve()
+    raw = atlas.to_json().encode("utf-8")
+    return raw, dict(schema_version=1,
+                    document_kind="wenu-atlas-publication-batch-request",
+                    publication_id="book", revision=1,
+                    design_id=atlas.geometry.design_id,
+                    design_revision=atlas.geometry.revision,
+                    design_sha256=hashlib.sha256(raw).hexdigest(),
+                    charts="S,20..21", jobs=2)
+
+
+def test_publication_batch_binds_exact_bytes_and_retains_effective_overrides(request_data, monkeypatch):
+    from wenu import Observer, CelestialSphere, MatplotlibRenderer
+    from wenu.objects.stars import Stars
+    import socket
+    raw, data = _batch_input(request_data)
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Batch planning must not load scientific or render resources")
+    for owner in (Observer, CelestialSphere, MatplotlibRenderer, Stars):
+        monkeypatch.setattr(owner, "__init__", forbidden)
+    monkeypatch.setattr(socket, "socket", forbidden)
+    request = AtlasPublicationBatchRequest.from_dict(data)
+    plan = request.resolve(raw, charts="34,3..6,20..21", jobs=100)
+    assert plan.chart_numbers == (3, 4, 5, 6, 20, 21, 34)
+    assert plan.worker_count == 7
+    assert plan.charts == "34,3..6,20..21" and plan.jobs == 100
+    assert plan.request is request and request.charts == "S,20..21"
+    assert request.resolve(raw).chart_numbers == (*range(1, 14), 20, 21)
+    assert request.resolve(raw, charts="E", jobs=1).worker_count == 1
+    assert plan.atlas.to_json().encode() == raw
+    with pytest.raises(FrozenInstanceError):
+        plan.jobs = 1
+    with pytest.raises(ValueError, match="disagree"):
+        replace(plan, sheets=plan.sheets[:-1])
+    missing_jobs = dict(data)
+    del missing_jobs["jobs"]
+    assert AtlasPublicationBatchRequest.from_dict(missing_jobs).jobs == 2
+
+
+def test_publication_batch_rejects_closed_input_faults(request_data):
+    raw, original = _batch_input(request_data)
+    faults = dict(schema_version=True, document_kind="wenu-atlas-publication-request",
+                  publication_id=" ", revision=0, design_revision=True,
+                  design_id=" other ", design_sha256="A" * 64, charts=None,
+                  jobs=True, surprise="ignored")
+    for key, value in faults.items():
+        data = dict(original)
+        assert key not in data or data[key] != value or type(data[key]) is not type(value)
+        data[key] = value
+        with pytest.raises(ValueError):
+            AtlasPublicationBatchRequest.from_dict(data)
+    for key in original.keys() - {"jobs"}:
+        data = dict(original)
+        del data[key]
+        with pytest.raises(ValueError):
+            AtlasPublicationBatchRequest.from_dict(data)
+    request = AtlasPublicationBatchRequest.from_dict(original)
+    for charts, jobs in (("35", 1), ("N,", 1), ("", 1), (True, 1),
+                         ("all", 0), ("all", True), ("all", "2")):
+        with pytest.raises(ValueError):
+            request.resolve(raw, charts=charts, jobs=jobs)
+    changed = raw + b"\n"
+    assert hashlib.sha256(changed).hexdigest() != original["design_sha256"]
+    with pytest.raises(ValueError, match="bytes"):
+        request.resolve(changed)
+    with pytest.raises(ValueError, match="identity"):
+        replace(request, design_id="another").resolve(raw)
+    with pytest.raises(TypeError):
+        request.resolve(raw.decode())
+
+
+def test_publication_batch_cannot_admit_corrupted_bound_design(request_data):
+    raw, data = _batch_input(request_data)
+    # A correct checksum does not replace the existing semantic JSON validator.
+    import json
+    content = json.loads(raw)
+    content["geometry"]["coordinate_frame"] = "fk5"
+    corrupted = json.dumps(content).encode()
+    assert corrupted != raw
+    data["design_sha256"] = hashlib.sha256(corrupted).hexdigest()
+    with pytest.raises(ValueError):
+        AtlasPublicationBatchRequest.from_dict(data).resolve(corrupted)
 
 
 def test_request_units_and_cli_reproduce_the_accepted_layout(request_data, tmp_path, monkeypatch, capsys):

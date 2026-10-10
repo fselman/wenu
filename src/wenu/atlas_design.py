@@ -11,6 +11,7 @@ from dataclasses import asdict, dataclass
 import json
 import hashlib
 import math
+import re
 from numbers import Real
 from pathlib import Path
 
@@ -898,6 +899,58 @@ def design_five_band_atlas(design_id, revision, page, overview, *,
     bands.append(AtlasPrimaryBand(c, 90, 0, (north,)))
     geometry = AtlasGeometrySpecimen(design_id, revision, page, overview, tuple(sheets))
     return AtlasBandTiling(geometry, tuple(bands), overlap, seed, RECTANGULAR_TILING_METHOD)
+
+
+def select_atlas_sheets(atlas, selector):
+    """Resolve a bounded union of numbers, inclusive ranges and S/N/E groups.
+
+    Selection retains persisted numbering and uses centre declination, never
+    footprint intersection. It neither loads catalogues nor reruns placement.
+    """
+    if not isinstance(atlas, AtlasBandTiling):
+        raise TypeError("atlas must be an AtlasBandTiling.")
+    if not isinstance(selector, str) or not selector.strip():
+        raise ValueError("Chart selector must be a nonempty string.")
+    sheets = atlas.geometry.sheets
+    available = {sheet.number for sheet in sheets}
+    selected = set()
+    max_number = max(available)
+
+    def number(token):
+        # Reject huge numeric endpoints before int conversion/range allocation.
+        digits = token.lstrip("0") or "0"
+        if len(digits) > len(str(max_number)):
+            raise ValueError("Chart number is absent from the design.")
+        value = int(digits)
+        if value not in available:
+            raise ValueError(f"Chart {value} is absent from the design.")
+        return value
+
+    for raw in selector.split(","):
+        token = raw.strip()
+        group = token.upper()
+        if group == "ALL":
+            selected.update(available)
+        elif group in ("S", "N", "E"):
+            selected.update(sheet.number for sheet in sheets if (
+                (group == "S" and sheet.center_dec_deg < 0)
+                or (group == "N" and sheet.center_dec_deg > 0)
+                or (group == "E" and sheet.center_dec_deg == 0)))
+        elif re.fullmatch(r"[0-9]+", token):
+            selected.add(number(token))
+        elif re.fullmatch(r"[0-9]+\.\.[0-9]+", token):
+            start, stop = (number(part) for part in token.split(".."))
+            if start > stop:
+                raise ValueError("Chart ranges must be ascending.")
+            members = {value for value in available if start <= value <= stop}
+            if len(members) != stop - start + 1:
+                raise ValueError("Chart range contains numbers absent from the design.")
+            selected.update(members)
+        else:
+            raise ValueError(f"Invalid chart selector token: {token!r}.")
+    if not selected:
+        raise ValueError("Chart selector selects no sheets.")
+    return tuple(sheet for sheet in sheets if sheet.number in selected)
 
 
 @dataclass(frozen=True)

@@ -599,3 +599,42 @@ is exposed. Failures identify the chart; report overflow cannot silently remove
 objects. New versioned destinations preserve earlier reviews. Exact schema
 keys, installed syntax and runtime behavior remain candidates, not implemented
 features.
+
+
+### Planning a selected publication batch (Python API)
+
+The first publication runtime slice plans sheets without drawing them. Selection
+accepts `all`, comma-separated numbers, inclusive ranges such as
+`3..6,20..21`, and unions with case-insensitive `S`, `N`, `E`.
+Groups follow sheet centre declination; overlapping footprints do not change
+group membership. Numbers retain atlas order and are never renumbered.
+
+For a validated design, use the advanced API:
+
+```python
+from pathlib import Path
+import hashlib
+from wenu.atlas_design import AtlasBandTiling
+from wenu.charts.atlas_publication import AtlasPublicationBatchRequest
+
+raw = Path("atlas_design_v1.json").read_bytes()
+atlas = AtlasBandTiling.from_json(raw.decode("utf-8"))
+request = AtlasPublicationBatchRequest.from_dict({
+    "schema_version": 1,
+    "document_kind": "wenu-atlas-publication-batch-request",
+    "publication_id": "book-atlas", "revision": 1,
+    "design_id": atlas.geometry.design_id,
+    "design_revision": atlas.geometry.revision,
+    "design_sha256": hashlib.sha256(raw).hexdigest(),
+    "charts": "3..6,20..21", "jobs": 2,
+})
+plan = request.resolve(raw)
+print(plan.chart_numbers, plan.worker_count)
+```
+
+An independently authored request must retain the expected hash and identity;
+recomputing its hash from a changed design intentionally creates a new binding.
+Optional resolution overrides `charts=` and `jobs=` are retained in the plan.
+Worker count is capped at the number of selected sheets. Planning constructs no
+celestial sphere and starts no workers. The installed atlas producer, persisted
+full-sphere data and parallel chart rendering remain upcoming milestones.

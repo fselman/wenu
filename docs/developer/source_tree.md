@@ -3318,3 +3318,15 @@ Extend `cli/atlas.py` with `plot_main`, install `wenu_plot_atlas`, and add autho
 presentation admission, selected native layers, unchanged JSON/numbers, physical
 exports and batch faults; point existing `test_atlas_design.py` index oracles at
 the relocated owner. No test file, dependency or top-level export is added.
+
+
+## Publication batch planning ownership (2026-10-10)
+
+Admit `charts/atlas_publication.py` for immutable publication invocation admission
+and design binding. The closest `atlas_design.py` remains the persisted geometry
+and sheet-selection owner; `charts/atlas_index.py` owns index appearance/export,
+and `request_generation.py` owns observer chart requests. None should absorb
+publication lifecycle. The new owner depends on atlas geometry only and adds no
+package, dependency, top-level export, installed command or scientific route.
+Extend existing `test_atlas_design.py` for selectors and `test_atlas_cli.py` for
+publication admission/isolation; add no milestone-specific test file.

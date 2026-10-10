@@ -2408,3 +2408,13 @@ It reads/revalidates JSON without placement, changing numbering or rewriting it.
 Existing polar geometry, native ICRS realization, chart composition, renderer and
 ExportOptions remain authoritative. No observer, ephemeris, arbitrary epoch,
 new transform, chart/report page producer or catalogue curation is introduced.
+
+
+### Publication planning seam (2026-10-10)
+
+The runtime now resolves atlas-order sheet selectors and an immutable publication
+batch request bound to exact design bytes. `charts/atlas_publication.py` depends
+on canonical atlas geometry validation, without observer, sky or rendering
+resources. This slice supplies input admission and a worker budget only;
+persisted celestial content, parallel production, reports and the installed
+third command remain future work under the accepted publication contract.

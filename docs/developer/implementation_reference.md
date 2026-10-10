@@ -4338,3 +4338,31 @@ This preserves joined-lens clipping that Matplotlib SVG otherwise omits when
 Joined complete contours are axis-owned and unclipped. Completely hidden
 footprints are omitted, including the formerly empty chart-34 south entry.
 No catalogue, projected coordinates, JSON numbering or tiling changes occur.
+
+
+## Design-bound publication batch planning (2026-10-10)
+
+`wenu.atlas_design.select_atlas_sheets(atlas, selector)` accepts a nonempty
+comma-separated union of positive persisted sheet numbers, ascending inclusive
+ranges (`3..6,20..21`), `all`, and case-insensitive `S/N/E` groups. Groups use
+centre declination (<0, >0, ==0); they do not use footprint intersections.
+Duplicates collapse in persisted atlas order. Empty tokens, missing numbers,
+descending ranges and unknown tokens fail; huge endpoints allocate no ranges.
+
+`wenu.charts.atlas_publication.AtlasPublicationBatchRequest.from_dict` admits
+only `schema_version = 1`,
+`document_kind = "wenu-atlas-publication-batch-request"`, `publication_id`,
+`revision`, `design_id`, `design_revision`, `design_sha256`, `charts`, and optional
+`jobs` (default 2). Identities are nonempty trimmed strings; revisions/jobs are
+positive integers, excluding booleans; SHA-256 is lowercase hexadecimal.
+This is a narrow planning protocol, distinct from the future full publication
+and snapshot schemas. There is no installed producer or TOML adapter yet.
+
+`request.resolve(design_bytes, charts=None, jobs=None)` verifies the original
+bytes' SHA-256, invokes canonical atlas JSON validation, checks identity/revision,
+and returns an immutable `AtlasPublicationBatchPlan` with effective selectors,
+requested jobs, selected sheets, `chart_numbers`, and `worker_count` capped at
+the selected sheet count. Only this resolution route verifies original bytes;
+direct plan construction checks geometry/selection consistency. The caller
+reads bytes once. Planning loads no sky, observer, renderer or network resource
+and neither rewrites the design nor executes workers.
