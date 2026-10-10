@@ -4786,11 +4786,13 @@ Fernando accepted the snapshot infrastructure at
 containing 118218 source stellar records and magnitude coverage 11.0. Diff,
 upstream and clean-tree checks passed. Acceptance is not merge authorization.
 
-He also requires the atlas persistence contract to include every object type
-currently supported by Wenu, except minor bodies and artificial satellites.
+He requires the atlas persistence contract to include every fixed celestial
+object type currently supported by Wenu. His subsequent clarification excludes
+all moving bodies and artificial satellites from the atlas for the moment, superseding
+the earlier proposal to include major Solar-System bodies.
 The existing native-only implementation is an accepted foundation, not completion
-of that content requirement. Its exclusions of DSO and moving bodies describe
-current runtime limitations, not the desired final atlas scope.
+of that content requirement. Its exclusion of DSO is a current runtime
+limitation; the moving-body exclusion is now part of the agreed atlas scope.
 
 The next coverage milestone must retain the full admitted source records for
 `nonstellar` (including Messier), galaxies, open clusters, globular clusters,
@@ -4803,28 +4805,18 @@ service for realization rather than relabeling them ICRS. Extend original
 native layer owners where their current realization is observer-only; do not
 put new scientific realization in snapshot transport facades.
 
-Include supported major Solar-System identities and their existing capabilities,
-including the Moon. Keep their time-dependent input component distinct from the
-static celestial catalogue component within the versioned persistence contract.
-Retain explicit evaluation time/scale, observation context where required,
-verified ephemeris resource identity/coverage and original provider semantics;
-do not invent a fixed native position or silently select the current time.
-Persist reusable data and resource bindings, never live observers/providers.
-Reusing the catalogue component must not require another whole-sphere build
-when the requested moving-body time changes. Any saved evaluated state is
-valid only for its declared context. The initial static-native rendering route
-remains observer-free; supporting additional object types does not authorize
-changing its stellar epoch or introducing an apparent/native mixture.
-
-Minor bodies and artificial satellites are excluded from default persistence.
-A later separately admitted extension may include explicitly selected, stable-ID
-subsets with the existing source, validity and provenance contracts. The Moon
-is included; the satellite exclusion concerns the artificial-satellite feature.
+Do not add Solar-System positions, ephemeris bindings, observation times or
+moving-body components to this atlas persistence milestone. Planets, the Moon,
+minor bodies and artificial satellites remain outside atlas preparation and production
+for the moment. Their support elsewhere in Wenu is unaffected. The atlas stays
+observer-independent and retains the declared native stellar epoch; adding
+fixed catalogue layers must not introduce an apparent/native mixture.
+Any future moving-object atlas extension requires a separate explicit decision.
 Never silently drop requested content, infer a subset from index appearance,
 or reload original catalogues on resume. Version expanded schemas explicitly
 and keep existing v1 bundles readable with truthful limited coverage.
 
-Complete this coverage and its native/provider admission before treating the
+Complete this fixed-content coverage and native admission before treating the
 snapshot as comprehensive or closing the atlas content milestone. Installed
 handoff, workers and reports remain separate responsibilities. Merge and branch
 cleanup require Fernando's separate explicit request.
