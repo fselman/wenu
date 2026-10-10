@@ -367,3 +367,13 @@ flowchart TD
 No edge returns to placement or changes JSON. Catalogue realization uses the
 accepted observer-free static ICRS path; figure assembly uses the established
 equatorial join and DPI-aware bisector. No coordinate authority is added.
+
+
+### Publication planning ownership (2026-10-10)
+
+The implemented dependency is `charts/atlas_publication.py` →
+`atlas_design.py`: exact-byte design binding and effective invocation admission
+use canonical geometry validation and atlas-order selectors. The resulting
+immutable plan has no edge to sky construction or rendering yet. Future snapshot,
+worker and spread assembly edges remain governed by the publication contract;
+existing coordinate-system diagrams need no new astronomical authority.

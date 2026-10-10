@@ -4711,3 +4711,27 @@ Record measured gains and limits; promise no CPU-count speedup or universal
 performance. Focused/full regression and Mac visual/print review are required
 for the future runtime milestone. This documentation-only contract remains
 reviewable independently and does not claim implemented parallel production.
+
+
+### Publication batch planning candidate (2026-10-10)
+
+PR #222 was accepted after 276 Mac checks and merged as `5002a856`; its branch
+was deleted and main was clean. The next bounded runtime slice implements
+atlas-order selectors and a closed immutable batch-planning request bound to the
+exact persisted design bytes. Full publication/scene TOML admission is deferred
+until snapshot and report schemas have concrete owners; this avoids freezing
+those schemas prematurely. No installed producer is claimed.
+
+Module admission: `charts/atlas_publication.py` owns publication invocation
+binding, separate from geometry/index/observer requests (see source_tree.md).
+Existing geometry and atlas CLI test owners cover group/range unions, invalid
+and huge endpoints, noncontiguous numbering, effective overrides, immutable
+plans, canonical corrupted-design rejection, exact SHA binding, and prohibited
+sky/observer/renderer/network construction. Coordinate-system guide review finds
+no coordinate transformation or scientific authority change in this slice.
+
+Next milestones remain full-sphere typed snapshot admission/persistence and
+provenance; bounded process workers through canonical rendering; reports and
+spread assembly; atomic publication, reuse and cancellation; measured cold/warm
+serial/parallel performance and Mac print review. A worker budget is not evidence
+of implemented parallel production. Do not merge this candidate before review.

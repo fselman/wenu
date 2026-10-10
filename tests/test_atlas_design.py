@@ -17,6 +17,7 @@ from wenu.atlas_design import (
     design_five_band_atlas,
     RECTANGULAR_TILING_METHOD,
     _sector_linear_maximum,
+    select_atlas_sheets,
 )
 
 
@@ -27,6 +28,44 @@ def five_band_atlas(page):
         field_width_deg=50, overlap_deg=0.25, seed_ra_deg=82.5,
         equatorial_half_height_deg=17, middle_boundary_dec_deg=45,
     )
+
+
+@pytest.mark.parametrize("selector,expected", [
+    ("3..6,20..21", (3, 4, 5, 6, 20, 21)),
+    (" S , e , n ", tuple(range(1, 35))),
+    ("s,20..21,34,3,3", (*range(1, 14), 20, 21, 34)),
+    ("E", tuple(range(14, 22))),
+    ("N", tuple(range(22, 35))),
+    ("all,2", tuple(range(1, 35))),
+    ("034,01", (1, 34)),
+])
+def test_sheet_selector_preserves_numbering_groups_and_order(five_band_atlas, selector, expected):
+    original = five_band_atlas.to_json()
+    selected = select_atlas_sheets(five_band_atlas, selector)
+    assert tuple(s.number for s in selected) == expected
+    assert all(s is five_band_atlas.geometry.sheets[s.number - 1] for s in selected)
+    assert five_band_atlas.to_json() == original
+
+
+@pytest.mark.parametrize("selector", [
+    "", " ", ",", "1,", ",1", "1,,2", "0", "35", "0..3", "1..35",
+    "6..3", "1...3", "1 .. 3", "-1", "+2", "1.0", "1e1", "South",
+    "\u0661", "1.." + "9" * 5000, None, 3, True,
+])
+def test_sheet_selector_rejects_invalid_and_unbounded_requests(five_band_atlas, selector):
+    with pytest.raises(ValueError):
+        select_atlas_sheets(five_band_atlas, selector)
+
+
+def test_sheet_groups_follow_loaded_geometry_instead_of_fixed_chart_numbers(five_band_atlas):
+    # Change only persisted editorial numbering; scientific geometry is retained.
+    geometry = replace(five_band_atlas.geometry, sheets=tuple(
+        replace(s, number=s.number * 2) for s in five_band_atlas.geometry.sheets))
+    atlas = replace(five_band_atlas, geometry=geometry)
+    assert tuple(s.number for s in select_atlas_sheets(atlas, "S")) == tuple(range(2, 28, 2))
+    with pytest.raises(ValueError, match="absent"):
+        select_atlas_sheets(atlas, "2..4")
+    assert tuple(s.number for s in select_atlas_sheets(atlas, "2,4")) == (2, 4)
 
 
 @pytest.mark.parametrize("ra0,ra1,lo,hi,target_ra,target_dec", [
