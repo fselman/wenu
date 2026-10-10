@@ -543,6 +543,8 @@ def test_chart_presentation_is_closed_and_rejects_nonstatic_inputs():
     assert AtlasChartPresentation.from_dict(data).formats == ('png', 'pdf', 'svg')
     for change in ({'observer': 'La Ligua'}, {'dpi': True}, {'dpi': 0},
                    {'star_magnitude_limit': 12}, {'layers': ['satellites']},
+                   {'star_size_scale': 0}, {'star_size_scale': True},
+                   {'star_size_scale': float('inf')}, {'star_size_scale': 1e200},
                    {'layers': 'stars'}, {'formats': ['png']},
                    {'formats': ['pdf', 'pdf']}, {'schema_version': True},
                    {'report_label_scale': 0}, {'report_label_scale': float('nan')},

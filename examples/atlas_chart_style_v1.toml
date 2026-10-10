@@ -3,6 +3,7 @@ document_kind = "wenu-atlas-chart-presentation"
 style = "atlas"
 dpi = 150
 star_magnitude_limit = 6.0
+star_size_scale = 1.5
 report_label_scale = 3.0
 report_label_family = "sans-serif"
 report_label_weight = "normal"

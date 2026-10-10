@@ -159,6 +159,7 @@ class AtlasChartPresentation:
     style: str = "atlas"
     dpi: int = 150
     star_magnitude_limit: float = 6.0
+    star_size_scale: float = 1.0
     layers: tuple = ("stars", "constellation_lines", "constellation_labels",
         "constellation_boundaries", "milky_way", "magellanic_clouds",
         "nonstellar", "galaxies", "open_clusters", "globular_clusters",
@@ -188,10 +189,12 @@ class AtlasChartPresentation:
         limit = self.star_magnitude_limit
         if isinstance(limit, bool) or not isinstance(limit, (int, float)) or not math.isfinite(limit) or not -2 <= limit <= 11:
             raise ValueError("star_magnitude_limit must be finite between -2 and 11.")
-        for name in ("report_label_scale", "report_separator_width", "report_separator_gap_mm"):
+        for name in ("star_size_scale", "report_label_scale", "report_separator_width", "report_separator_gap_mm"):
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
                 raise ValueError(f"{name} must be finite and positive.")
+        if not math.isfinite(self.star_size_scale * self.star_size_scale):
+            raise ValueError("star_size_scale squared must be finite.")
         _identity(self.report_label_family, "report_label_family")
         if not isinstance(self.report_label_weight, str) or self.report_label_weight not in {"normal", "bold", "light", "medium", "semibold", "heavy", "black"}:
             raise ValueError("Invalid report_label_weight.")
@@ -402,6 +405,7 @@ def _render_atlas_sheet(task, sky=None):
     """One isolated figure, canonical composition/export, all requested formats."""
     import matplotlib.pyplot as plt
     from .composition import compose_chart
+    from .style_overrides import ChartStyleOverrides
     from .detail import DetailOverrides
     from .export_workflow import export_composed_chart
     from .modes import PrintMode
@@ -412,6 +416,7 @@ def _render_atlas_sheet(task, sky=None):
     sky = _WORKER_SKY if sky is None else sky
     chart = AtlasSheetChart(sheet, page)
     composition = compose_chart(chart, style=presentation.style,
+        style_overrides=ChartStyleOverrides(star_size_scale=presentation.star_size_scale),
         mode=PrintMode(width_inches=page.width_mm / 25.4,
             height_inches=page.height_mm / 25.4, dpi=presentation.dpi),
         detail_overrides=DetailOverrides(

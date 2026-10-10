@@ -905,3 +905,12 @@ chart_number_box_borderpad = 0.0
 Location admits upper/lower left/right. Zero borderpad makes the box flush
 with both selected frame edges; padding controls space inside the box.
 Both values are nonnegative multiples of its font size; alpha is in [0, 1].
+
+Atlas stellar diameter control: the chart presentation accepts optional
+`star_size_scale` (finite positive multiplier, default `1.0`). The example
+`examples/atlas_chart_style_v1.toml` now uses `1.5`: every stellar marker is
+50% larger in diameter (2.25 times its area), including bright-star markers,
+variable/multiple overlays and the report magnitude key. The canonical
+render-local style override applies after style/mode resolution; magnitude
+selection, source sky, atlas geometry and index presentation are unchanged.
+Set `star_size_scale = 1.0` to recover the previous sizes.

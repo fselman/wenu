@@ -4557,3 +4557,12 @@ owns a visible, framed number in a configurable inside chart corner, with
 face/edge colour, alpha, internal padding and frame-edge borderpad. Zero
 borderpad aligns the box with both frame edges; its font matches the report.
 The previous chart-page heading is removed. No scientific geometry changes.
+
+Atlas stellar diameter control: the chart presentation accepts optional
+`star_size_scale` (finite positive multiplier, default `1.0`). The example
+`examples/atlas_chart_style_v1.toml` now uses `1.5`: every stellar marker is
+50% larger in diameter (2.25 times its area), including bright-star markers,
+variable/multiple overlays and the report magnitude key. The canonical
+render-local style override applies after style/mode resolution; magnitude
+selection, source sky, atlas geometry and index presentation are unchanged.
+Set `star_size_scale = 1.0` to recover the previous sizes.
