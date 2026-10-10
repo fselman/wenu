@@ -4509,3 +4509,28 @@ chart/report spreads. No measured speedup is claimed without Mac timings.
 ### Atlas index and reserved facing pages (2026-10-10)
 
 create_atlas(..., index=None) and wenu_create_atlas --index PDF accept an unencrypted one-page PDF before preparation. Read exact bytes once, retain its SHA-256, fit vector content proportionally to the JSON page without rotation, then assemble index/report/chart order. The index occupies physical page 1; each selected report is even and its chart odd. A 34-chart atlas has 69 pages. report-NN.pdf has mirrored binding margins, a reserved left report column and canonical legends at right. page_order, index_sha256 and report_content in the completion manifest describe the layout; bookmarks identify index/charts. No index argument preserves chart-only output. No report inventory or curation is implemented.
+
+### Atlas report templates and magnitude override (2026-10-10)
+
+create_main admits --magnitude-limit as a validated override of the independent
+AtlasChartPresentation.star_magnitude_limit. _atlas_report_data consumes existing
+rendered_star_geometry/visible_star_statistics, never a second sky realization.
+The atlas passes (floor(brightest), floor(faintest)) to the canonical key; the
+general legend integer-range API is unchanged. _render_atlas_report exports
+chart-NN_report in presentation.formats using canonical ExportOptions. The
+mirrored useful frame matches chart dimensions; object/star legends share a
+right edge inset 4 mm. An explicit object_title supplies native ICRS centre
+metadata instead of observer-derived context. Polar centres report RA as
+undefined and the tangent meridian separately.
+
+Each chart has chart-NN_report_data.json: schema_version 1, document_kind
+wenu-atlas-chart-report, chart_number, sheet_id, center (ICRS degree values,
+ra_defined and pole_meridian_ra_deg), page, layout (mm from bottom-left; frame,
+report and legends rectangles), stars (statistics and reference_range), report
+(status reserved, sections [], inventory_status not_generated), design_sha256,
+snapshot_sha256 and effective presentation. Null star statistics mean disabled
+stars; visible_count zero means no visible stars. Sidecar editing/readback and
+object inventories remain pending. All products are staged and hash-bound in
+the completion manifest; index absence retains chart-only combined-PDF order
+while exporting report products separately. This supersedes report-NN.pdf
+naming and index-dependent template generation.

@@ -3374,3 +3374,12 @@ performs no scientific realization, projection or rendering.
 ### Atlas index and reserved facing pages (2026-10-10)
 
 Extend atlas_publication.py for reserved left-hand report furniture and index/spread assembly; CLI admits one explicit index PDF. Reuse automatic_legends.py and its canonical symbol/magnitude owners against the existing rendered geometry. Do not add a new report model, production module, legend pipeline or sky lifecycle.
+
+### Atlas report-template amendment (2026-10-10)
+
+Atlas publication furniture and its layout/identity JSON remain in the existing
+charts/atlas_publication.py owner. It consumes existing rendered-star statistics
+and automatic legends, passing an atlas-specific bright-end reference range.
+cli/atlas.py admits the presentation magnitude override only. Existing atlas
+CLI/canonical-sphere tests protect the seams. No new report inventory owner,
+production module, dependency, coordinate transform or test file is admitted.

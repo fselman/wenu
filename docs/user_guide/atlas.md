@@ -5,7 +5,9 @@ The designer was accepted and merged in PR #220 after 413 focused and 3,270
 full Mac tests. `wenu_design_atlas` produces resolved JSON;
 `wenu_plot_atlas` now consumes it with independent version-1 presentation TOML.
 `wenu_create_atlas` now has a chart-page production candidate; see the current
-CLI below. Object report content and curation remain pending; reserved facing pages are available with an index PDF.
+CLI below. Matching report templates and JSON sidecars are available for every
+chart; an index PDF enables facing-page assembly. Object inventories and
+curation remain pending.
 PR #221 passed 543 focused and all 3,313 Mac tests plus SVG visual inspection;
 it merged at `49b29d6a`, with branch cleanup and clean Mac synchronization confirmed.
 Existing charts continue to use [`wenu_chart`](configuration.md).
@@ -23,14 +25,14 @@ flowchart TD
     B["Saved fixed sky"] --> C
     E["Independent chart presentation"] --> C
     C --> B
-    C --> R["Numbered chart pages and atlas PDF"]
+    C --> R["Numbered chart/report templates and atlas PDF"]
 ```
 
 | Command | Inputs | Outputs |
 |---|---|---|
 | `wenu_design_atlas` | Version-1 geometry TOML: page/margins, stereographic field, minimum overlap, overview meridian/band and placement seed; fixed supported orientation/numbering | **Only** a versioned, resolved atlas JSON; no figure and no astronomical catalogue selection |
 | `wenu_plot_atlas` | Resolved JSON plus independent overview layout, astronomical layers, typography and export choices | The two overlapping polar overview maps as an index figure, in PNG, PDF or SVG |
-| `wenu_create_atlas` | Resolved JSON, independent chart presentation, optional saved fixed sky and chart selector | Numbered chart pages, optional index/report spreads, ordered atlas PDF and completion manifest; report contents and curation remain planned |
+| `wenu_create_atlas` | Resolved JSON, independent chart presentation, optional saved fixed sky, chart selector and magnitude override | Numbered chart/report templates and JSON sidecars, optional index/report spreads, ordered atlas PDF and completion manifest; object inventories and curation remain planned |
 
 For example, keep the roles in separately versioned files:
 `atlas_design_request_v1.toml`, `atlas_design_v1.json`,
@@ -793,7 +795,7 @@ batch instead of hiding or cropping the key.
 The index is fitted proportionally into the existing paper margins, without
 rotation, rasterization or a change to chart geometry. Only an unencrypted
 one-page PDF is admitted, before any sky preparation. Index input is preserved.
-Output additionally includes `report-NN.pdf`; `manifest.json` records the index
+Output additionally includes `chart-NN_report.pdf`; `manifest.json` records the index
 digest, reserved report status and explicit physical page order. PDF bookmarks
 identify the index and charts. Without `--index`, the chart-only layout remains
 available. Report content, object inventories and editorial curation are future
@@ -806,3 +808,54 @@ wenu_create_atlas --design atlas_design_v1.json \
   --config examples/atlas_chart_style_v1.toml --index atlas_index_v2.pdf \
   --charts all --jobs 2 --from-sky fixed_sky_v2 --output-dir atlas_book_v2
 ```
+
+### Magnitude experiments and report templates (current candidate)
+
+`--magnitude-limit NUMBER` overrides `star_magnitude_limit` in the presentation
+TOML. Values must be finite in -2 through 11 and covered by the saved snapshot.
+Changing this limit does not rebuild a sufficient saved sphere. The limit
+selects stars, not deep-sky objects. It does not alter the independently styled
+index. General and per-object filters remain later work.
+
+The stellar key remains specific to each chart. Its first integer is the floor
+of the brightest plotted magnitude, so it is at least as bright as every
+plotted star: 1.1 starts at 1; -1.46 starts at -2. Its last integer is the floor
+of the faintest plotted magnitude. Sizes use the canonical chart star-size
+law. No stars means no stellar key.
+
+Each selected chart now always produces report templates in the same requested
+formats, even without `--index`. For example, `chart-21.png`, `.svg`, `.pdf`
+have matching `chart-21_report.png`, `.svg`, `.pdf` and
+`chart-21_report_data.json`. There is no separate `report-21.pdf` alias.
+The report has the same useful frame width/height and paper orientation as
+its chart, with inner/outer margins mirrored. The two legends share a right
+edge inset 4 mm from that frame. The object legend includes the chart number
+and ICRS centre RA/Dec. At a pole, RA is undefined; the separate tangent
+meridian specifies orientation and is labelled accordingly.
+
+The JSON sidecar is a version-1 `wenu-atlas-chart-report` document. It records
+the chart number/sheet identity, exact design/snapshot hashes, effective
+presentation, centre coordinates, physical page and report/legend/frame boxes
+in millimetres from the bottom-left origin, and visible-star statistics/key
+range. Its `report.sections` is an empty ordered list reserved for future
+formatted report content. `report.inventory_status = "not_generated"` makes
+clear that it is a template, not an empty object inventory. A future report
+formatter can use these boxes to place content without changing chart geometry;
+reading edited sidecars and populating object inventories are not implemented
+by this candidate. JSON needs no additional parser dependency.
+
+For the supplied design, Orion is chart 14, Scorpius 10, the Virgo centre
+(RA 186°, Dec 12°) is in chart 16, and the polar caps are 1 and 34. The full
+constellations may extend into neighbouring sheets. Example saved-sky experiment:
+
+```bash
+wenu_create_atlas --design atlas_design_v1.json \
+  --config examples/atlas_chart_style_v1.toml --charts 1,10,14,16,34 \
+  --magnitude-limit 5 --jobs 2 --from-sky fixed_sky_v2 \
+  --index atlas_index_v2.pdf --output-dir atlas_sample_mag5_v3
+```
+
+With an index, the combined PDF keeps index/report/chart order (11 pages for
+this selection). Without an index, its combined PDF remains chart-only; the
+separate report products and JSON are still exported. Completion-manifest
+checksums cover every report format and sidecar.

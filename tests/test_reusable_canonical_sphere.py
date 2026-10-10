@@ -676,9 +676,10 @@ def test_atlas_chart_batch_cold_saved_and_spawned_pages_match(native_snapshot_ca
         if mode == 'serial':
             from wenu.cli.atlas import create_main
             config = tmp_path/'presentation.toml'
-            config.write_text('schema_version = 1\ndocument_kind = "wenu-atlas-chart-presentation"\ndpi = 36\n')
+            config.write_text('schema_version = 1\ndocument_kind = "wenu-atlas-chart-presentation"\ndpi = 36\nstar_magnitude_limit = 4.0\n')
             assert create_main(['--design',str(design),'--config',str(config),
                 '--charts','14,10','--jobs','1','--from-sky',str(tmp_path/'saved'),
+                '--magnitude-limit','6',
                 '--output-dir',str(tmp_path/mode),'--index',str(index)]) == 0
             manifest = tmp_path/mode/'manifest.json'
         else:
@@ -699,10 +700,19 @@ def test_atlas_chart_batch_cold_saved_and_spawned_pages_match(native_snapshot_ca
             assert f'Chart {number}' in text and 'Object report' in text
             assert 'Reserved for the object report' in text
             assert 'Stars' in text
+            assert 'Centre: ICRS' in text and 'RA' in text and 'Dec' in text
             assert f'Chart {number}' in book.pages[position+1].extract_text()
         atlas = AtlasBandTiling.from_json(raw.decode())
         page = atlas.geometry.page
         for number in (10,14):
+            report = json.loads((manifest.parent/f'chart-{number:02d}_report_data.json').read_text())
+            assert report['design_sha256'] == data['design_sha256']
+            assert report['snapshot_sha256'] == data['snapshot_sha256']
+            assert report['presentation'] == data['presentation']
+            statistics = report['stars']['statistics']
+            assert report['stars']['reference_range'][0] <= statistics['brightest_magnitude']
+            for suffix in presentation.formats:
+                assert (manifest.parent/f'chart-{number:02d}_report.{suffix}').is_file()
             np.testing.assert_array_equal(imread(tmp_path/'cold'/f'chart-{number:02d}.png'),
                                           imread(manifest.parent/f'chart-{number:02d}.png'))
             media = PdfReader(manifest.parent/f'chart-{number:02d}.pdf').pages[0].mediabox
@@ -743,10 +753,12 @@ def test_atlas_chart_batch_publication_race_preserves_other_writer(native_snapsh
     design = tmp_path/'design.json'; design.write_bytes(raw)
     output = tmp_path/'contended'
     def page(task, sky=None):
+        import json
         sheet, _, _, directory = task
         with PdfWriter() as writer:
             writer.add_blank_page(width=72,height=72)
             writer.write(Path(directory)/f'chart-{sheet.number:02d}.pdf')
+        (Path(directory)/f'chart-{sheet.number:02d}_report_data.json').write_text(json.dumps({}))
         return sheet.number
     original = PdfWriter.write
     def race(self, destination):

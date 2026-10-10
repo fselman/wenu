@@ -205,33 +205,97 @@ def _initialize_atlas_worker(directory, digest):
         expected_manifest_sha256=digest).make_sky()
 
 
-def _render_atlas_report(chart, sky, composition, rendering, directory):
+def _atlas_report_data(chart, sky, composition, rendering):
+    """Describe the report template from the existing rendered star geometry."""
+    from dataclasses import asdict
+    import math
+    from .legend_geometry import rendered_star_geometry
+    from .magnitude_legend import visible_star_statistics
+    page = chart.page
+    statistics = None
+    reference_range = None
+    if "stars" in composition.detail.enabled_layers:
+        stars = rendered_star_geometry(rendering, sky=sky)
+        statistics = visible_star_statistics(stars.spherical, stars.projected,
+            stars.viewport, effective_limit=composition.detail.star_magnitude_limit)
+        if statistics.has_visible_stars:
+            # The first reference must be at least as bright as every plotted star.
+            reference_range = (math.floor(statistics.brightest_magnitude),
+                               math.floor(statistics.faintest_magnitude))
+    return dict(schema_version=1, document_kind="wenu-atlas-chart-report",
+        chart_number=chart.sheet.number, sheet_id=chart.sheet.sheet_id,
+        center=dict(coordinate_system="ICRS", ra_deg=chart.sheet.center_ra_deg,
+                    dec_deg=chart.sheet.center_dec_deg,
+                    ra_defined=abs(chart.sheet.center_dec_deg) != 90,
+                    pole_meridian_ra_deg=chart.sheet.pole_meridian_ra_deg),
+        page=dict(width_mm=page.width_mm, height_mm=page.height_mm),
+        layout=dict(units="mm", origin="bottom-left",
+            frame=dict(x=page.outer_mm, y=page.bottom_mm,
+                width=page.useful_width_mm, height=page.useful_height_mm),
+            report=dict(x=page.outer_mm + 4, y=page.bottom_mm + 4,
+                width=page.useful_width_mm * 0.68 - 8,
+                height=page.useful_height_mm - 8),
+            legends=dict(x=page.outer_mm + page.useful_width_mm * 0.68,
+                y=page.bottom_mm + 4, width=page.useful_width_mm * 0.32 - 4,
+                height=page.useful_height_mm - 8)),
+        stars=dict(statistics=None if statistics is None else asdict(statistics),
+                   reference_range=reference_range),
+        report=dict(status="reserved", sections=[], inventory_status="not_generated"))
+
+
+def _render_atlas_report(chart, sky, composition, rendering, directory,
+                         formats=("png", "pdf", "svg")):
     """Reserved left-hand page with canonical legends from the existing render."""
     import matplotlib.pyplot as plt
     from .automatic_legends import draw_automatic_chart_legends
     from .legend_plan import ChartLegendPlan, LegendPlacement
     from .regional import ExportOptions
+    from astropy.coordinates import Angle
+    import astropy.units as u
+    import json
+    data = _atlas_report_data(chart, sky, composition, rendering)
     page = chart.page
     figure = plt.figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4))
     left = page.outer_mm / page.width_mm
     bottom = page.bottom_mm / page.height_mm
     width = page.useful_width_mm / page.width_mm
     height = page.useful_height_mm / page.height_mm
+    frame = figure.add_axes((left, bottom, width, height))
+    frame.set_xticks([])
+    frame.set_yticks([])
+    frame.set_gid(f"chart-{chart.sheet.number:02d}-report-frame")
     # Reserve the wider column for later object reports; keep the key by the fold.
-    ax = figure.add_axes((left + width * 0.68, bottom, width * 0.32, height))
+    box = data["layout"]["legends"]
+    ax = figure.add_axes((box["x"] / page.width_mm, box["y"] / page.height_mm,
+                         box["width"] / page.width_mm, box["height"] / page.height_mm))
     ax.set_axis_off()
     figure.text(left, 1 - page.top_mm / (2 * page.height_mm),
         f"Chart {chart.sheet.number} — Object report", va="center", fontsize=10)
-    figure.text(left, bottom + height - 0.04,
+    report = data["layout"]["report"]
+    figure.text(report["x"] / page.width_mm,
+        (report["y"] + report["height"]) / page.height_mm,
         "Reserved for the object report", va="top", fontsize=10, color="0.45")
     try:
+        ra = Angle(chart.sheet.center_ra_deg * u.deg).to_string(
+            unit=u.hourangle, sep="hms", precision=0, pad=True)
+        dec = Angle(chart.sheet.center_dec_deg * u.deg).to_string(
+            unit=u.deg, sep="dms", precision=0, pad=True, alwayssign=True)
+        title = f"Chart {chart.sheet.number}\nCentre: ICRS\nRA {ra}\nDec {dec}"
+        if not data["center"]["ra_defined"]:
+            meridian = Angle(chart.sheet.pole_meridian_ra_deg * u.deg).to_string(
+                unit=u.hourangle, sep="hms", precision=0, pad=True)
+            title = (f"Chart {chart.sheet.number}\nCentre: ICRS\nRA undefined (pole)"
+                     f"\nDec {dec}\nMeridian {meridian}")
         plan = ChartLegendPlan("regional",
-            LegendPlacement(location="upper left"),
+            LegendPlacement(location="upper right"),
             LegendPlacement(enabled="stars" in composition.detail.enabled_layers,
-                location="lower left"))
+                location="lower right"))
         legends = draw_automatic_chart_legends(ax, chart, sky, composition.style,
             rendering, resolved_detail=composition.detail, plan=plan,
-            include_context=False)
+            include_context=True, object_title=title,
+            stellar_reference_range=data["stars"]["reference_range"])
+        for artist in legends.artists:
+            artist.borderaxespad = 0
         # Detect legend overflow rather than silently cropping it into the report.
         figure.canvas.draw()
         renderer = figure.canvas.get_renderer()
@@ -243,8 +307,12 @@ def _render_atlas_report(chart, sky, composition, rendering, directory):
                 raise ValueError("Legends do not fit the facing-page column.")
         if len(extents) == 2 and extents[0].overlaps(extents[1]):
             raise ValueError("Facing-page legends overlap.")
-        ExportOptions(dpi=composition.mode.dpi, bbox_inches=None).save(figure,
-            Path(directory) / f"report-{chart.sheet.number:02d}.pdf")
+        stem = f"chart-{chart.sheet.number:02d}_report"
+        export = ExportOptions(dpi=composition.mode.dpi, bbox_inches=None)
+        for suffix in formats:
+            export.save(figure, Path(directory) / f"{stem}.{suffix}")
+        (Path(directory) / f"{stem}_data.json").write_text(
+            json.dumps(data, indent=2, allow_nan=False) + "\n", encoding="utf-8")
     finally:
         plt.close(figure)
 
@@ -259,8 +327,7 @@ def _render_atlas_sheet(task, sky=None):
     from .regional import ExportOptions
     from wenu.rendering.matplotlib import MatplotlibRenderer
     from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
-    sheet, page, presentation, directory, *options = task
-    facing_report = bool(options and options[0])
+    sheet, page, presentation, directory = task
     sky = _WORKER_SKY if sky is None else sky
     chart = AtlasSheetChart(sheet, page)
     composition = compose_chart(chart, style=presentation.style,
@@ -289,8 +356,8 @@ def _render_atlas_sheet(task, sky=None):
             export_options=ExportOptions(dpi=presentation.dpi, bbox_inches=None))
         for suffix in presentation.formats[1:]:
             result.export_options.save(figure, Path(directory) / f"chart-{sheet.number:02d}.{suffix}")
-        if facing_report:
-            _render_atlas_report(chart, sky, composition, result.rendering, directory)
+        _render_atlas_report(chart, sky, composition, result.rendering, directory,
+                             formats=presentation.formats)
         return sheet.number
     except Exception as exc:
         raise RuntimeError(f"Chart {sheet.number} failed: {exc}") from exc
@@ -321,8 +388,9 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
     """Produce ordered chart pages with one preparation or explicit saved reuse.
 
     A manifest linked last commits the complete batch. Existing outputs and
-    saved skies are preserved. An index PDF enables reserved facing report pages;
-    object inventories and editorial curation remain separate.
+    saved skies are preserved. Each chart has matching report-template products;
+    an index PDF enables facing-page assembly. Object inventories and editorial
+    curation remain separate.
     """
     from contextlib import ExitStack
     from dataclasses import asdict
@@ -388,8 +456,6 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
         digest = snapshot.manifest_sha256
         staging = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix=".wenu-atlas-pages-", dir=output_dir.parent)))
         tasks = [(sheet, atlas.geometry.page, presentation, str(staging)) for sheet in sheets]
-        if index_bytes is not None:
-            tasks = [(*task, True) for task in tasks]
         if worker_count == 1:
             sky = cold_sky if cold_sky is not None else snapshot.make_sky()
             completed = [_render_atlas_sheet(task, sky) for task in tasks]
@@ -442,18 +508,25 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                 writer.add_outline_item("Atlas index", 0)
             for sheet in sheets:
                 if index_bytes is not None:
-                    writer.append(staging / f"report-{sheet.number:02d}.pdf")
+                    writer.append(staging / f"chart-{sheet.number:02d}_report.pdf")
                     page_order.append(dict(page=len(page_order) + 1, kind="report", chart=sheet.number))
                 writer.append(staging / f"chart-{sheet.number:02d}.pdf")
                 page_order.append(dict(page=len(page_order) + 1, kind="chart", chart=sheet.number))
                 writer.add_outline_item(f"Chart {sheet.number}", len(writer.pages) - 1)
             writer.write(staging / "atlas.pdf")
+        for sheet in sheets:
+            report_path = staging / f"chart-{sheet.number:02d}_report_data.json"
+            report_data = json.loads(report_path.read_text(encoding="utf-8"))
+            report_data.update(design_sha256=hashlib.sha256(raw).hexdigest(),
+                snapshot_sha256=digest, presentation=asdict(presentation))
+            report_path.write_text(json.dumps(report_data, indent=2, allow_nan=False) + "\n",
+                                   encoding="utf-8")
         products = sorted(staging.iterdir())
         manifest = dict(schema_version=1, document_kind="wenu-atlas-chart-batch",
             design_sha256=hashlib.sha256(raw).hexdigest(),
             snapshot_sha256=digest, charts=completed, workers=worker_count,
             index_sha256=(None if index_bytes is None else hashlib.sha256(index_bytes).hexdigest()),
-            report_content=(None if index_bytes is None else "reserved"), page_order=page_order,
+            report_content="reserved", page_order=page_order,
             presentation=asdict(presentation), elapsed_seconds=time.perf_counter() - started,
             products={p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in products})
         (staging / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")

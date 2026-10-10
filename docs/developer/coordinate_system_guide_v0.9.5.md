@@ -4601,3 +4601,13 @@ enters serial/spawn execution. PDF assembly changes document page order only.
 ### Atlas index and reserved facing pages (2026-10-10)
 
 Reviewed for index and reserved facing-page assembly: no celestial-coordinate meaning, source epoch or scientific realization changes. Legends consume the existing native ICRS rendering and resolved appearance, with observer-derived context disabled; no AltAz intermediate or new sphere/render is introduced. PDF fitting changes only the supplied index page placement, never atlas sheet projection or viewport.
+
+### Atlas report centre metadata (2026-10-10)
+
+Report furniture reads persisted ICRS sheet centres directly, formats RA in
+hours and Dec in degrees, and supplies an explicit native title to the existing
+legend owner. No observer or AltAz conversion is introduced. At polar centres
+RA is undefined; JSON retains the design's canonical RA=0 with ra_defined=false
+and the independent pole_meridian_ra_deg tangent-orientation anchor. The key's
+bright reference floor and report-page frame are presentation only. Existing
+Hipparcos source epoch and scientific/projection ownership remain unchanged.

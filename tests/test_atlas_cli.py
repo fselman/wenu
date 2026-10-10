@@ -578,6 +578,7 @@ def test_atlas_create_cli_rejects_selector_before_preparation(request_data, tmp_
         raise AssertionError('Invalid requests must not prepare the sky')
     monkeypatch.setattr(native_snapshot, 'prepare_native_sky_snapshot', forbidden)
     for extra in (['--charts', '0'], ['--jobs', '0'],
+                  ['--magnitude-limit', '12'], ['--magnitude-limit', 'nan'],
                   ['--save-sky', str(tmp_path/'sky'), '--from-sky', 'other'],
                   ['--index', str(tmp_path/'missing.pdf')]):
         with pytest.raises(SystemExit) as exc:
@@ -608,7 +609,8 @@ def test_atlas_index_rejects_multiple_pages_before_preparation(request_data, tmp
 
 @pytest.mark.parametrize('dimensions', [(353,250),(250,353)])
 @pytest.mark.parametrize('stars', [True,False])
-def test_reserved_report_mirrors_binding_margin_and_keeps_legends_at_right(dimensions, stars, tmp_path, monkeypatch):
+@pytest.mark.parametrize('polar', [False,True])
+def test_reserved_report_mirrors_binding_margin_and_keeps_legends_at_right(dimensions, stars, polar, tmp_path, monkeypatch):
     from types import SimpleNamespace
     import matplotlib.pyplot as plt
     import numpy as np
@@ -617,34 +619,64 @@ def test_reserved_report_mirrors_binding_margin_and_keeps_legends_at_right(dimen
     from wenu.charts import automatic_legends
     from wenu.charts.regional import ExportOptions
     page = AtlasPageGeometry(*dimensions,top_mm=18,bottom_mm=15,inner_mm=25,outer_mm=12)
-    chart = SimpleNamespace(page=page,sheet=SimpleNamespace(number=14))
-    composition = SimpleNamespace(style=object(),detail=SimpleNamespace(enabled_layers={'stars'} if stars else {'galaxies'}),
+    from wenu.geometry.viewport import Viewport
+    chart = SimpleNamespace(page=page,sheet=SimpleNamespace(number=14,
+        sheet_id='test-sheet',center_ra_deg=0 if polar else 82.5,
+        center_dec_deg=90 if polar else 0,pole_meridian_ra_deg=82.5 if polar else None))
+    composition = SimpleNamespace(style=object(),detail=SimpleNamespace(star_magnitude_limit=6,
+                                  enabled_layers={'stars'} if stars else {'galaxies'}),
                                   mode=SimpleNamespace(dpi=150))
-    rendering = object()
+    star_layer = object()
+    sky = SimpleNamespace(stars=star_layer)
+    rendering = SimpleNamespace(viewport=Viewport.centered(width=2,height=2), layers=(
+        SimpleNamespace(layer=star_layer,
+            spherical=SimpleNamespace(metadata={'magnitude': np.array([1.1,5.8,-1.5])}),
+            projected=SimpleNamespace(x=np.array([0,0,3]),y=np.array([0,0,0]))),))
     calls = []
     def legend(ax, actual_chart, sky, style, result, **options):
         assert actual_chart is chart and result is rendering
         assert style is composition.style and options['resolved_detail'] is composition.detail
-        assert options['include_context'] is False
-        assert options['plan'].objects.location == 'upper left'
-        assert options['plan'].stars.location == 'lower left'
+        assert options['include_context'] is True
+        if polar:
+            assert options['object_title'] == 'Chart 14\nCentre: ICRS\nRA undefined (pole)\nDec +90d00m00s\nMeridian 05h30m00s'
+        else:
+            assert options['object_title'] == 'Chart 14\nCentre: ICRS\nRA 05h30m00s\nDec +00d00m00s'
+        assert options['stellar_reference_range'] == ((1,5) if stars else None)
+        assert options['plan'].objects.location == 'upper right'
+        assert options['plan'].stars.location == 'lower right'
         assert options['plan'].stars.enabled is stars
         calls.append(1)
         return SimpleNamespace(artists=())
     def save(self, figure, destination):
-        assert destination.name == 'report-14.pdf' and self.bbox_inches is None
+        assert destination.stem == 'chart-14_report' and self.bbox_inches is None
+        assert destination.suffix in ('.png','.pdf','.svg')
         np.testing.assert_allclose(figure.get_size_inches(), np.array(dimensions)/25.4)
         ax = figure.axes[0]
         np.testing.assert_allclose(ax.get_position().bounds,
+            [page.outer_mm/page.width_mm,page.bottom_mm/page.height_mm,
+             page.useful_width_mm/page.width_mm,page.useful_height_mm/page.height_mm])
+        assert all(spine.get_visible() for spine in ax.spines.values())
+        ax = figure.axes[1]
+        np.testing.assert_allclose(ax.get_position().bounds,
             [(page.outer_mm+0.68*page.useful_width_mm)/page.width_mm,
-             page.bottom_mm/page.height_mm,0.32*page.useful_width_mm/page.width_mm,
-             page.useful_height_mm/page.height_mm])
+             (page.bottom_mm+4)/page.height_mm,(0.32*page.useful_width_mm-4)/page.width_mm,
+             (page.useful_height_mm-8)/page.height_mm])
         assert figure.texts[0].get_position()[0] == page.outer_mm/page.width_mm
     monkeypatch.setattr(automatic_legends,'draw_automatic_chart_legends',legend)
     monkeypatch.setattr(ExportOptions,'save',save)
     before = plt.get_fignums()
-    _render_atlas_report(chart,None,composition,rendering,tmp_path)
+    _render_atlas_report(chart,sky,composition,rendering,tmp_path)
     assert calls == [1] and plt.get_fignums() == before
+    import json
+    data = json.loads((tmp_path/'chart-14_report_data.json').read_text())
+    assert data['chart_number'] == 14 and data['center']['ra_deg'] == (0 if polar else 82.5)
+    assert data['center']['ra_defined'] is (not polar)
+    assert data['report']['inventory_status'] == 'not_generated'
+    assert data['report']['sections'] == []
+    if stars:
+        assert data['stars']['reference_range'] == [1,5]
+        assert data['stars']['statistics']['visible_count'] == 2
+        assert data['stars']['statistics']['brightest_magnitude'] == 1.1
 
 
 @pytest.mark.parametrize('dimensions', [(353,250),(250,353)])
