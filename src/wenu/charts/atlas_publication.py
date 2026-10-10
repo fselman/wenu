@@ -170,6 +170,13 @@ class AtlasChartPresentation:
     report_label_color: str = "black"
     report_separator_width: float = 0.8
     report_separator_gap_mm: float = 3.0
+    chart_number_box_visible: bool = True
+    chart_number_box_location: str = "upper right"
+    chart_number_box_facecolor: str = "white"
+    chart_number_box_edgecolor: str = "#777777"
+    chart_number_box_alpha: float = 0.9
+    chart_number_box_padding: float = 0.4
+    chart_number_box_borderpad: float = 0.0
 
     def __post_init__(self):
         import math
@@ -191,6 +198,20 @@ class AtlasChartPresentation:
         from matplotlib.colors import is_color_like
         if not isinstance(self.report_label_color, str) or not is_color_like(self.report_label_color):
             raise ValueError("Invalid report_label_color.")
+        if type(self.chart_number_box_visible) is not bool:
+            raise ValueError("chart_number_box_visible must be boolean.")
+        if not isinstance(self.chart_number_box_location, str) or self.chart_number_box_location not in {
+                "upper right", "upper left", "lower right", "lower left"}:
+            raise ValueError("Invalid chart_number_box_location.")
+        for name in ("chart_number_box_facecolor", "chart_number_box_edgecolor"):
+            if not isinstance(getattr(self, name), str) or not is_color_like(getattr(self, name)):
+                raise ValueError(f"Invalid {name}.")
+        for name in ("chart_number_box_alpha", "chart_number_box_padding", "chart_number_box_borderpad"):
+            value = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value < 0:
+                raise ValueError(f"Invalid {name}.")
+        if self.chart_number_box_alpha > 1:
+            raise ValueError("chart_number_box_alpha must be at most 1.")
         for name, allowed in (("layers", set(LAYERS)), ("formats", {"png", "pdf", "svg"})):
             values = getattr(self, name)
             if not isinstance(values, (list, tuple)) or not values or any(not isinstance(v, str) for v in values) or len(set(values)) != len(values) or not set(values) <= allowed:
@@ -297,37 +318,6 @@ def _render_atlas_report(chart, sky, composition, rendering, directory,
         (report["y"] + report["height"]) / page.height_mm,
         "Reserved for the object report", va="top", fontsize=10, color="0.45")
     try:
-        # A separate heading lets its type grow without enlarging centre metadata.
-        heading = figure.text((box["x"] + box["width"]) / page.width_mm,
-            (box["y"] + box["height"]) / page.height_mm,
-            f"Chart {chart.sheet.number}", ha="right", va="top",
-            fontsize=composition.style.legend.title_fontsize * presentation.report_label_scale,
-            fontfamily=presentation.report_label_family,
-            fontweight=presentation.report_label_weight,
-            color=presentation.report_label_color)
-        heading.set_gid(f"chart-{chart.sheet.number:02d}-report-heading")
-        figure.canvas.draw()
-        bounds = heading.get_window_extent(figure.canvas.get_renderer())
-        heading_height = bounds.height / figure.dpi * 25.4
-        heading_width = bounds.width / figure.dpi * 25.4
-        gap = presentation.report_separator_gap_mm
-        separator_y = box["y"] + box["height"] - heading_height - gap
-        legend_height = separator_y - gap - box["y"]
-        if heading_width > box["width"] or legend_height <= 0:
-            raise ValueError("Report heading does not fit the facing-page column.")
-        from matplotlib.lines import Line2D
-        separator = Line2D([box["x"] / page.width_mm,
-            (box["x"] + box["width"]) / page.width_mm],
-            [separator_y / page.height_mm] * 2, transform=figure.transFigure,
-            color=presentation.report_label_color, linewidth=presentation.report_separator_width)
-        separator.set_gid(f"chart-{chart.sheet.number:02d}-report-separator")
-        figure.add_artist(separator)
-        ax.set_position((box["x"] / page.width_mm, box["y"] / page.height_mm,
-                         box["width"] / page.width_mm, legend_height / page.height_mm))
-        data["layout"]["heading"] = dict(x=box["x"], y=separator_y + gap,
-            width=box["width"], height=heading_height)
-        data["layout"]["separator"] = dict(x=box["x"], y=separator_y, width=box["width"])
-        data["layout"]["legends"] = dict(box, height=legend_height)
         ra = Angle(chart.sheet.center_ra_deg * u.deg).to_string(
             unit=u.hourangle, sep="hms", precision=0, pad=True)
         dec = Angle(chart.sheet.center_dec_deg * u.deg).to_string(
@@ -342,10 +332,24 @@ def _render_atlas_report(chart, sky, composition, rendering, directory,
             LegendPlacement(location="upper right"),
             LegendPlacement(enabled="stars" in composition.detail.enabled_layers,
                 location="lower right"))
-        legends = draw_automatic_chart_legends(ax, chart, sky, composition.style,
+        report_style = composition.style
+        if not getattr(report_style.legend, "visible", True):
+            from dataclasses import replace
+            report_style = replace(report_style,
+                legend=replace(report_style.legend, visible=True, frame=True))
+        legends = draw_automatic_chart_legends(ax, chart, sky, report_style,
             rendering, resolved_detail=composition.detail, plan=plan,
             include_context=True, object_title=title,
             stellar_reference_range=data["stars"]["reference_range"])
+        from .legend import add_legend_heading
+        heading, separator = add_legend_heading(legends.legends.objects,
+            f"Chart {chart.sheet.number}",
+            fontsize=composition.style.legend.title_fontsize * presentation.report_label_scale,
+            family=presentation.report_label_family, weight=presentation.report_label_weight,
+            color=presentation.report_label_color,
+            separator_width=presentation.report_separator_width,
+            gap_mm=presentation.report_separator_gap_mm,
+            gid=f"chart-{chart.sheet.number:02d}-report")
         for artist in legends.artists:
             artist.borderaxespad = 0
         # Detect legend overflow rather than silently cropping it into the report.
@@ -353,6 +357,11 @@ def _render_atlas_report(chart, sky, composition, rendering, directory,
         renderer = figure.canvas.get_renderer()
         bounds = ax.get_window_extent(renderer)
         extents = [artist.get_window_extent(renderer) for artist in legends.artists]
+        for name, artist in (("heading", heading), ("separator", separator)):
+            extent = artist.get_window_extent(renderer)
+            factor = 25.4 / figure.dpi
+            data["layout"][name] = dict(x=extent.x0 * factor, y=extent.y0 * factor,
+                width=extent.width * factor, height=extent.height * factor)
         for extent in extents:
             if (extent.x0 < bounds.x0 - 1 or extent.x1 > bounds.x1 + 1
                     or extent.y0 < bounds.y0 - 1 or extent.y1 > bounds.y1 + 1):
@@ -367,6 +376,26 @@ def _render_atlas_report(chart, sky, composition, rendering, directory,
             json.dumps(data, indent=2, allow_nan=False) + "\n", encoding="utf-8")
     finally:
         plt.close(figure)
+
+
+def _draw_atlas_chart_number(ax, number, style, presentation):
+    """Place the chart number inside the selected frame corner."""
+    if presentation.chart_number_box_visible:
+        from matplotlib.offsetbox import AnchoredText
+        number_box = AnchoredText(str(number),
+            loc=presentation.chart_number_box_location, frameon=True,
+            pad=presentation.chart_number_box_padding, borderpad=presentation.chart_number_box_borderpad,
+            prop=dict(size=style.legend.title_fontsize * presentation.report_label_scale,
+                family=presentation.report_label_family, weight=presentation.report_label_weight,
+                color=presentation.report_label_color))
+        number_box.patch.set_facecolor(presentation.chart_number_box_facecolor)
+        number_box.patch.set_edgecolor(presentation.chart_number_box_edgecolor)
+        number_box.patch.set_alpha(presentation.chart_number_box_alpha)
+        number_box.set_gid(f"chart-{number:02d}-number-box")
+        number_box.set_zorder(200)
+        ax.add_artist(number_box)
+        return number_box
+    return None
 
 
 def _render_atlas_sheet(task, sky=None):
@@ -396,8 +425,7 @@ def _render_atlas_sheet(task, sky=None):
         page.useful_height_mm / page.height_mm))
     ax.set_xticks([])
     ax.set_yticks([])
-    figure.text(page.inner_mm / page.width_mm, 1 - page.top_mm / (2 * page.height_mm),
-        f"Chart {sheet.number}", va="center", fontsize=10)
+    _draw_atlas_chart_number(ax, sheet.number, composition.style, presentation)
     try:
         renderer = MatplotlibRenderer(ax)
         first = presentation.formats[0]

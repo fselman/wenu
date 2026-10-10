@@ -701,7 +701,9 @@ def test_atlas_chart_batch_cold_saved_and_spawned_pages_match(native_snapshot_ca
             assert 'Reserved for the object report' in text
             assert 'Stars' in text
             assert 'Centre: ICRS' in text and 'RA' in text and 'Dec' in text
-            assert f'Chart {number}' in book.pages[position+1].extract_text()
+            chart_text = book.pages[position+1].extract_text()
+            assert str(number) in chart_text.splitlines()
+            assert f'Chart {number}' not in chart_text
         atlas = AtlasBandTiling.from_json(raw.decode())
         page = atlas.geometry.page
         for number in (10,14):

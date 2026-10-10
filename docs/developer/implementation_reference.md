@@ -4540,13 +4540,20 @@ naming and index-dependent template generation.
 
 `AtlasChartPresentation` admits optional report_label_scale (default 3),
 report_label_family, report_label_weight, report_label_color,
-report_separator_width (points) and report_separator_gap_mm. The publication
-owner draws a separate chart-number heading and rule before the canonical
-metadata/object and stellar keys. It measures the heading, reserves space in
-the existing right column, records the resolved boxes, and rejects overflow.
+report_separator_width (points) and report_separator_gap_mm. The shared legend owner packs the enlarged chart-number heading and rule
+inside the existing object-legend frame, above its metadata and symbols. The
+publication owner records resolved boxes and rejects column overflow.
 The original chart render and stellar size law are unchanged.
 
 The atlas report uses an unmanaged Agg figure for physical layout measurement
 and export. Interactive GUI window resizing must not quantize its B4 paper
 size before heading/legend measurements; this is independent of the selected
 PNG/PDF/SVG export backend.
+
+`legend.add_legend_heading` isolates Matplotlib's optional offset-box title
+adaptation in the existing legend owner and preserves its metadata accessor.
+Ordinary legends retain their original layout. Atlas presentation additionally
+owns a visible, framed number in a configurable inside chart corner, with
+face/edge colour, alpha, internal padding and frame-edge borderpad. Zero
+borderpad aligns the box with both frame edges; its font matches the report.
+The previous chart-page heading is removed. No scientific geometry changes.

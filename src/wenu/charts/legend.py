@@ -142,3 +142,38 @@ def draw_chart_legend(
         tuple(descriptor.key for descriptor in descriptors),
     )
     return legend
+
+
+def add_legend_heading(legend, text, *, fontsize, family, weight, color,
+                       separator_width=0.8, gap_mm=3, gid=None):
+    """Pack a prominent heading and rule inside the existing legend frame.
+
+    Matplotlib exposes no public multi-font title packer. Keep this optional
+    offset-box adaptation here, alongside legend construction; ordinary keys
+    retain their original layout and get_title() metadata accessor.
+    """
+    from matplotlib.offsetbox import TextArea, DrawingArea, VPacker
+    renderer = legend.figure.canvas.get_renderer()
+    original = legend._legend_title_box
+    heading = TextArea(text, textprops=dict(size=fontsize, family=family,
+        weight=weight, color=color))
+    heading.set_figure(legend.figure)
+    width_px = max(child.get_window_extent(renderer).width for child in
+                   (heading, original, legend._legend_handle_box))
+    width = width_px / renderer.points_to_pixels(1)
+    rule = DrawingArea(width, separator_width, 0, 0)
+    line = Line2D([0, width], [separator_width / 2] * 2,
+                  color=color, linewidth=separator_width)
+    rule.add_artist(line)
+    title = VPacker(children=[heading, rule, original], align="left", pad=0,
+                    sep=gap_mm * 72 / 25.4)
+    title._text = original._text
+    legend._legend_box.get_children()[0] = title
+    legend._legend_title_box = title
+    title.set_figure(legend.figure)
+    if gid is not None:
+        heading._text.set_gid(gid + "-heading")
+        line.set_gid(gid + "-separator")
+    legend._wenu_heading = heading._text
+    legend._wenu_separator = line
+    return heading._text, line

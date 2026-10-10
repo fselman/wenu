@@ -863,8 +863,8 @@ checksums cover every report format and sidecar.
 
 ### Report chart heading
 
-The right-hand report column starts with a separate `Chart N` heading, followed
-by a horizontal rule and the centre metadata/object key. The stellar key remains
+The object legend box in the right-hand report column contains the enlarged
+`Chart N` heading, a horizontal rule, and the centre metadata/object key below. The stellar key remains
 below. The default heading is three times the current object-key title size;
 centre metadata and legend entries retain their sizes. Page headings are separate.
 
@@ -883,7 +883,25 @@ The scale multiplies the resolved legend title size. Separator width is in point
 the gap is in millimetres on each side of the rule. The rule uses the heading
 colour. Positive finite numeric values, a valid colour and an admitted font
 weight are required. Font families must be available on the rendering system.
-Oversized headings or legends fail explicitly rather than intruding into the
-report text. The report JSON records the heading, rule and remaining legend
+Oversized legends fail explicitly rather than intruding into the report text. The report JSON records the heading, rule and remaining legend
 rectangles; the effective presentation is retained in its provenance.
 These settings do not change chart geometry, page headings or stellar symbols.
+
+The chart itself contains a framed number only (for example `10`) inside its
+useful sky rectangle, at the upper-right corner by default. Its type size,
+family, weight and colour match the report heading. The former chart heading
+above the frame is removed. Optional presentation keys:
+
+```toml
+chart_number_box_visible = true
+chart_number_box_location = "upper right"
+chart_number_box_facecolor = "white"
+chart_number_box_edgecolor = "#777777"
+chart_number_box_alpha = 0.9
+chart_number_box_padding = 0.4
+chart_number_box_borderpad = 0.0
+```
+
+Location admits upper/lower left/right. Zero borderpad makes the box flush
+with both selected frame edges; padding controls space inside the box.
+Both values are nonnegative multiples of its font size; alpha is in [0, 1].

@@ -548,7 +548,9 @@ def test_chart_presentation_is_closed_and_rejects_nonstatic_inputs():
                    {'report_label_scale': 0}, {'report_label_scale': float('nan')},
                    {'report_label_family': ''}, {'report_label_weight': 'invalid'},
                    {'report_label_color': 'invalid-color'}, {'report_separator_width': -1},
-                   {'report_separator_gap_mm': True}):
+                   {'report_separator_gap_mm': True}, {'chart_number_box_visible': 1},
+                   {'chart_number_box_location': 'outside'}, {'chart_number_box_alpha': 2},
+                   {'chart_number_box_padding': -1}, {'chart_number_box_facecolor': 'invalid'}):
         with pytest.raises(ValueError):
             AtlasChartPresentation.from_dict(dict(data, **change))
 
@@ -654,7 +656,8 @@ def test_reserved_report_mirrors_binding_margin_and_keeps_legends_at_right(typog
         assert options['plan'].stars.location == 'lower right'
         assert options['plan'].stars.enabled is stars
         calls.append(1)
-        return SimpleNamespace(artists=())
+        artist = ax.legend([], [], title=options['object_title'], loc='upper right', title_fontsize=6.5)
+        return SimpleNamespace(artists=(artist,), legends=SimpleNamespace(objects=artist))
     def save(self, figure, destination):
         assert destination.stem == 'chart-14_report' and self.bbox_inches is None
         assert destination.suffix in ('.png','.pdf','.svg')
@@ -668,17 +671,24 @@ def test_reserved_report_mirrors_binding_margin_and_keeps_legends_at_right(typog
         np.testing.assert_allclose(ax.get_position().bounds[:3],
             [(page.outer_mm+0.68*page.useful_width_mm)/page.width_mm,
              (page.bottom_mm+4)/page.height_mm,(0.32*page.useful_width_mm-4)/page.width_mm])
-        heading = next(t for t in figure.texts if t.get_gid() == 'chart-14-report-heading')
+        legend = ax.get_legend()
+        heading = legend._wenu_heading
         assert heading.get_text() == 'Chart 14' and heading.get_fontsize() == 6.5 * presentation.report_label_scale
         assert heading.get_color() == presentation.report_label_color
         assert heading.get_fontfamily() == [presentation.report_label_family]
         assert heading.get_fontweight() == presentation.report_label_weight
-        separator = next(a for a in figure.artists if a.get_gid() == 'chart-14-report-separator')
+        separator = legend._wenu_separator
         assert separator.get_linewidth() == presentation.report_separator_width
         assert separator.get_color() == presentation.report_label_color
         renderer = figure.canvas.get_renderer()
-        assert heading.get_window_extent(renderer).y0 > separator.get_ydata()[0] * figure.bbox.height
-        assert ax.get_window_extent(renderer).y1 < separator.get_ydata()[0] * figure.bbox.height
+        frame_bounds = legend.get_frame().get_window_extent(renderer)
+        heading_bounds = heading.get_window_extent(renderer)
+        separator_bounds = separator.get_window_extent(renderer)
+        metadata_bounds = legend.get_title().get_window_extent(renderer)
+        assert frame_bounds.contains(heading_bounds.x0, heading_bounds.y1)
+        assert frame_bounds.contains(separator_bounds.x1, separator_bounds.y0)
+        assert heading_bounds.y0 > separator_bounds.y0 > metadata_bounds.y1
+        assert ax.get_window_extent(renderer).contains(frame_bounds.x0, frame_bounds.y0)
         assert figure.texts[0].get_position()[0] == page.outer_mm/page.width_mm
     monkeypatch.setattr(automatic_legends,'draw_automatic_chart_legends',legend)
     monkeypatch.setattr(ExportOptions,'save',save)
@@ -723,3 +733,32 @@ def test_atlas_index_keeps_vector_text_and_paper_orientation(dimensions):
     np.testing.assert_allclose([float(final.mediabox.width),float(final.mediabox.height)],
                               np.array(dimensions)*72/25.4)
     assert not final.images
+
+
+@pytest.mark.parametrize("location", ["upper right", "upper left", "lower right", "lower left"])
+def test_atlas_number_box_is_inside_and_flush_with_selected_frame_corner(location):
+    from types import SimpleNamespace
+    import numpy as np
+    from matplotlib.figure import Figure
+    from matplotlib.backends.backend_agg import FigureCanvasAgg
+    from wenu.charts.atlas_publication import AtlasChartPresentation, _draw_atlas_chart_number
+    figure = Figure(figsize=(353 / 25.4, 250 / 25.4))
+    FigureCanvasAgg(figure)
+    ax = figure.add_axes((0.1, 0.1, 0.8, 0.8))
+    style = SimpleNamespace(legend=SimpleNamespace(title_fontsize=6.5))
+    presentation = AtlasChartPresentation(chart_number_box_location=location)
+    artist = _draw_atlas_chart_number(ax, 10, style, presentation)
+    figure.canvas.draw()
+    renderer = figure.canvas.get_renderer()
+    frame = ax.get_window_extent(renderer)
+    box = artist.patch.get_window_extent(renderer)
+    np.testing.assert_allclose(box.x1 if "right" in location else box.x0,
+                               frame.x1 if "right" in location else frame.x0)
+    np.testing.assert_allclose(box.y1 if "upper" in location else box.y0,
+                               frame.y1 if "upper" in location else frame.y0)
+    assert box.x0 >= frame.x0 - 1e-8 and box.x1 <= frame.x1 + 1e-8
+    assert box.y0 >= frame.y0 - 1e-8 and box.y1 <= frame.y1 + 1e-8
+    assert artist.txt.get_text() == "10" and artist.txt._text.get_fontsize() == 19.5
+    assert not figure.texts
+    assert _draw_atlas_chart_number(ax, 10, style,
+        AtlasChartPresentation(chart_number_box_visible=False)) is None

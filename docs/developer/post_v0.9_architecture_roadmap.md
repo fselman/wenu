@@ -4937,3 +4937,16 @@ dimensions for text measurement and canonical export. Retain the existing
 physical-size assertions and focused cold/saved/spawn equivalence checks.
 This amendment does not relax dimensional tolerances or alter heading styling.
 Mac rerun and visual acceptance remain pending.
+
+
+### Report heading containment and inside chart number amendment (2026-10-10)
+
+Fernando clarified that the enlarged Chart N heading and horizontal rule must
+remain inside the original legend box, superseding the separate heading layout.
+Keep the canonical object key and pack its heading in the shared legend owner.
+He also requires only the chart number in a configurable box inside the sky
+frame, flush with its selected corner; his final default is upper right against
+the top and right edges. Use the same heading type size and remove the old
+chart-page heading. Preserve exact B4 geometry, saved-sphere reuse and isolated
+workers. Font/style and stellar-size redesign remain deferred. Acceptance,
+final regression, merge and cleanup remain separate.
