@@ -4587,3 +4587,13 @@ true-ecliptic and point mean-ecliptic definitions are not conflated. Of-date
 references, AltAz grids, antisolar points, moving bodies and artificial
 satellites are excluded from atlas preparation. All admitted native results
 remain static barycentric astrometry without observation or evaluation instant.
+
+### Native atlas sheet adapter (2026-10-10)
+
+Atlas production consumes exact persisted ICRS sheet centres, tangent bases,
+projection flips and inverse-defined rectangular viewports. It delegates the
+coordinate-neutral RegionalChart render implementation without supplying fake
+AltAz coordinates or an observer. Native label placement realizes original
+FK4/B1875 constellation regions through the existing canonical service. No
+Hipparcos epoch propagation, observation/evaluation instant or moving object
+enters serial/spawn execution. PDF assembly changes document page order only.

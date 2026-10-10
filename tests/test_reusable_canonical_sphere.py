@@ -637,3 +637,104 @@ def test_native_snapshot_legacy_coverage_stays_truthful(native_snapshot_case, tm
         legacy.require(layers=("galaxies",))
     sky = legacy.make_sky()
     assert sky.galaxies is None and sky.constellation_boundaries is None
+
+
+def test_atlas_chart_batch_cold_saved_and_spawned_pages_match(native_snapshot_case, tmp_path, monkeypatch):
+    import json
+    from pathlib import Path
+    import numpy as np
+    from matplotlib.image import imread
+    from pypdf import PdfReader
+    from wenu.charts.atlas_publication import AtlasChartPresentation, create_atlas
+    from wenu.sky import native_snapshot
+    from wenu.atlas_design import AtlasBandTiling
+    raw, bundle, digest, cold = native_snapshot_case
+    design = tmp_path/'design.json'
+    design.write_bytes(raw)
+    presentation = AtlasChartPresentation(dpi=36, formats=('png', 'pdf', 'svg'))
+    calls = []
+    original = native_snapshot.generate_native_icrs_sphere
+    def counted(**kwargs):
+        calls.append(1)
+        return original(**kwargs)
+    monkeypatch.setattr(native_snapshot, 'generate_native_icrs_sphere', counted)
+    first = create_atlas(design, tmp_path/'cold', presentation=presentation,
+                         charts='10,14', jobs=1, save_sky=tmp_path/'saved')
+    assert calls == [1]
+    def forbidden(*args, **kwargs):
+        raise AssertionError('Saved reuse must not prepare a sphere')
+    monkeypatch.setattr(native_snapshot, 'prepare_native_sky_snapshot', forbidden)
+    for mode, jobs in (('serial', 1), ('spawn', 2)):
+        if mode == 'serial':
+            from wenu.cli.atlas import create_main
+            config = tmp_path/'presentation.toml'
+            config.write_text('schema_version = 1\ndocument_kind = "wenu-atlas-chart-presentation"\ndpi = 36\n')
+            assert create_main(['--design',str(design),'--config',str(config),
+                '--charts','14,10','--jobs','1','--from-sky',str(tmp_path/'saved'),
+                '--output-dir',str(tmp_path/mode)]) == 0
+            manifest = tmp_path/mode/'manifest.json'
+        else:
+            manifest = create_atlas(design, tmp_path/mode, presentation=presentation,
+                                   charts='14,10', jobs=jobs, from_sky=tmp_path/'saved')
+        data = json.loads(manifest.read_text())
+        assert data['charts'] == [10, 14] and data['workers'] == jobs
+        assert len(PdfReader(manifest.parent/'atlas.pdf').pages) == 2
+        atlas = AtlasBandTiling.from_json(raw.decode())
+        page = atlas.geometry.page
+        for number in (10,14):
+            np.testing.assert_array_equal(imread(tmp_path/'cold'/f'chart-{number:02d}.png'),
+                                          imread(manifest.parent/f'chart-{number:02d}.png'))
+            media = PdfReader(manifest.parent/f'chart-{number:02d}.pdf').pages[0].mediabox
+            np.testing.assert_allclose([float(media.width),float(media.height)],
+                                      [page.width_mm*72/25.4,page.height_mm*72/25.4])
+    assert calls == [1]
+    with pytest.raises(ValueError):
+        create_atlas(design, tmp_path/'cold', presentation=presentation, from_sky=tmp_path/'saved')
+    assert design.read_bytes() == raw
+
+
+def test_atlas_chart_batch_failure_preserves_saved_data(native_snapshot_case, tmp_path, monkeypatch):
+    from wenu.charts import atlas_publication as owner
+    raw, bundle, digest, _ = native_snapshot_case
+    design = tmp_path/'design.json'; design.write_bytes(raw)
+    before = (bundle/'manifest.json').read_bytes()
+    def broken(*args, **kwargs):
+        raise RuntimeError('Chart 14 injected render failure')
+    monkeypatch.setattr(owner, '_render_atlas_sheet', broken)
+    with pytest.raises(RuntimeError, match='Chart 14'):
+        owner.create_atlas(design, tmp_path/'failed', presentation=owner.AtlasChartPresentation(),
+                           charts='14', jobs=1, from_sky=bundle)
+    assert not (tmp_path/'failed').exists()
+    assert not list(tmp_path.glob('.wenu-atlas-pages-*'))
+    assert (bundle/'manifest.json').read_bytes() == before
+
+
+def test_atlas_chart_batch_publication_race_preserves_other_writer(native_snapshot_case, tmp_path, monkeypatch):
+    from pathlib import Path
+    from pypdf import PdfWriter
+    from wenu.charts import atlas_publication as owner
+    raw, bundle, _, _ = native_snapshot_case
+    design = tmp_path/'design.json'; design.write_bytes(raw)
+    output = tmp_path/'contended'
+    def page(task, sky=None):
+        sheet, _, _, directory = task
+        with PdfWriter() as writer:
+            writer.add_blank_page(width=72,height=72)
+            writer.write(Path(directory)/f'chart-{sheet.number:02d}.pdf')
+        return sheet.number
+    original = PdfWriter.write
+    def race(self, destination):
+        result = original(self, destination)
+        if Path(destination).name == 'atlas.pdf':
+            output.mkdir()
+            (output/'other-writer').write_text('preserve')
+            assert output.is_dir()
+        return result
+    monkeypatch.setattr(owner, '_render_atlas_sheet', page)
+    monkeypatch.setattr(PdfWriter, 'write', race)
+    with pytest.raises(FileExistsError):
+        owner.create_atlas(design, output, presentation=owner.AtlasChartPresentation(formats=('pdf',)),
+                           charts='14', jobs=1, from_sky=bundle)
+    assert (output/'other-writer').read_text() == 'preserve'
+    assert not (output/'manifest.json').exists()
+    assert not list(tmp_path.glob('.wenu-atlas-pages-*'))

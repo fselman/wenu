@@ -398,3 +398,11 @@ The DSO, boundary, grid and point owners perform their new native realization;
 transport never generates outlines or converts coordinates. Their existing
 coordinate-service and rendering edges remain the sole scientific pipeline.
 No observer/ephemeris/moving-object edge is admitted to this atlas milestone.
+
+### Atlas chart-page batch edge (2026-10-10)
+
+Resolved design + independent presentation -> publication batch -> single
+native preparation or verified snapshot -> process-local layer facades ->
+canonical sheet composition/rectangular rendering/export -> vector PDF assembly
+-> manifest-last completed output. CLI owns admission only; saved-sky completion
+is independent of page-output failure. Existing scientific owner edges remain.

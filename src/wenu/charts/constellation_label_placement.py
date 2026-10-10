@@ -27,6 +27,7 @@ def apply_visible_constellation_label_anchors(
     maximum_boundary_vertices=73,
     transform_spherical=None,
     region_selection=None,
+    realization_context=None,
 ):
     """Use visible IAU regions to prepare labels at a chart boundary."""
     labels = getattr(sky, "constellation_labels", None)
@@ -58,15 +59,15 @@ def apply_visible_constellation_label_anchors(
                 "constellation label preparation requires ProjectedPoints."
             )
         resolved_observer = getattr(sky, "observer", None) if observer is None else observer
-        if resolved_observer is None:
+        if resolved_observer is None and realization_context is None:
             raise TypeError("constellation label placement requires an observer.")
         region_options = (
             {"selected": region_selection}
             if retain_partial and region_selection is not None else {}
         )
-        region_spherical = regions.spherical_geometry(
-            resolved_observer, **region_options
-        )
+        region_spherical = (regions.spherical_geometry(resolved_observer, **region_options)
+            if realization_context is None else
+            regions.realize(realization_context, resolved_observer, **region_options))
         if transform_spherical is not None:
             region_spherical = transform_spherical(region_spherical)
         region_projected = project_geometry_for_viewport(

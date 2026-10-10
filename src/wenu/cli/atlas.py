@@ -1,4 +1,4 @@
-"""Installed atlas adapters for geometry design and index presentation."""
+"""Installed atlas adapters for geometry, index and chart-page production."""
 
 from __future__ import annotations
 
@@ -92,3 +92,31 @@ def plot_main(argv=None):
 
 if __name__ == "__main__":
     raise SystemExit(design_main())
+
+
+def create_main(argv=None):
+    parser = argparse.ArgumentParser(prog="wenu_create_atlas",
+        description="Produce selected fixed ICRS atlas chart pages from resolved geometry.",
+        allow_abbrev=False)
+    parser.add_argument("--design", required=True, type=Path)
+    parser.add_argument("--config", required=True, type=Path)
+    parser.add_argument("--charts", default="all")
+    parser.add_argument("--jobs", type=int, default=2)
+    parser.add_argument("--output-dir", required=True, type=Path)
+    sky = parser.add_mutually_exclusive_group()
+    sky.add_argument("--save-sky", type=Path)
+    sky.add_argument("--from-sky", type=Path)
+    args = parser.parse_args(argv)
+    try:
+        from wenu.charts.atlas_publication import AtlasChartPresentation, create_atlas
+        with args.config.open("rb") as stream:
+            presentation = AtlasChartPresentation.from_dict(tomllib.load(stream))
+        output = create_atlas(args.design, args.output_dir, presentation=presentation,
+            charts=args.charts, jobs=args.jobs, save_sky=args.save_sky, from_sky=args.from_sky)
+    except (ValueError, OSError, UnicodeError, RuntimeError) as exc:
+        parser.error(str(exc))
+    except KeyboardInterrupt:
+        print("Atlas generation interrupted.", file=sys.stderr)
+        return 130
+    print(output)
+    return 0

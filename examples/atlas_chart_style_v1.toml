@@ -1,0 +1,10 @@
+schema_version = 1
+document_kind = "wenu-atlas-chart-presentation"
+style = "atlas"
+dpi = 150
+star_magnitude_limit = 6.0
+formats = ["png", "pdf", "svg"]
+layers = ["stars", "constellation_lines", "constellation_labels",
+  "constellation_boundaries", "milky_way", "magellanic_clouds", "nonstellar",
+  "galaxies", "open_clusters", "globular_clusters", "supernova_remnants",
+  "planetary_nebulae", "equatorial_grid"]

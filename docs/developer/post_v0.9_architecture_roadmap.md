@@ -4843,3 +4843,32 @@ scientific pipeline is added. This candidate implements the prior required
 fixed-content extension; Mac acceptance and merge remain pending. Next is the
 explicit installed plotter preparation/reuse handoff sharing one prepared sky,
 then rectangular/polar atlas workers, reports and measured production behavior.
+
+### Full chart-page inspection priority and producer candidate (2026-10-10)
+
+PR #224 fixed snapshot v2 was accepted after 482 focused and all 3389 Mac tests,
+digest-bound full-catalogue reuse and native boundary realization; it merged as
+18094015 and the Mac confirmed only clean synchronized main after cleanup.
+Fernando approved --design/--config/--charts/--jobs/--output-dir with independent
+--save-sky and --from-sky. He prioritizes generating all chart pages in one go
+for overall inspection before chart-by-chart DSO curation and general filters.
+This supersedes the earlier proposed --scene-only handoff and requirement to
+implement facing report pages before a full chart-page preview is useful.
+
+As-is: sheet records already own exact fixed-equatorial projection and physical
+page rectangles; native v2 owns complete fixed sources; ordinary regional
+rendering is coordinate-neutral but label anchoring still required an observer.
+Extend these existing owners for native sheet composition, label anchoring and
+spawn-safe mapped-data batches, without new modules/scientific pipeline. Add
+pypdf only for ordered lossless vector-PDF assembly; its lifecycle and failure
+belong to the publication owner. Closed independent chart-presentation input
+must not modify design geometry or use index content as chart selection.
+
+The candidate produces numbered PNG/PDF/SVG pages and ordered atlas.pdf, with a
+complete provenance/hash manifest committed last. Cold serial, saved serial and
+spawned selected renders must match; also render all 34 sheets and inspect
+poles, Orion and Scorpius. Preserve snapshots on batch failure and raced/existing
+outputs. Mac exact-head full regression and print/visual acceptance remain
+required. No merge or cleanup is authorized by implementation approval.
+Next: per-chart explicit identifier include/exclude for PNs, SNRs, galaxies,
+open/globular clusters, then authored facing reports and general filtering.
