@@ -59,6 +59,12 @@ def attach_semantic_svg_metadata(
     path_display_names=(),
     presentation_order,
     style_role,
+    preserve_paint_order=False,
+    data_attributes=None,
+    point_entities=(),
+    hierarchy_container=False,
+    compact_hierarchy=False,
+    svg_clip_box=None,
 ):
     """Attach renderer-neutral values for the later SVG export boundary."""
     semantic_path = tuple(semantic_path)
@@ -89,6 +95,21 @@ def attach_semantic_svg_metadata(
         metadata["presentation_order"] = int(presentation_order)
     if paint_role is not None:
         metadata["paint_role"] = paint_role.name
+    if preserve_paint_order:
+        metadata["preserve_paint_order"] = True
+    if hierarchy_container:
+        metadata["hierarchy_container"] = True
+    if compact_hierarchy:
+        metadata["compact_hierarchy"] = True
+    if svg_clip_box is not None:
+        metadata["svg_clip_box"] = tuple(svg_clip_box)
+    if data_attributes:
+        if any(not re.fullmatch(r"data-[a-z][a-z0-9-]*", key)
+               or key.startswith("data-wenu-") for key in data_attributes):
+            raise ValueError("Custom SVG attributes must use non-Wenu data names.")
+        metadata["data_attributes"] = dict(data_attributes)
+    if point_entities:
+        metadata["point_entities"] = tuple(point_entities)
     setattr(artist, _METADATA_ATTRIBUTE, metadata)
 
 
@@ -107,7 +128,7 @@ def annotate_semantic_svg(path, figure, *, provenance=None):
         serialized = path.read_text(encoding="utf-8")
         for svg_id, metadata in records:
             classes = [
-                "wenu-semantic-artist",
+                "wenu-semantic-container" if metadata.get("hierarchy_container") else "wenu-semantic-artist",
                 f"wenu-layer-{metadata['layer'].replace('_', '-')}",
                 f"wenu-edit-{metadata['edit_policy']}",
                 f"wenu-style-{metadata['style_role'].replace('_', '-')}",
@@ -135,6 +156,13 @@ def annotate_semantic_svg(path, figure, *, provenance=None):
                     metadata["presentation_order"]
                 )
             paint_role = metadata.get("paint_role")
+            if metadata.get("preserve_paint_order"):
+                attributes["data-wenu-preserve-paint-order"] = "true"
+            if metadata.get("hierarchy_container"):
+                attributes["data-wenu-container-path"] = metadata["semantic_path"]
+            if metadata.get("compact_hierarchy"):
+                attributes["data-wenu-compact-hierarchy"] = "true"
+            attributes.update(metadata.get("data_attributes", {}))
             if paint_role is not None:
                 classes.append(f"wenu-paint-{paint_role.replace('_', '-')}")
                 attributes["class"] = " ".join(classes)
@@ -163,10 +191,70 @@ def annotate_semantic_svg(path, figure, *, provenance=None):
                     f"Could not annotate Wenu SVG group {svg_id!r}."
                 )
         path.write_text(serialized, encoding="utf-8")
+        if any(metadata.get("point_entities") or metadata.get("svg_clip_box") for _, metadata in records):
+            tree = ET.parse(path)
+            root = tree.getroot()
+            by_id = {element.get("id"): element for element in root.iter()}
+            clip_boxes = {}
+            for svg_id, metadata in records:
+                group = by_id.get(svg_id)
+                if group is not None and metadata.get("svg_clip_box"):
+                    _apply_svg_clip_box(root, group, metadata["svg_clip_box"], clip_boxes)
+            for svg_id, metadata in records:
+                entities = metadata.get("point_entities", ())
+                group = by_id.get(svg_id)
+                if not entities or group is None:
+                    continue
+                def marker_instances(element):
+                    if element.tag == f"{{{_SVG_NAMESPACE}}}defs":
+                        return
+                    if element.tag in {f"{{{_SVG_NAMESPACE}}}use", f"{{{_SVG_NAMESPACE}}}path"}:
+                        yield element
+                    else:
+                        for child in element:
+                            yield from marker_instances(child)
+                markers = tuple(marker_instances(group))
+                if len(markers) != len(entities):
+                    raise ValueError("SVG marker instances must match supplied point identities.")
+                for element, (identifier, display_name) in zip(markers, entities, strict=True):
+                    if identifier in by_id:
+                        raise ValueError(f"Duplicate SVG point id {identifier!r}.")
+                    element.set("id", identifier)
+                    element.set(f"{{{_INKSCAPE_NAMESPACE}}}label", display_name)
+                    element.set("data-wenu-display-name", display_name)
+                    by_id[identifier] = element
+            tree.write(path, encoding="utf-8", xml_declaration=True)
         _group_semantics(path)
     if provenance is not None:
         _write_provenance(path, provenance)
     return path
+
+
+def _apply_svg_clip_box(root, artist, bounds, cache):
+    """Retain a caller-declared export rectangle alongside backend path clips."""
+    defs = root.find(f"{{{_SVG_NAMESPACE}}}defs")
+    if defs is None:
+        defs = ET.SubElement(root, f"{{{_SVG_NAMESPACE}}}defs")
+    def visit(element):
+        if element.tag == f"{{{_SVG_NAMESPACE}}}defs":
+            return
+        previous = element.get("clip-path")
+        if previous or element.tag.rsplit("}", 1)[-1] in {"path", "use", "text"}:
+            key = (tuple(bounds), previous)
+            if key not in cache:
+                identifier = f"wenu-export-clip-box-{len(cache) + 1:04d}"
+                clip = ET.SubElement(defs, f"{{{_SVG_NAMESPACE}}}clipPath", {"id": identifier})
+                x0, y0, x1, y1 = bounds
+                attributes = {"x": str(x0), "y": str(y0), "width": str(x1-x0), "height": str(y1-y0)}
+                if previous:
+                    attributes["clip-path"] = previous
+                ET.SubElement(clip, f"{{{_SVG_NAMESPACE}}}rect", attributes)
+                cache[key] = f"url(#{identifier})"
+            element.set("clip-path", cache[key])
+            return
+        for child in element:
+            visit(child)
+    visit(artist)
 
 
 def _canonical_json_value(value):
@@ -331,13 +419,21 @@ def _group_semantics(path):
     """Materialize supplied semantic paths without reclassification."""
     tree = ET.parse(path)
     root = tree.getroot()
+    containers = {tuple(e.get("data-wenu-container-path").split("/")): e
+                  for e in root.iter() if e.get("data-wenu-container-path")}
+    for element in root.iter():
+        if element.get("data-wenu-compact-hierarchy") == "true":
+            element.set(f"{{{_INKSCAPE_NAMESPACE}}}label", element.get("data-wenu-display-name"))
+    for container in containers.values():
+        container.set(f"{{{_INKSCAPE_NAMESPACE}}}label", container.get("data-wenu-display-name"))
+        container.set(f"{{{_INKSCAPE_NAMESPACE}}}groupmode", "layer")
     parent_of = {
         child: parent
         for parent in root.iter()
         for child in parent
     }
     candidates_by_parent = {}
-    for element in root.iter():
+    for element in tuple(root.iter()):
         classes = element.get("class", "").split()
         semantic_path = element.get("data-wenu-semantic-path", "")
         order = element.get("data-wenu-presentation-order")
@@ -354,9 +450,11 @@ def _group_semantics(path):
     if not candidates_by_parent:
         return path
 
+    fragments = {}
     for parent, candidates in candidates_by_parent.items():
-        _group_semantic_siblings(parent, candidates)
+        _group_semantic_siblings(parent, candidates, fragments=fragments)
     _consolidate_designer_hierarchy(root)
+    _flatten_compact_artists(root)
     _flatten_semantic_text_artists(root)
     _promote_common_label_typography(root)
     _promote_common_line_styles(root)
@@ -364,9 +462,12 @@ def _group_semantics(path):
     return path
 
 
-def _group_semantic_siblings(parent, candidates):
+def _group_semantic_siblings(parent, candidates, *, fragments=None):
     """Group one sibling set while preserving its supplied root paths."""
     original_children = list(parent)
+    preserve = any(element.get("data-wenu-preserve-paint-order") == "true"
+                   for element in candidates)
+    fragments = {} if fragments is None else fragments
     insertion_index = min(
         original_children.index(element) for element in candidates
     )
@@ -472,10 +573,14 @@ def _group_semantic_siblings(parent, candidates):
                 return supplied
         return _default_path_display_name(path_parts[-1])
 
-    def build_group(path_parts):
+    def build_group(path_parts, elements=None):
         token = "-".join(path_parts)
+        group_id = f"wenu-group-{token}"
+        if preserve:
+            fragments[token] = fragments.get(token, 0) + 1
+            group_id += f"--{fragments[token]:04d}"
         attributes = {
-            "id": f"wenu-group-{token}",
+            "id": group_id,
             "class": (
                 "wenu-semantic-group "
                 f"wenu-group-{path_parts[-1].replace('_', '-')}"
@@ -495,6 +600,16 @@ def _group_semantic_siblings(parent, candidates):
                 "data-wenu-locked": "true",
             })
         group = ET.Element(f"{{{_SVG_NAMESPACE}}}g", attributes)
+        leaf_artists = by_path.get(path_parts, ())
+        if (not preserve and not children_by_parent.get(path_parts)
+                and len(leaf_artists) == 1
+                and leaf_artists[0].get("data-wenu-compact-hierarchy") == "true"):
+            artist = leaf_artists[0]
+            artist.set(f"{{{_INKSCAPE_NAMESPACE}}}label", display_name(path_parts))
+            return artist
+        if elements is not None:
+            append_runs(group, elements, len(path_parts))
+            return group
         child_paths = sorted(
             children_by_parent.get(path_parts, ()),
             key=lambda item: (descendant_order(item), item),
@@ -511,13 +626,46 @@ def _group_semantic_siblings(parent, candidates):
             group.append(element)
         return group
 
+    def append_runs(target, elements, depth):
+        # Wrap only contiguous semantic siblings: no artist changes paint position.
+        run, previous = [], None
+        def flush():
+            if not run:
+                return
+            if previous is None:
+                target.extend(run)
+            else:
+                target.append(build_group(previous, list(run)))
+            run.clear()
+        for element in elements:
+            raw = element.get("data-wenu-semantic-path", "")
+            parts = tuple(raw.split("/")) if element in candidates else ()
+            key = parts[:depth + 1] if len(parts) > depth else None
+            if key != previous:
+                flush()
+                previous = key
+            run.append(element)
+        flush()
+
+    if preserve:
+        parent[:] = []
+        append_runs(parent, original_children, 0)
+        return
+
     for element in candidates:
         parent.remove(element)
+    container_path = tuple(parent.get("data-wenu-container-path", "").split("/"))
+    roots = children_by_parent.get(container_path, ()) if parent.get("data-wenu-container-path") else root_paths
     for offset, root_path in enumerate(sorted(
-        root_paths,
+        roots,
         key=lambda item: (descendant_order(item), item),
     )):
         parent.insert(insertion_index + offset, build_group(root_path))
+
+    if parent.get("data-wenu-container-path"):
+        # A directly drawable container member needs no second wrapper.
+        for element in by_path.get(container_path, ()):
+            parent.insert(insertion_index, element)
 
 
 def _consolidate_designer_hierarchy(root):
@@ -755,6 +903,72 @@ def _flatten_semantic_text_artists(root):
                 intermediate.remove(text_element)
         parent.remove(wrapper)
         parent.insert(index, text_element)
+
+
+def _flatten_compact_artists(root):
+    """Remove backend-only wrappers inside explicitly compact artist leaves.
+
+    Transfer clipping to their children; never discard transforms or style.
+    Text boxes retain their two drawable parts, named Background and Text.
+    """
+    group_tag = f"{{{_SVG_NAMESPACE}}}g"
+    for artist in tuple(root.iter(group_tag)):
+        if artist.get("data-wenu-compact-hierarchy") != "true":
+            continue
+        for wrapper in reversed(tuple(artist.iter(group_tag))):
+            if wrapper is artist or set(wrapper.attrib) - {"id", "clip-path"}:
+                continue
+            children = list(wrapper)
+            clip = wrapper.get("clip-path")
+            if clip and any(c.get("clip-path") not in {None, clip} for c in children):
+                continue
+            parent = next((p for p in artist.iter() if wrapper in list(p)), None)
+            if parent is None:
+                continue
+            index = list(parent).index(wrapper)
+            parent.remove(wrapper)
+            for offset, child in enumerate(children):
+                if clip:
+                    child.set("clip-path", clip)
+                parent.insert(index + offset, child)
+        if artist.get("data-wenu-style-role") == "number_label":
+            for child in artist:
+                child.set(f"{{{_INKSCAPE_NAMESPACE}}}label",
+                          "Text" if child.tag.endswith("}text") else "Background")
+        parent = next((p for p in root.iter() if artist in list(p)), None)
+        if (parent is not None and "wenu-semantic-group" in parent.get("class", "")
+                and parent.get("data-wenu-semantic-path") == artist.get("data-wenu-semantic-path")
+                and not any(k in artist.attrib for k in ("style", "transform", "clip-path", "opacity"))):
+            index = list(parent).index(artist)
+            parent.remove(artist)
+            for offset, child in enumerate(artist):
+                parent.insert(index + offset, child)
+            continue
+        children = list(artist)
+        if len(children) == 1 and children[0].tag != group_tag:
+            child = children[0]
+            # A single shape/text can carry the semantic identity itself.
+            if any(k in child.attrib and child.get(k) != v
+                   for k, v in artist.attrib.items() if k in {"style", "transform", "clip-path"}):
+                continue
+            attrs = {**artist.attrib, **child.attrib}
+            attrs["id"] = artist.get("id")
+            attrs[f"{{{_INKSCAPE_NAMESPACE}}}label"] = artist.get("data-wenu-display-name")
+            child.attrib.clear()
+            child.attrib.update(attrs)
+            parent = next((p for p in root.iter() if artist in list(p)), None)
+            if parent is not None:
+                index = list(parent).index(artist)
+                parent.remove(artist)
+                parent.insert(index, child)
+    for container in root.iter(group_tag):
+        if not container.get("data-wenu-container-path"):
+            continue
+        for empty in tuple(container.iter(group_tag)):
+            if len(empty) == 0 and not empty.get("data-wenu-semantic-path"):
+                parent = next((p for p in container.iter() if empty in list(p)), None)
+                if parent is not None:
+                    parent.remove(empty)
 
 
 def _style_declarations(element):

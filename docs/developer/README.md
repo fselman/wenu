@@ -193,3 +193,7 @@ is recorded below; neither record admits numerical Moonlight.
   — accepted protocol and resource/three-sample coverage receipts; final
   Cartesian specimens, signed phase, EOP uncertainty and runtime load order
   remain open. Comparison execution and numerical Moonlight remain blocked.
+
+The accepted atlas designer is merged in PR #220. The installed index plotter
+candidate is documented in the [atlas guide](../user_guide/atlas.md),
+implementation reference and current roadmap; publication commands remain planned.

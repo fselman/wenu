@@ -4541,3 +4541,16 @@ band-tiling JSON. Neither FK5 J2000 nor a source epoch/observer/time is inferred
 The existing atlas primary-containment/coverage methods and native catalogue
 index distinctions remain current; provider, coordinate-service and chart
 realization ownership are unchanged. General epoch propagation is not added.
+
+
+## Installed index presentation review (2026-10-09)
+
+The installed plotter relocates the existing paired-index composition owner.
+Presentation dimensions, fonts, palette, native layer selection and output DPI
+never modify JSON centres, primary regions, projection parameters or numbers.
+The same fixed ICRS stereographic index and native Hipparcos J1991.25 / morphology
+identity apply; no observer/AltAz or epoch propagation is introduced.
+This first closed schema admits only existing native ICRS layers. FK4/B1875 IAU
+boundaries are excluded until a separately reviewed canonical realization seam
+exists. The page lens remains distinct from the common declination band and
+sheet overlap. Projection/render/export ownership remains unchanged.

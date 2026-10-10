@@ -30,6 +30,86 @@ POINTS_PER_INCH = 72.0
 MM_PER_INCH = 25.4
 
 
+def test_ordered_semantic_fragments_preserve_interleaved_artists(tmp_path):
+    from wenu.svg_document import attach_semantic_svg_metadata
+    figure, ax = plt.subplots()
+    try:
+        artists = [ax.plot([0, 1], [i / 5, i / 5], zorder=i)[0]
+                   for i in range(5)]
+        paths = ["chart/atlas_index/north/atlas_charts/chart_14/boundary",
+                 "chart/atlas_index/north/veil", None,
+                 "chart/atlas_index/north/atlas_charts/chart_14/number",
+                 "chart/atlas_index/north/veil"]
+        for i, (artist, path) in enumerate(zip(artists, paths, strict=True)):
+            artist.set_gid(f"ordered-{i}")
+            if path is not None:
+                parts = tuple(path.split("/"))
+                attach_semantic_svg_metadata(artist, layer="test", zorder=i,
+                    paint_role=None, edit_policy=EditPolicy.STYLE,
+                    semantic_path=parts, lock_owner_path=parts[:-1],
+                    display_name=parts[-1].capitalize(), presentation_order=100-i,
+                    style_role="test", preserve_paint_order=True)
+        destination = ExportOptions().save(figure, tmp_path / "ordered.svg")
+    finally:
+        plt.close(figure)
+    root = ET.parse(destination).getroot()
+    ids = [e.get("id") for e in root.iter() if e.get("id")]
+    assert [identifier for identifier in ids if identifier.startswith("ordered-")] == [
+        f"ordered-{i}" for i in range(5)]
+    assert len(ids) == len(set(ids))
+    fragments = [e for e in root.iter() if e.get("data-wenu-semantic-path") ==
+                 "chart/atlas_index/north/atlas_charts/chart_14"
+                 and "wenu-semantic-group" in e.get("class", "")]
+    assert len(fragments) == 2
+
+
+def test_declared_svg_containers_expose_compact_artist_leaves(tmp_path):
+    from wenu.svg_document import attach_semantic_svg_metadata
+    figure, ax = plt.subplots()
+    try:
+        figure.set_gid("compact-document")
+        ax.set_gid("compact-disk")
+        for artist, path, name in ((figure, ("chart", "example"), "Example"),
+                (ax, ("chart", "example", "north"), "North Disk")):
+            attach_semantic_svg_metadata(artist, layer="test", zorder=0,
+                paint_role=None, edit_policy=EditPolicy.LAYOUT, semantic_path=path,
+                lock_owner_path=path, display_name=name, presentation_order=None,
+                style_role="container", hierarchy_container=True)
+        line = ax.plot((0, 1), (0.2, 0.8), zorder=2)[0]
+        line.set_clip_path(Circle((0.5, 0.5), 0.4, transform=ax.transAxes))
+        line.set_gid("compact-boundary")
+        path = ("chart", "example", "north", "charts", "chart_21", "boundary")
+        attach_semantic_svg_metadata(line, layer="test", zorder=2,
+            paint_role=None, edit_policy=EditPolicy.STYLE, semantic_path=path,
+            lock_owner_path=path[:-1], display_name="Boundary", presentation_order=2,
+            style_role="boundary", compact_hierarchy=True,
+            svg_clip_box=(0, 0, figure.get_figwidth() * 36, figure.get_figheight() * 72))
+        raw = tmp_path / "raw.svg"
+        figure.savefig(raw)
+        raw_root = ET.parse(raw).getroot()
+        original = next(e for e in raw_root.iter() if e.get("id") == "compact-boundary")
+        expected = next(e.get("d") for e in original.iter() if e.tag.endswith("}path"))
+        destination = ExportOptions(bbox_inches=None).save(figure, tmp_path / "compact.svg")
+    finally:
+        plt.close(figure)
+    root = ET.parse(destination).getroot()
+    by_id = {e.get("id"): e for e in root.iter()}
+    parents = {child: parent for parent in root.iter() for child in parent}
+    boundary = by_id["compact-boundary"]
+    assert boundary.tag.endswith("}path") and boundary.get("d") == expected
+    clip = by_id[boundary.get("clip-path")[5:-1]]
+    rectangle = next(iter(clip))
+    assert rectangle.tag.endswith("}rect") and float(rectangle.get("width")) == 230.4
+    path_clip = by_id[rectangle.get("clip-path")[5:-1]]
+    assert any(e.tag.endswith("}path") for e in path_clip)
+    chart = parents[boundary]
+    assert chart.get("data-wenu-display-name") == "Chart 21"
+    charts = parents[chart]
+    assert charts.get("data-wenu-display-name") == "Charts"
+    assert parents[charts] is by_id["compact-disk"]
+    assert parents[by_id["compact-disk"]] is by_id["compact-document"]
+
+
 def _representative_figure(*, figsize=(4.0, 3.0)):
     figure, ax = plt.subplots(figsize=figsize)
     boundary = Circle((0.5, 0.5), 0.42, transform=ax.transAxes)

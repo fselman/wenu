@@ -2,8 +2,6 @@
 
 from dataclasses import replace
 import json
-import importlib.util
-from pathlib import Path
 
 import numpy as np
 import pytest
@@ -142,11 +140,8 @@ def test_five_band_overview_preserves_all_numbers_and_exports(five_band_atlas, o
 
 @pytest.fixture
 def overview_example():
-    path = Path(__file__).resolve().parents[1] / "tools/render_atlas_band_overview_v1.py"
-    spec = importlib.util.spec_from_file_location("atlas_overview_example", path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+    from wenu.charts import atlas_index
+    return atlas_index
 
 
 @pytest.mark.parametrize("join,width", [(0, 0), (82.5, 20), (359.5, 40)])
@@ -186,7 +181,9 @@ def test_join_clip_tracks_export_dpi_and_retains_both_contours(five_band_atlas, 
             overview_example._draw_face(ax, five_band_atlas,
                 overview_example.overview_face(five_band_atlas.geometry.overview,pole), footprints=True)
         overview_example._join_faces(figure, axes, five_band_atlas)
-        assert len(figure.artists) == 2
+        for ax, pole in zip(axes, ("north", "south")):
+            contours = [a for a in ax.lines if a.get_gid() == f"atlas-index-{pole}-complete-rim"]
+            assert len(contours) == 1 and not contours[0].get_clip_on()
         clips = [ax.lines[0].get_clip_box() for ax in axes]
         before = [clip.extents.copy() for clip in clips]
         # GUI canvases may already have scaled the requested DPI for Retina.
@@ -220,8 +217,8 @@ def test_astronomical_index_uses_json_and_native_canonical_pipeline(
     monkeypatch.setattr(CelestialSphere, "draw_chart", recording)
     join = overview_example._join_faces
     numbers = set()
-    def inspect_join(figure, axes, atlas):
-        join(figure, axes, atlas)
+    def inspect_join(figure, axes, atlas, presentation=None):
+        join(figure, axes, atlas, presentation)
         for ax in axes:
             for artist in ax.texts:
                 if artist.get_text().isdigit():

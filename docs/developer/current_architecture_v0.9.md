@@ -2394,3 +2394,17 @@ constructs an observer/renderer. The supported request is fixed ICRS and
 stereographic with the existing orientation and numbering rules. No top-level
 export, dependency, chart/render pipeline or coordinate transformation changes.
 Index presentation and chart/report production remain separate later adapters.
+
+
+## Installed atlas index candidate (2026-10-09)
+
+The accepted designer is merged in PR #220 (`0cbb06ba`): 413 focused and 3,270
+full Mac tests, installed route and 34-sheet JSON validated. The next bounded
+product is `wenu_plot_atlas`, with independent version-1 presentation TOML.
+`charts/atlas_index.py` relocates the developer index owner, closes its inputs,
+and orchestrates paired figure composition and failure-safe export publication.
+`cli/atlas.py:plot_main` is its argument/TOML adapter. The legacy tool delegates.
+It reads/revalidates JSON without placement, changing numbering or rewriting it.
+Existing polar geometry, native ICRS realization, chart composition, renderer and
+ExportOptions remain authoritative. No observer, ephemeris, arbitrary epoch,
+new transform, chart/report page producer or catalogue curation is introduced.

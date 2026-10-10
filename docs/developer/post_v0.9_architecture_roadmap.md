@@ -21,8 +21,9 @@ stellar designations, minor bodies, atlas publication and satellites below;
 those historical milestones remain evidence, not the current next-action list.
 
 The [atlas user guide](../user_guide/atlas.md) supplies the command/input
-diagram and the user preparation steps. The designer CLI is now an implementation
-candidate (see the latest checkpoint): `wenu_design_atlas` produces **only resolved JSON**;
+diagram and the user preparation steps. The designer CLI is accepted and merged
+in PR #220; the installed index plotter is the current implementation candidate
+(see the latest checkpoint). `wenu_design_atlas` produces **only resolved JSON**;
 `wenu_plot_atlas` consumes it with independent index presentation inputs;
 `wenu_create_atlas` consumes it with publication and curation inputs.
 The original planning checkpoint did not implement or freeze their CLI/schema;
@@ -4370,3 +4371,80 @@ existing geometry oracles. Require focused/full regression and exact-head Mac
 verification before separate acceptance/merge. Next implement `wenu_plot_atlas`
 with independent presentation input; then `wenu_create_atlas` and pilot pairs.
 No merge or cleanup is authorized by this implementation request.
+
+
+## Installed atlas index candidate (2026-10-09)
+
+Fernando accepted and authorized merge of designer PR #220. Main `0cbb06ba`
+contains the exact `2e50f4f5` production content: 413 focused and 3,270 full Mac
+tests passed; installed designer emitted revalidated 34-sheet JSON; clean Mac
+main synchronization confirmed. This supersedes designer-pending checkpoints.
+Fernando authorized the next index-plotter milestone.
+
+As-is: the developer index tool already owns accepted composition and canonical
+native layer orchestration. Relocate it into `charts/atlas_index.py` rather than
+importing repository tools from an installed package or copying a second path.
+Admit independent closed presentation TOML for joined/separate layout, figure
+size, footprint display, selected native layers/levels/magnitude, index fonts,
+palette and fixed-size PNG/PDF/SVG export. Extend `cli/atlas.py` with installed
+`wenu_plot_atlas`; keep the old review tool as a thin compatibility adapter.
+Reuse geometry/persistence, projection, composition/detail, realization, renderer
+and export owners. No placement, observer, boundary-frame extension, report-page
+production, new dependency or catalogue curation belongs to this milestone.
+
+Admission gates: input closure and units, source JSON byte preservation,
+number/coverage consistency, selected native layers without observer transforms,
+real multi-format exports, DPI/physical dimensions, failure/race/interruption
+cleanup, legacy route and focused/full regression. Inspect the authored joined
+astronomical index in PNG/PDF/SVG, then obtain exact-head Mac acceptance.
+Merge/deletion remain separate. Next `wenu_create_atlas` and small pilot pairs.
+
+
+### Index veil review amendment (2026-10-09)
+
+Fernando's Mac verified plotter head `4422a127`: 442 focused and 3,299 full
+tests, installation and three exports passed, with source JSON SHA unchanged.
+The whitespace-only successor `c1ce670e` removes one trailing blank line.
+During visual review Fernando requested configurable colour/transparency over
+the celestial content to emphasize index borders/numbers. Extend this same
+pending plotter candidate with an optional compatible veil table and a version-2
+authored example. Keep the canonical renderer and joined clipping, raise index
+furniture above the veil, and require focused/full and PNG/PDF/SVG review.
+Plotter acceptance/merge remain pending; no page production is added.
+
+### Atlas semantic SVG review amendment (2026-10-09)
+
+Exact veil candidate `653e4c51` passed 454 focused and all 3,311 Mac tests;
+installation, PNG/PDF/SVG, unchanged JSON, diff and clean synchronized branch
+checks passed. Fernando then authorized meaningful SVG hierarchy and atlas
+chart-number identities, explicitly retaining borders and numbers above the
+veil. Extend the same pending PR, using the existing semantic renderer/export
+ownership. Face-scope catalogue IDs, name furniture and guides, carry HIP
+marker identity, and use ordered logical-group fragments where consolidation
+would alter paint order. Extend the existing atlas and SVG test owners for
+unique IDs, all chart numbers, hierarchy and interleaving. The coordinate guide
+was reviewed and remains current: no coordinate operation or provenance changes.
+Acceptance, merge and chart/report production remain separate decisions.
+
+### Atlas hierarchy simplification amendment (2026-10-10)
+
+Fernando rejected the repeated ancestors and fragmented editor hierarchy at
+Mac-verified `1c9ab746` (542 focused / 3,312 full tests) and approved North Disk
+and South Disk containing Charts, individual chart groups and their label and
+boundaries, alongside celestial layers and guides. This supersedes the index's
+ordered-fragment presentation. Preserve the shared export owner and default
+behavior for other products; declare containers and compact leaves upstream.
+
+Use one chart group per visible disk, with a common drawing order across all
+formats and chart furniture above the veil. Preserve source identifiers,
+editable number text/backing boxes, clipping, full joined contours and resolved
+JSON. Extend existing atlas and SVG tests for direct ownership, unique chart
+groups, shape equivalence and no empty hidden polar footprints. A Chart 34
+visual bug was reported without a detailed specimen; removing its spurious
+empty south footprint does not yet establish that the reported visual defect
+is resolved. Coordinate ownership and provenance remain unchanged. Focused,
+full and Mac visual/editor review remain required; PR #221 remains unmerged.
+Inkscape raster review exposed a prior SVG backend omission of the joined
+half-page clip rectangle. Preserve its intersection with native path clips
+through caller-declared export clip boxes in the shared SVG owner, keeping
+full contour guides unclipped and both veils confined to their assigned sides.

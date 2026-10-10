@@ -160,3 +160,289 @@ def test_module_route_and_installed_entry_point(tmp_path):
     assert result.returncode == 0, result.stderr
     assert result.stdout == ""
     assert len(AtlasBandTiling.read_json(output).geometry.sheets) == 34
+
+
+@pytest.fixture
+def index_data():
+    return cli.tomllib.loads((ROOT / "examples/atlas_index_style_v1.toml").read_text())
+
+
+@pytest.mark.parametrize("group,key,value", [
+    (None, "schema_version", True), (None, "schema_version", 2),
+    (None, "document_kind", "chart"), (None, "unknown", 1),
+    ("layout", "joined", "true"), ("layout", "width_mm", 0),
+    ("layout", "height_mm", float("nan")), ("layout", "join_ra_hours", 5.5),
+    ("content", "layers", ["planets"]), ("content", "layers", ["stars", "stars"]),
+    ("content", "layers", ["constellation_boundaries"]),
+    ("content", "star_magnitude_limit", "4.5"),
+    ("content", "milky_way_levels", ["ol9"]),
+    ("typography", "number_size_pt", True),
+    ("colours", "ink_color", "not-a-colour"),
+    ("export", "formats", []), ("export", "formats", ["png", "png"]),
+    ("export", "formats", ["eps"]), ("export", "dpi", 160.5),
+    ("export", "transparent", 1),
+])
+def test_index_request_rejects_unsupported_inputs(index_data, group, key, value):
+    from wenu.charts.atlas_index import AtlasIndexPresentation
+    data = deepcopy(index_data)
+    (data if group is None else data[group])[key] = value
+    with pytest.raises(ValueError):
+        AtlasIndexPresentation.from_dict(data)
+
+
+def test_plot_cli_geometry_is_unchanged_and_exports_selected_formats(index_data, request_data, tmp_path, monkeypatch, capsys):
+    from wenu.charts import atlas_index as index
+    from dataclasses import replace
+    from PIL import Image
+    from xml.etree import ElementTree
+    import wenu.atlas_design as geometry
+    atlas = geometry.AtlasDesignRequest.from_dict(request_data).resolve()
+    design = atlas.write_json(tmp_path / "design_v1.json")
+    before = design.read_bytes()
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Plotter must not design, observe or load sky in geometry-only mode")
+    monkeypatch.setattr(geometry, "design_five_band_atlas", forbidden)
+    monkeypatch.setattr(geometry, "design_band_atlas", forbidden)
+    monkeypatch.setattr(index, "index_sky", forbidden)
+    presentation = replace(index.AtlasIndexPresentation.from_dict(index_data),
+        layers=(), milky_way_levels=(), transparent=True, number_size_pt=13,
+        ink_color="#551177", paper_color="#f0e0c0")
+    figures = []
+    original = index.ExportOptions.save
+    def capture(self, figure, path):
+        if not figures:
+            figures.append(figure)
+        return original(self, figure, path)
+    monkeypatch.setattr(index.ExportOptions, "save", capture)
+    paths = index.plot_overview(design, tmp_path / "index_v1", presentation=presentation)
+    assert {p.suffix for p in paths} == {".png", ".pdf", ".svg"}
+    with Image.open(paths[0]) as image:
+        assert image.size == (2240, 1280)
+        assert image.convert("RGBA").getpixel((0, 0))[3] == 0
+    svg = ElementTree.parse(paths[2]).getroot()
+    assert svg.get("width") == "1008pt"
+    assert paths[1].read_bytes().startswith(b"%PDF-")
+    number_labels = [t for ax in figures[0].axes for t in ax.texts if t.get_text().isdigit()]
+    assert {int(t.get_text()) for t in number_labels} == set(range(1, 35))
+    assert all(t.get_fontsize() == 13 and t.get_color() == "#551177" for t in number_labels)
+    assert design.read_bytes() == before
+    with pytest.raises(FileExistsError):
+        index.plot_overview(design, tmp_path / "index_v1", presentation=presentation)
+    assert not list(tmp_path.glob(".wenu-index-*"))
+    assert 'wenu_plot_atlas = "wenu.cli.atlas:plot_main"' in (ROOT / "pyproject.toml").read_text()
+
+
+@pytest.mark.parametrize("layers,levels", [
+    (("stars",), ()), (("milky_way",), ("ol3",)),
+    (("constellation_lines", "constellation_labels"), ()),
+    (("magellanic_clouds",), ()),
+])
+def test_index_selects_native_layers_without_observer(layers, levels, request_data, tmp_path, monkeypatch):
+    from dataclasses import replace
+    from wenu.charts import atlas_index as index
+    from wenu.observer import Observer
+    from wenu.coordinate_service import CoordinateService
+    atlas = AtlasDesignRequest.from_dict(request_data).resolve()
+    design = atlas.write_json(tmp_path / "design_v1.json")
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Native index requested observation or an observer")
+    monkeypatch.setattr(Observer, "__init__", forbidden)
+    monkeypatch.setattr(CoordinateService, "transform_observer_geometry", forbidden)
+    results = []
+    original = index.CelestialSphere.draw_chart
+    def capture(self, **kwargs):
+        result = original(self, **kwargs)
+        results.append(result)
+        return result
+    monkeypatch.setattr(index.CelestialSphere, "draw_chart", capture)
+    config = replace(index.AtlasIndexPresentation(), layers=layers,
+                     milky_way_levels=levels, formats=("svg",))
+    index.plot_overview(design, tmp_path / "native_v1", presentation=config)
+    assert len(results) == 2
+    expected = {"milky_way_isophotes" if v == "milky_way" else
+                "magellanic_cloud_isophotes" if v == "magellanic_clouds" else v for v in layers}
+    for result in results:
+        assert {r.layer.layer_name for r in result.layers} == expected
+        assert all(r.spherical.coordinate_spec.frame == "icrs" for r in result.layers)
+        for r in result.layers:
+            if r.layer.layer_name == "milky_way_isophotes":
+                assert set(r.spherical.metadata["level"]) == set(levels)
+
+
+@pytest.mark.parametrize("fault", ["render", "publication", "interrupt"])
+def test_index_failed_batch_removes_only_its_outputs(fault, request_data, tmp_path, monkeypatch):
+    from wenu.charts import atlas_index as index
+    atlas = AtlasDesignRequest.from_dict(request_data).resolve()
+    design = atlas.write_json(tmp_path / "design_v1.json")
+    save = index.ExportOptions.save
+    link = index.os.link
+    count = 0
+    def fail_save(self, figure, path):
+        nonlocal count
+        count += 1
+        if count == 2:
+            raise OSError("export failed")
+        return save(self, figure, path)
+    def fail_link(source, destination):
+        nonlocal count
+        count += 1
+        if count == 2:
+            if fault == "interrupt":
+                raise KeyboardInterrupt()
+            Path(destination).write_bytes(b"concurrent winner")
+            raise FileExistsError("concurrent winner")
+        return link(source, destination)
+    monkeypatch.setattr(index.ExportOptions, "save", fail_save if fault == "render" else save)
+    monkeypatch.setattr(index.os, "link", fail_link if fault != "render" else link)
+    with pytest.raises(KeyboardInterrupt if fault == "interrupt" else OSError):
+        index.plot_overview(design, tmp_path / "index_v1", presentation=index.AtlasIndexPresentation())
+    assert not (tmp_path / "index_v1.png").exists()
+    assert not (tmp_path / "index_v1.svg").exists()
+    if fault == "publication":
+        assert (tmp_path / "index_v1.pdf").read_bytes() == b"concurrent winner"
+    else:
+        assert not (tmp_path / "index_v1.pdf").exists()
+    assert not list(tmp_path.glob(".wenu-index-*"))
+
+
+def test_plot_cli_example_and_closed_errors(request_data, tmp_path, capsys):
+    atlas = AtlasDesignRequest.from_dict(request_data).resolve()
+    design = atlas.write_json(tmp_path / "design_v1.json")
+    config = ROOT / "examples/atlas_index_style_v1.toml"
+    arguments = ["--design", str(design), "--config", str(config),
+                 "--output-prefix", str(tmp_path / "index_v1")]
+    assert cli.plot_main(arguments) == 0
+    assert len(capsys.readouterr().out.splitlines()) == 3
+    with pytest.raises(SystemExit) as exc:
+        cli.plot_main(arguments)
+    assert exc.value.code == 2
+    with pytest.raises(SystemExit):
+        cli.plot_main(arguments + ["--position-angle", "10"])
+    assert not list(tmp_path.glob(".wenu-index-*"))
+
+
+@pytest.mark.parametrize("change", [
+    {"enabled": "true"}, {"color": "unknown-colour"}, {"opacity": True},
+    {"opacity": -0.1}, {"opacity": 1.1}, {"opacity": float("nan")},
+    {"extra": 1},
+])
+def test_veil_admission_is_closed_and_finite(index_data, change):
+    from wenu.charts.atlas_index import AtlasIndexPresentation
+    index_data["veil"] = {"enabled": True, "color": "white", "opacity": 0.55}
+    index_data["veil"].update(change)
+    with pytest.raises(ValueError):
+        AtlasIndexPresentation.from_dict(index_data)
+
+
+@pytest.mark.parametrize("enabled,opacity,expected", [(False, 0.55, False),
+    (True, 0, False), (True, 0.55, True), (True, 1, True)])
+def test_veil_is_between_native_objects_and_index_borders_and_numbers(
+        request_data, enabled, opacity, expected, monkeypatch):
+    from dataclasses import replace
+    from wenu.charts import atlas_index as index
+    from matplotlib.figure import Figure
+    from matplotlib.backends.backend_agg import FigureCanvasAgg
+    from matplotlib.colors import to_rgba
+    atlas = AtlasDesignRequest.from_dict(request_data).resolve()
+    figure = Figure(figsize=(14, 8))
+    FigureCanvasAgg(figure)
+    ax = figure.add_subplot()
+    celestial = []
+    original = index.PolarPlanisphereChart.render
+    def capture(self, sky, renderer, **kwargs):
+        result = original(self, sky, renderer, **kwargs)
+        celestial.extend(a for a in (*ax.lines, *ax.patches, *ax.collections, *ax.texts)
+                         if getattr(a, "_wenu_svg_semantics", None))
+        return result
+    monkeypatch.setattr(index.PolarPlanisphereChart, "render", capture)
+    sky = index.index_sky(4.5, layers=("stars",))
+    presentation = replace(index.AtlasIndexPresentation(), layers=("stars",),
+        veil_enabled=enabled, veil_color="#ffeedd", veil_opacity=opacity)
+    face = index.overview_face(atlas.geometry.overview, "north")
+    index._draw_face(ax, atlas, face, footprints=True, sky=sky,
+                    presentation=presentation, star_magnitude_limit=4.5)
+    veils = [p for p in ax.patches if p.get_gid() == "atlas-index-veil-north"]
+    assert bool(veils) == expected
+    assert {int(t.get_text()) for t in ax.texts if t.get_text().isdigit()} >= {34}
+    if expected:
+        veil = veils[0]
+        assert veil.get_alpha() == opacity
+        assert veil.get_facecolor() == to_rgba("#ffeedd", opacity)
+        assert all(a.get_zorder() < veil.get_zorder() for a in celestial)
+        overlay = [a for a in (*ax.lines, *ax.patches, *ax.collections, *ax.texts)
+                   if a not in celestial and a is not veil]
+        assert overlay and all(a.get_zorder() > veil.get_zorder() for a in overlay)
+        index._join_faces(figure, (ax, figure.add_subplot()), atlas)
+        assert veil.get_clip_box() is not None
+
+
+def test_veil_example_exports_svg_without_modifying_design(request_data, tmp_path):
+    from wenu.charts.atlas_index import AtlasIndexPresentation
+    from xml.etree import ElementTree
+    old = cli.tomllib.loads((ROOT / "examples/atlas_index_style_v1.toml").read_text())
+    assert not AtlasIndexPresentation.from_dict(old).veil_enabled
+    config = ROOT / "examples/atlas_index_style_v2.toml"
+    data = cli.tomllib.loads(config.read_text())
+    assert AtlasIndexPresentation.from_dict(data).veil_opacity == 0.55
+    design = AtlasDesignRequest.from_dict(request_data).resolve().write_json(tmp_path / "design_v1.json")
+    before = design.read_bytes()
+    assert cli.plot_main(["--design", str(design), "--config", str(config),
+        "--output-prefix", str(tmp_path / "veiled_index_v2")]) == 0
+    svg = ElementTree.parse(tmp_path / "veiled_index_v2.svg")
+    ids = {e.get("id") for e in svg.getroot().iter()}
+    assert {"atlas-index-veil-north", "atlas-index-veil-south"} <= ids
+    elements = list(svg.getroot().iter())
+    all_ids = [e.get("id") for e in elements if e.get("id")]
+    assert len(all_ids) == len(set(all_ids))
+    by_id = {e.get("id"): e for e in elements}
+    parent_of = {child: parent for parent in elements for child in parent}
+    label_attr = "{http://www.inkscape.org/namespaces/inkscape}label"
+    assert by_id["atlas-index"].get(label_attr) == "Atlas Index"
+    for pole in ("north", "south"):
+        disk = by_id[f"atlas-index-{pole}"]
+        assert disk.get(label_attr) == f"{pole.capitalize()} Disk"
+        folders = {e.get(label_attr): e for e in disk}
+        assert {"Stars", "Constellations", "Milky Way", "Veil", "Guides", "Charts", "Heading"} <= folders.keys()
+        assert not {"Chart", "Atlas Index", "Celestial content", "Atlas Charts"} & folders.keys()
+        charts = folders["Charts"]
+        chart_names = [e.get(label_attr) for e in charts]
+        assert len(chart_names) == len(set(chart_names))
+        for chart in charts:
+            assert chart.get(label_attr).startswith("Chart ")
+            assert {e.get(label_attr) for e in chart} <= {"Label", "Primary Boundary", "Full Footprint"}
+        assert all(e.get("id", "").startswith("star-hip-") or e.tag.endswith("}defs")
+                   for e in folders["Stars"])
+        veil_position = elements.index(by_id[f"atlas-index-veil-{pole}"])
+        numbers = [e for e in elements if e.get("data-role") == "number_label"
+                   and e.get("id", "").endswith(pole)]
+        boundaries = [e for e in elements if e.get("data-role") in {"primary_boundary", "footprint"}
+                      and e.get("id", "").endswith(pole)]
+        assert numbers and boundaries
+        assert all(elements.index(e) > veil_position for e in numbers + boundaries)
+        for e in numbers + boundaries:
+            number = int(e.get("data-chart-number"))
+            assert f"chart_{number:02d}" in e.get("data-wenu-semantic-path")
+            assert parent_of[e].get(label_attr) == f"Chart {number}"
+            assert parent_of[parent_of[e]] is charts
+            if e.get("data-role") != "number_label":
+                assert e.tag.endswith("}path")
+            else:
+                assert {child.get(label_attr) for child in e} == {"Background", "Text"}
+        stars = [e for e in elements if e.get("id", "").startswith("star-hip-")
+                 and (e.get("id").endswith(pole) or f"-{pole}-overlay-" in e.get("id"))]
+        assert stars and all(elements.index(e) < veil_position for e in stars)
+        assert all(e.get("data-wenu-display-name", "").startswith("HIP ") for e in stars)
+        primary = by_id[f"chart-14-primary-boundary-{pole}"]
+        clip = by_id[primary.get("clip-path")[5:-1]]
+        rectangle = next(iter(clip))
+        assert rectangle.tag.endswith("}rect")
+        assert float(rectangle.get("x")) == pytest.approx(0 if pole == "north" else 504)
+        assert float(rectangle.get("width")) == pytest.approx(504)
+        assert rectangle.get("clip-path") is not None
+    assert {int(e.get("data-chart-number")) for e in elements
+            if e.get("data-role") == "number_label"} == set(range(1, 35))
+    assert "chart-14-number-label-north" in ids
+    assert "chart-14-number-label-south" in ids
+    assert "chart-34-footprint-south" not in ids
+    assert "chart-01-footprint-north" not in ids
+    assert design.read_bytes() == before

@@ -346,3 +346,24 @@ flowchart TD
 
 The separate overview tool consumes the same JSON; it does not run placement.
 The installed plotter and chart/report producer remain subsequent milestones.
+
+
+### Installed index presentation candidate (2026-10-09)
+
+The designer is accepted in PR #220. The index owner moves from the developer
+tool to `charts/atlas_index.py`; the tool becomes a compatibility adapter.
+This product flow supplements the unchanged coordinate and projection views:
+
+```mermaid
+flowchart TD
+    J["Validated atlas JSON"] --> I["Atlas index composition"]
+    T["Independent presentation TOML"] --> A["Installed plot adapter"]
+    A --> I
+    I --> C["Canonical polar charts and native ICRS layers"]
+    C --> R["MatplotlibRenderer and ExportOptions"]
+    R --> O["PNG, PDF, SVG"]
+```
+
+No edge returns to placement or changes JSON. Catalogue realization uses the
+accepted observer-free static ICRS path; figure assembly uses the established
+equatorial join and DPI-aware bisector. No coordinate authority is added.

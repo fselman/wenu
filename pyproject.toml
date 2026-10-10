@@ -31,6 +31,7 @@ dependencies = [
 [project.scripts]
 wenu_chart = "wenu.cli.chart:main"
 wenu_design_atlas = "wenu.cli.atlas:design_main"
+wenu_plot_atlas = "wenu.cli.atlas:plot_main"
 wenu_retrieve_comets = "wenu.cli.comets:main"
 wenu_examples = "wenu.cli.examples:main"
 wenu_notebooks = "wenu.cli.notebooks:main"

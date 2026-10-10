@@ -3296,3 +3296,25 @@ tool already reads that JSON. No atlas entry point or closed user request exists
 
 Projection, coordinate realization, catalogues, chart generation, renderer and
 exporter ownership remain unchanged. No user-facing figure is a designer output.
+
+
+## Installed index ownership (2026-10-09)
+
+As-is at accepted PR #220/main `0cbb06ba`: the developer overview tool owns
+already verified polar composition/primary outlines and optional native layers.
+An installed package must not import `tools` or duplicate those responsibilities.
+Admit `src/wenu/charts/atlas_index.py` by moving that exact index owner into the
+chart product package, extending it with immutable closed presentation admission
+and rendering/export lifecycle. The closest `atlas_design.py` owns geometry,
+while `polar_planisphere.py` owns one polar chart; neither should absorb paired
+figure furniture and multiple-format publication. Dependencies point toward
+existing atlas JSON, polar chart, composition/detail, sky realization,
+MatplotlibRenderer and ExportOptions. No new geometry, coordinate or astronomical
+rendering authority is created. `tools/render_atlas_band_overview_v1.py` becomes
+only a legacy argument adapter to the installed owner.
+
+Extend `cli/atlas.py` with `plot_main`, install `wenu_plot_atlas`, and add authored
+`examples/atlas_index_style_v1.toml`. Extend `test_atlas_cli.py` for independent
+presentation admission, selected native layers, unchanged JSON/numbers, physical
+exports and batch faults; point existing `test_atlas_design.py` index oracles at
+the relocated owner. No test file, dependency or top-level export is added.

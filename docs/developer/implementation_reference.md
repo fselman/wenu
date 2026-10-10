@@ -4268,3 +4268,73 @@ An existing destination, publication race or invalid/missing input exits 2;
 KeyboardInterrupt exits 130. Successful diagnostics use stderr and stdout is
 empty. The JSON is the existing band-tiling format and the developer plotter
 continues to read it unchanged. No source-TOML byte digest is claimed in output.
+
+
+## Installed atlas plotter contract (2026-10-09)
+
+Designer PR #220 is accepted and merged at `0cbb06ba`; its exact Mac-tested head
+`2e50f4f5` passed 413 focused and 3,270 full tests plus installed 34-sheet output.
+
+`wenu_plot_atlas --design RESOLVED_JSON --config PRESENTATION_TOML --output-prefix NEW_PREFIX`
+uses `cli/atlas.py:plot_main` and `charts/atlas_index.py:AtlasIndexPresentation` /
+`plot_overview`. The version-1 `wenu-atlas-index-presentation` mapping has closed
+layout, content, typography, colours and export tables; see the atlas user guide
+and authored example for all required keys/units/ranges. Geometry-only and
+selective native layers use the same paired chart pipeline. Canonical astronomical
+styling remains separate from configurable index furniture.
+
+Both PNG/PDF/SVG staging and final publication occur beside the output prefix.
+Reject existing files/symlinks before catalogue loading; hard-link publication
+never overwrites a concurrent destination. On render/publication/interruption
+failure, remove only this invocation's published inodes and staging directory.
+An unexpected process crash can leave a partial format batch; no transactional
+multi-file guarantee is asserted. Figures are closed on export failure.
+The developer tool delegates to the installed owner and keeps its old flags.
+
+
+### Index veil extension (2026-10-09)
+
+`AtlasIndexPresentation` accepts an optional closed `[veil]` table with
+`enabled`, `color` and finite `opacity` in [0,1]. Missing means disabled.
+The existing index owner draws a cap polygon through MatplotlibRenderer above
+all celestial artists, then places all index borders/footprints/guides/numbers
+above it. The existing joined clip applies to the polygon; the complete rim
+is retained. No domain membership, coordinate realization or catalogue changes.
+The authored style example is versioned as `atlas_index_style_v2.toml`; input
+schema remains compatible version 1. Extend existing CLI tests for admission,
+zero/full opacity, ordering/clipping and real SVG identities/JSON preservation.
+
+### Atlas SVG identity extension (2026-10-09)
+
+The index owner declares chart-number-based identities, custom data attributes,
+face-scoped native catalogue paths and furniture names before export. The
+renderer retains original point IDs alongside collection marker instances;
+the index supplies HIP display identities without changing symbol rendering.
+`attach_semantic_svg_metadata` optionally carries safe non-reserved data
+attributes, marker identities and `preserve_paint_order`. The shared SVG owner
+wraps contiguous semantic runs as uniquely numbered fragments, including
+non-semantic sibling gaps, and labels marker uses or inline paths from those
+supplied identities. No geometry, style, clipping or artist ordering changes.
+Existing callers retain their current hierarchy mode. Atlas groups do not
+consolidate boundaries or numbers beneath a veil.
+
+### Atlas compact SVG containers (2026-10-10)
+
+The index declares the figure and axes as semantic hierarchy containers.
+`attach_semantic_svg_metadata` optionally carries `hierarchy_container` and
+`compact_hierarchy`; existing callers retain their prior behavior. The shared
+exporter materializes only paths below a declared container, reuses single
+artist leaves, and conservatively removes backend wrappers while transferring
+clipping and retaining transforms/styles. Individual HIP identities survive
+collection flattening. Number boxes retain named Background and Text parts.
+
+The index supplies a contiguous per-chart/per-constellation drawing order in
+Matplotlib, common to PNG, PDF and SVG. Chart components are above the veil
+and guides; lines and labels for each constellation are below star symbols.
+The shared exporter also accepts a caller-declared `svg_clip_box` in export-page
+points: it intersects that rectangle with the backend path clip in SVG defs.
+This preserves joined-lens clipping that Matplotlib SVG otherwise omits when
+`clip_box` and `clip_path` coexist; no projected geometry is recomputed.
+Joined complete contours are axis-owned and unclipped. Completely hidden
+footprints are omitted, including the formerly empty chart-34 south entry.
+No catalogue, projected coordinates, JSON numbering or tiling changes occur.
