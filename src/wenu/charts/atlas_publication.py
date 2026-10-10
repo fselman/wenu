@@ -205,6 +205,50 @@ def _initialize_atlas_worker(directory, digest):
         expected_manifest_sha256=digest).make_sky()
 
 
+def _render_atlas_report(chart, sky, composition, rendering, directory):
+    """Reserved left-hand page with canonical legends from the existing render."""
+    import matplotlib.pyplot as plt
+    from .automatic_legends import draw_automatic_chart_legends
+    from .legend_plan import ChartLegendPlan, LegendPlacement
+    from .regional import ExportOptions
+    page = chart.page
+    figure = plt.figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4))
+    left = page.outer_mm / page.width_mm
+    bottom = page.bottom_mm / page.height_mm
+    width = page.useful_width_mm / page.width_mm
+    height = page.useful_height_mm / page.height_mm
+    # Reserve the wider column for later object reports; keep the key by the fold.
+    ax = figure.add_axes((left + width * 0.68, bottom, width * 0.32, height))
+    ax.set_axis_off()
+    figure.text(left, 1 - page.top_mm / (2 * page.height_mm),
+        f"Chart {chart.sheet.number} — Object report", va="center", fontsize=10)
+    figure.text(left, bottom + height - 0.04,
+        "Reserved for the object report", va="top", fontsize=10, color="0.45")
+    try:
+        plan = ChartLegendPlan("regional",
+            LegendPlacement(location="upper left"),
+            LegendPlacement(enabled="stars" in composition.detail.enabled_layers,
+                location="lower left"))
+        legends = draw_automatic_chart_legends(ax, chart, sky, composition.style,
+            rendering, resolved_detail=composition.detail, plan=plan,
+            include_context=False)
+        # Detect legend overflow rather than silently cropping it into the report.
+        figure.canvas.draw()
+        renderer = figure.canvas.get_renderer()
+        bounds = ax.get_window_extent(renderer)
+        extents = [artist.get_window_extent(renderer) for artist in legends.artists]
+        for extent in extents:
+            if (extent.x0 < bounds.x0 - 1 or extent.x1 > bounds.x1 + 1
+                    or extent.y0 < bounds.y0 - 1 or extent.y1 > bounds.y1 + 1):
+                raise ValueError("Legends do not fit the facing-page column.")
+        if len(extents) == 2 and extents[0].overlaps(extents[1]):
+            raise ValueError("Facing-page legends overlap.")
+        ExportOptions(dpi=composition.mode.dpi, bbox_inches=None).save(figure,
+            Path(directory) / f"report-{chart.sheet.number:02d}.pdf")
+    finally:
+        plt.close(figure)
+
+
 def _render_atlas_sheet(task, sky=None):
     """One isolated figure, canonical composition/export, all requested formats."""
     import matplotlib.pyplot as plt
@@ -215,7 +259,8 @@ def _render_atlas_sheet(task, sky=None):
     from .regional import ExportOptions
     from wenu.rendering.matplotlib import MatplotlibRenderer
     from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
-    sheet, page, presentation, directory = task
+    sheet, page, presentation, directory, *options = task
+    facing_report = bool(options and options[0])
     sky = _WORKER_SKY if sky is None else sky
     chart = AtlasSheetChart(sheet, page)
     composition = compose_chart(chart, style=presentation.style,
@@ -244,6 +289,8 @@ def _render_atlas_sheet(task, sky=None):
             export_options=ExportOptions(dpi=presentation.dpi, bbox_inches=None))
         for suffix in presentation.formats[1:]:
             result.export_options.save(figure, Path(directory) / f"chart-{sheet.number:02d}.{suffix}")
+        if facing_report:
+            _render_atlas_report(chart, sky, composition, result.rendering, directory)
         return sheet.number
     except Exception as exc:
         raise RuntimeError(f"Chart {sheet.number} failed: {exc}") from exc
@@ -251,12 +298,31 @@ def _render_atlas_sheet(task, sky=None):
         plt.close(figure)
 
 
+def _append_atlas_index(writer, reader, page):
+    """Fit one supplied vector index into the physical atlas paper margins."""
+    from pypdf import PdfWriter, Transformation
+    with PdfWriter() as source:
+        source.clone_document_from_reader(reader)
+        index_page = source.pages[0]
+        index_page.transfer_rotation_to_content()
+        target = writer.add_blank_page(width=page.width_mm * 72 / 25.4,
+                                      height=page.height_mm * 72 / 25.4)
+        box = index_page.mediabox
+        width, height = page.useful_width_mm * 72 / 25.4, page.useful_height_mm * 72 / 25.4
+        scale = min(width / float(box.width), height / float(box.height))
+        x = page.inner_mm * 72 / 25.4 + (width - float(box.width) * scale) / 2
+        y = page.bottom_mm * 72 / 25.4 + (height - float(box.height) * scale) / 2
+        transform = Transformation().translate(-float(box.left), -float(box.bottom)).scale(scale).translate(x, y)
+        target.merge_transformed_page(index_page, transform)
+
+
 def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
-                 save_sky=None, from_sky=None):
+                 save_sky=None, from_sky=None, index=None):
     """Produce ordered chart pages with one preparation or explicit saved reuse.
 
     A manifest linked last commits the complete batch. Existing outputs and
-    saved skies are preserved. Facing reports and editorial curation are separate.
+    saved skies are preserved. An index PDF enables reserved facing report pages;
+    object inventories and editorial curation remain separate.
     """
     from contextlib import ExitStack
     from dataclasses import asdict
@@ -268,7 +334,7 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
     import tempfile
     import time
     from concurrent.futures import ProcessPoolExecutor, wait, FIRST_COMPLETED
-    from pypdf import PdfWriter
+    from pypdf import PdfReader, PdfWriter
     from wenu.sky.native_snapshot import prepare_native_sky_snapshot, read_native_sky_snapshot
     _positive_integer(jobs, "jobs")
     if not isinstance(presentation, AtlasChartPresentation):
@@ -278,6 +344,23 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
     raw = Path(design_path).read_bytes()
     atlas = AtlasBandTiling.from_json(raw.decode("utf-8"))
     sheets = select_atlas_sheets(atlas, charts)
+    index_bytes = None
+    if index is not None:
+        import io
+        index_bytes = Path(index).read_bytes()
+        try:
+            index_reader = PdfReader(io.BytesIO(index_bytes))
+            if index_reader.is_encrypted or len(index_reader.pages) != 1:
+                raise ValueError("Index must be an unencrypted one-page PDF.")
+            index_page = index_reader.pages[0]
+            import math
+            if any(not math.isfinite(float(value)) for value in index_page.mediabox) or min(
+                    float(index_page.mediabox.width), float(index_page.mediabox.height)) <= 0:
+                raise ValueError("Index PDF has an invalid page size.")
+        except ValueError:
+            raise
+        except Exception as exc:
+            raise ValueError(f"Cannot read index PDF: {exc}") from exc
     output_dir = Path(output_dir)
     if output_dir.exists() or output_dir.is_symlink() or not output_dir.parent.is_dir():
         raise ValueError("Choose a new output directory with an existing parent.")
@@ -305,6 +388,8 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
         digest = snapshot.manifest_sha256
         staging = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix=".wenu-atlas-pages-", dir=output_dir.parent)))
         tasks = [(sheet, atlas.geometry.page, presentation, str(staging)) for sheet in sheets]
+        if index_bytes is not None:
+            tasks = [(*task, True) for task in tasks]
         if worker_count == 1:
             sky = cold_sky if cold_sky is not None else snapshot.make_sky()
             completed = [_render_atlas_sheet(task, sky) for task in tasks]
@@ -350,13 +435,25 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
         if completed != [sheet.number for sheet in sheets]:
             raise RuntimeError("Incomplete atlas batch.")
         with PdfWriter() as writer:
+            page_order = []
+            if index_bytes is not None:
+                _append_atlas_index(writer, index_reader, atlas.geometry.page)
+                page_order.append(dict(page=1, kind="index"))
+                writer.add_outline_item("Atlas index", 0)
             for sheet in sheets:
+                if index_bytes is not None:
+                    writer.append(staging / f"report-{sheet.number:02d}.pdf")
+                    page_order.append(dict(page=len(page_order) + 1, kind="report", chart=sheet.number))
                 writer.append(staging / f"chart-{sheet.number:02d}.pdf")
+                page_order.append(dict(page=len(page_order) + 1, kind="chart", chart=sheet.number))
+                writer.add_outline_item(f"Chart {sheet.number}", len(writer.pages) - 1)
             writer.write(staging / "atlas.pdf")
         products = sorted(staging.iterdir())
         manifest = dict(schema_version=1, document_kind="wenu-atlas-chart-batch",
             design_sha256=hashlib.sha256(raw).hexdigest(),
             snapshot_sha256=digest, charts=completed, workers=worker_count,
+            index_sha256=(None if index_bytes is None else hashlib.sha256(index_bytes).hexdigest()),
+            report_content=(None if index_bytes is None else "reserved"), page_order=page_order,
             presentation=asdict(presentation), elapsed_seconds=time.perf_counter() - started,
             products={p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in products})
         (staging / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")

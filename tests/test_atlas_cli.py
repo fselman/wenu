@@ -578,9 +578,98 @@ def test_atlas_create_cli_rejects_selector_before_preparation(request_data, tmp_
         raise AssertionError('Invalid requests must not prepare the sky')
     monkeypatch.setattr(native_snapshot, 'prepare_native_sky_snapshot', forbidden)
     for extra in (['--charts', '0'], ['--jobs', '0'],
-                  ['--save-sky', str(tmp_path/'sky'), '--from-sky', 'other']):
+                  ['--save-sky', str(tmp_path/'sky'), '--from-sky', 'other'],
+                  ['--index', str(tmp_path/'missing.pdf')]):
         with pytest.raises(SystemExit) as exc:
             cli.create_main(['--design', str(design), '--config', str(ROOT/'examples/atlas_chart_style_v1.toml'),
                              '--output-dir', str(tmp_path/'output'), *extra])
         assert exc.value.code == 2
     assert not (tmp_path/'output').exists()
+
+
+def test_atlas_index_rejects_multiple_pages_before_preparation(request_data, tmp_path, monkeypatch):
+    from pypdf import PdfWriter
+    from wenu.charts.atlas_publication import AtlasChartPresentation, create_atlas
+    from wenu.sky import native_snapshot
+    design = tmp_path/'design.json'
+    design.write_text(AtlasDesignRequest.from_dict(request_data).resolve().to_json())
+    index = tmp_path/'two-pages.pdf'
+    with PdfWriter() as writer:
+        writer.add_blank_page(width=100,height=100)
+        writer.add_blank_page(width=100,height=100)
+        writer.write(index)
+    def forbidden(*args, **kwargs):
+        raise AssertionError('Invalid index must fail before sky preparation')
+    monkeypatch.setattr(native_snapshot,'prepare_native_sky_snapshot',forbidden)
+    with pytest.raises(ValueError,match='one-page'):
+        create_atlas(design,tmp_path/'output',presentation=AtlasChartPresentation(),index=index)
+    assert not (tmp_path/'output').exists()
+
+
+@pytest.mark.parametrize('dimensions', [(353,250),(250,353)])
+@pytest.mark.parametrize('stars', [True,False])
+def test_reserved_report_mirrors_binding_margin_and_keeps_legends_at_right(dimensions, stars, tmp_path, monkeypatch):
+    from types import SimpleNamespace
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from wenu.atlas_design import AtlasPageGeometry
+    from wenu.charts.atlas_publication import _render_atlas_report
+    from wenu.charts import automatic_legends
+    from wenu.charts.regional import ExportOptions
+    page = AtlasPageGeometry(*dimensions,top_mm=18,bottom_mm=15,inner_mm=25,outer_mm=12)
+    chart = SimpleNamespace(page=page,sheet=SimpleNamespace(number=14))
+    composition = SimpleNamespace(style=object(),detail=SimpleNamespace(enabled_layers={'stars'} if stars else {'galaxies'}),
+                                  mode=SimpleNamespace(dpi=150))
+    rendering = object()
+    calls = []
+    def legend(ax, actual_chart, sky, style, result, **options):
+        assert actual_chart is chart and result is rendering
+        assert style is composition.style and options['resolved_detail'] is composition.detail
+        assert options['include_context'] is False
+        assert options['plan'].objects.location == 'upper left'
+        assert options['plan'].stars.location == 'lower left'
+        assert options['plan'].stars.enabled is stars
+        calls.append(1)
+        return SimpleNamespace(artists=())
+    def save(self, figure, destination):
+        assert destination.name == 'report-14.pdf' and self.bbox_inches is None
+        np.testing.assert_allclose(figure.get_size_inches(), np.array(dimensions)/25.4)
+        ax = figure.axes[0]
+        np.testing.assert_allclose(ax.get_position().bounds,
+            [(page.outer_mm+0.68*page.useful_width_mm)/page.width_mm,
+             page.bottom_mm/page.height_mm,0.32*page.useful_width_mm/page.width_mm,
+             page.useful_height_mm/page.height_mm])
+        assert figure.texts[0].get_position()[0] == page.outer_mm/page.width_mm
+    monkeypatch.setattr(automatic_legends,'draw_automatic_chart_legends',legend)
+    monkeypatch.setattr(ExportOptions,'save',save)
+    before = plt.get_fignums()
+    _render_atlas_report(chart,None,composition,rendering,tmp_path)
+    assert calls == [1] and plt.get_fignums() == before
+
+
+@pytest.mark.parametrize('dimensions', [(353,250),(250,353)])
+def test_atlas_index_keeps_vector_text_and_paper_orientation(dimensions):
+    import io
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from pypdf import PdfReader, PdfWriter
+    from wenu.atlas_design import AtlasPageGeometry
+    from wenu.charts.atlas_publication import _append_atlas_index
+    raw = io.BytesIO()
+    figure = plt.figure(figsize=(14,8))
+    figure.text(0.5,0.5,'Vector index')
+    figure.savefig(raw,format='pdf')
+    plt.close(figure)
+    reader = PdfReader(raw)
+    reader.pages[0].rotate(90)
+    page = AtlasPageGeometry(*dimensions,top_mm=18,bottom_mm=15,inner_mm=25,outer_mm=12)
+    with PdfWriter() as writer:
+        _append_atlas_index(writer,reader,page)
+        output = io.BytesIO()
+        writer.write(output)
+    final = PdfReader(output).pages[0]
+    assert final.rotation == 0 and reader.pages[0].rotation == 90
+    assert 'Vector index' in final.extract_text()
+    np.testing.assert_allclose([float(final.mediabox.width),float(final.mediabox.height)],
+                              np.array(dimensions)*72/25.4)
+    assert not final.images

@@ -5,7 +5,7 @@ The designer was accepted and merged in PR #220 after 413 focused and 3,270
 full Mac tests. `wenu_design_atlas` produces resolved JSON;
 `wenu_plot_atlas` now consumes it with independent version-1 presentation TOML.
 `wenu_create_atlas` now has a chart-page production candidate; see the current
-CLI below. Facing report pages and curation remain pending.
+CLI below. Object report content and curation remain pending; reserved facing pages are available with an index PDF.
 PR #221 passed 543 focused and all 3,313 Mac tests plus SVG visual inspection;
 it merged at `49b29d6a`, with branch cleanup and clean Mac synchronization confirmed.
 Existing charts continue to use [`wenu_chart`](configuration.md).
@@ -30,7 +30,7 @@ flowchart TD
 |---|---|---|
 | `wenu_design_atlas` | Version-1 geometry TOML: page/margins, stereographic field, minimum overlap, overview meridian/band and placement seed; fixed supported orientation/numbering | **Only** a versioned, resolved atlas JSON; no figure and no astronomical catalogue selection |
 | `wenu_plot_atlas` | Resolved JSON plus independent overview layout, astronomical layers, typography and export choices | The two overlapping polar overview maps as an index figure, in PNG, PDF or SVG |
-| `wenu_create_atlas` | Resolved JSON, independent chart presentation, optional saved fixed sky and chart selector | Numbered chart pages, ordered atlas PDF and completion manifest; facing reports and curation remain planned |
+| `wenu_create_atlas` | Resolved JSON, independent chart presentation, optional saved fixed sky and chart selector | Numbered chart pages, optional index/report spreads, ordered atlas PDF and completion manifest; report contents and curation remain planned |
 
 For example, keep the roles in separately versioned files:
 `atlas_design_request_v1.toml`, `atlas_design_v1.json`,
@@ -723,7 +723,7 @@ subsequent milestones.
 
 The third command accepts the agreed CLI. This replaces the historical proposed
 `--scene` handoff above. It produces every selected chart page and an ordered
-vector `atlas.pdf`; facing reports and per-object curation are not runnable yet.
+vector `atlas.pdf`. With `--index PDF` it includes the index and reserved facing report pages; object inventories and per-object curation remain pending.
 Presentation is independent of index styling and saved full-sky content.
 
 ```bash
@@ -767,3 +767,42 @@ Reuse verifies the declared frozen data and rejects insufficient coverage or a
 different design without refreshing sources. It does not skip existing charts.
 Workers finish their active render before shutdown after failure/cancellation.
 The new pypdf dependency assembles PDF pages without rasterizing their content.
+
+
+### Index and facing report pages (current candidate)
+
+Supply `--index atlas_index_v2.pdf`, the one-page vector PDF produced by
+`wenu_plot_atlas`, to create the book layout. The input index is read once and
+its exact SHA-256 is recorded; index appearance does not select chart contents.
+Choose the index generated from the same resolved design. The PDF itself has
+no machine-verifiable design binding; an arbitrary supplied PDF is not proof
+that its chart outlines match that design. No index sky is recreated.
+
+Page 1 is the index. Page 2 is the report reserved for the first selected chart,
+page 3 its chart, then the next report/chart pair on pages 4/5. Every chart is
+on an odd right-hand page even for a sparse selection such as `10,14`; chart
+numbers are retained. A full 34-chart design yields 69 pages. Report pages use
+the chart's exact landscape/portrait dimensions and orientation, with binding
+margins mirrored. The wider left column is reserved for the future object
+report; actual symbol and stellar magnitude legends occupy the right column.
+These are the canonical legend owners using the resolved chart appearance and
+already-rendered star geometry. No second sky render or sphere preparation is
+performed. Disabled stars omit the magnitude key. Legend overflow fails the
+batch instead of hiding or cropping the key.
+
+The index is fitted proportionally into the existing paper margins, without
+rotation, rasterization or a change to chart geometry. Only an unencrypted
+one-page PDF is admitted, before any sky preparation. Index input is preserved.
+Output additionally includes `report-NN.pdf`; `manifest.json` records the index
+digest, reserved report status and explicit physical page order. PDF bookmarks
+identify the index and charts. Without `--index`, the chart-only layout remains
+available. Report content, object inventories and editorial curation are future
+work; an empty report area does not claim that the chart has no objects.
+
+```bash
+wenu_plot_atlas --design atlas_design_v1.json \
+  --config examples/atlas_index_style_v2.toml --output-prefix atlas_index_v2
+wenu_create_atlas --design atlas_design_v1.json \
+  --config examples/atlas_chart_style_v1.toml --index atlas_index_v2.pdf \
+  --charts all --jobs 2 --from-sky fixed_sky_v2 --output-dir atlas_book_v2
+```

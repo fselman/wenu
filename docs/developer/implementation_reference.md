@@ -4505,3 +4505,7 @@ facades. `prepare_native_sky_snapshot(..., return_sky=True)` returns
 Facing report pages, editorial inclusion/exclusion and completed-chart skipping
 remain subsequent work. This candidate produces all chart pages, not complete
 chart/report spreads. No measured speedup is claimed without Mac timings.
+
+### Atlas index and reserved facing pages (2026-10-10)
+
+create_atlas(..., index=None) and wenu_create_atlas --index PDF accept an unencrypted one-page PDF before preparation. Read exact bytes once, retain its SHA-256, fit vector content proportionally to the JSON page without rotation, then assemble index/report/chart order. The index occupies physical page 1; each selected report is even and its chart odd. A 34-chart atlas has 69 pages. report-NN.pdf has mirrored binding margins, a reserved left report column and canonical legends at right. page_order, index_sha256 and report_content in the completion manifest describe the layout; bookmarks identify index/charts. No index argument preserves chart-only output. No report inventory or curation is implemented.

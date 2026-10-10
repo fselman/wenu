@@ -4872,3 +4872,7 @@ outputs. Mac exact-head full regression and print/visual acceptance remain
 required. No merge or cleanup is authorized by implementation approval.
 Next: per-chart explicit identifier include/exclude for PNs, SNRs, galaxies,
 open/globular clusters, then authored facing reports and general filtering.
+
+### Atlas index and reserved facing pages (2026-10-10)
+
+Fernando verified PR #225 head 7416cf5292250e8b358eb8d5b7a689b70f967c13 on the Mac: 693 focused tests, all 3395 tests, all 34 charts and a 34-page PDF passed; charts 10/14 match parallel initial and serial saved-sphere PNGs exactly. The tree was clean and synchronized. On 2026-10-10 he requested an opening index and even report pages facing odd chart pages, matching orientation, with legends at right. He chose reserved report space for this bounded extension. Add explicit --index PDF handoff, vector index fitting and reserved facing-page furniture now; defer object inventory/report contents, curation and further appearance changes. Acceptance and merge remain separate. The full book contains 69 pages for 34 charts; sparse selections retain chart numbers and odd physical chart pages.

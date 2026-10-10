@@ -3370,3 +3370,7 @@ Snapshot transport optionally returns the single prepared live sky for a serial
 cold oracle; its default API return remains the manifest digest.
 `pypdf>=6,<7` is admitted solely for lossless ordered vector-PDF assembly; it
 performs no scientific realization, projection or rendering.
+
+### Atlas index and reserved facing pages (2026-10-10)
+
+Extend atlas_publication.py for reserved left-hand report furniture and index/spread assembly; CLI admits one explicit index PDF. Reuse automatic_legends.py and its canonical symbol/magnitude owners against the existing rendered geometry. Do not add a new report model, production module, legend pipeline or sky lifecycle.

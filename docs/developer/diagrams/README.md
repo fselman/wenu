@@ -406,3 +406,7 @@ native preparation or verified snapshot -> process-local layer facades ->
 canonical sheet composition/rectangular rendering/export -> vector PDF assembly
 -> manifest-last completed output. CLI owns admission only; saved-sky completion
 is independent of page-output failure. Existing scientific owner edges remain.
+
+### Atlas index and reserved facing pages (2026-10-10)
+
+The new furniture dependency is charts/atlas_publication.py → charts/automatic_legends.py → rendered_legend_composition.py → existing legend owners. Its input is the existing sheet rendering, not another sky draw. Atlas publication → pypdf composes the supplied index and report/chart pages; native snapshot/geometry/render edges remain unchanged.

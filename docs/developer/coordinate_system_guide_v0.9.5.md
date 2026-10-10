@@ -4597,3 +4597,7 @@ AltAz coordinates or an observer. Native label placement realizes original
 FK4/B1875 constellation regions through the existing canonical service. No
 Hipparcos epoch propagation, observation/evaluation instant or moving object
 enters serial/spawn execution. PDF assembly changes document page order only.
+
+### Atlas index and reserved facing pages (2026-10-10)
+
+Reviewed for index and reserved facing-page assembly: no celestial-coordinate meaning, source epoch or scientific realization changes. Legends consume the existing native ICRS rendering and resolved appearance, with observer-derived context disabled; no AltAz intermediate or new sphere/render is introduced. PDF fitting changes only the supplied index page placement, never atlas sheet projection or viewport.

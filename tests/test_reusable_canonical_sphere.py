@@ -640,6 +640,7 @@ def test_native_snapshot_legacy_coverage_stays_truthful(native_snapshot_case, tm
 
 
 def test_atlas_chart_batch_cold_saved_and_spawned_pages_match(native_snapshot_case, tmp_path, monkeypatch):
+    import hashlib
     import json
     from pathlib import Path
     import numpy as np
@@ -664,6 +665,13 @@ def test_atlas_chart_batch_cold_saved_and_spawned_pages_match(native_snapshot_ca
     def forbidden(*args, **kwargs):
         raise AssertionError('Saved reuse must not prepare a sphere')
     monkeypatch.setattr(native_snapshot, 'prepare_native_sky_snapshot', forbidden)
+    import matplotlib.pyplot as plt
+    index = tmp_path/'index.pdf'
+    figure = plt.figure(figsize=(14,8))
+    figure.text(0.5,0.5,'Synthetic atlas index',ha='center')
+    figure.savefig(index)
+    plt.close(figure)
+    index_before = index.read_bytes()
     for mode, jobs in (('serial', 1), ('spawn', 2)):
         if mode == 'serial':
             from wenu.cli.atlas import create_main
@@ -671,14 +679,27 @@ def test_atlas_chart_batch_cold_saved_and_spawned_pages_match(native_snapshot_ca
             config.write_text('schema_version = 1\ndocument_kind = "wenu-atlas-chart-presentation"\ndpi = 36\n')
             assert create_main(['--design',str(design),'--config',str(config),
                 '--charts','14,10','--jobs','1','--from-sky',str(tmp_path/'saved'),
-                '--output-dir',str(tmp_path/mode)]) == 0
+                '--output-dir',str(tmp_path/mode),'--index',str(index)]) == 0
             manifest = tmp_path/mode/'manifest.json'
         else:
             manifest = create_atlas(design, tmp_path/mode, presentation=presentation,
-                                   charts='14,10', jobs=jobs, from_sky=tmp_path/'saved')
+                                   charts='14,10', jobs=jobs, from_sky=tmp_path/'saved', index=index)
         data = json.loads(manifest.read_text())
         assert data['charts'] == [10, 14] and data['workers'] == jobs
-        assert len(PdfReader(manifest.parent/'atlas.pdf').pages) == 2
+        book = PdfReader(manifest.parent/'atlas.pdf')
+        assert len(book.pages) == 5
+        assert 'Synthetic atlas index' in book.pages[0].extract_text()
+        assert data['report_content'] == 'reserved'
+        assert data['index_sha256'] == hashlib.sha256(index_before).hexdigest()
+        assert data['page_order'] == [dict(page=1,kind='index'),
+            dict(page=2,kind='report',chart=10),dict(page=3,kind='chart',chart=10),
+            dict(page=4,kind='report',chart=14),dict(page=5,kind='chart',chart=14)]
+        for position, number in ((1,10),(3,14)):
+            text = book.pages[position].extract_text()
+            assert f'Chart {number}' in text and 'Object report' in text
+            assert 'Reserved for the object report' in text
+            assert 'Stars' in text
+            assert f'Chart {number}' in book.pages[position+1].extract_text()
         atlas = AtlasBandTiling.from_json(raw.decode())
         page = atlas.geometry.page
         for number in (10,14):
@@ -687,7 +708,12 @@ def test_atlas_chart_batch_cold_saved_and_spawned_pages_match(native_snapshot_ca
             media = PdfReader(manifest.parent/f'chart-{number:02d}.pdf').pages[0].mediabox
             np.testing.assert_allclose([float(media.width),float(media.height)],
                                       [page.width_mm*72/25.4,page.height_mm*72/25.4])
+        for pdf_page in book.pages:
+            np.testing.assert_allclose([float(pdf_page.mediabox.width),float(pdf_page.mediabox.height)],
+                                      [page.width_mm*72/25.4,page.height_mm*72/25.4])
+            assert pdf_page.rotation == 0
     assert calls == [1]
+    assert index.read_bytes() == index_before
     with pytest.raises(ValueError):
         create_atlas(design, tmp_path/'cold', presentation=presentation, from_sky=tmp_path/'saved')
     assert design.read_bytes() == raw
