@@ -351,7 +351,8 @@ def test_veil_is_between_native_objects_and_index_borders_and_numbers(
     original = index.PolarPlanisphereChart.render
     def capture(self, sky, renderer, **kwargs):
         result = original(self, sky, renderer, **kwargs)
-        celestial.extend((*ax.lines, *ax.patches, *ax.collections, *ax.texts))
+        celestial.extend(a for a in (*ax.lines, *ax.patches, *ax.collections, *ax.texts)
+                         if getattr(a, "_wenu_svg_semantics", None))
         return result
     monkeypatch.setattr(index.PolarPlanisphereChart, "render", capture)
     sky = index.index_sky(4.5, layers=("stars",))
@@ -394,7 +395,23 @@ def test_veil_example_exports_svg_without_modifying_design(request_data, tmp_pat
     all_ids = [e.get("id") for e in elements if e.get("id")]
     assert len(all_ids) == len(set(all_ids))
     by_id = {e.get("id"): e for e in elements}
+    parent_of = {child: parent for parent in elements for child in parent}
+    label_attr = "{http://www.inkscape.org/namespaces/inkscape}label"
+    assert by_id["atlas-index"].get(label_attr) == "Atlas Index"
     for pole in ("north", "south"):
+        disk = by_id[f"atlas-index-{pole}"]
+        assert disk.get(label_attr) == f"{pole.capitalize()} Disk"
+        folders = {e.get(label_attr): e for e in disk}
+        assert {"Stars", "Constellations", "Milky Way", "Veil", "Guides", "Charts", "Heading"} <= folders.keys()
+        assert not {"Chart", "Atlas Index", "Celestial content", "Atlas Charts"} & folders.keys()
+        charts = folders["Charts"]
+        chart_names = [e.get(label_attr) for e in charts]
+        assert len(chart_names) == len(set(chart_names))
+        for chart in charts:
+            assert chart.get(label_attr).startswith("Chart ")
+            assert {e.get(label_attr) for e in chart} <= {"Label", "Primary Boundary", "Full Footprint"}
+        assert all(e.get("id", "").startswith("star-hip-") or e.tag.endswith("}defs")
+                   for e in folders["Stars"])
         veil_position = elements.index(by_id[f"atlas-index-veil-{pole}"])
         numbers = [e for e in elements if e.get("data-role") == "number_label"
                    and e.get("id", "").endswith(pole)]
@@ -405,12 +422,27 @@ def test_veil_example_exports_svg_without_modifying_design(request_data, tmp_pat
         for e in numbers + boundaries:
             number = int(e.get("data-chart-number"))
             assert f"chart_{number:02d}" in e.get("data-wenu-semantic-path")
+            assert parent_of[e].get(label_attr) == f"Chart {number}"
+            assert parent_of[parent_of[e]] is charts
+            if e.get("data-role") != "number_label":
+                assert e.tag.endswith("}path")
+            else:
+                assert {child.get(label_attr) for child in e} == {"Background", "Text"}
         stars = [e for e in elements if e.get("id", "").startswith("star-hip-")
                  and (e.get("id").endswith(pole) or f"-{pole}-overlay-" in e.get("id"))]
         assert stars and all(elements.index(e) < veil_position for e in stars)
         assert all(e.get("data-wenu-display-name", "").startswith("HIP ") for e in stars)
+        primary = by_id[f"chart-14-primary-boundary-{pole}"]
+        clip = by_id[primary.get("clip-path")[5:-1]]
+        rectangle = next(iter(clip))
+        assert rectangle.tag.endswith("}rect")
+        assert float(rectangle.get("x")) == pytest.approx(0 if pole == "north" else 504)
+        assert float(rectangle.get("width")) == pytest.approx(504)
+        assert rectangle.get("clip-path") is not None
     assert {int(e.get("data-chart-number")) for e in elements
             if e.get("data-role") == "number_label"} == set(range(1, 35))
     assert "chart-14-number-label-north" in ids
     assert "chart-14-number-label-south" in ids
+    assert "chart-34-footprint-south" not in ids
+    assert "chart-01-footprint-north" not in ids
     assert design.read_bytes() == before

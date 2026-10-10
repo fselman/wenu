@@ -4425,3 +4425,26 @@ would alter paint order. Extend the existing atlas and SVG test owners for
 unique IDs, all chart numbers, hierarchy and interleaving. The coordinate guide
 was reviewed and remains current: no coordinate operation or provenance changes.
 Acceptance, merge and chart/report production remain separate decisions.
+
+### Atlas hierarchy simplification amendment (2026-10-10)
+
+Fernando rejected the repeated ancestors and fragmented editor hierarchy at
+Mac-verified `1c9ab746` (542 focused / 3,312 full tests) and approved North Disk
+and South Disk containing Charts, individual chart groups and their label and
+boundaries, alongside celestial layers and guides. This supersedes the index's
+ordered-fragment presentation. Preserve the shared export owner and default
+behavior for other products; declare containers and compact leaves upstream.
+
+Use one chart group per visible disk, with a common drawing order across all
+formats and chart furniture above the veil. Preserve source identifiers,
+editable number text/backing boxes, clipping, full joined contours and resolved
+JSON. Extend existing atlas and SVG tests for direct ownership, unique chart
+groups, shape equivalence and no empty hidden polar footprints. A Chart 34
+visual bug was reported without a detailed specimen; removing its spurious
+empty south footprint does not yet establish that the reported visual defect
+is resolved. Coordinate ownership and provenance remain unchanged. Focused,
+full and Mac visual/editor review remain required; PR #221 remains unmerged.
+Inkscape raster review exposed a prior SVG backend omission of the joined
+half-page clip rectangle. Preserve its intersection with native path clips
+through caller-declared export clip boxes in the shared SVG owner, keeping
+full contour guides unclipped and both veils confined to their assigned sides.

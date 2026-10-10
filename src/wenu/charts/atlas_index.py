@@ -42,7 +42,7 @@ SUPPORTED_INDEX_LAYERS = frozenset({"stars", "constellation_lines",
 
 def _index_semantics(artists, path, role, *, number=None, svg_id=None,
                      edit_policy=EditPolicy.STYLE):
-    """Declare index identities upstream; the shared exporter preserves paint order."""
+    """Declare compact identities in the caller's explicit drawing order."""
     if not isinstance(artists, (list, tuple)):
         artists = (artists,)
     for position, artist in enumerate(artists, start=1):
@@ -54,27 +54,65 @@ def _index_semantics(artists, path, role, *, number=None, svg_id=None,
             zorder=artist.get_zorder(), paint_role=None, edit_policy=edit_policy,
             semantic_path=("chart", "atlas_index", *path),
             lock_owner_path=("chart", "atlas_index", *path[:-1]),
-            display_name=role, presentation_order=0, style_role=path[-1],
-            preserve_paint_order=True,
+            path_display_names=("Chart", "Atlas Index", *(
+                f"{p.capitalize()} Disk" if p in {"north", "south"} else
+                f"Chart {int(p[6:])}" if p.startswith("chart_") else p.replace("_", " ").title()
+                for p in path[:-1]), "Disk Rim" if path[-1] == "disk_rim" else role),
+            display_name=role, presentation_order=round(artist.get_zorder() * 1000000),
+            style_role=path[-1], compact_hierarchy=True,
             data_attributes={"data-role": path[-1], **(
                 {"data-chart-number": number} if number is not None else {})})
+
+
+def _index_container(artist, pole=None):
+    path = ("chart", "atlas_index", *((pole,) if pole else ()))
+    attach_semantic_svg_metadata(artist, layer="atlas_index",
+        zorder=artist.get_zorder(), paint_role=None, edit_policy=EditPolicy.LAYOUT,
+        semantic_path=path, lock_owner_path=path,
+        display_name=f"{pole.capitalize()} Disk" if pole else "Atlas Index",
+        presentation_order=None, style_role="container", hierarchy_container=True)
 
 
 def _index_celestial_semantics(ax, pole):
     """Scope existing catalogue identities to the face, without reclassification."""
     stars = 0
-    for artist in (*ax.lines, *ax.patches, *ax.collections, *ax.texts):
+    artists = (*ax.lines, *ax.patches, *ax.collections, *ax.texts)
+    metadata_records = [getattr(artist, "_wenu_svg_semantics", None) for artist in artists]
+    constellation_keys = {metadata["semantic_path"].split("/")[-1]
+                          for metadata in metadata_records if metadata
+                          and metadata["layer"] in {"constellation_lines", "constellation_labels"}}
+    constellation_order = {key: position for position, key in enumerate(sorted(constellation_keys))}
+    for artist in artists:
         metadata = getattr(artist, "_wenu_svg_semantics", None)
         if metadata is None:
             continue
         parts = tuple(metadata["semantic_path"].split("/"))
         if parts[0] != "sky":
             continue
-        prefix = ("chart", "atlas_index", pole, "celestial_content")
-        names = ("Chart", "Atlas Index", pole.capitalize(), "Celestial content")
+        prefix = ("chart", "atlas_index", pole)
+        suffix_path = parts[1:]
+        role = metadata["display_name"]
+        if metadata["layer"] in {"constellation_lines", "constellation_labels"}:
+            constellation = parts[-1]
+            label = metadata["layer"] == "constellation_labels"
+            suffix_path = ("constellations", constellation, "label" if label else "lines")
+            role = "Label" if label else "Lines"
+            # Keep each constellation together, below star symbols and the veil.
+            artist.set_zorder(2 + constellation_order[constellation] / 1000 + (0.0001 if label else 0))
+        elif parts[1] == "milky_way_and_magellanic_clouds":
+            suffix_path = (parts[2], *parts[3:]) if parts[2] == "milky_way" else (
+                "magellanic_clouds", parts[2], *parts[3:])
+            role = role.replace("Isophote ", "")
+        names = ("Chart", "Atlas Index", f"{pole.capitalize()} Disk",
+                 *("Large Magellanic Cloud" if p == "lmc" else "Small Magellanic Cloud" if p == "smc"
+                   else p.upper() if p.startswith("isophote_") else p.replace("_", " ").title()
+                   for p in suffix_path))
         point_entities = ()
         source_ids = getattr(artist, "_wenu_svg_point_source_ids", None)
         if metadata["layer"] == "stars" and source_ids is not None:
+            suffix_path = ("stars",)
+            role = "Stars"
+            names = ("Chart", "Atlas Index", f"{pole.capitalize()} Disk", role)
             stars += 1
             artist.set_gid(f"stars-symbols-{pole}-{stars:02d}")
             suffix = "" if stars == 1 else f"-overlay-{stars:02d}"
@@ -85,12 +123,12 @@ def _index_celestial_semantics(ax, pole):
         attach_semantic_svg_metadata(artist, layer=metadata["layer"],
             zorder=artist.get_zorder(), paint_role=None,
             edit_policy=EditPolicy(metadata["edit_policy"]),
-            semantic_path=(*prefix, *parts[1:]),
-            lock_owner_path=(*prefix, *metadata["lock_owner_path"].split("/")[1:]),
-            display_name=metadata["display_name"],
-            path_display_names=(*names, *metadata["path_display_names"][1:]),
-            presentation_order=0, style_role=metadata["style_role"],
-            preserve_paint_order=True, point_entities=point_entities)
+            semantic_path=(*prefix, *suffix_path),
+            lock_owner_path=(*prefix, *suffix_path[:-1]),
+            display_name=role, path_display_names=(*names[:-1], role),
+            presentation_order=round(artist.get_zorder() * 1000000),
+            style_role=metadata["style_role"],
+            compact_hierarchy=True, point_entities=point_entities)
 
 
 @dataclass(frozen=True)
@@ -235,11 +273,22 @@ def _join_faces(figure, axes, atlas, presentation=None):
         for artist in (*ax.lines, *ax.patches, *ax.collections, *ax.texts):
             artist.set_clip_box(clip)
             artist.set_clip_on(True)
+            metadata = getattr(artist, "_wenu_svg_semantics", None)
+            if metadata is not None:
+                # SVG backends may retain the path clip but omit clip_box.
+                # Supply export-page points; this index never uses tight crop.
+                width, height = figure.get_size_inches() * 72
+                metadata["svg_clip_box"] = (0 if pole == "north" else width / 2,
+                                            0, width / 2 if pole == "north" else width, height)
         boundary = overview_face(atlas.geometry.overview, pole).boundary
+        veil = next((p for p in ax.patches if p.get_gid() == f"atlas-index-veil-{pole}"), None)
         contour = Line2D(boundary.x, boundary.y, transform=ax.transData,
-                         color=presentation.border_color, linewidth=0.65, zorder=20)
-        figure.add_artist(contour)
-        _index_semantics(contour, (pole, "guides", "complete_rim"), "Complete rim")
+                         color=presentation.border_color, linewidth=0.65,
+                         zorder=(veil.get_zorder() if veil is not None else 0) + 4,
+                         clip_on=False)
+        ax.add_line(contour)
+        _index_semantics(contour, (pole, "guides", "disk_rim"), "Complete Contour",
+                         svg_id=f"atlas-index-{pole}-complete-rim")
 
 
 def overview_face(overview, pole):
@@ -293,6 +342,7 @@ def _draw_face(ax, atlas, face, *, footprints, sky=None, star_magnitude_limit=5.
                include_lowest_mw_isophote=False, magellanic_clouds=False, presentation=None):
     presentation = presentation or AtlasIndexPresentation(number_size_pt=10 if sky is not None else 7)
     ax.set_gid(f"atlas-index-{face.pole}")
+    _index_container(ax, face.pole)
     renderer = MatplotlibRenderer(ax)
     renderer.apply_viewport(face.viewport)
     renderer.set_clip_boundary(face.boundary, style={"edgecolor": presentation.border_color, "facecolor": "none", "linewidth": 1})
@@ -321,9 +371,7 @@ def _draw_face(ax, atlas, face, *, footprints, sky=None, star_magnitude_limit=5.
                     realization_context=LayerRealizationContext(NATIVE_ICRS_SPEC),
                     boundary_style={"edgecolor": presentation.border_color, "facecolor": "none", "linewidth": 1})
     _index_celestial_semantics(ax, face.pole)
-    for position, patch in enumerate(ax.patches, start=1):
-        if getattr(patch, "_wenu_svg_semantics", None) is None:
-            _index_semantics(patch, (face.pole, "guides", f"clip_rim_{position:02d}"), "Clip rim")
+    clip_rims = [patch for patch in ax.patches if getattr(patch, "_wenu_svg_semantics", None) is None]
     index_z = 0
     if sky is not None and presentation.veil_enabled and presentation.veil_opacity > 0:
         # Paint above every celestial artist, then place index furniture above it.
@@ -339,7 +387,12 @@ def _draw_face(ax, atlas, face, *, footprints, sky=None, star_magnitude_limit=5.
         renderer.draw(ProjectedCurve(face.boundary.x, face.boundary.y, closed=True), style={
             "color": presentation.border_color, "linewidth": 1, "zorder": index_z + 4,
         })
-        _index_semantics(ax.lines[-1], (face.pole, "guides", "rim"), "Rim")
+        _index_semantics(ax.lines[-1], (face.pole, "guides", "disk_rim"), "Visible Contour",
+                         svg_id=f"atlas-index-{face.pole}-rim")
+    for position, patch in enumerate(clip_rims, start=1):
+        patch.set_zorder(index_z + 4)
+        _index_semantics(patch, (face.pole, "guides", "disk_rim"), f"Clipping Boundary {position}",
+                         svg_id=f"atlas-index-{face.pole}-clip-rim-{position:02d}")
     highlight = atlas.primary_sheet_id(atlas.seed_ra_deg, 0)
     label_x, label_y, labels, ids = [], [], [], []
     for sheet, ra0, ra1, lower, upper in visible_regions(atlas, face):
@@ -348,11 +401,11 @@ def _draw_face(ax, atlas, face, *, footprints, sky=None, star_magnitude_limit=5.
             "facecolor": "none" if sky is not None else "#d0e9d8" if selected else
                          ("#edf3f8" if sheet.number % 2 else "#ffffff"),
             "edgecolor": presentation.highlight_color if selected else presentation.border_color,
-            "linewidth": 1.2 if selected else 0.45, "zorder": index_z + 1,
+            "linewidth": 1.2 if selected else 0.45, "zorder": index_z + 10 + sheet.number / 100,
         })
         _index_semantics(ax.patches[-1],
-            (face.pole, "atlas_charts", f"chart_{sheet.number:02d}", "primary_boundary"),
-            "Primary boundary", number=sheet.number,
+            (face.pole, "charts", f"chart_{sheet.number:02d}", "primary_boundary"),
+            "Primary Boundary", number=sheet.number,
             svg_id=f"chart-{sheet.number:02d}-primary-boundary-{face.pole}")
         # Thin rim fragments remain visible, but their number is placed only
         # where the actual centre is in this view. Every centre is in at least
@@ -374,9 +427,10 @@ def _draw_face(ax, atlas, face, *, footprints, sky=None, star_magnitude_limit=5.
                                         "alpha": 0.85, "pad": 0.6}})
     for artist, label in zip(number_artists, labels, strict=True):
         number = int(label)
+        artist.set_zorder(index_z + 10 + number / 100 + 0.0002)
         _index_semantics(artist,
-            (face.pole, "atlas_charts", f"chart_{number:02d}", "number_label"),
-            "Number label", number=number, edit_policy=EditPolicy.LAYOUT,
+            (face.pole, "charts", f"chart_{number:02d}", "number_label"),
+            "Label", number=number, edit_policy=EditPolicy.LAYOUT,
             svg_id=f"chart-{number:02d}-number-label-{face.pole}")
     ra = _samples(0, 360)
     for dec in (-atlas.geometry.overview.shared_band_width_deg / 2, 0,
@@ -402,22 +456,24 @@ def _draw_face(ax, atlas, face, *, footprints, sky=None, star_magnitude_limit=5.
             # Mask the hidden hemisphere before projection to avoid an antipodal
             # chord. The circular renderer clip is the final display boundary.
             visible = boundary[:, 1] >= face.limiting_declination_deg if face.pole == "north" else boundary[:, 1] <= face.limiting_declination_deg
+            if not np.any(visible):
+                continue
             safe_dec = np.where(visible, boundary[:, 1], np.nan)
             x, y = face.projection.project_spherical(boundary[:, 0], safe_dec)
             renderer.draw(ProjectedCurve(x, y), style={
                 "color": presentation.highlight_color if sheet.sheet_id == highlight else presentation.footprint_color,
                 "linewidth": 1.3 if sheet.sheet_id == highlight else 0.35,
                 "alpha": 1 if sheet.sheet_id == highlight else 0.4,
-                "zorder": index_z + 2,
+                "zorder": index_z + 10 + sheet.number / 100 + 0.0001,
             })
             _index_semantics(ax.lines[-1],
-                (face.pole, "atlas_charts", f"chart_{sheet.number:02d}", "footprint"),
-                "Footprint", number=sheet.number,
+                (face.pole, "charts", f"chart_{sheet.number:02d}", "footprint"),
+                "Full Footprint", number=sheet.number,
                 svg_id=f"chart-{sheet.number:02d}-footprint-{face.pole}")
     renderer.finalize_graphics()
     ax.set_title(f"{'Norte' if face.pole == 'north' else 'Sur'} · límite Dec {face.limiting_declination_deg:+g}°",
                  fontsize=presentation.text_size_pt + 2, pad=12, color=presentation.ink_color)
-    _index_semantics(ax.title, (face.pole, "heading"), f"{face.pole.capitalize()} heading",
+    _index_semantics(ax.title, (face.pole, "heading"), "Heading",
                      edit_policy=EditPolicy.LAYOUT)
 
 
@@ -457,6 +513,7 @@ def plot_overview(design_path, output_prefix, *, footprints=False, joined=False,
                     milky_way_levels=presentation.milky_way_levels) if astronomy else None
     figure = plt.figure(figsize=(presentation.width_mm / 25.4, presentation.height_mm / 25.4), facecolor=presentation.paper_color)
     figure.set_gid("atlas-index")
+    _index_container(figure)
     _index_semantics(figure.patch, ("background",), "Background")
     if joined:
         axes = composed_axes(figure, atlas.geometry.overview)
@@ -479,9 +536,7 @@ def plot_overview(design_path, output_prefix, *, footprints=False, joined=False,
                        include_lowest_mw_isophote=include_lowest_mw_isophote,
                        magellanic_clouds=magellanic_clouds, presentation=presentation)
         if joined:
-            _join_faces(figure, axes, atlas)
-            for contour in figure.artists:
-                contour.set_color(presentation.border_color)
+            _join_faces(figure, axes, atlas, presentation)
         highlighted = next(sheet.number for sheet in atlas.geometry.sheets
                            if sheet.sheet_id == atlas.primary_sheet_id(atlas.seed_ra_deg, 0))
         region_hint = " (cerca de Orión)" if atlas.seed_ra_deg == 82.5 else ""
@@ -503,7 +558,8 @@ def plot_overview(design_path, output_prefix, *, footprints=False, joined=False,
                     ha="center", fontsize=presentation.text_size_pt, color=presentation.border_color)
         for artist, role in zip(figure.texts,
                 ("title", "subtitle", "seed_legend", "guide_legend", "content_legend"), strict=True):
-            _index_semantics(artist, ("furniture", role), role.replace("_", " ").title(),
+            path = ("legends", role) if role.endswith("legend") else (role,)
+            _index_semantics(artist, path, role.replace("_", " ").title(),
                              edit_policy=EditPolicy.LAYOUT)
         options = ExportOptions(dpi=presentation.dpi, bbox_inches=None,
                                 transparent=presentation.transparent,

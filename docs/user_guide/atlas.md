@@ -529,9 +529,22 @@ Star marker instances use catalogue HIP identifiers, such as
 Constellation and morphology identities retain their canonical source keys
 with a hemisphere suffix. Every SVG ID is unique across the paired index.
 
-Editor groups expose the same logical semantic paths and descriptive labels.
-A logical chart may occupy several ordered fragments: combining its border,
-footprint and number into one physical group would change drawing order.
-Fragments have unique IDs and share `data-wenu-semantic-path`; grouping never
-moves an artist across the veil. Numbers and boundaries remain above it.
+Editor groups expose one **North Disk** and one **South Disk**. Each contains
+Stars (individual HIP markers), Constellations (one group per canonical
+abbreviation, with Lines and Label), Milky Way, optional Magellanic Clouds,
+Veil, Guides, Charts and Heading. Each chart occurs once per visible disk:
+`Charts → Chart 21 → Primary Boundary / Full Footprint / Label`.
+Boundaries are directly editable paths. The Label retains only its editable
+Text and white Background, preserving the number's backing box; anonymous
+backend wrappers and repeated semantic ancestors are removed. A chart wholly
+outside a disk does not create an empty footprint or chart group.
+
+Chart furniture is drawn together, in ascending chart-number order, above the
+veil and guides in every format. Within each chart the primary boundary is
+followed by its full footprint and number. Constellation lines and labels are
+also grouped together, below star symbols. This explicitly declared order
+permits one physical group per chart or constellation without SVG-only
+reordering of celestial geometry. Full joined contours belong to their own
+disk and remain unclipped. SVG explicitly retains the intersection of each
+disk's half-page rectangle and native path clip, matching PNG/PDF at the join. Global Title, Subtitle and Legends are separate.
 Technical marker definitions and clip paths retain backend-owned identifiers.

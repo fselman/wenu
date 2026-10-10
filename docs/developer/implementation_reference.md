@@ -4317,3 +4317,24 @@ non-semantic sibling gaps, and labels marker uses or inline paths from those
 supplied identities. No geometry, style, clipping or artist ordering changes.
 Existing callers retain their current hierarchy mode. Atlas groups do not
 consolidate boundaries or numbers beneath a veil.
+
+### Atlas compact SVG containers (2026-10-10)
+
+The index declares the figure and axes as semantic hierarchy containers.
+`attach_semantic_svg_metadata` optionally carries `hierarchy_container` and
+`compact_hierarchy`; existing callers retain their prior behavior. The shared
+exporter materializes only paths below a declared container, reuses single
+artist leaves, and conservatively removes backend wrappers while transferring
+clipping and retaining transforms/styles. Individual HIP identities survive
+collection flattening. Number boxes retain named Background and Text parts.
+
+The index supplies a contiguous per-chart/per-constellation drawing order in
+Matplotlib, common to PNG, PDF and SVG. Chart components are above the veil
+and guides; lines and labels for each constellation are below star symbols.
+The shared exporter also accepts a caller-declared `svg_clip_box` in export-page
+points: it intersects that rectangle with the backend path clip in SVG defs.
+This preserves joined-lens clipping that Matplotlib SVG otherwise omits when
+`clip_box` and `clip_path` coexist; no projected geometry is recomputed.
+Joined complete contours are axis-owned and unclipped. Completely hidden
+footprints are omitted, including the formerly empty chart-34 south entry.
+No catalogue, projected coordinates, JSON numbering or tiling changes occur.
