@@ -4419,3 +4419,47 @@ The installed plotter/producer are not wired to this API yet. Snapshot reuse
 must be explicit; figure-only plotting remains compatible. Original canonical
 realization may recompute derived ring areas and label anchors; no measured
 parallel speedup or completed-chart reuse is claimed in this data milestone.
+
+
+## Fixed celestial snapshot v2 candidate (2026-10-10)
+
+The same prepare/read/require/make_sky Python APIs now prepare schema version 2,
+compatibility `wenu-fixed-sky-records-v2`. This supersedes the earlier candidate's
+native-only layer restriction. V2 includes all six installed deep-sky layer
+owners (NonStellar/Messier, galaxies, open clusters, globular clusters, supernova
+remnants, planetary nebulae), authoritative IAU boundary vertices and fixed
+reference definitions in addition to the v1 stellar/isophote content.
+
+Retain entire normalized source tables before their default magnitude cuts,
+including nullable text, numeric values, masks, column units/descriptions and
+original JSON table metadata. Record source identities, ICRS/J2000 catalogue
+coordinate semantics and original native profile defaults. Default galaxy and
+globular limits still govern their active catalogues; explicit magnitude
+selection can use retained source rows through the original layer owner.
+Boundary records preserve FK4/B1875 RA in hours and declination in degrees.
+Sampling and transformation remain in ConstellationBoundaries; transport never
+relabels source vertices as ICRS. Version-2 admission verifies component/layer
+coverage, column dtype/shape/masks, native directions, boundary frame/equinox,
+reference definitions and profile semantics before returning the snapshot.
+
+The new native realization paths use the original ellipse, selection and
+semantic-metadata owners. Curves remain curves for Messier/globular/SNR;
+galaxies remain polygons; open clusters and planetary nebulae remain symbols.
+Ordinary observer realization is unchanged. Fixed reference grids are ICRS
+for equatorial axes and explicitly J2000 for the ecliptic, plus the Galactic
+plane; native grid dispatch rejects AltAz and an of-date equinox. Twelve fixed
+reference points retain their original frames, equinox and appearance data.
+CelestialPoints converts through the existing coordinate service; antisolar
+points and other time-dependent references are not prepared.
+
+Readers continue admitting the tested version-1 layout and compatibility tag.
+A v1 bundle retains its five-layer coverage; require() defaults to the bundle's
+own declared layers and rejects additional fixed content. It never promotes
+legacy coverage, refreshes sources, or converts the persisted bundle in place.
+New preparation produces v2 only. Packed non-pickled arrays, manifest-last
+no-clobber publication, frozen stellar policy and digest-bound reuse remain.
+The restored fixed tables and source arrays have independent facade state.
+
+No Solar-System bodies, ephemeris resources, artificial satellites, observer
+instances or evaluation times enter this atlas bundle. Installed command
+handoff, workers, reports and timing measurements remain later milestones.

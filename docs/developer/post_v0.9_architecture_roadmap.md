@@ -4820,3 +4820,26 @@ Complete this fixed-content coverage and native admission before treating the
 snapshot as comprehensive or closing the atlas content milestone. Installed
 handoff, workers and reports remain separate responsibilities. Merge and branch
 cleanup require Fernando's separate explicit request.
+
+
+### Fixed-content coverage runtime candidate (2026-10-10)
+
+After the clarified fixed-only scope, v2 preparation now loads all six current
+DSO catalogues once, alongside the existing single Hipparcos load, western
+figures, all isophotes and IAU boundary sources. Reference definitions are
+prepared with explicit static frames/equinoxes. Persist complete normalized
+source tables, masks, units and metadata; reconstruct through original layer
+owners and their native realization additions. Source-catalogue and boundary
+load counters, fresh-process loader prohibition, descriptor budget, cold/warm
+source and geometry equivalence, subset realization, extra frame/shape/coverage
+faults, legacy coverage and independent boundary/grid oracles cover this seam.
+The canonical render test includes all six DSO kinds, selected boundaries and
+fixed references together with the frozen stellar labels and gaps.
+
+Schema v2 is `wenu-fixed-sky-records-v2`; tested v1 is read-only compatible and
+keeps its limited coverage. No moving-body or artificial-satellite component,
+observer/evaluation time, new package/module/dependency/command or second
+scientific pipeline is added. This candidate implements the prior required
+fixed-content extension; Mac acceptance and merge remain pending. Next is the
+explicit installed plotter preparation/reuse handoff sharing one prepared sky,
+then rectangular/polar atlas workers, reports and measured production behavior.

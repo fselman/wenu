@@ -2435,3 +2435,17 @@ unsupported snapshot choices. The installed second/third command handoff,
 workers, reports and publication-wide rendering remain subsequent slices.
 Manifest-last no-clobber publication is the completion boundary; no power-loss
 recovery or atomic directory rename is claimed.
+
+
+### Fixed-object persistence coverage candidate (2026-10-10)
+
+Snapshot v2 extends native preparation to every current fixed catalogue layer,
+IAU boundaries and explicit fixed reference definitions. Original domain owners
+now supply native ICRS outlines/symbols, FK4/B1875 boundary transformation and
+reference realization. Snapshot transport restores records only. Source table
+rows remain independent of index/chart selections, with masks, units and
+metadata retained. V1 remains readable with its truthful limited coverage.
+Moving bodies and artificial satellites remain outside this atlas; no time or
+observer/provider component is added. The installed handoff and worker runtime
+remain pending. Existing native pipeline, descriptor budget and no-clobber
+publication remain the execution and persistence boundaries.

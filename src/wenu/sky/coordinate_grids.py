@@ -31,6 +31,19 @@ class CoordinatesGrid(GeometricalObject, ABC):
         self.observer = observer
         self.samples = int(samples)
 
+    def realize(self, context, observer, **options):
+        from copy import copy
+        from wenu.sky.realization import LayerRealizationContext
+        if not isinstance(context, LayerRealizationContext) or not context.is_native_icrs:
+            return super().realize(context, observer, **options)
+        if self.coordinate_system == "altaz":
+            raise ValueError("An AltAz grid is observer-local, not fixed atlas content.")
+        if str(getattr(self, "equinox", "J2000")).lower() == "of_date":
+            raise ValueError("Native grids require an explicit fixed equinox.")
+        local = copy(self)
+        local.observer, local._native_realization = None, True
+        return local.spherical_geometry(None, **options)
+
     def parallel(
         self,
         latitude_deg: float,
@@ -155,7 +168,7 @@ class CoordinatesGrid(GeometricalObject, ABC):
     ) -> SphericalCurves:
         resolved_observer = self._resolve_observer(observer)
         source_spec = self._native_coordinate_spec()
-        target_spec = observer_altaz_spec(
+        target_spec = self._coordinate_spec() if getattr(self, "_native_realization", False) else observer_altaz_spec(
             resolved_observer,
             position_status=self._output_position_status(),
             provider="wenu coordinate grid",
@@ -184,7 +197,7 @@ class CoordinatesGrid(GeometricalObject, ABC):
         return CoordinateService().transform(
             native,
             target_spec,
-            observation=observation_context(resolved_observer),
+            observation=None if getattr(self, "_native_realization", False) else observation_context(resolved_observer),
         )
 
     def _combine(self, collections) -> SphericalCurves:
@@ -217,6 +230,9 @@ class CoordinatesGrid(GeometricalObject, ABC):
         )
 
     def _coordinate_spec(self):
+        if getattr(self, "_native_realization", False):
+            from wenu.coordinates import ICRS_ASTROMETRIC_SPEC
+            return ICRS_ASTROMETRIC_SPEC
         return observer_altaz_spec(
             self._resolve_observer(None),
             position_status=self._output_position_status(),
@@ -228,6 +244,8 @@ class CoordinatesGrid(GeometricalObject, ABC):
         return PositionStatus.APPARENT
 
     def _resolve_observer(self, observer):
+        if getattr(self, "_native_realization", False):
+            return None
         resolved = self.observer if observer is None else observer
         if resolved is None:
             raise RuntimeError(
@@ -238,7 +256,7 @@ class CoordinatesGrid(GeometricalObject, ABC):
     def _grid_metadata(self):
         return {
             "coordinate_system": self.coordinate_system,
-            "output_coordinate_system": "altaz",
+            "output_coordinate_system": "icrs" if getattr(self, "_native_realization", False) else "altaz",
         }
 
     @abstractmethod

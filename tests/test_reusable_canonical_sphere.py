@@ -205,6 +205,7 @@ def native_snapshot_case(tmp_path_factory):
     destination = tmp_path_factory.mktemp("native-snapshot") / "sky-v1"
     counts = dict(spheres=0, catalogues=0)
     cold = []
+    fixed_counts = {name: 0 for name in (*snapshots._CATALOGUES, "constellation_boundaries")}
     generate, load = snapshots.generate_native_icrs_sphere, Stars.load
 
     def factory(**options):
@@ -219,12 +220,20 @@ def native_snapshot_case(tmp_path_factory):
 
     def forbidden(*args, **kwargs):
         raise AssertionError("Native preparation must not use network/observation")
+    def count_fixed_load(original):
+        def counted(self, *args, **kwargs):
+            fixed_counts[self.layer_name] += 1
+            return original(self, *args, **kwargs)
+        return counted
     with pytest.MonkeyPatch.context() as patch:
         patch.setattr(snapshots, "generate_native_icrs_sphere", factory)
         patch.setattr(Stars, "load", counted_load)
         patch.setattr(socket, "socket", forbidden)
+        for owner in (snapshots.NonStellar, snapshots.OpenClusters, snapshots.ConstellationBoundaries):
+            patch.setattr(owner, "load", count_fixed_load(owner.load))
         digest = snapshots.prepare_native_sky_snapshot(raw, destination)
     assert counts == dict(spheres=1, catalogues=1)
+    assert fixed_counts == {name: 1 for name in fixed_counts}
     return raw, destination, digest, cold[0]
 
 
@@ -233,6 +242,12 @@ def _assert_native_geometry_equal(first, second):
     assert type(first) is type(second)
     assert first.coordinate_spec == second.coordinate_spec
     assert len(first) == len(second)
+    if hasattr(first, "components"):
+        assert first.components.keys() == second.components.keys()
+        for key in first.components:
+            _assert_native_geometry_equal(first.components[key], second.components[key])
+        assert first.metadata == second.metadata
+        return
     for name in ("lon_deg", "lat_deg"):
         a, b = getattr(first, name), getattr(second, name)
         if isinstance(a, tuple):
@@ -254,6 +269,13 @@ def _assert_native_geometry_equal(first, second):
                 # Existing ring area reductions vary at machine precision
                 # with mapped-buffer alignment; vertices/topology stay exact.
                 np.testing.assert_allclose(a, b, rtol=1e-13, atol=1e-15, equal_nan=True)
+            elif a.dtype.kind == "O":
+                assert a.shape == b.shape
+                for left, right in zip(a.flat, b.flat, strict=True):
+                    if isinstance(left, (float, np.floating)) and np.isnan(left):
+                        assert isinstance(right, (float, np.floating)) and np.isnan(right)
+                    else:
+                        assert left == right
             else:
                 np.testing.assert_array_equal(a, b)
         else:
@@ -321,6 +343,7 @@ from wenu.sky.constellation_lines import ConstellationLines
 from wenu.sky.milky_way import MilkyWayIsophotes
 from wenu.sky.magellanic_clouds import MagellanicCloudIsophotes
 from wenu.sky import maximal_sphere
+from wenu.sky.native_snapshot import _CATALOGUES, ConstellationBoundaries
 from wenu import star_designations
 from wenu import stellar_research
 from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
@@ -329,7 +352,7 @@ soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
 resource.setrlimit(resource.RLIMIT_NOFILE, (min(64, soft), hard))
 def forbidden(*args, **kwargs):
     raise AssertionError("No original source loading or whole-sphere preparation on resume")
-for owner in (Stars, ConstellationLines, MilkyWayIsophotes, MagellanicCloudIsophotes):
+for owner in (Stars, ConstellationLines, MilkyWayIsophotes, MagellanicCloudIsophotes, ConstellationBoundaries, *_CATALOGUES.values()):
     owner.load = forbidden
 maximal_sphere.generate_native_icrs_sphere = forbidden
 maximal_sphere.generate_celestial_sphere = forbidden
@@ -343,6 +366,13 @@ points = sky.stars.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None, magn
 assert len(points) > 4000
 assert sky.stars.designation_catalogue.curation_sha256
 assert sky.constellation_lines.star_ids_for(("Sco",))
+context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+for name in _CATALOGUES:
+    layer = getattr(sky, name)
+    identifier = str(layer.realize(context, None).ids[0])
+    assert len(layer.realize(context, None, selected=(identifier,))) == 1, name
+assert len(sky.constellation_boundaries.realize(context, None, selected=("Sco",))) == 1
+assert not sky.solar_system_bodies and sky.moon is None
 labels = star_designations.resolve_star_labels(
     star_designations.StarLabelSelection(bayer=("Peg:delta",), show_full_bayer_designation=True),
     catalogue=sky.stars.designation_catalogue, research=sky.stellar_research)
@@ -366,7 +396,7 @@ def test_native_snapshot_requires_coverage_and_preserves_completed_bundle(native
     snapshot = read_native_sky_snapshot(destination)
     snapshot.require(layers=("stars", "constellation_lines"), star_magnitude_limit=6,
                      design_sha256=hashlib.sha256(raw).hexdigest())
-    for kwargs in (dict(layers=("galaxies",)), dict(layers=("constellation_boundaries",)),
+    for kwargs in (dict(layers=("planets",)), dict(layers=("satellites",)),
                    dict(layers="stars"), dict(star_magnitude_limit=11.1),
                    dict(star_magnitude_limit=float("nan")), dict(star_magnitude_limit=True),
                    dict(design_sha256="0" * 64)):
@@ -391,7 +421,8 @@ def test_native_snapshot_requires_coverage_and_preserves_completed_bundle(native
 @pytest.mark.parametrize("fault", (
     "schema", "unknown", "frame", "epoch", "layer", "dtype", "shape", "checksum",
     "unsafe", "design", "record", "missing", "symlink", "evidence",
-    "span", "overlap", "logical-shape"))
+    "span", "overlap", "logical-shape", "fixed-frame", "boundary-equinox",
+    "fixed-shape", "reference-equinox", "moving-content"))
 def test_native_snapshot_rejects_corruption_before_use(native_snapshot_case, tmp_path, fault):
     import hashlib
     import json
@@ -411,7 +442,7 @@ def test_native_snapshot_rejects_corruption_before_use(native_snapshot_case, tmp
     elif fault == "epoch":
         manifest["stellar_epoch"] = "J2000"
     elif fault == "layer":
-        manifest["layers"].append("galaxies")
+        manifest["layers"].append("planets")
     elif fault == "dtype":
         manifest["payloads"][array_name]["dtype"] = "|O"
     elif fault == "shape":
@@ -444,6 +475,27 @@ def test_native_snapshot_rejects_corruption_before_use(native_snapshot_case, tmp
         manifest["array_index"]["data-9999"] = dict(item)
     elif fault == "logical-shape":
         next(iter(manifest["array_index"].values()))["shape"] = [True]
+    elif fault in {"fixed-frame", "boundary-equinox", "fixed-shape", "reference-equinox", "moving-content"}:
+        def mapping(value):
+            return {key: item for key, item in value["mapping"]}
+        def change(value, key, item):
+            for pair in value["mapping"]:
+                if pair[0] == key:
+                    pair[1] = item
+                    return
+            raise AssertionError(key)
+        fixed = mapping(manifest["records"])["fixed"]
+        catalogues = mapping(fixed)["catalogues"]
+        if fault == "fixed-frame":
+            change(mapping(catalogues)["galaxies"], "frame", "fk5")
+        elif fault == "boundary-equinox":
+            change(mapping(fixed)["boundaries"], "equinox", "B1950.0")
+        elif fault == "fixed-shape":
+            change(mapping(mapping(catalogues)["galaxies"])["table"], "count", -1)
+        elif fault == "reference-equinox":
+            change(mapping(mapping(fixed)["references"])["ecliptic_grid"], "equinox", "of_date")
+        else:
+            catalogues["mapping"].append(["planets", {"mapping": []}])
     (destination / "manifest.json").write_text(json.dumps(manifest))
     with pytest.raises((ValueError, TypeError)):
         read_native_sky_snapshot(destination)
@@ -511,6 +563,16 @@ def test_native_snapshot_labels_and_gaps_use_frozen_curation(native_snapshot_cas
     composition = replace(composition, style=replace(composition.style,
         grids=replace(composition.style.grids, constellation_line_gap_points=1)))
     options = composition.layer_options(sky).layer_options
+    from wenu.sky.native_snapshot import _CATALOGUES
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    for name in _CATALOGUES:
+        layer = getattr(sky, name)
+        identifier = str(layer.realize(context, None).ids[0])
+        options[layer] = {"geometry": {"selected": (identifier,)}}
+    options[sky.constellation_boundaries] = {"geometry": {"selected": ("Sco", "Lib")}}
+    for layer in sky.layers:
+        if layer.layer_name in {"coordinates_grid", "celestial_points"}:
+            options[layer] = {}
     figure, ax = plt.subplots(figsize=(3, 3))
     try:
         result = face.render(sky, MatplotlibRenderer(ax), style=composition.style,
@@ -521,3 +583,57 @@ def test_native_snapshot_labels_and_gaps_use_frozen_curation(native_snapshot_cas
         assert result is not None
     finally:
         plt.close(figure)
+
+
+@pytest.mark.parametrize("name", ("nonstellar", "galaxies", "open_clusters", "globular_clusters", "supernova_remnants", "planetary_nebulae"))
+def test_native_snapshot_fixed_catalogue_rows_masks_units_and_subsets(native_snapshot_case, name):
+    import numpy as np
+    from wenu.sky.native_snapshot import read_native_sky_snapshot
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    _, destination, _, cold = native_snapshot_case
+    warm = read_native_sky_snapshot(destination).make_sky()
+    first, second = getattr(cold, name), getattr(warm, name)
+    left = first.catalog if name == "open_clusters" else first.source_catalog
+    right = second.catalog if name == "open_clusters" else second.source_catalog
+    assert len(left) == len(right) and left.colnames == right.colnames
+    assert left.meta == right.meta
+    for column in left.colnames:
+        assert left[column].unit == right[column].unit
+        assert left[column].description == right[column].description
+        np.testing.assert_array_equal(np.ma.getmaskarray(left[column]), np.ma.getmaskarray(right[column]))
+        a, b = np.asarray(left[column]), np.asarray(right[column])
+        if a.dtype.kind == "O":
+            for x, y in zip(a, b, strict=True):
+                assert (isinstance(x, float) and np.isnan(x) and isinstance(y, float) and np.isnan(y)) or x == y
+        else:
+            np.testing.assert_array_equal(a, b)
+    identifier = str(first.catalog["identifier"][0])
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    options = dict(selected=(identifier,))
+    if name not in {"open_clusters", "planetary_nebulae"}:
+        options["samples"] = 12
+    _assert_native_geometry_equal(first.realize(context, None, **options), second.realize(context, None, **options))
+    assert not warm.solar_system_bodies and warm.moon is None
+
+
+def test_native_snapshot_legacy_coverage_stays_truthful(native_snapshot_case, tmp_path):
+    import json
+    import shutil
+    from wenu.sky import native_snapshot as snapshots
+    _, original, _, _ = native_snapshot_case
+    directory = tmp_path / "legacy-v1"
+    shutil.copytree(original, directory)
+    manifest = json.loads((directory / "manifest.json").read_text())
+    manifest["schema_version"] = 1
+    manifest["compatibility"] = snapshots.LEGACY_COMPATIBILITY
+    manifest["layers"] = list(snapshots.LEGACY_LAYERS)
+    manifest["records"]["mapping"] = [pair for pair in manifest["records"]["mapping"] if pair[0] != "fixed"]
+    for key in (*snapshots._CATALOGUES, "iau_boundaries"):
+        del manifest["source_digests"][key]
+    (directory / "manifest.json").write_text(json.dumps(manifest))
+    legacy = snapshots.read_native_sky_snapshot(directory)
+    legacy.require()
+    with pytest.raises(ValueError):
+        legacy.require(layers=("galaxies",))
+    sky = legacy.make_sky()
+    assert sky.galaxies is None and sky.constellation_boundaries is None

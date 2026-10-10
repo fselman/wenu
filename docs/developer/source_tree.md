@@ -3342,3 +3342,17 @@ must not absorb scientific data persistence. Add no subpackage, dependency,
 installed command, top-level export or independent rendering/selection route.
 Extend existing `test_reusable_canonical_sphere.py` and `test_maximal_sphere.py`
 for cold/warm, fresh-process, topology, coverage and integrity oracles.
+
+
+## Fixed-content snapshot coverage (2026-10-10)
+
+Extend the existing native preparation and persistence owners, without a new
+module or package. NonStellar owns direct ICRS outlines for its Messier, galaxy,
+globular and SNR specializations; OpenClusters and PlanetaryNebulae own native
+point-symbol realization. ConstellationBoundaries owns FK4/B1875 sampling and
+canonical ICRS transformation; CoordinatesGrid and CelestialPoints own fixed
+reference realization. Persistence only restores original owner data and local
+state; it performs no geometry, projection or rendering. Reuse keeps the
+existing realization context and execution core. Extend the existing reusable
+sphere, maximal sphere, boundary and grid tests for the new admission and
+scientific seams; add no test file or dependency.

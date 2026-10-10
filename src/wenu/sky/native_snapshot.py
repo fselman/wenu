@@ -19,6 +19,16 @@ from types import MappingProxyType
 
 import numpy as np
 import pandas as pd
+from astropy.table import Table, MaskedColumn
+from wenu.objects.nonstellar import NonStellar
+from wenu.objects.galaxies import Galaxies
+from wenu.objects.globular_clusters import GlobularClusters
+from wenu.objects.open_clusters import OpenClusters
+from wenu.objects.supernova_remnants import SupernovaRemnants
+from wenu.objects.planetary_nebulae import PlanetaryNebulae
+from wenu.sky.constellation_boundaries import ConstellationBoundaries
+from wenu.sky.points import CelestialPoints
+from wenu.sky.coordinate_grids import EquatorialGrid, EclipticGrid, GalacticGrid
 
 from wenu.atlas_design import AtlasBandTiling
 from wenu import resources
@@ -36,9 +46,16 @@ from wenu.sky.maximal_sphere import (
     generate_native_icrs_sphere, _require_native_profile,
 )
 
-LAYERS = ("milky_way", "magellanic_clouds", "stars",
+LEGACY_LAYERS = ("milky_way", "magellanic_clouds", "stars",
           "constellation_lines", "constellation_labels")
-COMPATIBILITY = "wenu-native-sky-records-v1"
+LEGACY_COMPATIBILITY = "wenu-native-sky-records-v1"
+COMPATIBILITY = "wenu-fixed-sky-records-v2"
+_CATALOGUES = {"nonstellar": NonStellar, "galaxies": Galaxies,
+    "open_clusters": OpenClusters, "globular_clusters": GlobularClusters,
+    "supernova_remnants": SupernovaRemnants, "planetary_nebulae": PlanetaryNebulae}
+_REFERENCES = {"equatorial_grid": EquatorialGrid, "ecliptic_grid": EclipticGrid,
+               "galactic_grid": GalacticGrid}
+LAYERS = LEGACY_LAYERS + tuple(_CATALOGUES) + ("constellation_boundaries",) + tuple(_REFERENCES) + ("celestial_points",)
 _RECORDS = {c.__name__: c for c in (
     designations.HipLink, designations.DesignationStatement,
     designations.NameCandidate, designations.CuratedDesignation,
@@ -221,6 +238,98 @@ def _rings(features):
             for level, compounds in features.items()}
 
 
+def _table_records(table):
+    columns = {}
+    for name in table.colnames:
+        column = table[name]
+        data = np.asarray(column)
+        # Nullable text is metadata, not an executable object-array payload.
+        values = tuple(data.tolist()) if data.dtype.hasobject else data.astype(str) if data.dtype.kind == "S" else data
+        columns[name] = dict(values=values, dtype=data.dtype.str,
+            mask=np.ma.getmaskarray(column), unit=None if column.unit is None else str(column.unit),
+            description=column.description)
+    return dict(columns=columns, meta_json=json.dumps(table.meta, sort_keys=True, allow_nan=False), count=len(table))
+
+
+def _table_from_records(record):
+    table = Table(meta=json.loads(record["meta_json"]))
+    for name, column in record["columns"].items():
+        values = np.asarray(column["values"], dtype=column["dtype"])
+        table[name] = MaskedColumn(values, mask=column["mask"], unit=column["unit"],
+                                   description=column["description"], copy=False)
+    return table
+
+
+def _fixed_records(sky):
+    profile = sky.load_profile
+    fields = ("nonstellar_catalog", "nonstellar_magnitude_limit", "galaxy_magnitude_limit",
+              "globular_cluster_magnitude_limit", "extended_object_samples")
+    catalogues = {}
+    for name in _CATALOGUES:
+        layer = getattr(sky, name)
+        table = layer.catalog if name == "open_clusters" else layer.source_catalog
+        catalogues[name] = dict(table=_table_records(table), source=str(layer.source),
+                               frame="icrs", epoch="J2000.0", units="deg")
+    boundaries = sky.constellation_boundaries
+    points = []
+    for point in sky.points._points:
+        frame = point.coord.frame
+        points.append(dict(frame=frame.name, equinox=str(frame.equinox) if hasattr(frame, "equinox") else None,
+            lon=float(point.coord.spherical.lon.deg), lat=float(point.coord.spherical.lat.deg),
+            label=point.label, marker=point.marker, size=point.size, color=point.color,
+            zorder=point.zorder, style=dict(point.style)))
+    return dict(profile={name: getattr(profile, name) for name in fields}, catalogues=catalogues,
+        boundaries=dict(vertices=dict(boundaries.vertices), frame="fk4", equinox="B1875.0",
+                        units=("hourangle", "deg"), sampling_step_deg=boundaries.sampling_step_deg),
+        references=dict(equatorial_grid=dict(frame="icrs", equinox="J2000", include_equator=True),
+                        ecliptic_grid=dict(equinox="J2000", include_ecliptic=True),
+                        galactic_grid=dict(include_plane=True)), points=tuple(points))
+
+
+def _restore_fixed(sky, data):
+    fixed = data["fixed"]
+    profile = fixed["profile"]
+    sky.load_profile = CelestialSphereLoadProfile(star_magnitude_limit=sky.stars.magnitude_limit, **dict(profile))
+    for name, owner in _CATALOGUES.items():
+        content = fixed["catalogues"][name]
+        kwargs = (dict(catalog=profile["nonstellar_catalog"], magnitude_limit=profile["nonstellar_magnitude_limit"], samples=profile["extended_object_samples"])
+                  if name == "nonstellar" else dict(magnitude_limit=profile["galaxy_magnitude_limit" if name == "galaxies" else "globular_cluster_magnitude_limit"], samples=profile["extended_object_samples"])
+                  if name in {"galaxies", "globular_clusters"} else dict(samples=profile["extended_object_samples"])
+                  if name == "supernova_remnants" else {})
+        layer = owner(None, **kwargs)
+        table = _table_from_records(content["table"])
+        layer.source = content["source"]
+        layer.catalog = table
+        if name != "open_clusters":
+            layer.source_catalog = table
+            if layer.magnitude_limit is not None:
+                magnitude = np.asarray(table["magnitude"], dtype=float)
+                layer.catalog = table[~np.isfinite(magnitude) | (magnitude <= layer.magnitude_limit)]
+        setattr(sky, name, sky.add(layer))
+    content = fixed["boundaries"]
+    boundary = object.__new__(ConstellationBoundaries)
+    boundary.observer, boundary.boundaries_name, boundary.semantic_system_key = None, "iau", "iau"
+    boundary.filename, boundary.constellations = None, None
+    boundary.sampling_step_deg = content["sampling_step_deg"]
+    boundary.vertices, boundary.sampled_vertices = dict(content["vertices"]), {}
+    boundary._source_revision, boundary._observed_polygon_cache = 1, {}
+    sky.constellation_boundaries = sky.add(boundary)
+    sky.constellations.set_boundaries(boundary)
+    sky.constellation_labels.set_boundaries(boundary)
+    for name, owner in _REFERENCES.items():
+        sky.add(owner(None, **dict(fixed["references"][name])))
+    from astropy.coordinates import SkyCoord, BarycentricMeanEcliptic
+    from astropy.time import Time
+    import astropy.units as u
+    points = sky.add_points()
+    for record in fixed["points"]:
+        name = record["frame"]
+        frame = BarycentricMeanEcliptic(equinox=Time(record["equinox"])) if name == "barycentricmeanecliptic" else name
+        coord = SkyCoord(record["lon"] * u.deg, record["lat"] * u.deg, frame=frame)
+        points._append_point(coord, record["label"], record["marker"], record["size"], record["color"],
+                             record["zorder"], **dict(record["style"]))
+
+
 def _sky_records(sky):
     stars = sky.stars
     return dict(
@@ -232,6 +341,7 @@ def _sky_records(sky):
         milky_way=dict(features=_rings(sky.milky_way_isophotes.features),
                        source=sky.milky_way_isophotes.source,
                        sources=sky.milky_way_isophotes.sources),
+        fixed=_fixed_records(sky),
         clouds={cloud: dict(features=_rings(layer.features), fractions=layer.fractions,
                             source=layer.source)
                 for cloud, layer in sky.magellanic_cloud_isophotes.items()},
@@ -251,6 +361,13 @@ def _source_paths(profile, stack):
     else:
         result.update((f"milky_way_{level}", resolve(resources.milky_way_isophote_path(level)))
                       for level in MilkyWayIsophotes.available_levels)
+    for name in _CATALOGUES:
+        field = {"nonstellar": "nonstellar_filename", "galaxies": "galaxy_filename",
+                 "open_clusters": "open_cluster_filename", "globular_clusters": "globular_cluster_filename",
+                 "supernova_remnants": "supernova_remnant_filename", "planetary_nebulae": "planetary_nebula_filename"}[name]
+        catalog = profile.nonstellar_catalog if name == "nonstellar" else name
+        result[name] = resolve(getattr(profile, field) or resources.nonstellar_catalog_path(catalog))
+    result["iau_boundaries"] = resolve(profile.constellation_boundaries_filename or resources.boundary_path("iau"))
     root = resolve(resources.star_designations_manifest_path()).parent
     result.update((f"designation_{name}", root / name) for name in
                   ("manifest.json", "wikidata.json", "curation_manifest.json",
@@ -301,7 +418,7 @@ def prepare_native_sky_snapshot(design_bytes, destination, *,
                     (stage / name).write_bytes(data)
                     payloads[name] = dict(sha256=_digest(data), size=len(data))
                     evidence[key] = name
-            manifest = dict(schema_version=1, document_kind="wenu-native-sky-snapshot",
+            manifest = dict(schema_version=2, document_kind="wenu-native-sky-snapshot",
                             compatibility=COMPATIBILITY, frame="icrs",
                             origin="solar-system-barycenter", stellar_epoch="J1991.25",
                             position_status="astrometric", coordinate_units="deg",
@@ -350,8 +467,9 @@ class NativeSkySnapshot:
     def source_digests(self):
         return MappingProxyType(dict(self._manifest["source_digests"]))
 
-    def require(self, *, layers=LAYERS, star_magnitude_limit=None, design_sha256=None):
-        if isinstance(layers, str) or not set(layers) <= set(LAYERS):
+    def require(self, *, layers=None, star_magnitude_limit=None, design_sha256=None):
+        layers = self._manifest["layers"] if layers is None else layers
+        if isinstance(layers, str) or not set(layers) <= set(self._manifest["layers"]):
             raise ValueError("Unsupported or absent native snapshot layer.")
         limit = self.star_magnitude_limit if star_magnitude_limit is None else star_magnitude_limit
         if isinstance(limit, bool) or not isinstance(limit, (int, float)) or (
@@ -397,6 +515,8 @@ class NativeSkySnapshot:
         constellation.selected, constellation.lines, constellation.boundaries = None, lines, None
         sky.constellations = constellation
         sky.constellation_labels = sky.add(_SnapshotLabels(stars))
+        if "fixed" in data:
+            _restore_fixed(sky, data)
         return sky
 
 
@@ -414,11 +534,14 @@ def read_native_sky_snapshot(directory, *, expected_manifest_sha256=None):
               "stellar_epoch", "position_status", "coordinate_units", "full_sphere",
               "layers", "star_magnitude_limit", "design_id", "design_revision",
               "payloads", "array_index", "source_digests", "evidence", "records"))
-    expected = dict(schema_version=1, document_kind="wenu-native-sky-snapshot",
-                    compatibility=COMPATIBILITY, frame="icrs",
+    version = m["schema_version"]
+    if type(version) is not int or version not in (1, 2):
+        raise ValueError("Unsupported snapshot version.")
+    expected = dict(schema_version=version, document_kind="wenu-native-sky-snapshot",
+                    compatibility=LEGACY_COMPATIBILITY if version == 1 else COMPATIBILITY, frame="icrs",
                     origin="solar-system-barycenter", stellar_epoch="J1991.25",
                     position_status="astrometric", coordinate_units="deg",
-                    full_sphere=True, layers=list(LAYERS))
+                    full_sphere=True, layers=list(LEGACY_LAYERS if version == 1 else LAYERS))
     if any(type(m[key]) is not type(value) or m[key] != value for key, value in expected.items()):
         raise ValueError("Unsupported native snapshot schema or coordinate/layer semantics.")
     limit = m["star_magnitude_limit"]
@@ -486,6 +609,8 @@ def read_native_sky_snapshot(directory, *, expected_manifest_sha256=None):
         raise ValueError("Invalid snapshot source identities.")
     sources = set(m["source_digests"])
     common = {"hipparcos", "western_lines", "lmc", "smc"} | _EVIDENCE
+    if version == 2:
+        common |= set(_CATALOGUES) | {"iau_boundaries"}
     if sources not in (common | {"milky_way"}, common | {
             f"milky_way_{level}" for level in MilkyWayIsophotes.available_levels}):
         raise ValueError("Unsupported or incomplete snapshot source profile.")
@@ -497,8 +622,10 @@ def read_native_sky_snapshot(directory, *, expected_manifest_sha256=None):
     if set(m["evidence"]) != _EVIDENCE:
         raise ValueError("Incomplete snapshot designation/research evidence.")
     data = _decode(m["records"], arrays)
-    if not isinstance(data, MappingProxyType) or set(data) != {
-            "star_ids", "columns", "designation_catalogue", "research", "edges", "milky_way", "clouds"}:
+    required = {"star_ids", "columns", "designation_catalogue", "research", "edges", "milky_way", "clouds"}
+    if version == 2:
+        required.add("fixed")
+    if not isinstance(data, MappingProxyType) or set(data) != required:
         raise ValueError("Invalid native snapshot content.")
     ids, columns = data["star_ids"], data["columns"]
     if (not isinstance(ids, np.ndarray) or ids.ndim != 1 or ids.dtype.kind not in "iu"
@@ -556,4 +683,59 @@ def read_native_sky_snapshot(directory, *, expected_manifest_sha256=None):
             len(edge) != 2 or any(type(hip) is not int or hip <= 0 for hip in edge)
             for edges in data["edges"].values() for edge in edges):
         raise ValueError("Invalid constellation connectivity.")
+    if version == 2:
+        _validate_fixed(data["fixed"])
     return NativeSkySnapshot(directory, m, arrays, data, design_bytes, digest)
+
+
+def _validate_fixed(fixed):
+    if not isinstance(fixed, MappingProxyType) or set(fixed) != {"profile", "catalogues", "boundaries", "references", "points"}:
+        raise ValueError("Invalid fixed snapshot component.")
+    profile = fixed["profile"]
+    if set(profile) != {"nonstellar_catalog", "nonstellar_magnitude_limit", "galaxy_magnitude_limit", "globular_cluster_magnitude_limit", "extended_object_samples"}:
+        raise ValueError("Invalid fixed preparation profile.")
+    _require_native_profile(CelestialSphereLoadProfile(**dict(profile)))
+    if set(fixed["catalogues"]) != set(_CATALOGUES) or set(fixed["references"]) != set(_REFERENCES):
+        raise ValueError("Incomplete fixed object coverage.")
+    expected_refs = dict(equatorial_grid=dict(frame="icrs", equinox="J2000", include_equator=True),
+                         ecliptic_grid=dict(equinox="J2000", include_ecliptic=True), galactic_grid=dict(include_plane=True))
+    if fixed["references"] != expected_refs:
+        raise ValueError("Unsupported fixed reference definitions.")
+    for name, content in fixed["catalogues"].items():
+        if set(content) != {"table", "source", "frame", "epoch", "units"} or (content["frame"], content["epoch"], content["units"]) != ("icrs", "J2000.0", "deg"):
+            raise ValueError("Invalid fixed catalogue coordinate semantics.")
+        record = content["table"]
+        if set(record) != {"columns", "meta_json", "count"} or type(record["count"]) is not int or record["count"] < 0:
+            raise ValueError("Invalid fixed table record.")
+        for column in record["columns"].values():
+            if set(column) != {"values", "dtype", "mask", "unit", "description"}:
+                raise ValueError("Invalid fixed table column.")
+            dtype = np.dtype(column["dtype"])
+            if dtype.kind not in "bifuUSO" or (dtype.hasobject and any(v is not None and not isinstance(v, str) for v in column["values"])):
+                raise ValueError("Unsafe fixed column dtype.")
+            values, mask = np.asarray(column["values"]), column["mask"]
+            if values.shape != (record["count"],) or not isinstance(mask, np.ndarray) or mask.shape != values.shape or mask.dtype.kind != "b":
+                raise ValueError("Invalid fixed column shape/mask.")
+        table = _table_from_records(record)
+        if not {"identifier", "ra_deg", "dec_deg"} <= set(table.colnames):
+            raise ValueError("Incomplete fixed catalogue directions.")
+        for column, lower, upper in (("ra_deg", 0, 360), ("dec_deg", -90, 90)):
+            values = np.asarray(table[column], dtype=float)
+            if np.any(~np.isfinite(values)) or np.any((values < lower) | (values > upper)):
+                raise ValueError("Invalid fixed catalogue coordinates.")
+    boundaries = fixed["boundaries"]
+    if set(boundaries) != {"vertices", "frame", "equinox", "units", "sampling_step_deg"} or (boundaries["frame"], boundaries["equinox"], boundaries["units"]) != ("fk4", "B1875.0", ("hourangle", "deg")):
+        raise ValueError("Invalid native boundary frame/equinox.")
+    step = boundaries["sampling_step_deg"]
+    if type(step) not in (int, float) or not math.isfinite(step) or step <= 0 or not boundaries["vertices"]:
+        raise ValueError("Invalid boundary sampling/coverage.")
+    for vertices in boundaries["vertices"].values():
+        if not isinstance(vertices, np.ndarray) or vertices.ndim != 2 or vertices.shape[1] != 2 or len(vertices) < 3 or not np.all(np.isfinite(vertices)) or np.any((vertices[:, 0] < 0) | (vertices[:, 0] > 24)) or np.any(np.abs(vertices[:, 1]) > 90):
+            raise ValueError("Invalid authoritative boundary vertices.")
+    if len(fixed["points"]) != 12:
+        raise ValueError("Incomplete fixed celestial references.")
+    for point in fixed["points"]:
+        if set(point) != {"frame", "equinox", "lon", "lat", "label", "marker", "size", "color", "zorder", "style"} or point["frame"] not in {"icrs", "galactic", "barycentricmeanecliptic"}:
+            raise ValueError("Unsupported celestial reference point.")
+        if not math.isfinite(point["lon"]) or not math.isfinite(point["lat"]) or not 0 <= point["lon"] < 360 or abs(point["lat"]) > 90 or (point["frame"] == "barycentricmeanecliptic" and point["equinox"] != "J2000.000"):
+            raise ValueError("Invalid fixed reference coordinates/equinox.")

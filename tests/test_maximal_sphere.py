@@ -176,8 +176,8 @@ def test_ordinary_factory_loads_canonical_layers_without_an_observer():
     {"star_magnitude_limit": float("nan")},
     {"star_magnitude_limit": True},
     {"star_catalog": "other"},
-    {"galaxy_magnitude_limit": 10},
-    {"constellation_boundaries_filename": "unadmitted.dat"},
+    {"galaxy_magnitude_limit": float("inf")},
+    {"extended_object_samples": 12.5},
 ])
 def test_native_profile_rejects_unadmitted_fields_before_source_loading(changes, monkeypatch):
     from dataclasses import replace

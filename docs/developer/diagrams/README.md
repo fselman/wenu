@@ -388,3 +388,13 @@ native facades. Those facades call original layer realization, selection,
 projection and rendering authorities. Snapshot persistence introduces no
 observer/coordinate transformation, spatial selector or renderer. The installed
 index/producer and worker edges remain future integration, not current runtime.
+
+
+### Fixed-content snapshot owner extensions (2026-10-10)
+
+The existing preparation -> persistence -> native facade -> canonical chart
+edge now covers fixed DSO catalogues, IAU boundaries and reference definitions.
+The DSO, boundary, grid and point owners perform their new native realization;
+transport never generates outlines or converts coordinates. Their existing
+coordinate-service and rendering edges remain the sole scientific pipeline.
+No observer/ephemeris/moving-object edge is admitted to this atlas milestone.

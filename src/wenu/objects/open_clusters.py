@@ -112,6 +112,27 @@ class OpenClusters(AstronomicalObject):
                 indices.append(int(matches[0]))
         return self.catalog[np.asarray(indices, dtype=int)]
 
+    def realize(self, context, observer, **options):
+        from copy import copy
+        from wenu.sky.realization import LayerRealizationContext
+        if not isinstance(context, LayerRealizationContext) or not context.is_native_icrs:
+            return super().realize(context, observer, **options)
+        table = self._selected_table(options.pop("selected", None))
+        minimum = options.pop("minimum_size_arcmin", None)
+        if options:
+            raise TypeError(f"Unsupported native cluster options: {sorted(options)}")
+        if minimum is not None:
+            minimum = float(minimum)
+            if not np.isfinite(minimum) or minimum < 0:
+                raise ValueError("minimum_size_arcmin must be finite and non-negative.")
+            sizes = np.asarray(table["apparent_diameter_arcmin"], dtype=float)
+            table = table[np.isfinite(sizes) & (sizes >= minimum)]
+        local = copy(self)
+        local.catalog, local.selected = table, None
+        geometry = local.position()
+        geometry.metadata.update(geometry_kind="cartographic_symbol", symbol="open_cluster")
+        return geometry
+
     def spherical_geometry(
         self,
         observer,

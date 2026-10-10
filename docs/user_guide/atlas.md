@@ -671,8 +671,9 @@ the original catalogues again. A changed installed catalogue does not silently
 refresh a saved bundle; prepare a new versioned destination explicitly.
 
 Insufficient coverage, unsupported layers or corrupted data produce an error.
-Current snapshot support excludes deep-sky objects, IAU boundaries, moving bodies
-and observer coordinates. Existing bundles are never overwritten; partial
+Version 1 excludes deep-sky objects and IAU boundaries. Version 2 adds the
+fixed-content layers described below; moving bodies and observer coordinates
+remain excluded. Existing bundles are never overwritten; partial
 publication cannot be admitted without its final manifest. This API is the data
 layer milestone. Snapshot flags for the installed plotter, the installed atlas
 producer and parallel workers remain next steps.
@@ -683,12 +684,36 @@ producer and parallel workers remain next steps.
 The tested native snapshot API is the accepted persistence foundation. The
 required final atlas bundle includes all fixed celestial object types supported:
 its deep-sky catalogues as well as the stellar/isophote content, official
-constellation boundaries and reference layers. This expanded coverage is not
-yet implemented in v1. Existing v1
-bundles retain their declared limits and must not be described as comprehensive.
+constellation boundaries and reference layers. New preparation now produces
+version 2 with this fixed-content coverage. Existing v1 bundles remain readable
+and retain their declared limited coverage; requests for their missing layers
+fail instead of silently reloading sources.
 
 All moving bodies and artificial satellites are outside the atlas scope for the moment,
 including planets, the Moon, asteroids and comets. The atlas remains independent
 of observation time and ephemeris resources. A future moving-object extension
 requires a separate decision. Index appearance and chart subsets must never determine
 which source records are saved.
+
+
+### Fixed-content snapshot v2
+
+The prepare/read Python example above now saves v2. It retains the complete
+normalized source tables for Messier/nonstellar objects, galaxies, open and
+globular clusters, supernova remnants and planetary nebulae, including their
+catalogue identifiers, coordinates, dimensions, classifications, masks, units
+and metadata. It also saves official boundary vertices in their original
+FK4/B1875 frame and fixed reference definitions. These records are independent
+of index magnitude, chart selection and subsequent catalogue changes. Original
+layer owners realize the curves, symbols, transformed boundaries and reference
+geometry. Later reuse does not reopen source catalogues or build the sphere.
+
+For example, require(layers=("stars", "galaxies", "constellation_boundaries"))
+admits those layers in v2 and rejects them in a limited v1 bundle. Extra
+admitted reference names are equatorial_grid, ecliptic_grid, galactic_grid and
+celestial_points. Equatorial references use ICRS; ecliptic references use an
+explicit J2000 convention. Their reference epoch does not propagate or alter
+Hipparcos source positions. Moving bodies and artificial satellites are absent.
+New destinations are still required; an old bundle is never overwritten or
+silently upgraded. CLI snapshot handoff and parallel atlas production remain
+subsequent milestones.

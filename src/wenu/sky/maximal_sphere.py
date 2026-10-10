@@ -117,24 +117,22 @@ def _require_native_profile(profile):
     import math
     if not isinstance(profile, CelestialSphereLoadProfile):
         raise TypeError("profile must be a CelestialSphereLoadProfile.")
-    limit = profile.star_magnitude_limit
-    allowed = {"star_catalog", "star_magnitude_limit", "star_filename",
-               "constellation_lines_filename", "milky_way_filename",
-               "lmc_filename", "smc_filename"}
-    if (profile.star_catalog != "hipparcos" or type(limit) not in (int, float)
-            or not math.isfinite(limit) or limit <= 0 or any(
-                getattr(profile, f.name) != getattr(CANONICAL_MAXIMAL_SPHERE_PROFILE, f.name)
-                for f in fields(profile) if f.name not in allowed)):
-        raise ValueError("Unsupported native preparation profile or nonfinite Hipparcos coverage.")
-    return profile
+    limits = (profile.star_magnitude_limit, profile.galaxy_magnitude_limit,
+              profile.globular_cluster_magnitude_limit)
+    if (profile.star_catalog != "hipparcos"
+            or any(type(v) not in (int, float) or not math.isfinite(v) or v <= 0 for v in limits)
+            or (profile.nonstellar_magnitude_limit is not None and
+                (type(profile.nonstellar_magnitude_limit) not in (int, float) or
+                 not math.isfinite(profile.nonstellar_magnitude_limit)))
+            or type(profile.extended_object_samples) is not int or profile.extended_object_samples < 12):
+        raise ValueError("Unsupported fixed preparation profile or invalid catalogue coverage.")
 
 
 def generate_native_icrs_sphere(*, profile=CANONICAL_MAXIMAL_SPHERE_PROFILE):
     """Prepare the currently admitted static whole-sky layers once.
 
-    This is a native-only content profile: stars, western constellation lines
-    and labels, Milky Way and both Clouds. Other maximal-profile fields are
-    not admitted coverage. Connectivity is loaded before the single stellar
+    This is the fixed-content profile: all installed static catalogues,
+    boundaries and reference definitions. Moving bodies remain excluded. Connectivity is loaded before the single stellar
     load, so vertices require no catalogue reload.
     """
     from wenu.objects.stars import Stars
@@ -165,6 +163,31 @@ def generate_native_icrs_sphere(*, profile=CANONICAL_MAXIMAL_SPHERE_PROFILE):
     sky.constellations = constellation
     sky.constellation_lines = sky.add(constellation.lines)
     sky.constellation_labels = sky.add(ConstellationLabels(stars))
+    sky.add_nonstellar(catalog=profile.nonstellar_catalog, filename=profile.nonstellar_filename,
+                       magnitude_limit=profile.nonstellar_magnitude_limit, samples=profile.extended_object_samples)
+    sky.add_galaxies(filename=profile.galaxy_filename, magnitude_limit=profile.galaxy_magnitude_limit,
+                     samples=profile.extended_object_samples)
+    sky.add_open_clusters(filename=profile.open_cluster_filename)
+    sky.add_globular_clusters(filename=profile.globular_cluster_filename,
+                             magnitude_limit=profile.globular_cluster_magnitude_limit,
+                             samples=profile.extended_object_samples)
+    sky.add_supernova_remnants(filename=profile.supernova_remnant_filename, samples=profile.extended_object_samples)
+    sky.add_planetary_nebulae(filename=profile.planetary_nebula_filename)
+    sky.add_constellation_boundaries(filename=profile.constellation_boundaries_filename)
+    sky.add_equatorial_grid(frame="icrs", equinox="J2000", include_equator=True)
+    sky.add_ecliptic_grid(equinox="J2000", include_ecliptic=True)
+    sky.add_galactic_grid(include_plane=True)
+    points = sky.add_points()
+    from astropy.coordinates import BarycentricMeanEcliptic
+    from astropy.time import Time
+    ecliptic = BarycentricMeanEcliptic(equinox=Time("J2000"))
+    for pole in ("north", "south"):
+        points.add_equatorial_pole(pole)
+        points.add_galactic_pole(pole)
+        points.add_ecliptic_pole(pole, frame=ecliptic)
+    points.add_galactic_center()
+    points.add_galactic_anticenter()
+    points.add_ecliptic_cardinal_points(frame=ecliptic)
     return sky
 
 

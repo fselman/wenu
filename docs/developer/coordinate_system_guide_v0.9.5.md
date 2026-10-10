@@ -4568,3 +4568,22 @@ unadmitted coordinate/layer semantics fail. Read-only maps preserve exact source
 coordinates. Existing floating ring-area reductions may differ at roundoff with
 buffer alignment (comparison tolerance rtol 1e-13, atol 1e-15); ring coordinates,
 exterior/hole nesting and selection identities retain exact equality.
+
+
+### Fixed catalogue and reference snapshot admission (2026-10-10)
+
+The v2 atlas candidate admits all six fixed deep-sky catalogue owners, storing
+their original normalized ICRS/J2000 directions, dimensions, masks and units.
+Hipparcos remains unpropagated J1991.25; the added catalogue convention does
+not change stellar epochs or relabel them FK5/J2000. Original ellipse/point
+owners realize source-native geometry directly. IAU boundary vertices remain
+FK4/B1875, with RA in hours, declination in degrees, original topology and
+sampling controls. The boundary owner samples in B1875 and uses the canonical
+coordinate service for ICRS output; its native result matches an independent
+Astropy FK4/B1875-to-ICRS oracle. Reference grids use ICRS equatorial axes,
+explicit J2000 ecliptic convention and Galactic coordinates. Celestial-point
+mean-ecliptic references retain their explicit J2000 source convention; grid
+true-ecliptic and point mean-ecliptic definitions are not conflated. Of-date
+references, AltAz grids, antisolar points, moving bodies and artificial
+satellites are excluded from atlas preparation. All admitted native results
+remain static barycentric astrometry without observation or evaluation instant.

@@ -135,6 +135,45 @@ class NonStellar(AstronomicalObject):
             metadata=metadata,
         )
 
+    def realize(self, context, observer, **options):
+        """Realize original catalogue outlines directly in static ICRS."""
+        from wenu.sky.realization import LayerRealizationContext
+        from wenu.geometry.spherical import SphericalPolygons
+        if not isinstance(context, LayerRealizationContext) or not context.is_native_icrs:
+            return super().realize(context, observer, **options)
+        selected = options.pop("selected", None)
+        if selected is None:
+            selected = getattr(self, "selected", None)
+        limit = options.pop("magnitude_limit", None)
+        minimum = options.pop("minimum_size_arcmin", None)
+        samples = self._resolved_samples(options.pop("samples", None))
+        if options:
+            raise TypeError(f"Unsupported native outline options: {sorted(options)}")
+        table = self._geometry_table(selected, magnitude_limit=limit)
+        lon, lat = [], []
+        for row in table:
+            outline = self._ellipse(
+                SkyCoord(ra=float(row["ra_deg"]) * u.deg,
+                         dec=float(row["dec_deg"]) * u.deg, frame="icrs"),
+                row["major_axis_arcmin"], row["minor_axis_arcmin"],
+                row["position_angle_deg"], samples,
+                minimum_size_arcmin=minimum)
+            lon.append(outline.icrs.ra.to_value(u.deg))
+            lat.append(outline.icrs.dec.to_value(u.deg))
+        identifiers = [str(v) for v in table["identifier"]]
+        metadata = self._geometry_metadata(table, minimum_size_arcmin=minimum)
+        metadata["coordinate_system"] = "icrs"
+        geometry = SphericalPolygons if self.layer_name == "galaxies" else SphericalCurves
+        names = identifiers
+        if self.layer_name == "globular_clusters":
+            names = [str(i) if n is None else str(n)
+                     for i, n in zip(table["identifier"], table["common_name"], strict=True)]
+        return geometry(lon_deg=tuple(lon), lat_deg=tuple(lat),
+                        coordinate_spec=icrs_catalogue_spec(f"{self.catalog_name} non-stellar catalogue"),
+                        ids=identifiers, names=names,
+                        **({"closed": np.ones(len(table), dtype=bool)} if geometry is SphericalCurves else {}),
+                        metadata=metadata)
+
     def _normalize(self, source):
         names = {
             name.casefold(): name
