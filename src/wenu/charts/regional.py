@@ -648,6 +648,7 @@ class RegionalChart:
                 options, sky=sky, projection=projection, viewport=viewport,
                 boundary=boundary, observer=observer,
                 region_selection=self.outside_mask_constellations,
+                realization_context=realization_context,
             )
         result = sky.draw_chart(
             projection=projection,

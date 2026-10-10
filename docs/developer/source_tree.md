@@ -3356,3 +3356,30 @@ state; it performs no geometry, projection or rendering. Reuse keeps the
 existing realization context and execution core. Extend the existing reusable
 sphere, maximal sphere, boundary and grid tests for the new admission and
 scientific seams; add no test file or dependency.
+
+### Atlas chart batch owner (2026-10-10)
+
+Extend `charts/atlas_publication.py`, the existing design-bound publication
+owner, with the native sheet adapter, independent chart presentation and batch
+lifecycle. Extend `cli/atlas.py` only for thin `wenu_create_atlas` input admission.
+No new production module or top-level export is introduced. The adapter reuses
+RegionalChart's coordinate-neutral rectangular render implementation while
+exposing the exact persisted ICRS projection/viewport, never AltAz centre fields.
+Native constellation-label anchoring belongs to the existing placement owner.
+Snapshot transport optionally returns the single prepared live sky for a serial
+cold oracle; its default API return remains the manifest digest.
+`pypdf>=6,<7` is admitted solely for lossless ordered vector-PDF assembly; it
+performs no scientific realization, projection or rendering.
+
+### Atlas index and reserved facing pages (2026-10-10)
+
+Extend atlas_publication.py for reserved left-hand report furniture and index/spread assembly; CLI admits one explicit index PDF. Reuse automatic_legends.py and its canonical symbol/magnitude owners against the existing rendered geometry. Do not add a new report model, production module, legend pipeline or sky lifecycle.
+
+### Atlas report-template amendment (2026-10-10)
+
+Atlas publication furniture and its layout/identity JSON remain in the existing
+charts/atlas_publication.py owner. It consumes existing rendered-star statistics
+and automatic legends, passing an atlas-specific bright-end reference range.
+cli/atlas.py admits the presentation magnitude override only. Existing atlas
+CLI/canonical-sphere tests protect the seams. No new report inventory owner,
+production module, dependency, coordinate transform or test file is admitted.

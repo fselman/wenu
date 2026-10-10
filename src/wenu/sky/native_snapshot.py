@@ -377,12 +377,16 @@ def _source_paths(profile, stack):
 
 
 def prepare_native_sky_snapshot(design_bytes, destination, *,
-                                profile=CANONICAL_MAXIMAL_SPHERE_PROFILE):
+                                profile=CANONICAL_MAXIMAL_SPHERE_PROFILE,
+                                return_sky=False):
     """Prepare a complete admitted native sphere once and commit a new bundle.
 
     The manifest is linked last as the completion marker in an exclusively
     reserved directory. Existing destinations are never replaced. Reuse reads
     the bundle explicitly; preparation never silently refreshes an old bundle.
+    With return_sky=True, also return the original prepared sky for a cold
+    serial render. It is not serialized as a live object. Default callers
+    continue receiving only the manifest digest.
     """
     if not isinstance(design_bytes, bytes):
         raise TypeError("design_bytes must be bytes.")
@@ -440,7 +444,7 @@ def prepare_native_sky_snapshot(design_bytes, destination, *,
                     os.link(path, destination / path.name)
             os.link(stage / "manifest.json", destination / "manifest.json")
             reserved = False
-            return _digest(raw)
+            return (_digest(raw), sky) if return_sky else _digest(raw)
         finally:
             if reserved:
                 # This invocation exclusively created the destination.

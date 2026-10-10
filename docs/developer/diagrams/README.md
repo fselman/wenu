@@ -398,3 +398,15 @@ The DSO, boundary, grid and point owners perform their new native realization;
 transport never generates outlines or converts coordinates. Their existing
 coordinate-service and rendering edges remain the sole scientific pipeline.
 No observer/ephemeris/moving-object edge is admitted to this atlas milestone.
+
+### Atlas chart-page batch edge (2026-10-10)
+
+Resolved design + independent presentation -> publication batch -> single
+native preparation or verified snapshot -> process-local layer facades ->
+canonical sheet composition/rectangular rendering/export -> vector PDF assembly
+-> manifest-last completed output. CLI owns admission only; saved-sky completion
+is independent of page-output failure. Existing scientific owner edges remain.
+
+### Atlas index and reserved facing pages (2026-10-10)
+
+The new furniture dependency is charts/atlas_publication.py → charts/automatic_legends.py → rendered_legend_composition.py → existing legend owners. Its input is the existing sheet rendering, not another sky draw. Atlas publication → pypdf composes the supplied index and report/chart pages; native snapshot/geometry/render edges remain unchanged.

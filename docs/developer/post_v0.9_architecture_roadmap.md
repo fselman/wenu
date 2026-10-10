@@ -4843,3 +4843,66 @@ scientific pipeline is added. This candidate implements the prior required
 fixed-content extension; Mac acceptance and merge remain pending. Next is the
 explicit installed plotter preparation/reuse handoff sharing one prepared sky,
 then rectangular/polar atlas workers, reports and measured production behavior.
+
+### Full chart-page inspection priority and producer candidate (2026-10-10)
+
+PR #224 fixed snapshot v2 was accepted after 482 focused and all 3389 Mac tests,
+digest-bound full-catalogue reuse and native boundary realization; it merged as
+18094015 and the Mac confirmed only clean synchronized main after cleanup.
+Fernando approved --design/--config/--charts/--jobs/--output-dir with independent
+--save-sky and --from-sky. He prioritizes generating all chart pages in one go
+for overall inspection before chart-by-chart DSO curation and general filters.
+This supersedes the earlier proposed --scene-only handoff and requirement to
+implement facing report pages before a full chart-page preview is useful.
+
+As-is: sheet records already own exact fixed-equatorial projection and physical
+page rectangles; native v2 owns complete fixed sources; ordinary regional
+rendering is coordinate-neutral but label anchoring still required an observer.
+Extend these existing owners for native sheet composition, label anchoring and
+spawn-safe mapped-data batches, without new modules/scientific pipeline. Add
+pypdf only for ordered lossless vector-PDF assembly; its lifecycle and failure
+belong to the publication owner. Closed independent chart-presentation input
+must not modify design geometry or use index content as chart selection.
+
+The candidate produces numbered PNG/PDF/SVG pages and ordered atlas.pdf, with a
+complete provenance/hash manifest committed last. Cold serial, saved serial and
+spawned selected renders must match; also render all 34 sheets and inspect
+poles, Orion and Scorpius. Preserve snapshots on batch failure and raced/existing
+outputs. Mac exact-head full regression and print/visual acceptance remain
+required. No merge or cleanup is authorized by implementation approval.
+Next: per-chart explicit identifier include/exclude for PNs, SNRs, galaxies,
+open/globular clusters, then authored facing reports and general filtering.
+
+### Atlas index and reserved facing pages (2026-10-10)
+
+Fernando verified PR #225 head 7416cf5292250e8b358eb8d5b7a689b70f967c13 on the Mac: 693 focused tests, all 3395 tests, all 34 charts and a 34-page PDF passed; charts 10/14 match parallel initial and serial saved-sphere PNGs exactly. The tree was clean and synchronized. On 2026-10-10 he requested an opening index and even report pages facing odd chart pages, matching orientation, with legends at right. He chose reserved report space for this bounded extension. Add explicit --index PDF handoff, vector index fitting and reserved facing-page furniture now; defer object inventory/report contents, curation and further appearance changes. Acceptance and merge remain separate. The full book contains 69 pages for 34 charts; sparse selections retain chart numbers and odd physical chart pages.
+
+### Atlas report-template and magnitude review amendment (2026-10-10)
+
+Fernando's Mac verified e2254d29 with 415 focused and all 3,402 plugin-disabled
+tests, a 69-page atlas, unchanged chart 10/14 pixels, and clean synchronization.
+He subsequently requested per-chart magnitude keys whose first reference is at
+least as bright as the brightest plotted star, magnitude-limit experiments,
+matching framed report formats, native centre metadata and structured sidecars.
+This supersedes the proposed common magnitude range. Keep general appearance,
+object inventories, inclusion/exclusion curation and sidecar editing/readback
+outside this bounded template amendment.
+
+As-is: the canonical key rounds its bright end up; atlas report furniture has
+no frame, exports only PDF when an index is supplied, and lacks report data.
+Extend atlas_publication.py with rendered-star statistics and a floor-based
+explicit reference range through the existing legend owner, framed templates
+in the chart's formats and a versioned JSON record of layout/identity/content
+status. Extend the existing CLI with a magnitude override; native sky reuse,
+projection, star sizing and chart appearance retain their existing owners.
+Use existing atlas CLI and canonical-sphere tests; add no production module,
+new test file, dependency or whole-sphere build. Blank report sections remain
+explicitly reserved rather than implying that there are no objects.
+
+Separate report files are always produced; --index controls book assembly only.
+Template names are chart-NN_report.* and chart-NN_report_data.json. Polar RA
+is undefined; display the canonical tangent meridian separately. Test mirrored
+frames in both orientations, right alignment, star clipping/range, disabled
+stars, CLI override, saved/cold/parallel equivalence and publication failures.
+Sample Orion, Scorpius, Virgo and both polar caps at different limits before
+Mac visual acceptance. No merge or cleanup is authorized by this amendment.

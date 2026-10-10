@@ -199,7 +199,7 @@ Work in small, independently testable milestones. Each change must:
 - compile;
 - preserve existing public APIs unless the roadmap explicitly changes them;
 - pass the focused gate that covers every changed responsibility and immediate
-  seam, plus the full suite at the milestone handoff defined below;
+  seam, plus the final-candidate full suite before merging as defined below;
 - leave the project usable;
 - avoid unrelated refactoring, cleanup, or formatting.
 
@@ -212,20 +212,30 @@ repository. A documentation-only edit normally reruns the affected
 documentation contract and integrity checks; a domain edit reruns its owning
 tests plus directly affected shared-boundary tests.
 
-Run the complete plugin-disabled suite:
+Run the complete plugin-disabled suite once on the final candidate before merging
+a milestone branch into its integration branch or into `main`. Do not require
+a full run for every iteration, preview, or review handoff. An earlier full run
+is justified only by a material cross-cutting change whose effects cannot be
+bounded by focused gates; reuse that result at merge if the tested content
+remains unchanged.
 
-- once before presenting a bounded implementation milestone for acceptance;
-- after a material cross-cutting change whose effects cannot be bounded by the
-  focused gates;
-- before merging a milestone branch into its integration branch; and
-- before merging the integration branch into `main`.
+The same passing result can cover successive merges when the tested executable
+content, scientific fixtures, dependencies, configuration, packaging and
+non-documentation tests remain unchanged. Repeat the full suite after relevant
+changes invalidate that result, not merely because a new commit or merge commit
+was created. Changing magnitude limits or regenerating charts with existing
+supported inputs does not by itself require another full run.
 
 A previously passing full suite remains valid across a later documentation-only
 edit only when the documentation gate and repository-integrity checks pass and
 no executable code, scientific fixture, dependency, configuration, packaging,
-or non-documentation test collection changed. Record the exact commit or
-remote tree covered by every focused and full-suite result; never attach an
-earlier result ambiguously to later production content.
+or non-documentation test collection changed. Record the exact commit or remote
+tree covered by every focused and full-suite result; never attach an earlier
+result ambiguously to later production content. When reusing a receipt, record
+both the tested revision and the evidence that relevant content is unchanged.
+
+Fernando accepted this policy on 2026-10-10. It supersedes older checkpoint
+wording that requests a routine full-suite run at each implementation handoff.
 
 Create domain markers or focused test files only when they describe an
 enduring responsibility and their membership is complete and truthful. Do not

@@ -2449,3 +2449,18 @@ Moving bodies and artificial satellites remain outside this atlas; no time or
 observer/provider component is added. The installed handoff and worker runtime
 remain pending. Existing native pipeline, descriptor budget and no-clobber
 publication remain the execution and persistence boundaries.
+
+### Atlas chart-page production candidate (2026-10-10)
+
+The third installed adapter composes resolved geometry, independent presentation
+and the accepted fixed-sky snapshot. Native sheet framing stays in the
+publication owner; coordinate-neutral rectangular rendering, detail, projection
+preparation and exports keep their original owners. Spawn processes map data
+once and never pickle a live sphere or figure. One figure supplies each sheet's
+formats; pypdf combines their vector PDFs in numbered order. Batch completion
+is a manifest-last no-clobber commit, independent of saved-sky completion.
+Full chart-page inspection precedes facing reports and per-object curation.
+
+### Atlas index and reserved facing pages (2026-10-10)
+
+The explicit index-PDF route composes existing chart pages with reserved facing pages and canonical legends. Book assembly owns physical parity, mirrored binding margins and index placement only. It consumes the index bytes without rendering another sky; report legends consume the existing chart render. Scientific content, chart geometry and saved-sphere ownership remain unchanged.

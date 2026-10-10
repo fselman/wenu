@@ -4463,3 +4463,74 @@ The restored fixed tables and source arrays have independent facade state.
 No Solar-System bodies, ephemeris resources, artificial satellites, observer
 instances or evaluation times enter this atlas bundle. Installed command
 handoff, workers, reports and timing measurements remain later milestones.
+
+## Atlas chart-page batch candidate (2026-10-10)
+
+`cli.atlas:create_main` installs `wenu_create_atlas --design JSON --config TOML
+--charts SELECTOR --jobs COUNT --output-dir NEW_DIRECTORY`, with mutually
+exclusive `--save-sky NEW_DIRECTORY` and `--from-sky DIRECTORY`. Selector default
+is `all`; jobs default is two and actual workers are capped by selected sheets.
+Without either sky switch, preparation uses a temporary bundle. Save prepares
+once and retains the committed bundle even if chart generation fails. Explicit
+reuse maps/adopts the supplied bundle without original loaders or preparation.
+Design bytes and requested layer/magnitude coverage must agree with the bundle.
+
+`AtlasChartPresentation.from_dict` admits document kind
+`wenu-atlas-chart-presentation`, schema version 1, optional style (`atlas` or
+`cartoon`), integer dpi 36..1200, finite stellar limit -2..11, unique nonempty
+fixed layers and formats (`png`, `pdf`, `svg`). PDF is required for assembly.
+Geometry, observer/time, moving objects and unknown keys fail closed. The
+versioned example is `examples/atlas_chart_style_v1.toml`. Its `nonstellar`
+source-layer spelling maps to the canonical `nonstellar_objects` detail key.
+
+`AtlasSheetChart` exposes exact sheet projection and page viewport with native
+ICRS-only realization, and delegates canonical rectangular rendering. Physical
+figure size is the complete JSON page, useful axes match its binding/top/bottom
+margins, and export has no tight crop. All formats share one render per sheet.
+`create_atlas` reserves no final output until all charts and vector assembly
+succeed. Manifest-last exclusive hard links commit numbered products plus
+ordered `atlas.pdf`, with exact design/snapshot digests, resolved presentation,
+worker count, timings and output hashes. Existing destinations and raced writers
+are preserved; only owned incomplete output/staging is removed.
+
+Each spawn worker maps/verifies data once, owns local facade/figure state, and
+receives only small immutable sheet/page/presentation tasks. At most the actual
+worker count of tasks is in flight. Nested numeric thread pools are limited to
+one during spawn and parent environment is restored. Failure cancels unstarted
+work and waits for already active renders to finish; cancellation is not an
+instant hard process kill. Scheduling does not renumber charts. Serial cold
+uses the original single prepared sky, serial warm and workers use restored
+facades. `prepare_native_sky_snapshot(..., return_sky=True)` returns
+`(manifest_sha256, prepared_sky)`; default callers retain the digest-only return.
+Facing report pages, editorial inclusion/exclusion and completed-chart skipping
+remain subsequent work. This candidate produces all chart pages, not complete
+chart/report spreads. No measured speedup is claimed without Mac timings.
+
+### Atlas index and reserved facing pages (2026-10-10)
+
+create_atlas(..., index=None) and wenu_create_atlas --index PDF accept an unencrypted one-page PDF before preparation. Read exact bytes once, retain its SHA-256, fit vector content proportionally to the JSON page without rotation, then assemble index/report/chart order. The index occupies physical page 1; each selected report is even and its chart odd. A 34-chart atlas has 69 pages. report-NN.pdf has mirrored binding margins, a reserved left report column and canonical legends at right. page_order, index_sha256 and report_content in the completion manifest describe the layout; bookmarks identify index/charts. No index argument preserves chart-only output. No report inventory or curation is implemented.
+
+### Atlas report templates and magnitude override (2026-10-10)
+
+create_main admits --magnitude-limit as a validated override of the independent
+AtlasChartPresentation.star_magnitude_limit. _atlas_report_data consumes existing
+rendered_star_geometry/visible_star_statistics, never a second sky realization.
+The atlas passes (floor(brightest), floor(faintest)) to the canonical key; the
+general legend integer-range API is unchanged. _render_atlas_report exports
+chart-NN_report in presentation.formats using canonical ExportOptions. The
+mirrored useful frame matches chart dimensions; object/star legends share a
+right edge inset 4 mm. An explicit object_title supplies native ICRS centre
+metadata instead of observer-derived context. Polar centres report RA as
+undefined and the tangent meridian separately.
+
+Each chart has chart-NN_report_data.json: schema_version 1, document_kind
+wenu-atlas-chart-report, chart_number, sheet_id, center (ICRS degree values,
+ra_defined and pole_meridian_ra_deg), page, layout (mm from bottom-left; frame,
+report and legends rectangles), stars (statistics and reference_range), report
+(status reserved, sections [], inventory_status not_generated), design_sha256,
+snapshot_sha256 and effective presentation. Null star statistics mean disabled
+stars; visible_count zero means no visible stars. Sidecar editing/readback and
+object inventories remain pending. All products are staged and hash-bound in
+the completion manifest; index absence retains chart-only combined-PDF order
+while exporting report products separately. This supersedes report-NN.pdf
+naming and index-dependent template generation.
