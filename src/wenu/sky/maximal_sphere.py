@@ -141,9 +141,11 @@ def generate_native_icrs_sphere(*, profile=CANONICAL_MAXIMAL_SPHERE_PROFILE):
     from wenu.sky.constellations import Constellations
     from wenu.sky.constellation_labels import ConstellationLabels
     from wenu.star_designations import load_effective_star_designations
+    from wenu.stellar_research import load_stellar_research
     _require_native_profile(profile)
     sky = CelestialSphere(None)
     sky.load_profile = profile
+    sky.stellar_research = load_stellar_research()
     sky.add_milky_way_isophotes(filename=profile.milky_way_filename,
                               levels=MilkyWayIsophotes.available_levels)
     for cloud, filename in (("lmc", profile.lmc_filename), ("smc", profile.smc_filename)):

@@ -23,6 +23,7 @@ import pandas as pd
 from wenu.atlas_design import AtlasBandTiling
 from wenu import resources
 from wenu import star_designations as designations
+from wenu.stellar_research import StellarResearch
 from wenu.objects.stars import Stars
 from wenu.sky.celestial_sphere import CelestialSphere
 from wenu.sky.constellation_lines import ConstellationLines
@@ -43,6 +44,7 @@ _RECORDS = {c.__name__: c for c in (
     designations.NameCandidate, designations.CuratedDesignation,
     designations.CuratedName, designations.StarDesignations,
     designations.StarDesignationCatalogue,
+    StellarResearch,
 )}
 _COLUMNS = ("magnitude", "ra_degrees", "dec_degrees", "parallax_mas",
             "ra_mas_per_year", "dec_mas_per_year", "ra_hours", "epoch_year",
@@ -225,6 +227,7 @@ def _sky_records(sky):
         star_ids=stars.source_catalog.index.to_numpy(dtype=np.int64),
         columns={key: stars.source_catalog[key].to_numpy() for key in _COLUMNS},
         designation_catalogue=stars.designation_catalogue,
+        research=sky.stellar_research,
         edges=dict(sky.constellation_lines.edges_by_constellation),
         milky_way=dict(features=_rings(sky.milky_way_isophotes.features),
                        source=sky.milky_way_isophotes.source,
@@ -362,6 +365,7 @@ class NativeSkySnapshot:
         """Reconstruct local native facades, never original catalogue loading."""
         data = self._records
         sky = CelestialSphere(None)
+        sky.stellar_research = data["research"]
         sky.load_profile = CelestialSphereLoadProfile(star_magnitude_limit=self.star_magnitude_limit)
         mw = _SnapshotMilkyWay(None, levels=MilkyWayIsophotes.available_levels)
         mw.features, mw.source, mw.sources = (
@@ -494,7 +498,7 @@ def read_native_sky_snapshot(directory, *, expected_manifest_sha256=None):
         raise ValueError("Incomplete snapshot designation/research evidence.")
     data = _decode(m["records"], arrays)
     if not isinstance(data, MappingProxyType) or set(data) != {
-            "star_ids", "columns", "designation_catalogue", "edges", "milky_way", "clouds"}:
+            "star_ids", "columns", "designation_catalogue", "research", "edges", "milky_way", "clouds"}:
         raise ValueError("Invalid native snapshot content.")
     ids, columns = data["star_ids"], data["columns"]
     if (not isinstance(ids, np.ndarray) or ids.ndim != 1 or ids.dtype.kind not in "iu"
@@ -520,6 +524,12 @@ def read_native_sky_snapshot(directory, *, expected_manifest_sha256=None):
     if not isinstance(data["designation_catalogue"], designations.StarDesignationCatalogue):
         raise ValueError("Invalid frozen designation catalogue.")
     catalogue = data["designation_catalogue"]
+    research = data["research"]
+    if (not isinstance(research, StellarResearch)
+            or research.source_sha256 != m["source_digests"].get("designation_research.json")
+            or research.policy_sha256 != m["source_digests"].get("designation_research_policy.json")
+            or len(research.by_hip) != 77):
+        raise ValueError("Frozen shared-star policy disagrees with source provenance.")
     if (catalogue.source_sha256 != m["source_digests"].get("designation_wikidata.json")
             or catalogue.curation_sha256 != m["source_digests"].get("designation_curation.json")
             or any(type(hip) is not int or hip <= 0

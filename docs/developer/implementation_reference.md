@@ -4387,7 +4387,7 @@ units, packed typed array shapes/dtypes and frozen designation/curation/research
 An explicit logical-array index records dtype-packed offsets and shapes, with
 complete non-overlapping spans, so workers map a few files rather than every ring.
 NPY arrays admit only non-object primitive numeric/boolean/fixed Unicode data;
-record tags admit a fixed list of existing designation dataclasses. No dynamic
+record tags admit a fixed list of existing designation/research dataclasses. No dynamic
 imports or pickle, live sky, observer caches or projected geometry are serialized.
 Source files are hashed before/after preparation; changed inputs fail publication.
 
@@ -4403,6 +4403,9 @@ loading or maximal sphere preparation. Facades reuse original realization and
 selection methods. Native star selection also rejects excessive coverage and
 absent explicit IDs. Each facade has local mutable selection/cache state; mapped
 source arrays and nested record/feature structures remain read-only.
+The canonical label resolver accepts the frozen `StellarResearch` record through
+the native facade. Shared Bayer decisions therefore retain the saved research
+policy rather than consulting a later installed policy during chart rendering.
 
 Publication uses exclusive destination-directory reservation and exclusive hard
 links. The already verified manifest is linked last as the completion marker;

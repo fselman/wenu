@@ -322,6 +322,7 @@ from wenu.sky.milky_way import MilkyWayIsophotes
 from wenu.sky.magellanic_clouds import MagellanicCloudIsophotes
 from wenu.sky import maximal_sphere
 from wenu import star_designations
+from wenu import stellar_research
 from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
 import resource
 soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
@@ -335,12 +336,17 @@ maximal_sphere.generate_celestial_sphere = forbidden
 maximal_sphere.build_maximal_sphere = forbidden
 star_designations.load_star_designations = forbidden
 star_designations.load_stellar_curation = forbidden
+stellar_research.load_stellar_research = forbidden
 snapshot = read_native_sky_snapshot(sys.argv[1], expected_manifest_sha256=sys.argv[2])
 sky = snapshot.make_sky()
 points = sky.stars.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None, magnitude_limit=6)
 assert len(points) > 4000
 assert sky.stars.designation_catalogue.curation_sha256
 assert sky.constellation_lines.star_ids_for(("Sco",))
+labels = star_designations.resolve_star_labels(
+    star_designations.StarLabelSelection(bayer=("Peg:delta",), show_full_bayer_designation=True),
+    catalogue=sky.stars.designation_catalogue, research=sky.stellar_research)
+assert labels.labels == ((677, "δ Peg"),)
 print("verified frozen native sphere")
 '''
     env = dict(os.environ)
@@ -495,6 +501,8 @@ def test_native_snapshot_labels_and_gaps_use_frozen_curation(native_snapshot_cas
     def forbidden(*args, **kwargs):
         raise AssertionError("A saved effective catalogue must not reload current curation")
     monkeypatch.setattr(detail_application, "load_effective_star_designations", forbidden)
+    from wenu import stellar_research
+    monkeypatch.setattr(stellar_research, "load_stellar_research", forbidden)
     face = PolarPlanisphereChart(pole="south", projection_name="stereographic")
     composition = compose_chart(face, style="cartoon", mode="print",
         detail_overrides=DetailOverrides(star_magnitude_limit=5,
