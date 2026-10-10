@@ -544,7 +544,11 @@ def test_chart_presentation_is_closed_and_rejects_nonstatic_inputs():
     for change in ({'observer': 'La Ligua'}, {'dpi': True}, {'dpi': 0},
                    {'star_magnitude_limit': 12}, {'layers': ['satellites']},
                    {'layers': 'stars'}, {'formats': ['png']},
-                   {'formats': ['pdf', 'pdf']}, {'schema_version': True}):
+                   {'formats': ['pdf', 'pdf']}, {'schema_version': True},
+                   {'report_label_scale': 0}, {'report_label_scale': float('nan')},
+                   {'report_label_family': ''}, {'report_label_weight': 'invalid'},
+                   {'report_label_color': 'invalid-color'}, {'report_separator_width': -1},
+                   {'report_separator_gap_mm': True}):
         with pytest.raises(ValueError):
             AtlasChartPresentation.from_dict(dict(data, **change))
 
@@ -607,15 +611,19 @@ def test_atlas_index_rejects_multiple_pages_before_preparation(request_data, tmp
     assert not (tmp_path/'output').exists()
 
 
+@pytest.mark.parametrize('typography', [{}, dict(report_label_scale=2, report_label_family='serif',
+    report_label_weight='bold', report_label_color='#005577', report_separator_width=1.2,
+    report_separator_gap_mm=5)])
 @pytest.mark.parametrize('dimensions', [(353,250),(250,353)])
 @pytest.mark.parametrize('stars', [True,False])
 @pytest.mark.parametrize('polar', [False,True])
-def test_reserved_report_mirrors_binding_margin_and_keeps_legends_at_right(dimensions, stars, polar, tmp_path, monkeypatch):
+def test_reserved_report_mirrors_binding_margin_and_keeps_legends_at_right(typography, dimensions, stars, polar, tmp_path, monkeypatch):
     from types import SimpleNamespace
     import matplotlib.pyplot as plt
     import numpy as np
     from wenu.atlas_design import AtlasPageGeometry
-    from wenu.charts.atlas_publication import _render_atlas_report
+    from wenu.charts.atlas_publication import _render_atlas_report, AtlasChartPresentation
+    presentation = AtlasChartPresentation(**typography)
     from wenu.charts import automatic_legends
     from wenu.charts.regional import ExportOptions
     page = AtlasPageGeometry(*dimensions,top_mm=18,bottom_mm=15,inner_mm=25,outer_mm=12)
@@ -623,7 +631,7 @@ def test_reserved_report_mirrors_binding_margin_and_keeps_legends_at_right(dimen
     chart = SimpleNamespace(page=page,sheet=SimpleNamespace(number=14,
         sheet_id='test-sheet',center_ra_deg=0 if polar else 82.5,
         center_dec_deg=90 if polar else 0,pole_meridian_ra_deg=82.5 if polar else None))
-    composition = SimpleNamespace(style=object(),detail=SimpleNamespace(star_magnitude_limit=6,
+    composition = SimpleNamespace(style=SimpleNamespace(legend=SimpleNamespace(title_fontsize=6.5)),detail=SimpleNamespace(star_magnitude_limit=6,
                                   enabled_layers={'stars'} if stars else {'galaxies'}),
                                   mode=SimpleNamespace(dpi=150))
     star_layer = object()
@@ -638,9 +646,9 @@ def test_reserved_report_mirrors_binding_margin_and_keeps_legends_at_right(dimen
         assert style is composition.style and options['resolved_detail'] is composition.detail
         assert options['include_context'] is True
         if polar:
-            assert options['object_title'] == 'Chart 14\nCentre: ICRS\nRA undefined (pole)\nDec +90d00m00s\nMeridian 05h30m00s'
+            assert options['object_title'] == 'Centre: ICRS\nRA undefined (pole)\nDec +90d00m00s\nMeridian 05h30m00s'
         else:
-            assert options['object_title'] == 'Chart 14\nCentre: ICRS\nRA 05h30m00s\nDec +00d00m00s'
+            assert options['object_title'] == 'Centre: ICRS\nRA 05h30m00s\nDec +00d00m00s'
         assert options['stellar_reference_range'] == ((1,5) if stars else None)
         assert options['plan'].objects.location == 'upper right'
         assert options['plan'].stars.location == 'lower right'
@@ -657,15 +665,25 @@ def test_reserved_report_mirrors_binding_margin_and_keeps_legends_at_right(dimen
              page.useful_width_mm/page.width_mm,page.useful_height_mm/page.height_mm])
         assert all(spine.get_visible() for spine in ax.spines.values())
         ax = figure.axes[1]
-        np.testing.assert_allclose(ax.get_position().bounds,
+        np.testing.assert_allclose(ax.get_position().bounds[:3],
             [(page.outer_mm+0.68*page.useful_width_mm)/page.width_mm,
-             (page.bottom_mm+4)/page.height_mm,(0.32*page.useful_width_mm-4)/page.width_mm,
-             (page.useful_height_mm-8)/page.height_mm])
+             (page.bottom_mm+4)/page.height_mm,(0.32*page.useful_width_mm-4)/page.width_mm])
+        heading = next(t for t in figure.texts if t.get_gid() == 'chart-14-report-heading')
+        assert heading.get_text() == 'Chart 14' and heading.get_fontsize() == 6.5 * presentation.report_label_scale
+        assert heading.get_color() == presentation.report_label_color
+        assert heading.get_fontfamily() == [presentation.report_label_family]
+        assert heading.get_fontweight() == presentation.report_label_weight
+        separator = next(a for a in figure.artists if a.get_gid() == 'chart-14-report-separator')
+        assert separator.get_linewidth() == presentation.report_separator_width
+        assert separator.get_color() == presentation.report_label_color
+        renderer = figure.canvas.get_renderer()
+        assert heading.get_window_extent(renderer).y0 > separator.get_ydata()[0] * figure.bbox.height
+        assert ax.get_window_extent(renderer).y1 < separator.get_ydata()[0] * figure.bbox.height
         assert figure.texts[0].get_position()[0] == page.outer_mm/page.width_mm
     monkeypatch.setattr(automatic_legends,'draw_automatic_chart_legends',legend)
     monkeypatch.setattr(ExportOptions,'save',save)
     before = plt.get_fignums()
-    _render_atlas_report(chart,sky,composition,rendering,tmp_path)
+    _render_atlas_report(chart,sky,composition,rendering,tmp_path,presentation=presentation)
     assert calls == [1] and plt.get_fignums() == before
     import json
     data = json.loads((tmp_path/'chart-14_report_data.json').read_text())

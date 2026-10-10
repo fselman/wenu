@@ -164,6 +164,12 @@ class AtlasChartPresentation:
         "nonstellar", "galaxies", "open_clusters", "globular_clusters",
         "supernova_remnants", "planetary_nebulae", "equatorial_grid")
     formats: tuple = ("png", "pdf", "svg")
+    report_label_scale: float = 3.0
+    report_label_family: str = "sans-serif"
+    report_label_weight: str = "normal"
+    report_label_color: str = "black"
+    report_separator_width: float = 0.8
+    report_separator_gap_mm: float = 3.0
 
     def __post_init__(self):
         import math
@@ -175,6 +181,16 @@ class AtlasChartPresentation:
         limit = self.star_magnitude_limit
         if isinstance(limit, bool) or not isinstance(limit, (int, float)) or not math.isfinite(limit) or not -2 <= limit <= 11:
             raise ValueError("star_magnitude_limit must be finite between -2 and 11.")
+        for name in ("report_label_scale", "report_separator_width", "report_separator_gap_mm"):
+            value = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
+                raise ValueError(f"{name} must be finite and positive.")
+        _identity(self.report_label_family, "report_label_family")
+        if not isinstance(self.report_label_weight, str) or self.report_label_weight not in {"normal", "bold", "light", "medium", "semibold", "heavy", "black"}:
+            raise ValueError("Invalid report_label_weight.")
+        from matplotlib.colors import is_color_like
+        if not isinstance(self.report_label_color, str) or not is_color_like(self.report_label_color):
+            raise ValueError("Invalid report_label_color.")
         for name, allowed in (("layers", set(LAYERS)), ("formats", {"png", "pdf", "svg"})):
             values = getattr(self, name)
             if not isinstance(values, (list, tuple)) or not values or any(not isinstance(v, str) for v in values) or len(set(values)) != len(values) or not set(values) <= allowed:
@@ -244,7 +260,7 @@ def _atlas_report_data(chart, sky, composition, rendering):
 
 
 def _render_atlas_report(chart, sky, composition, rendering, directory,
-                         formats=("png", "pdf", "svg")):
+                         formats=("png", "pdf", "svg"), presentation=None):
     """Reserved left-hand page with canonical legends from the existing render."""
     import matplotlib.pyplot as plt
     from .automatic_legends import draw_automatic_chart_legends
@@ -253,6 +269,7 @@ def _render_atlas_report(chart, sky, composition, rendering, directory,
     from astropy.coordinates import Angle
     import astropy.units as u
     import json
+    presentation = AtlasChartPresentation() if presentation is None else presentation
     data = _atlas_report_data(chart, sky, composition, rendering)
     page = chart.page
     figure = plt.figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4))
@@ -276,15 +293,46 @@ def _render_atlas_report(chart, sky, composition, rendering, directory,
         (report["y"] + report["height"]) / page.height_mm,
         "Reserved for the object report", va="top", fontsize=10, color="0.45")
     try:
+        # A separate heading lets its type grow without enlarging centre metadata.
+        heading = figure.text((box["x"] + box["width"]) / page.width_mm,
+            (box["y"] + box["height"]) / page.height_mm,
+            f"Chart {chart.sheet.number}", ha="right", va="top",
+            fontsize=composition.style.legend.title_fontsize * presentation.report_label_scale,
+            fontfamily=presentation.report_label_family,
+            fontweight=presentation.report_label_weight,
+            color=presentation.report_label_color)
+        heading.set_gid(f"chart-{chart.sheet.number:02d}-report-heading")
+        figure.canvas.draw()
+        bounds = heading.get_window_extent(figure.canvas.get_renderer())
+        heading_height = bounds.height / figure.dpi * 25.4
+        heading_width = bounds.width / figure.dpi * 25.4
+        gap = presentation.report_separator_gap_mm
+        separator_y = box["y"] + box["height"] - heading_height - gap
+        legend_height = separator_y - gap - box["y"]
+        if heading_width > box["width"] or legend_height <= 0:
+            raise ValueError("Report heading does not fit the facing-page column.")
+        from matplotlib.lines import Line2D
+        separator = Line2D([box["x"] / page.width_mm,
+            (box["x"] + box["width"]) / page.width_mm],
+            [separator_y / page.height_mm] * 2, transform=figure.transFigure,
+            color=presentation.report_label_color, linewidth=presentation.report_separator_width)
+        separator.set_gid(f"chart-{chart.sheet.number:02d}-report-separator")
+        figure.add_artist(separator)
+        ax.set_position((box["x"] / page.width_mm, box["y"] / page.height_mm,
+                         box["width"] / page.width_mm, legend_height / page.height_mm))
+        data["layout"]["heading"] = dict(x=box["x"], y=separator_y + gap,
+            width=box["width"], height=heading_height)
+        data["layout"]["separator"] = dict(x=box["x"], y=separator_y, width=box["width"])
+        data["layout"]["legends"] = dict(box, height=legend_height)
         ra = Angle(chart.sheet.center_ra_deg * u.deg).to_string(
             unit=u.hourangle, sep="hms", precision=0, pad=True)
         dec = Angle(chart.sheet.center_dec_deg * u.deg).to_string(
             unit=u.deg, sep="dms", precision=0, pad=True, alwayssign=True)
-        title = f"Chart {chart.sheet.number}\nCentre: ICRS\nRA {ra}\nDec {dec}"
+        title = f"Centre: ICRS\nRA {ra}\nDec {dec}"
         if not data["center"]["ra_defined"]:
             meridian = Angle(chart.sheet.pole_meridian_ra_deg * u.deg).to_string(
                 unit=u.hourangle, sep="hms", precision=0, pad=True)
-            title = (f"Chart {chart.sheet.number}\nCentre: ICRS\nRA undefined (pole)"
+            title = ("Centre: ICRS\nRA undefined (pole)"
                      f"\nDec {dec}\nMeridian {meridian}")
         plan = ChartLegendPlan("regional",
             LegendPlacement(location="upper right"),
@@ -357,7 +405,7 @@ def _render_atlas_sheet(task, sky=None):
         for suffix in presentation.formats[1:]:
             result.export_options.save(figure, Path(directory) / f"chart-{sheet.number:02d}.{suffix}")
         _render_atlas_report(chart, sky, composition, result.rendering, directory,
-                             formats=presentation.formats)
+                             formats=presentation.formats, presentation=presentation)
         return sheet.number
     except Exception as exc:
         raise RuntimeError(f"Chart {sheet.number} failed: {exc}") from exc

@@ -859,3 +859,31 @@ With an index, the combined PDF keeps index/report/chart order (11 pages for
 this selection). Without an index, its combined PDF remains chart-only; the
 separate report products and JSON are still exported. Completion-manifest
 checksums cover every report format and sidecar.
+
+
+### Report chart heading
+
+The right-hand report column starts with a separate `Chart N` heading, followed
+by a horizontal rule and the centre metadata/object key. The stellar key remains
+below. The default heading is three times the current object-key title size;
+centre metadata and legend entries retain their sizes. Page headings are separate.
+
+Optional root keys in the chart-presentation TOML (schema version 1):
+
+```toml
+report_label_scale = 3.0
+report_label_family = "sans-serif"
+report_label_weight = "normal"
+report_label_color = "black"
+report_separator_width = 0.8
+report_separator_gap_mm = 3.0
+```
+
+The scale multiplies the resolved legend title size. Separator width is in points;
+the gap is in millimetres on each side of the rule. The rule uses the heading
+colour. Positive finite numeric values, a valid colour and an admitted font
+weight are required. Font families must be available on the rendering system.
+Oversized headings or legends fail explicitly rather than intruding into the
+report text. The report JSON records the heading, rule and remaining legend
+rectangles; the effective presentation is retained in its provenance.
+These settings do not change chart geometry, page headings or stellar symbols.

@@ -4906,3 +4906,22 @@ frames in both orientations, right alignment, star clipping/range, disabled
 stars, CLI override, saved/cold/parallel equivalence and publication failures.
 Sample Orion, Scorpius, Virgo and both polar caps at different limits before
 Mac visual acceptance. No merge or cleanup is authorized by this amendment.
+
+
+### Atlas batch accepted closure and report heading candidate (2026-10-10)
+
+PR #225 was accepted and merged as 8a5d4bfe658abd423a6d86c60eecf4dc8e74cfb6,
+with the exact accepted tree. The executable candidate passed 499 focused and
+all 3406 plugin-disabled Mac tests; the documentation-only policy amendment
+passed its affected test. Fernando confirmed clean synchronized main and local/
+remote branch cleanup. This supersedes earlier pending acceptance/merge wording.
+
+Before object curation, Fernando requested the Chart N heading in the report's
+right-hand legend column at three times its previous size, separated by a rule
+from centre metadata and keys below. Font family, weight, colour, size and rule
+presentation are configurable in the existing independent presentation schema.
+Use the publication owner for layout and retain canonical key drawing, physical
+report frames and cold/saved/spawn chart equivalence. Record resolved heading/
+rule/key boxes in report sidecars and reject overflow. Star sizes and broader
+appearance choices remain deferred. This bounded candidate still requires visual
+acceptance and final regression before a separately authorized merge.

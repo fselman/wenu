@@ -4534,3 +4534,14 @@ object inventories remain pending. All products are staged and hash-bound in
 the completion manifest; index absence retains chart-only combined-PDF order
 while exporting report products separately. This supersedes report-NN.pdf
 naming and index-dependent template generation.
+
+
+### Atlas report heading presentation
+
+`AtlasChartPresentation` admits optional report_label_scale (default 3),
+report_label_family, report_label_weight, report_label_color,
+report_separator_width (points) and report_separator_gap_mm. The publication
+owner draws a separate chart-number heading and rule before the canonical
+metadata/object and stellar keys. It measures the heading, reserves space in
+the existing right column, records the resolved boxes, and rejects overflow.
+The original chart render and stellar size law are unchanged.

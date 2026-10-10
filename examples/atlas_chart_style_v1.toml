@@ -3,6 +3,12 @@ document_kind = "wenu-atlas-chart-presentation"
 style = "atlas"
 dpi = 150
 star_magnitude_limit = 6.0
+report_label_scale = 3.0
+report_label_family = "sans-serif"
+report_label_weight = "normal"
+report_label_color = "black"
+report_separator_width = 0.8
+report_separator_gap_mm = 3.0
 formats = ["png", "pdf", "svg"]
 layers = ["stars", "constellation_lines", "constellation_labels",
   "constellation_boundaries", "milky_way", "magellanic_clouds", "nonstellar",
