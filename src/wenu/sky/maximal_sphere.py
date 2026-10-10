@@ -111,6 +111,86 @@ def generate_celestial_sphere(
     return build_maximal_sphere(None, profile=profile)
 
 
+def _require_native_profile(profile):
+    """Admit only fields owned by currently supported native layers."""
+    from dataclasses import fields
+    import math
+    if not isinstance(profile, CelestialSphereLoadProfile):
+        raise TypeError("profile must be a CelestialSphereLoadProfile.")
+    limits = (profile.star_magnitude_limit, profile.galaxy_magnitude_limit,
+              profile.globular_cluster_magnitude_limit)
+    if (profile.star_catalog != "hipparcos"
+            or any(type(v) not in (int, float) or not math.isfinite(v) or v <= 0 for v in limits)
+            or (profile.nonstellar_magnitude_limit is not None and
+                (type(profile.nonstellar_magnitude_limit) not in (int, float) or
+                 not math.isfinite(profile.nonstellar_magnitude_limit)))
+            or type(profile.extended_object_samples) is not int or profile.extended_object_samples < 12):
+        raise ValueError("Unsupported fixed preparation profile or invalid catalogue coverage.")
+
+
+def generate_native_icrs_sphere(*, profile=CANONICAL_MAXIMAL_SPHERE_PROFILE):
+    """Prepare the currently admitted static whole-sky layers once.
+
+    This is the fixed-content profile: all installed static catalogues,
+    boundaries and reference definitions. Moving bodies remain excluded. Connectivity is loaded before the single stellar
+    load, so vertices require no catalogue reload.
+    """
+    from wenu.objects.stars import Stars
+    from wenu.sky.constellations import Constellations
+    from wenu.sky.constellation_labels import ConstellationLabels
+    from wenu.star_designations import load_effective_star_designations
+    from wenu.stellar_research import load_stellar_research
+    _require_native_profile(profile)
+    sky = CelestialSphere(None)
+    sky.load_profile = profile
+    sky.stellar_research = load_stellar_research()
+    sky.add_milky_way_isophotes(filename=profile.milky_way_filename,
+                              levels=MilkyWayIsophotes.available_levels)
+    for cloud, filename in (("lmc", profile.lmc_filename), ("smc", profile.smc_filename)):
+        sky.add_magellanic_cloud_isophotes(cloud, filename=filename,
+                                          levels=MagellanicCloudIsophotes.available_levels)
+    stars = Stars(None, magnitude_limit=profile.star_magnitude_limit)
+    constellation = Constellations(stars, lines_file=profile.constellation_lines_filename)
+    stars.set_constellation_vertices(constellation.lines.star_ids, reload=False)
+    stars.load(filename=profile.star_filename)
+    stars.designation_catalogue = load_effective_star_designations(stars.designation_catalogue)
+    stars.source_catalog["star_designations"] = [
+        stars.designation_catalogue.get(int(hip)) for hip in stars.source_catalog.index]
+    stars.catalog["star_designations"] = [
+        stars.designation_catalogue.get(int(hip)) for hip in stars.catalog.index]
+    stars.hip_df = stars.catalog.copy()
+    sky.stars = sky.add(stars)
+    sky.constellations = constellation
+    sky.constellation_lines = sky.add(constellation.lines)
+    sky.constellation_labels = sky.add(ConstellationLabels(stars))
+    sky.add_nonstellar(catalog=profile.nonstellar_catalog, filename=profile.nonstellar_filename,
+                       magnitude_limit=profile.nonstellar_magnitude_limit, samples=profile.extended_object_samples)
+    sky.add_galaxies(filename=profile.galaxy_filename, magnitude_limit=profile.galaxy_magnitude_limit,
+                     samples=profile.extended_object_samples)
+    sky.add_open_clusters(filename=profile.open_cluster_filename)
+    sky.add_globular_clusters(filename=profile.globular_cluster_filename,
+                             magnitude_limit=profile.globular_cluster_magnitude_limit,
+                             samples=profile.extended_object_samples)
+    sky.add_supernova_remnants(filename=profile.supernova_remnant_filename, samples=profile.extended_object_samples)
+    sky.add_planetary_nebulae(filename=profile.planetary_nebula_filename)
+    sky.add_constellation_boundaries(filename=profile.constellation_boundaries_filename)
+    sky.add_equatorial_grid(frame="icrs", equinox="J2000", include_equator=True)
+    sky.add_ecliptic_grid(equinox="J2000", include_ecliptic=True)
+    sky.add_galactic_grid(include_plane=True)
+    points = sky.add_points()
+    from astropy.coordinates import BarycentricMeanEcliptic
+    from astropy.time import Time
+    ecliptic = BarycentricMeanEcliptic(equinox=Time("J2000"))
+    for pole in ("north", "south"):
+        points.add_equatorial_pole(pole)
+        points.add_galactic_pole(pole)
+        points.add_ecliptic_pole(pole, frame=ecliptic)
+    points.add_galactic_center()
+    points.add_galactic_anticenter()
+    points.add_ecliptic_cardinal_points(frame=ecliptic)
+    return sky
+
+
 def build_maximal_sphere(
     observer,
     *,

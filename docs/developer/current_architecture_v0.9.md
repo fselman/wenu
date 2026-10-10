@@ -2418,3 +2418,34 @@ on canonical atlas geometry validation, without observer, sky or rendering
 resources. This slice supplies input admission and a worker budget only;
 persisted celestial content, parallel production, reports and the installed
 third command remain future work under the accepted publication contract.
+
+
+### Native snapshot data seam candidate (2026-10-10)
+
+The native-only preparation owner loads whole-sphere Hipparcos/line content once,
+plus all admitted Milky Way and Magellanic Cloud levels, and freezes effective
+stellar designations/research provenance. The data persistence owner
+`sky/native_snapshot.py` binds exact atlas design bytes, closed JSON records and
+non-pickled typed read-only array maps. Explicit reuse builds local layer facades
+through existing native realization/selection without source reloading.
+
+Only stars, western constellation lines/labels and native isophotes are admitted.
+Deep-sky objects, IAU boundaries, moving bodies and observer realization remain
+unsupported snapshot choices. The installed second/third command handoff,
+workers, reports and publication-wide rendering remain subsequent slices.
+Manifest-last no-clobber publication is the completion boundary; no power-loss
+recovery or atomic directory rename is claimed.
+
+
+### Fixed-object persistence coverage candidate (2026-10-10)
+
+Snapshot v2 extends native preparation to every current fixed catalogue layer,
+IAU boundaries and explicit fixed reference definitions. Original domain owners
+now supply native ICRS outlines/symbols, FK4/B1875 boundary transformation and
+reference realization. Snapshot transport restores records only. Source table
+rows remain independent of index/chart selections, with masks, units and
+metadata retained. V1 remains readable with its truthful limited coverage.
+Moving bodies and artificial satellites remain outside this atlas; no time or
+observer/provider component is added. The installed handoff and worker runtime
+remain pending. Existing native pipeline, descriptor budget and no-clobber
+publication remain the execution and persistence boundaries.

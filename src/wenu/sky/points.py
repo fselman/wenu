@@ -354,6 +354,19 @@ class CelestialPoints(GeometricalObject):
             observation=observation_context(resolved_observer),
         )
 
+    def realize(self, context, observer, **options):
+        from wenu.sky.realization import LayerRealizationContext
+        if not isinstance(context, LayerRealizationContext) or not context.is_native_icrs:
+            return super().realize(context, observer, **options)
+        if options:
+            raise TypeError("Celestial points accept no native geometry options.")
+        coordinates = [self._to_icrs(point.coord) for point in self._points]
+        return SphericalPoints(
+            lon_deg=np.asarray([c.lon_deg[0] for c in coordinates]),
+            lat_deg=np.asarray([c.lat_deg[0] for c in coordinates]),
+            coordinate_spec=ICRS_ASTROMETRIC_SPEC,
+            labels=[point.label for point in self._points], metadata=self._style_metadata())
+
     @staticmethod
     def _native_spec(coord):
         frame = coord.frame

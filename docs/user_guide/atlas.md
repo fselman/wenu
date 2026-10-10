@@ -638,3 +638,82 @@ Optional resolution overrides `charts=` and `jobs=` are retained in the plan.
 Worker count is capped at the number of selected sheets. Planning constructs no
 celestial sphere and starts no workers. The installed atlas producer, persisted
 full-sphere data and parallel chart rendering remain upcoming milestones.
+
+
+### Saving native celestial content (Python API candidate)
+
+You can now prepare a reusable data bundle independently of index formatting:
+
+```python
+from pathlib import Path
+from wenu.sky.native_snapshot import (
+    prepare_native_sky_snapshot, read_native_sky_snapshot,
+)
+
+raw = Path("atlas_design_v1.json").read_bytes()
+digest = prepare_native_sky_snapshot(raw, "native_sky_v1")
+# In a later Python session, reuse the same saved revision:
+snapshot = read_native_sky_snapshot("native_sky_v1",
+                                    expected_manifest_sha256=digest)
+snapshot.require(layers=("stars", "constellation_lines"),
+                 star_magnitude_limit=6)
+sky = snapshot.make_sky()
+```
+
+Save the returned manifest digest alongside your project to bind later reuse to
+the selected revision. The bundle contains the exact design and the entire
+admitted native sphere, with stellar coverage through magnitude 11 by default,
+all western figures, all Milky Way levels and both Clouds. Index brightness
+limits and chart selection cannot prune it. Stars retain their native J1991.25
+ICRS positions and frozen designations/research evidence. Loading a bundle reads
+and verifies its data, then constructs local native layer views without loading
+the original catalogues again. A changed installed catalogue does not silently
+refresh a saved bundle; prepare a new versioned destination explicitly.
+
+Insufficient coverage, unsupported layers or corrupted data produce an error.
+Version 1 excludes deep-sky objects and IAU boundaries. Version 2 adds the
+fixed-content layers described below; moving bodies and observer coordinates
+remain excluded. Existing bundles are never overwritten; partial
+publication cannot be admitted without its final manifest. This API is the data
+layer milestone. Snapshot flags for the installed plotter, the installed atlas
+producer and parallel workers remain next steps.
+
+
+### Required complete-content coverage
+
+The tested native snapshot API is the accepted persistence foundation. The
+required final atlas bundle includes all fixed celestial object types supported:
+its deep-sky catalogues as well as the stellar/isophote content, official
+constellation boundaries and reference layers. New preparation now produces
+version 2 with this fixed-content coverage. Existing v1 bundles remain readable
+and retain their declared limited coverage; requests for their missing layers
+fail instead of silently reloading sources.
+
+All moving bodies and artificial satellites are outside the atlas scope for the moment,
+including planets, the Moon, asteroids and comets. The atlas remains independent
+of observation time and ephemeris resources. A future moving-object extension
+requires a separate decision. Index appearance and chart subsets must never determine
+which source records are saved.
+
+
+### Fixed-content snapshot v2
+
+The prepare/read Python example above now saves v2. It retains the complete
+normalized source tables for Messier/nonstellar objects, galaxies, open and
+globular clusters, supernova remnants and planetary nebulae, including their
+catalogue identifiers, coordinates, dimensions, classifications, masks, units
+and metadata. It also saves official boundary vertices in their original
+FK4/B1875 frame and fixed reference definitions. These records are independent
+of index magnitude, chart selection and subsequent catalogue changes. Original
+layer owners realize the curves, symbols, transformed boundaries and reference
+geometry. Later reuse does not reopen source catalogues or build the sphere.
+
+For example, require(layers=("stars", "galaxies", "constellation_boundaries"))
+admits those layers in v2 and rejects them in a limited v1 bundle. Extra
+admitted reference names are equatorial_grid, ecliptic_grid, galactic_grid and
+celestial_points. Equatorial references use ICRS; ecliptic references use an
+explicit J2000 convention. Their reference epoch does not propagate or alter
+Hipparcos source positions. Moving bodies and artificial satellites are absent.
+New destinations are still required; an old bundle is never overwritten or
+silently upgraded. CLI snapshot handoff and parallel atlas production remain
+subsequent milestones.

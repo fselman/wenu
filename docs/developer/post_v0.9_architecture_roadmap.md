@@ -4735,3 +4735,111 @@ provenance; bounded process workers through canonical rendering; reports and
 spread assembly; atomic publication, reuse and cancellation; measured cold/warm
 serial/parallel performance and Mac print review. A worker budget is not evidence
 of implemented parallel production. Do not merge this candidate before review.
+
+
+### Persisted native sky candidate (2026-10-10)
+
+PR #223 was accepted after 488 focused and 3347 full Mac passes, merged as
+`677ab5f7`, and cleaned to synchronized main only. The next bounded slice owns
+data preparation/persistence/reuse, not process workers or chart/report assembly.
+Module admission is recorded in source_tree.md: native preparation stays in
+maximal_sphere.py; sky/native_snapshot.py owns data-only integrity/coverage and
+lightweight native reconstruction; original layers own scientific realization.
+
+The candidate retains the entire declared native sphere (Hipparcos including
+source classifications and effective designations, western connectivity/labels,
+all MW and LMC/SMC levels), exact validated design bytes, source digests, typed
+non-pickled arrays and designation/curation/research evidence. Stars are loaded
+once in native preparation. Snapshot coverage is independent of index appearance
+and subset selection. Reuse maps verified arrays and instantiates local facades;
+it does not reload original catalogues or call the whole-sphere builder.
+Unsupported layer/profile or coordinate/epoch claims, fainter coverage, missing
+IDs, changed/corrupt payloads and unsafe names fail before rendering.
+
+Existing reusable-sphere/maximal-sphere tests supply 28 new checks for single
+cold preparation/load, cold/warm geometry/semantics, fresh-process reuse with
+original loaders prohibited, read-only dtype-packed maps and bounded descriptors (fresh-process file limit
+64), span/overlap admission, local facade state, frozen source
+metadata, coverage/version/shape/type/digest/path faults, completed-bundle
+preservation, no-clobber races and interruption cleanup. Existing render/detail
+checks cover label-gap use of an already-effective catalogue without applying
+current curation again. Ring vertices/topology/IDs compare exactly; derived
+floating ring-area metadata compares at machine-roundoff tolerance documented
+in the coordinate guide. Native support for DSO and IAU boundaries remains a
+separate audit, not an implicit claim of complete maximal-sphere coverage.
+
+No installed snapshot flags/TOML producer or parallel execution is added here.
+Next: wire explicit preparation/reuse into the second-command handoff (the index
+and persistence sharing one preparation), then native rectangular chart workers,
+reports, spread assembly and measured serial/parallel behavior. Measure loading,
+validation/mapping, facade transport and per-chart realization separately; source
+reuse does not eliminate I/O or derived geometry work. Manifest-last hard-link
+commit is tested; atomic directory rename and power-loss durability are not
+claimed. Mac filesystem acceptance and a separate merge decision remain pending.
+
+
+### Accepted snapshot foundation and complete-content requirement (2026-10-10)
+
+Fernando accepted the snapshot infrastructure at
+`d53f61302eb5c6d813655a3216450f107edf7ccb` after 630 focused and
+3375 complete plugin-disabled Mac tests passed, with a digest-bound bundle
+containing 118218 source stellar records and magnitude coverage 11.0. Diff,
+upstream and clean-tree checks passed. Acceptance is not merge authorization.
+
+He requires the atlas persistence contract to include every fixed celestial
+object type currently supported by Wenu. His subsequent clarification excludes
+all moving bodies and artificial satellites from the atlas for the moment, superseding
+the earlier proposal to include major Solar-System bodies.
+The existing native-only implementation is an accepted foundation, not completion
+of that content requirement. Its exclusion of DSO is a current runtime
+limitation; the moving-body exclusion is now part of the agreed atlas scope.
+
+The next coverage milestone must retain the full admitted source records for
+`nonstellar` (including Messier), galaxies, open clusters, globular clusters,
+supernova remnants and planetary nebulae, alongside stars, western figures,
+Milky Way and both Clouds. Include authoritative IAU boundary vertices and
+reference-layer definitions needed by existing charts; preserve native frames,
+units, masks, dimensions, classifications, identities and provenance. In
+particular, retain FK4/B1875 boundary sources and use the canonical coordinate
+service for realization rather than relabeling them ICRS. Extend original
+native layer owners where their current realization is observer-only; do not
+put new scientific realization in snapshot transport facades.
+
+Do not add Solar-System positions, ephemeris bindings, observation times or
+moving-body components to this atlas persistence milestone. Planets, the Moon,
+minor bodies and artificial satellites remain outside atlas preparation and production
+for the moment. Their support elsewhere in Wenu is unaffected. The atlas stays
+observer-independent and retains the declared native stellar epoch; adding
+fixed catalogue layers must not introduce an apparent/native mixture.
+Any future moving-object atlas extension requires a separate explicit decision.
+Never silently drop requested content, infer a subset from index appearance,
+or reload original catalogues on resume. Version expanded schemas explicitly
+and keep existing v1 bundles readable with truthful limited coverage.
+
+Complete this fixed-content coverage and native admission before treating the
+snapshot as comprehensive or closing the atlas content milestone. Installed
+handoff, workers and reports remain separate responsibilities. Merge and branch
+cleanup require Fernando's separate explicit request.
+
+
+### Fixed-content coverage runtime candidate (2026-10-10)
+
+After the clarified fixed-only scope, v2 preparation now loads all six current
+DSO catalogues once, alongside the existing single Hipparcos load, western
+figures, all isophotes and IAU boundary sources. Reference definitions are
+prepared with explicit static frames/equinoxes. Persist complete normalized
+source tables, masks, units and metadata; reconstruct through original layer
+owners and their native realization additions. Source-catalogue and boundary
+load counters, fresh-process loader prohibition, descriptor budget, cold/warm
+source and geometry equivalence, subset realization, extra frame/shape/coverage
+faults, legacy coverage and independent boundary/grid oracles cover this seam.
+The canonical render test includes all six DSO kinds, selected boundaries and
+fixed references together with the frozen stellar labels and gaps.
+
+Schema v2 is `wenu-fixed-sky-records-v2`; tested v1 is read-only compatible and
+keeps its limited coverage. No moving-body or artificial-satellite component,
+observer/evaluation time, new package/module/dependency/command or second
+scientific pipeline is added. This candidate implements the prior required
+fixed-content extension; Mac acceptance and merge remain pending. Next is the
+explicit installed plotter preparation/reuse handoff sharing one prepared sky,
+then rectangular/polar atlas workers, reports and measured production behavior.

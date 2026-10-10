@@ -4366,3 +4366,100 @@ the selected sheet count. Only this resolution route verifies original bytes;
 direct plan construction checks geometry/selection consistency. The caller
 reads bytes once. Planning loads no sky, observer, renderer or network resource
 and neither rewrites the design nor executes workers.
+
+
+## Persisted native sky input candidate (2026-10-10)
+
+`sky/maximal_sphere.py:generate_native_icrs_sphere` prepares the admitted whole
+sphere without an observer: Hipparcos stars (default coverage 11), western lines
+and labels, every Milky Way level and every LMC/SMC level. Connectivity is read
+before the single stellar load. Original catalogue rows, semantic classifications
+and effective designation/curation records are retained independently of any
+index limit or chart subset. Other profile overrides are rejected, rather than
+silently claiming unsupported deep-sky, boundary or moving-body coverage.
+
+`sky/native_snapshot.py:prepare_native_sky_snapshot(design_bytes, destination,
+profile=...)` binds canonical validated design bytes and publishes a new revision.
+A closed JSON `wenu-native-sky-snapshot` version 1 records compatibility
+`wenu-native-sky-records-v1`, exact design/source/payload digests, full-sphere
+coverage, ICRS barycentric astrometry, native Hipparcos epoch J1991.25, degree
+units, packed typed array shapes/dtypes and frozen designation/curation/research evidence.
+An explicit logical-array index records dtype-packed offsets and shapes, with
+complete non-overlapping spans, so workers map a few files rather than every ring.
+NPY arrays admit only non-object primitive numeric/boolean/fixed Unicode data;
+record tags admit a fixed list of existing designation/research dataclasses. No dynamic
+imports or pickle, live sky, observer caches or projected geometry are serialized.
+Source files are hashed before/after preparation; changed inputs fail publication.
+
+`read_native_sky_snapshot(directory, expected_manifest_sha256=None)` validates
+all declared files, safe basenames, sizes/digests, schema/compatibility, design,
+record shapes/types, epoch and topology before returning read-only maps. An
+expected manifest digest binds the exact externally selected revision; internal
+checksums detect corruption but do not constitute a cryptographic signature.
+`snapshot.require(layers=..., star_magnitude_limit=..., design_sha256=...)`
+fails on unsupported/insufficient coverage. `snapshot.make_sky()` reconstructs
+local native layer facades over the frozen records, with no original catalogue
+loading or maximal sphere preparation. Facades reuse original realization and
+selection methods. Native star selection also rejects excessive coverage and
+absent explicit IDs. Each facade has local mutable selection/cache state; mapped
+source arrays and nested record/feature structures remain read-only.
+The canonical label resolver accepts the frozen `StellarResearch` record through
+the native facade. Shared Bayer decisions therefore retain the saved research
+policy rather than consulting a later installed policy during chart rendering.
+
+Publication uses exclusive destination-directory reservation and exclusive hard
+links. The already verified manifest is linked last as the completion marker;
+readers cannot admit partial payload directories. Existing paths and concurrent
+writers are preserved. Exceptions/interruption remove only this invocation's
+uncommitted destination/staging, never an earlier committed bundle. This is a
+manifest commit protocol, not an atomic directory rename. Mac filesystem
+acceptance is required; power-loss durability/fsync recovery is not claimed.
+
+The installed plotter/producer are not wired to this API yet. Snapshot reuse
+must be explicit; figure-only plotting remains compatible. Original canonical
+realization may recompute derived ring areas and label anchors; no measured
+parallel speedup or completed-chart reuse is claimed in this data milestone.
+
+
+## Fixed celestial snapshot v2 candidate (2026-10-10)
+
+The same prepare/read/require/make_sky Python APIs now prepare schema version 2,
+compatibility `wenu-fixed-sky-records-v2`. This supersedes the earlier candidate's
+native-only layer restriction. V2 includes all six installed deep-sky layer
+owners (NonStellar/Messier, galaxies, open clusters, globular clusters, supernova
+remnants, planetary nebulae), authoritative IAU boundary vertices and fixed
+reference definitions in addition to the v1 stellar/isophote content.
+
+Retain entire normalized source tables before their default magnitude cuts,
+including nullable text, numeric values, masks, column units/descriptions and
+original JSON table metadata. Record source identities, ICRS/J2000 catalogue
+coordinate semantics and original native profile defaults. Default galaxy and
+globular limits still govern their active catalogues; explicit magnitude
+selection can use retained source rows through the original layer owner.
+Boundary records preserve FK4/B1875 RA in hours and declination in degrees.
+Sampling and transformation remain in ConstellationBoundaries; transport never
+relabels source vertices as ICRS. Version-2 admission verifies component/layer
+coverage, column dtype/shape/masks, native directions, boundary frame/equinox,
+reference definitions and profile semantics before returning the snapshot.
+
+The new native realization paths use the original ellipse, selection and
+semantic-metadata owners. Curves remain curves for Messier/globular/SNR;
+galaxies remain polygons; open clusters and planetary nebulae remain symbols.
+Ordinary observer realization is unchanged. Fixed reference grids are ICRS
+for equatorial axes and explicitly J2000 for the ecliptic, plus the Galactic
+plane; native grid dispatch rejects AltAz and an of-date equinox. Twelve fixed
+reference points retain their original frames, equinox and appearance data.
+CelestialPoints converts through the existing coordinate service; antisolar
+points and other time-dependent references are not prepared.
+
+Readers continue admitting the tested version-1 layout and compatibility tag.
+A v1 bundle retains its five-layer coverage; require() defaults to the bundle's
+own declared layers and rejects additional fixed content. It never promotes
+legacy coverage, refreshes sources, or converts the persisted bundle in place.
+New preparation produces v2 only. Packed non-pickled arrays, manifest-last
+no-clobber publication, frozen stellar policy and digest-bound reuse remain.
+The restored fixed tables and source arrays have independent facade state.
+
+No Solar-System bodies, ephemeris resources, artificial satellites, observer
+instances or evaluation times enter this atlas bundle. Installed command
+handoff, workers, reports and timing measurements remain later milestones.

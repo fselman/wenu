@@ -429,6 +429,31 @@ class ConstellationBoundaries(GeometricalObject):
             candidates=candidates,
         )[0]
 
+    def realize(self, context, observer, **options):
+        from wenu.sky.realization import LayerRealizationContext
+        if not isinstance(context, LayerRealizationContext) or not context.is_native_icrs:
+            return super().realize(context, observer, **options)
+        requested = self._expand_constellation_names(options.pop("selected", None))
+        if options:
+            raise TypeError(f"Unsupported native boundary options: {sorted(options)}")
+        if not self.sampled_vertices:
+            self.sample()
+        if requested is not None and requested.difference(self.sampled_vertices):
+            raise KeyError("Unknown loaded constellation boundary.")
+        ids = [name for name in self.sampled_vertices if requested is None or name in requested]
+        source = SphericalPolygons(
+            lon_deg=tuple(self.sampled_vertices[name][:, 0] * 15 for name in ids),
+            lat_deg=tuple(self.sampled_vertices[name][:, 1] for name in ids),
+            coordinate_spec=CoordinateSpec(frame="fk4", origin="solar-system-barycenter",
+                position_status=PositionStatus.ASTROMETRIC, equinox="B1875.0",
+                provider="IAU constellation boundaries"),
+            ids=ids, names=ids, metadata={"boundaries": self.boundaries_name,
+                "source_frame": "fk4", "source_equinox": "B1875.0",
+                "coordinate_system": "icrs", "semantic_entity_keys": tuple(
+                    semantic_key(name, field="constellation key") for name in ids),
+                "semantic_entity_display_names": tuple(ids)})
+        return CoordinateService().transform(source, ICRS_ASTROMETRIC_SPEC)
+
     def regions_of(
         self,
         ra_deg,
