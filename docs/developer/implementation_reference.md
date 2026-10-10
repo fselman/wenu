@@ -4545,3 +4545,8 @@ owner draws a separate chart-number heading and rule before the canonical
 metadata/object and stellar keys. It measures the heading, reserves space in
 the existing right column, records the resolved boxes, and rejects overflow.
 The original chart render and stellar size law are unchanged.
+
+The atlas report uses an unmanaged Agg figure for physical layout measurement
+and export. Interactive GUI window resizing must not quantize its B4 paper
+size before heading/legend measurements; this is independent of the selected
+PNG/PDF/SVG export backend.

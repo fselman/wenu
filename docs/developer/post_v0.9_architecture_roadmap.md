@@ -4925,3 +4925,15 @@ report frames and cold/saved/spawn chart equivalence. Record resolved heading/
 rule/key boxes in report sidecars and reject overflow. Star sizes and broader
 appearance choices remain deferred. This bounded candidate still requires visual
 acceptance and final regression before a separately authorized merge.
+
+
+### Report heading Mac canvas correction (2026-10-10)
+
+At c3029c59, all 16 Mac report-layout cases failed after drawing changed the
+figure size to pixel-rounded inches; input admission passed. The shell stopped
+before sample generation. Correct the report figure lifecycle to use a direct
+noninteractive Agg canvas without a GUI figure manager, preserving exact paper
+dimensions for text measurement and canonical export. Retain the existing
+physical-size assertions and focused cold/saved/spawn equivalence checks.
+This amendment does not relax dimensional tolerances or alter heading styling.
+Mac rerun and visual acceptance remain pending.

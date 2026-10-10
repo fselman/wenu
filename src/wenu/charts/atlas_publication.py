@@ -263,6 +263,8 @@ def _render_atlas_report(chart, sky, composition, rendering, directory,
                          formats=("png", "pdf", "svg"), presentation=None):
     """Reserved left-hand page with canonical legends from the existing render."""
     import matplotlib.pyplot as plt
+    from matplotlib.figure import Figure
+    from matplotlib.backends.backend_agg import FigureCanvasAgg
     from .automatic_legends import draw_automatic_chart_legends
     from .legend_plan import ChartLegendPlan, LegendPlacement
     from .regional import ExportOptions
@@ -272,7 +274,9 @@ def _render_atlas_report(chart, sky, composition, rendering, directory,
     presentation = AtlasChartPresentation() if presentation is None else presentation
     data = _atlas_report_data(chart, sky, composition, rendering)
     page = chart.page
-    figure = plt.figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4))
+    # Measure physical layout without a GUI window rounding the paper to pixels.
+    figure = Figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4))
+    FigureCanvasAgg(figure)
     left = page.outer_mm / page.width_mm
     bottom = page.bottom_mm / page.height_mm
     width = page.useful_width_mm / page.width_mm
