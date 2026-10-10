@@ -22,8 +22,8 @@ those historical milestones remain evidence, not the current next-action list.
 
 The [atlas user guide](../user_guide/atlas.md) supplies the command/input
 diagram and the user preparation steps. The designer CLI is accepted and merged
-in PR #220; the installed index plotter is the current implementation candidate
-(see the latest checkpoint). `wenu_design_atlas` produces **only resolved JSON**;
+in PR #220; the installed index plotter is accepted and merged in PR #221
+(see the publication checkpoint). `wenu_design_atlas` produces **only resolved JSON**;
 `wenu_plot_atlas` consumes it with independent index presentation inputs;
 `wenu_create_atlas` consumes it with publication and curation inputs.
 The original planning checkpoint did not implement or freeze their CLI/schema;
@@ -4448,3 +4448,266 @@ Inkscape raster review exposed a prior SVG backend omission of the joined
 half-page clip rectangle. Preserve its intersection with native path clips
 through caller-declared export clip boxes in the shared SVG owner, keeping
 full contour guides unclipped and both veils confined to their assigned sides.
+
+## Atlas publication audit and batch contract candidate (2026-10-10)
+
+### Accepted index closure and current scope
+
+Fernando accepted PR #221 after exact head `f83f33744fa9c64967c2c32a63c8eca2e5fca843`
+passed 543 focused and all 3,313 plugin-disabled Mac tests, source-JSON
+preservation, whitespace and clean synchronization checks. SVG inspection in
+Inkscape passed. PR #221 merged at `49b29d6a24348c3001141f5652ab37ab4fddf385`,
+whose tree is exactly the tested candidate. Both atlas plotter and designer
+branches were deleted locally and remotely; the Mac confirmed clean main.
+This supersedes earlier pending index review, acceptance and cleanup statements.
+
+Fernando authorized the next documentation-first publication audit, including
+one sky preparation per invocation, parallel sheets and mixed chart selectors.
+Fernando additionally requires disk-persisted complete-sky reuse across sessions,
+independent of the index's displayed star/content selection. This supersedes
+the earlier conversation's deferral of persistent caching.
+This candidate specifies the next runtime boundary; it installs no
+`wenu_create_atlas` command, schema reader, spatial index or multiprocessing.
+It changes no scientific geometry, dependency or catalogue. General stellar,
+deep-sky and observational-interest curation remain explicit later work.
+
+### As-is assessment at main 49b29d6a
+
+| Existing owner | Reusable capability | Missing publication seam |
+|---|---|---|
+| `atlas_design.py:AtlasBandTiling` and sheet/page records | Revalidated IDs/numbers, centres, tangent bases, exact projected rectangles, primary ownership and neighbours | Selection admission and publication identity binding |
+| `charts/atlas_index.py:index_sky`, `sky/celestial_sphere.py` and native layer owners | One observer-free loaded sphere shared by both index faces; typed native ICRS realization through `draw_chart()` | Publication-wide immutable preparation and spawn-safe transport; index-specific loading is not a generic publication owner |
+| `charts/request_generation.py:build_chart_request` | Supplied-sphere lifecycle and independent chart preparation | Its supplied-sphere route still requires an observer; do not bypass admission with a dummy observer |
+| `charts/fixed_sky_sequence.py` | Explicit one-build loaded-sphere mode and retained cold oracle | Observer-time sequence is not a static native atlas batch or a parallel executor |
+| `charts/regional.py:RegionalChart`, `geometry/frame.py`, `projections/stereographic.py`, viewport/composition and renderer owners | Canonical rectangular projection, preparation, physical rendering and export | Regional centre API is AltAz; adapt persisted ICRS sheet geometry without an observer round trip |
+| `charts/stellar_report.py:build_stellar_report` | Designation research for retained projected stars, stable HIP identity and curation digests | Complete selected-object report, primary/overlap membership, publication-wide object index and facing-page layout |
+| `cli/atlas.py`, `ExportOptions` and installed index publication | Thin input adapters, temporary generation, no-clobber publication and cleanup | One bounded batch lifecycle, worker failure/cancellation and ordered chart/report assembly |
+
+The fixed-sky reuse and realization-context historical records were consulted
+for their lifecycle boundaries. Active architecture, API reference, source map,
+diagram inventory and coordinate-system guide were reviewed. Their implemented
+ownership remains unchanged. Runtime admission must extend those owners rather
+than copying the index drawing path or replacing the canonical pipeline.
+
+### Proposed independent publication input
+
+The proposed command consumes resolved JSON plus a separate, closed version-1
+publication TOML. It does not rerun tiling or edit design bytes. Proposed CLI
+shape, **not runnable**:
+`wenu_create_atlas --scene SKY_SNAPSHOT_MANIFEST --config PUBLICATION_TOML --charts SELECTOR --jobs COUNT --output-dir NEW_DIRECTORY`.
+The scene manifest references the resolved design by exact bytes/digest; an
+optional explicit design path must agree with that identity. The second command
+may produce this reusable input bundle alongside its separate index figures.
+Use the document kind `wenu-atlas-publication-request` and schema version 1;
+exact table keys require review before runtime implementation.
+
+| Input group | Contract candidate |
+|---|---|
+| Identity | Publication identity/revision, design identity/revision and exact design SHA-256; preserve source sheet IDs and editorial numbers |
+| Selection | Required selector in TOML; explicit CLI selector overrides it. Resolve the complete selection before loading the sky |
+| Execution | Positive explicit worker count, CLI override; proposed default is two processes capped by selected-sheet count, with one for serial execution. Report actual count; no silent memory-driven change to science or selection |
+| Chart presentation | Existing style/mode and schema-v2 chart-overlay controls through their canonical translators; common defaults plus explicit per-sheet overrides keyed by existing number |
+| Content/curation | Common admitted layers and magnitude/label selections; explicit local curated notes with stable catalogue IDs and provenance. Require a snapshot covering these inputs, retaining source entries independently of index appearance |
+| Reports | Language, headings and explicit editorial notes/categories; unreviewed interest remains pending. No automatic observing-suitability claims |
+| Export | Requested PNG/PDF/SVG, finite validated DPI, transparency and a new versioned output directory; fixed physical pages without tight crop |
+
+The JSON owns chart-page size, margins, scale, projection, orientation and
+viewport. Presentation may not stretch or crop that useful rectangle. A
+different physical chart geometry requires a new design. Initial B4 landscape
+means each chart page and each report page is 353 x 250 mm; a two-page spread
+is 706 x 250 mm, not two charts squeezed into a single B4 sheet. Mirror inner
+and outer margins for the left report page. Titles/grid furniture must fit the
+reserved margins without shrinking the persisted sky scale.
+
+### Selector grammar and meaning
+
+Accept `all`, positive chart numbers, inclusive `a..b` ranges, `S`, `N`
+and `E`, joined by commas. Trim surrounding token whitespace and treat
+keywords case-insensitively. Tokens denote a union; duplicates disappear and
+results use ascending persisted atlas-number order. `all` may occur in a
+union. Reject empty tokens, signs, decimal numbers, malformed or descending
+ranges, absent numbers (including range members), and an empty final selection
+before sky preparation or worker startup. Bound expansion by the design's
+sheet count rather than allocating a user-sized range.
+
+S means centre declination < 0, N > 0 and E exactly 0 in the resolved JSON;
+S/N include their own polar sheet. No fuzzy equatorial tolerance, footprint
+intersection or renumbering is inferred. Group membership must be derived
+from each loaded design, never hard-coded. For the accepted 34-sheet example:
+S = 1..13, E = 14..21, N = 22..34. An empty group can contribute nothing to a
+union; an empty complete request is an error. Example `3..6,20..21,N`
+selects 3,4,5,6,20,21 and 22..34 without changing any numbers.
+
+### One shared preparation and process isolation
+
+1. Parent validates all inputs, selectors, per-sheet overrides, admitted
+   layers and outputs before creating expensive state. Read/revalidate the
+   design once. If a validated sufficient persisted snapshot is supplied, use
+   it without loading original catalogues or rebuilding the whole sky. On the
+   explicitly requested initial preparation path, load each required source once.
+2. Build one canonical observer-independent sky on that initial path and prepare common native
+   source data/designation joins once. Bind the prepared data to source and
+   curation digests. The union of selected-sheet requirements includes faint
+   constellation vertices and explicitly selected labels, independently of
+   marker magnitude cuts. Do not discard unplotted catalogue entries.
+3. Freeze reusable native coordinate/identity/topology arrays and validated
+   report metadata. Workers must not call catalogue loaders, rebuild a maximal
+   sphere or realize the complete sky again per sheet. The existing native
+   star realization still performs render-local selection; the implementation
+   needs a reviewed prepared-data handoff, not just a load counter claim.
+4. Use spawn-compatible processes with a bounded work queue and a noninteractive
+   renderer. Large numeric arrays should be transported once using read-only
+   memory mapping; metadata once per worker. A small worker-local layer facade
+   is allowed, but is not a second scientific sphere build. Preserve spherical
+   types, metadata, ring holes and semantic IDs. Audit serialization before
+   choosing the final transport; never blindly pickle a live sphere/figure,
+   open provider or cache. No new dependency or fork-only assumption.
+5. Workers own independent composition, selection, projection, clipping,
+   label placement, figures and output staging. All formats for one chart use
+   the same prepared chart geometry and canonical export owners. Never pass
+   Matplotlib figures between workers or share mutable render state.
+6. Parent collects results by sheet ID, validates completeness and assembles
+   by chart number. Scheduling, worker count and selection order cannot change
+   chart content or deterministic label decisions. Limit nested numeric
+   thread pools to avoid CPU oversubscription.
+
+Reuse is scientific native-data preparation, not reuse of another chart's
+projection, labels or apparent observer state. No observer, evaluation time,
+proper-motion propagation, ephemeris or network belongs to the initial static
+native atlas. Hipparcos positions/vertices retain J1991.25 source epoch in
+ICRS axes; do not relabel them FK5/J2000. Native support for additional layers
+such as deep-sky objects, reference grids and FK4/B1875 IAU boundaries must be
+audited and admitted explicitly; unsupported choices fail before work starts.
+
+Spatial acceleration is optional implementation machinery, not a new selection
+authority. Start with existing vectorized selection if adequate. Any added
+index must conservatively retain boundary/overlap objects and match independent
+full-scan membership at seams and poles; extended morphology cannot be selected
+only by its centre.
+
+### Persisted full-sky input and cross-session reuse
+
+The index PNG/PDF/SVG is not scientific input for chart production. The second
+command's reusable output must be a distinct versioned data bundle containing
+the exact resolved design plus a prepared whole-sphere snapshot. Index
+presentation (for example stars through magnitude 4.5) filters only the index
+render; it cannot prune the snapshot to that limit or to the selected charts.
+Prepare the full admitted catalogue/profile across the sphere, so later S/N/E,
+subset and all requests do not require another sphere construction. Completeness
+means the declared installed source/profile, not every celestial object known.
+
+Proposed extension of `wenu_plot_atlas`: an explicit snapshot-output destination
+and independent sky preparation profile, alongside its existing index
+presentation. The exact flags/keys remain candidate. A repeat plot can consume
+the same snapshot without rebuilding it. Figure-only invocation stays compatible;
+it must not secretly generate a large snapshot. If bundle preparation and index
+render happen together, both consume the single prepared sky. Freeze this
+handoff before implementing the producer; the current plotter emits only figures.
+
+Candidate on-disk structure: a closed versioned JSON manifest plus non-pickled
+numeric array payloads suitable for read-only mapping, exact design JSON and
+identity/designation/research metadata. Preserve native coordinates, units,
+frame, source epochs, stellar magnitudes/IDs, full designation candidates,
+curve topology, holes and semantic/source provenance. Do not serialize a live
+CelestialSphere object, mutable observer caches, projected geometry, figures,
+open handles or executable pickle payloads. Native layers/workers reconstruct
+only lightweight facades over verified prepared records through canonical
+realization dispatch. Persistence is not a second rendering authority.
+
+Record schema/document kind, preparation-profile coverage, exact source and
+payload digests, array shapes/dtypes, generator compatibility, frame/epoch
+semantics and designation/curation identities. Reject corruption, missing
+payloads, unsafe paths, unknown versions and unsupported coordinate/layer
+semantics before rendering. Reusing the frozen sources is deliberate even if
+installed catalogues later change; an explicit refresh creates a new snapshot
+revision, never silently substitutes new data. Changed editorial notes or label
+choices can be reapplied to retained identities; changed source science or
+derived curation requires explicit compatibility/repreparation of the affected
+metadata, without pretending the old metadata is current.
+
+The third command validates requested content against snapshot coverage. A
+fainter magnitude limit, missing layer or identity absent from the declared
+profile must fail with an actionable insufficiency message, not silently drop
+objects or reload sources. When sufficient, second and subsequent invocations
+perform zero whole-sphere construction and zero original-catalogue loading;
+reading/mapping persisted arrays still has measurable I/O and validation cost.
+This permits resuming atlas work even after temporary worker staging is removed.
+The persistent snapshot is independent of a batch's failure/cancellation and
+must never be deleted by worker cleanup.
+
+Keep source-snapshot reuse distinct from completed-chart reuse. Initially a
+new batch may render selected charts again from the saved sky. Skipping existing
+chart outputs requires a separate verified match of snapshot, design, effective
+per-chart settings, notes and renderer version; never assume filename existence
+means the chart is current. Snapshot publication must be complete, digest-bound
+and no-clobber; interruption must leave earlier snapshots intact. Future tests
+must prove fresh-process reconstruction equals cold native preparation, index
+magnitude changes leave snapshot contents unchanged, and insufficient/corrupt
+snapshots fail before worker startup.
+
+### Reports, publication and failure behavior
+
+Build one report record per stable catalogue identity with explicit selected,
+plotted, labelled and primary-owner states; retain overlap cross-references.
+Use canonical retained projected points as chart/report consistency evidence,
+and keep masked, below-limit or unplotted entries distinct. Pending designation
+discrepancies must appear in every relevant chart report. Whole-catalogue
+identity lookup is prepared once; per-chart membership is still independent.
+Extended-object membership needs an explicit rule before deep-sky admission.
+Reports may state known magnitudes/types and authored interest categories, but
+must not infer binocular/telescope suitability from magnitude alone.
+
+Produce separate chart and report pages plus structured/text sidecars and a
+publication manifest. Include design/configuration/curation digests, selected
+numbers, source epochs, generator version, worker count, output identities and
+exclusive preparation/render/assembly timing. Execution timing/worker metadata
+are separate from logical content identity. Deterministic content does not
+imply byte-identical PDF creation dates or backend IDs.
+
+One worker failure fails the requested batch with the chart identity: cancel
+pending jobs, stop/join workers and remove only invocation-owned temporary
+files/mappings. No retry, resume or partial-success atlas is implicit.
+Progress is parent-owned stderr: preparation, completed/total sheets and
+assembly. Cancellation exits 130; concise input/render failures have nonzero
+status. Existing outputs/symlinks are not overwritten.
+
+Stage the whole bundle beside a new final directory, validate all selected
+pairs and write a completion manifest before no-clobber publication. Do not
+claim transactional multi-file crash safety from the current exporter.
+The directory-publication implementation must prove its platform/race behavior;
+a successful completion marker is the acceptance boundary. Incomplete crash
+staging may remain but must not masquerade as a completed atlas.
+
+Report overflow must fail explicitly or produce declared continuation pages;
+never silently omit objects or shrink typography without review. The pilot
+must settle report pagination, combined-PDF page parity and blank-page policy
+before a full batch. No report text is fabricated to fill pages.
+
+### Next implementation and admission gates
+
+Implement selector/request admission and the persisted fixed-ICRS rectangular
+sheet adapter first; then one prepared-sky batch lifecycle, spawn workers,
+reports/page assembly and the installed thin CLI. Review any new module's
+durable ownership against existing generation, export and report owners before
+admission; this audit creates none. Keep atlas organisation before broad
+stellar/deep-sky curation. Pilot Orion plus a contrasting region, resolving
+their actual numbers from the JSON; preserve numbering rather than promising
+Orion is Chart 1.
+
+Extend closest existing atlas CLI/design, request-generation, realization,
+render-isolation, stellar-report and export tests for the new seams. Retain
+independent cold/native rendering and full-scan oracles. Admission requires:
+mixed selector/range/group faults; invalid inputs before load; exactly one
+parent preparation and no worker catalogue reload; spawn on macOS; serial/
+parallel content and normalized graphic equivalence; per-chart state isolation;
+no missing overlap objects or ring holes; fixed physical dimensions; source
+JSON byte preservation; unchanged numbering; report consistency/overflow;
+race, failure and cancellation cleanup. Add no milestone-named test file or
+duplicated scientific route merely for batching.
+
+Measure cold single-chart, representative subset and all-chart serial/parallel
+runs, including startup, transport, peak memory, per-sheet and assembly costs.
+Record measured gains and limits; promise no CPU-count speedup or universal
+performance. Focused/full regression and Mac visual/print review are required
+for the future runtime milestone. This documentation-only contract remains
+reviewable independently and does not claim implemented parallel production.

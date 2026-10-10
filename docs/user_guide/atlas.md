@@ -1,11 +1,12 @@
 # Creating a sky atlas
 
-**Status (2026-10-09): index plotter CLI implementation candidate.**
+**Status (2026-10-10): designer and index plotter accepted and merged.**
 The designer was accepted and merged in PR #220 after 413 focused and 3,270
 full Mac tests. `wenu_design_atlas` produces resolved JSON;
 `wenu_plot_atlas` now consumes it with independent version-1 presentation TOML.
 `wenu_create_atlas` remains a planned command: publication inputs are not runnable.
-Mac verification and separate acceptance/merge of the plotter remain pending.
+PR #221 passed 543 focused and all 3,313 Mac tests plus SVG visual inspection;
+it merged at `49b29d6a`, with branch cleanup and clean Mac synchronization confirmed.
 Existing charts continue to use [`wenu_chart`](configuration.md).
 
 ## Commands and inputs
@@ -17,7 +18,10 @@ flowchart TD
     J --> P["wenu_plot_atlas"]
     I["Index presentation inputs"] --> P
     P --> O["Polar overview figure"]
-    J --> C["wenu_create_atlas"]
+    J --> B["Resolved design and reusable sky bundle"]
+    P --> B
+    F["Independent full-sky preparation profile"] --> B
+    B --> C["wenu_create_atlas"]
     E["Publication and curation inputs"] --> C
     C --> R["Charts, report pages and text reports"]
 ```
@@ -26,7 +30,7 @@ flowchart TD
 |---|---|---|
 | `wenu_design_atlas` | Version-1 geometry TOML: page/margins, stereographic field, minimum overlap, overview meridian/band and placement seed; fixed supported orientation/numbering | **Only** a versioned, resolved atlas JSON; no figure and no astronomical catalogue selection |
 | `wenu_plot_atlas` | Resolved JSON plus independent overview layout, astronomical layers, typography and export choices | The two overlapping polar overview maps as an index figure, in PNG, PDF or SVG |
-| `wenu_create_atlas` | Resolved JSON plus chart appearance, catalogue selection, curation, report and export choices | Individual chart pages, facing report pages, and text reports; planned structured report data |
+| `wenu_create_atlas` | Planned reusable design/sky bundle produced alongside the index, plus independent chart appearance, selection, curation, report and export choices | Individual chart pages, facing report pages, and text reports; planned structured report data |
 
 For example, keep the roles in separately versioned files:
 `atlas_design_request_v1.toml`, `atlas_design_v1.json`,
@@ -548,3 +552,50 @@ reordering of celestial geometry. Full joined contours belong to their own
 disk and remain unclipped. SVG explicitly retains the intersection of each
 disk's half-page rectangle and native path clip, matching PNG/PDF at the join. Global Title, Subtitle and Legends are separate.
 Technical marker definitions and clip paths retain backend-owned identifiers.
+
+## Publication batch contract candidate (2026-10-10)
+
+The next command, `wenu_create_atlas`, is **not runnable** yet.
+Its [audit and proposed publication contract](../developer/post_v0.9_architecture_roadmap.md#atlas-publication-audit-and-batch-contract-candidate-2026-10-10)
+separates design geometry, presentation/curation and execution settings.
+
+Chart selection will accept a comma-separated union of numbers, inclusive
+ranges and case-insensitive groups: `3..6,20..21`, `S`, `N`, `E`,
+`S,20..21,34`, or `all`. S/N/E mean negative/positive/zero centre
+declination in the resolved design. They do not mean every footprint crossing
+a hemisphere. Polar sheets belong to S or N. In the accepted 34-sheet example,
+S = 1..13, E = 14..21 and N = 22..34. Numbers retain their atlas identities;
+duplicates disappear and output follows atlas-number order. Invalid or empty
+requests fail before catalogue loading.
+
+An explicit preparation operation alongside `wenu_plot_atlas` will load and
+prepare the full admitted sky once and save a versioned data bundle on disk.
+Its content profile is independent of which stars appear in the index image.
+The third command will consume that bundle and publication parameters. Later
+invocations reuse its verified records without rebuilding the sphere or loading
+the original catalogues; reading and validating the snapshot still takes time.
+An insufficient snapshot fails explicitly rather than silently omitting objects.
+This persistence is proposed; the installed plotter currently exports figures only.
+
+Independent processes will select, project,
+place labels, render and report each chart from that prepared data. A worker
+must not reload the catalogues or reconstruct the whole sphere per chart.
+Mac spawn startup and memory transport must be measured; worker count is an
+execution setting and does not change chart content. Serial execution remains
+available for comparison. Worker cleanup preserves the reusable sky bundle.
+Reusing the sky does not automatically skip already rendered chart files.
+
+Each right-hand chart page retains the exact JSON paper/viewport/scale, with
+a mirrored left-hand report page. For the B4 example each page is 353 x 250 mm.
+The initial native atlas retains Hipparcos J1991.25 positions in ICRS, with no
+observer, current-date propagation or moving objects. Additional native layers
+require explicit admission. Reports retain catalogue identity, primary versus
+overlap membership, designation cautions and authored notes; pending observing
+interest is not inferred from magnitude alone.
+
+The initial publication review will use Orion and a contrasting region, before
+a full batch. All requested pairs must succeed before a completed publication
+is exposed. Failures identify the chart; report overflow cannot silently remove
+objects. New versioned destinations preserve earlier reviews. Exact schema
+keys, installed syntax and runtime behavior remain candidates, not implemented
+features.
