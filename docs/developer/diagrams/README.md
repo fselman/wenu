@@ -377,3 +377,14 @@ use canonical geometry validation and atlas-order selectors. The resulting
 immutable plan has no edge to sky construction or rendering yet. Future snapshot,
 worker and spread assembly edges remain governed by the publication contract;
 existing coordinate-system diagrams need no new astronomical authority.
+
+
+### Native snapshot dependency boundary (2026-10-10)
+
+The preparation owner remains `sky/maximal_sphere.py`, which calls the original
+layer/catalogue loaders. `sky/native_snapshot.py` persists and verifies prepared
+records plus exact atlas bytes; explicit reuse maps data and reconstructs local
+native facades. Those facades call original layer realization, selection,
+projection and rendering authorities. Snapshot persistence introduces no
+observer/coordinate transformation, spatial selector or renderer. The installed
+index/producer and worker edges remain future integration, not current runtime.

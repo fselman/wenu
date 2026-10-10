@@ -2418,3 +2418,20 @@ on canonical atlas geometry validation, without observer, sky or rendering
 resources. This slice supplies input admission and a worker budget only;
 persisted celestial content, parallel production, reports and the installed
 third command remain future work under the accepted publication contract.
+
+
+### Native snapshot data seam candidate (2026-10-10)
+
+The native-only preparation owner loads whole-sphere Hipparcos/line content once,
+plus all admitted Milky Way and Magellanic Cloud levels, and freezes effective
+stellar designations/research provenance. The data persistence owner
+`sky/native_snapshot.py` binds exact atlas design bytes, closed JSON records and
+non-pickled typed read-only array maps. Explicit reuse builds local layer facades
+through existing native realization/selection without source reloading.
+
+Only stars, western constellation lines/labels and native isophotes are admitted.
+Deep-sky objects, IAU boundaries, moving bodies and observer realization remain
+unsupported snapshot choices. The installed second/third command handoff,
+workers, reports and publication-wide rendering remain subsequent slices.
+Manifest-last no-clobber publication is the completion boundary; no power-loss
+recovery or atomic directory rename is claimed.

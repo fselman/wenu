@@ -4554,3 +4554,17 @@ This first closed schema admits only existing native ICRS layers. FK4/B1875 IAU
 boundaries are excluded until a separately reviewed canonical realization seam
 exists. The page lens remains distinct from the common declination band and
 sheet overlap. Projection/render/export ownership remains unchanged.
+
+
+### Native snapshot coordinate preservation (2026-10-10)
+
+The atlas snapshot candidate persists source-native ICRS directions and existing
+isophote ring topology. Hipparcos positions and constellation vertices retain
+J1991.25 source epoch, barycentric astrometric status and degree units. No
+proper-motion propagation, observer transform, FK5/J2000 relabeling or current
+evaluation instant is introduced. Reconstructed layers must enter the existing
+`LayerRealizationContext(NATIVE_ICRS_SPEC)` route; apparent/observed requests and
+unadmitted coordinate/layer semantics fail. Read-only maps preserve exact source
+coordinates. Existing floating ring-area reductions may differ at roundoff with
+buffer alignment (comparison tolerance rtol 1e-13, atol 1e-15); ring coordinates,
+exterior/hole nesting and selection identities retain exact equality.

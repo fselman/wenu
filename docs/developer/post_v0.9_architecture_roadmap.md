@@ -4735,3 +4735,44 @@ provenance; bounded process workers through canonical rendering; reports and
 spread assembly; atomic publication, reuse and cancellation; measured cold/warm
 serial/parallel performance and Mac print review. A worker budget is not evidence
 of implemented parallel production. Do not merge this candidate before review.
+
+
+### Persisted native sky candidate (2026-10-10)
+
+PR #223 was accepted after 488 focused and 3347 full Mac passes, merged as
+`677ab5f7`, and cleaned to synchronized main only. The next bounded slice owns
+data preparation/persistence/reuse, not process workers or chart/report assembly.
+Module admission is recorded in source_tree.md: native preparation stays in
+maximal_sphere.py; sky/native_snapshot.py owns data-only integrity/coverage and
+lightweight native reconstruction; original layers own scientific realization.
+
+The candidate retains the entire declared native sphere (Hipparcos including
+source classifications and effective designations, western connectivity/labels,
+all MW and LMC/SMC levels), exact validated design bytes, source digests, typed
+non-pickled arrays and designation/curation/research evidence. Stars are loaded
+once in native preparation. Snapshot coverage is independent of index appearance
+and subset selection. Reuse maps verified arrays and instantiates local facades;
+it does not reload original catalogues or call the whole-sphere builder.
+Unsupported layer/profile or coordinate/epoch claims, fainter coverage, missing
+IDs, changed/corrupt payloads and unsafe names fail before rendering.
+
+Existing reusable-sphere/maximal-sphere tests supply 28 new checks for single
+cold preparation/load, cold/warm geometry/semantics, fresh-process reuse with
+original loaders prohibited, read-only dtype-packed maps and bounded descriptors (fresh-process file limit
+64), span/overlap admission, local facade state, frozen source
+metadata, coverage/version/shape/type/digest/path faults, completed-bundle
+preservation, no-clobber races and interruption cleanup. Existing render/detail
+checks cover label-gap use of an already-effective catalogue without applying
+current curation again. Ring vertices/topology/IDs compare exactly; derived
+floating ring-area metadata compares at machine-roundoff tolerance documented
+in the coordinate guide. Native support for DSO and IAU boundaries remains a
+separate audit, not an implicit claim of complete maximal-sphere coverage.
+
+No installed snapshot flags/TOML producer or parallel execution is added here.
+Next: wire explicit preparation/reuse into the second-command handoff (the index
+and persistence sharing one preparation), then native rectangular chart workers,
+reports, spread assembly and measured serial/parallel behavior. Measure loading,
+validation/mapping, facade transport and per-chart realization separately; source
+reuse does not eliminate I/O or derived geometry work. Manifest-last hard-link
+commit is tested; atomic directory rename and power-loss durability are not
+claimed. Mac filesystem acceptance and a separate merge decision remain pending.

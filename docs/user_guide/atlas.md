@@ -638,3 +638,41 @@ Optional resolution overrides `charts=` and `jobs=` are retained in the plan.
 Worker count is capped at the number of selected sheets. Planning constructs no
 celestial sphere and starts no workers. The installed atlas producer, persisted
 full-sphere data and parallel chart rendering remain upcoming milestones.
+
+
+### Saving native celestial content (Python API candidate)
+
+You can now prepare a reusable data bundle independently of index formatting:
+
+```python
+from pathlib import Path
+from wenu.sky.native_snapshot import (
+    prepare_native_sky_snapshot, read_native_sky_snapshot,
+)
+
+raw = Path("atlas_design_v1.json").read_bytes()
+digest = prepare_native_sky_snapshot(raw, "native_sky_v1")
+# In a later Python session, reuse the same saved revision:
+snapshot = read_native_sky_snapshot("native_sky_v1",
+                                    expected_manifest_sha256=digest)
+snapshot.require(layers=("stars", "constellation_lines"),
+                 star_magnitude_limit=6)
+sky = snapshot.make_sky()
+```
+
+Save the returned manifest digest alongside your project to bind later reuse to
+the selected revision. The bundle contains the exact design and the entire
+admitted native sphere, with stellar coverage through magnitude 11 by default,
+all western figures, all Milky Way levels and both Clouds. Index brightness
+limits and chart selection cannot prune it. Stars retain their native J1991.25
+ICRS positions and frozen designations/research evidence. Loading a bundle reads
+and verifies its data, then constructs local native layer views without loading
+the original catalogues again. A changed installed catalogue does not silently
+refresh a saved bundle; prepare a new versioned destination explicitly.
+
+Insufficient coverage, unsupported layers or corrupted data produce an error.
+Current snapshot support excludes deep-sky objects, IAU boundaries, moving bodies
+and observer coordinates. Existing bundles are never overwritten; partial
+publication cannot be admitted without its final manifest. This API is the data
+layer milestone. Snapshot flags for the installed plotter, the installed atlas
+producer and parallel workers remain next steps.

@@ -545,7 +545,9 @@ def composition_layer_options(
             magnitude_limit=composition.detail.star_magnitude_limit,
             include_ids=frozenset(int(value) for value in composition.detail.content_selection.stars or ()) | composition.detail.extra_star_ids | resolve_star_labels(
                 composition.detail.star_labels,
-                catalogue=load_effective_star_designations(sky.stars.designation_catalogue),
+                catalogue=(sky.stars.designation_catalogue
+                           if sky.stars.designation_catalogue.curation_sha256 is not None
+                           else load_effective_star_designations(sky.stars.designation_catalogue)),
                 constellations=composition.detail.stellar_label_constellations,
             ).hip_ids,
             include_constellation_vertices=(composition.detail.constellation_star_mode != "none"),

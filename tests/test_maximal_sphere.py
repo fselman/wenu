@@ -172,3 +172,18 @@ def test_ordinary_factory_loads_canonical_layers_without_an_observer():
         getattr(layer, "observer", None) is None
         for layer in sphere.layers
     )
+@pytest.mark.parametrize("changes", [
+    {"star_magnitude_limit": float("nan")},
+    {"star_magnitude_limit": True},
+    {"star_catalog": "other"},
+    {"galaxy_magnitude_limit": 10},
+    {"constellation_boundaries_filename": "unadmitted.dat"},
+])
+def test_native_profile_rejects_unadmitted_fields_before_source_loading(changes, monkeypatch):
+    from dataclasses import replace
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Invalid native profile must fail before sphere creation")
+    monkeypatch.setattr(maximal_sphere, "CelestialSphere", forbidden)
+    profile = replace(CANONICAL_MAXIMAL_SPHERE_PROFILE, **changes)
+    with pytest.raises(ValueError):
+        maximal_sphere.generate_native_icrs_sphere(profile=profile)

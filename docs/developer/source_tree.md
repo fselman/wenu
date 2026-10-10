@@ -3330,3 +3330,15 @@ publication lifecycle. The new owner depends on atlas geometry only and adds no
 package, dependency, top-level export, installed command or scientific route.
 Extend existing `test_atlas_design.py` for selectors and `test_atlas_cli.py` for
 publication admission/isolation; add no milestone-specific test file.
+
+## Native sky snapshot ownership (2026-10-10)
+
+Admit `sky/native_snapshot.py` for closed data-only persistence, integrity,
+coverage admission and lightweight reconstruction of existing native layers.
+The closest `maximal_sphere.py` remains the catalogue preparation owner; extend
+it with the admitted native-only factory and retain original layer selection,
+topology and realization owners. Atlas invocation planning and index appearance
+must not absorb scientific data persistence. Add no subpackage, dependency,
+installed command, top-level export or independent rendering/selection route.
+Extend existing `test_reusable_canonical_sphere.py` and `test_maximal_sphere.py`
+for cold/warm, fresh-process, topology, coverage and integrity oracles.
