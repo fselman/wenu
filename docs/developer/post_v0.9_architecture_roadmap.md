@@ -5086,3 +5086,16 @@ The review environment lacks the DE440s ephemeris and has a known Matplotlib
 the final full-suite receipt. Merge and cleanup are authorised but must
 retain an explicit record of any unresolved verification blocker.
 Later appearance changes and object inventories/curation remain separate work.
+
+### PR #227 final Mac verification and merge authorisation
+
+On 2026-10-11 Fernando ran the exact documentation-complete candidate
+`07b4a5d0954a74a2fe16cdfb34a577743bb33a1d` on the Mac with plugins
+disabled and MPLBACKEND=Agg: all 3,438 tests passed in 694.21 seconds.
+This resolves the earlier environment-specific full-suite blocker.
+Whole-atlas visual acceptance and explicit merge/cleanup authorisation are
+already recorded above. This documentation-only receipt changes no executable
+content, scientific fixtures, dependencies, configuration, packaging or tests;
+the passing full-suite receipt remains valid for its merge.
+The next work remains separately scoped appearance refinement and object
+inventories/curation; no new runtime milestone is started by closure.
