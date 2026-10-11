@@ -2502,3 +2502,16 @@ Generic legend descriptors carry counts and active-range membership; the
 Matplotlib legend owner packs physical disks and draws range/veil furniture
 at current renderer coordinates. Atlas presentation supplies veil appearance.
 Scientific selection, star sizing, sphere reuse and projection remain unchanged.
+
+### Geometry-driven atlas placement candidate
+
+`atlas_design.py` remains the sole geometry/request/tiling owner. Version-2
+requests derive B4 portrait/landscape dimensions and compute polar-first
+placements on a symmetric one-degree declination boundary grid. The existing
+rectangular halfspace certificate and deterministic assembly are shared with
+version-1 five-band requests. Dynamic programming minimizes chart count then
+band count within that finite family. No sky, observer, catalogue, projection,
+renderer or export pipeline is added. Resolved designs optionally retain the
+canonical request and computed layout; historical JSON remains readable.
+`wenu_plot_atlas` consumes the result without rerunning placement. Existing
+geometry and CLI test owners protect scientific containment and provenance.

@@ -4675,3 +4675,16 @@ remain unchanged. Batch acceptance covers the assembled page sizes/counts.
 The existing cold/saved/spawn batch contract additionally simulates a merger
 that rejects raw-path input, protecting the buffered publication seam without
 adding another catalogue construction or a separate test file.
+
+### Geometry-driven atlas placement candidate
+
+`atlas_design.py` remains the sole geometry/request/tiling owner. Version-2
+requests derive B4 portrait/landscape dimensions and compute polar-first
+placements on a symmetric one-degree declination boundary grid. The existing
+rectangular halfspace certificate and deterministic assembly are shared with
+version-1 five-band requests. Dynamic programming minimizes chart count then
+band count within that finite family. No sky, observer, catalogue, projection,
+renderer or export pipeline is added. Resolved designs optionally retain the
+canonical request and computed layout; historical JSON remains readable.
+`wenu_plot_atlas` consumes the result without rerunning placement. Existing
+geometry and CLI test owners protect scientific containment and provenance.

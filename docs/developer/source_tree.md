@@ -3461,3 +3461,16 @@ inactive-row veils. Automatic/rendered/planned legend adapters pass the
 opt-in report concern. `atlas_publication.py` uses canonical export furniture
 for the chart key and the same legend coordinator for richer report keys.
 No new module or test file is admitted; existing stable owners are extended.
+
+### Geometry-driven atlas placement candidate
+
+`atlas_design.py` remains the sole geometry/request/tiling owner. Version-2
+requests derive B4 portrait/landscape dimensions and compute polar-first
+placements on a symmetric one-degree declination boundary grid. The existing
+rectangular halfspace certificate and deterministic assembly are shared with
+version-1 five-band requests. Dynamic programming minimizes chart count then
+band count within that finite family. No sky, observer, catalogue, projection,
+renderer or export pipeline is added. Resolved designs optionally retain the
+canonical request and computed layout; historical JSON remains readable.
+`wenu_plot_atlas` consumes the result without rerunning placement. Existing
+geometry and CLI test owners protect scientific containment and provenance.

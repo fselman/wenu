@@ -5099,3 +5099,24 @@ content, scientific fixtures, dependencies, configuration, packaging or tests;
 the passing full-suite receipt remains valid for its merge.
 The next work remains separately scoped appearance refinement and object
 inventories/curation; no new runtime milestone is started by closure.
+
+### Candidate: geometry-driven atlas tiling (2026-10-11)
+
+Fernando authorised paper size, orientation, angular chart field and overlap
+as inputs, with band layout computed as output, and requested preservation
+of the existing five-band input choices. The reference version-1 example is
+unchanged and documented. Version-2 B4 requests omit algorithm/profile keys.
+The existing geometry owner now searches symmetric, unequal-height bands
+on a one-degree boundary grid plus exact polar boundaries. It fixes safe
+polar caps first and minimizes total charts then interior band count by
+dynamic programming. Continuous analytic halfspace validation certifies
+coverage and overlap. This is a finite-family optimum, not a global arbitrary
+placement optimum. Portrait 50-degree/.25-degree example yields 22 charts;
+landscape yields 34. New JSON retains canonical inputs and derived layout.
+
+Closest production and test owners are extended; no new modules or test files
+are admitted. The coordinate guide was reviewed and remains current: ICRS,
+stereographic geometry, no-observer design and final projection semantics
+are unchanged. Focused geometry/CLI/documentation checks and index inspection
+are required before Mac review. Final full-suite receipt and separate
+acceptance/merge remain pending. No curation or moving-object work is begun.

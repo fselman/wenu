@@ -7,7 +7,7 @@ not the final atlas command or publication contract.
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 import json
 import hashlib
 import math
@@ -518,6 +518,7 @@ class AtlasBandTiling:
     overlap_deg: float
     seed_ra_deg: float
     containment_method: str = TILING_METHOD
+    request_json: str | None = None
 
     def __post_init__(self):
         if not isinstance(self.geometry, AtlasGeometrySpecimen):
@@ -532,6 +533,17 @@ class AtlasBandTiling:
         if self.overlap_deg < 0 or not 0 <= self.seed_ra_deg < 360:
             raise ValueError("Invalid overlap or seed RA.")
         self.validation()
+        if self.request_json is not None:
+            request = AtlasDesignRequest.from_dict(json.loads(self.request_json))
+            if (request.page != self.geometry.page
+                    or request.overview != self.geometry.overview
+                    or request.design_id != self.geometry.design_id
+                    or request.revision != self.geometry.revision
+                    or request.overlap_deg != self.overlap_deg
+                    or request.seed_ra_deg != self.seed_ra_deg
+                    or any(sheet.field_width_deg != request.field_width_deg
+                           for sheet in self.geometry.sheets)):
+                raise ValueError("Design request does not match resolved geometry.")
 
     def validation(self):
         """Recompute partition completeness and conservative angular margins."""
@@ -656,7 +668,7 @@ class AtlasBandTiling:
         return {s: tuple(sorted(v)) for s, v in sorted(graph.items())}
 
     def to_dict(self):
-        return {
+        result = {
             "schema_version": 1,
             "document_kind": TILING_KIND,
             "generator": self.containment_method,
@@ -667,6 +679,25 @@ class AtlasBandTiling:
             "validation": self.validation(),
             "neighbours": self.neighbours(),
         }
+        if self.request_json is not None:
+            request = json.loads(self.request_json)
+            result["design_request"] = request
+            page = self.geometry.page
+            result["layout"] = {
+                "interior_band_count": len(self.bands) - 2,
+                "charts_per_band": [len(b.sheet_ids) for b in self.bands],
+                "orientation": "portrait" if page.height_mm > page.width_mm else "landscape",
+                "field_width_deg": self.geometry.sheets[0].field_width_deg,
+                "field_height_deg": self.geometry.sheets[0].field_height_deg(page),
+                "polar_primary_diameter_deg": 2 * (self.bands[0].dec_max_deg + 90),
+                "placement": ("polar-first-grid-bands-v1" if request["schema_version"] == 2
+                              or request["tiling"].get("algorithm") == "polar_first"
+                              else request["tiling"]["algorithm"]),
+                "objective": "minimum charts, then fewer bands on symmetric one-degree declination boundary grid"
+                             if request["schema_version"] == 2 or request["tiling"].get("algorithm") == "polar_first"
+                             else "explicit version-1 algorithm",
+            }
+        return result
 
     def to_json(self):
         return json.dumps(self.to_dict(), ensure_ascii=False, sort_keys=True,
@@ -681,7 +712,10 @@ class AtlasBandTiling:
     def from_dict(cls, data):
         _keys(data, ("schema_version", "document_kind", "generator", "geometry",
                     "bands", "overlap_deg", "seed_ra_deg", "validation",
-                    "neighbours"), "band tiling")
+                    "neighbours", *(key for key in ("design_request", "layout")
+                                    if key in data)), "band tiling")
+        if ("design_request" in data) != ("layout" in data):
+            raise ValueError("Design request and layout must occur together.")
         if type(data["schema_version"]) is not int or data["schema_version"] != 1:
             raise ValueError("Unsupported band-tiling schema.")
         if data["document_kind"] != TILING_KIND or data["generator"] not in (
@@ -693,9 +727,11 @@ class AtlasBandTiling:
             AtlasGeometrySpecimen.from_dict(data["geometry"]),
             tuple(_record(AtlasPrimaryBand, b) for b in data["bands"]),
             data["overlap_deg"], data["seed_ra_deg"], data["generator"],
+            json.dumps(data["design_request"], sort_keys=True, allow_nan=False)
+            if "design_request" in data else None,
         )
         # JSON comparison also rejects booleans masquerading as numbers.
-        for key in ("validation", "neighbours"):
+        for key in ("validation", "neighbours", *(k for k in ("layout",) if k in data)):
             expected = result.to_dict()[key]
             if json.dumps(data[key], sort_keys=True, allow_nan=False) != json.dumps(
                     expected, sort_keys=True, allow_nan=False):
@@ -846,29 +882,19 @@ def design_five_band_atlas(design_id, revision, page, overview, *,
     if polar_radius < 1 or not 0 < a < b < c < 90:
         raise ValueError("Invalid five-band primary boundaries or polar extent.")
     edges = (-90, -c, -b, -a, a, b, c, 90)
-    counts = []
-    for lo, hi in zip(edges[1:-2], edges[2:-1]):
-        dc = (lo + hi) / 2
-        trial = AtlasSheetGeometry("trial", 1, seed, dc, width)
+    return _design_rectangular_bands(design_id, revision, page, overview,
+                                     width, overlap, seed, edges, max_sheets)
 
-        def fits(count):
-            return _rectangle_clearance_deg(
-                trial, page, seed - 180 / count, seed + 180 / count, lo, hi,
-            ) >= margin
 
-        count = 3
-        while not fits(count):
-            if count == max_sheets:
-                raise ValueError("Requested five-band geometry cannot fit the sheet budget.")
-            count = min(count * 2, max_sheets)
-        lower, upper = 3, count
-        while lower < upper:
-            middle = (lower + upper) // 2
-            if fits(middle):
-                upper = middle
-            else:
-                lower = middle + 1
-        counts.append(lower)
+def _design_rectangular_bands(design_id, revision, page, overview,
+                              width, overlap, seed, edges, max_sheets):
+    """Common analytic rectangular admission and deterministic assembly."""
+    margin = overlap / 2 + 2 * ANGULAR_GUARD_DEG
+    c = edges[-2]
+    counts = [_band_sector_count(page, width, seed, overlap, lo, hi, max_sheets)
+              for lo, hi in zip(edges[1:-2], edges[2:-1])]
+    if any(count is None for count in counts):
+        raise ValueError("Requested band geometry cannot fit the sheet budget.")
     if sum(counts) + 2 > max_sheets:
         raise ValueError("Tiling exceeds the sheet-count budget.")
     recipe = [RECTANGULAR_TILING_METHOD, design_id, revision, asdict(page),
@@ -899,6 +925,89 @@ def design_five_band_atlas(design_id, revision, page, overview, *,
     bands.append(AtlasPrimaryBand(c, 90, 0, (north,)))
     geometry = AtlasGeometrySpecimen(design_id, revision, page, overview, tuple(sheets))
     return AtlasBandTiling(geometry, tuple(bands), overlap, seed, RECTANGULAR_TILING_METHOD)
+
+
+def _band_sector_count(page, width, seed, overlap, lo, hi, budget):
+    """Smallest integer RA count certified by the shared rectangle bound."""
+    trial = AtlasSheetGeometry("trial", 1, seed, (lo + hi) / 2, width)
+    margin = overlap / 2 + 2 * ANGULAR_GUARD_DEG
+
+    def fits(count):
+        try:
+            return _rectangle_clearance_deg(
+                trial, page, seed - 180 / count, seed + 180 / count, lo, hi
+            ) >= margin
+        except ValueError:
+            return False
+
+    if budget < 3 or not fits(budget):
+        return None
+    lower, upper = 3, budget
+    while lower < upper:
+        middle = (lower + upper) // 2
+        if fits(middle):
+            upper = middle
+        else:
+            lower = middle + 1
+    return lower
+
+
+def design_polar_first_atlas(design_id, revision, page, overview, *,
+                             field_width_deg, overlap_deg, seed_ra_deg,
+                             max_sheets=MAX_TILING_SHEETS):
+    """Minimum chart count on a symmetric one-degree boundary grid.
+
+    Fix the largest safe polar caps; choose one equatorial band and paired
+    unequal-height bands by dynamic programming. RA sectors are equal within
+    each band. Grid points are integer declinations plus the exact cap edge.
+    Coverage is continuous and analytic; only placement optimality is grid
+    restricted. Ties prefer fewer bands, then deterministic boundary order.
+    """
+    _identifier(design_id, "design_id")
+    _integer(revision, "revision")
+    _integer(max_sheets, "max_sheets")
+    if max_sheets > MAX_TILING_SHEETS:
+        raise ValueError("max_sheets exceeds the 4096-sheet budget.")
+    if not isinstance(page, AtlasPageGeometry) or not isinstance(overview, AtlasOverviewGeometry):
+        raise TypeError("page and overview require atlas geometry records.")
+    width = _number(field_width_deg, "field_width_deg")
+    overlap = _number(overlap_deg, "overlap_deg")
+    seed = _number(seed_ra_deg, "seed_ra_deg")
+    if not 5 <= width <= 120 or overlap < 0 or not 0 <= seed < 360:
+        raise ValueError("Invalid field, overlap or seed RA.")
+    trial = AtlasSheetGeometry("trial", 1, seed, 0, width)
+    radius = _inscribed_radius_deg(trial, page) - overlap / 2 - 2 * ANGULAR_GUARD_DEG
+    if radius < 1:
+        raise ValueError("Field/aspect/overlap leaves less than a 1-degree polar cap.")
+    extent = 90 - radius
+    nodes = [float(i) for i in range(1, math.ceil(extent))] + [extent]
+    # dp[i] holds the best northern partition from nodes[i] to the cap.
+    # Costs are per hemisphere; boundaries are retained for deterministic ties.
+    dp = {len(nodes) - 1: (0, 0, (extent,))}
+    for i in range(len(nodes) - 2, -1, -1):
+        choices = []
+        for j in range(i + 1, len(nodes)):
+            if j not in dp:
+                continue
+            count = _band_sector_count(page, width, seed, overlap,
+                                       nodes[i], nodes[j], max_sheets)
+            if count is not None:
+                cost, bands, boundaries = dp[j]
+                choices.append((cost + count, bands + 1, (nodes[i], *boundaries)))
+        if choices:
+            dp[i] = min(choices)
+    choices = []
+    for i, (cost, bands, boundaries) in dp.items():
+        count = _band_sector_count(page, width, seed, overlap,
+                                   -nodes[i], nodes[i], max_sheets)
+        if count is not None and 2 + count + 2 * cost <= max_sheets:
+            choices.append((2 + count + 2 * cost, 1 + 2 * bands, boundaries))
+    if not choices:
+        raise ValueError("No polar-first layout fits the sheet-count budget.")
+    _, _, north = min(choices)
+    edges = (-90, *(-v for v in reversed(north)), *north, 90)
+    return _design_rectangular_bands(design_id, revision, page, overview,
+                                     width, overlap, seed, edges, max_sheets)
 
 
 def select_atlas_sheets(atlas, selector):
@@ -955,7 +1064,7 @@ def select_atlas_sheets(atlas, selector):
 
 @dataclass(frozen=True)
 class AtlasDesignRequest:
-    """Version-1 geometry request for the supported stereographic designers.
+    """Versioned geometry request for the supported stereographic designers.
 
     This is independent of schema-v2 chart configuration. Astronomical
     selection and index presentation are not geometry-request inputs.
@@ -972,6 +1081,7 @@ class AtlasDesignRequest:
     max_sheets: int = MAX_TILING_SHEETS
     equatorial_half_height_deg: float | None = None
     middle_boundary_dec_deg: float | None = None
+    request_json: str | None = None
 
     def __post_init__(self):
         _identifier(self.design_id, "design_id")
@@ -982,8 +1092,8 @@ class AtlasDesignRequest:
         if not isinstance(self.page, AtlasPageGeometry) or not isinstance(
                 self.overview, AtlasOverviewGeometry):
             raise ValueError("page and overview require atlas geometry records.")
-        if self.algorithm not in ("five_band", "cap_bands"):
-            raise ValueError("algorithm must be five_band or cap_bands.")
+        if self.algorithm not in ("five_band", "cap_bands", "polar_first"):
+            raise ValueError("algorithm must be five_band, cap_bands or polar_first.")
         for name in ("field_width_deg", "overlap_deg", "seed_ra_deg"):
             object.__setattr__(self, name, _number(getattr(self, name), name))
         if not 5 <= self.field_width_deg <= 120 or self.overlap_deg < 0:
@@ -1005,7 +1115,7 @@ class AtlasDesignRequest:
         _keys(data, ("schema_version", "document_kind", "design_id", "revision",
                      "coordinate_frame", "projection", "page", "overview",
                      "tiling"), "atlas design request")
-        if type(data["schema_version"]) is not int or data["schema_version"] != 1:
+        if type(data["schema_version"]) is not int or data["schema_version"] not in (1, 2):
             raise ValueError("Unsupported atlas design request schema.")
         if data["document_kind"] != "wenu-atlas-design-request":
             raise ValueError("Unsupported atlas design request kind.")
@@ -1032,18 +1142,41 @@ class AtlasDesignRequest:
         tiling = data["tiling"]
         if not isinstance(tiling, dict):
             raise ValueError("tiling must be a table.")
-        required = {"algorithm", "field_width_deg", "overlap_deg"}
-        if tiling.get("algorithm") == "five_band":
+        version = data["schema_version"]
+        required = {"field_width_deg", "overlap_deg"}
+        if version == 1:
+            required.add("algorithm")
+        page_data = data["page"]
+        if version == 2:
+            _keys(page_data, ("paper_size", "orientation", "top_mm", "bottom_mm",
+                              "inner_mm", "outer_mm"), "page")
+            if page_data["paper_size"] != "B4":
+                raise ValueError("Version-2 paper_size currently supports ISO B4.")
+            if page_data["orientation"] not in ("portrait", "landscape"):
+                raise ValueError("orientation must be portrait or landscape.")
+            width_mm, height_mm = ((250, 353) if page_data["orientation"] == "portrait"
+                                   else (353, 250))
+            page_data = {k: page_data[k] for k in
+                         ("top_mm", "bottom_mm", "inner_mm", "outer_mm")}
+            page_data.update(width_mm=width_mm, height_mm=height_mm)
+        if version == 1 and tiling.get("algorithm") == "five_band":
             required |= {"equatorial_half_height_deg", "middle_boundary_dec_deg"}
         seed = ra_record(tiling, "seed_ra", required, ("max_sheets",))
+        canonical = json.loads(json.dumps(data, allow_nan=False))
+        canonical["overview"].pop("join_ra_hours", None)
+        canonical["overview"]["join_ra_deg"] = join
+        canonical["tiling"].pop("seed_ra_hours", None)
+        canonical["tiling"]["seed_ra_deg"] = seed
+        canonical["tiling"].setdefault("max_sheets", MAX_TILING_SHEETS)
         return cls(
             data["design_id"], data["revision"],
-            _record(AtlasPageGeometry, data["page"]),
+            _record(AtlasPageGeometry, page_data),
             AtlasOverviewGeometry(join, overview["shared_band_width_deg"]),
-            tiling["algorithm"], tiling["field_width_deg"], tiling["overlap_deg"],
+            tiling["algorithm"] if version == 1 else "polar_first", tiling["field_width_deg"], tiling["overlap_deg"],
             seed, tiling.get("max_sheets", MAX_TILING_SHEETS),
             tiling.get("equatorial_half_height_deg"),
             tiling.get("middle_boundary_dec_deg"),
+            json.dumps(canonical, sort_keys=True, allow_nan=False),
         )
 
     def resolve(self):
@@ -1051,9 +1184,11 @@ class AtlasDesignRequest:
         options = dict(field_width_deg=self.field_width_deg,
                        overlap_deg=self.overlap_deg, seed_ra_deg=self.seed_ra_deg,
                        max_sheets=self.max_sheets)
-        designer = design_band_atlas
+        designer = (design_polar_first_atlas if self.algorithm == "polar_first"
+                    else design_band_atlas)
         if self.algorithm == "five_band":
             designer = design_five_band_atlas
             options.update(equatorial_half_height_deg=self.equatorial_half_height_deg,
                            middle_boundary_dec_deg=self.middle_boundary_dec_deg)
-        return designer(self.design_id, self.revision, self.page, self.overview, **options)
+        result = designer(self.design_id, self.revision, self.page, self.overview, **options)
+        return replace(result, request_json=self.request_json)

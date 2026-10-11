@@ -442,3 +442,16 @@ The chart export's existing additional-furniture hook selects a bracketed
 key; facing reports select the full reference scale and interval counts.
 Dotted-range boxes and veils are backend furniture over legend rows only.
 There is no sky reconstruction, projection branch or feedback into sizing.
+
+### Geometry-driven atlas placement candidate
+
+`atlas_design.py` remains the sole geometry/request/tiling owner. Version-2
+requests derive B4 portrait/landscape dimensions and compute polar-first
+placements on a symmetric one-degree declination boundary grid. The existing
+rectangular halfspace certificate and deterministic assembly are shared with
+version-1 five-band requests. Dynamic programming minimizes chart count then
+band count within that finite family. No sky, observer, catalogue, projection,
+renderer or export pipeline is added. Resolved designs optionally retain the
+canonical request and computed layout; historical JSON remains readable.
+`wenu_plot_atlas` consumes the result without rerunning placement. Existing
+geometry and CLI test owners protect scientific containment and provenance.
