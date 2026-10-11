@@ -3383,3 +3383,19 @@ and automatic legends, passing an atlas-specific bright-end reference range.
 cli/atlas.py admits the presentation magnitude override only. Existing atlas
 CLI/canonical-sphere tests protect the seams. No new report inventory owner,
 production module, dependency, coordinate transform or test file is admitted.
+
+### Offline SVG stellar-area analysis (2026-10-11)
+
+`tools/analyze_atlas_star_areas.py` owns a read-only analysis of completed Wenu
+SVG artifacts: vector filled areas, physical-page conversion, centre clipping,
+logarithmic bins and diagnostic plot/CSV/JSON exports. The closest existing
+tool, `tools/render_49f6_svg_matrix.py`, produces a cross-product rendering
+audit; adding a user-supplied artifact histogram there would mix rendering
+and post-export analysis lifecycles. This new developer tool does not belong
+in the astronomical or export production pipeline and adds no dependency,
+installed CLI, package module or sky lifecycle.
+
+Extend `tests/test_svg_output.py`, the existing serialized-SVG contract owner,
+for measured transforms/references/clipping and real Matplotlib sizing
+equivalence. No new test file is created. These protect a new artifact-reading
+seam, rather than repeating catalogue or projection oracles.

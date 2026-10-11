@@ -4959,3 +4959,29 @@ variable/multiple overlays and the report magnitude key. The canonical
 render-local style override applies after style/mode resolution; magnitude
 selection, source sky, atlas geometry and index presentation are unchanged.
 Set `star_size_scale = 1.0` to recover the previous sizes.
+
+### Atlas appearance accepted closure and SVG-size analysis (2026-10-11)
+
+Fernando accepted PR #226 and merged it as
+`ecda4e01482364b9084bda05df552cc325968768`, with the exact accepted tree.
+Head `e9fb18104a0e7474016c72ea1dbb5e01de36514e` passed all 3419
+plugin-disabled Mac tests in 623.19 seconds, diff checks and clean-tree
+verification. Main is synchronized; local/remote feature branches were
+deleted. This closes the earlier pending heading, canvas and stellar-size
+acceptance wording.
+
+The next bounded request is a script that reads atlas SVG files and plots
+log10 number of stellar marker appearances per log10 symbol-area bin.
+Read the original vector artifact and its stellar semantic scope; exclude
+legend samples and variable/multiple overlays. Report filled silhouette area
+in physical mm², transformations, centre-clipping convention, per-file counts
+and bin data explicitly. Preserve the astronomy/render/export pipeline and
+read inputs without mutation. Overlapping pages count separate appearances;
+unique catalogue-star counting and general SVG-editor compatibility are not
+claimed. Extend the existing serialized SVG tests and add a tools script,
+not a production pipeline or dependency. Object curation and authored reports
+remain subsequent work. Acceptance, final full regression and merge of this
+new script remain separate.
+
+The coordinate-system guide was reviewed and remains current: the tool
+measures serialized page geometry, not sky coordinates or a new realization.

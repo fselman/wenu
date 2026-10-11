@@ -914,3 +914,49 @@ variable/multiple overlays and the report magnitude key. The canonical
 render-local style override applies after style/mode resolution; magnitude
 selection, source sky, atlas geometry and index presentation are unchanged.
 Set `star_size_scale = 1.0` to recover the previous sizes.
+
+## Measure star sizes from atlas SVG files
+
+The offline script reads existing SVGs; it does not regenerate charts, load a
+stellar catalogue, or create an observer or celestial sphere. For example:
+
+```bash
+python tools/analyze_atlas_star_areas.py output/atlas_mag8 \
+  --output-prefix output/atlas_star_areas_v1 --bins 30
+```
+
+You can also supply individual files, separated by spaces:
+
+```bash
+python tools/analyze_atlas_star_areas.py \
+  output/atlas_mag8/chart-10.svg output/atlas_mag8/chart-34.svg \
+  --output-prefix output/selected_star_areas_v1 --bins 30
+```
+
+Directory inputs select only `chart-NN.svg`, excluding report pages. Explicit
+SVG inputs may also be atlas indexes. Duplicate input paths are removed. The
+output directory must exist; the output prefix must be new. The script writes
+PNG, PDF and SVG plots, `_stars.csv` (one row per marker), `_bins.csv` (bin
+boundaries and counts), and `_summary.json` (per-file counts and conventions).
+
+Both axes use base-10 logarithms. Counts are appearances per equal-width bin
+in log area, not cumulative counts or number per square millimetre. Empty bins
+remain in the CSV but have no log-count point. Overlapping charts count repeated
+appearances separately; no unique-star identification or catalogue cross-match
+is inferred.
+
+Area is the full filled SVG silhouette in square millimetres of the printed
+page, including inherited affine transforms and physical page scaling. It is
+not the Matplotlib scatter parameter `s`, the stellar flux, or angular area.
+Strokes, labels, legend markers and variable/multiple classification overlays
+are excluded. Bright filled star markers are included. Zero-area and hidden
+markers are excluded. A marker must have its centre inside the page and its
+SVG clips; a partly clipped marker retains its full symbol area.
+
+The supported Wenu vector subset comprises line, quadratic and cubic Bezier
+paths, circles, local marker references and affine transforms. Unsupported
+marker path commands, malformed/cyclic references, nonuniform root viewport
+scaling and unsupported clip shapes fail explicitly. Rasterized stellar layers
+without vector markers cannot provide these measurements. Use the original
+Wenu exports; arbitrary CSS, masks, filters and complex editor geometry are
+not an SVG-renderer compatibility promise.

@@ -30,6 +30,87 @@ POINTS_PER_INCH = 72.0
 MM_PER_INCH = 25.4
 
 
+def _star_area_analyzer():
+    import importlib.util
+    from pathlib import Path
+    filename = Path(__file__).parents[1] / "tools/analyze_atlas_star_areas.py"
+    spec = importlib.util.spec_from_file_location("atlas_star_area_analysis", filename)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_svg_star_area_analysis_measures_references_transforms_and_clipping(tmp_path):
+    import math
+    analyzer = _star_area_analyzer()
+    source = tmp_path / "chart-01.svg"
+    source.write_text('''<svg xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        width="100mm" height="100mm" viewBox="0 0 100 100">
+      <defs><path id="triangle" d="M0 0 L1 0 L0 1 Z"/>
+        <clipPath id="window"><rect width="60" height="60"/></clipPath></defs>
+      <g data-wenu-semantic-path="sky/stars/symbols" clip-path="url(#window)">
+        <g transform="translate(10 20) scale(2 3)"><use xlink:href="#triangle"/></g>
+        <circle cx="30" cy="30" r="2"/>
+        <circle cx="59" cy="30" r="2"/>
+        <circle cx="70" cy="30" r="2"/>
+        <circle cx="20" cy="20" r="0"/>
+        <g display="none"><circle r="10"/></g>
+        <g data-wenu-paint-role="variable_stars"><circle cx="30" cy="30" r="4"/></g>
+      </g>
+      <g data-wenu-semantic-path="furniture/legends/stars"><circle r="8"/></g>
+    </svg>''')
+    records = analyzer.read_star_markers(source)
+    assert len(records) == 3
+    assert [row['area_mm2'] for row in records] == pytest.approx([3, 4*math.pi, 4*math.pi])
+    assert records[0]['x_mm'] == pytest.approx(11)
+    assert records[0]['y_mm'] == pytest.approx(21.5)
+    # Unsupported editor geometry must not silently produce wrong areas.
+    source.write_text(source.read_text().replace('M0 0 L1 0 L0 1 Z', 'M0 0 A1 1 0 0 0 1 1 Z'))
+    with pytest.raises(ValueError, match='Unsupported SVG path command'):
+        analyzer.read_star_markers(source)
+
+
+def test_svg_star_area_analysis_matches_actual_matplotlib_marker_scaling(tmp_path):
+    import math
+    analyzer = _star_area_analyzer()
+    areas = []
+    for diameter_scale in (1, 2):
+        figure, ax = plt.subplots(figsize=(3, 2))
+        try:
+            artist = ax.scatter([0, 0.5, 0.75], [0, 0.5, 0.75],
+                                s=[16*diameter_scale**2, 64*diameter_scale**2, 0])
+            artist.set_gid('measured-stars')
+            from wenu.svg_document import attach_semantic_svg_metadata
+            attach_semantic_svg_metadata(artist, layer='stars', zorder=5,
+                paint_role=None, edit_policy=EditPolicy.STYLE,
+                semantic_path=('sky', 'stars', 'symbols'),
+                lock_owner_path=('sky', 'stars'), display_name='Stars',
+                presentation_order=40, style_role='stars')
+            filename = ExportOptions(bbox_inches=None).save(figure,
+                tmp_path / f'chart-{diameter_scale:02d}.svg')
+        finally:
+            plt.close(figure)
+        records = analyzer.read_star_markers(filename)
+        assert len(records) == 2
+        areas.append([row['area_mm2'] for row in records])
+    assert areas[0] == pytest.approx([math.pi*4*(25.4/72)**2,
+                                    math.pi*16*(25.4/72)**2], rel=0.001)
+    assert areas[1] == pytest.approx([value*4 for value in areas[0]], rel=1e-5)
+    # Directory selection ignores reports; repeated explicit inputs are not counted twice.
+    (tmp_path / 'chart-01_report.svg').write_text('<invalid-report/>')
+    summary = analyzer.analyze([tmp_path, tmp_path/'chart-01.svg'], tmp_path/'areas_v1', bins=8)
+    assert summary['star_appearances'] == 4
+    import csv
+    with (tmp_path/'areas_v1_bins.csv').open() as output:
+        bins = list(csv.DictReader(output))
+    assert sum(int(row['count']) for row in bins) == 4
+    assert any(row['log10_count'] == '' for row in bins)
+    assert all((tmp_path/f'areas_v1.{extension}').exists() for extension in ('png', 'pdf', 'svg'))
+    with pytest.raises(ValueError, match='filenames must be new'):
+        analyzer.analyze([tmp_path/'chart-01.svg'], tmp_path/'areas_v1')
+
+
 def test_ordered_semantic_fragments_preserve_interleaved_artists(tmp_path):
     from wenu.svg_document import attach_semantic_svg_metadata
     figure, ax = plt.subplots()

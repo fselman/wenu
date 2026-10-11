@@ -4566,3 +4566,23 @@ variable/multiple overlays and the report magnitude key. The canonical
 render-local style override applies after style/mode resolution; magnitude
 selection, source sky, atlas geometry and index presentation are unchanged.
 Set `star_size_scale = 1.0` to recover the previous sizes.
+
+### Offline SVG star-area analysis (2026-10-11)
+
+`python tools/analyze_atlas_star_areas.py INPUT [INPUT ...]
+--output-prefix PREFIX [--bins 30]` reads Wenu vector SVGs and writes
+`PREFIX.{png,pdf,svg}`, `PREFIX_stars.csv`, `PREFIX_bins.csv` and
+`PREFIX_summary.json`. Directory inputs select numbered chart SVGs only.
+The script recognizes stellar semantic scopes, excludes classification and
+legend samples, resolves local SVG references/affine transforms, integrates
+closed linear/quadratic/cubic silhouettes and converts SVG units to mm².
+Gaussian integration is exact for the supported polynomial curves, subject
+to serialized coordinate precision. Counts are centre-visible marker
+appearances, including bright filled symbols; partial edge symbols keep full
+area. Duplicate file paths are removed, but repeated stars on different charts
+remain separate appearances. Equal log10-area bins retain empty CSV rows; the
+plot omits their undefined log counts. Unsupported geometry fails explicitly.
+
+No catalogue, sphere, observer, ephemeris, projection, chart appearance or
+SVG export behavior changes. This is an offline developer script with no
+new installed entry point or dependency.
