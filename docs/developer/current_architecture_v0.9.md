@@ -2476,3 +2476,9 @@ completed SVG artifacts to `charts/stellar_sizing_report.py`. This read-only
 post-export owner writes measurements, formula/curve reports and reproducible
 data; the existing PDF assembler appends its page. It has no celestial-sphere,
 observer or projection lifecycle. Snapshot creation/reuse remains unchanged.
+
+
+A catalogue-free sizing preview now uses the existing composition and
+preparation owners, followed by the diagnostic report owner. The toolbox
+adapter does not create or restore a celestial sphere; it produces physical
+symbol swatches and sizing curves only.

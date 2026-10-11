@@ -4620,3 +4620,11 @@ paper dimensions and product hashes in the final manifest. The read-only
 sphere. Diagnostic curves evaluate the frozen policy; measured counts come
 from actual SVG glyphs, excluding legends/classification overlays. A separate
 bright-star shape does not silently receive a circular-symbol guide.
+
+
+`preview_stellar_sizes` in the diagnostic owner resolves canonical composition
+without a sky. Its toolbox adapter accepts shared magnitude-policy arguments,
+`--star-size-scale`, style/mode/family, magnitude range, physical page dimensions,
+raster DPI and a new output prefix. Outputs include actual-size circular base
+symbols, diameter/log-area curves and reproducible JSON/CSV. Separate legacy
+bright shapes are rejected rather than silently previewed as circles.

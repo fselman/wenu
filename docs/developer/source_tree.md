@@ -3432,3 +3432,13 @@ and commits all products with its existing manifest-last boundary.
 Extend existing stellar-symbol, chart-CLI, atlas-CLI, SVG-output and reusable
 sphere tests for these shared-policy, recorded-provenance and batch seams.
 No new test file is admitted; legacy formula oracles remain unchanged.
+
+
+The catalogue-free preview is a second adapter,
+`tools/preview_stellar_sizes.py`, into the existing
+`charts/stellar_sizing_report.py` appearance/report owner. No new production
+module is admitted. Canonical composition resolves style/mode/family and the
+canonical preparation function supplies diameters. The preview adds a durable
+pre-render diagnostic seam, not a parallel astronomical renderer. Existing
+`tests/test_svg_output.py` covers no-sphere preparation, physical multiplier
+equivalence, palette/mode/family composition and no-overwrite admission.

@@ -1181,3 +1181,31 @@ def test_figure_margin_credits_and_version_belong_to_footer_furniture(
         )
         for element in root.iter()
     )
+
+
+@pytest.mark.parametrize('style,mode,family', [('atlas', 'print', 'regional'), ('cartoon', 'presentation', 'binocular')])
+def test_stellar_sizing_preview_reuses_composition_without_sky(tmp_path, monkeypatch, style, mode, family):
+    import json
+    from pathlib import Path
+    import numpy as np
+    from wenu.charts.stellar_sizing_report import preview_main
+    from wenu.sky import native_snapshot
+    def forbidden(*args, **kwargs):
+        raise AssertionError('An appearance preview must not prepare a sky.')
+    monkeypatch.setattr(native_snapshot, 'prepare_native_sky_snapshot', forbidden)
+    records = []
+    for scale in (1, 3):
+        prefix = tmp_path / f'preview-{scale}'
+        assert preview_main(['--mag-algorithm', 'asinh', '--mag-dmin', '.3',
+            '--mag-a', '.5', '--mag-b', '3', '--mag-size-reference', '8',
+            '--star-size-scale', str(scale), '--style', style, '--mode', mode,
+            '--family', family, '--dpi', '90', '--output-prefix', str(prefix)]) == 0
+        records.append(json.loads(Path(str(prefix)+'_data.json').read_text()))
+        for suffix in ('.png', '.pdf', '.svg', '.csv'):
+            assert Path(str(prefix)+suffix).stat().st_size > 0
+    np.testing.assert_allclose(records[1]['diameters_mm'], np.asarray(records[0]['diameters_mm'])*3)
+    np.testing.assert_allclose(records[1]['areas_mm2'], np.asarray(records[0]['areas_mm2'])*9)
+    assert records[1]['diameters_mm'][-1] == pytest.approx(.9)
+    assert records[1]['mode'] == mode
+    with pytest.raises(SystemExit):
+        preview_main(['--output-prefix', str(prefix)])  # no overwrite

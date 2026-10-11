@@ -581,3 +581,133 @@ def main(argv=None):
 
 if __name__ == "__main__":
     main()
+
+
+def preview_main(argv=None):
+    """Tool adapter for a catalogue-free, physically sized appearance preview."""
+    from .style_overrides import add_magnitude_sizing_arguments, magnitude_sizing_from_arguments
+    parser = argparse.ArgumentParser(description="Preview stellar diameter, area and actual-size symbols; no sky or catalogue is loaded.", allow_abbrev=False)
+    add_magnitude_sizing_arguments(parser)
+    parser.add_argument('--style', choices=('atlas', 'cartoon'), default='atlas')
+    parser.add_argument('--mode', choices=('print', 'presentation'), default='print')
+    parser.add_argument('--family', choices=('regional', 'binocular'), default='regional')
+    parser.add_argument('--star-size-scale', type=float, default=1)
+    parser.add_argument('--magnitude-limit', type=float, default=8)
+    parser.add_argument('--magnitude-min', type=float, default=-2)
+    parser.add_argument('--width-mm', type=float, default=353)
+    parser.add_argument('--height-mm', type=float, default=250)
+    parser.add_argument('--dpi', type=int)
+    parser.add_argument('--output-prefix', required=True, type=Path)
+    args = parser.parse_args(argv)
+    try:
+        from .style_components import StellarMagnitudeSizing
+        policy = magnitude_sizing_from_arguments(args, StellarMagnitudeSizing())
+        result = preview_stellar_sizes(args.output_prefix, policy=policy,
+            style=args.style, mode=args.mode, family=args.family,
+            star_size_scale=args.star_size_scale, magnitude_limit=args.magnitude_limit,
+            magnitude_min=args.magnitude_min, width_mm=args.width_mm,
+            height_mm=args.height_mm, dpi=args.dpi)
+    except (ValueError, TypeError, OSError) as exc:
+        parser.error(str(exc))
+    for path in result:
+        print(path)
+    return 0
+
+
+def preview_stellar_sizes(prefix, *, policy, style='atlas', mode='print',
+                          family='regional', star_size_scale=1, magnitude_limit=8,
+                          magnitude_min=-2, width_mm=353, height_mm=250, dpi=None):
+    """Resolve canonical composition, then render a non-astronomical swatch sheet."""
+    from .composition import compose_chart
+    from .detail import DetailOverrides
+    from .modes import PrintMode, PresentationMode
+    from .regional import RegionalChart
+    from .style_overrides import ChartStyleOverrides
+    from wenu.rendering.preparation import configured_magnitude_sizes
+    import matplotlib
+    import matplotlib.pyplot as plt
+    if style not in {'atlas', 'cartoon'} or mode not in {'print', 'presentation'}:
+        raise ValueError('Unsupported style or mode.')
+    if family not in {'regional', 'binocular'}:
+        raise ValueError('Unsupported chart family.')
+    values = (width_mm, height_mm, magnitude_min, magnitude_limit)
+    if not all(np.isfinite(value) for value in values) or min(width_mm, height_mm) <= 0:
+        raise ValueError('Dimensions must be positive and all range values finite.')
+    if not -2 <= magnitude_min < magnitude_limit <= 11:
+        raise ValueError('Magnitude range must increase within -2 through 11.')
+    if dpi is not None and (isinstance(dpi, bool) or not isinstance(dpi, int) or dpi <= 0):
+        raise ValueError('DPI must be a positive integer.')
+    prefix = Path(prefix)
+    outputs = [Path(str(prefix)+suffix) for suffix in ('.png', '.pdf', '.svg', '_data.json', '.csv')]
+    if not prefix.parent.is_dir() or any(p.exists() or p.is_symlink() for p in outputs):
+        raise ValueError('Output parent must exist and all output filenames must be new.')
+    chart = RegionalChart(45, 0, 45, 65)
+    if family == 'binocular':
+        from .binocular import BinocularChart
+        chart = BinocularChart(45, 0, field_diameter_deg=10)
+    mode_type = PrintMode if mode == 'print' else PresentationMode
+    mode_options = dict(width_inches=width_mm/25.4, height_inches=height_mm/25.4)
+    if dpi is not None:
+        mode_options['dpi'] = dpi
+    composition = compose_chart(chart, style=style, mode=mode_type(**mode_options),
+        detail_overrides=DetailOverrides(star_magnitude_limit=magnitude_limit),
+        style_overrides=ChartStyleOverrides(stellar_magnitude_sizing=policy,
+                                           star_size_scale=star_size_scale))
+    stars = composition.style.stars
+    if stars.draw_bright_symbols:
+        raise ValueError('This preview supports circular base symbols; use linear or asinh to preview the complete magnitude range without legacy bright-star shapes.')
+    record = resolved_sizing_record(stars, magnitude_limit)
+    magnitudes = np.linspace(magnitude_min, magnitude_limit, 501)
+    areas = _record_area(record, magnitudes)
+    scatter_sizes = configured_magnitude_sizes(
+        magnitudes*stars.ordinary_magnitude_scale+stars.ordinary_magnitude_offset,
+        stars.magnitude_sizing, limiting_magnitude=magnitude_limit)*stars.area_scale
+    diameters = np.sqrt(scatter_sizes)*25.4/72
+    samples = np.unique(np.r_[magnitude_min,
+        np.arange(np.ceil(magnitude_min), magnitude_limit+1e-8), magnitude_limit])
+    sample_sizes = configured_magnitude_sizes(
+        samples*stars.ordinary_magnitude_scale+stars.ordinary_magnitude_offset,
+        stars.magnitude_sizing, limiting_magnitude=magnitude_limit)*stars.area_scale
+    figure = plt.figure(figsize=(width_mm/25.4, height_mm/25.4), dpi=composition.mode.dpi)
+    try:
+        figure.suptitle(f'Stellar sizing preview — {policy.algorithm}', fontsize=16)
+        figure.text(.08, .90, f'{style} / {mode} / {family}; diameter multiplier {star_size_scale:g}; '
+                    f'{width_mm:g} × {height_mm:g} mm', fontsize=10)
+        axes = figure.subplots(1, 2)
+        figure.subplots_adjust(left=.08, right=.95, bottom=.45, top=.83, wspace=.32)
+        axes[0].plot(magnitudes, diameters)
+        axes[0].set(xlabel='Stellar magnitude', ylabel='Symbol diameter [mm]')
+        axes[1].plot(magnitudes, np.log10(areas))
+        axes[1].set(xlabel='Stellar magnitude', ylabel='log₁₀ filled symbol area [mm²]')
+        for ax in axes:
+            ax.grid(alpha=.25)
+        swatches = figure.add_axes((.08, .19, .87, .16), facecolor=composition.style.canvas.sky_color)
+        swatches.set(xlim=(-.5, len(samples)-.5), ylim=(-1, 1), xticks=[], yticks=[])
+        swatches.scatter(np.arange(len(samples)), np.zeros(len(samples)), s=sample_sizes,
+                         color=stars.color, linewidths=0)
+        label_color = stars.label_color or stars.color
+        for i, magnitude in enumerate(samples):
+            swatches.text(i, -.65, f'{magnitude:g}', ha='center', color=label_color, fontsize=9)
+        swatches.set_title('Actual-size symbols; print the PDF at 100% (no fit-to-page)', fontsize=10)
+        figure.text(.08, .11, f'dmin={policy.dmin_mm:g} mm; a={policy.a_mm:g} mm; '
+                    f'b={policy.b_mag:g} mag; sizing reference={policy.size_reference_magnitude:g} mag'
+                    if policy.algorithm != 'legacy' else record['formula'], fontsize=9)
+        figure.text(.08, .06, 'Screen zoom changes apparent size. Physical diameter policies use explicit mm; '
+                    'print/presentation changes palette and raster DPI.', fontsize=9)
+        with matplotlib.rc_context({'svg.fonttype':'none'}):
+            for path in outputs[:3]:
+                figure.savefig(path, dpi=composition.mode.dpi)
+        payload = dict(schema_version=1, document_kind='wenu-stellar-sizing-preview',
+            policy=record, style=style, mode=mode, family=family,
+            star_size_scale=star_size_scale, width_mm=width_mm, height_mm=height_mm,
+            dpi=composition.mode.dpi, magnitudes=magnitudes.tolist(),
+            diameters_mm=diameters.tolist(), areas_mm2=areas.tolist(),
+            sample_magnitudes=samples.tolist())
+        outputs[3].write_text(json.dumps(payload, indent=2, allow_nan=False)+'\n')
+        with outputs[4].open('w', newline='') as stream:
+            writer = csv.writer(stream)
+            writer.writerow(('magnitude', 'diameter_mm', 'filled_area_mm2'))
+            writer.writerows(zip(magnitudes, diameters, areas))
+    finally:
+        plt.close(figure)
+    return outputs

@@ -1053,3 +1053,32 @@ PYTHONPATH=src python tools/analyze_atlas_star_areas.py output/asinh_mag8_v1 \
 Supply `--index output/index_v1.pdf` to include the previously generated index
 and facing report/chart pairs. Subsequent runs keep `--from-sky`; changing
 parameters requires a new output directory or analysis prefix.
+
+
+### Preview a sizing law before rendering an atlas
+
+The source-tree toolbox includes `tools/preview_stellar_sizes.py`. It loads no
+celestial sphere or catalogue. It resolves the same style/mode and sizing
+policy used by charts, then writes diameter-versus-magnitude and log-area
+plots, an actual-size symbol row, PNG/PDF/SVG, and JSON/CSV measurements.
+Print the PDF at 100%, without fit-to-page; screen zoom changes apparent size.
+
+```bash
+PYTHONPATH=src python tools/preview_stellar_sizes.py \
+  --style atlas --mode print --family regional \
+  --mag-algorithm asinh \
+  --mag-dmin 0.30 --mag-a 0.50 --mag-b 3 \
+  --mag-size-reference 8 --magnitude-limit 8 \
+  --star-size-scale 3 \
+  --width-mm 353 --height-mm 250 \
+  --output-prefix "$review_dir/stellar_preview_scale3_v1"
+```
+
+`--mode presentation` selects display adaptation; `--style cartoon` and
+`--family binocular` select their canonical policies. Default raster DPI is
+300 for print or 160 for presentation, overridden with `--dpi`. For physical
+policies, explicit millimetre dimensions and diameter scaling take precedence
+over historical preset area factors. This preview covers circular base stars;
+legacy policies with separate bright-star shapes fail explicitly. It does not
+preview variable/multiple overlays, label collisions or stellar field density.
+Use a new output prefix for each comparison.

@@ -418,3 +418,9 @@ now admits selectable sizing laws. A new post-export edge is completed chart
 SVGs + frozen sizing record -> charts/stellar_sizing_report.py -> diagnostic
 artifacts -> existing atlas PDF assembly. This is page-artifact analysis;
 there is no new catalogue, sky, frame, projection or observer edge.
+
+
+The stellar diagnostic edge also supports catalogue-free preview: canonical
+composition resolves appearance, canonical preparation evaluates sizing, and
+`stellar_sizing_report` draws swatches/curves. No celestial-sphere or projection
+edge is added.

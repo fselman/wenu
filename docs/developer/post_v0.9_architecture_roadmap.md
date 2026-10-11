@@ -5020,3 +5020,12 @@ this changes page appearance, not astronomical coordinates or provenance.
 PR #227 remains unaccepted and unmerged. Focused shared-policy, SVG, batch and
 documentation gates plus visual specimens precede Mac review; the complete
 final-candidate suite is required once before merge, not at every preview.
+
+
+On 2026-10-11 Fernando requested a toolbox sizing-law preview before expensive
+atlas generation. The PR #227 candidate now includes a no-sphere preview
+adapter using canonical composition/preparation and the existing diagnostic
+owner. It compares physical sizes and sample symbols with style/mode/family
+and diameter scaling. This does not imply print acceptance, crowding analysis
+or automated aesthetic optimization. Full-suite and user acceptance remain
+pending; no merge or cleanup is authorized.
