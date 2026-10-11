@@ -433,3 +433,12 @@ count/area agreement → sizing area-budget exports → optional atlas PDF page.
 Shared diameter-policy evaluation remains upstream of rendering. There is
 no new sphere construction or projection edge and no density feedback into
 star sizes. This is an extension of existing owners, not a new pipeline.
+
+### Magnitude-key furniture extension
+
+Prepared chart geometry → shared visible-star mask/statistics → magnitude
+scale descriptors → shared legend renderer → chart export or facing report.
+The chart export's existing additional-furniture hook selects a bracketed
+key; facing reports select the full reference scale and interval counts.
+Dotted-range boxes and veils are backend furniture over legend rows only.
+There is no sky reconstruction, projection branch or feedback into sizing.

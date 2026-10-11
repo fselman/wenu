@@ -173,6 +173,8 @@ class AtlasChartPresentation:
     report_label_color: str = "black"
     report_separator_width: float = 0.8
     report_separator_gap_mm: float = 3.0
+    magnitude_veil_color: str = "white"
+    magnitude_veil_alpha: float = 0.65
     chart_number_box_visible: bool = True
     chart_number_box_location: str = "upper right"
     chart_number_box_facecolor: str = "white"
@@ -217,13 +219,15 @@ class AtlasChartPresentation:
         if not isinstance(self.chart_number_box_location, str) or self.chart_number_box_location not in {
                 "upper right", "upper left", "lower right", "lower left"}:
             raise ValueError("Invalid chart_number_box_location.")
-        for name in ("chart_number_box_facecolor", "chart_number_box_edgecolor"):
+        for name in ("chart_number_box_facecolor", "chart_number_box_edgecolor", "magnitude_veil_color"):
             if not isinstance(getattr(self, name), str) or not is_color_like(getattr(self, name)):
                 raise ValueError(f"Invalid {name}.")
-        for name in ("chart_number_box_alpha", "chart_number_box_padding", "chart_number_box_borderpad"):
+        for name in ("chart_number_box_alpha", "chart_number_box_padding", "chart_number_box_borderpad", "magnitude_veil_alpha"):
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value < 0:
                 raise ValueError(f"Invalid {name}.")
+        if self.magnitude_veil_alpha > 1:
+            raise ValueError("magnitude_veil_alpha must be at most 1.")
         if self.chart_number_box_alpha > 1:
             raise ValueError("chart_number_box_alpha must be at most 1.")
         for name, allowed in (("layers", set(LAYERS)), ("formats", {"png", "pdf", "svg"})):
@@ -277,7 +281,7 @@ def _atlas_report_data(chart, sky, composition, rendering):
         if statistics.has_visible_stars:
             # The first reference must be at least as bright as every plotted star.
             reference_range = (math.floor(statistics.brightest_magnitude),
-                               math.floor(statistics.faintest_magnitude))
+                               math.ceil(statistics.faintest_magnitude))
     from .stellar_sizing_report import resolved_sizing_record, magnitude_area_budget
     sizing_record = resolved_sizing_record(composition.style.stars, composition.detail.star_magnitude_limit)
     if statistics is not None and not sizing_record["draw_bright_symbols"]:
@@ -306,6 +310,17 @@ def _atlas_report_data(chart, sky, composition, rendering):
         stars=dict(statistics=None if statistics is None else asdict(statistics),
                    reference_range=reference_range),
         report=dict(status="reserved", sections=[], inventory_status="not_generated"))
+
+
+def _atlas_full_magnitude_range(composition, data):
+    """Full atlas reference scale, widened for any plotted exceptional star."""
+    import math
+    sizing = getattr(composition.style.stars, 'magnitude_sizing', None)
+    end = (sizing.size_reference_magnitude if sizing is not None and
+           sizing.algorithm != 'legacy' else max(8, composition.detail.star_magnitude_limit))
+    visible = data['stars']['reference_range']
+    return (min(-2, visible[0]) if visible else -2,
+            max(math.ceil(end), visible[1]) if visible else math.ceil(end))
 
 
 def _render_atlas_report(chart, sky, composition, rendering, directory,
@@ -368,7 +383,16 @@ def _render_atlas_report(chart, sky, composition, rendering, directory,
         legends = draw_automatic_chart_legends(ax, chart, sky, report_style,
             rendering, resolved_detail=composition.detail, plan=plan,
             include_context=True, object_title=title,
-            stellar_reference_range=data["stars"]["reference_range"])
+            stellar_reference_range=_atlas_full_magnitude_range(composition, data),
+            stellar_report_range=True, stellar_veil_color=presentation.magnitude_veil_color,
+            stellar_veil_alpha=presentation.magnitude_veil_alpha)
+        stellar_result = getattr(legends.legends, 'stars', None)
+        if stellar_result is not None and stellar_result.scale is not None:
+            from dataclasses import asdict
+            data['stars']['legend_entries'] = [asdict(entry) for entry in stellar_result.scale.entries]
+            data['stars']['interval_policy'] = '[m,m+1); counts are chart appearances, not discrete rendered sizes'
+            data['stars']['reference_policy'] = 'Symbol evaluated at bright interval bound m; star diameters remain continuous'
+
         from .legend import add_legend_heading
         heading, separator = add_legend_heading(legends.legends.objects,
             f"Chart {chart.sheet.number}",
@@ -426,6 +450,24 @@ def _draw_atlas_chart_number(ax, number, style, presentation):
     return None
 
 
+def _draw_atlas_magnitude_scale(*, chart, sky, renderer, composition, rendering):
+    """Minimal in-frame scale through the existing rendered-legend owner."""
+    if 'stars' not in composition.detail.enabled_layers:
+        return None
+    from .automatic_legends import draw_automatic_chart_legends
+    from .legend_plan import ChartLegendPlan, LegendPlacement
+    data = _atlas_report_data(chart, sky, composition, rendering)
+    legends = draw_automatic_chart_legends(renderer.ax, chart, sky, composition.style,
+        rendering, resolved_detail=composition.detail,
+        plan=ChartLegendPlan('regional', LegendPlacement(enabled=False),
+                             LegendPlacement(location='lower right')),
+        include_context=False, stellar_reference_range=data['stars']['reference_range'])
+    from types import SimpleNamespace
+    from wenu.chart_document import assign_furniture_semantics
+    assign_furniture_semantics(renderer, SimpleNamespace(legends=legends))
+    return legends
+
+
 def _render_atlas_sheet(task, sky=None):
     """One isolated figure, canonical composition/export, all requested formats."""
     import matplotlib.pyplot as plt
@@ -464,7 +506,8 @@ def _render_atlas_sheet(task, sky=None):
             Path(directory) / f"chart-{sheet.number:02d}.{first}",
             composition=composition,
             realization_context=LayerRealizationContext(NATIVE_ICRS_SPEC),
-            export_options=ExportOptions(dpi=presentation.dpi, bbox_inches=None))
+            export_options=ExportOptions(dpi=presentation.dpi, bbox_inches=None),
+            additional_furniture=_draw_atlas_magnitude_scale)
         for suffix in presentation.formats[1:]:
             result.export_options.save(figure, Path(directory) / f"chart-{sheet.number:02d}.{suffix}")
         _render_atlas_report(chart, sky, composition, result.rendering, directory,
@@ -636,17 +679,17 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                 writer.add_outline_item("Atlas index", 0)
             for sheet in sheets:
                 if index_bytes is not None:
-                    writer.append(staging / f"chart-{sheet.number:02d}_report.pdf")
+                    writer.append(PdfReader(staging / f"chart-{sheet.number:02d}_report.pdf"))
                     page_order.append(dict(page=len(page_order) + 1, kind="report", chart=sheet.number))
-                writer.append(staging / f"chart-{sheet.number:02d}.pdf")
+                writer.append(PdfReader(staging / f"chart-{sheet.number:02d}.pdf"))
                 page_order.append(dict(page=len(page_order) + 1, kind="chart", chart=sheet.number))
                 writer.add_outline_item(f"Chart {sheet.number}", len(writer.pages) - 1)
-            writer.append(staging / "stellar-sizing-report.pdf")
+            writer.append(PdfReader(staging / "stellar-sizing-report.pdf"))
             page_order.append(dict(page=len(page_order) + 1, kind="stellar_sizing_report"))
             writer.add_outline_item("Stellar sizing report", len(writer.pages) - 1)
             budget_pdf = staging / "stellar-sizing_area-budget.pdf"
             if budget_pdf.exists():
-                writer.append(budget_pdf)
+                writer.append(PdfReader(budget_pdf))
                 page_order.append(dict(page=len(page_order) + 1, kind="stellar_area_budget"))
                 writer.add_outline_item("Stellar area budget", len(writer.pages) - 1)
             writer.write(staging / "atlas.pdf")

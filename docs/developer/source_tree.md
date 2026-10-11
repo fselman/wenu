@@ -3451,3 +3451,13 @@ The existing `charts/style_components.py` typed policy and
 `charts/stellar_sizing_report.py` verifies them against manifest-bound SVGs
 and exports interval diagnostics. Existing toolbox adapters remain thin.
 No additional production module or test file is needed.
+
+### Atlas magnitude-key detail split
+
+Existing `magnitude_legend.py` descriptors and `magnitude_legend_workflow.py`
+coordinate interval counts from rendered geometry. Existing
+`magnitude_legend_matplotlib.py` owns marker-aware packing, dotted range and
+inactive-row veils. Automatic/rendered/planned legend adapters pass the
+opt-in report concern. `atlas_publication.py` uses canonical export furniture
+for the chart key and the same legend coordinator for richer report keys.
+No new module or test file is admitted; existing stable owners are extended.

@@ -2492,3 +2492,13 @@ post-export analysis owner, which writes interval area diagnostics and an
 optional book page. Selection and sizing remain separate; a saved sphere
 supports different laws without rebuilding its source catalog. No count-
 adaptive sizing or alternate sky/projection path is introduced.
+
+### Minimal chart magnitude key and detailed facing report
+
+Canonical chart export invokes atlas extra furniture after chart rendering
+and before saving. Shared rendered-legend composition consumes that geometry
+for both the minimal bracketed chart key and the full interval-count report.
+Generic legend descriptors carry counts and active-range membership; the
+Matplotlib legend owner packs physical disks and draws range/veil furniture
+at current renderer coordinates. Atlas presentation supplies veil appearance.
+Scientific selection, star sizing, sphere reuse and projection remain unchanged.

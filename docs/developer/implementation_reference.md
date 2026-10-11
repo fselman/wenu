@@ -4647,3 +4647,31 @@ The PDF assembler appends the optional area-budget page after sizing analysis.
 No inverse magnitude estimate, adaptive sizing, sky reload, or new projection
 pipeline is introduced. Existing stellar-symbol, SVG and reusable-sphere
 contract tests own verification.
+
+### Magnitude interval report and atlas chart furniture
+
+The existing magnitude-legend descriptor adds optional `interval_count` and
+`active` fields. `magnitude_legend_workflow` obtains exact interval counts from
+its canonical visible-star mask when `report_range=True`; existing cumulative
+count behaviour remains unchanged. The style/composition adapters forward
+this explicit opt-in. The Matplotlib legend owner centres each marker in an
+appropriately sized offset box and packs each row by its physical diameter.
+It draws the dotted active-range frame and inactive-row veils from current
+renderer row extents on every draw, preserving PDF/SVG/DPI placement.
+
+Atlas publication uses the existing export `additional_furniture` hook to
+request a minimal in-frame key before saving. Its report invokes the same
+rendered-legend coordinator with full reference bounds and interval counts.
+Presentation owns the veil colour/opacity; generic legend owners implement
+its rendering. Report JSON persists the descriptors and interval policy.
+No second legend, projection or sky pipeline and no new module are introduced.
+Existing magnitude-legend and atlas test owners cover interval membership,
+scaled-symbol containment, backend redraw, report wiring and empty layers.
+
+Atlas PDF assembly now consumes buffered `PdfReader` documents rather than
+raw-path reads inside the merger. This keeps the whole page snapshot intact
+on filesystems with short raw reads; page ordering, geometry and exports
+remain unchanged. Batch acceptance covers the assembled page sizes/counts.
+The existing cold/saved/spawn batch contract additionally simulates a merger
+that rejects raw-path input, protecting the buffered publication seam without
+adding another catalogue construction or a separate test file.

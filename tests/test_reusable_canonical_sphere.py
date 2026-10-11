@@ -646,6 +646,15 @@ def test_atlas_chart_batch_cold_saved_and_spawned_pages_match(native_snapshot_ca
     import numpy as np
     from matplotlib.image import imread
     from pypdf import PdfReader
+    from pypdf import PdfWriter
+    original_stream = PdfWriter._create_stream
+    def complete_stream(writer, source):
+        # Raw paths can produce short reads on virtual/network filesystems.
+        if isinstance(source, (str, Path)):
+            raise OSError('simulated short raw PDF read')
+        return original_stream(writer, source)
+    monkeypatch.setattr(PdfWriter, '_create_stream', complete_stream)
+
     from wenu.charts.atlas_publication import AtlasChartPresentation, create_atlas
     from wenu.sky import native_snapshot
     from wenu.atlas_design import AtlasBandTiling

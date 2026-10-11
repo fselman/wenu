@@ -20,6 +20,8 @@ class StellarMagnitudeEntry:
     magnitude: int
     area: float
     cumulative_count: int | None = None
+    interval_count: int | None = None
+    active: bool = True
 
 
 @dataclass(frozen=True)

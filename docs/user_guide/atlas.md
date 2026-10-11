@@ -1120,3 +1120,28 @@ The analyzer verifies report hashes, policy, total count and area against
 measured SVGs. Historical atlases lacking exact budgets still receive sizing
 analysis, with an explicit unavailable budget status; magnitudes are never
 inferred from symbol size. Counts inform review and do not change the law.
+
+### Chart magnitude key and facing-page interval report
+
+Atlas charts now show their magnitude key inside the chart frame. Its integer
+references bracket all plotted stars: floor(brightest) through ceil(faintest).
+There are no counts in this compact key. Symbol diameters use the exact chart
+law and diameter multiplier; no star magnitudes are quantized by the key.
+
+The facing report shows the full reference scale, normally -2 through the
+physical sizing reference (or at least 8 for legacy). Each symbol at m is
+labelled `m ≤ magnitude < m+1` and gives the number of plotted stars in that
+interval. The displayed symbol is evaluated at its bright bound m; actual
+star diameters vary continuously within the interval. This is an interval count, not a cumulative count. Exact integer
+magnitudes enter the interval starting at that integer. A dotted box surrounds
+the same reference range used on the chart. Remaining rows receive a veil;
+configure `magnitude_veil_color = "white"` and `magnitude_veil_alpha = 0.65`
+in the atlas chart presentation TOML. Alpha 0 disables the veil; 1 hides
+inactive rows completely. The complete scale and counts remain in report JSON.
+Empty charts omit the stellar keys. Counts come from prepared visible-star
+geometry, including the final footprint, without rebuilding the sphere.
+
+The legend's marker column and individual row heights accommodate physical
+symbol diameters at the selected scale; the largest symbols no longer spill
+outside the frame or collide with adjacent references. Chart and report
+legend exports follow the same backend/DPI-aware shared furniture path.

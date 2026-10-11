@@ -5046,3 +5046,19 @@ admitted. The coordinate-system guide was reviewed: native coordinates,
 projection and saved-sphere contracts remain unchanged. This candidate
 requires visual acceptance; PR #227 remains unmerged. A final full suite is
 reserved for the accepted merge candidate.
+
+### Review candidate: bracketed chart keys and interval-count reports
+
+Fernando selected diameter scale 1.7 as the leading quadratic comparison and
+authorized a full-atlas visual review. Chart keys bracket the exact visible
+magnitude range; facing reports keep the full reference scale with interval
+counts, a dotted chart-range box and configurable inactive-row veil. Shared
+legend packing now contains the enlarged disks and avoids row collisions.
+
+The existing furniture hook, legend descriptors/workflow/rendering and atlas
+presentation/report owners are extended. No new production or test module
+is admitted. The coordinate-system guide was reviewed and remains current:
+selection geometry, native coordinates and saved-sphere contracts are unchanged.
+Focused owner/seam tests and five-region rendering cover the candidate; the
+final accepted merge candidate still requires one complete suite. PR #227
+remains unmerged pending whole-atlas visual acceptance.

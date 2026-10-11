@@ -552,7 +552,9 @@ def test_chart_presentation_is_closed_and_rejects_nonstatic_inputs():
                    {'report_label_color': 'invalid-color'}, {'report_separator_width': -1},
                    {'report_separator_gap_mm': True}, {'chart_number_box_visible': 1},
                    {'chart_number_box_location': 'outside'}, {'chart_number_box_alpha': 2},
-                   {'chart_number_box_padding': -1}, {'chart_number_box_facecolor': 'invalid'}):
+                   {'chart_number_box_padding': -1}, {'chart_number_box_facecolor': 'invalid'},
+                   {'magnitude_veil_alpha': -1}, {'magnitude_veil_alpha': 1.1},
+                   {'magnitude_veil_alpha': True}, {'magnitude_veil_color': 'invalid'}):
         with pytest.raises(ValueError):
             AtlasChartPresentation.from_dict(dict(data, **change))
 
@@ -679,7 +681,8 @@ def test_reserved_report_mirrors_binding_margin_and_keeps_legends_at_right(typog
             assert options['object_title'] == 'Centre: ICRS\nRA undefined (pole)\nDec +90d00m00s\nMeridian 05h30m00s'
         else:
             assert options['object_title'] == 'Centre: ICRS\nRA 05h30m00s\nDec +00d00m00s'
-        assert options['stellar_reference_range'] == ((1,5) if stars else None)
+        assert options['stellar_reference_range'] == (-2,8)
+        assert options['stellar_report_range'] is True
         assert options['plan'].objects.location == 'upper right'
         assert options['plan'].stars.location == 'lower right'
         assert options['plan'].stars.enabled is stars
@@ -730,7 +733,7 @@ def test_reserved_report_mirrors_binding_margin_and_keeps_legends_at_right(typog
     assert data['report']['inventory_status'] == 'not_generated'
     assert data['report']['sections'] == []
     if stars:
-        assert data['stars']['reference_range'] == [1,5]
+        assert data['stars']['reference_range'] == [1,6]
         assert data['stars']['statistics']['visible_count'] == 2
         assert data['stars']['statistics']['brightest_magnitude'] == 1.1
 
