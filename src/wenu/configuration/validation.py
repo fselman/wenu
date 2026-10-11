@@ -125,7 +125,7 @@ _POSITIVE_NAMES = frozenset(
         "symbol_dot_size",
         "magnitude_scale",
         "scale",
-        "minimum_area",
+        "minimum_area", "mag_dmin", "mag_a", "mag_b",
         "maximum_area",
         "label_density",
         "label_repeat_length_factor",
@@ -156,6 +156,8 @@ _NONNEGATIVE_NAMES = frozenset(
     }
 )
 _ENUMS = {
+    "styles.atlas.stars.mag_algorithm": {"legacy", "linear", "asinh"},
+    "styles.cartoon.stars.mag_algorithm": {"legacy", "linear", "asinh"},
     "styles.atlas.stars.labels.placement": {"fixed", "auto"},
     "styles.atlas.canvas.labels_orientation": {"chart", "upright", "up-away-from-cp"},
     "styles.cartoon.canvas.labels_orientation": {"chart", "upright", "up-away-from-cp"},

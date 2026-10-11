@@ -288,6 +288,7 @@ def compose_chart(
     if (
         type(chart).__name__ == "BinocularChart"
         and named_style
+        and resolved_style.stars.magnitude_sizing.algorithm == "legacy"
     ):
         resolved_style = replace(
             resolved_style,
@@ -298,6 +299,9 @@ def compose_chart(
                 ),
             ),
         )
+    if (style_overrides is None
+            and resolved_style.stars.magnitude_sizing.algorithm != "legacy"):
+        style_overrides = ChartStyleOverrides()
     if style_overrides is not None:
         if not isinstance(style_overrides, ChartStyleOverrides):
             raise TypeError(
@@ -337,6 +341,12 @@ def compose_chart(
             geometry_defaults.default_content_layers
         ),
     )
+    sizing = resolved_style.stars.magnitude_sizing
+    if (sizing.algorithm != "legacy"
+            and (resolved_detail.enabled_layers is None or "stars" in resolved_detail.enabled_layers)
+            and (resolved_detail.star_magnitude_limit is None
+                 or resolved_detail.star_magnitude_limit > sizing.size_reference_magnitude)):
+        raise ValueError("Physical stellar sizing requires a magnitude limit no fainter than its sizing reference.")
     if furniture is not None and legends is not None:
         raise ValueError("Pass legends through furniture or legends, not both.")
     if furniture is not None:

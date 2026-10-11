@@ -586,6 +586,9 @@ def test_atlas_create_cli_rejects_selector_before_preparation(request_data, tmp_
         raise AssertionError('Invalid requests must not prepare the sky')
     monkeypatch.setattr(native_snapshot, 'prepare_native_sky_snapshot', forbidden)
     for extra in (['--charts', '0'], ['--jobs', '0'],
+                  ['--mag-a', '0.5'], ['--mag-algorithm', 'taki'],
+                  ['--mag-algorithm', 'asinh', '--mag-dmin', '0'],
+                  ['--mag-algorithm', 'asinh', '--mag-size-reference', '5'],
                   ['--magnitude-limit', '12'], ['--magnitude-limit', 'nan'],
                   ['--save-sky', str(tmp_path/'sky'), '--from-sky', 'other'],
                   ['--index', str(tmp_path/'missing.pdf')]):
@@ -594,6 +597,28 @@ def test_atlas_create_cli_rejects_selector_before_preparation(request_data, tmp_
                              '--output-dir', str(tmp_path/'output'), *extra])
         assert exc.value.code == 2
     assert not (tmp_path/'output').exists()
+
+
+def test_atlas_cli_passes_sizing_overrides_without_building_a_sky(tmp_path, monkeypatch):
+    from wenu.charts import atlas_publication
+    calls = []
+    def capture(*args, **kwargs):
+        calls.append(kwargs)
+        return tmp_path/'manifest.json'
+    monkeypatch.setattr(atlas_publication, 'create_atlas', capture)
+    assert cli.create_main(['--design', 'design.json', '--config', str(ROOT/'examples/atlas_chart_style_v1.toml'),
+        '--output-dir', str(tmp_path/'atlas'), '--from-sky', 'saved-sky', '--magnitude-limit', '8',
+        '--mag-algorithm', 'asinh', '--mag-a', '.4', '--mag-b', '2', '--mag-dmin', '.3',
+        '--mag-size-reference', '8', '--star-size-scale', '1', '--style', 'cartoon',
+        '--mode', 'presentation']) == 0
+    presentation = calls[0]['presentation']
+    assert presentation.stellar_magnitude_sizing.algorithm == 'asinh'
+    assert presentation.stellar_magnitude_sizing.a_mm == .4
+    assert presentation.stellar_magnitude_sizing.b_mag == 2
+    assert presentation.star_magnitude_limit == 8
+    assert presentation.star_size_scale == 1
+    assert presentation.mode == 'presentation' and presentation.style == 'cartoon'
+    assert calls[0]['from_sky'] == Path('saved-sky')
 
 
 def test_atlas_index_rejects_multiple_pages_before_preparation(request_data, tmp_path, monkeypatch):
@@ -635,7 +660,8 @@ def test_reserved_report_mirrors_binding_margin_and_keeps_legends_at_right(typog
     chart = SimpleNamespace(page=page,sheet=SimpleNamespace(number=14,
         sheet_id='test-sheet',center_ra_deg=0 if polar else 82.5,
         center_dec_deg=90 if polar else 0,pole_meridian_ra_deg=82.5 if polar else None))
-    composition = SimpleNamespace(style=SimpleNamespace(legend=SimpleNamespace(title_fontsize=6.5)),detail=SimpleNamespace(star_magnitude_limit=6,
+    from wenu.charts.presets import AtlasChartStyle
+    composition = SimpleNamespace(style=SimpleNamespace(stars=AtlasChartStyle().stars, legend=SimpleNamespace(title_fontsize=6.5)),detail=SimpleNamespace(star_magnitude_limit=6,
                                   enabled_layers={'stars'} if stars else {'galaxies'}),
                                   mode=SimpleNamespace(dpi=150))
     star_layer = object()

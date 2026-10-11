@@ -157,9 +157,11 @@ class AtlasChartPresentation:
     """Independent, closed chart-page input; geometry belongs to the design."""
 
     style: str = "atlas"
+    mode: str = "print"
     dpi: int = 150
     star_magnitude_limit: float = 6.0
     star_size_scale: float = 1.0
+    stellar_magnitude_sizing: object | None = None
     layers: tuple = ("stars", "constellation_lines", "constellation_labels",
         "constellation_boundaries", "milky_way", "magellanic_clouds",
         "nonstellar", "galaxies", "open_clusters", "globular_clusters",
@@ -184,11 +186,20 @@ class AtlasChartPresentation:
         from wenu.sky.native_snapshot import LAYERS
         if self.style not in {"atlas", "cartoon"}:
             raise ValueError("style must be atlas or cartoon.")
+        if self.mode not in {"print", "presentation"}:
+            raise ValueError("mode must be print or presentation.")
+        from .style_components import StellarMagnitudeSizing
+        if self.stellar_magnitude_sizing is not None and not isinstance(self.stellar_magnitude_sizing, StellarMagnitudeSizing):
+            raise TypeError("stellar_magnitude_sizing must be StellarMagnitudeSizing.")
         if type(self.dpi) is not int or not 36 <= self.dpi <= 1200:
             raise ValueError("dpi must be an integer from 36 to 1200.")
         limit = self.star_magnitude_limit
         if isinstance(limit, bool) or not isinstance(limit, (int, float)) or not math.isfinite(limit) or not -2 <= limit <= 11:
             raise ValueError("star_magnitude_limit must be finite between -2 and 11.")
+        if (self.stellar_magnitude_sizing is not None
+                and self.stellar_magnitude_sizing.algorithm != "legacy"
+                and limit > self.stellar_magnitude_sizing.size_reference_magnitude):
+            raise ValueError("Magnitude limit must not exceed the sizing reference.")
         for name in ("star_size_scale", "report_label_scale", "report_separator_width", "report_separator_gap_mm"):
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
@@ -230,7 +241,11 @@ class AtlasChartPresentation:
             raise ValueError("Unknown or missing atlas chart presentation keys.")
         if type(data["schema_version"]) is not int or data["schema_version"] != 1 or data["document_kind"] != "wenu-atlas-chart-presentation":
             raise ValueError("Unsupported atlas chart presentation schema/kind.")
-        return cls(**{k: v for k, v in data.items() if k not in required})
+        values = {k: v for k, v in data.items() if k not in required}
+        if isinstance(values.get("stellar_magnitude_sizing"), dict):
+            from .style_components import StellarMagnitudeSizing
+            values["stellar_magnitude_sizing"] = StellarMagnitudeSizing(**values["stellar_magnitude_sizing"])
+        return cls(**values)
 
 
 _WORKER_SKY = None
@@ -262,7 +277,10 @@ def _atlas_report_data(chart, sky, composition, rendering):
             # The first reference must be at least as bright as every plotted star.
             reference_range = (math.floor(statistics.brightest_magnitude),
                                math.floor(statistics.faintest_magnitude))
+    from .stellar_sizing_report import resolved_sizing_record
     return dict(schema_version=1, document_kind="wenu-atlas-chart-report",
+        stellar_sizing=resolved_sizing_record(composition.style.stars,
+            composition.detail.star_magnitude_limit),
         chart_number=chart.sheet.number, sheet_id=chart.sheet.sheet_id,
         center=dict(coordinate_system="ICRS", ra_deg=chart.sheet.center_ra_deg,
                     dec_deg=chart.sheet.center_dec_deg,
@@ -408,7 +426,7 @@ def _render_atlas_sheet(task, sky=None):
     from .style_overrides import ChartStyleOverrides
     from .detail import DetailOverrides
     from .export_workflow import export_composed_chart
-    from .modes import PrintMode
+    from .modes import PrintMode, PresentationMode
     from .regional import ExportOptions
     from wenu.rendering.matplotlib import MatplotlibRenderer
     from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
@@ -416,8 +434,9 @@ def _render_atlas_sheet(task, sky=None):
     sky = _WORKER_SKY if sky is None else sky
     chart = AtlasSheetChart(sheet, page)
     composition = compose_chart(chart, style=presentation.style,
-        style_overrides=ChartStyleOverrides(star_size_scale=presentation.star_size_scale),
-        mode=PrintMode(width_inches=page.width_mm / 25.4,
+        style_overrides=ChartStyleOverrides(star_size_scale=presentation.star_size_scale,
+            stellar_magnitude_sizing=presentation.stellar_magnitude_sizing),
+        mode=(PrintMode if presentation.mode == "print" else PresentationMode)(width_inches=page.width_mm / 25.4,
             height_inches=page.height_mm / 25.4, dpi=presentation.dpi),
         detail_overrides=DetailOverrides(
             star_magnitude_limit=presentation.star_magnitude_limit,
@@ -492,6 +511,9 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
     _positive_integer(jobs, "jobs")
     if not isinstance(presentation, AtlasChartPresentation):
         raise TypeError("presentation must be AtlasChartPresentation.")
+    if "svg" not in presentation.formats:
+        from dataclasses import replace
+        presentation = replace(presentation, formats=(*presentation.formats, "svg"))
     if save_sky is not None and from_sky is not None:
         raise ValueError("--save-sky and --from-sky are mutually exclusive.")
     raw = Path(design_path).read_bytes()
@@ -585,6 +607,20 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                         os.environ[key] = value
         if completed != [sheet.number for sheet in sheets]:
             raise RuntimeError("Incomplete atlas batch.")
+        # Publish an analysis input manifest inside staging, never a partial
+        # public batch. Charts and report records contain all diagnostic inputs.
+        policies = [json.loads((staging / f"chart-{sheet.number:02d}_report_data.json").read_text())
+                    ["stellar_sizing"] for sheet in sheets]
+        if any(policy != policies[0] for policy in policies):
+            raise ValueError("Atlas charts resolved different stellar sizing policies.")
+        analysis_manifest = dict(document_kind="wenu-atlas-chart-batch",
+            presentation=asdict(presentation), stellar_sizing=policies[0],
+            page=asdict(atlas.geometry.page),
+            products={p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+                      for p in staging.glob("chart-*.svg")})
+        (staging / "manifest.json").write_text(json.dumps(analysis_manifest))
+        from .stellar_sizing_report import analyze
+        analyze([staging], staging / "stellar-sizing", atlas_report=True)
         with PdfWriter() as writer:
             page_order = []
             if index_bytes is not None:
@@ -598,6 +634,9 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                 writer.append(staging / f"chart-{sheet.number:02d}.pdf")
                 page_order.append(dict(page=len(page_order) + 1, kind="chart", chart=sheet.number))
                 writer.add_outline_item(f"Chart {sheet.number}", len(writer.pages) - 1)
+            writer.append(staging / "stellar-sizing-report.pdf")
+            page_order.append(dict(page=len(page_order) + 1, kind="stellar_sizing_report"))
+            writer.add_outline_item("Stellar sizing report", len(writer.pages) - 1)
             writer.write(staging / "atlas.pdf")
         for sheet in sheets:
             report_path = staging / f"chart-{sheet.number:02d}_report_data.json"
@@ -606,13 +645,14 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                 snapshot_sha256=digest, presentation=asdict(presentation))
             report_path.write_text(json.dumps(report_data, indent=2, allow_nan=False) + "\n",
                                    encoding="utf-8")
-        products = sorted(staging.iterdir())
+        products = sorted(path for path in staging.iterdir() if path.name != "manifest.json")
         manifest = dict(schema_version=1, document_kind="wenu-atlas-chart-batch",
             design_sha256=hashlib.sha256(raw).hexdigest(),
             snapshot_sha256=digest, charts=completed, workers=worker_count,
             index_sha256=(None if index_bytes is None else hashlib.sha256(index_bytes).hexdigest()),
             report_content="reserved", page_order=page_order,
             presentation=asdict(presentation), elapsed_seconds=time.perf_counter() - started,
+            stellar_sizing=policies[0], page=asdict(atlas.geometry.page),
             products={p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in products})
         (staging / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
         output_dir.mkdir()

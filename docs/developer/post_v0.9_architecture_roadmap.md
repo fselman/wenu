@@ -4996,3 +4996,27 @@ individual magnitudes, create a sphere or change chart rendering. Extend the
 existing SVG tests for this provenance/appearance seam; no new test file or
 dependency is admitted. PR #227 remains a candidate pending Mac review and the
 final full suite before merge.
+
+### Shared stellar-sizing experiment candidate (2026-10-11)
+
+Fernando authorized implementation after confirming that the laws must be
+shared by all Wenu chart families, selectable, and evaluated after reusable
+native-sphere creation. Deliver direct editable commands, not parenthesized
+scripts, for magnitude-6/8 atlases using one saved snapshot. Keep selection
+and sizing reference separate, preserve legacy output and add experimental
+linear/asinh diameter policies. These are not attributed to Taki; an exact
+Taki implementation requires a separately verified formula.
+
+The bounded candidate extends canonical styling/preparation and shared
+CLI/TOML owners. Frozen policy/marker geometry and physical page parameters
+belong in the atlas manifest. One post-export artifact/report owner measures
+SVGs, supplies the log-count/log-area plot with reference lines, log-area
+versus magnitude, formula/parameters and actual-size samples, and is appended
+at the end of the atlas PDF. No second sphere or projection cache is admitted.
+Automatic perceptual/density calibration and scientific object curation remain
+later work. The coordinate-system guide was reviewed and remains current:
+this changes page appearance, not astronomical coordinates or provenance.
+
+PR #227 remains unaccepted and unmerged. Focused shared-policy, SVG, batch and
+documentation gates plus visual specimens precede Mac review; the complete
+final-candidate suite is required once before merge, not at every preview.

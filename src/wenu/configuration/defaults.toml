@@ -309,6 +309,11 @@ magnitude_scale = 1.5
 magnitude_exponent = 0.35
 minimum_area = 1.0
 maximum_area = "none"
+mag_algorithm = "legacy"
+mag_dmin = 0.30
+mag_a = 0.50
+mag_b = 3.0
+mag_size_reference = 8.0
 
 [styles.atlas.stars.labels]
 placement = "fixed"
@@ -550,6 +555,11 @@ magnitude_scale = 1.5
 magnitude_exponent = 0.35
 minimum_area = 1.0
 maximum_area = "none"
+mag_algorithm = "legacy"
+mag_dmin = 0.30
+mag_a = 0.50
+mag_b = 3.0
+mag_size_reference = 8.0
 
 [styles.cartoon.stars.labels]
 placement = "fixed"

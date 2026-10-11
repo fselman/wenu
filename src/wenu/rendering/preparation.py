@@ -45,6 +45,14 @@ def configured_magnitude_sizes(
     limiting_magnitude=None,
 ):
     """Apply an immutable stellar sizing configuration."""
+    if sizing.algorithm != "legacy":
+        difference = np.maximum(0.0, sizing.size_reference_magnitude
+                                - np.asarray(magnitudes, dtype=float))
+        growth = difference if sizing.algorithm == "linear" else np.arcsinh(difference / sizing.b_mag)
+        diameter = sizing.dmin_mm + sizing.a_mm * growth
+        if not np.isfinite(diameter).all() or not np.isfinite((diameter * 72 / 25.4)**2).all():
+            raise ValueError("Stellar diameter parameters overflow the finite sizing range.")
+        return (diameter * 72 / 25.4)**2
     reference = float(sizing.reference_magnitude)
     if sizing.reference == "limiting_magnitude":
         if limiting_magnitude is None:

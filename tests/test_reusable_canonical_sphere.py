@@ -688,13 +688,14 @@ def test_atlas_chart_batch_cold_saved_and_spawned_pages_match(native_snapshot_ca
         data = json.loads(manifest.read_text())
         assert data['charts'] == [10, 14] and data['workers'] == jobs
         book = PdfReader(manifest.parent/'atlas.pdf')
-        assert len(book.pages) == 5
+        assert len(book.pages) == 6
         assert 'Synthetic atlas index' in book.pages[0].extract_text()
         assert data['report_content'] == 'reserved'
         assert data['index_sha256'] == hashlib.sha256(index_before).hexdigest()
         assert data['page_order'] == [dict(page=1,kind='index'),
             dict(page=2,kind='report',chart=10),dict(page=3,kind='chart',chart=10),
-            dict(page=4,kind='report',chart=14),dict(page=5,kind='chart',chart=14)]
+            dict(page=4,kind='report',chart=14),dict(page=5,kind='chart',chart=14),
+            dict(page=6,kind='stellar_sizing_report')]
         for position, number in ((1,10),(3,14)):
             text = book.pages[position].extract_text()
             assert f'Chart {number}' in text and 'Object report' in text
@@ -760,8 +761,18 @@ def test_atlas_chart_batch_publication_race_preserves_other_writer(native_snapsh
         with PdfWriter() as writer:
             writer.add_blank_page(width=72,height=72)
             writer.write(Path(directory)/f'chart-{sheet.number:02d}.pdf')
-        (Path(directory)/f'chart-{sheet.number:02d}_report_data.json').write_text(json.dumps({}))
+        (Path(directory)/f'chart-{sheet.number:02d}_report_data.json').write_text(json.dumps({'stellar_sizing': record}))
         return sheet.number
+    # This test owns atomic publication, not diagnostic SVG measurement.
+    def diagnostic(*args, **kwargs):
+        directory = Path(args[1]).parent
+        with PdfWriter() as writer:
+            writer.add_blank_page(width=72, height=72)
+            writer.write(directory/'stellar-sizing-report.pdf')
+    from wenu.charts import stellar_sizing_report
+    monkeypatch.setattr(stellar_sizing_report, 'analyze', diagnostic)
+    from wenu.charts.presets import AtlasChartStyle
+    record = stellar_sizing_report.resolved_sizing_record(AtlasChartStyle().stars, 6)
     original = PdfWriter.write
     def race(self, destination):
         result = original(self, destination)

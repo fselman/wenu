@@ -410,3 +410,11 @@ is independent of page-output failure. Existing scientific owner edges remain.
 ### Atlas index and reserved facing pages (2026-10-10)
 
 The new furniture dependency is charts/atlas_publication.py → charts/automatic_legends.py → rendered_legend_composition.py → existing legend owners. Its input is the existing sheet rendering, not another sky draw. Atlas publication → pypdf composes the supplied index and report/chart pages; native snapshot/geometry/render edges remain unchanged.
+
+### Shared stellar appearance and post-export diagnostics (2026-10-11)
+
+The existing style -> canonical preparation -> stellar/legend rendering edge
+now admits selectable sizing laws. A new post-export edge is completed chart
+SVGs + frozen sizing record -> charts/stellar_sizing_report.py -> diagnostic
+artifacts -> existing atlas PDF assembly. This is page-artifact analysis;
+there is no new catalogue, sky, frame, projection or observer edge.

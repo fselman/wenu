@@ -4595,3 +4595,28 @@ minimum-area clamping is displayed as one faint-magnitude range, rather than
 several falsely distinct positions. No per-marker magnitude is inferred.
 `--no-magnitude-guides` disables these references; unavailable references have
 an explicit summary/CLI status while measured-area analysis remains available.
+
+### Selectable physical stellar sizing and atlas diagnostics (2026-10-11)
+
+`StellarMagnitudeSizing` now retains legacy fields and adds `algorithm`,
+`dmin_mm`, `a_mm`, `b_mag`, `size_reference_magnitude`. Algorithms are `legacy`,
+`linear` and `asinh`; legacy remains default. Canonical evaluation belongs to
+`configured_magnitude_sizes`. New curves use physical diameter, with a fixed
+reference independent of detail selection. Shared CLI and schema-v2 style
+configuration resolve through `ChartStyleOverrides`; binocular defaults do
+not replace a selected physical policy. Physical overrides normalize legacy
+family area/remapping factors; explicit `star_size_scale` still multiplies
+resolved diameter. Composition rejects a selection limit beyond the reference.
+
+Atlas presentation gains optional `mode` and typed `stellar_magnitude_sizing`;
+its CLI shares sizing options and explicit style/mode/diameter overrides.
+The existing worker composition and single-snapshot lifecycle are unchanged.
+Each chart report records the fully resolved sizing policy and circular marker
+geometry. Publication requires one compatible policy across selected sheets,
+retains SVG charts and generates diagnostics once after all workers finish.
+It appends the one-page sizing report to the assembled PDF and records policy,
+paper dimensions and product hashes in the final manifest. The read-only
+`charts/stellar_sizing_report.py` owner and its tools adapter reconstruct no
+sphere. Diagnostic curves evaluate the frozen policy; measured counts come
+from actual SVG glyphs, excluding legends/classification overlays. A separate
+bright-star shape does not silently receive a circular-symbol guide.

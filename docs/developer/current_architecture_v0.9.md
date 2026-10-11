@@ -2464,3 +2464,15 @@ Full chart-page inspection precedes facing reports and per-object curation.
 ### Atlas index and reserved facing pages (2026-10-10)
 
 The explicit index-PDF route composes existing chart pages with reserved facing pages and canonical legends. Book assembly owns physical parity, mirrored binding margins and index placement only. It consumes the index bytes without rendering another sky; report legends consume the existing chart render. Scientific content, chart geometry and saved-sphere ownership remain unchanged.
+
+### Shared stellar-sizing policies and atlas sizing reports (2026-10-11)
+
+Typed stellar appearance selects legacy, linear-diameter or asinh-diameter
+policies. Canonical preparation evaluates them for stars and existing legend
+owners; detail remains responsible for selection. Explicit physical policies
+resolve after mode/family adaptations, including binocular/polar seams.
+Atlas publication records resolved policy and marker geometry, then passes
+completed SVG artifacts to `charts/stellar_sizing_report.py`. This read-only
+post-export owner writes measurements, formula/curve reports and reproducible
+data; the existing PDF assembler appends its page. It has no celestial-sphere,
+observer or projection lifecycle. Snapshot creation/reuse remains unchanged.

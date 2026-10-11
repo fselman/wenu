@@ -153,6 +153,16 @@ class ChartStyleOverrides:
                 area_scale=stars.area_scale * area_factor,
                 variable_symbol_size=stars.variable_symbol_size * area_factor,
                 multiple_symbol_size=stars.multiple_symbol_size * area_factor))
+        sizing = self.stellar_magnitude_sizing or resolved.stars.magnitude_sizing
+        if sizing.algorithm != "legacy":
+            # Physical diameter policies supersede preset/family area factors
+            # and historical polar magnitude remapping. Explicit diameter
+            # multiplication remains available and is recorded after resolution.
+            return replace(resolved, stars=replace(resolved.stars,
+                magnitude_sizing=sizing, area_scale=(self.star_size_scale or 1.0)**2,
+                ordinary_magnitude_scale=1.0, ordinary_magnitude_offset=0.0,
+                bright_magnitude_scale=1.0, bright_magnitude_offset=0.0,
+                draw_bright_symbols=False))
         if self.stellar_magnitude_sizing is None:
             return resolved
         stars = getattr(resolved, "stars", None)
@@ -165,3 +175,28 @@ class ChartStyleOverrides:
                 magnitude_sizing=self.stellar_magnitude_sizing,
             ),
         )
+
+
+def add_magnitude_sizing_arguments(parser):
+    """Shared appearance switches; selection remains a separate detail option."""
+    parser.add_argument("--mag-algorithm", choices=("legacy", "linear", "asinh"))
+    parser.add_argument("--mag-a", type=float, help="Diameter growth coefficient, mm.")
+    parser.add_argument("--mag-b", type=float, help="Asinh transition interval, magnitudes.")
+    parser.add_argument("--mag-dmin", type=float, help="Minimum diameter, mm, before explicit star-size scaling.")
+    parser.add_argument("--mag-size-reference", type=float, help="Magnitude assigned the minimum diameter.")
+
+
+def magnitude_sizing_from_arguments(arguments, base=None):
+    """Build one typed policy, rejecting parameters without an algorithm."""
+    values = {field: getattr(arguments, option, None) for field, option in (
+        ("algorithm", "mag_algorithm"), ("a_mm", "mag_a"), ("b_mag", "mag_b"),
+        ("dmin_mm", "mag_dmin"), ("size_reference_magnitude", "mag_size_reference"))}
+    supplied = {key: value for key, value in values.items() if value is not None}
+    if not supplied:
+        return base
+    if values["algorithm"] is None and base is None:
+        raise ValueError("Magnitude sizing parameters require --mag-algorithm.")
+    policy = replace(base or StellarMagnitudeSizing(), **supplied)
+    if policy.algorithm == "legacy" and any(key != "algorithm" for key in supplied):
+        raise ValueError("Diameter parameters require linear or asinh sizing.")
+    return policy

@@ -407,6 +407,47 @@ def test_legacy_formula_remains_the_default():
     )
 
 
+@pytest.mark.parametrize("algorithm", ["linear", "asinh"])
+def test_physical_diameter_laws_share_chart_and_legend_sizes(algorithm):
+    policy = StellarMagnitudeSizing(algorithm=algorithm, dmin_mm=.30,
+        a_mm=.50, b_mag=3, size_reference_magnitude=8)
+    magnitudes = np.array([8., 7., 6., 0., -1.5])
+    expected = .30 + .50 * ((8-magnitudes) if algorithm == "linear" else
+                           np.arcsinh((8-magnitudes)/3))
+    sizes = configured_magnitude_sizes(magnitudes, policy, limiting_magnitude=6)
+    np.testing.assert_allclose(np.sqrt(sizes)*25.4/72, expected)
+    assert np.all(np.diff(sizes) > 0)
+    np.testing.assert_array_equal(sizes, configured_magnitude_sizes(magnitudes, policy, limiting_magnitude=8))
+    # Family defaults and historical magnitude remapping must not distort
+    # physical diameter overrides, including the binocular composition seam.
+    from wenu.charts.detail_application import configured_stellar_symbol_sizes
+    base = AtlasChartStyle()
+    override = ChartStyleOverrides(stellar_magnitude_sizing=policy)
+    style = override.apply(base)
+    assert style.stars.area_scale == 1
+    ordinary, _, bright = configured_stellar_symbol_sizes(magnitudes, style.stars)
+    np.testing.assert_array_equal(ordinary, sizes)
+    assert not np.any(bright)
+    key = stellar_magnitude_scale(0, 8, magnitude_sizing=policy, area_scale=style.stars.area_scale)
+    assert key.areas[-1] == pytest.approx(sizes[0])
+    chart = BinocularChart(45, 0, field_diameter_deg=10)
+    from wenu.charts.detail import DetailOverrides
+    composition = compose_chart(chart, style="atlas", mode="print", style_overrides=override,
+                                detail_overrides=DetailOverrides(star_magnitude_limit=8))
+    assert composition.style.stars.magnitude_sizing == policy
+    assert base.stars.magnitude_sizing.algorithm == "legacy"
+    if algorithm == "asinh":
+        diameter = np.sqrt(sizes)*25.4/72
+        assert diameter[-1]-diameter[-2] < diameter[1]-diameter[0]
+
+
+@pytest.mark.parametrize("changes", [{"algorithm": "taki"}, {"dmin_mm": 0},
+    {"a_mm": float("nan")}, {"b_mag": -1}, {"size_reference_magnitude": True}])
+def test_physical_sizing_rejects_invalid_policy(changes):
+    with pytest.raises(ValueError):
+        StellarMagnitudeSizing(**changes)
+
+
 def test_limiting_magnitude_maps_to_minimum_and_bright_stars_grow():
     areas = configured_magnitude_sizes(
         [11.0, 10.0, 6.0, -1.0],

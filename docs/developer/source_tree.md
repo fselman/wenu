@@ -3391,9 +3391,10 @@ SVG artifacts: vector filled areas, physical-page conversion, centre clipping,
 logarithmic bins and diagnostic plot/CSV/JSON exports. The closest existing
 tool, `tools/render_49f6_svg_matrix.py`, produces a cross-product rendering
 audit; adding a user-supplied artifact histogram there would mix rendering
-and post-export analysis lifecycles. This new developer tool does not belong
-in the astronomical or export production pipeline and adds no dependency,
-installed CLI, package module or sky lifecycle.
+and post-export analysis lifecycles. This artifact analysis does not belong in the astronomical or export
+production pipeline. Its original tools adapter has now moved to the shared
+post-export report owner described below; it adds no dependency, installed
+CLI or sky lifecycle.
 
 Extend `tests/test_svg_output.py`, the existing serialized-SVG contract owner,
 for measured transforms/references/clipping and real Matplotlib sizing
@@ -3406,3 +3407,28 @@ tests also cover batch-manifest hash admission, the historical default
 diameter multiplier, physical marker/reference equivalence and the collapsed
 faint-magnitude range. This is a provenance/appearance seam, not a new
 photometry or sky owner.
+
+### Shared sizing and post-export diagnostic ownership (2026-10-11)
+
+Extend `charts/style_components.py` and `rendering/preparation.py` for typed
+algorithm selection and canonical evaluation. `charts/style_overrides.py`
+owns physical policy resolution after style/mode/family adaptation and shared
+CLI parsing; configuration translation and composition retain their existing
+precedence/selection boundaries. Legacy remains the default.
+
+`charts/stellar_sizing_report.py` is admitted as the durable post-export
+artifact-analysis/report owner. It receives the former tools-script SVG
+measurement logic; `tools/analyze_atlas_star_areas.py` is now only its adapter.
+The closest existing owner, `svg_document.py`, annotates and exports charts:
+placing batch histograms and sizing-report assembly there would mix export
+with later read-only analysis and publication diagnostics. Production atlas
+orchestration cannot depend on a source-tree tools script. Dependencies point
+to immutable styling/preparation policy and serialized SVGs; no sky,
+projection, catalogue or observer lifecycle is introduced. It freezes resolved
+policy and marker geometry, validates input hashes, measures stars once and
+writes diagnostic PNG/PDF/SVG/data. Publication consumes its final report PDF
+and commits all products with its existing manifest-last boundary.
+
+Extend existing stellar-symbol, chart-CLI, atlas-CLI, SVG-output and reusable
+sphere tests for these shared-policy, recorded-provenance and batch seams.
+No new test file is admitted; legacy formula oracles remain unchanged.
