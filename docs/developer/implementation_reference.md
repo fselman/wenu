@@ -4586,3 +4586,12 @@ plot omits their undefined log counts. Unsupported geometry fails explicitly.
 No catalogue, sphere, observer, ephemeris, projection, chart appearance or
 SVG export behavior changes. This is an offline developer script with no
 new installed entry point or dependency.
+
+Magnitude guides reuse `AtlasChartStyle` and `configured_magnitude_sizes`,
+with filled `MarkerStyle("o")` geometry in physical mm². Admission requires
+matching adjacent batch-manifest SVG hashes and one compatible atlas-print
+presentation. The absent historical diameter multiplier defaults to 1.0;
+minimum-area clamping is displayed as one faint-magnitude range, rather than
+several falsely distinct positions. No per-marker magnitude is inferred.
+`--no-magnitude-guides` disables these references; unavailable references have
+an explicit summary/CLI status while measured-area analysis remains available.

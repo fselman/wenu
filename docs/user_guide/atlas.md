@@ -960,3 +960,19 @@ scaling and unsupported clip shapes fail explicitly. Rasterized stellar layers
 without vector markers cannot provide these measurements. Use the original
 Wenu exports; arbitrary CSS, masks, filters and complex editor geometry are
 not an SVG-renderer compatibility promise.
+
+Magnitude references are added automatically when all chart SVGs have matching
+SHA-256 entries in adjacent atlas batch `manifest.json` files and share the
+`atlas` print style, diameter multiplier and magnitude limit. Vertical dashed
+lines use Wenu's canonical magnitude sizing and circular marker geometry;
+magnitudes are annotated along the top. Older manifests without
+`star_size_scale` use the original multiplier `1.0`. The minimum symbol area
+collapses a range of faint magnitudes to one position: for the current atlas
+preset and a limit of 8, that line is labeled `5.50–8`. It does not imply that
+individual magnitudes can be recovered from those identically sized symbols.
+The guide values and their availability status are saved in the summary JSON.
+
+Missing manifests, edited SVGs or incompatible presentations retain the area
+histogram but omit magnitude guides, with an explicit status. Use
+`--no-magnitude-guides` to disable them. Resolving these appearance references
+does not create a sky or reload catalogues.

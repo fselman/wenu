@@ -4985,3 +4985,14 @@ new script remain separate.
 
 The coordinate-system guide was reviewed and remains current: the tool
 measures serialized page geometry, not sky coordinates or a new realization.
+
+The follow-up appearance diagnostic adds vertical magnitude references and
+top annotations to the same plot. Only hash-verified atlas batch exports with
+one compatible atlas-print presentation admit guides. Reuse canonical stellar
+sizing, preserve the historical diameter multiplier default and combine the
+minimum-area faint range into one line. Edited or unbound SVGs retain measured
+area counts with an explicit unavailable-guide status. This does not identify
+individual magnitudes, create a sphere or change chart rendering. Extend the
+existing SVG tests for this provenance/appearance seam; no new test file or
+dependency is admitted. PR #227 remains a candidate pending Mac review and the
+final full suite before merge.

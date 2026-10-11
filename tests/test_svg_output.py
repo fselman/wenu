@@ -111,6 +111,61 @@ def test_svg_star_area_analysis_matches_actual_matplotlib_marker_scaling(tmp_pat
         analyzer.analyze([tmp_path/'chart-01.svg'], tmp_path/'areas_v1')
 
 
+def test_svg_star_area_magnitude_guides_follow_manifest_scale_and_faint_plateau(tmp_path):
+    import hashlib
+    import json
+    import numpy as np
+    from wenu.charts.presets import AtlasChartStyle
+    from wenu.rendering.preparation import configured_magnitude_sizes
+    from wenu.svg_document import attach_semantic_svg_metadata
+    analyzer = _star_area_analyzer()
+    stars = AtlasChartStyle().stars
+    reference_areas = []
+    for scale in (1, 2):
+        directory = tmp_path / str(scale)
+        directory.mkdir()
+        figure, ax = plt.subplots(figsize=(3, 2))
+        try:
+            sizes = configured_magnitude_sizes(np.array([2., 6., 8.]), stars.magnitude_sizing,
+                                               limiting_magnitude=8) * stars.area_scale * scale**2
+            artist = ax.scatter([0, .5, 1], [0, .5, 1], s=sizes)
+            artist.set_gid('magnitude-reference-stars')
+            attach_semantic_svg_metadata(artist, layer='stars', zorder=5,
+                paint_role=None, edit_policy=EditPolicy.STYLE,
+                semantic_path=('sky', 'stars', 'symbols'),
+                lock_owner_path=('sky', 'stars'), display_name='Stars',
+                presentation_order=40, style_role='stars')
+            filename = ExportOptions(bbox_inches=None).save(figure, directory / 'chart-10.svg')
+        finally:
+            plt.close(figure)
+        presentation = {'style': 'atlas', 'star_magnitude_limit': 8}
+        if scale != 1:  # Older atlas manifests lack the multiplier: default is 1.
+            presentation['star_size_scale'] = scale
+        manifest = {'document_kind': 'wenu-atlas-chart-batch', 'presentation': presentation,
+                    'products': {filename.name: hashlib.sha256(filename.read_bytes()).hexdigest()}}
+        (directory / 'manifest.json').write_text(json.dumps(manifest))
+        measured = [row['area_mm2'] for row in analyzer.read_star_markers(filename)]
+        guides, status = analyzer.magnitude_guides({filename}, measured)
+        assert 'verified' in status
+        assert guides[0]['magnitude'] == 2
+        assert guides[0]['area_mm2'] == pytest.approx(measured[0], rel=1e-5)
+        assert guides[-1]['area_mm2'] == pytest.approx(measured[1], rel=1e-5)
+        assert measured[1] == pytest.approx(measured[2], rel=1e-5)
+        assert guides[-1]['label'] == '5.50–8'
+        assert guides[-1]['magnitude_max'] == 8
+        reference_areas.append(guides[0]['area_mm2'])
+        summary = analyzer.analyze([directory], directory / 'guides_v1', bins=8)
+        assert summary['magnitude_guides'] == guides
+        plot = ET.parse(directory / 'guides_v1.svg').getroot()
+        assert any(element.text == '5.50–8' for element in plot.iter())
+        filename.write_text(filename.read_text() + '\n')
+        assert analyzer.magnitude_guides({filename}, measured)[0] == []
+        assert 'differs' in analyzer.magnitude_guides({filename}, measured)[1]
+    assert reference_areas[1] == pytest.approx(4 * reference_areas[0])
+    guides, status = analyzer.magnitude_guides({tmp_path/'no-manifest.svg'}, [1])
+    assert guides == [] and 'No atlas batch manifest' in status
+
+
 def test_ordered_semantic_fragments_preserve_interleaved_artists(tmp_path):
     from wenu.svg_document import attach_semantic_svg_metadata
     figure, ax = plt.subplots()

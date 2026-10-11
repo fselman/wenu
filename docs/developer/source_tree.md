@@ -3399,3 +3399,10 @@ Extend `tests/test_svg_output.py`, the existing serialized-SVG contract owner,
 for measured transforms/references/clipping and real Matplotlib sizing
 equivalence. No new test file is created. These protect a new artifact-reading
 seam, rather than repeating catalogue or projection oracles.
+
+Magnitude reference lines remain in this artifact-analysis tool and reuse
+canonical preset/sizing policy without constructing a sphere. Existing SVG
+tests also cover batch-manifest hash admission, the historical default
+diameter multiplier, physical marker/reference equivalence and the collapsed
+faint-magnitude range. This is a provenance/appearance seam, not a new
+photometry or sky owner.

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 from pathlib import Path
 import re
@@ -278,7 +279,54 @@ def read_star_markers(filename):
     return records
 
 
-def analyze(inputs, output_prefix, bins=30):
+def magnitude_guides(files, areas):
+    """Resolve references only for original, compatible atlas-print exports."""
+    presentations = []
+    for filename in sorted(files):
+        manifest_path = filename.parent / "manifest.json"
+        if not manifest_path.is_file():
+            return [], "No atlas batch manifest beside every input SVG"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        if manifest.get("document_kind") != "wenu-atlas-chart-batch":
+            return [], "Inputs are not atlas batch chart exports"
+        digest = hashlib.sha256(filename.read_bytes()).hexdigest()
+        if manifest.get("products", {}).get(filename.name) != digest:
+            return [], "An SVG differs from its atlas manifest; magnitude references omitted"
+        presentation = manifest["presentation"]
+        presentations.append((presentation["style"],
+                              presentation.get("star_size_scale", 1.0),
+                              presentation["star_magnitude_limit"]))
+    if len(set(presentations)) != 1 or presentations[0][0] != "atlas":
+        return [], "Magnitude references require a single atlas style, size scale and magnitude limit"
+    # Reuse canonical appearance policy; no catalogue or sphere is constructed.
+    from wenu.charts.presets import AtlasChartStyle
+    from wenu.rendering.preparation import configured_magnitude_sizes
+    from matplotlib.markers import MarkerStyle
+    stars = AtlasChartStyle().stars
+    sizing = stars.magnitude_sizing
+    _, diameter_scale, limit = presentations[0]
+    marker = MarkerStyle("o")
+    shape = marker.get_path().transformed(marker.get_transform())
+    factor = _filled_area(shape) * (25.4 / 72)**2 * stars.area_scale * diameter_scale**2
+    def area(magnitude):
+        return float(configured_magnitude_sizes(np.array([magnitude]), sizing,
+                     limiting_magnitude=limit)[0]) * factor
+    reference = limit if sizing.reference == "limiting_magnitude" else sizing.reference_magnitude
+    plateau = reference + np.log10(sizing.scale / sizing.minimum_area) / sizing.exponent
+    brightest = reference - np.log10(max(areas) / factor / sizing.scale) / sizing.exponent
+    start = int(np.floor(brightest + 1e-4))
+    stop = min(limit, plateau)
+    values = list(np.arange(start, np.ceil(stop), dtype=float))
+    values = [value for value in values if value < stop - 1e-8] + [float(stop)]
+    guides = [{"magnitude": float(value), "area_mm2": area(value),
+               "label": f"{value:g}"} for value in values]
+    if limit > plateau:
+        guides[-1]["label"] = f"{plateau:.2f}–{limit:g}"
+        guides[-1]["magnitude_max"] = float(limit)
+    return guides, "Canonical atlas-print sizing, verified against SVG manifest hashes"
+
+
+def analyze(inputs, output_prefix, bins=30, show_magnitudes=True):
     """Write per-marker CSV, logarithmic-bin CSV, summary and PNG/PDF/SVG."""
     if type(bins) is not int or bins < 1:
         raise ValueError("bins must be a positive integer")
@@ -301,6 +349,7 @@ def analyze(inputs, output_prefix, bins=30):
     if not records:
         raise ValueError("No centre-visible filled stars found")
     areas = np.array([row["area_mm2"] for row in records])
+    guides, guide_status = magnitude_guides(files, areas) if show_magnitudes else ([], "Disabled")
     low, high = np.log10(areas.min()), np.log10(areas.max())
     if np.isclose(low, high):
         low, high = low-0.05, high+0.05
@@ -323,6 +372,16 @@ def analyze(inputs, output_prefix, bins=30):
                ylabel="log₁₀ number of star appearances per bin",
                title=f"{len(records):,} stellar markers in {len(files)} SVG chart(s)")
         ax.grid(alpha=0.25)
+        if guides:
+            for guide in guides:
+                ax.axvline(np.log10(guide["area_mm2"]), color="#547a96",
+                           linestyle="--", linewidth=0.8, alpha=0.7)
+            top = ax.secondary_xaxis("top")
+            top.set_xticks([np.log10(guide["area_mm2"]) for guide in guides],
+                          labels=[guide["label"] for guide in guides])
+            top.set_xlabel("Stellar magnitude (range where symbol size is clamped)")
+            top.tick_params(labelsize=9, labelrotation=35)
+            ax.set_title(ax.get_title(), pad=85)
         with matplotlib.rc_context({"svg.fonttype": "none"}):
             for destination in destinations[3:]:
                 figure.savefig(destination, dpi=180)
@@ -340,6 +399,7 @@ def analyze(inputs, output_prefix, bins=30):
     summary = {"schema_version": 1, "star_appearances": len(records), "files": per_file,
                "area_units": "mm2", "bins": bins, "binning": "equal log10 area intervals",
                "area_min_mm2": float(areas.min()), "area_max_mm2": float(areas.max()),
+               "magnitude_guides": guides, "magnitude_guide_status": guide_status,
                "count_policy": "centre-visible filled markers; repeated charts count separate appearances",
                "area_policy": "full SVG silhouette, excluding stroke, even at a clipped edge"}
     destinations[2].write_text(json.dumps(summary, indent=2)+"\n", encoding="utf-8")
@@ -351,13 +411,17 @@ def main(argv=None):
     parser.add_argument("inputs", nargs="+", type=Path, help="Chart SVGs or atlas output directories")
     parser.add_argument("--output-prefix", required=True, type=Path, help="New versioned output stem")
     parser.add_argument("--bins", type=int, default=30, help="Equal-width log10 area bins (default: 30)")
+    parser.add_argument("--no-magnitude-guides", action="store_true",
+                        help="Omit magnitude references from verified atlas batch manifests")
     args = parser.parse_args(argv)
     try:
-        summary = analyze(args.inputs, args.output_prefix, args.bins)
+        summary = analyze(args.inputs, args.output_prefix, args.bins,
+                          show_magnitudes=not args.no_magnitude_guides)
     except (ValueError, OSError, ET.ParseError) as error:
         parser.error(str(error))
     print(f"Counted {summary['star_appearances']} star appearances in {len(summary['files'])} SVG files")
     print(f"Outputs: {args.output_prefix}.* and CSV/JSON sidecars")
+    print(f"Magnitude references: {summary['magnitude_guide_status']}")
 
 
 if __name__ == "__main__":
