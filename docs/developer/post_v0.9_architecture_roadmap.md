@@ -5062,3 +5062,27 @@ selection geometry, native coordinates and saved-sphere contracts are unchanged.
 Focused owner/seam tests and five-region rendering cover the candidate; the
 final accepted merge candidate still requires one complete suite. PR #227
 remains unmerged pending whole-atlas visual acceptance.
+
+### Stellar sizing and magnitude-key visual acceptance (2026-10-11)
+
+Fernando visually accepted executable candidate
+`ef7ca11c6bdf0688dc0a8e71cf8e691a1975e115` and explicitly requested
+documentation, PR #227 merge and branch cleanup. This supersedes earlier
+pending visual-acceptance and no-merge-authorisation wording for PR #227.
+The accepted review profile is quadratic dmin 0.30 mm, a 0.04 mm per squared
+magnitude difference, reference/selection magnitude 8 and diameter factor 1.7.
+It is not a universal preset or an accepted print calibration.
+
+The full saved-sphere run produced all 34 chart/report pairs. Their product
+hashes, B4 dimensions and interval-count totals were verified. The facing
+book contains 71 pages including its index and two sizing diagnostic pages.
+The user guide now gives the complete direct CLI recipe. Shared sizing,
+legend, canonical furniture/export and buffered PDF assembly remain the
+implementation owners; coordinates and sphere contents are unchanged.
+
+A final plugin-disabled full-suite attempt is required before merging.
+The review environment lacks the DE440s ephemeris and has a known Matplotlib
+3.10 font-inheritance test incompatibility; focused receipts do not replace
+the final full-suite receipt. Merge and cleanup are authorised but must
+retain an explicit record of any unresolved verification blocker.
+Later appearance changes and object inventories/curation remain separate work.

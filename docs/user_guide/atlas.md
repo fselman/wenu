@@ -809,7 +809,7 @@ wenu_create_atlas --design atlas_design_v1.json \
   --charts all --jobs 2 --from-sky fixed_sky_v2 --output-dir atlas_book_v2
 ```
 
-### Magnitude experiments and report templates (current candidate)
+### Magnitude experiments and report templates
 
 `--magnitude-limit NUMBER` overrides `star_magnitude_limit` in the presentation
 TOML. Values must be finite in -2 through 11 and covered by the saved snapshot.
@@ -819,7 +819,7 @@ index. General and per-object filters remain later work.
 
 The stellar key remains specific to each chart. Its first integer is the floor
 of the brightest plotted magnitude, so it is at least as bright as every
-plotted star: 1.1 starts at 1; -1.46 starts at -2. Its last integer is the floor
+plotted star: 1.1 starts at 1; -1.46 starts at -2. Its last integer is the ceiling
 of the faintest plotted magnitude. Sizes use the canonical chart star-size
 law. No stars means no stellar key.
 
@@ -982,13 +982,15 @@ does not create a sky or reload catalogues.
 Stellar sizing is shared with regional, binocular, all-sky and planisphere
 charts. `StellarMagnitudeSizing` selects `legacy` (unchanged exponential scatter
 area with clamps), `linear` (diameter linear in magnitude difference), or
-`asinh` (diameter with smooth bright-end compression). The new curves are Wenu
+`asinh` (diameter with smooth bright-end compression), or `quadratic`
+(diameter quadratic in magnitude difference). The new curves are Wenu
 experimental policies, not implementations attributed to Toshimi Taki.
 
 For the new laws, define `t = max(0, size_reference_magnitude - m)`:
 
 - linear: `d_mm = dmin_mm + a_mm * t`;
-- asinh: `d_mm = dmin_mm + a_mm * asinh(t / b_mag)`.
+- asinh: `d_mm = dmin_mm + a_mm * asinh(t / b_mag)`;
+- quadratic: `d_mm = dmin_mm + a_mm * t**2`.
 
 Scatter size is `(72 * d_mm / 25.4)^2`; the recorded circular vector geometry
 converts that size to filled area. The minimum belongs to the sizing reference,
@@ -1083,7 +1085,7 @@ legacy policies with separate bright-star shapes fail explicitly. It does not
 preview variable/multiple overlays, label collisions or stellar field density.
 Use a new output prefix for each comparison.
 
-### Quadratic diameter candidate and magnitude area budgets
+### Quadratic diameters and magnitude area budgets
 
 The shared selectable `quadratic` law uses
 `d_mm = dmin_mm + a_mm * max(0, size_reference_magnitude - m)**2`.
@@ -1145,3 +1147,34 @@ The legend's marker column and individual row heights accommodate physical
 symbol diameters at the selected scale; the largest symbols no longer spill
 outside the frame or collide with adjacent references. Chart and report
 legend exports follow the same backend/DPI-aware shared furniture path.
+
+### Accepted full-atlas review recipe (2026-10-11)
+
+The visually accepted comparison uses the quadratic law with dmin 0.30 mm,
+a 0.04 mm per squared magnitude difference, reference magnitude 8, selection
+limit 8 and diameter multiplier 1.7. This is a reproducible review profile,
+not a replacement for every style preset or a physical print calibration.
+Use an existing sufficient snapshot and a fresh output directory:
+
+```bash
+wenu_plot_atlas \
+  --design atlas_design_v1.json \
+  --config examples/atlas_index_style_v2.toml \
+  --output-prefix atlas_index_scale1p7_v1
+
+wenu_create_atlas \
+  --design atlas_design_v1.json \
+  --config examples/atlas_chart_style_v1.toml \
+  --from-sky fixed_sky_v2 \
+  --index atlas_index_scale1p7_v1.pdf \
+  --charts all --jobs 2 --magnitude-limit 8 \
+  --mag-algorithm quadratic --mag-dmin 0.30 --mag-a 0.04 \
+  --mag-size-reference 8 --star-size-scale 1.7 \
+  --output-dir atlas_quadratic_scale1p7_v1
+```
+
+For the supplied 34-sheet design, the full book has 71 pages: index,
+34 facing report/chart pairs, stellar-sizing report and area-budget report.
+Changing the diameter multiplier or magnitude limit reuses the saved sphere
+within its declared coverage. The index has independent presentation inputs.
+The object-report text area remains reserved for later inventories and curation.
