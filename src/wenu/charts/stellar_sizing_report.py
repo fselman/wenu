@@ -288,6 +288,7 @@ def resolved_sizing_record(stars, limit):
     sizing = stars.magnitude_sizing
     formula = {
         "legacy": "S = clamp(scale * 10**(exponent * (reference - m)), minimum_area, maximum_area); A = circle_factor * area_scale * S",
+        "quadratic": "d_mm = dmin_mm + a_mm * max(0, size_reference_magnitude - m)**2; A = circle_factor * area_scale * (72*d_mm/25.4)**2",
         "linear": "d_mm = dmin_mm + a_mm * max(0, size_reference_magnitude - m); A = circle_factor * area_scale * (72*d_mm/25.4)**2",
         "asinh": "d_mm = dmin_mm + a_mm * asinh(max(0, size_reference_magnitude - m)/b_mag); A = circle_factor * area_scale * (72*d_mm/25.4)**2",
     }[sizing.algorithm]
@@ -413,6 +414,8 @@ def analyze(inputs, output_prefix, bins=30, show_magnitudes=True, atlas_report=F
     areas = np.array([row["area_mm2"] for row in records])
     record, guide_status = _verified_sizing(files) if show_magnitudes else (None, "Disabled")
     guides = [] if record is None else _reference_guides(record, areas)
+    budget, budget_status = (_verified_area_budget(files, record, areas) if record is not None
+                             else (None, "No verified sizing policy"))
     low, high = (np.log10(areas.min()), np.log10(areas.max())) if len(areas) else (-1., 1.)
     if np.isclose(low, high):
         low, high = low-0.05, high+0.05
@@ -424,8 +427,10 @@ def analyze(inputs, output_prefix, bins=30, show_magnitudes=True, atlas_report=F
         "_stars.csv", "_bins.csv", "_summary.json", ".png", ".pdf", ".svg")]
     report_destinations = [Path(str(prefix)+suffix) for suffix in (
         "-report.png", "-report.pdf", "-report.svg", "-report_data.json")]
+    budget_destinations = [Path(str(prefix)+suffix) for suffix in
+        ("_area-budget.png", "_area-budget.pdf", "_area-budget.svg", "_area-budget.json", "_area-budget.csv")]
     if record is not None and show_magnitudes:
-        destinations_to_check = destinations + report_destinations
+        destinations_to_check = destinations + report_destinations + (budget_destinations if budget else [])
     else:
         destinations_to_check = destinations
     if not prefix.parent.is_dir() or any(p.exists() for p in destinations_to_check):
@@ -469,11 +474,14 @@ def analyze(inputs, output_prefix, bins=30, show_magnitudes=True, atlas_report=F
                "area_units": "mm2", "bins": bins, "binning": "equal log10 area intervals",
                "area_min_mm2": float(areas.min()) if len(areas) else None, "area_max_mm2": float(areas.max()) if len(areas) else None,
                "magnitude_guides": guides, "magnitude_guide_status": guide_status,
+               "magnitude_area_budget": budget, "magnitude_area_budget_status": budget_status,
                "count_policy": "centre-visible filled markers; repeated charts count separate appearances",
                "area_policy": "full SVG silhouette, excluding stroke, even at a clipped edge"}
     destinations[2].write_text(json.dumps(summary, indent=2)+"\n", encoding="utf-8")
     if record is not None and show_magnitudes:
         _write_sizing_report(prefix, summary, record, edges, counts, guides, files, atlas_report)
+    if budget is not None:
+        _write_area_budget(prefix, budget, json.loads((sorted(files)[0].parent/"manifest.json").read_text()).get("page", {}))
     return summary
 
 
@@ -655,7 +663,7 @@ def preview_stellar_sizes(prefix, *, policy, style='atlas', mode='print',
                                            star_size_scale=star_size_scale))
     stars = composition.style.stars
     if stars.draw_bright_symbols:
-        raise ValueError('This preview supports circular base symbols; use linear or asinh to preview the complete magnitude range without legacy bright-star shapes.')
+        raise ValueError('This preview supports circular base symbols; use linear, asinh or quadratic to preview the complete magnitude range without legacy bright-star shapes.')
     record = resolved_sizing_record(stars, magnitude_limit)
     magnitudes = np.linspace(magnitude_min, magnitude_limit, 501)
     areas = _record_area(record, magnitudes)
@@ -711,3 +719,89 @@ def preview_stellar_sizes(prefix, *, policy, style='atlas', mode='print',
     finally:
         plt.close(figure)
     return outputs
+
+
+def magnitude_area_budget(magnitudes, record, chart_area_mm2):
+    """One-magnitude ink budgets from exact rendered-star magnitudes, not inversion."""
+    magnitudes = np.asarray(magnitudes, dtype=float)
+    if not np.isfinite(magnitudes).all() or not np.isfinite(chart_area_mm2) or chart_area_mm2 <= 0:
+        raise ValueError('Area budgets require finite magnitudes and positive chart area.')
+    areas = _record_area(record, magnitudes)
+    bins = []
+    for lower in sorted(set(np.floor(magnitudes).astype(int))):
+        selected = (magnitudes >= lower) & (magnitudes < lower+1)
+        area = float(areas[selected].sum())
+        bins.append(dict(magnitude_min=int(lower), magnitude_max=int(lower+1),
+            count=int(selected.sum()), area_mm2=area,
+            chart_fraction=area/chart_area_mm2))
+    return dict(schema_version=1, chart_area_mm2=float(chart_area_mm2),
+        count=len(magnitudes), total_area_mm2=float(areas.sum()), bins=bins,
+        interval_policy='[lower,upper); exact integer magnitudes belong to the next interval',
+        area_policy='sum of full circular base-symbol areas; strokes and overlap union excluded')
+
+
+def _verified_area_budget(files, record, measured_areas):
+    """Bind exact-magnitude budgets to chart/report hashes and measured SVG totals."""
+    budgets = []
+    for filename in sorted(files):
+        manifest = json.loads((filename.parent/'manifest.json').read_text())
+        report_path = filename.with_name(filename.stem+'_report_data.json')
+        if not report_path.is_file():
+            return None, 'Exact rendered-magnitude data absent; no inference from symbol size'
+        if manifest.get('products', {}).get(report_path.name) != hashlib.sha256(report_path.read_bytes()).hexdigest():
+            return None, 'Chart report differs from its manifest; area budget omitted'
+        report = json.loads(report_path.read_text())
+        budget = report.get('stellar_area_budget')
+        if budget is None or report.get('stellar_sizing') != record:
+            return None, 'Compatible exact-magnitude budget absent'
+        budgets.append(dict(source=filename.name, **budget))
+    if sum(b['count'] for b in budgets) != len(measured_areas) or not np.isclose(
+        sum(b['total_area_mm2'] for b in budgets), measured_areas.sum(), rtol=1e-6, atol=1e-8):
+        raise ValueError('Rendered-magnitude budgets disagree with measured SVG counts/areas.')
+    chart_area = sum(b['chart_area_mm2'] for b in budgets)
+    combined = {}
+    for budget in budgets:
+        for row in budget['bins']:
+            target = combined.setdefault(row['magnitude_min'], dict(
+                magnitude_min=row['magnitude_min'], magnitude_max=row['magnitude_max'], count=0, area_mm2=0.))
+            target['count'] += row['count']
+            target['area_mm2'] += row['area_mm2']
+    total_area = sum(row['area_mm2'] for row in combined.values())
+    for row in combined.values():
+        row['chart_fraction'] = row['area_mm2']/chart_area
+        row['symbol_area_fraction'] = row['area_mm2']/total_area if total_area else 0.
+    return dict(schema_version=1, bins=[combined[k] for k in sorted(combined)],
+        charts=budgets, chart_area_mm2=chart_area, total_area_mm2=total_area,
+        chart_fraction=total_area/chart_area, count=sum(b['count'] for b in budgets),
+        count_policy='appearances; overlapping charts repeat stars',
+        area_policy='summed full base-symbol ink, not actual covered union area'), 'Exact rendered magnitudes; report and SVG hashes verified'
+
+
+def _write_area_budget(prefix, budget, page):
+    import matplotlib
+    import matplotlib.pyplot as plt
+    rows = budget['bins']
+    labels = [f"{r['magnitude_min']} to {r['magnitude_max']}" for r in rows]
+    figure, axes = plt.subplots(1, 2, figsize=(page.get('width_mm', 353)/25.4, page.get('height_mm', 250)/25.4), layout='constrained')
+    try:
+        axes[0].bar(labels, [r['area_mm2'] for r in rows])
+        axes[0].set(title='Symbol area by magnitude interval', ylabel='Summed filled symbol area [mm²]')
+        axes[1].bar(labels, [100*r['chart_fraction'] for r in rows])
+        axes[1].set(title='Contribution relative to chart frames', ylabel='Fraction of summed chart-frame area [%]')
+        for ax in axes:
+            ax.tick_params(axis='x', labelrotation=55)
+            ax.set_xlabel('Magnitude interval [lower, upper)')
+            ax.grid(axis='y', alpha=.2)
+        figure.suptitle(f"Stellar area budget — {budget['count']:,} appearances; "
+                       f"summed ink {100*budget['chart_fraction']:.2f}% of chart frames")
+        with matplotlib.rc_context({'svg.fonttype':'none'}):
+            for suffix in ('png', 'pdf', 'svg'):
+                figure.savefig(Path(str(prefix)+f'_area-budget.{suffix}'), dpi=180)
+    finally:
+        plt.close(figure)
+    Path(str(prefix)+'_area-budget.json').write_text(json.dumps(budget, indent=2, allow_nan=False)+'\n')
+    with Path(str(prefix)+'_area-budget.csv').open('w', newline='') as stream:
+        fields = ('magnitude_min','magnitude_max','count','area_mm2','chart_fraction','symbol_area_fraction')
+        writer = csv.DictWriter(stream, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(rows)

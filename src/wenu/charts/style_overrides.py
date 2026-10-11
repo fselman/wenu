@@ -179,7 +179,7 @@ class ChartStyleOverrides:
 
 def add_magnitude_sizing_arguments(parser):
     """Shared appearance switches; selection remains a separate detail option."""
-    parser.add_argument("--mag-algorithm", choices=("legacy", "linear", "asinh"))
+    parser.add_argument("--mag-algorithm", choices=("legacy", "linear", "asinh", "quadratic"))
     parser.add_argument("--mag-a", type=float, help="Diameter growth coefficient, mm.")
     parser.add_argument("--mag-b", type=float, help="Asinh transition interval, magnitudes.")
     parser.add_argument("--mag-dmin", type=float, help="Minimum diameter, mm, before explicit star-size scaling.")
@@ -198,5 +198,5 @@ def magnitude_sizing_from_arguments(arguments, base=None):
         raise ValueError("Magnitude sizing parameters require --mag-algorithm.")
     policy = replace(base or StellarMagnitudeSizing(), **supplied)
     if policy.algorithm == "legacy" and any(key != "algorithm" for key in supplied):
-        raise ValueError("Diameter parameters require linear or asinh sizing.")
+        raise ValueError("Diameter parameters require linear, asinh or quadratic sizing.")
     return policy

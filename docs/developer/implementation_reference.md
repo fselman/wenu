@@ -4628,3 +4628,22 @@ without a sky. Its toolbox adapter accepts shared magnitude-policy arguments,
 raster DPI and a new output prefix. Outputs include actual-size circular base
 symbols, diameter/log-area curves and reproducible JSON/CSV. Separate legacy
 bright shapes are rejected rather than silently previewed as circles.
+
+### Quadratic sizing candidate and exact magnitude budgets
+
+`StellarMagnitudeSizing` and rendering preparation own the shared quadratic
+option. CLI and style configuration activate the same typed policy; no new
+production module or test file is admitted. The existing coefficient is in
+mm per squared magnitude difference for this law; `b_mag` is unused.
+
+Atlas publication takes the exact magnitudes selected by the existing
+`visible_star_mask` on prepared render geometry, and records per-interval
+counts and filled base-symbol areas in report JSON. The existing
+`stellar_sizing_report` owner verifies manifest hashes and aggregate counts
+and areas against SVG measurement before aggregation/export. Useful frame
+area is the denominator, and repeated appearances and disk overlaps remain
+explicit. Reports without compatible exact data yield an unavailable status.
+The PDF assembler appends the optional area-budget page after sizing analysis.
+No inverse magnitude estimate, adaptive sizing, sky reload, or new projection
+pipeline is introduced. Existing stellar-symbol, SVG and reusable-sphere
+contract tests own verification.

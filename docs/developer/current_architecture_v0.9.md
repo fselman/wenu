@@ -2482,3 +2482,13 @@ A catalogue-free sizing preview now uses the existing composition and
 preparation owners, followed by the diagnostic report owner. The toolbox
 adapter does not create or restore a celestial sphere; it produces physical
 symbol swatches and sizing curves only.
+
+### Shared quadratic policy and exact post-render diagnostics
+
+The canonical sizing policy includes quadratic diameter growth. Atlas
+prepared render geometry supplies exact visible-star magnitudes to report
+budgets. Manifest-bound report JSON and SVG measurements feed the existing
+post-export analysis owner, which writes interval area diagnostics and an
+optional book page. Selection and sizing remain separate; a saved sphere
+supports different laws without rebuilding its source catalog. No count-
+adaptive sizing or alternate sky/projection path is introduced.

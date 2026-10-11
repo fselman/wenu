@@ -265,10 +265,11 @@ def _atlas_report_data(chart, sky, composition, rendering):
     from dataclasses import asdict
     import math
     from .legend_geometry import rendered_star_geometry
-    from .magnitude_legend import visible_star_statistics
+    from .magnitude_legend import visible_star_statistics, visible_star_mask
     page = chart.page
     statistics = None
     reference_range = None
+    budget = None
     if "stars" in composition.detail.enabled_layers:
         stars = rendered_star_geometry(rendering, sky=sky)
         statistics = visible_star_statistics(stars.spherical, stars.projected,
@@ -277,10 +278,16 @@ def _atlas_report_data(chart, sky, composition, rendering):
             # The first reference must be at least as bright as every plotted star.
             reference_range = (math.floor(statistics.brightest_magnitude),
                                math.floor(statistics.faintest_magnitude))
-    from .stellar_sizing_report import resolved_sizing_record
+    from .stellar_sizing_report import resolved_sizing_record, magnitude_area_budget
+    sizing_record = resolved_sizing_record(composition.style.stars, composition.detail.star_magnitude_limit)
+    if statistics is not None and not sizing_record["draw_bright_symbols"]:
+        import numpy as np
+        mask = visible_star_mask(stars.spherical, stars.projected, stars.viewport,
+                                effective_limit=composition.detail.star_magnitude_limit)
+        budget = magnitude_area_budget(np.asarray(stars.spherical.metadata["magnitude"])[mask],
+            sizing_record, page.useful_width_mm * page.useful_height_mm)
     return dict(schema_version=1, document_kind="wenu-atlas-chart-report",
-        stellar_sizing=resolved_sizing_record(composition.style.stars,
-            composition.detail.star_magnitude_limit),
+        stellar_sizing=sizing_record, stellar_area_budget=budget,
         chart_number=chart.sheet.number, sheet_id=chart.sheet.sheet_id,
         center=dict(coordinate_system="ICRS", ra_deg=chart.sheet.center_ra_deg,
                     dec_deg=chart.sheet.center_dec_deg,
@@ -617,7 +624,7 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             presentation=asdict(presentation), stellar_sizing=policies[0],
             page=asdict(atlas.geometry.page),
             products={p.name: hashlib.sha256(p.read_bytes()).hexdigest()
-                      for p in staging.glob("chart-*.svg")})
+                      for p in staging.iterdir() if p.suffix == ".svg" or p.name.endswith("_report_data.json")})
         (staging / "manifest.json").write_text(json.dumps(analysis_manifest))
         from .stellar_sizing_report import analyze
         analyze([staging], staging / "stellar-sizing", atlas_report=True)
@@ -637,6 +644,11 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             writer.append(staging / "stellar-sizing-report.pdf")
             page_order.append(dict(page=len(page_order) + 1, kind="stellar_sizing_report"))
             writer.add_outline_item("Stellar sizing report", len(writer.pages) - 1)
+            budget_pdf = staging / "stellar-sizing_area-budget.pdf"
+            if budget_pdf.exists():
+                writer.append(budget_pdf)
+                page_order.append(dict(page=len(page_order) + 1, kind="stellar_area_budget"))
+                writer.add_outline_item("Stellar area budget", len(writer.pages) - 1)
             writer.write(staging / "atlas.pdf")
         for sheet in sheets:
             report_path = staging / f"chart-{sheet.number:02d}_report_data.json"

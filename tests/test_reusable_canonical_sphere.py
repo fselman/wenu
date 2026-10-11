@@ -688,14 +688,14 @@ def test_atlas_chart_batch_cold_saved_and_spawned_pages_match(native_snapshot_ca
         data = json.loads(manifest.read_text())
         assert data['charts'] == [10, 14] and data['workers'] == jobs
         book = PdfReader(manifest.parent/'atlas.pdf')
-        assert len(book.pages) == 6
+        assert len(book.pages) == 7
         assert 'Synthetic atlas index' in book.pages[0].extract_text()
         assert data['report_content'] == 'reserved'
         assert data['index_sha256'] == hashlib.sha256(index_before).hexdigest()
         assert data['page_order'] == [dict(page=1,kind='index'),
             dict(page=2,kind='report',chart=10),dict(page=3,kind='chart',chart=10),
             dict(page=4,kind='report',chart=14),dict(page=5,kind='chart',chart=14),
-            dict(page=6,kind='stellar_sizing_report')]
+            dict(page=6,kind='stellar_sizing_report'), dict(page=7,kind='stellar_area_budget')]
         for position, number in ((1,10),(3,14)):
             text = book.pages[position].extract_text()
             assert f'Chart {number}' in text and 'Object report' in text

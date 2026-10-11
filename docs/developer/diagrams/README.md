@@ -424,3 +424,12 @@ The stellar diagnostic edge also supports catalogue-free preview: canonical
 composition resolves appearance, canonical preparation evaluates sizing, and
 `stellar_sizing_report` draws swatches/curves. No celestial-sphere or projection
 edge is added.
+
+### Exact magnitude-budget data flow
+
+The existing owner flow now includes prepared chart render geometry → exact
+visible magnitudes → chart report JSON → manifest/hash verification and SVG
+count/area agreement → sizing area-budget exports → optional atlas PDF page.
+Shared diameter-policy evaluation remains upstream of rendering. There is
+no new sphere construction or projection edge and no density feedback into
+star sizes. This is an extension of existing owners, not a new pipeline.

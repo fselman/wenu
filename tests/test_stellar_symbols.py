@@ -407,13 +407,13 @@ def test_legacy_formula_remains_the_default():
     )
 
 
-@pytest.mark.parametrize("algorithm", ["linear", "asinh"])
+@pytest.mark.parametrize("algorithm", ["linear", "asinh", "quadratic"])
 def test_physical_diameter_laws_share_chart_and_legend_sizes(algorithm):
     policy = StellarMagnitudeSizing(algorithm=algorithm, dmin_mm=.30,
         a_mm=.50, b_mag=3, size_reference_magnitude=8)
     magnitudes = np.array([8., 7., 6., 0., -1.5])
-    expected = .30 + .50 * ((8-magnitudes) if algorithm == "linear" else
-                           np.arcsinh((8-magnitudes)/3))
+    expected = .30 + .50 * ((8-magnitudes)**2 if algorithm == "quadratic" else
+                           (8-magnitudes) if algorithm == "linear" else np.arcsinh((8-magnitudes)/3))
     sizes = configured_magnitude_sizes(magnitudes, policy, limiting_magnitude=6)
     np.testing.assert_allclose(np.sqrt(sizes)*25.4/72, expected)
     assert np.all(np.diff(sizes) > 0)

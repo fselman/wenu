@@ -23,7 +23,7 @@ class StellarMagnitudeSizing:
     size_reference_magnitude: float = 8.0
 
     def __post_init__(self):
-        if self.algorithm not in {"legacy", "linear", "asinh"}:
+        if self.algorithm not in {"legacy", "linear", "asinh", "quadratic"}:
             raise ValueError("Unsupported stellar magnitude algorithm.")
         for name in ("dmin_mm", "a_mm", "b_mag", "size_reference_magnitude"):
             value = getattr(self, name)

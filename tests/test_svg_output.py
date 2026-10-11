@@ -111,7 +111,7 @@ def test_svg_star_area_analysis_matches_actual_matplotlib_marker_scaling(tmp_pat
         analyzer.analyze([tmp_path/'chart-01.svg'], tmp_path/'areas_v1')
 
 
-@pytest.mark.parametrize('algorithm', ['legacy', 'asinh'])
+@pytest.mark.parametrize('algorithm', ['legacy', 'asinh', 'quadratic'])
 def test_svg_star_area_magnitude_guides_follow_manifest_scale_and_faint_plateau(tmp_path, algorithm):
     import hashlib
     import json
@@ -125,8 +125,8 @@ def test_svg_star_area_magnitude_guides_follow_manifest_scale_and_faint_plateau(
     from wenu.svg_document import attach_semantic_svg_metadata
     analyzer = _star_area_analyzer()
     stars = AtlasChartStyle().stars
-    if algorithm == 'asinh':
-        stars = ChartStyleOverrides(stellar_magnitude_sizing=StellarMagnitudeSizing(algorithm='asinh')).apply(AtlasChartStyle()).stars
+    if algorithm != 'legacy':
+        stars = ChartStyleOverrides(stellar_magnitude_sizing=StellarMagnitudeSizing(algorithm=algorithm)).apply(AtlasChartStyle()).stars
     reference_areas = []
     for scale in (1, 2):
         directory = tmp_path / str(scale)
@@ -150,9 +150,14 @@ def test_svg_star_area_magnitude_guides_follow_manifest_scale_and_faint_plateau(
             presentation['star_size_scale'] = scale
         manifest = {'document_kind': 'wenu-atlas-chart-batch', 'presentation': presentation,
                     'products': {filename.name: hashlib.sha256(filename.read_bytes()).hexdigest()}}
-        if algorithm == 'asinh':
+        if algorithm != 'legacy':
             manifest['stellar_sizing'] = stellar_sizing_report.resolved_sizing_record(
                 replace(stars, area_scale=stars.area_scale*scale**2), 8)
+        if algorithm != 'legacy':
+            budget = stellar_sizing_report.magnitude_area_budget([2., 6., 8.], manifest['stellar_sizing'], 1000.)
+            report_path = directory / 'chart-10_report_data.json'
+            report_path.write_text(json.dumps(dict(stellar_sizing=manifest['stellar_sizing'], stellar_area_budget=budget)))
+            manifest['products'][report_path.name] = hashlib.sha256(report_path.read_bytes()).hexdigest()
         (directory / 'manifest.json').write_text(json.dumps(manifest))
         measured = [row['area_mm2'] for row in analyzer.read_star_markers(filename)]
         guides, status = analyzer.magnitude_guides({filename}, measured)
@@ -170,6 +175,12 @@ def test_svg_star_area_magnitude_guides_follow_manifest_scale_and_faint_plateau(
         reference_areas.append(guides[0]['area_mm2'])
         summary = analyzer.analyze([directory], directory / 'guides_v1', bins=8)
         assert summary['magnitude_guides'] == guides
+        if algorithm != 'legacy':
+            budget = summary['magnitude_area_budget']
+            assert [row['count'] for row in budget['bins']] == [1, 1, 1]
+            assert budget['total_area_mm2'] == pytest.approx(sum(measured), rel=1e-6)
+            assert sum(row['symbol_area_fraction'] for row in budget['bins']) == pytest.approx(1)
+            assert (directory/'guides_v1_area-budget.pdf').is_file()
         plot = ET.parse(directory / 'guides_v1.svg').getroot()
         if algorithm == 'legacy':
             assert any(element.text == '5.50–8' for element in plot.iter())
@@ -177,7 +188,7 @@ def test_svg_star_area_magnitude_guides_follow_manifest_scale_and_faint_plateau(
         assert report['policy']['sizing']['algorithm'] == algorithm
         assert sum(report['histogram']['counts']) == 3
         assert all((directory/f'guides_v1-report.{suffix}').is_file() for suffix in ('png', 'pdf', 'svg'))
-        if algorithm == 'asinh':
+        if algorithm != 'legacy':
             # Recorded policy survives a later change of the packaged preset.
             saved = stellar_sizing_report.resolved_sizing_record
             stellar_sizing_report.resolved_sizing_record = lambda *a: (_ for _ in ()).throw(AssertionError('No preset reconstruction'))

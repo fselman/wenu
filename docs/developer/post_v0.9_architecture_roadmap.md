@@ -5029,3 +5029,20 @@ owner. It compares physical sizes and sample symbols with style/mode/family
 and diameter scaling. This does not imply print acceptance, crowding analysis
 or automated aesthetic optimization. Full-suite and user acceptance remain
 pending; no merge or cleanup is authorized.
+
+### Review candidate: quadratic diameters and exact area budgets
+
+The authorized next comparison adds a shared quadratic diameter law with
+explicit candidate parameters dmin=0.30 mm, a=0.04 mm per squared magnitude
+and reference magnitude 8, at diameter scale 1. Compare the same chart 14
+and saved canonical sphere against asinh. The law stays fixed across charts.
+
+Exact rendered-magnitude counts and summed filled symbol area per occupied
+one-magnitude interval are persisted in report JSON, verified against SVG
+count/area and hashes, exported as plot/data products, and appended to the
+atlas PDF. The diagnostic does not adapt sizes to local density. Existing
+owners and tests cover this addition; no new production or test module is
+admitted. The coordinate-system guide was reviewed: native coordinates,
+projection and saved-sphere contracts remain unchanged. This candidate
+requires visual acceptance; PR #227 remains unmerged. A final full suite is
+reserved for the accepted merge candidate.

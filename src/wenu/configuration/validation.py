@@ -156,8 +156,8 @@ _NONNEGATIVE_NAMES = frozenset(
     }
 )
 _ENUMS = {
-    "styles.atlas.stars.mag_algorithm": {"legacy", "linear", "asinh"},
-    "styles.cartoon.stars.mag_algorithm": {"legacy", "linear", "asinh"},
+    "styles.atlas.stars.mag_algorithm": {"legacy", "linear", "asinh", "quadratic"},
+    "styles.cartoon.stars.mag_algorithm": {"legacy", "linear", "asinh", "quadratic"},
     "styles.atlas.stars.labels.placement": {"fixed", "auto"},
     "styles.atlas.canvas.labels_orientation": {"chart", "upright", "up-away-from-cp"},
     "styles.cartoon.canvas.labels_orientation": {"chart", "upright", "up-away-from-cp"},

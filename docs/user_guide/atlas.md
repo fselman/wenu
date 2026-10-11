@@ -1082,3 +1082,41 @@ over historical preset area factors. This preview covers circular base stars;
 legacy policies with separate bright-star shapes fail explicitly. It does not
 preview variable/multiple overlays, label collisions or stellar field density.
 Use a new output prefix for each comparison.
+
+### Quadratic diameter candidate and magnitude area budgets
+
+The shared selectable `quadratic` law uses
+`d_mm = dmin_mm + a_mm * max(0, size_reference_magnitude - m)**2`.
+The growth coefficient has units mm per squared magnitude difference;
+`--mag-b` is unused by this law. This candidate requires explicit parameters:
+`--mag-algorithm quadratic --mag-dmin 0.30 --mag-a 0.04 --mag-size-reference 8
+--star-size-scale 1`. The magnitude limit remains a separate selection parameter.
+These settings give diameters 3.88 mm at Sirius's magnitude -1.46, 1.74 mm
+at magnitude 2, 0.94 mm at magnitude 4, and 0.30 mm at magnitude 8.
+
+Preview without constructing a sphere:
+
+```bash
+PYTHONPATH=src python tools/preview_stellar_sizes.py --style atlas --mode print --family regional --mag-algorithm quadratic --mag-dmin 0.30 --mag-a 0.04 --mag-size-reference 8 --magnitude-limit 8 --star-size-scale 1 --width-mm 353 --height-mm 250 --output-prefix "$review_dir/quadratic_preview_v1"
+```
+
+Render one chart using the saved sphere:
+
+```bash
+wenu_create_atlas --design "$review_dir/design_v1.json" --config examples/atlas_chart_style_v1.toml --charts 14 --jobs 1 --magnitude-limit 8 --mag-algorithm quadratic --mag-dmin 0.30 --mag-a 0.04 --mag-size-reference 8 --star-size-scale 1 --from-sky "$review_dir/native_sky_v1" --output-dir "$review_dir/quadratic_chart14_v1"
+```
+
+New chart reports retain exact rendered-magnitude budgets in
+`chart-NN_report_data.json`. Atlas analysis writes
+`stellar-sizing_area-budget.png`, `.pdf`, `.svg`, `.json`, and `.csv`.
+The PDF budget page follows the sizing report in the book. Each occupied
+one-magnitude interval `[lower, upper)` includes its count and summed filled
+circular symbol area. Fractions use the useful chart-frame area, excluding
+page margins. Exact integer magnitudes enter the interval starting at that
+integer. Counts are appearances: charts overlapping on the sky repeat stars.
+Areas exclude stroke width and do not compute the union of overlapping disks.
+
+The analyzer verifies report hashes, policy, total count and area against
+measured SVGs. Historical atlases lacking exact budgets still receive sizing
+analysis, with an explicit unavailable budget status; magnitudes are never
+inferred from symbol size. Counts inform review and do not change the law.

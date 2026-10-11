@@ -3442,3 +3442,12 @@ canonical preparation function supplies diameters. The preview adds a durable
 pre-render diagnostic seam, not a parallel astronomical renderer. Existing
 `tests/test_svg_output.py` covers no-sphere preparation, physical multiplier
 equivalence, palette/mode/family composition and no-overwrite admission.
+
+### Quadratic sizing and area-budget ownership
+
+The existing `charts/style_components.py` typed policy and
+`rendering/preparation.py` diameter evaluator include `quadratic`.
+`charts/atlas_publication.py` freezes exact rendered magnitude budgets;
+`charts/stellar_sizing_report.py` verifies them against manifest-bound SVGs
+and exports interval diagnostics. Existing toolbox adapters remain thin.
+No additional production module or test file is needed.
