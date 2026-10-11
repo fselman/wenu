@@ -159,11 +159,25 @@ class AtlasChartPresentation:
     style: str = "atlas"
     dpi: int = 150
     star_magnitude_limit: float = 6.0
+    star_size_scale: float = 1.0
     layers: tuple = ("stars", "constellation_lines", "constellation_labels",
         "constellation_boundaries", "milky_way", "magellanic_clouds",
         "nonstellar", "galaxies", "open_clusters", "globular_clusters",
         "supernova_remnants", "planetary_nebulae", "equatorial_grid")
     formats: tuple = ("png", "pdf", "svg")
+    report_label_scale: float = 3.0
+    report_label_family: str = "sans-serif"
+    report_label_weight: str = "normal"
+    report_label_color: str = "black"
+    report_separator_width: float = 0.8
+    report_separator_gap_mm: float = 3.0
+    chart_number_box_visible: bool = True
+    chart_number_box_location: str = "upper right"
+    chart_number_box_facecolor: str = "white"
+    chart_number_box_edgecolor: str = "#777777"
+    chart_number_box_alpha: float = 0.9
+    chart_number_box_padding: float = 0.4
+    chart_number_box_borderpad: float = 0.0
 
     def __post_init__(self):
         import math
@@ -175,6 +189,32 @@ class AtlasChartPresentation:
         limit = self.star_magnitude_limit
         if isinstance(limit, bool) or not isinstance(limit, (int, float)) or not math.isfinite(limit) or not -2 <= limit <= 11:
             raise ValueError("star_magnitude_limit must be finite between -2 and 11.")
+        for name in ("star_size_scale", "report_label_scale", "report_separator_width", "report_separator_gap_mm"):
+            value = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
+                raise ValueError(f"{name} must be finite and positive.")
+        if not math.isfinite(self.star_size_scale * self.star_size_scale):
+            raise ValueError("star_size_scale squared must be finite.")
+        _identity(self.report_label_family, "report_label_family")
+        if not isinstance(self.report_label_weight, str) or self.report_label_weight not in {"normal", "bold", "light", "medium", "semibold", "heavy", "black"}:
+            raise ValueError("Invalid report_label_weight.")
+        from matplotlib.colors import is_color_like
+        if not isinstance(self.report_label_color, str) or not is_color_like(self.report_label_color):
+            raise ValueError("Invalid report_label_color.")
+        if type(self.chart_number_box_visible) is not bool:
+            raise ValueError("chart_number_box_visible must be boolean.")
+        if not isinstance(self.chart_number_box_location, str) or self.chart_number_box_location not in {
+                "upper right", "upper left", "lower right", "lower left"}:
+            raise ValueError("Invalid chart_number_box_location.")
+        for name in ("chart_number_box_facecolor", "chart_number_box_edgecolor"):
+            if not isinstance(getattr(self, name), str) or not is_color_like(getattr(self, name)):
+                raise ValueError(f"Invalid {name}.")
+        for name in ("chart_number_box_alpha", "chart_number_box_padding", "chart_number_box_borderpad"):
+            value = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value < 0:
+                raise ValueError(f"Invalid {name}.")
+        if self.chart_number_box_alpha > 1:
+            raise ValueError("chart_number_box_alpha must be at most 1.")
         for name, allowed in (("layers", set(LAYERS)), ("formats", {"png", "pdf", "svg"})):
             values = getattr(self, name)
             if not isinstance(values, (list, tuple)) or not values or any(not isinstance(v, str) for v in values) or len(set(values)) != len(values) or not set(values) <= allowed:
@@ -244,18 +284,23 @@ def _atlas_report_data(chart, sky, composition, rendering):
 
 
 def _render_atlas_report(chart, sky, composition, rendering, directory,
-                         formats=("png", "pdf", "svg")):
+                         formats=("png", "pdf", "svg"), presentation=None):
     """Reserved left-hand page with canonical legends from the existing render."""
     import matplotlib.pyplot as plt
+    from matplotlib.figure import Figure
+    from matplotlib.backends.backend_agg import FigureCanvasAgg
     from .automatic_legends import draw_automatic_chart_legends
     from .legend_plan import ChartLegendPlan, LegendPlacement
     from .regional import ExportOptions
     from astropy.coordinates import Angle
     import astropy.units as u
     import json
+    presentation = AtlasChartPresentation() if presentation is None else presentation
     data = _atlas_report_data(chart, sky, composition, rendering)
     page = chart.page
-    figure = plt.figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4))
+    # Measure physical layout without a GUI window rounding the paper to pixels.
+    figure = Figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4))
+    FigureCanvasAgg(figure)
     left = page.outer_mm / page.width_mm
     bottom = page.bottom_mm / page.height_mm
     width = page.useful_width_mm / page.width_mm
@@ -280,20 +325,34 @@ def _render_atlas_report(chart, sky, composition, rendering, directory,
             unit=u.hourangle, sep="hms", precision=0, pad=True)
         dec = Angle(chart.sheet.center_dec_deg * u.deg).to_string(
             unit=u.deg, sep="dms", precision=0, pad=True, alwayssign=True)
-        title = f"Chart {chart.sheet.number}\nCentre: ICRS\nRA {ra}\nDec {dec}"
+        title = f"Centre: ICRS\nRA {ra}\nDec {dec}"
         if not data["center"]["ra_defined"]:
             meridian = Angle(chart.sheet.pole_meridian_ra_deg * u.deg).to_string(
                 unit=u.hourangle, sep="hms", precision=0, pad=True)
-            title = (f"Chart {chart.sheet.number}\nCentre: ICRS\nRA undefined (pole)"
+            title = ("Centre: ICRS\nRA undefined (pole)"
                      f"\nDec {dec}\nMeridian {meridian}")
         plan = ChartLegendPlan("regional",
             LegendPlacement(location="upper right"),
             LegendPlacement(enabled="stars" in composition.detail.enabled_layers,
                 location="lower right"))
-        legends = draw_automatic_chart_legends(ax, chart, sky, composition.style,
+        report_style = composition.style
+        if not getattr(report_style.legend, "visible", True):
+            from dataclasses import replace
+            report_style = replace(report_style,
+                legend=replace(report_style.legend, visible=True, frame=True))
+        legends = draw_automatic_chart_legends(ax, chart, sky, report_style,
             rendering, resolved_detail=composition.detail, plan=plan,
             include_context=True, object_title=title,
             stellar_reference_range=data["stars"]["reference_range"])
+        from .legend import add_legend_heading
+        heading, separator = add_legend_heading(legends.legends.objects,
+            f"Chart {chart.sheet.number}",
+            fontsize=composition.style.legend.title_fontsize * presentation.report_label_scale,
+            family=presentation.report_label_family, weight=presentation.report_label_weight,
+            color=presentation.report_label_color,
+            separator_width=presentation.report_separator_width,
+            gap_mm=presentation.report_separator_gap_mm,
+            gid=f"chart-{chart.sheet.number:02d}-report")
         for artist in legends.artists:
             artist.borderaxespad = 0
         # Detect legend overflow rather than silently cropping it into the report.
@@ -301,6 +360,11 @@ def _render_atlas_report(chart, sky, composition, rendering, directory,
         renderer = figure.canvas.get_renderer()
         bounds = ax.get_window_extent(renderer)
         extents = [artist.get_window_extent(renderer) for artist in legends.artists]
+        for name, artist in (("heading", heading), ("separator", separator)):
+            extent = artist.get_window_extent(renderer)
+            factor = 25.4 / figure.dpi
+            data["layout"][name] = dict(x=extent.x0 * factor, y=extent.y0 * factor,
+                width=extent.width * factor, height=extent.height * factor)
         for extent in extents:
             if (extent.x0 < bounds.x0 - 1 or extent.x1 > bounds.x1 + 1
                     or extent.y0 < bounds.y0 - 1 or extent.y1 > bounds.y1 + 1):
@@ -317,10 +381,31 @@ def _render_atlas_report(chart, sky, composition, rendering, directory,
         plt.close(figure)
 
 
+def _draw_atlas_chart_number(ax, number, style, presentation):
+    """Place the chart number inside the selected frame corner."""
+    if presentation.chart_number_box_visible:
+        from matplotlib.offsetbox import AnchoredText
+        number_box = AnchoredText(str(number),
+            loc=presentation.chart_number_box_location, frameon=True,
+            pad=presentation.chart_number_box_padding, borderpad=presentation.chart_number_box_borderpad,
+            prop=dict(size=style.legend.title_fontsize * presentation.report_label_scale,
+                family=presentation.report_label_family, weight=presentation.report_label_weight,
+                color=presentation.report_label_color))
+        number_box.patch.set_facecolor(presentation.chart_number_box_facecolor)
+        number_box.patch.set_edgecolor(presentation.chart_number_box_edgecolor)
+        number_box.patch.set_alpha(presentation.chart_number_box_alpha)
+        number_box.set_gid(f"chart-{number:02d}-number-box")
+        number_box.set_zorder(200)
+        ax.add_artist(number_box)
+        return number_box
+    return None
+
+
 def _render_atlas_sheet(task, sky=None):
     """One isolated figure, canonical composition/export, all requested formats."""
     import matplotlib.pyplot as plt
     from .composition import compose_chart
+    from .style_overrides import ChartStyleOverrides
     from .detail import DetailOverrides
     from .export_workflow import export_composed_chart
     from .modes import PrintMode
@@ -331,6 +416,7 @@ def _render_atlas_sheet(task, sky=None):
     sky = _WORKER_SKY if sky is None else sky
     chart = AtlasSheetChart(sheet, page)
     composition = compose_chart(chart, style=presentation.style,
+        style_overrides=ChartStyleOverrides(star_size_scale=presentation.star_size_scale),
         mode=PrintMode(width_inches=page.width_mm / 25.4,
             height_inches=page.height_mm / 25.4, dpi=presentation.dpi),
         detail_overrides=DetailOverrides(
@@ -344,8 +430,7 @@ def _render_atlas_sheet(task, sky=None):
         page.useful_height_mm / page.height_mm))
     ax.set_xticks([])
     ax.set_yticks([])
-    figure.text(page.inner_mm / page.width_mm, 1 - page.top_mm / (2 * page.height_mm),
-        f"Chart {sheet.number}", va="center", fontsize=10)
+    _draw_atlas_chart_number(ax, sheet.number, composition.style, presentation)
     try:
         renderer = MatplotlibRenderer(ax)
         first = presentation.formats[0]
@@ -357,7 +442,7 @@ def _render_atlas_sheet(task, sky=None):
         for suffix in presentation.formats[1:]:
             result.export_options.save(figure, Path(directory) / f"chart-{sheet.number:02d}.{suffix}")
         _render_atlas_report(chart, sky, composition, result.rendering, directory,
-                             formats=presentation.formats)
+                             formats=presentation.formats, presentation=presentation)
         return sheet.number
     except Exception as exc:
         raise RuntimeError(f"Chart {sheet.number} failed: {exc}") from exc

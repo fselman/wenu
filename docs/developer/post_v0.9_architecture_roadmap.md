@@ -4906,3 +4906,56 @@ frames in both orientations, right alignment, star clipping/range, disabled
 stars, CLI override, saved/cold/parallel equivalence and publication failures.
 Sample Orion, Scorpius, Virgo and both polar caps at different limits before
 Mac visual acceptance. No merge or cleanup is authorized by this amendment.
+
+
+### Atlas batch accepted closure and report heading candidate (2026-10-10)
+
+PR #225 was accepted and merged as 8a5d4bfe658abd423a6d86c60eecf4dc8e74cfb6,
+with the exact accepted tree. The executable candidate passed 499 focused and
+all 3406 plugin-disabled Mac tests; the documentation-only policy amendment
+passed its affected test. Fernando confirmed clean synchronized main and local/
+remote branch cleanup. This supersedes earlier pending acceptance/merge wording.
+
+Before object curation, Fernando requested the Chart N heading in the report's
+right-hand legend column at three times its previous size, separated by a rule
+from centre metadata and keys below. Font family, weight, colour, size and rule
+presentation are configurable in the existing independent presentation schema.
+Use the publication owner for layout and retain canonical key drawing, physical
+report frames and cold/saved/spawn chart equivalence. Record resolved heading/
+rule/key boxes in report sidecars and reject overflow. Star sizes and broader
+appearance choices remain deferred. This bounded candidate still requires visual
+acceptance and final regression before a separately authorized merge.
+
+
+### Report heading Mac canvas correction (2026-10-10)
+
+At c3029c59, all 16 Mac report-layout cases failed after drawing changed the
+figure size to pixel-rounded inches; input admission passed. The shell stopped
+before sample generation. Correct the report figure lifecycle to use a direct
+noninteractive Agg canvas without a GUI figure manager, preserving exact paper
+dimensions for text measurement and canonical export. Retain the existing
+physical-size assertions and focused cold/saved/spawn equivalence checks.
+This amendment does not relax dimensional tolerances or alter heading styling.
+Mac rerun and visual acceptance remain pending.
+
+
+### Report heading containment and inside chart number amendment (2026-10-10)
+
+Fernando clarified that the enlarged Chart N heading and horizontal rule must
+remain inside the original legend box, superseding the separate heading layout.
+Keep the canonical object key and pack its heading in the shared legend owner.
+He also requires only the chart number in a configurable box inside the sky
+frame, flush with its selected corner; his final default is upper right against
+the top and right edges. Use the same heading type size and remove the old
+chart-page heading. Preserve exact B4 geometry, saved-sphere reuse and isolated
+workers. Font/style and stellar-size redesign remain deferred. Acceptance,
+final regression, merge and cleanup remain separate.
+
+Atlas stellar diameter control: the chart presentation accepts optional
+`star_size_scale` (finite positive multiplier, default `1.0`). The example
+`examples/atlas_chart_style_v1.toml` now uses `1.5`: every stellar marker is
+50% larger in diameter (2.25 times its area), including bright-star markers,
+variable/multiple overlays and the report magnitude key. The canonical
+render-local style override applies after style/mode resolution; magnitude
+selection, source sky, atlas geometry and index presentation are unchanged.
+Set `star_size_scale = 1.0` to recover the previous sizes.

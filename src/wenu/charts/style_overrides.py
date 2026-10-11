@@ -25,6 +25,7 @@ class ChartStyleOverrides:
     ecliptic_linewidth: float | None = None
     coordinate_label_fontsize: float | None = None
     stellar_magnitude_sizing: StellarMagnitudeSizing | None = None
+    star_size_scale: float | None = None
     sky_color: str | None = None
     equatorial_reference_linewidth: float | None = None
     constellation_line_gap_points: float | None = None
@@ -36,6 +37,10 @@ class ChartStyleOverrides:
     grid_label_band_linewidth: float | None = None
 
     def __post_init__(self):
+        if self.star_size_scale is not None:
+            value = self.star_size_scale
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not isfinite(value) or value <= 0 or not isfinite(value * value):
+                raise ValueError("star_size_scale must be finite and positive.")
         if self.labels_orientation not in {None, "chart", "upright", "up-away-from-cp"}:
             raise ValueError("unsupported labels_orientation")
         if self.star_label_placement not in {None, "fixed", "auto"}:
@@ -141,6 +146,13 @@ class ChartStyleOverrides:
                 resolved,
                 canvas=replace(canvas, sky_color=str(self.sky_color)),
             )
+        if self.star_size_scale is not None:
+            stars = resolved.stars
+            area_factor = self.star_size_scale ** 2
+            resolved = replace(resolved, stars=replace(stars,
+                area_scale=stars.area_scale * area_factor,
+                variable_symbol_size=stars.variable_symbol_size * area_factor,
+                multiple_symbol_size=stars.multiple_symbol_size * area_factor))
         if self.stellar_magnitude_sizing is None:
             return resolved
         stars = getattr(resolved, "stars", None)

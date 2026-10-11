@@ -433,6 +433,27 @@ def test_style_override_preserves_configuration_as_typed_state():
     assert style.stars.magnitude_sizing is SIZING
 
 
+def test_star_diameter_scale_matches_bright_stars_and_magnitude_key():
+    from wenu.charts.detail_application import configured_stellar_symbol_sizes
+    from wenu.charts.legend_inputs import resolve_stellar_legend_inputs
+    original = AtlasChartStyle()
+    original = replace(original, stars=replace(original.stars, draw_bright_symbols=True))
+    larger = ChartStyleOverrides(star_size_scale=1.5).apply(original)
+    before = configured_stellar_symbol_sizes([-1.0, 2.0, 8.0], original.stars,
+                                            limiting_magnitude=8.0)
+    after = configured_stellar_symbol_sizes([-1.0, 2.0, 8.0], larger.stars,
+                                           limiting_magnitude=8.0)
+    for old, new in zip(before[:2], after[:2]):
+        np.testing.assert_allclose(new, old * 2.25)
+    np.testing.assert_array_equal(before[2], after[2])
+    key_before = resolve_stellar_legend_inputs(None, original, effective_limit=8.0)
+    key_after = resolve_stellar_legend_inputs(None, larger, effective_limit=8.0)
+    assert key_after.area_scale == key_before.area_scale * 2.25
+    assert larger.stars.variable_symbol_size == original.stars.variable_symbol_size * 2.25
+    assert larger.stars.multiple_symbol_size == original.stars.multiple_symbol_size * 2.25
+    assert original.stars.area_scale == AtlasChartStyle().stars.area_scale
+
+
 def test_magnitude_legend_uses_the_identical_area_law():
     scale = stellar_magnitude_scale(
         6.0,

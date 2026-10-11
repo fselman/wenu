@@ -4534,3 +4534,35 @@ object inventories remain pending. All products are staged and hash-bound in
 the completion manifest; index absence retains chart-only combined-PDF order
 while exporting report products separately. This supersedes report-NN.pdf
 naming and index-dependent template generation.
+
+
+### Atlas report heading presentation
+
+`AtlasChartPresentation` admits optional report_label_scale (default 3),
+report_label_family, report_label_weight, report_label_color,
+report_separator_width (points) and report_separator_gap_mm. The shared legend owner packs the enlarged chart-number heading and rule
+inside the existing object-legend frame, above its metadata and symbols. The
+publication owner records resolved boxes and rejects column overflow.
+The original chart render and stellar size law are unchanged.
+
+The atlas report uses an unmanaged Agg figure for physical layout measurement
+and export. Interactive GUI window resizing must not quantize its B4 paper
+size before heading/legend measurements; this is independent of the selected
+PNG/PDF/SVG export backend.
+
+`legend.add_legend_heading` isolates Matplotlib's optional offset-box title
+adaptation in the existing legend owner and preserves its metadata accessor.
+Ordinary legends retain their original layout. Atlas presentation additionally
+owns a visible, framed number in a configurable inside chart corner, with
+face/edge colour, alpha, internal padding and frame-edge borderpad. Zero
+borderpad aligns the box with both frame edges; its font matches the report.
+The previous chart-page heading is removed. No scientific geometry changes.
+
+Atlas stellar diameter control: the chart presentation accepts optional
+`star_size_scale` (finite positive multiplier, default `1.0`). The example
+`examples/atlas_chart_style_v1.toml` now uses `1.5`: every stellar marker is
+50% larger in diameter (2.25 times its area), including bright-star markers,
+variable/multiple overlays and the report magnitude key. The canonical
+render-local style override applies after style/mode resolution; magnitude
+selection, source sky, atlas geometry and index presentation are unchanged.
+Set `star_size_scale = 1.0` to recover the previous sizes.
