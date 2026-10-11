@@ -3383,3 +3383,81 @@ and automatic legends, passing an atlas-specific bright-end reference range.
 cli/atlas.py admits the presentation magnitude override only. Existing atlas
 CLI/canonical-sphere tests protect the seams. No new report inventory owner,
 production module, dependency, coordinate transform or test file is admitted.
+
+### Offline SVG stellar-area analysis (2026-10-11)
+
+`tools/analyze_atlas_star_areas.py` owns a read-only analysis of completed Wenu
+SVG artifacts: vector filled areas, physical-page conversion, centre clipping,
+logarithmic bins and diagnostic plot/CSV/JSON exports. The closest existing
+tool, `tools/render_49f6_svg_matrix.py`, produces a cross-product rendering
+audit; adding a user-supplied artifact histogram there would mix rendering
+and post-export analysis lifecycles. This artifact analysis does not belong in the astronomical or export
+production pipeline. Its original tools adapter has now moved to the shared
+post-export report owner described below; it adds no dependency, installed
+CLI or sky lifecycle.
+
+Extend `tests/test_svg_output.py`, the existing serialized-SVG contract owner,
+for measured transforms/references/clipping and real Matplotlib sizing
+equivalence. No new test file is created. These protect a new artifact-reading
+seam, rather than repeating catalogue or projection oracles.
+
+Magnitude reference lines remain in this artifact-analysis tool and reuse
+canonical preset/sizing policy without constructing a sphere. Existing SVG
+tests also cover batch-manifest hash admission, the historical default
+diameter multiplier, physical marker/reference equivalence and the collapsed
+faint-magnitude range. This is a provenance/appearance seam, not a new
+photometry or sky owner.
+
+### Shared sizing and post-export diagnostic ownership (2026-10-11)
+
+Extend `charts/style_components.py` and `rendering/preparation.py` for typed
+algorithm selection and canonical evaluation. `charts/style_overrides.py`
+owns physical policy resolution after style/mode/family adaptation and shared
+CLI parsing; configuration translation and composition retain their existing
+precedence/selection boundaries. Legacy remains the default.
+
+`charts/stellar_sizing_report.py` is admitted as the durable post-export
+artifact-analysis/report owner. It receives the former tools-script SVG
+measurement logic; `tools/analyze_atlas_star_areas.py` is now only its adapter.
+The closest existing owner, `svg_document.py`, annotates and exports charts:
+placing batch histograms and sizing-report assembly there would mix export
+with later read-only analysis and publication diagnostics. Production atlas
+orchestration cannot depend on a source-tree tools script. Dependencies point
+to immutable styling/preparation policy and serialized SVGs; no sky,
+projection, catalogue or observer lifecycle is introduced. It freezes resolved
+policy and marker geometry, validates input hashes, measures stars once and
+writes diagnostic PNG/PDF/SVG/data. Publication consumes its final report PDF
+and commits all products with its existing manifest-last boundary.
+
+Extend existing stellar-symbol, chart-CLI, atlas-CLI, SVG-output and reusable
+sphere tests for these shared-policy, recorded-provenance and batch seams.
+No new test file is admitted; legacy formula oracles remain unchanged.
+
+
+The catalogue-free preview is a second adapter,
+`tools/preview_stellar_sizes.py`, into the existing
+`charts/stellar_sizing_report.py` appearance/report owner. No new production
+module is admitted. Canonical composition resolves style/mode/family and the
+canonical preparation function supplies diameters. The preview adds a durable
+pre-render diagnostic seam, not a parallel astronomical renderer. Existing
+`tests/test_svg_output.py` covers no-sphere preparation, physical multiplier
+equivalence, palette/mode/family composition and no-overwrite admission.
+
+### Quadratic sizing and area-budget ownership
+
+The existing `charts/style_components.py` typed policy and
+`rendering/preparation.py` diameter evaluator include `quadratic`.
+`charts/atlas_publication.py` freezes exact rendered magnitude budgets;
+`charts/stellar_sizing_report.py` verifies them against manifest-bound SVGs
+and exports interval diagnostics. Existing toolbox adapters remain thin.
+No additional production module or test file is needed.
+
+### Atlas magnitude-key detail split
+
+Existing `magnitude_legend.py` descriptors and `magnitude_legend_workflow.py`
+coordinate interval counts from rendered geometry. Existing
+`magnitude_legend_matplotlib.py` owns marker-aware packing, dotted range and
+inactive-row veils. Automatic/rendered/planned legend adapters pass the
+opt-in report concern. `atlas_publication.py` uses canonical export furniture
+for the chart key and the same legend coordinator for richer report keys.
+No new module or test file is admitted; existing stable owners are extended.

@@ -367,6 +367,8 @@ class ChartLegendSelection:
 
 def add_chart_content_arguments(parser):
     """Add shared astronomical-content arguments to ``parser``."""
+    from .style_overrides import add_magnitude_sizing_arguments
+    add_magnitude_sizing_arguments(parser)
     parser.add_argument("--stars-in-constellations", action="append", type=_constellation_selection,
                         metavar="IAU[,IAU...]", help="retain stars only inside the selected IAU regions")
     parser.add_argument("--constellation-star-mode", choices=("none", "selected", "all"),
@@ -1043,7 +1045,9 @@ def chart_style_overrides(
     arguments,
 ) -> ChartStyleOverrides:
     """Resolve parsed visual arguments without applying mode defaults."""
+    from .style_overrides import magnitude_sizing_from_arguments
     return ChartStyleOverrides(
+        stellar_magnitude_sizing=magnitude_sizing_from_arguments(arguments),
         sky_color=arguments.sky_color,
         constellation_linewidth=arguments.constellation_line_width,
         constellation_line_color=arguments.constellation_line_color,

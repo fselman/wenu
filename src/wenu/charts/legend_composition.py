@@ -105,6 +105,9 @@ def draw_planned_chart_legends(
     stellar_reference_range=None,
     stellar_background=None,
     stellar_label_suffix="",
+    stellar_report_range=False,
+    stellar_veil_color="white",
+    stellar_veil_alpha=0.65,
 ) -> ComposedChartLegends:
     """Draw the planned object and stellar legends for a chart."""
     object_artist = None
@@ -180,6 +183,8 @@ def draw_planned_chart_legends(
             reference_magnitude=stellar_reference_magnitude,
             reference_range=stellar_reference_range,
             label_suffix=stellar_label_suffix,
+            report_range=stellar_report_range,
+            veil_color=stellar_veil_color, veil_alpha=stellar_veil_alpha,
         )
         if stellar_magnitude_sizing is not None:
             star_options["magnitude_sizing"] = stellar_magnitude_sizing

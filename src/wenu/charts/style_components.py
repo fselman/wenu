@@ -16,8 +16,21 @@ class StellarMagnitudeSizing:
     exponent: float = 0.35
     minimum_area: float = 1.0
     maximum_area: float | None = None
+    algorithm: str = "legacy"
+    dmin_mm: float = 0.30
+    a_mm: float = 0.50
+    b_mag: float = 3.0
+    size_reference_magnitude: float = 8.0
 
     def __post_init__(self):
+        if self.algorithm not in {"legacy", "linear", "asinh", "quadratic"}:
+            raise ValueError("Unsupported stellar magnitude algorithm.")
+        for name in ("dmin_mm", "a_mm", "b_mag", "size_reference_magnitude"):
+            value = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not isfinite(value):
+                raise ValueError(f"{name} must be finite.")
+            if name != "size_reference_magnitude" and value <= 0:
+                raise ValueError(f"{name} must be positive.")
         if self.reference not in {"fixed", "limiting_magnitude"}:
             raise ValueError(
                 "reference must be 'fixed' or 'limiting_magnitude'."

@@ -719,3 +719,37 @@ def test_statistics_module_remains_backend_independent():
 
     source = Path(module.__file__).read_text().lower()
     assert "matplotlib" not in source
+
+
+@pytest.mark.parametrize('diameter_scale', [1.7, 2.0])
+def test_interval_report_counts_and_scaled_markers_fit_every_backend(tmp_path, diameter_scale):
+    from wenu.charts.style_components import StellarMagnitudeSizing
+    figure, ax = plt.subplots(figsize=(8, 10))
+    try:
+        spherical, projected = m40i_chart_magnitude_legend_workflow_geometry()
+        result = draw_visible_stellar_magnitude_legend(ax, spherical, projected,
+            m40i_chart_magnitude_legend_workflow_Viewport(), effective_limit=8,
+            reference_range=(-2, 8), report_range=True,
+            magnitude_sizing=StellarMagnitudeSizing(algorithm='quadratic', a_mm=.04),
+            area_scale=diameter_scale**2, font_size=7, title_font_size=7,
+            veil_color='#ffffff', veil_alpha=.65)
+        assert sum(entry.interval_count for entry in result.scale.entries) == 4
+        assert {e.magnitude:e.interval_count for e in result.scale.entries} == {
+            -2:1,-1:0,0:1,1:0,2:1,3:0,4:1,5:0,6:0,7:0,8:0}
+        assert [e.magnitude for e in result.scale.entries if e.active] == list(range(-2,6))
+        assert result.artist.get_texts()[0].get_text() == '-2 ≤ m < -1   N=1'
+        for dpi in (100, 160):
+            figure.set_dpi(dpi);figure.canvas.draw()
+            renderer = figure.canvas.get_renderer()
+            frame = result.artist.get_frame().get_window_extent(renderer)
+            extents = [h.get_window_extent(renderer) for h in result.artist.legend_handles]
+            for bounds in extents:
+                assert frame.contains(bounds.x0, bounds.y0)
+                assert frame.contains(bounds.x1, bounds.y1)
+            assert all(not a.overlaps(b) for a,b in zip(extents,extents[1:]))
+        svg = tmp_path/'legend.svg';figure.savefig(svg)
+        text = svg.read_text()
+        assert 'magnitude-chart-range' in text
+        assert 'magnitude-veil-mag-6' in text and 'magnitude-veil-mag-4' not in text
+    finally:
+        plt.close(figure)

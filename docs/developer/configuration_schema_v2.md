@@ -383,3 +383,25 @@ Celestial-reference repetition uses the positive numeric setting
 Automatic non-polar labels search near visible curve ends; repeat at both
 ends when the contiguous visible arc exceeds this many rendered text widths.
 Explicit anchors and polar reference furniture preserve their established policy.
+
+### Optional stellar diameter policies (2026-10-11)
+
+Under `styles.atlas.stars` and `styles.cartoon.stars`, optional merged-default
+keys `mag_algorithm` (legacy/linear/asinh), `mag_dmin`, `mag_a`, `mag_b` and
+`mag_size_reference` configure the canonical typed stellar policy. Positive
+finite diameter coefficients are in mm; `mag_b` is a positive magnitude
+interval; the reference is a finite magnitude. Legacy remains default and
+preserves the established area fields. CLI overrides resolve after style,
+mode and family defaults. Diameter laws use an independent sizing reference;
+selection is still `detail` and must not extend beyond that reference.
+
+### Quadratic stellar diameter option
+
+`styles.atlas.stars.mag_algorithm` and `styles.cartoon.stars.mag_algorithm`
+also accept `quadratic`, alongside legacy, linear and asinh. The shared law
+is `d = mag_dmin + mag_a * max(0, mag_size_reference - m)**2`, in mm.
+Here `mag_a` is mm per squared magnitude difference; `mag_b` is unused.
+No new key or schema version is required. The review candidate sets
+`mag_dmin = 0.30`, `mag_a = 0.04`, `mag_size_reference = 8`, and explicitly
+uses diameter scale 1. Selection magnitude limits remain independent and
+must not exceed the physical law's reference magnitude.

@@ -101,6 +101,9 @@ def _stellar(table: Mapping[str, Any]) -> StellarStyle:
         color=table["color"],
         area_scale=table["area_scale"],
         magnitude_sizing=StellarMagnitudeSizing(
+            algorithm=table["mag_algorithm"],
+            dmin_mm=table["mag_dmin"], a_mm=table["mag_a"],
+            b_mag=table["mag_b"], size_reference_magnitude=table["mag_size_reference"],
             reference=table["magnitude_reference"],
             reference_magnitude=table["reference_magnitude"],
             scale=table["magnitude_scale"],

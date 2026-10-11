@@ -809,7 +809,7 @@ wenu_create_atlas --design atlas_design_v1.json \
   --charts all --jobs 2 --from-sky fixed_sky_v2 --output-dir atlas_book_v2
 ```
 
-### Magnitude experiments and report templates (current candidate)
+### Magnitude experiments and report templates
 
 `--magnitude-limit NUMBER` overrides `star_magnitude_limit` in the presentation
 TOML. Values must be finite in -2 through 11 and covered by the saved snapshot.
@@ -819,7 +819,7 @@ index. General and per-object filters remain later work.
 
 The stellar key remains specific to each chart. Its first integer is the floor
 of the brightest plotted magnitude, so it is at least as bright as every
-plotted star: 1.1 starts at 1; -1.46 starts at -2. Its last integer is the floor
+plotted star: 1.1 starts at 1; -1.46 starts at -2. Its last integer is the ceiling
 of the faintest plotted magnitude. Sizes use the canonical chart star-size
 law. No stars means no stellar key.
 
@@ -914,3 +914,267 @@ variable/multiple overlays and the report magnitude key. The canonical
 render-local style override applies after style/mode resolution; magnitude
 selection, source sky, atlas geometry and index presentation are unchanged.
 Set `star_size_scale = 1.0` to recover the previous sizes.
+
+## Measure star sizes from atlas SVG files
+
+The offline script reads existing SVGs; it does not regenerate charts, load a
+stellar catalogue, or create an observer or celestial sphere. For example:
+
+```bash
+python tools/analyze_atlas_star_areas.py output/atlas_mag8 \
+  --output-prefix output/atlas_star_areas_v1 --bins 30
+```
+
+You can also supply individual files, separated by spaces:
+
+```bash
+python tools/analyze_atlas_star_areas.py \
+  output/atlas_mag8/chart-10.svg output/atlas_mag8/chart-34.svg \
+  --output-prefix output/selected_star_areas_v1 --bins 30
+```
+
+Directory inputs select only `chart-NN.svg`, excluding report pages. Explicit
+SVG inputs may also be atlas indexes. Duplicate input paths are removed. The
+output directory must exist; the output prefix must be new. The script writes
+PNG, PDF and SVG plots, `_stars.csv` (one row per marker), `_bins.csv` (bin
+boundaries and counts), and `_summary.json` (per-file counts and conventions).
+
+Both axes use base-10 logarithms. Counts are appearances per equal-width bin
+in log area, not cumulative counts or number per square millimetre. Empty bins
+remain in the CSV but have no log-count point. Overlapping charts count repeated
+appearances separately; no unique-star identification or catalogue cross-match
+is inferred.
+
+Area is the full filled SVG silhouette in square millimetres of the printed
+page, including inherited affine transforms and physical page scaling. It is
+not the Matplotlib scatter parameter `s`, the stellar flux, or angular area.
+Strokes, labels, legend markers and variable/multiple classification overlays
+are excluded. Bright filled star markers are included. Zero-area and hidden
+markers are excluded. A marker must have its centre inside the page and its
+SVG clips; a partly clipped marker retains its full symbol area.
+
+The supported Wenu vector subset comprises line, quadratic and cubic Bezier
+paths, circles, local marker references and affine transforms. Unsupported
+marker path commands, malformed/cyclic references, nonuniform root viewport
+scaling and unsupported clip shapes fail explicitly. Rasterized stellar layers
+without vector markers cannot provide these measurements. Use the original
+Wenu exports; arbitrary CSS, masks, filters and complex editor geometry are
+not an SVG-renderer compatibility promise.
+
+Magnitude references are added automatically when all chart SVGs have matching
+SHA-256 entries in adjacent atlas batch `manifest.json` files and share the
+`atlas` print style, diameter multiplier and magnitude limit. Vertical dashed
+lines use Wenu's canonical magnitude sizing and circular marker geometry;
+magnitudes are annotated along the top. Older manifests without
+`star_size_scale` use the original multiplier `1.0`. The minimum symbol area
+collapses a range of faint magnitudes to one position: for the current atlas
+preset and a limit of 8, that line is labeled `5.50–8`. It does not imply that
+individual magnitudes can be recovered from those identically sized symbols.
+The guide values and their availability status are saved in the summary JSON.
+
+Missing manifests, edited SVGs or incompatible presentations retain the area
+histogram but omit magnitude guides, with an explicit status. Use
+`--no-magnitude-guides` to disable them. Resolving these appearance references
+does not create a sky or reload catalogues.
+
+## Shared stellar-sizing experiments
+
+Stellar sizing is shared with regional, binocular, all-sky and planisphere
+charts. `StellarMagnitudeSizing` selects `legacy` (unchanged exponential scatter
+area with clamps), `linear` (diameter linear in magnitude difference), or
+`asinh` (diameter with smooth bright-end compression), or `quadratic`
+(diameter quadratic in magnitude difference). The new curves are Wenu
+experimental policies, not implementations attributed to Toshimi Taki.
+
+For the new laws, define `t = max(0, size_reference_magnitude - m)`:
+
+- linear: `d_mm = dmin_mm + a_mm * t`;
+- asinh: `d_mm = dmin_mm + a_mm * asinh(t / b_mag)`;
+- quadratic: `d_mm = dmin_mm + a_mm * t**2`.
+
+Scatter size is `(72 * d_mm / 25.4)^2`; the recorded circular vector geometry
+converts that size to filled area. The minimum belongs to the sizing reference,
+not necessarily the selection limit. Set a reference of 8 for both magnitude-6
+and magnitude-8 comparisons. The selection limit must not exceed the reference;
+otherwise the experiment would reintroduce an in-range faint-size plateau.
+
+Shared `wenu_chart` switches are `--mag-algorithm`, `--mag-dmin` (mm),
+`--mag-a` (mm), `--mag-b` (magnitudes, used by asinh), and
+`--mag-size-reference`. The atlas command accepts the same switches, plus
+`--style atlas|cartoon`, `--mode print|presentation` and `--star-size-scale`.
+The latter is an explicit diameter multiplier. Use `--star-size-scale 1` when
+comparing literal millimetre parameters; the existing example requests 1.5.
+Physical diameter overrides replace historical preset/family area factors and
+polar magnitude remapping. They use circular stellar glyphs; classification
+marks keep their existing separate ownership. No automatic density-based
+calibration is claimed by this experimental milestone.
+
+The atlas presentation TOML also accepts `[stellar_magnitude_sizing]` with
+`algorithm`, `dmin_mm`, `a_mm`, `b_mag`, and `size_reference_magnitude`.
+General schema-v2 chart configuration accepts `mag_algorithm`, `mag_dmin`,
+`mag_a`, `mag_b` and `mag_size_reference` under `[styles.atlas.stars]` or
+`[styles.cartoon.stars]`. CLI overrides take precedence. The existing
+`--magnitude-limit` controls selection independently.
+
+Each completed atlas now includes a final `stellar-sizing-report.pdf` page
+in `atlas.pdf`, plus `stellar-sizing-report.png`, `.svg` and `_data.json`.
+The report contains log-count/log-area measurements with magnitude guides,
+log-area versus magnitude (magnitude itself is already logarithmic), the exact
+resolved formula/parameters, page/style/mode information and actual-size symbol
+samples. `stellar-sizing.{png,pdf,svg}` and `_stars.csv`, `_bins.csv`,
+`_summary.json` provide the standalone histogram and measured data. SVG charts
+are retained even for PDF-only requests so later analysis is self-contained.
+The final manifest records the resolved policy, marker geometry, paper
+geometry and hashes; analysis uses those values instead of current presets.
+Older manifests retain their documented atlas-print compatibility route.
+
+Create one saved sphere using `--save-sky`; reuse it with `--from-sky` for every
+subsequent sizing/style/selection experiment within snapshot coverage. No new
+projection cache or second sky product is introduced. Index presentation remains
+independent and is not regenerated by the chart command.
+
+Use direct commands and new output directories, for example:
+
+```bash
+wenu_create_atlas --design output/design_v1.json --config examples/atlas_chart_style_v1.toml \
+  --charts all --magnitude-limit 6 --mag-algorithm asinh \
+  --mag-dmin 0.30 --mag-a 0.50 --mag-b 3 --mag-size-reference 8 \
+  --star-size-scale 1 --jobs 2 --save-sky output/native_sky_v1 \
+  --output-dir output/asinh_mag6_v1
+
+wenu_create_atlas --design output/design_v1.json --config examples/atlas_chart_style_v1.toml \
+  --charts all --magnitude-limit 8 --mag-algorithm asinh \
+  --mag-dmin 0.30 --mag-a 0.50 --mag-b 3 --mag-size-reference 8 \
+  --star-size-scale 1 --jobs 2 --from-sky output/native_sky_v1 \
+  --output-dir output/asinh_mag8_v1
+
+PYTHONPATH=src python tools/analyze_atlas_star_areas.py output/asinh_mag8_v1 \
+  --output-prefix output/asinh_mag8_v1/diagnostic_v2 --bins 40
+```
+
+Supply `--index output/index_v1.pdf` to include the previously generated index
+and facing report/chart pairs. Subsequent runs keep `--from-sky`; changing
+parameters requires a new output directory or analysis prefix.
+
+
+### Preview a sizing law before rendering an atlas
+
+The source-tree toolbox includes `tools/preview_stellar_sizes.py`. It loads no
+celestial sphere or catalogue. It resolves the same style/mode and sizing
+policy used by charts, then writes diameter-versus-magnitude and log-area
+plots, an actual-size symbol row, PNG/PDF/SVG, and JSON/CSV measurements.
+Print the PDF at 100%, without fit-to-page; screen zoom changes apparent size.
+
+```bash
+PYTHONPATH=src python tools/preview_stellar_sizes.py \
+  --style atlas --mode print --family regional \
+  --mag-algorithm asinh \
+  --mag-dmin 0.30 --mag-a 0.50 --mag-b 3 \
+  --mag-size-reference 8 --magnitude-limit 8 \
+  --star-size-scale 3 \
+  --width-mm 353 --height-mm 250 \
+  --output-prefix "$review_dir/stellar_preview_scale3_v1"
+```
+
+`--mode presentation` selects display adaptation; `--style cartoon` and
+`--family binocular` select their canonical policies. Default raster DPI is
+300 for print or 160 for presentation, overridden with `--dpi`. For physical
+policies, explicit millimetre dimensions and diameter scaling take precedence
+over historical preset area factors. This preview covers circular base stars;
+legacy policies with separate bright-star shapes fail explicitly. It does not
+preview variable/multiple overlays, label collisions or stellar field density.
+Use a new output prefix for each comparison.
+
+### Quadratic diameters and magnitude area budgets
+
+The shared selectable `quadratic` law uses
+`d_mm = dmin_mm + a_mm * max(0, size_reference_magnitude - m)**2`.
+The growth coefficient has units mm per squared magnitude difference;
+`--mag-b` is unused by this law. This candidate requires explicit parameters:
+`--mag-algorithm quadratic --mag-dmin 0.30 --mag-a 0.04 --mag-size-reference 8
+--star-size-scale 1`. The magnitude limit remains a separate selection parameter.
+These settings give diameters 3.88 mm at Sirius's magnitude -1.46, 1.74 mm
+at magnitude 2, 0.94 mm at magnitude 4, and 0.30 mm at magnitude 8.
+
+Preview without constructing a sphere:
+
+```bash
+PYTHONPATH=src python tools/preview_stellar_sizes.py --style atlas --mode print --family regional --mag-algorithm quadratic --mag-dmin 0.30 --mag-a 0.04 --mag-size-reference 8 --magnitude-limit 8 --star-size-scale 1 --width-mm 353 --height-mm 250 --output-prefix "$review_dir/quadratic_preview_v1"
+```
+
+Render one chart using the saved sphere:
+
+```bash
+wenu_create_atlas --design "$review_dir/design_v1.json" --config examples/atlas_chart_style_v1.toml --charts 14 --jobs 1 --magnitude-limit 8 --mag-algorithm quadratic --mag-dmin 0.30 --mag-a 0.04 --mag-size-reference 8 --star-size-scale 1 --from-sky "$review_dir/native_sky_v1" --output-dir "$review_dir/quadratic_chart14_v1"
+```
+
+New chart reports retain exact rendered-magnitude budgets in
+`chart-NN_report_data.json`. Atlas analysis writes
+`stellar-sizing_area-budget.png`, `.pdf`, `.svg`, `.json`, and `.csv`.
+The PDF budget page follows the sizing report in the book. Each occupied
+one-magnitude interval `[lower, upper)` includes its count and summed filled
+circular symbol area. Fractions use the useful chart-frame area, excluding
+page margins. Exact integer magnitudes enter the interval starting at that
+integer. Counts are appearances: charts overlapping on the sky repeat stars.
+Areas exclude stroke width and do not compute the union of overlapping disks.
+
+The analyzer verifies report hashes, policy, total count and area against
+measured SVGs. Historical atlases lacking exact budgets still receive sizing
+analysis, with an explicit unavailable budget status; magnitudes are never
+inferred from symbol size. Counts inform review and do not change the law.
+
+### Chart magnitude key and facing-page interval report
+
+Atlas charts now show their magnitude key inside the chart frame. Its integer
+references bracket all plotted stars: floor(brightest) through ceil(faintest).
+There are no counts in this compact key. Symbol diameters use the exact chart
+law and diameter multiplier; no star magnitudes are quantized by the key.
+
+The facing report shows the full reference scale, normally -2 through the
+physical sizing reference (or at least 8 for legacy). Each symbol at m is
+labelled `m ≤ magnitude < m+1` and gives the number of plotted stars in that
+interval. The displayed symbol is evaluated at its bright bound m; actual
+star diameters vary continuously within the interval. This is an interval count, not a cumulative count. Exact integer
+magnitudes enter the interval starting at that integer. A dotted box surrounds
+the same reference range used on the chart. Remaining rows receive a veil;
+configure `magnitude_veil_color = "white"` and `magnitude_veil_alpha = 0.65`
+in the atlas chart presentation TOML. Alpha 0 disables the veil; 1 hides
+inactive rows completely. The complete scale and counts remain in report JSON.
+Empty charts omit the stellar keys. Counts come from prepared visible-star
+geometry, including the final footprint, without rebuilding the sphere.
+
+The legend's marker column and individual row heights accommodate physical
+symbol diameters at the selected scale; the largest symbols no longer spill
+outside the frame or collide with adjacent references. Chart and report
+legend exports follow the same backend/DPI-aware shared furniture path.
+
+### Accepted full-atlas review recipe (2026-10-11)
+
+The visually accepted comparison uses the quadratic law with dmin 0.30 mm,
+a 0.04 mm per squared magnitude difference, reference magnitude 8, selection
+limit 8 and diameter multiplier 1.7. This is a reproducible review profile,
+not a replacement for every style preset or a physical print calibration.
+Use an existing sufficient snapshot and a fresh output directory:
+
+```bash
+wenu_plot_atlas \
+  --design atlas_design_v1.json \
+  --config examples/atlas_index_style_v2.toml \
+  --output-prefix atlas_index_scale1p7_v1
+
+wenu_create_atlas \
+  --design atlas_design_v1.json \
+  --config examples/atlas_chart_style_v1.toml \
+  --from-sky fixed_sky_v2 \
+  --index atlas_index_scale1p7_v1.pdf \
+  --charts all --jobs 2 --magnitude-limit 8 \
+  --mag-algorithm quadratic --mag-dmin 0.30 --mag-a 0.04 \
+  --mag-size-reference 8 --star-size-scale 1.7 \
+  --output-dir atlas_quadratic_scale1p7_v1
+```
+
+For the supplied 34-sheet design, the full book has 71 pages: index,
+34 facing report/chart pairs, stellar-sizing report and area-budget report.
+Changing the diameter multiplier or magnitude limit reuses the saved sphere
+within its declared coverage. The index has independent presentation inputs.
+The object-report text area remains reserved for later inventories and curation.

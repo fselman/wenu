@@ -64,6 +64,18 @@ def test_complete_cli_contract_includes_context_and_credits():
     assert arguments.horizon_mask is False
 
 
+def test_shared_cli_selects_physical_stellar_sizing():
+    from wenu.charts.chart_arguments import chart_style_overrides
+    policy = chart_style_overrides(parser().parse_args([
+        '--mag-algorithm', 'asinh', '--mag-dmin', '.3', '--mag-a', '.5',
+        '--mag-b', '3', '--mag-size-reference', '8'])).stellar_magnitude_sizing
+    assert policy.algorithm == 'asinh' and policy.dmin_mm == .3
+    assert policy.a_mm == .5 and policy.b_mag == 3
+    assert policy.size_reference_magnitude == 8
+    with pytest.raises(ValueError, match='require'):
+        chart_style_overrides(parser().parse_args(['--mag-a', '.5']))
+
+
 @pytest.mark.parametrize(("flag", "policy"), [
     ("--labels-upright", "upright"),
     ("--labels-up-away-from-cp", "up-away-from-cp"),

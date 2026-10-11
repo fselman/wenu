@@ -4959,3 +4959,143 @@ variable/multiple overlays and the report magnitude key. The canonical
 render-local style override applies after style/mode resolution; magnitude
 selection, source sky, atlas geometry and index presentation are unchanged.
 Set `star_size_scale = 1.0` to recover the previous sizes.
+
+### Atlas appearance accepted closure and SVG-size analysis (2026-10-11)
+
+Fernando accepted PR #226 and merged it as
+`ecda4e01482364b9084bda05df552cc325968768`, with the exact accepted tree.
+Head `e9fb18104a0e7474016c72ea1dbb5e01de36514e` passed all 3419
+plugin-disabled Mac tests in 623.19 seconds, diff checks and clean-tree
+verification. Main is synchronized; local/remote feature branches were
+deleted. This closes the earlier pending heading, canvas and stellar-size
+acceptance wording.
+
+The next bounded request is a script that reads atlas SVG files and plots
+log10 number of stellar marker appearances per log10 symbol-area bin.
+Read the original vector artifact and its stellar semantic scope; exclude
+legend samples and variable/multiple overlays. Report filled silhouette area
+in physical mm², transformations, centre-clipping convention, per-file counts
+and bin data explicitly. Preserve the astronomy/render/export pipeline and
+read inputs without mutation. Overlapping pages count separate appearances;
+unique catalogue-star counting and general SVG-editor compatibility are not
+claimed. Extend the existing serialized SVG tests and add a tools script,
+not a production pipeline or dependency. Object curation and authored reports
+remain subsequent work. Acceptance, final full regression and merge of this
+new script remain separate.
+
+The coordinate-system guide was reviewed and remains current: the tool
+measures serialized page geometry, not sky coordinates or a new realization.
+
+The follow-up appearance diagnostic adds vertical magnitude references and
+top annotations to the same plot. Only hash-verified atlas batch exports with
+one compatible atlas-print presentation admit guides. Reuse canonical stellar
+sizing, preserve the historical diameter multiplier default and combine the
+minimum-area faint range into one line. Edited or unbound SVGs retain measured
+area counts with an explicit unavailable-guide status. This does not identify
+individual magnitudes, create a sphere or change chart rendering. Extend the
+existing SVG tests for this provenance/appearance seam; no new test file or
+dependency is admitted. PR #227 remains a candidate pending Mac review and the
+final full suite before merge.
+
+### Shared stellar-sizing experiment candidate (2026-10-11)
+
+Fernando authorized implementation after confirming that the laws must be
+shared by all Wenu chart families, selectable, and evaluated after reusable
+native-sphere creation. Deliver direct editable commands, not parenthesized
+scripts, for magnitude-6/8 atlases using one saved snapshot. Keep selection
+and sizing reference separate, preserve legacy output and add experimental
+linear/asinh diameter policies. These are not attributed to Taki; an exact
+Taki implementation requires a separately verified formula.
+
+The bounded candidate extends canonical styling/preparation and shared
+CLI/TOML owners. Frozen policy/marker geometry and physical page parameters
+belong in the atlas manifest. One post-export artifact/report owner measures
+SVGs, supplies the log-count/log-area plot with reference lines, log-area
+versus magnitude, formula/parameters and actual-size samples, and is appended
+at the end of the atlas PDF. No second sphere or projection cache is admitted.
+Automatic perceptual/density calibration and scientific object curation remain
+later work. The coordinate-system guide was reviewed and remains current:
+this changes page appearance, not astronomical coordinates or provenance.
+
+PR #227 remains unaccepted and unmerged. Focused shared-policy, SVG, batch and
+documentation gates plus visual specimens precede Mac review; the complete
+final-candidate suite is required once before merge, not at every preview.
+
+
+On 2026-10-11 Fernando requested a toolbox sizing-law preview before expensive
+atlas generation. The PR #227 candidate now includes a no-sphere preview
+adapter using canonical composition/preparation and the existing diagnostic
+owner. It compares physical sizes and sample symbols with style/mode/family
+and diameter scaling. This does not imply print acceptance, crowding analysis
+or automated aesthetic optimization. Full-suite and user acceptance remain
+pending; no merge or cleanup is authorized.
+
+### Review candidate: quadratic diameters and exact area budgets
+
+The authorized next comparison adds a shared quadratic diameter law with
+explicit candidate parameters dmin=0.30 mm, a=0.04 mm per squared magnitude
+and reference magnitude 8, at diameter scale 1. Compare the same chart 14
+and saved canonical sphere against asinh. The law stays fixed across charts.
+
+Exact rendered-magnitude counts and summed filled symbol area per occupied
+one-magnitude interval are persisted in report JSON, verified against SVG
+count/area and hashes, exported as plot/data products, and appended to the
+atlas PDF. The diagnostic does not adapt sizes to local density. Existing
+owners and tests cover this addition; no new production or test module is
+admitted. The coordinate-system guide was reviewed: native coordinates,
+projection and saved-sphere contracts remain unchanged. This candidate
+requires visual acceptance; PR #227 remains unmerged. A final full suite is
+reserved for the accepted merge candidate.
+
+### Review candidate: bracketed chart keys and interval-count reports
+
+Fernando selected diameter scale 1.7 as the leading quadratic comparison and
+authorized a full-atlas visual review. Chart keys bracket the exact visible
+magnitude range; facing reports keep the full reference scale with interval
+counts, a dotted chart-range box and configurable inactive-row veil. Shared
+legend packing now contains the enlarged disks and avoids row collisions.
+
+The existing furniture hook, legend descriptors/workflow/rendering and atlas
+presentation/report owners are extended. No new production or test module
+is admitted. The coordinate-system guide was reviewed and remains current:
+selection geometry, native coordinates and saved-sphere contracts are unchanged.
+Focused owner/seam tests and five-region rendering cover the candidate; the
+final accepted merge candidate still requires one complete suite. PR #227
+remains unmerged pending whole-atlas visual acceptance.
+
+### Stellar sizing and magnitude-key visual acceptance (2026-10-11)
+
+Fernando visually accepted executable candidate
+`ef7ca11c6bdf0688dc0a8e71cf8e691a1975e115` and explicitly requested
+documentation, PR #227 merge and branch cleanup. This supersedes earlier
+pending visual-acceptance and no-merge-authorisation wording for PR #227.
+The accepted review profile is quadratic dmin 0.30 mm, a 0.04 mm per squared
+magnitude difference, reference/selection magnitude 8 and diameter factor 1.7.
+It is not a universal preset or an accepted print calibration.
+
+The full saved-sphere run produced all 34 chart/report pairs. Their product
+hashes, B4 dimensions and interval-count totals were verified. The facing
+book contains 71 pages including its index and two sizing diagnostic pages.
+The user guide now gives the complete direct CLI recipe. Shared sizing,
+legend, canonical furniture/export and buffered PDF assembly remain the
+implementation owners; coordinates and sphere contents are unchanged.
+
+A final plugin-disabled full-suite attempt is required before merging.
+The review environment lacks the DE440s ephemeris and has a known Matplotlib
+3.10 font-inheritance test incompatibility; focused receipts do not replace
+the final full-suite receipt. Merge and cleanup are authorised but must
+retain an explicit record of any unresolved verification blocker.
+Later appearance changes and object inventories/curation remain separate work.
+
+### PR #227 final Mac verification and merge authorisation
+
+On 2026-10-11 Fernando ran the exact documentation-complete candidate
+`07b4a5d0954a74a2fe16cdfb34a577743bb33a1d` on the Mac with plugins
+disabled and MPLBACKEND=Agg: all 3,438 tests passed in 694.21 seconds.
+This resolves the earlier environment-specific full-suite blocker.
+Whole-atlas visual acceptance and explicit merge/cleanup authorisation are
+already recorded above. This documentation-only receipt changes no executable
+content, scientific fixtures, dependencies, configuration, packaging or tests;
+the passing full-suite receipt remains valid for its merge.
+The next work remains separately scoped appearance refinement and object
+inventories/curation; no new runtime milestone is started by closure.

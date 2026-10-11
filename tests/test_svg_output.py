@@ -30,6 +30,180 @@ POINTS_PER_INCH = 72.0
 MM_PER_INCH = 25.4
 
 
+def _star_area_analyzer():
+    import importlib.util
+    from pathlib import Path
+    filename = Path(__file__).parents[1] / "tools/analyze_atlas_star_areas.py"
+    spec = importlib.util.spec_from_file_location("atlas_star_area_analysis", filename)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_svg_star_area_analysis_measures_references_transforms_and_clipping(tmp_path):
+    import math
+    analyzer = _star_area_analyzer()
+    source = tmp_path / "chart-01.svg"
+    source.write_text('''<svg xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        width="100mm" height="100mm" viewBox="0 0 100 100">
+      <defs><path id="triangle" d="M0 0 L1 0 L0 1 Z"/>
+        <clipPath id="window"><rect width="60" height="60"/></clipPath></defs>
+      <g data-wenu-semantic-path="sky/stars/symbols" clip-path="url(#window)">
+        <g transform="translate(10 20) scale(2 3)"><use xlink:href="#triangle"/></g>
+        <circle cx="30" cy="30" r="2"/>
+        <circle cx="59" cy="30" r="2"/>
+        <circle cx="70" cy="30" r="2"/>
+        <circle cx="20" cy="20" r="0"/>
+        <g display="none"><circle r="10"/></g>
+        <g data-wenu-paint-role="variable_stars"><circle cx="30" cy="30" r="4"/></g>
+      </g>
+      <g data-wenu-semantic-path="furniture/legends/stars"><circle r="8"/></g>
+    </svg>''')
+    records = analyzer.read_star_markers(source)
+    assert len(records) == 3
+    assert [row['area_mm2'] for row in records] == pytest.approx([3, 4*math.pi, 4*math.pi])
+    assert records[0]['x_mm'] == pytest.approx(11)
+    assert records[0]['y_mm'] == pytest.approx(21.5)
+    # Unsupported editor geometry must not silently produce wrong areas.
+    source.write_text(source.read_text().replace('M0 0 L1 0 L0 1 Z', 'M0 0 A1 1 0 0 0 1 1 Z'))
+    with pytest.raises(ValueError, match='Unsupported SVG path command'):
+        analyzer.read_star_markers(source)
+
+
+def test_svg_star_area_analysis_matches_actual_matplotlib_marker_scaling(tmp_path):
+    import math
+    analyzer = _star_area_analyzer()
+    areas = []
+    for diameter_scale in (1, 2):
+        figure, ax = plt.subplots(figsize=(3, 2))
+        try:
+            artist = ax.scatter([0, 0.5, 0.75], [0, 0.5, 0.75],
+                                s=[16*diameter_scale**2, 64*diameter_scale**2, 0])
+            artist.set_gid('measured-stars')
+            from wenu.svg_document import attach_semantic_svg_metadata
+            attach_semantic_svg_metadata(artist, layer='stars', zorder=5,
+                paint_role=None, edit_policy=EditPolicy.STYLE,
+                semantic_path=('sky', 'stars', 'symbols'),
+                lock_owner_path=('sky', 'stars'), display_name='Stars',
+                presentation_order=40, style_role='stars')
+            filename = ExportOptions(bbox_inches=None).save(figure,
+                tmp_path / f'chart-{diameter_scale:02d}.svg')
+        finally:
+            plt.close(figure)
+        records = analyzer.read_star_markers(filename)
+        assert len(records) == 2
+        areas.append([row['area_mm2'] for row in records])
+    assert areas[0] == pytest.approx([math.pi*4*(25.4/72)**2,
+                                    math.pi*16*(25.4/72)**2], rel=0.001)
+    assert areas[1] == pytest.approx([value*4 for value in areas[0]], rel=1e-5)
+    # Directory selection ignores reports; repeated explicit inputs are not counted twice.
+    (tmp_path / 'chart-01_report.svg').write_text('<invalid-report/>')
+    summary = analyzer.analyze([tmp_path, tmp_path/'chart-01.svg'], tmp_path/'areas_v1', bins=8)
+    assert summary['star_appearances'] == 4
+    import csv
+    with (tmp_path/'areas_v1_bins.csv').open() as output:
+        bins = list(csv.DictReader(output))
+    assert sum(int(row['count']) for row in bins) == 4
+    assert any(row['log10_count'] == '' for row in bins)
+    assert all((tmp_path/f'areas_v1.{extension}').exists() for extension in ('png', 'pdf', 'svg'))
+    with pytest.raises(ValueError, match='filenames must be new'):
+        analyzer.analyze([tmp_path/'chart-01.svg'], tmp_path/'areas_v1')
+
+
+@pytest.mark.parametrize('algorithm', ['legacy', 'asinh', 'quadratic'])
+def test_svg_star_area_magnitude_guides_follow_manifest_scale_and_faint_plateau(tmp_path, algorithm):
+    import hashlib
+    import json
+    import numpy as np
+    from wenu.charts.presets import AtlasChartStyle
+    from wenu.charts.style_components import StellarMagnitudeSizing
+    from wenu.charts.style_overrides import ChartStyleOverrides
+    from wenu.charts import stellar_sizing_report
+    from dataclasses import replace
+    from wenu.rendering.preparation import configured_magnitude_sizes
+    from wenu.svg_document import attach_semantic_svg_metadata
+    analyzer = _star_area_analyzer()
+    stars = AtlasChartStyle().stars
+    if algorithm != 'legacy':
+        stars = ChartStyleOverrides(stellar_magnitude_sizing=StellarMagnitudeSizing(algorithm=algorithm)).apply(AtlasChartStyle()).stars
+    reference_areas = []
+    for scale in (1, 2):
+        directory = tmp_path / str(scale)
+        directory.mkdir()
+        figure, ax = plt.subplots(figsize=(3, 2))
+        try:
+            sizes = configured_magnitude_sizes(np.array([2., 6., 8.]), stars.magnitude_sizing,
+                                               limiting_magnitude=8) * stars.area_scale * scale**2
+            artist = ax.scatter([0, .5, 1], [0, .5, 1], s=sizes)
+            artist.set_gid('magnitude-reference-stars')
+            attach_semantic_svg_metadata(artist, layer='stars', zorder=5,
+                paint_role=None, edit_policy=EditPolicy.STYLE,
+                semantic_path=('sky', 'stars', 'symbols'),
+                lock_owner_path=('sky', 'stars'), display_name='Stars',
+                presentation_order=40, style_role='stars')
+            filename = ExportOptions(bbox_inches=None).save(figure, directory / 'chart-10.svg')
+        finally:
+            plt.close(figure)
+        presentation = {'style': 'atlas', 'star_magnitude_limit': 8}
+        if scale != 1:  # Older atlas manifests lack the multiplier: default is 1.
+            presentation['star_size_scale'] = scale
+        manifest = {'document_kind': 'wenu-atlas-chart-batch', 'presentation': presentation,
+                    'products': {filename.name: hashlib.sha256(filename.read_bytes()).hexdigest()}}
+        if algorithm != 'legacy':
+            manifest['stellar_sizing'] = stellar_sizing_report.resolved_sizing_record(
+                replace(stars, area_scale=stars.area_scale*scale**2), 8)
+        if algorithm != 'legacy':
+            budget = stellar_sizing_report.magnitude_area_budget([2., 6., 8.], manifest['stellar_sizing'], 1000.)
+            report_path = directory / 'chart-10_report_data.json'
+            report_path.write_text(json.dumps(dict(stellar_sizing=manifest['stellar_sizing'], stellar_area_budget=budget)))
+            manifest['products'][report_path.name] = hashlib.sha256(report_path.read_bytes()).hexdigest()
+        (directory / 'manifest.json').write_text(json.dumps(manifest))
+        measured = [row['area_mm2'] for row in analyzer.read_star_markers(filename)]
+        guides, status = analyzer.magnitude_guides({filename}, measured)
+        assert 'verified' in status
+        assert guides[0]['magnitude'] == 2
+        assert guides[0]['area_mm2'] == pytest.approx(measured[0], rel=1e-5)
+        assert guides[-1]['area_mm2'] == pytest.approx(measured[2], rel=1e-5)
+        if algorithm == 'legacy':
+            assert measured[1] == pytest.approx(measured[2], rel=1e-5)
+            assert guides[-1]['label'] == '5.50–8'
+            assert guides[-1]['magnitude_max'] == 8
+        else:
+            assert measured[1] > measured[2]
+            assert guides[-1]['label'] == '8'
+        reference_areas.append(guides[0]['area_mm2'])
+        summary = analyzer.analyze([directory], directory / 'guides_v1', bins=8)
+        assert summary['magnitude_guides'] == guides
+        if algorithm != 'legacy':
+            budget = summary['magnitude_area_budget']
+            assert [row['count'] for row in budget['bins']] == [1, 1, 1]
+            assert budget['total_area_mm2'] == pytest.approx(sum(measured), rel=1e-6)
+            assert sum(row['symbol_area_fraction'] for row in budget['bins']) == pytest.approx(1)
+            assert (directory/'guides_v1_area-budget.pdf').is_file()
+        plot = ET.parse(directory / 'guides_v1.svg').getroot()
+        if algorithm == 'legacy':
+            assert any(element.text == '5.50–8' for element in plot.iter())
+        report = json.loads((directory/'guides_v1-report_data.json').read_text())
+        assert report['policy']['sizing']['algorithm'] == algorithm
+        assert sum(report['histogram']['counts']) == 3
+        assert all((directory/f'guides_v1-report.{suffix}').is_file() for suffix in ('png', 'pdf', 'svg'))
+        if algorithm != 'legacy':
+            # Recorded policy survives a later change of the packaged preset.
+            saved = stellar_sizing_report.resolved_sizing_record
+            stellar_sizing_report.resolved_sizing_record = lambda *a: (_ for _ in ()).throw(AssertionError('No preset reconstruction'))
+            try:
+                assert analyzer.magnitude_guides({filename}, measured)[0] == guides
+            finally:
+                stellar_sizing_report.resolved_sizing_record = saved
+        filename.write_text(filename.read_text() + '\n')
+        assert analyzer.magnitude_guides({filename}, measured)[0] == []
+        assert 'differs' in analyzer.magnitude_guides({filename}, measured)[1]
+    assert reference_areas[1] == pytest.approx(4 * reference_areas[0])
+    guides, status = analyzer.magnitude_guides({tmp_path/'no-manifest.svg'}, [1])
+    assert guides == [] and 'No atlas batch manifest' in status
+
+
 def test_ordered_semantic_fragments_preserve_interleaved_artists(tmp_path):
     from wenu.svg_document import attach_semantic_svg_metadata
     figure, ax = plt.subplots()
@@ -1018,3 +1192,31 @@ def test_figure_margin_credits_and_version_belong_to_footer_furniture(
         )
         for element in root.iter()
     )
+
+
+@pytest.mark.parametrize('style,mode,family', [('atlas', 'print', 'regional'), ('cartoon', 'presentation', 'binocular')])
+def test_stellar_sizing_preview_reuses_composition_without_sky(tmp_path, monkeypatch, style, mode, family):
+    import json
+    from pathlib import Path
+    import numpy as np
+    from wenu.charts.stellar_sizing_report import preview_main
+    from wenu.sky import native_snapshot
+    def forbidden(*args, **kwargs):
+        raise AssertionError('An appearance preview must not prepare a sky.')
+    monkeypatch.setattr(native_snapshot, 'prepare_native_sky_snapshot', forbidden)
+    records = []
+    for scale in (1, 3):
+        prefix = tmp_path / f'preview-{scale}'
+        assert preview_main(['--mag-algorithm', 'asinh', '--mag-dmin', '.3',
+            '--mag-a', '.5', '--mag-b', '3', '--mag-size-reference', '8',
+            '--star-size-scale', str(scale), '--style', style, '--mode', mode,
+            '--family', family, '--dpi', '90', '--output-prefix', str(prefix)]) == 0
+        records.append(json.loads(Path(str(prefix)+'_data.json').read_text()))
+        for suffix in ('.png', '.pdf', '.svg', '.csv'):
+            assert Path(str(prefix)+suffix).stat().st_size > 0
+    np.testing.assert_allclose(records[1]['diameters_mm'], np.asarray(records[0]['diameters_mm'])*3)
+    np.testing.assert_allclose(records[1]['areas_mm2'], np.asarray(records[0]['areas_mm2'])*9)
+    assert records[1]['diameters_mm'][-1] == pytest.approx(.9)
+    assert records[1]['mode'] == mode
+    with pytest.raises(SystemExit):
+        preview_main(['--output-prefix', str(prefix)])  # no overwrite

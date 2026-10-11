@@ -71,6 +71,9 @@ def draw_styled_stellar_magnitude_legend(
     reference_magnitude: int | None = None,
     reference_range: tuple[int, int] | None = None,
     label_suffix: str = "",
+    report_range: bool = False,
+    veil_color: str = "white",
+    veil_alpha: float = 0.65,
 ) -> StellarMagnitudeLegendResult:
     """Draw a visible-star legend using independent style settings."""
     style = (
@@ -96,6 +99,7 @@ def draw_styled_stellar_magnitude_legend(
 
     options = dict(
         effective_limit=effective_limit,
+        report_range=report_range, veil_color=veil_color, veil_alpha=veil_alpha,
         area_scale=area_scale,
         color=color,
         alpha=alpha,

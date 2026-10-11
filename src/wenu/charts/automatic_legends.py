@@ -49,6 +49,9 @@ def draw_automatic_chart_legends(
     stellar_reference_range=None,
     stellar_background=None,
     stellar_label_suffix="",
+    stellar_report_range=False,
+    stellar_veil_color="white",
+    stellar_veil_alpha=0.65,
 ) -> AutomaticChartLegends:
     """Draw both chart legends with no duplicated scientific/style inputs."""
     inferred = (
@@ -75,6 +78,8 @@ def draw_automatic_chart_legends(
         stellar_reference_range=stellar_reference_range,
         stellar_background=stellar_background,
         stellar_label_suffix=stellar_label_suffix,
+        stellar_report_range=stellar_report_range,
+        stellar_veil_color=stellar_veil_color, stellar_veil_alpha=stellar_veil_alpha,
     )
     if stellar_counts:
         options["stellar_counts"] = True

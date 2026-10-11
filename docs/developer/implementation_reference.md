@@ -4566,3 +4566,112 @@ variable/multiple overlays and the report magnitude key. The canonical
 render-local style override applies after style/mode resolution; magnitude
 selection, source sky, atlas geometry and index presentation are unchanged.
 Set `star_size_scale = 1.0` to recover the previous sizes.
+
+### Offline SVG star-area analysis (2026-10-11)
+
+`python tools/analyze_atlas_star_areas.py INPUT [INPUT ...]
+--output-prefix PREFIX [--bins 30]` reads Wenu vector SVGs and writes
+`PREFIX.{png,pdf,svg}`, `PREFIX_stars.csv`, `PREFIX_bins.csv` and
+`PREFIX_summary.json`. Directory inputs select numbered chart SVGs only.
+The script recognizes stellar semantic scopes, excludes classification and
+legend samples, resolves local SVG references/affine transforms, integrates
+closed linear/quadratic/cubic silhouettes and converts SVG units to mm².
+Gaussian integration is exact for the supported polynomial curves, subject
+to serialized coordinate precision. Counts are centre-visible marker
+appearances, including bright filled symbols; partial edge symbols keep full
+area. Duplicate file paths are removed, but repeated stars on different charts
+remain separate appearances. Equal log10-area bins retain empty CSV rows; the
+plot omits their undefined log counts. Unsupported geometry fails explicitly.
+
+No catalogue, sphere, observer, ephemeris, projection, chart appearance or
+SVG export behavior changes. This is an offline developer script with no
+new installed entry point or dependency.
+
+Magnitude guides reuse `AtlasChartStyle` and `configured_magnitude_sizes`,
+with filled `MarkerStyle("o")` geometry in physical mm². Admission requires
+matching adjacent batch-manifest SVG hashes and one compatible atlas-print
+presentation. The absent historical diameter multiplier defaults to 1.0;
+minimum-area clamping is displayed as one faint-magnitude range, rather than
+several falsely distinct positions. No per-marker magnitude is inferred.
+`--no-magnitude-guides` disables these references; unavailable references have
+an explicit summary/CLI status while measured-area analysis remains available.
+
+### Selectable physical stellar sizing and atlas diagnostics (2026-10-11)
+
+`StellarMagnitudeSizing` now retains legacy fields and adds `algorithm`,
+`dmin_mm`, `a_mm`, `b_mag`, `size_reference_magnitude`. Algorithms are `legacy`,
+`linear` and `asinh`; legacy remains default. Canonical evaluation belongs to
+`configured_magnitude_sizes`. New curves use physical diameter, with a fixed
+reference independent of detail selection. Shared CLI and schema-v2 style
+configuration resolve through `ChartStyleOverrides`; binocular defaults do
+not replace a selected physical policy. Physical overrides normalize legacy
+family area/remapping factors; explicit `star_size_scale` still multiplies
+resolved diameter. Composition rejects a selection limit beyond the reference.
+
+Atlas presentation gains optional `mode` and typed `stellar_magnitude_sizing`;
+its CLI shares sizing options and explicit style/mode/diameter overrides.
+The existing worker composition and single-snapshot lifecycle are unchanged.
+Each chart report records the fully resolved sizing policy and circular marker
+geometry. Publication requires one compatible policy across selected sheets,
+retains SVG charts and generates diagnostics once after all workers finish.
+It appends the one-page sizing report to the assembled PDF and records policy,
+paper dimensions and product hashes in the final manifest. The read-only
+`charts/stellar_sizing_report.py` owner and its tools adapter reconstruct no
+sphere. Diagnostic curves evaluate the frozen policy; measured counts come
+from actual SVG glyphs, excluding legends/classification overlays. A separate
+bright-star shape does not silently receive a circular-symbol guide.
+
+
+`preview_stellar_sizes` in the diagnostic owner resolves canonical composition
+without a sky. Its toolbox adapter accepts shared magnitude-policy arguments,
+`--star-size-scale`, style/mode/family, magnitude range, physical page dimensions,
+raster DPI and a new output prefix. Outputs include actual-size circular base
+symbols, diameter/log-area curves and reproducible JSON/CSV. Separate legacy
+bright shapes are rejected rather than silently previewed as circles.
+
+### Quadratic sizing candidate and exact magnitude budgets
+
+`StellarMagnitudeSizing` and rendering preparation own the shared quadratic
+option. CLI and style configuration activate the same typed policy; no new
+production module or test file is admitted. The existing coefficient is in
+mm per squared magnitude difference for this law; `b_mag` is unused.
+
+Atlas publication takes the exact magnitudes selected by the existing
+`visible_star_mask` on prepared render geometry, and records per-interval
+counts and filled base-symbol areas in report JSON. The existing
+`stellar_sizing_report` owner verifies manifest hashes and aggregate counts
+and areas against SVG measurement before aggregation/export. Useful frame
+area is the denominator, and repeated appearances and disk overlaps remain
+explicit. Reports without compatible exact data yield an unavailable status.
+The PDF assembler appends the optional area-budget page after sizing analysis.
+No inverse magnitude estimate, adaptive sizing, sky reload, or new projection
+pipeline is introduced. Existing stellar-symbol, SVG and reusable-sphere
+contract tests own verification.
+
+### Magnitude interval report and atlas chart furniture
+
+The existing magnitude-legend descriptor adds optional `interval_count` and
+`active` fields. `magnitude_legend_workflow` obtains exact interval counts from
+its canonical visible-star mask when `report_range=True`; existing cumulative
+count behaviour remains unchanged. The style/composition adapters forward
+this explicit opt-in. The Matplotlib legend owner centres each marker in an
+appropriately sized offset box and packs each row by its physical diameter.
+It draws the dotted active-range frame and inactive-row veils from current
+renderer row extents on every draw, preserving PDF/SVG/DPI placement.
+
+Atlas publication uses the existing export `additional_furniture` hook to
+request a minimal in-frame key before saving. Its report invokes the same
+rendered-legend coordinator with full reference bounds and interval counts.
+Presentation owns the veil colour/opacity; generic legend owners implement
+its rendering. Report JSON persists the descriptors and interval policy.
+No second legend, projection or sky pipeline and no new module are introduced.
+Existing magnitude-legend and atlas test owners cover interval membership,
+scaled-symbol containment, backend redraw, report wiring and empty layers.
+
+Atlas PDF assembly now consumes buffered `PdfReader` documents rather than
+raw-path reads inside the merger. This keeps the whole page snapshot intact
+on filesystems with short raw reads; page ordering, geometry and exports
+remain unchanged. Batch acceptance covers the assembled page sizes/counts.
+The existing cold/saved/spawn batch contract additionally simulates a merger
+that rejects raw-path input, protecting the buffered publication seam without
+adding another catalogue construction or a separate test file.

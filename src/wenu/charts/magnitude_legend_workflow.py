@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+import math
+import numpy as np
 
 from matplotlib.legend import Legend
 
@@ -12,6 +14,7 @@ from .magnitude_legend import (
     stellar_magnitude_scale,
     cumulative_visible_star_counts,
     visible_star_statistics,
+    visible_star_mask,
 )
 from .magnitude_legend_matplotlib import (
     draw_stellar_magnitude_legend,
@@ -63,6 +66,9 @@ def draw_visible_stellar_magnitude_legend(
     reference_magnitude: int | None = None,
     reference_range: tuple[int, int] | None = None,
     label_suffix: str = "",
+    report_range: bool = False,
+    veil_color: str = "white",
+    veil_alpha: float = 0.65,
 ) -> StellarMagnitudeLegendResult:
     """Calculate and draw the legend for stars visible in a chart.
 
@@ -129,6 +135,16 @@ def draw_visible_stellar_magnitude_legend(
             cumulative_counts=counts,
             **scale_options,
         )
+    if report_range:
+        mask = visible_star_mask(spherical, projected, viewport,
+            effective_limit=effective_limit, footprint_contains=footprint_contains)
+        magnitudes = np.asarray(spherical.metadata['magnitude'], dtype=float)[mask]
+        lower = math.floor(statistics.brightest_magnitude)
+        upper = math.ceil(statistics.faintest_magnitude)
+        scale = replace(scale, entries=tuple(replace(entry,
+            interval_count=int(np.count_nonzero((magnitudes >= entry.magnitude) &
+                                               (magnitudes < entry.magnitude + 1))),
+            active=lower <= entry.magnitude <= upper) for entry in scale.entries))
     if not scale.entries:
         return StellarMagnitudeLegendResult(
             statistics=statistics,
@@ -155,6 +171,7 @@ def draw_visible_stellar_magnitude_legend(
         facecolor=facecolor,
         edgecolor=edgecolor,
         label_suffix=label_suffix,
+        report_range=report_range, veil_color=veil_color, veil_alpha=veil_alpha,
     )
     return StellarMagnitudeLegendResult(
         statistics=statistics,

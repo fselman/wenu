@@ -2464,3 +2464,41 @@ Full chart-page inspection precedes facing reports and per-object curation.
 ### Atlas index and reserved facing pages (2026-10-10)
 
 The explicit index-PDF route composes existing chart pages with reserved facing pages and canonical legends. Book assembly owns physical parity, mirrored binding margins and index placement only. It consumes the index bytes without rendering another sky; report legends consume the existing chart render. Scientific content, chart geometry and saved-sphere ownership remain unchanged.
+
+### Shared stellar-sizing policies and atlas sizing reports (2026-10-11)
+
+Typed stellar appearance selects legacy, linear-diameter or asinh-diameter
+policies. Canonical preparation evaluates them for stars and existing legend
+owners; detail remains responsible for selection. Explicit physical policies
+resolve after mode/family adaptations, including binocular/polar seams.
+Atlas publication records resolved policy and marker geometry, then passes
+completed SVG artifacts to `charts/stellar_sizing_report.py`. This read-only
+post-export owner writes measurements, formula/curve reports and reproducible
+data; the existing PDF assembler appends its page. It has no celestial-sphere,
+observer or projection lifecycle. Snapshot creation/reuse remains unchanged.
+
+
+A catalogue-free sizing preview now uses the existing composition and
+preparation owners, followed by the diagnostic report owner. The toolbox
+adapter does not create or restore a celestial sphere; it produces physical
+symbol swatches and sizing curves only.
+
+### Shared quadratic policy and exact post-render diagnostics
+
+The canonical sizing policy includes quadratic diameter growth. Atlas
+prepared render geometry supplies exact visible-star magnitudes to report
+budgets. Manifest-bound report JSON and SVG measurements feed the existing
+post-export analysis owner, which writes interval area diagnostics and an
+optional book page. Selection and sizing remain separate; a saved sphere
+supports different laws without rebuilding its source catalog. No count-
+adaptive sizing or alternate sky/projection path is introduced.
+
+### Minimal chart magnitude key and detailed facing report
+
+Canonical chart export invokes atlas extra furniture after chart rendering
+and before saving. Shared rendered-legend composition consumes that geometry
+for both the minimal bracketed chart key and the full interval-count report.
+Generic legend descriptors carry counts and active-range membership; the
+Matplotlib legend owner packs physical disks and draws range/veil furniture
+at current renderer coordinates. Atlas presentation supplies veil appearance.
+Scientific selection, star sizing, sphere reuse and projection remain unchanged.

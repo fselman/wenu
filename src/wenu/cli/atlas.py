@@ -104,6 +104,11 @@ def create_main(argv=None):
     parser.add_argument("--jobs", type=int, default=2)
     parser.add_argument("--magnitude-limit", type=float,
         help="Override the presentation's stellar magnitude limit (-2 through 11).")
+    from wenu.charts.style_overrides import add_magnitude_sizing_arguments
+    add_magnitude_sizing_arguments(parser)
+    parser.add_argument("--style", choices=("atlas", "cartoon"))
+    parser.add_argument("--mode", choices=("print", "presentation"))
+    parser.add_argument("--star-size-scale", type=float, help="Explicit diameter multiplier.")
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--index", type=Path,
         help="One-page index PDF; enables even report pages facing odd chart pages.")
@@ -115,13 +120,19 @@ def create_main(argv=None):
         from wenu.charts.atlas_publication import AtlasChartPresentation, create_atlas
         with args.config.open("rb") as stream:
             presentation = AtlasChartPresentation.from_dict(tomllib.load(stream))
+        from dataclasses import replace
+        from wenu.charts.style_overrides import magnitude_sizing_from_arguments
+        presentation = replace(presentation,
+            stellar_magnitude_sizing=magnitude_sizing_from_arguments(args, presentation.stellar_magnitude_sizing),
+            **{name: getattr(args, name) for name in ("style", "mode", "star_size_scale")
+               if getattr(args, name) is not None})
         if args.magnitude_limit is not None:
             from dataclasses import replace
             presentation = replace(presentation, star_magnitude_limit=args.magnitude_limit)
         output = create_atlas(args.design, args.output_dir, presentation=presentation,
             charts=args.charts, jobs=args.jobs, save_sky=args.save_sky, from_sky=args.from_sky,
             index=args.index)
-    except (ValueError, OSError, UnicodeError, RuntimeError) as exc:
+    except (ValueError, TypeError, OSError, UnicodeError, RuntimeError) as exc:
         parser.error(str(exc))
     except KeyboardInterrupt:
         print("Atlas generation interrupted.", file=sys.stderr)
