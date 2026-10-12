@@ -3515,3 +3515,14 @@ sized polar footprints; its geometry tests extend the analytic containment oracl
 to mixed sheet sizes. Existing atlas CLI tests cover request binding, redundant
 layout validation and a single configurable 7-point Messier designation on a
 co-located galaxy. No production or test file is added.
+
+Atlas review: rendering/symbols.py owns filled-cluster marker paths;
+style_components.py/styles.py and legend_symbols.py carry the matching optional
+chart/legend appearance. objects/globular_clusters.py admits compatibility centre
+geometry. request_grids.py carries the independent Dec-label scale; regional
+configuration defaults preserve its former scale. rendering/matplotlib.py owns
+pure display-curve magnification. charts/atlas_publication.py owns report count
+furniture and atomic appendix assembly; stellar_sizing_report.py owns actual
+catalogue cumulative counts and their audit/export products. Existing atlas,
+cluster, deep-sky-symbol, renderer and configuration test files protect these
+seams; no production or test module is added.

@@ -5206,3 +5206,16 @@ points. Chart count and analytic coverage do not establish label readability;
 Mac index/print review and final-candidate full tests remain pending. The
 coordinate-system guide was reviewed and remains current: frames, epochs,
 provenance and scientific transformations are unchanged.
+
+Atlas visual candidate: 1.8-times DSO diameters, configurable yellow filled
+cluster circles (internal cross for globulars), 80-percent Dec labels, per-chart
+visible-star count in report legends, and a final cumulative catalogue-count
+appendix. The user selected log N versus magnitude; zero/negative magnitudes
+are valid on that linear x-axis. Counts use actual source photometry, unique HIP
+identifiers and the atlas cutoff, not duplicated chart appearances.
+After visual acceptance, final-candidate full verification and separately
+requested merge/cleanup, the next work is category-by-category cluster and SNR
+curation: inspect histograms of physical catalogue characteristics one at a time
+and overlay the corresponding small-telescope catalogue selections. Specific
+comparison catalogues and scientific characteristic definitions will be resolved
+within that later curation step. No such curation or merge is claimed complete.

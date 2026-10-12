@@ -191,6 +191,9 @@ class AtlasChartPresentation:
     milky_way_color: str = "#87CEFA"
     legend_fontsize: float = 12.0
     messier_label_fontsize: float = 7.0
+    grid_dec_label_scale: float = 0.8
+    deep_sky_symbol_scale: float = 1.8
+    cluster_face_color: str = "yellow"
 
     def __post_init__(self):
         import math
@@ -213,7 +216,7 @@ class AtlasChartPresentation:
                 and limit > self.stellar_magnitude_sizing.size_reference_magnitude):
             raise ValueError("Magnitude limit must not exceed the sizing reference.")
         for name in ("star_size_scale", "report_label_scale", "report_separator_width", "report_separator_gap_mm",
-                     "grid_label_fontsize", "grid_minor_label_scale", "grid_frame_width_scale", "legend_fontsize", "messier_label_fontsize"):
+                     "grid_label_fontsize", "grid_minor_label_scale", "grid_frame_width_scale", "legend_fontsize", "messier_label_fontsize", "deep_sky_symbol_scale"):
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
                 raise ValueError(f"{name} must be finite and positive.")
@@ -223,6 +226,11 @@ class AtlasChartPresentation:
             raise ValueError("grid_lines_visible must be boolean.")
         if not math.isfinite(self.star_size_scale * self.star_size_scale):
             raise ValueError("star_size_scale squared must be finite.")
+        if not math.isfinite(self.deep_sky_symbol_scale * self.deep_sky_symbol_scale):
+            raise ValueError("deep_sky_symbol_scale squared must be finite.")
+        from matplotlib.colors import is_color_like
+        if not isinstance(self.cluster_face_color, str) or not is_color_like(self.cluster_face_color):
+            raise ValueError("Invalid cluster_face_color.")
         _identity(self.report_label_family, "report_label_family")
         if not isinstance(self.report_label_weight, str) or self.report_label_weight not in {"normal", "bold", "light", "medium", "semibold", "heavy", "black"}:
             raise ValueError("Invalid report_label_weight.")
@@ -413,6 +421,8 @@ def _render_atlas_report(chart, sky, composition, rendering, directory,
         legends = draw_automatic_chart_legends(ax, chart, sky, report_style,
             rendering, resolved_detail=composition.detail, plan=plan,
             include_context=True, object_title=title,
+            stellar_title="Star magnitude" + (f" ({data['stars']['statistics']['visible_count']:,})"
+                if data['stars']['statistics'] is not None else ""),
             stellar_reference_range=_atlas_full_magnitude_range(composition, data),
             stellar_report_range=True, stellar_veil_color=presentation.magnitude_veil_color,
             stellar_veil_alpha=presentation.magnitude_veil_alpha)
@@ -696,8 +706,15 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             products={p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                       for p in staging.iterdir() if p.suffix == ".svg" or p.name.endswith("_report_data.json")})
         (staging / "manifest.json").write_text(json.dumps(analysis_manifest))
-        from .stellar_sizing_report import analyze
+        from .stellar_sizing_report import analyze, render_catalogue_star_counts
         analyze([staging], staging / "stellar-sizing", atlas_report=True)
+        count_report = None
+        if "stars" in presentation.layers:
+            catalogue_sky = sky if worker_count == 1 else snapshot.make_sky()
+            count_report = render_catalogue_star_counts(catalogue_sky.stars,
+                staging / "atlas-star-counts", magnitude_limit=presentation.star_magnitude_limit,
+                page=atlas.geometry.page, dpi=presentation.dpi,
+                provenance=dict(design_sha256=hashlib.sha256(raw).hexdigest(), snapshot_sha256=digest))
         with PdfWriter() as writer:
             page_order = []
             if index_bytes is not None:
@@ -719,6 +736,10 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                 writer.append(PdfReader(budget_pdf))
                 page_order.append(dict(page=len(page_order) + 1, kind="stellar_area_budget"))
                 writer.add_outline_item("Stellar area budget", len(writer.pages) - 1)
+            if count_report is not None:
+                writer.append(PdfReader(staging / "atlas-star-counts.pdf"))
+                page_order.append(dict(page=len(page_order) + 1, kind="catalogue_star_counts"))
+                writer.add_outline_item("Catalogue star counts", len(writer.pages) - 1)
             writer.write(staging / "atlas.pdf")
         for sheet in sheets:
             report_path = staging / f"chart-{sheet.number:02d}_report_data.json"

@@ -2584,3 +2584,15 @@ validate the mixed footprint sizes. Atlas presentation owns positive finite
 messier_label_fontsize (default 7 points); request_generation passes it to the
 canonical label renderer. No new pipeline, production module or coordinate
 convention is introduced.
+
+Atlas review extensions retain the canonical chart command and pipeline.
+Atlas presentation owns cluster fill, DSO diameter scaling and Dec text scaling;
+request_generation resolves the composed deep-sky style. Shared marker paths,
+optional globular catalogue centres, existing legend descriptors and the generic
+renderer own their established seams. The renderer alone magnifies SNR display
+outlines, retaining scientific geometry and source dimensions. Report furniture
+uses existing visible_star_statistics for the chart's parenthesized count.
+stellar_sizing_report also owns the actual-source catalogue-count appendix;
+it reads the admitted sky's source catalogue rather than marker appearances or
+new catalogue loads. Atlas publication appends the page and publishes all audit
+products inside its existing staging/no-clobber lifecycle.

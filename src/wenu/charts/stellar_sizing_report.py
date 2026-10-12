@@ -1,4 +1,4 @@
-"""Measure filled star markers in Wenu SVGs without loading a celestial sphere.
+"""Stellar SVG measurements and actual-catalogue atlas count appendices.
 
 Areas describe complete vector silhouettes, excluding strokes. Count markers
 whose centres survive SVG clipping; partially clipped markers retain full area.
@@ -24,6 +24,62 @@ NUMBER = r"[-+]?(?:\d*\.\d+|\d+\.?\d*)(?:[eE][-+]?\d+)?"
 TOKENS = re.compile(rf"[A-Za-z]|{NUMBER}")
 GAUSS_X, GAUSS_W = np.polynomial.legendre.leggauss(4)
 GAUSS_T = (GAUSS_X + 1) / 2
+
+
+def catalogue_star_counts(stars, magnitude_limit):
+    """Cumulative actual catalogue counts, independent of page appearances."""
+    source = stars.source_catalog
+    source = source.loc[~source.index.duplicated(keep="first")]
+    magnitudes = source["magnitude"].to_numpy(dtype=float)
+    ra = source["ra_hours"].to_numpy(dtype=float)
+    dec = source["dec_degrees"].to_numpy(dtype=float)
+    finite = np.isfinite(magnitudes) & np.isfinite(ra) & np.isfinite(dec)
+    selected = finite & (magnitudes <= magnitude_limit)
+    values, frequency = np.unique(magnitudes[selected], return_counts=True)
+    cumulative = np.cumsum(frequency)
+    return dict(schema_version=1, document_kind="wenu-atlas-catalogue-star-counts",
+        catalogue="Hipparcos", identifier="HIP", scope="complete design, not chart appearances",
+        magnitude_limit=float(magnitude_limit), selected_count=int(np.count_nonzero(selected)),
+        invalid_count=int(np.count_nonzero(~finite)),
+        fainter_count=int(np.count_nonzero(finite & ~selected)),
+        magnitude=values.tolist(), cumulative_count=cumulative.tolist(),
+        log10_cumulative_count=np.log10(cumulative).tolist()), source.index.to_numpy()[selected], magnitudes[selected]
+
+
+def render_catalogue_star_counts(stars, output_prefix, *, magnitude_limit, page, dpi, provenance):
+    """Appendix from catalogue photometry; the existing atlas batch owns export."""
+    import matplotlib.pyplot as plt
+    from .regional import ExportOptions
+    data, identifiers, magnitudes = catalogue_star_counts(stars, magnitude_limit)
+    data["provenance"] = dict(provenance)
+    prefix = Path(output_prefix)
+    with Path(str(prefix) + "_catalogue.csv").open("w", newline="", encoding="utf-8") as stream:
+        writer = csv.writer(stream)
+        writer.writerow(("HIP", "magnitude"))
+        writer.writerows(zip(identifiers, magnitudes))
+    Path(str(prefix) + ".json").write_text(json.dumps(data, indent=2, allow_nan=False) + "\n", encoding="utf-8")
+    figure = plt.figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4), dpi=dpi)
+    try:
+        figure.suptitle(f"Atlas catalogue star counts ({data['selected_count']:,} stars)", fontsize=18, y=.94)
+        figure.text(.5, .885, f"Hipparcos · magnitude ≤ {magnitude_limit:g}\nEach HIP identifier is counted once", ha="center", fontsize=12)
+        ax = figure.add_axes((.15, .25, .8, .56))
+        if data["selected_count"]:
+            ax.step(data["magnitude"], data["log10_cumulative_count"], where="post", color="#183b56")
+        else:
+            ax.text(.5, .5, "No catalogue stars satisfy the atlas selection", transform=ax.transAxes, ha="center")
+        ax.set_xlabel("Catalogue magnitude m", fontsize=14)
+        ax.set_ylabel("log₁₀ N(≤ m)", fontsize=14)
+        ax.tick_params(labelsize=12)
+        ax.grid(alpha=.25)
+        figure.text(.15, .15, "Counts use actual catalogue photometry and finite sky positions.\n"
+            "Overlapping chart appearances are not counted again.\n"
+            "This curve covers the complete atlas design, even in a sample batch.", fontsize=12, va="top")
+        export = ExportOptions(dpi=dpi, bbox_inches=None)
+        for suffix in ("png", "pdf", "svg"):
+            export.save(figure, Path(str(prefix) + "." + suffix))
+    finally:
+        plt.close(figure)
+    return data
 
 
 def _numbers(text):
@@ -805,3 +861,4 @@ def _write_area_budget(prefix, budget, page):
         writer = csv.DictWriter(stream, fieldnames=fields)
         writer.writeheader()
         writer.writerows(rows)
+

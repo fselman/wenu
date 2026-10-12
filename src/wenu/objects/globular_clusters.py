@@ -127,12 +127,14 @@ class GlobularClusters(NonStellar):
         selected=None,
         minimum_size_arcmin=None,
         samples=None,
+        labels_only=False,
     ):
         geometry = super().spherical_geometry(
             observer,
             selected=selected,
             minimum_size_arcmin=minimum_size_arcmin,
             samples=samples,
+            labels_only=labels_only,
         )
         table = self._geometry_table(selected)
         geometry.names = np.asarray(
@@ -148,3 +150,4 @@ class GlobularClusters(NonStellar):
             dtype=object,
         )
         return geometry
+

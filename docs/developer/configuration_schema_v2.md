@@ -449,3 +449,10 @@ The separate atlas chart-presentation TOML supports messier_label_fontsize
 The separate version-2 atlas geometry-request TOML accepts exactly one central
 field_width_deg or field_height_deg, and optional polar_primary_diameter_deg.
 These atlas records are separate from ordinary chart configuration schema v2.
+
+Atlas chart-presentation TOML adds deep_sky_symbol_scale=1.8,
+cluster_face_color="yellow", and grid_dec_label_scale=0.8. The first is a
+positive finite diameter multiplier; the second is a valid colour string.
+The shared ordinary grid edge-mark preset adds grid_dec_label_scale=1.0,
+positive and finite, preserving existing ordinary appearance. These independent
+label/symbol appearance values do not change chart coverage or catalogue data.

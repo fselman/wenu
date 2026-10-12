@@ -217,7 +217,7 @@ def configure_chart_request_grids(sky, request, *, frame=None, observer=None):
 
 
 
-def equatorial_grid_tick_options(name, *, minor_scale, minute_labels_visible=False):
+def equatorial_grid_tick_options(name, *, minor_scale, minute_labels_visible=False, declination_scale=1.0):
     """Chart-owned coordinate typography; renderer consumes only mark records."""
     if name.startswith("right_ascension_"):
         minutes = round(float(name.removeprefix("right_ascension_")) * 4) % 1440
@@ -227,7 +227,7 @@ def equatorial_grid_tick_options(name, *, minor_scale, minute_labels_visible=Fal
         length = 4.0 if minute == 0 else 3.0 if label else 2.0
     else:
         value = float(name.removeprefix("declination_"))
-        label, scale, length = f"{value:+g}°", 1.0, 4.0
+        label, scale, length = f"{value:+g}°", declination_scale, 4.0
     return dict(label=label, font_scale=scale, length_points=length,
                 label_rotation="parallel" if name.startswith("declination_") else None,
                 label_lane=2 if name.startswith("declination_") else 0 if minute == 0 else 1,
@@ -243,7 +243,8 @@ def equatorial_grid_mark_options(chart, presentation):
     boundary = ProjectedCurve([view.x_min, view.x_max, view.x_max, view.x_min],
                              [view.y_min, view.y_min, view.y_max, view.y_max], closed=True)
     ticks = partial(equatorial_grid_tick_options, minor_scale=presentation.grid_minor_label_scale,
-                    minute_labels_visible=presentation.grid_minute_labels_visible)
+                    minute_labels_visible=presentation.grid_minute_labels_visible,
+                    declination_scale=presentation.grid_dec_label_scale)
     return {"equatorial_grid": dict(
         geometry=dict(ra=tuple(range(0, 360, 15 * presentation.grid_ra_step_hours)), dec=tuple(range(-80, 81, 10)),
                       ra_ticks=tuple(index * 2.5 for index in range(144)),

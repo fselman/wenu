@@ -552,8 +552,11 @@ class MatplotlibRenderer:
         label_anchor=None,
         boundary_ticks=None,
         boundary_tick_anchor=None,
+        curve_size_scale=1.0,
     ):
         """Draw a supported projected geometry object."""
+        if isinstance(curve_size_scale, bool) or not isinstance(curve_size_scale, (int, float)) or not np.isfinite(curve_size_scale) or curve_size_scale <= 0:
+            raise ValueError("curve_size_scale must be finite and positive.")
         common = {} if style is None else dict(style)
         labels = {} if label_style is None else dict(label_style)
         polygon_fill = (
@@ -603,7 +606,7 @@ class MatplotlibRenderer:
             )
         elif isinstance(geometry, ProjectedCurve):
             artists = self._draw_curve(
-                geometry,
+                self._display_scaled_curve(geometry, curve_size_scale),
                 common,
                 draw_labels=draw_labels,
                 label_style=labels,
@@ -619,6 +622,7 @@ class MatplotlibRenderer:
                 label_style=labels,
                 label_offset=label_offset,
                 label_formatter=label_formatter,
+                curve_size_scale=curve_size_scale,
             )
         elif isinstance(geometry, ProjectedGrid):
             artists = self._draw_grid(
@@ -877,6 +881,16 @@ class MatplotlibRenderer:
                 )
         return artists
 
+    @staticmethod
+    def _display_scaled_curve(curve, scale):
+        """Magnify a glyph about its display bounds; retain scientific geometry."""
+        if scale == 1 or curve.bounds is None:
+            return curve
+        x_min, x_max, y_min, y_max = curve.bounds
+        x_center, y_center = (x_min + x_max) / 2, (y_min + y_max) / 2
+        return ProjectedCurve(x_center + scale * (curve.x - x_center),
+            y_center + scale * (curve.y - y_center), name=curve.name, closed=curve.closed)
+
     def _draw_curves(
         self,
         curves,
@@ -887,6 +901,7 @@ class MatplotlibRenderer:
         label_style,
         label_offset,
         label_formatter,
+        curve_size_scale=1.0,
     ):
         entity_styles = self._entity_styles(
             styles,
@@ -894,6 +909,7 @@ class MatplotlibRenderer:
         )
         artists = []
         for index, curve in enumerate(curves):
+            curve = self._display_scaled_curve(curve, curve_size_scale)
             name = curve.name
             if name is None:
                 name = self._metadata_label(curves.metadata, index)

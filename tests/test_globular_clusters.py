@@ -73,6 +73,12 @@ def test_normalization_uses_half_light_diameter(catalogue, observer):
         [6.34, 10.0]
     )
     assert np.all(np.isnan(table["position_angle_deg"]))
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    from wenu.geometry.spherical import SphericalPoints
+    points = layer.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None, labels_only=True)
+    assert isinstance(points, SphericalPoints)
+    assert points.metadata['major_axis_arcmin'].tolist() == [6.34,10.0]
+    assert len(points) == 2 and len(layer.catalog) == 2
 
 
 def test_geometry_is_circular_and_preserves_metadata(

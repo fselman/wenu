@@ -540,10 +540,24 @@ def _render_atlas_sheet_request(request, sky):
         isophotes=replace(composition.style.isophotes,
             milky_way_color=presentation.milky_way_color,
             lmc_color=presentation.milky_way_color, smc_color=presentation.milky_way_color)))
+    deep = composition.style.deep_sky
+    area_scale = presentation.deep_sky_symbol_scale ** 2
+    composition = replace(composition, style=replace(composition.style,
+        deep_sky=replace(deep,
+            open_cluster_symbol_name="cluster_circle", open_cluster_color="black",
+            open_cluster_face_color=presentation.cluster_face_color,
+            open_cluster_symbol_size=deep.open_cluster_symbol_size * area_scale,
+            globular_cluster_symbol_name="globular_cluster", globular_cluster_color="black",
+            globular_cluster_face_color=presentation.cluster_face_color,
+            globular_cluster_symbol_size=deep.open_cluster_symbol_size * area_scale,
+            planetary_nebula_symbol_size=deep.planetary_nebula_symbol_size * area_scale)))
     axes_bounds = (page.inner_mm / page.width_mm,
         page.bottom_mm / page.height_mm, page.useful_width_mm / page.width_mm,
         page.useful_height_mm / page.height_mm)
     grid_options = {}
+    if "supernova_remnants" in presentation.layers:
+        grid_options["supernova_remnants"] = dict(
+            render=dict(curve_size_scale=presentation.deep_sky_symbol_scale))
     if "nonstellar" in presentation.layers:
         grid_options["nonstellar"] = dict(geometry=dict(labels_only=True),
             render=dict(draw_markers=False, draw_labels=True,

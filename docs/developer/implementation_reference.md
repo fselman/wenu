@@ -4776,3 +4776,23 @@ The existing persistence test admits tiny cross-platform summary differences
 and still rejects corrupted summaries and primary geometry. No placement is
 rerun and no coverage constraint is relaxed. Coordinate-system conventions and
 owners are unchanged.
+
+AtlasChartPresentation adds deep_sky_symbol_scale=1.8 (finite positive diameter
+scale), cluster_face_color="yellow" and grid_dec_label_scale=0.8.
+EquatorialGridMarks adds grid_dec_label_scale=1.0 for ordinary chart presets.
+DeepSkyStyle/PublicationStyle accept open_cluster_symbol_name/face_color and
+optional globular_cluster_symbol_name/size/face_color; default ordinary symbols
+are preserved. Native globular centre realization reuses the existing labels_only
+geometry option; observed compatibility dispatch admits the same option.
+SymbolLibrary adds cluster_circle and globular_cluster (circle/internal cross).
+MatplotlibRenderer.draw accepts positive finite curve_size_scale, scaling display
+curves about their bounds without mutating original projected or spherical data.
+
+stellar_sizing_report.catalogue_star_counts reads actual source-catalogue rows,
+counts unique HIP IDs with finite positions/photometry below the atlas limit,
+and returns exact cumulative counts by catalogue magnitude. Its appendix exporter
+writes PNG/PDF/SVG, source CSV and JSON with source-selection and snapshot/design
+provenance. Atlas publication appends it after the prior sizing/area appendices.
+Per-chart Star magnitude (N) furniture uses the existing visible-star statistic.
+The coordinate-system guide was reviewed and remains current: no new frame,
+epoch, catalogue astrometry transformation or physical size model is introduced.

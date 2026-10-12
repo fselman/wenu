@@ -218,7 +218,8 @@ def test_entity_label_formatter_can_rename_or_suppress_labels():
     plt.close(figure)
 
 
-def test_curves_preserve_nan_segmentation_and_style():
+@pytest.mark.parametrize('scale', [1.0,1.8])
+def test_curves_preserve_nan_segmentation_and_style(scale):
     figure, ax = plt.subplots()
     renderer = MatplotlibRenderer(ax)
     curves = ProjectedCurves(
@@ -233,6 +234,7 @@ def test_curves_preserve_nan_segmentation_and_style():
     artists = renderer.draw(
         curves,
         style={"linewidth": 1.75, "linestyle": "--"},
+        curve_size_scale=scale,
     )
 
     assert len(artists) == 1
@@ -240,6 +242,9 @@ def test_curves_preserve_nan_segmentation_and_style():
     assert artists[0].get_linewidth() == 1.75
     assert artists[0].get_linestyle() == "--"
     assert np.isnan(artists[0].get_xdata()[2])
+    np.testing.assert_allclose(artists[0].get_xdata(),
+        1.5+scale*(np.asarray([0,1,np.nan,2,3])-1.5),equal_nan=True)
+    np.testing.assert_allclose(curves.items[0].x,[0,1,np.nan,2,3],equal_nan=True)
     plt.close(figure)
 
 

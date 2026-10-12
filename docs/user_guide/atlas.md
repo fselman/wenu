@@ -1410,3 +1410,33 @@ tolerances of 1e-10 degrees for clearance/overlap and 1e-12 steradians for area;
 these tolerances do not relax geometry admission. Certificate keys, method,
 status, sheet count, angular guard and neighbour records remain exact. This
 permits the packaged 36-chart design to be checked on another platform.
+
+### Symbol and catalogue-count review
+
+Atlas chart presentation supports `deep_sky_symbol_scale = 1.8`,
+`cluster_face_color = "yellow"`, and `grid_dec_label_scale = 0.8`.
+The scale multiplies marker diameter (scatter area therefore grows by 3.24).
+Open clusters use black-edged filled circles; globular clusters use the same
+size and fill with an upright internal cross. Their glyph size is a display
+choice, independent of catalogue half-light diameter. Planetary-nebula marker
+areas receive the same diameter scale. SNR outline magnification happens only
+in the renderer about each projected glyph's bounds; spherical/projected source
+geometry and catalogue dimensions are retained unchanged. Ordinary chart styles
+keep their previous symbols unless the new optional cluster style is selected.
+
+Declination edge-label text defaults to 80 percent of the 12-point RA labels
+(9.6 points); RA hour/minute label scales and angular grid spacing are unchanged.
+The shared ordinary edge-mark TOML has `grid_dec_label_scale = 1.0` by default.
+Each atlas report title now reads `Star magnitude (N)`, where N is the number
+of finite stars actually inside that chart frame at its effective cutoff.
+
+The last atlas PDF page is a cumulative `log10 N(≤m)` versus catalogue-magnitude
+plot, exported separately as `atlas-star-counts.png`, `.svg` and `.pdf`.
+It uses actual Hipparcos source-catalogue photometry below the effective atlas
+magnitude limit and finite native positions; each HIP identifier is counted once.
+It is not inferred from SVG marker appearances or a theoretical population law.
+The curve covers the whole declared atlas even in a selected-chart sample batch.
+`atlas-star-counts_catalogue.csv` preserves the selected identifiers/magnitudes;
+`atlas-star-counts.json` contains the cumulative curve, exclusions and exact
+snapshot/design provenance. These products are published atomically with the
+existing chart/report batch. This appendix is omitted when stars are disabled.

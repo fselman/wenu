@@ -688,6 +688,7 @@ def test_reserved_report_mirrors_binding_margin_and_keeps_legends_at_right(typog
             assert options['object_title'] == 'Centre: ICRS\nRA 05h30m00s\nDec +00d00m00s'
         assert options['stellar_reference_range'] == (-2,8)
         assert options['stellar_report_range'] is True
+        assert options['stellar_title'] == ('Star magnitude (2)' if stars else 'Star magnitude')
         assert options['plan'].objects.location == 'upper right'
         assert options['plan'].stars.location == 'lower right'
         assert options['plan'].stars.enabled is stars
@@ -907,7 +908,7 @@ def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
     texts = list(renderer.ax.texts)
     assert ticks and texts
     assert all(t.get_text().endswith(('ʰ','ᵐ','°')) for t in texts)
-    assert all(t.get_fontsize()==(9 if t.get_text().endswith('ᵐ') else 12) for t in texts)
+    assert all(t.get_fontsize()==pytest.approx(9 if t.get_text().endswith('ᵐ') else 9.6 if t.get_text().endswith('°') else 12) for t in texts)
     assert all(a.get_linewidth()==0 for a in lines) == (not lines_visible)
     assert all(a.get_alpha()==0.65 for a in lines)
     if polar:
@@ -973,7 +974,8 @@ def test_requested_portrait_review_sheets_render_through_chart_command(number, t
     ("grid_label_fontsize",float('nan')),("grid_minor_label_scale",1.1),
     ("grid_frame_width_scale",0), ("grid_ra_step_hours",5),
     ("grid_minute_labels_visible",1), ("milky_way_color","invalid"), ("legend_fontsize",0),
-    ("messier_label_fontsize",0)])
+    ("messier_label_fontsize",0), ("deep_sky_symbol_scale",0),
+    ("cluster_face_color","invalid"), ("grid_dec_label_scale",0)])
 def test_atlas_coordinate_presentation_rejects_invalid_values(field,value):
     from wenu.charts.atlas_publication import AtlasChartPresentation
     with pytest.raises(ValueError):
@@ -1109,7 +1111,7 @@ def test_atlas_producer_uses_real_chart_command_and_prepares_sky_once(request_da
     design.write_text(atlas.to_json())
     config = tmp_path/'presentation.toml'
     config.write_text('schema_version=1\ndocument_kind="wenu-atlas-chart-presentation"\n'
-        'layers=["equatorial_grid","galaxies","nonstellar"]\nformats=["pdf","svg"]\n')
+        'layers=["stars","equatorial_grid","galaxies","nonstellar"]\nformats=["pdf","svg"]\n')
     sky = CelestialSphere(None)
     sky.add_equatorial_grid(frame='icrs', equinox='J2000', include_equator=True)
     # Co-located synthetic galaxy and Messier designation exercise both native
@@ -1122,6 +1124,16 @@ def test_atlas_producer_uses_real_chart_command_and_prepares_sky_once(request_da
     catalogue = tmp_path/'synthetic_dso.ecsv';table.write(catalogue,format='ascii.ecsv')
     sky.add_galaxies(filename=catalogue)
     sky.add_nonstellar(filename=catalogue)
+    from wenu.objects.stars import Stars
+    import pandas as pd
+    stars = Stars(None, magnitude_limit=6)
+    stars.source_catalog = pd.DataFrame(dict(
+        ra_hours=[sheet.center_ra_deg / 15]*3,
+        ra_degrees=[sheet.center_ra_deg]*3,
+        dec_degrees=[sheet.center_dec_deg, -80, 0],
+        magnitude=[-1.0, 5.0, 9.0], is_constellation_vertex=[False]*3), index=[11,12,13])
+    stars.catalog = stars.source_catalog[stars.source_catalog.magnitude <= 6].copy()
+    sky.stars = sky.add(stars)
     preparations, dispatches = [], []
     def prepare(raw, directory, **kwargs):
         preparations.append(raw)
@@ -1144,6 +1156,12 @@ def test_atlas_producer_uses_real_chart_command_and_prepares_sky_once(request_da
     manifest=json.loads((output/'manifest.json').read_text())
     assert manifest['charts']==[1,14] and manifest['workers']==1
     assert (output/'atlas.pdf').is_file()
+    counts=json.loads((output/'atlas-star-counts.json').read_text())
+    assert counts['selected_count']==2 and counts['cumulative_count']==[1,2]
+    assert counts['magnitude']==[-1.0,5.0]
+    assert counts['provenance']['snapshot_sha256']=='synthetic-digest'
+    assert manifest['page_order'][-1]['kind']=='catalogue_star_counts'
+    assert all((output/f'atlas-star-counts.{suffix}').is_file() for suffix in ('png','svg','pdf'))
     from xml.etree import ElementTree
     root = ElementTree.parse(output/'chart-14.svg').getroot()
     texts = [''.join(element.itertext()) for element in root.iter() if element.tag.endswith('}text')]
@@ -1152,3 +1170,19 @@ def test_atlas_producer_uses_real_chart_command_and_prepares_sky_once(request_da
         if element.tag.endswith('}text') and ''.join(element.itertext()) == 'M synthetic')
     assert '7px' in designation.get('style', '')
 
+
+
+def test_atlas_catalogue_counts_use_unique_actual_photometry_and_finite_positions():
+    import pandas as pd
+    import numpy as np
+    from types import SimpleNamespace
+    from wenu.charts.stellar_sizing_report import catalogue_star_counts
+    source = pd.DataFrame(dict(magnitude=[-1,-1,0,2,7,1],
+        ra_hours=[0,0,2,3,4,np.nan], dec_degrees=[0]*6), index=[1,1,2,3,4,5])
+    before=source.copy(deep=True)
+    data, identifiers, values=catalogue_star_counts(SimpleNamespace(source_catalog=source),6)
+    assert identifiers.tolist()==[1,2,3] and values.tolist()==[-1,0,2]
+    assert data['selected_count']==3 and data['cumulative_count']==[1,2,3]
+    assert data['invalid_count']==1 and data['fainter_count']==1
+    np.testing.assert_allclose(data['log10_cumulative_count'],np.log10([1,2,3]))
+    pd.testing.assert_frame_equal(source,before)

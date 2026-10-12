@@ -146,6 +146,13 @@ def _variable_star() -> Path:
     return Path.make_compound_path(circle, Path(dot_vertices, dot.codes))
 
 
+def _globular_cluster() -> Path:
+    """A circle with an upright cross wholly inside its circumference."""
+    cross = Path(np.asarray(((-1, 0), (1, 0), (0, -1), (0, 1)), dtype=float),
+                 np.asarray((Path.MOVETO, Path.LINETO, Path.MOVETO, Path.LINETO)))
+    return Path.make_compound_path(Path.unit_circle(), cross)
+
+
 def _multiple_star() -> Path:
     """Return an independent conventional multiple-star marker."""
     circle = Path.unit_circle()
@@ -169,6 +176,8 @@ class SymbolLibrary:
         default_factory=_circle_with_radial_ticks
     )
     open_cluster: Path = field(default_factory=_dotted_circle)
+    cluster_circle: Path = field(default_factory=Path.unit_circle)
+    globular_cluster: Path = field(default_factory=_globular_cluster)
     variable_star: Path = field(default_factory=_variable_star)
     multiple_star: Path = field(default_factory=_multiple_star)
     filled_five_point_star: Path = field(
@@ -184,6 +193,8 @@ class SymbolLibrary:
             {
                 "planetary_nebula": self.planetary_nebula,
                 "open_cluster": self.open_cluster,
+                "cluster_circle": self.cluster_circle,
+                "globular_cluster": self.globular_cluster,
                 "variable_star": self.variable_star,
                 "multiple_star": self.multiple_star,
                 "filled_five_point_star": self.filled_five_point_star,
@@ -197,3 +208,4 @@ class SymbolLibrary:
 
 
 DEFAULT_SYMBOLS = SymbolLibrary()
+
