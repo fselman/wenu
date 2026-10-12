@@ -3474,3 +3474,20 @@ renderer or export pipeline is added. Resolved designs optionally retain the
 canonical request and computed layout; historical JSON remains readable.
 `wenu_plot_atlas` consumes the result without rerunning placement. Existing
 geometry and CLI test owners protect scientific containment and provenance.
+
+
+### Atlas grid/frame ownership candidate (2026-10-12)
+
+Extend charts/atlas_publication.py for atlas-only cadence, typography, physical
+inset and measured chart-area reporting. sky/coordinate_grids.py owns optional
+request-local tick-only reference curves; existing projection/coordinate owners
+realize them. charts/boundaries.py owns actual crossing and inward tangent
+selection; rendering/label_placement.py transports a generic tick direction;
+rendering/matplotlib.py draws marks in points and separates measured exterior
+labels. sky/semantic_identity.py declares their ticks child. The existing
+projections/stereographic.py rejects its undefined antipode as a non-finite
+curve break. No new production or test module is introduced. Existing coordinate
+grid, boundary-anchor, renderer, projection and atlas CLI test owners protect
+these respective seams. The coordinate-system guide was reviewed and remains
+current; there is no new frame, epoch or observation path.
+

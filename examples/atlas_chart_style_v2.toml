@@ -1,0 +1,32 @@
+schema_version = 1
+document_kind = "wenu-atlas-chart-presentation"
+style = "atlas"
+dpi = 150
+star_magnitude_limit = 6.0
+star_size_scale = 1.5
+report_label_scale = 3.0
+report_label_family = "sans-serif"
+report_label_weight = "normal"
+report_label_color = "black"
+report_separator_width = 0.8
+report_separator_gap_mm = 3.0
+magnitude_veil_color = "white"
+magnitude_veil_alpha = 0.65
+chart_number_box_visible = true
+chart_number_box_location = "upper right"
+chart_number_box_facecolor = "white"
+chart_number_box_edgecolor = "#777777"
+chart_number_box_alpha = 0.9
+chart_number_box_padding = 0.4
+chart_number_box_borderpad = 0.0
+# Physical coordinate frame; existing sky/stellar appearance is retained.
+grid_lines_visible = true
+grid_label_fontsize = 12.0
+grid_minor_label_scale = 0.75
+grid_frame_width_scale = 1.5
+formats = ["png", "pdf", "svg"]
+layers = ["stars", "constellation_lines", "constellation_labels",
+  "constellation_boundaries", "milky_way", "magellanic_clouds", "nonstellar",
+  "galaxies", "open_clusters", "globular_clusters", "supernova_remnants",
+  "planetary_nebulae", "equatorial_grid"]
+

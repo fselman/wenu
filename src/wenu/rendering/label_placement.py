@@ -25,8 +25,15 @@ class CurveLabelPlacement:
     horizontal_alignment: str | None = None
     vertical_alignment: str | None = None
     exterior_direction: tuple[float, float] | None = None
+    tick_direction: tuple[float, float] | None = None
 
     def __post_init__(self):
+        if self.tick_direction is not None:
+            direction = np.asarray(self.tick_direction, dtype=float)
+            if (direction.shape != (2,) or not np.isfinite(direction).all()
+                    or not np.any(direction)):
+                raise ValueError("tick direction must be a finite nonzero vector.")
+            object.__setattr__(self, "tick_direction", tuple(direction))
         if self.exterior_direction is not None:
             direction = np.asarray(self.exterior_direction, dtype=float)
             if (
@@ -162,3 +169,4 @@ def tangent_label_placement(
         )
     )
     return CurveLabelPlacement(x, y, angle, normal_offset_em)
+

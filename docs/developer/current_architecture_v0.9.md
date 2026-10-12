@@ -2515,3 +2515,27 @@ renderer or export pipeline is added. Resolved designs optionally retain the
 canonical request and computed layout; historical JSON remains readable.
 `wenu_plot_atlas` consumes the result without rerunning placement. Existing
 geometry and CLI test owners protect scientific containment and provenance.
+
+
+### Atlas coordinate-grid and frame candidate (2026-10-12)
+
+Based on synchronized main `28e52bae`, atlas publication requests fixed ICRS
+RA lines every 2h and declination lines every 30 degrees, plus separate
+10-minute RA and 10-degree declination tick curves from EquatorialGrid.
+Source layers and saved native snapshots are not mutated. Boundary ownership
+remains in charts/boundaries.py: all true crossings carry inward projected
+curve tangents. The generic renderer draws physical marks and measures labels;
+it neither generates coordinates nor projects a second sky. Whole-hour labels
+and declinations default to 12 points; 20m/40m labels default to 9 points.
+Unlabelled RA marks occur at 10m, 30m and 50m within each hour. Dense minute
+and declination labels separate outward without moving scientific crossings.
+
+The nominal exterior-band minimum is scaled by 1.5. Uniform axes reduction
+reserves font-measured collision clearance inside the useful paper margins;
+projection, persisted viewport, angular coverage and tiling are unchanged.
+Actual renderer axes supply stellar area-budget denominators and the report's
+layout.chart_sky_frame. The shared stereographic projector treats its exact
+antipode as a non-finite break, preventing a false segment across polar sheets.
+PNG/PDF/semantic SVG use the same canonical render. No new module is introduced.
+Mac visual/print acceptance and merge remain pending.
+

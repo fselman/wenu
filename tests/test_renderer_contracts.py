@@ -617,3 +617,26 @@ def test_region_text_requires_whole_box_containment_in_its_own_visible_polygon(d
     renderer.finalize_graphics()
     assert ax.texts[0].get_position() == position and ax.texts[0].get_visible()
     plt.close(figure)
+
+@pytest.mark.parametrize("dpi", [100, 300])
+def test_boundary_ticks_are_slanted_physical_marks_without_interior_curves(dpi):
+    from wenu.charts.boundaries import ExteriorGridLabelAnchor
+    figure, ax = plt.subplots(figsize=(4,4),dpi=dpi)
+    ax.set(xlim=(-1,1),ylim=(-1,1),aspect="equal")
+    boundary = ProjectedCurve([-1,1,1,-1],[-1,-1,1,1],closed=True)
+    anchor = ExteriorGridLabelAnchor(None,boundary,all_crossings=True)
+    renderer = MatplotlibRenderer(ax)
+    grid = ProjectedGrid({"edge": ProjectedCurves([ProjectedCurve(
+        [-2,2],[-1,1],name="synthetic-diagonal")])})
+    marks = renderer.draw(grid,boundary_tick_anchor=anchor,
+        boundary_ticks={"edge": lambda name: dict(length_points=4,label=None)},
+        style=dict(color="black",linewidth=.8))
+    assert len(marks) == 2 and len(ax.lines) == 2 and len(ax.texts) == 0
+    for mark in marks:
+        points = ax.transData.transform(mark.get_xydata())
+        vector = points[1]-points[0]
+        assert np.linalg.norm(vector)*72/dpi == pytest.approx(4)
+        assert vector[1]/vector[0] == pytest.approx(.5)
+        assert mark._wenu_semantic_component == "ticks"
+    plt.close(figure)
+

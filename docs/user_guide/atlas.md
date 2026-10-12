@@ -1113,8 +1113,8 @@ New chart reports retain exact rendered-magnitude budgets in
 `stellar-sizing_area-budget.png`, `.pdf`, `.svg`, `.json`, and `.csv`.
 The PDF budget page follows the sizing report in the book. Each occupied
 one-magnitude interval `[lower, upper)` includes its count and summed filled
-circular symbol area. Fractions use the useful chart-frame area, excluding
-page margins. Exact integer magnitudes enter the interval starting at that
+circular symbol area. Fractions use the actual rendered sky area, excluding
+page margins and the coordinate-label frame. Exact integer magnitudes enter the interval starting at that
 integer. Counts are appearances: charts overlapping on the sky repeat stars.
 Areas exclude stroke width and do not compute the union of overlapping disks.
 
@@ -1251,3 +1251,35 @@ wenu_create_atlas \
 Use `--save-sky atlas_portrait_sky_v1` instead of `--from-sky` for the first
 render of this design. Worker count controls concurrent chart renders and
 memory use, without changing atlas geometry or stellar appearance.
+
+## Coordinate grid and readable edge markings
+
+Atlas chart pages use fixed ICRS grid lines every **2h in RA** and **30° in
+declination**. Edge marks follow the local projected coordinate curve into the
+sky. Every whole hour is labelled; **20m and 40m** use smaller labels; **10m,
+30m and 50m** have marks only. Declination marks and labels occur every **10°**
+where the corresponding curve crosses a page's sky boundary. A curve entirely
+inside the sky has no edge crossing. The poles have no unique RA label.
+
+Optional chart-presentation keys (same schema version 1):
+
+```toml
+grid_lines_visible = true
+grid_label_fontsize = 12.0
+grid_minor_label_scale = 0.75
+grid_frame_width_scale = 1.5
+```
+
+Font sizes are physical points: the defaults give 12-point hour/declination
+labels and 9-point minute labels. The nominal exterior-frame minimum is 50%
+wider; font measurement reserves extra space for overlapping labels. Dense
+minute/declination labels move outward into separate lanes while their marks
+stay at the true coordinate crossing. The sky shrinks uniformly within the
+useful paper margins, retaining the exact JSON projection, angular coverage and
+sheet numbering. Stellar area fractions use the actual reduced sky area.
+
+Set `grid_lines_visible = false` to retain edge marks and labels with the
+interior lines hidden. Remove `equatorial_grid` from `layers` to omit the
+complete equatorial grid and its reserved frame space. Both controls are
+independent of the resolved atlas design and saved sky data.
+

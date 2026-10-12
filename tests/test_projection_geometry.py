@@ -120,3 +120,21 @@ def test_legacy_altaz_projection_remains_available(projection):
     x, y = projection.project(alt_deg=90.0, az_deg=0.0)
     assert x == pytest.approx(0.0, abs=1e-12)
     assert y == pytest.approx(0.0, abs=1e-12)
+
+@pytest.mark.parametrize("pole", [-90.0, 90.0])
+@pytest.mark.parametrize("flip", [False, True])
+def test_stereographic_antipode_is_a_break_not_a_false_visible_segment(pole, flip):
+    from wenu.geometry.frame import SphericalFrame
+    from wenu.geometry.projected import ProjectedCurve
+    from wenu.charts.boundaries import ExteriorGridLabelAnchor
+    projection = StereographicProjection(frame=SphericalFrame(
+        pole_lon_deg=82.5,pole_lat_deg=pole),flip_ew=flip)
+    x, y = projection.project_spherical(np.arange(0,360,15),np.full(24,-pole))
+    assert np.isnan(x).all() and np.isnan(y).all()
+    # Neighbouring valid directions still obey the analytic stereographic radius.
+    x,y = projection.project_spherical(82.5,pole/90*89)
+    assert np.hypot(x,y) == pytest.approx(2*np.tan(np.radians(.5)),abs=1e-12)
+    curve = projection.project_curve(np.zeros(721),np.linspace(-90,90,721))
+    boundary = ProjectedCurve([-1,1,1,-1],[-1,-1,1,1],closed=True)
+    assert len(ExteriorGridLabelAnchor(None,boundary,all_crossings=True)(curve,None)) == 1
+

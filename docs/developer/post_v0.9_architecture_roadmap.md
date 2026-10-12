@@ -5138,3 +5138,34 @@ the chart frame, with at least 50 percent more coordinate-label border space
 and a slightly smaller physical sky rectangle while preserving angular
 field and centre. Assess the existing grid, frame, layout and export owners
 before implementation. Keep it outside the accepted geometry candidate.
+
+
+### Atlas coordinate-grid candidate (2026-10-12)
+
+Fernando requested this bounded milestone after confirming clean synchronized
+Mac main at 28e52bae5f19e41f1f38b8c84680bb1e95437ce0: 2h RA / 30-degree Dec
+interior lines; whole-hour edge labels; smaller 20m/40m labels; all 10m RA ticks;
+10-degree Dec ticks and labels; inward tick slopes following projected curves.
+Keep coordinate text clearly legible and the nominal frame minimum 50% wider,
+shrinking only physical sky size while preserving angular coverage.
+
+As-is: native preparation registered only an equator under equatorial_grid;
+ordinary exterior anchors selected one crossing, had no edge tick contract,
+and atlas axes occupied the complete useful page. The candidate extends only
+existing scientific/reference, boundary, renderer and publication owners.
+Font-measured outward lanes resolve polar overlaps without moving coordinate
+marks. The exposed grid_lines_visible switch permits later lines-off review.
+Actual sky area now governs stellar area budgets. An exact-antipode regression
+found during polar review is corrected in the shared stereographic owner,
+rather than being hidden by an atlas-specific projection workaround.
+
+Test admission extends existing coordinate-grid, boundary-anchor, renderer,
+projection and atlas CLI files. New fault models are separate major/tick
+cadences, immutable native state, all-crossing deduplication/closure, physical
+DPI-invariant slopes, singularity breaks, outward label collision clearance,
+paper containment and unchanged viewports. Existing lower-level tests retain
+ownership; no module, dependency, source acquisition or test file is added.
+The coordinate-system guide and current ownership diagrams were reviewed;
+scientific coordinate meaning remains current. Mac scientific/print acceptance,
+full final-candidate suite before merge, merge and cleanup remain separate.
+

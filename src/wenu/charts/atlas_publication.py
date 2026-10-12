@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 import hashlib
 import re
 from pathlib import Path
@@ -182,6 +182,10 @@ class AtlasChartPresentation:
     chart_number_box_alpha: float = 0.9
     chart_number_box_padding: float = 0.4
     chart_number_box_borderpad: float = 0.0
+    grid_lines_visible: bool = True
+    grid_label_fontsize: float = 12.0
+    grid_minor_label_scale: float = 0.75
+    grid_frame_width_scale: float = 1.5
 
     def __post_init__(self):
         import math
@@ -202,10 +206,15 @@ class AtlasChartPresentation:
                 and self.stellar_magnitude_sizing.algorithm != "legacy"
                 and limit > self.stellar_magnitude_sizing.size_reference_magnitude):
             raise ValueError("Magnitude limit must not exceed the sizing reference.")
-        for name in ("star_size_scale", "report_label_scale", "report_separator_width", "report_separator_gap_mm"):
+        for name in ("star_size_scale", "report_label_scale", "report_separator_width", "report_separator_gap_mm",
+                     "grid_label_fontsize", "grid_minor_label_scale", "grid_frame_width_scale"):
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
                 raise ValueError(f"{name} must be finite and positive.")
+        if self.grid_minor_label_scale > 1:
+            raise ValueError("grid_minor_label_scale must be at most 1.")
+        if type(self.grid_lines_visible) is not bool:
+            raise ValueError("grid_lines_visible must be boolean.")
         if not math.isfinite(self.star_size_scale * self.star_size_scale):
             raise ValueError("star_size_scale squared must be finite.")
         _identity(self.report_label_family, "report_label_family")
@@ -271,6 +280,16 @@ def _atlas_report_data(chart, sky, composition, rendering):
     from .legend_geometry import rendered_star_geometry
     from .magnitude_legend import visible_star_statistics, visible_star_mask
     page = chart.page
+    sky_area_mm2 = page.useful_width_mm * page.useful_height_mm
+    renderer = getattr(rendering, "renderer", None)
+    sky_frame = None
+    if renderer is not None:
+        renderer.ax.apply_aspect()
+        box = renderer.ax.get_window_extent()
+        scale = 25.4 / renderer.ax.figure.dpi
+        sky_frame = dict(x=box.x0 * scale, y=box.y0 * scale,
+                         width=box.width * scale, height=box.height * scale)
+        sky_area_mm2 = sky_frame["width"] * sky_frame["height"]
     statistics = None
     reference_range = None
     budget = None
@@ -289,7 +308,7 @@ def _atlas_report_data(chart, sky, composition, rendering):
         mask = visible_star_mask(stars.spherical, stars.projected, stars.viewport,
                                 effective_limit=composition.detail.star_magnitude_limit)
         budget = magnitude_area_budget(np.asarray(stars.spherical.metadata["magnitude"])[mask],
-            sizing_record, page.useful_width_mm * page.useful_height_mm)
+            sizing_record, sky_area_mm2)
     return dict(schema_version=1, document_kind="wenu-atlas-chart-report",
         stellar_sizing=sizing_record, stellar_area_budget=budget,
         chart_number=chart.sheet.number, sheet_id=chart.sheet.sheet_id,
@@ -299,6 +318,7 @@ def _atlas_report_data(chart, sky, composition, rendering):
                     pole_meridian_ra_deg=chart.sheet.pole_meridian_ra_deg),
         page=dict(width_mm=page.width_mm, height_mm=page.height_mm),
         layout=dict(units="mm", origin="bottom-left",
+            chart_sky_frame=sky_frame,
             frame=dict(x=page.outer_mm, y=page.bottom_mm,
                 width=page.useful_width_mm, height=page.useful_height_mm),
             report=dict(x=page.outer_mm + 4, y=page.bottom_mm + 4,
@@ -468,6 +488,76 @@ def _draw_atlas_magnitude_scale(*, chart, sky, renderer, composition, rendering)
     return legends
 
 
+def _atlas_tick_options(name, *, minor_scale):
+    """Chart-owned coordinate typography; renderer consumes only mark records."""
+    if name.startswith("right_ascension_"):
+        minutes = round(float(name.removeprefix("right_ascension_")) * 4) % 1440
+        hour, minute = divmod(minutes, 60)
+        label = f"{hour}h" if minute == 0 else f"{minute}m" if minute in (20, 40) else None
+        scale = 1.0 if minute == 0 else minor_scale
+        length = 4.0 if minute == 0 else 3.0 if label else 2.0
+    else:
+        value = float(name.removeprefix("declination_"))
+        label, scale, length = f"{value:+g}°", 1.0, 4.0
+    return dict(label=label, font_scale=scale, length_points=length,
+                label_lane=2 if name.startswith("declination_") else 0 if minute == 0 else 1,
+                style=dict(color="black", linewidth=0.8, alpha=1.0, linestyle="-", zorder=4))
+
+
+def _atlas_grid_options(chart, presentation):
+    """Request-local grid definitions; saved source data remains unchanged."""
+    from functools import partial
+    from .boundaries import ExteriorGridLabelAnchor
+    from wenu.geometry.projected import ProjectedCurve
+    view = chart.viewport
+    boundary = ProjectedCurve([view.x_min, view.x_max, view.x_max, view.x_min],
+                             [view.y_min, view.y_min, view.y_max, view.y_max], closed=True)
+    ticks = partial(_atlas_tick_options, minor_scale=presentation.grid_minor_label_scale)
+    return {"equatorial_grid": dict(
+        geometry=dict(ra=tuple(range(0, 360, 30)), dec=tuple(range(-60, 61, 30)),
+                      ra_ticks=tuple(index * 2.5 for index in range(144)),
+                      dec_ticks=tuple(range(-80, 81, 10))),
+        render=dict(draw_labels=False,
+                    style={} if presentation.grid_lines_visible else dict(linewidth=0),
+                    label_style=dict(fontsize=presentation.grid_label_fontsize, color="black", alpha=1.0),
+                    boundary_ticks=dict(tick_meridians=ticks, tick_parallels=ticks),
+                    boundary_tick_anchor=ExteriorGridLabelAnchor(None, boundary, all_crossings=True)))}
+
+
+def _atlas_grid_layout(page, style, presentation):
+    """Uniform sky reduction reserves the wider physical coordinate frame."""
+    canvas = style.canvas
+    baseline = max(8.5, presentation.grid_label_fontsize) + 2 * (
+        canvas.grid_label_band_padding_points + canvas.grid_label_band_linewidth / 2)
+    width = baseline * presentation.grid_frame_width_scale
+    padding = (width - max(8.5, presentation.grid_label_fontsize)) / 2 - canvas.grid_label_band_linewidth / 2
+    if padding < 0:
+        raise ValueError("grid_frame_width_scale is too small for the labels.")
+    # Reserve a conservative two-label lane where RA and Dec cross together.
+    # This is font measurement, not another sky realization or a changed viewport.
+    from matplotlib.backends.backend_agg import RendererAgg
+    from matplotlib.font_manager import FontProperties
+    measure = RendererAgg(1, 1, 72)
+    font = FontProperties(size=presentation.grid_label_fontsize)
+    def text_width(text):
+        return measure.get_text_width_height_descent(text, font, ismath=False)[0]
+    ra_width = max(text_width(f"{hour}h") for hour in range(24))
+    dec_width = max(text_width(f"{value:+g}°") for value in range(-80,81,10))
+    reserve = max(width, ra_width + dec_width + 2 + 2 * (
+        canvas.grid_label_band_padding_points + canvas.grid_label_band_linewidth / 2))
+    inset_mm = reserve * 25.4 / 72.0
+    factor = min(1 - 2 * inset_mm / page.useful_width_mm,
+                 1 - 2 * inset_mm / page.useful_height_mm)
+    if factor <= 0:
+        raise ValueError("Coordinate frame does not fit the useful page.")
+    width_mm, height_mm = page.useful_width_mm * factor, page.useful_height_mm * factor
+    bounds = ((page.inner_mm + (page.useful_width_mm - width_mm) / 2) / page.width_mm,
+              (page.bottom_mm + (page.useful_height_mm - height_mm) / 2) / page.height_mm,
+              width_mm / page.width_mm, height_mm / page.height_mm)
+    return bounds, replace(style, canvas=replace(canvas,
+        grid_label_band=True, grid_label_band_padding_points=padding))
+
+
 def _render_atlas_sheet(task, sky=None):
     """One isolated figure, canonical composition/export, all requested formats."""
     import matplotlib.pyplot as plt
@@ -493,9 +583,15 @@ def _render_atlas_sheet(task, sky=None):
                 for name in presentation.layers),
             constellation_star_mode="none"))
     figure = plt.figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4))
-    ax = figure.add_axes((page.inner_mm / page.width_mm,
+    axes_bounds = (page.inner_mm / page.width_mm,
         page.bottom_mm / page.height_mm, page.useful_width_mm / page.width_mm,
-        page.useful_height_mm / page.height_mm))
+        page.useful_height_mm / page.height_mm)
+    grid_options = None
+    if "equatorial_grid" in presentation.layers:
+        axes_bounds, grid_style = _atlas_grid_layout(page, composition.style, presentation)
+        composition = replace(composition, style=grid_style)
+        grid_options = _atlas_grid_options(chart, presentation)
+    ax = figure.add_axes(axes_bounds)
     ax.set_xticks([])
     ax.set_yticks([])
     _draw_atlas_chart_number(ax, sheet.number, composition.style, presentation)
@@ -505,6 +601,7 @@ def _render_atlas_sheet(task, sky=None):
         result = export_composed_chart(chart, sky, renderer,
             Path(directory) / f"chart-{sheet.number:02d}.{first}",
             composition=composition,
+            layer_options=grid_options,
             realization_context=LayerRealizationContext(NATIVE_ICRS_SPEC),
             export_options=ExportOptions(dpi=presentation.dpi, bbox_inches=None),
             additional_furniture=_draw_atlas_magnitude_scale)
@@ -719,3 +816,4 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             shutil.rmtree(output_dir)
             raise
     return output_dir / "manifest.json"
+

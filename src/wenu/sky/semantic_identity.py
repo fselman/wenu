@@ -62,6 +62,9 @@ class SemanticComponentContract:
 
 
 _GRID_COMPONENT_CONTRACTS = {
+    "ticks": SemanticComponentContract(
+        "ticks", "ticks", "ticks", EditPolicy.STYLE
+    ),
     "lines": SemanticComponentContract(
         "lines", "lines", "lines", EditPolicy.STYLE
     ),
@@ -755,3 +758,4 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
         edit_policy=edit_policy,
         **options,
     )
+

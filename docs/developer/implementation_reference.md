@@ -4688,3 +4688,35 @@ renderer or export pipeline is added. Resolved designs optionally retain the
 canonical request and computed layout; historical JSON remains readable.
 `wenu_plot_atlas` consumes the result without rerunning placement. Existing
 geometry and CLI test owners protect scientific containment and provenance.
+
+
+### Atlas coordinate presentation candidate (2026-10-12)
+
+AtlasChartPresentation adds grid_lines_visible (Boolean, default true),
+grid_label_fontsize (positive physical points, default 12),
+grid_minor_label_scale (positive and at most 1, default 0.75), and
+grid_frame_width_scale (positive, default 1.5; layout rejects values unable
+to fit the requested font or useful page). These are optional version-1
+presentation TOML keys. Omitting equatorial_grid from layers removes its lines,
+ticks, labels and dedicated physical inset. grid_lines_visible=false retains
+ticks and labels while suppressing interior grid lines.
+
+Atlas publication supplies request-local EquatorialGrid.spherical_geometry
+ra/dec selections and ra_ticks/dec_ticks, all in degrees. They become ordinary
+SphericalGrid components, realized in the accepted native ICRS context and
+projected once. Exact-zero declination avoids a duplicated equator component.
+ExteriorGridLabelAnchor(all_crossings=true) returns deduplicated real crossings
+with outward label directions and inward CurveLabelPlacement.tick_direction.
+MatplotlibRenderer.draw accepts boundary_ticks (component-name to mark-policy
+callback) and boundary_tick_anchor for generic physical edge marks. The callback
+returns length_points, optional label, font_scale, label_lane and style;
+tick-only components never draw their complete supporting curves. SVG marks
+have a separate style-editable ticks component. Renderer-measured text lanes
+move outward only; the coordinate anchors and tick slopes remain exact.
+
+The nominal band minimum grows by grid_frame_width_scale. Font measurement
+additionally reserves dense-label clearance; uniform physical sky scaling keeps
+the design's exact viewport and aspect ratio. Report layout.chart_sky_frame
+records the actual odd-page sky rectangle in mm from bottom-left. Stellar area
+budgets use that rectangle's area, excluding the coordinate frame.
+

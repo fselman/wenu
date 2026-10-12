@@ -139,6 +139,31 @@ class MatplotlibRenderer:
             text.set_transform(self.ax.transData + ScaledTranslation(
                 *shift, self.ax.figure.dpi_scale_trans,
             ))
+        # A secondary coordinate family may share an exact boundary crossing.
+        # Separate its text outward; never move the scientific tick along an edge.
+        primary = [text for text in labels if not getattr(text, "_wenu_exterior_lane", 0)]
+        placed = list(primary)
+        secondary = sorted((text for text in labels if getattr(text, "_wenu_exterior_lane", 0)),
+                           key=lambda text: text._wenu_exterior_lane)
+        for text in secondary:
+            position, vector = text._wenu_exterior_attachment
+            origin = self.ax.transData.transform(position)
+            direction = self.ax.transData.transform(np.asarray(position) + vector) - origin
+            direction /= np.linalg.norm(direction)
+            for _ in range(len(labels) + 1):
+                box = text.get_window_extent(renderer)
+                collisions = [other.get_window_extent(renderer) for other in placed
+                              if box.overlaps(other.get_window_extent(renderer))]
+                if not collisions:
+                    break
+                def support(bounds, maximum):
+                    corners = np.array([[bounds.x0, bounds.y0], [bounds.x0, bounds.y1],
+                                        [bounds.x1, bounds.y0], [bounds.x1, bounds.y1]])
+                    return (np.max if maximum else np.min)(corners @ direction)
+                offset = max(support(other, True) - support(box, False) for other in collisions) + 2 * scale
+                text.set_transform(text.get_transform() + ScaledTranslation(
+                    *(direction * offset / self.ax.figure.dpi), self.ax.figure.dpi_scale_trans))
+            placed.append(text)
         boxes = [text.get_window_extent(renderer) for text in labels]
         if circular:
             outer_radius = float(np.max(radius)) + minimum
@@ -525,6 +550,8 @@ class MatplotlibRenderer:
         label_offset=(0.0, 0.0),
         label_formatter=None,
         label_anchor=None,
+        boundary_ticks=None,
+        boundary_tick_anchor=None,
     ):
         """Draw a supported projected geometry object."""
         common = {} if style is None else dict(style)
@@ -605,6 +632,8 @@ class MatplotlibRenderer:
                 label_offset=label_offset,
                 label_formatter=label_formatter,
                 label_anchor=label_anchor,
+                boundary_ticks=boundary_ticks,
+                boundary_tick_anchor=boundary_tick_anchor,
             )
         elif isinstance(geometry, ProjectedPolygon):
             artists = self._draw_polygon(
@@ -902,6 +931,8 @@ class MatplotlibRenderer:
         label_offset,
         label_formatter,
         label_anchor,
+        boundary_ticks,
+        boundary_tick_anchor,
     ):
         component_styles = (
             {} if component_styles is None else component_styles
@@ -914,8 +945,10 @@ class MatplotlibRenderer:
             {} if styles is None else styles
         )
         artists = []
+        boundary_ticks = {} if boundary_ticks is None else boundary_ticks
         for name, curves in grid.components.items():
-            line_artists = self._draw_curves(
+            tick_options = boundary_ticks.get(name)
+            line_artists = [] if tick_options is not None else self._draw_curves(
                     curves,
                     {
                         **style,
@@ -930,7 +963,7 @@ class MatplotlibRenderer:
             for artist in line_artists:
                 setattr(artist, "_wenu_semantic_component", "lines")
             artists.extend(line_artists)
-            if draw_labels:
+            if draw_labels or tick_options is not None:
                 for index, curve in enumerate(curves):
                     curve_name = curve.name
                     if curve_name is None:
@@ -946,14 +979,15 @@ class MatplotlibRenderer:
                         closed=curve.closed,
                         name=curve_name,
                     )
-                    if label_anchor is None:
+                    anchor_policy = boundary_tick_anchor if tick_options is not None else label_anchor
+                    if anchor_policy is None:
                         anchor = self._anchor(curve.x, curve.y)
-                    elif getattr(label_anchor, "near_ends", False):
-                        anchor = label_anchor(
+                    elif getattr(anchor_policy, "near_ends", False):
+                        anchor = anchor_policy(
                             named_curve, self.ax, measure_curve=self._measure_curve_label,
                         )
                     else:
-                        anchor = label_anchor(named_curve, self.ax)
+                        anchor = anchor_policy(named_curve, self.ax)
                     if anchor is None:
                         continue
                     anchors = anchor if isinstance(anchor, list) and all(
@@ -964,6 +998,30 @@ class MatplotlibRenderer:
                             **label_style,
                             **dict(component_label_styles.get(name, {})),
                         }
+                        rule = {} if tick_options is None else tick_options(curve_name)
+                        if tick_options is not None:
+                            if not isinstance(anchor, CurveLabelPlacement) or anchor.tick_direction is None:
+                                raise ValueError("Boundary ticks require an inward curve tangent.")
+                            self.ax.apply_aspect()
+                            origin = self.ax.transData.transform((anchor.x, anchor.y))
+                            tangent = self.ax.transData.transform(
+                                np.array((anchor.x, anchor.y)) + anchor.tick_direction) - origin
+                            tangent /= np.linalg.norm(tangent)
+                            length = float(rule["length_points"])
+                            if not np.isfinite(length) or length <= 0:
+                                raise ValueError("Boundary tick length must be finite and positive.")
+                            end = self.ax.transData.inverted().transform(
+                                origin + tangent * length * self.ax.figure.dpi / 72.0)
+                            tick_style = {**style, **dict(rule.get("style", {}))}
+                            mark = render_curve(self.ax, ProjectedCurve(
+                                [anchor.x, end[0]], [anchor.y, end[1]], name=curve_name),
+                                **tick_style)
+                            mark._wenu_semantic_component = "ticks"
+                            artists.append(mark)
+                            if rule.get("label") is None:
+                                continue
+                            label_style_for_curve["fontsize"] = float(
+                                label_style_for_curve.get("fontsize", 10.0)) * rule.get("font_scale", 1.0)
                         if isinstance(anchor, CurveLabelPlacement):
                             position = (anchor.x, anchor.y)
                             if anchor.horizontal_alignment is not None:
@@ -1007,6 +1065,7 @@ class MatplotlibRenderer:
                         else:
                             position = anchor
                         label = (
+                            rule["label"] if tick_options is not None else
                             curve_name
                             if label_formatter is None
                             else label_formatter(curve_name)
@@ -1046,7 +1105,8 @@ class MatplotlibRenderer:
                                 (anchor.x, anchor.y),
                                 np.asarray(anchor.exterior_direction, dtype=float),
                             )
-                        candidate_factory = getattr(label_anchor, "candidates", None)
+                            label_artist._wenu_exterior_lane = rule.get("label_lane", 0)
+                        candidate_factory = getattr(anchor_policy, "candidates", None)
                         if isinstance(anchor, CurveLabelPlacement) and callable(candidate_factory):
                             per_anchor = getattr(label_anchor, "candidates_for_anchor", None)
                             candidates = tuple(
@@ -1785,3 +1845,4 @@ class MatplotlibRenderer:
         if not np.any(finite):
             return None
         return float(np.mean(x[finite])), float(np.mean(y[finite]))
+

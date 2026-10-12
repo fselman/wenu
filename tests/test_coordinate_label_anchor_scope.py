@@ -93,3 +93,21 @@ def test_coordinate_anchor_replaces_grid_anchor_only():
     assert resolved["altaz_grid"]["render"]["label_anchor"] is horizon_anchor
     assert resolved[grid]["render"]["label_anchor"] is boundary_anchor
     assert resolved[track]["render"]["label_anchor"] is track_anchor
+
+def test_all_boundary_crossings_carry_inward_tangents_and_close_parallel_seam():
+    import numpy as np
+    from wenu.charts.boundaries import ExteriorGridLabelAnchor
+    from wenu.geometry.projected import ProjectedCurve
+    boundary = ProjectedCurve([-1,1,1,-1],[-1,-1,1,1],closed=True)
+    anchor = ExteriorGridLabelAnchor(None,boundary,all_crossings=True)
+    diagonal = anchor(ProjectedCurve([-2,0,2],[-2,0,2]),None)
+    assert len(diagonal) == 2  # One mark per corner, without duplicates.
+    for item in diagonal:
+        assert np.dot(item.exterior_direction,item.tick_direction) < 0
+        assert item.tick_direction[0] == item.tick_direction[1]
+    assert anchor(ProjectedCurve([-2,np.nan,2],[0,np.nan,0]),None) is None
+    # The final closed-curve segment is required for the second crossing.
+    closed = anchor(ProjectedCurve([0,2,2],[0,0,2],closed=True),None)
+    assert len(closed) == 2
+    assert {(round(p.x),round(p.y)) for p in closed} == {(1,0),(1,1)}
+

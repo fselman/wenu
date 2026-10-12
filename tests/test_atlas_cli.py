@@ -829,3 +829,135 @@ def test_automatic_request_retains_geometry_inputs_and_computed_layout(tmp_path,
         changed[section][key] = value
         with pytest.raises(ValueError):
             AtlasDesignRequest.from_dict(changed)
+
+@pytest.mark.parametrize("polar", [False, "south", "north"])
+@pytest.mark.parametrize("lines_visible", [False, True])
+@pytest.mark.parametrize("orientation", ["landscape", "portrait"])
+def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
+        request_data, polar, lines_visible, orientation, tmp_path):
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from wenu import CelestialSphere
+    from wenu.charts.atlas_publication import (AtlasSheetChart, AtlasChartPresentation,
+        _atlas_grid_options, _atlas_grid_layout, _atlas_tick_options)
+    from wenu.charts.composition import compose_chart
+    from wenu.charts.detail import DetailOverrides
+    from wenu.charts.modes import PrintMode
+    from wenu.charts.export_workflow import export_composed_chart
+    from wenu.charts.regional import ExportOptions
+    from wenu.rendering.matplotlib import MatplotlibRenderer
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    request_data = deepcopy(request_data)
+    if orientation == 'portrait':
+        request_data['page'].update(width_mm=250,height_mm=353)
+    atlas = AtlasDesignRequest.from_dict(request_data).resolve()
+    page = atlas.geometry.page
+    sheet = atlas.geometry.sheets[0 if polar == 'south' else -1 if polar == 'north' else 13]
+    chart = AtlasSheetChart(sheet,page)
+    presentation = AtlasChartPresentation(layers=("equatorial_grid",),grid_lines_visible=lines_visible)
+    sky = CelestialSphere(None)
+    layer = sky.add_equatorial_grid(frame="icrs",equinox="J2000",include_equator=True)
+    composition = compose_chart(chart,style="atlas",mode=PrintMode(
+        width_inches=page.width_mm/25.4,height_inches=page.height_mm/25.4,dpi=150),
+        detail_overrides=DetailOverrides(enabled_layers=frozenset({"equatorial_grid"})))
+    bounds, style = _atlas_grid_layout(page,composition.style,presentation)
+    assert bounds[2]*page.width_mm/page.useful_width_mm == pytest.approx(
+        bounds[3]*page.height_mm/page.useful_height_mm)
+    assert bounds[2] < page.useful_width_mm/page.width_mm
+    assert chart.viewport == sheet.viewport(page)
+    # Definition of the 50% wider band is explicit and physically reproducible.
+    baseline = 12+2*(composition.style.canvas.grid_label_band_padding_points+
+        composition.style.canvas.grid_label_band_linewidth/2)
+    enlarged = 12+2*(style.canvas.grid_label_band_padding_points+style.canvas.grid_label_band_linewidth/2)
+    assert enlarged == pytest.approx(baseline*1.5)
+    composition = replace(composition,style=style)
+    fig = plt.figure()
+    renderer = MatplotlibRenderer(fig.add_axes(bounds))
+    result = export_composed_chart(chart,sky,renderer,tmp_path/'grid.svg',
+        composition=composition,layer_options=_atlas_grid_options(chart,presentation),
+        realization_context=LayerRealizationContext(NATIVE_ICRS_SPEC),
+        export_options=ExportOptions(dpi=150,bbox_inches=None))
+    assert layer.ra is None and layer.dec is None
+    rendered = result.rendering.layers[0]
+    assert rendered.spherical.coordinate_spec.frame == 'icrs'
+    assert len(rendered.spherical.components['meridians']) == 12
+    ticks = [a for a in rendered.artists if getattr(a,'_wenu_semantic_component',None)=='ticks']
+    lines = [a for a in rendered.artists if getattr(a,'_wenu_semantic_component',None)=='lines']
+    texts = list(renderer.ax.texts)
+    assert ticks and texts
+    assert all(t.get_text().endswith(('h','m','°')) for t in texts)
+    assert all(t.get_fontsize()==(9 if t.get_text().endswith('m') else 12) for t in texts)
+    assert all(a.get_linewidth()==0 for a in lines) == (not lines_visible)
+    if polar:
+        # A meridian meets a polar sheet boundary once. The antipode must not
+        # add a spurious second crossing through the chart.
+        from collections import Counter
+        assert all(count==1 for count in Counter(t.get_text() for t in texts
+                   if t.get_text().endswith('h')).values())
+    assert 'ticks' in (tmp_path/'grid.svg').read_text()
+    fig.canvas.draw()
+    outer = renderer._grid_label_band_frame.get_path().transformed(renderer._grid_label_band_frame.get_transform())
+    for text in texts:
+        box = text.get_window_extent(fig.canvas.get_renderer())
+        assert outer.contains_points([[box.x0,box.y0],[box.x1,box.y1]]).all()
+        assert not any(box.overlaps(other.get_window_extent(fig.canvas.get_renderer()))
+                       for other in texts if other is not text)
+    outer_mm = outer.vertices * 25.4 / fig.dpi
+    assert outer_mm[:,0].min() >= page.inner_mm-1e-6
+    assert outer_mm[:,0].max() <= page.width_mm-page.outer_mm+1e-6
+    assert outer_mm[:,1].min() >= page.bottom_mm-1e-6
+    assert outer_mm[:,1].max() <= page.height_mm-page.top_mm+1e-6
+    for minutes in range(60):
+        if minutes%10:
+            continue
+        rule = _atlas_tick_options(f'right_ascension_{15+minutes/4}',minor_scale=.75)
+        assert rule['label']==('1h' if minutes==0 else f'{minutes}m' if minutes in (20,40) else None)
+    plt.close(fig)
+
+
+@pytest.mark.parametrize("field,value", [("grid_lines_visible",1),
+    ("grid_label_fontsize",float('nan')),("grid_minor_label_scale",1.1),
+    ("grid_frame_width_scale",0)])
+def test_atlas_coordinate_presentation_rejects_invalid_values(field,value):
+    from wenu.charts.atlas_publication import AtlasChartPresentation
+    with pytest.raises(ValueError):
+        AtlasChartPresentation(**{field:value})
+
+def test_atlas_stellar_area_budget_uses_reduced_rendered_sky(request_data):
+    """Synthetic completed star geometry isolates the report denominator seam."""
+    from types import SimpleNamespace
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from wenu.charts.atlas_publication import (AtlasSheetChart, AtlasChartPresentation,
+        _atlas_grid_layout, _atlas_report_data)
+    from wenu.charts.composition import compose_chart
+    from wenu.charts.detail import DetailOverrides
+    from wenu.rendering.matplotlib import MatplotlibRenderer
+    atlas = AtlasDesignRequest.from_dict(request_data).resolve()
+    page = atlas.geometry.page
+    chart = AtlasSheetChart(atlas.geometry.sheets[13],page)
+    composition = compose_chart(chart,style='atlas',
+        detail_overrides=DetailOverrides(enabled_layers=frozenset({'stars'}),star_magnitude_limit=6))
+    bounds,style = _atlas_grid_layout(page,composition.style,AtlasChartPresentation())
+    style = replace(style,stars=replace(style.stars,draw_bright_symbols=False))
+    composition = replace(composition,style=style)
+    fig = plt.figure(figsize=(page.width_mm/25.4,page.height_mm/25.4),dpi=150)
+    renderer = MatplotlibRenderer(fig.add_axes(bounds))
+    renderer.apply_viewport(chart.viewport)
+    star_layer = object()
+    rendering = SimpleNamespace(renderer=renderer,viewport=chart.viewport,layers=(
+        SimpleNamespace(layer=star_layer,
+            spherical=SimpleNamespace(metadata={'magnitude':np.array([1.,2.])}),
+            projected=SimpleNamespace(x=np.array([0.,0.]),y=np.array([0.,0.]))),))
+    data = _atlas_report_data(chart,SimpleNamespace(stars=star_layer),composition,rendering)
+    box = renderer.ax.get_window_extent()
+    area = box.width*box.height*(25.4/fig.dpi)**2
+    budget = data['stellar_area_budget']
+    assert budget['chart_area_mm2'] == pytest.approx(area)
+    assert area < page.useful_width_mm*page.useful_height_mm
+    frame = data['layout']['chart_sky_frame']
+    assert frame['width']*frame['height'] == pytest.approx(area)
+    assert sum(row['chart_fraction'] for row in budget['bins']) == pytest.approx(
+        budget['total_area_mm2']/area)
+    plt.close(fig)
+

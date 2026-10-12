@@ -457,17 +457,21 @@ class ExteriorGridLabelAnchor:
     delegate: object
     boundary: ProjectedCurve
     circular: bool = False
+    all_crossings: bool = False
 
     def __call__(self, curve, ax):
-        anchor = self.delegate(curve, ax)
-        if anchor is None:
-            return None
-        target = np.array((anchor.x, anchor.y) if isinstance(anchor, CurveLabelPlacement) else anchor)
+        if not self.all_crossings:
+            anchor = self.delegate(curve, ax)
+            if anchor is None:
+                return None
+            target = np.array((anchor.x, anchor.y) if isinstance(anchor, CurveLabelPlacement) else anchor)
         boundary = np.column_stack((self.boundary.x, self.boundary.y))
         low, high = np.nanmin(boundary, axis=0), np.nanmax(boundary, axis=0)
         centre = (low + high) / 2.0
         radius = float(np.nanmedian(np.linalg.norm(boundary - centre, axis=1)))
         points = np.column_stack((curve.x, curve.y))
+        if curve.closed and len(points) and not np.array_equal(points[0], points[-1]):
+            points = np.vstack((points, points[0]))
         crossings = []
         for a, b in zip(points[:-1], points[1:]):
             if not (np.all(np.isfinite(a)) and np.all(np.isfinite(b))):
@@ -486,7 +490,7 @@ class ExteriorGridLabelAnchor:
                           (-bb + np.sqrt(discriminant)) / (2 * aa)):
                     if -1e-8 <= t <= 1 + 1e-8:
                         point = a + np.clip(t, 0, 1) * delta
-                        crossings.append((point, point - centre))
+                        crossings.append((point, point - centre, delta))
             else:
                 for axis in (0, 1):
                     if delta[axis] == 0:
@@ -497,12 +501,27 @@ class ExteriorGridLabelAnchor:
                         other = 1 - axis
                         if -1e-8 <= t <= 1 + 1e-8 and low[other] - 1e-8 <= point[other] <= high[other] + 1e-8:
                             direction = np.zeros(2); direction[axis] = sign
-                            crossings.append((point, direction))
+                            crossings.append((point, direction, delta))
         if not crossings:
             return None
-        point, direction = min(crossings, key=lambda item: np.linalg.norm(item[0] - target))
+        if self.all_crossings:
+            placements = []
+            for point, direction, tangent in crossings:
+                dot = float(np.dot(tangent, direction))
+                if abs(dot) <= 1e-12 * np.linalg.norm(tangent) * np.linalg.norm(direction):
+                    continue  # A tangency does not enter the sky.
+                if any(np.linalg.norm(point - (item.x, item.y)) < 1e-8 for item in placements):
+                    continue  # Shared samples and rectangle corners have one mark.
+                inward = tangent if dot < 0 else -tangent
+                placements.append(CurveLabelPlacement(
+                    *point, rotation_deg=0.0, normal_offset_em=0.65,
+                    horizontal_alignment="center", vertical_alignment="center",
+                    exterior_direction=tuple(direction), tick_direction=tuple(inward)))
+            return placements or None
+        point, direction, _ = min(crossings, key=lambda item: np.linalg.norm(item[0] - target))
         return CurveLabelPlacement(
             *point, rotation_deg=0.0, normal_offset_em=0.65,
             horizontal_alignment="center", vertical_alignment="center",
             exterior_direction=tuple(direction),
         )
+
