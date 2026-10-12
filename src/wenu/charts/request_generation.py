@@ -535,6 +535,10 @@ def _render_atlas_sheet_request(request, sky):
             enabled_layers=frozenset("nonstellar_objects" if name == "nonstellar" else name
                 for name in presentation.layers),
             constellation_star_mode="none"))
+    composition = replace(composition, style=replace(composition.style,
+        isophotes=replace(composition.style.isophotes,
+            milky_way_color=presentation.milky_way_color,
+            lmc_color=presentation.milky_way_color, smc_color=presentation.milky_way_color)))
     axes_bounds = (page.inner_mm / page.width_mm,
         page.bottom_mm / page.height_mm, page.useful_width_mm / page.width_mm,
         page.useful_height_mm / page.height_mm)

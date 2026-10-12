@@ -186,9 +186,13 @@ class AtlasChartPresentation:
     grid_label_fontsize: float = 12.0
     grid_minor_label_scale: float = 0.75
     grid_frame_width_scale: float = 1.5
+    grid_ra_step_hours: int = 2
+    grid_minute_labels_visible: bool = False
+    milky_way_color: str = "#87CEFA"
 
     def __post_init__(self):
         import math
+        _atlas_grid_marks(self)
         from wenu.sky.native_snapshot import LAYERS
         if self.style not in {"atlas", "cartoon"}:
             raise ValueError("style must be atlas or cartoon.")
@@ -221,6 +225,8 @@ class AtlasChartPresentation:
         if not isinstance(self.report_label_weight, str) or self.report_label_weight not in {"normal", "bold", "light", "medium", "semibold", "heavy", "black"}:
             raise ValueError("Invalid report_label_weight.")
         from matplotlib.colors import is_color_like
+        if not isinstance(self.milky_way_color, str) or not is_color_like(self.milky_way_color):
+            raise ValueError("Invalid milky_way_color.")
         if not isinstance(self.report_label_color, str) or not is_color_like(self.report_label_color):
             raise ValueError("Invalid report_label_color.")
         if type(self.chart_number_box_visible) is not bool:

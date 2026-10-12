@@ -896,6 +896,8 @@ requested_longitudes = "none"
 requested_latitudes = "none"
 
 [grids_references.coordinate_grid.edge_marks]
+grid_ra_step_hours = 2
+grid_minute_labels_visible = false
 enabled = false
 grid_lines_visible = true
 grid_label_fontsize = 12.0

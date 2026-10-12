@@ -2520,7 +2520,7 @@ geometry and CLI test owners protect scientific containment and provenance.
 ### Atlas coordinate-grid and frame candidate (2026-10-12)
 
 Based on synchronized main `28e52bae`, the shared grid presentation requests
-RA lines every 1h and declination lines every 10 degrees, plus separate
+RA lines every configurable interval (default 2h) and declination lines every 10 degrees, plus separate
 10-minute RA and 10-degree declination tick curves from EquatorialGrid.
 Source layers and saved native snapshots are not mutated. Boundary ownership
 remains in charts/boundaries.py: all true crossings carry inward projected
@@ -2558,6 +2558,14 @@ or scientific meaning is changed.
 
 
 The revised presentation uses editable superscript h/m characters and requests
-a generic perpendicular boundary-label rotation for Dec. The renderer derives
+a generic parallel boundary-label rotation for Dec. The renderer derives
 the angle from the display-space projected tangent; it has no coordinate-family
-knowledge. Visible lines use black, 0.9 opacity and 0.65-point width.
+knowledge. Visible lines use black, 0.65 opacity and 0.55-point width.
+
+Latest review adds configurable RA spacing and optional minute labels, defaulting
+to 2h lines and hidden 20m/40m text. Parallel Dec labels follow the curve outward
+from its true boundary crossing. Atlas sheet and index presentation select pale
+sky blue for MW/MCs through their existing style/composition owners. Canonical
+detail application delegates each DSO category to an enabled dedicated layer;
+NonStellar filters generic outlines request-locally. Snapshot catalogues remain
+unchanged, and generic outlines return when their dedicated owner is disabled.

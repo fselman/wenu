@@ -60,6 +60,7 @@ def test_edge_mark_translation_is_opt_in_and_immutable():
     assert translated == EquatorialGridMarks(grid_lines_visible=False, grid_label_fontsize=14.0)
     marks["grid_label_fontsize"] = 20.0
     assert translated.grid_label_fontsize == 14.0
+    assert translated.grid_ra_step_hours == 2 and translated.grid_minute_labels_visible is False
 
 
 def test_family_geometry_gateway_uses_cached_packaged_authority():

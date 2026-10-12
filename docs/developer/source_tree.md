@@ -3496,3 +3496,10 @@ grid, boundary-anchor, renderer, projection, configuration and chart/atlas CLI t
 these respective seams. The coordinate-system guide was reviewed and remains
 current; there is no new frame, epoch or observation path.
 
+
+Latest review: request_grids/style_components own configurable RA spacing and
+minute-label admission; the renderer owns generic parallel label angles and
+curve-following exterior offsets. Atlas/index presentation owns MW/MC fill colour.
+charts/detail_application.py supplies dedicated DSO categories; objects/nonstellar.py
+performs render-local exclusion of generic duplicate outlines. Existing atlas,
+configuration, renderer and nonstellar tests cover these seams.

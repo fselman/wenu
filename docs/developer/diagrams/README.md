@@ -475,3 +475,8 @@ existing realizations feeding the same projection/rendering owners.
 The revised shared grid presentation requests a perpendicular label orientation
 from the generic tick renderer. Its display-space tangent remains supplied by
 the existing boundary owner; no astronomical or projection authority is added.
+
+The shared mark renderer now admits parallel or perpendicular label orientation.
+Parallel Dec text follows the outward continuation of the same crossing tangent.
+The canonical detail -> NonStellar selection edge additionally suppresses
+generic outlines for categories owned by enabled dedicated DSO layers.

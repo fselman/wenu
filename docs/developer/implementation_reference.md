@@ -4737,8 +4737,15 @@ and conflicting declination cadence are rejected. Source geometry and viewport
 remain unchanged; the established ordinary coordinate realization is preserved.
 
 
-The revised shared edge-mark preset selects 1h RA and 10-degree Dec lines.
+The revised shared edge-mark preset selects configurable RA (default 2h) and 10-degree Dec lines.
 RA h/m units are Unicode superscripts to preserve editable SVG text. A mark
-record may request label_rotation="perpendicular"; the renderer derives its
-upright display-space normal angle. Visible grid lines use black at 0.9 opacity
-and 0.65-point width. Explicit preset declination cadence must be 10 degrees.
+record may request label_rotation="parallel"; the renderer derives its
+upright display-space tangent angle. Visible grid lines use black at 0.65 opacity
+and 0.55-point width. Explicit preset declination cadence must be 10 degrees.
+
+EquatorialGridMarks and AtlasChartPresentation admit grid_ra_step_hours and
+grid_minute_labels_visible, validated identically; regional CLI and TOML share
+the same contract. The renderer also retains perpendicular rotation for generic
+callers. Atlas/index milky_way_color sets MW/LMC/SMC through the composed style.
+NonStellar geometry accepts excluded_categories; canonical detail passes enabled
+dedicated catalogue categories before source-local realization/selection.

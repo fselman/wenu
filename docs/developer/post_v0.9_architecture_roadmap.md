@@ -5182,3 +5182,11 @@ units, Dec labels normal to their projected curves, and darker interior lines.
 The scientific viewport, 10m tick cadence and 20m/40m smaller labels are retained.
 Existing atlas tests now execute the actual 22-chart portrait design at sheets
 1, 5, 8, 10, 11 and 22. Index review exports PNG, SVG and PDF together.
+
+Fernando clarified Dec text should be parallel to the curve at the boundary,
+requested default 2h RA lines with configurable spacing, optional 20m/40m text
+hidden by default, lighter lines and paler blue MW/MCs. Uploaded chart 10 shows
+generic Messier dotted outlines over dedicated galaxies; canonical category
+ownership now suppresses those duplicate generic outlines while preserving
+source data and restoring generic presentation when a dedicated layer is off.
+Index review explicitly opens/checks independent PNG/SVG/PDF files.

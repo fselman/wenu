@@ -637,10 +637,16 @@ class EquatorialGridMarks:
     grid_label_fontsize: float = 12.0
     grid_minor_label_scale: float = 0.75
     grid_frame_width_scale: float = 1.5
+    grid_ra_step_hours: int = 2
+    grid_minute_labels_visible: bool = False
 
     def __post_init__(self):
         if type(self.grid_lines_visible) is not bool:
             raise ValueError("grid_lines_visible must be boolean.")
+        if type(self.grid_minute_labels_visible) is not bool:
+            raise ValueError("grid_minute_labels_visible must be boolean.")
+        if type(self.grid_ra_step_hours) is not int or self.grid_ra_step_hours not in (1, 2, 3, 4, 6, 8, 12):
+            raise ValueError("grid_ra_step_hours must be an integer divisor of 24 from 1 through 12.")
         for name in ("grid_label_fontsize", "grid_minor_label_scale", "grid_frame_width_scale"):
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not isfinite(value) or value <= 0:

@@ -99,7 +99,7 @@ def _grid_specifications(family, frame=None, detail=None, *, equinox="J2000"):
     equatorial_longitudes = longitudes
     marks = getattr(detail, "equatorial_grid_marks", None)
     if marks is not None:
-        equatorial_longitudes = tuple(range(0, 360, 15))
+        equatorial_longitudes = tuple(range(0, 360, 15 * marks.grid_ra_step_hours))
         equatorial_latitudes = _declination_values(10, include_zero=True)
     if family == "circumpolar" and frame is not None:
         equatorial_latitudes = _circumpolar_declinations(
@@ -217,19 +217,19 @@ def configure_chart_request_grids(sky, request, *, frame=None, observer=None):
 
 
 
-def equatorial_grid_tick_options(name, *, minor_scale):
+def equatorial_grid_tick_options(name, *, minor_scale, minute_labels_visible=False):
     """Chart-owned coordinate typography; renderer consumes only mark records."""
     if name.startswith("right_ascension_"):
         minutes = round(float(name.removeprefix("right_ascension_")) * 4) % 1440
         hour, minute = divmod(minutes, 60)
-        label = f"{hour}ʰ" if minute == 0 else f"{minute}ᵐ" if minute in (20, 40) else None
+        label = f"{hour}ʰ" if minute == 0 else f"{minute}ᵐ" if minute_labels_visible and minute in (20, 40) else None
         scale = 1.0 if minute == 0 else minor_scale
         length = 4.0 if minute == 0 else 3.0 if label else 2.0
     else:
         value = float(name.removeprefix("declination_"))
         label, scale, length = f"{value:+g}°", 1.0, 4.0
     return dict(label=label, font_scale=scale, length_points=length,
-                label_rotation="perpendicular" if name.startswith("declination_") else None,
+                label_rotation="parallel" if name.startswith("declination_") else None,
                 label_lane=2 if name.startswith("declination_") else 0 if minute == 0 else 1,
                 style=dict(color="black", linewidth=0.8, alpha=1.0, linestyle="-", zorder=4))
 
@@ -242,14 +242,15 @@ def equatorial_grid_mark_options(chart, presentation):
     view = chart.viewport
     boundary = ProjectedCurve([view.x_min, view.x_max, view.x_max, view.x_min],
                              [view.y_min, view.y_min, view.y_max, view.y_max], closed=True)
-    ticks = partial(equatorial_grid_tick_options, minor_scale=presentation.grid_minor_label_scale)
+    ticks = partial(equatorial_grid_tick_options, minor_scale=presentation.grid_minor_label_scale,
+                    minute_labels_visible=presentation.grid_minute_labels_visible)
     return {"equatorial_grid": dict(
-        geometry=dict(ra=tuple(range(0, 360, 15)), dec=tuple(range(-80, 81, 10)),
+        geometry=dict(ra=tuple(range(0, 360, 15 * presentation.grid_ra_step_hours)), dec=tuple(range(-80, 81, 10)),
                       ra_ticks=tuple(index * 2.5 for index in range(144)),
                       dec_ticks=tuple(range(-80, 81, 10))),
         render=dict(draw_labels=False,
-                    style=dict(color="black", alpha=0.9,
-                               linewidth=0.65 if presentation.grid_lines_visible else 0),
+                    style=dict(color="black", alpha=0.65,
+                               linewidth=0.55 if presentation.grid_lines_visible else 0),
                     label_style=dict(fontsize=presentation.grid_label_fontsize, color="black", alpha=1.0),
                     boundary_ticks=dict(tick_meridians=ticks, tick_parallels=ticks),
                     boundary_tick_anchor=ExteriorGridLabelAnchor(None, boundary, all_crossings=True)))}
@@ -280,7 +281,7 @@ def equatorial_grid_frame_layout(width_mm, height_mm, axes_bounds, style, presen
         return measure.get_text_width_height_descent(text, font, ismath=False)[0]
     ra_width = max(text_width(f"{hour}ʰ") for hour in range(24))
     dec_width = max(text_width(f"{value:+g}°") for value in range(-80,81,10))
-    reserve = max(width, ra_width + dec_width + 2 + 2 * (
+    reserve = max(width, ra_width + dec_width + 6 + 2 * (
         canvas.grid_label_band_padding_points + canvas.grid_label_band_linewidth / 2))
     inset_mm = reserve * 25.4 / 72.0
     factor = min(1 - 2 * inset_mm / page.useful_width_mm,

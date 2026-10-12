@@ -1070,10 +1070,12 @@ class MatplotlibRenderer:
                             if label_formatter is None
                             else label_formatter(curve_name)
                         )
-                        if tick_options is not None and rule.get("label_rotation") == "perpendicular":
-                            # Physical display-space normal to the projected curve,
+                        if tick_options is not None and rule.get("label_rotation") in {"parallel", "perpendicular"}:
+                            # Physical display-space tangent or normal to the curve,
                             # with an equivalent upright orientation for readability.
-                            angle = np.degrees(np.arctan2(tangent[1], tangent[0])) + 90.0
+                            angle = np.degrees(np.arctan2(tangent[1], tangent[0]))
+                            if rule["label_rotation"] == "perpendicular":
+                                angle += 90.0
                             label_style_for_curve.update(
                                 rotation=(angle + 90.0) % 180.0 - 90.0,
                                 rotation_mode="anchor")
@@ -1092,7 +1094,10 @@ class MatplotlibRenderer:
                             from matplotlib.transforms import ScaledTranslation
 
                             self.ax.apply_aspect()
-                            direction = np.asarray(anchor.exterior_direction, dtype=float)
+                            exterior_direction = (-np.asarray(anchor.tick_direction, dtype=float)
+                                if tick_options is not None and rule.get("label_rotation") == "parallel"
+                                else np.asarray(anchor.exterior_direction, dtype=float))
+                            direction = exterior_direction
                             origin = self.ax.transData.transform((anchor.x, anchor.y))
                             direction = self.ax.transData.transform(
                                 np.asarray((anchor.x, anchor.y)) + direction
@@ -1110,7 +1115,7 @@ class MatplotlibRenderer:
                             setattr(label_artist, "_wenu_exterior_label", True)
                             label_artist._wenu_exterior_attachment = (
                                 (anchor.x, anchor.y),
-                                np.asarray(anchor.exterior_direction, dtype=float),
+                                exterior_direction,
                             )
                             label_artist._wenu_exterior_lane = rule.get("label_lane", 0)
                         candidate_factory = getattr(anchor_policy, "candidates", None)

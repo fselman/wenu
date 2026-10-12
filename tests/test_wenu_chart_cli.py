@@ -861,11 +861,13 @@ def test_regional_command_and_toml_share_grid_marks_and_preserve_viewport(
     argv=['regional','--center-altitude','45deg','--center-azimuth','180deg','--position-angle','0',
         '--field-width','50','--field-height','40','--format','svg','--output',str(output),'--debug']
     if source=='cli':
-        argv+=['--equatorial-grid-ticks','--grid-lines-visible' if lines_visible else '--no-grid-lines-visible']
+        argv+=['--equatorial-grid-ticks','--grid-ra-step-hours','1','--grid-minute-labels-visible',
+            '--grid-lines-visible' if lines_visible else '--no-grid-lines-visible']
     else:
         config=tmp_path/'regional_grid_v1.toml'
         config.write_text('schema_version=2\n[grids_references.coordinate_grid.edge_marks]\n'
-            f'enabled=true\ngrid_lines_visible={str(lines_visible).lower()}\n')
+            f'enabled=true\ngrid_lines_visible={str(lines_visible).lower()}\n'
+            'grid_ra_step_hours=4\ngrid_minute_labels_visible=true\n')
         argv+=['--config',str(config)]
     with iers.earth_orientation_table.set(iers.IERS_B.open(iers.IERS_B_FILE)):
         assert chart.main(argv,emit_outputs=False)==0
@@ -876,7 +878,7 @@ def test_regional_command_and_toml_share_grid_marks_and_preserve_viewport(
     assert result.composition.context.viewport==expected
     rendering=getattr(result.rendering,'rendering',result.rendering)
     layer=next(item for item in rendering.layers if item.spherical.coordinate_spec.frame=='altaz')
-    assert len(layer.spherical.components['meridians'])==24
+    assert len(layer.spherical.components['meridians'])==(24 if source=='cli' else 6)
     assert len(layer.spherical.components['tick_meridians'])==144
     assert len(layer.spherical.components['tick_parallels'])==17
     assert layer.spherical.coordinate_spec.frame=='altaz'

@@ -835,8 +835,9 @@ def test_automatic_request_retains_geometry_inputs_and_computed_layout(tmp_path,
 @pytest.mark.parametrize("polar", [False, "south", "north"])
 @pytest.mark.parametrize("lines_visible", [False, True])
 @pytest.mark.parametrize("orientation", ["landscape", "portrait"])
+@pytest.mark.parametrize("minute_labels_visible", [False, True])
 def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
-        request_data, polar, lines_visible, orientation, tmp_path):
+        request_data, polar, lines_visible, orientation, minute_labels_visible, tmp_path):
     import matplotlib.pyplot as plt
     import numpy as np
     from wenu import CelestialSphere
@@ -856,7 +857,8 @@ def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
     page = atlas.geometry.page
     sheet = atlas.geometry.sheets[0 if polar == 'south' else -1 if polar == 'north' else 13]
     chart = AtlasSheetChart(sheet,page)
-    presentation = AtlasChartPresentation(layers=("equatorial_grid",),grid_lines_visible=lines_visible)
+    presentation = AtlasChartPresentation(layers=("equatorial_grid",),grid_lines_visible=lines_visible,
+        grid_minute_labels_visible=minute_labels_visible)
     sky = CelestialSphere(None)
     layer = sky.add_equatorial_grid(frame="icrs",equinox="J2000",include_equator=True)
     composition = compose_chart(chart,style="atlas",mode=PrintMode(
@@ -882,7 +884,7 @@ def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
     assert layer.ra is None and layer.dec is None
     rendered = result.rendering.layers[0]
     assert rendered.spherical.coordinate_spec.frame == 'icrs'
-    assert len(rendered.spherical.components['meridians']) == 24
+    assert len(rendered.spherical.components['meridians']) == 12
     assert len(rendered.spherical.components['parallels']) == 17
     ticks = [a for a in rendered.artists if getattr(a,'_wenu_semantic_component',None)=='ticks']
     lines = [a for a in rendered.artists if getattr(a,'_wenu_semantic_component',None)=='lines']
@@ -891,7 +893,7 @@ def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
     assert all(t.get_text().endswith(('ʰ','ᵐ','°')) for t in texts)
     assert all(t.get_fontsize()==(9 if t.get_text().endswith('ᵐ') else 12) for t in texts)
     assert all(a.get_linewidth()==0 for a in lines) == (not lines_visible)
-    assert all(a.get_alpha()==0.9 for a in lines)
+    assert all(a.get_alpha()==0.65 for a in lines)
     if polar:
         # A meridian meets a polar sheet boundary once. The antipode must not
         # add a spurious second crossing through the chart.
@@ -905,7 +907,7 @@ def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
         if text.get_text().endswith('°'):
             matching=[mark for mark in ticks if np.allclose(mark.get_xydata()[0],text.get_position(),atol=1e-12)]
             direction=np.array([np.cos(np.radians(text.get_rotation())),np.sin(np.radians(text.get_rotation()))])
-            assert matching and any(abs(np.dot(direction,
+            assert matching and any(abs(np.cross(direction,
                 np.diff(renderer.ax.transData.transform(mark.get_xydata()),axis=0)[0])) < 1e-7
                 for mark in matching)
         box = text.get_window_extent(fig.canvas.get_renderer())
@@ -921,7 +923,7 @@ def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
         if minutes%10:
             continue
         rule = _atlas_tick_options(f'right_ascension_{15+minutes/4}',minor_scale=.75)
-        assert rule['label']==('1ʰ' if minutes==0 else f'{minutes}ᵐ' if minutes in (20,40) else None)
+        assert rule['label']==('1ʰ' if minutes==0 else None)
     plt.close(fig)
 
 
@@ -953,11 +955,40 @@ def test_requested_portrait_review_sheets_render_through_chart_command(number, t
 
 @pytest.mark.parametrize("field,value", [("grid_lines_visible",1),
     ("grid_label_fontsize",float('nan')),("grid_minor_label_scale",1.1),
-    ("grid_frame_width_scale",0)])
+    ("grid_frame_width_scale",0), ("grid_ra_step_hours",5),
+    ("grid_minute_labels_visible",1), ("milky_way_color","invalid")])
 def test_atlas_coordinate_presentation_rejects_invalid_values(field,value):
     from wenu.charts.atlas_publication import AtlasChartPresentation
     with pytest.raises(ValueError):
         AtlasChartPresentation(**{field:value})
+
+
+@pytest.mark.parametrize('hours', [1, 2, 4])
+@pytest.mark.parametrize('minutes_visible', [False, True])
+def test_atlas_grid_ra_spacing_and_minute_label_switch(hours, minutes_visible):
+    from wenu.charts.request_grids import equatorial_grid_tick_options, equatorial_grid_mark_options
+    from wenu.charts.atlas_publication import AtlasChartPresentation
+    from wenu import RegionalChart
+    presentation = AtlasChartPresentation(grid_ra_step_hours=hours,
+        grid_minute_labels_visible=minutes_visible)
+    options = equatorial_grid_mark_options(RegionalChart(45,180,50,40), presentation)
+    assert options['equatorial_grid']['geometry']['ra'] == tuple(range(0,360,15*hours))
+    for minutes in (20,40):
+        rule = equatorial_grid_tick_options(f'right_ascension_{minutes/4}', minor_scale=.75,
+            minute_labels_visible=minutes_visible)
+        assert rule['label'] == (f'{minutes}ᵐ' if minutes_visible else None)
+        assert rule['length_points'] > 0
+
+
+def test_index_optional_mw_colour_keeps_v1_admission_and_reaches_typed_presentation(index_data):
+    from wenu.charts.atlas_index import AtlasIndexPresentation
+    assert AtlasIndexPresentation.from_dict(index_data).milky_way_color == '#87CEFA'
+    data = deepcopy(index_data)
+    data['colours']['milky_way_color'] = '#88aaff'
+    assert AtlasIndexPresentation.from_dict(data).milky_way_color == '#88aaff'
+    data['colours']['milky_way_color'] = 'invalid'
+    with pytest.raises(ValueError):
+        AtlasIndexPresentation.from_dict(data)
 
 def test_atlas_stellar_area_budget_uses_reduced_rendered_sky(request_data):
     """Synthetic completed star geometry isolates the report denominator seam."""

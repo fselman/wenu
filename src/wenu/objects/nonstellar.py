@@ -147,9 +147,10 @@ class NonStellar(AstronomicalObject):
         limit = options.pop("magnitude_limit", None)
         minimum = options.pop("minimum_size_arcmin", None)
         samples = self._resolved_samples(options.pop("samples", None))
+        excluded = options.pop("excluded_categories", ())
         if options:
             raise TypeError(f"Unsupported native outline options: {sorted(options)}")
-        table = self._geometry_table(selected, magnitude_limit=limit)
+        table = self._geometry_table(selected, magnitude_limit=limit, excluded_categories=excluded)
         lon, lat = [], []
         for row in table:
             outline = self._ellipse(
@@ -349,7 +350,7 @@ class NonStellar(AstronomicalObject):
         bearing = np.arctan2(east, north) * u.rad
         return center.directional_offset_by(bearing, separation)
 
-    def _geometry_table(self, selected=None, magnitude_limit=None):
+    def _geometry_table(self, selected=None, magnitude_limit=None, *, excluded_categories=()):
         """Return the catalogue rows participating in geometry."""
         table = (
             self.catalog
@@ -363,6 +364,10 @@ class NonStellar(AstronomicalObject):
                 | (magnitude <= float(magnitude_limit))
             )
             table = table[keep]
+        if excluded_categories:
+            excluded = frozenset(excluded_categories)
+            table = table[np.asarray([self.semantic_category(row["object_type"],
+                identifier=row["identifier"]) not in excluded for row in table], dtype=bool)]
         if selected is None:
             return table
         wanted = {
@@ -608,6 +613,7 @@ class NonStellar(AstronomicalObject):
         magnitude_limit=None,
         minimum_size_arcmin=None,
         samples=None,
+        excluded_categories=(),
     ) -> SphericalCurves:
         """Return sampled outlines transformed from ICRS to Alt/Az."""
         if self.catalog is None:
@@ -624,6 +630,7 @@ class NonStellar(AstronomicalObject):
         table = self._geometry_table(
             selected,
             magnitude_limit=magnitude_limit,
+            excluded_categories=excluded_categories,
         )
         resolved_samples = self._resolved_samples(samples)
 
@@ -716,3 +723,4 @@ class NonStellar(AstronomicalObject):
                 ),
             },
         )
+

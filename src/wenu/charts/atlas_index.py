@@ -151,6 +151,7 @@ class AtlasIndexPresentation:
     highlight_color: str = "#276749"
     guide_color: str = "#b7791f"
     footprint_color: str = "#8b3b65"
+    milky_way_color: str = "#87CEFA"
     formats: tuple[str, ...] = ("png", "pdf", "svg")
     dpi: int = 160
     transparent: bool = False
@@ -182,7 +183,7 @@ class AtlasIndexPresentation:
             object.__setattr__(self, name, tuple(values))
         if ("milky_way" in self.layers) != bool(self.milky_way_levels):
             raise ValueError("Select Milky Way levels exactly when its layer is enabled.")
-        for name in ("paper_color", "ink_color", "border_color", "highlight_color", "guide_color", "footprint_color", "veil_color"):
+        for name in ("paper_color", "ink_color", "border_color", "highlight_color", "guide_color", "footprint_color", "veil_color", "milky_way_color"):
             color = getattr(self, name)
             if type(color) is not str or not is_color_like(color):
                 raise ValueError(f"{name} must be a Matplotlib colour string.")
@@ -206,6 +207,8 @@ class AtlasIndexPresentation:
         }
         values = {}
         for group, keys in groups.items():
+            if group == "colours" and "milky_way_color" in data[group]:
+                keys = keys | {"milky_way_color"}
             _keys(data[group], keys, group)
             values.update(data[group])
         if "veil" in data:
@@ -365,7 +368,11 @@ def _draw_face(ax, atlas, face, *, footprints, sky=None, star_magnitude_limit=5.
             ),
         )
         style = replace(composition.style,
+                        isophotes=replace(composition.style.isophotes,
+                            milky_way_color=presentation.milky_way_color,
+                            lmc_color=presentation.milky_way_color, smc_color=presentation.milky_way_color),
                         canvas=replace(composition.style.canvas, sky_color="none"))
+        composition = replace(composition, style=style)
         options = composition.layer_options(sky).layer_options
         face.render(sky, renderer, style=style, layer_options=options,
                     realization_context=LayerRealizationContext(NATIVE_ICRS_SPEC),
@@ -583,3 +590,4 @@ def plot_overview(design_path, output_prefix, *, footprints=False, joined=False,
         return tuple(destinations)
     finally:
         plt.close(figure)
+

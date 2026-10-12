@@ -414,23 +414,32 @@ The optional schema-v2 table selects the shared atlas/regional presentation:
 [grids_references.coordinate_grid.edge_marks]
 enabled = false
 grid_lines_visible = true
+grid_ra_step_hours = 2
+grid_minute_labels_visible = false
 grid_label_fontsize = 12.0
 grid_minor_label_scale = 0.75
 grid_frame_width_scale = 1.5
 ```
 
-`enabled=true` selects 1h RA and 10-degree declination lines, all 10m RA marks,
+`enabled=true` selects configurable RA (default 2h) and 10-degree declination lines, all 10m RA marks,
 whole-hour and smaller 20m/40m labels, and 10-degree declination marks/labels.
 Font size and frame scale are positive finite numbers; the minor scale is
 positive and at most 1. Booleans are strict. Appearance validates even when
 disabled. Ordinary chart defaults remain disabled; atlas version-1 presentation
-uses the same four appearance values directly and enables markings whenever
+uses the same six appearance values directly and enables markings whenever
 equatorial_grid is selected. These are distinct existing configuration formats.
 
 `--equatorial-grid-ticks`/`--no-equatorial-grid-ticks` overrides `enabled`.
-The four matching appearance flags override TOML; `--no-grid-lines-visible`
+The matching appearance flags override TOML; `--no-grid-lines-visible`
 keeps edge marks while hiding full curves. Appearance flags require the preset.
 Ordinary admission requires regional charts, the equatorial grid and exterior
 label band, and a compatible 10-degree declination step. Physical sky reduction
 preserves angular coverage and the existing observer-time coordinate semantics.
 
+
+The integer grid_ra_step_hours must be one of 1,2,3,4,6,8,12. The strict Boolean
+grid_minute_labels_visible defaults false and controls only 20m/40m text, not
+tick geometry. Their regional CLI counterparts override TOML. Dec labels use
+the generic parallel rotation policy at the boundary; lines use 0.65 opacity
+and 0.55-point width. Atlas presentation milky_way_color defaults #87CEFA and
+controls MW/LMC/SMC fills; index [colours] accepts that optional key too.

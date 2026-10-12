@@ -381,6 +381,20 @@ def apply_resolved_detail(
                 "draw_labels": detail_name in detail.grid_label_layers,
             }
         geometry = {}
+        if name == "nonstellar":
+            # Dedicated catalogue layers own their categories; generic Messier
+            # dotted outlines must not impersonate an open-cluster symbol over
+            # the corresponding galaxy, globular, planetary-nebula or SNR draw.
+            categories = ("galaxies", "open_clusters", "globular_clusters", "planetary_nebulae", "supernova_remnants")
+            owners = {category: getattr(sky, category) for category in categories
+                      if getattr(sky, category, None) is not None}
+            effective = merge_sky_layer_options(sky,
+                {category: {"enabled": detail.layer_enabled(category)} for category in owners},
+                explicit_layer_options)
+            excluded = tuple(category for category in owners
+                             if effective[category].get("enabled", True))
+            if excluded:
+                geometry["excluded_categories"] = excluded
         if name == "stars":
             selected_stars = detail.content_selection.stars
             if detail.content_selection.star_constellations is not None:
@@ -787,3 +801,4 @@ def composition_layer_options(
         explicit_layer_options=layer_options,
         reload_catalogues=reload_catalogues,
     )
+

@@ -379,8 +379,10 @@ def add_chart_content_arguments(parser):
     parser.add_argument("--grid-label-band-frame-color", default=None, metavar="COLOR")
     parser.add_argument("--grid-label-band-line-width", type=float, default=None, metavar="POINTS")
     parser.add_argument("--equatorial-grid-ticks", action=argparse.BooleanOptionalAction,
-                        default=None, help="regional 2h/30-degree grid with 10m/10-degree edge marks")
+                        default=None, help="regional configurable RA/10-degree Dec grid with 10m/10-degree edge marks")
     parser.add_argument("--grid-lines-visible", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--grid-minute-labels-visible", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--grid-ra-step-hours", type=int, default=None, choices=(1,2,3,4,6,8,12))
     parser.add_argument("--grid-label-fontsize", type=float, default=None, metavar="POINTS")
     parser.add_argument("--grid-minor-label-scale", type=float, default=None)
     parser.add_argument("--grid-frame-width-scale", type=float, default=None)

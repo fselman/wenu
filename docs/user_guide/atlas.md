@@ -1254,9 +1254,9 @@ memory use, without changing atlas geometry or stellar appearance.
 
 ## Coordinate grid and readable edge markings
 
-Atlas chart pages use fixed ICRS grid lines every **1h in RA** and **10° in
+Atlas chart pages use fixed ICRS grid lines every **2h in RA** by default and **10° in
 declination**. Edge marks follow the local projected coordinate curve into the
-sky. Every whole hour is labelled; **20m and 40m** use smaller labels; **10m,
+sky. Every whole hour is labelled; optional **20m and 40m** labels use smaller text; **10m,
 30m and 50m** have marks only. Declination marks and labels occur every **10°**
 where the corresponding curve crosses a page's sky boundary. A curve entirely
 inside the sky has no edge crossing. The poles have no unique RA label.
@@ -1265,6 +1265,9 @@ Optional chart-presentation keys (same schema version 1):
 
 ```toml
 grid_lines_visible = true
+grid_ra_step_hours = 2
+grid_minute_labels_visible = false
+milky_way_color = "#87CEFA"
 grid_label_fontsize = 12.0
 grid_minor_label_scale = 0.75
 grid_frame_width_scale = 1.5
@@ -1314,9 +1317,25 @@ regional chart with its equatorial grid and exterior label band enabled.
 
 
 RA unit letters use editable Unicode superscripts (ʰ and ᵐ). Declination labels
-are perpendicular to the local projected declination curve, with upright text
-orientation. Visible grid lines use black at 0.9 opacity and 0.65-point width.
+are parallel to the local projected declination curve at its boundary crossing, with upright text
+orientation. Visible grid lines use black at 0.65 opacity and 0.55-point width.
 The portrait review set is charts 1, 5, 8, 10, 11 and 22, covering both polar
 caps and the requested Orion, Virgo and Scorpius fields. Recreate its index
 with wenu_plot_atlas and examples/atlas_index_style_v2.toml to export PNG, SVG
 and PDF together.
+
+Set grid_ra_step_hours to 1, 2, 3, 4, 6, 8 or 12 to change full RA grid lines.
+Minute labels are hidden by default; grid_minute_labels_visible=true restores
+20m/40m labels while retaining every 10m tick. Ordinary regional equivalents
+are --grid-ra-step-hours and --grid-minute-labels-visible (with a negative form).
+Dec text follows the extrapolated curve outward from the unchanged boundary
+crossing. milky_way_color sets the same pale sky-blue fill for MW, LMC and SMC.
+The index presentation accepts the same optional key under [colours]. The index
+PNG/SVG/PDF are independent files beside the chart output directory; open their
+parent folder to inspect all three.
+
+When a dedicated galaxy, open-cluster, globular-cluster, planetary-nebula or SNR
+layer is enabled, it owns that category: generic Messier dotted outlines are
+suppressed for the category. Disabling its dedicated layer restores the generic
+outline. This removes cluster-like circles over dedicated galaxy symbols and
+other duplicate category drawings without changing saved source catalogues.
