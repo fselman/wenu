@@ -841,7 +841,9 @@ def test_regional_command_and_toml_share_grid_marks_and_preserve_viewport(
     from wenu import CelestialSphere,CANONICAL_MAXIMAL_SPHERE_PROFILE
     from wenu.charts import request_generation
     monkeypatch.setattr(iers.conf,'auto_download',False)
-    instant=Time('2026-10-12T00:00:00Z')
+    # A historical instant and explicit bundled IERS-B table keep this rendering
+    # contract independent of the machine's predictive-table cache and age.
+    instant=Time('2000-01-01T00:00:00Z')
     observer=SimpleNamespace(utc_datetime=instant.to_datetime(timezone=timezone.utc),t_astropy=instant,
         lat_deg=-32.443342,lon_deg=-71.230289,elevation_m=52,timezone_name='UTC',
         location_name='Synthetic grid test',close=lambda:None,
@@ -865,7 +867,8 @@ def test_regional_command_and_toml_share_grid_marks_and_preserve_viewport(
         config.write_text('schema_version=2\n[grids_references.coordinate_grid.edge_marks]\n'
             f'enabled=true\ngrid_lines_visible={str(lines_visible).lower()}\n')
         argv+=['--config',str(config)]
-    assert chart.main(argv,emit_outputs=False)==0
+    with iers.earth_orientation_table.set(iers.IERS_B.open(iers.IERS_B_FILE)):
+        assert chart.main(argv,emit_outputs=False)==0
     assert len(results)==1 and output.is_file()
     result=results[0]
     from wenu import RegionalChart
