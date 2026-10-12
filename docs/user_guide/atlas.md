@@ -1178,3 +1178,76 @@ For the supplied 34-sheet design, the full book has 71 pages: index,
 Changing the diameter multiplier or magnitude limit reuses the saved sphere
 within its declared coverage. The index has independent presentation inputs.
 The object-report text area remains reserved for later inventories and curation.
+
+### Geometry-driven atlas design (version-2 request)
+
+`wenu_design_atlas` also accepts `examples/atlas_design_request_v2.toml`.
+Its inputs are ISO B4 paper, explicit portrait/landscape orientation, margins,
+full central horizontal angular field, minimum angular overlap, and placement
+seed. Angular height follows the useful rectangle's stereographic aspect;
+independent width/height forcing is not supported. Version 2 does not accept
+`algorithm` or explicit latitude boundaries: the layout is an output.
+
+The geometry owner fixes the largest inscribed polar caps after reserving
+overlap, then uses dynamic programming to minimize total chart count, with
+fewer bands as a tie-break. Search covers symmetric north/south bands, one
+equatorial band, equal RA sectors within each band, and latitude boundaries
+on a one-degree grid plus the exact polar-cap edge. Band heights may differ.
+This is an optimum within that declared finite family, not over arbitrary
+placements. Primary-region containment and overlap are validated continuously
+with the existing analytic rectangle halfspaces, not inferred from grid samples.
+The grid restricts placement choices, not coverage verification.
+
+Resolved JSON retains canonical request choices (RA values in degrees) and
+a computed `layout`: band count, charts per band, angular dimensions, polar
+primary diameter, orientation, placement method and objective. These records
+are checked against geometry when loading; loading does not retile. Historical
+resolved JSON without these optional records remains readable unchanged.
+Both designer versions retain their input choices in new outputs.
+
+```bash
+wenu_design_atlas --config examples/atlas_design_request_v2.toml --output atlas_portrait_design_v1.json
+wenu_plot_atlas --design atlas_portrait_design_v1.json --config examples/atlas_index_style_v2.toml --output-prefix atlas_portrait_index_v1
+```
+
+At the example's 50-degree field and 0.25-degree overlap, automatic portrait
+B4 yields 22 charts: two polar sheets and three interior bands with 6, 8, 6
+charts. Automatic landscape B4 yields 34 charts. Compare indexes before
+creating sky snapshots or rendering the book; changing designs currently
+requires a new design-bound snapshot.
+
+### Historical five-band reference inputs
+
+Preserve `examples/atlas_design_request_v1.toml` as the existing atlas recipe.
+It explicitly selects `five_band`, landscape B4 353 x 250 mm, top/bottom/outer
+margins 10 mm, inner margin 20 mm, field width 50 degrees, overlap 0.25 degrees,
+seed RA 5.5 hours, equatorial half-height 17 degrees and middle boundary
+45 degrees. The independent index uses join RA 5.5 hours and shared-band
+width 20 degrees. The sheet budget is 4096. This reproduces 34 charts with
+counts [1, 5, 7, 8, 7, 5, 1], including the polar sheets. At these exact inputs the automatic landscape search also reproduces the
+17/45-degree interior boundaries and counts; it does not require those
+boundaries as inputs. Other geometry choices can yield different layouts.
+
+### Accepted portrait appearance comparison
+
+The 22-chart portrait B4 layout was visually accepted with magnitude limit
+7.5, quadratic sizing reference 8, dmin 0.30 mm, coefficient 0.04 and
+diameter multiplier 1.7. Keep the reference at 8 when comparing selection
+limits so retained stars preserve their sizes. Reuse the same sufficient
+design-bound sphere with `--from-sky`; use a fresh output directory:
+
+```bash
+wenu_create_atlas \
+  --design atlas_portrait_design_v1.json \
+  --config examples/atlas_chart_style_v1.toml \
+  --from-sky atlas_portrait_sky_v1 \
+  --index atlas_portrait_index_v1.pdf \
+  --charts all --jobs 4 --magnitude-limit 7.5 \
+  --mag-algorithm quadratic --mag-dmin 0.30 --mag-a 0.04 \
+  --mag-size-reference 8 --star-size-scale 1.7 \
+  --output-dir atlas_portrait_mag7p5_v1
+```
+
+Use `--save-sky atlas_portrait_sky_v1` instead of `--from-sky` for the first
+render of this design. Worker count controls concurrent chart renders and
+memory use, without changing atlas geometry or stellar appearance.

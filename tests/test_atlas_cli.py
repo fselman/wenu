@@ -793,3 +793,39 @@ def test_atlas_number_box_is_inside_and_flush_with_selected_frame_corner(locatio
     assert not figure.texts
     assert _draw_atlas_chart_number(ax, 10, style,
         AtlasChartPresentation(chart_number_box_visible=False)) is None
+
+
+@pytest.mark.parametrize("orientation", ["portrait", "landscape"])
+def test_automatic_request_retains_geometry_inputs_and_computed_layout(tmp_path, orientation):
+    data = cli.tomllib.loads((ROOT / "examples/atlas_design_request_v2.toml").read_text())
+    data["page"]["orientation"] = orientation
+    request = AtlasDesignRequest.from_dict(data)
+    atlas = request.resolve()
+    result = atlas.to_dict()
+    assert result["design_request"]["page"]["orientation"] == orientation
+    assert "algorithm" not in result["design_request"]["tiling"]
+    assert result["layout"]["orientation"] == orientation
+    assert sum(result["layout"]["charts_per_band"]) == len(atlas.geometry.sheets)
+    assert atlas.validation()["shared_boundary_overlap_lower_bound_deg"] >= 0.25
+    assert AtlasBandTiling.from_json(atlas.to_json()) == atlas
+    # A loaded design is validated, not silently retiled; redundant summary
+    # and request geometry must agree with the persisted scientific geometry.
+    changed = deepcopy(result)
+    changed["layout"]["interior_band_count"] += 2
+    with pytest.raises(ValueError):
+        AtlasBandTiling.from_dict(changed)
+    changed = deepcopy(result)
+    changed["design_request"]["tiling"]["field_width_deg"] = 60
+    with pytest.raises(ValueError):
+        AtlasBandTiling.from_dict(changed)
+    changed = deepcopy(data)
+    changed["tiling"]["max_sheets"] = 5
+    with pytest.raises(ValueError, match="No polar-first"):
+        AtlasDesignRequest.from_dict(changed).resolve()
+    for section, key, value in (("page", "orientation", "sideways"),
+                                ("page", "paper_size", "unknown"),
+                                ("tiling", "algorithm", "five_band")):
+        changed = deepcopy(data)
+        changed[section][key] = value
+        with pytest.raises(ValueError):
+            AtlasDesignRequest.from_dict(changed)

@@ -38,11 +38,11 @@ def _publish_json(destination, text):
 def design_main(argv=None):
     parser = argparse.ArgumentParser(
         prog="wenu_design_atlas",
-        description="Resolve a version-1 atlas geometry TOML into validated JSON.",
+        description="Resolve an atlas geometry TOML into validated JSON.",
         allow_abbrev=False,
     )
     parser.add_argument("--config", required=True, type=Path,
-                        help="Explicit version-1 atlas design request TOML.")
+                        help="Explicit version-1 or version-2 atlas design request TOML.")
     parser.add_argument("--output", required=True, type=Path,
                         help="New resolved JSON path; parent directory must exist.")
     args = parser.parse_args(argv)

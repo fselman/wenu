@@ -15,6 +15,7 @@ from wenu.atlas_design import (
     AtlasBandTiling,
     design_band_atlas,
     design_five_band_atlas,
+    design_polar_first_atlas,
     RECTANGULAR_TILING_METHOD,
     _sector_linear_maximum,
     select_atlas_sheets,
@@ -103,12 +104,24 @@ def test_five_band_layout_reduces_ra_counts_without_changing_physical_scale(five
 
 
 @pytest.mark.parametrize("seed", [0, 82.5, 359.5])
-def test_five_band_rectangle_contains_primary_regions_and_boundary_neighbourhoods(page, seed):
-    atlas = design_five_band_atlas(
-        "five-band", 1, page, AtlasOverviewGeometry(82.5, 20),
-        field_width_deg=50, overlap_deg=.25, seed_ra_deg=seed,
-        equatorial_half_height_deg=17, middle_boundary_dec_deg=45,
-    )
+@pytest.mark.parametrize("layout", ["five_band", "auto_portrait", "auto_landscape"])
+def test_five_band_rectangle_contains_primary_regions_and_boundary_neighbourhoods(page, seed, layout):
+    options = dict(field_width_deg=50, overlap_deg=.25, seed_ra_deg=seed)
+    designer = design_five_band_atlas
+    if layout == "five_band":
+        options.update(equatorial_half_height_deg=17, middle_boundary_dec_deg=45)
+    else:
+        designer = design_polar_first_atlas
+        if layout == "auto_portrait":
+            page = replace(page, width_mm=250, height_mm=353)
+    atlas = designer("bands", 1, page, AtlasOverviewGeometry(82.5, 20), **options)
+    if layout == "auto_portrait":
+        assert [len(b.sheet_ids) for b in atlas.bands] == [1, 6, 8, 6, 1]
+    elif layout == "auto_landscape":
+        assert len(atlas.geometry.sheets) == 34
+        assert atlas.bands[2].dec_max_deg == -17
+        assert atlas.bands[1].dec_max_deg == -45
+        assert [len(b.sheet_ids) for b in atlas.bands] == [1, 5, 7, 8, 7, 5, 1]
     by_id = {s.sheet_id: s for s in atlas.geometry.sheets}
     for band in atlas.bands:
         for i, identifier in enumerate(band.sheet_ids):
