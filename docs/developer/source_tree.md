@@ -3509,3 +3509,9 @@ objects/nonstellar owns centre realization. Atlas publication passes the
 configurable 12-point legend typography to the existing legend owner, keeping
 report headings separate. Existing catalogue and atlas tests protect inherited
 galaxy realization, designation-only SVG output and actual legend text sizes.
+
+The existing atlas_design.py owns height-to-width resolution and independently
+sized polar footprints; its geometry tests extend the analytic containment oracle
+to mixed sheet sizes. Existing atlas CLI tests cover request binding, redundant
+layout validation and a single configurable 7-point Messier designation on a
+co-located galaxy. No production or test file is added.

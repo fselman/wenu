@@ -190,6 +190,7 @@ class AtlasChartPresentation:
     grid_minute_labels_visible: bool = False
     milky_way_color: str = "#87CEFA"
     legend_fontsize: float = 12.0
+    messier_label_fontsize: float = 7.0
 
     def __post_init__(self):
         import math
@@ -212,7 +213,7 @@ class AtlasChartPresentation:
                 and limit > self.stellar_magnitude_sizing.size_reference_magnitude):
             raise ValueError("Magnitude limit must not exceed the sizing reference.")
         for name in ("star_size_scale", "report_label_scale", "report_separator_width", "report_separator_gap_mm",
-                     "grid_label_fontsize", "grid_minor_label_scale", "grid_frame_width_scale", "legend_fontsize"):
+                     "grid_label_fontsize", "grid_minor_label_scale", "grid_frame_width_scale", "legend_fontsize", "messier_label_fontsize"):
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
                 raise ValueError(f"{name} must be finite and positive.")

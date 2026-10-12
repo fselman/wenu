@@ -443,3 +443,9 @@ tick geometry. Their regional CLI counterparts override TOML. Dec labels use
 the generic parallel rotation policy at the boundary; lines use 0.65 opacity
 and 0.55-point width. Atlas presentation milky_way_color defaults #87CEFA and
 controls MW/LMC/SMC fills; index [colours] accepts that optional key too.
+
+The separate atlas chart-presentation TOML supports messier_label_fontsize
+(default 7.0 points, finite and positive), independent of legend_fontsize.
+The separate version-2 atlas geometry-request TOML accepts exactly one central
+field_width_deg or field_height_deg, and optional polar_primary_diameter_deg.
+These atlas records are separate from ordinary chart configuration schema v2.

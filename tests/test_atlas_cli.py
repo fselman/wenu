@@ -800,9 +800,14 @@ def test_atlas_number_box_is_inside_and_flush_with_selected_frame_corner(locatio
         AtlasChartPresentation(chart_number_box_visible=False)) is None
 
 
-@pytest.mark.parametrize("orientation", ["portrait", "landscape"])
+@pytest.mark.parametrize("orientation", ["portrait", "landscape", "portrait_32charts"])
 def test_automatic_request_retains_geometry_inputs_and_computed_layout(tmp_path, orientation):
     data = cli.tomllib.loads((ROOT / "examples/atlas_design_request_v2.toml").read_text())
+    independent = orientation == "portrait_32charts"
+    if independent:
+        orientation = "portrait"
+        data["tiling"].pop("field_width_deg")
+        data["tiling"].update(field_height_deg=55, polar_primary_diameter_deg=40)
     data["page"]["orientation"] = orientation
     request = AtlasDesignRequest.from_dict(data)
     atlas = request.resolve()
@@ -813,6 +818,14 @@ def test_automatic_request_retains_geometry_inputs_and_computed_layout(tmp_path,
     assert sum(result["layout"]["charts_per_band"]) == len(atlas.geometry.sheets)
     assert atlas.validation()["shared_boundary_overlap_lower_bound_deg"] >= 0.25
     assert AtlasBandTiling.from_json(atlas.to_json()) == atlas
+    if independent:
+        assert result["layout"]["charts_per_band"] == [1, 10, 10, 10, 1]
+        assert result["layout"]["field_height_deg"] == pytest.approx(55)
+        assert result["layout"]["polar_primary_diameter_deg"] == pytest.approx(40)
+        changed = deepcopy(result)
+        changed["design_request"]["tiling"]["polar_primary_diameter_deg"] = 42
+        with pytest.raises(ValueError, match="does not match"):
+            AtlasBandTiling.from_dict(changed)
     # A loaded design is validated, not silently retiled; redundant summary
     # and request geometry must agree with the persisted scientific geometry.
     changed = deepcopy(result)
@@ -959,7 +972,8 @@ def test_requested_portrait_review_sheets_render_through_chart_command(number, t
 @pytest.mark.parametrize("field,value", [("grid_lines_visible",1),
     ("grid_label_fontsize",float('nan')),("grid_minor_label_scale",1.1),
     ("grid_frame_width_scale",0), ("grid_ra_step_hours",5),
-    ("grid_minute_labels_visible",1), ("milky_way_color","invalid"), ("legend_fontsize",0)])
+    ("grid_minute_labels_visible",1), ("milky_way_color","invalid"), ("legend_fontsize",0),
+    ("messier_label_fontsize",0)])
 def test_atlas_coordinate_presentation_rejects_invalid_values(field,value):
     from wenu.charts.atlas_publication import AtlasChartPresentation
     with pytest.raises(ValueError):
@@ -1133,5 +1147,8 @@ def test_atlas_producer_uses_real_chart_command_and_prepares_sky_once(request_da
     from xml.etree import ElementTree
     root = ElementTree.parse(output/'chart-14.svg').getroot()
     texts = [''.join(element.itertext()) for element in root.iter() if element.tag.endswith('}text')]
-    assert 'M synthetic' in texts
+    assert texts.count('M synthetic') == 1
+    designation = next(element for element in root.iter()
+        if element.tag.endswith('}text') and ''.join(element.itertext()) == 'M synthetic')
+    assert '7px' in designation.get('style', '')
 

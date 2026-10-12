@@ -4757,3 +4757,11 @@ unless an exclusion is requested. Atlas requests label-only Messier geometry
 and disables markers, with 10-point designation text. AtlasChartPresentation
 legend_fontsize defaults 12 points and sets chart/report legend rows and titles;
 heading and chart-number typography remains unchanged.
+
+Version-2 AtlasDesignRequest accepts exactly one of field_width_deg and
+field_height_deg, plus optional polar_primary_diameter_deg. The latter is a
+primary-area diameter, not a footprint diameter; the geometry owner reserves
+overlap on the polar short side. design_polar_first_atlas accepts the same
+optional diameter. Resolved layout dimensions describe the nonpolar sheets;
+each persisted sheet retains its own width. AtlasChartPresentation adds
+messier_label_fontsize=7.0, validated as finite and positive.

@@ -2575,3 +2575,12 @@ shared NonStellar realization, preserving all catalogue designations and source
 categories without generic outlines. Native catalogue subclasses retain their
 original table method contracts. Atlas legend_fontsize controls chart/report
 legend text and titles independently of heading/chart-number furniture.
+
+Atlas geometry review: the existing atlas_design owner accepts one version-2
+angular width or height, deriving its companion from the useful page aspect.
+Optional polar_primary_diameter_deg sizes polar sheets independently, including
+reserved overlap. Existing analytic coverage, request binding and serialization
+validate the mixed footprint sizes. Atlas presentation owns positive finite
+messier_label_fontsize (default 7 points); request_generation passes it to the
+canonical label renderer. No new pipeline, production module or coordinate
+convention is introduced.

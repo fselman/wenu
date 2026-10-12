@@ -104,7 +104,7 @@ def test_five_band_layout_reduces_ra_counts_without_changing_physical_scale(five
 
 
 @pytest.mark.parametrize("seed", [0, 82.5, 359.5])
-@pytest.mark.parametrize("layout", ["five_band", "auto_portrait", "auto_landscape"])
+@pytest.mark.parametrize("layout", ["five_band", "auto_portrait", "auto_landscape", "auto_portrait_32charts"])
 def test_five_band_rectangle_contains_primary_regions_and_boundary_neighbourhoods(page, seed, layout):
     options = dict(field_width_deg=50, overlap_deg=.25, seed_ra_deg=seed)
     designer = design_five_band_atlas
@@ -112,11 +112,15 @@ def test_five_band_rectangle_contains_primary_regions_and_boundary_neighbourhood
         options.update(equatorial_half_height_deg=17, middle_boundary_dec_deg=45)
     else:
         designer = design_polar_first_atlas
-        if layout == "auto_portrait":
+        if layout.startswith("auto_portrait"):
             page = replace(page, width_mm=250, height_mm=353)
+        if layout == "auto_portrait_32charts":
+            options.update(field_width_deg=36.73254758863342, polar_primary_diameter_deg=40)
     atlas = designer("bands", 1, page, AtlasOverviewGeometry(82.5, 20), **options)
     if layout == "auto_portrait":
         assert [len(b.sheet_ids) for b in atlas.bands] == [1, 6, 8, 6, 1]
+    elif layout == "auto_portrait_32charts":
+        assert [len(b.sheet_ids) for b in atlas.bands] == [1, 10, 10, 10, 1]
     elif layout == "auto_landscape":
         assert len(atlas.geometry.sheets) == 34
         assert atlas.bands[2].dec_max_deg == -17
@@ -713,3 +717,4 @@ def test_band_design_does_not_construct_observational_state(page, monkeypatch):
 def test_extra_index_layers_require_astronomical_rendering(overview_example, tmp_path, option):
     with pytest.raises(ValueError, match="require astronomy"):
         overview_example.plot_overview(tmp_path / "unused.json", tmp_path / "unused", **{option: True})
+

@@ -1183,13 +1183,17 @@ The object-report text area remains reserved for later inventories and curation.
 
 `wenu_design_atlas` also accepts `examples/atlas_design_request_v2.toml`.
 Its inputs are ISO B4 paper, explicit portrait/landscape orientation, margins,
-full central horizontal angular field, minimum angular overlap, and placement
-seed. Angular height follows the useful rectangle's stereographic aspect;
-independent width/height forcing is not supported. Version 2 does not accept
+one full central angular field (either `field_width_deg` or `field_height_deg`),
+minimum angular overlap, and placement seed. The other angular dimension follows
+the useful rectangle's stereographic aspect; simultaneous width/height forcing
+is not supported. Optional `polar_primary_diameter_deg` sets the polar primary
+cap diameter independently; the polar footprint additionally reserves overlap.
+Version 2 does not accept
 `algorithm` or explicit latitude boundaries: the layout is an output.
 
-The geometry owner fixes the largest inscribed polar caps after reserving
-overlap, then uses dynamic programming to minimize total chart count, with
+The geometry owner fixes the requested polar primary caps, or the largest
+inscribed polar caps when no diameter is supplied, then uses dynamic programming
+to minimize total chart count, with
 fewer bands as a tie-break. Search covers symmetric north/south bands, one
 equatorial band, equal RA sectors within each band, and latitude boundaries
 on a one-degree grid plus the exact polar-cap edge. Band heights may differ.
@@ -1352,3 +1356,25 @@ Set legend_fontsize = 12.0 in the atlas presentation TOML to control both.
 Report headings and chart-number boxes retain their separate typography. Ordinary
 schema-v2 chart TOML already exposes styles.atlas.legend.font_size and
 styles.atlas.legend.title_font_size; the atlas presentation is a distinct format.
+
+### 32-chart portrait alternative
+
+`examples/atlas_design_32charts_v1.toml` keeps B4 portrait, the existing margins,
+0.25-degree overlap and 5.5-hour seed. Nonpolar central field height is 55 degrees
+(width 36.73255 degrees); polar primary diameter is 40 degrees plus reserved
+footprint overlap. The result is 32 charts, with band counts [1, 10, 10, 10, 1]
+and primary boundaries -90, -70, -17, 17, 70, 90 degrees. With these same inputs,
+40-degree nonpolar height needs 60 charts, 50 degrees needs 35, and 60 degrees
+needs 30. Counts are calculated within the declared placement family.
+
+```bash
+wenu_design_atlas --config examples/atlas_design_32charts_v1.toml --output atlas_32charts_design_v1.json
+wenu_plot_atlas --design atlas_32charts_design_v1.json --config examples/atlas_index_style_v2.toml --output-prefix atlas_32charts_index_v1
+```
+
+Review the new index before preparing a new design-bound sky snapshot. This
+chart count is not evidence of uncluttered coordinate labels. The smaller polar
+cap moves the nonpolar primary boundary to 70 degrees; visual review is still
+needed. Atlas Messier designation labels now default to 7 points (70 percent of
+the former hardcoded 10 points). `messier_label_fontsize` is a positive, finite
+chart-presentation TOML setting, separate from the 12-point legend setting.

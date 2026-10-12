@@ -547,7 +547,7 @@ def _render_atlas_sheet_request(request, sky):
     if "nonstellar" in presentation.layers:
         grid_options["nonstellar"] = dict(geometry=dict(labels_only=True),
             render=dict(draw_markers=False, draw_labels=True,
-                label_style=dict(fontsize=10.0, color="black", alpha=1.0)))
+                label_style=dict(fontsize=presentation.messier_label_fontsize, color="black", alpha=1.0)))
     if "equatorial_grid" in presentation.layers:
         axes_bounds, grid_style = _atlas_grid_layout(page, composition.style, presentation)
         composition = replace(composition, style=grid_style)

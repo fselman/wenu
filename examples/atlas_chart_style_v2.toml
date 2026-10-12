@@ -25,6 +25,7 @@ grid_ra_step_hours = 2
 grid_minute_labels_visible = false
 milky_way_color = "#87CEFA"
 legend_fontsize = 12.0
+messier_label_fontsize = 7.0
 grid_label_fontsize = 12.0
 grid_minor_label_scale = 0.75
 grid_frame_width_scale = 1.5

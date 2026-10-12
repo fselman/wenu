@@ -5197,3 +5197,12 @@ method admission and extends an end-to-end batch test with synthetic galaxies
 and co-located Messier labels. Fernando clarified Messier is a heterogeneous
 designation catalogue; atlas sheets now draw its labels only. Requested legend
 text/title is 12 points, configurable independently of report headings.
+
+Atlas review candidate: independently sized 40-degree polar primary caps with
+55-degree nonpolar central height produce 32 B4 portrait charts at the existing
+margins and 0.25-degree overlap. Existing geometry and serialization owners are
+extended; the chart-presentation Messier fontsize becomes configurable at 7
+points. Chart count and analytic coverage do not establish label readability;
+Mac index/print review and final-candidate full tests remain pending. The
+coordinate-system guide was reviewed and remains current: frames, epochs,
+provenance and scientific transformations are unchanged.
