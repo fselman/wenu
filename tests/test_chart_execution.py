@@ -264,7 +264,10 @@ def test_coordinate_grid_identity_uses_coordinate_system():
     assert identity.display_name == "Equatorial grid"
     assert identity.presentation_order == 70
     assert identity.style_role == "equatorial_grid"
-    assert tuple(dict(identity.component_contracts)) == ("lines", "labels")
+    contracts = dict(identity.component_contracts)
+    assert tuple(contracts) == ("ticks", "lines", "labels")
+    assert contracts["ticks"].edit_policy is EditPolicy.STYLE
+    assert contracts["labels"].edit_policy is EditPolicy.LAYOUT
 
 
 def test_semantic_identity_supports_unnamed_layers_and_rejects_unsafe_names():
