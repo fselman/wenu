@@ -100,6 +100,7 @@ def draw_planned_chart_legends(
     resolved_detail=None,
     stellar_counts: bool = False,
     symbol_labels=None,
+    object_marker_scale=1.0,
     stellar_title="Stars",
     stellar_reference_magnitude=None,
     stellar_reference_range=None,
@@ -122,6 +123,8 @@ def draw_planned_chart_legends(
             title=object_title,
             context_lines=context_lines,
         )
+        if object_marker_scale != 1.0:
+            legend_kwargs["marker_scale"] = object_marker_scale
         if symbol_labels is not None:
             legend_kwargs["symbol_labels"] = symbol_labels
         if not include_objects:
@@ -207,3 +210,4 @@ def draw_planned_chart_legends(
         objects=object_artist,
         stars=stars_result,
     )
+

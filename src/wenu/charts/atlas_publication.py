@@ -421,6 +421,7 @@ def _render_atlas_report(chart, sky, composition, rendering, directory,
         legends = draw_automatic_chart_legends(ax, chart, sky, report_style,
             rendering, resolved_detail=composition.detail, plan=plan,
             include_context=True, object_title=title,
+            object_marker_scale=presentation.deep_sky_symbol_scale,
             stellar_title="Star magnitude" + (f" ({data['stars']['statistics']['visible_count']:,})"
                 if data['stars']['statistics'] is not None else ""),
             stellar_reference_range=_atlas_full_magnitude_range(composition, data),
@@ -492,6 +493,10 @@ def _draw_atlas_chart_number(ax, number, style, presentation):
 
 def _draw_atlas_magnitude_scale(*, chart, sky, renderer, composition, rendering, presentation=None):
     """Minimal in-frame scale through the existing rendered-legend owner."""
+    page = chart.page
+    renderer.fit_grid_label_band((page.inner_mm / page.width_mm,
+        page.bottom_mm / page.height_mm, page.useful_width_mm / page.width_mm,
+        page.useful_height_mm / page.height_mm))
     if 'stars' not in composition.detail.enabled_layers:
         return None
     from .automatic_legends import draw_automatic_chart_legends

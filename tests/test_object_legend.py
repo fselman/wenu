@@ -439,7 +439,9 @@ def test_renderer_uses_exact_canonical_marker_paths():
     descriptors = legend_symbol_descriptors(
         sky_with(
             open_clusters=object(),
+            globular_clusters=object(),
             planetary_nebulae=object(),
+            supernova_remnants=object(),
         ),
         AtlasChartStyle(),
     )
@@ -456,6 +458,10 @@ def test_renderer_uses_exact_canonical_marker_paths():
         handles["planetary_nebula"].get_marker()
         is DEFAULT_SYMBOLS.planetary_nebula
     )
+    for descriptor in descriptors:
+        enlarged = _legend_handle(descriptor, marker_scale=1.8)
+        assert enlarged.get_marker() is handles[descriptor.key].get_marker()
+        assert enlarged.get_markersize() == handles[descriptor.key].get_markersize() * 1.8
 
 
 def test_area_objects_use_patch_descriptors_and_handles():
@@ -624,6 +630,7 @@ def test_object_legend_preserves_descriptor_keys_when_labels_change():
         AtlasChartStyle(),
         title="Context",
         symbol_labels=custom,
+        marker_scale=1.8,
     )
 
     assert legend._wenu_legend_entry_keys == (
@@ -636,4 +643,7 @@ def test_object_legend_preserves_descriptor_keys_when_labels_change():
     )
     assert legend.get_texts()[0].get_text() == "Amas ouverts"
     assert legend.get_texts()[4].get_text() == "Galaxias"
+    from matplotlib import rcParams
+    assert all(handle.get_markersize() == rcParams['lines.markersize'] * 1.8
+               for handle in legend.legend_handles[:4])
     plt.close(figure)

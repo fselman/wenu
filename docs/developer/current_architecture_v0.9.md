@@ -2596,3 +2596,15 @@ stellar_sizing_report also owns the actual-source catalogue-count appendix;
 it reads the admitted sky's source catalogue rather than marker appearances or
 new catalogue loads. Atlas publication appends the page and publishes all audit
 products inside its existing staging/no-clobber lifecycle.
+
+
+### Atlas physical frame and report marker correction
+
+The atlas retains the canonical chart command and projected viewport. Its
+existing furniture callback now asks the renderer to fit the measured exterior
+coordinate frame into the useful paper bounds, uniformly resizing axes while
+retaining physical label and symbol sizes. Scientific geometry and selection
+are unchanged. The existing legend coordination chain propagates the atlas
+DSO diameter multiplier to the four report marker handles; patches and legend
+text retain their existing dimensions. No new geometry or export pipeline is
+introduced.

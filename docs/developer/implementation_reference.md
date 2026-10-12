@@ -4796,3 +4796,18 @@ provenance. Atlas publication appends it after the prior sizing/area appendices.
 Per-chart Star magnitude (N) furniture uses the existing visible-star statistic.
 The coordinate-system guide was reviewed and remains current: no new frame,
 epoch, catalogue astrometry transformation or physical size model is introduced.
+
+
+### Atlas frame fitting and report marker propagation
+
+`MatplotlibRenderer.fit_grid_label_band(bounds)` measures the completed outer
+coordinate frame and fits its axes uniformly into figure-fraction bounds.
+It reruns existing physical grid-label placement, without rereading sources,
+realizing geometry, changing the viewport or rescaling marker diameters.
+The atlas furniture callback fits the frame before computing chart-area budgets.
+`object_marker_scale` flows through the existing automatic, rendered and planned
+legend coordinators to `draw_chart_legend(marker_scale=...)`. The atlas report
+passes `deep_sky_symbol_scale`; the default 1.0 preserves ordinary legends.
+Only marker handles scale; galaxy and Milky Way patches and text retain their
+existing dimensions. Existing grid containment and marker-path oracles cover
+this change without a new production module or test file.

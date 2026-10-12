@@ -80,6 +80,33 @@ class MatplotlibRenderer:
             self._closed_boundary_path(boundary), dict(style),
         )
 
+    def fit_grid_label_band(self, bounds):
+        """Fit the measured exterior frame to figure bounds without changing sky geometry."""
+        if self._grid_label_band is None:
+            return
+        from matplotlib.transforms import Bbox
+        target = Bbox.from_bounds(*bounds).transformed(self.ax.figure.transFigure)
+        target = target.padded(-0.01 * self.ax.figure.dpi / 25.4)
+        for _ in range(12):
+            self._finalize_grid_label_band()
+            frame = self._grid_label_band_frame.get_path().transformed(
+                self._grid_label_band_frame.get_transform()).get_extents()
+            sky = self.ax.get_window_extent()
+            left, right = sky.x0 - frame.x0, frame.x1 - sky.x1
+            bottom, top = sky.y0 - frame.y0, frame.y1 - sky.y1
+            factor = min((target.width - left - right) / sky.width,
+                         (target.height - bottom - top) / sky.height)
+            if factor <= 0:
+                raise ValueError("Coordinate labels do not fit the page bounds.")
+            width, height = sky.width * factor, sky.height * factor
+            x = target.x0 + (target.width - width - left - right) / 2 + left
+            y = target.y0 + (target.height - height - bottom - top) / 2 + bottom
+            proposed = Bbox.from_bounds(x, y, width, height)
+            if np.max(np.abs(proposed.extents - sky.extents)) < 0.01:
+                break
+            self.ax.set_position(proposed.transformed(self.ax.figure.transFigure.inverted()))
+        self._finalize_grid_label_band()
+
     def _finalize_grid_label_band(self):
         """Fit a circular or rectangular exterior band to physical text bounds."""
         if self._grid_label_band is None:

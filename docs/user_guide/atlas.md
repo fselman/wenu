@@ -1440,3 +1440,13 @@ The curve covers the whole declared atlas even in a selected-chart sample batch.
 `atlas-star-counts.json` contains the cumulative curve, exclusions and exact
 snapshot/design provenance. These products are published atomically with the
 existing chart/report batch. This appendix is omitted when stars are disabled.
+
+
+### Measured chart frame and report marker sizes
+
+The atlas fits the rendered coordinate-label frame to the useful page area.
+It retains the configured wider band and the resolved angular viewport; the
+initial conservative label reserve no longer leaves an extra outside margin.
+`deep_sky_symbol_scale` also multiplies the diameters of the open-cluster,
+globular-cluster, planetary-nebula and SNR markers in the report legend. Its
+atlas default is 1.8; the legend text remains controlled by `legend_fontsize`.

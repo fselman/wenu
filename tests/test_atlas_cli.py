@@ -688,6 +688,7 @@ def test_reserved_report_mirrors_binding_margin_and_keeps_legends_at_right(typog
             assert options['object_title'] == 'Centre: ICRS\nRA 05h30m00s\nDec +00d00m00s'
         assert options['stellar_reference_range'] == (-2,8)
         assert options['stellar_report_range'] is True
+        assert options['object_marker_scale'] == presentation.deep_sky_symbol_scale
         assert options['stellar_title'] == ('Star magnitude (2)' if stars else 'Star magnitude')
         assert options['plan'].objects.location == 'upper right'
         assert options['plan'].stars.location == 'lower right'
@@ -919,6 +920,10 @@ def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
                    if t.get_text().endswith('ʰ')).values())
     assert 'ticks' in (tmp_path/'grid.svg').read_text()
     fig.canvas.draw()
+    renderer.fit_grid_label_band((page.inner_mm/page.width_mm,
+        page.bottom_mm/page.height_mm, page.useful_width_mm/page.width_mm,
+        page.useful_height_mm/page.height_mm))
+    fig.canvas.draw()
     outer = renderer._grid_label_band_frame.get_path().transformed(renderer._grid_label_band_frame.get_transform())
     for text in texts:
         if text.get_text().endswith('°'):
@@ -936,6 +941,10 @@ def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
     assert outer_mm[:,0].max() <= page.width_mm-page.outer_mm+1e-6
     assert outer_mm[:,1].min() >= page.bottom_mm-1e-6
     assert outer_mm[:,1].max() <= page.height_mm-page.top_mm+1e-6
+    assert min(outer_mm[:,0].min()-page.inner_mm,
+               page.width_mm-page.outer_mm-outer_mm[:,0].max(),
+               outer_mm[:,1].min()-page.bottom_mm,
+               page.height_mm-page.top_mm-outer_mm[:,1].max()) < 0.02
     for minutes in range(60):
         if minutes%10:
             continue
