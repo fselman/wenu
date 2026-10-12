@@ -723,7 +723,9 @@ def test_atlas_chart_batch_cold_saved_and_spawned_pages_match(native_snapshot_ca
             text = book.pages[position].extract_text()
             assert f'Chart {number}' in text and 'Object report' in text
             assert 'Reserved for the object report' in text
-            assert 'Stars' in text
+            report = json.loads((manifest.parent/f'chart-{number:02d}_report_data.json').read_text())
+            visible_count = report['stars']['statistics']['visible_count']
+            assert f'Star magnitude ({visible_count:,})' in text
             assert 'Centre: ICRS' in text and 'RA' in text and 'Dec' in text
             chart_text = book.pages[position+1].extract_text()
             assert str(number) in chart_text.splitlines()
