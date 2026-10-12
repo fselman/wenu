@@ -4749,3 +4749,11 @@ the same contract. The renderer also retains perpendicular rotation for generic
 callers. Atlas/index milky_way_color sets MW/LMC/SMC through the composed style.
 NonStellar geometry accepts excluded_categories; canonical detail passes enabled
 dedicated catalogue categories before source-local realization/selection.
+
+NonStellar labels_only realizes catalogue centres as SphericalPoints in native
+ICRS or the existing ordinary centre transform. Labels do not apply dedicated
+category exclusions. Native outlined subclasses receive no new table keyword
+unless an exclusion is requested. Atlas requests label-only Messier geometry
+and disables markers, with 10-point designation text. AtlasChartPresentation
+legend_fontsize defaults 12 points and sets chart/report legend rows and titles;
+heading and chart-number typography remains unchanged.

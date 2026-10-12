@@ -516,6 +516,7 @@ def _render_atlas_sheet_request(request, sky):
         _draw_atlas_chart_number, _draw_atlas_magnitude_scale, _render_atlas_report)
     from pathlib import Path
     from .composition import compose_chart
+    from functools import partial
     from .style_overrides import ChartStyleOverrides
     from .detail import DetailOverrides
     from .export_workflow import export_composed_chart
@@ -542,11 +543,15 @@ def _render_atlas_sheet_request(request, sky):
     axes_bounds = (page.inner_mm / page.width_mm,
         page.bottom_mm / page.height_mm, page.useful_width_mm / page.width_mm,
         page.useful_height_mm / page.height_mm)
-    grid_options = None
+    grid_options = {}
+    if "nonstellar" in presentation.layers:
+        grid_options["nonstellar"] = dict(geometry=dict(labels_only=True),
+            render=dict(draw_markers=False, draw_labels=True,
+                label_style=dict(fontsize=10.0, color="black", alpha=1.0)))
     if "equatorial_grid" in presentation.layers:
         axes_bounds, grid_style = _atlas_grid_layout(page, composition.style, presentation)
         composition = replace(composition, style=grid_style)
-        grid_options = _atlas_grid_options(chart, presentation)
+        grid_options.update(_atlas_grid_options(chart, presentation))
     figure = plt.figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4))
     ax = figure.add_axes(axes_bounds)
     ax.set_xticks([])
@@ -561,7 +566,7 @@ def _render_atlas_sheet_request(request, sky):
             layer_options=grid_options,
             realization_context=LayerRealizationContext(NATIVE_ICRS_SPEC),
             export_options=ExportOptions(dpi=presentation.dpi, bbox_inches=None),
-            additional_furniture=_draw_atlas_magnitude_scale)
+            additional_furniture=partial(_draw_atlas_magnitude_scale, presentation=presentation))
         for suffix in presentation.formats[1:]:
             result.export_options.save(figure, Path(directory) / f"chart-{sheet.number:02d}.{suffix}")
         _render_atlas_report(chart, sky, composition, result.rendering, directory,

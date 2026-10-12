@@ -2569,3 +2569,9 @@ sky blue for MW/MCs through their existing style/composition owners. Canonical
 detail application delegates each DSO category to an enabled dedicated layer;
 NonStellar filters generic outlines request-locally. Snapshot catalogues remain
 unchanged, and generic outlines return when their dedicated owner is disabled.
+
+Atlas execution now requests labels_only geometry for its Messier layer through
+shared NonStellar realization, preserving all catalogue designations and source
+categories without generic outlines. Native catalogue subclasses retain their
+original table method contracts. Atlas legend_fontsize controls chart/report
+legend text and titles independently of heading/chart-number furniture.

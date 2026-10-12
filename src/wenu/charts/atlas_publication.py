@@ -189,6 +189,7 @@ class AtlasChartPresentation:
     grid_ra_step_hours: int = 2
     grid_minute_labels_visible: bool = False
     milky_way_color: str = "#87CEFA"
+    legend_fontsize: float = 12.0
 
     def __post_init__(self):
         import math
@@ -211,7 +212,7 @@ class AtlasChartPresentation:
                 and limit > self.stellar_magnitude_sizing.size_reference_magnitude):
             raise ValueError("Magnitude limit must not exceed the sizing reference.")
         for name in ("star_size_scale", "report_label_scale", "report_separator_width", "report_separator_gap_mm",
-                     "grid_label_fontsize", "grid_minor_label_scale", "grid_frame_width_scale"):
+                     "grid_label_fontsize", "grid_minor_label_scale", "grid_frame_width_scale", "legend_fontsize"):
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
                 raise ValueError(f"{name} must be finite and positive.")
@@ -403,9 +404,9 @@ def _render_atlas_report(chart, sky, composition, rendering, directory,
             LegendPlacement(location="upper right"),
             LegendPlacement(enabled="stars" in composition.detail.enabled_layers,
                 location="lower right"))
-        report_style = composition.style
+        report_style = replace(composition.style, legend=replace(composition.style.legend,
+            fontsize=presentation.legend_fontsize, title_fontsize=presentation.legend_fontsize))
         if not getattr(report_style.legend, "visible", True):
-            from dataclasses import replace
             report_style = replace(report_style,
                 legend=replace(report_style.legend, visible=True, frame=True))
         legends = draw_automatic_chart_legends(ax, chart, sky, report_style,
@@ -478,14 +479,17 @@ def _draw_atlas_chart_number(ax, number, style, presentation):
     return None
 
 
-def _draw_atlas_magnitude_scale(*, chart, sky, renderer, composition, rendering):
+def _draw_atlas_magnitude_scale(*, chart, sky, renderer, composition, rendering, presentation=None):
     """Minimal in-frame scale through the existing rendered-legend owner."""
     if 'stars' not in composition.detail.enabled_layers:
         return None
     from .automatic_legends import draw_automatic_chart_legends
     from .legend_plan import ChartLegendPlan, LegendPlacement
     data = _atlas_report_data(chart, sky, composition, rendering)
-    legends = draw_automatic_chart_legends(renderer.ax, chart, sky, composition.style,
+    presentation = AtlasChartPresentation() if presentation is None else presentation
+    style = replace(composition.style, legend=replace(composition.style.legend,
+        fontsize=presentation.legend_fontsize, title_fontsize=presentation.legend_fontsize))
+    legends = draw_automatic_chart_legends(renderer.ax, chart, sky, style,
         rendering, resolved_detail=composition.detail,
         plan=ChartLegendPlan('regional', LegendPlacement(enabled=False),
                              LegendPlacement(location='lower right')),

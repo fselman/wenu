@@ -665,7 +665,8 @@ def test_reserved_report_mirrors_binding_margin_and_keeps_legends_at_right(typog
         sheet_id='test-sheet',center_ra_deg=0 if polar else 82.5,
         center_dec_deg=90 if polar else 0,pole_meridian_ra_deg=82.5 if polar else None))
     from wenu.charts.presets import AtlasChartStyle
-    composition = SimpleNamespace(style=SimpleNamespace(stars=AtlasChartStyle().stars, legend=SimpleNamespace(title_fontsize=6.5)),detail=SimpleNamespace(star_magnitude_limit=6,
+    composition = SimpleNamespace(style=replace(AtlasChartStyle(), legend=replace(
+        AtlasChartStyle().legend, title_fontsize=6.5)),detail=SimpleNamespace(star_magnitude_limit=6,
                                   enabled_layers={'stars'} if stars else {'galaxies'}),
                                   mode=SimpleNamespace(dpi=150))
     star_layer = object()
@@ -677,7 +678,9 @@ def test_reserved_report_mirrors_binding_margin_and_keeps_legends_at_right(typog
     calls = []
     def legend(ax, actual_chart, sky, style, result, **options):
         assert actual_chart is chart and result is rendering
-        assert style is composition.style and options['resolved_detail'] is composition.detail
+        assert style.legend.fontsize == presentation.legend_fontsize
+        assert style.legend.title_fontsize == presentation.legend_fontsize
+        assert options['resolved_detail'] is composition.detail
         assert options['include_context'] is True
         if polar:
             assert options['object_title'] == 'Centre: ICRS\nRA undefined (pole)\nDec +90d00m00s\nMeridian 05h30m00s'
@@ -956,7 +959,7 @@ def test_requested_portrait_review_sheets_render_through_chart_command(number, t
 @pytest.mark.parametrize("field,value", [("grid_lines_visible",1),
     ("grid_label_fontsize",float('nan')),("grid_minor_label_scale",1.1),
     ("grid_frame_width_scale",0), ("grid_ra_step_hours",5),
-    ("grid_minute_labels_visible",1), ("milky_way_color","invalid")])
+    ("grid_minute_labels_visible",1), ("milky_way_color","invalid"), ("legend_fontsize",0)])
 def test_atlas_coordinate_presentation_rejects_invalid_values(field,value):
     from wenu.charts.atlas_publication import AtlasChartPresentation
     with pytest.raises(ValueError):
@@ -1016,7 +1019,8 @@ def test_atlas_stellar_area_budget_uses_reduced_rendered_sky(request_data):
         SimpleNamespace(layer=star_layer,
             spherical=SimpleNamespace(metadata={'magnitude':np.array([1.,2.])}),
             projected=SimpleNamespace(x=np.array([0.,0.]),y=np.array([0.,0.]))),))
-    data = _atlas_report_data(chart,SimpleNamespace(stars=star_layer),composition,rendering)
+    sky = SimpleNamespace(stars=star_layer)
+    data = _atlas_report_data(chart,sky,composition,rendering)
     box = renderer.ax.get_window_extent()
     area = box.width*box.height*(25.4/fig.dpi)**2
     budget = data['stellar_area_budget']
@@ -1026,6 +1030,13 @@ def test_atlas_stellar_area_budget_uses_reduced_rendered_sky(request_data):
     assert frame['width']*frame['height'] == pytest.approx(area)
     assert sum(row['chart_fraction'] for row in budget['bins']) == pytest.approx(
         budget['total_area_mm2']/area)
+    from wenu.charts.atlas_publication import _draw_atlas_magnitude_scale
+    for size in (12.0, 14.0):
+        legends = _draw_atlas_magnitude_scale(chart=chart, sky=sky, renderer=renderer,
+            composition=composition, rendering=rendering,
+            presentation=AtlasChartPresentation(legend_fontsize=size))
+        texts = legends.legends.stars.artist.get_texts()
+        assert texts and all(text.get_fontsize()==size for text in texts)
     plt.close(fig)
 
 def test_atlas_sheet_worker_invokes_chart_entry_and_reuses_worker_sky(request_data, tmp_path, monkeypatch):
@@ -1084,9 +1095,19 @@ def test_atlas_producer_uses_real_chart_command_and_prepares_sky_once(request_da
     design.write_text(atlas.to_json())
     config = tmp_path/'presentation.toml'
     config.write_text('schema_version=1\ndocument_kind="wenu-atlas-chart-presentation"\n'
-        'layers=["equatorial_grid"]\nformats=["pdf","svg"]\n')
+        'layers=["equatorial_grid","galaxies","nonstellar"]\nformats=["pdf","svg"]\n')
     sky = CelestialSphere(None)
     sky.add_equatorial_grid(frame='icrs', equinox='J2000', include_equator=True)
+    # Co-located synthetic galaxy and Messier designation exercise both native
+    # inherited galaxy realization and catalogue-label-only sheet execution.
+    from astropy.table import Table
+    sheet = atlas.geometry.sheets[13]
+    table = Table(dict(name=['M synthetic'], ra_deg=[sheet.center_ra_deg],
+        dec_deg=[sheet.center_dec_deg], magnitude=[5.0], object_type=['Galaxy'],
+        major_axis_arcmin=[10.0], minor_axis_arcmin=[5.0], position_angle_deg=[30.0]))
+    catalogue = tmp_path/'synthetic_dso.ecsv';table.write(catalogue,format='ascii.ecsv')
+    sky.add_galaxies(filename=catalogue)
+    sky.add_nonstellar(filename=catalogue)
     preparations, dispatches = [], []
     def prepare(raw, directory, **kwargs):
         preparations.append(raw)
@@ -1109,4 +1130,8 @@ def test_atlas_producer_uses_real_chart_command_and_prepares_sky_once(request_da
     manifest=json.loads((output/'manifest.json').read_text())
     assert manifest['charts']==[1,14] and manifest['workers']==1
     assert (output/'atlas.pdf').is_file()
+    from xml.etree import ElementTree
+    root = ElementTree.parse(output/'chart-14.svg').getroot()
+    texts = [''.join(element.itertext()) for element in root.iter() if element.tag.endswith('}text')]
+    assert 'M synthetic' in texts
 

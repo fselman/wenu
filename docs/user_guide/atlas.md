@@ -1339,3 +1339,16 @@ layer is enabled, it owns that category: generic Messier dotted outlines are
 suppressed for the category. Disabling its dedicated layer restores the generic
 outline. This removes cluster-like circles over dedicated galaxy symbols and
 other duplicate category drawings without changing saved source catalogues.
+
+### Messier designations and readable legend text
+
+In atlas sheets, the heterogeneous Messier catalogue supplies designation labels
+at catalogue centres only. It supplies no outlines or category symbols; dedicated
+DSO layers retain symbol ownership. Atlas labels remain present for Messier
+galaxies and other categories even when those dedicated layers are enabled.
+
+The chart and facing-report legend text/title default to 12 physical points.
+Set legend_fontsize = 12.0 in the atlas presentation TOML to control both.
+Report headings and chart-number boxes retain their separate typography. Ordinary
+schema-v2 chart TOML already exposes styles.atlas.legend.font_size and
+styles.atlas.legend.title_font_size; the atlas presentation is a distinct format.

@@ -3503,3 +3503,9 @@ curve-following exterior offsets. Atlas/index presentation owns MW/MC fill colou
 charts/detail_application.py supplies dedicated DSO categories; objects/nonstellar.py
 performs render-local exclusion of generic duplicate outlines. Existing atlas,
 configuration, renderer and nonstellar tests cover these seams.
+
+Atlas request_generation admits label-only Messier catalogue geometry;
+objects/nonstellar owns centre realization. Atlas publication passes the
+configurable 12-point legend typography to the existing legend owner, keeping
+report headings separate. Existing catalogue and atlas tests protect inherited
+galaxy realization, designation-only SVG output and actual legend text sizes.

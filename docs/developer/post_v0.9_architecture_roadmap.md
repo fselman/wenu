@@ -5190,3 +5190,10 @@ generic Messier dotted outlines over dedicated galaxies; canonical category
 ownership now suppresses those duplicate generic outlines while preserving
 source data and restoring generic presentation when a dedicated layer is off.
 Index review explicitly opens/checks independent PNG/SVG/PDF files.
+
+After 612 Mac focused tests passed, real chart rendering exposed an inherited
+Galaxies._geometry_table keyword mismatch. The correction preserves subclass
+method admission and extends an end-to-end batch test with synthetic galaxies
+and co-located Messier labels. Fernando clarified Messier is a heterogeneous
+designation catalogue; atlas sheets now draw its labels only. Requested legend
+text/title is 12 points, configurable independently of report headings.
