@@ -529,7 +529,8 @@ def plot_overview(design_path, output_prefix, *, footprints=False, joined=False,
         figure.subplots_adjust(left=0.03, right=0.97, top=0.86, bottom=0.13, wspace=0.06)
     for ax in axes:
         ax.set_facecolor("none")
-    field = atlas.geometry.sheets[0].field_width_deg
+    field = next(sheet.field_width_deg for sheet in atlas.geometry.sheets
+                 if abs(sheet.center_dec_deg) != 90)
     page = atlas.geometry.page
     paper = "B4" if (page.width_mm, page.height_mm) == (353, 250) else f"{page.width_mm:g} × {page.height_mm:g} mm"
     figure.suptitle(f"Atlas {paper} · campo horizontal {field:g}° · {len(atlas.geometry.sheets)} hojas",

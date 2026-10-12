@@ -1378,3 +1378,27 @@ cap moves the nonpolar primary boundary to 70 degrees; visual review is still
 needed. Atlas Messier designation labels now default to 7 points (70 percent of
 the former hardcoded 10 points). `messier_label_fontsize` is a positive, finite
 chart-presentation TOML setting, separate from the 12-point legend setting.
+
+### 36-chart portrait comparison
+
+`examples/atlas_design_36charts_v1.json` is an explicit resolved design for
+visual comparison. It retains the 32-chart alternative's B4 portrait page,
+55-degree nonpolar field height, 40-degree polar primary diameter, seed and
+primary latitude boundaries. It adds one chart to each subpolar band and two
+to the equatorial band: counts [1, 11, 12, 11, 1]. Numbering is south to north;
+polar charts are 1 and 36, southern subpolar charts 2..12, equatorial charts
+13..24, and northern subpolar charts 25..35.
+
+The explicit design is validated by the existing continuous analytic rectangle
+certificate and strict serialization contract. It is not claimed to be a new
+minimum-count solution. The minimum global overlap remains 0.25 degrees;
+conservative lateral overlap bounds are 3.70093 degrees in the subpolar bands
+and 6.73255 degrees in the equatorial band. No new designer or renderer is used.
+
+```bash
+wenu_plot_atlas --design examples/atlas_design_36charts_v1.json --config examples/atlas_index_style_v2.toml --output-prefix atlas_36charts_index_v1
+```
+
+This command exports separate PNG, PDF and SVG index files. The resolved JSON
+is also usable by wenu_create_atlas; a sky snapshot prepared for another design
+cannot be reused with it. Index review precedes a new full chart-book render.
