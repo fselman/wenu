@@ -262,13 +262,15 @@ class AtlasChartPresentation:
 
 
 _WORKER_SKY = None
+_WORKER_CHART_COMMAND = None
 
 
-def _initialize_atlas_worker(directory, digest):
+def _initialize_atlas_worker(directory, digest, chart_command=None):
     import matplotlib
     matplotlib.use("Agg", force=True)
     from wenu.sky.native_snapshot import read_native_sky_snapshot
-    global _WORKER_SKY
+    global _WORKER_SKY, _WORKER_CHART_COMMAND
+    _WORKER_CHART_COMMAND = chart_command
     _WORKER_SKY = read_native_sky_snapshot(directory,
         expected_manifest_sha256=digest).make_sky()
 
@@ -488,132 +490,46 @@ def _draw_atlas_magnitude_scale(*, chart, sky, renderer, composition, rendering)
     return legends
 
 
+def _atlas_grid_marks(presentation):
+    from .style_components import EquatorialGridMarks
+    return EquatorialGridMarks(**{name: getattr(presentation, name)
+        for name in EquatorialGridMarks.__dataclass_fields__})
+
+
 def _atlas_tick_options(name, *, minor_scale):
-    """Chart-owned coordinate typography; renderer consumes only mark records."""
-    if name.startswith("right_ascension_"):
-        minutes = round(float(name.removeprefix("right_ascension_")) * 4) % 1440
-        hour, minute = divmod(minutes, 60)
-        label = f"{hour}h" if minute == 0 else f"{minute}m" if minute in (20, 40) else None
-        scale = 1.0 if minute == 0 else minor_scale
-        length = 4.0 if minute == 0 else 3.0 if label else 2.0
-    else:
-        value = float(name.removeprefix("declination_"))
-        label, scale, length = f"{value:+g}°", 1.0, 4.0
-    return dict(label=label, font_scale=scale, length_points=length,
-                label_lane=2 if name.startswith("declination_") else 0 if minute == 0 else 1,
-                style=dict(color="black", linewidth=0.8, alpha=1.0, linestyle="-", zorder=4))
+    from .request_grids import equatorial_grid_tick_options
+    return equatorial_grid_tick_options(name, minor_scale=minor_scale)
 
 
 def _atlas_grid_options(chart, presentation):
-    """Request-local grid definitions; saved source data remains unchanged."""
-    from functools import partial
-    from .boundaries import ExteriorGridLabelAnchor
-    from wenu.geometry.projected import ProjectedCurve
-    view = chart.viewport
-    boundary = ProjectedCurve([view.x_min, view.x_max, view.x_max, view.x_min],
-                             [view.y_min, view.y_min, view.y_max, view.y_max], closed=True)
-    ticks = partial(_atlas_tick_options, minor_scale=presentation.grid_minor_label_scale)
-    return {"equatorial_grid": dict(
-        geometry=dict(ra=tuple(range(0, 360, 30)), dec=tuple(range(-60, 61, 30)),
-                      ra_ticks=tuple(index * 2.5 for index in range(144)),
-                      dec_ticks=tuple(range(-80, 81, 10))),
-        render=dict(draw_labels=False,
-                    style={} if presentation.grid_lines_visible else dict(linewidth=0),
-                    label_style=dict(fontsize=presentation.grid_label_fontsize, color="black", alpha=1.0),
-                    boundary_ticks=dict(tick_meridians=ticks, tick_parallels=ticks),
-                    boundary_tick_anchor=ExteriorGridLabelAnchor(None, boundary, all_crossings=True)))}
+    from .request_grids import equatorial_grid_mark_options
+    return equatorial_grid_mark_options(chart, _atlas_grid_marks(presentation))
 
 
 def _atlas_grid_layout(page, style, presentation):
-    """Uniform sky reduction reserves the wider physical coordinate frame."""
-    canvas = style.canvas
-    baseline = max(8.5, presentation.grid_label_fontsize) + 2 * (
-        canvas.grid_label_band_padding_points + canvas.grid_label_band_linewidth / 2)
-    width = baseline * presentation.grid_frame_width_scale
-    padding = (width - max(8.5, presentation.grid_label_fontsize)) / 2 - canvas.grid_label_band_linewidth / 2
-    if padding < 0:
-        raise ValueError("grid_frame_width_scale is too small for the labels.")
-    # Reserve a conservative two-label lane where RA and Dec cross together.
-    # This is font measurement, not another sky realization or a changed viewport.
-    from matplotlib.backends.backend_agg import RendererAgg
-    from matplotlib.font_manager import FontProperties
-    measure = RendererAgg(1, 1, 72)
-    font = FontProperties(size=presentation.grid_label_fontsize)
-    def text_width(text):
-        return measure.get_text_width_height_descent(text, font, ismath=False)[0]
-    ra_width = max(text_width(f"{hour}h") for hour in range(24))
-    dec_width = max(text_width(f"{value:+g}°") for value in range(-80,81,10))
-    reserve = max(width, ra_width + dec_width + 2 + 2 * (
-        canvas.grid_label_band_padding_points + canvas.grid_label_band_linewidth / 2))
-    inset_mm = reserve * 25.4 / 72.0
-    factor = min(1 - 2 * inset_mm / page.useful_width_mm,
-                 1 - 2 * inset_mm / page.useful_height_mm)
-    if factor <= 0:
-        raise ValueError("Coordinate frame does not fit the useful page.")
-    width_mm, height_mm = page.useful_width_mm * factor, page.useful_height_mm * factor
-    bounds = ((page.inner_mm + (page.useful_width_mm - width_mm) / 2) / page.width_mm,
-              (page.bottom_mm + (page.useful_height_mm - height_mm) / 2) / page.height_mm,
-              width_mm / page.width_mm, height_mm / page.height_mm)
-    return bounds, replace(style, canvas=replace(canvas,
-        grid_label_band=True, grid_label_band_padding_points=padding))
+    from .request_grids import equatorial_grid_frame_layout
+    bounds = (page.inner_mm/page.width_mm, page.bottom_mm/page.height_mm,
+              page.useful_width_mm/page.width_mm, page.useful_height_mm/page.height_mm)
+    return equatorial_grid_frame_layout(page.width_mm, page.height_mm, bounds,
+                                        style, _atlas_grid_marks(presentation))
 
 
-def _render_atlas_sheet(task, sky=None):
-    """One isolated figure, canonical composition/export, all requested formats."""
-    import matplotlib.pyplot as plt
-    from .composition import compose_chart
-    from .style_overrides import ChartStyleOverrides
-    from .detail import DetailOverrides
-    from .export_workflow import export_composed_chart
-    from .modes import PrintMode, PresentationMode
-    from .regional import ExportOptions
-    from wenu.rendering.matplotlib import MatplotlibRenderer
-    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+def _render_atlas_sheet(task, sky=None, *, chart_command=None):
+    """Dispatch one immutable sheet through the supplied chart-command entry."""
+    from .request_generation import AtlasSheetChartRequest, generate_chart_request
     sheet, page, presentation, directory = task
+    command = chart_command if chart_command is not None else (_WORKER_CHART_COMMAND if sky is None else None)
     sky = _WORKER_SKY if sky is None else sky
-    chart = AtlasSheetChart(sheet, page)
-    composition = compose_chart(chart, style=presentation.style,
-        style_overrides=ChartStyleOverrides(star_size_scale=presentation.star_size_scale,
-            stellar_magnitude_sizing=presentation.stellar_magnitude_sizing),
-        mode=(PrintMode if presentation.mode == "print" else PresentationMode)(width_inches=page.width_mm / 25.4,
-            height_inches=page.height_mm / 25.4, dpi=presentation.dpi),
-        detail_overrides=DetailOverrides(
-            star_magnitude_limit=presentation.star_magnitude_limit,
-            enabled_layers=frozenset("nonstellar_objects" if name == "nonstellar" else name
-                for name in presentation.layers),
-            constellation_star_mode="none"))
-    figure = plt.figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4))
-    axes_bounds = (page.inner_mm / page.width_mm,
-        page.bottom_mm / page.height_mm, page.useful_width_mm / page.width_mm,
-        page.useful_height_mm / page.height_mm)
-    grid_options = None
-    if "equatorial_grid" in presentation.layers:
-        axes_bounds, grid_style = _atlas_grid_layout(page, composition.style, presentation)
-        composition = replace(composition, style=grid_style)
-        grid_options = _atlas_grid_options(chart, presentation)
-    ax = figure.add_axes(axes_bounds)
-    ax.set_xticks([])
-    ax.set_yticks([])
-    _draw_atlas_chart_number(ax, sheet.number, composition.style, presentation)
-    try:
-        renderer = MatplotlibRenderer(ax)
-        first = presentation.formats[0]
-        result = export_composed_chart(chart, sky, renderer,
-            Path(directory) / f"chart-{sheet.number:02d}.{first}",
-            composition=composition,
-            layer_options=grid_options,
-            realization_context=LayerRealizationContext(NATIVE_ICRS_SPEC),
-            export_options=ExportOptions(dpi=presentation.dpi, bbox_inches=None),
-            additional_furniture=_draw_atlas_magnitude_scale)
-        for suffix in presentation.formats[1:]:
-            result.export_options.save(figure, Path(directory) / f"chart-{sheet.number:02d}.{suffix}")
-        _render_atlas_report(chart, sky, composition, result.rendering, directory,
-                             formats=presentation.formats, presentation=presentation)
-        return sheet.number
-    except Exception as exc:
-        raise RuntimeError(f"Chart {sheet.number} failed: {exc}") from exc
-    finally:
-        plt.close(figure)
+    request = AtlasSheetChartRequest(sheet, page, presentation, Path(directory))
+    if command is None:
+        generate_chart_request(request, sky=sky)
+    else:
+        status = command(["atlas-sheet", "--chart-number", str(sheet.number),
+            "--output-dir", str(directory), "--debug"],
+            atlas_request=request, sky=sky, emit_outputs=False)
+        if type(status) is not int or status != 0:
+            raise RuntimeError(f"wenu_chart failed for chart {sheet.number}: {status}")
+    return sheet.number
 
 
 def _append_atlas_index(writer, reader, page):
@@ -635,7 +551,7 @@ def _append_atlas_index(writer, reader, page):
 
 
 def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
-                 save_sky=None, from_sky=None, index=None):
+                 save_sky=None, from_sky=None, index=None, chart_command=None):
     """Produce ordered chart pages with one preparation or explicit saved reuse.
 
     A manifest linked last commits the complete batch. Existing outputs and
@@ -656,6 +572,8 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
     from pypdf import PdfReader, PdfWriter
     from wenu.sky.native_snapshot import prepare_native_sky_snapshot, read_native_sky_snapshot
     _positive_integer(jobs, "jobs")
+    if chart_command is not None and not callable(chart_command):
+        raise TypeError("chart_command must be callable or None.")
     if not isinstance(presentation, AtlasChartPresentation):
         raise TypeError("presentation must be AtlasChartPresentation.")
     if "svg" not in presentation.formats:
@@ -712,7 +630,8 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
         tasks = [(sheet, atlas.geometry.page, presentation, str(staging)) for sheet in sheets]
         if worker_count == 1:
             sky = cold_sky if cold_sky is not None else snapshot.make_sky()
-            completed = [_render_atlas_sheet(task, sky) for task in tasks]
+            completed = [(_render_atlas_sheet(task, sky) if chart_command is None else
+                          _render_atlas_sheet(task, sky, chart_command=chart_command)) for task in tasks]
         else:
             variables = ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS")
             previous = {key: os.environ.get(key) for key in variables}
@@ -723,7 +642,7 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                 pool = ProcessPoolExecutor(max_workers=worker_count,
                     mp_context=multiprocessing.get_context("spawn"),
                     initializer=_initialize_atlas_worker,
-                    initargs=(str(directory), digest))
+                    initargs=(str(directory), digest, chart_command))
                 pending = {}
                 remaining = iter(tasks)
                 done_numbers = set()

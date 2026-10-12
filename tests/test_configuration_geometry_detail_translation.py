@@ -38,6 +38,30 @@ def test_packaged_family_geometry_translates_with_exact_parity():
         defaults.view_defaults["binocular"] = CHART_VIEW_DEFAULTS["binocular"]
 
 
+@pytest.mark.parametrize(("key", "value"), (
+    ("enabled", 1), ("grid_lines_visible", "yes"),
+    ("grid_label_fontsize", 0), ("grid_frame_width_scale", float("inf")),
+    ("grid_minor_label_scale", 1.1),
+))
+def test_edge_mark_configuration_rejects_invalid_appearance_even_when_disabled(key, value):
+    values = load_packaged_defaults()
+    values["grids_references"]["coordinate_grid"]["edge_marks"][key] = value
+    with pytest.raises(ConfigurationError):
+        validate_configuration(values)
+
+
+def test_edge_mark_translation_is_opt_in_and_immutable():
+    from wenu.charts.style_components import EquatorialGridMarks
+    values = load_packaged_defaults()
+    assert translate_geometry_detail_defaults(values).equatorial_grid_marks is None
+    marks = values["grids_references"]["coordinate_grid"]["edge_marks"]
+    marks.update(enabled=True, grid_lines_visible=False, grid_label_fontsize=14.0)
+    translated = translate_geometry_detail_defaults(values).equatorial_grid_marks
+    assert translated == EquatorialGridMarks(grid_lines_visible=False, grid_label_fontsize=14.0)
+    marks["grid_label_fontsize"] = 20.0
+    assert translated.grid_label_fontsize == 14.0
+
+
 def test_family_geometry_gateway_uses_cached_packaged_authority():
     packaged_geometry_detail_defaults.cache_clear()
     defaults = packaged_geometry_detail_defaults()
@@ -240,3 +264,4 @@ def test_empty_or_optional_list_element_types_are_strict(
     with pytest.raises(ConfigurationError) as error:
         validate_configuration(values)
     assert diagnostic in str(error.value)
+

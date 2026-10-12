@@ -628,3 +628,23 @@ class ChartStyle:
             sky,
             horizon_altitude_deg=horizon_altitude_deg,
         )
+
+@dataclass(frozen=True)
+class EquatorialGridMarks:
+    """Physical appearance for an explicitly requested marginal grid preset."""
+
+    grid_lines_visible: bool = True
+    grid_label_fontsize: float = 12.0
+    grid_minor_label_scale: float = 0.75
+    grid_frame_width_scale: float = 1.5
+
+    def __post_init__(self):
+        if type(self.grid_lines_visible) is not bool:
+            raise ValueError("grid_lines_visible must be boolean.")
+        for name in ("grid_label_fontsize", "grid_minor_label_scale", "grid_frame_width_scale"):
+            value = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not isfinite(value) or value <= 0:
+                raise ValueError(f"{name} must be finite and positive.")
+        if self.grid_minor_label_scale > 1:
+            raise ValueError("grid_minor_label_scale must be at most 1.")
+

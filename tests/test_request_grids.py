@@ -87,6 +87,24 @@ def test_individual_cli_addition_overrides_disabled_general_alias():
     assert requested_coordinate_grids(detail) == {"equatorial_grid"}
 
 
+@pytest.mark.parametrize("fault", ["family", "cadence", "disabled"])
+def test_edge_marks_reject_conflicting_requests_before_mutating_sky(fault):
+    from wenu.charts.style_components import EquatorialGridMarks
+    detail = DetailOverrides(equatorial_grid_marks=EquatorialGridMarks())
+    family = "regional"
+    if fault == "family":
+        family = "planisphere"
+    elif fault == "cadence":
+        detail = replace(detail, equatorial_declination_step_deg=15)
+    else:
+        detail = replace(detail, disabled_layers={"equatorial_grid"})
+    sky = CelestialSphere(None)
+    existing = sky.add_equatorial_grid(frame="icrs", equinox="J2000")
+    with pytest.raises(ValueError):
+        configure_chart_request_grids(sky, request(family, detail=detail))
+    assert grids(sky) == (existing,)
+
+
 @pytest.mark.parametrize(
     ("family", "frame", "step", "samples"),
     (
@@ -330,3 +348,4 @@ def test_regional_declination_grid_has_zero_and_uniform_multiples(step):
     assert 0.0 in grid.dec
     assert [b - a for a, b in zip(grid.dec, grid.dec[1:])] == pytest.approx([expected_step] * (len(grid.dec) - 1))
     assert all(value / expected_step == pytest.approx(round(value / expected_step)) for value in grid.dec)
+

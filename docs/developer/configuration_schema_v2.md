@@ -405,3 +405,32 @@ No new key or schema version is required. The review candidate sets
 `mag_dmin = 0.30`, `mag_a = 0.04`, `mag_size_reference = 8`, and explicitly
 uses diameter scale 1. Selection magnitude limits remain independent and
 must not exceed the physical law's reference magnitude.
+
+### Regional equatorial edge marks
+
+The optional schema-v2 table selects the shared atlas/regional presentation:
+
+```toml
+[grids_references.coordinate_grid.edge_marks]
+enabled = false
+grid_lines_visible = true
+grid_label_fontsize = 12.0
+grid_minor_label_scale = 0.75
+grid_frame_width_scale = 1.5
+```
+
+`enabled=true` selects 2h RA and 30-degree declination lines, all 10m RA marks,
+whole-hour and smaller 20m/40m labels, and 10-degree declination marks/labels.
+Font size and frame scale are positive finite numbers; the minor scale is
+positive and at most 1. Booleans are strict. Appearance validates even when
+disabled. Ordinary chart defaults remain disabled; atlas version-1 presentation
+uses the same four appearance values directly and enables markings whenever
+equatorial_grid is selected. These are distinct existing configuration formats.
+
+`--equatorial-grid-ticks`/`--no-equatorial-grid-ticks` overrides `enabled`.
+The four matching appearance flags override TOML; `--no-grid-lines-visible`
+keeps edge marks while hiding full curves. Appearance flags require the preset.
+Ordinary admission requires regional charts, the equatorial grid and exterior
+label band, and a compatible 30-degree declination step. Physical sky reduction
+preserves angular coverage and the existing observer-time coordinate semantics.
+

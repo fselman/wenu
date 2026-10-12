@@ -378,6 +378,12 @@ def add_chart_content_arguments(parser):
     parser.add_argument("--grid-label-band-fill-color", default=None, metavar="COLOR")
     parser.add_argument("--grid-label-band-frame-color", default=None, metavar="COLOR")
     parser.add_argument("--grid-label-band-line-width", type=float, default=None, metavar="POINTS")
+    parser.add_argument("--equatorial-grid-ticks", action=argparse.BooleanOptionalAction,
+                        default=None, help="regional 2h/30-degree grid with 10m/10-degree edge marks")
+    parser.add_argument("--grid-lines-visible", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--grid-label-fontsize", type=float, default=None, metavar="POINTS")
+    parser.add_argument("--grid-minor-label-scale", type=float, default=None)
+    parser.add_argument("--grid-frame-width-scale", type=float, default=None)
     parser.add_argument("--star-label-placement", choices=("fixed", "auto"), default=None)
     orientations = parser.add_mutually_exclusive_group()
     orientations.add_argument(
@@ -1166,3 +1172,4 @@ def chart_legend_selection(arguments) -> ChartLegendSelection:
         stellar_magnitudes=stellar,
         stellar_counts=bool(stellar and arguments.star_counts),
     )
+

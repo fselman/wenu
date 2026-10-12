@@ -129,9 +129,10 @@ def create_main(argv=None):
         if args.magnitude_limit is not None:
             from dataclasses import replace
             presentation = replace(presentation, star_magnitude_limit=args.magnitude_limit)
+        from wenu.cli.chart import main as chart_command
         output = create_atlas(args.design, args.output_dir, presentation=presentation,
             charts=args.charts, jobs=args.jobs, save_sky=args.save_sky, from_sky=args.from_sky,
-            index=args.index)
+            index=args.index, chart_command=chart_command)
     except (ValueError, TypeError, OSError, UnicodeError, RuntimeError) as exc:
         parser.error(str(exc))
     except KeyboardInterrupt:
@@ -139,3 +140,4 @@ def create_main(argv=None):
         return 130
     print(output)
     return 0
+

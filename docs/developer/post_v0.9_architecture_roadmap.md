@@ -5151,8 +5151,8 @@ shrinking only physical sky size while preserving angular coverage.
 
 As-is: native preparation registered only an equator under equatorial_grid;
 ordinary exterior anchors selected one crossing, had no edge tick contract,
-and atlas axes occupied the complete useful page. The candidate extends only
-existing scientific/reference, boundary, renderer and publication owners.
+and atlas axes occupied the complete useful page. The candidate extends existing
+scientific/reference, boundary, renderer and shared chart request owners.
 Font-measured outward lanes resolve polar overlaps without moving coordinate
 marks. The exposed grid_lines_visible switch permits later lines-off review.
 Actual sky area now governs stellar area budgets. An exact-antipode regression
@@ -5168,4 +5168,11 @@ ownership; no module, dependency, source acquisition or test file is added.
 The coordinate-system guide and current ownership diagrams were reviewed;
 scientific coordinate meaning remains current. Mac scientific/print acceptance,
 full final-candidate suite before merge, merge and cleanup remain separate.
+
+The corrected command boundary routes the atlas CLI through `wenu_chart
+atlas-sheet`, with explicit prepared native input and one sky per worker.
+Shared request generation now owns sheet execution; regional CLI/TOML admits
+the same mark policy and physical frame helpers. Existing chart/configuration
+tests additionally protect command admission, source reuse, native-versus-observer
+coordinate meaning, no-clobber output, spawn dispatch and regional parity.
 

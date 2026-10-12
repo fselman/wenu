@@ -1283,3 +1283,32 @@ interior lines hidden. Remove `equatorial_grid` from `layers` to omit the
 complete equatorial grid and its reserved frame space. Both controls are
 independent of the resolved atlas design and saved sky data.
 
+`wenu_create_atlas` renders every chart through the official `wenu_chart`
+entry, using its fixed-ICRS `atlas-sheet` command in process. The producer
+prepares or verifies the sky once; each worker reuses its mapped sky. Book
+assembly and index handling remain with the atlas command.
+
+To render one sheet independently from an existing sufficient, design-bound
+saved sky (use a new output directory):
+
+```bash
+wenu_chart atlas-sheet \
+  --design atlas_portrait_design_v1.json \
+  --config examples/atlas_chart_style_v2.toml \
+  --from-sky atlas_portrait_sky_v1 \
+  --chart-number 1 --output-dir atlas_single_sheet_v1
+```
+
+This writes the selected chart, its report and report data in the presentation's
+formats. It checks the saved sky against the exact design bytes and requested
+layers/magnitude limit. It does not assemble a complete atlas book.
+
+Ordinary regional charts can use the same markings with
+`wenu_chart regional ... --equatorial-grid-ticks`. Appearance options are
+`--grid-label-fontsize`, `--grid-minor-label-scale`,
+`--grid-frame-width-scale` and `--grid-lines-visible`/`--no-grid-lines-visible`.
+Use `--no-equatorial-grid-ticks` to override an enabled TOML preset. Regional
+charts retain their observer-time coordinate realization and original viewport;
+atlas sheets retain their fixed ICRS design. The preset currently requires a
+regional chart with its equatorial grid and exterior label band enabled.
+

@@ -621,6 +621,8 @@ def test_atlas_cli_passes_sizing_overrides_without_building_a_sky(tmp_path, monk
     assert presentation.star_size_scale == 1
     assert presentation.mode == 'presentation' and presentation.style == 'cartoon'
     assert calls[0]['from_sky'] == Path('saved-sky')
+    from wenu.cli.chart import main as chart_command
+    assert calls[0]['chart_command'] is chart_command
 
 
 def test_atlas_index_rejects_multiple_pages_before_preparation(request_data, tmp_path, monkeypatch):
@@ -960,4 +962,86 @@ def test_atlas_stellar_area_budget_uses_reduced_rendered_sky(request_data):
     assert sum(row['chart_fraction'] for row in budget['bins']) == pytest.approx(
         budget['total_area_mm2']/area)
     plt.close(fig)
+
+def test_atlas_sheet_worker_invokes_chart_entry_and_reuses_worker_sky(request_data, tmp_path, monkeypatch):
+    from wenu.charts import atlas_publication as publication
+    from wenu.sky import native_snapshot
+    atlas = AtlasDesignRequest.from_dict(request_data).resolve()
+    sky = object()
+    calls = []
+    monkeypatch.setattr(native_snapshot,'read_native_sky_snapshot',
+        lambda *args,**kwargs: type('SyntheticSnapshot',(),{'make_sky':lambda self:sky})())
+    def command(argv,**kwargs):
+        calls.append((argv,kwargs))
+        return 0
+    monkeypatch.setattr(publication,'_WORKER_SKY',None)
+    monkeypatch.setattr(publication,'_WORKER_CHART_COMMAND',None)
+    publication._initialize_atlas_worker('synthetic-snapshot','synthetic-digest',command)
+    for sheet in atlas.geometry.sheets[:2]:
+        assert publication._render_atlas_sheet((sheet,atlas.geometry.page,
+            publication.AtlasChartPresentation(),str(tmp_path))) == sheet.number
+    assert len(calls)==2 and all(kwargs['sky'] is sky for argv,kwargs in calls)
+    assert all(argv[0]=='atlas-sheet' and kwargs['emit_outputs'] is False for argv,kwargs in calls)
+    assert all(kwargs['atlas_request'].sheet.number==int(argv[2]) for argv,kwargs in calls)
+
+
+def test_atlas_sheet_command_runs_in_spawn_workers_without_an_observer(request_data, tmp_path):
+    import multiprocessing
+    from concurrent.futures import ProcessPoolExecutor
+    from wenu import CelestialSphere
+    from wenu.cli.chart import main as chart_command
+    from wenu.charts.atlas_publication import _render_atlas_sheet,AtlasChartPresentation
+    from pypdf import PdfReader
+    atlas = AtlasDesignRequest.from_dict(request_data).resolve()
+    sky = CelestialSphere(None)
+    sky.add_equatorial_grid(frame='icrs',equinox='J2000',include_equator=True)
+    presentation = AtlasChartPresentation(layers=('equatorial_grid',),formats=('pdf','svg'))
+    sheets = (atlas.geometry.sheets[0],atlas.geometry.sheets[13])
+    with ProcessPoolExecutor(max_workers=2,mp_context=multiprocessing.get_context('spawn')) as pool:
+        futures=[pool.submit(_render_atlas_sheet,(sheet,atlas.geometry.page,presentation,str(tmp_path)),
+            sky,chart_command=chart_command) for sheet in sheets]
+        assert [future.result(timeout=60) for future in futures]==[sheet.number for sheet in sheets]
+    for sheet in sheets:
+        assert (tmp_path/f'chart-{sheet.number:02d}.svg').exists()
+        assert (tmp_path/f'chart-{sheet.number:02d}_report_data.json').exists()
+        page=PdfReader(tmp_path/f'chart-{sheet.number:02d}.pdf').pages[0]
+        assert float(page.mediabox.width)==pytest.approx(atlas.geometry.page.width_mm*72/25.4)
+
+
+def test_atlas_producer_uses_real_chart_command_and_prepares_sky_once(request_data, tmp_path, monkeypatch):
+    """Synthetic source admission; actual CLI, sheet exports and book publication."""
+    import json
+    from wenu import CelestialSphere
+    from wenu.cli import chart
+    from wenu.sky import native_snapshot
+    atlas = AtlasDesignRequest.from_dict(request_data).resolve()
+    design = tmp_path/'design.json'
+    design.write_text(atlas.to_json())
+    config = tmp_path/'presentation.toml'
+    config.write_text('schema_version=1\ndocument_kind="wenu-atlas-chart-presentation"\n'
+        'layers=["equatorial_grid"]\nformats=["pdf","svg"]\n')
+    sky = CelestialSphere(None)
+    sky.add_equatorial_grid(frame='icrs', equinox='J2000', include_equator=True)
+    preparations, dispatches = [], []
+    def prepare(raw, directory, **kwargs):
+        preparations.append(raw)
+        return 'synthetic-digest', sky
+    snapshot = type('SyntheticSnapshot', (), {
+        'manifest_sha256':'synthetic-digest', 'require':lambda self, **kwargs:None,
+        'make_sky':lambda self: (_ for _ in ()).throw(AssertionError('Cold sky must be reused'))})()
+    monkeypatch.setattr(native_snapshot,'prepare_native_sky_snapshot',prepare)
+    monkeypatch.setattr(native_snapshot,'read_native_sky_snapshot',lambda *args, **kwargs:snapshot)
+    command = chart.main
+    def dispatch(argv, **kwargs):
+        dispatches.append((argv, kwargs['sky']))
+        return command(argv, **kwargs)
+    monkeypatch.setattr(chart,'main',dispatch)
+    output=tmp_path/'batch'
+    assert cli.create_main(['--design',str(design),'--config',str(config),
+        '--charts','1,14','--jobs','1','--output-dir',str(output)])==0
+    assert preparations == [design.read_bytes()]
+    assert len(dispatches)==2 and all(argv[0]=='atlas-sheet' and reused is sky for argv,reused in dispatches)
+    manifest=json.loads((output/'manifest.json').read_text())
+    assert manifest['charts']==[1,14] and manifest['workers']==1
+    assert (output/'atlas.pdf').is_file()
 

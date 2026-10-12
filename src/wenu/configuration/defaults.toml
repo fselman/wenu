@@ -895,6 +895,13 @@ include_galactic_reference = false
 requested_longitudes = "none"
 requested_latitudes = "none"
 
+[grids_references.coordinate_grid.edge_marks]
+enabled = false
+grid_lines_visible = true
+grid_label_fontsize = 12.0
+grid_minor_label_scale = 0.75
+grid_frame_width_scale = 1.5
+
 [coordinates.references]
 equinox = "J2000"
 
@@ -1000,3 +1007,4 @@ transparent = false
 face_color = "none"
 metadata = {}
 padding = 0.0
+

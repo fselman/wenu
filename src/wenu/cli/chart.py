@@ -113,6 +113,15 @@ def parser():
     )
     commands = value.add_subparsers(dest="command", required=True)
 
+    sheet = commands.add_parser("atlas-sheet", allow_abbrev=False,
+        help="render one exact fixed-ICRS atlas sheet using verified saved sky data")
+    sheet.add_argument("--design", type=Path)
+    sheet.add_argument("--config", type=Path)
+    sheet.add_argument("--from-sky", type=Path)
+    sheet.add_argument("--chart-number", type=int, required=True)
+    sheet.add_argument("--output-dir", type=Path, required=True)
+    sheet.add_argument("--debug", action="store_true")
+
     all_sky = commands.add_parser("all-sky", allow_abbrev=False)
     _add_common_arguments(all_sky, family="all-sky")
 
@@ -811,7 +820,51 @@ def write_defaults_template(path):
     return destination
 
 
-def main(argv=None):
+def _atlas_sheet(arguments, *, atlas_request=None, sky=None):
+    """Admit files or an explicitly prepared batch request before execution."""
+    from wenu.atlas_design import AtlasBandTiling
+    from wenu.charts.atlas_publication import AtlasChartPresentation
+    from wenu.charts.request_generation import AtlasSheetChartRequest, generate_chart_request
+    if atlas_request is None:
+        if any(value is None for value in (arguments.design, arguments.config, arguments.from_sky)):
+            raise ValueError("atlas-sheet requires --design, --config and --from-sky.")
+        if sky is not None:
+            raise ValueError("An injected sky requires an explicit atlas request.")
+        destination, source = arguments.output_dir.resolve(), arguments.from_sky.resolve()
+        if destination == source or source in destination.parents:
+            raise ValueError("Output must be outside the saved sky bundle.")
+        import hashlib
+        try:
+            import tomllib
+        except ModuleNotFoundError:
+            import tomli as tomllib
+        raw = arguments.design.read_bytes()
+        atlas = AtlasBandTiling.from_json(raw.decode("utf-8"))
+        selected = [sheet for sheet in atlas.geometry.sheets if sheet.number == arguments.chart_number]
+        if len(selected) != 1:
+            raise ValueError("Chart number is not present in the atlas design.")
+        with arguments.config.open("rb") as stream:
+            presentation = AtlasChartPresentation.from_dict(tomllib.load(stream))
+        from wenu.sky.native_snapshot import read_native_sky_snapshot
+        snapshot = read_native_sky_snapshot(arguments.from_sky)
+        snapshot.require(layers=presentation.layers,
+            star_magnitude_limit=presentation.star_magnitude_limit,
+            design_sha256=hashlib.sha256(raw).hexdigest())
+        atlas_request = AtlasSheetChartRequest(selected[0], atlas.geometry.page,
+            presentation, arguments.output_dir)
+        sky = snapshot.make_sky()
+    else:
+        if not isinstance(atlas_request, AtlasSheetChartRequest):
+            raise TypeError("atlas_request must be AtlasSheetChartRequest.")
+        if any(value is not None for value in (arguments.design, arguments.config, arguments.from_sky)):
+            raise ValueError("Prepared atlas requests cannot also supply design/config/snapshot files.")
+        if (atlas_request.sheet.number != arguments.chart_number
+                or atlas_request.output_dir != arguments.output_dir):
+            raise ValueError("Prepared atlas request disagrees with command arguments.")
+    return generate_chart_request(atlas_request, sky=sky).outputs
+
+
+def main(argv=None, *, atlas_request=None, sky=None, emit_outputs=True):
     """Run the installed command and return a process status."""
     arguments = parser().parse_args(argv)
     try:
@@ -821,11 +874,23 @@ def main(argv=None):
             else:
                 print(write_defaults_template(arguments.write))
             return 0
-        for output in generate(arguments):
-            print(output)
+        if arguments.command == "atlas-sheet":
+            outputs = _atlas_sheet(arguments, atlas_request=atlas_request, sky=sky)
+        else:
+            if atlas_request is not None or sky is not None:
+                raise ValueError("Prepared native sky inputs require the atlas-sheet command.")
+            outputs = generate(arguments)
+        if emit_outputs:
+            for output in outputs:
+                print(output)
         return 0
     except (FileNotFoundError, ValueError) as error:
         if arguments.debug:
+            raise
+        print(f"wenu_chart: error: {error}", file=sys.stderr)
+        return 2
+    except (OSError, RuntimeError) as error:
+        if arguments.command != "atlas-sheet" or arguments.debug:
             raise
         print(f"wenu_chart: error: {error}", file=sys.stderr)
         return 2
@@ -833,3 +898,4 @@ def main(argv=None):
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

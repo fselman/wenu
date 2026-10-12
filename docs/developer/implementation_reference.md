@@ -4701,7 +4701,7 @@ presentation TOML keys. Omitting equatorial_grid from layers removes its lines,
 ticks, labels and dedicated physical inset. grid_lines_visible=false retains
 ticks and labels while suppressing interior grid lines.
 
-Atlas publication supplies request-local EquatorialGrid.spherical_geometry
+The shared request_grids owner supplies request-local EquatorialGrid.spherical_geometry
 ra/dec selections and ra_ticks/dec_ticks, all in degrees. They become ordinary
 SphericalGrid components, realized in the accepted native ICRS context and
 projected once. Exact-zero declination avoids a duplicated equator component.
@@ -4719,4 +4719,20 @@ additionally reserves dense-label clearance; uniform physical sky scaling keeps
 the design's exact viewport and aspect ratio. Report layout.chart_sky_frame
 records the actual odd-page sky rectangle in mm from bottom-left. Stellar area
 budgets use that rectangle's area, excluding the coordinate frame.
+
+`wenu_create_atlas` calls the official `wenu_chart` entry in process for every
+sheet using `atlas-sheet --chart-number N --output-dir DIR` with an explicit
+AtlasSheetChartRequest and reusable verified sky. Worker initialization maps
+the saved native sky once per worker. request_generation owns the former
+publication render loop and stages one sheet's files before no-clobber publication.
+Command argument mismatches fail before execution; rendering/publication failures
+remove only owned files. Standalone atlas-sheet requires design, presentation
+config and a sufficient design-bound saved sky. It produces chart/report formats
+and report JSON, leaving whole-book assembly to the atlas producer.
+
+Ordinary regional requests admit the same EquatorialGridMarks contract through
+`--equatorial-grid-ticks` or `[grids_references.coordinate_grid.edge_marks]`.
+CLI appearance overrides TOML. Unsupported families, explicit grid/band disable
+and conflicting declination cadence are rejected. Source geometry and viewport
+remain unchanged; the established ordinary coordinate realization is preserved.
 

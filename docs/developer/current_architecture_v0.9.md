@@ -2519,7 +2519,7 @@ geometry and CLI test owners protect scientific containment and provenance.
 
 ### Atlas coordinate-grid and frame candidate (2026-10-12)
 
-Based on synchronized main `28e52bae`, atlas publication requests fixed ICRS
+Based on synchronized main `28e52bae`, the shared grid presentation requests
 RA lines every 2h and declination lines every 30 degrees, plus separate
 10-minute RA and 10-degree declination tick curves from EquatorialGrid.
 Source layers and saved native snapshots are not mutated. Boundary ownership
@@ -2538,4 +2538,21 @@ layout.chart_sky_frame. The shared stereographic projector treats its exact
 antipode as a non-finite break, preventing a false segment across polar sheets.
 PNG/PDF/semantic SVG use the same canonical render. No new module is introduced.
 Mac visual/print acceptance and merge remain pending.
+
+The installed atlas producer injects `wenu.cli.chart.main` and dispatches every
+sheet through its `atlas-sheet` subcommand, including spawned workers. A typed
+AtlasSheetChartRequest carries exact validated design geometry, presentation,
+destination and the already prepared observer-free sky. request_generation.py
+owns execution; publication retains batch/snapshot lifecycle, furniture and
+assembly. Native sheet admission never creates an ordinary observer. Public
+atlas-sheet file admission checks saved-sky sufficiency and exact design digest;
+batch admission reuses the sky already verified once by publication. Direct
+library create_atlas calls use the same request executor without a CLI adapter.
+
+Ordinary regional charts opt into EquatorialGridMarks through CLI or schema-v2
+TOML. request_grids.py owns shared coordinate selections, mark policies and
+physical frame layout. Both execution paths use those helpers and canonical
+composition/export. Ordinary regional grids retain the established observer-time
+FK5-to-AltAz realization; native atlas grids remain fixed ICRS. No frame, epoch
+or scientific meaning is changed.
 

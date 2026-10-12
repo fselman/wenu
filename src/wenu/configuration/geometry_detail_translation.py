@@ -50,6 +50,7 @@ class GeometryDetailDefaults:
     star_labels: StarLabelSelection = StarLabelSelection()
     star_constellations: frozenset[str] | None = None
     constellation_features: Mapping[str, tuple[str, ...]] | None = None
+    equatorial_grid_marks: object | None = None
 
 
 def _optional(value):
@@ -185,7 +186,12 @@ def translate_geometry_detail_defaults(
         "galaxy_magnitude_limit": canonical["binocular_galaxy_limit"],
     }
     sizing = detail["binocular_stellar_sizing"]
+    from wenu.charts.style_components import EquatorialGridMarks
+    marks = values["grids_references"]["coordinate_grid"]["edge_marks"]
+    appearance = EquatorialGridMarks(**{name: marks[name]
+        for name in EquatorialGridMarks.__dataclass_fields__})
     return GeometryDetailDefaults(
+        equatorial_grid_marks=appearance if marks["enabled"] else None,
         constellation_features=MappingProxyType({
             name: tuple(values["detail"]["constellations"][name])
             for name in (
@@ -255,3 +261,4 @@ def translate_geometry_detail_defaults(
 def packaged_geometry_detail_defaults() -> GeometryDetailDefaults:
     """Return immutable packaged geometry/detail authority once per process."""
     return translate_geometry_detail_defaults()
+

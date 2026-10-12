@@ -12,7 +12,7 @@ from wenu.configuration import ConfigurationError
 
 EXPECTED_COMMANDS = {
     "all-sky", "planisphere", "regional", "circumpolar", "binocular",
-    "defaults",
+    "defaults", "atlas-sheet",
 }
 
 
@@ -132,7 +132,7 @@ def test_constellation_system_is_an_explicit_parameter_not_content():
 
 
 def test_every_chart_family_exposes_solar_system_selectors():
-    for family in EXPECTED_COMMANDS - {"defaults"}:
+    for family in EXPECTED_COMMANDS - {"defaults", "atlas-sheet"}:
         arguments = chart.parser().parse_args(
             [family, "--planet", "venus", "--moon"]
         )
@@ -141,7 +141,7 @@ def test_every_chart_family_exposes_solar_system_selectors():
 
 
 def test_every_chart_family_exposes_moving_object_data_policy():
-    for family in EXPECTED_COMMANDS - {"defaults"}:
+    for family in EXPECTED_COMMANDS - {"defaults", "atlas-sheet"}:
         arguments = chart.parser().parse_args([
             family, "--data-policy", "offline",
         ])
@@ -161,7 +161,7 @@ def test_planisphere_accepts_one_comma_separated_planet_selection():
 
 
 def test_all_chart_families_accept_milky_way_contour():
-    for family in EXPECTED_COMMANDS - {"defaults"}:
+    for family in EXPECTED_COMMANDS - {"defaults", "atlas-sheet"}:
         arguments = chart.parser().parse_args([
             family, "--mw-contour", "OL2",
         ])
@@ -736,3 +736,152 @@ def test_sequence_cli_delegates_to_canonical_sequence_api(
         {"restart_policy": "resume"},
     )
     assert calls[3] == ("close",)
+
+def test_atlas_sheet_command_admits_saved_sky_and_executes_shared_request_owner(tmp_path,monkeypatch):
+    """Synthetic snapshot admission; actual native grid projection/export."""
+    import hashlib,tomllib
+    import numpy as np
+    import matplotlib.image as mpimg
+    from wenu import CelestialSphere,Observer
+    from wenu.atlas_design import AtlasDesignRequest
+    from wenu.charts.atlas_publication import _render_atlas_sheet,AtlasChartPresentation
+    from wenu.sky import native_snapshot
+    from wenu.charts import request_generation
+    root=Path(__file__).resolve().parents[1]
+    atlas=AtlasDesignRequest.from_dict(tomllib.loads((root/'examples/atlas_design_request_v1.toml').read_text())).resolve()
+    raw=atlas.to_json().encode()
+    design=tmp_path/'design_v1.json';design.write_bytes(raw)
+    config=tmp_path/'presentation_v1.toml'
+    config.write_text('schema_version=1\ndocument_kind="wenu-atlas-chart-presentation"\n'
+        'layers=["equatorial_grid"]\nformats=["png","pdf","svg"]\n')
+    sky=CelestialSphere(None)
+    layer=sky.add_equatorial_grid(frame='icrs',equinox='J2000',include_equator=True)
+    checks,calls=[],[]
+    class SyntheticSnapshot:
+        def require(self,**kwargs):
+            checks.append(kwargs)
+            return self
+        def make_sky(self):
+            return sky
+    monkeypatch.setattr(native_snapshot,'read_native_sky_snapshot',lambda path:SyntheticSnapshot())
+    def forbidden(*args,**kwargs):
+        raise AssertionError('Native atlas command must not construct an observer or load another sphere')
+    monkeypatch.setattr(Observer,'__init__',forbidden)
+    monkeypatch.setattr(chart,'generate_celestial_sphere',forbidden)
+    generate=request_generation.generate_chart_request
+    def capture(request,**kwargs):
+        calls.append(request)
+        return generate(request,**kwargs)
+    monkeypatch.setattr(request_generation,'generate_chart_request',capture)
+    output=tmp_path/'command'
+    argv=['atlas-sheet','--design',str(design),'--config',str(config),'--from-sky',str(tmp_path/'saved-sky'),
+        '--chart-number','1','--output-dir',str(output),'--debug']
+    assert chart.main(argv,emit_outputs=False)==0
+    assert len(calls)==1 and isinstance(calls[0],request_generation.AtlasSheetChartRequest)
+    assert calls[0].sheet==atlas.geometry.sheets[0]
+    assert checks==[dict(layers=('equatorial_grid',),star_magnitude_limit=6.,
+                        design_sha256=hashlib.sha256(raw).hexdigest())]
+    assert layer.ra is None and layer.dec is None
+    # The command and library routes execute the same sheet request/export owner.
+    library=tmp_path/'library'
+    _render_atlas_sheet((atlas.geometry.sheets[0],atlas.geometry.page,
+        AtlasChartPresentation(layers=('equatorial_grid',)),str(library)),sky)
+    np.testing.assert_array_equal(mpimg.imread(output/'chart-01.png'),mpimg.imread(library/'chart-01.png'))
+    before=(output/'chart-01.png').read_bytes()
+    with pytest.raises(ValueError,match='already exists'):
+        chart.main(argv,emit_outputs=False)
+    assert (output/'chart-01.png').read_bytes()==before
+    # A late publication failure must remove owned links and preserve others.
+    import os
+    failed=tmp_path/'failed';failed.mkdir()
+    sentinel=failed/'keep.txt';sentinel.write_text('keep')
+    fault_argv=argv.copy();fault_argv[fault_argv.index(str(output))]=str(failed)
+    link=os.link;linked=[]
+    def fail_second_link(source,destination):
+        linked.append(destination)
+        if len(linked)==2:
+            raise OSError('synthetic publication interruption')
+        return link(source,destination)
+    with monkeypatch.context() as scoped:
+        scoped.setattr(os,'link',fail_second_link)
+        with pytest.raises(OSError,match='synthetic publication'):
+            chart.main(fault_argv,emit_outputs=False)
+    assert list(failed.iterdir())==[sentinel] and sentinel.read_text()=='keep'
+    bad=argv.copy();bad[bad.index('1')]='9999'
+    with pytest.raises(ValueError,match='not present'):
+        chart.main(bad,emit_outputs=False)
+
+
+def test_atlas_prepared_command_rejects_argument_mismatch_before_execution(tmp_path,monkeypatch):
+    import tomllib
+    from wenu.atlas_design import AtlasDesignRequest
+    from wenu.charts.atlas_publication import AtlasChartPresentation
+    from wenu.charts.request_generation import AtlasSheetChartRequest
+    from wenu.charts import request_generation
+    atlas=AtlasDesignRequest.from_dict(tomllib.loads((Path(__file__).resolve().parents[1]/
+        'examples/atlas_design_request_v1.toml').read_text())).resolve()
+    request=AtlasSheetChartRequest(atlas.geometry.sheets[0],atlas.geometry.page,
+        AtlasChartPresentation(layers=('equatorial_grid',)),tmp_path/'output')
+    def forbidden(*args,**kwargs):
+        raise AssertionError('Mismatch must fail before execution')
+    monkeypatch.setattr(request_generation,'generate_chart_request',forbidden)
+    assert chart.main(['atlas-sheet','--chart-number','2','--output-dir',str(request.output_dir)],
+        atlas_request=request,sky=object())==2
+    assert not request.output_dir.exists()
+
+@pytest.mark.parametrize('source',['cli','toml'])
+@pytest.mark.parametrize('lines_visible',[False,True])
+def test_regional_command_and_toml_share_grid_marks_and_preserve_viewport(
+        source,lines_visible,tmp_path,monkeypatch):
+    """Actual FK5-to-AltAz grid realization with a synthetic observer facade."""
+    import astropy.units as u
+    from astropy.coordinates import AltAz,EarthLocation
+    from astropy.time import Time
+    from astropy.utils import iers
+    from wenu import CelestialSphere,CANONICAL_MAXIMAL_SPHERE_PROFILE
+    from wenu.charts import request_generation
+    monkeypatch.setattr(iers.conf,'auto_download',False)
+    instant=Time('2026-10-12T00:00:00Z')
+    observer=SimpleNamespace(utc_datetime=instant.to_datetime(timezone=timezone.utc),t_astropy=instant,
+        lat_deg=-32.443342,lon_deg=-71.230289,elevation_m=52,timezone_name='UTC',
+        location_name='Synthetic grid test',close=lambda:None,
+        altaz_frame=AltAz(obstime=instant,location=EarthLocation.from_geodetic(
+            -71.230289*u.deg,-32.443342*u.deg,52*u.m)))
+    sky=CelestialSphere(None);sky.load_profile=CANONICAL_MAXIMAL_SPHERE_PROFILE
+    monkeypatch.setattr(chart,'_observer',lambda *args,**kwargs:observer)
+    monkeypatch.setattr(chart,'generate_celestial_sphere',lambda:sky)
+    results=[]
+    export=request_generation.export_prepared_chart
+    def capture(*args,**kwargs):
+        result=export(*args,**kwargs);results.extend(result.exports);return result
+    monkeypatch.setattr('wenu.charts.drawing.export_prepared_chart',capture)
+    output=tmp_path/'regional.svg'
+    argv=['regional','--center-altitude','45deg','--center-azimuth','180deg','--position-angle','0',
+        '--field-width','50','--field-height','40','--format','svg','--output',str(output),'--debug']
+    if source=='cli':
+        argv+=['--equatorial-grid-ticks','--grid-lines-visible' if lines_visible else '--no-grid-lines-visible']
+    else:
+        config=tmp_path/'regional_grid_v1.toml'
+        config.write_text('schema_version=2\n[grids_references.coordinate_grid.edge_marks]\n'
+            f'enabled=true\ngrid_lines_visible={str(lines_visible).lower()}\n')
+        argv+=['--config',str(config)]
+    assert chart.main(argv,emit_outputs=False)==0
+    assert len(results)==1 and output.is_file()
+    result=results[0]
+    from wenu import RegionalChart
+    expected=RegionalChart(45,180,50,40,position_angle_deg=0).viewport
+    assert result.composition.context.viewport==expected
+    rendering=getattr(result.rendering,'rendering',result.rendering)
+    layer=next(item for item in rendering.layers if item.spherical.coordinate_spec.frame=='altaz')
+    assert len(layer.spherical.components['meridians'])==12
+    assert len(layer.spherical.components['tick_meridians'])==144
+    assert len(layer.spherical.components['tick_parallels'])==17
+    assert layer.spherical.coordinate_spec.frame=='altaz'
+    assert layer.spherical.coordinate_spec.instant is not None
+    ticks=[a for a in layer.artists if getattr(a,'_wenu_semantic_component',None)=='ticks']
+    lines=[a for a in layer.artists if getattr(a,'_wenu_semantic_component',None)=='lines']
+    assert ticks and lines
+    assert all(a.get_linewidth()==0 for a in lines)==(not lines_visible)
+    labels=[a for a in layer.artists if getattr(a,'_wenu_semantic_component',None)=='labels']
+    assert labels and all(a.get_fontsize() in (9,12) for a in labels)
+

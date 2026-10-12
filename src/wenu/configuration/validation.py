@@ -660,6 +660,12 @@ def _validate_semantics(configuration: Mapping[str, Any]) -> None:
                 )
 
     grid = configuration["grids_references"]["coordinate_grid"]
+    from wenu.charts.style_components import EquatorialGridMarks
+    try:
+        EquatorialGridMarks(**{name: grid["edge_marks"][name]
+            for name in EquatorialGridMarks.__dataclass_fields__})
+    except ValueError as error:
+        _error("grids_references.coordinate_grid.edge_marks", str(error))
     if grid["meridian_declination_minimum"] >= grid[
         "meridian_declination_maximum"
     ]:
@@ -773,3 +779,4 @@ def load_configuration(path=None) -> dict[str, Any]:
         source=f"user configuration {source}",
     )
     return merge_configuration_overlay(packaged, overlay)
+
