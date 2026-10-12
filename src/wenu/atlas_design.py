@@ -739,7 +739,20 @@ class AtlasBandTiling:
         # JSON comparison also rejects booleans masquerading as numbers.
         for key in ("validation", "neighbours", *(k for k in ("layout",) if k in data)):
             expected = result.to_dict()[key]
-            if json.dumps(data[key], sort_keys=True, allow_nan=False) != json.dumps(
+            actual = data[key]
+            if key == "validation" and isinstance(actual, dict) and actual.keys() == expected.keys():
+                actual = dict(actual)
+                # Derived evidence may differ in the last bits across NumPy/libm
+                # builds. Recompute coverage above; only its redundant floating
+                # summary receives tolerances, below the angular guard.
+                for name, tolerance in (("primary_area_sr", 1e-12),
+                        ("minimum_primary_clearance_deg", 1e-10),
+                        ("shared_boundary_overlap_lower_bound_deg", 1e-10)):
+                    value = _number(actual[name], name)
+                    if not math.isclose(value, expected[name], rel_tol=0, abs_tol=tolerance):
+                        raise ValueError("Inconsistent tiling validation.")
+                    actual[name] = expected[name]
+            if json.dumps(actual, sort_keys=True, allow_nan=False) != json.dumps(
                     expected, sort_keys=True, allow_nan=False):
                 raise ValueError(f"Inconsistent tiling {key}.")
         return result

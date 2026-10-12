@@ -1402,3 +1402,11 @@ wenu_plot_atlas --design examples/atlas_design_36charts_v1.json --config example
 This command exports separate PNG, PDF and SVG index files. The resolved JSON
 is also usable by wenu_create_atlas; a sky snapshot prepared for another design
 cannot be reused with it. Index review precedes a new full chart-book render.
+
+Portable resolved designs: loading always recomputes analytic containment and
+reserved overlap from persisted geometry. Redundant validation floats may differ
+in their last bits between NumPy/libm builds. Their comparison admits absolute
+tolerances of 1e-10 degrees for clearance/overlap and 1e-12 steradians for area;
+these tolerances do not relax geometry admission. Certificate keys, method,
+status, sheet count, angular guard and neighbour records remain exact. This
+permits the packaged 36-chart design to be checked on another platform.

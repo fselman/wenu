@@ -4765,3 +4765,14 @@ overlap on the polar short side. design_polar_first_atlas accepts the same
 optional diameter. Resolved layout dimensions describe the nonpolar sheets;
 each persisted sheet retains its own width. AtlasChartPresentation adds
 messier_label_fontsize=7.0, validated as finite and positive.
+
+AtlasBandTiling.from_dict recomputes geometry admission before comparing its
+redundant validation certificate. Derived minimum_primary_clearance_deg and
+shared_boundary_overlap_lower_bound_deg use absolute comparison tolerance
+1e-10 degrees (below ANGULAR_GUARD_DEG=1e-8); primary_area_sr uses 1e-12 sr.
+Relative tolerance is zero. Floating summaries reject booleans and nonfinite
+values; certificate keys, discrete values, guard and neighbours remain exact.
+The existing persistence test admits tiny cross-platform summary differences
+and still rejects corrupted summaries and primary geometry. No placement is
+rerun and no coverage constraint is relaxed. Coordinate-system conventions and
+owners are unchanged.

@@ -157,6 +157,21 @@ def test_five_band_json_revalidates_without_replacing_the_legacy_method(five_ban
         raise AssertionError("Reading must not regenerate placement")
     monkeypatch.setattr(module, "design_five_band_atlas", forbidden)
     assert AtlasBandTiling.read_json(path) == five_band_atlas
+    # A certificate generated on another platform may differ in its final
+    # floating bits. Geometry is still revalidated and must never be retiled.
+    for sign in (-1, 1):
+        data = five_band_atlas.to_dict()
+        data["validation"]["minimum_primary_clearance_deg"] += sign * 4e-11
+        data["validation"]["shared_boundary_overlap_lower_bound_deg"] += sign * 8e-11
+        data["validation"]["primary_area_sr"] += sign * 4e-13
+        assert AtlasBandTiling.from_dict(data) == five_band_atlas
+    for field, value in (("minimum_primary_clearance_deg", True),
+                         ("sheet_count", float(len(five_band_atlas.geometry.sheets))),
+                         ("angular_guard_deg", 2e-8)):
+        data = five_band_atlas.to_dict()
+        data["validation"][field] = value
+        with pytest.raises(ValueError):
+            AtlasBandTiling.from_dict(data)
     data = five_band_atlas.to_dict()
     assert data["generator"] == RECTANGULAR_TILING_METHOD
     data["validation"]["minimum_primary_clearance_deg"] += .01
