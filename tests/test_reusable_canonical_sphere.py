@@ -697,14 +697,28 @@ def test_atlas_chart_batch_cold_saved_and_spawned_pages_match(native_snapshot_ca
         data = json.loads(manifest.read_text())
         assert data['charts'] == [10, 14] and data['workers'] == jobs
         book = PdfReader(manifest.parent/'atlas.pdf')
-        assert len(book.pages) == 7
+        assert len(book.pages) == 8
         assert 'Synthetic atlas index' in book.pages[0].extract_text()
         assert data['report_content'] == 'reserved'
         assert data['index_sha256'] == hashlib.sha256(index_before).hexdigest()
         assert data['page_order'] == [dict(page=1,kind='index'),
             dict(page=2,kind='report',chart=10),dict(page=3,kind='chart',chart=10),
             dict(page=4,kind='report',chart=14),dict(page=5,kind='chart',chart=14),
-            dict(page=6,kind='stellar_sizing_report'), dict(page=7,kind='stellar_area_budget')]
+            dict(page=6,kind='stellar_sizing_report'), dict(page=7,kind='stellar_area_budget'),
+            dict(page=8,kind='catalogue_star_counts')]
+        assert 'Atlas catalogue star counts' in book.pages[-1].extract_text()
+        assert book.outline[-1].title == 'Catalogue star counts'
+        assert book.get_destination_page_number(book.outline[-1]) == 7
+        counts = json.loads((manifest.parent/'atlas-star-counts.json').read_text())
+        assert counts['magnitude_limit'] == 6
+        assert counts['provenance'] == dict(design_sha256=data['design_sha256'],
+                                            snapshot_sha256=data['snapshot_sha256'])
+        for suffix in ('png', 'pdf', 'svg', 'json'):
+            assert f'atlas-star-counts.{suffix}' in data['products']
+        for filename in ('atlas-star-counts.json', 'atlas-star-counts_catalogue.csv'):
+            assert (manifest.parent/filename).read_bytes() == (tmp_path/'cold'/filename).read_bytes()
+        np.testing.assert_array_equal(imread(tmp_path/'cold'/'atlas-star-counts.png'),
+                                      imread(manifest.parent/'atlas-star-counts.png'))
         for position, number in ((1,10),(3,14)):
             text = book.pages[position].extract_text()
             assert f'Chart {number}' in text and 'Object report' in text
