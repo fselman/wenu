@@ -1227,3 +1227,27 @@ width 20 degrees. The sheet budget is 4096. This reproduces 34 charts with
 counts [1, 5, 7, 8, 7, 5, 1], including the polar sheets. At these exact inputs the automatic landscape search also reproduces the
 17/45-degree interior boundaries and counts; it does not require those
 boundaries as inputs. Other geometry choices can yield different layouts.
+
+### Accepted portrait appearance comparison
+
+The 22-chart portrait B4 layout was visually accepted with magnitude limit
+7.5, quadratic sizing reference 8, dmin 0.30 mm, coefficient 0.04 and
+diameter multiplier 1.7. Keep the reference at 8 when comparing selection
+limits so retained stars preserve their sizes. Reuse the same sufficient
+design-bound sphere with `--from-sky`; use a fresh output directory:
+
+```bash
+wenu_create_atlas \
+  --design atlas_portrait_design_v1.json \
+  --config examples/atlas_chart_style_v1.toml \
+  --from-sky atlas_portrait_sky_v1 \
+  --index atlas_portrait_index_v1.pdf \
+  --charts all --jobs 4 --magnitude-limit 7.5 \
+  --mag-algorithm quadratic --mag-dmin 0.30 --mag-a 0.04 \
+  --mag-size-reference 8 --star-size-scale 1.7 \
+  --output-dir atlas_portrait_mag7p5_v1
+```
+
+Use `--save-sky atlas_portrait_sky_v1` instead of `--from-sky` for the first
+render of this design. Worker count controls concurrent chart renders and
+memory use, without changing atlas geometry or stellar appearance.
