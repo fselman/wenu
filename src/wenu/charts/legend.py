@@ -183,4 +183,3 @@ def add_legend_heading(legend, text, *, fontsize, family, weight, color,
     legend._wenu_heading = heading._text
     legend._wenu_separator = line
     return heading._text, line
-

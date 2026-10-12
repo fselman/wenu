@@ -100,4 +100,3 @@ def draw_automatic_chart_legends(
         plan=resolved_plan,
         legends=legends,
     )
-

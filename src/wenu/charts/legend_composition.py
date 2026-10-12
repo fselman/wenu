@@ -210,4 +210,3 @@ def draw_planned_chart_legends(
         objects=object_artist,
         stars=stars_result,
     )
-

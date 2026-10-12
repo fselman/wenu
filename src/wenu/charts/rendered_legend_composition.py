@@ -136,4 +136,3 @@ def draw_rendered_chart_legends(
         resolved_detail=resolved_detail,
         **legend_options,
     )
-
