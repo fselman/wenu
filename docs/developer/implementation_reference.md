@@ -4811,3 +4811,38 @@ passes `deep_sky_symbol_scale`; the default 1.0 preserves ordinary legends.
 Only marker handles scale; galaxy and Milky Way patches and text retain their
 existing dimensions. Existing grid containment and marker-path oracles cover
 this change without a new production module or test file.
+
+
+### Common-scale atlas publication contract implementation
+
+The existing publication owner rejects mixed field widths before any native
+sky preparation. `atlas_design_36charts_v2.json` is an explicitly revised,
+analytically validated resolved specimen; the original JSON is unchanged.
+The same page and viewport aspect, field width and presentation produce the
+same physical sky rectangle and tangent scale in every sheet. For Wenu's
+stereographic convention rho = projection_radius * tan(theta/2), the central
+derivative is projection_radius/2 per radian. Reports record this derivative
+in printed mm/degree, verified against the existing projected-radius oracle.
+
+Atlas frame dimensions are computed once from the configured fonts, padding
+and frame multiplier. The vertical allowance uses the largest rotated Dec
+text extent, independent of sheet position. `configure_grid_label_frame`
+provides the shared backend with fixed horizontal/vertical band sizes and
+edge-specific family priority; the ordinary default remains unchanged.
+Atlas execution no longer calls independent measured-frame fitting.
+The renderer preserves anchors, rotates vertical-edge RA labels along their
+meridians and suppresses lower-priority colliding text instead of creating
+lanes. Polar Dec text uses canonical projected positions on the actual 2h
+meridian nearest vertical, with physical inward clearance where necessary.
+
+Index orientation is an optional closed presentation field. Portrait changes
+the composition and projection position angles before drawing; it never
+rotates a labelled export. `--index` requires same-prefix PNG/SVG companions
+and the atomic atlas batch copies the three admitted products. PDF assembly
+records an index-following blank page before report/chart pairs. The catalogue
+count renderer reverses only its x-axis; source CSV, JSON and cumulative
+semantics remain unchanged. Existing owning tests cover these seams, including
+cold/saved/spawned equivalence; no production module or test file is added.
+
+The atlas PDF declares `/TwoPageLeft`; the existing producer and native reuse
+oracles verify this preferred viewing arrangement together with page order.

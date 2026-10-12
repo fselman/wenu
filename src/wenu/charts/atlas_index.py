@@ -136,6 +136,7 @@ class AtlasIndexPresentation:
     """Independent version-1 index presentation; never a geometry request."""
 
     joined: bool = True
+    orientation: str = 'landscape'
     footprints: bool = False
     width_mm: float = 355.6
     height_mm: float = 203.2
@@ -160,6 +161,8 @@ class AtlasIndexPresentation:
     veil_opacity: float = 0.55
 
     def __post_init__(self):
+        if type(self.orientation) is not str or self.orientation not in {'portrait', 'landscape'}:
+            raise ValueError('Index orientation must be portrait or landscape.')
         for name in ("joined", "footprints", "transparent", "veil_enabled"):
             if type(getattr(self, name)) is not bool:
                 raise ValueError(f"{name} must be a boolean.")
@@ -171,6 +174,10 @@ class AtlasIndexPresentation:
             if not lo <= value <= hi:
                 raise ValueError(f"{name} must be between {lo} and {hi}.")
             object.__setattr__(self, name, value)
+        if (self.orientation == 'portrait') != (self.height_mm > self.width_mm):
+            width, height = self.width_mm, self.height_mm
+            object.__setattr__(self, 'width_mm', height)
+            object.__setattr__(self, 'height_mm', width)
         for name, allowed, nonempty in (
                 ("layers", SUPPORTED_INDEX_LAYERS, False),
                 ("milky_way_levels", {"ol1", "ol2", "ol3", "ol4", "ol5"}, False),
@@ -207,6 +214,8 @@ class AtlasIndexPresentation:
         }
         values = {}
         for group, keys in groups.items():
+            if group == 'layout' and 'orientation' in data[group]:
+                keys = keys | {'orientation'}
             if group == "colours" and "milky_way_color" in data[group]:
                 keys = keys | {"milky_way_color"}
             _keys(data[group], keys, group)
@@ -241,7 +250,7 @@ def index_sky(star_magnitude_limit, *, include_lowest_mw_isophote=False,
     return sky
 
 
-def composed_axes(figure, overview):
+def composed_axes(figure, overview, orientation='landscape'):
     """Same-scale disks, with their inward equatorial points coincident."""
     north = overview_face(overview, "north")
     radius = north.boundary_radius
@@ -249,6 +258,13 @@ def composed_axes(figure, overview):
     # Equal square panels overlap by the excess cap beyond the equator.
     # Sky-band width and this physical lens are distinct quantities.
     ratio = equator_radius / radius
+    if orientation == 'portrait':
+        height = min(.70/(1+ratio), .94*figure.get_figwidth()/figure.get_figheight())
+        panel = height*figure.get_figheight()/figure.get_figwidth()
+        bottom = .15 + (.70-height*(1+ratio))/2
+        left = (1-panel)/2
+        return tuple(figure.add_axes((left,y,panel,height))
+                     for y in (bottom+height*ratio,bottom))
     panel = min(0.94 / (1 + ratio), 0.70 * figure.get_figheight() / figure.get_figwidth())
     height = panel * figure.get_figwidth() / figure.get_figheight()
     bottom = 0.135 + (0.70 - height) / 2
@@ -266,13 +282,14 @@ def _join_faces(figure, axes, atlas, presentation=None):
     index, not pointwise registration of the whole common sky band.
     """
     presentation = presentation or AtlasIndexPresentation()
-    for ax, pole in zip(axes, ("north", "south"), strict=True):
+    portrait = presentation.orientation == 'portrait'
+    poles = ('south', 'north') if portrait else ('north', 'south')
+    for ax, pole in zip(axes, poles, strict=True):
         # Keep this in figure coordinates: savefig changes DPI. A fixed
         # display-pixel Bbox would silently clip different sky on export.
-        clip = TransformedBbox(Bbox.from_extents(
-            0 if pole == "north" else 0.5, 0,
-            0.5 if pole == "north" else 1, 1,
-        ), figure.transFigure)
+        bounds = ((0,.5,1,1) if pole == 'south' else (0,0,1,.5)) if portrait else (
+            (0,0,.5,1) if pole == 'north' else (.5,0,1,1))
+        clip = TransformedBbox(Bbox.from_extents(*bounds), figure.transFigure)
         for artist in (*ax.lines, *ax.patches, *ax.collections, *ax.texts):
             artist.set_clip_box(clip)
             artist.set_clip_on(True)
@@ -283,7 +300,9 @@ def _join_faces(figure, axes, atlas, presentation=None):
                 width, height = figure.get_size_inches() * 72
                 metadata["svg_clip_box"] = (0 if pole == "north" else width / 2,
                                             0, width / 2 if pole == "north" else width, height)
-        boundary = overview_face(atlas.geometry.overview, pole).boundary
+                if portrait:
+                    metadata['svg_clip_box'] = (0,0,width,height/2) if pole == 'south' else (0,height/2,width,height)
+        boundary = overview_face(atlas.geometry.overview, pole, presentation.orientation).boundary
         veil = next((p for p in ax.patches if p.get_gid() == f"atlas-index-veil-{pole}"), None)
         contour = Line2D(boundary.x, boundary.y, transform=ax.transData,
                          color=presentation.border_color, linewidth=0.65,
@@ -294,14 +313,14 @@ def _join_faces(figure, axes, atlas, presentation=None):
                          svg_id=f"atlas-index-{pole}-complete-rim")
 
 
-def overview_face(overview, pole):
+def overview_face(overview, pole, orientation='landscape'):
     """Put the join meridian on the inward horizontal radius of each face."""
     north = pole == "north"
     return PolarPlanisphereChart(
         pole=pole, projection_name="stereographic", flip_ew=False,
         limiting_declination_deg=(overview.north_limit_dec_deg if north
                                   else overview.south_limit_dec_deg),
-        position_angle_deg=(1 if north else -1) * (overview.join_ra_deg - 90),
+        position_angle_deg=(1 if north else -1) * (overview.join_ra_deg - 90) + (90 if orientation == 'portrait' else 0),
     )
 
 
@@ -480,6 +499,9 @@ def _draw_face(ax, atlas, face, *, footprints, sky=None, star_magnitude_limit=5.
     renderer.finalize_graphics()
     ax.set_title(f"{'Norte' if face.pole == 'north' else 'Sur'} · límite Dec {face.limiting_declination_deg:+g}°",
                  fontsize=presentation.text_size_pt + 2, pad=12, color=presentation.ink_color)
+    if presentation.orientation == 'portrait' and face.pole == 'north':
+        ax.set_title(ax.get_title(), y=-.06, va='top', pad=0,
+                     fontsize=presentation.text_size_pt + 2, color=presentation.ink_color)
     _index_semantics(ax.title, (face.pole, "heading"), "Heading",
                      edit_policy=EditPolicy.LAYOUT)
 
@@ -523,9 +545,9 @@ def plot_overview(design_path, output_prefix, *, footprints=False, joined=False,
     _index_container(figure)
     _index_semantics(figure.patch, ("background",), "Background")
     if joined:
-        axes = composed_axes(figure, atlas.geometry.overview)
+        axes = composed_axes(figure, atlas.geometry.overview, presentation.orientation)
     else:
-        axes = figure.subplots(1, 2)
+        axes = figure.subplots(2, 1) if presentation.orientation == 'portrait' else figure.subplots(1, 2)
         figure.subplots_adjust(left=0.03, right=0.97, top=0.86, bottom=0.13, wspace=0.06)
     for ax in axes:
         ax.set_facecolor("none")
@@ -533,13 +555,17 @@ def plot_overview(design_path, output_prefix, *, footprints=False, joined=False,
                  if abs(sheet.center_dec_deg) != 90)
     page = atlas.geometry.page
     paper = "B4" if (page.width_mm, page.height_mm) == (353, 250) else f"{page.width_mm:g} × {page.height_mm:g} mm"
-    figure.suptitle(f"Atlas {paper} · campo horizontal {field:g}° · {len(atlas.geometry.sheets)} hojas",
+    title = f"Atlas {paper} · campo horizontal {field:g}° · {len(atlas.geometry.sheets)} hojas"
+    if presentation.orientation == 'portrait':
+        title = f"Atlas {paper} · {len(atlas.geometry.sheets)} hojas\nCampo horizontal {field:g}°"
+    figure.suptitle(title,
                    fontsize=presentation.heading_size_pt, color=presentation.ink_color, y=0.965)
     figure.text(0.5, 0.91, f"Áreas principales numeradas · ICRS · solapamiento mínimo {atlas.overlap_deg:g}°",
                 ha="center", fontsize=presentation.text_size_pt + 2, color=presentation.border_color)
     try:
-        for ax, pole in zip(axes, ("north", "south"), strict=True):
-            _draw_face(ax, atlas, overview_face(atlas.geometry.overview, pole), footprints=footprints,
+        poles = ('south', 'north') if presentation.orientation == 'portrait' else ('north', 'south')
+        for ax, pole in zip(axes, poles, strict=True):
+            _draw_face(ax, atlas, overview_face(atlas.geometry.overview, pole, presentation.orientation), footprints=footprints,
                        sky=sky, star_magnitude_limit=star_magnitude_limit,
                        include_lowest_mw_isophote=include_lowest_mw_isophote,
                        magellanic_clouds=magellanic_clouds, presentation=presentation)
@@ -562,8 +588,12 @@ def plot_overview(design_path, output_prefix, *, footprints=False, joined=False,
         legend = ("Huellas completas." if footprints else "Bordes: propiedad primaria.") if variant else (
             "Huellas completas con solapamiento." if footprints else
             "Los bordes indican propiedad primaria, no la huella completa de cada hoja.")
-        figure.text(0.5, 0.012, layout + content + legend,
-                    ha="center", fontsize=presentation.text_size_pt, color=presentation.border_color)
+        footer = layout + content + legend
+        if presentation.orientation == 'portrait':
+            from textwrap import fill
+            footer = fill(footer, width=85)
+        figure.text(0.5, 0.012, footer,
+                    ha="center", va='bottom' if presentation.orientation == 'portrait' else 'baseline', fontsize=presentation.text_size_pt, color=presentation.border_color)
         for artist, role in zip(figure.texts,
                 ("title", "subtitle", "seed_legend", "guide_legend", "content_legend"), strict=True):
             path = ("legends", role) if role.endswith("legend") else (role,)

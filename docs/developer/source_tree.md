@@ -3526,3 +3526,16 @@ furniture and atomic appendix assembly; stellar_sizing_report.py owns actual
 catalogue cumulative counts and their audit/export products. Existing atlas,
 cluster, deep-sky-symbol, renderer and configuration test files protect these
 seams; no production or test module is added.
+
+
+### Common-scale atlas layout ownership
+
+No production or test file is added for this contract. `atlas_publication.py`
+owns common atlas axes, font-derived bands, sheet cadence, interior polar Dec
+furniture, index companion admission and blank-page assembly.
+`request_generation.py` continues to execute actual sheet requests.
+`rendering/matplotlib.py` owns fixed-band label placement and edge-family
+suppression. `atlas_index.py` owns index orientation and all three exports;
+`stellar_sizing_report.py` owns the reversed magnitude display axis.
+Existing geometry records validate the revised
+`examples/atlas_design_36charts_v2.json`; the former specimen is preserved.

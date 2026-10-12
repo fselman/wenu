@@ -68,6 +68,7 @@ def render_catalogue_star_counts(stars, output_prefix, *, magnitude_limit, page,
         else:
             ax.text(.5, .5, "No catalogue stars satisfy the atlas selection", transform=ax.transAxes, ha="center")
         ax.set_xlabel("Catalogue magnitude m", fontsize=14)
+        ax.invert_xaxis()
         ax.set_ylabel("log₁₀ N(≤ m)", fontsize=14)
         ax.tick_params(labelsize=12)
         ax.grid(alpha=.25)

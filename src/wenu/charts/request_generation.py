@@ -551,9 +551,7 @@ def _render_atlas_sheet_request(request, sky):
             globular_cluster_face_color=presentation.cluster_face_color,
             globular_cluster_symbol_size=deep.open_cluster_symbol_size * area_scale,
             planetary_nebula_symbol_size=deep.planetary_nebula_symbol_size * area_scale)))
-    axes_bounds = (page.inner_mm / page.width_mm,
-        page.bottom_mm / page.height_mm, page.useful_width_mm / page.width_mm,
-        page.useful_height_mm / page.height_mm)
+    axes_bounds, grid_style = _atlas_grid_layout(page, composition.style, presentation)
     grid_options = {}
     if "supernova_remnants" in presentation.layers:
         grid_options["supernova_remnants"] = dict(
@@ -563,7 +561,6 @@ def _render_atlas_sheet_request(request, sky):
             render=dict(draw_markers=False, draw_labels=True,
                 label_style=dict(fontsize=presentation.messier_label_fontsize, color="black", alpha=1.0)))
     if "equatorial_grid" in presentation.layers:
-        axes_bounds, grid_style = _atlas_grid_layout(page, composition.style, presentation)
         composition = replace(composition, style=grid_style)
         grid_options.update(_atlas_grid_options(chart, presentation))
     figure = plt.figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4))
@@ -573,6 +570,10 @@ def _render_atlas_sheet_request(request, sky):
     _draw_atlas_chart_number(ax, sheet.number, composition.style, presentation)
     try:
         renderer = MatplotlibRenderer(ax)
+        from .atlas_publication import _atlas_frame_widths
+        horizontal, vertical = _atlas_frame_widths(composition.style, presentation)
+        renderer.configure_grid_label_frame(horizontal_points=horizontal,
+            vertical_points=vertical, polar=abs(sheet.center_dec_deg) == 90)
         first = presentation.formats[0]
         result = export_composed_chart(chart, sky, renderer,
             Path(directory) / f"chart-{sheet.number:02d}.{first}",

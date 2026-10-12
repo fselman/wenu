@@ -5219,3 +5219,22 @@ curation: inspect histograms of physical catalogue characteristics one at a time
 and overlay the corresponding small-telescope catalogue selections. Specific
 comparison catalogues and scientific characteristic definitions will be resolved
 within that later curation step. No such curation or merge is claimed complete.
+
+
+### Binding common-scale atlas implementation candidate (2026-10-12)
+
+Fernando accepted the instruction checkpoint b831b69a and authorised runtime
+implementation. The 36-chart revision has identical angular fields, fixed
+physical sky rectangles and equal central scale, with analytic coverage and
+overlap revalidated. Font-derived fixed bands replace independent sheet
+fitting. Nonpolar/polar RA cadence is 1h/2h; edge collisions use RA priority
+horizontally and Dec priority vertically, and polar Dec labels are interior.
+
+Portrait/landscape index composition and standalone publication PNG/SVG/PDF,
+the index-following blank page and report-left/chart-right display sequence,
+and a reversed actual-count magnitude axis are implemented as a candidate.
+Existing owners and tests are extended. The coordinate-system guide was
+reviewed and remains current; no scientific catalogue curation is begun.
+Focused checks and representative render inspection precede Mac native
+equivalence and visual acceptance. Final full tests before merge and explicit
+merge/cleanup remain separate.

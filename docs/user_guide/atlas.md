@@ -1450,3 +1450,53 @@ initial conservative label reserve no longer leaves an extra outside margin.
 `deep_sky_symbol_scale` also multiplies the diameters of the open-cluster,
 globular-cluster, planetary-nebula and SNR markers in the report legend. Its
 atlas default is 1.8; the legend text remains controlled by `legend_fontsize`.
+
+
+### Common-scale 36-chart publication revision
+
+Use `examples/atlas_design_36charts_v2.json` for the common-scale atlas.
+It retains the 36 centres and primary bands, with one 40.25000004-degree
+horizontal field and approximately 60.13865-degree vertical field for all
+sheets. Analytic full coverage and the 0.25-degree minimum overlap are
+recomputed. The earlier version-1 JSON remains a historical mixed-field
+comparison; publication now rejects mixed angular fields before sky loading.
+
+At the supplied presentation defaults, every sky rectangle measures about
+187.14 by 283.26 mm and its central scale is about 4.60154 mm per degree.
+The top/bottom band is fixed from the RA font, and left/right bands from the
+worst rotated Dec glyph extent at the configured Dec font. Padding and the
+configured frame multiplier are applied once, equally to all charts. No sheet
+is resized to fit its labels. Reports record the actual sky dimensions and
+`central_scale_mm_per_degree`. These are central scales, not a claim of
+constant stereographic scale away from the centre.
+
+Nonpolar sheets have 1h RA lines and polar sheets 2h lines. Vertical-edge RA
+text follows the projected meridian. Horizontal collisions retain RA text;
+vertical collisions retain Dec text. Ticks and curves remain present when
+text is suppressed. Polar Dec labels move inside, onto the 2h meridian nearest
+vertical, retaining their exact coordinate anchors and an inward physical
+text clearance when needed.
+
+Index presentation accepts optional `layout.orientation` (`landscape` by
+default or `portrait`). Landscape retains the joined side-by-side view;
+portrait draws the south cap above the north cap with page-oriented labels.
+The portrait B4 example is `examples/atlas_index_style_v3.toml`.
+Index PNG, SVG and PDF must share one output prefix. When `--index` supplies
+the PDF, publication requires its PNG/SVG companions and copies all three into
+the output as `atlas-index.png`, `atlas-index.svg` and `atlas-index.pdf`.
+
+The assembled book starts with [index, blank], then [report, chart] pairs.
+For this display use two-page viewing without a separate first-page cover.
+The manifest identifies the blank page. The final catalogue-count plot keeps
+the source values and cumulative counts, with brighter/lower magnitudes on
+the right. A new design digest requires a newly prepared saved sky bundle;
+do not reuse a bundle bound to the historical design.
+
+Use `examples/atlas_chart_style_v3.toml` for the new cadence defaults:
+`grid_ra_step_hours = 1` for nonpolar charts and
+`grid_polar_ra_step_hours = 2` for polar charts. Both retain the validated
+whole-hour divisor admission. Historical presentation version 2 explicitly
+selects 2h nonpolar lines; it is not the current review preset.
+
+The assembled PDF declares `/TwoPageLeft` as its preferred page layout so
+readers that honour this setting show the index/blank and report/chart pairs.

@@ -80,6 +80,10 @@ class MatplotlibRenderer:
             self._closed_boundary_path(boundary), dict(style),
         )
 
+    def configure_grid_label_frame(self, *, horizontal_points, vertical_points, polar=False):
+        """Fixed physical bands and edge-specific coordinate-label priority."""
+        self._grid_frame_policy = (horizontal_points, vertical_points, polar)
+
     def fit_grid_label_band(self, bounds):
         """Fit the measured exterior frame to figure bounds without changing sky geometry."""
         if self._grid_label_band is None:
@@ -117,6 +121,7 @@ class MatplotlibRenderer:
         self.ax.figure.canvas.draw()
         renderer = self.ax.figure.canvas.get_renderer()
         path, style = self._grid_label_band
+        policy = getattr(self, '_grid_frame_policy', None)
         inner = self.ax.transData.transform(path.vertices[:-1])
         low, high = inner.min(axis=0), inner.max(axis=0)
         centre = (low + high) / 2.0
@@ -136,10 +141,19 @@ class MatplotlibRenderer:
         # Keep its inner edge close to the boundary coordinate, with a
         # small physical clearance rather than half the ring width.
         for text in labels:
+            if policy is not None and policy[2] and getattr(text, '_wenu_coordinate_family', None) == 'dec':
+                text.set_visible(False)
+                continue
             attachment = getattr(text, "_wenu_exterior_attachment", None)
             if attachment is None:
                 continue
             position, direction = attachment
+            if policy is not None and getattr(text, '_wenu_coordinate_family', None) == 'ra' and abs(direction[0]) > abs(direction[1]):
+                direction = text._wenu_grid_tick_direction
+                tangent = self.ax.transData.transform(np.asarray(position) + direction) - self.ax.transData.transform(position)
+                angle = (np.degrees(np.arctan2(tangent[1], tangent[0])) + 90) % 180 - 90
+                text.set_rotation(angle)
+                text.set_rotation_mode('anchor')
             origin = self.ax.transData.transform(position)
             direction = self.ax.transData.transform(np.asarray(position) + direction) - origin
             direction /= np.linalg.norm(direction)
@@ -168,9 +182,28 @@ class MatplotlibRenderer:
             ))
         # A secondary coordinate family may share an exact boundary crossing.
         # Separate its text outward; never move the scientific tick along an edge.
-        primary = [text for text in labels if not getattr(text, "_wenu_exterior_lane", 0)]
+        if policy is not None:
+            labels = [text for text in labels if text.get_visible()]
+            widths = np.array([policy[1], policy[0]]) * scale
+            fixed_low, fixed_high = low - widths, high + widths
+            def priority(text):
+                position, direction = text._wenu_exterior_attachment
+                horizontal = text._wenu_grid_edge_horizontal
+                family = getattr(text, '_wenu_coordinate_family', None)
+                return 0 if family == ('ra' if horizontal else 'dec') else 1
+            retained = []
+            for text in sorted(labels, key=priority):
+                box = text.get_window_extent(renderer)
+                if (box.x0 < fixed_low[0] or box.x1 > fixed_high[0] or
+                    box.y0 < fixed_low[1] or box.y1 > fixed_high[1] or
+                    any(box.overlaps(other.get_window_extent(renderer)) for other in retained)):
+                    text.set_visible(False)
+                else:
+                    retained.append(text)
+            labels = retained
+        primary = [text for text in labels if policy is not None or not getattr(text, "_wenu_exterior_lane", 0)]
         placed = list(primary)
-        secondary = sorted((text for text in labels if getattr(text, "_wenu_exterior_lane", 0)),
+        secondary = sorted((text for text in labels if policy is None and getattr(text, "_wenu_exterior_lane", 0)),
                            key=lambda text: text._wenu_exterior_lane)
         for text in secondary:
             position, vector = text._wenu_exterior_attachment
@@ -204,7 +237,11 @@ class MatplotlibRenderer:
             outer = centre + outer_radius * np.column_stack((np.cos(angle), np.sin(angle)))
         else:
             outer_low, outer_high = low - minimum, high + minimum
+            if policy is not None:
+                outer_low, outer_high = fixed_low, fixed_high
             for text, box in zip(labels, boxes):
+                if policy is not None:
+                    continue
                 clearance = (style["linewidth"] / 2.0 * scale
                              if hasattr(text, "_wenu_exterior_attachment") else padding)
                 outer_low = np.minimum(outer_low, (box.x0 - clearance, box.y0 - clearance))
@@ -1161,6 +1198,9 @@ class MatplotlibRenderer:
                                 exterior_direction,
                             )
                             label_artist._wenu_exterior_lane = rule.get("label_lane", 0)
+                            label_artist._wenu_coordinate_family = 'ra' if str(curve_name).startswith('right_ascension_') else 'dec'
+                            label_artist._wenu_grid_tick_direction = -np.asarray(anchor.tick_direction, dtype=float)
+                            label_artist._wenu_grid_edge_horizontal = abs(anchor.exterior_direction[1]) >= abs(anchor.exterior_direction[0])
                         candidate_factory = getattr(anchor_policy, "candidates", None)
                         if isinstance(anchor, CurveLabelPlacement) and callable(candidate_factory):
                             per_anchor = getattr(label_anchor, "candidates_for_anchor", None)

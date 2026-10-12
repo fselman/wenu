@@ -648,5 +648,26 @@ def test_boundary_ticks_are_slanted_physical_marks_without_interior_curves(dpi):
     for text in ax.texts:
         angle=np.radians(text.get_rotation())
         assert np.dot([np.cos(angle),np.sin(angle)],[1,.5]) == pytest.approx(0,abs=1e-12)
+    # Fixed atlas bands discard the lower-priority family instead of moving
+    # either coordinate to another lane. Exercise all four edge decisions.
+    renderer.set_grid_label_band(boundary, style=dict(fill_color='white',
+        frame_color='black',label_color='black',linewidth=.8,padding_points=2))
+    renderer.configure_grid_label_frame(horizontal_points=30,vertical_points=30)
+    for text in ax.texts:
+        text.set_visible(False)
+    for position, direction, horizontal in (((0,1),(0,1),True),
+            ((0,-1),(0,-1),True), ((1,0),(1,0),False), ((-1,0),(-1,0),False)):
+        pair=[]
+        for family in ('dec','ra'):
+            text=ax.text(*position,'10°' if family=='dec' else '1ʰ',fontsize=10,ha='center',va='center')
+            text._wenu_exterior_label=True
+            text._wenu_exterior_attachment=(position,np.array(direction,dtype=float))
+            text._wenu_grid_tick_direction=np.array(direction,dtype=float)
+            text._wenu_coordinate_family=family
+            text._wenu_grid_edge_horizontal=horizontal
+            pair.append(text)
+        renderer._finalize_grid_label_band()
+        assert pair[1 if horizontal else 0].get_visible()
+        assert not pair[0 if horizontal else 1].get_visible()
     plt.close(figure)
 

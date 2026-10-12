@@ -456,3 +456,24 @@ positive finite diameter multiplier; the second is a valid colour string.
 The shared ordinary grid edge-mark preset adds grid_dec_label_scale=1.0,
 positive and finite, preserving existing ordinary appearance. These independent
 label/symbol appearance values do not change chart coverage or catalogue data.
+
+
+### Atlas index orientation and common-scale publication
+
+The independent schema-version-1 index presentation accepts optional
+`layout.orientation = "landscape"` or `"portrait"`. Landscape is the
+compatibility default; width/height are oriented accordingly. Portrait draws
+the south disk on top with page-oriented labels. See
+`examples/atlas_index_style_v3.toml`.
+
+The atlas's existing font, Dec scale, padding and frame multiplier determine
+one common physical sky rectangle. The atlas cadence is 1h for nonpolar
+sheets and 2h for polar sheets; the ordinary regional grid spacing option
+retains its existing meaning. Common-scale publication rejects mixed-field
+designs before source loading. An external index PDF requires same-prefix PNG
+and SVG companions; all three are published independently inside the batch.
+
+Atlas chart presentation now defaults `grid_ra_step_hours` to 1 and admits
+`grid_polar_ra_step_hours`, default 2, independently. The supplied version-3
+chart presentation records the accepted 1h/2h policy explicitly. The regional
+mark record continues to use its existing single spacing field.

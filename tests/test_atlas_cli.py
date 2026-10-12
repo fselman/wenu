@@ -279,7 +279,8 @@ def test_index_request_rejects_unsupported_inputs(index_data, group, key, value)
         AtlasIndexPresentation.from_dict(data)
 
 
-def test_plot_cli_geometry_is_unchanged_and_exports_selected_formats(index_data, request_data, tmp_path, monkeypatch, capsys):
+@pytest.mark.parametrize('orientation', ['landscape', 'portrait'])
+def test_plot_cli_geometry_is_unchanged_and_exports_selected_formats(index_data, request_data, tmp_path, monkeypatch, capsys, orientation):
     from wenu.charts import atlas_index as index
     from dataclasses import replace
     from PIL import Image
@@ -295,7 +296,7 @@ def test_plot_cli_geometry_is_unchanged_and_exports_selected_formats(index_data,
     monkeypatch.setattr(index, "index_sky", forbidden)
     presentation = replace(index.AtlasIndexPresentation.from_dict(index_data),
         layers=(), milky_way_levels=(), transparent=True, number_size_pt=13,
-        ink_color="#551177", paper_color="#f0e0c0")
+        ink_color="#551177", paper_color="#f0e0c0", orientation=orientation)
     figures = []
     original = index.ExportOptions.save
     def capture(self, figure, path):
@@ -306,14 +307,18 @@ def test_plot_cli_geometry_is_unchanged_and_exports_selected_formats(index_data,
     paths = index.plot_overview(design, tmp_path / "index_v1", presentation=presentation)
     assert {p.suffix for p in paths} == {".png", ".pdf", ".svg"}
     with Image.open(paths[0]) as image:
-        assert image.size == (2240, 1280)
+        assert image.size == ((2240, 1280) if orientation == 'landscape' else (1280, 2240))
         assert image.convert("RGBA").getpixel((0, 0))[3] == 0
     svg = ElementTree.parse(paths[2]).getroot()
-    assert svg.get("width") == "1008pt"
+    assert svg.get("width") == ('1008pt' if orientation == 'landscape' else '576pt')
     assert paths[1].read_bytes().startswith(b"%PDF-")
     number_labels = [t for ax in figures[0].axes for t in ax.texts if t.get_text().isdigit()]
     assert {int(t.get_text()) for t in number_labels} == set(range(1, 35))
     assert all(t.get_fontsize() == 13 and t.get_color() == "#551177" for t in number_labels)
+    if orientation == 'portrait':
+        assert figures[0].axes[0].get_position().y0 > figures[0].axes[1].get_position().y0
+        assert [ax.get_gid() for ax in figures[0].axes] == ['atlas-index-south', 'atlas-index-north']
+        assert any('south' in artist.get('id', '') for artist in svg.iter())
     assert design.read_bytes() == before
     with pytest.raises(FileExistsError):
         index.plot_overview(design, tmp_path / "index_v1", presentation=presentation)
@@ -599,6 +604,12 @@ def test_atlas_create_cli_rejects_selector_before_preparation(request_data, tmp_
                              '--output-dir', str(tmp_path/'output'), *extra])
         assert exc.value.code == 2
     assert not (tmp_path/'output').exists()
+    from wenu.atlas_design import AtlasBandTiling
+    mixed = ROOT/'examples/atlas_design_36charts_v1.json'
+    assert len({s.field_width_deg for s in AtlasBandTiling.from_json(mixed.read_text()).geometry.sheets}) == 2
+    with pytest.raises(SystemExit):
+        cli.create_main(['--design',str(mixed),'--config',str(ROOT/'examples/atlas_chart_style_v1.toml'),
+                         '--output-dir',str(tmp_path/'output')])
 
 
 def test_atlas_cli_passes_sizing_overrides_without_building_a_sky(tmp_path, monkeypatch):
@@ -860,7 +871,8 @@ def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
     import numpy as np
     from wenu import CelestialSphere
     from wenu.charts.atlas_publication import (AtlasSheetChart, AtlasChartPresentation,
-        _atlas_grid_options, _atlas_grid_layout, _atlas_tick_options)
+        _atlas_grid_options, _atlas_grid_layout, _atlas_tick_options, _atlas_frame_widths,
+        _draw_atlas_magnitude_scale)
     from wenu.charts.composition import compose_chart
     from wenu.charts.detail import DetailOverrides
     from wenu.charts.modes import PrintMode
@@ -890,23 +902,26 @@ def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
     # Definition of the 50% wider band is explicit and physically reproducible.
     baseline = 12+2*(composition.style.canvas.grid_label_band_padding_points+
         composition.style.canvas.grid_label_band_linewidth/2)
-    enlarged = 12+2*(style.canvas.grid_label_band_padding_points+style.canvas.grid_label_band_linewidth/2)
-    assert enlarged == pytest.approx(baseline*1.5)
+    horizontal, vertical = _atlas_frame_widths(style, presentation)
+    assert horizontal == pytest.approx(baseline*1.5)
     composition = replace(composition,style=style)
     fig = plt.figure()
     renderer = MatplotlibRenderer(fig.add_axes(bounds))
+    renderer.configure_grid_label_frame(horizontal_points=horizontal,
+        vertical_points=vertical, polar=bool(polar))
     result = export_composed_chart(chart,sky,renderer,tmp_path/'grid.svg',
         composition=composition,layer_options=_atlas_grid_options(chart,presentation),
         realization_context=LayerRealizationContext(NATIVE_ICRS_SPEC),
-        export_options=ExportOptions(dpi=150,bbox_inches=None))
+        export_options=ExportOptions(dpi=150,bbox_inches=None),
+        additional_furniture=lambda **options: _draw_atlas_magnitude_scale(**options, presentation=presentation))
     assert layer.ra is None and layer.dec is None
     rendered = result.rendering.layers[0]
     assert rendered.spherical.coordinate_spec.frame == 'icrs'
-    assert len(rendered.spherical.components['meridians']) == 12
+    assert len(rendered.spherical.components['meridians']) == (12 if polar else 24)
     assert len(rendered.spherical.components['parallels']) == 17
     ticks = [a for a in rendered.artists if getattr(a,'_wenu_semantic_component',None)=='ticks']
     lines = [a for a in rendered.artists if getattr(a,'_wenu_semantic_component',None)=='lines']
-    texts = list(renderer.ax.texts)
+    texts = [t for t in renderer.ax.texts if t.get_visible()]
     assert ticks and texts
     assert all(t.get_text().endswith(('ʰ','ᵐ','°')) for t in texts)
     assert all(t.get_fontsize()==pytest.approx(9 if t.get_text().endswith('ᵐ') else 9.6 if t.get_text().endswith('°') else 12) for t in texts)
@@ -920,19 +935,18 @@ def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
                    if t.get_text().endswith('ʰ')).values())
     assert 'ticks' in (tmp_path/'grid.svg').read_text()
     fig.canvas.draw()
-    renderer.fit_grid_label_band((page.inner_mm/page.width_mm,
-        page.bottom_mm/page.height_mm, page.useful_width_mm/page.width_mm,
-        page.useful_height_mm/page.height_mm))
-    fig.canvas.draw()
     outer = renderer._grid_label_band_frame.get_path().transformed(renderer._grid_label_band_frame.get_transform())
     for text in texts:
-        if text.get_text().endswith('°'):
+        if text.get_text().endswith('°') and not hasattr(text, '_wenu_polar_grid_anchor'):
             matching=[mark for mark in ticks if np.allclose(mark.get_xydata()[0],text.get_position(),atol=1e-12)]
             direction=np.array([np.cos(np.radians(text.get_rotation())),np.sin(np.radians(text.get_rotation()))])
             assert matching and any(abs(np.cross(direction,
                 np.diff(renderer.ax.transData.transform(mark.get_xydata()),axis=0)[0])) < 1e-7
                 for mark in matching)
         box = text.get_window_extent(fig.canvas.get_renderer())
+        if hasattr(text, '_wenu_polar_grid_anchor'):
+            sky_box = renderer.ax.get_window_extent()
+            assert sky_box.contains(box.x0,box.y0) and sky_box.contains(box.x1,box.y1)
         assert outer.contains_points([[box.x0,box.y0],[box.x1,box.y1]]).all()
         assert not any(box.overlaps(other.get_window_extent(fig.canvas.get_renderer()))
                        for other in texts if other is not text)
@@ -941,10 +955,9 @@ def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
     assert outer_mm[:,0].max() <= page.width_mm-page.outer_mm+1e-6
     assert outer_mm[:,1].min() >= page.bottom_mm-1e-6
     assert outer_mm[:,1].max() <= page.height_mm-page.top_mm+1e-6
-    assert min(outer_mm[:,0].min()-page.inner_mm,
-               page.width_mm-page.outer_mm-outer_mm[:,0].max(),
-               outer_mm[:,1].min()-page.bottom_mm,
-               page.height_mm-page.top_mm-outer_mm[:,1].max()) < 0.02
+    sky_box = renderer.ax.get_window_extent()
+    assert (outer_mm[:,0].max()-outer_mm[:,0].min()-sky_box.width*25.4/fig.dpi) == pytest.approx(2*vertical*25.4/72)
+    assert (outer_mm[:,1].max()-outer_mm[:,1].min()-sky_box.height*25.4/fig.dpi) == pytest.approx(2*horizontal*25.4/72)
     for minutes in range(60):
         if minutes%10:
             continue
@@ -953,17 +966,18 @@ def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
     plt.close(fig)
 
 
-@pytest.mark.parametrize("number", [1, 5, 8, 10, 11, 22])
+@pytest.mark.parametrize("number", [1, 6, 7, 12, 15, 16, 28, 32, 36])
 def test_requested_portrait_review_sheets_render_through_chart_command(number, tmp_path):
-    """Actual sheet execution on the 22-chart design with synthetic grid content."""
+    """Actual uniform-scale 36-chart execution with synthetic grid content."""
     from xml.etree import ElementTree
     from wenu import CelestialSphere
     from wenu.charts.atlas_publication import AtlasChartPresentation
     from wenu.charts.request_generation import AtlasSheetChartRequest
     from wenu.cli.chart import main
-    atlas = AtlasDesignRequest.from_dict(cli.tomllib.loads(
-        (ROOT/'examples/atlas_design_request_v2.toml').read_text())).resolve()
-    assert len(atlas.geometry.sheets) == 22
+    from wenu.atlas_design import AtlasBandTiling
+    atlas = AtlasBandTiling.from_json((ROOT/'examples/atlas_design_36charts_v2.json').read_text())
+    assert len(atlas.geometry.sheets) == 36
+    assert len({s.field_width_deg for s in atlas.geometry.sheets}) == 1
     sheet = atlas.geometry.sheets[number-1]
     sky = CelestialSphere(None)
     sky.add_equatorial_grid(frame='icrs', equinox='J2000', include_equator=True)
@@ -977,11 +991,22 @@ def test_requested_portrait_review_sheets_render_through_chart_command(number, t
     assert any(text.endswith('ʰ') for text in texts)
     assert any(text.endswith('°') for text in texts)
     assert any('ticks' in element.get('id','') for element in root.iter())
+    import json
+    from wenu.charts.atlas_publication import _atlas_grid_layout, _atlas_frame_widths
+    from wenu.charts.presets import AtlasChartStyle
+    report = json.loads((request.output_dir/f'chart-{number:02d}_report_data.json').read_text())
+    page = atlas.geometry.page
+    bounds, _ = _atlas_grid_layout(page, AtlasChartStyle(), request.presentation)
+    frame = report['layout']['chart_sky_frame']
+    assert frame['width'] == pytest.approx(bounds[2] * page.width_mm)
+    assert frame['height'] == pytest.approx(bounds[3] * page.height_mm)
+    assert report['layout']['central_scale_mm_per_degree'] == pytest.approx(
+        frame['width'] / sheet.viewport(page).width * sheet.projection.projected_radius(1e-5)/1e-5)
 
 
 @pytest.mark.parametrize("field,value", [("grid_lines_visible",1),
     ("grid_label_fontsize",float('nan')),("grid_minor_label_scale",1.1),
-    ("grid_frame_width_scale",0), ("grid_ra_step_hours",5),
+    ("grid_frame_width_scale",0), ("grid_ra_step_hours",5), ("grid_polar_ra_step_hours",5),
     ("grid_minute_labels_visible",1), ("milky_way_color","invalid"), ("legend_fontsize",0),
     ("messier_label_fontsize",0), ("deep_sky_symbol_scale",0),
     ("cluster_face_color","invalid"), ("grid_dec_label_scale",0)])
@@ -1158,13 +1183,38 @@ def test_atlas_producer_uses_real_chart_command_and_prepares_sky_once(request_da
         return command(argv, **kwargs)
     monkeypatch.setattr(chart,'main',dispatch)
     output=tmp_path/'batch'
+    import matplotlib.pyplot as plt
+    index = tmp_path/'index.pdf'
+    figure = plt.figure(figsize=(14,8))
+    figure.text(.5,.5,'Synthetic index')
+    for suffix in ('png', 'svg', 'pdf'):
+        figure.savefig(index.with_suffix('.'+suffix))
+    plt.close(figure)
+    from wenu.charts.regional import ExportOptions
+    original_save = ExportOptions.save
+    def check_axis(options, figure, path):
+        if path.stem == 'atlas-star-counts':
+            assert figure.axes[0].xaxis_inverted()
+            assert figure.axes[0].lines[0].get_xdata().tolist() == [-1., 5.]
+        return original_save(options, figure, path)
+    monkeypatch.setattr(ExportOptions, 'save', check_axis)
     assert cli.create_main(['--design',str(design),'--config',str(config),
-        '--charts','1,14','--jobs','1','--output-dir',str(output)])==0
+        '--charts','1,14','--jobs','1','--index',str(index),'--output-dir',str(output)])==0
     assert preparations == [design.read_bytes()]
     assert len(dispatches)==2 and all(argv[0]=='atlas-sheet' and reused is sky for argv,reused in dispatches)
     manifest=json.loads((output/'manifest.json').read_text())
     assert manifest['charts']==[1,14] and manifest['workers']==1
     assert (output/'atlas.pdf').is_file()
+    from pypdf import PdfReader
+    book = PdfReader(output/'atlas.pdf')
+    assert book.page_layout == '/TwoPageLeft'
+    assert not book.pages[1].extract_text().strip()
+    assert [entry['kind'] for entry in manifest['page_order'][:6]] == ['index','blank','report','chart','report','chart']
+    for suffix in ('png', 'svg', 'pdf'):
+        assert (output/f'atlas-index.{suffix}').read_bytes() == index.with_suffix('.'+suffix).read_bytes()
+    reports = [json.loads((output/f'chart-{number:02d}_report_data.json').read_text()) for number in (1,14)]
+    assert reports[0]['layout']['chart_sky_frame'] == pytest.approx(reports[1]['layout']['chart_sky_frame'])
+    assert reports[0]['layout']['central_scale_mm_per_degree'] == pytest.approx(reports[1]['layout']['central_scale_mm_per_degree'])
     counts=json.loads((output/'atlas-star-counts.json').read_text())
     assert counts['selected_count']==2 and counts['cumulative_count']==[1,2]
     assert counts['magnitude']==[-1.0,5.0]

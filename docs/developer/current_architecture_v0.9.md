@@ -2608,3 +2608,25 @@ are unchanged. The existing legend coordination chain propagates the atlas
 DSO diameter multiplier to the four report marker handles; patches and legend
 text retain their existing dimensions. No new geometry or export pipeline is
 introduced.
+
+
+### Common-scale atlas contract runtime candidate (2026-10-12)
+
+The binding publication rules supersede independent per-sheet physical fitting.
+Publication requires a common angular field and common physical sky rectangle;
+its frame budget is fixed from fonts for the complete atlas. The existing
+renderer implements edge-family suppression and projected RA orientation;
+the existing atlas furniture owner positions interior polar Dec text.
+Canonical scientific geometry, tick anchors and the chart-command route are
+retained. A versioned resolved 36-sheet specimen reconciles angular fields
+and recomputes analytic coverage through existing geometry records.
+
+The existing index owner draws landscape or south-above-north portrait views
+and exports independent PNG/SVG/PDF. Publication copies same-prefix index
+companions into its atomic output, appends the blank index-following display page,
+and keeps report/chart display pairs. The existing star-count owner reverses
+its displayed magnitude axis without altering catalogue values or counts.
+No new production module, parallel pipeline or catalogue acquisition is added.
+The coordinate-system guide was reviewed; native ICRS, frame, epoch and source
+provenance contracts remain current. Mac scientific and visual acceptance,
+final-candidate full verification and explicit merge/cleanup remain pending.

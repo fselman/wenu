@@ -216,15 +216,17 @@ def overview_example():
 
 
 @pytest.mark.parametrize("join,width", [(0, 0), (82.5, 20), (359.5, 40)])
-def test_composed_index_registers_equator_and_preserves_own_hemispheres(overview_example, join, width):
+@pytest.mark.parametrize('orientation', ['landscape', 'portrait'])
+def test_composed_index_registers_equator_and_preserves_own_hemispheres(overview_example, join, width, orientation):
     import matplotlib.pyplot as plt
     overview = AtlasOverviewGeometry(join, width)
-    figure = plt.figure(figsize=(14, 8))
+    figure = plt.figure(figsize=(14, 8) if orientation == 'landscape' else (8,14))
     try:
-        axes = overview_example.composed_axes(figure, overview)
+        axes = overview_example.composed_axes(figure, overview, orientation)
         locations = []
-        for ax, pole in zip(axes, ("north", "south")):
-            face = overview_example.overview_face(overview, pole)
+        poles = ('north','south') if orientation == 'landscape' else ('south','north')
+        for ax, pole in zip(axes, poles):
+            face = overview_example.overview_face(overview, pole, orientation)
             ax.set_xlim(-face.boundary_radius, face.boundary_radius)
             ax.set_ylim(-face.boundary_radius, face.boundary_radius)
             ax.set_aspect("equal")
@@ -233,26 +235,34 @@ def test_composed_index_registers_equator_and_preserves_own_hemispheres(overview
             ra,dec = np.meshgrid(np.linspace(0,360,73), np.linspace(0,90 if pole == "north" else -90,19))
             x,y = face.projection.project_spherical(ra.ravel(), dec.ravel())
             physical = figure.transFigure.inverted().transform(ax.transData.transform(np.column_stack((x,y))))
-            assert np.all(physical[:,0] <= .5 + 1e-12) if pole == "north" else np.all(physical[:,0] >= .5 - 1e-12)
+            coordinate = 0 if orientation == 'landscape' else 1
+            assert np.all(physical[:,coordinate] <= .5 + 1e-12) if pole == "north" else np.all(physical[:,coordinate] >= .5 - 1e-12)
         np.testing.assert_allclose(locations[0], locations[1], atol=1e-10)
         a,b = (ax.get_position() for ax in axes)
-        assert a.x1 >= b.x0 - 1e-12
-        assert a.x1 > b.x0 if width else a.x1 == pytest.approx(b.x0)
+        if orientation == 'landscape':
+            assert a.x1 >= b.x0 - 1e-12
+            assert a.x1 > b.x0 if width else a.x1 == pytest.approx(b.x0)
+        else:
+            assert a.y0 <= b.y1 + 1e-12
+            assert a.y0 < b.y1 if width else a.y0 == pytest.approx(b.y1)
     finally:
         plt.close(figure)
 
 
 @pytest.mark.parametrize("initial_dpi", [100, 200])
-def test_join_clip_tracks_export_dpi_and_retains_both_contours(five_band_atlas, overview_example, initial_dpi):
+@pytest.mark.parametrize('orientation', ['landscape', 'portrait'])
+def test_join_clip_tracks_export_dpi_and_retains_both_contours(five_band_atlas, overview_example, initial_dpi, orientation):
     import matplotlib.pyplot as plt
-    figure = plt.figure(figsize=(14,8), dpi=initial_dpi)
+    figure = plt.figure(figsize=(14,8) if orientation == 'landscape' else (8,14), dpi=initial_dpi)
     try:
-        axes = overview_example.composed_axes(figure, five_band_atlas.geometry.overview)
-        for ax,pole in zip(axes, ("north", "south")):
+        axes = overview_example.composed_axes(figure, five_band_atlas.geometry.overview, orientation)
+        poles = ('north','south') if orientation == 'landscape' else ('south','north')
+        for ax,pole in zip(axes, poles):
             overview_example._draw_face(ax, five_band_atlas,
-                overview_example.overview_face(five_band_atlas.geometry.overview,pole), footprints=True)
-        overview_example._join_faces(figure, axes, five_band_atlas)
-        for ax, pole in zip(axes, ("north", "south")):
+                overview_example.overview_face(five_band_atlas.geometry.overview,pole,orientation), footprints=True)
+        overview_example._join_faces(figure, axes, five_band_atlas,
+            overview_example.AtlasIndexPresentation(orientation=orientation))
+        for ax, pole in zip(axes, poles):
             contours = [a for a in ax.lines if a.get_gid() == f"atlas-index-{pole}-complete-rim"]
             assert len(contours) == 1 and not contours[0].get_clip_on()
         clips = [ax.lines[0].get_clip_box() for ax in axes]

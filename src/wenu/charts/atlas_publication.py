@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 import hashlib
+import math
 import re
 from pathlib import Path
 
@@ -186,7 +187,8 @@ class AtlasChartPresentation:
     grid_label_fontsize: float = 12.0
     grid_minor_label_scale: float = 0.75
     grid_frame_width_scale: float = 1.5
-    grid_ra_step_hours: int = 2
+    grid_ra_step_hours: int = 1
+    grid_polar_ra_step_hours: int = 2
     grid_minute_labels_visible: bool = False
     milky_way_color: str = "#87CEFA"
     legend_fontsize: float = 12.0
@@ -198,6 +200,8 @@ class AtlasChartPresentation:
     def __post_init__(self):
         import math
         _atlas_grid_marks(self)
+        from .style_components import EquatorialGridMarks
+        EquatorialGridMarks(grid_ra_step_hours=self.grid_polar_ra_step_hours)
         from wenu.sky.native_snapshot import LAYERS
         if self.style not in {"atlas", "cartoon"}:
             raise ValueError("style must be atlas or cartoon.")
@@ -337,6 +341,8 @@ def _atlas_report_data(chart, sky, composition, rendering):
         page=dict(width_mm=page.width_mm, height_mm=page.height_mm),
         layout=dict(units="mm", origin="bottom-left",
             chart_sky_frame=sky_frame,
+            central_scale_mm_per_degree=(None if sky_frame is None else
+                sky_frame['width'] / chart.viewport.width * chart.sheet.projection_radius * math.pi / 360),
             frame=dict(x=page.outer_mm, y=page.bottom_mm,
                 width=page.useful_width_mm, height=page.useful_height_mm),
             report=dict(x=page.outer_mm + 4, y=page.bottom_mm + 4,
@@ -493,10 +499,8 @@ def _draw_atlas_chart_number(ax, number, style, presentation):
 
 def _draw_atlas_magnitude_scale(*, chart, sky, renderer, composition, rendering, presentation=None):
     """Minimal in-frame scale through the existing rendered-legend owner."""
-    page = chart.page
-    renderer.fit_grid_label_band((page.inner_mm / page.width_mm,
-        page.bottom_mm / page.height_mm, page.useful_width_mm / page.width_mm,
-        page.useful_height_mm / page.height_mm))
+    if abs(chart.sheet.center_dec_deg) == 90:
+        _draw_polar_declination_labels(chart, renderer, presentation or AtlasChartPresentation(), rendering)
     if 'stars' not in composition.detail.enabled_layers:
         return None
     from .automatic_legends import draw_automatic_chart_legends
@@ -529,15 +533,87 @@ def _atlas_tick_options(name, *, minor_scale):
 
 def _atlas_grid_options(chart, presentation):
     from .request_grids import equatorial_grid_mark_options
-    return equatorial_grid_mark_options(chart, _atlas_grid_marks(presentation))
+    marks = replace(_atlas_grid_marks(presentation), grid_ra_step_hours=
+        presentation.grid_polar_ra_step_hours if abs(chart.sheet.center_dec_deg) == 90 else presentation.grid_ra_step_hours)
+    return equatorial_grid_mark_options(chart, marks)
+
+
+def _atlas_frame_widths(style, presentation):
+    allowance = 2 * (style.canvas.grid_label_band_padding_points + style.canvas.grid_label_band_linewidth / 2)
+    # A Dec string lies along its projected parallel, rather than along the
+    # vertical edge. Budget its worst rotated extent once from the font.
+    from matplotlib.backends.backend_agg import RendererAgg
+    from matplotlib.font_manager import FontProperties
+    font = FontProperties(size=presentation.grid_label_fontsize * presentation.grid_dec_label_scale)
+    measure = RendererAgg(1, 1, 72)
+    extent = max(math.hypot(*measure.get_text_width_height_descent(f'{value:+g}°', font, ismath=False)[:2])
+                 for value in range(-80, 81, 10))
+    return ((presentation.grid_label_fontsize + allowance) * presentation.grid_frame_width_scale,
+            (extent + allowance) * presentation.grid_frame_width_scale)
+
+
+def _draw_polar_declination_labels(chart, renderer, presentation, rendering):
+    """Interior Dec text on the actual grid meridian nearest page vertical."""
+    if 'equatorial_grid' not in presentation.layers or getattr(renderer, '_grid_label_band', None) is None:
+        return
+    import numpy as np
+    pole = chart.sheet.center_dec_deg
+    declination = pole - math.copysign(10, pole)
+    ras = np.arange(0, 360, 15. * presentation.grid_polar_ra_step_hours)
+    x, y = chart.projection.project_spherical(ras, np.full(len(ras), declination))
+    candidates = np.flatnonzero(y > 0)
+    chosen = min(candidates, key=lambda i: (round(abs(x[i]) / abs(y[i]), 12), ras[i]))
+    ra = ras[chosen]
+    from wenu.geometry.projected import ProjectedPoints
+    decs = np.arange(-80, 81, 10.)
+    x, y = chart.projection.project_spherical(np.full(len(decs), ra), decs)
+    view = chart.viewport
+    from wenu.sky.semantic_identity import semantic_layer_identity
+    grid_layer = next(record.layer for record in rendering.layers
+        if getattr(record.layer, 'coordinate_system', None) == 'equatorial')
+    identity = semantic_layer_identity(grid_layer)
+    keep = np.isfinite(x) & np.isfinite(y) & (x > view.x_min) & (x < view.x_max) & (y > view.y_min) & (y < view.y_max)
+    for px, py, dec in zip(x[keep], y[keep], decs[keep]):
+        tangent = chart.projection.project_spherical(np.array([ra-.01, ra+.01]), np.array([dec, dec]))
+        direction = np.diff(renderer.ax.transData.transform(np.column_stack(tangent)), axis=0)[0]
+        angle = (np.degrees(np.arctan2(direction[1], direction[0])) + 90) % 180 - 90
+        artists = renderer.draw(ProjectedPoints(np.array([px]), np.array([py]), names=(f'{dec:+g}°',)),
+            draw_markers=False, draw_labels=True, label_offset=(0, 0),
+            label_style=dict(fontsize=presentation.grid_label_fontsize * presentation.grid_dec_label_scale,
+                color='black', rotation=angle, ha='center', va='center'))
+        for artist in artists:
+            artist._wenu_semantic_component = 'labels'
+            artist.set_gid(f'atlas-polar-dec-{int(dec)}')
+            artist._wenu_polar_grid_anchor = (float(px), float(py), float(ra))
+            from matplotlib.transforms import ScaledTranslation
+            centre = renderer.ax.transData.transform((0, 0))
+            direction = centre - renderer.ax.transData.transform((px, py))
+            direction /= np.linalg.norm(direction)
+            bounds = renderer.ax.get_window_extent()
+            for _ in range(3):
+                box = artist.get_window_extent(renderer.ax.figure.canvas.get_renderer())
+                if bounds.contains(box.x0, box.y0) and bounds.contains(box.x1, box.y1):
+                    break
+                distance = max(bounds.x0-box.x0, box.x1-bounds.x1,
+                               bounds.y0-box.y0, box.y1-bounds.y1, 0) + 1
+                shift = direction * distance / renderer.ax.figure.dpi
+                artist.set_transform(artist.get_transform() + ScaledTranslation(
+                    *shift, renderer.ax.figure.dpi_scale_trans))
+        renderer.assign_semantic_identity(artists, identity)
 
 
 def _atlas_grid_layout(page, style, presentation):
-    from .request_grids import equatorial_grid_frame_layout
-    bounds = (page.inner_mm/page.width_mm, page.bottom_mm/page.height_mm,
-              page.useful_width_mm/page.width_mm, page.useful_height_mm/page.height_mm)
-    return equatorial_grid_frame_layout(page.width_mm, page.height_mm, bounds,
-                                        style, _atlas_grid_marks(presentation))
+    horizontal, vertical = _atlas_frame_widths(style, presentation)
+    horizontal, vertical = horizontal * 25.4 / 72, vertical * 25.4 / 72
+    factor = min(1 - 2 * vertical / page.useful_width_mm,
+                 1 - 2 * horizontal / page.useful_height_mm)
+    if factor <= 0:
+        raise ValueError('Coordinate frame does not fit the useful page.')
+    width, height = page.useful_width_mm * factor, page.useful_height_mm * factor
+    bounds = ((page.inner_mm + (page.useful_width_mm-width)/2)/page.width_mm,
+              (page.bottom_mm + (page.useful_height_mm-height)/2)/page.height_mm,
+              width/page.width_mm, height/page.height_mm)
+    return bounds, style
 
 
 def _render_atlas_sheet(task, sky=None, *, chart_command=None):
@@ -609,8 +685,11 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
         raise ValueError("--save-sky and --from-sky are mutually exclusive.")
     raw = Path(design_path).read_bytes()
     atlas = AtlasBandTiling.from_json(raw.decode("utf-8"))
+    if len({sheet.field_width_deg for sheet in atlas.geometry.sheets}) != 1:
+        raise ValueError('Atlas charts require a common angular field and central scale; use a revised uniform-field design.')
     sheets = select_atlas_sheets(atlas, charts)
     index_bytes = None
+    index_products = {}
     if index is not None:
         import io
         index_bytes = Path(index).read_bytes()
@@ -627,6 +706,11 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             raise
         except Exception as exc:
             raise ValueError(f"Cannot read index PDF: {exc}") from exc
+        for suffix in ('png', 'svg'):
+            companion = Path(index).with_suffix('.' + suffix)
+            if not companion.is_file():
+                raise ValueError(f'Index requires its standalone {suffix.upper()} companion: {companion}')
+            index_products[suffix] = companion.read_bytes()
     output_dir = Path(output_dir)
     if output_dir.exists() or output_dir.is_symlink() or not output_dir.parent.is_dir():
         raise ValueError("Choose a new output directory with an existing parent.")
@@ -653,6 +737,10 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             design_sha256=hashlib.sha256(raw).hexdigest())
         digest = snapshot.manifest_sha256
         staging = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix=".wenu-atlas-pages-", dir=output_dir.parent)))
+        if index_bytes is not None:
+            (staging/'atlas-index.pdf').write_bytes(index_bytes)
+            for suffix, content in index_products.items():
+                (staging/f'atlas-index.{suffix}').write_bytes(content)
         tasks = [(sheet, atlas.geometry.page, presentation, str(staging)) for sheet in sheets]
         if worker_count == 1:
             sky = cold_sky if cold_sky is not None else snapshot.make_sky()
@@ -721,11 +809,15 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                 page=atlas.geometry.page, dpi=presentation.dpi,
                 provenance=dict(design_sha256=hashlib.sha256(raw).hexdigest(), snapshot_sha256=digest))
         with PdfWriter() as writer:
+            writer.page_layout = '/TwoPageLeft'
             page_order = []
             if index_bytes is not None:
                 _append_atlas_index(writer, index_reader, atlas.geometry.page)
                 page_order.append(dict(page=1, kind="index"))
                 writer.add_outline_item("Atlas index", 0)
+                writer.add_blank_page(width=atlas.geometry.page.width_mm * 72 / 25.4,
+                    height=atlas.geometry.page.height_mm * 72 / 25.4)
+                page_order.append(dict(page=2, kind='blank'))
             for sheet in sheets:
                 if index_bytes is not None:
                     writer.append(PdfReader(staging / f"chart-{sheet.number:02d}_report.pdf"))
