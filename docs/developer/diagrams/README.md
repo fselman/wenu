@@ -471,3 +471,7 @@ remains in sky/coordinate_grids; boundaries supplies true crossing/tangent data,
 and the generic renderer draws physical ticks and measured exterior labels.
 The native ICRS and ordinary observer-time coordinate paths remain distinct
 existing realizations feeding the same projection/rendering owners.
+
+The revised shared grid presentation requests a perpendicular label orientation
+from the generic tick renderer. Its display-space tangent remains supplied by
+the existing boundary owner; no astronomical or projection authority is added.

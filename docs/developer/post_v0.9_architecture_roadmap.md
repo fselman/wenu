@@ -5176,3 +5176,9 @@ the same mark policy and physical frame helpers. Existing chart/configuration
 tests additionally protect command admission, source reuse, native-versus-observer
 coordinate meaning, no-clobber output, spawn dispatch and regional parity.
 
+
+Fernando revised the candidate to 1h RA / 10-degree Dec lines, superscript h/m
+units, Dec labels normal to their projected curves, and darker interior lines.
+The scientific viewport, 10m tick cadence and 20m/40m smaller labels are retained.
+Existing atlas tests now execute the actual 22-chart portrait design at sheets
+1, 5, 8, 10, 11 and 22. Index review exports PNG, SVG and PDF together.

@@ -882,24 +882,32 @@ def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
     assert layer.ra is None and layer.dec is None
     rendered = result.rendering.layers[0]
     assert rendered.spherical.coordinate_spec.frame == 'icrs'
-    assert len(rendered.spherical.components['meridians']) == 12
+    assert len(rendered.spherical.components['meridians']) == 24
+    assert len(rendered.spherical.components['parallels']) == 17
     ticks = [a for a in rendered.artists if getattr(a,'_wenu_semantic_component',None)=='ticks']
     lines = [a for a in rendered.artists if getattr(a,'_wenu_semantic_component',None)=='lines']
     texts = list(renderer.ax.texts)
     assert ticks and texts
-    assert all(t.get_text().endswith(('h','m','°')) for t in texts)
-    assert all(t.get_fontsize()==(9 if t.get_text().endswith('m') else 12) for t in texts)
+    assert all(t.get_text().endswith(('ʰ','ᵐ','°')) for t in texts)
+    assert all(t.get_fontsize()==(9 if t.get_text().endswith('ᵐ') else 12) for t in texts)
     assert all(a.get_linewidth()==0 for a in lines) == (not lines_visible)
+    assert all(a.get_alpha()==0.9 for a in lines)
     if polar:
         # A meridian meets a polar sheet boundary once. The antipode must not
         # add a spurious second crossing through the chart.
         from collections import Counter
         assert all(count==1 for count in Counter(t.get_text() for t in texts
-                   if t.get_text().endswith('h')).values())
+                   if t.get_text().endswith('ʰ')).values())
     assert 'ticks' in (tmp_path/'grid.svg').read_text()
     fig.canvas.draw()
     outer = renderer._grid_label_band_frame.get_path().transformed(renderer._grid_label_band_frame.get_transform())
     for text in texts:
+        if text.get_text().endswith('°'):
+            matching=[mark for mark in ticks if np.allclose(mark.get_xydata()[0],text.get_position(),atol=1e-12)]
+            direction=np.array([np.cos(np.radians(text.get_rotation())),np.sin(np.radians(text.get_rotation()))])
+            assert matching and any(abs(np.dot(direction,
+                np.diff(renderer.ax.transData.transform(mark.get_xydata()),axis=0)[0])) < 1e-7
+                for mark in matching)
         box = text.get_window_extent(fig.canvas.get_renderer())
         assert outer.contains_points([[box.x0,box.y0],[box.x1,box.y1]]).all()
         assert not any(box.overlaps(other.get_window_extent(fig.canvas.get_renderer()))
@@ -913,8 +921,34 @@ def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
         if minutes%10:
             continue
         rule = _atlas_tick_options(f'right_ascension_{15+minutes/4}',minor_scale=.75)
-        assert rule['label']==('1h' if minutes==0 else f'{minutes}m' if minutes in (20,40) else None)
+        assert rule['label']==('1ʰ' if minutes==0 else f'{minutes}ᵐ' if minutes in (20,40) else None)
     plt.close(fig)
+
+
+@pytest.mark.parametrize("number", [1, 5, 8, 10, 11, 22])
+def test_requested_portrait_review_sheets_render_through_chart_command(number, tmp_path):
+    """Actual sheet execution on the 22-chart design with synthetic grid content."""
+    from xml.etree import ElementTree
+    from wenu import CelestialSphere
+    from wenu.charts.atlas_publication import AtlasChartPresentation
+    from wenu.charts.request_generation import AtlasSheetChartRequest
+    from wenu.cli.chart import main
+    atlas = AtlasDesignRequest.from_dict(cli.tomllib.loads(
+        (ROOT/'examples/atlas_design_request_v2.toml').read_text())).resolve()
+    assert len(atlas.geometry.sheets) == 22
+    sheet = atlas.geometry.sheets[number-1]
+    sky = CelestialSphere(None)
+    sky.add_equatorial_grid(frame='icrs', equinox='J2000', include_equator=True)
+    request = AtlasSheetChartRequest(sheet, atlas.geometry.page,
+        AtlasChartPresentation(layers=('equatorial_grid',)), tmp_path/'sheet')
+    assert main(['atlas-sheet', '--chart-number', str(number), '--output-dir', str(request.output_dir),
+        '--debug'], atlas_request=request, sky=sky, emit_outputs=False) == 0
+    assert {path.suffix for path in request.output_dir.glob(f'chart-{number:02d}.*')} == {'.png','.pdf','.svg'}
+    root = ElementTree.parse(request.output_dir/f'chart-{number:02d}.svg').getroot()
+    texts = [''.join(element.itertext()) for element in root.iter() if element.tag.endswith('}text')]
+    assert any(text.endswith('ʰ') for text in texts)
+    assert any(text.endswith('°') for text in texts)
+    assert any('ticks' in element.get('id','') for element in root.iter())
 
 
 @pytest.mark.parametrize("field,value", [("grid_lines_visible",1),

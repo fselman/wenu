@@ -876,7 +876,7 @@ def test_regional_command_and_toml_share_grid_marks_and_preserve_viewport(
     assert result.composition.context.viewport==expected
     rendering=getattr(result.rendering,'rendering',result.rendering)
     layer=next(item for item in rendering.layers if item.spherical.coordinate_spec.frame=='altaz')
-    assert len(layer.spherical.components['meridians'])==12
+    assert len(layer.spherical.components['meridians'])==24
     assert len(layer.spherical.components['tick_meridians'])==144
     assert len(layer.spherical.components['tick_parallels'])==17
     assert layer.spherical.coordinate_spec.frame=='altaz'

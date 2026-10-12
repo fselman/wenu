@@ -2520,7 +2520,7 @@ geometry and CLI test owners protect scientific containment and provenance.
 ### Atlas coordinate-grid and frame candidate (2026-10-12)
 
 Based on synchronized main `28e52bae`, the shared grid presentation requests
-RA lines every 2h and declination lines every 30 degrees, plus separate
+RA lines every 1h and declination lines every 10 degrees, plus separate
 10-minute RA and 10-degree declination tick curves from EquatorialGrid.
 Source layers and saved native snapshots are not mutated. Boundary ownership
 remains in charts/boundaries.py: all true crossings carry inward projected
@@ -2556,3 +2556,8 @@ composition/export. Ordinary regional grids retain the established observer-time
 FK5-to-AltAz realization; native atlas grids remain fixed ICRS. No frame, epoch
 or scientific meaning is changed.
 
+
+The revised presentation uses editable superscript h/m characters and requests
+a generic perpendicular boundary-label rotation for Dec. The renderer derives
+the angle from the display-space projected tangent; it has no coordinate-family
+knowledge. Visible lines use black, 0.9 opacity and 0.65-point width.

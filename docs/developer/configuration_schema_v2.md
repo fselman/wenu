@@ -419,7 +419,7 @@ grid_minor_label_scale = 0.75
 grid_frame_width_scale = 1.5
 ```
 
-`enabled=true` selects 2h RA and 30-degree declination lines, all 10m RA marks,
+`enabled=true` selects 1h RA and 10-degree declination lines, all 10m RA marks,
 whole-hour and smaller 20m/40m labels, and 10-degree declination marks/labels.
 Font size and frame scale are positive finite numbers; the minor scale is
 positive and at most 1. Booleans are strict. Appearance validates even when
@@ -431,6 +431,6 @@ equatorial_grid is selected. These are distinct existing configuration formats.
 The four matching appearance flags override TOML; `--no-grid-lines-visible`
 keeps edge marks while hiding full curves. Appearance flags require the preset.
 Ordinary admission requires regional charts, the equatorial grid and exterior
-label band, and a compatible 30-degree declination step. Physical sky reduction
+label band, and a compatible 10-degree declination step. Physical sky reduction
 preserves angular coverage and the existing observer-time coordinate semantics.
 

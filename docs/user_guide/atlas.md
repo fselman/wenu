@@ -1254,7 +1254,7 @@ memory use, without changing atlas geometry or stellar appearance.
 
 ## Coordinate grid and readable edge markings
 
-Atlas chart pages use fixed ICRS grid lines every **2h in RA** and **30° in
+Atlas chart pages use fixed ICRS grid lines every **1h in RA** and **10° in
 declination**. Edge marks follow the local projected coordinate curve into the
 sky. Every whole hour is labelled; **20m and 40m** use smaller labels; **10m,
 30m and 50m** have marks only. Declination marks and labels occur every **10°**
@@ -1312,3 +1312,11 @@ charts retain their observer-time coordinate realization and original viewport;
 atlas sheets retain their fixed ICRS design. The preset currently requires a
 regional chart with its equatorial grid and exterior label band enabled.
 
+
+RA unit letters use editable Unicode superscripts (ʰ and ᵐ). Declination labels
+are perpendicular to the local projected declination curve, with upright text
+orientation. Visible grid lines use black at 0.9 opacity and 0.65-point width.
+The portrait review set is charts 1, 5, 8, 10, 11 and 22, covering both polar
+caps and the requested Orion, Virgo and Scorpius fields. Recreate its index
+with wenu_plot_atlas and examples/atlas_index_style_v2.toml to export PNG, SVG
+and PDF together.

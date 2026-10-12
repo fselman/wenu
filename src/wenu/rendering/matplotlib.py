@@ -1070,6 +1070,13 @@ class MatplotlibRenderer:
                             if label_formatter is None
                             else label_formatter(curve_name)
                         )
+                        if tick_options is not None and rule.get("label_rotation") == "perpendicular":
+                            # Physical display-space normal to the projected curve,
+                            # with an equivalent upright orientation for readability.
+                            angle = np.degrees(np.arctan2(tangent[1], tangent[0])) + 90.0
+                            label_style_for_curve.update(
+                                rotation=(angle + 90.0) % 180.0 - 90.0,
+                                rotation_mode="anchor")
                         label_artist = self._label(
                             *position,
                             label,

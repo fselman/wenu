@@ -4736,3 +4736,9 @@ CLI appearance overrides TOML. Unsupported families, explicit grid/band disable
 and conflicting declination cadence are rejected. Source geometry and viewport
 remain unchanged; the established ordinary coordinate realization is preserved.
 
+
+The revised shared edge-mark preset selects 1h RA and 10-degree Dec lines.
+RA h/m units are Unicode superscripts to preserve editable SVG text. A mark
+record may request label_rotation="perpendicular"; the renderer derives its
+upright display-space normal angle. Visible grid lines use black at 0.9 opacity
+and 0.65-point width. Explicit preset declination cadence must be 10 degrees.
