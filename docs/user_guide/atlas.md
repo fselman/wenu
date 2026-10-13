@@ -1606,3 +1606,12 @@ missing parameters appear in labelled categorical margins and summary counts.
 Caldwell/Messier positions are overplotted with distinct symbols. Richness is
 only a proxy, not brightness. Review flags retain shared aliases and source
 notes, including the earlier C37/C50 cases. Globular-cluster curation is later.
+
+## Open-cluster curation guide
+
+The [living catalogue curation guide](curation.md) documents the maintenance
+and comparison scripts, all supported axes, missing-value policies and outputs.
+Use E(B−V) ≤ 3 as the current working comparison ceiling; the earlier 0.5
+example remains a reproducible stricter experiment. No magnitude or surface-
+brightness cutoff has been adopted, and filtered exports do not automatically
+become atlas selections.
