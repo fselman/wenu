@@ -17,11 +17,94 @@ import re
 import sys
 
 import numpy as np
+from astropy import units as u
+from astropy.coordinates import angular_separation
 from astropy.table import MaskedColumn, Table
 
 from compare_open_clusters import identifier_key, observing_crosswalk
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def positional_audit(dias, hunt, groups, *, dias_diameter_column='apparent_diameter_arcmin',
+                     hunt_diameter_column='apparent_diameter_arcmin'):
+    """Audit every cross-source pair; positions never alter identifier groups."""
+    def values(table, column, unit):
+        if column not in table.colnames:
+            raise ValueError('Positional audit lacks column: '+column)
+        source = table[column]
+        array = np.ma.asarray(source, dtype=float).filled(np.nan)
+        return (array*(source.unit or unit)).to_value(unit)
+
+    def positions(table, diameter_column):
+        ra = values(table, 'ra_deg', u.deg)
+        dec = values(table, 'dec_deg', u.deg)
+        radius = values(table, diameter_column, u.arcmin)/2
+        coordinates_valid = np.isfinite(ra) & np.isfinite(dec) & (np.abs(dec)<=90)
+        radius_valid = np.isfinite(radius) & (radius>0)
+        return ra, dec, radius, coordinates_valid, radius_valid
+
+    dra,ddec,dr,dc,drv = positions(dias,dias_diameter_column)
+    hra,hdec,hr,hc,hrv = positions(hunt,hunt_diameter_column)
+    paired = {d:h for d,h,_ in groups if d is not None and h is not None}
+    used_h = set(paired.values())
+    rows = []
+    matched_counts = dict(pass_count=0, fail_count=0, unassessable_count=0)
+    candidate_sets = {category:[set(),set()] for category in
+                      ('both_unmatched','matched_elsewhere')}
+    candidate_counts = {category:0 for category in candidate_sets}
+    for d in range(len(dias)):
+        separation = np.full(len(hunt),np.nan)
+        if dc[d]:
+            separation[hc] = np.rad2deg(angular_separation(
+                np.deg2rad(dra[d]),np.deg2rad(ddec[d]),
+                np.deg2rad(hra[hc]),np.deg2rad(hdec[hc])))*60
+        assessable = dc[d] & drv[d] & hc & hrv
+        passes = assessable & (separation<dr[d]) & (separation<hr)
+        # Export every established identity pair, and all other passing pairs.
+        targets = set(np.flatnonzero(passes))
+        if d in paired:
+            targets.add(paired[d])
+        for h in sorted(targets):
+            identified = paired.get(d)==h
+            category = ('identifier_matched' if identified else
+                        'both_unmatched' if d not in paired and h not in used_h else
+                        'matched_elsewhere')
+            status = 'unassessable' if not assessable[h] else 'pass' if passes[h] else 'fail'
+            if identified:
+                matched_counts[status+'_count'] += 1
+            else:
+                candidate_counts[category] += 1
+                candidate_sets[category][0].add(d)
+                candidate_sets[category][1].add(h)
+            rows.append(dict(dias_id=text(dias['identifier'][d]),
+                hunt_id=int(hunt['hunt_id'][h]),hunt_name=text(hunt['identifier'][h]),
+                dias_ra_deg=dra[d],dias_dec_deg=ddec[d],hunt_ra_deg=hra[h],hunt_dec_deg=hdec[h],
+                separation_arcmin=separation[h],dias_radius_arcmin=dr[d],hunt_radius_arcmin=hr[h],
+                identifier_matched=identified,category=category,positional_status=status))
+    columns = ['dias_id','hunt_id','hunt_name','dias_ra_deg','dias_dec_deg','hunt_ra_deg','hunt_dec_deg',
+               'separation_arcmin','dias_radius_arcmin',
+               'hunt_radius_arcmin','identifier_matched','category','positional_status']
+    ledger = Table(rows=rows) if rows else Table(names=columns,
+        dtype=['U1','i8','U1','f8','f8','f8','f8','f8','f8','f8','bool','U1','U1'])
+    for name in ('dias_ra_deg','dias_dec_deg','hunt_ra_deg','hunt_dec_deg'):
+        ledger[name].unit = u.deg
+    for name in ('separation_arcmin','dias_radius_arcmin','hunt_radius_arcmin'):
+        ledger[name].unit = u.arcmin
+    counts = dict(criterion='separation < Dias radius AND separation < Hunt radius (strict)',
+        dias_diameter_column=dias_diameter_column,hunt_diameter_column=hunt_diameter_column,
+        radius_policy='Half each supplied diameter; no epoch propagation or identity changes.',
+        identifier_matched_pairs=len(paired),identifier_matched=matched_counts,
+        nonidentified_passing_pairs=sum(candidate_counts.values()),
+        nonidentified_distinct_dias=len(set.union(*(s[0] for s in candidate_sets.values()))),
+        nonidentified_distinct_hunt=len(set.union(*(s[1] for s in candidate_sets.values()))),
+        passing_candidates={category:dict(pairs=candidate_counts[category],
+            distinct_dias=len(indices[0]),distinct_hunt=len(indices[1]))
+            for category,indices in candidate_sets.items()},
+        invalid_or_missing={label:dict(coordinates=int(np.count_nonzero(~coords)),
+            radius=int(np.count_nonzero(~radii)))
+            for label,coords,radii in [('dias',dc,drv),('hunt',hc,hrv)]})
+    return ledger,counts
 
 
 def text(value):
@@ -249,11 +332,23 @@ def main(argv=None):
         epilog='Columns: wenu_id, RA, Dec, dias_id, dias_* parameters, hunt_id, hunt_* parameters,\n'
                'Messier_id, Caldwell_id, NGC_id, IC_id, Melotte_id, Collinder_id, Other_ids, review/source flags.\n'
                'RA and Dec are degrees. Both source positions/metadata are preserved.\n'
+               'Positional audit: spherical separation < BOTH radii, each half the selected diameter.\n'
+               'Default Dias diameter is its supplied angular diameter; default Hunt diameter is 2*r50.\n'
+               'Missing/nonpositive radii or invalid centres are unassessable, never positional passes.\n'
+               'The summary counts matched pass/fail/unknown pairs and nonidentified candidates;\n'
+               '_positions.csv includes all identity pairs and other passing pairs, with unique-object counts.\n'
+               'Positions never merge rows. Hunt tidal/total diameters may be selected explicitly.\n'
+               'Usage: python tools/merge_open_clusters.py --output-directory /path/to/review --name wenu_open_clusters_v2\n'
+               '       add --hunt-diameter-column tidal_diameter_arcmin to audit with Hunt tidal radii.\n'
                'This creates a candidate only: no clean database adoption, chart change or software merge.')
     parser.add_argument('--data-directory',type=Path,default=ROOT/'src/wenu/data/catalogs')
     parser.add_argument('--dias-catalogue',type=Path,help='Explicit normalized Dias input; all its rows are retained.')
     parser.add_argument('--hunt-catalogue',type=Path,help='Explicit normalized full Hunt input; all its rows/types are retained.')
     parser.add_argument('--id-registry',type=Path,help='Previous _ids.json; preserve existing wenu_id assignments.')
+    parser.add_argument('--dias-diameter-column',default='apparent_diameter_arcmin',
+        help='Dias angular diameter column; default apparent_diameter_arcmin. Radius = diameter/2.')
+    parser.add_argument('--hunt-diameter-column',default='apparent_diameter_arcmin',
+        help='Hunt angular diameter column; default apparent_diameter_arcmin (2*r50). Alternatives: tidal_diameter_arcmin, total_diameter_arcmin.')
     parser.add_argument('--output-directory',type=Path,default=ROOT/'output')
     parser.add_argument('--name',default='wenu_open_clusters_v1',help='New versioned output prefix; existing products are refused.')
     arguments = sys.argv[1:] if argv is None else list(argv)
@@ -276,13 +371,25 @@ def main(argv=None):
     registry = json.loads(args.id_registry.read_text()) if args.id_registry else None
     output,crosswalk,references,registry,summary = merge_catalogues(
         tables['dias'],tables['hunt'],tables['caldwell'],tables['messier'],registry=registry)
+    groups,_ = identify(tables['dias'],tables['hunt'])
+    positions,position_counts = positional_audit(tables['dias'],tables['hunt'],groups,
+        dias_diameter_column=args.dias_diameter_column,hunt_diameter_column=args.hunt_diameter_column)
+    dias_keys,hunt_keys = source_nodes(tables['dias'],tables['hunt'])
+    d_ids = {text(row['identifier']):registry['source_ids'][key]
+             for row,key in zip(tables['dias'],dias_keys)}
+    h_ids = {int(row['hunt_id']):registry['source_ids'][key]
+             for row,key in zip(tables['hunt'],hunt_keys)}
+    positions['dias_wenu_id'] = [d_ids[v] for v in positions['dias_id']]
+    positions['hunt_wenu_id'] = [h_ids[v] for v in positions['hunt_id']]
+    summary['positional_audit'] = position_counts
+    output.meta['positional_audit'] = position_counts
     hashes = {key:hashlib.sha256(path.read_bytes()).hexdigest() for key,path in paths.items()}
     if args.id_registry:
         hashes['previous_id_registry'] = hashlib.sha256(args.id_registry.read_bytes()).hexdigest()
     summary['source_sha256'] = hashes
     output.meta['source_sha256'] = hashes
     products = {suffix:args.output_directory/(args.name+suffix) for suffix in
-                ('.ecsv','.csv','_crosswalk.csv','_references.csv','_ids.json','_summary.json')}
+                ('.ecsv','.csv','_crosswalk.csv','_references.csv','_positions.csv','_ids.json','_summary.json')}
     if any(path.exists() for path in products.values()):
         raise FileExistsError('Candidate output already exists; use a new versioned prefix.')
     args.output_directory.mkdir(parents=True,exist_ok=True)
@@ -290,12 +397,14 @@ def main(argv=None):
     output.write(products['.csv'],format='ascii.csv')
     crosswalk.write(products['_crosswalk.csv'],format='ascii.csv')
     references.write(products['_references.csv'],format='ascii.csv')
+    positions.write(products['_positions.csv'],format='ascii.csv')
     products['_ids.json'].write_text(json.dumps(registry,indent=2,sort_keys=True)+'\n')
     # The completion receipt is published last; interrupted candidates lack it.
     summary['products'] = {path.name:hashlib.sha256(path.read_bytes()).hexdigest()
                            for path in products.values() if path!=products['_summary.json']}
     products['_summary.json'].write_text(json.dumps(summary,indent=2,allow_nan=False)+'\n')
     print(json.dumps({key:summary[key] for key in ('dias_rows','hunt_rows','combined_rows','matched_pairs','identity_review_rows')}))
+    print('Positional audit: '+json.dumps(position_counts))
     for path in products.values():
         print(path)
     return 0

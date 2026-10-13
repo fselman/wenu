@@ -5396,3 +5396,30 @@ ambiguity, observing components, source immutability, units/masks, stable IDs,
 registry conflicts, digest-bound outputs, help and overwrite refusal.
 Focused open-cluster/package validation passes 23 tests; exact-head Mac
 historical-documentation acceptance and the final full suite remain separate.
+
+
+### Published-centre positional audit for cluster union (2026-10-13)
+
+The existing developer union tool now audits every Dias/Hunt cross-source pair
+using spherical angular separation of supplied centres, without propagation.
+The strict test is separation < BOTH catalogue radii; each radius is half the
+selected angular diameter. Defaults use apparent_diameter_arcmin (Hunt 2r50);
+explicit --dias-diameter-column/--hunt-diameter-column options record alternative
+boundaries. Angular units are converted; unitless sizes mean arcminutes and
+unitless coordinates mean degrees. Invalid/missing centres or nonpositive,
+masked/nonfinite radii are unassessable. Missing columns/incompatible units fail
+before outputs. This adds no identity merge, position provider or chart change.
+
+The printed/receipt audit counts established identity pairs as pass/fail/unknown
+and other passing pairs as both_unmatched or matched_elsewhere. Pair and distinct
+source-object counts are separate, with deduplicated combined counts. The new
+_positions.csv ledger retains both original centres, separation, radii, source
+and Wenu IDs, category/status for all identifier pairs and other passing pairs.
+It is product-hashed with the existing completion receipt. Existing source
+catalogues remain untouched; real compilation remains a later curation step.
+No-argument help covers parameters, radius meanings, strict criterion, outputs
+and usage. The existing owning tests check spherical wrap/polar geometry,
+unequal radii, exact boundary, missing values, units, neighbour multiplicity,
+matched-elsewhere classification and CLI receipts. The focused open-cluster /
+package gate passes 25 tests; exact-head Mac/documentation acceptance and the
+final full suite remain pending. The living curation guide owns user details.

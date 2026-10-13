@@ -487,12 +487,16 @@ def _union_tool_and_sources(monkeypatch):
         ra_deg=[1.,2.,3.,4.],dec_deg=[10.,20.,30.,40.],
         member_count=[10,20,30,40],source_type_flag=['','','','IR']))
     dias['ra_deg'].unit = 'deg'
+    dias['apparent_diameter_arcmin'] = [30.,30.,30.,30.]
+    dias['apparent_diameter_arcmin'].unit = 'arcmin'
     dias.meta['coordinate_frame'] = 'ICRS/J2000 as supplied'
     hunt = Table(dict(identifier=['NGC_869','NGC_884','Melotte_22'],hunt_id=[1,2,3],
         aliases=['NGC_869,Shared alias','NGC_884,Shared alias','Melotte_22'],
         ra_deg=[1.1,2.1,5.],dec_deg=[10.1,20.1,50.],hunt_type=['g','m','o'],
         v5=[9.,10.,np.nan]))
     hunt.meta['coordinate_epoch'] = 'J2016.0'
+    hunt['apparent_diameter_arcmin'] = [30.,30.,30.]
+    hunt['apparent_diameter_arcmin'].unit = 'arcmin'
     caldwell = Table(dict(name=['C 14'],membership_type=['open_cluster_group'],
         cluster_components=['NGC0869|NGC0884'],related_aliases=[''],primary_id=['NGC0869']))
     messier = Table(dict(name=['M 45'],object_type=['OC'],alt_name=['']))
@@ -528,7 +532,7 @@ def test_open_cluster_union_preserves_rows_parameters_ids_and_compound_reference
     assert again==registry
     assert set(reordered['wenu_id'])==set(union['wenu_id'])
     extended = dias.copy(copy_data=True)
-    extended.add_row(dict(identifier='AAA new',ra_deg=0.,dec_deg=0.,member_count=1,source_type_flag=''))
+    extended.add_row(dict(identifier='AAA new',ra_deg=0.,dec_deg=0.,member_count=1,source_type_flag='',apparent_diameter_arcmin=30.))
     _,_,_,extended_registry,_ = tool.merge_catalogues(extended,hunt,caldwell,messier,registry=registry)
     assert all(extended_registry['source_ids'][k]==v for k,v in registry['source_ids'].items())
     assert extended_registry['next_id']==registry['next_id']+1
@@ -561,6 +565,7 @@ def test_open_cluster_union_cli_help_export_and_overwrite_policy(tmp_path,monkey
     assert tool.main([])==0
     help_text = capsys.readouterr().out
     assert '--id-registry' in help_text and 'wenu_id, RA, Dec' in help_text
+    assert '--hunt-diameter-column' in help_text and 'separation < BOTH radii' in help_text
     assert not list(tmp_path.iterdir())
     data = tmp_path/'data'
     for category,filename,table in [
@@ -576,12 +581,68 @@ def test_open_cluster_union_cli_help_export_and_overwrite_policy(tmp_path,monkey
     catalogue = Table.read(output/'wenu_open_clusters_v1.ecsv')
     assert len(catalogue)==5 and catalogue.meta['curation_status']=='unreviewed_candidate'
     assert catalogue.meta['source_sha256']['dias']==hashlib.sha256((data/'open_clusters/dias.ecsv').read_bytes()).hexdigest()
-    for name in ['_crosswalk.csv','_references.csv','_ids.json','_summary.json']:
+    for name in ['_crosswalk.csv','_references.csv','_positions.csv','_ids.json','_summary.json']:
         assert (output/('wenu_open_clusters_v1'+name)).exists()
     receipt = json.loads((output/'wenu_open_clusters_v1_summary.json').read_text())
     assert receipt['dias_rows']==4 and receipt['hunt_rows']==3
+    assert receipt['positional_audit']['identifier_matched']['pass_count']==2
     assert all(hashlib.sha256((output/name).read_bytes()).hexdigest()==value for name,value in receipt['products'].items())
     with pytest.raises(FileExistsError):
         tool.main(arguments)
     with pytest.raises(SystemExit):
         tool.main(['--name','unversioned'])
+
+
+def test_open_cluster_positional_audit_counts_pairs_and_unique_unmatched_objects(monkeypatch):
+    import pytest
+    from astropy.table import Table
+    tool,*_ = _union_tool_and_sources(monkeypatch)
+    dias = Table(dict(identifier=['A','B','C','D','E'],
+        ra_deg=[359.99,10.,20.,90.,0.],dec_deg=[0.]*5,
+        apparent_diameter_arcmin=[4.,6.,np.nan,6.,4.]))
+    hunt = Table(dict(identifier=['A','B','C','X','Y'],hunt_id=[1,2,3,4,5],
+        ra_deg=[.01,10.1,20.,90.01,90.02],dec_deg=[0.]*5,
+        apparent_diameter_arcmin=[4.,20.,4.,6.,6.]))
+    groups,_ = tool.identify(dias,hunt)
+    ledger,counts = tool.positional_audit(dias,hunt,groups)
+    assert counts['identifier_matched_pairs']==3
+    assert counts['identifier_matched']==dict(pass_count=1,fail_count=1,unassessable_count=1)
+    assert counts['passing_candidates']['both_unmatched']==dict(pairs=2,distinct_dias=1,distinct_hunt=2)
+    assert counts['passing_candidates']['matched_elsewhere']==dict(pairs=1,distinct_dias=1,distinct_hunt=1)
+    assert counts['nonidentified_passing_pairs']==3
+    assert counts['nonidentified_distinct_dias']==2 and counts['nonidentified_distinct_hunt']==3
+    assert counts['invalid_or_missing']['dias']['radius']==1
+    assert len(ledger)==6
+    matched = ledger[ledger['identifier_matched']]
+    assert list(matched['positional_status'])==['pass','fail','unassessable']
+    assert matched['separation_arcmin'][0]==pytest.approx(1.2)
+    # The B pair is inside the Hunt radius, but outside the Dias radius.
+    assert matched['dias_radius_arcmin'][1] < matched['separation_arcmin'][1] < matched['hunt_radius_arcmin'][1]
+    assert ledger['separation_arcmin'].unit==u.arcmin
+    assert tool.identify(dias,hunt)[0]==groups
+
+
+def test_open_cluster_positional_audit_spherical_units_boundary_and_missing(monkeypatch):
+    import pytest
+    from astropy.table import Table, MaskedColumn
+    tool,*_ = _union_tool_and_sources(monkeypatch)
+    dias = Table(dict(identifier=['P'],ra_deg=[0.],dec_deg=[89.],diameter=[5.]))
+    hunt = Table(dict(identifier=['P'],hunt_id=[1],ra_deg=[180.],dec_deg=[89.],diameter=[5.]))
+    dias['diameter'].unit = hunt['diameter'].unit = u.deg
+    groups,_ = tool.identify(dias,hunt)
+    kwargs = dict(dias_diameter_column='diameter',hunt_diameter_column='diameter')
+    ledger,counts = tool.positional_audit(dias,hunt,groups,**kwargs)
+    assert ledger['separation_arcmin'][0]==pytest.approx(120.)
+    assert counts['identifier_matched']['pass_count']==1
+    # Exact boundary is excluded by the strict criterion.
+    dias['diameter'][0] = ledger['separation_arcmin'][0]/30
+    _,counts = tool.positional_audit(dias,hunt,groups,**kwargs)
+    assert counts['identifier_matched']['fail_count']==1
+    hunt['diameter'] = MaskedColumn([5.],mask=[True],unit=u.deg)
+    _,counts = tool.positional_audit(dias,hunt,groups,**kwargs)
+    assert counts['identifier_matched']['unassessable_count']==1
+    hunt['dec_deg'][0] = 91.
+    _,counts = tool.positional_audit(dias,hunt,groups,**kwargs)
+    assert counts['invalid_or_missing']['hunt']['coordinates']==1
+    with pytest.raises(ValueError,match='lacks column'):
+        tool.positional_audit(dias,hunt,groups)

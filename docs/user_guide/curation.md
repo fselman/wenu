@@ -508,12 +508,15 @@ Calling the script without arguments displays help and creates nothing.
 | `--data-directory` | Root of packaged source/reference catalogues |
 | `--dias-catalogue`, `--hunt-catalogue` | Explicit alternate normalized ECSV inputs; all supplied rows are retained |
 | `--id-registry` | Preserve existing IDs using the previous registry |
+| `--dias-diameter-column` | Angular Dias diameter for positional audit; default `apparent_diameter_arcmin` |
+| `--hunt-diameter-column` | Angular Hunt diameter for positional audit; default `apparent_diameter_arcmin` (2r50); alternatives `tidal_diameter_arcmin` and `total_diameter_arcmin` |
 | `--output-directory` | Separate candidate destination; never an automatic installed-database replacement |
 | `--name` | Versioned prefix such as `wenu_open_clusters_v1`; must end `_vN` |
 
 Outputs are `<name>.ecsv` (authoritative typed candidate), `<name>.csv`
 (readable copy), `<name>_crosswalk.csv` (matched/review source pairs),
 `<name>_references.csv` (observing-reference assignments/ambiguities),
+`<name>_positions.csv` (positional audit of identity pairs and other passing pairs),
 `<name>_ids.json` (persistent identity registry) and `<name>_summary.json`
 (source/product digests, counts, policy and completion receipt). Missing source
 parameters are masked, not zero-filled scientific values. Existing products
@@ -524,3 +527,39 @@ Actual compilation commands and clean-database decisions will be supplied in
 the separate curation stage, at Fernando's request. Source integrity and
 coverage can be assessed then without merging software or automatically
 accepting ambiguous physical identities.
+
+### Positional coincidence audit
+
+Each explicit compilation also audits the original published source centres,
+using spherical angular separation (including RA wrap and polar geometry).
+The strict criterion is separation < Dias radius AND separation < Hunt radius.
+Each radius is half the selected source diameter, converted to arcminutes.
+Columns with angular units are converted; unitless diameter columns are
+interpreted as arcminutes and unitless RA/Dec as degrees. Missing diameter
+columns or incompatible units are errors before output creation. Missing,
+masked, nonfinite or nonpositive radii and invalid centres are unassessable;
+they never pass. Supplied centres are compared without epoch propagation.
+
+The default Hunt radius is r50, its half-member radius; the Dias source radius
+has a different definition. This is an audit using the selected catalogue
+quantities, not proof of common identity. The two diameter-column options allow
+explicit alternative angular boundaries, recorded in the receipt. No positional
+pair changes the identifier union, existing Wenu IDs or curation status.
+
+The printed audit and the summary's `positional_audit` report identifier-matched
+pairs separately as pass, fail and unassessable. Other passing pairs are split
+into `both_unmatched` (neither source row has an accepted identifier match) and
+`matched_elsewhere` (at least one row is already matched to another object).
+Each category reports pair count and distinct Dias/Hunt cluster counts. Their
+combined counts are also supplied, deduplicating objects across categories.
+One cluster can have several positional neighbours; pair count therefore need
+not equal cluster count. Invalid/missing centre and radius counts are given for
+each source; these diagnostics can overlap for the same row.
+
+The `_positions.csv` ledger contains every established identifier pair, including
+failed/unassessable pairs, and every other passing positional pair. It retains
+source and Wenu IDs, both centres, angular separation, both radii, category and
+positional status. Nonidentified pairs that fail or cannot be assessed are not
+expanded into a full Cartesian ledger. No-argument help describes the options,
+criterion, output meanings and usage. Real-catalogue execution remains the
+separate curation step requested by Fernando.
