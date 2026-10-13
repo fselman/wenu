@@ -576,7 +576,7 @@ def test_open_cluster_union_cli_help_export_and_overwrite_policy(tmp_path,monkey
     output = tmp_path/'candidate'
     arguments = ['--data-directory',str(data),'--dias-catalogue',str(data/'open_clusters/dias.ecsv'),
         '--hunt-catalogue',str(data/'open_clusters/hunt.ecsv'),'--output-directory',str(output),
-        '--name','wenu_open_clusters_v1']
+        '--name','wenu_open_clusters_v1','--without-observing-lists']
     assert tool.main(arguments)==0
     catalogue = Table.read(output/'wenu_open_clusters_v1.ecsv')
     assert len(catalogue)==5 and catalogue.meta['curation_status']=='unreviewed_candidate'
@@ -586,6 +586,8 @@ def test_open_cluster_union_cli_help_export_and_overwrite_policy(tmp_path,monkey
     receipt = json.loads((output/'wenu_open_clusters_v1_summary.json').read_text())
     assert receipt['dias_rows']==4 and receipt['hunt_rows']==3
     assert receipt['positional_audit']['identifier_matched']['pass_count']==2
+    assert receipt['observing_membership']['status']=='explicitly_skipped'
+    assert np.all(catalogue['in_al_open_clusters'].mask)
     assert all(hashlib.sha256((output/name).read_bytes()).hexdigest()==value for name,value in receipt['products'].items())
     with pytest.raises(FileExistsError):
         tool.main(arguments)
@@ -646,3 +648,78 @@ def test_open_cluster_positional_audit_spherical_units_boundary_and_missing(monk
     assert counts['invalid_or_missing']['hunt']['coordinates']==1
     with pytest.raises(ValueError,match='lacks column'):
         tool.positional_audit(dias,hunt,groups)
+
+
+def test_observing_membership_uses_names_preserves_compounds_and_masks_conflicts(monkeypatch):
+    from astropy.table import Table
+    _union_tool_and_sources(monkeypatch)
+    import observing_list_membership as lists
+    table = Table(dict(wenu_id=['W1','W2','W3','W4'],
+        dias_id=['NGC 869','NGC 884','Berk 58','Different'],
+        hunt_name=['NGC_869','NGC_884','Berkeley_58','Different'],
+        Other_ids=['NGC 869|Shared','NGC 884|Shared','Berkeley 58','NGC 869'],
+        Messier_id=['','','M 45',''],Caldwell_id=['C 14','C 14','','']))
+    def record(cat,name,ids):return dict(catalogue=cat,designation=name,identifiers=ids,source_file='synthetic.csv')
+    records=[record('caldwell','C 14',['C 14']),record('messier','M 45',['M 45']),
+             record('al_open_clusters','Berk 58',['Berk 58']),
+             record('sac_best_ngc','NGC 869',['NGC 869']),
+             record('herschel2','Shared',['Shared'])]
+    edges,summary = lists.annotate(table,records)
+    assert list(table['in_caldwell'])==[True,True,False,False]
+    assert table['in_messier'][2] and table['in_al_open_clusters'][2]
+    assert table['in_sac_best_ngc'][0] and np.ma.is_masked(table['in_sac_best_ngc'][3])
+    assert np.ma.is_masked(table['in_herschel2'][0]) and np.ma.is_masked(table['in_herschel2'][1])
+    np.testing.assert_equal(table['in_best_ngc'],table['in_sac_best_ngc'])
+    assert summary['counts']['al_open_clusters']['member_rows']==1
+    assert edges[edges['catalogue']=='caldwell']['wenu_ids'][0]=='W1|W2'
+    assert list(table['dias_id'])==['NGC 869','NGC 884','Berk 58','Different']
+    assert lists.key('Cr 140')==lists.key('Collinder_140')
+    assert lists.key('Ru 1')==lists.key('Ruprecht_1')
+    unresolved=table.copy(copy_data=True)
+    unresolved['Caldwell_id']=['']*len(table)
+    reference_edges=Table(dict(catalogue=['Caldwell'],designation=['C 14'],
+        status=['ambiguous'],candidate_identifiers=['NGC 869|NGC 884'],other_alias_rows=['']))
+    lists.annotate(unresolved,records,reference_edges=reference_edges)
+    assert np.ma.is_masked(unresolved['in_caldwell'][0])
+    assert np.ma.is_masked(unresolved['in_caldwell'][1])
+
+
+def test_first_pass_xlsx_preserves_blank_rows_and_stored_cells(tmp_path,monkeypatch):
+    from zipfile import ZipFile
+    _union_tool_and_sources(monkeypatch)
+    import observing_list_membership as lists
+    path=tmp_path/'tiny.xlsx'
+    with ZipFile(path,'w') as archive:
+        archive.writestr('xl/sharedStrings.xml','<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><si><t>Berk 58</t></si></sst>')
+        archive.writestr('xl/worksheets/sheet1.xml','<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData><row r="1"><c r="A1" t="s"><v>0</v></c></row><row r="3"><c r="B3" t="inlineStr"><is><t>source text</t></is></c><c r="C3"><v>9.7</v></c></row></sheetData></worksheet>')
+    assert lists.xlsx_rows(path)==[[['Berk 58'],[],['','source text','9.7']]]
+
+
+def test_converted_membership_hash_validation_and_converter_help(tmp_path,monkeypatch,capsys):
+    import csv,hashlib,json,pytest
+    _union_tool_and_sources(monkeypatch)
+    import observing_list_membership as lists
+    import convert_observing_catalogues as converter
+    assert converter.main([])==0
+    assert '--source-directory' in capsys.readouterr().out
+    assert not list(tmp_path.iterdir())
+    registry=tmp_path/'registry.json'
+    source_rows=[dict(file=name,sha256='0'*64) for name in lists.SOURCE_FILES]
+    registry.write_text(json.dumps(dict(products=source_rows)))
+    directory=tmp_path/'csv_v1';directory.mkdir()
+    index=directory/'observing_memberships_v1.csv'
+    with index.open('w',newline='') as stream:
+        writer=csv.writer(stream);writer.writerow(['catalogue','designation','identifiers_json','source_file'])
+        for name,count in lists.SOURCE_COUNTS.items():
+            for i in range(count):writer.writerow([name,str(i),json.dumps(['NGC '+str(i)]),lists.SOURCE_FILES[0]])
+    receipt=dict(source_registry_sha256=hashlib.sha256(registry.read_bytes()).hexdigest(),
+        source_sha256={r['file']:r['sha256'] for r in source_rows},
+        products=[dict(file=index.name,bytes=index.stat().st_size,sha256=hashlib.sha256(index.read_bytes()).hexdigest())])
+    (directory/'conversion_receipt_v1.json').write_text(json.dumps(receipt))
+    records,_=lists.load_converted(directory,registry)
+    assert len(records)==sum(lists.SOURCE_COUNTS.values())
+    index.write_text(index.read_text()+'corrupt\n')
+    with pytest.raises(ValueError,match='CSV checksum mismatch'):
+        lists.load_converted(directory,registry)
+    with pytest.raises(FileExistsError):
+        converter.convert(tmp_path,directory,registry)

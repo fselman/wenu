@@ -4828,3 +4828,52 @@ physical classifications/crosswalks, visual selection and chart integration
 remain later curation milestones. Each archived product was hash/length checked;
 ZIP contents and CRC were verified. Exact-head Mac documentation acceptance and
 the final software full suite remain separate before merge.
+
+
+### Cluster-list CSV first pass and explicit memberships (2026-10-13)
+
+Fernando requested CSV conversion before observing memberships, then narrowed
+this milestone to star clusters. tools/convert_observing_catalogues.py owns
+first-pass offline conversion of nine acquired cluster-containing list files
+(Messier/Caldwell/Herschel400/II/RASC/SAC/ALOC/ALGC and southern Herschel).
+Mixed lists retain every row. Non-cluster programme and Abell/CDS work is
+deferred. tools/observing_list_membership.py owns source verification,
+source-format decoding, conservative name normalization and membership review.
+These are developer maintenance responsibilities, not new production modules,
+resource loaders, position providers or parallel chart pipelines.
+
+The real requested CSV first pass produces 10 source grids/tables plus a
+1,796-record membership index and last-written hash-bound conversion receipt.
+Excel sheet separation, blank rows, titles/repeated headers and source cell
+positions are preserved. PDF identity/coordinate fields retain original row
+text and unparsed tails. CSV parameters remain source strings; no scientific
+homogenization or source replacement is implied. pypdf is an existing Wenu
+dependency; standard-library XLSX parsing needs no Excel package. Only legacy
+southern XLS conversion uses optional maintenance xlrd>=2,<3; the merge compiler
+consumes verified CSVs and needs no Excel reader. No global dependency changed.
+
+The union tool defaults to observing_lists/csv_v1 and adds in_messier,
+in_caldwell, in_herschel400, in_herschel2, in_rasc_finest_ngc, in_sac_best_ngc,
+in_best_ngc (same SAC alias), in_al_open_clusters, in_al_globular_clusters and
+in_herschel400_south. True is resolved explicit ID membership; false is no
+resolved identifier; competing claims are masked and retained in _observing.csv.
+Primary names precede aliases; explicit RASC/Caldwell compounds keep distinct
+physical rows. Historical AL M24/M45 approximate NGC associations do not
+replace the existing observing crosswalk. Extragalactic GC names retain host
+scope; questioned/mislabeled narrative names are not adopted as aliases.
+No positional coincidence creates membership or alters source union/stable IDs.
+
+Missing/unverified CSV receipts fail before writing. --observing-directory
+selects a verified conversion; --without-observing-lists explicitly emits masked
+flags. Both tools print parameter/usage help without arguments. Source and
+conversion hashes/counts are recorded. Full source rows/types and every
+Dias/Hunt parameter, coordinate and positional-audit meaning remain unchanged.
+The real CSV conversion is explicitly authorized; no real combined catalogue
+is generated. The existing owning tests cover flags, alias precedence/conflicts,
+compound memberships, skipped masks, stored XLSX cell/blank-row fidelity,
+conversion hashes/counts, help and overwrite refusal. Twenty-eight focused
+open-cluster/package cases pass in 8.86 s; all three tools compile. Actual nine
+source files yield 11 verified CSVs; index1796, raw Excel row locations and
+RASC explicit companions/negative alias case were checked. Mac exact-head
+focused/documentation acceptance and final full-suite merge acceptance remain
+separate. The user guide/resource README own the workflow details.

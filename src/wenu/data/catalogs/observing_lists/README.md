@@ -19,3 +19,13 @@ Source acquisition, future membership normalization, physical cross-identities,
 visual target curation and chart integration remain separate stages. Scanned
 Abell Table 2 is acquired but is not yet an accepted machine-readable parameter
 table. No redistribution licence is inferred from public download availability.
+
+Fernando installed the 18 checked originals under `sources_v1/`. The current
+cluster-focused first CSV pass is owned by `tools/convert_observing_catalogues.py`:
+nine relevant files become 10 source CSVs plus a hash-bound membership index in
+`csv_v1/`. These local source/CSV directories are not committed automatically.
+`tools/observing_list_membership.py` owns exact-name memberships and review
+ledgers; `tools/merge_open_clusters.py` reads the verified CSV receipt and adds
+10 membership flags, including the SAC/Best-NGC alias and southern Herschel
+supplement. PN, dark-nebula and double/multiple-star programme conversion is
+deferred. See the owning guide for formats, help and optional legacy-XLS reader.

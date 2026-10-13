@@ -340,11 +340,20 @@ def main(argv=None):
                'Positions never merge rows. Hunt tidal/total diameters may be selected explicitly.\n'
                'Usage: python tools/merge_open_clusters.py --output-directory /path/to/review --name wenu_open_clusters_v2\n'
                '       add --hunt-diameter-column tidal_diameter_arcmin to audit with Hunt tidal radii.\n'
+               'Observing membership: first convert the acquired files with tools/convert_observing_catalogues.py.\n'
+               'Default CSV directory: data root/observing_lists/csv_v1; choose --observing-directory to override.\n'
+               'Columns in_<list> are true for resolved identifier membership, false for no resolved match,\n'
+               'masked for unresolved claims. Best of NGC aliases SAC. _observing.csv retains review evidence.\n'
+               'Membership columns: in_messier, in_caldwell, in_herschel400, in_herschel2,\n'
+               'in_rasc_finest_ngc, in_sac_best_ngc, in_best_ngc, in_al_open_clusters,\n'
+               'in_al_globular_clusters, in_herschel400_south. Other programmes are deferred.\n'
                'This creates a candidate only: no clean database adoption, chart change or software merge.')
     parser.add_argument('--data-directory',type=Path,default=ROOT/'src/wenu/data/catalogs')
     parser.add_argument('--dias-catalogue',type=Path,help='Explicit normalized Dias input; all its rows are retained.')
     parser.add_argument('--hunt-catalogue',type=Path,help='Explicit normalized full Hunt input; all its rows/types are retained.')
     parser.add_argument('--id-registry',type=Path,help='Previous _ids.json; preserve existing wenu_id assignments.')
+    parser.add_argument('--observing-directory',type=Path,help='Verified first-pass CSV directory; default data root/observing_lists/csv_v1.')
+    parser.add_argument('--without-observing-lists',action='store_true',help='Explicitly skip list loading; membership flags are masked, never false absences.')
     parser.add_argument('--dias-diameter-column',default='apparent_diameter_arcmin',
         help='Dias angular diameter column; default apparent_diameter_arcmin. Radius = diameter/2.')
     parser.add_argument('--hunt-diameter-column',default='apparent_diameter_arcmin',
@@ -383,13 +392,24 @@ def main(argv=None):
     positions['hunt_wenu_id'] = [h_ids[v] for v in positions['hunt_id']]
     summary['positional_audit'] = position_counts
     output.meta['positional_audit'] = position_counts
+    from observing_list_membership import annotate, load_converted
+    observing_records,observing_receipt = None,None
+    if not args.without_observing_lists:
+        observing_records,observing_receipt = load_converted(
+            args.observing_directory or args.data_directory/'observing_lists/csv_v1',
+            args.data_directory/'observing_lists/observing_sources_v1.json')
+    observing_edges,observing_summary = annotate(output,observing_records,reference_edges=references)
+    if observing_receipt is not None:
+        observing_summary['conversion_receipt'] = observing_receipt
+    summary['observing_membership'] = observing_summary
+    output.meta['observing_membership'] = observing_summary
     hashes = {key:hashlib.sha256(path.read_bytes()).hexdigest() for key,path in paths.items()}
     if args.id_registry:
         hashes['previous_id_registry'] = hashlib.sha256(args.id_registry.read_bytes()).hexdigest()
     summary['source_sha256'] = hashes
     output.meta['source_sha256'] = hashes
     products = {suffix:args.output_directory/(args.name+suffix) for suffix in
-                ('.ecsv','.csv','_crosswalk.csv','_references.csv','_positions.csv','_ids.json','_summary.json')}
+                ('.ecsv','.csv','_crosswalk.csv','_references.csv','_positions.csv','_observing.csv','_ids.json','_summary.json')}
     if any(path.exists() for path in products.values()):
         raise FileExistsError('Candidate output already exists; use a new versioned prefix.')
     args.output_directory.mkdir(parents=True,exist_ok=True)
@@ -398,6 +418,7 @@ def main(argv=None):
     crosswalk.write(products['_crosswalk.csv'],format='ascii.csv')
     references.write(products['_references.csv'],format='ascii.csv')
     positions.write(products['_positions.csv'],format='ascii.csv')
+    observing_edges.write(products['_observing.csv'],format='ascii.csv')
     products['_ids.json'].write_text(json.dumps(registry,indent=2,sort_keys=True)+'\n')
     # The completion receipt is published last; interrupted candidates lack it.
     summary['products'] = {path.name:hashlib.sha256(path.read_bytes()).hexdigest()

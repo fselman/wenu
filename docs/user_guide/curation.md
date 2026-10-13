@@ -633,3 +633,88 @@ notices are preserved in their original files. No third-party guide or image
 collection is incorporated into Wenu's distributed scientific resources at this
 stage. Later curation, licence decisions, membership normalization and chart
 integration are explicit subsequent work.
+
+## First CSV pass and cluster-list membership
+
+Fernando requested CSV conversion before membership integration, and then
+limited the current milestone to star clusters. `tools/convert_observing_catalogues.py`
+therefore handles the nine acquired files for Messier, Caldwell, Herschel 400,
+Herschel II, RASC Finest NGC, SAC Best NGC, AL open clusters, AL globular clusters
+and the southern Herschel supplement. The original complete rows of mixed
+lists remain intact. PN, Abell, Barnard and double/multiple-star programme work
+is deferred; their acquired originals remain untouched.
+
+The converter reads the installed `observing_lists/sources_v1` directory and
+verifies each relevant source against `observing_sources_v1.json`. It produces
+10 source CSVs and `observing_memberships_v1.csv`, with a last-written
+`conversion_receipt_v1.json` binding source registry, source and output hashes.
+There are 1,796 source-list membership records; they are not deduplicated
+physical objects. Globular challenge rules remain a separate CSV sheet rather
+than eight invented object memberships. Existing output directories are refused.
+All conversion succeeds in memory before a new destination is created.
+
+Excel sheets retain their complete stored cell grid, including blank rows,
+titles and repeated headers; `source_row` and `source_column_N` locate every
+original cell. Each nonempty sheet has its own CSV. These are first-pass
+source grids, not yet typed homogeneous scientific parameter tables. PDF CSVs
+expose identity and source-coordinate fields while preserving the original row
+and unparsed tail. No unknown coordinate, magnitude, diameter or classification
+is silently imputed. CSV sources retain their factual fields. Parameters from
+these observing lists do not replace the separate Dias/Hunt source columns.
+
+No-argument invocation displays help and writes nothing. Usage from the
+repository root is:
+
+```bash
+PYTHONPATH=src python tools/convert_observing_catalogues.py \
+  --source-directory src/wenu/data/catalogs/observing_lists/sources_v1
+```
+
+The default destination is `src/wenu/data/catalogs/observing_lists/csv_v1`.
+`--output-directory` chooses a fresh directory; `--registry` selects the
+acquisition registry. XLSX conversion uses the Python standard library; PDF
+conversion uses Wenu's existing pypdf dependency. The legacy southern XLS
+requires the optional maintenance dependency `xlrd>=2,<3` (install with
+`python -m pip install 'xlrd>=2,<3'`). Merge compilation reads the resulting
+CSVs and needs no Excel reader.
+
+`tools/merge_open_clusters.py` defaults to that CSV directory. It verifies the
+conversion receipt and every CSV digest before adding the membership columns:
+
+| Column | Source list |
+|---|---|
+| `in_messier` | Messier membership, using the existing observing crosswalk |
+| `in_caldwell` | Caldwell membership, using the existing component crosswalk |
+| `in_herschel400` | Original Herschel 400 list |
+| `in_herschel2` | Herschel II 2020 list |
+| `in_rasc_finest_ngc` | RASC Finest NGC checklist |
+| `in_sac_best_ngc`, `in_best_ngc` | Same SAC selection; the generic title is an alias |
+| `in_al_open_clusters` | Original and southern AL open-cluster rows |
+| `in_al_globular_clusters` | The 190 regular AL globular entries |
+| `in_herschel400_south` | The separate 150-object southern supplement |
+
+True means a resolved explicit identifier membership; false means no resolved
+identifier in that list; masked means an unresolved competing claim. False is
+not proof of physical absence when an object has unrecognized aliases. Source
+primary names take precedence over aliases, with competing claims preserved.
+Explicit abbreviations such as Berk/Berkeley, Ru/Ruprecht, Tr/Trumpler and
+Cr/Collinder are normalized. Extragalactic globular names retain their host
+scope. Questioned/mislabeled narrative identifiers are not adopted as aliases.
+RASC's explicitly named companions and Caldwell's C14 components remain
+separate physical rows with membership in their observing target.
+
+Messier/Caldwell flags use the established reference crosswalk rather than
+reinterpret approximate historical AL associations: e.g. M45 is not assigned
+to a cluster by treating NGC1432 as the Pleiades, and M24 is not silently
+equated with NGC6603. The CSV source fields preserve those published values
+for review. No list membership is inferred from proximity to a star system.
+
+`--observing-directory` overrides the CSV location. Missing conversions fail
+before output creation. `--without-observing-lists` explicitly skips loading
+and emits masked membership columns, never false absences. The separate
+`<name>_observing.csv` ledger records per-source designation, resolved Wenu IDs
+and review IDs, including unmatched targets. Summary/metadata record list
+counts and the conversion receipt. Boolean annotations change neither source
+pairing nor stable IDs, parameter values, positional audit or chart defaults.
+Only synthetic union tests are generated during software development; the
+real first-pass CSV conversion is permitted by Fernando's separate instruction.
