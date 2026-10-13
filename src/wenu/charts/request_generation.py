@@ -553,6 +553,9 @@ def _render_atlas_sheet_request(request, sky):
             planetary_nebula_symbol_size=deep.planetary_nebula_symbol_size * area_scale)))
     axes_bounds, grid_style = _atlas_grid_layout(page, composition.style, presentation)
     grid_options = {}
+    if 'open_clusters' in presentation.layers:
+        grid_options['open_clusters'] = dict(geometry=dict(
+            exclude_infrared_embedded=presentation.open_cluster_exclude_infrared_embedded))
     if "supernova_remnants" in presentation.layers:
         grid_options["supernova_remnants"] = dict(
             render=dict(curve_size_scale=presentation.deep_sky_symbol_scale))

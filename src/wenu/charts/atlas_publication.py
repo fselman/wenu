@@ -196,6 +196,7 @@ class AtlasChartPresentation:
     grid_dec_label_scale: float = 0.8
     deep_sky_symbol_scale: float = 1.8
     cluster_face_color: str = "yellow"
+    open_cluster_exclude_infrared_embedded: bool = False
 
     def __post_init__(self):
         import math
@@ -228,6 +229,8 @@ class AtlasChartPresentation:
             raise ValueError("grid_minor_label_scale must be at most 1.")
         if type(self.grid_lines_visible) is not bool:
             raise ValueError("grid_lines_visible must be boolean.")
+        if type(self.open_cluster_exclude_infrared_embedded) is not bool:
+            raise ValueError('open_cluster_exclude_infrared_embedded must be boolean.')
         if not math.isfinite(self.star_size_scale * self.star_size_scale):
             raise ValueError("star_size_scale squared must be finite.")
         if not math.isfinite(self.deep_sky_symbol_scale * self.deep_sky_symbol_scale):

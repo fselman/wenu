@@ -4666,3 +4666,16 @@ identities and Dias parameters, never projected proximity or a mixture of
 coordinate/diameter providers. C14 is a two-cluster group; alternate Dias
 aliases for C37 and C50 remain review cases. Source hashes and licence are
 recorded with the resource and source digests with comparison outputs.
+
+
+### Open-cluster review parameters and preserved positions (2026-10-13)
+
+IR/embedded marks do not change catalogue coordinates or source classification.
+Optional draw selection uses the same native/observed point realizations.
+Angular diameters, distance, E(B-V), log age, member count and metallicity remain
+Dias values; V photometry is a separately source-traced OpenNGC supplement,
+joined by explicit IDs with ambiguity/type/shared-identity diagnostics.
+Derived projected diameter is 2 d tan(theta/2), with angle in radians; it is not
+an independently measured three-dimensional size. Plot margins for unknown
+coordinates are categorical, not numerical imputations. Filtered copies carry
+selection policy and source digests and do not replace the original catalogue.

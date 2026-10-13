@@ -46,6 +46,16 @@ def test_packaged_open_cluster_catalogue():
     assert len(table) == 1931
     assert "IC 2602" in set(table["identifier"])
     assert "NGC 4755" in set(table["identifier"])
+    assert np.count_nonzero(table['excluded_ir_embedded']) == 349
+    assert np.count_nonzero(table['amateur_exclusion_reason'] == 'infrared_discovery') == 344
+    assert np.count_nonzero(table['amateur_exclusion_reason'] == 'embedded') == 5
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    native = layer.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None,
+        exclude_infrared_embedded=True)
+    observed = layer.spherical_geometry(layer.observer, exclude_infrared_embedded=True)
+    assert len(native) == len(observed) == 1582
+    assert len(layer.catalog) == 1931
+    assert not np.any(native.metadata['excluded_ir_embedded'])
 
 
 def test_observing_catalogue_comparison_preserves_dias_and_group_members(tmp_path):
@@ -81,6 +91,19 @@ def test_observing_catalogue_comparison_preserves_dias_and_group_members(tmp_pat
     assert np.count_nonzero(annotated['in_caldwell']) == 29
     assert np.count_nonzero(annotated['in_messier']) == 27
     assert not np.any(annotated['in_caldwell'] & annotated['in_messier'])
+    filtered, _, filtered_summary = tool.compare(dias, caldwell, messier, exclude_ir_embedded=True)
+    assert len(filtered) == 1931 and np.count_nonzero(filtered['in_amateur_sample']) == 1582
+    assert filtered_summary['selection']['marked_ir_embedded'] == 349
+    # Inclusive E(B-V) bounds and explicit treatment of unknown reddening.
+    synthetic = Table(dict(reddening_e_bv=[.2,.5,.8,np.nan],
+        amateur_exclusion_reason=['','','','']))
+    keep, reasons = tool.selection_mask(synthetic, np.ones(4,dtype=bool), .5, None, 'exclude')
+    assert keep.tolist() == [True,True,False,False]
+    assert reasons == ['','','above_max_E_BV','missing_E_BV']
+    keep, _ = tool.selection_mask(synthetic, np.ones(4,dtype=bool), .5, None, 'include')
+    assert keep.tolist() == [True,True,False,True]
+    with pytest.raises(ValueError):
+        tool.selection_mask(synthetic, np.ones(4,dtype=bool), .2, .5, 'exclude')
     # A second exact-identifier candidate is an ambiguity, never a first match.
     duplicate = dias.copy(copy_data=True)
     duplicate.add_row(dias[np.flatnonzero(dias['identifier'] == 'NGC 869')[0]])
@@ -89,9 +112,20 @@ def test_observing_catalogue_comparison_preserves_dias_and_group_members(tmp_pat
     assert len(bad_summary['catalogue_component_matches']['Caldwell']['ambiguous']) == 1
     assert list(bad_edges['status'][bad_edges['component'] == 'NGC0869']) == ['ambiguous']
     prefix = tmp_path/'comparison_v1'
-    assert tool.main(['--output-prefix', str(prefix)]) == 0
+    assert tool.main(['--output-prefix', str(prefix), '--x', 'diameter', '--y', 'brightness',
+        '--max-ebv', '.5', '--write-filtered-catalogue']) == 0
     emitted = json.loads((tmp_path/'comparison_v1_summary.json').read_text())
     assert emitted['dias_clusters'] == 1931 and len(emitted['source_sha256']) == 3
+    retained = Table.read(tmp_path/'comparison_v1_filtered.ecsv')
+    assert len(retained) == emitted['selection']['eligible']
+    assert np.all(np.asarray(retained['reddening_e_bv']) <= .5)
+    assert not np.any(retained['excluded_ir_embedded'])
+    availability = emitted['plot_parameter_availability']
+    assert sum(availability[key] for key in ('both','missing_y','missing_x','missing_both')) == len(retained)
+    assert availability['x'] == 'diameter' and availability['y'] == 'brightness'
+    assert (tmp_path/'comparison_v1_figure.png').exists()
+    assert (tmp_path/'comparison_v1_figure.svg').exists()
+    assert (tmp_path/'comparison_v1_figure.pdf').exists()
     with pytest.raises(FileExistsError):
         tool.main(['--output-prefix', str(prefix)])
 
@@ -107,6 +141,29 @@ def test_requested_order_and_metadata_are_preserved():
     assert geometry.ids.tolist() == ["NGC 4755", "IC 2602"]
     assert geometry.metadata["symbol"] == "open_cluster"
     assert "apparent_diameter_arcmin" in geometry.metadata
+
+
+def test_open_cluster_photometry_rejects_ambiguous_and_noncluster_matches():
+    import importlib.util
+    from pathlib import Path
+    from astropy.table import Table
+    root = Path(__file__).resolve().parents[1]
+    spec = importlib.util.spec_from_file_location('compare_open_clusters', root/'tools/compare_open_clusters.py')
+    tool = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(tool)
+    def row(kind, aliases='', ngc=''):
+        return dict(Type=kind, Identifiers=aliases, NGC=ngc, IC='', Sources='V-Mag:2',
+            **{'V-Mag':'5.0', 'OpenNGC notes':'', 'NED notes':''})
+    sources = {'NGC0001': ('NGC.csv', row('OCl','shared alias')),
+               'NGC0002': ('NGC.csv', row('OCl','shared alias')),
+               'NGC0003': ('NGC.csv', row('G')),
+               'NGC0004': ('NGC.csv', row('Dup', ngc='1'))}
+    dias = Table(dict(identifier=['NGC 1','shared alias','NGC 3','NGC 4']))
+    table = tool.openngc_photometry(dias, sources)
+    assert list(table['photometry_status']) == ['measured_V','ambiguous','type_conflict','measured_V']
+    assert np.isnan(table['v_magnitude'][1:3]).all()
+    assert list(table['photometry_identity_review']) == [True,False,False,True]
+    assert list(table['identifier']) == list(dias['identifier'])
 
 
 def test_open_cluster_coordinates_are_vectorized_and_finite():

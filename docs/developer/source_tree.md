@@ -3567,3 +3567,18 @@ than adding a production catalogue/provider module. Existing
 109-entry admission, resource hashes, native centres, compound membership,
 source preservation and ambiguous/alternate-alias handling. No test file,
 production layer or dependency is added.
+
+
+### Open-cluster plotting and marking ownership (2026-10-13)
+
+objects/open_clusters.py owns classification annotations and optional native/
+observed drawing exclusion. Existing atlas_publication/request_generation owners
+admit and forward the atlas presentation flag. tools/compare_open_clusters.py
+owns offline parameter selection, reddening cuts, comparison figures and
+selection exports. tools/query_open_cluster_photometry.py is a maintenance
+entry for pinned V-data enrichment, reusing the existing OpenNGC acquisition
+helper and comparison join; it does not add a production provider/module.
+The supplement and its provenance live in data/catalogs/open_clusters;
+pyproject explicitly includes them. Existing open-cluster and atlas-CLI tests
+cover the new seams, including canonical chart execution. No test file or
+runtime dependency is added.

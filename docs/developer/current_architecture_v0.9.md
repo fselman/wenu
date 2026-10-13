@@ -2654,3 +2654,16 @@ parameters, conflating catalogue membership with physical object category,
 or adding a parallel rendering path. Compound entries and alternate Dias
 alias rows remain explicit in the crosswalk. Resource packaging includes
 source provenance and the applicable OpenNGC licence.
+
+
+### Open-cluster amateur-review boundary (2026-10-13)
+
+Classification marks are derived annotations on a complete catalogue, separate
+from render or review selection. The existing open-cluster layer admits an
+optional IR/E exclusion for both native and observed routes. Atlas presentation
+forwards this through wenu_chart and the existing layer; version-5 review style
+enables it. Offline tools use complete source catalogues, a separately pinned
+V supplement and explicit selection metadata to plot chosen parameters and
+export filtered copies. Missing coordinates are represented categorically,
+not invented. Source classification, photometry provenance and proposed amateur
+suitability remain distinct; globular-cluster work is a later milestone.

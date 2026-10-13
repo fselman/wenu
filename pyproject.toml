@@ -60,6 +60,7 @@ markers = [
 
 [tool.setuptools.package-data]
 "wenu.data.catalogs.caldwell" = ["*.ecsv", "*.csv", "*.json", "*.txt", "README.md"]
+"wenu.data.catalogs.open_clusters" = ["*.ecsv", "*.csv", "*.json", "README.md"]
 "wenu.data.catalogs.star_designations" = [
     "*.json", "README.md", "source/*.json.gz", "source/*.json", "source/*.rq",
 ]

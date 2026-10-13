@@ -5273,3 +5273,21 @@ Chart runtime and comparison perform no network access. Membership facts were
 checked against the Astronomical League's published list; no guide prose or
 images are redistributed. The parameter snapshot carries OpenNGC attribution
 and its licence. Mac focused/full-suite acceptance and merge remain separate.
+
+
+### Open-cluster parameter-plane review (2026-10-13)
+
+Fernando requested IR/embedded exclusions as marks rather than source-row
+deletion, a two-dimensional Caldwell/Messier comparison, scripts under tools
+reading data and writing output, selectable axes, E(B-V) cuts and optional
+filtered-catalogue creation. The bounded implementation preserves all Dias
+rows, derives IR/E marks, supports explicit plot/export selection and adds
+source-traced V photometry without inferring absent values. Atlas filtering is
+opt-in through the existing layer and new version-5 style. No final reddening,
+brightness, richness or diameter threshold has been accepted. Physical-duplicate
+curation and globular-cluster comparison remain subsequent work.
+
+The photometry maintenance entry reuses the earlier OpenNGC pinned-file policy:
+two serial raw-file GETs (or digest-verified cache), no concurrency, polling or
+automatic retries. OpenNGC v20260501/CC BY-SA 4.0 attribution and the separately
+packaged licence are retained. All plotting/selection commands are offline.

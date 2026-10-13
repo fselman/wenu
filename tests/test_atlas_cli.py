@@ -1016,9 +1016,44 @@ def test_requested_portrait_review_sheets_render_through_chart_command(number, t
         frame['width'] / sheet.viewport(page).width * sheet.projection.projected_radius(1e-5)/1e-5)
 
 
+def test_atlas_ir_embedded_filter_reaches_canonical_chart_layer(request_data, tmp_path, monkeypatch):
+    from astropy.table import Table
+    from wenu import CelestialSphere
+    from wenu.charts.atlas_publication import AtlasChartPresentation
+    from wenu.charts.request_generation import AtlasSheetChartRequest
+    from wenu.cli.chart import main
+    atlas = AtlasDesignRequest.from_dict(request_data).resolve()
+    sheet, page = atlas.geometry.sheets[13], atlas.geometry.page
+    table = Table(dict(identifier=['synthetic ordinary','synthetic IR','synthetic E','synthetic V'],
+        ra_deg=[sheet.center_ra_deg]*4, dec_deg=[sheet.center_dec_deg]*4,
+        apparent_diameter_arcmin=[10.]*4, object_type=['open cluster']*4,
+        source_type_flag=['','IR','E','V']))
+    source = tmp_path/'synthetic_open_clusters.ecsv'
+    table.write(source, format='ascii.ecsv')
+    sky = CelestialSphere(None); layer = sky.add_open_clusters(filename=source)
+    counts = []
+    from wenu.charts import export_workflow
+    original = export_workflow.export_composed_chart
+    def capture(*args, **kwargs):
+        result = original(*args, **kwargs)
+        counts.append(len(next(record.spherical for record in result.rendering.layers if record.layer is layer)))
+        return result
+    monkeypatch.setattr(export_workflow, 'export_composed_chart', capture)
+    for exclude in (False, True):
+        directory = tmp_path/str(exclude)
+        request = AtlasSheetChartRequest(sheet, page, AtlasChartPresentation(
+            layers=('open_clusters',), dpi=36, formats=('pdf', 'svg'),
+            open_cluster_exclude_infrared_embedded=exclude), directory)
+        assert main(['atlas-sheet','--chart-number',str(sheet.number),
+            '--output-dir',str(directory),'--debug'], atlas_request=request,
+            sky=sky, emit_outputs=False) == 0
+    assert counts == [4,2] and len(layer.catalog) == 4
+
+
 @pytest.mark.parametrize("field,value", [("grid_lines_visible",1),
     ("grid_label_fontsize",float('nan')),("grid_minor_label_scale",1.1),
     ("grid_frame_width_scale",0), ("grid_ra_step_hours",5), ("grid_polar_ra_step_hours",5),
+    ("open_cluster_exclude_infrared_embedded", 1),
     ("grid_minute_labels_visible",1), ("milky_way_color","invalid"), ("legend_fontsize",0),
     ("messier_label_fontsize",0), ("deep_sky_symbol_scale",0),
     ("cluster_face_color","invalid"), ("grid_dec_label_scale",0)])

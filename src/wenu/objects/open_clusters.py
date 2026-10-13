@@ -40,10 +40,31 @@ class OpenClusters(AstronomicalObject):
             self.source = Path(filename)
             table = Table.read(self.source)
         self._validate(table)
+        table = self.mark_amateur_exclusions(table)
         self.catalog = table
         self._source_revision += 1
         self._observed_point_cache.clear()
         return self.catalog
+
+    @staticmethod
+    def mark_amateur_exclusions(table):
+        """Retain every row and mark only explicit Dias IR/E classifications."""
+        marked = table.copy(copy_data=True)
+        flags = (np.asarray([str(v).strip().upper() for v in table['source_type_flag']])
+                 if 'source_type_flag' in table.colnames else np.full(len(table), ''))
+        marked['excluded_ir_embedded'] = np.isin(flags, ('IR', 'E'))
+        marked['amateur_exclusion_reason'] = np.where(flags == 'IR', 'infrared_discovery',
+            np.where(flags == 'E', 'embedded', ''))
+        return marked
+
+    @classmethod
+    def _amateur_filtered(cls, table, exclude):
+        if type(exclude) is not bool:
+            raise ValueError('exclude_infrared_embedded must be boolean.')
+        if not exclude:
+            return table
+        marked = cls.mark_amateur_exclusions(table)
+        return marked[~np.asarray(marked['excluded_ir_embedded'], dtype=bool)]
 
     def position(self, instant=None) -> SphericalPoints:
         """Return selected native open-cluster catalogue centres in ICRS."""
@@ -118,6 +139,7 @@ class OpenClusters(AstronomicalObject):
         if not isinstance(context, LayerRealizationContext) or not context.is_native_icrs:
             return super().realize(context, observer, **options)
         table = self._selected_table(options.pop("selected", None))
+        table = self._amateur_filtered(table, options.pop('exclude_infrared_embedded', False))
         minimum = options.pop("minimum_size_arcmin", None)
         if options:
             raise TypeError(f"Unsupported native cluster options: {sorted(options)}")
@@ -139,6 +161,7 @@ class OpenClusters(AstronomicalObject):
         *,
         selected=None,
         minimum_size_arcmin=None,
+        exclude_infrared_embedded=False,
     ) -> SphericalPoints:
         """Return vectorized Alt/Az centers for open-cluster symbols."""
         if self.catalog is None:
@@ -152,6 +175,7 @@ class OpenClusters(AstronomicalObject):
                 "An observer with an altaz_frame is required."
             )
         table = self._selected_table(selected)
+        table = self._amateur_filtered(table, exclude_infrared_embedded)
         if minimum_size_arcmin is not None:
             minimum = float(minimum_size_arcmin)
             if not np.isfinite(minimum) or minimum < 0.0:
@@ -210,3 +234,4 @@ class OpenClusters(AstronomicalObject):
             names=identifiers,
             metadata=metadata,
         )
+

@@ -4892,3 +4892,35 @@ comparison outputs. M45's explicit Melotte 22 identity is supplied by the
 pinned OpenNGC Mel022/M=045 row. All sample statistics use Dias parameters;
 no proximity matching, source mutation or automatic physical-object merging
 is admitted. Existing nonstellar/open-cluster tests own the new seams.
+
+
+### Open-cluster review selection and two-parameter plotting (2026-10-13)
+
+OpenClusters.mark_amateur_exclusions(table) returns a copied table with IR/E
+annotations, preserving every source row/value. Loading applies it; native and
+observed geometry admit optional boolean exclude_infrared_embedded through
+_amateur_filtered, recomputing marks for old restored snapshots when needed.
+AtlasChartPresentation admits open_cluster_exclude_infrared_embedded (default
+false); the version-5 preset selects true and request_generation forwards it
+to the existing layer through the canonical sheet route. No alternate symbol
+or projection pipeline is introduced.
+
+The existing comparison tool now owns named parameter choices, inclusive
+E(B-V) selection, missing-value policies, annotated full-table export, optional
+filtered ECSV, and a two-dimensional PNG/SVG/PDF figure. Active selection reasons
+are separate from immutable source classification. All selected rows are
+accounted for by the main panel and categorical missing-coordinate margins.
+V axes are reversed; richness is labelled as a proxy. Physical diameter is
+2 d tan(theta/2), where theta is the source angular diameter in radians, and
+is labelled derived projected size. Invalid bounds/identical axes are rejected;
+preexisting output products are not overwritten.
+
+The V supplement is a separate source-digest-bound resource; the comparison
+validates its sidecar checksum and Dias digest and exact identifier order.
+Explicit primary IDs precede source aliases, source duplicate references are
+collapsed, non-cluster types and ambiguous targets are rejected for photometry,
+and shared identities/source notes remain review fields. No positional matching,
+brightness imputation or automatic physical-duplicate removal is admitted.
+The new maintenance-only query_open_cluster_photometry.py reuses the existing
+pinned OpenNGC acquisition helpers and comparison join, preserving separate
+acquisition/runtime lifecycles. Plotting and filtering perform no network I/O.
