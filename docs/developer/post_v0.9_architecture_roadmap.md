@@ -5423,3 +5423,36 @@ unequal radii, exact boundary, missing values, units, neighbour multiplicity,
 matched-elsewhere classification and CLI receipts. The focused open-cluster /
 package gate passes 25 tests; exact-head Mac/documentation acceptance and the
 final full suite remain pending. The living curation guide owns user details.
+
+
+### Amateur observing-list source acquisition v1 (2026-10-13)
+
+Fernando requested source acquisition before selecting public/beginner targets.
+The new data-directory registry
+`src/wenu/data/catalogs/observing_lists/observing_sources_v1.json` inventories
+13 distinct source lists/catalogues plus the generic Best of the NGC alias.
+Eighteen checked source-table products are delivered separately in the versioned
+wenu_observing_catalogues_v1.zip, with publisher/edition URLs, retrieval dates,
+source and derivative SHA-256, byte counts and observed membership counts.
+The resource README and living user curation guide own this acquisition record.
+This is provenance/guide work, not a new loader, sky layer, rendering pipeline,
+physical identity union or adopted interesting-target selection. Existing
+Messier/Caldwell parameter resources and all software remain unchanged.
+
+Count distinctions are explicit: AL Messier membership 110 vs packaged HEASARC
+109; SAC named 110 vs 111 source rows; RASC 110 observing numbers vs 112 rows;
+AL open clusters 125+89 downloaded rows vs advertised 90 southern additions;
+globulars 190 with a 50-object requirement; double stars now 200 with a
+100-object requirement; multiple stars now 115. Southern Herschel/planetary
+supplements and northern PN alternates are acquired separately. Barnard's
+349-row public ASU export and notes replace rejected HTTP-200 HTML FTP
+responses; original coordinate-system metadata remains source authority.
+Abell's 86-entry original scanned Table 2 is acquired, with parent-paper hash
+and extraction provenance, but OCR is not accepted numeric coordinates.
+No source frame/epoch, component separation or position angle is silently
+reinterpreted or propagated. Raw list documents stay in the separate acquisition
+archive; no public redistribution licence is inferred. Membership normalization,
+physical classifications/crosswalks, visual selection and chart integration
+remain later curation milestones. Each archived product was hash/length checked;
+ZIP contents and CRC were verified. Exact-head Mac documentation acceptance and
+the final software full suite remain separate before merge.

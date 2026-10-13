@@ -563,3 +563,73 @@ positional status. Nonidentified pairs that fail or cannot be assessed are not
 expanded into a full Cartesian ledger. No-argument help describes the options,
 criterion, output meanings and usage. Real-catalogue execution remains the
 separate curation step requested by Fernando.
+
+## Observing-list source acquisition, version 1
+
+Fernando requested the source catalogues before deciding which objects belong
+in Wenu's public/beginner selection. The versioned download
+`wenu_observing_catalogues_v1.zip` contains 18 source-table files, with the
+inventory/provenance ledger `observing_sources_v1.json` and validation counts.
+The same ledger is tracked under
+`src/wenu/data/catalogs/observing_lists/observing_sources_v1.json`.
+Each product records its source URL, publisher, retrieval time, byte count,
+SHA-256, edition/count distinctions and any extraction from a parent source.
+Archive source files are separate from installed chart resources. This stage
+does not filter attractive targets, cross-identify physical objects, introduce
+a sky layer or change atlas defaults. The existing Messier/Caldwell parameter
+resources and their earlier provenance remain intact.
+
+### Verified inventory and corrections to the earlier table
+
+| Catalogue/list | Acquired source and count | Meaning and review distinction |
+|---|---|---|
+| [Messier](https://old.astroleague.org/al/obsclubs/messier/messlist.html) | AL table, 110 numbered entries; factual CSV | Existing HEASARC Wenu parameter table has 109 rows and omits M102. The additional observing membership does not resolve its disputed physical identification. |
+| [Caldwell](https://old.astroleague.org/al/obsclubs/caldwell/cldwlist.html) | AL table, 109 entries; factual CSV | Existing OpenNGC-backed resource and CC BY-SA 4.0 provenance retain parameter authority. Mixed object types and compound entries remain distinct. |
+| [Herschel 400](https://www.astroleague.org/herschel-400-observing-program/) | NGC-order PDF, 400 rows; southern XLS supplement, 150 | Publisher accepts manual NGC1750 or online NGC7814. This snapshot follows the online list. Southern certification combines 150 supplementary with 250 original targets. |
+| [Herschel II](https://www.astroleague.org/herschel-ii-observing-program/) | 2020 NGC-order PDF, 400 rows | Confirmed replacements NGC1985, NGC4517, NGC7492; removed NGC1750, NGC1990, NGC2253 absent. |
+| Best of the NGC | Alias of SAC below in this inventory | The earlier table supplied no distinct publisher/source for this generic name; it is not counted as an independently verified additional list. |
+| [RASC Finest NGC](https://rasc.ca/finest-ngc-objects) | Checklist 2.1a (2021-06-19), PDF; 110 base observing numbers, 112 displayed object rows | Number 82 has two object rows; 99 has a/b components. Other compound identifications are retained in the original checklist. Observing target count is not a physical-object count. |
+| [SAC 110 Best of the NGC](https://www.saguaroastro.org/110-best-ngc-objects/) | A.J. Crayon/Steve Coe, version 1.0 (1990-01-04), factual CSV; 111 distinct NGC rows | Publisher title says 110. Preserve the 111 supplied rows and this distinction rather than removing one to fit the title. Source prose/descriptions are omitted from the CSV. |
+| [AL Open Cluster Program](https://www.astroleague.org/open-cluster-observing-program/) | Complete-list XLSX dated 2025-10-04; 125 original + 89 southern = 214 rows | Programme page advertises 90 supplementary objects. This workbook contains 89 southern rows. Membership does not guarantee current scientific classification as an open cluster. |
+| [AL Globular Cluster Program](https://www.astroleague.org/globular-cluster-observing-program/) | 2021-11-16 XLSX; 190 regular object rows plus 8 challenge rules | 50 is the observing requirement, not the source catalogue size. Challenge rules can describe classes/groups rather than individual catalogue objects. |
+| [AL Planetary Nebula Program](https://www.astroleague.org/planetary-nebula-observing-program/) | Standard XLSX 110 rows; southern XLS 110; northern-alternate XLS 26 | Repeated spreadsheet headers are not objects. Four optional proto-PN mentioned on the page are absent from this standard workbook; no rows are invented for them. Southern list preserves publisher corrections. |
+| [AL Double Star Program](https://www.astroleague.org/double-star-observing-program/) | June 2026 XLSX, 200 numbered systems | 100 is the award requirement. June 2026 expanded the list to include southern targets. Source URL's `202660628` filename is retained literally. |
+| [AL Multiple Star Program](https://www.astroleague.org/multiple-star-observing-program/) | Appendix 2026-03-16 XLSX, 115 systems | Supersedes the earlier 114 count. Worksheet title still says `Current List 20200510`; that stale title does not determine the acquisition edition. |
+| [Barnard](https://cdsarc.cds.unistra.fr/viz-bin/cat/VII/220A) | CDS VII/220A; 349 object rows in VizieR TSV, separate notes TSV and ReadMe | Barnard 1927, NAOJ electronic compilation, diameters/notes supplied by Bill Gray, position corrections through 2008-06-30. Names have gaps and suffixes; CDS `recno` is not an object ID. |
+| [Abell planetary-nebula candidates](https://doi.org/10.1086/148602) | G.O. Abell, ApJ 144,259 (1966), Table 2; 86 entries in two original scanned table pages | Extracted from NASA ADS's historical paper scan. Historically provisional PN classifications are preserved. Acquisition is complete as a scanned catalogue; numeric normalization requires verified transcription, not unreviewed OCR. |
+
+### Source fidelity and provenance
+
+The AL, RASC and SAC lists are observing memberships, not physical catalogues
+or proof that every entry is a beginner showpiece. Herschel II and Abell in
+particular contain difficult objects. Keep programme membership, source
+classification, accepted scientific classification and future visual selection
+as separate attributes. Compound observing entries must not silently collapse
+their constituent objects in the future crosswalk.
+
+Source coordinates, magnitudes, diameters, stellar component separations and
+position angles remain publisher values. They are not homogenized measurements
+or current double-star ephemerides. Barnard's TSV explicitly preserves FK4
+B1875 and FK5 J2000 systems. Abell's table labels its positions 1950. Neither
+resource is silently interpreted as native ICRS. Later adapters must document
+their position/epoch transformations within Wenu's canonical pipeline.
+
+All Excel/PDF source lists are retained unchanged. The Messier, Caldwell and
+SAC webpages are represented by factual table CSV extractions; the ledger binds
+them to the downloaded parent-page URL/hash. Narrative observing descriptions
+are not reproduced. Abell's catalogue-table PDF preserves only original Table
+2 pages 10-11 of the parent scan (printed pages 268-269); its parent URL/hash
+and extraction are recorded. OCR text is not shipped as accepted coordinates.
+
+The Barnard FTP `.dat` requests returned HTTP-200 HTML anti-bot pages, which
+failed content validation and were excluded. The documented public VizieR ASU
+interface supplied the actual 349-row table and notes. This is recorded as a
+source-format choice; HTTP success alone never establishes a valid catalogue.
+
+Public download availability is not treated as a new redistribution licence.
+The source files remain acquisition/review material; the ledger records rights
+status separately from origin and scientific validation. AL and RASC copyright
+notices are preserved in their original files. No third-party guide or image
+collection is incorporated into Wenu's distributed scientific resources at this
+stage. Later curation, licence decisions, membership normalization and chart
+integration are explicit subsequent work.
