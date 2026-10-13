@@ -894,3 +894,86 @@ plots. Running from `tools` uses `PYTHONPATH=../src`,
 `--data-directory ../src/wenu/data/catalogs` for the merge, and relative
 `../output/...` destinations. There is no need to move the candidate into
 the installed data directory or to download another catalogue.
+
+
+### Wenu open-cluster selection v0.1
+
+`tools/curate_open_clusters.py` creates Fernando's explicit first selection
+from a full combined ECSV. The confirmed mandatory lists are Messier,
+Caldwell, SAC Urban, **RASC** Finest NGC (`rasc_finest_ngc`, correcting the
+request's `rsac` spelling), and SAC Best NGC. Every resolved cluster row in
+these lists is retained regardless of magnitude, radius, reddening or missing
+V10. Unresolved list claims are also retained with an explicit review reason;
+this avoids silently excluding a possible mandatory object. This is a
+selection of the supplied cluster union, not the insertion of every galaxy,
+star or nebula in the original observing lists.
+
+Additional objects must satisfy the intersection of:
+
+- finite Hunt-derived V10 strictly brighter than 12.5;
+- V10 < 17.5 − (12.5/3) log10(radius in arcmin), the line through
+  (1,17.5) and (1000,5) on the logarithmic radius axis;
+- source-specific E(B−V) ≤ 3, with missing reddening excluded;
+- positive finite radius and member_count, so the point is assessable in both
+  radius and member-count views. There is no additional member-count threshold.
+
+“Above” refers to the inverted magnitude axes, hence the less-than inequalities.
+Fernando confirmed both available Dias/Hunt points must pass for an additional
+object (`--source-policy all`); a single-source object uses its one available
+point. Dias-only objects without a Hunt V10 cannot pass the numeric selection,
+but mandatory membership still retains them. The plotted V10<11 restriction
+is explicitly not inherited. The line is extrapolated outside 1–1000 arcmin.
+`--source-policy any`, `--max-v10`, `--max-ebv`, and `--without-ebv-cut` permit
+explicit later alternatives, which are recorded in the outputs.
+
+Primary/alias pairs from the union remain intact. The curation tool also
+checks every cross-source positional pair using the published centres and
+half each apparent diameter (Hunt r50). Only reciprocal unique, otherwise
+unmatched Dias–Hunt pairs inside both radii are combined provisionally.
+Existing alias ambiguities remain review flags, not erased by coincidence.
+Competing positional candidates and pairs involving an object already matched
+elsewhere remain separate. `--position-match audit-only` checks positions
+without combining them. The retained Wenu ID is the smaller of the two existing
+IDs; `previous_wenu_ids` and summary redirects preserve both input IDs. The
+union ID registry is not modified, and no epoch propagation is performed.
+
+The CSV has a normal first-row header and preserves both catalogue parameter
+blocks and identifiers. Explicit `selection_*` columns record source origin,
+mandatory lists, unresolved claims, numerical pass/reason for each source,
+line-boundary values, the final selection reason and a readable criteria string.
+The input ECSV digest is included. An ECSV companion preserves units, masks
+and original source/list provenance for the existing plotting tool. Separate
+selection and pairing ledgers include excluded rows and remaining ambiguity;
+the completion JSON records criteria, counts, input digest, ID lineage and
+product digests. Existing versioned products are refused. No arguments prints
+help and writes nothing.
+
+From `tools`, using the full candidate generated for the three plots:
+
+```bash
+PYTHONPATH=../src python curate_open_clusters.py \
+  --catalogue ../output/open_cluster_comparison_v3/wenu_open_clusters_v3.ecsv \
+  --output-directory ../output/curation_v0.1 \
+  --name wenu_open_clusters_v0.1
+
+PYTHONPATH=../src MPLBACKEND=Agg python plot_merged_open_clusters.py \
+  --catalogue ../output/curation_v0.1/wenu_open_clusters_v0.1.ecsv \
+  --output-directory ../output/curation_v0.1/plots \
+  --name selected_radius_v10_v1 --x radius
+```
+
+For a member-count check use `--x members` and a distinct output prefix.
+Do not reapply the global magnitude/reddening cuts when inspecting the full
+selection: they would hide mandatory-list exceptions. The existing plot
+continues to distinguish filled Dias and hollow Hunt values and show missing
+V10 separately.
+
+The verified packaged-source run starts with 7,873 union rows, finds seven
+additional provisional positional pairs (with 13 competing unmatched edges
+left for review), and selects 583 rows: 142 resolved mandatory-list rows,
+27 rows retained for unresolved mandatory claims, and 414 further numeric-only
+rows. Categories in this count are disjoint for this run; general per-criterion
+flags may overlap. Of the seven positional pairs, one is retained in the
+selection. Positional matching remains provisional and the 27 list-claim rows
+require review. This v0.1 output is a requested curation snapshot; it is not
+installed as a sky-chart source and does not merge the software branch.

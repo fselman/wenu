@@ -5555,3 +5555,33 @@ radius independence, masked/zero counts, strict cuts, CLI exports and help.
 No catalogue data, physical identity policy, public sky layer, chart default,
 canonical pipeline or dependency changes. Software delivery remains separate
 from final catalogue curation and branch merge.
+
+
+## Explicit open-cluster curation v0.1 checkpoint
+
+Fernando requested the filtering script and a v0.1 CSV, confirming brighter
+V10<12.5 and V10 below 17.5-(12.5/3)*log10(radius_arcmin), E(B-V)<=3 for
+additional candidates, and intersection across both available source points.
+The five mandatory observing lists bypass all numeric cuts; unresolved list
+claims are retained and flagged for review. The former plot's V10<11 cut is
+not inherited. `tools/curate_open_clusters.py` owns this offline selection from
+the complete source-preserving union. It reuses the existing spherical audit
+and numeric-field reader; primary/alias pairs remain intact. Reciprocal unique
+unmatched pairs inside both published radii may be combined provisionally,
+with original ID lineage, source parameters and unresolved alias flags retained.
+Competing positions and objects matched elsewhere remain review evidence;
+audit-only mode makes no positional combinations.
+
+CSV/ECSV, all-row selection ledger, pairing ledger and digest-bound completion
+summary preserve source origin, mandatory reasons, thresholds, per-source
+numeric decisions and positional provenance. Previous plotting commands read
+the ECSV; full-selection checks omit global cuts to show mandatory exceptions.
+The owning guide documents parameters, strict boundaries, source-policy choices,
+ID redirects and curation commands. The verified real run selects 583 rows,
+including 142 resolved mandatory, 27 unresolved mandatory claims and 414 further
+numeric-only rows; seven positional pairs are provisional before selection and
+one remains selected. Existing owning tests cover log-boundary endpoints,
+strict cuts, mandatory overrides, missing fields, all/any source policies,
+one-to-one positional pairing, ambiguity, ID conservation, source preservation,
+help and admission failures. No curated data is installed or committed as a
+chart resource, and no software merge, pipeline or dependency change occurs.

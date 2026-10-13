@@ -832,3 +832,78 @@ def test_member_count_cli_exports_axis_metadata_and_no_argument_help(tmp_path,mo
     assert plot.main([])==0
     help_text=capsys.readouterr().out
     assert '--x {radius,members}' in help_text and 'member_count' in help_text
+
+
+def test_v01_selection_mandatory_override_and_strict_log_radius_boundaries(monkeypatch):
+    from astropy.table import Table,MaskedColumn
+    _union_tool_and_sources(monkeypatch)
+    import curate_open_clusters as curator
+    table=Table(dict(wenu_id=['W1','W2','W3','W4','W5','W6'],has_dias=[False]*5+[True],has_hunt=[True]*6,
+      hunt_v10=[12.499,5.,4.999,np.nan,10.,10.],hunt_apparent_diameter_arcmin=[2.,2000.,2000.,2.,2.,2.],
+      hunt_member_count=[20]*6,hunt_reddening_e_bv=[3.,3.,3.,np.nan,3.01,1.],
+      dias_apparent_diameter_arcmin=[np.nan]*5+[2000.],dias_member_count=[0]*5+[50],dias_reddening_e_bv=[np.nan]*5+[1.]))
+    for name in curator.MANDATORY: table['in_'+name]=MaskedColumn([False]*6,mask=False)
+    table['in_messier'][3]=True
+    selected=curator.selection(table)
+    assert list(selected['selection_selected'])==[True,False,True,True,False,False]
+    assert selected['selection_hunt_v10_boundary'][0]==17.5
+    assert selected['selection_hunt_v10_boundary'][1]==5.
+    assert selected['selection_retained_by_mandatory_list'][3]
+    assert selected['selection_hunt_numeric_reason'][4]=='ebv_cut'
+    assert not selected['selection_retained_by_numeric_intersection'][5]
+    assert curator.selection(table,source_policy='any')['selection_retained_by_numeric_intersection'][5]
+    table['hunt_v10'][0]=12.5
+    table['in_sac_urban'].mask[4]=True
+    selected=curator.selection(table)
+    assert not selected['selection_selected'][0]
+    assert selected['selection_retained_by_mandatory_review'][4]
+
+
+def test_v01_positional_pairing_preserves_source_values_and_id_lineage(monkeypatch):
+    from astropy.table import Table
+    tool,_,_,caldwell,messier=_union_tool_and_sources(monkeypatch)
+    import curate_open_clusters as curator
+    dias=Table(dict(identifier=['Dias A'],ra_deg=[1.],dec_deg=[0.],apparent_diameter_arcmin=[30.],member_count=[31]))
+    hunt=Table(dict(identifier=['Hunt B'],hunt_id=[7],aliases=[''],ra_deg=[1.01],dec_deg=[0.],
+                    apparent_diameter_arcmin=[10.],member_count=[120],v10=[10.]))
+    union,*_=tool.merge_catalogues(dias,hunt,caldwell,messier)
+    original_ids=set(union['wenu_id'])
+    output,ledger,summary=curator.position_pairs(union)
+    assert len(union)==2 and len(output)==1
+    assert summary['added_positional_pairs']==1
+    assert set(output['previous_wenu_ids'][0].split('|'))==original_ids
+    assert output['dias_member_count'][0]==31 and output['hunt_member_count'][0]==120
+    assert output['dias_ra_deg'][0]==1. and output['hunt_ra_deg'][0]==1.01
+    assert output['RA'][0]==1.01 and output['has_dias'][0] and output['has_hunt'][0]
+    assert output['positional_pair_provisional'][0]
+    assert ledger['curation_pair_decision'][0]=='paired_position_provisionally'
+    audit,_,_=curator.position_pairs(union,'audit-only')
+    assert len(audit)==2
+    # Two Hunt candidates for one Dias row remain separate, regardless of order.
+    hunt.add_row(dict(identifier='Hunt C',hunt_id=8,aliases='',ra_deg=1.02,dec_deg=0.,
+                      apparent_diameter_arcmin=10.,member_count=80,v10=9.))
+    union,*_=tool.merge_catalogues(dias,hunt,caldwell,messier)
+    output,ledger,summary=curator.position_pairs(union)
+    assert len(output)==3 and summary['added_positional_pairs']==0
+    assert set(ledger['curation_pair_decision'])=={'competing_position_candidates'}
+    hunt=hunt[:1]
+    union,*_=tool.merge_catalogues(dias,hunt,caldwell,messier)
+    union['identity_review'][0]=True
+    output,ledger,summary=curator.position_pairs(union)
+    assert len(output)==1 and summary['added_positional_pairs']==1
+    assert output['identity_review'][0] and output['positional_pair_provisional'][0]
+
+
+def test_v01_curator_help_and_unverified_mandatory_lists_fail_before_writing(tmp_path,monkeypatch,capsys):
+    from astropy.table import Table
+    import pytest
+    _union_tool_and_sources(monkeypatch)
+    import curate_open_clusters as curator
+    assert curator.main([])==0
+    assert '--source-policy' in capsys.readouterr().out
+    table=Table(dict(wenu_id=['W1']))
+    source=tmp_path/'source_v1.ecsv';table.write(source)
+    destination=tmp_path/'output'
+    with pytest.raises(ValueError,match='Mandatory list unavailable'):
+        curator.main(['--catalogue',str(source),'--output-directory',str(destination)])
+    assert not destination.exists()
