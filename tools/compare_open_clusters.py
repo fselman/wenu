@@ -2,8 +2,10 @@
 """Compare packaged Dias open clusters with Caldwell and Messier membership.
 
 Joins use explicit catalogue identifiers, never nearest-position guesses.
-Physical parameters always come from the same Dias rows for all three samples.
-No catalogue or chart selection is changed by this offline inspection tool.
+Spatial and physical parameters come from the same Dias rows for every sample;
+V photometry comes from a separately source-traced OpenNGC supplement.
+Original catalogue files and chart defaults remain intact. Selection is exported
+as annotations and, optionally, a separate filtered catalogue.
 """
 
 import argparse
