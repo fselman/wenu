@@ -669,5 +669,22 @@ def test_boundary_ticks_are_slanted_physical_marks_without_interior_curves(dpi):
         renderer._finalize_grid_label_band()
         assert pair[1 if horizontal else 0].get_visible()
         assert not pair[0 if horizontal else 1].get_visible()
+    # A steep meridian requires normal-to-edge clearance, while its text and
+    # offset still follow the projected meridian. Cover both vertical edges.
+    for sign in (-1, 1):
+        position = (sign, .55)
+        text = ax.text(*position, '2ʰ', fontsize=10, ha='center', va='center')
+        text._wenu_exterior_label = True
+        text._wenu_exterior_attachment = (position, np.array([sign, 0.]))
+        text._wenu_grid_tick_direction = np.array([sign*.25, 1.])
+        text._wenu_coordinate_family = 'ra'
+        text._wenu_grid_edge_horizontal = False
+        renderer._finalize_grid_label_band()
+        assert text.get_visible()
+        box = text.get_window_extent(figure.canvas.get_renderer())
+        edge = ax.transData.transform(position)[0]
+        gap = box.x0-edge if sign > 0 else edge-box.x1
+        assert gap*72/dpi == pytest.approx(2.4, abs=1e-8)
+        assert abs(np.tan(np.radians(text.get_rotation()))) == pytest.approx(4)
     plt.close(figure)
 

@@ -51,8 +51,15 @@ def _keys(value, expected, name):
 
 
 def _record(cls, value):
+    if cls is AtlasPageGeometry and isinstance(value, dict) and 'sky_aspect_ratio' not in value:
+        value = dict(value, sky_aspect_ratio=None)
     _keys(value, cls.__dataclass_fields__, cls.__name__)
     return cls(**value)
+
+
+def _page_dict(page):
+    """Keep legacy page serialization unchanged when no sky ratio is chosen."""
+    return {key: value for key, value in asdict(page).items() if value is not None}
 
 
 @dataclass(frozen=True)
@@ -65,9 +72,17 @@ class AtlasPageGeometry:
     bottom_mm: float
     inner_mm: float
     outer_mm: float
+    sky_aspect_ratio: float | None = None
 
     def __post_init__(self):
         for name in self.__dataclass_fields__:
+            if name == 'sky_aspect_ratio':
+                if self.sky_aspect_ratio is not None:
+                    value = _number(self.sky_aspect_ratio, name)
+                    if value <= 0:
+                        raise ValueError('sky_aspect_ratio must be positive.')
+                    object.__setattr__(self, name, value)
+                continue
             value = _number(getattr(self, name), name)
             if value < 0 or (name in {"width_mm", "height_mm"} and value == 0):
                 raise ValueError(f"Invalid page dimension: {name}.")
@@ -87,7 +102,8 @@ class AtlasPageGeometry:
 
     @property
     def aspect_ratio(self):
-        return self.useful_width_mm / self.useful_height_mm
+        return (self.sky_aspect_ratio if self.sky_aspect_ratio is not None
+                else self.useful_width_mm / self.useful_height_mm)
 
 
 @dataclass(frozen=True)
@@ -271,7 +287,7 @@ class AtlasGeometrySpecimen:
             "angular_units": "degrees",
             "design_id": self.design_id,
             "revision": self.revision,
-            "page": asdict(self.page),
+            "page": _page_dict(self.page),
             "overview": asdict(self.overview),
             "sheets": [{"geometry": asdict(s), "resolved": s.resolved(self.page)}
                        for s in self.sheets],
@@ -813,7 +829,7 @@ def design_band_atlas(design_id, revision, page, overview, *,
     if rows * 3 + 2 > max_sheets:
         raise ValueError("Tiling exceeds the sheet-count budget.")
     # Namespace changes on retiling, independent of overview presentation.
-    recipe = [TILING_METHOD, design_id, revision, asdict(page), width, overlap, seed]
+    recipe = [TILING_METHOD, design_id, revision, _page_dict(page), width, overlap, seed]
     digest = hashlib.sha256(json.dumps(recipe, sort_keys=True).encode()).hexdigest()
     namespace = f"{design_id}:r{revision}:{digest}"
     sheets, bands = [], []
@@ -917,7 +933,7 @@ def _design_rectangular_bands(design_id, revision, page, overview,
         raise ValueError("Requested band geometry cannot fit the sheet budget.")
     if sum(counts) + 2 > max_sheets:
         raise ValueError("Tiling exceeds the sheet-count budget.")
-    recipe = [RECTANGULAR_TILING_METHOD, design_id, revision, asdict(page),
+    recipe = [RECTANGULAR_TILING_METHOD, design_id, revision, _page_dict(page),
               width, overlap, seed, edges, counts]
     if polar_width is not None:
         recipe.append(polar_width)

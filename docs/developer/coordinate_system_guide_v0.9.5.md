@@ -4641,3 +4641,15 @@ band or rotate labelled exports.
 These are index-presentation changes, not a change to atlas sheet frames,
 celestial axes, catalogue epochs, scientific realization or coordinate-service
 ownership. The observer-free native ICRS pipeline remains the same.
+
+
+### Explicit atlas sky aspect (2026-10-13)
+
+Atlas page geometry can declare `sky_aspect_ratio` for the projected sky
+rectangle independently of the outer useful paper rectangle. Legacy records
+use the useful-page ratio. Revision-3 36-chart geometry chooses the aspect
+remaining after fixed font-derived coordinate bands, and revalidates its exact
+stereographic footprints analytically. Printed mapping remains isotropic with
+one central scale across all sheets. Exterior grid text continues along the
+projected grid line, but its physical edge clearance is measured normal to the
+page boundary; a steep meridian cannot leave the text box crossing that edge.

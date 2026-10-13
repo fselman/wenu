@@ -4846,3 +4846,24 @@ cold/saved/spawned equivalence; no production module or test file is added.
 
 The atlas PDF declares `/TwoPageLeft`; the existing producer and native reuse
 oracles verify this preferred viewing arrangement together with page order.
+
+
+### Atlas full-height frame correction (2026-10-13)
+
+`AtlasPageGeometry.sky_aspect_ratio` optionally fixes the projected sky
+rectangle's width/height independently of the useful outer page. Its absent
+value preserves legacy geometry and exact page serialization; explicit values
+must be finite and positive. Existing `AtlasSheetGeometry.viewport` and the
+continuous analytic containment owner use that ratio, and resolved JSON still
+revalidates all viewport/field-height/certificate values. No new geometry or
+publication pipeline is introduced.
+
+`_atlas_grid_layout` fits this explicit ratio inside the useful rectangle
+minus the two fixed font-derived bands on each axis. Revision-3 36-chart
+geometry and chart-style-v4 choose matching dimensions, so the chart's outer
+frame equals the report's useful frame in both dimensions. Other ratios remain
+isotropic and may leave unused space. The shared renderer measures exterior
+label clearance against the physical edge normal while preserving the label's
+projected-line continuation and text angle. Ordinary regional fitting remains
+unchanged; fixed-band labels that cannot fit remain subject to suppression.
+Existing geometry, CLI and renderer contract tests own these gates.

@@ -5238,3 +5238,14 @@ reviewed and remains current; no scientific catalogue curation is begun.
 Focused checks and representative render inspection precede Mac native
 equivalence and visual acceptance. Final full tests before merge and explicit
 merge/cleanup remain separate.
+
+
+### Atlas chart/report frame correction (2026-10-13)
+
+Fernando reported the smaller chart frame, unused coordinate-band space and
+insufficient clearance for slanted RA labels in the generated full atlas.
+The bounded correction adds explicit sky aspect to the existing geometry owner,
+revalidates a versioned 36-chart revision, fits the fixed bands to the full
+report-frame dimensions, and corrects edge-normal label clearance. Historical
+designs remain unchanged. Mac catalogue-backed and visual acceptance remain
+required; this correction does not authorize PR merge, cleanup or curation.

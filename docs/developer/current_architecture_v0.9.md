@@ -2630,3 +2630,15 @@ No new production module, parallel pipeline or catalogue acquisition is added.
 The coordinate-system guide was reviewed; native ICRS, frame, epoch and source
 provenance contracts remain current. Mac scientific and visual acceptance,
 final-candidate full verification and explicit merge/cleanup remain pending.
+
+
+### Atlas full-frame geometry reconciliation (2026-10-13)
+
+An optional explicit sky aspect in the existing atlas page geometry separates
+projected sky shape from the outer useful-page shape. Legacy records retain
+their existing meaning and serialization. The revised 36-sheet example is
+analytically revalidated and uses one common sky rectangle and central scale.
+Publication reserves fixed font-derived bands before fitting this chosen aspect;
+it does not stretch the projection or adjust individual sheets. The shared
+renderer measures exterior text clearance normal to the frame edge while
+retaining exact crossings and projected-line continuation.

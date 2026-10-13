@@ -1500,3 +1500,35 @@ selects 2h nonpolar lines; it is not the current review preset.
 
 The assembled PDF declares `/TwoPageLeft` as its preferred page layout so
 readers that honour this setting show the index/blank and report/chart pairs.
+
+
+### Full-height coordinate frame correction (2026-10-13)
+
+Use `examples/atlas_design_36charts_v3.json` with
+`examples/atlas_chart_style_v4.toml` for the corrected 36-chart B4 portrait
+publication. The chart outer frame now has the same 220 × 333 mm dimensions
+as the report frame, with the existing mirrored binding margins. Fixed bands
+are approximately 5.927 mm above/below and 10.953 mm left/right. The printed
+sky rectangle is 198.093 × 321.147 mm on every sheet; all sheets share the
+same central angular scale. No individual sheet is stretched or fitted to text.
+
+Revision 3 explicitly records `page.sky_aspect_ratio = 0.616831374967213`.
+It retains the 36 centres, primary bands, numbering and common 40.25000004°
+field width; the field height becomes approximately 64.198525°. The existing
+continuous analytic rectangle certificate is recomputed and remains valid.
+Earlier JSON revisions are preserved and keep their original interpretation.
+A different font or frame-width scale can leave unused space when it differs
+from the geometry's chosen sky ratio; it cannot silently change the covering.
+
+Slanted RA labels still continue along their projected meridian. Their complete
+text boxes now clear the inner edge by the configured physical padding plus
+half the frame stroke, measured normal to that edge. Labels that cannot fit the
+fixed band are suppressed under the existing edge-priority rules.
+
+```bash
+wenu_plot_atlas --design examples/atlas_design_36charts_v3.json --config examples/atlas_index_style_v3.toml --output-prefix atlas_36charts_index_v6
+wenu_create_atlas --design examples/atlas_design_36charts_v3.json --config examples/atlas_chart_style_v4.toml --charts all --jobs 3 --index atlas_36charts_index_v6.pdf --save-sky native_sky_v3 --output-dir atlas_36charts_v6
+```
+
+The revised geometry has a new digest: prepare a new native-sky bundle rather
+than reusing the revision-2 design-bound bundle.

@@ -162,6 +162,20 @@ class MatplotlibRenderer:
             support = (abs(direction[0]) * box.width + abs(direction[1]) * box.height) / 2.0
             clearance = 1.5 if not circular and direction[1] < -0.9 else 0.35
             offset = support + clearance * scale
+            if policy is not None and not circular:
+                # Continue along the projected grid line, but measure clearance
+                # normal to the physical edge. A radial support distance leaves
+                # steep meridians touching or crossing a vertical boundary.
+                edge_direction = attachment[1]
+                normal = (np.array([0., np.copysign(1., edge_direction[1])])
+                          if text._wenu_grid_edge_horizontal else
+                          np.array([np.copysign(1., edge_direction[0]), 0.]))
+                outward = float(np.dot(direction, normal))
+                edge_support = (abs(normal[0]) * box.width + abs(normal[1]) * box.height) / 2.0
+                if outward <= 1e-12:
+                    text.set_visible(False)
+                    continue
+                offset = (edge_support + padding) / outward
             if circular:
                 # Fit the upright text box to the curved inner rim.
                 target = float(np.max(radius)) + 0.35 * scale

@@ -477,3 +477,15 @@ Atlas chart presentation now defaults `grid_ra_step_hours` to 1 and admits
 `grid_polar_ra_step_hours`, default 2, independently. The supplied version-3
 chart presentation records the accepted 1h/2h policy explicitly. The regional
 mark record continues to use its existing single spacing field.
+
+
+### Atlas sky rectangle and full-frame example (2026-10-13)
+
+The separate version-1 atlas geometry/request page record admits optional
+`sky_aspect_ratio`, a finite positive projected sky width/height ratio. This is
+geometry, not index or publication presentation. Absence retains the useful-page
+ratio and legacy serialized keys; unknown keys still fail admission. The
+revision-3 36-chart example fixes 0.616831374967213, paired with chart-style-v4
+`grid_frame_width_scale = 1.0` and the existing 12 pt RA/9.6 pt Dec fonts.
+Changing presentation cannot reinterpret resolved footprints. No change is made
+to general Wenu schema-version-2 chart geometry.

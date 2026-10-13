@@ -605,11 +605,12 @@ def _draw_polar_declination_labels(chart, renderer, presentation, rendering):
 def _atlas_grid_layout(page, style, presentation):
     horizontal, vertical = _atlas_frame_widths(style, presentation)
     horizontal, vertical = horizontal * 25.4 / 72, vertical * 25.4 / 72
-    factor = min(1 - 2 * vertical / page.useful_width_mm,
-                 1 - 2 * horizontal / page.useful_height_mm)
-    if factor <= 0:
+    available_width = page.useful_width_mm - 2 * vertical
+    available_height = page.useful_height_mm - 2 * horizontal
+    width = min(available_width, available_height * page.aspect_ratio)
+    height = width / page.aspect_ratio
+    if width <= 0 or height <= 0:
         raise ValueError('Coordinate frame does not fit the useful page.')
-    width, height = page.useful_width_mm * factor, page.useful_height_mm * factor
     bounds = ((page.inner_mm + (page.useful_width_mm-width)/2)/page.width_mm,
               (page.bottom_mm + (page.useful_height_mm-height)/2)/page.height_mm,
               width/page.width_mm, height/page.height_mm)

@@ -2476,3 +2476,17 @@ and standalone exports; the index blank-page/report-left/chart-right sequence;
 and the reversed magnitude axis with unchanged underlying catalogue counts.
 Use the canonical `wenu_chart` sheet route and existing geometry, renderer,
 legend, export and publication owners. No parallel pipeline is permitted.
+
+
+## Atlas full-frame acceptance constraint (2026-10-13)
+
+Fernando reported excess blank space and a chart frame smaller than its report
+frame. The chart's outer coordinate frame must match the report's useful-frame
+width and height, with the existing mirrored binding margins. Reconcile a
+versioned sky aspect with fixed font-derived bands through the existing atlas
+geometry owner; never stretch a projection, silently reinterpret an accepted
+JSON, or fit individual sheets differently. Verify actual exported frame bounds
+and a common central scale. Exterior RA labels following slanted meridians
+must clear the inner edge with their complete text boxes, measured normal to
+that edge, while retaining the exact crossing, continuation and readable angle.
+Preserve the accepted fixed-band collision/suppression policy.

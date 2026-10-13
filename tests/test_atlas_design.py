@@ -157,6 +157,21 @@ def test_five_band_json_revalidates_without_replacing_the_legacy_method(five_ban
         raise AssertionError("Reading must not regenerate placement")
     monkeypatch.setattr(module, "design_five_band_atlas", forbidden)
     assert AtlasBandTiling.read_json(path) == five_band_atlas
+    # Legacy documents retain their exact page keys. The optional, explicit
+    # sky ratio belongs to resolved geometry and changes the analytic footprint.
+    assert 'sky_aspect_ratio' not in five_band_atlas.to_dict()['geometry']['page']
+    wider = replace(five_band_atlas, geometry=replace(five_band_atlas.geometry,
+        page=replace(five_band_atlas.geometry.page, sky_aspect_ratio=1.2)))
+    assert AtlasBandTiling.from_json(wider.to_json()) == wider
+    assert all(s.viewport(wider.geometry.page).aspect_ratio == pytest.approx(1.2)
+               for s in wider.geometry.sheets)
+    changed = wider.to_dict()
+    changed['geometry']['page']['sky_aspect_ratio'] = 1.1
+    with pytest.raises(ValueError, match='Inconsistent resolved'):
+        AtlasBandTiling.from_dict(changed)
+    for invalid in (0, -1, True, float('nan')):
+        with pytest.raises(ValueError):
+            replace(five_band_atlas.geometry.page, sky_aspect_ratio=invalid)
     # A certificate generated on another platform may differ in its final
     # floating bits. Geometry is still revalidated and must never be retiled.
     for sign in (-1, 1):

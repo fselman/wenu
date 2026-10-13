@@ -3539,3 +3539,15 @@ suppression. `atlas_index.py` owns index orientation and all three exports;
 `stellar_sizing_report.py` owns the reversed magnitude display axis.
 Existing geometry records validate the revised
 `examples/atlas_design_36charts_v2.json`; the former specimen is preserved.
+
+
+### Atlas frame correction ownership (2026-10-13)
+
+The existing `src/wenu/atlas_design.py` owns optional explicit sky aspect,
+legacy-preserving page serialization and analytic revalidation.
+`src/wenu/charts/atlas_publication.py` fits that aspect inside fixed coordinate
+bands. `src/wenu/rendering/matplotlib.py` owns normal-to-edge text clearance,
+projected-line alignment and fixed-band suppression. Existing atlas-design,
+atlas-CLI and renderer-contract test files cover these changes. New examples
+are `examples/atlas_design_36charts_v3.json` and
+`examples/atlas_chart_style_v4.toml`; historical versions remain available.

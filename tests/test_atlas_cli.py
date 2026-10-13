@@ -944,6 +944,15 @@ def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
                 np.diff(renderer.ax.transData.transform(mark.get_xydata()),axis=0)[0])) < 1e-7
                 for mark in matching)
         box = text.get_window_extent(fig.canvas.get_renderer())
+        if hasattr(text, '_wenu_exterior_attachment'):
+            position, direction = text._wenu_exterior_attachment
+            edge = renderer.ax.transData.transform(position)
+            axis = 1 if text._wenu_grid_edge_horizontal else 0
+            gap = ((box.y0-edge[1] if direction[1] > 0 else edge[1]-box.y1)
+                   if axis == 1 else
+                   (box.x0-edge[0] if direction[0] > 0 else edge[0]-box.x1))
+            assert gap*72/fig.dpi >= (style.canvas.grid_label_band_padding_points +
+                style.canvas.grid_label_band_linewidth/2) - 1e-7
         if hasattr(text, '_wenu_polar_grid_anchor'):
             sky_box = renderer.ax.get_window_extent()
             assert sky_box.contains(box.x0,box.y0) and sky_box.contains(box.x1,box.y1)
@@ -975,14 +984,14 @@ def test_requested_portrait_review_sheets_render_through_chart_command(number, t
     from wenu.charts.request_generation import AtlasSheetChartRequest
     from wenu.cli.chart import main
     from wenu.atlas_design import AtlasBandTiling
-    atlas = AtlasBandTiling.from_json((ROOT/'examples/atlas_design_36charts_v2.json').read_text())
+    atlas = AtlasBandTiling.from_json((ROOT/'examples/atlas_design_36charts_v3.json').read_text())
     assert len(atlas.geometry.sheets) == 36
     assert len({s.field_width_deg for s in atlas.geometry.sheets}) == 1
     sheet = atlas.geometry.sheets[number-1]
     sky = CelestialSphere(None)
     sky.add_equatorial_grid(frame='icrs', equinox='J2000', include_equator=True)
     request = AtlasSheetChartRequest(sheet, atlas.geometry.page,
-        AtlasChartPresentation(layers=('equatorial_grid',)), tmp_path/'sheet')
+        AtlasChartPresentation(layers=('equatorial_grid',), grid_frame_width_scale=1.0), tmp_path/'sheet')
     assert main(['atlas-sheet', '--chart-number', str(number), '--output-dir', str(request.output_dir),
         '--debug'], atlas_request=request, sky=sky, emit_outputs=False) == 0
     assert {path.suffix for path in request.output_dir.glob(f'chart-{number:02d}.*')} == {'.png','.pdf','.svg'}
@@ -1000,6 +1009,9 @@ def test_requested_portrait_review_sheets_render_through_chart_command(number, t
     frame = report['layout']['chart_sky_frame']
     assert frame['width'] == pytest.approx(bounds[2] * page.width_mm)
     assert frame['height'] == pytest.approx(bounds[3] * page.height_mm)
+    horizontal, vertical = _atlas_frame_widths(AtlasChartStyle(), request.presentation)
+    assert frame['width'] + 2*vertical*25.4/72 == pytest.approx(page.useful_width_mm)
+    assert frame['height'] + 2*horizontal*25.4/72 == pytest.approx(page.useful_height_mm)
     assert report['layout']['central_scale_mm_per_degree'] == pytest.approx(
         frame['width'] / sheet.viewport(page).width * sheet.projection.projected_radius(1e-5)/1e-5)
 
