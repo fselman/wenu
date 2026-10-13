@@ -556,6 +556,12 @@ def _render_atlas_sheet_request(request, sky):
     if 'open_clusters' in presentation.layers:
         grid_options['open_clusters'] = dict(geometry=dict(
             exclude_infrared_embedded=presentation.open_cluster_exclude_infrared_embedded))
+        if presentation.open_cluster_angular_sizes:
+            import math
+            grid_options['open_clusters']['render'] = dict(
+                point_diameter_metadata_key="apparent_diameter_arcmin",
+                point_diameter_scale=sheet.projection_radius * math.pi / 21600)
+
     if "supernova_remnants" in presentation.layers:
         grid_options["supernova_remnants"] = dict(
             render=dict(curve_size_scale=presentation.deep_sky_symbol_scale))

@@ -5246,3 +5246,28 @@ layers, atlas geometry, presentation and stellar settings are unchanged.
 Tests extend `test_open_clusters.py` and `test_atlas_cli.py` at the normalization,
 installation, profile-propagation and saved-sky boundaries. No atlas software
 merge or chart adoption is implied by producing a candidate.
+
+
+## Open-cluster symbols at the atlas central scale
+
+Atlas open-cluster circles now use the catalogue angular diameter at the
+central chart scale, bounded below by the existing styled symbol diameter.
+Hunt diameter is 2*r50; Dias-only entries use the published Dias diameter.
+Missing, masked, nonfinite or nonpositive diameters retain the current minimum.
+Colours, outlines, labels, catalogue selection and all other layers are unchanged.
+
+The atlas request owns the angular-to-projection conversion (projection radius
+multiplied by pi/21600 per arcminute). The generic renderer converts supplied
+point diameters to physical scatter areas using the actual equal-aspect axes
+width and viewport width. It accepts a caller-specified metadata key and unit
+scale; it does not choose catalogues or know source definitions. The helper in
+rendering/preparation.py preserves the current area floor. Scatter area is the
+square of the normalized circle diameter in points, independent of export DPI.
+No local projection-distortion correction is applied away from the centre.
+
+AtlasChartPresentation.open_cluster_angular_sizes defaults to true. The atlas
+CLI exposes --open-cluster-size angular|fixed; fixed restores previous sizes.
+Existing saved skies can be reused because catalogue metadata is unchanged.
+Tests extend the existing Matplotlib renderer and atlas CLI owners, checking
+physical dimensions at two DPIs, equal central/edge sizing, missing-value
+floors, rendered chart scale, fixed mode and presentation admission.

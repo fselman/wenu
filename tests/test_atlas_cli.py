@@ -623,7 +623,7 @@ def test_atlas_cli_passes_sizing_overrides_without_building_a_sky(tmp_path, monk
         '--output-dir', str(tmp_path/'atlas'), '--from-sky', 'saved-sky', '--magnitude-limit', '8',
         '--mag-algorithm', 'asinh', '--mag-a', '.4', '--mag-b', '2', '--mag-dmin', '.3',
         '--mag-size-reference', '8', '--star-size-scale', '1', '--style', 'cartoon',
-        '--mode', 'presentation']) == 0
+        '--mode', 'presentation', '--open-cluster-size', 'fixed']) == 0
     presentation = calls[0]['presentation']
     assert presentation.stellar_magnitude_sizing.algorithm == 'asinh'
     assert presentation.stellar_magnitude_sizing.a_mm == .4
@@ -631,6 +631,7 @@ def test_atlas_cli_passes_sizing_overrides_without_building_a_sky(tmp_path, monk
     assert presentation.star_magnitude_limit == 8
     assert presentation.star_size_scale == 1
     assert presentation.mode == 'presentation' and presentation.style == 'cartoon'
+    assert presentation.open_cluster_angular_sizes is False
     assert calls[0]['from_sky'] == Path('saved-sky')
     from wenu.cli.chart import main as chart_command
     assert calls[0]['chart_command'] is chart_command
@@ -1303,3 +1304,42 @@ def test_atlas_catalogue_counts_use_unique_actual_photometry_and_finite_position
     assert data['invalid_count']==1 and data['fainter_count']==1
     np.testing.assert_allclose(data['log10_cumulative_count'],np.log10([1,2,3]))
     pd.testing.assert_frame_equal(source,before)
+
+
+@pytest.mark.parametrize('angular',[True,False])
+def test_atlas_cluster_diameters_match_reported_central_scale(request_data,tmp_path,monkeypatch,angular):
+    from wenu import CelestialSphere
+    from astropy.table import Table
+    from wenu.charts.atlas_publication import AtlasChartPresentation
+    from wenu.charts.request_generation import AtlasSheetChartRequest,generate_chart_request
+    from wenu.rendering import MatplotlibRenderer
+    from matplotlib.collections import PathCollection
+    import numpy as np
+    import json
+    atlas=AtlasDesignRequest.from_dict(request_data).resolve()
+    sheet=atlas.geometry.sheets[13]
+    path=tmp_path/'clusters.ecsv'
+    Table(dict(identifier=['Small','Large','Missing'],ra_deg=[sheet.center_ra_deg]*3,
+        dec_deg=[sheet.center_dec_deg]*3,object_type=['Open Cluster']*3,
+        apparent_diameter_arcmin=[.1,120,np.nan])).write(path)
+    sky=CelestialSphere(None);sky.add_open_clusters(filename=path)
+    measured=[]
+    original=MatplotlibRenderer.draw
+    def capture(renderer,geometry,**kwargs):
+        result=original(renderer,geometry,**kwargs)
+        if geometry.metadata.get('symbol')=='open_cluster':
+            measured.extend(a.get_sizes() for a in result if isinstance(a,PathCollection))
+        return result
+    monkeypatch.setattr(MatplotlibRenderer,'draw',capture)
+    presentation=AtlasChartPresentation(layers=('open_clusters',),formats=('pdf','svg'),open_cluster_angular_sizes=angular)
+    generate_chart_request(AtlasSheetChartRequest(sheet,atlas.geometry.page,presentation,tmp_path/'charts'),sky=sky)
+    report=json.loads((tmp_path/'charts/chart-14_report_data.json').read_text())
+    areas=np.broadcast_to(measured[0],(3,))
+    assert areas[0]==pytest.approx(areas[2])
+    if angular:
+        mm=2*report['layout']['central_scale_mm_per_degree']
+        assert np.sqrt(areas[1])*25.4/72==pytest.approx(mm)
+        assert areas[1]>areas[0]
+    else:
+        np.testing.assert_allclose(areas,[areas[0]]*3)
+    with pytest.raises(ValueError): AtlasChartPresentation(open_cluster_angular_sizes='yes')

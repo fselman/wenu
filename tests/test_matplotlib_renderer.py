@@ -370,3 +370,29 @@ def test_render_text_returns_text():
 
 
 
+
+
+
+@pytest.mark.parametrize('dpi', [96, 192])
+def test_metadata_diameters_use_physical_scale_and_preserve_minimum(dpi):
+    from wenu.rendering import MatplotlibRenderer
+    from wenu.geometry.projected import ProjectedPoints
+    from wenu.geometry.viewport import Viewport
+    from wenu.rendering.preparation import diameter_marker_areas
+    from wenu.rendering.symbols import DEFAULT_SYMBOLS
+    fig=plt.figure(figsize=(4,4),dpi=dpi)
+    ax=fig.add_axes((.1,.1,.8,.8))
+    renderer=MatplotlibRenderer(ax)
+    renderer.apply_viewport(Viewport.centered(width=2,height=2))
+    points=ProjectedPoints(x=[0,.8,0,0,0,0],y=[0]*6,
+        metadata={'test_diameter':np.ma.array([10,10,.1,np.nan,-1,99],mask=[False]*5+[True])})
+    result=renderer.draw(points,style={'s':64,'marker':DEFAULT_SYMBOLS['cluster_circle']},
+        point_diameter_scale=.01,point_diameter_metadata_key='test_diameter')
+    collection=next(a for a in result if isinstance(a,PathCollection))
+    # 3.2 inches of axes width / 2 projection units, independent of DPI/position.
+    expected_diameter=10*.01*(3.2*72/2)
+    np.testing.assert_allclose(np.sqrt(collection.get_sizes()),[expected_diameter]*2+[8]*4)
+    assert collection.get_paths()[0].get_extents().width==pytest.approx(1)
+    np.testing.assert_allclose(diameter_marker_areas([np.nan,-1,0,2],64,8),[64,64,64,256])
+    with pytest.raises(ValueError): renderer.draw(points,point_diameter_scale=-1)
+    plt.close(fig)

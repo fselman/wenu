@@ -1046,3 +1046,33 @@ catalogue, atlas layout, symbol styling or stellar setting is replaced.
 V10 remains a selection statistic and is never interpreted as integrated V.
 Geometry IDs are Wenu IDs; display labels retain catalogue names. Programmatic
 `OpenClusters(selected=[...])` accepts Wenu IDs as well as display names.
+
+
+## Angular sizes for atlas open-cluster symbols
+
+Open-cluster symbols use the catalogue diameter at the central scale of the
+chart. The displayed diameter in millimetres is the larger of:
+
+- The existing styled symbol diameter (the minimum).
+- Catalogue diameter in arcminutes / 60, multiplied by the chart's central
+  scale in millimetres per degree.
+
+Hunt entries use diameter 2*r50, the adopted half-member radius doubled;
+Dias-only entries use the Dias diameter. This is a source-defined size, not a
+tidal boundary. Missing, masked or nonpositive sizes retain the minimum symbol.
+The central scale is used throughout each chart, without a local correction
+for projection distortion. Star sizes, other object symbols, labels, colours,
+outline widths and catalogue contents are unchanged. The deep-sky symbol scale
+continues to control the minimum; it does not multiply catalogue-derived sizes.
+
+Angular sizes are the atlas default. Use `--open-cluster-size angular` explicitly,
+or `--open-cluster-size fixed` to reproduce the previous fixed symbols. The
+presentation TOML equivalent is `open_cluster_angular_sizes = true` or false.
+The atlas CLI help describes this choice.
+
+The accepted v0.2 saved sky can be reused: omit `--open-cluster-catalogue` and
+`--save-sky`, and supply
+`--from-sky output/atlas_open_clusters_v0.2/native_sky_v1`. Keep the same design,
+presentation and stellar settings, choose a new output directory, and reuse
+the existing index. This redraws the current catalogue without reinstalling or
+recurating it. The existing per-chart report records the central scale used.

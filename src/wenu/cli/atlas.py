@@ -114,6 +114,8 @@ def create_main(argv=None):
         help="One-page index PDF; enables even report pages facing odd chart pages.")
     parser.add_argument("--open-cluster-catalogue", type=Path,
         help="Versioned ECSV or active open_star_clusters.ecsv symlink; changes only open clusters. Requires a new sky.")
+    parser.add_argument("--open-cluster-size", choices=("angular", "fixed"),
+        help="Open-cluster diameter at the central chart scale, with current symbol as minimum (default angular); fixed restores previous symbols.")
     sky = parser.add_mutually_exclusive_group()
     sky.add_argument("--save-sky", type=Path)
     sky.add_argument("--from-sky", type=Path)
@@ -128,6 +130,8 @@ def create_main(argv=None):
             stellar_magnitude_sizing=magnitude_sizing_from_arguments(args, presentation.stellar_magnitude_sizing),
             **{name: getattr(args, name) for name in ("style", "mode", "star_size_scale")
                if getattr(args, name) is not None})
+        if args.open_cluster_size is not None:
+            presentation = replace(presentation, open_cluster_angular_sizes=args.open_cluster_size == "angular")
         if args.magnitude_limit is not None:
             from dataclasses import replace
             presentation = replace(presentation, star_magnitude_limit=args.magnitude_limit)
