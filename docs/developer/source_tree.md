@@ -3628,3 +3628,46 @@ replacement. Source data/photometry and chart defaults are unchanged by this
 identifier correction. The curation guide records the exact receipt and
 selection meanings; Mac focused and later final full-suite acceptance remain
 separate from source publication.
+
+
+### Source-preserving Wenu open-cluster union tool (2026-10-13)
+
+Fernando requested software delivery before catalogue curation. The new
+`tools/merge_open_clusters.py` owns offline candidate compilation from complete
+supplied Dias and Hunt tables. It is a developer tool, not a production sky
+layer, coordinate service or alternate rendering pipeline. Identifier
+normalization and observing-reference resolution remain shared with
+`tools/compare_open_clusters.py`; its existing comparison behavior is preserved.
+No-argument invocation prints help and writes nothing. No real combined
+database is generated or adopted during this software milestone.
+
+The candidate schema orders wenu_id, RA, Dec, dias_id and all dias_* parameters,
+hunt_id and all hunt_* parameters, then Messier_id, Caldwell_id, NGC_id and
+other identifiers. Every supplied source row is represented once, retaining
+all types, classifications, parameters, source positions, units and masks.
+Primary identities precede reciprocal unique published aliases; competing
+claims remain separate with a review ledger. No positional guess or same-source
+collapse creates identities. C14 still annotates two distinct components.
+An explicit persistent WOC identity registry preserves IDs during updates and
+rejects proposed merges/splits of published identities for review.
+
+Displayed RA/Dec use Hunt when available, otherwise Dias, without averaging,
+epoch propagation or reinterpretation. Both original source positions and
+metadata are retained. Hunt keeps J2016.0 provenance; an unknown Dias position
+epoch is not inferred from its J2000 frame/equinox description. Physical
+parameters are never silently averaged/coalesced. The tool supplies candidate
+ECSV/CSV, source/reference crosswalks, ID registry and a completion receipt with
+source/product hashes. Existing products are refused; the receipt is written
+last. The logical database is wenu_open_clusters, but acceptance/filtering,
+clean-database generation commands and chart adoption belong to later curation.
+
+The defaults retain all 1,931 packaged Dias and 7,167 full Hunt rows. Dias's
+existing normalization had already excluded 235 of the original 2,166 records;
+an alternate normalized Dias input can supply a fuller population. This tool
+cannot recover earlier provider exclusions and explicitly records that scope.
+The owning user guide documents schema, help, policies and outputs. Synthetic
+regressions in the existing open-cluster test owner cover row conservation,
+ambiguity, observing components, source immutability, units/masks, stable IDs,
+registry conflicts, digest-bound outputs, help and overwrite refusal.
+Focused open-cluster/package validation passes 23 tests; exact-head Mac
+historical-documentation acceptance and the final full suite remain separate.

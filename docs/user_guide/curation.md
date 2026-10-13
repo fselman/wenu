@@ -29,6 +29,7 @@ Run scripts from the repository root with Wenu installed and `PYTHONPATH=src`.
 | `tools/compare_open_clusters.py` | Offline membership comparison, marking, configurable two-parameter plot and candidate export | Reads packaged catalogues under `src/wenu/data/catalogs/`; writes versioned products under `output/` by default |
 | `tools/query_caldwell_openngc.py` | Explicit maintenance of Caldwell membership/parameters | Reads the versioned membership ledger and pinned OpenNGC files; writes Caldwell resources and provenance |
 | `tools/query_hunt_reffert2024.py` | Explicit serial CDS acquisition or verified offline cache preparation | Writes full Hunt and V5<11 candidate ECSV resources plus provenance under `open_clusters/`; raw members stay outside the repository |
+| `tools/merge_open_clusters.py` | Offline source-preserving union and cross-identification compiler, separate from curation | Reads complete supplied Dias/Hunt tables and observing references; writes a versioned candidate ECSV/CSV, crosswalks, ID registry and receipt only when invoked |
 | `tools/hunt_reffert_catalogue.py` | Offline CDS parsing, Gaia conversions, member statistics and Hunt comparison adapter | Shared developer-tool helper, not a chart layer or stellar-position provider |
 | `tools/query_open_cluster_photometry.py` | Explicit maintenance of the separate Dias V-photometry supplement | Reads Dias and pinned OpenNGC files; writes the supplement and its provenance under `open_clusters/` |
 
@@ -435,3 +436,91 @@ combine by logical AND; the axes themselves never impose a magnitude cut.
   open "$review_dir"
 )
 ```
+
+
+## Wenu open-cluster union: software before curation
+
+The logical database name is `wenu_open_clusters`. The developer tool
+`tools/merge_open_clusters.py` compiles a candidate union; it does not create an
+accepted clean database, replace a source catalogue, select attractive targets,
+change chart/atlas defaults or merge software. Fernando requested that this
+software milestone precede a separate curation stage. During development only
+explicitly synthetic inputs are compiled in tests. Real-catalogue generation,
+identity decisions, filtering, accepted parameter choices and adoption wait for
+the later curation request. No final combined database is committed now.
+
+The default inputs are the current packaged Dias 1,931-row normalized snapshot
+and the full Hunt 7,167-row prepared table. All rows/types in those inputs are
+represented exactly once: unflagged, infrared, embedded, moving-group,
+globular, rejected and other rows are not removed by this compiler. Dias's
+original source had 2,166 entries, and Wenu's existing normalization had already
+excluded 235. The tool cannot restore those upstream rows; `--dias-catalogue`
+accepts another normalized source retaining a fuller population. The receipt
+records input counts, source hashes, source metadata and this input-scope limit.
+
+### Column order and scientific meaning
+
+| Column group, in order | Contents |
+|---|---|
+| `wenu_id`, `RA`, `Dec` | Wenu identity and displayed ICRS centre, in degrees |
+| `dias_id`, `dias_*` | Original Dias name and every source parameter, including source RA/Dec, units, masks and classifications |
+| `hunt_id`, `hunt_name`, `hunt_*` | Original numeric Hunt ID, source name and every source parameter/derived member statistic; existing `hunt_type`/`hunt_note` names remain prefixed only once |
+| `Messier_id`, `Caldwell_id`, `NGC_id` | Source/reference identifications; multiple claims are pipe-separated |
+| `IC_id`, `Melotte_id`, `Collinder_id`, `Other_ids` | Additional source identifiers and the retained complete name/alias set |
+| `RA_source`, `position_epoch`, `match_method`, review/source flags | Provenance, match reason, unresolved claims and source-presence diagnostics |
+
+RA/Dec use Hunt when present, otherwise Dias, without averaging or epoch
+propagation. Both source coordinates remain separately available. Hunt retains
+its supplied J2016.0 epoch. A Dias source position epoch is not inferred from
+its J2000 coordinate/equinox description; `position_epoch` is unknown there,
+and the original source metadata remains authoritative. This policy is explicit
+in the candidate receipt; a later curation stage may adopt another position.
+Physical parameters are never averaged or silently coalesced: Hunt's 2r50
+and AV50/3.1 proxy remain distinct from Dias's diameter and E(B-V).
+
+### Identity matching and stable Wenu IDs
+
+The compiler shares identifier normalization and observing crosswalks with
+`compare_open_clusters.py`. Exact source primary matches take precedence.
+After reserving those pairs, only reciprocal unique published-alias pairs are
+combined. Position proximity alone never merges objects. One-to-many,
+many-to-one, competing alias claims and references requiring review remain
+explicit. Source rows within the same catalogue are not collapsed. A compound
+reference such as C14 annotates its two components and never merges them into
+one cluster. All observing-reference types may annotate retained source rows;
+this does not declare non-open Hunt aggregates to be accepted open clusters.
+
+`wenu_id` uses the `WOC00000001` form. A first run assigns deterministic IDs
+from source keys; reorderings do not change those assignments. For later
+updates, supply the prior `_ids.json` with `--id-registry`: new sources receive
+new IDs, old IDs are retained, and inactive registry entries are not deleted.
+A proposed merge of two existing Wenu IDs or split of one ID fails closed for
+review. A registry is therefore essential for stable identity across added
+catalogue records; restarting without it is a new identity allocation, not a
+safe update. Duplicate source keys and invalid registries are rejected.
+
+### Help and outputs
+
+Calling the script without arguments displays help and creates nothing.
+
+| Option | Responsibility |
+|---|---|
+| `--data-directory` | Root of packaged source/reference catalogues |
+| `--dias-catalogue`, `--hunt-catalogue` | Explicit alternate normalized ECSV inputs; all supplied rows are retained |
+| `--id-registry` | Preserve existing IDs using the previous registry |
+| `--output-directory` | Separate candidate destination; never an automatic installed-database replacement |
+| `--name` | Versioned prefix such as `wenu_open_clusters_v1`; must end `_vN` |
+
+Outputs are `<name>.ecsv` (authoritative typed candidate), `<name>.csv`
+(readable copy), `<name>_crosswalk.csv` (matched/review source pairs),
+`<name>_references.csv` (observing-reference assignments/ambiguities),
+`<name>_ids.json` (persistent identity registry) and `<name>_summary.json`
+(source/product digests, counts, policy and completion receipt). Missing source
+parameters are masked, not zero-filled scientific values. Existing products
+are refused. The summary is written last; its absence marks an interrupted
+candidate rather than a complete compilation. Source catalogues remain intact.
+
+Actual compilation commands and clean-database decisions will be supplied in
+the separate curation stage, at Fernando's request. Source integrity and
+coverage can be assessed then without merging software or automatically
+accepting ambiguous physical identities.

@@ -472,3 +472,116 @@ def test_packaged_hunt_crosswalk_and_fifth_member_resource():
     assert np.count_nonzero(bright & np.asarray(annotated['in_messier'])) == 23
     lost = annotated[np.asarray(annotated['in_messier']) & ~bright]
     assert set(lost['messier_designations']) == {'M 11','M 26','M 29','M 103'}
+
+
+def _union_tool_and_sources(monkeypatch):
+    import importlib.util
+    from pathlib import Path
+    from astropy.table import Table
+    root = Path(__file__).resolve().parents[1]
+    monkeypatch.syspath_prepend(str(root/'tools'))
+    spec = importlib.util.spec_from_file_location('merge_open_clusters',root/'tools/merge_open_clusters.py')
+    tool = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(tool)
+    dias = Table(dict(identifier=['NGC 869','NGC 884','Shared alias','Infrared X'],
+        ra_deg=[1.,2.,3.,4.],dec_deg=[10.,20.,30.,40.],
+        member_count=[10,20,30,40],source_type_flag=['','','','IR']))
+    dias['ra_deg'].unit = 'deg'
+    dias.meta['coordinate_frame'] = 'ICRS/J2000 as supplied'
+    hunt = Table(dict(identifier=['NGC_869','NGC_884','Melotte_22'],hunt_id=[1,2,3],
+        aliases=['NGC_869,Shared alias','NGC_884,Shared alias','Melotte_22'],
+        ra_deg=[1.1,2.1,5.],dec_deg=[10.1,20.1,50.],hunt_type=['g','m','o'],
+        v5=[9.,10.,np.nan]))
+    hunt.meta['coordinate_epoch'] = 'J2016.0'
+    caldwell = Table(dict(name=['C 14'],membership_type=['open_cluster_group'],
+        cluster_components=['NGC0869|NGC0884'],related_aliases=[''],primary_id=['NGC0869']))
+    messier = Table(dict(name=['M 45'],object_type=['OC'],alt_name=['']))
+    return tool,dias,hunt,caldwell,messier
+
+
+def test_open_cluster_union_preserves_rows_parameters_ids_and_compound_references(monkeypatch):
+    tool,dias,hunt,caldwell,messier = _union_tool_and_sources(monkeypatch)
+    original_dias = dias.copy(copy_data=True)
+    original_hunt = hunt.copy(copy_data=True)
+    union,edges,refs,registry,summary = tool.merge_catalogues(dias,hunt,caldwell,messier)
+    assert len(union)==5 and summary['matched_pairs']==2
+    assert sum(union['has_dias'])==4 and sum(union['has_hunt'])==3
+    assert len(set(union['wenu_id']))==len(union)
+    assert union.colnames[:4]==['wenu_id','RA','Dec','dias_id']
+    assert union['RA'].unit==u.deg and union['dias_ra_deg'].unit==u.deg
+    assert np.count_nonzero(union['Caldwell_id']=='C 14')==2
+    assert np.count_nonzero(union['Messier_id']=='M 45')==1
+    paired = union[union['dias_id']=='NGC 869'][0]
+    assert paired['RA']==1.1 and paired['dias_ra_deg']==1. and paired['hunt_ra_deg']==1.1
+    assert paired['hunt_type']=='g'  # all source classes retained, without curation
+    assert paired['NGC_id']=='NGC 869'
+    infrared = union[union['dias_id']=='Infrared X'][0]
+    assert infrared['dias_source_type_flag']=='IR' and not infrared['has_hunt']
+    assert np.ma.is_masked(infrared['hunt_v5'])
+    assert np.count_nonzero(edges['status']=='review')==2
+    assert union[union['dias_id']=='Shared alias']['identity_review'][0]
+    # Pure compilation never mutates source tables or their parameters.
+    assert dias.colnames==original_dias.colnames and hunt.colnames==original_hunt.colnames
+    np.testing.assert_equal(dias['ra_deg'],original_dias['ra_deg'])
+    np.testing.assert_equal(hunt['v5'],original_hunt['v5'])
+    reordered,_,_,again,_ = tool.merge_catalogues(dias[::-1],hunt[::-1],caldwell,messier,registry=registry)
+    assert again==registry
+    assert set(reordered['wenu_id'])==set(union['wenu_id'])
+    extended = dias.copy(copy_data=True)
+    extended.add_row(dict(identifier='AAA new',ra_deg=0.,dec_deg=0.,member_count=1,source_type_flag=''))
+    _,_,_,extended_registry,_ = tool.merge_catalogues(extended,hunt,caldwell,messier,registry=registry)
+    assert all(extended_registry['source_ids'][k]==v for k,v in registry['source_ids'].items())
+    assert extended_registry['next_id']==registry['next_id']+1
+
+
+def test_open_cluster_union_registry_conflicts_fail_closed(monkeypatch):
+    import pytest
+    tool,dias,hunt,caldwell,messier = _union_tool_and_sources(monkeypatch)
+    conflict = dict(schema_version=1,next_id=3,source_ids={
+        'dias:ngc869':'WOC00000001','hunt:1':'WOC00000002'})
+    with pytest.raises(ValueError,match='combines existing Wenu IDs'):
+        tool.merge_catalogues(dias,hunt,caldwell,messier,registry=conflict)
+    split = dict(schema_version=1,next_id=2,source_ids={
+        'dias:infraredx':'WOC00000001','hunt:3':'WOC00000001'})
+    with pytest.raises(ValueError,match='split across rows'):
+        tool.merge_catalogues(dias,hunt,caldwell,messier,registry=split)
+    duplicate = dias.copy(copy_data=True)
+    duplicate.add_row(dias[0])
+    assert len(duplicate)==len(dias)+1
+    with pytest.raises(ValueError,match='Duplicate source identities'):
+        tool.merge_catalogues(duplicate,hunt,caldwell,messier)
+
+
+def test_open_cluster_union_cli_help_export_and_overwrite_policy(tmp_path,monkeypatch,capsys):
+    import hashlib
+    import json
+    import pytest
+    from astropy.table import Table
+    tool,dias,hunt,caldwell,messier = _union_tool_and_sources(monkeypatch)
+    assert tool.main([])==0
+    help_text = capsys.readouterr().out
+    assert '--id-registry' in help_text and 'wenu_id, RA, Dec' in help_text
+    assert not list(tmp_path.iterdir())
+    data = tmp_path/'data'
+    for category,filename,table in [
+        ('open_clusters','dias.ecsv',dias),('open_clusters','hunt.ecsv',hunt),
+        ('caldwell','caldwell_openngc.ecsv',caldwell),('messier','messier_heasarc.ecsv',messier)]:
+        (data/category).mkdir(parents=True,exist_ok=True)
+        table.write(data/category/filename,format='ascii.ecsv')
+    output = tmp_path/'candidate'
+    arguments = ['--data-directory',str(data),'--dias-catalogue',str(data/'open_clusters/dias.ecsv'),
+        '--hunt-catalogue',str(data/'open_clusters/hunt.ecsv'),'--output-directory',str(output),
+        '--name','wenu_open_clusters_v1']
+    assert tool.main(arguments)==0
+    catalogue = Table.read(output/'wenu_open_clusters_v1.ecsv')
+    assert len(catalogue)==5 and catalogue.meta['curation_status']=='unreviewed_candidate'
+    assert catalogue.meta['source_sha256']['dias']==hashlib.sha256((data/'open_clusters/dias.ecsv').read_bytes()).hexdigest()
+    for name in ['_crosswalk.csv','_references.csv','_ids.json','_summary.json']:
+        assert (output/('wenu_open_clusters_v1'+name)).exists()
+    receipt = json.loads((output/'wenu_open_clusters_v1_summary.json').read_text())
+    assert receipt['dias_rows']==4 and receipt['hunt_rows']==3
+    assert all(hashlib.sha256((output/name).read_bytes()).hexdigest()==value for name,value in receipt['products'].items())
+    with pytest.raises(FileExistsError):
+        tool.main(arguments)
+    with pytest.raises(SystemExit):
+        tool.main(['--name','unversioned'])

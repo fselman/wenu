@@ -30,8 +30,8 @@ def identifier_key(value):
     return ''.join(value.casefold().split())
 
 
-def compare(dias, caldwell, messier, *, exclude_ir_embedded=False,
-            max_ebv=None, min_ebv=None, missing_ebv='exclude', catalogue_name='Dias'):
+def observing_crosswalk(dias, caldwell, messier, *, all_types=False):
+    """Resolve observing identifiers independently of source physical parameters."""
     lookup = {}
     source_alias_lookup = {}
     for index, name in enumerate(dias['identifier']):
@@ -64,21 +64,30 @@ def compare(dias, caldwell, messier, *, exclude_ir_embedded=False,
             other_alias_rows='|'.join(str(dias['identifier'][i]) for i in other_aliases)))
 
     for row in caldwell:
-        if str(row['membership_type']) not in ('open_cluster', 'open_cluster_group', 'cluster_with_nebulosity'):
+        if not all_types and str(row['membership_type']) not in ('open_cluster', 'open_cluster_group', 'cluster_with_nebulosity'):
             continue
-        components = str(row['cluster_components']).split('|')
+        components = ([] if np.ma.is_masked(row['cluster_components']) else str(row['cluster_components']).split('|'))
+        if not components and all_types:
+            components = [str(row['primary_id'])]
         aliases = ([] if np.ma.is_masked(row['related_aliases'])
                    else str(row['related_aliases']).split('|'))
         for component in components:
             add('Caldwell', str(row['name']), component, aliases if len(components) == 1 else ())
     for row in messier:
-        if str(row['object_type']).strip() != 'OC':
+        if not all_types and str(row['object_type']).strip() != 'OC':
             continue
         designation = str(row['name']).strip()
         # M45 has no alt_name in the packaged HEASARC table. Its explicit
         # Melotte 22 identity is supplied by OpenNGC's Mel022/M=045 record.
         component = 'Melotte 22' if identifier_key(designation) == 'm45' else str(row['alt_name']).strip()
         add('Messier', designation, component)
+
+    return memberships, edges
+
+
+def compare(dias, caldwell, messier, *, exclude_ir_embedded=False,
+            max_ebv=None, min_ebv=None, missing_ebv='exclude', catalogue_name='Dias'):
+    memberships, edges = observing_crosswalk(dias, caldwell, messier)
 
     annotated = OpenClusters.mark_amateur_exclusions(dias)
     for catalogue, values in memberships.items():
