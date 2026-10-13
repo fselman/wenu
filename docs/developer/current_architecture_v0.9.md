@@ -2693,3 +2693,23 @@ and member sums are incomplete observed estimates. Catalogue ICRS centres keep
 J2016.0 provenance; this offline curation adds no stellar-position provider,
 epoch propagation or chart-frame reinterpretation. Source attribution and
 provider-policy preflight are recorded in the living user curation guide.
+
+### Complete Hunt resource receipt and identifier audit (2026-10-13)
+
+Fernando published the full/curated Gaia-member resources at `7ff3a403`, after
+complete source acquisition, hash validation, 7,167 aggregate / 1,291,929 member
+count checks and exact full-to-curated row comparison. The 431 type-o V5<11
+candidates are an initial member-brightness selection, not final amateur curation.
+The source remains offline and digest-bound; no new download is required.
+
+The comparison identifier owner normalizes published underscore separators and
+keeps primary identities ahead of source aliases. The actual-source regression
+checks all 29 Caldwell components and 27 Messier matches, plus the retained
+Melotte_25/CWNU_1242 alias distinction. The IR/E and E(B-V)<=3 review sample
+contains 5,485 open clusters, all with diameter/V5; adding V5<11 retains 428,
+including 22 Caldwell components and 23 Messier clusters. M11, M26, M29 and
+M103 fail the V5 threshold and require scientific interpretation, not silent
+replacement. Source data/photometry and chart defaults are unchanged by this
+identifier correction. The curation guide records the exact receipt and
+selection meanings; Mac focused and later final full-suite acceptance remain
+separate from source publication.

@@ -258,12 +258,17 @@ at least five accepted members with valid estimated apparent V <11.
 
 ### Prepare the data once
 
-The large complete member-file retrieval did not finish in the assistant
-workspace; the smaller bulk-query attempt timed out. The parser was checked
-against the actual complete clusters table and the first 100 exact member
-records, and calculation/CLI routes against explicitly synthetic fixtures.
-**A complete source-backed build and its target count remain pending on the
-Mac. No incomplete member file is accepted as a full catalogue.**
+The full source-backed Mac build is published at `7ff3a4031577bfb47a84a97340cdd153351b6540`.
+All 7,167 aggregates and 1,291,929 member records passed source validation;
+431 type-o clusters satisfy converted V5 <11 under p>=0.5/tidal selection.
+The complete members.dat.gz is 389,517,674 bytes, SHA-256
+`cd9cef40b3c5586579611fdf1034e927ea157acfdc8250a1fc502e6105fec794`.
+Prepared full/curated tables and their digest-bound provenance are now packaged;
+ordinary comparisons require no source download. The command below is for
+explicit regeneration into a fresh candidate data directory; use
+`--data-directory` to choose that directory. Existing prepared resources are
+refused, so the original first-build command must not be rerun over the installed
+resources. No incomplete member file is accepted as a full catalogue.
 
 Run this explicit acquisition from the Mac repository root. It requests each
 CDS file once, serially, without automatic retries or per-star queries. Cache
@@ -275,10 +280,10 @@ complete receipt is published. A large download may take substantial time.
 (
   set -e
   cd /Users/fselman/odrive/Dropbox/software/wenu
-  source_dir="$HOME/Downloads/wenu-hunt-reffert2024-source-v1"
+  source_dir="$HOME/Downloads/wenu-hunt-reffert2024-source-v2"
   PYTHONPATH=src python tools/query_hunt_reffert2024.py \
     --download-directory "$source_dir" \
-    --data-directory src/wenu/data/catalogs
+    --data-directory "$HOME/Downloads/wenu-hunt-candidate-data-v2"
 )
 ```
 
@@ -323,7 +328,8 @@ The comparison adds positive Dias IR/E evidence through explicit primary names
 and Hunt's published AllNames aliases. Unmatched classification is `unknown`,
 not evidence of optical transparency. The plot still highlights Caldwell and
 Messier through the existing component crosswalk; ambiguous aliases remain
-unresolved. Hunt reference matches and counts need review after full acquisition.
+unresolved. The corrected complete-source crosswalk matches all 29 Caldwell components and
+27 Messier clusters, preserving additional alias claims for review.
 The `_hunt.csv` preserves all input rows and selection reasons; the optional
 `_filtered.ecsv` also applies the chosen reddening and IR/E criteria. This
 further selection is distinct from the prepared V5-only curated resource.
@@ -370,8 +376,15 @@ members. They omit unavailable members and stars absent from Gaia; they are
 not completeness-corrected total cluster photometry. Missing counts and
 V5 status are retained. Very bright stars, unresolved systems, crowding,
 membership ambiguity and high extinction require review before accepting an
-observability ranking. The full source-backed run should audit lost reference
-objects as well as retained candidates; no pass count is asserted yet.
+observability ranking. The complete-source audit retains all 29 Caldwell components and 27 Messier
+clusters in the E(B-V)<=3 review plane. Adding V5<11 leaves 22 Caldwell and
+23 Messier components; M11, M26, M29 and M103 fail this member-brightness
+criterion. This illustrates why V5 alone is not a complete visual-appeal measure.
+The IR/E and E(B-V)<=3 criteria retain 428 of the 431 bright candidates,
+excluding Alessi_20 (embedded), COIN-Gaia_23 and FSR_0686 (infrared discovery).
+Names with underscores, such as NGC_188, normalize to their spaced catalogue
+identifiers. Primary names take precedence over published aliases; other alias
+claims remain review evidence rather than duplicate selected objects.
 
 Provider policy was checked on 2026-10-13 against
 [VizieR rules of usage](https://cds.unistra.fr/vizier-org/licences_vizier.html)

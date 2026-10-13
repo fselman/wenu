@@ -333,7 +333,7 @@ def test_hunt_catalogue_plot_selection_export_and_digest(tmp_path):
         source = Path(nonstellar_catalog_path(category))
         shutil.copyfile(source,data/category/source.name)
     # Synthetic normalized resource, explicitly not a captured provider fixture.
-    rows = Table(dict(identifier=['NGC 869','NGC 884','NGC 2168','synthetic moving group'],
+    rows = Table(dict(identifier=['NGC_869','NGC_884','NGC_2168','synthetic moving group'],
         hunt_id=[1,2,3,4],aliases=['NGC0869','NGC0884','NGC2168',''],hunt_type=['o','o','o','m'],
         source_type_flag=['','','',''],apparent_diameter_arcmin=[20.,20.,30.,40.],
         distance_pc=[100.,100.,200.,300.],reddening_e_bv=[.2,.2,.2,.2],
@@ -348,6 +348,8 @@ def test_hunt_catalogue_plot_selection_export_and_digest(tmp_path):
     provenance = dict(files={p.name:dict(sha256=hashlib.sha256(p.read_bytes()).hexdigest())
         for p in (full,curated)},synthetic_fixture=True)
     (data/'open_clusters'/hunt.PROVENANCE_NAME).write_text(json.dumps(provenance))
+    assert tool.identifier_key('NGC_0188') == tool.identifier_key('NGC 188')
+    assert tool.identifier_key('Melotte_25') == tool.identifier_key('Melotte 25')
     original_labels = dict(tool.PARAMETERS)
     prefix = tmp_path/'hunt_test_v1'
     arguments = ['--catalogue','hunt-reffert2024','--data-directory',str(data),
@@ -356,7 +358,7 @@ def test_hunt_catalogue_plot_selection_export_and_digest(tmp_path):
     assert tool.main(arguments) == 0
     assert tool.PARAMETERS == original_labels
     selected = Table.read(tmp_path/'hunt_test_v1_filtered.ecsv')
-    assert list(selected['identifier']) == ['NGC 869']
+    assert list(selected['identifier']) == ['NGC_869']
     all_rows = Table.read(tmp_path/'hunt_test_v1_hunt.csv')
     assert len(all_rows) == 4
     summary = json.loads((tmp_path/'hunt_test_v1_summary.json').read_text())
@@ -418,3 +420,40 @@ def test_hunt_acquisition_receipt_and_no_argument_help(tmp_path, monkeypatch, ca
         tool.acquire(failed_cache)
     assert len(calls) == previous_calls+1  # no retry
     assert not (failed_cache/'receipt.json').exists()
+
+
+def test_packaged_hunt_crosswalk_and_fifth_member_resource():
+    import importlib.util
+    from pathlib import Path
+    from astropy.table import Table
+    root = Path(__file__).resolve().parents[1]
+    def load_tool(name):
+        spec = importlib.util.spec_from_file_location(name,root/'tools'/f'{name}.py')
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+    hunt = load_tool('hunt_reffert_catalogue')
+    tool = load_tool('compare_open_clusters')
+    directory = root/'src/wenu/data/catalogs/open_clusters'
+    full, provenance, _ = hunt.load(directory)
+    curated, _, _ = hunt.load(directory,curated=True)
+    assert len(full) == 7167 and len(curated) == provenance['curated_rows'] == 431
+    assert provenance['source_member_rows'] == 1291929
+    assert np.all(np.asarray(curated['hunt_type']) == 'o')
+    assert np.all(np.asarray(curated['v5'],float) < 11)
+    assert list(curated['identifier']) == list(full['identifier'][full['curated_v5lt11']])
+    annotated, edges, summary = tool.compare(full,
+        Table.read(nonstellar_catalog_path('caldwell')),
+        Table.read(nonstellar_catalog_path('messier')),catalogue_name='Hunt & Reffert 2024')
+    assert summary['catalogue_component_matches']['Caldwell']['matched'] == 29
+    assert summary['catalogue_component_matches']['Messier']['matched'] == 27
+    # Primary Melotte_25 wins over the separate CWNU_1242 alias claim.
+    hyades = edges[edges['designation'] == 'C 41'][0]
+    assert hyades['dias_identifier'] == 'Melotte_25'
+    assert hyades['match_method'] == 'exact_identifier'
+    assert hyades['other_alias_rows'] == 'CWNU_1242'
+    bright = np.asarray(annotated['v5'],float) < 11
+    assert np.count_nonzero(bright & np.asarray(annotated['in_caldwell'])) == 22
+    assert np.count_nonzero(bright & np.asarray(annotated['in_messier'])) == 23
+    lost = annotated[np.asarray(annotated['in_messier']) & ~bright]
+    assert set(lost['messier_designations']) == {'M 11','M 26','M 29','M 103'}

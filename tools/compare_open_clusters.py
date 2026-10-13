@@ -22,7 +22,7 @@ from wenu.objects.open_clusters import OpenClusters
 
 
 def identifier_key(value):
-    value = str(value).strip()
+    value = str(value).strip().replace('_', ' ')
     match = re.fullmatch(r'(NGC|IC|Melotte|Mel|Collinder)\s*0*(\d+)', value, re.IGNORECASE)
     if match:
         prefix = 'melotte' if match[1].casefold() == 'mel' else match[1].casefold()
@@ -33,24 +33,28 @@ def identifier_key(value):
 def compare(dias, caldwell, messier, *, exclude_ir_embedded=False,
             max_ebv=None, min_ebv=None, missing_ebv='exclude', catalogue_name='Dias'):
     lookup = {}
+    source_alias_lookup = {}
     for index, name in enumerate(dias['identifier']):
         lookup.setdefault(identifier_key(name), []).append(index)
         if 'aliases' in dias.colnames:
             for alias in str(dias['aliases'][index]).split(','):
                 key = identifier_key(alias)
-                if key and index not in lookup.get(key, []):
-                    lookup.setdefault(key, []).append(index)
+                if key and index not in source_alias_lookup.get(key, []):
+                    source_alias_lookup.setdefault(key, []).append(index)
     edges = []
     memberships = {'Caldwell': [[] for _ in dias], 'Messier': [[] for _ in dias]}
 
     def add(catalogue, designation, component, aliases=()):
         direct = lookup.get(identifier_key(component), []) if component else []
-        alternatives = sorted({i for alias in aliases for i in lookup.get(identifier_key(alias), [])})
-        candidates = direct if direct else alternatives
+        component_aliases = source_alias_lookup.get(identifier_key(component), []) if component else []
+        alternatives = sorted({i for alias in aliases for i in
+            [*lookup.get(identifier_key(alias), []), *source_alias_lookup.get(identifier_key(alias), [])]})
+        candidates = direct if direct else sorted(set(component_aliases)) if component_aliases else alternatives
         chosen = candidates[0] if len(candidates) == 1 else None
         status = 'unmatched' if not candidates else 'ambiguous' if len(candidates) > 1 else 'matched'
-        method = 'exact_identifier' if direct else 'explicit_alias' if alternatives else ''
-        other_aliases = [i for i in alternatives if i not in direct]
+        method = ('exact_identifier' if direct else 'published_source_alias' if component_aliases
+                  else 'explicit_alias' if alternatives else '')
+        other_aliases = sorted(set(component_aliases+alternatives).difference(candidates))
         if chosen is not None:
             memberships[catalogue][chosen].append(designation)
         edges.append(dict(catalogue=catalogue, designation=designation, component=component,
