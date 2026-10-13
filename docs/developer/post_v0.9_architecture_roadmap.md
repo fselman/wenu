@@ -5505,3 +5505,32 @@ source files yield 11 verified CSVs; index1796, raw Excel row locations and
 RASC explicit companions/negative alias case were checked. Mac exact-head
 focused/documentation acceptance and final full-suite merge acceptance remain
 separate. The user guide/resource README own the workflow details.
+
+
+## Observing-list additions and first-membership comparison checkpoint
+
+Fernando requested the six remaining observing lists, source provenance and
+an observing guide, including urban southern coverage and the history of the
+Herschel programmes. `observing_additions_v1.json` records seven publisher
+source snapshots independently of `observing_sources_v1.json`; the existing
+source and CSV receipts remain valid. `tools/observing_list_additions.py` owns
+the supplementary HTML/ZIP/XLSX/PDF decoding and verified CSV reader.
+`tools/convert_observing_catalogues.py --additions` selects this separate
+conversion. `tools/merge_open_clusters.py` auto-loads installed supplementary
+CSVs, supports `--observing-additions-directory`, and masks unavailable lists.
+Exact observing references may annotate compound targets; stars near clusters
+and asterism narrative references never establish physical cluster identity.
+Raw list targets stay separate from the Dias–Hunt cluster union.
+
+`tools/plot_merged_open_clusters.py` is an offline curation diagnostic for
+published source radii versus Hunt-derived V10. First true list membership
+selects one configurable symbol, with Messier/Caldwell first by default.
+Matched Dias points explicitly share Hunt V10; Dias-only objects remain in a
+missing-V10 panel. Filled/hollow symbols distinguish source radii. Point and
+summary ledgers retain filters, unavailable flags and exclusions. No-argument
+help writes nothing. `docs/user_guide/curation.md` explains list objectives,
+verified counts, urban southern limits, condition-specific observing demands,
+and modern Herschel programme selection. Existing owning tests cover source
+masking, exact identities, compound references, first-list precedence, shared
+V10, strict cuts and supplementary digest rejection. No new public sky layer,
+canonical pipeline change, curated database adoption or software merge occurs.

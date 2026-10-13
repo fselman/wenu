@@ -346,13 +346,16 @@ def main(argv=None):
                'masked for unresolved claims. Best of NGC aliases SAC. _observing.csv retains review evidence.\n'
                'Membership columns: in_messier, in_caldwell, in_herschel400, in_herschel2,\n'
                'in_rasc_finest_ngc, in_sac_best_ngc, in_best_ngc, in_al_open_clusters,\n'
-               'in_al_globular_clusters, in_herschel400_south. Other programmes are deferred.\n'
+               'in_al_globular_clusters, in_herschel400_south; supplementary flags: sac_urban,\n'
+               'sac_beyond_ngc, sac_red_stars, sac_asterisms, al_carbon_stars, al_dark_nebulae.\n'
+               'Supplementary CSVs auto-load from csv_additions_v1 when installed; absent lists are masked.\n'
                'This creates a candidate only: no clean database adoption, chart change or software merge.')
     parser.add_argument('--data-directory',type=Path,default=ROOT/'src/wenu/data/catalogs')
     parser.add_argument('--dias-catalogue',type=Path,help='Explicit normalized Dias input; all its rows are retained.')
     parser.add_argument('--hunt-catalogue',type=Path,help='Explicit normalized full Hunt input; all its rows/types are retained.')
     parser.add_argument('--id-registry',type=Path,help='Previous _ids.json; preserve existing wenu_id assignments.')
     parser.add_argument('--observing-directory',type=Path,help='Verified first-pass CSV directory; default data root/observing_lists/csv_v1.')
+    parser.add_argument('--observing-additions-directory',type=Path,help='Verified supplementary CSVs; default data root/observing_lists/csv_additions_v1 when present. Explicit missing directories fail.')
     parser.add_argument('--without-observing-lists',action='store_true',help='Explicitly skip list loading; membership flags are masked, never false absences.')
     parser.add_argument('--dias-diameter-column',default='apparent_diameter_arcmin',
         help='Dias angular diameter column; default apparent_diameter_arcmin. Radius = diameter/2.')
@@ -398,6 +401,13 @@ def main(argv=None):
         observing_records,observing_receipt = load_converted(
             args.observing_directory or args.data_directory/'observing_lists/csv_v1',
             args.data_directory/'observing_lists/observing_sources_v1.json')
+        additions_directory = args.observing_additions_directory or args.data_directory/'observing_lists/csv_additions_v1'
+        if args.observing_additions_directory is not None or additions_directory.exists():
+            from observing_list_additions import load_converted as load_additions
+            additions_records,additions_receipt = load_additions(
+                additions_directory,args.data_directory/'observing_lists/observing_additions_v1.json')
+            observing_records += additions_records
+            observing_receipt['supplementary_conversion'] = additions_receipt
     observing_edges,observing_summary = annotate(output,observing_records,reference_edges=references)
     if observing_receipt is not None:
         observing_summary['conversion_receipt'] = observing_receipt

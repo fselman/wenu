@@ -723,3 +723,72 @@ def test_converted_membership_hash_validation_and_converter_help(tmp_path,monkey
         lists.load_converted(directory,registry)
     with pytest.raises(FileExistsError):
         converter.convert(tmp_path,directory,registry)
+
+
+def test_supplementary_membership_absence_is_unknown_and_nearby_stars_are_not_clusters(monkeypatch):
+    from astropy.table import Table
+    _union_tool_and_sources(monkeypatch)
+    import observing_list_membership as lists
+    table=Table(dict(wenu_id=['W1'],dias_id=['NGC 457'],hunt_name=['NGC_457'],
+                     Other_ids=['NGC 457'],Messier_id=[''],Caldwell_id=['']))
+    record=dict(catalogue='sac_red_stars',designation='HD 11224',
+                identifiers=['HD 11224'],source_file='synthetic.csv')
+    _,summary=lists.annotate(table,[record])
+    assert not table['in_sac_red_stars'][0]
+    assert np.ma.is_masked(table['in_sac_urban'][0])
+    assert summary['counts']['sac_urban']['unresolved_rows']==1
+    assert len(table)==1 and table['dias_id'][0]=='NGC 457'
+    table['Messier_id']=['M 45']
+    lists.annotate(table,[dict(catalogue='sac_urban',designation='M 45',identifiers=['M 45'],source_file='synthetic.csv')])
+    assert table['in_sac_urban'][0]
+
+
+def test_first_list_plot_preserves_source_radii_shared_v10_masks_and_strict_cut(monkeypatch,capsys):
+    from astropy.table import Table,MaskedColumn
+    import pytest
+    _union_tool_and_sources(monkeypatch)
+    import plot_merged_open_clusters as plot
+    table=Table(dict(wenu_id=['W1','W2'],dias_id=['NGC 457','Dias only'],
+      dias_apparent_diameter_arcmin=[20.,30.],hunt_apparent_diameter_arcmin=[10.,np.nan],
+      in_messier=[True,False],in_caldwell=[True,True]))
+    table['in_sac_urban']=MaskedColumn([True,True],mask=[False,True])
+    table['hunt_id']=MaskedColumn([1,0],mask=[False,True])
+    table['hunt_v10']=MaskedColumn([11.,0.],mask=[False,True])
+    assert list(plot.first_membership(table,['messier','caldwell','sac_urban']))==['messier','caldwell']
+    data=plot.points(table,['messier','caldwell'])
+    assert list(data['radius_arcmin'])==[10.,5.,15.]
+    assert list(data['selection_status'])==['plotted','plotted','missing_v10']
+    assert list(data['v10'][:2])==[11.,11.]
+    cut=plot.points(table,['messier','caldwell'],max_v10=11)
+    assert list(cut['selection_status'])==['v10_cut','v10_cut','missing_v10']
+    with pytest.raises(ValueError,match='distinct'):
+        plot.first_membership(table,['messier','messier'])
+    assert plot.main([])==0
+    assert '--priority' in capsys.readouterr().out
+
+
+def test_supplementary_conversion_requires_complete_csvs_and_detects_corruption(tmp_path,monkeypatch):
+    import csv,hashlib,json,pytest
+    _union_tool_and_sources(monkeypatch)
+    import observing_list_additions as additions
+    monkeypatch.setattr(additions,'COUNTS',{'sac_urban':1})
+    registry=tmp_path/'registry.json'
+    registry.write_text(json.dumps(dict(products=[dict(file='source.html',sha256='0'*64)])))
+    directory=tmp_path/'csv';directory.mkdir()
+    index=directory/'observing_memberships_v1.csv'
+    with index.open('w',newline='') as stream:
+        writer=csv.writer(stream);writer.writerow(['catalogue','designation','identifiers_json','source_file'])
+        writer.writerow(['sac_urban','NGC 457',json.dumps(['NGC 457']),'source.html'])
+    source=directory/'sac_urban_list_v1.csv';source.write_text('identifier\nNGC 457\n')
+    receipt=dict(source_registry_sha256=hashlib.sha256(registry.read_bytes()).hexdigest(),
+      source_sha256={'source.html':'0'*64},products=[dict(file=p.name,bytes=p.stat().st_size,
+      sha256=hashlib.sha256(p.read_bytes()).hexdigest()) for p in [index,source]])
+    path=directory/'conversion_receipt_v1.json';path.write_text(json.dumps(receipt))
+    records,_=additions.load_converted(directory,registry)
+    assert records[0]['identifiers']==['NGC 457']
+    source.write_text('corrupted\n')
+    with pytest.raises(ValueError,match='checksum'):
+        additions.load_converted(directory,registry)
+    receipt['products']=receipt['products'][:1];path.write_text(json.dumps(receipt))
+    with pytest.raises(ValueError,match='Incomplete'):
+        additions.load_converted(directory,registry)

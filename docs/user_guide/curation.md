@@ -718,3 +718,154 @@ counts and the conversion receipt. Boolean annotations change neither source
 pairing nor stable IDs, parameter values, positional audit or chart defaults.
 Only synthetic union tests are generated during software development; the
 real first-pass CSV conversion is permitted by Fernando's separate instruction.
+
+
+## Observing-list additions: purpose, objects and conditions (v1)
+
+Wenu uses these lists to help select observing targets and annotate their
+provenance. They are selections for different observing goals, not uniform
+all-sky surveys or interchangeable measures of completeness. Membership in
+several lists is retained; a plot's first-match symbol is only a presentation
+choice. A successful sighting, resolving individual stars, and seeing fine
+structure are different observing tasks.
+
+### The seven requested lists
+
+Counts below are verified against the downloaded source files, not inferred
+from programme names or the number of observations required for an award.
+
+| List | Acquired entries | Objective and object characteristics |
+|---|---:|---|
+| Herschel 400 Southern | 150 supplementary targets (already installed) | Southern replacements for inaccessible northern Herschel 400 targets. Mixed deep-sky objects; combine these 150 with at least 250 original targets for the southern programme. |
+| SAC 110 Objects Beyond the NGC | 110 | Explore other designations: clusters, galaxies, nebulae, galaxy clusters and a quasar. A heterogeneous selection: bright wide clusters such as Collinder 140 and Melotte 111 coexist with faint or low-contrast targets. |
+| SAC Urban List | 100 fixed targets; 10 observer-chosen targets are not a predefined catalogue | A programme for light-polluted metro-Phoenix skies. Contains open/globular clusters, double and variable stars, planetary nebulae, galaxies and other nebulae. |
+| SAC Red Stars v2.0 | 333 | Enjoy stellar colours. Includes cool stars and carbon stars, many variable; colour index, spectral classification and brightness are preserved. This is larger than the older 70-star web list. |
+| SAC Asterisms v3.2 | 114 | Recognizable patterns of stars, not necessarily bound clusters. Angular extent determines whether naked eye, binoculars, or a telescope provides a useful field. Published positions, sizes and magnitudes are approximate. |
+| AL Carbon Stars, June 2026 workbook | 100 main + 28 southern | Observe stellar colour and variability. Brightness changes with phase; identifying the correct star and recording colour are central tasks. The southern sheet is preserved separately in the source workbook. |
+| AL Dark Nebulae | 35 required + 105 optional | Recognize obscuring clouds against a luminous background. Programme completion requires the 35 required objects plus 35 chosen from the optional set, not every optional target. Includes named large features such as the Great Rift, which has no single centre. |
+
+Sources: [SAC Beyond the NGC](https://www.saguaroastro.org/110-objects-beyond-the-ngc/),
+[SAC Urban](https://www.saguaroastro.org/the-urban-list/),
+[SAC downloads](https://www.saguaroastro.org/sac-downloads/),
+[AL Carbon Stars](https://www.astroleague.org/carbon-star-observing-program/),
+[AL Dark Nebulae](https://www.astroleague.org/dark-nebula-observing-program/),
+and [AL Herschel 400/Southern](https://www.astroleague.org/herschel-400-observing-program/).
+The acquisition registry supplies exact download URLs, editions, timestamps,
+byte lengths and SHA-256 digests. Publisher upload timestamps are not taken
+as the scientific edition dates.
+
+### Urban skies and southern coverage
+
+The SAC list was selected for Phoenix. Its 100 fixed rows include 26 targets
+with negative declination; M41, NGC2362, M6 and M7 provide southern examples.
+The southernmost target is M7, at the published declination −34°48′. Thus it
+includes southern objects but leaves the far-southern sky outside its coverage.
+The title's 110 consists of 100 fixed entries plus 10 chosen by the observer.
+The programme defines its urban setting by the Milky Way being invisible to
+the unaided eye; this does not guarantee every target in every urban sky.
+
+Computed from the source declinations at latitude −32.443342° (La Ligua),
+87 fixed targets rise geometrically and 63 culminate at least 20° high.
+This uses h_max = 90° − |latitude − declination|; it excludes terrain,
+refraction, season, weather and sky brightness. It is an accessibility check,
+not an observing-success prediction. The source's NGC2244 row has malformed
+fields (`+04 57 O`, type `C`); first-pass CSV preserves these for review.
+
+### What “challenging” means
+
+Do not interpret an entire list as a single difficulty category. For clusters,
+compare member magnitudes (including V10), concentration, angular size,
+extinction, altitude and background. Integrated magnitude alone does not
+predict whether individual members will be visible. Diffuse galaxies and
+nebulae depend strongly on surface brightness and sky contrast. Stellar
+colour lists depend on current variable-star brightness, field identification
+and the observer's colour perception. Large asterisms require a sufficiently
+wide field. Dark nebulae need a visible background and are not a general urban
+recommendation. Distinguish catalogue measurements from individual observer
+reports; no universal `difficulty` value is added to Wenu.
+
+### Were the Herschel lists compiled by William Herschel?
+
+William Herschel compiled the historical observations from which many NGC
+entries originate. The Herschel **400** is a modern subset selected by the
+Ancient City Astronomy Club of St Augustine, Florida. Herschel **II** is
+another modern 400-object programme, introduced in 1997 and maintained by the
+Rose City Ancient Astronomers. Neither modern 400-target checklist was chosen
+by William Herschel. The southern 150 is a modern programme supplement.
+
+Herschel II is predominantly galaxies, with most targets at magnitudes 11–13;
+its purpose includes careful identification and technical descriptions. That
+makes completion more demanding than a showpiece list, without implying all
+of its clusters are unusually hard. The publisher describes an 8-inch
+instrument under good dark skies as suitable for much of the list and suggests
+10 inches or more for completing it. See [Herschel II](https://www.astroleague.org/herschel-ii-observing-program/).
+
+### Other acquired lists
+
+Messier supplies familiar mixed deep-sky targets; Caldwell broadens the
+selection, including southern targets. RASC Finest NGC and SAC Best NGC are
+showpiece selections with different memberships; the generic “Best of NGC”
+label in Wenu aliases SAC rather than creating a third independent source.
+The AL open-cluster programme emphasizes comparing star-cluster appearance;
+the globular programme emphasizes compact stellar systems. The double- and
+multiple-star programmes concern stellar systems, not physical open clusters.
+Planetary-nebula programmes and Abell concern planetary nebulae; Barnard is a
+historical dark-nebula catalogue. Their full raw sources remain acquired, but
+planetary-nebula conversion/adoption is deferred as requested. These original
+files and counts are documented in the existing acquisition inventory.
+
+### Data, conversion and cluster membership
+
+Install the additions alongside the existing directories:
+`observing_lists/sources_additions_v1` and `observing_lists/csv_additions_v1`.
+Keep the existing `sources_v1`, `csv_v1` and their registries unchanged.
+The additions contain seven original source snapshots for six lists, seven
+CSVs including the membership index, and a conversion receipt. CSVs preserve
+source values without imputing modern positions or astrophysical properties;
+dark-nebula CSVs contain designation/coordinate facts, while original PDFs
+retain the full tables and commentary.
+
+To reproduce conversion offline from the repository root:
+
+```bash
+PYTHONPATH=src python tools/convert_observing_catalogues.py \
+  --additions \
+  --source-directory src/wenu/data/catalogs/observing_lists/sources_additions_v1 \
+  --output-directory /path/to/new/csv_additions_v1
+```
+
+The merged cluster tool automatically reads the supplementary CSV directory
+when installed. `--observing-additions-directory` overrides that location;
+an explicitly supplied missing or corrupt directory fails before writing.
+Absent supplementary lists produce masked flags, not false absences.
+New columns are `in_sac_urban`, `in_sac_beyond_ngc`, `in_sac_red_stars`,
+`in_sac_asterisms`, `in_al_carbon_stars`, and `in_al_dark_nebulae`.
+Only explicit primary designations are used for these additions. A note saying
+that a red star or asterism lies near a cluster does not tag that cluster.
+Original non-cluster targets stay in their own list and unmatched ledger;
+they never become extra rows in the Dias–Hunt cluster union.
+
+### Radius–V10 comparison with one symbol per object
+
+`tools/plot_merged_open_clusters.py` reads the combined ECSV and exports
+PNG/SVG/PDF, a point ledger and a summary. Each source point receives the
+symbol of its first true membership flag, starting with Messier and Caldwell.
+The remaining priority is a configurable observing preference; Urban is the
+next default because of the requested urban emphasis. `--priority` replaces
+the order with comma-separated supported list names. Filled points use Dias
+radii, hollow points use Hunt radii; radii are half each chosen diameter.
+Matched Dias points share Hunt-derived V10. Dias-only objects have no V10 and
+remain in the separate missing-V10 panel, not assigned a synthetic magnitude.
+
+```bash
+PYTHONPATH=src python tools/plot_merged_open_clusters.py \
+  --catalogue /path/to/wenu_open_clusters_v2.ecsv \
+  --output-directory /path/to/new/plots --name wenu_radius_v10_v1 \
+  --max-v10 11 --max-ebv 3
+```
+
+V10 < 11 is strict; E(B−V) ≤ 3 is evaluated separately for each source.
+Missing reddening under that cut is excluded and logged. Omitting either cut
+removes that filter. All tools print help and write nothing with no arguments.
+This work does not adopt a curated database, change sky charts or merge the
+software branch.

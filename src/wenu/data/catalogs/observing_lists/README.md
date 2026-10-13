@@ -29,3 +29,13 @@ ledgers; `tools/merge_open_clusters.py` reads the verified CSV receipt and adds
 10 membership flags, including the SAC/Best-NGC alias and southern Herschel
 supplement. PN, dark-nebula and double/multiple-star programme conversion is
 deferred. See the owning guide for formats, help and optional legacy-XLS reader.
+
+
+Six supplementary lists are acquired separately in `sources_additions_v1` and
+converted in `csv_additions_v1`, with `observing_additions_v1.json` as their
+independent registry. The existing v1 acquisition/conversion remains valid.
+Use `tools/convert_observing_catalogues.py --additions`; merge auto-loads verified
+additions when installed and masks unavailable list flags. Their purposes,
+southern coverage, source anomalies, observing conditions and Herschel history
+are explained in `docs/user_guide/curation.md`. Raw/converted data installation
+remains separate from source-code development and catalogue adoption.

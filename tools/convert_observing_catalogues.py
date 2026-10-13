@@ -2,7 +2,9 @@
 """First-pass CSV conversion of verified observing lists containing star clusters.
 
 Preserve source fields/sheets; no cluster union, filtering or chart adoption.
-PN, dark-nebula and double/multiple-star programme work is deferred.
+Default mode converts the original cluster-containing lists. --additions
+converts Urban, Beyond NGC, Red Stars, Asterisms, Carbon Stars and Dark Nebulae.
+Planetary-nebula and double/multiple-star conversion remains deferred.
 No arguments prints help and writes nothing. Excel XLS needs optional xlrd.
 """
 
@@ -97,15 +99,23 @@ def main(argv=None):
         epilog='Usage: python tools/convert_observing_catalogues.py --source-directory src/wenu/data/catalogs/observing_lists/sources_v1\n'
                'Output: CSV files per source/sheet, observing_memberships_v1.csv and conversion_receipt_v1.json.\n'
                'Existing outputs are refused. XLSX/CSV/TSV/PDF remain offline; legacy XLS requires xlrd>=2,<3.')
+    parser.add_argument('--additions',action='store_true',help='Convert the six supplementary lists using observing_additions_v1.json; default output csv_additions_v1.')
     parser.add_argument('--source-directory',type=Path,required=True)
-    parser.add_argument('--output-directory',type=Path,default=ROOT/'src/wenu/data/catalogs/observing_lists/csv_v1')
-    parser.add_argument('--registry',type=Path,default=ROOT/'src/wenu/data/catalogs/observing_lists/observing_sources_v1.json')
+    parser.add_argument('--output-directory',type=Path,default=None)
+    parser.add_argument('--registry',type=Path,default=None)
     arguments = sys.argv[1:] if argv is None else list(argv)
     if not arguments:parser.print_help();return 0
     args = parser.parse_args(arguments)
-    receipt = convert(args.source_directory,args.output_directory,args.registry)
+    root = ROOT/'src/wenu/data/catalogs/observing_lists'
+    destination = args.output_directory or root/('csv_additions_v1' if args.additions else 'csv_v1')
+    registry = args.registry or root/('observing_additions_v1.json' if args.additions else 'observing_sources_v1.json')
+    if args.additions:
+        from observing_list_additions import convert as convert_additions
+        receipt = convert_additions(args.source_directory,destination,registry)
+    else:
+        receipt = convert(args.source_directory,destination,registry)
     print(f"Converted {len(receipt['source_sha256'])} verified source files into {len(receipt['products'])} CSV files.")
-    print(args.output_directory)
+    print(destination)
     return 0
 
 

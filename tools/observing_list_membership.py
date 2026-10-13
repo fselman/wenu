@@ -17,6 +17,8 @@ from compare_open_clusters import identifier_key
 LISTS = ['messier', 'caldwell', 'herschel400', 'herschel2', 'rasc_finest_ngc',
          'sac_best_ngc', 'al_open_clusters', 'al_globular_clusters',
          'herschel400_south']
+ADDITIONAL_LISTS = ['sac_urban', 'sac_beyond_ngc', 'sac_red_stars', 'sac_asterisms',
+                    'al_carbon_stars', 'al_dark_nebulae']
 SOURCE_FILES = ['messier_list_v1.csv','caldwell_list_v1.csv','sac_best_list_v1.csv',
                 'herschel400_list_v1.pdf','herschel2_list_v1.pdf','rasc_finest_list_v1.pdf',
                 'al_open_clusters_list_v1.xlsx','al_globular_clusters_list_v1.xlsx',
@@ -171,7 +173,7 @@ def records_from_sources(directory, manifest):
 def annotate(table, records=None, reference_edges=None):
     """Add exact-ID membership flags and a separate per-source-record ledger."""
     if records is None:
-        for catalogue in LISTS+['best_ngc']:
+        for catalogue in LISTS+ADDITIONAL_LISTS+['best_ngc']:
             table['in_'+catalogue] = MaskedColumn(np.zeros(len(table),bool),mask=True)
         return Table(names=['catalogue','designation','source_file','status','wenu_ids'],
                      dtype=['U1']*5),dict(status='explicitly_skipped')
@@ -184,27 +186,36 @@ def annotate(table, records=None, reference_edges=None):
             if name.strip():aliases.setdefault(key(name),set()).add(i)
     review = set()
     edges = []
-    for catalogue in LISTS:
+    for catalogue in LISTS+ADDITIONAL_LISTS:
         values = np.zeros(len(table),bool)
         uncertain = set()
         for record in [r for r in records if r['catalogue']==catalogue]:
             matched,ambiguous = set(),set()
             for name in record['identifiers']:
-                if catalogue in ('messier','caldwell'):
-                    column = 'Messier_id' if catalogue=='messier' else 'Caldwell_id'
+                observing_reference = ('messier' if re.fullmatch(r'm\d+',key(name)) else
+                                       'caldwell' if re.fullmatch(r'c\d+',key(name)) else None)
+                if observing_reference is not None:
+                    column = 'Messier_id' if observing_reference=='messier' else 'Caldwell_id'
                     direct = {i for i,row in enumerate(table) if key(name) in
                               {key(v) for v in str(row[column]).split('|') if v}}
                     claims = direct  # compound observing references may tag multiple rows
                 else:
                     direct = primary.get(key(name),set())
                     claims = direct or aliases.get(key(name),set())
-                if len(claims)>1 and catalogue not in ('messier','caldwell'):
+                if len(claims)>1 and observing_reference is None:
                     ambiguous.update(claims)
                 else:
                     matched.update(claims)
                 # Preserve competing alias evidence even when a primary wins.
-                if direct and catalogue not in ('messier','caldwell'):
+                if direct and observing_reference is None:
                     ambiguous.update(aliases.get(key(name),set())-direct)
+                if observing_reference and reference_edges is not None:
+                    for edge in reference_edges:
+                        if str(edge['catalogue']).casefold()!=observing_reference or key(edge['designation'])!=key(name): continue
+                        candidates = str(edge['candidate_identifiers']) if str(edge['status'])=='ambiguous' else ''
+                        candidates += '|'+str(edge['other_alias_rows'])
+                        for candidate in candidates.split('|'):
+                            ambiguous.update(primary.get(key(candidate),set()))
             if catalogue in ('messier','caldwell') and reference_edges is not None:
                 for edge in reference_edges:
                     if (str(edge['catalogue']).casefold()!=catalogue or
@@ -221,14 +232,15 @@ def annotate(table, records=None, reference_edges=None):
                 'matched' if matched else 'unmatched',
                 wenu_ids='|'.join(sorted(str(table['wenu_id'][i]) for i in matched)),
                 review_wenu_ids='|'.join(sorted(str(table['wenu_id'][i]) for i in ambiguous))))
-        table['in_'+catalogue] = MaskedColumn(values,mask=[i in uncertain and not values[i] for i in range(len(table))])
+        table['in_'+catalogue] = MaskedColumn(values,mask=[(catalogue in ADDITIONAL_LISTS and not any(r['catalogue']==catalogue for r in records)) or (i in uncertain and not values[i]) for i in range(len(table))])
     table['in_best_ngc'] = table['in_sac_best_ngc'].copy()
     table['observing_membership_review'] = [i in review for i in range(len(table))]
     summary = dict(status='verified_sources',criterion='Explicit identifiers/aliases only; false means no resolved list identifier, masked means an unresolved claim.',
         best_ngc_alias='sac_best_ngc',counts={catalogue:dict(
+            availability='unavailable' if catalogue in ADDITIONAL_LISTS and not any(r['catalogue']==catalogue for r in records) else 'loaded',
             source_records=sum(r['catalogue']==catalogue for r in records),
             member_rows=int(np.count_nonzero(table['in_'+catalogue].filled(False))),
-            unresolved_rows=int(np.count_nonzero(table['in_'+catalogue].mask))) for catalogue in LISTS})
+            unresolved_rows=int(np.count_nonzero(table['in_'+catalogue].mask))) for catalogue in LISTS+ADDITIONAL_LISTS})
     return Table(rows=edges),summary
 
 
