@@ -17,7 +17,8 @@ Current working choice: exclude explicitly flagged infrared/embedded clusters
 and use an inclusive **E(B−V) ≤ 3** ceiling. This replaces 0.5 as our working
 comparison ceiling, not the underlying source values. No integrated-magnitude
 or surface-brightness cutoff has yet been adopted. The CLI applies no reddening
-bound unless one is supplied.
+bound unless one is supplied. The subsequent Hunt & Reffert workflow below
+adopts converted fifth-member V < 11, separately from integrated magnitude.
 
 ## Script registry and input data
 
@@ -27,6 +28,8 @@ Run scripts from the repository root with Wenu installed and `PYTHONPATH=src`.
 |---|---|---|
 | `tools/compare_open_clusters.py` | Offline membership comparison, marking, configurable two-parameter plot and candidate export | Reads packaged catalogues under `src/wenu/data/catalogs/`; writes versioned products under `output/` by default |
 | `tools/query_caldwell_openngc.py` | Explicit maintenance of Caldwell membership/parameters | Reads the versioned membership ledger and pinned OpenNGC files; writes Caldwell resources and provenance |
+| `tools/query_hunt_reffert2024.py` | Explicit serial CDS acquisition or verified offline cache preparation | Writes full Hunt and V5<11 candidate ECSV resources plus provenance under `open_clusters/`; raw members stay outside the repository |
+| `tools/hunt_reffert_catalogue.py` | Offline CDS parsing, Gaia conversions, member statistics and Hunt comparison adapter | Shared developer-tool helper, not a chart layer or stellar-position provider |
 | `tools/query_open_cluster_photometry.py` | Explicit maintenance of the separate Dias V-photometry supplement | Reads Dias and pinned OpenNGC files; writes the supplement and its provenance under `open_clusters/` |
 
 The Dias/HEASARC snapshot contains 1,931 retained rows. It provides positions,
@@ -134,8 +137,9 @@ Keep accepted/rejected/uncertain manual decisions in a separate versioned
 ledger with identifier, reason, evidence and date. Unknown data and rejected
 objects are different states.
 
-The current CLI filters infrared/embedded flags and reddening. It does **not**
-yet expose magnitude, surface-brightness or Trumpler cutoffs. Discuss the
+The Dias route filters infrared/embedded flags and reddening. It does **not**
+expose integrated-magnitude, surface-brightness or Trumpler cutoffs. The Hunt
+route additionally supports the strict fifth-member `--max-v5` criterion. Discuss the
 meaning and missing-value policy before adding those options; do not describe
 a planned filter as installed. The atlas presentation option
 `open_cluster_exclude_infrared_embedded` controls only that flag-based
@@ -223,3 +227,157 @@ measurement/derived/proxy status, defaults, missing-data policy, source and
 licence, complete commands, outputs and validation. Add new object categories
 only after their sources and scientific meanings are reviewed. Record accepted
 criteria separately from experiments and keep original catalogue rows intact.
+
+
+
+## Hunt & Reffert (2024): member-based curation
+
+Source: Emily L. Hunt and Sabine Reffert, *Improving the open cluster census.
+III. Using cluster masses, radii, and dynamics to create a cleaned open cluster
+catalogue*, A&A 686, A42 (2024),
+[paper DOI](https://doi.org/10.1051/0004-6361/202348662),
+[CDS J/A+A/686/A42](https://cdsarc.cds.unistra.fr/viz-bin/cat/J/A+A/686/A42).
+The source has 7,167 aggregates and 1,291,929 member rows; types `o`, `m`, `g`,
+`d`, `r` distinguish open clusters, moving groups, globular clusters, distant
+unclassified objects and rejected objects. Full source rows remain retained.
+
+The default member policy is **probability >= 0.5 inside the estimated King
+tidal radius** (`inrt=1`). This is an initial reproducible policy, not a claim
+that all accepted members are certain. The maintenance command can instead
+use Jacobi-radius members or all published members, and a different probability
+threshold. Every prepared product records the policy; rebuild into a fresh
+candidate data directory when changing it. Gaia IDs remain decimal strings.
+
+The curated resource contains source type `o` objects with **V5 strictly <11**.
+V5 is the fifth-brightest member after converting each star and ranking in V;
+it is not the V magnitude of the fifth-brightest star ranked in G. G5, B5 and
+R5 have their own rankings and retained fifth-member Gaia IDs. Missing colours
+and out-of-domain conversions remain missing. Five valid members are required;
+missing other members can move V5 to a fainter value. A retained cluster has
+at least five accepted members with valid estimated apparent V <11.
+
+### Prepare the data once
+
+The large complete member-file retrieval did not finish in the assistant
+workspace; the smaller bulk-query attempt timed out. The parser was checked
+against the actual complete clusters table and the first 100 exact member
+records, and calculation/CLI routes against explicitly synthetic fixtures.
+**A complete source-backed build and its target count remain pending on the
+Mac. No incomplete member file is accepted as a full catalogue.**
+
+Run this explicit acquisition from the Mac repository root. It requests each
+CDS file once, serially, without automatic retries or per-star queries. Cache
+files are external, with hashes and retrieval receipts; existing caches and
+prepared outputs are refused. Interrupted files carry `.partial`, and no
+complete receipt is published. A large download may take substantial time.
+
+```bash
+(
+  set -e
+  cd /Users/fselman/odrive/Dropbox/software/wenu
+  source_dir="$HOME/Downloads/wenu-hunt-reffert2024-source-v1"
+  PYTHONPATH=src python tools/query_hunt_reffert2024.py \
+    --download-directory "$source_dir" \
+    --data-directory src/wenu/data/catalogs
+)
+```
+
+For a complete previously acquired cache, replace `--download-directory` with
+`--source-directory`; every original source digest is checked before parsing.
+The full build requires the published cluster/member counts and exact record
+widths. The cache retains ReadMe, clusters.dat.gz, members.dat.gz,
+crossma.dat.gz and receipt.json. Only compact prepared tables go under data.
+The source original tables are never replaced by the candidate export.
+
+### Help, catalogue selection and plotting
+
+Both commands display their help and exit successfully without arguments:
+
+```bash
+PYTHONPATH=src python tools/compare_open_clusters.py
+PYTHONPATH=src python tools/query_hunt_reffert2024.py
+```
+
+Choose `--catalogue dias`, `--catalogue hunt-reffert2024` (all prepared rows,
+with non-open types marked outside the review selection), or
+`--catalogue hunt-curated` (the prepared V5<11 subset). The first is the default.
+Hunt plotting is entirely offline and requires the prepared resources above.
+Hunt member-only axes are rejected on the Dias route.
+
+```bash
+(
+  set -e
+  cd /Users/fselman/odrive/Dropbox/software/wenu
+  review_dir="$(mktemp -d "$HOME/Downloads/wenu-hunt-v5-v1.XXXXXX")"
+  PYTHONPATH=src MPLBACKEND=Agg python tools/compare_open_clusters.py \
+    --catalogue hunt-reffert2024 \
+    --data-directory src/wenu/data/catalogs \
+    --output-directory "$review_dir" --name hunt_v5lt11_v1 \
+    --x diameter --y v5 --max-v5 11 \
+    --max-ebv 3 --write-filtered-catalogue
+  open "$review_dir"
+)
+```
+
+The comparison adds positive Dias IR/E evidence through explicit primary names
+and Hunt's published AllNames aliases. Unmatched classification is `unknown`,
+not evidence of optical transparency. The plot still highlights Caldwell and
+Messier through the existing component crosswalk; ambiguous aliases remain
+unresolved. Hunt reference matches and counts need review after full acquisition.
+The `_hunt.csv` preserves all input rows and selection reasons; the optional
+`_filtered.ecsv` also applies the chosen reddening and IR/E criteria. This
+further selection is distinct from the prepared V5-only curated resource.
+
+| Axis | Hunt definition |
+|---|---|
+| `diameter` | 2*r50 in arcmin: half-members radius within tidal radius; not Dias visual diameter |
+| `tidal_diameter`, `total_diameter` | 2*rt and 2*rtot in arcmin; total includes tails |
+| `members`, `accepted_members` | Published N and members passing probability/aperture policy |
+| `g5`, `v5`, `b5`, `r5` | Fifth-brightest valid accepted member in each band |
+| `g10`, `v10` | Tenth-brightest valid accepted member |
+| `brightness` | Summed converted V of valid accepted members |
+| `integrated_g`, `integrated_b`, `integrated_r` | Corresponding observed member sums |
+| `bright_members` | Accepted members with valid converted V <11 |
+| `av` | Published median AV50 |
+| `ebv` | AV50/3.1 proxy, with assumed R_V=3.1; not published E(B-V) |
+| `distance`, `log_age` | Published dist50 and logAge50 |
+| `physical_diameter` | 2*d*tan(theta/2), using the chosen 2r50 diameter |
+| `significance`, `cmd_quality` | Published CST and median CMD classification score |
+| `metallicity` | Missing for this prepared Hunt resource; never substituted |
+
+### Gaia to Johnson B,V and Cousins R
+
+Use the official [Gaia DR3 photometric relations, Tables 5.9 and 5.10](https://gea.esac.esa.int/archive/documentation/GDR3/Data_processing/chap_cu5pho/cu5pho_sec_photSystem/cu5pho_ssec_photRelations.html).
+For observed c = BP-RP, the relations give G-band differences, so **subtract**
+the polynomial from G to recover the requested band:
+
+```text
+V = G - (-0.02704 + 0.01424*c - 0.2156*c^2 + 0.01426*c^3)
+B = G - ( 0.01448 - 0.6874*c - 0.3604*c^2 + 0.06718*c^3 - 0.006061*c^4)
+R = G - (-0.02275 + 0.3961*c - 0.1243*c^2 - 0.01396*c^3 + 0.003775*c^4)
+```
+
+V is admitted only for -0.5 < c <5. B and R are conservatively admitted for
+-0.5 < c <2 and 0 < c <2 respectively: the published redder B/R domains
+require confirmed M giants, which our source fields do not establish.
+Do not extrapolate or infer spectral class from colour alone. R denotes
+Cousins R, not Johnson R. Polynomial fit scatter is approximately 0.03017,
+0.0633 and 0.03167 mag for V,B,R; this is not a per-star uncertainty guarantee.
+Observed colours and magnitudes retain extinction. AV is not subtracted.
+
+Integrated magnitudes sum fluxes, not magnitudes, over the accepted valid
+members. They omit unavailable members and stars absent from Gaia; they are
+not completeness-corrected total cluster photometry. Missing counts and
+V5 status are retained. Very bright stars, unresolved systems, crowding,
+membership ambiguity and high extinction require review before accepting an
+observability ranking. The full source-backed run should audit lost reference
+objects as well as retained candidates; no pass count is asserted yet.
+
+Provider policy was checked on 2026-10-13 against
+[VizieR rules of usage](https://cds.unistra.fr/vizier-org/licences_vizier.html)
+and its [bulk client documentation](https://vizier.cds.unistra.fr/vizier/doc/cdsclient.html).
+No numeric concurrency/rate allowance was established; use serial bulk access,
+no automated retries, verified cache reuse and source attribution. Cite Hunt &
+Reffert, A&A, CDS/VizieR and ESA/Gaia/DPAC. VizieR's scientific-use availability
+is not a blanket CC0 or unrestricted-commercial-use declaration. The raw
+source and derived resources are not silently relicensed.

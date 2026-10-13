@@ -2667,3 +2667,29 @@ V supplement and explicit selection metadata to plot chosen parameters and
 export filtered copies. Missing coordinates are represented categorically,
 not invented. Source classification, photometry provenance and proposed amateur
 suitability remain distinct; globular-cluster work is a later milestone.
+
+
+
+### Hunt & Reffert member curation tool boundary (2026-10-13)
+
+The existing tools/compare_open_clusters.py selects Dias, Hunt & Reffert 2024,
+or its separately prepared converted-V5<11 subset. No-argument invocation
+prints catalogue/column help without loading data or writing outputs.
+tools/hunt_reffert_catalogue.py owns offline CDS parsing, observed Gaia-to-BVR
+relations, probability/aperture member statistics and the comparison adapter;
+tools/query_hunt_reffert2024.py owns explicit serial raw acquisition or verified
+cache preparation. These are developer-tool responsibilities, not production
+sky layers, coordinate services or alternate chart renderers. Existing comparison
+and scatter/export functions remain shared. The installed Dias chart catalogue
+and atlas snapshot defaults remain unchanged. Full source-backed preparation
+and its counts await Mac acquisition; partial data never claim full membership.
+
+Observed Johnson V/B and Cousins R follow official Gaia DR3 polynomial domains.
+V5 ranks members in converted V, with strict <11 selection; membership defaults
+to probability >=0.5 within the estimated tidal radius. Full rows, source IDs,
+missing diagnostics, source hashes and separate candidate exports are retained.
+Hunt diameter is 2r50, E(B-V) is explicitly AV50/3.1 under assumed R_V=3.1,
+and member sums are incomplete observed estimates. Catalogue ICRS centres keep
+J2016.0 provenance; this offline curation adds no stellar-position provider,
+epoch propagation or chart-frame reinterpretation. Source attribution and
+provider-policy preflight are recorded in the living user curation guide.

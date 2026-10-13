@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Compare packaged Dias open clusters with Caldwell and Messier membership.
+"""Compare Dias or prepared Hunt & Reffert (2024) clusters with Caldwell/Messier.
 
 Joins use explicit catalogue identifiers, never nearest-position guesses.
-Spatial and physical parameters come from the same Dias rows for every sample;
-V photometry comes from a separately source-traced OpenNGC supplement.
+Parameters come from the selected catalogue for every reference sample.
+Dias V uses OpenNGC; Hunt photometry uses accepted Gaia members.
 Original catalogue files and chart defaults remain intact. Selection is exported
 as annotations and, optionally, a separate filtered catalogue.
 """
@@ -13,6 +13,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import sys
 
 from astropy.table import Table
 import numpy as np
@@ -30,10 +31,15 @@ def identifier_key(value):
 
 
 def compare(dias, caldwell, messier, *, exclude_ir_embedded=False,
-            max_ebv=None, min_ebv=None, missing_ebv='exclude'):
+            max_ebv=None, min_ebv=None, missing_ebv='exclude', catalogue_name='Dias'):
     lookup = {}
     for index, name in enumerate(dias['identifier']):
         lookup.setdefault(identifier_key(name), []).append(index)
+        if 'aliases' in dias.colnames:
+            for alias in str(dias['aliases'][index]).split(','):
+                key = identifier_key(alias)
+                if key and index not in lookup.get(key, []):
+                    lookup.setdefault(key, []).append(index)
     edges = []
     memberships = {'Caldwell': [[] for _ in dias], 'Messier': [[] for _ in dias]}
 
@@ -92,7 +98,7 @@ def compare(dias, caldwell, messier, *, exclude_ir_embedded=False,
             unmatched=[e for e in selected if e['status'] == 'unmatched'],
             ambiguous=[e for e in selected if e['status'] == 'ambiguous'],
             alias_review=[e for e in selected if e['other_alias_rows']])
-    for name, keep in [('Dias', eligible),
+    for name, keep in [(catalogue_name, eligible),
             ('Caldwell', np.asarray(annotated['in_caldwell']) & eligible),
             ('Messier', np.asarray(annotated['in_messier']) & eligible)]:
         statistics = {'clusters': int(np.count_nonzero(keep))}
@@ -179,6 +185,29 @@ PARAMETERS = {
 }
 
 
+HUNT_PARAMETERS = {
+    'g5': ('g5', 'Fifth-brightest accepted member G (mag)', False),
+    'v5': ('v5', 'Fifth-brightest accepted member converted V (mag)', False),
+    'b5': ('b5', 'Fifth-brightest accepted member converted B (mag)', False),
+    'r5': ('r5', 'Fifth-brightest accepted member converted Cousins R (mag)', False),
+    'g10': ('g10', 'Tenth-brightest accepted member G (mag)', False),
+    'v10': ('v10', 'Tenth-brightest accepted member converted V (mag)', False),
+    'integrated_g': ('g_integrated', 'Summed accepted member G (mag)', False),
+    'integrated_b': ('b_integrated', 'Summed converted member B (mag)', False),
+    'integrated_r': ('r_integrated', 'Summed converted member Cousins R (mag)', False),
+    'bright_members': ('v_bright_members', 'Accepted members with converted V <11', True),
+    'accepted_members': ('accepted_member_count', 'Accepted members (probability/aperture policy)', True),
+    'av': ('av_magnitude', 'Hunt AV50 (mag)', False),
+    'tidal_diameter': ('tidal_diameter_arcmin', 'Hunt diameter 2rt (arcmin)', True),
+    'total_diameter': ('total_diameter_arcmin', 'Hunt diameter 2rtot, including tails (arcmin)', True),
+    'significance': ('cluster_significance', 'Hunt astrometric significance CST', False),
+    'cmd_quality': ('cmd_quality', 'Hunt median CMD classification score', False),
+}
+PARAMETERS.update(HUNT_PARAMETERS)
+MAGNITUDE_PARAMETERS = {'brightness', 'g5', 'v5', 'b5', 'r5', 'g10', 'v10',
+                        'integrated_g', 'integrated_b', 'integrated_r'}
+
+
 def selection_mask(table, eligible, max_ebv, min_ebv, missing_ebv):
     for limit in (max_ebv, min_ebv):
         if limit is not None and (isinstance(limit, bool) or not np.isfinite(limit) or limit < 0):
@@ -202,7 +231,7 @@ def selection_mask(table, eligible, max_ebv, min_ebv, missing_ebv):
     return keep, reasons
 
 
-def plot_comparison(table, prefix, x_parameter='diameter', y_parameter='members'):
+def plot_comparison(table, prefix, x_parameter='diameter', y_parameter='members', catalogue_name='Dias'):
     """Plot chosen measured/derived parameters with categorical missing margins."""
     import matplotlib.pyplot as plt
     if x_parameter == y_parameter:
@@ -231,11 +260,11 @@ def plot_comparison(table, prefix, x_parameter='diameter', y_parameter='members'
     missing_both = figure.add_subplot(grid[1,0])
     groups = {}
     for group, selection, marker, color, size in (
-            ('Dias', eligible, '.', '#777777', 12),
+            (catalogue_name, eligible, '.', '#777777', 12),
             ('Caldwell', eligible & np.asarray(table['in_caldwell']), 'o', '#0072B2', 70),
             ('Messier', eligible & np.asarray(table['in_messier']), '^', '#D55E00', 70)):
-        options = dict(marker=marker, s=size, zorder=2 if group=='Dias' else 4)
-        if group == 'Dias':
+        options = dict(marker=marker, s=size, zorder=2 if group==catalogue_name else 4)
+        if group == catalogue_name:
             options.update(color=color, alpha=.35)
         else:
             options.update(facecolors='none', edgecolors=color, linewidths=1.4)
@@ -249,9 +278,9 @@ def plot_comparison(table, prefix, x_parameter='diameter', y_parameter='members'
         ax.set_xscale('log')
     if log_y:
         ax.set_yscale('log')
-    if x_parameter == 'brightness':
+    if x_parameter in MAGNITUDE_PARAMETERS:
         ax.invert_xaxis()
-    if y_parameter == 'brightness':
+    if y_parameter in MAGNITUDE_PARAMETERS:
         ax.invert_yaxis()
     ax.set_ylabel(ylabel, fontsize=13)
     if not masks[0].any():
@@ -272,7 +301,7 @@ def plot_comparison(table, prefix, x_parameter='diameter', y_parameter='members'
     missing_both.axis('off')
     missing_both.text(.5,.5,f'{np.count_nonzero(masks[3])}\nmissing\nboth', ha='center', va='center', fontsize=10)
     figure.supxlabel('Legend counts refer to the main panel. Missing values occupy labelled margins; no imputation.\n'
-        'Member count is a richness proxy. V photometry is heterogeneous; brighter values lie up/right.', fontsize=10)
+        'Member count is a richness proxy. Photometry follows the selected catalogue; brighter magnitudes lie up/right.', fontsize=10)
     for suffix in ('png', 'svg', 'pdf'):
         figure.savefig(prefix.parent/(prefix.name+'_figure.'+suffix), dpi=180)
     plt.close(figure)
@@ -282,7 +311,17 @@ def plot_comparison(table, prefix, x_parameter='diameter', y_parameter='members'
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+    columns = '\n'.join(f'  {name:20s} {definition[1]}' for name, definition in PARAMETERS.items())
+    parser = argparse.ArgumentParser(description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=('Catalogue: --catalogue dias (default), hunt-reffert2024, or hunt-curated.\n'
+                'Hunt-only member columns are rejected for Dias. Hunt diameter is 2*r50; ebv is AV50/3.1.\n'
+                'hunt-curated: Type o, p>=0.5, inside tidal radius, converted V5 <11.\n'
+                'Columns for --x/--y (choose different names; member/AV/CST/quality columns are Hunt-only):\n'+columns))
+    parser.add_argument('--catalogue', choices=('dias','hunt-reffert2024','hunt-curated'), default='dias',
+        help='Choose source; hunt-curated is the retained V5<11 subset.')
+    parser.add_argument('--max-v5', type=float,
+        help='Hunt only: strict V5 < limit; missing V5 is excluded.')
     parser.add_argument('--output-prefix', type=Path)
     parser.add_argument('--output-directory', type=Path, default=Path(__file__).resolve().parents[1]/'output')
     parser.add_argument('--data-directory', type=Path, default=Path(__file__).resolve().parents[1]/'src/wenu/data/catalogs')
@@ -294,7 +333,21 @@ def main(argv=None):
     parser.add_argument('--missing-ebv', choices=('exclude','include'), default='exclude')
     parser.add_argument('--write-filtered-catalogue', action='store_true')
     parser.add_argument('--include-infrared-embedded', action='store_true')
-    args = parser.parse_args(argv)
+    arguments = sys.argv[1:] if argv is None else list(argv)
+    if not arguments:
+        parser.print_help()
+        return 0
+    args = parser.parse_args(arguments)
+    if args.catalogue == 'dias' and (args.max_v5 is not None or args.x in HUNT_PARAMETERS or args.y in HUNT_PARAMETERS):
+        parser.error('Hunt columns/--max-v5 require --catalogue hunt-reffert2024 or hunt-curated.')
+    if args.catalogue != 'dias':
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('hunt_reffert_catalogue', Path(__file__).with_name('hunt_reffert_catalogue.py'))
+        hunt = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(hunt)
+        return hunt.compare_main(args,
+            compare_function=compare, plot_function=plot_comparison, parameters=PARAMETERS,
+            key_function=identifier_key)
     if args.x == args.y:
         raise ValueError('Choose two different plot parameters.')
     paths = {name: args.data_directory/name/filename for name,filename in (

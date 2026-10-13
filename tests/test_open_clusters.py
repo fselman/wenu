@@ -258,3 +258,163 @@ def test_selected_clusters_render_as_one_path_collection():
     assert isinstance(artists[0], PathCollection)
     assert len(artists[0].get_offsets()) == 2
     plt.close(fig)
+
+
+
+def test_hunt_member_photometry_rank_policy_and_help(tmp_path, capsys):
+    import importlib.util
+    from pathlib import Path
+    from astropy.table import Table
+    import pytest
+    root = Path(__file__).resolve().parents[1]
+    def tool(name):
+        spec = importlib.util.spec_from_file_location(name, root/'tools'/f'{name}.py')
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+    hunt = tool('hunt_reffert_catalogue')
+    compare = tool('compare_open_clusters')
+    assert compare.main([]) == 0
+    help_text = capsys.readouterr().out
+    assert '--catalogue' in help_text and 'hunt-curated' in help_text and 'v5' in help_text
+    assert not list(tmp_path.iterdir())
+    with pytest.raises(SystemExit):
+        compare.main(['--catalogue','dias','--y','v5'])
+    # Synthetic fixture: policy boundary, reversed V/G ordering, exact IDs,
+    # missing colours, no extrapolation, and observed (not dereddened) sums.
+    clusters = Table(dict(hunt_id=[1,2], identifier=['synthetic A','synthetic B']))
+    stars = [dict(hunt_id=1,source_id=str(6000000000000000000+i),probability=.5,
+        inrt=1,inrj=1,g=9+i*.2,bp=10+i*.2,rp=9+i*.2) for i in range(6)]
+    stars[0].update(bp=13.,rp=9.)  # G brightest, V fainter than fifth.
+    stars += [dict(hunt_id=1,source_id='7',probability=.49,inrt=1,inrj=1,g=1.,bp=2.,rp=1.),
+              dict(hunt_id=1,source_id='8',probability=1.,inrt=0,inrj=0,g=2.,bp=3.,rp=2.),
+              dict(hunt_id=1,source_id='9',probability=1.,inrt=1,inrj=1,g=10.,bp=np.nan,rp=9.)]
+    result = hunt.member_statistics(clusters,iter(stars))
+    assert result['accepted_member_count'][0] == 7
+    assert result['g5_source_id'][0] != result['v5_source_id'][0]
+    assert result['v5_source_id'][0] == str(6000000000000000005)
+    assert result['missing_v_members'][0] == 1
+    assert result['v5_status'][0] == 'partial_photometry'
+    assert np.isnan(result['v5'][1]) and result['v5_status'][1] == 'fewer_than_five_valid_V'
+    expected_v = 10.-(-.02704+.01424-.2156+.01426)
+    assert result['v5'][0] == pytest.approx(expected_v)
+    assert hunt.gaia_to_bvr([10],[11],[10])['V'][0] == pytest.approx(expected_v)
+    assert np.isnan(hunt.gaia_to_bvr([10],[15],[10])['V'][0])
+    assert np.isnan(hunt.gaia_to_bvr([10],[13],[10])['R'][0])
+    assert np.isnan(hunt.gaia_to_bvr([10],[13],[10])['B'][0])
+    v = hunt.gaia_to_bvr([s['g'] for s in stars[:6]],
+        [s['bp'] for s in stars[:6]],[s['rp'] for s in stars[:6]])['V']
+    assert result['v_integrated'][0] == pytest.approx(-2.5*np.log10(np.sum(10**(-.4*v))))
+    with pytest.raises(ValueError,match='Duplicate'):
+        hunt.member_statistics(clusters,iter(stars+[stars[0]]))
+    with pytest.raises(ValueError):
+        hunt.member_statistics(clusters,iter(stars),minimum_probability=1.1)
+
+
+def test_hunt_catalogue_plot_selection_export_and_digest(tmp_path):
+    import importlib.util
+    import hashlib
+    import json
+    import shutil
+    from pathlib import Path
+    from astropy.table import Table
+    import pytest
+    root = Path(__file__).resolve().parents[1]
+    def load_tool(name):
+        spec = importlib.util.spec_from_file_location(name,root/'tools'/f'{name}.py')
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+    hunt = load_tool('hunt_reffert_catalogue')
+    tool = load_tool('compare_open_clusters')
+    data = tmp_path/'data'
+    for category in ('open_clusters','caldwell','messier'):
+        (data/category).mkdir(parents=True)
+        source = Path(nonstellar_catalog_path(category))
+        shutil.copyfile(source,data/category/source.name)
+    # Synthetic normalized resource, explicitly not a captured provider fixture.
+    rows = Table(dict(identifier=['NGC 869','NGC 884','NGC 2168','synthetic moving group'],
+        hunt_id=[1,2,3,4],aliases=['NGC0869','NGC0884','NGC2168',''],hunt_type=['o','o','o','m'],
+        source_type_flag=['','','',''],apparent_diameter_arcmin=[20.,20.,30.,40.],
+        distance_pc=[100.,100.,200.,300.],reddening_e_bv=[.2,.2,.2,.2],
+        log_age_years=[7.,7.,7.,7.],member_count=[10,10,10,10],metallicity_feh=[np.nan]*4,
+        v5=[10.999,11.,np.nan,9.],g5=[10.,10.,np.nan,8.],v_magnitude=[7.,7.,np.nan,6.]))
+    rows.meta.update(member_policy=dict(minimum_probability=.5,aperture='tidal'),
+        synthetic_fixture=True)
+    full = data/'open_clusters'/hunt.FULL_NAME
+    curated = data/'open_clusters'/hunt.CURATED_NAME
+    rows.write(full,format='ascii.ecsv')
+    rows[:1].write(curated,format='ascii.ecsv')
+    provenance = dict(files={p.name:dict(sha256=hashlib.sha256(p.read_bytes()).hexdigest())
+        for p in (full,curated)},synthetic_fixture=True)
+    (data/'open_clusters'/hunt.PROVENANCE_NAME).write_text(json.dumps(provenance))
+    original_labels = dict(tool.PARAMETERS)
+    prefix = tmp_path/'hunt_test_v1'
+    arguments = ['--catalogue','hunt-reffert2024','--data-directory',str(data),
+        '--output-prefix',str(prefix),'--x','diameter','--y','v5','--max-v5','11',
+        '--write-filtered-catalogue']
+    assert tool.main(arguments) == 0
+    assert tool.PARAMETERS == original_labels
+    selected = Table.read(tmp_path/'hunt_test_v1_filtered.ecsv')
+    assert list(selected['identifier']) == ['NGC 869']
+    all_rows = Table.read(tmp_path/'hunt_test_v1_hunt.csv')
+    assert len(all_rows) == 4
+    summary = json.loads((tmp_path/'hunt_test_v1_summary.json').read_text())
+    assert summary['selection']['eligible'] == 1
+    assert summary['samples']['Hunt & Reffert 2024']['clusters'] == 1
+    assert summary['samples']['Caldwell']['clusters'] == 1
+    assert summary['samples']['Messier']['clusters'] == 0
+    assert 'source_identifier' in Table.read(tmp_path/'hunt_test_v1_crosswalk.csv').colnames
+    assert (tmp_path/'hunt_test_v1_figure.png').is_file()
+    with pytest.raises(FileExistsError):
+        tool.main(arguments)
+    assert tool.main(['--catalogue','hunt-curated','--data-directory',str(data),
+        '--output-prefix',str(tmp_path/'curated_test_v1'),'--y','v5']) == 0
+    full.write_text(full.read_text()+'\n')
+    assert hashlib.sha256(full.read_bytes()).hexdigest() != provenance['files'][full.name]['sha256']
+    with pytest.raises(ValueError,match='digest'):
+        hunt.load(data/'open_clusters')
+
+
+def test_hunt_acquisition_receipt_and_no_argument_help(tmp_path, monkeypatch, capsys):
+    import gzip
+    import hashlib
+    import importlib.util
+    import io
+    import json
+    from pathlib import Path
+    import pytest
+    root = Path(__file__).resolve().parents[1]
+    monkeypatch.syspath_prepend(str(root/'tools'))
+    spec = importlib.util.spec_from_file_location('query_hunt_reffert2024',root/'tools/query_hunt_reffert2024.py')
+    tool = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(tool)
+    assert tool.main([]) == 0
+    assert '--source-directory' in capsys.readouterr().out
+    calls = []
+    payloads = {name: b'synthetic ReadMe\n' if name == 'ReadMe' else gzip.compress(b'synthetic record\n')
+                for name in tool.FILES}
+    class Response(io.BytesIO):
+        status = 200
+    def response(request,timeout):
+        calls.append(request.full_url)
+        return Response(payloads[request.full_url.rsplit('/',1)[-1]])
+    monkeypatch.setattr(tool.urllib.request,'urlopen',response)
+    cache = tmp_path/'cache'
+    tool.acquire(cache)
+    receipt = json.loads((cache/'receipt.json').read_text())
+    assert calls == [tool.BASE_URL+name for name in tool.FILES]
+    assert all(receipt[name]['sha256'] == hashlib.sha256(payloads[name]).hexdigest() for name in tool.FILES)
+    assert not list(cache.glob('*.partial'))
+    with pytest.raises(FileExistsError):
+        tool.acquire(cache)
+    def failure(request,timeout):
+        calls.append(request.full_url)
+        raise TimeoutError('synthetic transport failure')
+    monkeypatch.setattr(tool.urllib.request,'urlopen',failure)
+    previous_calls = len(calls)
+    failed_cache = tmp_path/'failed'
+    with pytest.raises(TimeoutError):
+        tool.acquire(failed_cache)
+    assert len(calls) == previous_calls+1  # no retry
+    assert not (failed_cache/'receipt.json').exists()
