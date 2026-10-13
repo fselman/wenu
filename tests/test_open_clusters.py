@@ -792,3 +792,43 @@ def test_supplementary_conversion_requires_complete_csvs_and_detects_corruption(
     receipt['products']=receipt['products'][:1];path.write_text(json.dumps(receipt))
     with pytest.raises(ValueError,match='Incomplete'):
         additions.load_converted(directory,registry)
+
+
+def test_member_count_axis_uses_each_source_count_without_halving_or_radius_dependency(monkeypatch):
+    from astropy.table import Table,MaskedColumn
+    _union_tool_and_sources(monkeypatch)
+    import plot_merged_open_clusters as plot
+    table=Table(dict(wenu_id=['W1','W2','W3'],dias_id=['A','B','C'],hunt_id=[1,2,3],
+      hunt_v10=[10.,11.,12.],dias_member_count=[31,0,-1],hunt_member_count=[120,80,50],
+      hunt_accepted_member_count=[40,30,20],in_messier=[True,False,False]))
+    # No radius columns: members mode must not require or substitute radii.
+    table['dias_member_count']=MaskedColumn(table['dias_member_count'],mask=[False,False,True])
+    data=plot.points(table,['messier'],x='members',max_v10=11)
+    assert list(data['x_value'][:2])==[31.,120.]
+    assert list(data['selection_status'])==['plotted','plotted','invalid_members','v10_cut','invalid_members','v10_cut']
+    assert np.all(np.isnan(data['radius_arcmin']))
+    assert list(data['first_list'][:2])==['messier','messier']
+    assert list(data['v10'][:2])==[10.,10.]
+
+
+def test_member_count_cli_exports_axis_metadata_and_no_argument_help(tmp_path,monkeypatch,capsys):
+    import json
+    from astropy.table import Table
+    _union_tool_and_sources(monkeypatch)
+    import plot_merged_open_clusters as plot
+    table=Table(dict(wenu_id=['W1'],dias_id=['A'],hunt_id=[1],hunt_v10=[10.],
+                     dias_member_count=[31],hunt_member_count=[120],in_messier=[True]))
+    path=tmp_path/'candidate_v1.ecsv';table.write(path)
+    output=tmp_path/'plots'
+    assert plot.main(['--catalogue',str(path),'--output-directory',str(output),
+                      '--name','members_v10_v1','--x','members'])==0
+    receipt=json.loads((output/'members_v10_v1_summary.json').read_text())
+    assert receipt['x']=='members'
+    assert receipt['x_columns']==['dias_member_count','hunt_member_count']
+    ledger=Table.read(output/'members_v10_v1_points.csv')
+    assert list(ledger['x_value'])==[31.,120.]
+    assert all((output/('members_v10_v1'+extension)).exists() for extension in ('.png','.svg','.pdf'))
+    capsys.readouterr()
+    assert plot.main([])==0
+    help_text=capsys.readouterr().out
+    assert '--x {radius,members}' in help_text and 'member_count' in help_text

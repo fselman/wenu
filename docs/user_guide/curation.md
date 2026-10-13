@@ -869,3 +869,28 @@ Missing reddening under that cut is excluded and logged. Omitting either cut
 removes that filter. All tools print help and write nothing with no arguments.
 This work does not adopt a curated database, change sky charts or merge the
 software branch.
+
+
+### Member-count axis and the three comparison plots
+
+`tools/plot_merged_open_clusters.py --x members` plots original
+`dias_member_count` and `hunt_member_count` directly against Hunt-derived V10.
+It does not halve counts or replace Hunt's published N with the smaller
+accepted-member subset used for photometry. The source counts have different
+membership definitions and should be interpreted as separate catalogue
+measurements. Radius remains the default (`--x radius`); it is half each
+selected published diameter. Both x-axis choices use a logarithmic scale;
+nonpositive, missing or nonfinite x values are excluded and logged. V10,
+reddening cuts, source masks, first-list priority and no-V10 panel retain
+their existing meanings. Point exports preserve radius, member_count and
+the actual x_value; the summary records the selected axis/source columns.
+No-argument help lists both axis choices.
+
+Fernando selected three views: radius versus V10 with E(B−V)≤3; the same
+with the strict V10<11 cut; and member count versus V10 with E(B−V)≤3.
+The source/catalogue inputs stay under `src/wenu/data/catalogs`; an unadopted
+combined candidate can be generated under `output` and reused by all three
+plots. Running from `tools` uses `PYTHONPATH=../src`,
+`--data-directory ../src/wenu/data/catalogs` for the merge, and relative
+`../output/...` destinations. There is no need to move the candidate into
+the installed data directory or to download another catalogue.

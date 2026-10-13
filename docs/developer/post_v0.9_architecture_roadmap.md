@@ -5534,3 +5534,24 @@ and modern Herschel programme selection. Existing owning tests cover source
 masking, exact identities, compound references, first-list precedence, shared
 V10, strict cuts and supplementary digest rejection. No new public sky layer,
 canonical pipeline change, curated database adoption or software merge occurs.
+
+
+## Member-count comparison axis checkpoint
+
+Fernando selected the previous two radius–V10 views plus a member-count–V10
+view, with source data read from Wenu's data directory and products written
+under output. The existing `tools/plot_merged_open_clusters.py` now accepts
+`--x radius|members`. Radius retains the half-diameter default; members uses
+the separate published `dias_member_count` and `hunt_member_count` directly,
+without halving counts or substituting photometrically accepted members.
+Only the selected axis columns are required; invalid/nonpositive x values
+are excluded and logged for the logarithmic x axis. The point ledger retains
+radius, member_count and x_value; summary records axis/source columns.
+V10 sharing for matched Dias rows, missing-V10 panel, source-specific reddening,
+strict V10 cuts, first-list priority, masks and plot exports retain their scope.
+The owning guide documents both axes and running from tools with ../src and
+../output paths. Existing owning tests exercise unequal source counts, missing
+radius independence, masked/zero counts, strict cuts, CLI exports and help.
+No catalogue data, physical identity policy, public sky layer, chart default,
+canonical pipeline or dependency changes. Software delivery remains separate
+from final catalogue curation and branch merge.
