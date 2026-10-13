@@ -4970,3 +4970,19 @@ replacement. Source data/photometry and chart defaults are unchanged by this
 identifier correction. The curation guide records the exact receipt and
 selection meanings; Mac focused and later final full-suite acceptance remain
 separate from source publication.
+
+### Tenth-member open-cluster cutoff (2026-10-13)
+
+The existing comparison adapter accepts optional strict --max-v10 in addition
+to --max-v5. Both supplied limits must pass; missing rank magnitudes receive
+explicit missing_V5/missing_V10 reasons. No-argument help advertises the option,
+and Dias rejects these member-specific cuts. The same packaged source/member
+policy, BVR conversion, identifier owner, plot/export owner and IR/E/reddening
+selection are reused without acquisition or resource changes. The full Hunt
+source with V10<11, IR/E exclusions and E(B-V)<=3 retains 229 candidates,
+including 20 Caldwell components and 21 Messier clusters. The named
+hunt-curated source remains the previously prepared V5 subset; independent
+V10 comparisons use hunt-reffert2024 and separate versioned filtered exports.
+The coordinate guide was reviewed and remains current: rank-10 photometry
+already exists and this selection option changes no coordinate meaning,
+provider, frame, epoch, position, sky layer or chart pipeline.

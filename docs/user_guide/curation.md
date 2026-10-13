@@ -139,7 +139,9 @@ objects are different states.
 
 The Dias route filters infrared/embedded flags and reddening. It does **not**
 expose integrated-magnitude, surface-brightness or Trumpler cutoffs. The Hunt
-route additionally supports the strict fifth-member `--max-v5` criterion. Discuss the
+route additionally supports strict fifth-member `--max-v5` and tenth-member
+`--max-v10` criteria. Unknown values fail their supplied cut; if both cuts
+are supplied, both must pass. Discuss the
 meaning and missing-value policy before adding those options; do not describe
 a planned filter as installed. The atlas presentation option
 `open_cluster_exclude_infrared_embedded` controls only that flag-based
@@ -394,3 +396,42 @@ no automated retries, verified cache reuse and source attribution. Cite Hunt &
 Reffert, A&A, CDS/VizieR and ESA/Gaia/DPAC. VizieR's scientific-use availability
 is not a blanket CC0 or unrestricted-commercial-use declaration. The raw
 source and derived resources are not silently relicensed.
+
+
+## Tenth-member comparison (V10)
+
+Choose `--y v10` and `--max-v10 11` to apply the same strict apparent-magnitude
+threshold to the tenth-brightest accepted member in converted Johnson V.
+The default p>=0.5/tidal member policy, observed-colour conversion, IR/E marks,
+E(B-V) handling, alias crosswalk and source hashes are identical to the V5 route.
+Fewer than ten valid converted members yields missing V10: retain the row with
+`missing_V10` as its exclusion reason when this cut is supplied. Without the
+cut, selected objects missing V10 remain in the plot's categorical margin.
+The source V10 column is already packaged; no download or rebuild is needed.
+
+Use `--catalogue hunt-reffert2024` for this comparison. The `hunt-curated`
+preset is still the named V5<11 source subset, so it would preselect on V5.
+The V10 candidate is a separate `_filtered.ecsv`, with `max_v10` and any other
+criteria retained in its selection metadata. Both member cuts, if supplied,
+combine by logical AND; the axes themselves never impose a magnitude cut.
+
+```bash
+(
+  set -e
+  cd /Users/fselman/odrive/Dropbox/software/wenu
+  review_dir="$(mktemp -d "$HOME/Downloads/wenu-hunt-v10-v3.XXXXXX")"
+
+  PYTHONPATH=src MPLBACKEND=Agg python tools/compare_open_clusters.py \
+    --catalogue hunt-reffert2024 --output-directory "$review_dir" \
+    --name hunt_diameter_v10_ebv3_v3 \
+    --x diameter --y v10 --max-ebv 3 --write-filtered-catalogue
+
+  PYTHONPATH=src MPLBACKEND=Agg python tools/compare_open_clusters.py \
+    --catalogue hunt-reffert2024 --output-directory "$review_dir" \
+    --name hunt_v10lt11_ebv3_v3 \
+    --x diameter --y v10 --max-ebv 3 --max-v10 11 \
+    --write-filtered-catalogue
+
+  open "$review_dir"
+)
+```

@@ -276,10 +276,12 @@ def test_hunt_member_photometry_rank_policy_and_help(tmp_path, capsys):
     compare = tool('compare_open_clusters')
     assert compare.main([]) == 0
     help_text = capsys.readouterr().out
-    assert '--catalogue' in help_text and 'hunt-curated' in help_text and 'v5' in help_text
+    assert '--catalogue' in help_text and 'hunt-curated' in help_text and 'v5' in help_text and '--max-v10' in help_text
     assert not list(tmp_path.iterdir())
     with pytest.raises(SystemExit):
         compare.main(['--catalogue','dias','--y','v5'])
+    with pytest.raises(SystemExit):
+        compare.main(['--catalogue','dias','--max-v10','11'])
     # Synthetic fixture: policy boundary, reversed V/G ordering, exact IDs,
     # missing colours, no extrapolation, and observed (not dereddened) sums.
     clusters = Table(dict(hunt_id=[1,2], identifier=['synthetic A','synthetic B']))
@@ -338,7 +340,7 @@ def test_hunt_catalogue_plot_selection_export_and_digest(tmp_path):
         source_type_flag=['','','',''],apparent_diameter_arcmin=[20.,20.,30.,40.],
         distance_pc=[100.,100.,200.,300.],reddening_e_bv=[.2,.2,.2,.2],
         log_age_years=[7.,7.,7.,7.],member_count=[10,10,10,10],metallicity_feh=[np.nan]*4,
-        v5=[10.999,11.,np.nan,9.],g5=[10.,10.,np.nan,8.],v_magnitude=[7.,7.,np.nan,6.]))
+        v5=[10.999,11.,np.nan,9.],v10=[11.999,12.,np.nan,9.],g5=[10.,10.,np.nan,8.],v_magnitude=[7.,7.,np.nan,6.]))
     rows.meta.update(member_policy=dict(minimum_probability=.5,aperture='tidal'),
         synthetic_fixture=True)
     full = data/'open_clusters'/hunt.FULL_NAME
@@ -372,6 +374,19 @@ def test_hunt_catalogue_plot_selection_export_and_digest(tmp_path):
         tool.main(arguments)
     assert tool.main(['--catalogue','hunt-curated','--data-directory',str(data),
         '--output-prefix',str(tmp_path/'curated_test_v1'),'--y','v5']) == 0
+    assert tool.main(['--catalogue','hunt-reffert2024','--data-directory',str(data),
+        '--output-prefix',str(tmp_path/'v10_test_v1'),'--y','v10','--max-v10','12',
+        '--write-filtered-catalogue']) == 0
+    v10_selected = Table.read(tmp_path/'v10_test_v1_filtered.ecsv')
+    assert list(v10_selected['identifier']) == ['NGC_869']
+    assert v10_selected.meta['selection']['max_v10'] == 12
+    assert v10_selected.meta['selection']['max_v5'] is None
+    v10_all = Table.read(tmp_path/'v10_test_v1_hunt.csv')
+    assert v10_all['selection_exclusion_reason'][1] == 'V10_not_brighter_than_limit'
+    assert v10_all['selection_exclusion_reason'][2] == 'missing_V10'
+    with pytest.raises(ValueError,match='--max-v10 must be finite'):
+        tool.main(['--catalogue','hunt-reffert2024','--data-directory',str(data),
+            '--output-prefix',str(tmp_path/'invalid_v10_v1'),'--max-v10','nan'])
     full.write_text(full.read_text()+'\n')
     assert hashlib.sha256(full.read_bytes()).hexdigest() != provenance['files'][full.name]['sha256']
     with pytest.raises(ValueError,match='digest'):

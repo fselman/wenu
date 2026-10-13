@@ -326,6 +326,8 @@ def main(argv=None):
         help='Choose source; hunt-curated is the retained V5<11 subset.')
     parser.add_argument('--max-v5', type=float,
         help='Hunt only: strict V5 < limit; missing V5 is excluded.')
+    parser.add_argument('--max-v10', type=float,
+        help='Hunt only: strict V10 < limit; missing V10 is excluded. Both limits, if given, must pass.')
     parser.add_argument('--output-prefix', type=Path)
     parser.add_argument('--output-directory', type=Path, default=Path(__file__).resolve().parents[1]/'output')
     parser.add_argument('--data-directory', type=Path, default=Path(__file__).resolve().parents[1]/'src/wenu/data/catalogs')
@@ -342,8 +344,8 @@ def main(argv=None):
         parser.print_help()
         return 0
     args = parser.parse_args(arguments)
-    if args.catalogue == 'dias' and (args.max_v5 is not None or args.x in HUNT_PARAMETERS or args.y in HUNT_PARAMETERS):
-        parser.error('Hunt columns/--max-v5 require --catalogue hunt-reffert2024 or hunt-curated.')
+    if args.catalogue == 'dias' and (args.max_v5 is not None or args.max_v10 is not None or args.x in HUNT_PARAMETERS or args.y in HUNT_PARAMETERS):
+        parser.error('Hunt columns/--max-v5/--max-v10 require --catalogue hunt-reffert2024 or hunt-curated.')
     if args.catalogue != 'dias':
         import importlib.util
         spec = importlib.util.spec_from_file_location('hunt_reffert_catalogue', Path(__file__).with_name('hunt_reffert_catalogue.py'))

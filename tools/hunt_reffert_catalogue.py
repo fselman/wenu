@@ -196,8 +196,10 @@ def compare_main(args, *, compare_function, plot_function, parameters, key_funct
     """Adapt Hunt tables to the existing comparison/plot/export owners offline."""
     if args.x == args.y:
         raise ValueError('Choose two different plot parameters.')
-    if args.max_v5 is not None and not np.isfinite(args.max_v5):
-        raise ValueError('--max-v5 must be finite.')
+    for rank in (5, 10):
+        limit = getattr(args, 'max_v'+str(rank))
+        if limit is not None and not np.isfinite(limit):
+            raise ValueError(f'--max-v{rank} must be finite.')
     directory = args.data_directory
     table, provenance, source_path = load(directory/'open_clusters', args.catalogue == 'hunt-curated')
     dias_path = directory/'open_clusters/open_clusters_dias_heasarc.ecsv'
@@ -221,19 +223,26 @@ def compare_main(args, *, compare_function, plot_function, parameters, key_funct
     keep = np.asarray(annotated['in_amateur_sample'], dtype=bool).copy()
     reasons = [str(value) for value in annotated['selection_exclusion_reason']]
     for i, row in enumerate(annotated):
-        reason = ('not_open_cluster' if row['hunt_type'] != 'o' else
-                  'missing_V5' if args.max_v5 is not None and not np.isfinite(row['v5']) else
-                  'V5_not_brighter_than_limit' if args.max_v5 is not None and row['v5'] >= args.max_v5 else '')
-        if reason:
+        row_reasons = ['not_open_cluster'] if row['hunt_type'] != 'o' else []
+        for rank in (5, 10):
+            limit = getattr(args, 'max_v'+str(rank))
+            if limit is None:
+                continue
+            magnitude = row['v'+str(rank)]
+            if not np.isfinite(magnitude):
+                row_reasons.append(f'missing_V{rank}')
+            elif magnitude >= limit:
+                row_reasons.append(f'V{rank}_not_brighter_than_limit')
+        if row_reasons:
             keep[i] = False
-            reasons[i] = '|'.join(filter(None, (reasons[i], reason)))
+            reasons[i] = '|'.join(filter(None, (reasons[i], *row_reasons)))
     annotated['in_amateur_sample'] = keep
     annotated['selection_exclusion_reason'] = reasons
     summary['hunt_clusters'] = summary.pop('dias_clusters')
     summary['catalogue'] = args.catalogue
-    summary['selection'].update(max_v5=args.max_v5, hunt_open_clusters_only=True,
+    summary['selection'].update(max_v5=args.max_v5, max_v10=args.max_v10, hunt_open_clusters_only=True,
         eligible=int(np.count_nonzero(keep)), member_policy=table.meta['member_policy'])
-    # Recompute statistics after the extra Hunt type/V5 criteria.
+    # Recompute statistics after the extra Hunt type/member-magnitude criteria.
     for group, statistics in summary['samples'].items():
         selected = keep if group == name else keep & np.asarray(annotated['in_'+group.casefold()])
         statistics['clusters'] = int(np.count_nonzero(selected))
@@ -251,7 +260,7 @@ def compare_main(args, *, compare_function, plot_function, parameters, key_funct
     summary.update(parameter_source=dict(table.meta), photometry_provenance=provenance,
         source_sha256={key:hashlib.sha256(path.read_bytes()).hexdigest() for key,path in paths.items()},
         matching_policy='Exact normalized primary and published AllNames aliases; ambiguous identities remain unresolved.',
-        notes='B/V/R are calibrated estimates. Missing photometry can make V5 too faint and member sums too faint. IR/E flags are positive Dias crossmatch evidence only.')
+        notes='B/V/R are calibrated estimates. Missing photometry can make V5/V10 too faint and member sums too faint. IR/E flags are positive Dias crossmatch evidence only.')
     if not args.name or Path(args.name).name != args.name:
         raise ValueError('Output name must be a nonempty filename prefix.')
     prefix = args.output_prefix or args.output_directory/args.name
