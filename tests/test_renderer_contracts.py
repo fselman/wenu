@@ -218,7 +218,8 @@ def test_entity_label_formatter_can_rename_or_suppress_labels():
     plt.close(figure)
 
 
-def test_curves_preserve_nan_segmentation_and_style():
+@pytest.mark.parametrize('scale', [1.0,1.8])
+def test_curves_preserve_nan_segmentation_and_style(scale):
     figure, ax = plt.subplots()
     renderer = MatplotlibRenderer(ax)
     curves = ProjectedCurves(
@@ -233,6 +234,7 @@ def test_curves_preserve_nan_segmentation_and_style():
     artists = renderer.draw(
         curves,
         style={"linewidth": 1.75, "linestyle": "--"},
+        curve_size_scale=scale,
     )
 
     assert len(artists) == 1
@@ -240,6 +242,9 @@ def test_curves_preserve_nan_segmentation_and_style():
     assert artists[0].get_linewidth() == 1.75
     assert artists[0].get_linestyle() == "--"
     assert np.isnan(artists[0].get_xdata()[2])
+    np.testing.assert_allclose(artists[0].get_xdata(),
+        1.5+scale*(np.asarray([0,1,np.nan,2,3])-1.5),equal_nan=True)
+    np.testing.assert_allclose(curves.items[0].x,[0,1,np.nan,2,3],equal_nan=True)
     plt.close(figure)
 
 
@@ -617,3 +622,69 @@ def test_region_text_requires_whole_box_containment_in_its_own_visible_polygon(d
     renderer.finalize_graphics()
     assert ax.texts[0].get_position() == position and ax.texts[0].get_visible()
     plt.close(figure)
+
+@pytest.mark.parametrize("dpi", [100, 300])
+def test_boundary_ticks_are_slanted_physical_marks_without_interior_curves(dpi):
+    from wenu.charts.boundaries import ExteriorGridLabelAnchor
+    figure, ax = plt.subplots(figsize=(4,4),dpi=dpi)
+    ax.set(xlim=(-1,1),ylim=(-1,1),aspect="equal")
+    boundary = ProjectedCurve([-1,1,1,-1],[-1,-1,1,1],closed=True)
+    anchor = ExteriorGridLabelAnchor(None,boundary,all_crossings=True)
+    renderer = MatplotlibRenderer(ax)
+    grid = ProjectedGrid({"edge": ProjectedCurves([ProjectedCurve(
+        [-2,2],[-1,1],name="synthetic-diagonal")])})
+    marks = renderer.draw(grid,boundary_tick_anchor=anchor,
+        boundary_ticks={"edge": lambda name: dict(length_points=4,label="+10°",
+            label_rotation="perpendicular")},
+        style=dict(color="black",linewidth=.8))
+    ticks=[artist for artist in marks if getattr(artist,'_wenu_semantic_component',None)=='ticks']
+    assert len(ticks) == 2 and len(ax.lines) == 2 and len(ax.texts) == 2
+    for mark in ticks:
+        points = ax.transData.transform(mark.get_xydata())
+        vector = points[1]-points[0]
+        assert np.linalg.norm(vector)*72/dpi == pytest.approx(4)
+        assert vector[1]/vector[0] == pytest.approx(.5)
+        assert mark._wenu_semantic_component == "ticks"
+    for text in ax.texts:
+        angle=np.radians(text.get_rotation())
+        assert np.dot([np.cos(angle),np.sin(angle)],[1,.5]) == pytest.approx(0,abs=1e-12)
+    # Fixed atlas bands discard the lower-priority family instead of moving
+    # either coordinate to another lane. Exercise all four edge decisions.
+    renderer.set_grid_label_band(boundary, style=dict(fill_color='white',
+        frame_color='black',label_color='black',linewidth=.8,padding_points=2))
+    renderer.configure_grid_label_frame(horizontal_points=30,vertical_points=30)
+    for text in ax.texts:
+        text.set_visible(False)
+    for position, direction, horizontal in (((0,1),(0,1),True),
+            ((0,-1),(0,-1),True), ((1,0),(1,0),False), ((-1,0),(-1,0),False)):
+        pair=[]
+        for family in ('dec','ra'):
+            text=ax.text(*position,'10°' if family=='dec' else '1ʰ',fontsize=10,ha='center',va='center')
+            text._wenu_exterior_label=True
+            text._wenu_exterior_attachment=(position,np.array(direction,dtype=float))
+            text._wenu_grid_tick_direction=np.array(direction,dtype=float)
+            text._wenu_coordinate_family=family
+            text._wenu_grid_edge_horizontal=horizontal
+            pair.append(text)
+        renderer._finalize_grid_label_band()
+        assert pair[1 if horizontal else 0].get_visible()
+        assert not pair[0 if horizontal else 1].get_visible()
+    # A steep meridian requires normal-to-edge clearance, while its text and
+    # offset still follow the projected meridian. Cover both vertical edges.
+    for sign in (-1, 1):
+        position = (sign, .55)
+        text = ax.text(*position, '2ʰ', fontsize=10, ha='center', va='center')
+        text._wenu_exterior_label = True
+        text._wenu_exterior_attachment = (position, np.array([sign, 0.]))
+        text._wenu_grid_tick_direction = np.array([sign*.25, 1.])
+        text._wenu_coordinate_family = 'ra'
+        text._wenu_grid_edge_horizontal = False
+        renderer._finalize_grid_label_band()
+        assert text.get_visible()
+        box = text.get_window_extent(figure.canvas.get_renderer())
+        edge = ax.transData.transform(position)[0]
+        gap = box.x0-edge if sign > 0 else edge-box.x1
+        assert gap*72/dpi == pytest.approx(2.4, abs=1e-8)
+        assert abs(np.tan(np.radians(text.get_rotation()))) == pytest.approx(4)
+    plt.close(figure)
+

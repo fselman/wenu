@@ -4611,3 +4611,45 @@ RA is undefined; JSON retains the design's canonical RA=0 with ra_defined=false
 and the independent pole_meridian_ra_deg tangent-orientation anchor. The key's
 bright reference floor and report-page frame are presentation only. Existing
 Hipparcos source epoch and scientific/projection ownership remain unchanged.
+
+
+### Common central atlas scale and portrait index (2026-10-12)
+
+The common-scale publication candidate uses one rectangular angular field
+and one printed sky footprint for all sheets. Wenu's stereographic radius
+parameter satisfies rho = radius * tan(theta/2), so the local derivative at
+the centre is radius/2 per radian. Reported mm/degree multiply that derivative
+by the physical axes-width/projected-viewport-width ratio and pi/180.
+The owning test checks it against a small-angle projected-radius oracle.
+Scale still varies away from the centre; no flat finite chart is claimed
+isometric to the sphere.
+
+The revised resolved 36-sheet specimen preserves ICRS centres, polar meridian
+anchors, primary ownership, native epochs and catalogue provenance. Expanded
+nonpolar angular fields are explicit versioned geometry, with analytic
+coverage and overlap recomputed. Physical layout does not silently change
+viewport coordinates, and suppressed text never removes a scientific tick.
+Polar Dec text anchors are canonical projected positions on the actual RA
+meridian nearest page vertical; physical text clearance preserves that anchor.
+
+Landscape index views retain the existing inward horizontal join and lens.
+Portrait views use explicit projection position angles before drawing and
+put the south disk above the north disk. Joined views meet at the equatorial
+join point and use a horizontal page bisector in the shared lens; separated
+views remain separate. They do not claim pointwise registration of the common
+band or rotate labelled exports.
+These are index-presentation changes, not a change to atlas sheet frames,
+celestial axes, catalogue epochs, scientific realization or coordinate-service
+ownership. The observer-free native ICRS pipeline remains the same.
+
+
+### Explicit atlas sky aspect (2026-10-13)
+
+Atlas page geometry can declare `sky_aspect_ratio` for the projected sky
+rectangle independently of the outer useful paper rectangle. Legacy records
+use the useful-page ratio. Revision-3 36-chart geometry chooses the aspect
+remaining after fixed font-derived coordinate bands, and revalidates its exact
+stereographic footprints analytically. Printed mapping remains isotropic with
+one central scale across all sheets. Exterior grid text continues along the
+projected grid line, but its physical edge clearance is measured normal to the
+page boundary; a steep meridian cannot leave the text box crossing that edge.

@@ -2515,3 +2515,130 @@ renderer or export pipeline is added. Resolved designs optionally retain the
 canonical request and computed layout; historical JSON remains readable.
 `wenu_plot_atlas` consumes the result without rerunning placement. Existing
 geometry and CLI test owners protect scientific containment and provenance.
+
+
+### Atlas coordinate-grid and frame candidate (2026-10-12)
+
+Based on synchronized main `28e52bae`, the shared grid presentation requests
+RA lines every configurable interval (default 2h) and declination lines every 10 degrees, plus separate
+10-minute RA and 10-degree declination tick curves from EquatorialGrid.
+Source layers and saved native snapshots are not mutated. Boundary ownership
+remains in charts/boundaries.py: all true crossings carry inward projected
+curve tangents. The generic renderer draws physical marks and measures labels;
+it neither generates coordinates nor projects a second sky. Whole-hour labels
+and declinations default to 12 points; 20m/40m labels default to 9 points.
+Unlabelled RA marks occur at 10m, 30m and 50m within each hour. Dense minute
+and declination labels separate outward without moving scientific crossings.
+
+The nominal exterior-band minimum is scaled by 1.5. Uniform axes reduction
+reserves font-measured collision clearance inside the useful paper margins;
+projection, persisted viewport, angular coverage and tiling are unchanged.
+Actual renderer axes supply stellar area-budget denominators and the report's
+layout.chart_sky_frame. The shared stereographic projector treats its exact
+antipode as a non-finite break, preventing a false segment across polar sheets.
+PNG/PDF/semantic SVG use the same canonical render. No new module is introduced.
+Mac visual/print acceptance and merge remain pending.
+
+The installed atlas producer injects `wenu.cli.chart.main` and dispatches every
+sheet through its `atlas-sheet` subcommand, including spawned workers. A typed
+AtlasSheetChartRequest carries exact validated design geometry, presentation,
+destination and the already prepared observer-free sky. request_generation.py
+owns execution; publication retains batch/snapshot lifecycle, furniture and
+assembly. Native sheet admission never creates an ordinary observer. Public
+atlas-sheet file admission checks saved-sky sufficiency and exact design digest;
+batch admission reuses the sky already verified once by publication. Direct
+library create_atlas calls use the same request executor without a CLI adapter.
+
+Ordinary regional charts opt into EquatorialGridMarks through CLI or schema-v2
+TOML. request_grids.py owns shared coordinate selections, mark policies and
+physical frame layout. Both execution paths use those helpers and canonical
+composition/export. Ordinary regional grids retain the established observer-time
+FK5-to-AltAz realization; native atlas grids remain fixed ICRS. No frame, epoch
+or scientific meaning is changed.
+
+
+The revised presentation uses editable superscript h/m characters and requests
+a generic parallel boundary-label rotation for Dec. The renderer derives
+the angle from the display-space projected tangent; it has no coordinate-family
+knowledge. Visible lines use black, 0.65 opacity and 0.55-point width.
+
+Latest review adds configurable RA spacing and optional minute labels, defaulting
+to 2h lines and hidden 20m/40m text. Parallel Dec labels follow the curve outward
+from its true boundary crossing. Atlas sheet and index presentation select pale
+sky blue for MW/MCs through their existing style/composition owners. Canonical
+detail application delegates each DSO category to an enabled dedicated layer;
+NonStellar filters generic outlines request-locally. Snapshot catalogues remain
+unchanged, and generic outlines return when their dedicated owner is disabled.
+
+Atlas execution now requests labels_only geometry for its Messier layer through
+shared NonStellar realization, preserving all catalogue designations and source
+categories without generic outlines. Native catalogue subclasses retain their
+original table method contracts. Atlas legend_fontsize controls chart/report
+legend text and titles independently of heading/chart-number furniture.
+
+Atlas geometry review: the existing atlas_design owner accepts one version-2
+angular width or height, deriving its companion from the useful page aspect.
+Optional polar_primary_diameter_deg sizes polar sheets independently, including
+reserved overlap. Existing analytic coverage, request binding and serialization
+validate the mixed footprint sizes. Atlas presentation owns positive finite
+messier_label_fontsize (default 7 points); request_generation passes it to the
+canonical label renderer. No new pipeline, production module or coordinate
+convention is introduced.
+
+Atlas review extensions retain the canonical chart command and pipeline.
+Atlas presentation owns cluster fill, DSO diameter scaling and Dec text scaling;
+request_generation resolves the composed deep-sky style. Shared marker paths,
+optional globular catalogue centres, existing legend descriptors and the generic
+renderer own their established seams. The renderer alone magnifies SNR display
+outlines, retaining scientific geometry and source dimensions. Report furniture
+uses existing visible_star_statistics for the chart's parenthesized count.
+stellar_sizing_report also owns the actual-source catalogue-count appendix;
+it reads the admitted sky's source catalogue rather than marker appearances or
+new catalogue loads. Atlas publication appends the page and publishes all audit
+products inside its existing staging/no-clobber lifecycle.
+
+
+### Atlas physical frame and report marker correction
+
+The atlas retains the canonical chart command and projected viewport. Its
+existing furniture callback now asks the renderer to fit the measured exterior
+coordinate frame into the useful paper bounds, uniformly resizing axes while
+retaining physical label and symbol sizes. Scientific geometry and selection
+are unchanged. The existing legend coordination chain propagates the atlas
+DSO diameter multiplier to the four report marker handles; patches and legend
+text retain their existing dimensions. No new geometry or export pipeline is
+introduced.
+
+
+### Common-scale atlas contract runtime candidate (2026-10-12)
+
+The binding publication rules supersede independent per-sheet physical fitting.
+Publication requires a common angular field and common physical sky rectangle;
+its frame budget is fixed from fonts for the complete atlas. The existing
+renderer implements edge-family suppression and projected RA orientation;
+the existing atlas furniture owner positions interior polar Dec text.
+Canonical scientific geometry, tick anchors and the chart-command route are
+retained. A versioned resolved 36-sheet specimen reconciles angular fields
+and recomputes analytic coverage through existing geometry records.
+
+The existing index owner draws landscape or south-above-north portrait views
+and exports independent PNG/SVG/PDF. Publication copies same-prefix index
+companions into its atomic output, appends the blank index-following display page,
+and keeps report/chart display pairs. The existing star-count owner reverses
+its displayed magnitude axis without altering catalogue values or counts.
+No new production module, parallel pipeline or catalogue acquisition is added.
+The coordinate-system guide was reviewed; native ICRS, frame, epoch and source
+provenance contracts remain current. Mac scientific and visual acceptance,
+final-candidate full verification and explicit merge/cleanup remain pending.
+
+
+### Atlas full-frame geometry reconciliation (2026-10-13)
+
+An optional explicit sky aspect in the existing atlas page geometry separates
+projected sky shape from the outer useful-page shape. Legacy records retain
+their existing meaning and serialization. The revised 36-sheet example is
+analytically revalidated and uses one common sky rectangle and central scale.
+Publication reserves fixed font-derived bands before fitting this chosen aspect;
+it does not stretch the projection or adjust individual sheets. The shared
+renderer measures exterior text clearance normal to the frame edge while
+retaining exact crossings and projected-line continuation.

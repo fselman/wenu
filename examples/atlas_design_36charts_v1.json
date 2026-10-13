@@ -1,0 +1,1830 @@
+{
+  "bands": [
+    {
+      "dec_max_deg": -70.0,
+      "dec_min_deg": -90.0,
+      "ra_origin_deg": 0.0,
+      "sheet_ids": [
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-1-sector-1"
+      ]
+    },
+    {
+      "dec_max_deg": -17.0,
+      "dec_min_deg": -70.0,
+      "ra_origin_deg": 66.13636363636364,
+      "sheet_ids": [
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-1",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-2",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-3",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-4",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-5",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-6",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-7",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-8",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-9",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-10",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-11"
+      ]
+    },
+    {
+      "dec_max_deg": 17.0,
+      "dec_min_deg": -17.0,
+      "ra_origin_deg": 67.5,
+      "sheet_ids": [
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-1",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-2",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-3",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-4",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-5",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-6",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-7",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-8",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-9",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-10",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-11",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-12"
+      ]
+    },
+    {
+      "dec_max_deg": 70.0,
+      "dec_min_deg": 17.0,
+      "ra_origin_deg": 66.13636363636364,
+      "sheet_ids": [
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-1",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-2",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-3",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-4",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-5",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-6",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-7",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-8",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-9",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-10",
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-11"
+      ]
+    },
+    {
+      "dec_max_deg": 90.0,
+      "dec_min_deg": 70.0,
+      "ra_origin_deg": 0.0,
+      "sheet_ids": [
+        "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-5-sector-1"
+      ]
+    }
+  ],
+  "document_kind": "wenu-atlas-band-tiling",
+  "generator": "latitude-bands-rectangle-halfspaces-v1",
+  "geometry": {
+    "angular_units": "degrees",
+    "coordinate_frame": "icrs",
+    "coverage_status": "unverified",
+    "design_id": "b4-portrait-36charts",
+    "document_kind": "wenu-atlas-geometry-specimen",
+    "overview": {
+      "join_ra_deg": 82.5,
+      "shared_band_width_deg": 20.0
+    },
+    "page": {
+      "bottom_mm": 10.0,
+      "height_mm": 353.0,
+      "inner_mm": 20.0,
+      "outer_mm": 10.0,
+      "top_mm": 10.0,
+      "width_mm": 250.0
+    },
+    "revision": 1,
+    "schema_version": 1,
+    "sheets": [
+      {
+        "geometry": {
+          "center_dec_deg": -90.0,
+          "center_ra_deg": 0.0,
+          "field_width_deg": 40.25000004000001,
+          "flip_ew": false,
+          "number": 1,
+          "pole_meridian_ra_deg": 82.5,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-1-sector-1"
+        },
+        "resolved": {
+          "field_height_deg": 60.13865154318479,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.1305261922200517,
+              0.9914448613738104,
+              7.992424175358924e-18
+            ],
+            [
+              0.9914448613738104,
+              -0.1305261922200517,
+              6.070848880062641e-17
+            ],
+            [
+              6.123233995736766e-17,
+              0.0,
+              -1.0
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.35490388747666574,
+            "x_min": -0.35490388747666574,
+            "y_max": 0.5371954296805895,
+            "y_min": -0.5371954296805895
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": -43.5,
+          "center_ra_deg": 82.5,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 2,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-1"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.08984830166255506,
+              0.6824656068747219,
+              0.7253743710122879
+            ],
+            [
+              0.9914448613738104,
+              -0.13052619222005174,
+              1.3877787807814457e-17
+            ],
+            [
+              0.09468035458224897,
+              0.7191686927123924,
+              -0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": -43.5,
+          "center_ra_deg": 115.22727272727273,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 3,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-2"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              -0.29338356239357416,
+              0.6227022620769765,
+              0.7253743710122877
+            ],
+            [
+              0.9046242794992536,
+              0.42620993998316836,
+              2.7755575615628914e-17
+            ],
+            [
+              -0.30916176713447563,
+              0.6561912677442151,
+              -0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": -43.5,
+          "center_ra_deg": 147.95454545454544,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 4,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-3"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              -0.5834682183389378,
+              0.36523534887372755,
+              0.7253743710122879
+            ],
+            [
+              0.530591880653408,
+              0.8476274276972635,
+              0.0
+            ],
+            [
+              -0.6148472122186658,
+              0.3848777516931926,
+              -0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": -43.5,
+          "center_ra_deg": 180.6818181818182,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 5,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-4"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              -0.6883058375511188,
+              -0.008191206967272236,
+              0.7253743710122879
+            ],
+            [
+              -0.011899691316814127,
+              0.999929196166691,
+              0.0
+            ],
+            [
+              -0.7253230117262357,
+              -0.008631731104174428,
+              -0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": -43.5,
+          "center_ra_deg": 213.40909090909093,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 6,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-5"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              -0.5746112166774696,
+              -0.3790171124724661,
+              0.7253743710122877
+            ],
+            [
+              -0.5506131953731492,
+              0.83476051001528,
+              -2.7755575615628914e-17
+            ],
+            [
+              -0.6055138798982301,
+              -0.39940070026486396,
+              -0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": -43.5,
+          "center_ra_deg": 246.13636363636363,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 7,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-6"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              -0.2784815945175706,
+              -0.6295077627745977,
+              0.7253743710122877
+            ],
+            [
+              -0.9145109003454395,
+              0.4045612600699351,
+              0.0
+            ],
+            [
+              -0.2934583695591677,
+              -0.663362769121954,
+              -0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": -43.5,
+          "center_ra_deg": 278.8636363636364,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 8,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-7"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.106063966244736,
+              -0.6801341462851012,
+              0.7253743710122879
+            ],
+            [
+              -0.9880578560833015,
+              -0.15408333145434544,
+              0.0
+            ],
+            [
+              0.11176809963717366,
+              -0.7167118458801742,
+              -0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": -43.5,
+          "center_ra_deg": 311.59090909090907,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 9,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-8"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.4569349671365132,
+              -0.5148227439483238,
+              0.7253743710122879
+            ],
+            [
+              -0.7479034237979212,
+              -0.6638075539426671,
+              2.7755575615628914e-17
+            ],
+            [
+              0.48150898691436733,
+              -0.5425099756153535,
+              -0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": -43.5,
+          "center_ra_deg": 344.3181818181818,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 10,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-9"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.6627323445106471,
+              -0.1860587579716386,
+              0.7253743710122877
+            ],
+            [
+              -0.27029493888977263,
+              -0.9627775682942419,
+              0.0
+            ],
+            [
+              0.6983741730261757,
+              -0.19606502128497358,
+              -0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": -43.5,
+          "center_ra_deg": 17.045454545454504,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 11,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-10"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.6581168851456334,
+              0.20177756903267785,
+              0.7253743710122877
+            ],
+            [
+              0.2931302793031013,
+              -0.9560725073736226,
+              0.0
+            ],
+            [
+              0.6935104936782823,
+              0.21262919197414332,
+              -0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": -43.5,
+          "center_ra_deg": 49.77272727272725,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 12,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-11"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.4445539647785864,
+              0.5255509435612947,
+              0.7253743710122877
+            ],
+            [
+              0.7634887049768232,
+              -0.645821180647409,
+              -2.7755575615628914e-17
+            ],
+            [
+              0.4684621326985273,
+              0.5538151391475492,
+              -0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 0.0,
+          "center_ra_deg": 82.5,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 13,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-1"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.9914448613738104,
+              -0.1305261922200517,
+              0.0
+            ],
+            [
+              0.1305261922200517,
+              0.9914448613738104,
+              0.0
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 0.0,
+          "center_ra_deg": 112.5,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 14,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-2"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.9238795325112867,
+              0.3826834323650897,
+              -0.0
+            ],
+            [
+              -0.3826834323650897,
+              0.9238795325112867,
+              0.0
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 0.0,
+          "center_ra_deg": 142.5,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 15,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-3"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.6087614290087209,
+              0.793353340291235,
+              -0.0
+            ],
+            [
+              -0.793353340291235,
+              0.6087614290087209,
+              0.0
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 0.0,
+          "center_ra_deg": 172.5,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 16,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-4"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.13052619222005157,
+              0.9914448613738104,
+              -0.0
+            ],
+            [
+              -0.9914448613738104,
+              0.13052619222005157,
+              0.0
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 0.0,
+          "center_ra_deg": 202.5,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 17,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-5"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              -0.38268343236508967,
+              0.9238795325112868,
+              0.0
+            ],
+            [
+              -0.9238795325112868,
+              -0.38268343236508967,
+              0.0
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 0.0,
+          "center_ra_deg": 232.5,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 18,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-6"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              -0.7933533402912349,
+              0.6087614290087209,
+              0.0
+            ],
+            [
+              -0.6087614290087209,
+              -0.7933533402912349,
+              0.0
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 0.0,
+          "center_ra_deg": 262.5,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 19,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-7"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              -0.9914448613738104,
+              0.13052619222005163,
+              0.0
+            ],
+            [
+              -0.13052619222005163,
+              -0.9914448613738104,
+              0.0
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 0.0,
+          "center_ra_deg": 292.5,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 20,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-8"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              -0.9238795325112866,
+              -0.38268343236509,
+              0.0
+            ],
+            [
+              0.38268343236509,
+              -0.9238795325112866,
+              0.0
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 0.0,
+          "center_ra_deg": 322.5,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 21,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-9"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              -0.6087614290087209,
+              -0.7933533402912349,
+              0.0
+            ],
+            [
+              0.7933533402912349,
+              -0.6087614290087209,
+              0.0
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 0.0,
+          "center_ra_deg": 352.5,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 22,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-10"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              -0.13052619222005168,
+              -0.9914448613738104,
+              0.0
+            ],
+            [
+              0.9914448613738104,
+              -0.13052619222005168,
+              0.0
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 0.0,
+          "center_ra_deg": 22.5,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 23,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-11"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.3826834323650898,
+              -0.9238795325112867,
+              0.0
+            ],
+            [
+              0.9238795325112867,
+              0.3826834323650898,
+              0.0
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 0.0,
+          "center_ra_deg": 52.5,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 24,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-12"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.7933533402912352,
+              -0.6087614290087207,
+              0.0
+            ],
+            [
+              0.6087614290087207,
+              0.7933533402912352,
+              0.0
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 43.5,
+          "center_ra_deg": 82.5,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 25,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-1"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              -0.08984830166255506,
+              -0.6824656068747219,
+              0.7253743710122879
+            ],
+            [
+              0.9914448613738104,
+              -0.13052619222005174,
+              -1.3877787807814457e-17
+            ],
+            [
+              0.09468035458224897,
+              0.7191686927123924,
+              0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 43.5,
+          "center_ra_deg": 115.22727272727273,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 26,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-2"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.29338356239357416,
+              -0.6227022620769765,
+              0.7253743710122877
+            ],
+            [
+              0.9046242794992536,
+              0.42620993998316836,
+              -2.7755575615628914e-17
+            ],
+            [
+              -0.30916176713447563,
+              0.6561912677442151,
+              0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 43.5,
+          "center_ra_deg": 147.95454545454544,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 27,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-3"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.5834682183389378,
+              -0.36523534887372755,
+              0.7253743710122879
+            ],
+            [
+              0.530591880653408,
+              0.8476274276972635,
+              0.0
+            ],
+            [
+              -0.6148472122186658,
+              0.3848777516931926,
+              0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 43.5,
+          "center_ra_deg": 180.6818181818182,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 28,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-4"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.6883058375511188,
+              0.008191206967272236,
+              0.7253743710122879
+            ],
+            [
+              -0.011899691316814127,
+              0.999929196166691,
+              0.0
+            ],
+            [
+              -0.7253230117262357,
+              -0.008631731104174428,
+              0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 43.5,
+          "center_ra_deg": 213.40909090909093,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 29,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-5"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.5746112166774696,
+              0.3790171124724661,
+              0.7253743710122877
+            ],
+            [
+              -0.5506131953731492,
+              0.83476051001528,
+              2.7755575615628914e-17
+            ],
+            [
+              -0.6055138798982301,
+              -0.39940070026486396,
+              0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 43.5,
+          "center_ra_deg": 246.13636363636363,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 30,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-6"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.2784815945175706,
+              0.6295077627745977,
+              0.7253743710122877
+            ],
+            [
+              -0.9145109003454395,
+              0.4045612600699351,
+              0.0
+            ],
+            [
+              -0.2934583695591677,
+              -0.663362769121954,
+              0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 43.5,
+          "center_ra_deg": 278.8636363636364,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 31,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-7"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              -0.106063966244736,
+              0.6801341462851012,
+              0.7253743710122879
+            ],
+            [
+              -0.9880578560833015,
+              -0.15408333145434544,
+              0.0
+            ],
+            [
+              0.11176809963717366,
+              -0.7167118458801742,
+              0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 43.5,
+          "center_ra_deg": 311.59090909090907,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 32,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-8"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              -0.4569349671365132,
+              0.5148227439483238,
+              0.7253743710122879
+            ],
+            [
+              -0.7479034237979212,
+              -0.6638075539426671,
+              -2.7755575615628914e-17
+            ],
+            [
+              0.48150898691436733,
+              -0.5425099756153535,
+              0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 43.5,
+          "center_ra_deg": 344.3181818181818,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 33,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-9"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              -0.6627323445106471,
+              0.1860587579716386,
+              0.7253743710122877
+            ],
+            [
+              -0.27029493888977263,
+              -0.9627775682942419,
+              0.0
+            ],
+            [
+              0.6983741730261757,
+              -0.19606502128497358,
+              0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 43.5,
+          "center_ra_deg": 17.045454545454504,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 34,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-10"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              -0.6581168851456334,
+              -0.20177756903267785,
+              0.7253743710122877
+            ],
+            [
+              0.2931302793031013,
+              -0.9560725073736226,
+              0.0
+            ],
+            [
+              0.6935104936782823,
+              0.21262919197414332,
+              0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 43.5,
+          "center_ra_deg": 49.77272727272725,
+          "field_width_deg": 36.73254758863342,
+          "flip_ew": false,
+          "number": 35,
+          "pole_meridian_ra_deg": null,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-11"
+        },
+        "resolved": {
+          "field_height_deg": 55.00000000000001,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              -0.4445539647785864,
+              -0.5255509435612947,
+              0.7253743710122877
+            ],
+            [
+              0.7634887049768232,
+              -0.645821180647409,
+              2.7755575615628914e-17
+            ],
+            [
+              0.4684621326985273,
+              0.5538151391475492,
+              0.6883545756937539
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.32332527033265807,
+            "x_min": -0.32332527033265807,
+            "y_max": 0.48939688645806884,
+            "y_min": -0.48939688645806884
+          }
+        }
+      },
+      {
+        "geometry": {
+          "center_dec_deg": 90.0,
+          "center_ra_deg": 0.0,
+          "field_width_deg": 40.25000004000001,
+          "flip_ew": false,
+          "number": 36,
+          "pole_meridian_ra_deg": 82.5,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-5-sector-1"
+        },
+        "resolved": {
+          "field_height_deg": 60.13865154318479,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              0.1305261922200517,
+              0.9914448613738104,
+              -7.992424175358924e-18
+            ],
+            [
+              -0.9914448613738104,
+              0.1305261922200517,
+              6.070848880062641e-17
+            ],
+            [
+              6.123233995736766e-17,
+              0.0,
+              1.0
+            ]
+          ],
+          "viewport": {
+            "x_max": 0.35490388747666574,
+            "x_min": -0.35490388747666574,
+            "y_max": 0.5371954296805895,
+            "y_min": -0.5371954296805895
+          }
+        }
+      }
+    ]
+  },
+  "neighbours": {
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-1-sector-1": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-10",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-11",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-2",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-3",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-4",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-5",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-6",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-7",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-8",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-9"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-1": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-1-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-11",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-2",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-12",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-2"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-10": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-1-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-11",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-9",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-10",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-11"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-11": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-1-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-10",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-11",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-12"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-2": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-1-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-3",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-2",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-3"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-3": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-1-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-2",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-4",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-3",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-4"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-4": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-1-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-3",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-5",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-4",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-5"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-5": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-1-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-4",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-6",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-5",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-6"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-6": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-1-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-5",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-7",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-6",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-7"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-7": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-1-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-6",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-8",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-7",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-8"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-8": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-1-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-7",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-9",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-8",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-9"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-9": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-1-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-10",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-8",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-10",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-9"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-1": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-12",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-2",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-1"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-10": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-10",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-9",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-11",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-9",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-10",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-9"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-11": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-10",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-11",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-10",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-12",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-10",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-11"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-12": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-11",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-11",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-11"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-2": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-2",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-3",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-2"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-3": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-2",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-3",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-2",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-4",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-2",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-3"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-4": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-3",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-4",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-3",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-5",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-3",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-4"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-5": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-4",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-5",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-4",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-6",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-4",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-5"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-6": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-5",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-6",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-5",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-7",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-5",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-6"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-7": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-6",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-7",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-6",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-8",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-6",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-7"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-8": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-7",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-8",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-7",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-9",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-7",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-8"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-9": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-8",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-2-sector-9",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-10",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-8",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-8",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-9"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-1": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-12",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-2",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-11",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-2",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-5-sector-1"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-10": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-10",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-11",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-11",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-9",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-5-sector-1"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-11": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-11",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-12",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-10",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-5-sector-1"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-2": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-2",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-3",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-3",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-5-sector-1"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-3": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-3",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-4",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-2",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-4",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-5-sector-1"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-4": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-4",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-5",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-3",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-5",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-5-sector-1"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-5": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-5",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-6",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-4",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-6",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-5-sector-1"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-6": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-6",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-7",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-5",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-7",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-5-sector-1"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-7": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-7",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-8",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-6",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-8",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-5-sector-1"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-8": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-8",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-9",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-7",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-9",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-5-sector-1"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-9": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-10",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-3-sector-9",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-10",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-8",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-5-sector-1"
+    ],
+    "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-5-sector-1": [
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-1",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-10",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-11",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-2",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-3",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-4",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-5",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-6",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-7",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-8",
+      "b4-portrait-36charts:r1:59cc6392fa97a24f52a81864258ca6293053c1a76868325ce225949f255d3316:band-4-sector-9"
+    ]
+  },
+  "overlap_deg": 0.25,
+  "schema_version": 1,
+  "seed_ra_deg": 82.5,
+  "validation": {
+    "angular_guard_deg": 1e-08,
+    "coverage_status": "validated_analytic_rectangle_bound",
+    "method": "latitude-bands-rectangle-halfspaces-v1",
+    "minimum_primary_clearance_deg": 0.12500000999999594,
+    "primary_area_sr": 12.566370614359172,
+    "shared_boundary_overlap_lower_bound_deg": 0.2500000199999919,
+    "sheet_count": 36
+  }
+}

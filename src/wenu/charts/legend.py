@@ -35,7 +35,7 @@ def _legend_handler_map():
     }
 
 
-def _legend_handle(descriptor):
+def _legend_handle(descriptor, *, marker_scale=1.0):
     if descriptor.key == "galaxy":
         return Ellipse(
             (0.0, 0.0),
@@ -58,11 +58,13 @@ def _legend_handle(descriptor):
     marker = descriptor.marker
     if descriptor.symbol_name is not None:
         marker = DEFAULT_SYMBOLS[descriptor.symbol_name]
+    from matplotlib import rcParams
     return Line2D(
         [],
         [],
         color=descriptor.edge_color,
         marker=marker,
+        markersize=rcParams["lines.markersize"] * marker_scale,
         markerfacecolor=descriptor.face_color,
         markeredgecolor=descriptor.edge_color,
         markeredgewidth=descriptor.linewidth,
@@ -85,8 +87,12 @@ def draw_chart_legend(
     include_context=True,
     resolved_detail=None,
     symbol_labels=None,
+    marker_scale=1.0,
 ):
     """Draw a configurable symbol key with coordinate and context metadata."""
+    import math
+    if not math.isfinite(marker_scale) or marker_scale <= 0:
+        raise ValueError("marker_scale must be finite and positive.")
     config = style.legend
     if not config.visible:
         return None
@@ -101,7 +107,7 @@ def draw_chart_legend(
         if include_objects
         else ()
     )
-    handles = [_legend_handle(descriptor) for descriptor in descriptors]
+    handles = [_legend_handle(descriptor, marker_scale=marker_scale) for descriptor in descriptors]
     title_lines = []
     if include_context:
         title_lines = (

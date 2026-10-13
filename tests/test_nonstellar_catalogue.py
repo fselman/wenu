@@ -51,12 +51,55 @@ def test_nonstellar_is_the_single_catalogue_layer():
     assert issubclass(NonStellar, AstronomicalObject)
 
 
+def test_dedicated_galaxy_layer_suppresses_generic_messier_outline_without_mutating_sources(catalogue):
+    from wenu.objects.galaxies import Galaxies
+    from wenu.charts.detail import ResolvedDetail
+    from wenu.charts.detail_application import apply_resolved_detail
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    sky = CelestialSphere(None)
+    layer = NonStellar(None); layer.load(filename=catalogue)
+    sky.nonstellar = sky.add(layer)
+    sky.galaxies = sky.add(Galaxies(None))
+    original = layer.catalog.copy()
+    for enabled, override, expected in (({'nonstellar_objects','galaxies'}, None, ('M 1','M 42')),
+                              ({'nonstellar_objects'}, None, ('M 1','M 31','M 42')),
+                              ({'nonstellar_objects','galaxies'}, False, ('M 1','M 31','M 42'))):
+        application = apply_resolved_detail(sky, ResolvedDetail(enabled_layers=frozenset(enabled)),
+            explicit_layer_options=None if override is None else {sky.galaxies: {'enabled': override}})
+        options = application.layer_options[layer].get('geometry', {})
+        rendered = layer.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None, **options)
+        assert tuple(rendered.names) == expected
+    assert np.array_equal(layer.catalog['identifier'], original['identifier'])
+
+
 def test_dimension_parser():
     assert NonStellar.parse_dimension("26 X 14") == (26.0, 14.0)
     assert NonStellar.parse_dimension("80") == (80.0, 80.0)
     major, minor = NonStellar.parse_dimension("")
     assert np.isnan(major)
     assert np.isnan(minor)
+
+
+def test_native_galaxy_subclass_keeps_its_table_contract(catalogue):
+    from wenu.objects.galaxies import Galaxies
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    from wenu.geometry.spherical import SphericalPolygons
+    layer = Galaxies(None)
+    layer.load(filename=catalogue)
+    result = layer.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None)
+    assert isinstance(result, SphericalPolygons)
+    assert len(result) == len(layer.catalog)
+
+
+def test_native_messier_labels_keep_heterogeneous_designations_without_outlines(catalogue):
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    from wenu.geometry.spherical import SphericalPoints
+    layer = NonStellar(None); layer.load(filename=catalogue)
+    result = layer.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None,
+        labels_only=True, excluded_categories=('galaxies','supernova_remnants'))
+    assert isinstance(result, SphericalPoints)
+    assert tuple(result.names) == ('M 1','M 31','M 42')
+    assert result.metadata['semantic_entity_categories'] == ('supernova_remnants','galaxies','nebulae')
 
 
 def test_load_normalizes_heasarc_fields(catalogue, observer):

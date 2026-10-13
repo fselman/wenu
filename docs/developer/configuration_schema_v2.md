@@ -405,3 +405,87 @@ No new key or schema version is required. The review candidate sets
 `mag_dmin = 0.30`, `mag_a = 0.04`, `mag_size_reference = 8`, and explicitly
 uses diameter scale 1. Selection magnitude limits remain independent and
 must not exceed the physical law's reference magnitude.
+
+### Regional equatorial edge marks
+
+The optional schema-v2 table selects the shared atlas/regional presentation:
+
+```toml
+[grids_references.coordinate_grid.edge_marks]
+enabled = false
+grid_lines_visible = true
+grid_ra_step_hours = 2
+grid_minute_labels_visible = false
+grid_label_fontsize = 12.0
+grid_minor_label_scale = 0.75
+grid_frame_width_scale = 1.5
+```
+
+`enabled=true` selects configurable RA (default 2h) and 10-degree declination lines, all 10m RA marks,
+whole-hour and smaller 20m/40m labels, and 10-degree declination marks/labels.
+Font size and frame scale are positive finite numbers; the minor scale is
+positive and at most 1. Booleans are strict. Appearance validates even when
+disabled. Ordinary chart defaults remain disabled; atlas version-1 presentation
+uses the same six appearance values directly and enables markings whenever
+equatorial_grid is selected. These are distinct existing configuration formats.
+
+`--equatorial-grid-ticks`/`--no-equatorial-grid-ticks` overrides `enabled`.
+The matching appearance flags override TOML; `--no-grid-lines-visible`
+keeps edge marks while hiding full curves. Appearance flags require the preset.
+Ordinary admission requires regional charts, the equatorial grid and exterior
+label band, and a compatible 10-degree declination step. Physical sky reduction
+preserves angular coverage and the existing observer-time coordinate semantics.
+
+
+The integer grid_ra_step_hours must be one of 1,2,3,4,6,8,12. The strict Boolean
+grid_minute_labels_visible defaults false and controls only 20m/40m text, not
+tick geometry. Their regional CLI counterparts override TOML. Dec labels use
+the generic parallel rotation policy at the boundary; lines use 0.65 opacity
+and 0.55-point width. Atlas presentation milky_way_color defaults #87CEFA and
+controls MW/LMC/SMC fills; index [colours] accepts that optional key too.
+
+The separate atlas chart-presentation TOML supports messier_label_fontsize
+(default 7.0 points, finite and positive), independent of legend_fontsize.
+The separate version-2 atlas geometry-request TOML accepts exactly one central
+field_width_deg or field_height_deg, and optional polar_primary_diameter_deg.
+These atlas records are separate from ordinary chart configuration schema v2.
+
+Atlas chart-presentation TOML adds deep_sky_symbol_scale=1.8,
+cluster_face_color="yellow", and grid_dec_label_scale=0.8. The first is a
+positive finite diameter multiplier; the second is a valid colour string.
+The shared ordinary grid edge-mark preset adds grid_dec_label_scale=1.0,
+positive and finite, preserving existing ordinary appearance. These independent
+label/symbol appearance values do not change chart coverage or catalogue data.
+
+
+### Atlas index orientation and common-scale publication
+
+The independent schema-version-1 index presentation accepts optional
+`layout.orientation = "landscape"` or `"portrait"`. Landscape is the
+compatibility default; width/height are oriented accordingly. Portrait draws
+the south disk on top with page-oriented labels. See
+`examples/atlas_index_style_v3.toml`.
+
+The atlas's existing font, Dec scale, padding and frame multiplier determine
+one common physical sky rectangle. The atlas cadence is 1h for nonpolar
+sheets and 2h for polar sheets; the ordinary regional grid spacing option
+retains its existing meaning. Common-scale publication rejects mixed-field
+designs before source loading. An external index PDF requires same-prefix PNG
+and SVG companions; all three are published independently inside the batch.
+
+Atlas chart presentation now defaults `grid_ra_step_hours` to 1 and admits
+`grid_polar_ra_step_hours`, default 2, independently. The supplied version-3
+chart presentation records the accepted 1h/2h policy explicitly. The regional
+mark record continues to use its existing single spacing field.
+
+
+### Atlas sky rectangle and full-frame example (2026-10-13)
+
+The separate version-1 atlas geometry/request page record admits optional
+`sky_aspect_ratio`, a finite positive projected sky width/height ratio. This is
+geometry, not index or publication presentation. Absence retains the useful-page
+ratio and legacy serialized keys; unknown keys still fail admission. The
+revision-3 36-chart example fixes 0.616831374967213, paired with chart-style-v4
+`grid_frame_width_scale = 1.0` and the existing 12 pt RA/9.6 pt Dec fonts.
+Changing presentation cannot reinterpret resolved footprints. No change is made
+to general Wenu schema-version-2 chart geometry.

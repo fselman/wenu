@@ -81,3 +81,23 @@ def test_fixed_native_reference_grids_are_local_and_reject_observer_choices():
         EclipticGrid(None).realize(context, None)
     with pytest.raises(ValueError, match="observer-local"):
         AltAzGrid(None).realize(context, None)
+
+def test_native_equatorial_tick_curves_keep_exact_cadence_and_local_state():
+    import numpy as np
+    from wenu.sky.coordinate_grids import EquatorialGrid
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    grid = EquatorialGrid(None, frame="icrs", equinox="J2000", samples=37, include_equator=True)
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    geometry = grid.realize(context, None, ra=tuple(range(0,360,30)),
+        dec=tuple(range(-60,61,30)), ra_ticks=tuple(i*2.5 for i in range(144)),
+        dec_ticks=tuple(range(-80,81,10)))
+    assert set(geometry.components) == {"meridians", "parallels", "tick_meridians", "tick_parallels"}
+    assert len(geometry.components["meridians"]) == 12
+    assert len(geometry.components["parallels"]) == 5
+    assert len(geometry.components["tick_meridians"]) == 144
+    assert len(geometry.components["tick_parallels"]) == 17
+    for index, longitude in enumerate(geometry.components["tick_meridians"].lon_deg):
+        np.testing.assert_array_equal(longitude, np.full(37,index*2.5))
+    assert grid.ra is None and grid.dec is None and not hasattr(grid,"_native_realization")
+    assert set(grid.realize(context,None).components) == {"reference"}
+

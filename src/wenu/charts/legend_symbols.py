@@ -41,9 +41,9 @@ def legend_symbol_descriptors(
             label="Open cluster",
             kind="marker",
             layer_attribute="open_clusters",
-            symbol_name="open_cluster",
+            symbol_name=deep.open_cluster_symbol_name,
             edge_color=deep.open_cluster_color,
-            face_color="none",
+            face_color=deep.open_cluster_face_color or "none",
             alpha=deep.open_cluster_alpha,
             linewidth=deep.open_cluster_linewidth,
         ),
@@ -52,9 +52,10 @@ def legend_symbol_descriptors(
             label="Globular cluster",
             kind="marker",
             layer_attribute="globular_clusters",
-            marker="o",
+            marker="o" if deep.globular_cluster_symbol_name is None else None,
+            symbol_name=deep.globular_cluster_symbol_name,
             edge_color=deep.globular_cluster_color,
-            face_color=deep.globular_cluster_color,
+            face_color=deep.globular_cluster_face_color or deep.globular_cluster_color,
             alpha=deep.globular_cluster_alpha,
             linewidth=deep.globular_cluster_linewidth,
         ),
@@ -128,3 +129,4 @@ def legend_symbol_descriptors(
             )
         )
     )
+

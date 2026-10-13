@@ -4688,3 +4688,182 @@ renderer or export pipeline is added. Resolved designs optionally retain the
 canonical request and computed layout; historical JSON remains readable.
 `wenu_plot_atlas` consumes the result without rerunning placement. Existing
 geometry and CLI test owners protect scientific containment and provenance.
+
+
+### Atlas coordinate presentation candidate (2026-10-12)
+
+AtlasChartPresentation adds grid_lines_visible (Boolean, default true),
+grid_label_fontsize (positive physical points, default 12),
+grid_minor_label_scale (positive and at most 1, default 0.75), and
+grid_frame_width_scale (positive, default 1.5; layout rejects values unable
+to fit the requested font or useful page). These are optional version-1
+presentation TOML keys. Omitting equatorial_grid from layers removes its lines,
+ticks, labels and dedicated physical inset. grid_lines_visible=false retains
+ticks and labels while suppressing interior grid lines.
+
+The shared request_grids owner supplies request-local EquatorialGrid.spherical_geometry
+ra/dec selections and ra_ticks/dec_ticks, all in degrees. They become ordinary
+SphericalGrid components, realized in the accepted native ICRS context and
+projected once. Exact-zero declination avoids a duplicated equator component.
+ExteriorGridLabelAnchor(all_crossings=true) returns deduplicated real crossings
+with outward label directions and inward CurveLabelPlacement.tick_direction.
+MatplotlibRenderer.draw accepts boundary_ticks (component-name to mark-policy
+callback) and boundary_tick_anchor for generic physical edge marks. The callback
+returns length_points, optional label, font_scale, label_lane and style;
+tick-only components never draw their complete supporting curves. SVG marks
+have a separate style-editable ticks component. Renderer-measured text lanes
+move outward only; the coordinate anchors and tick slopes remain exact.
+
+The nominal band minimum grows by grid_frame_width_scale. Font measurement
+additionally reserves dense-label clearance; uniform physical sky scaling keeps
+the design's exact viewport and aspect ratio. Report layout.chart_sky_frame
+records the actual odd-page sky rectangle in mm from bottom-left. Stellar area
+budgets use that rectangle's area, excluding the coordinate frame.
+
+`wenu_create_atlas` calls the official `wenu_chart` entry in process for every
+sheet using `atlas-sheet --chart-number N --output-dir DIR` with an explicit
+AtlasSheetChartRequest and reusable verified sky. Worker initialization maps
+the saved native sky once per worker. request_generation owns the former
+publication render loop and stages one sheet's files before no-clobber publication.
+Command argument mismatches fail before execution; rendering/publication failures
+remove only owned files. Standalone atlas-sheet requires design, presentation
+config and a sufficient design-bound saved sky. It produces chart/report formats
+and report JSON, leaving whole-book assembly to the atlas producer.
+
+Ordinary regional requests admit the same EquatorialGridMarks contract through
+`--equatorial-grid-ticks` or `[grids_references.coordinate_grid.edge_marks]`.
+CLI appearance overrides TOML. Unsupported families, explicit grid/band disable
+and conflicting declination cadence are rejected. Source geometry and viewport
+remain unchanged; the established ordinary coordinate realization is preserved.
+
+
+The revised shared edge-mark preset selects configurable RA (default 2h) and 10-degree Dec lines.
+RA h/m units are Unicode superscripts to preserve editable SVG text. A mark
+record may request label_rotation="parallel"; the renderer derives its
+upright display-space tangent angle. Visible grid lines use black at 0.65 opacity
+and 0.55-point width. Explicit preset declination cadence must be 10 degrees.
+
+EquatorialGridMarks and AtlasChartPresentation admit grid_ra_step_hours and
+grid_minute_labels_visible, validated identically; regional CLI and TOML share
+the same contract. The renderer also retains perpendicular rotation for generic
+callers. Atlas/index milky_way_color sets MW/LMC/SMC through the composed style.
+NonStellar geometry accepts excluded_categories; canonical detail passes enabled
+dedicated catalogue categories before source-local realization/selection.
+
+NonStellar labels_only realizes catalogue centres as SphericalPoints in native
+ICRS or the existing ordinary centre transform. Labels do not apply dedicated
+category exclusions. Native outlined subclasses receive no new table keyword
+unless an exclusion is requested. Atlas requests label-only Messier geometry
+and disables markers, with 10-point designation text. AtlasChartPresentation
+legend_fontsize defaults 12 points and sets chart/report legend rows and titles;
+heading and chart-number typography remains unchanged.
+
+Version-2 AtlasDesignRequest accepts exactly one of field_width_deg and
+field_height_deg, plus optional polar_primary_diameter_deg. The latter is a
+primary-area diameter, not a footprint diameter; the geometry owner reserves
+overlap on the polar short side. design_polar_first_atlas accepts the same
+optional diameter. Resolved layout dimensions describe the nonpolar sheets;
+each persisted sheet retains its own width. AtlasChartPresentation adds
+messier_label_fontsize=7.0, validated as finite and positive.
+
+AtlasBandTiling.from_dict recomputes geometry admission before comparing its
+redundant validation certificate. Derived minimum_primary_clearance_deg and
+shared_boundary_overlap_lower_bound_deg use absolute comparison tolerance
+1e-10 degrees (below ANGULAR_GUARD_DEG=1e-8); primary_area_sr uses 1e-12 sr.
+Relative tolerance is zero. Floating summaries reject booleans and nonfinite
+values; certificate keys, discrete values, guard and neighbours remain exact.
+The existing persistence test admits tiny cross-platform summary differences
+and still rejects corrupted summaries and primary geometry. No placement is
+rerun and no coverage constraint is relaxed. Coordinate-system conventions and
+owners are unchanged.
+
+AtlasChartPresentation adds deep_sky_symbol_scale=1.8 (finite positive diameter
+scale), cluster_face_color="yellow" and grid_dec_label_scale=0.8.
+EquatorialGridMarks adds grid_dec_label_scale=1.0 for ordinary chart presets.
+DeepSkyStyle/PublicationStyle accept open_cluster_symbol_name/face_color and
+optional globular_cluster_symbol_name/size/face_color; default ordinary symbols
+are preserved. Native globular centre realization reuses the existing labels_only
+geometry option; observed compatibility dispatch admits the same option.
+SymbolLibrary adds cluster_circle and globular_cluster (circle/internal cross).
+MatplotlibRenderer.draw accepts positive finite curve_size_scale, scaling display
+curves about their bounds without mutating original projected or spherical data.
+
+stellar_sizing_report.catalogue_star_counts reads actual source-catalogue rows,
+counts unique HIP IDs with finite positions/photometry below the atlas limit,
+and returns exact cumulative counts by catalogue magnitude. Its appendix exporter
+writes PNG/PDF/SVG, source CSV and JSON with source-selection and snapshot/design
+provenance. Atlas publication appends it after the prior sizing/area appendices.
+Per-chart Star magnitude (N) furniture uses the existing visible-star statistic.
+The coordinate-system guide was reviewed and remains current: no new frame,
+epoch, catalogue astrometry transformation or physical size model is introduced.
+
+
+### Atlas frame fitting and report marker propagation
+
+`MatplotlibRenderer.fit_grid_label_band(bounds)` measures the completed outer
+coordinate frame and fits its axes uniformly into figure-fraction bounds.
+It reruns existing physical grid-label placement, without rereading sources,
+realizing geometry, changing the viewport or rescaling marker diameters.
+The atlas furniture callback fits the frame before computing chart-area budgets.
+`object_marker_scale` flows through the existing automatic, rendered and planned
+legend coordinators to `draw_chart_legend(marker_scale=...)`. The atlas report
+passes `deep_sky_symbol_scale`; the default 1.0 preserves ordinary legends.
+Only marker handles scale; galaxy and Milky Way patches and text retain their
+existing dimensions. Existing grid containment and marker-path oracles cover
+this change without a new production module or test file.
+
+
+### Common-scale atlas publication contract implementation
+
+The existing publication owner rejects mixed field widths before any native
+sky preparation. `atlas_design_36charts_v2.json` is an explicitly revised,
+analytically validated resolved specimen; the original JSON is unchanged.
+The same page and viewport aspect, field width and presentation produce the
+same physical sky rectangle and tangent scale in every sheet. For Wenu's
+stereographic convention rho = projection_radius * tan(theta/2), the central
+derivative is projection_radius/2 per radian. Reports record this derivative
+in printed mm/degree, verified against the existing projected-radius oracle.
+
+Atlas frame dimensions are computed once from the configured fonts, padding
+and frame multiplier. The vertical allowance uses the largest rotated Dec
+text extent, independent of sheet position. `configure_grid_label_frame`
+provides the shared backend with fixed horizontal/vertical band sizes and
+edge-specific family priority; the ordinary default remains unchanged.
+Atlas execution no longer calls independent measured-frame fitting.
+The renderer preserves anchors, rotates vertical-edge RA labels along their
+meridians and suppresses lower-priority colliding text instead of creating
+lanes. Polar Dec text uses canonical projected positions on the actual 2h
+meridian nearest vertical, with physical inward clearance where necessary.
+
+Index orientation is an optional closed presentation field. Portrait changes
+the composition and projection position angles before drawing; it never
+rotates a labelled export. `--index` requires same-prefix PNG/SVG companions
+and the atomic atlas batch copies the three admitted products. PDF assembly
+records an index-following blank page before report/chart pairs. The catalogue
+count renderer reverses only its x-axis; source CSV, JSON and cumulative
+semantics remain unchanged. Existing owning tests cover these seams, including
+cold/saved/spawned equivalence; no production module or test file is added.
+
+The atlas PDF declares `/TwoPageLeft`; the existing producer and native reuse
+oracles verify this preferred viewing arrangement together with page order.
+
+
+### Atlas full-height frame correction (2026-10-13)
+
+`AtlasPageGeometry.sky_aspect_ratio` optionally fixes the projected sky
+rectangle's width/height independently of the useful outer page. Its absent
+value preserves legacy geometry and exact page serialization; explicit values
+must be finite and positive. Existing `AtlasSheetGeometry.viewport` and the
+continuous analytic containment owner use that ratio, and resolved JSON still
+revalidates all viewport/field-height/certificate values. No new geometry or
+publication pipeline is introduced.
+
+`_atlas_grid_layout` fits this explicit ratio inside the useful rectangle
+minus the two fixed font-derived bands on each axis. Revision-3 36-chart
+geometry and chart-style-v4 choose matching dimensions, so the chart's outer
+frame equals the report's useful frame in both dimensions. Other ratios remain
+isotropic and may leave unused space. The shared renderer measures exterior
+label clearance against the physical edge normal while preserving the label's
+projected-line continuation and text angle. Ordinary regional fitting remains
+unchanged; fixed-band labels that cannot fit remain subject to suppression.
+Existing geometry, CLI and renderer contract tests own these gates.

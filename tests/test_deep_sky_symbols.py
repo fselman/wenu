@@ -409,13 +409,14 @@ def observer():
     )
 
 
-def test_symbol_library_exposes_normalized_planetary_nebula():
+@pytest.mark.parametrize('name,moves', [('planetary_nebula',5),('cluster_circle',1),('globular_cluster',3)])
+def test_symbol_library_exposes_normalized_planetary_nebula(name, moves):
     library = SymbolLibrary()
-    marker = library["planetary_nebula"]
+    marker = library[name]
     assert isinstance(marker, MatplotlibPath)
-    assert marker is library.planetary_nebula
+    assert marker is getattr(library,name)
     assert np.max(np.abs(marker.vertices)) == 1.0
-    assert np.count_nonzero(marker.codes == MatplotlibPath.MOVETO) == 5
+    assert np.count_nonzero(marker.codes == MatplotlibPath.MOVETO) == moves
 
 
 def test_planetary_nebulae_are_vectorized_points():

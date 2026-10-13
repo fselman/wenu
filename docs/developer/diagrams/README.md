@@ -455,3 +455,28 @@ renderer or export pipeline is added. Resolved designs optionally retain the
 canonical request and computed layout; historical JSON remains readable.
 `wenu_plot_atlas` consumes the result without rerunning placement. Existing
 geometry and CLI test owners protect scientific containment and provenance.
+
+### Shared chart command and equatorial edge marks (2026-10-12)
+
+The atlas CLI injects the official `wenu_chart` entry into publication. Batch
+publication dispatches `atlas-sheet` with validated geometry/presentation and
+the reusable native sky; spawned workers retain that entry and their mapped
+sky. The chart CLI admits input; request_generation owns sheet composition and
+export. Publication retains atlas furniture, reports, snapshots and PDF assembly.
+Standalone sheet admission verifies exact design binding and saved-sky sufficiency.
+
+Ordinary regional CLI/TOML and native sheet presentation share request_grids
+mark policies and physical frame layout. Scientific coordinate-grid generation
+remains in sky/coordinate_grids; boundaries supplies true crossing/tangent data,
+and the generic renderer draws physical ticks and measured exterior labels.
+The native ICRS and ordinary observer-time coordinate paths remain distinct
+existing realizations feeding the same projection/rendering owners.
+
+The revised shared grid presentation requests a perpendicular label orientation
+from the generic tick renderer. Its display-space tangent remains supplied by
+the existing boundary owner; no astronomical or projection authority is added.
+
+The shared mark renderer now admits parallel or perpendicular label orientation.
+Parallel Dec text follows the outward continuation of the same crossing tangent.
+The canonical detail -> NonStellar selection edge additionally suppresses
+generic outlines for categories owned by enabled dedicated DSO layers.

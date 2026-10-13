@@ -18,6 +18,7 @@ number_size_pt = 10
 text_size_pt = 9
 
 [colours]
+milky_way_color = "#87CEFA"
 paper_color = "white"
 ink_color = "#183b56"
 border_color = "#527089"
@@ -34,3 +35,4 @@ transparent = false
 enabled = true
 color = "white"
 opacity = 0.55
+

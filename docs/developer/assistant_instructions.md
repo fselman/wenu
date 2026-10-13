@@ -2374,3 +2374,119 @@ containment; do not claim sampled coverage proves no gaps. The next runtime
 candidate is geometry records/validation/serialization, before automatic full
 atlas or report-page production. Workflow acceptance is not a Mac verification
 receipt or a separate merge/deletion request for PR #213.
+
+
+## Binding atlas publication principles (2026-10-12)
+
+Fernando established the following requirements for subsequent atlas work.
+They supersede earlier candidate choices about per-chart page fitting, label
+collision lanes, RA cadence and index/book layout. These are mandatory design
+and acceptance constraints, not a claim that the current renderer implements
+them. This checkpoint records the requested instructions; runtime changes
+must follow the existing bounded implementation and verification procedure.
+
+### Common scale and printed sky region
+
+- Every chart, including both polar charts, must have exactly the same local
+  angular scale at its centre, expressed in printed mm per degree of true
+  angular separation in every tangent direction.
+- Every chart page must have the same physical sky-region width, height and
+  shape. This requirement concerns the printed sky footprint, not identical
+  celestial coordinates. Coordinate-label frames are outside that region.
+- Choose the physical sky region and central scale once for the atlas. Never
+  enlarge or shrink individual charts to fill spare page area or accommodate
+  labels. Keep physical font and symbol sizes independent of angular scale.
+- Retain stereographic projection unless Fernando separately chooses another
+  projection. Its unavoidable scale variation away from each centre must be
+  distinguished from the common central scale; do not claim constant scale
+  throughout a finite spherical chart.
+- Reconcile the resolved geometry with these two requirements before rendering.
+  Existing different polar/nonpolar angular field widths cannot be hidden by
+  per-sheet rescaling. If the design or covering must change, explicitly revise
+  its versioned geometry and recompute analytic coverage and overlap through
+  the existing design owner. Do not silently reinterpret an accepted JSON.
+
+### Coordinate grids, frame dimensions and label placement
+
+- Nonpolar charts use RA grid lines every 1 hour; polar charts use RA grid
+  lines every 2 hours. Determine this from the sheet geometry, not its number.
+  Retain 10-degree Dec grid lines and the previously requested 10-minute RA
+  ticks, superscript hour/minute units, configurable minute text and Dec font
+  sizing unless a later instruction changes them.
+- The top and bottom frame bands have fixed physical thickness determined by
+  the configured RA font size. The left and right bands have fixed physical
+  thickness determined by the configured Dec font size. Establish these sizes
+  once per configured atlas, with any padding/stroke allowance explicit and
+  fixed. Do not grow individual bands to fit labels or add another label row.
+- Place each retained edge label at the exact projected grid-line crossing,
+  following the line's continuation into the frame. In particular, RA labels
+  on vertical edges must follow the projected meridian even when it is steeply
+  inclined; do not use a detached, generic vertical-edge label position.
+  Align their text with that local projected line. Preserve readable text
+  orientation and exact scientific tick anchors.
+- On either horizontal edge, an RA/Dec label collision keeps the RA label and
+  eliminates the conflicting Dec label.
+- On either vertical edge, an RA/Dec label collision keeps the Dec label and
+  eliminates the conflicting RA label.
+- Resolve these conflicts by suppressing the lower-priority label, not by
+  displacing its coordinate, enlarging the frame, or creating outward lanes.
+  Suppressing text does not remove its scientific grid line or tick.
+- On polar charts, put the Dec labels inside the sky region, on the projected
+  RA axis closest to the page's vertical direction. Select this axis from the
+  projected geometry and use it consistently, with deterministic tie handling;
+  do not substitute boundary Dec labels. Retain the accepted Dec text alignment
+  parallel to the projected Dec line at each label position.
+
+### Index products, orientation and book pairing
+
+- Publish the actual index map as independent PNG, SVG and PDF products, in
+  addition to its inclusion in the assembled atlas. Verify their paths and
+  existence in the delivered publication output; merely generating an index
+  PDF or mentioning standalone files is insufficient.
+- Make index orientation configurable independently of chart geometry.
+  Landscape retains the existing side-by-side composition.
+  Portrait puts the south polar cap above the north polar cap.
+  Orient index text correctly for the resulting page; do not rotate an
+  already-labelled landscape bitmap or SVG wholesale.
+- Immediately after the index page, insert an intentionally blank page.
+  Subsequent report/chart pairs must display with the report on the left and
+  its matching chart on the right. Use two-page viewing with the separate
+  first-page-cover option disabled: [index, blank], then [report, chart].
+  Check PDF page order and actual two-page viewing; record the blank page
+  explicitly in the manifest. Do not conflate this viewing arrangement with
+  printed recto/verso parity or a viewer that isolates the first page.
+
+### Actual-catalogue star-count appendix
+
+- Keep the actual-catalogue cumulative log N versus magnitude appendix and
+  its admitted source photometry, unique-star counting and provenance.
+- Put the brightest stars, with the lowest and potentially negative
+  magnitudes, on the right of its horizontal axis. Magnitude increases toward
+  the left. Reverse the displayed magnitude axis; do not negate magnitudes,
+  reverse cumulative-count meaning, or replace catalogue counts with SVG
+  appearances or a theoretical distribution.
+
+### Required evidence for the next implementation
+
+Extend existing owning tests and inspection products to verify common central
+scale and sky dimensions across all sheets, including both poles; fixed
+font-derived frame dimensions; 1h/2h RA cadence; projected RA label alignment;
+edge-specific suppression; interior polar Dec labels; both index orientations
+and standalone exports; the index blank-page/report-left/chart-right sequence;
+and the reversed magnitude axis with unchanged underlying catalogue counts.
+Use the canonical `wenu_chart` sheet route and existing geometry, renderer,
+legend, export and publication owners. No parallel pipeline is permitted.
+
+
+## Atlas full-frame acceptance constraint (2026-10-13)
+
+Fernando reported excess blank space and a chart frame smaller than its report
+frame. The chart's outer coordinate frame must match the report's useful-frame
+width and height, with the existing mirrored binding margins. Reconcile a
+versioned sky aspect with fixed font-derived bands through the existing atlas
+geometry owner; never stretch a projection, silently reinterpret an accepted
+JSON, or fit individual sheets differently. Verify actual exported frame bounds
+and a common central scale. Exterior RA labels following slanted meridians
+must clear the inner edge with their complete text boxes, measured normal to
+that edge, while retaining the exact crossing, continuation and readable angle.
+Preserve the accepted fixed-band collision/suppression policy.

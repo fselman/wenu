@@ -5138,3 +5138,114 @@ the chart frame, with at least 50 percent more coordinate-label border space
 and a slightly smaller physical sky rectangle while preserving angular
 field and centre. Assess the existing grid, frame, layout and export owners
 before implementation. Keep it outside the accepted geometry candidate.
+
+
+### Atlas coordinate-grid candidate (2026-10-12)
+
+Fernando requested this bounded milestone after confirming clean synchronized
+Mac main at 28e52bae5f19e41f1f38b8c84680bb1e95437ce0: 2h RA / 30-degree Dec
+interior lines; whole-hour edge labels; smaller 20m/40m labels; all 10m RA ticks;
+10-degree Dec ticks and labels; inward tick slopes following projected curves.
+Keep coordinate text clearly legible and the nominal frame minimum 50% wider,
+shrinking only physical sky size while preserving angular coverage.
+
+As-is: native preparation registered only an equator under equatorial_grid;
+ordinary exterior anchors selected one crossing, had no edge tick contract,
+and atlas axes occupied the complete useful page. The candidate extends existing
+scientific/reference, boundary, renderer and shared chart request owners.
+Font-measured outward lanes resolve polar overlaps without moving coordinate
+marks. The exposed grid_lines_visible switch permits later lines-off review.
+Actual sky area now governs stellar area budgets. An exact-antipode regression
+found during polar review is corrected in the shared stereographic owner,
+rather than being hidden by an atlas-specific projection workaround.
+
+Test admission extends existing coordinate-grid, boundary-anchor, renderer,
+projection and atlas CLI files. New fault models are separate major/tick
+cadences, immutable native state, all-crossing deduplication/closure, physical
+DPI-invariant slopes, singularity breaks, outward label collision clearance,
+paper containment and unchanged viewports. Existing lower-level tests retain
+ownership; no module, dependency, source acquisition or test file is added.
+The coordinate-system guide and current ownership diagrams were reviewed;
+scientific coordinate meaning remains current. Mac scientific/print acceptance,
+full final-candidate suite before merge, merge and cleanup remain separate.
+
+The corrected command boundary routes the atlas CLI through `wenu_chart
+atlas-sheet`, with explicit prepared native input and one sky per worker.
+Shared request generation now owns sheet execution; regional CLI/TOML admits
+the same mark policy and physical frame helpers. Existing chart/configuration
+tests additionally protect command admission, source reuse, native-versus-observer
+coordinate meaning, no-clobber output, spawn dispatch and regional parity.
+
+
+Fernando revised the candidate to 1h RA / 10-degree Dec lines, superscript h/m
+units, Dec labels normal to their projected curves, and darker interior lines.
+The scientific viewport, 10m tick cadence and 20m/40m smaller labels are retained.
+Existing atlas tests now execute the actual 22-chart portrait design at sheets
+1, 5, 8, 10, 11 and 22. Index review exports PNG, SVG and PDF together.
+
+Fernando clarified Dec text should be parallel to the curve at the boundary,
+requested default 2h RA lines with configurable spacing, optional 20m/40m text
+hidden by default, lighter lines and paler blue MW/MCs. Uploaded chart 10 shows
+generic Messier dotted outlines over dedicated galaxies; canonical category
+ownership now suppresses those duplicate generic outlines while preserving
+source data and restoring generic presentation when a dedicated layer is off.
+Index review explicitly opens/checks independent PNG/SVG/PDF files.
+
+After 612 Mac focused tests passed, real chart rendering exposed an inherited
+Galaxies._geometry_table keyword mismatch. The correction preserves subclass
+method admission and extends an end-to-end batch test with synthetic galaxies
+and co-located Messier labels. Fernando clarified Messier is a heterogeneous
+designation catalogue; atlas sheets now draw its labels only. Requested legend
+text/title is 12 points, configurable independently of report headings.
+
+Atlas review candidate: independently sized 40-degree polar primary caps with
+55-degree nonpolar central height produce 32 B4 portrait charts at the existing
+margins and 0.25-degree overlap. Existing geometry and serialization owners are
+extended; the chart-presentation Messier fontsize becomes configurable at 7
+points. Chart count and analytic coverage do not establish label readability;
+Mac index/print review and final-candidate full tests remain pending. The
+coordinate-system guide was reviewed and remains current: frames, epochs,
+provenance and scientific transformations are unchanged.
+
+Atlas visual candidate: 1.8-times DSO diameters, configurable yellow filled
+cluster circles (internal cross for globulars), 80-percent Dec labels, per-chart
+visible-star count in report legends, and a final cumulative catalogue-count
+appendix. The user selected log N versus magnitude; zero/negative magnitudes
+are valid on that linear x-axis. Counts use actual source photometry, unique HIP
+identifiers and the atlas cutoff, not duplicated chart appearances.
+After visual acceptance, final-candidate full verification and separately
+requested merge/cleanup, the next work is category-by-category cluster and SNR
+curation: inspect histograms of physical catalogue characteristics one at a time
+and overlay the corresponding small-telescope catalogue selections. Specific
+comparison catalogues and scientific characteristic definitions will be resolved
+within that later curation step. No such curation or merge is claimed complete.
+
+
+### Binding common-scale atlas implementation candidate (2026-10-12)
+
+Fernando accepted the instruction checkpoint b831b69a and authorised runtime
+implementation. The 36-chart revision has identical angular fields, fixed
+physical sky rectangles and equal central scale, with analytic coverage and
+overlap revalidated. Font-derived fixed bands replace independent sheet
+fitting. Nonpolar/polar RA cadence is 1h/2h; edge collisions use RA priority
+horizontally and Dec priority vertically, and polar Dec labels are interior.
+
+Portrait/landscape index composition and standalone publication PNG/SVG/PDF,
+the index-following blank page and report-left/chart-right display sequence,
+and a reversed actual-count magnitude axis are implemented as a candidate.
+Existing owners and tests are extended. The coordinate-system guide was
+reviewed and remains current; no scientific catalogue curation is begun.
+Focused checks and representative render inspection precede Mac native
+equivalence and visual acceptance. Final full tests before merge and explicit
+merge/cleanup remain separate.
+
+
+### Atlas chart/report frame correction (2026-10-13)
+
+Fernando reported the smaller chart frame, unused coordinate-band space and
+insufficient clearance for slanted RA labels in the generated full atlas.
+The bounded correction adds explicit sky aspect to the existing geometry owner,
+revalidates a versioned 36-chart revision, fits the fixed bands to the full
+report-frame dimensions, and corrects edge-normal label clearance. Historical
+designs remain unchanged. Mac catalogue-backed and visual acceptance remain
+required; this correction does not authorize PR merge, cleanup or curation.

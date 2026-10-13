@@ -44,6 +44,7 @@ def draw_automatic_chart_legends(
     include_context=None,
     stellar_counts: bool = False,
     symbol_labels=None,
+    object_marker_scale=1.0,
     stellar_title="Stars",
     stellar_reference_magnitude=None,
     stellar_reference_range=None,
@@ -81,6 +82,8 @@ def draw_automatic_chart_legends(
         stellar_report_range=stellar_report_range,
         stellar_veil_color=stellar_veil_color, stellar_veil_alpha=stellar_veil_alpha,
     )
+    if object_marker_scale != 1.0:
+        options["object_marker_scale"] = object_marker_scale
     if stellar_counts:
         options["stellar_counts"] = True
     legends = draw_rendered_chart_legends(

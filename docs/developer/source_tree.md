@@ -3474,3 +3474,80 @@ renderer or export pipeline is added. Resolved designs optionally retain the
 canonical request and computed layout; historical JSON remains readable.
 `wenu_plot_atlas` consumes the result without rerunning placement. Existing
 geometry and CLI test owners protect scientific containment and provenance.
+
+
+### Atlas grid/frame ownership candidate (2026-10-12)
+
+charts/request_grids.py owns shared cadence, typography and physical inset;
+style_components.py carries the immutable EquatorialGridMarks contract.
+cli/atlas.py injects cli/chart.py:main into atlas publication, which invokes
+the actual atlas-sheet command for each page. request_generation.py owns sheet
+composition, rendering and export; atlas_publication.py retains batch/snapshot
+coordination, atlas furniture and measured chart-area reporting.
+sky/coordinate_grids.py owns optional
+request-local tick-only reference curves; existing projection/coordinate owners
+realize them. charts/boundaries.py owns actual crossing and inward tangent
+selection; rendering/label_placement.py transports a generic tick direction;
+rendering/matplotlib.py draws marks in points and separates measured exterior
+labels. sky/semantic_identity.py declares their ticks child. The existing
+projections/stereographic.py rejects its undefined antipode as a non-finite
+curve break. No new production or test module is introduced. Existing coordinate
+grid, boundary-anchor, renderer, projection, configuration and chart/atlas CLI test owners protect
+these respective seams. The coordinate-system guide was reviewed and remains
+current; there is no new frame, epoch or observation path.
+
+
+Latest review: request_grids/style_components own configurable RA spacing and
+minute-label admission; the renderer owns generic parallel label angles and
+curve-following exterior offsets. Atlas/index presentation owns MW/MC fill colour.
+charts/detail_application.py supplies dedicated DSO categories; objects/nonstellar.py
+performs render-local exclusion of generic duplicate outlines. Existing atlas,
+configuration, renderer and nonstellar tests cover these seams.
+
+Atlas request_generation admits label-only Messier catalogue geometry;
+objects/nonstellar owns centre realization. Atlas publication passes the
+configurable 12-point legend typography to the existing legend owner, keeping
+report headings separate. Existing catalogue and atlas tests protect inherited
+galaxy realization, designation-only SVG output and actual legend text sizes.
+
+The existing atlas_design.py owns height-to-width resolution and independently
+sized polar footprints; its geometry tests extend the analytic containment oracle
+to mixed sheet sizes. Existing atlas CLI tests cover request binding, redundant
+layout validation and a single configurable 7-point Messier designation on a
+co-located galaxy. No production or test file is added.
+
+Atlas review: rendering/symbols.py owns filled-cluster marker paths;
+style_components.py/styles.py and legend_symbols.py carry the matching optional
+chart/legend appearance. objects/globular_clusters.py admits compatibility centre
+geometry. request_grids.py carries the independent Dec-label scale; regional
+configuration defaults preserve its former scale. rendering/matplotlib.py owns
+pure display-curve magnification. charts/atlas_publication.py owns report count
+furniture and atomic appendix assembly; stellar_sizing_report.py owns actual
+catalogue cumulative counts and their audit/export products. Existing atlas,
+cluster, deep-sky-symbol, renderer and configuration test files protect these
+seams; no production or test module is added.
+
+
+### Common-scale atlas layout ownership
+
+No production or test file is added for this contract. `atlas_publication.py`
+owns common atlas axes, font-derived bands, sheet cadence, interior polar Dec
+furniture, index companion admission and blank-page assembly.
+`request_generation.py` continues to execute actual sheet requests.
+`rendering/matplotlib.py` owns fixed-band label placement and edge-family
+suppression. `atlas_index.py` owns index orientation and all three exports;
+`stellar_sizing_report.py` owns the reversed magnitude display axis.
+Existing geometry records validate the revised
+`examples/atlas_design_36charts_v2.json`; the former specimen is preserved.
+
+
+### Atlas frame correction ownership (2026-10-13)
+
+The existing `src/wenu/atlas_design.py` owns optional explicit sky aspect,
+legacy-preserving page serialization and analytic revalidation.
+`src/wenu/charts/atlas_publication.py` fits that aspect inside fixed coordinate
+bands. `src/wenu/rendering/matplotlib.py` owns normal-to-edge text clearance,
+projected-line alignment and fixed-band suppression. Existing atlas-design,
+atlas-CLI and renderer-contract test files cover these changes. New examples
+are `examples/atlas_design_36charts_v3.json` and
+`examples/atlas_chart_style_v4.toml`; historical versions remain available.

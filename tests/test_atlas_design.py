@@ -104,7 +104,7 @@ def test_five_band_layout_reduces_ra_counts_without_changing_physical_scale(five
 
 
 @pytest.mark.parametrize("seed", [0, 82.5, 359.5])
-@pytest.mark.parametrize("layout", ["five_band", "auto_portrait", "auto_landscape"])
+@pytest.mark.parametrize("layout", ["five_band", "auto_portrait", "auto_landscape", "auto_portrait_32charts"])
 def test_five_band_rectangle_contains_primary_regions_and_boundary_neighbourhoods(page, seed, layout):
     options = dict(field_width_deg=50, overlap_deg=.25, seed_ra_deg=seed)
     designer = design_five_band_atlas
@@ -112,11 +112,15 @@ def test_five_band_rectangle_contains_primary_regions_and_boundary_neighbourhood
         options.update(equatorial_half_height_deg=17, middle_boundary_dec_deg=45)
     else:
         designer = design_polar_first_atlas
-        if layout == "auto_portrait":
+        if layout.startswith("auto_portrait"):
             page = replace(page, width_mm=250, height_mm=353)
+        if layout == "auto_portrait_32charts":
+            options.update(field_width_deg=36.73254758863342, polar_primary_diameter_deg=40)
     atlas = designer("bands", 1, page, AtlasOverviewGeometry(82.5, 20), **options)
     if layout == "auto_portrait":
         assert [len(b.sheet_ids) for b in atlas.bands] == [1, 6, 8, 6, 1]
+    elif layout == "auto_portrait_32charts":
+        assert [len(b.sheet_ids) for b in atlas.bands] == [1, 10, 10, 10, 1]
     elif layout == "auto_landscape":
         assert len(atlas.geometry.sheets) == 34
         assert atlas.bands[2].dec_max_deg == -17
@@ -153,6 +157,36 @@ def test_five_band_json_revalidates_without_replacing_the_legacy_method(five_ban
         raise AssertionError("Reading must not regenerate placement")
     monkeypatch.setattr(module, "design_five_band_atlas", forbidden)
     assert AtlasBandTiling.read_json(path) == five_band_atlas
+    # Legacy documents retain their exact page keys. The optional, explicit
+    # sky ratio belongs to resolved geometry and changes the analytic footprint.
+    assert 'sky_aspect_ratio' not in five_band_atlas.to_dict()['geometry']['page']
+    wider = replace(five_band_atlas, geometry=replace(five_band_atlas.geometry,
+        page=replace(five_band_atlas.geometry.page, sky_aspect_ratio=1.2)))
+    assert AtlasBandTiling.from_json(wider.to_json()) == wider
+    assert all(s.viewport(wider.geometry.page).aspect_ratio == pytest.approx(1.2)
+               for s in wider.geometry.sheets)
+    changed = wider.to_dict()
+    changed['geometry']['page']['sky_aspect_ratio'] = 1.1
+    with pytest.raises(ValueError, match='Inconsistent resolved'):
+        AtlasBandTiling.from_dict(changed)
+    for invalid in (0, -1, True, float('nan')):
+        with pytest.raises(ValueError):
+            replace(five_band_atlas.geometry.page, sky_aspect_ratio=invalid)
+    # A certificate generated on another platform may differ in its final
+    # floating bits. Geometry is still revalidated and must never be retiled.
+    for sign in (-1, 1):
+        data = five_band_atlas.to_dict()
+        data["validation"]["minimum_primary_clearance_deg"] += sign * 4e-11
+        data["validation"]["shared_boundary_overlap_lower_bound_deg"] += sign * 8e-11
+        data["validation"]["primary_area_sr"] += sign * 4e-13
+        assert AtlasBandTiling.from_dict(data) == five_band_atlas
+    for field, value in (("minimum_primary_clearance_deg", True),
+                         ("sheet_count", float(len(five_band_atlas.geometry.sheets))),
+                         ("angular_guard_deg", 2e-8)):
+        data = five_band_atlas.to_dict()
+        data["validation"][field] = value
+        with pytest.raises(ValueError):
+            AtlasBandTiling.from_dict(data)
     data = five_band_atlas.to_dict()
     assert data["generator"] == RECTANGULAR_TILING_METHOD
     data["validation"]["minimum_primary_clearance_deg"] += .01
@@ -197,15 +231,17 @@ def overview_example():
 
 
 @pytest.mark.parametrize("join,width", [(0, 0), (82.5, 20), (359.5, 40)])
-def test_composed_index_registers_equator_and_preserves_own_hemispheres(overview_example, join, width):
+@pytest.mark.parametrize('orientation', ['landscape', 'portrait'])
+def test_composed_index_registers_equator_and_preserves_own_hemispheres(overview_example, join, width, orientation):
     import matplotlib.pyplot as plt
     overview = AtlasOverviewGeometry(join, width)
-    figure = plt.figure(figsize=(14, 8))
+    figure = plt.figure(figsize=(14, 8) if orientation == 'landscape' else (8,14))
     try:
-        axes = overview_example.composed_axes(figure, overview)
+        axes = overview_example.composed_axes(figure, overview, orientation)
         locations = []
-        for ax, pole in zip(axes, ("north", "south")):
-            face = overview_example.overview_face(overview, pole)
+        poles = ('north','south') if orientation == 'landscape' else ('south','north')
+        for ax, pole in zip(axes, poles):
+            face = overview_example.overview_face(overview, pole, orientation)
             ax.set_xlim(-face.boundary_radius, face.boundary_radius)
             ax.set_ylim(-face.boundary_radius, face.boundary_radius)
             ax.set_aspect("equal")
@@ -214,26 +250,34 @@ def test_composed_index_registers_equator_and_preserves_own_hemispheres(overview
             ra,dec = np.meshgrid(np.linspace(0,360,73), np.linspace(0,90 if pole == "north" else -90,19))
             x,y = face.projection.project_spherical(ra.ravel(), dec.ravel())
             physical = figure.transFigure.inverted().transform(ax.transData.transform(np.column_stack((x,y))))
-            assert np.all(physical[:,0] <= .5 + 1e-12) if pole == "north" else np.all(physical[:,0] >= .5 - 1e-12)
+            coordinate = 0 if orientation == 'landscape' else 1
+            assert np.all(physical[:,coordinate] <= .5 + 1e-12) if pole == "north" else np.all(physical[:,coordinate] >= .5 - 1e-12)
         np.testing.assert_allclose(locations[0], locations[1], atol=1e-10)
         a,b = (ax.get_position() for ax in axes)
-        assert a.x1 >= b.x0 - 1e-12
-        assert a.x1 > b.x0 if width else a.x1 == pytest.approx(b.x0)
+        if orientation == 'landscape':
+            assert a.x1 >= b.x0 - 1e-12
+            assert a.x1 > b.x0 if width else a.x1 == pytest.approx(b.x0)
+        else:
+            assert a.y0 <= b.y1 + 1e-12
+            assert a.y0 < b.y1 if width else a.y0 == pytest.approx(b.y1)
     finally:
         plt.close(figure)
 
 
 @pytest.mark.parametrize("initial_dpi", [100, 200])
-def test_join_clip_tracks_export_dpi_and_retains_both_contours(five_band_atlas, overview_example, initial_dpi):
+@pytest.mark.parametrize('orientation', ['landscape', 'portrait'])
+def test_join_clip_tracks_export_dpi_and_retains_both_contours(five_band_atlas, overview_example, initial_dpi, orientation):
     import matplotlib.pyplot as plt
-    figure = plt.figure(figsize=(14,8), dpi=initial_dpi)
+    figure = plt.figure(figsize=(14,8) if orientation == 'landscape' else (8,14), dpi=initial_dpi)
     try:
-        axes = overview_example.composed_axes(figure, five_band_atlas.geometry.overview)
-        for ax,pole in zip(axes, ("north", "south")):
+        axes = overview_example.composed_axes(figure, five_band_atlas.geometry.overview, orientation)
+        poles = ('north','south') if orientation == 'landscape' else ('south','north')
+        for ax,pole in zip(axes, poles):
             overview_example._draw_face(ax, five_band_atlas,
-                overview_example.overview_face(five_band_atlas.geometry.overview,pole), footprints=True)
-        overview_example._join_faces(figure, axes, five_band_atlas)
-        for ax, pole in zip(axes, ("north", "south")):
+                overview_example.overview_face(five_band_atlas.geometry.overview,pole,orientation), footprints=True)
+        overview_example._join_faces(figure, axes, five_band_atlas,
+            overview_example.AtlasIndexPresentation(orientation=orientation))
+        for ax, pole in zip(axes, poles):
             contours = [a for a in ax.lines if a.get_gid() == f"atlas-index-{pole}-complete-rim"]
             assert len(contours) == 1 and not contours[0].get_clip_on()
         clips = [ax.lines[0].get_clip_box() for ax in axes]
@@ -713,3 +757,4 @@ def test_band_design_does_not_construct_observational_state(page, monkeypatch):
 def test_extra_index_layers_require_astronomical_rendering(overview_example, tmp_path, option):
     with pytest.raises(ValueError, match="require astronomy"):
         overview_example.plot_overview(tmp_path / "unused.json", tmp_path / "unused", **{option: True})
+

@@ -183,6 +183,9 @@ class DeepSkyStyle:
     globular_cluster_draw_labels: bool = False
     globular_cluster_label_color: str | None = None
     globular_cluster_label_fontsize: float = 6.0
+    globular_cluster_symbol_name: str | None = None
+    globular_cluster_symbol_size: float = 18.0
+    globular_cluster_face_color: str | None = None
     planetary_nebula_color: str = "white"
     planetary_nebula_face_color: str = "none"
     planetary_nebula_symbol_size: float = 64.0
@@ -198,6 +201,8 @@ class DeepSkyStyle:
     open_cluster_draw_labels: bool = False
     open_cluster_label_color: str | None = None
     open_cluster_label_fontsize: float = 6.0
+    open_cluster_symbol_name: str = "open_cluster"
+    open_cluster_face_color: str | None = None
 
 
 @dataclass(frozen=True)
@@ -457,6 +462,11 @@ class ChartStyle:
                 deep.supernova_remnant_label_fontsize
             ),
             globular_cluster_color=deep.globular_cluster_color,
+            globular_cluster_symbol_name=deep.globular_cluster_symbol_name,
+            globular_cluster_symbol_size=deep.globular_cluster_symbol_size,
+            globular_cluster_face_color=deep.globular_cluster_face_color,
+            open_cluster_symbol_name=deep.open_cluster_symbol_name,
+            open_cluster_face_color=deep.open_cluster_face_color,
             globular_cluster_linewidth=deep.globular_cluster_linewidth,
             globular_cluster_alpha=deep.globular_cluster_alpha,
             globular_cluster_minimum_size_arcmin=(
@@ -628,3 +638,30 @@ class ChartStyle:
             sky,
             horizon_altitude_deg=horizon_altitude_deg,
         )
+
+@dataclass(frozen=True)
+class EquatorialGridMarks:
+    """Physical appearance for an explicitly requested marginal grid preset."""
+
+    grid_lines_visible: bool = True
+    grid_label_fontsize: float = 12.0
+    grid_minor_label_scale: float = 0.75
+    grid_frame_width_scale: float = 1.5
+    grid_ra_step_hours: int = 2
+    grid_minute_labels_visible: bool = False
+    grid_dec_label_scale: float = 1.0
+
+    def __post_init__(self):
+        if type(self.grid_lines_visible) is not bool:
+            raise ValueError("grid_lines_visible must be boolean.")
+        if type(self.grid_minute_labels_visible) is not bool:
+            raise ValueError("grid_minute_labels_visible must be boolean.")
+        if type(self.grid_ra_step_hours) is not int or self.grid_ra_step_hours not in (1, 2, 3, 4, 6, 8, 12):
+            raise ValueError("grid_ra_step_hours must be an integer divisor of 24 from 1 through 12.")
+        for name in ("grid_label_fontsize", "grid_minor_label_scale", "grid_frame_width_scale", "grid_dec_label_scale"):
+            value = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not isfinite(value) or value <= 0:
+                raise ValueError(f"{name} must be finite and positive.")
+        if self.grid_minor_label_scale > 1:
+            raise ValueError("grid_minor_label_scale must be at most 1.")
+

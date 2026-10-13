@@ -325,10 +325,15 @@ class DetailOverrides:
     extra_star_ids: frozenset[int] | None = None
     content_selection: SkyContentSelection | None = None
     equatorial_declination_step_deg: float | None = None
+    equatorial_grid_marks: object | None = None
     star_labels: StarLabelSelection | None = None
     stellar_label_constellations: tuple[str, ...] | None = None
 
     def __post_init__(self):
+        if self.equatorial_grid_marks is not None:
+            from .style_components import EquatorialGridMarks
+            if not isinstance(self.equatorial_grid_marks, EquatorialGridMarks):
+                raise TypeError("equatorial_grid_marks must be EquatorialGridMarks or None.")
         if self.star_labels is not None and not isinstance(self.star_labels, StarLabelSelection):
             raise TypeError("star_labels must be StarLabelSelection or None")
         for name in (
@@ -729,7 +734,7 @@ def apply_detail_overrides(
     if overrides is None:
         return detail
     layer_fields = {"enabled_layer_additions", "disabled_layers"}
-    request_fields = {"equatorial_declination_step_deg"}
+    request_fields = {"equatorial_declination_step_deg", "equatorial_grid_marks"}
     changes = {
         item.name: getattr(overrides, item.name)
         for item in fields(overrides)
@@ -749,3 +754,4 @@ def apply_detail_overrides(
     enabled.update(() if additions is None else additions)
     enabled.difference_update(() if removals is None else removals)
     return replace(resolved, enabled_layers=frozenset(enabled))
+

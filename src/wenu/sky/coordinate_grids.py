@@ -470,7 +470,8 @@ class EquatorialGrid(CoordinatesGrid):
             metadata=self._grid_metadata(),
         )
 
-    def spherical_geometry(self, observer) -> SphericalGrid:
+    def spherical_geometry(self, observer, *, ra=None, dec=None,
+                           ra_ticks=None, dec_ticks=None) -> SphericalGrid:
         resolved = self._resolve_observer(observer)
         if resolved is not self.observer:
             return type(self)(
@@ -483,10 +484,21 @@ class EquatorialGrid(CoordinatesGrid):
                 include_equator=self.include_equator,
                 meridian_dec_min=self.meridian_dec_min,
                 meridian_dec_max=self.meridian_dec_max,
-            ).spherical_geometry(resolved)
-        geometry = self.grid(ra=self.ra, dec=self.dec)
+            ).spherical_geometry(resolved, ra=ra, dec=dec,
+                                 ra_ticks=ra_ticks, dec_ticks=dec_ticks)
+        ra = self.ra if ra is None else ra
+        dec = self.dec if dec is None else dec
+        geometry = self.grid(ra=ra, dec=dec)
         components = dict(geometry.components)
-        if self.include_equator:
+        # Tick-only curves follow the same scientific realization/projection.
+        # Their physical marks and typography belong to chart/render owners.
+        if ra_ticks is not None:
+            components["tick_meridians"] = self._combine(
+                [self.meridian(value) for value in ra_ticks])
+        if dec_ticks is not None:
+            components["tick_parallels"] = self._combine(
+                [self.parallel(value) for value in dec_ticks])
+        if self.include_equator and (dec is None or 0.0 not in dec):
             components["reference"] = self.equator()
         return SphericalGrid(
             components=components,
@@ -768,3 +780,4 @@ class GalacticGrid(CoordinatesGrid):
             position_status=PositionStatus.ASTROMETRIC,
             provider="wenu galactic grid",
         )
+

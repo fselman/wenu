@@ -80,6 +80,37 @@ class MatplotlibRenderer:
             self._closed_boundary_path(boundary), dict(style),
         )
 
+    def configure_grid_label_frame(self, *, horizontal_points, vertical_points, polar=False):
+        """Fixed physical bands and edge-specific coordinate-label priority."""
+        self._grid_frame_policy = (horizontal_points, vertical_points, polar)
+
+    def fit_grid_label_band(self, bounds):
+        """Fit the measured exterior frame to figure bounds without changing sky geometry."""
+        if self._grid_label_band is None:
+            return
+        from matplotlib.transforms import Bbox
+        target = Bbox.from_bounds(*bounds).transformed(self.ax.figure.transFigure)
+        target = target.padded(-0.01 * self.ax.figure.dpi / 25.4)
+        for _ in range(12):
+            self._finalize_grid_label_band()
+            frame = self._grid_label_band_frame.get_path().transformed(
+                self._grid_label_band_frame.get_transform()).get_extents()
+            sky = self.ax.get_window_extent()
+            left, right = sky.x0 - frame.x0, frame.x1 - sky.x1
+            bottom, top = sky.y0 - frame.y0, frame.y1 - sky.y1
+            factor = min((target.width - left - right) / sky.width,
+                         (target.height - bottom - top) / sky.height)
+            if factor <= 0:
+                raise ValueError("Coordinate labels do not fit the page bounds.")
+            width, height = sky.width * factor, sky.height * factor
+            x = target.x0 + (target.width - width - left - right) / 2 + left
+            y = target.y0 + (target.height - height - bottom - top) / 2 + bottom
+            proposed = Bbox.from_bounds(x, y, width, height)
+            if np.max(np.abs(proposed.extents - sky.extents)) < 0.01:
+                break
+            self.ax.set_position(proposed.transformed(self.ax.figure.transFigure.inverted()))
+        self._finalize_grid_label_band()
+
     def _finalize_grid_label_band(self):
         """Fit a circular or rectangular exterior band to physical text bounds."""
         if self._grid_label_band is None:
@@ -90,6 +121,7 @@ class MatplotlibRenderer:
         self.ax.figure.canvas.draw()
         renderer = self.ax.figure.canvas.get_renderer()
         path, style = self._grid_label_band
+        policy = getattr(self, '_grid_frame_policy', None)
         inner = self.ax.transData.transform(path.vertices[:-1])
         low, high = inner.min(axis=0), inner.max(axis=0)
         centre = (low + high) / 2.0
@@ -109,10 +141,19 @@ class MatplotlibRenderer:
         # Keep its inner edge close to the boundary coordinate, with a
         # small physical clearance rather than half the ring width.
         for text in labels:
+            if policy is not None and policy[2] and getattr(text, '_wenu_coordinate_family', None) == 'dec':
+                text.set_visible(False)
+                continue
             attachment = getattr(text, "_wenu_exterior_attachment", None)
             if attachment is None:
                 continue
             position, direction = attachment
+            if policy is not None and getattr(text, '_wenu_coordinate_family', None) == 'ra' and abs(direction[0]) > abs(direction[1]):
+                direction = text._wenu_grid_tick_direction
+                tangent = self.ax.transData.transform(np.asarray(position) + direction) - self.ax.transData.transform(position)
+                angle = (np.degrees(np.arctan2(tangent[1], tangent[0])) + 90) % 180 - 90
+                text.set_rotation(angle)
+                text.set_rotation_mode('anchor')
             origin = self.ax.transData.transform(position)
             direction = self.ax.transData.transform(np.asarray(position) + direction) - origin
             direction /= np.linalg.norm(direction)
@@ -121,6 +162,20 @@ class MatplotlibRenderer:
             support = (abs(direction[0]) * box.width + abs(direction[1]) * box.height) / 2.0
             clearance = 1.5 if not circular and direction[1] < -0.9 else 0.35
             offset = support + clearance * scale
+            if policy is not None and not circular:
+                # Continue along the projected grid line, but measure clearance
+                # normal to the physical edge. A radial support distance leaves
+                # steep meridians touching or crossing a vertical boundary.
+                edge_direction = attachment[1]
+                normal = (np.array([0., np.copysign(1., edge_direction[1])])
+                          if text._wenu_grid_edge_horizontal else
+                          np.array([np.copysign(1., edge_direction[0]), 0.]))
+                outward = float(np.dot(direction, normal))
+                edge_support = (abs(normal[0]) * box.width + abs(normal[1]) * box.height) / 2.0
+                if outward <= 1e-12:
+                    text.set_visible(False)
+                    continue
+                offset = (edge_support + padding) / outward
             if circular:
                 # Fit the upright text box to the curved inner rim.
                 target = float(np.max(radius)) + 0.35 * scale
@@ -139,6 +194,50 @@ class MatplotlibRenderer:
             text.set_transform(self.ax.transData + ScaledTranslation(
                 *shift, self.ax.figure.dpi_scale_trans,
             ))
+        # A secondary coordinate family may share an exact boundary crossing.
+        # Separate its text outward; never move the scientific tick along an edge.
+        if policy is not None:
+            labels = [text for text in labels if text.get_visible()]
+            widths = np.array([policy[1], policy[0]]) * scale
+            fixed_low, fixed_high = low - widths, high + widths
+            def priority(text):
+                position, direction = text._wenu_exterior_attachment
+                horizontal = text._wenu_grid_edge_horizontal
+                family = getattr(text, '_wenu_coordinate_family', None)
+                return 0 if family == ('ra' if horizontal else 'dec') else 1
+            retained = []
+            for text in sorted(labels, key=priority):
+                box = text.get_window_extent(renderer)
+                if (box.x0 < fixed_low[0] or box.x1 > fixed_high[0] or
+                    box.y0 < fixed_low[1] or box.y1 > fixed_high[1] or
+                    any(box.overlaps(other.get_window_extent(renderer)) for other in retained)):
+                    text.set_visible(False)
+                else:
+                    retained.append(text)
+            labels = retained
+        primary = [text for text in labels if policy is not None or not getattr(text, "_wenu_exterior_lane", 0)]
+        placed = list(primary)
+        secondary = sorted((text for text in labels if policy is None and getattr(text, "_wenu_exterior_lane", 0)),
+                           key=lambda text: text._wenu_exterior_lane)
+        for text in secondary:
+            position, vector = text._wenu_exterior_attachment
+            origin = self.ax.transData.transform(position)
+            direction = self.ax.transData.transform(np.asarray(position) + vector) - origin
+            direction /= np.linalg.norm(direction)
+            for _ in range(len(labels) + 1):
+                box = text.get_window_extent(renderer)
+                collisions = [other.get_window_extent(renderer) for other in placed
+                              if box.overlaps(other.get_window_extent(renderer))]
+                if not collisions:
+                    break
+                def support(bounds, maximum):
+                    corners = np.array([[bounds.x0, bounds.y0], [bounds.x0, bounds.y1],
+                                        [bounds.x1, bounds.y0], [bounds.x1, bounds.y1]])
+                    return (np.max if maximum else np.min)(corners @ direction)
+                offset = max(support(other, True) - support(box, False) for other in collisions) + 2 * scale
+                text.set_transform(text.get_transform() + ScaledTranslation(
+                    *(direction * offset / self.ax.figure.dpi), self.ax.figure.dpi_scale_trans))
+            placed.append(text)
         boxes = [text.get_window_extent(renderer) for text in labels]
         if circular:
             outer_radius = float(np.max(radius)) + minimum
@@ -152,7 +251,11 @@ class MatplotlibRenderer:
             outer = centre + outer_radius * np.column_stack((np.cos(angle), np.sin(angle)))
         else:
             outer_low, outer_high = low - minimum, high + minimum
+            if policy is not None:
+                outer_low, outer_high = fixed_low, fixed_high
             for text, box in zip(labels, boxes):
+                if policy is not None:
+                    continue
                 clearance = (style["linewidth"] / 2.0 * scale
                              if hasattr(text, "_wenu_exterior_attachment") else padding)
                 outer_low = np.minimum(outer_low, (box.x0 - clearance, box.y0 - clearance))
@@ -525,8 +628,13 @@ class MatplotlibRenderer:
         label_offset=(0.0, 0.0),
         label_formatter=None,
         label_anchor=None,
+        boundary_ticks=None,
+        boundary_tick_anchor=None,
+        curve_size_scale=1.0,
     ):
         """Draw a supported projected geometry object."""
+        if isinstance(curve_size_scale, bool) or not isinstance(curve_size_scale, (int, float)) or not np.isfinite(curve_size_scale) or curve_size_scale <= 0:
+            raise ValueError("curve_size_scale must be finite and positive.")
         common = {} if style is None else dict(style)
         labels = {} if label_style is None else dict(label_style)
         polygon_fill = (
@@ -576,7 +684,7 @@ class MatplotlibRenderer:
             )
         elif isinstance(geometry, ProjectedCurve):
             artists = self._draw_curve(
-                geometry,
+                self._display_scaled_curve(geometry, curve_size_scale),
                 common,
                 draw_labels=draw_labels,
                 label_style=labels,
@@ -592,6 +700,7 @@ class MatplotlibRenderer:
                 label_style=labels,
                 label_offset=label_offset,
                 label_formatter=label_formatter,
+                curve_size_scale=curve_size_scale,
             )
         elif isinstance(geometry, ProjectedGrid):
             artists = self._draw_grid(
@@ -605,6 +714,8 @@ class MatplotlibRenderer:
                 label_offset=label_offset,
                 label_formatter=label_formatter,
                 label_anchor=label_anchor,
+                boundary_ticks=boundary_ticks,
+                boundary_tick_anchor=boundary_tick_anchor,
             )
         elif isinstance(geometry, ProjectedPolygon):
             artists = self._draw_polygon(
@@ -848,6 +959,16 @@ class MatplotlibRenderer:
                 )
         return artists
 
+    @staticmethod
+    def _display_scaled_curve(curve, scale):
+        """Magnify a glyph about its display bounds; retain scientific geometry."""
+        if scale == 1 or curve.bounds is None:
+            return curve
+        x_min, x_max, y_min, y_max = curve.bounds
+        x_center, y_center = (x_min + x_max) / 2, (y_min + y_max) / 2
+        return ProjectedCurve(x_center + scale * (curve.x - x_center),
+            y_center + scale * (curve.y - y_center), name=curve.name, closed=curve.closed)
+
     def _draw_curves(
         self,
         curves,
@@ -858,6 +979,7 @@ class MatplotlibRenderer:
         label_style,
         label_offset,
         label_formatter,
+        curve_size_scale=1.0,
     ):
         entity_styles = self._entity_styles(
             styles,
@@ -865,6 +987,7 @@ class MatplotlibRenderer:
         )
         artists = []
         for index, curve in enumerate(curves):
+            curve = self._display_scaled_curve(curve, curve_size_scale)
             name = curve.name
             if name is None:
                 name = self._metadata_label(curves.metadata, index)
@@ -902,6 +1025,8 @@ class MatplotlibRenderer:
         label_offset,
         label_formatter,
         label_anchor,
+        boundary_ticks,
+        boundary_tick_anchor,
     ):
         component_styles = (
             {} if component_styles is None else component_styles
@@ -914,8 +1039,10 @@ class MatplotlibRenderer:
             {} if styles is None else styles
         )
         artists = []
+        boundary_ticks = {} if boundary_ticks is None else boundary_ticks
         for name, curves in grid.components.items():
-            line_artists = self._draw_curves(
+            tick_options = boundary_ticks.get(name)
+            line_artists = [] if tick_options is not None else self._draw_curves(
                     curves,
                     {
                         **style,
@@ -930,7 +1057,7 @@ class MatplotlibRenderer:
             for artist in line_artists:
                 setattr(artist, "_wenu_semantic_component", "lines")
             artists.extend(line_artists)
-            if draw_labels:
+            if draw_labels or tick_options is not None:
                 for index, curve in enumerate(curves):
                     curve_name = curve.name
                     if curve_name is None:
@@ -946,14 +1073,15 @@ class MatplotlibRenderer:
                         closed=curve.closed,
                         name=curve_name,
                     )
-                    if label_anchor is None:
+                    anchor_policy = boundary_tick_anchor if tick_options is not None else label_anchor
+                    if anchor_policy is None:
                         anchor = self._anchor(curve.x, curve.y)
-                    elif getattr(label_anchor, "near_ends", False):
-                        anchor = label_anchor(
+                    elif getattr(anchor_policy, "near_ends", False):
+                        anchor = anchor_policy(
                             named_curve, self.ax, measure_curve=self._measure_curve_label,
                         )
                     else:
-                        anchor = label_anchor(named_curve, self.ax)
+                        anchor = anchor_policy(named_curve, self.ax)
                     if anchor is None:
                         continue
                     anchors = anchor if isinstance(anchor, list) and all(
@@ -964,6 +1092,30 @@ class MatplotlibRenderer:
                             **label_style,
                             **dict(component_label_styles.get(name, {})),
                         }
+                        rule = {} if tick_options is None else tick_options(curve_name)
+                        if tick_options is not None:
+                            if not isinstance(anchor, CurveLabelPlacement) or anchor.tick_direction is None:
+                                raise ValueError("Boundary ticks require an inward curve tangent.")
+                            self.ax.apply_aspect()
+                            origin = self.ax.transData.transform((anchor.x, anchor.y))
+                            tangent = self.ax.transData.transform(
+                                np.array((anchor.x, anchor.y)) + anchor.tick_direction) - origin
+                            tangent /= np.linalg.norm(tangent)
+                            length = float(rule["length_points"])
+                            if not np.isfinite(length) or length <= 0:
+                                raise ValueError("Boundary tick length must be finite and positive.")
+                            end = self.ax.transData.inverted().transform(
+                                origin + tangent * length * self.ax.figure.dpi / 72.0)
+                            tick_style = {**style, **dict(rule.get("style", {}))}
+                            mark = render_curve(self.ax, ProjectedCurve(
+                                [anchor.x, end[0]], [anchor.y, end[1]], name=curve_name),
+                                **tick_style)
+                            mark._wenu_semantic_component = "ticks"
+                            artists.append(mark)
+                            if rule.get("label") is None:
+                                continue
+                            label_style_for_curve["fontsize"] = float(
+                                label_style_for_curve.get("fontsize", 10.0)) * rule.get("font_scale", 1.0)
                         if isinstance(anchor, CurveLabelPlacement):
                             position = (anchor.x, anchor.y)
                             if anchor.horizontal_alignment is not None:
@@ -1007,10 +1159,20 @@ class MatplotlibRenderer:
                         else:
                             position = anchor
                         label = (
+                            rule["label"] if tick_options is not None else
                             curve_name
                             if label_formatter is None
                             else label_formatter(curve_name)
                         )
+                        if tick_options is not None and rule.get("label_rotation") in {"parallel", "perpendicular"}:
+                            # Physical display-space tangent or normal to the curve,
+                            # with an equivalent upright orientation for readability.
+                            angle = np.degrees(np.arctan2(tangent[1], tangent[0]))
+                            if rule["label_rotation"] == "perpendicular":
+                                angle += 90.0
+                            label_style_for_curve.update(
+                                rotation=(angle + 90.0) % 180.0 - 90.0,
+                                rotation_mode="anchor")
                         label_artist = self._label(
                             *position,
                             label,
@@ -1026,7 +1188,10 @@ class MatplotlibRenderer:
                             from matplotlib.transforms import ScaledTranslation
 
                             self.ax.apply_aspect()
-                            direction = np.asarray(anchor.exterior_direction, dtype=float)
+                            exterior_direction = (-np.asarray(anchor.tick_direction, dtype=float)
+                                if tick_options is not None and rule.get("label_rotation") == "parallel"
+                                else np.asarray(anchor.exterior_direction, dtype=float))
+                            direction = exterior_direction
                             origin = self.ax.transData.transform((anchor.x, anchor.y))
                             direction = self.ax.transData.transform(
                                 np.asarray((anchor.x, anchor.y)) + direction
@@ -1044,9 +1209,13 @@ class MatplotlibRenderer:
                             setattr(label_artist, "_wenu_exterior_label", True)
                             label_artist._wenu_exterior_attachment = (
                                 (anchor.x, anchor.y),
-                                np.asarray(anchor.exterior_direction, dtype=float),
+                                exterior_direction,
                             )
-                        candidate_factory = getattr(label_anchor, "candidates", None)
+                            label_artist._wenu_exterior_lane = rule.get("label_lane", 0)
+                            label_artist._wenu_coordinate_family = 'ra' if str(curve_name).startswith('right_ascension_') else 'dec'
+                            label_artist._wenu_grid_tick_direction = -np.asarray(anchor.tick_direction, dtype=float)
+                            label_artist._wenu_grid_edge_horizontal = abs(anchor.exterior_direction[1]) >= abs(anchor.exterior_direction[0])
+                        candidate_factory = getattr(anchor_policy, "candidates", None)
                         if isinstance(anchor, CurveLabelPlacement) and callable(candidate_factory):
                             per_anchor = getattr(label_anchor, "candidates_for_anchor", None)
                             candidates = tuple(
@@ -1785,3 +1954,4 @@ class MatplotlibRenderer:
         if not np.any(finite):
             return None
         return float(np.mean(x[finite])), float(np.mean(y[finite]))
+

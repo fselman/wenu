@@ -678,7 +678,8 @@ def test_atlas_chart_batch_cold_saved_and_spawned_pages_match(native_snapshot_ca
     index = tmp_path/'index.pdf'
     figure = plt.figure(figsize=(14,8))
     figure.text(0.5,0.5,'Synthetic atlas index',ha='center')
-    figure.savefig(index)
+    for suffix in ('pdf', 'png', 'svg'):
+        figure.savefig(index.with_suffix('.' + suffix))
     plt.close(figure)
     index_before = index.read_bytes()
     for mode, jobs in (('serial', 1), ('spawn', 2)):
@@ -697,19 +698,40 @@ def test_atlas_chart_batch_cold_saved_and_spawned_pages_match(native_snapshot_ca
         data = json.loads(manifest.read_text())
         assert data['charts'] == [10, 14] and data['workers'] == jobs
         book = PdfReader(manifest.parent/'atlas.pdf')
-        assert len(book.pages) == 7
+        assert book.page_layout == '/TwoPageLeft'
+        assert len(book.pages) == 9
         assert 'Synthetic atlas index' in book.pages[0].extract_text()
         assert data['report_content'] == 'reserved'
         assert data['index_sha256'] == hashlib.sha256(index_before).hexdigest()
         assert data['page_order'] == [dict(page=1,kind='index'),
-            dict(page=2,kind='report',chart=10),dict(page=3,kind='chart',chart=10),
-            dict(page=4,kind='report',chart=14),dict(page=5,kind='chart',chart=14),
-            dict(page=6,kind='stellar_sizing_report'), dict(page=7,kind='stellar_area_budget')]
-        for position, number in ((1,10),(3,14)):
+            dict(page=2,kind='blank'),
+            dict(page=3,kind='report',chart=10),dict(page=4,kind='chart',chart=10),
+            dict(page=5,kind='report',chart=14),dict(page=6,kind='chart',chart=14),
+            dict(page=7,kind='stellar_sizing_report'), dict(page=8,kind='stellar_area_budget'),
+            dict(page=9,kind='catalogue_star_counts')]
+        assert not book.pages[1].extract_text().strip()
+        for suffix in ('pdf', 'png', 'svg'):
+            assert (manifest.parent/f'atlas-index.{suffix}').read_bytes() == index.with_suffix('.'+suffix).read_bytes()
+        assert 'Atlas catalogue star counts' in book.pages[-1].extract_text()
+        assert book.outline[-1].title == 'Catalogue star counts'
+        assert book.get_destination_page_number(book.outline[-1]) == 8
+        counts = json.loads((manifest.parent/'atlas-star-counts.json').read_text())
+        assert counts['magnitude_limit'] == 6
+        assert counts['provenance'] == dict(design_sha256=data['design_sha256'],
+                                            snapshot_sha256=data['snapshot_sha256'])
+        for suffix in ('png', 'pdf', 'svg', 'json'):
+            assert f'atlas-star-counts.{suffix}' in data['products']
+        for filename in ('atlas-star-counts.json', 'atlas-star-counts_catalogue.csv'):
+            assert (manifest.parent/filename).read_bytes() == (tmp_path/'cold'/filename).read_bytes()
+        np.testing.assert_array_equal(imread(tmp_path/'cold'/'atlas-star-counts.png'),
+                                      imread(manifest.parent/'atlas-star-counts.png'))
+        for position, number in ((2,10),(4,14)):
             text = book.pages[position].extract_text()
             assert f'Chart {number}' in text and 'Object report' in text
             assert 'Reserved for the object report' in text
-            assert 'Stars' in text
+            report = json.loads((manifest.parent/f'chart-{number:02d}_report_data.json').read_text())
+            visible_count = report['stars']['statistics']['visible_count']
+            assert f'Star magnitude ({visible_count:,})' in text
             assert 'Centre: ICRS' in text and 'RA' in text and 'Dec' in text
             chart_text = book.pages[position+1].extract_text()
             assert str(number) in chart_text.splitlines()
@@ -798,3 +820,4 @@ def test_atlas_chart_batch_publication_race_preserves_other_writer(native_snapsh
     assert (output/'other-writer').read_text() == 'preserve'
     assert not (output/'manifest.json').exists()
     assert not list(tmp_path.glob('.wenu-atlas-pages-*'))
+

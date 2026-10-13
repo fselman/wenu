@@ -378,6 +378,27 @@ def _chart_view_argument_plans(
     }
     detail_overrides = chart_detail_overrides(effective_arguments)
     from dataclasses import replace
+    from .style_components import EquatorialGridMarks
+    marks = (None if configuration is None else configuration.geometry_detail.equatorial_grid_marks)
+    selected_marks = getattr(effective_arguments, "equatorial_grid_ticks", None)
+    if selected_marks is False:
+        marks = None
+    elif selected_marks is True:
+        marks = marks or EquatorialGridMarks()
+    appearance = {name: getattr(effective_arguments, name, None)
+        for name in EquatorialGridMarks.__dataclass_fields__}
+    appearance = {name: value for name, value in appearance.items() if value is not None}
+    if appearance and marks is None:
+        raise ValueError("Grid-mark appearance controls require --equatorial-grid-ticks or enabled TOML edge_marks.")
+    if marks is not None:
+        if view.family != "regional":
+            raise ValueError("Equatorial edge marks currently require a regional chart.")
+        if not (effective_arguments.equatorial_grid or effective_arguments.equatorial_grid_labels):
+            raise ValueError("Equatorial edge marks conflict with --no-equatorial-grid.")
+        if getattr(effective_arguments, "grid_label_band", None) is False:
+            raise ValueError("Equatorial edge marks require the exterior grid-label band.")
+        marks = replace(marks, **appearance)
+        detail_overrides = replace(detail_overrides, equatorial_grid_marks=marks)
     from wenu.star_designations import StarLabelSelection
 
     defaults = (
@@ -552,3 +573,4 @@ def draw_chart_view_from_arguments(view, arguments, **options):
         draw_chart_view(view, destination, **request_options)
         for destination, request_options in plans
     )
+

@@ -147,9 +147,24 @@ class NonStellar(AstronomicalObject):
         limit = options.pop("magnitude_limit", None)
         minimum = options.pop("minimum_size_arcmin", None)
         samples = self._resolved_samples(options.pop("samples", None))
+        excluded = options.pop("excluded_categories", ())
+        labels_only = options.pop("labels_only", False)
+        if type(labels_only) is not bool:
+            raise ValueError("labels_only must be boolean.")
+        if labels_only:
+            excluded = ()
         if options:
             raise TypeError(f"Unsupported native outline options: {sorted(options)}")
-        table = self._geometry_table(selected, magnitude_limit=limit)
+        table_options = {"excluded_categories": excluded} if excluded else {}
+        table = self._geometry_table(selected, magnitude_limit=limit, **table_options)
+        if labels_only:
+            from copy import copy
+            local = copy(self)
+            local.catalog = table
+            geometry = local.position()
+            geometry.metadata.update(self._geometry_metadata(table))
+            geometry.metadata["coordinate_system"] = "icrs"
+            return geometry
         lon, lat = [], []
         for row in table:
             outline = self._ellipse(
@@ -349,7 +364,7 @@ class NonStellar(AstronomicalObject):
         bearing = np.arctan2(east, north) * u.rad
         return center.directional_offset_by(bearing, separation)
 
-    def _geometry_table(self, selected=None, magnitude_limit=None):
+    def _geometry_table(self, selected=None, magnitude_limit=None, *, excluded_categories=()):
         """Return the catalogue rows participating in geometry."""
         table = (
             self.catalog
@@ -363,6 +378,10 @@ class NonStellar(AstronomicalObject):
                 | (magnitude <= float(magnitude_limit))
             )
             table = table[keep]
+        if excluded_categories:
+            excluded = frozenset(excluded_categories)
+            table = table[np.asarray([self.semantic_category(row["object_type"],
+                identifier=row["identifier"]) not in excluded for row in table], dtype=bool)]
         if selected is None:
             return table
         wanted = {
@@ -608,6 +627,8 @@ class NonStellar(AstronomicalObject):
         magnitude_limit=None,
         minimum_size_arcmin=None,
         samples=None,
+        excluded_categories=(),
+        labels_only=False,
     ) -> SphericalCurves:
         """Return sampled outlines transformed from ICRS to Alt/Az."""
         if self.catalog is None:
@@ -615,6 +636,10 @@ class NonStellar(AstronomicalObject):
                 "The catalogue has not been loaded. "
                 "Call nonstellar.load() first."
             )
+        if type(labels_only) is not bool:
+            raise ValueError("labels_only must be boolean.")
+        if labels_only:
+            return self.spherical_centers(observer, selected=selected, magnitude_limit=magnitude_limit)
         resolved = self.observer if observer is None else observer
         if resolved is None or not hasattr(resolved, "altaz_frame"):
             raise ValueError(
@@ -624,6 +649,7 @@ class NonStellar(AstronomicalObject):
         table = self._geometry_table(
             selected,
             magnitude_limit=magnitude_limit,
+            excluded_categories=excluded_categories,
         )
         resolved_samples = self._resolved_samples(samples)
 
@@ -716,3 +742,4 @@ class NonStellar(AstronomicalObject):
                 ),
             },
         )
+

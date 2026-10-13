@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 import hashlib
+import math
 import re
 from pathlib import Path
 
@@ -182,9 +183,25 @@ class AtlasChartPresentation:
     chart_number_box_alpha: float = 0.9
     chart_number_box_padding: float = 0.4
     chart_number_box_borderpad: float = 0.0
+    grid_lines_visible: bool = True
+    grid_label_fontsize: float = 12.0
+    grid_minor_label_scale: float = 0.75
+    grid_frame_width_scale: float = 1.5
+    grid_ra_step_hours: int = 1
+    grid_polar_ra_step_hours: int = 2
+    grid_minute_labels_visible: bool = False
+    milky_way_color: str = "#87CEFA"
+    legend_fontsize: float = 12.0
+    messier_label_fontsize: float = 7.0
+    grid_dec_label_scale: float = 0.8
+    deep_sky_symbol_scale: float = 1.8
+    cluster_face_color: str = "yellow"
 
     def __post_init__(self):
         import math
+        _atlas_grid_marks(self)
+        from .style_components import EquatorialGridMarks
+        EquatorialGridMarks(grid_ra_step_hours=self.grid_polar_ra_step_hours)
         from wenu.sky.native_snapshot import LAYERS
         if self.style not in {"atlas", "cartoon"}:
             raise ValueError("style must be atlas or cartoon.")
@@ -202,16 +219,28 @@ class AtlasChartPresentation:
                 and self.stellar_magnitude_sizing.algorithm != "legacy"
                 and limit > self.stellar_magnitude_sizing.size_reference_magnitude):
             raise ValueError("Magnitude limit must not exceed the sizing reference.")
-        for name in ("star_size_scale", "report_label_scale", "report_separator_width", "report_separator_gap_mm"):
+        for name in ("star_size_scale", "report_label_scale", "report_separator_width", "report_separator_gap_mm",
+                     "grid_label_fontsize", "grid_minor_label_scale", "grid_frame_width_scale", "legend_fontsize", "messier_label_fontsize", "deep_sky_symbol_scale"):
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
                 raise ValueError(f"{name} must be finite and positive.")
+        if self.grid_minor_label_scale > 1:
+            raise ValueError("grid_minor_label_scale must be at most 1.")
+        if type(self.grid_lines_visible) is not bool:
+            raise ValueError("grid_lines_visible must be boolean.")
         if not math.isfinite(self.star_size_scale * self.star_size_scale):
             raise ValueError("star_size_scale squared must be finite.")
+        if not math.isfinite(self.deep_sky_symbol_scale * self.deep_sky_symbol_scale):
+            raise ValueError("deep_sky_symbol_scale squared must be finite.")
+        from matplotlib.colors import is_color_like
+        if not isinstance(self.cluster_face_color, str) or not is_color_like(self.cluster_face_color):
+            raise ValueError("Invalid cluster_face_color.")
         _identity(self.report_label_family, "report_label_family")
         if not isinstance(self.report_label_weight, str) or self.report_label_weight not in {"normal", "bold", "light", "medium", "semibold", "heavy", "black"}:
             raise ValueError("Invalid report_label_weight.")
         from matplotlib.colors import is_color_like
+        if not isinstance(self.milky_way_color, str) or not is_color_like(self.milky_way_color):
+            raise ValueError("Invalid milky_way_color.")
         if not isinstance(self.report_label_color, str) or not is_color_like(self.report_label_color):
             raise ValueError("Invalid report_label_color.")
         if type(self.chart_number_box_visible) is not bool:
@@ -253,13 +282,15 @@ class AtlasChartPresentation:
 
 
 _WORKER_SKY = None
+_WORKER_CHART_COMMAND = None
 
 
-def _initialize_atlas_worker(directory, digest):
+def _initialize_atlas_worker(directory, digest, chart_command=None):
     import matplotlib
     matplotlib.use("Agg", force=True)
     from wenu.sky.native_snapshot import read_native_sky_snapshot
-    global _WORKER_SKY
+    global _WORKER_SKY, _WORKER_CHART_COMMAND
+    _WORKER_CHART_COMMAND = chart_command
     _WORKER_SKY = read_native_sky_snapshot(directory,
         expected_manifest_sha256=digest).make_sky()
 
@@ -271,6 +302,16 @@ def _atlas_report_data(chart, sky, composition, rendering):
     from .legend_geometry import rendered_star_geometry
     from .magnitude_legend import visible_star_statistics, visible_star_mask
     page = chart.page
+    sky_area_mm2 = page.useful_width_mm * page.useful_height_mm
+    renderer = getattr(rendering, "renderer", None)
+    sky_frame = None
+    if renderer is not None:
+        renderer.ax.apply_aspect()
+        box = renderer.ax.get_window_extent()
+        scale = 25.4 / renderer.ax.figure.dpi
+        sky_frame = dict(x=box.x0 * scale, y=box.y0 * scale,
+                         width=box.width * scale, height=box.height * scale)
+        sky_area_mm2 = sky_frame["width"] * sky_frame["height"]
     statistics = None
     reference_range = None
     budget = None
@@ -289,7 +330,7 @@ def _atlas_report_data(chart, sky, composition, rendering):
         mask = visible_star_mask(stars.spherical, stars.projected, stars.viewport,
                                 effective_limit=composition.detail.star_magnitude_limit)
         budget = magnitude_area_budget(np.asarray(stars.spherical.metadata["magnitude"])[mask],
-            sizing_record, page.useful_width_mm * page.useful_height_mm)
+            sizing_record, sky_area_mm2)
     return dict(schema_version=1, document_kind="wenu-atlas-chart-report",
         stellar_sizing=sizing_record, stellar_area_budget=budget,
         chart_number=chart.sheet.number, sheet_id=chart.sheet.sheet_id,
@@ -299,6 +340,9 @@ def _atlas_report_data(chart, sky, composition, rendering):
                     pole_meridian_ra_deg=chart.sheet.pole_meridian_ra_deg),
         page=dict(width_mm=page.width_mm, height_mm=page.height_mm),
         layout=dict(units="mm", origin="bottom-left",
+            chart_sky_frame=sky_frame,
+            central_scale_mm_per_degree=(None if sky_frame is None else
+                sky_frame['width'] / chart.viewport.width * chart.sheet.projection_radius * math.pi / 360),
             frame=dict(x=page.outer_mm, y=page.bottom_mm,
                 width=page.useful_width_mm, height=page.useful_height_mm),
             report=dict(x=page.outer_mm + 4, y=page.bottom_mm + 4,
@@ -375,14 +419,17 @@ def _render_atlas_report(chart, sky, composition, rendering, directory,
             LegendPlacement(location="upper right"),
             LegendPlacement(enabled="stars" in composition.detail.enabled_layers,
                 location="lower right"))
-        report_style = composition.style
+        report_style = replace(composition.style, legend=replace(composition.style.legend,
+            fontsize=presentation.legend_fontsize, title_fontsize=presentation.legend_fontsize))
         if not getattr(report_style.legend, "visible", True):
-            from dataclasses import replace
             report_style = replace(report_style,
                 legend=replace(report_style.legend, visible=True, frame=True))
         legends = draw_automatic_chart_legends(ax, chart, sky, report_style,
             rendering, resolved_detail=composition.detail, plan=plan,
             include_context=True, object_title=title,
+            object_marker_scale=presentation.deep_sky_symbol_scale,
+            stellar_title="Star magnitude" + (f" ({data['stars']['statistics']['visible_count']:,})"
+                if data['stars']['statistics'] is not None else ""),
             stellar_reference_range=_atlas_full_magnitude_range(composition, data),
             stellar_report_range=True, stellar_veil_color=presentation.magnitude_veil_color,
             stellar_veil_alpha=presentation.magnitude_veil_alpha)
@@ -450,14 +497,19 @@ def _draw_atlas_chart_number(ax, number, style, presentation):
     return None
 
 
-def _draw_atlas_magnitude_scale(*, chart, sky, renderer, composition, rendering):
+def _draw_atlas_magnitude_scale(*, chart, sky, renderer, composition, rendering, presentation=None):
     """Minimal in-frame scale through the existing rendered-legend owner."""
+    if abs(chart.sheet.center_dec_deg) == 90:
+        _draw_polar_declination_labels(chart, renderer, presentation or AtlasChartPresentation(), rendering)
     if 'stars' not in composition.detail.enabled_layers:
         return None
     from .automatic_legends import draw_automatic_chart_legends
     from .legend_plan import ChartLegendPlan, LegendPlacement
     data = _atlas_report_data(chart, sky, composition, rendering)
-    legends = draw_automatic_chart_legends(renderer.ax, chart, sky, composition.style,
+    presentation = AtlasChartPresentation() if presentation is None else presentation
+    style = replace(composition.style, legend=replace(composition.style.legend,
+        fontsize=presentation.legend_fontsize, title_fontsize=presentation.legend_fontsize))
+    legends = draw_automatic_chart_legends(renderer.ax, chart, sky, style,
         rendering, resolved_detail=composition.detail,
         plan=ChartLegendPlan('regional', LegendPlacement(enabled=False),
                              LegendPlacement(location='lower right')),
@@ -468,55 +520,119 @@ def _draw_atlas_magnitude_scale(*, chart, sky, renderer, composition, rendering)
     return legends
 
 
-def _render_atlas_sheet(task, sky=None):
-    """One isolated figure, canonical composition/export, all requested formats."""
-    import matplotlib.pyplot as plt
-    from .composition import compose_chart
-    from .style_overrides import ChartStyleOverrides
-    from .detail import DetailOverrides
-    from .export_workflow import export_composed_chart
-    from .modes import PrintMode, PresentationMode
-    from .regional import ExportOptions
-    from wenu.rendering.matplotlib import MatplotlibRenderer
-    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+def _atlas_grid_marks(presentation):
+    from .style_components import EquatorialGridMarks
+    return EquatorialGridMarks(**{name: getattr(presentation, name)
+        for name in EquatorialGridMarks.__dataclass_fields__})
+
+
+def _atlas_tick_options(name, *, minor_scale):
+    from .request_grids import equatorial_grid_tick_options
+    return equatorial_grid_tick_options(name, minor_scale=minor_scale)
+
+
+def _atlas_grid_options(chart, presentation):
+    from .request_grids import equatorial_grid_mark_options
+    marks = replace(_atlas_grid_marks(presentation), grid_ra_step_hours=
+        presentation.grid_polar_ra_step_hours if abs(chart.sheet.center_dec_deg) == 90 else presentation.grid_ra_step_hours)
+    return equatorial_grid_mark_options(chart, marks)
+
+
+def _atlas_frame_widths(style, presentation):
+    allowance = 2 * (style.canvas.grid_label_band_padding_points + style.canvas.grid_label_band_linewidth / 2)
+    # A Dec string lies along its projected parallel, rather than along the
+    # vertical edge. Budget its worst rotated extent once from the font.
+    from matplotlib.backends.backend_agg import RendererAgg
+    from matplotlib.font_manager import FontProperties
+    font = FontProperties(size=presentation.grid_label_fontsize * presentation.grid_dec_label_scale)
+    measure = RendererAgg(1, 1, 72)
+    extent = max(math.hypot(*measure.get_text_width_height_descent(f'{value:+g}°', font, ismath=False)[:2])
+                 for value in range(-80, 81, 10))
+    return ((presentation.grid_label_fontsize + allowance) * presentation.grid_frame_width_scale,
+            (extent + allowance) * presentation.grid_frame_width_scale)
+
+
+def _draw_polar_declination_labels(chart, renderer, presentation, rendering):
+    """Interior Dec text on the actual grid meridian nearest page vertical."""
+    if 'equatorial_grid' not in presentation.layers or getattr(renderer, '_grid_label_band', None) is None:
+        return
+    import numpy as np
+    pole = chart.sheet.center_dec_deg
+    declination = pole - math.copysign(10, pole)
+    ras = np.arange(0, 360, 15. * presentation.grid_polar_ra_step_hours)
+    x, y = chart.projection.project_spherical(ras, np.full(len(ras), declination))
+    candidates = np.flatnonzero(y > 0)
+    chosen = min(candidates, key=lambda i: (round(abs(x[i]) / abs(y[i]), 12), ras[i]))
+    ra = ras[chosen]
+    from wenu.geometry.projected import ProjectedPoints
+    decs = np.arange(-80, 81, 10.)
+    x, y = chart.projection.project_spherical(np.full(len(decs), ra), decs)
+    view = chart.viewport
+    from wenu.sky.semantic_identity import semantic_layer_identity
+    grid_layer = next(record.layer for record in rendering.layers
+        if getattr(record.layer, 'coordinate_system', None) == 'equatorial')
+    identity = semantic_layer_identity(grid_layer)
+    keep = np.isfinite(x) & np.isfinite(y) & (x > view.x_min) & (x < view.x_max) & (y > view.y_min) & (y < view.y_max)
+    for px, py, dec in zip(x[keep], y[keep], decs[keep]):
+        tangent = chart.projection.project_spherical(np.array([ra-.01, ra+.01]), np.array([dec, dec]))
+        direction = np.diff(renderer.ax.transData.transform(np.column_stack(tangent)), axis=0)[0]
+        angle = (np.degrees(np.arctan2(direction[1], direction[0])) + 90) % 180 - 90
+        artists = renderer.draw(ProjectedPoints(np.array([px]), np.array([py]), names=(f'{dec:+g}°',)),
+            draw_markers=False, draw_labels=True, label_offset=(0, 0),
+            label_style=dict(fontsize=presentation.grid_label_fontsize * presentation.grid_dec_label_scale,
+                color='black', rotation=angle, ha='center', va='center'))
+        for artist in artists:
+            artist._wenu_semantic_component = 'labels'
+            artist.set_gid(f'atlas-polar-dec-{int(dec)}')
+            artist._wenu_polar_grid_anchor = (float(px), float(py), float(ra))
+            from matplotlib.transforms import ScaledTranslation
+            centre = renderer.ax.transData.transform((0, 0))
+            direction = centre - renderer.ax.transData.transform((px, py))
+            direction /= np.linalg.norm(direction)
+            bounds = renderer.ax.get_window_extent()
+            for _ in range(3):
+                box = artist.get_window_extent(renderer.ax.figure.canvas.get_renderer())
+                if bounds.contains(box.x0, box.y0) and bounds.contains(box.x1, box.y1):
+                    break
+                distance = max(bounds.x0-box.x0, box.x1-bounds.x1,
+                               bounds.y0-box.y0, box.y1-bounds.y1, 0) + 1
+                shift = direction * distance / renderer.ax.figure.dpi
+                artist.set_transform(artist.get_transform() + ScaledTranslation(
+                    *shift, renderer.ax.figure.dpi_scale_trans))
+        renderer.assign_semantic_identity(artists, identity)
+
+
+def _atlas_grid_layout(page, style, presentation):
+    horizontal, vertical = _atlas_frame_widths(style, presentation)
+    horizontal, vertical = horizontal * 25.4 / 72, vertical * 25.4 / 72
+    available_width = page.useful_width_mm - 2 * vertical
+    available_height = page.useful_height_mm - 2 * horizontal
+    width = min(available_width, available_height * page.aspect_ratio)
+    height = width / page.aspect_ratio
+    if width <= 0 or height <= 0:
+        raise ValueError('Coordinate frame does not fit the useful page.')
+    bounds = ((page.inner_mm + (page.useful_width_mm-width)/2)/page.width_mm,
+              (page.bottom_mm + (page.useful_height_mm-height)/2)/page.height_mm,
+              width/page.width_mm, height/page.height_mm)
+    return bounds, style
+
+
+def _render_atlas_sheet(task, sky=None, *, chart_command=None):
+    """Dispatch one immutable sheet through the supplied chart-command entry."""
+    from .request_generation import AtlasSheetChartRequest, generate_chart_request
     sheet, page, presentation, directory = task
+    command = chart_command if chart_command is not None else (_WORKER_CHART_COMMAND if sky is None else None)
     sky = _WORKER_SKY if sky is None else sky
-    chart = AtlasSheetChart(sheet, page)
-    composition = compose_chart(chart, style=presentation.style,
-        style_overrides=ChartStyleOverrides(star_size_scale=presentation.star_size_scale,
-            stellar_magnitude_sizing=presentation.stellar_magnitude_sizing),
-        mode=(PrintMode if presentation.mode == "print" else PresentationMode)(width_inches=page.width_mm / 25.4,
-            height_inches=page.height_mm / 25.4, dpi=presentation.dpi),
-        detail_overrides=DetailOverrides(
-            star_magnitude_limit=presentation.star_magnitude_limit,
-            enabled_layers=frozenset("nonstellar_objects" if name == "nonstellar" else name
-                for name in presentation.layers),
-            constellation_star_mode="none"))
-    figure = plt.figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4))
-    ax = figure.add_axes((page.inner_mm / page.width_mm,
-        page.bottom_mm / page.height_mm, page.useful_width_mm / page.width_mm,
-        page.useful_height_mm / page.height_mm))
-    ax.set_xticks([])
-    ax.set_yticks([])
-    _draw_atlas_chart_number(ax, sheet.number, composition.style, presentation)
-    try:
-        renderer = MatplotlibRenderer(ax)
-        first = presentation.formats[0]
-        result = export_composed_chart(chart, sky, renderer,
-            Path(directory) / f"chart-{sheet.number:02d}.{first}",
-            composition=composition,
-            realization_context=LayerRealizationContext(NATIVE_ICRS_SPEC),
-            export_options=ExportOptions(dpi=presentation.dpi, bbox_inches=None),
-            additional_furniture=_draw_atlas_magnitude_scale)
-        for suffix in presentation.formats[1:]:
-            result.export_options.save(figure, Path(directory) / f"chart-{sheet.number:02d}.{suffix}")
-        _render_atlas_report(chart, sky, composition, result.rendering, directory,
-                             formats=presentation.formats, presentation=presentation)
-        return sheet.number
-    except Exception as exc:
-        raise RuntimeError(f"Chart {sheet.number} failed: {exc}") from exc
-    finally:
-        plt.close(figure)
+    request = AtlasSheetChartRequest(sheet, page, presentation, Path(directory))
+    if command is None:
+        generate_chart_request(request, sky=sky)
+    else:
+        status = command(["atlas-sheet", "--chart-number", str(sheet.number),
+            "--output-dir", str(directory), "--debug"],
+            atlas_request=request, sky=sky, emit_outputs=False)
+        if type(status) is not int or status != 0:
+            raise RuntimeError(f"wenu_chart failed for chart {sheet.number}: {status}")
+    return sheet.number
 
 
 def _append_atlas_index(writer, reader, page):
@@ -538,7 +654,7 @@ def _append_atlas_index(writer, reader, page):
 
 
 def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
-                 save_sky=None, from_sky=None, index=None):
+                 save_sky=None, from_sky=None, index=None, chart_command=None):
     """Produce ordered chart pages with one preparation or explicit saved reuse.
 
     A manifest linked last commits the complete batch. Existing outputs and
@@ -559,6 +675,8 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
     from pypdf import PdfReader, PdfWriter
     from wenu.sky.native_snapshot import prepare_native_sky_snapshot, read_native_sky_snapshot
     _positive_integer(jobs, "jobs")
+    if chart_command is not None and not callable(chart_command):
+        raise TypeError("chart_command must be callable or None.")
     if not isinstance(presentation, AtlasChartPresentation):
         raise TypeError("presentation must be AtlasChartPresentation.")
     if "svg" not in presentation.formats:
@@ -568,8 +686,11 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
         raise ValueError("--save-sky and --from-sky are mutually exclusive.")
     raw = Path(design_path).read_bytes()
     atlas = AtlasBandTiling.from_json(raw.decode("utf-8"))
+    if len({sheet.field_width_deg for sheet in atlas.geometry.sheets}) != 1:
+        raise ValueError('Atlas charts require a common angular field and central scale; use a revised uniform-field design.')
     sheets = select_atlas_sheets(atlas, charts)
     index_bytes = None
+    index_products = {}
     if index is not None:
         import io
         index_bytes = Path(index).read_bytes()
@@ -586,6 +707,11 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             raise
         except Exception as exc:
             raise ValueError(f"Cannot read index PDF: {exc}") from exc
+        for suffix in ('png', 'svg'):
+            companion = Path(index).with_suffix('.' + suffix)
+            if not companion.is_file():
+                raise ValueError(f'Index requires its standalone {suffix.upper()} companion: {companion}')
+            index_products[suffix] = companion.read_bytes()
     output_dir = Path(output_dir)
     if output_dir.exists() or output_dir.is_symlink() or not output_dir.parent.is_dir():
         raise ValueError("Choose a new output directory with an existing parent.")
@@ -612,10 +738,15 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             design_sha256=hashlib.sha256(raw).hexdigest())
         digest = snapshot.manifest_sha256
         staging = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix=".wenu-atlas-pages-", dir=output_dir.parent)))
+        if index_bytes is not None:
+            (staging/'atlas-index.pdf').write_bytes(index_bytes)
+            for suffix, content in index_products.items():
+                (staging/f'atlas-index.{suffix}').write_bytes(content)
         tasks = [(sheet, atlas.geometry.page, presentation, str(staging)) for sheet in sheets]
         if worker_count == 1:
             sky = cold_sky if cold_sky is not None else snapshot.make_sky()
-            completed = [_render_atlas_sheet(task, sky) for task in tasks]
+            completed = [(_render_atlas_sheet(task, sky) if chart_command is None else
+                          _render_atlas_sheet(task, sky, chart_command=chart_command)) for task in tasks]
         else:
             variables = ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS")
             previous = {key: os.environ.get(key) for key in variables}
@@ -626,7 +757,7 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                 pool = ProcessPoolExecutor(max_workers=worker_count,
                     mp_context=multiprocessing.get_context("spawn"),
                     initializer=_initialize_atlas_worker,
-                    initargs=(str(directory), digest))
+                    initargs=(str(directory), digest, chart_command))
                 pending = {}
                 remaining = iter(tasks)
                 done_numbers = set()
@@ -669,14 +800,25 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             products={p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                       for p in staging.iterdir() if p.suffix == ".svg" or p.name.endswith("_report_data.json")})
         (staging / "manifest.json").write_text(json.dumps(analysis_manifest))
-        from .stellar_sizing_report import analyze
+        from .stellar_sizing_report import analyze, render_catalogue_star_counts
         analyze([staging], staging / "stellar-sizing", atlas_report=True)
+        count_report = None
+        if "stars" in presentation.layers:
+            catalogue_sky = sky if worker_count == 1 else snapshot.make_sky()
+            count_report = render_catalogue_star_counts(catalogue_sky.stars,
+                staging / "atlas-star-counts", magnitude_limit=presentation.star_magnitude_limit,
+                page=atlas.geometry.page, dpi=presentation.dpi,
+                provenance=dict(design_sha256=hashlib.sha256(raw).hexdigest(), snapshot_sha256=digest))
         with PdfWriter() as writer:
+            writer.page_layout = '/TwoPageLeft'
             page_order = []
             if index_bytes is not None:
                 _append_atlas_index(writer, index_reader, atlas.geometry.page)
                 page_order.append(dict(page=1, kind="index"))
                 writer.add_outline_item("Atlas index", 0)
+                writer.add_blank_page(width=atlas.geometry.page.width_mm * 72 / 25.4,
+                    height=atlas.geometry.page.height_mm * 72 / 25.4)
+                page_order.append(dict(page=2, kind='blank'))
             for sheet in sheets:
                 if index_bytes is not None:
                     writer.append(PdfReader(staging / f"chart-{sheet.number:02d}_report.pdf"))
@@ -692,6 +834,10 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                 writer.append(PdfReader(budget_pdf))
                 page_order.append(dict(page=len(page_order) + 1, kind="stellar_area_budget"))
                 writer.add_outline_item("Stellar area budget", len(writer.pages) - 1)
+            if count_report is not None:
+                writer.append(PdfReader(staging / "atlas-star-counts.pdf"))
+                page_order.append(dict(page=len(page_order) + 1, kind="catalogue_star_counts"))
+                writer.add_outline_item("Catalogue star counts", len(writer.pages) - 1)
             writer.write(staging / "atlas.pdf")
         for sheet in sheets:
             report_path = staging / f"chart-{sheet.number:02d}_report_data.json"
@@ -719,3 +865,4 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             shutil.rmtree(output_dir)
             raise
     return output_dir / "manifest.json"
+

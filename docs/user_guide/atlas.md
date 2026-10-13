@@ -1113,8 +1113,8 @@ New chart reports retain exact rendered-magnitude budgets in
 `stellar-sizing_area-budget.png`, `.pdf`, `.svg`, `.json`, and `.csv`.
 The PDF budget page follows the sizing report in the book. Each occupied
 one-magnitude interval `[lower, upper)` includes its count and summed filled
-circular symbol area. Fractions use the useful chart-frame area, excluding
-page margins. Exact integer magnitudes enter the interval starting at that
+circular symbol area. Fractions use the actual rendered sky area, excluding
+page margins and the coordinate-label frame. Exact integer magnitudes enter the interval starting at that
 integer. Counts are appearances: charts overlapping on the sky repeat stars.
 Areas exclude stroke width and do not compute the union of overlapping disks.
 
@@ -1183,13 +1183,17 @@ The object-report text area remains reserved for later inventories and curation.
 
 `wenu_design_atlas` also accepts `examples/atlas_design_request_v2.toml`.
 Its inputs are ISO B4 paper, explicit portrait/landscape orientation, margins,
-full central horizontal angular field, minimum angular overlap, and placement
-seed. Angular height follows the useful rectangle's stereographic aspect;
-independent width/height forcing is not supported. Version 2 does not accept
+one full central angular field (either `field_width_deg` or `field_height_deg`),
+minimum angular overlap, and placement seed. The other angular dimension follows
+the useful rectangle's stereographic aspect; simultaneous width/height forcing
+is not supported. Optional `polar_primary_diameter_deg` sets the polar primary
+cap diameter independently; the polar footprint additionally reserves overlap.
+Version 2 does not accept
 `algorithm` or explicit latitude boundaries: the layout is an output.
 
-The geometry owner fixes the largest inscribed polar caps after reserving
-overlap, then uses dynamic programming to minimize total chart count, with
+The geometry owner fixes the requested polar primary caps, or the largest
+inscribed polar caps when no diameter is supplied, then uses dynamic programming
+to minimize total chart count, with
 fewer bands as a tie-break. Search covers symmetric north/south bands, one
 equatorial band, equal RA sectors within each band, and latitude boundaries
 on a one-degree grid plus the exact polar-cap edge. Band heights may differ.
@@ -1251,3 +1255,280 @@ wenu_create_atlas \
 Use `--save-sky atlas_portrait_sky_v1` instead of `--from-sky` for the first
 render of this design. Worker count controls concurrent chart renders and
 memory use, without changing atlas geometry or stellar appearance.
+
+## Coordinate grid and readable edge markings
+
+Atlas chart pages use fixed ICRS grid lines every **2h in RA** by default and **10° in
+declination**. Edge marks follow the local projected coordinate curve into the
+sky. Every whole hour is labelled; optional **20m and 40m** labels use smaller text; **10m,
+30m and 50m** have marks only. Declination marks and labels occur every **10°**
+where the corresponding curve crosses a page's sky boundary. A curve entirely
+inside the sky has no edge crossing. The poles have no unique RA label.
+
+Optional chart-presentation keys (same schema version 1):
+
+```toml
+grid_lines_visible = true
+grid_ra_step_hours = 2
+grid_minute_labels_visible = false
+milky_way_color = "#87CEFA"
+grid_label_fontsize = 12.0
+grid_minor_label_scale = 0.75
+grid_frame_width_scale = 1.5
+```
+
+Font sizes are physical points: the defaults give 12-point hour/declination
+labels and 9-point minute labels. The nominal exterior-frame minimum is 50%
+wider; font measurement reserves extra space for overlapping labels. Dense
+minute/declination labels move outward into separate lanes while their marks
+stay at the true coordinate crossing. The sky shrinks uniformly within the
+useful paper margins, retaining the exact JSON projection, angular coverage and
+sheet numbering. Stellar area fractions use the actual reduced sky area.
+
+Set `grid_lines_visible = false` to retain edge marks and labels with the
+interior lines hidden. Remove `equatorial_grid` from `layers` to omit the
+complete equatorial grid and its reserved frame space. Both controls are
+independent of the resolved atlas design and saved sky data.
+
+`wenu_create_atlas` renders every chart through the official `wenu_chart`
+entry, using its fixed-ICRS `atlas-sheet` command in process. The producer
+prepares or verifies the sky once; each worker reuses its mapped sky. Book
+assembly and index handling remain with the atlas command.
+
+To render one sheet independently from an existing sufficient, design-bound
+saved sky (use a new output directory):
+
+```bash
+wenu_chart atlas-sheet \
+  --design atlas_portrait_design_v1.json \
+  --config examples/atlas_chart_style_v2.toml \
+  --from-sky atlas_portrait_sky_v1 \
+  --chart-number 1 --output-dir atlas_single_sheet_v1
+```
+
+This writes the selected chart, its report and report data in the presentation's
+formats. It checks the saved sky against the exact design bytes and requested
+layers/magnitude limit. It does not assemble a complete atlas book.
+
+Ordinary regional charts can use the same markings with
+`wenu_chart regional ... --equatorial-grid-ticks`. Appearance options are
+`--grid-label-fontsize`, `--grid-minor-label-scale`,
+`--grid-frame-width-scale` and `--grid-lines-visible`/`--no-grid-lines-visible`.
+Use `--no-equatorial-grid-ticks` to override an enabled TOML preset. Regional
+charts retain their observer-time coordinate realization and original viewport;
+atlas sheets retain their fixed ICRS design. The preset currently requires a
+regional chart with its equatorial grid and exterior label band enabled.
+
+
+RA unit letters use editable Unicode superscripts (ʰ and ᵐ). Declination labels
+are parallel to the local projected declination curve at its boundary crossing, with upright text
+orientation. Visible grid lines use black at 0.65 opacity and 0.55-point width.
+The portrait review set is charts 1, 5, 8, 10, 11 and 22, covering both polar
+caps and the requested Orion, Virgo and Scorpius fields. Recreate its index
+with wenu_plot_atlas and examples/atlas_index_style_v2.toml to export PNG, SVG
+and PDF together.
+
+Set grid_ra_step_hours to 1, 2, 3, 4, 6, 8 or 12 to change full RA grid lines.
+Minute labels are hidden by default; grid_minute_labels_visible=true restores
+20m/40m labels while retaining every 10m tick. Ordinary regional equivalents
+are --grid-ra-step-hours and --grid-minute-labels-visible (with a negative form).
+Dec text follows the extrapolated curve outward from the unchanged boundary
+crossing. milky_way_color sets the same pale sky-blue fill for MW, LMC and SMC.
+The index presentation accepts the same optional key under [colours]. The index
+PNG/SVG/PDF are independent files beside the chart output directory; open their
+parent folder to inspect all three.
+
+When a dedicated galaxy, open-cluster, globular-cluster, planetary-nebula or SNR
+layer is enabled, it owns that category: generic Messier dotted outlines are
+suppressed for the category. Disabling its dedicated layer restores the generic
+outline. This removes cluster-like circles over dedicated galaxy symbols and
+other duplicate category drawings without changing saved source catalogues.
+
+### Messier designations and readable legend text
+
+In atlas sheets, the heterogeneous Messier catalogue supplies designation labels
+at catalogue centres only. It supplies no outlines or category symbols; dedicated
+DSO layers retain symbol ownership. Atlas labels remain present for Messier
+galaxies and other categories even when those dedicated layers are enabled.
+
+The chart and facing-report legend text/title default to 12 physical points.
+Set legend_fontsize = 12.0 in the atlas presentation TOML to control both.
+Report headings and chart-number boxes retain their separate typography. Ordinary
+schema-v2 chart TOML already exposes styles.atlas.legend.font_size and
+styles.atlas.legend.title_font_size; the atlas presentation is a distinct format.
+
+### 32-chart portrait alternative
+
+`examples/atlas_design_32charts_v1.toml` keeps B4 portrait, the existing margins,
+0.25-degree overlap and 5.5-hour seed. Nonpolar central field height is 55 degrees
+(width 36.73255 degrees); polar primary diameter is 40 degrees plus reserved
+footprint overlap. The result is 32 charts, with band counts [1, 10, 10, 10, 1]
+and primary boundaries -90, -70, -17, 17, 70, 90 degrees. With these same inputs,
+40-degree nonpolar height needs 60 charts, 50 degrees needs 35, and 60 degrees
+needs 30. Counts are calculated within the declared placement family.
+
+```bash
+wenu_design_atlas --config examples/atlas_design_32charts_v1.toml --output atlas_32charts_design_v1.json
+wenu_plot_atlas --design atlas_32charts_design_v1.json --config examples/atlas_index_style_v2.toml --output-prefix atlas_32charts_index_v1
+```
+
+Review the new index before preparing a new design-bound sky snapshot. This
+chart count is not evidence of uncluttered coordinate labels. The smaller polar
+cap moves the nonpolar primary boundary to 70 degrees; visual review is still
+needed. Atlas Messier designation labels now default to 7 points (70 percent of
+the former hardcoded 10 points). `messier_label_fontsize` is a positive, finite
+chart-presentation TOML setting, separate from the 12-point legend setting.
+
+### 36-chart portrait comparison
+
+`examples/atlas_design_36charts_v1.json` is an explicit resolved design for
+visual comparison. It retains the 32-chart alternative's B4 portrait page,
+55-degree nonpolar field height, 40-degree polar primary diameter, seed and
+primary latitude boundaries. It adds one chart to each subpolar band and two
+to the equatorial band: counts [1, 11, 12, 11, 1]. Numbering is south to north;
+polar charts are 1 and 36, southern subpolar charts 2..12, equatorial charts
+13..24, and northern subpolar charts 25..35.
+
+The explicit design is validated by the existing continuous analytic rectangle
+certificate and strict serialization contract. It is not claimed to be a new
+minimum-count solution. The minimum global overlap remains 0.25 degrees;
+conservative lateral overlap bounds are 3.70093 degrees in the subpolar bands
+and 6.73255 degrees in the equatorial band. No new designer or renderer is used.
+
+```bash
+wenu_plot_atlas --design examples/atlas_design_36charts_v1.json --config examples/atlas_index_style_v2.toml --output-prefix atlas_36charts_index_v1
+```
+
+This command exports separate PNG, PDF and SVG index files. The resolved JSON
+is also usable by wenu_create_atlas; a sky snapshot prepared for another design
+cannot be reused with it. Index review precedes a new full chart-book render.
+
+Portable resolved designs: loading always recomputes analytic containment and
+reserved overlap from persisted geometry. Redundant validation floats may differ
+in their last bits between NumPy/libm builds. Their comparison admits absolute
+tolerances of 1e-10 degrees for clearance/overlap and 1e-12 steradians for area;
+these tolerances do not relax geometry admission. Certificate keys, method,
+status, sheet count, angular guard and neighbour records remain exact. This
+permits the packaged 36-chart design to be checked on another platform.
+
+### Symbol and catalogue-count review
+
+Atlas chart presentation supports `deep_sky_symbol_scale = 1.8`,
+`cluster_face_color = "yellow"`, and `grid_dec_label_scale = 0.8`.
+The scale multiplies marker diameter (scatter area therefore grows by 3.24).
+Open clusters use black-edged filled circles; globular clusters use the same
+size and fill with an upright internal cross. Their glyph size is a display
+choice, independent of catalogue half-light diameter. Planetary-nebula marker
+areas receive the same diameter scale. SNR outline magnification happens only
+in the renderer about each projected glyph's bounds; spherical/projected source
+geometry and catalogue dimensions are retained unchanged. Ordinary chart styles
+keep their previous symbols unless the new optional cluster style is selected.
+
+Declination edge-label text defaults to 80 percent of the 12-point RA labels
+(9.6 points); RA hour/minute label scales and angular grid spacing are unchanged.
+The shared ordinary edge-mark TOML has `grid_dec_label_scale = 1.0` by default.
+Each atlas report title now reads `Star magnitude (N)`, where N is the number
+of finite stars actually inside that chart frame at its effective cutoff.
+
+The last atlas PDF page is a cumulative `log10 N(≤m)` versus catalogue-magnitude
+plot, exported separately as `atlas-star-counts.png`, `.svg` and `.pdf`.
+It uses actual Hipparcos source-catalogue photometry below the effective atlas
+magnitude limit and finite native positions; each HIP identifier is counted once.
+It is not inferred from SVG marker appearances or a theoretical population law.
+The curve covers the whole declared atlas even in a selected-chart sample batch.
+`atlas-star-counts_catalogue.csv` preserves the selected identifiers/magnitudes;
+`atlas-star-counts.json` contains the cumulative curve, exclusions and exact
+snapshot/design provenance. These products are published atomically with the
+existing chart/report batch. This appendix is omitted when stars are disabled.
+
+
+### Measured chart frame and report marker sizes
+
+The atlas fits the rendered coordinate-label frame to the useful page area.
+It retains the configured wider band and the resolved angular viewport; the
+initial conservative label reserve no longer leaves an extra outside margin.
+`deep_sky_symbol_scale` also multiplies the diameters of the open-cluster,
+globular-cluster, planetary-nebula and SNR markers in the report legend. Its
+atlas default is 1.8; the legend text remains controlled by `legend_fontsize`.
+
+
+### Common-scale 36-chart publication revision
+
+Use `examples/atlas_design_36charts_v2.json` for the common-scale atlas.
+It retains the 36 centres and primary bands, with one 40.25000004-degree
+horizontal field and approximately 60.13865-degree vertical field for all
+sheets. Analytic full coverage and the 0.25-degree minimum overlap are
+recomputed. The earlier version-1 JSON remains a historical mixed-field
+comparison; publication now rejects mixed angular fields before sky loading.
+
+At the supplied presentation defaults, every sky rectangle measures about
+187.14 by 283.26 mm and its central scale is about 4.60154 mm per degree.
+The top/bottom band is fixed from the RA font, and left/right bands from the
+worst rotated Dec glyph extent at the configured Dec font. Padding and the
+configured frame multiplier are applied once, equally to all charts. No sheet
+is resized to fit its labels. Reports record the actual sky dimensions and
+`central_scale_mm_per_degree`. These are central scales, not a claim of
+constant stereographic scale away from the centre.
+
+Nonpolar sheets have 1h RA lines and polar sheets 2h lines. Vertical-edge RA
+text follows the projected meridian. Horizontal collisions retain RA text;
+vertical collisions retain Dec text. Ticks and curves remain present when
+text is suppressed. Polar Dec labels move inside, onto the 2h meridian nearest
+vertical, retaining their exact coordinate anchors and an inward physical
+text clearance when needed.
+
+Index presentation accepts optional `layout.orientation` (`landscape` by
+default or `portrait`). Landscape retains the joined side-by-side view;
+portrait draws the south cap above the north cap with page-oriented labels.
+The portrait B4 example is `examples/atlas_index_style_v3.toml`.
+Index PNG, SVG and PDF must share one output prefix. When `--index` supplies
+the PDF, publication requires its PNG/SVG companions and copies all three into
+the output as `atlas-index.png`, `atlas-index.svg` and `atlas-index.pdf`.
+
+The assembled book starts with [index, blank], then [report, chart] pairs.
+For this display use two-page viewing without a separate first-page cover.
+The manifest identifies the blank page. The final catalogue-count plot keeps
+the source values and cumulative counts, with brighter/lower magnitudes on
+the right. A new design digest requires a newly prepared saved sky bundle;
+do not reuse a bundle bound to the historical design.
+
+Use `examples/atlas_chart_style_v3.toml` for the new cadence defaults:
+`grid_ra_step_hours = 1` for nonpolar charts and
+`grid_polar_ra_step_hours = 2` for polar charts. Both retain the validated
+whole-hour divisor admission. Historical presentation version 2 explicitly
+selects 2h nonpolar lines; it is not the current review preset.
+
+The assembled PDF declares `/TwoPageLeft` as its preferred page layout so
+readers that honour this setting show the index/blank and report/chart pairs.
+
+
+### Full-height coordinate frame correction (2026-10-13)
+
+Use `examples/atlas_design_36charts_v3.json` with
+`examples/atlas_chart_style_v4.toml` for the corrected 36-chart B4 portrait
+publication. The chart outer frame now has the same 220 × 333 mm dimensions
+as the report frame, with the existing mirrored binding margins. Fixed bands
+are approximately 5.927 mm above/below and 10.953 mm left/right. The printed
+sky rectangle is 198.093 × 321.147 mm on every sheet; all sheets share the
+same central angular scale. No individual sheet is stretched or fitted to text.
+
+Revision 3 explicitly records `page.sky_aspect_ratio = 0.616831374967213`.
+It retains the 36 centres, primary bands, numbering and common 40.25000004°
+field width; the field height becomes approximately 64.198525°. The existing
+continuous analytic rectangle certificate is recomputed and remains valid.
+Earlier JSON revisions are preserved and keep their original interpretation.
+A different font or frame-width scale can leave unused space when it differs
+from the geometry's chosen sky ratio; it cannot silently change the covering.
+
+Slanted RA labels still continue along their projected meridian. Their complete
+text boxes now clear the inner edge by the configured physical padding plus
+half the frame stroke, measured normal to that edge. Labels that cannot fit the
+fixed band are suppressed under the existing edge-priority rules.
+
+```bash
+wenu_plot_atlas --design examples/atlas_design_36charts_v3.json --config examples/atlas_index_style_v3.toml --output-prefix atlas_36charts_index_v6
+wenu_create_atlas --design examples/atlas_design_36charts_v3.json --config examples/atlas_chart_style_v4.toml --charts all --jobs 3 --index atlas_36charts_index_v6.pdf --save-sky native_sky_v3 --output-dir atlas_36charts_v6
+```
+
+The revised geometry has a new digest: prepare a new native-sky bundle rather
+than reusing the revision-2 design-bound bundle.

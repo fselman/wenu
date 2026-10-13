@@ -1,0 +1,26 @@
+# B4 portrait: 32 charts, 55-degree nonpolar height and 40-degree polar caps.
+schema_version = 2
+document_kind = "wenu-atlas-design-request"
+design_id = "b4-portrait-32charts"
+revision = 1
+coordinate_frame = "icrs"
+projection = "stereographic"
+
+[page]
+paper_size = "B4"
+orientation = "portrait"
+top_mm = 10
+bottom_mm = 10
+inner_mm = 20
+outer_mm = 10
+
+[overview]
+join_ra_hours = 5.5
+shared_band_width_deg = 20
+
+[tiling]
+field_height_deg = 55
+polar_primary_diameter_deg = 40
+overlap_deg = 0.25
+seed_ra_hours = 5.5
+max_sheets = 4096

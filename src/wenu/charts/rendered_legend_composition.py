@@ -52,6 +52,7 @@ def draw_rendered_chart_legends(
     include_objects=True,
     include_context=None,
     symbol_labels=None,
+    object_marker_scale=1.0,
     stellar_title="Stars",
     stellar_reference_magnitude=None,
     stellar_reference_range=None,
@@ -94,6 +95,8 @@ def draw_rendered_chart_legends(
     legend_options = dict(
         stellar_counts=stellar_counts,
     )
+    if object_marker_scale != 1.0:
+        legend_options["object_marker_scale"] = object_marker_scale
     if inputs is not None and inputs.magnitude_sizing is not None:
         legend_options["stellar_magnitude_sizing"] = (
             inputs.magnitude_sizing

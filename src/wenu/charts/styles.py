@@ -207,6 +207,9 @@ class PublicationStyle:
     globular_cluster_draw_labels: bool = False
     globular_cluster_label_color: str | None = None
     globular_cluster_label_fontsize: float = 6.0
+    globular_cluster_symbol_name: str | None = None
+    globular_cluster_symbol_size: float = 18.0
+    globular_cluster_face_color: str | None = None
 
 
     planetary_nebula_color: str = "white"
@@ -224,6 +227,8 @@ class PublicationStyle:
     open_cluster_draw_labels: bool = False
     open_cluster_label_color: str | None = None
     open_cluster_label_fontsize: float = 6.0
+    open_cluster_symbol_name: str = "open_cluster"
+    open_cluster_face_color: str | None = None
     venus_color: str = "#8c5a00"
     venus_marker: str = "o"
     venus_symbol_size: float = 10.5
@@ -694,9 +699,9 @@ class PublicationStyle:
                 "prepare": clip,
                 "render": {
                     "style": {
-                        "marker": DEFAULT_SYMBOLS.open_cluster,
+                        "marker": DEFAULT_SYMBOLS[self.open_cluster_symbol_name],
                         "s": self.open_cluster_symbol_size,
-                        "facecolors": self.open_cluster_color,
+                        "facecolors": self.open_cluster_color if self.open_cluster_face_color is None else self.open_cluster_face_color,
                         "edgecolors": self.open_cluster_color,
                         "linewidths": self.open_cluster_linewidth,
                         "alpha": self.open_cluster_alpha,
@@ -834,6 +839,15 @@ class PublicationStyle:
                     "label_offset": (0.0, 0.015),
                 },
             }
+            if self.globular_cluster_symbol_name is not None:
+                options[sky.globular_clusters]["geometry"] = {"labels_only": True}
+                options[sky.globular_clusters]["render"]["style"] = {
+                    "marker": DEFAULT_SYMBOLS[self.globular_cluster_symbol_name],
+                    "s": self.globular_cluster_symbol_size,
+                    "facecolors": self.globular_cluster_face_color or self.globular_cluster_color,
+                    "edgecolors": self.globular_cluster_color,
+                    "linewidths": self.globular_cluster_linewidth,
+                    "alpha": self.globular_cluster_alpha, "zorder": layers.GLOBULAR_CLUSTERS}
         if sky.constellation_lines is not None:
             options[sky.constellation_lines] = {
                 "prepare": clip,
@@ -1191,3 +1205,4 @@ class PublicationStyle:
             rotation_deg=0.0,
             normal_offset_em=0.65,
         )
+

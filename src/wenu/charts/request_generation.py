@@ -38,6 +38,26 @@ class ChartRequestGeneration:
         return tuple(path for result in self.exports for path in (result.output, *getattr(result, "report_outputs", ())))
 
 
+@dataclass(frozen=True)
+class AtlasSheetChartRequest:
+    """Validated fixed-ICRS sheet input for the shared chart execution owner."""
+
+    sheet: object
+    page: object
+    presentation: object
+    output_dir: object
+
+    def __post_init__(self):
+        from pathlib import Path
+        from wenu.atlas_design import AtlasSheetGeometry, AtlasPageGeometry
+        from .atlas_publication import AtlasChartPresentation
+        if not isinstance(self.sheet, AtlasSheetGeometry) or not isinstance(self.page, AtlasPageGeometry):
+            raise TypeError("Atlas sheet requests require validated sheet/page geometry.")
+        if not isinstance(self.presentation, AtlasChartPresentation):
+            raise TypeError("Atlas sheet requests require AtlasChartPresentation.")
+        object.__setattr__(self, "output_dir", Path(self.output_dir))
+
+
 @dataclass
 class ChartRequestBuild:
     """Prepared request plus explicit ownership of its reusable sphere."""
@@ -141,6 +161,8 @@ def export_prepared_chart(
 
     chart = prepared.chart
     request = prepared.resolved.request
+    from .request_grids import validate_equatorial_grid_marks
+    validate_equatorial_grid_marks(request)
     realization_context = chart_request_realization_context(
         request,
         resolved_observer,
@@ -236,6 +258,18 @@ def export_prepared_chart(
             export_options["svg_provenance"] = provenance
             renderer = MatplotlibRenderer(ax)
             renderer.axes_frame_visible = request.product.axes_frame
+            marks = request.detail.equatorial_grid_marks
+            if marks is not None:
+                from .request_grids import equatorial_grid_frame_layout, equatorial_grid_mark_options
+                renderer.apply_viewport(chart.viewport)
+                ax.apply_aspect()
+                width_mm, height_mm = figure.get_size_inches() * 25.4
+                bounds, style = equatorial_grid_frame_layout(width_mm, height_mm,
+                    tuple(ax.get_position().bounds), composition.style, marks)
+                ax.set_position(bounds)
+                composition = replace(composition, style=style)
+                export_options["composition"] = composition
+                export_options["layer_options"] = equatorial_grid_mark_options(chart, marks)
             result = chart.export(
                 sky,
                 renderer,
@@ -406,6 +440,15 @@ def generate_chart_request(
     observer=None,
 ):
     """Resolve and export a request using an owned or supplied sphere."""
+    if isinstance(request, AtlasSheetChartRequest):
+        if sky is None or getattr(sky, "observer", None) is not None:
+            raise ValueError("Atlas sheet requests require an explicit observer-free prepared sky.")
+        if any(value is not None for value in (profile, configuration, observer)):
+            raise ValueError("Atlas sheet requests do not admit observer/configuration overrides.")
+        return _generate_atlas_sheet_request(request, sky)
+    if isinstance(request, ChartRequest):
+        from .request_grids import validate_equatorial_grid_marks
+        validate_equatorial_grid_marks(request)
     build = build_chart_request(
         request,
         sky=sky,
@@ -425,3 +468,130 @@ def generate_chart_request(
         )
     finally:
         build.close()
+
+
+
+def _generate_atlas_sheet_request(request, sky):
+    """Publish one completed command's files without clobbering other sheets."""
+    from pathlib import Path
+    import os
+    import tempfile
+    directory = request.output_dir
+    if directory.is_symlink() or (directory.exists() and not directory.is_dir()) or not directory.parent.is_dir():
+        raise ValueError("Atlas-sheet output requires a safe directory and an existing parent.")
+    number, formats = request.sheet.number, request.presentation.formats
+    names = tuple(f"chart-{number:02d}.{suffix}" for suffix in formats) + tuple(
+        f"chart-{number:02d}_report.{suffix}" for suffix in formats) + (f"chart-{number:02d}_report_data.json",)
+    if any((directory/name).exists() or (directory/name).is_symlink() for name in names):
+        raise ValueError("Atlas-sheet output already exists; choose a new destination.")
+    with tempfile.TemporaryDirectory(prefix=".wenu-chart-", dir=directory.parent) as temporary:
+        staged = _render_atlas_sheet_request(replace(request, output_dir=Path(temporary)), sky)
+        owned_directory, linked = False, []
+        try:
+            if not directory.exists():
+                directory.mkdir()
+                owned_directory = True
+            if directory.is_symlink() or not directory.is_dir():
+                raise ValueError("Atlas-sheet output requires a safe directory.")
+            for output in staged.outputs:
+                destination = directory/output.name
+                os.link(output, destination)
+                linked.append(destination)
+        except BaseException:
+            for output in linked:
+                output.unlink()
+            if owned_directory:
+                directory.rmdir()
+            raise
+        return ChartRequestGeneration(tuple(replace(result,
+            output=directory/Path(result.output).name,
+            report_outputs=tuple(directory/Path(output).name for output in result.report_outputs))
+            for result in staged.exports))
+
+
+def _render_atlas_sheet_request(request, sky):
+    """One isolated figure, canonical composition/export, all requested formats."""
+    import matplotlib.pyplot as plt
+    from .atlas_publication import (AtlasSheetChart, _atlas_grid_layout, _atlas_grid_options,
+        _draw_atlas_chart_number, _draw_atlas_magnitude_scale, _render_atlas_report)
+    from pathlib import Path
+    from .composition import compose_chart
+    from functools import partial
+    from .style_overrides import ChartStyleOverrides
+    from .detail import DetailOverrides
+    from .export_workflow import export_composed_chart
+    from .modes import PrintMode, PresentationMode
+    from .regional import ExportOptions
+    from wenu.rendering.matplotlib import MatplotlibRenderer
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    sheet, page, presentation, directory = request.sheet, request.page, request.presentation, request.output_dir
+    chart = AtlasSheetChart(sheet, page)
+    composition = compose_chart(chart, style=presentation.style,
+        style_overrides=ChartStyleOverrides(star_size_scale=presentation.star_size_scale,
+            stellar_magnitude_sizing=presentation.stellar_magnitude_sizing),
+        mode=(PrintMode if presentation.mode == "print" else PresentationMode)(width_inches=page.width_mm / 25.4,
+            height_inches=page.height_mm / 25.4, dpi=presentation.dpi),
+        detail_overrides=DetailOverrides(
+            star_magnitude_limit=presentation.star_magnitude_limit,
+            enabled_layers=frozenset("nonstellar_objects" if name == "nonstellar" else name
+                for name in presentation.layers),
+            constellation_star_mode="none"))
+    composition = replace(composition, style=replace(composition.style,
+        isophotes=replace(composition.style.isophotes,
+            milky_way_color=presentation.milky_way_color,
+            lmc_color=presentation.milky_way_color, smc_color=presentation.milky_way_color)))
+    deep = composition.style.deep_sky
+    area_scale = presentation.deep_sky_symbol_scale ** 2
+    composition = replace(composition, style=replace(composition.style,
+        deep_sky=replace(deep,
+            open_cluster_symbol_name="cluster_circle", open_cluster_color="black",
+            open_cluster_face_color=presentation.cluster_face_color,
+            open_cluster_symbol_size=deep.open_cluster_symbol_size * area_scale,
+            globular_cluster_symbol_name="globular_cluster", globular_cluster_color="black",
+            globular_cluster_face_color=presentation.cluster_face_color,
+            globular_cluster_symbol_size=deep.open_cluster_symbol_size * area_scale,
+            planetary_nebula_symbol_size=deep.planetary_nebula_symbol_size * area_scale)))
+    axes_bounds, grid_style = _atlas_grid_layout(page, composition.style, presentation)
+    grid_options = {}
+    if "supernova_remnants" in presentation.layers:
+        grid_options["supernova_remnants"] = dict(
+            render=dict(curve_size_scale=presentation.deep_sky_symbol_scale))
+    if "nonstellar" in presentation.layers:
+        grid_options["nonstellar"] = dict(geometry=dict(labels_only=True),
+            render=dict(draw_markers=False, draw_labels=True,
+                label_style=dict(fontsize=presentation.messier_label_fontsize, color="black", alpha=1.0)))
+    if "equatorial_grid" in presentation.layers:
+        composition = replace(composition, style=grid_style)
+        grid_options.update(_atlas_grid_options(chart, presentation))
+    figure = plt.figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4))
+    ax = figure.add_axes(axes_bounds)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    _draw_atlas_chart_number(ax, sheet.number, composition.style, presentation)
+    try:
+        renderer = MatplotlibRenderer(ax)
+        from .atlas_publication import _atlas_frame_widths
+        horizontal, vertical = _atlas_frame_widths(composition.style, presentation)
+        renderer.configure_grid_label_frame(horizontal_points=horizontal,
+            vertical_points=vertical, polar=abs(sheet.center_dec_deg) == 90)
+        first = presentation.formats[0]
+        result = export_composed_chart(chart, sky, renderer,
+            Path(directory) / f"chart-{sheet.number:02d}.{first}",
+            composition=composition,
+            layer_options=grid_options,
+            realization_context=LayerRealizationContext(NATIVE_ICRS_SPEC),
+            export_options=ExportOptions(dpi=presentation.dpi, bbox_inches=None),
+            additional_furniture=partial(_draw_atlas_magnitude_scale, presentation=presentation))
+        for suffix in presentation.formats[1:]:
+            result.export_options.save(figure, Path(directory) / f"chart-{sheet.number:02d}.{suffix}")
+        _render_atlas_report(chart, sky, composition, result.rendering, directory,
+                             formats=presentation.formats, presentation=presentation)
+        other_outputs = tuple(Path(directory) / f"chart-{sheet.number:02d}.{suffix}"
+            for suffix in presentation.formats[1:])
+        report_outputs = tuple(Path(directory) / f"chart-{sheet.number:02d}_report.{suffix}"
+            for suffix in presentation.formats) + (Path(directory) / f"chart-{sheet.number:02d}_report_data.json",)
+        return ChartRequestGeneration((replace(result, report_outputs=(*other_outputs, *report_outputs)),))
+    except Exception as exc:
+        raise RuntimeError(f"Chart {sheet.number} failed: {exc}") from exc
+    finally:
+        plt.close(figure)

@@ -101,6 +101,12 @@ class StereographicProjection:
         y = r * np.cos(lon)
         if self.flip_ew:
             x = -x
+        # tan(pi/2) is numerically huge but finite. The antipode is undefined;
+        # retain a non-finite break rather than connecting its arbitrary azimuth
+        # back through a visible chart (notably meridians on polar atlas sheets).
+        antipode = np.abs(lat + np.pi / 2.0) <= 8 * np.finfo(float).eps
+        x = np.where(antipode, np.nan, x)
+        y = np.where(antipode, np.nan, y)
         return x, y
 
     def projected_radius(self, angular_radius_deg: float) -> float:
@@ -331,3 +337,4 @@ class StereographicProjection:
             )
         x, y = self.project_spherical(lon_deg, lat_deg)
         return ProjectedPolygon(x=x, y=y, name=name)
+
