@@ -1,0 +1,34 @@
+{
+  "source": "Caldwell membership with OpenNGC parameters",
+  "catalogue_reference": "Patrick Moore, Beyond Messier: The Caldwell Catalog, Sky & Telescope, December 1995",
+  "membership_source_url": "https://old.astroleague.org/al/obsclubs/caldwell/cldwlist.html",
+  "membership_ledger_sha256": "604f43a1d11fcfe18b059c03dd3e10093e2a8fd502f1227c991b30c428c366bd",
+  "parameter_source": "OpenNGC",
+  "release": "v20260501",
+  "coordinate_frame": "ICRS/J2000",
+  "retrieved_at_utc": "2026-10-13T12:21:52+00:00",
+  "row_count": 109,
+  "license": "CC-BY-SA-4.0",
+  "source_files": {
+    "NGC.csv": {
+      "url": "https://raw.githubusercontent.com/mattiaverga/OpenNGC/v20260501/database_files/NGC.csv",
+      "sha256": "840fe0c9ee1332e551b2e722a0e92726cd7b157914a3d2177602832aadd3aa9e"
+    },
+    "addendum.csv": {
+      "url": "https://raw.githubusercontent.com/mattiaverga/OpenNGC/v20260501/database_files/addendum.csv",
+      "sha256": "1d8f0914e643ada325a5a94d88d8fefad6a4937a2f77cc34f21483af22b11983"
+    }
+  },
+  "notes": "Membership is heterogeneous. C14 is a two-cluster group. OpenNGC duplicate targets supply parameters without changing the original observing designation. Missing photometry is not inferred.",
+  "files": {
+    "caldwell_openngc.ecsv": {
+      "sha256": "484453b320464cbe06db4f7bb7748a9cc1118e50ea6324da94443217c9902564"
+    },
+    "caldwell_openngc.csv": {
+      "sha256": "92e000d299f0a030f933a652e1d68f1cb72a014be655e2cc2bda9c69f2d0eec0"
+    },
+    "CC-BY-SA-4.0.txt": {
+      "sha256": "cde7883b9050a1104f4ac19a1572aafd6e5d7323b68351aaf51fbf4beba54966"
+    }
+  }
+}

@@ -5249,3 +5249,27 @@ revalidates a versioned 36-chart revision, fits the fixed bands to the full
 report-frame dimensions, and corrects edge-normal label clearance. Historical
 designs remain unchanged. Mac catalogue-backed and visual acceptance remain
 required; this correction does not authorize PR merge, cleanup or curation.
+
+
+### Open-cluster observing-list comparison (2026-10-13)
+
+After atlas PR 229 was merged and cleaned up at `96e6d4fb`, Fernando requested
+Caldwell ingestion and comparison of Dias clusters with Caldwell and Messier.
+The bounded milestone adds the complete source-traced 109-entry Caldwell
+resource and an offline identity crosswalk using existing catalogue owners.
+It does not choose an observability cutoff, curate physical duplicates, alter
+atlas chart density or automatically draw Caldwell symbols. Initial matches
+are 27 Messier clusters and 29 Dias clusters for 28 Caldwell entries. C37 and
+C50 retain competing alias rows as review cases. Histograms and decisions
+about retained telescope targets remain subsequent curation work.
+
+Provider-policy preflight checked on 2026-10-13: OpenNGC's pinned README and
+CC BY-SA 4.0 licence establish attribution/redistribution conditions. GitHub
+[API best practices](https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api)
+require conservative serial access and stopping on throttling. The maintenance
+tool uses three serial pinned raw-file GETs, with no polling, concurrency or
+automatic retries, or a fully cached source directory with exact digests.
+Chart runtime and comparison perform no network access. Membership facts were
+checked against the Astronomical League's published list; no guide prose or
+images are redistributed. The parameter snapshot carries OpenNGC attribution
+and its licence. Mac focused/full-suite acceptance and merge remain separate.

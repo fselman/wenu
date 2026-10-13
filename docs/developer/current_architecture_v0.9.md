@@ -2642,3 +2642,15 @@ Publication reserves fixed font-derived bands before fitting this chosen aspect;
 it does not stretch the projection or adjust individual sheets. The shared
 renderer measures exterior text clearance normal to the frame edge while
 retaining exact crossings and projected-line continuation.
+
+
+### Caldwell catalogue comparison boundary (2026-10-13)
+
+Caldwell is an additional mixed observing-catalogue resource, loaded by the
+existing NonStellar owner. Runtime charts and native-sky snapshot selection
+retain their existing defaults. Pinned maintenance and an offline comparison
+utility attach observing designations to Dias rows without replacing source
+parameters, conflating catalogue membership with physical object category,
+or adding a parallel rendering path. Compound entries and alternate Dias
+alias rows remain explicit in the crosswalk. Resource packaging includes
+source provenance and the applicable OpenNGC licence.

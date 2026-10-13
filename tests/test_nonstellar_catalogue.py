@@ -51,6 +51,49 @@ def test_nonstellar_is_the_single_catalogue_layer():
     assert issubclass(NonStellar, AstronomicalObject)
 
 
+def test_complete_caldwell_catalogue_uses_existing_nonstellar_loader(tmp_path):
+    import hashlib
+    import json
+    from wenu.resources import nonstellar_catalog_path
+    path = nonstellar_catalog_path('caldwell')
+    source = Table.read(path)
+    assert len(source) == 109
+    assert list(source['caldwell_number']) == list(range(1, 110))
+    assert source[13]['cluster_components'] == 'NGC0869|NGC0884'
+    assert source[40]['cluster_components'] == 'Melotte 25'
+    assert source[49]['primary_id'] == 'NGC2244'
+    assert source[49]['parameter_source_id'] == 'NGC2239'
+    assert source[36]['primary_id'] == 'NGC6885'
+    assert source[36]['parameter_source_id'] == 'NGC6882'
+    provenance = json.loads(path.parent.joinpath('caldwell_openngc.provenance.json').read_text())
+    assert provenance['license'] == 'CC-BY-SA-4.0'
+    for name, record in provenance['files'].items():
+        assert hashlib.sha256(path.parent.joinpath(name).read_bytes()).hexdigest() == record['sha256']
+    assert hashlib.sha256(path.parent.joinpath('caldwell_membership_v1.csv').read_bytes()).hexdigest() == provenance['membership_ledger_sha256']
+    layer = NonStellar(None, catalog='caldwell')
+    table = layer.load()
+    assert list(table['identifier']) == [f'C {n}' for n in range(1, 110)]
+    assert np.isfinite(table['ra_deg']).all() and np.isfinite(table['dec_deg']).all()
+    assert set(table['object_type']) >= {'open cluster', 'globular cluster', 'galaxy', 'planetary nebula'}
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    points = layer.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None,
+        selected=['C 1', 'C 14', 'C 106'], labels_only=True)
+    assert set(points.ids) == {'C 1', 'C 14', 'C 106'}
+    import importlib.util
+    from pathlib import Path
+    root = Path(__file__).resolve().parents[1]
+    spec = importlib.util.spec_from_file_location('query_caldwell_openngc', root/'tools/query_caldwell_openngc.py')
+    maintenance = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(maintenance)
+    assert len(maintenance.membership()) == 109
+    corrupted = b'corrupted cached source\n'
+    assert maintenance.digest(corrupted) != maintenance.SOURCE_HASHES['NGC.csv']
+    (tmp_path/'NGC.csv').write_bytes(corrupted)
+    with pytest.raises(ValueError, match='Pinned OpenNGC source digest mismatch'):
+        maintenance.main(['--source-directory', str(tmp_path), '--output-directory', str(tmp_path/'output')])
+    assert not (tmp_path/'output').exists()
+
+
 def test_dedicated_galaxy_layer_suppresses_generic_messier_outline_without_mutating_sources(catalogue):
     from wenu.objects.galaxies import Galaxies
     from wenu.charts.detail import ResolvedDetail

@@ -1532,3 +1532,32 @@ wenu_create_atlas --design examples/atlas_design_36charts_v3.json --config examp
 
 The revised geometry has a new digest: prepare a new native-sky bundle rather
 than reusing the revision-2 design-bound bundle.
+
+
+### Caldwell and open-cluster comparison (2026-10-13)
+
+Wenu packages all 109 Caldwell entries as a heterogeneous observing catalogue,
+with factual membership checked against the Astronomical League and parameters
+from pinned OpenNGC `v20260501`. Attribution, CC BY-SA 4.0 licence, exact source
+hashes and generated-product hashes accompany the ECSV/CSV snapshot. This adds
+an offline catalogue resource, not a new automatically enabled chart layer or
+an open-cluster symbol category. The existing Python loader supports
+`NonStellar(None, catalog="caldwell").load()`.
+
+Compare the exact packaged Dias snapshot with Messier and Caldwell using:
+
+```bash
+PYTHONPATH=src python tools/compare_open_clusters.py --output-prefix open_clusters_comparison_v1
+```
+
+The tool writes `_dias.csv` (all 1,931 rows with membership tags),
+`_crosswalk.csv` (every selected observing-list component and match status),
+and `_summary.json` (counts, parameter availability/medians, review cases and
+source SHA-256 values). All physical comparison values come from Dias. The
+initial result is 27 Messier clusters and 28 Caldwell entries corresponding to
+29 clusters; all have an identifier match. C14 matches NGC 869 and NGC 884;
+C41 matches Melotte 25 and M45 matches Melotte 22. C37 (NGC 6885/6882) and C50
+(NGC 2244/2239) expose alternate Dias rows for later review. Exact observing
+identifiers take precedence; aliases are fallback-only and ambiguities are
+reported. No nearest-position match, physical duplicate merge, chart-density
+cut or missing-parameter imputation is performed.

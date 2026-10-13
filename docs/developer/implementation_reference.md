@@ -4867,3 +4867,28 @@ label clearance against the physical edge normal while preserving the label's
 projected-line continuation and text angle. Ordinary regional fitting remains
 unchanged; fixed-band labels that cannot fit remain subject to suppression.
 Existing geometry, CLI and renderer contract tests own these gates.
+
+
+### Caldwell resource and catalogue comparison (2026-10-13)
+
+The existing `resources.nonstellar_catalog_path("caldwell")` resolves
+`data/catalogs/caldwell/caldwell_openngc.ecsv`; `NonStellar` loads it through
+its existing native centre/outline routes. No new production layer, provider,
+projection, renderer or automatic atlas option is added. Setuptools explicitly
+packages the new ECSV, CSV, JSON, licence, membership ledger and README.
+
+`tools/query_caldwell_openngc.py` owns reproducible maintenance: a complete
+1..109 membership ledger, pinned OpenNGC source/licence SHA-256 admission,
+cycle/ambiguity rejection for duplicate targets, and canonical ECSV/CSV with
+separate observing identifiers and parameter-source identifiers. C14 is a
+compound observing entry. Missing photometry remains missing. Provenance
+includes membership origin, release, coordinates, product hashes and licence.
+
+`tools/compare_open_clusters.py` is an offline inspection utility. It joins
+explicit normalized NGC/IC/Melotte/Collinder identities, preserves all Dias
+rows, splits only explicitly declared group components, reports absent or
+ambiguous matches and competing alias rows, and writes source-bound CSV/JSON
+comparison outputs. M45's explicit Melotte 22 identity is supplied by the
+pinned OpenNGC Mel022/M=045 row. All sample statistics use Dias parameters;
+no proximity matching, source mutation or automatic physical-object merging
+is admitted. Existing nonstellar/open-cluster tests own the new seams.

@@ -3551,3 +3551,19 @@ projected-line alignment and fixed-band suppression. Existing atlas-design,
 atlas-CLI and renderer-contract test files cover these changes. New examples
 are `examples/atlas_design_36charts_v3.json` and
 `examples/atlas_chart_style_v4.toml`; historical versions remain available.
+
+
+### Caldwell data and comparison ownership (2026-10-13)
+
+`src/wenu/data/catalogs/caldwell/` is a resource package, not a new sky layer.
+The existing `resources.py` and `objects/nonstellar.py` remain its loading and
+native-realization owners. `tools/query_caldwell_openngc.py` owns pinned
+catalogue maintenance; `tools/compare_open_clusters.py` owns offline
+observing-list cross-identification and inspection exports. Their lifecycles
+are separate from runtime chart generation and existing HEASARC acquisition.
+The new tools extend the established catalogue-maintenance pattern rather
+than adding a production catalogue/provider module. Existing
+`tests/test_nonstellar_catalogue.py` and `tests/test_open_clusters.py` protect
+109-entry admission, resource hashes, native centres, compound membership,
+source preservation and ambiguous/alternate-alias handling. No test file,
+production layer or dependency is added.

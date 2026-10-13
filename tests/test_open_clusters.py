@@ -48,6 +48,54 @@ def test_packaged_open_cluster_catalogue():
     assert "NGC 4755" in set(table["identifier"])
 
 
+def test_observing_catalogue_comparison_preserves_dias_and_group_members(tmp_path):
+    import importlib.util
+    import json
+    from pathlib import Path
+    from astropy.table import Table
+    import pytest
+    root = Path(__file__).resolve().parents[1]
+    spec = importlib.util.spec_from_file_location('compare_open_clusters', root/'tools/compare_open_clusters.py')
+    tool = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(tool)
+    dias = Table.read(nonstellar_catalog_path('open_clusters'))
+    original = dias.copy(copy_data=True)
+    caldwell = Table.read(nonstellar_catalog_path('caldwell'))
+    messier = Table.read(nonstellar_catalog_path('messier'))
+    annotated, edges, summary = tool.compare(dias, caldwell, messier)
+    assert len(annotated) == 1931 and len(edges) == 56
+    assert summary['catalogue_component_matches']['Caldwell']['entries'] == 28
+    assert summary['catalogue_component_matches']['Caldwell']['matched'] == 29
+    assert summary['catalogue_component_matches']['Messier']['matched'] == 27
+    for row in dias:
+        expected = original[np.flatnonzero(original['identifier'] == row['identifier'])[0]]
+        assert row['identifier'] == expected['identifier']
+        assert row['ra_deg'] == expected['ra_deg']
+    assert dias.colnames == original.colnames
+    assert set(edges['dias_identifier'][edges['designation'] == 'C 14']) == {'NGC 869', 'NGC 884'}
+    assert list(edges['dias_identifier'][edges['designation'] == 'M 45']) == ['Melotte 22']
+    assert list(edges['dias_identifier'][edges['designation'] == 'C 41']) == ['Melotte 25']
+    assert 'C 49' not in set(edges['designation'])  # Rosette nebula is not the cluster.
+    review = summary['catalogue_component_matches']['Caldwell']['alias_review']
+    assert {r['designation'] for r in review} == {'C 37', 'C 50'}
+    assert np.count_nonzero(annotated['in_caldwell']) == 29
+    assert np.count_nonzero(annotated['in_messier']) == 27
+    assert not np.any(annotated['in_caldwell'] & annotated['in_messier'])
+    # A second exact-identifier candidate is an ambiguity, never a first match.
+    duplicate = dias.copy(copy_data=True)
+    duplicate.add_row(dias[np.flatnonzero(dias['identifier'] == 'NGC 869')[0]])
+    assert len(duplicate) == len(dias)+1
+    _, bad_edges, bad_summary = tool.compare(duplicate, caldwell, messier)
+    assert len(bad_summary['catalogue_component_matches']['Caldwell']['ambiguous']) == 1
+    assert list(bad_edges['status'][bad_edges['component'] == 'NGC0869']) == ['ambiguous']
+    prefix = tmp_path/'comparison_v1'
+    assert tool.main(['--output-prefix', str(prefix)]) == 0
+    emitted = json.loads((tmp_path/'comparison_v1_summary.json').read_text())
+    assert emitted['dias_clusters'] == 1931 and len(emitted['source_sha256']) == 3
+    with pytest.raises(FileExistsError):
+        tool.main(['--output-prefix', str(prefix)])
+
+
 def test_requested_order_and_metadata_are_preserved():
     layer = OpenClusters(
         observer(),

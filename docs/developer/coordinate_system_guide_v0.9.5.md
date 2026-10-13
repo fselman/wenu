@@ -4653,3 +4653,16 @@ stereographic footprints analytically. Printed mapping remains isotropic with
 one central scale across all sheets. Exterior grid text continues along the
 projected grid line, but its physical edge clearance is measured normal to the
 page boundary; a steep meridian cannot leave the text box crossing that edge.
+
+
+### Caldwell observing membership provenance (2026-10-13)
+
+Caldwell's 109 observing entries are heterogeneous. Their packaged centres
+are OpenNGC ICRS/J2000 coordinates and use NonStellar's established realization
+route; they do not introduce a new physical category or a second transform.
+Observing identifiers, parameter-source identifiers and compound components
+are stored separately. Open-cluster comparison uses explicit catalogue
+identities and Dias parameters, never projected proximity or a mixture of
+coordinate/diameter providers. C14 is a two-cluster group; alternate Dias
+aliases for C37 and C50 remain review cases. Source hashes and licence are
+recorded with the resource and source digests with comparison outputs.
