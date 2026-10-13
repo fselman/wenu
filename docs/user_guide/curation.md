@@ -977,3 +977,72 @@ flags may overlap. Of the seven positional pairs, one is retained in the
 selection. Positional matching remains provisional and the 27 list-claim rows
 require review. This v0.1 output is a requested curation snapshot; it is not
 installed as a sky-chart source and does not merge the software branch.
+
+
+
+## Depuration and atlas installation of the selected catalogue
+
+Software and catalogue curation remain separate. Keep the v0.1 selection and
+publish a new v0.2, retaining its source identifiers, coordinates, memberships,
+selection criteria and unresolved identity flags. This amateur open-cluster
+layer contains Hunt type o and Dias-only open clusters. Hunt globular clusters
+and moving groups are excluded; the existing globular atlas database remains
+unchanged. Single-source objects without another catalogue designation or
+resolved observing-list membership are excluded. Masked membership claims stay
+for review. All modern catalogues, including OC, count; an HSC name alone does
+not provide another compilation.
+
+For the reviewed v0.1 input, 583 rows become 513: 48 globular clusters, 17 moving
+groups and five HSC-only entries are excluded. The latter are HSC 1865, 2304,
+2384, 2764 and 2911. The retained source counts are 328 both, 4 Dias-only and
+181 Hunt-only. Absence means absence of corroboration in the installed source
+resources, not absence from all astronomical literature.
+
+Run from the repository's tools directory:
+
+```bash
+PYTHONPATH=../src python prepare_open_cluster_catalogue.py --help
+PYTHONPATH=../src python prepare_open_cluster_catalogue.py \\
+  --catalogue ../output/curation_v0.1/wenu_open_clusters_v0.1.ecsv \\
+  --output-directory ../output/curation_v0.2 \\
+  --install-directory ../data/catalogs/open_clusters \\
+  --activate
+```
+
+The output contains ECSV, CSV, a row-by-row depuration ledger, all passing
+source-centre comparisons in a positions ledger, and a summary with input and
+product hashes. The seven retained overlap pairs are review candidates, not
+seven confirmed duplicates. Separations and both published diameters are in
+arcminutes; radius is half the supplied diameter. All Dias/Hunt combinations
+are checked, including two positions from the same source. No epoch propagation
+or additional identity merge occurs. 76 retained rows carry identity-review
+flags; they remain available for scientific inspection.
+
+The installation directory is a standard catalogue-only tree outside package
+resources. Each version is immutable. The relative symlink
+`data/catalogs/open_clusters/open_star_clusters.ecsv` selects
+`wenu_open_clusters_v0.2.ecsv`. An installed Wenu can read this same directory;
+without an explicit installation directory, activation uses
+`~/.local/share/wenu/catalogs/open_clusters`. A regular file at the selector path
+is never overwritten. Selecting a different version changes the symlink only;
+old versions remain available. Catalogue generation and activation are explicit,
+and ordinary Wenu defaults continue to use the packaged catalogue.
+
+Plot the new output ECSV with `plot_merged_open_clusters.py` using the same
+radius/member/V10 options as before. To recreate the atlas, run from the
+repository root with the existing design, index, presentation and stellar
+options, adding:
+
+```bash
+--open-cluster-catalogue data/catalogs/open_clusters/open_star_clusters.ecsv
+```
+
+Use a new output directory and a new saved-sky directory. Do not reuse an old
+`--from-sky` bundle: it contains its original open-cluster database. The
+catalogue override resolves the symlink once and reaches the existing sky
+preparation profile. The saved sky records the actual source hash and retains
+source columns/masks; all workers read the same prepared objects. No other
+catalogue, atlas layout, symbol styling or stellar setting is replaced.
+V10 remains a selection statistic and is never interpreted as integrated V.
+Geometry IDs are Wenu IDs; display labels retain catalogue names. Programmatic
+`OpenClusters(selected=[...])` accepts Wenu IDs as well as display names.

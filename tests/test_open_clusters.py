@@ -907,3 +907,53 @@ def test_v01_curator_help_and_unverified_mandatory_lists_fail_before_writing(tmp
     with pytest.raises(ValueError,match='Mandatory list unavailable'):
         curator.main(['--catalogue',str(source),'--output-directory',str(destination)])
     assert not destination.exists()
+
+
+def test_depurated_catalogue_preserves_sources_masks_and_active_selector(tmp_path, monkeypatch):
+    """The new seam excludes only the agreed types/absences and freezes IDs."""
+    import sys
+    from pathlib import Path
+    import pytest
+    from astropy.table import Table, MaskedColumn
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1]/'tools'))
+    import prepare_open_cluster_catalogue as preparation
+    table = Table(dict(wenu_id=['W1','W2','W3','W4','W5','W6'], RA=[0.]*6,Dec=[0.]*6,
+        has_dias=[True,False,False,False,False,False],has_hunt=[True]*6,
+        dias_id=['NGC 1','','','','',''],hunt_name=['NGC_1','HSC_2','HSC_3','HSC_4','OC_5','HSC_6'],
+        hunt_type=['o','o','g','m','o','o'],Other_ids=['','','','','',''],identity_review=[False]*6))
+    table['in_messier'] = MaskedColumn([False]*6,mask=[False,False,False,False,False,True])
+    for source in ('dias','hunt'):
+        for column in ('ra_deg','dec_deg','apparent_diameter_arcmin','distance_pc','reddening_e_bv','member_count'):
+            table[source+'_'+column]=[2.]*6
+    table['dias_source_type_flag']=MaskedColumn(['',0,0,0,0,0],dtype=object,mask=[False,True,True,True,True,True])
+    table['hunt_v10']=[9.]*6
+    original = table.copy()
+    selected, marked = preparation.depurate(table)
+    assert list(selected['wenu_id'])==['W1','W5','W6']  # OC is external; unknown claims retained.
+    assert list(marked['depuration_reason'])==['','single_source_no_other_compilation','hunt_type_g','hunt_type_m','','']
+    assert table.colnames==original.colnames
+    from wenu.sky.native_snapshot import _table_records, _table_from_records
+    restored=_table_from_records(_table_records(selected))
+    assert restored['dias_source_type_flag'].mask.tolist()==[False,True,True]
+    assert np.asarray(restored['dias_source_type_flag'],dtype=object).tolist()==['',None,None]
+    assert 'magnitude' not in selected.colnames and 'v_magnitude' not in selected.colnames
+    assert selected['hunt_v10'].tolist()==[9.]*3
+    path=tmp_path/'wenu_open_clusters_v0.2.ecsv';selected.write(path)
+    selector=preparation.install(path,tmp_path/'installed',activate=True)
+    assert selector.is_symlink() and selector.readlink()==Path(path.name)
+    assert selector.read_bytes()==path.read_bytes()
+    layer=OpenClusters(None);layer.load(filename=selector)
+    geometry=layer.position()
+    assert list(geometry.ids)==['W1','W5','W6'] and list(geometry.labels)==['NGC 1','OC 5','HSC 6']
+    assert len(layer._selected_table(['W5']))==1
+    assert np.ma.is_masked(layer.catalog['in_messier'][2])
+    with pytest.raises(FileExistsError): preparation.install(path,tmp_path/'installed',activate=True)
+    # A regular selector file is never overwritten, including on a new version.
+    other=tmp_path/'regular';other.mkdir();(other/'open_star_clusters.ecsv').write_text('keep')
+    with pytest.raises(ValueError): preparation.install(path,other,activate=True)
+    assert not (other/path.name).exists()
+    positions=preparation.positional_review(selected)
+    assert len(set(zip(positions['wenu_id_a'],positions['wenu_id_b'])))==3
+    assert preparation.main([])==0
+    invalid=selected.copy();invalid['hunt_type'][0]='g'
+    with pytest.raises(ValueError): OpenClusters.normalize_catalogue(invalid)

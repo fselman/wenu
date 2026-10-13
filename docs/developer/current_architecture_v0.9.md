@@ -2945,3 +2945,31 @@ strict cuts, mandatory overrides, missing fields, all/any source policies,
 one-to-one positional pairing, ambiguity, ID conservation, source preservation,
 help and admission failures. No curated data is installed or committed as a
 chart resource, and no software merge, pipeline or dependency change occurs.
+
+
+## Curated open-cluster atlas catalogue (v0.2)
+
+`tools/prepare_open_cluster_catalogue.py` publishes a new version from an
+existing selected union. It keeps Hunt type `o` and Dias-only rows, excludes
+single-source rows without another catalogue designation or resolved list
+membership, and retains masked claims for review. Modern discovery catalogues
+including OC count; HSC alone does not corroborate a Hunt entry. Source rows,
+IDs, coordinates, masks, selection criteria and provisional pairing flags are
+preserved. Every exclusion is recorded; proximity never causes deletion.
+
+The installation boundary copies immutable versioned ECSV bytes into a chosen
+catalogue directory and optionally atomically selects them using the relative
+`open_star_clusters.ecsv` symlink. Existing versions and regular selector files
+are refused. This is separate from software installation and package resources.
+`OpenClusters.normalize_catalogue` adapts the union at the existing layer
+boundary: Hunt-preferred coordinates/diameters and source member counts, stable
+Wenu geometry IDs and readable labels. V10 is never integrated photometry.
+
+`wenu_create_atlas --open-cluster-catalogue PATH` replaces only the open-cluster
+source in `CelestialSphereLoadProfile`. The selector resolves once before
+preparation; the existing native snapshot hashes and serializes the selected
+catalogue for all workers. An override with `--from-sky` is rejected. Other
+layers, atlas geometry, presentation and stellar settings are unchanged.
+Tests extend `test_open_clusters.py` and `test_atlas_cli.py` at the normalization,
+installation, profile-propagation and saved-sky boundaries. No atlas software
+merge or chart adoption is implied by producing a candidate.

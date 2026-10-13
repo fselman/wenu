@@ -112,6 +112,8 @@ def create_main(argv=None):
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--index", type=Path,
         help="One-page index PDF; enables even report pages facing odd chart pages.")
+    parser.add_argument("--open-cluster-catalogue", type=Path,
+        help="Versioned ECSV or active open_star_clusters.ecsv symlink; changes only open clusters. Requires a new sky.")
     sky = parser.add_mutually_exclusive_group()
     sky.add_argument("--save-sky", type=Path)
     sky.add_argument("--from-sky", type=Path)
@@ -132,7 +134,8 @@ def create_main(argv=None):
         from wenu.cli.chart import main as chart_command
         output = create_atlas(args.design, args.output_dir, presentation=presentation,
             charts=args.charts, jobs=args.jobs, save_sky=args.save_sky, from_sky=args.from_sky,
-            index=args.index, chart_command=chart_command)
+            index=args.index, chart_command=chart_command,
+            open_cluster_catalogue=args.open_cluster_catalogue)
     except (ValueError, TypeError, OSError, UnicodeError, RuntimeError) as exc:
         parser.error(str(exc))
     except KeyboardInterrupt:
