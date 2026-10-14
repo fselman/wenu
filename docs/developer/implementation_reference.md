@@ -5299,3 +5299,52 @@ observing root. Working observing/curated trees are excluded from automatic
 package discovery; installed software reads explicit catalogue paths. The
 existing atlas pipeline, saved-sky format, symbol sizing and source selection
 are unchanged. The curation guide documents each tool and the complete workflow.
+
+## Planetary-nebula comparison CLI
+
+`PYTHONPATH=src python tools/compare_planetary_nebulae.py --name planetary_nebulae_comparison_v1`
+generates both radius/H-beta plots and all-row CSV/ECSV, identity crosswalk and
+summary in `output/planetary_nebulae_comparison_v1`.
+No arguments displays help and writes nothing.
+Options: `--data-directory`, `--observing-directory`,
+`--output-directory`, versioned `--name`,
+`--view flux|surface-brightness|both`, and comma-separated `--priority`.
+The default list priority starts Messier/Caldwell/SAC Urban/RASC Finest/SAC Best.
+
+This offline route preserves every source row and every resolved membership.
+Radius limits and missing quantities are separate statuses; no visual threshold
+is installed. H-beta remains an observed line flux, not visual magnitude.
+The summary records source hashes, formula, command and completion products.
+See [curation](../user_guide/curation.md#planetary-nebula-observing-list-comparison).
+
+`--write-selected-catalogue` additionally emits `_selected.csv/.ecsv` and
+`_public_review.csv`; `--min-log-hbeta` defaults to -12 and requires a strict
+greater-than comparison for additional targets. All reference memberships
+bypass this cut. Original comparison outputs remain all-row products.
+Public review is sorted by decreasing finite H-beta surface brightness,
+retains angular sizes/quality, and assigns no public-interest approval.
+
+`wenu_create_atlas` additionally accepts `--planetary-nebula-catalogue PATH`.
+`create_atlas(..., planetary_nebula_catalogue=PATH)` maps the same input to
+`CelestialSphereLoadProfile.planetary_nebula_filename`. Open-cluster and PN
+overrides are independent and both require a new sky; either is rejected with
+`--from-sky`. Promotion uses `compare_planetary_nebulae.py --promote-catalogue
+PATH --activate`, with optional `--curated-directory`, and verifies the entire
+summary-bound bundle before copying. The relative working selector is
+`curated_catalogs/planetary_nebulae/planetary_nebulae.ecsv`.
+
+## Catalogue selection-criteria PDF pages
+
+`create_atlas(..., selection_criteria=())` and repeatable CLI
+`--selection-criteria PATH` admit version-1
+`wenu-catalogue-selection-criteria` JSON. Its catalogue record supplies local
+filename and SHA-256; ordered PDF page records supply filename, SHA-256 and
+title. The selected ECSV must match an explicit atlas catalogue override.
+One-page unencrypted PDFs and valid physical bounds are checked before sky
+preparation. Existing PDF assembly fits vector pages inside atlas margins,
+adds bookmarks and records criteria/catalogue/page hashes and page order.
+
+AtlasChartPresentation admits planetary_nebula_symbol_scale (diameter factor),
+planetary_nebula_color and planetary_nebula_linewidth (points), defaulting to
+1.25, #24552b and 1.1 with full opacity. The canonical style reaches charts and
+report legends. No celestial geometry or scientific measurements change.

@@ -938,6 +938,11 @@ def test_depurated_catalogue_preserves_sources_masks_and_active_selector(tmp_pat
     assert np.asarray(restored['dias_source_type_flag'],dtype=object).tolist()==['',None,None]
     assert 'magnitude' not in selected.colnames and 'v_magnitude' not in selected.colnames
     assert selected['hunt_v10'].tolist()==[9.]*3
+    selected.meta.update(selection_policy=dict(mandatory_lists=['messier'],
+        mandatory_policy='Mandatory rows bypass numeric cuts.', numeric_policy='Positive counts and radii.',
+        boundary='V10 < 17.5-(12.5/3)*log10(radius_arcmin)', max_v10=12.5,
+        max_ebv=3.,source_policy='all',position_policy='Provisional pairs retain source positions.'),
+        depuration=dict(input_sha256='synthetic-parent'))
     path=tmp_path/'wenu_open_clusters_v0.2.ecsv';selected.write(path)
     selector=preparation.install(path,tmp_path/'installed',activate=True)
     assert selector.is_symlink() and selector.readlink()==Path(path.name)
@@ -960,7 +965,8 @@ def test_depurated_catalogue_preserves_sources_masks_and_active_selector(tmp_pat
     import hashlib,json
     evidence=path.with_name(path.stem+'_positions.csv');evidence.write_text('review\n')
     summary=path.with_name(path.stem+'_summary.json')
-    summary.write_text(json.dumps(dict(products={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in [path,evidence]})))
+    summary.write_text(json.dumps(dict(input_sha256='synthetic-parent', excluded_counts={'hunt_type_g':1},
+        products={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in [path,evidence]})))
     accepted=tmp_path/'curated'
     selector=preparation.promote_catalogue(path,accepted,activate=True)
     assert selector.is_symlink() and (accepted/evidence.name).read_bytes()==evidence.read_bytes()
@@ -969,6 +975,16 @@ def test_depurated_catalogue_preserves_sources_masks_and_active_selector(tmp_pat
     evidence.write_text('tampered')
     with pytest.raises(ValueError,match='checksum'): preparation.promote_catalogue(path,tmp_path/'bad')
     assert not (tmp_path/'bad').exists()
+    import plot_merged_open_clusters as plot
+    before = selector.read_bytes()
+    assert plot.main(['--catalogue',str(selector),'--criteria-pages']) == 0
+    criteria_path = accepted/'wenu_open_clusters_v0.2_criteria_v1.json'
+    criteria = json.loads(criteria_path.read_text())
+    assert criteria['catalogue']['sha256'] == hashlib.sha256(before).hexdigest()
+    assert len(criteria['pages']) == 3
+    assert all('_v0.2_criteria_v1_' in p['file'] for p in criteria['pages'])
+    assert selector.read_bytes() == before
+    with pytest.raises(FileExistsError): plot.publish_criteria(selector)
 
 
 def test_working_data_migration_keeps_receipts_and_list_memberships(tmp_path,monkeypatch):

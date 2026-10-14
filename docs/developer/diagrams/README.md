@@ -480,3 +480,26 @@ The shared mark renderer now admits parallel or perpendicular label orientation.
 Parallel Dec text follows the outward continuation of the same crossing tangent.
 The canonical detail -> NonStellar selection edge additionally suppresses
 generic outlines for categories owned by enabled dedicated DSO layers.
+
+### Offline planetary-nebula diagnostic ownership
+
+The PN comparison has the same offline developer-tool boundary as the cluster
+comparison: scientific source and verified observing identities feed
+`tools/compare_planetary_nebulae.py`, which writes plots and review ledgers.
+Existing path/conversion/Excel helpers supply source provenance. No edge feeds
+the production sky, coordinate, projection or rendering owners; no diagram
+of the canonical chart pipeline needs an astronomical change.
+
+### Curated planetary-nebula atlas source edge
+
+The existing catalogue-selector -> atlas CLI -> immutable load profile ->
+native snapshot -> canonical sheet command edge now accepts PN and open-cluster
+selectors independently. Verified bundle promotion remains an offline
+working-data operation. No coordinate or rendering owner is added.
+
+### Catalogue criteria publication edge
+
+Existing scientific plotting tools -> immutable catalogue-bound policy/plot
+bundle beside curated ECSV -> atlas CLI admission -> existing vector PDF
+assembly. Verification precedes sky preparation; native sky, projection and
+chart-rendering edges remain unchanged. No new module is introduced.

@@ -5666,3 +5666,87 @@ observing root. Working observing/curated trees are excluded from automatic
 package discovery; installed software reads explicit catalogue paths. The
 existing atlas pipeline, saved-sky format, symbol sizing and source selection
 are unchanged. The curation guide documents each tool and the complete workflow.
+
+## Planetary-nebula comparison milestone (2026-10-14)
+
+Fernando authorized an offline overlay of current best observing lists,
+Messier/Caldwell and the AL planetary lists over the large PN catalogue.
+The Mac was clean on synchronized main at
+`8f91504aa399635c80f46159d3c6b8e20d57f737`.
+As-is: 1,143 Strasbourg-ESO objects have optical diameters and H-beta fluxes,
+without a visual-observability cut. Broad list conversions exist; the three
+PN workbooks remain original Excel sources with verified per-list provenance.
+There was no dedicated PN comparison tool.
+
+The bounded candidate is `tools/compare_planetary_nebulae.py`, with all-row
+annotation, explicit identities, disjoint first-list symbols, flux and
+surface-proxy views, missing/diameter-limit panels and digest-bound review
+products. Source catalogues and chart defaults remain unchanged.
+The reference run resolves 178 distinct objects; Sh 2-216 and four southern
+identity conflicts remain review cases. No final visibility threshold,
+classification revision, curated catalogue promotion or atlas adoption is
+authorized by generating these plots.
+
+The coordinate-system guide was reviewed and updated for diagnostic
+provenance/quantity interpretation. Existing planetary-nebula tests are the
+closest stable owner and are extended for matching, signed namespaces,
+source checksums, limits, surface-area units and CLI receipt/no-clobber seams.
+No new test or production-module family is introduced. Focused verification
+precedes Mac scientific review; full-suite verification remains the final
+candidate merge gate under the accepted test policy.
+
+Fernando authorized candidate selection on 2026-10-14 after the comparison:
+all resolved reference-list members OR observed log H-beta > -12. The first
+selection has 319 rows, including 141 additional flux-only objects. Public
+interest is separate: only the highest surface brightness warrants review,
+and even M57 is challenging for newcomers. No object is automatically approved
+for the public. Optional selected CSV/ECSV and a ranked, quality-labelled review
+table extend the same offline owner. No public numerical cutoff or atlas
+installation has been accepted. The Mac comparison gate passed 12 tests after
+installation of the existing optional xlrd dependency; the expanded candidate
+requires its own focused verification and final merge gate.
+
+Fernando requested recreating the atlas with the curated PN v1 on 2026-10-14,
+explicitly requiring the same open-cluster mechanism. At clean synchronized
+Mac head `7c5287ef3971e45d5e938e46971566cc1dfd0b4c`, the prior full suite passed
+3,581 tests. That receipt covers the comparison/selection, not this new runtime
+connection. The as-is load profile already supports a PN filename; only the
+atlas CLI/publication mapping and separate verified bundle/selector promotion
+were missing. The candidate extends those existing owners, preserves curation
+metadata in the PN layer, and adds no module, default selection, coordinate
+transform or pipeline. Tests extend the real atlas-command preparation seam
+for simultaneous selectors and saved-sky rejection, and the existing PN export
+test for immutable promotion, checksums, regular-selector refusal, normalization
+and native realization. New runtime content needs focused verification and a
+final candidate full-suite gate; previous comparison tests cannot substitute.
+
+## PN contrast and selection appendices (2026-10-14)
+
+Fernando requested larger, higher-contrast PN symbols and atlas pages with
+selection plots stored beside curated catalogues. The bounded candidate extends
+existing presentation, diagnostic, immutable-publication and PDF owners.
+PN diameters increase 25%, with dark green and heavier outlines. PN plots retain
+the full source population; cluster plots describe the accepted population and
+stored selection/depuration rules. Catalogue hashes bind all criteria pages.
+Fernando accepted the atlas appearance and selection appendices on 2026-10-14
+at `12be5079643bd423be69468a5f3d16bec41039b9`, and explicitly requested
+documentation, merge and cleanup. The Mac focused gate passed 21 tests in
+35.54 seconds and both catalogue-bound criteria bundles were generated.
+This acceptance does not approve any PN for public interest. Merge and branch
+cleanup are authorized. The final-candidate Mac full suite at
+`6f48b9d073529ef8dcb798eee1ad510acf572034` passed all 3,581 tests in
+1,085.62 seconds (18:05) on 2026-10-14. This supersedes the pending-gate status.
+The earlier 3,581-test receipt at 7c5287ef does not cover this runtime content.
+This acceptance update changes documentation only.
+
+## Next nebular catalogue: EN-MS / NE-EM
+
+Fernando chose the future catalogue name **massive-star ejecta nebulae**,
+**EN-MS**, or **nebulosas de eyeccion de estrellas masivas**, **NE-EM**, on
+2026-10-14. Keep this physical class separate from planetary nebulae, including
+PNe with [WR] central stars. Record massive-star association and evidence for
+stellar ejecta separately from morphology and wind-swept interstellar gas.
+This checkpoint names the next catalogue; it acquires no sources, admits no
+objects and implements no new layer. PN atlas closure and software cleanup
+remain the current task. The full-suite receipt above is retained across this
+documentation-only update; rerun the affected documentation contract.

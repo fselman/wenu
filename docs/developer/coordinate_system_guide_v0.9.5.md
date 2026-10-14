@@ -5038,3 +5038,45 @@ observing root. Working observing/curated trees are excluded from automatic
 package discovery; installed software reads explicit catalogue paths. The
 existing atlas pipeline, saved-sky format, symbol sizing and source selection
 are unchanged. The curation guide documents each tool and the complete workflow.
+
+## Planetary-nebula comparison provenance and quantities
+
+`tools/compare_planetary_nebulae.py` is an offline diagnostic, not a new
+coordinate service. It retains the original source coordinate columns and
+performs no positional matching, epoch propagation or coordinate transformation.
+Signed PN G and PK identifiers are catalogue names, not coordinates recomputed
+from rounded source positions. Conflicting source identities remain review
+claims. The existing chart realization and canonical pipeline are unchanged.
+
+The optical radius is half the Acker diameter in arcminutes. Diameter limits
+are excluded from measured-radius main panels; uncertain sizes are hollow.
+H-beta flux is the observed base-10 logarithm in erg s-1 cm-2, not V magnitude,
+[O III], central-star brightness or an extinction-corrected luminosity.
+The circular-area proxy subtracts log10(pi*(60*radius_arcmin)^2), giving
+a per-square-arcsecond quantity. It inherits source aperture/size uncertainty,
+adds no independent measurement, and is not an eyepiece-visibility criterion.
+No missing quantity is imputed. The source hashes and primary HEASARC
+quantity documentation, checked 2026-10-14, are retained in the receipt.
+
+The optional PN selection uses only resolved observing membership OR finite
+observed log H-beta > -12, independently of angular-size availability. A
+surface-brightness-ranked review retains size and uncertainty but does not
+approve public interest. Neither selection nor ranking changes source
+coordinates, performs a transform or turns a flux proxy into visibility.
+
+The curated PN atlas override changes source provenance/counts, not coordinate
+meaning. It supplies `planetary_nebula_filename` through the existing load
+profile and native ICRS realization. The selector resolves once; snapshot
+hashes identify actual source bytes and all workers reuse the same prepared
+records. Curation/list/public-review columns remain metadata. No H-beta
+selection is repeated at normalization or rendering, and no public-interest
+approval is inferred. This mirrors the established open-cluster override.
+
+### Selection-criteria pages and PN contrast
+
+Reviewed on 2026-10-14: PN size/color/stroke changes are display style, not
+physical angular diameters. Criteria plots retain observed H-beta and the
+circular-area surface-brightness proxy; cluster plots retain source radii,
+Hunt V10 and separate member counts. Hash binding is publication provenance,
+not a new frame, epoch or realization. Vector PDF fitting affects appendix
+pages only and never rescales atlas charts.

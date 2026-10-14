@@ -1615,3 +1615,47 @@ Use E(B−V) ≤ 3 as the current working comparison ceiling; the earlier 0.5
 example remains a reproducible stricter experiment. No magnitude or surface-
 brightness cutoff has been adopted, and filtered exports do not automatically
 become atlas selections.
+
+### Curated planetary-nebula catalogue override
+
+`wenu_create_atlas --planetary-nebula-catalogue PATH` uses the same explicit
+new-sky override mechanism as `--open-cluster-catalogue`. The working selector
+is `src/wenu/data/curated_catalogs/planetary_nebulae/planetary_nebulae.ecsv`.
+Promote and activate the verified selected bundle with
+`tools/compare_planetary_nebulae.py --promote-catalogue PATH --activate`; see
+[curation](curation.md#promote-planetary-nebula-v1-and-prepare-a-new-atlas).
+
+Pass both selectors to retain both curated catalogues. The PN selector is
+resolved once into `CelestialSphereLoadProfile.planetary_nebula_filename`;
+all workers reuse the existing digest-bound snapshot. Use a new `--save-sky`
+and a new output directory; either catalogue override with `--from-sky` is
+rejected. Old skies and trial outputs remain unchanged. Selection provenance
+and public-review flags survive normalization, but no object is automatically
+marked for public interest. The geometry, fonts, symbol sizes and page layout
+retain the explicitly supplied presentation.
+
+### Selection-criteria appendix pages
+
+Use repeatable `wenu_create_atlas --selection-criteria PATH` to append the
+versioned policy and plot pages for each curated catalogue. Supply its matching
+catalogue override in the same invocation. Catalogue and PDF hashes are checked
+before sky preparation. Report/chart spreads remain intact; appendix bookmarks
+and provenance are recorded. Mismatched or damaged evidence is rejected.
+Saved-sky-only invocations cannot bind these new criteria bundles.
+
+Generate bundles with the [curation commands](curation.md#publish-selection-criteria-pages).
+`examples/atlas_chart_style_v6.toml` retains the latest 7.5-magnitude atlas
+appearance and angular cluster symbols, with PN diameter enlarged by 25%,
+dark green and a 1.1-point stroke. Independent TOML settings are
+`planetary_nebula_symbol_scale`, `planetary_nebula_color` and
+`planetary_nebula_linewidth`. Measurements and public-interest flags are unchanged.
+
+### Accepted curated atlas review (2026-10-14)
+
+Fernando accepted the 36-chart atlas review using PN selection v1, open-cluster
+v0.2, version-6 presentation and the catalogue-bound selection appendices.
+The PN glyph remains symbolic; its stronger appearance does not encode optical
+size, H-beta flux or public-interest approval. The source catalogues, criteria
+bundles and rendered outputs remain versioned separately from software.
+Acceptance was at `12be5079643bd423be69468a5f3d16bec41039b9`; merge and cleanup
+were requested, with the final software regression gate still to be completed.

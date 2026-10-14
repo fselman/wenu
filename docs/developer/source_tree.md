@@ -3941,3 +3941,40 @@ observing root. Working observing/curated trees are excluded from automatic
 package discovery; installed software reads explicit catalogue paths. The
 existing atlas pipeline, saved-sky format, symbol sizing and source selection
 are unchanged. The curation guide documents each tool and the complete workflow.
+
+## Planetary-nebula curation diagnostic ownership
+
+`tools/compare_planetary_nebulae.py` owns the offline PN catalogue/reference
+crosswalk, AL planetary-workbook identity parser, radius/H-beta diagnostic
+plots and completion receipt. It reuses `catalogue_data_layout.py`,
+`observing_list_membership.py` and `observing_list_additions.py`.
+The closest existing `compare_open_clusters.py` owns cluster measurements;
+PN coordinate-sign and line-flux semantics are a distinct scientific
+responsibility. No production file is added. Trials belong under output.
+`tests/test_planetary_nebulae.py` owns the new identity/provenance/quantity
+seams and CLI acceptance; `test_current_documentation.py` checks the guide.
+
+The same PN diagnostic owner exports optional membership-or-flux selection
+and ranked public-review products. It adds no tool or production module.
+Existing planetary tests extend the strict-threshold, missing/masked membership,
+source-isolation and new export composition seams without repeating rendering.
+
+The PN comparison owner now verifies/promotes its complete selected output
+bundle and atomically activates the relative `planetary_nebulae.ecsv` selector
+under `curated_catalogs/planetary_nebulae`, using `copy_verified` from the
+existing working-data owner. `cli/atlas.py` admits the PN path;
+`charts/atlas_publication.py` maps it to the existing immutable load profile.
+`objects/planetary_nebulae.py` retains curation columns/metadata. Snapshot
+provenance and worker reuse remain in their existing owner. Tests extend
+`test_planetary_nebulae.py` and the existing atlas preparation/CLI test.
+
+## Selection-criteria page ownership
+
+Existing PN and cluster plotting tools own scientific inputs and policy;
+`tools/catalogue_data_layout.py::publish_selection_criteria` owns immutable
+policy/plot publication and catalogue hashes. `cli/atlas.py` admits repeatable
+`--selection-criteria`; `charts/atlas_publication.py` verifies and assembles
+PDF artifacts. `request_generation.py` propagates independent PN appearance.
+No production module or test file is added. Existing atlas, PN, cluster and
+current-documentation tests cover these seams. The review style is
+`examples/atlas_chart_style_v6.toml`.

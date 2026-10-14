@@ -64,6 +64,14 @@ class PlanetaryNebulae(NonStellar):
             actual = names.get(name.casefold())
             if actual is not None:
                 normalized[name] = source[actual]
+        # Curated source decisions remain provenance, not a second selection.
+        for name in source.colnames:
+            if (name.startswith(('in_', 'selection_')) or name in (
+                'memberships', 'first_list', 'membership_review', 'radius_arcmin',
+                'radius_status', 'hbeta_flux_status', 'log_hbeta_surface_brightness_proxy',
+                'public_interest', 'public_review_status')):
+                normalized[name] = source[name]
+        normalized.meta.update(source.meta)
         return normalized
 
     def spherical_geometry(
@@ -176,6 +184,10 @@ class PlanetaryNebulae(NonStellar):
                     table[name],
                     dtype=object,
                 )
+        for name in table.colnames:
+            if name.startswith(('in_', 'selection_')) or name in (
+                'memberships', 'membership_review', 'public_interest', 'public_review_status'):
+                metadata[name] = np.asarray(table[name])
         return metadata
 
     def realize(self, context, observer, **options):

@@ -3026,3 +3026,54 @@ observing root. Working observing/curated trees are excluded from automatic
 package discovery; installed software reads explicit catalogue paths. The
 existing atlas pipeline, saved-sky format, symbol sizing and source selection
 are unchanged. The curation guide documents each tool and the complete workflow.
+
+## Offline planetary-nebula comparison (2026-10-14)
+
+`tools/compare_planetary_nebulae.py` is an offline developer diagnostic over
+the existing 1,143-row Strasbourg-ESO source. It reuses working-data path
+resolution, hash-bound observing membership loaders and the existing Excel
+reader. Explicit identity matching and missing/limit-aware H-beta diagnostics
+are separate from the production sky pipeline. No sky layer, provider,
+projection, renderer, chart default or curated catalogue is changed.
+See [the curation guide](../user_guide/curation.md#planetary-nebula-observing-list-comparison).
+
+The closest cluster comparison owns cluster-specific quantities and selection;
+the new tool owns PN-specific identity namespaces, optical diameter limits,
+observed H-beta flux and circular-area proxy semantics. It introduces no new
+production module. Tests extend the existing planetary-nebula owner rather
+than adding a milestone test file.
+
+The PN comparison additionally owns optional candidate selection through
+`--write-selected-catalogue`: reference membership OR strict observed
+log H-beta > -12, with no size cut. It retains full diagnostics and exports
+319 selected rows plus a surface-brightness-ranked public review table.
+Public-interest approval remains unassessed; this is not atlas installation.
+
+## Curated planetary-nebula atlas override
+
+`wenu_create_atlas --planetary-nebula-catalogue PATH` extends the existing
+open-cluster override in the same CLI/publication owners. It resolves a selector
+once into `CelestialSphereLoadProfile.planetary_nebula_filename`, independently
+of the open-cluster override. The existing snapshot owns hashing and worker
+reuse. Either override with `--from-sky` is rejected. No second sky, transform,
+projection or renderer is added. PN normalization retains curation metadata
+and changes no selection by itself. The comparison tool promotes a verified
+complete bundle using existing collision-safe copying and a relative atomic
+`planetary_nebulae.ecsv` selector, without filtering or modifying source data.
+
+## Catalogue selection-criteria appendix (2026-10-14)
+
+The existing atlas publication owner admits explicit catalogue-bound criteria
+JSON through repeatable `--selection-criteria`. It verifies each selected ECSV
+and one-page PDF digest before sky preparation, appends fitted vector pages
+after the existing appendices, and records page order and evidence hashes.
+It requires the matching explicit catalogue override; saved-sky-only evidence
+is not admitted. Chart/report pairing and native snapshot formats are unchanged.
+
+Existing offline PN and cluster plotting owners publish portrait policy and
+plot pages alongside the unchanged curated ECSV, using the shared immutable
+working-data publication helper. PN pages use the verified full comparison
+population; cluster pages show the accepted population and stored selection
+policy, not an invented excluded population. Atlas presentation separately
+owns PN diameter scale (1.25), dark green (#24552b), linewidth (1.1 pt) and full
+opacity; the canonical sheet style also supplies the report legend.

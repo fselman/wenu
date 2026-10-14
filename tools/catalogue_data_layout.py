@@ -67,6 +67,61 @@ def copy_verified(files):
         if target.read_bytes()!=Path(source).read_bytes(): raise ValueError('Copy verification failed: '+str(target))
 
 
+def publish_selection_criteria(catalogue, name, title, paragraphs, plots):
+    """Publish versioned review pages alongside an unchanged curated catalogue.
+
+    Callers own the scientific plots and policy. This shared publication helper
+    owns immutable copies, human-readable policy pages and their hash binding.
+    """
+    import re
+    import tempfile
+    import textwrap
+    import matplotlib.pyplot as plt
+    catalogue = Path(catalogue).resolve(strict=True)
+    if not re.fullmatch(r'[A-Za-z0-9_.-]+_v\d+(?:\.\d+)*', name):
+        raise ValueError('Use an explicit versioned criteria name.')
+    destination = catalogue.parent / (name + '.json')
+    if destination.exists() or destination.is_symlink():
+        raise FileExistsError('Criteria version exists; choose a new version.')
+    lines = []
+    for paragraph in [title, 'Catalogue: ' + catalogue.name, *paragraphs]:
+        lines.extend(textwrap.wrap(str(paragraph), width=85) or [''])
+        lines.append('')
+    pages, products = [], []
+    with tempfile.TemporaryDirectory(prefix='wenu-criteria-') as directory:
+        directory = Path(directory)
+        for i, offset in enumerate(range(0, len(lines), 44), 1):
+            prefix = directory / f'{name}_policy_{i:02d}'
+            fig = plt.figure(figsize=(8.27, 11.69))
+            fig.text(.07, .95, '\n'.join(lines[offset:offset+44]),
+                va='top', fontsize=11, linespacing=1.6)
+            for suffix in ('png', 'svg', 'pdf'):
+                path = Path(str(prefix) + '.' + suffix)
+                fig.savefig(path, dpi=180)
+                products.append(path)
+            plt.close(fig)
+            pages.append(dict(file=prefix.name + '.pdf', title=title + ' — policy'))
+        for i, (plot_title, source) in enumerate(plots, 1):
+            source = Path(source)
+            prefix = directory / f'{name}_plot_{i:02d}'
+            for suffix in ('png', 'svg', 'pdf'):
+                path = Path(str(prefix) + '.' + suffix)
+                path.write_bytes(source.with_suffix('.' + suffix).read_bytes())
+                products.append(path)
+            pages.append(dict(file=prefix.name + '.pdf', title=plot_title))
+        hashes = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in products}
+        for page in pages:
+            page['sha256'] = hashes[page['file']]
+        record = dict(schema_version=1, document_kind='wenu-catalogue-selection-criteria',
+            catalogue=dict(file=catalogue.name, sha256=hashlib.sha256(catalogue.read_bytes()).hexdigest()),
+            policy=list(paragraphs), pages=pages, products=hashes)
+        manifest = directory / destination.name
+        manifest.write_text(json.dumps(record, indent=2, ensure_ascii=False) + '\n')
+        # Check all collisions before publishing; completion manifest goes last.
+        copy_verified([(p, catalogue.parent / p.name) for p in [*products, manifest]])
+    return destination
+
+
 def provenance(directory, registry_path, batch, conversion=None):
     registry=json.loads(Path(registry_path).read_text())
     grouped={}
@@ -103,3 +158,4 @@ def publish_conversion(flat_directory, directory, registry_path, batch):
     copy_verified(files)
     provenance(directory,registry_path,batch,receipt)
     return receipt
+

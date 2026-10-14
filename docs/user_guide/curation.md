@@ -35,6 +35,7 @@ earlier mixed acquisition inventory.
 | `prepare_open_cluster_catalogue.py` | Depurate a selected output candidate; separately verify and promote an accepted output bundle |
 | `plot_merged_open_clusters.py` | Explicit trial ECSV, or the accepted active selector by default; plots and point ledgers in `output/` |
 | `compare_open_clusters.py` | Scientific source comparisons; reads `data/catalogs/` and writes diagnostic outputs |
+| `compare_planetary_nebulae.py` | Offline PN radius/H-beta comparison with verified observing-list overlays; writes all-row diagnostics under `output/` |
 | `wenu_create_atlas` | Explicit accepted selector when preparing a new sky, or an existing frozen sky when redrawing it |
 
 All CLI tools display their parameters with `--help`. The standalone catalogue
@@ -1199,3 +1200,186 @@ The accepted v0.2 saved sky can be reused: omit `--open-cluster-catalogue` and
 presentation and stellar settings, choose a new output directory, and reuse
 the existing index. This redraws the current catalogue without reinstalling or
 recurating it. The existing per-chart report records the central scale used.
+
+## Planetary-nebula observing-list comparison
+
+`tools/compare_planetary_nebulae.py` is an offline diagnostic. It retains all
+1,143 Strasbourg-ESO/HEASARC rows and highlights the same broad observing lists
+used for open-cluster comparisons, plus the AL planetary-nebula standard,
+southern and northern-alternate lists. It performs no final visual selection,
+catalogue promotion or atlas change.
+
+Default first-list priority is Messier, Caldwell, SAC Urban, RASC Finest NGC,
+SAC Best NGC, Herschel 400 South, Herschel 400, Herschel II, SAC Beyond NGC,
+AL Planetary Nebulae, AL Planetary Nebulae South, AL Northern Alternates.
+One symbol is assigned per nebula; every resolved membership remains in the
+table. The displayed legend counts describe disjoint first-list groups in the
+main panel, not total list memberships. Use `--priority` with comma-separated
+supported keys to change the display preference.
+
+```bash
+PYTHONPATH=src MPLBACKEND=Agg python tools/compare_planetary_nebulae.py \
+  --output-directory output/planetary_nebulae_comparison_v1 \
+  --name planetary_nebulae_comparison_v1
+```
+
+No arguments prints help without writing. `--view flux|surface-brightness|both`
+selects the view; both is the default. `--data-directory` selects scientific
+sources; `--observing-directory` selects the named-list working tree.
+Output names must end in an explicit `_vN` version. Existing products are
+refused. Legacy AL workbooks use the existing Excel reader and require
+`xlrd>=2,<3`; the existing tools already use this optional dependency.
+
+The x axis is optical angular radius in arcminutes, half the Acker diameter.
+The y axes are observed H-beta flux and a mean H-beta surface-brightness proxy:
+
+```text
+log10(S_Hbeta) = log_hbeta_flux - log10(pi*(60*radius_arcmin)^2)
+```
+
+Flux is in erg s-1 cm-2, numerically equivalent to mW m-2; the surface proxy
+is per square arcsecond. HEASARC's primary quantity documentation was checked
+on 2026-10-14 at
+[PLNEBULAE](https://heasarc.gsfc.nasa.gov/W3Browse/nebula-catalog/plnebulae.html).
+H-beta is not V magnitude or [O III] flux. No extinction correction is applied.
+The surface quantity assumes a circular optical aperture, is not an
+independently measured surface brightness, and may mix flux/diameter apertures.
+These are exploratory optical diagnostics, not guarantees of eyepiece visibility.
+Central-star magnitudes and heterogeneous list magnitudes are not substituted.
+
+Missing data are retained in labelled margins and the ledger, never imputed.
+Diameter limits remain limits and do not enter measured-radius main panels;
+uncertain diameters are plotted with hollow symbols. A missing flux does not
+mean radio-only, and reference-list membership does not prove visual visibility.
+
+The source and reference ECSV digests are verified against adjacent provenance.
+Broad memberships reuse the existing original/additions conversion loaders.
+The three original AL workbooks are verified against their per-list provenance
+and parsed only in identity columns, with exact counts 110, 110 and 26.
+Explicit PN G and PK signs are retained. Abell/A, Jonckheere/J, Hubble/Hb,
+Jones/Jn and Pease/Ps are catalogue-name expansions. Consecutive combined NGC
+designations retain both explicitly named components; parenthetical host
+names such as M15 in Pease 1 are not nebular aliases. Published combined
+identity cells are split without using narrative nicknames or positions.
+Conflicting identifiers remain ambiguous and do not acquire resolved membership.
+
+Outputs are `_catalogue.csv/.ecsv`, `_crosswalk.csv`, `_summary.json`, and
+`_radius_hbeta_flux.png/.svg/.pdf` plus the corresponding
+`_radius_hbeta_surface-brightness` files. CSVs have a normal first-row header.
+The summary records the exact Git commit, command, source/conversion hashes,
+quantity definitions, missing/limit policy, all-list counts and product hashes.
+It is written last. Raw scientific and observing resources are unchanged.
+
+At base `8f91504aa399635c80f46159d3c6b8e20d57f737`, verified source parsing
+finds 178 distinct rows with resolved list membership, including all four
+Messier and 13 Caldwell planetary nebulae. There are 796 main-panel points,
+128 measured-radius rows without H-beta flux, 195 flux-bearing rows without
+usable measured radius, and 24 unavailable in both axes. The surface-proxy
+view has 219 unavailable in both axes because it requires a measured area.
+The AL standard list resolves 109 of 110 rows; Sh 2-216 is unmatched in this
+historical snapshot. Four southern-list records have conflicting published
+identity fields: NGC 3918, Shapley 1, NGC 6302 and NGC 6445. Their positive
+PN G latitude fields disagree with the negative-latitude objects claimed by
+their other identifiers. Preserve both candidates for review, without silently
+correcting the publisher's source. General-list unmatched records often describe
+other physical object types; they are not all missing planetary nebulae.
+
+### Candidate inclusion and public-interest review
+
+Add `--write-selected-catalogue` to export Fernando's first PN selection:
+resolved membership in any reference list OR finite observed log H-beta flux
+strictly greater than -12. `--min-log-hbeta` changes only the latter threshold.
+Membership bypasses the flux cut, including missing flux or size; diameter
+limits do not remove a flux-qualified object. An unresolved list claim does
+not create resolved membership, but a candidate may qualify independently by
+its measured flux. All-row selection reasons and identity-review flags remain.
+
+The verified input selects 319 of 1,143 rows: 178 reference-list objects and
+141 additional H-beta-only objects, with 824 excluded. The full comparison
+plots remain intact, with a dashed flux boundary and its mapped surface-proxy
+curve. No separate surface-brightness inclusion cutoff is applied.
+
+New products are `_selected.csv`, `_selected.ecsv` and `_public_review.csv`.
+The public review table contains the selected objects in decreasing finite
+surface-brightness order, with missing values last, stable identifier ties,
+angular sizes and explicit diameter-quality flags. This ordering is a review
+aid, not public approval. Every `public_interest` flag remains false and its
+`public_review_status` is unassessed. False here means not approved, not an
+assessed rejection. Fernando specifically considers even M57 challenging for
+newcomers: only the highest-surface-brightness objects may be public targets,
+if any. Very small high-surface-brightness nebulae still require evaluation.
+No public numerical cutoff, visual guarantee or atlas adoption is inferred.
+
+```bash
+PYTHONPATH=src MPLBACKEND=Agg python tools/compare_planetary_nebulae.py --output-directory output/planetary_nebulae_selection_v1 --name planetary_nebulae_selection_v1 --write-selected-catalogue --min-log-hbeta -12
+```
+
+### Promote planetary-nebula v1 and prepare a new atlas
+
+Use the same mechanism as the open-cluster catalogue: separately promote a
+verified selected bundle, activate a relative selector, then pass that selector
+when preparing a new atlas sky. This is not another filtering operation.
+
+```bash
+PYTHONPATH=src python tools/compare_planetary_nebulae.py --promote-catalogue output/planetary_nebulae_selection_v1/planetary_nebulae_selection_v1_selected.ecsv --activate
+```
+
+The default destination is `src/wenu/data/curated_catalogs/planetary_nebulae`.
+Every completion-summary product and the summary itself is preserved, with
+checksum, selected-row/count, unique-identity and finite-position validation.
+Existing identical bytes can be reused; different versions and regular
+selector files are refused. `planetary_nebulae.ecsv` is an atomically updated
+relative symlink to the versioned selected ECSV. Original output experiments
+remain unchanged. `--curated-directory` permits an explicit destination.
+
+Add `--planetary-nebula-catalogue src/wenu/data/curated_catalogs/planetary_nebulae/planetary_nebulae.ecsv`
+to `wenu_create_atlas`, alongside the existing `--open-cluster-catalogue`.
+Both selectors resolve once and reach `CelestialSphereLoadProfile`; the existing
+native snapshot hashes the actual sources for every worker. Use new output
+and saved-sky directories. A catalogue override with `--from-sky` is rejected
+because the saved sky retains its earlier catalogue. No geometry, presentation,
+stellar sizing, other catalogue or rendering owner is changed. The PN layer
+retains selection/list/public-review columns as metadata without filtering again.
+
+## Publish selection-criteria pages
+
+Criteria publication preserves accepted catalogues and original selection
+bundles. It adds versioned JSON, policy pages and portrait scientific plots
+alongside the resolved curated ECSV. Catalogue and PDF hashes bind these pages.
+Existing criteria versions cannot be overwritten; use `--criteria-name
+<new_prefix_vN>` for another revision.
+
+From the repository root:
+
+```bash
+PYTHONPATH=src MPLBACKEND=Agg python tools/compare_planetary_nebulae.py \
+  --publish-criteria src/wenu/data/curated_catalogs/planetary_nebulae/planetary_nebulae.ecsv
+PYTHONPATH=src MPLBACKEND=Agg python tools/plot_merged_open_clusters.py \
+  --catalogue src/wenu/data/curated_catalogs/open_clusters/open_star_clusters.ecsv \
+  --criteria-pages
+```
+
+PN v1 produces `planetary_nebulae_selection_v1_selected_criteria_v1.json`;
+open clusters v0.2 produce `wenu_open_clusters_v0.2_criteria_v1.json`, each in its
+curated directory. Pass both to `wenu_create_atlas --selection-criteria` with
+the matching catalogue overrides. No filtering or activation occurs.
+
+PN plots show the full comparison population, list membership, strict observed
+log H-beta > -12 additions and the surface-brightness diagnostic. Cluster plots
+show only the accepted population, stored V10/radius boundary, mandatory-list
+bypass, reddening and subsequent depuration rules. An unavailable rejected
+population is not reconstructed. Hunt V10 is member photometry, not integrated
+cluster magnitude. Missing data retain their established meanings. No object
+is approved for public interest by publishing these criteria.
+
+### Accepted PN selection v1 and criteria bundles (2026-10-14)
+
+Fernando accepted atlas use of PN selection v1 and the criteria appendices at
+`12be5079643bd423be69468a5f3d16bec41039b9`. The Mac focused gate passed
+21 tests in 35.54 seconds; PN and open-cluster criteria JSON bundles were
+successfully generated beside their curated catalogues. The accepted PN rule
+remains all resolved reference-list members OR finite observed log H-beta > -12,
+with 319 selected rows. Public-interest flags remain unassessed; accepting the
+atlas and inclusion criteria does not approve a public-observing shortlist.
+Preserve the curated bundles, active selectors and earlier output experiments
+during software merge and branch cleanup.

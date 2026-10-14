@@ -62,8 +62,8 @@ def points(table, priority, dias_diameter='apparent_diameter_arcmin', hunt_diame
     return Table(rows=rows)
 
 
-def plot(point_table, priority, path, x='radius'):
-    fig,(ax,missing)=plt.subplots(2,1,figsize=(11,8),sharex=True,
+def plot(point_table, priority, path, x='radius', *, selection_policy=None):
+    fig,(ax,missing)=plt.subplots(2,1,figsize=(8.27,11.69) if selection_policy else (11,8),sharex=True,
         gridspec_kw={'height_ratios':[5,1]},layout='constrained')
     styles={name:(MARKERS[PRIORITY.index(name)],plt.get_cmap('tab20')((2*PRIORITY.index(name))%20)) for name in priority}
     styles['unlisted']=('o','#999999'); legend=[]
@@ -83,12 +83,62 @@ def plot(point_table, priority, path, x='radius'):
     ax.invert_yaxis(); ax.set_xscale('log'); ax.set_ylabel('Hunt-derived V10 (mag)')
     ax.set_title('Dias and Hunt '+('radii' if x=='radius' else 'member counts')+': first matching observing list')
     ax.grid(alpha=.2); missing.grid(axis='x',alpha=.2)
+    if selection_policy is not None:
+        ax.set_title('Selected open clusters: ' + ('radii' if x == 'radius' else 'member counts'))
+        ax.axhline(selection_policy['max_v10'], color='#222222', linestyle='--',
+            label='Numeric additions: strict V10 limit')
+        if x == 'radius':
+            radii = np.geomspace(*ax.get_xlim(), 200)
+            limits = ax.get_ylim()
+            ax.plot(radii, 17.5 - (12.5/3)*np.log10(radii), color='#222222', linestyle=':',
+                label='Numeric additions: radius boundary')
+            ax.set_ylim(limits)
+        fig.supxlabel('Selected catalogue only; mandatory list members bypass numeric cuts. See the policy page for reddening and depuration.', fontsize=10)
     missing.set_yticks([0,1],['Dias','Hunt']); missing.set_ylim(-.7,1.7)
     missing.set_ylabel('No V10')
     missing.set_xlabel(('Published angular radius (arcmin)' if x=='radius' else 'Published member count')+
         '\nFilled: Dias. Hollow: Hunt. Matched Dias points share Hunt V10.')
-    ax.legend(handles=list(reversed(legend)),loc='upper left',bbox_to_anchor=(1.01,1),fontsize=8)
+    if selection_policy is not None:
+        legend += [Line2D([], [], color='#222222', linestyle='--', label='Strict V10 limit')]
+        if x == 'radius':
+            legend += [Line2D([], [], color='#222222', linestyle=':', label='Radius boundary')]
+        ax.legend(handles=list(reversed(legend)), loc='best', fontsize=9, ncols=2)
+    else:
+        ax.legend(handles=list(reversed(legend)),loc='upper left',bbox_to_anchor=(1.01,1),fontsize=8)
     fig.savefig(path,dpi=180); plt.close(fig)
+
+
+def publish_criteria(catalogue, name=None):
+    """Explain accepted selection metadata without reselecting catalogue rows."""
+    import tempfile
+    from catalogue_data_layout import publish_selection_criteria
+    catalogue = Path(catalogue).resolve(strict=True)
+    table = Table.read(catalogue, format='ascii.ecsv')
+    policy = table.meta.get('selection_policy')
+    if not policy or 'depuration' not in table.meta:
+        raise ValueError('Accepted cluster selection and depuration metadata required.')
+    summary = json.loads(catalogue.with_name(catalogue.stem + '_summary.json').read_text())
+    if summary['products'].get(catalogue.name) != hashlib.sha256(catalogue.read_bytes()).hexdigest():
+        raise ValueError('Criteria catalogue does not match its accepted summary.')
+    paragraphs = [f'{len(table)} selected open clusters. These plots show the accepted population, not the excluded parent catalogue.',
+        'Mandatory lists: ' + ', '.join(policy['mandatory_lists']), policy['mandatory_policy'],
+        policy['numeric_policy'], policy['boundary'],
+        f"Numeric limits: V10 < {policy['max_v10']}; E(B-V) limit: {policy['max_ebv']}; available-source policy: {policy['source_policy']}.",
+        'Depuration: retain Hunt type o and Dias-only open clusters. Single-source objects need other compilation or observing-list evidence; masked claims remain for review.',
+        'Excluded counts: ' + json.dumps(summary['excluded_counts'], sort_keys=True),
+        'Hunt V10 is the tenth brightest accepted member, not integrated cluster magnitude. Identifier-matched Dias points share Hunt V10; no independent Dias V10 is supplied. Filled symbols use Dias data, hollow symbols Hunt data.',
+        policy['position_policy'], 'Parent selection SHA-256: ' + summary['input_sha256']]
+    with tempfile.TemporaryDirectory(prefix='wenu-cluster-criteria-') as directory:
+        plots = []
+        for x in ('radius', 'members'):
+            point_table = points(table, PRIORITY, x=x)
+            prefix = Path(directory) / x
+            for suffix in ('png', 'svg', 'pdf'):
+                plot(point_table, PRIORITY, prefix.with_suffix('.' + suffix), x,
+                    selection_policy=policy)
+            plots.append(('Open clusters — ' + x + ' and V10', prefix.with_suffix('.pdf')))
+        return publish_selection_criteria(catalogue, name or catalogue.stem + '_criteria_v1',
+            'Open clusters: inclusion criteria', paragraphs, plots)
 
 
 def main(argv=None):
@@ -99,7 +149,10 @@ def main(argv=None):
       'Both X-axis choices require positive values and use a logarithmic scale; invalid values are logged.\n'
       'Optional --max-v10 11 (strict); --max-ebv 3 (source-specific). Exclusions are exported.')
     parser.add_argument('--catalogue',type=Path,default=CURATED/'open_star_clusters.ecsv',help='Trial output ECSV, or default active accepted catalogue under curated_catalogs/open_clusters.')
-    parser.add_argument('--output-directory',type=Path,required=True)
+    parser.add_argument('--output-directory',type=Path)
+    parser.add_argument('--criteria-pages', action='store_true',
+        help='Publish versioned policy, radius/V10 and member/V10 pages alongside the accepted catalogue. No filtering.')
+    parser.add_argument('--criteria-name', help='New criteria prefix ending in _vN; default <catalogue stem>_criteria_v1.')
     parser.add_argument('--name',default='wenu_radius_v10_v1')
     parser.add_argument('--x',choices=['radius','members'],default='radius',help='X axis: half selected source diameter, or original source member_count.')
     parser.add_argument('--priority',default=','.join(PRIORITY),help='Comma-separated list names; first true flag selects the only symbol.')
@@ -109,6 +162,13 @@ def main(argv=None):
     arguments=sys.argv[1:] if argv is None else list(argv)
     if not arguments: parser.print_help(); return 0
     args=parser.parse_args(arguments)
+    if args.criteria_pages:
+        if args.max_v10 is not None or args.max_ebv is not None:
+            parser.error('Criteria pages use the accepted metadata, not additional cuts.')
+        print(publish_criteria(args.catalogue, args.criteria_name))
+        return 0
+    if args.output_directory is None:
+        parser.error('--output-directory is required for a diagnostic plot.')
     if not args.name or Path(args.name).name!=args.name: raise ValueError('Name must be a filename prefix.')
     priority=args.priority.split(','); table=Table.read(args.catalogue,format='ascii.ecsv')
     x_columns = (['dias_'+args.dias_diameter_column,'hunt_'+args.hunt_diameter_column]
@@ -136,3 +196,4 @@ def main(argv=None):
 
 
 if __name__=='__main__': raise SystemExit(main())
+

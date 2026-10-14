@@ -195,6 +195,9 @@ class AtlasChartPresentation:
     messier_label_fontsize: float = 7.0
     grid_dec_label_scale: float = 0.8
     deep_sky_symbol_scale: float = 1.8
+    planetary_nebula_symbol_scale: float = 1.25
+    planetary_nebula_color: str = "#24552b"
+    planetary_nebula_linewidth: float = 1.1
     cluster_face_color: str = "yellow"
     open_cluster_exclude_infrared_embedded: bool = False
     open_cluster_angular_sizes: bool = True
@@ -222,7 +225,7 @@ class AtlasChartPresentation:
                 and limit > self.stellar_magnitude_sizing.size_reference_magnitude):
             raise ValueError("Magnitude limit must not exceed the sizing reference.")
         for name in ("star_size_scale", "report_label_scale", "report_separator_width", "report_separator_gap_mm",
-                     "grid_label_fontsize", "grid_minor_label_scale", "grid_frame_width_scale", "legend_fontsize", "messier_label_fontsize", "deep_sky_symbol_scale"):
+                     "grid_label_fontsize", "grid_minor_label_scale", "grid_frame_width_scale", "legend_fontsize", "messier_label_fontsize", "deep_sky_symbol_scale", "planetary_nebula_symbol_scale", "planetary_nebula_linewidth"):
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
                 raise ValueError(f"{name} must be finite and positive.")
@@ -239,6 +242,11 @@ class AtlasChartPresentation:
         if not math.isfinite(self.deep_sky_symbol_scale * self.deep_sky_symbol_scale):
             raise ValueError("deep_sky_symbol_scale squared must be finite.")
         from matplotlib.colors import is_color_like
+        if not isinstance(self.planetary_nebula_color, str) or not is_color_like(self.planetary_nebula_color):
+            raise ValueError("Invalid planetary_nebula_color.")
+        pn_scale = self.deep_sky_symbol_scale * self.planetary_nebula_symbol_scale
+        if not math.isfinite(pn_scale * pn_scale):
+            raise ValueError("Planetary-nebula symbol area must be finite.")
         if not isinstance(self.cluster_face_color, str) or not is_color_like(self.cluster_face_color):
             raise ValueError("Invalid cluster_face_color.")
         _identity(self.report_label_family, "report_label_family")
@@ -659,9 +667,60 @@ def _append_atlas_index(writer, reader, page):
         target.merge_transformed_page(index_page, transform)
 
 
+def _read_selection_criteria(paths, catalogues):
+    """Admit immutable, catalogue-bound PDF pages before preparing any sky."""
+    import io
+    import json
+    from pypdf import PdfReader
+    admitted = {Path(p).resolve(strict=True): hashlib.sha256(Path(p).read_bytes()).hexdigest()
+                for p in catalogues if p is not None}
+    records = []
+    seen = set()
+    for path in paths:
+        path = Path(path).resolve(strict=True)
+        raw = path.read_bytes()
+        data = json.loads(raw)
+        if (not isinstance(data, dict) or type(data.get('schema_version')) is not int or data.get('schema_version') != 1 or
+                data.get('document_kind') != 'wenu-catalogue-selection-criteria'):
+            raise ValueError('Unsupported selection-criteria manifest.')
+        catalogue = data.get('catalogue')
+        if (not isinstance(catalogue, dict) or set(catalogue) != {'file', 'sha256'} or
+                not isinstance(catalogue['file'], str) or Path(catalogue['file']).name != catalogue['file']):
+            raise ValueError('Invalid criteria catalogue filename.')
+        target = path.parent / catalogue['file']
+        if (target.resolve(strict=True) not in admitted or
+                admitted[target.resolve()] != catalogue['sha256']):
+            raise ValueError('Selection criteria do not match an explicit atlas catalogue.')
+        if not isinstance(data.get('pages'), list) or not data['pages']:
+            raise ValueError('Selection criteria require pages.')
+        for page in data['pages']:
+            if not isinstance(page, dict) or set(page) != {'file', 'title', 'sha256'} or not isinstance(page['file'], str):
+                raise ValueError('Invalid selection PDF record.')
+            name = page['file']
+            if Path(name).name != name or Path(name).suffix != '.pdf' or name in seen:
+                raise ValueError('Invalid or duplicate selection PDF filename.')
+            content = (path.parent / name).read_bytes()
+            if hashlib.sha256(content).hexdigest() != page['sha256']:
+                raise ValueError('Selection PDF checksum mismatch: ' + name)
+            reader = PdfReader(io.BytesIO(content))
+            if reader.is_encrypted or len(reader.pages) != 1:
+                raise ValueError('Selection PDF must contain one unencrypted page.')
+            box = reader.pages[0].mediabox
+            if any(not math.isfinite(float(v)) for v in box) or min(float(box.width), float(box.height)) <= 0:
+                raise ValueError('Invalid selection PDF page size.')
+            _identity(page['title'], 'Selection page title')
+            seen.add(name)
+            records.append(dict(file=f'selection-criteria-{len(records)+1:03d}.pdf', source_file=name,
+                title=page['title'], content=content,
+                sha256=page['sha256'], catalogue_sha256=catalogue['sha256'],
+                criteria_file=path.name, criteria_sha256=hashlib.sha256(raw).hexdigest()))
+    return records
+
+
 def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                  save_sky=None, from_sky=None, index=None, chart_command=None,
-                 open_cluster_catalogue=None):
+                 open_cluster_catalogue=None, planetary_nebula_catalogue=None,
+                 selection_criteria=()):
     """Produce ordered chart pages with one preparation or explicit saved reuse.
 
     A manifest linked last commits the complete batch. Existing outputs and
@@ -691,8 +750,10 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
         presentation = replace(presentation, formats=(*presentation.formats, "svg"))
     if save_sky is not None and from_sky is not None:
         raise ValueError("--save-sky and --from-sky are mutually exclusive.")
-    if from_sky is not None and open_cluster_catalogue is not None:
+    if from_sky is not None and (open_cluster_catalogue is not None or planetary_nebula_catalogue is not None):
         raise ValueError("A catalogue override requires a new sky; omit --from-sky.")
+    criteria = _read_selection_criteria(selection_criteria,
+        (open_cluster_catalogue, planetary_nebula_catalogue))
     raw = Path(design_path).read_bytes()
     atlas = AtlasBandTiling.from_json(raw.decode("utf-8"))
     if len({sheet.field_width_deg for sheet in atlas.geometry.sheets}) != 1:
@@ -738,14 +799,18 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
         cold_sky = None
         if from_sky is None:
             directory = save_sky or Path(stack.enter_context(tempfile.TemporaryDirectory(prefix="wenu-atlas-sky-"))) / "sky"
-            if open_cluster_catalogue is None:
+            if open_cluster_catalogue is None and planetary_nebula_catalogue is None:
                 digest, cold_sky = prepare_native_sky_snapshot(raw, directory, return_sky=True)
             else:
                 from dataclasses import replace
                 from wenu.sky.maximal_sphere import CANONICAL_MAXIMAL_SPHERE_PROFILE
                 # Resolve the selector once; all workers reuse the hashed snapshot.
-                profile = replace(CANONICAL_MAXIMAL_SPHERE_PROFILE,
-                    open_cluster_filename=Path(open_cluster_catalogue).resolve(strict=True))
+                overrides = {}
+                for field, catalogue in (("open_cluster_filename", open_cluster_catalogue),
+                                         ("planetary_nebula_filename", planetary_nebula_catalogue)):
+                    if catalogue is not None:
+                        overrides[field] = Path(catalogue).resolve(strict=True)
+                profile = replace(CANONICAL_MAXIMAL_SPHERE_PROFILE, **overrides)
                 digest, cold_sky = prepare_native_sky_snapshot(raw, directory,
                     profile=profile, return_sky=True)
         else:
@@ -756,6 +821,8 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             design_sha256=hashlib.sha256(raw).hexdigest())
         digest = snapshot.manifest_sha256
         staging = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix=".wenu-atlas-pages-", dir=output_dir.parent)))
+        for record in criteria:
+            (staging / record['file']).write_bytes(record['content'])
         if index_bytes is not None:
             (staging/'atlas-index.pdf').write_bytes(index_bytes)
             for suffix, content in index_products.items():
@@ -856,6 +923,14 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                 writer.append(PdfReader(staging / "atlas-star-counts.pdf"))
                 page_order.append(dict(page=len(page_order) + 1, kind="catalogue_star_counts"))
                 writer.add_outline_item("Catalogue star counts", len(writer.pages) - 1)
+            for record in criteria:
+                first_page = len(writer.pages)
+                reader = PdfReader(staging / record['file'])
+                _append_atlas_index(writer, reader, atlas.geometry.page)
+                page_order.append(dict(page=first_page + 1, kind="selection_criteria",
+                    title=record['title'], file=record['file'],
+                    catalogue_sha256=record['catalogue_sha256']))
+                writer.add_outline_item(record['title'], first_page)
             writer.write(staging / "atlas.pdf")
         for sheet in sheets:
             report_path = staging / f"chart-{sheet.number:02d}_report_data.json"
@@ -870,6 +945,7 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             snapshot_sha256=digest, charts=completed, workers=worker_count,
             index_sha256=(None if index_bytes is None else hashlib.sha256(index_bytes).hexdigest()),
             report_content="reserved", page_order=page_order,
+            selection_criteria=[{k: v for k, v in record.items() if k != 'content'} for record in criteria],
             presentation=asdict(presentation), elapsed_seconds=time.perf_counter() - started,
             stellar_sizing=policies[0], page=asdict(atlas.geometry.page),
             products={p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in products})
@@ -883,4 +959,3 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             shutil.rmtree(output_dir)
             raise
     return output_dir / "manifest.json"
-

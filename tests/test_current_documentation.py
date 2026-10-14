@@ -10471,3 +10471,32 @@ def test_albireo_name_curation_and_beta2_component_scope_are_documented():
     assert "StarDesignations.curated_names" in reference
     assert "record.names" in reference
     assert "Wikidata snapshot remain unchanged" in reference
+
+
+def test_planetary_comparison_documents_quantities_provenance_and_pending_selection():
+    guide = " ".join(read(ROOT/'docs/user_guide/curation.md').split())
+    for phrase in ('tools/compare_planetary_nebulae.py', '--view flux|surface-brightness|both',
+                   'H-beta is not V magnitude or [O III] flux.',
+                   'Missing data are retained in labelled margins and the ledger, never imputed.',
+                   '178 distinct rows', 'Sh 2-216', 'NGC 3918, Shapley 1, NGC 6302 and NGC 6445'):
+        assert phrase in guide
+    for phrase in ('--write-selected-catalogue', '319 of 1,143 rows',
+                   'Every `public_interest` flag remains false',
+                   'No public numerical cutoff', '_public_review.csv'):
+        assert phrase in guide
+    for name in ('current_architecture_v0.9.md', 'source_tree.md',
+                 'implementation_reference.md', 'post_v0.9_architecture_roadmap.md',
+                 'coordinate_system_guide_v0.9.5.md'):
+        assert 'tools/compare_planetary_nebulae.py' in read(DEVELOPER/name)
+    coordinates = read(COORDINATE_GUIDE)
+    assert 'performs no positional matching' in coordinates
+    assert 'per-square-arcsecond quantity' in coordinates
+    atlas_guide = read(ROOT/'docs/user_guide/atlas.md')
+    for phrase in ('--planetary-nebula-catalogue', 'planetary_nebulae.ecsv', '--from-sky'):
+        assert phrase in atlas_guide
+    for phrase in ('--selection-criteria', 'planetary_nebula_symbol_scale', 'atlas_chart_style_v6.toml'):
+        assert phrase in atlas_guide
+    for phrase in ('--publish-criteria', '--criteria-pages', 'alongside the resolved curated ECSV'):
+        assert phrase in guide
+    for phrase in ('--promote-catalogue', 'relative symlink', 'without filtering'):
+        assert phrase in read(ROOT/'docs/user_guide/curation.md')
