@@ -1,0 +1,27 @@
+{
+  "input_file": "../output/curation_v0.1/wenu_open_clusters_v0.1.ecsv",
+  "input_sha256": "c072f225548889da195fb7a33fe94707a2b638db45af8c38f28b4406ff7223fc",
+  "input_rows": 583,
+  "selected_rows": 513,
+  "excluded_counts": {
+    "hunt_type_m": 17,
+    "single_source_no_other_compilation": 5,
+    "hunt_type_g": 48
+  },
+  "source_presence": {
+    "both": 328,
+    "dias_only": 4,
+    "hunt_only": 181
+  },
+  "spatial_candidate_pairs": 7,
+  "spatial_source_comparisons": 14,
+  "physical_duplicate_count": null,
+  "identity_review_rows": 76,
+  "note": "Spatial overlaps are review candidates. No additional identity merges; all source IDs/positions and provisional-pair flags are preserved.",
+  "products": {
+    "wenu_open_clusters_v0.2.ecsv": "5f149895d29665ede5b2e0e1d410b84da80ed68a768fe495c2134f499985e35e",
+    "wenu_open_clusters_v0.2.csv": "f7fe1d38279a983ed5532908503cbecae02aef2ade728a1d2af5bec9b944fa48",
+    "wenu_open_clusters_v0.2_depuration.csv": "7c4d18c147299faf3d48de71b491501f7b79982864a8f38062f88789dd1430a1",
+    "wenu_open_clusters_v0.2_positions.csv": "e3f0c32fba32d779e6bc45229183d9f1cea54cd938c58d25ae89de33cde2f354"
+  }
+}

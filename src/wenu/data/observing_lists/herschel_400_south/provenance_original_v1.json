@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "source_registry": "observing_sources_v1.json",
+  "source_registry_sha256": "a8f02a20a407d1558a71649549de8cb7827f1093edab72320b8900f8cd23066e",
+  "registry_metadata": {
+    "schema_version": 1,
+    "acquisition_version": "v1",
+    "created_utc": "2026-10-13T19:36:37.025607+00:00",
+    "repository_base": "8e9b193a608bcdbcc34e10d87f32ab678bcec60d",
+    "scope": "Source acquisition only; no target filtering, union, physical classification adoption or chart changes.",
+    "archive": "wenu_observing_catalogues_v1.zip",
+    "aliases": [
+      {
+        "requested_title": "Best of the NGC",
+        "catalogue_id": "sac_best_ngc",
+        "status": "Generic label mapped to SAC; no independent second publisher/list verified"
+      }
+    ],
+    "excluded_attempts": [
+      {
+        "file": "barnard_list_v1.dat",
+        "reason": "HTTP200 HTML anti-bot response; not catalogue data"
+      },
+      {
+        "file": "barnard_notes_v1.dat",
+        "reason": "HTTP200 HTML anti-bot response; not catalogue data"
+      }
+    ]
+  },
+  "source_products": [
+    {
+      "file": "herschel400_south_list_v1.xls",
+      "bytes": 65024,
+      "sha256": "fd0e45152cb4f5522421b6c95ef71c6f1619e109c4016866df8085ab0ea38e75",
+      "observed_counts": {
+        "rows": 150
+      },
+      "source": {
+        "file": "herschel400_south_list_v1.xls",
+        "url": "https://www.astroleague.org/wp-content/uploads/2024/01/Herschel-400-Southern-Skies-Observing-List-1.xls",
+        "final_url": "https://www.astroleague.org/wp-content/uploads/2024/01/Herschel-400-Southern-Skies-Observing-List-1.xls",
+        "bytes": 65024,
+        "sha256": "fd0e45152cb4f5522421b6c95ef71c6f1619e109c4016866df8085ab0ea38e75",
+        "retrieved_utc": "2026-10-13T19:30:05.460454+00:00",
+        "content_type": "application/vnd.ms-excel",
+        "last_modified": "Fri, 19 Jan 2024 10:01:22 GMT"
+      }
+    }
+  ],
+  "source_descriptions": [
+    {
+      "catalogue_id": "herschel400",
+      "title": "Herschel 400",
+      "files": [
+        "herschel400_list_v1.pdf",
+        "herschel400_south_list_v1.xls"
+      ],
+      "nominal_or_programme_count": 400,
+      "publisher": "Astronomical League / Ancient City Astronomy Club",
+      "landing_url": "https://www.astroleague.org/herschel-400-observing-program/",
+      "notes": "Southern supplement has 150 targets. Publisher documents NGC1750 in manual vs NGC7814 online; retrieved online list contains NGC7814. Components are not deduplicated into physical objects.",
+      "rights_status": "Source attribution retained; no new public redistribution licence inferred from download availability.",
+      "licence_observation": "Publisher website states All Rights Reserved; no explicit open redistribution licence verified."
+    }
+  ],
+  "converted_products": [
+    {
+      "file": "herschel400_south_list_v1__sheet1.csv",
+      "source_file": "herschel400_south_list_v1.xls",
+      "rows": 152,
+      "columns": [
+        "source_row",
+        "source_column_1",
+        "source_column_2",
+        "source_column_3",
+        "source_column_4",
+        "source_column_5",
+        "source_column_6",
+        "source_column_7",
+        "source_column_8",
+        "source_column_9",
+        "source_column_10",
+        "source_column_11",
+        "source_column_12",
+        "source_column_13",
+        "source_column_14",
+        "source_column_15",
+        "source_column_16",
+        "source_column_17"
+      ],
+      "status": "Original cell grid; title/header rows and separate sheets retained.",
+      "bytes": 12129,
+      "sha256": "9b8bebab6597e5dd410b6bd1b4a008a6bab00b5abc5911eb5e47fff52741f14c"
+    }
+  ]
+}

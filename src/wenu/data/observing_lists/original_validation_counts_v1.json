@@ -1,0 +1,72 @@
+{
+  "messier_list_v1.csv": {
+    "rows": 110
+  },
+  "caldwell_list_v1.csv": {
+    "rows": 109
+  },
+  "sac_best_list_v1.csv": {
+    "rows": 111
+  },
+  "herschel400_list_v1.pdf": {
+    "rows": 400,
+    "distinct_ngc_ids": 400
+  },
+  "herschel2_list_v1.pdf": {
+    "rows": 400,
+    "distinct_ngc_ids": 400,
+    "replacement_ids_present": [
+      "1985",
+      "4517",
+      "7492"
+    ],
+    "removed_ids_present": []
+  },
+  "rasc_finest_list_v1.pdf": {
+    "object_rows": 112,
+    "distinct_observing_numbers": 110
+  },
+  "al_open_clusters_list_v1.xlsx": {
+    "original_rows": 125,
+    "southern_rows": 89,
+    "total_rows": 214
+  },
+  "al_globular_clusters_list_v1.xlsx": {
+    "regular_rows": 190,
+    "challenge_rules": 8
+  },
+  "al_planetaries_list_v1.xlsx": {
+    "rows": 110,
+    "proto_planetary_rows_in_download": 0
+  },
+  "al_doubles_list_v1.xlsx": {
+    "rows": 200,
+    "award_required": 100
+  },
+  "al_multiples_list_v1.xlsx": {
+    "rows": 115
+  },
+  "herschel400_south_list_v1.xls": {
+    "rows": 150
+  },
+  "al_planetaries_south_list_v1.xls": {
+    "rows": 110
+  },
+  "al_planetaries_alternates_list_v1.xls": {
+    "rows": 26
+  },
+  "barnard_vizier_v1.tsv": {
+    "rows": 349
+  },
+  "barnard_notes_v1.tsv": {
+    "rows": 603
+  },
+  "abell1966_table2_v1.pdf": {
+    "catalogue_entries": 86,
+    "source_pages_1_based": [
+      10,
+      11
+    ],
+    "normalization_status": "original scanned Table 2; OCR not accepted as numeric data"
+  }
+}

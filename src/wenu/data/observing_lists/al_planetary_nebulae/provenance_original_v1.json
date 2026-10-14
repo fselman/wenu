@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "source_registry": "observing_sources_v1.json",
+  "source_registry_sha256": "a8f02a20a407d1558a71649549de8cb7827f1093edab72320b8900f8cd23066e",
+  "registry_metadata": {
+    "schema_version": 1,
+    "acquisition_version": "v1",
+    "created_utc": "2026-10-13T19:36:37.025607+00:00",
+    "repository_base": "8e9b193a608bcdbcc34e10d87f32ab678bcec60d",
+    "scope": "Source acquisition only; no target filtering, union, physical classification adoption or chart changes.",
+    "archive": "wenu_observing_catalogues_v1.zip",
+    "aliases": [
+      {
+        "requested_title": "Best of the NGC",
+        "catalogue_id": "sac_best_ngc",
+        "status": "Generic label mapped to SAC; no independent second publisher/list verified"
+      }
+    ],
+    "excluded_attempts": [
+      {
+        "file": "barnard_list_v1.dat",
+        "reason": "HTTP200 HTML anti-bot response; not catalogue data"
+      },
+      {
+        "file": "barnard_notes_v1.dat",
+        "reason": "HTTP200 HTML anti-bot response; not catalogue data"
+      }
+    ]
+  },
+  "source_products": [
+    {
+      "file": "al_planetaries_list_v1.xlsx",
+      "bytes": 31647,
+      "sha256": "bbd05812d8af25a1f4ffa2366986a458e140dc3b0e661d841c3171413254d84f",
+      "observed_counts": {
+        "rows": 110,
+        "proto_planetary_rows_in_download": 0
+      },
+      "source": {
+        "file": "al_planetaries_list_v1.xlsx",
+        "url": "https://www.astroleague.org/wp-content/uploads/2022/02/Planetary-Nebula-List.xlsx",
+        "final_url": "https://www.astroleague.org/wp-content/uploads/2022/02/Planetary-Nebula-List.xlsx",
+        "bytes": 31647,
+        "sha256": "bbd05812d8af25a1f4ffa2366986a458e140dc3b0e661d841c3171413254d84f",
+        "retrieved_utc": "2026-10-13T19:29:51.040768+00:00",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Tue, 22 Feb 2022 12:27:24 GMT"
+      }
+    },
+    {
+      "file": "al_planetaries_south_list_v1.xls",
+      "bytes": 69632,
+      "sha256": "1439c2b2da9afacef9f769937abbb2c43bae560dd25325c060c653a912ee8539",
+      "observed_counts": {
+        "rows": 110
+      },
+      "source": {
+        "file": "al_planetaries_south_list_v1.xls",
+        "url": "https://www.astroleague.org/wp-content/uploads/2022/02/Southern-PN-List.xls",
+        "final_url": "https://www.astroleague.org/wp-content/uploads/2022/02/Southern-PN-List.xls",
+        "bytes": 69632,
+        "sha256": "1439c2b2da9afacef9f769937abbb2c43bae560dd25325c060c653a912ee8539",
+        "retrieved_utc": "2026-10-13T19:30:10.183563+00:00",
+        "content_type": "application/vnd.ms-excel",
+        "last_modified": "Tue, 22 Feb 2022 12:28:22 GMT"
+      }
+    },
+    {
+      "file": "al_planetaries_alternates_list_v1.xls",
+      "bytes": 32768,
+      "sha256": "4b82b6dda46962fbc9efbf07a8b2929b6bc90e1af9528149c4b286606de765d8",
+      "observed_counts": {
+        "rows": 26
+      },
+      "source": {
+        "file": "al_planetaries_alternates_list_v1.xls",
+        "url": "https://www.astroleague.org/wp-content/uploads/2022/02/List-of-Alt-Objects.xls",
+        "final_url": "https://www.astroleague.org/wp-content/uploads/2022/02/List-of-Alt-Objects.xls",
+        "bytes": 32768,
+        "sha256": "4b82b6dda46962fbc9efbf07a8b2929b6bc90e1af9528149c4b286606de765d8",
+        "retrieved_utc": "2026-10-13T19:30:16.990977+00:00",
+        "content_type": "application/vnd.ms-excel",
+        "last_modified": "Tue, 22 Feb 2022 12:29:09 GMT"
+      }
+    }
+  ],
+  "source_descriptions": [
+    {
+      "catalogue_id": "al_planetary_nebulae",
+      "title": "AL Planetary Nebula Program",
+      "files": [
+        "al_planetaries_list_v1.xlsx",
+        "al_planetaries_south_list_v1.xls",
+        "al_planetaries_alternates_list_v1.xls"
+      ],
+      "nominal_or_programme_count": 110,
+      "publisher": "Astronomical League / Back Bay Amateur Astronomers",
+      "landing_url": "https://www.astroleague.org/planetary-nebula-observing-program/",
+      "notes": "Standard workbook has 110 object rows (repeated headers excluded). Separate southern list has 110, northern alternates 26. Four optional proto-PN are mentioned on programme page but are absent from downloaded standard workbook. Never invent those rows.",
+      "rights_status": "Source attribution retained; no new public redistribution licence inferred from download availability.",
+      "licence_observation": "Publisher website states All Rights Reserved; no explicit open redistribution licence verified."
+    }
+  ],
+  "converted_products": []
+}

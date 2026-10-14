@@ -1,0 +1,926 @@
+catalogue,designation,identifiers_json,source_file
+sac_urban,M 31,"[""M 31""]",sac_urban_source_v1.html
+sac_urban,NGC 752,"[""NGC 752""]",sac_urban_source_v1.html
+sac_urban,Gamma And,"[""Gamma And""]",sac_urban_source_v1.html
+sac_urban,NGC 7662,"[""NGC 7662""]",sac_urban_source_v1.html
+sac_urban,M 2,"[""M 2""]",sac_urban_source_v1.html
+sac_urban,Lambda Ari,"[""Lambda Ari""]",sac_urban_source_v1.html
+sac_urban,NGC 1907,"[""NGC 1907""]",sac_urban_source_v1.html
+sac_urban,M 38,"[""M 38""]",sac_urban_source_v1.html
+sac_urban,M 36,"[""M 36""]",sac_urban_source_v1.html
+sac_urban,M 37,"[""M 37""]",sac_urban_source_v1.html
+sac_urban,Xi Bootes,"[""Xi Bootes""]",sac_urban_source_v1.html
+sac_urban,Webb,"[""Webb""]",sac_urban_source_v1.html
+sac_urban,NGC 129,"[""NGC 129""]",sac_urban_source_v1.html
+sac_urban,Eta Cas,"[""Eta Cas""]",sac_urban_source_v1.html
+sac_urban,NGC 457,"[""NGC 457""]",sac_urban_source_v1.html
+sac_urban,M 103,"[""M 103""]",sac_urban_source_v1.html
+sac_urban,NGC 654,"[""NGC 654""]",sac_urban_source_v1.html
+sac_urban,Stock 2,"[""Stock 2""]",sac_urban_source_v1.html
+sac_urban,M 52,"[""M 52""]",sac_urban_source_v1.html
+sac_urban,NGC 7789,"[""NGC 7789""]",sac_urban_source_v1.html
+sac_urban,IC 1396,"[""IC 1396""]",sac_urban_source_v1.html
+sac_urban,Mu Cep,"[""Mu Cep""]",sac_urban_source_v1.html
+sac_urban,Nu CMa,"[""Nu CMa""]",sac_urban_source_v1.html
+sac_urban,M 41,"[""M 41""]",sac_urban_source_v1.html
+sac_urban,NGC 2362,"[""NGC 2362""]",sac_urban_source_v1.html
+sac_urban,M 44,"[""M 44""]",sac_urban_source_v1.html
+sac_urban,48 Cnc,"[""48 Cnc""]",sac_urban_source_v1.html
+sac_urban,Mel 111,"[""Mel 111""]",sac_urban_source_v1.html
+sac_urban,24 Com,"[""24 Com""]",sac_urban_source_v1.html
+sac_urban,M 53,"[""M 53""]",sac_urban_source_v1.html
+sac_urban,STF 1669,"[""STF 1669""]",sac_urban_source_v1.html
+sac_urban,Y CVn,"[""Y CVn""]",sac_urban_source_v1.html
+sac_urban,M 51,"[""M 51""]",sac_urban_source_v1.html
+sac_urban,M 3,"[""M 3""]",sac_urban_source_v1.html
+sac_urban,Beta Cyg,"[""Beta Cyg""]",sac_urban_source_v1.html
+sac_urban,NGC 6811,"[""NGC 6811""]",sac_urban_source_v1.html
+sac_urban,NGC 6826,"[""NGC 6826""]",sac_urban_source_v1.html
+sac_urban,NGC 6910,"[""NGC 6910""]",sac_urban_source_v1.html
+sac_urban,61 Cyg,"[""61 Cyg""]",sac_urban_source_v1.html
+sac_urban,NGC 7027,"[""NGC 7027""]",sac_urban_source_v1.html
+sac_urban,Gamma Del,"[""Gamma Del""]",sac_urban_source_v1.html
+sac_urban,NGC 6543,"[""NGC 6543""]",sac_urban_source_v1.html
+sac_urban,NGC 1535,"[""NGC 1535""]",sac_urban_source_v1.html
+sac_urban,M 35,"[""M 35""]",sac_urban_source_v1.html
+sac_urban,M 13,"[""M 13""]",sac_urban_source_v1.html
+sac_urban,NGC 6210,"[""NGC 6210""]",sac_urban_source_v1.html
+sac_urban,M 92,"[""M 92""]",sac_urban_source_v1.html
+sac_urban,V Hydrae,"[""V Hydrae""]",sac_urban_source_v1.html
+sac_urban,R Lep,"[""R Lep""]",sac_urban_source_v1.html
+sac_urban,M 79,"[""M 79""]",sac_urban_source_v1.html
+sac_urban,M 56,"[""M 56""]",sac_urban_source_v1.html
+sac_urban,Beta Lyr,"[""Beta Lyr""]",sac_urban_source_v1.html
+sac_urban,M 57,"[""M 57""]",sac_urban_source_v1.html
+sac_urban,STF 2481,"[""STF 2481""]",sac_urban_source_v1.html
+sac_urban,NGC 2215,"[""NGC 2215""]",sac_urban_source_v1.html
+sac_urban,Beta Mon,"[""Beta Mon""]",sac_urban_source_v1.html
+sac_urban,NGC 2244,"[""NGC 2244""]",sac_urban_source_v1.html
+sac_urban,NGC 2251,"[""NGC 2251""]",sac_urban_source_v1.html
+sac_urban,NGC 2252,"[""NGC 2252""]",sac_urban_source_v1.html
+sac_urban,NGC 2324,"[""NGC 2324""]",sac_urban_source_v1.html
+sac_urban,IC 4665,"[""IC 4665""]",sac_urban_source_v1.html
+sac_urban,NGC 6633,"[""NGC 6633""]",sac_urban_source_v1.html
+sac_urban,STF 688,"[""STF 688""]",sac_urban_source_v1.html
+sac_urban,M 42,"[""M 42""]",sac_urban_source_v1.html
+sac_urban,Sigma Ori,"[""Sigma Ori""]",sac_urban_source_v1.html
+sac_urban,STF 790,"[""STF 790""]",sac_urban_source_v1.html
+sac_urban,NGC 2169,"[""NGC 2169""]",sac_urban_source_v1.html
+sac_urban,1 Peg,"[""1 Peg""]",sac_urban_source_v1.html
+sac_urban,M 15,"[""M 15""]",sac_urban_source_v1.html
+sac_urban,NGC 869,"[""NGC 869""]",sac_urban_source_v1.html
+sac_urban,NGC 884,"[""NGC 884""]",sac_urban_source_v1.html
+sac_urban,NGC 957,"[""NGC 957""]",sac_urban_source_v1.html
+sac_urban,TR 2,"[""TR 2""]",sac_urban_source_v1.html
+sac_urban,M 34,"[""M 34""]",sac_urban_source_v1.html
+sac_urban,Eta Per,"[""Eta Per""]",sac_urban_source_v1.html
+sac_urban,STF 336,"[""STF 336""]",sac_urban_source_v1.html
+sac_urban,Mel 20,"[""Mel 20""]",sac_urban_source_v1.html
+sac_urban,NGC 1342,"[""NGC 1342""]",sac_urban_source_v1.html
+sac_urban,NGC 1528,"[""NGC 1528""]",sac_urban_source_v1.html
+sac_urban,h1991,"[""h1991""]",sac_urban_source_v1.html
+sac_urban,M 80,"[""M 80""]",sac_urban_source_v1.html
+sac_urban,M 4,"[""M 4""]",sac_urban_source_v1.html
+sac_urban,M 6,"[""M 6""]",sac_urban_source_v1.html
+sac_urban,M 7,"[""M 7""]",sac_urban_source_v1.html
+sac_urban,M 11,"[""M 11""]",sac_urban_source_v1.html
+sac_urban,M 5,"[""M 5""]",sac_urban_source_v1.html
+sac_urban,IC 4756,"[""IC 4756""]",sac_urban_source_v1.html
+sac_urban,M 8,"[""M 8""]",sac_urban_source_v1.html
+sac_urban,M 24,"[""M 24""]",sac_urban_source_v1.html
+sac_urban,M 17,"[""M 17""]",sac_urban_source_v1.html
+sac_urban,M 22,"[""M 22""]",sac_urban_source_v1.html
+sac_urban,M 45,"[""M 45""]",sac_urban_source_v1.html
+sac_urban,STT 84,"[""STT 84""]",sac_urban_source_v1.html
+sac_urban,M 81,"[""M 81""]",sac_urban_source_v1.html
+sac_urban,M 82,"[""M 82""]",sac_urban_source_v1.html
+sac_urban,M 97,"[""M 97""]",sac_urban_source_v1.html
+sac_urban,Zeta UMa,"[""Zeta UMa""]",sac_urban_source_v1.html
+sac_urban,SS Virgo,"[""SS Virgo""]",sac_urban_source_v1.html
+sac_urban,M 104,"[""M 104""]",sac_urban_source_v1.html
+sac_urban,Cr 399,"[""Cr 399""]",sac_urban_source_v1.html
+sac_beyond_ngc,Abell 262,"[""Abell 262""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,B133,"[""B133""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 4846,"[""IC 4846""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,B142-3,"[""B142-3""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Pal 11,"[""Pal 11""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 405,"[""IC 405""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 410,"[""IC 410""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Sh2-224,"[""Sh2-224""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 2149,"[""IC 2149""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,King 6,"[""King 6""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 342,"[""IC 342""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 3568,"[""IC 3568""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,King 14,"[""King 14""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 59,"[""IC 59""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Cr 463,"[""Cr 463""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Stock 2,"[""Stock 2""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 1795,"[""IC 1795""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Mel 15,"[""Mel 15""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 289,"[""IC 289""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Tr 37,"[""Tr 37""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 1396,"[""IC 1396""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 1470,"[""IC 1470""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 1613,"[""IC 1613""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 2165,"[""IC 2165""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Tombaugh 1,"[""Tombaugh 1""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Haffner 23,"[""Haffner 23""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Sh2-301,"[""Sh2-301""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Cr 140,"[""Cr 140""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Mel 111,"[""Mel 111""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Abell 1656,"[""Abell 1656""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Abell 2065,"[""Abell 2065""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,PK 64+ 5.1,"[""PK 64+ 5.1""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,M1-92,"[""M1-92""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 1318,"[""IC 1318""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 5070,"[""IC 5070""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,PK 80-6.1,"[""PK 80-6.1""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 5146,"[""IC 5146""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,UGC 10822,"[""UGC 10822""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,MCG-06-07-001,"[""MCG-06-07-001""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 443,"[""IC 443""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Cr 89,"[""Cr 89""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,PK194+ 2.1,"[""PK194+ 2.1""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,PK205+14.1,"[""PK205+14.1""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Abell 2151,"[""Abell 2151""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 4593,"[""IC 4593""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,PK 51+ 9.1,"[""PK 51+ 9.1""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,PK 238+34.1,"[""PK 238+34.1""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Abell 1060,"[""Abell 1060""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 764,"[""IC 764""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 4351,"[""IC 4351""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 1434,"[""IC 1434""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 1442,"[""IC 1442""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 5217,"[""IC 5217""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,UGC 5470,"[""UGC 5470""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Abell 1367,"[""Abell 1367""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 418,"[""IC 418""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,PK 342+27.1,"[""PK 342+27.1""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,PK 164+31.1,"[""PK 164+31.1""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,PK 64+15.1,"[""PK 64+15.1""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Steph 1,"[""Steph 1""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 2177,"[""IC 2177""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Mel 72,"[""Mel 72""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 4634,"[""IC 4634""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,B 64,"[""B 64""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,B 72,"[""B 72""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,B 78,"[""B 78""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 4665,"[""IC 4665""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Cr 350,"[""Cr 350""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,PK190-17.1,"[""PK190-17.1""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Cr 69,"[""Cr 69""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Cr 70,"[""Cr 70""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 434/B33,"[""IC 434/B33""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Sh2-276,"[""Sh2-276""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Jones 1,"[""Jones 1""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Abell 426,"[""Abell 426""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Mel 20,"[""Mel 20""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 348,"[""IC 348""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 351,"[""IC 351""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Abell 194,"[""Abell 194""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Cr 135,"[""Cr 135""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Mel 71,"[""Mel 71""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Ru 44,"[""Ru 44""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,PK 254+ 5.1,"[""PK 254+ 5.1""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,MCG-06-03-015,"[""MCG-06-03-015""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 5332,"[""IC 5332""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Cr 302,"[""Cr 302""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 4628,"[""IC 4628""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Tr 24,"[""Tr 24""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Harvard 16,"[""Harvard 16""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Tr 30,"[""Tr 30""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 1287,"[""IC 1287""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 1295,"[""IC 1295""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 1276,"[""IC 1276""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 4756,"[""IC 4756""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,UGC 5373,"[""UGC 5373""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Sh2-84,"[""Sh2-84""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Harvard 20,"[""Harvard 20""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 4997,"[""IC 4997""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,PK 359- 0.1,"[""PK 359- 0.1""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,B 86,"[""B 86""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 349,"[""IC 349""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Mel 25,"[""Mel 25""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 2087,"[""IC 2087""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,UGC 1281,"[""UGC 1281""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,UGC 9749,"[""UGC 9749""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,3C 273,"[""3C 273""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Cr 399,"[""Cr 399""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Stock 1,"[""Stock 1""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,Sh2-88,"[""Sh2-88""]",sac_beyond_ngc_source_v1.html
+sac_beyond_ngc,IC 4954,"[""IC 4954""]",sac_beyond_ngc_source_v1.html
+sac_red_stars,SU And,"[""SU And""]",sac_red_stars_source_v1.zip
+sac_red_stars,VX And,"[""VX And""]",sac_red_stars_source_v1.zip
+sac_red_stars,R And,"[""R And""]",sac_red_stars_source_v1.zip
+sac_red_stars,AQ And,"[""AQ And""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 11224,"[""HD 11224""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 11727,"[""HD 11727""]",sac_red_stars_source_v1.zip
+sac_red_stars,VY And,"[""VY And""]",sac_red_stars_source_v1.zip
+sac_red_stars,EW And,"[""EW And""]",sac_red_stars_source_v1.zip
+sac_red_stars,BD +48 4070,"[""BD +48 4070""]",sac_red_stars_source_v1.zip
+sac_red_stars,ST And,"[""ST And""]",sac_red_stars_source_v1.zip
+sac_red_stars,AB Ant,"[""AB Ant""]",sac_red_stars_source_v1.zip
+sac_red_stars,U Ant,"[""U Ant""]",sac_red_stars_source_v1.zip
+sac_red_stars,U Aps,"[""U Aps""]",sac_red_stars_source_v1.zip
+sac_red_stars,HK Aql,"[""HK Aql""]",sac_red_stars_source_v1.zip
+sac_red_stars,UW Aql,"[""UW Aql""]",sac_red_stars_source_v1.zip
+sac_red_stars,UV Aql,"[""UV Aql""]",sac_red_stars_source_v1.zip
+sac_red_stars,V Aql,"[""V Aql""]",sac_red_stars_source_v1.zip
+sac_red_stars,V 1469 Aql,"[""V 1469 Aql""]",sac_red_stars_source_v1.zip
+sac_red_stars,LP Aqr,"[""LP Aqr""]",sac_red_stars_source_v1.zip
+sac_red_stars,T Ara,"[""T Ara""]",sac_red_stars_source_v1.zip
+sac_red_stars,V Ari,"[""V Ari""]",sac_red_stars_source_v1.zip
+sac_red_stars,Rho2 Ari,"[""Rho2 Ari""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 30443,"[""HD 30443""]",sac_red_stars_source_v1.zip
+sac_red_stars,V346 Aur,"[""V346 Aur""]",sac_red_stars_source_v1.zip
+sac_red_stars,TX Aur,"[""TX Aur""]",sac_red_stars_source_v1.zip
+sac_red_stars,R Aur,"[""R Aur""]",sac_red_stars_source_v1.zip
+sac_red_stars,V 438 Aur,"[""V 438 Aur""]",sac_red_stars_source_v1.zip
+sac_red_stars,UV Aur,"[""UV Aur""]",sac_red_stars_source_v1.zip
+sac_red_stars,S Aur,"[""S Aur""]",sac_red_stars_source_v1.zip
+sac_red_stars,V362 Aur,"[""V362 Aur""]",sac_red_stars_source_v1.zip
+sac_red_stars,CM Aur,"[""CM Aur""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 36574,"[""HD 36574""]",sac_red_stars_source_v1.zip
+sac_red_stars,NO Aur,"[""NO Aur""]",sac_red_stars_source_v1.zip
+sac_red_stars,FU Aur,"[""FU Aur""]",sac_red_stars_source_v1.zip
+sac_red_stars,AF Aur,"[""AF Aur""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 39045,"[""HD 39045""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 39183,"[""HD 39183""]",sac_red_stars_source_v1.zip
+sac_red_stars,AZ Aur,"[""AZ Aur""]",sac_red_stars_source_v1.zip
+sac_red_stars,V Aur,"[""V Aur""]",sac_red_stars_source_v1.zip
+sac_red_stars,RV Aur,"[""RV Aur""]",sac_red_stars_source_v1.zip
+sac_red_stars,UU Aur,"[""UU Aur""]",sac_red_stars_source_v1.zip
+sac_red_stars,T Cae,"[""T Cae""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 21465,"[""HD 21465""]",sac_red_stars_source_v1.zip
+sac_red_stars,U Cam,"[""U Cam""]",sac_red_stars_source_v1.zip
+sac_red_stars,UV Cam,"[""UV Cam""]",sac_red_stars_source_v1.zip
+sac_red_stars,ST Cam,"[""ST Cam""]",sac_red_stars_source_v1.zip
+sac_red_stars,S Cam,"[""S Cam""]",sac_red_stars_source_v1.zip
+sac_red_stars,R Cap,"[""R Cap""]",sac_red_stars_source_v1.zip
+sac_red_stars,RT Cap,"[""RT Cap""]",sac_red_stars_source_v1.zip
+sac_red_stars,Upsilon Cap,"[""Upsilon Cap""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 91056,"[""HD 91056""]",sac_red_stars_source_v1.zip
+sac_red_stars,CPD -62 1643,"[""CPD -62 1643""]",sac_red_stars_source_v1.zip
+sac_red_stars,V 361 Car,"[""V 361 Car""]",sac_red_stars_source_v1.zip
+sac_red_stars,RT Car,"[""RT Car""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 96584,"[""HD 96584""]",sac_red_stars_source_v1.zip
+sac_red_stars,WZ Cas,"[""WZ Cas""]",sac_red_stars_source_v1.zip
+sac_red_stars,UX Cas,"[""UX Cas""]",sac_red_stars_source_v1.zip
+sac_red_stars,ST Cas,"[""ST Cas""]",sac_red_stars_source_v1.zip
+sac_red_stars,FR Cas,"[""FR Cas""]",sac_red_stars_source_v1.zip
+sac_red_stars,W Cas,"[""W Cas""]",sac_red_stars_source_v1.zip
+sac_red_stars,V 466 Cas,"[""V 466 Cas""]",sac_red_stars_source_v1.zip
+sac_red_stars,WW Cas,"[""WW Cas""]",sac_red_stars_source_v1.zip
+sac_red_stars,BD +59 0274,"[""BD +59 0274""]",sac_red_stars_source_v1.zip
+sac_red_stars,X Cas,"[""X Cas""]",sac_red_stars_source_v1.zip
+sac_red_stars,V 623 Cas,"[""V 623 Cas""]",sac_red_stars_source_v1.zip
+sac_red_stars,V398 Cas,"[""V398 Cas""]",sac_red_stars_source_v1.zip
+sac_red_stars,V 353 Cas,"[""V 353 Cas""]",sac_red_stars_source_v1.zip
+sac_red_stars,DS Cas,"[""DS Cas""]",sac_red_stars_source_v1.zip
+sac_red_stars,PZ Cas,"[""PZ Cas""]",sac_red_stars_source_v1.zip
+sac_red_stars,R Cas,"[""R Cas""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 113842,"[""HD 113842""]",sac_red_stars_source_v1.zip
+sac_red_stars,UY Cen,"[""UY Cen""]",sac_red_stars_source_v1.zip
+sac_red_stars,R Cen,"[""R Cen""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 202380,"[""HD 202380""]",sac_red_stars_source_v1.zip
+sac_red_stars,SW Cep,"[""SW Cep""]",sac_red_stars_source_v1.zip
+sac_red_stars,S Cep,"[""S Cep""]",sac_red_stars_source_v1.zip
+sac_red_stars,Mu Cep,"[""Mu Cep""]",sac_red_stars_source_v1.zip
+sac_red_stars,RW Cep,"[""RW Cep""]",sac_red_stars_source_v1.zip
+sac_red_stars,W Cep,"[""W Cep""]",sac_red_stars_source_v1.zip
+sac_red_stars,DG Cep,"[""DG Cep""]",sac_red_stars_source_v1.zip
+sac_red_stars,AE Cet,"[""AE Cet""]",sac_red_stars_source_v1.zip
+sac_red_stars,Omicron Cet,"[""Omicron Cet""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 16115,"[""HD 16115""]",sac_red_stars_source_v1.zip
+sac_red_stars,CI Cha,"[""CI Cha""]",sac_red_stars_source_v1.zip
+sac_red_stars,IV CMa,"[""IV CMa""]",sac_red_stars_source_v1.zip
+sac_red_stars,CD -26 2983,"[""CD -26 2983""]",sac_red_stars_source_v1.zip
+sac_red_stars,SAO 172106,"[""SAO 172106""]",sac_red_stars_source_v1.zip
+sac_red_stars,GO CMa,"[""GO CMa""]",sac_red_stars_source_v1.zip
+sac_red_stars,BD -20 1569,"[""BD -20 1569""]",sac_red_stars_source_v1.zip
+sac_red_stars,Omicron 1 CMa,"[""Omicron 1 CMa""]",sac_red_stars_source_v1.zip
+sac_red_stars,Sigma CMa,"[""Sigma CMa""]",sac_red_stars_source_v1.zip
+sac_red_stars,W CMa,"[""W CMa""]",sac_red_stars_source_v1.zip
+sac_red_stars,CD -31 4270,"[""CD -31 4270""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 56577,"[""HD 56577""]",sac_red_stars_source_v1.zip
+sac_red_stars,VY CMa,"[""VY CMa""]",sac_red_stars_source_v1.zip
+sac_red_stars,BE CMa,"[""BE CMa""]",sac_red_stars_source_v1.zip
+sac_red_stars,R CMi,"[""R CMi""]",sac_red_stars_source_v1.zip
+sac_red_stars,BE CMi,"[""BE CMi""]",sac_red_stars_source_v1.zip
+sac_red_stars,W CMi,"[""W CMi""]",sac_red_stars_source_v1.zip
+sac_red_stars,V Cnc,"[""V Cnc""]",sac_red_stars_source_v1.zip
+sac_red_stars,XX Cnc,"[""XX Cnc""]",sac_red_stars_source_v1.zip
+sac_red_stars,Iota Cnc,"[""Iota Cnc""]",sac_red_stars_source_v1.zip
+sac_red_stars,X Cnc,"[""X Cnc""]",sac_red_stars_source_v1.zip
+sac_red_stars,T Cnc,"[""T Cnc""]",sac_red_stars_source_v1.zip
+sac_red_stars,GM Cnc,"[""GM Cnc""]",sac_red_stars_source_v1.zip
+sac_red_stars,12 Com,"[""12 Com""]",sac_red_stars_source_v1.zip
+sac_red_stars,24 Com,"[""24 Com""]",sac_red_stars_source_v1.zip
+sac_red_stars,V CrB,"[""V CrB""]",sac_red_stars_source_v1.zip
+sac_red_stars,T CrB,"[""T CrB""]",sac_red_stars_source_v1.zip
+sac_red_stars,Gamma Cru,"[""Gamma Cru""]",sac_red_stars_source_v1.zip
+sac_red_stars,DY Cru,"[""DY Cru""]",sac_red_stars_source_v1.zip
+sac_red_stars,CD -59 04459,"[""CD -59 04459""]",sac_red_stars_source_v1.zip
+sac_red_stars,2 CVn,"[""2 CVn""]",sac_red_stars_source_v1.zip
+sac_red_stars,Y CVn,"[""Y CVn""]",sac_red_stars_source_v1.zip
+sac_red_stars,TU CVn,"[""TU CVn""]",sac_red_stars_source_v1.zip
+sac_red_stars,TT CVn,"[""TT CVn""]",sac_red_stars_source_v1.zip
+sac_red_stars,R Cyg,"[""R Cyg""]",sac_red_stars_source_v1.zip
+sac_red_stars,TT Cyg,"[""TT Cyg""]",sac_red_stars_source_v1.zip
+sac_red_stars,AX Cyg,"[""AX Cyg""]",sac_red_stars_source_v1.zip
+sac_red_stars,BD +35 3985,"[""BD +35 3985""]",sac_red_stars_source_v1.zip
+sac_red_stars,SV Cyg,"[""SV Cyg""]",sac_red_stars_source_v1.zip
+sac_red_stars,RY Cyg,"[""RY Cyg""]",sac_red_stars_source_v1.zip
+sac_red_stars,RS Cyg,"[""RS Cyg""]",sac_red_stars_source_v1.zip
+sac_red_stars,U Cyg,"[""U Cyg""]",sac_red_stars_source_v1.zip
+sac_red_stars,RW Cyg,"[""RW Cyg""]",sac_red_stars_source_v1.zip
+sac_red_stars,V Cyg,"[""V Cyg""]",sac_red_stars_source_v1.zip
+sac_red_stars,AZ Cyg,"[""AZ Cyg""]",sac_red_stars_source_v1.zip
+sac_red_stars,61 Cyg,"[""61 Cyg""]",sac_red_stars_source_v1.zip
+sac_red_stars,YY Cyg,"[""YY Cyg""]",sac_red_stars_source_v1.zip
+sac_red_stars,W Cyg,"[""W Cyg""]",sac_red_stars_source_v1.zip
+sac_red_stars,V 460 Cyg,"[""V 460 Cyg""]",sac_red_stars_source_v1.zip
+sac_red_stars,RV Cyg,"[""RV Cyg""]",sac_red_stars_source_v1.zip
+sac_red_stars,BD +53 2693,"[""BD +53 2693""]",sac_red_stars_source_v1.zip
+sac_red_stars,LW Cyg,"[""LW Cyg""]",sac_red_stars_source_v1.zip
+sac_red_stars,HH Del,"[""HH Del""]",sac_red_stars_source_v1.zip
+sac_red_stars,R Dor,"[""R Dor""]",sac_red_stars_source_v1.zip
+sac_red_stars,Eta 2 Dor,"[""Eta 2 Dor""]",sac_red_stars_source_v1.zip
+sac_red_stars,RY Dra,"[""RY Dra""]",sac_red_stars_source_v1.zip
+sac_red_stars,T Dra,"[""T Dra""]",sac_red_stars_source_v1.zip
+sac_red_stars,UX Dra,"[""UX Dra""]",sac_red_stars_source_v1.zip
+sac_red_stars,Z Eri,"[""Z Eri""]",sac_red_stars_source_v1.zip
+sac_red_stars,DV Eri,"[""DV Eri""]",sac_red_stars_source_v1.zip
+sac_red_stars,SY Eri,"[""SY Eri""]",sac_red_stars_source_v1.zip
+sac_red_stars,R For,"[""R For""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 20729,"[""HD 20729""]",sac_red_stars_source_v1.zip
+sac_red_stars,BD +24 1124,"[""BD +24 1124""]",sac_red_stars_source_v1.zip
+sac_red_stars,TU Gem,"[""TU Gem""]",sac_red_stars_source_v1.zip
+sac_red_stars,TV Gem,"[""TV Gem""]",sac_red_stars_source_v1.zip
+sac_red_stars,BU Gem,"[""BU Gem""]",sac_red_stars_source_v1.zip
+sac_red_stars,Eta Gem,"[""Eta Gem""]",sac_red_stars_source_v1.zip
+sac_red_stars,ZZ Gem,"[""ZZ Gem""]",sac_red_stars_source_v1.zip
+sac_red_stars,AB Gem,"[""AB Gem""]",sac_red_stars_source_v1.zip
+sac_red_stars,DH Gem,"[""DH Gem""]",sac_red_stars_source_v1.zip
+sac_red_stars,CR Gem,"[""CR Gem""]",sac_red_stars_source_v1.zip
+sac_red_stars,NY Gem,"[""NY Gem""]",sac_red_stars_source_v1.zip
+sac_red_stars,VW Gem,"[""VW Gem""]",sac_red_stars_source_v1.zip
+sac_red_stars,R Gem,"[""R Gem""]",sac_red_stars_source_v1.zip
+sac_red_stars,VX Gem,"[""VX Gem""]",sac_red_stars_source_v1.zip
+sac_red_stars,BM Gem,"[""BM Gem""]",sac_red_stars_source_v1.zip
+sac_red_stars,NQ Gem,"[""NQ Gem""]",sac_red_stars_source_v1.zip
+sac_red_stars,Pi1 Gru,"[""Pi1 Gru""]",sac_red_stars_source_v1.zip
+sac_red_stars,RR Her,"[""RR Her""]",sac_red_stars_source_v1.zip
+sac_red_stars,BD +42 2811,"[""BD +42 2811""]",sac_red_stars_source_v1.zip
+sac_red_stars,Alpha Her,"[""Alpha Her""]",sac_red_stars_source_v1.zip
+sac_red_stars,95 Her,"[""95 Her""]",sac_red_stars_source_v1.zip
+sac_red_stars,TW Hor,"[""TW Hor""]",sac_red_stars_source_v1.zip
+sac_red_stars,RY Hya,"[""RY Hya""]",sac_red_stars_source_v1.zip
+sac_red_stars,MT Hya,"[""MT Hya""]",sac_red_stars_source_v1.zip
+sac_red_stars,IQ Hya,"[""IQ Hya""]",sac_red_stars_source_v1.zip
+sac_red_stars,Alpha Hya,"[""Alpha Hya""]",sac_red_stars_source_v1.zip
+sac_red_stars,Y Hya,"[""Y Hya""]",sac_red_stars_source_v1.zip
+sac_red_stars,CZ Hya,"[""CZ Hya""]",sac_red_stars_source_v1.zip
+sac_red_stars,U Hya,"[""U Hya""]",sac_red_stars_source_v1.zip
+sac_red_stars,V Hya,"[""V Hya""]",sac_red_stars_source_v1.zip
+sac_red_stars,W Hya,"[""W Hya""]",sac_red_stars_source_v1.zip
+sac_red_stars,Lambda Hyi,"[""Lambda Hyi""]",sac_red_stars_source_v1.zip
+sac_red_stars,BD +53 2834,"[""BD +53 2834""]",sac_red_stars_source_v1.zip
+sac_red_stars,DV Lac,"[""DV Lac""]",sac_red_stars_source_v1.zip
+sac_red_stars,TX Lac,"[""TX Lac""]",sac_red_stars_source_v1.zip
+sac_red_stars,U Lac,"[""U Lac""]",sac_red_stars_source_v1.zip
+sac_red_stars,TV Lac,"[""TV Lac""]",sac_red_stars_source_v1.zip
+sac_red_stars,R Leo,"[""R Leo""]",sac_red_stars_source_v1.zip
+sac_red_stars,R Lep,"[""R Lep""]",sac_red_stars_source_v1.zip
+sac_red_stars,RX Lep,"[""RX Lep""]",sac_red_stars_source_v1.zip
+sac_red_stars,SZ Lep,"[""SZ Lep""]",sac_red_stars_source_v1.zip
+sac_red_stars,Gamma Lep,"[""Gamma Lep""]",sac_red_stars_source_v1.zip
+sac_red_stars,Z Lup,"[""Z Lup""]",sac_red_stars_source_v1.zip
+sac_red_stars,UW Lyn,"[""UW Lyn""]",sac_red_stars_source_v1.zip
+sac_red_stars,R Lyn,"[""R Lyn""]",sac_red_stars_source_v1.zip
+sac_red_stars,Y Lyn,"[""Y Lyn""]",sac_red_stars_source_v1.zip
+sac_red_stars,T Lyn,"[""T Lyn""]",sac_red_stars_source_v1.zip
+sac_red_stars,T Lyr,"[""T Lyr""]",sac_red_stars_source_v1.zip
+sac_red_stars,XY Lyr,"[""XY Lyr""]",sac_red_stars_source_v1.zip
+sac_red_stars,HK Lyr,"[""HK Lyr""]",sac_red_stars_source_v1.zip
+sac_red_stars,Delta2 Lyr,"[""Delta2 Lyr""]",sac_red_stars_source_v1.zip
+sac_red_stars,BD +32 3250,"[""BD +32 3250""]",sac_red_stars_source_v1.zip
+sac_red_stars,R Lyr,"[""R Lyr""]",sac_red_stars_source_v1.zip
+sac_red_stars,KS Mon,"[""KS Mon""]",sac_red_stars_source_v1.zip
+sac_red_stars,BN Mon,"[""BN Mon""]",sac_red_stars_source_v1.zip
+sac_red_stars,CZ Mon,"[""CZ Mon""]",sac_red_stars_source_v1.zip
+sac_red_stars,BD +0 1660,"[""BD +0 1660""]",sac_red_stars_source_v1.zip
+sac_red_stars,GY Mon,"[""GY Mon""]",sac_red_stars_source_v1.zip
+sac_red_stars,BG Mon,"[""BG Mon""]",sac_red_stars_source_v1.zip
+sac_red_stars,IV Mon,"[""IV Mon""]",sac_red_stars_source_v1.zip
+sac_red_stars,RV Mon,"[""RV Mon""]",sac_red_stars_source_v1.zip
+sac_red_stars,V 614 Mon,"[""V 614 Mon""]",sac_red_stars_source_v1.zip
+sac_red_stars,BD -8 1699,"[""BD -8 1699""]",sac_red_stars_source_v1.zip
+sac_red_stars,RY Mon,"[""RY Mon""]",sac_red_stars_source_v1.zip
+sac_red_stars,V 758 Mon,"[""V 758 Mon""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 58385,"[""HD 58385""]",sac_red_stars_source_v1.zip
+sac_red_stars,SU Mon,"[""SU Mon""]",sac_red_stars_source_v1.zip
+sac_red_stars,RR Mus,"[""RR Mus""]",sac_red_stars_source_v1.zip
+sac_red_stars,My Mus,"[""My Mus""]",sac_red_stars_source_v1.zip
+sac_red_stars,RS Mus,"[""RS Mus""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 145384,"[""HD 145384""]",sac_red_stars_source_v1.zip
+sac_red_stars,V Oph,"[""V Oph""]",sac_red_stars_source_v1.zip
+sac_red_stars,V2105 Oph,"[""V2105 Oph""]",sac_red_stars_source_v1.zip
+sac_red_stars,TW Oph,"[""TW Oph""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 161820,"[""HD 161820""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 163826,"[""HD 163826""]",sac_red_stars_source_v1.zip
+sac_red_stars,70 Oph,"[""70 Oph""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 168413,"[""HD 168413""]",sac_red_stars_source_v1.zip
+sac_red_stars,TY Oph,"[""TY Oph""]",sac_red_stars_source_v1.zip
+sac_red_stars,R Ori,"[""R Ori""]",sac_red_stars_source_v1.zip
+sac_red_stars,W Ori,"[""W Ori""]",sac_red_stars_source_v1.zip
+sac_red_stars,CI Ori,"[""CI Ori""]",sac_red_stars_source_v1.zip
+sac_red_stars,RT Ori,"[""RT Ori""]",sac_red_stars_source_v1.zip
+sac_red_stars,Alpha Ori,"[""Alpha Ori""]",sac_red_stars_source_v1.zip
+sac_red_stars,GK Ori,"[""GK Ori""]",sac_red_stars_source_v1.zip
+sac_red_stars,BL Ori,"[""BL Ori""]",sac_red_stars_source_v1.zip
+sac_red_stars,V Pav,"[""V Pav""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 203133,"[""HD 203133""]",sac_red_stars_source_v1.zip
+sac_red_stars,RX Peg,"[""RX Peg""]",sac_red_stars_source_v1.zip
+sac_red_stars,TW Peg,"[""TW Peg""]",sac_red_stars_source_v1.zip
+sac_red_stars,RZ Peg,"[""RZ Peg""]",sac_red_stars_source_v1.zip
+sac_red_stars,IV Peg,"[""IV Peg""]",sac_red_stars_source_v1.zip
+sac_red_stars,XX Per,"[""XX Per""]",sac_red_stars_source_v1.zip
+sac_red_stars,FZ Per,"[""FZ Per""]",sac_red_stars_source_v1.zip
+sac_red_stars,RS Per,"[""RS Per""]",sac_red_stars_source_v1.zip
+sac_red_stars,S Per,"[""S Per""]",sac_red_stars_source_v1.zip
+sac_red_stars,BS Per,"[""BS Per""]",sac_red_stars_source_v1.zip
+sac_red_stars,YZ Per,"[""YZ Per""]",sac_red_stars_source_v1.zip
+sac_red_stars,Rho Per,"[""Rho Per""]",sac_red_stars_source_v1.zip
+sac_red_stars,Y Per,"[""Y Per""]",sac_red_stars_source_v1.zip
+sac_red_stars,TYC 3325-48-1,"[""TYC 3325-48-1""]",sac_red_stars_source_v1.zip
+sac_red_stars,V 466 Per,"[""V 466 Per""]",sac_red_stars_source_v1.zip
+sac_red_stars,AC Per,"[""AC Per""]",sac_red_stars_source_v1.zip
+sac_red_stars,FR Per,"[""FR Per""]",sac_red_stars_source_v1.zip
+sac_red_stars,SY Per,"[""SY Per""]",sac_red_stars_source_v1.zip
+sac_red_stars,GI Per,"[""GI Per""]",sac_red_stars_source_v1.zip
+sac_red_stars,W Pic,"[""W Pic""]",sac_red_stars_source_v1.zip
+sac_red_stars,55 Psc,"[""55 Psc""]",sac_red_stars_source_v1.zip
+sac_red_stars,Z Psc,"[""Z Psc""]",sac_red_stars_source_v1.zip
+sac_red_stars,TX Psc,"[""TX Psc""]",sac_red_stars_source_v1.zip
+sac_red_stars,L2 Pup,"[""L2 Pup""]",sac_red_stars_source_v1.zip
+sac_red_stars,Pi Pup,"[""Pi Pup""]",sac_red_stars_source_v1.zip
+sac_red_stars,BD -16 1986,"[""BD -16 1986""]",sac_red_stars_source_v1.zip
+sac_red_stars,KQ Pup,"[""KQ Pup""]",sac_red_stars_source_v1.zip
+sac_red_stars,BD -14 2039,"[""BD -14 2039""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 63032,"[""HD 63032""]",sac_red_stars_source_v1.zip
+sac_red_stars,IK Pup,"[""IK Pup""]",sac_red_stars_source_v1.zip
+sac_red_stars,RU Pup,"[""RU Pup""]",sac_red_stars_source_v1.zip
+sac_red_stars,FK Pup,"[""FK Pup""]",sac_red_stars_source_v1.zip
+sac_red_stars,IR Pup,"[""IR Pup""]",sac_red_stars_source_v1.zip
+sac_red_stars,IV Pup,"[""IV Pup""]",sac_red_stars_source_v1.zip
+sac_red_stars,AC Pup,"[""AC Pup""]",sac_red_stars_source_v1.zip
+sac_red_stars,YY Pyx,"[""YY Pyx""]",sac_red_stars_source_v1.zip
+sac_red_stars,CCCS 1277,"[""CCCS 1277""]",sac_red_stars_source_v1.zip
+sac_red_stars,R Pyx,"[""R Pyx""]",sac_red_stars_source_v1.zip
+sac_red_stars,UZ Pyx,"[""UZ Pyx""]",sac_red_stars_source_v1.zip
+sac_red_stars,UW Pyx,"[""UW Pyx""]",sac_red_stars_source_v1.zip
+sac_red_stars,R Scl,"[""R Scl""]",sac_red_stars_source_v1.zip
+sac_red_stars,Alpha Sco,"[""Alpha Sco""]",sac_red_stars_source_v1.zip
+sac_red_stars,SU Sco,"[""SU Sco""]",sac_red_stars_source_v1.zip
+sac_red_stars,V 901 Sco,"[""V 901 Sco""]",sac_red_stars_source_v1.zip
+sac_red_stars,TT Sco,"[""TT Sco""]",sac_red_stars_source_v1.zip
+sac_red_stars,BM Sco,"[""BM Sco""]",sac_red_stars_source_v1.zip
+sac_red_stars,SX Sco,"[""SX Sco""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 162611,"[""HD 162611""]",sac_red_stars_source_v1.zip
+sac_red_stars,TYC 5695-71-1,"[""TYC 5695-71-1""]",sac_red_stars_source_v1.zip
+sac_red_stars,BD -10 4719,"[""BD -10 4719""]",sac_red_stars_source_v1.zip
+sac_red_stars,RX Sct,"[""RX Sct""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 173348,"[""HD 173348""]",sac_red_stars_source_v1.zip
+sac_red_stars,S Sct,"[""S Sct""]",sac_red_stars_source_v1.zip
+sac_red_stars,T Sct,"[""T Sct""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 166105,"[""HD 166105""]",sac_red_stars_source_v1.zip
+sac_red_stars,FO Ser,"[""FO Ser""]",sac_red_stars_source_v1.zip
+sac_red_stars,DR Ser,"[""DR Ser""]",sac_red_stars_source_v1.zip
+sac_red_stars,W Sex,"[""W Sex""]",sac_red_stars_source_v1.zip
+sac_red_stars,X Sge,"[""X Sge""]",sac_red_stars_source_v1.zip
+sac_red_stars,VX Sgr,"[""VX Sgr""]",sac_red_stars_source_v1.zip
+sac_red_stars,SZ Sgr,"[""SZ Sgr""]",sac_red_stars_source_v1.zip
+sac_red_stars,V 781 Sgr,"[""V 781 Sgr""]",sac_red_stars_source_v1.zip
+sac_red_stars,h 5033,"[""h 5033""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 164562,"[""HD 164562""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 167976,"[""HD 167976""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 167976,"[""HD 167976""]",sac_red_stars_source_v1.zip
+sac_red_stars,V4028 Sgr,"[""V4028 Sgr""]",sac_red_stars_source_v1.zip
+sac_red_stars,SS Sgr,"[""SS Sgr""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 170820,"[""HD 170820""]",sac_red_stars_source_v1.zip
+sac_red_stars,BD -19 5053,"[""BD -19 5053""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 174707,"[""HD 174707""]",sac_red_stars_source_v1.zip
+sac_red_stars,V 1942 Sgr,"[""V 1942 Sgr""]",sac_red_stars_source_v1.zip
+sac_red_stars,AQ Sgr,"[""AQ Sgr""]",sac_red_stars_source_v1.zip
+sac_red_stars,UW Sgr,"[""UW Sgr""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 26748,"[""HD 26748""]",sac_red_stars_source_v1.zip
+sac_red_stars,Phi Tau,"[""Phi Tau""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 27482,"[""HD 27482""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 29496,"[""HD 29496""]",sac_red_stars_source_v1.zip
+sac_red_stars,TT Tau,"[""TT Tau""]",sac_red_stars_source_v1.zip
+sac_red_stars,CE Tau,"[""CE Tau""]",sac_red_stars_source_v1.zip
+sac_red_stars,TU Tau,"[""TU Tau""]",sac_red_stars_source_v1.zip
+sac_red_stars,CP Tau,"[""CP Tau""]",sac_red_stars_source_v1.zip
+sac_red_stars,Y Tau,"[""Y Tau""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 38451,"[""HD 38451""]",sac_red_stars_source_v1.zip
+sac_red_stars,X Tra,"[""X Tra""]",sac_red_stars_source_v1.zip
+sac_red_stars,RT UMa,"[""RT UMa""]",sac_red_stars_source_v1.zip
+sac_red_stars,VY UMa,"[""VY UMa""]",sac_red_stars_source_v1.zip
+sac_red_stars,S UMa,"[""S UMa""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 65424,"[""HD 65424""]",sac_red_stars_source_v1.zip
+sac_red_stars,KZ Vel,"[""KZ Vel""]",sac_red_stars_source_v1.zip
+sac_red_stars,X Vel,"[""X Vel""]",sac_red_stars_source_v1.zip
+sac_red_stars,GZ Vel,"[""GZ Vel""]",sac_red_stars_source_v1.zip
+sac_red_stars,SS Vir,"[""SS Vir""]",sac_red_stars_source_v1.zip
+sac_red_stars,RU Vir,"[""RU Vir""]",sac_red_stars_source_v1.zip
+sac_red_stars,SAO 158240,"[""SAO 158240""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 178690,"[""HD 178690""]",sac_red_stars_source_v1.zip
+sac_red_stars,CG Vul,"[""CG Vul""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 183556,"[""HD 183556""]",sac_red_stars_source_v1.zip
+sac_red_stars,EP Vul,"[""EP Vul""]",sac_red_stars_source_v1.zip
+sac_red_stars,HD 187238,"[""HD 187238""]",sac_red_stars_source_v1.zip
+sac_red_stars,NR Vul,"[""NR Vul""]",sac_red_stars_source_v1.zip
+sac_red_stars,BD Vul,"[""BD Vul""]",sac_red_stars_source_v1.zip
+sac_asterisms,7 Sisters of the Pole,"[""7 Sisters of the Pole""]",sac_asterisms_source_v1.zip
+sac_asterisms,Little Joe,"[""Little Joe""]",sac_asterisms_source_v1.zip
+sac_asterisms,Queen's 'W',"[""Queen's 'W'""]",sac_asterisms_source_v1.zip
+sac_asterisms,Eddie's Coaster,"[""Eddie's Coaster""]",sac_asterisms_source_v1.zip
+sac_asterisms,Queen's Kite,"[""Queen's Kite""]",sac_asterisms_source_v1.zip
+sac_asterisms,Golf Putter,"[""Golf Putter""]",sac_asterisms_source_v1.zip
+sac_asterisms,Triangulum Minor,"[""Triangulum Minor""]",sac_asterisms_source_v1.zip
+sac_asterisms,Diamond Ring,"[""Diamond Ring""]",sac_asterisms_source_v1.zip
+sac_asterisms,Lilium (Lilly),"[""Lilium (Lilly)""]",sac_asterisms_source_v1.zip
+sac_asterisms,Head of the Whale,"[""Head of the Whale""]",sac_asterisms_source_v1.zip
+sac_asterisms,Medusa's Head,"[""Medusa's Head""]",sac_asterisms_source_v1.zip
+sac_asterisms,Saxophone,"[""Saxophone""]",sac_asterisms_source_v1.zip
+sac_asterisms,Chi 1;2;3,"[""Chi 1;2;3""]",sac_asterisms_source_v1.zip
+sac_asterisms,Kemble's Kite,"[""Kemble's Kite""]",sac_asterisms_source_v1.zip
+sac_asterisms,Segment of Perseus,"[""Segment of Perseus""]",sac_asterisms_source_v1.zip
+sac_asterisms,Ally's Braid,"[""Ally's Braid""]",sac_asterisms_source_v1.zip
+sac_asterisms,Kemble's Cascade,"[""Kemble's Cascade""]",sac_asterisms_source_v1.zip
+sac_asterisms,Davis' Dog,"[""Davis' Dog""]",sac_asterisms_source_v1.zip
+sac_asterisms,Hyades,"[""Hyades""]",sac_asterisms_source_v1.zip
+sac_asterisms,Kids,"[""Kids""]",sac_asterisms_source_v1.zip
+sac_asterisms,Flying Minnow,"[""Flying Minnow""]",sac_asterisms_source_v1.zip
+sac_asterisms,Smiley Face,"[""Smiley Face""]",sac_asterisms_source_v1.zip
+sac_asterisms,Saucepan,"[""Saucepan""]",sac_asterisms_source_v1.zip
+sac_asterisms,Lambda-Lambda,"[""Lambda-Lambda""]",sac_asterisms_source_v1.zip
+sac_asterisms,Spermatozoon,"[""Spermatozoon""]",sac_asterisms_source_v1.zip
+sac_asterisms,African Buffalo Horns,"[""African Buffalo Horns""]",sac_asterisms_source_v1.zip
+sac_asterisms,False Kids,"[""False Kids""]",sac_asterisms_source_v1.zip
+sac_asterisms,Heavenly 'G',"[""Heavenly 'G'""]",sac_asterisms_source_v1.zip
+sac_asterisms,Winter Triangle,"[""Winter Triangle""]",sac_asterisms_source_v1.zip
+sac_asterisms,Orion's Belt,"[""Orion's Belt""]",sac_asterisms_source_v1.zip
+sac_asterisms,Orion's Sword,"[""Orion's Sword""]",sac_asterisms_source_v1.zip
+sac_asterisms,Herschel's Telescope,"[""Herschel's Telescope""]",sac_asterisms_source_v1.zip
+sac_asterisms,Unicorn's Horn,"[""Unicorn's Horn""]",sac_asterisms_source_v1.zip
+sac_asterisms,Pakan's 3,"[""Pakan's 3""]",sac_asterisms_source_v1.zip
+sac_asterisms,Mini Orion,"[""Mini Orion""]",sac_asterisms_source_v1.zip
+sac_asterisms,Tuft in the tail,"[""Tuft in the tail""]",sac_asterisms_source_v1.zip
+sac_asterisms,Tiny Southern Cross,"[""Tiny Southern Cross""]",sac_asterisms_source_v1.zip
+sac_asterisms,Argo Navis,"[""Argo Navis""]",sac_asterisms_source_v1.zip
+sac_asterisms,Little Crab,"[""Little Crab""]",sac_asterisms_source_v1.zip
+sac_asterisms,Southern Little Queen,"[""Southern Little Queen""]",sac_asterisms_source_v1.zip
+sac_asterisms,Manger,"[""Manger""]",sac_asterisms_source_v1.zip
+sac_asterisms,Head of Hydra,"[""Head of Hydra""]",sac_asterisms_source_v1.zip
+sac_asterisms,False Cross,"[""False Cross""]",sac_asterisms_source_v1.zip
+sac_asterisms,Sickle,"[""Sickle""]",sac_asterisms_source_v1.zip
+sac_asterisms,Diamond Cross,"[""Diamond Cross""]",sac_asterisms_source_v1.zip
+sac_asterisms,Sailboat Cluster,"[""Sailboat Cluster""]",sac_asterisms_source_v1.zip
+sac_asterisms,Parabola,"[""Parabola""]",sac_asterisms_source_v1.zip
+sac_asterisms,Broken engagement Ring,"[""Broken engagement Ring""]",sac_asterisms_source_v1.zip
+sac_asterisms,Pointers (North),"[""Pointers (North)""]",sac_asterisms_source_v1.zip
+sac_asterisms,Big Dipper,"[""Big Dipper""]",sac_asterisms_source_v1.zip
+sac_asterisms,Sail,"[""Sail""]",sac_asterisms_source_v1.zip
+sac_asterisms,Southern Cross,"[""Southern Cross""]",sac_asterisms_source_v1.zip
+sac_asterisms,Stargate,"[""Stargate""]",sac_asterisms_source_v1.zip
+sac_asterisms,Jaws,"[""Jaws""]",sac_asterisms_source_v1.zip
+sac_asterisms,Skip Loader,"[""Skip Loader""]",sac_asterisms_source_v1.zip
+sac_asterisms,Horse and Rider,"[""Horse and Rider""]",sac_asterisms_source_v1.zip
+sac_asterisms,Night Owl (Noctus),"[""Night Owl (Noctus)""]",sac_asterisms_source_v1.zip
+sac_asterisms,Dark Emu,"[""Dark Emu""]",sac_asterisms_source_v1.zip
+sac_asterisms,Napoleon's Hat,"[""Napoleon's Hat""]",sac_asterisms_source_v1.zip
+sac_asterisms,Pointers (South),"[""Pointers (South)""]",sac_asterisms_source_v1.zip
+sac_asterisms,Kite,"[""Kite""]",sac_asterisms_source_v1.zip
+sac_asterisms,Mini Scorpion,"[""Mini Scorpion""]",sac_asterisms_source_v1.zip
+sac_asterisms,Golden Horseshoe,"[""Golden Horseshoe""]",sac_asterisms_source_v1.zip
+sac_asterisms,Guardians of the Pole,"[""Guardians of the Pole""]",sac_asterisms_source_v1.zip
+sac_asterisms,Quadrans Muralis,"[""Quadrans Muralis""]",sac_asterisms_source_v1.zip
+sac_asterisms,Three Patriarchs,"[""Three Patriarchs""]",sac_asterisms_source_v1.zip
+sac_asterisms,Zig Zag,"[""Zig Zag""]",sac_asterisms_source_v1.zip
+sac_asterisms,Mini - Coathanger,"[""Mini - Coathanger""]",sac_asterisms_source_v1.zip
+sac_asterisms,Backwards 5,"[""Backwards 5""]",sac_asterisms_source_v1.zip
+sac_asterisms,Little Dipper,"[""Little Dipper""]",sac_asterisms_source_v1.zip
+sac_asterisms,Keystone,"[""Keystone""]",sac_asterisms_source_v1.zip
+sac_asterisms,Table of Scorpius,"[""Table of Scorpius""]",sac_asterisms_source_v1.zip
+sac_asterisms,Coffin,"[""Coffin""]",sac_asterisms_source_v1.zip
+sac_asterisms,Hercules's Club,"[""Hercules's Club""]",sac_asterisms_source_v1.zip
+sac_asterisms,Bowtie,"[""Bowtie""]",sac_asterisms_source_v1.zip
+sac_asterisms,Fish Hook,"[""Fish Hook""]",sac_asterisms_source_v1.zip
+sac_asterisms,Sudor Ophiuchi,"[""Sudor Ophiuchi""]",sac_asterisms_source_v1.zip
+sac_asterisms,Stinger of Scorpius,"[""Stinger of Scorpius""]",sac_asterisms_source_v1.zip
+sac_asterisms,Lozenge,"[""Lozenge""]",sac_asterisms_source_v1.zip
+sac_asterisms,Ruby Ring,"[""Ruby Ring""]",sac_asterisms_source_v1.zip
+sac_asterisms,Bull of Poniatowski,"[""Bull of Poniatowski""]",sac_asterisms_source_v1.zip
+sac_asterisms,Jenn's Confluence,"[""Jenn's Confluence""]",sac_asterisms_source_v1.zip
+sac_asterisms,HSL Chain,"[""HSL Chain""]",sac_asterisms_source_v1.zip
+sac_asterisms,Offramp,"[""Offramp""]",sac_asterisms_source_v1.zip
+sac_asterisms,X Marks The Spot,"[""X Marks The Spot""]",sac_asterisms_source_v1.zip
+sac_asterisms,Little Queen,"[""Little Queen""]",sac_asterisms_source_v1.zip
+sac_asterisms,Teapot,"[""Teapot""]",sac_asterisms_source_v1.zip
+sac_asterisms,Button Hook,"[""Button Hook""]",sac_asterisms_source_v1.zip
+sac_asterisms,Essertoo String,"[""Essertoo String""]",sac_asterisms_source_v1.zip
+sac_asterisms,Swoosh,"[""Swoosh""]",sac_asterisms_source_v1.zip
+sac_asterisms,Teaspoon,"[""Teaspoon""]",sac_asterisms_source_v1.zip
+sac_asterisms,Coathanger,"[""Coathanger""]",sac_asterisms_source_v1.zip
+sac_asterisms,Arrowchain,"[""Arrowchain""]",sac_asterisms_source_v1.zip
+sac_asterisms,Summer Triangle,"[""Summer Triangle""]",sac_asterisms_source_v1.zip
+sac_asterisms,Fairy Ring,"[""Fairy Ring""]",sac_asterisms_source_v1.zip
+sac_asterisms,Red Necked Emu,"[""Red Necked Emu""]",sac_asterisms_source_v1.zip
+sac_asterisms,Northern Cross,"[""Northern Cross""]",sac_asterisms_source_v1.zip
+sac_asterisms,Theta Delphini,"[""Theta Delphini""]",sac_asterisms_source_v1.zip
+sac_asterisms,Job's Coffin,"[""Job's Coffin""]",sac_asterisms_source_v1.zip
+sac_asterisms,Dark Rift,"[""Dark Rift""]",sac_asterisms_source_v1.zip
+sac_asterisms,Toadstool,"[""Toadstool""]",sac_asterisms_source_v1.zip
+sac_asterisms,Horseshoe,"[""Horseshoe""]",sac_asterisms_source_v1.zip
+sac_asterisms,Air ballon,"[""Air ballon""]",sac_asterisms_source_v1.zip
+sac_asterisms,Cepheus OB2 Ass'n,"[""Cepheus OB2 Ass'n""]",sac_asterisms_source_v1.zip
+sac_asterisms,House of Cepheus,"[""House of Cepheus""]",sac_asterisms_source_v1.zip
+sac_asterisms,Crossbow,"[""Crossbow""]",sac_asterisms_source_v1.zip
+sac_asterisms,Water Jar,"[""Water Jar""]",sac_asterisms_source_v1.zip
+sac_asterisms,Stephan's Test,"[""Stephan's Test""]",sac_asterisms_source_v1.zip
+sac_asterisms,Great Square,"[""Great Square""]",sac_asterisms_source_v1.zip
+sac_asterisms,Lucky 7,"[""Lucky 7""]",sac_asterisms_source_v1.zip
+sac_asterisms,Circlet of Pisces,"[""Circlet of Pisces""]",sac_asterisms_source_v1.zip
+sac_asterisms,Airplane,"[""Airplane""]",sac_asterisms_source_v1.zip
+sac_asterisms,DNA Strand,"[""DNA Strand""]",sac_asterisms_source_v1.zip
+sac_asterisms,Frederick's Glory,"[""Frederick's Glory""]",sac_asterisms_source_v1.zip
+al_carbon_stars,R Sculptoris,"[""R Sculptoris""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,R Fornacis,"[""R Fornacis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,SAO 216512 (Eridanus),"[""SAO 216512 (Eridanus)""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,T Caeli,"[""T Caeli""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,SZ Leporis,"[""SZ Leporis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,W Pictoris,"[""W Pictoris""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,IV Canis Majoris,"[""IV Canis Majoris""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,N P Puppis,"[""N P Puppis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,V406 Puppis,"[""V406 Puppis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,RT Puppis,"[""RT Puppis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,R Pyxidis,"[""R Pyxidis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,UZ Pyxidis,"[""UZ Pyxidis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,X Velorum,"[""X Velorum""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,AB Antiliae,"[""AB Antiliae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,XZ Velorum,"[""XZ Velorum""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,U Antiliae,"[""U Antiliae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,SAO 222254 (Vela),"[""SAO 222254 (Vela)""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,TV Centauri,"[""TV Centauri""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,S Centauri,"[""S Centauri""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,UY Centauri 1,"[""UY Centauri 1""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,Z Lupi,"[""Z Lupi""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,V553 Centauri 2,"[""V553 Centauri 2""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,HM Librae 3,"[""HM Librae 3""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,SU Scorpii,"[""SU Scorpii""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,TT Scorpii,"[""TT Scorpii""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,SX Scorpii,"[""SX Scorpii""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,RY Sagittarii 4,"[""RY Sagittarii 4""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,T Indi,"[""T Indi""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,WZ Cassiopeiae,"[""WZ Cassiopeiae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,SU Andromedae,"[""SU Andromedae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,SAO 109003 (Pisces),"[""SAO 109003 (Pisces)""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,VX Andromedae,"[""VX Andromedae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,AQ Andromedae,"[""AQ Andromedae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,NSV 15196 (Andromeda),"[""NSV 15196 (Andromeda)""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,W Cassiopeiae,"[""W Cassiopeiae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,Z Piscium,"[""Z Piscium""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,V Arietis,"[""V Arietis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,SAO 129989 (Cetus),"[""SAO 129989 (Cetus)""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,UY Andromedae,"[""UY Andromedae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,V623 Cassiopeiae,"[""V623 Cassiopeiae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,Y Persei,"[""Y Persei""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,V466 Persei,"[""V466 Persei""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,U Camelopardalis,"[""U Camelopardalis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,UV Camelopardalis,"[""UV Camelopardalis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,XX Camelopardalis,"[""XX Camelopardalis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,ST Camelopardalis,"[""ST Camelopardalis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,TT Tauri,"[""TT Tauri""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,R Leporis,"[""R Leporis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,EL Aurigae,"[""EL Aurigae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,W Orionis,"[""W Orionis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,TX Aurigae,"[""TX Aurigae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,SY Eridani,"[""SY Eridani""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,UV Aurigae,"[""UV Aurigae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,S Aurigae,"[""S Aurigae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,RT Orionis,"[""RT Orionis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,S Camelopardalis,"[""S Camelopardalis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,TU Tauri,"[""TU Tauri""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,Y Tauri,"[""Y Tauri""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,FU Aurigae,"[""FU Aurigae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,TU Geminorum,"[""TU Geminorum""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,FU Monocerotis,"[""FU Monocerotis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,V Aurigae,"[""V Aurigae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,BL Orionis,"[""BL Orionis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,UU Aurigae,"[""UU Aurigae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,VW Geminorum,"[""VW Geminorum""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,GY Monocerotis,"[""GY Monocerotis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,RV Monocerotis,"[""RV Monocerotis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,V614 Monocerotis,"[""V614 Monocerotis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,RY Monocerotis,"[""RY Monocerotis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,W Canis Majoris,"[""W Canis Majoris""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,R Canis Minoris,"[""R Canis Minoris""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,BM Geminorum,"[""BM Geminorum""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,RU Camelopardalis,"[""RU Camelopardalis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,NQ Geminorum,"[""NQ Geminorum""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,RU Puppis,"[""RU Puppis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,X Cancri,"[""X Cancri""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,T Cancri,"[""T Cancri""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,Y Hydrae,"[""Y Hydrae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,U Hydrae,"[""U Hydrae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,VY Ursae Majoris,"[""VY Ursae Majoris""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,V Hydrae,"[""V Hydrae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,SS Virginis,"[""SS Virginis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,Y Canum Venaticorum,"[""Y Canum Venaticorum""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,RY Draconis,"[""RY Draconis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,SAO 157721 (Virgo),"[""SAO 157721 (Virgo)""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,V Coronae Borealis,"[""V Coronae Borealis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,RR Herculis,"[""RR Herculis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,V Ophiuchi,"[""V Ophiuchi""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,SAO 46574 (Hercules),"[""SAO 46574 (Hercules)""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,TW Ophiuchi,"[""TW Ophiuchi""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,SZ Sagittarii,"[""SZ Sagittarii""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,T Draconis,"[""T Draconis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,FO Serpentis,"[""FO Serpentis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,AC Herculis,"[""AC Herculis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,T Lyrae,"[""T Lyrae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,HK Lyrae,"[""HK Lyrae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,S Scuti,"[""S Scuti""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,UV Aquilae,"[""UV Aquilae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,V Aquilae,"[""V Aquilae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,V1942 Sagittarii,"[""V1942 Sagittarii""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,U Lyrae,"[""U Lyrae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,UX Draconis,"[""UX Draconis""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,NSV 11960 (Aquila),"[""NSV 11960 (Aquila)""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,AW Cygni,"[""AW Cygni""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,AQ Sagittarii,"[""AQ Sagittarii""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,TT Cygni,"[""TT Cygni""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,AX Cygni,"[""AX Cygni""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,V1469 Aquilae,"[""V1469 Aquilae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,BF Sagittae,"[""BF Sagittae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,X Sagittae,"[""X Sagittae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,SV Cygni,"[""SV Cygni""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,RY Cygni,"[""RY Cygni""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,RS Cygni,"[""RS Cygni""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,RT Capricorni,"[""RT Capricorni""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,U Cygni,"[""U Cygni""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,V Cygni,"[""V Cygni""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,CY Cygni,"[""CY Cygni""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,SAO 106516 (Delphinus),"[""SAO 106516 (Delphinus)""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,NSV 13571 (Vulpecula),"[""NSV 13571 (Vulpecula)""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,S Cephei,"[""S Cephei""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,V460 Cygni,"[""V460 Cygni""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,RV Cygni,"[""RV Cygni""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,RX Pegasi,"[""RX Pegasi""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,RZ Pegasi,"[""RZ Pegasi""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,RU Aquarii,"[""RU Aquarii""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,ST Andromedae,"[""ST Andromedae""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,TX Piscium,"[""TX Piscium""]",al_carbon_stars_source_v1.xlsx
+al_carbon_stars,SAO 128396 (Pisces),"[""SAO 128396 (Pisces)""]",al_carbon_stars_source_v1.xlsx
+al_dark_nebulae,B 142,"[""B 142""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 143,"[""B 143""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 34,"[""B 34""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 160,"[""B 160""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 161,"[""B 161""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 171,"[""B 171""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 365,"[""B 365""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 144,"[""B 144""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 145,"[""B 145""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 168,"[""B 168""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 352,"[""B 352""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 353,"[""B 353""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 361,"[""B 361""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,LDN 935,"[""LDN 935""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,LG3,"[""LG3""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,Northern Coalsack,"[""Northern Coalsack""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 37,"[""B 37""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 44,"[""B 44""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 64,"[""B 64""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 78,"[""B 78""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,Stem,"[""Stem""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,Fish's Mouth,"[""Fish's Mouth""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,Flame,"[""Flame""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 275,"[""B 275""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 103,"[""B 103""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 111,"[""B 111""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 119a,"[""B 119a""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 85,"[""B 85""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 86,"[""B 86""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 92,"[""B 92""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 93,"[""B 93""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,Lagoon,"[""Lagoon""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,Swan's neck,"[""Swan's neck""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 22,"[""B 22""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,The Great Rift,"[""The Great Rift""]",al_dark_required_source_v1.pdf
+al_dark_nebulae,B 137,"[""B 137""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,LDN 582,"[""LDN 582""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,LDN 617,"[""LDN 617""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 335,"[""B 335""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 139,"[""B 139""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 138,"[""B 138""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 337,"[""B 337""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 136,"[""B 136""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 135,"[""B 135""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 132,"[""B 132""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 130,"[""B 130""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 129,"[""B 129""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 127,"[""B 127""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 334,"[""B 334""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 26,"[""B 26""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 226,"[""B 226""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 29,"[""B 29""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 28,"[""B 28""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 27,"[""B 27""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 152,"[""B 152""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 150,"[""B 150""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 174,"[""B 174""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 173,"[""B 173""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 170,"[""B 170""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 169,"[""B 169""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 163,"[""B 163""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 162,"[""B 162""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,Be 157,"[""Be 157""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,LDN 889,"[""LDN 889""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 362,"[""B 362""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 343,"[""B 343""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 164,"[""B 164""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 228,"[""B 228""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,SL 7,"[""SL 7""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,SL 11,"[""SL 11""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 59,"[""B 59""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 66,"[""B 66""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 45,"[""B 45""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 268,"[""B 268""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 83a,"[""B 83a""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 62,"[""B 62""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 67a,"[""B 67a""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 60,"[""B 60""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 262,"[""B 262""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 261,"[""B 261""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 259,"[""B 259""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 256,"[""B 256""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 72,"[""B 72""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 69,"[""B 69""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 68,"[""B 68""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 67,"[""B 67""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 77,"[""B 77""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 65,"[""B 65""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 33,"[""B 33""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 35,"[""B 35""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 32,"[""B 32""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 31,"[""B 31""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 30,"[""B 30""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 36,"[""B 36""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 4,"[""B 4""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 5,"[""B 5""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 3,"[""B 3""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 287,"[""B 287""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 48,"[""B 48""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 50,"[""B 50""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 55,"[""B 55""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 56,"[""B 56""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 231,"[""B 231""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 233,"[""B 233""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 240,"[""B 240""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 242,"[""B 242""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 283,"[""B 283""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 117,"[""B 117""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 118,"[""B 118""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 97,"[""B 97""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 95,"[""B 95""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 115,"[""B 115""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 312,"[""B 312""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 104,"[""B 104""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 116,"[""B 116""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 114,"[""B 114""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 110,"[""B 110""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 112,"[""B 112""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 108,"[""B 108""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 101,"[""B 101""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 100,"[""B 100""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 320,"[""B 320""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 314,"[""B 314""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,LDN 557,"[""LDN 557""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 295,"[""B 295""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 87,"[""B 87""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 84a,"[""B 84a""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 289,"[""B 289""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 84,"[""B 84""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 303,"[""B 303""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 296,"[""B 296""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 90,"[""B 90""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 88,"[""B 88""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 89,"[""B 89""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 214,"[""B 214""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 215,"[""B 215""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 7,"[""B 7""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 10,"[""B 10""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 211,"[""B 211""]",al_dark_optional_source_v1.pdf
+al_dark_nebulae,B 213,"[""B 213""]",al_dark_optional_source_v1.pdf

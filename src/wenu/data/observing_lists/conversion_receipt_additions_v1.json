@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "source_registry_sha256": "84bb6c963cf856e86a33db1f11141ef16112619a9a21995af361c7cff52cb710",
+  "source_sha256": {
+    "sac_urban_source_v1.html": "3a739f9fb896def7bf8eb13cb18e1e4ffd01e6361f26fb9a32a03b4dbc4dd70b",
+    "sac_beyond_ngc_source_v1.html": "29e12322de517e9719a231e8b6b98caf6a664fa14667aa1832feec4419ed8a33",
+    "sac_red_stars_source_v1.zip": "8a751a7b0167aacc4c886eb1d89f3dd536064df5645f4c4cb71d33a5e20aea73",
+    "sac_asterisms_source_v1.zip": "5ac85e27ca1f25657aa5322150a0b5b495f3ef8e140e042ffd11bb6e6a238d47",
+    "al_carbon_stars_source_v1.xlsx": "c42630277d3a131339f66579a5dcb73f2edbbf34ec2431a3ace2af425621bdda",
+    "al_dark_required_source_v1.pdf": "5d6bc6a591fc18117d86472a3fee340fba198fd99bd755b3536d9649668cb4a0",
+    "al_dark_optional_source_v1.pdf": "8df3ad7835ad4b37f481f3c671e85a2a4e819dc30a13c3e44523c6a70dc786eb"
+  },
+  "products": [
+    {
+      "file": "sac_urban_list_v1.csv",
+      "rows": 100,
+      "bytes": 9366,
+      "sha256": "8dea1c7dd8e22e231e15e959ea97a81a3386065b6a5724cc4d0e082bb70f3e6d"
+    },
+    {
+      "file": "sac_beyond_ngc_list_v1.csv",
+      "rows": 110,
+      "bytes": 11271,
+      "sha256": "c7c521e9c5c2fa921276d5798f1afe5fd0381635d577edf8cfb941b4872ba605"
+    },
+    {
+      "file": "sac_red_stars_list_v1.csv",
+      "rows": 333,
+      "bytes": 37675,
+      "sha256": "8916246a38f27ea849017575e25ba9bc3f1da94677152893c36755fdbf2d5af0"
+    },
+    {
+      "file": "sac_asterisms_list_v1.csv",
+      "rows": 114,
+      "bytes": 20982,
+      "sha256": "200427da8e0d6b25ccfbe42c2aeb20762b674d5e536409ba0805b12ed054f7b8"
+    },
+    {
+      "file": "al_carbon_stars_list_v1.csv",
+      "rows": 128,
+      "bytes": 15327,
+      "sha256": "dd49686cf630c5d8f17209a9e8cbc438fca4a0c52fe7ce58bc6bc37d0a77bb51"
+    },
+    {
+      "file": "al_dark_nebulae_list_v1.csv",
+      "rows": 140,
+      "bytes": 10919,
+      "sha256": "44026a4876437859ebc8552508ab6f00d0971747fc944a17358f875465ee041b"
+    },
+    {
+      "file": "observing_memberships_v1.csv",
+      "rows": 925,
+      "bytes": 64515,
+      "sha256": "9b711b77f7e7084371979384e57f86273637c81cf706c4aa74dd49d29512f803"
+    }
+  ],
+  "policy": "Six supplementary lists; exact primary identities only. Dark-nebula coordinate extraction excludes narrative aliases; Great Rift has no centre."
+}

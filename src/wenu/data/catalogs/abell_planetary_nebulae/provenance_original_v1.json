@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "source_registry": "observing_sources_v1.json",
+  "source_registry_sha256": "a8f02a20a407d1558a71649549de8cb7827f1093edab72320b8900f8cd23066e",
+  "registry_metadata": {
+    "schema_version": 1,
+    "acquisition_version": "v1",
+    "created_utc": "2026-10-13T19:36:37.025607+00:00",
+    "repository_base": "8e9b193a608bcdbcc34e10d87f32ab678bcec60d",
+    "scope": "Source acquisition only; no target filtering, union, physical classification adoption or chart changes.",
+    "archive": "wenu_observing_catalogues_v1.zip",
+    "aliases": [
+      {
+        "requested_title": "Best of the NGC",
+        "catalogue_id": "sac_best_ngc",
+        "status": "Generic label mapped to SAC; no independent second publisher/list verified"
+      }
+    ],
+    "excluded_attempts": [
+      {
+        "file": "barnard_list_v1.dat",
+        "reason": "HTTP200 HTML anti-bot response; not catalogue data"
+      },
+      {
+        "file": "barnard_notes_v1.dat",
+        "reason": "HTTP200 HTML anti-bot response; not catalogue data"
+      }
+    ]
+  },
+  "source_products": [
+    {
+      "file": "abell1966_table2_v1.pdf",
+      "bytes": 115906,
+      "sha256": "3246e00ff7803d672f71fdb1a548dfad19fd7f22ec80b4b19b8a757b25f3f35a",
+      "observed_counts": {
+        "catalogue_entries": 86,
+        "source_pages_1_based": [
+          10,
+          11
+        ],
+        "normalization_status": "original scanned Table 2; OCR not accepted as numeric data"
+      },
+      "source": {
+        "file": "abell1966_source_v1.pdf",
+        "url": "https://articles.adsabs.harvard.edu/pdf/1966ApJ...144..259A",
+        "final_url": "https://articles.adsabs.harvard.edu/pdf/1966ApJ...144..259A",
+        "sha256": "afb3c43d096134cfb17d86f3636616e1bcaa27f15348b722056d493d2974bfbe",
+        "bytes": 3180168,
+        "retrieved_utc": "2026-10-13T19:31:51.168581+00:00",
+        "content_type": "application/pdf"
+      },
+      "derivation": "Original Table 2 pages 10-11 extracted with pypdf; original paper pages 268-269. No OCR normalization."
+    }
+  ],
+  "source_descriptions": [
+    {
+      "catalogue_id": "abell_planetary_nebulae",
+      "title": "Abell 1966 planetary-nebula candidates",
+      "files": [
+        "abell1966_table2_v1.pdf"
+      ],
+      "nominal_or_programme_count": 86,
+      "publisher": "G.O. Abell, ApJ 144,259 (1966); NASA ADS historical scan",
+      "landing_url": "https://doi.org/10.1086/148602",
+      "notes": "86 historically provisional PN entries in original Table 2, including subsequently disputed classifications. Source coordinates labelled 1950; no automatic ICRS conversion. Scanned table is acquired, numeric normalization awaits validated transcription; OCR is not accepted data.",
+      "rights_status": "Source attribution retained; no new public redistribution licence inferred from download availability.",
+      "licence_observation": "Historical AAS/ApJ scan; source-table extraction only; no new open redistribution licence inferred."
+    }
+  ],
+  "converted_products": []
+}

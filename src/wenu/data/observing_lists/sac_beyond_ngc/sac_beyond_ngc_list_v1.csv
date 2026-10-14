@@ -1,0 +1,111 @@
+identifier,source_file,source_column_1,source_column_2,source_column_3,source_column_4,source_column_5,source_column_6,source_column_7,source_column_8
+Abell 262,sac_beyond_ngc_source_v1.html,Abell 262,AND,GAC,01 52.7,+36 09,13,173,Includes NGC 708 and 753
+B133,sac_beyond_ngc_source_v1.html,B133,AQL,DN,19 06.1,-06 50,—,10X5,2 deg south of Lamba Aql
+IC 4846,sac_beyond_ngc_source_v1.html,IC 4846,AQL,PN,19 15.7,-08 59,12,2″,Tiny disk in 13″ at 220X
+B142-3,sac_beyond_ngc_source_v1.html,B142-3,AQL,DN,19 40.7,+10 57,—,80×50,Big; west of Altair
+Pal 11,sac_beyond_ngc_source_v1.html,Pal 11,AQL,GC,19 45.3,-08 02,11.9,3.2,Low surface brightness
+IC 405,sac_beyond_ngc_source_v1.html,IC 405,AUR,EN,05 16.2,+34 16,—,30×19,Flaming Star Nebula
+IC 410,sac_beyond_ngc_source_v1.html,IC 410,AUR,EN,05 22.6,+33 31,—,20,Faint neb; invol w/NGC1893
+Sh2-224,sac_beyond_ngc_source_v1.html,Sh2-224,AUR,SNR,05 27.3,+42 59,—,20X3,Very faint in 13″ w/UHC
+IC 2149,sac_beyond_ngc_source_v1.html,IC 2149,AUR,PN,05 56.3,+46 07,10,10″,"Bright, small, 11m cent*"
+King 6,sac_beyond_ngc_source_v1.html,King 6,CAM,OC,03 28.1,+56 27,—,7.0,24* mags 10..13 at 100X
+IC 342,sac_beyond_ngc_source_v1.html,IC 342,CAM,GAL,03 46.8,+68 06,10,18×17,SBc type; Kembles Cascade nr
+IC 3568,sac_beyond_ngc_source_v1.html,IC 3568,CAM,PN,12 32.9,+82 33,10.6,18″,12 mag cent*
+King 14,sac_beyond_ngc_source_v1.html,King 14,CAS,OC,00 31.9,+63 10,9.0,7.0,"Quite rich, 29 * in 10X6"
+IC 59,sac_beyond_ngc_source_v1.html,IC 59,CAS,EN,00 56.7,+61 04,—,10×5,Paired with IC 63
+Cr 463,sac_beyond_ngc_source_v1.html,Cr 463,CAS,OC,01 48.4,+71 57,5.7,36,44* at 60X in 13″
+Stock 2,sac_beyond_ngc_source_v1.html,Stock 2,CAS,OC,02 15.0,+59 16,4.0,60,Easy in Binos; near Dbl Cl
+IC 1795,sac_beyond_ngc_source_v1.html,IC 1795,CAS,EN,02 26.5,+62 04,—,27×13,Use nebula filter
+Mel 15,sac_beyond_ngc_source_v1.html,Mel 15,CAS,OC,02 32.6,+61 27,7.0,21,39* in IC 1805 neby
+IC 289,sac_beyond_ngc_source_v1.html,IC 289,CAS,PN,03 10.3,+61 20,12,30″,15 mag central*
+Tr 37,sac_beyond_ngc_source_v1.html,Tr 37,CEP,OC,21 39.0,+57 30,5.1,50,30* Invl in IC 1396 neby
+IC 1396,sac_beyond_ngc_source_v1.html,IC 1396,CEP,EN,21 39.1,+57 30,—,50,"Large, faint, Use neb filter"
+IC 1470,sac_beyond_ngc_source_v1.html,IC 1470,CEP,RN,23 05.2,+60 15,—,15×1,Reflection nebula
+IC 1613,sac_beyond_ngc_source_v1.html,IC 1613,CET,GAL,01 04.8,+02 07,12,11×9,Low surface br; Local Group
+IC 2165,sac_beyond_ngc_source_v1.html,IC 2165,CMA,PN,06 21.8,-12 59,10.5,9″x7″,Small disk at 220X in 13″
+Tombaugh 1,sac_beyond_ngc_source_v1.html,Tombaugh 1,CMA,OC,07 01.3,-19 40,10.5,5,38*; somewhat compressed
+Haffner 23,sac_beyond_ngc_source_v1.html,Haffner 23,CMA,OC,07 09.4,-16 57,—,11.0,abt 6 deg east of Sirius
+Sh2-301,sac_beyond_ngc_source_v1.html,Sh2-301,CMA,EN,07 0.8 –,18 29 1,0.5 8,x7 P,retty br; UHC filter helps
+Cr 140,sac_beyond_ngc_source_v1.html,Cr 140,CMA,OC,07 23.9,-32 12,4.0,42,Naked eye: 18* in binocs
+Mel 111,sac_beyond_ngc_source_v1.html,Mel 111,COM,OC,12 25.0,+26 00,2,275,Coma Star Cl; 32* in binos
+Abell 1656,sac_beyond_ngc_source_v1.html,Abell 1656,COM,GAC,12 59.8,+27 59,11,157,72 GAL br. than 15m in 2d
+Abell 2065,sac_beyond_ngc_source_v1.html,Abell 2065,CRB,GAC,15 22.1,+27 39,14,61,Difficult galaxy cluster
+PK 64+ 5.1,sac_beyond_ngc_source_v1.html,PK 64+ 5.1,CYG,PN,19 34.8,+30 31,9.6,5″,Campbell’s hydrogen star
+M1-92,sac_beyond_ngc_source_v1.html,M1-92,CYG,EN,19 36.3,+29 33,11.7,8″,Footprint Neb; like Dbl*
+IC 1318,sac_beyond_ngc_source_v1.html,IC 1318,CYG,EN,20 22.2,+40 15,—,60×30,Neby around Gamma CYG
+IC 5070,sac_beyond_ngc_source_v1.html,IC 5070,CYG,EN,20 50.8,+44 21,—,80,Pelican Neb; * 56 Cyg invl
+PK 80-6.1,sac_beyond_ngc_source_v1.html,PK 80-6.1,CYG,PN,21 02.3,+36 42,13.5,17″,Egg Nebula
+IC 5146,sac_beyond_ngc_source_v1.html,IC 5146,CYG,EN,21 53.4,+47 16,10,9.0,Cocoon Neb; end of dark lane
+UGC 10822,sac_beyond_ngc_source_v1.html,UGC 10822,DRA,GAL,17 20.2,+57 55,10,33X18,Draco Dwarf; Low Surf Br
+MCG-06-07-001,sac_beyond_ngc_source_v1.html,MCG-06-07-001,FOR,GAL,02 39.9,-34 32,8.1,17X12,Fornax Dwarf; Low Surf Br
+IC 443,sac_beyond_ngc_source_v1.html,IC 443,GEM,SNR,06 16.9,+22 47,—,50×40,Filament; close to Eta GEM
+Cr 89,sac_beyond_ngc_source_v1.html,Cr 89,GEM,OC,06 18.0,+23 38,5.7,35,15*
+PK194+ 2.1,sac_beyond_ngc_source_v1.html,PK194+ 2.1,GEM,PN,06 26.0,+17 47,12.4,10″,"Small disk, J 900."
+PK205+14.1,sac_beyond_ngc_source_v1.html,PK205+14.1,GEM,PN,07 29.0,+13 15,14.1,10×6,Medusa Neb; use filter; Abell
+Abell 2151,sac_beyond_ngc_source_v1.html,Abell 2151,HER,GC,16 05.1,+17 43,15,137,Her Gal Cl; very faint
+IC 4593,sac_beyond_ngc_source_v1.html,IC 4593,HER,PN,16 12.2,+12 04,11,10″,11 mag cent*; small
+PK 51+ 9.1,sac_beyond_ngc_source_v1.html,PK 51+ 9.1,HER,PN,18 49.8,+20 50,11.6,3″,13 mag cent*; very small
+PK 238+34.1,sac_beyond_ngc_source_v1.html,PK 238+34.1,HYA,PN,09 39.1,-02 48,13.4,268″,Very difficult in 13″
+Abell 1060,sac_beyond_ngc_source_v1.html,Abell 1060,HYA,GAC,10 36.8,-27 32,12.7,229,5 Gal/Deg
+IC 764,sac_beyond_ngc_source_v1.html,IC 764,HYA,GAL,12 10.2,-29 44,13,5×2,Low surface brightness
+IC 4351,sac_beyond_ngc_source_v1.html,IC 4351,HYA,GAL,13 57.9,-29 19,12.8,5X1,Edge-on spiral
+IC 1434,sac_beyond_ngc_source_v1.html,IC 1434,LAC,OC,22 10.5,+52 50,09.0,8.0,"fine cl,6 branches,st 12-15 m"
+IC 1442,sac_beyond_ngc_source_v1.html,IC 1442,LAC,OC,22 16.5,+54 03,09.1,5,Cl of neb stars
+IC 5217,sac_beyond_ngc_source_v1.html,IC 5217,LAC,PN,22 23.9,+50 57,12.5,8″X6″,14 mag central*
+UGC 5470,sac_beyond_ngc_source_v1.html,UGC 5470,LEO,GAL,10 08.4,+12 18,10.2,11X8,"PA 80, 0.3 N of Regulus"
+Abell 1367,sac_beyond_ngc_source_v1.html,Abell 1367,LEO,GAC,11 44.5,+19 50,14.0,157,More GAL >14 mag than any GAC
+IC 418,sac_beyond_ngc_source_v1.html,IC 418,LEP,PN,05 27.5,-12 42,11,10″,11 mag central*
+PK 342+27.1,sac_beyond_ngc_source_v1.html,PK 342+27.1,LIB,PN,15 22.3,-23 38,11.6,7,15 mag central*; small
+PK 164+31.1,sac_beyond_ngc_source_v1.html,PK 164+31.1,LYN,PN,07 57.8,+53 25,13,400″,NGC2474/75 are nearby
+PK 64+15.1,sac_beyond_ngc_source_v1.html,PK 64+15.1,LYR,PN,18 50.0,+35 15,13.3,17″,Pretty small; faint
+Steph 1,sac_beyond_ngc_source_v1.html,Steph 1,LYR,OC,18 53.5,+36 55,3.8,20,15* and Delta LYR
+IC 2177,sac_beyond_ngc_source_v1.html,IC 2177,MON,EN,07 05.1,-10 42,—,120×40,Eagle Nebula; long filament
+Mel 72,sac_beyond_ngc_source_v1.html,Mel 72,MON,OC,07 38.4,-10 41,10.0,10,"40*, many faint"
+IC 4634,sac_beyond_ngc_source_v1.html,IC 4634,OPH,PN,17 01.6,-21 50,11,10″,17 mag central*
+B 64,sac_beyond_ngc_source_v1.html,B 64,OPH,DN,17 17.2,-18 32,—,20,30′ preceding M9
+B 72,sac_beyond_ngc_source_v1.html,B 72,OPH,DN,17 23.5,-23 38,—,30,"The Snake, thin dark lane"
+B 78,sac_beyond_ngc_source_v1.html,B 78,OPH,DN,17 33.0,-26 00,—,200,Bowl of the Pipe
+IC 4665,sac_beyond_ngc_source_v1.html,IC 4665,OPH,OC,17 46.3,+05 43,4.2,41,30* mags 7…
+Cr 350,sac_beyond_ngc_source_v1.html,Cr 350,OPH,OC,17 48.1,+01 18,6.1,45,Scattered 32* at 60X in 13″
+PK190-17.1,sac_beyond_ngc_source_v1.html,PK190-17.1,ORI,PN,05 05.6,+10 42,12.5,11″,"13 mag central*, J 320"
+Cr 69,sac_beyond_ngc_source_v1.html,Cr 69,ORI,OC,05 35.1,+09 56,2.8,65,"Lambda ORI cluster, 20*"
+Cr 70,sac_beyond_ngc_source_v1.html,Cr 70,ORI,OC,05 36.0,-01 00,0.4,150,"Orions belt, 100 stars"
+IC 434/B33,sac_beyond_ngc_source_v1.html,IC 434/B33,ORI,EN,05 41.0,-02 24,—,60×10,B33=Horsehead Neb
+Sh2-276,sac_beyond_ngc_source_v1.html,Sh2-276,ORI,EN,05 48.0,+01 00,—,600,Barnard’s Loop; streamer
+Jones 1,sac_beyond_ngc_source_v1.html,Jones 1,PEG,PN,23 35.9,+30 28,12.7,314″,PK104-29.1; use filter
+Abell 426,sac_beyond_ngc_source_v1.html,Abell 426,PER,GAC,03 19.7,+41 30,13,252,Incl NGC 1275
+Mel 20,sac_beyond_ngc_source_v1.html,Mel 20,PER,OC,03 22.0,+49 00,1.2,185,Alpha Per Cl; 39* in binos
+IC 348,sac_beyond_ngc_source_v1.html,IC 348,PER,CN,03 44.6,+32 10,07.3,10X10,"pB,vL,vgbM"
+IC 351,sac_beyond_ngc_source_v1.html,IC 351,PER,PN,03 47.5,+35 03,12.4,8″X6″,15 mag central*
+Abell 194,sac_beyond_ngc_source_v1.html,Abell 194,PSC,GAC,01 25.5,-01 22,13,131,Includes NGC 541
+Cr 135,sac_beyond_ngc_source_v1.html,Cr 135,PUP,OC,07 17.0,-36 50,2.1,50,Scattered; 38* at 60X in 13″
+Mel 71,sac_beyond_ngc_source_v1.html,Mel 71,PUP,OC,07 37.5,-12 04,7.1,9,48*; compressed cluster
+Ru 44,sac_beyond_ngc_source_v1.html,Ru 44,PUP,OC,07 59.0,-28 35,7.2,5,52*; seen in binos
+PK 254+ 5.1,sac_beyond_ngc_source_v1.html,PK 254+ 5.1,PYX,PN,08 40.7,-32 23,11.0,11X6,abt 1 deg NW alpha PYX
+MCG-06-03-015,sac_beyond_ngc_source_v1.html,MCG-06-03-015,SCL,GAL,00 59.9,-33 42,10.5,40X31,Sculptor Dwarf; big and dim
+IC 5332,sac_beyond_ngc_source_v1.html,IC 5332,SCL,GAL,23 31.7,-36 22,10.6,4X4,Face-on; Low surface br.
+Cr 302,sac_beyond_ngc_source_v1.html,Cr 302,SCO,OC,16 26.0,-26 00,1.0,500,Antares moving cluster
+IC 4628,sac_beyond_ngc_source_v1.html,IC 4628,SCO,EN,16 57.0,-40 20,—,90×60,Very large
+Tr 24,sac_beyond_ngc_source_v1.html,Tr 24,SCO,OC,16 57.0,-40 40,9,60,"200*, rich; Harvard 12"
+Harvard 16,sac_beyond_ngc_source_v1.html,Harvard 16,SCO,OC,17 31.4,-36 51,10.0,15,Invl in Stinger
+Tr 30,sac_beyond_ngc_source_v1.html,Tr 30,SCO,OC,17 56.5,-35 19,8.8,15,In field of M 7;Harvard 18
+IC 1287,sac_beyond_ngc_source_v1.html,IC 1287,SCT,BN,18 31.6,-10 50,—,20X10,"* 5.5 in L,E neb"
+IC 1295,sac_beyond_ngc_source_v1.html,IC 1295,SCT,PN,18 54.6,-08 50,12.7,60″,Faint; 0.4deg ESE NGC 6712
+IC 1276,sac_beyond_ngc_source_v1.html,IC 1276,SER,GC,18 10.8,-07 13,10.3,7.1,"eeF,vL,v difficult,D* close p"
+IC 4756,sac_beyond_ngc_source_v1.html,IC 4756,SER,OC,18 39.0,+05 27,5.4,52,80* mags 8…
+UGC 5373,sac_beyond_ngc_source_v1.html,UGC 5373,SEX,GAL,10 00.0,+05 20,11.3,5X3,Sextans B dwarf; faint
+Sh2-84,sac_beyond_ngc_source_v1.html,Sh2-84,SGE,EN,19 49.0,+18 24,—,15×3,Faint streamer
+Harvard 20,sac_beyond_ngc_source_v1.html,Harvard 20,SGE,OC,19 53.1,+18 20,7.7,10,20* mags 11…
+IC 4997,sac_beyond_ngc_source_v1.html,IC 4997,SGE,PN,20 20.2,+16 45,11,2″,Look for disk w/filter; 14m*
+PK 359- 0.1,sac_beyond_ngc_source_v1.html,PK 359- 0.1,SGR,PN,17 47.9,-30 00,12,19X12,Low surface brightness
+B 86,sac_beyond_ngc_source_v1.html,B 86,SGR,DN,18 02.7,-27 50,—,4,Ink Spot; small
+IC 349,sac_beyond_ngc_source_v1.html,IC 349,TAU,BN,03 46.3,+23 56,—,30,"eF,vS,E 165 deg,dist 36″from"
+Mel 25,sac_beyond_ngc_source_v1.html,Mel 25,TAU,OC,04 27.0,+16 00,1,330,"Hyades; large, bright"
+IC 2087,sac_beyond_ngc_source_v1.html,IC 2087,TAU,EN,04 40.0,+25 44,—,2,Faint neby in B22 DN
+UGC 1281,sac_beyond_ngc_source_v1.html,UGC 1281,TRI,GAL,01 49.6,+32 35,12.6,5X1,
+UGC 9749,sac_beyond_ngc_source_v1.html,UGC 9749,UMI,GAL,15 08.8,+67 12,10.9,23X16,low surf brt; UMI dwarf
+3C 273,sac_beyond_ngc_source_v1.html,3C 273,VIR,QSO,12 29.1,+02 06,12,,Like D*; Brightest quasar
+Cr 399,sac_beyond_ngc_source_v1.html,Cr 399,VUL,OC,19 25.4,+20 11,3.6,60,The Coathanger; naked eye
+Stock 1,sac_beyond_ngc_source_v1.html,Stock 1,VUL,OC,19 35.8,+25 13,5.3,60,Easy in Binos; 47* in 40′
+Sh2-88,sac_beyond_ngc_source_v1.html,Sh2-88,VUL,EN,19 46.0,+25 20,11.5,18×6,Elong streamer; Use filter
+IC 4954,sac_beyond_ngc_source_v1.html,IC 4954,VUL,EN,20 04.8,+29 15,—,1,Faint dbl neby with 12m*

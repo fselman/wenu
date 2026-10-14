@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "source_registry": "observing_additions_v1.json",
+  "source_registry_sha256": "84bb6c963cf856e86a33db1f11141ef16112619a9a21995af361c7cff52cb710",
+  "registry_metadata": {
+    "schema_version": 1,
+    "version": "additions_v1",
+    "source_pages": {
+      "sac_red_stars": "https://www.saguaroastro.org/sac-downloads/",
+      "sac_asterisms": "https://www.saguaroastro.org/sac-downloads/",
+      "al_carbon_stars": "https://www.astroleague.org/carbon-star-observing-program/",
+      "al_dark_nebulae": "https://www.astroleague.org/dark-nebula-observing-program/"
+    },
+    "policy": "Source snapshots retain publisher editions, acquisition UTC, original URLs, bytes and SHA-256. Observing selections are not all-sky completeness samples. No catalogue adoption or software merge.",
+    "expected_records": {
+      "sac_urban": 100,
+      "sac_beyond_ngc": 110,
+      "sac_red_stars": 333,
+      "sac_asterisms": 114,
+      "al_carbon_stars": 128,
+      "al_dark_nebulae": 140
+    }
+  },
+  "source_products": [
+    {
+      "url": "https://www.astroleague.org/wp-content/uploads/2022/02/DN-RequiredObjects.pdf",
+      "final_url": "https://www.astroleague.org/wp-content/uploads/2022/02/DN-RequiredObjects.pdf",
+      "bytes": 91067,
+      "sha256": "5d6bc6a591fc18117d86472a3fee340fba198fd99bd755b3536d9649668cb4a0",
+      "retrieved_utc": "2026-10-13T20:27:59.583614+00:00",
+      "file": "al_dark_required_source_v1.pdf",
+      "catalogue": "al_dark_nebulae",
+      "edition": "required, revised January 14 2012"
+    },
+    {
+      "url": "https://www.astroleague.org/wp-content/uploads/2022/02/DN-Optional.pdf",
+      "final_url": "https://www.astroleague.org/wp-content/uploads/2022/02/DN-Optional.pdf",
+      "bytes": 198783,
+      "sha256": "8df3ad7835ad4b37f481f3c671e85a2a4e819dc30a13c3e44523c6a70dc786eb",
+      "retrieved_utc": "2026-10-13T20:28:04.317500+00:00",
+      "file": "al_dark_optional_source_v1.pdf",
+      "catalogue": "al_dark_nebulae",
+      "edition": "optional, publisher PDF"
+    }
+  ],
+  "source_descriptions": [],
+  "converted_products": [
+    {
+      "file": "al_dark_nebulae_list_v1.csv",
+      "rows": 140,
+      "bytes": 10919,
+      "sha256": "44026a4876437859ebc8552508ab6f00d0971747fc944a17358f875465ee041b"
+    }
+  ]
+}

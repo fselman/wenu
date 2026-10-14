@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "source_registry": "observing_sources_v1.json",
+  "source_registry_sha256": "a8f02a20a407d1558a71649549de8cb7827f1093edab72320b8900f8cd23066e",
+  "registry_metadata": {
+    "schema_version": 1,
+    "acquisition_version": "v1",
+    "created_utc": "2026-10-13T19:36:37.025607+00:00",
+    "repository_base": "8e9b193a608bcdbcc34e10d87f32ab678bcec60d",
+    "scope": "Source acquisition only; no target filtering, union, physical classification adoption or chart changes.",
+    "archive": "wenu_observing_catalogues_v1.zip",
+    "aliases": [
+      {
+        "requested_title": "Best of the NGC",
+        "catalogue_id": "sac_best_ngc",
+        "status": "Generic label mapped to SAC; no independent second publisher/list verified"
+      }
+    ],
+    "excluded_attempts": [
+      {
+        "file": "barnard_list_v1.dat",
+        "reason": "HTTP200 HTML anti-bot response; not catalogue data"
+      },
+      {
+        "file": "barnard_notes_v1.dat",
+        "reason": "HTTP200 HTML anti-bot response; not catalogue data"
+      }
+    ]
+  },
+  "source_products": [
+    {
+      "file": "barnard_vizier_v1.tsv",
+      "bytes": 22084,
+      "sha256": "8a05c3c91ca3916995e14dc11a5515b88df51fa3dfd75d9e5ecf188eb6bd54d0",
+      "observed_counts": {
+        "rows": 349
+      },
+      "source": {
+        "file": "barnard_vizier_v1.tsv",
+        "url": "https://vizier.cds.unistra.fr/viz-bin/asu-tsv?-source=VII%2F220A%2Fbarnard&-out.all=1&-out.max=unlimited",
+        "final_url": "https://vizier.cds.unistra.fr/viz-bin/asu-tsv?-source=VII%2F220A%2Fbarnard&-out.all=1&-out.max=unlimited",
+        "sha256": "8a05c3c91ca3916995e14dc11a5515b88df51fa3dfd75d9e5ecf188eb6bd54d0",
+        "bytes": 22084,
+        "retrieved_utc": "2026-10-13T19:31:45.814582+00:00",
+        "content_type": "text/tab-separated-values"
+      }
+    },
+    {
+      "file": "barnard_notes_v1.tsv",
+      "bytes": 41677,
+      "sha256": "c6390a7c477c220c81763c124dde444e593cc7b9abf00acf6efef0df57624baa",
+      "observed_counts": {
+        "rows": 603
+      },
+      "source": {
+        "file": "barnard_notes_v1.tsv",
+        "url": "https://vizier.cds.unistra.fr/viz-bin/asu-tsv?-source=VII%2F220A%2Fnotes&-out.all=1&-out.max=unlimited",
+        "final_url": "https://vizier.cds.unistra.fr/viz-bin/asu-tsv?-source=VII%2F220A%2Fnotes&-out.all=1&-out.max=unlimited",
+        "sha256": "c6390a7c477c220c81763c124dde444e593cc7b9abf00acf6efef0df57624baa",
+        "bytes": 41677,
+        "retrieved_utc": "2026-10-13T19:35:23.529270+00:00"
+      }
+    },
+    {
+      "file": "barnard_source_v1.txt",
+      "bytes": 4996,
+      "sha256": "0e3712b7ced37610a36123436acce1d6b4d71189b88f008bfc60faa8352045f4",
+      "observed_counts": null,
+      "source": {
+        "key": "barnard",
+        "url": "https://cdsarc.cds.unistra.fr/ftp/VII/220A/ReadMe",
+        "final_url": "https://cdsarc.cds.unistra.fr/ftp/VII/220A/ReadMe",
+        "file": "barnard_source_v1.txt",
+        "bytes": 4996,
+        "sha256": "0e3712b7ced37610a36123436acce1d6b4d71189b88f008bfc60faa8352045f4",
+        "retrieved_utc": "2026-10-13T19:28:53.084430+00:00"
+      }
+    }
+  ],
+  "source_descriptions": [
+    {
+      "catalogue_id": "barnard",
+      "title": "Barnard dark nebulae",
+      "files": [
+        "barnard_vizier_v1.tsv",
+        "barnard_notes_v1.tsv",
+        "barnard_source_v1.txt"
+      ],
+      "nominal_or_programme_count": 349,
+      "publisher": "E.E. Barnard (1927); CDS VII/220A; NAOJ and Bill Gray electronic compilation",
+      "landing_url": "https://cdsarc.cds.unistra.fr/viz-bin/cat/VII/220A",
+      "notes": "349 entries via official VizieR ASU interface; data-centre record number is not object ID. Names include suffixes/gaps. B1875 FK4 and J2000 FK5 positions retain source definitions. Direct FTP .dat URLs returned anti-bot HTML and were excluded.",
+      "rights_status": "Source attribution retained; no new public redistribution licence inferred from download availability.",
+      "licence_observation": "CDS rights URI retained in original TSV; original Barnard publication dates to 1927. Electronic compilation attribution retained."
+    }
+  ],
+  "converted_products": []
+}

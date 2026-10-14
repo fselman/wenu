@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "source_registry": "observing_sources_v1.json",
+  "source_registry_sha256": "a8f02a20a407d1558a71649549de8cb7827f1093edab72320b8900f8cd23066e",
+  "registry_metadata": {
+    "schema_version": 1,
+    "acquisition_version": "v1",
+    "created_utc": "2026-10-13T19:36:37.025607+00:00",
+    "repository_base": "8e9b193a608bcdbcc34e10d87f32ab678bcec60d",
+    "scope": "Source acquisition only; no target filtering, union, physical classification adoption or chart changes.",
+    "archive": "wenu_observing_catalogues_v1.zip",
+    "aliases": [
+      {
+        "requested_title": "Best of the NGC",
+        "catalogue_id": "sac_best_ngc",
+        "status": "Generic label mapped to SAC; no independent second publisher/list verified"
+      }
+    ],
+    "excluded_attempts": [
+      {
+        "file": "barnard_list_v1.dat",
+        "reason": "HTTP200 HTML anti-bot response; not catalogue data"
+      },
+      {
+        "file": "barnard_notes_v1.dat",
+        "reason": "HTTP200 HTML anti-bot response; not catalogue data"
+      }
+    ]
+  },
+  "source_products": [
+    {
+      "file": "caldwell_list_v1.csv",
+      "bytes": 4582,
+      "sha256": "2c0f46231afa4ce5051df5680aec4c62261415e0f70e7b8d6baf70d1782c1dfd",
+      "observed_counts": {
+        "rows": 109
+      },
+      "source": {
+        "file": "caldwell_list_v1.html",
+        "url": "https://old.astroleague.org/al/obsclubs/caldwell/cldwlist.html",
+        "final_url": "https://old.astroleague.org/al/obsclubs/caldwell/cldwlist.html",
+        "bytes": 67775,
+        "sha256": "3998e5264f6da3c946608f0e3c0bb3be373dce182c9229e478f62c4ef86040ae",
+        "retrieved_utc": "2026-10-13T19:30:29.028274+00:00"
+      },
+      "derivation": "HTML table factual columns only; source descriptions omitted; values remain source strings."
+    }
+  ],
+  "source_descriptions": [
+    {
+      "catalogue_id": "caldwell",
+      "title": "Caldwell",
+      "files": [
+        "caldwell_list_v1.csv"
+      ],
+      "nominal_or_programme_count": 109,
+      "publisher": "Patrick Moore / Astronomical League",
+      "landing_url": "https://old.astroleague.org/al/obsclubs/caldwell/cldwlist.html",
+      "notes": "Existing packaged OpenNGC parameter resource and CC BY-SA 4.0 provenance remain authoritative for Wenu parameters; this is additional observing-membership evidence.",
+      "rights_status": "Source attribution retained; no new public redistribution licence inferred from download availability.",
+      "licence_observation": "Publisher website states All Rights Reserved; no explicit open redistribution licence verified."
+    }
+  ],
+  "converted_products": [
+    {
+      "file": "caldwell_list_v1.csv",
+      "source_file": "caldwell_list_v1.csv",
+      "rows": 109,
+      "columns": [
+        "Caldwell_number",
+        "source_identifier",
+        "constellation",
+        "source_type",
+        "RA_h_m",
+        "Dec_deg_arcmin",
+        "magnitude",
+        "size"
+      ],
+      "status": "source_fields_preserved",
+      "bytes": 4582,
+      "sha256": "2c0f46231afa4ce5051df5680aec4c62261415e0f70e7b8d6baf70d1782c1dfd"
+    }
+  ]
+}

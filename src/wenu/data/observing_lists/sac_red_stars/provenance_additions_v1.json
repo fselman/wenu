@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "source_registry": "observing_additions_v1.json",
+  "source_registry_sha256": "84bb6c963cf856e86a33db1f11141ef16112619a9a21995af361c7cff52cb710",
+  "registry_metadata": {
+    "schema_version": 1,
+    "version": "additions_v1",
+    "source_pages": {
+      "sac_red_stars": "https://www.saguaroastro.org/sac-downloads/",
+      "sac_asterisms": "https://www.saguaroastro.org/sac-downloads/",
+      "al_carbon_stars": "https://www.astroleague.org/carbon-star-observing-program/",
+      "al_dark_nebulae": "https://www.astroleague.org/dark-nebula-observing-program/"
+    },
+    "policy": "Source snapshots retain publisher editions, acquisition UTC, original URLs, bytes and SHA-256. Observing selections are not all-sky completeness samples. No catalogue adoption or software merge.",
+    "expected_records": {
+      "sac_urban": 100,
+      "sac_beyond_ngc": 110,
+      "sac_red_stars": 333,
+      "sac_asterisms": 114,
+      "al_carbon_stars": 128,
+      "al_dark_nebulae": 140
+    }
+  },
+  "source_products": [
+    {
+      "url": "https://www.saguaroastro.org/download/sac_redstars_ver20-zip/?wpdmdl=6257&refresh=6ace942f65b141791923247",
+      "final_url": "https://www.saguaroastro.org/wp-content/sac-docs/ObservingDownloads/SAC_RedStars_Ver20.zip",
+      "bytes": 64356,
+      "sha256": "8a751a7b0167aacc4c886eb1d89f3dd536064df5645f4c4cb71d33a5e20aea73",
+      "retrieved_utc": "2026-10-13T20:32:19.002206+00:00",
+      "file": "sac_red_stars_source_v1.zip",
+      "catalogue": "sac_red_stars",
+      "edition": "2.0, July 7 2008"
+    }
+  ],
+  "source_descriptions": [],
+  "converted_products": [
+    {
+      "file": "sac_red_stars_list_v1.csv",
+      "rows": 333,
+      "bytes": 37675,
+      "sha256": "8916246a38f27ea849017575e25ba9bc3f1da94677152893c36755fdbf2d5af0"
+    }
+  ]
+}
