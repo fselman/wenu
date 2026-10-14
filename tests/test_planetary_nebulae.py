@@ -241,7 +241,7 @@ def test_planetary_selected_cli_exports_exact_union_and_ranked_review(monkeypatc
     from astropy.table import Table
     tool = _comparison_tool(monkeypatch)
     # Existing CLI export test owns plot rendering; inspect this new composition seam.
-    def synthetic_plot(table, prefix, view, priority):
+    def synthetic_plot(table, prefix, view, priority, **kwargs):
         for suffix in ('png', 'svg', 'pdf'):
             prefix.with_name(prefix.name+'_radius_hbeta_'+view+'.'+suffix).write_bytes(b'synthetic plot stub')
         return {}
@@ -285,6 +285,16 @@ def test_planetary_selected_cli_exports_exact_union_and_ranked_review(monkeypatc
     assert not geometry.metadata['public_interest'].any()
 
     import pytest
+    before_catalogue = selector.read_bytes()
+    criteria_path = tool.publish_criteria(selector)
+    criteria = json.loads(criteria_path.read_text())
+    assert criteria_path.parent == installed
+    assert criteria['catalogue']['sha256'] == hashlib.sha256(before_catalogue).hexdigest()
+    assert len(criteria['pages']) == 3
+    assert any('strict' in p for p in criteria['policy'])
+    assert selector.read_bytes() == before_catalogue
+    with pytest.raises(FileExistsError):
+        tool.publish_criteria(selector)
     blocked = tmp_path/'blocked'
     blocked.mkdir()
     (blocked/'planetary_nebulae.ecsv').write_text('preserve regular selector')

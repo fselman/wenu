@@ -5071,3 +5071,12 @@ hashes identify actual source bytes and all workers reuse the same prepared
 records. Curation/list/public-review columns remain metadata. No H-beta
 selection is repeated at normalization or rendering, and no public-interest
 approval is inferred. This mirrors the established open-cluster override.
+
+### Selection-criteria pages and PN contrast
+
+Reviewed on 2026-10-14: PN size/color/stroke changes are display style, not
+physical angular diameters. Criteria plots retain observed H-beta and the
+circular-area surface-brightness proxy; cluster plots retain source radii,
+Hunt V10 and separate member counts. Hash binding is publication provenance,
+not a new frame, epoch or realization. Vector PDF fitting affects appendix
+pages only and never rescales atlas charts.

@@ -1340,3 +1340,34 @@ and saved-sky directories. A catalogue override with `--from-sky` is rejected
 because the saved sky retains its earlier catalogue. No geometry, presentation,
 stellar sizing, other catalogue or rendering owner is changed. The PN layer
 retains selection/list/public-review columns as metadata without filtering again.
+
+## Publish selection-criteria pages
+
+Criteria publication preserves accepted catalogues and original selection
+bundles. It adds versioned JSON, policy pages and portrait scientific plots
+alongside the resolved curated ECSV. Catalogue and PDF hashes bind these pages.
+Existing criteria versions cannot be overwritten; use `--criteria-name
+<new_prefix_vN>` for another revision.
+
+From the repository root:
+
+```bash
+PYTHONPATH=src MPLBACKEND=Agg python tools/compare_planetary_nebulae.py \
+  --publish-criteria src/wenu/data/curated_catalogs/planetary_nebulae/planetary_nebulae.ecsv
+PYTHONPATH=src MPLBACKEND=Agg python tools/plot_merged_open_clusters.py \
+  --catalogue src/wenu/data/curated_catalogs/open_clusters/open_star_clusters.ecsv \
+  --criteria-pages
+```
+
+PN v1 produces `planetary_nebulae_selection_v1_selected_criteria_v1.json`;
+open clusters v0.2 produce `wenu_open_clusters_v0.2_criteria_v1.json`, each in its
+curated directory. Pass both to `wenu_create_atlas --selection-criteria` with
+the matching catalogue overrides. No filtering or activation occurs.
+
+PN plots show the full comparison population, list membership, strict observed
+log H-beta > -12 additions and the surface-brightness diagnostic. Cluster plots
+show only the accepted population, stored V10/radius boundary, mandatory-list
+bypass, reddening and subsequent depuration rules. An unavailable rejected
+population is not reconstructed. Hunt V10 is member photometry, not integrated
+cluster magnitude. Missing data retain their established meanings. No object
+is approved for public interest by publishing these criteria.

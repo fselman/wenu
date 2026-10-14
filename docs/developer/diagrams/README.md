@@ -496,3 +496,10 @@ The existing catalogue-selector -> atlas CLI -> immutable load profile ->
 native snapshot -> canonical sheet command edge now accepts PN and open-cluster
 selectors independently. Verified bundle promotion remains an offline
 working-data operation. No coordinate or rendering owner is added.
+
+### Catalogue criteria publication edge
+
+Existing scientific plotting tools -> immutable catalogue-bound policy/plot
+bundle beside curated ECSV -> atlas CLI admission -> existing vector PDF
+assembly. Verification precedes sky preparation; native sky, projection and
+chart-rendering edges remain unchanged. No new module is introduced.

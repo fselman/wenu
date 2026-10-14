@@ -10494,5 +10494,9 @@ def test_planetary_comparison_documents_quantities_provenance_and_pending_select
     atlas_guide = read(ROOT/'docs/user_guide/atlas.md')
     for phrase in ('--planetary-nebula-catalogue', 'planetary_nebulae.ecsv', '--from-sky'):
         assert phrase in atlas_guide
+    for phrase in ('--selection-criteria', 'planetary_nebula_symbol_scale', 'atlas_chart_style_v6.toml'):
+        assert phrase in atlas_guide
+    for phrase in ('--publish-criteria', '--criteria-pages', 'alongside the resolved curated ECSV'):
+        assert phrase in guide
     for phrase in ('--promote-catalogue', 'relative symlink', 'without filtering'):
         assert phrase in read(ROOT/'docs/user_guide/curation.md')

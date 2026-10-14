@@ -3967,3 +3967,14 @@ existing working-data owner. `cli/atlas.py` admits the PN path;
 `objects/planetary_nebulae.py` retains curation columns/metadata. Snapshot
 provenance and worker reuse remain in their existing owner. Tests extend
 `test_planetary_nebulae.py` and the existing atlas preparation/CLI test.
+
+## Selection-criteria page ownership
+
+Existing PN and cluster plotting tools own scientific inputs and policy;
+`tools/catalogue_data_layout.py::publish_selection_criteria` owns immutable
+policy/plot publication and catalogue hashes. `cli/atlas.py` admits repeatable
+`--selection-criteria`; `charts/atlas_publication.py` verifies and assembles
+PDF artifacts. `request_generation.py` propagates independent PN appearance.
+No production module or test file is added. Existing atlas, PN, cluster and
+current-documentation tests cover these seams. The review style is
+`examples/atlas_chart_style_v6.toml`.

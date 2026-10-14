@@ -218,7 +218,7 @@ def compare(source, records, references=None, priority=None):
         membership_review_rows=int(sum(bool(v) for v in table['membership_review'])))
 
 
-def plot(table, prefix, view, priority):
+def plot(table, prefix, view, priority, *, portrait=False):
     """One symbol per nebula; unavailable axes occupy explicit margins."""
     import matplotlib.pyplot as plt
     from matplotlib.lines import Line2D
@@ -228,13 +228,14 @@ def plot(table, prefix, view, priority):
     valid_x = np.array(table['radius_status']) == 'measured'
     valid_y = np.isfinite(y)
     masks = [valid_x & valid_y, valid_x & ~valid_y, ~valid_x & valid_y, ~valid_x & ~valid_y]
-    fig = plt.figure(figsize=(15, 10), layout='constrained')
-    grid = fig.add_gridspec(2, 3, width_ratios=(1.1, 8, 3.2), height_ratios=(8, 1.1))
+    fig = plt.figure(figsize=(8.27, 11.69) if portrait else (15, 10), layout='constrained')
+    grid = (fig.add_gridspec(3, 2, width_ratios=(1.1, 8), height_ratios=(8, 1.1, 3.5))
+            if portrait else fig.add_gridspec(2, 3, width_ratios=(1.1, 8, 3.2), height_ratios=(8, 1.1)))
     ax = fig.add_subplot(grid[0, 1])
     missing_y = fig.add_subplot(grid[1, 1], sharex=ax)
     missing_x = fig.add_subplot(grid[0, 0], sharey=ax)
     missing_both = fig.add_subplot(grid[1, 0])
-    legend_ax = fig.add_subplot(grid[:, 2]); legend_ax.axis('off')
+    legend_ax = fig.add_subplot(grid[2, :] if portrait else grid[:, 2]); legend_ax.axis('off')
     markers = ['*', 's', 'D', '^', 'v', 'P', 'X', 'p', 'h', 'd', '<', '>']
     styles = {name: (markers[PRIORITY.index(name)], plt.get_cmap('tab20')(2*PRIORITY.index(name) % 20)) for name in PRIORITY}
     styles['unlisted'] = ('.', '#888888')
@@ -288,14 +289,19 @@ def plot(table, prefix, view, priority):
     missing_x.set_ylabel(f'{int(masks[2].sum())} unknown/limited radius', fontsize=11)
     missing_both.axis('off')
     missing_both.text(.5, .5, f'{int(masks[3].sum())}\nunavailable\nboth axes', ha='center', va='center', fontsize=11)
-    legend_ax.legend(handles=handles[::-1], loc='upper left', fontsize=11, frameon=False,
+    legend_ax.legend(handles=handles[::-1], loc='upper left', fontsize=10 if portrait else 11,
+        ncols=2 if portrait else 1, frameon=False,
         title='First list by priority\n(main-panel counts)', title_fontsize=12)
-    legend_ax.text(0, .12, 'All memberships remain in the table.\nHollow symbols: uncertain diameter.\nDiameter limits stay outside main panel.\nMissing data are not faint detections.\n\nHβ is not visual magnitude or [O III].\nNo visibility cutoff has been applied.',
-        transform=legend_ax.transAxes, fontsize=11, va='bottom')
-    if 'min_log_hbeta' in table.meta:
+    if portrait:
+        legend_ax.text(0, .02, 'Hollow: uncertain diameter. Missing/limited data stay in margins.\nDashed: additional-object flux cut; reference-list members bypass it.',
+            transform=legend_ax.transAxes, fontsize=10, va='bottom')
+    else:
+        legend_ax.text(0, .12, 'All memberships remain in the table.\nHollow symbols: uncertain diameter.\nDiameter limits stay outside main panel.\nMissing data are not faint detections.\n\nHβ is not visual magnitude or [O III].\nNo visibility cutoff has been applied.',
+            transform=legend_ax.transAxes, fontsize=11, va='bottom')
+    if not portrait and 'min_log_hbeta' in table.meta:
         legend_ax.text(0, .045, 'Dashed: additional-object Hβ cut.\nReference-list members bypass it.',
             transform=legend_ax.transAxes, fontsize=11, va='bottom')
-    fig.supxlabel('Observed flux; no extinction correction. Surface brightness assumes a circular optical area and is a diagnostic proxy.', fontsize=11)
+    fig.supxlabel('Observed flux; no extinction correction.\nSurface brightness assumes a circular optical area; diagnostic proxy.', fontsize=11)
     for suffix in ('png', 'svg', 'pdf'):
         fig.savefig(prefix.parent/(prefix.name+'_radius_hbeta_'+view+'.'+suffix), dpi=180)
     plt.close(fig)
@@ -365,10 +371,18 @@ def main(argv=None):
     parser.add_argument('--curated-directory', type=Path, default=CURATED)
     parser.add_argument('--activate', action='store_true',
         help='Promotion only: atomically select the version with a relative planetary_nebulae.ecsv symlink.')
+    parser.add_argument('--publish-criteria', type=Path,
+        help='Publish versioned policy/plot pages alongside an accepted selected ECSV; does not select or activate data.')
+    parser.add_argument('--criteria-name', help='New criteria prefix ending in _vN; default <selected stem>_criteria_v1.')
     arguments = sys.argv[1:] if argv is None else list(argv)
     if not arguments:
         parser.print_help(); return 0
     args = parser.parse_args(arguments)
+    if args.publish_criteria is not None:
+        if args.promote_catalogue is not None or args.write_selected_catalogue or args.activate:
+            parser.error('Criteria publication is separate from selection and promotion.')
+        print(publish_criteria(args.publish_criteria, args.criteria_name))
+        return 0
     if args.promote_catalogue is not None:
         if args.write_selected_catalogue:
             parser.error('Promotion and selection are separate operations.')
@@ -433,6 +447,44 @@ def main(argv=None):
     for p in products:
         print(p)
     return 0
+
+
+def publish_criteria(catalogue, name=None):
+    """Bind the accepted all-row diagnostics and actual inclusion policy."""
+    from catalogue_data_layout import publish_selection_criteria
+    catalogue = Path(catalogue).resolve(strict=True)
+    match = re.fullmatch(r'(.+_v\d+(?:\.\d+)*)_selected\.ecsv', catalogue.name)
+    if match is None:
+        raise ValueError('Expected versioned selected PN ECSV.')
+    prefix = match[1]
+    summary = json.loads(catalogue.with_name(prefix + '_summary.json').read_text())
+    for filename, expected in summary['products'].items():
+        if Path(filename).name != filename or not filename.startswith(prefix + '_'):
+            raise ValueError('Invalid accepted planetary product filename.')
+        if digest(catalogue.parent / filename) != expected:
+            raise ValueError('Accepted planetary product checksum mismatch: ' + filename)
+    if summary['products'].get(catalogue.name) != digest(catalogue):
+        raise ValueError('Criteria catalogue is not bound to the accepted summary.')
+    selection = summary['selection']
+    paragraphs = [
+        f"Include every resolved reference-list member OR finite observed log H-beta flux > {selection['min_log_hbeta']:g}. The cut is strict; list members bypass it.",
+        f"{selection['selected']} selected of {selection['total']}: {selection['reference_list']} reference-list members and {selection['additional_hbeta_only']} additional flux-only objects.",
+        'Reference lists: ' + ', '.join(summary['priority']),
+        summary['scientific_policy'], summary['surface_brightness_formula'],
+        summary['diameter_policy'], selection['public_policy'],
+        'Plots retain the full comparison population and unavailable-data margins. A surface-brightness ranking is a review aid; it is not an approved public-interest selection.',
+        'Scientific source SHA-256: ' + summary['source_sha256']]
+    import tempfile
+    with tempfile.TemporaryDirectory(prefix='wenu-pn-criteria-') as directory:
+        plots = []
+        table = Table.read(catalogue.with_name(prefix + '_catalogue.ecsv'))
+        for view in ('flux', 'surface-brightness'):
+            plot_prefix = Path(directory) / 'criteria'
+            plot(table, plot_prefix, view, summary['priority'], portrait=True)
+            plots.append(('Planetary nebulae — ' + view,
+                Path(directory) / ('criteria_radius_hbeta_' + view + '.pdf')))
+        return publish_selection_criteria(catalogue, name or catalogue.stem + '_criteria_v1',
+            'Planetary nebulae: inclusion criteria', paragraphs, plots)
 
 
 def promote_catalogue(catalogue, directory=CURATED, *, activate=False):

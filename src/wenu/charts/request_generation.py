@@ -550,7 +550,10 @@ def _render_atlas_sheet_request(request, sky):
             globular_cluster_symbol_name="globular_cluster", globular_cluster_color="black",
             globular_cluster_face_color=presentation.cluster_face_color,
             globular_cluster_symbol_size=deep.open_cluster_symbol_size * area_scale,
-            planetary_nebula_symbol_size=deep.planetary_nebula_symbol_size * area_scale)))
+            planetary_nebula_symbol_size=deep.planetary_nebula_symbol_size * area_scale * presentation.planetary_nebula_symbol_scale ** 2,
+            planetary_nebula_color=presentation.planetary_nebula_color,
+            planetary_nebula_linewidth=presentation.planetary_nebula_linewidth,
+            planetary_nebula_alpha=1.0)))
     axes_bounds, grid_style = _atlas_grid_layout(page, composition.style, presentation)
     grid_options = {}
     if 'open_clusters' in presentation.layers:

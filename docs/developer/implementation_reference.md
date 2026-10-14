@@ -5332,3 +5332,19 @@ overrides are independent and both require a new sky; either is rejected with
 PATH --activate`, with optional `--curated-directory`, and verifies the entire
 summary-bound bundle before copying. The relative working selector is
 `curated_catalogs/planetary_nebulae/planetary_nebulae.ecsv`.
+
+## Catalogue selection-criteria PDF pages
+
+`create_atlas(..., selection_criteria=())` and repeatable CLI
+`--selection-criteria PATH` admit version-1
+`wenu-catalogue-selection-criteria` JSON. Its catalogue record supplies local
+filename and SHA-256; ordered PDF page records supply filename, SHA-256 and
+title. The selected ECSV must match an explicit atlas catalogue override.
+One-page unencrypted PDFs and valid physical bounds are checked before sky
+preparation. Existing PDF assembly fits vector pages inside atlas margins,
+adds bookmarks and records criteria/catalogue/page hashes and page order.
+
+AtlasChartPresentation admits planetary_nebula_symbol_scale (diameter factor),
+planetary_nebula_color and planetary_nebula_linewidth (points), defaulting to
+1.25, #24552b and 1.1 with full opacity. The canonical style reaches charts and
+report legends. No celestial geometry or scientific measurements change.

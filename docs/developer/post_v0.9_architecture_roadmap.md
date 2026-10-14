@@ -5719,3 +5719,15 @@ for simultaneous selectors and saved-sky rejection, and the existing PN export
 test for immutable promotion, checksums, regular-selector refusal, normalization
 and native realization. New runtime content needs focused verification and a
 final candidate full-suite gate; previous comparison tests cannot substitute.
+
+## PN contrast and selection appendices (2026-10-14)
+
+Fernando requested larger, higher-contrast PN symbols and atlas pages with
+selection plots stored beside curated catalogues. The bounded candidate extends
+existing presentation, diagnostic, immutable-publication and PDF owners.
+PN diameters increase 25%, with dark green and heavier outlines. PN plots retain
+the full source population; cluster plots describe the accepted population and
+stored selection/depuration rules. Catalogue hashes bind all criteria pages.
+Mac visual review and the final full-suite merge gate remain pending. No new
+production module, catalogue selection, public-interest approval, merge or
+branch deletion occurs.

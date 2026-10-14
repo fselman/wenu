@@ -3060,3 +3060,20 @@ projection or renderer is added. PN normalization retains curation metadata
 and changes no selection by itself. The comparison tool promotes a verified
 complete bundle using existing collision-safe copying and a relative atomic
 `planetary_nebulae.ecsv` selector, without filtering or modifying source data.
+
+## Catalogue selection-criteria appendix (2026-10-14)
+
+The existing atlas publication owner admits explicit catalogue-bound criteria
+JSON through repeatable `--selection-criteria`. It verifies each selected ECSV
+and one-page PDF digest before sky preparation, appends fitted vector pages
+after the existing appendices, and records page order and evidence hashes.
+It requires the matching explicit catalogue override; saved-sky-only evidence
+is not admitted. Chart/report pairing and native snapshot formats are unchanged.
+
+Existing offline PN and cluster plotting owners publish portrait policy and
+plot pages alongside the unchanged curated ECSV, using the shared immutable
+working-data publication helper. PN pages use the verified full comparison
+population; cluster pages show the accepted population and stored selection
+policy, not an invented excluded population. Atlas presentation separately
+owns PN diameter scale (1.25), dark green (#24552b), linewidth (1.1 pt) and full
+opacity; the canonical sheet style also supplies the report legend.

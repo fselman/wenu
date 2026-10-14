@@ -1633,3 +1633,19 @@ rejected. Old skies and trial outputs remain unchanged. Selection provenance
 and public-review flags survive normalization, but no object is automatically
 marked for public interest. The geometry, fonts, symbol sizes and page layout
 retain the explicitly supplied presentation.
+
+### Selection-criteria appendix pages
+
+Use repeatable `wenu_create_atlas --selection-criteria PATH` to append the
+versioned policy and plot pages for each curated catalogue. Supply its matching
+catalogue override in the same invocation. Catalogue and PDF hashes are checked
+before sky preparation. Report/chart spreads remain intact; appendix bookmarks
+and provenance are recorded. Mismatched or damaged evidence is rejected.
+Saved-sky-only invocations cannot bind these new criteria bundles.
+
+Generate bundles with the [curation commands](curation.md#publish-selection-criteria-pages).
+`examples/atlas_chart_style_v6.toml` retains the latest 7.5-magnitude atlas
+appearance and angular cluster symbols, with PN diameter enlarged by 25%,
+dark green and a 1.1-point stroke. Independent TOML settings are
+`planetary_nebula_symbol_scale`, `planetary_nebula_color` and
+`planetary_nebula_linewidth`. Measurements and public-interest flags are unchanged.

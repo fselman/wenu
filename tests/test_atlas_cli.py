@@ -559,7 +559,9 @@ def test_chart_presentation_is_closed_and_rejects_nonstatic_inputs():
                    {'chart_number_box_location': 'outside'}, {'chart_number_box_alpha': 2},
                    {'chart_number_box_padding': -1}, {'chart_number_box_facecolor': 'invalid'},
                    {'magnitude_veil_alpha': -1}, {'magnitude_veil_alpha': 1.1},
-                   {'magnitude_veil_alpha': True}, {'magnitude_veil_color': 'invalid'}):
+                   {'magnitude_veil_alpha': True}, {'magnitude_veil_color': 'invalid'},
+                   {'planetary_nebula_symbol_scale': 0}, {'planetary_nebula_symbol_scale': 1e200},
+                   {'planetary_nebula_color': 'invalid'}, {'planetary_nebula_linewidth': -1}):
         with pytest.raises(ValueError):
             AtlasChartPresentation.from_dict(dict(data, **change))
 
@@ -1253,8 +1255,17 @@ def test_atlas_producer_uses_real_chart_command_and_prepares_sky_once(request_da
     selected_planetary_catalogue=tmp_path/'selected_planetary_nebulae.ecsv'
     selected_planetary_catalogue.write_text('synthetic; profile propagation is tested at preparation seam')
     planetary_selector=tmp_path/'planetary_nebulae.ecsv';planetary_selector.symlink_to(selected_planetary_catalogue.name)
+    import hashlib
+    criteria = tmp_path/'criteria_v1.json'
+    criteria_data = dict(schema_version=1, document_kind='wenu-catalogue-selection-criteria',
+        catalogue=dict(file=selected_planetary_catalogue.name,
+            sha256=hashlib.sha256(selected_planetary_catalogue.read_bytes()).hexdigest()),
+        pages=[dict(file=index.name, title='Synthetic selection plot',
+            sha256=hashlib.sha256(index.read_bytes()).hexdigest())])
+    criteria.write_text(json.dumps(criteria_data))
     assert cli.create_main(['--design',str(design),'--config',str(config),
         '--open-cluster-catalogue',str(selector), '--planetary-nebula-catalogue',str(planetary_selector),
+        '--selection-criteria',str(criteria),
         '--charts','1,14','--jobs','1','--index',str(index),'--output-dir',str(output)])==0
     assert preparations == [design.read_bytes()]
     from dataclasses import replace
@@ -1288,7 +1299,23 @@ def test_atlas_producer_uses_real_chart_command_and_prepares_sky_once(request_da
     assert counts['selected_count']==2 and counts['cumulative_count']==[1,2]
     assert counts['magnitude']==[-1.0,5.0]
     assert counts['provenance']['snapshot_sha256']=='synthetic-digest'
-    assert manifest['page_order'][-1]['kind']=='catalogue_star_counts'
+    assert manifest['page_order'][-2]['kind']=='catalogue_star_counts'
+    assert manifest['page_order'][-1]['kind']=='selection_criteria'
+    assert book.pages[-1].extract_text().strip() == 'Synthetic index'
+    assert manifest['selection_criteria'][0]['catalogue_sha256'] == criteria_data['catalogue']['sha256']
+    assert manifest['selection_criteria'][0]['criteria_sha256'] == hashlib.sha256(criteria.read_bytes()).hexdigest()
+    from wenu.charts.atlas_publication import _read_selection_criteria
+    with pytest.raises(ValueError, match='explicit atlas catalogue'):
+        _read_selection_criteria([criteria], [selected_catalogue])
+    original_digest = criteria_data['pages'][0]['sha256']
+    criteria_data['pages'][0]['sha256'] = '0'*64
+    assert criteria_data['pages'][0]['sha256'] != original_digest
+    criteria.write_text(json.dumps(criteria_data))
+    with pytest.raises(SystemExit):
+        cli.create_main(['--design',str(design),'--config',str(config),
+            '--planetary-nebula-catalogue',str(planetary_selector),
+            '--selection-criteria',str(criteria),'--output-dir',str(tmp_path/'bad_criteria')])
+    assert preparations == [design.read_bytes()] and not (tmp_path/'bad_criteria').exists()
     assert all((output/f'atlas-star-counts.{suffix}').is_file() for suffix in ('png','svg','pdf'))
     from xml.etree import ElementTree
     root = ElementTree.parse(output/'chart-14.svg').getroot()
@@ -1333,18 +1360,31 @@ def test_atlas_cluster_diameters_match_reported_central_scale(request_data,tmp_p
         dec_deg=[sheet.center_dec_deg]*3,object_type=['Open Cluster']*3,
         apparent_diameter_arcmin=[.1,120,np.nan])).write(path)
     sky=CelestialSphere(None);sky.add_open_clusters(filename=path)
+    pn_path=tmp_path/'pn.ecsv'
+    Table(dict(identifier=['PN synthetic'],ra_deg=[sheet.center_ra_deg],
+        dec_deg=[sheet.center_dec_deg],object_type=['Planetary Nebula'])).write(pn_path)
+    sky.add_planetary_nebulae(filename=pn_path)
+    planetary=[]
     measured=[]
     original=MatplotlibRenderer.draw
     def capture(renderer,geometry,**kwargs):
         result=original(renderer,geometry,**kwargs)
         if geometry.metadata.get('symbol')=='open_cluster':
             measured.extend(a.get_sizes() for a in result if isinstance(a,PathCollection))
+        if geometry.metadata.get('symbol')=='planetary_nebula':
+            planetary.extend(a for a in result if isinstance(a,PathCollection))
         return result
     monkeypatch.setattr(MatplotlibRenderer,'draw',capture)
-    presentation=AtlasChartPresentation(layers=('open_clusters',),formats=('pdf','svg'),open_cluster_angular_sizes=angular)
+    presentation=AtlasChartPresentation(layers=('open_clusters','planetary_nebulae'),formats=('pdf','svg'),open_cluster_angular_sizes=angular)
     generate_chart_request(AtlasSheetChartRequest(sheet,atlas.geometry.page,presentation,tmp_path/'charts'),sky=sky)
     report=json.loads((tmp_path/'charts/chart-14_report_data.json').read_text())
     areas=np.broadcast_to(measured[0],(3,))
+    from wenu.charts.presets import AtlasChartStyle
+    from matplotlib.colors import to_rgba
+    expected = AtlasChartStyle().deep_sky.planetary_nebula_symbol_size * 1.8**2 * 1.25**2
+    assert planetary[0].get_sizes()[0] == pytest.approx(expected)
+    np.testing.assert_allclose(planetary[0].get_edgecolors()[0], to_rgba('#24552b'))
+    assert planetary[0].get_linewidths()[0] == pytest.approx(1.1)
     assert areas[0]==pytest.approx(areas[2])
     if angular:
         mm=2*report['layout']['central_scale_mm_per_degree']
