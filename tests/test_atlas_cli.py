@@ -1324,6 +1324,23 @@ def test_atlas_producer_uses_real_chart_command_and_prepares_sky_once(request_da
     designation = next(element for element in root.iter()
         if element.tag.endswith('}text') and ''.join(element.itertext()) == 'M synthetic')
     assert '7px' in designation.get('style', '')
+    # An installed default supplies its matching criteria without CLI paths.
+    from wenu import resources
+    criteria_data['pages'][0]['sha256'] = original_digest
+    criteria.write_text(json.dumps(criteria_data))
+    config.write_text(config.read_text().replace('"nonstellar"]', '"nonstellar","planetary_nebulae"]'))
+    monkeypatch.setattr(resources, 'curated_catalogue_bundle', lambda domain:
+        dict(catalogue=selected_planetary_catalogue, criteria=(criteria,))
+        if domain == 'planetary_nebulae' else None)
+    automatic = tmp_path / 'automatic'
+    assert cli.create_main(['--design',str(design),'--config',str(config),
+        '--charts','14','--jobs','1','--output-dir',str(automatic)]) == 0
+    default_manifest = json.loads((automatic / 'manifest.json').read_text())
+    assert default_manifest['page_order'][-1]['kind'] == 'selection_criteria'
+    assert default_manifest['selection_criteria'][0]['catalogue_sha256'] == criteria_data['catalogue']['sha256']
+    assert len(preparations) == 2
+    assert profiles[-1] == replace(CANONICAL_MAXIMAL_SPHERE_PROFILE,
+        planetary_nebula_filename=selected_planetary_catalogue.resolve())
 
 
 

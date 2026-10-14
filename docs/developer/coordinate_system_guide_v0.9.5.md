@@ -5080,3 +5080,13 @@ circular-area surface-brightness proxy; cluster plots retain source radii,
 Hunt V10 and separate member counts. Hash binding is publication provenance,
 not a new frame, epoch or realization. Vector PDF fitting affects appendix
 pages only and never rescales atlas charts.
+
+
+### Installed curated defaults provenance review
+
+Reviewed on 2026-10-14: installation changes default catalogue provenance and
+row membership to the accepted selections, not coordinates, epoch, photometry
+or physical classification. Both original scientific sources remain addressable.
+Portable manifests retain hashes of catalogue and report bytes. Atlas defaults
+are resolved once through existing load-profile filenames, then shared in the
+same native snapshot. No curation is repeated at build or realization time.

@@ -1383,3 +1383,27 @@ with 319 selected rows. Public-interest flags remain unassessed; accepting the
 atlas and inclusion criteria does not approve a public-observing shortlist.
 Preserve the curated bundles, active selectors and earlier output experiments
 during software merge and branch cleanup.
+
+
+## Install accepted catalogues with Wenu
+
+Normal `python -m pip install .` installs verified active curated bundles and
+uses their catalogues as defaults. Wheels and source archives include selected
+ECSV files, summaries, selection/review ledgers, criterion JSON and bound
+PDF/PNG/SVG reports. They use a portable manifest rather than selector symlinks.
+Original scientific source catalogues remain packaged and accessible.
+
+Working active selectors still choose the accepted version. No-argument
+installation does not filter scientific data again or import raw observing-list
+sources. All completion/criteria hashes must match before packaging; existing
+invalid bundles stop the build. Domains without an accepted active bundle keep
+their original source default. Explicit layer filenames and atlas catalogue
+switches take precedence. Rebuild/reinstall to distribute a newly activated
+version. Editable installations read verified working-tree selectors.
+
+For explicit original-source work, use
+`nonstellar_catalog_path('planetary_nebulae', curated=False)` or
+`source_nonstellar_catalog_path('open_clusters')`. Inspect associated reports
+through `curated_catalogue_bundle(name)['products']` and criteria through its
+`criteria` entry. This general mechanism applies to future accepted domains;
+it does not automatically implement a new scientific sky layer such as EN-MS.

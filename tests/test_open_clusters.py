@@ -39,10 +39,10 @@ def observer():
 
 
 def test_packaged_open_cluster_catalogue():
-    path = nonstellar_catalog_path("open_clusters")
+    path = nonstellar_catalog_path("open_clusters", curated=False)
     assert path.is_file()
     layer = OpenClusters(observer())
-    table = layer.load()
+    table = layer.load(filename=path)
     assert len(table) == 1931
     assert "IC 2602" in set(table["identifier"])
     assert "NGC 4755" in set(table["identifier"])
@@ -68,7 +68,7 @@ def test_observing_catalogue_comparison_preserves_dias_and_group_members(tmp_pat
     spec = importlib.util.spec_from_file_location('compare_open_clusters', root/'tools/compare_open_clusters.py')
     tool = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(tool)
-    dias = Table.read(nonstellar_catalog_path('open_clusters'))
+    dias = Table.read(nonstellar_catalog_path('open_clusters', curated=False))
     original = dias.copy(copy_data=True)
     caldwell = Table.read(nonstellar_catalog_path('caldwell'))
     messier = Table.read(nonstellar_catalog_path('messier'))
@@ -135,7 +135,7 @@ def test_requested_order_and_metadata_are_preserved():
         observer(),
         selected=["NGC 4755", "IC 2602"],
     )
-    layer.load()
+    layer.load(filename=nonstellar_catalog_path('open_clusters', curated=False))
     geometry = layer.spherical_geometry(layer.observer)
     assert isinstance(geometry, SphericalPoints)
     assert geometry.ids.tolist() == ["NGC 4755", "IC 2602"]
@@ -188,7 +188,7 @@ def test_empty_selection_returns_empty_points():
 
 def test_sequential_open_cluster_selections_share_observed_catalogue():
     layer = OpenClusters(observer())
-    layer.load()
+    layer.load(filename=nonstellar_catalog_path('open_clusters', curated=False))
 
     first = layer.spherical_geometry(
         layer.observer,
@@ -332,7 +332,7 @@ def test_hunt_catalogue_plot_selection_export_and_digest(tmp_path):
     data = tmp_path/'data'
     for category in ('open_clusters','caldwell','messier'):
         (data/category).mkdir(parents=True)
-        source = Path(nonstellar_catalog_path(category))
+        source = Path(nonstellar_catalog_path(category, curated=False))
         shutil.copyfile(source,data/category/source.name)
     # Synthetic normalized resource, explicitly not a captured provider fixture.
     rows = Table(dict(identifier=['NGC_869','NGC_884','NGC_2168','synthetic moving group'],

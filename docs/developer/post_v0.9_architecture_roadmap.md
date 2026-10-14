@@ -5750,3 +5750,22 @@ This checkpoint names the next catalogue; it acquires no sources, admits no
 objects and implements no new layer. PN atlas closure and software cleanup
 remain the current task. The full-suite receipt above is retained across this
 documentation-only update; rerun the affected documentation contract.
+
+
+## General curated catalogue installation candidate (2026-10-14)
+
+Fernando requested accepted bundles be tracked, then selected normal package
+installation with curated defaults. The published data correction is at
+`4c6392987293141765a08daa88462dac9bb3ae47`, with clean synchronized Mac tree.
+The bounded candidate adds generic bundle verification, portable wheel/sdist
+activation, editable-source support, explicit original-source access and
+automatic matching criteria appendices. It preserves source snapshots,
+scientific rows and canonical chart/native-sky owners. No new nebular class or
+object-report table is implemented. EN-MS / NE-EM remains the next catalogue.
+
+New build-only module and installation-test admission are recorded in source_tree.
+The clean-install oracle uses declared synthetic bundles and tests wheel,
+source-archive and editable routes outside the repository. Actual accepted
+513-row OC/319-row PN wheel verification and the final full-suite merge gate
+remain Mac acceptance steps. No merge or branch deletion for this new software
+candidate is authorized by the earlier PN-atlas closure.

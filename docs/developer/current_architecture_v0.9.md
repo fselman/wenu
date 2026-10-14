@@ -3077,3 +3077,24 @@ population; cluster pages show the accepted population and stored selection
 policy, not an invented excluded population. Atlas presentation separately
 owns PN diameter scale (1.25), dark green (#24552b), linewidth (1.1 pt) and full
 opacity; the canonical sheet style also supplies the report legend.
+
+
+## Installed curated catalogue defaults (2026-10-14)
+
+Fernando requested that normal Wenu installation include accepted catalogues
+and associated reports and use the curated versions as defaults. Resource
+admission remains in `resources.py`: active selectors/completion summaries and
+criteria receipts become one portable `wenu-curated-catalogues` manifest.
+Each bound catalogue, ledger, plot and report is SHA-256 verified; a present
+invalid bundle fails closed. Missing domains retain scientific-source defaults;
+explicit filenames retain precedence. No astronomical selection is repeated.
+
+The build-only `src/curated_catalogue_packaging.py` adapter extends setuptools
+build_py/sdist and delegates admission to the stdlib-only resource owner.
+It copies verified active bundles without symlinks into wheel/source resources;
+editable builds verify and retain the working-tree selectors. Source catalogue
+resources remain available through `nonstellar_catalog_path(..., curated=False)`.
+Atlas publication resolves installed defaults once into existing profile fields
+and automatically appends the latest bound criteria for enabled supported
+catalogue layers on a new sky. Saved snapshots retain their recorded selection.
+Raw observing-list sources remain maintenance inputs, not installed defaults.

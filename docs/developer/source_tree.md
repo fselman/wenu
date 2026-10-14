@@ -3978,3 +3978,22 @@ PDF artifacts. `request_generation.py` propagates independent PN appearance.
 No production module or test file is added. Existing atlas, PN, cluster and
 current-documentation tests cover these seams. The review style is
 `examples/atlas_chart_style_v6.toml`.
+
+
+## Curated catalogue installation ownership
+
+`resources.py` owns generic active-bundle/portable-manifest admission, hash
+verification, curated-default lookup and explicit original-source lookup.
+`src/curated_catalogue_packaging.py` is a build-only setuptools adapter outside
+Wenu's runtime package. Its lifecycle requires isolated build dependencies and
+release-tree/wheel copying; placing those commands in resources.py would add
+setuptools as a runtime dependency. MANIFEST.in retains the adapter in sdists;
+pyproject.toml registers it and excludes build-only modules from wheel imports.
+Existing atlas publication owns default profile binding and PDF assembly.
+
+The new `tests/test_curated_catalogues.py` owns resource admission plus real
+wheel, source-archive and editable-install subprocess acceptance. The closest
+`test_package_boundaries.py` checks static imports/package structure and cannot
+serve as an independent installer/environment oracle. Synthetic data is labelled
+explicitly; existing PN/cluster tests retain their scientific source oracles via
+explicit source access. Existing atlas tests cover automatic default criteria.

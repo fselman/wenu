@@ -10496,6 +10496,10 @@ def test_planetary_comparison_documents_quantities_provenance_and_pending_select
         assert phrase in atlas_guide
     for phrase in ('--selection-criteria', 'planetary_nebula_symbol_scale', 'atlas_chart_style_v6.toml'):
         assert phrase in atlas_guide
+    for phrase in ('Installed curated catalogues', 'use these defaults automatically'):
+        assert phrase in atlas_guide
+    for phrase in ('Install accepted catalogues with Wenu', 'curated_catalogue_bundle', 'portable manifest'):
+        assert phrase in guide
     for phrase in ('--publish-criteria', '--criteria-pages', 'alongside the resolved curated ECSV'):
         assert phrase in guide
     for phrase in ('--promote-catalogue', 'relative symlink', 'without filtering'):

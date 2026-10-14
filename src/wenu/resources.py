@@ -71,8 +71,17 @@ def boundary_path(name):
         f"Unknown boundary set: {name}"
     )
 
-def nonstellar_catalog_path(name):
-    """Return a packaged non-stellar catalogue resource."""
+def nonstellar_catalog_path(name, *, curated=True):
+    """Prefer an accepted curated bundle; preserve explicit scientific access."""
+    if curated:
+        bundle = curated_catalogue_bundle(str(name).lower())
+        if bundle is not None:
+            return bundle['catalogue']
+    return source_nonstellar_catalog_path(name)
+
+
+def source_nonstellar_catalog_path(name):
+    """Return the original packaged scientific snapshot, without curation."""
     catalogues = {
         "caldwell": (
             "wenu.data.catalogs.caldwell",
@@ -190,4 +199,171 @@ def star_designations_manifest_path():
     return (
         files("wenu.data") / "catalogs" / "star_designations" / "manifest.json"
     )
+
+
+def _curated_filename(name):
+    import re
+    if not isinstance(name, str) or not re.fullmatch(r'[A-Za-z0-9_.-]+', name) or name in {'.', '..'}:
+        raise ValueError('Invalid curated product filename.')
+    return name
+
+
+def _curated_products(records):
+    """Read both established summary encodings without rewriting receipts."""
+    import re
+    if not isinstance(records, dict):
+        raise ValueError('Invalid curated product records.')
+    products = {}
+    for key, record in records.items():
+        name = record['file'] if isinstance(record, dict) else key
+        digest = record['sha256'] if isinstance(record, dict) else record
+        _curated_filename(name)
+        if not isinstance(digest, str) or not re.fullmatch(r'[0-9a-f]{64}', digest):
+            raise ValueError('Invalid curated product digest.')
+        if name in products and products[name] != digest:
+            raise ValueError('Conflicting curated product digest.')
+        products[name] = digest
+    return products
+
+
+def _verify_curated_products(directory, products):
+    import hashlib
+    from pathlib import Path
+    for name, expected in _curated_products(products).items():
+        resource = directory / name
+        if isinstance(resource, Path) and resource.is_symlink():
+            raise ValueError('Curated products must be regular files: ' + name)
+        if not resource.is_file() or hashlib.sha256(resource.read_bytes()).hexdigest() != expected:
+            raise ValueError('Curated product checksum mismatch: ' + name)
+
+
+def build_curated_catalogue_manifest(root):
+    """Verify active working bundles and describe portable installation bytes.
+
+    This is resource/provenance admission only; it does not interpret tables,
+    select objects, download resources or change scientific catalogue bytes.
+    """
+    import hashlib
+    import json
+    from pathlib import Path
+    root = Path(root)
+    index = root / 'manifest.json'
+    if index.is_file():
+        data = json.loads(index.read_text())
+        _validate_curated_manifest(data)
+        for domain, record in data['catalogues'].items():
+            _verify_curated_products(root / domain, record['products'])
+        return data
+    catalogues = {}
+    if root.is_dir():
+        for directory in sorted(root.iterdir()):
+            if not directory.is_dir():
+                continue
+            _curated_filename(directory.name)
+            selectors = []
+            for path in directory.glob('*.ecsv'):
+                if path.is_symlink():
+                    selectors.append((path, str(path.readlink())))
+                elif path.stat().st_size <= 512:
+                    # Git checkouts with core.symlinks=false store a link's
+                    # relative target as a plain one-line file.
+                    target = path.read_text().strip()
+                    if '\n' not in target and target.endswith('.ecsv'):
+                        _curated_filename(target)
+                        selectors.append((path, target))
+            if len(selectors) > 1:
+                raise ValueError('More than one active curated selector: ' + directory.name)
+            if not selectors:
+                continue
+            selector, target = selectors[0]
+            _curated_filename(target)
+            catalogue = directory / target
+            if catalogue.is_symlink() or not catalogue.is_file():
+                raise ValueError('Active curated catalogue must be a regular file.')
+            digest = hashlib.sha256(catalogue.read_bytes()).hexdigest()
+            summaries = []
+            for path in directory.glob('*_summary.json'):
+                data = json.loads(path.read_text())
+                products = _curated_products(data.get('products', {}))
+                if products.get(catalogue.name) == digest:
+                    summaries.append((path, products))
+            if len(summaries) != 1:
+                raise ValueError('Active curated catalogue requires one matching completion summary: ' + catalogue.name)
+            summary, products = summaries[0]
+            products[summary.name] = hashlib.sha256(summary.read_bytes()).hexdigest()
+            criteria = []
+            for path in sorted(directory.glob('*.json')):
+                data = json.loads(path.read_text())
+                if not isinstance(data, dict) or data.get('document_kind') != 'wenu-catalogue-selection-criteria':
+                    continue
+                binding = data.get('catalogue')
+                if not isinstance(binding, dict):
+                    raise ValueError('Invalid criteria catalogue binding.')
+                if binding.get('file') != catalogue.name:
+                    continue
+                if binding != dict(file=catalogue.name, sha256=digest):
+                    raise ValueError('Criteria catalogue checksum mismatch: ' + path.name)
+                if type(data.get('schema_version')) is not int or data['schema_version'] != 1:
+                    raise ValueError('Unsupported criteria schema.')
+                evidence = _curated_products(data['products'])
+                for page in data['pages']:
+                    if evidence.get(page['file']) != page['sha256']:
+                        raise ValueError('Criteria PDF is not bound to its product record.')
+                for name, expected in evidence.items():
+                    if name in products and products[name] != expected:
+                        raise ValueError('Conflicting curated evidence: ' + name)
+                    products[name] = expected
+                products[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
+                criteria.append(path.name)
+            _verify_curated_products(directory, products)
+            catalogues[directory.name] = dict(catalogue=catalogue.name,
+                selector=selector.name, summary=summary.name, products=products, criteria=criteria)
+    return dict(schema_version=1, document_kind='wenu-curated-catalogues', catalogues=catalogues)
+
+
+def _validate_curated_manifest(data):
+    if (not isinstance(data, dict) or type(data.get('schema_version')) is not int or data['schema_version'] != 1 or
+            data.get('document_kind') != 'wenu-curated-catalogues' or not isinstance(data.get('catalogues'), dict)):
+        raise ValueError('Unsupported curated catalogue manifest.')
+    for domain, record in data['catalogues'].items():
+        _curated_filename(domain)
+        if not isinstance(record, dict) or set(record) != {'catalogue', 'selector', 'summary', 'products', 'criteria'}:
+            raise ValueError('Invalid curated catalogue record.')
+        products = _curated_products(record['products'])
+        for name in (record['catalogue'], record['summary'], record['selector']):
+            _curated_filename(name)
+        if not isinstance(record['criteria'], list):
+            raise ValueError('Invalid curated criteria records.')
+        for name in (record['catalogue'], record['summary'], *record['criteria']):
+            _curated_filename(name)
+            if name not in products:
+                raise ValueError('Missing curated product binding: ' + name)
+
+
+def curated_catalogue_bundle(name):
+    """Return verified installed catalogue and associated evidence resources.
+
+    Wheels use the portable manifest; a source/editable checkout may use its
+    existing relative selector links. Missing domains retain scientific defaults;
+    a present but invalid accepted bundle fails rather than silently falling back.
+    """
+    import json
+    name = _curated_filename(name)
+    root = files('wenu.data') / 'curated_catalogs'
+    index = root / 'manifest.json'
+    if index.is_file():
+        data = json.loads(index.read_text())
+        _validate_curated_manifest(data)
+    else:
+        from pathlib import Path
+        data = build_curated_catalogue_manifest(Path(str(root)))
+    record = data['catalogues'].get(name)
+    if record is None:
+        return None
+    directory = root / name
+    _verify_curated_products(directory, record['products'])
+    return dict(catalogue=directory / record['catalogue'],
+        summary=directory / record['summary'],
+        criteria=tuple(directory / p for p in record['criteria']),
+        products={p: directory / p for p in record['products']})
 
