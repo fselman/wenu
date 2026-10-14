@@ -3941,3 +3941,15 @@ observing root. Working observing/curated trees are excluded from automatic
 package discovery; installed software reads explicit catalogue paths. The
 existing atlas pipeline, saved-sky format, symbol sizing and source selection
 are unchanged. The curation guide documents each tool and the complete workflow.
+
+## Planetary-nebula curation diagnostic ownership
+
+`tools/compare_planetary_nebulae.py` owns the offline PN catalogue/reference
+crosswalk, AL planetary-workbook identity parser, radius/H-beta diagnostic
+plots and completion receipt. It reuses `catalogue_data_layout.py`,
+`observing_list_membership.py` and `observing_list_additions.py`.
+The closest existing `compare_open_clusters.py` owns cluster measurements;
+PN coordinate-sign and line-flux semantics are a distinct scientific
+responsibility. No production file is added. Trials belong under output.
+`tests/test_planetary_nebulae.py` owns the new identity/provenance/quantity
+seams and CLI acceptance; `test_current_documentation.py` checks the guide.

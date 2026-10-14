@@ -5038,3 +5038,22 @@ observing root. Working observing/curated trees are excluded from automatic
 package discovery; installed software reads explicit catalogue paths. The
 existing atlas pipeline, saved-sky format, symbol sizing and source selection
 are unchanged. The curation guide documents each tool and the complete workflow.
+
+## Planetary-nebula comparison provenance and quantities
+
+`tools/compare_planetary_nebulae.py` is an offline diagnostic, not a new
+coordinate service. It retains the original source coordinate columns and
+performs no positional matching, epoch propagation or coordinate transformation.
+Signed PN G and PK identifiers are catalogue names, not coordinates recomputed
+from rounded source positions. Conflicting source identities remain review
+claims. The existing chart realization and canonical pipeline are unchanged.
+
+The optical radius is half the Acker diameter in arcminutes. Diameter limits
+are excluded from measured-radius main panels; uncertain sizes are hollow.
+H-beta flux is the observed base-10 logarithm in erg s-1 cm-2, not V magnitude,
+[O III], central-star brightness or an extinction-corrected luminosity.
+The circular-area proxy subtracts log10(pi*(60*radius_arcmin)^2), giving
+a per-square-arcsecond quantity. It inherits source aperture/size uncertainty,
+adds no independent measurement, and is not an eyepiece-visibility criterion.
+No missing quantity is imputed. The source hashes and primary HEASARC
+quantity documentation, checked 2026-10-14, are retained in the receipt.

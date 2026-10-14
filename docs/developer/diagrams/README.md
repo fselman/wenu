@@ -480,3 +480,12 @@ The shared mark renderer now admits parallel or perpendicular label orientation.
 Parallel Dec text follows the outward continuation of the same crossing tangent.
 The canonical detail -> NonStellar selection edge additionally suppresses
 generic outlines for categories owned by enabled dedicated DSO layers.
+
+### Offline planetary-nebula diagnostic ownership
+
+The PN comparison has the same offline developer-tool boundary as the cluster
+comparison: scientific source and verified observing identities feed
+`tools/compare_planetary_nebulae.py`, which writes plots and review ledgers.
+Existing path/conversion/Excel helpers supply source provenance. No edge feeds
+the production sky, coordinate, projection or rendering owners; no diagram
+of the canonical chart pipeline needs an astronomical change.

@@ -3026,3 +3026,19 @@ observing root. Working observing/curated trees are excluded from automatic
 package discovery; installed software reads explicit catalogue paths. The
 existing atlas pipeline, saved-sky format, symbol sizing and source selection
 are unchanged. The curation guide documents each tool and the complete workflow.
+
+## Offline planetary-nebula comparison (2026-10-14)
+
+`tools/compare_planetary_nebulae.py` is an offline developer diagnostic over
+the existing 1,143-row Strasbourg-ESO source. It reuses working-data path
+resolution, hash-bound observing membership loaders and the existing Excel
+reader. Explicit identity matching and missing/limit-aware H-beta diagnostics
+are separate from the production sky pipeline. No sky layer, provider,
+projection, renderer, chart default or curated catalogue is changed.
+See [the curation guide](../user_guide/curation.md#planetary-nebula-observing-list-comparison).
+
+The closest cluster comparison owns cluster-specific quantities and selection;
+the new tool owns PN-specific identity namespaces, optical diameter limits,
+observed H-beta flux and circular-area proxy semantics. It introduces no new
+production module. Tests extend the existing planetary-nebula owner rather
+than adding a milestone test file.

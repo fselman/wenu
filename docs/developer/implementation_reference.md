@@ -5299,3 +5299,20 @@ observing root. Working observing/curated trees are excluded from automatic
 package discovery; installed software reads explicit catalogue paths. The
 existing atlas pipeline, saved-sky format, symbol sizing and source selection
 are unchanged. The curation guide documents each tool and the complete workflow.
+
+## Planetary-nebula comparison CLI
+
+`PYTHONPATH=src python tools/compare_planetary_nebulae.py --name planetary_nebulae_comparison_v1`
+generates both radius/H-beta plots and all-row CSV/ECSV, identity crosswalk and
+summary in `output/planetary_nebulae_comparison_v1`.
+No arguments displays help and writes nothing.
+Options: `--data-directory`, `--observing-directory`,
+`--output-directory`, versioned `--name`,
+`--view flux|surface-brightness|both`, and comma-separated `--priority`.
+The default list priority starts Messier/Caldwell/SAC Urban/RASC Finest/SAC Best.
+
+This offline route preserves every source row and every resolved membership.
+Radius limits and missing quantities are separate statuses; no visual threshold
+is installed. H-beta remains an observed line flux, not visual magnitude.
+The summary records source hashes, formula, command and completion products.
+See [curation](../user_guide/curation.md#planetary-nebula-observing-list-comparison).

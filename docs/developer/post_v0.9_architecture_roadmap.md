@@ -5666,3 +5666,31 @@ observing root. Working observing/curated trees are excluded from automatic
 package discovery; installed software reads explicit catalogue paths. The
 existing atlas pipeline, saved-sky format, symbol sizing and source selection
 are unchanged. The curation guide documents each tool and the complete workflow.
+
+## Planetary-nebula comparison milestone (2026-10-14)
+
+Fernando authorized an offline overlay of current best observing lists,
+Messier/Caldwell and the AL planetary lists over the large PN catalogue.
+The Mac was clean on synchronized main at
+`8f91504aa399635c80f46159d3c6b8e20d57f737`.
+As-is: 1,143 Strasbourg-ESO objects have optical diameters and H-beta fluxes,
+without a visual-observability cut. Broad list conversions exist; the three
+PN workbooks remain original Excel sources with verified per-list provenance.
+There was no dedicated PN comparison tool.
+
+The bounded candidate is `tools/compare_planetary_nebulae.py`, with all-row
+annotation, explicit identities, disjoint first-list symbols, flux and
+surface-proxy views, missing/diameter-limit panels and digest-bound review
+products. Source catalogues and chart defaults remain unchanged.
+The reference run resolves 178 distinct objects; Sh 2-216 and four southern
+identity conflicts remain review cases. No final visibility threshold,
+classification revision, curated catalogue promotion or atlas adoption is
+authorized by generating these plots.
+
+The coordinate-system guide was reviewed and updated for diagnostic
+provenance/quantity interpretation. Existing planetary-nebula tests are the
+closest stable owner and are extended for matching, signed namespaces,
+source checksums, limits, surface-area units and CLI receipt/no-clobber seams.
+No new test or production-module family is introduced. Focused verification
+precedes Mac scientific review; full-suite verification remains the final
+candidate merge gate under the accepted test policy.

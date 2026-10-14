@@ -35,6 +35,7 @@ earlier mixed acquisition inventory.
 | `prepare_open_cluster_catalogue.py` | Depurate a selected output candidate; separately verify and promote an accepted output bundle |
 | `plot_merged_open_clusters.py` | Explicit trial ECSV, or the accepted active selector by default; plots and point ledgers in `output/` |
 | `compare_open_clusters.py` | Scientific source comparisons; reads `data/catalogs/` and writes diagnostic outputs |
+| `compare_planetary_nebulae.py` | Offline PN radius/H-beta comparison with verified observing-list overlays; writes all-row diagnostics under `output/` |
 | `wenu_create_atlas` | Explicit accepted selector when preparing a new sky, or an existing frozen sky when redrawing it |
 
 All CLI tools display their parameters with `--help`. The standalone catalogue
@@ -1199,3 +1200,86 @@ The accepted v0.2 saved sky can be reused: omit `--open-cluster-catalogue` and
 presentation and stellar settings, choose a new output directory, and reuse
 the existing index. This redraws the current catalogue without reinstalling or
 recurating it. The existing per-chart report records the central scale used.
+
+## Planetary-nebula observing-list comparison
+
+`tools/compare_planetary_nebulae.py` is an offline diagnostic. It retains all
+1,143 Strasbourg-ESO/HEASARC rows and highlights the same broad observing lists
+used for open-cluster comparisons, plus the AL planetary-nebula standard,
+southern and northern-alternate lists. It performs no final visual selection,
+catalogue promotion or atlas change.
+
+Default first-list priority is Messier, Caldwell, SAC Urban, RASC Finest NGC,
+SAC Best NGC, Herschel 400 South, Herschel 400, Herschel II, SAC Beyond NGC,
+AL Planetary Nebulae, AL Planetary Nebulae South, AL Northern Alternates.
+One symbol is assigned per nebula; every resolved membership remains in the
+table. The displayed legend counts describe disjoint first-list groups in the
+main panel, not total list memberships. Use `--priority` with comma-separated
+supported keys to change the display preference.
+
+```bash
+PYTHONPATH=src MPLBACKEND=Agg python tools/compare_planetary_nebulae.py \
+  --output-directory output/planetary_nebulae_comparison_v1 \
+  --name planetary_nebulae_comparison_v1
+```
+
+No arguments prints help without writing. `--view flux|surface-brightness|both`
+selects the view; both is the default. `--data-directory` selects scientific
+sources; `--observing-directory` selects the named-list working tree.
+Output names must end in an explicit `_vN` version. Existing products are
+refused. Legacy AL workbooks use the existing Excel reader and require
+`xlrd>=2,<3`; the existing tools already use this optional dependency.
+
+The x axis is optical angular radius in arcminutes, half the Acker diameter.
+The y axes are observed H-beta flux and a mean H-beta surface-brightness proxy:
+
+```text
+log10(S_Hbeta) = log_hbeta_flux - log10(pi*(60*radius_arcmin)^2)
+```
+
+Flux is in erg s-1 cm-2, numerically equivalent to mW m-2; the surface proxy
+is per square arcsecond. HEASARC's primary quantity documentation was checked
+on 2026-10-14 at
+[PLNEBULAE](https://heasarc.gsfc.nasa.gov/W3Browse/nebula-catalog/plnebulae.html).
+H-beta is not V magnitude or [O III] flux. No extinction correction is applied.
+The surface quantity assumes a circular optical aperture, is not an
+independently measured surface brightness, and may mix flux/diameter apertures.
+These are exploratory optical diagnostics, not guarantees of eyepiece visibility.
+Central-star magnitudes and heterogeneous list magnitudes are not substituted.
+
+Missing data are retained in labelled margins and the ledger, never imputed.
+Diameter limits remain limits and do not enter measured-radius main panels;
+uncertain diameters are plotted with hollow symbols. A missing flux does not
+mean radio-only, and reference-list membership does not prove visual visibility.
+
+The source and reference ECSV digests are verified against adjacent provenance.
+Broad memberships reuse the existing original/additions conversion loaders.
+The three original AL workbooks are verified against their per-list provenance
+and parsed only in identity columns, with exact counts 110, 110 and 26.
+Explicit PN G and PK signs are retained. Abell/A, Jonckheere/J, Hubble/Hb,
+Jones/Jn and Pease/Ps are catalogue-name expansions. Consecutive combined NGC
+designations retain both explicitly named components; parenthetical host
+names such as M15 in Pease 1 are not nebular aliases. Published combined
+identity cells are split without using narrative nicknames or positions.
+Conflicting identifiers remain ambiguous and do not acquire resolved membership.
+
+Outputs are `_catalogue.csv/.ecsv`, `_crosswalk.csv`, `_summary.json`, and
+`_radius_hbeta_flux.png/.svg/.pdf` plus the corresponding
+`_radius_hbeta_surface-brightness` files. CSVs have a normal first-row header.
+The summary records the exact Git commit, command, source/conversion hashes,
+quantity definitions, missing/limit policy, all-list counts and product hashes.
+It is written last. Raw scientific and observing resources are unchanged.
+
+At base `8f91504aa399635c80f46159d3c6b8e20d57f737`, verified source parsing
+finds 178 distinct rows with resolved list membership, including all four
+Messier and 13 Caldwell planetary nebulae. There are 796 main-panel points,
+128 measured-radius rows without H-beta flux, 195 flux-bearing rows without
+usable measured radius, and 24 unavailable in both axes. The surface-proxy
+view has 219 unavailable in both axes because it requires a measured area.
+The AL standard list resolves 109 of 110 rows; Sh 2-216 is unmatched in this
+historical snapshot. Four southern-list records have conflicting published
+identity fields: NGC 3918, Shapley 1, NGC 6302 and NGC 6445. Their positive
+PN G latitude fields disagree with the negative-latitude objects claimed by
+their other identifiers. Preserve both candidates for review, without silently
+correcting the publisher's source. General-list unmatched records often describe
+other physical object types; they are not all missing planetary nebulae.
