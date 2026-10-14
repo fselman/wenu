@@ -383,3 +383,23 @@ Explicit anchors and polar reference furniture preserve their established policy
 [Named Chilean locations](locations.md) and the versioned CSV catalogue for
 municipal and observatory references, aliases, height conventions and
 regional timezone defaults. Explicit height and timezone overrides still win.
+
+
+## Installed named presets
+
+Run `wenu_chart presets` to list installed chart, full atlas-style, atlas-layout
+and atlas-index presets. Names work from any directory; no source checkout is
+needed. Regional charts using atlas style inherit the chart appearance of v6.
+Their custom TOML and explicit CLI switches retain precedence. Atlas-only
+reports, numbering, index and publication settings remain in the full atlas
+style and are not applied to a standalone regional chart.
+
+```bash
+wenu_chart regional --center-on Sco --field-width 60 --field-height 50 --config scorpius-v1 --style atlas --mode print --magnitude-limit 7 --output sco_installed_catalogues_v2.png
+```
+
+This review uses installed catalogue defaults. It enables deep-sky labels and
+retains small objects; it does not redefine the accepted catalogue membership.
+`--config atlas-v6` explicitly selects the current shared chart appearance.
+Custom filesystem overlays remain supported. Styles v1-v5 are historical
+repository examples and are not registered as installed selectable styles.

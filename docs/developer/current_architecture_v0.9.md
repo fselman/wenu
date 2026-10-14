@@ -3098,3 +3098,23 @@ Atlas publication resolves installed defaults once into existing profile fields
 and automatically appends the latest bound criteria for enabled supported
 catalogue layers on a new sky. Saved snapshots retain their recorded selection.
 Raw observing-list sources remain maintenance inputs, not installed defaults.
+
+
+## Installed layout and presentation presets (candidate, 2026-10-14)
+
+Atlas layout and full atlas style are independent protocols. The installed
+`b4-landscape-five-band` layout has 34 sheets in five nonpolar bands plus two
+caps; `b4-portrait` preserves the accepted 36-sheet revision-3 design with
+three nonpolar bands plus two caps. Both are immutable resolved JSON resources
+validated by AtlasBandTiling; style selection does not regenerate their tiling.
+The full `atlas-v6` presentation includes chart appearance and atlas-only
+report, number-box and publication settings. It is the atlas CLI default.
+
+Regional atlas charts inherit only the chart concerns from that version-6
+resource through configuration validation/translation, before user overlays.
+Report typography, chart numbering, index composition, facing pages and PDF
+assembly do not enter regional configuration. Quadratic stellar diameters,
+central-scale cluster symbols, DSO appearance and grid marks reuse their
+existing style/detail/export/render owners. Other families retain their
+packaged defaults. Installed preset lookup is owned by resources.py; no new
+sky, projection, coordinate, catalogue-selection or renderer pipeline exists.

@@ -5795,3 +5795,31 @@ markers and omitted 4,352 lines. This is restoration, not a roadmap revision.
 Focused verification and the exact recovery commit are recorded in the PR;
 Mac editable-install acceptance, actual accepted-bundle wheel checks and the
 final full-suite merge gate remain pending. No merge or cleanup is authorized.
+
+
+## Installed atlas layout/style milestone (candidate, 2026-10-14)
+
+Fernando requested installed selectable presets after the repository-relative
+Scorpius configuration was unavailable in normal command usage. He specified
+atlas style v6 as the current default for regional charts and atlases, excluding
+v1-v5 from selectable styles, and clarified that atlas layout and full atlas
+style are separate: the latter includes shared chart appearance and atlas-only
+presentation. The clean synchronized Mac base is 80d97e27daea04bdbec0337f056ca09d54c03745.
+
+As-is: curated catalogues/reports already install, but example presentation and
+layout files do not; atlas commands require explicit paths and regional defaults
+retain legacy appearance. The candidate installs closed named resources, makes
+v6 the full atlas CLI default, derives its chart subset before regional user
+overlays, and exposes independent landscape/portrait layout selection. Geometry
+is unchanged: 34 landscape sheets (five interior bands plus caps) and the exact
+accepted 36-sheet portrait revision 3 (three interior bands plus caps).
+
+No new production module, test file, catalogue selection, scientific source,
+projection or renderer is introduced. Owning tests extend profile inheritance,
+user precedence, independent CLI protocols, analytic layout validation and real
+wheel/source/editable resource availability. The coordinate guide was reviewed
+and remains current: cluster angular sizes still use the accepted central-scale
+metadata conversion and PN sizes remain symbolic. Further regional print design
+work remains a later milestone. Focused, full Mac and visual acceptance receipts
+must cover this changed runtime/packaging content; the 3,584-test receipt at
+8cc66342 cannot substitute. No merge or branch cleanup is authorized.

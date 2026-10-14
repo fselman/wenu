@@ -201,6 +201,14 @@ def compose_chart(
             raise TypeError(
                 "configuration must be a ConfigurationDefaults value."
             )
+    if configuration is None and isinstance(style, str) and style.lower() == ATLAS_STYLE:
+        try:
+            regional = chart_type_name(chart) == 'regional'
+        except ValueError:
+            regional = False
+        if regional:
+            from wenu.configuration import load_configuration_defaults
+            configuration = load_configuration_defaults(family='regional')
     style_defaults = _resolved_style_mode_defaults(configuration)
     geometry_defaults = _resolved_geometry_detail_defaults(configuration)
     context = chart.chart_context

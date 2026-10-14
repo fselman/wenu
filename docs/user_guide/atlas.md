@@ -1676,3 +1676,35 @@ Design, presentation and index remain explicit atlas inputs. Existing
 implicitly acquire current installed criteria pages. Detailed per-chart object
 tables remain pending; this installation includes existing reports and does
 not create those tables.
+
+
+## Installed atlas layouts and full styles
+
+Atlas layout controls geometry. Full atlas style controls shared chart
+appearance plus atlas-only report typography, numbering and publication settings.
+The two are selected independently. Current installed layouts are:
+
+| Preset | Paper | Interior bands | Polar caps | Charts |
+|---|---|---:|---:|---:|
+| b4-landscape-five-band | B4 landscape | 5 | 2 | 34 |
+| b4-portrait | B4 portrait | 3 | 2 | 36 |
+
+Portrait preserves the accepted atlas_design_36charts_v3.json bytes and common
+central scale. Both resources retain their existing analytic coverage and
+minimum-overlap certificates. Selecting a presentation does not retile them.
+The current full style is atlas-v6; v1-v5 remain historical examples only.
+
+```bash
+wenu_chart presets
+wenu_design_atlas --layout b4-portrait --output atlas_b4_portrait_v1.json
+wenu_plot_atlas --layout b4-portrait --output-prefix atlas_b4_portrait_index_v1
+wenu_create_atlas --layout b4-portrait --charts 1 --output-dir atlas_b4_portrait_review_v1
+```
+
+The last command defaults to atlas-v6; --config atlas-v6 selects it explicitly.
+Use --layout b4-landscape-five-band for the landscape arrangement. Index plotting
+chooses the matching installed portrait/landscape index presentation when
+--config is omitted. --config selects index style in wenu_plot_atlas and full
+atlas style in wenu_create_atlas; their validators remain distinct. Explicit
+--design JSON and --config TOML paths continue to work. Installed curated
+catalogues and their matching criteria remain the normal new-sky defaults.

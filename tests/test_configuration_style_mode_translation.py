@@ -211,7 +211,7 @@ def test_named_composition_consumes_translated_mode_and_cartoon_values(
     )
     monkeypatch.setattr(
         "wenu.charts.composition._style_mode_defaults",
-        lambda: configured,
+        lambda configuration=None: configured,
     )
     chart = RegionalChart(
         center_alt_deg=45.0,

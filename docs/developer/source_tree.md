@@ -3997,3 +3997,22 @@ wheel, source-archive and editable-install subprocess acceptance. The closest
 serve as an independent installer/environment oracle. Synthetic data is labelled
 explicitly; existing PN/cluster tests retain their scientific source oracles via
 explicit source access. Existing atlas tests cover automatic default criteria.
+
+
+## Installed preset ownership (candidate, 2026-10-14)
+
+`resources.py` owns closed named lookup for chart configuration, full atlas
+presentation, resolved atlas layout and atlas-index resources under
+`configuration/presets/`. These TOML/JSON files are installed data, not a new
+production module. `configuration/validation.py` maps the shared chart subset
+of atlas-v6 into schema-v2 fields before ordinary user overlay merging;
+style_mode_translation and geometry_detail_translation retain typed ownership.
+
+`cli/chart.py` exposes discovery and named chart inputs. `cli/atlas.py` resolves
+layout, presentation and index inputs independently through their existing
+validators. Composition activates regional defaults; style_components and
+style_overrides retain physical stellar diameter scaling. Generic export binds
+cluster angular-size metadata to the actual projection radius; detail_application
+passes the existing symbol/label/outline controls to the existing renderer.
+No production module or test file is added. Existing configuration, composition,
+chart/atlas CLI and wheel/sdist/editable tests cover the new seams.

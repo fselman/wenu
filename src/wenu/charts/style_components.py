@@ -86,6 +86,7 @@ class StellarStyle:
 
     color: str = "white"
     area_scale: float = 1.0
+    diameter_scale: float = 1.0
     magnitude_sizing: StellarMagnitudeSizing = field(
         default_factory=StellarMagnitudeSizing
     )
@@ -116,6 +117,9 @@ class StellarStyle:
 
 
     def __post_init__(self):
+        from math import isfinite
+        if isinstance(self.diameter_scale, bool) or not isfinite(self.diameter_scale) or self.diameter_scale <= 0:
+            raise ValueError('diameter_scale must be finite and positive')
         if self.label_placement not in {"fixed", "auto"}:
             raise ValueError("label_placement must be fixed or auto")
 
@@ -152,10 +156,15 @@ class DeepSkyStyle:
     """Presentation of catalogued nonstellar objects."""
 
     nonstellar_color: str = "white"
+    nonstellar_labels_only: bool = False
+    supernova_remnant_symbol_scale: float = 1.0
+    open_cluster_angular_sizes: bool = False
+    open_cluster_exclude_infrared_embedded: bool = False
     nonstellar_linewidth: float = 0.8
     nonstellar_alpha: float = 0.9
     nonstellar_minimum_size_arcmin: float | None = 30.0
     nonstellar_draw_labels: bool = False
+    nonstellar_label_color: str | None = None
     nonstellar_label_fontsize: float = 7.0
     nonstellar_symbol_dots: int = 12
     nonstellar_dot_markersize: float = 2.0

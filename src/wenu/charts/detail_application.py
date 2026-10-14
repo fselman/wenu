@@ -515,6 +515,20 @@ def composition_layer_options(
     publication = (
         converter() if callable(converter) else composition.style
     )
+    deep = getattr(composition.style, 'deep_sky', None)
+    appearance = {}
+    if deep is not None:
+        if deep.nonstellar_labels_only:
+            appearance['nonstellar'] = dict(geometry=dict(labels_only=True),
+                render=dict(draw_markers=False, draw_labels=True,
+                    label_style=dict(fontsize=deep.nonstellar_label_fontsize,
+                        color=deep.nonstellar_label_color or deep.nonstellar_color, alpha=1.0)))
+        if deep.supernova_remnant_symbol_scale != 1.0:
+            appearance['supernova_remnants'] = dict(render=dict(curve_size_scale=deep.supernova_remnant_symbol_scale))
+        if deep.open_cluster_exclude_infrared_embedded:
+            options = dict(geometry=dict(exclude_infrared_embedded=deep.open_cluster_exclude_infrared_embedded))
+            appearance['open_clusters'] = options
+        base = merge_sky_layer_options(sky, base, appearance)
     stars = getattr(composition.style, "stars", None)
     sizing = getattr(stars, "magnitude_sizing", None)
     if (

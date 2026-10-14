@@ -73,6 +73,6 @@ def translate_configuration_defaults(
     )
 
 
-def load_configuration_defaults(path=None) -> ConfigurationDefaults:
+def load_configuration_defaults(path=None, *, family=None) -> ConfigurationDefaults:
     """Load and translate packaged defaults plus an optional user overlay."""
-    return translate_configuration_defaults(load_configuration(path))
+    return translate_configuration_defaults(load_configuration(path, family=family))

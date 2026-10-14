@@ -504,3 +504,21 @@ missing-reddening policy, include-IR/embedded option and optional filtered ECSV
 are inspection/curation inputs, separate from atlas TOML. No default numerical
 observability threshold is admitted; copied catalogues retain source/selection
 provenance. Data/output roots and versioned output names are explicit options.
+
+
+## Installed current presentation and layout selection
+
+An ordinary command's --config accepts a filesystem overlay or installed chart
+preset atlas-v6/scorpius-v1. Regional atlas defaults first inherit the shared
+chart subset of atlas-v6, then apply the supplied overlay and explicit CLI
+values. Full atlas presentation remains its own version-1 protocol, including
+report typography and publication settings; a layout JSON cannot be a chart
+configuration. Layout and index preset names use their independently validated
+protocols. All presets are installed package resources.
+
+Additional generic style fields: stars.diameter_scale (positive);
+open_cluster.face_color, angular_sizes and exclude_infrared_embedded;
+globular_cluster.symbol_shape (none/globular_cluster), symbol_size and face_color;
+nonstellar.labels_only; supernova_remnant.symbol_scale (positive). Open-cluster
+symbol_shape admits circle/open_cluster/cluster_circle. Neutral defaults preserve
+existing appearance; physical sizing, detail and geometry retain separate owners.

@@ -71,7 +71,12 @@ def test_named_atlas_uses_packaged_family_detail_without_example_policy():
     assert all_sky.detail.star_magnitude_limit == pytest.approx(5.0)
     assert not all_sky.detail.layer_enabled("open_clusters")
     assert not all_sky.detail.layer_enabled("planetary_nebulae")
-    assert regional.detail.star_magnitude_limit == pytest.approx(6.5)
+    assert regional.detail.star_magnitude_limit == pytest.approx(7.5)
+    assert regional.style.stars.area_scale == pytest.approx(1.7**2)
+    assert regional.style.stars.magnitude_sizing.algorithm == 'quadratic'
+    assert regional.style.deep_sky.open_cluster_symbol_name == 'cluster_circle'
+    assert regional.style.deep_sky.open_cluster_angular_sizes
+    assert regional.context.viewport == regional_chart().viewport
 
 
 def test_named_cartoon_uses_restrained_bright_deep_sky_policy():

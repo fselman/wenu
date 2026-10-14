@@ -13,7 +13,19 @@ try:
 except ModuleNotFoundError:  # Python 3.10, supported by the package.
     import tomli as tomllib
 
-from wenu.atlas_design import AtlasDesignRequest
+from wenu.atlas_design import AtlasDesignRequest, AtlasBandTiling
+from wenu.resources import configuration_input_path, configuration_preset_names
+
+
+def _layout_arguments(parser):
+    geometry = parser.add_mutually_exclusive_group()
+    geometry.add_argument('--design', type=Path, help='Resolved JSON path or installed atlas layout name.')
+    geometry.add_argument('--layout', choices=configuration_preset_names('atlas-layout'),
+        help='Installed atlas layout (default b4-portrait).')
+
+
+def _layout_path(args):
+    return configuration_input_path(args.design or args.layout or 'b4-portrait', kind='atlas-layout')
 
 
 def _publish_json(destination, text):
@@ -41,8 +53,10 @@ def design_main(argv=None):
         description="Resolve an atlas geometry TOML into validated JSON.",
         allow_abbrev=False,
     )
-    parser.add_argument("--config", required=True, type=Path,
-                        help="Explicit version-1 or version-2 atlas design request TOML.")
+    choice = parser.add_mutually_exclusive_group()
+    choice.add_argument('--config', type=Path, help='Explicit atlas design request TOML or installed layout name.')
+    choice.add_argument('--layout', choices=configuration_preset_names('atlas-layout'),
+                        help='Installed resolved layout (default b4-portrait).')
     parser.add_argument("--output", required=True, type=Path,
                         help="New resolved JSON path; parent directory must exist.")
     args = parser.parse_args(argv)
@@ -53,10 +67,15 @@ def design_main(argv=None):
             raise ValueError(f"Output already exists: {args.output}")
         if not args.output.parent.is_dir():
             raise ValueError("Output parent directory must exist.")
-        with args.config.open("rb") as stream:
-            request = AtlasDesignRequest.from_dict(tomllib.load(stream))
-        atlas = request.resolve()
-        text = atlas.to_json()
+        source = configuration_input_path(args.config or args.layout or 'b4-portrait', kind='atlas-layout')
+        if source.suffix == '.json':
+            text = source.read_text()
+            atlas = AtlasBandTiling.from_json(text)
+        else:
+            with source.open('rb') as stream:
+                request = AtlasDesignRequest.from_dict(tomllib.load(stream))
+            atlas = request.resolve()
+            text = atlas.to_json()
         _publish_json(args.output, text)
     except (ValueError, OSError, UnicodeError) as exc:
         parser.error(str(exc))
@@ -71,15 +90,19 @@ def plot_main(argv=None):
     parser = argparse.ArgumentParser(prog="wenu_plot_atlas",
         description="Render a resolved atlas JSON using independent presentation TOML.",
         allow_abbrev=False)
-    parser.add_argument("--design", required=True, type=Path)
-    parser.add_argument("--config", required=True, type=Path)
+    _layout_arguments(parser)
+    parser.add_argument('--config', type=Path, help='Atlas index TOML path or installed index preset name.')
     parser.add_argument("--output-prefix", required=True, type=Path)
     args = parser.parse_args(argv)
     try:
         from wenu.charts.atlas_index import AtlasIndexPresentation, plot_overview
-        with args.config.open("rb") as stream:
+        design = _layout_path(args)
+        atlas = AtlasBandTiling.from_json(design.read_text())
+        page = atlas.geometry.page
+        default_index = 'b4-landscape' if page.width_mm > page.height_mm else 'b4-portrait'
+        with configuration_input_path(args.config or default_index, kind='atlas-index').open('rb') as stream:
             presentation = AtlasIndexPresentation.from_dict(tomllib.load(stream))
-        outputs = plot_overview(args.design, args.output_prefix, presentation=presentation)
+        outputs = plot_overview(design, args.output_prefix, presentation=presentation)
     except (ValueError, OSError, UnicodeError) as exc:
         parser.error(str(exc))
     except KeyboardInterrupt:
@@ -98,8 +121,9 @@ def create_main(argv=None):
     parser = argparse.ArgumentParser(prog="wenu_create_atlas",
         description="Produce selected fixed ICRS atlas chart pages from resolved geometry.",
         allow_abbrev=False)
-    parser.add_argument("--design", required=True, type=Path)
-    parser.add_argument("--config", required=True, type=Path)
+    _layout_arguments(parser)
+    parser.add_argument('--config', type=Path, default=Path('atlas-v6'),
+                        help='Full atlas presentation TOML path or installed style name (default atlas-v6).')
     parser.add_argument("--charts", default="all")
     parser.add_argument("--jobs", type=int, default=2)
     parser.add_argument("--magnitude-limit", type=float,
@@ -126,7 +150,7 @@ def create_main(argv=None):
     args = parser.parse_args(argv)
     try:
         from wenu.charts.atlas_publication import AtlasChartPresentation, create_atlas
-        with args.config.open("rb") as stream:
+        with configuration_input_path(args.config, kind='atlas-style').open('rb') as stream:
             presentation = AtlasChartPresentation.from_dict(tomllib.load(stream))
         from dataclasses import replace
         from wenu.charts.style_overrides import magnitude_sizing_from_arguments
@@ -140,7 +164,7 @@ def create_main(argv=None):
             from dataclasses import replace
             presentation = replace(presentation, star_magnitude_limit=args.magnitude_limit)
         from wenu.cli.chart import main as chart_command
-        output = create_atlas(args.design, args.output_dir, presentation=presentation,
+        output = create_atlas(_layout_path(args), args.output_dir, presentation=presentation,
             charts=args.charts, jobs=args.jobs, save_sky=args.save_sky, from_sky=args.from_sky,
             index=args.index, chart_command=chart_command,
             open_cluster_catalogue=args.open_cluster_catalogue,

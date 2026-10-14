@@ -159,7 +159,7 @@ class ChartStyleOverrides:
             # and historical polar magnitude remapping. Explicit diameter
             # multiplication remains available and is recorded after resolution.
             return replace(resolved, stars=replace(resolved.stars,
-                magnitude_sizing=sizing, area_scale=(self.star_size_scale or 1.0)**2,
+                magnitude_sizing=sizing, area_scale=(self.star_size_scale if self.star_size_scale is not None else resolved.stars.diameter_scale)**2,
                 ordinary_magnitude_scale=1.0, ordinary_magnitude_offset=0.0,
                 bright_magnitude_scale=1.0, bright_magnitude_offset=0.0,
                 draw_bright_symbols=False))

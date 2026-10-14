@@ -367,3 +367,45 @@ def curated_catalogue_bundle(name):
         criteria=tuple(directory / p for p in record['criteria']),
         products={p: directory / p for p in record['products']})
 
+
+
+# Immutable installed presets. Layout, atlas presentation and ordinary chart
+# configuration are distinct protocols; a name cannot cross those boundaries.
+_CONFIGURATION_PRESETS = {
+    'chart': {'atlas-v6': 'chart_atlas_v6.toml',
+              'scorpius-v1': 'sco_installed_catalogues_v1.toml'},
+    'atlas-style': {'atlas-v6': 'atlas_style_v6.toml'},
+    'atlas-layout': {'b4-landscape-five-band': 'atlas_layout_b4_landscape_v1.json',
+                     'b4-portrait': 'atlas_layout_b4_portrait_v3.json'},
+    'atlas-index': {'b4-landscape': 'atlas_index_style_v2.toml',
+                    'b4-portrait': 'atlas_index_style_v3.toml'},
+}
+
+
+def configuration_preset_names(kind):
+    """List installed preset names for one independently owned protocol."""
+    if kind not in _CONFIGURATION_PRESETS:
+        raise ValueError('Unknown configuration preset kind: ' + str(kind))
+    return tuple(_CONFIGURATION_PRESETS[kind])
+
+
+def configuration_preset_path(name, *, kind):
+    """Return an installed preset without repository-relative lookup."""
+    names = configuration_preset_names(kind)
+    if name not in names:
+        raise ValueError(f'Unknown {kind} preset {name!r}; choose ' + ', '.join(names))
+    path = files('wenu.configuration') / 'presets' / _CONFIGURATION_PRESETS[kind][name]
+    if not path.is_file():
+        raise FileNotFoundError('Installed configuration preset is missing: ' + str(path))
+    return path
+
+
+def configuration_input_path(value, *, kind):
+    """Resolve a registered name or retain an explicit filesystem input."""
+    from pathlib import Path
+    name = str(value)
+    if name in configuration_preset_names(kind):
+        return configuration_preset_path(name, kind=kind)
+    if any(name in values for values in _CONFIGURATION_PRESETS.values()):
+        raise ValueError(f'Preset {name!r} is not a {kind} input.')
+    return Path(value).expanduser()

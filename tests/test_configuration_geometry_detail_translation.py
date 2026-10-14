@@ -153,7 +153,7 @@ def test_named_composition_consumes_packaged_family_and_cartoon_detail(
     )
     monkeypatch.setattr(
         "wenu.charts.composition._geometry_detail_defaults",
-        lambda: configured,
+        lambda configuration=None: configured,
     )
     chart = RegionalChart(
         center_alt_deg=45.0,
@@ -181,7 +181,7 @@ def test_named_composition_consumes_packaged_family_and_cartoon_detail(
     )
 
     explicit = FixedDetailPolicy(
-        ResolvedDetail(star_magnitude_limit=9.0)
+        ResolvedDetail(star_magnitude_limit=8.0)
     )
     overridden = compose_chart(
         chart,
@@ -189,7 +189,7 @@ def test_named_composition_consumes_packaged_family_and_cartoon_detail(
         mode="print",
         detail=explicit,
     )
-    assert overridden.detail.star_magnitude_limit == 9.0
+    assert overridden.detail.star_magnitude_limit == 8.0
 
 
 def test_translated_policies_carry_configured_content_layer_sets():

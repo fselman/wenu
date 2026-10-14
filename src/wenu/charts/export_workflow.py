@@ -104,6 +104,14 @@ def export_composed_chart(
     """Render, decorate, and save one resolved composition exactly once."""
     _validate_composition(chart, composition)
     figure = _configure_figure(renderer, composition)
+    deep = getattr(composition.style, 'deep_sky', None)
+    if deep is not None and deep.open_cluster_angular_sizes:
+        import math
+        from .detail_application import merge_layer_options
+        layer_options = merge_layer_options({'open_clusters': {'render': {
+            'point_diameter_metadata_key': 'apparent_diameter_arcmin',
+            'point_diameter_scale': chart.projection.radius * math.pi / 21600,
+        }}}, layer_options)
     application = composition.layer_options(
         sky,
         overrides=layer_options,
