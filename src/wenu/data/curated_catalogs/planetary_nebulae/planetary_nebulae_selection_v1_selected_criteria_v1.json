@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "document_kind": "wenu-catalogue-selection-criteria",
+  "catalogue": {
+    "file": "planetary_nebulae_selection_v1_selected.ecsv",
+    "sha256": "6797b9b6f8b405fa444885335020c4fdf2f2e04fb90e975a21f82b1163e4b91a"
+  },
+  "policy": [
+    "Include every resolved reference-list member OR finite observed log H-beta flux > -12. The cut is strict; list members bypass it.",
+    "319 selected of 1143: 178 reference-list members and 141 additional flux-only objects.",
+    "Reference lists: messier, caldwell, sac_urban, rasc_finest_ngc, sac_best_ngc, herschel400_south, herschel400, herschel2, sac_beyond_ngc, al_planetary_nebulae, al_planetary_nebulae_south, al_planetary_nebulae_alternates",
+    "Observed H-beta flux in erg s-1 cm-2; surface proxy per arcsec2. Not V or OIII; no extinction correction, visual-selection threshold or imputation.",
+    "log10(S_Hbeta) = log_hbeta_flux - log10(pi*(60*radius_arcmin)^2)",
+    "Upper/lower limits retained as limits; excluded from measured-radius main panels. Uncertain diameters are hollow. No radius or flux imputation.",
+    "Highest surface brightness first for review, with angular size and quality; no automatic public-interest approval.",
+    "Plots retain the full comparison population and unavailable-data margins. A surface-brightness ranking is a review aid; it is not an approved public-interest selection.",
+    "Scientific source SHA-256: 949d05e8bd41d05345024df52da69f1030b7818656798c8471815a3b6be939e3"
+  ],
+  "pages": [
+    {
+      "file": "planetary_nebulae_selection_v1_selected_criteria_v1_policy_01.pdf",
+      "title": "Planetary nebulae: inclusion criteria — policy",
+      "sha256": "632368a5c08e3879f429df18d33474ed4a72645c6fa97a91a787635e83895f72"
+    },
+    {
+      "file": "planetary_nebulae_selection_v1_selected_criteria_v1_plot_01.pdf",
+      "title": "Planetary nebulae — flux",
+      "sha256": "59da0bc1fa9b6d695ad120e96e8bfd115c2d72a6b46d7dee445b25ed3bd37404"
+    },
+    {
+      "file": "planetary_nebulae_selection_v1_selected_criteria_v1_plot_02.pdf",
+      "title": "Planetary nebulae — surface-brightness",
+      "sha256": "274f3083720e7b176504b44814c35ff1db592b778b963cd1406d5f500a56f7bc"
+    }
+  ],
+  "products": {
+    "planetary_nebulae_selection_v1_selected_criteria_v1_policy_01.png": "808ac880dbc153d55957e51d8d43202a53e4d84ed96b1b3da8b7499e270e396d",
+    "planetary_nebulae_selection_v1_selected_criteria_v1_policy_01.svg": "74eefff0d08fd5b4a18e4347227610f68c9fb71b9c88e6b30f5a97b0c40a1b8d",
+    "planetary_nebulae_selection_v1_selected_criteria_v1_policy_01.pdf": "632368a5c08e3879f429df18d33474ed4a72645c6fa97a91a787635e83895f72",
+    "planetary_nebulae_selection_v1_selected_criteria_v1_plot_01.png": "d3e57b561ab0e4f64099a8448b8d0eef4a7540d3325ec628379dd4ff484f19b4",
+    "planetary_nebulae_selection_v1_selected_criteria_v1_plot_01.svg": "7626a583265337fe9239077e92cd4b1fd2b6fa7d0200848465879eebf8d6ef94",
+    "planetary_nebulae_selection_v1_selected_criteria_v1_plot_01.pdf": "59da0bc1fa9b6d695ad120e96e8bfd115c2d72a6b46d7dee445b25ed3bd37404",
+    "planetary_nebulae_selection_v1_selected_criteria_v1_plot_02.png": "0bed4f9e83847631f9dc8bb4ed6b78bb8dffd1d5d793b749d289052b3d4cb688",
+    "planetary_nebulae_selection_v1_selected_criteria_v1_plot_02.svg": "be5ef921a3f2638a5bdb4ae5c45e90485a9b16a0c993692e9ce51e40b92f0529",
+    "planetary_nebulae_selection_v1_selected_criteria_v1_plot_02.pdf": "274f3083720e7b176504b44814c35ff1db592b778b963cd1406d5f500a56f7bc"
+  }
+}
