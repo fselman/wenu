@@ -1649,3 +1649,13 @@ appearance and angular cluster symbols, with PN diameter enlarged by 25%,
 dark green and a 1.1-point stroke. Independent TOML settings are
 `planetary_nebula_symbol_scale`, `planetary_nebula_color` and
 `planetary_nebula_linewidth`. Measurements and public-interest flags are unchanged.
+
+### Accepted curated atlas review (2026-10-14)
+
+Fernando accepted the 36-chart atlas review using PN selection v1, open-cluster
+v0.2, version-6 presentation and the catalogue-bound selection appendices.
+The PN glyph remains symbolic; its stronger appearance does not encode optical
+size, H-beta flux or public-interest approval. The source catalogues, criteria
+bundles and rendered outputs remain versioned separately from software.
+Acceptance was at `12be5079643bd423be69468a5f3d16bec41039b9`; merge and cleanup
+were requested, with the final software regression gate still to be completed.

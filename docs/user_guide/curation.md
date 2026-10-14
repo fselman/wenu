@@ -1371,3 +1371,15 @@ bypass, reddening and subsequent depuration rules. An unavailable rejected
 population is not reconstructed. Hunt V10 is member photometry, not integrated
 cluster magnitude. Missing data retain their established meanings. No object
 is approved for public interest by publishing these criteria.
+
+### Accepted PN selection v1 and criteria bundles (2026-10-14)
+
+Fernando accepted atlas use of PN selection v1 and the criteria appendices at
+`12be5079643bd423be69468a5f3d16bec41039b9`. The Mac focused gate passed
+21 tests in 35.54 seconds; PN and open-cluster criteria JSON bundles were
+successfully generated beside their curated catalogues. The accepted PN rule
+remains all resolved reference-list members OR finite observed log H-beta > -12,
+with 319 selected rows. Public-interest flags remain unassessed; accepting the
+atlas and inclusion criteria does not approve a public-observing shortlist.
+Preserve the curated bundles, active selectors and earlier output experiments
+during software merge and branch cleanup.

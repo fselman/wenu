@@ -5728,6 +5728,11 @@ existing presentation, diagnostic, immutable-publication and PDF owners.
 PN diameters increase 25%, with dark green and heavier outlines. PN plots retain
 the full source population; cluster plots describe the accepted population and
 stored selection/depuration rules. Catalogue hashes bind all criteria pages.
-Mac visual review and the final full-suite merge gate remain pending. No new
-production module, catalogue selection, public-interest approval, merge or
-branch deletion occurs.
+Fernando accepted the atlas appearance and selection appendices on 2026-10-14
+at `12be5079643bd423be69468a5f3d16bec41039b9`, and explicitly requested
+documentation, merge and cleanup. The Mac focused gate passed 21 tests in
+35.54 seconds and both catalogue-bound criteria bundles were generated.
+This acceptance does not approve any PN for public interest. Merge and branch
+cleanup are authorized; execution awaits the final-candidate full-suite gate.
+The earlier 3,581-test receipt at 7c5287ef does not cover this runtime content.
+This acceptance update changes documentation only.
