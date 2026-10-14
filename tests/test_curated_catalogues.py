@@ -138,14 +138,19 @@ import sys
 import json
 import site
 from pathlib import Path
-sys.path.extend(json.loads(sys.argv[2]))
+dependencies = json.loads(sys.argv[2])
+# Isolated mode still includes the interpreter's installed site-packages.
+# Process the fixture's editable .pth before restoring dependency locations,
+# so a pre-existing Wenu installation cannot shadow the project under test.
+sys.path[:] = [p for p in sys.path if p not in dependencies]
 site.addsitedir(sys.argv[1])
 sys.path.insert(0, sys.argv[1])
+sys.path.extend(dependencies)
 import wenu
 from wenu import resources
 from wenu.objects.open_clusters import OpenClusters
 from wenu.objects.planetary_nebulae import PlanetaryNebulae
-assert Path(wenu.__file__).is_relative_to(Path(sys.argv[3]))
+assert Path(wenu.__file__).is_relative_to(Path(sys.argv[3])), wenu.__file__
 assert len(OpenClusters(None).load()) == 1
 assert len(PlanetaryNebulae(None).load()) == 1
 for domain in ('open_clusters','planetary_nebulae'):
@@ -158,6 +163,11 @@ assert len(PlanetaryNebulae(None).load(filename=original)) == 1143
 print('Independent installed defaults, evidence and explicit scientific override verified.')
 '''
         dependencies = [p for p in sys.path if Path(p).name in ('site-packages', 'dist-packages')]
+        ambient = tmp_path / 'ambient/site-packages'
+        (ambient / 'wenu').mkdir(parents=True, exist_ok=True)
+        (ambient / 'wenu/__init__.py').write_text(
+            'raise AssertionError("Ambient Wenu installation shadowed the fixture")\n')
+        dependencies.insert(0, str(ambient))
         result = subprocess.run([sys.executable, '-I', '-c', script, str(installed), json.dumps(dependencies), str(installed)],
             cwd=tmp_path, capture_output=True, text=True)
         assert result.returncode == 0, result.stdout + result.stderr
