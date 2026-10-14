@@ -5733,6 +5733,20 @@ at `12be5079643bd423be69468a5f3d16bec41039b9`, and explicitly requested
 documentation, merge and cleanup. The Mac focused gate passed 21 tests in
 35.54 seconds and both catalogue-bound criteria bundles were generated.
 This acceptance does not approve any PN for public interest. Merge and branch
-cleanup are authorized; execution awaits the final-candidate full-suite gate.
+cleanup are authorized. The final-candidate Mac full suite at
+`6f48b9d073529ef8dcb798eee1ad510acf572034` passed all 3,581 tests in
+1,085.62 seconds (18:05) on 2026-10-14. This supersedes the pending-gate status.
 The earlier 3,581-test receipt at 7c5287ef does not cover this runtime content.
 This acceptance update changes documentation only.
+
+## Next nebular catalogue: EN-MS / NE-EM
+
+Fernando chose the future catalogue name **massive-star ejecta nebulae**,
+**EN-MS**, or **nebulosas de eyeccion de estrellas masivas**, **NE-EM**, on
+2026-10-14. Keep this physical class separate from planetary nebulae, including
+PNe with [WR] central stars. Record massive-star association and evidence for
+stellar ejecta separately from morphology and wind-swept interstellar gas.
+This checkpoint names the next catalogue; it acquires no sources, admits no
+objects and implements no new layer. PN atlas closure and software cleanup
+remain the current task. The full-suite receipt above is retained across this
+documentation-only update; rerun the affected documentation contract.
