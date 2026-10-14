@@ -1,0 +1,3 @@
+# Preserve hash-bound Matplotlib SVG products byte-for-byte.
+# SVG path serialization may contain trailing spaces; source checks stay enabled.
+src/wenu/data/curated_catalogs/**/*.svg -whitespace
