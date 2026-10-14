@@ -5323,3 +5323,12 @@ greater-than comparison for additional targets. All reference memberships
 bypass this cut. Original comparison outputs remain all-row products.
 Public review is sorted by decreasing finite H-beta surface brightness,
 retains angular sizes/quality, and assigns no public-interest approval.
+
+`wenu_create_atlas` additionally accepts `--planetary-nebula-catalogue PATH`.
+`create_atlas(..., planetary_nebula_catalogue=PATH)` maps the same input to
+`CelestialSphereLoadProfile.planetary_nebula_filename`. Open-cluster and PN
+overrides are independent and both require a new sky; either is rejected with
+`--from-sky`. Promotion uses `compare_planetary_nebulae.py --promote-catalogue
+PATH --activate`, with optional `--curated-directory`, and verifies the entire
+summary-bound bundle before copying. The relative working selector is
+`curated_catalogs/planetary_nebulae/planetary_nebulae.ecsv`.

@@ -3048,3 +3048,15 @@ The PN comparison additionally owns optional candidate selection through
 log H-beta > -12, with no size cut. It retains full diagnostics and exports
 319 selected rows plus a surface-brightness-ranked public review table.
 Public-interest approval remains unassessed; this is not atlas installation.
+
+## Curated planetary-nebula atlas override
+
+`wenu_create_atlas --planetary-nebula-catalogue PATH` extends the existing
+open-cluster override in the same CLI/publication owners. It resolves a selector
+once into `CelestialSphereLoadProfile.planetary_nebula_filename`, independently
+of the open-cluster override. The existing snapshot owns hashing and worker
+reuse. Either override with `--from-sky` is rejected. No second sky, transform,
+projection or renderer is added. PN normalization retains curation metadata
+and changes no selection by itself. The comparison tool promotes a verified
+complete bundle using existing collision-safe copying and a relative atomic
+`planetary_nebulae.ecsv` selector, without filtering or modifying source data.

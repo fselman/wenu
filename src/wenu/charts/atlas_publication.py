@@ -661,7 +661,7 @@ def _append_atlas_index(writer, reader, page):
 
 def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                  save_sky=None, from_sky=None, index=None, chart_command=None,
-                 open_cluster_catalogue=None):
+                 open_cluster_catalogue=None, planetary_nebula_catalogue=None):
     """Produce ordered chart pages with one preparation or explicit saved reuse.
 
     A manifest linked last commits the complete batch. Existing outputs and
@@ -691,7 +691,7 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
         presentation = replace(presentation, formats=(*presentation.formats, "svg"))
     if save_sky is not None and from_sky is not None:
         raise ValueError("--save-sky and --from-sky are mutually exclusive.")
-    if from_sky is not None and open_cluster_catalogue is not None:
+    if from_sky is not None and (open_cluster_catalogue is not None or planetary_nebula_catalogue is not None):
         raise ValueError("A catalogue override requires a new sky; omit --from-sky.")
     raw = Path(design_path).read_bytes()
     atlas = AtlasBandTiling.from_json(raw.decode("utf-8"))
@@ -738,14 +738,18 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
         cold_sky = None
         if from_sky is None:
             directory = save_sky or Path(stack.enter_context(tempfile.TemporaryDirectory(prefix="wenu-atlas-sky-"))) / "sky"
-            if open_cluster_catalogue is None:
+            if open_cluster_catalogue is None and planetary_nebula_catalogue is None:
                 digest, cold_sky = prepare_native_sky_snapshot(raw, directory, return_sky=True)
             else:
                 from dataclasses import replace
                 from wenu.sky.maximal_sphere import CANONICAL_MAXIMAL_SPHERE_PROFILE
                 # Resolve the selector once; all workers reuse the hashed snapshot.
-                profile = replace(CANONICAL_MAXIMAL_SPHERE_PROFILE,
-                    open_cluster_filename=Path(open_cluster_catalogue).resolve(strict=True))
+                overrides = {}
+                for field, catalogue in (("open_cluster_filename", open_cluster_catalogue),
+                                         ("planetary_nebula_filename", planetary_nebula_catalogue)):
+                    if catalogue is not None:
+                        overrides[field] = Path(catalogue).resolve(strict=True)
+                profile = replace(CANONICAL_MAXIMAL_SPHERE_PROFILE, **overrides)
                 digest, cold_sky = prepare_native_sky_snapshot(raw, directory,
                     profile=profile, return_sky=True)
         else:
@@ -883,4 +887,3 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             shutil.rmtree(output_dir)
             raise
     return output_dir / "manifest.json"
-

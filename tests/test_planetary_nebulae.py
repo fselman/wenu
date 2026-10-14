@@ -202,6 +202,7 @@ def test_planetary_comparison_cli_exports_preserves_source_and_refuses_clobber(m
     assert source.read_bytes() == before
     for name, expected in summary['products'].items():
         assert hashlib.sha256((tmp_path/name).read_bytes()).hexdigest() == expected
+
     assert set(summary['plots']) == {'flux', 'surface-brightness'}
     with pytest.raises(FileExistsError):
         tool.main(args)
@@ -260,3 +261,41 @@ def test_planetary_selected_cli_exports_exact_union_and_ranked_review(monkeypatc
     assert np.all(np.diff(surface[np.isfinite(surface)]) <= 0)
     for name, expected in summary['products'].items():
         assert hashlib.sha256((tmp_path/name).read_bytes()).hexdigest() == expected
+
+    catalogue = tmp_path/'selected_pn_v1_selected.ecsv'
+    installed = tmp_path/'curated'
+    selector = tool.promote_catalogue(catalogue, installed, activate=True)
+    assert selector.is_symlink() and selector.readlink().as_posix() == catalogue.name
+    assert selector.read_bytes() == catalogue.read_bytes()
+    assert tool.promote_catalogue(catalogue, installed, activate=True) == selector
+    for name in summary['products']:
+        assert (installed/name).read_bytes() == (tmp_path/name).read_bytes()
+    layer = PlanetaryNebulae(None)
+    normalized = layer.load(filename=selector)
+    assert len(normalized) == 319 and np.asarray(normalized['selection_included']).all()
+    assert not any(normalized['public_interest'])
+    from wenu.sky.native_snapshot import _table_records, _table_from_records
+    restored = _table_from_records(_table_records(normalized))
+    assert list(restored['identifier']) == list(normalized['identifier'])
+    assert list(restored['selection_included']) == list(normalized['selection_included'])
+    assert list(restored['public_review_status']) == list(normalized['public_review_status'])
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    geometry = layer.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None)
+    assert len(geometry) == 319 and 'selection_reason' in geometry.metadata
+    assert not geometry.metadata['public_interest'].any()
+
+    import pytest
+    blocked = tmp_path/'blocked'
+    blocked.mkdir()
+    (blocked/'planetary_nebulae.ecsv').write_text('preserve regular selector')
+    with pytest.raises(ValueError, match='regular file'):
+        tool.promote_catalogue(catalogue, blocked, activate=True)
+    assert list(blocked.iterdir()) == [blocked/'planetary_nebulae.ecsv']
+    review_path = tmp_path/'selected_pn_v1_public_review.csv'
+    before = review_path.read_bytes()
+    review_path.write_bytes(before+b'corrupted')
+    assert review_path.read_bytes() != before
+    rejected = tmp_path/'rejected'
+    with pytest.raises(ValueError, match='checksum mismatch'):
+        tool.promote_catalogue(catalogue, rejected, activate=True)
+    assert not rejected.exists()

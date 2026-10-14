@@ -10491,3 +10491,8 @@ def test_planetary_comparison_documents_quantities_provenance_and_pending_select
     coordinates = read(COORDINATE_GUIDE)
     assert 'performs no positional matching' in coordinates
     assert 'per-square-arcsecond quantity' in coordinates
+    atlas_guide = read(ROOT/'docs/user_guide/atlas.md')
+    for phrase in ('--planetary-nebula-catalogue', 'planetary_nebulae.ecsv', '--from-sky'):
+        assert phrase in atlas_guide
+    for phrase in ('--promote-catalogue', 'relative symlink', 'without filtering'):
+        assert phrase in read(ROOT/'docs/user_guide/curation.md')

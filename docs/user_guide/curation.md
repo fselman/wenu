@@ -1313,3 +1313,30 @@ No public numerical cutoff, visual guarantee or atlas adoption is inferred.
 ```bash
 PYTHONPATH=src MPLBACKEND=Agg python tools/compare_planetary_nebulae.py --output-directory output/planetary_nebulae_selection_v1 --name planetary_nebulae_selection_v1 --write-selected-catalogue --min-log-hbeta -12
 ```
+
+### Promote planetary-nebula v1 and prepare a new atlas
+
+Use the same mechanism as the open-cluster catalogue: separately promote a
+verified selected bundle, activate a relative selector, then pass that selector
+when preparing a new atlas sky. This is not another filtering operation.
+
+```bash
+PYTHONPATH=src python tools/compare_planetary_nebulae.py --promote-catalogue output/planetary_nebulae_selection_v1/planetary_nebulae_selection_v1_selected.ecsv --activate
+```
+
+The default destination is `src/wenu/data/curated_catalogs/planetary_nebulae`.
+Every completion-summary product and the summary itself is preserved, with
+checksum, selected-row/count, unique-identity and finite-position validation.
+Existing identical bytes can be reused; different versions and regular
+selector files are refused. `planetary_nebulae.ecsv` is an atomically updated
+relative symlink to the versioned selected ECSV. Original output experiments
+remain unchanged. `--curated-directory` permits an explicit destination.
+
+Add `--planetary-nebula-catalogue src/wenu/data/curated_catalogs/planetary_nebulae/planetary_nebulae.ecsv`
+to `wenu_create_atlas`, alongside the existing `--open-cluster-catalogue`.
+Both selectors resolve once and reach `CelestialSphereLoadProfile`; the existing
+native snapshot hashes the actual sources for every worker. Use new output
+and saved-sky directories. A catalogue override with `--from-sky` is rejected
+because the saved sky retains its earlier catalogue. No geometry, presentation,
+stellar sizing, other catalogue or rendering owner is changed. The PN layer
+retains selection/list/public-review columns as metadata without filtering again.

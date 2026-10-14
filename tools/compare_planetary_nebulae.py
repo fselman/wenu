@@ -17,7 +17,7 @@ import sys
 import numpy as np
 from astropy.table import Table
 
-from catalogue_data_layout import OBSERVING, data_file
+from catalogue_data_layout import OBSERVING, data_file, copy_verified
 from observing_list_membership import excel_rows, key, load_converted
 from observing_list_additions import load_converted as load_additions
 
@@ -35,6 +35,7 @@ AL_FILES = [
     ('al_planetary_nebulae_alternates', 'al_planetaries_alternates_list_v1.xls', 26),
 ]
 HBETA_DOCUMENTATION = 'https://heasarc.gsfc.nasa.gov/W3Browse/nebula-catalog/plnebulae.html'
+CURATED = ROOT/'src/wenu/data/curated_catalogs/planetary_nebulae'
 
 
 def digest(path):
@@ -359,10 +360,22 @@ def main(argv=None):
         help='Export list-membership OR observed H-beta selection and a surface-brightness-ranked public review table.')
     parser.add_argument('--min-log-hbeta', type=float, default=-12.,
         help='Selection only: strict log_hbeta_flux > threshold (default -12). Reference membership bypasses this cut.')
+    parser.add_argument('--promote-catalogue', type=Path,
+        help='Verify and copy an accepted versioned selected ECSV and its entire summary-bound bundle; no filtering.')
+    parser.add_argument('--curated-directory', type=Path, default=CURATED)
+    parser.add_argument('--activate', action='store_true',
+        help='Promotion only: atomically select the version with a relative planetary_nebulae.ecsv symlink.')
     arguments = sys.argv[1:] if argv is None else list(argv)
     if not arguments:
         parser.print_help(); return 0
     args = parser.parse_args(arguments)
+    if args.promote_catalogue is not None:
+        if args.write_selected_catalogue:
+            parser.error('Promotion and selection are separate operations.')
+        print(promote_catalogue(args.promote_catalogue, args.curated_directory, activate=args.activate))
+        return 0
+    if args.activate:
+        parser.error('--activate requires --promote-catalogue.')
     if not args.name or Path(args.name).name != args.name or not re.search(r'_v\d+(?:\.\d+)*$', args.name):
         raise ValueError('Output name must be a filename prefix ending in an explicit _vN version.')
     path = args.data_directory/'planetary_nebulae/planetary_nebulae_acker_heasarc.ecsv'
@@ -420,6 +433,57 @@ def main(argv=None):
     for p in products:
         print(p)
     return 0
+
+
+def promote_catalogue(catalogue, directory=CURATED, *, activate=False):
+    """Promote verified immutable products using the open-cluster handoff mechanism."""
+    from wenu.objects.planetary_nebulae import PlanetaryNebulae
+    catalogue, directory = Path(catalogue), Path(directory)
+    match = re.fullmatch(r'(.+_v\d+(?:\.\d+)*)_selected\.ecsv', catalogue.name)
+    if match is None:
+        raise ValueError('Promote a versioned _vN_selected.ecsv catalogue.')
+    prefix = match[1]
+    summary_path = catalogue.with_name(prefix+'_summary.json')
+    summary = json.loads(summary_path.read_text())
+    records = summary['products']
+    if catalogue.name not in records:
+        raise ValueError('Selected ECSV is absent from its completion summary.')
+    files = []
+    for name, expected in records.items():
+        if Path(name).name != name or not name.startswith(prefix+'_'):
+            raise ValueError('Invalid accepted planetary product filename.')
+        path = catalogue.parent/name
+        if digest(path) != expected:
+            raise ValueError('Accepted planetary product checksum mismatch: '+name)
+        files.append((path, directory/name))
+    source = Table.read(catalogue)
+    if (not len(source) or len(source) != summary['selection']['selected'] or
+            len(set(map(str, source['identifier']))) != len(source)):
+        raise ValueError('Selected planetary count or identity mismatch.')
+    included = source['selection_included']
+    if np.asarray(included).dtype.kind != 'b' or np.ma.getmaskarray(included).any() or not np.asarray(included).all():
+        raise ValueError('Selected planetary catalogue contains unselected or unknown rows.')
+    normalized = PlanetaryNebulae(None).load(filename=catalogue)
+    if (not np.isfinite(normalized['ra_deg']).all() or
+            not np.isfinite(normalized['dec_deg']).all() or
+            (np.abs(normalized['dec_deg']) > 90).any()):
+        raise ValueError('Invalid selected planetary positions.')
+    files.append((summary_path, directory/summary_path.name))
+    selector = directory/'planetary_nebulae.ecsv'
+    if activate and (selector.exists() or selector.is_symlink()) and not selector.is_symlink():
+        raise ValueError('Active planetary selector is a regular file; refusing replacement.')
+    copy_verified(files)
+    if activate:
+        import os
+        import tempfile
+        stage = Path(tempfile.mkdtemp(prefix='.wenu-selector-', dir=directory))
+        try:
+            link = stage/'selector'
+            link.symlink_to(catalogue.name)
+            os.replace(link, selector)
+        finally:
+            stage.rmdir()
+    return selector if activate else directory/catalogue.name
 
 
 if __name__ == '__main__':

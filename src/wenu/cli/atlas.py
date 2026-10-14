@@ -114,6 +114,8 @@ def create_main(argv=None):
         help="One-page index PDF; enables even report pages facing odd chart pages.")
     parser.add_argument("--open-cluster-catalogue", type=Path,
         help="Versioned ECSV or active open_star_clusters.ecsv symlink; changes only open clusters. Requires a new sky.")
+    parser.add_argument("--planetary-nebula-catalogue", type=Path,
+        help="Versioned ECSV or active planetary_nebulae.ecsv symlink; changes only planetary nebulae. Requires a new sky.")
     parser.add_argument("--open-cluster-size", choices=("angular", "fixed"),
         help="Open-cluster diameter at the central chart scale, with current symbol as minimum (default angular); fixed restores previous symbols.")
     sky = parser.add_mutually_exclusive_group()
@@ -139,7 +141,8 @@ def create_main(argv=None):
         output = create_atlas(args.design, args.output_dir, presentation=presentation,
             charts=args.charts, jobs=args.jobs, save_sky=args.save_sky, from_sky=args.from_sky,
             index=args.index, chart_command=chart_command,
-            open_cluster_catalogue=args.open_cluster_catalogue)
+            open_cluster_catalogue=args.open_cluster_catalogue,
+            planetary_nebula_catalogue=args.planetary_nebula_catalogue)
     except (ValueError, TypeError, OSError, UnicodeError, RuntimeError) as exc:
         parser.error(str(exc))
     except KeyboardInterrupt:
@@ -147,4 +150,3 @@ def create_main(argv=None):
         return 130
     print(output)
     return 0
-

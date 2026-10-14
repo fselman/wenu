@@ -5063,3 +5063,11 @@ observed log H-beta > -12, independently of angular-size availability. A
 surface-brightness-ranked review retains size and uncertainty but does not
 approve public interest. Neither selection nor ranking changes source
 coordinates, performs a transform or turns a flux proxy into visibility.
+
+The curated PN atlas override changes source provenance/counts, not coordinate
+meaning. It supplies `planetary_nebula_filename` through the existing load
+profile and native ICRS realization. The selector resolves once; snapshot
+hashes identify actual source bytes and all workers reuse the same prepared
+records. Curation/list/public-review columns remain metadata. No H-beta
+selection is repeated at normalization or rendering, and no public-interest
+approval is inferred. This mirrors the established open-cluster override.

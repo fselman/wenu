@@ -489,3 +489,10 @@ comparison: scientific source and verified observing identities feed
 Existing path/conversion/Excel helpers supply source provenance. No edge feeds
 the production sky, coordinate, projection or rendering owners; no diagram
 of the canonical chart pipeline needs an astronomical change.
+
+### Curated planetary-nebula atlas source edge
+
+The existing catalogue-selector -> atlas CLI -> immutable load profile ->
+native snapshot -> canonical sheet command edge now accepts PN and open-cluster
+selectors independently. Verified bundle promotion remains an offline
+working-data operation. No coordinate or rendering owner is added.

@@ -1250,16 +1250,26 @@ def test_atlas_producer_uses_real_chart_command_and_prepares_sky_once(request_da
     selected_catalogue=tmp_path/'selected_clusters.ecsv'
     selected_catalogue.write_text('synthetic; profile propagation is tested at preparation seam')
     selector=tmp_path/'open_star_clusters.ecsv';selector.symlink_to(selected_catalogue.name)
+    selected_planetary_catalogue=tmp_path/'selected_planetary_nebulae.ecsv'
+    selected_planetary_catalogue.write_text('synthetic; profile propagation is tested at preparation seam')
+    planetary_selector=tmp_path/'planetary_nebulae.ecsv';planetary_selector.symlink_to(selected_planetary_catalogue.name)
     assert cli.create_main(['--design',str(design),'--config',str(config),
-        '--open-cluster-catalogue',str(selector), '--charts','1,14','--jobs','1','--index',str(index),'--output-dir',str(output)])==0
+        '--open-cluster-catalogue',str(selector), '--planetary-nebula-catalogue',str(planetary_selector),
+        '--charts','1,14','--jobs','1','--index',str(index),'--output-dir',str(output)])==0
     assert preparations == [design.read_bytes()]
     from dataclasses import replace
     from wenu.sky.maximal_sphere import CANONICAL_MAXIMAL_SPHERE_PROFILE
-    assert profiles == [replace(CANONICAL_MAXIMAL_SPHERE_PROFILE,open_cluster_filename=selected_catalogue.resolve())]
+    assert profiles == [replace(CANONICAL_MAXIMAL_SPHERE_PROFILE,
+        open_cluster_filename=selected_catalogue.resolve(),
+        planetary_nebula_filename=selected_planetary_catalogue.resolve())]
     with pytest.raises(SystemExit):
         cli.create_main(["--design",str(design),"--config",str(config),"--output-dir",str(tmp_path/"invalid"),
             "--from-sky",str(tmp_path/"old-sky"),"--open-cluster-catalogue",str(selector)])
     assert not (tmp_path/"invalid").exists()
+    with pytest.raises(SystemExit):
+        cli.create_main(["--design",str(design),"--config",str(config),"--output-dir",str(tmp_path/"invalid_pn"),
+            "--from-sky",str(tmp_path/"old-sky"),"--planetary-nebula-catalogue",str(planetary_selector)])
+    assert not (tmp_path/"invalid_pn").exists()
     assert len(dispatches)==2 and all(argv[0]=='atlas-sheet' and reused is sky for argv,reused in dispatches)
     manifest=json.loads((output/'manifest.json').read_text())
     assert manifest['charts']==[1,14] and manifest['workers']==1

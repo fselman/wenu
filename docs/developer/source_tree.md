@@ -3958,3 +3958,12 @@ The same PN diagnostic owner exports optional membership-or-flux selection
 and ranked public-review products. It adds no tool or production module.
 Existing planetary tests extend the strict-threshold, missing/masked membership,
 source-isolation and new export composition seams without repeating rendering.
+
+The PN comparison owner now verifies/promotes its complete selected output
+bundle and atomically activates the relative `planetary_nebulae.ecsv` selector
+under `curated_catalogs/planetary_nebulae`, using `copy_verified` from the
+existing working-data owner. `cli/atlas.py` admits the PN path;
+`charts/atlas_publication.py` maps it to the existing immutable load profile.
+`objects/planetary_nebulae.py` retains curation columns/metadata. Snapshot
+provenance and worker reuse remain in their existing owner. Tests extend
+`test_planetary_nebulae.py` and the existing atlas preparation/CLI test.

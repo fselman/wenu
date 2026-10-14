@@ -1615,3 +1615,21 @@ Use E(B−V) ≤ 3 as the current working comparison ceiling; the earlier 0.5
 example remains a reproducible stricter experiment. No magnitude or surface-
 brightness cutoff has been adopted, and filtered exports do not automatically
 become atlas selections.
+
+### Curated planetary-nebula catalogue override
+
+`wenu_create_atlas --planetary-nebula-catalogue PATH` uses the same explicit
+new-sky override mechanism as `--open-cluster-catalogue`. The working selector
+is `src/wenu/data/curated_catalogs/planetary_nebulae/planetary_nebulae.ecsv`.
+Promote and activate the verified selected bundle with
+`tools/compare_planetary_nebulae.py --promote-catalogue PATH --activate`; see
+[curation](curation.md#promote-planetary-nebula-v1-and-prepare-a-new-atlas).
+
+Pass both selectors to retain both curated catalogues. The PN selector is
+resolved once into `CelestialSphereLoadProfile.planetary_nebula_filename`;
+all workers reuse the existing digest-bound snapshot. Use a new `--save-sky`
+and a new output directory; either catalogue override with `--from-sky` is
+rejected. Old skies and trial outputs remain unchanged. Selection provenance
+and public-review flags survive normalization, but no object is automatically
+marked for public interest. The geometry, fonts, symbol sizes and page layout
+retain the explicitly supplied presentation.

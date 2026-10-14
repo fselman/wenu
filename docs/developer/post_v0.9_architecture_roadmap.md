@@ -5705,3 +5705,17 @@ table extend the same offline owner. No public numerical cutoff or atlas
 installation has been accepted. The Mac comparison gate passed 12 tests after
 installation of the existing optional xlrd dependency; the expanded candidate
 requires its own focused verification and final merge gate.
+
+Fernando requested recreating the atlas with the curated PN v1 on 2026-10-14,
+explicitly requiring the same open-cluster mechanism. At clean synchronized
+Mac head `7c5287ef3971e45d5e938e46971566cc1dfd0b4c`, the prior full suite passed
+3,581 tests. That receipt covers the comparison/selection, not this new runtime
+connection. The as-is load profile already supports a PN filename; only the
+atlas CLI/publication mapping and separate verified bundle/selector promotion
+were missing. The candidate extends those existing owners, preserves curation
+metadata in the PN layer, and adds no module, default selection, coordinate
+transform or pipeline. Tests extend the real atlas-command preparation seam
+for simultaneous selectors and saved-sky rejection, and the existing PN export
+test for immutable promotion, checksums, regular-selector refusal, normalization
+and native realization. New runtime content needs focused verification and a
+final candidate full-suite gate; previous comparison tests cannot substitute.
