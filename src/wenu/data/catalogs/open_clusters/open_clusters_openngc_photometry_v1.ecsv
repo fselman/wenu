@@ -1,0 +1,1959 @@
+# %ECSV 1.0
+# ---
+# datatype:
+# - {name: identifier, datatype: string}
+# - {name: v_magnitude, unit: mag, datatype: float64}
+# - {name: photometry_source_id, datatype: string}
+# - {name: photometry_status, datatype: string}
+# - {name: photometry_match_method, datatype: string}
+# - {name: photometry_candidates, datatype: string}
+# - {name: v_source_code, datatype: string}
+# - {name: photometry_notes, datatype: string}
+# - {name: photometry_identity_review, datatype: bool}
+# meta: !!omap
+# - {source: OpenNGC}
+# - {release: v20260501}
+# - {license: CC-BY-SA-4.0}
+# - {licence_path: ../caldwell/CC-BY-SA-4.0.txt}
+# - {retrieved_at_utc: '2026-10-13T12:58:53+00:00'}
+# - {dias_sha256: 508dfdb29110957cf66e50fa2a3cca4139098a4ed396b24787128fc24057241d}
+# - source_files:
+#     NGC.csv: {sha256: 840fe0c9ee1332e551b2e722a0e92726cd7b157914a3d2177602832aadd3aa9e, url: 'https://raw.githubusercontent.com/mattiaverga/OpenNGC/v20260501/database_files/NGC.csv'}
+#     addendum.csv: {sha256: 1d8f0914e643ada325a5a94d88d8fefad6a4937a2f77cc34f21483af22b11983, url: 'https://raw.githubusercontent.com/mattiaverga/OpenNGC/v20260501/database_files/addendum.csv'}
+# - {matching_policy: 'Explicit primary identifier first, then source aliases; collapse source duplicate references, reject multiple targets
+#     and non-cluster types. No positional matching or imputed photometry.'}
+# - {brightness_notice: 'Source V magnitudes are heterogeneous integrated values. Retain source codes, notes and shared-identity review
+#     flags; availability is not an observability ranking.'}
+# schema: astropy-2.0
+identifier v_magnitude photometry_source_id photometry_status photometry_match_method photometry_candidates v_source_code photometry_notes photometry_identity_review
+"ESO 008 06" nan "" unmatched "" "" "" "" False
+"Mamajek 1" nan "" unmatched "" "" "" "" False
+"ESO 021 06" nan "" unmatched "" "" "" "" False
+"Feigelson 1" nan "" unmatched "" "" "" "" False
+"NGC 1520" nan NGC1520 missing_V primary_identifier NGC1520 "" "About a dozen stars scattered around HD 25864." False
+"ESO 043 13" nan "" unmatched "" "" "" "" False
+"ESO 065 07" nan "" unmatched "" "" "" "" False
+"ASCC 69" nan "" unmatched "" "" "" "" False
+"ASCC 51" nan "" unmatched "" "" "" "" False
+"ESO 062 08" nan "" unmatched "" "" "" "" False
+"NGC 1785" nan NGC1785 type_conflict primary_identifier NGC1785 "" "Chain of 5 to 10 stars superposed on the Large Magellanic Cloud." False
+"NGC 1901" nan NGC1901 missing_V primary_identifier NGC1901 "" "Superposed on the Large Magellanic Cloud." False
+"ASCC 78" nan "" unmatched "" "" "" "" False
+"Collinder 261" nan "" unmatched "" "" "" "" False
+"Ruprecht 163" nan "" unmatched "" "" "" "" False
+"ASCC 71" nan "" unmatched "" "" "" "" False
+"Ruprecht 110" nan "" unmatched "" "" "" "" False
+"ASCC 73" nan "" unmatched "" "" "" "" False
+"BH 140" nan "" unmatched "" "" "" "" False
+"Collinder 268" nan "" unmatched "" "" "" "" False
+"ASCC 57" nan "" unmatched "" "" "" "" False
+"FSR 1617" nan "" unmatched "" "" "" "" False
+"ASCC 76" nan "" unmatched "" "" "" "" False
+"BH 164" nan "" unmatched "" "" "" "" False
+"Collinder 277" nan "" unmatched "" "" "" "" False
+"BH 144" nan "" unmatched "" "" "" "" False
+"Ruprecht 84" nan "" unmatched "" "" "" "" False
+"ESO 093 08" nan "" unmatched "" "" "" "" False
+"FSR 1605" nan "" unmatched "" "" "" "" False
+"Melotte 101" 8.0 Mel101 measured_V primary_identifier Mel101 V-Mag:2 "" False
+"NGC 4815" 8.6 NGC4815 measured_V primary_identifier NGC4815 V-Mag:2 "" False
+"Ruprecht 107" nan "" unmatched "" "" "" "" False
+"Loden 995" nan "" unmatched "" "" "" "" False
+"ESO 099 06" nan "" unmatched "" "" "" "" False
+"NGC 4463" 7.2 NGC4463 measured_V primary_identifier NGC4463 V-Mag:2 "" False
+"Loden 615" nan "" unmatched "" "" "" "" False
+"NGC 5288" 11.8 NGC5288 measured_V primary_identifier NGC5288 V-Mag:2 "" False
+"ESO 092 18" nan "" unmatched "" "" "" "" False
+"Ruprecht 98" nan "" unmatched "" "" "" "" False
+"Loden 848" nan "" unmatched "" "" "" "" False
+"ASCC 70" nan "" unmatched "" "" "" "" False
+"ASCC 82" nan "" unmatched "" "" "" "" False
+"IC 2602" nan IC2602 missing_V primary_identifier IC2602 "" "" False
+"ASCC 56" nan "" unmatched "" "" "" "" False
+"Loden 894" nan "" unmatched "" "" "" "" False
+"Collinder 271" nan "" unmatched "" "" "" "" False
+"Juchert 13" nan "" unmatched "" "" "" "" False
+"BH 132" nan "" unmatched "" "" "" "" False
+"Ruprecht 99" nan "" unmatched "" "" "" "" False
+"BH 111" nan "" unmatched "" "" "" "" False
+"NGC 6588" nan NGC6588 type_conflict primary_identifier NGC6588 "" "3-4 stars including a close double star 30 seconds preceding nominal pos." False
+"Teutsch 79" nan "" unmatched "" "" "" "" False
+"Saurer 4" nan "" unmatched "" "" "" "" False
+"Melotte 105" 8.5 Mel105 measured_V primary_identifier Mel105 V-Mag:2 "" False
+"Ruprecht 166" nan "" unmatched "" "" "" "" False
+"Loden 1375" nan "" unmatched "" "" "" "" False
+"BH 131" nan "" unmatched "" "" "" "" False
+"NGC 5045" nan NGC5045 type_conflict primary_identifier NGC5045 "" "NED lists NGC5045=NGC5155, but updated Corwin identification makes two distinct objects. Position and diameters taken from Corwin's catalog." False
+"Majaess 160" nan "" unmatched "" "" "" "" False
+"IC 2944" nan IC2944 missing_V primary_identifier IC2944 "" "Position is for Lambda Centauri, more or less centered in 40' x 20' nebula." False
+"NGC 4052" 8.8 NGC4052 measured_V primary_identifier NGC4052 V-Mag:2 "" False
+"SAI 118" nan "" unmatched "" "" "" "" False
+"Ruprecht 88" nan "" unmatched "" "" "" "" False
+"Hogg 15" nan "" unmatched "" "" "" "" False
+"Graham 1" nan "" unmatched "" "" "" "" False
+"Dias 4" nan "" unmatched "" "" "" "" False
+"NGC 4609" 6.9 NGC4609 measured_V primary_identifier NGC4609 V-Mag:2 "" False
+"Ruprecht 101" nan "" unmatched "" "" "" "" False
+"NGC 5281" 5.9 NGC5281 measured_V primary_identifier NGC5281 V-Mag:2 "" False
+"NGC 5269" nan NGC5269 missing_V primary_identifier NGC5269 "" "" False
+"Alessi 24" nan "" unmatched "" "" "" "" False
+"Trumpler 21" nan "" unmatched "" "" "" "" False
+"IC 2714" 8.2 IC2714 measured_V primary_identifier IC2714 V-Mag:2 "" False
+"Ruprecht 97" nan "" unmatched "" "" "" "" False
+"Ruprecht 102" nan "" unmatched "" "" "" "" False
+"Alessi 52" nan "" unmatched "" "" "" "" False
+"Danks 1" nan "" unmatched "" "" "" "" False
+"Danks 2" nan "" unmatched "" "" "" "" False
+"NGC 3036" nan NGC3036 missing_V primary_identifier NGC3036 "" "" False
+"FSR 1595" nan "" unmatched "" "" "" "" False
+"Stock 16" nan "" unmatched "" "" "" "" False
+"Ruprecht 100" nan "" unmatched "" "" "" "" False
+"Teutsch 77" nan "" unmatched "" "" "" "" False
+"Ruprecht 112" nan "" unmatched "" "" "" "" False
+"Loden 466" nan "" unmatched "" "" "" "" False
+"Stock 14" nan "" unmatched "" "" "" "" False
+"Lynga 15" nan "" unmatched "" "" "" "" False
+"Loden 807" nan "" unmatched "" "" "" "" False
+"ASCC 75" nan "" unmatched "" "" "" "" False
+"C1331 622" nan "" unmatched "" "" "" "" False
+"ASCC 77" nan "" unmatched "" "" "" "" False
+"FSR 1586" nan "" unmatched "" "" "" "" False
+"Ruprecht 162" nan "" unmatched "" "" "" "" False
+"Basel 18" nan "" unmatched "" "" "" "" False
+"SAI 116" nan "" unmatched "" "" "" "" False
+"Lynga 1" nan "" unmatched "" "" "" "" False
+"Ruprecht 96" nan "" unmatched "" "" "" "" False
+"Pismis 18" nan "" unmatched "" "" "" "" False
+"Loden 991" nan "" unmatched "" "" "" "" False
+"Loden 1339" nan "" unmatched "" "" "" "" False
+"FSR 1645" nan "" unmatched "" "" "" "" False
+"NGC 4349" 7.4 NGC4349 measured_V primary_identifier NGC4349 V-Mag:2 "" False
+"NGC 5316" 6.0 NGC5316 measured_V primary_identifier NGC5316 V-Mag:2 "" False
+"Loden 1101" nan "" unmatched "" "" "" "" False
+"Ruprecht 92" nan "" unmatched "" "" "" "" False
+"Kronberger 39" nan "" unmatched "" "" "" "" False
+"BH 151" nan "" unmatched "" "" "" "" False
+"Bochum 12" nan "" unmatched "" "" "" "" False
+"Loden 624" nan "" unmatched "" "" "" "" False
+"Loden 1409" nan "" unmatched "" "" "" "" False
+"NGC 3766" 5.3 NGC3766 measured_V primary_identifier NGC3766 V-Mag:2 "" False
+"Trumpler 11" nan "" unmatched "" "" "" "" False
+"Ruprecht 105" nan "" unmatched "" "" "" "" False
+"BH 110" nan "" unmatched "" "" "" "" False
+"Loden 1256" nan "" unmatched "" "" "" "" False
+"Hogg 17" nan "" unmatched "" "" "" "" False
+"Lynga 2" nan "" unmatched "" "" "" "" False
+"Collinder 272" nan "" unmatched "" "" "" "" False
+"Loden 481" nan "" unmatched "" "" "" "" False
+"NGC 3603" nan NGC3603 missing_V primary_identifier NGC3603 "" "" False
+"NGC 4103" 7.4 NGC4103 measured_V primary_identifier NGC4103 V-Mag:2 "" False
+"Hogg 16" nan "" unmatched "" "" "" "" False
+"Majaess 133" nan "" unmatched "" "" "" "" False
+"Alessi 5" nan "" unmatched "" "" "" "" False
+"Trumpler 22" nan "" unmatched "" "" "" "" False
+"Ruprecht 95" nan "" unmatched "" "" "" "" False
+"ASCC 65" nan "" unmatched "" "" "" "" False
+"Collinder 236" nan "" unmatched "" "" "" "" False
+"NGC 2609" nan NGC2609 missing_V primary_identifier NGC2609 "" "" False
+"ASCC 67" nan "" unmatched "" "" "" "" False
+"Hogg 8" nan "" unmatched "" "" "" "" False
+"ASCC 72" nan "" unmatched "" "" "" "" False
+"NGC 5168" 9.1 NGC5168 measured_V primary_identifier NGC5168 V-Mag:2 "" False
+"Alessi Teutsch 8" nan "" unmatched "" "" "" "" False
+"ASCC 64" nan "" unmatched "" "" "" "" False
+"Hogg 23" nan "" unmatched "" "" "" "" False
+"Collinder 257" nan "" unmatched "" "" "" "" False
+"Pismis 19" nan "" unmatched "" "" "" "" False
+"NGC 3590" 8.2 NGC3590 measured_V primary_identifier NGC3590 V-Mag:2 "" False
+"Hogg 12" nan "" unmatched "" "" "" "" False
+"Harvard 5" nan "" unmatched "" "" "" "" False
+"NGC 2516" 3.8 NGC2516 measured_V primary_identifier NGC2516 V-Mag:2 "" False
+"ASCC 84" nan "" unmatched "" "" "" "" False
+"Ruprecht 164" nan "" unmatched "" "" "" "" False
+"ASCC 79" nan "" unmatched "" "" "" "" False
+"Loden 402" nan "" unmatched "" "" "" "" False
+"Teutsch 143a" nan "" unmatched "" "" "" "" False
+"NGC 5617" 6.3 NGC5617 measured_V primary_identifier NGC5617 V-Mag:2 "" False
+"NGC 3255" 11.0 NGC3255 measured_V primary_identifier NGC3255 V-Mag:2 "" False
+"Trumpler 18" nan "" unmatched "" "" "" "" False
+"Loden 565" nan "" unmatched "" "" "" "" False
+"Trumpler 20" nan "" unmatched "" "" "" "" False
+"Teutsch 80" nan "" unmatched "" "" "" "" False
+"Ruprecht 104" nan "" unmatched "" "" "" "" False
+"NGC 6025" 5.1 NGC6025 measured_V primary_identifier NGC6025 V-Mag:2 "" False
+"ASCC 63" nan "" unmatched "" "" "" "" False
+"Hogg 10" nan "" unmatched "" "" "" "" False
+"Hogg 11" nan "" unmatched "" "" "" "" False
+"Hogg 5" nan "" unmatched "" "" "" "" False
+"Loden 309" nan "" unmatched "" "" "" "" False
+"Juchert 10" nan "" unmatched "" "" "" "" False
+"NGC 4755" nan NGC4755 missing_V primary_identifier NGC4755 "" "" False
+"NGC 3496" 8.2 NGC3496 measured_V primary_identifier NGC3496 V-Mag:2 "" False
+"ESO 123 26" nan "" unmatched "" "" "" "" False
+"Collinder 240" nan "" unmatched "" "" "" "" False
+"Trumpler 12" nan "" unmatched "" "" "" "" False
+"Loden 1010" nan "" unmatched "" "" "" "" False
+"NGC 3572" 6.6 NGC3572 measured_V primary_identifier NGC3572 V-Mag:2 "" False
+"Sher 1" nan "" unmatched "" "" "" "" False
+"Collinder 275" nan "" unmatched "" "" "" "" False
+"Chupina 3" nan "" unmatched "" "" "" "" False
+"ASCC 80" nan "" unmatched "" "" "" "" False
+"Trumpler 13" nan "" unmatched "" "" "" "" False
+"NGC 3114" 4.2 NGC3114 measured_V primary_identifier NGC3114 V-Mag:2 "" False
+"Bochum 9" nan "" unmatched "" "" "" "" False
+"NGC 4439" 8.4 NGC4439 measured_V primary_identifier NGC4439 V-Mag:2 "" False
+"ASCC 62" nan "" unmatched "" "" "" "" False
+"Collinder 228" nan "" unmatched "" "" "" "" False
+"Bochum 11" nan "" unmatched "" "" "" "" False
+"NGC 5043" nan NGC5043 missing_V primary_identifier NGC5043 "" "" False
+"Collinder 223" nan "" unmatched "" "" "" "" False
+"Ruprecht 111" nan "" unmatched "" "" "" "" False
+"NGC 2132" nan NGC2132 missing_V primary_identifier NGC2132 "" "20-30 stars, 17 arcmin by 11 arcmin; open cluster?" False
+"Pismis 17" nan "" unmatched "" "" "" "" False
+"Feinstein 1" nan "" unmatched "" "" "" "" False
+"Hogg 14" nan "" unmatched "" "" "" "" False
+"Loden 1095" nan "" unmatched "" "" "" "" False
+"Trumpler 16" nan "" unmatched "" "" "" "" False
+"Loden 1225" nan "" unmatched "" "" "" "" False
+"ESO 130 13" nan "" unmatched "" "" "" "" False
+"NGC 5606" 7.7 NGC5606 measured_V primary_identifier NGC5606 V-Mag:2 "" False
+"FSR 1698" nan "" unmatched "" "" "" "" False
+"NGC 4852" 8.9 NGC4852 measured_V primary_identifier NGC4852 V-Mag:2 "" False
+"NGC 5381" nan NGC5381 missing_V primary_identifier NGC5381 "" "" False
+"Collinder 232" nan "" unmatched "" "" "" "" False
+"ASCC 53" nan "" unmatched "" "" "" "" False
+"Trumpler 14" nan "" unmatched "" "" "" "" False
+"Teutsch 106" nan "" unmatched "" "" "" "" False
+"SAI 113" nan "" unmatched "" "" "" "" False
+"Turner 6" nan "" unmatched "" "" "" "" False
+"Stock 15" nan "" unmatched "" "" "" "" False
+"Ruprecht 113" nan "" unmatched "" "" "" "" False
+"Teutsch 31" nan "" unmatched "" "" "" "" False
+"Trumpler 15" nan "" unmatched "" "" "" "" False
+"Loden 1152" nan "" unmatched "" "" "" "" False
+"Loden 915" nan "" unmatched "" "" "" "" False
+"Majaess 65" nan "" unmatched "" "" "" "" False
+"Trumpler 17" nan "" unmatched "" "" "" "" False
+"FSR 1535" nan "" unmatched "" "" "" "" False
+"DC 5" nan "" unmatched "" "" "" "" False
+"BH 99" nan "" unmatched "" "" "" "" False
+"ESO 134 12" nan "" unmatched "" "" "" "" False
+"Bochum 10" nan "" unmatched "" "" "" "" False
+"Loden 1282" nan "" unmatched "" "" "" "" False
+"Platais 8" nan "" unmatched "" "" "" "" False
+"Pismis 20" nan "" unmatched "" "" "" "" False
+"Hogg 9" nan "" unmatched "" "" "" "" False
+"Basel 17" nan "" unmatched "" "" "" "" False
+"NGC 5138" 5.33 NGC5138 measured_V primary_identifier NGC5138 V-Mag:2 "" False
+"Majaess 135" nan "" unmatched "" "" "" "" False
+"FSR 1651" nan "" unmatched "" "" "" "" False
+"Ruprecht 167" nan "" unmatched "" "" "" "" False
+"Alessi Teutsch 12" nan "" unmatched "" "" "" "" False
+"Stock 13" nan "" unmatched "" "" "" "" False
+"Loden 336" nan "" unmatched "" "" "" "" False
+"ASCC 74" nan "" unmatched "" "" "" "" False
+"NGC 3532" 3.0 NGC3532 measured_V primary_identifier NGC3532 V-Mag:2 "" False
+"FSR 1657" nan "" unmatched "" "" "" "" False
+"Loden 165" nan "" unmatched "" "" "" "" False
+"Carraro 1" nan "" unmatched "" "" "" "" False
+"BH 91" nan "" unmatched "" "" "" "" False
+"Loden 1202" nan "" unmatched "" "" "" "" False
+"NGC 3324" 6.7 NGC3324 measured_V primary_identifier NGC3324 V-Mag:2 "IC 2599 is a part of this emission nebula." False
+"BH 118" nan "" unmatched "" "" "" "" False
+"ESO 139 54" nan "" unmatched "" "" "" "" False
+"Loden 372" nan "" unmatched "" "" "" "" False
+"ASCC 60" nan "" unmatched "" "" "" "" False
+"Ruprecht 108" nan "" unmatched "" "" "" "" False
+"Loden 1171" nan "" unmatched "" "" "" "" False
+"Lynga 3" nan "" unmatched "" "" "" "" False
+"NGC 3293" 4.7 NGC3293 measured_V primary_identifier NGC3293 V-Mag:2 "" False
+"BH 84" nan "" unmatched "" "" "" "" False
+"Loden 1378" nan "" unmatched "" "" "" "" False
+"ESO 139 13" nan "" unmatched "" "" "" "" False
+"NGC 4337" 8.9 NGC4337 measured_V primary_identifier NGC4337 V-Mag:2 "" False
+"BH 90" nan "" unmatched "" "" "" "" False
+"NGC 6087" 5.4 NGC6087 measured_V primary_identifier NGC6087 V-Mag:2 "" False
+"Collinder 220" nan "" unmatched "" "" "" "" False
+"ESO 131 09" nan "" unmatched "" "" "" "" False
+"Loden 1289" nan "" unmatched "" "" "" "" False
+"Westerlund 2" nan "" unmatched "" "" "" "" False
+"ASCC 59" nan "" unmatched "" "" "" "" False
+"IC 2581" 4.3 IC2581 measured_V primary_identifier IC2581 V-Mag:2 "" False
+"Collinder 292" nan "" unmatched "" "" "" "" False
+"NGC 5715" 9.8 NGC5715 measured_V primary_identifier NGC5715 V-Mag:2 "" False
+"Trumpler 19" nan "" unmatched "" "" "" "" False
+"Ruprecht 91" nan "" unmatched "" "" "" "" False
+"NGC 6005" 10.7 NGC6005 measured_V primary_identifier NGC6005 V-Mag:2 "" False
+"ASCC 55" nan "" unmatched "" "" "" "" False
+"IC 2488" 7.4 IC2488 measured_V primary_identifier IC2488 V-Mag:2 "" False
+"ESO 175 06" nan "" unmatched "" "" "" "" False
+"Turner 7" nan "" unmatched "" "" "" "" False
+"Ruprecht 114" nan "" unmatched "" "" "" "" False
+"ASCC 61" nan "" unmatched "" "" "" "" False
+"Lynga 5" nan "" unmatched "" "" "" "" False
+"NGC 5662" 5.5 NGC5662 measured_V primary_identifier NGC5662 V-Mag:2 "" False
+"BH 78" nan "" unmatched "" "" "" "" False
+"FSR 1697" nan "" unmatched "" "" "" "" False
+"NGC 5999" 9.0 NGC5999 measured_V primary_identifier NGC5999 V-Mag:2 "" False
+"Ruprecht 165" nan "" unmatched "" "" "" "" False
+"NGC 3033" 8.8 NGC3033 measured_V primary_identifier NGC3033 V-Mag:2 "" False
+"Basel 20" nan "" unmatched "" "" "" "" False
+"BH 92" nan "" unmatched "" "" "" "" False
+"Ruprecht 75" nan "" unmatched "" "" "" "" False
+"FSR 1688" nan "" unmatched "" "" "" "" False
+"ESO 165 09" nan "" unmatched "" "" "" "" False
+"Schuster 1" nan "" unmatched "" "" "" "" False
+"NGC 3960" 8.3 NGC3960 measured_V primary_identifier NGC3960 V-Mag:2 "" False
+"NGC 5823" 7.9 NGC5823 measured_V primary_identifier NGC5823 V-Mag:2 "" False
+"BH 87" nan "" unmatched "" "" "" "" False
+"ASCC 66" nan "" unmatched "" "" "" "" False
+"Saurer 3" nan "" unmatched "" "" "" "" False
+"Majaess 166" nan "" unmatched "" "" "" "" False
+"Lynga 4" nan "" unmatched "" "" "" "" False
+"Ruprecht 77" nan "" unmatched "" "" "" "" False
+"Ruprecht 85" nan "" unmatched "" "" "" "" False
+"NGC 4230" 9.4 NGC4230 measured_V primary_identifier NGC4230 V-Mag:2 "ESO 171-SC 014 is not NGC 4230." False
+"FSR 1509" nan "" unmatched "" "" "" "" False
+"ASCC 58" nan "" unmatched "" "" "" "" False
+"Harvard 10" nan "" unmatched "" "" "" "" False
+"NGC 5593" nan NGC5593 missing_V primary_identifier NGC5593 "" "" False
+"NGC 3105" 9.7 NGC3105 measured_V primary_identifier NGC3105 V-Mag:2 "" False
+"BH 66" nan "" unmatched "" "" "" "" False
+"BH 75" nan "" unmatched "" "" "" "" False
+"Ruprecht 83" nan "" unmatched "" "" "" "" False
+"NGC 5925" 8.4 NGC5925 measured_V primary_identifier NGC5925 V-Mag:2 "" False
+"FSR 1518" nan "" unmatched "" "" "" "" False
+"Loden 2115" nan "" unmatched "" "" "" "" False
+"NGC 5749" 8.8 NGC5749 measured_V primary_identifier NGC5749 V-Mag:2 "" False
+"Teutsch 44" nan "" unmatched "" "" "" "" False
+"ASCC 54" nan "" unmatched "" "" "" "" False
+"NGC 5822" 6.5 NGC5822 measured_V primary_identifier NGC5822 V-Mag:2 "" False
+"ASCC 52" nan "" unmatched "" "" "" "" False
+"BH 106" nan "" unmatched "" "" "" "" False
+"NGC 6067" 5.6 NGC6067 measured_V primary_identifier NGC6067 V-Mag:2 "" False
+"NGC 3330" 7.4 NGC3330 measured_V primary_identifier NGC3330 V-Mag:2 "" False
+"Moffat 1" nan "" unmatched "" "" "" "" False
+"NGC 6031" 8.5 NGC6031 measured_V primary_identifier NGC6031 V-Mag:2 "" False
+"Ruprecht 82" nan "" unmatched "" "" "" "" False
+"FSR 1500" nan "" unmatched "" "" "" "" False
+"Ruprecht 79" nan "" unmatched "" "" "" "" False
+"NGC 6208" 7.2 NGC6208 measured_V primary_identifier NGC6208 V-Mag:2 "" False
+"Ruprecht 78" nan "" unmatched "" "" "" "" False
+"Harvard 9" nan "" unmatched "" "" "" "" False
+"Trumpler 23" nan "" unmatched "" "" "" "" False
+"NGC 2925" 8.3 NGC2925 measured_V primary_identifier NGC2925 V-Mag:2 "" False
+"Miller 1" nan "" unmatched "" "" "" "" False
+"Pismis 16" nan "" unmatched "" "" "" "" False
+"BH 72" nan "" unmatched "" "" "" "" False
+"Alessi Teutsch 3" nan "" unmatched "" "" "" "" False
+"IC 2391" 2.5 IC2391 measured_V primary_identifier IC2391 V-Mag:2 "" False
+"SAI 108" nan "" unmatched "" "" "" "" False
+"NGC 2669" 6.1 NGC2669 measured_V primary_identifier NGC2669 V-Mag:2 "" False
+"NGC 2910" 7.2 NGC2910 measured_V primary_identifier NGC2910 V-Mag:2 "" False
+"BH 52" nan "" unmatched "" "" "" "" False
+"Teutsch 48" nan "" unmatched "" "" "" "" False
+"ASCC 83" nan "" unmatched "" "" "" "" False
+"Pismis 14" nan "" unmatched "" "" "" "" False
+"NGC 6253" 10.2 NGC6253 measured_V primary_identifier NGC6253 V-Mag:2 "" False
+"NGC 5764" 12.6 NGC5764 measured_V primary_identifier NGC5764 V-Mag:2 "" False
+"NGC 6152" 8.1 NGC6152 measured_V primary_identifier NGC6152 V-Mag:2 "" False
+"Loden 2326" nan "" unmatched "" "" "" "" False
+"Loden 2313" nan "" unmatched "" "" "" "" False
+"Ruprecht 115" nan "" unmatched "" "" "" "" False
+"Johansson 1" nan "" unmatched "" "" "" "" False
+"Teutsch 66" nan "" unmatched "" "" "" "" False
+"Hogg 18" nan "" unmatched "" "" "" "" False
+"FSR 1496" nan "" unmatched "" "" "" "" False
+"ESO 211 01" nan "" unmatched "" "" "" "" False
+"Ruprecht 116" nan "" unmatched "" "" "" "" False
+"Ruprecht 118" nan "" unmatched "" "" "" "" False
+"Lynga 6" nan "" unmatched "" "" "" "" False
+"NGC 5800" nan NGC5800 missing_V primary_identifier NGC5800 "" "" False
+"Ruprecht 117" nan "" unmatched "" "" "" "" False
+"Pismis 22" nan "" unmatched "" "" "" "" False
+"ESO 236 07" nan "" unmatched "" "" "" "" False
+"NGC 3228" 6.0 NGC3228 measured_V primary_identifier NGC3228 V-Mag:2 "" False
+"Majaess 170" nan "" unmatched "" "" "" "" False
+"ESO 229 02" nan "" unmatched "" "" "" "" False
+"Ruprecht 76" nan "" unmatched "" "" "" "" False
+"BH 88" nan "" unmatched "" "" "" "" False
+"Ruprecht 119" nan "" unmatched "" "" "" "" False
+"ESO 231 30" nan "" unmatched "" "" "" "" False
+"Ruprecht 176" nan "" unmatched "" "" "" "" False
+"BH 67" nan "" unmatched "" "" "" "" False
+"Alessi 8" nan "" unmatched "" "" "" "" False
+"ESO 226 06" nan "" unmatched "" "" "" "" False
+"NGC 2866" nan NGC2866 missing_V primary_identifier NGC2866 "" "" False
+"Collinder 307" nan "" unmatched "" "" "" "" False
+"Mamajek 4" nan "" unmatched "" "" "" "" False
+"ASCC 81" nan "" unmatched "" "" "" "" False
+"Collinder 213" nan "" unmatched "" "" "" "" False
+"SAI 109" nan "" unmatched "" "" "" "" False
+"Lynga 12" nan "" unmatched "" "" "" "" False
+"Ruprecht 87" nan "" unmatched "" "" "" "" False
+"FSR 1714" nan "" unmatched "" "" "" "" False
+"Alessi 34" nan "" unmatched "" "" "" "" False
+"NGC 2972" 9.9 NGC2972 measured_V primary_identifier NGC2972 V-Mag:2 "" False
+"ESO 211 09" nan "" unmatched "" "" "" "" False
+"ESO 211 03" nan "" unmatched "" "" "" "" False
+"FSR 1715" nan "" unmatched "" "" "" "" False
+"BH 73" nan "" unmatched "" "" "" "" False
+"SAI 91" nan "" unmatched "" "" "" "" False
+"Pismis 11" nan "" unmatched "" "" "" "" False
+"IC 4651" 6.9 IC4651 measured_V primary_identifier IC4651 V-Mag:2 "" False
+"NGC 6167" 6.7 NGC6167 measured_V primary_identifier NGC6167 V-Mag:2 "" False
+"BH 85" nan "" unmatched "" "" "" "" False
+"FSR 1732" nan "" unmatched "" "" "" "" False
+"BH 63" nan "" unmatched "" "" "" "" False
+"NGC 2547" 4.7 NGC2547 measured_V primary_identifier NGC2547 V-Mag:2 "" False
+"NGC 6134" 7.2 NGC6134 measured_V primary_identifier NGC6134 V-Mag:2 "" False
+"Hogg 19" nan "" unmatched "" "" "" "" False
+"Collinder 205" nan "" unmatched "" "" "" "" False
+"Pismis 23" nan "" unmatched "" "" "" "" False
+"NGC 2670" 7.8 NGC2670 measured_V primary_identifier NGC2670 V-Mag:2 "" False
+"NGC 6193" nan NGC6193 missing_V primary_identifier NGC6193 "" "Involved in NGC 6188." False
+"Lynga 9" nan "" unmatched "" "" "" "" False
+"ASCC 46" nan "" unmatched "" "" "" "" False
+"NGC 5460" 5.6 NGC5460 measured_V primary_identifier NGC5460 V-Mag:2 "" False
+"Ruprecht 63" nan "" unmatched "" "" "" "" False
+"Ruprecht 120" nan "" unmatched "" "" "" "" False
+"NGC 3909" nan NGC3909 missing_V primary_identifier NGC3909 "" "" False
+"ESO 217 08" nan "" unmatched "" "" "" "" False
+"IC 2395" 4.6 IC2395 measured_V primary_identifier IC2395 V-Mag:2 "" False
+"Harvard 13" nan "" unmatched "" "" "" "" False
+"Majaess 114" nan "" unmatched "" "" "" "" False
+"Pismis 15" nan "" unmatched "" "" "" "" False
+"Muzzio 1" nan "" unmatched "" "" "" "" False
+"Hogg 21" nan "" unmatched "" "" "" "" False
+"ESO 260 06" nan "" unmatched "" "" "" "" False
+"Melotte 66" nan "" unmatched "" "" "" "" False
+"NGC 6200" 7.4 NGC6200 measured_V primary_identifier NGC6200 V-Mag:2 "" False
+"FSR 1443" nan "" unmatched "" "" "" "" False
+"FSR 1471" nan "" unmatched "" "" "" "" False
+"Patchick 94" nan "" unmatched "" "" "" "" False
+"Ruprecht 60" nan "" unmatched "" "" "" "" False
+"NGC 2660" 8.8 NGC2660 measured_V primary_identifier NGC2660 V-Mag:2 "" False
+"FSR 1441" nan "" unmatched "" "" "" "" False
+"Hogg 22" nan "" unmatched "" "" "" "" False
+"Ruprecht 160" nan "" unmatched "" "" "" "" False
+"ESO 260 07" nan "" unmatched "" "" "" "" False
+"NGC 6204" 8.2 NGC6204 measured_V primary_identifier NGC6204 V-Mag:2 "" False
+"Alessi 9" nan "" unmatched "" "" "" "" False
+"Ruprecht 71" nan "" unmatched "" "" "" "" False
+"Alessi 3" nan "" unmatched "" "" "" "" False
+"Teutsch 103" nan "" unmatched "" "" "" "" False
+"Lynga 11" nan "" unmatched "" "" "" "" False
+"SAI 94" nan "" unmatched "" "" "" "" False
+"Pismis 8" nan "" unmatched "" "" "" "" False
+"NGC 2645" 7.32 NGC2645 measured_V primary_identifier NGC2645 V-Mag:2 "" False
+"Ruprecht 121" nan "" unmatched "" "" "" "" False
+"ESO 260 17" nan "" unmatched "" "" "" "" False
+"FSR 1429" nan "" unmatched "" "" "" "" False
+"ESO 275 01" nan "" unmatched "" "" "" "" False
+"Bochum 7" nan "" unmatched "" "" "" "" False
+"NGC 6250" 5.9 NGC6250 measured_V primary_identifier NGC6250 V-Mag:2 "" False
+"BH 197" nan "" unmatched "" "" "" "" False
+"Westerlund 1" nan "" unmatched "" "" "" "" False
+"NGC 6178" 7.2 NGC6178 measured_V primary_identifier NGC6178 V-Mag:2 "" False
+"ASCC 85" nan "" unmatched "" "" "" "" False
+"Lynga 14" nan "" unmatched "" "" "" "" False
+"Moitinho 1" nan "" unmatched "" "" "" "" False
+"NGC 3446" nan NGC3446 missing_V primary_identifier NGC3446 "" "" False
+"Pismis 12" nan "" unmatched "" "" "" "" False
+"NGC 2659" 8.6 NGC2659 measured_V primary_identifier NGC2659 V-Mag:2 "" False
+"NGC 6249" 8.2 NGC6249 measured_V primary_identifier NGC6249 V-Mag:2 "" False
+"FSR 1415" nan "" unmatched "" "" "" "" False
+"NGC 6216" 10.1 NGC6216 measured_V primary_identifier NGC6216 V-Mag:2 "" False
+"ESO 261 07" nan "" unmatched "" "" "" "" False
+"NGC 2220" nan NGC2220 type_conflict primary_identifier NGC2220 "" "Aggregate of 9-10 bright stars involving SAO 217873." False
+"NGC 6259" 8.0 NGC6259 measured_V primary_identifier NGC6259 V-Mag:2 "" False
+"BH 34" nan "" unmatched "" "" "" "" False
+"Ruprecht 154" nan "" unmatched "" "" "" "" False
+"Pismis 4" nan "" unmatched "" "" "" "" False
+"BH 54" nan "" unmatched "" "" "" "" False
+"FSR 1430" nan "" unmatched "" "" "" "" False
+"ESO 281 24" nan "" unmatched "" "" "" "" False
+"BH 200" nan "" unmatched "" "" "" "" False
+"FSR 1412" nan "" unmatched "" "" "" "" False
+"Ruprecht 65" nan "" unmatched "" "" "" "" False
+"NGC 6169" 6.6 NGC6169 measured_V primary_identifier NGC6169 V-Mag:2 "" False
+"Ruprecht 80" nan "" unmatched "" "" "" "" False
+"ESO 277 04" nan "" unmatched "" "" "" "" False
+"Platais 9" nan "" unmatched "" "" "" "" False
+"BH 37" nan "" unmatched "" "" "" "" False
+"Lynga 13" nan "" unmatched "" "" "" "" False
+"Ruprecht 67" nan "" unmatched "" "" "" "" False
+"NGC 6192" 8.5 NGC6192 measured_V primary_identifier NGC6192 V-Mag:2 "" False
+"BH 56" nan "" unmatched "" "" "" "" False
+"NGC 3680" 7.6 NGC3680 measured_V primary_identifier NGC3680 V-Mag:2 "" False
+"NGC 6322" 6.0 NGC6322 measured_V primary_identifier NGC6322 V-Mag:2 "" False
+"ESO 311 14" nan "" unmatched "" "" "" "" False
+"Trumpler 10" nan "" unmatched "" "" "" "" False
+"ESO 309 03" nan "" unmatched "" "" "" "" False
+"ESO 334 02" nan "" unmatched "" "" "" "" False
+"Majaess 99" nan "" unmatched "" "" "" "" False
+"Teutsch 84" nan "" unmatched "" "" "" "" False
+"Teutsch 64" nan "" unmatched "" "" "" "" False
+"ESO 324 15" nan "" unmatched "" "" "" "" False
+"SAI 88" nan "" unmatched "" "" "" "" False
+"NGC 2671" 11.6 NGC2671 measured_V primary_identifier NGC2671 V-Mag:2 "" False
+"NGC 6231" 2.6 NGC6231 measured_V primary_identifier NGC6231 V-Mag:2 "" False
+"ESO 313 03" nan "" unmatched "" "" "" "" False
+"SAI 90" nan "" unmatched "" "" "" "" False
+"Majaess 104" nan "" unmatched "" "" "" "" False
+"Alessi 43" nan "" unmatched "" "" "" "" False
+"Pismis 2" nan "" unmatched "" "" "" "" False
+"Majaess 101" nan "" unmatched "" "" "" "" False
+"ESO 311 21" nan "" unmatched "" "" "" "" False
+"ESO 312 03" nan "" unmatched "" "" "" "" False
+"FSR 1394" nan "" unmatched "" "" "" "" False
+"ESO 312 04" nan "" unmatched "" "" "" "" False
+"Collinder 197" nan "" unmatched "" "" "" "" False
+"BH 211" nan "" unmatched "" "" "" "" False
+"BH 202" nan "" unmatched "" "" "" "" False
+"BH 217" nan "" unmatched "" "" "" "" False
+"ESO 332 08" nan "" unmatched "" "" "" "" False
+"BH 205" nan "" unmatched "" "" "" "" False
+"NGC 6124" 5.8 NGC6124 measured_V primary_identifier NGC6124 V-Mag:2 "" False
+"NGC 2849" 12.5 NGC2849 measured_V primary_identifier NGC2849 V-Mag:2 "" False
+"Ruprecht 56" nan "" unmatched "" "" "" "" False
+"Ruprecht 125" nan "" unmatched "" "" "" "" False
+"ESO 313 12" nan "" unmatched "" "" "" "" False
+"Ruprecht 64" nan "" unmatched "" "" "" "" False
+"FSR 1390" nan "" unmatched "" "" "" "" False
+"FSR 1380" nan "" unmatched "" "" "" "" False
+"FSR 1758" nan "" unmatched "" "" "" "" False
+"Moffat 2" nan "" unmatched "" "" "" "" False
+"NGC 6268" 9.5 NGC6268 measured_V primary_identifier NGC6268 V-Mag:2 "" False
+"Teutsch 85" nan "" unmatched "" "" "" "" False
+"Saurer 2" nan "" unmatched "" "" "" "" False
+"Pismis 5" nan "" unmatched "" "" "" "" False
+"ESO 315 14" nan "" unmatched "" "" "" "" False
+"BH 55" nan "" unmatched "" "" "" "" False
+"NGC 6242" 6.4 NGC6242 measured_V primary_identifier NGC6242 V-Mag:2 "" False
+"NGC 6318" 11.8 NGC6318 measured_V primary_identifier NGC6318 V-Mag:2 "" False
+"Alessi Teutsch 7" nan "" unmatched "" "" "" "" False
+"Trumpler 25" nan "" unmatched "" "" "" "" False
+"Havlen Moffat 1" nan "" unmatched "" "" "" "" False
+"Pismis 7" nan "" unmatched "" "" "" "" False
+"Pismis 3" nan "" unmatched "" "" "" "" False
+"NGC 2477" 5.8 NGC2477 measured_V primary_identifier NGC2477 V-Mag:2 "" False
+"FSR 1755" nan "" unmatched "" "" "" "" False
+"NGC 2451A" nan "" unmatched "" "" "" "" False
+"ESO 332 20" nan "" unmatched "" "" "" "" False
+"BH 222" nan "" unmatched "" "" "" "" False
+"Ruprecht 152" nan "" unmatched "" "" "" "" False
+"ESO 314 14" nan "" unmatched "" "" "" "" False
+"Ruprecht 66" nan "" unmatched "" "" "" "" False
+"Teutsch 38" nan "" unmatched "" "" "" "" False
+"NGC 6281" 5.4 NGC6281 measured_V primary_identifier NGC6281 V-Mag:2 "" False
+"Ruprecht 123" nan "" unmatched "" "" "" "" False
+"Collinder 338" nan "" unmatched "" "" "" "" False
+"ESO 313 11" nan "" unmatched "" "" "" "" False
+"NGC 2451B" nan "" unmatched "" "" "" "" False
+"ESO 337 23" nan "" unmatched "" "" "" "" False
+"ASCC 48" nan "" unmatched "" "" "" "" False
+"NGC 2546" 6.3 NGC2546 measured_V primary_identifier NGC2546 V-Mag:2 "" False
+"DC 3" nan "" unmatched "" "" "" "" False
+"ASCC 91" nan "" unmatched "" "" "" "" False
+"Pismis 1" nan "" unmatched "" "" "" "" False
+"BH 208" nan "" unmatched "" "" "" "" False
+"NGC 6400" 8.8 NGC6400 measured_V primary_identifier NGC6400 V-Mag:2 "" False
+"Collinder 135" nan "" unmatched "" "" "" "" False
+"Harvard 16" nan "" unmatched "" "" "" "" False
+"BH 214" nan "" unmatched "" "" "" "" False
+"NGC 2818" nan NGC2818 type_conflict primary_identifier NGC2818 V-Mag:3 "Open cluster and planetary nebula." False
+"Turner 5" nan "" unmatched "" "" "" "" False
+"SAI 86" nan "" unmatched "" "" "" "" False
+"AH03 J0822 36.4" nan "" unmatched "" "" "" "" False
+"BH 23" nan "" unmatched "" "" "" "" False
+"FSR 1767" nan "" unmatched "" "" "" "" False
+"Collinder 185" nan "" unmatched "" "" "" "" False
+"Alessi 13" nan "" unmatched "" "" "" "" False
+"Ruprecht 127" nan "" unmatched "" "" "" "" False
+"NGC 2579" nan NGC2579 missing_V primary_identifier NGC2579 "" "ESO 370-PN?009 is a candidate planetary nebula included in NGC 2579." False
+"ESO 389 05" nan "" unmatched "" "" "" "" False
+"ESO 370 17" nan "" unmatched "" "" "" "" False
+"NGC 6334" nan NGC6334 type_conflict primary_identifier NGC6334 "" "" False
+"Teutsch 50" nan "" unmatched "" "" "" "" False
+"BH 4" nan "" unmatched "" "" "" "" False
+"Ruprecht 68" nan "" unmatched "" "" "" "" False
+"BH 223" nan "" unmatched "" "" "" "" False
+"Majaess 95" nan "" unmatched "" "" "" "" False
+"ESO 393 12" nan "" unmatched "" "" "" "" False
+"ASCC 45" nan "" unmatched "" "" "" "" False
+"Ivanov 8" nan "" unmatched "" "" "" "" False
+"ASCC 88" nan "" unmatched "" "" "" "" False
+"Bochum 13" nan "" unmatched "" "" "" "" False
+"ESO 371 25" nan "" unmatched "" "" "" "" False
+"ESO 367 10" nan "" unmatched "" "" "" "" False
+"NGC 6396" 8.5 NGC6396 measured_V primary_identifier NGC6396 V-Mag:2 "" False
+"Ruprecht 128" nan "" unmatched "" "" "" "" False
+"NGC 6444" nan NGC6444 missing_V primary_identifier NGC6444 "" "" False
+"ASCC 90" nan "" unmatched "" "" "" "" False
+"NGC 6475" 3.3 NGC6475 measured_V primary_identifier NGC6475 V-Mag:2 "" False
+"NGC 2635" 11.2 NGC2635 measured_V primary_identifier NGC2635 V-Mag:2 "" False
+"Kronberger 85" nan "" unmatched "" "" "" "" False
+"ESO 370 13" nan "" unmatched "" "" "" "" False
+"FSR 1363" nan "" unmatched "" "" "" "" False
+"ESO 368 11" nan "" unmatched "" "" "" "" False
+"Ruprecht 59" nan "" unmatched "" "" "" "" False
+"AH03 J1725 34.4" nan "" unmatched "" "" "" "" False
+"Pismis 24" nan "" unmatched "" "" "" "" False
+"NGC 6357" nan NGC6357 missing_V primary_identifier NGC6357 "" "Involved in emission nebulosity" False
+"Ruprecht 61" nan "" unmatched "" "" "" "" False
+"Collinder 333" nan "" unmatched "" "" "" "" False
+"NGC 2061" nan NGC2061 missing_V primary_identifier NGC2061 "" "Group of stars." False
+"Arp Madore 2" nan "" unmatched "" "" "" "" False
+"ASCC 98" nan "" unmatched "" "" "" "" False
+"Bochum 15" nan "" unmatched "" "" "" "" False
+"Trumpler 27" nan "" unmatched "" "" "" "" False
+"ESO 397 01" nan "" unmatched "" "" "" "" False
+"NGC 6404" 10.6 NGC6404 measured_V primary_identifier NGC6404 V-Mag:2 "" False
+"SAI 82" nan "" unmatched "" "" "" "" False
+"NGC 2588" 11.8 NGC2588 measured_V primary_identifier NGC2588 V-Mag:2 "" False
+"FSR 1343" nan "" unmatched "" "" "" "" False
+"ESO 368 14" nan "" unmatched "" "" "" "" False
+"Antalova 4" nan "" unmatched "" "" "" "" False
+"Haffner 15" nan "" unmatched "" "" "" "" False
+"NGC 2658" 9.2 NGC2658 measured_V primary_identifier NGC2658 V-Mag:2 "" False
+"Ruprecht 55" nan "" unmatched "" "" "" "" False
+"NGC 6383" 5.5 NGC6374 measured_V primary_identifier NGC6374 V-Mag:2 "Bright star superposed." False
+"Antalova 2" nan "" unmatched "" "" "" "" False
+"Trumpler 28" nan "" unmatched "" "" "" "" False
+"Dutra Bica 50" nan "" unmatched "" "" "" "" False
+"NGC 6416" nan NGC6416 missing_V primary_identifier NGC6416 "" "" False
+"Ferrero 1" nan "" unmatched "" "" "" "" False
+"BH 19" nan "" unmatched "" "" "" "" False
+"BH 221" nan "" unmatched "" "" "" "" False
+"NGC 6405" 4.2 NGC6405 measured_V primary_identifier NGC6405 V-Mag:2 "" False
+"Antalova 3" nan "" unmatched "" "" "" "" False
+"ESO 429 05" nan "" unmatched "" "" "" "" False
+"ESO 435 33" nan "" unmatched "" "" "" "" False
+"Ruprecht 48" nan "" unmatched "" "" "" "" False
+"Ruprecht 52" nan "" unmatched "" "" "" "" False
+"ESO 445 74" nan "" unmatched "" "" "" "" False
+"Ruprecht 58" nan "" unmatched "" "" "" "" False
+"Ruprecht 54" nan "" unmatched "" "" "" "" False
+"BH 231" nan "" unmatched "" "" "" "" False
+"Collinder 140" nan "" unmatched "" "" "" "" False
+"Haffner 17" nan "" unmatched "" "" "" "" False
+"NGC 2439" 6.9 NGC2439 measured_V primary_identifier NGC2439 V-Mag:2 "" False
+"Collinder 196" nan "" unmatched "" "" "" "" False
+"NGC 6425" 7.2 NGC6425 measured_V primary_identifier NGC6425 V-Mag:2 "" False
+"NGC 2243" 9.4 NGC2243 measured_V primary_identifier NGC2243 V-Mag:2 "" False
+"Ruprecht 35" nan "" unmatched "" "" "" "" False
+"Dutra Bica 51" nan "" unmatched "" "" "" "" False
+"Majaess 184" nan "" unmatched "" "" "" "" False
+"Ruprecht 47" nan "" unmatched "" "" "" "" False
+"ESO 429 13" nan "" unmatched "" "" "" "" False
+"Collinder 132" nan "" unmatched "" "" "" "" False
+"Ruprecht 51" nan "" unmatched "" "" "" "" False
+"NGC 2567" 7.4 NGC2567 measured_V primary_identifier NGC2567 V-Mag:2 "" False
+"Haffner 20" nan "" unmatched "" "" "" "" False
+"ESO 461 38" nan "" unmatched "" "" "" "" False
+"NGC 2580" 9.7 NGC2580 measured_V primary_identifier NGC2580 V-Mag:2 "" False
+"Ruprecht 153" nan "" unmatched "" "" "" "" False
+"NGC 6451" 8.2 NGC6451 measured_V primary_identifier NGC6451 V-Mag:2 "" False
+"ESO 427 32" nan "" unmatched "" "" "" "" False
+"Ruprecht 130" nan "" unmatched "" "" "" "" False
+"Basel 5" nan "" unmatched "" "" "" "" False
+"Haffner 13" nan "" unmatched "" "" "" "" False
+"NGC 2489" 7.9 NGC2489 measured_V primary_identifier NGC2489 V-Mag:2 "" False
+"NGC 2627" 8.4 NGC2627 measured_V primary_identifier NGC2627 V-Mag:2 "" False
+"NGC 2533" 7.6 NGC2533 measured_V primary_identifier NGC2533 V-Mag:2 "" False
+"Czernik 32" nan "" unmatched "" "" "" "" False
+"Blanco 1" nan "" unmatched "" "" "" "" False
+"NGC 2571" 7.0 NGC2571 measured_V primary_identifier NGC2571 V-Mag:2 "" False
+"BH 245" nan "" unmatched "" "" "" "" False
+"ESO 456 72" nan "" unmatched "" "" "" "" False
+"Ruprecht 134" nan "" unmatched "" "" "" "" False
+"NGC 2587" 9.2 NGC2587 measured_V primary_identifier NGC2587 V-Mag:2 "" False
+"Haffner 7" nan "" unmatched "" "" "" "" False
+"Trumpler 26" nan "" unmatched "" "" "" "" False
+"ESO 447 29" nan "" unmatched "" "" "" "" False
+"Dutra Bica 25" nan "" unmatched "" "" "" "" False
+"Collinder 347" nan "" unmatched "" "" "" "" False
+"ESO 436 02" nan "" unmatched "" "" "" "" False
+"ESO 425 06" nan "" unmatched "" "" "" "" False
+"IRAS 17301 2917" nan "" unmatched "" "" "" "" False
+"ESO 435 09" nan "" unmatched "" "" "" "" False
+"Dutra Bica 10" nan "" unmatched "" "" "" "" False
+"Dutra Bica 7" nan "" unmatched "" "" "" "" False
+"Dutra Bica 11" nan "" unmatched "" "" "" "" False
+"Dutra Bica 12" nan "" unmatched "" "" "" "" False
+"Dutra Bica 58" nan "" unmatched "" "" "" "" False
+"Ruprecht 20" nan "" unmatched "" "" "" "" False
+"Dutra Bica 6" nan "" unmatched "" "" "" "" False
+"Dutra Bica 5" nan "" unmatched "" "" "" "" False
+"Collinder 351" nan "" unmatched "" "" "" "" False
+"Ruprecht 133" nan "" unmatched "" "" "" "" False
+"NGC 5998" nan NGC5998 missing_V primary_identifier NGC5998 "" "" False
+"Ruprecht 44" nan "" unmatched "" "" "" "" False
+"Dutra Bica 32" nan "" unmatched "" "" "" "" False
+"ASCC 87" nan "" unmatched "" "" "" "" False
+"Ruprecht 168" nan "" unmatched "" "" "" "" False
+"Ruprecht 150" nan "" unmatched "" "" "" "" False
+"Haffner 14" nan "" unmatched "" "" "" "" False
+"Dutra Bica 28" nan "" unmatched "" "" "" "" False
+"Ruprecht 12" nan "" unmatched "" "" "" "" False
+"ASCC 43" nan "" unmatched "" "" "" "" False
+"Trumpler 31" nan "" unmatched "" "" "" "" False
+"NGC 2527" 6.5 NGC2520 measured_V primary_identifier NGC2520 V-Mag:2 "" False
+"SAI 81" nan "" unmatched "" "" "" "" False
+"Dutra Bica 18" nan "" unmatched "" "" "" "" False
+"Teutsch 25" nan "" unmatched "" "" "" "" False
+"Haffner 22" nan "" unmatched "" "" "" "" False
+"NGC 2483" 7.6 NGC2483 measured_V primary_identifier NGC2483 V-Mag:2 "" False
+"NGC 6520" 7.6 NGC6520 measured_V primary_identifier NGC6520 V-Mag:2 "" False
+"ESO 432 03" nan "" unmatched "" "" "" "" False
+"Dutra Bica 31" nan "" unmatched "" "" "" "" False
+"Haffner 11" nan "" unmatched "" "" "" "" False
+"ESO 494 09" nan "" unmatched "" "" "" "" False
+"Collinder 468" nan "" unmatched "" "" "" "" False
+"Czernik 37" nan "" unmatched "" "" "" "" False
+"vdBergh 83" nan "" unmatched "" "" "" "" False
+"ESO 493 03" nan "" unmatched "" "" "" "" False
+"Haffner 21" nan "" unmatched "" "" "" "" False
+"NGC 2453" 8.3 NGC2453 measured_V primary_identifier NGC2453 V-Mag:2 "" False
+"FSR 1315" nan "" unmatched "" "" "" "" False
+"Ruprecht 57" nan "" unmatched "" "" "" "" False
+"Ruprecht 41" nan "" unmatched "" "" "" "" False
+"ESO 524 01" nan "" unmatched "" "" "" "" False
+"AH03 J0748 26.9" nan "" unmatched "" "" "" "" False
+"Dutra Bica 40" nan "" unmatched "" "" "" "" False
+"Ruprecht 49" nan "" unmatched "" "" "" "" False
+"Ruprecht 27" nan "" unmatched "" "" "" "" False
+"Alessi 33" nan "" unmatched "" "" "" "" False
+"NGC 2467" nan NGC2467 missing_V primary_identifier NGC2467 "" "" False
+"Alessi 18" nan "" unmatched "" "" "" "" False
+"Haffner 18" nan "" unmatched "" "" "" "" False
+"Ruprecht 36" nan "" unmatched "" "" "" "" False
+"Haffner 19" nan "" unmatched "" "" "" "" False
+"Ruprecht 18" nan "" unmatched "" "" "" "" False
+"Dutra Bica 49" nan "" unmatched "" "" "" "" False
+"ESO 486 54" nan "" unmatched "" "" "" "" False
+"Ruprecht 53" nan "" unmatched "" "" "" "" False
+"Ruprecht 42" nan "" unmatched "" "" "" "" False
+"Majaess 88" nan "" unmatched "" "" "" "" False
+"Trumpler 9" nan "" unmatched "" "" "" "" False
+"NGC 6698" nan NGC6698 missing_V primary_identifier NGC6698 "" "NGC ident. uncertain; nominal position for NGC 6698 is 25 arcmin south." False
+"Ruprecht 13" nan "" unmatched "" "" "" "" False
+"ESO 518 03" nan "" unmatched "" "" "" "" False
+"ASCC 95" nan "" unmatched "" "" "" "" False
+"NGC 2354" 6.5 NGC2354 measured_V primary_identifier NGC2354 V-Mag:2 "" False
+"FSR 1308" nan "" unmatched "" "" "" "" False
+"Ruprecht 32" nan "" unmatched "" "" "" "" False
+"Haffner 16" nan "" unmatched "" "" "" "" False
+"Waterloo 3" nan "" unmatched "" "" "" "" False
+"Dutra Bica 59" nan "" unmatched "" "" "" "" False
+"Ruprecht 137" nan "" unmatched "" "" "" "" False
+"ASCC 33" nan "" unmatched "" "" "" "" False
+"NGC 2362" 4.1 NGC2362 measured_V primary_identifier NGC2362 V-Mag:2 "" False
+"Dutra Bica 45" nan "" unmatched "" "" "" "" False
+"Ruprecht 169" nan "" unmatched "" "" "" "" False
+"Collinder 121" nan "" unmatched "" "" "" "" False
+"Ruprecht 136" nan "" unmatched "" "" "" "" False
+"Ruprecht 138" nan "" unmatched "" "" "" "" False
+"Ivanov 6" nan "" unmatched "" "" "" "" False
+"Majaess 89" nan "" unmatched "" "" "" "" False
+"ESO 521 38" nan "" unmatched "" "" "" "" False
+"Majaess 90" nan "" unmatched "" "" "" "" False
+"ASCC 37" nan "" unmatched "" "" "" "" False
+"ESO 522 05" nan "" unmatched "" "" "" "" False
+"NGC 6530" 4.6 NGC6530 measured_V primary_identifier NGC6530 V-Mag:2 "" False
+"NGC 2482" 7.3 NGC2482 measured_V primary_identifier NGC2482 V-Mag:2 "" False
+"Trumpler 6" nan "" unmatched "" "" "" "" False
+"NGC 2352" nan NGC2352 missing_V primary_identifier NGC2352 "" "" False
+"Berkeley 75" nan "" unmatched "" "" "" "" False
+"Trumpler 7" nan "" unmatched "" "" "" "" False
+"NGC 2447" 6.2 NGC2447 measured_V primary_identifier NGC2447 V-Mag:2 "" False
+"Collinder 367" nan "" unmatched "" "" "" "" False
+"Dutra Bica 60" nan "" unmatched "" "" "" "" False
+"Bochum 14" nan "" unmatched "" "" "" "" False
+"ESO 525 08" nan "" unmatched "" "" "" "" False
+"Ruprecht 139" nan "" unmatched "" "" "" "" False
+"Ruprecht 23" nan "" unmatched "" "" "" "" False
+"NGC 6546" 8.0 NGC6546 measured_V primary_identifier NGC6546 V-Mag:2 "" False
+"FSR 0022" nan "" unmatched "" "" "" "" False
+"Ruprecht 17" nan "" unmatched "" "" "" "" False
+"NGC 6514" nan NGC6514 type_conflict primary_identifier NGC6514 V-Mag:10 "" False
+"ASCC 39" nan "" unmatched "" "" "" "" False
+"FSR 0023" nan "" unmatched "" "" "" "" False
+"Juchert 12" nan "" unmatched "" "" "" "" False
+"ESO 561 05" nan "" unmatched "" "" "" "" False
+"NGC 6531" 5.9 NGC6531 measured_V primary_identifier NGC6531 V-Mag:3 "" False
+"NGC 6469" 8.2 NGC6469 measured_V primary_identifier NGC6469 V-Mag:2 "" False
+"ASCC 93" nan "" unmatched "" "" "" "" False
+"Platais 5" nan "" unmatched "" "" "" "" False
+"NGC 6583" 10.0 NGC6583 measured_V primary_identifier NGC6583 V-Mag:2 "" False
+"FSR 1294" nan "" unmatched "" "" "" "" False
+"Teutsch 14a" nan "" unmatched "" "" "" "" False
+"NGC 6573" nan NGC6573 type_conflict primary_identifier NGC6573 "" "NGC identification is very uncertain." False
+"Majaess 190" nan "" unmatched "" "" "" "" False
+"Bica 4" nan "" unmatched "" "" "" "" False
+"ESO 589 26" nan "" unmatched "" "" "" "" False
+"NGC 2367" 7.9 NGC2367 measured_V primary_identifier NGC2367 V-Mag:2 "" False
+"FSR 1275" nan "" unmatched "" "" "" "" False
+"NGC 6568" 8.6 NGC6568 measured_V primary_identifier NGC6568 V-Mag:2 "" False
+"vdBergh 113" nan "" unmatched "" "" "" "" False
+"FSR 0031" nan "" unmatched "" "" "" "" False
+"NGC 2455" 10.2 NGC2455 measured_V primary_identifier NGC2455 V-Mag:2 "" False
+"FSR 1270" nan "" unmatched "" "" "" "" False
+"ASCC 36" nan "" unmatched "" "" "" "" False
+"NGC 2384" 7.4 NGC2384 measured_V primary_identifier NGC2384 V-Mag:2 "" False
+"NGC 2383" 8.4 NGC2383 measured_V primary_identifier NGC2383 V-Mag:2 "" False
+"ESO 559 13" nan "" unmatched "" "" "" "" False
+"Tombaugh 2" nan "" unmatched "" "" "" "" False
+"Ruprecht 11" nan "" unmatched "" "" "" "" False
+"NGC 2287" 4.5 NGC2287 measured_V primary_identifier NGC2287 V-Mag:2 "" False
+"NGC 7826" nan NGC7826 type_conflict primary_identifier NGC7826 "" "Group of Galactic stars." False
+"NGC 2421" 8.3 NGC2421 measured_V primary_identifier NGC2421 V-Mag:2 "" False
+"Tombaugh 1" nan "" unmatched "" "" "" "" False
+"Czernik 31" nan "" unmatched "" "" "" "" False
+"Ruprecht 34" nan "" unmatched "" "" "" "" False
+"Collinder 394" nan "" unmatched "" "" "" "" False
+"FSR 0035" nan "" unmatched "" "" "" "" False
+"Ruprecht 10" nan "" unmatched "" "" "" "" False
+"FSR 0039" nan "" unmatched "" "" "" "" False
+"NGC 6716" 7.5 NGC6716 measured_V primary_identifier NGC6716 V-Mag:2 "" False
+"NGC 6595" nan NGC6590 type_conflict primary_identifier NGC6590 "" "" False
+"Teutsch 61" nan "" unmatched "" "" "" "" False
+"Auner 1" nan "" unmatched "" "" "" "" False
+"Trumpler 33" nan "" unmatched "" "" "" "" False
+"Dias 5" nan "" unmatched "" "" "" "" False
+"FSR 1255" nan "" unmatched "" "" "" "" False
+"Ruprecht 15" nan "" unmatched "" "" "" "" False
+"Alessi 40" nan "" unmatched "" "" "" "" False
+"Ruprecht 16" nan "" unmatched "" "" "" "" False
+"Bochum 6" nan "" unmatched "" "" "" "" False
+"IC 4725" 4.6 IC4725 measured_V primary_identifier IC4725 V-Mag:2 "" False
+"Ruprecht 157" nan "" unmatched "" "" "" "" False
+"NGC 2432" 10.2 NGC2432 measured_V primary_identifier NGC2432 V-Mag:2 "" False
+"NGC 2509" 9.3 NGC2509 measured_V primary_identifier NGC2509 V-Mag:2 "" False
+"Markarian 38" nan "" unmatched "" "" "" "" False
+"NGC 6494" 5.5 NGC6494 measured_V primary_identifier NGC6494 V-Mag:2 "" False
+"Turner 3" nan "" unmatched "" "" "" "" False
+"Turner 2" nan "" unmatched "" "" "" "" False
+"ASCC 99" nan "" unmatched "" "" "" "" False
+"Turner 4" nan "" unmatched "" "" "" "" False
+"NGC 2204" 8.6 NGC2204 measured_V primary_identifier NGC2204 V-Mag:2 "" False
+"Ruprecht 5" nan "" unmatched "" "" "" "" False
+"ESO 559 02" nan "" unmatched "" "" "" "" False
+"Mayer 3" nan "" unmatched "" "" "" "" False
+"FSR 1253" nan "" unmatched "" "" "" "" False
+"NGC 6603" 11.1 NGC6603 measured_V primary_identifier NGC6603 V-Mag:2 "Included in the Milky Way starcloud MESSIER 024." False
+"Majaess 86" nan "" unmatched "" "" "" "" False
+"Haffner 24" nan "" unmatched "" "" "" "" False
+"Collinder 469" nan "" unmatched "" "" "" "" False
+"Ruprecht 145" nan "" unmatched "" "" "" "" False
+"NGC 2479" 9.6 NGC2479 measured_V primary_identifier NGC2479 V-Mag:2 "" False
+"Teutsch 49" nan "" unmatched "" "" "" "" False
+"NGC 6507" 9.6 NGC6507 measured_V primary_identifier NGC6507 V-Mag:2 "" False
+"FSR 0046" nan "" unmatched "" "" "" "" False
+"Ruprecht 37" nan "" unmatched "" "" "" "" False
+"Bochum 4" nan "" unmatched "" "" "" "" False
+"NGC 6613" 6.9 NGC6613 measured_V primary_identifier NGC6613 V-Mag:2 "" False
+"Haffner 9" nan "" unmatched "" "" "" "" False
+"Bochum 5" nan "" unmatched "" "" "" "" False
+"NGC 6645" 8.5 NGC6645 measured_V primary_identifier NGC6645 V-Mag:2 "" False
+"NGC 6596" nan NGC6596 missing_V primary_identifier NGC6596 "" "" False
+"Dolidze 52" nan "" unmatched "" "" "" "" False
+"Berkeley 25" nan "" unmatched "" "" "" "" False
+"Ruprecht 147" nan "" unmatched "" "" "" "" False
+"NGC 6618" nan NGC6618 type_conflict primary_identifier NGC6618 V-Mag:10 "" False
+"Ruprecht 171" nan "" unmatched "" "" "" "" False
+"FSR 1243" nan "" unmatched "" "" "" "" False
+"Waterloo 8" nan "" unmatched "" "" "" "" False
+"FSR 0052" nan "" unmatched "" "" "" "" False
+"Ruprecht 26" nan "" unmatched "" "" "" "" False
+"NGC 2360" 7.2 NGC2360 measured_V primary_identifier NGC2360 V-Mag:2 "" False
+"NGC 2414" 7.9 NGC2414 measured_V primary_identifier NGC2414 V-Mag:2 "" False
+"FSR 1234" nan "" unmatched "" "" "" "" False
+"Czernik 29" nan "" unmatched "" "" "" "" False
+"Haffner 10" nan "" unmatched "" "" "" "" False
+"Ivanov 7" nan "" unmatched "" "" "" "" False
+"Waterloo 7" nan "" unmatched "" "" "" "" False
+"FSR 0054" nan "" unmatched "" "" "" "" False
+"ASCC 94" nan "" unmatched "" "" "" "" False
+"Haffner 4" nan "" unmatched "" "" "" "" False
+"NGC 2425" nan NGC2425 missing_V primary_identifier NGC2425 "" "" False
+"NGC 2437" 6.1 NGC2437 measured_V primary_identifier NGC2437 V-Mag:2 "" False
+"Kronberger 25" nan "" unmatched "" "" "" "" False
+"Dolidze 28" nan "" unmatched "" "" "" "" False
+"Kharchenko 3" nan "" unmatched "" "" "" "" False
+"Kharchenko 2" nan "" unmatched "" "" "" "" False
+"NGC 2422" 4.4 NGC2422 measured_V primary_identifier NGC2422 V-Mag:2 "" False
+"Kronberger 2" nan "" unmatched "" "" "" "" False
+"Ruprecht 1" nan "" unmatched "" "" "" "" False
+"Basel 11a" nan "" unmatched "" "" "" "" False
+"NGC 2401" 12.6 NGC2401 measured_V primary_identifier NGC2401 V-Mag:2 "" False
+"NGC 2423" 6.7 NGC2423 measured_V primary_identifier NGC2423 V-Mag:2 "" False
+"FSR 1227" nan "" unmatched "" "" "" "" False
+"FSR 1209" nan "" unmatched "" "" "" "" False
+"NGC 6611" nan NGC6611 type_conflict primary_identifier NGC6611 V-Mag:2 "" False
+"ASCC 40" nan "" unmatched "" "" "" "" False
+"NGC 2318" nan NGC2318 missing_V primary_identifier NGC2318 "" "" False
+"DC 4" nan "" unmatched "" "" "" "" False
+"NGC 2413" nan NGC2413 missing_V primary_identifier NGC2413 "" "" False
+"Trumpler 32" nan "" unmatched "" "" "" "" False
+"FSR 0051" nan "" unmatched "" "" "" "" False
+"NGC 2374" 8.0 NGC2374 measured_V primary_identifier NGC2374 V-Mag:2 "" False
+"Berkeley 33" nan "" unmatched "" "" "" "" False
+"NGC 2345" 7.7 NGC2345 measured_V primary_identifier NGC2345 V-Mag:2 "" False
+"Berkeley 36" nan "" unmatched "" "" "" "" False
+"Haffner 6" nan "" unmatched "" "" "" "" False
+"Bica 3" nan "" unmatched "" "" "" "" False
+"DC 1" nan "" unmatched "" "" "" "" False
+"FSR 1204" nan "" unmatched "" "" "" "" False
+"NGC 2539" 6.5 NGC2539 measured_V primary_identifier NGC2539 V-Mag:2 "" False
+"FSR 1202" nan "" unmatched "" "" "" "" False
+"Ruprecht 24" nan "" unmatched "" "" "" "" False
+"Haffner 8" nan "" unmatched "" "" "" "" False
+BDSB96 nan "" unmatched "" "" "" "" False
+"Ruprecht 141" nan "" unmatched "" "" "" "" False
+"Dias 6" nan "" unmatched "" "" "" "" False
+"NGC 6604" 6.5 NGC6604 measured_V primary_identifier NGC6604 V-Mag:2 "" False
+"Ruprecht 142" nan "" unmatched "" "" "" "" False
+"Ruprecht 143" nan "" unmatched "" "" "" "" False
+"Melotte 71" 7.1 Mel071 measured_V primary_identifier Mel071 V-Mag:2 "" False
+"NGC 6631" 11.7 NGC6631 measured_V primary_identifier NGC6631 V-Mag:2 "" False
+"Alessi 31" nan "" unmatched "" "" "" "" False
+"FSR 0059" nan "" unmatched "" "" "" "" False
+"NGC 6625" 9.0 NGC6625 measured_V primary_identifier NGC6625 V-Mag:2 "Coordinates taken from Simbad and Corwin.|NGC identification is not certain." False
+"SAI 69" nan "" unmatched "" "" "" "" False
+"Berkeley 76" nan "" unmatched "" "" "" "" False
+"NGC 2396" 7.4 NGC2396 measured_V primary_identifier NGC2396 V-Mag:2 "" False
+"Ruprecht 135" nan "" unmatched "" "" "" "" False
+"vdBergh 92" nan "" unmatched "" "" "" "" False
+"Ruprecht 144" nan "" unmatched "" "" "" "" False
+"NGC 2506" 7.6 NGC2506 measured_V primary_identifier NGC2506 V-Mag:2 "" False
+"Collinder 466" nan "" unmatched "" "" "" "" False
+"Melotte 72" 10.1 Mel072 measured_V primary_identifier Mel072 V-Mag:2 "" False
+"NGC 2343" 6.7 NGC2343 measured_V primary_identifier NGC2343 V-Mag:2 "" False
+"Ruprecht 4" nan "" unmatched "" "" "" "" False
+"NGC 2351" nan NGC2351 missing_V primary_identifier NGC2351 "" "NGC declination is 1 degree too far south if this is NGC 2351." False
+"Alessi 10" nan "" unmatched "" "" "" "" False
+"NGC 6649" 8.9 NGC6649 measured_V primary_identifier NGC6649 V-Mag:2 "" False
+"FSR 1171" nan "" unmatched "" "" "" "" False
+"NGC 2353" 7.1 NGC2353 measured_V primary_identifier NGC2353 V-Mag:2 "" False
+"NGC 2335" 7.2 NGC2335 measured_V primary_identifier NGC2335 V-Mag:2 "" False
+"Ruprecht 170" nan "" unmatched "" "" "" "" False
+"Czernik 30" nan "" unmatched "" "" "" "" False
+"Majaess 70" nan "" unmatched "" "" "" "" False
+"FSR 1183" nan "" unmatched "" "" "" "" False
+"vdBergh 80" nan "" unmatched "" "" "" "" False
+"NGC 2225" nan NGC2225 missing_V primary_identifier NGC2225 "" "" False
+"NGC 6694" 8.87 NGC6694 measured_V primary_identifier NGC6694 V-Mag:2 "" False
+"Alessi 21" nan "" unmatched "" "" "" "" False
+"FSR 1163" nan "" unmatched "" "" "" "" False
+"Wit 3" nan "" unmatched "" "" "" "" False
+"NGC 6728" nan NGC6728 missing_V primary_identifier NGC6728 "" "NGC identification is not certain." False
+"Dolidze 27" nan "" unmatched "" "" "" "" False
+"FSR 1170" nan "" unmatched "" "" "" "" False
+"Ivanov 4" nan "" unmatched "" "" "" "" False
+"NGC 2349" nan NGC2349 missing_V primary_identifier NGC2349 "" "" False
+"Dias 3" nan "" unmatched "" "" "" "" False
+"Trumpler 34" nan "" unmatched "" "" "" "" False
+"NGC 2323" 5.9 NGC2323 measured_V primary_identifier NGC2323 V-Mag:2 "" False
+"Mamajek 2" nan "" unmatched "" "" "" "" False
+"NGC 6664" 7.8 NGC6664 measured_V primary_identifier NGC6664 V-Mag:2 "" False
+"NGC 2364" nan NGC2364 missing_V primary_identifier NGC2364 "" "" False
+"NGC 2215" 8.45 NGC2215 measured_V primary_identifier NGC2215 V-Mag:2 "" False
+"NGC 2309" 10.5 NGC2309 measured_V primary_identifier NGC2309 V-Mag:2 "" False
+"NGC 2302" 8.9 NGC2299 measured_V primary_identifier NGC2299 V-Mag:2 "" False
+"ASCC 24" nan "" unmatched "" "" "" "" False
+"FSR 1144" nan "" unmatched "" "" "" "" False
+"FSR 1150" nan "" unmatched "" "" "" "" False
+"Berkeley 73" nan "" unmatched "" "" "" "" False
+"NGC 6705" 5.8 NGC6705 measured_V primary_identifier NGC6705 V-Mag:2 "" False
+"NGC 6683" 9.4 NGC6683 measured_V primary_identifier NGC6683 V-Mag:2 "" False
+"ASCC 30" nan "" unmatched "" "" "" "" False
+"Stephenson 2" nan "" unmatched "" "" "" "" False
+"NGC 1980" 2.5 NGC1980 measured_V primary_identifier NGC1980 V-Mag:2 "" False
+"Basel 1" nan "" unmatched "" "" "" "" False
+"Wit 1" nan "" unmatched "" "" "" "" False
+"NGC 2548" 5.8 NGC2548 measured_V primary_identifier NGC2548 V-Mag:2 "" False
+"NGC 2338" nan NGC2338 missing_V primary_identifier NGC2338 "" "" False
+"FSR 1153" nan "" unmatched "" "" "" "" False
+"ASCC 38" nan "" unmatched "" "" "" "" False
+"Teutsch 145" nan "" unmatched "" "" "" "" False
+"NGC 6704" 9.2 NGC6704 measured_V primary_identifier NGC6704 V-Mag:2 "" False
+"NGC 2250" 8.9 NGC2250 measured_V primary_identifier NGC2250 V-Mag:2 "" False
+"Bochum 3" nan "" unmatched "" "" "" "" False
+"Andrews Lindsay 5" nan "" unmatched "" "" "" "" False
+"NGC 2232" 3.9 NGC2232 measured_V primary_identifier NGC2232 V-Mag:2 "" False
+"NGC 2219" nan NGC2219 missing_V primary_identifier NGC2219 "" "" False
+"NGC 2311" 9.6 NGC2311 measured_V primary_identifier NGC2311 V-Mag:2 "" False
+"Berkeley 39" nan "" unmatched "" "" "" "" False
+"ASCC 27" nan "" unmatched "" "" "" "" False
+"Czernik 26" nan "" unmatched "" "" "" "" False
+"Trumpler 35" nan "" unmatched "" "" "" "" False
+"Dolidze 32" nan "" unmatched "" "" "" "" False
+"Ivanov 9" nan "" unmatched "" "" "" "" False
+"FSR 0087" nan "" unmatched "" "" "" "" False
+"FSR 0090" nan "" unmatched "" "" "" "" False
+"FSR 0089" nan "" unmatched "" "" "" "" False
+"Berkeley 77" nan "" unmatched "" "" "" "" False
+"NGC 2286" 7.5 NGC2286 measured_V primary_identifier NGC2286 V-Mag:2 "" False
+"Wit 2" nan "" unmatched "" "" "" "" False
+"Ferrero 10" nan "" unmatched "" "" "" "" False
+"ASCC 29" nan "" unmatched "" "" "" "" False
+"FSR 1113" nan "" unmatched "" "" "" "" False
+"NGC 2260" nan NGC2260 missing_V primary_identifier NGC2260 "" "" False
+"Berkeley 79" nan "" unmatched "" "" "" "" False
+"Berkeley 80" nan "" unmatched "" "" "" "" False
+"Alessi 60" nan "" unmatched "" "" "" "" False
+"Berkeley 37" nan "" unmatched "" "" "" "" False
+"FSR 0094" nan "" unmatched "" "" "" "" False
+"King 23" nan "" unmatched "" "" "" "" False
+"NGC 6775" nan NGC6775 missing_V primary_identifier NGC6775 "" "" False
+"FSR 1077" nan "" unmatched "" "" "" "" False
+"Berkeley 24" nan "" unmatched "" "" "" "" False
+"FSR 1065" nan "" unmatched "" "" "" "" False
+"Patchick 90" nan "" unmatched "" "" "" "" False
+"NGC 6735" nan NGC6735 missing_V primary_identifier NGC6735 "" "" False
+"Berkeley 81" nan "" unmatched "" "" "" "" False
+"FSR 1063" nan "" unmatched "" "" "" "" False
+"Berkeley 34" nan "" unmatched "" "" "" "" False
+"FSR 1085" nan "" unmatched "" "" "" "" False
+"ASCC 28" nan "" unmatched "" "" "" "" False
+"FSR 0100" nan "" unmatched "" "" "" "" False
+"Dolidze 49" nan "" unmatched "" "" "" "" False
+"Herschel 1" nan "" unmatched "" "" "" "" False
+"Teutsch 146" nan "" unmatched "" "" "" "" False
+"Berkeley 20" nan "" unmatched "" "" "" "" False
+"SAI 72" nan "" unmatched "" "" "" "" False
+"Dolidze 25" nan "" unmatched "" "" "" "" False
+"Bochum 2" nan "" unmatched "" "" "" "" False
+"NGC 2112" 9.1 NGC2112 measured_V primary_identifier NGC2112 V-Mag:2 "" False
+"NGC 2301" 6.0 NGC2301 measured_V primary_identifier NGC2301 V-Mag:2 "" False
+"FSR 0098" nan "" unmatched "" "" "" "" False
+"Ferrero 11" nan "" unmatched "" "" "" "" False
+"FSR 1080" nan "" unmatched "" "" "" "" False
+"NGC 2324" 8.4 NGC2324 measured_V primary_identifier NGC2324 V-Mag:2 "" False
+"NGC 2262" nan NGC2262 missing_V primary_identifier NGC2262 "" "" False
+"Collinder 350" nan "" unmatched "" "" "" "" False
+"vdBergh 85" nan "" unmatched "" "" "" "" False
+"Teutsch 13" nan "" unmatched "" "" "" "" False
+"Alessi 44" nan "" unmatched "" "" "" "" False
+"FSR 0107" nan "" unmatched "" "" "" "" False
+"FSR 1053" nan "" unmatched "" "" "" "" False
+"Alessi 15" nan "" unmatched "" "" "" "" False
+"Dolidze 24" nan "" unmatched "" "" "" "" False
+"Collinder 115" nan "" unmatched "" "" "" "" False
+"Saurer 1" nan "" unmatched "" "" "" "" False
+"Collinder 110" nan "" unmatched "" "" "" "" False
+"ASCC 35" nan "" unmatched "" "" "" "" False
+"Alessi 16" nan "" unmatched "" "" "" "" False
+"Alessi 59" nan "" unmatched "" "" "" "" False
+"Collinder 91" nan "" unmatched "" "" "" "" False
+"Berkeley 35" nan "" unmatched "" "" "" "" False
+"FSR 0101" nan "" unmatched "" "" "" "" False
+"Collinder 96" nan "" unmatched "" "" "" "" False
+"Collinder 359" nan "" unmatched "" "" "" "" False
+"Berkeley 28" nan "" unmatched "" "" "" "" False
+"vdBergh 1" nan "" unmatched "" "" "" "" False
+"Berkeley 30" nan "" unmatched "" "" "" "" False
+"FSR 1031" nan "" unmatched "" "" "" "" False
+"ASCC 31" nan "" unmatched "" "" "" "" False
+"FSR 1051" nan "" unmatched "" "" "" "" False
+"NGC 6755" 7.5 NGC6755 measured_V primary_identifier NGC6755 V-Mag:2 "" False
+"Czernik 39" nan "" unmatched "" "" "" "" False
+"Dias 2" nan "" unmatched "" "" "" "" False
+"Dolidze 22" nan "" unmatched "" "" "" "" False
+"NGC 2269" 10.0 NGC2269 measured_V primary_identifier NGC2269 V-Mag:2 "" False
+"NGC 6756" 10.6 NGC6756 measured_V primary_identifier NGC6756 V-Mag:2 "" False
+"Collinder 107" nan "" unmatched "" "" "" "" False
+"Collinder 104" nan "" unmatched "" "" "" "" False
+"NGC 6773" nan NGC6773 missing_V primary_identifier NGC6773 "" "" False
+"Czernik 38" nan "" unmatched "" "" "" "" False
+"NGC 2244" 4.8 NGC2239 measured_V primary_identifier NGC2239 V-Mag:2 "" True
+"NGC 2239" 4.8 NGC2239 measured_V primary_identifier NGC2239 V-Mag:2 "" True
+"NGC 2252" 7.7 NGC2252 measured_V primary_identifier NGC2252 V-Mag:2 "" False
+"Berkeley 78" nan "" unmatched "" "" "" "" False
+"IC 4756" 4.6 IC4756 measured_V primary_identifier IC4756 V-Mag:2 "" False
+"NGC 2186" 8.7 NGC2186 measured_V primary_identifier NGC2186 V-Mag:2 "" False
+"Majaess 79" nan "" unmatched "" "" "" "" False
+"Archinal 1" nan "" unmatched "" "" "" "" False
+"Majaess 82" nan "" unmatched "" "" "" "" False
+"IC 4665" 4.2 IC4665 measured_V primary_identifier IC4665 V-Mag:2 "" False
+"Berkeley 26" nan "" unmatched "" "" "" "" False
+"Berkeley 27" nan "" unmatched "" "" "" "" False
+"Collinder 97" nan "" unmatched "" "" "" "" False
+"Collinder 106" nan "" unmatched "" "" "" "" False
+"ASCC 34" nan "" unmatched "" "" "" "" False
+"Mamajek 3" nan "" unmatched "" "" "" "" False
+"Juchert 3" nan "" unmatched "" "" "" "" False
+"Czernik 27" nan "" unmatched "" "" "" "" False
+"Berkeley 32" nan "" unmatched "" "" "" "" False
+"NGC 6633" 4.6 NGC6633 measured_V primary_identifier NGC6633 V-Mag:2 "" False
+"FSR 1025" nan "" unmatched "" "" "" "" False
+"FSR 1029" nan "" unmatched "" "" "" "" False
+"Juchert 18" nan "" unmatched "" "" "" "" False
+"NGC 2236" 8.5 NGC2236 measured_V primary_identifier NGC2236 V-Mag:2 "" False
+"Czernik 25" nan "" unmatched "" "" "" "" False
+"Dolidze 21" nan "" unmatched "" "" "" "" False
+"NGC 2394" nan NGC2394 missing_V primary_identifier NGC2394 "" "" False
+"ASCC 26" nan "" unmatched "" "" "" "" False
+"Collinder 74" nan "" unmatched "" "" "" "" False
+"NGC 2254" 9.1 NGC2254 measured_V primary_identifier NGC2254 V-Mag:2 "" False
+"Berkeley 22" nan "" unmatched "" "" "" "" False
+"Basel 8" nan "" unmatched "" "" "" "" False
+"FSR 0118" nan "" unmatched "" "" "" "" False
+"Dolidze 19" nan "" unmatched "" "" "" "" False
+"Berkeley 31" nan "" unmatched "" "" "" "" False
+"Basel 7" nan "" unmatched "" "" "" "" False
+"NGC 2251" 7.3 NGC2251 measured_V primary_identifier NGC2251 V-Mag:2 "" False
+"Alessi 53" nan "" unmatched "" "" "" "" False
+"Trumpler 5" nan "" unmatched "" "" "" "" False
+"Alessi 56" nan "" unmatched "" "" "" "" False
+"NGC 2264" 3.9 NGC2264 measured_V primary_identifier NGC2264 V-Mag:2 "" False
+"Collinder 69" nan "" unmatched "" "" "" "" False
+"Collinder 95" nan "" unmatched "" "" "" "" False
+"NGC 2312" nan NGC2312 missing_V primary_identifier NGC2312 "" "" False
+"NGC 6709" 6.7 NGC6709 measured_V primary_identifier NGC6709 V-Mag:2 "" False
+"NGC 6724" nan NGC6724 missing_V primary_identifier NGC6724 "" "NGC identification is not certain." False
+"NGC 2141" 9.4 NGC2141 measured_V primary_identifier NGC2141 V-Mag:2 "" False
+"Poole J1856+10.8" nan "" unmatched "" "" "" "" False
+"Poole J1855+10.8" nan "" unmatched "" "" "" "" False
+"NGC 7193" nan NGC7193 missing_V primary_identifier NGC7193 "" "" False
+"NGC 2259" 10.8 NGC2259 measured_V primary_identifier NGC2259 V-Mag:2 "" False
+"NGC 1662" 6.4 NGC1662 measured_V primary_identifier NGC1662 V-Mag:2 "" False
+"NGC 6525" nan NGC6525 missing_V primary_identifier NGC6525 "" "" False
+"FSR 0979" nan "" unmatched "" "" "" "" False
+"Berkeley 43" nan "" unmatched "" "" "" "" False
+"NGC 6858" nan NGC6858 missing_V primary_identifier NGC6858 "" "" False
+"NGC 2678" nan NGC2678 missing_V primary_identifier NGC2678 "" "" False
+"Dol Dzim 2" nan "" unmatched "" "" "" "" False
+"Dias 8" nan "" unmatched "" "" "" "" False
+"NGC 6837" nan NGC6837 missing_V primary_identifier NGC6837 "" "" False
+"NGC 2682" 6.9 NGC2682 measured_V primary_identifier NGC2682 V-Mag:2 "" False
+"FSR 0977" nan "" unmatched "" "" "" "" False
+"Chupina 5" nan "" unmatched "" "" "" "" False
+"NGC 2265" nan NGC2265 missing_V primary_identifier NGC2265 "" "Group of Galactic stars." False
+"Chupina 1" nan "" unmatched "" "" "" "" False
+"FSR 0124" nan "" unmatched "" "" "" "" False
+"FSR 0123" nan "" unmatched "" "" "" "" False
+"NGC 6840" nan NGC6840 missing_V primary_identifier NGC6840 "" "" False
+"NGC 6843" nan NGC6843 missing_V primary_identifier NGC6843 "" "" False
+"Alessi 19" nan "" unmatched "" "" "" "" False
+"Chupina 2" nan "" unmatched "" "" "" "" False
+"Chupina 4" nan "" unmatched "" "" "" "" False
+"FSR 0974" nan "" unmatched "" "" "" "" False
+"NGC 2224" nan NGC2224 type_conflict primary_identifier NGC2224 "" "Group of Galactic stars." False
+"Juchert 1" nan "" unmatched "" "" "" "" False
+"NGC 2194" 8.5 NGC2194 measured_V primary_identifier NGC2194 V-Mag:2 "" False
+"Skiff J0614+12.9" nan "" unmatched "" "" "" "" False
+"FSR 0956" nan "" unmatched "" "" "" "" False
+"FSR 0952" nan "" unmatched "" "" "" "" False
+"Berkeley 82" nan "" unmatched "" "" "" "" False
+"FSR 0975" nan "" unmatched "" "" "" "" False
+"Teutsch 12" nan "" unmatched "" "" "" "" False
+"NGC 2395" 8.0 NGC2395 measured_V primary_identifier NGC2395 V-Mag:2 "" False
+"FSR 0942" nan "" unmatched "" "" "" "" False
+"NGC 2355" 9.7 NGC2355 measured_V primary_identifier NGC2355 V-Mag:2 "" False
+"FSR 0126" nan "" unmatched "" "" "" "" False
+"Teutsch 11" nan "" unmatched "" "" "" "" False
+"Kronberger 13" nan "" unmatched "" "" "" "" False
+"NGC 2169" 5.9 NGC2169 measured_V primary_identifier NGC2169 V-Mag:2 "" False
+"FSR 0129" nan "" unmatched "" "" "" "" False
+"FSR 0953" nan "" unmatched "" "" "" "" False
+"Ivanov 2" nan "" unmatched "" "" "" "" False
+"FSR 0939" nan "" unmatched "" "" "" "" False
+"FSR 0932" nan "" unmatched "" "" "" "" False
+"FSR 0957" nan "" unmatched "" "" "" "" False
+"FSR 0940" nan "" unmatched "" "" "" "" False
+"Riddle 15" nan "" unmatched "" "" "" "" False
+"King 26" nan "" unmatched "" "" "" "" False
+"FSR 0937" nan "" unmatched "" "" "" "" False
+"FSR 0131" nan "" unmatched "" "" "" "" False
+"Dol Dzim 7" nan "" unmatched "" "" "" "" False
+"FSR 0133" nan "" unmatched "" "" "" "" False
+"Alessi 57" nan "" unmatched "" "" "" "" False
+"Berkeley 45" nan "" unmatched "" "" "" "" False
+"FSR 0941" nan "" unmatched "" "" "" "" False
+"FSR 0948" nan "" unmatched "" "" "" "" False
+"Melotte 25" nan C041 missing_V explicit_alias C041 "" "" False
+"Majaess 69" nan "" unmatched "" "" "" "" False
+"NGC 6950" nan NGC6950 missing_V primary_identifier NGC6950 "" "" False
+"NGC 1817" 7.7 NGC1817 measured_V primary_identifier NGC1817 V-Mag:2 "" False
+"NGC 2234" nan NGC2234 missing_V primary_identifier NGC2234 "" "" False
+"FSR 0924" nan "" unmatched "" "" "" "" False
+"FSR 0134" nan "" unmatched "" "" "" "" False
+"Berkeley 29" nan "" unmatched "" "" "" "" False
+"FSR 0923" nan "" unmatched "" "" "" "" False
+"Berkeley 47" nan "" unmatched "" "" "" "" False
+"NGC 7084" nan NGC7084 missing_V primary_identifier NGC7084 "" "" False
+"Roslund 1" nan "" unmatched "" "" "" "" False
+"FSR 0929" nan "" unmatched "" "" "" "" False
+"NGC 6839" nan NGC6839 type_conflict primary_identifier NGC6839 "" "Identification taken from Corwin's catalog. Small group of stars." False
+"NGC 2304" 10.0 NGC2304 measured_V primary_identifier NGC2304 V-Mag:2 "" False
+"FSR 0927" nan "" unmatched "" "" "" "" False
+"Harvard 20" nan "" unmatched "" "" "" "" False
+"Kronberger 79" nan "" unmatched "" "" "" "" False
+"Teutsch 42" nan "" unmatched "" "" "" "" False
+"Skiff J0619+18.5" nan "" unmatched "" "" "" "" False
+"ASCC 104" nan "" unmatched "" "" "" "" False
+"Teutsch 27" nan "" unmatched "" "" "" "" False
+"FSR 0903" nan "" unmatched "" "" "" "" False
+"NGC 1647" 6.4 NGC1647 measured_V primary_identifier NGC1647 V-Mag:2 "" False
+"FSR 0900" nan "" unmatched "" "" "" "" False
+"Berkeley 44" nan "" unmatched "" "" "" "" False
+"NGC 2632" 3.1 NGC2632 measured_V primary_identifier NGC2632 V-Mag:2 "" False
+"Bochum 1" nan "" unmatched "" "" "" "" False
+"FSR 0142" nan "" unmatched "" "" "" "" False
+"NGC 2026" nan NGC2026 missing_V primary_identifier NGC2026 "" "" False
+"NGC 6802" 8.8 NGC6802 measured_V primary_identifier NGC6802 V-Mag:2 "" False
+"FSR 0894" nan "" unmatched "" "" "" "" False
+"Roslund 3" nan "" unmatched "" "" "" "" False
+"NGC 2175" 6.8 NGC2175 measured_V primary_identifier NGC2175 V-Mag:2 "Position is for SAO 078049." False
+"FSR 0902" nan "" unmatched "" "" "" "" False
+"Berkeley 23" nan "" unmatched "" "" "" "" False
+"Pismis 27" nan "" unmatched "" "" "" "" False
+"Czernik 24" nan "" unmatched "" "" "" "" False
+"NGC 6873" nan NGC6873 missing_V primary_identifier NGC6873 "" "" False
+"Czernik 40" nan "" unmatched "" "" "" "" False
+"Dias 7" nan "" unmatched "" "" "" "" False
+"NGC 6827" nan NGC6827 missing_V primary_identifier NGC6827 "" "" False
+"NGC 2420" 8.3 NGC2420 measured_V primary_identifier NGC2420 V-Mag:2 "" False
+"Alessi 62" nan "" unmatched "" "" "" "" False
+"Koposov 77" nan "" unmatched "" "" "" "" False
+"Berkeley 21" nan "" unmatched "" "" "" "" False
+"ASCC 107" nan "" unmatched "" "" "" "" False
+"Basel 11b" nan "" unmatched "" "" "" "" False
+"FSR 0883" nan "" unmatched "" "" "" "" False
+"NGC 6793" nan NGC6793 missing_V primary_identifier NGC6793 "" "" False
+"NGC 6938" nan NGC6938 missing_V primary_identifier NGC6938 "" "" False
+"Berkeley 72" nan "" unmatched "" "" "" "" False
+"Platais 4" nan "" unmatched "" "" "" "" False
+"FSR 0891" nan "" unmatched "" "" "" "" False
+"Kronberger 12" nan "" unmatched "" "" "" "" False
+"FSR 0855" nan "" unmatched "" "" "" "" False
+"Collinder 404" nan "" unmatched "" "" "" "" False
+"NGC 6830" 7.9 NGC6830 measured_V primary_identifier NGC6830 V-Mag:2 "" False
+"NGC 6823" 7.1 NGC6823 measured_V primary_identifier NGC6823 V-Mag:2 "" False
+"Teutsch 40" nan "" unmatched "" "" "" "" False
+"NGC 2129" 6.7 NGC2129 measured_V primary_identifier NGC2129 V-Mag:2 "" False
+"FSR 0154" nan "" unmatched "" "" "" "" False
+"Collinder 89" nan "" unmatched "" "" "" "" False
+"NGC 1750" nan NGC1750 missing_V primary_identifier NGC1750 "" "" False
+"NGC 1746" 6.1 NGC1746 measured_V primary_identifier NGC1746 V-Mag:2 "" False
+"Alessi 12" nan "" unmatched "" "" "" "" False
+"NGC 1758" nan NGC1758 missing_V primary_identifier NGC1758 "" "" False
+"Roslund 2" nan "" unmatched "" "" "" "" False
+"IC 2157" 8.4 IC2157 measured_V primary_identifier IC2157 V-Mag:2 "" False
+"NGC 2158" 8.6 NGC2158 measured_V primary_identifier NGC2158 V-Mag:2 "" False
+"Melotte 22" 1.2 Mel022 measured_V primary_identifier Mel022 V-Mag:10 "" False
+"IC 2156" nan IC2156 missing_V primary_identifier IC2156 "" "Probably part of the star cluster IC 2157." False
+"Teutsch 7" nan "" unmatched "" "" "" "" False
+"Kharchenko 1" nan "" unmatched "" "" "" "" False
+"NGC 2168" 5.1 NGC2168 measured_V primary_identifier NGC2168 V-Mag:2 "" False
+"FSR 0869" nan "" unmatched "" "" "" "" False
+"Koposov 63" nan "" unmatched "" "" "" "" False
+"ASCC 25" nan "" unmatched "" "" "" "" False
+"Koposov 62" nan "" unmatched "" "" "" "" False
+"FSR 0850" nan "" unmatched "" "" "" "" False
+"Dutra Bica 84" nan "" unmatched "" "" "" "" False
+"NGC 6800" nan NGC6800 missing_V primary_identifier NGC6800 "" "" False
+"FSR 0852" nan "" unmatched "" "" "" "" False
+"Stock 1" nan "" unmatched "" "" "" "" False
+"FSR 0162" nan "" unmatched "" "" "" "" False
+"Czernik 41" nan "" unmatched "" "" "" "" False
+"FSR 0163" nan "" unmatched "" "" "" "" False
+"FSR 0842" nan "" unmatched "" "" "" "" False
+"Saurer 5" nan "" unmatched "" "" "" "" False
+"FSR 0858" nan "" unmatched "" "" "" "" False
+"NGC 6904" nan NGC6904 missing_V primary_identifier NGC6904 "" "" False
+"FSR 0849" nan "" unmatched "" "" "" "" False
+"Dol Dzim 4" nan "" unmatched "" "" "" "" False
+"FSR 0158" nan "" unmatched "" "" "" "" False
+"Melotte 111" nan Mel111 missing_V primary_identifier Mel111 "" "" False
+"Kronberger 31" nan "" unmatched "" "" "" "" False
+"Koposov 53" nan "" unmatched "" "" "" "" False
+"FSR 0856" nan "" unmatched "" "" "" "" False
+"FSR 0846" nan "" unmatched "" "" "" "" False
+"NGC 6885" 14.1 NGC6882 measured_V primary_identifier NGC6882 V-Mag:2 "Identification as NGC 6682 is not certain." True
+"Dol Dzim 3" nan "" unmatched "" "" "" "" False
+"Collinder 416" nan "" unmatched "" "" "" "" False
+"AH03 J2011+26.7" nan "" unmatched "" "" "" "" False
+"FSR 0165" nan "" unmatched "" "" "" "" False
+"NGC 6882" 14.1 NGC6882 measured_V primary_identifier NGC6882 V-Mag:2 "Identification as NGC 6682 is not certain." True
+"Teutsch 51" nan "" unmatched "" "" "" "" False
+"FSR 0160" nan "" unmatched "" "" "" "" False
+"NGC 2266" 9.5 NGC2266 measured_V primary_identifier NGC2266 V-Mag:2 "" False
+"Majaess 68" nan "" unmatched "" "" "" "" False
+"FSR 0167" nan "" unmatched "" "" "" "" False
+"NGC 2331" 8.5 NGC2331 measured_V primary_identifier NGC2331 V-Mag:2 "" False
+"Turner 1" nan "" unmatched "" "" "" "" False
+"ASCC 105" nan "" unmatched "" "" "" "" False
+"Dutra Bica 83" nan "" unmatched "" "" "" "" False
+"Majaess 61" nan "" unmatched "" "" "" "" False
+"Dolidze 14" nan "" unmatched "" "" "" "" False
+"FSR 0170" nan "" unmatched "" "" "" "" False
+"Turner 8" nan "" unmatched "" "" "" "" False
+"Kronberger 4" nan "" unmatched "" "" "" "" False
+"NGC 6940" 6.3 NGC6940 measured_V primary_identifier NGC6940 V-Mag:2 "" False
+"Berkeley 83" nan "" unmatched "" "" "" "" False
+"Czernik 19" nan "" unmatched "" "" "" "" False
+"Teutsch 10" nan "" unmatched "" "" "" "" False
+"Czernik 23" nan "" unmatched "" "" "" "" False
+"FSR 0826" nan "" unmatched "" "" "" "" False
+"Berkeley 52" nan "" unmatched "" "" "" "" False
+"FSR 0178" nan "" unmatched "" "" "" "" False
+"Roslund 4" nan "" unmatched "" "" "" "" False
+"Turner 9" nan "" unmatched "" "" "" "" False
+"NGC 6743" nan NGC6743 missing_V primary_identifier NGC6743 "" "" False
+"NGC 6834" 7.8 NGC6834 measured_V primary_identifier NGC6834 V-Mag:2 "" False
+"FSR 0823" nan "" unmatched "" "" "" "" False
+"Berkeley 19" nan "" unmatched "" "" "" "" False
+"Alessi Teutsch 10" nan "" unmatched "" "" "" "" False
+"FSR 0756" nan "" unmatched "" "" "" "" False
+"Teutsch 43" nan "" unmatched "" "" "" "" False
+"FSR 0828" nan "" unmatched "" "" "" "" False
+"FSR 0821" nan "" unmatched "" "" "" "" False
+"Koposov 43" nan "" unmatched "" "" "" "" False
+"ASCC 102" nan "" unmatched "" "" "" "" False
+"ASCC 17" nan "" unmatched "" "" "" "" False
+"NGC 6847" nan NGC6847 missing_V primary_identifier NGC6847 "" "Identification as NGC 6847 is very uncertain." False
+"Basel 4" nan "" unmatched "" "" "" "" False
+"Latham 1" nan "" unmatched "" "" "" "" False
+"Kronberger 68" nan "" unmatched "" "" "" "" False
+"Berkeley 17" nan "" unmatched "" "" "" "" False
+"Skiff J0507+30.8" nan "" unmatched "" "" "" "" False
+"Kronberger 52" nan "" unmatched "" "" "" "" False
+"FSR 0817" nan "" unmatched "" "" "" "" False
+"Czernik 18" nan "" unmatched "" "" "" "" False
+"Teutsch 45" nan "" unmatched "" "" "" "" False
+"Teutsch 124" nan "" unmatched "" "" "" "" False
+"Koposov 36" nan "" unmatched "" "" "" "" False
+"FSR 0814" nan "" unmatched "" "" "" "" False
+"DC 8" nan "" unmatched "" "" "" "" False
+"FSR 0815" nan "" unmatched "" "" "" "" False
+"Kronberger 69" nan "" unmatched "" "" "" "" False
+"Kronberger 60" nan "" unmatched "" "" "" "" False
+"FSR 0816" nan "" unmatched "" "" "" "" False
+"Dol Dzim 9" nan "" unmatched "" "" "" "" False
+"SAI 132" nan "" unmatched "" "" "" "" False
+"FSR 0812" nan "" unmatched "" "" "" "" False
+"FSR 0807" nan "" unmatched "" "" "" "" False
+"Kronberger 54" nan "" unmatched "" "" "" "" False
+"Platais 2" nan "" unmatched "" "" "" "" False
+"IC 348" nan IC0348 missing_V primary_identifier IC0348 "" "" False
+"Saurer 6" nan "" unmatched "" "" "" "" False
+"Berkeley 71" nan "" unmatched "" "" "" "" False
+"NGC 6846" 14.2 NGC6846 measured_V primary_identifier NGC6846 V-Mag:2 "" False
+"Loiano 1" nan "" unmatched "" "" "" "" False
+"NGC 2099" 5.6 NGC2099 measured_V primary_identifier NGC2099 V-Mag:2 "" False
+"Berkeley 69" nan "" unmatched "" "" "" "" False
+"Dolidze 16" nan "" unmatched "" "" "" "" False
+"FSR 0189" nan "" unmatched "" "" "" "" False
+"Teutsch 1" nan "" unmatched "" "" "" "" False
+"Koposov 27" nan "" unmatched "" "" "" "" False
+"Melotte 31" nan "" unmatched "" "" "" "" False
+"NGC 1893" 7.5 NGC1893 measured_V primary_identifier NGC1893 V-Mag:2 "NED considers NGC1893 and IC410 the same object. Here dimensions are taken from HEASARC mwsc table, while magnitudes are referred to Simbad's NGC1893 entry." False
+"SAI 48" nan "" unmatched "" "" "" "" False
+"Dolidze 18" nan "" unmatched "" "" "" "" False
+"FSR 0182" nan "" unmatched "" "" "" "" False
+"ASCC 100" nan "" unmatched "" "" "" "" False
+"ASCC 110" nan "" unmatched "" "" "" "" False
+"FSR 0190" nan "" unmatched "" "" "" "" False
+"Toepler 1" nan "" unmatched "" "" "" "" False
+"FSR 0195" nan "" unmatched "" "" "" "" False
+"King 8" nan "" unmatched "" "" "" "" False
+"NGC 7037" nan NGC7037 missing_V primary_identifier NGC7037 "" "" False
+"Roslund 5" nan "" unmatched "" "" "" "" False
+"FSR 0192" nan "" unmatched "" "" "" "" False
+"Berkeley 84" nan "" unmatched "" "" "" "" False
+"FSR 0188" nan "" unmatched "" "" "" "" False
+"Patchick 75" nan "" unmatched "" "" "" "" False
+"NGC 1960" 6.0 NGC1960 measured_V primary_identifier NGC1960 V-Mag:2 "" False
+"NGC 1931" 10.1 NGC1931 measured_V primary_identifier NGC1931 V-Mag:2 "" False
+"Berkeley 51" nan "" unmatched "" "" "" "" False
+"Stock 8" nan "" unmatched "" "" "" "" False
+"ASCC 109" nan "" unmatched "" "" "" "" False
+"Berkeley 49" nan "" unmatched "" "" "" "" False
+"FSR 0777" nan "" unmatched "" "" "" "" False
+"Kronberger 1" nan "" unmatched "" "" "" "" False
+"Majaess 58" nan "" unmatched "" "" "" "" False
+"Alessi Teutsch 9" nan "" unmatched "" "" "" "" False
+"FSR 0775" nan "" unmatched "" "" "" "" False
+"Berkeley 50" nan "" unmatched "" "" "" "" False
+"Teutsch 28" nan "" unmatched "" "" "" "" False
+"ASCC 14" nan "" unmatched "" "" "" "" False
+"Koposov 12" nan "" unmatched "" "" "" "" False
+"Teutsch 8" nan "" unmatched "" "" "" "" False
+"NGC 1907" 8.2 NGC1907 measured_V primary_identifier NGC1907 V-Mag:2 "" False
+"Koposov 10" nan "" unmatched "" "" "" "" False
+"Biurakan 2" nan "" unmatched "" "" "" "" False
+"Ruprecht 175" nan "" unmatched "" "" "" "" False
+"Kronberger 28" nan "" unmatched "" "" "" "" False
+"Turner 11" nan "" unmatched "" "" "" "" False
+"Ruprecht 172" nan "" unmatched "" "" "" "" False
+"Teutsch 35" nan "" unmatched "" "" "" "" False
+"FSR 0198" nan "" unmatched "" "" "" "" False
+"Biurakan 1" nan "" unmatched "" "" "" "" False
+"NGC 6871" 5.2 NGC6871 measured_V primary_identifier NGC6871 V-Mag:2 "" False
+"FSR 0759" nan "" unmatched "" "" "" "" False
+"NGC 6883" 8.0 NGC6883 measured_V primary_identifier NGC6883 V-Mag:2 "" False
+"NGC 1912" 6.4 NGC1912 measured_V primary_identifier NGC1912 V-Mag:2 "" False
+"Majaess 207" nan "" unmatched "" "" "" "" False
+"Dol Dzim 11" nan "" unmatched "" "" "" "" False
+"Czernik 21" nan "" unmatched "" "" "" "" False
+"Teutsch 30" nan "" unmatched "" "" "" "" False
+"Alessi 22" nan "" unmatched "" "" "" "" False
+"ASCC 101" nan "" unmatched "" "" "" "" False
+"NGC 7063" 7.0 NGC7063 measured_V primary_identifier NGC7063 V-Mag:2 "" False
+"Dolidze 1" nan "" unmatched "" "" "" "" False
+"SAI 46" nan "" unmatched "" "" "" "" False
+"ASCC 15" nan "" unmatched "" "" "" "" False
+"Dolidze 47" nan "" unmatched "" "" "" "" False
+"Kronberger 57" nan "" unmatched "" "" "" "" False
+"Kronberger 73" nan "" unmatched "" "" "" "" False
+"Kronberger 74" nan "" unmatched "" "" "" "" False
+"Teutsch 5" nan "" unmatched "" "" "" "" False
+"FSR 0753" nan "" unmatched "" "" "" "" False
+"Dolidze 3" nan "" unmatched "" "" "" "" False
+"Stephenson 1" nan "" unmatched "" "" "" "" False
+"NGC 1778" 7.7 NGC1778 measured_V primary_identifier NGC1778 V-Mag:2 "" False
+"Ruprecht 174" nan "" unmatched "" "" "" "" False
+"FSR 0210" nan "" unmatched "" "" "" "" False
+"Berkeley 87" nan "" unmatched "" "" "" "" False
+"NGC 1342" 6.7 NGC1342 measured_V primary_identifier NGC1342 V-Mag:2 "" False
+"ASCC 111" nan "" unmatched "" "" "" "" False
+"Dolidze 45" nan "" unmatched "" "" "" "" False
+"Kronberger 18" nan "" unmatched "" "" "" "" False
+"IC 4996" 7.3 IC4996 measured_V primary_identifier IC4996 V-Mag:2 "" False
+"Dolidze 37" nan "" unmatched "" "" "" "" False
+"Dolidze 41" nan "" unmatched "" "" "" "" False
+"Teutsch 39" nan "" unmatched "" "" "" "" False
+"Berkeley 85" nan "" unmatched "" "" "" "" False
+"NGC 6791" 9.5 NGC6791 measured_V primary_identifier NGC6791 V-Mag:2 "" False
+"NGC 752" 5.7 NGC0752 measured_V primary_identifier NGC0752 V-Mag:2 "" False
+"FSR 0225" nan "" unmatched "" "" "" "" False
+"Kronberger 72" nan "" unmatched "" "" "" "" False
+"Dolidze 40" nan "" unmatched "" "" "" "" False
+"Stock 10" nan "" unmatched "" "" "" "" False
+"FSR 0744" nan "" unmatched "" "" "" "" False
+"Feibelman 1" nan "" unmatched "" "" "" "" False
+"Dol Dzim 5" nan "" unmatched "" "" "" "" False
+"Dolidze 42" nan "" unmatched "" "" "" "" False
+"Teutsch 52" nan "" unmatched "" "" "" "" False
+"Basel 6" nan "" unmatched "" "" "" "" False
+"SAI 41" nan "" unmatched "" "" "" "" False
+"NGC 6913" 6.6 NGC6913 measured_V primary_identifier NGC6913 V-Mag:2 "" False
+"ASCC 113" nan "" unmatched "" "" "" "" False
+"Skiff J1942+38.6" nan "" unmatched "" "" "" "" False
+"Berkeley 86" nan "" unmatched "" "" "" "" False
+"Teutsch 132" nan "" unmatched "" "" "" "" False
+"FSR 0213" nan "" unmatched "" "" "" "" False
+"King 17" nan "" unmatched "" "" "" "" False
+"FSR 0763" nan "" unmatched "" "" "" "" False
+"Bica 6" nan "" unmatched "" "" "" "" False
+"Teutsch 2" nan "" unmatched "" "" "" "" False
+"Roslund 6" nan "" unmatched "" "" "" "" False
+"NGC 1857" 7.0 NGC1857 measured_V primary_identifier NGC1857 V-Mag:2 "" False
+"vdBergh 130" nan "" unmatched "" "" "" "" False
+"ASCC 108" nan "" unmatched "" "" "" "" False
+"Czernik 20" nan "" unmatched "" "" "" "" False
+"ASCC 122" nan "" unmatched "" "" "" "" False
+"FSR 0237" nan "" unmatched "" "" "" "" False
+"FSR 0733" nan "" unmatched "" "" "" "" False
+"FSR 0761" nan "" unmatched "" "" "" "" False
+"NGC 2192" 10.9 NGC2192 measured_V primary_identifier NGC2192 V-Mag:2 "" False
+"Kronberger 59" nan "" unmatched "" "" "" "" False
+"NGC 6819" 7.3 NGC6819 measured_V primary_identifier NGC6819 V-Mag:2 "" False
+"FSR 0224" nan "" unmatched "" "" "" "" False
+"Waterloo 2" nan "" unmatched "" "" "" "" False
+"Berkeley 54" nan "" unmatched "" "" "" "" False
+"Dol Dzim 10" nan "" unmatched "" "" "" "" False
+"Collinder 419" nan "" unmatched "" "" "" "" False
+"NGC 6910" 7.4 NGC6910 measured_V primary_identifier NGC6910 V-Mag:2 "" False
+"FSR 0222" nan "" unmatched "" "" "" "" False
+"FSR 0735" nan "" unmatched "" "" "" "" False
+"FSR 0223" nan "" unmatched "" "" "" "" False
+"SAI 36" nan "" unmatched "" "" "" "" False
+"NGC 2281" 5.4 NGC2281 measured_V primary_identifier NGC2281 V-Mag:2 "" False
+"Collinder 62" nan "" unmatched "" "" "" "" False
+"FSR 0219" nan "" unmatched "" "" "" "" False
+"Dolidze 38" nan "" unmatched "" "" "" "" False
+"Kronberger 58" nan "" unmatched "" "" "" "" False
+"IC 1311" 13.1 IC1311 measured_V primary_identifier IC1311 V-Mag:2 "" False
+"Bica 1" nan "" unmatched "" "" "" "" False
+"SAI 137" nan "" unmatched "" "" "" "" False
+"Bica 2" nan "" unmatched "" "" "" "" False
+"FSR 0238" nan "" unmatched "" "" "" "" False
+"FSR 0236" nan "" unmatched "" "" "" "" False
+"NGC 7024" nan NGC7024 missing_V primary_identifier NGC7024 "" "" False
+"FSR 0723" nan "" unmatched "" "" "" "" False
+"FSR 0248" nan "" unmatched "" "" "" "" False
+"Collinder 421" nan "" unmatched "" "" "" "" False
+"Dolidze 44" nan "" unmatched "" "" "" "" False
+"ASCC 12" nan "" unmatched "" "" "" "" False
+"FSR 0719" nan "" unmatched "" "" "" "" False
+"Berkeley 56" nan "" unmatched "" "" "" "" False
+"Berkeley 70" nan "" unmatched "" "" "" "" False
+"FSR 0714" nan "" unmatched "" "" "" "" False
+"Dolidze 9" nan "" unmatched "" "" "" "" False
+"FSR 0721" nan "" unmatched "" "" "" "" False
+"Majaess 50" nan "" unmatched "" "" "" "" False
+"FSR 0246" nan "" unmatched "" "" "" "" False
+"Berkeley 68" nan "" unmatched "" "" "" "" False
+"Dolidze 36" nan "" unmatched "" "" "" "" False
+"FSR 0717" nan "" unmatched "" "" "" "" False
+"FSR 0245" nan "" unmatched "" "" "" "" False
+"Dolidze 8" nan "" unmatched "" "" "" "" False
+"SAI 47" nan "" unmatched "" "" "" "" False
+"FSR 0734" nan "" unmatched "" "" "" "" False
+"NGC 7044" 12.0 NGC7044 measured_V primary_identifier NGC7044 V-Mag:2 "" False
+"FSR 0249" nan "" unmatched "" "" "" "" False
+"FSR 0732" nan "" unmatched "" "" "" "" False
+"FSR 0232" nan "" unmatched "" "" "" "" False
+"Berkeley 12" nan "" unmatched "" "" "" "" False
+"NGC 1039" 5.2 NGC1039 measured_V primary_identifier NGC1039 V-Mag:2 "" False
+"FSR 0239" nan "" unmatched "" "" "" "" False
+"FSR 0247" nan "" unmatched "" "" "" "" False
+"FSR 0251" nan "" unmatched "" "" "" "" False
+"Skiff J0458+43.0" nan "" unmatched "" "" "" "" False
+"FSR 0261" nan "" unmatched "" "" "" "" False
+"Berkeley 14" nan "" unmatched "" "" "" "" False
+"NGC 1664" 7.6 NGC1664 measured_V primary_identifier NGC1664 V-Mag:2 "" False
+"FSR 0258" nan "" unmatched "" "" "" "" False
+"Teutsch 22" nan "" unmatched "" "" "" "" False
+"FSR 0722" nan "" unmatched "" "" "" "" False
+"NGC 6866" 7.6 NGC6866 measured_V primary_identifier NGC6866 V-Mag:2 "" False
+"Wit 4" nan "" unmatched "" "" "" "" False
+"FSR 0255" nan "" unmatched "" "" "" "" False
+"FSR 0270" nan "" unmatched "" "" "" "" False
+"NGC 1193" 12.6 NGC1193 measured_V primary_identifier NGC1193 V-Mag:2 "" False
+"Berkeley 15" nan "" unmatched "" "" "" "" False
+"ASCC 13" nan "" unmatched "" "" "" "" False
+"Collinder 428" nan "" unmatched "" "" "" "" False
+"NGC 6996" nan NGC6996 type_conflict primary_identifier NGC6996 "" "" False
+"NGC 6997" 10.0 NGC6997 measured_V primary_identifier NGC6997 V-Mag:2 "" False
+"NGC 2666" nan NGC2666 missing_V primary_identifier NGC2666 "" "Identification as NGC 2666 is very uncertain." False
+"Ruprecht 148" nan "" unmatched "" "" "" "" False
+"FSR 0273" nan "" unmatched "" "" "" "" False
+"Basel 14" nan "" unmatched "" "" "" "" False
+"ASCC 11" nan "" unmatched "" "" "" "" False
+"Berkeley 11" nan "" unmatched "" "" "" "" False
+"NGC 1605" 10.7 NGC1605 measured_V primary_identifier NGC1605 V-Mag:2 "" False
+"Berkeley 18" nan "" unmatched "" "" "" "" False
+"NGC 7039" 7.6 NGC7039 measured_V primary_identifier NGC7039 V-Mag:2 "" False
+"FSR 0260" nan "" unmatched "" "" "" "" False
+"FSR 0716" nan "" unmatched "" "" "" "" False
+"FSR 0702" nan "" unmatched "" "" "" "" False
+"NGC 7093" nan NGC7093 missing_V primary_identifier NGC7093 "" "" False
+"Berkeley 89" nan "" unmatched "" "" "" "" False
+"FSR 0686" nan "" unmatched "" "" "" "" False
+"Basel 12" nan "" unmatched "" "" "" "" False
+"Alessi 37" nan "" unmatched "" "" "" "" False
+"Majaess 211" nan "" unmatched "" "" "" "" False
+"NGC 7062" 8.3 NGC7062 measured_V primary_identifier NGC7062 V-Mag:2 "" False
+"NGC 6811" 6.8 NGC6811 measured_V primary_identifier NGC6811 V-Mag:2 "" False
+"NGC 7209" 7.7 NGC7209 measured_V primary_identifier NGC7209 V-Mag:2 "" False
+"NGC 1883" 12.0 NGC1883 measured_V primary_identifier NGC1883 V-Mag:2 "" False
+"Basel 13" nan "" unmatched "" "" "" "" False
+"ASCC 23" nan "" unmatched "" "" "" "" False
+"Berkeley 90" nan "" unmatched "" "" "" "" False
+"Juchert 20" nan "" unmatched "" "" "" "" False
+"FSR 0275" nan "" unmatched "" "" "" "" False
+"ASCC 119" nan "" unmatched "" "" "" "" False
+"SAI 141" nan "" unmatched "" "" "" "" False
+"NGC 7082" 7.2 NGC7082 measured_V primary_identifier NGC7082 V-Mag:2 "" False
+"Teutsch 156" nan "" unmatched "" "" "" "" False
+"Majaess 209" nan "" unmatched "" "" "" "" False
+"NGC 1245" 8.4 NGC1245 measured_V primary_identifier NGC1245 V-Mag:2 "" False
+"IC 5146" 7.2 IC5146 measured_V primary_identifier IC5146 V-Mag:2 "The position is for the included star." False
+"NGC 7011" nan NGC7011 missing_V primary_identifier NGC7011 "" "" False
+"FSR 0699" nan "" unmatched "" "" "" "" False
+"NGC 1798" nan NGC1798 missing_V primary_identifier NGC1798 "" "" False
+"IC 1369" nan IC1369 missing_V primary_identifier IC1369 "" "" False
+"FSR 0274" nan "" unmatched "" "" "" "" False
+"NGC 7071" nan NGC7071 type_conflict primary_identifier NGC7071 "" "" False
+"FSR 0696" nan "" unmatched "" "" "" "" False
+"NGC 7067" 9.7 NGC7067 measured_V primary_identifier NGC7067 V-Mag:2 "" False
+"Berkeley 88" nan "" unmatched "" "" "" "" False
+"FSR 0282" nan "" unmatched "" "" "" "" False
+"FSR 0687" nan "" unmatched "" "" "" "" False
+"NGC 7092" 4.6 NGC7092 measured_V primary_identifier NGC7092 V-Mag:2 "" False
+"Berkeley 91" nan "" unmatched "" "" "" "" False
+"Aveni Hunter 1" nan "" unmatched "" "" "" "" False
+"FSR 0674" nan "" unmatched "" "" "" "" False
+"Basel 15" nan "" unmatched "" "" "" "" False
+"Platais 1" nan "" unmatched "" "" "" "" False
+"FSR 0288" nan "" unmatched "" "" "" "" False
+"NGC 7686" 5.6 NGC7686 measured_V primary_identifier NGC7686 V-Mag:2 "" False
+"Patchick 89" nan "" unmatched "" "" "" "" False
+"FSR 0284" nan "" unmatched "" "" "" "" False
+"NGC 1513" 8.4 NGC1513 measured_V primary_identifier NGC1513 V-Mag:2 "" False
+"Casado Alessi 1" nan "" unmatched "" "" "" "" False
+"Melotte 20" nan "" unmatched "" "" "" "" False
+"SAI 43" nan "" unmatched "" "" "" "" False
+"FSR 0295" nan "" unmatched "" "" "" "" False
+"NGC 7243" 6.4 NGC7243 measured_V primary_identifier NGC7243 V-Mag:2 "" False
+"NGC 2126" nan NGC2126 missing_V primary_identifier NGC2126 "" "" False
+"FSR 0296" nan "" unmatched "" "" "" "" False
+"NGC 1545" 6.2 NGC1545 measured_V primary_identifier NGC1545 V-Mag:2 "" False
+"SAI 143" nan "" unmatched "" "" "" "" False
+"NGC 1624" 11.8 NGC1624 measured_V primary_identifier NGC1624 V-Mag:2 "" False
+"Teutsch 144" nan "" unmatched "" "" "" "" False
+"NGC 7801" nan NGC7801 missing_V primary_identifier NGC7801 "" "" False
+"FSR 0307" nan "" unmatched "" "" "" "" False
+"FSR 0290" nan "" unmatched "" "" "" "" False
+"SAI 49" nan "" unmatched "" "" "" "" False
+"NGC 7031" 9.1 NGC7031 measured_V primary_identifier NGC7031 V-Mag:2 "" False
+"FSR 0312" nan "" unmatched "" "" "" "" False
+"Majaess 42" nan "" unmatched "" "" "" "" False
+"ASCC 126" nan "" unmatched "" "" "" "" False
+"Barkhatova 2" nan "" unmatched "" "" "" "" False
+"Berkeley 53" nan "" unmatched "" "" "" "" False
+"FSR 0667" nan "" unmatched "" "" "" "" False
+"FSR 0322" nan "" unmatched "" "" "" "" False
+"NGC 1528" 6.4 NGC1528 measured_V primary_identifier NGC1528 V-Mag:2 "" False
+"Majaess 41" nan "" unmatched "" "" "" "" False
+"FSR 0304" nan "" unmatched "" "" "" "" False
+"FSR 0325" nan "" unmatched "" "" "" "" False
+"NGC 1348" nan NGC1348 missing_V primary_identifier NGC1348 "" "" False
+"FSR 0319" nan "" unmatched "" "" "" "" False
+"ASCC 115" nan "" unmatched "" "" "" "" False
+"Majaess 36" nan "" unmatched "" "" "" "" False
+"FSR 0665" nan "" unmatched "" "" "" "" False
+"NGC 7086" 8.4 NGC7086 measured_V primary_identifier NGC7086 V-Mag:2 "" False
+"FSR 0306" nan "" unmatched "" "" "" "" False
+"NGC 2165" nan NGC2165 missing_V primary_identifier NGC2165 "" "" False
+"SAI 1" nan "" unmatched "" "" "" "" False
+"Berkeley 55" nan "" unmatched "" "" "" "" False
+"King 7" nan "" unmatched "" "" "" "" False
+"FSR 0671" nan "" unmatched "" "" "" "" False
+"FSR 0660" nan "" unmatched "" "" "" "" False
+"Alessi Teutsch 11" nan "" unmatched "" "" "" "" False
+"NGC 7394" nan NGC7394 missing_V primary_identifier NGC7394 "" "" False
+"Czernik 15" nan "" unmatched "" "" "" "" False
+"FSR 0316" nan "" unmatched "" "" "" "" False
+"NGC 7296" 9.7 NGC7295 measured_V primary_identifier NGC7295 V-Mag:2 "" False
+"Kronberger 80" nan "" unmatched "" "" "" "" False
+"Berkeley 98" nan "" unmatched "" "" "" "" False
+"Juchert 19" nan "" unmatched "" "" "" "" False
+"FSR 0323" nan "" unmatched "" "" "" "" False
+"FSR 0302" nan "" unmatched "" "" "" "" False
+"Stock 12" nan "" unmatched "" "" "" "" False
+"Czernik 16" nan "" unmatched "" "" "" "" False
+"Berkeley 9" nan "" unmatched "" "" "" "" False
+"NGC 1444" 6.6 NGC1444 measured_V primary_identifier NGC1444 V-Mag:2 "" False
+"NGC 1496" 9.6 NGC1496 measured_V primary_identifier NGC1496 V-Mag:2 "" False
+"King 5" nan "" unmatched "" "" "" "" False
+"Berkeley 13" nan "" unmatched "" "" "" "" False
+"IC 1434" nan IC1434 missing_V primary_identifier IC1434 "" "" False
+"FSR 0342" nan "" unmatched "" "" "" "" False
+"Mayer 2" nan "" unmatched "" "" "" "" False
+"Patchick 103" nan "" unmatched "" "" "" "" False
+"NGC 1220" 11.8 NGC1220 measured_V primary_identifier NGC1220 V-Mag:2 "" False
+"FSR 0341" nan "" unmatched "" "" "" "" False
+"Kronberger 84" nan "" unmatched "" "" "" "" False
+"Kronberger 81" nan "" unmatched "" "" "" "" False
+"FSR 0656" nan "" unmatched "" "" "" "" False
+"FSR 0320" nan "" unmatched "" "" "" "" False
+"NGC 7128" 9.7 NGC7128 measured_V primary_identifier NGC7128 V-Mag:2 "" False
+"FSR 0314" nan "" unmatched "" "" "" "" False
+"FSR 0317" nan "" unmatched "" "" "" "" False
+"FSR 0324" nan "" unmatched "" "" "" "" False
+"FSR 0326" nan "" unmatched "" "" "" "" False
+"FSR 0655" nan "" unmatched "" "" "" "" False
+"Juchert 11" nan "" unmatched "" "" "" "" False
+"FSR 0357" nan "" unmatched "" "" "" "" False
+"ASCC 114" nan "" unmatched "" "" "" "" False
+"FSR 0654" nan "" unmatched "" "" "" "" False
+"IC 1442" 9.1 IC1442 measured_V primary_identifier IC1442 V-Mag:2 "" False
+"ASCC 123" nan "" unmatched "" "" "" "" False
+"NGC 7245" 9.2 NGC7245 measured_V primary_identifier NGC7245 V-Mag:2 "" False
+"King 9" nan "" unmatched "" "" "" "" False
+"ASCC 116" nan "" unmatched "" "" "" "" False
+"ASCC 128" nan "" unmatched "" "" "" "" False
+"NGC 7127" nan NGC7127 missing_V primary_identifier NGC7127 "" "" False
+"NGC 7175" nan NGC7175 missing_V primary_identifier NGC7175 "" "" False
+"ASCC 121" nan "" unmatched "" "" "" "" False
+"Czernik 12" nan "" unmatched "" "" "" "" False
+"FSR 0333" nan "" unmatched "" "" "" "" False
+"FSR 0662" nan "" unmatched "" "" "" "" False
+"Alessi 2" nan "" unmatched "" "" "" "" False
+"FSR 0336" nan "" unmatched "" "" "" "" False
+"ASCC 3" nan "" unmatched "" "" "" "" False
+"FSR 0338" nan "" unmatched "" "" "" "" False
+"Berkeley 96" nan "" unmatched "" "" "" "" False
+"NGC 7226" 9.6 NGC7226 measured_V primary_identifier NGC7226 V-Mag:2 "" False
+"FSR 0334" nan "" unmatched "" "" "" "" False
+"NGC 744" 7.9 NGC0744 measured_V primary_identifier NGC0744 V-Mag:2 "" False
+"FSR 0365" nan "" unmatched "" "" "" "" False
+"Alessi J2327+55" nan "" unmatched "" "" "" "" False
+"ASCC 2" nan "" unmatched "" "" "" "" False
+"Teutsch 126" nan "" unmatched "" "" "" "" False
+"NGC 2013" nan NGC2013 missing_V primary_identifier NGC2013 "" "" False
+"NGC 657" nan NGC0657 missing_V primary_identifier NGC0657 "" "" False
+"ASCC 5" nan "" unmatched "" "" "" "" False
+"Berkeley 94" nan "" unmatched "" "" "" "" False
+"Trumpler 2" nan "" unmatched "" "" "" "" False
+"Stock 19" nan "" unmatched "" "" "" "" False
+"SBB 2" nan "" unmatched "" "" "" "" False
+"FSR 0384" nan "" unmatched "" "" "" "" False
+"Teutsch 127" nan "" unmatched "" "" "" "" False
+"NGC 6856" nan NGC6856 missing_V primary_identifier NGC6856 "" "" False
+"King 6" nan "" unmatched "" "" "" "" False
+"FSR 0611" nan "" unmatched "" "" "" "" False
+"Majaess 19" nan "" unmatched "" "" "" "" False
+"SBB 4" nan "" unmatched "" "" "" "" False
+"IC 1590" nan IC1590 missing_V primary_identifier IC1590 "" "Involved with the nebula NGC 281." False
+"Berkeley 102" nan "" unmatched "" "" "" "" False
+"NGC 7789" 6.7 NGC7789 measured_V primary_identifier NGC7789 V-Mag:2 "" False
+"FSR 0614" nan "" unmatched "" "" "" "" False
+"FSR 0356" nan "" unmatched "" "" "" "" False
+"NGC 7423" nan NGC7423 missing_V primary_identifier NGC7423 "" "" False
+"NGC 884" 3.8 NGC0884 measured_V primary_identifier NGC0884 V-Mag:2 "Caldwell 14 refers to both NGC869 and NGC884" False
+"NGC 869" 3.7 NGC0869 measured_V primary_identifier NGC0869 V-Mag:2 "Caldwell 14 refers to both NGC869 and NGC884" False
+"ASCC 120" nan "" unmatched "" "" "" "" False
+"FSR 0647" nan "" unmatched "" "" "" "" False
+"Alicante 1" nan "" unmatched "" "" "" "" False
+"SAI 25" nan "" unmatched "" "" "" "" False
+"NGC 7235" 7.7 NGC7234 measured_V primary_identifier NGC7234 V-Mag:2 "" False
+"NGC 7352" nan NGC7352 type_conflict primary_identifier NGC7352 "" "Called a cluster by John Herschel; no cluster at this position." False
+"Trumpler 37" nan "" unmatched "" "" "" "" False
+"Berkeley 92" nan "" unmatched "" "" "" "" False
+"NGC 957" 7.6 NGC0957 measured_V primary_identifier NGC0957 V-Mag:2 "" False
+"NGC 7055" nan NGC7055 missing_V primary_identifier NGC7055 "" "" False
+"FSR 0354" nan "" unmatched "" "" "" "" False
+"ASCC 6" nan "" unmatched "" "" "" "" False
+"ASCC 9" nan "" unmatched "" "" "" "" False
+"Stock 21" nan "" unmatched "" "" "" "" False
+"Teutsch 74" nan "" unmatched "" "" "" "" False
+"FSR 0596" nan "" unmatched "" "" "" "" False
+"NGC 7261" 8.4 NGC7261 measured_V primary_identifier NGC7261 V-Mag:2 "" False
+"NGC 7380" 7.2 NGC7380 measured_V primary_identifier NGC7380 V-Mag:2 "" False
+"King 2" nan "" unmatched "" "" "" "" False
+"NGC 457" 6.4 NGC0457 measured_V primary_identifier NGC0457 V-Mag:2 "" False
+"King 18" nan "" unmatched "" "" "" "" False
+"Basel 10" nan "" unmatched "" "" "" "" False
+"IC 361" 11.7 IC0361 measured_V primary_identifier IC0361 V-Mag:2 "" False
+"FSR 0377" nan "" unmatched "" "" "" "" False
+"FSR 0381" nan "" unmatched "" "" "" "" False
+"Juchert 9" nan "" unmatched "" "" "" "" False
+"King 20" nan "" unmatched "" "" "" "" False
+"FSR 0441" nan "" unmatched "" "" "" "" False
+"Czernik 14" nan "" unmatched "" "" "" "" False
+"FSR 0394" nan "" unmatched "" "" "" "" False
+"Czernik 8" nan "" unmatched "" "" "" "" False
+"FSR 0591" nan "" unmatched "" "" "" "" False
+"Alessi 20" nan "" unmatched "" "" "" "" False
+"Berkeley 66" nan "" unmatched "" "" "" "" False
+"FSR 0358" nan "" unmatched "" "" "" "" False
+"NGC 436" 8.8 NGC0436 measured_V primary_identifier NGC0436 V-Mag:2 "" False
+"FSR 0385" nan "" unmatched "" "" "" "" False
+"ASCC 7" nan "" unmatched "" "" "" "" False
+"Berkeley 97" nan "" unmatched "" "" "" "" False
+"King 4" nan "" unmatched "" "" "" "" False
+"FSR 0366" nan "" unmatched "" "" "" "" False
+"Tombaugh 5" nan "" unmatched "" "" "" "" False
+"FSR 0443" nan "" unmatched "" "" "" "" False
+"Berkeley 95" nan "" unmatched "" "" "" "" False
+"King 10" nan "" unmatched "" "" "" "" False
+"SAI 17" nan "" unmatched "" "" "" "" False
+"FSR 0459" nan "" unmatched "" "" "" "" False
+"Berkeley 103" nan "" unmatched "" "" "" "" False
+"FSR 0486" nan "" unmatched "" "" "" "" False
+"FSR 0634" nan "" unmatched "" "" "" "" False
+"NGC 6832" nan NGC6832 missing_V primary_identifier NGC6832 "" "" False
+"Stock 2" nan "" unmatched "" "" "" "" False
+"ASCC 8" nan "" unmatched "" "" "" "" False
+"Czernik 11" nan "" unmatched "" "" "" "" False
+"FSR 0401" nan "" unmatched "" "" "" "" False
+"FSR 0474" nan "" unmatched "" "" "" "" False
+"Teutsch 54" nan "" unmatched "" "" "" "" False
+"FSR 0435" nan "" unmatched "" "" "" "" False
+"FSR 0417" nan "" unmatched "" "" "" "" False
+"FSR 0521" nan "" unmatched "" "" "" "" False
+"Czernik 9" nan "" unmatched "" "" "" "" False
+"Czernik 42" nan "" unmatched "" "" "" "" False
+"Majaess 215" nan "" unmatched "" "" "" "" False
+"Juchert Saloran 1" nan "" unmatched "" "" "" "" False
+"NGC 7429" nan NGC7429 missing_V primary_identifier NGC7429 "" "" False
+"NGC 7795" nan NGC7795 missing_V primary_identifier NGC7795 "" "" False
+"Reiland 1" nan "" unmatched "" "" "" "" False
+"Kumar 21" nan "" unmatched "" "" "" "" False
+"FSR 0364" nan "" unmatched "" "" "" "" False
+"Stock 23" nan "" unmatched "" "" "" "" False
+"NGC 433" nan NGC0433 missing_V primary_identifier NGC0433 "" "" False
+"Czernik 2" nan "" unmatched "" "" "" "" False
+"NGC 743" nan NGC0743 missing_V primary_identifier NGC0743 "" "" False
+"NGC 129" 6.5 NGC0129 measured_V primary_identifier NGC0129 V-Mag:2 "" False
+"Kronberger 23" nan "" unmatched "" "" "" "" False
+"Riddle 4" nan "" unmatched "" "" "" "" False
+"FSR 0436" nan "" unmatched "" "" "" "" False
+"Skiff J2330+60.2" nan "" unmatched "" "" "" "" False
+"FSR 0537" nan "" unmatched "" "" "" "" False
+"Berkeley 2" nan "" unmatched "" "" "" "" False
+"Teutsch 53" nan "" unmatched "" "" "" "" False
+"Berkeley 65" nan "" unmatched "" "" "" "" False
+"IC 1848" 6.5 IC1848 measured_V primary_identifier IC1848 V-Mag:2 "Immersed in nebulosity." False
+"Markarian 50" nan "" unmatched "" "" "" "" False
+"Majaess 227" nan "" unmatched "" "" "" "" False
+"Berkeley 1" nan "" unmatched "" "" "" "" False
+"King 19" nan "" unmatched "" "" "" "" False
+"SAI 149" nan "" unmatched "" "" "" "" False
+"FSR 0628" nan "" unmatched "" "" "" "" False
+"SAI 24" nan "" unmatched "" "" "" "" False
+"NGC 7510" 7.9 NGC7510 measured_V primary_identifier NGC7510 V-Mag:2 "" False
+"NGC 581" 7.4 NGC0581 measured_V primary_identifier NGC0581 V-Mag:2 "" False
+"NGC 6939" 7.8 NGC6939 measured_V primary_identifier NGC6939 V-Mag:2 "" False
+"NGC 659" 7.9 NGC0659 measured_V primary_identifier NGC0659 V-Mag:2 "" False
+"SAI 6" nan "" unmatched "" "" "" "" False
+"FSR 0460" nan "" unmatched "" "" "" "" False
+"Markarian 6" nan "" unmatched "" "" "" "" False
+"FSR 0547" nan "" unmatched "" "" "" "" False
+"NGC 7419" 13.0 NGC7419 measured_V primary_identifier NGC7419 V-Mag:2 "" False
+"FSR 0369" nan "" unmatched "" "" "" "" False
+"FSR 0451" nan "" unmatched "" "" "" "" False
+"FSR 0422" nan "" unmatched "" "" "" "" False
+"Pfleiderer 3" nan "" unmatched "" "" "" "" False
+"FSR 0448" nan "" unmatched "" "" "" "" False
+"Berkeley 60" nan "" unmatched "" "" "" "" False
+"Berkeley 58" nan "" unmatched "" "" "" "" False
+"Majaess 30" nan "" unmatched "" "" "" "" False
+"Alessi Teutsch 5" nan "" unmatched "" "" "" "" False
+"Berkeley 6" nan "" unmatched "" "" "" "" False
+S1 nan "" unmatched "" "" "" "" False
+"NGC 189" 8.8 NGC0189 measured_V primary_identifier NGC0189 V-Mag:2 "" False
+"FSR 0578" nan "" unmatched "" "" "" "" False
+"FSR 0426" nan "" unmatched "" "" "" "" False
+"King 13" nan "" unmatched "" "" "" "" False
+"NGC 7790" 8.5 NGC7790 measured_V primary_identifier NGC7790 V-Mag:2 "" False
+"NGC 663" 7.1 NGC0663 measured_V primary_identifier NGC0663 V-Mag:2 "" False
+"Trumpler 1" nan "" unmatched "" "" "" "" False
+"FSR 0425" nan "" unmatched "" "" "" "" False
+"FSR 0534" nan "" unmatched "" "" "" "" False
+"Czernik 43" nan "" unmatched "" "" "" "" False
+"NGC 103" 9.8 NGC0103 measured_V primary_identifier NGC0103 V-Mag:2 "" False
+"Czernik 5" nan "" unmatched "" "" "" "" False
+"NGC 7788" 9.4 NGC7788 measured_V primary_identifier NGC7788 V-Mag:2 "" False
+"IC 1805" 6.5 IC1805 measured_V primary_identifier IC1805 V-Mag:2 "" False
+"FSR 0480" nan "" unmatched "" "" "" "" False
+"Czernik 1" nan "" unmatched "" "" "" "" False
+"Czernik 4" nan "" unmatched "" "" "" "" False
+"NGC 136" nan NGC0136 missing_V primary_identifier NGC0136 "" "" False
+"ASCC 4" nan "" unmatched "" "" "" "" False
+"NGC 381" 9.3 NGC0381 measured_V primary_identifier NGC0381 V-Mag:2 "" False
+"NGC 7654" 6.9 NGC7654 measured_V primary_identifier NGC7654 V-Mag:3 "" False
+"FSR 0505" nan "" unmatched "" "" "" "" False
+"FSR 0584" nan "" unmatched "" "" "" "" False
+"Teutsch 76" nan "" unmatched "" "" "" "" False
+"NGC 1027" 6.7 NGC1027 measured_V primary_identifier NGC1027 V-Mag:2 "The IC identification is not certain." False
+"Mayer 1" nan "" unmatched "" "" "" "" False
+"Harvard 21" nan "" unmatched "" "" "" "" False
+"NGC 225" 7.0 NGC0225 measured_V primary_identifier NGC0225 V-Mag:2 "" False
+"Tombaugh 4" nan "" unmatched "" "" "" "" False
+"IC 166" 11.7 IC0166 measured_V primary_identifier IC0166 V-Mag:2 "" False
+"King 15" nan "" unmatched "" "" "" "" False
+"NGC 654" 6.5 NGC0654 measured_V primary_identifier NGC0654 V-Mag:2 "" False
+"Majaess 225" nan "" unmatched "" "" "" "" False
+"King 12" nan "" unmatched "" "" "" "" False
+"Stock 24" nan "" unmatched "" "" "" "" False
+"Czernik 17" nan "" unmatched "" "" "" "" False
+"Czernik 44" nan "" unmatched "" "" "" "" False
+"Teutsch 162" nan "" unmatched "" "" "" "" False
+"NGC 358" nan NGC0358 type_conflict primary_identifier NGC0358 "" "Four Galactic stars" False
+"Teutsch 55" nan "" unmatched "" "" "" "" False
+"FSR 0404" nan "" unmatched "" "" "" "" False
+"Stock 17" nan "" unmatched "" "" "" "" False
+"NGC 366" nan NGC0366 missing_V primary_identifier NGC0366 "" "" False
+"Czernik 7" nan "" unmatched "" "" "" "" False
+"SAI 16" nan "" unmatched "" "" "" "" False
+"ASCC 117" nan "" unmatched "" "" "" "" False
+"Pfleiderer 4" nan "" unmatched "" "" "" "" False
+"NGC 1502" 6.9 NGC1502 measured_V primary_identifier NGC1502 V-Mag:2 "" False
+"Stock 3" nan "" unmatched "" "" "" "" False
+"Czernik 13" nan "" unmatched "" "" "" "" False
+"Berkeley 7" nan "" unmatched "" "" "" "" False
+"FSR 0498" nan "" unmatched "" "" "" "" False
+"ASCC 130" nan "" unmatched "" "" "" "" False
+"SAI 21" nan "" unmatched "" "" "" "" False
+"NGC 7160" 6.1 NGC7160 measured_V primary_identifier NGC7160 V-Mag:2 "" False
+"FSR 0406" nan "" unmatched "" "" "" "" False
+"Stock 20" nan "" unmatched "" "" "" "" False
+"SAI 14" nan "" unmatched "" "" "" "" False
+"ASCC 1" nan "" unmatched "" "" "" "" False
+"SAI 4" nan "" unmatched "" "" "" "" False
+"King 21" nan "" unmatched "" "" "" "" False
+"ASCC 125" nan "" unmatched "" "" "" "" False
+"Czernik 3" nan "" unmatched "" "" "" "" False
+"Kronberger 55" nan "" unmatched "" "" "" "" False
+"Czernik 6" nan "" unmatched "" "" "" "" False
+"FSR 0413" nan "" unmatched "" "" "" "" False
+"Berkeley 5" nan "" unmatched "" "" "" "" False
+"Teutsch 23" nan "" unmatched "" "" "" "" False
+"FSR 0542" nan "" unmatched "" "" "" "" False
+"FSR 0414" nan "" unmatched "" "" "" "" False
+"FSR 0416" nan "" unmatched "" "" "" "" False
+"FSR 0536" nan "" unmatched "" "" "" "" False
+"King 14" nan "" unmatched "" "" "" "" False
+"Negueruela 1" nan "" unmatched "" "" "" "" False
+"FSR 0453" nan "" unmatched "" "" "" "" False
+"Trumpler 3" nan "" unmatched "" "" "" "" False
+"Pismis Moreno 1" nan "" unmatched "" "" "" "" False
+"NGC 559" 9.5 NGC0559 measured_V primary_identifier NGC0559 V-Mag:2 "" False
+"Majaess 9" nan "" unmatched "" "" "" "" False
+"NGC 146" 9.1 NGC0146 measured_V primary_identifier NGC0146 V-Mag:2 "" False
+"NGC 133" 9.4 NGC0133 measured_V primary_identifier NGC0133 V-Mag:2 "" False
+"FSR 0442" nan "" unmatched "" "" "" "" False
+"Berkeley 104" nan "" unmatched "" "" "" "" False
+"FSR 0538" nan "" unmatched "" "" "" "" False
+"Berkeley 63" nan "" unmatched "" "" "" "" False
+"FSR 0494" nan "" unmatched "" "" "" "" False
+"Berkeley 100" nan "" unmatched "" "" "" "" False
+"Berkeley 93" nan "" unmatched "" "" "" "" False
+"Berkeley 62" nan "" unmatched "" "" "" "" False
+"FSR 0496" nan "" unmatched "" "" "" "" False
+"NGC 637" 8.2 NGC0637 measured_V primary_identifier NGC0637 V-Mag:2 "" False
+"Dias 1" nan "" unmatched "" "" "" "" False
+"King 16" nan "" unmatched "" "" "" "" False
+"Berkeley 101" nan "" unmatched "" "" "" "" False
+"Majaess 26" nan "" unmatched "" "" "" "" False
+"Berkeley 4" nan "" unmatched "" "" "" "" False
+"Majaess 8" nan "" unmatched "" "" "" "" False
+"FSR 0553" nan "" unmatched "" "" "" "" False
+"NGC 609" 11.0 NGC0609 measured_V primary_identifier NGC0609 V-Mag:2 "" False
+"Stock 18" nan "" unmatched "" "" "" "" False
+"FSR 0519" nan "" unmatched "" "" "" "" False
+"ASCC 127" nan "" unmatched "" "" "" "" False
+"FSR 0551" nan "" unmatched "" "" "" "" False
+"Majaess 1" nan "" unmatched "" "" "" "" False
+"FSR 0508" nan "" unmatched "" "" "" "" False
+"Patchick 78" nan "" unmatched "" "" "" "" False
+"FSR 0469" nan "" unmatched "" "" "" "" False
+"Pfleiderer 1" nan "" unmatched "" "" "" "" False
+"Majaess 20" nan "" unmatched "" "" "" "" False
+"NGC 7142" 9.3 NGC7142 measured_V primary_identifier NGC7142 V-Mag:2 "" False
+"FSR 0522" nan "" unmatched "" "" "" "" False
+"FSR 0546" nan "" unmatched "" "" "" "" False
+"Berkeley 64" nan "" unmatched "" "" "" "" False
+"FSR 0549" nan "" unmatched "" "" "" "" False
+"FSR 0516" nan "" unmatched "" "" "" "" False
+"NGC 7129" 11.5 NGC7129 measured_V primary_identifier NGC7129 V-Mag:2 "" False
+"Berkeley 10" nan "" unmatched "" "" "" "" False
+"NGC 3231" nan NGC3231 missing_V primary_identifier NGC3231 "" "" False
+"Berkeley 61" nan "" unmatched "" "" "" "" False
+"Berkeley 59" nan "" unmatched "" "" "" "" False
+"NGC 7762" nan NGC7762 missing_V primary_identifier NGC7762 "" "" False
+"Skiff J0058+68.4" nan "" unmatched "" "" "" "" False
+"King 11" nan "" unmatched "" "" "" "" False
+"Collinder 285" nan "" unmatched "" "" "" "" False
+"vdBergh 152" nan "" unmatched "" "" "" "" False
+"Platais 3" nan "" unmatched "" "" "" "" False
+"NGC 110" nan NGC0110 missing_V primary_identifier NGC0110 "" "" False
+"Berkeley 99" nan "" unmatched "" "" "" "" False
+"Collinder 463" nan "" unmatched "" "" "" "" False
+"Collinder 471" nan "" unmatched "" "" "" "" False
+"Majaess 29" nan "" unmatched "" "" "" "" False
+"NGC 7708" nan NGC7708 missing_V primary_identifier NGC7708 "" "" False
+"vdBergh 150" nan "" unmatched "" "" "" "" False
+"Collinder 464" nan "" unmatched "" "" "" "" False
+"Berkeley 8" nan "" unmatched "" "" "" "" False
+"SAI 30" nan "" unmatched "" "" "" "" False
+"NGC 188" 8.1 NGC0188 measured_V primary_identifier NGC0188 V-Mag:2 "" False

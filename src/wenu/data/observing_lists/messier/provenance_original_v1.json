@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "source_registry": "observing_sources_v1.json",
+  "source_registry_sha256": "a8f02a20a407d1558a71649549de8cb7827f1093edab72320b8900f8cd23066e",
+  "registry_metadata": {
+    "schema_version": 1,
+    "acquisition_version": "v1",
+    "created_utc": "2026-10-13T19:36:37.025607+00:00",
+    "repository_base": "8e9b193a608bcdbcc34e10d87f32ab678bcec60d",
+    "scope": "Source acquisition only; no target filtering, union, physical classification adoption or chart changes.",
+    "archive": "wenu_observing_catalogues_v1.zip",
+    "aliases": [
+      {
+        "requested_title": "Best of the NGC",
+        "catalogue_id": "sac_best_ngc",
+        "status": "Generic label mapped to SAC; no independent second publisher/list verified"
+      }
+    ],
+    "excluded_attempts": [
+      {
+        "file": "barnard_list_v1.dat",
+        "reason": "HTTP200 HTML anti-bot response; not catalogue data"
+      },
+      {
+        "file": "barnard_notes_v1.dat",
+        "reason": "HTTP200 HTML anti-bot response; not catalogue data"
+      }
+    ]
+  },
+  "source_products": [
+    {
+      "file": "messier_list_v1.csv",
+      "bytes": 4775,
+      "sha256": "157357c283959a366ae70207cf52e310b80f4931ac76e2a3d165c88d7b024b76",
+      "observed_counts": {
+        "rows": 110
+      },
+      "source": {
+        "file": "messier_list_v1.html",
+        "url": "https://old.astroleague.org/al/obsclubs/messier/messlist.html",
+        "final_url": "https://old.astroleague.org/al/obsclubs/messier/messlist.html",
+        "bytes": 51311,
+        "sha256": "4cb64f95b204cfb1c6141ee45394893f67996b1ac399cc28047a568e29701f8c",
+        "retrieved_utc": "2026-10-13T19:30:23.921262+00:00"
+      },
+      "derivation": "HTML table factual columns only; source descriptions omitted; values remain source strings."
+    }
+  ],
+  "source_descriptions": [
+    {
+      "catalogue_id": "messier",
+      "title": "Messier",
+      "files": [
+        "messier_list_v1.csv"
+      ],
+      "nominal_or_programme_count": 110,
+      "publisher": "Astronomical League / historical Messier membership",
+      "landing_url": "https://old.astroleague.org/al/obsclubs/messier/messlist.html",
+      "notes": "AL membership has M1-M110; packaged HEASARC parameter table has 109 rows and omits M102. Preserve the M102 identification uncertainty; do not silently replace existing parameters.",
+      "rights_status": "Source attribution retained; no new public redistribution licence inferred from download availability.",
+      "licence_observation": "Publisher website states All Rights Reserved; no explicit open redistribution licence verified."
+    }
+  ],
+  "converted_products": [
+    {
+      "file": "messier_list_v1.csv",
+      "source_file": "messier_list_v1.csv",
+      "rows": 110,
+      "columns": [
+        "NGC",
+        "RA_h",
+        "RA_m",
+        "Dec_deg",
+        "Dec_arcmin",
+        "magnitude",
+        "source_type",
+        "constellation",
+        "size",
+        "Messier_number"
+      ],
+      "status": "source_fields_preserved",
+      "bytes": 4775,
+      "sha256": "157357c283959a366ae70207cf52e310b80f4931ac76e2a3d165c88d7b024b76"
+    }
+  ]
+}

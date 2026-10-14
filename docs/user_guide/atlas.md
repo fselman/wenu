@@ -1532,3 +1532,86 @@ wenu_create_atlas --design examples/atlas_design_36charts_v3.json --config examp
 
 The revised geometry has a new digest: prepare a new native-sky bundle rather
 than reusing the revision-2 design-bound bundle.
+
+
+### Caldwell and open-cluster comparison (2026-10-13)
+
+Wenu packages all 109 Caldwell entries as a heterogeneous observing catalogue,
+with factual membership checked against the Astronomical League and parameters
+from pinned OpenNGC `v20260501`. Attribution, CC BY-SA 4.0 licence, exact source
+hashes and generated-product hashes accompany the ECSV/CSV snapshot. This adds
+an offline catalogue resource, not a new automatically enabled chart layer or
+an open-cluster symbol category. The existing Python loader supports
+`NonStellar(None, catalog="caldwell").load()`.
+
+Compare the exact packaged Dias snapshot with Messier and Caldwell using:
+
+```bash
+PYTHONPATH=src python tools/compare_open_clusters.py --output-prefix open_clusters_comparison_v1
+```
+
+The tool writes `_dias.csv` (all 1,931 rows with membership tags),
+`_crosswalk.csv` (every selected observing-list component and match status),
+and `_summary.json` (counts, parameter availability/medians, review cases and
+source SHA-256 values). All physical comparison values come from Dias. The
+initial result is 27 Messier clusters and 28 Caldwell entries corresponding to
+29 clusters; all have an identifier match. C14 matches NGC 869 and NGC 884;
+C41 matches Melotte 25 and M45 matches Melotte 22. C37 (NGC 6885/6882) and C50
+(NGC 2244/2239) expose alternate Dias rows for later review. Exact observing
+identifiers take precedence; aliases are fallback-only and ambiguities are
+reported. No nearest-position match, physical duplicate merge, chart-density
+cut or missing-parameter imputation is performed.
+
+
+### Open-cluster flags, configurable plots and selection exports (2026-10-13)
+
+The Dias source retains all 1,931 rows. Loaded open-cluster tables add
+`excluded_ir_embedded` and `amateur_exclusion_reason` annotations for source
+flags IR (344) and E (5). The initial amateur sample contains 1,582 rows.
+The existing layer's optional `exclude_infrared_embedded` native/observed
+geometry argument filters drawing without deleting catalogue rows.
+
+`examples/atlas_chart_style_v5.toml` enables the new atlas presentation setting
+`open_cluster_exclude_infrared_embedded = true`; older presets and the default
+presentation keep the prior appearance. The flag travels through the same
+`wenu_chart` sheet route. It is not a general brightness/observability ranking.
+
+The offline tool reads from `src/wenu/data/catalogs` by default and writes to
+`output`. Choose another root with `--data-directory` or
+`--output-directory`; `--output-prefix` remains supported. A versioned
+`--name` identifies the generated products. Axis choices are `diameter`,
+`members`, `brightness`, `distance`, `ebv`, `log_age`, `metallicity`, and
+`physical_diameter` (projected parsec size derived from distance and angle).
+
+```bash
+PYTHONPATH=src MPLBACKEND=Agg python tools/compare_open_clusters.py --output-directory output --name open_clusters_size_brightness_v2 --x diameter --y brightness --write-filtered-catalogue
+PYTHONPATH=src MPLBACKEND=Agg python tools/compare_open_clusters.py --output-directory output --name open_clusters_ebv05_v2 --x diameter --y brightness --max-ebv 0.5 --write-filtered-catalogue
+```
+
+The 0.5 reddening cut above is an example, not an adopted curation threshold.
+Bounds are inclusive. Unknown E(B-V) is excluded when a bound is supplied;
+`--missing-ebv include` retains it explicitly. `--min-ebv` supplies a lower
+bound; `--include-infrared-embedded` reverses the initial IR/E exclusion.
+The full `_dias.csv` always contains every row with active selection flags and
+reasons. `--write-filtered-catalogue` adds a separate `_filtered.ecsv`, suitable
+for the existing OpenClusters filename loader, with selection/source metadata.
+The canonical source is never overwritten by comparison or plotting.
+
+The separate OpenNGC photometry supplement is matched by explicit identities,
+digest-bound to Dias and source-traced; absent or ambiguous V magnitudes remain
+missing. Brightness plots reverse magnitude axes (brighter up/right).
+With only IR/E exclusion, 1,541 clusters have diameter and member count;
+317 have diameter and V magnitude. The plots account for all selected rows:
+missing parameters appear in labelled categorical margins and summary counts.
+Caldwell/Messier positions are overplotted with distinct symbols. Richness is
+only a proxy, not brightness. Review flags retain shared aliases and source
+notes, including the earlier C37/C50 cases. Globular-cluster curation is later.
+
+## Open-cluster curation guide
+
+The [living catalogue curation guide](curation.md) documents the maintenance
+and comparison scripts, all supported axes, missing-value policies and outputs.
+Use E(B−V) ≤ 3 as the current working comparison ceiling; the earlier 0.5
+example remains a reproducible stricter experiment. No magnitude or surface-
+brightness cutoff has been adopted, and filtered exports do not automatically
+become atlas selections.

@@ -75,3 +75,9 @@ the [regional chart guide](regional_charts.md).
 Generated gallery products belong below `output/` and are not committed. The
 one exception is the approved README image; its exact provenance is recorded
 in [the planisphere guide](planisphere.md#readme-image-provenance).
+
+## Catalogue curation
+
+See [Catalogue curation](curation.md) for the living script registry, offline
+open-cluster comparisons, the working E(B−V) ≤ 3 ceiling, candidate exports
+and interpretation of brightness and surface-brightness proxies.

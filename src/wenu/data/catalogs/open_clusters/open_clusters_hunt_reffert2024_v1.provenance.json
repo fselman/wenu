@@ -1,0 +1,98 @@
+{
+  "catalogue": "J/A+A/686/A42",
+  "paper": "https://doi.org/10.1051/0004-6361/202348662",
+  "source_receipts": {
+    "ReadMe": {
+      "url": "https://cdsarc.cds.unistra.fr/ftp/J/A+A/686/A42/ReadMe",
+      "sha256": "b9270a8189ff26f9a93e5e6142e21e7d85a8ade3f9a7b30b7321d834166aa5e9",
+      "bytes": 25600,
+      "retrieved_utc": "2026-10-13T16:15:28.691584+00:00",
+      "http_status": 200
+    },
+    "clusters.dat.gz": {
+      "url": "https://cdsarc.cds.unistra.fr/ftp/J/A+A/686/A42/clusters.dat.gz",
+      "sha256": "8ca6dae60113da57768f87116dc9f7b564af98ca1750ec967a54fe188fd1b047",
+      "bytes": 2604860,
+      "retrieved_utc": "2026-10-13T16:15:44.133432+00:00",
+      "http_status": 200
+    },
+    "members.dat.gz": {
+      "url": "https://cdsarc.cds.unistra.fr/ftp/J/A+A/686/A42/members.dat.gz",
+      "sha256": "cd9cef40b3c5586579611fdf1034e927ea157acfdc8250a1fc502e6105fec794",
+      "bytes": 389517674,
+      "retrieved_utc": "2026-10-13T16:43:13.430612+00:00",
+      "http_status": 200
+    },
+    "crossma.dat.gz": {
+      "url": "https://cdsarc.cds.unistra.fr/ftp/J/A+A/686/A42/crossma.dat.gz",
+      "sha256": "ffb4e5acd9ec22dec5525c9e71ea8f8bd3ff1c6fed4ff676311cfc75f1e891e8",
+      "bytes": 520182,
+      "retrieved_utc": "2026-10-13T16:43:16.196595+00:00",
+      "http_status": 200
+    }
+  },
+  "source_rows": 7167,
+  "source_member_rows": 1291929,
+  "curated_rows": 431,
+  "member_policy": {
+    "minimum_probability": 0.5,
+    "aperture": "tidal"
+  },
+  "transformations": {
+    "url": "https://gea.esac.esa.int/archive/documentation/GDR3/Data_processing/chap_cu5pho/cu5pho_sec_photSystem/cu5pho_ssec_photRelations.html",
+    "equations": "band = G - polynomial(BP-RP)",
+    "coefficients": {
+      "V": [
+        -0.02704,
+        0.01424,
+        -0.2156,
+        0.01426
+      ],
+      "B": [
+        0.01448,
+        -0.6874,
+        -0.3604,
+        0.06718,
+        -0.006061
+      ],
+      "R": [
+        -0.02275,
+        0.3961,
+        -0.1243,
+        -0.01396,
+        0.003775
+      ]
+    },
+    "colour_limits": {
+      "V": [
+        -0.5,
+        5.0
+      ],
+      "B": [
+        -0.5,
+        2.0
+      ],
+      "R": [
+        0.0,
+        2.0
+      ]
+    },
+    "fit_scatter_mag": {
+      "V": 0.03017,
+      "B": 0.0633,
+      "R": 0.03167
+    },
+    "note": "B/R colour >2 needs confirmed M giants; conservatively omitted. R is Cousins R."
+  },
+  "policy_checked": "2026-10-13",
+  "provider_policy": "https://cds.unistra.fr/vizier-org/licences_vizier.html",
+  "redistribution": "Public CDS source; retain authors/CDS/Gaia acknowledgement. No blanket CC0 claim.",
+  "files": {
+    "open_clusters_hunt_reffert2024_v1.ecsv": {
+      "sha256": "92212734a47869d89b46f8e467c79f54e198e940d3a84f455d71752d88073223"
+    },
+    "open_clusters_hunt_reffert2024_v5lt11_v1.ecsv": {
+      "sha256": "80255172bb51a5c470905d83bdbcf04b7d2d2c7ba2540de23832fb69097163f9"
+    }
+  }
+}

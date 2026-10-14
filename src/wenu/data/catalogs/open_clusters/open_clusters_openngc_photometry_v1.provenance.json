@@ -1,0 +1,25 @@
+{
+  "source": "OpenNGC",
+  "release": "v20260501",
+  "license": "CC-BY-SA-4.0",
+  "licence_path": "../caldwell/CC-BY-SA-4.0.txt",
+  "retrieved_at_utc": "2026-10-13T12:58:53+00:00",
+  "dias_sha256": "508dfdb29110957cf66e50fa2a3cca4139098a4ed396b24787128fc24057241d",
+  "source_files": {
+    "NGC.csv": {
+      "url": "https://raw.githubusercontent.com/mattiaverga/OpenNGC/v20260501/database_files/NGC.csv",
+      "sha256": "840fe0c9ee1332e551b2e722a0e92726cd7b157914a3d2177602832aadd3aa9e"
+    },
+    "addendum.csv": {
+      "url": "https://raw.githubusercontent.com/mattiaverga/OpenNGC/v20260501/database_files/addendum.csv",
+      "sha256": "1d8f0914e643ada325a5a94d88d8fefad6a4937a2f77cc34f21483af22b11983"
+    }
+  },
+  "matching_policy": "Explicit primary identifier first, then source aliases; collapse source duplicate references, reject multiple targets and non-cluster types. No positional matching or imputed photometry.",
+  "brightness_notice": "Source V magnitudes are heterogeneous integrated values. Retain source codes, notes and shared-identity review flags; availability is not an observability ranking.",
+  "files": {
+    "open_clusters_openngc_photometry_v1.ecsv": {
+      "sha256": "b98a4ba5f86743fe3b58b60bc1a3e3654876a4a65024c9fc1d16c778f335b18b"
+    }
+  }
+}

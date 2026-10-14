@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "source_registry": "observing_sources_v1.json",
+  "source_registry_sha256": "a8f02a20a407d1558a71649549de8cb7827f1093edab72320b8900f8cd23066e",
+  "registry_metadata": {
+    "schema_version": 1,
+    "acquisition_version": "v1",
+    "created_utc": "2026-10-13T19:36:37.025607+00:00",
+    "repository_base": "8e9b193a608bcdbcc34e10d87f32ab678bcec60d",
+    "scope": "Source acquisition only; no target filtering, union, physical classification adoption or chart changes.",
+    "archive": "wenu_observing_catalogues_v1.zip",
+    "aliases": [
+      {
+        "requested_title": "Best of the NGC",
+        "catalogue_id": "sac_best_ngc",
+        "status": "Generic label mapped to SAC; no independent second publisher/list verified"
+      }
+    ],
+    "excluded_attempts": [
+      {
+        "file": "barnard_list_v1.dat",
+        "reason": "HTTP200 HTML anti-bot response; not catalogue data"
+      },
+      {
+        "file": "barnard_notes_v1.dat",
+        "reason": "HTTP200 HTML anti-bot response; not catalogue data"
+      }
+    ]
+  },
+  "source_products": [
+    {
+      "file": "rasc_finest_list_v1.pdf",
+      "bytes": 279386,
+      "sha256": "2c008441ac83af10cb6d349b24d8cc1c28a97f2089e16bdc0a0eef63cd7cac46",
+      "observed_counts": {
+        "object_rows": 112,
+        "distinct_observing_numbers": 110
+      },
+      "source": {
+        "file": "rasc_finest_list_v1.pdf",
+        "url": "https://www.rasc.ca/sites/default/files/RASC_FNGC_checklist_1.pdf",
+        "final_url": "https://www.rasc.ca/sites/default/files/RASC_FNGC_checklist_1.pdf",
+        "bytes": 279386,
+        "sha256": "2c008441ac83af10cb6d349b24d8cc1c28a97f2089e16bdc0a0eef63cd7cac46",
+        "retrieved_utc": "2026-10-13T19:29:37.700023+00:00",
+        "content_type": "application/pdf",
+        "last_modified": "Sat, 19 Jun 2021 15:38:34 GMT"
+      }
+    }
+  ],
+  "source_descriptions": [
+    {
+      "catalogue_id": "rasc_finest_ngc",
+      "title": "RASC Finest NGC",
+      "files": [
+        "rasc_finest_list_v1.pdf"
+      ],
+      "nominal_or_programme_count": 110,
+      "publisher": "Alan Dyer / Royal Astronomical Society of Canada",
+      "landing_url": "https://rasc.ca/finest-ngc-objects",
+      "notes": "Checklist version 2.1a, edited 2021-06-19. 110 base observing numbers, 112 displayed object rows; #82 has two rows and #99 has a/b components. Compound targets/aliases are not physical identity merges.",
+      "rights_status": "Source attribution retained; no new public redistribution licence inferred from download availability.",
+      "licence_observation": "Checklist states Copyright 2021 Royal Astronomical Society of Canada."
+    }
+  ],
+  "converted_products": [
+    {
+      "file": "rasc_finest_list_v1.csv",
+      "source_file": "rasc_finest_list_v1.pdf",
+      "rows": 112,
+      "columns": [
+        "source_page",
+        "observing_number",
+        "identifier",
+        "source_alias_and_type",
+        "RA_source",
+        "Dec_source",
+        "source_tail",
+        "source_row_text"
+      ],
+      "status": "Structured identity/coordinate fields plus original row/tail retained; no physical reclassification.",
+      "bytes": 17377,
+      "sha256": "bcb33e1e1d6ac432c45daeeb2fd4fe260e02d230bd8b5ecc408819a186279ae1"
+    }
+  ]
+}

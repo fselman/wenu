@@ -112,6 +112,10 @@ def create_main(argv=None):
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--index", type=Path,
         help="One-page index PDF; enables even report pages facing odd chart pages.")
+    parser.add_argument("--open-cluster-catalogue", type=Path,
+        help="Versioned ECSV or active open_star_clusters.ecsv symlink; changes only open clusters. Requires a new sky.")
+    parser.add_argument("--open-cluster-size", choices=("angular", "fixed"),
+        help="Open-cluster diameter at the central chart scale, with current symbol as minimum (default angular); fixed restores previous symbols.")
     sky = parser.add_mutually_exclusive_group()
     sky.add_argument("--save-sky", type=Path)
     sky.add_argument("--from-sky", type=Path)
@@ -126,13 +130,16 @@ def create_main(argv=None):
             stellar_magnitude_sizing=magnitude_sizing_from_arguments(args, presentation.stellar_magnitude_sizing),
             **{name: getattr(args, name) for name in ("style", "mode", "star_size_scale")
                if getattr(args, name) is not None})
+        if args.open_cluster_size is not None:
+            presentation = replace(presentation, open_cluster_angular_sizes=args.open_cluster_size == "angular")
         if args.magnitude_limit is not None:
             from dataclasses import replace
             presentation = replace(presentation, star_magnitude_limit=args.magnitude_limit)
         from wenu.cli.chart import main as chart_command
         output = create_atlas(args.design, args.output_dir, presentation=presentation,
             charts=args.charts, jobs=args.jobs, save_sky=args.save_sky, from_sky=args.from_sky,
-            index=args.index, chart_command=chart_command)
+            index=args.index, chart_command=chart_command,
+            open_cluster_catalogue=args.open_cluster_catalogue)
     except (ValueError, TypeError, OSError, UnicodeError, RuntimeError) as exc:
         parser.error(str(exc))
     except KeyboardInterrupt:

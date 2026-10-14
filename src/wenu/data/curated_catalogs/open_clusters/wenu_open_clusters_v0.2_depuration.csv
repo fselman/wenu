@@ -1,0 +1,584 @@
+wenu_id,dias_id,hunt_name,hunt_type,has_dias,has_hunt,depuration_retained,depuration_reason,other_compilation_evidence,other_compilation_unresolved
+WOC00000005,Alessi 10,Alessi_10,o,True,True,True,,Alessi 10|Alessi_10|LeDrew_3|Theia_535,False
+WOC00000006,Alessi 12,Alessi_12,o,True,True,True,,Alessi 12|Alessi_12|LeDrew_2|MWSC_3404|Theia_254,False
+WOC00000011,Alessi 19,Alessi_19,o,True,True,True,,Alessi 19|Alessi_19|LeDrew_5|MWSC_2887|OC_0068,False
+WOC00000012,Alessi 2,Alessi_2,o,True,True,True,,Alessi 2|Alessi_2|LeDrew_4|MWSC_419,False
+WOC00000013,Alessi 20,Alessi_20,o,True,True,True,,Alessi 20|Alessi_20|Theia_34,False
+WOC00000014,Alessi 21,Alessi_21,o,True,True,True,,Alessi 21|Alessi_21,False
+WOC00000017,Alessi 3,Alessi_3,o,True,True,True,,Alessi 3|Alessi_3|MWSC_1157|Theia_1011,False
+WOC00000018,Alessi 31,Alessi_31,o,True,True,True,,ASCC_92|Alessi 31|Alessi_31|MWSC_2723|Theia_739,False
+WOC00000020,Alessi 34,Alessi_34,o,True,True,True,,ASCC_44|Alessi 34|Alessi_34|MWSC_1414,False
+WOC00000021,Alessi 37,Alessi_37,o,True,True,True,,ASCC_124|Alessi 37|Alessi_37|MWSC_3663,False
+WOC00000022,Alessi 40,Alessi_40,o,True,True,True,,ASCC_97|Alessi 40|Alessi_40|MWSC_2963|Theia_462,False
+WOC00000023,Alessi 43,Alessi_43,o,True,True,True,,ASCC_50|Alessi 43|Alessi_43|Theia_2087|Theia_28,False
+WOC00000025,Alessi 5,Alessi_5,o,True,True,True,,Alessi 5|Alessi_5|MWSC_1844,False
+WOC00000032,Alessi 62,Alessi_62,o,True,True,True,,Alessi 62|Alessi_62|MWSC_3025|Theia_1131,False
+WOC00000033,Alessi 8,Alessi_8,o,True,True,True,,Alessi 8|Alessi_8|MWSC_2298|Theia_252|Theia_335,False
+WOC00000037,Alessi Teutsch 11,Alessi-Teutsch_11,o,True,True,True,,ASCC_112|AT_11|Alessi Teutsch 11|Alessi-Teutsch_11|Alessi_46|Alessi_J2016.5+5204|Alessi_Teutsch_11|MWSC_3295|Theia_397,False
+WOC00000040,Alessi Teutsch 5,Alessi-Teutsch_5,o,True,True,True,,ASCC_118|AT_5|Alessi Teutsch 5|Alessi-Teutsch_5|Alessi_27|Alessi_Teutsch_5|MWSC_3589,False
+WOC00000042,Alessi Teutsch 8,Alessi-Teutsch_8,o,True,True,True,,ASCC_68|AT_8|Alessi Teutsch 8|Alessi-Teutsch_8|Alessi_Teutsch_8|MWSC_1993|Theia_498,False
+WOC00000053,ASCC 101,ASCC_101,o,True,True,True,,ASCC 101|ASCC_101|Alessi_J1913.6+3619|LeDrew_6|MWSC_3070|Theia_445,False
+WOC00000056,ASCC 105,ASCC_105,o,True,True,True,,ASCC 105|ASCC_105|MWSC_3157|Theia_165|Theia_544,False
+WOC00000058,ASCC 108,ASCC_108,o,True,True,True,,ASCC 108|ASCC_108|MWSC_3201|Theia_3446,False
+WOC00000060,ASCC 11,ASCC_11,o,True,True,True,,ASCC 11|ASCC_11|MWSC_284|Teutsch_J0332.2+4450|Theia_152,False
+WOC00000063,ASCC 113,ASCC_113,o,True,True,True,,ASCC 113|ASCC_113|MWSC_3480|Theia_461,False
+WOC00000064,ASCC 114,ASCC_114,o,True,True,True,,ASCC 114|ASCC_114|MWSC_3542|Theia_296,False
+WOC00000069,ASCC 12,ASCC_12,o,True,True,True,,ASCC 12|ASCC_12|MWSC_427,False
+WOC00000077,ASCC 128,ASCC_128,o,True,True,True,,ASCC 128|ASCC_128|MWSC_3720,False
+WOC00000084,ASCC 23,ASCC_23,o,True,True,True,,ASCC 23|ASCC_23|FSR_746|Ferrero_16|MWSC_839|Theia_552,False
+WOC00000090,ASCC 29,ASCC_29,o,True,True,True,,ASCC 29|ASCC_29|MWSC_1013|Theia_2521,False
+WOC00000092,ASCC 30,ASCC_30,o,True,True,True,,ASCC 30|ASCC_30|Alessi_35|MWSC_1028,False
+WOC00000115,ASCC 58,ASCC_58,o,True,True,True,,ASCC 58|ASCC_58|MWSC_1782|Theia_453,False
+WOC00000135,ASCC 77,ASCC_77,o,True,True,True,,ASCC 77|ASCC_77|Ferrero_15|MWSC_2205|Theia_2146,False
+WOC00000138,ASCC 8,UBC_418,o,True,True,True,,ASCC 8|ASCC_8|MWSC_180|Stock_2|UBC_418,False
+WOC00000144,ASCC 85,ASCC_85,o,True,True,True,,ASCC 85|ASCC_85|MWSC_2465|Theia_156|Theia_3681|Theia_4023,False
+WOC00000145,ASCC 87,ASCC_87,o,True,True,True,,ASCC 87|ASCC_87|MWSC_2520|Theia_330,False
+WOC00000148,ASCC 90,ASCC_90,o,True,True,True,,ASCC 90|ASCC_90|Alessi_41|MWSC_2655|Theia_948,False
+WOC00000152,ASCC 95,ASCC_95,o,True,True,True,,ASCC 95|ASCC_95|MWSC_2861,False
+WOC00000154,ASCC 99,ASCC_99,o,True,True,True,,ASCC 99|ASCC_99|MWSC_2999|Theia_518,False
+WOC00000210,Berkeley 4,Berkeley_4,o,True,True,True,,Berkeley 4|Berkeley_4|MWSC_73|OCL_307|OC_0229|OC_0230,False
+WOC00000225,Berkeley 59,Berkeley_59,o,True,True,True,,Berkeley 59|Berkeley_59|Theia_670|in_al_open_clusters,False
+WOC00000277,BH 164,BH_164,o,True,True,True,,Alessi_7|BH 164|BH_164|MWSC_2255|vdBergh-Hagen_164,False
+WOC00000287,BH 221,BH_221,o,True,True,True,,BH 221|BH_221|ESO_454-6|MWSC_2563|OC_0691|vdBergh-Hagen_221,False
+WOC00000290,BH 23,BH_23,o,True,True,True,,BH 23|BH_23|Theia_80,False
+WOC00000299,BH 56,BH_56,o,True,True,True,,BH 56|BH_56|ESO_260-12|MWSC_1605|Magakian_425|vdBergh-Hagen_56,False
+WOC00000314,BH 99,BH_99,o,True,True,True,,BH 99|BH_99|vdBergh-Hagen_99,False
+WOC00000322,Blanco 1,Blanco_1,o,True,True,True,,Blanco 1|Blanco_1|ESO_409-9|MWSC_7|OCL_43|zeta_Scl|in_al_open_clusters,False
+WOC00000324,Bochum 10,Bochum_10,o,True,True,True,,Bochum 10|Bochum_10|UBC_653,False
+WOC00000327,Bochum 13,Bochum_13,o,True,True,True,,Bochum 13|Bochum_13|Theia_1642,False
+WOC00000339,Casado Alessi 1,Casado-Alessi_1,o,True,True,True,,Alessi_1|CA_1|Casado Alessi 1|Casado-Alessi_1|Casado_Alessi_1|LeDrew_1|MWSC_88|Theia_1254,False
+WOC00000352,Collinder 135,Collinder_135,o,True,True,True,,Collinder 135|Collinder_135|in_sac_beyond_ngc,False
+WOC00000353,Collinder 140,Collinder_140,o,True,True,True,,Collinder 140|Collinder_140|in_sac_beyond_ngc,False
+WOC00000359,Collinder 220,Collinder_220,o,True,True,True,,Collinder 220|Collinder_220|ESO_127-19|MWSC_1803|NGC 3247|NGC_3247|OCL_809|in_al_open_clusters,False
+WOC00000369,Collinder 272,Collinder_272,o,True,True,True,,Collinder 272|Collinder_272|ESO_132-9|MWSC_2128|OCL_904|Theia_2234,False
+WOC00000371,Collinder 277,Collinder_277,o,True,True,True,,Collinder 277|Collinder_277|ESO_97-6|MWSC_2166|OCL_909|Platais_11|Theia_4887,False
+WOC00000378,Collinder 350,Collinder_350,o,True,True,True,,Collinder 350|Collinder_350|MWSC_2700|OCL_75|Theia_919|in_al_open_clusters|in_sac_beyond_ngc,False
+WOC00000382,Collinder 394,Collinder_394,o,True,True,True,,Collinder 394|Collinder_394|ESO_592-3|MWSC_3011|OCL_42|Theia_407,False
+WOC00000384,Collinder 416,Gulliver_18,o,True,True,True,,20_Vul|Collinder 416|Collinder 417|Collinder_416|Collinder_417|FSR_168|Gulliver_18|MWSC_3277|MWSC_3278|MWSC_3282|NGC 6882|NGC 6885|NGC_6882|NGC_6885|OCL_132|OCL_133|Theia_2530,False
+WOC00000385,Collinder 419,Collinder_419,o,True,True,True,,Collinder 419|Collinder_419|Theia_286,False
+WOC00000386,Collinder 421,Collinder_421,o,True,True,True,,Collinder 421|Collinder_421|Theia_2340|UBC_142|in_al_open_clusters,False
+WOC00000388,Collinder 463,Collinder_463,o,True,True,True,,Collinder 463|Collinder_463|in_al_open_clusters|in_sac_beyond_ngc,False
+WOC00000395,Collinder 69,Collinder_69,o,True,True,True,,Collinder 69|Collinder_69|FSR_0934|FSR_934|MWSC_585|in_al_open_clusters|in_sac_beyond_ngc,False
+WOC00000399,Collinder 95,Collinder_95,o,True,True,True,,Collinder 95|Collinder_95,False
+WOC00000432,Czernik 43,Czernik_43,o,True,True,True,,Collinder 455|Collinder_455|Czernik 43|Czernik_43|MWSC_3725|Melotte 243|Melotte_243|NGC 7654|NGC_7654|OCL_260|Theia_2376|UBC_399,False
+WOC00000450,Dias 5,Dias_5,o,True,True,True,,Dias 5|Dias_5,False
+WOC00000580,ESO 521 38,ESO_521-38,o,True,True,True,,ESO 521 38|ESO_521-38|ESO_521_38|MWSC_2825,False
+WOC00000590,Feinstein 1,Feinstein_1,o,True,True,True,,Feinstein 1|Feinstein_1|UBC_266|UBC_658,False
+WOC00000591,Ferrero 1,Ferrero_1,o,True,True,True,,ASCC_96|Ferrero 1|Ferrero_1|MWSC_2893|Slotegraaf_61,False
+WOC00000593,Ferrero 11,Ferrero_11,o,True,True,True,,ASCC_22|Ferrero 11|Ferrero_11|MWSC_813|Theia_488,False
+WOC00000764,FSR 0686,FSR_0686,o,True,True,True,,FSR 0686|FSR_0686|Theia_204|UBC_55,False
+WOC00000899,Haffner 13,Haffner_13,o,True,True,True,,BH_5|ESO_429-10|Haffner 13|Haffner_13|MWSC_1305|OCL_678|Theia_106,False
+WOC00000915,Harvard 10,Harvard_10,o,True,True,True,,ESO_179-2|Harvard 10|Harvard_10|MWSC_2381|OCL_954,False
+WOC00000916,Harvard 13,Harvard_13,o,True,True,True,,ESO_227-3|Harvard 13|Harvard_13|MWSC_2523|OCL_986|Theia_4391,False
+WOC00000917,Harvard 16,Harvard_16,o,True,True,True,,BH_230|Collinder 332|Collinder_332|ESO_393-2|ESO_393-3|Harvard 16|Harvard_16|MWSC_2616|OCL_1010|OCL_1012|Theia_1728|in_sac_beyond_ngc,False
+WOC00000918,Harvard 20,Harvard_20,o,True,True,True,,Collinder 408|Collinder 409|Collinder_408|Collinder_409|FSR_144|FSR_147|GCL_115|Harvard 20|Harvard_20|MWSC_3198|MWSC_3200|Melotte 226|Melotte_226|NGC 6838|NGC_6838|OCL_116|OCL_117|Theia_4117|Theia_6074|Theia_6500|Theia_7156|Theia_7398|Theia_7437|Theia_8028|UBC_362|in_al_open_clusters|in_sac_beyond_ngc,False
+WOC00000920,Harvard 5,Harvard_5,o,True,True,True,,BH_133|Collinder 257|Collinder 258|Collinder_257|Collinder_258|ESO_131-5|HD_108353|Harvard 5|Harvard_5|MWSC_2027|MWSC_2033|OCL_880,False
+WOC00000923,Herschel 1,Herschel_1,o,True,True,True,,ADS_6366|ASCC_41|FSR_1141|Herschel 1|Herschel_1|MWSC_1335|MWSC_1337|Theia_225,False
+WOC00000943,IC 1590,IC_1590,o,True,True,True,,IC 1590|IC_1590,False
+WOC00000945,IC 1805,IC_1805,o,True,True,True,,IC 1805|IC_1805|OC_0248|in_al_open_clusters,False
+WOC00000949,IC 2391,IC_2391,o,True,True,True,,C 85|IC 2391|IC_2391|Theia_114|in_caldwell,False
+WOC00000950,IC 2395,IC_2395,o,True,True,True,,IC 2395|IC_2395|Theia_25|Theia_6786,False
+WOC00000951,IC 2488,IC_2488,o,True,True,True,,BH_69|Collinder 208|Collinder_208|ESO_166-14|IC 2488|IC_2488|MWSC_1671|Melotte 97|Melotte_97|OCL_789|Theia_2692|in_al_open_clusters,False
+WOC00000952,IC 2581,IC_2581,o,True,True,True,,IC 2581|IC_2581|in_al_open_clusters,False
+WOC00000953,IC 2602,IC_2602,o,True,True,True,,BH_103|C 102|Collinder 229|Collinder_229|ESO_93-2|IC 2602|IC_2602|MWSC_1840|Melotte 102|Melotte_102|OCL_838|in_caldwell|in_al_open_clusters,False
+WOC00000954,IC 2714,IC_2714,o,True,True,True,,BH_116|Collinder 245|Collinder_245|ESO_129-18|FSR_1582|IC 2714|IC_2714|MWSC_1929|MWSC_1930|Melotte 104|Melotte_104|OCL_855|Theia_3798,False
+WOC00000955,IC 2944,IC_2944,o,True,True,True,,BH_121|C 100|IC 2944|IC_2944|vdBergh-Hagen_121|in_caldwell,False
+WOC00000956,IC 348,IC_348,o,True,True,True,,IC 348|IC_348|Theia_17|in_al_open_clusters|in_sac_beyond_ngc,False
+WOC00000958,IC 4651,IC_4651,o,True,True,True,,BH_224|Collinder 327|Collinder_327|ESO_228-2|FSR_1738|IC 4651|IC_4651|MWSC_2590|Melotte 169|Melotte_169|OCL_987|Theia_1343|in_al_open_clusters,False
+WOC00000959,IC 4665,IC_4665,o,True,True,True,,Collinder 349|Collinder_349|IC 4665|IC_4665|MWSC_2689|Melotte 179|Melotte_179|OCL_85|Theia_76|in_al_open_clusters|in_sac_urban|in_sac_beyond_ngc,False
+WOC00000960,IC 4725,IC_4725,o,True,True,True,,Collinder 382|Collinder_382|ESO_591-6|IC 4725|IC_4725|M 25|MWSC_2940|M_25|Melotte 204|Melotte_204|OCL_38|Theia_650|in_messier,False
+WOC00000961,IC 4756,IC_4756,o,True,True,True,,Collinder 386|Collinder_386|Graff_1|IC 4756|IC_4756|LISC-III_3449|MWSC_2967|Melotte 210|Melotte_210|OCL_94|Theia_1115|in_al_open_clusters|in_sac_urban|in_sac_beyond_ngc,False
+WOC00000962,IC 4996,IC_4996,o,True,True,True,,IC 4996|IC_4996|in_al_open_clusters,False
+WOC00000963,IC 5146,IC_5146,o,True,True,True,,C 19|IC 5146|IC_5146|Theia_88|in_caldwell|in_sac_beyond_ngc,False
+WOC00000983,Kharchenko 1,Kharchenko_1,o,True,True,True,,Collinder 82|Collinder_82|Kharchenko 1|Kharchenko_1|MWSC_747|MWSC_754|Melotte 41|Melotte_41|NGC 2168|NGC_2168|OCL_466,False
+WOC00001003,King 6,King_6,o,True,True,True,,King 6|King_6|Theia_864|in_sac_beyond_ngc,False
+WOC00001052,Loden 1225,Loden_1194,o,True,True,True,,ESO_133-12|Loden 1225|Loden_1194|Loden_1225|MWSC_2200|MWSC_2204|OCL_915.3|OCL_915.5|Theia_129|Theia_447,False
+WOC00001086,Lynga 2,Lynga_2,o,True,True,True,,Lynga 2|Lynga_2|Theia_365,False
+WOC00001138,Markarian 38,Markarian_38,o,True,True,True,,Markarian 38|Markarian_38,False
+WOC00001144,Melotte 101,Melotte_101,o,True,True,True,,BH_101|Collinder 227|Collinder_227|ESO_93-1|FSR_1564|MWSC_1840|Melotte 101|Melotte_101|OCL_841|OC_0555|Theia_3281|Theia_4350,False
+WOC00001145,Melotte 105,Melotte_105,o,True,True,True,,BH_117|Collinder 246|Collinder_246|ESO_93-7|FSR_1587|MWSC_1933|Melotte 105|Melotte_105|OCL_856|OC_0564,False
+WOC00001146,Melotte 111,Melotte_111,o,True,True,True,,Collinder 256|Collinder_256|Coma_Berenices|MWSC_2020|Melotte 111|Melotte_111|OCL_558|in_sac_urban|in_sac_beyond_ngc,False
+WOC00001147,Melotte 20,Melotte_20,o,True,True,True,,Melotte 20|Melotte_20|in_sac_urban|in_sac_beyond_ngc,False
+WOC00001148,Melotte 22,Melotte_22,o,True,True,True,,Collinder 42|Collinder_42|Escorial_1|M 45|M45|MWSC_305|Melotte 22|Melotte_22|OCL_421|Pleiades|Theia_369|in_messier|in_sac_urban,False
+WOC00001149,Melotte 25,Melotte_25,o,True,True,True,,C 41|Collinder 50|Collinder_50|Hyades|MWSC_379|Melotte 25|Melotte_25|OCL_456|Taurus_Moving_Cluster|in_caldwell|in_sac_beyond_ngc,False
+WOC00001160,NGC 1027,NGC_1027,o,True,True,True,,NGC 1027|NGC_1027|Theia_2345|in_herschel400|in_al_open_clusters,False
+WOC00001162,NGC 1039,NGC_1039,o,True,True,True,,Collinder 31|Collinder_31|M 34|MWSC_223|Melotte 17|Melotte_17|NGC 1039|NGC_1039|OCL_382|Theia_251|in_messier|in_sac_urban,False
+WOC00001167,NGC 129,NGC_129,o,True,True,True,,NGC 129|NGC_129|Theia_2238|in_herschel400|in_sac_urban,False
+WOC00001169,NGC 1342,NGC_1342,o,True,True,True,,Collinder 40|Collinder_40|FSR_679|MWSC_283|Melotte 21|Melotte_21|NGC 1342|NGC_1342|OCL_401|Theia_853|in_herschel400|in_al_open_clusters|in_sac_urban,False
+WOC00001175,NGC 1502,NGC_1502,o,True,True,True,,NGC 1502|NGC_1502|Theia_1701|in_herschel400|in_al_open_clusters,False
+WOC00001178,NGC 1528,NGC_1528,o,True,True,True,,Collinder 47|Collinder_47|MWSC_353|Melotte 23|Melotte_23|NGC 1528|NGC_1528|OCL_397|Theia_5062|Theia_5528|Theia_593|Theia_7064|in_herschel400|in_sac_urban,False
+WOC00001179,NGC 1545,NGC_1545,o,True,True,True,,Collinder 49|Collinder_49|MWSC_369|NGC 1545|NGC_1545|OCL_399|Theia_749|in_herschel400,False
+WOC00001182,NGC 1647,NGC_1647,o,True,True,True,,Collinder 54|Collinder_54|MWSC_416|Melotte 26|Melotte_26|NGC 1647|NGC_1647|OCL_457|Theia_740|in_herschel400,False
+WOC00001183,NGC 1662,NGC_1662,o,True,True,True,,Collinder 55|Collinder_55|MWSC_425|NGC 1662|NGC_1662|OCL_470|Theia_1018|in_herschel2|in_al_open_clusters,False
+WOC00001184,NGC 1664,NGC_1664,o,True,True,True,,Collinder 56|Collinder_56|MWSC_430|Melotte 27|Melotte_27|NGC 1664|NGC_1664|OCL_411|in_herschel400,False
+WOC00001187,NGC 1758,NGC_1758,o,True,True,True,,Collinder 57|Collinder_57|FSR_822|MWSC_461|MWSC_463|Melotte 28|Melotte_28|NGC 1746|NGC 1758|NGC_1746|NGC_1758|OCL_452|OCL_453|Theia_897,False
+WOC00001188,NGC 1778,NGC_1778,o,True,True,True,,Collinder 58|Collinder_58|MWSC_472|NGC 1778|NGC_1778|OCL_429|Theia_2031|in_herschel2,False
+WOC00001191,NGC 1817,NGC_1817,o,True,True,True,,Collinder 60|Collinder_60|MWSC_484|NGC 1817|NGC_1817|OCL_463|Theia_4898|in_herschel400,False
+WOC00001193,NGC 188,NGC_188,o,True,True,True,,C 1|Collinder 6|Collinder_6|MWSC_74|Melotte 2|Melotte_2|NGC 188|NGC_188|OCL_309|in_caldwell|in_al_open_clusters,False
+WOC00001196,NGC 1893,NGC_1893,o,True,True,True,,NGC 1893|NGC_1893|OC_0293|in_al_open_clusters,False
+WOC00001197,NGC 1901,NGC_1901,o,True,True,True,,AFF_5|Bok_1|MWSC_500|NGC 1901|NGC_1901|OCL_791.1|in_al_open_clusters,False
+WOC00001198,NGC 1907,NGC_1907,o,True,True,True,,Collinder 66|Collinder_66|FSR_774|MWSC_552|Melotte 35|Melotte_35|NGC 1907|NGC_1907|OCL_434|Theia_3773|in_herschel400|in_sac_best_ngc|in_sac_urban|in_best_ngc,False
+WOC00001199,NGC 1912,NGC_1912,o,True,True,True,,Collinder 67|Collinder_67|M 38|MWSC_557|Melotte 36|Melotte_36|NGC 1912|NGC_1912|OCL_433|Theia_2549|in_messier|in_al_open_clusters|in_sac_urban,False
+WOC00001200,NGC 1931,NGC_1931,o,True,True,True,,NGC 1931|NGC_1931|in_herschel400|in_rasc_finest_ngc|in_sac_best_ngc|in_best_ngc,False
+WOC00001201,NGC 1960,NGC_1960,o,True,True,True,,M 36|NGC 1960|NGC_1960|Theia_2010|in_messier|in_sac_urban,False
+WOC00001202,NGC 1980,NGC_1980,o,True,True,True,,NGC 1980|NGC_1980|UBC_208|in_herschel400|in_al_open_clusters,False
+WOC00001206,NGC 2099,NGC_2099,o,True,True,True,,Collinder 75|Collinder_75|FSR_818|M 37|MWSC_689|Melotte 38|Melotte_38|NGC 2099|NGC_2099|OCL_451|Theia_3542|Theia_874|in_messier|in_sac_urban,False
+WOC00001209,NGC 2129,NGC_2129,o,True,True,True,,NGC 2129|NGC_2129|in_herschel400,False
+WOC00001212,NGC 2158,NGC_2158,o,True,True,True,,Collinder 81|Collinder_81|FSR_872|MWSC_733|Melotte 40|Melotte_40|NGC 2158|NGC_2158|OCL_468|in_herschel400|in_sac_best_ngc|in_al_open_clusters|in_best_ngc,False
+WOC00001214,NGC 2168,NGC_2168,o,True,True,True,,Collinder 82|Collinder_82|M 35|MWSC_754|Melotte 41|Melotte_41|NGC 2168|NGC_2168|OCL_466|Theia_203|in_messier|in_sac_urban,False
+WOC00001215,NGC 2169,NGC_2169,o,True,True,True,,NGC 2169|NGC_2169|OC_0323|in_herschel400|in_al_open_clusters|in_sac_urban,False
+WOC00001219,NGC 2194,NGC_2194,o,True,True,True,,Collinder 87|Collinder_87|FSR_961|MWSC_803|Melotte 43|Melotte_43|NGC 2194|NGC_2194|OCL_485|in_herschel400|in_rasc_finest_ngc|in_sac_best_ngc|in_best_ngc,False
+WOC00001221,NGC 2215,NGC_2215,o,True,True,True,,Collinder 90|Collinder_90|MWSC_843|Melotte 45|Melotte_45|NGC 2215|NGC_2215|OCL_550|Theia_1087|in_herschel400|in_al_open_clusters|in_sac_urban,False
+WOC00001226,NGC 2232,NGC_2232,o,True,True,True,,Collinder 93|Collinder_93|Escorial_8|MWSC_871|NGC 2232|NGC_2232|OCL_545|in_herschel400|in_al_open_clusters,False
+WOC00001229,NGC 2239,,,True,False,True,,C 49|NGC 2239|in_caldwell,False
+WOC00001231,NGC 2244,NGC_2244,o,True,True,True,,C 50|NGC 2244|NGC_2244|in_caldwell|in_herschel400|in_sac_best_ngc|in_al_open_clusters|in_sac_urban|in_best_ngc,False
+WOC00001234,NGC 2251,NGC_2251,o,True,True,True,,Collinder 101|Collinder_101|MWSC_916|NGC 2251|NGC_2251|OCL_499|Theia_2992|in_herschel400|in_sac_urban,False
+WOC00001235,NGC 2252,,,True,False,True,,NGC 2252|in_herschel2|in_sac_urban,False
+WOC00001240,NGC 2264,NGC_2264,o,True,True,True,,NGC 2264|NGC_2264|Theia_41|in_herschel400,False
+WOC00001244,NGC 2281,NGC_2281,o,True,True,True,,Collinder 116|Collinder_116|MWSC_989|Melotte 51|Melotte_51|NGC 2281|NGC_2281|OCL_446|Theia_635|in_herschel400,False
+WOC00001246,NGC 2287,NGC_2287,o,True,True,True,,Collinder 118|Collinder_118|ESO_557-14|M 41|MWSC_978|Melotte 52|Melotte_52|NGC 2287|NGC_2287|OCL_597|Theia_476|in_messier|in_sac_urban,False
+WOC00001247,NGC 2301,NGC_2301,o,True,True,True,,Collinder 119|Collinder_119|MWSC_1000|Melotte 54|Melotte_54|NGC 2301|NGC_2301|OCL_540|in_herschel400,False
+WOC00001248,NGC 2302,NGC_2302,o,True,True,True,,MWSC_1001|NGC 2302|NGC_2302|OCL_554|in_herschel2,False
+WOC00001253,NGC 2318,NGC_2318,o,True,True,True,,MWSC_1050|NGC 2318|NGC_2318|Theia_3278,False
+WOC00001254,NGC 2323,NGC_2323,o,True,True,True,,M 50|NGC 2323|NGC_2323|in_messier|in_al_open_clusters,False
+WOC00001255,NGC 2324,NGC_2324,o,True,True,True,,Collinder 125|Collinder_125|FSR_1089|MWSC_1084|Melotte 59|Melotte_59|NGC 2324|NGC_2324|OCL_542|OC_0355|Theia_3592|in_herschel400|in_sac_urban,False
+WOC00001257,NGC 2335,NGC_2335,o,True,True,True,,NGC 2335|NGC_2335|Theia_1977|in_herschel400|in_al_open_clusters,False
+WOC00001259,NGC 2343,NGC_2343,o,True,True,True,,NGC 2343|NGC_2343|Theia_2557|in_herschel400,False
+WOC00001260,NGC 2345,NGC_2345,o,True,True,True,,NGC 2345|NGC_2345|Theia_2051,False
+WOC00001264,NGC 2353,NGC_2353,o,True,True,True,,NGC 2353|NGC_2353|Theia_2363|in_herschel400|in_al_open_clusters,False
+WOC00001265,NGC 2354,NGC_2354,o,True,True,True,,Collinder 131|Collinder_131|ESO_492-6|FSR_1291|MWSC_1148|NGC 2354|NGC_2354|OCL_639|Theia_5939|in_herschel400,False
+WOC00001267,NGC 2360,NGC_2360,o,True,True,True,,C 58|Collinder 134|Collinder_134|FSR_1225|MWSC_1165|Melotte 64|Melotte_64|NGC 2360|NGC_2360|OCL_589|OC_0391|Theia_1473|in_caldwell|in_herschel400|in_al_open_clusters,False
+WOC00001268,NGC 2362,NGC_2362,o,True,True,True,,C 64|NGC 2362|NGC_2362|Theia_2054|in_caldwell|in_herschel400|in_sac_urban,False
+WOC00001271,NGC 2374,NGC_2374,o,True,True,True,,Collinder 139|Collinder_139|MWSC_1206|NGC 2374|NGC_2374|OCL_585|Theia_3491|in_herschel2,False
+WOC00001276,NGC 2396,NGC_2396,o,True,True,True,,Collinder 148|Collinder_148|MWSC_1232|NGC 2396|NGC_2396|OCL_579|Theia_2447|in_herschel2,False
+WOC00001281,NGC 2421,NGC_2421,o,True,True,True,,Collinder 151|Collinder_151|ESO_56-2|FSR_1274|MWSC_1277|Melotte 67|Melotte_67|NGC 2421|NGC_2421|OCL_626|OC_0405|Theia_2102|Theia_2547|in_herschel400,False
+WOC00001282,NGC 2422,NGC_2422,o,True,True,True,,Collinder 152|Collinder_152|Escorial_21|M 47|MWSC_1278|Melotte 68|Melotte_68|NGC 2422|NGC_2422|OCL_596|Theia_320|in_messier|in_herschel400|in_al_open_clusters,False
+WOC00001283,NGC 2423,NGC_2423,o,True,True,True,,Collinder 153|Collinder_153|MWSC_1283|Melotte 70|Melotte_70|NGC 2423|NGC_2423|OCL_592|Theia_1176|in_herschel400,False
+WOC00001286,NGC 2437,NGC_2437,o,True,True,True,,Collinder 159|Collinder_159|FSR_1241|M 46|MWSC_1313|Melotte 75|Melotte_75|NGC 2437|NGC_2437|OCL_601|Theia_3371|in_messier,False
+WOC00001287,NGC 2439,NGC_2439,o,True,True,True,,NGC 2439|NGC_2439|OC_0430|in_al_open_clusters,False
+WOC00001288,NGC 2447,NGC_2447,o,True,True,True,,Collinder 160|Collinder_160|FSR_1301|M 93|MWSC_1324|Melotte 76|Melotte_76|NGC 2447|NGC_2447|OCL_649|Theia_277|in_messier,False
+WOC00001289,NGC 2451A,NGC_2451A,o,True,True,True,,BH_9|Collinder 161|Collinder_161|ESO_311-8|Escorial_24|HIP_37742_Group|MWSC_1308|MWSC_1322|NGC 2451|NGC 2451A|NGC_2451|NGC_2451A|NGC_2451B|OCL_716|Platais_7,False
+WOC00001290,NGC 2451B,NGC_2451B,o,True,True,True,,BH_9|Collinder 161|Collinder_161|ESO_311-8|Escorial_24|HIP_37742_Group|MWSC_1308|MWSC_1322|NGC 2451|NGC 2451B|NGC_2451|NGC_2451A|NGC_2451B|OCL_716|Platais_7,False
+WOC00001294,NGC 2477,NGC_2477,o,True,True,True,,BH_13|C 71|Collinder 165|Collinder_165|ESO_311-17|FSR_1369|MWSC_1363|Melotte 78|Melotte_78|NGC 2477|NGC_2477|OCL_720|Theia_5145|in_caldwell|in_herschel400_south,False
+WOC00001295,NGC 2479,NGC_2479,o,True,True,True,,Collinder 167|Collinder_167|ESO_561-1|FSR_1271|MWSC_1380|NGC 2479|NGC_2479|OCL_623|Theia_5185|Trumpler_8|UBC_226|in_herschel400,False
+WOC00001296,NGC 2482,NGC_2482,o,True,True,True,,Collinder 166|Collinder_166|ESO_494-3|MWSC_1382|NGC 2482|NGC_2482|OCL_653|Theia_2811|in_herschel400,False
+WOC00001298,NGC 2489,NGC_2489,o,True,True,True,,BH_15|Collinder 169|Collinder_169|ESO_430-3|FSR_1330|MWSC_1386|Melotte 79|Melotte_79|NGC 2489|NGC_2489|OCL_690|in_herschel400,False
+WOC00001299,NGC 2506,NGC_2506,o,True,True,True,,C 54|Collinder 170|Collinder_170|FSR_1230|MWSC_1406|Melotte 80|Melotte_80|NGC 2506|NGC_2506|OCL_593|Theia_6245|in_caldwell|in_herschel400|in_al_open_clusters,False
+WOC00001301,NGC 2516,NGC_2516,o,True,True,True,,C 96|Collinder 172|Collinder_172|ESO_124-6|FSR_1487|MWSC_1393|Melotte 82|Melotte_82|NGC 2516|NGC_2516|OCL_776|Theia_613|in_caldwell,False
+WOC00001302,NGC 2527,NGC_2527,o,True,True,True,,Collinder 174|Collinder_174|ESO_430-15|MWSC_1428|NGC 2527|NGC_2527|OCL_685|Theia_1047|in_herschel400,False
+WOC00001304,NGC 2539,NGC_2539,o,True,True,True,,Collinder 176|Collinder_176|MWSC_1439|Melotte 83|Melotte_83|NGC 2539|NGC_2539|OCL_611|Theia_3938|in_herschel400|in_rasc_finest_ngc|in_sac_best_ngc|in_best_ngc,False
+WOC00001305,NGC 2546,NGC_2546,o,True,True,True,,BH_22|Collinder 178|Collinder_178|ESO_369-7|MWSC_1447|NGC 2546|NGC_2546|OCL_726|Theia_2948|Theia_298|Theia_472|Theia_4930|in_herschel400_south,False
+WOC00001306,NGC 2547,NGC_2547,o,True,True,True,,NGC 2547|NGC_2547,False
+WOC00001307,NGC 2548,NGC_2548,o,True,True,True,,Collinder 179|Collinder_179|FSR_1217|M 48|MWSC_1454|Melotte 85|Melotte_85|NGC 2548|NGC_2548|OCL_584|Theia_870|in_messier|in_herschel400|in_al_open_clusters,False
+WOC00001308,NGC 2567,NGC_2567,o,True,True,True,,BH_26|Collinder 180|Collinder_180|ESO_431-3|FSR_1354|MWSC_1467|Melotte 86|Melotte_86|NGC 2567|NGC_2567|OCL_708|Theia_3423|Theia_4190|in_herschel400|in_al_open_clusters,False
+WOC00001309,NGC 2571,NGC_2571,o,True,True,True,,BH_27|Collinder 181|Collinder_181|ESO_431-5|MWSC_1469|NGC 2571|NGC_2571|OCL_701|in_herschel400,False
+WOC00001315,NGC 2627,NGC_2627,o,True,True,True,,BH_38|Collinder 188|Collinder_188|ESO_431-20|FSR_1362|MWSC_1514|Melotte 87|Melotte_87|NGC 2627|NGC_2627|OCL_714|Theia_6581|in_herschel400,False
+WOC00001316,NGC 2632,NGC_2632,o,True,True,True,,Collinder 189|Collinder_189|M 44|MWSC_1527|M_44|Melotte 88|Melotte_88|NGC 2632|NGC_2632|OCL_507|Praesepe|in_messier|in_al_open_clusters|in_sac_urban,False
+WOC00001323,NGC 2669,NGC_2669,o,True,True,True,,BH_52|Collinder 199|Collinder 202|Collinder_199|Collinder_202|ESO_165-5|Harvard_3|MWSC_1561|MWSC_1562|NGC 2669|NGC_2669|OCL_768|Theia_2767,False
+WOC00001324,NGC 2670,NGC_2670,o,True,True,True,,BH_50|Collinder 200|Collinder_200|ESO_210-5|MWSC_1554|Melotte 93|Melotte_93|NGC 2670|NGC_2670|OCL_764|Theia_2717|in_herschel400_south,False
+WOC00001327,NGC 2682,NGC_2682,o,True,True,True,,Collinder 204|Collinder_204|M 67|MWSC_1585|Melotte 94|Melotte_94|NGC 2682|NGC_2682|OCL_549|in_messier|in_al_open_clusters,False
+WOC00001331,NGC 2910,NGC_2910,o,True,True,True,,BH_71|Collinder 209|Collinder_209|ESO_166-17|FSR_1493|MWSC_1679|NGC 2910|NGC_2910|OCL_781|Theia_2765|in_herschel400_south,False
+WOC00001332,NGC 2925,NGC_2925,o,True,True,True,,NGC 2925|NGC_2925|in_herschel400_south,False
+WOC00001337,NGC 3114,NGC_3114,o,True,True,True,,BH_86|Collinder 215|Collinder_215|ESO_127-2|MWSC_1749|Melotte 98|Melotte_98|NGC 3114|NGC_3114|OCL_802|Theia_293|Theia_295|in_al_open_clusters,False
+WOC00001338,NGC 3228,NGC_3228,o,True,True,True,,BH_93|Collinder 218|Collinder_218|ESO_214-1|MWSC_1794|NGC 3228|NGC_3228|OCL_800|Theia_102|in_al_open_clusters|in_herschel400_south,False
+WOC00001341,NGC 3293,NGC_3293,o,True,True,True,,NGC 3293|NGC_3293,False
+WOC00001343,NGC 3330,NGC_3330,o,True,True,True,,BH_100|Collinder 226|Collinder_226|ESO_168-11|Harvard_4|MWSC_1835|NGC 3330|NGC_3330|OCL_806,False
+WOC00001346,NGC 3532,NGC_3532,o,True,True,True,,BH_109|C 91|Collinder 238|Collinder_238|ESO_128-31|MWSC_1890|Melotte 103|Melotte_103|NGC 3532|NGC_3532|OCL_839|Theia_720|in_caldwell|in_al_open_clusters,False
+WOC00001349,NGC 3590,NGC_3590,o,True,True,True,,DBSB_61|ESO_129-11|Hogg_12|MWSC_1918|MWSC_1919|NGC 3590|NGC_3590|OCL_851,False
+WOC00001352,NGC 3680,NGC_3680,o,True,True,True,,Collinder 247|Collinder_247|ESO_265-32|FSR_1548|MWSC_1942|Melotte 106|Melotte_106|NGC 3680|NGC_3680|OCL_823|Theia_6552,False
+WOC00001353,NGC 3766,NGC_3766,o,True,True,True,,C 97|NGC 3766|NGC_3766|Theia_1849|Theia_1935|Theia_2813|in_caldwell,False
+WOC00001354,NGC 381,NGC_381,o,True,True,True,,NGC 381|NGC_381|in_herschel400,False
+WOC00001357,NGC 4052,NGC_4052,o,True,True,True,,BH_126|Collinder 251|Collinder_251|ESO_94-10|MWSC_1991|NGC 4052|NGC_4052|OCL_870|in_al_open_clusters|in_herschel400_south,False
+WOC00001358,NGC 4103,NGC_4103,o,True,True,True,,BH_127|Collinder 252|Collinder_252|ESO_130-5|MWSC_1997|Melotte 109|Melotte_109|NGC 4103|NGC_4103|OCL_871|Theia_2558|in_al_open_clusters|in_herschel400_south,False
+WOC00001362,NGC 4349,NGC_4349,o,True,True,True,,BH_130|Collinder 255|Collinder_255|ESO_131-3|FSR_1614|Loden_624|MWSC_2024|Melotte 110|Melotte_110|NGC 4349|NGC_4349|OCL_882|Theia_2499|Theia_3079|Theia_3101|in_herschel400_south,False
+WOC00001365,NGC 4463,NGC_4463,o,True,True,True,,BH_135|Collinder 260|Collinder_260|ESO_95-10|MWSC_2042|NGC 4463|NGC_4463|OCL_885|Theia_1930|Theia_2125|Theia_2351|Theia_4223|in_al_open_clusters|in_herschel400_south,False
+WOC00001366,NGC 457,NGC_457,o,True,True,True,,C 13|NGC 457|NGC_457|in_caldwell|in_herschel400|in_rasc_finest_ngc|in_sac_best_ngc|in_sac_urban|in_best_ngc,False
+WOC00001367,NGC 4609,NGC_4609,o,True,True,True,,C 98|NGC 4609|NGC_4609|Theia_2070|in_caldwell|in_al_open_clusters,False
+WOC00001368,NGC 4755,NGC_4755,o,True,True,True,,BH_141|C 94|Collinder 264|Collinder_264|ESO_131-16|FSR_1633|MWSC_2072|Melotte 114|Melotte_114|NGC 4755|NGC_4755|OCL_892|Theia_1748|Theia_2900|kappa_Crucis|in_caldwell,False
+WOC00001370,NGC 4852,NGC_4852,o,True,True,True,,BH_143|Collinder 266|Collinder_266|ESO_131-17|MWSC_2078|Melotte 116|Melotte_116|NGC 4852|NGC_4852|OCL_894|Theia_2553|in_herschel400_south,False
+WOC00001373,NGC 5138,NGC_5138,o,True,True,True,,Collinder 270|Collinder_270|ESO_132-7|MWSC_2121|NGC 5138|NGC_5138|OCL_902,False
+WOC00001376,NGC 5281,NGC_5281,o,True,True,True,,BH_152|Collinder 276|Collinder_276|ESO_97-5|MWSC_2161|Melotte 120|Melotte_120|NGC 5281|NGC_5281|OCL_911|Theia_1873|Theia_1948|in_al_open_clusters,False
+WOC00001378,NGC 5316,NGC_5316,o,True,True,True,,BH_154|Collinder 279|Collinder_279|ESO_133-6|MWSC_2175|Melotte 122|Melotte_122|NGC 5316|NGC_5316|OCL_913|OC_0603|Theia_2235,False
+WOC00001380,NGC 5460,NGC_5460,o,True,True,True,,Collinder 280|Collinder_280|ESO_221-24|MWSC_2202|Melotte 123|Melotte_123|NGC 5460|NGC_5460|OCL_925|Theia_266|in_al_open_clusters|in_herschel400_south,False
+WOC00001381,NGC 559,NGC_559,o,True,True,True,,C 8|NGC 559|NGC_559|in_caldwell|in_herschel400,False
+WOC00001382,NGC 5593,NGC_5593,o,True,True,True,,ESO_175-8|MWSC_2217|NGC 5593|NGC_5593|OCL_926|Theia_422,False
+WOC00001383,NGC 5606,NGC_5606,o,True,True,True,,NGC 5606|NGC_5606|OC_0612,False
+WOC00001384,NGC 5617,NGC_5617,o,True,True,True,,BH_159|Collinder 282|Collinder_282|ESO_134-4|MWSC_2223|Melotte 125|Melotte_125|NGC 5617|NGC_5617|OCL_919|OC_0609|in_herschel400_south,False
+WOC00001385,NGC 5662,NGC_5662,o,True,True,True,,BH_162|Collinder 284|Collinder_284|ESO_175-10|MWSC_2234|Melotte 127|Melotte_127|NGC 5662|NGC_5662|OCL_928|Theia_353|Theia_60|in_herschel400_south,False
+WOC00001387,NGC 5749,NGC_5749,o,True,True,True,,BH_165|Collinder 287|Collinder_287|ESO_176-4|MWSC_2256|NGC 5749|NGC_5749|OCL_930|Theia_1986|in_al_open_clusters,False
+WOC00001390,NGC 581,NGC_581,o,True,True,True,,M 103|NGC 581|NGC_581|Theia_2079|in_messier|in_al_open_clusters|in_sac_urban,False
+WOC00001391,NGC 5822,NGC_5822,o,True,True,True,,BH_168|Collinder 289|Collinder_289|ESO_176-9|Loden_2104|MWSC_2269|Melotte 130|Melotte_130|NGC 5822|NGC_5822|OCL_937|Theia_1174|Theia_7059|in_al_open_clusters,False
+WOC00001392,NGC 5823,NGC_5823,o,True,True,True,,BH_169|C 88|Collinder 290|Collinder_290|ESO_176-11|MWSC_2273|Melotte 131|Melotte_131|NGC 5823|NGC_5823|OCL_936|Theia_2779|in_caldwell|in_herschel400_south,False
+WOC00001393,NGC 5925,NGC_5925,o,True,True,True,,BH_172|Collinder 291|Collinder_291|ESO_177-6|MWSC_2293|NGC 5925|NGC_5925|OCL_938|Theia_2978|in_herschel400_south,False
+WOC00001397,NGC 6025,NGC_6025,o,True,True,True,,BH_181|C 95|Collinder 296|Collinder_296|ESO_136-14|MWSC_2347|Melotte 139|Melotte_139|NGC 6025|NGC_6025|OCL_939|in_caldwell|in_al_open_clusters,False
+WOC00001399,NGC 6067,NGC_6067,o,True,True,True,,NGC 6067|NGC_6067|Theia_2390|Theia_2993,False
+WOC00001400,NGC 6087,NGC_6087,o,True,True,True,,BH_188|C 89|Collinder 300|Collinder_300|ESO_137-15|MWSC_2382|Melotte 141|Melotte_141|NGC 6087|NGC_6087|OCL_948|Theia_299|in_caldwell,False
+WOC00001402,NGC 6124,NGC_6124,o,True,True,True,,C 75|Collinder 301|Collinder_301|ESO_331-3|MWSC_2403|Melotte 145|Melotte_145|NGC 6124|NGC_6124|OCL_990|Theia_848|in_caldwell|in_al_open_clusters|in_herschel400_south,False
+WOC00001403,NGC 6134,NGC_6134,o,True,True,True,,BH_191|Collinder 303|Collinder_303|ESO_226-9|MWSC_2412|Melotte 146|Melotte_146|NGC 6134|NGC_6134|OCL_968|Theia_4874|in_herschel400_south,False
+WOC00001404,NGC 6152,NGC_6152,o,True,True,True,,Collinder 304|Collinder_304|ESO_179-9|MWSC_2423|NGC 6152|NGC_6152|OCL_961|Theia_2642|in_herschel400_south,False
+WOC00001405,NGC 6167,NGC_6167,o,True,True,True,,BH_192|Collinder 305|Collinder_305|ESO_226-16|Harvard_11|MWSC_2425|NGC 6167|NGC_6167|OCL_971|OC_0661|Theia_2387|in_herschel400_south,False
+WOC00001407,NGC 6178,NGC_6178,o,True,True,True,,Collinder 308|Collinder_308|ESO_276-6|MWSC_2428|NGC 6178|NGC_6178|OCL_980|in_al_open_clusters,False
+WOC00001408,NGC 6192,NGC_6192,o,True,True,True,,BH_194|Collinder 309|Collinder_309|ESO_277-3|MWSC_2440|Melotte 149|Melotte_149|NGC 6192|NGC_6192|OCL_988|Theia_3268|in_herschel400_south,False
+WOC00001409,NGC 6193,NGC_6193,o,True,True,True,,C 82|NGC 6193|NGC_6193|Theia_1643|in_caldwell|in_herschel400_south,False
+WOC00001410,NGC 6200,NGC_6200,o,True,True,True,,BH_196|Collinder 311|Collinder_311|ESO_277-8|MWSC_2450|NGC 6200|NGC_6200|OCL_978|UBC_318,False
+WOC00001411,NGC 6204,NGC_6204,o,True,True,True,,NGC 6204|NGC_6204|Theia_2147,False
+WOC00001412,NGC 6208,NGC_6208,o,True,True,True,,BH_198|Collinder 313|Collinder_313|ESO_179-14|FSR_1724|MWSC_2470|NGC 6208|NGC_6208|OCL_964|Theia_5118|in_herschel400_south,False
+WOC00001414,NGC 6231,NGC_6231,o,True,True,True,,C 76|NGC 6231|NGC_6231|in_caldwell,False
+WOC00001415,NGC 6242,NGC_6242,o,True,True,True,,BH_204|Collinder 317|Collinder_317|ESO_332-10|MWSC_2488|Melotte 155|Melotte_155|NGC 6242|NGC_6242|OCL_1001|in_herschel400_south,False
+WOC00001417,NGC 6250,NGC_6250,o,True,True,True,,BH_206|Collinder 320|Collinder_320|ESO_277-20|MWSC_2500|NGC 6250|NGC_6250|OCL_991|Theia_132|Theia_354,False
+WOC00001419,NGC 6259,NGC_6259,o,True,True,True,,BH_209|Collinder 322|Collinder_322|ESO_277-22|MWSC_2511|Melotte 158|Melotte_158|NGC 6259|NGC_6259|OCL_996|OC_0672|Theia_3505,False
+WOC00001420,NGC 6268,NGC_6268,o,True,True,True,,BH_212|Collinder 323|Collinder_323|ESO_332-17|MWSC_2516|NGC 6268|NGC_6268|OCL_1002,False
+WOC00001421,NGC 6281,NGC_6281,o,True,True,True,,BH_213|Collinder 324|Collinder_324|ESO_332-19|MWSC_2530|Melotte 161|Melotte_161|NGC 6281|NGC_6281|OCL_1003|in_al_open_clusters,False
+WOC00001427,NGC 6383,NGC_6383,o,True,True,True,,NGC 6383|NGC_6383|in_al_open_clusters,False
+WOC00001429,NGC 6400,NGC_6400,o,True,True,True,,BH_241|Collinder 342|Collinder_342|ESO_393-14|MWSC_2660|Melotte 177|Melotte_177|NGC 6400|NGC_6400|OCL_1014|Theia_1860|in_al_open_clusters,False
+WOC00001431,NGC 6405,NGC_6405,o,True,True,True,,M 6|NGC 6405|NGC_6405|Theia_122|in_messier|in_sac_urban,False
+WOC00001432,NGC 6416,NGC_6416,o,True,True,True,,Collinder 344|Collinder_344|ESO_455-32|MWSC_2673|NGC 6416|NGC_6416|OCL_1031|Theia_3310|UBC_331|in_al_open_clusters|in_herschel400_south,False
+WOC00001433,NGC 6425,NGC_6425,o,True,True,True,,BH_246|Collinder 384|Collinder_384|ESO_455-38|MWSC_2691|NGC 6425|NGC_6425|OCL_1033|Theia_892|UBC_333,False
+WOC00001434,NGC 6444,NGC_6444,o,True,True,True,,ESO_393-3|MWSC_2709|NGC 6444|NGC_6444|OCL_1023|Ruprecht_132|Theia_4790|UBC_329,False
+WOC00001435,NGC 6451,NGC_6451,o,True,True,True,,BH_250|Collinder 352|Collinder_352|ESO_455-50|MWSC_2718|Melotte 181|Melotte_181|NGC 6451|NGC_6451|OCL_1035|Theia_2680|UBC_570|in_herschel400,False
+WOC00001437,NGC 6475,NGC_6475,o,True,True,True,,BH_254|Collinder 354|Collinder_354|ESO_394-9|M 7|MWSC_2739|Melotte 183|Melotte_183|NGC 6475|NGC_6475|OCL_1028|Theia_692|in_messier|in_al_open_clusters|in_sac_urban,False
+WOC00001438,NGC 6494,NGC_6494,o,True,True,True,,Collinder 356|Collinder_356|ESO_589-22|M 23|MWSC_2757|Melotte 184|Melotte_184|NGC 6494|NGC_6494|OCL_30|Theia_653|in_messier,False
+WOC00001440,NGC 6514,,,True,False,True,,M 20|NGC 6514|in_messier|in_herschel400|in_al_open_clusters,False
+WOC00001441,NGC 6520,NGC_6520,o,True,True,True,,BH_255|Collinder 361|Collinder_361|ESO_456-42|MWSC_2790|Melotte 187|Melotte_187|NGC 6520|NGC_6520|OCL_10|in_herschel400|in_rasc_finest_ngc|in_sac_best_ngc|in_al_open_clusters|in_best_ngc,False
+WOC00001443,NGC 6530,NGC_6530,o,True,True,True,,NGC 6530|NGC_6530|OC_0006|in_al_open_clusters|in_herschel400_south,False
+WOC00001444,NGC 6531,NGC_6531,o,True,True,True,,Collinder 363|Collinder_363|ESO_521-19|M 21|MWSC_2796|Melotte 188|Melotte_188|NGC 6531|NGC_6531|OCL_26|in_messier,False
+WOC00001445,NGC 654,NGC_654,o,True,True,True,,NGC 654|NGC_654|in_herschel400|in_sac_urban,False
+WOC00001447,NGC 6568,NGC_6568,o,True,True,True,,Collinder 369|Collinder_369|ESO_590-6|MWSC_2841|NGC 6568|NGC_6568|OCL_28|Theia_674|in_herschel400|in_al_open_clusters,False
+WOC00001452,NGC 659,NGC_659,o,True,True,True,,NGC 659|NGC_659|in_herschel400,False
+WOC00001457,NGC 6611,NGC_6611,o,True,True,True,,M 16|NGC 6611|NGC_6611|in_messier,False
+WOC00001458,NGC 6613,NGC_6613,o,True,True,True,,Collinder 376|Collinder_376|M 18|MWSC_2892|NGC 6613|NGC_6613|OCL_40|Theia_1931|in_messier|in_al_open_clusters,False
+WOC00001459,NGC 6618,NGC_6618,m,True,True,False,hunt_type_m,M 17|NGC 6618|NGC_6618|Theia_846|in_messier|in_sac_urban,False
+WOC00001461,NGC 663,NGC_663,o,True,True,True,,C 10|NGC 663|NGC_663|Theia_1874|in_caldwell|in_herschel400|in_rasc_finest_ngc|in_sac_best_ngc|in_best_ngc,False
+WOC00001463,NGC 6633,NGC_6633,o,True,True,True,,Collinder 380|Collinder_380|MWSC_2917|Melotte 201|Melotte_201|NGC 6633|NGC_6633|OCL_90|Theia_924|in_herschel400|in_rasc_finest_ngc|in_sac_best_ngc|in_sac_urban|in_best_ngc,False
+WOC00001464,NGC 6645,NGC_6645,o,True,True,True,,Collinder 383|Collinder_383|MWSC_2946|Melotte 205|Melotte_205|NGC 6645|NGC_6645|OCL_48|in_herschel400,False
+WOC00001466,NGC 6664,NGC_6664,o,True,True,True,,Alessi_153|Collinder 385|Collinder_385|MWSC_2962|NGC 6664|NGC_6664|OCL_68|Theia_2336|in_herschel400,False
+WOC00001468,NGC 6694,NGC_6694,o,True,True,True,,Collinder 389|Collinder_389|FSR_71|M 26|MWSC_2987|Melotte 212|Melotte_212|NGC 6694|NGC_6694|OCL_67|in_messier|in_al_open_clusters,False
+WOC00001471,NGC 6705,NGC_6705,o,True,True,True,,Collinder 391|Collinder_391|FSR_82|M 11|MWSC_3008|Melotte 213|Melotte_213|NGC 6705|NGC_6705|OCL_76|OC_0048|Theia_1776|Theia_2170|Theia_2622|in_messier|in_al_open_clusters|in_sac_urban,False
+WOC00001472,NGC 6709,NGC_6709,o,True,True,True,,Collinder 392|Collinder_392|MWSC_3009|Melotte 214|Melotte_214|NGC 6709|NGC_6709|OCL_100|Theia_2542|in_al_open_clusters,False
+WOC00001473,NGC 6716,NGC_6716,o,True,True,True,,Collinder 393|Collinder_393|ESO_592-5|MWSC_3020|NGC 6716|NGC_6716|OCL_46|Theia_407|in_al_open_clusters,False
+WOC00001475,NGC 6728,NGC_6728,o,True,True,True,,MWSC_3032|NGC 6728|NGC_6728|Theia_3529,False
+WOC00001483,NGC 6793,NGC_6793,o,True,True,True,,MWSC_3098|NGC 6793|NGC_6793|OCL_115|Theia_738|in_herschel2|in_al_open_clusters,False
+WOC00001484,NGC 6800,NGC_6800,o,True,True,True,,MWSC_3123|NGC 6800|NGC_6800|OCL_123|Theia_3363|in_herschel2|in_al_open_clusters,False
+WOC00001485,NGC 6802,NGC_6802,o,True,True,True,,Collinder 400|Collinder_400|FSR_141|MWSC_3134|NGC 6802|NGC_6802|OCL_114|in_herschel400|in_rasc_finest_ngc,False
+WOC00001486,NGC 6811,NGC_6811,o,True,True,True,,Collinder 402|Collinder_402|FSR_228|Melotte 222|Melotte_222|NGC 6811|NGC_6811|OCL_185|Theia_5603|in_al_open_clusters|in_sac_urban,False
+WOC00001487,NGC 6819,NGC_6819,o,True,True,True,,Collinder 403|Collinder_403|FSR_202|MWSC_3155|Melotte 223|Melotte_223|NGC 6819|NGC_6819|OCL_155|Theia_7522|Theia_8171|in_rasc_finest_ngc|in_sac_best_ngc|in_al_open_clusters|in_best_ngc,False
+WOC00001488,NGC 6823,NGC_6823,o,True,True,True,,NGC 6823|NGC_6823|OC_0087|in_herschel400|in_al_open_clusters,False
+WOC00001490,NGC 6830,NGC_6830,o,True,True,True,,Collinder 406|Collinder_406|MWSC_3191|Melotte 224|Melotte_224|NGC 6830|NGC_6830|OCL_125|Theia_1933|in_herschel400,False
+WOC00001501,NGC 6866,NGC_6866,o,True,True,True,,NGC 6866|NGC_6866|Theia_4895|in_herschel400,False
+WOC00001502,NGC 6871,NGC_6871,o,True,True,True,,Collinder 413|Collinder_413|NGC 6871|NGC_6871|OCL_148|in_al_open_clusters,False
+WOC00001504,NGC 6882,NGC_6882,m,True,True,False,hunt_type_m,Collinder 416|Collinder_416|FSR_168|MWSC_3277|MWSC_3278|NGC 6882|NGC_6882|OCL_133|OCSN_20|Theia_170|in_herschel400|in_al_open_clusters,False
+WOC00001506,NGC 6885,,,True,False,True,,C 37|NGC 6885|in_caldwell|in_herschel400|in_al_open_clusters,False
+WOC00001508,NGC 6910,NGC_6910,o,True,True,True,,NGC 6910|NGC_6910|Theia_286|in_herschel400|in_al_open_clusters|in_sac_urban,False
+WOC00001509,NGC 6913,NGC_6913,o,True,True,True,,Collinder 422|Collinder_422|M 29|MWSC_3329|NGC 6913|NGC_6913|OCL_168|in_messier,False
+WOC00001511,NGC 6939,NGC_6939,o,True,True,True,,Collinder 423|Collinder_423|FSR_315|MWSC_3357|Melotte 231|Melotte_231|NGC 6939|NGC_6939|OCL_217|Theia_7410|in_herschel400|in_rasc_finest_ngc|in_sac_best_ngc|in_best_ngc,False
+WOC00001512,NGC 6940,NGC_6940,o,True,True,True,,Collinder 424|Collinder_424|MWSC_3370|Melotte 232|Melotte_232|NGC 6940|NGC_6940|OCL_141|Theia_1272|in_herschel400|in_rasc_finest_ngc|in_sac_best_ngc|in_best_ngc,False
+WOC00001514,NGC 6996,NGC_6996,o,True,True,True,,NGC 6996|NGC 6997|NGC_6996|NGC_6997|Theia_899,False
+WOC00001520,NGC 7039,NGC_7039,o,True,True,True,,Collinder 431|Collinder_431|MWSC_3474|NGC 7039|NGC_7039|OCL_203|Theia_26,False
+WOC00001524,NGC 7063,NGC_7063,o,True,True,True,,Collinder 435|Collinder_435|MWSC_3507|NGC 7063|NGC_7063|OCL_192|in_al_open_clusters,False
+WOC00001527,NGC 7082,NGC_7082,o,True,True,True,,MWSC_3517|NGC 7082|NGC_7082|OCL_209|Theia_2214|in_herschel2,False
+WOC00001529,NGC 7086,NGC_7086,o,True,True,True,,Collinder 437|Collinder_437|FSR_309|MWSC_3520|NGC 7086|NGC_7086|OCL_214|Theia_2737|in_herschel400,False
+WOC00001530,NGC 7092,Theia_517,o,True,True,True,,Collinder 438|Collinder_438|M 39|MWSC_3521|Melotte 236|Melotte_236|NGC 7092|NGC_7092|OCL_211|Theia_517|Theia_822|in_messier,False
+WOC00001534,NGC 7129,NGC_7129,o,True,True,True,,NGC 7129|NGC_7129|in_herschel2|in_rasc_finest_ngc|in_sac_best_ngc|in_best_ngc,False
+WOC00001536,NGC 7160,NGC_7160,o,True,True,True,,Collinder 443|Collinder_443|MWSC_3572|NGC 7160|NGC_7160|OCL_236|Theia_42|in_herschel400,False
+WOC00001539,NGC 7209,NGC_7209,o,True,True,True,,Collinder 444|Collinder_444|MWSC_3585|Melotte 238|Melotte_238|NGC 7209|NGC_7209|OCL_215|Theia_4421|in_herschel400|in_sac_best_ngc|in_al_open_clusters|in_best_ngc,False
+WOC00001542,NGC 7243,NGC_7243,o,True,True,True,,C 16|Collinder 448|Collinder_448|MWSC_3602|Melotte 240|Melotte_240|NGC 7243|NGC_7243|OCL_221|Theia_356|in_caldwell|in_herschel400|in_sac_best_ngc|in_best_ngc,False
+WOC00001547,NGC 7380,NGC_7380,o,True,True,True,,NGC 7380|NGC_7380|in_herschel400,False
+WOC00001551,NGC 7429,NGC_7429,m,True,True,False,hunt_type_m,MWSC_3676|NGC 7429|NGC_7429|OCL_249|RSG_7|RSG_8,False
+WOC00001552,NGC 743,NGC_743,o,True,True,True,,NGC 743|NGC_743|Theia_112,False
+WOC00001553,NGC 744,NGC_744,o,True,True,True,,Collinder 22|Collinder_22|FSR_574|MWSC_153|NGC 744|NGC_744|OCL_344|Theia_3014,False
+WOC00001554,NGC 7510,NGC_7510,o,True,True,True,,NGC 7510|NGC_7510|in_herschel400|in_al_open_clusters,False
+WOC00001555,NGC 752,NGC_752,o,True,True,True,,C 28|Collinder 23|Collinder_23|MWSC_151|Melotte 12|Melotte_12|NGC 752|NGC_752|OCL_363|in_caldwell|in_herschel400|in_sac_urban,False
+WOC00001556,NGC 7654,NGC_7654,o,True,True,True,,Collinder 455|Collinder_455|M 52|MWSC_3725|Melotte 243|Melotte_243|NGC 7654|NGC_7654|OCL_260|Theia_2085|Theia_2376|in_messier|in_sac_urban,False
+WOC00001561,NGC 7789,NGC_7789,o,True,True,True,,Collinder 460|Collinder_460|FSR_450|MWSC_3779|Melotte 245|Melotte_245|NGC 7789|NGC_7789|OCL_269|Theia_3615|Theia_6475|in_herschel400|in_rasc_finest_ngc|in_sac_best_ngc|in_sac_urban|in_best_ngc,False
+WOC00001566,NGC 869,NGC_869,o,True,True,True,,C 14|NGC 869|NGC_869|in_caldwell|in_herschel400|in_rasc_finest_ngc|in_sac_best_ngc|in_sac_urban|in_best_ngc,False
+WOC00001567,NGC 884,NGC_884,o,True,True,True,,C 14|NGC 884|NGC_884|in_caldwell|in_herschel400|in_rasc_finest_ngc|in_sac_best_ngc|in_sac_urban|in_best_ngc,False
+WOC00001568,NGC 957,NGC_957,o,True,True,True,,Collinder 28|Collinder_28|FSR_603|FoF_2134|LP_2134|MWSC_211|NGC 957|NGC_957|OCL_362|OC_0253|UBC_421|in_sac_urban,False
+WOC00001594,Pismis 4,Pismis_4,o,True,True,True,,Pismis 4|Pismis_4|Theia_2451|Theia_343,False
+WOC00001598,Pismis Moreno 1,Pismis-Moreno_1,o,True,True,True,,Pismis Moreno 1|Pismis-Moreno_1|Pismis_Moreno_1,False
+WOC00001612,Roslund 2,Roslund_2,o,True,True,True,,Roslund 2|Roslund_2|Theia_1717|Theia_2554,False
+WOC00001613,Roslund 3,Roslund_3,o,True,True,True,,OCL_121|Roslund 3|Roslund_3|Theia_2301,False
+WOC00001615,Roslund 5,Roslund_5,o,True,True,True,,Roslund 5|Roslund_5,False
+WOC00001616,Roslund 6,Roslund_6,o,True,True,True,,RSG_6|Roslund 6|Roslund_6|TRSG_6,False
+WOC00001617,Ruprecht 1,Ruprecht_1,o,True,True,True,,FSR_1179|MWSC_929|MWSC_931|OCL_563|Ruprecht 1|Ruprecht_1|Theia_3569|in_al_open_clusters,False
+WOC00001636,Ruprecht 119,Ruprecht_119,o,True,True,True,,ESO_226-10|MWSC_2413|OCL_963|OC_0655|Ruprecht 119|Ruprecht_119,False
+WOC00001639,Ruprecht 121,Ruprecht_121,o,True,True,True,,ESO_277-6|MWSC_2446|OCL_983|Ruprecht 121|Ruprecht_121|Theia_3360,False
+WOC00001657,Ruprecht 145,Ruprecht_145,o,True,True,True,,ESO_592-2|MWSC_3005|OCL_52|Ruprecht 145|Ruprecht_145|Theia_1134,False
+WOC00001678,Ruprecht 171,Ruprecht_171,o,True,True,True,,MWSC_2944|OCL_50|Ruprecht 171|Ruprecht_171|Theia_5903,False
+WOC00001687,Ruprecht 26,Ruprecht_26,o,True,True,True,,FSR_1244|MWSC_1285|OCL_602|Ruprecht 26|Ruprecht_26|Theia_2348,False
+WOC00001704,Ruprecht 53,Ruprecht_53,o,True,True,True,,CWNU_1026|ESO_494-32|MWSC_1442|OCL_682|Ruprecht 53|Ruprecht_53|Theia_484,False
+WOC00001732,Ruprecht 91,Ruprecht_91,o,True,True,True,,ESO_169-1|MWSC_1855|OCL_824|Ruprecht 91|Ruprecht_91|Theia_2396,False
+WOC00001737,Ruprecht 98,Ruprecht_98,o,True,True,True,,BH_125|ESO_94-9|MWSC_1988|OCL_868|Ruprecht 98|Ruprecht_98|Theia_1028,False
+WOC00001745,SAI 118,SAI_118,o,True,True,True,,MWSC_2153|SAI 118|SAI_118,False
+WOC00001755,SAI 24,SAI_24,o,True,True,True,,Collinder 34|Collinder_34|SAI 24|SAI_24|in_al_open_clusters,False
+WOC00001793,Stephenson 1,Stephenson_1,o,True,True,True,,MWSC_3018|OCL_137|Stephenson 1|Stephenson_1|delta_Lyr,False
+WOC00001795,Stock 1,Stock_1,o,True,True,True,,OCL_127|Stock 1|Stock_1|Theia_821|in_sac_beyond_ngc,False
+WOC00001796,Stock 10,Stock_10,o,True,True,True,,Stock 10|Stock_10|Theia_609,False
+WOC00001797,Stock 12,Stock_12,o,True,True,True,,MWSC_3743|OCL_258|Stock 12|Stock_12|Theia_451,False
+WOC00001798,Stock 13,Stock_13,o,True,True,True,,Stock 13|Stock_13|UBC_267|in_al_open_clusters,False
+WOC00001805,Stock 2,Stock_2,o,True,True,True,,Stock 2|Stock_2|Theia_524|in_sac_urban|in_sac_beyond_ngc,False
+WOC00001811,Stock 8,Stock_8,o,True,True,True,,Stock 8|Stock_8|Theia_1658,False
+WOC00001838,Teutsch 35,Teutsch_35,o,True,True,True,,ASCC_103|Teutsch 35|Teutsch_35|Teutsch_J1935.9+3540|Theia_457,False
+WOC00001871,Tombaugh 5,Tombaugh_5,o,True,True,True,,FSR_641|MWSC_306|OCL_385|Theia_3121|Tombaugh 5|Tombaugh_5|in_al_open_clusters,False
+WOC00001872,Trumpler 1,Trumpler_1,o,True,True,True,,Collinder 15|Collinder_15|FSR_552|MWSC_127|OCL_328|Trumpler 1|Trumpler_1|in_al_open_clusters,False
+WOC00001873,Trumpler 10,Trumpler_10,o,True,True,True,,Trumpler 10|Trumpler_10,False
+WOC00001877,Trumpler 14,Trumpler_14,o,True,True,True,,Trumpler 14|Trumpler_14,False
+WOC00001879,Trumpler 16,Trumpler_16,o,True,True,True,,Trumpler 16|Trumpler_16,False
+WOC00001881,Trumpler 18,Trumpler_18,o,True,True,True,,Trumpler 18|Trumpler_18|in_al_open_clusters,False
+WOC00001883,Trumpler 2,Trumpler_2,o,True,True,True,,Collinder 29|Collinder_29|MWSC_219|OCL_365|Theia_851|Trumpler 2|Trumpler_2|in_al_open_clusters|in_sac_urban,False
+WOC00001885,Trumpler 21,Trumpler_21,o,True,True,True,,BH_148|Collinder 274|Collinder_274|ESO_96-15|MWSC_2131|OCL_903|Theia_2377|Trumpler 21|Trumpler_21|in_al_open_clusters,False
+WOC00001888,Trumpler 25,Trumpler_25,o,True,True,True,,BH_225|Collinder 329|Collinder_329|ESO_333-7|Harvard_14|MWSC_2587|OCL_1007|OC_0683|Theia_1997|Theia_3280|Trumpler 25|Trumpler_25,False
+WOC00001889,Trumpler 26,Trumpler_26,o,True,True,True,,Collinder 331|Collinder_331|ESO_454-33|Harvard_15|MWSC_2604|OCL_1032|Theia_2599|Trumpler 26|Trumpler_26|UBC_332|in_al_open_clusters,False
+WOC00001892,Trumpler 3,Trumpler_3,o,True,True,True,,Collinder 36|Collinder_36|Harvard_1|MWSC_262|OCL_366|Theia_127|Trumpler 3|Trumpler_3|in_al_open_clusters,False
+WOC00001895,Trumpler 33,Trumpler_33,o,True,True,True,,Collinder 378|Collinder_378|ESO_590-20|MWSC_2910|OCL_34|Theia_1816|Trumpler 33|Trumpler_33|in_al_open_clusters,False
+WOC00001898,Trumpler 37,Trumpler_37,o,True,True,True,,IC 1396|IC_1396|Trumpler 37|Trumpler_37|in_sac_beyond_ngc,False
+WOC00001901,Trumpler 7,Trumpler_7,o,True,True,True,,Collinder 146|Collinder_146|ESO_492-16|FSR_1288|MWSC_1229|OCL_635|Theia_1904|Trumpler 7|Trumpler_7|in_al_open_clusters,False
+WOC00001914,vdBergh 113,vdBergh_113,o,True,True,True,,UBC_1005|UFMG_84|vdBergh 113|vdBergh_113,False
+WOC00001921,vdBergh 92,vdBergh_92,o,True,True,True,,vdBergh 92|vdBergh_92,False
+WOC00001968,,Alessi_170,o,False,True,True,,Alessi_170|Theia_3522|UBC_215,False
+WOC00001979,,Alessi_190,o,False,True,True,,Alessi_190|Theia_950|UBC_5,False
+WOC00001990,,Alessi_191,m,False,True,False,hunt_type_m,Alessi_191|UBC_577,False
+WOC00002001,,Alessi_80B,o,False,True,True,,Alessi_80B,False
+WOC00002147,,ASCC_20,o,False,True,True,,ASCC_20|OCSN_57,False
+WOC00002253,,ASCC_21,o,False,True,True,,ASCC_21,False
+WOC00002267,,Collinder_302,m,False,True,False,hunt_type_m,Collinder 302|Collinder_302|ESO_517-1|FSR_1764|GCL_41|MWSC_2396|NGC 6121|NGC_6121|in_sac_beyond_ngc,False
+WOC00002300,,ESO_130-06,o,False,True,True,,ESO_130-06|ESO_130-130|ESO_130-6|ESO_130_06|MWSC_1998|Steine_4,False
+WOC00002305,,ESO_332-13,o,False,True,True,,BH_205|Collinder 316|Collinder_316|ESO_332-13|ESO_332_13|Trumpler_24|UBC_323,False
+WOC00002331,,FSR_0569,o,False,True,True,,FSR_0569|FSR_569|MWSC_207|Theia_51|UBC_187,False
+WOC00002346,,FSR_0905,o,False,True,True,,FSR_0905|FSR_905|MWSC_904|Theia_3923,False
+WOC00002350,,FSR_0951,o,False,True,True,,FSR_0951|FSR_951|MWSC_849|Theia_2489,False
+WOC00002422,,LP_403,o,False,True,True,,FoF_403|LP_403|UBC_501,False
+WOC00002438,,LP_1800,o,False,True,True,,FoF_1800|LP_1800|UBC_170,False
+WOC00002446,,LP_2139,o,False,True,True,,FoF_2139|LP_2139|Theia_2461|UBC_195,False
+WOC00002456,,LP_2383,o,False,True,True,,FoF_2383|LP_2383,False
+WOC00002462,,Gulliver_2,o,False,True,True,,BH_22|Collinder 178|Collinder_178|ESO_369-7|Gulliver_2|MWSC_1447|NGC 2546|NGC_2546|OCL_726,False
+WOC00002465,,Gulliver_5,o,False,True,True,,Gulliver_5,False
+WOC00002467,,Gulliver_9,o,False,True,True,,Gulliver_9|Theia_82,False
+WOC00002478,,Gulliver_21,o,False,True,True,,Gulliver_21|Teutsch_205|Theia_469,False
+WOC00002502,,Gulliver_47,o,False,True,True,,Gulliver_47|Theia_3474,False
+WOC00002515,,Gulliver_60,o,False,True,True,,Gulliver_60,False
+WOC00003616,,Briceno_1,o,False,True,True,,ASCC_16|Briceno_1,False
+WOC00003737,,COIN-Gaia_11,o,False,True,True,,COIN-Gaia_11|Theia_963,False
+WOC00003825,,COIN-Gaia_20,o,False,True,True,,COIN-Gaia_20|Theia_2419,False
+WOC00003847,,COIN-Gaia_23,o,False,True,True,,Alessi_135|COIN-Gaia_23|Majaess_65|Theia_497,False
+WOC00003858,,COIN-Gaia_24,o,False,True,True,,COIN-Gaia_24,False
+WOC00003869,,COIN-Gaia_25,o,False,True,True,,COIN-Gaia_25|Theia_991,False
+WOC00003913,,COIN-Gaia_30,o,False,True,True,,COIN-Gaia_30|Theia_757,False
+WOC00004001,,COIN-Gaia_38,o,False,True,True,,COIN-Gaia_38|Melotte 20|Melotte_20|Theia_3727,False
+WOC00004049,,HSC_1865,o,False,True,False,single_source_no_other_compilation,,False
+WOC00004434,,HSC_2304,o,False,True,False,single_source_no_other_compilation,,False
+WOC00004508,,HSC_2384,o,False,True,False,single_source_no_other_compilation,,False
+WOC00004749,,CWNU_147,o,False,True,True,,CWNU_147,False
+WOC00004843,,HSC_2764,o,False,True,False,single_source_no_other_compilation,,False
+WOC00004903,,CWNU_172,o,False,True,True,,CWNU_172,False
+WOC00004968,,HSC_2911,o,False,True,False,single_source_no_other_compilation,,False
+WOC00005040,,HXHWL_6,o,False,True,True,,HXHWL_6,False
+WOC00005045,,HXHWL_13,o,False,True,True,,HXHWL_13|Theia_903,False
+WOC00005053,,HXHWL_22,o,False,True,True,,FSR_1180|HXHWL_22,False
+WOC00005056,,HXHWL_29,o,False,True,True,,HXHWL_29,False
+WOC00005060,,HXHWL_33,o,False,True,True,,HXHWL_33|UBC_1561,False
+WOC00005088,,Teutsch_89,o,False,True,True,,Gulliver_8|HXWHB_6|HXWHB_8|Melotte 31|Melotte_31|Teutsch_89|Theia_504,False
+WOC00005102,,IC_1396,o,False,True,True,,IC 1396|IC_1396|Trumpler_37|in_al_open_clusters|in_sac_urban|in_sac_beyond_ngc,False
+WOC00005103,,CWNU_224,o,False,True,True,,CWNU_224,False
+WOC00005112,,CWNU_229,o,False,True,True,,CWNU_229,False
+WOC00005124,,CWNU_239,o,False,True,True,,CWNU_239|LISC-III_1682|Theia_1671|UBC_1330,False
+WOC00005136,,LISC_3534,o,False,True,True,,LISC_3534|Theia_322,False
+WOC00005141,,Loden_46,o,False,True,True,,Loden_46|MWSC_1798|Theia_4106,False
+WOC00005158,,NGC_362,g,False,True,False,hunt_type_g,C 104|ESO_51-13|GCL_3|MWSC_99|NGC 362|NGC_362|in_caldwell|in_al_globular_clusters,False
+WOC00005161,,NGC_1261,g,False,True,False,hunt_type_g,C 87|ESO_155-11|GCL_5|MWSC_263|NGC 1261|NGC_1261|in_caldwell|in_al_globular_clusters,False
+WOC00005165,,CWNU_275,o,False,True,True,,CWNU_275|Theia_1889|Theia_5705,False
+WOC00005166,,NGC_1582,o,False,True,True,,Collinder 51|Collinder_51|MWSC_388|NGC 1582|NGC_1582|OCL_407|Theia_2581|Theia_364|in_herschel2,False
+WOC00005167,,NGC_1708,o,False,True,True,,MWSC_458|NGC 1708|NGC_1708,False
+WOC00005170,,NGC_1851,g,False,True,False,hunt_type_g,C 73|ESO_305-16|GCL_9|MWSC_489|NGC 1851|NGC_1851|in_caldwell|in_al_globular_clusters,False
+WOC00005172,,NGC_1904,g,False,True,False,hunt_type_g,ESO_487-7|GCL_10|M 79|MWSC_528|NGC 1904|NGC_1904|in_messier|in_al_globular_clusters|in_sac_urban,False
+WOC00005174,,NGC_2068,o,False,True,True,,M 78|NGC 2068|NGC_2068|OCSN_62|OC_0341|in_messier,False
+WOC00005182,,CWNU_284,o,False,True,True,,CWNU_284|Theia_3609|UBC_1523,False
+WOC00005184,,NGC_2358,o,False,True,True,,MWSC_1159|NGC 2358|NGC_2358|Theia_898,False
+WOC00005186,,NGC_2419,g,False,True,False,hunt_type_g,C 25|GCL_12|MWSC_1290|NGC 2419|NGC_2419|in_caldwell|in_herschel400|in_al_globular_clusters,False
+WOC00005187,,NGC_2428,o,False,True,True,,MWSC_1297|NGC 2428|NGC_2428|Theia_4005,False
+WOC00005189,,NGC_2448,o,False,True,True,,ESO_493-8|MWSC_1323|NGC 2448|NGC_2448|Theia_2468,False
+WOC00005195,,NGC_3201,g,False,True,False,hunt_type_g,C 79|ESO_263-26|FSR_1503|GCL_15|MWSC_1788|NGC 3201|NGC_3201|in_caldwell|in_al_globular_clusters,False
+WOC00005199,,NGC_4372,g,False,True,False,hunt_type_g,C 108|ESO_64-6|FSR_1619|GCL_19|MWSC_2029|NGC 4372|NGC_4372|in_caldwell|in_al_globular_clusters,False
+WOC00005200,,NGC_4590,g,False,True,False,hunt_type_g,ESO_506-30|GCL_20|M 68|MWSC_2059|NGC 4590|NGC_4590|in_messier|in_al_globular_clusters,False
+WOC00005202,,NGC_4833,g,False,True,False,hunt_type_g,C 105|ESO_65-4|FSR_1636|GCL_21|MWSC_2077|NGC 4833|NGC_4833|in_caldwell|in_al_globular_clusters,False
+WOC00005203,,NGC_5024,g,False,True,False,hunt_type_g,GCL_22|M 53|MWSC_2094|NGC 5024|NGC_5024|in_messier|in_al_globular_clusters|in_sac_urban,False
+WOC00005205,,NGC_5139,g,False,True,False,hunt_type_g,C 80|ESO_270-11|FSR_1664|GCL_24|MWSC_2120|NGC 5139|NGC_5139|omega_Centauri|in_caldwell|in_sac_best_ngc|in_al_globular_clusters|in_best_ngc,False
+WOC00005207,,NGC_5272,g,False,True,False,hunt_type_g,GCL_25|M 3|MWSC_2152|NGC 5272|NGC_5272|in_messier|in_al_globular_clusters|in_sac_urban,False
+WOC00005208,,NGC_5286,g,False,True,False,hunt_type_g,C 84|ESO_220-38|FSR_1671|GCL_26|MWSC_2160|NGC 5286|NGC_5286|in_caldwell|in_al_globular_clusters,False
+WOC00005209,,NGC_5466,g,False,True,False,hunt_type_g,GCL_27|MWSC_2198|NGC 5466|NGC_5466|in_herschel400|in_rasc_finest_ngc|in_al_globular_clusters,False
+WOC00005212,,NGC_5694,g,False,True,False,hunt_type_g,C 66|ESO_512-10|GCL_29|MWSC_2238|NGC 5694|NGC_5694|in_caldwell|in_herschel400|in_al_globular_clusters,False
+WOC00005216,,NGC_5904,g,False,True,False,hunt_type_g,GCL_34|M 5|MWSC_2286|NGC 5904|NGC_5904|in_messier|in_al_globular_clusters|in_sac_urban,False
+WOC00005221,,NGC_6093,g,False,True,False,hunt_type_g,ESO_516-11|FSR_1768|GCL_39|M 80|MWSC_2376|NGC 6093|NGC_6093|in_messier|in_al_globular_clusters|in_sac_urban,False
+WOC00005222,,NGC_6101,g,False,True,False,hunt_type_g,C 107|ESO_69-4|FSR_1020|GCL_40|MWSC_2404|NGC 6101|NGC_6101|in_caldwell|in_al_globular_clusters,False
+WOC00005223,,NGC_6121,g,False,True,False,hunt_type_g,ESO_517-1|FSR_1764|GCL_41|M 4|MWSC_2396|NGC 6121|NGC_6121|in_messier|in_al_globular_clusters|in_sac_urban,False
+WOC00005227,,NGC_6171,g,False,True,False,hunt_type_g,GCL_44|M 107|MWSC_2422|NGC 6171|NGC_6171|in_messier|in_herschel400|in_al_globular_clusters,False
+WOC00005228,,NGC_6205,g,False,True,False,hunt_type_g,GCL_44|M 13|MWSC_2445|NGC 6205|NGC_6205|in_messier|in_al_globular_clusters|in_sac_urban,False
+WOC00005230,,NGC_6218,g,False,True,False,hunt_type_g,GCL_45|M 12|MWSC_2464|NGC 6218|NGC_6218|in_messier|in_al_globular_clusters,False
+WOC00005234,,NGC_6254,g,False,True,False,hunt_type_g,GCL_49|M 10|MWSC_2498|NGC 6254|NGC_6254|in_messier|in_al_globular_clusters,False
+WOC00005235,,NGC_6266,g,False,True,False,hunt_type_g,ESO_453-14|GCL_51|M 62|MWSC_2512|NGC 6266|NGC_6266|in_messier|in_al_globular_clusters,False
+WOC00005236,,NGC_6273,g,False,True,False,hunt_type_g,ESO_518-7|FSR_1779|GCL_52|M 19|MWSC_2519|NGC 6273|NGC_6273|in_messier|in_al_globular_clusters,False
+WOC00005243,,NGC_6333,g,False,True,False,hunt_type_g,ESO_587-5|FAUST_4082|FSR_20|GCL_60|M 9|MWSC_2567|NGC 6333|NGC_6333|in_messier|in_al_globular_clusters,False
+WOC00005244,,NGC_6341,g,False,True,False,hunt_type_g,GCL_59|M 92|MWSC_2557|NGC 6341|NGC_6341|in_messier|in_al_globular_clusters|in_sac_urban,False
+WOC00005246,,NGC_6352,g,False,True,False,hunt_type_g,BH_226|C 81|Collinder 328|Collinder_328|ESO_228-3|FSR_1741|GCL_64|MWSC_2592|Melotte 170|Melotte_170|NGC 6352|NGC_6352|OCL_993|in_caldwell|in_al_globular_clusters,False
+WOC00005254,,NGC_6397,g,False,True,False,hunt_type_g,C 86|ESO_181-4|FSR_1733|GCL_74|MWSC_2662|NGC 6397|NGC_6397|in_caldwell|in_al_globular_clusters,False
+WOC00005257,,NGC_6402,g,False,True,False,hunt_type_g,FSR_64|GCL_72|M 14|MWSC_2643|NGC 6402|NGC_6402|in_messier|in_al_globular_clusters,False
+WOC00005269,,NGC_6541,g,False,True,False,hunt_type_g,C 78|ESO_280-4|FSR_1759|GCL_86|MWSC_2813|NGC 6541|NGC_6541|in_caldwell|in_al_globular_clusters|in_herschel400_south,False
+WOC00005278,,NGC_6626,g,False,True,False,hunt_type_g,ESO_522-23|GCL_94|M 28|MWSC_2908|NGC 6626|NGC_6626|in_messier|in_al_globular_clusters,False
+WOC00005280,,NGC_6637,g,False,True,False,hunt_type_g,ESO_457-14|FSR_8|GCL_96|M 69|MWSC_2936|NGC 6637|NGC_6637|in_messier|in_al_globular_clusters,False
+WOC00005284,,NGC_6656,g,False,True,False,hunt_type_g,ESO_523-4|GCL_99|M 22|MWSC_2961|NGC 6656|NGC_6656|in_messier|in_al_globular_clusters|in_sac_urban,False
+WOC00005285,,NGC_6681,g,False,True,False,hunt_type_g,ESO_458-3|FSR_12|GCL_101|M 70|MWSC_2981|NGC 6681|NGC_6681|in_messier|in_al_globular_clusters,False
+WOC00005287,,NGC_6712,g,False,True,False,hunt_type_g,FSR_74|GCL_103|MWSC_3104|Melotte 215|Melotte_215|NGC 6712|NGC_6712|OCL_72|in_herschel400|in_rasc_finest_ngc|in_sac_best_ngc|in_al_globular_clusters|in_best_ngc,False
+WOC00005288,,NGC_6715,g,False,True,False,hunt_type_g,ESO_458-8|FSR_21|GCL_104|M 54|MWSC_3023|NGC 6715|NGC_6715|in_messier|in_al_globular_clusters,False
+WOC00005293,,NGC_6752,g,False,True,False,hunt_type_g,C 93|ESO_141-30|GCL_108|MWSC_3062|NGC 6752|NGC_6752|Theia_5229|in_caldwell|in_al_globular_clusters,False
+WOC00005295,,NGC_6779,g,False,True,False,hunt_type_g,FSR_159|GCL_110|M 56|MWSC_3077|NGC 6779|NGC_6779|in_messier|in_al_globular_clusters|in_sac_urban,False
+WOC00005297,,NGC_6809,g,False,True,False,hunt_type_g,ESO_460-21|GCL_113|M 55|MWSC_3150|NGC 6809|NGC_6809|in_messier|in_al_globular_clusters,False
+WOC00005298,,NGC_6838,g,False,True,False,hunt_type_g,Collinder 409|Collinder_409|FSR_147|GCL_115|M 71|MWSC_3200|Melotte 226|Melotte_226|NGC 6838|NGC_6838|OCL_117|Theia_6500|Theia_7156|in_messier|in_al_globular_clusters,False
+WOC00005300,,NGC_6864,g,False,True,False,hunt_type_g,ESO_595-13|GCL_116|M 75|MWSC_3254|NGC 6864|NGC_6864|in_messier|in_al_globular_clusters,False
+WOC00005301,,NGC_6934,g,False,True,False,hunt_type_g,C 47|FSR_135|GCL_117|MWSC_3369|NGC 6934|NGC_6934|in_caldwell|in_herschel400|in_al_globular_clusters,False
+WOC00005303,,NGC_6981,g,False,True,False,hunt_type_g,GCL_118|M 72|MWSC_3446|NGC 6981|NGC_6981|in_messier|in_al_globular_clusters|in_herschel400_south,False
+WOC00005304,,NGC_6991,o,False,True,True,,NGC 6991|NGC_6991|Theia_1231|in_herschel2,False
+WOC00005305,,NGC_7006,g,False,True,False,hunt_type_g,C 42|FSR_164|GCL_119|NGC 7006|NGC_7006|in_caldwell|in_herschel400|in_al_globular_clusters,False
+WOC00005307,,NGC_7058,o,False,True,True,,MWSC_3501|NGC 7058|NGC_7058|Theia_1641,False
+WOC00005308,,NGC_7078,g,False,True,False,hunt_type_g,GCL_120|M 15|MWSC_3518|NGC 7078|NGC_7078|in_messier|in_al_globular_clusters|in_sac_urban,False
+WOC00005309,,NGC_7089,g,False,True,False,hunt_type_g,GCL_121|M 2|MWSC_3526|NGC 7089|NGC_7089|in_messier|in_al_globular_clusters|in_sac_urban,False
+WOC00005310,,NGC_7099,g,False,True,False,hunt_type_g,ESO_531-21|GCL_122|M 30|MWSC_3543|NGC 7099|NGC_7099|in_messier|in_al_globular_clusters,False
+WOC00005384,,OC_0165,o,False,True,True,,OC_0165|Teutsch_181|Theia_2293|Theia_3159|Theia_3245|Theia_3701|Theia_4516,False
+WOC00005434,,OC_0343,o,False,True,True,,CWNU_1003|OC_0343|Theia_838,False
+WOC00005446,,OC_0370,o,False,True,True,,OC_0370|Theia_361,False
+WOC00005449,,OC_0377,o,False,True,True,,CMa_8|OC_0377|Theia_1654|Theia_265,False
+WOC00005455,,OC_0395,o,False,True,True,,CWNU_91|LISC_3392|OC_0395,False
+WOC00005476,,OC_0470,o,False,True,True,,CWWL_3526|OC_0470,False
+WOC00005486,,CWNU_406,o,False,True,True,,CWNU_406,False
+WOC00005500,,OC_0540,o,False,True,True,,FoF_2059|LP_2059|OC_0540|Theia_295|Theia_5358|Theia_5606|UBC_257,False
+WOC00005507,,OC_0588,o,False,True,True,,CWNU_1122|OC_0588,False
+WOC00005533,,OC_0675,o,False,True,True,,CWNU_316|OC_0675,False
+WOC00005537,,OC_0684,o,False,True,True,,ASCC_88|Gulliver_29|OC_0684|Theia_1690,False
+WOC00005552,,OCSN_27,o,False,True,True,,OCSN_27,False
+WOC00005557,,OCSN_40,m,False,True,False,hunt_type_m,Collinder 460|Collinder_460|FSR_450|MWSC_3779|Melotte 245|Melotte_245|NGC 7789|NGC_7789|OCL_269|OCSN_40|Theia_920,False
+WOC00005565,,OCSN_61,o,False,True,True,,Collinder 70|Collinder_70|OCSN_61,False
+WOC00005572,,OCSN_77,o,False,True,True,,OCSN_77,False
+WOC00005580,,OCSN_96,o,False,True,True,,OCSN_96,False
+WOC00005646,,Platais_12,o,False,True,True,,HIP_67440_Group|MWSC_2173|OCSN_90|Platais_12,False
+WOC00005647,,Pozzo_1,o,False,True,True,,Pozzo_1|Theia_22|Theia_99,False
+WOC00005652,,RSG_5,o,False,True,True,,LISC-III_3723|RSG_5,False
+WOC00005654,,Renou_23,o,False,True,True,,LISC-III_3517|Renou_23|Theia_938|UBC_8,False
+WOC00005657,,Roslund_7,o,False,True,True,,MWSC_3416|OCL_187|Roslund_7|Theia_2375,False
+WOC00005660,,Ruprecht_19,o,False,True,True,,ESO_559-10|MWSC_1218|OCL_622|Ruprecht_19|Theia_2230,False
+WOC00005671,,Ruprecht_93,o,False,True,True,,ESO_128-30|MWSC_1885|NGC 3519|NGC_3519|OCL_844|Ruprecht_93|Theia_2841,False
+WOC00005673,,Ruprecht_94,o,False,True,True,,Ruprecht_94,False
+WOC00005679,,Ruprecht_151,o,False,True,True,,MWSC_1309|OCL_606|Ruprecht_151|Theia_4005,False
+WOC00005680,,Ruprecht_161,o,False,True,True,,ESO_127-9|MWSC_1773|OCL_810|Ruprecht_161|Theia_295,False
+WOC00005692,,Schoenball_1,o,False,True,True,,Gulliver_16|NGC 581|NGC_581|Schoenball_1|Theia_2079,False
+WOC00005696,,Steine_12,o,False,True,True,,COIN-Gaia_1|Steine_12|Teutsch_J0047.3+6643|Theia_713,False
+WOC00005699,,Stock_4,o,False,True,True,,Stock_4|in_al_open_clusters,False
+WOC00005700,,Stock_5,o,False,True,True,,Stock_5|Theia_1003,False
+WOC00005701,,Stock_7,o,False,True,True,,Stock_7|Theia_964,False
+WOC00005738,,Teutsch_176,o,False,True,True,,Ferrero_53|Teutsch_176|Teutsch_J0352+4558|Theia_297|UBC_88|UPK_322,False
+WOC00005739,,Teutsch_177,o,False,True,True,,LISC-III_3344|Teutsch_177|Theia_2851|UBC_216,False
+WOC00005740,,Teutsch_179,o,False,True,True,,LISC-III_3755|Teutsch_179|UBC_9,False
+WOC00005746,,Teutsch_201,o,False,True,True,,Teutsch_201|Theia_194|UPK_433,False
+WOC00005749,,Teutsch_211,o,False,True,True,,HXHWL_3|Teutsch_211|Theia_2319|Theia_3524|Theia_5438,False
+WOC00005781,,Theia_13,o,False,True,True,,Collinder 70|Collinder_70|Gulliver_6|Theia_13|UBC_17b,False
+WOC00005792,,Theia_47,m,False,True,False,hunt_type_m,Collinder 47|Collinder_47|MWSC_353|Melotte 23|Melotte_23|NGC 1528|NGC_1528|OCL_397|Theia_47,False
+WOC00005819,,Theia_123,o,False,True,True,,OCSN_46|Theia_123,False
+WOC00005828,,Theia_172,o,False,True,True,,CWNU_254|Theia_172|Tian_1,False
+WOC00005856,,CWNU_525,o,False,True,True,,CWNU_525|Stock_10|Theia_2077,False
+WOC00005859,,Theia_267,o,False,True,True,,NGC 2323|NGC_2323|Theia_267,False
+WOC00005862,,Theia_274,o,False,True,True,,Theia_274,False
+WOC00005863,,Theia_277,o,False,True,True,,Collinder 160|Collinder_160|FSR_1301|MWSC_1324|Melotte 76|Melotte_76|NGC 2447|NGC_2447|OCL_649|Theia_277,False
+WOC00005928,,Theia_613,m,False,True,False,hunt_type_m,Collinder 172|Collinder_172|ESO_124-6|FSR_1487|MWSC_1393|Melotte 82|Melotte_82|NGC 2516|NGC_2516|OCL_776|Theia_613,False
+WOC00005939,,Theia_651,m,False,True,False,hunt_type_m,CWNU_417|Theia_651,False
+WOC00005944,,Theia_665,o,False,True,True,,Theia_665,False
+WOC00005959,,Theia_743,o,False,True,True,,OC_0565|Theia_621|Theia_743,False
+WOC00005963,,Theia_754,o,False,True,True,,Collinder 57|Collinder_57|FSR_822|MWSC_461|MWSC_462|Melotte 28|Melotte_28|NGC 1746|NGC 1750|NGC_1746|NGC_1750|OCL_452|OCL_454|Theia_3947|Theia_754,False
+WOC00006010,,Theia_990,o,False,True,True,,IC 1396|IC_1396|Theia_990|Trumpler_37,False
+WOC00006027,,Theia_1170,m,False,True,False,hunt_type_m,Theia_1170,False
+WOC00006039,,Theia_1408,o,False,True,True,,MWSC_784|NGC 2184|NGC_2184|Theia_1408,False
+WOC00006047,,Theia_1643,o,False,True,True,,NGC 6193|NGC_6193|Theia_1643|Theia_2108,False
+WOC00006057,,Theia_1713,o,False,True,True,,CWNU_1131|OC_0262|Theia_1713,False
+WOC00006067,,Theia_1761,o,False,True,True,,Theia_1761|UFMG_72,False
+WOC00006093,,Theia_1891,o,False,True,True,,Theia_1891|UFMG_30,False
+WOC00006156,,Theia_2360,o,False,True,True,,OC_0447|Theia_2360,False
+WOC00006157,,Theia_2376,o,False,True,True,,Collinder 455|Collinder_455|MWSC_3725|Melotte 243|Melotte_243|NGC 7654|NGC_7654|OCL_260|Theia_2376|Theia_3500,False
+WOC00006167,,Theia_2460,o,False,True,True,,CWNU_1151|Theia_2460,False
+WOC00006168,,Theia_2468,m,False,True,False,hunt_type_m,Collinder 160|Collinder_160|FSR_1301|MWSC_1324|Melotte 76|Melotte_76|NGC 2447|NGC_2447|OCL_649|Theia_2468|Theia_277,False
+WOC00006184,,Theia_2649,o,False,True,True,,CMa_1|HXHWL_54|PHOC_4|Theia_2649,False
+WOC00006192,,Theia_2745,o,False,True,True,,HXHWL_64|Theia_2745,False
+WOC00006210,,Theia_2982,o,False,True,True,,HXHWL_16|LISC_3316|Theia_2982,False
+WOC00006222,,Theia_3127,o,False,True,True,,Theia_2145|Theia_2310|Theia_2765|Theia_3127|Theia_3439|Theia_4547|Theia_4603,False
+WOC00006240,,CWNU_1084,o,False,True,True,,CWNU_1084|Roslund_5|Theia_73,False
+WOC00006289,,Theia_3862,m,False,True,False,hunt_type_m,Stock_2|Theia_3862,False
+WOC00006292,,Theia_3922,o,False,True,True,,OC_0700|Theia_3922|UFMG_94,False
+WOC00006305,,Theia_4208,o,False,True,True,,Theia_4208,False
+WOC00006324,,Theia_4535,o,False,True,True,,HXHWL_23|Theia_4535,False
+WOC00006391,,CWNU_1134,m,False,True,False,hunt_type_m,CWNU_1134|IC 2391|IC_2391,False
+WOC00006395,,Trumpler_29,o,False,True,True,,Collinder 343|Collinder_343|ESO_334-4|Harvard_17|MWSC_2663|OCL_1009|Trumpler_29,False
+WOC00006396,,Trumpler_30,o,False,True,True,,Collinder 355|Collinder_355|ESO_394-12|Harvard_18|MWSC_2755|OCL_1025|Theia_3241|Trumpler_30|UBC_330|in_sac_beyond_ngc,False
+WOC00006397,,CWNU_1140,o,False,True,True,,CWNU_1140|Collinder 47|Collinder_47|MWSC_353|Melotte 23|Melotte_23|NGC 1528|NGC_1528|OCL_397|Theia_5062|Theia_593|Theia_7064,False
+WOC00006399,,UBC_6,o,False,True,True,,Teutsch_182|Theia_5006|UBC_6,False
+WOC00006415,,UBC_54,o,False,True,True,,Theia_2574|UBC_54,False
+WOC00006416,,UBC_56,o,False,True,True,,FoF_2230|LP_2230|Theia_1083|UBC_56,False
+WOC00006433,,UBC_94,o,False,True,True,,Theia_2302|UBC_94,False
+WOC00006438,,UBC_100,o,False,True,True,,UBC_100,False
+WOC00006444,,UBC_106,o,False,True,True,,Theia_4850|UBC_106,False
+WOC00006450,,UBC_114,o,False,True,True,,Theia_1902|UBC_114,False
+WOC00006461,,UBC_129,o,False,True,True,,UBC_129,False
+WOC00006476,,UBC_150,o,False,True,True,,Theia_487|UBC_150,False
+WOC00006489,,UBC_168,o,False,True,True,,Theia_893|UBC_168,False
+WOC00006494,,UBC_175,o,False,True,True,,MWSC_3682|NGC 7438|NGC_7438|Theia_4429|Theia_866|UBC_175,False
+WOC00006497,,UBC_179,o,False,True,True,,Theia_3528|UBC_179,False
+WOC00006504,,UBC_189,o,False,True,True,,NGC 886|NGC_886|Stock_6|Theia_1270|Theia_746|UBC_189,False
+WOC00006506,,UBC_194,o,False,True,True,,Theia_3699|UBC_194,False
+WOC00006507,,UBC_198,o,False,True,True,,Collinder 67|Collinder_67|MWSC_557|Melotte 36|Melotte_36|NGC 1912|NGC_1912|OCL_433|UBC_198,False
+WOC00006544,,UBC_255,o,False,True,True,,Theia_1472|UBC_255,False
+WOC00006557,,UBC_277,o,False,True,True,,LISC_3241|Theia_4161|UBC_277,False
+WOC00006558,,UBC_279,o,False,True,True,,Theia_3153|Theia_4842|Theia_5361|UBC_279,False
+WOC00006569,,UBC_290,o,False,True,True,,Theia_2208|Theia_3288|Theia_3924|UBC_290,False
+WOC00006573,,UBC_294,o,False,True,True,,Theia_5319|UBC_294,False
+WOC00006575,,UBC_295,o,False,True,True,,Theia_3999|UBC_295,False
+WOC00006592,,UBC_319,o,False,True,True,,LISC_3355|Theia_2006|UBC_319,False
+WOC00006603,,UBC_340,o,False,True,True,,UBC_340|XDOCC_8,False
+WOC00006604,,UBC_343,o,False,True,True,,Theia_1651|Theia_1678|Theia_2117|Theia_2741|Theia_3353|Theia_4383|UBC_343,False
+WOC00006610,,UBC_350,o,False,True,True,,UBC_350,False
+WOC00006614,,UBC_356,o,False,True,True,,LISC_3404|UBC_356,False
+WOC00006629,,CWNU_1242,m,False,True,False,hunt_type_m,CWNU_1242|Collinder 50|Collinder_50|Hyades|MWSC_379|Melotte 25|Melotte_25|OCL_456|Taurus_Moving_Cluster,False
+WOC00006748,,UBC_525,o,False,True,True,,UBC_525,False
+WOC00006790,,UBC_582,o,False,True,True,,Theia_1876|UBC_582,False
+WOC00006861,,UBC_1021,o,False,True,True,,CWNU_328|UBC_1021,False
+WOC00007072,,UBC_1297,o,False,True,True,,CWNU_300|UBC_1297,False
+WOC00007079,,Alessi-Teutsch_21,o,False,True,True,,AT_21|Alessi-Teutsch_1|Alessi-Teutsch_21|Alessi_23|COIN-Gaia_2|Theia_2869|Theia_3945,False
+WOC00007297,,UBC_1592,o,False,True,True,,CWNU_261|UBC_1592,False
+WOC00007374,,UFMG_95,o,False,True,True,,UFMG_95,False
+WOC00007376,,UPK_4,o,False,True,True,,Theia_575|UPK_4,False
+WOC00007379,,UPK_7,o,False,True,True,,Theia_351|UPK_7,False
+WOC00007380,,UPK_12,o,False,True,True,,Theia_7543|UBC_98|UPK_12,False
+WOC00007381,,UPK_13,o,False,True,True,,UBC_99|UPK_13,False
+WOC00007383,,UPK_17,o,False,True,True,,Theia_1048|UPK_17,False
+WOC00007391,,UPK_26,o,False,True,True,,UPK_26,False
+WOC00007404,,UPK_45,o,False,True,True,,UBC_116|UPK_45,False
+WOC00007409,,UPK_53,o,False,True,True,,Theia_952|UPK_53,False
+WOC00007412,,UPK_55,o,False,True,True,,Theia_278|UPK_55,False
+WOC00007427,,UPK_93,o,False,True,True,,Theia_1065|UPK_93,False
+WOC00007455,,UPK_164,o,False,True,True,,UPK_164,False
+WOC00007458,,UPK_168,o,False,True,True,,UBC_165|UPK_168,False
+WOC00007459,,UPK_169,o,False,True,True,,Theia_131|UPK_169,False
+WOC00007463,,UPK_185,o,False,True,True,,FoF_2275|LP_2275|UBC_171|UPK_185,False
+WOC00007472,,UPK_220,o,False,True,True,,Theia_1084|Theia_367|UBC_402|UPK_220,False
+WOC00007495,,UPK_333,o,False,True,True,,Theia_981|UPK_333,False
+WOC00007503,,UPK_394,o,False,True,True,,Theia_271|Theia_3968|UBC_202|UPK_394,False
+WOC00007520,,Alessi_6,o,False,True,True,,Alessi_6|MWSC_2240|Theia_996|in_al_open_clusters,False
+WOC00007528,,UPK_508,o,False,True,True,,Theia_891|UBC_477|UPK_508,False
+WOC00007531,,UPK_528,o,False,True,True,,Theia_2652|Theia_4431|UPK_528,False
+WOC00007538,,UPK_549,o,False,True,True,,FoF_2236|LP_2236|Theia_1242|UBC_256|UPK_549,False
+WOC00007539,,UPK_552,m,False,True,False,hunt_type_m,UPK_552,False
+WOC00007545,,UPK_578,o,False,True,True,,Theia_1082|UPK_578,False
+WOC00007569,,UPK_640,o,False,True,True,,FoF_2442|LP_2442|UPK_640,False
+WOC00007570,,UPK_642,o,False,True,True,,Theia_288|UPK_642,False
+WOC00007572,,UPK_645,o,False,True,True,,Theia_337|UPK_645,False
+WOC00007575,,XDOCC_1,o,False,True,True,,NGC 457|NGC_457|Theia_772|XDOCC_1,False
+WOC00007576,,XDOCC_2,o,False,True,True,,CWNU_2673|NGC 1960|NGC_1960|XDOCC_2,False
+WOC00007579,,ZHBJZ_1,o,False,True,True,,FoF_2439|LP_2439|ZHBJZ_1,False
+WOC00007727,,Alessi_36,o,False,True,True,,Alessi_36|FoF_2385|LP_2385|UBC_7,False
+WOC00007773,,CWNU_1845,o,False,True,True,,CWNU_1845|Collinder 125|Collinder_125|FSR_1089|MWSC_1084|Melotte 59|Melotte_59|NGC 2324|NGC_2324|OCL_542,False
+WOC00007830,,Alessi_84,m,False,True,False,hunt_type_m,Alessi_84|CWNU_1128|RSG_2|TRSG_2,False
+WOC00007841,,Alessi_94,m,False,True,False,hunt_type_m,Alessi_94|Theia_841|UBC_2,False
+WOC00007863,,Alessi_116,o,False,True,True,,Alessi_116|Theia_1177|UBC_131|UPK_84,False

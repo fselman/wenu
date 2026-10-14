@@ -631,6 +631,8 @@ class MatplotlibRenderer:
         boundary_ticks=None,
         boundary_tick_anchor=None,
         curve_size_scale=1.0,
+        point_diameter_scale=None,
+        point_diameter_metadata_key="diameter",
     ):
         """Draw a supported projected geometry object."""
         if isinstance(curve_size_scale, bool) or not isinstance(curve_size_scale, (int, float)) or not np.isfinite(curve_size_scale) or curve_size_scale <= 0:
@@ -660,6 +662,18 @@ class MatplotlibRenderer:
                 geometry,
                 self._viewport,
             )
+
+        if point_diameter_scale is not None:
+            scale = point_diameter_scale
+            if isinstance(scale, bool) or not np.isfinite(scale) or scale <= 0:
+                raise ValueError("point_diameter_scale must be finite and positive.")
+            if not isinstance(geometry, ProjectedPoints) or self._viewport is None:
+                raise ValueError("Angular marker sizing requires points and a configured viewport.")
+            from wenu.rendering.preparation import diameter_marker_areas
+            self.ax.apply_aspect()
+            points_per_unit = self.ax.get_window_extent().width * 72 / self.ax.figure.dpi / self._viewport.width
+            diameters = geometry.metadata.get(point_diameter_metadata_key, np.full(len(geometry), np.nan))
+            common["s"] = diameter_marker_areas(diameters, common.get("s", 1.0), scale * points_per_unit)
 
         if isinstance(geometry, ProjectedPoint):
             artists = self._draw_point(

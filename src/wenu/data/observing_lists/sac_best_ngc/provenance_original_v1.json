@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "source_registry": "observing_sources_v1.json",
+  "source_registry_sha256": "a8f02a20a407d1558a71649549de8cb7827f1093edab72320b8900f8cd23066e",
+  "registry_metadata": {
+    "schema_version": 1,
+    "acquisition_version": "v1",
+    "created_utc": "2026-10-13T19:36:37.025607+00:00",
+    "repository_base": "8e9b193a608bcdbcc34e10d87f32ab678bcec60d",
+    "scope": "Source acquisition only; no target filtering, union, physical classification adoption or chart changes.",
+    "archive": "wenu_observing_catalogues_v1.zip",
+    "aliases": [
+      {
+        "requested_title": "Best of the NGC",
+        "catalogue_id": "sac_best_ngc",
+        "status": "Generic label mapped to SAC; no independent second publisher/list verified"
+      }
+    ],
+    "excluded_attempts": [
+      {
+        "file": "barnard_list_v1.dat",
+        "reason": "HTTP200 HTML anti-bot response; not catalogue data"
+      },
+      {
+        "file": "barnard_notes_v1.dat",
+        "reason": "HTTP200 HTML anti-bot response; not catalogue data"
+      }
+    ]
+  },
+  "source_products": [
+    {
+      "file": "sac_best_list_v1.csv",
+      "bytes": 4574,
+      "sha256": "d6e3093c2ae1ae292f4d9b52bea9edb9053544aff8131d0d3d2b98458c65bb11",
+      "observed_counts": {
+        "rows": 111
+      },
+      "source": {
+        "key": "sac_best",
+        "url": "https://www.saguaroastro.org/110-best-ngc-objects/",
+        "final_url": "https://www.saguaroastro.org/110-best-ngc-objects/",
+        "file": "sac_best_source_v1.html",
+        "bytes": 163104,
+        "sha256": "f32a1a5d0e7313ed741d531b2fa0f79c1f007ef0f1cb1aed4eae7cda4efec78a",
+        "retrieved_utc": "2026-10-13T19:28:42.738856+00:00"
+      },
+      "derivation": "HTML table factual columns only; source descriptions omitted; values remain source strings."
+    }
+  ],
+  "source_descriptions": [
+    {
+      "catalogue_id": "sac_best_ngc",
+      "title": "SAC 110 Best of the NGC",
+      "files": [
+        "sac_best_list_v1.csv"
+      ],
+      "nominal_or_programme_count": 110,
+      "publisher": "A.J. Crayon and Steve Coe / Saguaro Astronomy Club",
+      "landing_url": "https://www.saguaroastro.org/110-best-ngc-objects/",
+      "notes": "Source labels version 1.0, 1990-01-04. Retrieved table has 111 distinct NGC rows. Retain all rows; nominal 110 versus table count remains a review distinction. Generic Best of the NGC is an alias here, not an independently verified second list.",
+      "rights_status": "Source attribution retained; no new public redistribution licence inferred from download availability.",
+      "licence_observation": "Public club list; no explicit open redistribution licence verified for this source selection."
+    }
+  ],
+  "converted_products": [
+    {
+      "file": "sac_best_list_v1.csv",
+      "source_file": "sac_best_list_v1.csv",
+      "rows": 111,
+      "columns": [
+        "NGC_number",
+        "constellation",
+        "source_type",
+        "RA_2000",
+        "Dec",
+        "magnitude",
+        "size"
+      ],
+      "status": "source_fields_preserved",
+      "bytes": 4574,
+      "sha256": "d6e3093c2ae1ae292f4d9b52bea9edb9053544aff8131d0d3d2b98458c65bb11"
+    }
+  ]
+}

@@ -196,6 +196,8 @@ class AtlasChartPresentation:
     grid_dec_label_scale: float = 0.8
     deep_sky_symbol_scale: float = 1.8
     cluster_face_color: str = "yellow"
+    open_cluster_exclude_infrared_embedded: bool = False
+    open_cluster_angular_sizes: bool = True
 
     def __post_init__(self):
         import math
@@ -228,6 +230,10 @@ class AtlasChartPresentation:
             raise ValueError("grid_minor_label_scale must be at most 1.")
         if type(self.grid_lines_visible) is not bool:
             raise ValueError("grid_lines_visible must be boolean.")
+        if type(self.open_cluster_angular_sizes) is not bool:
+            raise ValueError("open_cluster_angular_sizes must be boolean.")
+        if type(self.open_cluster_exclude_infrared_embedded) is not bool:
+            raise ValueError('open_cluster_exclude_infrared_embedded must be boolean.')
         if not math.isfinite(self.star_size_scale * self.star_size_scale):
             raise ValueError("star_size_scale squared must be finite.")
         if not math.isfinite(self.deep_sky_symbol_scale * self.deep_sky_symbol_scale):
@@ -654,7 +660,8 @@ def _append_atlas_index(writer, reader, page):
 
 
 def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
-                 save_sky=None, from_sky=None, index=None, chart_command=None):
+                 save_sky=None, from_sky=None, index=None, chart_command=None,
+                 open_cluster_catalogue=None):
     """Produce ordered chart pages with one preparation or explicit saved reuse.
 
     A manifest linked last commits the complete batch. Existing outputs and
@@ -684,6 +691,8 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
         presentation = replace(presentation, formats=(*presentation.formats, "svg"))
     if save_sky is not None and from_sky is not None:
         raise ValueError("--save-sky and --from-sky are mutually exclusive.")
+    if from_sky is not None and open_cluster_catalogue is not None:
+        raise ValueError("A catalogue override requires a new sky; omit --from-sky.")
     raw = Path(design_path).read_bytes()
     atlas = AtlasBandTiling.from_json(raw.decode("utf-8"))
     if len({sheet.field_width_deg for sheet in atlas.geometry.sheets}) != 1:
@@ -729,7 +738,16 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
         cold_sky = None
         if from_sky is None:
             directory = save_sky or Path(stack.enter_context(tempfile.TemporaryDirectory(prefix="wenu-atlas-sky-"))) / "sky"
-            digest, cold_sky = prepare_native_sky_snapshot(raw, directory, return_sky=True)
+            if open_cluster_catalogue is None:
+                digest, cold_sky = prepare_native_sky_snapshot(raw, directory, return_sky=True)
+            else:
+                from dataclasses import replace
+                from wenu.sky.maximal_sphere import CANONICAL_MAXIMAL_SPHERE_PROFILE
+                # Resolve the selector once; all workers reuse the hashed snapshot.
+                profile = replace(CANONICAL_MAXIMAL_SPHERE_PROFILE,
+                    open_cluster_filename=Path(open_cluster_catalogue).resolve(strict=True))
+                digest, cold_sky = prepare_native_sky_snapshot(raw, directory,
+                    profile=profile, return_sky=True)
         else:
             directory = Path(from_sky)
         snapshot = read_native_sky_snapshot(directory)

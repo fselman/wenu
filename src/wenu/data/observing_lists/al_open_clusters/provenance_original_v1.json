@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "source_registry": "observing_sources_v1.json",
+  "source_registry_sha256": "a8f02a20a407d1558a71649549de8cb7827f1093edab72320b8900f8cd23066e",
+  "registry_metadata": {
+    "schema_version": 1,
+    "acquisition_version": "v1",
+    "created_utc": "2026-10-13T19:36:37.025607+00:00",
+    "repository_base": "8e9b193a608bcdbcc34e10d87f32ab678bcec60d",
+    "scope": "Source acquisition only; no target filtering, union, physical classification adoption or chart changes.",
+    "archive": "wenu_observing_catalogues_v1.zip",
+    "aliases": [
+      {
+        "requested_title": "Best of the NGC",
+        "catalogue_id": "sac_best_ngc",
+        "status": "Generic label mapped to SAC; no independent second publisher/list verified"
+      }
+    ],
+    "excluded_attempts": [
+      {
+        "file": "barnard_list_v1.dat",
+        "reason": "HTTP200 HTML anti-bot response; not catalogue data"
+      },
+      {
+        "file": "barnard_notes_v1.dat",
+        "reason": "HTTP200 HTML anti-bot response; not catalogue data"
+      }
+    ]
+  },
+  "source_products": [
+    {
+      "file": "al_open_clusters_list_v1.xlsx",
+      "bytes": 35115,
+      "sha256": "e18dcdea16ada1cc141fb641cbfa1bd3e8937163b9c570afe109a84083a5effc",
+      "observed_counts": {
+        "original_rows": 125,
+        "southern_rows": 89,
+        "total_rows": 214
+      },
+      "source": {
+        "file": "al_open_clusters_list_v1.xlsx",
+        "url": "https://www.astroleague.org/wp-content/uploads/2025/10/OC-Complete-List-20251004.xlsx",
+        "final_url": "https://www.astroleague.org/wp-content/uploads/2025/10/OC-Complete-List-20251004.xlsx",
+        "bytes": 35115,
+        "sha256": "e18dcdea16ada1cc141fb641cbfa1bd3e8937163b9c570afe109a84083a5effc",
+        "retrieved_utc": "2026-10-13T19:29:41.658788+00:00",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Sat, 04 Oct 2025 17:05:02 GMT"
+      }
+    }
+  ],
+  "source_descriptions": [
+    {
+      "catalogue_id": "al_open_clusters",
+      "title": "AL Open Cluster Program",
+      "files": [
+        "al_open_clusters_list_v1.xlsx"
+      ],
+      "nominal_or_programme_count": 125,
+      "publisher": "Astronomical League",
+      "landing_url": "https://www.astroleague.org/open-cluster-observing-program/",
+      "notes": "Workbook dated 2025-10-04 contains 125 original and 89 southern rows, 214 total. Programme page advertises 90 supplementary targets; preserve actual file and flag this discrepancy. Programme membership does not establish physical open-cluster classification.",
+      "rights_status": "Source attribution retained; no new public redistribution licence inferred from download availability.",
+      "licence_observation": "Publisher website states All Rights Reserved; no explicit open redistribution licence verified."
+    }
+  ],
+  "converted_products": [
+    {
+      "file": "al_open_clusters_list_v1__sheet1.csv",
+      "source_file": "al_open_clusters_list_v1.xlsx",
+      "rows": 230,
+      "columns": [
+        "source_row",
+        "source_column_1",
+        "source_column_2",
+        "source_column_3",
+        "source_column_4",
+        "source_column_5",
+        "source_column_6",
+        "source_column_7",
+        "source_column_8",
+        "source_column_9"
+      ],
+      "status": "Original cell grid; title/header rows and separate sheets retained.",
+      "bytes": 11810,
+      "sha256": "f0e7581a5d7da1b9bcd4bd32338a6c1c8af6858d4dc28219bf97b65a4fa959f1"
+    }
+  ]
+}

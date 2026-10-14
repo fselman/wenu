@@ -74,6 +74,10 @@ def boundary_path(name):
 def nonstellar_catalog_path(name):
     """Return a packaged non-stellar catalogue resource."""
     catalogues = {
+        "caldwell": (
+            "wenu.data.catalogs.caldwell",
+            ("caldwell_openngc.ecsv",),
+        ),
         "messier": (
             "wenu.data.catalogs.messier",
             (
@@ -186,3 +190,4 @@ def star_designations_manifest_path():
     return (
         files("wenu.data") / "catalogs" / "star_designations" / "manifest.json"
     )
+

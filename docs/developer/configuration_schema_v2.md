@@ -489,3 +489,18 @@ revision-3 36-chart example fixes 0.616831374967213, paired with chart-style-v4
 `grid_frame_width_scale = 1.0` and the existing 12 pt RA/9.6 pt Dec fonts.
 Changing presentation cannot reinterpret resolved footprints. No change is made
 to general Wenu schema-version-2 chart geometry.
+
+
+### Open-cluster atlas exclusion and offline review options (2026-10-13)
+
+The separate atlas-chart presentation admits boolean
+open_cluster_exclude_infrared_embedded, default false; atlas_chart_style_v5.toml
+sets true. It forwards only a render selection to the existing open-cluster
+layer. Original catalogue rows remain present. No general chart schema-2
+selection key is introduced in this bounded milestone.
+
+The offline tools command's x/y parameter choices, min/max E(B-V), explicit
+missing-reddening policy, include-IR/embedded option and optional filtered ECSV
+are inspection/curation inputs, separate from atlas TOML. No default numerical
+observability threshold is admitted; copied catalogues retain source/selection
+provenance. Data/output roots and versioned output names are explicit options.

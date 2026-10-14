@@ -1641,3 +1641,25 @@ def _visible_segments(x, y, latitude, *, closed, minimum):
 
     finish()
     return segments
+
+
+
+def diameter_marker_areas(diameters, minimum_area, points_per_unit):
+    """Map supplied diameters to scatter areas, bounded by the current symbol.
+
+    Missing, masked, nonfinite and nonpositive diameters keep the minimum.
+    Circle markers have unit normalized width: sqrt(s) is diameter in points.
+    """
+    if isinstance(points_per_unit, bool) or not np.isfinite(points_per_unit) or points_per_unit <= 0:
+        raise ValueError("points_per_unit must be finite and positive.")
+    diameters = np.ma.asarray(diameters, dtype=float).filled(np.nan)
+    minimum = np.broadcast_to(np.asarray(minimum_area, dtype=float), diameters.shape)
+    if np.any(~np.isfinite(minimum)) or np.any(minimum < 0):
+        raise ValueError("Minimum marker areas must be finite and nonnegative.")
+    valid = np.isfinite(diameters) & (diameters > 0)
+    sizes = np.where(valid, diameters, 0) * points_per_unit
+    with np.errstate(over="ignore"):
+        areas = sizes ** 2
+    if np.any(~np.isfinite(areas)):
+        raise ValueError("Angular marker areas overflow the finite range.")
+    return np.maximum(minimum, areas)

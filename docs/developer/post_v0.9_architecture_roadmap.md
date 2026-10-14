@@ -5249,3 +5249,420 @@ revalidates a versioned 36-chart revision, fits the fixed bands to the full
 report-frame dimensions, and corrects edge-normal label clearance. Historical
 designs remain unchanged. Mac catalogue-backed and visual acceptance remain
 required; this correction does not authorize PR merge, cleanup or curation.
+
+
+### Open-cluster observing-list comparison (2026-10-13)
+
+After atlas PR 229 was merged and cleaned up at `96e6d4fb`, Fernando requested
+Caldwell ingestion and comparison of Dias clusters with Caldwell and Messier.
+The bounded milestone adds the complete source-traced 109-entry Caldwell
+resource and an offline identity crosswalk using existing catalogue owners.
+It does not choose an observability cutoff, curate physical duplicates, alter
+atlas chart density or automatically draw Caldwell symbols. Initial matches
+are 27 Messier clusters and 29 Dias clusters for 28 Caldwell entries. C37 and
+C50 retain competing alias rows as review cases. Histograms and decisions
+about retained telescope targets remain subsequent curation work.
+
+Provider-policy preflight checked on 2026-10-13: OpenNGC's pinned README and
+CC BY-SA 4.0 licence establish attribution/redistribution conditions. GitHub
+[API best practices](https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api)
+require conservative serial access and stopping on throttling. The maintenance
+tool uses three serial pinned raw-file GETs, with no polling, concurrency or
+automatic retries, or a fully cached source directory with exact digests.
+Chart runtime and comparison perform no network access. Membership facts were
+checked against the Astronomical League's published list; no guide prose or
+images are redistributed. The parameter snapshot carries OpenNGC attribution
+and its licence. Mac focused/full-suite acceptance and merge remain separate.
+
+
+### Open-cluster parameter-plane review (2026-10-13)
+
+Fernando requested IR/embedded exclusions as marks rather than source-row
+deletion, a two-dimensional Caldwell/Messier comparison, scripts under tools
+reading data and writing output, selectable axes, E(B-V) cuts and optional
+filtered-catalogue creation. The bounded implementation preserves all Dias
+rows, derives IR/E marks, supports explicit plot/export selection and adds
+source-traced V photometry without inferring absent values. Atlas filtering is
+opt-in through the existing layer and new version-5 style. No final reddening,
+brightness, richness or diameter threshold has been accepted. Physical-duplicate
+curation and globular-cluster comparison remain subsequent work.
+
+The photometry maintenance entry reuses the earlier OpenNGC pinned-file policy:
+two serial raw-file GETs (or digest-verified cache), no concurrency, polling or
+automatic retries. OpenNGC v20260501/CC BY-SA 4.0 attribution and the separately
+packaged licence are retained. All plotting/selection commands are offline.
+
+
+
+### Hunt & Reffert member curation tool boundary (2026-10-13)
+
+The existing tools/compare_open_clusters.py selects Dias, Hunt & Reffert 2024,
+or its separately prepared converted-V5<11 subset. No-argument invocation
+prints catalogue/column help without loading data or writing outputs.
+tools/hunt_reffert_catalogue.py owns offline CDS parsing, observed Gaia-to-BVR
+relations, probability/aperture member statistics and the comparison adapter;
+tools/query_hunt_reffert2024.py owns explicit serial raw acquisition or verified
+cache preparation. These are developer-tool responsibilities, not production
+sky layers, coordinate services or alternate chart renderers. Existing comparison
+and scatter/export functions remain shared. The installed Dias chart catalogue
+and atlas snapshot defaults remain unchanged. Full source-backed preparation
+and its counts await Mac acquisition; partial data never claim full membership.
+
+Observed Johnson V/B and Cousins R follow official Gaia DR3 polynomial domains.
+V5 ranks members in converted V, with strict <11 selection; membership defaults
+to probability >=0.5 within the estimated tidal radius. Full rows, source IDs,
+missing diagnostics, source hashes and separate candidate exports are retained.
+Hunt diameter is 2r50, E(B-V) is explicitly AV50/3.1 under assumed R_V=3.1,
+and member sums are incomplete observed estimates. Catalogue ICRS centres keep
+J2016.0 provenance; this offline curation adds no stellar-position provider,
+epoch propagation or chart-frame reinterpretation. Source attribution and
+provider-policy preflight are recorded in the living user curation guide.
+
+### Complete Hunt resource receipt and identifier audit (2026-10-13)
+
+Fernando published the full/curated Gaia-member resources at `7ff3a403`, after
+complete source acquisition, hash validation, 7,167 aggregate / 1,291,929 member
+count checks and exact full-to-curated row comparison. The 431 type-o V5<11
+candidates are an initial member-brightness selection, not final amateur curation.
+The source remains offline and digest-bound; no new download is required.
+
+The comparison identifier owner normalizes published underscore separators and
+keeps primary identities ahead of source aliases. The actual-source regression
+checks all 29 Caldwell components and 27 Messier matches, plus the retained
+Melotte_25/CWNU_1242 alias distinction. The IR/E and E(B-V)<=3 review sample
+contains 5,485 open clusters, all with diameter/V5; adding V5<11 retains 428,
+including 22 Caldwell components and 23 Messier clusters. M11, M26, M29 and
+M103 fail the V5 threshold and require scientific interpretation, not silent
+replacement. Source data/photometry and chart defaults are unchanged by this
+identifier correction. The curation guide records the exact receipt and
+selection meanings; Mac focused and later final full-suite acceptance remain
+separate from source publication.
+
+### Tenth-member open-cluster cutoff (2026-10-13)
+
+The existing comparison adapter accepts optional strict --max-v10 in addition
+to --max-v5. Both supplied limits must pass; missing rank magnitudes receive
+explicit missing_V5/missing_V10 reasons. No-argument help advertises the option,
+and Dias rejects these member-specific cuts. The same packaged source/member
+policy, BVR conversion, identifier owner, plot/export owner and IR/E/reddening
+selection are reused without acquisition or resource changes. The full Hunt
+source with V10<11, IR/E exclusions and E(B-V)<=3 retains 229 candidates,
+including 20 Caldwell components and 21 Messier clusters. The named
+hunt-curated source remains the previously prepared V5 subset; independent
+V10 comparisons use hunt-reffert2024 and separate versioned filtered exports.
+The coordinate guide was reviewed and remains current: rank-10 photometry
+already exists and this selection option changes no coordinate meaning,
+provider, frame, epoch, position, sky layer or chart pipeline.
+
+
+### Source-preserving Wenu open-cluster union tool (2026-10-13)
+
+Fernando requested software delivery before catalogue curation. The new
+`tools/merge_open_clusters.py` owns offline candidate compilation from complete
+supplied Dias and Hunt tables. It is a developer tool, not a production sky
+layer, coordinate service or alternate rendering pipeline. Identifier
+normalization and observing-reference resolution remain shared with
+`tools/compare_open_clusters.py`; its existing comparison behavior is preserved.
+No-argument invocation prints help and writes nothing. No real combined
+database is generated or adopted during this software milestone.
+
+The candidate schema orders wenu_id, RA, Dec, dias_id and all dias_* parameters,
+hunt_id and all hunt_* parameters, then Messier_id, Caldwell_id, NGC_id and
+other identifiers. Every supplied source row is represented once, retaining
+all types, classifications, parameters, source positions, units and masks.
+Primary identities precede reciprocal unique published aliases; competing
+claims remain separate with a review ledger. No positional guess or same-source
+collapse creates identities. C14 still annotates two distinct components.
+An explicit persistent WOC identity registry preserves IDs during updates and
+rejects proposed merges/splits of published identities for review.
+
+Displayed RA/Dec use Hunt when available, otherwise Dias, without averaging,
+epoch propagation or reinterpretation. Both original source positions and
+metadata are retained. Hunt keeps J2016.0 provenance; an unknown Dias position
+epoch is not inferred from its J2000 frame/equinox description. Physical
+parameters are never silently averaged/coalesced. The tool supplies candidate
+ECSV/CSV, source/reference crosswalks, ID registry and a completion receipt with
+source/product hashes. Existing products are refused; the receipt is written
+last. The logical database is wenu_open_clusters, but acceptance/filtering,
+clean-database generation commands and chart adoption belong to later curation.
+
+The defaults retain all 1,931 packaged Dias and 7,167 full Hunt rows. Dias's
+existing normalization had already excluded 235 of the original 2,166 records;
+an alternate normalized Dias input can supply a fuller population. This tool
+cannot recover earlier provider exclusions and explicitly records that scope.
+The owning user guide documents schema, help, policies and outputs. Synthetic
+regressions in the existing open-cluster test owner cover row conservation,
+ambiguity, observing components, source immutability, units/masks, stable IDs,
+registry conflicts, digest-bound outputs, help and overwrite refusal.
+Focused open-cluster/package validation passes 23 tests; exact-head Mac
+historical-documentation acceptance and the final full suite remain separate.
+
+
+### Published-centre positional audit for cluster union (2026-10-13)
+
+The existing developer union tool now audits every Dias/Hunt cross-source pair
+using spherical angular separation of supplied centres, without propagation.
+The strict test is separation < BOTH catalogue radii; each radius is half the
+selected angular diameter. Defaults use apparent_diameter_arcmin (Hunt 2r50);
+explicit --dias-diameter-column/--hunt-diameter-column options record alternative
+boundaries. Angular units are converted; unitless sizes mean arcminutes and
+unitless coordinates mean degrees. Invalid/missing centres or nonpositive,
+masked/nonfinite radii are unassessable. Missing columns/incompatible units fail
+before outputs. This adds no identity merge, position provider or chart change.
+
+The printed/receipt audit counts established identity pairs as pass/fail/unknown
+and other passing pairs as both_unmatched or matched_elsewhere. Pair and distinct
+source-object counts are separate, with deduplicated combined counts. The new
+_positions.csv ledger retains both original centres, separation, radii, source
+and Wenu IDs, category/status for all identifier pairs and other passing pairs.
+It is product-hashed with the existing completion receipt. Existing source
+catalogues remain untouched; real compilation remains a later curation step.
+No-argument help covers parameters, radius meanings, strict criterion, outputs
+and usage. The existing owning tests check spherical wrap/polar geometry,
+unequal radii, exact boundary, missing values, units, neighbour multiplicity,
+matched-elsewhere classification and CLI receipts. The focused open-cluster /
+package gate passes 25 tests; exact-head Mac/documentation acceptance and the
+final full suite remain pending. The living curation guide owns user details.
+
+
+### Amateur observing-list source acquisition v1 (2026-10-13)
+
+Fernando requested source acquisition before selecting public/beginner targets.
+The new data-directory registry
+`src/wenu/data/observing_lists/observing_sources_v1.json` inventories
+13 distinct source lists/catalogues plus the generic Best of the NGC alias.
+Eighteen checked source-table products are delivered separately in the versioned
+wenu_observing_catalogues_v1.zip, with publisher/edition URLs, retrieval dates,
+source and derivative SHA-256, byte counts and observed membership counts.
+The resource README and living user curation guide own this acquisition record.
+This is provenance/guide work, not a new loader, sky layer, rendering pipeline,
+physical identity union or adopted interesting-target selection. Existing
+Messier/Caldwell parameter resources and all software remain unchanged.
+
+Count distinctions are explicit: AL Messier membership 110 vs packaged HEASARC
+109; SAC named 110 vs 111 source rows; RASC 110 observing numbers vs 112 rows;
+AL open clusters 125+89 downloaded rows vs advertised 90 southern additions;
+globulars 190 with a 50-object requirement; double stars now 200 with a
+100-object requirement; multiple stars now 115. Southern Herschel/planetary
+supplements and northern PN alternates are acquired separately. Barnard's
+349-row public ASU export and notes replace rejected HTTP-200 HTML FTP
+responses; original coordinate-system metadata remains source authority.
+Abell's 86-entry original scanned Table 2 is acquired, with parent-paper hash
+and extraction provenance, but OCR is not accepted numeric coordinates.
+No source frame/epoch, component separation or position angle is silently
+reinterpreted or propagated. Raw list documents stay in the separate acquisition
+archive; no public redistribution licence is inferred. Membership normalization,
+physical classifications/crosswalks, visual selection and chart integration
+remain later curation milestones. Each archived product was hash/length checked;
+ZIP contents and CRC were verified. Exact-head Mac documentation acceptance and
+the final software full suite remain separate before merge.
+
+
+### Cluster-list CSV first pass and explicit memberships (2026-10-13)
+
+Fernando requested CSV conversion before observing memberships, then narrowed
+this milestone to star clusters. tools/convert_observing_catalogues.py owns
+first-pass offline conversion of nine acquired cluster-containing list files
+(Messier/Caldwell/Herschel400/II/RASC/SAC/ALOC/ALGC and southern Herschel).
+Mixed lists retain every row. Non-cluster programme and Abell/CDS work is
+deferred. tools/observing_list_membership.py owns source verification,
+source-format decoding, conservative name normalization and membership review.
+These are developer maintenance responsibilities, not new production modules,
+resource loaders, position providers or parallel chart pipelines.
+
+The real requested CSV first pass produces 10 source grids/tables plus a
+1,796-record membership index and last-written hash-bound conversion receipt.
+Excel sheet separation, blank rows, titles/repeated headers and source cell
+positions are preserved. PDF identity/coordinate fields retain original row
+text and unparsed tails. CSV parameters remain source strings; no scientific
+homogenization or source replacement is implied. pypdf is an existing Wenu
+dependency; standard-library XLSX parsing needs no Excel package. Only legacy
+southern XLS conversion uses optional maintenance xlrd>=2,<3; the merge compiler
+consumes verified CSVs and needs no Excel reader. No global dependency changed.
+
+The union tool defaults to observing_lists/csv_v1 and adds in_messier,
+in_caldwell, in_herschel400, in_herschel2, in_rasc_finest_ngc, in_sac_best_ngc,
+in_best_ngc (same SAC alias), in_al_open_clusters, in_al_globular_clusters and
+in_herschel400_south. True is resolved explicit ID membership; false is no
+resolved identifier; competing claims are masked and retained in _observing.csv.
+Primary names precede aliases; explicit RASC/Caldwell compounds keep distinct
+physical rows. Historical AL M24/M45 approximate NGC associations do not
+replace the existing observing crosswalk. Extragalactic GC names retain host
+scope; questioned/mislabeled narrative names are not adopted as aliases.
+No positional coincidence creates membership or alters source union/stable IDs.
+
+Missing/unverified CSV receipts fail before writing. --observing-directory
+selects a verified conversion; --without-observing-lists explicitly emits masked
+flags. Both tools print parameter/usage help without arguments. Source and
+conversion hashes/counts are recorded. Full source rows/types and every
+Dias/Hunt parameter, coordinate and positional-audit meaning remain unchanged.
+The real CSV conversion is explicitly authorized; no real combined catalogue
+is generated. The existing owning tests cover flags, alias precedence/conflicts,
+compound memberships, skipped masks, stored XLSX cell/blank-row fidelity,
+conversion hashes/counts, help and overwrite refusal. Twenty-eight focused
+open-cluster/package cases pass in 8.86 s; all three tools compile. Actual nine
+source files yield 11 verified CSVs; index1796, raw Excel row locations and
+RASC explicit companions/negative alias case were checked. Mac exact-head
+focused/documentation acceptance and final full-suite merge acceptance remain
+separate. The user guide/resource README own the workflow details.
+
+
+## Observing-list additions and first-membership comparison checkpoint
+
+Fernando requested the six remaining observing lists, source provenance and
+an observing guide, including urban southern coverage and the history of the
+Herschel programmes. `observing_additions_v1.json` records seven publisher
+source snapshots independently of `observing_sources_v1.json`; the existing
+source and CSV receipts remain valid. `tools/observing_list_additions.py` owns
+the supplementary HTML/ZIP/XLSX/PDF decoding and verified CSV reader.
+`tools/convert_observing_catalogues.py --additions` selects this separate
+conversion. `tools/merge_open_clusters.py` auto-loads installed supplementary
+CSVs, supports `--observing-additions-directory`, and masks unavailable lists.
+Exact observing references may annotate compound targets; stars near clusters
+and asterism narrative references never establish physical cluster identity.
+Raw list targets stay separate from the Dias–Hunt cluster union.
+
+`tools/plot_merged_open_clusters.py` is an offline curation diagnostic for
+published source radii versus Hunt-derived V10. First true list membership
+selects one configurable symbol, with Messier/Caldwell first by default.
+Matched Dias points explicitly share Hunt V10; Dias-only objects remain in a
+missing-V10 panel. Filled/hollow symbols distinguish source radii. Point and
+summary ledgers retain filters, unavailable flags and exclusions. No-argument
+help writes nothing. `docs/user_guide/curation.md` explains list objectives,
+verified counts, urban southern limits, condition-specific observing demands,
+and modern Herschel programme selection. Existing owning tests cover source
+masking, exact identities, compound references, first-list precedence, shared
+V10, strict cuts and supplementary digest rejection. No new public sky layer,
+canonical pipeline change, curated database adoption or software merge occurs.
+
+
+## Member-count comparison axis checkpoint
+
+Fernando selected the previous two radius–V10 views plus a member-count–V10
+view, with source data read from Wenu's data directory and products written
+under output. The existing `tools/plot_merged_open_clusters.py` now accepts
+`--x radius|members`. Radius retains the half-diameter default; members uses
+the separate published `dias_member_count` and `hunt_member_count` directly,
+without halving counts or substituting photometrically accepted members.
+Only the selected axis columns are required; invalid/nonpositive x values
+are excluded and logged for the logarithmic x axis. The point ledger retains
+radius, member_count and x_value; summary records axis/source columns.
+V10 sharing for matched Dias rows, missing-V10 panel, source-specific reddening,
+strict V10 cuts, first-list priority, masks and plot exports retain their scope.
+The owning guide documents both axes and running from tools with ../src and
+../output paths. Existing owning tests exercise unequal source counts, missing
+radius independence, masked/zero counts, strict cuts, CLI exports and help.
+No catalogue data, physical identity policy, public sky layer, chart default,
+canonical pipeline or dependency changes. Software delivery remains separate
+from final catalogue curation and branch merge.
+
+
+## Explicit open-cluster curation v0.1 checkpoint
+
+Fernando requested the filtering script and a v0.1 CSV, confirming brighter
+V10<12.5 and V10 below 17.5-(12.5/3)*log10(radius_arcmin), E(B-V)<=3 for
+additional candidates, and intersection across both available source points.
+The five mandatory observing lists bypass all numeric cuts; unresolved list
+claims are retained and flagged for review. The former plot's V10<11 cut is
+not inherited. `tools/curate_open_clusters.py` owns this offline selection from
+the complete source-preserving union. It reuses the existing spherical audit
+and numeric-field reader; primary/alias pairs remain intact. Reciprocal unique
+unmatched pairs inside both published radii may be combined provisionally,
+with original ID lineage, source parameters and unresolved alias flags retained.
+Competing positions and objects matched elsewhere remain review evidence;
+audit-only mode makes no positional combinations.
+
+CSV/ECSV, all-row selection ledger, pairing ledger and digest-bound completion
+summary preserve source origin, mandatory reasons, thresholds, per-source
+numeric decisions and positional provenance. Previous plotting commands read
+the ECSV; full-selection checks omit global cuts to show mandatory exceptions.
+The owning guide documents parameters, strict boundaries, source-policy choices,
+ID redirects and curation commands. The verified real run selects 583 rows,
+including 142 resolved mandatory, 27 unresolved mandatory claims and 414 further
+numeric-only rows; seven positional pairs are provisional before selection and
+one remains selected. Existing owning tests cover log-boundary endpoints,
+strict cuts, mandatory overrides, missing fields, all/any source policies,
+one-to-one positional pairing, ambiguity, ID conservation, source preservation,
+help and admission failures. No curated data is installed or committed as a
+chart resource, and no software merge, pipeline or dependency change occurs.
+
+
+## Curated open-cluster atlas catalogue (v0.2)
+
+`tools/prepare_open_cluster_catalogue.py` publishes a new version from an
+existing selected union. It keeps Hunt type `o` and Dias-only rows, excludes
+single-source rows without another catalogue designation or resolved list
+membership, and retains masked claims for review. Modern discovery catalogues
+including OC count; HSC alone does not corroborate a Hunt entry. Source rows,
+IDs, coordinates, masks, selection criteria and provisional pairing flags are
+preserved. Every exclusion is recorded; proximity never causes deletion.
+
+The installation boundary copies immutable versioned ECSV bytes into a chosen
+catalogue directory and optionally atomically selects them using the relative
+`open_star_clusters.ecsv` symlink. Existing versions and regular selector files
+are refused. This is separate from software installation and package resources.
+`OpenClusters.normalize_catalogue` adapts the union at the existing layer
+boundary: Hunt-preferred coordinates/diameters and source member counts, stable
+Wenu geometry IDs and readable labels. V10 is never integrated photometry.
+
+`wenu_create_atlas --open-cluster-catalogue PATH` replaces only the open-cluster
+source in `CelestialSphereLoadProfile`. The selector resolves once before
+preparation; the existing native snapshot hashes and serializes the selected
+catalogue for all workers. An override with `--from-sky` is rejected. Other
+layers, atlas geometry, presentation and stellar settings are unchanged.
+Tests extend `test_open_clusters.py` and `test_atlas_cli.py` at the normalization,
+installation, profile-propagation and saved-sky boundaries. No atlas software
+merge or chart adoption is implied by producing a candidate.
+
+
+## Open-cluster symbols at the atlas central scale
+
+Atlas open-cluster circles now use the catalogue angular diameter at the
+central chart scale, bounded below by the existing styled symbol diameter.
+Hunt diameter is 2*r50; Dias-only entries use the published Dias diameter.
+Missing, masked, nonfinite or nonpositive diameters retain the current minimum.
+Colours, outlines, labels, catalogue selection and all other layers are unchanged.
+
+The atlas request owns the angular-to-projection conversion (projection radius
+multiplied by pi/21600 per arcminute). The generic renderer converts supplied
+point diameters to physical scatter areas using the actual equal-aspect axes
+width and viewport width. It accepts a caller-specified metadata key and unit
+scale; it does not choose catalogues or know source definitions. The helper in
+rendering/preparation.py preserves the current area floor. Scatter area is the
+square of the normalized circle diameter in points, independent of export DPI.
+No local projection-distortion correction is applied away from the centre.
+
+AtlasChartPresentation.open_cluster_angular_sizes defaults to true. The atlas
+CLI exposes --open-cluster-size angular|fixed; fixed restores previous sizes.
+Existing saved skies can be reused because catalogue metadata is unchanged.
+Tests extend the existing Matplotlib renderer and atlas CLI owners, checking
+physical dimensions at two DPIs, equal central/edge sizing, missing-value
+floors, rendered chart scale, fixed mode and presentation admission.
+
+
+## Standard catalogue maintenance layout
+
+Scientific sources remain under src/wenu/data/catalogs. Observing selections
+now live in src/wenu/data/observing_lists, with one named directory per list,
+original files, CSVs, README and provenance. Barnard/Abell physical catalogues
+belong to scientific sources. Trials and diagnostic products belong to output;
+accepted bundles and the relative active selector belong to
+src/wenu/data/curated_catalogs/open_clusters.
+
+catalogue_data_layout.py owns offline path resolution, collision-safe copying,
+per-list provenance and conversion publication. migrate_catalogue_data.py
+verifies historical source/conversion receipts, moves legacy flat folders only
+after verified copies, and records migration evidence. Registry/receipt bytes,
+membership records, source identifiers and scientific selection rules remain
+unchanged. Legacy flat inputs remain readable; new publication is per list.
+The shared resolver is used by both source-specific observing converters/loaders.
+
+prepare_open_cluster_catalogue.py separates trial depuration from accepted
+--promote-catalogue publication. Promotion checks the complete summary-bound
+bundle, preserves trial outputs, copies accepted data/review evidence and
+atomically changes only the selector. The plot tool defaults to that accepted
+selector while accepting explicit trial inputs. Merger defaults use the new
+observing root. Working observing/curated trees are excluded from automatic
+package discovery; installed software reads explicit catalogue paths. The
+existing atlas pipeline, saved-sky format, symbol sizing and source selection
+are unchanged. The curation guide documents each tool and the complete workflow.
