@@ -139,9 +139,9 @@ import json
 import site
 from pathlib import Path
 dependencies = json.loads(sys.argv[2])
-# Isolated mode still includes the interpreter's installed site-packages.
-# Process the fixture's editable .pth before restoring dependency locations,
-# so a pre-existing Wenu installation cannot shadow the project under test.
+# -I -S prevents startup .pth files and editable finders from installing
+# an ambient Wenu before this script runs. Process only the fixture's .pth;
+# dependency directories supply libraries without executing their .pth files.
 sys.path[:] = [p for p in sys.path if p not in dependencies]
 site.addsitedir(sys.argv[1])
 sys.path.insert(0, sys.argv[1])
@@ -168,7 +168,7 @@ print('Independent installed defaults, evidence and explicit scientific override
         (ambient / 'wenu/__init__.py').write_text(
             'raise AssertionError("Ambient Wenu installation shadowed the fixture")\n')
         dependencies.insert(0, str(ambient))
-        result = subprocess.run([sys.executable, '-I', '-c', script, str(installed), json.dumps(dependencies), str(installed)],
+        result = subprocess.run([sys.executable, '-I', '-S', '-c', script, str(installed), json.dumps(dependencies), str(installed)],
             cwd=tmp_path, capture_output=True, text=True)
         assert result.returncode == 0, result.stdout + result.stderr
     editable = tmp_path / 'editable'
@@ -176,6 +176,6 @@ print('Independent installed defaults, evidence and explicit scientific override
         '--no-build-isolation', '--target', str(editable), '--editable', str(project)],
         cwd=tmp_path, capture_output=True, text=True)
     assert result.returncode == 0, result.stdout + result.stderr
-    result = subprocess.run([sys.executable, '-I', '-c', script, str(editable),
+    result = subprocess.run([sys.executable, '-I', '-S', '-c', script, str(editable),
         json.dumps(dependencies), str(project / 'src')], cwd=tmp_path, capture_output=True, text=True)
     assert result.returncode == 0, result.stdout + result.stderr
