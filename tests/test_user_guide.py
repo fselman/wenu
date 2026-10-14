@@ -27,6 +27,7 @@ GUIDE_PAGES = (
     "labels.md",
     "locations.md",
     "atlas.md",
+    "curation.md",
 )
 
 
