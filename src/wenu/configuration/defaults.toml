@@ -442,6 +442,7 @@ label_font_size = 6.0
 [styles.atlas.open_cluster]
 face_color = "none"
 angular_sizes = false
+diameter_scale = 1.0
 exclude_infrared_embedded = false
 color = "#d2b321"
 line_width = 0.45
@@ -697,6 +698,7 @@ label_font_size = 6.0
 [styles.cartoon.open_cluster]
 face_color = "none"
 angular_sizes = false
+diameter_scale = 1.0
 exclude_infrared_embedded = false
 color = "#b89028"
 line_width = 0.55

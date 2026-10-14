@@ -1,0 +1,59 @@
+# Scorpius review using installed catalogue defaults, v2: compact symbols, no object labels.
+# Retain the curated small-object population for visual inspection.
+schema_version = 2
+
+[detail.adaptive]
+adapt_layers = false
+
+[[detail.adaptive.levels]]
+span = 3.0
+stars = 7.0
+galaxies = 11.0
+open_clusters = 0.000001
+globular_clusters = 0.000001
+planetary_nebulae = 0.000001
+supernova_remnants = 0.000001
+label_density = 1.0
+
+[[detail.adaptive.levels]]
+span = 180.0
+stars = 7.0
+galaxies = 11.0
+open_clusters = 0.000001
+globular_clusters = 0.000001
+planetary_nebulae = 0.000001
+supernova_remnants = 0.000001
+label_density = 1.0
+
+[styles.atlas.open_cluster]
+draw_labels = false
+symbol_size = 24.6402
+diameter_scale = 0.65
+
+[styles.atlas.globular_cluster]
+draw_labels = false
+symbol_size = 24.6402
+
+[styles.atlas.planetary_nebula]
+draw_labels = false
+color = "#24552b"
+line_width = 1.1
+symbol_size = 11.8828125
+opacity = 1.0
+
+[styles.atlas.galaxy]
+draw_labels = false
+
+[styles.atlas.supernova_remnant]
+draw_labels = false
+symbol_scale = 1.17
+
+[styles.atlas.stars]
+diameter_scale = 1.19
+
+[styles.atlas.nonstellar]
+draw_labels = false
+
+[grids_references.coordinate_grid.edge_marks]
+grid_label_fontsize = 8.4
+grid_frame_width_scale = 0.7

@@ -520,7 +520,7 @@ def composition_layer_options(
     if deep is not None:
         if deep.nonstellar_labels_only:
             appearance['nonstellar'] = dict(geometry=dict(labels_only=True),
-                render=dict(draw_markers=False, draw_labels=True,
+                render=dict(draw_markers=False, draw_labels=deep.nonstellar_draw_labels,
                     label_style=dict(fontsize=deep.nonstellar_label_fontsize,
                         color=deep.nonstellar_label_color or deep.nonstellar_color, alpha=1.0)))
         if deep.supernova_remnant_symbol_scale != 1.0:

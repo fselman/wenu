@@ -772,7 +772,7 @@ def load_configuration(path=None, *, family=None) -> dict[str, Any]:
     """Load packaged defaults with an optional partial user TOML overlay."""
     packaged = load_packaged_defaults()
     from wenu.resources import configuration_input_path
-    if family == 'regional' or str(path) in {'atlas-v6', 'scorpius-v1'}:
+    if family == 'regional' or str(path) in {'atlas-v6', 'scorpius-v1', 'scorpius-v2'}:
         packaged = merge_configuration_overlay(packaged, _regional_atlas_v6_overlay(packaged))
     if path is None or str(path) == 'atlas-v6':
         return packaged

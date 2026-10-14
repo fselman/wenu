@@ -5823,3 +5823,10 @@ metadata conversion and PN sizes remain symbolic. Further regional print design
 work remains a later milestone. Focused, full Mac and visual acceptance receipts
 must cover this changed runtime/packaging content; the 3,584-test receipt at
 8cc66342 cannot substitute. No merge or branch cleanup is authorized.
+
+
+### Compact Sco installed comparison v2
+
+The installed chart preset `scorpius-v2` retains the v1 catalogue/detail selection and suppresses object labels. Relative to v1, stellar diameters are 70%, cluster and PN symbol diameters 65%, SNR symbol scale 65%, and coordinate label font size and frame-width multiplier 70%. Open-cluster angular diameters and their minimum marker areas scale together using the positive `[styles.atlas.open_cluster].diameter_scale` (default 1.0; cartoon has the same neutral field). Shared label-only nonstellar rendering honors `draw_labels = false`. These controls remain in the existing configuration translation, composition and export owners; scientific catalogue membership and atlas layouts are unchanged. Full atlas v6 defaults remain intact. The regional stereographic print design is still deferred.
+
+Run `wenu_chart regional --center-on Sco --field-width 60 --field-height 50 --config scorpius-v2 --style atlas --mode print --magnitude-limit 7 --output sco_installed_catalogues_v3.png` for the next installed-path visual review. This is a candidate comparison, not a new acceptance receipt.

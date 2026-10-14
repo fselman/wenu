@@ -110,7 +110,7 @@ def export_composed_chart(
         from .detail_application import merge_layer_options
         layer_options = merge_layer_options({'open_clusters': {'render': {
             'point_diameter_metadata_key': 'apparent_diameter_arcmin',
-            'point_diameter_scale': chart.projection.radius * math.pi / 21600,
+            'point_diameter_scale': chart.projection.radius * math.pi / 21600 * deep.open_cluster_diameter_scale,
         }}}, layer_options)
     application = composition.layer_options(
         sky,

@@ -158,6 +158,7 @@ class DeepSkyStyle:
     nonstellar_color: str = "white"
     nonstellar_labels_only: bool = False
     supernova_remnant_symbol_scale: float = 1.0
+    open_cluster_diameter_scale: float = 1.0
     open_cluster_angular_sizes: bool = False
     open_cluster_exclude_infrared_embedded: bool = False
     nonstellar_linewidth: float = 0.8

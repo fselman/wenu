@@ -233,3 +233,25 @@ def test_constellation_feature_overlays_reject_invalid_lists(key, value):
     with pytest.raises(ValueError):
         merge_configuration_overlay(load_packaged_defaults(), {
             'schema_version': 2, 'detail': {'constellations': {key: value}}})
+
+
+def test_compact_scorpius_comparison_retains_objects_without_labels():
+    previous = load_configuration_defaults('scorpius-v1')
+    compact = load_configuration_defaults('scorpius-v2')
+    a = previous.style_mode.atlas
+    b = compact.style_mode.atlas
+    assert b.stars.diameter_scale == pytest.approx(a.stars.diameter_scale * .7)
+    for field in ('open_cluster_symbol_size', 'globular_cluster_symbol_size', 'planetary_nebula_symbol_size'):
+        assert getattr(b.deep_sky, field) == pytest.approx(getattr(a.deep_sky, field) * .65**2)
+    assert b.deep_sky.open_cluster_angular_sizes
+    assert b.deep_sky.open_cluster_diameter_scale == .65
+    assert b.deep_sky.supernova_remnant_symbol_scale == pytest.approx(a.deep_sky.supernova_remnant_symbol_scale * .65)
+    for field in ('nonstellar_draw_labels', 'galaxy_draw_labels', 'open_cluster_draw_labels', 'globular_cluster_draw_labels', 'planetary_nebula_draw_labels', 'supernova_remnant_draw_labels'):
+        assert not getattr(b.deep_sky, field)
+    before = load_configuration('scorpius-v1')
+    after = load_configuration('scorpius-v2')
+    old = before['grids_references']['coordinate_grid']['edge_marks']
+    new = after['grids_references']['coordinate_grid']['edge_marks']
+    assert new['grid_label_fontsize'] == pytest.approx(old['grid_label_fontsize'] * .7)
+    assert new['grid_frame_width_scale'] == pytest.approx(old['grid_frame_width_scale'] * .7)
+    assert after['detail'] == before['detail']

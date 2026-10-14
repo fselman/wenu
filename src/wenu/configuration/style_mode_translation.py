@@ -171,6 +171,7 @@ def _deep_sky(style: Mapping[str, Any]) -> DeepSkyStyle:
         nonstellar_color=nonstellar["color"],
         nonstellar_labels_only=nonstellar['labels_only'],
         supernova_remnant_symbol_scale=supernova['symbol_scale'],
+        open_cluster_diameter_scale=open_cluster['diameter_scale'],
         open_cluster_angular_sizes=open_cluster['angular_sizes'],
         open_cluster_exclude_infrared_embedded=open_cluster['exclude_infrared_embedded'],
         open_cluster_symbol_name=('open_cluster' if open_cluster['symbol_shape'] == 'circle' else open_cluster['symbol_shape']),
