@@ -147,8 +147,8 @@ def main(argv=None):
       epilog='Usage: PYTHONPATH=../src python curate_open_clusters.py --catalogue ../output/open_cluster_comparison_v3/wenu_open_clusters_v3.ecsv --output-directory ../output/curation_v0.1\n'
       'The first CSV row contains column names; provenance/criteria are explicit row columns and a JSON summary.\n'
       'Outputs: <name>.csv/.ecsv, _selection.csv, _pairing.csv, _summary.json; existing products are refused.\n'
-      'Position pairs remain provisional; old union IDs are retained in previous_wenu_ids/redirects. No chart adoption.')
-    parser.add_argument('--catalogue',type=Path,required=True,help='Full union ECSV, including verified observing memberships and source masks.')
+      'Position pairs remain provisional; old union IDs are retained in previous_wenu_ids/redirects. Accepted versions are promoted separately with prepare_open_cluster_catalogue.py --promote-catalogue; never write trial files into curated_catalogs.')
+    parser.add_argument('--catalogue',type=Path,required=True,help='Trial union ECSV from output/, including verified observing memberships and source masks.')
     parser.add_argument('--output-directory',type=Path,required=True)
     parser.add_argument('--name',default='wenu_open_clusters_v0.1')
     parser.add_argument('--max-v10',type=float,default=12.5,help='Strict Hunt V10 limit for numeric additions; default 12.5.')

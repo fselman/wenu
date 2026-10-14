@@ -93,12 +93,13 @@ def excel_rows(path):
 def records_from_sources(directory, manifest):
     """Decode only membership identities; preserve source parameter authority."""
     directory = Path(directory)
+    from catalogue_data_layout import data_file
     products = {r['file']:r for r in manifest['products'] if r['file'] in SOURCE_FILES}
     if set(products)!=set(SOURCE_FILES):raise ValueError('Registry lacks a cluster-list source.')
     for name,product in products.items():
         if Path(name).name!=name:
             raise ValueError('Invalid observing source filename.')
-        data = (directory/name).read_bytes()
+        data = data_file(directory,name).read_bytes()
         if len(data)!=product['bytes'] or hashlib.sha256(data).hexdigest()!=product['sha256']:
             raise ValueError('Observing source checksum mismatch: '+name)
     records = []
@@ -109,7 +110,7 @@ def records_from_sources(directory, manifest):
     for catalogue in ('messier','caldwell','sac_best_ngc'):
         name = {'messier':'messier_list_v1.csv','caldwell':'caldwell_list_v1.csv',
                 'sac_best_ngc':'sac_best_list_v1.csv'}[catalogue]
-        for row in csv.DictReader((directory/name).open(encoding='utf-8')):
+        for row in csv.DictReader(data_file(directory,name).open(encoding='utf-8')):
             if catalogue=='messier':
                 # Use established observing crosswalk labels, not the historical
                 # AL table's approximate M24/M45 NGC associations.
@@ -123,7 +124,7 @@ def records_from_sources(directory, manifest):
     for catalogue,name in [('herschel400','herschel400_list_v1.pdf'),
                            ('herschel2','herschel2_list_v1.pdf'),
                            ('rasc_finest_ngc','rasc_finest_list_v1.pdf')]:
-        text = '\n'.join(page.extract_text() or '' for page in PdfReader(directory/name).pages)
+        text = '\n'.join(page.extract_text() or '' for page in PdfReader(data_file(directory,name)).pages)
         if catalogue=='herschel400':
             for n in re.findall(r'^\s*(\d+)\s+\d+\s+\d',text,re.M):
                 add(catalogue,'NGC '+n,['NGC '+n],name)
@@ -149,7 +150,7 @@ def records_from_sources(directory, manifest):
         ('al_globular_clusters','al_globular_clusters_list_v1.xlsx'),
         ('herschel400_south','herschel400_south_list_v1.xls')]
     for catalogue,name in excel:
-        for rows in excel_rows(directory/name):
+        for rows in excel_rows(data_file(directory,name)):
             for row in rows:
                 row = [str(v).strip() if v is not None else '' for v in row]
                 if catalogue=='al_open_clusters':
@@ -247,7 +248,8 @@ def annotate(table, records=None, reference_edges=None):
 def load_converted(directory, registry_path):
     """Use only a complete, hash-bound first-pass CSV conversion."""
     directory,registry_path = Path(directory),Path(registry_path)
-    receipt_path = directory/'conversion_receipt_v1.json'
+    from catalogue_data_layout import data_file
+    receipt_path = data_file(directory,'conversion_receipt_v1.json')
     if not receipt_path.exists():
         raise FileNotFoundError('First-pass CSV receipt missing; run tools/convert_observing_catalogues.py before compilation: '+str(receipt_path))
     receipt = json.loads(receipt_path.read_text())
@@ -259,11 +261,11 @@ def load_converted(directory, registry_path):
     products = {r['file']:r for r in receipt['products']}
     for name,record in products.items():
         if Path(name).name!=name:raise ValueError('Invalid converted filename.')
-        data = (directory/name).read_bytes()
+        data = data_file(directory,name).read_bytes()
         if len(data)!=record['bytes'] or hashlib.sha256(data).hexdigest()!=record['sha256']:
             raise ValueError('Converted CSV checksum mismatch: '+name)
     records = []
-    with (directory/'observing_memberships_v1.csv').open(encoding='utf-8',newline='') as stream:
+    with data_file(directory,'observing_memberships_v1.csv').open(encoding='utf-8',newline='') as stream:
         for row in csv.DictReader(stream):
             records.append(dict(catalogue=row['catalogue'],designation=row['designation'],
                 source_file=row['source_file'],identifiers=json.loads(row['identifiers_json'])))

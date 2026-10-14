@@ -5062,7 +5062,7 @@ final full suite remain pending. The living curation guide owns user details.
 
 Fernando requested source acquisition before selecting public/beginner targets.
 The new data-directory registry
-`src/wenu/data/catalogs/observing_lists/observing_sources_v1.json` inventories
+`src/wenu/data/observing_lists/observing_sources_v1.json` inventories
 13 distinct source lists/catalogues plus the generic Best of the NGC alias.
 Eighteen checked source-table products are delivered separately in the versioned
 wenu_observing_catalogues_v1.zip, with publisher/edition URLs, retrieval dates,
@@ -5271,3 +5271,31 @@ Existing saved skies can be reused because catalogue metadata is unchanged.
 Tests extend the existing Matplotlib renderer and atlas CLI owners, checking
 physical dimensions at two DPIs, equal central/edge sizing, missing-value
 floors, rendered chart scale, fixed mode and presentation admission.
+
+
+## Standard catalogue maintenance layout
+
+Scientific sources remain under src/wenu/data/catalogs. Observing selections
+now live in src/wenu/data/observing_lists, with one named directory per list,
+original files, CSVs, README and provenance. Barnard/Abell physical catalogues
+belong to scientific sources. Trials and diagnostic products belong to output;
+accepted bundles and the relative active selector belong to
+src/wenu/data/curated_catalogs/open_clusters.
+
+catalogue_data_layout.py owns offline path resolution, collision-safe copying,
+per-list provenance and conversion publication. migrate_catalogue_data.py
+verifies historical source/conversion receipts, moves legacy flat folders only
+after verified copies, and records migration evidence. Registry/receipt bytes,
+membership records, source identifiers and scientific selection rules remain
+unchanged. Legacy flat inputs remain readable; new publication is per list.
+The shared resolver is used by both source-specific observing converters/loaders.
+
+prepare_open_cluster_catalogue.py separates trial depuration from accepted
+--promote-catalogue publication. Promotion checks the complete summary-bound
+bundle, preserves trial outputs, copies accepted data/review evidence and
+atomically changes only the selector. The plot tool defaults to that accepted
+selector while accepting explicit trial inputs. Merger defaults use the new
+observing root. Working observing/curated trees are excluded from automatic
+package discovery; installed software reads explicit catalogue paths. The
+existing atlas pipeline, saved-sky format, symbol sizing and source selection
+are unchanged. The curation guide documents each tool and the complete workflow.

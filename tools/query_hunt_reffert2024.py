@@ -61,7 +61,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument('--download-directory', type=Path,
-        help='Explicit download into a NEW external cache directory; member file is large.')
+        help='Explicit download into a NEW scientific source directory, e.g. src/wenu/data/catalogs/open_clusters/hunt_sources_v1; member file is large.')
     source.add_argument('--source-directory', type=Path,
         help='Offline reuse of complete raw CDS files and receipt.json.')
     parser.add_argument('--data-directory', type=Path, default=ROOT/'src/wenu/data/catalogs',

@@ -58,6 +58,13 @@ markers = [
     "slow: intrinsically expensive after accepted optimization",
 ]
 
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["wenu.data.observing_lists*", "wenu.data.curated_catalogs*"]
+
+[tool.setuptools.exclude-package-data]
+"*" = ["observing_lists/*", "observing_lists/**/*", "curated_catalogs/*", "curated_catalogs/**/*"]
+
 [tool.setuptools.package-data]
 "wenu.data.catalogs.caldwell" = ["*.ecsv", "*.csv", "*.json", "*.txt", "README.md"]
 "wenu.data.catalogs.open_clusters" = ["*.ecsv", "*.csv", "*.json", "README.md"]

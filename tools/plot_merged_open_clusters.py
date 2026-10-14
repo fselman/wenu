@@ -11,6 +11,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+from catalogue_data_layout import CURATED
 import sys
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
@@ -97,7 +98,7 @@ def main(argv=None):
       'Use --x radius (default) or --x members (source-specific published member_count).\n'
       'Both X-axis choices require positive values and use a logarithmic scale; invalid values are logged.\n'
       'Optional --max-v10 11 (strict); --max-ebv 3 (source-specific). Exclusions are exported.')
-    parser.add_argument('--catalogue',type=Path,required=True,help='Source-preserving combined ECSV, retaining masks and metadata.')
+    parser.add_argument('--catalogue',type=Path,default=CURATED/'open_star_clusters.ecsv',help='Trial output ECSV, or default active accepted catalogue under curated_catalogs/open_clusters.')
     parser.add_argument('--output-directory',type=Path,required=True)
     parser.add_argument('--name',default='wenu_radius_v10_v1')
     parser.add_argument('--x',choices=['radius','members'],default='radius',help='X axis: half selected source diameter, or original source member_count.')

@@ -18,6 +18,7 @@ import re
 import sys
 
 from observing_list_membership import SOURCE_FILES, excel_rows, records_from_sources
+from catalogue_data_layout import OBSERVING, data_file, publish_conversion
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -43,7 +44,7 @@ def convert(directory, destination, registry_path):
     for product in manifest['products']:
         name = product['file']
         if name not in SOURCE_FILES:continue
-        path = directory/name
+        path = data_file(directory,name)
         stem = path.stem
         if path.suffix=='.csv':
             rows = list(csv.reader(path.open(encoding='utf-8',newline='')))
@@ -96,24 +97,30 @@ def convert(directory, destination, registry_path):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__,formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog='Usage: python tools/convert_observing_catalogues.py --source-directory src/wenu/data/catalogs/observing_lists/sources_v1\n'
-               'Output: CSV files per source/sheet, observing_memberships_v1.csv and conversion_receipt_v1.json.\n'
+        epilog='Usage: python tools/convert_observing_catalogues.py --source-directory src/wenu/data/observing_lists\n'
+               'Output: per-list CSV files and root observing_memberships_<original|additions>_v1.csv / conversion_receipt_<original|additions>_v1.json.\n'
                'Existing outputs are refused. XLSX/CSV/TSV/PDF remain offline; legacy XLS requires xlrd>=2,<3.')
-    parser.add_argument('--additions',action='store_true',help='Convert the six supplementary lists using observing_additions_v1.json; default output csv_additions_v1.')
-    parser.add_argument('--source-directory',type=Path,required=True)
+    parser.add_argument('--additions',action='store_true',help='Convert the six supplementary lists using observing_additions_v1.json; CSV files stay beside each list source.')
+    parser.add_argument('--source-directory',type=Path,default=OBSERVING,help='Per-list original files; default src/wenu/data/observing_lists.')
     parser.add_argument('--output-directory',type=Path,default=None)
     parser.add_argument('--registry',type=Path,default=None)
     arguments = sys.argv[1:] if argv is None else list(argv)
     if not arguments:parser.print_help();return 0
     args = parser.parse_args(arguments)
-    root = ROOT/'src/wenu/data/catalogs/observing_lists'
-    destination = args.output_directory or root/('csv_additions_v1' if args.additions else 'csv_v1')
+    root = OBSERVING
+    destination = args.output_directory or root
     registry = args.registry or root/('observing_additions_v1.json' if args.additions else 'observing_sources_v1.json')
+    import tempfile
+    batch='additions' if args.additions else 'original'
+    if data_file(destination,'conversion_receipt_v1.json',batch).exists():
+        raise FileExistsError('Conversion exists; choose a new version/destination.')
+    converter=convert
     if args.additions:
-        from observing_list_additions import convert as convert_additions
-        receipt = convert_additions(args.source_directory,destination,registry)
-    else:
-        receipt = convert(args.source_directory,destination,registry)
+        from observing_list_additions import convert as converter
+    with tempfile.TemporaryDirectory(prefix='wenu-observing-csv-') as temporary:
+        flat=Path(temporary)/'csv'
+        converter(args.source_directory,flat,registry)
+        receipt=publish_conversion(flat,destination,registry,batch)
     print(f"Converted {len(receipt['source_sha256'])} verified source files into {len(receipt['products'])} CSV files.")
     print(destination)
     return 0

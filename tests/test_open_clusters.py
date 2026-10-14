@@ -957,3 +957,62 @@ def test_depurated_catalogue_preserves_sources_masks_and_active_selector(tmp_pat
     assert preparation.main([])==0
     invalid=selected.copy();invalid['hunt_type'][0]='g'
     with pytest.raises(ValueError): OpenClusters.normalize_catalogue(invalid)
+    import hashlib,json
+    evidence=path.with_name(path.stem+'_positions.csv');evidence.write_text('review\n')
+    summary=path.with_name(path.stem+'_summary.json')
+    summary.write_text(json.dumps(dict(products={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in [path,evidence]})))
+    accepted=tmp_path/'curated'
+    selector=preparation.promote_catalogue(path,accepted,activate=True)
+    assert selector.is_symlink() and (accepted/evidence.name).read_bytes()==evidence.read_bytes()
+    assert path.is_file() and summary.is_file()  # output trials remain
+    preparation.promote_catalogue(path,accepted,activate=True)  # same immutable bytes reused
+    evidence.write_text('tampered')
+    with pytest.raises(ValueError,match='checksum'): preparation.promote_catalogue(path,tmp_path/'bad')
+    assert not (tmp_path/'bad').exists()
+
+
+def test_working_data_migration_keeps_receipts_and_list_memberships(tmp_path,monkeypatch):
+    import csv,hashlib,json
+    from pathlib import Path
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1]/'tools'))
+    import observing_list_membership as original
+    import observing_list_additions as additions
+    from migrate_catalogue_data import migrate
+    from catalogue_data_layout import data_file
+    monkeypatch.setattr(original,'SOURCE_FILES',['messier_list_v1.csv'])
+    monkeypatch.setattr(original,'LISTS',['messier'])
+    monkeypatch.setattr(original,'SOURCE_COUNTS',{'messier':1})
+    monkeypatch.setattr(additions,'COUNTS',{'sac_urban':1})
+    legacy=tmp_path/'legacy';destination=tmp_path/'data/observing_lists';destination.mkdir(parents=True)
+    source_bytes={}
+    for batch,source_folder,csv_folder,registry_name,list_id,source_file,csv_file in [
+        ('original','sources_v1','csv_v1','observing_sources_v1.json','messier','messier_list_v1.csv','messier_list_v1.csv'),
+        ('additions','sources_additions_v1','csv_additions_v1','observing_additions_v1.json','sac_urban','sac_urban_source_v1.html','sac_urban_list_v1.csv')]:
+        source=legacy/source_folder;converted=legacy/csv_folder;source.mkdir(parents=True);converted.mkdir()
+        raw=b'object\nM 1\n';(source/source_file).write_bytes(raw)
+        registry=destination/registry_name
+        registry.write_text(json.dumps({'products':[dict(file=source_file,bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())]}))
+        (converted/csv_file).write_bytes(raw)
+        index=converted/'observing_memberships_v1.csv'
+        with index.open('w',newline='') as stream:
+            writer=csv.writer(stream);writer.writerow(['catalogue','designation','identifiers_json','source_file'])
+            writer.writerow([list_id,'M 1','["M 1"]',source_file])
+        receipt=dict(source_registry_sha256=hashlib.sha256(registry.read_bytes()).hexdigest(),
+            source_sha256={source_file:hashlib.sha256(raw).hexdigest()},products=[dict(file=p.name,bytes=p.stat().st_size,
+                sha256=hashlib.sha256(p.read_bytes()).hexdigest()) for p in [converted/csv_file,index]])
+        r=converted/'conversion_receipt_v1.json';r.write_text(json.dumps(receipt));source_bytes[batch]=r.read_bytes()
+    report=migrate(legacy,destination)
+    assert not legacy.exists() and report['migrated_files']==8
+    assert (destination/'messier/provenance_original_v1.json').is_file()
+    assert (destination/'sac_urban/provenance_additions_v1.json').is_file()
+    for batch in source_bytes:
+        assert data_file(destination,'conversion_receipt_v1.json',batch).read_bytes()==source_bytes[batch]
+    assert len(original.load_converted(destination,destination/'observing_sources_v1.json')[0])==1
+    assert len(additions.load_converted(destination,destination/'observing_additions_v1.json')[0])==1
+    # Conflicts fail before source removal/copy.
+    from catalogue_data_layout import copy_verified
+    source=tmp_path/'new';source.write_bytes(b'new')
+    target=tmp_path/'old';target.write_bytes(b'old')
+    import pytest
+    with pytest.raises(FileExistsError): copy_verified([(source,target)])
+    assert source.read_bytes()==b'new' and target.read_bytes()==b'old'

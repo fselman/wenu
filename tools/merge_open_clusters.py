@@ -341,21 +341,21 @@ def main(argv=None):
                'Usage: python tools/merge_open_clusters.py --output-directory /path/to/review --name wenu_open_clusters_v2\n'
                '       add --hunt-diameter-column tidal_diameter_arcmin to audit with Hunt tidal radii.\n'
                'Observing membership: first convert the acquired files with tools/convert_observing_catalogues.py.\n'
-               'Default CSV directory: data root/observing_lists/csv_v1; choose --observing-directory to override.\n'
+               'Default CSV directory: src/wenu/data/observing_lists (per-list CSVs); choose --observing-directory to override.\n'
                'Columns in_<list> are true for resolved identifier membership, false for no resolved match,\n'
                'masked for unresolved claims. Best of NGC aliases SAC. _observing.csv retains review evidence.\n'
                'Membership columns: in_messier, in_caldwell, in_herschel400, in_herschel2,\n'
                'in_rasc_finest_ngc, in_sac_best_ngc, in_best_ngc, in_al_open_clusters,\n'
                'in_al_globular_clusters, in_herschel400_south; supplementary flags: sac_urban,\n'
                'sac_beyond_ngc, sac_red_stars, sac_asterisms, al_carbon_stars, al_dark_nebulae.\n'
-               'Supplementary CSVs auto-load from csv_additions_v1 when installed; absent lists are masked.\n'
+               'Supplementary CSVs auto-load from per-list directories when converted; absent lists are masked.\n'
                'This creates a candidate only: no clean database adoption, chart change or software merge.')
     parser.add_argument('--data-directory',type=Path,default=ROOT/'src/wenu/data/catalogs')
     parser.add_argument('--dias-catalogue',type=Path,help='Explicit normalized Dias input; all its rows are retained.')
     parser.add_argument('--hunt-catalogue',type=Path,help='Explicit normalized full Hunt input; all its rows/types are retained.')
     parser.add_argument('--id-registry',type=Path,help='Previous _ids.json; preserve existing wenu_id assignments.')
-    parser.add_argument('--observing-directory',type=Path,help='Verified first-pass CSV directory; default data root/observing_lists/csv_v1.')
-    parser.add_argument('--observing-additions-directory',type=Path,help='Verified supplementary CSVs; default data root/observing_lists/csv_additions_v1 when present. Explicit missing directories fail.')
+    parser.add_argument('--observing-directory',type=Path,help='Verified first-pass CSV directory; default src/wenu/data/observing_lists (per-list CSVs).')
+    parser.add_argument('--observing-additions-directory',type=Path,help='Verified supplementary CSVs; default src/wenu/data/observing_lists when converted. Explicit missing directories fail.')
     parser.add_argument('--without-observing-lists',action='store_true',help='Explicitly skip list loading; membership flags are masked, never false absences.')
     parser.add_argument('--dias-diameter-column',default='apparent_diameter_arcmin',
         help='Dias angular diameter column; default apparent_diameter_arcmin. Radius = diameter/2.')
@@ -396,16 +396,19 @@ def main(argv=None):
     summary['positional_audit'] = position_counts
     output.meta['positional_audit'] = position_counts
     from observing_list_membership import annotate, load_converted
+    from catalogue_data_layout import OBSERVING, data_file
     observing_records,observing_receipt = None,None
     if not args.without_observing_lists:
-        observing_records,observing_receipt = load_converted(
-            args.observing_directory or args.data_directory/'observing_lists/csv_v1',
-            args.data_directory/'observing_lists/observing_sources_v1.json')
-        additions_directory = args.observing_additions_directory or args.data_directory/'observing_lists/csv_additions_v1'
-        if args.observing_additions_directory is not None or additions_directory.exists():
+        observing_root=args.observing_directory or OBSERVING
+        observing_registry=observing_root/'observing_sources_v1.json'
+        if not observing_registry.is_file(): observing_registry=OBSERVING/'observing_sources_v1.json'
+        observing_records,observing_receipt = load_converted(observing_root,observing_registry)
+        additions_directory = args.observing_additions_directory or observing_root
+        if args.observing_additions_directory is not None or data_file(additions_directory,'conversion_receipt_v1.json','additions').exists():
             from observing_list_additions import load_converted as load_additions
-            additions_records,additions_receipt = load_additions(
-                additions_directory,args.data_directory/'observing_lists/observing_additions_v1.json')
+            additions_registry=additions_directory/'observing_additions_v1.json'
+            if not additions_registry.is_file(): additions_registry=OBSERVING/'observing_additions_v1.json'
+            additions_records,additions_receipt = load_additions(additions_directory,additions_registry)
             observing_records += additions_records
             observing_receipt['supplementary_conversion'] = additions_receipt
     observing_edges,observing_summary = annotate(output,observing_records,reference_edges=references)

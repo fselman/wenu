@@ -10,6 +10,7 @@ import re
 from zipfile import ZipFile
 
 from observing_list_membership import xlsx_rows
+from catalogue_data_layout import data_file
 
 COUNTS = dict(sac_urban=100, sac_beyond_ngc=110, sac_red_stars=333,
               sac_asterisms=114, al_carbon_stars=128, al_dark_nebulae=140)
@@ -37,7 +38,7 @@ def source_rows(directory):
     result = []
     for catalogue, filename in [('sac_urban', 'sac_urban_source_v1.html'),
                                 ('sac_beyond_ngc', 'sac_beyond_ngc_source_v1.html')]:
-        parser = SourceTables(); parser.feed((directory/filename).read_text())
+        parser = SourceTables(); parser.feed(data_file(directory,filename,'additions').read_text())
         rows = [r for r in parser.rows if (r[0].isdigit() if catalogue == 'sac_urban'
                                           else len(r) >= 7 and r[1].upper() in {v.upper() for v in CONSTELLATIONS})]
         for row in rows:
@@ -45,21 +46,21 @@ def source_rows(directory):
             result.append((catalogue, identifier, filename, row))
     for catalogue, filename in [('sac_red_stars', 'sac_red_stars_source_v1.zip'),
                                 ('sac_asterisms', 'sac_asterisms_source_v1.zip')]:
-        with ZipFile(directory/filename) as archive:
+        with ZipFile(data_file(directory,filename,'additions')) as archive:
             member = next(n for n in archive.namelist() if 'qcq' in n.lower())
             rows = list(csv.reader(io.StringIO(archive.read(member).decode('cp1252'))))
         for row in rows[1:]:
             if row and row[0].strip():
                 result.append((catalogue, row[0].strip(), filename, [v.strip() for v in row]))
     filename = 'al_carbon_stars_source_v1.xlsx'
-    for sheet, rows in enumerate(xlsx_rows(directory/filename), 1):
+    for sheet, rows in enumerate(xlsx_rows(data_file(directory,filename,'additions')), 1):
         for row in rows:
             if len(row) > 5 and re.fullmatch(r'\d{2}\s+\d{2}\s+\d{2}', row[4].strip()):
                 result.append(('al_carbon_stars', row[2].strip(), filename, [str(sheet)]+row))
     from pypdf import PdfReader
     for filename, subset in [('al_dark_required_source_v1.pdf', 'required'),
                              ('al_dark_optional_source_v1.pdf', 'optional')]:
-        for number, page in enumerate(PdfReader(directory/filename).pages, 1):
+        for number, page in enumerate(PdfReader(data_file(directory,filename,'additions')).pages, 1):
             text = page.extract_text() or ''
             for match in re.finditer(r'^(.+?)\s+([A-Za-z]{3})\s+(\d+h.*?)$', text, re.M):
                 if match[2] not in CONSTELLATIONS: continue
@@ -89,7 +90,7 @@ def convert(directory, destination, registry_path):
     for product in registry['products']:
         name = product['file']
         if Path(name).name != name: raise ValueError('Invalid source filename.')
-        data = (directory/name).read_bytes()
+        data = data_file(directory,name,'additions').read_bytes()
         if len(data) != product['bytes'] or hashlib.sha256(data).hexdigest() != product['sha256']:
             raise ValueError('Addition source checksum mismatch: '+name)
     records = source_rows(directory)
@@ -122,7 +123,7 @@ def convert(directory, destination, registry_path):
 
 def load_converted(directory, registry_path):
     directory, registry_path = map(Path, (directory, registry_path))
-    receipt_path = directory/'conversion_receipt_v1.json'
+    receipt_path = data_file(directory,'conversion_receipt_v1.json','additions')
     receipt = json.loads(receipt_path.read_text()); registry = json.loads(registry_path.read_text())
     if receipt['source_registry_sha256'] != hashlib.sha256(registry_path.read_bytes()).hexdigest():
         raise ValueError('Supplementary CSV registry mismatch.')
@@ -132,10 +133,10 @@ def load_converted(directory, registry_path):
     expected = {name+'_list_v1.csv' for name in COUNTS} | {'observing_memberships_v1.csv'}
     if set(products) != expected: raise ValueError('Incomplete supplementary CSV set.')
     for name, product in products.items():
-        data = (directory/name).read_bytes()
+        data = data_file(directory,name,'additions').read_bytes()
         if len(data) != product['bytes'] or hashlib.sha256(data).hexdigest() != product['sha256']:
             raise ValueError('Supplementary CSV checksum mismatch: '+name)
-    with (directory/'observing_memberships_v1.csv').open(newline='', encoding='utf-8') as stream:
+    with data_file(directory,'observing_memberships_v1.csv','additions').open(newline='', encoding='utf-8') as stream:
         records = [dict(catalogue=r['catalogue'], designation=r['designation'],
                         identifiers=json.loads(r['identifiers_json']), source_file=r['source_file'])
                    for r in csv.DictReader(stream)]

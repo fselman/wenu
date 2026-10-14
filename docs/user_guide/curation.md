@@ -5,6 +5,130 @@ registry, commands, parameter definitions and acceptance record whenever a
 curation script or supported filter changes. Work on open clusters first;
 globular clusters and supernova remnants are subsequent, separate stages.
 
+## Standard working-data workflow
+
+Use these locations for all new work:
+
+| Location | Contents |
+|---|---|
+| `src/wenu/data/catalogs/<catalogue>/` | Scientific source catalogues, original downloads and their provenance |
+| `src/wenu/data/observing_lists/<list>/` | Observing-group selections, original files, converted CSVs, README and provenance |
+| `output/<experiment>/` | Trial unions, filtered candidates, plots, summaries and review ledgers |
+| `src/wenu/data/curated_catalogs/open_clusters/` | Accepted versioned Wenu catalogues, complete review/provenance bundles and active selector |
+
+Observing selections are not uniform original scientific survey catalogues.
+Their membership reflects the compilers' observing objectives; they do not
+generally claim completeness. Barnard and Abell are scientific catalogues and
+their acquired originals stay under `catalogs/barnard/` and
+`catalogs/abell_planetary_nebulae/`, even though their names appeared in the
+earlier mixed acquisition inventory.
+
+### Tool responsibilities
+
+| Tool | Input and output |
+|---|---|
+| `query_hunt_reffert2024.py` | Explicit scientific source download or verified offline source cache; prepared scientific tables under `data/catalogs/open_clusters/` |
+| `migrate_catalogue_data.py` | Verify and relocate legacy sources/CSVs; optionally promote the accepted cluster bundle; preserve historical receipt bytes |
+| `convert_observing_catalogues.py` | Original per-list files to per-list CSVs, immutable conversion receipts and descriptive provenance |
+| `merge_open_clusters.py` | Scientific Dias/Hunt tables plus verified observing-list CSVs to a source-preserving trial union and review ledgers in `output/` |
+| `curate_open_clusters.py` | Explicit trial union from `output/` to a versioned filtered candidate and selection/pairing evidence in `output/` |
+| `prepare_open_cluster_catalogue.py` | Depurate a selected output candidate; separately verify and promote an accepted output bundle |
+| `plot_merged_open_clusters.py` | Explicit trial ECSV, or the accepted active selector by default; plots and point ledgers in `output/` |
+| `compare_open_clusters.py` | Scientific source comparisons; reads `data/catalogs/` and writes diagnostic outputs |
+| `wenu_create_atlas` | Explicit accepted selector when preparing a new sky, or an existing frozen sky when redrawing it |
+
+All CLI tools display their parameters with `--help`. The standalone catalogue
+tools display help without writing when invoked without arguments.
+`catalogue_data_layout.py` owns shared path resolution and provenance publication;
+`observing_list_membership.py` and `observing_list_additions.py` remain the
+source-specific membership/conversion owners.
+
+### Download, convert, iterate, review, promote
+
+1. Download the original files into the appropriate named scientific catalogue
+   or observing-list directory. Keep versioned filenames and record publisher,
+   URL, edition, acquisition date, byte count, SHA-256 and rights information.
+   Current observing sources are bound by the two pinned acquisition registries;
+   changing an edition requires updated source bindings, not overwriting a file.
+2. Convert observing files to CSV beside their original sources. From the
+   repository root, for a fresh/unconverted pinned acquisition:
+
+```bash
+PYTHONPATH=src python tools/convert_observing_catalogues.py --source-directory src/wenu/data/observing_lists
+PYTHONPATH=src python tools/convert_observing_catalogues.py --additions --source-directory src/wenu/data/observing_lists
+```
+
+   An existing completed conversion is refused. Already migrated conversions
+   need no reconversion. Legacy flat folders remain readable for verification;
+   new CLI publication always follows the named-list layout.
+3. Build a new union, then filter and depurate into explicit experiment folders.
+   Examples below use new version names; existing products are refused:
+
+```bash
+PYTHONPATH=src python tools/merge_open_clusters.py --output-directory output/cluster_union_v4 --name wenu_open_clusters_v4
+PYTHONPATH=src python tools/curate_open_clusters.py --catalogue output/cluster_union_v4/wenu_open_clusters_v4.ecsv --output-directory output/curation_v0.3 --name wenu_open_clusters_v0.3
+PYTHONPATH=src python tools/prepare_open_cluster_catalogue.py --catalogue output/curation_v0.3/wenu_open_clusters_v0.3.ecsv --output-directory output/depuration_v0.3 --name wenu_open_clusters_v0.3
+```
+
+   For later full unions, use `--id-registry` with the preceding full-union
+   `_ids.json` to retain stable Wenu IDs. Change catalogue versions or experiment
+   folders for each iteration; preserve prior results and their provenance.
+4. Plot the candidate explicitly and inspect selection, identity and positional
+   ledgers. The membership priority and numeric filters are documented below:
+
+```bash
+PYTHONPATH=src python tools/plot_merged_open_clusters.py --catalogue output/depuration_v0.3/wenu_open_clusters_v0.3.ecsv --x radius --output-directory output/depuration_v0.3/plots --name radius_v10_v1
+PYTHONPATH=src python tools/plot_merged_open_clusters.py --catalogue output/depuration_v0.3/wenu_open_clusters_v0.3.ecsv --x members --output-directory output/depuration_v0.3/plots --name members_v10_v1
+```
+
+5. Only after acceptance, promote the complete bundle without filtering again:
+
+```bash
+PYTHONPATH=src python tools/prepare_open_cluster_catalogue.py --promote-catalogue output/depuration_v0.3/wenu_open_clusters_v0.3.ecsv --activate
+```
+
+   Promotion verifies every recorded product hash, copies ECSV/CSV, the summary
+   and review ledgers into `src/wenu/data/curated_catalogs/open_clusters/`, and
+   atomically updates the relative `open_star_clusters.ecsv` selector. Trial
+   outputs remain unchanged. Different existing bytes are refused; identical
+   accepted bundles can be reused. A regular selector file is never overwritten.
+   No scientific source, observing-list membership or catalogue selection is
+   recalculated during promotion.
+
+Plot the active accepted version by omitting `--catalogue` from the merged plot
+tool. Prepare a new atlas with
+`--open-cluster-catalogue src/wenu/data/curated_catalogs/open_clusters/open_star_clusters.ecsv`.
+An existing saved sky remains self-contained and can still be reused with
+`--from-sky`; moving the original data does not rewrite its historical source
+paths or hashes. Working observing/curated trees are excluded from automatic
+package discovery. An installed Wenu reads the explicitly selected working
+catalogue path, so data acceptance does not require a software rebuild.
+
+### Migrating the current files
+
+From the repository root:
+
+```bash
+PYTHONPATH=src python tools/migrate_catalogue_data.py --legacy-directory src/wenu/data/catalogs/observing_lists --accepted-catalogue output/curation_v0.2/wenu_open_clusters_v0.2.ecsv
+```
+
+The migration verifies all acquired and converted files against their existing
+receipts before copying. Each observing list receives its own named folder,
+README and provenance. Historical registries/receipts are unchanged; aggregate
+membership indices and conversion receipts use original/additions versioned
+filenames at the new root. Source and converted CSV bytes may share one file
+when they are identical. Source-specific identifiers and list counts do not
+change. The 45 legacy source/CSV/receipt files map to the new layout without
+discarding evidence. The four obsolete flat folders are removed only after
+verified copies exist.
+
+The accepted v0.2 bundle is promoted intact and selected at the curated path.
+The old top-level `data/catalogs/open_clusters/` version/selector is removed
+only when it matches the accepted bytes; empty obsolete parents are then
+removed. Other top-level data is preserved. `output/`, saved skies and atlases
+remain untouched. A migration receipt records the final product hashes.
+
+
 ## Preserve sources and record decisions
 
 Keep the packaged source catalogues intact. Mark excluded objects and record
@@ -571,7 +695,7 @@ in Wenu's public/beginner selection. The versioned download
 `wenu_observing_catalogues_v1.zip` contains 18 source-table files, with the
 inventory/provenance ledger `observing_sources_v1.json` and validation counts.
 The same ledger is tracked under
-`src/wenu/data/catalogs/observing_lists/observing_sources_v1.json`.
+`src/wenu/data/observing_lists/observing_sources_v1.json`.
 Each product records its source URL, publisher, retrieval time, byte count,
 SHA-256, edition/count distinctions and any extraction from a parent source.
 Archive source files are separate from installed chart resources. This stage
@@ -644,14 +768,14 @@ and the southern Herschel supplement. The original complete rows of mixed
 lists remain intact. PN, Abell, Barnard and double/multiple-star programme work
 is deferred; their acquired originals remain untouched.
 
-The converter reads the installed `observing_lists/sources_v1` directory and
+The converter reads the installed `observing_lists` directory and
 verifies each relevant source against `observing_sources_v1.json`. It produces
-10 source CSVs and `observing_memberships_v1.csv`, with a last-written
-`conversion_receipt_v1.json` binding source registry, source and output hashes.
+10 per-list source CSVs and root `observing_memberships_original_v1.csv`, with
+`conversion_receipt_original_v1.json` binding source registry, source and output hashes.
 There are 1,796 source-list membership records; they are not deduplicated
 physical objects. Globular challenge rules remain a separate CSV sheet rather
-than eight invented object memberships. Existing output directories are refused.
-All conversion succeeds in memory before a new destination is created.
+than eight invented object memberships. Existing conversion receipts and differing product bytes are refused.
+Conversion is staged and verified before publication beside the list sources.
 
 Excel sheets retain their complete stored cell grid, including blank rows,
 titles and repeated headers; `source_row` and `source_column_N` locate every
@@ -667,10 +791,10 @@ repository root is:
 
 ```bash
 PYTHONPATH=src python tools/convert_observing_catalogues.py \
-  --source-directory src/wenu/data/catalogs/observing_lists/sources_v1
+  --source-directory src/wenu/data/observing_lists
 ```
 
-The default destination is `src/wenu/data/catalogs/observing_lists/csv_v1`.
+The default destination is `src/wenu/data/observing_lists`.
 `--output-directory` chooses a fresh directory; `--registry` selects the
 acquisition registry. XLSX conversion uses the Python standard library; PDF
 conversion uses Wenu's existing pypdf dependency. The legacy southern XLS
@@ -816,9 +940,8 @@ files and counts are documented in the existing acquisition inventory.
 
 ### Data, conversion and cluster membership
 
-Install the additions alongside the existing directories:
-`observing_lists/sources_additions_v1` and `observing_lists/csv_additions_v1`.
-Keep the existing `sources_v1`, `csv_v1` and their registries unchanged.
+Keep additions in their named list directories under `observing_lists/`.
+The immutable registries and conversion receipts retain the historical acquisition grouping.
 The additions contain seven original source snapshots for six lists, seven
 CSVs including the membership index, and a conversion receipt. CSVs preserve
 source values without imputing modern positions or astrophysical properties;
@@ -830,8 +953,8 @@ To reproduce conversion offline from the repository root:
 ```bash
 PYTHONPATH=src python tools/convert_observing_catalogues.py \
   --additions \
-  --source-directory src/wenu/data/catalogs/observing_lists/sources_additions_v1 \
-  --output-directory /path/to/new/csv_additions_v1
+  --source-directory src/wenu/data/observing_lists \
+  --output-directory /path/to/new/observing_lists
 ```
 
 The merged cluster tool automatically reads the supplementary CSV directory
@@ -1002,10 +1125,10 @@ Run from the repository's tools directory:
 
 ```bash
 PYTHONPATH=../src python prepare_open_cluster_catalogue.py --help
-PYTHONPATH=../src python prepare_open_cluster_catalogue.py \\
-  --catalogue ../output/curation_v0.1/wenu_open_clusters_v0.1.ecsv \\
-  --output-directory ../output/curation_v0.2 \\
-  --install-directory ../data/catalogs/open_clusters \\
+PYTHONPATH=../src python prepare_open_cluster_catalogue.py \
+  --catalogue ../output/curation_v0.1/wenu_open_clusters_v0.1.ecsv \
+  --output-directory ../output/curation_v0.2 \
+  --install-directory ../src/wenu/data/curated_catalogs/open_clusters \
   --activate
 ```
 
@@ -1018,12 +1141,12 @@ are checked, including two positions from the same source. No epoch propagation
 or additional identity merge occurs. 76 retained rows carry identity-review
 flags; they remain available for scientific inspection.
 
-The installation directory is a standard catalogue-only tree outside package
-resources. Each version is immutable. The relative symlink
-`data/catalogs/open_clusters/open_star_clusters.ecsv` selects
+The accepted working directory is the curated_catalogs tree, excluded from
+automatic package discovery. Each version is immutable. The relative symlink
+`src/wenu/data/curated_catalogs/open_clusters/open_star_clusters.ecsv` selects
 `wenu_open_clusters_v0.2.ecsv`. An installed Wenu can read this same directory;
 without an explicit installation directory, activation uses
-`~/.local/share/wenu/catalogs/open_clusters`. A regular file at the selector path
+`src/wenu/data/curated_catalogs/open_clusters`. A regular file at the selector path
 is never overwritten. Selecting a different version changes the symlink only;
 old versions remain available. Catalogue generation and activation are explicit,
 and ordinary Wenu defaults continue to use the packaged catalogue.
@@ -1034,7 +1157,7 @@ repository root with the existing design, index, presentation and stellar
 options, adding:
 
 ```bash
---open-cluster-catalogue data/catalogs/open_clusters/open_star_clusters.ecsv
+--open-cluster-catalogue src/wenu/data/curated_catalogs/open_clusters/open_star_clusters.ecsv
 ```
 
 Use a new output directory and a new saved-sky directory. Do not reuse an old

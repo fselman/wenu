@@ -5,7 +5,9 @@ Keep Hunt type o and Dias-only open clusters. Exclude single-source objects
 without another catalogue designation or resolved observing-list membership;
 masked claims remain for review. HSC alone is not corroboration; OC and other
 modern catalogues count. No physical identity is decided by sky proximity.
-All source columns/IDs are retained. The original selection is never changed.
+All source columns/IDs are retained. The original selection is never changed. Trial products belong in output/.
+Use --promote-catalogue only after reviewing an accepted version; its entire
+verified bundle is copied to curated_catalogs without filtering again.
 No arguments prints help and creates nothing.
 """
 from __future__ import annotations
@@ -26,7 +28,8 @@ from wenu.objects.open_clusters import OpenClusters
 from merge_open_clusters import text
 
 
-DEFAULT_INSTALL_DIRECTORY = Path.home()/'.local/share/wenu/catalogs/open_clusters'
+from catalogue_data_layout import CURATED, check_targets, copy_verified
+DEFAULT_INSTALL_DIRECTORY = CURATED
 
 
 def depurate(table):
@@ -107,16 +110,57 @@ def install(catalogue, directory, *, activate=False):
     return selector if activate else target
 
 
+def promotion_files(catalogue, directory):
+    """Admit the complete accepted output bundle using its recorded hashes."""
+    catalogue,directory=Path(catalogue),Path(directory)
+    OpenClusters._validate(OpenClusters.normalize_catalogue(Table.read(catalogue,format='ascii.ecsv')))
+    summary_path=catalogue.with_name(catalogue.stem+'_summary.json')
+    summary=json.loads(summary_path.read_text())
+    records=summary['products']
+    files=[]
+    for name,record in records.items():
+        filename=record['file'] if isinstance(record,dict) else name
+        digest=record['sha256'] if isinstance(record,dict) else record
+        if Path(filename).name!=filename or not filename.startswith(catalogue.stem):
+            raise ValueError('Invalid accepted product filename.')
+        source=catalogue.parent/filename
+        if hashlib.sha256(source.read_bytes()).hexdigest()!=digest:
+            raise ValueError('Accepted product checksum mismatch: '+filename)
+        files.append((source,directory/filename))
+    if catalogue.name not in [p.name for p,_ in files]: raise ValueError('Accepted ECSV is absent from summary.')
+    files.append((summary_path,directory/summary_path.name))
+    return files
+
+
+def promote_catalogue(catalogue, directory=CURATED, *, activate=False):
+    """Copy accepted data and review evidence; preserve all output experiments."""
+    files=promotion_files(catalogue,directory)
+    selector=Path(directory)/'open_star_clusters.ecsv'
+    if activate and (selector.exists() or selector.is_symlink()) and not selector.is_symlink():
+        raise ValueError('Selector is a regular file; refusing replacement.')
+    copy_verified(files)
+    if activate:
+        import os,tempfile
+        stage=Path(tempfile.mkdtemp(prefix='.wenu-selector-',dir=directory))
+        try:
+            link=stage/'selector';link.symlink_to(Path(catalogue).name);os.replace(link,selector)
+        finally: stage.rmdir()
+    return selector if activate else Path(directory)/Path(catalogue).name
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__,formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog='Example (from tools): PYTHONPATH=../src python prepare_open_cluster_catalogue.py --catalogue ../output/curation_v0.1/wenu_open_clusters_v0.1.ecsv --output-directory ../output/curation_v0.2 --install-directory ../data/catalogs/open_clusters --activate\n'
+        epilog='Example (from tools): PYTHONPATH=../src python prepare_open_cluster_catalogue.py --catalogue ../output/curation_v0.1/wenu_open_clusters_v0.1.ecsv --output-directory ../output/curation_v0.2 \n'
         'Plot the resulting ECSV with plot_merged_open_clusters.py. Atlas: --open-cluster-catalogue <installed directory>/open_star_clusters.ecsv.\n'
-        'Existing versions are refused. Overlap candidates stay separate; _positions.csv is a review ledger, not a duplicate count.')
-    parser.add_argument('--catalogue',required=True,type=Path,help='Selected union ECSV, with original masks and source parameters.')
-    parser.add_argument('--output-directory',required=True,type=Path)
+        'Promote after review: --promote-catalogue ../output/curation_v0.2/wenu_open_clusters_v0.2.ecsv --activate\n'
+        'Existing different versions are refused. Overlap candidates stay separate; _positions.csv is a review ledger, not a duplicate count.')
+    parser.add_argument('--catalogue',type=Path,help='Selected union ECSV, with original masks and source parameters.')
+    parser.add_argument('--output-directory',type=Path)
+    parser.add_argument('--promote-catalogue',type=Path,help='Accepted output ECSV: verify and copy its complete bundle, without filtering again.')
+    parser.add_argument('--curated-directory',type=Path,default=CURATED,help='Accepted working catalogues; default src/wenu/data/curated_catalogs/open_clusters.')
     parser.add_argument('--name',default='wenu_open_clusters_v0.2',help='New versioned prefix.')
-    parser.add_argument('--install-directory',type=Path,help='Catalogue installation directory, separate from software/package resources.')
-    parser.add_argument('--activate',action='store_true',help='Install and select by relative symlink; default directory ~/.local/share/wenu/catalogs/open_clusters.')
+    parser.add_argument('--install-directory',type=Path,help='Explicit accepted-directory override for the legacy combined filtering/promotion mode; prefer separate --promote-catalogue.')
+    parser.add_argument('--activate',action='store_true',help='Install and select by relative symlink; default src/wenu/data/curated_catalogs/open_clusters.')
     arguments = sys.argv[1:] if argv is None else list(argv)
     if not arguments: parser.print_help(); return 0
     args = parser.parse_args(arguments)
@@ -151,7 +195,7 @@ def main(argv=None):
     products['_summary.json'].write_text(json.dumps(summary,indent=2)+'\n')
     print(json.dumps({k:v for k,v in summary.items() if k!='products'},indent=2))
     if args.install_directory is not None or args.activate:
-        print(install(products['.ecsv'],args.install_directory or DEFAULT_INSTALL_DIRECTORY,activate=args.activate))
+        print(promote_catalogue(products['.ecsv'],args.install_directory or DEFAULT_INSTALL_DIRECTORY,activate=args.activate))
     return 0
 
 
