@@ -5316,3 +5316,10 @@ Radius limits and missing quantities are separate statuses; no visual threshold
 is installed. H-beta remains an observed line flux, not visual magnitude.
 The summary records source hashes, formula, command and completion products.
 See [curation](../user_guide/curation.md#planetary-nebula-observing-list-comparison).
+
+`--write-selected-catalogue` additionally emits `_selected.csv/.ecsv` and
+`_public_review.csv`; `--min-log-hbeta` defaults to -12 and requires a strict
+greater-than comparison for additional targets. All reference memberships
+bypass this cut. Original comparison outputs remain all-row products.
+Public review is sorted by decreasing finite H-beta surface brightness,
+retains angular sizes/quality, and assigns no public-interest approval.

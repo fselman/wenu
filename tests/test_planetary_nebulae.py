@@ -207,3 +207,56 @@ def test_planetary_comparison_cli_exports_preserves_source_and_refuses_clobber(m
         tool.main(args)
     with pytest.raises(ValueError, match='explicit _vN'):
         tool.main(['--name', 'unversioned'])
+
+
+def test_planetary_selection_list_union_strict_flux_missing_values_and_public_review(monkeypatch):
+    from astropy.table import MaskedColumn, Table
+    import pytest
+    tool = _comparison_tool(monkeypatch)
+    source = Table(dict(identifier=['listed_missing', 'listed_faint', 'bright', 'boundary', 'missing'],
+        log_hbeta_flux=[np.nan, -15., -11.99, -12., np.nan],
+        log_hbeta_surface_brightness_proxy=[np.nan, -16., -11., -13., np.nan],
+        optical_diameter_uncertain=['', '', ':', '', '']))
+    source['in_messier'] = [True, False, False, False, False]
+    source['in_caldwell'] = MaskedColumn([False, True, True, False, False],
+        mask=[False, False, True, False, False])
+    annotated, selected, review, summary = tool.select_catalogue(source)
+    assert list(annotated['selection_included']) == [True, True, True, False, False]
+    assert list(selected['identifier']) == ['listed_missing', 'listed_faint', 'bright']
+    assert summary['reference_list'] == 2 and summary['additional_hbeta_only'] == 1
+    assert list(review['identifier']) == ['bright', 'listed_faint', 'listed_missing']
+    assert review[0]['surface_brightness_quality'] == 'uncertain_diameter'
+    assert not any(selected['public_interest'])
+    assert set(selected['public_review_status']) == {'unassessed'}
+    assert 'selection_included' not in source.colnames
+    for invalid in (float('nan'), float('inf'), True):
+        with pytest.raises(ValueError, match='threshold must be finite'):
+            tool.select_catalogue(source, invalid)
+
+
+def test_planetary_selected_cli_exports_exact_union_and_ranked_review(monkeypatch, tmp_path):
+    import json
+    import hashlib
+    from astropy.table import Table
+    tool = _comparison_tool(monkeypatch)
+    # Existing CLI export test owns plot rendering; inspect this new composition seam.
+    def synthetic_plot(table, prefix, view, priority):
+        for suffix in ('png', 'svg', 'pdf'):
+            prefix.with_name(prefix.name+'_radius_hbeta_'+view+'.'+suffix).write_bytes(b'synthetic plot stub')
+        return {}
+    monkeypatch.setattr(tool, 'plot', synthetic_plot)
+    assert tool.main(['--output-directory', str(tmp_path), '--name', 'selected_pn_v1',
+        '--write-selected-catalogue']) == 0
+    selected = Table.read(tmp_path/'selected_pn_v1_selected.ecsv')
+    all_rows = Table.read(tmp_path/'selected_pn_v1_catalogue.ecsv')
+    review = Table.read(tmp_path/'selected_pn_v1_public_review.csv', format='ascii.csv')
+    summary = json.loads((tmp_path/'selected_pn_v1_summary.json').read_text())
+    assert len(selected) == 319 and len(all_rows) == 1143 and len(review) == 319
+    assert summary['selection']['reference_list'] == 178
+    assert summary['selection']['additional_hbeta_only'] == 141
+    assert sum(all_rows['selection_included']) == 319
+    assert not any(selected['public_interest'])
+    surface = np.asarray(np.ma.filled(review['log_hbeta_surface_brightness_proxy'], np.nan), float)
+    assert np.all(np.diff(surface[np.isfinite(surface)]) <= 0)
+    for name, expected in summary['products'].items():
+        assert hashlib.sha256((tmp_path/name).read_bytes()).hexdigest() == expected

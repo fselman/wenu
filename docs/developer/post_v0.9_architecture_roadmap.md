@@ -5694,3 +5694,14 @@ source checksums, limits, surface-area units and CLI receipt/no-clobber seams.
 No new test or production-module family is introduced. Focused verification
 precedes Mac scientific review; full-suite verification remains the final
 candidate merge gate under the accepted test policy.
+
+Fernando authorized candidate selection on 2026-10-14 after the comparison:
+all resolved reference-list members OR observed log H-beta > -12. The first
+selection has 319 rows, including 141 additional flux-only objects. Public
+interest is separate: only the highest surface brightness warrants review,
+and even M57 is challenging for newcomers. No object is automatically approved
+for the public. Optional selected CSV/ECSV and a ranked, quality-labelled review
+table extend the same offline owner. No public numerical cutoff or atlas
+installation has been accepted. The Mac comparison gate passed 12 tests after
+installation of the existing optional xlrd dependency; the expanded candidate
+requires its own focused verification and final merge gate.

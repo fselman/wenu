@@ -10480,6 +10480,10 @@ def test_planetary_comparison_documents_quantities_provenance_and_pending_select
                    'Missing data are retained in labelled margins and the ledger, never imputed.',
                    '178 distinct rows', 'Sh 2-216', 'NGC 3918, Shapley 1, NGC 6302 and NGC 6445'):
         assert phrase in guide
+    for phrase in ('--write-selected-catalogue', '319 of 1,143 rows',
+                   'Every `public_interest` flag remains false',
+                   'No public numerical cutoff', '_public_review.csv'):
+        assert phrase in guide
     for name in ('current_architecture_v0.9.md', 'source_tree.md',
                  'implementation_reference.md', 'post_v0.9_architecture_roadmap.md',
                  'coordinate_system_guide_v0.9.5.md'):

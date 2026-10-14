@@ -1283,3 +1283,33 @@ PN G latitude fields disagree with the negative-latitude objects claimed by
 their other identifiers. Preserve both candidates for review, without silently
 correcting the publisher's source. General-list unmatched records often describe
 other physical object types; they are not all missing planetary nebulae.
+
+### Candidate inclusion and public-interest review
+
+Add `--write-selected-catalogue` to export Fernando's first PN selection:
+resolved membership in any reference list OR finite observed log H-beta flux
+strictly greater than -12. `--min-log-hbeta` changes only the latter threshold.
+Membership bypasses the flux cut, including missing flux or size; diameter
+limits do not remove a flux-qualified object. An unresolved list claim does
+not create resolved membership, but a candidate may qualify independently by
+its measured flux. All-row selection reasons and identity-review flags remain.
+
+The verified input selects 319 of 1,143 rows: 178 reference-list objects and
+141 additional H-beta-only objects, with 824 excluded. The full comparison
+plots remain intact, with a dashed flux boundary and its mapped surface-proxy
+curve. No separate surface-brightness inclusion cutoff is applied.
+
+New products are `_selected.csv`, `_selected.ecsv` and `_public_review.csv`.
+The public review table contains the selected objects in decreasing finite
+surface-brightness order, with missing values last, stable identifier ties,
+angular sizes and explicit diameter-quality flags. This ordering is a review
+aid, not public approval. Every `public_interest` flag remains false and its
+`public_review_status` is unassessed. False here means not approved, not an
+assessed rejection. Fernando specifically considers even M57 challenging for
+newcomers: only the highest-surface-brightness objects may be public targets,
+if any. Very small high-surface-brightness nebulae still require evaluation.
+No public numerical cutoff, visual guarantee or atlas adoption is inferred.
+
+```bash
+PYTHONPATH=src MPLBACKEND=Agg python tools/compare_planetary_nebulae.py --output-directory output/planetary_nebulae_selection_v1 --name planetary_nebulae_selection_v1 --write-selected-catalogue --min-log-hbeta -12
+```

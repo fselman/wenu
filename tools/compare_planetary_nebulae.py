@@ -265,6 +265,18 @@ def plot(table, prefix, view, priority):
         'log₁₀ mean Hβ surface-brightness proxy [erg s⁻¹ cm⁻² arcsec⁻²]', fontsize=14)
     ax.set_title(f'Planetary nebulae: observing-list comparison\n{len(table):,} catalogue objects; {int(masks[0].sum()):,} in main panel', fontsize=17)
     ax.grid(alpha=.18)
+    if 'min_log_hbeta' in table.meta:
+        threshold = table.meta['min_log_hbeta']
+        if view == 'flux':
+            ax.axhline(threshold, color='#222222', linestyle='--', linewidth=1.4)
+            ax.text(.02, threshold, f'Additional objects: log Hβ > {threshold:g}',
+                transform=ax.get_yaxis_transform(), fontsize=11, va='bottom')
+        elif valid_x.any():
+            limits = ax.get_ylim()
+            radii = np.geomspace(x[valid_x].min(), x[valid_x].max(), 200)
+            ax.plot(radii, threshold-np.log10(np.pi*(60*radii)**2),
+                color='#222222', linestyle='--', linewidth=1.4)
+            ax.set_ylim(limits)
     ax.tick_params(labelsize=12)
     plt.setp(ax.get_xticklabels(), visible=False)
     missing_y.set(ylim=(0, 1), yticks=[])
@@ -279,12 +291,59 @@ def plot(table, prefix, view, priority):
         title='First list by priority\n(main-panel counts)', title_fontsize=12)
     legend_ax.text(0, .12, 'All memberships remain in the table.\nHollow symbols: uncertain diameter.\nDiameter limits stay outside main panel.\nMissing data are not faint detections.\n\nHβ is not visual magnitude or [O III].\nNo visibility cutoff has been applied.',
         transform=legend_ax.transAxes, fontsize=11, va='bottom')
+    if 'min_log_hbeta' in table.meta:
+        legend_ax.text(0, .045, 'Dashed: additional-object Hβ cut.\nReference-list members bypass it.',
+            transform=legend_ax.transAxes, fontsize=11, va='bottom')
     fig.supxlabel('Observed flux; no extinction correction. Surface brightness assumes a circular optical area and is a diagnostic proxy.', fontsize=11)
     for suffix in ('png', 'svg', 'pdf'):
         fig.savefig(prefix.parent/(prefix.name+'_radius_hbeta_'+view+'.'+suffix), dpi=180)
     plt.close(fig)
     return dict(main_panel=int(masks[0].sum()), missing_y=int(masks[1].sum()),
         missing_or_limited_radius=int(masks[2].sum()), unavailable_both=int(masks[3].sum()))
+
+
+def select_catalogue(table, min_log_hbeta=-12.):
+    """List union OR strict observed-flux cut; public interest needs human review."""
+    if isinstance(min_log_hbeta, bool) or not np.isfinite(min_log_hbeta):
+        raise ValueError('H-beta threshold must be finite.')
+    annotated = table.copy(copy_data=True)
+    listed = np.zeros(len(table), bool)
+    for name in PRIORITY:
+        if 'in_'+name in table.colnames:
+            listed |= np.asarray(np.ma.filled(table['in_'+name], False), bool)
+    flux = np.asarray(np.ma.filled(table['log_hbeta_flux'], np.nan), float)
+    bright = np.isfinite(flux) & (flux > min_log_hbeta)
+    keep = listed | bright
+    annotated['selection_list_member'] = listed
+    annotated['selection_hbeta_pass'] = bright
+    annotated['selection_included'] = keep
+    annotated['selection_reason'] = [
+        'reference_list_and_hbeta' if listed[i] and bright[i] else
+        'reference_list' if listed[i] else 'hbeta_only' if bright[i] else
+        'missing_hbeta' if not np.isfinite(flux[i]) else 'not_brighter_than_cut'
+        for i in range(len(table))]
+    # False means not approved for the public, not an assessed rejection.
+    annotated['public_interest'] = np.zeros(len(table), bool)
+    annotated['public_review_status'] = ['unassessed' if keep[i] else 'not_selected'
+        for i in range(len(table))]
+    annotated.meta.update(selection_rule='Resolved reference-list membership OR finite observed log_hbeta_flux > threshold.',
+        min_log_hbeta=float(min_log_hbeta), public_policy='Highest surface brightness first for review, with angular size and quality; no automatic public-interest approval.')
+    selected = annotated[keep]
+    review = selected.copy(copy_data=True)
+    surface = np.asarray(np.ma.filled(review['log_hbeta_surface_brightness_proxy'], np.nan), float)
+    quality = ['missing_surface_brightness' if not np.isfinite(surface[i]) else
+        'uncertain_diameter' if text(review['optical_diameter_uncertain'][i]) else
+        'measured_diameter' for i in range(len(review))]
+    review['surface_brightness_quality'] = quality
+    order = sorted(range(len(review)), key=lambda i: (
+        not np.isfinite(surface[i]), -surface[i] if np.isfinite(surface[i]) else 0.,
+        text(review['identifier'][i])))
+    review = review[order]
+    review['surface_brightness_review_order'] = np.arange(1, len(review)+1)
+    return annotated, selected, review, dict(total=len(table), selected=int(keep.sum()),
+        reference_list=int(listed.sum()), additional_hbeta_only=int((bright & ~listed).sum()),
+        excluded=int((~keep).sum()), min_log_hbeta=float(min_log_hbeta),
+        public_interest_approved=0, public_policy=selected.meta['public_policy'])
 
 
 def main(argv=None):
@@ -296,6 +355,10 @@ def main(argv=None):
     parser.add_argument('--name', default='planetary_nebulae_comparison_v1')
     parser.add_argument('--view', choices=('flux', 'surface-brightness', 'both'), default='both')
     parser.add_argument('--priority', default=','.join(PRIORITY))
+    parser.add_argument('--write-selected-catalogue', action='store_true',
+        help='Export list-membership OR observed H-beta selection and a surface-brightness-ranked public review table.')
+    parser.add_argument('--min-log-hbeta', type=float, default=-12.,
+        help='Selection only: strict log_hbeta_flux > threshold (default -12). Reference membership bypasses this cut.')
     arguments = sys.argv[1:] if argv is None else list(argv)
     if not arguments:
         parser.print_help(); return 0
@@ -316,10 +379,17 @@ def main(argv=None):
     references, reference_hashes = reference_names(args.data_directory)
     priority = args.priority.split(',')
     table, crosswalk, summary = compare(source, records+extra+al, references, priority)
+    selection_products = []
+    if args.write_selected_catalogue:
+        table, selected, public_review, summary['selection'] = select_catalogue(table, args.min_log_hbeta)
     views = ['flux', 'surface-brightness'] if args.view == 'both' else [args.view]
     prefix = args.output_directory/args.name
     products = [prefix.with_name(prefix.name+s) for s in ('_catalogue.csv', '_catalogue.ecsv', '_crosswalk.csv', '_summary.json')]
     products += [prefix.with_name(prefix.name+'_radius_hbeta_'+view+'.'+suffix) for view in views for suffix in ('png', 'svg', 'pdf')]
+    if args.write_selected_catalogue:
+        selection_products = [prefix.with_name(prefix.name+s) for s in
+            ('_selected.csv', '_selected.ecsv', '_public_review.csv')]
+        products += selection_products
     if any(p.exists() or p.is_symlink() for p in products):
         raise FileExistsError('Comparison output exists; use a new versioned name or directory.')
     summary.update(source_sha256=digest(path), provenance_sha256=digest(provenance_path),
@@ -337,10 +407,16 @@ def main(argv=None):
     args.output_directory.mkdir(parents=True, exist_ok=True)
     table.write(products[0], format='ascii.csv'); table.write(products[1], format='ascii.ecsv')
     crosswalk.write(products[2], format='ascii.csv')
+    if selection_products:
+        selected.write(selection_products[0], format='ascii.csv')
+        selected.write(selection_products[1], format='ascii.ecsv')
+        public_review.write(selection_products[2], format='ascii.csv')
     summary['plots'] = {view: plot(table, prefix, view, priority) for view in views}
     summary['products'] = {p.name: digest(p) for p in products if p != products[3]}
     products[3].write_text(json.dumps(summary, indent=2, allow_nan=False)+'\n')
     print(json.dumps({k: summary[k] for k in ('rows', 'listed_rows', 'membership_review_rows', 'lists', 'plots')}, indent=2))
+    if 'selection' in summary:
+        print(json.dumps(summary['selection'], indent=2))
     for p in products:
         print(p)
     return 0

@@ -5057,3 +5057,9 @@ a per-square-arcsecond quantity. It inherits source aperture/size uncertainty,
 adds no independent measurement, and is not an eyepiece-visibility criterion.
 No missing quantity is imputed. The source hashes and primary HEASARC
 quantity documentation, checked 2026-10-14, are retained in the receipt.
+
+The optional PN selection uses only resolved observing membership OR finite
+observed log H-beta > -12, independently of angular-size availability. A
+surface-brightness-ranked review retains size and uncertainty but does not
+approve public interest. Neither selection nor ranking changes source
+coordinates, performs a transform or turns a flux proxy into visibility.

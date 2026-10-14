@@ -3042,3 +3042,9 @@ the new tool owns PN-specific identity namespaces, optical diameter limits,
 observed H-beta flux and circular-area proxy semantics. It introduces no new
 production module. Tests extend the existing planetary-nebula owner rather
 than adding a milestone test file.
+
+The PN comparison additionally owns optional candidate selection through
+`--write-selected-catalogue`: reference membership OR strict observed
+log H-beta > -12, with no size cut. It retains full diagnostics and exports
+319 selected rows plus a surface-brightness-ranked public review table.
+Public-interest approval remains unassessed; this is not atlas installation.

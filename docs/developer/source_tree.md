@@ -3953,3 +3953,8 @@ PN coordinate-sign and line-flux semantics are a distinct scientific
 responsibility. No production file is added. Trials belong under output.
 `tests/test_planetary_nebulae.py` owns the new identity/provenance/quantity
 seams and CLI acceptance; `test_current_documentation.py` checks the guide.
+
+The same PN diagnostic owner exports optional membership-or-flux selection
+and ranked public-review products. It adds no tool or production module.
+Existing planetary tests extend the strict-threshold, missing/masked membership,
+source-isolation and new export composition seams without repeating rendering.
