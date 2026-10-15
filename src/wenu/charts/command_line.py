@@ -89,7 +89,7 @@ def chart_configuration(arguments):
     """Load one immutable effective configuration for parsed arguments."""
     from wenu.configuration import load_configuration_defaults
 
-    return load_configuration_defaults(getattr(arguments, "config", None))
+    return load_configuration_defaults(getattr(arguments, "config", None), family=getattr(arguments, "command", None))
 
 
 def chart_cli_furniture(
@@ -381,6 +381,8 @@ def _chart_view_argument_plans(
     from .style_components import EquatorialGridMarks
     marks = (None if configuration is None else configuration.geometry_detail.equatorial_grid_marks)
     selected_marks = getattr(effective_arguments, "equatorial_grid_ticks", None)
+    if effective_arguments.equatorial_grid is False and selected_marks is not True:
+        marks = None
     if selected_marks is False:
         marks = None
     elif selected_marks is True:

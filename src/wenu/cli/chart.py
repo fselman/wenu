@@ -180,6 +180,8 @@ def parser():
     )
     binocular_orientation.add_argument("--position-angle", type=float)
 
+    commands.add_parser("presets", help="list installed chart, atlas-style, layout and index presets", allow_abbrev=False)
+
     defaults = commands.add_parser(
         "defaults",
         help="print or write the packaged authoritative TOML defaults",
@@ -723,7 +725,7 @@ def _title(arguments):
 
 def generate(arguments):
     """Generate every requested product through Wenu's ordinary facade."""
-    values = load_configuration(arguments.config)
+    values = load_configuration(arguments.config, family=arguments.command)
     configuration = translate_configuration_defaults(values)
     observer = _observer(
         arguments,
@@ -838,12 +840,13 @@ def _atlas_sheet(arguments, *, atlas_request=None, sky=None):
             import tomllib
         except ModuleNotFoundError:
             import tomli as tomllib
-        raw = arguments.design.read_bytes()
+        from wenu.resources import configuration_input_path
+        raw = configuration_input_path(arguments.design, kind='atlas-layout').read_bytes()
         atlas = AtlasBandTiling.from_json(raw.decode("utf-8"))
         selected = [sheet for sheet in atlas.geometry.sheets if sheet.number == arguments.chart_number]
         if len(selected) != 1:
             raise ValueError("Chart number is not present in the atlas design.")
-        with arguments.config.open("rb") as stream:
+        with configuration_input_path(arguments.config, kind='atlas-style').open("rb") as stream:
             presentation = AtlasChartPresentation.from_dict(tomllib.load(stream))
         from wenu.sky.native_snapshot import read_native_sky_snapshot
         snapshot = read_native_sky_snapshot(arguments.from_sky)
@@ -868,6 +871,11 @@ def main(argv=None, *, atlas_request=None, sky=None, emit_outputs=True):
     """Run the installed command and return a process status."""
     arguments = parser().parse_args(argv)
     try:
+        if arguments.command == 'presets':
+            from wenu.resources import configuration_preset_names
+            for kind in ('chart', 'atlas-style', 'atlas-layout', 'atlas-index'):
+                print(kind + ': ' + ', '.join(configuration_preset_names(kind)))
+            return 0
         if arguments.command == "defaults":
             if arguments.write is None:
                 print(packaged_defaults_text(), end="")

@@ -201,6 +201,14 @@ def compose_chart(
             raise TypeError(
                 "configuration must be a ConfigurationDefaults value."
             )
+    if configuration is None and isinstance(style, str) and style.lower() == ATLAS_STYLE:
+        try:
+            regional = chart_type_name(chart) == 'regional'
+        except ValueError:
+            regional = False
+        if regional:
+            from wenu.configuration import load_configuration_defaults
+            configuration = load_configuration_defaults(family='regional')
     style_defaults = _resolved_style_mode_defaults(configuration)
     geometry_defaults = _resolved_geometry_detail_defaults(configuration)
     context = chart.chart_context
@@ -308,6 +316,13 @@ def compose_chart(
                 "style_overrides must be a ChartStyleOverrides value."
             )
         resolved_style = style_overrides.apply(resolved_style)
+        if resolved_style.stars.magnitude_sizing.algorithm != "legacy":
+            # Physical sizing replaces historical preset areas; retain the
+            # independently resolved output-mode area multiplier.
+            resolved_style = replace(resolved_style, stars=replace(
+                resolved_style.stars,
+                area_scale=resolved_style.stars.area_scale * resolved_mode.symbol_scale,
+            ))
     if (type(chart).__name__ == "FullSkyChart"
             and resolved_style.grids.constellation_line_gap_points is None):
         resolved_style = replace(resolved_style, grids=replace(

@@ -151,6 +151,16 @@ from wenu import resources
 from wenu.objects.open_clusters import OpenClusters
 from wenu.objects.planetary_nebulae import PlanetaryNebulae
 assert Path(wenu.__file__).is_relative_to(Path(sys.argv[3])), wenu.__file__
+from wenu.configuration import load_configuration_defaults
+from wenu.cli.chart import main as chart_main
+assert chart_main(['presets']) == 0
+assert load_configuration_defaults(family='regional').style_mode.atlas.stars.diameter_scale == 1.7
+for name in ('b4-landscape-five-band', 'b4-portrait'):
+    path = resources.configuration_preset_path(name, kind='atlas-layout')
+    layout = json.loads(path.read_text())
+    assert len(layout['geometry']['sheets']) == (34 if name == 'b4-landscape-five-band' else 36)
+assert resources.configuration_preset_path('atlas-v6', kind='atlas-style').is_file()
+assert resources.configuration_preset_path('scorpius-v1', kind='chart').is_file()
 assert len(OpenClusters(None).load()) == 1
 assert len(PlanetaryNebulae(None).load()) == 1
 for domain in ('open_clusters','planetary_nebulae'):

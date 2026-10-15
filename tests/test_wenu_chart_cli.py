@@ -12,7 +12,7 @@ from wenu.configuration import ConfigurationError
 
 EXPECTED_COMMANDS = {
     "all-sky", "planisphere", "regional", "circumpolar", "binocular",
-    "defaults", "atlas-sheet",
+    "defaults", "atlas-sheet", "presets",
 }
 
 
@@ -21,6 +21,15 @@ def test_project_installs_the_underscored_command():
 
     assert 'wenu_chart = "wenu.cli.chart:main"' in source
     assert "wenu-chart =" not in source
+
+
+def test_regular_chart_command_discovers_installed_presets(capsys):
+    assert chart.main(['presets']) == 0
+    output = capsys.readouterr().out
+    assert 'chart: atlas-v6, scorpius-v1' in output
+    assert 'atlas-layout: b4-landscape-five-band, b4-portrait' in output
+    assert 'atlas-style: atlas-v6' in output
+    assert 'atlas-v5' not in output
 
 
 def test_parser_exposes_one_family_subcommand_set():
@@ -132,7 +141,7 @@ def test_constellation_system_is_an_explicit_parameter_not_content():
 
 
 def test_every_chart_family_exposes_solar_system_selectors():
-    for family in EXPECTED_COMMANDS - {"defaults", "atlas-sheet"}:
+    for family in EXPECTED_COMMANDS - {"defaults", "atlas-sheet", "presets"}:
         arguments = chart.parser().parse_args(
             [family, "--planet", "venus", "--moon"]
         )
@@ -141,7 +150,7 @@ def test_every_chart_family_exposes_solar_system_selectors():
 
 
 def test_every_chart_family_exposes_moving_object_data_policy():
-    for family in EXPECTED_COMMANDS - {"defaults", "atlas-sheet"}:
+    for family in EXPECTED_COMMANDS - {"defaults", "atlas-sheet", "presets"}:
         arguments = chart.parser().parse_args([
             family, "--data-policy", "offline",
         ])
@@ -161,7 +170,7 @@ def test_planisphere_accepts_one_comma_separated_planet_selection():
 
 
 def test_all_chart_families_accept_milky_way_contour():
-    for family in EXPECTED_COMMANDS - {"defaults", "atlas-sheet"}:
+    for family in EXPECTED_COMMANDS - {"defaults", "atlas-sheet", "presets"}:
         arguments = chart.parser().parse_args([
             family, "--mw-contour", "OL2",
         ])
@@ -888,5 +897,5 @@ def test_regional_command_and_toml_share_grid_marks_and_preserve_viewport(
     assert ticks and lines
     assert all(a.get_linewidth()==0 for a in lines)==(not lines_visible)
     labels=[a for a in layer.artists if getattr(a,'_wenu_semantic_component',None)=='labels']
-    assert labels and all(a.get_fontsize() in (9,12) for a in labels)
+    assert labels and all(any(a.get_fontsize() == pytest.approx(size) for size in (9, 9.6, 12)) for a in labels)
 

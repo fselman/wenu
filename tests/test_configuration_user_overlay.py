@@ -5,6 +5,41 @@ from pathlib import Path
 
 import pytest
 
+def test_installed_regional_v6_profile_has_only_chart_concerns_and_user_precedence(tmp_path):
+    from wenu.resources import configuration_preset_names, configuration_preset_path, configuration_input_path
+    import tomllib
+    assert configuration_preset_names('atlas-style') == ('atlas-v6',)
+    atlas = tomllib.loads(configuration_preset_path('atlas-v6', kind='atlas-style').read_text())
+    chart_path = configuration_preset_path('atlas-v6', kind='chart')
+    assert tomllib.loads(chart_path.read_text())['schema_version'] == 2
+    assert load_configuration(chart_path) == load_configuration('atlas-v6')
+    regional = load_configuration_defaults(family='regional')
+    plain = load_configuration_defaults()
+    deep = regional.style_mode.atlas.deep_sky
+    stars = regional.style_mode.atlas.stars
+    assert stars.diameter_scale == atlas['star_size_scale'] == 1.7
+    assert stars.magnitude_sizing.algorithm == 'quadratic'
+    assert stars.magnitude_sizing.a_mm == atlas['stellar_magnitude_sizing']['a_mm']
+    assert deep.open_cluster_symbol_name == 'cluster_circle'
+    assert deep.open_cluster_face_color == 'yellow'
+    assert deep.globular_cluster_symbol_name == 'globular_cluster'
+    assert deep.planetary_nebula_symbol_size == pytest.approx(18 * 1.8**2 * 1.25**2)
+    assert deep.open_cluster_angular_sizes and deep.nonstellar_labels_only
+    assert regional.geometry_detail.family_atlas_policies['regional'].star_magnitude_limit == 7.5
+    assert plain.style_mode.atlas.stars.magnitude_sizing.algorithm == 'legacy'
+    assert regional.furniture_product_export == plain.furniture_product_export
+    assert 'report_label_scale' not in load_configuration(family='regional')
+    overlay = tmp_path/'custom.toml'
+    overlay.write_text('schema_version = 2\n[styles.atlas.planetary_nebula]\ncolor = "red"\n[styles.atlas.stars]\ndiameter_scale = 2.0\n')
+    custom = load_configuration_defaults(overlay, family='regional')
+    assert custom.style_mode.atlas.deep_sky.planetary_nebula_color == 'red'
+    assert custom.style_mode.atlas.stars.diameter_scale == 2
+    assert load_configuration_defaults('scorpius-v1').style_mode.atlas.stars.diameter_scale == 1.7
+    with pytest.raises(ValueError, match='not a chart input'):
+        configuration_input_path('b4-portrait', kind='chart')
+    with pytest.raises(ValueError, match='Unknown'):
+        configuration_preset_path('atlas-v5', kind='atlas-style')
+
 from wenu.configuration import (
     ConfigurationError,
     load_configuration,
@@ -198,3 +233,25 @@ def test_constellation_feature_overlays_reject_invalid_lists(key, value):
     with pytest.raises(ValueError):
         merge_configuration_overlay(load_packaged_defaults(), {
             'schema_version': 2, 'detail': {'constellations': {key: value}}})
+
+
+def test_compact_scorpius_comparison_retains_objects_without_labels():
+    previous = load_configuration_defaults('scorpius-v1')
+    compact = load_configuration_defaults('scorpius-v2')
+    a = previous.style_mode.atlas
+    b = compact.style_mode.atlas
+    assert b.stars.diameter_scale == pytest.approx(a.stars.diameter_scale * .7)
+    for field in ('open_cluster_symbol_size', 'globular_cluster_symbol_size', 'planetary_nebula_symbol_size'):
+        assert getattr(b.deep_sky, field) == pytest.approx(getattr(a.deep_sky, field) * .65**2)
+    assert b.deep_sky.open_cluster_angular_sizes
+    assert b.deep_sky.open_cluster_diameter_scale == .65
+    assert b.deep_sky.supernova_remnant_symbol_scale == pytest.approx(a.deep_sky.supernova_remnant_symbol_scale * .65)
+    for field in ('nonstellar_draw_labels', 'galaxy_draw_labels', 'open_cluster_draw_labels', 'globular_cluster_draw_labels', 'planetary_nebula_draw_labels', 'supernova_remnant_draw_labels'):
+        assert not getattr(b.deep_sky, field)
+    before = load_configuration('scorpius-v1')
+    after = load_configuration('scorpius-v2')
+    old = before['grids_references']['coordinate_grid']['edge_marks']
+    new = after['grids_references']['coordinate_grid']['edge_marks']
+    assert new['grid_label_fontsize'] == pytest.approx(old['grid_label_fontsize'] * .7)
+    assert new['grid_frame_width_scale'] == pytest.approx(old['grid_frame_width_scale'] * .7)
+    assert after['detail'] == before['detail']

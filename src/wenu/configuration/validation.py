@@ -122,6 +122,8 @@ _POSITIVE_NAMES = frozenset(
         "title_font_size",
         "label_font_size",
         "symbol_size",
+        "diameter_scale",
+        "symbol_scale",
         "symbol_dot_size",
         "magnitude_scale",
         "scale",
@@ -193,6 +195,10 @@ _ENUMS = {
     "grids_references.references.state": {"none", "line", "labeled"},
     "grids_references.poles.state": {"none", "visible", "both"},
 }
+
+for _style in ('atlas', 'cartoon'):
+    _ENUMS[f'styles.{_style}.open_cluster.symbol_shape'] = {'circle', 'open_cluster', 'cluster_circle'}
+    _ENUMS[f'styles.{_style}.globular_cluster.symbol_shape'] = {'none', 'globular_cluster'}
 
 for _family in (
     "all_sky", "planisphere", "regional_single", "regional_group",
@@ -762,12 +768,15 @@ def load_packaged_defaults() -> dict[str, Any]:
     return parse_configuration(_resource_text(), source="packaged defaults")
 
 
-def load_configuration(path=None) -> dict[str, Any]:
+def load_configuration(path=None, *, family=None) -> dict[str, Any]:
     """Load packaged defaults with an optional partial user TOML overlay."""
     packaged = load_packaged_defaults()
-    if path is None:
+    from wenu.resources import configuration_input_path
+    if family == 'regional' or str(path) in {'atlas-v6', 'scorpius-v1', 'scorpius-v2'}:
+        packaged = merge_configuration_overlay(packaged, _regional_atlas_v6_overlay(packaged))
+    if path is None or str(path) == 'atlas-v6':
         return packaged
-    source = Path(path)
+    source = configuration_input_path(path, kind='chart')
     try:
         text = source.read_text(encoding="utf-8")
     except OSError as error:
@@ -780,3 +789,55 @@ def load_configuration(path=None) -> dict[str, Any]:
     )
     return merge_configuration_overlay(packaged, overlay)
 
+
+
+def _regional_atlas_v6_overlay(packaged):
+    """Translate only chart concerns from the current atlas presentation.
+
+    Report typography, numbering, facing pages, PDF assembly and index layout
+    never enter ordinary regional chart configuration.
+    """
+    from wenu.resources import configuration_preset_path
+    data = tomllib.loads(configuration_preset_path('atlas-v6', kind='atlas-style').read_text())
+    if data.get('document_kind') != 'wenu-atlas-chart-presentation' or data.get('schema_version') != 1:
+        raise ConfigurationError('Invalid installed atlas-v6 presentation.')
+    base = packaged['styles']['atlas']
+    area = data['deep_sky_symbol_scale'] ** 2
+    sizing = data['stellar_magnitude_sizing']
+    return {
+        'schema_version': 2,
+        'detail': {'canonical': {'regional_star_limit': data['star_magnitude_limit']}},
+        'styles': {'atlas': {
+            'stars': {'diameter_scale': data['star_size_scale'],
+                      'mag_algorithm': sizing['algorithm'], 'mag_a': sizing['a_mm'],
+                      'mag_b': sizing['b_mag'], 'mag_dmin': sizing['dmin_mm'],
+                      'mag_size_reference': sizing['size_reference_magnitude']},
+            'milky_way': {'fill': {'color': data['milky_way_color']}},
+            'lmc': {'fill': {'color': data['milky_way_color']}},
+            'smc': {'fill': {'color': data['milky_way_color']}},
+            'open_cluster': {'symbol_shape': 'cluster_circle', 'color': 'black',
+                'face_color': data['cluster_face_color'],
+                'symbol_size': base['open_cluster']['symbol_size'] * area,
+                'angular_sizes': data['open_cluster_angular_sizes'],
+                'exclude_infrared_embedded': data['open_cluster_exclude_infrared_embedded']},
+            'globular_cluster': {'symbol_shape': 'globular_cluster', 'color': 'black',
+                'face_color': data['cluster_face_color'],
+                'symbol_size': base['open_cluster']['symbol_size'] * area},
+            'planetary_nebula': {'symbol_size': base['planetary_nebula']['symbol_size'] * area * data['planetary_nebula_symbol_scale'] ** 2,
+                'color': data['planetary_nebula_color'], 'line_width': data['planetary_nebula_linewidth'],
+                'opacity': 1.0},
+            'supernova_remnant': {'symbol_scale': data['deep_sky_symbol_scale']},
+            'nonstellar': {'draw_labels': True, 'labels_only': True,
+                'label_color': 'black', 'label_font_size': data['messier_label_fontsize']},
+            'legend': {'font_size': data['legend_fontsize']},
+        }},
+        'grids_references': {'coordinate_grid': {'edge_marks': {
+            'enabled': True, 'grid_lines_visible': data['grid_lines_visible'],
+            'grid_ra_step_hours': data['grid_ra_step_hours'],
+            'grid_minute_labels_visible': data['grid_minute_labels_visible'],
+            'grid_label_fontsize': data['grid_label_fontsize'],
+            'grid_minor_label_scale': data['grid_minor_label_scale'],
+            'grid_dec_label_scale': data['grid_dec_label_scale'],
+            'grid_frame_width_scale': data['grid_frame_width_scale'],
+        }}},
+    }

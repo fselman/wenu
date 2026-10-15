@@ -15,6 +15,39 @@ from wenu.cli import atlas as cli
 from wenu.charts.atlas_publication import AtlasPublicationBatchRequest
 
 
+@pytest.mark.parametrize('name,count,interior', [('b4-landscape-five-band',34,5),('b4-portrait',36,3)])
+def test_installed_layout_and_style_are_independent_cli_inputs(tmp_path, monkeypatch, name, count, interior):
+    from wenu.resources import configuration_preset_path
+    from wenu.charts import atlas_publication
+    path = configuration_preset_path(name, kind='atlas-layout')
+    atlas = AtlasBandTiling.from_json(path.read_text())
+    assert len(atlas.geometry.sheets) == count
+    assert len(atlas.bands) == interior + 2
+    assert len({s.field_width_deg for s in atlas.geometry.sheets}) == 1
+    output = tmp_path/'design.json'
+    assert cli.design_main(['--layout',name,'--output',str(output)]) == 0
+    assert output.read_bytes() == path.read_bytes()
+    calls = []
+    def capture(design, directory, **kwargs):
+        calls.append((design,kwargs)); return tmp_path/'manifest.json'
+    monkeypatch.setattr(atlas_publication,'create_atlas',capture)
+    assert cli.create_main(['--layout',name,'--charts','1','--output-dir',str(tmp_path/'atlas')]) == 0
+    design, kwargs = calls[0]
+    assert design == path
+    presentation = kwargs['presentation']
+    assert presentation.star_magnitude_limit == 7.5
+    assert presentation.star_size_scale == 1.7
+    assert presentation.stellar_magnitude_sizing.algorithm == 'quadratic'
+    assert presentation.report_label_scale == 3
+    assert presentation.chart_number_box_visible
+    assert presentation.open_cluster_angular_sizes
+    assert cli.create_main(['--layout',name,'--charts','1','--magnitude-limit','7',
+        '--star-size-scale','2','--output-dir',str(tmp_path/'override')]) == 0
+    assert calls[1][1]['presentation'].star_magnitude_limit == 7
+    assert calls[1][1]['presentation'].star_size_scale == 2
+    assert calls[1][0] == path
+
+
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLE = ROOT / "examples/atlas_design_request_v1.toml"
 

@@ -1216,7 +1216,10 @@ def test_stellar_sizing_preview_reuses_composition_without_sky(tmp_path, monkeyp
             assert Path(str(prefix)+suffix).stat().st_size > 0
     np.testing.assert_allclose(records[1]['diameters_mm'], np.asarray(records[0]['diameters_mm'])*3)
     np.testing.assert_allclose(records[1]['areas_mm2'], np.asarray(records[0]['areas_mm2'])*9)
-    assert records[1]['diameters_mm'][-1] == pytest.approx(.9)
+    # Presentation multiplies symbol area by 1.25, hence diameter by its square root.
+    mode_area_scale = 1.25 if mode == 'presentation' else 1.0
+    assert records[0]['diameters_mm'][-1] == pytest.approx(.3 * np.sqrt(mode_area_scale))
+    assert records[1]['diameters_mm'][-1] == pytest.approx(.9 * np.sqrt(mode_area_scale))
     assert records[1]['mode'] == mode
     with pytest.raises(SystemExit):
         preview_main(['--output-prefix', str(prefix)])  # no overwrite

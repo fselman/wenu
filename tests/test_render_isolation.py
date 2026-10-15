@@ -10,6 +10,7 @@ from astropy.table import Table
 
 from wenu import (
     AdaptiveDetailPolicy,
+    AtlasChartStyle,
     CartoonDetailPolicy,
     FixedDetailPolicy,
     FullSkyChart,
@@ -195,7 +196,7 @@ def test_regional_then_full_sky_uses_field_local_limits():
     before = snapshot(sky)
     detail = AdaptiveDetailPolicy()
     regional = compose_chart(
-        regional_chart(), style="atlas", detail=detail
+        regional_chart(), style=AtlasChartStyle(), detail=detail
     )
     planisphere = compose_chart(
         FullSkyChart(), style="atlas", detail=detail

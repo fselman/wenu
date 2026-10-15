@@ -3098,3 +3098,53 @@ Atlas publication resolves installed defaults once into existing profile fields
 and automatically appends the latest bound criteria for enabled supported
 catalogue layers on a new sky. Saved snapshots retain their recorded selection.
 Raw observing-list sources remain maintenance inputs, not installed defaults.
+
+
+## Installed layout and presentation presets (candidate, 2026-10-14)
+
+Atlas layout and full atlas style are independent protocols. The installed
+`b4-landscape-five-band` layout has 34 sheets in five nonpolar bands plus two
+caps; `b4-portrait` preserves the accepted 36-sheet revision-3 design with
+three nonpolar bands plus two caps. Both are immutable resolved JSON resources
+validated by AtlasBandTiling; style selection does not regenerate their tiling.
+The full `atlas-v6` presentation includes chart appearance and atlas-only
+report, number-box and publication settings. It is the atlas CLI default.
+
+Regional atlas charts inherit only the chart concerns from that version-6
+resource through configuration validation/translation, before user overlays.
+Report typography, chart numbering, index composition, facing pages and PDF
+assembly do not enter regional configuration. Quadratic stellar diameters,
+central-scale cluster symbols, DSO appearance and grid marks reuse their
+existing style/detail/export/render owners. Other families retain their
+packaged defaults. Installed preset lookup is owned by resources.py; no new
+sky, projection, coordinate, catalogue-selection or renderer pipeline exists.
+
+
+### Compact Sco installed comparison v2
+
+The installed chart preset `scorpius-v2` retains the v1 catalogue/detail selection and suppresses object labels. Relative to v1, stellar diameters are 70%, cluster and PN symbol diameters 65%, SNR symbol scale 65%, and coordinate label font size and frame-width multiplier 70%. Open-cluster angular diameters and their minimum marker areas scale together using the positive `[styles.atlas.open_cluster].diameter_scale` (default 1.0; cartoon has the same neutral field). Shared label-only nonstellar rendering honors `draw_labels = false`. These controls remain in the existing configuration translation, composition and export owners; scientific catalogue membership and atlas layouts are unchanged. Full atlas v6 defaults remain intact. The regional stereographic print design is still deferred.
+
+Run `wenu_chart regional --center-on Sco --field-width 60 --field-height 50 --config scorpius-v2 --style atlas --mode print --magnitude-limit 7 --output sco_installed_catalogues_v3.png` for the next installed-path visual review. This is a candidate comparison, not a new acceptance receipt.
+
+
+### Fernando's acceptance and merge authorization (2026-10-14)
+
+Fernando accepted the installed catalogue and atlas-preset milestone and explicitly requested documentation, merge and cleanup. The scope includes accepted installed defaults (513 open clusters, 319 planetary nebulae), independent full atlas v6 style and layouts, the 34-chart B4 landscape five-band and 36-chart B4 portrait selections, and the compact Sco comparison with object labels disabled. Atlas products are kept in separate repository-local `output/atlas_b4_portrait_v1/` and `output/atlas_b4_landscape_v1/` directories, with a fresh native sky snapshot for each layout. Existing output directories must not be overwritten. Regional stereographic print design remains deferred.
+
+The reported installed Mac CLI/preset discovery and initial Sco render succeeded at `eeb503b184a9ca21ae97bd5ab2e9aa830c7ba265`; compact runtime candidate is `1b191a5566323cf403eaea6c6884b7cec2effc00`. Acceptance is recorded from Fernando's explicit statement, without inventing atlas-generation logs or a new full-suite result. Catalogue-base full verification remains 3,584 passing tests at `8cc66342d0e18f60077263ba54e0c9cd9d519696`; it does not cover the subsequent preset runtime changes. Final preset focused gates passed, but a fresh final-candidate complete plugin-disabled Mac suite remains required before merging the preset runtime. Merge and cleanup are already authorized and require no further permission once that gate passes.
+
+
+### Final-suite recovery after accepted atlas-preset review (2026-10-14)
+
+The complete Mac suite at `0d9ed74734c1f0f0baf166579701cd3f3af5b49a` reported 13 failed and 3,576 passed in 995.75 seconds. It is a failed verification receipt, not merge clearance. Recovery keeps the accepted catalogue membership, print appearance and independent atlas style/layout resources intact. Existing configuration-loader mocks now accept the family keyword, export legend mocks accept the optional stellar legend style, and regional default assertions cover v6 rather than former legacy defaults. The explicit adaptive-policy isolation check uses an explicit legacy style so its fainter limits do not contradict v6's physical sizing reference.
+
+Two production seams are corrected in the existing owners: composition retains the independently resolved output-mode area multiplier after physical stellar diameter sizing, and shared export/detail application adds appearance options only for layers actually present in the sky. Thus a catalogue-free export remains empty and presentation symbol scaling still applies. No new production module, scientific data or preset is introduced. Focused verification and a fresh final-candidate complete Mac suite are required; Fernando's acceptance and authorization to merge and clean remain in effect.
+
+
+### Accepted installed catalogue/preset milestone: final Mac verification (2026-10-15)
+
+Fernando reported the complete plugin-disabled Mac suite passing at `2778f2e5134d259d60c8416992d5f9ea26fa192d`: 3,589 passed in 1,063.20 seconds (17:43). The supplied command checked the exact candidate revision and whitespace before the run, then confirmed a clean working tree on synchronized `feat/installed-atlas-presets` afterward. This passing receipt supersedes the two failed final-suite attempts recorded above. His 2026-10-14 acceptance and explicit instruction to document, merge and clean remain effective for PRs #232 and #233.
+
+The accepted scope is installed verified curated defaults (513 open clusters and 319 planetary nebulae, with original scientific snapshots still accessible), independently selectable atlas layouts and full atlas v6 style, shared v6 regional chart appearance, and compact Sco comparison without object labels. B4 landscape five-band has 34 charts; B4 portrait has 36 charts with three interior bands plus two caps. Layout and atlas style remain separate protocols. Regional stereographic print design is deferred. Generated portrait and landscape products remain in their separate `output/` directories and are preserved during branch cleanup.
+
+This closure adds documentation only. The tested executable code, scientific fixtures, dependencies, configuration, packaging and non-documentation tests are unchanged from the passing candidate; reuse its full-suite receipt after the documentation gate and repository-integrity checks. Merge the catalogue base #232 into main, retarget and merge #233 into main, verify the resulting tree matches this documented candidate, then remove only the two merged feature branches. No full-suite repetition is required solely for these documentation and merge commits.

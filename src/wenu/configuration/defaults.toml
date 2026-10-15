@@ -301,6 +301,7 @@ line_width = 0.8
 padding_points = 2.0
 
 [styles.atlas.stars]
+diameter_scale = 1.0
 color = "#151515"
 area_scale = 0.85
 magnitude_reference = "fixed"
@@ -375,6 +376,7 @@ line_style = "solid"
 opacity = 0.0
 
 [styles.atlas.nonstellar]
+labels_only = false
 color = "#c5a000"
 line_width = 0.8
 line_style = "solid"
@@ -402,6 +404,7 @@ label_color = "none"
 label_font_size = 6.0
 
 [styles.atlas.supernova_remnant]
+symbol_scale = 1.0
 color = "#5f844c"
 line_width = 0.55
 line_style = "solid"
@@ -412,6 +415,9 @@ label_color = "none"
 label_font_size = 6.0
 
 [styles.atlas.globular_cluster]
+symbol_shape = "none"
+symbol_size = 18.0
+face_color = "none"
 color = "#c5a000"
 line_width = 0.8
 line_style = "solid"
@@ -434,6 +440,10 @@ label_color = "none"
 label_font_size = 6.0
 
 [styles.atlas.open_cluster]
+face_color = "none"
+angular_sizes = false
+diameter_scale = 1.0
+exclude_infrared_embedded = false
 color = "#d2b321"
 line_width = 0.45
 line_style = "dotted"
@@ -547,6 +557,7 @@ line_width = 0.8
 padding_points = 2.0
 
 [styles.cartoon.stars]
+diameter_scale = 1.0
 color = "#172238"
 area_scale = 1.30
 magnitude_reference = "fixed"
@@ -621,6 +632,7 @@ line_style = "solid"
 opacity = 0.0
 
 [styles.cartoon.nonstellar]
+labels_only = false
 color = "#b07a17"
 line_width = 0.8
 line_style = "solid"
@@ -648,6 +660,7 @@ label_color = "none"
 label_font_size = 6.0
 
 [styles.cartoon.supernova_remnant]
+symbol_scale = 1.0
 color = "#66865d"
 line_width = 0.8
 line_style = "dashed"
@@ -658,6 +671,9 @@ label_color = "none"
 label_font_size = 6.0
 
 [styles.cartoon.globular_cluster]
+symbol_shape = "none"
+symbol_size = 18.0
+face_color = "none"
 color = "#b07a17"
 line_width = 0.8
 line_style = "solid"
@@ -680,6 +696,10 @@ label_color = "none"
 label_font_size = 6.0
 
 [styles.cartoon.open_cluster]
+face_color = "none"
+angular_sizes = false
+diameter_scale = 1.0
+exclude_infrared_embedded = false
 color = "#b89028"
 line_width = 0.55
 line_style = "dotted"

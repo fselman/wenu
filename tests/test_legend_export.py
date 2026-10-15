@@ -909,7 +909,7 @@ def test_export_draws_legends_before_its_single_save(monkeypatch, tmp_path):
         calls.append("render")
         return rendering
 
-    def fake_legends(*args):
+    def fake_legends(*args, **kwargs):
         calls.append("legends")
         assert args[4] is rendering
         return rendered_with_legends
@@ -1122,7 +1122,7 @@ def test_composed_export_renders_legends_and_saves_once(
         calls.append(("render", kwargs))
         return plain_rendering
 
-    def fake_legends(*args):
+    def fake_legends(*args, **kwargs):
         calls.append(("legends", args))
         assert args[0] is chart
         assert args[4] is plain_rendering

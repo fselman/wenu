@@ -100,6 +100,7 @@ def _stellar(table: Mapping[str, Any]) -> StellarStyle:
         label_placement=table["labels"]["placement"],
         color=table["color"],
         area_scale=table["area_scale"],
+        diameter_scale=table["diameter_scale"],
         magnitude_sizing=StellarMagnitudeSizing(
             algorithm=table["mag_algorithm"],
             dmin_mm=table["mag_dmin"], a_mm=table["mag_a"],
@@ -168,12 +169,23 @@ def _deep_sky(style: Mapping[str, Any]) -> DeepSkyStyle:
     open_cluster = style["open_cluster"]
     return DeepSkyStyle(
         nonstellar_color=nonstellar["color"],
+        nonstellar_labels_only=nonstellar['labels_only'],
+        supernova_remnant_symbol_scale=supernova['symbol_scale'],
+        open_cluster_diameter_scale=open_cluster['diameter_scale'],
+        open_cluster_angular_sizes=open_cluster['angular_sizes'],
+        open_cluster_exclude_infrared_embedded=open_cluster['exclude_infrared_embedded'],
+        open_cluster_symbol_name=('open_cluster' if open_cluster['symbol_shape'] == 'circle' else open_cluster['symbol_shape']),
+        open_cluster_face_color=_optional(open_cluster['face_color']),
+        globular_cluster_symbol_name=_optional(globular['symbol_shape']),
+        globular_cluster_symbol_size=globular['symbol_size'],
+        globular_cluster_face_color=_optional(globular['face_color']),
         nonstellar_linewidth=nonstellar["line_width"],
         nonstellar_alpha=nonstellar["opacity"],
         nonstellar_minimum_size_arcmin=(
             nonstellar["minimum_size_arcmin"]
         ),
         nonstellar_draw_labels=nonstellar["draw_labels"],
+        nonstellar_label_color=_optional(nonstellar['label_color']),
         nonstellar_label_fontsize=nonstellar["label_font_size"],
         nonstellar_symbol_dots=nonstellar["symbol_dots"],
         nonstellar_dot_markersize=nonstellar["symbol_dot_size"],

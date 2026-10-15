@@ -211,7 +211,7 @@ def test_bright_cut_selects_rigel_and_every_brighter_hipparcos_star():
     assert catalogue.loc[37279, "magnitude"] == pytest.approx(0.40)
 
 
-def test_physical_style_does_not_change_other_atlas_print_families():
+def test_polar_physical_style_does_not_override_regional_v6():
     from wenu import RegionalChart
 
     regional = RegionalChart(
@@ -223,7 +223,9 @@ def test_physical_style_does_not_change_other_atlas_print_families():
 
     style = compose_chart(regional, style="atlas", mode="print").style
 
-    assert style == translate_style_mode_defaults().atlas
+    from wenu.configuration import load_configuration_defaults
+    baseline = load_configuration_defaults(family="regional").style_mode.atlas
+    assert style == replace(baseline, stars=replace(baseline.stars, area_scale=1.7**2))
     assert style.stars.color == "#151515"
     assert style.isophotes.milky_way_contour_color == "#555555"
 

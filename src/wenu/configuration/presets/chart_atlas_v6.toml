@@ -1,0 +1,64 @@
+# Shared chart subset derived from the full atlas style v6.
+schema_version = 2
+
+[detail.canonical]
+regional_star_limit = 7.5
+
+[styles.atlas.stars]
+diameter_scale = 1.7
+mag_algorithm = "quadratic"
+mag_a = 0.04
+mag_b = 3.0
+mag_dmin = 0.3
+mag_size_reference = 8.0
+
+[styles.atlas.milky_way.fill]
+color = "#87CEFA"
+
+[styles.atlas.lmc.fill]
+color = "#87CEFA"
+
+[styles.atlas.smc.fill]
+color = "#87CEFA"
+
+[styles.atlas.open_cluster]
+symbol_shape = "cluster_circle"
+color = "black"
+face_color = "yellow"
+symbol_size = 58.32000000000001
+angular_sizes = true
+exclude_infrared_embedded = false
+
+[styles.atlas.globular_cluster]
+symbol_shape = "globular_cluster"
+color = "black"
+face_color = "yellow"
+symbol_size = 58.32000000000001
+
+[styles.atlas.planetary_nebula]
+symbol_size = 91.12500000000001
+color = "#24552b"
+line_width = 1.1
+opacity = 1.0
+
+[styles.atlas.supernova_remnant]
+symbol_scale = 1.8
+
+[styles.atlas.nonstellar]
+draw_labels = true
+labels_only = true
+label_color = "black"
+label_font_size = 7.0
+
+[styles.atlas.legend]
+font_size = 12.0
+
+[grids_references.coordinate_grid.edge_marks]
+enabled = true
+grid_lines_visible = true
+grid_ra_step_hours = 1
+grid_minute_labels_visible = false
+grid_label_fontsize = 12.0
+grid_minor_label_scale = 0.75
+grid_dec_label_scale = 0.8
+grid_frame_width_scale = 1.0
