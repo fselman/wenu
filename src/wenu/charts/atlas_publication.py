@@ -752,8 +752,32 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
         raise ValueError("--save-sky and --from-sky are mutually exclusive.")
     if from_sky is not None and (open_cluster_catalogue is not None or planetary_nebula_catalogue is not None):
         raise ValueError("A catalogue override requires a new sky; omit --from-sky.")
-    criteria = _read_selection_criteria(selection_criteria,
-        (open_cluster_catalogue, planetary_nebula_catalogue))
+    criteria_catalogues = dict(open_cluster_filename=open_cluster_catalogue,
+        planetary_nebula_filename=planetary_nebula_catalogue)
+    criteria_paths = list(selection_criteria)
+    if from_sky is None:
+        from wenu.resources import curated_catalogue_bundle
+        for layer, domain, field in (
+                ('nonstellar', 'messier', 'nonstellar_filename'),
+                ('galaxies', 'galaxies', 'galaxy_filename'),
+                ('open_clusters', 'open_clusters', 'open_cluster_filename'),
+                ('globular_clusters', 'globular_clusters', 'globular_cluster_filename'),
+                ('supernova_remnants', 'supernova_remnants', 'supernova_remnant_filename'),
+                ('planetary_nebulae', 'planetary_nebulae', 'planetary_nebula_filename')):
+            if criteria_catalogues.get(field) is not None or layer not in presentation.layers:
+                continue
+            bundle = curated_catalogue_bundle(domain)
+            if bundle is None:
+                continue
+            criteria_catalogues[field] = bundle['catalogue']
+            if not selection_criteria and bundle['criteria']:
+                def revision(path):
+                    match = re.search(r'_v(\d+(?:\.\d+)*)\.json$', path.name)
+                    if match is None:
+                        raise ValueError('Installed criteria require an explicit version.')
+                    return tuple(map(int, match[1].split('.')))
+                criteria_paths.append(max(bundle['criteria'], key=revision))
+    criteria = _read_selection_criteria(criteria_paths, criteria_catalogues.values())
     raw = Path(design_path).read_bytes()
     atlas = AtlasBandTiling.from_json(raw.decode("utf-8"))
     if len({sheet.field_width_deg for sheet in atlas.geometry.sheets}) != 1:
@@ -799,15 +823,14 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
         cold_sky = None
         if from_sky is None:
             directory = save_sky or Path(stack.enter_context(tempfile.TemporaryDirectory(prefix="wenu-atlas-sky-"))) / "sky"
-            if open_cluster_catalogue is None and planetary_nebula_catalogue is None:
+            if all(catalogue is None for catalogue in criteria_catalogues.values()):
                 digest, cold_sky = prepare_native_sky_snapshot(raw, directory, return_sky=True)
             else:
                 from dataclasses import replace
                 from wenu.sky.maximal_sphere import CANONICAL_MAXIMAL_SPHERE_PROFILE
                 # Resolve the selector once; all workers reuse the hashed snapshot.
                 overrides = {}
-                for field, catalogue in (("open_cluster_filename", open_cluster_catalogue),
-                                         ("planetary_nebula_filename", planetary_nebula_catalogue)):
+                for field, catalogue in criteria_catalogues.items():
                     if catalogue is not None:
                         overrides[field] = Path(catalogue).resolve(strict=True)
                 profile = replace(CANONICAL_MAXIMAL_SPHERE_PROFILE, **overrides)

@@ -26,13 +26,13 @@ def observer():
 
 
 def test_packaged_planetary_nebula_catalogue_exists():
-    path = nonstellar_catalog_path("planetary_nebulae")
+    path = nonstellar_catalog_path("planetary_nebulae", curated=False)
     assert path.is_file()
 
 
 def test_catalogue_loads_true_and_probable_objects():
     layer = PlanetaryNebulae(observer())
-    table = layer.load()
+    table = layer.load(filename=nonstellar_catalog_path('planetary_nebulae', curated=False))
     assert len(table) == 1143
     assert "PN G063.1+13.9" in set(table["identifier"])
     assert "PN G036.1-57.1" in set(table["identifier"])

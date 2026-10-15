@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "document_kind": "wenu-catalogue-selection-criteria",
+  "catalogue": {
+    "file": "wenu_open_clusters_v0.2.ecsv",
+    "sha256": "5f149895d29665ede5b2e0e1d410b84da80ed68a768fe495c2134f499985e35e"
+  },
+  "policy": [
+    "513 selected open clusters. These plots show the accepted population, not the excluded parent catalogue.",
+    "Mandatory lists: messier, caldwell, sac_urban, rasc_finest_ngc, sac_best_ngc",
+    "All resolved cluster rows and unresolved claims retained; mandatory rows bypass all numeric cuts.",
+    "Intersection: positive source radius/member_count, finite Hunt V10, strict V10 below sloping boundary and max_v10; source-specific reddening cut.",
+    "V10 < 17.5 - (12.5/3) * log10(radius_arcmin); extrapolated outside 1..1000 arcmin.",
+    "Numeric limits: V10 < 12.5; E(B-V) limit: 3.0; available-source policy: all.",
+    "Depuration: retain Hunt type o and Dias-only open clusters. Single-source objects need other compilation or observing-list evidence; masked claims remain for review.",
+    "Excluded counts: {\"hunt_type_g\": 48, \"hunt_type_m\": 17, \"single_source_no_other_compilation\": 5}",
+    "Hunt V10 is the tenth brightest accepted member, not integrated cluster magnitude. Identifier-matched Dias points share Hunt V10; no independent Dias V10 is supplied. Filled symbols use Dias data, hollow symbols Hunt data.",
+    "Strict separation < both published radii; reciprocal unique unmatched pairs are provisional and retain unresolved alias review flags.",
+    "Parent selection SHA-256: c072f225548889da195fb7a33fe94707a2b638db45af8c38f28b4406ff7223fc"
+  ],
+  "pages": [
+    {
+      "file": "wenu_open_clusters_v0.2_criteria_v1_policy_01.pdf",
+      "title": "Open clusters: inclusion criteria — policy",
+      "sha256": "4861efe6c324a6ab0c25df373871d5441c06af680ae75baa4add6f2e843a381f"
+    },
+    {
+      "file": "wenu_open_clusters_v0.2_criteria_v1_plot_01.pdf",
+      "title": "Open clusters — radius and V10",
+      "sha256": "307564ea92a5d28f7bd73dc187756df2c813ed3f254a0370b4b333ca04df15ee"
+    },
+    {
+      "file": "wenu_open_clusters_v0.2_criteria_v1_plot_02.pdf",
+      "title": "Open clusters — members and V10",
+      "sha256": "6aa35c1575d9ee6d5d3875e3fe5fb98d057ac1df774def907f24070749da1d20"
+    }
+  ],
+  "products": {
+    "wenu_open_clusters_v0.2_criteria_v1_policy_01.png": "a99f502df4693aac0b6e0158cf70c76f95098300c53b335c3756954ab9478ccc",
+    "wenu_open_clusters_v0.2_criteria_v1_policy_01.svg": "51482b969e74986128536a68bc0be9cc9ef3662ce0fccad8467acc59549bd009",
+    "wenu_open_clusters_v0.2_criteria_v1_policy_01.pdf": "4861efe6c324a6ab0c25df373871d5441c06af680ae75baa4add6f2e843a381f",
+    "wenu_open_clusters_v0.2_criteria_v1_plot_01.png": "f1991c0272adbd1d00bf5cd36b94a34a5651d9e3f158a1494f4911dfb7840fc2",
+    "wenu_open_clusters_v0.2_criteria_v1_plot_01.svg": "f955c3ff333f84edcafd4e6b4e9fc9035a6ed9c8ae8f7e307092e43434d1319f",
+    "wenu_open_clusters_v0.2_criteria_v1_plot_01.pdf": "307564ea92a5d28f7bd73dc187756df2c813ed3f254a0370b4b333ca04df15ee",
+    "wenu_open_clusters_v0.2_criteria_v1_plot_02.png": "7065550eeb837b9e24eacd407b7d537a6dc59e64fed8386299fa735e832a3233",
+    "wenu_open_clusters_v0.2_criteria_v1_plot_02.svg": "0daf576519a3bbc862f6e628333bccd1456f93ab2f489957bd23662402d5de30",
+    "wenu_open_clusters_v0.2_criteria_v1_plot_02.pdf": "6aa35c1575d9ee6d5d3875e3fe5fb98d057ac1df774def907f24070749da1d20"
+  }
+}

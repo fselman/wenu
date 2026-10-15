@@ -10,9 +10,11 @@ Promote an accepted output using `tools/prepare_open_cluster_catalogue.py
 --promote-catalogue PATH --activate`. Promotion verifies the complete output
 bundle and preserves its bytes. Different existing versions are never
 replaced; byte-identical products can be reused. The selector alone may change.
-This working-data tree is excluded from automatic package discovery. An
-installed Wenu reads an explicitly chosen catalogue path; adopting data does
-not require changing or rebuilding its software package.
+This tree is excluded from Python package discovery as executable code.
+The general build mechanism explicitly installs verified active bundles as
+package resources and makes them defaults. It preserves all bound catalogue,
+selection and report bytes. Original source catalogues remain available, and
+explicit paths still allow local adoption without rebuilding the package.
 
 Planetary-nebula versions use the same verified-bundle mechanism under
 `planetary_nebulae/`, with a relative `planetary_nebulae.ecsv` selector. Promote

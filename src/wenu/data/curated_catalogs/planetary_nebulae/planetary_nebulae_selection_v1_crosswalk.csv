@@ -1,0 +1,1849 @@
+catalogue,designation,source_file,source_row,identifiers_json,status,matched_names,planetary_ids
+messier,M 31,messier_list_v1.csv,0,"[""M 31""]",unmatched,,
+messier,M 32,messier_list_v1.csv,0,"[""M 32""]",unmatched,,
+messier,M 110,messier_list_v1.csv,0,"[""M 110""]",unmatched,,
+messier,M 33,messier_list_v1.csv,0,"[""M 33""]",unmatched,,
+messier,M 52,messier_list_v1.csv,0,"[""M 52""]",unmatched,,
+messier,M 103,messier_list_v1.csv,0,"[""M 103""]",unmatched,,
+messier,M 34,messier_list_v1.csv,0,"[""M 34""]",unmatched,,
+messier,M 76,messier_list_v1.csv,0,"[""M 76""]",matched,M 76,PN G130.9-10.5
+messier,M 1,messier_list_v1.csv,0,"[""M 1""]",unmatched,,
+messier,M 45,messier_list_v1.csv,0,"[""M 45""]",unmatched,,
+messier,M 36,messier_list_v1.csv,0,"[""M 36""]",unmatched,,
+messier,M 37,messier_list_v1.csv,0,"[""M 37""]",unmatched,,
+messier,M 38,messier_list_v1.csv,0,"[""M 38""]",unmatched,,
+messier,M 42,messier_list_v1.csv,0,"[""M 42""]",unmatched,,
+messier,M 43,messier_list_v1.csv,0,"[""M 43""]",unmatched,,
+messier,M 78,messier_list_v1.csv,0,"[""M 78""]",unmatched,,
+messier,M 79,messier_list_v1.csv,0,"[""M 79""]",unmatched,,
+messier,M 35,messier_list_v1.csv,0,"[""M 35""]",unmatched,,
+messier,M 50,messier_list_v1.csv,0,"[""M 50""]",unmatched,,
+messier,M 41,messier_list_v1.csv,0,"[""M 41""]",unmatched,,
+messier,M 46,messier_list_v1.csv,0,"[""M 46""]",unmatched,,
+messier,M 47,messier_list_v1.csv,0,"[""M 47""]",unmatched,,
+messier,M 93,messier_list_v1.csv,0,"[""M 93""]",unmatched,,
+messier,M 44,messier_list_v1.csv,0,"[""M 44""]",unmatched,,
+messier,M 67,messier_list_v1.csv,0,"[""M 67""]",unmatched,,
+messier,M 48,messier_list_v1.csv,0,"[""M 48""]",unmatched,,
+messier,M 81,messier_list_v1.csv,0,"[""M 81""]",unmatched,,
+messier,M 82,messier_list_v1.csv,0,"[""M 82""]",unmatched,,
+messier,M 97,messier_list_v1.csv,0,"[""M 97""]",matched,M 97|NGC 3587,PN G148.4+57.0
+messier,M 108,messier_list_v1.csv,0,"[""M 108""]",unmatched,,
+messier,M 109,messier_list_v1.csv,0,"[""M 109""]",unmatched,,
+messier,M 101,messier_list_v1.csv,0,"[""M 101""]",unmatched,,
+messier,M 40,messier_list_v1.csv,0,"[""M 40""]",unmatched,,
+messier,M 65,messier_list_v1.csv,0,"[""M 65""]",unmatched,,
+messier,M 66,messier_list_v1.csv,0,"[""M 66""]",unmatched,,
+messier,M 95,messier_list_v1.csv,0,"[""M 95""]",unmatched,,
+messier,M 96,messier_list_v1.csv,0,"[""M 96""]",unmatched,,
+messier,M 105,messier_list_v1.csv,0,"[""M 105""]",unmatched,,
+messier,M 3,messier_list_v1.csv,0,"[""M 3""]",unmatched,,
+messier,M 51,messier_list_v1.csv,0,"[""M 51""]",unmatched,,
+messier,M 63,messier_list_v1.csv,0,"[""M 63""]",unmatched,,
+messier,M 94,messier_list_v1.csv,0,"[""M 94""]",unmatched,,
+messier,M 106,messier_list_v1.csv,0,"[""M 106""]",unmatched,,
+messier,M 49,messier_list_v1.csv,0,"[""M 49""]",unmatched,,
+messier,M 58,messier_list_v1.csv,0,"[""M 58""]",unmatched,,
+messier,M 59,messier_list_v1.csv,0,"[""M 59""]",unmatched,,
+messier,M 60,messier_list_v1.csv,0,"[""M 60""]",unmatched,,
+messier,M 84,messier_list_v1.csv,0,"[""M 84""]",unmatched,,
+messier,M 86,messier_list_v1.csv,0,"[""M 86""]",unmatched,,
+messier,M 87,messier_list_v1.csv,0,"[""M 87""]",unmatched,,
+messier,M 89,messier_list_v1.csv,0,"[""M 89""]",unmatched,,
+messier,M 90,messier_list_v1.csv,0,"[""M 90""]",unmatched,,
+messier,M 61,messier_list_v1.csv,0,"[""M 61""]",unmatched,,
+messier,M 104,messier_list_v1.csv,0,"[""M 104""]",unmatched,,
+messier,M 53,messier_list_v1.csv,0,"[""M 53""]",unmatched,,
+messier,M 64,messier_list_v1.csv,0,"[""M 64""]",unmatched,,
+messier,M 85,messier_list_v1.csv,0,"[""M 85""]",unmatched,,
+messier,M 88,messier_list_v1.csv,0,"[""M 88""]",unmatched,,
+messier,M 98,messier_list_v1.csv,0,"[""M 98""]",unmatched,,
+messier,M 99,messier_list_v1.csv,0,"[""M 99""]",unmatched,,
+messier,M 100,messier_list_v1.csv,0,"[""M 100""]",unmatched,,
+messier,M 91,messier_list_v1.csv,0,"[""M 91""]",unmatched,,
+messier,M 68,messier_list_v1.csv,0,"[""M 68""]",unmatched,,
+messier,M 83,messier_list_v1.csv,0,"[""M 83""]",unmatched,,
+messier,M 5,messier_list_v1.csv,0,"[""M 5""]",unmatched,,
+messier,M 102,messier_list_v1.csv,0,"[""M 102""]",unmatched,,
+messier,M 13,messier_list_v1.csv,0,"[""M 13""]",unmatched,,
+messier,M 92,messier_list_v1.csv,0,"[""M 92""]",unmatched,,
+messier,M 9,messier_list_v1.csv,0,"[""M 9""]",unmatched,,
+messier,M 10,messier_list_v1.csv,0,"[""M 10""]",unmatched,,
+messier,M 12,messier_list_v1.csv,0,"[""M 12""]",unmatched,,
+messier,M 14,messier_list_v1.csv,0,"[""M 14""]",unmatched,,
+messier,M 19,messier_list_v1.csv,0,"[""M 19""]",unmatched,,
+messier,M 62,messier_list_v1.csv,0,"[""M 62""]",unmatched,,
+messier,M 107,messier_list_v1.csv,0,"[""M 107""]",unmatched,,
+messier,M 4,messier_list_v1.csv,0,"[""M 4""]",unmatched,,
+messier,M 80,messier_list_v1.csv,0,"[""M 80""]",unmatched,,
+messier,M 6,messier_list_v1.csv,0,"[""M 6""]",unmatched,,
+messier,M 7,messier_list_v1.csv,0,"[""M 7""]",unmatched,,
+messier,M 11,messier_list_v1.csv,0,"[""M 11""]",unmatched,,
+messier,M 26,messier_list_v1.csv,0,"[""M 26""]",unmatched,,
+messier,M 16,messier_list_v1.csv,0,"[""M 16""]",unmatched,,
+messier,M 17,messier_list_v1.csv,0,"[""M 17""]",unmatched,,
+messier,M 18,messier_list_v1.csv,0,"[""M 18""]",unmatched,,
+messier,M 24,messier_list_v1.csv,0,"[""M 24""]",unmatched,,
+messier,M 20,messier_list_v1.csv,0,"[""M 20""]",unmatched,,
+messier,M 21,messier_list_v1.csv,0,"[""M 21""]",unmatched,,
+messier,M 8,messier_list_v1.csv,0,"[""M 8""]",unmatched,,
+messier,M 22,messier_list_v1.csv,0,"[""M 22""]",unmatched,,
+messier,M 28,messier_list_v1.csv,0,"[""M 28""]",unmatched,,
+messier,M 23,messier_list_v1.csv,0,"[""M 23""]",unmatched,,
+messier,M 25,messier_list_v1.csv,0,"[""M 25""]",unmatched,,
+messier,M 54,messier_list_v1.csv,0,"[""M 54""]",unmatched,,
+messier,M 55,messier_list_v1.csv,0,"[""M 55""]",unmatched,,
+messier,M 69,messier_list_v1.csv,0,"[""M 69""]",unmatched,,
+messier,M 70,messier_list_v1.csv,0,"[""M 70""]",unmatched,,
+messier,M 75,messier_list_v1.csv,0,"[""M 75""]",unmatched,,
+messier,M 56,messier_list_v1.csv,0,"[""M 56""]",unmatched,,
+messier,M 57,messier_list_v1.csv,0,"[""M 57""]",matched,M 57|NGC 6720,PN G063.1+13.9
+messier,M 29,messier_list_v1.csv,0,"[""M 29""]",unmatched,,
+messier,M 39,messier_list_v1.csv,0,"[""M 39""]",unmatched,,
+messier,M 27,messier_list_v1.csv,0,"[""M 27""]",matched,M 27|NGC 6853,PN G060.8-03.6
+messier,M 71,messier_list_v1.csv,0,"[""M 71""]",unmatched,,
+messier,M 30,messier_list_v1.csv,0,"[""M 30""]",unmatched,,
+messier,M 2,messier_list_v1.csv,0,"[""M 2""]",unmatched,,
+messier,M 72,messier_list_v1.csv,0,"[""M 72""]",unmatched,,
+messier,M 73,messier_list_v1.csv,0,"[""M 73""]",unmatched,,
+messier,M 15,messier_list_v1.csv,0,"[""M 15""]",unmatched,,
+messier,M 74,messier_list_v1.csv,0,"[""M 74""]",unmatched,,
+messier,M 77,messier_list_v1.csv,0,"[""M 77""]",unmatched,,
+caldwell,C 1,caldwell_list_v1.csv,0,"[""C 1""]",unmatched,,
+caldwell,C 2,caldwell_list_v1.csv,0,"[""C 2""]",matched,NGC0040,PN G120.0+09.8
+caldwell,C 3,caldwell_list_v1.csv,0,"[""C 3""]",unmatched,,
+caldwell,C 4,caldwell_list_v1.csv,0,"[""C 4""]",unmatched,,
+caldwell,C 5,caldwell_list_v1.csv,0,"[""C 5""]",unmatched,,
+caldwell,C 6,caldwell_list_v1.csv,0,"[""C 6""]",matched,NGC6543,PN G096.4+29.9
+caldwell,C 7,caldwell_list_v1.csv,0,"[""C 7""]",unmatched,,
+caldwell,C 8,caldwell_list_v1.csv,0,"[""C 8""]",unmatched,,
+caldwell,C 9,caldwell_list_v1.csv,0,"[""C 9""]",unmatched,,
+caldwell,C 10,caldwell_list_v1.csv,0,"[""C 10""]",unmatched,,
+caldwell,C 11,caldwell_list_v1.csv,0,"[""C 11""]",unmatched,,
+caldwell,C 12,caldwell_list_v1.csv,0,"[""C 12""]",unmatched,,
+caldwell,C 13,caldwell_list_v1.csv,0,"[""C 13""]",unmatched,,
+caldwell,C 14,caldwell_list_v1.csv,0,"[""C 14""]",unmatched,,
+caldwell,C 15,caldwell_list_v1.csv,0,"[""C 15""]",matched,NGC6826,PN G083.5+12.7
+caldwell,C 16,caldwell_list_v1.csv,0,"[""C 16""]",unmatched,,
+caldwell,C 17,caldwell_list_v1.csv,0,"[""C 17""]",unmatched,,
+caldwell,C 18,caldwell_list_v1.csv,0,"[""C 18""]",unmatched,,
+caldwell,C 19,caldwell_list_v1.csv,0,"[""C 19""]",unmatched,,
+caldwell,C 20,caldwell_list_v1.csv,0,"[""C 20""]",unmatched,,
+caldwell,C 21,caldwell_list_v1.csv,0,"[""C 21""]",unmatched,,
+caldwell,C 22,caldwell_list_v1.csv,0,"[""C 22""]",matched,NGC7662,PN G106.5-17.6
+caldwell,C 23,caldwell_list_v1.csv,0,"[""C 23""]",unmatched,,
+caldwell,C 24,caldwell_list_v1.csv,0,"[""C 24""]",unmatched,,
+caldwell,C 25,caldwell_list_v1.csv,0,"[""C 25""]",unmatched,,
+caldwell,C 26,caldwell_list_v1.csv,0,"[""C 26""]",unmatched,,
+caldwell,C 27,caldwell_list_v1.csv,0,"[""C 27""]",unmatched,,
+caldwell,C 28,caldwell_list_v1.csv,0,"[""C 28""]",unmatched,,
+caldwell,C 29,caldwell_list_v1.csv,0,"[""C 29""]",unmatched,,
+caldwell,C 30,caldwell_list_v1.csv,0,"[""C 30""]",unmatched,,
+caldwell,C 31,caldwell_list_v1.csv,0,"[""C 31""]",unmatched,,
+caldwell,C 32,caldwell_list_v1.csv,0,"[""C 32""]",unmatched,,
+caldwell,C 33,caldwell_list_v1.csv,0,"[""C 33""]",unmatched,,
+caldwell,C 34,caldwell_list_v1.csv,0,"[""C 34""]",unmatched,,
+caldwell,C 35,caldwell_list_v1.csv,0,"[""C 35""]",unmatched,,
+caldwell,C 36,caldwell_list_v1.csv,0,"[""C 36""]",unmatched,,
+caldwell,C 37,caldwell_list_v1.csv,0,"[""C 37""]",unmatched,,
+caldwell,C 38,caldwell_list_v1.csv,0,"[""C 38""]",unmatched,,
+caldwell,C 39,caldwell_list_v1.csv,0,"[""C 39""]",matched,NGC2392,PN G197.8+17.3
+caldwell,C 40,caldwell_list_v1.csv,0,"[""C 40""]",unmatched,,
+caldwell,C 41,caldwell_list_v1.csv,0,"[""C 41""]",unmatched,,
+caldwell,C 42,caldwell_list_v1.csv,0,"[""C 42""]",unmatched,,
+caldwell,C 43,caldwell_list_v1.csv,0,"[""C 43""]",unmatched,,
+caldwell,C 44,caldwell_list_v1.csv,0,"[""C 44""]",unmatched,,
+caldwell,C 45,caldwell_list_v1.csv,0,"[""C 45""]",unmatched,,
+caldwell,C 46,caldwell_list_v1.csv,0,"[""C 46""]",unmatched,,
+caldwell,C 47,caldwell_list_v1.csv,0,"[""C 47""]",unmatched,,
+caldwell,C 48,caldwell_list_v1.csv,0,"[""C 48""]",unmatched,,
+caldwell,C 49,caldwell_list_v1.csv,0,"[""C 49""]",unmatched,,
+caldwell,C 50,caldwell_list_v1.csv,0,"[""C 50""]",unmatched,,
+caldwell,C 51,caldwell_list_v1.csv,0,"[""C 51""]",unmatched,,
+caldwell,C 52,caldwell_list_v1.csv,0,"[""C 52""]",unmatched,,
+caldwell,C 53,caldwell_list_v1.csv,0,"[""C 53""]",unmatched,,
+caldwell,C 54,caldwell_list_v1.csv,0,"[""C 54""]",unmatched,,
+caldwell,C 55,caldwell_list_v1.csv,0,"[""C 55""]",matched,NGC7009,PN G037.7-34.5
+caldwell,C 56,caldwell_list_v1.csv,0,"[""C 56""]",matched,NGC0246,PN G118.8-74.7
+caldwell,C 57,caldwell_list_v1.csv,0,"[""C 57""]",unmatched,,
+caldwell,C 58,caldwell_list_v1.csv,0,"[""C 58""]",unmatched,,
+caldwell,C 59,caldwell_list_v1.csv,0,"[""C 59""]",matched,NGC3242,PN G261.0+32.0
+caldwell,C 60,caldwell_list_v1.csv,0,"[""C 60""]",unmatched,,
+caldwell,C 61,caldwell_list_v1.csv,0,"[""C 61""]",unmatched,,
+caldwell,C 62,caldwell_list_v1.csv,0,"[""C 62""]",unmatched,,
+caldwell,C 63,caldwell_list_v1.csv,0,"[""C 63""]",matched,NGC7293,PN G036.1-57.1
+caldwell,C 64,caldwell_list_v1.csv,0,"[""C 64""]",unmatched,,
+caldwell,C 65,caldwell_list_v1.csv,0,"[""C 65""]",unmatched,,
+caldwell,C 66,caldwell_list_v1.csv,0,"[""C 66""]",unmatched,,
+caldwell,C 67,caldwell_list_v1.csv,0,"[""C 67""]",unmatched,,
+caldwell,C 68,caldwell_list_v1.csv,0,"[""C 68""]",unmatched,,
+caldwell,C 69,caldwell_list_v1.csv,0,"[""C 69""]",matched,NGC6302,PN G349.5+01.0
+caldwell,C 70,caldwell_list_v1.csv,0,"[""C 70""]",unmatched,,
+caldwell,C 71,caldwell_list_v1.csv,0,"[""C 71""]",unmatched,,
+caldwell,C 72,caldwell_list_v1.csv,0,"[""C 72""]",unmatched,,
+caldwell,C 73,caldwell_list_v1.csv,0,"[""C 73""]",unmatched,,
+caldwell,C 74,caldwell_list_v1.csv,0,"[""C 74""]",matched,NGC3132,PN G272.1+12.3
+caldwell,C 75,caldwell_list_v1.csv,0,"[""C 75""]",unmatched,,
+caldwell,C 76,caldwell_list_v1.csv,0,"[""C 76""]",unmatched,,
+caldwell,C 77,caldwell_list_v1.csv,0,"[""C 77""]",unmatched,,
+caldwell,C 78,caldwell_list_v1.csv,0,"[""C 78""]",unmatched,,
+caldwell,C 79,caldwell_list_v1.csv,0,"[""C 79""]",unmatched,,
+caldwell,C 80,caldwell_list_v1.csv,0,"[""C 80""]",unmatched,,
+caldwell,C 81,caldwell_list_v1.csv,0,"[""C 81""]",unmatched,,
+caldwell,C 82,caldwell_list_v1.csv,0,"[""C 82""]",unmatched,,
+caldwell,C 83,caldwell_list_v1.csv,0,"[""C 83""]",unmatched,,
+caldwell,C 84,caldwell_list_v1.csv,0,"[""C 84""]",unmatched,,
+caldwell,C 85,caldwell_list_v1.csv,0,"[""C 85""]",unmatched,,
+caldwell,C 86,caldwell_list_v1.csv,0,"[""C 86""]",unmatched,,
+caldwell,C 87,caldwell_list_v1.csv,0,"[""C 87""]",unmatched,,
+caldwell,C 88,caldwell_list_v1.csv,0,"[""C 88""]",unmatched,,
+caldwell,C 89,caldwell_list_v1.csv,0,"[""C 89""]",unmatched,,
+caldwell,C 90,caldwell_list_v1.csv,0,"[""C 90""]",matched,NGC2867,PN G278.1-05.9
+caldwell,C 91,caldwell_list_v1.csv,0,"[""C 91""]",unmatched,,
+caldwell,C 92,caldwell_list_v1.csv,0,"[""C 92""]",unmatched,,
+caldwell,C 93,caldwell_list_v1.csv,0,"[""C 93""]",unmatched,,
+caldwell,C 94,caldwell_list_v1.csv,0,"[""C 94""]",unmatched,,
+caldwell,C 95,caldwell_list_v1.csv,0,"[""C 95""]",unmatched,,
+caldwell,C 96,caldwell_list_v1.csv,0,"[""C 96""]",unmatched,,
+caldwell,C 97,caldwell_list_v1.csv,0,"[""C 97""]",unmatched,,
+caldwell,C 98,caldwell_list_v1.csv,0,"[""C 98""]",unmatched,,
+caldwell,C 99,caldwell_list_v1.csv,0,"[""C 99""]",unmatched,,
+caldwell,C 100,caldwell_list_v1.csv,0,"[""C 100""]",unmatched,,
+caldwell,C 101,caldwell_list_v1.csv,0,"[""C 101""]",unmatched,,
+caldwell,C 102,caldwell_list_v1.csv,0,"[""C 102""]",unmatched,,
+caldwell,C 103,caldwell_list_v1.csv,0,"[""C 103""]",unmatched,,
+caldwell,C 104,caldwell_list_v1.csv,0,"[""C 104""]",unmatched,,
+caldwell,C 105,caldwell_list_v1.csv,0,"[""C 105""]",unmatched,,
+caldwell,C 106,caldwell_list_v1.csv,0,"[""C 106""]",unmatched,,
+caldwell,C 107,caldwell_list_v1.csv,0,"[""C 107""]",unmatched,,
+caldwell,C 108,caldwell_list_v1.csv,0,"[""C 108""]",unmatched,,
+caldwell,C 109,caldwell_list_v1.csv,0,"[""C 109""]",matched,NGC3195,PN G296.6-20.0
+sac_best_ngc,NGC 891,sac_best_list_v1.csv,0,"[""NGC 891""]",unmatched,,
+sac_best_ngc,NGC 7662,sac_best_list_v1.csv,0,"[""NGC 7662""]",matched,NGC 7662,PN G106.5-17.6
+sac_best_ngc,NGC 6781,sac_best_list_v1.csv,0,"[""NGC 6781""]",matched,NGC 6781,PN G041.8-02.9
+sac_best_ngc,NGC 7009,sac_best_list_v1.csv,0,"[""NGC 7009""]",matched,NGC 7009,PN G037.7-34.5
+sac_best_ngc,NGC 7293,sac_best_list_v1.csv,0,"[""NGC 7293""]",matched,NGC 7293,PN G036.1-57.1
+sac_best_ngc,NGC 772,sac_best_list_v1.csv,0,"[""NGC 772""]",unmatched,,
+sac_best_ngc,NGC 1907,sac_best_list_v1.csv,0,"[""NGC 1907""]",unmatched,,
+sac_best_ngc,NGC 1931,sac_best_list_v1.csv,0,"[""NGC 1931""]",unmatched,,
+sac_best_ngc,NGC 1501,sac_best_list_v1.csv,0,"[""NGC 1501""]",matched,NGC 1501,PN G144.5+06.5
+sac_best_ngc,NGC 2403,sac_best_list_v1.csv,0,"[""NGC 2403""]",unmatched,,
+sac_best_ngc,NGC 2655,sac_best_list_v1.csv,0,"[""NGC 2655""]",unmatched,,
+sac_best_ngc,NGC 185,sac_best_list_v1.csv,0,"[""NGC 185""]",unmatched,,
+sac_best_ngc,NGC 281,sac_best_list_v1.csv,0,"[""NGC 281""]",unmatched,,
+sac_best_ngc,NGC 457,sac_best_list_v1.csv,0,"[""NGC 457""]",unmatched,,
+sac_best_ngc,NGC 663,sac_best_list_v1.csv,0,"[""NGC 663""]",unmatched,,
+sac_best_ngc,NGC 7789,sac_best_list_v1.csv,0,"[""NGC 7789""]",unmatched,,
+sac_best_ngc,NGC 5128,sac_best_list_v1.csv,0,"[""NGC 5128""]",unmatched,,
+sac_best_ngc,NGC 5139,sac_best_list_v1.csv,0,"[""NGC 5139""]",unmatched,,
+sac_best_ngc,NGC 40,sac_best_list_v1.csv,0,"[""NGC 40""]",matched,NGC 40,PN G120.0+09.8
+sac_best_ngc,NGC 6939,sac_best_list_v1.csv,0,"[""NGC 6939""]",unmatched,,
+sac_best_ngc,NGC 6946,sac_best_list_v1.csv,0,"[""NGC 6946""]",unmatched,,
+sac_best_ngc,NGC 7129,sac_best_list_v1.csv,0,"[""NGC 7129""]",unmatched,,
+sac_best_ngc,NGC 246,sac_best_list_v1.csv,0,"[""NGC 246""]",matched,NGC 246,PN G118.8-74.7
+sac_best_ngc,NGC 936,sac_best_list_v1.csv,0,"[""NGC 936""]",unmatched,,
+sac_best_ngc,NGC 2359,sac_best_list_v1.csv,0,"[""NGC 2359""]",unmatched,,
+sac_best_ngc,NGC 4274,sac_best_list_v1.csv,0,"[""NGC 4274""]",unmatched,,
+sac_best_ngc,NGC 4414,sac_best_list_v1.csv,0,"[""NGC 4414""]",unmatched,,
+sac_best_ngc,NGC 4494,sac_best_list_v1.csv,0,"[""NGC 4494""]",unmatched,,
+sac_best_ngc,NGC 4559,sac_best_list_v1.csv,0,"[""NGC 4559""]",unmatched,,
+sac_best_ngc,NGC 4565,sac_best_list_v1.csv,0,"[""NGC 4565""]",unmatched,,
+sac_best_ngc,NGC 4725,sac_best_list_v1.csv,0,"[""NGC 4725""]",unmatched,,
+sac_best_ngc,NGC 4361,sac_best_list_v1.csv,0,"[""NGC 4361""]",matched,NGC 4361,PN G294.1+43.6
+sac_best_ngc,NGC 4111,sac_best_list_v1.csv,0,"[""NGC 4111""]",unmatched,,
+sac_best_ngc,NGC 4214,sac_best_list_v1.csv,0,"[""NGC 4214""]",unmatched,,
+sac_best_ngc,NGC 4244,sac_best_list_v1.csv,0,"[""NGC 4244""]",unmatched,,
+sac_best_ngc,NGC 4449,sac_best_list_v1.csv,0,"[""NGC 4449""]",unmatched,,
+sac_best_ngc,NGC 4490,sac_best_list_v1.csv,0,"[""NGC 4490""]",unmatched,,
+sac_best_ngc,NGC 4631,sac_best_list_v1.csv,0,"[""NGC 4631""]",unmatched,,
+sac_best_ngc,NGC 4656,sac_best_list_v1.csv,0,"[""NGC 4656""]",unmatched,,
+sac_best_ngc,NGC 5005,sac_best_list_v1.csv,0,"[""NGC 5005""]",unmatched,,
+sac_best_ngc,NGC 5033,sac_best_list_v1.csv,0,"[""NGC 5033""]",unmatched,,
+sac_best_ngc,NGC 6819,sac_best_list_v1.csv,0,"[""NGC 6819""]",unmatched,,
+sac_best_ngc,NGC 6826,sac_best_list_v1.csv,0,"[""NGC 6826""]",matched,NGC 6826,PN G083.5+12.7
+sac_best_ngc,NGC 6960,sac_best_list_v1.csv,0,"[""NGC 6960""]",unmatched,,
+sac_best_ngc,NGC 6992,sac_best_list_v1.csv,0,"[""NGC 6992""]",unmatched,,
+sac_best_ngc,NGC 7000,sac_best_list_v1.csv,0,"[""NGC 7000""]",unmatched,,
+sac_best_ngc,NGC 7027,sac_best_list_v1.csv,0,"[""NGC 7027""]",matched,NGC 7027,PN G084.9-03.4
+sac_best_ngc,NGC 5907,sac_best_list_v1.csv,0,"[""NGC 5907""]",unmatched,,
+sac_best_ngc,NGC 6503,sac_best_list_v1.csv,0,"[""NGC 6503""]",unmatched,,
+sac_best_ngc,NGC 6543,sac_best_list_v1.csv,0,"[""NGC 6543""]",matched,NGC 6543,PN G096.4+29.9
+sac_best_ngc,NGC 1232,sac_best_list_v1.csv,0,"[""NGC 1232""]",unmatched,,
+sac_best_ngc,NGC 1535,sac_best_list_v1.csv,0,"[""NGC 1535""]",matched,NGC 1535,PN G206.4-40.5
+sac_best_ngc,NGC 2158,sac_best_list_v1.csv,0,"[""NGC 2158""]",unmatched,,
+sac_best_ngc,NGC 2392,sac_best_list_v1.csv,0,"[""NGC 2392""]",matched,NGC 2392,PN G197.8+17.3
+sac_best_ngc,NGC 6207,sac_best_list_v1.csv,0,"[""NGC 6207""]",unmatched,,
+sac_best_ngc,NGC 6210,sac_best_list_v1.csv,0,"[""NGC 6210""]",matched,NGC 6210,PN G043.1+37.7
+sac_best_ngc,NGC 3242,sac_best_list_v1.csv,0,"[""NGC 3242""]",matched,NGC 3242,PN G261.0+32.0
+sac_best_ngc,NGC 7209,sac_best_list_v1.csv,0,"[""NGC 7209""]",unmatched,,
+sac_best_ngc,NGC 7243,sac_best_list_v1.csv,0,"[""NGC 7243""]",unmatched,,
+sac_best_ngc,NGC 2903,sac_best_list_v1.csv,0,"[""NGC 2903""]",unmatched,,
+sac_best_ngc,NGC 3384,sac_best_list_v1.csv,0,"[""NGC 3384""]",unmatched,,
+sac_best_ngc,NGC 3521,sac_best_list_v1.csv,0,"[""NGC 3521""]",unmatched,,
+sac_best_ngc,NGC 3607,sac_best_list_v1.csv,0,"[""NGC 3607""]",unmatched,,
+sac_best_ngc,NGC 3628,sac_best_list_v1.csv,0,"[""NGC 3628""]",unmatched,,
+sac_best_ngc,NGC 3344,sac_best_list_v1.csv,0,"[""NGC 3344""]",unmatched,,
+sac_best_ngc,NGC 3432,sac_best_list_v1.csv,0,"[""NGC 3432""]",unmatched,,
+sac_best_ngc,NGC 2683,sac_best_list_v1.csv,0,"[""NGC 2683""]",unmatched,,
+sac_best_ngc,NGC 2244,sac_best_list_v1.csv,0,"[""NGC 2244""]",unmatched,,
+sac_best_ngc,NGC 2261,sac_best_list_v1.csv,0,"[""NGC 2261""]",unmatched,,
+sac_best_ngc,NGC 6369,sac_best_list_v1.csv,0,"[""NGC 6369""]",matched,NGC 6369,PN G002.4+05.8
+sac_best_ngc,NGC 6572,sac_best_list_v1.csv,0,"[""NGC 6572""]",matched,NGC 6572,PN G034.6+11.8
+sac_best_ngc,NGC 6633,sac_best_list_v1.csv,0,"[""NGC 6633""]",unmatched,,
+sac_best_ngc,NGC 1788,sac_best_list_v1.csv,0,"[""NGC 1788""]",unmatched,,
+sac_best_ngc,NGC 1973,sac_best_list_v1.csv,0,"[""NGC 1973""]",unmatched,,
+sac_best_ngc,NGC 2024,sac_best_list_v1.csv,0,"[""NGC 2024""]",unmatched,,
+sac_best_ngc,NGC 2022,sac_best_list_v1.csv,0,"[""NGC 2022""]",matched,NGC 2022,PN G196.6-10.9
+sac_best_ngc,NGC 2194,sac_best_list_v1.csv,0,"[""NGC 2194""]",unmatched,,
+sac_best_ngc,NGC 7331,sac_best_list_v1.csv,0,"[""NGC 7331""]",unmatched,,
+sac_best_ngc,NGC 869,sac_best_list_v1.csv,0,"[""NGC 869""]",unmatched,,
+sac_best_ngc,NGC 884,sac_best_list_v1.csv,0,"[""NGC 884""]",unmatched,,
+sac_best_ngc,NGC 1023,sac_best_list_v1.csv,0,"[""NGC 1023""]",unmatched,,
+sac_best_ngc,NGC 1491,sac_best_list_v1.csv,0,"[""NGC 1491""]",unmatched,,
+sac_best_ngc,NGC 2438,sac_best_list_v1.csv,0,"[""NGC 2438""]",matched,NGC 2438,PN G231.8+04.1
+sac_best_ngc,NGC 2440,sac_best_list_v1.csv,0,"[""NGC 2440""]",matched,NGC 2440,PN G234.8+02.4
+sac_best_ngc,NGC 2539,sac_best_list_v1.csv,0,"[""NGC 2539""]",unmatched,,
+sac_best_ngc,NGC 253,sac_best_list_v1.csv,0,"[""NGC 253""]",unmatched,,
+sac_best_ngc,NGC 6712,sac_best_list_v1.csv,0,"[""NGC 6712""]",unmatched,,
+sac_best_ngc,NGC 3115,sac_best_list_v1.csv,0,"[""NGC 3115""]",unmatched,,
+sac_best_ngc,NGC 6445,sac_best_list_v1.csv,0,"[""NGC 6445""]",matched,NGC 6445,PN G008.0+03.9
+sac_best_ngc,NGC 6520,sac_best_list_v1.csv,0,"[""NGC 6520""]",unmatched,,
+sac_best_ngc,NGC 6818,sac_best_list_v1.csv,0,"[""NGC 6818""]",matched,NGC 6818,PN G025.8-17.9
+sac_best_ngc,NGC 2841,sac_best_list_v1.csv,0,"[""NGC 2841""]",unmatched,,
+sac_best_ngc,NGC 3079,sac_best_list_v1.csv,0,"[""NGC 3079""]",unmatched,,
+sac_best_ngc,NGC 3077,sac_best_list_v1.csv,0,"[""NGC 3077""]",unmatched,,
+sac_best_ngc,NGC 3184,sac_best_list_v1.csv,0,"[""NGC 3184""]",unmatched,,
+sac_best_ngc,NGC 3675,sac_best_list_v1.csv,0,"[""NGC 3675""]",unmatched,,
+sac_best_ngc,NGC 3877,sac_best_list_v1.csv,0,"[""NGC 3877""]",unmatched,,
+sac_best_ngc,NGC 3941,sac_best_list_v1.csv,0,"[""NGC 3941""]",unmatched,,
+sac_best_ngc,NGC 4026,sac_best_list_v1.csv,0,"[""NGC 4026""]",unmatched,,
+sac_best_ngc,NGC 4088,sac_best_list_v1.csv,0,"[""NGC 4088""]",unmatched,,
+sac_best_ngc,NGC 4605,sac_best_list_v1.csv,0,"[""NGC 4605""]",unmatched,,
+sac_best_ngc,NGC 4216,sac_best_list_v1.csv,0,"[""NGC 4216""]",unmatched,,
+sac_best_ngc,NGC 4388,sac_best_list_v1.csv,0,"[""NGC 4388""]",unmatched,,
+sac_best_ngc,NGC 4438,sac_best_list_v1.csv,0,"[""NGC 4438""]",unmatched,,
+sac_best_ngc,NGC 4526,sac_best_list_v1.csv,0,"[""NGC 4526""]",unmatched,,
+sac_best_ngc,NGC 4535,sac_best_list_v1.csv,0,"[""NGC 4535""]",unmatched,,
+sac_best_ngc,NGC 4567,sac_best_list_v1.csv,0,"[""NGC 4567""]",unmatched,,
+sac_best_ngc,NGC 4699,sac_best_list_v1.csv,0,"[""NGC 4699""]",unmatched,,
+sac_best_ngc,NGC 4762,sac_best_list_v1.csv,0,"[""NGC 4762""]",unmatched,,
+sac_best_ngc,NGC 5746,sac_best_list_v1.csv,0,"[""NGC 5746""]",unmatched,,
+sac_best_ngc,NGC 6940,sac_best_list_v1.csv,0,"[""NGC 6940""]",unmatched,,
+herschel400,NGC 40,herschel400_list_v1.pdf,0,"[""NGC 40""]",matched,NGC 40,PN G120.0+09.8
+herschel400,NGC 129,herschel400_list_v1.pdf,0,"[""NGC 129""]",unmatched,,
+herschel400,NGC 136,herschel400_list_v1.pdf,0,"[""NGC 136""]",unmatched,,
+herschel400,NGC 157,herschel400_list_v1.pdf,0,"[""NGC 157""]",unmatched,,
+herschel400,NGC 185,herschel400_list_v1.pdf,0,"[""NGC 185""]",unmatched,,
+herschel400,NGC 205,herschel400_list_v1.pdf,0,"[""NGC 205""]",unmatched,,
+herschel400,NGC 225,herschel400_list_v1.pdf,0,"[""NGC 225""]",unmatched,,
+herschel400,NGC 246,herschel400_list_v1.pdf,0,"[""NGC 246""]",matched,NGC 246,PN G118.8-74.7
+herschel400,NGC 247,herschel400_list_v1.pdf,0,"[""NGC 247""]",unmatched,,
+herschel400,NGC 253,herschel400_list_v1.pdf,0,"[""NGC 253""]",unmatched,,
+herschel400,NGC 278,herschel400_list_v1.pdf,0,"[""NGC 278""]",unmatched,,
+herschel400,NGC 288,herschel400_list_v1.pdf,0,"[""NGC 288""]",unmatched,,
+herschel400,NGC 381,herschel400_list_v1.pdf,0,"[""NGC 381""]",unmatched,,
+herschel400,NGC 404,herschel400_list_v1.pdf,0,"[""NGC 404""]",unmatched,,
+herschel400,NGC 436,herschel400_list_v1.pdf,0,"[""NGC 436""]",unmatched,,
+herschel400,NGC 457,herschel400_list_v1.pdf,0,"[""NGC 457""]",unmatched,,
+herschel400,NGC 488,herschel400_list_v1.pdf,0,"[""NGC 488""]",unmatched,,
+herschel400,NGC 524,herschel400_list_v1.pdf,0,"[""NGC 524""]",unmatched,,
+herschel400,NGC 559,herschel400_list_v1.pdf,0,"[""NGC 559""]",unmatched,,
+herschel400,NGC 584,herschel400_list_v1.pdf,0,"[""NGC 584""]",unmatched,,
+herschel400,NGC 596,herschel400_list_v1.pdf,0,"[""NGC 596""]",unmatched,,
+herschel400,NGC 598,herschel400_list_v1.pdf,0,"[""NGC 598""]",unmatched,,
+herschel400,NGC 613,herschel400_list_v1.pdf,0,"[""NGC 613""]",unmatched,,
+herschel400,NGC 615,herschel400_list_v1.pdf,0,"[""NGC 615""]",unmatched,,
+herschel400,NGC 637,herschel400_list_v1.pdf,0,"[""NGC 637""]",unmatched,,
+herschel400,NGC 651,herschel400_list_v1.pdf,0,"[""NGC 651""]",matched,NGC 651,PN G130.9-10.5
+herschel400,NGC 654,herschel400_list_v1.pdf,0,"[""NGC 654""]",unmatched,,
+herschel400,NGC 659,herschel400_list_v1.pdf,0,"[""NGC 659""]",unmatched,,
+herschel400,NGC 663,herschel400_list_v1.pdf,0,"[""NGC 663""]",unmatched,,
+herschel400,NGC 720,herschel400_list_v1.pdf,0,"[""NGC 720""]",unmatched,,
+herschel400,NGC 752,herschel400_list_v1.pdf,0,"[""NGC 752""]",unmatched,,
+herschel400,NGC 772,herschel400_list_v1.pdf,0,"[""NGC 772""]",unmatched,,
+herschel400,NGC 779,herschel400_list_v1.pdf,0,"[""NGC 779""]",unmatched,,
+herschel400,NGC 869,herschel400_list_v1.pdf,0,"[""NGC 869""]",unmatched,,
+herschel400,NGC 884,herschel400_list_v1.pdf,0,"[""NGC 884""]",unmatched,,
+herschel400,NGC 891,herschel400_list_v1.pdf,0,"[""NGC 891""]",unmatched,,
+herschel400,NGC 908,herschel400_list_v1.pdf,0,"[""NGC 908""]",unmatched,,
+herschel400,NGC 936,herschel400_list_v1.pdf,0,"[""NGC 936""]",unmatched,,
+herschel400,NGC 1022,herschel400_list_v1.pdf,0,"[""NGC 1022""]",unmatched,,
+herschel400,NGC 1023,herschel400_list_v1.pdf,0,"[""NGC 1023""]",unmatched,,
+herschel400,NGC 1027,herschel400_list_v1.pdf,0,"[""NGC 1027""]",unmatched,,
+herschel400,NGC 1052,herschel400_list_v1.pdf,0,"[""NGC 1052""]",unmatched,,
+herschel400,NGC 1055,herschel400_list_v1.pdf,0,"[""NGC 1055""]",unmatched,,
+herschel400,NGC 1084,herschel400_list_v1.pdf,0,"[""NGC 1084""]",unmatched,,
+herschel400,NGC 1245,herschel400_list_v1.pdf,0,"[""NGC 1245""]",unmatched,,
+herschel400,NGC 1342,herschel400_list_v1.pdf,0,"[""NGC 1342""]",unmatched,,
+herschel400,NGC 1407,herschel400_list_v1.pdf,0,"[""NGC 1407""]",unmatched,,
+herschel400,NGC 1444,herschel400_list_v1.pdf,0,"[""NGC 1444""]",unmatched,,
+herschel400,NGC 1501,herschel400_list_v1.pdf,0,"[""NGC 1501""]",matched,NGC 1501,PN G144.5+06.5
+herschel400,NGC 1502,herschel400_list_v1.pdf,0,"[""NGC 1502""]",unmatched,,
+herschel400,NGC 1513,herschel400_list_v1.pdf,0,"[""NGC 1513""]",unmatched,,
+herschel400,NGC 1528,herschel400_list_v1.pdf,0,"[""NGC 1528""]",unmatched,,
+herschel400,NGC 1535,herschel400_list_v1.pdf,0,"[""NGC 1535""]",matched,NGC 1535,PN G206.4-40.5
+herschel400,NGC 1545,herschel400_list_v1.pdf,0,"[""NGC 1545""]",unmatched,,
+herschel400,NGC 1647,herschel400_list_v1.pdf,0,"[""NGC 1647""]",unmatched,,
+herschel400,NGC 1664,herschel400_list_v1.pdf,0,"[""NGC 1664""]",unmatched,,
+herschel400,NGC 1788,herschel400_list_v1.pdf,0,"[""NGC 1788""]",unmatched,,
+herschel400,NGC 1817,herschel400_list_v1.pdf,0,"[""NGC 1817""]",unmatched,,
+herschel400,NGC 1857,herschel400_list_v1.pdf,0,"[""NGC 1857""]",unmatched,,
+herschel400,NGC 1907,herschel400_list_v1.pdf,0,"[""NGC 1907""]",unmatched,,
+herschel400,NGC 1931,herschel400_list_v1.pdf,0,"[""NGC 1931""]",unmatched,,
+herschel400,NGC 1961,herschel400_list_v1.pdf,0,"[""NGC 1961""]",unmatched,,
+herschel400,NGC 1964,herschel400_list_v1.pdf,0,"[""NGC 1964""]",unmatched,,
+herschel400,NGC 1980,herschel400_list_v1.pdf,0,"[""NGC 1980""]",unmatched,,
+herschel400,NGC 1999,herschel400_list_v1.pdf,0,"[""NGC 1999""]",unmatched,,
+herschel400,NGC 2022,herschel400_list_v1.pdf,0,"[""NGC 2022""]",matched,NGC 2022,PN G196.6-10.9
+herschel400,NGC 2024,herschel400_list_v1.pdf,0,"[""NGC 2024""]",unmatched,,
+herschel400,NGC 2126,herschel400_list_v1.pdf,0,"[""NGC 2126""]",unmatched,,
+herschel400,NGC 2129,herschel400_list_v1.pdf,0,"[""NGC 2129""]",unmatched,,
+herschel400,NGC 2158,herschel400_list_v1.pdf,0,"[""NGC 2158""]",unmatched,,
+herschel400,NGC 2169,herschel400_list_v1.pdf,0,"[""NGC 2169""]",unmatched,,
+herschel400,NGC 2185,herschel400_list_v1.pdf,0,"[""NGC 2185""]",unmatched,,
+herschel400,NGC 2186,herschel400_list_v1.pdf,0,"[""NGC 2186""]",unmatched,,
+herschel400,NGC 2194,herschel400_list_v1.pdf,0,"[""NGC 2194""]",unmatched,,
+herschel400,NGC 2204,herschel400_list_v1.pdf,0,"[""NGC 2204""]",unmatched,,
+herschel400,NGC 2215,herschel400_list_v1.pdf,0,"[""NGC 2215""]",unmatched,,
+herschel400,NGC 2232,herschel400_list_v1.pdf,0,"[""NGC 2232""]",unmatched,,
+herschel400,NGC 2244,herschel400_list_v1.pdf,0,"[""NGC 2244""]",unmatched,,
+herschel400,NGC 2251,herschel400_list_v1.pdf,0,"[""NGC 2251""]",unmatched,,
+herschel400,NGC 2264,herschel400_list_v1.pdf,0,"[""NGC 2264""]",unmatched,,
+herschel400,NGC 2266,herschel400_list_v1.pdf,0,"[""NGC 2266""]",unmatched,,
+herschel400,NGC 2281,herschel400_list_v1.pdf,0,"[""NGC 2281""]",unmatched,,
+herschel400,NGC 2286,herschel400_list_v1.pdf,0,"[""NGC 2286""]",unmatched,,
+herschel400,NGC 2301,herschel400_list_v1.pdf,0,"[""NGC 2301""]",unmatched,,
+herschel400,NGC 2304,herschel400_list_v1.pdf,0,"[""NGC 2304""]",unmatched,,
+herschel400,NGC 2311,herschel400_list_v1.pdf,0,"[""NGC 2311""]",unmatched,,
+herschel400,NGC 2324,herschel400_list_v1.pdf,0,"[""NGC 2324""]",unmatched,,
+herschel400,NGC 2335,herschel400_list_v1.pdf,0,"[""NGC 2335""]",unmatched,,
+herschel400,NGC 2343,herschel400_list_v1.pdf,0,"[""NGC 2343""]",unmatched,,
+herschel400,NGC 2353,herschel400_list_v1.pdf,0,"[""NGC 2353""]",unmatched,,
+herschel400,NGC 2354,herschel400_list_v1.pdf,0,"[""NGC 2354""]",unmatched,,
+herschel400,NGC 2355,herschel400_list_v1.pdf,0,"[""NGC 2355""]",unmatched,,
+herschel400,NGC 2360,herschel400_list_v1.pdf,0,"[""NGC 2360""]",unmatched,,
+herschel400,NGC 2362,herschel400_list_v1.pdf,0,"[""NGC 2362""]",unmatched,,
+herschel400,NGC 2371,herschel400_list_v1.pdf,0,"[""NGC 2371""]",matched,NGC 2371,PN G189.1+19.8
+herschel400,NGC 2372,herschel400_list_v1.pdf,0,"[""NGC 2372""]",matched,NGC 2372,PN G189.1+19.8
+herschel400,NGC 2392,herschel400_list_v1.pdf,0,"[""NGC 2392""]",matched,NGC 2392,PN G197.8+17.3
+herschel400,NGC 2395,herschel400_list_v1.pdf,0,"[""NGC 2395""]",unmatched,,
+herschel400,NGC 2403,herschel400_list_v1.pdf,0,"[""NGC 2403""]",unmatched,,
+herschel400,NGC 2419,herschel400_list_v1.pdf,0,"[""NGC 2419""]",unmatched,,
+herschel400,NGC 2420,herschel400_list_v1.pdf,0,"[""NGC 2420""]",unmatched,,
+herschel400,NGC 2421,herschel400_list_v1.pdf,0,"[""NGC 2421""]",unmatched,,
+herschel400,NGC 2422,herschel400_list_v1.pdf,0,"[""NGC 2422""]",unmatched,,
+herschel400,NGC 2423,herschel400_list_v1.pdf,0,"[""NGC 2423""]",unmatched,,
+herschel400,NGC 2438,herschel400_list_v1.pdf,0,"[""NGC 2438""]",matched,NGC 2438,PN G231.8+04.1
+herschel400,NGC 2440,herschel400_list_v1.pdf,0,"[""NGC 2440""]",matched,NGC 2440,PN G234.8+02.4
+herschel400,NGC 2479,herschel400_list_v1.pdf,0,"[""NGC 2479""]",unmatched,,
+herschel400,NGC 2482,herschel400_list_v1.pdf,0,"[""NGC 2482""]",unmatched,,
+herschel400,NGC 2489,herschel400_list_v1.pdf,0,"[""NGC 2489""]",unmatched,,
+herschel400,NGC 2506,herschel400_list_v1.pdf,0,"[""NGC 2506""]",unmatched,,
+herschel400,NGC 2509,herschel400_list_v1.pdf,0,"[""NGC 2509""]",unmatched,,
+herschel400,NGC 2527,herschel400_list_v1.pdf,0,"[""NGC 2527""]",unmatched,,
+herschel400,NGC 2539,herschel400_list_v1.pdf,0,"[""NGC 2539""]",unmatched,,
+herschel400,NGC 2548,herschel400_list_v1.pdf,0,"[""NGC 2548""]",unmatched,,
+herschel400,NGC 2567,herschel400_list_v1.pdf,0,"[""NGC 2567""]",unmatched,,
+herschel400,NGC 2571,herschel400_list_v1.pdf,0,"[""NGC 2571""]",unmatched,,
+herschel400,NGC 2613,herschel400_list_v1.pdf,0,"[""NGC 2613""]",unmatched,,
+herschel400,NGC 2627,herschel400_list_v1.pdf,0,"[""NGC 2627""]",unmatched,,
+herschel400,NGC 2655,herschel400_list_v1.pdf,0,"[""NGC 2655""]",unmatched,,
+herschel400,NGC 2681,herschel400_list_v1.pdf,0,"[""NGC 2681""]",unmatched,,
+herschel400,NGC 2683,herschel400_list_v1.pdf,0,"[""NGC 2683""]",unmatched,,
+herschel400,NGC 2742,herschel400_list_v1.pdf,0,"[""NGC 2742""]",unmatched,,
+herschel400,NGC 2768,herschel400_list_v1.pdf,0,"[""NGC 2768""]",unmatched,,
+herschel400,NGC 2775,herschel400_list_v1.pdf,0,"[""NGC 2775""]",unmatched,,
+herschel400,NGC 2782,herschel400_list_v1.pdf,0,"[""NGC 2782""]",unmatched,,
+herschel400,NGC 2787,herschel400_list_v1.pdf,0,"[""NGC 2787""]",unmatched,,
+herschel400,NGC 2811,herschel400_list_v1.pdf,0,"[""NGC 2811""]",unmatched,,
+herschel400,NGC 2841,herschel400_list_v1.pdf,0,"[""NGC 2841""]",unmatched,,
+herschel400,NGC 2859,herschel400_list_v1.pdf,0,"[""NGC 2859""]",unmatched,,
+herschel400,NGC 2903,herschel400_list_v1.pdf,0,"[""NGC 2903""]",unmatched,,
+herschel400,NGC 2950,herschel400_list_v1.pdf,0,"[""NGC 2950""]",unmatched,,
+herschel400,NGC 2964,herschel400_list_v1.pdf,0,"[""NGC 2964""]",unmatched,,
+herschel400,NGC 2974,herschel400_list_v1.pdf,0,"[""NGC 2974""]",unmatched,,
+herschel400,NGC 2976,herschel400_list_v1.pdf,0,"[""NGC 2976""]",unmatched,,
+herschel400,NGC 2985,herschel400_list_v1.pdf,0,"[""NGC 2985""]",unmatched,,
+herschel400,NGC 3034,herschel400_list_v1.pdf,0,"[""NGC 3034""]",unmatched,,
+herschel400,NGC 3077,herschel400_list_v1.pdf,0,"[""NGC 3077""]",unmatched,,
+herschel400,NGC 3079,herschel400_list_v1.pdf,0,"[""NGC 3079""]",unmatched,,
+herschel400,NGC 3115,herschel400_list_v1.pdf,0,"[""NGC 3115""]",unmatched,,
+herschel400,NGC 3147,herschel400_list_v1.pdf,0,"[""NGC 3147""]",unmatched,,
+herschel400,NGC 3166,herschel400_list_v1.pdf,0,"[""NGC 3166""]",unmatched,,
+herschel400,NGC 3169,herschel400_list_v1.pdf,0,"[""NGC 3169""]",unmatched,,
+herschel400,NGC 3184,herschel400_list_v1.pdf,0,"[""NGC 3184""]",unmatched,,
+herschel400,NGC 3190,herschel400_list_v1.pdf,0,"[""NGC 3190""]",unmatched,,
+herschel400,NGC 3193,herschel400_list_v1.pdf,0,"[""NGC 3193""]",unmatched,,
+herschel400,NGC 3198,herschel400_list_v1.pdf,0,"[""NGC 3198""]",unmatched,,
+herschel400,NGC 3226,herschel400_list_v1.pdf,0,"[""NGC 3226""]",unmatched,,
+herschel400,NGC 3227,herschel400_list_v1.pdf,0,"[""NGC 3227""]",unmatched,,
+herschel400,NGC 3242,herschel400_list_v1.pdf,0,"[""NGC 3242""]",matched,NGC 3242,PN G261.0+32.0
+herschel400,NGC 3245,herschel400_list_v1.pdf,0,"[""NGC 3245""]",unmatched,,
+herschel400,NGC 3277,herschel400_list_v1.pdf,0,"[""NGC 3277""]",unmatched,,
+herschel400,NGC 3294,herschel400_list_v1.pdf,0,"[""NGC 3294""]",unmatched,,
+herschel400,NGC 3310,herschel400_list_v1.pdf,0,"[""NGC 3310""]",unmatched,,
+herschel400,NGC 3344,herschel400_list_v1.pdf,0,"[""NGC 3344""]",unmatched,,
+herschel400,NGC 3377,herschel400_list_v1.pdf,0,"[""NGC 3377""]",unmatched,,
+herschel400,NGC 3379,herschel400_list_v1.pdf,0,"[""NGC 3379""]",unmatched,,
+herschel400,NGC 3384,herschel400_list_v1.pdf,0,"[""NGC 3384""]",unmatched,,
+herschel400,NGC 3395,herschel400_list_v1.pdf,0,"[""NGC 3395""]",unmatched,,
+herschel400,NGC 3412,herschel400_list_v1.pdf,0,"[""NGC 3412""]",unmatched,,
+herschel400,NGC 3414,herschel400_list_v1.pdf,0,"[""NGC 3414""]",unmatched,,
+herschel400,NGC 3432,herschel400_list_v1.pdf,0,"[""NGC 3432""]",unmatched,,
+herschel400,NGC 3486,herschel400_list_v1.pdf,0,"[""NGC 3486""]",unmatched,,
+herschel400,NGC 3489,herschel400_list_v1.pdf,0,"[""NGC 3489""]",unmatched,,
+herschel400,NGC 3504,herschel400_list_v1.pdf,0,"[""NGC 3504""]",unmatched,,
+herschel400,NGC 3521,herschel400_list_v1.pdf,0,"[""NGC 3521""]",unmatched,,
+herschel400,NGC 3556,herschel400_list_v1.pdf,0,"[""NGC 3556""]",unmatched,,
+herschel400,NGC 3593,herschel400_list_v1.pdf,0,"[""NGC 3593""]",unmatched,,
+herschel400,NGC 3607,herschel400_list_v1.pdf,0,"[""NGC 3607""]",unmatched,,
+herschel400,NGC 3608,herschel400_list_v1.pdf,0,"[""NGC 3608""]",unmatched,,
+herschel400,NGC 3610,herschel400_list_v1.pdf,0,"[""NGC 3610""]",unmatched,,
+herschel400,NGC 3613,herschel400_list_v1.pdf,0,"[""NGC 3613""]",unmatched,,
+herschel400,NGC 3619,herschel400_list_v1.pdf,0,"[""NGC 3619""]",unmatched,,
+herschel400,NGC 3621,herschel400_list_v1.pdf,0,"[""NGC 3621""]",unmatched,,
+herschel400,NGC 3626,herschel400_list_v1.pdf,0,"[""NGC 3626""]",unmatched,,
+herschel400,NGC 3628,herschel400_list_v1.pdf,0,"[""NGC 3628""]",unmatched,,
+herschel400,NGC 3631,herschel400_list_v1.pdf,0,"[""NGC 3631""]",unmatched,,
+herschel400,NGC 3640,herschel400_list_v1.pdf,0,"[""NGC 3640""]",unmatched,,
+herschel400,NGC 3655,herschel400_list_v1.pdf,0,"[""NGC 3655""]",unmatched,,
+herschel400,NGC 3665,herschel400_list_v1.pdf,0,"[""NGC 3665""]",unmatched,,
+herschel400,NGC 3675,herschel400_list_v1.pdf,0,"[""NGC 3675""]",unmatched,,
+herschel400,NGC 3686,herschel400_list_v1.pdf,0,"[""NGC 3686""]",unmatched,,
+herschel400,NGC 3726,herschel400_list_v1.pdf,0,"[""NGC 3726""]",unmatched,,
+herschel400,NGC 3729,herschel400_list_v1.pdf,0,"[""NGC 3729""]",unmatched,,
+herschel400,NGC 3810,herschel400_list_v1.pdf,0,"[""NGC 3810""]",unmatched,,
+herschel400,NGC 3813,herschel400_list_v1.pdf,0,"[""NGC 3813""]",unmatched,,
+herschel400,NGC 3877,herschel400_list_v1.pdf,0,"[""NGC 3877""]",unmatched,,
+herschel400,NGC 3893,herschel400_list_v1.pdf,0,"[""NGC 3893""]",unmatched,,
+herschel400,NGC 3898,herschel400_list_v1.pdf,0,"[""NGC 3898""]",unmatched,,
+herschel400,NGC 3900,herschel400_list_v1.pdf,0,"[""NGC 3900""]",unmatched,,
+herschel400,NGC 3912,herschel400_list_v1.pdf,0,"[""NGC 3912""]",unmatched,,
+herschel400,NGC 3938,herschel400_list_v1.pdf,0,"[""NGC 3938""]",unmatched,,
+herschel400,NGC 3941,herschel400_list_v1.pdf,0,"[""NGC 3941""]",unmatched,,
+herschel400,NGC 3945,herschel400_list_v1.pdf,0,"[""NGC 3945""]",unmatched,,
+herschel400,NGC 3949,herschel400_list_v1.pdf,0,"[""NGC 3949""]",unmatched,,
+herschel400,NGC 3953,herschel400_list_v1.pdf,0,"[""NGC 3953""]",unmatched,,
+herschel400,NGC 3962,herschel400_list_v1.pdf,0,"[""NGC 3962""]",unmatched,,
+herschel400,NGC 3982,herschel400_list_v1.pdf,0,"[""NGC 3982""]",unmatched,,
+herschel400,NGC 3992,herschel400_list_v1.pdf,0,"[""NGC 3992""]",unmatched,,
+herschel400,NGC 3998,herschel400_list_v1.pdf,0,"[""NGC 3998""]",unmatched,,
+herschel400,NGC 4026,herschel400_list_v1.pdf,0,"[""NGC 4026""]",unmatched,,
+herschel400,NGC 4027,herschel400_list_v1.pdf,0,"[""NGC 4027""]",unmatched,,
+herschel400,NGC 4030,herschel400_list_v1.pdf,0,"[""NGC 4030""]",unmatched,,
+herschel400,NGC 4036,herschel400_list_v1.pdf,0,"[""NGC 4036""]",unmatched,,
+herschel400,NGC 4038,herschel400_list_v1.pdf,0,"[""NGC 4038""]",unmatched,,
+herschel400,NGC 4041,herschel400_list_v1.pdf,0,"[""NGC 4041""]",unmatched,,
+herschel400,NGC 4051,herschel400_list_v1.pdf,0,"[""NGC 4051""]",unmatched,,
+herschel400,NGC 4085,herschel400_list_v1.pdf,0,"[""NGC 4085""]",unmatched,,
+herschel400,NGC 4088,herschel400_list_v1.pdf,0,"[""NGC 4088""]",unmatched,,
+herschel400,NGC 4102,herschel400_list_v1.pdf,0,"[""NGC 4102""]",unmatched,,
+herschel400,NGC 4111,herschel400_list_v1.pdf,0,"[""NGC 4111""]",unmatched,,
+herschel400,NGC 4143,herschel400_list_v1.pdf,0,"[""NGC 4143""]",unmatched,,
+herschel400,NGC 4147,herschel400_list_v1.pdf,0,"[""NGC 4147""]",unmatched,,
+herschel400,NGC 4150,herschel400_list_v1.pdf,0,"[""NGC 4150""]",unmatched,,
+herschel400,NGC 4151,herschel400_list_v1.pdf,0,"[""NGC 4151""]",unmatched,,
+herschel400,NGC 4179,herschel400_list_v1.pdf,0,"[""NGC 4179""]",unmatched,,
+herschel400,NGC 4203,herschel400_list_v1.pdf,0,"[""NGC 4203""]",unmatched,,
+herschel400,NGC 4214,herschel400_list_v1.pdf,0,"[""NGC 4214""]",unmatched,,
+herschel400,NGC 4216,herschel400_list_v1.pdf,0,"[""NGC 4216""]",unmatched,,
+herschel400,NGC 4245,herschel400_list_v1.pdf,0,"[""NGC 4245""]",unmatched,,
+herschel400,NGC 4251,herschel400_list_v1.pdf,0,"[""NGC 4251""]",unmatched,,
+herschel400,NGC 4258,herschel400_list_v1.pdf,0,"[""NGC 4258""]",unmatched,,
+herschel400,NGC 4261,herschel400_list_v1.pdf,0,"[""NGC 4261""]",unmatched,,
+herschel400,NGC 4273,herschel400_list_v1.pdf,0,"[""NGC 4273""]",unmatched,,
+herschel400,NGC 4274,herschel400_list_v1.pdf,0,"[""NGC 4274""]",unmatched,,
+herschel400,NGC 4278,herschel400_list_v1.pdf,0,"[""NGC 4278""]",unmatched,,
+herschel400,NGC 4281,herschel400_list_v1.pdf,0,"[""NGC 4281""]",unmatched,,
+herschel400,NGC 4293,herschel400_list_v1.pdf,0,"[""NGC 4293""]",unmatched,,
+herschel400,NGC 4303,herschel400_list_v1.pdf,0,"[""NGC 4303""]",unmatched,,
+herschel400,NGC 4314,herschel400_list_v1.pdf,0,"[""NGC 4314""]",unmatched,,
+herschel400,NGC 4346,herschel400_list_v1.pdf,0,"[""NGC 4346""]",unmatched,,
+herschel400,NGC 4350,herschel400_list_v1.pdf,0,"[""NGC 4350""]",unmatched,,
+herschel400,NGC 4361,herschel400_list_v1.pdf,0,"[""NGC 4361""]",matched,NGC 4361,PN G294.1+43.6
+herschel400,NGC 4365,herschel400_list_v1.pdf,0,"[""NGC 4365""]",unmatched,,
+herschel400,NGC 4371,herschel400_list_v1.pdf,0,"[""NGC 4371""]",unmatched,,
+herschel400,NGC 4394,herschel400_list_v1.pdf,0,"[""NGC 4394""]",unmatched,,
+herschel400,NGC 4414,herschel400_list_v1.pdf,0,"[""NGC 4414""]",unmatched,,
+herschel400,NGC 4419,herschel400_list_v1.pdf,0,"[""NGC 4419""]",unmatched,,
+herschel400,NGC 4429,herschel400_list_v1.pdf,0,"[""NGC 4429""]",unmatched,,
+herschel400,NGC 4435,herschel400_list_v1.pdf,0,"[""NGC 4435""]",unmatched,,
+herschel400,NGC 4438,herschel400_list_v1.pdf,0,"[""NGC 4438""]",unmatched,,
+herschel400,NGC 4442,herschel400_list_v1.pdf,0,"[""NGC 4442""]",unmatched,,
+herschel400,NGC 4448,herschel400_list_v1.pdf,0,"[""NGC 4448""]",unmatched,,
+herschel400,NGC 4449,herschel400_list_v1.pdf,0,"[""NGC 4449""]",unmatched,,
+herschel400,NGC 4450,herschel400_list_v1.pdf,0,"[""NGC 4450""]",unmatched,,
+herschel400,NGC 4459,herschel400_list_v1.pdf,0,"[""NGC 4459""]",unmatched,,
+herschel400,NGC 4473,herschel400_list_v1.pdf,0,"[""NGC 4473""]",unmatched,,
+herschel400,NGC 4477,herschel400_list_v1.pdf,0,"[""NGC 4477""]",unmatched,,
+herschel400,NGC 4478,herschel400_list_v1.pdf,0,"[""NGC 4478""]",unmatched,,
+herschel400,NGC 4485,herschel400_list_v1.pdf,0,"[""NGC 4485""]",unmatched,,
+herschel400,NGC 4490,herschel400_list_v1.pdf,0,"[""NGC 4490""]",unmatched,,
+herschel400,NGC 4494,herschel400_list_v1.pdf,0,"[""NGC 4494""]",unmatched,,
+herschel400,NGC 4526,herschel400_list_v1.pdf,0,"[""NGC 4526""]",unmatched,,
+herschel400,NGC 4527,herschel400_list_v1.pdf,0,"[""NGC 4527""]",unmatched,,
+herschel400,NGC 4535,herschel400_list_v1.pdf,0,"[""NGC 4535""]",unmatched,,
+herschel400,NGC 4536,herschel400_list_v1.pdf,0,"[""NGC 4536""]",unmatched,,
+herschel400,NGC 4546,herschel400_list_v1.pdf,0,"[""NGC 4546""]",unmatched,,
+herschel400,NGC 4548,herschel400_list_v1.pdf,0,"[""NGC 4548""]",unmatched,,
+herschel400,NGC 4550,herschel400_list_v1.pdf,0,"[""NGC 4550""]",unmatched,,
+herschel400,NGC 4559,herschel400_list_v1.pdf,0,"[""NGC 4559""]",unmatched,,
+herschel400,NGC 4565,herschel400_list_v1.pdf,0,"[""NGC 4565""]",unmatched,,
+herschel400,NGC 4570,herschel400_list_v1.pdf,0,"[""NGC 4570""]",unmatched,,
+herschel400,NGC 4594,herschel400_list_v1.pdf,0,"[""NGC 4594""]",unmatched,,
+herschel400,NGC 4596,herschel400_list_v1.pdf,0,"[""NGC 4596""]",unmatched,,
+herschel400,NGC 4618,herschel400_list_v1.pdf,0,"[""NGC 4618""]",unmatched,,
+herschel400,NGC 4631,herschel400_list_v1.pdf,0,"[""NGC 4631""]",unmatched,,
+herschel400,NGC 4636,herschel400_list_v1.pdf,0,"[""NGC 4636""]",unmatched,,
+herschel400,NGC 4643,herschel400_list_v1.pdf,0,"[""NGC 4643""]",unmatched,,
+herschel400,NGC 4654,herschel400_list_v1.pdf,0,"[""NGC 4654""]",unmatched,,
+herschel400,NGC 4656,herschel400_list_v1.pdf,0,"[""NGC 4656""]",unmatched,,
+herschel400,NGC 4660,herschel400_list_v1.pdf,0,"[""NGC 4660""]",unmatched,,
+herschel400,NGC 4665,herschel400_list_v1.pdf,0,"[""NGC 4665""]",unmatched,,
+herschel400,NGC 4666,herschel400_list_v1.pdf,0,"[""NGC 4666""]",unmatched,,
+herschel400,NGC 4689,herschel400_list_v1.pdf,0,"[""NGC 4689""]",unmatched,,
+herschel400,NGC 4697,herschel400_list_v1.pdf,0,"[""NGC 4697""]",unmatched,,
+herschel400,NGC 4698,herschel400_list_v1.pdf,0,"[""NGC 4698""]",unmatched,,
+herschel400,NGC 4699,herschel400_list_v1.pdf,0,"[""NGC 4699""]",unmatched,,
+herschel400,NGC 4725,herschel400_list_v1.pdf,0,"[""NGC 4725""]",unmatched,,
+herschel400,NGC 4753,herschel400_list_v1.pdf,0,"[""NGC 4753""]",unmatched,,
+herschel400,NGC 4754,herschel400_list_v1.pdf,0,"[""NGC 4754""]",unmatched,,
+herschel400,NGC 4762,herschel400_list_v1.pdf,0,"[""NGC 4762""]",unmatched,,
+herschel400,NGC 4781,herschel400_list_v1.pdf,0,"[""NGC 4781""]",unmatched,,
+herschel400,NGC 4800,herschel400_list_v1.pdf,0,"[""NGC 4800""]",unmatched,,
+herschel400,NGC 4845,herschel400_list_v1.pdf,0,"[""NGC 4845""]",unmatched,,
+herschel400,NGC 4856,herschel400_list_v1.pdf,0,"[""NGC 4856""]",unmatched,,
+herschel400,NGC 4866,herschel400_list_v1.pdf,0,"[""NGC 4866""]",unmatched,,
+herschel400,NGC 4900,herschel400_list_v1.pdf,0,"[""NGC 4900""]",unmatched,,
+herschel400,NGC 4958,herschel400_list_v1.pdf,0,"[""NGC 4958""]",unmatched,,
+herschel400,NGC 4995,herschel400_list_v1.pdf,0,"[""NGC 4995""]",unmatched,,
+herschel400,NGC 5005,herschel400_list_v1.pdf,0,"[""NGC 5005""]",unmatched,,
+herschel400,NGC 5033,herschel400_list_v1.pdf,0,"[""NGC 5033""]",unmatched,,
+herschel400,NGC 5054,herschel400_list_v1.pdf,0,"[""NGC 5054""]",unmatched,,
+herschel400,NGC 5195,herschel400_list_v1.pdf,0,"[""NGC 5195""]",unmatched,,
+herschel400,NGC 5248,herschel400_list_v1.pdf,0,"[""NGC 5248""]",unmatched,,
+herschel400,NGC 5273,herschel400_list_v1.pdf,0,"[""NGC 5273""]",unmatched,,
+herschel400,NGC 5322,herschel400_list_v1.pdf,0,"[""NGC 5322""]",unmatched,,
+herschel400,NGC 5363,herschel400_list_v1.pdf,0,"[""NGC 5363""]",unmatched,,
+herschel400,NGC 5364,herschel400_list_v1.pdf,0,"[""NGC 5364""]",unmatched,,
+herschel400,NGC 5466,herschel400_list_v1.pdf,0,"[""NGC 5466""]",unmatched,,
+herschel400,NGC 5473,herschel400_list_v1.pdf,0,"[""NGC 5473""]",unmatched,,
+herschel400,NGC 5474,herschel400_list_v1.pdf,0,"[""NGC 5474""]",unmatched,,
+herschel400,NGC 5557,herschel400_list_v1.pdf,0,"[""NGC 5557""]",unmatched,,
+herschel400,NGC 5566,herschel400_list_v1.pdf,0,"[""NGC 5566""]",unmatched,,
+herschel400,NGC 5576,herschel400_list_v1.pdf,0,"[""NGC 5576""]",unmatched,,
+herschel400,NGC 5631,herschel400_list_v1.pdf,0,"[""NGC 5631""]",unmatched,,
+herschel400,NGC 5634,herschel400_list_v1.pdf,0,"[""NGC 5634""]",unmatched,,
+herschel400,NGC 5676,herschel400_list_v1.pdf,0,"[""NGC 5676""]",unmatched,,
+herschel400,NGC 5689,herschel400_list_v1.pdf,0,"[""NGC 5689""]",unmatched,,
+herschel400,NGC 5694,herschel400_list_v1.pdf,0,"[""NGC 5694""]",unmatched,,
+herschel400,NGC 5746,herschel400_list_v1.pdf,0,"[""NGC 5746""]",unmatched,,
+herschel400,NGC 5846,herschel400_list_v1.pdf,0,"[""NGC 5846""]",unmatched,,
+herschel400,NGC 5866,herschel400_list_v1.pdf,0,"[""NGC 5866""]",unmatched,,
+herschel400,NGC 5897,herschel400_list_v1.pdf,0,"[""NGC 5897""]",unmatched,,
+herschel400,NGC 5907,herschel400_list_v1.pdf,0,"[""NGC 5907""]",unmatched,,
+herschel400,NGC 5982,herschel400_list_v1.pdf,0,"[""NGC 5982""]",unmatched,,
+herschel400,NGC 6118,herschel400_list_v1.pdf,0,"[""NGC 6118""]",unmatched,,
+herschel400,NGC 6144,herschel400_list_v1.pdf,0,"[""NGC 6144""]",unmatched,,
+herschel400,NGC 6171,herschel400_list_v1.pdf,0,"[""NGC 6171""]",unmatched,,
+herschel400,NGC 6207,herschel400_list_v1.pdf,0,"[""NGC 6207""]",unmatched,,
+herschel400,NGC 6217,herschel400_list_v1.pdf,0,"[""NGC 6217""]",unmatched,,
+herschel400,NGC 6229,herschel400_list_v1.pdf,0,"[""NGC 6229""]",unmatched,,
+herschel400,NGC 6235,herschel400_list_v1.pdf,0,"[""NGC 6235""]",unmatched,,
+herschel400,NGC 6284,herschel400_list_v1.pdf,0,"[""NGC 6284""]",unmatched,,
+herschel400,NGC 6287,herschel400_list_v1.pdf,0,"[""NGC 6287""]",unmatched,,
+herschel400,NGC 6293,herschel400_list_v1.pdf,0,"[""NGC 6293""]",unmatched,,
+herschel400,NGC 6304,herschel400_list_v1.pdf,0,"[""NGC 6304""]",unmatched,,
+herschel400,NGC 6316,herschel400_list_v1.pdf,0,"[""NGC 6316""]",unmatched,,
+herschel400,NGC 6342,herschel400_list_v1.pdf,0,"[""NGC 6342""]",unmatched,,
+herschel400,NGC 6355,herschel400_list_v1.pdf,0,"[""NGC 6355""]",unmatched,,
+herschel400,NGC 6356,herschel400_list_v1.pdf,0,"[""NGC 6356""]",unmatched,,
+herschel400,NGC 6369,herschel400_list_v1.pdf,0,"[""NGC 6369""]",matched,NGC 6369,PN G002.4+05.8
+herschel400,NGC 6401,herschel400_list_v1.pdf,0,"[""NGC 6401""]",unmatched,,
+herschel400,NGC 6426,herschel400_list_v1.pdf,0,"[""NGC 6426""]",unmatched,,
+herschel400,NGC 6440,herschel400_list_v1.pdf,0,"[""NGC 6440""]",unmatched,,
+herschel400,NGC 6445,herschel400_list_v1.pdf,0,"[""NGC 6445""]",matched,NGC 6445,PN G008.0+03.9
+herschel400,NGC 6451,herschel400_list_v1.pdf,0,"[""NGC 6451""]",unmatched,,
+herschel400,NGC 6514,herschel400_list_v1.pdf,0,"[""NGC 6514""]",unmatched,,
+herschel400,NGC 6517,herschel400_list_v1.pdf,0,"[""NGC 6517""]",unmatched,,
+herschel400,NGC 6520,herschel400_list_v1.pdf,0,"[""NGC 6520""]",unmatched,,
+herschel400,NGC 6522,herschel400_list_v1.pdf,0,"[""NGC 6522""]",unmatched,,
+herschel400,NGC 6528,herschel400_list_v1.pdf,0,"[""NGC 6528""]",unmatched,,
+herschel400,NGC 6540,herschel400_list_v1.pdf,0,"[""NGC 6540""]",unmatched,,
+herschel400,NGC 6543,herschel400_list_v1.pdf,0,"[""NGC 6543""]",matched,NGC 6543,PN G096.4+29.9
+herschel400,NGC 6544,herschel400_list_v1.pdf,0,"[""NGC 6544""]",unmatched,,
+herschel400,NGC 6553,herschel400_list_v1.pdf,0,"[""NGC 6553""]",unmatched,,
+herschel400,NGC 6568,herschel400_list_v1.pdf,0,"[""NGC 6568""]",unmatched,,
+herschel400,NGC 6569,herschel400_list_v1.pdf,0,"[""NGC 6569""]",unmatched,,
+herschel400,NGC 6583,herschel400_list_v1.pdf,0,"[""NGC 6583""]",unmatched,,
+herschel400,NGC 6624,herschel400_list_v1.pdf,0,"[""NGC 6624""]",unmatched,,
+herschel400,NGC 6629,herschel400_list_v1.pdf,0,"[""NGC 6629""]",matched,NGC 6629,PN G009.4-05.0
+herschel400,NGC 6633,herschel400_list_v1.pdf,0,"[""NGC 6633""]",unmatched,,
+herschel400,NGC 6638,herschel400_list_v1.pdf,0,"[""NGC 6638""]",unmatched,,
+herschel400,NGC 6642,herschel400_list_v1.pdf,0,"[""NGC 6642""]",unmatched,,
+herschel400,NGC 6645,herschel400_list_v1.pdf,0,"[""NGC 6645""]",unmatched,,
+herschel400,NGC 6664,herschel400_list_v1.pdf,0,"[""NGC 6664""]",unmatched,,
+herschel400,NGC 6712,herschel400_list_v1.pdf,0,"[""NGC 6712""]",unmatched,,
+herschel400,NGC 6755,herschel400_list_v1.pdf,0,"[""NGC 6755""]",unmatched,,
+herschel400,NGC 6756,herschel400_list_v1.pdf,0,"[""NGC 6756""]",unmatched,,
+herschel400,NGC 6781,herschel400_list_v1.pdf,0,"[""NGC 6781""]",matched,NGC 6781,PN G041.8-02.9
+herschel400,NGC 6802,herschel400_list_v1.pdf,0,"[""NGC 6802""]",unmatched,,
+herschel400,NGC 6818,herschel400_list_v1.pdf,0,"[""NGC 6818""]",matched,NGC 6818,PN G025.8-17.9
+herschel400,NGC 6823,herschel400_list_v1.pdf,0,"[""NGC 6823""]",unmatched,,
+herschel400,NGC 6826,herschel400_list_v1.pdf,0,"[""NGC 6826""]",matched,NGC 6826,PN G083.5+12.7
+herschel400,NGC 6830,herschel400_list_v1.pdf,0,"[""NGC 6830""]",unmatched,,
+herschel400,NGC 6834,herschel400_list_v1.pdf,0,"[""NGC 6834""]",unmatched,,
+herschel400,NGC 6866,herschel400_list_v1.pdf,0,"[""NGC 6866""]",unmatched,,
+herschel400,NGC 6882,herschel400_list_v1.pdf,0,"[""NGC 6882""]",unmatched,,
+herschel400,NGC 6885,herschel400_list_v1.pdf,0,"[""NGC 6885""]",unmatched,,
+herschel400,NGC 6905,herschel400_list_v1.pdf,0,"[""NGC 6905""]",matched,NGC 6905,PN G061.4-09.5
+herschel400,NGC 6910,herschel400_list_v1.pdf,0,"[""NGC 6910""]",unmatched,,
+herschel400,NGC 6934,herschel400_list_v1.pdf,0,"[""NGC 6934""]",unmatched,,
+herschel400,NGC 6939,herschel400_list_v1.pdf,0,"[""NGC 6939""]",unmatched,,
+herschel400,NGC 6940,herschel400_list_v1.pdf,0,"[""NGC 6940""]",unmatched,,
+herschel400,NGC 6946,herschel400_list_v1.pdf,0,"[""NGC 6946""]",unmatched,,
+herschel400,NGC 7000,herschel400_list_v1.pdf,0,"[""NGC 7000""]",unmatched,,
+herschel400,NGC 7006,herschel400_list_v1.pdf,0,"[""NGC 7006""]",unmatched,,
+herschel400,NGC 7008,herschel400_list_v1.pdf,0,"[""NGC 7008""]",matched,NGC 7008,PN G093.4+05.4
+herschel400,NGC 7009,herschel400_list_v1.pdf,0,"[""NGC 7009""]",matched,NGC 7009,PN G037.7-34.5
+herschel400,NGC 7044,herschel400_list_v1.pdf,0,"[""NGC 7044""]",unmatched,,
+herschel400,NGC 7062,herschel400_list_v1.pdf,0,"[""NGC 7062""]",unmatched,,
+herschel400,NGC 7086,herschel400_list_v1.pdf,0,"[""NGC 7086""]",unmatched,,
+herschel400,NGC 7128,herschel400_list_v1.pdf,0,"[""NGC 7128""]",unmatched,,
+herschel400,NGC 7142,herschel400_list_v1.pdf,0,"[""NGC 7142""]",unmatched,,
+herschel400,NGC 7160,herschel400_list_v1.pdf,0,"[""NGC 7160""]",unmatched,,
+herschel400,NGC 7209,herschel400_list_v1.pdf,0,"[""NGC 7209""]",unmatched,,
+herschel400,NGC 7217,herschel400_list_v1.pdf,0,"[""NGC 7217""]",unmatched,,
+herschel400,NGC 7243,herschel400_list_v1.pdf,0,"[""NGC 7243""]",unmatched,,
+herschel400,NGC 7296,herschel400_list_v1.pdf,0,"[""NGC 7296""]",unmatched,,
+herschel400,NGC 7331,herschel400_list_v1.pdf,0,"[""NGC 7331""]",unmatched,,
+herschel400,NGC 7380,herschel400_list_v1.pdf,0,"[""NGC 7380""]",unmatched,,
+herschel400,NGC 7448,herschel400_list_v1.pdf,0,"[""NGC 7448""]",unmatched,,
+herschel400,NGC 7479,herschel400_list_v1.pdf,0,"[""NGC 7479""]",unmatched,,
+herschel400,NGC 7510,herschel400_list_v1.pdf,0,"[""NGC 7510""]",unmatched,,
+herschel400,NGC 7606,herschel400_list_v1.pdf,0,"[""NGC 7606""]",unmatched,,
+herschel400,NGC 7662,herschel400_list_v1.pdf,0,"[""NGC 7662""]",matched,NGC 7662,PN G106.5-17.6
+herschel400,NGC 7686,herschel400_list_v1.pdf,0,"[""NGC 7686""]",unmatched,,
+herschel400,NGC 7723,herschel400_list_v1.pdf,0,"[""NGC 7723""]",unmatched,,
+herschel400,NGC 7727,herschel400_list_v1.pdf,0,"[""NGC 7727""]",unmatched,,
+herschel400,NGC 7789,herschel400_list_v1.pdf,0,"[""NGC 7789""]",unmatched,,
+herschel400,NGC 7790,herschel400_list_v1.pdf,0,"[""NGC 7790""]",unmatched,,
+herschel400,NGC 7814,herschel400_list_v1.pdf,0,"[""NGC 7814""]",unmatched,,
+herschel2,NGC 23,herschel2_list_v1.pdf,0,"[""NGC 23""]",unmatched,,
+herschel2,NGC 24,herschel2_list_v1.pdf,0,"[""NGC 24""]",unmatched,,
+herschel2,NGC 125,herschel2_list_v1.pdf,0,"[""NGC 125""]",unmatched,,
+herschel2,NGC 151,herschel2_list_v1.pdf,0,"[""NGC 151""]",unmatched,,
+herschel2,NGC 175,herschel2_list_v1.pdf,0,"[""NGC 175""]",unmatched,,
+herschel2,NGC 198,herschel2_list_v1.pdf,0,"[""NGC 198""]",unmatched,,
+herschel2,NGC 206,herschel2_list_v1.pdf,0,"[""NGC 206""]",unmatched,,
+herschel2,NGC 214,herschel2_list_v1.pdf,0,"[""NGC 214""]",unmatched,,
+herschel2,NGC 217,herschel2_list_v1.pdf,0,"[""NGC 217""]",unmatched,,
+herschel2,NGC 315,herschel2_list_v1.pdf,0,"[""NGC 315""]",unmatched,,
+herschel2,NGC 337,herschel2_list_v1.pdf,0,"[""NGC 337""]",unmatched,,
+herschel2,NGC 357,herschel2_list_v1.pdf,0,"[""NGC 357""]",unmatched,,
+herschel2,NGC 410,herschel2_list_v1.pdf,0,"[""NGC 410""]",unmatched,,
+herschel2,NGC 428,herschel2_list_v1.pdf,0,"[""NGC 428""]",unmatched,,
+herschel2,NGC 499,herschel2_list_v1.pdf,0,"[""NGC 499""]",unmatched,,
+herschel2,NGC 513,herschel2_list_v1.pdf,0,"[""NGC 513""]",unmatched,,
+herschel2,NGC 514,herschel2_list_v1.pdf,0,"[""NGC 514""]",unmatched,,
+herschel2,NGC 604,herschel2_list_v1.pdf,0,"[""NGC 604""]",unmatched,,
+herschel2,NGC 636,herschel2_list_v1.pdf,0,"[""NGC 636""]",unmatched,,
+herschel2,NGC 660,herschel2_list_v1.pdf,0,"[""NGC 660""]",unmatched,,
+herschel2,NGC 665,herschel2_list_v1.pdf,0,"[""NGC 665""]",unmatched,,
+herschel2,NGC 672,herschel2_list_v1.pdf,0,"[""NGC 672""]",unmatched,,
+herschel2,NGC 706,herschel2_list_v1.pdf,0,"[""NGC 706""]",unmatched,,
+herschel2,NGC 718,herschel2_list_v1.pdf,0,"[""NGC 718""]",unmatched,,
+herschel2,NGC 741,herschel2_list_v1.pdf,0,"[""NGC 741""]",unmatched,,
+herschel2,NGC 821,herschel2_list_v1.pdf,0,"[""NGC 821""]",unmatched,,
+herschel2,NGC 890,herschel2_list_v1.pdf,0,"[""NGC 890""]",unmatched,,
+herschel2,NGC 896,herschel2_list_v1.pdf,0,"[""NGC 896""]",unmatched,,
+herschel2,NGC 925,herschel2_list_v1.pdf,0,"[""NGC 925""]",unmatched,,
+herschel2,NGC 991,herschel2_list_v1.pdf,0,"[""NGC 991""]",unmatched,,
+herschel2,NGC 1003,herschel2_list_v1.pdf,0,"[""NGC 1003""]",unmatched,,
+herschel2,NGC 1012,herschel2_list_v1.pdf,0,"[""NGC 1012""]",unmatched,,
+herschel2,NGC 1032,herschel2_list_v1.pdf,0,"[""NGC 1032""]",unmatched,,
+herschel2,NGC 1035,herschel2_list_v1.pdf,0,"[""NGC 1035""]",unmatched,,
+herschel2,NGC 1045,herschel2_list_v1.pdf,0,"[""NGC 1045""]",unmatched,,
+herschel2,NGC 1058,herschel2_list_v1.pdf,0,"[""NGC 1058""]",unmatched,,
+herschel2,NGC 1060,herschel2_list_v1.pdf,0,"[""NGC 1060""]",unmatched,,
+herschel2,NGC 1070,herschel2_list_v1.pdf,0,"[""NGC 1070""]",unmatched,,
+herschel2,NGC 1073,herschel2_list_v1.pdf,0,"[""NGC 1073""]",unmatched,,
+herschel2,NGC 1087,herschel2_list_v1.pdf,0,"[""NGC 1087""]",unmatched,,
+herschel2,NGC 1090,herschel2_list_v1.pdf,0,"[""NGC 1090""]",unmatched,,
+herschel2,NGC 1114,herschel2_list_v1.pdf,0,"[""NGC 1114""]",unmatched,,
+herschel2,NGC 1156,herschel2_list_v1.pdf,0,"[""NGC 1156""]",unmatched,,
+herschel2,NGC 1161,herschel2_list_v1.pdf,0,"[""NGC 1161""]",unmatched,,
+herschel2,NGC 1162,herschel2_list_v1.pdf,0,"[""NGC 1162""]",unmatched,,
+herschel2,NGC 1169,herschel2_list_v1.pdf,0,"[""NGC 1169""]",unmatched,,
+herschel2,NGC 1172,herschel2_list_v1.pdf,0,"[""NGC 1172""]",unmatched,,
+herschel2,NGC 1175,herschel2_list_v1.pdf,0,"[""NGC 1175""]",unmatched,,
+herschel2,NGC 1184,herschel2_list_v1.pdf,0,"[""NGC 1184""]",unmatched,,
+herschel2,NGC 1187,herschel2_list_v1.pdf,0,"[""NGC 1187""]",unmatched,,
+herschel2,NGC 1193,herschel2_list_v1.pdf,0,"[""NGC 1193""]",unmatched,,
+herschel2,NGC 1199,herschel2_list_v1.pdf,0,"[""NGC 1199""]",unmatched,,
+herschel2,NGC 1207,herschel2_list_v1.pdf,0,"[""NGC 1207""]",unmatched,,
+herschel2,NGC 1209,herschel2_list_v1.pdf,0,"[""NGC 1209""]",unmatched,,
+herschel2,NGC 1325,herschel2_list_v1.pdf,0,"[""NGC 1325""]",unmatched,,
+herschel2,NGC 1332,herschel2_list_v1.pdf,0,"[""NGC 1332""]",unmatched,,
+herschel2,NGC 1348,herschel2_list_v1.pdf,0,"[""NGC 1348""]",unmatched,,
+herschel2,NGC 1353,herschel2_list_v1.pdf,0,"[""NGC 1353""]",unmatched,,
+herschel2,NGC 1400,herschel2_list_v1.pdf,0,"[""NGC 1400""]",unmatched,,
+herschel2,NGC 1421,herschel2_list_v1.pdf,0,"[""NGC 1421""]",unmatched,,
+herschel2,NGC 1491,herschel2_list_v1.pdf,0,"[""NGC 1491""]",unmatched,,
+herschel2,NGC 1507,herschel2_list_v1.pdf,0,"[""NGC 1507""]",unmatched,,
+herschel2,NGC 1514,herschel2_list_v1.pdf,0,"[""NGC 1514""]",matched,NGC 1514,PN G165.5-15.2
+herschel2,NGC 1579,herschel2_list_v1.pdf,0,"[""NGC 1579""]",unmatched,,
+herschel2,NGC 1582,herschel2_list_v1.pdf,0,"[""NGC 1582""]",unmatched,,
+herschel2,NGC 1587,herschel2_list_v1.pdf,0,"[""NGC 1587""]",unmatched,,
+herschel2,NGC 1600,herschel2_list_v1.pdf,0,"[""NGC 1600""]",unmatched,,
+herschel2,NGC 1605,herschel2_list_v1.pdf,0,"[""NGC 1605""]",unmatched,,
+herschel2,NGC 1618,herschel2_list_v1.pdf,0,"[""NGC 1618""]",unmatched,,
+herschel2,NGC 1624,herschel2_list_v1.pdf,0,"[""NGC 1624""]",unmatched,,
+herschel2,NGC 1637,herschel2_list_v1.pdf,0,"[""NGC 1637""]",unmatched,,
+herschel2,NGC 1662,herschel2_list_v1.pdf,0,"[""NGC 1662""]",unmatched,,
+herschel2,NGC 1663,herschel2_list_v1.pdf,0,"[""NGC 1663""]",unmatched,,
+herschel2,NGC 1700,herschel2_list_v1.pdf,0,"[""NGC 1700""]",unmatched,,
+herschel2,NGC 1762,herschel2_list_v1.pdf,0,"[""NGC 1762""]",unmatched,,
+herschel2,NGC 1778,herschel2_list_v1.pdf,0,"[""NGC 1778""]",unmatched,,
+herschel2,NGC 1779,herschel2_list_v1.pdf,0,"[""NGC 1779""]",unmatched,,
+herschel2,NGC 1832,herschel2_list_v1.pdf,0,"[""NGC 1832""]",unmatched,,
+herschel2,NGC 1883,herschel2_list_v1.pdf,0,"[""NGC 1883""]",unmatched,,
+herschel2,NGC 1977,herschel2_list_v1.pdf,0,"[""NGC 1977""]",unmatched,,
+herschel2,NGC 1985,herschel2_list_v1.pdf,0,"[""NGC 1985""]",unmatched,,
+herschel2,NGC 2023,herschel2_list_v1.pdf,0,"[""NGC 2023""]",unmatched,,
+herschel2,NGC 2071,herschel2_list_v1.pdf,0,"[""NGC 2071""]",unmatched,,
+herschel2,NGC 2112,herschel2_list_v1.pdf,0,"[""NGC 2112""]",unmatched,,
+herschel2,NGC 2139,herschel2_list_v1.pdf,0,"[""NGC 2139""]",unmatched,,
+herschel2,NGC 2170,herschel2_list_v1.pdf,0,"[""NGC 2170""]",unmatched,,
+herschel2,NGC 2182,herschel2_list_v1.pdf,0,"[""NGC 2182""]",unmatched,,
+herschel2,NGC 2192,herschel2_list_v1.pdf,0,"[""NGC 2192""]",unmatched,,
+herschel2,NGC 2196,herschel2_list_v1.pdf,0,"[""NGC 2196""]",unmatched,,
+herschel2,NGC 2236,herschel2_list_v1.pdf,0,"[""NGC 2236""]",unmatched,,
+herschel2,NGC 2245,herschel2_list_v1.pdf,0,"[""NGC 2245""]",unmatched,,
+herschel2,NGC 2252,herschel2_list_v1.pdf,0,"[""NGC 2252""]",unmatched,,
+herschel2,NGC 2254,herschel2_list_v1.pdf,0,"[""NGC 2254""]",unmatched,,
+herschel2,NGC 2259,herschel2_list_v1.pdf,0,"[""NGC 2259""]",unmatched,,
+herschel2,NGC 2261,herschel2_list_v1.pdf,0,"[""NGC 2261""]",unmatched,,
+herschel2,NGC 2269,herschel2_list_v1.pdf,0,"[""NGC 2269""]",unmatched,,
+herschel2,NGC 2274,herschel2_list_v1.pdf,0,"[""NGC 2274""]",unmatched,,
+herschel2,NGC 2283,herschel2_list_v1.pdf,0,"[""NGC 2283""]",unmatched,,
+herschel2,NGC 2302,herschel2_list_v1.pdf,0,"[""NGC 2302""]",unmatched,,
+herschel2,NGC 2309,herschel2_list_v1.pdf,0,"[""NGC 2309""]",unmatched,,
+herschel2,NGC 2316,herschel2_list_v1.pdf,0,"[""NGC 2316""]",unmatched,,
+herschel2,NGC 2331,herschel2_list_v1.pdf,0,"[""NGC 2331""]",unmatched,,
+herschel2,NGC 2339,herschel2_list_v1.pdf,0,"[""NGC 2339""]",unmatched,,
+herschel2,NGC 2346,herschel2_list_v1.pdf,0,"[""NGC 2346""]",matched,NGC 2346,PN G215.6+03.6
+herschel2,NGC 2347,herschel2_list_v1.pdf,0,"[""NGC 2347""]",unmatched,,
+herschel2,NGC 2359,herschel2_list_v1.pdf,0,"[""NGC 2359""]",unmatched,,
+herschel2,NGC 2366,herschel2_list_v1.pdf,0,"[""NGC 2366""]",unmatched,,
+herschel2,NGC 2367,herschel2_list_v1.pdf,0,"[""NGC 2367""]",unmatched,,
+herschel2,NGC 2374,herschel2_list_v1.pdf,0,"[""NGC 2374""]",unmatched,,
+herschel2,NGC 2396,herschel2_list_v1.pdf,0,"[""NGC 2396""]",unmatched,,
+herschel2,NGC 2414,herschel2_list_v1.pdf,0,"[""NGC 2414""]",unmatched,,
+herschel2,NGC 2415,herschel2_list_v1.pdf,0,"[""NGC 2415""]",unmatched,,
+herschel2,NGC 2432,herschel2_list_v1.pdf,0,"[""NGC 2432""]",unmatched,,
+herschel2,NGC 2467,herschel2_list_v1.pdf,0,"[""NGC 2467""]",unmatched,,
+herschel2,NGC 2493,herschel2_list_v1.pdf,0,"[""NGC 2493""]",unmatched,,
+herschel2,NGC 2500,herschel2_list_v1.pdf,0,"[""NGC 2500""]",unmatched,,
+herschel2,NGC 2525,herschel2_list_v1.pdf,0,"[""NGC 2525""]",unmatched,,
+herschel2,NGC 2541,herschel2_list_v1.pdf,0,"[""NGC 2541""]",unmatched,,
+herschel2,NGC 2610,herschel2_list_v1.pdf,0,"[""NGC 2610""]",matched,NGC 2610,PN G239.6+13.9
+herschel2,NGC 2639,herschel2_list_v1.pdf,0,"[""NGC 2639""]",unmatched,,
+herschel2,NGC 2756,herschel2_list_v1.pdf,0,"[""NGC 2756""]",unmatched,,
+herschel2,NGC 2765,herschel2_list_v1.pdf,0,"[""NGC 2765""]",unmatched,,
+herschel2,NGC 2781,herschel2_list_v1.pdf,0,"[""NGC 2781""]",unmatched,,
+herschel2,NGC 2784,herschel2_list_v1.pdf,0,"[""NGC 2784""]",unmatched,,
+herschel2,NGC 2805,herschel2_list_v1.pdf,0,"[""NGC 2805""]",unmatched,,
+herschel2,NGC 2855,herschel2_list_v1.pdf,0,"[""NGC 2855""]",unmatched,,
+herschel2,NGC 2880,herschel2_list_v1.pdf,0,"[""NGC 2880""]",unmatched,,
+herschel2,NGC 2889,herschel2_list_v1.pdf,0,"[""NGC 2889""]",unmatched,,
+herschel2,NGC 2986,herschel2_list_v1.pdf,0,"[""NGC 2986""]",unmatched,,
+herschel2,NGC 3065,herschel2_list_v1.pdf,0,"[""NGC 3065""]",unmatched,,
+herschel2,NGC 3067,herschel2_list_v1.pdf,0,"[""NGC 3067""]",unmatched,,
+herschel2,NGC 3073,herschel2_list_v1.pdf,0,"[""NGC 3073""]",unmatched,,
+herschel2,NGC 3078,herschel2_list_v1.pdf,0,"[""NGC 3078""]",unmatched,,
+herschel2,NGC 3107,herschel2_list_v1.pdf,0,"[""NGC 3107""]",unmatched,,
+herschel2,NGC 3145,herschel2_list_v1.pdf,0,"[""NGC 3145""]",unmatched,,
+herschel2,NGC 3156,herschel2_list_v1.pdf,0,"[""NGC 3156""]",unmatched,,
+herschel2,NGC 3158,herschel2_list_v1.pdf,0,"[""NGC 3158""]",unmatched,,
+herschel2,NGC 3162,herschel2_list_v1.pdf,0,"[""NGC 3162""]",unmatched,,
+herschel2,NGC 3177,herschel2_list_v1.pdf,0,"[""NGC 3177""]",unmatched,,
+herschel2,NGC 3225,herschel2_list_v1.pdf,0,"[""NGC 3225""]",unmatched,,
+herschel2,NGC 3254,herschel2_list_v1.pdf,0,"[""NGC 3254""]",unmatched,,
+herschel2,NGC 3274,herschel2_list_v1.pdf,0,"[""NGC 3274""]",unmatched,,
+herschel2,NGC 3301,herschel2_list_v1.pdf,0,"[""NGC 3301""]",unmatched,,
+herschel2,NGC 3319,herschel2_list_v1.pdf,0,"[""NGC 3319""]",unmatched,,
+herschel2,NGC 3338,herschel2_list_v1.pdf,0,"[""NGC 3338""]",unmatched,,
+herschel2,NGC 3359,herschel2_list_v1.pdf,0,"[""NGC 3359""]",unmatched,,
+herschel2,NGC 3424,herschel2_list_v1.pdf,0,"[""NGC 3424""]",unmatched,,
+herschel2,NGC 3430,herschel2_list_v1.pdf,0,"[""NGC 3430""]",unmatched,,
+herschel2,NGC 3507,herschel2_list_v1.pdf,0,"[""NGC 3507""]",unmatched,,
+herschel2,NGC 3511,herschel2_list_v1.pdf,0,"[""NGC 3511""]",unmatched,,
+herschel2,NGC 3513,herschel2_list_v1.pdf,0,"[""NGC 3513""]",unmatched,,
+herschel2,NGC 3516,herschel2_list_v1.pdf,0,"[""NGC 3516""]",unmatched,,
+herschel2,NGC 3524,herschel2_list_v1.pdf,0,"[""NGC 3524""]",unmatched,,
+herschel2,NGC 3547,herschel2_list_v1.pdf,0,"[""NGC 3547""]",unmatched,,
+herschel2,NGC 3583,herschel2_list_v1.pdf,0,"[""NGC 3583""]",unmatched,,
+herschel2,NGC 3585,herschel2_list_v1.pdf,0,"[""NGC 3585""]",unmatched,,
+herschel2,NGC 3596,herschel2_list_v1.pdf,0,"[""NGC 3596""]",unmatched,,
+herschel2,NGC 3599,herschel2_list_v1.pdf,0,"[""NGC 3599""]",unmatched,,
+herschel2,NGC 3605,herschel2_list_v1.pdf,0,"[""NGC 3605""]",unmatched,,
+herschel2,NGC 3611,herschel2_list_v1.pdf,0,"[""NGC 3611""]",unmatched,,
+herschel2,NGC 3622,herschel2_list_v1.pdf,0,"[""NGC 3622""]",unmatched,,
+herschel2,NGC 3636,herschel2_list_v1.pdf,0,"[""NGC 3636""]",unmatched,,
+herschel2,NGC 3637,herschel2_list_v1.pdf,0,"[""NGC 3637""]",unmatched,,
+herschel2,NGC 3642,herschel2_list_v1.pdf,0,"[""NGC 3642""]",unmatched,,
+herschel2,NGC 3646,herschel2_list_v1.pdf,0,"[""NGC 3646""]",unmatched,,
+herschel2,NGC 3652,herschel2_list_v1.pdf,0,"[""NGC 3652""]",unmatched,,
+herschel2,NGC 3659,herschel2_list_v1.pdf,0,"[""NGC 3659""]",unmatched,,
+herschel2,NGC 3666,herschel2_list_v1.pdf,0,"[""NGC 3666""]",unmatched,,
+herschel2,NGC 3668,herschel2_list_v1.pdf,0,"[""NGC 3668""]",unmatched,,
+herschel2,NGC 3669,herschel2_list_v1.pdf,0,"[""NGC 3669""]",unmatched,,
+herschel2,NGC 3672,herschel2_list_v1.pdf,0,"[""NGC 3672""]",unmatched,,
+herschel2,NGC 3681,herschel2_list_v1.pdf,0,"[""NGC 3681""]",unmatched,,
+herschel2,NGC 3682,herschel2_list_v1.pdf,0,"[""NGC 3682""]",unmatched,,
+herschel2,NGC 3683,herschel2_list_v1.pdf,0,"[""NGC 3683""]",unmatched,,
+herschel2,NGC 3689,herschel2_list_v1.pdf,0,"[""NGC 3689""]",unmatched,,
+herschel2,NGC 3693,herschel2_list_v1.pdf,0,"[""NGC 3693""]",unmatched,,
+herschel2,NGC 3705,herschel2_list_v1.pdf,0,"[""NGC 3705""]",unmatched,,
+herschel2,NGC 3732,herschel2_list_v1.pdf,0,"[""NGC 3732""]",unmatched,,
+herschel2,NGC 3756,herschel2_list_v1.pdf,0,"[""NGC 3756""]",unmatched,,
+herschel2,NGC 3887,herschel2_list_v1.pdf,0,"[""NGC 3887""]",unmatched,,
+herschel2,NGC 3892,herschel2_list_v1.pdf,0,"[""NGC 3892""]",unmatched,,
+herschel2,NGC 4013,herschel2_list_v1.pdf,0,"[""NGC 4013""]",unmatched,,
+herschel2,NGC 4024,herschel2_list_v1.pdf,0,"[""NGC 4024""]",unmatched,,
+herschel2,NGC 4039,herschel2_list_v1.pdf,0,"[""NGC 4039""]",unmatched,,
+herschel2,NGC 4045,herschel2_list_v1.pdf,0,"[""NGC 4045""]",unmatched,,
+herschel2,NGC 4047,herschel2_list_v1.pdf,0,"[""NGC 4047""]",unmatched,,
+herschel2,NGC 4062,herschel2_list_v1.pdf,0,"[""NGC 4062""]",unmatched,,
+herschel2,NGC 4073,herschel2_list_v1.pdf,0,"[""NGC 4073""]",unmatched,,
+herschel2,NGC 4096,herschel2_list_v1.pdf,0,"[""NGC 4096""]",unmatched,,
+herschel2,NGC 4100,herschel2_list_v1.pdf,0,"[""NGC 4100""]",unmatched,,
+herschel2,NGC 4105,herschel2_list_v1.pdf,0,"[""NGC 4105""]",unmatched,,
+herschel2,NGC 4124,herschel2_list_v1.pdf,0,"[""NGC 4124""]",unmatched,,
+herschel2,NGC 4133,herschel2_list_v1.pdf,0,"[""NGC 4133""]",unmatched,,
+herschel2,NGC 4136,herschel2_list_v1.pdf,0,"[""NGC 4136""]",unmatched,,
+herschel2,NGC 4138,herschel2_list_v1.pdf,0,"[""NGC 4138""]",unmatched,,
+herschel2,NGC 4144,herschel2_list_v1.pdf,0,"[""NGC 4144""]",unmatched,,
+herschel2,NGC 4152,herschel2_list_v1.pdf,0,"[""NGC 4152""]",unmatched,,
+herschel2,NGC 4157,herschel2_list_v1.pdf,0,"[""NGC 4157""]",unmatched,,
+herschel2,NGC 4168,herschel2_list_v1.pdf,0,"[""NGC 4168""]",unmatched,,
+herschel2,NGC 4169,herschel2_list_v1.pdf,0,"[""NGC 4169""]",unmatched,,
+herschel2,NGC 4185,herschel2_list_v1.pdf,0,"[""NGC 4185""]",unmatched,,
+herschel2,NGC 4189,herschel2_list_v1.pdf,0,"[""NGC 4189""]",unmatched,,
+herschel2,NGC 4212,herschel2_list_v1.pdf,0,"[""NGC 4212""]",unmatched,,
+herschel2,NGC 4217,herschel2_list_v1.pdf,0,"[""NGC 4217""]",unmatched,,
+herschel2,NGC 4220,herschel2_list_v1.pdf,0,"[""NGC 4220""]",unmatched,,
+herschel2,NGC 4224,herschel2_list_v1.pdf,0,"[""NGC 4224""]",unmatched,,
+herschel2,NGC 4233,herschel2_list_v1.pdf,0,"[""NGC 4233""]",unmatched,,
+herschel2,NGC 4235,herschel2_list_v1.pdf,0,"[""NGC 4235""]",unmatched,,
+herschel2,NGC 4236,herschel2_list_v1.pdf,0,"[""NGC 4236""]",unmatched,,
+herschel2,NGC 4237,herschel2_list_v1.pdf,0,"[""NGC 4237""]",unmatched,,
+herschel2,NGC 4241,herschel2_list_v1.pdf,0,"[""NGC 4241""]",unmatched,,
+herschel2,NGC 4244,herschel2_list_v1.pdf,0,"[""NGC 4244""]",unmatched,,
+herschel2,NGC 4248,herschel2_list_v1.pdf,0,"[""NGC 4248""]",unmatched,,
+herschel2,NGC 4250,herschel2_list_v1.pdf,0,"[""NGC 4250""]",unmatched,,
+herschel2,NGC 4256,herschel2_list_v1.pdf,0,"[""NGC 4256""]",unmatched,,
+herschel2,NGC 4260,herschel2_list_v1.pdf,0,"[""NGC 4260""]",unmatched,,
+herschel2,NGC 4264,herschel2_list_v1.pdf,0,"[""NGC 4264""]",unmatched,,
+herschel2,NGC 4267,herschel2_list_v1.pdf,0,"[""NGC 4267""]",unmatched,,
+herschel2,NGC 4270,herschel2_list_v1.pdf,0,"[""NGC 4270""]",unmatched,,
+herschel2,NGC 4271,herschel2_list_v1.pdf,0,"[""NGC 4271""]",unmatched,,
+herschel2,NGC 4290,herschel2_list_v1.pdf,0,"[""NGC 4290""]",unmatched,,
+herschel2,NGC 4291,herschel2_list_v1.pdf,0,"[""NGC 4291""]",unmatched,,
+herschel2,NGC 4294,herschel2_list_v1.pdf,0,"[""NGC 4294""]",unmatched,,
+herschel2,NGC 4298,herschel2_list_v1.pdf,0,"[""NGC 4298""]",unmatched,,
+herschel2,NGC 4299,herschel2_list_v1.pdf,0,"[""NGC 4299""]",unmatched,,
+herschel2,NGC 4302,herschel2_list_v1.pdf,0,"[""NGC 4302""]",unmatched,,
+herschel2,NGC 4310,herschel2_list_v1.pdf,0,"[""NGC 4310""]",unmatched,,
+herschel2,NGC 4312,herschel2_list_v1.pdf,0,"[""NGC 4312""]",unmatched,,
+herschel2,NGC 4313,herschel2_list_v1.pdf,0,"[""NGC 4313""]",unmatched,,
+herschel2,NGC 4319,herschel2_list_v1.pdf,0,"[""NGC 4319""]",unmatched,,
+herschel2,NGC 4336,herschel2_list_v1.pdf,0,"[""NGC 4336""]",unmatched,,
+herschel2,NGC 4339,herschel2_list_v1.pdf,0,"[""NGC 4339""]",unmatched,,
+herschel2,NGC 4340,herschel2_list_v1.pdf,0,"[""NGC 4340""]",unmatched,,
+herschel2,NGC 4343,herschel2_list_v1.pdf,0,"[""NGC 4343""]",unmatched,,
+herschel2,NGC 4359,herschel2_list_v1.pdf,0,"[""NGC 4359""]",unmatched,,
+herschel2,NGC 4369,herschel2_list_v1.pdf,0,"[""NGC 4369""]",unmatched,,
+herschel2,NGC 4379,herschel2_list_v1.pdf,0,"[""NGC 4379""]",unmatched,,
+herschel2,NGC 4395,herschel2_list_v1.pdf,0,"[""NGC 4395""]",unmatched,,
+herschel2,NGC 4487,herschel2_list_v1.pdf,0,"[""NGC 4487""]",unmatched,,
+herschel2,NGC 4517,herschel2_list_v1.pdf,0,"[""NGC 4517""]",unmatched,,
+herschel2,NGC 4519,herschel2_list_v1.pdf,0,"[""NGC 4519""]",unmatched,,
+herschel2,NGC 4571,herschel2_list_v1.pdf,0,"[""NGC 4571""]",unmatched,,
+herschel2,NGC 4586,herschel2_list_v1.pdf,0,"[""NGC 4586""]",unmatched,,
+herschel2,NGC 4605,herschel2_list_v1.pdf,0,"[""NGC 4605""]",unmatched,,
+herschel2,NGC 4608,herschel2_list_v1.pdf,0,"[""NGC 4608""]",unmatched,,
+herschel2,NGC 4612,herschel2_list_v1.pdf,0,"[""NGC 4612""]",unmatched,,
+herschel2,NGC 4639,herschel2_list_v1.pdf,0,"[""NGC 4639""]",unmatched,,
+herschel2,NGC 4647,herschel2_list_v1.pdf,0,"[""NGC 4647""]",unmatched,,
+herschel2,NGC 4691,herschel2_list_v1.pdf,0,"[""NGC 4691""]",unmatched,,
+herschel2,NGC 4742,herschel2_list_v1.pdf,0,"[""NGC 4742""]",unmatched,,
+herschel2,NGC 4880,herschel2_list_v1.pdf,0,"[""NGC 4880""]",unmatched,,
+herschel2,NGC 4902,herschel2_list_v1.pdf,0,"[""NGC 4902""]",unmatched,,
+herschel2,NGC 4904,herschel2_list_v1.pdf,0,"[""NGC 4904""]",unmatched,,
+herschel2,NGC 4914,herschel2_list_v1.pdf,0,"[""NGC 4914""]",unmatched,,
+herschel2,NGC 4915,herschel2_list_v1.pdf,0,"[""NGC 4915""]",unmatched,,
+herschel2,NGC 4928,herschel2_list_v1.pdf,0,"[""NGC 4928""]",unmatched,,
+herschel2,NGC 4939,herschel2_list_v1.pdf,0,"[""NGC 4939""]",unmatched,,
+herschel2,NGC 4941,herschel2_list_v1.pdf,0,"[""NGC 4941""]",unmatched,,
+herschel2,NGC 4956,herschel2_list_v1.pdf,0,"[""NGC 4956""]",unmatched,,
+herschel2,NGC 4981,herschel2_list_v1.pdf,0,"[""NGC 4981""]",unmatched,,
+herschel2,NGC 4984,herschel2_list_v1.pdf,0,"[""NGC 4984""]",unmatched,,
+herschel2,NGC 4999,herschel2_list_v1.pdf,0,"[""NGC 4999""]",unmatched,,
+herschel2,NGC 5012,herschel2_list_v1.pdf,0,"[""NGC 5012""]",unmatched,,
+herschel2,NGC 5018,herschel2_list_v1.pdf,0,"[""NGC 5018""]",unmatched,,
+herschel2,NGC 5020,herschel2_list_v1.pdf,0,"[""NGC 5020""]",unmatched,,
+herschel2,NGC 5023,herschel2_list_v1.pdf,0,"[""NGC 5023""]",unmatched,,
+herschel2,NGC 5037,herschel2_list_v1.pdf,0,"[""NGC 5037""]",unmatched,,
+herschel2,NGC 5044,herschel2_list_v1.pdf,0,"[""NGC 5044""]",unmatched,,
+herschel2,NGC 5053,herschel2_list_v1.pdf,0,"[""NGC 5053""]",unmatched,,
+herschel2,NGC 5056,herschel2_list_v1.pdf,0,"[""NGC 5056""]",unmatched,,
+herschel2,NGC 5061,herschel2_list_v1.pdf,0,"[""NGC 5061""]",unmatched,,
+herschel2,NGC 5068,herschel2_list_v1.pdf,0,"[""NGC 5068""]",unmatched,,
+herschel2,NGC 5077,herschel2_list_v1.pdf,0,"[""NGC 5077""]",unmatched,,
+herschel2,NGC 5078,herschel2_list_v1.pdf,0,"[""NGC 5078""]",unmatched,,
+herschel2,NGC 5084,herschel2_list_v1.pdf,0,"[""NGC 5084""]",unmatched,,
+herschel2,NGC 5087,herschel2_list_v1.pdf,0,"[""NGC 5087""]",unmatched,,
+herschel2,NGC 5103,herschel2_list_v1.pdf,0,"[""NGC 5103""]",unmatched,,
+herschel2,NGC 5129,herschel2_list_v1.pdf,0,"[""NGC 5129""]",unmatched,,
+herschel2,NGC 5134,herschel2_list_v1.pdf,0,"[""NGC 5134""]",unmatched,,
+herschel2,NGC 5204,herschel2_list_v1.pdf,0,"[""NGC 5204""]",unmatched,,
+herschel2,NGC 5308,herschel2_list_v1.pdf,0,"[""NGC 5308""]",unmatched,,
+herschel2,NGC 5371,herschel2_list_v1.pdf,0,"[""NGC 5371""]",unmatched,,
+herschel2,NGC 5383,herschel2_list_v1.pdf,0,"[""NGC 5383""]",unmatched,,
+herschel2,NGC 5426,herschel2_list_v1.pdf,0,"[""NGC 5426""]",unmatched,,
+herschel2,NGC 5430,herschel2_list_v1.pdf,0,"[""NGC 5430""]",unmatched,,
+herschel2,NGC 5440,herschel2_list_v1.pdf,0,"[""NGC 5440""]",unmatched,,
+herschel2,NGC 5443,herschel2_list_v1.pdf,0,"[""NGC 5443""]",unmatched,,
+herschel2,NGC 5444,herschel2_list_v1.pdf,0,"[""NGC 5444""]",unmatched,,
+herschel2,NGC 5445,herschel2_list_v1.pdf,0,"[""NGC 5445""]",unmatched,,
+herschel2,NGC 5447,herschel2_list_v1.pdf,0,"[""NGC 5447""]",unmatched,,
+herschel2,NGC 5448,herschel2_list_v1.pdf,0,"[""NGC 5448""]",unmatched,,
+herschel2,NGC 5462,herschel2_list_v1.pdf,0,"[""NGC 5462""]",unmatched,,
+herschel2,NGC 5480,herschel2_list_v1.pdf,0,"[""NGC 5480""]",unmatched,,
+herschel2,NGC 5481,herschel2_list_v1.pdf,0,"[""NGC 5481""]",unmatched,,
+herschel2,NGC 5485,herschel2_list_v1.pdf,0,"[""NGC 5485""]",unmatched,,
+herschel2,NGC 5490,herschel2_list_v1.pdf,0,"[""NGC 5490""]",unmatched,,
+herschel2,NGC 5493,herschel2_list_v1.pdf,0,"[""NGC 5493""]",unmatched,,
+herschel2,NGC 5506,herschel2_list_v1.pdf,0,"[""NGC 5506""]",unmatched,,
+herschel2,NGC 5507,herschel2_list_v1.pdf,0,"[""NGC 5507""]",unmatched,,
+herschel2,NGC 5520,herschel2_list_v1.pdf,0,"[""NGC 5520""]",unmatched,,
+herschel2,NGC 5523,herschel2_list_v1.pdf,0,"[""NGC 5523""]",unmatched,,
+herschel2,NGC 5529,herschel2_list_v1.pdf,0,"[""NGC 5529""]",unmatched,,
+herschel2,NGC 5533,herschel2_list_v1.pdf,0,"[""NGC 5533""]",unmatched,,
+herschel2,NGC 5548,herschel2_list_v1.pdf,0,"[""NGC 5548""]",unmatched,,
+herschel2,NGC 5560,herschel2_list_v1.pdf,0,"[""NGC 5560""]",unmatched,,
+herschel2,NGC 5582,herschel2_list_v1.pdf,0,"[""NGC 5582""]",unmatched,,
+herschel2,NGC 5585,herschel2_list_v1.pdf,0,"[""NGC 5585""]",unmatched,,
+herschel2,NGC 5590,herschel2_list_v1.pdf,0,"[""NGC 5590""]",unmatched,,
+herschel2,NGC 5595,herschel2_list_v1.pdf,0,"[""NGC 5595""]",unmatched,,
+herschel2,NGC 5597,herschel2_list_v1.pdf,0,"[""NGC 5597""]",unmatched,,
+herschel2,NGC 5600,herschel2_list_v1.pdf,0,"[""NGC 5600""]",unmatched,,
+herschel2,NGC 5602,herschel2_list_v1.pdf,0,"[""NGC 5602""]",unmatched,,
+herschel2,NGC 5605,herschel2_list_v1.pdf,0,"[""NGC 5605""]",unmatched,,
+herschel2,NGC 5638,herschel2_list_v1.pdf,0,"[""NGC 5638""]",unmatched,,
+herschel2,NGC 5660,herschel2_list_v1.pdf,0,"[""NGC 5660""]",unmatched,,
+herschel2,NGC 5668,herschel2_list_v1.pdf,0,"[""NGC 5668""]",unmatched,,
+herschel2,NGC 5687,herschel2_list_v1.pdf,0,"[""NGC 5687""]",unmatched,,
+herschel2,NGC 5728,herschel2_list_v1.pdf,0,"[""NGC 5728""]",unmatched,,
+herschel2,NGC 5750,herschel2_list_v1.pdf,0,"[""NGC 5750""]",unmatched,,
+herschel2,NGC 5775,herschel2_list_v1.pdf,0,"[""NGC 5775""]",unmatched,,
+herschel2,NGC 5791,herschel2_list_v1.pdf,0,"[""NGC 5791""]",unmatched,,
+herschel2,NGC 5806,herschel2_list_v1.pdf,0,"[""NGC 5806""]",unmatched,,
+herschel2,NGC 5812,herschel2_list_v1.pdf,0,"[""NGC 5812""]",unmatched,,
+herschel2,NGC 5813,herschel2_list_v1.pdf,0,"[""NGC 5813""]",unmatched,,
+herschel2,NGC 5831,herschel2_list_v1.pdf,0,"[""NGC 5831""]",unmatched,,
+herschel2,NGC 5838,herschel2_list_v1.pdf,0,"[""NGC 5838""]",unmatched,,
+herschel2,NGC 5850,herschel2_list_v1.pdf,0,"[""NGC 5850""]",unmatched,,
+herschel2,NGC 5854,herschel2_list_v1.pdf,0,"[""NGC 5854""]",unmatched,,
+herschel2,NGC 5861,herschel2_list_v1.pdf,0,"[""NGC 5861""]",unmatched,,
+herschel2,NGC 5864,herschel2_list_v1.pdf,0,"[""NGC 5864""]",unmatched,,
+herschel2,NGC 5878,herschel2_list_v1.pdf,0,"[""NGC 5878""]",unmatched,,
+herschel2,NGC 5879,herschel2_list_v1.pdf,0,"[""NGC 5879""]",unmatched,,
+herschel2,NGC 5899,herschel2_list_v1.pdf,0,"[""NGC 5899""]",unmatched,,
+herschel2,NGC 5970,herschel2_list_v1.pdf,0,"[""NGC 5970""]",unmatched,,
+herschel2,NGC 5985,herschel2_list_v1.pdf,0,"[""NGC 5985""]",unmatched,,
+herschel2,NGC 6015,herschel2_list_v1.pdf,0,"[""NGC 6015""]",unmatched,,
+herschel2,NGC 6058,herschel2_list_v1.pdf,0,"[""NGC 6058""]",matched,NGC 6058,PN G064.6+48.2
+herschel2,NGC 6070,herschel2_list_v1.pdf,0,"[""NGC 6070""]",unmatched,,
+herschel2,NGC 6106,herschel2_list_v1.pdf,0,"[""NGC 6106""]",unmatched,,
+herschel2,NGC 6155,herschel2_list_v1.pdf,0,"[""NGC 6155""]",unmatched,,
+herschel2,NGC 6166,herschel2_list_v1.pdf,0,"[""NGC 6166""]",unmatched,,
+herschel2,NGC 6181,herschel2_list_v1.pdf,0,"[""NGC 6181""]",unmatched,,
+herschel2,NGC 6239,herschel2_list_v1.pdf,0,"[""NGC 6239""]",unmatched,,
+herschel2,NGC 6340,herschel2_list_v1.pdf,0,"[""NGC 6340""]",unmatched,,
+herschel2,NGC 6507,herschel2_list_v1.pdf,0,"[""NGC 6507""]",unmatched,,
+herschel2,NGC 6526,herschel2_list_v1.pdf,0,"[""NGC 6526""]",unmatched,,
+herschel2,NGC 6548,herschel2_list_v1.pdf,0,"[""NGC 6548""]",unmatched,,
+herschel2,NGC 6596,herschel2_list_v1.pdf,0,"[""NGC 6596""]",unmatched,,
+herschel2,NGC 6604,herschel2_list_v1.pdf,0,"[""NGC 6604""]",unmatched,,
+herschel2,NGC 6717,herschel2_list_v1.pdf,0,"[""NGC 6717""]",unmatched,,
+herschel2,NGC 6772,herschel2_list_v1.pdf,0,"[""NGC 6772""]",matched,NGC 6772,PN G033.1-06.3
+herschel2,NGC 6793,herschel2_list_v1.pdf,0,"[""NGC 6793""]",unmatched,,
+herschel2,NGC 6800,herschel2_list_v1.pdf,0,"[""NGC 6800""]",unmatched,,
+herschel2,NGC 6804,herschel2_list_v1.pdf,0,"[""NGC 6804""]",matched,NGC 6804,PN G045.7-04.5
+herschel2,NGC 6814,herschel2_list_v1.pdf,0,"[""NGC 6814""]",unmatched,,
+herschel2,NGC 6824,herschel2_list_v1.pdf,0,"[""NGC 6824""]",unmatched,,
+herschel2,NGC 6857,herschel2_list_v1.pdf,0,"[""NGC 6857""]",unmatched,,
+herschel2,NGC 6888,herschel2_list_v1.pdf,0,"[""NGC 6888""]",unmatched,,
+herschel2,NGC 6894,herschel2_list_v1.pdf,0,"[""NGC 6894""]",matched,NGC 6894,PN G069.4-02.6
+herschel2,NGC 6907,herschel2_list_v1.pdf,0,"[""NGC 6907""]",unmatched,,
+herschel2,NGC 6960,herschel2_list_v1.pdf,0,"[""NGC 6960""]",unmatched,,
+herschel2,NGC 6991,herschel2_list_v1.pdf,0,"[""NGC 6991""]",unmatched,,
+herschel2,NGC 6992,herschel2_list_v1.pdf,0,"[""NGC 6992""]",unmatched,,
+herschel2,NGC 6997,herschel2_list_v1.pdf,0,"[""NGC 6997""]",unmatched,,
+herschel2,NGC 7023,herschel2_list_v1.pdf,0,"[""NGC 7023""]",unmatched,,
+herschel2,NGC 7031,herschel2_list_v1.pdf,0,"[""NGC 7031""]",unmatched,,
+herschel2,NGC 7042,herschel2_list_v1.pdf,0,"[""NGC 7042""]",unmatched,,
+herschel2,NGC 7067,herschel2_list_v1.pdf,0,"[""NGC 7067""]",unmatched,,
+herschel2,NGC 7082,herschel2_list_v1.pdf,0,"[""NGC 7082""]",unmatched,,
+herschel2,NGC 7129,herschel2_list_v1.pdf,0,"[""NGC 7129""]",unmatched,,
+herschel2,NGC 7139,herschel2_list_v1.pdf,0,"[""NGC 7139""]",matched,NGC 7139,PN G104.1+07.9
+herschel2,NGC 7156,herschel2_list_v1.pdf,0,"[""NGC 7156""]",unmatched,,
+herschel2,NGC 7171,herschel2_list_v1.pdf,0,"[""NGC 7171""]",unmatched,,
+herschel2,NGC 7177,herschel2_list_v1.pdf,0,"[""NGC 7177""]",unmatched,,
+herschel2,NGC 7184,herschel2_list_v1.pdf,0,"[""NGC 7184""]",unmatched,,
+herschel2,NGC 7218,herschel2_list_v1.pdf,0,"[""NGC 7218""]",unmatched,,
+herschel2,NGC 7245,herschel2_list_v1.pdf,0,"[""NGC 7245""]",unmatched,,
+herschel2,NGC 7332,herschel2_list_v1.pdf,0,"[""NGC 7332""]",unmatched,,
+herschel2,NGC 7354,herschel2_list_v1.pdf,0,"[""NGC 7354""]",matched,NGC 7354,PN G107.8+02.3
+herschel2,NGC 7377,herschel2_list_v1.pdf,0,"[""NGC 7377""]",unmatched,,
+herschel2,NGC 7392,herschel2_list_v1.pdf,0,"[""NGC 7392""]",unmatched,,
+herschel2,NGC 7419,herschel2_list_v1.pdf,0,"[""NGC 7419""]",unmatched,,
+herschel2,NGC 7457,herschel2_list_v1.pdf,0,"[""NGC 7457""]",unmatched,,
+herschel2,NGC 7463,herschel2_list_v1.pdf,0,"[""NGC 7463""]",unmatched,,
+herschel2,NGC 7465,herschel2_list_v1.pdf,0,"[""NGC 7465""]",unmatched,,
+herschel2,NGC 7492,herschel2_list_v1.pdf,0,"[""NGC 7492""]",unmatched,,
+herschel2,NGC 7507,herschel2_list_v1.pdf,0,"[""NGC 7507""]",unmatched,,
+herschel2,NGC 7541,herschel2_list_v1.pdf,0,"[""NGC 7541""]",unmatched,,
+herschel2,NGC 7562,herschel2_list_v1.pdf,0,"[""NGC 7562""]",unmatched,,
+herschel2,NGC 7600,herschel2_list_v1.pdf,0,"[""NGC 7600""]",unmatched,,
+herschel2,NGC 7619,herschel2_list_v1.pdf,0,"[""NGC 7619""]",unmatched,,
+herschel2,NGC 7623,herschel2_list_v1.pdf,0,"[""NGC 7623""]",unmatched,,
+herschel2,NGC 7626,herschel2_list_v1.pdf,0,"[""NGC 7626""]",unmatched,,
+herschel2,NGC 7635,herschel2_list_v1.pdf,0,"[""NGC 7635""]",unmatched,,
+herschel2,NGC 7640,herschel2_list_v1.pdf,0,"[""NGC 7640""]",unmatched,,
+herschel2,NGC 7742,herschel2_list_v1.pdf,0,"[""NGC 7742""]",unmatched,,
+herschel2,NGC 7762,herschel2_list_v1.pdf,0,"[""NGC 7762""]",unmatched,,
+herschel2,NGC 7785,herschel2_list_v1.pdf,0,"[""NGC 7785""]",unmatched,,
+herschel2,NGC 7814,herschel2_list_v1.pdf,0,"[""NGC 7814""]",unmatched,,
+herschel2,NGC 7832,herschel2_list_v1.pdf,0,"[""NGC 7832""]",unmatched,,
+rasc_finest_ngc,FNGC 1,rasc_finest_list_v1.pdf,0,"[""NGC 7009""]",matched,NGC 7009,PN G037.7-34.5
+rasc_finest_ngc,FNGC 2,rasc_finest_list_v1.pdf,0,"[""NGC 7293""]",matched,NGC 7293,PN G036.1-57.1
+rasc_finest_ngc,FNGC 3,rasc_finest_list_v1.pdf,0,"[""NGC 7331""]",unmatched,,
+rasc_finest_ngc,FNGC 4,rasc_finest_list_v1.pdf,0,"[""NGC 7635""]",unmatched,,
+rasc_finest_ngc,FNGC 5,rasc_finest_list_v1.pdf,0,"[""NGC 7789""]",unmatched,,
+rasc_finest_ngc,FNGC 6,rasc_finest_list_v1.pdf,0,"[""NGC 185""]",unmatched,,
+rasc_finest_ngc,FNGC 7,rasc_finest_list_v1.pdf,0,"[""NGC 281""]",unmatched,,
+rasc_finest_ngc,FNGC 8,rasc_finest_list_v1.pdf,0,"[""NGC 457""]",unmatched,,
+rasc_finest_ngc,FNGC 9,rasc_finest_list_v1.pdf,0,"[""Collinder 20"", ""NGC 663""]",unmatched,,
+rasc_finest_ngc,FNGC 10,rasc_finest_list_v1.pdf,0,"[""IC 289""]",matched,IC 289,PN G138.8+02.8
+rasc_finest_ngc,FNGC 11,rasc_finest_list_v1.pdf,0,"[""NGC 7662""]",matched,NGC 7662,PN G106.5-17.6
+rasc_finest_ngc,FNGC 12,rasc_finest_list_v1.pdf,0,"[""NGC 891""]",unmatched,,
+rasc_finest_ngc,FNGC 13,rasc_finest_list_v1.pdf,0,"[""NGC 253""]",unmatched,,
+rasc_finest_ngc,FNGC 14,rasc_finest_list_v1.pdf,0,"[""NGC 772""]",unmatched,,
+rasc_finest_ngc,FNGC 15,rasc_finest_list_v1.pdf,0,"[""NGC 246""]",matched,NGC 246,PN G118.8-74.7
+rasc_finest_ngc,FNGC 16,rasc_finest_list_v1.pdf,0,"[""NGC 936""]",unmatched,,
+rasc_finest_ngc,FNGC 17,rasc_finest_list_v1.pdf,0,"[""NGC 869"", ""NGC 884""]",unmatched,,
+rasc_finest_ngc,FNGC 18,rasc_finest_list_v1.pdf,0,"[""NGC 1023""]",unmatched,,
+rasc_finest_ngc,FNGC 19,rasc_finest_list_v1.pdf,0,"[""NGC 1491""]",unmatched,,
+rasc_finest_ngc,FNGC 20,rasc_finest_list_v1.pdf,0,"[""NGC 1501""]",matched,NGC 1501,PN G144.5+06.5
+rasc_finest_ngc,FNGC 21,rasc_finest_list_v1.pdf,0,"[""NGC 1232""]",unmatched,,
+rasc_finest_ngc,FNGC 22,rasc_finest_list_v1.pdf,0,"[""NGC 1535""]",matched,NGC 1535,PN G206.4-40.5
+rasc_finest_ngc,FNGC 23,rasc_finest_list_v1.pdf,0,"[""NGC 1514""]",matched,NGC 1514,PN G165.5-15.2
+rasc_finest_ngc,FNGC 24,rasc_finest_list_v1.pdf,0,"[""NGC 1931""]",unmatched,,
+rasc_finest_ngc,FNGC 25,rasc_finest_list_v1.pdf,0,"[""NGC 1788""]",unmatched,,
+rasc_finest_ngc,FNGC 26,rasc_finest_list_v1.pdf,0,"[""NGC 1973"", ""NGC 1975"", ""NGC 1977""]",unmatched,,
+rasc_finest_ngc,FNGC 27,rasc_finest_list_v1.pdf,0,"[""NGC 2022""]",matched,NGC 2022,PN G196.6-10.9
+rasc_finest_ngc,FNGC 28,rasc_finest_list_v1.pdf,0,"[""NGC 2024""]",unmatched,,
+rasc_finest_ngc,FNGC 29,rasc_finest_list_v1.pdf,0,"[""Collinder 87"", ""NGC 2194""]",unmatched,,
+rasc_finest_ngc,FNGC 30,rasc_finest_list_v1.pdf,0,"[""NGC 2371""]",matched,NGC 2371,PN G189.1+19.8
+rasc_finest_ngc,FNGC 31,rasc_finest_list_v1.pdf,0,"[""NGC 2392""]",matched,NGC 2392,PN G197.8+17.3
+rasc_finest_ngc,FNGC 32,rasc_finest_list_v1.pdf,0,"[""NGC 2237""]",unmatched,,
+rasc_finest_ngc,FNGC 33,rasc_finest_list_v1.pdf,0,"[""NGC 2261""]",unmatched,,
+rasc_finest_ngc,FNGC 34,rasc_finest_list_v1.pdf,0,"[""NGC 2359""]",unmatched,,
+rasc_finest_ngc,FNGC 35,rasc_finest_list_v1.pdf,0,"[""NGC 2440""]",matched,NGC 2440,PN G234.8+02.4
+rasc_finest_ngc,FNGC 36,rasc_finest_list_v1.pdf,0,"[""Collinder 176"", ""NGC 2539""]",unmatched,,
+rasc_finest_ngc,FNGC 37,rasc_finest_list_v1.pdf,0,"[""NGC 2403""]",unmatched,,
+rasc_finest_ngc,FNGC 38,rasc_finest_list_v1.pdf,0,"[""NGC 2655""]",unmatched,,
+rasc_finest_ngc,FNGC 39,rasc_finest_list_v1.pdf,0,"[""NGC 2683""]",unmatched,,
+rasc_finest_ngc,FNGC 40,rasc_finest_list_v1.pdf,0,"[""NGC 2841""]",unmatched,,
+rasc_finest_ngc,FNGC 41,rasc_finest_list_v1.pdf,0,"[""NGC 3079""]",unmatched,,
+rasc_finest_ngc,FNGC 42,rasc_finest_list_v1.pdf,0,"[""NGC 3184""]",unmatched,,
+rasc_finest_ngc,FNGC 43,rasc_finest_list_v1.pdf,0,"[""NGC 3877""]",unmatched,,
+rasc_finest_ngc,FNGC 44,rasc_finest_list_v1.pdf,0,"[""NGC 3941""]",unmatched,,
+rasc_finest_ngc,FNGC 45,rasc_finest_list_v1.pdf,0,"[""NGC 4026""]",unmatched,,
+rasc_finest_ngc,FNGC 46,rasc_finest_list_v1.pdf,0,"[""NGC 4088""]",unmatched,,
+rasc_finest_ngc,FNGC 47,rasc_finest_list_v1.pdf,0,"[""NGC 4157""]",unmatched,,
+rasc_finest_ngc,FNGC 48,rasc_finest_list_v1.pdf,0,"[""NGC 4605""]",unmatched,,
+rasc_finest_ngc,FNGC 49,rasc_finest_list_v1.pdf,0,"[""NGC 3115""]",unmatched,,
+rasc_finest_ngc,FNGC 50,rasc_finest_list_v1.pdf,0,"[""NGC 3242""]",matched,NGC 3242,PN G261.0+32.0
+rasc_finest_ngc,FNGC 51,rasc_finest_list_v1.pdf,0,"[""NGC 3003""]",unmatched,,
+rasc_finest_ngc,FNGC 52,rasc_finest_list_v1.pdf,0,"[""NGC 3344""]",unmatched,,
+rasc_finest_ngc,FNGC 53,rasc_finest_list_v1.pdf,0,"[""NGC 3432""]",unmatched,,
+rasc_finest_ngc,FNGC 54,rasc_finest_list_v1.pdf,0,"[""NGC 2903""]",unmatched,,
+rasc_finest_ngc,FNGC 55,rasc_finest_list_v1.pdf,0,"[""NGC 3384""]",unmatched,,
+rasc_finest_ngc,FNGC 56,rasc_finest_list_v1.pdf,0,"[""NGC 3521""]",unmatched,,
+rasc_finest_ngc,FNGC 57,rasc_finest_list_v1.pdf,0,"[""NGC 3607""]",unmatched,,
+rasc_finest_ngc,FNGC 58,rasc_finest_list_v1.pdf,0,"[""NGC 3628""]",unmatched,,
+rasc_finest_ngc,FNGC 59,rasc_finest_list_v1.pdf,0,"[""NGC 4111""]",unmatched,,
+rasc_finest_ngc,FNGC 60,rasc_finest_list_v1.pdf,0,"[""NGC 4214""]",unmatched,,
+rasc_finest_ngc,FNGC 61,rasc_finest_list_v1.pdf,0,"[""NGC 4244""]",unmatched,,
+rasc_finest_ngc,FNGC 62,rasc_finest_list_v1.pdf,0,"[""NGC 4449""]",unmatched,,
+rasc_finest_ngc,FNGC 63,rasc_finest_list_v1.pdf,0,"[""NGC 4490""]",unmatched,,
+rasc_finest_ngc,FNGC 64,rasc_finest_list_v1.pdf,0,"[""NGC 4631""]",unmatched,,
+rasc_finest_ngc,FNGC 65,rasc_finest_list_v1.pdf,0,"[""NGC 4656""]",unmatched,,
+rasc_finest_ngc,FNGC 66,rasc_finest_list_v1.pdf,0,"[""NGC 5005""]",unmatched,,
+rasc_finest_ngc,FNGC 67,rasc_finest_list_v1.pdf,0,"[""NGC 5033""]",unmatched,,
+rasc_finest_ngc,FNGC 68,rasc_finest_list_v1.pdf,0,"[""NGC 4274""]",unmatched,,
+rasc_finest_ngc,FNGC 69,rasc_finest_list_v1.pdf,0,"[""NGC 4414""]",unmatched,,
+rasc_finest_ngc,FNGC 70,rasc_finest_list_v1.pdf,0,"[""NGC 4494""]",unmatched,,
+rasc_finest_ngc,FNGC 71,rasc_finest_list_v1.pdf,0,"[""NGC 4559""]",unmatched,,
+rasc_finest_ngc,FNGC 72,rasc_finest_list_v1.pdf,0,"[""NGC 4565""]",unmatched,,
+rasc_finest_ngc,FNGC 73,rasc_finest_list_v1.pdf,0,"[""NGC 4725""]",unmatched,,
+rasc_finest_ngc,FNGC 74,rasc_finest_list_v1.pdf,0,"[""NGC 4038"", ""NGC 4039""]",unmatched,,
+rasc_finest_ngc,FNGC 75,rasc_finest_list_v1.pdf,0,"[""NGC 4361""]",matched,NGC 4361,PN G294.1+43.6
+rasc_finest_ngc,FNGC 76,rasc_finest_list_v1.pdf,0,"[""NGC 4216""]",unmatched,,
+rasc_finest_ngc,FNGC 77,rasc_finest_list_v1.pdf,0,"[""NGC 4388""]",unmatched,,
+rasc_finest_ngc,FNGC 78,rasc_finest_list_v1.pdf,0,"[""NGC 4435"", ""NGC 4438""]",unmatched,,
+rasc_finest_ngc,FNGC 79,rasc_finest_list_v1.pdf,0,"[""NGC 4517""]",unmatched,,
+rasc_finest_ngc,FNGC 80,rasc_finest_list_v1.pdf,0,"[""NGC 4526""]",unmatched,,
+rasc_finest_ngc,FNGC 81,rasc_finest_list_v1.pdf,0,"[""NGC 4535""]",unmatched,,
+rasc_finest_ngc,FNGC 82,rasc_finest_list_v1.pdf,0,"[""NGC 4567""]",unmatched,,
+rasc_finest_ngc,FNGC 82,rasc_finest_list_v1.pdf,0,"[""NGC 4568""]",unmatched,,
+rasc_finest_ngc,FNGC 83,rasc_finest_list_v1.pdf,0,"[""NGC 4699""]",unmatched,,
+rasc_finest_ngc,FNGC 84,rasc_finest_list_v1.pdf,0,"[""NGC 4762""]",unmatched,,
+rasc_finest_ngc,FNGC 85,rasc_finest_list_v1.pdf,0,"[""NGC 5746""]",unmatched,,
+rasc_finest_ngc,FNGC 86,rasc_finest_list_v1.pdf,0,"[""NGC 5466""]",unmatched,,
+rasc_finest_ngc,FNGC 87,rasc_finest_list_v1.pdf,0,"[""NGC 5907""]",unmatched,,
+rasc_finest_ngc,FNGC 88,rasc_finest_list_v1.pdf,0,"[""NGC 6503""]",unmatched,,
+rasc_finest_ngc,FNGC 89,rasc_finest_list_v1.pdf,0,"[""NGC 6543""]",matched,NGC 6543,PN G096.4+29.9
+rasc_finest_ngc,FNGC 90,rasc_finest_list_v1.pdf,0,"[""NGC 6210""]",matched,NGC 6210,PN G043.1+37.7
+rasc_finest_ngc,FNGC 91,rasc_finest_list_v1.pdf,0,"[""NGC 6369""]",matched,NGC 6369,PN G002.4+05.8
+rasc_finest_ngc,FNGC 92,rasc_finest_list_v1.pdf,0,"[""NGC 6572""]",matched,NGC 6572,PN G034.6+11.8
+rasc_finest_ngc,FNGC 93,rasc_finest_list_v1.pdf,0,"[""Collinder 380"", ""NGC 6633""]",unmatched,,
+rasc_finest_ngc,FNGC 94,rasc_finest_list_v1.pdf,0,"[""NGC 6712""]",unmatched,,
+rasc_finest_ngc,FNGC 95,rasc_finest_list_v1.pdf,0,"[""NGC 6781""]",matched,NGC 6781,PN G041.8-02.9
+rasc_finest_ngc,FNGC 96,rasc_finest_list_v1.pdf,0,"[""Collinder 403"", ""NGC 6819""]",unmatched,,
+rasc_finest_ngc,FNGC 97,rasc_finest_list_v1.pdf,0,"[""NGC 6826""]",matched,NGC 6826,PN G083.5+12.7
+rasc_finest_ngc,FNGC 98,rasc_finest_list_v1.pdf,0,"[""NGC 6888""]",unmatched,,
+rasc_finest_ngc,FNGC 99a,rasc_finest_list_v1.pdf,0,"[""NGC 6992""]",unmatched,,
+rasc_finest_ngc,FNGC 99b,rasc_finest_list_v1.pdf,0,"[""NGC 6960""]",unmatched,,
+rasc_finest_ngc,FNGC 100,rasc_finest_list_v1.pdf,0,"[""NGC 7000""]",unmatched,,
+rasc_finest_ngc,FNGC 101,rasc_finest_list_v1.pdf,0,"[""NGC 7027""]",matched,NGC 7027,PN G084.9-03.4
+rasc_finest_ngc,FNGC 102,rasc_finest_list_v1.pdf,0,"[""NGC 6445""]",matched,NGC 6445,PN G008.0+03.9
+rasc_finest_ngc,FNGC 103,rasc_finest_list_v1.pdf,0,"[""Collinder 361"", ""NGC 6520""]",unmatched,,
+rasc_finest_ngc,FNGC 104,rasc_finest_list_v1.pdf,0,"[""NGC 6818""]",matched,NGC 6818,PN G025.8-17.9
+rasc_finest_ngc,FNGC 105,rasc_finest_list_v1.pdf,0,"[""Collinder 400"", ""NGC 6802""]",unmatched,,
+rasc_finest_ngc,FNGC 106,rasc_finest_list_v1.pdf,0,"[""Collinder 424"", ""NGC 6940""]",unmatched,,
+rasc_finest_ngc,FNGC 107,rasc_finest_list_v1.pdf,0,"[""Collinder 423"", ""NGC 6939""]",unmatched,,
+rasc_finest_ngc,FNGC 108,rasc_finest_list_v1.pdf,0,"[""NGC 6946""]",unmatched,,
+rasc_finest_ngc,FNGC 109,rasc_finest_list_v1.pdf,0,"[""NGC 7129""]",unmatched,,
+rasc_finest_ngc,FNGC 110,rasc_finest_list_v1.pdf,0,"[""NGC 40""]",matched,NGC 40,PN G120.0+09.8
+herschel400_south,NGC 134,herschel400_south_list_v1.xls,0,"[""NGC 134""]",unmatched,,
+herschel400_south,NGC 300,herschel400_south_list_v1.xls,0,"[""NGC 300""]",unmatched,,
+herschel400_south,NGC 681,herschel400_south_list_v1.xls,0,"[""NGC 681""]",unmatched,,
+herschel400_south,NGC 2573,herschel400_south_list_v1.xls,0,"[""NGC 2573""]",unmatched,,
+herschel400_south,NGC 1049,herschel400_south_list_v1.xls,0,"[""NGC 1049""]",unmatched,,
+herschel400_south,NGC 1073,herschel400_south_list_v1.xls,0,"[""NGC 1073""]",unmatched,,
+herschel400_south,NGC 1232,herschel400_south_list_v1.xls,0,"[""NGC 1232""]",unmatched,,
+herschel400_south,NGC 1300,herschel400_south_list_v1.xls,0,"[""NGC 1300""]",unmatched,,
+herschel400_south,NGC 1350,herschel400_south_list_v1.xls,0,"[""NGC 1350""]",unmatched,,
+herschel400_south,NGC 1380,herschel400_south_list_v1.xls,0,"[""NGC 1380""]",unmatched,,
+herschel400_south,NGC 1387,herschel400_south_list_v1.xls,0,"[""NGC 1387""]",unmatched,,
+herschel400_south,NGC 1395,herschel400_south_list_v1.xls,0,"[""NGC 1395""]",unmatched,,
+herschel400_south,NGC 1398,herschel400_south_list_v1.xls,0,"[""NGC 1398""]",unmatched,,
+herschel400_south,NGC 1404,herschel400_south_list_v1.xls,0,"[""NGC 1404""]",unmatched,,
+herschel400_south,NGC 1433,herschel400_south_list_v1.xls,0,"[""NGC 1433""]",unmatched,,
+herschel400_south,NGC 1435,herschel400_south_list_v1.xls,0,"[""NGC 1435""]",unmatched,,
+herschel400_south,NGC 1499,herschel400_south_list_v1.xls,0,"[""NGC 1499""]",unmatched,,
+herschel400_south,NGC 1512,herschel400_south_list_v1.xls,0,"[""NGC 1512""]",unmatched,,
+herschel400_south,NGC 1515,herschel400_south_list_v1.xls,0,"[""NGC 1515""]",unmatched,,
+herschel400_south,NGC 1514,herschel400_south_list_v1.xls,0,"[""NGC 1514""]",matched,NGC 1514,PN G165.5-15.2
+herschel400_south,NGC 1532,herschel400_south_list_v1.xls,0,"[""NGC 1532""]",unmatched,,
+herschel400_south,NGC 1543,herschel400_south_list_v1.xls,0,"[""NGC 1543""]",unmatched,,
+herschel400_south,NGC 1559,herschel400_south_list_v1.xls,0,"[""NGC 1559""]",unmatched,,
+herschel400_south,NGC 1579,herschel400_south_list_v1.xls,0,"[""NGC 1579""]",unmatched,,
+herschel400_south,NGC 1617,herschel400_south_list_v1.xls,0,"[""NGC 1617""]",unmatched,,
+herschel400_south,NGC 1672,herschel400_south_list_v1.xls,0,"[""NGC 1672""]",unmatched,,
+herschel400_south,NGC 1783,herschel400_south_list_v1.xls,0,"[""NGC 1783""]",unmatched,,
+herschel400_south,NGC 1818,herschel400_south_list_v1.xls,0,"[""NGC 1818""]",unmatched,,
+herschel400_south,NGC 1792,herschel400_south_list_v1.xls,0,"[""NGC 1792""]",unmatched,,
+herschel400_south,NGC 1808,herschel400_south_list_v1.xls,0,"[""NGC 1808""]",unmatched,,
+herschel400_south,NGC 1866,herschel400_south_list_v1.xls,0,"[""NGC 1866""]",unmatched,,
+herschel400_south,NGC 1968,herschel400_south_list_v1.xls,0,"[""NGC 1968""]",unmatched,,
+herschel400_south,NGC 1977,herschel400_south_list_v1.xls,0,"[""NGC 1977""]",unmatched,,
+herschel400_south,NGC 1981,herschel400_south_list_v1.xls,0,"[""NGC 1981""]",unmatched,,
+herschel400_south,NGC 2214,herschel400_south_list_v1.xls,0,"[""NGC 2214""]",unmatched,,
+herschel400_south,NGC 2243,herschel400_south_list_v1.xls,0,"[""NGC 2243""]",unmatched,,
+herschel400_south,NGC 2237,herschel400_south_list_v1.xls,0,"[""NGC 2237""]",unmatched,,
+herschel400_south,NGC 2298,herschel400_south_list_v1.xls,0,"[""NGC 2298""]",unmatched,,
+herschel400_south,NGC 2346,herschel400_south_list_v1.xls,0,"[""NGC 2346""]",matched,NGC 2346,PN G215.6+03.6
+herschel400_south,NGC 2442,herschel400_south_list_v1.xls,0,"[""NGC 2442""]",unmatched,,
+herschel400_south,NGC 2451,herschel400_south_list_v1.xls,0,"[""NGC 2451""]",unmatched,,
+herschel400_south,NGC 2467,herschel400_south_list_v1.xls,0,"[""NGC 2467""]",unmatched,,
+herschel400_south,NGC 2477,herschel400_south_list_v1.xls,0,"[""NGC 2477""]",unmatched,,
+herschel400_south,NGC 2546,herschel400_south_list_v1.xls,0,"[""NGC 2546""]",unmatched,,
+herschel400_south,NGC 2659,herschel400_south_list_v1.xls,0,"[""NGC 2659""]",unmatched,,
+herschel400_south,NGC 2670,herschel400_south_list_v1.xls,0,"[""NGC 2670""]",unmatched,,
+herschel400_south,NGC 2671,herschel400_south_list_v1.xls,0,"[""NGC 2671""]",unmatched,,
+herschel400_south,NGC 2736,herschel400_south_list_v1.xls,0,"[""NGC 2736""]",unmatched,,
+herschel400_south,NGC 2818,herschel400_south_list_v1.xls,0,"[""NGC 2818""]",matched,NGC 2818,PN G261.9+08.5
+herschel400_south,NGC 2867,herschel400_south_list_v1.xls,0,"[""NGC 2867""]",matched,NGC 2867,PN G278.1-05.9
+herschel400_south,NGC 2899,herschel400_south_list_v1.xls,0,"[""NGC 2899""]",matched,NGC 2899,PN G277.1-03.8
+herschel400_south,NGC 2910,herschel400_south_list_v1.xls,0,"[""NGC 2910""]",unmatched,,
+herschel400_south,NGC 2925,herschel400_south_list_v1.xls,0,"[""NGC 2925""]",unmatched,,
+herschel400_south,NGC 2972,herschel400_south_list_v1.xls,0,"[""NGC 2972""]",unmatched,,
+herschel400_south,NGC 2997,herschel400_south_list_v1.xls,0,"[""NGC 2997""]",unmatched,,
+herschel400_south,NGC 3109,herschel400_south_list_v1.xls,0,"[""NGC 3109""]",unmatched,,
+herschel400_south,NGC 3187,herschel400_south_list_v1.xls,0,"[""NGC 3187""]",unmatched,,
+herschel400_south,NGC 3199,herschel400_south_list_v1.xls,0,"[""NGC 3199""]",unmatched,,
+herschel400_south,NGC 3228,herschel400_south_list_v1.xls,0,"[""NGC 3228""]",unmatched,,
+herschel400_south,NGC 3603,herschel400_south_list_v1.xls,0,"[""NGC 3603""]",unmatched,,
+herschel400_south,NGC 3699,herschel400_south_list_v1.xls,0,"[""NGC 3699""]",matched,NGC 3699,PN G292.6+01.2
+herschel400_south,NGC 3960,herschel400_south_list_v1.xls,0,"[""NGC 3960""]",unmatched,,
+herschel400_south,NGC 3923,herschel400_south_list_v1.xls,0,"[""NGC 3923""]",unmatched,,
+herschel400_south,NGC 4039,herschel400_south_list_v1.xls,0,"[""NGC 4039""]",unmatched,,
+herschel400_south,NGC 4052,herschel400_south_list_v1.xls,0,"[""NGC 4052""]",unmatched,,
+herschel400_south,NGC 4103,herschel400_south_list_v1.xls,0,"[""NGC 4103""]",unmatched,,
+herschel400_south,NGC 4244,herschel400_south_list_v1.xls,0,"[""NGC 4244""]",unmatched,,
+herschel400_south,NGC 4275,herschel400_south_list_v1.xls,0,"[""NGC 4275""]",unmatched,,
+herschel400_south,NGC 4337,herschel400_south_list_v1.xls,0,"[""NGC 4337""]",unmatched,,
+herschel400_south,NGC 4349,herschel400_south_list_v1.xls,0,"[""NGC 4349""]",unmatched,,
+herschel400_south,NGC 4463,herschel400_south_list_v1.xls,0,"[""NGC 4463""]",unmatched,,
+herschel400_south,NGC 4567,herschel400_south_list_v1.xls,0,"[""NGC 4567""]",unmatched,,
+herschel400_south,NGC 4568,herschel400_south_list_v1.xls,0,"[""NGC 4568""]",unmatched,,
+herschel400_south,NGC 4696,herschel400_south_list_v1.xls,0,"[""NGC 4696""]",unmatched,,
+herschel400_south,NGC 4710,herschel400_south_list_v1.xls,0,"[""NGC 4710""]",unmatched,,
+herschel400_south,NGC 4815,herschel400_south_list_v1.xls,0,"[""NGC 4815""]",unmatched,,
+herschel400_south,NGC 4852,herschel400_south_list_v1.xls,0,"[""NGC 4852""]",unmatched,,
+herschel400_south,NGC 4889,herschel400_south_list_v1.xls,0,"[""NGC 4889""]",unmatched,,
+herschel400_south,NGC 4976,herschel400_south_list_v1.xls,0,"[""NGC 4976""]",unmatched,,
+herschel400_south,NGC 5061,herschel400_south_list_v1.xls,0,"[""NGC 5061""]",unmatched,,
+herschel400_south,NGC 5068,herschel400_south_list_v1.xls,0,"[""NGC 5068""]",unmatched,,
+herschel400_south,NGC 5078,herschel400_south_list_v1.xls,0,"[""NGC 5078""]",unmatched,,
+herschel400_south,NGC 5102,herschel400_south_list_v1.xls,0,"[""NGC 5102""]",unmatched,,
+herschel400_south,NGC 5253,herschel400_south_list_v1.xls,0,"[""NGC 5253""]",unmatched,,
+herschel400_south,NGC 5460,herschel400_south_list_v1.xls,0,"[""NGC 5460""]",unmatched,,
+herschel400_south,NGC 5617,herschel400_south_list_v1.xls,0,"[""NGC 5617""]",unmatched,,
+herschel400_south,NGC 5643,herschel400_south_list_v1.xls,0,"[""NGC 5643""]",unmatched,,
+herschel400_south,NGC 5662,herschel400_south_list_v1.xls,0,"[""NGC 5662""]",unmatched,,
+herschel400_south,NGC 5824,herschel400_south_list_v1.xls,0,"[""NGC 5824""]",unmatched,,
+herschel400_south,NGC 5823,herschel400_south_list_v1.xls,0,"[""NGC 5823""]",unmatched,,
+herschel400_south,NGC 5882,herschel400_south_list_v1.xls,0,"[""NGC 5882""]",matched,NGC 5882,PN G327.8+10.0
+herschel400_south,NGC 5925,herschel400_south_list_v1.xls,0,"[""NGC 5925""]",unmatched,,
+herschel400_south,NGC 5999,herschel400_south_list_v1.xls,0,"[""NGC 5999""]",unmatched,,
+herschel400_south,NGC 6005,herschel400_south_list_v1.xls,0,"[""NGC 6005""]",unmatched,,
+herschel400_south,NGC 6072,herschel400_south_list_v1.xls,0,"[""NGC 6072""]",matched,NGC 6072,PN G342.1+10.8
+herschel400_south,NGC 6124,herschel400_south_list_v1.xls,0,"[""NGC 6124""]",unmatched,,
+herschel400_south,NGC 6134,herschel400_south_list_v1.xls,0,"[""NGC 6134""]",unmatched,,
+herschel400_south,NGC 6139,herschel400_south_list_v1.xls,0,"[""NGC 6139""]",unmatched,,
+herschel400_south,NGC 6153,herschel400_south_list_v1.xls,0,"[""NGC 6153""]",matched,NGC 6153,PN G341.8+05.4
+herschel400_south,NGC 6152,herschel400_south_list_v1.xls,0,"[""NGC 6152""]",unmatched,,
+herschel400_south,NGC 6167,herschel400_south_list_v1.xls,0,"[""NGC 6167""]",unmatched,,
+herschel400_south,NGC 6188,herschel400_south_list_v1.xls,0,"[""NGC 6188""]",unmatched,,
+herschel400_south,NGC 6192,herschel400_south_list_v1.xls,0,"[""NGC 6192""]",unmatched,,
+herschel400_south,NGC 6193,herschel400_south_list_v1.xls,0,"[""NGC 6193""]",unmatched,,
+herschel400_south,NGC 6210,herschel400_south_list_v1.xls,0,"[""NGC 6210""]",matched,NGC 6210,PN G043.1+37.7
+herschel400_south,NGC 6208,herschel400_south_list_v1.xls,0,"[""NGC 6208""]",unmatched,,
+herschel400_south,NGC 6216,herschel400_south_list_v1.xls,0,"[""NGC 6216""]",unmatched,,
+herschel400_south,NGC 6242,herschel400_south_list_v1.xls,0,"[""NGC 6242""]",unmatched,,
+herschel400_south,NGC 6253,herschel400_south_list_v1.xls,0,"[""NGC 6253""]",unmatched,,
+herschel400_south,NGC 6302,herschel400_south_list_v1.xls,0,"[""NGC 6302""]",matched,NGC 6302,PN G349.5+01.0
+herschel400_south,NGC 6309,herschel400_south_list_v1.xls,0,"[""NGC 6309""]",matched,NGC 6309,PN G009.6+14.8
+herschel400_south,NGC 6318,herschel400_south_list_v1.xls,0,"[""NGC 6318""]",unmatched,,
+herschel400_south,NGC 6322,herschel400_south_list_v1.xls,0,"[""NGC 6322""]",unmatched,,
+herschel400_south,NGC 6337,herschel400_south_list_v1.xls,0,"[""NGC 6337""]",matched,NGC 6337,PN G349.3-01.1
+herschel400_south,NGC 6416,herschel400_south_list_v1.xls,0,"[""NGC 6416""]",unmatched,,
+herschel400_south,NGC 6441,herschel400_south_list_v1.xls,0,"[""NGC 6441""]",unmatched,,
+herschel400_south,NGC 6453,herschel400_south_list_v1.xls,0,"[""NGC 6453""]",unmatched,,
+herschel400_south,NGC 6496,herschel400_south_list_v1.xls,0,"[""NGC 6496""]",unmatched,,
+herschel400_south,NGC 6530,herschel400_south_list_v1.xls,0,"[""NGC 6530""]",unmatched,,
+herschel400_south,NGC 6537,herschel400_south_list_v1.xls,0,"[""NGC 6537""]",matched,NGC 6537,PN G010.1+00.7
+herschel400_south,NGC 6541,herschel400_south_list_v1.xls,0,"[""NGC 6541""]",unmatched,,
+herschel400_south,NGC 6563,herschel400_south_list_v1.xls,0,"[""NGC 6563""]",matched,NGC 6563,PN G358.5-07.3
+herschel400_south,NGC 6572,herschel400_south_list_v1.xls,0,"[""NGC 6572""]",matched,NGC 6572,PN G034.6+11.8
+herschel400_south,NGC 6567,herschel400_south_list_v1.xls,0,"[""NGC 6567""]",matched,NGC 6567,PN G011.7-00.6
+herschel400_south,NGC 6590,herschel400_south_list_v1.xls,0,"[""NGC 6590""]",unmatched,,
+herschel400_south,NGC 6584,herschel400_south_list_v1.xls,0,"[""NGC 6584""]",unmatched,,
+herschel400_south,NGC 6603,herschel400_south_list_v1.xls,0,"[""NGC 6603""]",unmatched,,
+herschel400_south,NGC 6604,herschel400_south_list_v1.xls,0,"[""NGC 6604""]",unmatched,,
+herschel400_south,NGC 6652,herschel400_south_list_v1.xls,0,"[""NGC 6652""]",unmatched,,
+herschel400_south,NGC 6723,herschel400_south_list_v1.xls,0,"[""NGC 6723""]",unmatched,,
+herschel400_south,NGC 6729,herschel400_south_list_v1.xls,0,"[""NGC 6729""]",unmatched,,
+herschel400_south,NGC 6751,herschel400_south_list_v1.xls,0,"[""NGC 6751""]",matched,NGC 6751,PN G029.2-05.9
+herschel400_south,NGC 6769,herschel400_south_list_v1.xls,0,"[""NGC 6769""]",unmatched,,
+herschel400_south,NGC 6791,herschel400_south_list_v1.xls,0,"[""NGC 6791""]",unmatched,,
+herschel400_south,NGC 6822,herschel400_south_list_v1.xls,0,"[""NGC 6822""]",unmatched,,
+herschel400_south,NGC 6857,herschel400_south_list_v1.xls,0,"[""NGC 6857""]",unmatched,,
+herschel400_south,NGC 6888,herschel400_south_list_v1.xls,0,"[""NGC 6888""]",unmatched,,
+herschel400_south,NGC 6891,herschel400_south_list_v1.xls,0,"[""NGC 6891""]",matched,NGC 6891,PN G054.1-12.1
+herschel400_south,NGC 6981,herschel400_south_list_v1.xls,0,"[""NGC 6981""]",unmatched,,
+herschel400_south,NGC 6992,herschel400_south_list_v1.xls,0,"[""NGC 6992""]",unmatched,,
+herschel400_south,NGC 7026,herschel400_south_list_v1.xls,0,"[""NGC 7026""]",matched,NGC 7026,PN G089.0+00.3
+herschel400_south,NGC 7027,herschel400_south_list_v1.xls,0,"[""NGC 7027""]",matched,NGC 7027,PN G084.9-03.4
+herschel400_south,NGC 7320,herschel400_south_list_v1.xls,0,"[""NGC 7320""]",unmatched,,
+herschel400_south,NGC 7410,herschel400_south_list_v1.xls,0,"[""NGC 7410""]",unmatched,,
+herschel400_south,NGC 7424,herschel400_south_list_v1.xls,0,"[""NGC 7424""]",unmatched,,
+herschel400_south,NGC 7456,herschel400_south_list_v1.xls,0,"[""NGC 7456""]",unmatched,,
+herschel400_south,NGC 7552,herschel400_south_list_v1.xls,0,"[""NGC 7552""]",unmatched,,
+herschel400_south,NGC 7582,herschel400_south_list_v1.xls,0,"[""NGC 7582""]",unmatched,,
+herschel400_south,NGC 7590,herschel400_south_list_v1.xls,0,"[""NGC 7590""]",unmatched,,
+herschel400_south,NGC 7599,herschel400_south_list_v1.xls,0,"[""NGC 7599""]",unmatched,,
+sac_urban,M 31,sac_urban_source_v1.html,0,"[""M 31""]",unmatched,,
+sac_urban,NGC 752,sac_urban_source_v1.html,0,"[""NGC 752""]",unmatched,,
+sac_urban,Gamma And,sac_urban_source_v1.html,0,"[""Gamma And""]",unmatched,,
+sac_urban,NGC 7662,sac_urban_source_v1.html,0,"[""NGC 7662""]",matched,NGC 7662,PN G106.5-17.6
+sac_urban,M 2,sac_urban_source_v1.html,0,"[""M 2""]",unmatched,,
+sac_urban,Lambda Ari,sac_urban_source_v1.html,0,"[""Lambda Ari""]",unmatched,,
+sac_urban,NGC 1907,sac_urban_source_v1.html,0,"[""NGC 1907""]",unmatched,,
+sac_urban,M 38,sac_urban_source_v1.html,0,"[""M 38""]",unmatched,,
+sac_urban,M 36,sac_urban_source_v1.html,0,"[""M 36""]",unmatched,,
+sac_urban,M 37,sac_urban_source_v1.html,0,"[""M 37""]",unmatched,,
+sac_urban,Xi Bootes,sac_urban_source_v1.html,0,"[""Xi Bootes""]",unmatched,,
+sac_urban,Webb,sac_urban_source_v1.html,0,"[""Webb""]",unmatched,,
+sac_urban,NGC 129,sac_urban_source_v1.html,0,"[""NGC 129""]",unmatched,,
+sac_urban,Eta Cas,sac_urban_source_v1.html,0,"[""Eta Cas""]",unmatched,,
+sac_urban,NGC 457,sac_urban_source_v1.html,0,"[""NGC 457""]",unmatched,,
+sac_urban,M 103,sac_urban_source_v1.html,0,"[""M 103""]",unmatched,,
+sac_urban,NGC 654,sac_urban_source_v1.html,0,"[""NGC 654""]",unmatched,,
+sac_urban,Stock 2,sac_urban_source_v1.html,0,"[""Stock 2""]",unmatched,,
+sac_urban,M 52,sac_urban_source_v1.html,0,"[""M 52""]",unmatched,,
+sac_urban,NGC 7789,sac_urban_source_v1.html,0,"[""NGC 7789""]",unmatched,,
+sac_urban,IC 1396,sac_urban_source_v1.html,0,"[""IC 1396""]",unmatched,,
+sac_urban,Mu Cep,sac_urban_source_v1.html,0,"[""Mu Cep""]",unmatched,,
+sac_urban,Nu CMa,sac_urban_source_v1.html,0,"[""Nu CMa""]",unmatched,,
+sac_urban,M 41,sac_urban_source_v1.html,0,"[""M 41""]",unmatched,,
+sac_urban,NGC 2362,sac_urban_source_v1.html,0,"[""NGC 2362""]",unmatched,,
+sac_urban,M 44,sac_urban_source_v1.html,0,"[""M 44""]",unmatched,,
+sac_urban,48 Cnc,sac_urban_source_v1.html,0,"[""48 Cnc""]",unmatched,,
+sac_urban,Mel 111,sac_urban_source_v1.html,0,"[""Mel 111""]",unmatched,,
+sac_urban,24 Com,sac_urban_source_v1.html,0,"[""24 Com""]",unmatched,,
+sac_urban,M 53,sac_urban_source_v1.html,0,"[""M 53""]",unmatched,,
+sac_urban,STF 1669,sac_urban_source_v1.html,0,"[""STF 1669""]",unmatched,,
+sac_urban,Y CVn,sac_urban_source_v1.html,0,"[""Y CVn""]",unmatched,,
+sac_urban,M 51,sac_urban_source_v1.html,0,"[""M 51""]",unmatched,,
+sac_urban,M 3,sac_urban_source_v1.html,0,"[""M 3""]",unmatched,,
+sac_urban,Beta Cyg,sac_urban_source_v1.html,0,"[""Beta Cyg""]",unmatched,,
+sac_urban,NGC 6811,sac_urban_source_v1.html,0,"[""NGC 6811""]",unmatched,,
+sac_urban,NGC 6826,sac_urban_source_v1.html,0,"[""NGC 6826""]",matched,NGC 6826,PN G083.5+12.7
+sac_urban,NGC 6910,sac_urban_source_v1.html,0,"[""NGC 6910""]",unmatched,,
+sac_urban,61 Cyg,sac_urban_source_v1.html,0,"[""61 Cyg""]",unmatched,,
+sac_urban,NGC 7027,sac_urban_source_v1.html,0,"[""NGC 7027""]",matched,NGC 7027,PN G084.9-03.4
+sac_urban,Gamma Del,sac_urban_source_v1.html,0,"[""Gamma Del""]",unmatched,,
+sac_urban,NGC 6543,sac_urban_source_v1.html,0,"[""NGC 6543""]",matched,NGC 6543,PN G096.4+29.9
+sac_urban,NGC 1535,sac_urban_source_v1.html,0,"[""NGC 1535""]",matched,NGC 1535,PN G206.4-40.5
+sac_urban,M 35,sac_urban_source_v1.html,0,"[""M 35""]",unmatched,,
+sac_urban,M 13,sac_urban_source_v1.html,0,"[""M 13""]",unmatched,,
+sac_urban,NGC 6210,sac_urban_source_v1.html,0,"[""NGC 6210""]",matched,NGC 6210,PN G043.1+37.7
+sac_urban,M 92,sac_urban_source_v1.html,0,"[""M 92""]",unmatched,,
+sac_urban,V Hydrae,sac_urban_source_v1.html,0,"[""V Hydrae""]",unmatched,,
+sac_urban,R Lep,sac_urban_source_v1.html,0,"[""R Lep""]",unmatched,,
+sac_urban,M 79,sac_urban_source_v1.html,0,"[""M 79""]",unmatched,,
+sac_urban,M 56,sac_urban_source_v1.html,0,"[""M 56""]",unmatched,,
+sac_urban,Beta Lyr,sac_urban_source_v1.html,0,"[""Beta Lyr""]",unmatched,,
+sac_urban,M 57,sac_urban_source_v1.html,0,"[""M 57""]",matched,M 57|NGC 6720,PN G063.1+13.9
+sac_urban,STF 2481,sac_urban_source_v1.html,0,"[""STF 2481""]",unmatched,,
+sac_urban,NGC 2215,sac_urban_source_v1.html,0,"[""NGC 2215""]",unmatched,,
+sac_urban,Beta Mon,sac_urban_source_v1.html,0,"[""Beta Mon""]",unmatched,,
+sac_urban,NGC 2244,sac_urban_source_v1.html,0,"[""NGC 2244""]",unmatched,,
+sac_urban,NGC 2251,sac_urban_source_v1.html,0,"[""NGC 2251""]",unmatched,,
+sac_urban,NGC 2252,sac_urban_source_v1.html,0,"[""NGC 2252""]",unmatched,,
+sac_urban,NGC 2324,sac_urban_source_v1.html,0,"[""NGC 2324""]",unmatched,,
+sac_urban,IC 4665,sac_urban_source_v1.html,0,"[""IC 4665""]",unmatched,,
+sac_urban,NGC 6633,sac_urban_source_v1.html,0,"[""NGC 6633""]",unmatched,,
+sac_urban,STF 688,sac_urban_source_v1.html,0,"[""STF 688""]",unmatched,,
+sac_urban,M 42,sac_urban_source_v1.html,0,"[""M 42""]",unmatched,,
+sac_urban,Sigma Ori,sac_urban_source_v1.html,0,"[""Sigma Ori""]",unmatched,,
+sac_urban,STF 790,sac_urban_source_v1.html,0,"[""STF 790""]",unmatched,,
+sac_urban,NGC 2169,sac_urban_source_v1.html,0,"[""NGC 2169""]",unmatched,,
+sac_urban,1 Peg,sac_urban_source_v1.html,0,"[""1 Peg""]",unmatched,,
+sac_urban,M 15,sac_urban_source_v1.html,0,"[""M 15""]",unmatched,,
+sac_urban,NGC 869,sac_urban_source_v1.html,0,"[""NGC 869""]",unmatched,,
+sac_urban,NGC 884,sac_urban_source_v1.html,0,"[""NGC 884""]",unmatched,,
+sac_urban,NGC 957,sac_urban_source_v1.html,0,"[""NGC 957""]",unmatched,,
+sac_urban,TR 2,sac_urban_source_v1.html,0,"[""TR 2""]",unmatched,,
+sac_urban,M 34,sac_urban_source_v1.html,0,"[""M 34""]",unmatched,,
+sac_urban,Eta Per,sac_urban_source_v1.html,0,"[""Eta Per""]",unmatched,,
+sac_urban,STF 336,sac_urban_source_v1.html,0,"[""STF 336""]",unmatched,,
+sac_urban,Mel 20,sac_urban_source_v1.html,0,"[""Mel 20""]",unmatched,,
+sac_urban,NGC 1342,sac_urban_source_v1.html,0,"[""NGC 1342""]",unmatched,,
+sac_urban,NGC 1528,sac_urban_source_v1.html,0,"[""NGC 1528""]",unmatched,,
+sac_urban,h1991,sac_urban_source_v1.html,0,"[""h1991""]",unmatched,,
+sac_urban,M 80,sac_urban_source_v1.html,0,"[""M 80""]",unmatched,,
+sac_urban,M 4,sac_urban_source_v1.html,0,"[""M 4""]",unmatched,,
+sac_urban,M 6,sac_urban_source_v1.html,0,"[""M 6""]",unmatched,,
+sac_urban,M 7,sac_urban_source_v1.html,0,"[""M 7""]",unmatched,,
+sac_urban,M 11,sac_urban_source_v1.html,0,"[""M 11""]",unmatched,,
+sac_urban,M 5,sac_urban_source_v1.html,0,"[""M 5""]",unmatched,,
+sac_urban,IC 4756,sac_urban_source_v1.html,0,"[""IC 4756""]",unmatched,,
+sac_urban,M 8,sac_urban_source_v1.html,0,"[""M 8""]",unmatched,,
+sac_urban,M 24,sac_urban_source_v1.html,0,"[""M 24""]",unmatched,,
+sac_urban,M 17,sac_urban_source_v1.html,0,"[""M 17""]",unmatched,,
+sac_urban,M 22,sac_urban_source_v1.html,0,"[""M 22""]",unmatched,,
+sac_urban,M 45,sac_urban_source_v1.html,0,"[""M 45""]",unmatched,,
+sac_urban,STT 84,sac_urban_source_v1.html,0,"[""STT 84""]",unmatched,,
+sac_urban,M 81,sac_urban_source_v1.html,0,"[""M 81""]",unmatched,,
+sac_urban,M 82,sac_urban_source_v1.html,0,"[""M 82""]",unmatched,,
+sac_urban,M 97,sac_urban_source_v1.html,0,"[""M 97""]",matched,M 97|NGC 3587,PN G148.4+57.0
+sac_urban,Zeta UMa,sac_urban_source_v1.html,0,"[""Zeta UMa""]",unmatched,,
+sac_urban,SS Virgo,sac_urban_source_v1.html,0,"[""SS Virgo""]",unmatched,,
+sac_urban,M 104,sac_urban_source_v1.html,0,"[""M 104""]",unmatched,,
+sac_urban,Cr 399,sac_urban_source_v1.html,0,"[""Cr 399""]",unmatched,,
+sac_beyond_ngc,Abell 262,sac_beyond_ngc_source_v1.html,0,"[""Abell 262""]",unmatched,,
+sac_beyond_ngc,B133,sac_beyond_ngc_source_v1.html,0,"[""B133""]",unmatched,,
+sac_beyond_ngc,IC 4846,sac_beyond_ngc_source_v1.html,0,"[""IC 4846""]",matched,IC 4846,PN G027.6-09.6
+sac_beyond_ngc,B142-3,sac_beyond_ngc_source_v1.html,0,"[""B142-3""]",unmatched,,
+sac_beyond_ngc,Pal 11,sac_beyond_ngc_source_v1.html,0,"[""Pal 11""]",unmatched,,
+sac_beyond_ngc,IC 405,sac_beyond_ngc_source_v1.html,0,"[""IC 405""]",unmatched,,
+sac_beyond_ngc,IC 410,sac_beyond_ngc_source_v1.html,0,"[""IC 410""]",unmatched,,
+sac_beyond_ngc,Sh2-224,sac_beyond_ngc_source_v1.html,0,"[""Sh2-224""]",unmatched,,
+sac_beyond_ngc,IC 2149,sac_beyond_ngc_source_v1.html,0,"[""IC 2149""]",matched,IC 2149,PN G166.1+10.4
+sac_beyond_ngc,King 6,sac_beyond_ngc_source_v1.html,0,"[""King 6""]",unmatched,,
+sac_beyond_ngc,IC 342,sac_beyond_ngc_source_v1.html,0,"[""IC 342""]",unmatched,,
+sac_beyond_ngc,IC 3568,sac_beyond_ngc_source_v1.html,0,"[""IC 3568""]",matched,IC 3568,PN G123.6+34.5
+sac_beyond_ngc,King 14,sac_beyond_ngc_source_v1.html,0,"[""King 14""]",unmatched,,
+sac_beyond_ngc,IC 59,sac_beyond_ngc_source_v1.html,0,"[""IC 59""]",unmatched,,
+sac_beyond_ngc,Cr 463,sac_beyond_ngc_source_v1.html,0,"[""Cr 463""]",unmatched,,
+sac_beyond_ngc,Stock 2,sac_beyond_ngc_source_v1.html,0,"[""Stock 2""]",unmatched,,
+sac_beyond_ngc,IC 1795,sac_beyond_ngc_source_v1.html,0,"[""IC 1795""]",unmatched,,
+sac_beyond_ngc,Mel 15,sac_beyond_ngc_source_v1.html,0,"[""Mel 15""]",unmatched,,
+sac_beyond_ngc,IC 289,sac_beyond_ngc_source_v1.html,0,"[""IC 289""]",matched,IC 289,PN G138.8+02.8
+sac_beyond_ngc,Tr 37,sac_beyond_ngc_source_v1.html,0,"[""Tr 37""]",unmatched,,
+sac_beyond_ngc,IC 1396,sac_beyond_ngc_source_v1.html,0,"[""IC 1396""]",unmatched,,
+sac_beyond_ngc,IC 1470,sac_beyond_ngc_source_v1.html,0,"[""IC 1470""]",unmatched,,
+sac_beyond_ngc,IC 1613,sac_beyond_ngc_source_v1.html,0,"[""IC 1613""]",unmatched,,
+sac_beyond_ngc,IC 2165,sac_beyond_ngc_source_v1.html,0,"[""IC 2165""]",matched,IC 2165,PN G221.3-12.3
+sac_beyond_ngc,Tombaugh 1,sac_beyond_ngc_source_v1.html,0,"[""Tombaugh 1""]",unmatched,,
+sac_beyond_ngc,Haffner 23,sac_beyond_ngc_source_v1.html,0,"[""Haffner 23""]",unmatched,,
+sac_beyond_ngc,Sh2-301,sac_beyond_ngc_source_v1.html,0,"[""Sh2-301""]",unmatched,,
+sac_beyond_ngc,Cr 140,sac_beyond_ngc_source_v1.html,0,"[""Cr 140""]",unmatched,,
+sac_beyond_ngc,Mel 111,sac_beyond_ngc_source_v1.html,0,"[""Mel 111""]",unmatched,,
+sac_beyond_ngc,Abell 1656,sac_beyond_ngc_source_v1.html,0,"[""Abell 1656""]",unmatched,,
+sac_beyond_ngc,Abell 2065,sac_beyond_ngc_source_v1.html,0,"[""Abell 2065""]",unmatched,,
+sac_beyond_ngc,PK 64+ 5.1,sac_beyond_ngc_source_v1.html,0,"[""PK 64+ 5.1""]",matched,PK 64+ 5.1,PN G064.7+05.0
+sac_beyond_ngc,M1-92,sac_beyond_ngc_source_v1.html,0,"[""M1-92""]",unmatched,,
+sac_beyond_ngc,IC 1318,sac_beyond_ngc_source_v1.html,0,"[""IC 1318""]",unmatched,,
+sac_beyond_ngc,IC 5070,sac_beyond_ngc_source_v1.html,0,"[""IC 5070""]",unmatched,,
+sac_beyond_ngc,PK 80-6.1,sac_beyond_ngc_source_v1.html,0,"[""PK 80-6.1""]",unmatched,,
+sac_beyond_ngc,IC 5146,sac_beyond_ngc_source_v1.html,0,"[""IC 5146""]",unmatched,,
+sac_beyond_ngc,UGC 10822,sac_beyond_ngc_source_v1.html,0,"[""UGC 10822""]",unmatched,,
+sac_beyond_ngc,MCG-06-07-001,sac_beyond_ngc_source_v1.html,0,"[""MCG-06-07-001""]",unmatched,,
+sac_beyond_ngc,IC 443,sac_beyond_ngc_source_v1.html,0,"[""IC 443""]",unmatched,,
+sac_beyond_ngc,Cr 89,sac_beyond_ngc_source_v1.html,0,"[""Cr 89""]",unmatched,,
+sac_beyond_ngc,PK194+ 2.1,sac_beyond_ngc_source_v1.html,0,"[""PK194+ 2.1""]",matched,PK194+ 2.1,PN G194.2+02.5
+sac_beyond_ngc,PK205+14.1,sac_beyond_ngc_source_v1.html,0,"[""PK205+14.1""]",matched,PK205+14.1,PN G205.1+14.2
+sac_beyond_ngc,Abell 2151,sac_beyond_ngc_source_v1.html,0,"[""Abell 2151""]",unmatched,,
+sac_beyond_ngc,IC 4593,sac_beyond_ngc_source_v1.html,0,"[""IC 4593""]",matched,IC 4593,PN G025.3+40.8
+sac_beyond_ngc,PK 51+ 9.1,sac_beyond_ngc_source_v1.html,0,"[""PK 51+ 9.1""]",matched,PK 51+ 9.1,PN G051.4+09.6
+sac_beyond_ngc,PK 238+34.1,sac_beyond_ngc_source_v1.html,0,"[""PK 238+34.1""]",matched,PK 238+34.1,PN G238.0+34.8
+sac_beyond_ngc,Abell 1060,sac_beyond_ngc_source_v1.html,0,"[""Abell 1060""]",unmatched,,
+sac_beyond_ngc,IC 764,sac_beyond_ngc_source_v1.html,0,"[""IC 764""]",unmatched,,
+sac_beyond_ngc,IC 4351,sac_beyond_ngc_source_v1.html,0,"[""IC 4351""]",unmatched,,
+sac_beyond_ngc,IC 1434,sac_beyond_ngc_source_v1.html,0,"[""IC 1434""]",unmatched,,
+sac_beyond_ngc,IC 1442,sac_beyond_ngc_source_v1.html,0,"[""IC 1442""]",unmatched,,
+sac_beyond_ngc,IC 5217,sac_beyond_ngc_source_v1.html,0,"[""IC 5217""]",matched,IC 5217,PN G100.6-05.4
+sac_beyond_ngc,UGC 5470,sac_beyond_ngc_source_v1.html,0,"[""UGC 5470""]",unmatched,,
+sac_beyond_ngc,Abell 1367,sac_beyond_ngc_source_v1.html,0,"[""Abell 1367""]",unmatched,,
+sac_beyond_ngc,IC 418,sac_beyond_ngc_source_v1.html,0,"[""IC 418""]",matched,IC 418,PN G215.2-24.2
+sac_beyond_ngc,PK 342+27.1,sac_beyond_ngc_source_v1.html,0,"[""PK 342+27.1""]",matched,PK 342+27.1,PN G342.1+27.5
+sac_beyond_ngc,PK 164+31.1,sac_beyond_ngc_source_v1.html,0,"[""PK 164+31.1""]",matched,PK 164+31.1,PN G164.8+31.1
+sac_beyond_ngc,PK 64+15.1,sac_beyond_ngc_source_v1.html,0,"[""PK 64+15.1""]",matched,PK 64+15.1,PN G064.9+15.5
+sac_beyond_ngc,Steph 1,sac_beyond_ngc_source_v1.html,0,"[""Steph 1""]",unmatched,,
+sac_beyond_ngc,IC 2177,sac_beyond_ngc_source_v1.html,0,"[""IC 2177""]",unmatched,,
+sac_beyond_ngc,Mel 72,sac_beyond_ngc_source_v1.html,0,"[""Mel 72""]",unmatched,,
+sac_beyond_ngc,IC 4634,sac_beyond_ngc_source_v1.html,0,"[""IC 4634""]",matched,IC 4634,PN G000.3+12.2
+sac_beyond_ngc,B 64,sac_beyond_ngc_source_v1.html,0,"[""B 64""]",unmatched,,
+sac_beyond_ngc,B 72,sac_beyond_ngc_source_v1.html,0,"[""B 72""]",unmatched,,
+sac_beyond_ngc,B 78,sac_beyond_ngc_source_v1.html,0,"[""B 78""]",unmatched,,
+sac_beyond_ngc,IC 4665,sac_beyond_ngc_source_v1.html,0,"[""IC 4665""]",unmatched,,
+sac_beyond_ngc,Cr 350,sac_beyond_ngc_source_v1.html,0,"[""Cr 350""]",unmatched,,
+sac_beyond_ngc,PK190-17.1,sac_beyond_ngc_source_v1.html,0,"[""PK190-17.1""]",matched,PK190-17.1,PN G190.3-17.7
+sac_beyond_ngc,Cr 69,sac_beyond_ngc_source_v1.html,0,"[""Cr 69""]",unmatched,,
+sac_beyond_ngc,Cr 70,sac_beyond_ngc_source_v1.html,0,"[""Cr 70""]",unmatched,,
+sac_beyond_ngc,IC 434/B33,sac_beyond_ngc_source_v1.html,0,"[""IC 434/B33""]",unmatched,,
+sac_beyond_ngc,Sh2-276,sac_beyond_ngc_source_v1.html,0,"[""Sh2-276""]",unmatched,,
+sac_beyond_ngc,Jones 1,sac_beyond_ngc_source_v1.html,0,"[""Jones 1""]",matched,Jones 1,PN G104.2-29.6
+sac_beyond_ngc,Abell 426,sac_beyond_ngc_source_v1.html,0,"[""Abell 426""]",unmatched,,
+sac_beyond_ngc,Mel 20,sac_beyond_ngc_source_v1.html,0,"[""Mel 20""]",unmatched,,
+sac_beyond_ngc,IC 348,sac_beyond_ngc_source_v1.html,0,"[""IC 348""]",unmatched,,
+sac_beyond_ngc,IC 351,sac_beyond_ngc_source_v1.html,0,"[""IC 351""]",matched,IC 351,PN G159.0-15.1
+sac_beyond_ngc,Abell 194,sac_beyond_ngc_source_v1.html,0,"[""Abell 194""]",unmatched,,
+sac_beyond_ngc,Cr 135,sac_beyond_ngc_source_v1.html,0,"[""Cr 135""]",unmatched,,
+sac_beyond_ngc,Mel 71,sac_beyond_ngc_source_v1.html,0,"[""Mel 71""]",unmatched,,
+sac_beyond_ngc,Ru 44,sac_beyond_ngc_source_v1.html,0,"[""Ru 44""]",unmatched,,
+sac_beyond_ngc,PK 254+ 5.1,sac_beyond_ngc_source_v1.html,0,"[""PK 254+ 5.1""]",matched,PK 254+ 5.1,PN G253.9+05.7
+sac_beyond_ngc,MCG-06-03-015,sac_beyond_ngc_source_v1.html,0,"[""MCG-06-03-015""]",unmatched,,
+sac_beyond_ngc,IC 5332,sac_beyond_ngc_source_v1.html,0,"[""IC 5332""]",unmatched,,
+sac_beyond_ngc,Cr 302,sac_beyond_ngc_source_v1.html,0,"[""Cr 302""]",unmatched,,
+sac_beyond_ngc,IC 4628,sac_beyond_ngc_source_v1.html,0,"[""IC 4628""]",unmatched,,
+sac_beyond_ngc,Tr 24,sac_beyond_ngc_source_v1.html,0,"[""Tr 24""]",unmatched,,
+sac_beyond_ngc,Harvard 16,sac_beyond_ngc_source_v1.html,0,"[""Harvard 16""]",unmatched,,
+sac_beyond_ngc,Tr 30,sac_beyond_ngc_source_v1.html,0,"[""Tr 30""]",unmatched,,
+sac_beyond_ngc,IC 1287,sac_beyond_ngc_source_v1.html,0,"[""IC 1287""]",unmatched,,
+sac_beyond_ngc,IC 1295,sac_beyond_ngc_source_v1.html,0,"[""IC 1295""]",matched,IC 1295,PN G025.4-04.7
+sac_beyond_ngc,IC 1276,sac_beyond_ngc_source_v1.html,0,"[""IC 1276""]",unmatched,,
+sac_beyond_ngc,IC 4756,sac_beyond_ngc_source_v1.html,0,"[""IC 4756""]",unmatched,,
+sac_beyond_ngc,UGC 5373,sac_beyond_ngc_source_v1.html,0,"[""UGC 5373""]",unmatched,,
+sac_beyond_ngc,Sh2-84,sac_beyond_ngc_source_v1.html,0,"[""Sh2-84""]",unmatched,,
+sac_beyond_ngc,Harvard 20,sac_beyond_ngc_source_v1.html,0,"[""Harvard 20""]",unmatched,,
+sac_beyond_ngc,IC 4997,sac_beyond_ngc_source_v1.html,0,"[""IC 4997""]",matched,IC 4997,PN G058.3-10.9
+sac_beyond_ngc,PK 359- 0.1,sac_beyond_ngc_source_v1.html,0,"[""PK 359- 0.1""]",matched,PK 359- 0.1,PN G359.3-00.9
+sac_beyond_ngc,B 86,sac_beyond_ngc_source_v1.html,0,"[""B 86""]",unmatched,,
+sac_beyond_ngc,IC 349,sac_beyond_ngc_source_v1.html,0,"[""IC 349""]",unmatched,,
+sac_beyond_ngc,Mel 25,sac_beyond_ngc_source_v1.html,0,"[""Mel 25""]",unmatched,,
+sac_beyond_ngc,IC 2087,sac_beyond_ngc_source_v1.html,0,"[""IC 2087""]",unmatched,,
+sac_beyond_ngc,UGC 1281,sac_beyond_ngc_source_v1.html,0,"[""UGC 1281""]",unmatched,,
+sac_beyond_ngc,UGC 9749,sac_beyond_ngc_source_v1.html,0,"[""UGC 9749""]",unmatched,,
+sac_beyond_ngc,3C 273,sac_beyond_ngc_source_v1.html,0,"[""3C 273""]",unmatched,,
+sac_beyond_ngc,Cr 399,sac_beyond_ngc_source_v1.html,0,"[""Cr 399""]",unmatched,,
+sac_beyond_ngc,Stock 1,sac_beyond_ngc_source_v1.html,0,"[""Stock 1""]",unmatched,,
+sac_beyond_ngc,Sh2-88,sac_beyond_ngc_source_v1.html,0,"[""Sh2-88""]",unmatched,,
+sac_beyond_ngc,IC 4954,sac_beyond_ngc_source_v1.html,0,"[""IC 4954""]",unmatched,,
+al_planetary_nebulae,NGC 40,al_planetaries_list_v1.xlsx,2,"[""NGC 40"", ""Caldwell 2""]",matched,NGC 40|NGC0040,PN G120.0+09.8
+al_planetary_nebulae,NGC 246,al_planetaries_list_v1.xlsx,3,"[""NGC 246"", ""Caldwell 56""]",matched,NGC 246|NGC0246,PN G118.8-74.7
+al_planetary_nebulae,NGC 650,al_planetaries_list_v1.xlsx,4,"[""NGC 650"", ""M 76""]",matched,NGC 650|M 76,PN G130.9-10.5
+al_planetary_nebulae,IC 1747,al_planetaries_list_v1.xlsx,5,"[""IC 1747""]",matched,IC 1747,PN G130.2+01.3
+al_planetary_nebulae,Abell 4,al_planetaries_list_v1.xlsx,6,"[""Abell 4""]",matched,Abell 4,PN G144.3-15.5
+al_planetary_nebulae,IC 289,al_planetaries_list_v1.xlsx,7,"[""IC 289""]",matched,IC 289,PN G138.8+02.8
+al_planetary_nebulae,NGC 1360,al_planetaries_list_v1.xlsx,8,"[""NGC 1360"", ""M 1-3""]",matched,NGC 1360|M 1-3,PN G220.3-53.9
+al_planetary_nebulae,IC 351,al_planetaries_list_v1.xlsx,9,"[""IC 351""]",matched,IC 351,PN G159.0-15.1
+al_planetary_nebulae,IC 2003,al_planetaries_list_v1.xlsx,10,"[""IC 2003""]",matched,IC 2003,PN G161.2-14.8
+al_planetary_nebulae,NGC 1501,al_planetaries_list_v1.xlsx,11,"[""NGC 1501""]",matched,NGC 1501,PN G144.5+06.5
+al_planetary_nebulae,NGC 1514,al_planetaries_list_v1.xlsx,12,"[""NGC 1514""]",matched,NGC 1514,PN G165.5-15.2
+al_planetary_nebulae,NGC 1535,al_planetaries_list_v1.xlsx,13,"[""NGC 1535""]",matched,NGC 1535,PN G206.4-40.5
+al_planetary_nebulae,Sh 2-216,al_planetaries_list_v1.xlsx,14,"[""Sh 2-216"", ""Sharpless 2-216""]",unmatched,,
+al_planetary_nebulae,Jonckheere 320,al_planetaries_list_v1.xlsx,15,"[""Jonckheere 320""]",matched,Jonckheere 320,PN G190.3-17.7
+al_planetary_nebulae,IC 418,al_planetaries_list_v1.xlsx,16,"[""IC 418"", ""Raspberry""]",matched,IC 418,PN G215.2-24.2
+al_planetary_nebulae,NGC 2022,al_planetaries_list_v1.xlsx,17,"[""NGC 2022""]",matched,NGC 2022,PN G196.6-10.9
+al_planetary_nebulae,IC 2149,al_planetaries_list_v1.xlsx,18,"[""IC 2149""]",matched,IC 2149,PN G166.1+10.4
+al_planetary_nebulae,IC 2165,al_planetaries_list_v1.xlsx,19,"[""IC 2165""]",matched,IC 2165,PN G221.3-12.3
+al_planetary_nebulae,Jonckheere 900,al_planetaries_list_v1.xlsx,20,"[""Jonckheere 900""]",matched,Jonckheere 900,PN G194.2+02.5
+al_planetary_nebulae,M1-7,al_planetaries_list_v1.xlsx,21,"[""M1-7""]",matched,M1-7,PN G189.8+07.7
+al_planetary_nebulae,NGC 2346,al_planetaries_list_v1.xlsx,22,"[""NGC 2346"", ""M 1-10""]",matched,NGC 2346|M 1-10,PN G215.6+03.6
+al_planetary_nebulae,NGC 2371,al_planetaries_list_v1.xlsx,23,"[""NGC 2371"", ""NGC 2372""]",matched,NGC 2371|NGC 2372,PN G189.1+19.8
+al_planetary_nebulae,Abell 21,al_planetaries_list_v1.xlsx,24,"[""Abell 21""]",matched,Abell 21,PN G205.1+14.2
+al_planetary_nebulae,NGC 2392,al_planetaries_list_v1.xlsx,25,"[""NGC 2392"", ""Caldwell 39""]",matched,NGC 2392|NGC2392,PN G197.8+17.3
+al_planetary_nebulae,NGC 2438,al_planetaries_list_v1.xlsx,26,"[""NGC 2438""]",matched,NGC 2438,PN G231.8+04.1
+al_planetary_nebulae,NGC 2440,al_planetaries_list_v1.xlsx,27,"[""NGC 2440""]",matched,NGC 2440,PN G234.8+02.4
+al_planetary_nebulae,NGC 2452,al_planetaries_list_v1.xlsx,28,"[""NGC 2452""]",matched,NGC 2452,PN G243.3-01.0
+al_planetary_nebulae,JnEr 1,al_planetaries_list_v1.xlsx,29,"[""JnEr 1""]",matched,JnEr 1,PN G164.8+31.1
+al_planetary_nebulae,NGC 2610,al_planetaries_list_v1.xlsx,30,"[""NGC 2610""]",matched,NGC 2610,PN G239.6+13.9
+al_planetary_nebulae,M 3-6,al_planetaries_list_v1.xlsx,31,"[""M 3-6""]",matched,M 3-6,PN G253.9+05.7
+al_planetary_nebulae,NGC 2818,al_planetaries_list_v1.xlsx,32,"[""NGC 2818""]",matched,NGC 2818,PN G261.9+08.5
+al_planetary_nebulae,NGC 3132,al_planetaries_list_v1.xlsx,33,"[""NGC 3132"", ""Caldwel 74""]",matched,NGC 3132,PN G272.1+12.3
+al_planetary_nebulae,NGC 3242,al_planetaries_list_v1.xlsx,34,"[""NGC 3242"", ""Caldwell 59""]",matched,NGC 3242|NGC3242,PN G261.0+32.0
+al_planetary_nebulae,NGC 3587,al_planetaries_list_v1.xlsx,36,"[""NGC 3587"", ""M 97""]",matched,NGC 3587|M 97|NGC 3587,PN G148.4+57.0
+al_planetary_nebulae,NGC 4361,al_planetaries_list_v1.xlsx,37,"[""NGC 4361""]",matched,NGC 4361,PN G294.1+43.6
+al_planetary_nebulae,IC 3568,al_planetaries_list_v1.xlsx,38,"[""IC 3568""]",matched,IC 3568,PN G123.6+34.5
+al_planetary_nebulae,Abell 35,al_planetaries_list_v1.xlsx,39,"[""Abell 35""]",matched,Abell 35,PN G303.6+40.0
+al_planetary_nebulae,Abell 36,al_planetaries_list_v1.xlsx,40,"[""Abell 36""]",matched,Abell 36,PN G318.4+41.4
+al_planetary_nebulae,NGC 5873,al_planetaries_list_v1.xlsx,41,"[""NGC 5873""]",matched,NGC 5873,PN G331.3+16.8
+al_planetary_nebulae,NGC 6026,al_planetaries_list_v1.xlsx,42,"[""NGC 6026""]",matched,NGC 6026,PN G341.6+13.7
+al_planetary_nebulae,NGC 6058,al_planetaries_list_v1.xlsx,43,"[""NGC 6058""]",matched,NGC 6058,PN G064.6+48.2
+al_planetary_nebulae,IC 4593,al_planetaries_list_v1.xlsx,44,"[""IC 4593""]",matched,IC 4593,PN G025.3+40.8
+al_planetary_nebulae,NGC 6072,al_planetaries_list_v1.xlsx,45,"[""NGC 6072""]",matched,NGC 6072,PN G342.1+10.8
+al_planetary_nebulae,NGC 6153,al_planetaries_list_v1.xlsx,46,"[""NGC 6153""]",matched,NGC 6153,PN G341.8+05.4
+al_planetary_nebulae,NGC 6210,al_planetaries_list_v1.xlsx,47,"[""NGC 6210""]",matched,NGC 6210,PN G043.1+37.7
+al_planetary_nebulae,IC 4634,al_planetaries_list_v1.xlsx,48,"[""IC 4634""]",matched,IC 4634,PN G000.3+12.2
+al_planetary_nebulae,M 2-9,al_planetaries_list_v1.xlsx,49,"[""M 2-9""]",matched,M 2-9,PN G010.8+18.0
+al_planetary_nebulae,NGC 6302,al_planetaries_list_v1.xlsx,50,"[""NGC 6302"", ""Gum 60""]",matched,NGC 6302|Gum 60,PN G349.5+01.0
+al_planetary_nebulae,NGC 6309,al_planetaries_list_v1.xlsx,51,"[""NGC 6309""]",matched,NGC 6309,PN G009.6+14.8
+al_planetary_nebulae,NGC 6337,al_planetaries_list_v1.xlsx,52,"[""NGC 6337"", ""Haro 110""]",matched,NGC 6337,PN G349.3-01.1
+al_planetary_nebulae,NGC 6369,al_planetaries_list_v1.xlsx,53,"[""NGC 6369""]",matched,NGC 6369,PN G002.4+05.8
+al_planetary_nebulae,NGC 6445,al_planetaries_list_v1.xlsx,54,"[""NGC 6445""]",matched,NGC 6445,PN G008.0+03.9
+al_planetary_nebulae,IC 4670,al_planetaries_list_v1.xlsx,55,"[""IC 4670"", ""Hubble 6""]",matched,Hubble 6,PN G007.2+01.8
+al_planetary_nebulae,NGC 6543,al_planetaries_list_v1.xlsx,56,"[""NGC 6543"", ""Caldwell 6""]",matched,NGC 6543|NGC6543,PN G096.4+29.9
+al_planetary_nebulae,NGC 6537,al_planetaries_list_v1.xlsx,57,"[""NGC 6537""]",matched,NGC 6537,PN G010.1+00.7
+al_planetary_nebulae,NGC 6565,al_planetaries_list_v1.xlsx,58,"[""NGC 6565""]",matched,NGC 6565,PN G003.5-04.6
+al_planetary_nebulae,NGC 6563,al_planetaries_list_v1.xlsx,59,"[""NGC 6563""]",matched,NGC 6563,PN G358.5-07.3
+al_planetary_nebulae,NGC 6572,al_planetaries_list_v1.xlsx,60,"[""NGC 6572""]",matched,NGC 6572,PN G034.6+11.8
+al_planetary_nebulae,NGC 6567,al_planetaries_list_v1.xlsx,61,"[""NGC 6567""]",matched,NGC 6567,PN G011.7-00.6
+al_planetary_nebulae,NGC 6578,al_planetaries_list_v1.xlsx,62,"[""NGC 6578""]",matched,NGC 6578,PN G010.8-01.8
+al_planetary_nebulae,NGC 6620,al_planetaries_list_v1.xlsx,63,"[""NGC 6620""]",matched,NGC 6620,PN G005.8-06.1
+al_planetary_nebulae,NGC 6629,al_planetaries_list_v1.xlsx,64,"[""NGC 6629""]",matched,NGC 6629,PN G009.4-05.0
+al_planetary_nebulae,NGC 6644,al_planetaries_list_v1.xlsx,65,"[""NGC 6644""]",matched,NGC 6644,PN G008.3-07.3
+al_planetary_nebulae,IC 4732,al_planetaries_list_v1.xlsx,66,"[""IC 4732""]",matched,IC 4732,PN G010.7-06.4
+al_planetary_nebulae,IC 4776,al_planetaries_list_v1.xlsx,67,"[""IC 4776""]",matched,IC 4776,PN G002.0-13.4
+al_planetary_nebulae,NGC 6720,al_planetaries_list_v1.xlsx,68,"[""NGC 6720"", ""M 57""]",matched,NGC 6720|M 57|NGC 6720,PN G063.1+13.9
+al_planetary_nebulae,IC 1295,al_planetaries_list_v1.xlsx,70,"[""IC 1295""]",matched,IC 1295,PN G025.4-04.7
+al_planetary_nebulae,NGC 6742,al_planetaries_list_v1.xlsx,71,"[""NGC 6742"", ""Abell 50""]",matched,Abell 50,PN G078.5+18.7
+al_planetary_nebulae,Sh 2-71,al_planetaries_list_v1.xlsx,72,"[""Sh 2-71"", ""Sharpless 2-71""]",matched,Sh 2-71,PN G035.9-01.1
+al_planetary_nebulae,NGC 6741,al_planetaries_list_v1.xlsx,73,"[""NGC 6741"", ""Jonckheere 475""]",matched,NGC 6741|Jonckheere 475,PN G033.8-02.6
+al_planetary_nebulae,NGC 6751,al_planetaries_list_v1.xlsx,74,"[""NGC 6751""]",matched,NGC 6751,PN G029.2-05.9
+al_planetary_nebulae,NGC 6765,al_planetaries_list_v1.xlsx,75,"[""NGC 6765"", ""M 1-68""]",matched,NGC 6765|M 1-68,PN G062.4+09.5
+al_planetary_nebulae,IC 4846,al_planetaries_list_v1.xlsx,76,"[""IC 4846""]",matched,IC 4846,PN G027.6-09.6
+al_planetary_nebulae,IC 1297,al_planetaries_list_v1.xlsx,77,"[""IC 1297""]",matched,IC 1297,PN G358.3-21.6
+al_planetary_nebulae,NGC 6778,al_planetaries_list_v1.xlsx,78,"[""NGC 6778""]",matched,NGC 6778,PN G034.5-06.7
+al_planetary_nebulae,NGC 6781,al_planetaries_list_v1.xlsx,79,"[""NGC 6781""]",matched,NGC 6781,PN G041.8-02.9
+al_planetary_nebulae,NGC 6790,al_planetaries_list_v1.xlsx,80,"[""NGC 6790""]",matched,NGC 6790,PN G037.8-06.3
+al_planetary_nebulae,Vy 2-2,al_planetaries_list_v1.xlsx,81,"[""Vy 2-2"", ""M 1-70""]",matched,Vy 2-2|M 1-70,PN G045.4-02.7
+al_planetary_nebulae,NGC 6803,al_planetaries_list_v1.xlsx,82,"[""NGC 6803""]",matched,NGC 6803,PN G046.4-04.1
+al_planetary_nebulae,NGC 6804,al_planetaries_list_v1.xlsx,83,"[""NGC 6804""]",matched,NGC 6804,PN G045.7-04.5
+al_planetary_nebulae,NGC 6807,al_planetaries_list_v1.xlsx,84,"[""NGC 6807""]",matched,NGC 6807,PN G042.9-06.9
+al_planetary_nebulae,BD+30 3639,al_planetaries_list_v1.xlsx,85,"[""BD+30 3639""]",matched,BD+30 3639,PN G064.7+05.0
+al_planetary_nebulae,NGC 6818,al_planetaries_list_v1.xlsx,86,"[""NGC 6818""]",matched,NGC 6818,PN G025.8-17.9
+al_planetary_nebulae,NGC 6826,al_planetaries_list_v1.xlsx,87,"[""NGC 6826"", ""Caldwell 15""]",matched,NGC 6826|NGC6826,PN G083.5+12.7
+al_planetary_nebulae,NGC 6833,al_planetaries_list_v1.xlsx,88,"[""NGC 6833""]",matched,NGC 6833,PN G082.5+11.3
+al_planetary_nebulae,NGC 6853,al_planetaries_list_v1.xlsx,89,"[""NGC 6853"", ""M 27""]",matched,NGC 6853|M 27|NGC 6853,PN G060.8-03.6
+al_planetary_nebulae,NGC 6884,al_planetaries_list_v1.xlsx,90,"[""NGC 6884""]",matched,NGC 6884,PN G082.1+07.0
+al_planetary_nebulae,NGC 6879,al_planetaries_list_v1.xlsx,91,"[""NGC 6879""]",matched,NGC 6879,PN G057.2-08.9
+al_planetary_nebulae,NGC 6881,al_planetaries_list_v1.xlsx,92,"[""NGC 6881""]",matched,NGC 6881,PN G074.5+02.1
+al_planetary_nebulae,NGC 6886,al_planetaries_list_v1.xlsx,93,"[""NGC 6886""]",matched,NGC 6886,PN G060.1-07.7
+al_planetary_nebulae,NGC 6891,al_planetaries_list_v1.xlsx,94,"[""NGC 6891""]",matched,NGC 6891,PN G054.1-12.1
+al_planetary_nebulae,NGC 6894,al_planetaries_list_v1.xlsx,95,"[""NGC 6894""]",matched,NGC 6894,PN G069.4-02.6
+al_planetary_nebulae,IC 4997,al_planetaries_list_v1.xlsx,96,"[""IC 4997""]",matched,IC 4997,PN G058.3-10.9
+al_planetary_nebulae,NGC 6905,al_planetaries_list_v1.xlsx,97,"[""NGC 6905"", ""Blue Flash Nebula""]",matched,NGC 6905,PN G061.4-09.5
+al_planetary_nebulae,NGC 7008,al_planetaries_list_v1.xlsx,98,"[""NGC 7008"", ""Fetus Nebula""]",matched,NGC 7008,PN G093.4+05.4
+al_planetary_nebulae,NGC 7009,al_planetaries_list_v1.xlsx,99,"[""NGC 7009"", ""Caldwell 55""]",matched,NGC 7009|NGC7009,PN G037.7-34.5
+al_planetary_nebulae,NGC 7026,al_planetaries_list_v1.xlsx,100,"[""NGC 7026"", ""Cheeseburger Nebula""]",matched,NGC 7026,PN G089.0+00.3
+al_planetary_nebulae,NGC 7027,al_planetaries_list_v1.xlsx,101,"[""NGC 7027"", ""Green Rectangle""]",matched,NGC 7027,PN G084.9-03.4
+al_planetary_nebulae,Sh1-89,al_planetaries_list_v1.xlsx,102,"[""Sh1-89"", ""Sharpless 1-89""]",matched,Sh1-89,PN G089.8-00.6
+al_planetary_nebulae,NGC 7048 Hubble 9,al_planetaries_list_v1.xlsx,104,"[""NGC 7048 Hubble 9"", ""NGC 7048"", ""Hubble 9""]",matched,NGC 7048|Hubble 9,PN G088.7-01.6
+al_planetary_nebulae,Pease 1 (In M15),al_planetaries_list_v1.xlsx,105,"[""Pease 1 (In M15)"", ""Pease 1""]",matched,Pease 1,PN G065.0-27.3
+al_planetary_nebulae,IC 5117,al_planetaries_list_v1.xlsx,106,"[""IC 5117""]",matched,IC 5117,PN G089.8-05.1
+al_planetary_nebulae,Hu 1-2,al_planetaries_list_v1.xlsx,107,"[""Hu 1-2""]",matched,Hu 1-2,PN G086.5-08.8
+al_planetary_nebulae,NGC 7094 K 1-19,al_planetaries_list_v1.xlsx,108,"[""NGC 7094 K 1-19"", ""NGC 7094"", ""K 1-19""]",matched,NGC 7094|K 1-19,PN G066.7-28.2
+al_planetary_nebulae,IC 5217,al_planetaries_list_v1.xlsx,109,"[""IC 5217""]",matched,IC 5217,PN G100.6-05.4
+al_planetary_nebulae,NGC 7293,al_planetaries_list_v1.xlsx,110,"[""NGC 7293"", ""Caldwell 63""]",matched,NGC 7293|NGC7293,PN G036.1-57.1
+al_planetary_nebulae,NGC 7354,al_planetaries_list_v1.xlsx,111,"[""NGC 7354""]",matched,NGC 7354,PN G107.8+02.3
+al_planetary_nebulae,NGC 7662,al_planetaries_list_v1.xlsx,112,"[""NGC 7662"", ""Caldwell 22""]",matched,NGC 7662|NGC7662,PN G106.5-17.6
+al_planetary_nebulae,Jones 1,al_planetaries_list_v1.xlsx,113,"[""Jones 1""]",matched,Jones 1,PN G104.2-29.6
+al_planetary_nebulae,Abell 82,al_planetaries_list_v1.xlsx,114,"[""Abell 82""]",matched,Abell 82,PN G114.0-04.6
+al_planetary_nebulae_south,NGC 246,al_planetaries_south_list_v1.xls,2,"[""NGC 246"", ""PK 118-74.1"", ""K 118-74"", ""PN G118.8-74.7""]",matched,NGC 246|PK 118-74.1|PN G118.8-74.7,PN G118.8-74.7
+al_planetary_nebulae_south,NGC 1360,al_planetaries_south_list_v1.xls,3,"[""NGC 1360"", ""M 1-3"", ""PN G220.3-53.9"", ""ESO 482-7""]",matched,NGC 1360|M 1-3|PN G220.3-53.9,PN G220.3-53.9
+al_planetary_nebulae_south,NGC 1535,al_planetaries_south_list_v1.xls,4,"[""NGC 1535"", ""PK 206-40.1"", ""K 206-40"", ""PN G206.4-40.5""]",matched,NGC 1535|PK 206-40.1|PN G206.4-40.5,PN G206.4-40.5
+al_planetary_nebulae_south,Jonckheere 320,al_planetaries_south_list_v1.xls,5,"[""Jonckheere 320"", ""J 320"", ""PK 190-17.1"", ""K 190-17"", ""PN G190.3-17.7"", ""ARO 60""]",matched,Jonckheere 320|J 320|PK 190-17.1|PN G190.3-17.7|ARO 60,PN G190.3-17.7
+al_planetary_nebulae_south,IC 418,al_planetaries_south_list_v1.xls,6,"[""IC 418"", ""PK 215-24.1"", ""K 215-24"", ""PN G215.2-24.2""]",matched,IC 418|PK 215-24.1|PN G215.2-24.2,PN G215.2-24.2
+al_planetary_nebulae_south,NGC 2022,al_planetaries_south_list_v1.xls,7,"[""NGC 2022"", ""PK 196-10.1"", ""K 196-10"", ""PN G196.6-10.9""]",matched,NGC 2022|PK 196-10.1|PN G196.6-10.9,PN G196.6-10.9
+al_planetary_nebulae_south,IC 2165,al_planetaries_south_list_v1.xls,8,"[""IC 2165"", ""PK 221-12.1"", ""K 221-12"", ""PN G221.3-12.3""]",matched,IC 2165|PK 221-12.1|PN G221.3-12.3,PN G221.3-12.3
+al_planetary_nebulae_south,Jonckheere 900,al_planetaries_south_list_v1.xls,9,"[""Jonckheere 900"", ""PK 194-2.1"", ""K 194-2"", ""PN G194.2+02.5""]",matched,Jonckheere 900|PN G194.2+02.5,PN G194.2+02.5
+al_planetary_nebulae_south,NGC 2346,al_planetaries_south_list_v1.xls,10,"[""NGC 2346"", ""M 1-10"", ""PN G215.6+03.6""]",matched,NGC 2346|M 1-10|PN G215.6+03.6,PN G215.6+03.6
+al_planetary_nebulae_south,Abell 21,al_planetaries_south_list_v1.xls,11,"[""Abell 21"", ""PK 205-14.1"", ""K 205-14"", ""PN G205.1+14.2""]",matched,Abell 21|PN G205.1+14.2,PN G205.1+14.2
+al_planetary_nebulae_south,NGC 2392,al_planetaries_south_list_v1.xls,12,"[""NGC 2392"", ""PK 197-17.1"", ""K 197-17"", ""PN G197.8+17.3""]",matched,NGC 2392|PN G197.8+17.3,PN G197.8+17.3
+al_planetary_nebulae_south,NGC 2438,al_planetaries_south_list_v1.xls,13,"[""NGC 2438"", ""PK 231-4.2"", ""K 231-4"", ""PN G231.8+04.1""]",matched,NGC 2438|PN G231.8+04.1,PN G231.8+04.1
+al_planetary_nebulae_south,NGC 2440,al_planetaries_south_list_v1.xls,14,"[""NGC 2440"", ""PK 234-2.1"", ""K 234-2"", ""PN G234.8+02.4"", ""ESO 560-9""]",matched,NGC 2440|PN G234.8+02.4,PN G234.8+02.4
+al_planetary_nebulae_south,NGC 2452,al_planetaries_south_list_v1.xls,15,"[""NGC 2452"", ""PK 243-1.1"", ""K 243-1"", ""PN G243.3-01.0"", ""He 2-4"", ""ESO 493-11"", ""ARO 93""]",matched,NGC 2452|PK 243-1.1|PN G243.3-01.0|He 2-4|ESO 493-11|ARO 93,PN G243.3-01.0
+al_planetary_nebulae_south,NGC 2610,al_planetaries_south_list_v1.xls,16,"[""NGC 2610"", ""PK 239-13.1"", ""K 239-13"", ""PN G239.6+13.9""]",matched,NGC 2610|PN G239.6+13.9,PN G239.6+13.9
+al_planetary_nebulae_south,M 3-6,al_planetaries_south_list_v1.xls,17,"[""M 3-6"", ""PK 254-5.1"", ""K 254-5"", ""PN G253.9+05.7"", ""He 2-12""]",matched,M 3-6|PN G253.9+05.7|He 2-12,PN G253.9+05.7
+al_planetary_nebulae_south,IC 2448,al_planetaries_south_list_v1.xls,18,"[""IC 2448"", ""PK 285-14.1"", ""K 285-14"", ""PN G285.7-14.9"", ""He 2-19"", ""ESO 61-1""]",matched,IC 2448|PK 285-14.1|PN G285.7-14.9|He 2-19,PN G285.7-14.9
+al_planetary_nebulae_south,NGC 2792,al_planetaries_south_list_v1.xls,19,"[""NGC 2792"", ""PK 265-4.1"", ""K 265-4"", ""PN G265.7+04.1"", ""He 2-20"", ""ESO 314-6""]",matched,NGC 2792|PN G265.7+04.1|He 2-20,PN G265.7+04.1
+al_planetary_nebulae_south,NGC 2818,al_planetaries_south_list_v1.xls,20,"[""NGC 2818"", ""PK 261-8.1"", ""K 261-8"", ""PN G261.9+08.5"", ""He 2-23"", ""ESO 372-13""]",matched,NGC 2818|PN G261.9+08.5|He 2-23|ESO 372-13,PN G261.9+08.5
+al_planetary_nebulae_south,NGC 2867,al_planetaries_south_list_v1.xls,21,"[""NGC 2867"", ""PK 278-5.1"", ""K 278-5"", ""PN G278.1-05.9"", ""He 2-27"", ""ESO 126-8""]",matched,NGC 2867|PK 278-5.1|PN G278.1-05.9|He 2-27,PN G278.1-05.9
+al_planetary_nebulae_south,NGC 2899,al_planetaries_south_list_v1.xls,22,"[""NGC 2899"", ""PK 277-3.1"", ""K 277-3"", ""PN G277.1-03.8"", ""He 2-30"", ""ESO 166-13""]",matched,NGC 2899|PK 277-3.1|PN G277.1-03.8|He 2-30|ESO 166-13,PN G277.1-03.8
+al_planetary_nebulae_south,IC 2501,al_planetaries_south_list_v1.xls,23,"[""IC 2501"", ""PK 281-5.1"", ""K 281-5"", ""PN G281.0-05.6"", ""He 2-33""]",matched,IC 2501|PK 281-5.1|PN G281.0-05.6|He 2-33,PN G281.0-05.6
+al_planetary_nebulae_south,NGC 3132,al_planetaries_south_list_v1.xls,24,"[""NGC 3132"", ""PK 272-12.1"", ""K 272-12"", ""PN G272.1+12.3"", ""He 2-40"", ""ESO 316-27""]",matched,NGC 3132|PN G272.1+12.3|He 2-40|ESO 316-27,PN G272.1+12.3
+al_planetary_nebulae_south,IC 2553,al_planetaries_south_list_v1.xls,25,"[""IC 2553"", ""PK 285-5.1"", ""K 285-5"", ""PN G285.4-05.3"", ""He 2-42"", ""ESO 127-10""]",matched,IC 2553|PK 285-5.1|PN G285.4-05.3|He 2-42|ESO 127-10,PN G285.4-05.3
+al_planetary_nebulae_south,NGC 3195,al_planetaries_south_list_v1.xls,26,"[""NGC 3195"", ""PK 296-20.1"", ""K 296-20"", ""PN G296.6-20.0"", ""He 2-44"", ""ESO 19-2""]",matched,NGC 3195|PK 296-20.1|PN G296.6-20.0|He 2-44,PN G296.6-20.0
+al_planetary_nebulae_south,NGC 3211,al_planetaries_south_list_v1.xls,27,"[""NGC 3211"", ""PK 286-4.1"", ""K 286-4"", ""PN G286.3-04.8"", ""He 2-46"", ""ESO 127-15""]",matched,NGC 3211|PK 286-4.1|PN G286.3-04.8|He 2-46|ESO 127-15,PN G286.3-04.8
+al_planetary_nebulae_south,NGC 3242,al_planetaries_south_list_v1.xls,28,"[""NGC 3242"", ""PK 261-32.1"", ""K 261-32"", ""PN G261.0+32.0"", ""ESO 568-5""]",matched,NGC 3242|PN G261.0+32.0,PN G261.0+32.0
+al_planetary_nebulae_south,IC 2621,al_planetaries_south_list_v1.xls,29,"[""IC 2621"", ""PK 291-4.1"", ""K 291-4"", ""PN G291.6-04.8"", ""He 2-59"", ""ESO 93-4""]",matched,IC 2621|PK 291-4.1|PN G291.6-04.8|He 2-59,PN G291.6-04.8
+al_planetary_nebulae_south,K 1-22,al_planetaries_south_list_v1.xls,30,"[""K 1-22"", ""PN G283.6+25.3"", ""ESO 378-1""]",matched,K 1-22|PN G283.6+25.3,PN G283.6+25.3
+al_planetary_nebulae_south,NGC 3699,al_planetaries_south_list_v1.xls,31,"[""NGC 3699"", ""PK 292-1.1"", ""K 292-1"", ""PN G292.6+01.2"", ""He 2-65"", ""ESO 129-21""]",matched,NGC 3699|PN G292.6+01.2|He 2-65|ESO 129-21,PN G292.6+01.2
+al_planetary_nebulae_south,Fleming 1,al_planetaries_south_list_v1.xls,32,"[""Fleming 1"", ""PK 290-7.1"", ""K 290-7"", ""PN G290.5+07.9"", ""He 2-66"", ""ESO 170-6""]",matched,PN G290.5+07.9|He 2-66,PN G290.5+07.9
+al_planetary_nebulae_south,NGC 3918,al_planetaries_south_list_v1.xls,33,"[""NGC 3918"", ""PK 294-4.1"", ""K 294-4"", ""PN G294.6+04.7"", ""He 2-74"", ""ESO 170-13""]",ambiguous,NGC 3918|PK 294-4.1|PN G294.6+04.7|He 2-74|ESO 170-13,PN G294.6+04.7|PN G294.9-04.3
+al_planetary_nebulae_south,NGC 4071,al_planetaries_south_list_v1.xls,34,"[""NGC 4071"", ""Sa 2-82"", ""PK 298-4.1"", ""K 298-4"", ""PN G 298.3-04.8"", ""He 2-75"", ""ESO 94-12""]",matched,NGC 4071|Sa 2-82|PK 298-4.1|PN G 298.3-04.8|He 2-75,PN G298.3-04.8
+al_planetary_nebulae_south,NGC 4361,al_planetaries_south_list_v1.xls,35,"[""NGC 4361"", ""PK 294-43.1"", ""K 294-43"", ""PN G294.1+43.6"", ""ESO 573-19""]",matched,NGC 4361|PN G294.1+43.6|ESO 573-19,PN G294.1+43.6
+al_planetary_nebulae_south,Abell 35,al_planetaries_south_list_v1.xls,36,"[""Abell 35"", ""PK 303-40.1"", ""K 303-40"", ""PN G303.6+40.0""]",matched,Abell 35|PN G303.6+40.0,PN G303.6+40.0
+al_planetary_nebulae_south,IC 4191,al_planetaries_south_list_v1.xls,37,"[""IC 4191"", ""PK 304-4.1"", ""K 304-4"", ""PN G304.5-04.8"", ""He 2-89"", ""ESO 96-2""]",matched,IC 4191|PK 304-4.1|PN G304.5-04.8|He 2-89,PN G304.5-04.8
+al_planetary_nebulae_south,He 2-90,al_planetaries_south_list_v1.xls,38,"[""He 2-90"", ""Sa 290"", ""PK 305+01.1"", ""PN G 305.1+01.4"", ""ESO 132-1""]",matched,He 2-90|PK 305+01.1|PN G 305.1+01.4,PN G305.1+01.4
+al_planetary_nebulae_south,NGC 5189,al_planetaries_south_list_v1.xls,39,"[""NGC 5189"", ""IC 4274"", ""PN G307.2-03.4"", ""He 2-94"", ""ESO 96-16""]",matched,NGC 5189|PN G307.2-03.4|He 2-94,PN G307.2-03.4
+al_planetary_nebulae_south,Abell 36,al_planetaries_south_list_v1.xls,40,"[""Abell 36"", ""PK 318-41.1"", ""K 318-41"", ""PN G318.4+41.4"", ""ESO 577""]",matched,Abell 36|PN G318.4+41.4,PN G318.4+41.4
+al_planetary_nebulae_south,NGC 5307,al_planetaries_south_list_v1.xls,41,"[""NGC 5307"", ""PK 312-10.1"", ""K 312-10"", ""PN G312.3+10.5"", ""He 2-98"", ""ESO 221-11""]",matched,NGC 5307|PN G312.3+10.5|He 2-98|ESO 221-11,PN G312.3+10.5
+al_planetary_nebulae_south,NGC 5315,al_planetaries_south_list_v1.xls,42,"[""NGC 5315"", ""PK 309-4.2"", ""K 309-4"", ""PN G309.1-04.3"", ""He 2-100"", ""ESO 97-9""]",matched,NGC 5315|PK 309-4.2|PN G309.1-04.3|He 2-100,PN G309.1-04.3
+al_planetary_nebulae_south,IC 4406,al_planetaries_south_list_v1.xls,43,"[""IC 4406"", ""PK 319-15.1"", ""K 319-15"", ""PN G319.6+15.7"", ""He 2-110"", ""ESO 272-6""]",matched,IC 4406|PN G319.6+15.7|He 2-110,PN G319.6+15.7
+al_planetary_nebulae_south,NGC 5844,al_planetaries_south_list_v1.xls,44,"[""NGC 5844"", ""PK 317-5.1"", ""K 317-5"", ""PN G317.1-05.7"", ""He 2-119"", ""ESO 99-1""]",matched,PK 317-5.1|PN G317.1-05.7|He 2-119,PN G317.1-05.7
+al_planetary_nebulae_south,NGC 5873,al_planetaries_south_list_v1.xls,45,"[""NGC 5873"", ""PK 331-16.1"", ""K 331-16"", ""PN G331.3+16.8"", ""He 2-121"", ""ESO 328-34""]",matched,NGC 5873|PN G331.3+16.8|He 2-121|ESO 328-34,PN G331.3+16.8
+al_planetary_nebulae_south,NGC 5882,al_planetaries_south_list_v1.xls,46,"[""NGC 5882"", ""PK 327-10.1"", ""K 327-10"", ""PN G327.8+10.0"", ""He 2-122"", ""ESO 274-7""]",matched,NGC 5882|PN G327.8+10.0|He 2-122,PN G327.8+10.0
+al_planetary_nebulae_south,He 2-131,al_planetaries_south_list_v1.xls,47,"[""He 2-131"", ""PK 315-13.1"", ""K 315-13"", ""PN G315.1-13.0"", ""ESO 68-8""]",matched,He 2-131|PK 315-13.1|PN G315.1-13.0,PN G315.1-13.0
+al_planetary_nebulae_south,NGC 5979,al_planetaries_south_list_v1.xls,48,"[""NGC 5979"", ""PK 322-5.1"", ""K 322-5"", ""PN G322.5-05.2"", ""He 2-135"", ""ESO 136-3""]",matched,NGC 5979|PK 322-5.1|PN G322.5-05.2|He 2-135,PN G322.5-05.2
+al_planetary_nebulae_south,Shapley 1,al_planetaries_south_list_v1.xls,49,"[""Shapley 1"", ""PK 329-2.1"", ""K 329-2"", ""PN G329.0+01.9""]",ambiguous,PK 329-2.1|PN G329.0+01.9,PN G329.0+01.9|PN G329.4-02.7
+al_planetary_nebulae_south,He 2-138,al_planetaries_south_list_v1.xls,50,"[""He 2-138"", ""PK 320-9.1"", ""K 320-9"", ""PN G320.1-09.6"", ""ESO 100-3""]",matched,He 2-138|PK 320-9.1|PN G320.1-09.6,PN G320.1-09.6
+al_planetary_nebulae_south,He2-141,al_planetaries_south_list_v1.xls,51,"[""He2-141"", ""PK 325-4.1"", ""K 325-4"", ""PN G325.4-04.0"", ""He 2-141"", ""ESO 136-11""]",matched,He2-141|PK 325-4.1|PN G325.4-04.0|He 2-141|ESO 136-11,PN G325.4-04.0
+al_planetary_nebulae_south,NGC 6026,al_planetaries_south_list_v1.xls,52,"[""NGC 6026"", ""PK 341-13.1"", ""K 341-13"", ""PN G341.6+13.7"", ""He 2-144"", ""ESO 389-7""]",matched,NGC 6026|PN G341.6+13.7|He 2-144,PN G341.6+13.7
+al_planetary_nebulae_south,IC 4593,al_planetaries_south_list_v1.xls,53,"[""IC 4593"", ""PK 025-40.1"", ""K 025-40"", ""PN G025.3+40.8""]",matched,IC 4593|PN G025.3+40.8,PN G025.3+40.8
+al_planetary_nebulae_south,NGC 6072,al_planetaries_south_list_v1.xls,54,"[""NGC 6072"", ""PK 342-10.1"", ""K 342-10"", ""PN G342.1+10.8"", ""ESO 389-15"", ""ARO 500""]",matched,NGC 6072|PN G342.1+10.8|ESO 389-15|ARO 500,PN G342.1+10.8
+al_planetary_nebulae_south,IC 4599,al_planetaries_south_list_v1.xls,55,"[""IC 4599"", ""PK 338-5.1"", ""K 338-5"", ""PN G338.8+05.6"", ""He 2-155"", ""ESO 331-1""]",matched,PN G338.8+05.6|He 2-155,PN G338.8+05.6
+al_planetary_nebulae_south,NGC 6153,al_planetaries_south_list_v1.xls,56,"[""NGC 6153"", ""PK 341-5.1"", ""K 341-5"", ""PN G341.8+05.4"", ""He 2-167"", ""ESO 331-6""]",matched,NGC 6153|PN G341.8+05.4|He 2-167,PN G341.8+05.4
+al_planetary_nebulae_south,He 2-182,al_planetaries_south_list_v1.xls,57,"[""He 2-182"", ""PK 325-12.1"", ""K 325-12"", ""PN G325.8-12.8"", ""ESO 101-16""]",matched,He 2-182|PK 325-12.1|PN G325.8-12.8|ESO 101-16,PN G325.8-12.8
+al_planetary_nebulae_south,He 2-185,al_planetaries_south_list_v1.xls,58,"[""He 2-185"", ""PK 321-16.1"", ""K 321-16"", ""PN G321.3-16.7"", ""ESO 70-1""]",matched,He 2-185|PK 321-16.1|PN G321.3-16.7,PN G321.3-16.7
+al_planetary_nebulae_south,IC 4634,al_planetaries_south_list_v1.xls,59,"[""IC 4634"", ""PK 000-12.1"", ""K 000-12"", ""PN G000.3+12.2"", ""He 2-189"", ""ESO 587-1""]",matched,IC 4634|PN G000.3+12.2|He 2-189,PN G000.3+12.2
+al_planetary_nebulae_south,M 2-9,al_planetaries_south_list_v1.xls,60,"[""M 2-9"", ""PK 010-18.2"", ""K 010-18"", ""PN G010.8+18.0""]",matched,M 2-9|PN G010.8+18.0,PN G010.8+18.0
+al_planetary_nebulae_south,NGC 6302,al_planetaries_south_list_v1.xls,61,"[""NGC 6302"", ""PK 349-1.1"", ""K 349-1"", ""PN G349.5+01.0"", ""He 2-204"", ""ESO 392-5"", ""ARO 502""]",ambiguous,NGC 6302|PK 349-1.1|PN G349.5+01.0|He 2-204|ARO 502,PN G349.3-01.1|PN G349.5+01.0
+al_planetary_nebulae_south,NGC 6309,al_planetaries_south_list_v1.xls,62,"[""NGC 6309"", ""PK 009-14.1"", ""K 009-14"", ""PN G009.6+14.8"", ""He 2-206""]",matched,NGC 6309|PN G009.6+14.8|He 2-206,PN G009.6+14.8
+al_planetary_nebulae_south,NGC 6326,al_planetaries_south_list_v1.xls,63,"[""NGC 6326"", ""PK 338-8.1"", ""K 338-8"", ""PN G338.1-08.3"", ""He 2-208"", ""ESO 228-1""]",matched,NGC 6326|PK 338-8.1|PN G338.1-08.3|He 2-208,PN G338.1-08.3
+al_planetary_nebulae_south,NGC 6337,al_planetaries_south_list_v1.xls,64,"[""NGC 6337"", ""PK 349-1.1"", ""K 349-1"", ""PN G349.3-01.1"", ""He 2-215"", ""ESO 333-5""]",matched,NGC 6337|PK 349-1.1|PN G349.3-01.1|He 2-215,PN G349.3-01.1
+al_planetary_nebulae_south,NGC 6369,al_planetaries_south_list_v1.xls,65,"[""NGC 6369"", ""PK 002-5.1"", ""K 002-5"", ""PN G002.4+05.8"", ""He 2-232"", ""ESO 520-3""]",matched,NGC 6369|PN G002.4+05.8|He 2-232,PN G002.4+05.8
+al_planetary_nebulae_south,NGC 6445,al_planetaries_south_list_v1.xls,66,"[""NGC 6445"", ""PK 008-3.1"", ""K 008-3"", ""PN G008.0+03.9"", ""He 2-290"", ""ESO 589-9"", ""ARO 67""]",ambiguous,NGC 6445|PK 008-3.1|PN G008.0+03.9|He 2-290|ARO 67,PN G008.0+03.9|PN G008.4-03.6
+al_planetary_nebulae_south,IC 4670,al_planetaries_south_list_v1.xls,67,"[""IC 4670"", ""Hubble 6"", ""PK 007-1.1"", ""K 007-1"", ""PN G007.2+01.8"", ""ESO 589-20"", ""ARO 96""]",matched,Hubble 6|PN G007.2+01.8|ESO 589-20|ARO 96,PN G007.2+01.8
+al_planetary_nebulae_south,He 2-313,al_planetaries_south_list_v1.xls,68,"[""He 2-313"", ""PK 357-4.3"", ""K 357-4"", ""PN G357.1-04.7"", ""ESO 394-15""]",matched,He 2-313|PK 357-4.3|PN G357.1-04.7|ESO 394-15,PN G357.1-04.7
+al_planetary_nebulae_south,He 2-320,al_planetaries_south_list_v1.xls,69,"[""He 2-320"", ""PK 352-7.1"", ""K 352-7"", ""PN G352.9-07.5"", ""ESO 334-10""]",matched,He 2-320|PK 352-7.1|PN G352.9-07.5|ESO 334-10,PN G352.9-07.5
+al_planetary_nebulae_south,M 3-21,al_planetaries_south_list_v1.xls,70,"[""M 3-21"", ""PK 355-6.1"", ""K 355-6"", ""PN G355.1-06.9"", ""He 2-328"", ""ESO 394-21""]",matched,M 3-21|PK 355-6.1|PN G355.1-06.9|He 2-328|ESO 394-21,PN G355.1-06.9
+al_planetary_nebulae_south,NGC 6537,al_planetaries_south_list_v1.xls,71,"[""NGC 6537"", ""PK 010-0.1"", ""K 010-0"", ""PN G010.1+00.7"", ""He 2-340"", ""ESO 590-1""]",matched,NGC 6537|PN G010.1+00.7|He 2-340,PN G010.1+00.7
+al_planetary_nebulae_south,M 1-38,al_planetaries_south_list_v1.xls,72,"[""M 1-38"", ""PK 002-3.5"", ""K 002-3"", ""PN G002.4-03.7"", ""He 2-344"", ""ESO 456-52""]",matched,M 1-38|PK 002-3.5|PN G002.4-03.7|He 2-344|ESO 456-52,PN G002.4-03.7
+al_planetary_nebulae_south,NGC 6565,al_planetaries_south_list_v1.xls,73,"[""NGC 6565"", ""PK 003-4.5"", ""K 003-4"", ""PN G003.5-04.6"", ""He 2-362"", ""ESO 456-70"", ""ARO 68""]",matched,NGC 6565|PK 003-4.5|PN G003.5-04.6|ESO 456-70|ARO 68,PN G003.5-04.6
+al_planetary_nebulae_south,NGC 6563,al_planetaries_south_list_v1.xls,74,"[""NGC 6563"", ""PK 358-7.1"", ""K 358-7"", ""PN G358.5-07.3"", ""He 2-361"", ""ESO 394-33"", ""ARO 503""]",matched,NGC 6563|PK 358-7.1|PN G358.5-07.3|ESO 394-33|ARO 503,PN G358.5-07.3
+al_planetary_nebulae_south,NGC 6572,al_planetaries_south_list_v1.xls,75,"[""NGC 6572"", ""PK 034-11.1"", ""K 034-11"", ""PN G034.6+11.8"", ""ARO 7""]",matched,NGC 6572|PN G034.6+11.8|ARO 7,PN G034.6+11.8
+al_planetary_nebulae_south,NGC 6567,al_planetaries_south_list_v1.xls,76,"[""NGC 6567"", ""PK 011-0.2"", ""K 011-0"", ""PN G011.7-00.6"", ""He 2-369"", ""ESO 590-8""]",matched,NGC 6567|PK 011-0.2|PN G011.7-00.6|He 2-369,PN G011.7-00.6
+al_planetary_nebulae_south,He 2-377,al_planetaries_south_list_v1.xls,77,"[""He 2-377"", ""PK 001-6.2"", ""K 001-6"", ""PN G001.5-06.7"", ""ESO 457-2""]",matched,He 2-377|PK 001-6.2|PN G001.5-06.7,PN G001.5-06.7
+al_planetary_nebulae_south,NGC 6578,al_planetaries_south_list_v1.xls,78,"[""NGC 6578"", ""PK 010-1.1"", ""K 010-1"", ""PN G010.8-01.8"", ""He 2-381"", ""ESO 590-12"", ""ARO 70""]",matched,NGC 6578|PK 010-1.1|PN G010.8-01.8|He 2-381|ESO 590-12|ARO 70,PN G010.8-01.8
+al_planetary_nebulae_south,NGC 6620,al_planetaries_south_list_v1.xls,79,"[""NGC 6620"", ""PK 005-6.1"", ""K 005-6"", ""PN G005.8-06.1"", ""He 2-394"", ""ESO 522-22"", ""ARO 99""]",matched,NGC 6620|PK 005-6.1|PN G005.8-06.1|He 2-394|ESO 522-22|ARO 99,PN G005.8-06.1
+al_planetary_nebulae_south,NGC 6629,al_planetaries_south_list_v1.xls,80,"[""NGC 6629"", ""PK 009-5.1"", ""K 009-5"", ""PN G009.4-05.0"", ""He 2-399"", ""ESO 522-26""]",matched,NGC 6629|PK 009-5.1|PN G009.4-05.0|He 2-399|ESO 522-26,PN G009.4-05.0
+al_planetary_nebulae_south,NGC 6644,al_planetaries_south_list_v1.xls,81,"[""NGC 6644"", ""PK 008-7.2"", ""K 008-7"", ""PN G008.3-07.3"", ""He 2-408"", ""ESO 522-23""]",matched,NGC 6644|PK 008-7.2|PN G008.3-07.3|He 2-408|ESO 522-23,PN G008.3-07.3
+al_planetary_nebulae_south,IC 4732,al_planetaries_south_list_v1.xls,82,"[""IC 4732"", ""PK 010-6.1"", ""K 010-6"", ""PN G010.7-06.4"", ""He 2-410"", ""ESO 523-1"", ""ARO 71""]",matched,IC 4732|PK 010-6.1|PN G010.7-06.4|He 2-410|ARO 71,PN G010.7-06.4
+al_planetary_nebulae_south,IC 4776,al_planetaries_south_list_v1.xls,83,"[""IC 4776"", ""PK 002-13.1"", ""K 002-13"", ""PN G002.0-13.4"", ""He 2-421"", ""ESO 396-2""]",matched,IC 4776|PK 002-13.1|PN G002.0-13.4|He 2-421,PN G002.0-13.4
+al_planetary_nebulae_south,M 1-61,al_planetaries_south_list_v1.xls,84,"[""M 1-61"", ""PK 019-5.1"", ""K 019-5"", ""PN G019.4-05.3""]",matched,M 1-61|PK 019-5.1|PN G019.4-05.3,PN G019.4-05.3
+al_planetary_nebulae_south,IC 1295,al_planetaries_south_list_v1.xls,85,"[""IC 1295"", ""PK 025-4.2"", ""K 025-4"", ""PN G025.4-04.7"", ""ARO 8""]",matched,IC 1295|PK 025-4.2|PN G025.4-04.7|ARO 8,PN G025.4-04.7
+al_planetary_nebulae_south,He 2-425,al_planetaries_south_list_v1.xls,86,"[""He 2-425"", ""PK 003-14.1"", ""K 003-14"", ""PN G003.9-14.9"", ""ESO 458-9""]",matched,PK 003-14.1|PN G003.9-14.9,PN G003.9-14.9
+al_planetary_nebulae_south,Sh 2-71,al_planetaries_south_list_v1.xls,87,"[""Sh 2-71"", ""PK 036-1.1"", ""K 036-1"", ""PN G035.9-01.1""]",matched,Sh 2-71|PK 036-1.1|PN G035.9-01.1,PN G035.9-01.1
+al_planetary_nebulae_south,NGC 6741,al_planetaries_south_list_v1.xls,88,"[""NGC 6741"", ""PK 033-2.1"", ""K 033-2"", ""PN G033.8-02.6""]",matched,NGC 6741|PK 033-2.1|PN G033.8-02.6,PN G033.8-02.6
+al_planetary_nebulae_south,NGC 6751,al_planetaries_south_list_v1.xls,89,"[""NGC 6751"", ""PK 029-5.1"", ""K 029-5"", ""PN G029.2-05.9""]",matched,NGC 6751|PK 029-5.1|PN G029.2-05.9,PN G029.2-05.9
+al_planetary_nebulae_south,IC 4846,al_planetaries_south_list_v1.xls,90,"[""IC 4846"", ""PK 027-9.1"", ""K 027-9"", ""PN G027.6-09.6""]",matched,IC 4846|PK 027-9.1|PN G027.6-09.6,PN G027.6-09.6
+al_planetary_nebulae_south,IC 1297,al_planetaries_south_list_v1.xls,91,"[""IC 1297"", ""PK 358-21.1"", ""K 358-21"", ""PN G358.3-21.6"", ""He 2-431"", ""ESO 337-20""]",matched,IC 1297|PK 358-21.1|PN G358.3-21.6|He 2-431|ESO 337-20,PN G358.3-21.6
+al_planetary_nebulae_south,NGC 6778,al_planetaries_south_list_v1.xls,92,"[""NGC 6778"", ""PK 034-6.1"", ""K 034-6"", ""PN G034.5-06.7"", ""ARO 72""]",matched,NGC 6778|PK 034-6.1|PN G034.5-06.7|ARO 72,PN G034.5-06.7
+al_planetary_nebulae_south,NGC 6781,al_planetaries_south_list_v1.xls,93,"[""NGC 6781"", ""PK 041-2.1"", ""K 041-2"", ""PN G041.8-02.9""]",matched,NGC 6781|PK 041-2.1|PN G041.8-02.9,PN G041.8-02.9
+al_planetary_nebulae_south,NGC 6790,al_planetaries_south_list_v1.xls,94,"[""NGC 6790"", ""PK 037-6.1"", ""K 037-6"", ""PN G037.8-06.3""]",matched,NGC 6790|PK 037-6.1|PN G037.8-06.3,PN G037.8-06.3
+al_planetary_nebulae_south,Vy 2-2,al_planetaries_south_list_v1.xls,95,"[""Vy 2-2"", ""M 1-70"", ""PK 045-2.1"", ""K 045-2"", ""PN G045.4-02.7"", ""ARO 151""]",matched,Vy 2-2|M 1-70|PK 045-2.1|PN G045.4-02.7|ARO 151,PN G045.4-02.7
+al_planetary_nebulae_south,NGC 6803,al_planetaries_south_list_v1.xls,96,"[""NGC 6803"", ""PK 046-4.1"", ""K 046-4"", ""PN G046.4-04.1""]",matched,NGC 6803|PK 046-4.1|PN G046.4-04.1,PN G046.4-04.1
+al_planetary_nebulae_south,NGC 6804,al_planetaries_south_list_v1.xls,97,"[""NGC 6804"", ""PK 045-4.1"", ""K 045-4"", ""PN G045.7-04.5""]",matched,NGC 6804|PK 045-4.1|PN G045.7-04.5,PN G045.7-04.5
+al_planetary_nebulae_south,He 2-434,al_planetaries_south_list_v1.xls,98,"[""He 2-434"", ""PK 320-28.1"", ""K 320-28"", ""PN G320.3-28.8"", ""ESO 46-3""]",matched,He 2-434|PK 320-28.1|PN G320.3-28.8,PN G320.3-28.8
+al_planetary_nebulae_south,NGC 6807,al_planetaries_south_list_v1.xls,99,"[""NGC 6807"", ""PK 042-6.1"", ""K 042-6"", ""PN G042.9-06.9"", ""ARO 74""]",matched,NGC 6807|PK 042-6.1|PN G042.9-06.9|ARO 74,PN G042.9-06.9
+al_planetary_nebulae_south,NGC 6818,al_planetaries_south_list_v1.xls,100,"[""NGC 6818"", ""PK 025-17.1"", ""K 025-17"", ""PN G025.8-17.9""]",matched,NGC 6818|PK 025-17.1|PN G025.8-17.9,PN G025.8-17.9
+al_planetary_nebulae_south,NGC 6853,al_planetaries_south_list_v1.xls,101,"[""NGC 6853"", ""M 27"", ""PN G060.8-03.6"", ""He 2-452""]",matched,NGC 6853|M 27|PN G060.8-03.6|He 2-452|NGC 6853,PN G060.8-03.6
+al_planetary_nebulae_south,NGC 6879,al_planetaries_south_list_v1.xls,102,"[""NGC 6879"", ""PK 057-8.1"", ""K 057-8"", ""PN G057.2-08.9"", ""He 2-455""]",matched,NGC 6879|PK 057-8.1|PN G057.2-08.9|He 2-455,PN G057.2-08.9
+al_planetary_nebulae_south,NGC 6886,al_planetaries_south_list_v1.xls,103,"[""NGC 6886"", ""PK 060-7.2"", ""K 060-7"", ""PN G060.1-07.7"", ""He 2-458""]",matched,NGC 6886|PK 060-7.2|PN G060.1-07.7|He 2-458,PN G060.1-07.7
+al_planetary_nebulae_south,NGC 6891,al_planetaries_south_list_v1.xls,104,"[""NGC 6891"", ""PK 054-12.1"", ""K 054-12"", ""PN G054.1-12.1""]",matched,NGC 6891|PK 054-12.1|PN G054.1-12.1,PN G054.1-12.1
+al_planetary_nebulae_south,IC 4997,al_planetaries_south_list_v1.xls,105,"[""IC 4997"", ""PK 058-10.1"", ""K 058-10"", ""PN G058.3-10.9"", ""He 2-464""]",matched,IC 4997|PK 058-10.1|PN G058.3-10.9|He 2-464,PN G058.3-10.9
+al_planetary_nebulae_south,NGC 6905,al_planetaries_south_list_v1.xls,106,"[""NGC 6905"", ""PK 061-9.1"", ""K 061-9"", ""PN G061.4-09.5"", ""He 2-466""]",matched,NGC 6905|PK 061-9.1|PN G061.4-09.5|He 2-466,PN G061.4-09.5
+al_planetary_nebulae_south,NGC 7009,al_planetaries_south_list_v1.xls,107,"[""NGC 7009"", ""PK 037-34.1"", ""K 037-34"", ""PN G037.7-34.5""]",matched,NGC 7009|PK 037-34.1|PN G037.7-34.5,PN G037.7-34.5
+al_planetary_nebulae_south,Pease 1,al_planetaries_south_list_v1.xls,108,"[""Pease 1"", ""PK 065-27.1"", ""K 065-27"", ""PN G065.0-27.3""]",matched,Pease 1|PK 065-27.1|PN G065.0-27.3,PN G065.0-27.3
+al_planetary_nebulae_south,NGC 7094,al_planetaries_south_list_v1.xls,109,"[""NGC 7094"", ""K 1-19"", ""PK 066-28.1"", ""K 066-28"", ""PN G066.7-28.2"", ""ARO 194""]",matched,NGC 7094|K 1-19|PK 066-28.1|PN G066.7-28.2|ARO 194,PN G066.7-28.2
+al_planetary_nebulae_south,IC 5148,al_planetaries_south_list_v1.xls,110,"[""IC 5148"", ""PK 002-52.1"", ""K 002-52"", ""PN G002.7-52.4"", ""ESO 344-5""]",matched,PK 002-52.1|PN G002.7-52.4,PN G002.7-52.4
+al_planetary_nebulae_south,NGC 7293,al_planetaries_south_list_v1.xls,111,"[""NGC 7293"", ""PK 036-57.1"", ""K 036-57"", ""PN G036.1-57.1""]",matched,NGC 7293|PK 036-57.1|PN G036.1-57.1,PN G036.1-57.1
+al_planetary_nebulae_alternates,Vy1-1,al_planetaries_alternates_list_v1.xls,2,"[""Vy1-1"", ""VV' 4""]",matched,Vy1-1|VV' 4,PN G118.0-08.6
+al_planetary_nebulae_alternates,EGB 1,al_planetaries_alternates_list_v1.xls,3,"[""EGB 1"", ""LBN 624""]",matched,EGB 1,PN G124.0+10.7
+al_planetary_nebulae_alternates,Simeiz 22,al_planetaries_alternates_list_v1.xls,4,"[""Simeiz 22"", ""LBN 633""]",matched,Simeiz 22,PN G128.0-04.1
+al_planetary_nebulae_alternates,HDW 3,al_planetaries_alternates_list_v1.xls,5,"[""HDW 3""]",matched,HDW 3,PN G149.4-09.2
+al_planetary_nebulae_alternates,M 1-4,al_planetaries_alternates_list_v1.xls,6,"[""M 1-4""]",matched,M 1-4,PN G147.4-02.3
+al_planetary_nebulae_alternates,PuWe 1,al_planetaries_alternates_list_v1.xls,7,"[""PuWe 1""]",matched,PuWe 1,PN G158.9+17.8
+al_planetary_nebulae_alternates,K2-2,al_planetaries_alternates_list_v1.xls,8,"[""K2-2"", ""LBN 926""]",matched,K2-2,PN G204.1+04.7
+al_planetary_nebulae_alternates,Abell 31,al_planetaries_alternates_list_v1.xls,9,"[""Abell 31"", ""Sh 2-290""]",matched,Abell 31|Sh 2-290,PN G219.1+31.2
+al_planetary_nebulae_alternates,EGB 6,al_planetaries_alternates_list_v1.xls,10,"[""EGB 6""]",matched,EGB 6,PN G221.5+46.3
+al_planetary_nebulae_alternates,LoTr 5,al_planetaries_alternates_list_v1.xls,11,"[""LoTr 5"", ""IN Com""]",matched,LoTr 5,PN G339.9+88.4
+al_planetary_nebulae_alternates,DdDm 1,al_planetaries_alternates_list_v1.xls,12,"[""DdDm 1"", ""KO 1""]",matched,DdDm 1|KO 1,PN G061.9+41.3
+al_planetary_nebulae_alternates,Vy 1-2,al_planetaries_alternates_list_v1.xls,13,"[""Vy 1-2"", ""VV' 291""]",matched,Vy 1-2|VV' 291,PN G053.3+24.0
+al_planetary_nebulae_alternates,Cn 3-1,al_planetaries_alternates_list_v1.xls,14,"[""Cn 3-1"", ""SaSt 2-20""]",matched,Cn 3-1|SaSt 2-20,PN G038.2+12.0
+al_planetary_nebulae_alternates,PC 19,al_planetaries_alternates_list_v1.xls,15,"[""PC 19""]",matched,PC 19,PN G032.1+07.0
+al_planetary_nebulae_alternates,M 1-54,al_planetaries_alternates_list_v1.xls,16,"[""M 1-54"", ""Sa 2-350""]",matched,M 1-54|Sa 2-350,PN G016.0-04.3
+al_planetary_nebulae_alternates,Hu 2-1,al_planetaries_alternates_list_v1.xls,17,"[""Hu 2-1"", ""VV' 458""]",matched,Hu 2-1|VV' 458,PN G051.4+09.6
+al_planetary_nebulae_alternates,M 3-34,al_planetaries_alternates_list_v1.xls,18,"[""M 3-34"", ""Sa 2-390""]",matched,M 3-34|Sa 2-390,PN G031.0-10.8
+al_planetary_nebulae_alternates,NGC 6852,al_planetaries_alternates_list_v1.xls,19,"[""NGC 6852"", ""K1-18""]",matched,NGC 6852|K1-18,PN G042.5-14.5
+al_planetary_nebulae_alternates,He 2-459,al_planetaries_alternates_list_v1.xls,20,"[""He 2-459"", ""VES 123""]",matched,He 2-459|VES 123,PN G068.3-02.7
+al_planetary_nebulae_alternates,Abell 74,al_planetaries_alternates_list_v1.xls,21,"[""Abell 74"", ""VV' 546""]",matched,Abell 74|VV' 546,PN G072.7-17.1
+al_planetary_nebulae_alternates,Abell 75,al_planetaries_alternates_list_v1.xls,22,"[""Abell 75""]",matched,Abell 75,PN G101.8+08.7
+al_planetary_nebulae_alternates,M 1-79,al_planetaries_alternates_list_v1.xls,23,"[""M 1-79""]",matched,M 1-79,PN G093.3-02.4
+al_planetary_nebulae_alternates,NGC 7139,al_planetaries_alternates_list_v1.xls,24,"[""NGC 7139""]",matched,NGC 7139,PN G104.1+07.9
+al_planetary_nebulae_alternates,DeHt 5,al_planetaries_alternates_list_v1.xls,25,"[""DeHt 5""]",matched,DeHt 5,PN G111.0+11.6
+al_planetary_nebulae_alternates,Me 2-2,al_planetaries_alternates_list_v1.xls,26,"[""Me 2-2"", ""PK 100-8.1"", ""K 100-8""]",matched,Me 2-2|PK 100-8.1,PN G100.0-08.7
+al_planetary_nebulae_alternates,Vy 2-3,al_planetaries_alternates_list_v1.xls,27,"[""Vy 2-3""]",matched,Vy 2-3,PN G107.6-13.3

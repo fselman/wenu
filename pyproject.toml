@@ -62,6 +62,13 @@ markers = [
 where = ["src"]
 exclude = ["wenu.data.observing_lists*", "wenu.data.curated_catalogs*"]
 
+[tool.setuptools.cmdclass]
+build_py = "curated_catalogue_packaging.CuratedBuildPy"
+sdist = "curated_catalogue_packaging.CuratedSdist"
+
+[tool.setuptools]
+py-modules = []
+
 [tool.setuptools.exclude-package-data]
 "*" = ["observing_lists/*", "observing_lists/**/*", "curated_catalogs/*", "curated_catalogs/**/*"]
 

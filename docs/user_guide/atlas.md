@@ -1659,3 +1659,20 @@ size, H-beta flux or public-interest approval. The source catalogues, criteria
 bundles and rendered outputs remain versioned separately from software.
 Acceptance was at `12be5079643bd423be69468a5f3d16bec41039b9`; merge and cleanup
 were requested, with the final software regression gate still to be completed.
+
+
+### Installed curated catalogues and criteria
+
+Normal package installation now bundles verified active curated catalogues and
+their associated evidence. New atlas skies use these defaults automatically;
+explicit catalogue paths still take precedence. For each enabled supported
+catalogue layer, the latest matching installed criteria version is appended
+unless explicit `--selection-criteria` inputs are supplied. Catalogue bytes are
+resolved once into the existing profile before sky preparation.
+
+A normal installed atlas therefore needs no repository-relative curated paths.
+Design, presentation and index remain explicit atlas inputs. Existing
+`--from-sky` snapshots retain their own recorded selection and do not
+implicitly acquire current installed criteria pages. Detailed per-chart object
+tables remain pending; this installation includes existing reports and does
+not create those tables.

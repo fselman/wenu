@@ -5750,3 +5750,48 @@ This checkpoint names the next catalogue; it acquires no sources, admits no
 objects and implements no new layer. PN atlas closure and software cleanup
 remain the current task. The full-suite receipt above is retained across this
 documentation-only update; rerun the affected documentation contract.
+
+
+## General curated catalogue installation candidate (2026-10-14)
+
+Fernando requested accepted bundles be tracked, then selected normal package
+installation with curated defaults. The published data correction is at
+`4c6392987293141765a08daa88462dac9bb3ae47`, with clean synchronized Mac tree.
+The bounded candidate adds generic bundle verification, portable wheel/sdist
+activation, editable-source support, explicit original-source access and
+automatic matching criteria appendices. It preserves source snapshots,
+scientific rows and canonical chart/native-sky owners. No new nebular class or
+object-report table is implemented. EN-MS / NE-EM remains the next catalogue.
+
+New build-only module and installation-test admission are recorded in source_tree.
+The clean-install oracle uses declared synthetic bundles and tests wheel,
+source-archive and editable routes outside the repository. Actual accepted
+513-row OC/319-row PN wheel verification and the final full-suite merge gate
+remain Mac acceptance steps. No merge or branch deletion for this new software
+candidate is authorized by the earlier PN-atlas closure.
+
+The Mac focused gate at `65d3cb3799eb63c52a34d4ffd0e47b7fd0ad783f`
+passed 21 tests but stopped in the editable-install oracle: an existing Wenu
+installation could precede the fixture's editable source on the import path.
+The corrected oracle processes the fixture before dependency locations and
+includes a competing ambient Wenu package to detect shadowing. This changes
+verification only; actual accepted-bundle wheel and full-suite receipts remain
+pending.
+
+## Curated installation recovery (2026-10-14)
+
+The Mac retest at `338e209a7bf22231db10343b1813a9b06ec6c5e8` passed two
+resource tests but still failed the editable-install origin assertion: Python
+startup had already processed the ambient editable installation before the
+script removed dependency directories. The corrected installation subprocess
+uses `-I -S`, explicitly processes only the fixture's installation directory,
+and restores dependency paths without executing their startup `.pth` files.
+The installed-source origin assertion and competing ambient package remain.
+Production installation and catalogue bytes are unchanged.
+
+The same recovery restores the complete roadmap from `65d3cb37`; the previous
+commit accidentally committed a truncated tool response containing truncation
+markers and omitted 4,352 lines. This is restoration, not a roadmap revision.
+Focused verification and the exact recovery commit are recorded in the PR;
+Mac editable-install acceptance, actual accepted-bundle wheel checks and the
+final full-suite merge gate remain pending. No merge or cleanup is authorized.

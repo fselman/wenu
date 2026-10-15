@@ -503,3 +503,12 @@ Existing scientific plotting tools -> immutable catalogue-bound policy/plot
 bundle beside curated ECSV -> atlas CLI admission -> existing vector PDF
 assembly. Verification precedes sky preparation; native sky, projection and
 chart-rendering edges remain unchanged. No new module is introduced.
+
+
+### Curated installation resource edge
+
+Source active selector + verified completion/criteria receipts -> resources.py
+portable manifest -> build-only setuptools adapter -> installed resource bundle.
+Ordinary resource lookup -> existing catalogue layer -> existing native snapshot
+and chart pipeline. Atlas PDF assembly consumes the matching installed criteria.
+No selection, projection, renderer or astronomical provider is duplicated.
