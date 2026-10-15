@@ -206,7 +206,8 @@ def test_presentation_applies_mode_visual_scales_and_screen_output():
             symbol_scale=1.3,
         ),
     )
-    baseline = AtlasChartStyle()
+    from wenu.configuration import load_configuration_defaults
+    baseline = load_configuration_defaults(family="regional").style_mode.atlas
 
     assert composition.mode.width_inches == 12.0
     assert composition.mode.dpi == 144
@@ -217,7 +218,7 @@ def test_presentation_applies_mode_visual_scales_and_screen_output():
         baseline.grids.coordinate_linewidth * 1.4
     )
     assert composition.style.stars.area_scale == pytest.approx(
-        baseline.stars.area_scale * 1.3
+        baseline.stars.diameter_scale**2 * 1.3
     )
     assert composition.style.solar_system.venus_symbol_size == pytest.approx(
         baseline.solar_system.venus_symbol_size * 1.3
@@ -233,7 +234,10 @@ def test_print_is_unchanged_and_mode_resolution_is_render_local():
     presentation = compose_chart(chart, style="atlas", mode="presentation")
     second_print = compose_chart(chart, style="atlas", mode="print")
 
-    assert first_print.style == second_print.style == AtlasChartStyle()
+    assert first_print.style == second_print.style
+    assert first_print.style.stars.diameter_scale == 1.7
+    assert first_print.style.stars.area_scale == pytest.approx(1.7**2)
+    assert first_print.style.stars.magnitude_sizing.algorithm == "quadratic"
     assert presentation.style != first_print.style
     assert first_print.style is not presentation.style
     assert first_print.mode == second_print.mode

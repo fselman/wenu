@@ -116,7 +116,7 @@ def test_canonical_example_and_installed_command_resolve_the_same_view(
     monkeypatch.setattr(example, "get_chart_view", record(example_calls))
 
     monkeypatch.setattr(
-        chart, "load_configuration", lambda path=None: configuration_values
+        chart, "load_configuration", lambda path=None, *, family=None: configuration_values
     )
     monkeypatch.setattr(chart, "translate_configuration_defaults",
                         lambda values: configuration)

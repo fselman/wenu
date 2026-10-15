@@ -31,7 +31,7 @@ def _install_catalogue_free_runtime(monkeypatch, captured):
         target=None,
     )
 
-    monkeypatch.setattr(chart, "load_configuration", lambda path=None: values)
+    monkeypatch.setattr(chart, "load_configuration", lambda path=None, *, family=None: values)
     monkeypatch.setattr(
         chart,
         "translate_configuration_defaults",

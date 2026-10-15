@@ -105,7 +105,9 @@ def export_composed_chart(
     _validate_composition(chart, composition)
     figure = _configure_figure(renderer, composition)
     deep = getattr(composition.style, 'deep_sky', None)
-    if deep is not None and deep.open_cluster_angular_sizes:
+    if (deep is not None and deep.open_cluster_angular_sizes
+            and any(getattr(layer, "layer_name", None) == "open_clusters"
+                    for layer in sky.layers)):
         import math
         from .detail_application import merge_layer_options
         layer_options = merge_layer_options({'open_clusters': {'render': {

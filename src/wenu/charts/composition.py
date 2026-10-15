@@ -316,6 +316,13 @@ def compose_chart(
                 "style_overrides must be a ChartStyleOverrides value."
             )
         resolved_style = style_overrides.apply(resolved_style)
+        if resolved_style.stars.magnitude_sizing.algorithm != "legacy":
+            # Physical sizing replaces historical preset areas; retain the
+            # independently resolved output-mode area multiplier.
+            resolved_style = replace(resolved_style, stars=replace(
+                resolved_style.stars,
+                area_scale=resolved_style.stars.area_scale * resolved_mode.symbol_scale,
+            ))
     if (type(chart).__name__ == "FullSkyChart"
             and resolved_style.grids.constellation_line_gap_points is None):
         resolved_style = replace(resolved_style, grids=replace(

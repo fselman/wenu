@@ -528,6 +528,9 @@ def composition_layer_options(
         if deep.open_cluster_exclude_infrared_embedded:
             options = dict(geometry=dict(exclude_infrared_embedded=deep.open_cluster_exclude_infrared_embedded))
             appearance['open_clusters'] = options
+        present = {getattr(layer, "layer_name", None) for layer in sky.layers}
+        appearance = {name: options for name, options in appearance.items()
+                      if name in present}
         base = merge_sky_layer_options(sky, base, appearance)
     stars = getattr(composition.style, "stars", None)
     sizing = getattr(stars, "magnitude_sizing", None)
