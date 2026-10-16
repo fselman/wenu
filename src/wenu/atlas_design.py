@@ -53,6 +53,8 @@ def _keys(value, expected, name):
 def _record(cls, value):
     if cls is AtlasPageGeometry and isinstance(value, dict) and 'sky_aspect_ratio' not in value:
         value = dict(value, sky_aspect_ratio=None)
+    if cls is AtlasSheetGeometry and isinstance(value, dict) and 'boundary_kind' not in value:
+        value = dict(value, boundary_kind='rectangle')
     _keys(value, cls.__dataclass_fields__, cls.__name__)
     return cls(**value)
 
@@ -60,6 +62,14 @@ def _record(cls, value):
 def _page_dict(page):
     """Keep legacy page serialization unchanged when no sky ratio is chosen."""
     return {key: value for key, value in asdict(page).items() if value is not None}
+
+
+def _sheet_dict(sheet):
+    """Keep existing rectangular design bytes unchanged."""
+    values = asdict(sheet)
+    if sheet.boundary_kind == 'rectangle':
+        values.pop('boundary_kind')
+    return values
 
 
 @dataclass(frozen=True)
@@ -148,6 +158,7 @@ class AtlasSheetGeometry:
     flip_ew: bool = False
     pole_meridian_ra_deg: float | None = None
     projection_radius: float = 2.0
+    boundary_kind: str = 'rectangle'
 
     def __post_init__(self):
         _identifier(self.sheet_id, "sheet_id")
@@ -167,6 +178,11 @@ class AtlasSheetGeometry:
             raise ValueError("projection_radius must be positive.")
         if type(self.flip_ew) is not bool:
             raise ValueError("flip_ew must be boolean.")
+        if self.boundary_kind not in ('rectangle', 'hemisphere'):
+            raise ValueError('Unsupported atlas sheet boundary_kind.')
+        if self.boundary_kind == 'hemisphere' and (
+                abs(self.center_dec_deg) != 90 or self.field_width_deg != 180):
+            raise ValueError('A hemispheric sheet requires a pole and a 180-degree field.')
         polar = abs(self.center_dec_deg) == 90
         if polar:
             anchor = _number(self.pole_meridian_ra_deg, "pole_meridian_ra_deg")
@@ -221,6 +237,10 @@ class AtlasSheetGeometry:
             np.linspace(a, b, samples_per_edge, endpoint=False)
             for a, b in zip(corners, corners[1:] + corners[:1])
         ])
+        if self.boundary_kind == 'hemisphere':
+            angles = np.linspace(0, 2 * math.pi, 4 * samples_per_edge, endpoint=False)
+            radius = self.projection.projected_radius(90)
+            xy = radius * np.column_stack((np.cos(angles), np.sin(angles)))
         coordinates = self.projection.unproject_spherical(xy[:, 0], xy[:, 1])
         return tuple(zip((coordinates.lon_deg % 360).tolist(),
                          coordinates.lat_deg.tolist()))
@@ -233,6 +253,8 @@ class AtlasSheetGeometry:
             raise ValueError("Directions must be finite.")
         if np.any(np.abs(dec) > 90):
             raise ValueError("Declinations must be in [-90, 90].")
+        if self.boundary_kind == 'hemisphere':
+            return dec <= 0 if self.center_dec_deg < 0 else dec >= 0
         aligned = self.frame.transform(ra, dec)
         x, y = self.projection.project_spherical(ra, dec)
         v = self.viewport(page)
@@ -275,6 +297,8 @@ class AtlasGeometrySpecimen:
             if len({getattr(s, attribute) for s in sheets}) != len(sheets):
                 raise ValueError(f"Duplicate sheet {attribute}.")
         for sheet in sheets:
+            if sheet.boundary_kind == 'hemisphere' and self.page.aspect_ratio != 1:
+                raise ValueError('Hemispheric sheets require a square sky aspect ratio.')
             sheet.viewport(self.page)
         object.__setattr__(self, "sheets", tuple(sorted(sheets, key=lambda s: s.number)))
 
@@ -289,7 +313,7 @@ class AtlasGeometrySpecimen:
             "revision": self.revision,
             "page": _page_dict(self.page),
             "overview": asdict(self.overview),
-            "sheets": [{"geometry": asdict(s), "resolved": s.resolved(self.page)}
+            "sheets": [{"geometry": _sheet_dict(s), "resolved": s.resolved(self.page)}
                        for s in self.sheets],
         }
 
@@ -384,6 +408,7 @@ class AtlasGeometrySpecimen:
 TILING_KIND = "wenu-atlas-band-tiling"
 TILING_METHOD = "latitude-bands-inscribed-cap-v1"
 RECTANGULAR_TILING_METHOD = "latitude-bands-rectangle-halfspaces-v1"
+HEMISPHERIC_TILING_METHOD = "two-closed-polar-hemispheres-v1"
 ANGULAR_GUARD_DEG = 1e-8
 MAX_TILING_SHEETS = 4096
 
@@ -569,10 +594,14 @@ class AtlasBandTiling:
 
     def validation(self):
         """Recompute partition completeness and conservative angular margins."""
+        if self.containment_method == HEMISPHERIC_TILING_METHOD:
+            return self._validate_hemispheres()
         if not isinstance(self.containment_method, str) or self.containment_method not in (
                 TILING_METHOD, RECTANGULAR_TILING_METHOD):
             raise ValueError("Unsupported band-tiling containment method.")
         sheets = {s.sheet_id: s for s in self.geometry.sheets}
+        if any(s.boundary_kind != 'rectangle' for s in sheets.values()):
+            raise ValueError('Band tilings require rectangular sheet boundaries.')
         if len(sheets) > MAX_TILING_SHEETS:
             raise ValueError("Tiling exceeds the sheet-count budget.")
         assigned = [s for b in self.bands for s in b.sheet_ids]
@@ -643,6 +672,30 @@ class AtlasBandTiling:
             "shared_boundary_overlap_lower_bound_deg": 2 * min(margins),
             "sheet_count": len(sheets),
         }
+
+    def _validate_hemispheres(self):
+        """Exact complementary Dec intervals; no sampled or guarded overlap claim."""
+        sheets = self.geometry.sheets
+        if (len(sheets) != 2 or len(self.bands) != 2 or self.overlap_deg != 0
+                or self.geometry.overview.shared_band_width_deg != 0
+                or self.geometry.page.aspect_ratio != 1):
+            raise ValueError('Two hemispheres require two sheets, square sky and zero overlap/shared band.')
+        for sheet, band, pole, lower, upper, number in zip(
+                sheets, self.bands, (-90, 90), (-90, 0), (0, 90), (1, 2)):
+            if (sheet.boundary_kind != 'hemisphere' or sheet.field_width_deg != 180
+                    or sheet.center_dec_deg != pole or sheet.number != number
+                    or sheet.pole_meridian_ra_deg != self.seed_ra_deg
+                    or band.dec_min_deg != lower or band.dec_max_deg != upper
+                    or band.sheet_ids != (sheet.sheet_id,)):
+                raise ValueError('Invalid complementary hemispheric geometry or ownership.')
+        if (sheets[0].projection_radius != sheets[1].projection_radius
+                or sheets[0].flip_ew != sheets[1].flip_ew):
+            raise ValueError('Hemispheres require equal projection scale and handedness.')
+        return dict(method=HEMISPHERIC_TILING_METHOD,
+            coverage_status='validated_exact_complementary_hemispheres',
+            angular_guard_deg=0.0, primary_area_sr=4 * math.pi,
+            minimum_primary_clearance_deg=0.0,
+            shared_boundary_overlap_lower_bound_deg=0.0, sheet_count=2)
 
     def primary_sheet_id(self, ra_deg, dec_deg):
         """Unique scalar ownership: upper latitude/RA sector wins a shared edge."""
@@ -741,7 +794,7 @@ class AtlasBandTiling:
         if type(data["schema_version"]) is not int or data["schema_version"] != 1:
             raise ValueError("Unsupported band-tiling schema.")
         if data["document_kind"] != TILING_KIND or data["generator"] not in (
-                TILING_METHOD, RECTANGULAR_TILING_METHOD):
+                TILING_METHOD, RECTANGULAR_TILING_METHOD, HEMISPHERIC_TILING_METHOD):
             raise ValueError("Unsupported band-tiling method or kind.")
         if not isinstance(data["bands"], list):
             raise ValueError("bands must be an array.")
@@ -792,6 +845,28 @@ class AtlasBandTiling:
     @classmethod
     def read_json(cls, path):
         return cls.from_json(Path(path).read_text(encoding="utf-8"))
+
+
+def design_hemispheric_atlas(design_id, revision, page, overview, *,
+                             field_width_deg=180, overlap_deg=0,
+                             seed_ra_deg=0, max_sheets=MAX_TILING_SHEETS):
+    """Resolve the two circular stereographic hemispheres through the atlas owner."""
+    _integer(max_sheets, 'max_sheets')
+    if (field_width_deg != 180 or overlap_deg != 0 or max_sheets < 2
+            or max_sheets > MAX_TILING_SHEETS):
+        raise ValueError('Hemispheric design requires field 180, overlap zero and at least two sheets.')
+    recipe = [HEMISPHERIC_TILING_METHOD, design_id, revision, _page_dict(page), seed_ra_deg]
+    digest = hashlib.sha256(json.dumps(recipe, sort_keys=True).encode()).hexdigest()
+    namespace = f'{design_id}:r{revision}:{digest}'
+    sheets = tuple(AtlasSheetGeometry(
+        f'{namespace}:{name}', number, 0, pole, 180,
+        pole_meridian_ra_deg=seed_ra_deg, boundary_kind='hemisphere')
+        for name, number, pole in (('south', 1, -90), ('north', 2, 90)))
+    geometry = AtlasGeometrySpecimen(design_id, revision, page, overview, sheets)
+    bands = tuple(AtlasPrimaryBand(lower, upper, seed_ra_deg, (sheet.sheet_id,))
+        for sheet, lower, upper in zip(sheets, (-90, 0), (0, 90)))
+    return AtlasBandTiling(geometry, bands, overlap_deg, seed_ra_deg,
+                          HEMISPHERIC_TILING_METHOD)
 
 
 def design_band_atlas(design_id, revision, page, overview, *,
@@ -1149,11 +1224,16 @@ class AtlasDesignRequest:
         if not isinstance(self.page, AtlasPageGeometry) or not isinstance(
                 self.overview, AtlasOverviewGeometry):
             raise ValueError("page and overview require atlas geometry records.")
-        if self.algorithm not in ("five_band", "cap_bands", "polar_first"):
-            raise ValueError("algorithm must be five_band, cap_bands or polar_first.")
+        if self.algorithm not in ("five_band", "cap_bands", "polar_first", "hemispheres"):
+            raise ValueError("algorithm must be five_band, cap_bands, polar_first or hemispheres.")
         for name in ("field_width_deg", "overlap_deg", "seed_ra_deg"):
             object.__setattr__(self, name, _number(getattr(self, name), name))
-        if not 5 <= self.field_width_deg <= 120 or self.overlap_deg < 0:
+        if self.algorithm == 'hemispheres':
+            if (self.field_width_deg != 180 or self.overlap_deg != 0
+                    or self.overview.shared_band_width_deg != 0 or self.page.aspect_ratio != 1
+                    or self.max_sheets < 2):
+                raise ValueError('Hemispheres require field 180, zero overlap/shared band and square sky.')
+        elif not 5 <= self.field_width_deg <= 120 or self.overlap_deg < 0:
             raise ValueError("Invalid field width or minimum overlap.")
         if not 0 <= self.seed_ra_deg < 360:
             raise ValueError("seed_ra_deg must be in [0, 360).")
@@ -1262,6 +1342,8 @@ class AtlasDesignRequest:
                        max_sheets=self.max_sheets)
         designer = (design_polar_first_atlas if self.algorithm == "polar_first"
                     else design_band_atlas)
+        if self.algorithm == 'hemispheres':
+            designer = design_hemispheric_atlas
         if self.algorithm == "five_band":
             designer = design_five_band_atlas
             options.update(equatorial_half_height_deg=self.equatorial_half_height_deg,

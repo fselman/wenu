@@ -5858,3 +5858,54 @@ Fernando reported the complete plugin-disabled Mac suite passing at `2778f2e5134
 The accepted scope is installed verified curated defaults (513 open clusters and 319 planetary nebulae, with original scientific snapshots still accessible), independently selectable atlas layouts and full atlas v6 style, shared v6 regional chart appearance, and compact Sco comparison without object labels. B4 landscape five-band has 34 charts; B4 portrait has 36 charts with three interior bands plus two caps. Layout and atlas style remain separate protocols. Regional stereographic print design is deferred. Generated portrait and landscape products remain in their separate `output/` directories and are preserved during branch cleanup.
 
 This closure adds documentation only. The tested executable code, scientific fixtures, dependencies, configuration, packaging and non-documentation tests are unchanged from the passing candidate; reuse its full-suite receipt after the documentation gate and repository-integrity checks. Merge the catalogue base #232 into main, retarget and merge #233 into main, verify the resulting tree matches this documented candidate, then remove only the two merged feature branches. No full-suite repetition is required solely for these documentation and merge commits.
+
+
+## Two hemispheric atlas milestone (2026-10-16)
+
+Fernando authorized this bounded extension after confirming clean synchronized
+Mac main `975733e39edb83d0817adcff67d429912d52684c`. He requires the official
+wenu_design_atlas, wenu_plot_atlas and wenu_create_atlas commands, a reusable
+installed layout, atlas-v6 appearance and the already curated objects. His
+latest geometry is pole-to-equator on both charts, with no positive-area overlap.
+
+As-is: resolved band tilings require an interior band and fields no wider than
+120 degrees; publication assumes rectangular sheets; the index assumes at
+least one nonpolar sheet. A Python-only disk workaround adopted a different
+physical-planisphere style and bypassed normal curated publication, so it is
+superseded for this request.
+
+The candidate adds explicit hemisphere boundaries and a complementary-Dec
+certificate through the existing geometry owner; registers b4-hemispheres;
+reuses the canonical native polar cap renderer with disk-specific curation
+disabled; and retains ordinary v6 publication, installed curated catalogue
+resolution, saved-sky binding and the report/chart/index/appendix sequence.
+The equator belongs to both closed drawing boundaries, but only the north
+primary ownership interval. Historical rectangular designs remain unchanged.
+Circular pages necessarily use equal square sky bounds, with a common fixed
+font-derived ring; their outer circles cannot fill the full rectangular B4
+report frame. This explicit requested geometry does not stretch a projection.
+
+No production module or test file is added. Extend test_atlas_design.py for
+new shape/partition persistence and corruption faults, and test_atlas_cli.py
+for installed selection plus the complete three-command composition seam.
+The latter uses explicitly synthetic catalogues at existing preparation and
+curated-resource seams, checks both hemispheres, styles, common scale, coordinate
+text, unique index SVG IDs and ordered PDF assembly. Existing polar, grid and
+renderer tests cover unchanged lower-level responsibilities. No additional
+provider acquisition, general catalogue curation or object inventory is added.
+The coordinate-system guide and ownership diagrams were reviewed; native ICRS,
+unpropagated catalogue epochs and catalogue provenance remain current.
+Mac catalogue-backed validation and final full-suite verification remain
+required before acceptance/merge; no merge or cleanup is authorized.
+
+Focused candidate verification in the assistant environment: 274 tests passed,
+with three existing large-catalogue-dependent tests deselected (two astronomical
+index integrations and the Hipparcos bright-star oracle). The package-boundary
+gate also passed all six tests. The full three-command synthetic-catalogue test
+passed separately after physical frame assertions were added. The initial
+broader attempt encountered missing local resource copies; after retrieving the
+exact GitHub resources it was rerun successfully. Compilation and whitespace
+checks passed. No complete-suite or real installed-catalogue render is claimed.
+Documentation changes append only, retain established acceptance wording and
+introduce no new developer-document filename. Mac documentation, scientific
+catalogue, visual and final full-suite acceptance remain pending.

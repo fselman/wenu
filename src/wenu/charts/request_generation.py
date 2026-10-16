@@ -554,7 +554,9 @@ def _render_atlas_sheet_request(request, sky):
             planetary_nebula_color=presentation.planetary_nebula_color,
             planetary_nebula_linewidth=presentation.planetary_nebula_linewidth,
             planetary_nebula_alpha=1.0)))
-    axes_bounds, grid_style = _atlas_grid_layout(page, composition.style, presentation)
+    circular = sheet.boundary_kind == 'hemisphere'
+    axes_bounds, grid_style = _atlas_grid_layout(page, composition.style, presentation,
+                                               circular=circular)
     grid_options = {}
     if 'open_clusters' in presentation.layers:
         grid_options['open_clusters'] = dict(geometry=dict(
@@ -583,7 +585,8 @@ def _render_atlas_sheet_request(request, sky):
     try:
         renderer = MatplotlibRenderer(ax)
         from .atlas_publication import _atlas_frame_widths
-        horizontal, vertical = _atlas_frame_widths(composition.style, presentation)
+        horizontal, vertical = _atlas_frame_widths(composition.style, presentation,
+                                                  circular=circular)
         renderer.configure_grid_label_frame(horizontal_points=horizontal,
             vertical_points=vertical, polar=abs(sheet.center_dec_deg) == 90)
         first = presentation.formats[0]
@@ -607,3 +610,4 @@ def _render_atlas_sheet_request(request, sky):
         raise RuntimeError(f"Chart {sheet.number} failed: {exc}") from exc
     finally:
         plt.close(figure)
+

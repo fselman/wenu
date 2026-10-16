@@ -208,8 +208,13 @@ class MatplotlibRenderer:
             retained = []
             for text in sorted(labels, key=priority):
                 box = text.get_window_extent(renderer)
+                corners = np.array([[box.x0, box.y0], [box.x0, box.y1],
+                                    [box.x1, box.y0], [box.x1, box.y1]])
+                outside_ring = circular and np.max(np.linalg.norm(corners - centre, axis=1)) > (
+                    float(np.max(radius)) + max(widths) - style['linewidth'] / 2 * scale)
                 if (box.x0 < fixed_low[0] or box.x1 > fixed_high[0] or
                     box.y0 < fixed_low[1] or box.y1 > fixed_high[1] or
+                    outside_ring or
                     any(box.overlaps(other.get_window_extent(renderer)) for other in retained)):
                     text.set_visible(False)
                 else:
@@ -240,8 +245,11 @@ class MatplotlibRenderer:
             placed.append(text)
         boxes = [text.get_window_extent(renderer) for text in labels]
         if circular:
-            outer_radius = float(np.max(radius)) + minimum
+            outer_radius = float(np.max(radius)) + (
+                max(policy[0], policy[1]) * scale if policy is not None else minimum)
             for text, box in zip(labels, boxes):
+                if policy is not None:
+                    continue
                 clearance = (style["linewidth"] / 2.0 * scale
                              if hasattr(text, "_wenu_exterior_attachment") else padding)
                 corners = np.array([[box.x0, box.y0], [box.x0, box.y1],

@@ -5418,3 +5418,24 @@ The reported installed Mac CLI/preset discovery and initial Sco render succeeded
 The complete Mac suite at `0d9ed74734c1f0f0baf166579701cd3f3af5b49a` reported 13 failed and 3,576 passed in 995.75 seconds. It is a failed verification receipt, not merge clearance. Recovery keeps the accepted catalogue membership, print appearance and independent atlas style/layout resources intact. Existing configuration-loader mocks now accept the family keyword, export legend mocks accept the optional stellar legend style, and regional default assertions cover v6 rather than former legacy defaults. The explicit adaptive-policy isolation check uses an explicit legacy style so its fainter limits do not contradict v6's physical sizing reference.
 
 Two production seams are corrected in the existing owners: composition retains the independently resolved output-mode area multiplier after physical stellar diameter sizing, and shared export/detail application adds appearance options only for layers actually present in the sky. Thus a catalogue-free export remains empty and presentation symbol scaling still applies. No new production module, scientific data or preset is introduced. Focused verification and a fresh final-candidate complete Mac suite are required; Fernando's acceptance and authorization to merge and clean remain in effect.
+
+
+## Hemispheric atlas geometry (candidate, 2026-10-16)
+
+`AtlasSheetGeometry.boundary_kind` defaults to `rectangle`; historical JSON
+omits that default field. The explicit `hemisphere` value requires a polar
+centre, 180-degree field and a square sky viewport. `contains` and diagnostic
+`boundary_samples` use the actual hemispheric cap rather than square corners.
+Version-1 `AtlasDesignRequest` additionally admits algorithm `hemispheres`;
+`design_hemispheric_atlas` and `AtlasBandTiling` certify exactly two complementary
+primary bands, zero area overlap and a shared equatorial boundary. Unique
+primary ownership at Dec 0 is north. Guarded rectangular/cap certificates and
+limits for all previous algorithms are unchanged.
+
+`PolarPlanisphereChart.reviewed_label_curation` defaults to true. The atlas
+adapter explicitly disables the reviewed disk-specific label/size policy while
+reusing native realization, cap clipping, projection, renderer and exporters.
+`_atlas_frame_widths`/`_atlas_grid_layout` take optional `circular=False`;
+the circular adapter reserves one common font-derived radial band.
+The public three-command workflow and installed curated defaults are documented
+in the [atlas guide](../user_guide/atlas.md#two-hemispheric-charts-candidate-2026-10-16).

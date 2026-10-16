@@ -1729,3 +1729,51 @@ The reported installed Mac CLI/preset discovery and initial Sco render succeeded
 The complete Mac suite at `0d9ed74734c1f0f0baf166579701cd3f3af5b49a` reported 13 failed and 3,576 passed in 995.75 seconds. It is a failed verification receipt, not merge clearance. Recovery keeps the accepted catalogue membership, print appearance and independent atlas style/layout resources intact. Existing configuration-loader mocks now accept the family keyword, export legend mocks accept the optional stellar legend style, and regional default assertions cover v6 rather than former legacy defaults. The explicit adaptive-policy isolation check uses an explicit legacy style so its fainter limits do not contradict v6's physical sizing reference.
 
 Two production seams are corrected in the existing owners: composition retains the independently resolved output-mode area multiplier after physical stellar diameter sizing, and shared export/detail application adds appearance options only for layers actually present in the sky. Thus a catalogue-free export remains empty and presentation symbol scaling still applies. No new production module, scientific data or preset is introduced. Focused verification and a fresh final-candidate complete Mac suite are required; Fernando's acceptance and authorization to merge and clean remain in effect.
+
+
+## Two hemispheric charts (candidate, 2026-10-16)
+
+The installed `b4-hemispheres` layout has exactly two circular stereographic
+charts on ISO B4 portrait paper: chart 1 covers Dec -90 through 0 degrees;
+chart 2 covers Dec 0 through +90 degrees. Both have angular radius 90 degrees,
+the same physical sky diameter and the same central angular scale. They share
+only the equator, a zero-area boundary; unique primary ownership assigns Dec 0
+to the northern sheet. This is not a rectangular 180-degree footprint.
+
+Layout and appearance remain independent. Select `--config atlas-v6` for the
+accepted stellar sizing, DSO symbols, fonts and colours. It does not invoke
+the special physical-planisphere blue palette or its south-face size/label
+curation. The normal installed curated open-cluster and planetary-nebula
+catalogues and matching criteria appendices are retained. This layout does
+not add new public-interest decisions or detailed per-object report tables.
+
+The same three commands produce the resolved geometry, independent index and
+publication. Run from an existing parent directory, with new output names:
+
+```bash
+mkdir -p output/atlas_hemisferios_v1
+wenu_design_atlas --layout b4-hemispheres --output output/atlas_hemisferios_v1/design_v1.json
+wenu_plot_atlas --design output/atlas_hemisferios_v1/design_v1.json --output-prefix output/atlas_hemisferios_v1/index_v1
+wenu_create_atlas --design output/atlas_hemisferios_v1/design_v1.json --config atlas-v6 --charts all --jobs 2 --index output/atlas_hemisferios_v1/index_v1.pdf --save-sky output/atlas_hemisferios_v1/native_sky_v1 --output-dir output/atlas_hemisferios_v1/publication_v1
+```
+
+The assembled `publication_v1/atlas.pdf` contains two chart pages plus the
+usual index, blank, facing reports and applicable appendices. The index retains
+its independent lower-density presentation; its optional layers are not the
+full chart catalogue selection. For a changed publication use a new output
+version. Existing saved-sky reuse remains explicit and bound to the exact
+design digest. Do not reuse a sky from a 34- or 36-chart layout.
+
+For a versioned editable geometry request use
+`examples/atlas_design_hemispheres_v1.toml` as `wenu_design_atlas --config`.
+Its version-1 `tiling.algorithm = "hemispheres"` requires field width 180,
+zero overlap, zero overview shared band, a square `page.sky_aspect_ratio = 1`
+and at least two allowed sheets. Other algorithms retain their existing
+field and band limits. The equatorial grid retains polar 2h meridians,
+10-degree parallels, 10-minute RA ticks and interior polar Dec labels.
+The circular exterior band is fixed once from the worst rotated configured
+coordinate glyph extents; it does not grow separately for either sheet.
+Both circles occupy the same square sky region inside the B4 page.
+
+This is a verified-runtime candidate pending complete Mac catalogue-backed
+rendering, scientific/visual acceptance and final full-suite merge clearance.

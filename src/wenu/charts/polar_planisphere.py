@@ -86,8 +86,11 @@ class PolarPlanisphereChart:
     physical_diameter_mm: float = 195.0
     flip_ew: bool = True
     boundary_samples: int = 721
+    reviewed_label_curation: bool = True
 
     def __post_init__(self):
+        if type(self.reviewed_label_curation) is not bool:
+            raise ValueError('reviewed_label_curation must be boolean.')
         pole = str(self.pole).strip().lower()
         if pole not in {"north", "south"}:
             raise ValueError("pole must be 'north' or 'south'.")
@@ -264,13 +267,22 @@ class PolarPlanisphereChart:
         )
         if layer_options is not None:
             options.update(layer_options)
-        options = self._inset_constellation_labels(sky, options)
+        if self.reviewed_label_curation:
+            options = self._inset_constellation_labels(sky, options)
         options = apply_object_label_orientation(
             options, sky=sky, style=resolved_style, polar=True,
         )
-        options = apply_coordinate_label_anchor(
-            options, self.coordinate_label_anchor
-        )
+        anchor = self.coordinate_label_anchor
+        # Atlas sheets use the shared exterior-coordinate band without adopting
+        # the physical planisphere's reviewed south-face label/size overrides.
+        if not self.reviewed_label_curation and getattr(resolved_style, 'grid_label_band', False):
+            from .boundaries import ExteriorGridLabelAnchor
+            anchor = ExteriorGridLabelAnchor(anchor, self.boundary, circular=True)
+            band = getattr(renderer, 'set_grid_label_band', None)
+            if callable(band):
+                band_style = getattr(resolved_style, 'grid_label_band_style', None)
+                band(self.boundary, style=band_style() if callable(band_style) else None)
+        options = apply_coordinate_label_anchor(options, anchor)
         set_background = getattr(renderer, "set_circular_background", None)
         canvas = getattr(style, "canvas", None)
         sky_color = getattr(canvas, "sky_color", None)

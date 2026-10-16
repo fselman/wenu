@@ -15,7 +15,7 @@ from wenu.cli import atlas as cli
 from wenu.charts.atlas_publication import AtlasPublicationBatchRequest
 
 
-@pytest.mark.parametrize('name,count,interior', [('b4-landscape-five-band',34,5),('b4-portrait',36,3)])
+@pytest.mark.parametrize('name,count,interior', [('b4-landscape-five-band',34,5),('b4-portrait',36,3), ('b4-hemispheres',2,0)])
 def test_installed_layout_and_style_are_independent_cli_inputs(tmp_path, monkeypatch, name, count, interior):
     from wenu.resources import configuration_preset_path
     from wenu.charts import atlas_publication
@@ -41,6 +41,7 @@ def test_installed_layout_and_style_are_independent_cli_inputs(tmp_path, monkeyp
     assert presentation.report_label_scale == 3
     assert presentation.chart_number_box_visible
     assert presentation.open_cluster_angular_sizes
+    assert {'open_clusters', 'planetary_nebulae'} <= set(presentation.layers)
     assert cli.create_main(['--layout',name,'--charts','1','--magnitude-limit','7',
         '--star-size-scale','2','--output-dir',str(tmp_path/'override')]) == 0
     assert calls[1][1]['presentation'].star_magnitude_limit == 7
@@ -50,6 +51,122 @@ def test_installed_layout_and_style_are_independent_cli_inputs(tmp_path, monkeyp
 
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLE = ROOT / "examples/atlas_design_request_v1.toml"
+
+
+def test_hemispheric_atlas_uses_all_three_commands_and_curated_catalogue_seams(tmp_path, monkeypatch):
+    """Synthetic catalogue evidence; real design, index, chart and book routes."""
+    import json
+    import numpy as np
+    import pandas as pd
+    from astropy.table import Table
+    from pypdf import PdfReader
+    from xml.etree import ElementTree
+    from wenu import CelestialSphere
+    from wenu.objects.stars import Stars
+    from wenu.sky import native_snapshot
+    from wenu.charts import atlas_index, export_workflow
+    from wenu import resources
+
+    design = tmp_path / 'hemispheres_v1.json'
+    assert cli.design_main(['--config', str(ROOT/'examples/atlas_design_hemispheres_v1.toml'),
+                            '--output', str(design)]) == 0
+    original_design = design.read_bytes()
+    # Exercise the installed index preset without loading unrelated sky catalogues.
+    monkeypatch.setattr(atlas_index, 'index_sky', lambda *a, **k: CelestialSphere(None))
+    prefix = tmp_path/'index_v1'
+    assert cli.plot_main(['--design', str(design), '--output-prefix', str(prefix)]) == 0
+    elements = list(ElementTree.parse(prefix.with_suffix('.svg')).getroot().iter())
+    ids = [e.get('id') for e in elements if e.get('id')]
+    assert len(ids) == len(set(ids))
+    assert {int(e.get('data-chart-number')) for e in elements
+            if e.get('data-role') == 'number_label'} == {1, 2}
+
+    sky = CelestialSphere(None)
+    sky.add_equatorial_grid(frame='icrs', equinox='J2000', include_equator=True)
+    sources = {}
+    for domain, add in (('open_clusters', sky.add_open_clusters),
+                        ('planetary_nebulae', sky.add_planetary_nebulae)):
+        path = tmp_path/f'synthetic_curated_{domain}_v1.ecsv'
+        Table(dict(identifier=[f'{domain} south', f'{domain} north'],
+            ra_deg=[60., 60.], dec_deg=[-30., 30.],
+            apparent_diameter_arcmin=[10., 10.],
+            major_axis_arcmin=[10., 10.], minor_axis_arcmin=[10., 10.],
+            object_type=['open cluster' if domain == 'open_clusters' else 'planetary nebula']*2,
+            selection_fixture=['synthetic']*2)).write(path, format='ascii.ecsv')
+        add(filename=path)
+        sources[domain] = path
+    stars = Stars(None, magnitude_limit=11)
+    stars.source_catalog = pd.DataFrame(dict(ra_hours=[4., 4.], ra_degrees=[60., 60.],
+        dec_degrees=[-30., 30.], magnitude=[1., 2.], is_constellation_vertex=[False]*2), index=[11, 12])
+    stars.catalog = stars.source_catalog.copy()
+    sky.stars = sky.add(stars)
+    bundles = []
+    def bundle(domain):
+        bundles.append(domain)
+        if domain not in sources:
+            return None
+        return dict(catalogue=sources[domain], criteria=())
+    monkeypatch.setattr(resources, 'curated_catalogue_bundle', bundle)
+    profiles = []
+    def prepare(raw, directory, **kwargs):
+        assert raw == original_design
+        profiles.append(kwargs['profile'])
+        return 'synthetic-digest', sky
+    monkeypatch.setattr(native_snapshot, 'prepare_native_sky_snapshot', prepare)
+    snapshot = type('SyntheticSnapshot', (), {
+        'manifest_sha256': 'synthetic-digest', 'require': lambda self, **kw: None})()
+    monkeypatch.setattr(native_snapshot, 'read_native_sky_snapshot', lambda *a, **k: snapshot)
+    exports = []
+    export = export_workflow.export_composed_chart
+    def capture(chart, *args, **kwargs):
+        result = export(chart, *args, **kwargs)
+        style = result.composition.style
+        assert not style.stars.draw_bright_symbols
+        assert style.stars.color == '#151515'
+        assert style.deep_sky.planetary_nebula_color == '#24552b'
+        renderer = args[1]
+        outer = renderer._grid_label_band_frame
+        bounds = outer.get_path().transformed(outer.get_transform()).get_extents()
+        scale = 25.4 / renderer.ax.figure.dpi
+        # Polygonal display rims approximate the fixed circle to < 2 microns.
+        assert bounds.width * scale == pytest.approx(chart.page.useful_width_mm, abs=.002)
+        assert bounds.height * scale == pytest.approx(bounds.width * scale, abs=.002)
+        for record in result.rendering.layers:
+            if record.layer in (sky.stars, sky.open_clusters, sky.planetary_nebulae):
+                assert np.isfinite(record.projected.x).sum() == 1
+        exports.append(result)
+        return result
+    monkeypatch.setattr(export_workflow, 'export_composed_chart', capture)
+    output = tmp_path/'atlas_v1'
+    assert cli.create_main(['--design', str(design), '--config', 'atlas-v6',
+        '--jobs', '1', '--index', str(prefix.with_suffix('.pdf')),
+        '--output-dir', str(output)]) == 0
+    assert len(exports) == 2 and len(profiles) == 1
+    assert profiles[0].open_cluster_filename == sources['open_clusters']
+    assert profiles[0].planetary_nebula_filename == sources['planetary_nebulae']
+    assert {'open_clusters', 'planetary_nebulae'} <= set(bundles)
+    frames, scales = [], []
+    for number in (1, 2):
+        data = json.loads((output/f'chart-{number:02d}_report_data.json').read_text())
+        assert data['stars']['statistics']['visible_count'] == 1
+        frames.append(data['layout']['chart_sky_frame'])
+        scales.append(data['layout']['central_scale_mm_per_degree'])
+        assert frames[-1]['width'] == pytest.approx(frames[-1]['height'])
+        assert data['stellar_area_budget']['chart_area_mm2'] == pytest.approx(
+            np.pi * frames[-1]['width'] * frames[-1]['height'] / 4)
+        root = ElementTree.parse(output/f'chart-{number:02d}.svg').getroot()
+        texts = [''.join(e.itertext()) for e in root.iter() if e.tag.endswith('}text')]
+        assert {f'{hour}ʰ' for hour in range(0, 24, 2)} <= set(texts)
+        assert any(text.endswith('°') for text in texts)
+    assert scales[0] == pytest.approx(scales[1])
+    assert frames[0] == frames[1]
+    book = PdfReader(output/'atlas.pdf')
+    assert 'Chart 1' in book.pages[2].extract_text()
+    assert 'Chart 2' in book.pages[4].extract_text()
+    assert not book.pages[1].extract_text().strip()
+    manifest = json.loads((output/'manifest.json').read_text())
+    assert len(book.pages) == len(manifest['page_order'])
+    assert design.read_bytes() == original_design
 
 
 @pytest.fixture

@@ -3148,3 +3148,18 @@ Fernando reported the complete plugin-disabled Mac suite passing at `2778f2e5134
 The accepted scope is installed verified curated defaults (513 open clusters and 319 planetary nebulae, with original scientific snapshots still accessible), independently selectable atlas layouts and full atlas v6 style, shared v6 regional chart appearance, and compact Sco comparison without object labels. B4 landscape five-band has 34 charts; B4 portrait has 36 charts with three interior bands plus two caps. Layout and atlas style remain separate protocols. Regional stereographic print design is deferred. Generated portrait and landscape products remain in their separate `output/` directories and are preserved during branch cleanup.
 
 This closure adds documentation only. The tested executable code, scientific fixtures, dependencies, configuration, packaging and non-documentation tests are unchanged from the passing candidate; reuse its full-suite receipt after the documentation gate and repository-integrity checks. Merge the catalogue base #232 into main, retarget and merge #233 into main, verify the resulting tree matches this documented candidate, then remove only the two merged feature branches. No full-suite repetition is required solely for these documentation and merge commits.
+
+
+## Two-hemisphere atlas adapter (candidate, 2026-10-16)
+
+`atlas_design.py` adds explicit hemispheric sheet boundaries and an exact
+complementary-Dec partition certificate inside the existing resolved-atlas
+protocol. Legacy rectangular records retain their meaning and serialization.
+The installed `b4-hemispheres` resource remains independent of `atlas-v6`.
+`AtlasSheetChart` delegates its circular native-ICRS realization to the existing
+`PolarPlanisphereChart` cap/projection owner, disabling only that owner's
+reviewed physical-disk label/size curation. Composition continues through
+`wenu_chart atlas-sheet`, with the ordinary atlas style and curated sources.
+Existing grid owners use the circular rim for tick intersections and a fixed
+font-derived ring; the report area denominator is the actual circular area.
+No new production module, scientific catalogue or parallel pipeline is added.

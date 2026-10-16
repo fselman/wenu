@@ -115,7 +115,7 @@ class AtlasPublicationBatchPlan:
 
 @dataclass(frozen=True)
 class AtlasSheetChart:
-    """Native fixed-equatorial adapter over the canonical rectangular renderer."""
+    """Native fixed-equatorial adapter over canonical rectangular/polar owners."""
 
     sheet: AtlasSheetGeometry
     page: object
@@ -132,12 +132,27 @@ class AtlasSheetChart:
 
     @property
     def coordinate_label_anchor(self):
+        if self.sheet.boundary_kind == 'hemisphere':
+            return self.polar_chart.coordinate_label_anchor
         from .boundaries import RectangularLabelAnchor
         return RectangularLabelAnchor()
 
     @property
+    def polar_chart(self):
+        from .polar_planisphere import PolarPlanisphereChart
+        return PolarPlanisphereChart(
+            pole='south' if self.sheet.center_dec_deg < 0 else 'north',
+            limiting_declination_deg=0, projection_name='stereographic',
+            position_angle_deg=self.sheet.position_angle_deg + math.copysign(
+                self.sheet.pole_meridian_ra_deg, self.sheet.center_dec_deg),
+            projection_radius=self.sheet.projection_radius, flip_ew=self.sheet.flip_ew,
+            reviewed_label_curation=False)
+
+    @property
     def chart_context(self):
         from .context import ChartContext
+        if self.sheet.boundary_kind == 'hemisphere':
+            return self.polar_chart.chart_context
         return ChartContext(self.viewport, self.sheet.field_width_deg,
             self.sheet.field_height_deg(self.page), self.sheet.center_ra_deg,
             self.sheet.center_dec_deg)
@@ -150,6 +165,8 @@ class AtlasSheetChart:
             raise ValueError("Atlas sheets require explicit native ICRS realization.")
         if options.get("observer") is not None:
             raise ValueError("Atlas sheets do not admit an observer.")
+        if self.sheet.boundary_kind == 'hemisphere':
+            return self.polar_chart.render(sky, renderer, **options)
         return RegionalChart.render(self, sky, renderer, **options)
 
 
@@ -326,6 +343,8 @@ def _atlas_report_data(chart, sky, composition, rendering):
         sky_frame = dict(x=box.x0 * scale, y=box.y0 * scale,
                          width=box.width * scale, height=box.height * scale)
         sky_area_mm2 = sky_frame["width"] * sky_frame["height"]
+    if chart.sheet.boundary_kind == 'hemisphere':
+        sky_area_mm2 *= math.pi / 4
     statistics = None
     reference_range = None
     budget = None
@@ -552,7 +571,7 @@ def _atlas_grid_options(chart, presentation):
     return equatorial_grid_mark_options(chart, marks)
 
 
-def _atlas_frame_widths(style, presentation):
+def _atlas_frame_widths(style, presentation, *, circular=False):
     allowance = 2 * (style.canvas.grid_label_band_padding_points + style.canvas.grid_label_band_linewidth / 2)
     # A Dec string lies along its projected parallel, rather than along the
     # vertical edge. Budget its worst rotated extent once from the font.
@@ -562,6 +581,14 @@ def _atlas_frame_widths(style, presentation):
     measure = RendererAgg(1, 1, 72)
     extent = max(math.hypot(*measure.get_text_width_height_descent(f'{value:+g}°', font, ismath=False)[:2])
                  for value in range(-80, 81, 10))
+    if circular:
+        # Radial RA labels rotate around the rim. Their display bounding boxes
+        # require at most width + height in the radial direction, once per atlas.
+        ra_font = FontProperties(size=presentation.grid_label_fontsize)
+        ra_extent = max(sum(measure.get_text_width_height_descent(f'{hour}ʰ', ra_font, ismath=False)[:2])
+                        for hour in range(24))
+        thickness = (max(extent, ra_extent) + allowance) * presentation.grid_frame_width_scale
+        return thickness, thickness
     return ((presentation.grid_label_fontsize + allowance) * presentation.grid_frame_width_scale,
             (extent + allowance) * presentation.grid_frame_width_scale)
 
@@ -616,8 +643,8 @@ def _draw_polar_declination_labels(chart, renderer, presentation, rendering):
         renderer.assign_semantic_identity(artists, identity)
 
 
-def _atlas_grid_layout(page, style, presentation):
-    horizontal, vertical = _atlas_frame_widths(style, presentation)
+def _atlas_grid_layout(page, style, presentation, *, circular=False):
+    horizontal, vertical = _atlas_frame_widths(style, presentation, circular=circular)
     horizontal, vertical = horizontal * 25.4 / 72, vertical * 25.4 / 72
     available_width = page.useful_width_mm - 2 * vertical
     available_height = page.useful_height_mm - 2 * horizontal

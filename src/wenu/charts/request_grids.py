@@ -242,6 +242,10 @@ def equatorial_grid_mark_options(chart, presentation):
     view = chart.viewport
     boundary = ProjectedCurve([view.x_min, view.x_max, view.x_max, view.x_min],
                              [view.y_min, view.y_min, view.y_max, view.y_max], closed=True)
+    from .context import BoundaryKind
+    circular = chart.chart_context.boundary_kind is BoundaryKind.CIRCULAR
+    if circular:
+        boundary = chart.chart_context.clip_boundary
     ticks = partial(equatorial_grid_tick_options, minor_scale=presentation.grid_minor_label_scale,
                     minute_labels_visible=presentation.grid_minute_labels_visible,
                     declination_scale=presentation.grid_dec_label_scale)
@@ -254,7 +258,8 @@ def equatorial_grid_mark_options(chart, presentation):
                                linewidth=0.55 if presentation.grid_lines_visible else 0),
                     label_style=dict(fontsize=presentation.grid_label_fontsize, color="black", alpha=1.0),
                     boundary_ticks=dict(tick_meridians=ticks, tick_parallels=ticks),
-                    boundary_tick_anchor=ExteriorGridLabelAnchor(None, boundary, all_crossings=True)))}
+                    boundary_tick_anchor=ExteriorGridLabelAnchor(None, boundary,
+                        circular=circular, all_crossings=True)))}
 
 
 def equatorial_grid_frame_layout(width_mm, height_mm, axes_bounds, style, presentation):
@@ -295,3 +300,4 @@ def equatorial_grid_frame_layout(width_mm, height_mm, axes_bounds, style, presen
               width_mm / page.width_mm, height_mm / page.height_mm)
     return bounds, replace(style, canvas=replace(canvas,
         grid_label_band=True, grid_label_band_padding_points=padding))
+

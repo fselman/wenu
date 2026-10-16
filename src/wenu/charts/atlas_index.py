@@ -459,8 +459,8 @@ def _draw_face(ax, atlas, face, *, footprints, sky=None, star_magnitude_limit=5.
             "Label", number=number, edit_policy=EditPolicy.LAYOUT,
             svg_id=f"chart-{number:02d}-number-label-{face.pole}")
     ra = _samples(0, 360)
-    for dec in (-atlas.geometry.overview.shared_band_width_deg / 2, 0,
-                atlas.geometry.overview.shared_band_width_deg / 2):
+    for dec in sorted({-atlas.geometry.overview.shared_band_width_deg / 2, 0,
+                       atlas.geometry.overview.shared_band_width_deg / 2}):
         if (face.pole == "north" and dec < face.limiting_declination_deg) or (
                 face.pole == "south" and dec > face.limiting_declination_deg):
             continue
@@ -551,8 +551,8 @@ def plot_overview(design_path, output_prefix, *, footprints=False, joined=False,
         figure.subplots_adjust(left=0.03, right=0.97, top=0.86, bottom=0.13, wspace=0.06)
     for ax in axes:
         ax.set_facecolor("none")
-    field = next(sheet.field_width_deg for sheet in atlas.geometry.sheets
-                 if abs(sheet.center_dec_deg) != 90)
+    field = next((sheet.field_width_deg for sheet in atlas.geometry.sheets
+                  if abs(sheet.center_dec_deg) != 90), atlas.geometry.sheets[0].field_width_deg)
     page = atlas.geometry.page
     paper = "B4" if (page.width_mm, page.height_mm) == (353, 250) else f"{page.width_mm:g} × {page.height_mm:g} mm"
     title = f"Atlas {paper} · campo horizontal {field:g}° · {len(atlas.geometry.sheets)} hojas"
@@ -574,7 +574,10 @@ def plot_overview(design_path, output_prefix, *, footprints=False, joined=False,
         highlighted = next(sheet.number for sheet in atlas.geometry.sheets
                            if sheet.sheet_id == atlas.primary_sheet_id(atlas.seed_ra_deg, 0))
         region_hint = " (cerca de Orión)" if atlas.seed_ra_deg == 82.5 else ""
-        figure.text(0.5, 0.075, f"Hoja semilla {highlighted}, centro semilla RA {atlas.seed_ra_deg / 15:g} h, Dec 0°{region_hint}.",
+        hemispheric = all(sheet.boundary_kind == 'hemisphere' for sheet in atlas.geometry.sheets)
+        seed_caption = (f"Carta 1: sur · carta 2: norte · meridiano de orientación RA {atlas.seed_ra_deg / 15:g} h."
+            if hemispheric else f"Hoja semilla {highlighted}, centro semilla RA {atlas.seed_ra_deg / 15:g} h, Dec 0°{region_hint}.")
+        figure.text(0.5, 0.075, seed_caption,
                     ha="center", fontsize=presentation.text_size_pt + 1, color=presentation.highlight_color)
         figure.text(0.5, 0.041, f"Guías: ecuador, límites de banda compartida ±{atlas.geometry.overview.shared_band_width_deg / 2:g}° y meridiano RA {atlas.geometry.overview.join_ra_deg / 15:g} h.",
                     ha="center", fontsize=presentation.text_size_pt, color=presentation.guide_color)
@@ -584,6 +587,8 @@ def plot_overview(design_path, output_prefix, *, footprints=False, joined=False,
             "magellanic_clouds": "Nubes de Magallanes"}
         content = " · ".join(layer_names[layer] for layer in presentation.layers) + ". " if astronomy else "Sin catálogos. "
         layout = "Contornos unidos; banda común con dos proyecciones. " if joined else "Discos separados. "
+        if hemispheric:
+            layout = "Dos hemisferios hasta el ecuador, sin solapamiento de área. "
         variant = astronomy and (include_lowest_mw_isophote or magellanic_clouds)
         legend = ("Huellas completas." if footprints else "Bordes: propiedad primaria.") if variant else (
             "Huellas completas con solapamiento." if footprints else
