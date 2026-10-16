@@ -208,6 +208,7 @@ class AtlasChartPresentation:
     grid_polar_ra_step_hours: int = 2
     grid_minute_labels_visible: bool = False
     milky_way_color: str = "#87CEFA"
+    chart_legend_visible: bool = True
     legend_fontsize: float = 12.0
     messier_label_fontsize: float = 7.0
     grid_dec_label_scale: float = 0.8
@@ -249,6 +250,8 @@ class AtlasChartPresentation:
                 raise ValueError(f"{name} must be finite and positive.")
         if self.grid_minor_label_scale > 1:
             raise ValueError("grid_minor_label_scale must be at most 1.")
+        if type(self.chart_legend_visible) is not bool:
+            raise ValueError("chart_legend_visible must be boolean.")
         if type(self.grid_lines_visible) is not bool:
             raise ValueError("grid_lines_visible must be boolean.")
         if type(self.open_cluster_angular_sizes) is not bool:
@@ -538,12 +541,12 @@ def _draw_atlas_magnitude_scale(*, chart, sky, renderer, composition, rendering,
     """Minimal in-frame scale through the existing rendered-legend owner."""
     if abs(chart.sheet.center_dec_deg) == 90:
         _draw_polar_declination_labels(chart, renderer, presentation or AtlasChartPresentation(), rendering)
-    if 'stars' not in composition.detail.enabled_layers:
+    presentation = AtlasChartPresentation() if presentation is None else presentation
+    if not presentation.chart_legend_visible or 'stars' not in composition.detail.enabled_layers:
         return None
     from .automatic_legends import draw_automatic_chart_legends
     from .legend_plan import ChartLegendPlan, LegendPlacement
     data = _atlas_report_data(chart, sky, composition, rendering)
-    presentation = AtlasChartPresentation() if presentation is None else presentation
     style = replace(composition.style, legend=replace(composition.style.legend,
         fontsize=presentation.legend_fontsize, title_fontsize=presentation.legend_fontsize))
     legends = draw_automatic_chart_legends(renderer.ax, chart, sky, style,

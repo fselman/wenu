@@ -41,20 +41,44 @@ def test_installed_layout_and_style_are_independent_cli_inputs(tmp_path, monkeyp
     assert presentation.report_label_scale == 3
     assert presentation.chart_number_box_visible
     assert presentation.open_cluster_angular_sizes
+    assert presentation.chart_legend_visible
     assert {'open_clusters', 'planetary_nebulae'} <= set(presentation.layers)
     assert cli.create_main(['--layout',name,'--charts','1','--magnitude-limit','7',
         '--star-size-scale','2','--output-dir',str(tmp_path/'override')]) == 0
     assert calls[1][1]['presentation'].star_magnitude_limit == 7
     assert calls[1][1]['presentation'].star_size_scale == 2
     assert calls[1][0] == path
+    assert cli.create_main(['--layout',name,'--no-legend','--no-planetary-nebulae',
+        '--output-dir',str(tmp_path/'hidden')]) == 0
+    hidden = calls[2][1]['presentation']
+    assert hidden.chart_legend_visible is False
+    assert set(hidden.layers) == set(presentation.layers) - {'planetary_nebulae'}
+    from dataclasses import asdict
+    # Persist both settings through the existing closed presentation schema.
+    data = asdict(hidden)
+    del data['stellar_magnitude_sizing']
+    data.update(schema_version=1, document_kind='wenu-atlas-chart-presentation')
+    assert atlas_publication.AtlasChartPresentation.from_dict(data).chart_legend_visible is False
+    config = tmp_path/'hidden.toml'
+    config.write_text('schema_version = 1\ndocument_kind = "wenu-atlas-chart-presentation"\n'
+        'chart_legend_visible = false\nlayers = ["stars"]\n')
+    assert cli.create_main(['--layout',name,'--config',str(config),
+        '--output-dir',str(tmp_path/'inherited')]) == 0
+    assert calls[3][1]['presentation'].chart_legend_visible is False
+    assert calls[3][1]['presentation'].layers == ('stars',)
+    assert cli.create_main(['--layout',name,'--config',str(config),'--legend','--planetary-nebulae',
+        '--output-dir',str(tmp_path/'shown')]) == 0
+    assert calls[4][1]['presentation'].chart_legend_visible is True
+    assert calls[4][1]['presentation'].layers == ('stars','planetary_nebulae')
 
 
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLE = ROOT / "examples/atlas_design_request_v1.toml"
 
 
-@pytest.mark.parametrize('style_name', ['atlas-v6', 'atlas-hemispheres-v2'])
-def test_hemispheric_atlas_uses_all_three_commands_and_curated_catalogue_seams(tmp_path, monkeypatch, style_name):
+@pytest.mark.parametrize('style_name,show_features', [
+    ('atlas-v6',True), ('atlas-hemispheres-v2',True), ('atlas-hemispheres-v2',False)])
+def test_hemispheric_atlas_uses_all_three_commands_and_curated_catalogue_seams(tmp_path, monkeypatch, style_name, show_features):
     """Synthetic catalogue evidence; real design, index, chart and book routes."""
     import json
     import numpy as np
@@ -131,6 +155,8 @@ def test_hemispheric_atlas_uses_all_three_commands_and_curated_catalogue_seams(t
         from wenu.charts.presets import AtlasChartStyle
         expected_cluster_area = AtlasChartStyle().deep_sky.open_cluster_symbol_size * (1.8*(0.5 if small else 1))**2
         assert style.deep_sky.globular_cluster_symbol_size == pytest.approx(expected_cluster_area)
+        assert ('planetary_nebulae' in result.composition.detail.enabled_layers) is show_features
+        assert any(record.layer is sky.planetary_nebulae for record in result.rendering.layers) is show_features
         renderer = args[1]
         outer = renderer._grid_label_band_frame
         bounds = outer.get_path().transformed(outer.get_transform()).get_extents()
@@ -147,11 +173,13 @@ def test_hemispheric_atlas_uses_all_three_commands_and_curated_catalogue_seams(t
     output = tmp_path/'atlas_v1'
     assert cli.create_main(['--design', str(design), '--config', style_name,
         '--jobs', '1', '--index', str(prefix.with_suffix('.pdf')),
-        '--output-dir', str(output)]) == 0
+        '--output-dir', str(output),
+        *([] if show_features else ['--no-legend','--no-planetary-nebulae'])]) == 0
     assert len(exports) == 2 and len(profiles) == 1
     assert profiles[0].open_cluster_filename == sources['open_clusters']
-    assert profiles[0].planetary_nebula_filename == sources['planetary_nebulae']
-    assert {'open_clusters', 'planetary_nebulae'} <= set(bundles)
+    assert profiles[0].planetary_nebula_filename == (sources['planetary_nebulae'] if show_features else None)
+    assert 'open_clusters' in bundles
+    assert ('planetary_nebulae' in bundles) is show_features
     frames, scales = [], []
     for number in (1, 2):
         data = json.loads((output/f'chart-{number:02d}_report_data.json').read_text())
@@ -165,6 +193,7 @@ def test_hemispheric_atlas_uses_all_three_commands_and_curated_catalogue_seams(t
         texts = [''.join(e.itertext()) for e in root.iter() if e.tag.endswith('}text')]
         assert {f'{hour}ʰ' for hour in range(0, 24, 2)} <= set(texts)
         assert any(text.endswith('°') for text in texts)
+        assert ('Stars' in texts) is show_features
     assert scales[0] == pytest.approx(scales[1])
     assert frames[0] == frames[1]
     book = PdfReader(output/'atlas.pdf')
@@ -1210,7 +1239,7 @@ def test_atlas_ir_embedded_filter_reaches_canonical_chart_layer(request_data, tm
     assert counts == [4,2] and len(layer.catalog) == 4
 
 
-@pytest.mark.parametrize("field,value", [("grid_lines_visible",1),
+@pytest.mark.parametrize("field,value", [("grid_lines_visible",1), ("chart_legend_visible",1),
     ("grid_label_fontsize",float('nan')),("grid_minor_label_scale",1.1),
     ("grid_frame_width_scale",0), ("grid_ra_step_hours",5), ("grid_polar_ra_step_hours",5),
     ("open_cluster_exclude_infrared_embedded", 1),
@@ -1296,6 +1325,9 @@ def test_atlas_stellar_area_budget_uses_reduced_rendered_sky(request_data):
             presentation=AtlasChartPresentation(legend_fontsize=size))
         texts = legends.legends.stars.artist.get_texts()
         assert texts and all(text.get_fontsize()==size for text in texts)
+    assert _draw_atlas_magnitude_scale(chart=chart, sky=sky, renderer=renderer,
+        composition=composition, rendering=rendering,
+        presentation=AtlasChartPresentation(chart_legend_visible=False)) is None
     plt.close(fig)
 
 def test_atlas_sheet_worker_invokes_chart_entry_and_reuses_worker_sky(request_data, tmp_path, monkeypatch):

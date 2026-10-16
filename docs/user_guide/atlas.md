@@ -1801,3 +1801,22 @@ wenu_create_atlas --design output/atlas_hemisferios_v1/design_v1.json --config a
 Create the new parent `output/atlas_hemisferios_v2` first. The plotted stars are
 limited to magnitude 5; the native snapshot retains the canonical maximal
 catalogue for explicit reuse. Preserve the previous output for comparison.
+
+
+### Optional chart legend and planetary nebulae
+
+`wenu_create_atlas --no-legend` hides the stellar-magnitude legend inside
+chart pages. The equivalent persistent presentation key is
+`chart_legend_visible = false`; its default is true. Reports and polar
+coordinate labels are independent of this switch.
+
+`--no-planetary-nebulae` removes `planetary_nebulae` from the effective
+presentation `layers`. To save that choice, omit that layer in the full
+style TOML. This is ordinary detail selection; it does not change catalogue
+curation or geometry and works with an existing native sky.
+
+The positive forms `--legend` and `--planetary-nebulae` explicitly enable the
+features. Omitting either option preserves the selected style's setting;
+explicit CLI choices take precedence over TOML. For example, add
+`--no-legend --no-planetary-nebulae` to the hemisphere v2 publication command,
+using a fresh output directory.
