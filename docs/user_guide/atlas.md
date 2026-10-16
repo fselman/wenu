@@ -1820,3 +1820,16 @@ features. Omitting either option preserves the selected style's setting;
 explicit CLI choices take precedence over TOML. For example, add
 `--no-legend --no-planetary-nebulae` to the hemisphere v2 publication command,
 using a fresh output directory.
+
+
+### Excluding layers from the command
+
+Use `wenu_create_atlas --exclude-layer nonstellar` to hide only Messier labels
+(M1, M2, etc.). Atlas `nonstellar` renders labels only; symbols remain in their
+independent open-cluster, globular-cluster, galaxy and PN layers.
+Repeat `--exclude-layer` for more layers, for example
+`--exclude-layer nonstellar --exclude-layer planetary_nebulae`.
+Exclusions apply after the individual layer switches, so an explicitly excluded
+layer remains excluded even with `--planetary-nebulae`.
+Omitting this option preserves the style's layers. Exclusion works with the
+existing native sky; use a fresh publication output directory.

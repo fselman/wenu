@@ -133,6 +133,9 @@ def create_main(argv=None):
     parser.add_argument("--style", choices=("atlas", "cartoon"))
     parser.add_argument("--mode", choices=("print", "presentation"))
     parser.add_argument("--star-size-scale", type=float, help="Explicit diameter multiplier.")
+    from wenu.sky.native_snapshot import LAYERS
+    parser.add_argument("--exclude-layer", choices=LAYERS, action="append", default=[],
+        help="Exclude a layer; repeat to exclude several. Applied after layer switches. In atlases, nonstellar contains only Messier labels.")
     parser.add_argument("--legend", dest="chart_legend_visible",
         action=argparse.BooleanOptionalAction, default=None,
         help="Show or hide the stellar magnitude legend inside chart pages; reports are unchanged.")
@@ -168,6 +171,9 @@ def create_main(argv=None):
             if args.planetary_nebulae:
                 layers = presentation.layers if "planetary_nebulae" in presentation.layers else (*layers, "planetary_nebulae")
             presentation = replace(presentation, layers=layers)
+        if args.exclude_layer:
+            presentation = replace(presentation, layers=tuple(
+                layer for layer in presentation.layers if layer not in args.exclude_layer))
         if args.open_cluster_size is not None:
             presentation = replace(presentation, open_cluster_angular_sizes=args.open_cluster_size == "angular")
         if args.magnitude_limit is not None:

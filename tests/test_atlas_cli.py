@@ -70,6 +70,12 @@ def test_installed_layout_and_style_are_independent_cli_inputs(tmp_path, monkeyp
         '--output-dir',str(tmp_path/'shown')]) == 0
     assert calls[4][1]['presentation'].chart_legend_visible is True
     assert calls[4][1]['presentation'].layers == ('stars','planetary_nebulae')
+    assert cli.create_main(['--layout',name,'--exclude-layer','nonstellar',
+        '--exclude-layer','planetary_nebulae','--planetary-nebulae',
+        '--output-dir',str(tmp_path/'excluded')]) == 0
+    excluded = calls[5][1]['presentation']
+    assert set(excluded.layers) == set(presentation.layers) - {'nonstellar','planetary_nebulae'}
+    assert excluded.chart_legend_visible is True
 
 
 ROOT = Path(__file__).resolve().parents[1]
