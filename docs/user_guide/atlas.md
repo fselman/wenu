@@ -1777,3 +1777,27 @@ Both circles occupy the same square sky region inside the B4 page.
 
 This is a verified-runtime candidate pending complete Mac catalogue-backed
 rendering, scientific/visual acceptance and final full-suite merge clearance.
+
+
+### Hemisphere appearance revision 2
+
+The installed full style `atlas-hemispheres-v2` preserves atlas-v6 colours,
+fonts and curated catalogue selection, with stellar magnitude limit 5 and
+half the v6 diameters for stars, open/globular clusters and planetary nebulae.
+Angular open-cluster diameters and their minimum symbols scale together;
+catalogue angular sizes and the geometric central scale remain unchanged.
+Other object classes retain v6 sizing. The optional positive
+`cluster_symbol_scale` presentation field defaults to 1 and scales both cluster
+types independently of `deep_sky_symbol_scale`. PN retains its separate factor.
+The star diameter multiplier is 0.85 (half of v6's 1.7); the cluster multiplier
+is 0.5 and the PN multiplier is 0.625 (half of v6's 1.25).
+
+Keep the existing resolved design and standalone index. Publish to a fresh path:
+
+```bash
+wenu_create_atlas --design output/atlas_hemisferios_v1/design_v1.json --config atlas-hemispheres-v2 --charts all --jobs 2 --index output/atlas_hemisferios_v1/index_v1.pdf --save-sky output/atlas_hemisferios_v2/native_sky_v2 --output-dir output/atlas_hemisferios_v2/publication_v2
+```
+
+Create the new parent `output/atlas_hemisferios_v2` first. The plotted stars are
+limited to magnitude 5; the native snapshot retains the canonical maximal
+catalogue for explicit reuse. Preserve the previous output for comparison.

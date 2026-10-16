@@ -53,7 +53,8 @@ ROOT = Path(__file__).resolve().parents[1]
 EXAMPLE = ROOT / "examples/atlas_design_request_v1.toml"
 
 
-def test_hemispheric_atlas_uses_all_three_commands_and_curated_catalogue_seams(tmp_path, monkeypatch):
+@pytest.mark.parametrize('style_name', ['atlas-v6', 'atlas-hemispheres-v2'])
+def test_hemispheric_atlas_uses_all_three_commands_and_curated_catalogue_seams(tmp_path, monkeypatch, style_name):
     """Synthetic catalogue evidence; real design, index, chart and book routes."""
     import json
     import numpy as np
@@ -124,6 +125,12 @@ def test_hemispheric_atlas_uses_all_three_commands_and_curated_catalogue_seams(t
         assert not style.stars.draw_bright_symbols
         assert style.stars.color == '#151515'
         assert style.deep_sky.planetary_nebula_color == '#24552b'
+        small = style_name == 'atlas-hemispheres-v2'
+        assert result.composition.detail.star_magnitude_limit == (5 if small else 7.5)
+        assert style.stars.area_scale == pytest.approx((0.85 if small else 1.7)**2)
+        from wenu.charts.presets import AtlasChartStyle
+        expected_cluster_area = AtlasChartStyle().deep_sky.open_cluster_symbol_size * (1.8*(0.5 if small else 1))**2
+        assert style.deep_sky.globular_cluster_symbol_size == pytest.approx(expected_cluster_area)
         renderer = args[1]
         outer = renderer._grid_label_band_frame
         bounds = outer.get_path().transformed(outer.get_transform()).get_extents()
@@ -138,7 +145,7 @@ def test_hemispheric_atlas_uses_all_three_commands_and_curated_catalogue_seams(t
         return result
     monkeypatch.setattr(export_workflow, 'export_composed_chart', capture)
     output = tmp_path/'atlas_v1'
-    assert cli.create_main(['--design', str(design), '--config', 'atlas-v6',
+    assert cli.create_main(['--design', str(design), '--config', style_name,
         '--jobs', '1', '--index', str(prefix.with_suffix('.pdf')),
         '--output-dir', str(output)]) == 0
     assert len(exports) == 2 and len(profiles) == 1
@@ -1209,6 +1216,8 @@ def test_atlas_ir_embedded_filter_reaches_canonical_chart_layer(request_data, tm
     ("open_cluster_exclude_infrared_embedded", 1),
     ("grid_minute_labels_visible",1), ("milky_way_color","invalid"), ("legend_fontsize",0),
     ("messier_label_fontsize",0), ("deep_sky_symbol_scale",0),
+    ("cluster_symbol_scale",0), ("cluster_symbol_scale",True),
+    ("cluster_symbol_scale",float("inf")),
     ("cluster_face_color","invalid"), ("grid_dec_label_scale",0)])
 def test_atlas_coordinate_presentation_rejects_invalid_values(field,value):
     from wenu.charts.atlas_publication import AtlasChartPresentation
@@ -1510,8 +1519,9 @@ def test_atlas_catalogue_counts_use_unique_actual_photometry_and_finite_position
     pd.testing.assert_frame_equal(source,before)
 
 
+@pytest.mark.parametrize('symbol_scale',[1.0,0.5])
 @pytest.mark.parametrize('angular',[True,False])
-def test_atlas_cluster_diameters_match_reported_central_scale(request_data,tmp_path,monkeypatch,angular):
+def test_atlas_cluster_diameters_match_reported_central_scale(request_data,tmp_path,monkeypatch,angular,symbol_scale):
     from wenu import CelestialSphere
     from astropy.table import Table
     from wenu.charts.atlas_publication import AtlasChartPresentation
@@ -1542,19 +1552,21 @@ def test_atlas_cluster_diameters_match_reported_central_scale(request_data,tmp_p
             planetary.extend(a for a in result if isinstance(a,PathCollection))
         return result
     monkeypatch.setattr(MatplotlibRenderer,'draw',capture)
-    presentation=AtlasChartPresentation(layers=('open_clusters','planetary_nebulae'),formats=('pdf','svg'),open_cluster_angular_sizes=angular)
+    presentation=AtlasChartPresentation(layers=('open_clusters','planetary_nebulae'),formats=('pdf','svg'),open_cluster_angular_sizes=angular,
+        cluster_symbol_scale=symbol_scale, planetary_nebula_symbol_scale=1.25*symbol_scale)
     generate_chart_request(AtlasSheetChartRequest(sheet,atlas.geometry.page,presentation,tmp_path/'charts'),sky=sky)
     report=json.loads((tmp_path/'charts/chart-14_report_data.json').read_text())
     areas=np.broadcast_to(measured[0],(3,))
     from wenu.charts.presets import AtlasChartStyle
     from matplotlib.colors import to_rgba
-    expected = AtlasChartStyle().deep_sky.planetary_nebula_symbol_size * 1.8**2 * 1.25**2
+    expected = AtlasChartStyle().deep_sky.planetary_nebula_symbol_size * 1.8**2 * (1.25*symbol_scale)**2
     assert planetary[0].get_sizes()[0] == pytest.approx(expected)
     np.testing.assert_allclose(planetary[0].get_edgecolors()[0], to_rgba('#24552b'))
     assert planetary[0].get_linewidths()[0] == pytest.approx(1.1)
     assert areas[0]==pytest.approx(areas[2])
+    assert areas[0] == pytest.approx(AtlasChartStyle().deep_sky.open_cluster_symbol_size * (1.8*symbol_scale)**2)
     if angular:
-        mm=2*report['layout']['central_scale_mm_per_degree']
+        mm=2*report['layout']['central_scale_mm_per_degree']*symbol_scale
         assert np.sqrt(areas[1])*25.4/72==pytest.approx(mm)
         assert areas[1]>areas[0]
     else:

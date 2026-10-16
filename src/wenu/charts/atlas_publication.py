@@ -212,6 +212,7 @@ class AtlasChartPresentation:
     messier_label_fontsize: float = 7.0
     grid_dec_label_scale: float = 0.8
     deep_sky_symbol_scale: float = 1.8
+    cluster_symbol_scale: float = 1.0
     planetary_nebula_symbol_scale: float = 1.25
     planetary_nebula_color: str = "#24552b"
     planetary_nebula_linewidth: float = 1.1
@@ -242,7 +243,7 @@ class AtlasChartPresentation:
                 and limit > self.stellar_magnitude_sizing.size_reference_magnitude):
             raise ValueError("Magnitude limit must not exceed the sizing reference.")
         for name in ("star_size_scale", "report_label_scale", "report_separator_width", "report_separator_gap_mm",
-                     "grid_label_fontsize", "grid_minor_label_scale", "grid_frame_width_scale", "legend_fontsize", "messier_label_fontsize", "deep_sky_symbol_scale", "planetary_nebula_symbol_scale", "planetary_nebula_linewidth"):
+                     "grid_label_fontsize", "grid_minor_label_scale", "grid_frame_width_scale", "legend_fontsize", "messier_label_fontsize", "deep_sky_symbol_scale", "cluster_symbol_scale", "planetary_nebula_symbol_scale", "planetary_nebula_linewidth"):
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
                 raise ValueError(f"{name} must be finite and positive.")
@@ -258,6 +259,9 @@ class AtlasChartPresentation:
             raise ValueError("star_size_scale squared must be finite.")
         if not math.isfinite(self.deep_sky_symbol_scale * self.deep_sky_symbol_scale):
             raise ValueError("deep_sky_symbol_scale squared must be finite.")
+        cluster_scale = self.deep_sky_symbol_scale * self.cluster_symbol_scale
+        if not math.isfinite(cluster_scale * cluster_scale):
+            raise ValueError("Cluster symbol area must be finite.")
         from matplotlib.colors import is_color_like
         if not isinstance(self.planetary_nebula_color, str) or not is_color_like(self.planetary_nebula_color):
             raise ValueError("Invalid planetary_nebula_color.")

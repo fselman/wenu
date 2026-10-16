@@ -542,14 +542,16 @@ def _render_atlas_sheet_request(request, sky):
             lmc_color=presentation.milky_way_color, smc_color=presentation.milky_way_color)))
     deep = composition.style.deep_sky
     area_scale = presentation.deep_sky_symbol_scale ** 2
+    cluster_area_scale = area_scale * presentation.cluster_symbol_scale ** 2
     composition = replace(composition, style=replace(composition.style,
         deep_sky=replace(deep,
             open_cluster_symbol_name="cluster_circle", open_cluster_color="black",
             open_cluster_face_color=presentation.cluster_face_color,
-            open_cluster_symbol_size=deep.open_cluster_symbol_size * area_scale,
+            open_cluster_diameter_scale=presentation.cluster_symbol_scale,
+            open_cluster_symbol_size=deep.open_cluster_symbol_size * cluster_area_scale,
             globular_cluster_symbol_name="globular_cluster", globular_cluster_color="black",
             globular_cluster_face_color=presentation.cluster_face_color,
-            globular_cluster_symbol_size=deep.open_cluster_symbol_size * area_scale,
+            globular_cluster_symbol_size=deep.open_cluster_symbol_size * cluster_area_scale,
             planetary_nebula_symbol_size=deep.planetary_nebula_symbol_size * area_scale * presentation.planetary_nebula_symbol_scale ** 2,
             planetary_nebula_color=presentation.planetary_nebula_color,
             planetary_nebula_linewidth=presentation.planetary_nebula_linewidth,
@@ -565,7 +567,7 @@ def _render_atlas_sheet_request(request, sky):
             import math
             grid_options['open_clusters']['render'] = dict(
                 point_diameter_metadata_key="apparent_diameter_arcmin",
-                point_diameter_scale=sheet.projection_radius * math.pi / 21600)
+                point_diameter_scale=sheet.projection_radius * math.pi / 21600 * presentation.cluster_symbol_scale)
 
     if "supernova_remnants" in presentation.layers:
         grid_options["supernova_remnants"] = dict(
