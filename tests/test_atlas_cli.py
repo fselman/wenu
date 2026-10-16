@@ -826,7 +826,7 @@ def test_reserved_report_mirrors_binding_margin_and_keeps_legends_at_right(typog
     page = AtlasPageGeometry(*dimensions,top_mm=18,bottom_mm=15,inner_mm=25,outer_mm=12)
     from wenu.geometry.viewport import Viewport
     chart = SimpleNamespace(page=page,sheet=SimpleNamespace(number=14,
-        sheet_id='test-sheet',center_ra_deg=0 if polar else 82.5,
+        sheet_id='test-sheet',boundary_kind='rectangle',center_ra_deg=0 if polar else 82.5,
         center_dec_deg=90 if polar else 0,pole_meridian_ra_deg=82.5 if polar else None))
     from wenu.charts.presets import AtlasChartStyle
     composition = SimpleNamespace(style=replace(AtlasChartStyle(), legend=replace(
