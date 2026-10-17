@@ -1,0 +1,27 @@
+# Two circular hemispheres; appearance and curated catalogues are independent.
+schema_version = 1
+document_kind = "wenu-atlas-design-request"
+design_id = "b4-hemispheres"
+revision = 1
+coordinate_frame = "icrs"
+projection = "stereographic"
+
+[page]
+width_mm = 250
+height_mm = 353
+top_mm = 10
+bottom_mm = 10
+inner_mm = 20
+outer_mm = 10
+sky_aspect_ratio = 1.0
+
+[overview]
+join_ra_hours = 0
+shared_band_width_deg = 0
+
+[tiling]
+algorithm = "hemispheres"
+field_width_deg = 180
+overlap_deg = 0
+seed_ra_hours = 0
+max_sheets = 2

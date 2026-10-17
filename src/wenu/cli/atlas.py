@@ -133,6 +133,14 @@ def create_main(argv=None):
     parser.add_argument("--style", choices=("atlas", "cartoon"))
     parser.add_argument("--mode", choices=("print", "presentation"))
     parser.add_argument("--star-size-scale", type=float, help="Explicit diameter multiplier.")
+    from wenu.sky.native_snapshot import LAYERS
+    parser.add_argument("--exclude-layer", choices=LAYERS, action="append", default=[],
+        help="Exclude a layer; repeat to exclude several. Applied after layer switches. In atlases, nonstellar contains only Messier labels.")
+    parser.add_argument("--legend", dest="chart_legend_visible",
+        action=argparse.BooleanOptionalAction, default=None,
+        help="Show or hide the stellar magnitude legend inside chart pages; reports are unchanged.")
+    parser.add_argument("--planetary-nebulae", action=argparse.BooleanOptionalAction, default=None,
+        help="Show or hide the planetary-nebula layer; overrides the presentation layer selection.")
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--index", type=Path,
         help="One-page index PDF; enables even report pages facing odd chart pages.")
@@ -156,8 +164,16 @@ def create_main(argv=None):
         from wenu.charts.style_overrides import magnitude_sizing_from_arguments
         presentation = replace(presentation,
             stellar_magnitude_sizing=magnitude_sizing_from_arguments(args, presentation.stellar_magnitude_sizing),
-            **{name: getattr(args, name) for name in ("style", "mode", "star_size_scale")
+            **{name: getattr(args, name) for name in ("style", "mode", "star_size_scale", "chart_legend_visible")
                if getattr(args, name) is not None})
+        if args.planetary_nebulae is not None:
+            layers = tuple(layer for layer in presentation.layers if layer != "planetary_nebulae")
+            if args.planetary_nebulae:
+                layers = presentation.layers if "planetary_nebulae" in presentation.layers else (*layers, "planetary_nebulae")
+            presentation = replace(presentation, layers=layers)
+        if args.exclude_layer:
+            presentation = replace(presentation, layers=tuple(
+                layer for layer in presentation.layers if layer not in args.exclude_layer))
         if args.open_cluster_size is not None:
             presentation = replace(presentation, open_cluster_angular_sizes=args.open_cluster_size == "angular")
         if args.magnitude_limit is not None:

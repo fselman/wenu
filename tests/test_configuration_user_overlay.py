@@ -8,7 +8,7 @@ import pytest
 def test_installed_regional_v6_profile_has_only_chart_concerns_and_user_precedence(tmp_path):
     from wenu.resources import configuration_preset_names, configuration_preset_path, configuration_input_path
     import tomllib
-    assert configuration_preset_names('atlas-style') == ('atlas-v6',)
+    assert 'atlas-v6' in configuration_preset_names('atlas-style')
     atlas = tomllib.loads(configuration_preset_path('atlas-v6', kind='atlas-style').read_text())
     chart_path = configuration_preset_path('atlas-v6', kind='chart')
     assert tomllib.loads(chart_path.read_text())['schema_version'] == 2

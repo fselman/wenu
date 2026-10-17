@@ -1,0 +1,189 @@
+{
+  "bands": [
+    {
+      "dec_max_deg": 0.0,
+      "dec_min_deg": -90.0,
+      "ra_origin_deg": 0.0,
+      "sheet_ids": [
+        "b4-hemispheres:r1:5ef9b07c377c2871bbf7962da31de25688aaefc6a5dc5efac68ccc28de1e8096:south"
+      ]
+    },
+    {
+      "dec_max_deg": 90.0,
+      "dec_min_deg": 0.0,
+      "ra_origin_deg": 0.0,
+      "sheet_ids": [
+        "b4-hemispheres:r1:5ef9b07c377c2871bbf7962da31de25688aaefc6a5dc5efac68ccc28de1e8096:north"
+      ]
+    }
+  ],
+  "design_request": {
+    "coordinate_frame": "icrs",
+    "design_id": "b4-hemispheres",
+    "document_kind": "wenu-atlas-design-request",
+    "overview": {
+      "join_ra_deg": 0.0,
+      "shared_band_width_deg": 0
+    },
+    "page": {
+      "bottom_mm": 10,
+      "height_mm": 353,
+      "inner_mm": 20,
+      "outer_mm": 10,
+      "sky_aspect_ratio": 1.0,
+      "top_mm": 10,
+      "width_mm": 250
+    },
+    "projection": "stereographic",
+    "revision": 1,
+    "schema_version": 1,
+    "tiling": {
+      "algorithm": "hemispheres",
+      "field_width_deg": 180,
+      "max_sheets": 2,
+      "overlap_deg": 0,
+      "seed_ra_deg": 0.0
+    }
+  },
+  "document_kind": "wenu-atlas-band-tiling",
+  "generator": "two-closed-polar-hemispheres-v1",
+  "geometry": {
+    "angular_units": "degrees",
+    "coordinate_frame": "icrs",
+    "coverage_status": "unverified",
+    "design_id": "b4-hemispheres",
+    "document_kind": "wenu-atlas-geometry-specimen",
+    "overview": {
+      "join_ra_deg": 0.0,
+      "shared_band_width_deg": 0.0
+    },
+    "page": {
+      "bottom_mm": 10.0,
+      "height_mm": 353.0,
+      "inner_mm": 20.0,
+      "outer_mm": 10.0,
+      "sky_aspect_ratio": 1.0,
+      "top_mm": 10.0,
+      "width_mm": 250.0
+    },
+    "revision": 1,
+    "schema_version": 1,
+    "sheets": [
+      {
+        "geometry": {
+          "boundary_kind": "hemisphere",
+          "center_dec_deg": -90.0,
+          "center_ra_deg": 0.0,
+          "field_width_deg": 180.0,
+          "flip_ew": false,
+          "number": 1,
+          "pole_meridian_ra_deg": 0.0,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-hemispheres:r1:5ef9b07c377c2871bbf7962da31de25688aaefc6a5dc5efac68ccc28de1e8096:south"
+        },
+        "resolved": {
+          "field_height_deg": 180.0,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              1.0,
+              0.0,
+              6.123233995736766e-17
+            ],
+            [
+              0.0,
+              -1.0,
+              0.0
+            ],
+            [
+              6.123233995736766e-17,
+              0.0,
+              -1.0
+            ]
+          ],
+          "viewport": {
+            "x_max": 2.0,
+            "x_min": -2.0,
+            "y_max": 2.0,
+            "y_min": -2.0
+          }
+        }
+      },
+      {
+        "geometry": {
+          "boundary_kind": "hemisphere",
+          "center_dec_deg": 90.0,
+          "center_ra_deg": 0.0,
+          "field_width_deg": 180.0,
+          "flip_ew": false,
+          "number": 2,
+          "pole_meridian_ra_deg": 0.0,
+          "position_angle_deg": 0.0,
+          "projection_radius": 2.0,
+          "sheet_id": "b4-hemispheres:r1:5ef9b07c377c2871bbf7962da31de25688aaefc6a5dc5efac68ccc28de1e8096:north"
+        },
+        "resolved": {
+          "field_height_deg": 180.0,
+          "projection": "stereographic",
+          "tangent_basis": [
+            [
+              1.0,
+              0.0,
+              -6.123233995736766e-17
+            ],
+            [
+              -0.0,
+              1.0,
+              0.0
+            ],
+            [
+              6.123233995736766e-17,
+              0.0,
+              1.0
+            ]
+          ],
+          "viewport": {
+            "x_max": 2.0,
+            "x_min": -2.0,
+            "y_max": 2.0,
+            "y_min": -2.0
+          }
+        }
+      }
+    ]
+  },
+  "layout": {
+    "charts_per_band": [
+      1,
+      1
+    ],
+    "field_height_deg": 180.0,
+    "field_width_deg": 180.0,
+    "interior_band_count": 0,
+    "objective": "explicit version-1 algorithm",
+    "orientation": "portrait",
+    "placement": "hemispheres",
+    "polar_primary_diameter_deg": 180.0
+  },
+  "neighbours": {
+    "b4-hemispheres:r1:5ef9b07c377c2871bbf7962da31de25688aaefc6a5dc5efac68ccc28de1e8096:north": [
+      "b4-hemispheres:r1:5ef9b07c377c2871bbf7962da31de25688aaefc6a5dc5efac68ccc28de1e8096:south"
+    ],
+    "b4-hemispheres:r1:5ef9b07c377c2871bbf7962da31de25688aaefc6a5dc5efac68ccc28de1e8096:south": [
+      "b4-hemispheres:r1:5ef9b07c377c2871bbf7962da31de25688aaefc6a5dc5efac68ccc28de1e8096:north"
+    ]
+  },
+  "overlap_deg": 0.0,
+  "schema_version": 1,
+  "seed_ra_deg": 0.0,
+  "validation": {
+    "angular_guard_deg": 0.0,
+    "coverage_status": "validated_exact_complementary_hemispheres",
+    "method": "two-closed-polar-hemispheres-v1",
+    "minimum_primary_clearance_deg": 0.0,
+    "primary_area_sr": 12.566370614359172,
+    "shared_boundary_overlap_lower_bound_deg": 0.0,
+    "sheet_count": 2
+  }
+}

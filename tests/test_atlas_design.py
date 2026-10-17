@@ -6,6 +6,65 @@ import json
 import numpy as np
 import pytest
 
+
+def test_hemispheric_design_is_exact_and_round_trips_without_rectangular_corners():
+    from pathlib import Path
+    import tomllib
+    from wenu.atlas_design import AtlasDesignRequest, HEMISPHERIC_TILING_METHOD
+    path = Path(__file__).resolve().parents[1] / 'examples/atlas_design_hemispheres_v1.toml'
+    atlas = AtlasDesignRequest.from_dict(tomllib.loads(path.read_text())).resolve()
+    assert atlas.containment_method == HEMISPHERIC_TILING_METHOD
+    assert atlas.validation()['primary_area_sr'] == pytest.approx(4 * np.pi)
+    assert atlas.validation()['shared_boundary_overlap_lower_bound_deg'] == 0
+    assert AtlasBandTiling.from_json(atlas.to_json()).to_json() == atlas.to_json()
+    south, north = atlas.geometry.sheets
+    assert [south.number, north.number] == [1, 2]
+    assert all(s.boundary_kind == 'hemisphere' for s in (south, north))
+    assert atlas.primary_sheet_id(123, 0) == north.sheet_id
+    assert atlas.neighbours() == {south.sheet_id: (north.sheet_id,), north.sheet_id: (south.sheet_id,)}
+    for sheet, sign in ((south, -1), (north, 1)):
+        ra = np.arange(0, 360, 13.)
+        np.testing.assert_array_equal(sheet.contains(atlas.geometry.page, ra, sign * .01), True)
+        np.testing.assert_array_equal(sheet.contains(atlas.geometry.page, ra, -sign * .01), False)
+        edge = np.asarray(sheet.boundary_samples(atlas.geometry.page))
+        np.testing.assert_allclose(edge[:, 1], 0, atol=1e-12)
+        x, y = sheet.projection.project_spherical(edge[:, 0], edge[:, 1])
+        np.testing.assert_allclose(np.hypot(x, y), sheet.projection.projected_radius(90))
+
+
+@pytest.mark.parametrize('section,key,value', [
+    ('tiling', 'field_width_deg', 179), ('tiling', 'overlap_deg', .1),
+    ('tiling', 'max_sheets', 1), ('overview', 'shared_band_width_deg', 20),
+    ('page', 'sky_aspect_ratio', .8),
+])
+def test_hemispheric_request_rejects_inconsistent_inputs(section, key, value):
+    from pathlib import Path
+    import tomllib
+    from wenu.atlas_design import AtlasDesignRequest
+    path = Path(__file__).resolve().parents[1] / 'examples/atlas_design_hemispheres_v1.toml'
+    data = tomllib.loads(path.read_text())
+    assert data[section][key] != value
+    data[section][key] = value
+    with pytest.raises(ValueError):
+        AtlasDesignRequest.from_dict(data)
+
+
+def test_hemispheric_json_rejects_boundary_and_partition_tampering():
+    from pathlib import Path
+    from copy import deepcopy
+    path = Path(__file__).resolve().parents[1] / 'src/wenu/configuration/presets/atlas_layout_b4_hemispheres_v1.json'
+    original = json.loads(path.read_text())
+    for mutate in (
+        lambda d: d['geometry']['sheets'][0]['geometry'].update(boundary_kind='rectangle'),
+        lambda d: d['bands'][0].update(dec_max_deg=-1),
+        lambda d: d['geometry']['sheets'][1]['geometry'].update(projection_radius=3),
+    ):
+        changed = deepcopy(original)
+        mutate(changed)
+        assert changed != original
+        with pytest.raises(ValueError):
+            AtlasBandTiling.from_dict(changed)
+
 from wenu.atlas_design import (
     AtlasGeometrySpecimen,
     AtlasOverviewGeometry,

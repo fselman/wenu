@@ -115,7 +115,7 @@ class AtlasPublicationBatchPlan:
 
 @dataclass(frozen=True)
 class AtlasSheetChart:
-    """Native fixed-equatorial adapter over the canonical rectangular renderer."""
+    """Native fixed-equatorial adapter over canonical rectangular/polar owners."""
 
     sheet: AtlasSheetGeometry
     page: object
@@ -132,12 +132,27 @@ class AtlasSheetChart:
 
     @property
     def coordinate_label_anchor(self):
+        if self.sheet.boundary_kind == 'hemisphere':
+            return self.polar_chart.coordinate_label_anchor
         from .boundaries import RectangularLabelAnchor
         return RectangularLabelAnchor()
 
     @property
+    def polar_chart(self):
+        from .polar_planisphere import PolarPlanisphereChart
+        return PolarPlanisphereChart(
+            pole='south' if self.sheet.center_dec_deg < 0 else 'north',
+            limiting_declination_deg=0, projection_name='stereographic',
+            position_angle_deg=self.sheet.position_angle_deg + math.copysign(
+                self.sheet.pole_meridian_ra_deg, self.sheet.center_dec_deg),
+            projection_radius=self.sheet.projection_radius, flip_ew=self.sheet.flip_ew,
+            reviewed_label_curation=False)
+
+    @property
     def chart_context(self):
         from .context import ChartContext
+        if self.sheet.boundary_kind == 'hemisphere':
+            return self.polar_chart.chart_context
         return ChartContext(self.viewport, self.sheet.field_width_deg,
             self.sheet.field_height_deg(self.page), self.sheet.center_ra_deg,
             self.sheet.center_dec_deg)
@@ -150,6 +165,8 @@ class AtlasSheetChart:
             raise ValueError("Atlas sheets require explicit native ICRS realization.")
         if options.get("observer") is not None:
             raise ValueError("Atlas sheets do not admit an observer.")
+        if self.sheet.boundary_kind == 'hemisphere':
+            return self.polar_chart.render(sky, renderer, **options)
         return RegionalChart.render(self, sky, renderer, **options)
 
 
@@ -191,10 +208,12 @@ class AtlasChartPresentation:
     grid_polar_ra_step_hours: int = 2
     grid_minute_labels_visible: bool = False
     milky_way_color: str = "#87CEFA"
+    chart_legend_visible: bool = True
     legend_fontsize: float = 12.0
     messier_label_fontsize: float = 7.0
     grid_dec_label_scale: float = 0.8
     deep_sky_symbol_scale: float = 1.8
+    cluster_symbol_scale: float = 1.0
     planetary_nebula_symbol_scale: float = 1.25
     planetary_nebula_color: str = "#24552b"
     planetary_nebula_linewidth: float = 1.1
@@ -225,12 +244,14 @@ class AtlasChartPresentation:
                 and limit > self.stellar_magnitude_sizing.size_reference_magnitude):
             raise ValueError("Magnitude limit must not exceed the sizing reference.")
         for name in ("star_size_scale", "report_label_scale", "report_separator_width", "report_separator_gap_mm",
-                     "grid_label_fontsize", "grid_minor_label_scale", "grid_frame_width_scale", "legend_fontsize", "messier_label_fontsize", "deep_sky_symbol_scale", "planetary_nebula_symbol_scale", "planetary_nebula_linewidth"):
+                     "grid_label_fontsize", "grid_minor_label_scale", "grid_frame_width_scale", "legend_fontsize", "messier_label_fontsize", "deep_sky_symbol_scale", "cluster_symbol_scale", "planetary_nebula_symbol_scale", "planetary_nebula_linewidth"):
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
                 raise ValueError(f"{name} must be finite and positive.")
         if self.grid_minor_label_scale > 1:
             raise ValueError("grid_minor_label_scale must be at most 1.")
+        if type(self.chart_legend_visible) is not bool:
+            raise ValueError("chart_legend_visible must be boolean.")
         if type(self.grid_lines_visible) is not bool:
             raise ValueError("grid_lines_visible must be boolean.")
         if type(self.open_cluster_angular_sizes) is not bool:
@@ -241,6 +262,9 @@ class AtlasChartPresentation:
             raise ValueError("star_size_scale squared must be finite.")
         if not math.isfinite(self.deep_sky_symbol_scale * self.deep_sky_symbol_scale):
             raise ValueError("deep_sky_symbol_scale squared must be finite.")
+        cluster_scale = self.deep_sky_symbol_scale * self.cluster_symbol_scale
+        if not math.isfinite(cluster_scale * cluster_scale):
+            raise ValueError("Cluster symbol area must be finite.")
         from matplotlib.colors import is_color_like
         if not isinstance(self.planetary_nebula_color, str) or not is_color_like(self.planetary_nebula_color):
             raise ValueError("Invalid planetary_nebula_color.")
@@ -326,6 +350,8 @@ def _atlas_report_data(chart, sky, composition, rendering):
         sky_frame = dict(x=box.x0 * scale, y=box.y0 * scale,
                          width=box.width * scale, height=box.height * scale)
         sky_area_mm2 = sky_frame["width"] * sky_frame["height"]
+    if chart.sheet.boundary_kind == 'hemisphere':
+        sky_area_mm2 *= math.pi / 4
     statistics = None
     reference_range = None
     budget = None
@@ -515,12 +541,12 @@ def _draw_atlas_magnitude_scale(*, chart, sky, renderer, composition, rendering,
     """Minimal in-frame scale through the existing rendered-legend owner."""
     if abs(chart.sheet.center_dec_deg) == 90:
         _draw_polar_declination_labels(chart, renderer, presentation or AtlasChartPresentation(), rendering)
-    if 'stars' not in composition.detail.enabled_layers:
+    presentation = AtlasChartPresentation() if presentation is None else presentation
+    if not presentation.chart_legend_visible or 'stars' not in composition.detail.enabled_layers:
         return None
     from .automatic_legends import draw_automatic_chart_legends
     from .legend_plan import ChartLegendPlan, LegendPlacement
     data = _atlas_report_data(chart, sky, composition, rendering)
-    presentation = AtlasChartPresentation() if presentation is None else presentation
     style = replace(composition.style, legend=replace(composition.style.legend,
         fontsize=presentation.legend_fontsize, title_fontsize=presentation.legend_fontsize))
     legends = draw_automatic_chart_legends(renderer.ax, chart, sky, style,
@@ -552,7 +578,7 @@ def _atlas_grid_options(chart, presentation):
     return equatorial_grid_mark_options(chart, marks)
 
 
-def _atlas_frame_widths(style, presentation):
+def _atlas_frame_widths(style, presentation, *, circular=False):
     allowance = 2 * (style.canvas.grid_label_band_padding_points + style.canvas.grid_label_band_linewidth / 2)
     # A Dec string lies along its projected parallel, rather than along the
     # vertical edge. Budget its worst rotated extent once from the font.
@@ -562,6 +588,14 @@ def _atlas_frame_widths(style, presentation):
     measure = RendererAgg(1, 1, 72)
     extent = max(math.hypot(*measure.get_text_width_height_descent(f'{value:+g}°', font, ismath=False)[:2])
                  for value in range(-80, 81, 10))
+    if circular:
+        # Radial RA labels rotate around the rim. Their display bounding boxes
+        # require at most width + height in the radial direction, once per atlas.
+        ra_font = FontProperties(size=presentation.grid_label_fontsize)
+        ra_extent = max(sum(measure.get_text_width_height_descent(f'{hour}ʰ', ra_font, ismath=False)[:2])
+                        for hour in range(24))
+        thickness = (max(extent, ra_extent) + allowance) * presentation.grid_frame_width_scale
+        return thickness, thickness
     return ((presentation.grid_label_fontsize + allowance) * presentation.grid_frame_width_scale,
             (extent + allowance) * presentation.grid_frame_width_scale)
 
@@ -616,8 +650,8 @@ def _draw_polar_declination_labels(chart, renderer, presentation, rendering):
         renderer.assign_semantic_identity(artists, identity)
 
 
-def _atlas_grid_layout(page, style, presentation):
-    horizontal, vertical = _atlas_frame_widths(style, presentation)
+def _atlas_grid_layout(page, style, presentation, *, circular=False):
+    horizontal, vertical = _atlas_frame_widths(style, presentation, circular=circular)
     horizontal, vertical = horizontal * 25.4 / 72, vertical * 25.4 / 72
     available_width = page.useful_width_mm - 2 * vertical
     available_height = page.useful_height_mm - 2 * horizontal

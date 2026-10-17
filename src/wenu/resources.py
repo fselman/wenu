@@ -375,9 +375,11 @@ _CONFIGURATION_PRESETS = {
     'chart': {'atlas-v6': 'chart_atlas_v6.toml',
               'scorpius-v1': 'sco_installed_catalogues_v1.toml',
               'scorpius-v2': 'sco_installed_catalogues_v2.toml'},
-    'atlas-style': {'atlas-v6': 'atlas_style_v6.toml'},
+    'atlas-style': {'atlas-v6': 'atlas_style_v6.toml',
+                    'atlas-hemispheres-v2': 'atlas_style_hemispheres_v2.toml'},
     'atlas-layout': {'b4-landscape-five-band': 'atlas_layout_b4_landscape_v1.json',
-                     'b4-portrait': 'atlas_layout_b4_portrait_v3.json'},
+                     'b4-portrait': 'atlas_layout_b4_portrait_v3.json',
+                     'b4-hemispheres': 'atlas_layout_b4_hemispheres_v1.json'},
     'atlas-index': {'b4-landscape': 'atlas_index_style_v2.toml',
                     'b4-portrait': 'atlas_index_style_v3.toml'},
 }
