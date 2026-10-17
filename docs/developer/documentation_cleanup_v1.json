@@ -1,0 +1,469 @@
+{
+  "schema_version": 1,
+  "baseline_commit": "6708f54a0d8984c0be348b2c8cb02b311646a02b",
+  "tested_commit": "ea8dc505a606fca76a53aaee0f5925ea76dbadb3",
+  "tested_tree": "c217bd158ac555d201d3968bd9b8727921bb494b",
+  "mac_full_suite": {
+    "passed": 3606,
+    "elapsed_seconds": 1136.74
+  },
+  "historical_documentation_test_count": 238,
+  "scope": "Documentation and documentation-contract tests only; production, data, dependencies, packaging and other test files unchanged.",
+  "preserved_editions": [
+    {
+      "original_path": "README.es.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/README.es.md",
+      "original_git_blob_sha": "504c15432581e0646df9de4dcafa374a2eff1133",
+      "disposition": "preserved_before_consolidation"
+    },
+    {
+      "original_path": "README.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/README.md",
+      "original_git_blob_sha": "c103f0b1b5446de8cee194166a09eb2e9a3c8c5f",
+      "disposition": "preserved_before_consolidation"
+    },
+    {
+      "original_path": "docs/developer/README.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/README.md",
+      "original_git_blob_sha": "51358fcab825935b2921c3b101023c13ea7901c5",
+      "disposition": "preserved_before_consolidation"
+    },
+    {
+      "original_path": "docs/developer/artificial_satellite_crossing_audit_50s0.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/artificial_satellite_crossing_audit_50s0.md",
+      "original_git_blob_sha": "e961feb5dbbde85d99a03ee0194edb33595bfe85",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/assistant_instructions.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/assistant_instructions.md",
+      "original_git_blob_sha": "819a484a104c343c0d6dd1f2422beb568cbec2b9",
+      "disposition": "preserved_before_consolidation"
+    },
+    {
+      "original_path": "docs/developer/comet_discovery_and_reporting_audit_50a5d.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/comet_discovery_and_reporting_audit_50a5d.md",
+      "original_git_blob_sha": "92b13b8ce95e8b1003c9da0fdf85cf709ef7d0bf",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/coordinate_system_guide_v0.9.5.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/coordinate_system_guide_v0.9.5.md",
+      "original_git_blob_sha": "eae49b244578a764681f4f7afc93077e850cb0ab",
+      "disposition": "preserved_before_consolidation"
+    },
+    {
+      "original_path": "docs/developer/current_architecture_v0.9.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/current_architecture_v0.9.md",
+      "original_git_blob_sha": "14873ada08806ff6d021d48e70b5d1611b48ab16",
+      "disposition": "preserved_before_consolidation"
+    },
+    {
+      "original_path": "docs/developer/diagrams/README.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/README.md",
+      "original_git_blob_sha": "f07c513cc1655765be92e3a531b0a2b28e1d0e8e",
+      "disposition": "preserved_before_consolidation"
+    },
+    {
+      "original_path": "docs/developer/diagrams/asteroid_validation_50a2.dot",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/asteroid_validation_50a2.dot",
+      "original_git_blob_sha": "c6389a59e1773aceb1c517b1ec383c8db289676b",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/asteroid_validation_50a2.svg",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/asteroid_validation_50a2.svg",
+      "original_git_blob_sha": "7e707819455354281c85287a98227fbbed195fdb",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/coordinate_runtime_sequence_as_is_v0.9.5.dot",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/coordinate_runtime_sequence_as_is_v0.9.5.dot",
+      "original_git_blob_sha": "8417af50fb3eb736cdd1aea5d82af8ffbfdeeeca",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/coordinate_runtime_sequence_as_is_v0.9.5.svg",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/coordinate_runtime_sequence_as_is_v0.9.5.svg",
+      "original_git_blob_sha": "c5af88642ef08bbd24a5d2c33fe0944a5a155d93",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/coordinate_runtime_sequence_target_49bc.dot",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/coordinate_runtime_sequence_target_49bc.dot",
+      "original_git_blob_sha": "f6565939c6866e7067c16e2d3d465e2e74ab737b",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/coordinate_runtime_sequence_target_49bc.svg",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/coordinate_runtime_sequence_target_49bc.svg",
+      "original_git_blob_sha": "481b54b7b012f1977f24c4911feca8c0a73f84f1",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/coordinate_static_structure_as_is_v0.9.5.dot",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/coordinate_static_structure_as_is_v0.9.5.dot",
+      "original_git_blob_sha": "2a654cddd3be7d4bd2c6b4a5d0c8b8613e20a4be",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/coordinate_static_structure_as_is_v0.9.5.svg",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/coordinate_static_structure_as_is_v0.9.5.svg",
+      "original_git_blob_sha": "fb4025090b1a8edc831750b99e23d428fdefcd2c",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/coordinate_static_structure_as_is_v0.9.dot",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/coordinate_static_structure_as_is_v0.9.dot",
+      "original_git_blob_sha": "27f77d8b3f4e2becf36771bf8bbae12c0d6805d0",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/coordinate_static_structure_as_is_v0.9.svg",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/coordinate_static_structure_as_is_v0.9.svg",
+      "original_git_blob_sha": "621bb6f0158f92a2f1db586d8541d87742a36ff4",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/coordinate_static_structure_target_49bc.dot",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/coordinate_static_structure_target_49bc.dot",
+      "original_git_blob_sha": "782ba8b7d176597db9c65b0b4c65a2f6932c7ce7",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/coordinate_static_structure_target_49bc.svg",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/coordinate_static_structure_target_49bc.svg",
+      "original_git_blob_sha": "5277a3678996107b01a7ca6fdebfeedc3d839cb9",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/coordinate_transformation_as_is_v0.9.5.dot",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/coordinate_transformation_as_is_v0.9.5.dot",
+      "original_git_blob_sha": "3c9aab97b5410e322542507b831bbc438c578aac",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/coordinate_transformation_as_is_v0.9.5.svg",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/coordinate_transformation_as_is_v0.9.5.svg",
+      "original_git_blob_sha": "1ab5c2e0d0ffff2325c1cfd0834992a9451545a1",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/coordinate_transformation_as_is_v0.9.dot",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/coordinate_transformation_as_is_v0.9.dot",
+      "original_git_blob_sha": "8596d20aa3887b544ffda746c145eb48d003659e",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/coordinate_transformation_as_is_v0.9.svg",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/coordinate_transformation_as_is_v0.9.svg",
+      "original_git_blob_sha": "3755b77be47717244b165329011becd82100fa6c",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/coordinate_transformation_target_49bc.dot",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/coordinate_transformation_target_49bc.dot",
+      "original_git_blob_sha": "b7190e28cf14c0c4fffc11e5f137e29baebc1fe7",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/coordinate_transformation_target_49bc.svg",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/coordinate_transformation_target_49bc.svg",
+      "original_git_blob_sha": "b5199fb67beb61d0e8260e51f7885a7be4d37137",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/current_architecture_v0.9_overview.dot",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/current_architecture_v0.9_overview.dot",
+      "original_git_blob_sha": "582ee717f9701d65642cdc401fd25f122106928e",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/current_architecture_v0.9_overview.svg",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/current_architecture_v0.9_overview.svg",
+      "original_git_blob_sha": "4df727f2488651704337e994db98ccb61aad464e",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/drawable_ceres_50a3b.dot",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/drawable_ceres_50a3b.dot",
+      "original_git_blob_sha": "26352ac47c38ac1d8daad71e954d94e467073cc2",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/drawable_ceres_50a3b.svg",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/drawable_ceres_50a3b.svg",
+      "original_git_blob_sha": "452e1cb17a734741ebc39b94337d9d72ce87fb7c",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/minor_body_state_provider_50a1.dot",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/minor_body_state_provider_50a1.dot",
+      "original_git_blob_sha": "8f338a906a8c568cd49be5d7f7eb5df2bfb025e4",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/minor_body_state_provider_50a1.svg",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/minor_body_state_provider_50a1.svg",
+      "original_git_blob_sha": "9dec32d98a4dd1e04eae827eb56aa4e9f5644da7",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/numbered_asteroids_50a3d.dot",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/numbered_asteroids_50a3d.dot",
+      "original_git_blob_sha": "e8baeab518adea47f841210375bfeb604e41b284",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/diagrams/numbered_asteroids_50a3d.svg",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/diagrams/numbered_asteroids_50a3d.svg",
+      "original_git_blob_sha": "be8160273079cb51d1f0d665026a9ba0c2da5de5",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/implementation_reference.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/implementation_reference.md",
+      "original_git_blob_sha": "a0c79204385b46a4504ad989097a843b24da319f",
+      "disposition": "preserved_before_consolidation"
+    },
+    {
+      "original_path": "docs/developer/post_v0.9_architecture_roadmap.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/post_v0.9_architecture_roadmap.md",
+      "original_git_blob_sha": "2f95ba58848a7b0d88f9c020d140c676f5530884",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satchecker_provider_contract_audit_50s2a.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satchecker_provider_contract_audit_50s2a.md",
+      "original_git_blob_sha": "3f4b7de2361c0581026be3fb03fc60671e1a2878",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_binocular_regional_track_audit_50s6g3b.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_binocular_regional_track_audit_50s6g3b.md",
+      "original_git_blob_sha": "ddaaac70ac79725c45d3a56814e005a86c7629bb",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_cli_file_protocol_audit_50s6g2c.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_cli_file_protocol_audit_50s6g2c.md",
+      "original_git_blob_sha": "e7d56a442346ef4903d1983cac0009bb0e08b8b7",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_crossing_acceleration_audit_50s6a.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_crossing_acceleration_audit_50s6a.md",
+      "original_git_blob_sha": "229c4f54a08442f2d6c1ab4b5728271f1cf6cfd6",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_crossing_coordination_audit_50s6c.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_crossing_coordination_audit_50s6c.md",
+      "original_git_blob_sha": "3f1dff16ead45b64144c363962a8f3428e7dd9c6",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_crossing_oracle_audit_50s5a.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_crossing_oracle_audit_50s5a.md",
+      "original_git_blob_sha": "59fa514d042ee3c45073aa0423e1d258440b486e",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_delivery_audit_50s6g.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_delivery_audit_50s6g.md",
+      "original_git_blob_sha": "9bb3c6277ade159f3cb93b5ac6af2239c5175bb0",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_direct_source_radiometry_audit_50s7d.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_direct_source_radiometry_audit_50s7d.md",
+      "original_git_blob_sha": "4524d5ef79a9203e9a9cb91e8ff02c43b90b7126",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_equivalence_matrix_audit_50s6g1b2d.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_equivalence_matrix_audit_50s6g1b2d.md",
+      "original_git_blob_sha": "1f977adb03db6e92de14a1052b86c6eb4d9ab42d",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_exact_crossing_report_audit_50s6g2a.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_exact_crossing_report_audit_50s6g2a.md",
+      "original_git_blob_sha": "199c2f74bcccf0f6c32b1c75bf4f238e980a91b6",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_exact_local_track_audit_50s6g3a.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_exact_local_track_audit_50s6g3a.md",
+      "original_git_blob_sha": "01957d3eff5e2727fe82643e30edc7b73d4efc64",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_guide.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_guide.md",
+      "original_git_blob_sha": "59168249ac92785be0b94338ceec610e8203493d",
+      "disposition": "preserved_before_consolidation"
+    },
+    {
+      "original_path": "docs/developer/satellite_illumination_night_geometry_audit_50s7a.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_illumination_night_geometry_audit_50s7a.md",
+      "original_git_blob_sha": "2854ffcb4733ff695625cce8443dfc9442a01df7",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_lime_distribution_preflight_50s7d3a.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_lime_distribution_preflight_50s7d3a.md",
+      "original_git_blob_sha": "66b1234faa3f038c223d3204748580c7a97db1bd",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_lime_offline_inspection_audit_50s7d3b.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_lime_offline_inspection_audit_50s7d3b.md",
+      "original_git_blob_sha": "d203b20ca51c4d36ba394a6ca998538b14ac3a0c",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_medium_specimen_audit_50s6g1b2c.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_medium_specimen_audit_50s6g1b2c.md",
+      "original_git_blob_sha": "39eba734f93f5147d576731692b7437c67003067",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_moonlight_geometry_comparison_audit_50s7d3_phase_b.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_moonlight_geometry_comparison_audit_50s7d3_phase_b.md",
+      "original_git_blob_sha": "19ca28f9d8acd30ee83f06f02350a521cb85a76b",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_moonlight_geometry_run_protocol_phase_b.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_moonlight_geometry_run_protocol_phase_b.md",
+      "original_git_blob_sha": "c0a621cbce7aaf7b5aaa3c317b37a26477b2bb9e",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_moonlight_radiometry_audit_50s7d3.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_moonlight_radiometry_audit_50s7d3.md",
+      "original_git_blob_sha": "5195f90dc9a712d90461e4cebe9c24a19c77fbef",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_multifov_interchange_audit_50s6e.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_multifov_interchange_audit_50s6e.md",
+      "original_git_blob_sha": "35d8363c75f3b2e8bb5c04b677eaa76fdcf87318",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_observatory_planning_adapter_audit_50s6h.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_observatory_planning_adapter_audit_50s6h.md",
+      "original_git_blob_sha": "d5c5cc44c4473a2680b0e5d84482dd8326d4ca75",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_program_log.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_program_log.md",
+      "original_git_blob_sha": "394e3957c518a3c44a0c913d70034fe4792dc994",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_report_drawing_audit_50s3a.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_report_drawing_audit_50s3a.md",
+      "original_git_blob_sha": "c47330fa95651804b564f0105cace21a6b50e410",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_shadow_transition_audit_50s7c.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_shadow_transition_audit_50s7c.md",
+      "original_git_blob_sha": "a0e2331fb275e3c26a2427ca853c88707abdd979",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_snapshot_admission_audit_50s6g1b2a.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_snapshot_admission_audit_50s6g1b2a.md",
+      "original_git_blob_sha": "7ce9c74ad9dab750e91d60c42b3c53761415419e",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_snapshot_preflight_audit_50s6g1b.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_snapshot_preflight_audit_50s6g1b.md",
+      "original_git_blob_sha": "bf3f2ed814cb723811fc0342f428821aa5d0282a",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_snapshot_propagation_audit_50s4a.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_snapshot_propagation_audit_50s4a.md",
+      "original_git_blob_sha": "665cdb4a979088b83e2909f5e735f27b96d997c2",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_spectral_solar_radiometry_audit_50s7d2.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_spectral_solar_radiometry_audit_50s7d2.md",
+      "original_git_blob_sha": "e4db815f824e9c6ecb2b982edd6598546a3f28b5",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_stereographic_planisphere_track_audit_50s6g4a.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_stereographic_planisphere_track_audit_50s6g4a.md",
+      "original_git_blob_sha": "99ed45e2f60604a8a1c307d753bae278738286f3",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/satellite_tabular_report_audit_50s6g2b.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/satellite_tabular_report_audit_50s6g2b.md",
+      "original_git_blob_sha": "648e4b644881d90a7abbcfe80ed304972de5d22e",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/source_tree.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/source_tree.md",
+      "original_git_blob_sha": "f17a183ed90f52996242aa83a3fd0a9c7a09d839",
+      "disposition": "preserved_before_consolidation"
+    },
+    {
+      "original_path": "docs/developer/stellar_designations_audit.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/stellar_designations_audit.md",
+      "original_git_blob_sha": "fc7e0cc93c938e90ce284788f50b70f402124376",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/developer/target_architecture_v0.9.5.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/developer/target_architecture_v0.9.5.md",
+      "original_git_blob_sha": "ee30df75a0380474d8826f0ed6a375e3acf43616",
+      "disposition": "moved"
+    },
+    {
+      "original_path": "docs/user_guide/atlas.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/user_guide/atlas.md",
+      "original_git_blob_sha": "f17b22020f9ea743e07dc254fd7e7b5fc44389b9",
+      "disposition": "preserved_before_consolidation"
+    },
+    {
+      "original_path": "docs/user_guide/curation.md",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/docs/user_guide/curation.md",
+      "original_git_blob_sha": "936f45d28c9a0b3189267071f9f7b90449833a7e",
+      "disposition": "preserved_before_consolidation"
+    },
+    {
+      "original_path": "tests/test_current_documentation.py",
+      "archive_path": "docs/developer/archive/pre_kernel_20261017/tests/test_current_documentation.py.txt",
+      "original_git_blob_sha": "2789ea289461ae40afb7f4877d1a6abe01219a65",
+      "disposition": "preserved_before_consolidation"
+    }
+  ],
+  "retained_operational_checks": [
+    "Python example syntax",
+    "public import execution",
+    "obsolete import rejection",
+    "source inventory coverage",
+    "current chart-family CLI examples",
+    "schema-v2 constellation controls",
+    "unchanged Selman review cells",
+    "SCM version contract"
+  ],
+  "replacement_checks": [
+    "active authority inventory and links/anchors",
+    "exact archived Git-blob identities",
+    "noncollection of historical tests",
+    "all registered atlas presets and valid CLI options",
+    "two architecture diagrams and ordered milestone exits"
+  ]
+}

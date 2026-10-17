@@ -1,0 +1,5441 @@
+# Wenu implementation reference
+
+Regional v10 reference placement measures the visible contiguous curve and
+its rendered label width in final display units. Automatic names search near
+the curve ends; when length exceeds `label_repeat_length_factor` (default 5)
+times text width, independent end windows supply two labels. Full text must
+fit the sky boundary. Tangents, normal offsets, explicit anchors, polar
+reference policy and temporal annotations retain their existing owners.
+Schema-v2 `grids_references.references.label_repeat_length_factor` translates
+through furniture and survives CLI reference selection. Coordinate latitude
+lists now use symmetric multiples of their interval from zero; equatorial
+grids include zero declination even without a separately requested reference.
+The 70-degree regional review requests `--declination-step 15` explicitly.
+Automatic density thresholds remain unchanged; no new module is introduced.
+
+The La Ligua v6 follow-up requires full constellation-text containment
+inside the prepared visible IAU region and sky boundary. Names with no fitting
+candidate are omitted, including fixed names; fixed candidates are not moved.
+The renderer exposes omitted names through `suppressed_region_labels`.
+Packaged coordinate fonts are atlas 5.04 points and cartoon 5.76 points.
+Marginal text sits near its coordinate crossing; ordinary cardinal labels
+retain the compact band. Oversized or dense diagonal text may expand furniture.
+Noncentral altitude labels use a 0.2-em offset; the zenith keeps 0.65 em.
+The shared deterministic search retains orientation, colour, reference-curve
+association and temporal anchors. Location planispheres default to a 1-point
+constellation gap, with explicit CLI/TOML values retaining precedence.
+The active authored Scorpius figure replaces sigma–delta with sigma–beta1
+(HIP 80112–78820); its remaining edges and segment count are unchanged.
+No module ownership, coordinate convention or grid cadence changes.
+
+The exterior coordinate-label band is chart-owned furniture for non-polar
+planispheres, regional/constellation charts and binocular fields. Existing
+canvas style/configuration/CLI owners supply enabled, fill/frame colours,
+physical line width and padding. The default is opaque white with a black
+0.8-point frame. `charts/boundaries.py::ExteriorGridLabelAnchor` selects real
+crossings near existing regional/binocular anchors; it does not add cadence
+or pole-specific policy. `MatplotlibRenderer.set_grid_label_band()` and final
+furniture measurement produce an annulus or rectangular compound path with
+an interior hole, preserve the viewport and fit exterior text in physical
+units. `chart_document.py` assigns separate style-editable SVG identities.
+Polar/calendar furniture, tracks and astronomical geometry are unchanged.
+No production module or test module is added. See the label guide for controls.
+
+## Object-label typography overrides
+
+`ChartStyleOverrides(labels_orientation="upright")` or
+`labels_orientation="up-away-from-cp"` overrides `CanvasStyle.labels_orientation`.
+`chart` retains the family default. Composed styles carry the value through
+`PublicationStyle.labels_orientation` to chart-local preparation. The CLI
+switches `--labels-upright` and `--labels-up-away-from-cp` are mutually
+exclusive; TOML uses `[styles.atlas.canvas]` or `[styles.cartoon.canvas]`.
+The away-from-pole policy requires a polar-planisphere chart. Neither
+switch changes reference-curve names, coordinate labels, track dates, or
+sequence annotations. `MatplotlibRenderer.finalize_label_placement()` keeps
+point-label rotation rules and evaluates actual rotated candidate bounds.
+`FullSkyChart.altitude_label_azimuths_deg` defaults to `(0, 90, 180, 270)`.
+`HorizonGridLabelAnchor` applies only to its AltAz grid; other grids retain
+the existing circular anchor. A grid anchor may return a list of
+`CurveLabelPlacement` objects. `exterior_direction` requests an unclipped
+exterior label, displaced in physical units by measured text support plus
+`normal_offset_em` padding. Automatic point placement checks the actual clip
+path, while temporal dates remain fixed obstacles.
+See [label typography](../user_guide/labels.md) for limitations.
+
+With `star_label_placement="auto"`, constellation label styles carry internal
+`placement="region"`; prepared points may carry aligned `label_regions`
+metadata containing their projected visible IAU polygons. The renderer joins
+these bounded area candidates with stellar candidates and optional curve
+anchor `candidates(curve, ax)` values. Reference furniture supplies these
+values only for automatic anchors, preserving each local tangent and normal
+offset. Explicit reference anchors and all grid/temporal labels remain fixed.
+`MatplotlibRenderer.unresolved_label_collisions` exposes residual text pairs
+for inspection after finalization. Coordinate descent plus bounded pair moves
+is deterministic; no annealing or CLI diagnostic output is added.
+
+**Architecture version:** 0.9
+**Status:** Implemented
+**Date:** 2026-08-28
+
+This reference records the implemented public chart workflow. Lower-level
+geometry, projection, preparation, and rendering APIs remain available for
+advanced use, but ordinary chart production uses a resolved composition.
+
+## 1. Canonical public imports
+
+The CLI constellation feature selectors accept `all` independently for
+labels, lines and boundaries, with matching `--constellation-*-exclude`
+explicit IAU lists. Configuration parity lives in `[detail.constellations]`.
+Resolution expands/subtracts public identities before the existing layer
+adapters and `SkyContentSelection`; only automatic `all` label placement
+marks `visible_constellation_labels=True`. Render-local preparation uses
+official region/viewport intersection and preserves partially visible regions
+outside the usual typography inset. Explicit star labels are unchanged.
+
+
+```python
+from wenu import (
+    AdaptiveDetailPolicy,
+    AllSkyChart,
+    AtlasChartStyle,
+    BinocularChart,
+    CartoonDetailPolicy,
+    CelestialSphere,
+    ChartContentOptions,
+    ChartLegendSelection,
+    ChartStyleOverrides,
+    CircumpolarChart,
+    DetailOverrides,
+    FixedDetailPolicy,
+    FullSkyChart,
+    LegendOptions,
+    MatplotlibRenderer,
+    Observer,
+    PresentationMode,
+    PrintMode,
+    RegionalChart,
+    ResolvedDetail,
+    SkyContentSelection,
+    add_chart_arguments,
+    chart_detail_overrides,
+    compose_chart,
+)
+```
+
+The stable named choices are:
+
+- chart styles: `"atlas"` and `"cartoon"`;
+- output modes: `"print"` (with `"paper"` as an alias) and
+  `"presentation"`.
+
+`Observer` owns its loaded Skyfield ephemeris. Call `observer.close()` when
+its lifetime ends, or use `with Observer(...) as observer:` for deterministic
+cleanup. Existing callers retain automatic finalization as a safety net.
+
+## 2. Independent chart concerns
+
+| Concern | Owns |
+|---|---|
+| Chart type | projection, framing, viewport, and final boundary |
+| Style | visual appearance |
+| Output mode | dimensions, DPI, and medium-specific visual scaling |
+| Detail policy | astronomical selection and density |
+| Legend policy | object, stellar-magnitude, and contextual furniture |
+
+Styles and modes do not change chart geometry. Detail is resolved into
+render-local layer options, so sequential exports of the same sky do not leak
+selection state.
+
+## 3. Canonical composition and export
+
+```python
+composition = compose_chart(
+    chart,
+    style="atlas",
+    mode="print",
+    detail=FixedDetailPolicy(
+        ResolvedDetail(star_magnitude_limit=6.0)
+    ),
+    legends=LegendOptions(
+        objects=True,
+        stellar_magnitudes=True,
+        context=True,
+    ),
+)
+
+result = chart.export(
+    sky,
+    MatplotlibRenderer(ax),
+    "chart.png",
+    composition=composition,
+)
+```
+
+`chart.export()` resolves render-local layer options, invokes the existing
+chart renderer, draws requested legends, and saves exactly once. It returns a
+`ChartExportResult`; established two-value unpacking remains supported:
+
+```python
+rendering, saved = result
+```
+
+Compatibility `style=` and `layer_options=` arguments remain available for
+existing callers.
+
+Canonical examples may add the complete shared command-line contract with:
+
+```python
+add_chart_arguments(parser, default_output="output/example")
+```
+
+The parsed request separates product selection, astronomical content,
+appearance, and legends. Content and legend switches are opt-in. Explicit
+visual overrides are immutable and apply after style/mode resolution:
+
+```python
+composition = compose_chart(
+    chart,
+    style="cartoon",
+    mode="presentation",
+    style_overrides=ChartStyleOverrides(
+        constellation_linewidth=2.0,
+        constellation_line_color="white",
+    ),
+)
+```
+
+Omitting `style_overrides` preserves the resolved style and mode defaults.
+`chart_detail_overrides(arguments)` applies the caller magnitude limit and
+the explicitly selected constellation and coordinate-grid layers relative to
+the selected detail policy. Constellation lines, labels, and boundaries are
+independent opt-in requests. It retains cartoon constellation-vertex
+selection even when line figures are hidden.
+
+Each canonical example exposes independent equatorial, ecliptic, and Galactic
+grid and grid-label switches. A `*-grid-labels` switch enables only its own
+grid. The grid systems use black, orange, and blue respectively for both
+their default lines and numeric labels. The principal equator, ecliptic, and
+Galactic plane remain separate furniture selected with
+`--grid-references SELECTION`.
+
+Cartoon presentation resolves a trichromatic palette: deep-blue background,
+yellow stars/lines/boundaries/context, and white footer credits. Cartoon print
+uses white paper with black structure, context, and credits. Circular chart
+boundaries obtain their appearance from the resolved cartoon mode without
+changing their chart-owned geometry. When Milky Way or Magellanic Cloud
+isophotes are selected as cartoon content, they use unshaded dotted contours:
+yellow in presentation and black in print.
+
+## 4. Chart types
+
+The canonical workflow supports:
+
+- `RegionalChart`;
+- `FullSkyChart`;
+- `AllSkyChart`;
+- `CircumpolarChart`;
+- `BinocularChart`.
+
+Each chart exposes `chart_context`, `render(...)`, and `export(...)` according
+to its geometry and boundary requirements. `FullSkyChart` may place its
+stereographic tangent point independently of the observer zenith; the observer
+still determines the AltAz sky and horizon. `CircumpolarChart` owns its
+declination-parallel boundary and circular grid-label anchor; when no explicit
+boundary appearance is supplied, it resolves that appearance from the chart
+style before delegating clipping to its circular rendering chart.
+`BinocularChart` uses the same shared boundary-resolution contract, so direct
+binocular compositions receive a visible style-owned aperture rim while an
+explicit `boundary_style` retains precedence.
+Circular charts, including full-sky planispheres, paint their style-owned sky
+color only inside the clipping
+boundary. Their default raster export leaves the surrounding figure and axes
+area transparent while retaining titles and footer furniture.
+The canonical `all_sky.py` example requests the complete Galactic sphere with
+Mollweide projection, central longitude zero, position angle zero, and an
+adaptive atlas magnitude ceiling of 5.0. Its labeled Galactic grid is supplied
+by the ordinary all-sky drawing default. The shared constellation-subject
+parser optionally supplies arbitrary adjacent or disjoint region masks; no
+example code transforms coordinates, splits the seam, or clips the ellipse.
+Built-in atlas and cartoon compositions use one quarter of their ordinary
+stellar scatter area for this half-height map, halving marker diameter while
+keeping rendered stars and the magnitude legend consistent.
+Constellation boundaries are outline-only content: their polygons always use
+a transparent face, including when an outside-region mask is also enabled.
+The canonical `binocular_object.py` example centers the same binocular chart
+family on any drawable target in the packaged resolver and accepts an explicit
+field diameter. Centaurus A (NGC 5128) and Omega Centauri (NGC 5139) remain
+the documented regression targets. Like the other five canonical examples,
+it generates one observer-independent sphere, obtains one observer-bound view,
+and delegates the selected product matrix to
+`draw_chart_view_from_arguments()`. It has no private target dictionary,
+catalogue loading, request graph, renderer, or export loop.
+The binocular stellar-magnitude legend defaults outside the rectangular axes
+at lower right so its frame remains clear of the circular aperture.
+Its stellar presentation opts into `StellarMagnitudeSizing` with the resolved
+limiting magnitude as the reference, so the faintest selected magnitude uses
+the configured minimum scatter area. Brighter stars grow by the configured
+exponent and are bounded by the configured maximum area. The rendered stars
+and stellar magnitude legend use the same sizing configuration.
+`LegendOptions.stellar_reference_magnitude` may restrict that same canonical
+legend to one representative integer magnitude without introducing a second
+marker-size calculation. `stellar_label_suffix` supplies compact unit text
+such as ` mag` while preserving the ordinary full-scale default.
+Milestone 46D.8I makes binocular products grid-free by default; all four grid
+systems remain explicit opt-ins. The title includes the resolved ICRS center
+and field diameter, and unregistered reference furniture marks the resolved
+target with a `+` through the ordinary projection and clipping pipeline. The
+binocular-only exponent is `0.35`, with minimum area `1.0` and maximum area
+`40.0`. Named binocular atlas composition selects the existing packaged fixed
+detail policy, so its limiting-magnitude sizing reference is always defined.
+The render callback is installed only when the supplied sphere contains a
+stellar layer; catalogue-free and empty-sky composition remains empty.
+
+Milestone 46D.8J changes no API or rendering behavior. It records acceptance
+of the remediated `2883e67` implementation while retaining the fixed visual
+matrix for a later complete rerun.
+`ChartContext.horizon_altitude_deg` optionally carries a chart-owned altitude
+floor into composition detail application. Circumpolar charts set it to
+`-90.0`, so their declination field and reference furniture are not clipped
+at the observer's horizon; other circular chart families retain their prior
+behavior.
+
+## 4.1 Canonical examples
+
+The supported user examples are exactly:
+
+- `all_sky.py`;
+- `planisphere.py`;
+- `regional_constellation_group.py`;
+- `regional_constellation.py`;
+- `circumpolar.py`;
+- `binocular_object.py`.
+
+An installed Wenu distribution provides the `wenu_examples` command. Running
+it creates `wenu_examples/` in the current directory and installs these six
+scripts from package resources. Existing scripts are preserved unless the
+caller supplies `--force`.
+
+Catalogue, symbol, legend, clipping, and historical style demonstrations are
+test-local regression fixtures rather than additional public examples.
+Every canonical example is a fewer-than-70-line declaration, and its source
+copy is byte-identical to the corresponding installed package resource.
+
+## 5. Styles and modes
+
+Named styles are resolved by `compose_chart()`:
+
+```python
+printed = compose_chart(chart, style="atlas", mode="print")
+slides = compose_chart(chart, style="atlas", mode="presentation")
+cartoon = compose_chart(chart, style="cartoon", mode="print")
+```
+
+Concrete style and mode objects may also be supplied. Use
+`cartoon_chart_style(...)` when explicit cartoon label placement or palette
+controls are required.
+
+## 6. Detail policies
+
+Available policies include:
+
+- `FixedDetailPolicy` for explicit resolved values;
+- `AdaptiveDetailPolicy` for field-size-dependent density, optionally with a
+  fixed publication `star_magnitude_limit` while its deep-sky thresholds
+  remain adaptive;
+- `CartoonDetailPolicy` for restrained cartoon content while preserving
+  constellation vertices and admitting only configured bright galaxies and
+  large clusters alongside the Milky Way and Magellanic Clouds.
+
+`DetailOverrides` modifies a policy without merging content choices into
+style or mode. Layer selection is applied locally for each render.
+
+`SkyContentSelection` carries immutable named subsets for one render and is
+owned by `ResolvedDetail.content_selection`. `None` preserves a registered
+layer's default selection, while an empty set explicitly selects no members
+of that family. The v0.8 migration initially applies the catalogue and
+constellation-label selections already supported by layer geometry. It also
+applies constellation-line and boundary subsets and Milky Way, LMC, and SMC
+isophote levels as render-local geometry options. These selections do not
+change the registered layers' loaded content or defaults.
+Resolved chart requests use `ol2` through `ol5` when no Milky Way levels are
+supplied. Comparative Mollweide and stereographic renders established that
+the D3-Celestial `ol1` geometry itself produces a very broad, nearly
+Galactic-latitude-bounded faint envelope; no distant vertex, projection jump,
+or clipping closure creates it. `ol1` remains available as explicit catalogue
+content, but is not a governed display default. Explicit level requests retain
+precedence. The public CLI exposes this nested selection as
+`--mw-contour OL1[,OL2,...]|all`; a comma-separated numbered selection draws
+exactly those isophotes, while `all` draws all five instead of the governed
+default set.
+The runtime catalogue is mechanically exported into five independent,
+plain-text GeoJSON resources, `milky_way_ol1.geojson` through
+`milky_way_ol5.geojson`. Explicit selection sends only rings from the chosen
+file into coordinate transformation and projection; the combined pinned
+snapshot remains provenance authority.
+
+`ResolvedDetail.extended_object_samples` may request a lower render-local
+sampling density for extended-object outlines. It applies to Messier-style
+non-stellar objects, galaxies, globular clusters, and supernova remnants.
+The request cannot exceed the layer's construction-time maximum sampling
+quality; fixed-symbol open clusters and planetary nebulae are unaffected.
+
+## 7. Legends
+
+`LegendOptions` independently controls:
+
+- canonical deep-sky object symbols;
+- the visible stellar magnitude scale;
+- chart-center and coordinate-system context;
+- observer, location, date, and time when applicable.
+
+Legend content is derived from resolved enabled layers. Legends are drawn as
+part of export before the single final save.
+Planisphere legends use outside placements clear of the circular sky.
+`LegendOptions.symbol_labels` and `LegendOptions.stellar_title` permit
+example-local language overrides without changing global English defaults.
+
+## 8. Canonical execution core
+
+All chart combinations retain the same execution flow:
+
+```text
+catalogues and sky layers
+    -> spherical geometry
+    -> projection-domain guard
+    -> projection
+    -> projected geometry
+    -> chart preparation
+    -> CelestialSphere.draw_chart()
+    -> renderer
+    -> legends and export
+```
+
+The low-level call remains available to advanced callers:
+
+```python
+result = sky.draw_chart(
+    projection=projection,
+    renderer=renderer,
+    viewport=viewport,
+    layer_options=layer_options,
+)
+```
+
+### Reusable maximal sphere
+
+`build_maximal_sphere(observer)` loads the complete canonical astronomical
+content once and returns an ordinary `CelestialSphere`. Its immutable
+`CelestialSphereLoadProfile` records catalogue sources, magnitude ceilings,
+and maximum extended-object sampling quality. Before resolving a chart
+request, call `sky.load_profile.require(...)`; it raises `ValueError` rather
+than allowing a request deeper than the loaded data.
+
+The factory does not select a projection, chart frame, mask, grid spacing,
+detail, style, legend, renderer, or output. Coordinate grids remain
+request-time geometry because their spacing and extent differ by chart
+family. Rendering continues through `CelestialSphere.draw_chart()`.
+
+The loaded stellar layer computes its maximal observer-time AltAz arrays on
+first use. Later magnitude selections and constellation-line geometry for the
+same observer and instant reuse those immutable arrays. A different observer,
+instant, ephemeris, data directory, catalogue, or source reload selects a
+different cache entry; presentation and render state never enter the key.
+Open clusters and planetary nebulae likewise transform their complete loaded
+center catalogues once and obtain ordered render-local subsets by identifier.
+Milky Way and Magellanic Cloud isophotes transform every loaded ring in one
+maximal vectorized operation and apply level choices afterward. Constellation
+boundaries do the same after native B1875 sampling; their cache key includes
+the sampling step so geometry quality cannot be reused accidentally.
+Milky Way rings also carry intrinsic filled-side and solid-angle metadata
+(`spherical_interior_left`, `spherical_interior_area_sr`). Projection-cap
+preparation uses these to anchor each ring's winding and restore any missing
+whole-cap winding with signed cap boundaries. It preserves compound holes
+without joining unrelated visible fragments or complementing an entire
+compound because one source ring winds around a pole. The renderer continues
+to consume ordinary compound projected polygons.
+Sampled extended-object outlines are cached once per observer, loaded source,
+source revision, sample count, and minimum displayed angular size. Identifier
+and supported magnitude selections then index that immutable maximal
+realization. This shared `NonStellar` behavior covers ordinary nonstellar
+objects, galaxies, globular clusters, and supernova remnants.
+
+The physical polar-planisphere detail policy loads its reviewed binocular
+selection from `data/polar_binocular_targets.json`. Selection remains keyed by
+canonical catalogue identifier. Independent per-family display-label
+overrides prefer Messier designations or concise common names and may return
+`None` to omit one label in a close pair while retaining both objects. Detail
+application supplies those overrides through the renderer's generic
+`label_formatter` option. The polar atlas-print palette alone raises the
+minimum displayed outline diameter to 40 arcminutes and the globular-cluster
+floor to 80 arcminutes; it does not filter catalogue objects or alter their
+recorded angular dimensions. The polar chart owner applies readable tangent
+rotation to enabled deep-sky labels after composition: each text baseline is
+perpendicular to the radius and its typographic down faces the disk center.
+
+`ChartRequest` is the immutable input shared by the Python facade and future
+command-line adapter. `ChartObserverRequest` defines the actual observing
+location and instant; `ChartSubjectRequest` accepts one target, explicit ICRS
+coordinate, constellation set, or packaged group; and `ChartFrameRequest`
+holds optional framing overrides. Existing `SkyContentSelection`,
+`DetailOverrides`, `ChartFurnitureOptions`, and `ChartProductOptions` remain
+the corresponding content, detail, furniture, and output contracts.
+For planispheres, `ChartFrameRequest.mirror_ew` and the matching
+`get_chart_view(..., mirror_ew=True)` argument exchange east and west relative
+to the default chart. The CLI exposes this as `planisphere --flip-ew`.
+Resolution retains the flag on `ResolvedChartFrame`; preparation selects
+`FullSkyChart.flip_ew=False` for a mirrored view and `True` otherwise.
+The default is output-neutral, and other request families reject mirroring.
+The atlas and cartoon canvas tables accept `title_color` independently of
+`foreground`. Translation carries it through `CanvasStyle` and
+`PublicationStyle`, and mode adaptation retains explicit values. A missing
+override, `"none"`, or `"inherit_canvas"` uses the effective foreground,
+preserving legacy title colors. Cartoon's axes adapter respects the same
+title override while retaining its ordinary frame styling.
+For regional and binocular views, a named `orientation` is explicit and
+mutually exclusive with a literal `position_angle_deg`; zero therefore remains
+an ordinary angle. Regional framing may also carry a paired fixed horizontal
+altitude/azimuth centre, which requires explicit width and height and remains
+independent of constellation content selection.
+`ChartContentExclusions` names deep-sky catalogue identifiers that must be
+omitted after field selection; it does not mutate loaded catalogue content.
+`ChartProductCompositionOptions` optionally assigns a detail policy and
+`ChartStyleOverrides` to one exact selected `ChartProduct`. These values are
+resolved only at composition time. They cannot carry framing, projection,
+masking, or other chart geometry, and duplicate or unselected product entries
+are rejected when the request is constructed.
+Semantic style overrides may strengthen the ecliptic independently of the
+coordinate-grid baseline and enlarge coordinate labels without changing other
+products. `ChartStyleOverrides.constellation_label_offsets` carries validated
+finite per-label projected displacements into the existing grid-style owner;
+it adjusts one render without changing spherical catalogue anchors. The
+shared `--sky-color` option follows the same path: it becomes a
+`ChartStyleOverrides.sky_color` value and replaces
+`ChartCanvasStyle.sky_color` after style and mode resolution. Chart entry
+points must not bypass that semantic owner by setting a Matplotlib axes color
+directly.
+`ChartFurnitureOptions.context` may carry `ChartContextOptions` selecting
+chart-center coordinates, the active coordinate-grid description, observer
+location, date, and local time. These are declarative booleans rather than
+precomputed strings. The request exporter resolves them after both the chart
+and sky exist, appends any caller-supplied context lines, and passes the result
+through the established immutable legend furniture. The contract is shared by
+all four chart families.
+`ReferenceAnnotations.ecliptic_keypoints` independently selects `none`,
+`markers`, or `labeled`. The reference-furniture owner delegates the four
+equinox/solstice positions to `CelestialPoints.add_ecliptic_keypoints()` and
+supplies the same barycentric true-ecliptic J2000 frame used by the rendered
+ecliptic curve. The FK5 equatorial grid and celestial equator use the matching
+J2000 policy, so the March and September markers are genuine intersections. Celestial-reference layers use the same composition-resolved
+horizon altitude as ordinary layers: rectangular regional charts resolve to
+-90 degrees, so seasonal points are not discarded merely because they are
+below the observer's physical horizon. Ordinary projection and viewport
+clipping still decide which of the four points are present in a field.
+`ecliptic_keypoint_legend` requests a compact lower-left name key. The
+reference rendering inspects its already-projected point result and adds only
+the canonical points inside the final viewport. Each entry identifies the
+symbol's localized zodiac sign before its localized seasonal explanation;
+both sets of four names are carried by the immutable annotation request.
+`LegendOptions.stellar_reference_range` requests a fixed inclusive integer
+magnitude scale while retaining the chart's canonical magnitude-to-area law.
+`stellar_background="sky"` resolves the legend frame from the composed canvas
+sky and foreground colors and forces an opaque frame; it is not a backend
+color literal.
+`ChartStyleOverrides.equatorial_reference_linewidth` strengthens only the
+celestial-equator reference prepared by canonical furniture. It does not
+change the linewidth of the ordinary right-ascension and declination grid;
+the existing `ecliptic_linewidth` remains the corresponding semantic control
+for ecliptic layers.
+
+`resolve_target(ChartSubjectRequest(...))` resolves packaged aliases without
+network access. Its immutable `ResolvedTarget` records canonical key, display
+name, ICRS coordinate, matched alias, provenance, and `TargetComponent`
+values. The initial packaged cross-identifications cover the canonical
+Centaurus A and Omega Centauri fields plus M13, M16, M17, M57, M7, and the
+Veil Nebula usage-audit targets. Unknown and ambiguous aliases are errors,
+not empty successful charts.
+`ResolvedTarget.coordinate` provides its authoritative center as an ICRS
+`SkyCoord`; `primary_identifier` exposes the first drawable component in
+publication form. These preserve compatibility builders and titles without
+duplicating coordinates or catalogue spelling in example scripts.
+
+`charts/object_center.py::get_object_center()` is the typed point-center
+centering boundary. Its `ResolvedTarget` overload transforms fixed packaged or
+explicit ICRS coordinates through `CoordinateService`; its
+`SolarSystemBodyDescriptor` overload realizes the shared symbolic point with
+the accepted astrometric-to-apparent provider chain. Both return one immutable
+`ObjectCenter` in the observer-horizontal product frame with identity and
+provenance. The resolver knows no projection, viewport, style, renderer, or
+exporter. Regional requests may use that center without a constellation;
+constellation sets retain their separate geometry-derived framing contract.
+
+`resolve_constellation_subject(ChartSubjectRequest(...))` accepts either an
+ordered IAU abbreviation set or a packaged teaching-group alias. Its
+`ResolvedConstellationSubject` keeps public region identities separate from
+the line, boundary, and label identifiers consumed downstream. A public
+Serpens (`Ser`) request expands to the two figure and label identities
+without requiring callers to know `Ser1`, `Ser2`, `SerCap`, or `SerCau`.
+Packaged groups also carry their provenance, legacy canonical framing
+defaults, and curated content identifiers until spatial field selection
+replaces the latter in a later 46C.7 step.
+
+`resolve_chart_request(request, profile)` combines independently resolved
+center, constellation selections, and explicit `SkyContentSelection`.
+Centered target components are not unioned into drawable content. It calls
+the load profile's established
+`require()` contract for requested stellar depth, galaxy depth, and outline
+sampling, returning a new immutable `ResolvedChartRequest` without modifying
+the input request or constructing a chart.
+
+The returned `ResolvedChartFrame` records the effective explicit, family, or
+packaged-group field and its provenance. `automatic_from_geometry=True` means
+an arbitrary constellation set must be framed later from loaded authoritative
+geometry; it is not replaced by a guessed fixed field.
+
+`RegionalChart.from_constellations()` may omit `angular_radius_deg`. It then
+frames all selected loaded figure endpoints using their spherical mean,
+maximum great-circle separation, `framing_padding` (default 1.15), and
+`minimum_angular_radius_deg` (default 5). Supplying radius and aspect ratio
+continues to provide exact publication control.
+`local_orientation_at()` resolves the pointwise signed parallactic angle and
+the tangent directions toward celestial north and the local zenith. The chart
+retains the centre result in `ResolvedChartOrientation`; rendering does not
+recompute it and this milestone draws no orientation line.
+
+`select_spatial_chart_content(sky, chart, resolved_request)` obtains cached
+AltAz centers for every registered deep-sky catalogue, projects them through
+the chart, and returns a new request containing field objects plus explicit
+inclusions and target components, minus the request's explicit exclusions.
+An identifier cannot be both explicitly included and excluded, and the
+resolved central target cannot be excluded. Extended-object layers expose
+`spherical_centers()` so selection does not sample their outlines.
+
+`prepare_chart_request(sky, resolved_request)` constructs the established
+chart type from the resolved family, target, constellation identities, field,
+position angle, pole, and mask. It then applies the spatial selector and
+returns an immutable `PreparedChartRequest`. It neither builds a second sky
+nor composes, renders, or exports. A masked planisphere is an ordinary
+`FullSkyChart` whose optional outside mask uses the shared official-boundary
+masking operation; its chart-owned horizon limits automatic field objects.
+
+`build_chart_request(request, sky=None)` is the public non-exporting facade
+over observer/sphere acquisition, resolution, request-time grids, chart
+construction, and spatial selection. It returns `ChartRequestBuild`, which
+exposes `sky`, `prepared`, and `chart`. When it constructs the sphere it owns
+the observer and closes it once through `close()` or context-manager exit; a
+supplied compatible sphere remains caller-owned and is never closed. Failure
+during an owned build closes the observer before propagating the error.
+
+`generate_chart_request(request)` is the ordinary one-call facade. It owns
+the observer and canonical maximal sphere, resolves and prepares the request,
+and returns a `ChartRequestGeneration` containing the inspectable
+`ChartExportResult` values and their output paths. It always closes the owned
+observer. Advanced callers that already have a compatible sphere may call
+`export_prepared_chart(sky, prepared_request)` after resolution and
+preparation; this avoids rebuilding the sphere while retaining the same
+canonical composition and single-export path.
+The resolved request also carries `horizon_mask` through this export boundary
+as a render option. Regional, binocular, circumpolar, and Galactic all-sky
+charts prepare the above-horizon opening beside any constellation opening.
+The mask composer passes all independent groups to one
+`MatplotlibRenderer.draw_outside_mask()` call; nonzero winding leaves only
+their intersection transparent and applies the resolved outside-mask alpha
+once. A planisphere accepts the shared option but deliberately performs no
+horizon-mask operation because its horizon is already the chart boundary.
+Generation delegates its entire preparation phase to
+`build_chart_request()`, then exports the returned prepared request and closes
+only resources recorded as owned by that build result.
+For each selected output, that export boundary applies the request's matching
+`ChartProductCompositionOptions` before the common render-local detail
+overrides. Omitting a matching entry preserves the established style-derived
+detail and mode defaults.
+It also realizes optional `ChartContextOptions` once per prepared request,
+before product composition, so every product receives identical scientific
+metadata without requiring example-side access to a constructed chart.
+
+`generate_chart_request(request, sky=existing_sphere)` provides the simpler
+reuse adapter needed by canonical examples and batch callers. The sphere must
+declare a load profile and its observer's normalized latitude, longitude,
+elevation, and UTC instant must match `request.observer`. The facade resolves,
+prepares, composes, and exports against that sphere without rebuilding or
+closing it. `ChartObserverRequest.scientific_identity()` performs this check
+without loading an ephemeris. When `sky` is omitted, generation continues to
+own and close its observer and sphere resources.
+
+`configure_chart_request_grids(sky, request, frame=...)` owns coordinate grids as
+request-time geometry. It derives explicit grid selection from
+`DetailOverrides.enabled_layers`, `enabled_layer_additions`,
+`disabled_layers`, and `grid_label_layers`; labels imply the corresponding
+geometry. It replaces only prior `CoordinatesGrid` layers and registers a
+15-degree density for resolved views smaller than 60 degrees and a 30-degree
+density otherwise. This makes sequential
+requests order-independent without adding coordinate grids to the maximal
+load profile or mutating astronomical catalogue content. Ordinary generation
+calls this boundary automatically after request resolution.
+
+`HorizonReference(observer=None, samples=721)` is the semantic observer-local
+altitude-zero curve. `spherical_geometry(observer)` returns one closed native
+AltAz curve named `horizon`; an observerless instance requires the execution
+observer explicitly. `CelestialSphere.add_horizon_reference()` registers the
+layer without adding an `AltAzGrid`. The maximal-sphere factory does not add
+this request-time geometry.
+
+`ChartRequest.horizon` and `ChartRequest.horizon_mask` are independent frozen
+request booleans. The shared chart-content parser exposes them as `--horizon`
+and `--horizon-mask`; `draw_chart_view(..., horizon=False,
+horizon_mask=False)` provides the matching ordinary Python interface, and
+`draw_chart_view_from_arguments()` forwards both through the common adapter.
+Q.3 declares and transports the controls only. Request-time layer lifecycle,
+mask geometry, appearance, and visible behavior remain assigned to Q.4
+through Q.7.
+
+`configure_chart_request_horizon(sky, request)` owns the optional reference
+lifecycle. It removes prior `HorizonReference` instances on every call,
+clears `sky.horizon_reference`, and registers one replacement only when
+`request.horizon` is true and the family is not `planisphere`. It returns the
+registered reference or `None`. The canonical request builder and ordinary
+drawing facade call this configurator after grid configuration. An AltAz grid
+continues to use `include_horizon=False`; `horizon_mask` does not imply the
+reference. Because registration itself is the selection boundary, resolved
+astronomical detail policies do not disable a registered semantic horizon.
+`PublicationStyle.horizon_reference_style()` supplies its explicit color,
+linewidth, linestyle, alpha, and z-order. `ChartStyle` stores those semantic
+values in `GridStyle`, and atlas/cartoon output adapters alter appearance only.
+The reference remains an ordinary sky layer rendered through
+`CelestialSphere.draw_chart()`; styles never construct or transform its
+geometry.
+
+`HorizonReference.visible_hemisphere_geometry(observer,
+radial_step_deg=5)` returns native AltAz `SphericalPolygons` tessellating the
+altitude-nonnegative hemisphere. Its metadata identifies an `above_horizon`
+mask opening and its altitude-zero vertices come from the same sampled
+semantic horizon used by the reference curve.
+
+`resolved_outside_mask_style(style)` is the sole chart-family fallback and
+conversion boundary for mask appearance. It returns the existing resolved
+`MaskStyle` as Matplotlib face color, alpha, and z-order options. Horizon-only,
+constellation-only, and combined masks all pass that same mapping to the one
+compound mask draw; no horizon-specific opacity setting exists.
+
+The packaged cartoon mask uses warm white `#fffdf5` at opacity `0.45` and
+z-order `20.0`. Milestone 46D.8H.2 records the values selected through a local
+user-overlay render; atlas appearance and the shared compound-mask geometry and
+rendering contracts are unchanged.
+
+Milestone 46D.8H.1 preserves that translated cartoon `MaskStyle` through mode
+realization. The presentation palette continues to resolve the canvas and
+semantic drawing colors but no longer substitutes its sky color into the mask.
+User TOML therefore controls the final cartoon mask color and opacity.
+
+The Q.8 contract suite exercises the four independent `(horizon,
+horizon_mask)` control states through both shared adapters, chart-family mask
+boundaries, planisphere idempotence with and without constellation masking,
+Mollweide seam-piece grouping, compound-path winding and single alpha, and
+forward/reverse request sequences on one reusable `CelestialSphere`. These
+are tests of the established pipeline; Q.8 adds no alternate geometry,
+projection, clipping, rendering, or export path.
+
+The ordinary interfaces are final: shared scripts use `--horizon` and
+`--horizon-mask`, while Python callers use `draw_chart_view(...,
+horizon=True, horizon_mask=True)`. Neither interface implies the other role.
+The canonical circumpolar declaration additionally exposes
+`--limiting-declination`; this changes the chart-owned polar field boundary
+and does not participate in horizon geometry or appearance.
+
+For automatic regional fields, `RegionalChart.from_constellations()` accepts
+`framing_constellations` independently of its figure-line identities. The
+ordinary request builder supplies official IAU boundary identities there, so
+the spherical center and padded angular radius cover the complete selected
+regions. This does not select boundary-line appearance, alter Serpens figure
+connectivity, or override an explicitly requested field size.
+
+`StereographicProjection.unproject_spherical(x, y)` performs the inverse
+planar mapping and returns coordinates in the projection's source frame. It
+is the classification boundary used by horizon-mask preparation; it does not
+perform astronomy, clipping, or masking.
+
+`PolarAzimuthalEquidistantProjection(radius=2, pole="south",
+position_angle_deg=0, flip_ew=True)` maps polar angular distance linearly in
+projected radius. `radius` is the equatorial projected radius. The projection
+supports north and south poles, forward and inverse spherical mapping,
+position angle, handedness, radius conversion, viewport construction, and the
+ordinary point, curve, grid, and polygon dispatch contract. Milestone 48B.1
+does not connect it to a chart family or physical planisphere product.
+
+`ProjectionSelection(name, coordinate_frame)` is the frozen projection
+identity used at the request/view boundary. The accepted pairs are
+stereographic/horizontal, stereographic/equatorial, Mollweide/Galactic, and
+polar-azimuthal-equidistant/equatorial. `build(**geometry)` imports and
+constructs a fresh selected
+projection lazily; projection scale, position angle, handedness, pole, and
+central longitude remain chart-owned constructor values. `ChartView` exposes
+the value as `projection_selection`. Existing v0.8 families still reject the
+polar pair until a polar chart owner is added.
+
+`prepare_horizon_mask_opening(...)` returns a frozen `PreparedHorizonMask`
+with `visibility` equal to `above`, `crossing`, or `below`, native spherical
+openings, and prepared projected openings. Regional, binocular, and
+circumpolar fields are classified from their final rectangular or circular
+boundary. Wholly above fields use the viewport as their opening, wholly below
+fields use no opening, and crossing fields project the AltAz tessellation
+through `project_geometry_for_viewport()`. With `complete_sphere=True`, the
+optional chart-owned transformation is applied before projection; Galactic
+Mollweide therefore reuses its established seam splitting. This function
+prepares geometry only and does not call a renderer.
+
+`CelestialSphere.draw_chart(..., observer=observer)` selects the scientific
+observer explicitly for every registered layer. The same optional keyword is
+carried by canonical chart rendering and export, request preparation and
+export, spatial selection, masking, constellation-label placement, and
+contextual or celestial-reference furniture. Omitting it uses `sky.observer`
+for backward compatibility; an observerless sphere must receive it explicitly.
+
+`generate_celestial_sphere(profile=CANONICAL_MAXIMAL_SPHERE_PROFILE)` loads
+one reusable observer-independent canonical sphere. The sphere owns its load
+profile, native catalogue content, provenance, and observed-geometry caches,
+but neither it nor its canonical layers select an observer or instant. The
+compatibility `build_maximal_sphere(observer, profile=...)` retains the prior
+observer-bound behavior.
+
+### Celestial-scene dependencies (Milestone 49D.1)
+
+Observer-independent loading is not yet observer-independent spherical
+realization. `CelestialSphere.draw_chart()` still resolves one observer and
+calls `layer.spherical_geometry(observer, ...)` for every enabled layer.
+Hipparcos stars, constellation geometry, catalogue objects, Milky Way
+isophotes, and Magellanic Cloud isophotes therefore use their established
+observer-bound realization paths during ordinary rendering.
+
+`docs/developer/archive/milestone_history/49d_scene/celestial_scene_dependency_audit_49d1.md` classifies three
+scientific realization groups: celestial background, dynamic astronomical
+objects, and observer-local geometry. All three must converge in one explicit
+spherical product frame before the existing projection and preparation path.
+A future planet enters after provider evaluation and
+`CoordinateService` transformation as an ordinary semantic sky layer; it
+does not enter through the renderer, furniture, command, or a parallel scene
+graph.
+
+49D.1 added no runtime type and changed no geometry.
+
+### Minimal layer-realization context (Milestone 49D.2)
+
+`LayerRealizationContext(product_coordinate_spec, observation=None,
+evaluation_instant=None, evaluation_time_scale=None,
+reference_equinox=None)` is the frozen scientific input available to a layer
+before projection. Evaluation instant and time scale must be supplied together.
+The value contains no projection, viewport, renderer, style, furniture, output,
+or cache policy.
+
+`SkyLayer.realize(context, observer, **geometry_options)` is a concrete
+compatibility adapter that delegates to the layer's established
+`spherical_geometry(observer, **geometry_options)`. Supplying no
+`realization_context` to `CelestialSphere.draw_chart()` calls
+`spherical_geometry()` directly, preserving the pre-49D.2 route exactly.
+Supplying a typed context selects `realize()`; an untyped value is rejected.
+
+No ordinary chart facade supplies this context yet. The only specialized
+dynamic layer is test-local: it evaluates a deterministic structural
+`PositionProvider`, transforms its native point once through
+`CoordinateService`, and then uses the existing projection and renderer path.
+Caching, real ephemeris selection, installed moving-object layers, public
+request exposure, and the first planet remain later milestones.
+
+Future Sun, Moon, and planet layers must attach renderer-neutral
+`SemanticLayerIdentity` before projection and then use the same canonical
+projection, preparation, Matplotlib rendering, and single export path as every
+other layer. For SVG, the downstream annotator serializes the reserved
+`solar-system/sun`, `solar-system/moon`, and `solar-system/planets`
+hierarchy; it does not evaluate ephemerides, transform positions, infer object
+identity, or add a post-export overlay.
+
+`tools/benchmark_reusable_sphere.py` is the reproducible diagnostic for that
+contract. It builds one sphere, prepares and exports six chart families for
+three observer/instant identities, prints progress for 37 operations, and
+writes operation timings, overlapping profiler categories, and observed-cache
+counts to JSON. It deliberately defines no pass/fail timing threshold.
+
+`get_chart_view(sky, observer, *, family, ...)` obtains one geometrical view
+from that reusable sphere. `observer` is an existing caller-owned `Observer`;
+the view neither creates nor closes it. Friendly target, coordinate,
+constellation, group, field, position-angle, pole, declination-limit, and mask
+arguments are resolved by the established request and preparation contracts.
+The returned frozen `ChartView` exposes `chart`, `family`, `mask`,
+`projection_name`, `coordinate_frame`, `target`, `constellations`, and
+`frame`, and `projection_selection`. Both identities come from the resolved
+immutable `ChartRequest` and the selection pairs them without constructing a
+projection until requested.
+Regional, binocular, circumpolar, and planisphere views use stereographic
+projection in the horizontal frame. The all-sky view uses Mollweide projection
+in the Galactic frame. Other combinations are rejected explicitly. Style,
+mode, detail, grids, furniture, language, title, and output remain drawing
+concerns.
+
+`CoordinateService.transform_observer_geometry()` is the single AltAz-to-celestial service entry point used by all-sky, polar, horizon, and reference-furniture consumers. It preserves geometry kind, topology, semantic arrays, and metadata while recording the AltAz source and requested celestial result. The former chart-owned `coordinate_frames.py` adapters are removed in 49C.3.
+
+`PolarPlanisphereChart(pole="south", limiting_declination_deg=None,
+projection_name="polar_azimuthal_equidistant", position_angle_deg=0,
+projection_radius=2, physical_diameter_mm=195, flip_ew=True)` describes one
+immutable polar disk face. An omitted limit resolves to +20 degrees for the
+south face and -20 degrees for the north face. The chart accepts either the
+linear polar-equidistant projection or an equatorial stereographic
+alternative, while retaining the same selected pole, circular declination
+boundary, exact centre, square viewport, physical diameter, and canonical
+AltAz-to-ICRS render/export path. Physical diameter is declared product
+geometry and does not alter normalized projection coordinates. Pairing,
+calendar furniture, registration, and horizon overlay are not part of this
+class.
+
+`PolarPlanispherePairRequest(...)` is the immutable source of truth for a
+matched back-to-back pair. It accepts the shared projection name, position
+angle, projection radius, physical diameter, boundary sampling, south-face
+handedness, and optional calendar and pivot radii, plus independently named
+north and south declination limits. Equal physical scale requires those limits
+to produce equal polar angular radii. `resolve()` returns a
+`PolarPlanispherePair` containing fresh north/south charts and frozen
+`PolarFaceRegistration` records. The resolver derives projection-aware
+opposite paper RA direction: the equidistant pair reverses the north
+`flip_ew`, while stereographic retains it because its pole rotation already
+reverses orientation. Corresponding asymmetric registration angles are
+reflected between faces, centres and physical radii match, and
+`text_mirrored` remains false. These records are geometry metadata; later
+furniture owns drawing them.
+
+`MollweideProjection(central_longitude_deg=0, flip_ew=True, radius=1)` is the
+coordinate-neutral equal-area all-sky projection. `project_spherical()` maps
+generic longitude and latitude directly; `project_geometry()` supports all
+canonical spherical geometry forms. Points are vectorized. Curves and grid
+components are unwrapped and clipped into separate open pieces at the
+longitude seam. Polygon rings are clipped into valid closed pieces on either
+side. Per-entity identifiers, labels, names, styles, and compound-ring
+metadata are duplicated for every split piece. The projection owns no
+astronomical frame conversion, chart boundary, renderer, or style behavior.
+
+`AllSkyChart()` owns the complete-sphere Galactic Mollweide view. Its
+projected boundary is the exact 2:1 Mollweide ellipse, and its chart context
+reports 360 by 180 degrees and the full `4 pi` steradians. During canonical
+`CelestialSphere.draw_chart()` execution it requests a Galactic transformation from `CoordinateService` before projection, retains catalogue centers
+without horizon rejection, and clips all artists and optional disjoint
+constellation-mask openings at the ellipse. Ordinary drawing selects a
+labeled Galactic grid by default; equatorial and ecliptic overlays remain
+available explicitly.
+
+`chart_view_defaults(family, group=False)` returns the corresponding frozen
+`ChartViewDefaults` policy from `CHART_VIEW_DEFAULTS`:
+
+| Ordinary view | Default framing |
+|---|---|
+| binocular | fixed 6.5-degree diameter |
+| regional single | automatic from constellation geometry |
+| regional group | automatic from an arbitrary set, or a packaged preset |
+| planisphere | visible observer hemisphere |
+| all_sky | complete Galactic sphere in a Mollweide ellipse |
+| circumpolar | south pole through declination -69.75 degrees |
+
+Every policy except `all_sky` uses stereographic projection and the horizontal
+coordinate frame. `all_sky` uses Mollweide and Galactic coordinates. Every
+regional and binocular policies explicitly use celestial-north-up; the other
+families use literal position angle 0 degrees. Every policy uses no mask.
+Explicit arguments to
+`get_chart_view()` take precedence. The advanced
+`ChartRequest` API continues to require an explicit circumpolar declination
+limit; the default is an ordinary-interface convenience rather than a change
+to that contract.
+
+`draw_chart_view(view, destination, ...)` completes the ordinary workflow and
+returns one `ChartExportResult`. Direct choices are `style`, `mode`, `grids`,
+`grid_labels`, `furniture`, `title`, and `language`. Advanced callers may also
+supply a `DetailPolicy`, `DetailOverrides`, and `ChartStyleOverrides` without
+leaving the ordinary facade. Grid names accept `altaz`, `equatorial`,
+`ecliptic`, or `galactic`, with their `_grid` semantic names also accepted.
+The view's spatial content is retained, the load profile validates explicit
+detail ceilings, and the destination is saved exactly once.
+
+```python
+result = draw_chart_view(
+    view,
+    "output/m57.png",
+    style="atlas",
+    mode="print",
+    grids=("equatorial",),
+    grid_labels=("equatorial",),
+    title="M57",
+)
+print(result.output)
+```
+
+Command-line examples add the complete common contract with
+`add_chart_cli_arguments(parser, default_output=...)`. The resulting namespace
+is passed to `draw_chart_view_from_arguments(view, arguments, stem=...)`, which
+returns one `ChartExportResult` per selected product. A family may pass
+`product_details` keyed by exact `ChartProduct` values or by style name when
+an application needs to replace the packaged family policy, and may construct
+localized furniture with `chart_cli_furniture()`; these remain declarative
+inputs to `draw_chart_view()` rather than a second rendering path.
+The ordinary CLI enables the labeled equatorial grid by default and accepts
+`--no-equatorial-grid` to omit it. Equatorial right ascension is labeled as
+`hh:mm`; declination and the other coordinate systems use degrees.
+`--declination-step DEGREES` replaces only the equatorial parallel interval
+through `DetailOverrides` and canonical request-grid configuration. It leaves
+right-ascension meridian density and every non-equatorial grid unchanged;
+omission preserves the established family policy.
+
+Installed chart commands use `--center-on IDENTIFIER` for framing and the
+independent `--constellation-lines`, `--constellation-labels`,
+`--constellation-boundaries`, and `--constellation-mask` selections for
+content and masking. `parse_constellation_list()` remains the shared IAU-list
+normalizer. Named centers use qualified namespaces when necessary and an
+unqualified identifier only when offline resolution is unique.
+
+A masked stereographic planisphere accepts a possibly disjoint constellation
+set. Its full-sky mask selects official boundary geometry before projection,
+discards regions with no sampled vertex at or above the chart horizon, and
+retains complete partially visible polygons. The renderer then clips those
+separate mask openings at the chart-owned horizon, so an all-invisible set
+correctly shades the complete visible hemisphere. Regional masks do not apply
+observer-horizon rejection.
+
+```python
+sky = generate_celestial_sphere()
+observer = Observer(location="La Ligua", time="2026-08-15 22:00")
+view = get_chart_view(
+    sky,
+    observer,
+    family="binocular",
+    target="M57",
+    field_diameter_deg=6.5,
+)
+```
+
+```python
+result = generate_chart_request(
+    ChartRequest(
+        observer=ChartObserverRequest(
+            location="La Ligua",
+            time="2026-08-15 22:00",
+        ),
+        family="binocular",
+        subject=ChartSubjectRequest(target="Centaurus A"),
+        product=ChartProductOptions(output="output/centaurus-a.png"),
+    )
+)
+print(result.outputs)
+```
+
+### Proposed ephemeris-provider boundary (Milestone 49E.1)
+
+The current `positions.py::PositionProvider.position(instant)` returns native
+`SphericalPoints` and remains unchanged. It is not sufficient as the sole
+solar-system ephemeris boundary because a raw provider product must retain
+Cartesian position and velocity, target, centre, frame, evaluation instant/time
+scale, units, kernel identity, coverage, and provenance.
+
+The proposed design separates an ephemeris state source from a solar-system
+direction realizer. The realizer owns retarded emission-time evaluation and the
+declared light-time/apparent-place correction policy. It creates typed
+spherical geometry only after observer-relative direction and position status
+are defined. `CoordinateService` then owns the final coordinate representation
+transformation. 49E.1 installs no runtime classes, provider, kernel adapter, or
+moving-object layer.
+
+The accepted next-step contract requires six-component states and a resolved
+resource identity containing provider/model, filename, SHA-256 content digest,
+coverage, and provenance. SHA-256 is calculated once per resolved kernel
+resource. 49E.2 will atomically remove the unreleased
+`PositionStatus.TOPOCENTRIC` member and migrate its single helper default and
+two focused tests, representing topocentricity through origin instead. The
+first later vertical slice is Venus, followed by the Moon.
+
+### Minimal ephemeris runtime contracts (Milestone 49E.2)
+
+`src/wenu/ephemeris.py` owns frozen `EphemerisResourceIdentity`,
+`EphemerisStateRequest`, and `EphemerisState` values and the structural
+`EphemerisStateSource` protocol. A state requires typed request/resource,
+three finite position components, three finite velocity components, explicit
+units, and optional provider-native identifiers and provenance. The resource
+identity validates a 64-hex SHA-256 and explicit coverage scale but performs no
+file I/O.
+
+`PositionStatus.TOPOCENTRIC` is removed. `observer_altaz_spec()` retains
+`origin="observer"` and requires an explicit `position_status`. Astropy/Skyfield
+observer-transformed celestial products declare `APPARENT`; native horizon,
+cardinal/zenith, polar-horizon, and AltAz-grid products declare `GEOMETRIC`. The deterministic source remains
+in `tests/test_ephemeris.py`; no real provider, kernel adapter, direction
+realizer, or moving-body layer is installed.
+
+### Borrowed Skyfield ephemeris adapter (Milestone 49E.3)
+
+`src/wenu/skyfield_ephemeris.py::SkyfieldEphemerisStateSource` borrows the
+already-open `Observer.ephemeris` and `Observer.timescale`. Its factory
+calculates SHA-256 once, infers a conventional DE model separately from the BSP
+filename, and records the common SPK-segment coverage interval in TDB.
+`state()` supports explicit geometric ICRF target-minus-centre states and
+returns AU, AU/day, NAIF identifiers, and immutable resource provenance.
+
+The adapter has no `close()`: `Observer` owns resource lifetime. It performs
+no kernel load or network operation. `tools/validate_49e3_skyfield_adapter.py`
+refuses to download a missing kernel and compares the six-component Venus/SSB
+state with direct Skyfield evaluation. Direction realization and any Venus
+layer remain later milestones.
+
+### Solar-System direction-realizer audit (Milestone 49E.4)
+
+`docs/developer/archive/milestone_history/49e_ephemeris/solar_system_direction_realizer_49e4.md` defines the proposed
+handoff from geometric Cartesian states to observer-relative directions. The
+astrometric stage owns the observer state at reception, iterative target state
+at retarded emission time, one-way light time, distance, convergence policy,
+and immutable resource provenance. A subsequent apparent stage adds declared
+aberration and gravitational deflection.
+
+49E.4 installs no runtime class. The proposed 49E.5 result surrounds one
+ICRS-oriented `SphericalPoints` value with distance and timing metadata before
+`CoordinateService` transforms it into the product frame. Neither reception
+nor emission instant is stored as a position reference epoch or equinox.
+
+### Astrometric direction runtime (Milestone 49E.5)
+
+`src/wenu/solar_system_directions.py` owns frozen
+`ObserverBarycentricState`, `AstrometricDirectionRequest`, and
+`AstrometricDirection`, plus `AstrometricDirectionRealizer`. The realizer
+evaluates the observer once at reception, requests ICRF/AU target states at
+iterated emission instants, and returns observer-origin ICRS spherical geometry
+with only `one-way-light-time` declared as a correction.
+
+`src/wenu/skyfield_ephemeris.py::skyfield_observer_barycentric_state()`
+borrows `Observer.skyfield` and accepts only a state source using the same open
+kernel. `tools/validate_49e5_astrometric_direction.py` is the explicit
+no-download Venus comparison with direct Skyfield `observe()`. No installed
+layer consumes the result in 49E.5.
+
+### Apparent direction runtime (Milestone 49E.6)
+
+`src/wenu/solar_system_directions.py` owns frozen
+`ApparentCorrectionPolicy` and `ApparentDirection`. The accepted astrometric
+result also retains relative target-minus-observer velocity in AU/day.
+
+`src/wenu/skyfield_ephemeris.py::SkyfieldApparentDirectionRealizer` rebuilds a
+Skyfield astrometric value from that retained result and calls only
+`apparent()`. It verifies kernel, resource, observer state, and reception
+instant identity; it does not call `observe()` or repeat light-time iteration.
+The result is observer-origin apparent ICRS `SphericalPoints` with explicit
+deflection, aberration, and resource provenance. No production layer consumes
+it in 49E.6.
+
+### Ordinary realization-context handoff (Milestone 49I.1A)
+
+`charts/request_realization.py::chart_request_realization_context(request,
+observer)` returns the immutable pre-projection `LayerRealizationContext` for
+one matching ordinary request and observer. Horizontal products receive an
+observer-local apparent AltAz specification; all-sky receives an
+observer-origin apparent Galactic specification. The reference equinox remains
+separate from both product specifications.
+
+`export_prepared_chart()` constructs the context once and forwards it through
+the shared composition/export boundary and chart facade. Existing layers
+continue through `SkyLayer.realize()` to their unchanged
+`spherical_geometry()` method. Direct low-level calls may still omit the
+context. 49I.1A installs no moving-body layer.
+
+Fernando accepted this output-neutral handoff on 2026-08-30 after 166 focused,
+1,859 routine, and 1,890 complete tests passed. The complete suite verifies
+that observer instants supplied as `utc_datetime`, `t_astropy`, or AltAz
+`obstime` normalize through the same scientific context boundary.
+
+### First drawable Venus layer (Milestone 49I.1B)
+
+`sky/venus.py::VenusLayer.realize()` is the first production consumer of
+`LayerRealizationContext`. `SkyContentSelection.planets` and CLI
+`--planet venus` own opt-in selection. The layer returns ordinary
+`SphericalPoints` in the product specification; style owns its symbolic marker
+and label, and the existing renderer/exporter owns all output formats.
+
+Fernando scientifically and visually accepted the slice on 2026-08-30. The
+installed-DE440 regional Venus agreed with Stellarium at the declared La Ligua
+instant, and PNG, PDF, and semantic SVG looked the same. Acceptance evidence is
+148 implementation-review tests, 35 focused post-correction tests, and all
+1,898 tests in 82.01 seconds.
+
+### Proposed Moon and shared-body boundary (Milestone 49I.2)
+
+`archive/milestone_history/49i_solar_system/moon_shared_body_pipeline_audit_49i2.md` identifies the invariant path from a
+typed state source through observer-relative astrometric and apparent
+direction, one product-frame transformation, and ordinary rendering/export.
+It keeps provider-specific orbit evaluation and body-specific physical
+appearance behind separate contracts. No shared runtime layer or Moon is
+installed by the audit.
+
+### Numerical Moon-direction validation (Milestone 49I.2A)
+
+`tools/validate_49i2a_moon_direction.py` composes the existing state source,
+observer-state adapter, astrometric realizer, and apparent realizer for
+`moon`/NAIF 301. It compares against direct Skyfield and reports parallax and
+observer-height evidence. `tests/test_moon_direction_validation.py` supplies
+the deterministic provider-neutral contract proof. Neither owns chart content
+or production geometry.
+
+### Shared Solar-System point layer (Milestone 49I.2B)
+
+`sky/solar_system_points.py` defines frozen `SolarSystemPointDescriptor` body
+data and `SolarSystemPointLayer` orchestration from typed realization context
+through one product-frame transformation. `sky/venus.py::VenusLayer` is the
+first thin specialization. The shared layer attaches stable point identity and
+provenance; projection, visibility, appearance, semantic scene placement,
+rendering, and export remain in their established owners. 49I.2B itself
+installed no Moon chart layer; 49I.2C below adds the first.
+
+### First drawable Moon point (Milestone 49I.2C)
+
+`sky/moon.py` defines frozen `MOON_POINT` data and the thin
+`MoonLayer(SolarSystemPointLayer)` specialization. Public `--moon` and
+`--planet venus` controls adapt into
+`SkyContentSelection.solar_system_objects`; detail application keeps both
+layers default-off and forwards exact selection. The maximal sphere registers
+Moon once, style owns its provisional hollow marker and label, and semantic
+identity owns `sky/solar_system/natural_satellites/moon`.
+
+
+### Accepted Solar-System track contract (Milestone 49I.2D)
+
+`archive/milestone_history/49i_solar_system/solar_system_track_audit_49i2d.md` proposes one renderer-neutral request
+containing body identity, start instant, sample cadence, tick cadence, and tick
+count. Body and observer states are reevaluated at every sample instant. Their
+apparent ICRS-oriented directions are assembled into one `SphericalCurves`
+record and transformed into the static chart's single product frame before the
+ordinary projection path.
+
+The current scalar direction realizer remains the correctness path; later
+batching is only an optimization. Existing curve transformation, projection,
+clipping, renderer, and export contracts require no parallel implementation.
+Exact tick anchors and per-sample instants are scientific metadata. Visible
+perpendicular ticks, line appearance, start glyph, and date-label appearance
+remain projected/style concerns. Fernando accepted this documentation-only
+boundary after all 1,919 tests passed. The audit installs no runtime API or
+output.
+
+### Scientific Solar-System track curve (Milestone 49I.2D.1)
+
+`sky/solar_system_tracks.py` defines frozen
+`SolarSystemTrackRequest` and `SolarSystemTrackResult` contracts plus
+`SolarSystemTrackRealizer.curve()`. The request normalizes one start instant,
+positive sample/tick steps in days, and a positive tick count. Its sample
+sequence includes both endpoints and every exact major-time anchor.
+
+The realizer borrows one source, reevaluates the observer and accepted scalar
+direction chain per vertex, retains every `ApparentDirection`, assembles one
+open native `SphericalCurves`, and calls `CoordinateService.transform()`
+once for the fixed product frame. The result retains sample instants, exact tick
+indices, resource identity, and scalar evidence. No installed layer or public
+chart request consumes it in 49I.2D.1. Fernando accepted the scientific
+contract and installed-DE440 validation after all 1,929 tests passed.
+
+`GridStyle.constellation_label_fontsize` and the corresponding
+`PublicationStyle` field independently control constellation-label typography.
+`None` retains the legacy `CanvasStyle.label_fontsize` fallback. Schema-v2
+translation retains that fallback for equal canvas/constellation values and
+carries unequal `styles.<style>.constellation_labels.font_size` values through
+the ordinary atlas/cartoon mode scale and layer-options mapping. Coordinate
+labels, other objects, furniture, and geometry retain their own contracts.
+
+## 8.1 Packaged configuration validation
+
+`wenu.configuration.load_packaged_defaults()` reads and strictly validates a
+fresh copy of the installed schema-v2 `defaults.toml`. The related
+`parse_configuration()` and `validate_configuration()` functions validate
+complete documents and mappings, and raise `ConfigurationError` with the full
+configuration path on failure. `translate_style_mode_defaults()` constructs
+existing immutable atlas/cartoon style, print/presentation mode, and palette
+objects with exact current parity. `translate_geometry_detail_defaults()`
+does the same for family view defaults, neutral/content/cartoon/adaptive
+detail, canonical family ceilings, and binocular fixed detail and stellar
+sizing. `translate_furniture_product_export_defaults()` completes the same
+translation boundary for references, poles, footer/context options, family
+legend plans, magnitude-legend appearance, product selection, and export
+options. `packaged_style_mode_defaults()` caches the validated style/mode
+translation, and canonical named composition now consumes its semantic bases,
+modes, palettes, and cartoon label-transform values. Explicit style and mode
+objects remain unchanged.
+
+`packaged_geometry_detail_defaults()` likewise caches the validated family
+view and detail translation. `chart_view_defaults()` returns its packaged
+family contracts. Named atlas composition uses the corresponding all-sky,
+planisphere, regional, or circumpolar adaptive policy; named cartoon
+composition uses its restrained bright-content policy. Explicit frame
+arguments, `DetailPolicy` values, and `DetailOverrides` continue to take
+precedence.
+
+`packaged_furniture_product_export_defaults()` caches the remaining validated
+translation. Ordinary drawing uses its neutral references, poles, and footer
+when no explicit furniture is supplied; legends and context remain opt-in.
+Family legend plans, magnitude-legend appearance and footer coordinates
+resolve through the same authority. Shared product parser
+defaults and generated filename extensions use its product values. Canonical
+export starts with its bounding-box, metadata and padding settings, then
+retains the existing derived mode DPI/transparency, circular transparency,
+and canvas face color. Explicit furniture, CLI product selections, output
+paths, and chart export options still win.
+The canonical footer interprets its configured coordinates as outer limits,
+anchors left and right credit text to the chart axes when those axes are more
+inset, and reserves at most a typography-sized strip below the chart. Tight
+export therefore grows only downward for credits instead of exposing unused
+canvas on the top and sides.
+
+Generated reference labels resolve through `data/translations.json` and
+`wenu.translations.translate_label()`. The shared command-line furniture uses
+the selected product language before applying any explicit caller overrides;
+unknown labels pass through unchanged, while unsupported language identifiers
+are rejected.
+
+Ordinary `draw_chart_view()` and `ChartRequest` omission now also resolves
+style, mode, language, and title through `[products.default]`. Direct typed
+constructors retain their historical default arguments for source
+compatibility; canonical named composition, view, drawing, furniture,
+product, and export gateways no longer consult those literals as runtime
+authority.
+
+`load_configuration(path=None)` returns a fresh complete effective mapping.
+With no path it is equivalent to the packaged authority; with a path it loads
+a partial user TOML document, recursively merges only documented keys over a
+fresh packaged mapping, and validates the complete result.
+`parse_configuration_overlay()`, `validate_configuration_overlay()`, and
+`merge_configuration_overlay()` expose the same strict boundary for callers
+that already own text or mappings. Every overlay must declare
+`schema_version = 2`.
+
+`load_configuration_defaults(path=None)` and
+`translate_configuration_defaults()` return one frozen
+`ConfigurationDefaults` aggregate containing the existing style/mode,
+geometry/detail, and furniture/product/export translations. These functions
+do not install global process state. Ordinary runtime and CLI activation
+remains the following Milestone 46D.5 slice.
+
+The ordinary runtime accepts that aggregate directly:
+
+```python
+from wenu import get_chart_view
+from wenu.configuration import load_configuration_defaults
+
+configuration = load_configuration_defaults("my-wenu.toml")
+view = get_chart_view(
+    sky,
+    observer,
+    family="binocular",
+    target="M13",
+    configuration=configuration,
+)
+```
+
+`draw_chart_view()` automatically carries `view.configuration` through named
+style/mode composition, detail, footer and magnitude-legend appearance, and
+export. Explicit view and drawing arguments retain final precedence. The six
+canonical examples expose the same path as `--config PATH`; the adapter loads
+and validates it before generating a maximal sphere. Omitted `--style`,
+`--mode`, and `--all-products` values resolve from the effective TOML, while
+arguments explicitly present on the command line override it.
+
+## 9. Installed unified chart command
+
+Installing Wenu provides one command over the ordinary Python facade:
+
+```text
+wenu_chart all-sky ...
+wenu_chart planisphere ...
+wenu_chart regional --center-on constellation:Cen,Cru,Mus ...
+wenu_chart circumpolar ...
+wenu_chart binocular --center-on cluster:M13 ...
+wenu_chart defaults
+```
+
+Every chart subcommand accepts the shared product, content, grid, horizon,
+furniture, appearance, output, observer, title, language, and `--config`
+controls. Observer controls use the unambiguous `--observer-location`,
+`--observer-time`, `--observer-latitude`, `--observer-longitude`,
+`--observer-height`, and `--observer-timezone` names because `--location`
+already selects location context furniture. Ephemeris and data-directory
+overrides are also available.
+
+The command loads and translates one effective configuration, constructs an
+`Observer`, calls `generate_celestial_sphere()`, passes the result to
+`get_chart_view()`, and finally calls `draw_chart_view_from_arguments()`.
+It prints the resulting output paths and closes the observer in a `finally`
+boundary. `src/wenu/cli/chart.py` does not import or execute example scripts.
+The examples and installed command are separate adapters over the same
+library interfaces.
+
+`wenu_chart defaults` writes the installed commented `defaults.toml` to
+standard output without loading an observer or astronomical catalogues.
+`wenu_chart defaults --write PATH` copies those exact UTF-8 bytes to an
+editable file and prints its path. The destination parent must exist; an
+existing file is deterministically replaced. This deliberately preserves
+comments and formatting from the authority rather than serializing translated
+Python contracts.
+
+Configuration line styles use the complete public vocabulary `solid`,
+`dashed`, `dotted`, `dash_dot`, and `none`. Named publication, presentation,
+outreach, location, and observing profiles are separate schema-v2 TOML files
+passed through `--config`. One invocation accepts one overlay. Version 2 has
+no profile inheritance or multi-file composition; that feature remains
+deferred until ordinary single-file use demonstrates a concrete requirement.
+
+The canonical examples and `wenu_chart` are independently maintained
+front-end adapters over this same interface. Their parity contract resolves
+omitted geometry from the same effective configuration before comparing the
+observer-bound view request; syntactic differences such as an example
+spelling out `projection="stereographic"` while the command accepts the
+configured default are therefore not treated as behavioral differences.
+
+The installed-command drawing contract is likewise resolved by
+`draw_chart_view_from_arguments()`, not by a command-specific translation.
+Its tested vocabulary includes content detail, grids and labels, horizon
+reference and mask, furniture and legends, post-mode appearance, product,
+title, language, and destination. Selecting `--all-products` yields the
+canonical atlas/cartoon by print/presentation matrix in deterministic order.
+
+Each `wenu_chart` invocation loads and translates a fresh effective document;
+it does not install active configuration globally. Partial overlays therefore
+affect only their named values, a later command may safely use another overlay
+or packaged defaults, and a reused maximal sphere acquires no configuration
+state. Explicit command observer, center, geometry, product, title, language,
+and output arguments retain final precedence. Invalid documents raise
+`ConfigurationError` before observer or astronomical construction.
+
+## 10. Package imports
+
+Internal implementation imports use responsibility-based packages:
+
+```python
+from wenu.geometry.spherical import SphericalCurves, SphericalGrid
+from wenu.geometry.projected import ProjectedCurve, ProjectedPoints
+from wenu.geometry.frame import SphericalFrame
+from wenu.geometry.viewport import Viewport
+from wenu.projections.stereographic import StereographicProjection
+from wenu.rendering.matplotlib import MatplotlibRenderer
+from wenu.charts.composition import ChartComposition, compose_chart
+```
+
+Pre-v0.4 singular top-level geometry modules and the old `wenu.renderers`,
+`wenu.regional`, and `wenu.styles` packages do not exist.
+
+## 11. Extension procedure
+
+- Add a chart type only when geometry or framing differs.
+- Add a style by composing visual components; do not add projection or export
+  behavior to it.
+- Add an output mode by implementing `resolve(context)` and preserving chart
+  geometry and content.
+- Add a detail policy by returning `ResolvedDetail`.
+- Extend legends from resolved content and semantic render metadata, never by
+  querying catalogues directly.
+
+Every extension must continue through `CelestialSphere.draw_chart()`.
+
+## Polar common-year calendar model
+
+`CommonYearCalendarRequest` resolves the neutral civil-date geometry used by
+future polar-planisphere furniture. Its defaults calibrate La Ligua/Papudo
+with longitude `-71.230289`, standard UTC offset `-4`, and common reference
+year 2026. The returned `CommonYearCalendarScale` contains 365 frozen day
+records, 12 true month arcs, 12 month-boundary records, semantic month label
+keys, and numeric labels only for days 5, 10, 15, 20, 25, and 30 when that
+date exists. It deliberately excludes leap days, daylight-saving rules,
+localized month text, face handedness, and renderer policy.
+
+`PolarCalendarFurnitureRequest.resolve(pair)` converts that neutral scale into
+one matched `PolarCalendarPairFurniture`. Each face contains 365 tick segments
+in physical millimetres, 12 strengthened month boundaries, 71 numeric day
+labels, and 12 semantic month-label anchors. The default central star-disk
+radius is 80 percent of the physical disk radius; tick lengths and day/month
+label radii are separately configurable fractions. An explicit paired
+`calendar_radius_mm` overrides the fractional star-disk default and is rejected
+if it leaves insufficient room. All calendar geometry stays between that
+reserved radius and the physical edge. Text rotations encode
+typographic bases outward and never mirror glyphs. A date direction is exactly
+opposite the projected direction of its midnight RA, deriving reversed face
+handedness from the selected equidistant or stereographic projection.
+
+`PolarPageFurnitureRequest(source_revision=...)` resolves the paired disk into
+one `PolarPagePairFurniture` expressed entirely in physical A4 paper
+coordinates. The default page is 210 by 297 mm with a 5 mm safe margin and the
+195 mm disk centred at `(105, 148.5)` mm. Each face carries a 1 mm centre-punch
+radius, the reflected registration metadata positioned in millimetres, a
+triangle/circle/square glyph sequence whose triangle is the unambiguous
+orientation cue, and an exact 50 mm scale ruler with 10 mm major intervals.
+The south and north pages share one request and remain individually readable;
+their completed text is never mirrored.
+
+The page request also owns local semantic information for the classroom
+edition: `SOUTH / SUR` or `NORTH / NORTE`, La Ligua/Papudo identity, La Ligua
+coordinates, UTC-4 standard time, the explicit daylight-saving disclaimer,
+projection and declination coverage, magnitude limit 5.0, disk diameter,
+actual-size printing, minimal cutting/gluing/face-use instructions, product
+identifier, and source revision. `source_revision` is mandatory at resolution
+so a printable page cannot silently omit provenance. This object contains no
+artists or saving code; renderer realization and the single final save per
+page belong to the following export milestone.
+
+`draw_polar_page_furniture(...)` is the single Matplotlib realization of one
+resolved calendar face and page face. It runs only as additional furniture
+after the canonical sky, reference, legend, and footer stages. The chart axes
+are expanded from the stellar aperture to the physical date-ring radius; daily
+ticks, Spanish month names, and all paper marks are then drawn from immutable
+millimetre records. A transparent full-page axes uses coordinates from
+`(0, 0)` to `(210, 297)` mm, while `polar_disk_axes_bounds(face)` locates the
+195 mm outer disk exactly on the physical A4 figure. The function saves
+nothing and returns an inspectable `PolarFacePageRendering` artist record.
+
+`PolarMagnitudeScaleRequest` resolves the polar-only classroom scale at the
+packaged magnitude-0.5 bright cutoff and magnitude-5.0 catalogue ceiling. The
+four five-point intervals (`-1.5..-1.0` through `0.0..0.5`) and five circular
+intervals (`0.5..1.0` through `4.0..5.0`) use interval midpoints as samples of
+`configured_stellar_symbol_sizes(...)`. The resulting immutable scale object
+is passed unchanged to both `PolarPageFurnitureRequest.resolve(...)` and
+`PolarPouchFurnitureRequest.resolve(...)`; their placement records are in
+millimetres. `draw_polar_magnitude_scale(...)` realizes those stored point
+areas without introducing an independent legend sizing law.
+
+`export_polar_planisphere_pages(...)` accepts one resolved pair, calendar, and
+page-furniture pair plus explicit north and south destinations. Each face uses
+an A4 `PrintMode`, the accepted polar composition, and a non-tight opaque
+`ExportOptions`; `bbox_inches=None` is essential because tight bounding boxes
+would destroy actual-size page dimensions. It calls
+`PolarPlanisphereChart.export()` exactly once per face. That method delegates
+to `export_composed_chart()`, whose optional callable additional-furniture
+stage now runs immediately before its existing sole `save()`. The returned
+`PolarPagePairExportResult` retains both ordinary `ChartExportResult` values,
+including the new `additional_furniture_rendering` record.
+
+`tools/render_48e4_polar_pages.py --source-revision REVISION` is the review
+entry point. It writes `polar-planisphere-south-a4.pdf`,
+`polar-planisphere-north-a4.pdf`, and `manifest.json`; source revision is
+required rather than guessed from a working directory. The PDFs contain A4
+media boxes, one 195 mm disk each, embedded product/source metadata, and no
+implicit crop-to-content operation.
+
+## Polar folded-pouch furniture
+
+`PolarHorizonOverlayRequest.resolve(pair, pages, observer)` retains only
+astronomical altitude-zero geometry: paired clipped horizon segments, the
+shared observer latitude, physical disk scale, and the face-specific meridian
+horizon reference. It deliberately exposes no E, W, N, or S label anchors.
+Those printed letters tell the user how to hold the fixed pouch; they are not
+derived from the rotating disk's current projected orientation.
+
+`PolarPouchFurnitureRequest.resolve(overlays)` maps that immutable horizon pair
+onto one 210 by 297 mm folded construction. With the 195 mm classroom disk and
+5 mm safe margin, the fold is at 97 mm and the disk centre is `(105, 194.5)`
+mm, so the complete disk lies between the fold and the upper safe margin. The
+fold therefore supplies vertical registration when the disk rests on it.
+
+Each resolved face owns three identical annular date windows. Every window
+spans 37.5 degrees, adjacent windows are separated by 5 degrees, and the full
+group is centred on the bottom of the disk. The hour furniture covers 19:00
+through 05:00 at one-hour/15-degree intervals. On the south face it runs from
+right to left; on the north face it runs from left to right. Bold numerals lie
+just inside the hour circle with upright tangent bases, and each short radial
+tick begins on that circle and extends outward. The windows run from 0.83 to
+0.95 disk radius: they expose calendar ticks, day numbers, and month names
+while retaining a continuous outer strip over the disk's white margin.
+
+Fixed paper labels are E-S-W, two bold `HORIZONTE` labels, and `Muchos cielos,
+un firmamento` on the south face, and bold W-N-E plus two bold `HORIZONTE`
+labels on the north face. Cardinal labels share a seven-millimetre vertical
+clearance below the local resolved horizon. Horizon text positions and
+rotations follow the resolved curve and remain just below it on retained
+paper. Geographic letters remain manual pouch furniture, not rotating-disk
+sky anchors.
+
+`PolarPouchSheetRequest.resolve(pouches)` imposes both accepted faces on one
+portrait A4 sheet. A one-millimetre central spine separates fold lines at 148
+and 149 mm. The south face occupies the upper 148 mm panel; the north face is
+rotated 180 degrees into the lower panel. Each panel is clipped without
+recalculating face geometry. The 195 mm disk therefore protrudes 47 mm from
+the open edge after folding and is inserted after the side seams are glued.
+
+`PolarPouchFaceFurniture.sky_window_boundary_mm` first joins all resolved
+horizon segments from E to W, then closes them with the physical upper disk
+arc. This is the complete
+cuttable visible-sky window path; the renderer never infers which side of the
+horizon is visible. The original horizon segments remain separately available
+so the astronomical horizon can be printed more strongly than the remaining
+cut arc.
+
+`draw_polar_pouch_face(face, figure=...)` realizes one resolved face on an A4
+axes expressed directly in millimetres. All cut, fold, hour, label, and glue
+marks are black for inspection through paper. The function returns
+`PolarPouchFaceRendering`, calculates no astronomy or furniture positions, and
+saves nothing.
+
+`draw_polar_pouch_sheet(sheet, pouches, figure=...)` applies the two resolved
+affine placements to those same vector artists on one axes. It clips each face
+to its 148 mm panel and preserves the distinct fold lines around the spine.
+North text artists receive the additional 180-degree glyph rotation required
+to read upright after the lower panel is folded; rotating coordinates alone
+does not rotate Matplotlib text glyphs.
+`export_polar_pouch_sheet(...)` owns the one-save actual-size A4 boundary.
+
+`export_polar_pouch_pages(...)` creates one 210 by 297 mm figure per face,
+calls the pouch renderer once, and delegates exactly one final save per output
+to the established `ExportOptions` boundary with `bbox_inches=None`. Explicit
+source revision is mandatory and embedded in PDF metadata. The review tool
+`tools/render_48g2_polar_pouch.py` writes one clean single-sheet fabrication
+PDF, one faded canonical-disk PNG diagnostic, and a checksum manifest. The
+diagnostic composer registers and clips both disks at their imposed panel
+positions and rotates 15 August to the 21-hour mark on both faces; it does not
+affect the fabrication PDF. Printing is one-sided at
+100 percent / Actual Size. The review command's `--title` option supplies the
+south title before furniture resolution; its default is `Muchos cielos, un
+firmamento`.
+
+Diagnostic center registration is an explicit two-step mapping. The canonical
+disk-page center `(105, 148.5)` mm first maps to the pouch-face disk center
+`(105, 194.5)` mm; the panel affine then maps that center to the imposed A4
+sheet. Rotation and circular clipping use the pouch-face center, preventing
+the 46 mm vertical offset that would result from applying the panel affine
+directly to the canonical page center.
+
+## Polar classroom-disk content
+
+`PolarPlanisphereDetailPolicy` is the packaged atlas-detail authority for a
+`polar_planisphere` composition. Its canonical configuration selects stars
+through magnitude 5.0 and enables exactly `stars`, `constellation_lines`,
+`constellation_labels`, `milky_way`, and `magellanic_clouds`.
+`constellation_star_mode="none"`
+ensures that faint constellation vertices do not bypass the stellar ceiling.
+Constellation boundaries, coordinate grids, galaxies, clusters, planetary
+nebulae, and supernova remnants remain disabled. Because the policy ignores
+face context and output-mode scaling, north and south
+compositions produce identical render-local catalogue geometry options before
+their different projections clip the common sky.
+
+## Polar physical-print appearance
+
+For named atlas-print composition, `polar_planisphere_chart_style()` adapts the
+resolved atlas style using the packaged `PolarPlanisphereStylePalette`. The
+printer-calibrated values use white paper, darker configurable blue stars, a
+curve that promotes intermediate magnitudes while reaching its 1.25 pt² floor
+at magnitude 5, darker filled Milky Way and Cloud features with zero Milky Way
+edge and contour realization, stronger but subordinate constellation and
+reference structure, a restrained circular boundary, and no legend. The
+same palette owns 6.45 pt day labels and 11.5 pt month labels, with their
+weights, and `CalendarStyle` carries those resolved values to physical-page
+realization. The adapter does not
+change detail, chart geometry, projection, output scale, or other chart
+families. Atlas presentation retains its established screen palette.
+
+The optional bright-star overlay uses `StellarStyle` values for its magnitude
+cutoff, color, opacity, and affine magnitude scale and offset.
+`PublicationStyle` emits one vectorized five-point overlay, and the renderer
+masks vector-valued overlay areas with the same point mask. The corrected polar
+configuration uses a 0.5 cutoff, retaining the established bright affine law
+through that endpoint and the established ordinary 0.18..5.5 affine law,
+then multiplies five-point areas by `0.70^2 / 0.38^2` so the inner pentagon has
+70 percent of the mapped linear size, and suppresses the ordinary circle under
+each selected overlay. These are
+appearance-only operations over the existing Hipparcos points.
+
+The canonical actual-size page and pouch tools pass an 86 mm calendar radius
+to the paired disk request. This is the stellar-aperture boundary inside the
+unchanged 97.5 mm outer radius. `PolarCalendarFurnitureRequest` places day and
+month labels at 0.957 of the outer radius in the remaining annulus; its
+rendered-font regression verifies
+that the complete Spanish month names remain inside the cut line.
+
+Run `python tools/render_48e2_polar_preview.py` for the canonical equidistant
+north/south diagnostic. The tool may also render `--projection stereographic`
+for comparison and accepts `--dpi 540` for three-times-linear-resolution
+inspection. It routes its ecliptic label anchors through `CoordinateService`,
+writes only below the requested output directory, and saves each face once.
+
+For Milestone 48E.3, `PolarPlanispherePairRequest` defaults to symmetric
+limits of +20 and -20 degrees. A default stereographic pair selects its
+unmirrored south-face convention automatically; an explicit `south_flip_ew`
+still overrides it. Polar reference composition opts into the ordinary
+equatorial-grid layer, realized as meridians at 0, 90, 180, and 270 degrees.
+Short declination ticks every 20 degrees are projected disk furniture, not
+spherical parallels. After conversion to equatorial coordinates, polar points,
+curves, and grids are clipped to the face's declination cap before projection.
+This prevents exterior constellation endpoints from becoming false planar
+chords in the equidistant view. The established reference sky
+owns the equator, ecliptic, Galactic plane, ecliptic cardinal points, and pole
+annotations, and converts its canonical AltAz geometry back to ICRS before
+the polar projection. Both physical poles may be requested normally; the same
+declination-cap preparation suppresses out-of-face markers and labels. Pole
+selection also accepts explicit `north` and
+`south` values. The polar physical palette owns a
+single neutral reference color and a configurable principal-label size. The
+diagnostic uses the canonical footer, whose application version comes from
+installed package metadata. `PolarCalendarTick.labeled_day` allows stronger
+stroke weight without changing tick length.
+
+Automatic equator, ecliptic, and Galactic-plane labels share a render-local
+collision registry. Reservations use normalized chart coordinates so the
+policy is independent of projection scale and output size. Later labels search
+their visible curve for a separated interior candidate; explicit anchors are
+never displaced.
+
+For `polar_planisphere` only, automatic and explicit principal-reference
+labels choose between the two equivalent tangent directions by requiring the
+typographic down normal to point toward projected disk center. Other chart
+families retain the ordinary page-readable tangent convention.
+
+Polar constellation labels use the corresponding circular tangent at their
+point anchor and the same inward-down convention. The renderer resolves their
+rotation callback per projected point without changing non-polar label style.
+Polar ecliptic keypoints use small `x` symbols, celestial poles use `+`, and
+ecliptic and Galactic poles use `x`.
+The physical disk suppresses their inline labels and renders all pole and
+ecliptic-keypoint markers at the same small, light weight. Their meanings are
+reserved for later external product furniture or documentation.
+The ecliptic cardinal keypoints retain their zodiac labels. Packaged polar
+label directions place the celestial-equator and ecliptic names in opposite,
+comparatively sparse 3h/15h sectors rather than near their crossings. The
+configuration stores equatorial right ascension and ecliptic longitude so the
+anchors remain independent of page size and projection scale.
+Ecliptic anchors and cardinal keypoints share the reference grid's barycentric
+true-ecliptic J2000 frame. The equatorial grid and celestial equator are FK5
+J2000, so the equinox markers coincide with both curves. A future explicit
+`of_date` product policy must change the whole reference set together.
+
+## 12. Compatibility and deprecation
+
+The legacy `cartoon_output_mode()` and `compose_cartoon_chart()` wrappers
+remain functional but emit `DeprecationWarning`. Their replacements and the
+v0.5 compatibility policy are recorded in `archive/migration_history/deprecations_v0.5.md`.
+
+## 13. User documentation and reference image
+
+The v0.7 user guide begins at `docs/user_guide/index.md` and contains one page
+for each canonical family plus a shared styles, modes, detail, and furniture
+reference and the unified-command/configuration profile guide.
+`docs/user_guide.md` remains only as a compatibility link.
+
+The README planisphere is the sole checked-in generated chart. Its generating
+script, exact arguments, source commit, dimensions, SHA-256 checksum,
+destination, and visual approval are recorded in
+`docs/user_guide/planisphere.md`. All other generated products remain below
+`output/` and outside version control.
+
+For the Milestone 46D.8 visual handoff, run:
+
+```bash
+python tools/render_46d8_visual_matrix.py
+```
+
+The runner invokes the real command module once per product and writes 18
+PNGs plus `manifest.json` below `output/46d8-visual-matrix/`. Use `--list` to
+inspect the matrix or repeated `--entry NAME` options to rerender selected
+products. The review and approval contract is
+`docs/developer/archive/acceptance_history/visual_acceptance_46d8.md`.
+
+The matrix intentionally assigns one independently visible role to each mask
+diagnostic. Outside-mask openings compose by union, so a constellation opening
+and the above-horizon opening must not be used together to judge the opacity
+or completeness of either one. A horizon reference is claimed only where the
+chosen family geometry demonstrates a crossing.
+
+The canonical equatorial formatter emits right ascension as `hh:mm` and signed
+declination as `dd:mm`. Regional fields through 60 degrees use 15-degree grid
+sampling; circumpolar charts use 30-degree, two-hour meridians. All-sky grids
+include zero latitude, place latitude labels on the central longitude, and
+label only principal longitudes. These are shared chart policies rather than
+example arguments.
+
+### Sgr-Sco-Oph-Ser regional product
+
+`examples/regional_constellation_group.py --center-on constellation:Sgr,Sco,Oph,Ser`
+selects the
+Sagittarius, Scorpius, Ophiuchus, and two-part Serpens region. It does not
+enable any non-equatorial grid by default. Every canonical family exposes `--altaz-grid`,
+`--equatorial-grid`, `--ecliptic-grid`, and `--galactic-grid` plus the
+corresponding label switches, and the ordinary CLI defaults to a labeled
+equatorial grid. The AltAz grid has a black semantic base color, realized
+as gray `#707070` for both lines and labels in print modes so it remains
+subordinate to black stars. It excludes its altitude-zero circle so it does
+not duplicate the chart-owned horizon.
+`--constellation-mask Sgr,Sco,Oph,Ser` enables that mask explicitly.
+
+
+## SVG output contract (Milestone 49F.3)
+
+The shared chart product arguments accept `--format png`, `--format pdf`,
+and `--format svg`. Public format resolution is owned by
+`wenu.output_policy.OutputFormat`; backend-specific Matplotlib font terms are
+not public API.
+
+`ChartProductOptions.output_format` carries an optional explicit format into
+deterministic naming. A single-file output suffix that contradicts an explicit
+format raises `ValueError`. Commands that omit the option retain established
+configuration and suffix behavior.
+
+The canonical SVG final-save path retains genuine text elements and then
+annotates Wenu-owned semantic artist groups through
+`wenu.svg_document.annotate_semantic_svg()`. Those groups expose stable IDs,
+semantic layer and paint metadata, and `data-wenu-edit` classification without
+reordering the XML tree or changing geometry, clipping, or appearance.
+
+SVG is the editable vector product; PDF is the portable publication and
+printing product. Ordinary SVG names font families and fallbacks but does not
+embed font files. The supported external-editing rules and safe Inkscape
+workflow are documented in `docs/user_guide/svg_output.md`.
+
+## Temporal sequence vocabulary (Milestone 49G.1)
+
+`src/wenu/temporal.py` defines renderer-neutral immutable time contracts.
+
+`TemporalTimeline` owns strictly increasing, offset-aware physical instants.
+It normalizes them to UTC, keeps an IANA civil/display time zone separate, and
+reports simulation duration, frame count, uniform sampling interval when
+present, sampling kind, civil representations, and deterministic frame names.
+`TemporalTimeline.uniform()` creates an inclusive uniform sample; direct
+construction permits explicitly irregular samples.
+
+`PlaybackSpec` owns only playback duration and frames per second. Its implied
+frame count may be checked against a timeline, but playback never determines
+the meaning of a simulation instant or sampling interval.
+
+`tools/render_circumpolar_movie.py` is the reference consumer. It resolves
+these contracts and still performs complete canonical `wenu_chart` renders
+before invoking external FFmpeg. No package sequence renderer, alternate
+astronomical path, CLI sequence request, or temporal cache exists yet.
+
+### Observer-time chart sequence (Milestone 49G.2)
+
+`ObserverTimeChartSequenceRequest` pairs one immutable `ChartRequest` with
+one `TemporalTimeline`. It currently accepts one explicitly formatted
+product whose configured output is a directory. Planning preserves the chart
+definition and replaces only observer time and the deterministic frame output
+path.
+
+`generate_observer_time_chart_sequence()` has no injectable production
+executor: it calls `generate_chart_request()` for every frame and validates
+the returned static output against its plan. The ordered
+`ObserverTimeChartSequenceGeneration` retains per-frame UTC simulation time,
+civil display time, complete static generation, and output path.
+
+This API is intentionally observer-time-specific. Proper motion and
+precession require a future celestial-realization epoch plus catalogue
+reference epoch, time scale, astrometric propagation, frame, and provenance
+policy. Moving-object providers likewise require their own explicit evaluation
+instant. Neither role is represented by relabelling observer time.
+
+
+
+### Deterministic sequence manifests (Milestone 49G.3)
+
+`ObserverTimeSequenceManifest.from_sequence()` creates the schema-versioned
+portable identity of an `ObserverTimeChartSequenceRequest`. The canonical
+identity includes chart/product choices, timeline, display timezone, playback,
+and ordered frames while excluding only the base observer time and output
+directory owned by the sequence plan.
+
+`write_observer_time_sequence_manifest()` writes a fresh manifest atomically;
+`read_observer_time_sequence_manifest()` validates schema and identity;
+`update_observer_time_sequence_manifest()` atomically persists verified frame
+byte counts and SHA-256 values without changing plan identity.
+
+`generate_observer_time_chart_sequence(..., restart_policy="restart")`
+renders all frames. With `restart_policy="resume"`, it rejects incompatible
+plans and reuses only outputs whose complete file bytes match their manifest
+record. Missing or changed outputs return to canonical static generation.
+
+
+## Temporal sequence CLI and configuration (Milestone 49G.4)
+
+The installed `wenu_chart` family commands optionally accept an inclusive
+observer-time stop, uniform frame count, civil display timezone, playback
+metadata, and restart/resume policy. Omission preserves the existing static
+path. Static and sequence commands resolve through one shared CLI product
+plan and `chart_view_request()`; sequence frames then use only
+`generate_observer_time_chart_sequence()` and `generate_chart_request()`.
+
+`ConfigurationDefaults.sequence` carries the immutable translated
+schema-version-2 `[sequence]` table. Packaged values disable sequence output.
+User overlays may provide a complete sequence, and explicit CLI values take
+precedence. The effective configuration reaches every frame and participates
+in deterministic manifest identity.
+
+## Fixed-sky rotating-horizon planning
+
+`FixedSkyRotatingHorizonSequenceRequest` plans an Earth-rotation presentation
+with one explicit aware `celestial_anchor_time` and a
+`TemporalTimeline` of observer-local instants. Its frames keep the celestial
+request and camera time fixed while exposing a separate local observer for
+horizon, cardinal, AltAz, visibility, and mask realization.
+
+This is a planning boundary only. The accepted implementation continues to use
+complete observer-time renders as its oracle; optimized canonical rendering
+and scientifically keyed reuse are later 49H increments. The celestial anchor
+is not a catalogue reference epoch and does not replace future provider-owned
+proper-motion realization.
+
+The 49H.2 independent current-behavior baseline is
+`generate_fixed_sky_complete_render_baseline()`, which produces complete canonical circumpolar observer-time renders in a
+separate directory. Visual acceptance showed that celestial content rotates,
+so these frames are not the fixed-sky pixel oracle.
+`compare_png_frames()` reports explicit RGBA difference metrics evaluated
+against `PngFrameComparisonTolerance`; exact equality is the default.
+Other chart families remain outside this oracle until stable-camera
+equivalence is proved.
+
+
+
+## Fixed-sky reference rendering (Milestone 49H.3)
+
+`fixed_sky_circumpolar_orientation()` derives one anchor-relative
+circumpolar position angle from the actual celestial-to-horizontal
+transformation at the anchor and frame instants. It keeps a fixed celestial
+reference at identical projected coordinates while rotating local horizon and
+AltAz geometry. It does not use a 15-degree-per-hour approximation.
+
+`resolve_fixed_sky_rotating_horizon_frame()` preserves dual-time ownership
+while producing an ordinary frame-local `ChartRequest` whose only projection
+change is `position_angle_deg`.
+
+`generate_fixed_sky_rotating_horizon_sequence()` is the accepted uncached
+reference executor. It sends every resolved frame through
+`generate_chart_request()`; no alternate sphere, projection, renderer,
+furniture, or export path exists. Scientifically keyed reuse and
+restart/resume support remain future work.
+
+## Typed coordinate vocabulary, providers, and service (Milestones 49B.1–49C.1)
+
+`wenu.coordinates.CoordinateSpec` is the immutable scientific identity
+vocabulary for a represented coordinate set. It records frame, origin,
+position status, optional epoch/equinox and instant/time-scale pairs,
+representation and units, provider/model provenance, and declared correction
+policies. It does not transform coordinates.
+
+`wenu.coordinates.ObservationContext` is the immutable observer-local input
+vocabulary. It records normalized terrestrial longitude, latitude, elevation,
+physical instant/time scale, refraction policy, and Earth-orientation policy.
+It is not yet constructed by `Observer` in 49B.1.
+
+`wenu.positions.PositionProvider` is a runtime-checkable structural protocol
+for native astronomical position generation. Milestone 49B.3 adapts `Stars`, `NonStellar`, and `OpenClusters` as native
+ICRS point providers; all `NonStellar` subclasses inherit the centre provider.
+`wenu.geometry.SphericalGeometry` names the existing point,
+curve, polygon, and grid record union.
+
+Milestone 49B.2 makes `CoordinateSpec` a required keyword-only member of all
+four spherical geometry records. Production layers declare the coordinate
+identity at construction, transformations declare their target identity,
+selection and relative-longitude operations preserve identity, and
+`SphericalGrid` rejects components with a different specification. Synthetic
+projection tests use an explicitly named generic spherical specification;
+there is no implicit or inferred fallback. Coordinate values and equations remain unchanged.
+
+The provider boundary returns native catalogue centres only. Galaxy outlines,
+isophotes, constellation geometry, coordinate grids, and horizon geometry are
+morphology or constructed references and deliberately do not become position
+providers.
+
+## Central coordinate service (Milestone 49C.1)
+
+`wenu.coordinate_service.CoordinateService` is the single new Astropy-backed
+transformation boundary for typed spherical geometry. Its `transform()` method
+accepts points, curves, polygons, or grids and returns the same concrete kind
+in an explicit target `CoordinateSpec`. Identifiers, labels, names, metadata,
+curve segmentation, polygon rings, grid component names, and closure flags are
+preserved.
+
+ICRS, Galactic, barycentric mean ecliptic, and observer-local AltAz frames are
+supported. AltAz requires an explicit `ObservationContext`; vacuum refraction
+and Astropy Earth-orientation policy are currently the only accepted local
+policies. Existing charts and layers do not call the service until 49C.2, so
+49C.1 changes no production rendering path.
+
+
+## Coordinate ownership during architecture 0.9.5
+
+The accepted 49C.1 `CoordinateService` is the single Astropy-backed owner of
+astronomical frame transformations. The merged 49C.2 milestone routes reference
+points and grids, chart compatibility conversions, deep-sky geometry,
+constellation references, observer caches, and chart-orientation reference
+directions through that service while preserving concrete `Spherical*` kinds,
+topology, semantic arrays, metadata, and provenance.
+
+Position generation remains separate. `Stars.position()` supplies native
+Hipparcos ICRS catalogue positions. Skyfield continues to generate the one
+apparent topocentric stellar realization, and constellation lines reuse those
+same cached arrays. Native AltAz horizon construction likewise remains
+reference geometry; a service call is required only when a product requests
+that geometry in another astronomical frame.
+
+The 49C.3 candidate removes `charts/coordinate_frames.py` and the handwritten `coordinates.py::radec_to_altaz()`. Every production Astropy transformation now occurs inside `CoordinateService`. `Observer` supplies immutable `observation_context` and retains only the time, location, Skyfield, and AltAz compatibility state required by providers and public Astropy-coordinate entry points.
+
+# Public celestial reference policy
+
+`CelestialReferencePolicy(equinox="J2000")` is the immutable public contract
+for coupled FK5 equatorial and barycentric true-ecliptic reference geometry.
+`J2000` is the compatibility default; `of_date` resolves from the chart
+observer's declared Astropy time. `ChartRequest.reference_policy` carries the
+resolved request through ordinary grid and furniture construction.
+
+The installed command exposes `--reference-equinox EQUINOX`. The corresponding
+schema-version-2 overlay is `[coordinates.references] equinox = "..."`, with
+the explicit command value taking precedence.
+
+Reusable view drawing passes `ChartView.observer` explicitly to
+`configure_chart_request_grids(..., observer=...)`. Direct library callers
+may continue to rely on `sky.observer` as the fallback. This distinction is
+required for `of_date`, which always resolves from the declared chart
+observer's `t_astropy` and never from the computer clock.
+
+Scientific acceptance compared default J2000, explicit J2000.0, J2016.0, and
+of-date SVGs. The coupled references moved coherently while apparent stars
+remained fixed. Final verification passed 1,786 routine tests with 30
+deselected and 1,816 complete tests.
+
+## Accepted drawable Venus track (Milestone 49I.2D.2)
+
+Regional and binocular `wenu_chart` requests accept
+`--planet-track venus`, `--track-start`, `--track-sample-step`,
+`--track-tick-step`, `--track-tick-count`, and optional
+`--track-tick-labels`. The track request is independent of `--planet venus`.
+
+`SolarSystemTrackLayer` realizes the scientific curve.
+`solar_system_track_annotations.py` prepares its projected path,
+perpendicular ticks, start label, and two-pass perpendicular date layout.
+Appearance is owned by `PublicationStyle`; PNG, PDF, and semantic SVG use the
+ordinary renderer and exporter.
+
+
+## Accepted physical apparent-disk boundary (Milestone 49I.3A)
+
+`archive/milestone_history/49i_solar_system/physical_apparent_disk_audit_49i3a.md` is the active accepted contract for
+future resolved Venus and Moon appearance. It separates apparent centre,
+physical angular diameter, illumination, tangent-plane orientation,
+body-specific orientation, photometry, and object-specific display
+magnification.
+
+No runtime API is installed by 49I.3A. Existing Venus and Moon layers continue
+to return symbolic `SphericalPoints`, and their current fixed hollow markers
+remain unchanged. Future resolved disks must become ordinary semantic geometry
+before the canonical projection and shared PNG/PDF/SVG path.
+
+
+## Venus physical-appearance state (Milestone 49I.3B)
+
+`solar_system_appearance.py::SolarSystemApparentDisk` is the frozen
+renderer-neutral physical state. `SolarSystemAppearanceRealizer.appearance()`
+accepts one ephemeris source, accepted target and Sun apparent directions,
+display identity, physical radius, and radius-model identity.
+
+The result records angular diameter, Sun–target–observer phase angle,
+spherical illuminated fraction, and bright-limb position angle measured from
+apparent celestial north toward east. `VENUS_MEAN_RADIUS_KM` is 6051.8 km.
+No chart request or layer consumes this API in 49I.3B.
+
+
+## Accepted resolved Venus disk boundary (Milestone 49I.3C)
+
+`archive/milestone_history/49i_solar_system/resolved_venus_disk_audit_49i3c.md` accepts three ordinary semantic
+geometries: illuminated face, limb, and terminator. They are sampled at the
+physical angular radius, transformed, and projected ordinarily. Chart
+preparation then scales projected offsets around the projected physical centre.
+
+The accepted physical angular diameter remains in
+`SolarSystemApparentDisk`; future request/detail policy owns a separate
+Venus-specific display magnification. Multiple epochs use independently
+realized states in one fixed chart frame. This audit installs no runtime API.
+
+
+## Venus spherical disk geometry (Milestone 49I.3C.1)
+
+`solar_system_disk_geometry.py::SolarSystemDiskGeometryRealizer.geometry()`
+accepts one `SolarSystemApparentDisk` and an optional even sample count of at
+least 16. It returns a frozen `SolarSystemDiskGeometry` containing ordinary
+`SphericalPoints`, `SphericalCurves`, and `SphericalPolygons` records for
+the centre, limb, terminator, and illuminated face.
+
+The default is 720 physical limb samples. Geometry preserves the appearance
+coordinate specification, physical angular radius, phase, bright-limb
+orientation, model identity, and provenance. It applies no display
+magnification and owns no chart or rendering policy.
+
+
+## Drawable resolved Venus disk (Milestone 49I.3C.2)
+
+`sky/venus_disk.py::VenusDiskRealization` realizes one accepted Venus
+appearance and physical disk geometry, transforms all components into the
+product frame, and shares that state across the illuminated-face, limb, and
+terminator layers.
+
+`charts/request_disks.py::SolarSystemDiskDisplayRequest` owns the explicit
+target and governed magnification. `charts/solar_system_disk_preparation.py`
+projects the separately transformed physical centre through the chart's exact
+projector and scales only projected component offsets about it. Factor 1 is
+physical angular scale. The accepted public controls are
+`--planet-appearance venus=resolved` and
+`--planet-disk-magnification venus=FACTOR`.
+
+
+## Drawable resolved Moon (Milestone 49I.3E.2)
+
+Bare `--moon` adapts to `SolarSystemDiskDisplayRequest(MOON_BODY, 1)`.
+`--moon-appearance symbolic` instead enables the existing point layer, and
+`--moon-disk-magnification FACTOR` supplies a finite value from 1 through
+1000 only for resolved appearance.
+
+`MOON_BODY.resolved_disk_chart_families` authorizes all five chart families.
+The same descriptor property preserves Venus's regional/binocular boundary.
+`solar_system_disk_layers()` creates the three generic components,
+`SolarSystemDiskRealization` reuses the accepted apparent and appearance
+realizers, and `SolarSystemDiskGeometryRealizer` retains the 720-sample
+default. `MagnifyProjectedDisk` remains the sole display magnification owner.
+
+Publication style lookup uses the component descriptor's entity key, with
+Moon-owned disk colors and line values. Projection, clipping, renderers,
+semantic SVG, and exporters remain generic. The review matrix is generated by
+`tools/render_49i3e2_resolved_moon_review.py`. No sequence request or
+multi-epoch Moon realization is installed. Fernando accepted this
+single-epoch implementation and its five-family visual matrix on 2026-09-02;
+all 2,104 tests passed at closure.
+
+
+## Lunar physical-appearance state (Milestone 49I.3E.1)
+
+`sky/moon.py::MOON_BODY` is the immutable catalog identity shared by the
+accepted symbolic Moon layer and future physical appearance. It records NAIF
+body ID `301`, Earth parent key, equal-volume mean radius `1737.4 km`, and the
+output-neutral `spherical_physical_appearance` capability.
+
+`sky/earth.py::EARTH_BODY` supplies non-drawable NAIF body identity `399` so
+catalog relationship queries are complete. `SolarSystemAppearanceRealizer`
+uses the accepted topocentric Moon and Sun apparent directions with
+descriptor-owned radius data to return `SolarSystemApparentDisk`. No chart
+request consumes this state in 49I.3E.1.
+
+Fernando scientifically accepted the eight-case installed-DE440 validation
+on 2026-09-02. The maximum apparent-centre residual was `1.338e-07 deg`, the
+maximum physical angular-diameter residual was `2.994e-06 arcsec`, and the
+minimum explicit topocentric parallax was `0.272607 deg`. The accepted state
+remains output-neutral. Final verification passed 73 documentation tests, 124
+focused tests, 2,051 routine tests with 30 deselected, and all 2,081 tests;
+integration remains.
+
+
+## Frozen-Earth Venus sequence state (Milestone 49I.3C.3.2A)
+
+`FrozenEarthDiskSequenceRequest` declares exact start-inclusive major samples
+and a fixed ecliptic equinox. `FrozenEarthDiskSequenceRealizer.sequence()`
+evaluates one start-time Earth heliocentric state and one same-epoch planet
+heliocentric state per sample. It returns `FrozenEarthDiskSequence` containing
+`FrozenEarthGeometricDisk` values, complete ICRF vectors, frozen-earth/AU
+distances, fixed Sun direction, physical appearance, and provenance.
+
+All directions declare geometric status in fixed J2000 mean-ecliptic axes;
+none use the apparent-direction pipeline. The API is output-neutral. Drawable
+restricted-scene integration remains 49I.3C.3.2B.
+
+
+## Drawable frozen-Earth Venus sequence (Milestone 49I.3C.3.2B)
+
+`FrozenEarthSolarSystemDiskSequenceDisplayRequest` combines the accepted
+scientific request with governed magnification and optional dates.
+`FrozenEarthVenusDiskSequenceRealization` exposes shared illuminated-face,
+limb, terminator, centre, and fixed-Sun spherical geometry in the frozen-Earth
+product frame.
+
+Regional drawing restricts content to those layers, an optional
+`FrozenEarthEquatorialGrid`, and an explicitly requested
+`FrozenEarthEclipticReference`. `MagnifyProjectedDiskSequence` magnifies every
+Venus disk around its own projected physical centre. Public controls use
+`--planet-disk-sequence venus`, `--disk-sequence-model
+frozen-earth-ecliptic`, `--disk-sequence-start`, `--disk-sequence-step`,
+`--disk-sequence-n-steps`, optional `--disk-sequence-labels`, and
+`--planet-disk-magnification venus=FACTOR`.
+
+
+## Accepted multi-epoch planet-disk sequence (Milestone 49I.3C.3)
+
+`archive/milestone_history/49i_solar_system/planet_disk_sequence_audit_49i3c3.md` defines a proposed immutable sequence
+request and result for exact major instants, with no minor curve cadence. The
+candidate has two model policies: independently observed topocentric states in
+one fixed ordinary chart frame, and frozen-Earth geometric states in one fixed
+ecliptic construction. Each sample preserves full physical distance and provenance for possible
+future 3D use. Runtime types, CLI names, and 3D visualization are not yet
+installed.
+
+
+## Observed Venus disk sequence (Milestone 49I.3C.3.1A)
+
+`ObservedSolarSystemDiskSequenceRequest` declares a start instant, major step,
+interval count, body descriptor, physical radius, and radius model.
+`ObservedSolarSystemDiskSequenceRealizer.sequence()` returns
+`ObservedSolarSystemDiskSequence` with `n_steps + 1` exact per-epoch
+appearances, physical spherical disk geometries, and explicit observer/AU
+distances. The API is output-neutral; drawable request integration remains
+49I.3C.3.1B.
+
+
+## Drawable observed Venus disk sequence (Milestone 49I.3C.3.1B)
+
+`ObservedSolarSystemDiskSequenceDisplayRequest` combines the accepted
+scientific sequence with one magnification and optional date labels.
+`ObservedVenusDiskSequenceRealization` independently transforms each physical
+epoch into the fixed product frame and exposes combined centres, limbs,
+terminators, and illuminated faces.
+
+`MagnifyProjectedDiskSequence` projects every physical centre and magnifies
+each corresponding projected component around that centre. Public controls
+are `--planet-disk-sequence venus`, `--disk-sequence-model observed`,
+`--disk-sequence-start`, `--disk-sequence-step`,
+`--disk-sequence-n-steps`, optional `--disk-sequence-labels`, and
+`--planet-disk-magnification venus=FACTOR`.
+
+
+## Observed Moon disk sequence (Milestone 49I.3E.3)
+
+`--moon-disk-sequence` selects one generic
+`ObservedSolarSystemDiskSequenceDisplayRequest` for `MOON_BODY`. The shared
+sequence options define start-inclusive physical epochs; optional labels and
+`--moon-disk-magnification` retain the established shared behavior.
+
+`MOON_BODY.observed_disk_sequence_chart_families` authorizes regional,
+binocular, circumpolar, planisphere, and all-sky output. The generic observed
+realizer independently computes every physical sample and transforms each
+complete geometry into the chart epoch's fixed product frame. The existing
+sequence layers, per-centre preparation, renderer, semantics, and exporters
+remain authoritative. Frozen-Earth Moon requests are rejected.
+
+
+
+## Resolved Moon integration closure (Milestone 49I.3E)
+
+The resolved-Moon program is complete through 49I.3E.3. Public selection
+supports the resolved single Moon by default, explicit symbolic compatibility,
+Moon-specific presentation magnification, and the observed fixed-chart disk
+sequence. All five ordinary chart families consume the same descriptor-driven
+appearance, spherical geometry, projection, preparation, renderer, semantic,
+and export contracts.
+
+This closure introduces no API or runtime change. Frozen-Earth lunar sequences
+and other excluded lunar models require separately accepted contracts.
+
+
+## Performance diagnostics and oracle (Milestone 49J.0)
+
+`tools/benchmark_reusable_sphere.py` remains the existing no-threshold
+diagnostic for one shared observer-independent sphere, 18 prepared views, and
+18 atlas-print PNG exports. Its cProfile groups may overlap and are not an
+additive decomposition of wall time.
+
+The authoritative cold-frame route remains a fresh
+`generate_chart_request()` call for each frame. The accepted uncached
+fixed-sky executor supplies the first repeated-static correctness workload.
+49J.0 documents a future exclusive-span benchmark but adds no public API,
+instrumentation, cache, optimization, or output change.
+
+The accepted audit is archived at
+`archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md`.
+Current 49J sequencing, test-practice review and decisions, production
+measurement, first reuse, and the later 50A/50B programs are governed by
+`post_v0.9_architecture_roadmap.md`. The planning document changes
+no installed interface or runtime owner.
+
+The accepted 49J.1 report is
+`archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md`.
+It inventories the
+committed fixture and marker topology, static repeated-work leads, maintained
+testing guidance, and the repeated Mac `--durations` protocol. It adds no
+installed interface, fixture, marker, benchmark threshold, or runtime owner.
+The accepted
+`archive/milestone_history/49j_performance/test_practice_decisions_49j2.md` is
+likewise documentation-only.
+`archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`
+installs its reproducible command and test-admission rules in contributor
+documentation but changes no installed interface or runtime owner.
+`archive/milestone_history/49j_performance/marker_truthfulness_49j3b.md`
+records the completed marker audit and narrowed overbroad
+module-level `visual` classification without changing an installed interface,
+test assertion, fixture, or runtime owner.
+`archive/milestone_history/49j_performance/repository_source_index_49j3c.md`
+documents the completed test-only immutable
+repository-source inventory and lazy parsed-source index. It adds no installed
+interface or runtime owner.
+`archive/milestone_history/49j_performance/immutable_catalogue_fixture_49j3d.md`
+documents one accepted test-module immutable catalogue-summary fixture and the
+rejection of unsafe session-scoped sphere or mutable-table reuse.
+`archive/milestone_history/49j_performance/cold_builder_kernel_oracles_49j3e.md`
+documents the accepted preservation of independent cold builders and direct
+installed-kernel recomputation.
+`archive/milestone_history/49j_performance/calendar_layout_cost_49j3f.md`
+documents the accepted test-only removal of redundant canvas redraws while
+retaining all physical calendar-label extent measurements.
+`archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md`
+documents the accepted preservation of the cold two-frame canonical sequence.
+`archive/milestone_history/49j_performance/test_suite_optimization_closure_49j3h.md`
+documents the accepted 49J.3 closure and durable test-file placement rules.
+`tools/benchmark_cold_frames.py` is the 49J.4 diagnostic entry point. It calls
+the unchanged `generate_chart_request()` once per fresh resolved frame and
+writes raw exclusive `perf_counter_ns` observations plus residual, environment,
+resource, semantic/projection, and output evidence. It is not an installed
+interface, cache, alternate executor, or timing threshold.
+
+The accepted 49J.5A record at
+`archive/milestone_history/49j_performance/loaded_sphere_reuse_49j5a.md` adds
+`FixedSkySequenceExecution.COLD` and
+`FixedSkySequenceExecution.REUSE_LOADED_SPHERE` to
+`generate_fixed_sky_rotating_horizon_sequence()`. Cold remains the default and
+builds an independent canonical sphere per frame. Reuse mode loads one
+observer-independent canonical sphere, creates and closes a fresh `Observer`
+per frame, and passes both to `generate_chart_request()`. The generation result
+records the mode, canonical-sphere build count, and immutable reused load
+profile. Supplying an explicit observer to `generate_chart_request()` is valid
+only with an observer-independent supplied sphere.
+
+The accepted 49J.5B record at
+`archive/milestone_history/49j_performance/fixed_sky_reuse_equivalence_49j5b.md`
+adds `tools/benchmark_fixed_sky_reuse.py`. The outside-repository
+diagnostic invokes those same modes for PNG, semantic SVG, and PDF; compares
+scientific and projected records, clipping, furniture, and request provenance;
+normalizes only SVG metadata and volatile Matplotlib internal identifiers; and
+compares PDF after Poppler rendering at 150 DPI or the built-in macOS `sips`
+fallback. Renderer availability is checked before work begins. Raw timings
+have no threshold.
+
+`archive/milestone_history/49j_performance/performance_closure_49j6.md`
+records exact Mac equivalence, raw characterization timings, complete gate
+coverage, retained cold/reuse ownership, and the closure of 49J. The accepted
+50A.0 audit now authorizes the bounded 50A.1 generic minor-body
+state-provider/resource seam.
+
+`archive/milestone_history/50a_minor_bodies/minor_body_scientific_provider_audit_50a0.md`
+accepts no installed API. It requires the 50A.1 minor-body provider to return
+the existing uncorrected `EphemerisState`, keep a locally resolved small-body/
+planetary resource chain explicit, and leave light time, apparent place,
+projection, rendering, and export with their current owners.
+
+### Generic minor-body state provider (Milestone 50A.1)
+
+`src/wenu/ephemeris.py::EphemerisResourceChain` freezes one primary resource,
+one or more distinct `EphemerisResourceIdentity` dependencies, and provenance.
+`EphemerisState.resource` accepts that chain without changing existing
+single-resource states.
+
+`src/wenu/minor_body_ephemeris.py::MinorBodySolutionIdentity` separates the
+Wenu target key from provider designations, Horizons command and SPK ID, and
+retains solution epoch/reference, model parameters, quality fields, and source
+provenance. `SkyfieldMinorBodyStateSource.from_kernels()` borrows and
+fingerprints an already-open small-body SPK, borrows an existing planetary
+state source and timescale, and records ordered target/centre/coverage segment
+provenance. It performs no open, download, refresh, close, registration, or
+chart operation. Milestone 50A.2 adds `SpiceMinorBodyKernel`, which owns one
+local DAF handle, enumerates exact segment descriptors and evaluates the
+selected type-21 descriptor with CSPICE `spkpvn()`. It does not use SPICE's
+global kernel pool or hidden path composition. `spiceypy>=6,<9` is the
+installed CSPICE binding required because Skyfield/jplephem cannot evaluate
+the type-21 segments currently generated by Horizons.
+
+`MinorBodyEphemerisState` is a frozen `EphemerisState` subtype and therefore
+satisfies the existing provider protocol while retaining the complete typed
+solution and selected ordered `MinorBodySegmentIdentity` on every result.
+
+`state()` requires an exact Wenu target, geometric ICRF, and TDB. It evaluates
+the last covering SPK target segment, requests the segment's numeric centre
+relative to the caller's centre from the declared planetary dependency at the
+same instant, validates the dependency state, and adds the complete position
+and velocity in AU and AU/day. It fails closed outside either resource's
+coverage. For 50A.2, the existing astrometric realizer admits the chain only
+when it explicitly contains the observer's planetary resource. The existing
+Skyfield apparent realizer retains planetary deflection and observer ownership
+while preserving the astrometric target provenance. The adapter is connected
+only by `tools/validate_50a2_asteroids.py`, not to a body or chart.
+
+`tools/acquire_50a2_asteroid_resources.py` performs the explicit networked
+Horizons acquisition and freezes per-acquisition digests. The offline validator
+compares three Ceres and four Apophis epochs with
+`tests/fixtures/horizons_asteroid_validation_50a2.json`; production rendering
+does not acquire, update, or validate resources implicitly.
+
+The accepted 50A.4 comet numerical slice reuses that validator machinery.
+`tools/build_50a4_comet_fixture.py` parses the inspected 2P/Encke SBDB and
+Horizons evidence into a compact frozen oracle, preserving apparition command
+`90000091` separately from NAIF target `1000025`, solution `K273/14`, the
+type-21 solar-centred segment, and complete `A1` and `A2` records.
+`tools/validate_50a4_comet.py` enforces the accepted comet-specific fixture
+tolerances by default. `--characterize` reports residuals without applying the
+matrix and cannot report acceptance. Neither mode adds runtime or drawable
+comet behavior.
+
+`archive/milestone_history/50a_minor_bodies/first_drawable_asteroid_audit_50a3a.md`
+is the accepted contract for connecting Ceres in 50A.3B. It identifies
+descriptor-aware source resolution as
+the only missing generic seam: planetary descriptors retain the existing
+Skyfield source and the Ceres descriptor receives the accepted minor-body
+source. It proposes an explicit manifest-backed resource directory and reuse
+of the existing point, fixed-frame track, projection, preparation, semantic,
+renderer, and export paths. The audit adds no current API or behavior.
+
+### Drawable Ceres resource binding (Milestone 50A.3B accepted)
+
+`sky/ceres.py` defines `CERES_BODY` and its accepted Horizons solution
+identity. `minor_body_resources.py` defines `MinorBodyResourceSession`, which
+requires an explicit manifest-backed directory, validates the Ceres file and
+type-21 segment identity, caches one opened kernel for the chart build, and
+closes it once. `request_minor_body_descriptors()` discovers selected
+minor-body descriptors without changing the catalog into a closed Ceres enum.
+
+`EphemerisSourceBinding(target_source, observer_source)` is the generic point
+and track seam. Planetary descriptors bind both roles to the existing
+Skyfield source. Ceres binds `SkyfieldMinorBodyStateSource` only as the target
+source and retains the observer's DE440 `SkyfieldEphemerisStateSource` for
+observer state and apparent-place correction. `ChartRequest` carries the
+optional `minor_body_resource_directory`; request-build and direct-drawing
+owners bind and restore the resolver and close the resource session. The CLI
+selectors are `--asteroid ceres` and `--asteroid-track ceres`. Rendering never
+downloads or silently substitutes a propagator.
+
+The accepted contract is
+`archive/milestone_history/50a_minor_bodies/drawable_ceres_50a3b.md`.
+
+### Installed numbered asteroids (Milestone 50A.3D candidate)
+
+`minor_body_resources.py` adds `MinorBodyResourceCollection`, which validates
+structured manifest identity and solution records and resolves a permanent
+number or exact case-folded installed official name to one number-owned
+descriptor. `ChartRequest.minor_body_descriptors` transports request-owned
+descriptors without extending the global catalog. Request-build and direct
+drawing temporarily register those layers, share one resource session between
+point and track, and restore a reusable sphere on close.
+
+`tools/acquire_numbered_asteroids.py NUMBER [...] --output-directory PATH` is
+the explicit networked acquisition route. Ordinary chart rendering only reads
+that local directory. The 50A.2 Ceres manifest remains a compatibility input.
+
+### Automatic minor-body preflight (Milestones 50A.3I and 50A.5D.2C candidate)
+
+The installed CLI accepts `--data-policy acquire-if-missing`, `offline`, or
+`refresh`; the packaged default is `acquire-if-missing`. Before constructing a
+sphere or view, it collects typed asteroid and comet selections required by a
+center, point, or track and asks `minor_body_acquisition.py` for one verified
+local collection covering every required epoch plus margin. Automatic asteroid
+selection remains limited to positive permanent numbers. Comet selections use
+exact installed or SBDB identity; partial names, wildcards, and bare asteroid
+numbers in comet context fail closed.
+
+That module is the only network owner. It validates staging before atomic
+content-addressed publication and serializes concurrent acquisition. An
+explicit `--minor-body-resource-directory` is validated as one complete,
+read-only authority. Adequate warm caches perform no provider access. Mixed
+asteroid/comet requests resolve to one effective collection, while request
+generation and rendering retain the offline contract.
+
+### Installed comets (Milestone 50A.5C)
+
+`tools/install_comet_resource.py` converts one accepted compact comet fixture
+and its digest-bound raw evidence into the existing manifest schema. It checks
+the actual SPK target, solar centre, ICRF frame, type 21, coverage, and digest
+before atomically publishing the directory. `MinorBodyResourceCollection`
+then derives the numbered-comet descriptor and exact aliases from that
+manifest; neither Encke nor 161P is a runtime branch.
+
+The installed source exposes a provider `PsAng` only at exact evidence epochs.
+The existing comet point and shared track-symbol layers prefer that value and
+otherwise retain the accepted apparent-Sun fallback. `PsAMV` remains evidence
+only and is never substituted for gas-tail orientation.
+
+`--center-on-date ISO_TIME` is a generic moving-center companion to
+`--center-on` in regional and binocular commands. The CLI constructs the chart
+observer at that instant, resolves a planet, Moon, asteroid, or installed
+comet through `center_arguments.py`, and uses `object_center.py` to obtain the
+single apparent center point. Consequently the same instant governs horizon
+and zenith-up orientation. Track realization remains timeline-owned; its
+samples are not replaced by the center date.
+
+### Deterministic comet discovery and sampled model magnitude
+
+`comet_discovery.py` owns one explicit SBDB Query API request, inclusive UTC
+civil-day to TDB conversion, an immutable typed result, fail-closed provider
+schema validation, sorting, and exact request/raw-response provenance.
+`cli/comets.py` exposes this boundary as `wenu_retrieve_comets START STOP` with
+an explicit perihelion-distance bound and table or JSON publication.
+
+When `--observer-location NAME` is present, `comet_photometry.py` owns bounded
+sequential Horizons observer-table requests and its validated raw-response
+cache. Each comet has an independent
+endpoint-inclusive UTC interval spanning ±30 days around its perihelion.
+An omitted `--magnitude-step` selects an automatic cadence, normally `1d`;
+an explicit cadence is preserved or rejected with its minimum usable value.
+The implementation validates the
+exact target and orbit solution selected by SBDB, preserves `T-mag` and
+`N-mag` independently, and retains exact request/raw-response provenance and
+provider notices. The official Horizons file API carries discrete epochs by
+POST. The route defaults to 50 comet solutions, permits an explicitly larger
+workload through `--max-photometry-comets`, obeys JPL's one-request-at-a-time
+Fair Use Policy, remains bounded to 367 epochs per comet, and fails the whole
+result after any Horizons failure. Progress is
+terminal-aware stderr output. Exact request cache keys and atomic validated
+entries make long workloads resumable without changing deterministic result
+order or original retrieval provenance.
+
+The primary summary is the numerically smallest valid sampled `T-mag`,
+labelled the brightest sampled total model magnitude. It is not a continuous
+minimum, visibility forecast, or detectability estimate. Unknown values remain
+unknown, and Horizons' practical uncertainty warning of roughly 1 magnitude is
+published. This explicit network path remains independent of `wenu_chart`;
+no SPK acquisition/cache, coordinate, projection, renderer, semantic, report,
+or export owner changes.
+
+### Exact minor-body identity resolution (Milestone 50A.5D.2A candidate)
+
+`minor_body_identity.py` provides an immutable
+`ResolvedMinorBodyIdentity` and requires callers to state `expected_class` as
+`comet` or `asteroid`. Exact installed aliases win without network access.
+Uninstalled designations use one SBDB `des` request; names use one `sstr`
+request. Provider signature, version, response shape, kind, identity, aliases,
+orbit solution, request parameters, retrieval instant, and raw SHA-256 are
+validated or retained.
+
+`resolve_comet_identity` binds the accepted comet route. The generic core can
+also resolve asteroid identity when explicitly class-constrained, but this
+slice does not connect asteroid names to CLI preflight or acquisition.
+Partial names, ambiguous HTTP 300 responses, wrong-class results, and bare
+asteroid numbers supplied as comets fail without selecting a candidate.
+
+
+### Resolved minor-body acquisition (Milestone 50A.5D.2B candidate)
+
+`acquire_minor_body_resources(identities, output_directory, start=..., stop=...)`
+accepts typed `ResolvedMinorBodyIdentity` values. It performs an explicit
+Horizons identity lookup, binds the returned unique record and orbit solution,
+requests a bounded type-21 SPK by that record, validates the target and segment,
+and writes the existing manifest-backed resource format. Comet
+non-gravitational parameters and both identity and Horizons receipts remain
+provenance.
+
+`ensure_minor_body_resources(...)` applies `offline`,
+`acquire-if-missing`, or `refresh` before rendering. It reuses a verified
+warm cache without network access or publishes a validated acquisition
+atomically under a per-identity lock. The 50A.5D.2C candidate connects that
+boundary to `wenu_chart` for exact comet and mixed asteroid/comet preflight.
+
+## Provider-neutral satellite crossing domain (Milestone 50S.1 accepted)
+
+`wenu.satellite_crossings` defines six frozen provider-neutral values:
+`SatelliteIdentity`, `SatelliteObserver`, `SatelliteFieldOfView`,
+`InclusiveTimeInterval`, `SatelliteCrossingCandidate`, and
+`SatelliteCrossingResult`. They are advanced domain contracts and are not yet
+exported from `wenu` or connected to a public command.
+
+The initial FoV is a closed circular region on the sphere. Its centre retains a
+shared `CoordinateSpec`; longitude wraps to [0, 360) degrees, latitude remains
+within [-90, 90] degrees, and angular radius is in (0, 180] degrees. Query
+intervals require explicit UTC instants and include both endpoints. Boundary
+touch is a valid zero-duration crossing.
+
+A candidate binds satellite identity, terrestrial site and coordinate policy,
+field, interval, source provider, optional orbit-solution/snapshot evidence,
+provenance, and warnings. A normalized result represents one connected field
+visit and retains ordered entry, closest-approach, and exit instants, closest
+angular separation, optional provider-derived range, angular rate,
+illumination, event identity, provenance, and warnings. It performs no
+acquisition, propagation, exact crossing solution, illumination calculation,
+charting, or rendering. Fernando accepted the contract on 2026-09-15 after
+all 2,428 tests passed; PR #123 merged it as `23b851b`.
+
+
+## SatChecker crossing candidates
+
+`SatCheckerQuery.from_domain(observer, field_of_view, interval,
+earth_orientation_identity=...)` accepts the 50S.1 observer, closed circular
+field, and inclusive UTC interval. The field must be geometric,
+topocentric-direction ICRS. The query records the explicit UTC-to-UT1 result,
+complete original Wenu semantics, versioned endpoint, transmitted parameters,
+Earth-orientation identity, and stable SHA-256 cache key.
+
+`submit(query, timeout=...)` makes one asynchronous provider submission.
+`poll(query, task_id, timeout=...)` makes one status request. Neither function
+retries, waits, loops, or runs concurrently. Tests inject the transport;
+ordinary tests perform no network access.
+
+`SatCheckerReceipt` retains the exact response bytes, SHA-256, resolved URL,
+retrieval instant, HTTP status, normalized media type, and headers.
+`parse_response()` recognizes only PENDING, PROGRESS, SUCCESS, FAILURE, and
+ERROR. SUCCESS becomes `SatCheckerCandidateEvidence`: one
+`SatelliteCrossingCandidate` and ordered `SatCheckerSample` values retaining
+UT1 Julian date, converted UTC instant, geometric topocentric RA/Dec, angular
+distance, and optional altitude, azimuth, range, and provider illumination.
+No exact `SatelliteCrossingResult` is synthesized.
+
+`SatCheckerCache(root)` atomically stores immutable content-addressed exact
+receipt bytes and a canonical manifest. `store(query, responses)` accepts
+only a terminal-success chain. `load(query)` is network-free and validates
+the request identity, adapter schema, every raw digest, receipt metadata, and
+normalized interpretation digest before reuse.
+
+
+Fernando accepted the bounded 50S.2B API and ownership on 2026-09-15 after the
+45-test provider/domain gate, 168-test expanded focused gate, 2,457-test
+complete suite, and terminal live SatChecker normalization all passed.
+
+
+## SatChecker sampled-candidate presentations (50S.3B accepted)
+
+`SatCheckerPresentation(query, response, cache_provenance=())` accepts a
+terminal `SatCheckerResponse`. `.document` returns the versioned,
+JSON-compatible report model; `.to_json()` returns deterministic sorted,
+indented JSON with a final newline; and `.to_text()` returns the deterministic
+human-readable projection of the same model. The first line is
+`SatChecker sampled candidate evidence — not verified crossings`. SUCCESS
+evidence is sorted by full NORAD catalogue identifier. FAILURE and ERROR
+responses report zero candidates. PENDING and PROGRESS are rejected.
+
+`SatelliteCandidateTrackLayer(evidence)` consumes one normalized
+`SatCheckerCandidateEvidence`. Two or more samples become one open
+`SphericalCurves`; one sample becomes one `SphericalPoints` value with no
+invented segment.
+
+`SatelliteCandidateSamplesLayer(evidence, label_times=True)` exposes the
+supplied ordered samples as `SphericalPoints`. Its labels are exact normalized
+UTC sample strings when enabled. Both layer types require a
+`LayerRealizationContext`, use `CoordinateService`, retain candidate-only
+metadata and provider illumination as evidence, and perform no network access,
+cache read, propagation, interpolation, or exact crossing construction.
+
+
+## Local satellite elements and snapshots (50S.4B accepted)
+
+`SatelliteElementRecord` is an immutable canonical OMM/GP-domain record. It
+retains full integer NORAD identity, UTC element epoch, OMM mean elements and
+source fields, fixed `EARTH`/`TEME`/`UTC`/`SGP4` declarations, exact
+source identity, record digest, and provenance. Construction rejects missing
+or unknown mapping fields, invalid semantics, non-finite or out-of-range
+values, and record-content digest mismatch.
+
+`SatelliteSnapshotManifest` identifies one schema-versioned resource,
+records file, canonical content SHA-256, record count, source and builder
+identity, provider-policy reference/check instant, provenance, and warnings.
+`SatelliteElementSnapshot` requires a non-empty tuple ordered by the complete
+NORAD catalogue identifier, rejects duplicates and count mismatch, and
+provides an immutable `by_norad_catalog_id` mapping.
+
+`load_snapshot(snapshot_id="synthetic_50s4b_v1")` reads installed resources
+with `importlib.resources`, requires the records bytes to equal Wenu's
+canonical sorted compact JSON representation, verifies the snapshot and every
+record digest, and then constructs the immutable domain. The default resource
+contains three explicitly synthetic non-operational LEO/MEO/geosynchronous-like
+records. It performs no network access and no propagation. Fernando accepted
+this API and ownership boundary on 2026-09-15; only 50S.4C propagation is
+authorized next.
+
+
+## Validated SGP4 geometric TEME propagation (50S.4C accepted)
+
+`split_julian_date(utc)` normalizes an ISO-8601 UTC instant and returns
+`(canonical_utc, julian_day, julian_fraction)`. The components remain separate
+when passed to SGP4 so modern Julian-date precision is not collapsed into one
+float.
+
+`Sgp4TemePropagator(record, snapshot_sha256=None)` maps the canonical OMM
+fields to `sgp4.omm.initialize()` with explicit `WGS72`. `.propagate(utc)`
+returns one immutable `SatelliteTemeState`; `.propagate_many(instants)`
+returns ordered states and uses `sgp4_array()` when the accelerated backend is
+available. Empty input returns an empty tuple.
+
+`SatelliteTemeState` is successful state evidence only: status zero,
+geocentric geometric `EARTH`/`TEME`, position kilometres, velocity
+kilometres per second, canonical UTC, split Julian date, element age, record
+and optional snapshot identity, upstream version/backend, WGS-72, improved
+mode, provenance, and warnings. `SatellitePropagationError` retains every
+non-zero upstream status code, message, satellite identifier, and instant.
+
+The synthetic snapshot now uses full identifiers 300001–300003 because the
+upstream `Satrec` interface rejects values above 339999. Record and snapshot
+digests were regenerated; there is no hidden propagator identifier. This API
+does not transform TEME or produce observer-relative directions.
+
+
+Fernando accepted the bounded 50S.4C API and ownership on 2026-09-15. Only 50S.4D Earth-orientation and topocentric state work is authorized next.
+
+
+## Satellite topocentric state chain (50S.4D accepted)
+
+`SatelliteTopocentricTransformer().transform(teme_state, observer)` accepts one
+successful `SatelliteTemeState` and one vacuum `SatelliteObserver`. It uses
+the installed `astropy-iers-data` IERS-A resource without network access,
+performs the Astropy TEME/ITRS transformation, subtracts the WGS-84 observer in
+ITRS Cartesian space, and returns `SatelliteTopocentricState`.
+
+`SatelliteEarthOrientationEvidence` records the exact source path and SHA-256,
+Astropy and `astropy-iers-data` versions, MJD coverage, UT1−UTC, x/y polar
+motion, and their interpolation statuses. `SatelliteEarthOrientationError`
+reports unavailable or out-of-coverage local EOP data.
+
+The returned state contains the source TEME state and observer, satellite and
+observer ITRS vectors, observer-subtracted position and velocity, range,
+geometric vacuum azimuth/altitude, and a geometric topocentric direction
+expressed in GCRS axes. Its two `CoordinateSpec` values distinguish
+`altaz`/observer from `gcrs-axes`/topocentric-direction. The latter is an
+axes representation, not an ICRS or GCRS catalogue/apparent coordinate.
+Fernando accepted this API and ownership on 2026-09-15; only the bounded
+50S.4E propagated-specimen builder is authorized next.
+
+### Propagated sampled specimen builder (accepted 50S.4E)
+
+Run the developer tool with an explicit output directory:
+
+```bash
+python tools/build_50s4_satellite_specimens.py \
+  --output-directory /explicit/developer/output
+```
+
+The fixed output `propagated-sampled-specimens.json` contains ordered samples
+for all three installed synthetic records and query inputs centered on each
+middle sampled topocentric direction. Defaults use La Ligua, the snapshot
+epoch, a three-instant five-minute grid, and a one-degree field radius. Every
+choice is recorded. The output is deterministic for the same installed
+software/resources and arguments, network-free, and labelled **propagated
+sampled specimens — not verified crossings**. It is input evidence for later
+50S.5 work, not a crossing result or completeness claim.
+
+Fernando scientifically and architecturally accepted this developer product on
+2026-09-15. It closes 50S.4 without promoting the tool into a runtime authority.
+
+
+### Accepted complete local crossing-oracle contract (50S.5A audit)
+
+No callable local crossing oracle exists yet. The accepted audit specifies an
+immutable query containing one installed snapshot, observer, compatible fixed
+geometric GCRS-axis circular field, inclusive UTC interval, and explicit
+positive time/angular tolerances. The proposed exhaustive oracle returns
+ordered existing `SatelliteCrossingResult` visits or raises an explicit
+convergence error; it never silently drops invalid records or unresolved
+intervals.
+
+`SatelliteCrossingResult` remains a value contract, not evidence that a
+continuous crossing has already been solved. 50S.4E sampled specimens remain
+non-oracular input evidence. Fernando accepted this contract on 2026-09-15;
+only bounded 50S.5B implementation is authorized next.
+
+### Complete local crossing oracle (50S.5B accepted)
+
+`LocalSatelliteCrossingQuery(snapshot, observer, field_of_view, interval,
+time_tolerance_seconds, angular_tolerance_deg)` is an immutable exhaustive
+request. `LocalSatelliteCrossingOracle(max_evaluations_per_record=20000)`
+returns a tuple of existing `SatelliteCrossingResult` visits ordered by full
+NORAD catalogue identifier and entry instant. It raises
+`SatelliteCrossingConvergenceError` instead of returning an incomplete set.
+
+The compatible field is a fixed closed circular geometric topocentric
+direction expressed in GCRS axes. Query endpoints are inclusive, boundary touch
+counts, a tangent is a zero-duration result, and adjacent numerical fragments
+merge only after recursive time/angular tolerance connectivity. Illumination
+remains `None`. Fernando scientifically and architecturally accepted this
+boundary on 2026-09-15. Only a documentation-first 50S.6 acceleration audit is
+authorized next.
+
+### Conservative crossing acceleration (50S.6A audit accepted)
+
+No acceleration API exists yet. The accepted
+`LocalSatelliteCrossingOracle.solve(query)` remains the exhaustive independent
+correctness route. The proposed later owner would emit immutable tri-state
+`reject`, `retain`, or `indeterminate` evidence and may remove work only for
+a proved conservative rejection. Retained candidates must use the accepted
+exact record solver, and no partial record set may be labelled exhaustive.
+
+The authorized 50S.6B implementation is limited to
+the topocentric field-cone versus bounded orbital-shell selector. Phase,
+coarse-state, HEALPix/time, horizon, and occultation filters remain outside that
+first slice.
+
+### Conservative cone-shell selector (50S.6B accepted)
+
+`ConeShellPolicy` declares the admitted snapshot, 60-second interval limit,
+element-domain limits, outward orbital-speed factor, observer-speed bound, and
+numerical margin. `ConservativeConeShellSelector.select(query)` returns one
+NORAD-ordered immutable `ConeShellDecision` per snapshot record inside a
+`ConeShellSelection`.
+
+A decision is `reject`, `retain`, or `indeterminate`.
+`exact_solver_norad_catalog_ids` contains both retained and indeterminate
+records. The selector never returns `SatelliteCrossingResult` and does not
+coordinate an accelerated solve. The accepted
+`LocalSatelliteCrossingOracle.solve(query)` API and implementation remain
+unchanged.
+
+Fernando scientifically and architecturally accepted this bounded selector on
+2026-09-16. No accelerated solve API exists.
+
+### Accepted accelerated coordination contract (50S.6C audit)
+
+No accelerated crossing service exists. The accepted audit authorizes a later
+`AcceleratedLocalSatelliteCrossingOracle` that would accept the unchanged
+`LocalSatelliteCrossingQuery`, validate complete NORAD-ordered selector
+evidence, and route every retain or indeterminate decision through the same
+exact record seam used by exhaustive `LocalSatelliteCrossingOracle.solve`.
+
+The underlying `SatelliteCrossingResult` tuple must remain exactly equivalent
+to exhaustive output. Acceleration evidence is separate. Selector failure must
+fall back to the exhaustive route or fail closed; it cannot produce an empty
+search. The accepted cone-shell selector's installed-snapshot, 60-second domain
+is unchanged, and no callable coordinator is authorized by this audit.
+
+
+### Accepted accelerated local crossing coordinator (50S.6D)
+
+`AcceleratedCrossingPolicy` freezes the admitted
+`synthetic_50s4b_v1`, 60-second coordinator domain and chooses either
+`fallback_exhaustive` or `fail_closed` selector-failure behavior.
+
+`AcceleratedLocalSatelliteCrossingOracle.solve(query)` returns the same
+ordered `SatelliteCrossingResult` tuple as the exhaustive public API.
+`solve_with_evidence(query)` returns that tuple together with immutable
+`AcceleratedCrossingEvidence`, which records the complete selector evidence,
+rejected identifiers, exact-solver identifiers, and any exhaustive fallback.
+
+Both routes use the same package-internal exact-record seam owned by
+`crossing_oracle.py`. The accelerated route validates query identity and
+complete NORAD-ordered coverage before solving. Retain and indeterminate
+records are evaluated exactly once; rejected records are not evaluated.
+Malformed evidence or an out-of-domain reject fails closed.
+
+
+## Accepted multi-FoV and observatory interchange contract
+
+The 50S.6E accepted audit specifies a same-observer batch containing any
+non-empty ordered
+number of independently timed FoVs. The centre of every field must satisfy the
+configured airmass limit throughout its complete interval. The initial policy
+uses geometric vacuum AltAz, plane-parallel `X = sec(z)`, and configurable
+`X_max` defaulting to 2. Only the centre is checked; the FoV radius does not
+enter airmass admission. This is field admission, not a satellite horizon or
+occultation filter. Ten is the reference workload, not a cardinality limit.
+Future JSON, ECSV, and VOTable encodings must represent
+one canonical lossless crossing model; any Paranal, ELT, or other observatory
+adapter remains outside the solver and requires a separate interface audit.
+
+The accepted bounded runtime API is:
+
+- `MultiFieldCrossingPolicy`: immutable synthetic-snapshot, 60-second,
+  centre-airmass, certification, and execution-chunk policy;
+- `MultiFieldCrossingRequest`: immutable non-empty ordered tuple of complete
+  `LocalSatelliteCrossingQuery` values with unique field identifiers;
+- `FieldAirmassCertifier`: conservative complete-interval field-centre
+  admission using the governed installed-IERS-A altitude evaluator;
+- `MultiFieldCrossingValidationError.failures`: every ordered field-specific
+  atomic validation failure;
+- `MultiFieldSatelliteCrossingCoordinator.solve(request)`: validate every
+  field before work, then return one `MultiFieldCrossingResult` per input field
+  in input order, with exact crossings plus separate airmass and 50S.6D
+  acceleration evidence.
+
+Chunk size changes execution only. No public cardinality maximum, partial
+result, shared-state speed claim, CLI, file adapter, report, or chart is
+implemented.
+Fernando scientifically and architecturally accepted this API on 2026-09-17
+after 2,577 plugin-disabled tests passed. Only a separately bounded 50S.6G
+audit is authorized next; representative-scale runtime and output remain
+unauthorized.
+
+## Accepted 50S.6G delivery direction
+
+No interface in this section is implemented. The candidate audit proposes an
+explicit-directory immutable snapshot loader; one canonical exact-crossing
+logical report; deterministic JSON plus lossless ECSV and VOTable encodings;
+an atomic direct CLI; and a versioned JSON file protocol.
+
+For file input, whole-batch validation precedes all crossing work. Any invalid
+field yields one separate validation-output JSON with ordered failures and an
+embedded complete request containing only the valid fields. Supplying that
+document explicitly in a second call causes the embedded request to be
+digest-bound revalidated and then calculated. It is a request/validation
+envelope, not a scientific crossing report.
+
+Exact drawable tracks require separately certified ordered samples linked to
+the accepted entry/closest/exit result. Ordinary chart requests may later gain
+a distinct artificial-satellite selection; they must not reuse the natural or
+minor-body `SolarSystemTrackRequest` contract.
+
+Fernando scientifically and architecturally accepted this direction on
+2026-09-17 after all 145 plugin-disabled current-documentation tests passed in
+4.36 seconds. Only bounded 50S.6G.1A external immutable snapshot loading is
+authorized next; every interface described above remains unimplemented.
+
+## Accepted explicit-directory satellite snapshot loader
+
+`load_snapshot_directory(directory) -> SatelliteElementSnapshot` loads one
+caller-selected local directory. `directory` accepts a string or path-like
+value and must identify a real non-symlink directory. `manifest.json` and its
+declared records file must be non-symlink regular files.
+
+The function reuses the installed route's complete manifest-schema, canonical
+records bytes, SHA-256 digest, record-count, full-NORAD uniqueness/order, OMM
+semantics, UTC epoch, provenance, and warning validation. The physical
+directory name is not compared with `manifest.snapshot_id`. Invalid type,
+path, manifest, records, canonicalization, digest, or record content fails
+before a snapshot is returned. The function performs no network access,
+acquisition, publication, fallback, or runtime admission.
+
+Fernando scientifically and architecturally accepted this interface on
+2026-09-17 after the 164-test focused gate and all 2,583 plugin-disabled tests
+passed. Only a separately bounded 50S.6G.1B audit is authorized next.
+
+## Accepted representative snapshot preflight contract
+
+No interface in this section is implemented. The audit proposes separate
+policy-receipt and acquisition operations. The first freezes the exact official
+CelesTrak policy response and its SHA-256 without requesting GP data. The
+second requires explicit acknowledgement of that exact digest before one fixed
+`GROUP=active&FORMAT=CSV` request. Every redirect, non-200 response, timeout,
+changed policy, malformed record, duplicate NORAD identity, or unsupported OMM
+value fails closed without retry or partial publication.
+
+The future builder preserves raw response bytes and receipts locally, maps only
+documented omitted constants, constructs every existing typed OMM record,
+canonicalizes by full NORAD order, reloads the staged result through
+`load_snapshot_directory()`, and atomically publishes a content-addressed
+external directory. Digest-bound evidence policies may evaluate it without
+changing ordinary synthetic defaults.
+
+Fernando scientifically and architecturally accepted this contract on
+2026-09-17 after all 147 plugin-disabled current-documentation tests passed in
+4.54 seconds. Only the bounded fake-transport 50S.6G.1B.1 implementation is
+authorized next; live provider access and 50S.6G.1B.2 remain unauthorized.
+
+### Implemented offline satellite snapshot acquisition seam
+
+Use `freeze_policy_receipt(..., transport=...)` and
+`acquire_active_snapshot(..., transport=...)` from
+`wenu.satellites.snapshot_acquisition`. A transport is mandatory and no
+stdlib, third-party, or implicit network implementation is supplied. The
+offline developer command `tools/build_satellite_snapshot.py` accepts only
+explicit response files. Its `build` operation requires the exact
+`--accept-policy-sha256` value and writes only beneath the explicit external
+snapshot root.
+
+The frozen direct policy endpoint is exactly
+`https://celestrak.org/usage-policy.php`. Do not substitute a documentation
+subdirectory, accept a redirect, or weaken the parsed documented-query marker
+from `gp-data-formats.php`.
+
+The six-file directory remains content-addressed by canonical `records.json`,
+retains full raw policy and provider bytes, and is validated before atomic
+rename. CelesTrak `GROUP=active` remains a representative provider population,
+not a complete resident-space-object catalogue.
+
+Fernando accepted this offline builder on 2026-09-17 after 175 focused tests
+and all 2,594 plugin-disabled tests passed. A real policy fetch, GP request,
+and exact policy-digest approval remain separately authorized operations.
+
+Fernando accepted the exact direct-policy-URL correction on 2026-09-17 after
+all 2,595 plugin-disabled tests passed. It changes no provider or acquisition
+authority.
+
+Fernando accepted the exact `non-HTTP 200` policy-clause compatibility
+correction on 2026-09-17 after 10 focused tests and all 2,595 plugin-disabled
+tests passed. The frozen 14,643-byte response and receipt share SHA-256
+`67bf0faa7e026a7cd49799069db9d3355f2a867894133afd39e130d6185724aa`. This does not approve the digest for GP access; that explicit
+human acknowledgement remains a separate operation.
+
+The accepted CelesTrak CSV adapter requires the observed suffix-free
+`YYYY-MM-DDTHH:MM:SS.ffffff` epoch form, applies the provider's declared UTC
+invariant, and stores canonical explicit-`Z` instants. The offline command
+requires the captured media type; it must not synthesize one. Fernando accepted
+this repair and the 16,559-record snapshot on 2026-09-17 after 15 focused and
+2,600 complete plugin-disabled tests. Raw SHA-256 is `e54730e14b2097444c5e20bba6dd13d3e2d92f956797d49256ddb1a70ffe5014`; canonical
+SHA-256 is `e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`. No second request or 50S.6G.1B.2 work is implied.
+
+
+## Accepted proposed external snapshot admission contract
+
+50S.6G.1B.2A proposes an explicit evidence-only admission token bound to exact
+canonical-record SHA-256 plus validated manifest identity. It is not yet a
+public or implemented API. A later bounded implementation would pass the same
+immutable token to the conservative selector, accelerated coordinator, and
+multi-FoV batch, while leaving `synthetic_50s4b_v1` as the ordinary default.
+Directory names, `snapshot_id` alone, acquisition-response digests, and
+policy digests are not runtime admission identities. Fernando scientifically
+and architecturally accepted this proposal on 2026-09-17 after all 150 plugin-disabled current-documentation tests passed in 3.84 seconds. Only
+bounded 50S.6G.1B.2B implementation is authorized next.
+
+
+## External snapshot admission API
+
+`ExternalSnapshotIdentity.from_snapshot(snapshot)` derives the exact
+six-field identity from an already validated `SatelliteElementSnapshot`.
+`ExternalSnapshotAdmissionPolicy(policy_identity, admitted_identities)`
+holds a non-empty immutable finite allowlist; `admit(snapshot)` returns an
+`ExternalSnapshotAdmission` only after complete equality. Admission tokens
+cannot be directly constructed and `require(snapshot)` rejects token/query
+substitution.
+
+`CELESTRAK_ACTIVE_20260917_IDENTITY` records the accepted 16,559-record
+snapshot identity and canonical digest. It does not load or enable the
+snapshot. `ConservativeConeShellSelector`,
+`AcceleratedLocalSatelliteCrossingOracle`, and
+`MultiFieldSatelliteCrossingCoordinator` accept optional
+`external_snapshot_admission`. Their ordinary synthetic defaults are
+unchanged; an external call must explicitly supply the matching token.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2B on
+2026-09-17 after 51 focused runtime tests, 151 current-documentation tests,
+and all 2,611 plugin-disabled tests passed; the complete suite took 215.89
+seconds. `git diff --check` and the working tree were clean. Only bounded
+50S.6G.1B.2C deterministic medium-specimen work is authorized next; 50S.6G.1B.2D
+matrix execution and later delivery remain separately unauthorized.
+
+
+## Accepted proposed deterministic medium-specimen contract
+
+50S.6G.1B.2C proposes an offline, explicit-parent operation that requires the
+accepted external admission token and matching acquisition report. It uses
+`retrieved_stopped_utc` as the signed element-age reference, requires two
+representatives per non-empty declared bin, fills deterministically to a
+default target of 256, and publishes a content-addressed derived snapshot plus
+`selection-receipt.json`. This is not yet an implemented API.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2C on
+2026-09-17 after all 153 plugin-disabled current-documentation tests passed in
+4.58 seconds; `git diff --check` and the working tree were clean. Only bounded
+fake-data implementation is authorized next. The first real medium selection,
+50S.6G.1B.2D matrix execution, and later delivery remain separately
+unauthorized.
+
+### Deterministic medium snapshot evidence API
+
+`select_medium_snapshot(parent_directory, output_root, *, admission,
+target_count=256)` is the candidate 50S.6G.1B.2C API in
+`satellites/snapshot_evidence.py`. It accepts no transport and no current
+time. The function requires an `ExternalSnapshotAdmission`, validates the
+parent snapshot, acquisition report, captured provider-response bytes and
+retrieval interval, and uses `retrieved_stopped_utc` as the signed-age
+reference.
+
+It publishes `manifest.json`, `records.json`, and
+`selection-receipt.json` beneath the subset canonical-record digest. Existing
+products are fully revalidated and never overwritten. The receipt contains no
+filesystem path. The 2026-09-17 fake-data gate passed 30 plugin-disabled tests
+in 5.99 seconds. Real medium selection and matrix execution remain
+unauthorized.
+
+### Accepted medium-evidence implementation
+
+The 50S.6G.1B.2C API and offline command were scientifically and
+architecturally accepted on 2026-09-17 at `1d9d4e4`. The full
+plugin-disabled suite passed 2,622 tests in 225.75 seconds; the focused gate
+passed 185 tests in 9.03 seconds. The implementation remains evidence-only:
+running `select-medium` on the accepted real parent requires separate
+authorization, and matrix execution remains outside this acceptance.
+
+### Real medium specimen identity
+
+The external specimen contains 256 records with canonical-record SHA-256
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`.
+Its canonical selection receipt has SHA-256
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`.
+It derives from the accepted 16,559-record parent
+`e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`
+using age reference `2026-09-17T15:52:23.000000Z`.
+
+The derived manifest binds the parent canonical digest, acquisition-report
+digest, and receipt digest. All 24 bins are populated; 48 records form the
+mandatory union and 208 are deterministic fill. The artifact is external,
+immutable, and evidence-only. It is not a runtime default or installed
+resource, and matrix execution remains unauthorized.
+
+### Accepted real medium evidence
+
+The accepted 50S.6G.1B.2C external artifact is exactly subset
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`
+with receipt
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`.
+Fernando accepted it on 2026-09-17 at `c4cd009` after 157 plugin-disabled
+documentation tests passed in 4.66 seconds. No other artifact is implied by
+this acceptance, and 50S.6G.1B.2D remains unauthorized.
+
+### Proposed exact-equivalence matrix contract
+
+Candidate 50S.6G.1B.2D assigns a future
+`satellites/crossing_matrix.py` owner to canonicalize and compare the existing
+`LocalSatelliteCrossingOracle` and
+`AcceleratedLocalSatelliteCrossingOracle`. It must consume one exact
+digest-admitted medium snapshot, atomically certify all 10 La Ligua fields,
+forbid exhaustive fallback, compare complete ordered result bytes and digests,
+capture isolated raw resource observations, and publish only fully revalidated
+external evidence.
+
+The proposed `run-equivalence-matrix` developer command is offline. Neither
+the owner nor command exists yet.
+
+### Accepted 50S.6G.1B.2D matrix contract
+
+Fernando accepted the proposed strict exhaustive/accelerated equivalence
+contract on 2026-09-17 at `6e7a8b9`, after 159 plugin-disabled documentation
+tests passed in 10.75 seconds. A later bounded implementation may add the
+dedicated matrix owner and offline command using fake data only. The real
+medium specimen must not be read or executed without separate authorization.
+
+### Candidate crossing equivalence matrix API
+
+`wenu.satellites.crossing_matrix.run_equivalence_matrix` is the candidate
+50S.6G.1B.2D fake-data-tested orchestration API. Its explicit inputs bind the
+snapshot directory, digest admission token, exact specimen identity, ordered
+queries, atomic airmass certifier, injected isolated-route executor, and matrix
+policy. It publishes canonical evidence atomically and revalidates both
+`equivalence-report.json` and `matrix-manifest.json` plus every bound file.
+
+Candidate commit `19520f3` passed 2634 plugin-disabled full-suite tests in
+230.25 seconds on 2026-09-17. Those tests used fake data only; the API has not
+read the accepted real specimen or executed the real matrix and makes no
+performance claim. Scientific and architectural acceptance remains required
+before separately authorizing real execution.
+
+### Accepted crossing equivalence matrix boundary
+
+Fernando scientifically and architecturally accepted
+`run_equivalence_matrix` as the bounded fake-data-tested 50S.6G.1B.2D API on
+2026-09-17. The evidence comprises 2634 plugin-disabled full-suite tests in
+230.25 seconds at `19520f3` and 161 plugin-disabled
+current-documentation tests in 3.32 seconds at `3ef6a4d`. This acceptance
+does not admit a real specimen or execute a real matrix. A separately bounded
+real-execution audit is the only authorized next step.
+
+### Proposed real-matrix execution surface
+
+The accepted `run_equivalence_matrix()` orchestration API at `9bdf301`
+requires injected executor and airmass-certifier objects and therefore is not
+an approved real-execution entry point. A bounded next implementation must add
+a frozen canonical ten-field request fixture, exact accepted-medium receipt
+constraints, a production whole-interval certifier, a fresh-subprocess
+canonical worker protocol, and an explicit offline
+`run-equivalence-matrix` developer command.
+
+The command must require explicit snapshot and output paths plus exact digest
+acknowledgements. It must perform no discovery, provider request, refresh,
+fallback, or implicit default selection. This candidate audit reads no real
+artifact and executes no matrix.
+
+### Accepted real-execution readiness boundary
+
+Fernando scientifically and architecturally accepted the fail-closed
+production-path finding on 2026-09-17 after 163 plugin-disabled
+current-documentation tests passed in 3.80 seconds at `054ac39`. The accepted
+next scope is fake-data implementation of the exact receipt validator, frozen
+fixture, production certifier, subprocess protocol and worker, explicit
+offline command, and tests. The acceptance grants no authority to read or run
+the external real specimen.\n
+
+### Candidate offline production matrix path
+
+`build_matrix_queries(snapshot)` materializes one digest-frozen ten-field La
+Ligua fixture containing only 15- and 60-second intervals.
+`ProductionMatrixAirmassCertifier` composes the accepted centre-only,
+whole-interval geometric vacuum policy at maximum airmass 2.
+`FreshSubprocessMatrixExecutor` runs one route/query/repetition per fresh
+Python process through a canonical private protocol and records exit status,
+environment, timing, allocation, request, result, evidence, and snapshot
+digests. `run_production_equivalence_matrix()` requires the exact accepted
+medium identity, receipt constraints, and operator acknowledgement before the
+existing equivalence owner runs. This candidate provides no discovery,
+network, refresh, fallback, concurrency, cache reuse, or implicit execution.\n
+
+Candidate verification on Fernando's Mac completed at executable commit
+`81f9031`: the 14-test focused matrix gate passed in 9.35 seconds, the
+210-test immediate-boundary and documentation gate passed in 60.26 seconds,
+and all 2,645 plugin-disabled tests passed in 243.71 seconds. `git diff
+--check 5cd60fd...HEAD` and the working tree were clean. No accepted real
+specimen was accessed and no real matrix was executed. The candidate still
+requires Fernando's scientific and architectural acceptance.\n
+
+### Accepted production-path implementation
+
+Fernando scientifically and architecturally accepted the bounded fake-data
+production-path implementation on 2026-09-18. The executable evidence remains
+14 focused tests in 9.35 seconds, 210 immediate-boundary tests in 60.26
+seconds, and all 2,645 plugin-disabled tests in 243.71 seconds at `81f9031`.
+After documentation-only evidence recording, 164 current-documentation tests
+passed in 3.94 seconds at `602eed7`; the whitespace check and working tree
+were clean.
+
+Preserve the exact accepted-medium and receipt constraints, digest-frozen
+ten-field La Ligua fixture with only 15- and 60-second intervals, production
+whole-interval airmass certifier, canonical fresh-subprocess worker/executor,
+explicit offline command, and shortened fake-data test practice. This
+acceptance does not authorize accessing the accepted real specimen, executing
+the real matrix, publishing real evidence, making a performance claim, or
+advancing later delivery. Any real execution requires a separate explicit
+authorization.\n
+
+### Candidate first real run policy
+
+The accepted `run-equivalence-matrix` command is unchanged. Candidate
+50S.6G.1B.2D.1 proposes one invocation only, using the exact accepted medium,
+receipt and parent digests, exact acknowledgement, explicit absolute paths,
+the existing 3600-second per-worker timeout, and a new empty external output
+root with at least 2 GiB free. There is no automatic retry or resume. Success
+publishes one external content-addressed evidence directory whose acceptance
+is a separate review.\n
+
+### Accepted first-real-execution authorization
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2D.1 on
+2026-09-18 after all 165 plugin-disabled current-documentation tests passed in
+5.07 seconds at `af8044a`; the whitespace check and working tree were clean.
+
+This acceptance authorizes exactly one operator-started offline execution
+against the exact accepted 256-record medium, using the three frozen digests,
+exact acknowledgement, accepted ten-field 15/60-second fixture, one new empty
+external output root with at least 2 GiB free, the existing 3600-second
+per-subprocess timeout, and no retry or resume. It does not itself start the
+run. The exact absolute Mac paths must be resolved before the command is
+issued. Failure or interruption authorizes no restart. Successful evidence
+remains external and unaccepted pending an independent review; no performance
+claim or later 50S.6G delivery is authorized.\n
+
+### Candidate matrix progress reporting
+
+When the production wrapper constructs its default
+`FreshSubprocessMatrixExecutor`, it supplies a policy-derived invocation total
+to `MatrixProgressBar`. The bar reports field, exhaustive/accelerated route,
+warm-up or measured repetition, completed count, and percentage on parent
+stderr. Injected executors remain quiet by default. Progress changes no worker
+input/output, timeout, result, evidence, or digest.
+
+## Candidate matrix progress verification
+
+At candidate commit `b0b4432`, the parent-process progress display passed 180 focused plugin-disabled tests in 5.44 seconds and all 2647 plugin-disabled tests in 239.53 seconds on 2026-09-18. The diff check was clean. This verification changes neither the callable contract nor canonical evidence and does not authorize execution.
+
+## Accepted matrix progress display
+
+Fernando scientifically and architecturally accepted the parent-process progress display at `96b9ba0` on 2026-09-18 after the recorded focused, full-suite, final-documentation, and diff verification. This acceptance changes no worker protocol or canonical evidence and does not itself authorize execution.
+
+## Renewed single real-run contract
+
+Following progress-display merge `9c4b808`, Fernando explicitly renewed authorization on 2026-09-18 for exactly one operator-started real matrix run. The accepted invocation contract, specimen identities, 10-field fixture, 15/60-second intervals, two routes, warm-up and repetition counts, 80-invocation ceiling, worker timeout, new-output-root rule, and no-retry/no-resume policy remain unchanged.
+
+## Accepted renewed real-run contract
+
+Fernando scientifically and architecturally accepted candidate `dd71e01` on 2026-09-18 after the 169-test documentation gate and clean repository checks. The accepted invocation contract remains inactive until this record is merged and external preflight succeeds.
+
+## Candidate first real-matrix evidence
+
+Report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` records the successful single run from `9d93113` on 2026-09-18: 10 fields, 60 measured observations, exact exhaustive/accelerated canonical equality, zero fallback, and zero rejected exhaustive crossings. Decision totals were 2,455 reject, 101 indeterminate, and 4 retain. All fields had zero crossings, so positive real-crossing behavior was not exercised. Resource observations are descriptive only.
+
+## Accepted first real-matrix evidence
+
+Fernando scientifically and architecturally accepted the first real-matrix report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at `186e255` on 2026-09-18 after the 171-test documentation gate. The accepted contract evidence is exact empty-result equivalence and complete conservative partitioning. All fields had zero crossings; no positive real-crossing or universal performance conclusion follows.
+
+
+## Candidate 50S.6G.1B closure boundary
+
+The integrated `b010a6c` runtime remains unchanged. Its external-snapshot,
+admission, medium-selection, matrix, and offline execution APIs retain their
+accepted fail-closed contracts. The one real report proves exact empty-result
+route equivalence and partition integrity for the accepted ten-field fixture;
+all fields had zero crossings.
+
+This candidate adds no report API or serialization. It claims no positive real
+crossing, full-snapshot matrix, broad FoV-count capacity, universal
+performance, concurrency, or reuse result and authorizes no further execution.
+Pending separate acceptance, 50S.6G.2A remains unauthorized. Acceptance would
+authorize only its documentation audit.
+
+
+## Accepted 50S.6G.1B closure boundary
+
+Fernando scientifically and architecturally accepted the bounded closure on
+2026-09-19 at `c62a451`, after 173 documentation tests passed in 3.82 seconds
+and repository checks were clean. Existing APIs remain unchanged; all real
+fields had zero crossings and no broader execution or performance claim is
+accepted.
+
+Only a 50S.6G.2A documentation audit is authorized next. No report API,
+schema, encoder, decoder, or round-trip implementation is authorized.
+
+
+## Candidate 50S.6G.2A exact-report boundary
+
+No exact-report API exists at baseline `3f234cc`. The candidate audit
+provisionally defines an immutable logical report constructor, JSON-compatible
+document, deterministic JSON encoder, and strict typed decoder in a dedicated
+owner adjacent to `satellite_presentations.py`. Creation time is explicit;
+serialization consults neither clock nor scientific services.
+
+The proposed schema is closed and versioned, future-science values are required
+nulls in version 1, and semantic plus digest validation is mandatory. These are
+candidate contracts only; no production API is authorized.
+
+
+## Accepted 50S.6G.2A implementation authorization
+
+Fernando accepted the documentation contract on 2026-09-19 at `835ddfe`,
+after 175 documentation tests passed in 3.27 seconds and clean repository
+checks. Only the audited exact-report model, schema, pure encoder/decoder, and
+focused tests are authorized; the candidate API names remain subject to the
+implementation as-is assessment.
+
+
+## Candidate exact-crossing report API
+
+`ExactSatelliteCrossingReport.from_results(...)` accepts an ordered non-empty
+sequence of existing `MultiFieldCrossingResult` values, one
+`MultiFieldCrossingPolicy`, an explicit UTC creation instant, Wenu version,
+and crossing-oracle, acceleration, and batch-coordinator implementation
+identities. It validates shared observer and snapshot identity, field
+uniqueness/order, exact crossing order and element identity, airmass and
+acceleration context, and complete snapshot partitions.
+
+`report.document` returns a detached JSON-compatible copy;
+`report.report_identity_sha256` returns canonical logical identity; and
+`report.to_json()` returns deterministic UTF-8-compatible JSON text.
+`ExactSatelliteCrossingReport.from_json(text_or_utf8_bytes)` applies the
+packaged closed schema, reconstructs existing immutable Wenu domain values,
+checks semantic invariants and digest identity, and supports typed and
+byte-identical canonical round trips.
+
+This candidate API performs no scientific calculation and exposes no path,
+overwrite, file-writing, CLI, ECSV, VOTable, track, chart, or future-science
+operation. Acceptance remains pending.
+
+
+## Accepted 50S.6G.2A exact-report API
+
+Fernando scientifically and architecturally accepted the bounded 50S.6G.2A
+implementation on 2026-09-19. The executable candidate at `a65e5ac` passed
+all 2,676 plugin-disabled tests in 234.08 seconds; the final pre-acceptance
+documentation gate at `8af0d14` passed 179 tests in 5.05 seconds; diff and
+working-tree checks were clean.
+
+The candidate API documented above is accepted within its bounded exclusions.
+No file, CLI, ECSV/VOTable, track, chart, illumination, brightness, detector,
+provider, scheduling, or execution API is implied.
+
+
+## Candidate 50S.6G.2B tabular API
+
+Subject to separate acceptance, the exact report may gain pure in-memory
+`to_ecsv()`, `from_ecsv(...)`, `to_votable()`, and
+`from_votable(...)` operations. ECSV returns text; VOTable returns bytes.
+Decoders return `ExactSatelliteCrossingReport` and must reproduce the same
+canonical JSON and `report_identity_sha256`.
+
+The public methods delegate to one private shared logical-to-tabular projection
+and thin format adapters. The shared mapping is reusable but is not prematurely
+public. These candidate APIs accept no path, file object, overwrite flag, or
+service and perform no scientific computation. Implementation remains
+unauthorized pending acceptance.
+
+## Accepted 50S.6G.2B tabular API boundary
+
+Fernando scientifically and architecturally accepted the documentation-only
+audit on 2026-09-19 at `ef14bc1`, after 181 plugin-disabled documentation
+tests passed in 4.88 seconds and repository checks were clean.
+
+A bounded implementation may add the pure in-memory `to_ecsv()`,
+`from_ecsv(...)`, `to_votable()`, and `from_votable(...)` operations
+described above. They must delegate to one reusable format-neutral projection,
+preserve canonical JSON and `report_identity_sha256`, and accept no path,
+file object, overwrite flag, service, or scientific-computation responsibility.
+
+
+## Accepted complete 50S.6G.2B tabular API
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.6G.2B implementation on 2026-09-19. Executable commit `3bbd82f` passed
+208 focused tests in 6.68 seconds and all 2,689 plugin-disabled tests in
+215.15 seconds. Documentation evidence commit `ece80c7` passed all 186
+current-documentation tests in 4.60 seconds; diff checks and the clean,
+synchronized Mac working tree passed.
+
+`ExactSatelliteCrossingReport.to_ecsv() -> str` and
+`ExactSatelliteCrossingReport.from_ecsv(text_or_utf8_bytes)` provide
+deterministic lossless ECSV interchange.
+`ExactSatelliteCrossingReport.to_votable() -> bytes` and
+`ExactSatelliteCrossingReport.from_votable(xml_or_utf8_bytes)` provide
+deterministic lossless VOTable 1.5/BINARY2 interchange. Both reconstruct the
+accepted exact report and verify canonical JSON identity through
+`report_identity_sha256`. The VOTable wire contract uses adjacent Boolean
+`__is_null` FIELDs for nullable Unicode values under Astropy 7.1.0.
+
+These methods accept and return values only, never paths or file-like objects.
+This acceptance authorizes no later filesystem, CLI, publication, track,
+chart, or API milestone.
+
+## Candidate 50S.6G.2C CLI/file API
+
+The proposed installed `wenu_satellite_crossings` command composes the accepted
+multi-FoV coordinator and exact-report encoders through mutually exclusive
+direct, `--request`, and `--validated-request` inputs. Initial requests,
+validation outputs, and bundle manifests are closed versioned JSON products
+with canonical SHA-256 identities. Publication is explicit, symlink-safe,
+atomic, and no-clobber; successful bundles contain fixed `report.json`,
+`report.ecsv`, `report.vot`, and `manifest.json` names. The detailed audit
+freezes failure and interruption behavior but exposes no API until separately
+accepted and implemented.
+
+## Accepted 50S.6G.2C implementation authorization
+
+After acceptance at `bcac404`, implementation may add only the documented
+`wenu_satellite_crossings` adapter, packaged closed request/validation/manifest
+schemas, installed entry point, filesystem publisher, and focused enduring
+CLI/file-protocol tests. It must compose the accepted batch and report APIs,
+retain the fixed exit/status and interruption contract, and add no scientific
+or format mapping of its own.
+
+## Candidate 50S.6G.2C executable API
+
+`MultiFieldSatelliteCrossingCoordinator.validate(request)` returns ordered
+admission evidence after the existing complete atomic validation and performs
+no crossing solve. The installed `wenu_satellite_crossings` entry point uses
+that seam for first-call partition evidence and uses `solve(request)` only for
+an all-valid initial/direct request or a revalidated second-call subset.
+
+The adapter owns strict protocol decoding, fixed exit statuses, safe paths,
+staging, atomic no-clobber publication, and manifest construction. It delegates
+all scientific validation, calculation, report identity, ECSV, and VOTable
+behavior to the accepted owners.
+
+## Verified candidate 50S.6G.2C API
+
+The candidate `validate()` seam and installed CLI at `e08ebf5` passed the
+immediate and complete repository gates. This verification changes no public
+authority: the API remains candidate until Fernando separately accepts the
+scientific and architectural implementation.
+
+## Accepted 50S.6G.2C executable API
+
+The accepted `validate(request)` seam performs only existing atomic scientific
+validation and returns ordered admissions; `solve(request)` remains the sole
+calculation route. The accepted CLI composes this seam with the immutable exact
+report encoders and fixed atomic bundle publisher. Preserve all closed-schema,
+identity, path, status, and interruption contracts.
+
+## Candidate 50S.6G.3A exact-local-track API
+
+A future frozen exact-track evidence value may bind one accepted `SatelliteCrossingResult` to ordered UTC samples, exact entry/closest/exit roles, geometric topocentric directions expressed in GCRS axes, range, sampling policy, provenance, and `track_identity_sha256`. A separate realizer would compose the accepted SGP4/TEME and topocentric services and fail closed rather than return partial evidence.
+
+A future output-neutral layer may consume only that evidence and return an open `SphericalCurves` path or a singleton `SphericalPoints`, plus event views that select retained vertices without recomputation. These are proposed APIs only; implementation requires separate acceptance.
+
+## Accepted 50S.6G.3A implementation authorization
+
+After acceptance at `ce54971`, implementation may add only the frozen exact-local-track evidence, sampling policy, typed failures, realizer, output-neutral path/event views, stable semantic identity, and focused offline tests described by the audit. It must compose existing crossing, propagation, topocentric, spherical-geometry, and coordinate-service owners and must not change report, CLI, provider, chart, renderer, or exporter APIs.
+
+## Candidate 50S.6G.3A executable API
+
+`ExactLocalTrackPolicy`, `ExactLocalTrackEvaluation`, `ExactLocalSatelliteTrackSample`, `ExactLocalSatelliteTrack`, `ExactLocalTrackError`, and `ExactLocalSatelliteTrackRealizer` provide the bounded evidence route. `SatelliteExactTrackLayer` and `SatelliteExactTrackEventsLayer` expose retained evidence as ordinary geometry without recomputation.
+
+The collection `CoordinateSpec` is timeless `gcrs-axes` / `topocentric-direction`; `sample_time_scale="utc"` and each sample instant carry time. `CoordinateService` treats `gcrs-axes` only as the fixed GCRS/ICRS axis orientation for direction transformations. These APIs remain candidate pending full verification and acceptance.
+
+## Verified candidate 50S.6G.3A API
+
+The candidate exact-track evidence, realizer, failure, path/event layer, coordinate-service, and semantic APIs at `f0a4164` passed the complete 2,728-test repository gate. They remain candidate APIs until Fernando separately accepts the implementation.
+
+## Accepted 50S.6G.3A API
+
+The exact-track policy, evaluation, sample, evidence, typed-error, realizer, path layer, event layer, semantic identity, and fixed-axis coordinate-service seam are accepted within their documented boundary. Preserve evidence-level/per-sample UTC and the timeless collection specification. No chart request or rendering API is accepted by this milestone.
+
+## Candidate 50S.6G.3B chart-request API
+
+A future frozen `SatelliteExactTrackDisplayRequest` may contain one already-realized `ExactLocalSatelliteTrack` plus `draw_path`, `draw_events`, and `label_events` controls. `ChartRequest.satellite_exact_tracks` would be an explicit default-empty ordered tuple, admitted only for regional or binocular stereographic horizontal products with matching observer and reference-instant identity.
+
+The chart path would install accepted evidence-only layers and emit bounded provenance summaries. These are proposed APIs only; implementation requires separate acceptance.
+
+## Accepted 50S.6G.3B implementation authorization
+
+After acceptance at `ef58180`, implementation may add only `SatelliteExactTrackDisplayRequest`, the default-empty `ChartRequest.satellite_exact_tracks` tuple, bounded admission/provenance/lifecycle composition, existing-owner appearance integration, focused tests, and required specimens. The chart route must consume accepted evidence and perform no orbital or crossing science.
+
+## Candidate 50S.6G.3B executable API
+
+SatelliteExactTrackDisplayRequest is a frozen value containing one accepted ExactLocalSatelliteTrack and boolean draw_path, draw_events, and label_events controls. ChartRequest.satellite_exact_tracks is an ordered default-empty tuple with duplicate-identity, family, frame, observer-policy, and reference-instant admission.
+
+configure_chart_request_satellite_tracks() installs only requested evidence views, while ChartRequestBuild records and removes those layers. satellite_exact_track_provenance() and chart_request_provenance_parameters() replace recursive evidence serialization with ordered bounded summaries. These APIs remain candidate pending complete verification and acceptance.
+
+## Candidate 50S.6G.4A paired stereographic planisphere API
+
+The proposed API reuses `SatelliteExactTrackDisplayRequest`; it introduces no
+polar-specific evidence or display value. A future bounded
+`export_polar_planisphere_pages(...)` may accept an explicit default-empty
+`satellite_exact_tracks` tuple, validate the complete tuple and resolved pair,
+install the accepted path/event layers once, export both stereographic faces,
+and clean up after success or failure.
+
+The typed equatorial projection seam must express native `gcrs-axes` as ICRS
+axes while preserving geometric topocentric origin, timeless collection
+meaning, per-sample UTC, and track identity. Existing observer-local layers
+retain their current transformation. North/south overlap is intentional, face
+cap clipping creates no event, and page provenance remains bounded. These are
+proposed APIs only; no implementation is authorized by the audit.
+
+## Accepted 50S.6G.4A implementation authorization
+
+After acceptance at `c1d9015`, implementation may add only the explicit
+default-empty `satellite_exact_tracks` input to the paired stereographic page
+export, complete pair/display admission, shared request-owned installation and
+cleanup, typed fixed-axis equatorial handling, bounded per-face provenance and
+validity furniture, focused tests, and required north/south PNG/PDF/semantic-
+SVG specimens. It must consume accepted evidence and perform no new satellite
+science.
+
+## Corrective 50S.6G.4A proposed request boundary
+
+ChartRequest already carries satellite_exact_tracks and requires
+projection="stereographic" plus coordinate_frame="horizontal" for every
+ordinary planisphere request. prepare_chart_request() resolves that family to
+FullSkyChart; chart_request_realization_context() supplies the fixed AltAz
+product frame; configure_chart_request_satellite_tracks() installs retained
+path/event views; ChartRequestBuild removes them; and ordinary export records
+bounded provenance.
+
+The corrective audit proposes no new API. A future accepted 50S.6G.4B may only
+extend validate_satellite_exact_track_requests() so family="planisphere" joins
+regional and binocular. all_sky and circumpolar remain rejected. The earlier
+paired stereographic planisphere API proposal is superseded and authorizes no
+runtime work.
+
+## Accepted corrective 50S.6G.4A implementation authorization
+
+After acceptance at 80855938, a bounded 50S.6G.4B may add planisphere to the
+families admitted by validate_satellite_exact_track_requests(). It must reuse
+the existing ChartRequest satellite_exact_tracks value,
+configure_chart_request_satellite_tracks(), ChartRequestBuild cleanup, fixed
+horizontal LayerRealizationContext, FullSkyChart, canonical rendering/export,
+and bounded provenance. No new public request type or projection, coordinate,
+layer, renderer, exporter, provider, CLI, or report API is authorized.
+
+## Verified candidate 50S.6G.4B request behavior
+
+At candidate `91eafff5`,
+`validate_satellite_exact_track_requests()` admits `planisphere`, `regional`,
+and `binocular` for non-empty tuples while retaining stereographic-horizontal,
+observer, coordinate-policy, reference-instant, UTC, type, display-control,
+and unique-identity validation. `all_sky` and `circumpolar` remain rejected.
+An empty tuple still returns before family admission and installs no layer.
+
+## Accepted 50S.6G.4B request behavior
+
+After merge `f0730d8`, non-empty
+`ChartRequest(family="planisphere")` values may include ordered
+`SatelliteExactTrackDisplayRequest` values under the same strict
+stereographic-horizontal, observer, coordinate-policy, reference-instant, UTC,
+display-control, and identity contracts as regional and binocular products.
+`all_sky` and `circumpolar` remain rejected; an empty tuple remains neutral.
+## Accepted 50S.6H planning-advisory boundary
+
+The accepted documentation-only 50S.6H audit authorizes the next bounded implementation of an immutable planning
+context and deterministic canonical JSON advisory downstream of
+`ExactSatelliteCrossingReport`. The report must first pass its existing
+strict decoder and digest verification. The adapter would only intersect
+caller-supplied half-open planned UTC intervals with accepted exact crossing
+intervals; it would not propagate, transform, filter by visibility, rank, or
+schedule.
+
+No such runtime is implemented yet. Only this offline projection is authorized
+next. Paranal p2 network/write operations and any ELT operational mapping
+remain outside the accepted implementation.
+## Accepted 50S.6H offline planning-advisory API
+
+The accepted implementation exports:
+
+- `PlanningObservationUnit` — one caller-owned non-empty half-open UTC
+  interval associated with an accepted report `field_id`;
+- `ObservatoryPlanningContext` — one frozen general-profile version 1
+  context with an exact `SatelliteObserver` and ordered unique units;
+- `PlanningAdvisoryValidationError` — one stable typed rejection with a
+  machine-readable `code`; and
+- `SatellitePlanningAdvisory` — the immutable strict JSON result with
+  `from_report()`, `from_json()`, `document`, `to_json()`, and
+  `planning_advisory_identity_sha256`.
+
+`from_report()` preserves input objects, rejects observer or field mismatch
+atomically, preserves planning-unit then report order, treats endpoint contact
+as no overlap, and permits identified zero-row output. Fernando accepted this public behavior on 2026-09-20; it becomes implemented
+on merge.
+The validation tool produces a positive advisory, an endpoint-touch zero-row
+advisory, their source exact report, and a SHA-256 manifest entirely offline.
+Its Paranal text is an opaque review label under the `general` profile and
+does not claim p2 compatibility.
+## Accepted complete 50S.6H behavior
+
+Candidate revision `32dce675` passed the focused and complete gates and
+produced independently identified positive and zero-row advisories from the
+same identified exact report. The evidence verifies deterministic strict JSON,
+half-open endpoint behavior, source immutability, report-interchange
+equivalence, atomic mismatch rejection, and absence of a network/write surface.
+Fernando accepted the API and evidence on 2026-09-20.
+
+## Candidate 50S.7A reserved illumination interfaces
+
+No 50S.7 API is implemented. The audit reserves immutable concepts for
+`SatelliteIlluminationGeometry`, `SatelliteShadowTransition`, and
+component-resolved incident-light fields. A geometry state would bind one UTC
+instant, satellite/orbit/snapshot identity, accepted propagated state,
+Sun/Earth/Moon geometry, direct-solar disk visibility, typed shadow class,
+observer solar altitude, twilight class, model resources, and numerical
+policy.
+
+Every component uses an explicit status such as `evaluated`,
+`not_evaluated`, `outside_model_domain`, or `unavailable_input`; unknown is
+never numeric zero. These names are audit vocabulary, not public exports.
+Acceptance of the audit may authorize only the direct-Sun/observer-night
+geometry slice, not radiometry, Earthshine, Moonlight, Lunar-Earthshine,
+brightness, or detector behavior.
+
+## Accepted 50S.7A implementation authorization
+
+No 50S.7 runtime API is implemented by the accepted audit. After merge, the
+only authorized implementation slice is 50S.7B: immutable direct-Sun and
+observer-night geometry with finite uniform-Sun/WGS-84 vacuum Earth
+occultation, typed shadow state, observer geometric twilight, provenance, and
+focused offline validation.
+
+The reserved component-status vocabulary remains output-neutral. Transition
+search, radiometry, solar Earthshine, Moonlight radiometry,
+Lunar-Earthshine, component summation, brightness, detector, facility, and
+scheduling APIs remain unauthorized.
+## Candidate 50S.7B direct-Sun and observer-night API
+
+`wenu.satellites.illumination` now exports an unaccepted candidate API:
+
+- `SolarOccultationPolicy` declares the uniform-Sun, WGS-84 vacuum,
+  bounded adaptive equal-solid-angle quadrature and contact tolerances;
+- `SolarOccultationGeometry` carries refined/coarse visible fractions,
+  convergence difference, typed class, angular radius, distance, and ray
+  counts;
+- `SatelliteIlluminationGeometryEvaluator.evaluate(topocentric_state)`
+  requests the exact same-instant Earth-to-Sun state from an injected
+  `EphemerisStateSource`, rotates it to ITRS with matching Earth-orientation
+  evidence, and returns immutable `SatelliteIlluminationGeometry`;
+- `SolarOccultationClass`, `ObserverTwilightClass`, and
+  `LunarOccultorStatus` provide stable semantic states; and
+- `SatelliteIlluminationGeometryError.code` uses the failure vocabulary
+  reserved by the accepted audit.
+
+`evaluate_solar_occultation(...)` is the frame-explicit numerical boundary
+for already-ITRS inputs. `classify_observer_twilight(...)` applies geometric
+Sun-centre thresholds `0`, `-6`, `-12`, and `-18` degrees exactly.
+Neither function makes a radiometric, apparent-brightness, visibility, or
+detectability claim. The API is a review candidate until Fernando separately
+accepts it.
+
+50S.7C shadow-transition search and all later satellite-light behavior remain
+unauthorized by this candidate.
+
+## Accepted 50S.7B API boundary
+
+Fernando accepted the immutable 50S.7B public contracts at `054ac53a` on
+2026-09-21: `SolarOccultationPolicy`, `SolarOccultationGeometry`,
+`SatelliteIlluminationGeometry`,
+`SatelliteIlluminationGeometryEvaluator`, typed occultation/twilight/lunar
+statuses, stable failure codes, and the frame-explicit numerical and twilight
+helpers.
+
+Preserve their output-neutral geometry meaning and complete provenance. Do not
+add transition events, radiometry, brightness, visibility, or scheduling
+semantics to these types. Merge remains separate; after merge only a
+documentation-first 50S.7C audit is authorized.
+
+## Candidate 50S.7C reserved transition API
+
+No transition API is implemented by this documentation-only audit. It reserves
+`SatelliteShadowTransitionQuery`, `ShadowTransitionSearchPolicy`, a closed
+directed transition-kind enum, and immutable
+`SatelliteShadowTransition` results.
+
+A future result would retain left/right `SolarOccultationClass` values, one
+canonical UTC midpoint, a certified closed UTC bracket no wider than the
+declared time tolerance, exact satellite/orbit/snapshot/resource identity,
+shadow/search policies, evaluation counts, provenance, and warnings. An empty
+tuple is valid only after the complete query interval is certified
+transition-free.
+
+Contact is an event, not another occultation class. Direct
+`sunlit <-> umbra`, `sunlit <-> antumbra`, and
+`umbra <-> antumbra` outputs are invalid. The candidate authorizes no runtime
+or public export before separate acceptance and adds no brightness, visibility,
+report, chart, CLI, planning, detector, facility, or scheduling API.
+
+## Accepted 50S.7C transition API authorization
+
+Fernando accepted the reserved transition API contract at `030a6322` on
+2026-09-21. After merge, a bounded implementation may add the immutable query,
+search policy, directed transition kinds, and
+`SatelliteShadowTransition` result described above.
+
+The implementation must retain certified closed UTC brackets, exact
+record/snapshot/resource/model/search identity, complete interval
+certification, deterministic ordering, and atomic fail-closed behavior. It
+must not add transition data to crossing, track, report, chart, CLI, or
+planning APIs, and it must not add radiometric, brightness, visibility,
+detector, facility, or scheduling semantics. Merge remains separate.
+
+## Candidate 50S.7C transition API implementation
+
+At executable `69375fab`, the unaccepted bounded API exports
+`ShadowTransitionSearchPolicy`,
+`SatelliteShadowTransitionQuery`, `SolarOccultationContactGeometry`,
+`SatelliteShadowTransition`, `ShadowTransitionKind`,
+`SatelliteShadowTransitionFinder`, and
+`evaluate_solar_occultation_contact`. The topocentric owner exports
+`SatelliteGeocentricItrsState` and `SatelliteGeocentricItrsTransformer`.
+
+One query binds an immutable snapshot, one full NORAD identifier, one closed
+UTC interval, and both occultation and search policies. Each result retains
+the exact record, snapshot, query interval, directed side classes, certified
+bracket, deterministic midpoint, achieved width, evaluation count, EOP and
+ephemeris identities, complete policies, implementation identifier,
+provenance, and warnings. `SatelliteShadowTransition.identity` exposes that
+immutable identity tuple.
+
+Stable failures include invalid/unsupported query, propagation, EOP,
+ephemeris, frame, non-finite geometry, degenerate topology, inconsistent
+bracket, and `transition_search_exhausted`. The candidate adds no output or
+later illumination API; complete gates and acceptance remain pending.
+
+## Accepted 50S.7C transition API implementation
+
+Fernando accepted the immutable 50S.7C transition API at
+`eaeab6085b52bfed6136d37f3010c2f353e59f53` on 2026-09-21. Preserve the
+single-record closed-interval query, explicit occultation and search policies,
+six directed adjacent transition kinds, certified brackets, deterministic
+midpoints, exact identity and provenance, ordered atomic results, and typed
+fail-closed errors implemented at executable `bf877404`.
+
+The accepted API remains output-neutral and observer-independent. It adds no
+crossing, track, report, chart, CLI, planning, radiometric, brightness,
+visibility, detector, facility, or scheduling semantics. PR 183 merge, branch
+deletion, and any 50S.7D+ API remain separately authorized decisions.
+## Candidate 50S.7D radiometry API boundary
+
+No radiometry API is implemented by this documentation-only audit. It proposes
+for a later accepted 50S.7D.1 only immutable
+`DirectSolarIrradiancePolicy`, `DirectSolarIrradiance`, and
+`DirectSolarIrradianceEvaluator` contracts in the existing illumination
+owner.
+
+The evaluator would consume one accepted `SatelliteIlluminationGeometry` and
+return bolometric normal-plane clear and incident irradiance in `W m-2`,
+retaining distance, visible fraction, occultation class, complete geometry and
+model identity, convergence evidence, provenance, and explicit
+physical-uncertainty `not_evaluated`. It would perform no propagation,
+ephemeris query, occultation calculation, surface projection, or output work.
+
+The candidate authorizes no runtime. Spectral/passband Sunlight, numeric
+Moonlight, reflected fields, component bundles, magnitude, visibility,
+detector, report, chart, CLI, planning, facility, and scheduling APIs remain
+unauthorized.
+
+## Accepted 50S.7D radiometry API authority
+
+Fernando accepted the documentation-only 50S.7D API boundary at exact
+candidate `362199d04bd917741a8be88f20608967af75530e` on 2026-09-21 after
+214 plugin-disabled current-documentation tests passed in 7.00 seconds and
+repository checks were clean.
+
+After merge, a bounded 50S.7D.1 implementation may add only immutable
+`DirectSolarIrradiancePolicy`, `DirectSolarIrradiance`, and
+`DirectSolarIrradianceEvaluator` contracts in the existing illumination
+owner. The evaluator must consume accepted geometry, return bolometric
+normal-plane clear and incident irradiance, retain identity/provenance and
+convergence evidence, and leave physical/model uncertainty explicitly
+`not_evaluated`.
+
+Spectral/passband Sunlight, numeric Moonlight, reflected fields, component
+bundles, surface response, magnitude, visibility, detector, report, chart,
+CLI, planning, facility, and scheduling APIs remain unauthorized. PR 184
+merge, branch deletion, and 50S.7D.2+ remain separate decisions.
+
+## Candidate 50S.7D.1 direct-Sun irradiance API implementation
+
+Executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` exports immutable
+`DirectSolarIrradiancePolicy`, `DirectSolarIrradiance`, and
+`DirectSolarIrradianceEvaluator` contracts. The evaluator accepts exactly one
+`SatelliteIlluminationGeometry` and implements
+`E_clear = 1361 * (au / r)^2` and
+`E_incident = visible_fraction * E_clear`.
+
+The result retains complete geometry identity, UTC, distance in kilometres and
+astronomical units, visible fraction, occultation class, clear/incident values,
+coarse value, convergence difference, policy, provenance, warnings, and
+physical/model uncertainty status `not_evaluated`. Unsupported model,
+incompatible uniform-disk geometry, inconsistent distance, and non-same-
+instant inputs fail closed through the accepted illumination failure boundary.
+The candidate adds no surface, passband, Moonlight, output, brightness,
+visibility, or detector API and is not yet accepted.
+
+## Verified candidate 50S.7D.1 API implementation
+
+The immutable API at exact branch head
+`5bf5d52e81670f1a69af0476283195d12a3119bc` passed its independent
+installed-resource formula receipt, 308-test expanded gate, and complete
+2,832-test plugin-disabled suite. The receipt independently recomputed the
+declared IAU nominal formula for sunlit, penumbral, and umbral LEO, MEO, and
+GEO geometry with zero residuals.
+
+The API remains an unaccepted review candidate. Do not extend it with
+spectral/passband, Moonlight, reflected-field, spacecraft-response, brightness,
+visibility, detector, output, facility, or scheduling contracts. Merge and
+branch deletion remain separate decisions.
+
+## Accepted 50S.7D.1 direct-Sun irradiance API implementation
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. Preserve the
+immutable `DirectSolarIrradiancePolicy`, `DirectSolarIrradiance`, and
+`DirectSolarIrradianceEvaluator` contracts and their fail-closed geometry
+boundary.
+
+The independent receipt, 308 expanded tests, complete 2,832-test suite, and
+final 223-test documentation/package-boundary gate passed. The acceptance adds
+no 50S.7D.2+, output, brightness, visibility, detector, facility, or scheduling
+API; merge and branch deletion remain separate decisions.
+
+## Candidate 50S.7D.2 spectral API boundary
+
+The audit proposes immutable spectral resource identity, policy, result, and
+evaluator contracts over the exact TSIS-1 HSRS v2 native grid. Energy spectral
+irradiance is distinct from photon quantities; interpolation, extrapolation,
+renormalization, aggregate uncertainty, passband libraries, and runtime remain
+unauthorized pending separate acceptance.
+
+## Accepted 50S.7D.2 spectral API boundary
+
+Fernando accepted the proposed immutable resource identity, policy, result, and
+evaluator boundary at exact candidate
+`0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe` on 2026-09-22. After audit
+merge, the bounded implementation may expose only native-grid energy spectral
+irradiance and exact-grid energy integration for the externally installed
+TSIS-1 HSRS v2 resource. It must retain pointwise uncertainty and report
+integrated uncertainty as `not_evaluated`. No interpolation, extrapolation,
+renormalization, Moonlight, passband library, photon rate, or output API is
+authorized.
+
+## Candidate 50S.7D.2 spectral API implementation
+
+Executable `8e930db2` exports immutable
+`SolarSpectralIrradianceResourceIdentity`,
+`DirectSolarSpectralIrradiancePolicy`,
+`DirectSolarSpectralIrradiance`, and
+`DirectSolarSpectralIrradianceEvaluator` contracts plus the explicit offline
+`load_solar_spectral_irradiance_resource(path)` entry point.
+
+The loader admits only the accepted TSIS-1 HSRS v2 serialization by byte count
+and SHA-256, then validates UTF-8 CSV schema, native grid, values, bandwidth,
+and integral. The evaluator consumes one complete accepted
+`SatelliteIlluminationGeometry`, preserves native tuples, scales energy
+spectral irradiance and absolute pointwise uncertainty, and leaves integrated
+uncertainty `not_evaluated`. `integrate_energy()` accepts only exact native
+endpoints. Unsupported models, resources, geometry, interpolation,
+extrapolation, and renormalization fail closed.
+
+This remains an unaccepted candidate. It supplies no acquisition API,
+Moonlight, passband response, photon rate, surface response, brightness,
+visibility, detector, report, chart, CLI, planning, facility, or scheduling
+API.
+
+## Verified candidate 50S.7D.2 spectral API
+
+Exact verified head `8f2ca825` retains the bounded executable API at
+`8e930db2`. The real-resource receipt, 132 expanded tests, 227
+documentation/package tests, clean diff, and complete 2,858-test suite passed.
+
+The API remains an unaccepted candidate: exact external-resource admission,
+native immutable energy samples, pointwise uncertainty, exact-grid integration,
+and integrated uncertainty `not_evaluated`. Acquisition, interpolation,
+extrapolation, renormalization, Moonlight, photon, output, and later APIs remain
+unauthorized.
+
+## Accepted 50S.7D.2 spectral API implementation
+
+Fernando accepted exact verified candidate `d1edeb46` on 2026-09-22.
+Preserve the executable `8e930db2` immutable resource identity, policy,
+result, evaluator, offline loader, typed failures, native tuples, pointwise
+uncertainty, exact-grid energy integration, and deterministic identity.
+
+The API must continue to forbid implicit acquisition, interpolation,
+extrapolation, renormalization, aggregate uncertainty, Moonlight, photon
+conversion, surface response, brightness, visibility, detector, output,
+facility, and scheduling behavior. PR 187 merge and branch deletion remain
+separate decisions.
+
+## Candidate 50S.7D.3 Moonlight API readiness
+
+No Moonlight API is implemented or authorized. The candidate audit identifies
+the future separation between same-instant lunar source geometry in
+`satellites/illumination.py` and exact external model admission plus native-
+band irradiance in `satellites/radiometry.py`.
+
+The preferred LIME model remains blocked pending an exact versioned
+distribution, byte identities, license, native bands, coefficients, geometry
+conventions, supported domain, uncertainty, and authoritative reference
+outputs. Existing lunar `not_evaluated` semantics remain authoritative.
+No coefficient, loader, policy, result, evaluator, eclipse, occultation,
+passband, brightness, visibility, detector, output, facility, or scheduling API
+is added.
+
+## Accepted 50S.7D.3 Moonlight API readiness
+
+Fernando accepted exact documentation-only candidate `abbb1b78` on
+2026-09-22 after the 230-test documentation/package gate and clean repository
+checks. No Moonlight API was added or authorized.
+
+After merge, only an external LIME distribution preflight may proceed under
+separate controls. Existing `not_evaluated` semantics remain authoritative.
+No resource retrieval, coefficient API, geometry API, loader, evaluator,
+numeric Moonlight, output, brightness, visibility, detector, facility, or
+scheduling behavior is authorized.
+
+## Final accepted 50S.7D.3 API-readiness verification
+
+Acceptance-record head `0be116ab` passed 231 documentation/package tests in
+8.54 seconds and clean repository checks. No Moonlight API exists or is
+authorized. Only the post-merge external LIME distribution preflight may
+proceed under separate controls.
+
+## Candidate 50S.7D.3A LIME distribution preflight
+
+No API is added. The receipt identifies LIME Toolbox `v1.4.2` tag commit
+`b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f`, macOS asset SHA-256
+`e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21`,
+and candidate coefficient SHA-256
+`8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691`.
+
+The future boundary would accept Wenu-owned direct selenographic geometry; it
+must not accept a TLE or delegate propagation to LIME's EO-CFI route. Resource,
+geometry, coefficient, irradiance, and uncertainty APIs remain unauthorized.
+
+## Accepted 50S.7D.3A LIME distribution preflight
+
+Fernando accepted exact candidate `27e1ee1c` on 2026-09-22 after 232
+plugin-disabled documentation/package tests passed in 11.95 seconds. This
+accepts only the frozen distribution receipt and future direct-selenographic
+adapter boundary. It adds no API, dependency, execution, or Moonlight result;
+PR 189 merge and later offline inspection require separate instructions.
+
+## Candidate 50S.7D.3B offline-inspection interface
+
+No public or production API is added. The only new executable interface is the
+developer command
+`tools/validate_50s7d3b_lime_offline_inspection.py PACKAGE OUTPUT_DIRECTORY`.
+It accepts the exact external macOS package and a nonexistent external output
+directory, fails closed on identity or environment mismatch, and emits a
+digest-bound evidence set.
+
+The tool neither imports nor wraps LIME in Wenu. Geometry, resource, policy,
+result, evaluator, uncertainty, and numeric Moonlight APIs remain
+unauthorized. Its manifest must state `production_runtime_changed=false` and
+`moonlight_status=not_evaluated`.
+
+
+## Offline stellar designation candidates (2026-10-06)
+
+`wenu.star_designations.load_star_designations(manifest_path=None)` loads the
+verified immutable Wikidata snapshot; `catalogue.get(hip)` returns a per-HIP
+candidate record or `None`. `record.candidates("bayer" | "flamsteed")` retains
+active alternatives without a preferred choice. `record.names` retains English
+label/alias evidence, not canonical proper names. `record.review_fields` marks
+known pending designation conflicts; `item_ids` preserves entity distinctions.
+
+`Stars.load()` attaches `star_designations` before magnitude filtering.
+`Stars.position()` and `Stars.spherical_geometry()` carry the aligned object
+array and scalar snapshot edition/digest. Coordinates and magnitudes remain
+Hipparcos data; chart defaults do not activate designation labels. The accepted
+name/Bayer CLI/TOML options are not yet implemented. See the
+[resource checkpoint](stellar_designations_audit.md#10-wikidata-resource-checkpoint-2026-10-06).
+
+## Explicit stellar labels and optional reports (candidate)
+
+```python
+from wenu.star_designations import StarLabelSelection, resolve_star_labels
+from wenu.charts.detail import DetailOverrides
+
+selection = StarLabelSelection(
+    bayer=("Peg:delta",), show_full_bayer_designation=True,
+)
+overrides = DetailOverrides(star_labels=selection)
+resolved = resolve_star_labels(selection, constellations=("Peg",))
+assert resolved(677) == "δ Peg"
+```
+
+`ResolvedDetail.star_labels` defaults empty; its
+`stellar_label_constellations` carries explicit IAU context. Normal composition
+and the CLI translate these through existing detail application; selected HIPs
+bypass magnitude limits but remain subject to geometry clipping. Exact English
+Wikidata names/aliases can be requested; ambiguous/unavailable selectors fail.
+This API does not declare all aliases official proper names.
+
+Digest-bound authored `name_associations` in the existing curation resource
+add `CuratedName` values to `StarDesignations.curated_names`. Source
+`record.names` and the Wikidata snapshot remain unchanged. Each name requires
+an exact HIP/Bayer association, canonical IAU scope and component/source
+evidence, retained in the existing per-HIP curation/report note. Explicit name
+selection indexes both collections; automatic catalogue name metadata remains
+on its original source. Albireo is associated only with HIP 95947 (β¹ Cyg,
+IAU component Aa); existing `Cyg:beta2` remains HIP 95951. Proper-name
+precedence, magnitude bypass and chart clipping follow the existing pipeline.
+
+`ChartRequest.stellar_report` defaults false. Ordinary static
+`chart_view_request(..., stellar_report=True)` requests reports per exported
+product. `ChartExportResult.report_outputs` holds the Markdown and JSON paths;
+existing two-value unpacking is unchanged. `ChartRequestGeneration.outputs`
+includes chart and report paths. Reports are named `<chart filename>.stars.md`
+and `<chart filename>.stars.json`, including the chart extension. They consume
+already projected/rendered geometry; they never realize coordinates again.
+Sequence reporting, automatic global labels and Flamsteed selectors are outside
+this milestone. `load_stellar_research()` exposes the cached digest-bound
+77-case HIP index and accepted shared preferences, independently of astrometry.
+
+## HIP curation and coverage review (candidate, 2026-10-06)
+
+`load_star_designations()` remains the unchanged Wikidata evidence API.
+`load_effective_star_designations()` adds only authored missing-kind
+associations from the digest-bound curation table.
+`record.candidates(kind)` still returns Wikidata claims;
+`record.assignments(kind)` returns those claims when present and otherwise
+the separately typed `CuratedDesignation` records. Curated associations do
+not acquire Wikidata statement IDs, entity IDs or ranks.
+
+`catalogue.hips_for_designation(code, kind)` returns a frozenset of all
+matching HIPs. The relationship is many-to-many: `8 Sco` resolves to HIP
+78820 and 78821; `β¹ Sco` and `β² Sco` distinguish them. Unsupported literal
+source spellings remain evidence and are not silently normalized into matches.
+Existing name/Bayer selectors use the effective catalogue. Ambiguous matches
+still fail; no brightest-component rule or new Flamsteed CLI is introduced.
+
+`load_stellar_curation()` exposes immutable association records and
+independent per-HIP coverage/variant review notes. It verifies a separate
+manifest and exact original-snapshot binding. The table adds 158 missing-kind
+associations (64 Bayer, 94 Flamsteed), preserves all 226 audited coverage gaps,
+58 variant discrepancies and 167 unjoined source statements. Of the bright
+V < 5 gaps, 32 Bayer and 32 Flamsteed receive cross-index associations.
+Agreement is evidence, not a claim of independent physical verification.
+
+Chart reports include original and effective assignments, authored provenance,
+pending gaps and variants for retained HIPs. The original 77-case dossier
+remains unchanged; existing report fields remain available and additional
+curation fields are additive. Astrometry metadata stays on the raw snapshot.
+Superscripts, geometry, point selection and existing explicit-label magnitude
+bypass are preserved. No automatic labels or spatial merging are added.
+
+The two β Sco records also retain an explicit system selector alias backed by
+the active unjoined Wikidata declaration. `Sco:beta` therefore fails as
+ambiguous with both HIPs; `Sco:beta1,beta2` selects them individually.
+Selector aliases do not replace component labels or source claims.
+
+## Constellation publication presentation
+
+`SkyContentSelection.star_constellations` carries the optional stellar-region
+restriction. `Stars` caches IAU membership from its unchanged native ICRS
+source catalogue using Astropy's constellation resolver, and intersects this
+restriction after magnitude, explicit-star and vertex selection. Reloading
+the catalogue invalidates the cache; one request cannot restrict another.
+
+The detail application layer derives line endpoint clearance from the same
+resolved symbol areas used for stellar rendering. The generic Matplotlib
+renderer converts physical points to display lengths and recomputes trimming
+after aspect/layout settles. It leaves clipped intersections untouched and
+never changes astronomical curves. Opt-in automatic point-label placement
+uses final display bounds and existing markers, labels and lines. Each label
+has eight directions at three clearances, 0.75–2.25 physical points beyond
+its marker radius. Above/below positions align the glyph box with the stellar
+centre. If the nearest other selected label anchor is within three glyph-box
+heights plus the marker radius and its vertical separation exceeds twice its
+horizontal separation, side positions are preferred. A long label (width
+more than three heights) in this situation also tries a 3-point clearance.
+
+Candidates first minimize interference with any stellar disk, then association
+ambiguity among explicitly labelled anchors, label collisions, clipping,
+local alignment and cosmetic line avoidance. Association uses the label-edge
+attachment point nearest its intended anchor and distances to visible marker
+disks; unrelated stars remain symbol obstacles. Anchors within 0.25 points
+share a visible anchor for this display test; catalogue identities remain
+distinct. Up to eight coordinate-descent passes revisit the initially greedy
+assignment. This bounded heuristic preserves all selected labels and is best
+effort when no unambiguous collision-free candidate exists; it uses
+no opaque halos. Export finalizes these display adjustments before save.
+
+Product controls govern transparency, axes frame and title. Transparent
+requests use an unpainted canvas; source coordinates, projection, designations
+and catalogue associations are unchanged. Coordinate-guide review found no
+change to scientific position realization: region membership is catalogue
+classification, whereas display gaps and label placement are graphical.
+
+## Chile location catalogue v1
+
+The existing `observer.py` owner now resolves a digest-verified offline
+`data/chile_locations_v1.json` snapshot with 345 municipal reference points
+and 14 observatory/site references. `data/chile_locations_v1.csv` exposes
+stable IDs, Country:Region:Province:Comune:City names, coordinates, EGM96 elevation,
+ellipsoidal runtime height, timezone and provenance. No production module or
+chart/coordinate pipeline is added. Name matching is accent/case insensitive;
+only unique short names or qualified contiguous suffixes resolve. Ambiguity
+reports alternatives and missing named-site heights require an explicit
+override. Legacy La Ligua/Papudo coordinates and heights remain unchanged.
+
+New elevations are nearest-post NASADEM HGT V001 estimates, with offline
+bilinear EGM96 geoid conversion `h = H + N`; the historical two heights remain
+explicitly unclassified. `tzdata>=2025.2` supports the Coyhaique fallback.
+Coordinate references describe approximate settlements/sites, not surveyed
+instrument positions. Raw MinCiencia/BCN geometry and the full GeoNames
+country dump are not vendored. See [the location guide](../user_guide/locations.md).
+
+
+## Atlas geometry specimen API (candidate)
+
+Import from `wenu.atlas_design`; no atlas command is installed yet.
+
+- `AtlasPageGeometry(width_mm, height_mm, top_mm, bottom_mm, inner_mm, outer_mm)`
+  describes a right-hand page; dimensions are explicit and margins can be zero.
+- `AtlasOverviewGeometry(join_ra_deg, shared_band_width_deg)` describes only
+  celestial join geometry; north/south limits are minus/plus half the band.
+- `AtlasSheetGeometry(sheet_id, number, center_ra_deg, center_dec_deg,
+  field_width_deg, position_angle_deg=0, flip_ew=False,
+  pole_meridian_ra_deg=None, projection_radius=2)` describes fixed ICRS geometry.
+  Default nonpolar orientation is north up, increasing RA left. Angles follow
+  the existing frame policy; flipping reverses x. Polar centres use RA=0 and
+  require an explicit meridian: at zero position angle it points along +y.
+- `sheet.viewport(page)` preserves useful paper aspect in the projected plane;
+  `field_height_deg(page)` inverse-converts its half-height.
+- `sheet.boundary_samples(page, samples_per_edge=17)` returns diagnostic
+  RA/Dec degree pairs; these samples carry no coverage/error certification.
+  `sheet.contains(page, ra_deg, dec_deg)` tests projected-rectangle membership
+  with a small numerical boundary tolerance and excludes the projection antipode.
+- `AtlasGeometrySpecimen(design_id, revision, page, overview, sheets)` normalizes
+  sheets into immutable editorial-number order, rejecting repeated IDs/numbers.
+  Use `to_dict/to_json`, `from_dict/from_json`, `write_json(path)/read_json(path)`.
+
+Schema version 1 is specifically the specimen format, not the future complete
+atlas format. Kind `wenu-atlas-geometry-specimen`, fixed frame `icrs`, angular
+units `degrees` and status `unverified` are required. All nested keys are exact;
+unknown/missing keys, duplicate JSON keys, NaN/Infinity, numeric strings,
+booleans as numbers and inconsistent redundant plane/basis values fail closed.
+The reader recomputes resolved geometry using the existing projection. Output
+is deterministic UTF-8 JSON; no time/catalogue/observer provenance is invented.
+The caller owns destination directory creation and revision/filename selection.
+No full-sphere coverage, neighbour graph, primary areas or report ownership is
+claimed. Those belong to subsequent design implementation.
+
+
+## Atlas band-coverage comparison API (candidate)
+
+Import from `wenu.atlas_design`; the three atlas commands remain planned.
+
+- `design_band_atlas(design_id, revision, page, overview, *,
+  field_width_deg, overlap_deg, seed_ra_deg, max_sheets=4096)` constructs a
+  conservative complete stereographic comparison tiling. Angles are degrees.
+  The field is a full central horizontal span in [5,120]; the shorter
+  inscribed angular cap, after overlap reservation, must be at least 1°.
+  Physical aspect derives the height through the existing projection.
+  `overlap_deg` is a nonnegative minimum angular width near shared primary
+  boundaries, independent of the overview shared band. `seed_ra_deg` in
+  [0,360) places the first centre of every row and orients polar sheets.
+  It is independent of `overview.join_ra_deg`. The bounded sheet budget
+  fails explicitly rather than returning incomplete geometry.
+- `AtlasPrimaryBand(dec_min_deg, dec_max_deg, ra_origin_deg, sheet_ids)`
+  defines an exact latitude interval with equal RA sectors in the stored ID
+  order. Sheet rectangles are still defined by their inverse projection.
+- `AtlasBandTiling(geometry, bands, overlap_deg, seed_ra_deg)` validates
+  every sheet's primary cap containment, the contiguous band partition,
+  complete sector assignment and angular margin. One sheet owns each pole;
+  interior bands require at least three aligned sectors.
+- `validation()` returns method, status `validated_analytic_cap_bound`,
+  1e-8-degree numerical guard, primary area in steradians, minimum angular
+  primary clearance, shared-boundary overlap lower bound and sheet count.
+  It is a conservative analytic floating-point check, not formal interval
+  arithmetic or an optimized covering.
+- `primary_sheet_id(ra_deg, dec_deg)` returns one scalar owner. RA wraps,
+  latitude/longitude intervals are half-open, the upper band/sector wins a
+  boundary, +90 is retained and poles ignore RA.
+- `neighbours()` returns reciprocal tuples of IDs sharing a positive-length
+  primary edge. Corner-only contact is excluded. This graph does not enumerate
+  every pair of intersecting full rectangular footprints.
+- `to_dict/to_json/from_dict/from_json/write_json/read_json` use a separate
+  version-1 `wenu-atlas-band-tiling` protocol. Resolved sheet geometry, primary
+  bands, generator version, overlap/seed, evidence and neighbours are stored;
+  readers validate these records without regenerating placement. Embedded
+  legacy specimen status is unverified by itself; the envelope supplies the
+  whole-sphere validation. Unknown keys, unsupported versions, duplicate keys,
+  non-finite numbers and inconsistent evidence/navigation fail closed.
+
+ID namespaces change with geometry inputs or design revision. Overview changes
+preserve sheets and IDs. Numbering is south-to-north, increasing RA from the
+seed in each row, with a separate polar sheet at each end. Changing centre
+count is a redesign; cross-edition IDs must not be assumed equivalent.
+
+## Atlas visual review helper (candidate)
+
+`tools/render_atlas_band_overview_v1.py DESIGN_JSON OUTPUT_PREFIX [--footprints]`
+reads `AtlasBandTiling.read_json` and writes three new products using
+`OUTPUT_PREFIX.png/.pdf/.svg`. An existing destination rejects the request
+before rendering. Use explicit versioned prefixes. The helper has no placement,
+catalogue, observer, final CLI/schema or report-page responsibility.
+
+`overview_face` returns the canonical stereographic polar chart with the join
+meridian directed inward. `visible_regions` intersects stored latitude/RA
+ownership regions with that chart's cap; `primary_outline` samples these
+regions only for rendering, retaining full-circle polar edges. Numbers use
+persisted sheet centres/IDs, with identical numbers in both views where visible.
+`plot_overview` revalidates JSON, draws through `MatplotlibRenderer`, finalizes
+graphics and exports through `ExportOptions`, closing its figure even on failure.
+Optional footprints are sampled for display, masked at the view latitude and
+clipped by the renderer's circular boundary. No analytic certificate is inferred
+from those samples. Paper composition and celestial layers remain future work.
+
+## Five-band rectangle comparison API (candidate)
+
+`design_five_band_atlas(design_id, revision, page, overview, *,
+field_width_deg, overlap_deg, seed_ra_deg, equatorial_half_height_deg,
+middle_boundary_dec_deg, max_sheets=4096)` requires two explicit positive
+symmetric primary latitude boundaries. The polar boundary derives from the
+shorter viewport half-side, reserving half the overlap plus numerical guards.
+Five interior rows have aligned midpoint centres and minimum feasible integer
+equal-RA sector counts; exactly one sheet owns each pole. Field bounds remain
+5–120°, positive polar cap at least 1°, and budgets 17–4096. Invalid geometry
+or exhausted budgets fail without returning an incomplete design.
+
+`AtlasBandTiling.containment_method` defaults to the legacy cap method.
+The additional `latitude-bands-rectangle-halfspaces-v1` tag returns
+`validated_analytic_rectangle_bound`; it checks complete primary regions
+against four spherical rectangle-edge halfspaces using analytic sinusoidal
+extrema and measures conservative angular clearance to those circles.
+The existing JSON key set/version remains unchanged; its generator string
+declares the method and the reader dispatches/revalidates only known tags.
+Old cap documents serialize unchanged. Unknown methods, changed evidence and
+even tiny partition gaps are rejected. Geometry namespaces include the resolved
+profile and counts; changing overview geometry alone preserves identities.
+
+The default behaviour of `design_band_atlas` is unchanged. The new API is
+an explicitly parameterized comparison rather than a frozen final CLI or global
+optimization algorithm. The existing review tool renders either method.
+
+## Composed atlas index and native ICRS realization candidate (2026-10-09)
+
+`sky.realization.NATIVE_ICRS_SPEC` declares static unpropagated catalogue
+ICRS as the product frame without assigning a common physical catalogue epoch.
+`LayerRealizationContext(NATIVE_ICRS_SPEC)` is the exact observer-free
+realization request. `is_native_icrs` requires that spec and no observation,
+evaluation instant/time scale or reference equinox. The canonical sky loop
+rejects any native layer returning non-ICRS, non-barycentric, non-astrometric
+or time-evaluated geometry before projection. The default `SkyLayer.realize()`
+rejects this request for unmigrated layers. Legacy and other typed context
+calls retain the established observer-backed path.
+
+The four admitted native owners are `Stars`, `ConstellationLines`,
+`ConstellationLabels` and `MilkyWayIsophotes`. Their private shared geometry
+implementations preserve existing selection and semantic metadata. Native
+stars and figure vertices use Hipparcos J1991.25 coordinates without propagation;
+figure vertices use the finite maximal source independently of the magnitude-
+limited marker selection. Labels use the existing source grouping and spherical
+means. Morphology retains native ICRS rings, holes, compound IDs, areas and
+interior handedness, without entering the observed cache. Native polar rendering
+uses the existing equatorial cap/projection directly, without an AltAz round trip.
+
+`tools/render_atlas_band_overview_v1.py:plot_overview()` additionally accepts
+`joined=False`, `astronomy=False` and `star_magnitude_limit=5.5`.
+Corresponding tool flags are `--joined`, `--astronomy` and
+`--star-magnitude-limit`; the valid magnitude interval is (0,11]. Existing
+`--footprints`, three exports, JSON validation and destination protection
+remain. Separate geometry-only plotting is still available without catalogues.
+Joined layout registers the inward equatorial point at equal physical scales,
+retains both full contours and clips content at the page bisector with a
+`TransformedBbox` that follows export DPI. It preserves own-hemisphere
+coverage but does not register the whole shared sky band pointwise. No installed
+atlas command or schema change is claimed.
+
+
+The accepted magnitude-4.5 atlas index variant is implemented by optional
+`include_lowest_mw_isophote=False` and `magellanic_clouds=False` arguments to
+`plot_overview()`, corresponding to `--include-lowest-mw-isophote` and
+`--magellanic-clouds`. Both require astronomical rendering. OL1 augments the
+existing OL2–OL5 selection through `SkyContentSelection`; LMC and SMC use their
+four canonical levels. Default rendering and resolved geometry are unchanged.
+`MagellanicCloudIsophotes.realize()` now deliberately admits the existing
+static native ICRS context and shares ring construction/selection with the
+observed path. Native realization copies source directions, preserves holes,
+compound IDs and fractions, assigns no epoch and bypasses the observed cache.
+The existing polar projection, preparation and renderer handle both Clouds;
+no new coordinate or rendering pipeline is introduced. Current tests cover
+native selected rings/holes with a populated observed cache, both Clouds,
+legacy cache reuse, and end-to-end magnitude-4.5/OL1/Cloud exports from JSON.
+
+
+## Atlas designer request and command candidate (2026-10-09)
+
+`wenu.atlas_design.AtlasDesignRequest.from_dict(mapping)` accepts the closed
+version-1 atlas request documented in the [atlas guide](../user_guide/atlas.md#version-1-request-contract).
+The frozen request owns page/overview records, algorithm, field, overlap,
+seed, budget and optional five-band latitude profile. `resolve()` delegates
+to `design_five_band_atlas` or `design_band_atlas` and returns `AtlasBandTiling`.
+RA hours are admitted explicitly and converted once; resolved coordinates stay
+ICRS degrees. Unsupported schemas/keys/frames/projections fail closed.
+
+`wenu.cli.atlas.design_main(argv=None)` is the `wenu_design_atlas` entry point.
+Required flags are `--config` (TOML) and `--output` (new `.json` file). The
+adapter parses before resolution, serializes before publication and writes a
+same-directory temporary file, flushes/fsyncs it, then links it atomically to
+the destination without replacement. Finally it removes the temporary file.
+An existing destination, publication race or invalid/missing input exits 2;
+KeyboardInterrupt exits 130. Successful diagnostics use stderr and stdout is
+empty. The JSON is the existing band-tiling format and the developer plotter
+continues to read it unchanged. No source-TOML byte digest is claimed in output.
+
+
+## Installed atlas plotter contract (2026-10-09)
+
+Designer PR #220 is accepted and merged at `0cbb06ba`; its exact Mac-tested head
+`2e50f4f5` passed 413 focused and 3,270 full tests plus installed 34-sheet output.
+
+`wenu_plot_atlas --design RESOLVED_JSON --config PRESENTATION_TOML --output-prefix NEW_PREFIX`
+uses `cli/atlas.py:plot_main` and `charts/atlas_index.py:AtlasIndexPresentation` /
+`plot_overview`. The version-1 `wenu-atlas-index-presentation` mapping has closed
+layout, content, typography, colours and export tables; see the atlas user guide
+and authored example for all required keys/units/ranges. Geometry-only and
+selective native layers use the same paired chart pipeline. Canonical astronomical
+styling remains separate from configurable index furniture.
+
+Both PNG/PDF/SVG staging and final publication occur beside the output prefix.
+Reject existing files/symlinks before catalogue loading; hard-link publication
+never overwrites a concurrent destination. On render/publication/interruption
+failure, remove only this invocation's published inodes and staging directory.
+An unexpected process crash can leave a partial format batch; no transactional
+multi-file guarantee is asserted. Figures are closed on export failure.
+The developer tool delegates to the installed owner and keeps its old flags.
+
+
+### Index veil extension (2026-10-09)
+
+`AtlasIndexPresentation` accepts an optional closed `[veil]` table with
+`enabled`, `color` and finite `opacity` in [0,1]. Missing means disabled.
+The existing index owner draws a cap polygon through MatplotlibRenderer above
+all celestial artists, then places all index borders/footprints/guides/numbers
+above it. The existing joined clip applies to the polygon; the complete rim
+is retained. No domain membership, coordinate realization or catalogue changes.
+The authored style example is versioned as `atlas_index_style_v2.toml`; input
+schema remains compatible version 1. Extend existing CLI tests for admission,
+zero/full opacity, ordering/clipping and real SVG identities/JSON preservation.
+
+### Atlas SVG identity extension (2026-10-09)
+
+The index owner declares chart-number-based identities, custom data attributes,
+face-scoped native catalogue paths and furniture names before export. The
+renderer retains original point IDs alongside collection marker instances;
+the index supplies HIP display identities without changing symbol rendering.
+`attach_semantic_svg_metadata` optionally carries safe non-reserved data
+attributes, marker identities and `preserve_paint_order`. The shared SVG owner
+wraps contiguous semantic runs as uniquely numbered fragments, including
+non-semantic sibling gaps, and labels marker uses or inline paths from those
+supplied identities. No geometry, style, clipping or artist ordering changes.
+Existing callers retain their current hierarchy mode. Atlas groups do not
+consolidate boundaries or numbers beneath a veil.
+
+### Atlas compact SVG containers (2026-10-10)
+
+The index declares the figure and axes as semantic hierarchy containers.
+`attach_semantic_svg_metadata` optionally carries `hierarchy_container` and
+`compact_hierarchy`; existing callers retain their prior behavior. The shared
+exporter materializes only paths below a declared container, reuses single
+artist leaves, and conservatively removes backend wrappers while transferring
+clipping and retaining transforms/styles. Individual HIP identities survive
+collection flattening. Number boxes retain named Background and Text parts.
+
+The index supplies a contiguous per-chart/per-constellation drawing order in
+Matplotlib, common to PNG, PDF and SVG. Chart components are above the veil
+and guides; lines and labels for each constellation are below star symbols.
+The shared exporter also accepts a caller-declared `svg_clip_box` in export-page
+points: it intersects that rectangle with the backend path clip in SVG defs.
+This preserves joined-lens clipping that Matplotlib SVG otherwise omits when
+`clip_box` and `clip_path` coexist; no projected geometry is recomputed.
+Joined complete contours are axis-owned and unclipped. Completely hidden
+footprints are omitted, including the formerly empty chart-34 south entry.
+No catalogue, projected coordinates, JSON numbering or tiling changes occur.
+
+
+## Design-bound publication batch planning (2026-10-10)
+
+`wenu.atlas_design.select_atlas_sheets(atlas, selector)` accepts a nonempty
+comma-separated union of positive persisted sheet numbers, ascending inclusive
+ranges (`3..6,20..21`), `all`, and case-insensitive `S/N/E` groups. Groups use
+centre declination (<0, >0, ==0); they do not use footprint intersections.
+Duplicates collapse in persisted atlas order. Empty tokens, missing numbers,
+descending ranges and unknown tokens fail; huge endpoints allocate no ranges.
+
+`wenu.charts.atlas_publication.AtlasPublicationBatchRequest.from_dict` admits
+only `schema_version = 1`,
+`document_kind = "wenu-atlas-publication-batch-request"`, `publication_id`,
+`revision`, `design_id`, `design_revision`, `design_sha256`, `charts`, and optional
+`jobs` (default 2). Identities are nonempty trimmed strings; revisions/jobs are
+positive integers, excluding booleans; SHA-256 is lowercase hexadecimal.
+This is a narrow planning protocol, distinct from the future full publication
+and snapshot schemas. There is no installed producer or TOML adapter yet.
+
+`request.resolve(design_bytes, charts=None, jobs=None)` verifies the original
+bytes' SHA-256, invokes canonical atlas JSON validation, checks identity/revision,
+and returns an immutable `AtlasPublicationBatchPlan` with effective selectors,
+requested jobs, selected sheets, `chart_numbers`, and `worker_count` capped at
+the selected sheet count. Only this resolution route verifies original bytes;
+direct plan construction checks geometry/selection consistency. The caller
+reads bytes once. Planning loads no sky, observer, renderer or network resource
+and neither rewrites the design nor executes workers.
+
+
+## Persisted native sky input candidate (2026-10-10)
+
+`sky/maximal_sphere.py:generate_native_icrs_sphere` prepares the admitted whole
+sphere without an observer: Hipparcos stars (default coverage 11), western lines
+and labels, every Milky Way level and every LMC/SMC level. Connectivity is read
+before the single stellar load. Original catalogue rows, semantic classifications
+and effective designation/curation records are retained independently of any
+index limit or chart subset. Other profile overrides are rejected, rather than
+silently claiming unsupported deep-sky, boundary or moving-body coverage.
+
+`sky/native_snapshot.py:prepare_native_sky_snapshot(design_bytes, destination,
+profile=...)` binds canonical validated design bytes and publishes a new revision.
+A closed JSON `wenu-native-sky-snapshot` version 1 records compatibility
+`wenu-native-sky-records-v1`, exact design/source/payload digests, full-sphere
+coverage, ICRS barycentric astrometry, native Hipparcos epoch J1991.25, degree
+units, packed typed array shapes/dtypes and frozen designation/curation/research evidence.
+An explicit logical-array index records dtype-packed offsets and shapes, with
+complete non-overlapping spans, so workers map a few files rather than every ring.
+NPY arrays admit only non-object primitive numeric/boolean/fixed Unicode data;
+record tags admit a fixed list of existing designation/research dataclasses. No dynamic
+imports or pickle, live sky, observer caches or projected geometry are serialized.
+Source files are hashed before/after preparation; changed inputs fail publication.
+
+`read_native_sky_snapshot(directory, expected_manifest_sha256=None)` validates
+all declared files, safe basenames, sizes/digests, schema/compatibility, design,
+record shapes/types, epoch and topology before returning read-only maps. An
+expected manifest digest binds the exact externally selected revision; internal
+checksums detect corruption but do not constitute a cryptographic signature.
+`snapshot.require(layers=..., star_magnitude_limit=..., design_sha256=...)`
+fails on unsupported/insufficient coverage. `snapshot.make_sky()` reconstructs
+local native layer facades over the frozen records, with no original catalogue
+loading or maximal sphere preparation. Facades reuse original realization and
+selection methods. Native star selection also rejects excessive coverage and
+absent explicit IDs. Each facade has local mutable selection/cache state; mapped
+source arrays and nested record/feature structures remain read-only.
+The canonical label resolver accepts the frozen `StellarResearch` record through
+the native facade. Shared Bayer decisions therefore retain the saved research
+policy rather than consulting a later installed policy during chart rendering.
+
+Publication uses exclusive destination-directory reservation and exclusive hard
+links. The already verified manifest is linked last as the completion marker;
+readers cannot admit partial payload directories. Existing paths and concurrent
+writers are preserved. Exceptions/interruption remove only this invocation's
+uncommitted destination/staging, never an earlier committed bundle. This is a
+manifest commit protocol, not an atomic directory rename. Mac filesystem
+acceptance is required; power-loss durability/fsync recovery is not claimed.
+
+The installed plotter/producer are not wired to this API yet. Snapshot reuse
+must be explicit; figure-only plotting remains compatible. Original canonical
+realization may recompute derived ring areas and label anchors; no measured
+parallel speedup or completed-chart reuse is claimed in this data milestone.
+
+
+## Fixed celestial snapshot v2 candidate (2026-10-10)
+
+The same prepare/read/require/make_sky Python APIs now prepare schema version 2,
+compatibility `wenu-fixed-sky-records-v2`. This supersedes the earlier candidate's
+native-only layer restriction. V2 includes all six installed deep-sky layer
+owners (NonStellar/Messier, galaxies, open clusters, globular clusters, supernova
+remnants, planetary nebulae), authoritative IAU boundary vertices and fixed
+reference definitions in addition to the v1 stellar/isophote content.
+
+Retain entire normalized source tables before their default magnitude cuts,
+including nullable text, numeric values, masks, column units/descriptions and
+original JSON table metadata. Record source identities, ICRS/J2000 catalogue
+coordinate semantics and original native profile defaults. Default galaxy and
+globular limits still govern their active catalogues; explicit magnitude
+selection can use retained source rows through the original layer owner.
+Boundary records preserve FK4/B1875 RA in hours and declination in degrees.
+Sampling and transformation remain in ConstellationBoundaries; transport never
+relabels source vertices as ICRS. Version-2 admission verifies component/layer
+coverage, column dtype/shape/masks, native directions, boundary frame/equinox,
+reference definitions and profile semantics before returning the snapshot.
+
+The new native realization paths use the original ellipse, selection and
+semantic-metadata owners. Curves remain curves for Messier/globular/SNR;
+galaxies remain polygons; open clusters and planetary nebulae remain symbols.
+Ordinary observer realization is unchanged. Fixed reference grids are ICRS
+for equatorial axes and explicitly J2000 for the ecliptic, plus the Galactic
+plane; native grid dispatch rejects AltAz and an of-date equinox. Twelve fixed
+reference points retain their original frames, equinox and appearance data.
+CelestialPoints converts through the existing coordinate service; antisolar
+points and other time-dependent references are not prepared.
+
+Readers continue admitting the tested version-1 layout and compatibility tag.
+A v1 bundle retains its five-layer coverage; require() defaults to the bundle's
+own declared layers and rejects additional fixed content. It never promotes
+legacy coverage, refreshes sources, or converts the persisted bundle in place.
+New preparation produces v2 only. Packed non-pickled arrays, manifest-last
+no-clobber publication, frozen stellar policy and digest-bound reuse remain.
+The restored fixed tables and source arrays have independent facade state.
+
+No Solar-System bodies, ephemeris resources, artificial satellites, observer
+instances or evaluation times enter this atlas bundle. Installed command
+handoff, workers, reports and timing measurements remain later milestones.
+
+## Atlas chart-page batch candidate (2026-10-10)
+
+`cli.atlas:create_main` installs `wenu_create_atlas --design JSON --config TOML
+--charts SELECTOR --jobs COUNT --output-dir NEW_DIRECTORY`, with mutually
+exclusive `--save-sky NEW_DIRECTORY` and `--from-sky DIRECTORY`. Selector default
+is `all`; jobs default is two and actual workers are capped by selected sheets.
+Without either sky switch, preparation uses a temporary bundle. Save prepares
+once and retains the committed bundle even if chart generation fails. Explicit
+reuse maps/adopts the supplied bundle without original loaders or preparation.
+Design bytes and requested layer/magnitude coverage must agree with the bundle.
+
+`AtlasChartPresentation.from_dict` admits document kind
+`wenu-atlas-chart-presentation`, schema version 1, optional style (`atlas` or
+`cartoon`), integer dpi 36..1200, finite stellar limit -2..11, unique nonempty
+fixed layers and formats (`png`, `pdf`, `svg`). PDF is required for assembly.
+Geometry, observer/time, moving objects and unknown keys fail closed. The
+versioned example is `examples/atlas_chart_style_v1.toml`. Its `nonstellar`
+source-layer spelling maps to the canonical `nonstellar_objects` detail key.
+
+`AtlasSheetChart` exposes exact sheet projection and page viewport with native
+ICRS-only realization, and delegates canonical rectangular rendering. Physical
+figure size is the complete JSON page, useful axes match its binding/top/bottom
+margins, and export has no tight crop. All formats share one render per sheet.
+`create_atlas` reserves no final output until all charts and vector assembly
+succeed. Manifest-last exclusive hard links commit numbered products plus
+ordered `atlas.pdf`, with exact design/snapshot digests, resolved presentation,
+worker count, timings and output hashes. Existing destinations and raced writers
+are preserved; only owned incomplete output/staging is removed.
+
+Each spawn worker maps/verifies data once, owns local facade/figure state, and
+receives only small immutable sheet/page/presentation tasks. At most the actual
+worker count of tasks is in flight. Nested numeric thread pools are limited to
+one during spawn and parent environment is restored. Failure cancels unstarted
+work and waits for already active renders to finish; cancellation is not an
+instant hard process kill. Scheduling does not renumber charts. Serial cold
+uses the original single prepared sky, serial warm and workers use restored
+facades. `prepare_native_sky_snapshot(..., return_sky=True)` returns
+`(manifest_sha256, prepared_sky)`; default callers retain the digest-only return.
+Facing report pages, editorial inclusion/exclusion and completed-chart skipping
+remain subsequent work. This candidate produces all chart pages, not complete
+chart/report spreads. No measured speedup is claimed without Mac timings.
+
+### Atlas index and reserved facing pages (2026-10-10)
+
+create_atlas(..., index=None) and wenu_create_atlas --index PDF accept an unencrypted one-page PDF before preparation. Read exact bytes once, retain its SHA-256, fit vector content proportionally to the JSON page without rotation, then assemble index/report/chart order. The index occupies physical page 1; each selected report is even and its chart odd. A 34-chart atlas has 69 pages. report-NN.pdf has mirrored binding margins, a reserved left report column and canonical legends at right. page_order, index_sha256 and report_content in the completion manifest describe the layout; bookmarks identify index/charts. No index argument preserves chart-only output. No report inventory or curation is implemented.
+
+### Atlas report templates and magnitude override (2026-10-10)
+
+create_main admits --magnitude-limit as a validated override of the independent
+AtlasChartPresentation.star_magnitude_limit. _atlas_report_data consumes existing
+rendered_star_geometry/visible_star_statistics, never a second sky realization.
+The atlas passes (floor(brightest), floor(faintest)) to the canonical key; the
+general legend integer-range API is unchanged. _render_atlas_report exports
+chart-NN_report in presentation.formats using canonical ExportOptions. The
+mirrored useful frame matches chart dimensions; object/star legends share a
+right edge inset 4 mm. An explicit object_title supplies native ICRS centre
+metadata instead of observer-derived context. Polar centres report RA as
+undefined and the tangent meridian separately.
+
+Each chart has chart-NN_report_data.json: schema_version 1, document_kind
+wenu-atlas-chart-report, chart_number, sheet_id, center (ICRS degree values,
+ra_defined and pole_meridian_ra_deg), page, layout (mm from bottom-left; frame,
+report and legends rectangles), stars (statistics and reference_range), report
+(status reserved, sections [], inventory_status not_generated), design_sha256,
+snapshot_sha256 and effective presentation. Null star statistics mean disabled
+stars; visible_count zero means no visible stars. Sidecar editing/readback and
+object inventories remain pending. All products are staged and hash-bound in
+the completion manifest; index absence retains chart-only combined-PDF order
+while exporting report products separately. This supersedes report-NN.pdf
+naming and index-dependent template generation.
+
+
+### Atlas report heading presentation
+
+`AtlasChartPresentation` admits optional report_label_scale (default 3),
+report_label_family, report_label_weight, report_label_color,
+report_separator_width (points) and report_separator_gap_mm. The shared legend owner packs the enlarged chart-number heading and rule
+inside the existing object-legend frame, above its metadata and symbols. The
+publication owner records resolved boxes and rejects column overflow.
+The original chart render and stellar size law are unchanged.
+
+The atlas report uses an unmanaged Agg figure for physical layout measurement
+and export. Interactive GUI window resizing must not quantize its B4 paper
+size before heading/legend measurements; this is independent of the selected
+PNG/PDF/SVG export backend.
+
+`legend.add_legend_heading` isolates Matplotlib's optional offset-box title
+adaptation in the existing legend owner and preserves its metadata accessor.
+Ordinary legends retain their original layout. Atlas presentation additionally
+owns a visible, framed number in a configurable inside chart corner, with
+face/edge colour, alpha, internal padding and frame-edge borderpad. Zero
+borderpad aligns the box with both frame edges; its font matches the report.
+The previous chart-page heading is removed. No scientific geometry changes.
+
+Atlas stellar diameter control: the chart presentation accepts optional
+`star_size_scale` (finite positive multiplier, default `1.0`). The example
+`examples/atlas_chart_style_v1.toml` now uses `1.5`: every stellar marker is
+50% larger in diameter (2.25 times its area), including bright-star markers,
+variable/multiple overlays and the report magnitude key. The canonical
+render-local style override applies after style/mode resolution; magnitude
+selection, source sky, atlas geometry and index presentation are unchanged.
+Set `star_size_scale = 1.0` to recover the previous sizes.
+
+### Offline SVG star-area analysis (2026-10-11)
+
+`python tools/analyze_atlas_star_areas.py INPUT [INPUT ...]
+--output-prefix PREFIX [--bins 30]` reads Wenu vector SVGs and writes
+`PREFIX.{png,pdf,svg}`, `PREFIX_stars.csv`, `PREFIX_bins.csv` and
+`PREFIX_summary.json`. Directory inputs select numbered chart SVGs only.
+The script recognizes stellar semantic scopes, excludes classification and
+legend samples, resolves local SVG references/affine transforms, integrates
+closed linear/quadratic/cubic silhouettes and converts SVG units to mm².
+Gaussian integration is exact for the supported polynomial curves, subject
+to serialized coordinate precision. Counts are centre-visible marker
+appearances, including bright filled symbols; partial edge symbols keep full
+area. Duplicate file paths are removed, but repeated stars on different charts
+remain separate appearances. Equal log10-area bins retain empty CSV rows; the
+plot omits their undefined log counts. Unsupported geometry fails explicitly.
+
+No catalogue, sphere, observer, ephemeris, projection, chart appearance or
+SVG export behavior changes. This is an offline developer script with no
+new installed entry point or dependency.
+
+Magnitude guides reuse `AtlasChartStyle` and `configured_magnitude_sizes`,
+with filled `MarkerStyle("o")` geometry in physical mm². Admission requires
+matching adjacent batch-manifest SVG hashes and one compatible atlas-print
+presentation. The absent historical diameter multiplier defaults to 1.0;
+minimum-area clamping is displayed as one faint-magnitude range, rather than
+several falsely distinct positions. No per-marker magnitude is inferred.
+`--no-magnitude-guides` disables these references; unavailable references have
+an explicit summary/CLI status while measured-area analysis remains available.
+
+### Selectable physical stellar sizing and atlas diagnostics (2026-10-11)
+
+`StellarMagnitudeSizing` now retains legacy fields and adds `algorithm`,
+`dmin_mm`, `a_mm`, `b_mag`, `size_reference_magnitude`. Algorithms are `legacy`,
+`linear` and `asinh`; legacy remains default. Canonical evaluation belongs to
+`configured_magnitude_sizes`. New curves use physical diameter, with a fixed
+reference independent of detail selection. Shared CLI and schema-v2 style
+configuration resolve through `ChartStyleOverrides`; binocular defaults do
+not replace a selected physical policy. Physical overrides normalize legacy
+family area/remapping factors; explicit `star_size_scale` still multiplies
+resolved diameter. Composition rejects a selection limit beyond the reference.
+
+Atlas presentation gains optional `mode` and typed `stellar_magnitude_sizing`;
+its CLI shares sizing options and explicit style/mode/diameter overrides.
+The existing worker composition and single-snapshot lifecycle are unchanged.
+Each chart report records the fully resolved sizing policy and circular marker
+geometry. Publication requires one compatible policy across selected sheets,
+retains SVG charts and generates diagnostics once after all workers finish.
+It appends the one-page sizing report to the assembled PDF and records policy,
+paper dimensions and product hashes in the final manifest. The read-only
+`charts/stellar_sizing_report.py` owner and its tools adapter reconstruct no
+sphere. Diagnostic curves evaluate the frozen policy; measured counts come
+from actual SVG glyphs, excluding legends/classification overlays. A separate
+bright-star shape does not silently receive a circular-symbol guide.
+
+
+`preview_stellar_sizes` in the diagnostic owner resolves canonical composition
+without a sky. Its toolbox adapter accepts shared magnitude-policy arguments,
+`--star-size-scale`, style/mode/family, magnitude range, physical page dimensions,
+raster DPI and a new output prefix. Outputs include actual-size circular base
+symbols, diameter/log-area curves and reproducible JSON/CSV. Separate legacy
+bright shapes are rejected rather than silently previewed as circles.
+
+### Quadratic sizing candidate and exact magnitude budgets
+
+`StellarMagnitudeSizing` and rendering preparation own the shared quadratic
+option. CLI and style configuration activate the same typed policy; no new
+production module or test file is admitted. The existing coefficient is in
+mm per squared magnitude difference for this law; `b_mag` is unused.
+
+Atlas publication takes the exact magnitudes selected by the existing
+`visible_star_mask` on prepared render geometry, and records per-interval
+counts and filled base-symbol areas in report JSON. The existing
+`stellar_sizing_report` owner verifies manifest hashes and aggregate counts
+and areas against SVG measurement before aggregation/export. Useful frame
+area is the denominator, and repeated appearances and disk overlaps remain
+explicit. Reports without compatible exact data yield an unavailable status.
+The PDF assembler appends the optional area-budget page after sizing analysis.
+No inverse magnitude estimate, adaptive sizing, sky reload, or new projection
+pipeline is introduced. Existing stellar-symbol, SVG and reusable-sphere
+contract tests own verification.
+
+### Magnitude interval report and atlas chart furniture
+
+The existing magnitude-legend descriptor adds optional `interval_count` and
+`active` fields. `magnitude_legend_workflow` obtains exact interval counts from
+its canonical visible-star mask when `report_range=True`; existing cumulative
+count behaviour remains unchanged. The style/composition adapters forward
+this explicit opt-in. The Matplotlib legend owner centres each marker in an
+appropriately sized offset box and packs each row by its physical diameter.
+It draws the dotted active-range frame and inactive-row veils from current
+renderer row extents on every draw, preserving PDF/SVG/DPI placement.
+
+Atlas publication uses the existing export `additional_furniture` hook to
+request a minimal in-frame key before saving. Its report invokes the same
+rendered-legend coordinator with full reference bounds and interval counts.
+Presentation owns the veil colour/opacity; generic legend owners implement
+its rendering. Report JSON persists the descriptors and interval policy.
+No second legend, projection or sky pipeline and no new module are introduced.
+Existing magnitude-legend and atlas test owners cover interval membership,
+scaled-symbol containment, backend redraw, report wiring and empty layers.
+
+Atlas PDF assembly now consumes buffered `PdfReader` documents rather than
+raw-path reads inside the merger. This keeps the whole page snapshot intact
+on filesystems with short raw reads; page ordering, geometry and exports
+remain unchanged. Batch acceptance covers the assembled page sizes/counts.
+The existing cold/saved/spawn batch contract additionally simulates a merger
+that rejects raw-path input, protecting the buffered publication seam without
+adding another catalogue construction or a separate test file.
+
+### Geometry-driven atlas placement candidate
+
+`atlas_design.py` remains the sole geometry/request/tiling owner. Version-2
+requests derive B4 portrait/landscape dimensions and compute polar-first
+placements on a symmetric one-degree declination boundary grid. The existing
+rectangular halfspace certificate and deterministic assembly are shared with
+version-1 five-band requests. Dynamic programming minimizes chart count then
+band count within that finite family. No sky, observer, catalogue, projection,
+renderer or export pipeline is added. Resolved designs optionally retain the
+canonical request and computed layout; historical JSON remains readable.
+`wenu_plot_atlas` consumes the result without rerunning placement. Existing
+geometry and CLI test owners protect scientific containment and provenance.
+
+
+### Atlas coordinate presentation candidate (2026-10-12)
+
+AtlasChartPresentation adds grid_lines_visible (Boolean, default true),
+grid_label_fontsize (positive physical points, default 12),
+grid_minor_label_scale (positive and at most 1, default 0.75), and
+grid_frame_width_scale (positive, default 1.5; layout rejects values unable
+to fit the requested font or useful page). These are optional version-1
+presentation TOML keys. Omitting equatorial_grid from layers removes its lines,
+ticks, labels and dedicated physical inset. grid_lines_visible=false retains
+ticks and labels while suppressing interior grid lines.
+
+The shared request_grids owner supplies request-local EquatorialGrid.spherical_geometry
+ra/dec selections and ra_ticks/dec_ticks, all in degrees. They become ordinary
+SphericalGrid components, realized in the accepted native ICRS context and
+projected once. Exact-zero declination avoids a duplicated equator component.
+ExteriorGridLabelAnchor(all_crossings=true) returns deduplicated real crossings
+with outward label directions and inward CurveLabelPlacement.tick_direction.
+MatplotlibRenderer.draw accepts boundary_ticks (component-name to mark-policy
+callback) and boundary_tick_anchor for generic physical edge marks. The callback
+returns length_points, optional label, font_scale, label_lane and style;
+tick-only components never draw their complete supporting curves. SVG marks
+have a separate style-editable ticks component. Renderer-measured text lanes
+move outward only; the coordinate anchors and tick slopes remain exact.
+
+The nominal band minimum grows by grid_frame_width_scale. Font measurement
+additionally reserves dense-label clearance; uniform physical sky scaling keeps
+the design's exact viewport and aspect ratio. Report layout.chart_sky_frame
+records the actual odd-page sky rectangle in mm from bottom-left. Stellar area
+budgets use that rectangle's area, excluding the coordinate frame.
+
+`wenu_create_atlas` calls the official `wenu_chart` entry in process for every
+sheet using `atlas-sheet --chart-number N --output-dir DIR` with an explicit
+AtlasSheetChartRequest and reusable verified sky. Worker initialization maps
+the saved native sky once per worker. request_generation owns the former
+publication render loop and stages one sheet's files before no-clobber publication.
+Command argument mismatches fail before execution; rendering/publication failures
+remove only owned files. Standalone atlas-sheet requires design, presentation
+config and a sufficient design-bound saved sky. It produces chart/report formats
+and report JSON, leaving whole-book assembly to the atlas producer.
+
+Ordinary regional requests admit the same EquatorialGridMarks contract through
+`--equatorial-grid-ticks` or `[grids_references.coordinate_grid.edge_marks]`.
+CLI appearance overrides TOML. Unsupported families, explicit grid/band disable
+and conflicting declination cadence are rejected. Source geometry and viewport
+remain unchanged; the established ordinary coordinate realization is preserved.
+
+
+The revised shared edge-mark preset selects configurable RA (default 2h) and 10-degree Dec lines.
+RA h/m units are Unicode superscripts to preserve editable SVG text. A mark
+record may request label_rotation="parallel"; the renderer derives its
+upright display-space tangent angle. Visible grid lines use black at 0.65 opacity
+and 0.55-point width. Explicit preset declination cadence must be 10 degrees.
+
+EquatorialGridMarks and AtlasChartPresentation admit grid_ra_step_hours and
+grid_minute_labels_visible, validated identically; regional CLI and TOML share
+the same contract. The renderer also retains perpendicular rotation for generic
+callers. Atlas/index milky_way_color sets MW/LMC/SMC through the composed style.
+NonStellar geometry accepts excluded_categories; canonical detail passes enabled
+dedicated catalogue categories before source-local realization/selection.
+
+NonStellar labels_only realizes catalogue centres as SphericalPoints in native
+ICRS or the existing ordinary centre transform. Labels do not apply dedicated
+category exclusions. Native outlined subclasses receive no new table keyword
+unless an exclusion is requested. Atlas requests label-only Messier geometry
+and disables markers, with 10-point designation text. AtlasChartPresentation
+legend_fontsize defaults 12 points and sets chart/report legend rows and titles;
+heading and chart-number typography remains unchanged.
+
+Version-2 AtlasDesignRequest accepts exactly one of field_width_deg and
+field_height_deg, plus optional polar_primary_diameter_deg. The latter is a
+primary-area diameter, not a footprint diameter; the geometry owner reserves
+overlap on the polar short side. design_polar_first_atlas accepts the same
+optional diameter. Resolved layout dimensions describe the nonpolar sheets;
+each persisted sheet retains its own width. AtlasChartPresentation adds
+messier_label_fontsize=7.0, validated as finite and positive.
+
+AtlasBandTiling.from_dict recomputes geometry admission before comparing its
+redundant validation certificate. Derived minimum_primary_clearance_deg and
+shared_boundary_overlap_lower_bound_deg use absolute comparison tolerance
+1e-10 degrees (below ANGULAR_GUARD_DEG=1e-8); primary_area_sr uses 1e-12 sr.
+Relative tolerance is zero. Floating summaries reject booleans and nonfinite
+values; certificate keys, discrete values, guard and neighbours remain exact.
+The existing persistence test admits tiny cross-platform summary differences
+and still rejects corrupted summaries and primary geometry. No placement is
+rerun and no coverage constraint is relaxed. Coordinate-system conventions and
+owners are unchanged.
+
+AtlasChartPresentation adds deep_sky_symbol_scale=1.8 (finite positive diameter
+scale), cluster_face_color="yellow" and grid_dec_label_scale=0.8.
+EquatorialGridMarks adds grid_dec_label_scale=1.0 for ordinary chart presets.
+DeepSkyStyle/PublicationStyle accept open_cluster_symbol_name/face_color and
+optional globular_cluster_symbol_name/size/face_color; default ordinary symbols
+are preserved. Native globular centre realization reuses the existing labels_only
+geometry option; observed compatibility dispatch admits the same option.
+SymbolLibrary adds cluster_circle and globular_cluster (circle/internal cross).
+MatplotlibRenderer.draw accepts positive finite curve_size_scale, scaling display
+curves about their bounds without mutating original projected or spherical data.
+
+stellar_sizing_report.catalogue_star_counts reads actual source-catalogue rows,
+counts unique HIP IDs with finite positions/photometry below the atlas limit,
+and returns exact cumulative counts by catalogue magnitude. Its appendix exporter
+writes PNG/PDF/SVG, source CSV and JSON with source-selection and snapshot/design
+provenance. Atlas publication appends it after the prior sizing/area appendices.
+Per-chart Star magnitude (N) furniture uses the existing visible-star statistic.
+The coordinate-system guide was reviewed and remains current: no new frame,
+epoch, catalogue astrometry transformation or physical size model is introduced.
+
+
+### Atlas frame fitting and report marker propagation
+
+`MatplotlibRenderer.fit_grid_label_band(bounds)` measures the completed outer
+coordinate frame and fits its axes uniformly into figure-fraction bounds.
+It reruns existing physical grid-label placement, without rereading sources,
+realizing geometry, changing the viewport or rescaling marker diameters.
+The atlas furniture callback fits the frame before computing chart-area budgets.
+`object_marker_scale` flows through the existing automatic, rendered and planned
+legend coordinators to `draw_chart_legend(marker_scale=...)`. The atlas report
+passes `deep_sky_symbol_scale`; the default 1.0 preserves ordinary legends.
+Only marker handles scale; galaxy and Milky Way patches and text retain their
+existing dimensions. Existing grid containment and marker-path oracles cover
+this change without a new production module or test file.
+
+
+### Common-scale atlas publication contract implementation
+
+The existing publication owner rejects mixed field widths before any native
+sky preparation. `atlas_design_36charts_v2.json` is an explicitly revised,
+analytically validated resolved specimen; the original JSON is unchanged.
+The same page and viewport aspect, field width and presentation produce the
+same physical sky rectangle and tangent scale in every sheet. For Wenu's
+stereographic convention rho = projection_radius * tan(theta/2), the central
+derivative is projection_radius/2 per radian. Reports record this derivative
+in printed mm/degree, verified against the existing projected-radius oracle.
+
+Atlas frame dimensions are computed once from the configured fonts, padding
+and frame multiplier. The vertical allowance uses the largest rotated Dec
+text extent, independent of sheet position. `configure_grid_label_frame`
+provides the shared backend with fixed horizontal/vertical band sizes and
+edge-specific family priority; the ordinary default remains unchanged.
+Atlas execution no longer calls independent measured-frame fitting.
+The renderer preserves anchors, rotates vertical-edge RA labels along their
+meridians and suppresses lower-priority colliding text instead of creating
+lanes. Polar Dec text uses canonical projected positions on the actual 2h
+meridian nearest vertical, with physical inward clearance where necessary.
+
+Index orientation is an optional closed presentation field. Portrait changes
+the composition and projection position angles before drawing; it never
+rotates a labelled export. `--index` requires same-prefix PNG/SVG companions
+and the atomic atlas batch copies the three admitted products. PDF assembly
+records an index-following blank page before report/chart pairs. The catalogue
+count renderer reverses only its x-axis; source CSV, JSON and cumulative
+semantics remain unchanged. Existing owning tests cover these seams, including
+cold/saved/spawned equivalence; no production module or test file is added.
+
+The atlas PDF declares `/TwoPageLeft`; the existing producer and native reuse
+oracles verify this preferred viewing arrangement together with page order.
+
+
+### Atlas full-height frame correction (2026-10-13)
+
+`AtlasPageGeometry.sky_aspect_ratio` optionally fixes the projected sky
+rectangle's width/height independently of the useful outer page. Its absent
+value preserves legacy geometry and exact page serialization; explicit values
+must be finite and positive. Existing `AtlasSheetGeometry.viewport` and the
+continuous analytic containment owner use that ratio, and resolved JSON still
+revalidates all viewport/field-height/certificate values. No new geometry or
+publication pipeline is introduced.
+
+`_atlas_grid_layout` fits this explicit ratio inside the useful rectangle
+minus the two fixed font-derived bands on each axis. Revision-3 36-chart
+geometry and chart-style-v4 choose matching dimensions, so the chart's outer
+frame equals the report's useful frame in both dimensions. Other ratios remain
+isotropic and may leave unused space. The shared renderer measures exterior
+label clearance against the physical edge normal while preserving the label's
+projected-line continuation and text angle. Ordinary regional fitting remains
+unchanged; fixed-band labels that cannot fit remain subject to suppression.
+Existing geometry, CLI and renderer contract tests own these gates.
+
+
+### Caldwell resource and catalogue comparison (2026-10-13)
+
+The existing `resources.nonstellar_catalog_path("caldwell")` resolves
+`data/catalogs/caldwell/caldwell_openngc.ecsv`; `NonStellar` loads it through
+its existing native centre/outline routes. No new production layer, provider,
+projection, renderer or automatic atlas option is added. Setuptools explicitly
+packages the new ECSV, CSV, JSON, licence, membership ledger and README.
+
+`tools/query_caldwell_openngc.py` owns reproducible maintenance: a complete
+1..109 membership ledger, pinned OpenNGC source/licence SHA-256 admission,
+cycle/ambiguity rejection for duplicate targets, and canonical ECSV/CSV with
+separate observing identifiers and parameter-source identifiers. C14 is a
+compound observing entry. Missing photometry remains missing. Provenance
+includes membership origin, release, coordinates, product hashes and licence.
+
+`tools/compare_open_clusters.py` is an offline inspection utility. It joins
+explicit normalized NGC/IC/Melotte/Collinder identities, preserves all Dias
+rows, splits only explicitly declared group components, reports absent or
+ambiguous matches and competing alias rows, and writes source-bound CSV/JSON
+comparison outputs. M45's explicit Melotte 22 identity is supplied by the
+pinned OpenNGC Mel022/M=045 row. All sample statistics use Dias parameters;
+no proximity matching, source mutation or automatic physical-object merging
+is admitted. Existing nonstellar/open-cluster tests own the new seams.
+
+
+### Open-cluster review selection and two-parameter plotting (2026-10-13)
+
+OpenClusters.mark_amateur_exclusions(table) returns a copied table with IR/E
+annotations, preserving every source row/value. Loading applies it; native and
+observed geometry admit optional boolean exclude_infrared_embedded through
+_amateur_filtered, recomputing marks for old restored snapshots when needed.
+AtlasChartPresentation admits open_cluster_exclude_infrared_embedded (default
+false); the version-5 preset selects true and request_generation forwards it
+to the existing layer through the canonical sheet route. No alternate symbol
+or projection pipeline is introduced.
+
+The existing comparison tool now owns named parameter choices, inclusive
+E(B-V) selection, missing-value policies, annotated full-table export, optional
+filtered ECSV, and a two-dimensional PNG/SVG/PDF figure. Active selection reasons
+are separate from immutable source classification. All selected rows are
+accounted for by the main panel and categorical missing-coordinate margins.
+V axes are reversed; richness is labelled as a proxy. Physical diameter is
+2 d tan(theta/2), where theta is the source angular diameter in radians, and
+is labelled derived projected size. Invalid bounds/identical axes are rejected;
+preexisting output products are not overwritten.
+
+The V supplement is a separate source-digest-bound resource; the comparison
+validates its sidecar checksum and Dias digest and exact identifier order.
+Explicit primary IDs precede source aliases, source duplicate references are
+collapsed, non-cluster types and ambiguous targets are rejected for photometry,
+and shared identities/source notes remain review fields. No positional matching,
+brightness imputation or automatic physical-duplicate removal is admitted.
+The new maintenance-only query_open_cluster_photometry.py reuses the existing
+pinned OpenNGC acquisition helpers and comparison join, preserving separate
+acquisition/runtime lifecycles. Plotting and filtering perform no network I/O.
+
+
+
+### Hunt & Reffert member curation tool boundary (2026-10-13)
+
+The existing tools/compare_open_clusters.py selects Dias, Hunt & Reffert 2024,
+or its separately prepared converted-V5<11 subset. No-argument invocation
+prints catalogue/column help without loading data or writing outputs.
+tools/hunt_reffert_catalogue.py owns offline CDS parsing, observed Gaia-to-BVR
+relations, probability/aperture member statistics and the comparison adapter;
+tools/query_hunt_reffert2024.py owns explicit serial raw acquisition or verified
+cache preparation. These are developer-tool responsibilities, not production
+sky layers, coordinate services or alternate chart renderers. Existing comparison
+and scatter/export functions remain shared. The installed Dias chart catalogue
+and atlas snapshot defaults remain unchanged. Full source-backed preparation
+and its counts await Mac acquisition; partial data never claim full membership.
+
+Observed Johnson V/B and Cousins R follow official Gaia DR3 polynomial domains.
+V5 ranks members in converted V, with strict <11 selection; membership defaults
+to probability >=0.5 within the estimated tidal radius. Full rows, source IDs,
+missing diagnostics, source hashes and separate candidate exports are retained.
+Hunt diameter is 2r50, E(B-V) is explicitly AV50/3.1 under assumed R_V=3.1,
+and member sums are incomplete observed estimates. Catalogue ICRS centres keep
+J2016.0 provenance; this offline curation adds no stellar-position provider,
+epoch propagation or chart-frame reinterpretation. Source attribution and
+provider-policy preflight are recorded in the living user curation guide.
+
+### Complete Hunt resource receipt and identifier audit (2026-10-13)
+
+Fernando published the full/curated Gaia-member resources at `7ff3a403`, after
+complete source acquisition, hash validation, 7,167 aggregate / 1,291,929 member
+count checks and exact full-to-curated row comparison. The 431 type-o V5<11
+candidates are an initial member-brightness selection, not final amateur curation.
+The source remains offline and digest-bound; no new download is required.
+
+The comparison identifier owner normalizes published underscore separators and
+keeps primary identities ahead of source aliases. The actual-source regression
+checks all 29 Caldwell components and 27 Messier matches, plus the retained
+Melotte_25/CWNU_1242 alias distinction. The IR/E and E(B-V)<=3 review sample
+contains 5,485 open clusters, all with diameter/V5; adding V5<11 retains 428,
+including 22 Caldwell components and 23 Messier clusters. M11, M26, M29 and
+M103 fail the V5 threshold and require scientific interpretation, not silent
+replacement. Source data/photometry and chart defaults are unchanged by this
+identifier correction. The curation guide records the exact receipt and
+selection meanings; Mac focused and later final full-suite acceptance remain
+separate from source publication.
+
+### Tenth-member open-cluster cutoff (2026-10-13)
+
+The existing comparison adapter accepts optional strict --max-v10 in addition
+to --max-v5. Both supplied limits must pass; missing rank magnitudes receive
+explicit missing_V5/missing_V10 reasons. No-argument help advertises the option,
+and Dias rejects these member-specific cuts. The same packaged source/member
+policy, BVR conversion, identifier owner, plot/export owner and IR/E/reddening
+selection are reused without acquisition or resource changes. The full Hunt
+source with V10<11, IR/E exclusions and E(B-V)<=3 retains 229 candidates,
+including 20 Caldwell components and 21 Messier clusters. The named
+hunt-curated source remains the previously prepared V5 subset; independent
+V10 comparisons use hunt-reffert2024 and separate versioned filtered exports.
+The coordinate guide was reviewed and remains current: rank-10 photometry
+already exists and this selection option changes no coordinate meaning,
+provider, frame, epoch, position, sky layer or chart pipeline.
+
+
+### Source-preserving Wenu open-cluster union tool (2026-10-13)
+
+Fernando requested software delivery before catalogue curation. The new
+`tools/merge_open_clusters.py` owns offline candidate compilation from complete
+supplied Dias and Hunt tables. It is a developer tool, not a production sky
+layer, coordinate service or alternate rendering pipeline. Identifier
+normalization and observing-reference resolution remain shared with
+`tools/compare_open_clusters.py`; its existing comparison behavior is preserved.
+No-argument invocation prints help and writes nothing. No real combined
+database is generated or adopted during this software milestone.
+
+The candidate schema orders wenu_id, RA, Dec, dias_id and all dias_* parameters,
+hunt_id and all hunt_* parameters, then Messier_id, Caldwell_id, NGC_id and
+other identifiers. Every supplied source row is represented once, retaining
+all types, classifications, parameters, source positions, units and masks.
+Primary identities precede reciprocal unique published aliases; competing
+claims remain separate with a review ledger. No positional guess or same-source
+collapse creates identities. C14 still annotates two distinct components.
+An explicit persistent WOC identity registry preserves IDs during updates and
+rejects proposed merges/splits of published identities for review.
+
+Displayed RA/Dec use Hunt when available, otherwise Dias, without averaging,
+epoch propagation or reinterpretation. Both original source positions and
+metadata are retained. Hunt keeps J2016.0 provenance; an unknown Dias position
+epoch is not inferred from its J2000 frame/equinox description. Physical
+parameters are never silently averaged/coalesced. The tool supplies candidate
+ECSV/CSV, source/reference crosswalks, ID registry and a completion receipt with
+source/product hashes. Existing products are refused; the receipt is written
+last. The logical database is wenu_open_clusters, but acceptance/filtering,
+clean-database generation commands and chart adoption belong to later curation.
+
+The defaults retain all 1,931 packaged Dias and 7,167 full Hunt rows. Dias's
+existing normalization had already excluded 235 of the original 2,166 records;
+an alternate normalized Dias input can supply a fuller population. This tool
+cannot recover earlier provider exclusions and explicitly records that scope.
+The owning user guide documents schema, help, policies and outputs. Synthetic
+regressions in the existing open-cluster test owner cover row conservation,
+ambiguity, observing components, source immutability, units/masks, stable IDs,
+registry conflicts, digest-bound outputs, help and overwrite refusal.
+Focused open-cluster/package validation passes 23 tests; exact-head Mac
+historical-documentation acceptance and the final full suite remain separate.
+
+
+### Published-centre positional audit for cluster union (2026-10-13)
+
+The existing developer union tool now audits every Dias/Hunt cross-source pair
+using spherical angular separation of supplied centres, without propagation.
+The strict test is separation < BOTH catalogue radii; each radius is half the
+selected angular diameter. Defaults use apparent_diameter_arcmin (Hunt 2r50);
+explicit --dias-diameter-column/--hunt-diameter-column options record alternative
+boundaries. Angular units are converted; unitless sizes mean arcminutes and
+unitless coordinates mean degrees. Invalid/missing centres or nonpositive,
+masked/nonfinite radii are unassessable. Missing columns/incompatible units fail
+before outputs. This adds no identity merge, position provider or chart change.
+
+The printed/receipt audit counts established identity pairs as pass/fail/unknown
+and other passing pairs as both_unmatched or matched_elsewhere. Pair and distinct
+source-object counts are separate, with deduplicated combined counts. The new
+_positions.csv ledger retains both original centres, separation, radii, source
+and Wenu IDs, category/status for all identifier pairs and other passing pairs.
+It is product-hashed with the existing completion receipt. Existing source
+catalogues remain untouched; real compilation remains a later curation step.
+No-argument help covers parameters, radius meanings, strict criterion, outputs
+and usage. The existing owning tests check spherical wrap/polar geometry,
+unequal radii, exact boundary, missing values, units, neighbour multiplicity,
+matched-elsewhere classification and CLI receipts. The focused open-cluster /
+package gate passes 25 tests; exact-head Mac/documentation acceptance and the
+final full suite remain pending. The living curation guide owns user details.
+
+
+### Amateur observing-list source acquisition v1 (2026-10-13)
+
+Fernando requested source acquisition before selecting public/beginner targets.
+The new data-directory registry
+`src/wenu/data/observing_lists/observing_sources_v1.json` inventories
+13 distinct source lists/catalogues plus the generic Best of the NGC alias.
+Eighteen checked source-table products are delivered separately in the versioned
+wenu_observing_catalogues_v1.zip, with publisher/edition URLs, retrieval dates,
+source and derivative SHA-256, byte counts and observed membership counts.
+The resource README and living user curation guide own this acquisition record.
+This is provenance/guide work, not a new loader, sky layer, rendering pipeline,
+physical identity union or adopted interesting-target selection. Existing
+Messier/Caldwell parameter resources and all software remain unchanged.
+
+Count distinctions are explicit: AL Messier membership 110 vs packaged HEASARC
+109; SAC named 110 vs 111 source rows; RASC 110 observing numbers vs 112 rows;
+AL open clusters 125+89 downloaded rows vs advertised 90 southern additions;
+globulars 190 with a 50-object requirement; double stars now 200 with a
+100-object requirement; multiple stars now 115. Southern Herschel/planetary
+supplements and northern PN alternates are acquired separately. Barnard's
+349-row public ASU export and notes replace rejected HTTP-200 HTML FTP
+responses; original coordinate-system metadata remains source authority.
+Abell's 86-entry original scanned Table 2 is acquired, with parent-paper hash
+and extraction provenance, but OCR is not accepted numeric coordinates.
+No source frame/epoch, component separation or position angle is silently
+reinterpreted or propagated. Raw list documents stay in the separate acquisition
+archive; no public redistribution licence is inferred. Membership normalization,
+physical classifications/crosswalks, visual selection and chart integration
+remain later curation milestones. Each archived product was hash/length checked;
+ZIP contents and CRC were verified. Exact-head Mac documentation acceptance and
+the final software full suite remain separate before merge.
+
+
+### Cluster-list CSV first pass and explicit memberships (2026-10-13)
+
+Fernando requested CSV conversion before observing memberships, then narrowed
+this milestone to star clusters. tools/convert_observing_catalogues.py owns
+first-pass offline conversion of nine acquired cluster-containing list files
+(Messier/Caldwell/Herschel400/II/RASC/SAC/ALOC/ALGC and southern Herschel).
+Mixed lists retain every row. Non-cluster programme and Abell/CDS work is
+deferred. tools/observing_list_membership.py owns source verification,
+source-format decoding, conservative name normalization and membership review.
+These are developer maintenance responsibilities, not new production modules,
+resource loaders, position providers or parallel chart pipelines.
+
+The real requested CSV first pass produces 10 source grids/tables plus a
+1,796-record membership index and last-written hash-bound conversion receipt.
+Excel sheet separation, blank rows, titles/repeated headers and source cell
+positions are preserved. PDF identity/coordinate fields retain original row
+text and unparsed tails. CSV parameters remain source strings; no scientific
+homogenization or source replacement is implied. pypdf is an existing Wenu
+dependency; standard-library XLSX parsing needs no Excel package. Only legacy
+southern XLS conversion uses optional maintenance xlrd>=2,<3; the merge compiler
+consumes verified CSVs and needs no Excel reader. No global dependency changed.
+
+The union tool defaults to observing_lists/csv_v1 and adds in_messier,
+in_caldwell, in_herschel400, in_herschel2, in_rasc_finest_ngc, in_sac_best_ngc,
+in_best_ngc (same SAC alias), in_al_open_clusters, in_al_globular_clusters and
+in_herschel400_south. True is resolved explicit ID membership; false is no
+resolved identifier; competing claims are masked and retained in _observing.csv.
+Primary names precede aliases; explicit RASC/Caldwell compounds keep distinct
+physical rows. Historical AL M24/M45 approximate NGC associations do not
+replace the existing observing crosswalk. Extragalactic GC names retain host
+scope; questioned/mislabeled narrative names are not adopted as aliases.
+No positional coincidence creates membership or alters source union/stable IDs.
+
+Missing/unverified CSV receipts fail before writing. --observing-directory
+selects a verified conversion; --without-observing-lists explicitly emits masked
+flags. Both tools print parameter/usage help without arguments. Source and
+conversion hashes/counts are recorded. Full source rows/types and every
+Dias/Hunt parameter, coordinate and positional-audit meaning remain unchanged.
+The real CSV conversion is explicitly authorized; no real combined catalogue
+is generated. The existing owning tests cover flags, alias precedence/conflicts,
+compound memberships, skipped masks, stored XLSX cell/blank-row fidelity,
+conversion hashes/counts, help and overwrite refusal. Twenty-eight focused
+open-cluster/package cases pass in 8.86 s; all three tools compile. Actual nine
+source files yield 11 verified CSVs; index1796, raw Excel row locations and
+RASC explicit companions/negative alias case were checked. Mac exact-head
+focused/documentation acceptance and final full-suite merge acceptance remain
+separate. The user guide/resource README own the workflow details.
+
+
+## Observing-list additions and first-membership comparison checkpoint
+
+Fernando requested the six remaining observing lists, source provenance and
+an observing guide, including urban southern coverage and the history of the
+Herschel programmes. `observing_additions_v1.json` records seven publisher
+source snapshots independently of `observing_sources_v1.json`; the existing
+source and CSV receipts remain valid. `tools/observing_list_additions.py` owns
+the supplementary HTML/ZIP/XLSX/PDF decoding and verified CSV reader.
+`tools/convert_observing_catalogues.py --additions` selects this separate
+conversion. `tools/merge_open_clusters.py` auto-loads installed supplementary
+CSVs, supports `--observing-additions-directory`, and masks unavailable lists.
+Exact observing references may annotate compound targets; stars near clusters
+and asterism narrative references never establish physical cluster identity.
+Raw list targets stay separate from the Dias–Hunt cluster union.
+
+`tools/plot_merged_open_clusters.py` is an offline curation diagnostic for
+published source radii versus Hunt-derived V10. First true list membership
+selects one configurable symbol, with Messier/Caldwell first by default.
+Matched Dias points explicitly share Hunt V10; Dias-only objects remain in a
+missing-V10 panel. Filled/hollow symbols distinguish source radii. Point and
+summary ledgers retain filters, unavailable flags and exclusions. No-argument
+help writes nothing. `docs/user_guide/curation.md` explains list objectives,
+verified counts, urban southern limits, condition-specific observing demands,
+and modern Herschel programme selection. Existing owning tests cover source
+masking, exact identities, compound references, first-list precedence, shared
+V10, strict cuts and supplementary digest rejection. No new public sky layer,
+canonical pipeline change, curated database adoption or software merge occurs.
+
+
+## Member-count comparison axis checkpoint
+
+Fernando selected the previous two radius–V10 views plus a member-count–V10
+view, with source data read from Wenu's data directory and products written
+under output. The existing `tools/plot_merged_open_clusters.py` now accepts
+`--x radius|members`. Radius retains the half-diameter default; members uses
+the separate published `dias_member_count` and `hunt_member_count` directly,
+without halving counts or substituting photometrically accepted members.
+Only the selected axis columns are required; invalid/nonpositive x values
+are excluded and logged for the logarithmic x axis. The point ledger retains
+radius, member_count and x_value; summary records axis/source columns.
+V10 sharing for matched Dias rows, missing-V10 panel, source-specific reddening,
+strict V10 cuts, first-list priority, masks and plot exports retain their scope.
+The owning guide documents both axes and running from tools with ../src and
+../output paths. Existing owning tests exercise unequal source counts, missing
+radius independence, masked/zero counts, strict cuts, CLI exports and help.
+No catalogue data, physical identity policy, public sky layer, chart default,
+canonical pipeline or dependency changes. Software delivery remains separate
+from final catalogue curation and branch merge.
+
+
+## Explicit open-cluster curation v0.1 checkpoint
+
+Fernando requested the filtering script and a v0.1 CSV, confirming brighter
+V10<12.5 and V10 below 17.5-(12.5/3)*log10(radius_arcmin), E(B-V)<=3 for
+additional candidates, and intersection across both available source points.
+The five mandatory observing lists bypass all numeric cuts; unresolved list
+claims are retained and flagged for review. The former plot's V10<11 cut is
+not inherited. `tools/curate_open_clusters.py` owns this offline selection from
+the complete source-preserving union. It reuses the existing spherical audit
+and numeric-field reader; primary/alias pairs remain intact. Reciprocal unique
+unmatched pairs inside both published radii may be combined provisionally,
+with original ID lineage, source parameters and unresolved alias flags retained.
+Competing positions and objects matched elsewhere remain review evidence;
+audit-only mode makes no positional combinations.
+
+CSV/ECSV, all-row selection ledger, pairing ledger and digest-bound completion
+summary preserve source origin, mandatory reasons, thresholds, per-source
+numeric decisions and positional provenance. Previous plotting commands read
+the ECSV; full-selection checks omit global cuts to show mandatory exceptions.
+The owning guide documents parameters, strict boundaries, source-policy choices,
+ID redirects and curation commands. The verified real run selects 583 rows,
+including 142 resolved mandatory, 27 unresolved mandatory claims and 414 further
+numeric-only rows; seven positional pairs are provisional before selection and
+one remains selected. Existing owning tests cover log-boundary endpoints,
+strict cuts, mandatory overrides, missing fields, all/any source policies,
+one-to-one positional pairing, ambiguity, ID conservation, source preservation,
+help and admission failures. No curated data is installed or committed as a
+chart resource, and no software merge, pipeline or dependency change occurs.
+
+
+## Curated open-cluster atlas catalogue (v0.2)
+
+`tools/prepare_open_cluster_catalogue.py` publishes a new version from an
+existing selected union. It keeps Hunt type `o` and Dias-only rows, excludes
+single-source rows without another catalogue designation or resolved list
+membership, and retains masked claims for review. Modern discovery catalogues
+including OC count; HSC alone does not corroborate a Hunt entry. Source rows,
+IDs, coordinates, masks, selection criteria and provisional pairing flags are
+preserved. Every exclusion is recorded; proximity never causes deletion.
+
+The installation boundary copies immutable versioned ECSV bytes into a chosen
+catalogue directory and optionally atomically selects them using the relative
+`open_star_clusters.ecsv` symlink. Existing versions and regular selector files
+are refused. This is separate from software installation and package resources.
+`OpenClusters.normalize_catalogue` adapts the union at the existing layer
+boundary: Hunt-preferred coordinates/diameters and source member counts, stable
+Wenu geometry IDs and readable labels. V10 is never integrated photometry.
+
+`wenu_create_atlas --open-cluster-catalogue PATH` replaces only the open-cluster
+source in `CelestialSphereLoadProfile`. The selector resolves once before
+preparation; the existing native snapshot hashes and serializes the selected
+catalogue for all workers. An override with `--from-sky` is rejected. Other
+layers, atlas geometry, presentation and stellar settings are unchanged.
+Tests extend `test_open_clusters.py` and `test_atlas_cli.py` at the normalization,
+installation, profile-propagation and saved-sky boundaries. No atlas software
+merge or chart adoption is implied by producing a candidate.
+
+
+## Open-cluster symbols at the atlas central scale
+
+Atlas open-cluster circles now use the catalogue angular diameter at the
+central chart scale, bounded below by the existing styled symbol diameter.
+Hunt diameter is 2*r50; Dias-only entries use the published Dias diameter.
+Missing, masked, nonfinite or nonpositive diameters retain the current minimum.
+Colours, outlines, labels, catalogue selection and all other layers are unchanged.
+
+The atlas request owns the angular-to-projection conversion (projection radius
+multiplied by pi/21600 per arcminute). The generic renderer converts supplied
+point diameters to physical scatter areas using the actual equal-aspect axes
+width and viewport width. It accepts a caller-specified metadata key and unit
+scale; it does not choose catalogues or know source definitions. The helper in
+rendering/preparation.py preserves the current area floor. Scatter area is the
+square of the normalized circle diameter in points, independent of export DPI.
+No local projection-distortion correction is applied away from the centre.
+
+AtlasChartPresentation.open_cluster_angular_sizes defaults to true. The atlas
+CLI exposes --open-cluster-size angular|fixed; fixed restores previous sizes.
+Existing saved skies can be reused because catalogue metadata is unchanged.
+Tests extend the existing Matplotlib renderer and atlas CLI owners, checking
+physical dimensions at two DPIs, equal central/edge sizing, missing-value
+floors, rendered chart scale, fixed mode and presentation admission.
+
+
+## Standard catalogue maintenance layout
+
+Scientific sources remain under src/wenu/data/catalogs. Observing selections
+now live in src/wenu/data/observing_lists, with one named directory per list,
+original files, CSVs, README and provenance. Barnard/Abell physical catalogues
+belong to scientific sources. Trials and diagnostic products belong to output;
+accepted bundles and the relative active selector belong to
+src/wenu/data/curated_catalogs/open_clusters.
+
+catalogue_data_layout.py owns offline path resolution, collision-safe copying,
+per-list provenance and conversion publication. migrate_catalogue_data.py
+verifies historical source/conversion receipts, moves legacy flat folders only
+after verified copies, and records migration evidence. Registry/receipt bytes,
+membership records, source identifiers and scientific selection rules remain
+unchanged. Legacy flat inputs remain readable; new publication is per list.
+The shared resolver is used by both source-specific observing converters/loaders.
+
+prepare_open_cluster_catalogue.py separates trial depuration from accepted
+--promote-catalogue publication. Promotion checks the complete summary-bound
+bundle, preserves trial outputs, copies accepted data/review evidence and
+atomically changes only the selector. The plot tool defaults to that accepted
+selector while accepting explicit trial inputs. Merger defaults use the new
+observing root. Working observing/curated trees are excluded from automatic
+package discovery; installed software reads explicit catalogue paths. The
+existing atlas pipeline, saved-sky format, symbol sizing and source selection
+are unchanged. The curation guide documents each tool and the complete workflow.
+
+## Planetary-nebula comparison CLI
+
+`PYTHONPATH=src python tools/compare_planetary_nebulae.py --name planetary_nebulae_comparison_v1`
+generates both radius/H-beta plots and all-row CSV/ECSV, identity crosswalk and
+summary in `output/planetary_nebulae_comparison_v1`.
+No arguments displays help and writes nothing.
+Options: `--data-directory`, `--observing-directory`,
+`--output-directory`, versioned `--name`,
+`--view flux|surface-brightness|both`, and comma-separated `--priority`.
+The default list priority starts Messier/Caldwell/SAC Urban/RASC Finest/SAC Best.
+
+This offline route preserves every source row and every resolved membership.
+Radius limits and missing quantities are separate statuses; no visual threshold
+is installed. H-beta remains an observed line flux, not visual magnitude.
+The summary records source hashes, formula, command and completion products.
+See [curation](../user_guide/curation.md#planetary-nebula-observing-list-comparison).
+
+`--write-selected-catalogue` additionally emits `_selected.csv/.ecsv` and
+`_public_review.csv`; `--min-log-hbeta` defaults to -12 and requires a strict
+greater-than comparison for additional targets. All reference memberships
+bypass this cut. Original comparison outputs remain all-row products.
+Public review is sorted by decreasing finite H-beta surface brightness,
+retains angular sizes/quality, and assigns no public-interest approval.
+
+`wenu_create_atlas` additionally accepts `--planetary-nebula-catalogue PATH`.
+`create_atlas(..., planetary_nebula_catalogue=PATH)` maps the same input to
+`CelestialSphereLoadProfile.planetary_nebula_filename`. Open-cluster and PN
+overrides are independent and both require a new sky; either is rejected with
+`--from-sky`. Promotion uses `compare_planetary_nebulae.py --promote-catalogue
+PATH --activate`, with optional `--curated-directory`, and verifies the entire
+summary-bound bundle before copying. The relative working selector is
+`curated_catalogs/planetary_nebulae/planetary_nebulae.ecsv`.
+
+## Catalogue selection-criteria PDF pages
+
+`create_atlas(..., selection_criteria=())` and repeatable CLI
+`--selection-criteria PATH` admit version-1
+`wenu-catalogue-selection-criteria` JSON. Its catalogue record supplies local
+filename and SHA-256; ordered PDF page records supply filename, SHA-256 and
+title. The selected ECSV must match an explicit atlas catalogue override.
+One-page unencrypted PDFs and valid physical bounds are checked before sky
+preparation. Existing PDF assembly fits vector pages inside atlas margins,
+adds bookmarks and records criteria/catalogue/page hashes and page order.
+
+AtlasChartPresentation admits planetary_nebula_symbol_scale (diameter factor),
+planetary_nebula_color and planetary_nebula_linewidth (points), defaulting to
+1.25, #24552b and 1.1 with full opacity. The canonical style reaches charts and
+report legends. No celestial geometry or scientific measurements change.
+
+
+## Curated resource installation API
+
+`nonstellar_catalog_path(name, curated=True)` returns a verified active curated
+resource when present, otherwise the original scientific snapshot.
+`source_nonstellar_catalog_path(name)` or `curated=False` explicitly returns the
+original source. An explicit layer filename still bypasses default resolution.
+`curated_catalogue_bundle(name)` returns catalogue, summary, criteria and all
+bound product resources; absent domains return None. Corrupt evidence raises
+ValueError, rather than reverting to an unrelated source selection.
+
+`build_curated_catalogue_manifest(root)` admits generic per-domain working
+selectors (relative symlinks or Git's one-line link files), verifies completion
+and criteria product hashes, and returns a version-1 portable manifest.
+`CuratedBuildPy` and `CuratedSdist` copy those exact bytes into release resources;
+no selector symlink is required by the installed wheel or source archive.
+Setuptools command extension/PEP 660 guidance was checked on 2026-10-14:
+https://setuptools.pypa.io/en/stable/userguide/extension.html .
+No source photometry, coordinates, catalogue selection or report content is
+regenerated by installation. Native sky formats and renderer APIs are unchanged.
+
+
+## Installed presets and regional chart defaults (candidate, 2026-10-14)
+
+`configuration_preset_names(kind)` and `configuration_preset_path(name, kind=...)`
+in resources.py list or resolve immutable installed resources. Supported kinds
+are chart, atlas-style, atlas-layout and atlas-index. `configuration_input_path`
+accepts an exact registered name or explicit filesystem path and rejects a name
+from an incompatible protocol. No repository-relative fallback is used.
+
+`load_configuration(path=None, family='regional')` and
+`load_configuration_defaults(..., family='regional')` apply the chart subset
+of atlas-v6 before explicit user overrides. Named regional atlas composition
+uses it when no explicit ConfigurationDefaults is supplied. Family-neutral
+loading and other families retain the existing default document.
+
+The chart protocol accepts atlas-v6 and scorpius-v1; the latter adds review
+labels/small-object detail. Full atlas presentation accepts atlas-v6 only.
+Atlas layouts accept b4-landscape-five-band (34 charts) and b4-portrait
+(36 charts, accepted revision 3). Index presets are b4-landscape and b4-portrait.
+`wenu_chart presets` lists these independently. Atlas creation defaults to
+b4-portrait layout and atlas-v6 presentation; --layout selects geometry,
+--config selects the command-specific presentation. Explicit paths remain valid.
+
+Schema-v2 style fields now include stellar diameter_scale, cluster face colours
+and globular symbol controls, open-cluster angular_sizes and infrared exclusion,
+nonstellar labels_only and SNR symbol_scale. Neutral values retain old nonregional
+appearance. Existing explicit CLI sizing overrides retain precedence.
+
+
+### Compact Sco installed comparison v2
+
+The installed chart preset `scorpius-v2` retains the v1 catalogue/detail selection and suppresses object labels. Relative to v1, stellar diameters are 70%, cluster and PN symbol diameters 65%, SNR symbol scale 65%, and coordinate label font size and frame-width multiplier 70%. Open-cluster angular diameters and their minimum marker areas scale together using the positive `[styles.atlas.open_cluster].diameter_scale` (default 1.0; cartoon has the same neutral field). Shared label-only nonstellar rendering honors `draw_labels = false`. These controls remain in the existing configuration translation, composition and export owners; scientific catalogue membership and atlas layouts are unchanged. Full atlas v6 defaults remain intact. The regional stereographic print design is still deferred.
+
+Run `wenu_chart regional --center-on Sco --field-width 60 --field-height 50 --config scorpius-v2 --style atlas --mode print --magnitude-limit 7 --output sco_installed_catalogues_v3.png` for the next installed-path visual review. This is a candidate comparison, not a new acceptance receipt.
+
+
+### Fernando's acceptance and merge authorization (2026-10-14)
+
+Fernando accepted the installed catalogue and atlas-preset milestone and explicitly requested documentation, merge and cleanup. The scope includes accepted installed defaults (513 open clusters, 319 planetary nebulae), independent full atlas v6 style and layouts, the 34-chart B4 landscape five-band and 36-chart B4 portrait selections, and the compact Sco comparison with object labels disabled. Atlas products are kept in separate repository-local `output/atlas_b4_portrait_v1/` and `output/atlas_b4_landscape_v1/` directories, with a fresh native sky snapshot for each layout. Existing output directories must not be overwritten. Regional stereographic print design remains deferred.
+
+The reported installed Mac CLI/preset discovery and initial Sco render succeeded at `eeb503b184a9ca21ae97bd5ab2e9aa830c7ba265`; compact runtime candidate is `1b191a5566323cf403eaea6c6884b7cec2effc00`. Acceptance is recorded from Fernando's explicit statement, without inventing atlas-generation logs or a new full-suite result. Catalogue-base full verification remains 3,584 passing tests at `8cc66342d0e18f60077263ba54e0c9cd9d519696`; it does not cover the subsequent preset runtime changes. Final preset focused gates passed, but a fresh final-candidate complete plugin-disabled Mac suite remains required before merging the preset runtime. Merge and cleanup are already authorized and require no further permission once that gate passes.
+
+
+### Final-suite recovery after accepted atlas-preset review (2026-10-14)
+
+The complete Mac suite at `0d9ed74734c1f0f0baf166579701cd3f3af5b49a` reported 13 failed and 3,576 passed in 995.75 seconds. It is a failed verification receipt, not merge clearance. Recovery keeps the accepted catalogue membership, print appearance and independent atlas style/layout resources intact. Existing configuration-loader mocks now accept the family keyword, export legend mocks accept the optional stellar legend style, and regional default assertions cover v6 rather than former legacy defaults. The explicit adaptive-policy isolation check uses an explicit legacy style so its fainter limits do not contradict v6's physical sizing reference.
+
+Two production seams are corrected in the existing owners: composition retains the independently resolved output-mode area multiplier after physical stellar diameter sizing, and shared export/detail application adds appearance options only for layers actually present in the sky. Thus a catalogue-free export remains empty and presentation symbol scaling still applies. No new production module, scientific data or preset is introduced. Focused verification and a fresh final-candidate complete Mac suite are required; Fernando's acceptance and authorization to merge and clean remain in effect.
+
+
+## Hemispheric atlas geometry (candidate, 2026-10-16)
+
+`AtlasSheetGeometry.boundary_kind` defaults to `rectangle`; historical JSON
+omits that default field. The explicit `hemisphere` value requires a polar
+centre, 180-degree field and a square sky viewport. `contains` and diagnostic
+`boundary_samples` use the actual hemispheric cap rather than square corners.
+Version-1 `AtlasDesignRequest` additionally admits algorithm `hemispheres`;
+`design_hemispheric_atlas` and `AtlasBandTiling` certify exactly two complementary
+primary bands, zero area overlap and a shared equatorial boundary. Unique
+primary ownership at Dec 0 is north. Guarded rectangular/cap certificates and
+limits for all previous algorithms are unchanged.
+
+`PolarPlanisphereChart.reviewed_label_curation` defaults to true. The atlas
+adapter explicitly disables the reviewed disk-specific label/size policy while
+reusing native realization, cap clipping, projection, renderer and exporters.
+`_atlas_frame_widths`/`_atlas_grid_layout` take optional `circular=False`;
+the circular adapter reserves one common font-derived radial band.
+The public three-command workflow and installed curated defaults are documented
+in the [atlas guide](../user_guide/atlas.md#two-hemispheric-charts-candidate-2026-10-16).

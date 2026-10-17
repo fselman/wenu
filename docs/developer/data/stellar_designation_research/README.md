@@ -41,7 +41,7 @@ to accepted catalogue decisions.
 
 After reviewing this dossier, Fernando approved contextual shared-star labels,
 Wikidata for other assignments and optional discrepancy reports for stars in
-each chart. [Audit section 11](../../stellar_designations_audit.md#11-approved-handling-policy-and-labelreport-candidate-2026-10-06)
+each chart. [Audit section 11](../../archive/pre_kernel_20261017/docs/developer/stellar_designations_audit.md#11-approved-handling-policy-and-labelreport-candidate-2026-10-06)
 records the implementation candidate. These original research artifacts remain
 unchanged; unresolved historical questions and blank review cells are preserved
 as evidence rather than blocking development.

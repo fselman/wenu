@@ -1,33 +1,26 @@
-# Wenu artificial-satellite scientific and implementation guide
+# Wenu artificial-satellite scientific guide
 
-**Status:** Living 50S work-in-progress guide; foundation integrated into
-`main`, program paused at 50S.7D.3 Phase B on 2026-10-05.
-50S.0 decisions accepted by Fernando on 2026-09-14
-**Established:** 2026-09-14
-**Initial baseline:** `862acaa`
-**Current authority:** the accepted portions of this guide together with the
-active 50S milestone record and the general Wenu architecture documents
+**Current baseline:** `6708f54a`, 2026-10-17. Satellite science is paused behind
+the [kernel roadmap](kernel_roadmap_v0.9.5.md). This is scientific teaching,
+not an instruction to resume a historical next step.
 
-## 1. Purpose
+## 1. Purpose and current capability
 
-This guide keeps the scientific meaning, provider constraints, mathematical
-conventions, data flow, ownership boundaries, and validation plan for Wenu's
-artificial-satellite program in one place while 50S is developed.
+Preserve identity, resource/provider policy, propagation, frames, crossing
+semantics, exact reports and independent validation. The implemented foundation
+includes local snapshots/SGP4/topocentric states, bounded exact crossings and
+acceleration, reports/files/tracks, planning advisory, direct-Sun geometry,
+shadow transitions and direct solar irradiance. Sampled candidates remain
+scientifically different from exact connected visits.
 
-It remains intentionally separate from `coordinate_system_guide_v0.9.5.md` after the
-foundation merge to preserve the satellite-specific pedagogy. Any later
-consolidation must check that no scientific meaning, equation, provider rule,
-or validation obligation is lost. The [current roadmap checkpoint](post_v0.9_architecture_roadmap.md#satellite-pause-and-resumption)
-and [program log](satellite_program_log.md) state accepted capabilities and
-remaining work. Direct-Sun incident irradiance is implemented; numerical
-Moonlight, observer brightness and detector contamination remain incomplete.
-Older candidate/next-step sections retain their historical context and do not
-supersede the current pause or authorization boundaries.
-
-This document is not evidence that a described capability is implemented.
-Each section distinguishes accepted direction, proposed implementation, and
-future work. The as-built source ownership remains in `source_tree.md` and the
-public interface remains in `implementation_reference.md`.
+Numerical Moonlight, reflected fields, surface response/BRDF, apparent observer
+brightness and detector contamination remain incomplete. Direct solar spectral
+resource semantics and current restrictions are in
+[scientific contracts](scientific_contracts.md). Old future-tense teaching
+below expresses a requirement, not admission of a broader runtime capability.
+Full checkpoint history and numerical receipts remain in the
+[original guide](archive/pre_kernel_20261017/docs/developer/satellite_guide.md)
+and [program log](archive/pre_kernel_20261017/docs/developer/satellite_program_log.md).
 
 ## 2. Acronyms and specialized abbreviations
 
@@ -126,7 +119,7 @@ No later stage may change the result of an earlier geometric crossing test.
 
 ## 4. Canonical satellite flow
 
-The proposed scientific flow is:
+The scientific responsibility flow is:
 
 ```text
 provider-neutral crossing query
@@ -230,7 +223,7 @@ then-current terms.
 IAU CPS SatChecker is Wenu's first bounded online crossing provider and an
 external comparison oracle for selected ephemerides, range, motion,
 illumination, and circular-field candidates. Fernando accepted the 50S.2A review on 2026-09-15. It covers
-SatChecker 1.8.0 at commit `a638d72`. Its current service samples at one-second
+SatChecker 1.8.0 at commit `a638d72`. The audited service version samples at one-second
 steps with a stop-exclusive grid and accepts points within 1.2 times the
 requested radius. It therefore supplies a candidate envelope and sampled
 evidence, not exact connected crossing events.
@@ -253,7 +246,7 @@ General-perturbations elements are mean elements fitted for SGP4. They are not
 osculating Keplerian elements and must not be silently propagated with a
 two-body or unrelated numerical model.
 
-Wenu will use a Vallado-compatible SGP4 implementation verified against the
+Wenu uses a Vallado-compatible SGP4 implementation verified against the
 published reference vectors. Scalar and array evaluation must implement the
 same model and error behavior. Each result retains propagator identity and
 version, element epoch, evaluation instant, time offset from the element
@@ -441,7 +434,7 @@ not a reinterpretation of SGP4 output.
 ### 8.1 Field
 
 A field is spherical scientific geometry independent of chart projection.
-Initially planned forms are:
+Field geometry vocabulary includes:
 
 - circular field, defined by centre and angular radius;
 - spherical rectangle, defined by centre, orientation, width, and height;
@@ -631,7 +624,7 @@ sampled tracks and query inputs only. It does not find a useful field automatica
 expected crossings, invoke a crossing query, calculate entry/exit or closest
 approach, or certify central, grazing, between-sample, multiple-crossing,
 non-crossing, horizon, shadow-transition, seam, or polar cases. Those
-crossing-oracle responsibilities belong to 50S.5. The future 50S.5
+crossing-oracle responsibilities belong to the implemented local solver. The original 50S.5
 dense/adaptive brute-force reference path must remain independent of production
 rejection filters.
 
@@ -680,47 +673,20 @@ complete-scan equivalence test.
 
 ## 16. Source ownership direction
 
-The 50S.1 admission review found no existing owner for provider-neutral
-satellite field and crossing semantics. `coordinates.py` remains the coordinate
-vocabulary owner, `ephemeris.py` remains the Cartesian state boundary, and the
-minor-body, moving-track, chart, renderer, and report owners have different
-lifecycles and failure modes.
+`coordinates.py` owns coordinate vocabulary; `ephemeris.py` owns existing
+Cartesian resource/state contracts. `satellite_crossings.py` owns immutable
+field/query/connected-visit semantics independently of projection or acquisition.
+The current `satellites/` package owns elements/snapshots, SGP4, topocentric
+states, crossing oracle/acceleration/batch/matrix, exact tracks, illumination
+and radiometry. See the [complete source map](source_tree.md) for every module.
 
-`satellite_crossings.py` therefore owns the first immutable satellite-domain
-contracts: `SatelliteIdentity`, `SatelliteObserver`,
-`SatelliteFieldOfView`, `InclusiveTimeInterval`,
-`SatelliteCrossingCandidate`, and `SatelliteCrossingResult`. The first field
-is circular, spherical, explicitly framed, and closed. A candidate binds
-identity, observer, field, interval, source, optional orbit/snapshot evidence,
-provenance, and warnings. A normalized result represents one connected visit,
-keeps ordered entry, closest-approach, and exit instants inside the inclusive
-query interval, and accepts boundary touch.
-
-This is a distinct scientific-domain responsibility: it owns neither provider
-acquisition nor propagation and is independent of chart projection. A
-`src/wenu/satellites/` package remains deferred until snapshot ingestion, SGP4
-state, crossing geometry, indexing, illumination, and photometry form several
-collaborating production modules. Later work must not duplicate Wenu's
-coordinate service, trajectory geometry, projection, preparation, renderer,
-semantic SVG, or export machinery.
-
-Fernando accepted these 50S.1 contracts and ownership boundaries on 2026-09-15.
-The focused Mac gate passed all 139 tests in 3.07 seconds, the complete
-plugin-disabled suite passed all 2,428 tests in 85.52 seconds, and PR #123
-merged the verified implementation into the satellite integration branch as
-`23b851b`.
-
-The accepted 50S.2B provider module is `satchecker.py`. It owns exact
-versioned request translation, explicit no-download UTC-to-UT1 conversion,
-immutable response receipts, one-shot submit/poll access, provider task/schema
-normalization, ordered sampled evidence, and the content-addressed local cache.
-It imports the 50S.1 contracts rather than redefining them. The adapter accepts
-only geometric topocentric-direction ICRS fields and never constructs an exact
-connected-visit result. `tests/test_satchecker.py` is the durable provider
-boundary owner; ordinary tests inject transport and remain network-free. The
-bounded live check reached real HTTP 200 PENDING states and a later SUCCESS
-receipt; the adapter normalized 13 candidates and 26 ordered samples while
-retaining the candidate-only boundary.
+`satchecker.py` owns bounded request translation, no-download UTC-to-UT1
+conversion, exact response receipts, task normalization and validated caching.
+It returns sampled candidates, not exact connected visits. Report/presentation
+adapters consume scientific results through the existing shared chart pipeline.
+The monolithic Wenu installation is not yet an independently installable
+satellite provider package. Kernel integration and package extraction are
+planned separately; no new scientific capability follows from moving files.
 
 ## 17. Exact crossing reports
 
@@ -762,548 +728,6 @@ required JSON nulls in version 1. Null means “not evaluated,” not false, dar
 zero, or absent. Adding those sciences requires a later schema version and its
 own accepted physical model.
 
-## 18. Development history
-
-Chronological decisions, candidate states, verification evidence, and
-acceptance records are maintained separately in
-[satellite_program_log.md](satellite_program_log.md). They are not part of this
-pedagogical guide. Keep the two responsibilities linked, but do not merge
-documents mechanically.
-
-
-## Lossless reusable tabular views of an exact-crossing report
-
-A scientific report and a file format are different layers. Wenu's accepted
-exact-crossing report has one logical identity derived from canonical JSON.
-ECSV and VOTable can later provide interoperable tabular views without
-changing that identity or recalculating a crossing.
-
-The proposed design first projects the report into shared validated record
-kinds: one report record, one record for every field, and records for its
-crossings. A zero-crossing field still has a field record. Stable ordinals
-preserve scientific array order, while units, masks, coordinate meaning, UTC
-time metadata, provenance, and joins remain explicit. Thin format adapters can
-then express those same records as one ECSV table or as related VOTable tables.
-
-This is a reusable design: scientific flattening and validation are written
-once, so two formats cannot quietly acquire different meanings, and later
-publication code can reuse the same in-memory representation. ECSV is a
-human-readable table format with YAML metadata; VOTable is an IVOA XML format
-with astronomical FIELD, PARAM, and TIMESYS metadata. Neither format makes a
-satellite visible, illuminated, bright, or damaging to a detector. This
-candidate belongs to 50S.6G.2B and is not yet implemented.
-
-## 50S.6G.2C file-protocol interpretation
-
-The proposed two-call workflow is an audit-preserving selection protocol, not
-a new visibility calculation. The first call evaluates every requested FoV and
-solves none when any is invalid. Its deterministic JSON records all invalid
-FoVs and the ordered valid subset. The second call leaves invalid FoVs explicit
-but sends only that revalidated subset to the existing exact crossing service.
-The resulting JSON, ECSV, and VOTable files describe the same accepted exact
-local report; filesystem history does not change astronomical meaning.
-
-## Accepted 50S.6G.2C reader boundary
-
-The accepted next implementation is an offline transport and publication
-layer. Readers should interpret its validation-output document as an explicit
-audit-preserving partition of the original FoVs, not a scientific crossing
-result. Only the revalidated embedded valid subset may reach the unchanged
-exact crossing service on the second call.
-
-## Candidate exact local track evidence
-
-50S.6G.3A proposes a track as evidence for one already solved connected visit. It evaluates the accepted immutable orbit snapshot from entry through exit and retains entry, closest approach, and exit as exact sample anchors. Adaptive midpoint checks add samples between those anchors; declared limits fail closed instead of returning a shortened track.
-
-This exact local evidence is different from SatChecker's provider-sampled candidate path. An output-neutral layer would only present retained evidence and would perform no propagation or crossing calculation. The audit is documentation-only and no implementation is yet authorized.
-
-## Accepted exact local track audit
-
-Fernando accepted the 50S.6G.3A documentation boundary on 2026-09-19. A bounded implementation may now construct immutable exact connected-visit evidence through the accepted local propagation route and expose it through a science-free layer. Chart integration and later track products remain separate milestones.
-
-## Candidate exact local track implementation
-
-The candidate now realizes one immutable sample set for each accepted connected visit. Event instants are always vertices; midpoint chord-deviation and maximum-step checks add intervening samples; limits fail closed. The layer reads that evidence and never propagates again.
-
-The curve itself has no single time. UTC is therefore declared once on the evidence and retained on every sample, while the collection coordinate specification describes only the timeless GCRS-axis orientation and topocentric-direction origin. Focused verification passed; full verification and acceptance remain pending.
-
-## Accepted exact local track implementation
-
-50S.6G.3A is accepted: Wenu can now construct immutable exact track evidence for an already solved connected visit and expose its path and events without repeating propagation. This does not yet place a track on a binocular or regional chart; that integration begins with a separate 50S.6G.3B documentation audit.
-
-## Candidate binocular and regional exact-track charts
-
-50S.6G.3B proposes an explicit display request that carries already-computed exact evidence into an ordinary regional or binocular chart. The request may show the path, exact event markers, and optional event labels. Chart construction does not solve or propagate a satellite again; it only installs evidence views and uses Wenu's ordinary projection, clipping, styling, and export path.
-
-The complete curve is shown in one fixed chart frame at the crossing field's reference instant. Planisphere tracks and later visibility or illumination science remain separate work. This audit is documentation-only.
-
-## Accepted binocular/regional chart audit
-
-Fernando accepted the 50S.6G.3B documentation boundary on 2026-09-19. A bounded implementation may now carry already-realized exact evidence into ordinary regional and binocular charts, with path/event/label controls and existing output paths. It may not perform satellite science or add planisphere support.
-
-## Candidate binocular and regional track implementation
-
-The candidate accepts already-realized exact evidence directly in a regional or binocular ChartRequest. It can draw the retained path, the exact entry/closest/exit markers, and optional English event labels. Reusing a sphere leaves no request-owned satellite layer behind, and chart provenance records only the track digest and bounded identity/event summary.
-
-Deterministic offline specimens use a nearly straight short pass and export PNG, PDF, and semantic SVG from the same prepared chart. Boundary clipping is tested separately so the specimen does not invent an implausible bending satellite path. The implementation remains a candidate pending complete verification and acceptance.
-
-## Candidate stereographic polar-planisphere exact tracks
-
-50S.6G.4A proposes an event-specific overlay on Wenu's paired physical north
-and south polar planisphere faces, not on the ordinary horizontal full-sky
-planisphere. The same already-realized track is expressed in fixed equatorial
-axes and projected independently onto both stereographic faces. A track in the
-declination overlap may appear on both; a face boundary clips only the drawing
-and never creates a new entry or exit event.
-
-This product is valid only for the stated observing site and UTC interval. It
-must not suggest that the satellite repeats the path whenever the planisphere
-is rotated to the same sky. Horizon furniture remains separate and makes no
-visibility claim. The audit is documentation-only; implementation and later
-illumination or brightness science remain unauthorized.
-
-## Accepted stereographic polar-planisphere audit
-
-Fernando accepted the 50S.6G.4A documentation boundary on 2026-09-19. A
-bounded implementation may now carry already-realized exact evidence through
-the paired north/south stereographic page export, including event-specific
-site/time validity, face overlap, cap clipping, cleanup, and existing semantic
-outputs. It may not perform new satellite science or add other all-sky,
-illumination, or brightness behavior.
-
-## Corrective ordinary AltAz planisphere audit
-
-The intended exact-track planisphere is Wenu's ordinary visible-hemisphere
-chart: one zenith-centred stereographic FullSkyChart in observer-local AltAz,
-bounded by the horizon. It is not the paired north/south equatorial physical
-planisphere.
-
-A future corrected implementation may reuse the same fixed horizontal
-product-frame rule already accepted for regional and binocular charts. The
-complete retained track is transformed at the chart reference instant;
-per-sample UTC remains evidence. Horizon clipping changes only presentation
-and never creates an event or establishes visibility.
-
-The earlier paired-polar authorization is superseded. This corrective audit is
-documentation only and requires Fernando's separate acceptance before any
-runtime work.
-
-## Accepted corrective AltAz planisphere audit
-
-Fernando accepted the corrected ordinary visible-hemisphere product on
-2026-09-20. A bounded implementation may display accepted exact tracks on one
-zenith-centred AltAz stereographic FullSkyChart, using the existing fixed
-chart-reference frame, horizon presentation boundary, lifecycle, semantics,
-provenance, and exporters. Paired polar, circumpolar, Galactic all-sky, and
-later science remain outside this milestone.
-
-## Verified candidate ordinary-planisphere exact track
-
-The candidate places one accepted connected visit on the ordinary La Ligua
-visible-hemisphere planisphere. The complete track is expressed in the one
-AltAz frame fixed at chart time; the sample times still identify retained
-evidence. The horizon may clip drawing only and cannot invent an entry or exit
-event. The physical manifest accompanies the chart with site, chart time,
-complete visit interval, track identity, and output digests.
-
-## Accepted ordinary-planisphere exact tracks
-
-Wenu now accepts already-realized exact connected visits on the ordinary
-observer-horizontal stereographic planisphere. One fixed AltAz frame describes
-the chart, retained sample UTC records the evidence, and the horizon clips
-presentation without inventing events. The accepted physical La Ligua
-specimen and manifest demonstrate the PNG/PDF/semantic-SVG route and retain
-site, chart time, complete visit interval, identity, and output digests.
-## Accepted 50S.6H observatory-planning interpretation
-
-A satellite crossing and an observing-plan decision are different claims.
-The accepted exact report says when a propagated object intersects a declared
-field for one observer. The authorized next 50S.6H advisory will say only that this
-crossing interval overlaps a caller-supplied planned UTC interval.
-
-It will not say that the satellite is illuminated, detectable, bright enough
-to matter, harmful to a detector, or grounds to reschedule an observation.
-Paranal OB constraints and time windows remain scientific and operational
-inputs owned by ESO and the observer. ELT planning remains unspecified until
-an official operational interface is available.
-## Accepted offline satellite planning advisory
-
-The accepted advisory answers only: “does this planned half-open UTC interval
-overlap an accepted geometric satellite crossing interval?” Each positive row
-retains the plan, crossing, overlap, object, observer, field, snapshot, and
-report identities. A zero-row result means no geometric interval overlap was
-found for those inputs; it is not a claim of an uncontaminated observation.
-
-The fixed scientific-status text states that illumination, apparent
-brightness, detector effect, and operational disposition are unknown. Human
-review remains responsible for observatory action.
-## Accepted advisory specimens
-
-The positive specimen intersects a four-second geometric crossing with a
-two-second planned interval and records exactly one two-second row. The second
-planned interval begins at the crossing exit and records zero rows, confirming
-half-open endpoint semantics. Both retain independent identities and state
-that operational disposition is unknown. This is validation evidence, not an
-observing recommendation.
-
-## Candidate 50S.7A illumination vocabulary
-
-Four source paths must be named independently:
-
-- **Sunlight:** Sun to satellite;
-- **Earthshine:** Sun to Earth to satellite;
-- **Moonlight:** Sun to Moon to satellite; and
-- **Lunar-Earthshine:** Sun to Moon to Earth to satellite.
-
-The last term follows the explicit definition in Caddy et al. (2026) and must
-not be confused with sunlight reflected from Earth onto the Moon. Sunlight and
-Moonlight are finite-disk beams. Earthshine and Lunar-Earthshine arrive from
-many Earth-surface directions and remain extended radiance fields until a
-spacecraft surface and BRDF are introduced in 50S.8.
-
-Satellite shadow and observer night are independent questions. A finite solar
-disk behind the WGS-84 vacuum Earth limb yields sunlit, penumbra, umbra, or
-possible antumbra geometry. Observer twilight uses the geometric altitude of
-the Sun's center. Neither state says that a satellite is in the field, above
-the horizon, bright enough to see, harmful to a detector, or grounds for a
-schedule change. The 50S.7A candidate changes no runtime.
-
-### Order-of-magnitude illumination memory scale
-
-These are memory-scale estimates for incident illumination at a LEO satellite,
-not Wenu model constants. The magnitude penalty assumes the same satellite
-surface, attitude, BRDF, range, observer direction, and passband, so that only
-the source irradiance changes.
-
-| Source and favourable geometry | Incident scale | Relative to direct Sun | Same-geometry penalty |
-| --- | ---: | ---: | ---: |
-| Direct Sunlight near 1 au | `1.36e3 W m-2` | `1` | `0 mag` |
-| Solar Earthshine onto a nadir-facing surface over sunlit Earth | roughly `1e1-4e2 W m-2` | `1e-2-3e-1` | roughly `+1.3 to +5 mag` |
-| Direct full-Moon light | roughly `3e-3 W m-2` | `2.5e-6` | roughly `+14 mag` |
-| Direct quarter-Moon light | roughly `3e-4 W m-2` | `2e-7` | roughly `+16.6 mag` |
-| Full-Moon Lunar-Earthshine onto a favourable nadir-facing surface | roughly `1e-4-1e-3 W m-2` | `1e-7-1e-6` | roughly `+15 to +18 mag` |
-| Quarter-Moon Lunar-Earthshine, scaled as a first estimate | roughly `1e-5-1e-4 W m-2` | `1e-8-1e-7` | roughly `+18 to +21 mag` |
-
-The direct-Moon scale follows the Sun/full-Moon contrast of about `400,000`
-(`14 mag`) quoted by Caddy et al. (2026). Their first-order lunar phase law
-gives `m(90 deg) - m(0 deg) = 2.60 mag`, so quarter-Moon illumination is
-about `0.091` of full Moon, not one half. Converting a visual contrast into
-the bolometric-looking `W m-2` values above is deliberately only an
-order-of-magnitude mnemonic; a real calculation must name its bandpass and
-spectral model.
-
-The reflected-Earth ranges are simple favourable-geometry estimates: a bright
-Earth beneath LEO can return a few percent to a few tenths of the incident
-source onto a nadir-facing surface. They can fall to zero when no suitably
-illuminated Earth is visible, and clouds, land/ocean BRDF, specular geometry,
-altitude, and spacecraft attitude can move the answer greatly.
-
-Two papers anchor the scale:
-
-- Fankhauser, Tyson, and Askari (2023), *Satellite Optical Brightness*
-  (<https://doi.org/10.3847/1538-3881/ace047>), models direct Sunlight plus
-  solar Earthshine with Earth and spacecraft BRDFs and finds Earthshine can
-  materially increase apparent brightness, especially in civil twilight.
-- Caddy et al. (2026), *The First Observations of Moonlit Satellites*
-  (<https://arxiv.org/html/2609.07057v1>), reports `147` Moonlit ISS
-  detections with median `V = 12.02 +/- 0.17 mag`, about
-  `13.1 +/- 1.3 mag` fainter than daylight. In their representative STK ISS
-  case, adding Lunar-Earthshine changed `V = 13.46` for direct Moonlight
-  alone to `V = 12.98`: about `0.48 mag`, or `1.55x` in total flux. It
-  added about `14%` to one directly Moonlit body component and dominated
-  components that faced Earth but received no direct Moonlight.
-
-- Hainaut and Williams (2020), *Impact of satellite constellations on
-  astronomical observations with ESO telescopes in the visible and infrared
-  domains* (<https://arxiv.org/abs/2003.01992>), gives a conservative
-  order-of-magnitude impact study for `18` then-proposed constellations with
-  more than `26,000` satellites. It estimated about `1,600` illuminated
-  satellites above the horizon just after sunset and `1,100` at the end of
-  astronomical twilight, with about `85%` below `30 deg` elevation. During
-  the first and last hours of night, predicted losses were below `1%` for
-  narrow/normal-field ESO imaging and spectroscopy, about `3%` for wide-field
-  or long medium-field exposures, and `30-40%` for ultra-wide survey
-  exposures such as Rubin/LSST; thermal-IR losses were negligible. The paper
-  is a planning and mitigation precedent, not a present-day population or
-  brightness baseline: it deliberately used simplified, conservative 2020
-  constellation and photometric assumptions.
-
-
-The practical memory rule is therefore: Sunlight dominates an illuminated
-surface; solar Earthshine can be a percent-to-tens-of-percent correction;
-full Moon is about a millionth to a few millionths of Sunlight; quarter Moon
-is about another factor of eleven down; and Lunar-Earthshine is commonly a
-fraction of direct Moonlight in total flux but can be the entire illumination
-of a nadir-facing component. These ratios do not by themselves predict an
-observed satellite magnitude.
-
-## Accepted 50S.7A illumination vocabulary
-
-Fernando scientifically and architecturally accepted the four-component
-50S.7A vocabulary and its scientific separation on 2026-09-20 at
-`fdf7e005a41a5a4d45200f841e914815d37da870`. Sunlight, solar Earthshine, Moonlight,
-and Lunar-Earthshine remain independent incident-light components. Geometry
-and incident source fields remain separate from spacecraft attitude, BRDF,
-apparent brightness, and detector response.
-
-After merge, only direct finite uniform-Sun/WGS-84 vacuum shadow geometry and observer
-geometric twilight may be implemented in 50S.7B. The order-of-magnitude table
-remains a pedagogical memory scale, not a Wenu numerical model or acceptance
-constant.
-## Candidate 50S.7B direct-Sun and night vocabulary
-
-The candidate reports geometry, not whether a satellite will be visible. A
-`sunlit` result means the modeled uniform solar disk is wholly unobstructed
-by the vacuum WGS-84 Earth. `penumbra` means partial disk occultation,
-`umbra` complete occultation, and `antumbra` an Earth silhouette wholly
-inside the solar disk. The visible fraction is a converged geometric disk
-fraction in `[0, 1]`, not irradiance or magnitude.
-
-Observer night is independent. `day`, civil, nautical, astronomical
-twilight, and astronomical night use the geometric vacuum Sun-centre
-thresholds `0`, `-6`, `-12`, and `-18` degrees. These labels do not say
-that the satellite is above the horizon, inside a requested field, bright
-enough, or detectable. Lunar solar occultation is explicitly
-`not_evaluated`; Moonlight, Earthshine, and Lunar-Earthshine remain later
-separate models.
-
-50S.7C shadow-transition search and all later satellite-light behavior remain
-unauthorized by this candidate.
-
-## Accepted 50S.7B geometry vocabulary
-
-Fernando accepted the 50S.7B geometry behavior at `054ac53a` on 2026-09-21.
-The `sunlit`, `penumbra`, `umbra`, and `antumbra` terms, converged
-finite-disk fraction, geometric twilight classes, and lunar
-`not_evaluated` status have the bounded meanings stated above. They remain
-neither brightness nor visibility predictions.
-
-Merge remains separate. After merge, only a documentation-first 50S.7C
-shadow-transition audit is authorized.
-
-## Candidate 50S.7C shadow-transition vocabulary
-
-A shadow state describes one ordinary instant; a shadow transition describes
-the boundary between the states on its two sides. Contact is an event, not a
-fifth state. The directed vocabulary is
-`sunlit_to_penumbra`, `penumbra_to_sunlit`,
-`penumbra_to_umbra`, `umbra_to_penumbra`,
-`penumbra_to_antumbra`, and `antumbra_to_penumbra`.
-
-The accepted visible solar-disk fraction is a finite ray-quadrature result, so
-it is not a smooth clock for contact. A future solver must instead isolate zero
-of continuous signed solar-limb/Earth-silhouette contact geometry, certify a
-UTC bracket, inspect stable side classes, and either return every event in the
-closed interval or fail closed. Two contacts between initial samples must not
-be missed.
-
-These events remain geometry only. They do not say whether the observer is at
-night, the satellite is in a field or above the horizon, the spacecraft is
-bright, or a detector is affected. The audit changes no runtime and 50S.7D+
-behavior remains unauthorized.
-
-## Accepted 50S.7C transition vocabulary
-
-Fernando accepted the documentation-only transition vocabulary at
-`030a6322` on 2026-09-21. After merge, the bounded implementation may add
-only the six directed finite-source class boundaries, continuous contact
-geometry, certified UTC brackets, complete interval certification, and
-fail-closed search described above.
-
-Contact remains an event rather than a state. Shadow events remain independent
-of observer night and make no brightness, visibility, detectability, detector,
-facility, or scheduling claim. 50S.7D+ remains unauthorized.
-
-## Candidate 50S.7C transition runtime vocabulary
-
-At executable `69375fab`, the bounded candidate treats contact as an
-observer-independent event between
-two ordinary `SolarOccultationClass` side states. It exposes exactly six
-directed adjacent kinds: sunlit/penumbra in both directions,
-penumbra/umbra in both directions, and penumbra/antumbra in both directions.
-Direct non-adjacent output is invalid.
-
-Each representative event time is the deterministic midpoint of a retained
-closed UTC bracket no wider than the declared tolerance. Endpoint contact is
-explicitly rejected when the requested interval cannot certify both directed
-sides. An empty tuple means the whole admitted interval was certified free of
-contact; it is never a budget fallback. These events remain unattached to
-crossings and carry no observer-night, brightness, visibility, detector,
-facility, or scheduling meaning. The implementation remains unaccepted and
-50S.7D+ remains unauthorized.
-
-## Accepted 50S.7C transition runtime vocabulary
-
-Fernando accepted the implemented transition vocabulary at
-`eaeab6085b52bfed6136d37f3010c2f353e59f53` on 2026-09-21. Contact remains
-an observer-independent event between two ordinary shadow states, represented
-only by the six directed adjacent kinds. Each event retains a certified UTC
-bracket and deterministic midpoint; an empty result certifies the complete
-admitted interval, and uncertainty fails closed.
-
-These transitions remain geometry only. They carry no observer-night,
-crossing, brightness, visibility, detector, facility, or scheduling meaning.
-PR 183 merge, branch deletion, transition attachment, and 50S.7D+ remain
-separate unauthorized work.
-## Candidate 50S.7D direct-source radiometry vocabulary
-
-Incident irradiance answers how much radiant power reaches a unit area normal
-to a source beam at the satellite. It is not the power intercepted by an
-oriented spacecraft surface and not the brightness seen by an observer.
-
-The first proposed 50S.7D.1 model is bolometric direct Sunlight:
-`1361 W m-2` at 1 au under the IAU nominal convention, scaled by inverse
-square Sun-satellite distance and by the accepted uniform-disk visible
-fraction. The word nominal identifies a convention; it does not mean the
-physical Sun has zero variability or uncertainty.
-
-Bolometric, spectral, and passband irradiance are different quantities.
-Moonlight requires a phase-, libration-, distance-, and wavelength-dependent
-model; unknown Moonlight is never numeric zero. This candidate adds no runtime
-and 50S.7D.2+, Earth-reflected fields, brightness, visibility, detector,
-facility, scheduling, and output behavior remain unauthorized.
-
-## Accepted 50S.7D direct-source radiometry vocabulary
-
-Fernando accepted the documentation-only 50S.7D vocabulary at exact candidate
-`362199d04bd917741a8be88f20608967af75530e` on 2026-09-21 after 214
-plugin-disabled current-documentation tests passed in 7.00 seconds and
-repository checks were clean.
-
-After merge, only the 50S.7D.1 bolometric normal-plane direct-Sun quantity may
-be implemented. Preserve `1361 W m-2` as an exact IAU nominal convention,
-not an instantaneous measurement or zero-uncertainty claim; preserve unknown
-Moonlight as not evaluated, never numeric zero. Spectral/passband Sunlight,
-Moonlight, reflected fields, spacecraft response, brightness, visibility,
-detector, output, facility, and scheduling vocabulary remain unauthorized.
-PR 184 merge and branch deletion remain separate explicit decisions.
-
-## Candidate 50S.7D.1 runtime vocabulary
-
-Executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` computes direct
-Sunlight on an abstract plane normal to the incoming beam. At one astronomical
-unit with no occultation it is exactly the IAU nominal `1361 W m-2`; at other
-distances it follows inverse-square scaling, and Earth occultation multiplies
-it by the already-evaluated visible solar-disk fraction.
-
-This is bolometric normal-plane irradiance, not panel irradiance, observer
-brightness, magnitude, visibility, or detector signal. The nominal constant is
-exact as a convention while physical/model uncertainty remains
-`not_evaluated`; solar variability and limb darkening are omitted. Unknown
-Moonlight remains not evaluated, never numeric zero. The candidate is not yet
-accepted and all 50S.7D.2+ behavior remains unauthorized.
-
-## Verified candidate 50S.7D.1 runtime evidence
-
-At exact branch head `5bf5d52e81670f1a69af0476283195d12a3119bc`, independent
-recomputation agreed exactly with Wenu for sunlit, partly eclipsed, and fully
-eclipsed LEO, MEO, and GEO examples. Clear irradiance followed inverse-square
-distance scaling; incident irradiance followed the evaluated visible fraction;
-only umbra produced numeric zero.
-
-All 308 expanded tests and 2,832 complete plugin-disabled tests passed. This is
-verification evidence, not scientific or architectural acceptance. Spectral
-Sunlight, Moonlight, reflected fields, spacecraft response, brightness,
-visibility, detector, output, facility, and scheduling remain unauthorized.
-
-## Accepted 50S.7D.1 runtime vocabulary
-
-Fernando scientifically and architecturally accepted exact verified candidate
-`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. Direct-Sun
-`clear` and `incident` continue to mean bolometric normal-plane irradiance;
-numeric zero remains restricted to evaluated umbra, while physical/model
-uncertainty remains `not_evaluated`.
-
-The independent receipt, 308 expanded tests, all 2,832 plugin-disabled tests,
-and final 223 documentation/package-boundary tests passed. 50S.7D.2+, merge,
-branch deletion, and later runtime vocabulary remain unauthorized.
-
-## Candidate 50S.7D.2 spectral vocabulary
-
-The proposed reference spectrum is TSIS-1 HSRS v2 over 202-2730 nm at 1 nm
-FWHM and 0.1 nm sampling. Bandwidth is resolution, not integration width;
-energy spectral irradiance is not photon flux, and the finite-domain integral
-is not bolometric TSI. The audit authorizes no runtime.
-
-## Accepted 50S.7D.2 spectral vocabulary
-
-Fernando accepted the exact TSIS-1 HSRS v2 `tsis1_hsrs_1nm` vocabulary at
-candidate `0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe` on 2026-09-22:
-1 nm FWHM resolution, 0.1 nm native sampling over 202-2730 nm, energy spectral
-irradiance, retained pointwise uncertainty, and integrated uncertainty
-`not_evaluated`. No interpolation, extrapolation, `1361 W m-2`
-renormalization, or numeric Moonlight is implied. The audit added no runtime or
-resource.
-
-## Candidate 50S.7D.2 spectral direct-Sun implementation
-
-Candidate `8e930db2` adds an offline, output-neutral direct-Sun reference
-spectrum over the exact TSIS-1 HSRS v2 native grid. It preserves the complete
-accepted illumination geometry, applies inverse-square distance scaling and
-one achromatic uniform-disk visible fraction, retains pointwise provider
-uncertainty, and records that integrated uncertainty is `not_evaluated`.
-
-The CSV remains an explicitly installed external resource. Wenu neither
-downloads nor vendors it. The finite-domain integral is not bolometric TSI,
-the 1 nm bandwidth is resolution rather than integration width, and no
-interpolation, extrapolation, 1361 W m-2 renormalization, photon conversion, or
-Moonlight is implied. The candidate is unaccepted.
-
-## Verified candidate 50S.7D.2 direct-Sun spectrum
-
-Exact head `8f2ca825` passed the installed external-resource receipt, 132
-expanded tests, 227 documentation/package tests, clean diff, and all 2,858
-plugin-disabled tests. The receipt independently reproduced the admitted bytes,
-native grid, resolution, integral, and production-loader result.
-
-The spectrum remains a verified but unaccepted reference-energy product. It is
-not bolometric TSI, Moonlight, spacecraft brightness, visibility, or detector
-response.
-
-## Accepted 50S.7D.2 direct-Sun spectrum
-
-Fernando accepted exact verified candidate `d1edeb46` on 2026-09-22.
-Preserve the executable `8e930db2` TSIS-1 HSRS v2 native-grid energy
-spectrum, exact external-resource identity, pointwise uncertainty,
-inverse-square scaling, accepted achromatic visible fraction, exact-grid
-integration, and explicit integrated uncertainty `not_evaluated`.
-
-The product remains distinct from bolometric TSI, Moonlight, spacecraft
-brightness, visibility, and detector response. PR 187 merge and branch
-deletion remain separate.
-
-## Candidate 50S.7D.3 direct-Moonlight readiness
-
-Direct Moonlight is sunlight reflected by the lunar disk and received on a
-normal plane at the satellite. It is not illuminated fraction times solar
-irradiance, Earthshine, spacecraft brightness, visibility, or detector signal.
-
-The audit prefers LIME over ROLO/GIRO for a future production model because of
-its SI-traceable scale and band-specific uncertainty. It adds no number:
-versioned LIME bytes, license, native bands, coefficients, geometry conventions,
-domain, uncertainty, and reference outputs are not yet frozen. Existing
-Moonlight remains `not_evaluated`. After separate acceptance and merge, only
-an explicit external distribution preflight may proceed; runtime remains
-blocked.
-
-## Accepted 50S.7D.3 direct-Moonlight readiness
-
-Fernando accepted exact documentation-only candidate `abbb1b78` on
-2026-09-22 after 230 documentation/package tests and clean repository checks.
-Preserve LIME as the preferred future production model, GIRO/ROLO as comparison
-evidence, and numeric Moonlight as `not_evaluated`.
-
-After merge, only a separately controlled external LIME distribution preflight
-is authorized. It must freeze version, bytes, license, bands, coefficients,
-geometry, domain, uncertainty, and reference outputs. It authorizes no
-resource retrieval or runtime by itself.
-
-## Final accepted 50S.7D.3 readiness verification
-
-Acceptance-record head `0be116ab` passed 231 documentation/package tests in
-8.54 seconds and clean repository checks. Moonlight remains
-`not_evaluated`; only the post-merge external LIME distribution preflight is
-authorized next.
 
 ## What LIME is, why Wenu needs it, and how Wenu would use it
 
@@ -1361,113 +785,19 @@ meaning, eclipse/occultation states, warnings, and provenance. Missing
 resources, unsupported geometry, eclipse outside the admitted model, or
 numerical failure remain `not_evaluated`, never zero.
 
-## Candidate 50S.7D.3A LIME distribution preflight
 
-The preflight found official public LIME Toolbox release `v1.4.2` at tag
-commit `b28f1e87fdf98b3ee58c6b38bd0ccb55ca97047f`. The independently
-retrieved macOS asset has `516220150` bytes and SHA-256
-`e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21`.
-The source declares `LGPL-3.0-only` and contains candidate coefficient
-`LIME_MODEL_COEFS_20251010_V01.nc` with SHA-256
-`8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691`.
 
-This is a candidate receipt, not runtime admission. Exact coefficient bands
-and covariance, per-resource and third-party redistribution terms, lunar frame
-and phase conventions, and authoritative executable reference outputs remain
-unresolved. The toolbox was neither installed nor executed. Moonlight remains
-`not_evaluated`; only a separately accepted offline Mac resource-and-reference-
-output inspection may follow.
+## Current report and external-execution boundaries
 
-## Accepted 50S.7D.3A LIME preflight
+Exact reports support deterministic canonical JSON and lossless ECSV/VOTable
+views through one format-neutral projection. Strict decoders preserve nullable
+Unicode flags and reject mismatched identities, duplicate keys and invalid
+domain context. The two-call CLI uses atomic no-clobber publication.
+Track samples are already solved geometric evidence, not a second search.
 
-Fernando accepted the scientific and architectural conclusions at exact
-candidate `27e1ee1c9071b79387a2ad2b5dda4cb7fa263ffa` on 2026-09-22 after
-232 focused tests passed on the Mac in 11.95 seconds. The accepted conclusion
-is that LIME supplies lunar radiometry while Wenu supplies the complete direct
-selenographic geometry and retains orbit, time, frame, visibility, and output
-authority.
-
-Acceptance does not resolve coefficient/data licenses, exact netCDF schema,
-lunar conventions, or authoritative executable reference outputs. It
-authorizes no installation, execution, dependency, API, or Moonlight runtime.
-PR 189 merge and any later offline inspection remain separate decisions.
-
-## Candidate 50S.7D.3B: how the offline LIME inspection works
-
-The accepted preflight answered “which LIME?” but not “what does that exact
-executable return?” The 50S.7D.3B inspection is the bridge. It runs the frozen
-external toolbox as an oracle, not as a Wenu dependency and not as the future
-production Moonlight path.
-
-The distinction matters:
-
-- LIME owns the candidate empirical lunar-reflectance calculation and its
-  native uncertainty machinery;
-- Wenu continues to own satellite propagation, time, ephemerides, frames,
-  same-instant geometry, eclipse/occultation policy, and outputs; and
-- this inspection owns only evidence about LIME's exact package, resources,
-  interface, domain flags, and native numerical results.
-
-The developer command has two positional inputs:
-
-```text
-python tools/validate_50s7d3b_lime_offline_inspection.py \
-  /absolute/path/to/lime.pkg \
-  /absolute/path/to/new-evidence-directory
-```
-
-The output directory must not exist. The package must have the accepted
-`516220150` byte size and SHA-256
-`e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21`.
-An existing `/Applications/LimeTBX.app` is recorded but never selected. Only
-the app expanded from the exact verified package is used.
-
-The command does not run Apple's installer. It expands the package into a
-temporary directory. The exact package has no installer signature, and strict
-code-signature verification of the bundled `QtDataVisualization.framework`
-fails with an ambiguous-bundle-format error. The harness records both failures
-and rejects any different signature result; **neither signature is verified**.
-Its admission relies on the frozen package size and SHA-256 and the bundled
-coefficient
-`LIME_MODEL_COEFS_20251010_V01.nc` at SHA-256
-`8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691`.
-The full harness enters the network-denied sandbox before loading the bundled
-netCDF library. It executes that temporary app with a minimal environment,
-isolated home and temporary directory. The child inherits the harness's single
-macOS sandbox rule `(deny network*)`; a nested sandbox call failed with
-`sandbox_apply: Operation not permitted` on the first amended Mac attempt and
-was removed without changing the network rule.
-Proxy variables are also redirected to the local discard port. LIME's
-coefficient-update option is never called.
-
-Ten direct-selenographic rows hold both distances and all longitudes/latitudes
-fixed while testing signed phase at `-90.001`, `-90`, `-15`, `-2`, `-1.999`,
-`1.999`, `2`, `15`, `90`, and `90.001` degrees. This directly probes both
-signs and both edges of LIME's source-level
-`2 <= abs(phase_angle) <= 90` predicate. It does not yet say whether Wenu and
-LIME construct those scalars from Cartesian geometry in the same way.
-
-The tool runs a central-value calculation twice and requires exact equality of
-native CIMEL wavelengths, irradiance, reflectance, input geometry echoed by
-LIME, and domain flags. A third run enables LIME uncertainty propagation. Raw
-netCDF files are retained alongside JSON projections of the native values and
-schema. Package/app receipts, notices, version/help output, logs, byte counts,
-and SHA-256 digests are collected into one manifest.
-
-The environment and runtime statements are part of the evidence:
-
-```text
-network_access=false
-preexisting_installation_present=true
-installed_by_inspection=false
-production_runtime_changed=false
-moonlight_status=not_evaluated
-```
-
-A successful command is only Phase A candidate evidence. The console summary
-and manifest must be reviewed before anything else proceeds. Phase B will
-independently compare Wenu/SPICE-derived direct-selenographic geometry against
-LIME's conventions for representative LEO, MEO, GEO, and highly elliptical
-states. Until that comparison and a later runtime amendment are separately
-accepted, Wenu must not import LIME, return numeric Moonlight, or interpret an
-outside-domain or failed case as zero.
+The LIME v1.4.2 offline inspection is accepted external evidence with unverified
+signatures. It does not establish a numeric Wenu Moonlight model or equivalence
+of LIME's DE421 conventions with the independent DE440/SPICE comparison.
+The paused Phase-B protocol has unresolved case-state, frame/load-order,
+signed-phase and EOP/uncertainty questions. Do not repeat consumed external
+runs or infer new execution authority from an archived checkpoint.
