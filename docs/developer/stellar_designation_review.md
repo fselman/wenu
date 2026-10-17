@@ -2,7 +2,7 @@
 
 **Handling policy accepted (2026-10-06):** Fernando approved contextual
 shared-star labels, Wikidata for other cases and optional per-chart discrepancy
-reports. See [audit section 11](stellar_designations_audit.md#11-approved-handling-policy-and-labelreport-candidate-2026-10-06).
+reports. See [audit section 11](archive/pre_kernel_20261017/docs/developer/stellar_designations_audit.md#11-approved-handling-policy-and-labelreport-candidate-2026-10-06).
 The blank cells below are frozen source-review evidence, not development blockers.
 
 Wikidata is the provisional baseline used by Wenu. All 77 HIP/field cases

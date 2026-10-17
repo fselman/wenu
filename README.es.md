@@ -6,7 +6,7 @@
 
 # Wenu
 
-**Wenu** es una biblioteca de Python de código abierto para la creación de cartas astronómicas bellas, precisas y personalizables.
+**Wenu** es una biblioteca de Python para la creación de cartas astronómicas bellas, precisas y personalizables.
 
 Fue desarrollada para apoyar la comunicación de la astronomía mediante la educación, la divulgación científica, la publicación de material astronómico y la observación guiada del cielo. Sus aplicaciones incluyen guías de observación, planisferios, material educativo, libros, artículos, presentaciones y cursos de astronomía.
 
@@ -154,7 +154,7 @@ y representación gráfica.
 
 ## Documentación
 
-La [guía de usuario v0.8](docs/user_guide/index.md) documenta las seis
+La [guía de usuario actual](docs/user_guide/index.md) documenta las seis
 familias canónicas de cartas y sus controles compartidos. Use `--format svg`
 para obtener texto y vectores editables; consulte la
 [guía de salida SVG](docs/user_guide/svg_output.md) para conocer el flujo de
@@ -162,7 +162,7 @@ trabajo admitido en Inkscape y las limitaciones de portabilidad tipográfica.
 La referencia
 técnica vigente es `docs/developer/implementation_reference.md`; la
 arquitectura implementada se describe en
-`docs/developer/archive/architecture_history/target_architecture_v0.8.md`.
+`docs/developer/current_architecture_v0.9.md`.
 
 ---
 
@@ -181,3 +181,7 @@ La licencia será especificada antes de la primera versión pública.
 ## Agradecimientos
 
 Wenu se apoya en el extraordinario trabajo de la comunidad de software astronómico de código abierto, en particular de los desarrolladores de Astropy, Skyfield y Matplotlib, así como en los catálogos astronómicos puestos a disposición de la comunidad científica.
+
+
+Prioridad de desarrollo actual: [kernel and loadable packages](docs/developer/kernel_roadmap_v0.9.5.md),
+con Gaia DR3 y un futuro adaptador DR4. Es trabajo planificado, todavía no implementado.

@@ -1,9 +1,13 @@
 # Catalogue curation guide
 
-This is the living guide for catalogue curation in Wenu. Update its script
-registry, commands, parameter definitions and acceptance record whenever a
-curation script or supported filter changes. Work on open clusters first;
-globular clusters and supernova remnants are subsequent, separate stages.
+**Consolidated current workflow:** 2026-10-17. Accepted installed defaults are
+513 open clusters and 319 planetary nebulae. Historical comparisons and dormant
+experiments do not change these selections. Source acquisition, identity,
+scientific quantities, selection, promotion and drawing are separate operations.
+One-time source-acquisition logs and superseded experiment plans are retained
+in the [original edition](../developer/archive/pre_kernel_20261017/docs/user_guide/curation.md).
+The procedures and scientific cautions below remain available; dates identify
+source editions, not a new request to rerun acquisition or alter curation.
 
 ## Standard working-data workflow
 
@@ -295,33 +299,6 @@ can be attached to multiple source rows, and source diameters or integrated
 fluxes may describe different apertures. Review those cases before inferring
 that coincident plotted positions imply comparable visual appearance.
 
-## Integrated magnitude and surface brightness: next experiment
-
-For a circular aperture of diameter D arcmin, a mean V surface-brightness
-proxy would be:
-
-```text
-mu_V = m_V + 2.5 log10(pi (30 D)^2)   [mag per square arcsecond]
-```
-
-This follows from spreading total flux over the aperture area. Smaller
-values mean brighter mean surface brightness. It is a deterministic transform
-of our existing diameter/magnitude axes: it can describe a selection boundary,
-but adds no independent measurement to that plane.
-
-Our current D and V come from different catalogue sources with potentially
-different apertures. Treat this as an exploratory proxy, not measured cluster
-surface brightness. Do not use OpenNGC's galaxy surface-brightness field for
-open clusters. Resolved clusters also require information about individual
-members and field contrast; a smooth-source threshold is insufficient.
-
-Observed V already contains extinction. Combining an E(B−V) screen with an
-observed-V cutoff is possible, but do not dim V a second time or substitute a
-dereddened intrinsic magnitude as a direct measure of eyepiece visibility.
-Before adopting a cutoff, compare retained/lost reference objects, missing
-photometry, source-review cases and representative Dias-only clusters.
-No numerical V or surface-brightness threshold is accepted at this stage.
-
 ## Regenerating sources is separate maintenance
 
 Ordinary comparisons are offline and require no regeneration. Maintenance
@@ -563,7 +540,7 @@ combine by logical AND; the axes themselves never impose a magnitude cut.
 ```
 
 
-## Wenu open-cluster union: software before curation
+## Wenu open-cluster union and identity
 
 The logical database name is `wenu_open_clusters`. The developer tool
 `tools/merge_open_clusters.py` compiles a candidate union; it does not create an
@@ -688,162 +665,6 @@ positional status. Nonidentified pairs that fail or cannot be assessed are not
 expanded into a full Cartesian ledger. No-argument help describes the options,
 criterion, output meanings and usage. Real-catalogue execution remains the
 separate curation step requested by Fernando.
-
-## Observing-list source acquisition, version 1
-
-Fernando requested the source catalogues before deciding which objects belong
-in Wenu's public/beginner selection. The versioned download
-`wenu_observing_catalogues_v1.zip` contains 18 source-table files, with the
-inventory/provenance ledger `observing_sources_v1.json` and validation counts.
-The same ledger is tracked under
-`src/wenu/data/observing_lists/observing_sources_v1.json`.
-Each product records its source URL, publisher, retrieval time, byte count,
-SHA-256, edition/count distinctions and any extraction from a parent source.
-Archive source files are separate from installed chart resources. This stage
-does not filter attractive targets, cross-identify physical objects, introduce
-a sky layer or change atlas defaults. The existing Messier/Caldwell parameter
-resources and their earlier provenance remain intact.
-
-### Verified inventory and corrections to the earlier table
-
-| Catalogue/list | Acquired source and count | Meaning and review distinction |
-|---|---|---|
-| [Messier](https://old.astroleague.org/al/obsclubs/messier/messlist.html) | AL table, 110 numbered entries; factual CSV | Existing HEASARC Wenu parameter table has 109 rows and omits M102. The additional observing membership does not resolve its disputed physical identification. |
-| [Caldwell](https://old.astroleague.org/al/obsclubs/caldwell/cldwlist.html) | AL table, 109 entries; factual CSV | Existing OpenNGC-backed resource and CC BY-SA 4.0 provenance retain parameter authority. Mixed object types and compound entries remain distinct. |
-| [Herschel 400](https://www.astroleague.org/herschel-400-observing-program/) | NGC-order PDF, 400 rows; southern XLS supplement, 150 | Publisher accepts manual NGC1750 or online NGC7814. This snapshot follows the online list. Southern certification combines 150 supplementary with 250 original targets. |
-| [Herschel II](https://www.astroleague.org/herschel-ii-observing-program/) | 2020 NGC-order PDF, 400 rows | Confirmed replacements NGC1985, NGC4517, NGC7492; removed NGC1750, NGC1990, NGC2253 absent. |
-| Best of the NGC | Alias of SAC below in this inventory | The earlier table supplied no distinct publisher/source for this generic name; it is not counted as an independently verified additional list. |
-| [RASC Finest NGC](https://rasc.ca/finest-ngc-objects) | Checklist 2.1a (2021-06-19), PDF; 110 base observing numbers, 112 displayed object rows | Number 82 has two object rows; 99 has a/b components. Other compound identifications are retained in the original checklist. Observing target count is not a physical-object count. |
-| [SAC 110 Best of the NGC](https://www.saguaroastro.org/110-best-ngc-objects/) | A.J. Crayon/Steve Coe, version 1.0 (1990-01-04), factual CSV; 111 distinct NGC rows | Publisher title says 110. Preserve the 111 supplied rows and this distinction rather than removing one to fit the title. Source prose/descriptions are omitted from the CSV. |
-| [AL Open Cluster Program](https://www.astroleague.org/open-cluster-observing-program/) | Complete-list XLSX dated 2025-10-04; 125 original + 89 southern = 214 rows | Programme page advertises 90 supplementary objects. This workbook contains 89 southern rows. Membership does not guarantee current scientific classification as an open cluster. |
-| [AL Globular Cluster Program](https://www.astroleague.org/globular-cluster-observing-program/) | 2021-11-16 XLSX; 190 regular object rows plus 8 challenge rules | 50 is the observing requirement, not the source catalogue size. Challenge rules can describe classes/groups rather than individual catalogue objects. |
-| [AL Planetary Nebula Program](https://www.astroleague.org/planetary-nebula-observing-program/) | Standard XLSX 110 rows; southern XLS 110; northern-alternate XLS 26 | Repeated spreadsheet headers are not objects. Four optional proto-PN mentioned on the page are absent from this standard workbook; no rows are invented for them. Southern list preserves publisher corrections. |
-| [AL Double Star Program](https://www.astroleague.org/double-star-observing-program/) | June 2026 XLSX, 200 numbered systems | 100 is the award requirement. June 2026 expanded the list to include southern targets. Source URL's `202660628` filename is retained literally. |
-| [AL Multiple Star Program](https://www.astroleague.org/multiple-star-observing-program/) | Appendix 2026-03-16 XLSX, 115 systems | Supersedes the earlier 114 count. Worksheet title still says `Current List 20200510`; that stale title does not determine the acquisition edition. |
-| [Barnard](https://cdsarc.cds.unistra.fr/viz-bin/cat/VII/220A) | CDS VII/220A; 349 object rows in VizieR TSV, separate notes TSV and ReadMe | Barnard 1927, NAOJ electronic compilation, diameters/notes supplied by Bill Gray, position corrections through 2008-06-30. Names have gaps and suffixes; CDS `recno` is not an object ID. |
-| [Abell planetary-nebula candidates](https://doi.org/10.1086/148602) | G.O. Abell, ApJ 144,259 (1966), Table 2; 86 entries in two original scanned table pages | Extracted from NASA ADS's historical paper scan. Historically provisional PN classifications are preserved. Acquisition is complete as a scanned catalogue; numeric normalization requires verified transcription, not unreviewed OCR. |
-
-### Source fidelity and provenance
-
-The AL, RASC and SAC lists are observing memberships, not physical catalogues
-or proof that every entry is a beginner showpiece. Herschel II and Abell in
-particular contain difficult objects. Keep programme membership, source
-classification, accepted scientific classification and future visual selection
-as separate attributes. Compound observing entries must not silently collapse
-their constituent objects in the future crosswalk.
-
-Source coordinates, magnitudes, diameters, stellar component separations and
-position angles remain publisher values. They are not homogenized measurements
-or current double-star ephemerides. Barnard's TSV explicitly preserves FK4
-B1875 and FK5 J2000 systems. Abell's table labels its positions 1950. Neither
-resource is silently interpreted as native ICRS. Later adapters must document
-their position/epoch transformations within Wenu's canonical pipeline.
-
-All Excel/PDF source lists are retained unchanged. The Messier, Caldwell and
-SAC webpages are represented by factual table CSV extractions; the ledger binds
-them to the downloaded parent-page URL/hash. Narrative observing descriptions
-are not reproduced. Abell's catalogue-table PDF preserves only original Table
-2 pages 10-11 of the parent scan (printed pages 268-269); its parent URL/hash
-and extraction are recorded. OCR text is not shipped as accepted coordinates.
-
-The Barnard FTP `.dat` requests returned HTTP-200 HTML anti-bot pages, which
-failed content validation and were excluded. The documented public VizieR ASU
-interface supplied the actual 349-row table and notes. This is recorded as a
-source-format choice; HTTP success alone never establishes a valid catalogue.
-
-Public download availability is not treated as a new redistribution licence.
-The source files remain acquisition/review material; the ledger records rights
-status separately from origin and scientific validation. AL and RASC copyright
-notices are preserved in their original files. No third-party guide or image
-collection is incorporated into Wenu's distributed scientific resources at this
-stage. Later curation, licence decisions, membership normalization and chart
-integration are explicit subsequent work.
-
-## First CSV pass and cluster-list membership
-
-Fernando requested CSV conversion before membership integration, and then
-limited the current milestone to star clusters. `tools/convert_observing_catalogues.py`
-therefore handles the nine acquired files for Messier, Caldwell, Herschel 400,
-Herschel II, RASC Finest NGC, SAC Best NGC, AL open clusters, AL globular clusters
-and the southern Herschel supplement. The original complete rows of mixed
-lists remain intact. PN, Abell, Barnard and double/multiple-star programme work
-is deferred; their acquired originals remain untouched.
-
-The converter reads the installed `observing_lists` directory and
-verifies each relevant source against `observing_sources_v1.json`. It produces
-10 per-list source CSVs and root `observing_memberships_original_v1.csv`, with
-`conversion_receipt_original_v1.json` binding source registry, source and output hashes.
-There are 1,796 source-list membership records; they are not deduplicated
-physical objects. Globular challenge rules remain a separate CSV sheet rather
-than eight invented object memberships. Existing conversion receipts and differing product bytes are refused.
-Conversion is staged and verified before publication beside the list sources.
-
-Excel sheets retain their complete stored cell grid, including blank rows,
-titles and repeated headers; `source_row` and `source_column_N` locate every
-original cell. Each nonempty sheet has its own CSV. These are first-pass
-source grids, not yet typed homogeneous scientific parameter tables. PDF CSVs
-expose identity and source-coordinate fields while preserving the original row
-and unparsed tail. No unknown coordinate, magnitude, diameter or classification
-is silently imputed. CSV sources retain their factual fields. Parameters from
-these observing lists do not replace the separate Dias/Hunt source columns.
-
-No-argument invocation displays help and writes nothing. Usage from the
-repository root is:
-
-```bash
-PYTHONPATH=src python tools/convert_observing_catalogues.py \
-  --source-directory src/wenu/data/observing_lists
-```
-
-The default destination is `src/wenu/data/observing_lists`.
-`--output-directory` chooses a fresh directory; `--registry` selects the
-acquisition registry. XLSX conversion uses the Python standard library; PDF
-conversion uses Wenu's existing pypdf dependency. The legacy southern XLS
-requires the optional maintenance dependency `xlrd>=2,<3` (install with
-`python -m pip install 'xlrd>=2,<3'`). Merge compilation reads the resulting
-CSVs and needs no Excel reader.
-
-`tools/merge_open_clusters.py` defaults to that CSV directory. It verifies the
-conversion receipt and every CSV digest before adding the membership columns:
-
-| Column | Source list |
-|---|---|
-| `in_messier` | Messier membership, using the existing observing crosswalk |
-| `in_caldwell` | Caldwell membership, using the existing component crosswalk |
-| `in_herschel400` | Original Herschel 400 list |
-| `in_herschel2` | Herschel II 2020 list |
-| `in_rasc_finest_ngc` | RASC Finest NGC checklist |
-| `in_sac_best_ngc`, `in_best_ngc` | Same SAC selection; the generic title is an alias |
-| `in_al_open_clusters` | Original and southern AL open-cluster rows |
-| `in_al_globular_clusters` | The 190 regular AL globular entries |
-| `in_herschel400_south` | The separate 150-object southern supplement |
-
-True means a resolved explicit identifier membership; false means no resolved
-identifier in that list; masked means an unresolved competing claim. False is
-not proof of physical absence when an object has unrecognized aliases. Source
-primary names take precedence over aliases, with competing claims preserved.
-Explicit abbreviations such as Berk/Berkeley, Ru/Ruprecht, Tr/Trumpler and
-Cr/Collinder are normalized. Extragalactic globular names retain their host
-scope. Questioned/mislabeled narrative identifiers are not adopted as aliases.
-RASC's explicitly named companions and Caldwell's C14 components remain
-separate physical rows with membership in their observing target.
-
-Messier/Caldwell flags use the established reference crosswalk rather than
-reinterpret approximate historical AL associations: e.g. M45 is not assigned
-to a cluster by treating NGC1432 as the Pleiades, and M24 is not silently
-equated with NGC6603. The CSV source fields preserve those published values
-for review. No list membership is inferred from proximity to a star system.
-
-`--observing-directory` overrides the CSV location. Missing conversions fail
-before output creation. `--without-observing-lists` explicitly skips loading
-and emits masked membership columns, never false absences. The separate
-`<name>_observing.csv` ledger records per-source designation, resolved Wenu IDs
-and review IDs, including unmatched targets. Summary/metadata record list
-counts and the conversion receipt. Boolean annotations change neither source
-pairing nor stable IDs, parameter values, positional audit or chart defaults.
-Only synthetic union tests are generated during software development; the
-real first-pass CSV conversion is permitted by Fernando's separate instruction.
-
 
 ## Observing-list additions: purpose, objects and conditions (v1)
 
