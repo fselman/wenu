@@ -73,6 +73,15 @@ is independent of concrete stellar/galaxy classes. Galaxy shape parameters and
 late geometry stay above the kernel. Open-cluster state evaluation and remaining
 K3 families/consumers have not yet migrated.
 
+The open-cluster motion audit found retained Dias motions but omitted published
+Hunt motions. Selected-centre and motion provenance must remain separate until
+an explicit source-combination policy is admitted. Incomplete epochs also require
+the dev8 candidate `catalogue_lookup` prerequisite; native/epoch requirements
+remain intact and clusters do not inherit the galaxy static model. Production
+still pins dev7. Next: accept that SDK subset, route source lookups, then ingest
+complete source-bound cluster astrometry before enabling propagation. See the
+[motion audit](kernel_migration_audit_v1.md#open-cluster-motion-and-lookup-audit-2026-10-18).
+
 Keep every existing Wenu capability while placing all scientific state access
 behind a uniform kernel contract. Add Gaia DR3 astrometry for the stars already
 in Wenu by default, with configurable membership and a later DR4 adapter.

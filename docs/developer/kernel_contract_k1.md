@@ -145,6 +145,7 @@ identified snapshot, not an in-place edit of an old result.
 | Capability | State returned | Required admission |
 |---|---|---|
 | `native_direction` | Unit direction with native reference meaning | Direction known, distance not implied |
+| `catalogue_lookup` | Encoded source direction, without epoch astrometry | Optional per-object source epoch; explicit source/reference gaps and no physical-model accuracy/reuse |
 | `static_direction` | Epoch-independent direction in an admitted model/reference | Optional source epoch provenance; explicit coverage and uncertainty |
 | `epoch_direction` | Direction evaluated at a requested epoch | Declared motion model and its coverage; absent motion is not zero |
 | `cartesian_state` | Position plus optional velocity | Registered frame/origin; explicit velocity availability |
@@ -162,7 +163,8 @@ propagate, mutate state or claim physical accuracy from missing inputs.
 |---|---|---|
 | Current Hipparcos direction route | Native catalogue direction and source epoch | Propagation merely because `position(instant)` accepts an argument |
 | Gaia-enriched stellar subset | Admit epoch-direction model per usable solution; keep unmatched stars via explicit alternative | Six-dimensional state from missing distance/radial velocity; Gaia G as V |
-| Galaxies/deep-sky fixed directions | Explicit constant-direction model; morphology remains domain geometry | Newly measured/proper-motion-propagated positions at every date |
+| Galaxies | Explicit constant-direction model; morphology remains domain geometry | Newly measured/proper-motion-propagated positions at every date |
+| Incomplete-epoch cluster catalogue | Explicit source lookup, retaining source-specific astrometry above the kernel | Epoch propagation or zero physical motion from an unchanging source lookup |
 | Existing planetary/minor-body source | Resource-bound geometric Cartesian states; reuse current light-time/appearance services above it | New body, disk, brightness or coverage capability from registration alone |
 | Satellite SGP4 source | Explicit TEME state from the immutable element snapshot | ICRS, visibility or ancient extrapolation by relabelling |
 | Grids, reference planes and constellation figures | Geometry services consume state/reference contracts where needed | Fabricated physical objects or moving IAU boundaries |
@@ -177,7 +179,7 @@ provenance. Static directions must not require an artificial source epoch.
 Wenu's metadata admission makes this model distinction. The SDK now admits
 `static_direction` models with empty `ObjectRecord.source_epochs` and nullable
 `DirectionState.source_epoch`. Native/epoch capabilities still require catalogue
-source epochs; a session rejects null direction epochs outside static admission.
+source epochs; null direction epochs require static or catalogue-lookup admission.
 Static and native/epoch capabilities cannot share a single model admission.
 Declared epochs cannot be omitted or changed. Query time and actual anchor remain
 required. Coverage, scale, numerical error and certificate checks are unchanged;
@@ -188,6 +190,20 @@ capability with source-bound metadata and explicit legacy reference gaps.
 Source-metadata closure and remaining family/observer migration stay open.
 Galaxy axes/PA and outline construction belong above the kernel; no physical
 curve propagation capability is implied.
+
+`catalogue_lookup` is a distinct additive candidate capability for source
+directions whose reference epochs may be unknown or differ by object. It
+preserves source encoding, not a physical zero-motion hypothesis. Only
+`batch_evaluation` may share its admission. Full-model source lookup uses the
+ordinary query/result/lifetime envelope, preserves declared numerical epochs
+and refuses nondefault accuracy, velocity, interval and bounded-reuse requests
+before backend work. Physical-model evidence must remain `not_evaluated`.
+Query time is request bookkeeping; it is never an inferred source epoch.
+The shipped kit verifies time-independent lookup vectors at its supplied times.
+This does not weaken native/epoch requirements or certify physical validity.
+Domain records retain source labels without inventing a numerical time scale.
+The SDK has no catalogue-specific interpretation. Production still pins dev7;
+open-cluster routing and astrometric enrichment remain separate work.
 
 ## 5. Query and result envelopes
 

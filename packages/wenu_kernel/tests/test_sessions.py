@@ -196,6 +196,102 @@ class StaticDirectionTests(unittest.TestCase):
             self.assertNotEqual(direction_anchor_identity(anchor), direction_anchor_identity(declared))
 
 
+class CatalogueLookupTests(unittest.TestCase):
+    """Closest owner: StaticDirectionTests; protect honest incomplete-source lookup."""
+
+    open_provider = StaticDirectionTests.open_provider
+
+    def test_mixed_source_epochs_are_preserved_and_new_queries_reach_provider(self):
+        from synthetic_providers import CatalogueLookupDirections
+        provider = CatalogueLookupDirections()
+        session = self.open_provider(provider)
+        first = session.evaluate(provider.query())
+        later = session.evaluate(provider.query(times=(replace(EPOCH, jd2=.1),)))
+        self.assertEqual(tuple(row.source_epoch for row in first.states), (None, EPOCH))
+        self.assertEqual(tuple(row.source_epoch for row in later.states), (None, EPOCH))
+        self.assertEqual(tuple(row.vector for row in first.states), tuple(row.vector for row in later.states))
+        self.assertEqual(provider.calls['evaluate'], 2)
+        self.assertIs(session.evaluate(later.query), later)
+
+    def test_lookup_cannot_advertise_other_models_or_temporal_certificates(self):
+        from synthetic_providers import CatalogueLookupDirections
+        for extra in ('native_direction', 'epoch_direction', 'static_direction', 'cartesian_state',
+                      'direction_reuse_bound', 'canonical_direction_reuse'):
+            provider = CatalogueLookupDirections()
+            self.addCleanup(provider.close)
+            admission = provider.descriptor.admissions[0]
+            provider.descriptor = replace(provider.descriptor, admissions=(replace(admission,
+                capabilities=admission.capabilities + (extra,)),))
+            kernel = Kernel(references=(REFERENCE,))
+            self.addCleanup(kernel.close)
+            with self.subTest(extra=extra), self.assertRaises(UnsupportedCapability):
+                kernel.register(provider, ownership='owned')
+            self.assertEqual(provider.calls['close'], 0)
+
+    def test_accuracy_velocity_and_interval_requests_refuse_before_evaluation(self):
+        from synthetic_providers import CatalogueLookupDirections
+        provider = CatalogueLookupDirections()
+        session = self.open_provider(provider)
+        variants = (
+            dict(accuracy=AccuracyRequest(angular_rad=1e-6)),
+            dict(accuracy=AccuracyRequest(position_m=1)),
+            dict(accuracy=AccuracyRequest(velocity_m_s=1)),
+            dict(accuracy=AccuracyRequest(metric='another-metric')),
+            dict(require_velocity=True), dict(coverage=provider.coverage),
+            dict(accuracy=AccuracyRequest(angular_rad=1e-6), evaluation_policy='bounded_reuse'),
+        )
+        for changes in variants:
+            with self.subTest(changes=changes), self.assertRaises(UnsupportedCapability):
+                session.evaluate(provider.query(**changes))
+        self.assertEqual(provider.calls['evaluate'], 0)
+
+    def test_known_or_unknown_epoch_corruption_never_enters_cache(self):
+        from synthetic_providers import CatalogueLookupDirections
+        for index, wrong in ((0, EPOCH), (1, None), (1, replace(EPOCH, jd1=1))):
+            provider = CatalogueLookupDirections()
+            session = self.open_provider(provider)
+            evaluate = provider.evaluate
+            def corrupt(query):
+                batch = evaluate(query)
+                rows = list(batch.states)
+                rows[index] = replace(rows[index], source_epoch=wrong)
+                return replace(batch, states=rows)
+            provider.evaluate = corrupt
+            with self.subTest(index=index, wrong=wrong), self.assertRaises(InvalidProviderResult):
+                session.evaluate(provider.query())
+            provider.evaluate = evaluate
+            self.assertEqual(len(session.evaluate(provider.query()).states), 2)
+            self.assertEqual(provider.calls['evaluate'], 2)
+
+    def test_lookup_keeps_explicit_scale_and_coverage_limits(self):
+        from synthetic_providers import CatalogueLookupDirections
+        provider = CatalogueLookupDirections()
+        session = self.open_provider(provider)
+        for query, error in ((provider.query(times=(TimePoint(1, 0, 'tt'),)), OutsideCoverage),
+                             (provider.query(times=(replace(EPOCH, scale='tdb'),)), TimeConversionUnavailable)):
+            with self.subTest(error=error), self.assertRaises(error):
+                session.evaluate(query)
+        self.assertEqual(provider.calls['evaluate'], 0)
+
+    def test_lookup_cannot_publish_known_physical_epoch_accuracy(self):
+        from synthetic_providers import CatalogueLookupDirections
+        provider = CatalogueLookupDirections()
+        session = self.open_provider(provider)
+        evaluate = provider.evaluate
+        def corrupt(query):
+            batch = evaluate(query)
+            row = batch.states[-1]
+            physical = replace(row.evidence.physical_model, status='bounded', value=0)
+            row = replace(row, evidence=replace(row.evidence, physical_model=physical))
+            return replace(batch, states=batch.states[:-1] + (row,))
+        provider.evaluate = corrupt
+        with self.assertRaises(InvalidProviderResult):
+            session.evaluate(provider.query())
+        provider.evaluate = evaluate
+        session.evaluate(provider.query())
+        self.assertEqual(provider.calls['evaluate'], 2)
+
+
 class RegistryTests(unittest.TestCase):
     def setUp(self):
         self.fixed = FixedDirections("fixed")

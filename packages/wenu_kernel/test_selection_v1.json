@@ -1,8 +1,8 @@
 {
   "schema": "wenu-test-selection/1",
   "owner": "wenu_kernel",
-  "slice": "Additive static_direction capability with optional source epoch and unchanged native/epoch admission",
-  "accepted_base": "ca5cbc2190752e6749bd796b9537fc790260db41",
+  "slice": "Additive catalogue_lookup without physical epoch-model accuracy; mixed/unknown source epochs; native/epoch/static admission unchanged",
+  "accepted_base": "5f8fca4c4a391ea54aba05401163bb1c245ce7ff",
   "runtime_dependencies": [],
   "required": [
     "python -m unittest discover -s packages/wenu_kernel/tests -v",
@@ -45,12 +45,17 @@
     "static capability admits wrong state representation or ambiguous direction meaning",
     "declared static source epoch hidden/changed or null provenance poisons partial cache",
     "static output changes with evaluation time but passes shipped conformance",
-    "static constancy silently grants temporal reuse, infinite coverage or physical certainty"
+    "static constancy silently grants temporal reuse, infinite coverage or physical certainty",
+    "Incomplete source epoch replaced by fabricated date or zero-motion model",
+    "Lookup admission mixed with propagation, static model or temporal reuse",
+    "Lookup accuracy/velocity/interval request reaches backend",
+    "Lookup state hides declared epoch or claims physical epoch-model accuracy",
+    "Lookup vectors vary with request time while shipped kit accepts them"
   ],
   "legacy_tests_moved_or_removed": [],
   "affected_consumers": [
-    "SDK records, registration/session, portable conformance and synthetic providers",
-    "Existing Wenu native stellar provider and Stars via kernel-static-compatibility; production pin unchanged"
+    "SDK registration/session, records, portable conformance and synthetic/external consumer cases",
+    "Existing Wenu shared catalogue provider via stellar and static galaxy consumers; production SDK pin unchanged"
   ],
   "excluded": {
     "other production consumers": "No production routing, resources, snapshot schema, observation/numerical model, projection/render or atlas changes. Existing native stellar consumers use unchanged required fields and retain their epochs.",
@@ -59,51 +64,32 @@
   "collection_change": "none; root pytest remains scoped to tests and the kernel retains its explicit independent gate",
   "verification": {
     "source_digest_algorithm": "SHA-256 over sorted repository path + NUL + exact file bytes + NUL for every Python file in the named directory",
-    "source_sha256": "d85e23513671112381324fe855de348fb6dd395f12fff930de9c3a09c1b1d551",
-    "tests_sha256": "036555b4f7a11f44513757c00fbec046235f42a5bccf9ebe5b489ba856782317",
-    "source_unittest_cases": 181,
-    "installed_wheel_unittest_cases": 181,
-    "wheel_sha256": "812c90e5ae9a80c92b40c07d9e8a06ce36f3f92ff84b969e7b87fc02490a1384",
+    "source_sha256": "6c152ea2b206f8d96153c4de41bbe00226c94207947da642fb322ecf652f84a4",
+    "tests_sha256": "25f0ec6b53e253ca30a4fbb8652172bd1696ca386c27de44e6febd75ad0f004f",
+    "source_unittest_cases": 204,
+    "source_seconds": 0.33,
+    "installed_wheel_unittest_cases": 204,
     "isolated_environment": "fresh venv; Wenu/numpy/astropy/matplotlib/skyfield/sgp4/pandas/spiceypy absent",
-    "positive_constructed_provider_cases": 8,
-    "external_consumer_conformance_cases": 8,
-    "external_consumer": "separate -I -S subprocess imports only installed SDK and its own constructed provider; repository fixtures absent",
+    "positive_constructed_provider_cases": 10,
+    "external_consumer_conformance_cases": 16,
+    "consumer_passed": 69,
+    "consumer_subtests": 9,
+    "consumer_seconds": 6.1,
     "fault_injection": [
-      "bad provider ordering, metadata propagation, history-dependent output, unobserved evaluation, missing reuse case, corrupt certificate and impure planner fail the shipped kit",
-      "disabled metadata purity guard fails harness meta-tests",
-      "disabled failed-admission cleanup fails harness meta-tests",
-      "disabled canonical planning purity guard fails harness meta-tests"
+      "Disabled lookup accuracy/refusal guard: closest query test fails",
+      "Disabled lookup physical-model evidence guard: closest publication test fails",
+      "Disabled lookup invariance guard: shipped harness meta-test fails"
     ],
-    "mac_documentation_gate": "pending for this candidate",
-    "prior_dev6_receipt": {
-      "source_digest_algorithm": "SHA-256 over sorted repository path + NUL + exact file bytes + NUL for every Python file in the named directory",
-      "source_sha256": "604157f6f5423096fe326d9e6a2707ea78906e599486c890af246784aa8948d9",
-      "tests_sha256": "8adf51085393ff8087960442562ce8c3ad7fe2e835cd31e1244286bf984a496d",
-      "source_unittest_cases": 157,
-      "installed_wheel_unittest_cases": 157,
-      "wheel_sha256": "b815f32db19eda0b839121f5101c189d9279a046fd98f03009f6a06e6b4a4ea7",
-      "isolated_environment": "fresh venv; Wenu/numpy/astropy/matplotlib/skyfield/sgp4/pandas/spiceypy absent",
-      "positive_constructed_provider_cases": 6,
-      "external_consumer_conformance_cases": 8,
-      "external_consumer": "separate -I -S subprocess imports only installed SDK and its own constructed provider; repository fixtures absent",
-      "fault_injection": [
-        "bad provider ordering, metadata propagation, history-dependent output, unobserved evaluation, missing reuse case, corrupt certificate and impure planner fail the shipped kit",
-        "disabled metadata purity guard fails harness meta-tests",
-        "disabled failed-admission cleanup fails harness meta-tests",
-        "disabled canonical planning purity guard fails harness meta-tests"
-      ],
-      "mac_documentation_gate": "pending for this candidate"
-    },
-    "source_seconds": 0.348,
-    "installed_wheel_seconds": 0.362,
-    "native_compatibility_passed": 49,
-    "native_compatibility_subtests": 9,
-    "native_compatibility_seconds": 1.51
+    "mac_acceptance": "pending",
+    "installed_wheel_seconds": 0.323,
+    "wheel_sha256": "93ddcbaf7b92f2d0972915b1112f6b8065f88b1aacbb0ebb77a53d6f844b6ee4",
+    "documentation_local": "33 passed; three archive-dependent checks await complete Mac checkout; active links checked against authoritative tree",
+    "tooling": "8 passed in 0.926 s"
   },
   "existing_test_changes": [
     {
-      "node_ids": "All pre-existing SDK test methods",
-      "change": "Retained unchanged; append record/session/harness tests and two static provider factories. Portable conformance fresh/warm method adds static-vector invariance assertions."
+      "node_ids": "Existing SDK tests",
+      "change": "Retain existing assertions; extend portable invariance check to explicit lookup and external consumer subprocess to exercise both native and lookup capabilities. Add owner tests and two lookup factory cases."
     }
   ]
 }

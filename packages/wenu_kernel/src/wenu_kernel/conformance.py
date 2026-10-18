@@ -164,11 +164,11 @@ class ProviderConformance:
         self.assertEqual(fresh.evaluate(other.probe), probe)
         self.assertEqual(fresh.evaluate(other.query), first)
         self.assertEqual(session.evaluate(case.query), first)
-        if "static_direction" in admission.capabilities:
+        if set(admission.capabilities) & {"static_direction", "catalogue_lookup"}:
             vectors = {}
             for row in first.states + probe.states:
                 self.assertEqual(row.vector, vectors.setdefault(row.object_key, row.vector),
-                                 "static direction changed with evaluation time")
+                                 "static/lookup direction changed with evaluation time")
 
     def test_conformance_publication_and_owned_lifetime(self):
         case, kernel, session, _ = self._open_case()

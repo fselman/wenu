@@ -68,6 +68,19 @@
         }
       ]
     },
+    "kernel-catalogue-lookup-compatibility": {
+      "scope": "Existing stellar and static galaxy consumers against the additive catalogue_lookup SDK candidate.",
+      "limits": "Supply candidate SDK on PYTHONPATH. No root dependency pin, provider routing, resource, snapshot, numerical, projection/render, atlas or collection changes. Independent SDK source/wheel and documentation/tooling gates remain separate; no full production repeat.",
+      "extends": [
+        "kernel-static-compatibility"
+      ],
+      "selections": [
+        {
+          "node": "tests/test_galaxy_geometry.py",
+          "reason": "Existing static galaxy provider, returned-vector/refusal boundaries, source epochs and shipped conformance remain compatible."
+        }
+      ]
+    },
     "kernel-static-compatibility": {
       "scope": "Existing native stellar adapter and public Stars compatibility with the additive static-direction SDK contract.",
       "limits": "Run with the candidate SDK explicitly installed or on PYTHONPATH. No production routing, root dependency pin, catalogue/resource, snapshot schema, numerical model, projection/render or atlas changes. Independent SDK/wheel gate is separate; no full production suite.",

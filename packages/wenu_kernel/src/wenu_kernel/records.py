@@ -443,7 +443,7 @@ class ReuseCertificate:
 
 @dataclass(frozen=True, slots=True)
 class DirectionState:
-    """A nullable source epoch is admitted only by a static-direction session model."""
+    """Nullable source epoch needs explicit static or catalogue-lookup admission."""
 
     object_key: ObjectKey
     time: TimePoint
