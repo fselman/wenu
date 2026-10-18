@@ -5,15 +5,14 @@
 **As-is base:** main `3359e9ebb430de68e68cdee8bfc40ddd6d3da692`.
 **Proposed contract identifier:** `wenu.kernel/1.0`.
 
-**Current candidate extension:** explicit TimeService, admitted TimeAdapter
-protocol and immutable conversion admission/receipt records. Accepted Cartesian
-states and `StateQuery.require_velocity` remain unchanged. This additive time
-extension is reviewed before the K5 freeze.
+**Current candidate extension:** distributable provider conformance kit,
+factory-owned cases and explicit activity/buffer hooks. Runtime state/time
+contracts remain unchanged. The kit is reviewed before the K5 freeze.
 
 The [K2 implementation](../../packages/wenu_kernel/README.md) remains a declared
 native-state subset. Direction/certificate/canonical-planning and SI Cartesian
-full-model behavior are accepted through PR #240. The current candidate adds
-explicit time conversion and an optional finite-domain TT(TAI)/TAI adapter.
+full-model behavior and explicit time conversion are accepted through
+PR #241. The current candidate ships reusable provider conformance checks.
 Other records/services remain targets, not available imports. Observation,
 Gaia and production routing remain pending. The coordinate guide now documents
 this separate time boundary; existing Wenu transformations/parser are unchanged.
@@ -537,8 +536,16 @@ not imports falsely attributed to existing Wenu.
 
 ## 12. Conformance and independently testable modules
 
-The conformance kit depends on core contracts and synthetic providers only.
-It imports neither Wenu products nor another installed astronomical package.
+The shipped `wenu_kernel.conformance` kit depends only on core contracts
+and the standard library. It imports neither synthetic/concrete providers,
+repository tests, Wenu products nor another installed astronomical package.
+Each provider supplies fresh offline `ProviderCase` factories and honest
+`ProviderActivity`/buffer-mutation hooks. `provider_suite` composes normal
+unittest suites without constructing providers during discovery. Run a case
+per admitted catalogue/model/reference/subset; the kit does not infer complete
+model coverage from one sample. Advertised direction/canonical reuse requires
+executable supplied samples. The same full-model gate supports Cartesian states
+with known or absent velocity. See the [kit API](../../packages/wenu_kernel/README.md#provider-conformance).
 Each domain adds its numerical science oracles; these are not duplicated inside
 the core. A provider change preserving contract runs its own tests/conformance;
 unrelated provider or graphics suites are not a prerequisite after isolation
@@ -586,10 +593,11 @@ No numerical tolerance, ancient accuracy, full covariance support, backend
 coverage or provider permission is admitted merely by accepting the API.
 
 The accepted K2 foundation supplies records, registration/session admission and
-direction certificates without production rerouting. The current bounded slice
-includes canonical direction planning and full-model Cartesian states. The
-current time slice supplies explicit adapter admission and TT(TAI)/TAI conversion;
-it does not close all K2 gates. Relativistic/civil-time adapters and the
-distributable conformance kit remain explicit work before the K5 SDK freeze.
+direction certificates without production rerouting. The accepted native-state
+subset includes canonical direction planning and full-model Cartesian states. The
+accepted time subset supplies explicit adapter admission and TT(TAI)/TAI
+conversion. The current slice ships the reusable provider conformance kit.
+Real provider science/isolation, relativistic/civil-time adapters and complete
+consumer migration remain explicit work before the K5 SDK freeze.
 No Gaia acquisition, scientific-provider extraction, product rewrite or new
 satellite science is part of K1. Wenu must continue to run after every merge.

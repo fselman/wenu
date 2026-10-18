@@ -1,8 +1,8 @@
 {
   "schema": "wenu-test-selection/1",
   "owner": "wenu_kernel",
-  "slice": "K2 explicit TimeService admission, conversion receipts and finite-domain TT(TAI)/TAI adapter",
-  "accepted_base": "1fe78a5158de06f33fa462eea6378f07fd50a47a",
+  "slice": "K2 shipped portable state-provider conformance kit and isolated external consumer",
+  "accepted_base": "a0683a43e1cdd87e91c5f60c1ccada10cacdac5d",
   "runtime_dependencies": [],
   "required": [
     "python -m unittest discover -s packages/wenu_kernel/tests -v",
@@ -33,38 +33,51 @@
     "unadmitted/ambiguous time conversion, resource-coverage bypass or silent conversion chain",
     "loss of split-date precision, incorrect TT(TAI)/TAI offset or inward-rounded error bound",
     "conversion changes source/model/resource/provenance identity or ignores numerical tolerance",
-    "conversion discards backend cause or changes native state same-scale admission"
+    "conversion discards backend cause or changes native state same-scale admission",
+    "conformance suite imports repository fixtures, Wenu products or another provider",
+    "provider construction occurs during conformance test discovery",
+    "metadata or canonical planning performs hidden state evaluation",
+    "one factory sample silently stands in for an unexercised advertised reuse capability",
+    "the reusable harness accepts faulty ordering, history-dependent states or corrupt certificates",
+    "failed conformance setup leaks its caller-owned provider"
   ],
   "legacy_tests_moved_or_removed": [],
   "affected_consumers": [
-    "synthetic test providers only"
+    "SDK conformance harness, synthetic test providers and independent constructed consumer only"
   ],
   "excluded": {
-    "legacy scientific and graphical suites": "No existing src/wenu code, catalogue, resource, backend or root runtime dependency changes; no current production consumer imports the SDK or TimeService.",
+    "legacy scientific and graphical suites": "No existing src/wenu code, scientific resource, root runtime dependency or product path changes; existing Wenu does not import the SDK conformance module.",
     "unrelated providers": "No real provider is part of this slice; neither SDK nor test fixtures import one.",
     "release integration": "No product routing or installed combination changes; isolated-wheel evidence is required before this foundation can be accepted. Final integration remains required for K3 production adapters."
   },
   "collection_change": "none; root pytest remains scoped to tests and the kernel retains its explicit independent gate",
   "verification": {
     "source_digest_algorithm": "SHA-256 over sorted repository path + NUL + exact file bytes + NUL for every Python file in the named directory",
-    "source_sha256": "9f0b53fab1f4ef3c62709b8323c4bc793c087688d2b53b609017b27180e06c3e",
-    "tests_sha256": "2f47f8c5d96e160892cb33c7cf26666098046503f1f7791faa02f4182f3c9434",
-    "source_unittest_cases": 98,
-    "installed_wheel_unittest_cases": 98,
-    "wheel_sha256": "7c045e4c25cd9c78f4ec78e3d1ede00a0be5c28e51018829aeef8ccbb04a8ac2",
+    "source_sha256": "604157f6f5423096fe326d9e6a2707ea78906e599486c890af246784aa8948d9",
+    "tests_sha256": "8adf51085393ff8087960442562ce8c3ad7fe2e835cd31e1244286bf984a496d",
+    "source_unittest_cases": 157,
+    "installed_wheel_unittest_cases": 157,
+    "wheel_sha256": "b815f32db19eda0b839121f5101c189d9279a046fd98f03009f6a06e6b4a4ea7",
     "isolated_environment": "fresh venv; Wenu/numpy/astropy/matplotlib/skyfield/sgp4/pandas/spiceypy absent",
+    "positive_constructed_provider_cases": 6,
+    "external_consumer_conformance_cases": 8,
+    "external_consumer": "separate -I -S subprocess imports only installed SDK and its own constructed provider; repository fixtures absent",
     "fault_injection": [
-      "wrong TT(TAI)/TAI defining offset fails owning tests",
-      "collapsing split JD into binary64 fails owning tests",
-      "ignoring conversion model/resource identity fails owning tests",
-      "ignoring requested numerical conversion bound fails owning tests"
+      "bad provider ordering, metadata propagation, history-dependent output, unobserved evaluation, missing reuse case, corrupt certificate and impure planner fail the shipped kit",
+      "disabled metadata purity guard fails harness meta-tests",
+      "disabled failed-admission cleanup fails harness meta-tests",
+      "disabled canonical planning purity guard fails harness meta-tests"
     ],
     "mac_documentation_gate": "pending for this candidate"
   },
   "existing_test_changes": [
     {
+      "node_ids": "packages/wenu_kernel/tests/test_sessions.py::FixedProviderTests::* and MovingProviderTests::*; RegistryTests unchanged",
+      "change": "Rename the test-side mixin to SyntheticProviderChecks and clarify its fixture-specific scope; all existing test method ASTs, assertions and collected IDs are unchanged."
+    },
+    {
       "node_id": "packages/wenu_kernel/tests/test_isolation.py::IsolationTests::test_sdk_import_with_site_packages_disabled",
-      "change": "Also import the time service and optional TT(TAI)/TAI adapter under -I -S; the forbidden dependency assertions are retained."
+      "change": "Also import the optional shipped conformance module under -I -S; retain all forbidden dependency assertions."
     }
   ]
 }

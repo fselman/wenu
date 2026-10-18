@@ -48,8 +48,79 @@ Native-state value records remain in `wenu_kernel.records`; time-specific record
 belong to `wenu_kernel.time`. The reuse module exports the
 certificate type plus `make_certificate` for its content identity and admission.
 Records do not import session, hashing or provider services.
-The shared provider gate is currently a test-side mixin; the distributable
-complete conformance kit remains a K2/K5 deliverable.
+The reusable standard-library provider gate is shipped in
+`wenu_kernel.conformance`; provider-specific fault/science checks remain with
+their owner. See [provider conformance](#provider-conformance).
+
+## Provider conformance
+
+The optional `wenu_kernel.conformance` module ships in this wheel, uses only
+the standard library and SDK, and imports no repository tests, concrete
+providers, numerical backends or product code. It is not imported automatically
+by the runtime facade. A provider package installs the SDK plus its own code
+and owns its offline fixtures and numerical/science oracles.
+
+Create a `ProviderCase(provider, query, probe, activity, mutate_buffers,
+reuse_query=None)` factory. Every call creates a fresh open provider with the
+same immutable bindings. `query` is a supported full-model query with at least
+two distinct times; `probe` includes an additional time but the same catalogue, model,
+reference and ordered object selection. Use multiple objects whenever the
+admitted subset permits. The suite reverses both query axes to check ordering.
+
+`activity()` returns `ProviderActivity(evaluations, certifications, closes)`
+from honest owner instrumentation. Count all numerical work, including hidden
+propagation inside metadata/planning calls; inspection must have no effects.
+`mutate_buffers()` changes actual provider-owned source/result buffers that
+could alias published data. If the implementation has no mutable buffers,
+document that fact with its owner tests rather than inventing a fake mutation.
+The harness proves its evaluation hook observes work; it cannot prove an
+owner's instrumentation or a no-op mutation hook is truthful.
+
+An advertised `direction_reuse_bound` requires a supported multi-time
+`bounded_reuse` query with an explicit angular tolerance. Ordinary providers
+omit `reuse_query` and must explicitly refuse certification. Canonical providers
+must supply a query that actually exercises planning and certificates without
+fallback. There are no skipped tests hiding an unexercised advertised capability.
+
+Run one factory/suite for **each admitted catalogue/model/reference/subset**;
+one sampled case does not certify an entire multi-model descriptor. Each suite
+owns eight checks: pure/stable metadata, ordered full-model results and exact
+cache, cold/warm/request-order equivalence, immutable publication and owned
+closing, borrowed closing, invalid selection/scale admission, optional direction
+certification/refusal and optional canonical planning/reproducibility. Cartesian
+position-only and velocity-bearing cases use the same full-model checks.
+
+`provider_suite(factory, name="StellarModelContract")` constructs a normal
+`unittest.TestSuite` without instantiating a provider during discovery. It can
+be composed with the provider's own science tests:
+
+```python
+from wenu_kernel.conformance import provider_suite
+
+def load_tests(loader, tests, pattern):
+    # make_offline_case is defined by this provider's test fixtures.
+    tests.addTests(provider_suite(make_offline_case, name="StellarModelContract"))
+    return tests
+```
+
+Alternatively mix `ProviderConformance` with `unittest.TestCase` and implement
+`make_case()`. Do not import another package's tests or Wenu's synthetic fixtures.
+Provider construction failures before returning a case remain factory-owned;
+after return, the harness cleans up failed admission and request-owned sessions.
+Cleanup failures are reported by unittest alongside the original failure.
+
+The kit checks contracts on supplied samples. It does **not** prove physical
+accuracy, conservative bounds throughout an interval, real resource integrity,
+acquisition permission, concurrency or all production consumers. Those proofs,
+provider-specific backend/failure/uncertainty cases and isolated installation
+belong to that provider's gate. Shared SDK failures stay in the SDK owner suite.
+Time-adapter tests remain owned by the explicit time service/adapter boundary.
+
+The SDK gate runs this kit against six constructed state-provider cases and
+deliberately faulty providers. A separate `-I -S` consumer uses only SDK imports
+and its own constructed provider, with repository fixtures absent. Existing
+synthetic fault/recovery tests retain their original test IDs and assertions.
+No current Wenu production path is rerouted by shipping this test module.
 
 ## Explicit time conversion
 
@@ -93,7 +164,7 @@ tests protect numerical representation, not ancient TAI science.
 TDB/TCB conversion requires a separately admitted numerical authority; none is
 supplied here. UTC/UT1, leap seconds, EOP, Delta-T and historical calendar input
 remain outside core `TimePoint`. Importing the SDK or time service loads no
-astronomy/graphics backend. The complete provider conformance kit remains next.
+astronomy/graphics backend. State-provider conformance is a separate shipped gate.
 
 ## Cartesian state meaning
 

@@ -1,4 +1,4 @@
-"""Reusable provider gate and registry/session composition/failure contracts."""
+"""Synthetic provider faults and registry/session composition/failure contracts."""
 
 from dataclasses import replace
 import unittest
@@ -14,11 +14,11 @@ from wenu_kernel.records import AccuracyRequest, ObjectKey, SessionPolicy, TimeP
 from synthetic_providers import EPOCH, FixedDirections, MovingDirections, REFERENCE
 
 
-class ProviderConformance:
-    """Shared gate, independently applied to each synthetic provider factory.
+class SyntheticProviderChecks:
+    """Fixture-specific mutation/failure checks retained with their old test IDs.
 
-    This first test-side kit uses only SDK records. A distributable full
-    conformance kit remains a later K2/K5 deliverable.
+    The portable provider gate is shipped in wenu_kernel.conformance; these
+    synthetic hooks and numerical expectations are not part of that API.
     """
 
     def test_order_identity_and_identical_query_reuse(self):
@@ -71,7 +71,7 @@ class ProviderConformance:
         self.assertEqual(self.provider.calls["evaluate"], 5)
 
 
-class FixedProviderTests(ProviderConformance, unittest.TestCase):
+class FixedProviderTests(SyntheticProviderChecks, unittest.TestCase):
     def setUp(self):
         self.provider = FixedDirections("fixed")
         self.kernel = Kernel(references=(REFERENCE,))

@@ -22,20 +22,20 @@ PR #234 is integrated. Its tree is identical to `ea8dc505`, which passed all
 
 ## Forward work
 
-K1 and the K2 direction/reuse and SI Cartesian subsets are accepted through
-PR #240, main `1fe78a51`.
+K1 and the K2 native-state/reuse and explicit time subsets are accepted
+through PR #241, main `a0683a43`.
 The separate [kernel project](../../packages/wenu_kernel/README.md) owns
 standard-library direction records, registration and synchronous sessions.
 SI Cartesian states retain explicit optional velocity, independent error
-channels and source-epoch availability. The current candidate adds an explicit
-TimeService with admitted offline adapters and conversion receipts, plus a
-bounded TT(TAI)/TAI adapter. Native state queries still require matching scales.
+channels and source-epoch availability. TimeService admits explicit offline
+conversions, including bounded TT(TAI)/TAI. Native state queries still require
+matching scales. The current candidate ships the reusable provider conformance
+kit with factory-owned fixtures and independent installed-consumer evidence.
 Its [selection manifest](../../packages/wenu_kernel/test_selection_v1.json)
 keeps the independent core gate separate from existing Wenu tests. Current
 products do not consume it yet. Relativistic/civil-time adapters, realization
-services, Cartesian reuse, the distributable conformance kit and K3 routing
-remain pending; this is not a completed
-kernel or frozen SDK.
+services, Cartesian reuse and K3 routing remain pending; this is not a
+completed kernel or frozen SDK.
 
 [Roadmap to v0.9.5: kernel and loadable packages](kernel_roadmap_v0.9.5.md)
 is the single active forward roadmap. Both architecture diagrams are in that

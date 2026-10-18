@@ -7,9 +7,11 @@ architecture lives separately in the [roadmap](kernel_roadmap_v0.9.5.md).
 The separate [K2 kernel project](../../packages/wenu_kernel/README.md)
 implements immutable direction records, explicit registration and synchronous
 sessions, reproducible certified direction reuse and SI Cartesian full-model
-states with optional velocity and separate uncertainty channels. The current
-candidate adds explicit time-adapter admission, conversion receipts and bounded
-TT(TAI)/TAI conversion, separate from same-scale native state queries.
+states with optional velocity and separate uncertainty channels. Explicit
+time-adapter admission, conversion receipts and bounded TT(TAI)/TAI conversion
+remain separate from same-scale native state queries. The current candidate
+ships a reusable stdlib provider conformance kit and verifies an external
+consumer with no repository fixtures.
 It has no runtime dependencies or existing
 product consumers. The production pipeline below is unchanged; routing it
 through the kernel remains K3. Real providers and the SDK freeze are pending.

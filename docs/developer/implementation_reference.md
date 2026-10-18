@@ -204,6 +204,20 @@ this method; existing non-planning providers retain their original protocol.
 - `sky/native_snapshot.py`: current native catalogue snapshot and reuse facade.
   Preserve coverage, resource and design binding; do not relabel it as the new kernel.
 
+## Independent provider verification
+
+`wenu_kernel.conformance.provider_suite(factory, name=...)` returns a standard
+`unittest.TestSuite`. The factory creates a fresh `ProviderCase` containing
+the provider, supported full-model `query`, a distinct-time `probe`, activity
+and buffer-mutation hooks, and `reuse_query` when direction reuse is advertised.
+`ProviderActivity` records full-model work, certifications and close calls.
+Run one case per admitted catalogue/model/reference/subset. The same checks
+support direction and SI Cartesian providers; optional canonical reuse must be
+exercised by a supplied sample, while unrelated providers need no planner.
+See the [kit contract and limitations](../../packages/wenu_kernel/README.md#provider-conformance).
+The provider owns its science/failure tests and fixtures; the SDK module ships
+no concrete provider and does not import the legacy Wenu package.
+
 ## Configuration, presentation and curation
 
 Use [schema v2](configuration_schema_v2.md) for ordinary chart configuration.
