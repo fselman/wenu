@@ -24,6 +24,14 @@ not scientific accuracy evidence for Gaia or any real catalogue. No legacy test
 is moved or removed; the existing missing-tolerance case now expects
 `InvalidQuery` because bounded reuse is an implemented policy requiring a bound.
 
+Canonical planning extends the same owner gate. Compare cold/warm sessions,
+reversed request order and multi-time batches; test cell boundaries where an
+older certificate remains valid but the provider's canonical anchor changes.
+Malformed plans must fail before propagation. Failures during certification
+must not publish new canonical anchors. Providers without the optional planning
+capability retain the accepted full-model fallback. Synthetic schedules are
+contract evidence, not a scientific accuracy claim for a real catalogue.
+
 Run the smallest owner suite plus directly affected contract/seam tests.
 Use `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1`; add no ambient plugin dependency.
 During iteration, do not run unrelated scientific, projection or rendering

@@ -153,11 +153,17 @@ adapter is supplied by the foundation.
 cover scalar original direction anchors. `StateBatch.reuse_certificates` lists
 their immutable envelopes; reused rows carry `certificate_id`, original
 `anchor_time`, requested `time` and retained `source_epoch`. The default
-`SessionPolicy.reproducibility="reproducible"` uses full-model evaluation.
+`SessionPolicy.reproducibility="reproducible"` uses provider-planned canonical
+anchors when supported, otherwise full-model evaluation.
 Explicit `interactive_bounded` sessions may reuse admitted certificates for
 `bounded_reuse` queries with a positive angular tolerance. `query.coverage`
 requires a certificate covering the whole interval. No arbitrary cached anchor
-is admitted as a reproducible atlas result; canonical anchor planning is pending.
+is admitted as a reproducible atlas result. Optional
+`wenu_kernel.providers.CanonicalDirectionProvider.plan_reuse` returns an immutable
+`DirectionReusePlan` of `AnchorSelection` records, constructed with
+`wenu_kernel.reuse.make_reuse_plan`. The returned `StateBatch.reuse_plan` records
+that schedule. Only providers advertising `canonical_direction_reuse` need
+this method; existing non-planning providers retain their original protocol.
 
 - `coordinates.py`: `CoordinateSpec`, `ObservationContext` and scientific
   enum/value vocabulary. Frame, origin, status, epoch, equinox and instant

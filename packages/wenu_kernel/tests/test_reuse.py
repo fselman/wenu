@@ -7,11 +7,11 @@ import unittest
 from wenu_kernel import Kernel
 from wenu_kernel.errors import (
     AccuracyUnavailable, InvalidProviderResult, InvalidQuery, OutsideCoverage,
-    ProviderEvaluationError,
+    ProviderEvaluationError, UnsupportedCapability,
 )
 from wenu_kernel.records import AccuracyRequest, SessionPolicy, StateBatch, TimeSpan
 from wenu_kernel.reuse import direction_anchor_identity, certificate_identity
-from synthetic_providers import CertifiedDirections, EPOCH, FixedDirections, REFERENCE, shifted
+from synthetic_providers import CertifiedDirections, CanonicalDirections, EPOCH, FixedDirections, REFERENCE, shifted
 
 
 class ReuseTests(unittest.TestCase):
@@ -260,6 +260,147 @@ class ReuseTests(unittest.TestCase):
         self.kernel.close()
         self.assertEqual(reused.reuse_certificates[0].identity, identity)
         self.assertEqual(reused.states[0].anchor_time, EPOCH)
+
+
+class CanonicalReuseTests(unittest.TestCase):
+    def setUp(self):
+        self.provider = CanonicalDirections()
+        self.kernel = Kernel(references=(REFERENCE,))
+        self.kernel.register(self.provider, ownership="borrowed")
+        self.session = self.kernel.open_session(SessionPolicy((self.provider.reference,)))
+
+    def tearDown(self):
+        self.session.close()
+        self.kernel.close()
+
+    def query(self, time=EPOCH, **changes):
+        return self.provider.query(times=(time,), accuracy=AccuracyRequest(angular_rad=1e-5),
+                                   evaluation_policy="bounded_reuse", **changes)
+
+    def test_cold_warm_reverse_order_and_different_batches_return_identical_rows(self):
+        times = (shifted(EPOCH, .001), shifted(EPOCH, -.001), shifted(EPOCH, .01))
+        forward = {t: self.session.evaluate(self.query(t)) for t in times}
+        with self.kernel.open_session(SessionPolicy((self.provider.reference,))) as reverse:
+            backward = {t: reverse.evaluate(self.query(t)) for t in reversed(times)}
+        self.assertEqual(forward, backward)
+        with self.kernel.open_session(SessionPolicy((self.provider.reference,))) as batch_session:
+            batch = batch_session.evaluate(replace(self.query(), times=tuple(reversed(times))))
+        for row in batch.states:
+            match = next(r for r in forward[row.time].states if r.object_key == row.object_key)
+            self.assertEqual(row, match)
+        self.assertTrue(all(result.reuse_plan is not None for result in forward.values()))
+
+    def test_same_cell_reuses_anchors_and_new_cell_updates_only_fast_object(self):
+        first = self.session.evaluate(self.query(shifted(EPOCH, .001)))
+        self.provider.evaluated_objects.clear()
+        second = self.session.evaluate(self.query(shifted(EPOCH, .0015)))
+        self.assertEqual(self.provider.evaluated_objects, [])
+        self.assertEqual([r.anchor_time for r in first.states], [r.anchor_time for r in second.states])
+        third = self.session.evaluate(self.query(shifted(EPOCH, .01)))
+        self.assertEqual(self.provider.evaluated_objects, [(third.states[0].anchor_time, self.provider.objects[0])])
+        self.assertEqual(third.states[1].anchor_time, EPOCH)
+
+    def test_cell_boundary_uses_planned_anchor_even_when_previous_certificate_still_fits(self):
+        before = shifted(EPOCH, nextafter(2**-9, 0))
+        boundary = shifted(EPOCH, 2**-9)
+        obj = self.provider.objects[0]
+        a = self.session.evaluate(self.query(before, objects=(obj,)))
+        self.assertTrue(a.reuse_certificates[0].validity.contains(boundary))
+        b = self.session.evaluate(self.query(boundary, objects=(obj,)))
+        self.assertEqual(a.states[0].anchor_time, EPOCH)
+        self.assertEqual(b.states[0].anchor_time, shifted(EPOCH, 2**-8))
+        self.assertEqual(self.provider.calls["evaluate"], 2)
+
+    def test_plan_is_pure_deterministic_and_transitively_immutable(self):
+        from wenu_kernel.reuse import make_reuse_plan, reuse_plan_identity
+        query = self.query(shifted(EPOCH, .001))
+        calls = self.provider.calls.copy()
+        plan = self.provider.plan_reuse(query)
+        self.assertEqual(plan, self.provider.plan_reuse(query))
+        self.assertEqual(self.provider.calls, calls)
+        self.assertEqual(self.provider.evaluated_objects, [])
+        self.assertEqual(plan.identity, reuse_plan_identity(plan))
+        values = list(plan.anchors)
+        copied = make_reuse_plan(query, values, plan.method)
+        values.clear()
+        self.assertEqual(copied, plan)
+        with self.assertRaises(FrozenInstanceError):
+            plan.anchors[0].anchor_time = EPOCH
+
+    def test_invalid_plans_fail_before_any_propagation(self):
+        for fault in ("none", "query", "omit", "order", "outside", "scale", "method_resource", "identity"):
+            self.provider.plan_fault = fault
+            with self.subTest(fault=fault), self.assertRaises(InvalidProviderResult):
+                self.session.evaluate(self.query(shifted(EPOCH, .001)))
+        self.assertEqual(self.provider.calls["evaluate"], 0)
+        self.provider.plan_fault = None
+        self.assertIsNotNone(self.session.evaluate(self.query(shifted(EPOCH, .001))).reuse_plan)
+
+    def test_backend_planning_failure_preserves_cause_and_never_falls_back(self):
+        self.provider.plan_fault = "backend"
+        with self.assertRaises(ProviderEvaluationError) as caught:
+            self.session.evaluate(self.query())
+        self.assertIsInstance(caught.exception.__cause__, RuntimeError)
+        self.assertEqual(self.provider.calls["evaluate"], 0)
+
+    def test_unavailable_or_unsupported_plans_fall_back_to_actual_epoch_model(self):
+        for index, fault in enumerate(("unavailable", "unsupported")):
+            self.provider.plan_fault = fault
+            result = self.session.evaluate(self.query(shifted(EPOCH, .001 + index * .0001)))
+            with self.subTest(fault=fault):
+                self.assertIsNone(result.reuse_plan)
+                self.assertTrue(all(row.anchor_time == row.time and row.certificate_id is None for row in result.states))
+
+    def test_too_tight_canonical_certificate_falls_back_without_relaxing_bound(self):
+        self.session.evaluate(self.query(shifted(EPOCH, .001)))
+        query = replace(self.query(shifted(EPOCH, .001)), accuracy=AccuracyRequest(angular_rad=1e-12))
+        result = self.session.evaluate(query)
+        self.assertIsNone(result.reuse_plan)
+        self.assertTrue(all(row.evidence.numerical.value <= 1e-12 and row.time == row.anchor_time for row in result.states))
+
+    def test_certificate_failure_rolls_back_all_new_canonical_anchors(self):
+        self.provider.certificate_fault = "backend"
+        self.provider.fail_certificate_object = self.provider.objects[1]
+        query = self.query(shifted(EPOCH, .001))
+        with self.assertRaises(ProviderEvaluationError):
+            self.session.evaluate(query)
+        self.assertEqual(len(self.provider.evaluated_objects), 2)
+        self.provider.certificate_fault = None
+        self.session.evaluate(query)
+        self.assertEqual(len(self.provider.evaluated_objects), 4)
+
+    def test_explicit_whole_interval_has_a_certificate_and_uncovered_interval_fails(self):
+        obj = self.provider.objects[0]
+        fitting = TimeSpan(shifted(EPOCH, -.002), shifted(EPOCH, .002))
+        result = self.session.evaluate(self.query(shifted(EPOCH, .001), objects=(obj,), coverage=fitting))
+        self.assertIsNotNone(result.reuse_plan)
+        self.assertTrue(all(result.reuse_certificates[0].validity.contains(t) for t in (fitting.start, fitting.stop)))
+        # A requested interval need not contain the provider's canonical anchor.
+        narrow = TimeSpan(shifted(EPOCH, .0009), shifted(EPOCH, .0011))
+        narrow_result = self.session.evaluate(self.query(shifted(EPOCH, .001), objects=(obj,), coverage=narrow))
+        self.assertIsNotNone(narrow_result.reuse_plan)
+        self.assertFalse(narrow.contains(narrow_result.states[0].anchor_time))
+        too_wide = TimeSpan(shifted(EPOCH, -.01), shifted(EPOCH, .01))
+        with self.assertRaises(AccuracyUnavailable):
+            self.session.evaluate(self.query(shifted(EPOCH, .001), objects=(obj,), coverage=too_wide))
+
+    def test_full_model_policy_never_uses_canonical_reuse(self):
+        self.session.evaluate(self.query(shifted(EPOCH, .001)))
+        result = self.session.evaluate(replace(self.query(shifted(EPOCH, .0015)), evaluation_policy="full_model"))
+        self.assertIsNone(result.reuse_plan)
+        self.assertTrue(all(row.certificate_id is None and row.time == row.anchor_time for row in result.states))
+
+    def test_optional_capability_requires_a_planner_and_does_not_touch_other_provider(self):
+        bad = CanonicalDirections("incomplete")
+        bad.plan_reuse = None
+        with self.assertRaises(UnsupportedCapability):
+            self.kernel.register(bad, ownership="owned")
+        self.assertEqual(bad.calls["close"], 0)
+        fixed = FixedDirections("independent")
+        self.kernel.register(fixed, ownership="borrowed")
+        before = fixed.calls.copy()
+        self.session.evaluate(self.query(shifted(EPOCH, .001)))
+        self.assertEqual(fixed.calls, before)
 
 
 if __name__ == "__main__":

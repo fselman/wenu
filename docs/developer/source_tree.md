@@ -16,7 +16,9 @@ The independent [kernel project](../../packages/wenu_kernel/README.md) lives
 outside `src/wenu`. Its `records.py`, `errors.py`, `providers.py`, `kernel.py`
 and small `__init__.py` own candidate SDK values, errors, protocol and session
 lifecycle respectively. `reuse.py` owns angular certificate identities and
-interval/error admission without physical motion equations. All source/test
+interval/error admission and canonical plan identity without physical motion
+equations. `providers.py` also declares the optional canonical planning protocol;
+`kernel.py` admits its schedule and owns atomic per-object anchor caching. All source/test
 paths and the explicit selection manifest are tracked in
 [the migration inventory](kernel_migration_inventory_v1.json).
 It is not imported by the existing product package.

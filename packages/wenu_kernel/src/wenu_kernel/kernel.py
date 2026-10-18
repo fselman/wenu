@@ -12,7 +12,7 @@ from .records import (
     ProviderDescriptor, ProviderKey, ReferenceSpec, SessionPolicy, StateBatch,
     StateQuery, exact,
 )
-from .reuse import validate_certificate, qualifies
+from .reuse import validate_certificate, qualifies, validate_reuse_plan
 
 
 def invoke(provider, operation, *args, provider_key=None):
@@ -66,9 +66,15 @@ class Kernel:
             if (admission.reference.representation, admission.reference.units) != ("direction", "rad"):
                 raise UnsupportedCapability("only direction states are implemented in this slice")
             if not set(admission.capabilities) <= {
-                "native_direction", "epoch_direction", "batch_evaluation", "direction_reuse_bound"
+                "native_direction", "epoch_direction", "batch_evaluation", "direction_reuse_bound",
+                "canonical_direction_reuse",
             }:
                 raise UnsupportedCapability("capability is outside this implementation slice")
+            if "canonical_direction_reuse" in admission.capabilities and (
+                "direction_reuse_bound" not in admission.capabilities
+                or not callable(getattr(provider, "plan_reuse", None))
+            ):
+                raise UnsupportedCapability("canonical reuse requires a planner and direction bounds")
             if not set(admission.model.dependencies) <= set(admission.catalogue.resources):
                 raise ResourceMismatch("model resources are not bound by its catalogue")
         self._providers[descriptor.key] = provider, descriptor, ownership
@@ -145,6 +151,7 @@ class KernelSession:
         self._snapshots = snapshots
         self._cache = {}
         self._reuse = {}
+        self._canonical = {}
         self._closed = False
 
     @property
@@ -195,6 +202,11 @@ class KernelSession:
         if query in self._cache:
             return self._cache[query]
         if query.evaluation_policy == "bounded_reuse":
+            if (self.policy.reproducibility == "reproducible"
+                    and "canonical_direction_reuse" in admission.capabilities):
+                result = self._evaluate_canonical(query, records, instance, descriptor, admission)
+                if result is not None:
+                    return result
             return self._evaluate_bounded(query, records, instance, descriptor, admission)
         batch = self._evaluate_full(query, records, instance, descriptor)
         self._cache[query] = batch
@@ -226,9 +238,66 @@ class KernelSession:
             bound = query.accuracy.angular_rad
             if bound is not None and (numerical.status != "bounded" or numerical.value > bound):
                 raise AccuracyUnavailable("provider cannot certify the requested numerical bound")
-        if batch.reuse_certificates:
+        if batch.reuse_certificates or batch.reuse_plan is not None:
             raise InvalidProviderResult("full-model provider output cannot contain reuse certificates")
         return batch
+
+    def _evaluate_canonical(self, query, records, instance, descriptor, admission):
+        """Evaluate only provider-chosen anchors; cache history never chooses one.
+
+        A provider that cannot supply the requested bound falls back to full
+        evaluation. Invalid envelopes and backend errors fail closed. Neither
+        path publishes a partial canonical cache.
+        """
+        try:
+            plan = invoke(instance, "plan_reuse", query, provider_key=descriptor.key)
+        except (UnsupportedCapability, AccuracyUnavailable):
+            return None
+        validate_reuse_plan(plan, query, admission)
+        anchors, missing, staged = {}, {}, {}
+        for selection in plan.anchors:
+            key = (query.catalogue, query.model, query.reference, selection.object_key,
+                   selection.anchor_time, query.accuracy)
+            anchor = self._canonical.get(key)
+            if anchor is not None:
+                anchors[selection.anchor_time, selection.object_key] = anchor
+            else:
+                objects = missing.setdefault(selection.anchor_time, [])
+                if selection.object_key not in objects:
+                    objects.append(selection.object_key)
+        for time, objects in missing.items():
+            full = replace(query, objects=tuple(objects), times=(time,),
+                           evaluation_policy="full_model", coverage=None)
+            try:
+                batch = self._evaluate_full(full, records, instance, descriptor)
+            except (UnsupportedCapability, AccuracyUnavailable):
+                return None
+            for row in batch.states:
+                scalar = replace(full, objects=(row.object_key,))
+                anchor = StateBatch(scalar, (row,))
+                anchors[time, row.object_key] = anchor
+                key = (query.catalogue, query.model, query.reference, row.object_key, time, query.accuracy)
+                staged[key] = anchor
+        states, certificates = [], {}
+        for selection in plan.anchors:
+            anchor = anchors[selection.anchor_time, selection.object_key]
+            request = replace(query, objects=(selection.object_key,), times=(selection.requested_time,))
+            try:
+                cert = invoke(instance, "certify", request, anchor, provider_key=descriptor.key)
+            except (UnsupportedCapability, AccuracyUnavailable):
+                return None
+            validate_certificate(cert, anchor, admission)
+            if not qualifies(cert, query, selection.requested_time):
+                return None
+            row = anchor.states[0]
+            numerical = replace(row.evidence.numerical, value=cert.maximum_error)
+            states.append(replace(row, time=selection.requested_time, certificate_id=cert.identity,
+                                  evidence=replace(row.evidence, numerical=numerical)))
+            certificates[cert.identity] = cert
+        result = StateBatch(query, tuple(states), tuple(certificates[k] for k in sorted(certificates)), plan)
+        self._canonical.update(staged)
+        self._cache[query] = result
+        return result
 
     @staticmethod
     def _reuse_key(query, obj):
@@ -299,6 +368,7 @@ class KernelSession:
             self._kernel._busy[key] -= 1
         self._cache.clear()
         self._reuse.clear()
+        self._canonical.clear()
         self._bindings.clear()
         self._snapshots.clear()
         self._closed = True

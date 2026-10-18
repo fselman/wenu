@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wenu-kernel"
-version = "0.0.0.dev2"
+version = "0.0.0.dev3"
 description = "Candidate Wenu kernel contracts and synchronous state sessions"
 requires-python = ">=3.10"
 dependencies = []

@@ -1,8 +1,8 @@
 {
   "schema": "wenu-test-selection/1",
   "owner": "wenu_kernel",
-  "slice": "K2 direction certificates and explicit interactive bounded reuse",
-  "accepted_base": "ddd7d6c2708c776870d9a36f39b51474e9818460",
+  "slice": "K2 optional canonical anchor planning for reproducible direction reuse",
+  "accepted_base": "112a0781c2993b490366a3f483ac5045cb8e600a",
   "runtime_dependencies": [],
   "required": [
     "python -m unittest discover -s packages/wenu_kernel/tests -v",
@@ -21,7 +21,11 @@
     "reuse interval widened by floating-point epsilon or failure to cover a requested whole interval",
     "certificate drops original anchor error, changes source/model/reference or replaces the computed anchor",
     "reproducible output depends on request history or interactive mode is selected implicitly",
-    "partial reuse/certification failure publishes one cache before all rows succeed"
+    "partial reuse/certification failure publishes one cache before all rows succeed",
+    "canonical result or chosen anchor depends on cache history or request order",
+    "canonical cache omits actual anchor time or substitutes a still-valid arbitrary anchor",
+    "invalid plan query/order/identity/resource binding reaches propagation",
+    "failed canonical certification publishes new anchor cache entries"
   ],
   "legacy_tests_moved_or_removed": [],
   "affected_consumers": [
@@ -35,23 +39,18 @@
   "collection_change": "none; root pytest remains scoped to tests and the kernel retains its explicit independent gate",
   "verification": {
     "source_digest_algorithm": "SHA-256 over sorted repository path + NUL + exact file bytes + NUL for every Python file in the named directory",
-    "source_sha256": "017a12c193d2ce936a56de00d07538a8aef78251cc725839f8bde710fb3fcff8",
-    "tests_sha256": "5b9d257a6802ce4003bd9da0a6aad4edab0627e797ffddf881bb3ea19fc7a886",
-    "source_unittest_cases": 52,
-    "installed_wheel_unittest_cases": 52,
-    "wheel_sha256": "6172ce17c154e5b3407ed4dce8e788f7da5834bab7e22aacb5a36f41a55bd6d5",
+    "source_sha256": "d9a146185da1b73aa0e26bbb040c2ca4b67e1552503d8f353904ce88e30e11d8",
+    "tests_sha256": "ac2fb63541f660b66bd4c59af50cc7a579cd3555fbbb4ef0d8fa2db4eecda794",
+    "source_unittest_cases": 64,
+    "installed_wheel_unittest_cases": 64,
+    "wheel_sha256": "edadc189d1573f08654c85b2087615a5aa18801bd3d0b55ad5bab87dd7baf8b5",
     "isolated_environment": "fresh venv; Wenu/numpy/astropy/matplotlib/skyfield/sgp4/pandas/spiceypy absent",
     "fault_injection": [
-      "ignoring tolerance admission fails owning tests",
-      "ignoring whole-interval admission fails owning tests",
-      "omitting retained anchor error fails owning tests"
+      "omitting anchor time from canonical cache key fails owning tests",
+      "ignoring plan query binding fails owning tests",
+      "publishing canonical anchors before complete certification fails owning tests"
     ],
     "mac_documentation_gate": "pending for this candidate"
   },
-  "existing_test_changes": [
-    {
-      "node_id": "packages/wenu_kernel/tests/test_sessions.py::RegistryTests::test_unsupported_unknown_object_reference_coverage_and_scale_before_evaluation",
-      "change": "Missing angular bound now raises InvalidQuery: bounded_reuse is implemented and requires a tolerance. No backend evaluation remains the protected outcome."
-    }
-  ]
+  "existing_test_changes": []
 }

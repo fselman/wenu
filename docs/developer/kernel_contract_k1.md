@@ -5,10 +5,14 @@
 **As-is base:** main `3359e9ebb430de68e68cdee8bfc40ddd6d3da692`.
 **Proposed contract identifier:** `wenu.kernel/1.0`.
 
+**Current candidate extension:** optional canonical planning capability/protocol,
+immutable plan records and optional result provenance. Existing `StateProvider`
+methods remain unchanged. This additive extension is reviewed before the K5 freeze.
+
 The [K2 implementation](../../packages/wenu_kernel/README.md) remains a declared
-direction-only subset. The current candidate adds typed scalar angular
-certificates and explicit interactive reuse; reproducible queries retain the
-full-model fallback until canonical anchors are implemented. Other records/
+direction-only subset. The current candidate adds optional provider-planned
+canonical anchors for reproducible certified reuse, retaining the full-model
+fallback for providers without an admitted plan/bound. Other records/
 services in this specification are targets, not available imports. Observation,
 Gaia and production routing remain pending. No astronomical transformation
 changes; the coordinate guide remains current. Canonical time input is validated
@@ -114,6 +118,7 @@ identified snapshot, not an in-place edit of an old result.
 | `epoch_direction` | Direction evaluated at a requested epoch | Declared motion model and its coverage; absent motion is not zero |
 | `cartesian_state` | Position plus optional velocity | Registered frame/origin; explicit velocity availability |
 | `direction_reuse_bound` | Bound for reusing a native direction | Model-valid angular certificate in that same reference meaning |
+| `canonical_direction_reuse` | Deterministic original-anchor schedule | Pure optional planner plus `direction_reuse_bound`; model/resource coverage |
 | `cartesian_reuse_bound` | Position and, if requested, velocity bounds | Metric/unit-specific certificate |
 | `batch_evaluation` | Ordered independent object/time samples | Same science/error semantics as scalar evaluation |
 
@@ -152,6 +157,9 @@ class StateProvider(Protocol):
     def evaluate(self, query: StateQuery) -> StateBatch: ...
     def certify(self, query: StateQuery, anchor: StateBatch) -> ReuseCertificate: ...
     def close(self) -> None: ...
+
+class CanonicalDirectionProvider(StateProvider, Protocol):
+    def plan_reuse(self, query: StateQuery) -> DirectionReusePlan: ...
 
 class TimeService(Protocol):
     def convert(self, time: TimePoint, target_scale: Literal["tai", "tt", "tdb", "tcb"]) -> TimeConversion: ...
@@ -288,7 +296,33 @@ Only the latter may use the current warmness-dependent certificate set.
 reports the interval-wide bound, including the original anchor error.
 Certificates currently cover one object at one original anchor; multi-object
 queries batch missing objects for evaluation and reassemble exact time-major order.
-Canonical anchor scheduling remains a named reproducible-reuse prerequisite.
+
+The optional `canonical_direction_reuse` capability adds
+`CanonicalDirectionProvider.plan_reuse(query) -> DirectionReusePlan`; it is
+not a new mandatory method on existing providers. Advertising it requires a
+planner plus `direction_reuse_bound`. A planner may inspect admitted immutable
+metadata, but cannot propagate, acquire resources, use cache/request history
+or mutate scientific/session state. Its schedule depends only on the exact
+admitted model, resources, query and declared policy; independent provider
+conformance must establish cold/warm and request-order equivalence.
+
+`AnchorSelection(object_key, requested_time, anchor_time)` records each logical
+row's choice. `DirectionReusePlan(query, anchors, method, identity)` preserves
+exact time-major row order and identifies the planner version/configuration/
+resources. The kernel verifies query/identity/resource binding and every
+anchor's model/resource coverage before propagation. The plan is returned in
+`StateBatch.reuse_plan`; sample/anchor/source epochs retain their distinct meanings.
+
+Reproducible mode follows only this declared schedule. The session-local
+canonical cache keys complete catalogue/model/reference, object, actual anchor
+and requested accuracy; it never substitutes an arbitrary still-valid anchor.
+Missing anchors batch by anchor time. Certificates are validated against the
+selected original full-model states, must bound requested samples/intervals,
+and publish atomically with the new canonical cache entries. No rows of a
+failed batch are committed. Explicitly unavailable plans/bounds use full-model
+fallback; invalid plans/certificates and backend failures remain typed failures.
+In this bounded implementation, one unavailable/insufficient planned row falls
+back for the complete query and discards all newly staged canonical anchors.
 
 For this subset, optional `StateQuery.coverage` on a `bounded_reuse` request
 explicitly asks for whole-interval certification. Full evaluation of samples
@@ -504,9 +538,9 @@ No numerical tolerance, ancient accuracy, full covariance support, backend
 coverage or provider permission is admitted merely by accepting the API.
 
 The accepted K2 foundation supplies records, registration/session admission and
-two synthetic providers without production rerouting. Its next bounded slice
-adds the direction certificate subset described above; it does not close all
-K2 gates. Canonical reproducible anchors, Cartesian/time services and the
+direction certificates without production rerouting. The current bounded slice
+adds optional canonical planning with synthetic providers; it does not close all
+K2 gates. Cartesian/time services and the
 distributable conformance kit remain explicit work before the K5 SDK freeze.
 No Gaia acquisition, scientific-provider extraction, product rewrite or new
 satellite science is part of K1. Wenu must continue to run after every merge.
