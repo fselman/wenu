@@ -15,8 +15,11 @@ native-state subset. Direction/certificate/canonical-planning and SI Cartesian
 full-model behavior and explicit time conversion are accepted through
 PR #241; reusable provider conformance checks are accepted through PR #242.
 Other records/services remain targets, not available imports. Observation,
-Gaia and production routing remain pending. The coordinate guide now documents
-this separate time boundary; existing Wenu transformations/parser are unchanged.
+Gaia and remaining production routing are pending. The current K3 candidate
+connects only native stellar realization through an explicit native-catalogue
+lookup reference, without altering SDK contracts or claiming epoch propagation.
+The coordinate guide documents source epoch and this separate time boundary;
+existing Wenu transformations/parser are unchanged.
 Canonical native time input is still validated rather than implicitly normalized.
 
 The [roadmap](kernel_roadmap_v0.9.5.md) remains the sequencing authority.

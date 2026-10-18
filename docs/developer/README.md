@@ -39,17 +39,19 @@ independent installed-consumer evidence. Minor-body request-resource rollback
 is accepted through PR #243, main `f5a0abf3` (3,400 Mac integration tests passed).
 PR #244, main `d36b1786`, scopes ordinary-request layer configuration to one
 active build: original layer order/identities, horizon/disk aliases and point
-label flags are restored on close/failure. The current shared-lifecycle candidate
-extends this owner to direct view/drawing
-and native atlas sheets, and makes `wenu_chart atlas-sheet` the default producer
-route even without command injection. Its extending test gate includes real
-serial/spawn and cold/saved atlas equivalence. No existing product is routed
-through the SDK yet.
-Its [selection manifest](../../packages/wenu_kernel/test_selection_v1.json)
+label flags are restored on close/failure. PR #246, main `e5bd7c16`, extends
+this owner to direct view/drawing and native atlas sheets, and makes
+`wenu_chart atlas-sheet` the default producer route. Its 247-test Mac gate
+passed, including real serial/spawn and cold/saved atlas equivalence.
+The current K3 candidate connects native stellar realization to the real SDK
+through `stellar_state.py`. It preserves unpropagated Hipparcos directions,
+IDs and display metadata; it does not yet propagate stars or migrate observed
+astrometry, constellation endpoints, reports or other object families.
+The SDK [selection manifest](../../packages/wenu_kernel/test_selection_v1.json)
 keeps the independent core gate separate from existing Wenu tests. Current
-products do not consume it yet. Relativistic/civil-time adapters, realization
-services, Cartesian reuse and K3 routing remain pending; this is not a
-completed kernel or frozen SDK.
+products consume only the native stellar adapter in this candidate.
+Relativistic/civil-time adapters, common realization services, Cartesian reuse
+and remaining K3 routing are pending; this is not a completed kernel or frozen SDK.
 
 [Roadmap to v0.9.5: kernel and loadable packages](kernel_roadmap_v0.9.5.md)
 is the single active forward roadmap. Both architecture diagrams are in that
@@ -64,8 +66,8 @@ K5 remains the final usable SDK freeze after all consumers migrate.
 The `v0.9.5` name is provisional. The old document with this version in its
 title described the completed 49B/49C coordinate work, not this new kernel.
 Its [original edition](archive/pre_kernel_20261017/docs/developer/target_architecture_v0.9.5.md)
-is archived. Release naming must be confirmed before a tag is made; no package
-version, release tag or runtime is changed by this documentation cleanup.
+is archived. Release naming must be confirmed before a tag is made. No release
+tag is created by this roadmap; runtime migration status is stated above.
 
 ## Curation and unresolved science
 

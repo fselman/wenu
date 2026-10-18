@@ -1,6 +1,6 @@
 {
   "schema": "wenu-test-gates/1",
-  "reviewed_base": "7e1b1f9be2d1de0dc6a9a08a8f3a31bd692210df",
+  "reviewed_base": "e5bd7c16ab3d7089fc51420432f540b2b2fe2ef9",
   "selection_method": "Reviewed owner/consumer paths and preserved existing test IDs; explicit human impact review, not import-based automatic coverage inference.",
   "production_receipt": {
     "tested_commit": "595ff557c5972ad548eb1202f615328a5440c439",
@@ -164,6 +164,52 @@
         {
           "node": "tests/test_reusable_canonical_sphere.py::test_atlas_chart_batch_cold_saved_and_spawned_pages_match",
           "reason": "Changed native scope and default dispatch require existing real cold/saved/spawned page, report, book and pixel equivalence; previously about 126 s, not an unrelated blanket suite."
+        }
+      ]
+    },
+    "kernel-native-stars": {
+      "scope": "First real kernel consumer: unpropagated native stellar realization, including saved stars and native atlas workers; separate SDK dependency.",
+      "limits": "Not all-consumer migration, Gaia propagation, requested-epoch accuracy or SDK freeze. No observed astrometry, constellation endpoint, other-family numerical model, snapshot schema, projection or renderer changes. Add owners if those contracts change. SDK source unchanged; adapter runs shipped conformance instead of repeating the SDK suite.",
+      "selections": [
+        {
+          "node": "tests/test_stellar_state.py",
+          "reason": "Native lookup owner and the eight shipped provider-conformance checks; epoch, uncertainty, refusal, aliasing and owned cleanup."
+        },
+        {
+          "node": "tests/test_stars.py",
+          "reason": "Whole stellar owner preserves observed behavior, selection/metadata and instrumented real-kernel results/failure seams."
+        },
+        {
+          "node": "tests/test_position_providers.py::test_stars_provide_static_native_icrs_positions",
+          "reason": "Protect the separate unmigrated legacy position API."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_matches_cold_full_sphere_and_layer_options",
+          "reason": "Real full-catalogue cold/saved stellar geometry and metadata selection."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources",
+          "reason": "Saved-star reconstruction calls separately installed SDK in a fresh process without source acquisition."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_labels_and_gaps_use_frozen_curation",
+          "reason": "Native metadata/IDs retain frozen labels and line gaps."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_kernel_native_stars_preserve_legacy_page_pixels",
+          "reason": "Independent legacy direct-table baseline versus kernel path through the same canonical renderer."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_atlas_chart_batch_cold_saved_and_spawned_pages_match",
+          "reason": "Real native CLI/serial/saved/spawn equivalence despite changed stellar state access."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_atlas_producer_uses_real_chart_command_and_prepares_sky_once",
+          "reason": "Public producer through wenu_chart uses native stellar consumer and preserves one sky preparation."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override",
+          "reason": "New separate runtime dependency requires actual wheel/sdist/editable imports and native calls; preserve all existing resource/default assertions."
         }
       ]
     }

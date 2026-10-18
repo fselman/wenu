@@ -39,14 +39,18 @@ it imports only the SDK and standard library, not repository fixtures.
 All source/test
 paths and the explicit selection manifest are tracked in
 [the migration inventory](kernel_migration_inventory_v1.json).
-It is not imported by the existing product package.
+The native stellar adapter imports it lazily; unrelated product imports do
+not eagerly initialize it. Root packaging declares the separate SDK dependency.
 K3 request isolation remains inside the existing owners:
 `charts/request_generation.py` owns `open_chart_request_scope`, shared by
 ordinary generation, direct drawing and native atlas sheets, plus the journal,
 temporary layer/registry restoration and build lifetime. Horizon, disk and
 track configuration owners remember their attribute writes through that journal;
 `minor_body_resources.py` owns atomic resolver binding/restoration. No new
-source module, catalogue clone or provider routing is introduced.
+catalogue clone is introduced by lifecycle isolation. The separate
+`stellar_state.py` owner now binds copied native stellar inputs and queries the
+SDK; `objects/stars.py` owns selection and geometry conversion. The kernel
+imports no concrete Wenu classes.
 
 | Module | Present responsibility |
 |---|---|
@@ -80,6 +84,7 @@ source module, catalogue clone or provider routing is introduced.
 | [`solar_system_disk_geometry.py`](../../src/wenu/solar_system_disk_geometry.py) | Renderer-neutral physical spherical geometry for apparent body disks. |
 | [`star_designations.py`](../../src/wenu/star_designations.py) | Offline, immutable HIP-linked Wikidata candidates, separate from astrometry. |
 | [`stellar_research.py`](../../src/wenu/stellar_research.py) | Immutable, offline HIP index of designation research and accepted policy. |
+| [`stellar_state.py`](../../src/wenu/stellar_state.py) | Immutable native stellar lookup provider and owned kernel-query scope; no propagation, observer or acquisition. |
 | [`svg_document.py`](../../src/wenu/svg_document.py) | Deterministic semantic annotations for Matplotlib SVG output. |
 | [`temporal.py`](../../src/wenu/temporal.py) | Renderer-neutral temporal sequence vocabulary. |
 | [`temporal_components.py`](../../src/wenu/temporal_components.py) | Shared visibility policy for start-inclusive temporal components. |

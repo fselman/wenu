@@ -422,19 +422,19 @@
       "path": "src/wenu/charts/magnitude_legend_matplotlib.py",
       "git_blob_sha": "07104731fa669bb972df830cf5e3c51076b00b11",
       "as_is_directory": "src/wenu/charts",
-      "description": "Matplotlib rendering for stellar magnitude–size legends."
+      "description": "Matplotlib rendering for stellar magnitude\u2013size legends."
     },
     {
       "path": "src/wenu/charts/magnitude_legend_style.py",
       "git_blob_sha": "9328fc55e2d465c8335486b72cf2273de6b5bdec",
       "as_is_directory": "src/wenu/charts",
-      "description": "Style configuration for stellar magnitude–size legends."
+      "description": "Style configuration for stellar magnitude\u2013size legends."
     },
     {
       "path": "src/wenu/charts/magnitude_legend_workflow.py",
       "git_blob_sha": "b270984666cd5b435fec7874e73135642b2d471d",
       "as_is_directory": "src/wenu/charts",
-      "description": "Chart-level workflow for stellar magnitude–size legends."
+      "description": "Chart-level workflow for stellar magnitude\u2013size legends."
     },
     {
       "path": "src/wenu/charts/modes.py",
@@ -1671,6 +1671,13 @@
       "git_blob_sha": "3f6789ee94308c176d5743bacf74b7205622a8b1",
       "as_is_directory": "src/wenu",
       "description": "Immutable, offline HIP index of designation research and accepted policy."
+    },
+    {
+      "path": "src/wenu/stellar_state.py",
+      "git_blob_sha": "ec20dcd321b81c270cff6a6a4b11fae675712760",
+      "as_is_directory": "src/wenu",
+      "description": "Immutable native stellar lookup provider and owned kernel-query scope; no propagation, observer or acquisition.",
+      "baseline_relation": "Added in K3 native-stellar candidate; not present in pinned historical census."
     },
     {
       "path": "src/wenu/svg_document.py",
@@ -6368,6 +6375,27 @@
       ]
     },
     {
+      "path": "tests/test_stellar_state.py",
+      "git_blob_sha": "4091695d05e542a89b3b27eb99543e920980410d",
+      "test_functions": 6,
+      "marks": {},
+      "parametrize_decorators": 0,
+      "fixtures": [],
+      "peer_test_imports": [],
+      "imports": [
+        "dataclasses",
+        "math",
+        "unittest",
+        "unittest.mock",
+        "wenu_kernel",
+        "wenu_kernel.conformance",
+        "wenu_kernel.errors",
+        "wenu_kernel.records",
+        "wenu"
+      ],
+      "baseline_relation": "Added in K3 native-stellar candidate; eight inherited ProviderConformance tests are additional to six explicit owner methods."
+    },
+    {
       "path": "tests/test_stellar_symbols.py",
       "git_blob_sha": "0a4ceb9cca4e3f8bc3f0e2d1ac3bd5deac3c6470",
       "test_functions": 23,
@@ -7338,7 +7366,7 @@
   "independent_projects": [
     {
       "path": "packages/wenu_kernel",
-      "scope": "K2 native direction/Cartesian states, certified/canonical reuse, explicit time and portable provider conformance; current Wenu consumers remain unmigrated",
+      "scope": "K2 native direction/Cartesian states, certified/canonical reuse, explicit time and portable provider conformance; native stellar Wenu consumer added in current K3 candidate, remaining consumers unmigrated",
       "source_paths": [
         "packages/wenu_kernel/src/wenu_kernel/__init__.py",
         "packages/wenu_kernel/src/wenu_kernel/conformance.py",
@@ -7514,7 +7542,7 @@
     },
     {
       "id": "shared-request-lifecycle",
-      "stage": "K3 candidate; no state consumer routed",
+      "stage": "K3 shared lifecycle accepted in PR #246; no state consumer routed by that slice",
       "accepted_base": "7e1b1f9be2d1de0dc6a9a08a8f3a31bd692210df",
       "source_paths": [
         "src/wenu/charts/request_generation.py",
@@ -7562,7 +7590,7 @@
           "cleanup error loses original context",
           "atlas defaults bypass command"
         ],
-        "normal_mac_runtime": "pending"
+        "normal_mac_runtime": "accepted; see mac_runtime_verification"
       },
       "content_sha256": {
         "src/wenu/charts/request_generation.py": "81336797a5e9e3431c8134a9add6016cc734d6875dd684f216aec640d6a58cdd",
@@ -7581,11 +7609,113 @@
         "output publication stays with existing exporters; scope cleanup does not reverse completed publication"
       ],
       "remaining": [
-        "normal Mac gate acceptance",
         "chart/atlas private-helper cycle",
         "production kernel adapters and all-consumer reconciliation"
       ],
-      "existing_test_changes": "Five existing horizon mock signatures accept the scope keyword; all prior test IDs and assertions preserved."
+      "existing_test_changes": "Five existing horizon mock signatures accept the scope keyword; all prior test IDs and assertions preserved.",
+      "accepted_head": "33c1559384763d48e0cd393b64d56494fa78a549",
+      "merged_commit": "e5bd7c16ab3d7089fc51420432f540b2b2fe2ef9",
+      "identical_merge_tree": "ee029759532b0797eca9660c7e0355b97a59f3ec",
+      "mac_runtime_verification": {
+        "tooling_tests": 8,
+        "tooling_seconds": 0.36,
+        "documentation_tests": 36,
+        "documentation_seconds": 3.06,
+        "request_shared_lifecycle_tests": 247,
+        "request_shared_lifecycle_seconds": 232.56,
+        "environment": "User-reported Mac; plugin autoload disabled."
+      }
+    },
+    {
+      "id": "kernel-native-stars",
+      "stage": "K3 native stellar consumer candidate; normal Mac gate pending",
+      "accepted_base": "e5bd7c16ab3d7089fc51420432f540b2b2fe2ef9",
+      "source_paths": [
+        "src/wenu/stellar_state.py",
+        "src/wenu/objects/stars.py",
+        "pyproject.toml"
+      ],
+      "test_paths": [
+        "tests/test_stellar_state.py",
+        "tests/test_stars.py",
+        "tests/test_reusable_canonical_sphere.py",
+        "tests/test_curated_catalogues.py"
+      ],
+      "public_paths": [
+        "Stars.realize(native_icrs_context, None)",
+        "Stars._spherical_geometry(native_icrs=True)",
+        "_SnapshotStars inherited native realization",
+        "wenu_chart atlas-sheet",
+        "create_atlas serial/saved/spawn native stars"
+      ],
+      "routed": "Finite native stellar geometry only, through real KernelSession.evaluate and its returned directions. Exact source float encoding retained only if it matches the returned vector.",
+      "unrouted": [
+        "Stars.position(instant), including legacy J2000.0 metadata defect",
+        "Skyfield observed stellar astrometry",
+        "Direct constellation endpoint/label table readers",
+        "Other astronomical families, reports and non-chart scientific state consumers",
+        "Snapshot serialization is legacy transport, not kernel-state persistence"
+      ],
+      "protected_faults": [
+        "native consumer bypasses kernel",
+        "consumer ignores returned kernel vector",
+        "provider reverses requested ID order",
+        "mutable caller table changes provider numerical state",
+        "unknown uncertainty becomes a zero-error bound",
+        "Hipparcos source epoch mislabelled J2000",
+        "kernel refusal silently concealed",
+        "owned registration/session scopes leak or close twice",
+        "native coordinate round trip breaks exact legacy encoding, IDs, metadata or selection",
+        "cold/saved/fresh-process/spawn or installed consumers cannot load the separate SDK"
+      ],
+      "legacy_tests_moved_or_removed": [],
+      "existing_test_assertions": "All existing test IDs and assertion ASTs preserved; installed packaging owner extends existing wheel/sdist/editable checks.",
+      "gate": "kernel-native-stars",
+      "selection_manifest": "tools/test_gates_v1.json",
+      "local_verification": {
+        "provider_owner_and_conformance_tests": 14,
+        "native_consumer_cases": 5,
+        "new_consumer_cases_failing_against_accepted_stars": 5,
+        "detected_mutations": 7,
+        "method": "Full actual provider/test modules and installed SDK, with Wenu facade stubbed; native Stars/geometry source modules with actual numpy/pandas/SDK and unused astrometry/acquisition imports throwing stubs. Not normal Wenu/pytest or rendering evidence.",
+        "synthetic_provider_timing": {
+          "5000_rows_seconds": 0.071,
+          "100000_rows_seconds": 1.756,
+          "limits": "One synthetic local cold query; not Mac, catalogue, atlas rendering or repeatable benchmark acceptance."
+        },
+        "normal_mac_runtime": "pending; owner/consumer, legacy pixel, real atlas and installed packaging gate required"
+      },
+      "runtime_dependency": {
+        "distribution": "wenu-kernel",
+        "sdk_source_commit": "8fea897ff8456b717d5db55a8c735a94584523b7",
+        "subdirectory": "packages/wenu_kernel",
+        "policy": "Provisional immutable VCS dependency before SDK publication; separate local installation in development; no vendoring, production sys.path workaround or runtime acquisition.",
+        "sdk_source_changes": false
+      },
+      "scope_limits": [
+        "Native-catalogue lookup only; no requested-epoch propagation or zero-motion physical model",
+        "Source J1991.25(TT), no implicit time conversion",
+        "All uncertainty channels explicitly not_evaluated; no accuracy/reuse/velocity claim",
+        "Unbounded lookup availability is not physical astrometric validity",
+        "Per-selection owned provider/session, no hidden global mutable registry/cache",
+        "No Gaia, snapshot schema, observer, projection or renderer algorithm changes",
+        "K3 all-consumer routing and K5 freeze remain open"
+      ],
+      "excluded": {
+        "isolated SDK 157 tests": "SDK source unchanged; actual adapter executes eight shipped conformance tests.",
+        "request lifecycle gates": "Accepted PR #246 ownership/rollback unchanged; actual native public consumers selected instead.",
+        "other provider science suites": "Other provider/observer/numerical algorithms unchanged; whole stellar owner retains observed seam.",
+        "full production suite": "Impact bounded to native stellar state access and separate SDK dependency, with affected install/consumer matrix. No automatic full repeat."
+      },
+      "content_sha256": {
+        "src/wenu/stellar_state.py": "ca4d049ea2ea0e9917a4c97f62958bc9968d73f5c76c7bfbe9632d7d015fea24",
+        "src/wenu/objects/stars.py": "5dbfc648294f88e8b0c1cf1be7ccae7125b81b99fd400a2b2e8d043d3758cec9",
+        "pyproject.toml": "ac0312708ffb8fdb5f31ed2165ded46a45a99d869c78b874a9e0f0f4158ba1ab",
+        "tests/test_stellar_state.py": "6ac3a1bdb36c5638b18832855edd9a67ab646f4bfb0af7c5692c2685632a7cb8",
+        "tests/test_stars.py": "b1150a99cefcaaa97da4b0d06a58e48bc440210ee6847124e38729c819963b45",
+        "tests/test_reusable_canonical_sphere.py": "7efee730ebc32bf9ae1b32929d5e3a98154c570e157b987a2076b9e99177f306",
+        "tests/test_curated_catalogues.py": "4b58a0ca43887d729a98d1abebd776d3e4e5b64947b077c69f26aad7db70e453"
+      }
     }
   ],
   "development_test_gates": {
@@ -7599,7 +7729,7 @@
     "reviewed_base": "d36b178668b8ae564ee410c870f1793dc7ef68b6",
     "purpose": "Explicit owner/consumer selections before package extraction; not automatic coverage or independent legacy installation.",
     "legacy_test_moves_or_deletions": [],
-    "normal_mac_acceptance": "Accepted at 04c6ae21688ce8643ac2980265df2ec4a3c4b816, identical merge 7e1b1f9be2d1de0dc6a9a08a8f3a31bd692210df; current extending gate pending.",
+    "normal_mac_acceptance": "Request gates accepted through PR #246; current kernel-native-stars gate pending.",
     "local_verification": {
       "stdlib_tests": 8,
       "isolation_command": "python -I -S -m unittest discover -s tools/tests -v",
@@ -7622,5 +7752,11 @@
       "request_configuration_seconds": 91.56,
       "identical_merge_tree": "2d9efb84c33dedeb0ac388f85c0418c99b2bcb94"
     }
+  },
+  "current_inventory_extension": {
+    "base_commit": "e5bd7c16ab3d7089fc51420432f540b2b2fe2ef9",
+    "production_python_files": 263,
+    "test_side_python_files": 240,
+    "limits": "Historical baseline counts/hashes remain historical. Current path inventory includes added K3 owners; per-slice hashes identify edited owners. Not a new full functionality census."
   }
 }

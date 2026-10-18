@@ -821,3 +821,33 @@ def test_atlas_chart_batch_publication_race_preserves_other_writer(native_snapsh
     assert not (output/'manifest.json').exists()
     assert not list(tmp_path.glob('.wenu-atlas-pages-*'))
 
+
+
+def test_kernel_native_stars_preserve_legacy_page_pixels(native_snapshot_case, tmp_path, monkeypatch):
+    """Same canonical renderer; compare accepted raw native rows with kernel access."""
+    import numpy as np
+    from matplotlib.image import imread
+    from wenu.atlas_design import AtlasBandTiling
+    from wenu.charts.atlas_publication import AtlasChartPresentation
+    from wenu.charts.request_generation import AtlasSheetChartRequest, generate_chart_request
+    from wenu.objects.stars import Stars
+
+    raw, _, _, sky = native_snapshot_case
+    atlas = AtlasBandTiling.from_json(raw.decode())
+    sheet = atlas.geometry.sheets[13]
+    presentation = AtlasChartPresentation(layers=('stars', 'constellation_lines'),
+        star_magnitude_limit=6, formats=('png',), dpi=72)
+
+    def legacy_native_rows(self, catalog):
+        # Exact source-table route replaced by the first kernel adapter.
+        return (catalog['ra_degrees'].to_numpy(dtype=float),
+                catalog['dec_degrees'].to_numpy(dtype=float))
+
+    with monkeypatch.context() as baseline:
+        baseline.setattr(Stars, '_native_catalogue_coordinates', legacy_native_rows)
+        generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
+            presentation, tmp_path/'legacy'), sky=sky)
+    generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
+        presentation, tmp_path/'kernel'), sky=sky)
+    name = f'chart-{sheet.number:02d}.png'
+    np.testing.assert_array_equal(imread(tmp_path/'legacy'/name), imread(tmp_path/'kernel'/name))

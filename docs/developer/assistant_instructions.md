@@ -32,8 +32,9 @@ Projection alignment is not an astronomical frame transform. Preserve public
 APIs and accepted atlas-print appearance unless the bounded task changes them.
 
 The standalone K2 foundation is a separate candidate under `packages/wenu_kernel`.
-Kernel routing of current products, Gaia DR3 and astronomical package extraction
-remain planned, not implemented. Run the new core's explicit independent gate;
+Native stellar realization has the first K3 adapter candidate; other kernel
+routing, Gaia DR3 and astronomical package extraction remain planned. Run the
+core's explicit independent gate only when its implementation/contracts change;
 root pytest discovery intentionally remains scoped to the existing `tests` owner.
 Every existing functionality must use the kernel before kernel closure, with
 temporary adapters allowed. Extract one independently installable package at

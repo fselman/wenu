@@ -1,7 +1,7 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 3, 2026-10-18. **Status:** documentation for review; no
-kernel, Gaia acquisition or package extraction is implemented by this change.
+**Plan revision:** 4, 2026-10-18. **Status:** K3 native stellar adapter candidate;
+Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -24,8 +24,14 @@ PR #244, main `d36b1786`, adds synchronous ordinary-request configuration
 isolation (layer registry, horizon/disk aliases and point labels). It does not
 yet route a product through the kernel. See the
 [scope and gate](../../packages/wenu_kernel/README.md).
-Relativistic/civil-time adapters, observation services, Cartesian reuse,
-and K3 consumer adapters remain ahead. No current Wenu product uses the kernel yet.
+PR #246, main `e5bd7c16`, accepts shared request lifecycle and default
+`wenu_chart atlas-sheet` dispatch (247 Mac tests passed). The current candidate
+routes native stellar realization through a real kernel/session and a legacy
+native lookup adapter. It preserves catalogue positions; no propagation is
+added. Observed astrometry, `Stars.position`, direct constellation/table readers,
+other families and non-chart consumers remain for subsequent K3 slices.
+Relativistic/civil-time adapters, common observation services, Cartesian reuse
+and SDK freeze remain ahead. The native adapter Mac gate is pending.
 
 Keep every existing Wenu capability while placing all scientific state access
 behind a uniform kernel contract. Add Gaia DR3 astrometry for the stars already
@@ -62,7 +68,8 @@ for the first time. See [testing policy](testing_policy.md).
 ## Current architecture
 
 Arrows show calls/dependencies; dashed edges identify coupling to remove.
-The existing projection and graphics pipeline is retained.
+The existing projection and graphics pipeline is retained. The kernel edge
+shows the current native stellar candidate; dashed source paths remain to migrate.
 
 ```mermaid
 flowchart TB
@@ -89,7 +96,10 @@ flowchart TB
     P --> R
     S -. "Knows concrete implementations" .-> L
     C -. "Temporarily mutates shared layers" .-> S
-    L --> D
+    L -. "Other state consumers" .-> D
+    L -->|"Native stars only"| K["Kernel session"]
+    K --> N["Native stellar provider"]
+    N --> D
     L -. "Combines state and observation" .-> O
     O --> G
 ```
@@ -161,7 +171,8 @@ propagating stars does not drag the official boundary with them.
 
 The [K1 contract specification](kernel_contract_k1.md) defines the proposed
 SDK names, typed records, operations, capability matrix, errors and independent
-conformance gates. It is a review candidate, not an implemented API.
+conformance gates. Its accepted implemented subset is documented in the SDK;
+K5 all-consumer acceptance and final contract freeze remain open.
 
 The kernel owns identity, typed time/state queries, capability admission,
 provider registration, resource/provenance identity, immutable results,
@@ -438,15 +449,16 @@ journal (PR #244) restore original layer
 identities/order and horizon/disk/point-label attributes, reject overlapping
 builds on one sky, and preserve the lease after failed cleanup.
 This does not claim thread safety or rollback of arbitrary external mutations.
-No consumer is marked migrated by these prerequisites. Production adapters,
-instrumented state routing and all-consumer reconciliation remain ahead.
-The current lifecycle candidate routes ordinary view/drawing, ordinary generation
+No consumer is marked migrated by these prerequisites. PR #246 routes ordinary view/drawing, ordinary generation
 and native atlas sheets through `open_chart_request_scope`, preserving their
 geometry, helper order and observer requirements. Atlas producers use the
 injected command or default to `wenu_chart atlas-sheet`; no direct-generator
 fallback remains. Shared-scope failure tests and real serial/spawn/cold-saved
-atlas equivalence are required before acceptance. This does not close the
-chart/atlas private-helper cycle or migrate a state consumer to the kernel.
+atlas equivalence passed on the Mac. This does not close the
+chart/atlas private-helper cycle. The next native stellar candidate supplies
+one real state consumer with instrumented no-bypass/failure tests, source-native
+semantics, saved/worker compatibility and a separate-installation gate.
+It leaves the remaining all-consumer ledger open and adds no Gaia/motion model.
 Break chart/atlas private-helper cycles with a public sheet contract while
 preserving canonical rendering. Make changes in separate bounded slices;
 do not combine structural movement, Gaia data replacement and appearance tuning.
