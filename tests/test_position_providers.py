@@ -17,7 +17,15 @@ from wenu.positions import PositionProvider
 from wenu.sky.horizon import HorizonReference
 
 
-def test_stars_provide_static_native_icrs_positions():
+def test_stars_provide_static_native_icrs_positions(monkeypatch):
+    from wenu_kernel import KernelSession
+    from wenu.stellar_state import HIPPARCOS_SOURCE_EPOCH
+    calls = []
+    evaluate = KernelSession.evaluate
+    def capture(session, query):
+        calls.append(query)
+        return evaluate(session, query)
+    monkeypatch.setattr(KernelSession, 'evaluate', capture)
     stars = Stars(None, catalog="hipparcos")
     stars.catalog = pd.DataFrame(
         {
@@ -38,6 +46,86 @@ def test_stars_provide_static_native_icrs_positions():
     assert geometry.coordinate_spec.frame == "icrs"
     assert geometry.coordinate_spec.origin == "solar-system-barycenter"
     assert geometry.coordinate_spec.instant is None
+    assert geometry.coordinate_spec.epoch == "J1991.25"
+    assert len(calls) == 1 and calls[0].times == (HIPPARCOS_SOURCE_EPOCH,)
+    assert tuple(key.value for key in calls[0].objects) == ('hipparcos:100', 'hipparcos:200')
+
+
+def _native_star_source():
+    """Synthetic source: faint and missing-coordinate rows exceed marker selection."""
+    stars = Stars(None, magnitude_limit=2)
+    stars.source_catalog = pd.DataFrame(dict(ra_degrees=[15., 30., np.nan],
+        ra_hours=[1., 2., np.nan], dec_degrees=[-30., 45., 0.],
+        magnitude=[1., 9., 3.], is_variable=[False, True, False]), index=[100, 200, 300])
+    stars.catalog = stars.source_catalog.iloc[:1].copy()
+    return stars
+
+
+def test_native_id_query_keeps_faint_rows_missing_coordinates_and_source_order(monkeypatch):
+    from wenu_kernel import KernelSession
+    stars = _native_star_source()
+    source, active = stars.source_catalog.copy(deep=True), stars.catalog.copy(deep=True)
+    queries = []
+    evaluate = KernelSession.evaluate
+    def capture(session, query):
+        queries.append(query)
+        return evaluate(session, query)
+    monkeypatch.setattr(KernelSession, 'evaluate', capture)
+    points = stars.native_positions([300, 200, 100, 404])
+    np.testing.assert_array_equal(points.ids, [100, 200, 300])
+    np.testing.assert_array_equal(points.lon_deg, [15., 30., np.nan])
+    np.testing.assert_array_equal(points.metadata['magnitude'], [1., 9., 3.])
+    np.testing.assert_array_equal(points.metadata['is_variable'], [False, True, False])
+    assert len(queries) == 1
+    assert tuple(key.value for key in queries[0].objects) == ('hipparcos:100', 'hipparcos:200')
+    assert points.coordinate_spec.epoch == 'J1991.25' and points.coordinate_spec.instant is None
+    pd.testing.assert_frame_equal(source, stars.source_catalog)
+    pd.testing.assert_frame_equal(active, stars.catalog)
+
+
+def test_native_position_uses_authoritative_degree_encoding_when_both_columns_exist():
+    stars = _native_star_source()
+    # A derived hours column must not replace the source's degree encoding.
+    stars.source_catalog.loc[100, 'ra_hours'] = np.nextafter(1., np.inf)
+    stars.catalog = stars.source_catalog.iloc[:1].copy()
+    before = stars.catalog.copy(deep=True)
+    direct, selected = stars.position(), stars.native_positions([100])
+    np.testing.assert_array_equal(direct.lon_deg, [15.])
+    np.testing.assert_array_equal(selected.lon_deg, direct.lon_deg)
+    assert direct.coordinate_spec == selected.coordinate_spec
+    pd.testing.assert_frame_equal(before, stars.catalog)
+
+
+@pytest.mark.parametrize('route', ('position', 'native_positions'))
+def test_native_position_routes_use_returned_kernel_direction_and_propagate_failure(monkeypatch, route):
+    from dataclasses import replace
+    from wenu_kernel import KernelSession
+    stars = _native_star_source()
+    evaluate = KernelSession.evaluate
+    def quarter_turn(session, query):
+        batch = evaluate(session, query)
+        return replace(batch, states=tuple(replace(state,
+            vector=(-state.vector[1], state.vector[0], state.vector[2])) for state in batch.states))
+    def query():
+        return stars.position('2026-08-28T00:00:00') if route == 'position' else stars.native_positions([100])
+    monkeypatch.setattr(KernelSession, 'evaluate', quarter_turn)
+    np.testing.assert_allclose(query().lon_deg, [105.], rtol=0, atol=1e-12)
+    def fail(*args):
+        raise RuntimeError('synthetic native state refusal')
+    monkeypatch.setattr(KernelSession, 'evaluate', fail)
+    with pytest.raises(RuntimeError, match='native state refusal'):
+        query()
+
+
+def test_native_id_query_empty_absent_and_unloaded_policies(monkeypatch):
+    from wenu_kernel import KernelSession
+    stars = _native_star_source()
+    def forbidden(*args):
+        raise AssertionError('An empty selection must not query the kernel')
+    monkeypatch.setattr(KernelSession, 'evaluate', forbidden)
+    assert len(stars.native_positions([])) == len(stars.native_positions([404])) == 0
+    with pytest.raises(RuntimeError, match='catalogue has not been loaded'):
+        Stars(None).native_positions([100])
 
 
 def test_nonstellar_catalogues_provide_native_centres_not_morphology():

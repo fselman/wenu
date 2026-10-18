@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 4, 2026-10-18. **Status:** K3 native stellar adapter candidate;
+**Plan revision:** 5, 2026-10-18. **Status:** K3 partial native stellar routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -25,13 +25,17 @@ isolation (layer registry, horizon/disk aliases and point labels). It does not
 yet route a product through the kernel. See the
 [scope and gate](../../packages/wenu_kernel/README.md).
 PR #246, main `e5bd7c16`, accepts shared request lifecycle and default
-`wenu_chart atlas-sheet` dispatch (247 Mac tests passed). The current candidate
-routes native stellar realization through a real kernel/session and a legacy
-native lookup adapter. It preserves catalogue positions; no propagation is
-added. Observed astrometry, `Stars.position`, direct constellation/table readers,
-other families and non-chart consumers remain for subsequent K3 slices.
+`wenu_chart atlas-sheet` dispatch (247 Mac tests passed). PR #247, main
+`bf804cbb`, accepts native stellar realization through a real kernel/session and
+legacy native lookup adapter, with Mac installation/output acceptance. The next
+bounded slice routes public `Stars.position`, explicit HIP lookup and native
+constellation endpoints through that adapter, correcting source-epoch metadata.
+It preserves source directions; no propagation is added. Observed astrometry,
+native constellation-label anchors, other families and remaining non-chart
+consumers stay open for subsequent K3 slices.
 Relativistic/civil-time adapters, common observation services, Cartesian reuse
-and SDK freeze remain ahead. The native adapter Mac gate is pending.
+and SDK freeze remain ahead. New endpoint/public-position acceptance is separate
+from the accepted adapter; neither closes K3.
 
 Keep every existing Wenu capability while placing all scientific state access
 behind a uniform kernel contract. Add Gaia DR3 astrometry for the stars already
@@ -69,7 +73,7 @@ for the first time. See [testing policy](testing_policy.md).
 
 Arrows show calls/dependencies; dashed edges identify coupling to remove.
 The existing projection and graphics pipeline is retained. The kernel edge
-shows the current native stellar candidate; dashed source paths remain to migrate.
+shows partial native stellar routing; dashed source paths remain to migrate.
 
 ```mermaid
 flowchart TB
@@ -97,7 +101,7 @@ flowchart TB
     S -. "Knows concrete implementations" .-> L
     C -. "Temporarily mutates shared layers" .-> S
     L -. "Other state consumers" .-> D
-    L -->|"Native stars only"| K["Kernel session"]
+    L -->|"Native stars, positions and line vertices"| K["Kernel session"]
     K --> N["Native stellar provider"]
     N --> D
     L -. "Combines state and observation" .-> O
@@ -455,10 +459,12 @@ geometry, helper order and observer requirements. Atlas producers use the
 injected command or default to `wenu_chart atlas-sheet`; no direct-generator
 fallback remains. Shared-scope failure tests and real serial/spawn/cold-saved
 atlas equivalence passed on the Mac. This does not close the
-chart/atlas private-helper cycle. The next native stellar candidate supplies
-one real state consumer with instrumented no-bypass/failure tests, source-native
-semantics, saved/worker compatibility and a separate-installation gate.
-It leaves the remaining all-consumer ledger open and adds no Gaia/motion model.
+chart/atlas private-helper cycle. Accepted PR #247 supplies a real native stellar
+consumer, source-native semantics, saved/worker compatibility and a separate
+installation gate. The next slice extends the same adapter to public positions
+and native figure vertices, with opaque-interface, changed-vector and refusal
+tests plus saved/rendered consumer checks. Native label anchors and observed
+astrometry remain explicit ledger entries; neither slice adds a Gaia/motion model.
 Break chart/atlas private-helper cycles with a public sheet contract while
 preserving canonical rendering. Make changes in separate bounded slices;
 do not combine structural movement, Gaia data replacement and appearance tuning.

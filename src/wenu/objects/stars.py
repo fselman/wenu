@@ -194,22 +194,46 @@ class Stars(AstronomicalObject):
         return self.catalog
 
     def position(self, instant=None) -> SphericalPoints:
-        """Return the stable native Hipparcos catalogue positions in ICRS."""
+        """Return the stable selection's source-native ICRS positions.
+
+        ``instant`` remains a compatibility argument, not a propagation request.
+        The returned epoch identifies the unpropagated Hipparcos solution.
+        """
         del instant
         if self.catalog is None:
             raise RuntimeError(
                 "The stellar catalogue has not been loaded. "
                 "Call stars.load() first."
             )
+        return self._native_position_geometry(self.catalog)
+
+    def native_positions(self, identifiers) -> SphericalPoints:
+        """Query explicit HIP identities independently of marker selection.
+
+        Return available rows in source order, including missing-coordinate
+        rows with their original metadata/NaNs. Absent identities are omitted;
+        callers such as constellation figures retain their missing-ID policy.
+        This source-native lookup does not propagate to an evaluation epoch.
+        """
+        source = getattr(self, "source_catalog", None)
+        if source is None:
+            source = self.catalog
+        if source is None:
+            raise RuntimeError("The stellar catalogue has not been loaded. Call stars.load() first.")
+        selected = frozenset(int(identifier) for identifier in identifiers)
+        return self._native_position_geometry(source[source.index.isin(selected)])
+
+    def _native_position_geometry(self, catalog) -> SphericalPoints:
+        lon, lat = self._native_catalogue_coordinates(catalog)
         metadata = {
             "catalog": self.catalog_name,
             "coordinate_system": "icrs",
         }
         for name in ("magnitude", "star_designations", *_HIPPARCOS_SEMANTIC_DEFAULTS):
-            if name in self.catalog.columns:
-                metadata[name] = self.catalog[name].to_numpy(copy=True)
+            if name in catalog.columns:
+                metadata[name] = catalog[name].to_numpy(copy=True)
         provenance = ("ESA Hipparcos Catalogue I/239",)
-        if "star_designations" in self.catalog.columns:
+        if "star_designations" in catalog.columns:
             metadata["star_designations_edition"] = (
                 self.designation_catalogue.edition
             )
@@ -218,13 +242,14 @@ class Stars(AstronomicalObject):
             )
 
         return SphericalPoints(
-            lon_deg=self.catalog["ra_hours"].to_numpy(dtype=float) * 15.0,
-            lat_deg=self.catalog["dec_degrees"].to_numpy(dtype=float),
+            lon_deg=lon,
+            lat_deg=lat,
             coordinate_spec=icrs_catalogue_spec(
                 f"{self.catalog_name} stellar catalogue",
+                epoch="J1991.25",
                 provenance=provenance,
             ),
-            ids=self.catalog.index.to_numpy(copy=True),
+            ids=catalog.index.to_numpy(copy=True),
             metadata=metadata,
         )
 
@@ -445,7 +470,9 @@ class Stars(AstronomicalObject):
             HIPPARCOS_SOURCE_EPOCH, native_stellar_states, native_stellar_angles,
         )
 
-        lon = catalog["ra_degrees"].to_numpy(dtype=float, copy=True)
+        lon = (catalog["ra_degrees"].to_numpy(dtype=float, copy=True)
+               if "ra_degrees" in catalog.columns
+               else catalog["ra_hours"].to_numpy(dtype=float, copy=True) * 15.0)
         lat = catalog["dec_degrees"].to_numpy(dtype=float, copy=True)
         finite = np.isfinite(lon) & np.isfinite(lat)
         # Missing-coordinate rows retain legacy IDs/metadata for downstream

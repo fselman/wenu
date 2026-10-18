@@ -364,6 +364,11 @@ snapshot = read_native_sky_snapshot(sys.argv[1], expected_manifest_sha256=sys.ar
 sky = snapshot.make_sky()
 points = sky.stars.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None, magnitude_limit=6)
 assert len(points) > 4000
+assert sky.stars.position().coordinate_spec.epoch == 'J1991.25'
+vertices = sky.stars.native_positions(sky.constellation_lines.star_ids)
+edges = sky.constellation_lines.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None)
+assert vertices.coordinate_spec.epoch == edges.coordinate_spec.epoch == 'J1991.25'
+assert len(edges) and set(vertices.ids) <= set(sky.stars.source_catalog.index)
 assert sky.stars.designation_catalogue.curation_sha256
 assert sky.constellation_lines.star_ids_for(("Sco",))
 context = LayerRealizationContext(NATIVE_ICRS_SPEC)
@@ -386,6 +391,27 @@ print("verified frozen native sphere")
                             env=env, text=True, capture_output=True, timeout=60)
     assert result.returncode == 0, result.stderr
     assert result.stdout.strip() == "verified frozen native sphere"
+
+
+def test_native_position_api_and_vertex_edges_match_cold_and_saved_sky(native_snapshot_case):
+    import numpy as np
+    from wenu.sky.native_snapshot import read_native_sky_snapshot
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    _, destination, _, cold = native_snapshot_case
+    saved = read_native_sky_snapshot(destination).make_sky()
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    _assert_native_geometry_equal(cold.stars.position(), saved.stars.position())
+    identifiers = cold.constellation_lines.star_ids
+    left, right = cold.stars.native_positions(identifiers), saved.stars.native_positions(identifiers)
+    _assert_native_geometry_equal(left, right)
+    a, b = cold.constellation_lines.realize(context, None), saved.constellation_lines.realize(context, None)
+    _assert_native_geometry_equal(a, b)
+    index = {int(identifier): i for i, identifier in enumerate(left.ids)}
+    for hip_edge, lon, lat in zip(a.metadata['hip_edges'], a.lon_deg, a.lat_deg, strict=True):
+        positions = [index[int(identifier)] for identifier in hip_edge]
+        np.testing.assert_array_equal(lon, left.lon_deg[positions])
+        np.testing.assert_array_equal(lat, left.lat_deg[positions])
+    assert left.coordinate_spec.epoch == a.coordinate_spec.epoch == 'J1991.25'
 
 
 def test_native_snapshot_requires_coverage_and_preserves_completed_bundle(native_snapshot_case):

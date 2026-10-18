@@ -158,8 +158,26 @@ vector; altered results determine the output. This preserves existing exact
 native-value assertions without bypassing the query. Source tables,
 IDs, photometry, designation metadata and missing-row behavior remain owned
 by `Stars`. `_SnapshotStars` inherits this path. No public facade export is
-added. `Stars.position`, observer astrometry and constellation table readers
-are still legacy consumers. Native snapshot serialization remains unchanged.
+added. Native snapshot serialization remains unchanged.
+
+`Stars.position(instant=None)` uses the same kernel-backed helper for the stable
+marker selection. `instant` is retained for compatibility and ignored: the result
+is explicitly source-native J1991.25, not a propagated position at that instant.
+`Stars.native_positions(identifiers)` queries explicit HIP IDs from the full
+source table (or the stable table for constructed legacy objects without one).
+Available rows retain source order, IDs, photometry, designations and NaNs;
+absent IDs are omitted for the consumer's missing-ID policy. Empty selections
+avoid a query. Both APIs prefer authoritative `ra_degrees`, with hours × 15
+only for hours-only constructed inputs, avoiding a redundant floating-point
+round trip. Neither mutates active marker selection.
+
+Native `ConstellationLines.realize` requests the loaded graph's vertex IDs
+through `native_positions`, then joins returned IDs to the original edge order.
+This preserves faint endpoints, warning/gap policy and global resolvability
+metadata without evaluating unrelated catalogue stars. Returned kernel vectors
+control endpoints; refusal is not replaced by raw catalogue coordinates.
+Observed astrometry and native constellation-label anchor calculation remain
+legacy consumers. No claim of all-consumer kernel closure follows.
 
 The `native-catalogue` reference explicitly means an unpropagated lookup.
 Unbounded lookup availability is not astrometric validity at arbitrary epochs;
@@ -182,15 +200,18 @@ The SDK is not yet frozen or published on PyPI. Replacing this provisional pin
 requires a reviewed compatible release and installation gate. The new
 `kernel-native-stars` gate checks separate wheel/sdist/editable consumption,
 native selection/saved-worker behavior and a legacy-versus-kernel page image.
-Normal Mac execution is pending for this candidate.
+PR #247 passed its final Mac followup at `8e4be740` (identical merge `bf804cbb`):
+eight tooling, 36 documentation and seven native-output cases, including actual
+wheel/sdist/editable consumption. The new public-position/endpoint slice uses
+the narrower `native-stellar-routing` gate; it does not change installation.
 
 ## Coordinate and state entry points
 
 The separate candidate `wenu_kernel` package provides `Kernel`, `KernelSession`
 and `StateProvider` plus typed direction/Cartesian records in `wenu_kernel.records`. See its
 [implemented subset and independent gate](../../packages/wenu_kernel/README.md).
-Only the native stellar realization below has a production adapter in this
-candidate. Preserve other existing imports until their own K3 public-path gate
+Only native stellar realization, public native positions and native constellation
+endpoints have a production adapter. Preserve other existing imports until their own K3 public-path gate
 is implemented. No common observer adapter is supplied by the foundation.
 
 `wenu_kernel.time.TimeService(adapters=(), admissions=())` admits one explicit

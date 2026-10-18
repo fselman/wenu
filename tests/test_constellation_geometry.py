@@ -163,6 +163,8 @@ def test_native_constellation_vertices_and_mean_anchors_use_same_source(tmp_path
     from wenu.sky.realization import LayerRealizationContext
     from wenu.sky.constellation_labels import ConstellationLabels
     lines, observer = make_lines(tmp_path)
+    from wenu.objects.stars import Stars
+    lines.stars = Stars(None)
     source = pd.DataFrame({"ra_degrees": [80., 82., 84.],
                            "dec_degrees": [0., 1., 2.]}, index=[100, 200, 300])
     # Faint vertices remain part of the figure even when their markers are
@@ -255,6 +257,88 @@ def test_unknown_line_selection_is_rejected(tmp_path):
 
     with pytest.raises(KeyError, match="Unknown loaded constellation"):
         lines.spherical_geometry(observer, selected={"Lyr"})
+
+
+def _native_kernel_lines(tmp_path):
+    """Constructed HIP topology with a faint vertex and one missing position."""
+    from wenu.objects.stars import Stars
+    stars = Stars(None, magnitude_limit=2)
+    stars.source_catalog = pd.DataFrame(dict(ra_degrees=[15., 30., np.nan, 60., 75.],
+        dec_degrees=[-30., 45., 0., 10., 20.], magnitude=[1., 9., 3., 9., 1.]),
+        index=[100, 200, 300, 400, 500])
+    stars.catalog = stars.source_catalog.iloc[:1].copy()
+    path = tmp_path / 'native.fab'
+    path.write_text('Cru 3 100 200 300\nCen 2 100 400\n', encoding='utf-8')
+    return ConstellationLines(stars, filename=path)
+
+
+def test_native_edges_follow_the_same_kernel_results_as_stellar_positions(tmp_path, monkeypatch):
+    from dataclasses import replace
+    from wenu_kernel import KernelSession
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    lines = _native_kernel_lines(tmp_path)
+    source, active = lines.stars.source_catalog.copy(deep=True), lines.stars.catalog.copy(deep=True)
+    evaluate = KernelSession.evaluate
+    calls = []
+    def quarter_turn(session, query):
+        calls.append(query)
+        batch = evaluate(session, query)
+        return replace(batch, states=tuple(replace(state,
+            vector=(-state.vector[1], state.vector[0], state.vector[2])) for state in batch.states))
+    monkeypatch.setattr(KernelSession, 'evaluate', quarter_turn)
+    from wenu.sky.constellation_lines import UnresolvedConstellationStarWarning
+    with pytest.warns(UnresolvedConstellationStarWarning, match='300'):
+        geometry = lines.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None, selected={'Cru'})
+    assert len(calls) == 1
+    assert tuple(key.value for key in calls[0].objects) == ('hipparcos:100', 'hipparcos:200', 'hipparcos:400')
+    assert len(geometry) == 1
+    np.testing.assert_allclose(geometry.lon_deg[0], [105., 120.], rtol=0, atol=1e-12)
+    points = lines.stars.native_positions([100, 200])
+    np.testing.assert_array_equal(geometry.lon_deg[0], points.lon_deg)
+    np.testing.assert_array_equal(geometry.lat_deg[0], points.lat_deg)
+    assert geometry.coordinate_spec.epoch == points.coordinate_spec.epoch == 'J1991.25'
+    assert geometry.metadata['hip_edges'] == ((100, 200),)
+    assert geometry.metadata['unresolved_star_ids'] == {300}
+    assert geometry.metadata['resolvable_star_ids'] == {100, 200, 400}
+    pd.testing.assert_frame_equal(source, lines.stars.source_catalog)
+    pd.testing.assert_frame_equal(active, lines.stars.catalog)
+
+
+def test_native_line_geometry_uses_only_the_public_native_id_interface(tmp_path):
+    from wenu.geometry.spherical import SphericalPoints
+    from wenu.coordinates import icrs_catalogue_spec
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    calls = []
+    class Source:
+        def native_positions(self, identifiers):
+            calls.append(identifiers)
+            # Deliberately shuffled: endpoints must be joined by HIP, not row position.
+            return SphericalPoints(lon_deg=[60., 15., 30.], lat_deg=[10., -30., 45.],
+                ids=[400, 100, 200], coordinate_spec=icrs_catalogue_spec('synthetic native source', epoch='J1991.25'))
+        @property
+        def catalog(self):
+            raise AssertionError('Native geometry must not inspect marker tables')
+        @property
+        def source_catalog(self):
+            raise AssertionError('Native geometry must not inspect source astrometry')
+    path = tmp_path / 'public.fab'
+    path.write_text('Cru 2 100 200\nCen 2 100 400\n', encoding='utf-8')
+    lines = ConstellationLines(Source(), filename=path)
+    geometry = lines.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None, selected={'Cru'})
+    assert calls == [frozenset({100, 200, 400})]
+    np.testing.assert_array_equal(geometry.lon_deg[0], [15., 30.])
+    assert geometry.metadata['resolvable_star_ids'] == {100, 200, 400}
+
+
+def test_native_line_kernel_refusal_is_not_replaced_with_catalogue_coordinates(tmp_path, monkeypatch):
+    from wenu_kernel import KernelSession
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    lines = _native_kernel_lines(tmp_path)
+    def fail(*args):
+        raise RuntimeError('synthetic vertex kernel refusal')
+    monkeypatch.setattr(KernelSession, 'evaluate', fail)
+    with pytest.raises(RuntimeError, match='vertex kernel refusal'):
+        lines.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None)
 
 
 def test_packaged_serpens_record_exposes_parts_and_preserves_bridge():

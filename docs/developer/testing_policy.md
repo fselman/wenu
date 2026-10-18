@@ -64,7 +64,9 @@ Fernando's Mac; 36 documentation tests passed in 2.51 s and eight tooling tests
 passed in 0.083 s at `04c6ae21` (identical merge `7e1b1f9b`). The current shared-
 lifecycle gate passed 247 tests in 232.56 s, with 36 documentation tests in
 3.06 s and eight tooling tests in 0.360 s at `33c15593` (identical merge
-`e5bd7c16`). The native stellar candidate awaits its own Mac gate. Their supporting tooling is
+`e5bd7c16`). PR #247's final Mac followup passed at `8e4be740` (identical merge
+`bf804cbb`): eight tooling tests in 0.563 s, 36 documentation tests in 3.04 s
+and seven native-output cases in 250.81 s. Their supporting tooling is
 independently tested with the standard library:
 
 ```bash
@@ -89,7 +91,7 @@ Future unchanged manifests do not require revalidating every gate. `--collect` i
 
 `kernel-native-stars` is independent of request-lifecycle selections. It runs
 the native provider owner (including eight shipped conformance checks), the
-existing stellar owner, the unmigrated position API guard, real full-catalogue
+existing stellar owner, the public position API guard, real full-catalogue
 cold/saved/fresh-process and label/gap consumers, legacy-versus-kernel page
 pixels, serial/spawn atlas equivalence and the real public producer. The new
 external runtime dependency adds wheel/sdist/editable installation checks to
@@ -127,8 +129,40 @@ The regional case reproduces the reported 0.54-point label shifts and 990
 mismatched image elements. The fix uses fixed 100-dpi offscreen layout rather
 than changing pixel tolerances or the renderer's placement algorithms.
 Run this smaller gate for that bounded followup; use `kernel-native-stars`
-for changed stellar adapter/routing contracts. The coordinate guide remains
+for changes to the stellar adapter itself. The coordinate guide remains
 current because this followup changes display measurement ownership only.
+
+### Public native positions and constellation endpoints
+
+`native-stellar-routing` covers the next bounded consumer change on `bf804cbb`:
+`Stars.position`, explicit HIP lookup and native constellation-line geometry.
+It runs the stellar owner, six stellar public-position cases, twelve line cases
+from the mixed geometry owner, and five real saved/rendered consumers. The
+nonstellar position providers, grids and boundaries in those mixed files are
+not changed and are not rerun just because they share a file.
+
+The closest position and native-line tests are extended without removing old
+assertions. New faults protected are bypass of returned kernel vectors, silent
+fallback after refusal, raw-table/private/Skyfield coupling in native lines,
+missing faint endpoints, wrong identity joins, active-selection mutation and
+incorrect source-epoch metadata. Real cold/saved positions and every endpoint,
+source-free fresh-process APIs, frozen label/gap behavior, exact raw-coordinate
+page pixels and serial/spawn output remain selected. Native label-anchor
+calculation itself is deliberately not migrated in this slice.
+
+```bash
+python -I -S -m unittest discover -s tools/tests -v
+python tools/run_test_gate.py documentation --run
+python tools/run_test_gate.py native-stellar-routing --run
+```
+
+SDK source, provider algorithm, dependency/build metadata, source resources and
+snapshot schema are unchanged. Reuse accepted PR #247 installation/display-DPI
+evidence and PR #242 SDK evidence; do not rerun packaging, the 157 SDK tests,
+orbital/radiometry physics, request-lifecycle gates or the full production suite.
+The whole stellar owner still checks its observed seam; observed line tests
+protect the unmodified observer-time route. Coordinate metadata changes require
+the updated coordinate/scientific contracts, not a claim of proper motion.
 
 ## Request consumers and retained evidence
 

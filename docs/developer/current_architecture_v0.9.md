@@ -11,7 +11,7 @@ states with optional velocity and separate uncertainty channels. Explicit
 time-adapter admission, conversion receipts and bounded TT(TAI)/TAI conversion
 remain separate from same-scale native state queries. A reusable stdlib
 provider conformance kit verifies an external consumer with no repository fixtures.
-The SDK has no runtime dependencies. The current K3 candidate makes it a
+The SDK has no runtime dependencies. Accepted PR #247 makes it a
 separate Wenu dependency and routes native stellar realization through it.
 Other state consumers and the SDK freeze remain pending. The canonical
 projection and rendering pipeline is retained.
@@ -77,9 +77,9 @@ sites currently supply only right ascension and declination: no catalogue
 proper motions, parallax or radial velocity. The observed route does compute
 apparent AltAz for the requested observer/date; lack of stellar space-motion
 propagation does not mean Earth orientation is omitted. Native ICRS axes do
-not precess. The two native output routes also disagree in their epoch
-metadata (J1991.25 versus default J2000.0); this is a migration defect to fix,
-not a scientific convention to preserve. No Gaia astrometric provider exists.
+not precess. The native position/realization routes now consistently declare
+source epoch J1991.25; the former default J2000.0 metadata was incorrect.
+No Gaia astrometric provider exists.
 
 Native `Stars.realize()` now selects rows with the existing policy and obtains
 finite directions from `stellar_state.LegacyNativeStellarProvider` through
@@ -89,8 +89,13 @@ The adapter is a source-native lookup, with J1991.25(TT) source epoch and
 explicitly unknown errors, not a proper-motion or zero-motion model.
 Missing-coordinate rows retain their legacy metadata/NaNs outside kernel
 states for downstream filtering. No acquisition occurs during evaluation.
-`Stars.position`, observed Skyfield astrometry, direct constellation-table
-readers and other families remain unmigrated. See the
+`Stars.position()` uses the same helper. `Stars.native_positions(identifiers)`
+looks up explicit HIP identities in source order, independently of marker
+magnitude selection. Native constellation lines consume only that public
+interface and join returned IDs to their curated topology, including faint
+vertices; they no longer read catalogue coordinates themselves. Saved stars
+inherit both APIs without a snapshot schema change. Observed Skyfield astrometry,
+native constellation-label anchors and other families remain unmigrated. See the
 [adapter contract](implementation_reference.md#native-stellar-kernel-adapter).
 Solar-System Cartesian resources, state requests and astrometric/apparent
 direction realizers have stronger typed contracts. They solve light time
@@ -101,7 +106,8 @@ than reimplemented in a new kernel.
 
 1. `CelestialSphere` and `maximal_sphere` know concrete layer classes. There is
    no uniform registry behind all epoch-state consumers; only native stellar
-   realization currently uses the SDK registry.
+   realization, public native positions and native line vertices currently use
+   the SDK registry.
 2. `SkyLayer.realize()` has a legacy fallback that discards the context and
    calls `spherical_geometry(observer)`. Physical state and observation are
    therefore not uniformly separated.

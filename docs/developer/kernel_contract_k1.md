@@ -15,8 +15,9 @@ native-state subset. Direction/certificate/canonical-planning and SI Cartesian
 full-model behavior and explicit time conversion are accepted through
 PR #241; reusable provider conformance checks are accepted through PR #242.
 Other records/services remain targets, not available imports. Observation,
-Gaia and remaining production routing are pending. The current K3 candidate
-connects only native stellar realization through an explicit native-catalogue
+Gaia and remaining production routing are pending. Partial K3 routing
+connects native stellar realization, public native positions and constellation
+endpoints through an explicit native-catalogue
 lookup reference, without altering SDK contracts or claiming epoch propagation.
 The coordinate guide documents source epoch and this separate time boundary;
 existing Wenu transformations/parser are unchanged.

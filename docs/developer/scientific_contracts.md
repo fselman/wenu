@@ -36,10 +36,13 @@ Measurement, model and numerical uncertainty are explicitly unevaluated.
 Finite invalid latitude is refused; missing-coordinate legacy rows remain
 outside kernel states and retain NaNs/metadata for existing downstream filters.
 
-The native realization is routed; observed Skyfield realization and
-`Stars.position(instant)` remain legacy. The latter still ignores instant and
-uses default J2000.0 epoch metadata, inconsistent with source J1991.25; that
-unresolved migration defect must be corrected with its own compatibility gate.
+Native realization, `Stars.position(instant)`, explicit HIP positions and native
+constellation endpoints use this lookup. `position` still ignores instant for
+compatibility, but now declares the correct source epoch J1991.25, not the old
+incorrect J2000.0 default. Source RA degrees are authoritative when present;
+hours-only constructed inputs retain the hours × 15 conversion. This is a
+coordinate-encoding/metadata correction, not motion propagation. Observed
+Skyfield realization and native constellation-label anchors remain unmigrated.
 No historical-epoch or Gaia accuracy claim follows from this adapter.
 
 ## Catalogue identity and curation

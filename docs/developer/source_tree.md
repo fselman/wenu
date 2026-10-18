@@ -49,7 +49,9 @@ track configuration owners remember their attribute writes through that journal;
 `minor_body_resources.py` owns atomic resolver binding/restoration. No new
 catalogue clone is introduced by lifecycle isolation. The separate
 `stellar_state.py` owner now binds copied native stellar inputs and queries the
-SDK; `objects/stars.py` owns selection and geometry conversion. Native page
+SDK; `objects/stars.py` owns selection, public source-native HIP lookup and
+geometry conversion. Native constellation lines consume that public lookup,
+not source-table coordinates. Native page
 creation in `charts/request_generation.py` also owns its fixed-resolution
 offscreen canvas, separately from raster export dpi. The kernel imports no
 concrete Wenu classes.
@@ -288,7 +290,7 @@ concrete Wenu classes.
 | [`objects/nonstellar.py`](../../src/wenu/objects/nonstellar.py) | Catalogue layer for non-stellar astronomical objects. |
 | [`objects/open_clusters.py`](../../src/wenu/objects/open_clusters.py) | Vectorized fixed-symbol layer for Galactic open clusters. |
 | [`objects/planetary_nebulae.py`](../../src/wenu/objects/planetary_nebulae.py) | Planetary-nebula catalogue represented by fixed chart symbols. |
-| [`objects/stars.py`](../../src/wenu/objects/stars.py) | Stellar catalogue layer producing spherical point geometry. |
+| [`objects/stars.py`](../../src/wenu/objects/stars.py) | Stellar selection, kernel-backed native positions/HIP lookup and spherical point geometry; legacy observed route. |
 | [`objects/supernova_remnants.py`](../../src/wenu/objects/supernova_remnants.py) | Green Galactic supernova-remnant catalogue layer. |
 
 ## projections
@@ -344,7 +346,7 @@ concrete Wenu classes.
 | [`sky/ceres.py`](../../src/wenu/sky/ceres.py) | Catalog-owned identity for the first drawable asteroid. |
 | [`sky/constellation_boundaries.py`](../../src/wenu/sky/constellation_boundaries.py) | Official IAU constellation boundaries as spherical domain geometry. |
 | [`sky/constellation_labels.py`](../../src/wenu/sky/constellation_labels.py) | Constellation label anchors represented as spherical point geometry. |
-| [`sky/constellation_lines.py`](../../src/wenu/sky/constellation_lines.py) | Constellation-line topology expressed as observer-time spherical geometry. |
+| [`sky/constellation_lines.py`](../../src/wenu/sky/constellation_lines.py) | Curated edge topology joined to public native HIP positions or legacy observer-time geometry. |
 | [`sky/constellations.py`](../../src/wenu/sky/constellations.py) | Constellation layer grouping without projection or rendering state. |
 | [`sky/coordinate_grids.py`](../../src/wenu/sky/coordinate_grids.py) | Observer-time AltAz, equatorial, ecliptic, and Galactic grid geometry. |
 | [`sky/earth.py`](../../src/wenu/sky/earth.py) | Non-drawable Earth identity for moving-body relationships. |
