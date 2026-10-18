@@ -1158,7 +1158,12 @@ contract explicitly; the loader does not thereby establish missing source
 semantics. The immutable nonstellar admission record mirrors declared source
 frame/origin/epoch/time scale, units, edition and provenance, with explicit gaps.
 Native geometry now uses an unknown epoch unless one is declared; ICRS/J2000
-does not supply a measurement epoch. Strict admission refuses missing facts.
+does not supply a measurement epoch. Strict admission refuses facts missing for
+the selected model. Galaxies use `static-direction`: their source epoch/scale
+are optional provenance, with no requested-epoch update of native ICRS centres.
+Other providers retain source-epoch admission. An ancient date-oriented frame
+or observer can transform these fixed directions through its separate service;
+that is not a galaxy catalogue update. No fictitious measurement epoch is needed.
 Existing charts retain their original coordinate interpretation with model
 `legacy-unverified-catalogue-encoding`, rather than claiming that undeclared
 source facts have been established. Snapshot v5 validates these records against

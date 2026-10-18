@@ -31,7 +31,7 @@ the shared defaults or other nonstellar families.
 | M2 / fixed | `sky/constellation_lines.py` and `sky/constellation_labels.py` supplied their own Hipparcos epoch/provider descriptions | Native endpoints inherit returned position specifications; label metadata comes from the stellar interface. Label-anchor computation remains a separate legacy state consumer. | Native constellation geometry and frozen label/gap consumers |
 | M3 / fixed | `sky/native_snapshot.py` embedded J1991.25 both in writing and admission and did not persist the source metadata envelope | New schema v3 persists metadata, verifies it against source identity/row epochs and restores the same runtime record. v1/v2 compatibility uses an explicit source-bound packaged profile; unidentified legacy sources are refused. Nonstellar snapshot assumptions remain M6. | Snapshot admission/corruption, v1/v2 compatibility, source-free process and serial/spawn consumers |
 | M4 / cluster path fixed; shared defaults open | `coordinates.py::icrs_catalogue_spec` and `ICRS_ASTROMETRIC_SPEC` still supply J2000.0 by default. Open-cluster geometry now explicitly consumes row epochs/source lineage; the active table retains nested Hunt provenance under `input_catalogue_metadata.hunt_metadata` | The cluster path no longer inherits J2000. Mixed or unknown collections expose no scalar epoch; selected known rows retain their source label. Change the shared helper to require explicit epoch/unknown only after migrating its other callers. | `test_open_clusters.py`, stellar/nonstellar position contracts and curated saved-sky consumers |
-| M5 / mechanism implemented; source gaps open | `objects/nonstellar.py` preserves source fields/metadata/units and mirrors declared coordinate facts in a frozen `NonStellarCatalogueMetadata` record bound to input bytes. Native and observed specifications consume it; source provider identity replaces copied labels. Conflicting declarations and strict incomplete admission fail before publication | Missing facts remain null and discoverable in `missing_fields`; `require_complete()` and strict load refuse them. Legacy charts retain the explicit `legacy-unverified-catalogue-encoding` model. Actual source frame/origin/epoch/scale gaps must be resolved before physical provider closure; compatibility is not evidence of accuracy. | `nonstellar-admission`: owner regressions, real family geometry, cold/saved/source-free and public CLI consumers |
+| M5 / mechanism implemented; source gaps open | `objects/nonstellar.py` preserves source fields/metadata/units and mirrors declared coordinate facts in a frozen `NonStellarCatalogueMetadata` record bound to input bytes. Native and observed specifications consume it; source provider identity replaces copied labels. Conflicting declarations and strict incomplete admission fail before publication | Missing facts remain null and discoverable in `missing_fields`; `require_complete()` and strict load refuse them. Legacy charts retain the explicit `legacy-unverified-catalogue-encoding` model. Actual source frame/origin and model-required epoch/scale gaps must be resolved before physical provider closure. Galaxy static directions do not require a measurement epoch; compatibility is not evidence of accuracy. | `nonstellar-admission`: owner regressions, real family geometry, cold/saved/source-free and public CLI consumers |
 | M6 / header defaults fixed; legacy interpretation explicit | Snapshot v5 derives fixed headers from each provider, stores nonstellar records, checks source identity/table metadata/units/header agreement and retains the separate open-cluster row contract | Readers admit v1-v4 historical formats without treating their J2000 headers as measurement epochs. Missing legacy units/digests are not reconstructed as facts. Resource gaps from M5 remain open; shared coordinate helper defaults are still M4. | Existing corruption owner plus nonstellar record/header conflicts, actual known/unknown epoch round trips and legacy admission |
 | M7 / medium, open | `sky/ceres.py::CERES_SOLUTION` embeds Horizons solution number/date, osculating epoch and quality fields; `minor_body_resources.py` treats this descriptor as the expected identity, while newer comet identities are manifest-derived | A Ceres resource update requires a code edit and can diverge from its acquisition evidence. Migrate the complete solution identity to a versioned data manifest; preserve the existing descriptor-to-manifest/SPK digest and frame checks. | Minor-body resources/ephemeris and Ceres public state/track owners |
 | M8 / medium, open | `satellites/radiometry.py` embeds TSIS product DOI/URL, byte digest/count, grid bounds/sampling, header and audit integral | These are edition-specific resource facts and belong to a validated resource metadata document. Current code deliberately admits one exact resource and verifies it; this is inflexibility/duplication, not evidence of corrupted radiometry. Preserve the numerical integral and malformed-resource oracles when extracting it. | Satellite radiometry resource/parser owner |
@@ -53,7 +53,7 @@ are retained; no catalogue files are changed by the admission slice.
 |---|---|---|---|---|
 | Messier/HEASARC | Absent | Absent | Sky Catalog reference and HEASARC URLs retained | Frame/origin and epoch/scale |
 | Caldwell/OpenNGC | ICRS/J2000 | Absent | Release, membership URL, source-file URLs/digests retained | Origin and epoch/scale |
-| Galaxies/OpenNGC | Absent | Absent | Release/license/source-file URLs/digests retained | Frame/origin and epoch/scale |
+| Galaxies/OpenNGC | Absent | Absent; optional for the explicit static model | Release/license/source-file URLs/digests retained | Frame/origin; epoch/scale do not block static admission |
 | Harris globular clusters | Absent | Absent | December 2010 edition reference and HEASARC/McMaster URLs retained | Frame/origin and epoch/scale |
 | Strasbourg-ESO PN selection | ICRS/J2000 as served by TAP | Absent | 1992 edition, HEASARC and comparison/selection provenance retained | Origin and epoch/scale |
 | Green remnants | ICRS/J2000 | Absent | 2024 October edition and CDS/original-source URLs retained | Origin and epoch/scale |
@@ -64,9 +64,17 @@ describes RA/Dec in the requested equinox, and
 [HEASARC Harris](https://heasarc.gsfc.nasa.gov/w3browse/all/globclust.html)
 explicitly describes an input equinox of 2000. Neither statement establishes a
 common measurement epoch/time scale for these rows or a precision ICRS origin
-solution. The release-pinned OpenNGC README was unavailable to this retrieval;
-no new frame or measurement-epoch assertion is derived from it. Missing source
-facts therefore remain open, with strict admission refusing them. Legacy chart
+solution. The initially unavailable release-pinned OpenNGC documentation was
+subsequently retrieved through GitHub at `v20260501`:
+[README](https://github.com/mattiaverga/OpenNGC/blob/v20260501/README.md)
+(blob `11b2668f5aacd1224e932094024612435528d879`) says coordinates usually come
+from NED, and [field guide](https://github.com/mattiaverga/OpenNGC/blob/v20260501/NGC_guide.txt)
+(blob `7e5e1447c3cccd54cd5cbebb29387e5b30b05cc1`) labels RA/Dec as J2000 epoch.
+Those statements do not establish a new precision frame/origin solution for
+each source row. No catalogue bytes or coordinate frame declarations are changed.
+The user-selected galaxy chart model is explicitly static; measurement
+epoch/scale are provenance rather than admission prerequisites for that model.
+Other required source facts remain open and are refused in strict mode. Legacy chart
 compatibility is an explicitly labelled interpretation, not a metadata repair.
 
 Existing well-governed satellite/SPK/comet resource admission remains unchanged.

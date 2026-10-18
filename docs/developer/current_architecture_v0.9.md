@@ -112,7 +112,12 @@ epochs are explicit; snapshot v5 preserves these records and validates its heade
 without automatic J2000 stamps. Strict admission refuses missing declarations;
 existing charts retain an explicitly marked legacy encoding. Several resources
 still lack a declared frame, and all inspected nonstellar tables lack measurement
-epochs. Resolving those data gaps is required before physical provider closure.
+epochs. Admission is model-specific: `Galaxies` uses `static-direction` and does
+not require a source epoch/scale. It keeps native ICRS directions fixed while
+retaining any source epoch as provenance. Other providers keep the default
+source-epoch policy. Frame/origin/units/provenance remain required for strict
+galaxy admission. Source gaps and the kernel direction-state epoch constraint
+still prevent claiming complete galaxy kernel routing.
 Observed Skyfield astrometry,
 native constellation-label anchors and other families remain unmigrated. See the
 [adapter contract](implementation_reference.md#native-stellar-kernel-adapter).

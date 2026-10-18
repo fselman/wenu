@@ -65,7 +65,12 @@ record now validates declarations, exposes missing facts and controls geometry
 specifications and snapshot v5 headers. Strict admission refuses remaining source
 gaps; legacy charts retain explicitly unverified coordinate encoding. No automatic
 J2000 measurement epoch remains in those provider/snapshot paths. Resource metadata
-closure and shared helper defaults remain open audit findings.
+closure and shared helper defaults remain open audit findings. Galaxies now use
+an explicit static-direction admission policy: measurement epoch/scale are
+optional provenance, while frame/origin/units/source identity remain required.
+Requested epoch changes leave their native centres unchanged. Supporting this
+model with an unknown source epoch in kernel direction states is a separate
+next contract/implementation slice.
 The SDK [selection manifest](../../packages/wenu_kernel/test_selection_v1.json)
 keeps the independent core gate separate from existing Wenu tests. Current
 products consume only this partial native stellar adapter.

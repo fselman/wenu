@@ -89,6 +89,17 @@ Future unchanged manifests do not require revalidating every gate. `--collect` i
 
 ## Nonstellar ingestion gate
 
+`galaxy-static-model` is the narrower followup for model-specific epoch
+requirements. It runs the changed metadata owner and galaxy geometry owner,
+all six fixed-table round trips, an actual static no-epoch galaxy preparation/
+restore, the known source-epoch round trip and source-free fresh-process restore.
+Tests span Julian years -10000 to +10000 without changing native galaxy centres,
+retain supplied epoch provenance and demonstrate that frame and other provider
+epoch requirements still fail when missing. The new strict no-epoch regression
+fails on the previous implementation. Snapshot schema/resources, numerical
+transforms, renderer, worker dispatch and SDK are unchanged; reuse PR #251's
+corruption/public-command evidence. Do not run the broader parent gates too.
+
 The subsequent `nonstellar-admission` gate extends this selection once. It adds
 immutable record/strict-refusal/known-versus-unknown epoch and observed-provider
 identity regressions, all existing snapshot corruption cases, seven nonstellar

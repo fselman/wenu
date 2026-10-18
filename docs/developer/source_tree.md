@@ -286,7 +286,7 @@ concrete Wenu classes.
 |---|---|
 | [`objects/__init__.py`](../../src/wenu/objects/__init__.py) | Physical astronomical chart layers. |
 | [`objects/astronomical_object.py`](../../src/wenu/objects/astronomical_object.py) | Base class for physical astronomical chart layers. |
-| [`objects/galaxies.py`](../../src/wenu/objects/galaxies.py) | Bright-galaxy catalogue layer. |
+| [`objects/galaxies.py`](../../src/wenu/objects/galaxies.py) | Bright-galaxy catalogue layer with explicit epoch-independent static-direction admission. |
 | [`objects/globular_clusters.py`](../../src/wenu/objects/globular_clusters.py) | Milky Way globular-cluster catalogue layer. |
 | [`objects/nonstellar.py`](../../src/wenu/objects/nonstellar.py) | Atomic ingestion, immutable source admission/gap record, angular normalization and metadata-owned centre/outline specifications. |
 | [`objects/open_clusters.py`](../../src/wenu/objects/open_clusters.py) | Vectorized cluster symbols, selected row epoch/source metadata and aggregate coordinate specification. |
