@@ -95,14 +95,16 @@ than reimplemented in a new kernel.
 3. Frozen coordinate metadata does not make every geometry result immutable:
    general arrays, dictionaries and layer collections remain mutable.
 4. Request preparation temporarily installs layers and rebinds resolvers.
-   The current K3 prerequisite candidate repairs rollback of request-added
-   minor-body registry entries/entity aliases and resolver bindings, including
-   partial addition, failed session construction/binding and later preparation
-   failures. Normal close detaches those registrations; cleanup attempts continue
-   after an error and preserve exception chains. Existing satellite ownership
-   remains covered. This is not complete request isolation: grids, horizon,
-   disks, natural tracks and their label flags still have separate mutable
-   configuration paths to migrate before sharing kernel state.
+   Minor-body registration/alias and atomic resolver rollback is accepted in
+   PR #243. The current K3 candidate adds a synchronous request-state journal
+   around ordinary request preparation. It restores original layer identities
+   and order, horizon/disk aliases and point-label flags on close or failure;
+   overlapping builds on one mutable sky fail before configuration. Failed cleanup
+   retains the lease; a returned build can retry close before another request. Configuration
+   owners explicitly remember their writes; direct standalone configuration
+   calls retain their persistent semantics. Catalogues/resources/scientific
+   caches are not cloned or rewound. This is isolation of canonical request
+   configuration, not thread safety, arbitrary caller mutations or kernel routing.
 5. `charts/atlas_publication.py` calls request generation, while request
    generation imports atlas-specific private furniture/report helpers.
    This creates a cycle across the intended chart/atlas barrier.

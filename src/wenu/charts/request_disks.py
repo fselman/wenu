@@ -177,7 +177,7 @@ class FrozenEarthSolarSystemDiskSequenceDisplayRequest:
         return str(family).strip().lower() == "regional"
 
 
-def configure_chart_request_disks(sky, request):
+def configure_chart_request_disks(sky, request, *, state=None):
     """Replace request-owned disk layers with the current request selection."""
     for layer in tuple(sky.layers):
         name = getattr(layer, "layer_name", "")
@@ -191,6 +191,8 @@ def configure_chart_request_disks(sky, request):
         ):
             sky.remove(layer)
             if name:
+                if state is not None:
+                    state.remember_attribute(sky, name)
                 setattr(sky, name, None)
 
     for name in (
@@ -207,6 +209,8 @@ def configure_chart_request_disks(sky, request):
         "venus_disk_sequence_frozen_labels",
         "frozen_earth_sun",
     ):
+        if state is not None:
+            state.remember_attribute(sky, name)
         setattr(sky, name, None)
 
     for disk in request.solar_system_disks:
@@ -215,6 +219,8 @@ def configure_chart_request_disks(sky, request):
             magnification=disk.magnification,
         )
         for layer in layers:
+            if state is not None:
+                state.remember_attribute(sky, layer.layer_name)
             setattr(sky, layer.layer_name, layer)
             sky.add(layer)
 
@@ -235,5 +241,7 @@ def configure_chart_request_disks(sky, request):
             temporal_components=sequence.temporal_components,
         )
         for layer in layers:
+            if state is not None:
+                state.remember_attribute(sky, layer.layer_name)
             setattr(sky, layer.layer_name, layer)
             sky.add(layer)

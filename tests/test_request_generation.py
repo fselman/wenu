@@ -27,6 +27,7 @@ from wenu.charts.request_generation import (
     export_prepared_chart,
     generate_chart_request,
     _prepare_with_sphere,
+    _RequestSkyState,
 )
 from wenu.charts.request_resolver import resolve_chart_request
 from wenu.sky.maximal_sphere import CANONICAL_MAXIMAL_SPHERE_PROFILE
@@ -390,15 +391,15 @@ def test_generation_owns_and_closes_its_observer(monkeypatch, tmp_path):
     )
     monkeypatch.setattr(
         "wenu.charts.request_generation.configure_chart_request_horizon",
-        lambda actual, value: events.append("horizon"),
+        lambda actual, value, *, state=None: events.append("horizon"),
     )
     monkeypatch.setattr(
         "wenu.charts.request_generation.configure_chart_request_disks",
-        lambda actual, value: events.append("disks"),
+        lambda actual, value, *, state=None: events.append("disks"),
     )
     monkeypatch.setattr(
         "wenu.charts.request_tracks.configure_chart_request_track",
-        lambda actual, value, *, source_resolver: events.append("track"),
+        lambda actual, value, *, source_resolver, state=None: events.append("track"),
     )
     monkeypatch.setattr(
         "wenu.charts.request_generation.export_prepared_chart",
@@ -472,15 +473,15 @@ def test_public_build_boundary_prepares_without_exporting(
     )
     monkeypatch.setattr(
         "wenu.charts.request_generation.configure_chart_request_horizon",
-        lambda actual, value: events.append("horizon"),
+        lambda actual, value, *, state=None: events.append("horizon"),
     )
     monkeypatch.setattr(
         "wenu.charts.request_generation.configure_chart_request_disks",
-        lambda actual, value: events.append("disks"),
+        lambda actual, value, *, state=None: events.append("disks"),
     )
     monkeypatch.setattr(
         "wenu.charts.request_tracks.configure_chart_request_track",
-        lambda actual, value, *, source_resolver: events.append("track"),
+        lambda actual, value, *, source_resolver, state=None: events.append("track"),
     )
     monkeypatch.setattr(
         "wenu.charts.request_generation.prepare_chart_request",
@@ -560,15 +561,15 @@ def test_generation_reuses_a_compatible_supplied_sphere(
     )
     monkeypatch.setattr(
         "wenu.charts.request_generation.configure_chart_request_horizon",
-        lambda actual, value: events.append((actual, value)),
+        lambda actual, value, *, state=None: events.append((actual, value)),
     )
     monkeypatch.setattr(
         "wenu.charts.request_generation.configure_chart_request_disks",
-        lambda actual, value: events.append((actual, value)),
+        lambda actual, value, *, state=None: events.append((actual, value)),
     )
     monkeypatch.setattr(
         "wenu.charts.request_tracks.configure_chart_request_track",
-        lambda actual, value, *, source_resolver: events.append((actual, value)),
+        lambda actual, value, *, source_resolver, state=None: events.append((actual, value)),
     )
     monkeypatch.setattr(
         "wenu.charts.request_generation.export_prepared_chart",
@@ -623,15 +624,15 @@ def test_generation_reuses_an_observer_independent_sphere_explicitly(
     )
     monkeypatch.setattr(
         "wenu.charts.request_generation.configure_chart_request_horizon",
-        lambda actual, value: None,
+        lambda actual, value, *, state=None: None,
     )
     monkeypatch.setattr(
         "wenu.charts.request_generation.configure_chart_request_disks",
-        lambda actual, value: None,
+        lambda actual, value, *, state=None: None,
     )
     monkeypatch.setattr(
         "wenu.charts.request_tracks.configure_chart_request_track",
-        lambda actual, value, *, source_resolver: None,
+        lambda actual, value, *, source_resolver, state=None: None,
     )
     monkeypatch.setattr(
         "wenu.charts.request_generation.prepare_chart_request",
@@ -965,3 +966,255 @@ def test_minor_body_build_close_error_still_restores_supplied_sky(monkeypatch):
         build.close()
     assert caught.value is fixture.cleanup_error
     _assert_minor_body_request_restored(fixture)
+
+
+def _configured_request_fixture(monkeypatch, *, failure_stage=None):
+    """Run real configuration owners with constructed, non-numerical layers."""
+    from wenu.sky.celestial_sphere import CelestialSphere
+    from wenu.sky.sky_layer import SkyLayer
+
+    error = RuntimeError("synthetic configured-request failure: " + str(failure_stage))
+    closes = []
+
+    class Layer(SkyLayer):
+        def __init__(self, name, display_kind=None):
+            self.layer_name = name
+            self.display_kind = display_kind
+
+        def spherical_geometry(self, observer):
+            raise AssertionError("configuration must not evaluate scientific geometry")
+
+    class Grid(Layer):
+        pass
+
+    class Horizon(Layer):
+        pass
+
+    failed_names = {"grid": "new-grid", "horizon": "new-horizon",
+                    "disk": "test_disk_limb", "sequence": "test_sequence_limb",
+                    "track": "solar_system_track", "symbol": "solar_system_track_symbol"}
+
+    class Sky(CelestialSphere):
+        def add(self, layer):
+            if (layer.layer_name == failed_names.get(failure_stage)
+                    and not any(layer is old for old in before[0])):
+                raise error
+            return super().add(layer)
+
+        def add_equatorial_grid(self, **kwargs):
+            return self.add(Grid("new-grid"))
+
+        def add_horizon_reference(self):
+            self.horizon_reference = Horizon("new-horizon")
+            return self.add(self.horizon_reference)
+
+    sky = Sky(SimpleNamespace(close=lambda: closes.append(True)))
+    retained = Layer("catalogue")
+    selected, other = Layer("selected-point"), Layer("other-point")
+    selected.request_draw_label = True
+    sky.solar_system_bodies.update(selected=selected, other=other)
+    original_grid, original_horizon = Grid("original-grid"), Horizon("original-horizon")
+    disk = Layer("original_disk", "resolved_disk")
+    sequence = Layer("original_sequence", "observed_disk_sequence")
+    track = Layer("solar_system_track")
+    symbol = Layer("solar_system_track_symbol")
+    # Bypass the fault injector while installing the original registry.
+    for layer in (retained, original_grid, selected, disk, original_horizon, sequence, track, symbol, other):
+        CelestialSphere.add(sky, layer)
+    sky.horizon_reference, sky.original_disk, sky.original_sequence = original_horizon, disk, sequence
+    sky.venus_disk_illuminated = None  # distinguish existing None from absence
+    sky.catalogue_cache = object()
+    before = (tuple(sky.layers), dict(vars(sky)), dict(vars(selected)), dict(vars(other)))
+    descriptor = SimpleNamespace(selection_key="selected", body_class="asteroid", display_name="Fixture", iau_number=42)
+    request = SimpleNamespace(
+        family="regional", coordinate_frame="equatorial", horizon=True,
+        detail=SimpleNamespace(grids=True),
+        reference_policy=SimpleNamespace(resolved_equinox=lambda observer: "J2000"),
+        minor_body_descriptors=(), solar_system_disks=(SimpleNamespace(descriptor=descriptor, magnification=1),),
+        solar_system_disk_sequence=SimpleNamespace(sequence=object(), magnification=1,
+                                                  label_dates=False, temporal_components=None),
+        solar_system_tracks=(SimpleNamespace(descriptor=descriptor, tick_offsets_days=(0, 1, 2)),),
+        solar_system_track_labels="none", solar_system_track_symbols="major",
+        solar_system_track_tick_labels=False, solar_system_track_path=True, solar_system_track_ticks=True,
+    )
+    monkeypatch.setattr("wenu.minor_body_resources.request_minor_body_descriptors", lambda value: ())
+    monkeypatch.setattr("wenu.charts.request_generation.resolve_chart_request",
+                        lambda value, profile: SimpleNamespace(request=value, frame=None))
+    monkeypatch.setattr("wenu.charts.request_grids.ChartRequest", SimpleNamespace)
+    monkeypatch.setattr("wenu.charts.request_grids.CoordinatesGrid", Grid)
+    monkeypatch.setattr("wenu.charts.request_grids.validate_equatorial_grid_marks", lambda value: None)
+    monkeypatch.setattr("wenu.charts.request_grids.requested_coordinate_grids",
+                        lambda detail: {"equatorial_grid"} if detail.grids else set())
+    monkeypatch.setattr("wenu.charts.request_grids._grid_specifications", lambda *args, **kwargs: {"equatorial_grid": {}})
+    monkeypatch.setattr("wenu.charts.request_horizon.ChartRequest", SimpleNamespace)
+    monkeypatch.setattr("wenu.charts.request_horizon.HorizonReference", Horizon)
+    monkeypatch.setattr("wenu.charts.request_disks.solar_system_disk_layers", lambda *args, **kwargs: (
+        Layer("test_disk_face", "resolved_disk"), Layer("test_disk_limb", "resolved_disk")))
+    monkeypatch.setattr("wenu.charts.request_disks.observed_solar_system_disk_sequence_layers", lambda *args, **kwargs: (
+        Layer("test_sequence_face", "observed_disk_sequence"), Layer("test_sequence_limb", "observed_disk_sequence")))
+    monkeypatch.setattr("wenu.charts.request_tracks._selected_point_replaces_start_label", lambda *args: True)
+    monkeypatch.setattr("wenu.charts.request_tracks.SolarSystemTrackRealizer", lambda **kwargs: object())
+    monkeypatch.setattr("wenu.charts.request_tracks.SolarSystemTrackRealization", lambda *args, **kwargs: object())
+    monkeypatch.setattr("wenu.charts.request_tracks.SolarSystemTrackLayer", lambda *args, **kwargs: Layer("solar_system_track"))
+    monkeypatch.setattr("wenu.charts.request_tracks.SolarSystemTrackSymbolLayer", lambda *args: Layer("solar_system_track_symbol"))
+    monkeypatch.setattr("wenu.charts.request_satellite_tracks.configure_chart_request_satellite_tracks", lambda *args: ())
+    def prepare(*args, **kwargs):
+        if failure_stage == "prepare":
+            raise error
+        return SimpleNamespace(chart=object())
+    monkeypatch.setattr("wenu.charts.request_generation.prepare_chart_request", prepare)
+    return SimpleNamespace(sky=sky, request=request, before=before, error=error, closes=closes)
+
+
+def _assert_configured_sky_restored(fixture):
+    sky = fixture.sky
+    layers, attributes, selected, other = fixture.before
+    assert len(layers) == len(sky.layers)
+    assert all(a is b for a, b in zip(layers, sky.layers))
+    assert vars(sky).keys() == attributes.keys()
+    assert all(getattr(sky, name) is value for name, value in attributes.items())
+    assert vars(sky.solar_system_bodies["selected"]) == selected
+    assert vars(sky.solar_system_bodies["other"]) == other
+    assert fixture.closes == []
+
+
+@pytest.mark.parametrize("failure_stage", ["grid", "horizon", "disk", "sequence", "track", "symbol", "prepare"])
+def test_configured_request_failure_restores_all_request_mutations(monkeypatch, failure_stage):
+    fixture = _configured_request_fixture(monkeypatch, failure_stage=failure_stage)
+    with pytest.raises(RuntimeError) as caught:
+        _prepare_with_sphere(fixture.request, fixture.sky, object(), owns_observer=False)
+    assert caught.value is fixture.error
+    _assert_configured_sky_restored(fixture)
+
+
+def test_configured_build_restores_order_aliases_flags_and_rejects_overlap(monkeypatch):
+    fixture = _configured_request_fixture(monkeypatch)
+    build = _prepare_with_sphere(fixture.request, fixture.sky, object(), owns_observer=False)
+    assert build.sky is fixture.sky
+    assert fixture.sky.solar_system_bodies["selected"].request_draw_label is False
+    assert fixture.sky.solar_system_bodies["other"].request_draw_label is True
+    configured = fixture.sky.layers
+    with pytest.raises(RuntimeError, match="already active"):
+        _prepare_with_sphere(fixture.request, fixture.sky, object(), owns_observer=False)
+    assert fixture.sky.layers == configured
+    build.close()
+    build.close()
+    _assert_configured_sky_restored(fixture)
+    next_build = _prepare_with_sphere(fixture.request, fixture.sky, object(), owns_observer=False)
+    next_build.close()
+    _assert_configured_sky_restored(fixture)
+
+
+def test_configured_export_failure_restores_supplied_sky(monkeypatch):
+    fixture = _configured_request_fixture(monkeypatch)
+    build = _prepare_with_sphere(fixture.request, fixture.sky, object(), owns_observer=False)
+    monkeypatch.setattr("wenu.charts.request_generation.build_chart_request", lambda *args, **kwargs: build)
+    def fail(*args, **kwargs):
+        raise fixture.error
+    monkeypatch.setattr("wenu.charts.request_generation.export_prepared_chart", fail)
+    with pytest.raises(RuntimeError) as caught:
+        generate_chart_request(fixture.request, sky=fixture.sky)
+    assert caught.value is fixture.error
+    _assert_configured_sky_restored(fixture)
+
+
+def test_configured_requests_are_independent_of_prior_request_order(monkeypatch):
+    fixture = _configured_request_fixture(monkeypatch)
+    full = fixture.request
+    empty = SimpleNamespace(**{**vars(full), "horizon": False, "detail": SimpleNamespace(grids=False),
+                              "solar_system_disks": (), "solar_system_disk_sequence": None, "solar_system_tracks": ()})
+    signatures = {}
+    for name, request in (("empty", empty), ("full", full), ("full", full), ("empty", empty)):
+        with _prepare_with_sphere(request, fixture.sky, object(), owns_observer=False):
+            current = tuple(layer.layer_name for layer in fixture.sky.layers)
+            assert signatures.setdefault(name, current) == current
+        _assert_configured_sky_restored(fixture)
+
+
+@pytest.mark.parametrize("failure", ["attribute", "registry"])
+def test_request_state_restoration_failure_attempts_all_and_retains_lease(failure):
+    values = [object(), object()]
+    class Sky:
+        def __init__(self):
+            self.layers = list(values)
+            self.fail = False
+
+        def clear(self):
+            self.layers.clear()
+
+        def extend(self, layers):
+            if self.fail and failure == "registry":
+                raise RuntimeError("synthetic registry restoration failure")
+            self.layers.extend(layers)
+    class Owner:
+        def __init__(self):
+            self._value, self.fail = "old", False
+
+        @property
+        def value(self):
+            return self._value
+
+        @value.setter
+        def value(self, value):
+            if self.fail and failure == "attribute":
+                raise RuntimeError("synthetic attribute restoration failure")
+            self._value = value
+    sky, owner = Sky(), Owner()
+    state = _RequestSkyState(sky)
+    state.remember_attribute(owner, "value")
+    state.remember_attribute(sky, "temporary_alias")
+    owner.value, sky.temporary_alias, sky.layers[:] = "new", object(), [object()]
+    state.remember_attribute(owner, "value")  # must retain the first value
+    sky.fail = owner.fail = True
+    with pytest.raises(RuntimeError, match="synthetic .* restoration failure"):
+        state.restore()
+    assert not hasattr(sky, "temporary_alias")
+    if failure == "attribute":
+        assert sky.layers == values
+    else:
+        assert owner.value == "old"
+    with pytest.raises(RuntimeError, match="already active"):
+        _RequestSkyState(sky)
+    sky.fail = owner.fail = False
+    state.restore()
+    state.restore()
+    assert sky.layers == values and owner.value == "old"
+    assert not hasattr(sky, "_active_chart_request_state")
+    with pytest.raises(RuntimeError, match="already restored"):
+        state.remember_attribute(owner, "value")
+
+
+@pytest.mark.parametrize("existing_lease_slot", [False, True])
+def test_request_state_preserves_original_none_and_missing_attributes(existing_lease_slot):
+    sky = SimpleNamespace(layers=(), present=None)
+    if existing_lease_slot:
+        sky._active_chart_request_state = None
+    state = _RequestSkyState(sky)
+    state.remember_attribute(sky, "present")
+    state.remember_attribute(sky, "absent")
+    sky.present, sky.absent = object(), object()
+    state.remember_attribute(sky, "present")
+    state.restore()
+    assert sky.present is None and not hasattr(sky, "absent")
+    assert hasattr(sky, "_active_chart_request_state") is existing_lease_slot
+    if existing_lease_slot:
+        assert sky._active_chart_request_state is None
+
+
+def test_failed_resource_close_keeps_request_lease_until_build_close_retry(monkeypatch):
+    fixture = _configured_request_fixture(monkeypatch)
+    build = _prepare_with_sphere(fixture.request, fixture.sky, object(), owns_observer=False)
+    class Resource:
+        fail = True
+        def close(self):
+            if self.fail:
+                raise RuntimeError("synthetic resource close failure")
+    resource = Resource()
+    build.minor_body_session = resource
+    with pytest.raises(RuntimeError, match="resource close failure"):
+        build.close()
+    with pytest.raises(RuntimeError, match="already active"):
+        _prepare_with_sphere(fixture.request, fixture.sky, object(), owns_observer=False)
+    resource.fail = False
+    build.close()
+    _assert_configured_sky_restored(fixture)

@@ -33,10 +33,12 @@ All source/test
 paths and the explicit selection manifest are tracked in
 [the migration inventory](kernel_migration_inventory_v1.json).
 It is not imported by the existing product package.
-The first K3 prerequisite remains inside the existing owners:
-`charts/request_generation.py` scopes temporary minor-body layers/registry
-aliases and cleanup, while `minor_body_resources.py` owns atomic resolver
-binding/restoration. It introduces no provider routing or new source module.
+K3 request isolation remains inside the existing owners:
+`charts/request_generation.py` owns the synchronous request-state journal,
+temporary layer/registry restoration and build lifetime. Horizon, disk and
+track configuration owners remember their attribute writes through that journal;
+`minor_body_resources.py` owns atomic resolver binding/restoration. No new
+source module, catalogue clone or provider routing is introduced.
 
 | Module | Present responsibility |
 |---|---|
