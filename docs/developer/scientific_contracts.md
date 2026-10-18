@@ -4,6 +4,13 @@
 cleanup and the future kernel migration. Archived audits retain detailed
 proofs and source receipts; moving them does not revoke a compatibility promise.
 
+Open clusters retain mean Dias motions in the curated table, while Wenu's Hunt
+derivatives omit the published motion fields. Current cluster positions are not
+propagated. A source lookup must not claim zero motion, date accuracy or a
+fabricated measurement epoch. SDK `catalogue_lookup` is an additive candidate
+prerequisite, not migrated production routing. See the
+[source and motion audit](kernel_migration_audit_v1.md#open-cluster-motion-and-lookup-audit-2026-10-18).
+
 ## Coordinates, time and resources
 
 Frame, origin, position status, catalogue epoch, equinox, evaluation instant

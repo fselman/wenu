@@ -43,7 +43,7 @@ from wenu_kernel.records import (
 class ConsumerProvider:
     # Entirely constructed data owned by this external consumer; no imports
     # from the repository's synthetic provider or test helpers.
-    def __init__(self):
+    def __init__(self, capability="native_direction"):
         epoch = TimePoint(2451545, 0, "tt")
         span = TimeSpan(replace(epoch, jd1=2451544), replace(epoch, jd1=2451547))
         key = ProviderKey("external-fixture", "1")
@@ -52,9 +52,12 @@ class ConsumerProvider:
         self.model = ModelRef("external-fixture:fixed", "1", "3"*64, (resource,))
         self.reference = ReferenceSpec("icrs", "ssb", "geometric", "direction", "rad", "external:none")
         self.objects = (ObjectKey("external:a"), ObjectKey("external:b"))
-        caps = ("native_direction", "batch_evaluation")
+        caps = (capability, "batch_evaluation")
+        self.source_epochs = {obj: (None if capability == "catalogue_lookup" and i == 0 else epoch)
+                              for i, obj in enumerate(self.objects)}
         self.snapshot = CatalogueSnapshot(self.catalogue_ref, tuple(
-            ObjectRecord(obj, (), "constructed", (epoch,), caps, ("constructed",)) for obj in self.objects))
+            ObjectRecord(obj, (), "constructed", (() if self.source_epochs[obj] is None else (epoch,)),
+                         caps, ("constructed",)) for obj in self.objects))
         admission = ModelAdmission(self.catalogue_ref, self.model, self.reference, self.objects, caps, span)
         self.descriptor = ProviderDescriptor(key, (self.catalogue_ref,), (admission,), "local:immutable")
         self.evaluations = self.closes = 0
@@ -80,7 +83,7 @@ class ConsumerProvider:
             for obj in query.objects:
                 buffer = [1, 0, 0]
                 self.buffers.append(buffer)
-                rows.append(DirectionState(obj, time, self.epoch, time, self.reference, buffer, evidence))
+                rows.append(DirectionState(obj, time, self.source_epochs[obj], time, self.reference, buffer, evidence))
         return StateBatch(query, rows)
 
     def certify(self, query, anchor):
@@ -89,8 +92,8 @@ class ConsumerProvider:
     def close(self):
         self.closes += 1
 
-def make_case():
-    p = ConsumerProvider()
+def make_case(capability="native_direction"):
+    p = ConsumerProvider(capability)
     query = StateQuery(p.catalogue_ref, p.model, tuple(reversed(p.objects)),
                        (replace(p.epoch, jd2=.1), p.epoch), p.reference, AccuracyRequest())
     probe = replace(query, times=(replace(p.epoch, jd1=p.epoch.jd1+1),))
@@ -103,14 +106,20 @@ suite = provider_suite(make_case, name="IndependentConsumer")
 result = unittest.TextTestRunner(stream=io.StringIO()).run(suite)
 assert result.wasSuccessful(), result.errors + result.failures
 assert result.testsRun == 8 and not result.skipped
+lookup_suite = provider_suite(lambda: make_case("catalogue_lookup"), name="IndependentLookupConsumer")
+lookup_result = unittest.TextTestRunner(stream=io.StringIO()).run(lookup_suite)
+assert lookup_result.wasSuccessful(), lookup_result.errors + lookup_result.failures
+assert lookup_result.testsRun == 8 and not lookup_result.skipped
 for forbidden in ("wenu", "numpy", "astropy", "matplotlib", "skyfield", "sgp4",
                   "synthetic_providers", "test_sessions", "test_conformance"):
     assert not any(n == forbidden or n.startswith(forbidden + ".") for n in sys.modules), forbidden
 print("Independent consumer: 8 shipped conformance checks passed")
+print("Independent lookup consumer: 8 shipped conformance checks passed")
 '''.replace("SDK_ROOT", repr(root))
         result = subprocess.run([sys.executable, "-I", "-S", "-B", "-c", code],
                                 capture_output=True, text=True, check=True, cwd="/tmp")
         self.assertIn("8 shipped conformance checks passed", result.stdout)
+        self.assertIn("Independent lookup consumer: 8 shipped conformance checks passed", result.stdout)
 
     def test_local_provider_gate_collects_without_wenu_or_backends(self):
         # Ordinary unittest discovery is the package gate; no pytest plugin or

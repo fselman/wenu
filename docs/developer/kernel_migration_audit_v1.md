@@ -95,6 +95,58 @@ and installation checks because those boundaries changed. The separate
 other unmodified provider physics is audited statically here, not claimed newly
 tested or repaired.
 
+## Open-cluster motion and lookup audit, 2026-10-18
+
+Inspected accepted main `5f8fca4c4a391ea54aba05401163bb1c245ce7ff`.
+Resource blob identities were checked against that GitHub tree. Counts below
+describe these exact Wenu derivatives, not completeness of the published catalogues.
+
+| Resource | Rows | Proper-motion pairs retained | Position lineage |
+|---|---:|---:|---|
+| Dias HEASARC ECSV | 1,931 | 1,872 finite pairs, declared mas/yr | Measurement epoch not declared; J2000 frame/equinox text is not a measurement date |
+| Hunt/Reffert full Wenu derivative | 7,167 | No motion columns | ICRS, source label J2016.0; no explicit numerical epoch scale in this metadata |
+| Hunt/Reffert V5 derivative | 431 | No motion columns | Same source metadata as full derivative |
+| Active curated v0.2 | 513 | 331 finite Dias pairs (332 unmasked, one nonfinite) | 509 Hunt centres/J2016.0; four Dias centres/unknown epoch |
+
+All four Dias-centred rows have finite Dias motions. The other 327 finite Dias
+pairs accompany Hunt-selected centres; a cross-catalogue combination needs an
+explicit reviewed astrometric policy, not column presence alone. Current
+`OpenClusters.position(instant)` ignores the instant; neither native nor observed
+cluster geometry applies these retained motions. Observer/date transformation is
+separate and does not replace physical source motion.
+
+Primary-source verification (2026-10-18):
+[CDS Hunt/Reffert ReadMe](https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/J/A+A/686/A42?format=html&tex=true)
+defines cluster `pmRA` as mean motion multiplied by cos(dec), `pmDE`, their
+standard errors and dispersions, parallax/error and radial-velocity fields.
+The published catalogue therefore has astrometry omitted by Wenu's derivative.
+[HEASARC OPENCLUST documentation](https://heasarc.gsfc.nasa.gov/w3browse/all/openclust.html)
+defines mean RA/Dec motions in mas/yr, motion errors and references, and radial
+velocity/error fields. Its displayed RA description alone does not settle the
+cos(dec) convention; check the original CDS source before propagation. A mean
+motion dispersion must not silently substitute for uncertainty of the mean.
+
+Before propagation, ingest a source-bound standard astrometric record retaining
+the selected centre's source/epoch/scale/frame/origin, motion convention/units,
+available uncertainties and correlations, distance/parallax, radial velocity and
+their source identities. Preserve masks and raw columns; absent motion is
+unknown, never zero. Prefer the matching Hunt solution for a Hunt centre after
+source verification, with an explicitly declared alternative for Dias-only rows.
+No acquisition, automatic cross-source merge or resource-byte change occurs in
+this prerequisite. Re-ingestion must retain the existing 513-object membership
+unless a separate selection change is requested.
+
+The SDK dev8 candidate introduces `catalogue_lookup` before cluster routing:
+it admits incomplete per-object source epochs without invoking the galaxy static
+model. It refuses physical epoch accuracy, velocity and temporal reuse. The
+production pin remains dev7; this candidate does not yet route a cluster or add
+motion. The next adapter must bind preserved source metadata to its resource
+identity and route native/public/observed/saved consumers without fallback.
+Only a later explicit propagation model may claim positions at a new epoch.
+For ancient charts, bulk cluster motion and changes to member distribution are
+different questions; translating a present-day symbol does not reconstruct the
+historical membership or morphology.
+
 ## Original functionality and test audit
 
 **Audit revision:** 1, 2026-10-18. **Inspected revision:**

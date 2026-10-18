@@ -77,6 +77,11 @@ production dependency pin. Shape parameters stay with the galaxy layer.
 The SDK [selection manifest](../../packages/wenu_kernel/test_selection_v1.json)
 keeps the independent core gate separate from existing Wenu tests. Current
 products consume the partial native stellar and static galaxy centre adapters.
+A dev8 candidate adds explicit catalogue lookup without requiring invented
+source epochs or a static physical model. Production remains on accepted dev7;
+open-cluster routing and motion propagation are still pending. The
+[cluster motion audit](kernel_migration_audit_v1.md#open-cluster-motion-and-lookup-audit-2026-10-18)
+records retained Dias motions, omitted Hunt astrometry and required provenance.
 Relativistic/civil-time adapters, common realization services, Cartesian reuse
 and remaining K3 routing are pending; this is not a completed kernel or frozen SDK.
 

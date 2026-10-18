@@ -5,6 +5,8 @@ It is not the K5 frozen SDK. Existing Wenu continues to use its current code;
 the accepted native stellar adapter uses its existing source-epoch subset.
 The SDK extension itself adds no numerical backend. Wenu now supplies a
 source-bound static galaxy direction consumer outside this package.
+The dev8 candidate adds catalogue lookup for incomplete source epochs; the
+production pin remains accepted dev7. No open-cluster consumer is migrated yet.
 
 ## Implemented scope
 
@@ -206,7 +208,7 @@ computed anchor. Neither is a substitute measurement date.
 Static and native/epoch direction capabilities require distinct model admissions.
 Object records may advertise multiple models, but any native/epoch direction
 capability retains its source-epoch requirement. The session permits a null
-direction source epoch only under an explicit static admission. A nullable value
+direction source epoch only under explicit static or catalogue-lookup admission. A nullable value
 record alone does not authorize a model. No galaxy-specific code enters the SDK.
 
 Constancy is exact only relative to the selected model; missing physical
@@ -222,6 +224,33 @@ Cartesian temporal reuse fails explicitly. Each query returns only the state
 variant matching its native reference, in exact time-major order. Accepted
 list buffers are copied into immutable tuples. All rows validate before any
 cache entry is published.
+
+## Catalogue lookup admission
+
+`catalogue_lookup` returns encoded source directions through the same ordered
+session interface. This compatibility capability is distinct from both physical
+epoch propagation and an adopted static astronomical model. Its vectors must be
+invariant under query time; query time records the request, not a measurement
+date. Source epochs may be unknown or differ by object; any admitted numerical
+epoch must match that object's declared provenance. Unqualified source epoch
+labels must remain in the domain source record, never be assigned an invented
+time scale. The domain adapter binds those records into resource identity.
+
+Only `batch_evaluation` may accompany this capability in an admission. All
+nondefault accuracy requests, velocity, requested intervals and temporal reuse
+are refused before backend evaluation. Physical-model evidence must remain
+`not_evaluated`; source measurement and encoding evidence stay separate.
+Coverage still constrains lookup availability, not physical validity. No date,
+frame, origin, zero motion, unlimited coverage or accuracy is inferred.
+Native/epoch admissions retain their existing mandatory source epochs. Exact
+query caching, source-epoch consistency, all-or-nothing publication, lifecycle
+and scale checks remain unchanged. The portable kit checks lookup vectors over
+its query/probe samples, including mixed and wholly unknown source epochs.
+
+The next open-cluster adapter may use this compatibility route while separately
+preserving original mean motions and their provenance. It must not apply Dias
+motions automatically to Hunt-selected centres. Propagation requires a distinct
+admitted model and validated source conventions; this SDK slice provides none.
 
 ## Angular reuse and reproducibility
 

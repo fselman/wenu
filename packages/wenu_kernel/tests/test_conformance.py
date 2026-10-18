@@ -14,7 +14,7 @@ from wenu_kernel.errors import InvalidQuery
 from wenu_kernel.records import AccuracyRequest
 from synthetic_providers import (
     CanonicalDirections, CertifiedDirections, FixedDirections, MovingDirections,
-    SyntheticCartesian, StaticDirections, CertifiedStaticDirections, EPOCH,
+    SyntheticCartesian, StaticDirections, CertifiedStaticDirections, CatalogueLookupDirections, EPOCH,
 )
 
 
@@ -48,6 +48,8 @@ FACTORIES = (
     ("PositionOnlyContract", make_factory(SyntheticCartesian, "kit-position-only", velocity_available=False)),
     ("StaticContract", make_factory(StaticDirections, "kit-static")),
     ("CertifiedStaticContract", make_factory(CertifiedStaticDirections, "kit-certified-static")),
+    ("CatalogueLookupContract", make_factory(CatalogueLookupDirections, "kit-lookup")),
+    ("UnknownEpochLookupContract", make_factory(CatalogueLookupDirections, "kit-undated", epochs=(None, None))),
 )
 
 
@@ -146,6 +148,13 @@ class HarnessTests(unittest.TestCase):
             case = FACTORIES[0][1]()
             return replace(case, activity=lambda: ProviderActivity(0, 0, 0))
         self.assert_rejects(factory, "order_identity_and_exact_cache")
+
+    def test_fault_lookup_uses_query_time_to_move_source_direction_is_detected(self):
+        def factory():
+            case = make_factory(CatalogueLookupDirections, "fault-lookup")()
+            case.provider.rate = 1.0
+            return case
+        self.assert_rejects(factory, "fresh_warm_and_request_order")
 
     def test_fault_missing_advertised_reuse_case_is_detected(self):
         def factory():

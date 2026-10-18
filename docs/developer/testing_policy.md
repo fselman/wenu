@@ -49,6 +49,25 @@ atlas rendering, unrelated providers and the full production suite are excluded.
 That SDK-only slice left the production pin unchanged; the subsequent galaxy
 adapter now pins its accepted source and supplies its own installation gate.
 
+## Catalogue lookup SDK prerequisite
+
+Run the SDK independent unittest gate and the same tests against a fresh built
+dev8 wheel without Wenu or scientific dependencies. Record/session tests retain
+native/epoch admission and test mixed/unknown provenance, refusals before backend
+work, atomic failed batches, coverage/scale and unknown physical-model accuracy.
+The portable kit covers mixed and unknown lookup epochs, and its meta-test
+rejects deliberately time-dependent lookup vectors. The external consumer runs
+both native and lookup models using only its own synthetic provider and installed
+SDK, with site-packages disabled. No captured astronomical oracle is claimed.
+
+Run `kernel-catalogue-lookup-compatibility` with the candidate SDK explicitly on
+PYTHONPATH: existing stellar state/Stars and galaxy geometry/provider consumers.
+Run documentation and tooling separately. Production pin, provider routing,
+resource bytes, snapshot schema, epoch transformations, projection, rendering,
+atlas lifetime and collection are unchanged; their broad gates and the full
+production suite are excluded. The cluster audit is a resource inspection, not
+new scientific validation or a claim that the cluster adapter is implemented.
+
 ## Galaxy routing and shared catalogue adapter
 
 `kernel-galaxy-routes` selects inherited nonstellar owner/geometry seams, the

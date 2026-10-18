@@ -8,7 +8,7 @@ from .errors import (
     ResourceMismatch, UnknownObject, UnsupportedCapability, InvalidQuery,
 )
 from .records import (
-    CONTRACT, CapabilityDecision, CatalogueRef, CatalogueSnapshot, DirectionState, CartesianState,
+    CONTRACT, AccuracyRequest, CapabilityDecision, CatalogueRef, CatalogueSnapshot, DirectionState, CartesianState,
     ProviderDescriptor, ProviderKey, ReferenceSpec, SessionPolicy, StateBatch,
     StateQuery, exact,
 )
@@ -69,11 +69,11 @@ class Kernel:
             if not direction and not cartesian:
                 raise UnsupportedCapability("unsupported native representation/units")
             if not set(admission.capabilities) <= {
-                "native_direction", "epoch_direction", "static_direction", "batch_evaluation", "direction_reuse_bound",
+                "native_direction", "epoch_direction", "static_direction", "catalogue_lookup", "batch_evaluation", "direction_reuse_bound",
                 "canonical_direction_reuse", "cartesian_state",
             }:
                 raise UnsupportedCapability("capability is outside this implementation slice")
-            direction_caps = {"native_direction", "epoch_direction", "static_direction", "direction_reuse_bound", "canonical_direction_reuse"}
+            direction_caps = {"native_direction", "epoch_direction", "static_direction", "catalogue_lookup", "direction_reuse_bound", "canonical_direction_reuse"}
             if ((direction and "cartesian_state" in admission.capabilities)
                     or (cartesian and (set(admission.capabilities) & direction_caps
                                        or "cartesian_state" not in admission.capabilities))):
@@ -82,6 +82,10 @@ class Kernel:
                 set(admission.capabilities) & {"native_direction", "epoch_direction"}
             ):
                 raise UnsupportedCapability("static direction requires a distinct model admission")
+            if "catalogue_lookup" in admission.capabilities and not set(admission.capabilities) <= {
+                "catalogue_lookup", "batch_evaluation",
+            }:
+                raise UnsupportedCapability("catalogue lookup cannot claim another direction model or reuse")
             if "canonical_direction_reuse" in admission.capabilities and (
                 "direction_reuse_bound" not in admission.capabilities
                 or not callable(getattr(provider, "plan_reuse", None))
@@ -211,9 +215,14 @@ class KernelSession:
         if len(admissions) != 1:
             raise UnsupportedCapability("query must match exactly one advertised model/reference/subset")
         admission = admissions[0]
-        required = {"cartesian_state"} if query.reference.representation == "cartesian" else {"native_direction", "epoch_direction", "static_direction"}
+        required = {"cartesian_state"} if query.reference.representation == "cartesian" else {"native_direction", "epoch_direction", "static_direction", "catalogue_lookup"}
         if not set(admission.capabilities) & required:
             raise UnsupportedCapability("model lacks the requested state capability")
+        if "catalogue_lookup" in admission.capabilities and (
+            query.evaluation_policy != "full_model" or query.coverage is not None
+            or query.require_velocity or query.accuracy != AccuracyRequest()
+        ):
+            raise UnsupportedCapability("catalogue lookup supplies source directions without epoch accuracy or reuse")
         coverage_points = query.times + ((query.coverage.start, query.coverage.stop) if query.coverage else ())
         for time in coverage_points:
             if not admission.coverage.contains(time) or any(
@@ -251,9 +260,12 @@ class KernelSession:
             if (type(row) is not expected_type or row.reference != query.reference
                     or row.anchor_time != row.time):
                 raise InvalidProviderResult("state provenance/reference/anchor mismatch")
+            if ("catalogue_lookup" in admission.capabilities
+                    and row.evidence.physical_model.status != "not_evaluated"):
+                raise InvalidProviderResult("catalogue lookup cannot claim physical epoch-model accuracy")
             if (type(row) is DirectionState and row.source_epoch is None
-                    and "static_direction" not in admission.capabilities):
-                raise InvalidProviderResult("only static direction models may omit a source epoch")
+                    and not set(admission.capabilities) & {"static_direction", "catalogue_lookup"}):
+                raise InvalidProviderResult("this direction model requires a source epoch")
             source_epochs = records[row.object_key].source_epochs
             if ((row.source_epoch is None and source_epochs)
                     or (row.source_epoch is not None and row.source_epoch not in source_epochs)):

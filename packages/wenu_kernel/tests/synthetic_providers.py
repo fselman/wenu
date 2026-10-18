@@ -371,6 +371,24 @@ class StaticDirections(SyntheticDirections):
                                            for row in batch.states))
 
 
+class CatalogueLookupDirections(SyntheticDirections):
+    """Synthetic source lookup; constancy makes no physical zero-motion claim."""
+
+    capability = "catalogue_lookup"
+
+    def __init__(self, name="lookup", *, epochs=(None, EPOCH)):
+        super().__init__(name)
+        self.epochs = dict(zip(self.objects, epochs, strict=True))
+        self.snapshot = replace(self.snapshot, objects=tuple(
+            replace(obj, source_epochs=(() if self.epochs[obj.key] is None else (self.epochs[obj.key],)))
+            for obj in self.snapshot.objects))
+
+    def evaluate(self, query):
+        batch = super().evaluate(query)
+        return replace(batch, states=tuple(replace(row, source_epoch=self.epochs[row.object_key])
+                                           for row in batch.states))
+
+
 class CertifiedStaticDirections(StaticDirections):
     """Finite coverage and constant numerical bound; not physical certainty."""
 
