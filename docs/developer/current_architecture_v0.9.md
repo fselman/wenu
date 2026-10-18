@@ -96,7 +96,7 @@ than reimplemented in a new kernel.
    general arrays, dictionaries and layer collections remain mutable.
 4. Request preparation temporarily installs layers and rebinds resolvers.
    Minor-body registration/alias and atomic resolver rollback is accepted in
-   PR #243. The current K3 candidate adds a synchronous request-state journal
+   PR #243. PR #244 adds a synchronous request-state journal
    around ordinary request preparation. It restores original layer identities
    and order, horizon/disk aliases and point-label flags on close or failure;
    overlapping builds on one mutable sky fail before configuration. Failed cleanup
@@ -105,6 +105,10 @@ than reimplemented in a new kernel.
    calls retain their persistent semantics. Catalogues/resources/scientific
    caches are not cloned or rewound. This is isolation of canonical request
    configuration, not thread safety, arbitrary caller mutations or kernel routing.
+   `charts/drawing.py::draw_chart_view_request` is a separate ordinary route
+   that calls configuration helpers directly without this journal. The installed
+   ordinary CLI uses that route. Both routes must enter the K3 consumer ledger;
+   request-generation rollback is not a universal drawing-lifecycle fix.
 5. `charts/atlas_publication.py` calls request generation, while request
    generation imports atlas-specific private furniture/report helpers.
    This creates a cycle across the intended chart/atlas barrier.

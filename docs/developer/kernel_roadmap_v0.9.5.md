@@ -20,7 +20,7 @@ and explicit time subsets plus the reusable provider conformance kit are
 accepted through PR #242, main `8fea897f`. Native state queries retain their
 explicit same-scale policy. Minor-body request-resource rollback is accepted
 through PR #243, main `f5a0abf3`, with 3,400 Mac integration tests passing.
-The current K3 candidate adds synchronous ordinary-request configuration
+PR #244, main `d36b1786`, adds synchronous ordinary-request configuration
 isolation (layer registry, horizon/disk aliases and point labels). It does not
 yet route a product through the kernel. See the
 [scope and gate](../../packages/wenu_kernel/README.md).
@@ -433,13 +433,18 @@ bounded. Runtime authority is accepted one milestone at a time.
 | K9 | Release closure | Packaging combinations, compatibility matrix, scientific/visual/print acceptance and release naming/tag decision |
 
 K3 must address request-layer rollback before sharing kernel state. Accepted
-minor-body registration/resolver lifetime work is followed by the current
-ordinary-request configuration journal candidate: restore original layer
+minor-body registration/resolver lifetime and ordinary-request configuration
+journal (PR #244) restore original layer
 identities/order and horizon/disk/point-label attributes, reject overlapping
 builds on one sky, and preserve the lease after failed cleanup.
 This does not claim thread safety or rollback of arbitrary external mutations.
 No consumer is marked migrated by these prerequisites. Production adapters,
 instrumented state routing and all-consumer reconciliation remain ahead.
+Reconcile ordinary view/drawing, ordinary generation and native atlas-sheet
+lifecycles under shared services while preserving their distinct geometry and
+observer requirements. The installed atlas CLI already injects `wenu_chart`
+for sheets; its Python API retains a direct fallback without that injection.
+Neither command sharing nor the ordinary journal alone closes this boundary.
 Break chart/atlas private-helper cycles with a public sheet contract while
 preserving canonical rendering. Make changes in separate bounded slices;
 do not combine structural movement, Gaia data replacement and appearance tuning.
@@ -514,9 +519,10 @@ suites or their dependencies. Charts/atlases have their own public-contract
 gates using deterministic admitted states. Integration/release checks are a
 separate responsibility, not a routine tax on every module change.
 
-During the cross-cutting migration, final integrated candidates still require
-the accepted integration evidence. This temporary obligation ends for a module
-only after its isolation is demonstrated. See the [testing matrix](testing_policy.md).
+During migration, select owner/contract/consumer gates from the actual diff.
+Full integration is required for release closure or reviewed broad shared impact,
+not automatically for each K3 revision. Independent package installation remains
+a separate exit requirement. See the [testing matrix](testing_policy.md).
 Do not promise universal independence while shared internals remain mutable.
 
 ## Explicit non-goals for this roadmap's first steps

@@ -20,6 +20,11 @@ PR #234 is integrated. Its tree is identical to `ea8dc505`, which passed all
 | [Proposed kernel contract K1](kernel_contract_k1.md) | Proposed SDK types, operations, capabilities, errors and conformance gates |
 | [Assistant instructions](assistant_instructions.md) | Contribution and delivery workflow |
 
+The [executable test selections](../../tools/test_gates_v1.json) and
+[runner](../../tools/run_test_gate.py) define reviewed documentation and request
+gates. See the testing policy for scope, exclusions and pending normal-runtime
+acceptance; focused selection does not claim independent product installation.
+
 ## Forward work
 
 K1 and the K2 native-state/reuse and explicit time subsets are accepted
@@ -32,7 +37,7 @@ conversions, including bounded TT(TAI)/TAI. Native state queries still require
 matching scales. Provider conformance uses factory-owned fixtures and
 independent installed-consumer evidence. Minor-body request-resource rollback
 is accepted through PR #243, main `f5a0abf3` (3,400 Mac integration tests passed).
-The current K3 candidate scopes ordinary-request layer configuration to one
+PR #244, main `d36b1786`, scopes ordinary-request layer configuration to one
 active build: original layer order/identities, horizon/disk aliases and point
 label flags are restored on close/failure. No existing product is routed
 through the SDK yet.

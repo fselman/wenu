@@ -214,7 +214,7 @@ and visits each distinct layer once, including a separately registered Moon.
 `prior_minor_body_attributes` retains request-owned alias restoration metadata;
 it is not a catalogue/snapshot persistence format.
 
-Minor-body lifetime rollback is accepted in PR #243. The current K3 candidate
+Minor-body lifetime rollback is accepted in PR #243. PR #244
 also journals ordinary request configuration inside `_prepare_with_sphere()`.
 Use `with build_chart_request(...) as build:` or explicitly close the build:
 its sky is the supplied object, its requested configuration remains active while

@@ -570,9 +570,11 @@ is accepted. Shared contract changes require an explicit affected-consumer plan.
 
 These are required future tests, not passes claimed by this document. Keep
 existing numerical, visual, print and public-path evidence while migrating.
-Final integration receipts are still required for cross-cutting runtime slices
-until module isolation is demonstrated. Documentation-only K1 requires only
-its documentation/integrity gate.
+Select owner/conformance/consumer gates from reviewed semantic impact, including
+during migration. Full integration receipts belong to release closure and broad
+shared changes with an explicit impact rationale. Focused legacy selection does
+not itself demonstrate independent package installation. Documentation-only K1
+requires its documentation/integrity gate; follow the current testing policy.
 
 ## 13. K1 acceptance and bounded K2 entry
 

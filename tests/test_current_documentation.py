@@ -169,6 +169,18 @@ def test_source_map_covers_exactly_current_production_modules():
                 str(p.relative_to(ROOT)) for p in (base / folder).rglob("*.py")}
         assert (ROOT / project["selection_manifest"]).is_file()
     assert tomllib.loads(read(ROOT / "pyproject.toml"))["tool"]["pytest"]["ini_options"]["testpaths"] == ["tests"]
+    tooling = audit["development_test_gates"]
+    assert set(tooling["source_paths"]) == {"tools/run_test_gate.py"}
+    assert set(tooling["test_paths"]) == {"tools/tests/test_test_gates.py"}
+    for path in tooling["source_paths"] + tooling["test_paths"]:
+        assert (ROOT / path).is_file(), path
+    manifest = json.loads(read(ROOT / tooling["selection_manifest"]))
+    assert manifest["schema"] == "wenu-test-gates/1"
+    for gate in manifest["gates"].values():
+        assert gate["scope"] and gate["limits"]
+        for selection in gate["selections"]:
+            assert selection["reason"]
+            assert (ROOT / selection["node"].split("::")[0]).is_file()
     for record in audit["preserved_test_editions"]:
         assert git_blob((ROOT / record["archive_path"]).read_bytes()) == record["original_git_blob_sha"]
 
