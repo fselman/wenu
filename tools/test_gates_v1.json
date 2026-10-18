@@ -13,6 +13,61 @@
     "environment": "User-reported Mac; plugin autoload disabled."
   },
   "gates": {
+    "galaxy-installation-retry": {
+      "scope": "Installation-only retry for galaxy routing: isolated wheel/sdist/editable Wenu consumes an explicitly separate installed SDK wheel.",
+      "limits": "Test fixture/gate/documentation only; production code, dependency pin, SDK implementation, resources and routing unchanged from 04ad8e1e. Retain Mac evidence for 183 passed and 9 subtests; rerun only the failed installation case. No parent gate or numerical/atlas/SDK repeat.",
+      "selections": [
+        {
+          "node": "tests/test_curated_catalogues.py::test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override",
+          "reason": "Fix -I -S dependency isolation when host SDK is editable. Verify all three root install modes, actual stellar/static galaxy calls, separate SDK origin and refusal of ambient Wenu/SDK shadowing."
+        }
+      ]
+    },
+    "kernel-galaxy-routes": {
+      "scope": "Static galaxy kernel routing for public/native/observed centres and outline construction, with shared immutable-table provider mechanics and updated accepted SDK pin.",
+      "limits": "Extends inherited nonstellar owner/geometry seams; no source resource bytes or snapshot schema, SDK implementation, coordinate-transform mathematics, projection/render algorithm or atlas lifetime changes. The single-outline concatenation edge avoids a redundant broken stack operation. Source frame/origin gaps remain explicit legacy compatibility. SDK dev7 is accepted unchanged; no SDK/full production repeat.",
+      "extends": [
+        "nonstellar-ingestion"
+      ],
+      "selections": [
+        {
+          "node": "tests/test_stellar_state.py",
+          "reason": "Shared immutable-table provider extraction retains stellar bindings, conformance and lifetime."
+        },
+        {
+          "node": "tests/test_stars.py",
+          "reason": "Public stellar consumer remains unchanged."
+        },
+        {
+          "node": "tests/test_position_providers.py",
+          "reason": "All inherited public centre boundaries retain their contracts."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_retains_static_galaxy_model_without_epoch",
+          "reason": "Cold/saved galaxy directions use the new provider without inventing epochs."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_declared_nonstellar_epoch",
+          "reason": "Declared epoch survives source-bound restored consumption."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_kernel_galaxy_routes_preserve_accepted_atlas_pixels",
+          "reason": "Exact rendered pixels against accepted direct source-centre route on a galaxy-bearing page."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_kernel_native_stars_preserve_legacy_page_pixels",
+          "reason": "Shared adapter extraction preserves accepted stellar native pixels."
+        },
+        {
+          "node": "tests/test_wenu_chart_cli.py::test_atlas_sheet_command_admits_saved_sky_and_executes_shared_request_owner",
+          "reason": "Real saved-sky public command imports the new shared owner and consumes native galaxies."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override",
+          "reason": "Changed SDK dependency pin and new module ship in wheel/sdist; installed native consumer works."
+        }
+      ]
+    },
     "kernel-static-compatibility": {
       "scope": "Existing native stellar adapter and public Stars compatibility with the additive static-direction SDK contract.",
       "limits": "Run with the candidate SDK explicitly installed or on PYTHONPATH. No production routing, root dependency pin, catalogue/resource, snapshot schema, numerical model, projection/render or atlas changes. Independent SDK/wheel gate is separate; no full production suite.",

@@ -50,8 +50,8 @@ temporary layer/registry restoration and build lifetime. Horizon, disk and
 track configuration owners remember their attribute writes through that journal;
 `minor_body_resources.py` owns atomic resolver binding/restoration. No new
 catalogue clone is introduced by lifecycle isolation. The separate
-`stellar_state.py` owner now binds copied native stellar inputs and queries the
-SDK; `objects/stars.py` owns selection, public source-native HIP lookup and
+`catalogue_state.py` owner now binds immutable copied direction tables and
+queries the SDK. `stellar_state.py` retains the native stellar facade; `objects/stars.py` owns selection, public source-native HIP lookup and
 geometry conversion. Native constellation lines consume that public lookup,
 not source-table coordinates. Native page
 creation in `charts/request_generation.py` also owns its fixed-resolution
@@ -90,7 +90,8 @@ concrete Wenu classes.
 | [`solar_system_disk_geometry.py`](../../src/wenu/solar_system_disk_geometry.py) | Renderer-neutral physical spherical geometry for apparent body disks. |
 | [`star_designations.py`](../../src/wenu/star_designations.py) | Offline, immutable HIP-linked Wikidata candidates, separate from astrometry. |
 | [`stellar_research.py`](../../src/wenu/stellar_research.py) | Immutable, offline HIP index of designation research and accepted policy. |
-| [`stellar_state.py`](../../src/wenu/stellar_state.py) | Immutable native stellar lookup provider and owned kernel-query scope; no propagation, observer or acquisition. |
+| [`catalogue_state.py`](../../src/wenu/catalogue_state.py) | Shared immutable direction-table provider, vector decoding and owned kernel scope; no catalogue decoding, observer or graphics. |
+| [`stellar_state.py`](../../src/wenu/stellar_state.py) | Source-epoch native stellar facade over the shared table/provider boundary; no propagation or acquisition. |
 | [`stellar_catalogue.py`](../../src/wenu/stellar_catalogue.py) | Validated stellar ingestion, immutable metadata mirror and standard table envelope; source facts read from data documents. |
 | [`svg_document.py`](../../src/wenu/svg_document.py) | Deterministic semantic annotations for Matplotlib SVG output. |
 | [`temporal.py`](../../src/wenu/temporal.py) | Renderer-neutral temporal sequence vocabulary. |
@@ -288,7 +289,7 @@ concrete Wenu classes.
 |---|---|
 | [`objects/__init__.py`](../../src/wenu/objects/__init__.py) | Physical astronomical chart layers. |
 | [`objects/astronomical_object.py`](../../src/wenu/objects/astronomical_object.py) | Base class for physical astronomical chart layers. |
-| [`objects/galaxies.py`](../../src/wenu/objects/galaxies.py) | Bright-galaxy catalogue layer with explicit epoch-independent static-direction admission. |
+| [`objects/galaxies.py`](../../src/wenu/objects/galaxies.py) | Source-bound static galaxy centre provider and shape metadata; chart/observer consumers use kernel centres before domain outline construction. |
 | [`objects/globular_clusters.py`](../../src/wenu/objects/globular_clusters.py) | Milky Way globular-cluster catalogue layer. |
 | [`objects/nonstellar.py`](../../src/wenu/objects/nonstellar.py) | Atomic ingestion, immutable source admission/gap record, angular normalization and metadata-owned centre/outline specifications. |
 | [`objects/open_clusters.py`](../../src/wenu/objects/open_clusters.py) | Vectorized cluster symbols, selected row epoch/source metadata and aggregate coordinate specification. |

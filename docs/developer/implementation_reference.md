@@ -209,7 +209,7 @@ velocity and reuse certification are refused. The helper queries J1991.25(TT)
 for current Hipparcos rows; it never relabels them as propagated J2025.0 states.
 
 Until SDK publication, root metadata uses an immutable VCS dependency pinned
-to SDK source commit `8fea897ff8456b717d5db55a8c735a94584523b7`, subdirectory
+to SDK source commit `4add1447d0db5598c1b2ff7f3c231d465b2c63f0`, subdirectory
 `packages/wenu_kernel`. This is a separate distribution, not vendored code.
 A normal install resolves that dependency at installation time; rendering does
 not acquire software or catalogue data. For a synchronized development checkout:
@@ -444,9 +444,53 @@ fields and query/result variants are unchanged.
 Static providers retain explicit model/resource coverage, references, accuracy
 and existing certificate admission. Static does not imply zero physical error,
 new observer transformations, infinite coverage or implicit caching. The root
-production dependency remains pinned to the accepted SDK commit above because
-no production consumer yet requires this extension; the independent dev7 wheel
-and existing native stellar adapter compatibility are verified separately.
+production dependency now pins accepted dev7 at the immutable commit above.
+Galaxy directions consume the new capability; native stellar semantics remain
+unchanged and share only the table/provider mechanics.
+
+## Galaxy kernel adapter and shape ownership
+
+`objects/galaxies.py::_native_centres` validates preserved catalogue metadata,
+constructs a `static_direction` provider and consumes kernel-returned vectors.
+It backs inherited public `position`, native chart outline/label construction,
+observed outline centres and observed centre-table inputs. Refused/failed queries
+propagate; there is no direct-source recovery route. Empty/missing coordinates
+remain empty/missing rather than fabricated states. Exact source angle encoding
+is retained only when the returned vector is identical; changed vectors control
+all downstream geometry.
+
+`catalogue_state.py` owns copied immutable rows, content-bound identities,
+standard provider protocol, vector decoding and owned kernel/session lifetime.
+`stellar_state.py` remains a native stellar facade; its descriptor/resource
+identities, required source epochs and returned states are preserved. Galaxies
+do not import a concrete stellar provider.
+
+The galaxy model keeps fixed native directions. Full source metadata and digest
+are bound into the derived resource identity. A source epoch with an admitted
+explicit scale is retained as a TimePoint; an unqualified date is preserved in
+metadata but refused for numerical kernel admission, never assigned a scale.
+An undated `position()` uses JD 0 TT as a deterministic internal evaluation
+anchor, not a source measurement date. Explicit requested instants retain their
+actual evaluation meaning; supported Astropy/date inputs are decoded to TT.
+Unbounded availability is the declared static chart model policy, not a bound
+on physical accuracy. No numerical or physical precision is claimed.
+
+Legacy source gaps remain in the admission record and reference policy. A missing
+origin becomes `legacy-unverified-origin` in the SDK reference; no barycentric
+source origin is inferred. Strict catalogue admission still rejects missing
+frame/origin/units/provenance. Existing public coordinate metadata retains its
+marked compatibility interpretation.
+
+Centre, angular semiaxes and PA form the domain shape description. Catalogue
+major/minor diameters are converted to semiaxes by existing outline geometry;
+PA retains its defining celestial frame. Shape parameters and outline sampling
+stay above the kernel. Curves are constructed only for requested chart geometry;
+LMC/SMC keep their separate isophote treatment. The existing observed path still
+transforms sampled vertices as a frame transformation. Replacing that with a
+centre/local-orientation construction is a separately validated geometry change;
+no physical propagation of a galaxy curve is introduced here. The one-outline
+case now uses its existing coordinate array directly, avoiding an unnecessary
+concatenation that failed for a single synthetic galaxy.
 
 ## Independent provider verification
 

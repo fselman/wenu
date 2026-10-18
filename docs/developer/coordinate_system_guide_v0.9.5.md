@@ -1162,7 +1162,14 @@ does not supply a measurement epoch. Strict admission refuses facts missing for
 the selected model. The SDK `static_direction` capability permits null source
 epochs under an explicit static admission; native/epoch direction models retain
 their epoch requirement. Requested/anchor times, frame/origin, coverage and
-uncertainty checks remain distinct and required. Galaxy routing remains pending.
+uncertainty checks remain distinct and required. Galaxy centre consumers now
+query this interface before constructing shape geometry or using the existing
+observer transform. An unknown origin remains explicit in the SDK reference;
+strict source-metadata closure is pending. Axes/PA stay in their native frame
+with domain geometry, not as kernel-propagated curves. Undated lookup uses an
+internal JD 0 TT evaluation anchor, never a fabricated measurement epoch.
+A source epoch without an admitted explicit scale is preserved but cannot be
+converted to a numeric kernel source epoch.
 Galaxies use `static-direction`: their source epoch/scale
 are optional provenance, with no requested-epoch update of native ICRS centres.
 Other providers retain source-epoch admission. An ancient date-oriented frame

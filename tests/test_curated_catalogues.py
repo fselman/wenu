@@ -94,6 +94,24 @@ def test_curated_manifest_refuses_escaping_selector_and_unbound_catalogue(tmp_pa
 
 
 def test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override(tmp_path):
+    # -I -S intentionally ignores editable .pth finders. Install the accepted
+    # SDK wheel into an explicit, separate target instead of borrowing an
+    # ambient Wenu/kernel installation. Build only local source, without network.
+    sdk_project = tmp_path / 'sdk-project'
+    shutil.copytree(ROOT / 'packages/wenu_kernel', sdk_project,
+        ignore=shutil.ignore_patterns('build', 'dist', '*.egg-info', '__pycache__', 'tests'))
+    sdk_wheels = tmp_path / 'sdk-wheels'
+    sdk_wheels.mkdir()
+    result = subprocess.run([sys.executable, '-m', 'pip', 'wheel', '--no-deps',
+        '--no-build-isolation', '--wheel-dir', str(sdk_wheels), str(sdk_project)],
+        cwd=tmp_path, capture_output=True, text=True)
+    assert result.returncode == 0, result.stdout + result.stderr
+    sdk_wheel = next(sdk_wheels.glob('*.whl'))
+    sdk_installed = tmp_path / 'sdk-installed'
+    result = subprocess.run([sys.executable, '-m', 'pip', 'install', '--no-deps', '--no-index',
+        '--target', str(sdk_installed), str(sdk_wheel)],
+        cwd=tmp_path, capture_output=True, text=True)
+    assert result.returncode == 0, result.stdout + result.stderr
     project = tmp_path / 'project'
     project.mkdir()
     shutil.copytree(ROOT / 'src/wenu', project / 'src/wenu',
@@ -141,7 +159,7 @@ def test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_over
             sdk = [value for value in requirements if value.name.replace('_', '-').lower() == 'wenu-kernel']
             assert len(sdk) == 1
             assert sdk[0].url == ('git+https://github.com/fselman/wenu.git@'
-                '8fea897ff8456b717d5db55a8c735a94584523b7#subdirectory=packages/wenu_kernel')
+                '4add1447d0db5598c1b2ff7f3c231d465b2c63f0#subdirectory=packages/wenu_kernel')
         installed = tmp_path / f'installed_{i}'
         result = subprocess.run([sys.executable, '-m', 'pip', 'install', '--no-deps',
             '--target', str(installed), str(wheel)], cwd=tmp_path, capture_output=True, text=True)
@@ -158,6 +176,7 @@ dependencies = json.loads(sys.argv[2])
 sys.path[:] = [p for p in sys.path if p not in dependencies]
 site.addsitedir(sys.argv[1])
 sys.path.insert(0, sys.argv[1])
+sys.path.insert(0, sys.argv[4])
 sys.path.extend(dependencies)
 import wenu
 from wenu import resources
@@ -181,6 +200,7 @@ import wenu_kernel
 from wenu.objects.stars import Stars
 from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
 assert not Path(wenu_kernel.__file__).is_relative_to(Path(sys.argv[3]))
+assert Path(wenu_kernel.__file__).is_relative_to(Path(sys.argv[4]))
 stars = Stars(None)
 stars.catalog = pd.DataFrame(dict(ra_degrees=[90.], dec_degrees=[30.],
     magnitude=[1.], is_constellation_vertex=[False]), index=[11])
@@ -195,6 +215,27 @@ points = stars.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None)
 np.testing.assert_allclose(points.lon_deg, [90.], atol=1e-12, rtol=0)
 np.testing.assert_allclose(points.lat_deg, [30.], atol=1e-12, rtol=0)
 assert points.ids.tolist() == [11] and points.coordinate_spec.epoch == 'J1991.25'
+# The installed galaxy path exercises dev7's static capability independently
+# of the interpreter's editable SDK or Wenu source tree.
+from astropy.table import Table
+from wenu.objects.galaxies import Galaxies
+from wenu_kernel import KernelSession
+seen = []
+evaluate = KernelSession.evaluate
+def capture(session, query):
+    result = evaluate(session, query)
+    seen.append(result)
+    return result
+KernelSession.evaluate = capture
+try:
+    galaxies = Galaxies(None)
+    galaxies.catalog = galaxies.source_catalog = Table(dict(identifier=['synthetic'],
+        ra_deg=[12.], dec_deg=[-20.]))
+    points = galaxies.position()
+    np.testing.assert_array_equal(points.lon_deg, [12.])
+    assert seen and seen[-1].states[0].source_epoch is None
+finally:
+    KernelSession.evaluate = evaluate
 assert len(OpenClusters(None).load()) == 1
 assert len(PlanetaryNebulae(None).load()) == 1
 for domain in ('open_clusters','planetary_nebulae'):
@@ -211,8 +252,11 @@ print('Independent installed defaults, evidence and explicit scientific override
         (ambient / 'wenu').mkdir(parents=True, exist_ok=True)
         (ambient / 'wenu/__init__.py').write_text(
             'raise AssertionError("Ambient Wenu installation shadowed the fixture")\n')
+        (ambient / 'wenu_kernel').mkdir(exist_ok=True)
+        (ambient / 'wenu_kernel/__init__.py').write_text(
+            'raise AssertionError("Ambient SDK shadowed the explicit installed dependency")\n')
         dependencies.insert(0, str(ambient))
-        result = subprocess.run([sys.executable, '-I', '-S', '-c', script, str(installed), json.dumps(dependencies), str(installed)],
+        result = subprocess.run([sys.executable, '-I', '-S', '-c', script, str(installed), json.dumps(dependencies), str(installed), str(sdk_installed)],
             cwd=tmp_path, capture_output=True, text=True)
         assert result.returncode == 0, result.stdout + result.stderr
     editable = tmp_path / 'editable'
@@ -221,5 +265,5 @@ print('Independent installed defaults, evidence and explicit scientific override
         cwd=tmp_path, capture_output=True, text=True)
     assert result.returncode == 0, result.stdout + result.stderr
     result = subprocess.run([sys.executable, '-I', '-S', '-c', script, str(editable),
-        json.dumps(dependencies), str(project / 'src')], cwd=tmp_path, capture_output=True, text=True)
+        json.dumps(dependencies), str(project / 'src'), str(sdk_installed)], cwd=tmp_path, capture_output=True, text=True)
     assert result.returncode == 0, result.stdout + result.stderr

@@ -70,10 +70,13 @@ an explicit static-direction admission policy: measurement epoch/scale are
 optional provenance, while frame/origin/units/source identity remain required.
 Requested epoch changes leave their native centres unchanged. The SDK now supports explicit `static_direction` admissions with optional source
 epochs; native/epoch direction models retain their epoch requirement. Galaxy
-provider routing and source frame/origin closure remain the next separate slice.
+centre routing now uses this capability for public positions, chart outlines and
+observed centres. Missing source facts remain explicit legacy compatibility;
+source frame/origin closure remains open. The accepted dev7 SDK is now the
+production dependency pin. Shape parameters stay with the galaxy layer.
 The SDK [selection manifest](../../packages/wenu_kernel/test_selection_v1.json)
 keeps the independent core gate separate from existing Wenu tests. Current
-products consume only this partial native stellar adapter.
+products consume the partial native stellar and static galaxy centre adapters.
 Relativistic/civil-time adapters, common realization services, Cartesian reuse
 and remaining K3 routing are pending; this is not a completed kernel or frozen SDK.
 

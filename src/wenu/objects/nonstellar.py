@@ -335,9 +335,17 @@ class NonStellar(AstronomicalObject):
                                    provider=spec.provider, model=spec.model,
                                    provenance=spec.provenance)
 
+    def _native_centres(self, table, instant=None):
+        """State boundary: unmigrated families retain source coordinates."""
+        return (np.asarray(table["ra_deg"], dtype=float),
+                np.asarray(table["dec_deg"], dtype=float))
+
+    def _state_table(self, table, instant=None):
+        """Source table for legacy observation; migrated families override."""
+        return table
+
     def position(self, instant=None) -> SphericalPoints:
         """Return active native non-stellar catalogue centres in ICRS."""
-        del instant
         if self.catalog is None:
             raise RuntimeError(
                 "The catalogue has not been loaded. "
@@ -357,9 +365,10 @@ class NonStellar(AstronomicalObject):
         # column with the same spelling; the original column stays in the table.
         metadata["catalogue_admission"] = self.catalogue_metadata.to_record()
         metadata["catalogue_position_model"] = self.position_model
+        longitude, latitude = self._native_centres(table, instant)
         return SphericalPoints(
-            lon_deg=np.asarray(table["ra_deg"], dtype=float),
-            lat_deg=np.asarray(table["dec_deg"], dtype=float),
+            lon_deg=longitude,
+            lat_deg=latitude,
             coordinate_spec=self.native_coordinate_spec(table),
             ids=identifiers,
             names=identifiers,
@@ -397,10 +406,11 @@ class NonStellar(AstronomicalObject):
             geometry.metadata["coordinate_system"] = "icrs"
             return geometry
         lon, lat = [], []
-        for row in table:
+        longitude, latitude = self._native_centres(table)
+        for row, ra, dec in zip(table, longitude, latitude, strict=True):
             outline = self._ellipse(
-                SkyCoord(ra=float(row["ra_deg"]) * u.deg,
-                         dec=float(row["dec_deg"]) * u.deg, frame="icrs"),
+                SkyCoord(ra=float(ra) * u.deg,
+                         dec=float(dec) * u.deg, frame="icrs"),
                 row["major_axis_arcmin"], row["minor_axis_arcmin"],
                 row["position_angle_deg"], samples,
                 minimum_size_arcmin=minimum)
@@ -812,10 +822,11 @@ class NonStellar(AstronomicalObject):
         if len(table) == 0:
             return (), ()
         outlines = []
-        for row in table:
+        longitude, latitude = self._native_centres(table, getattr(observer.altaz_frame, "obstime", None))
+        for row, ra, dec in zip(table, longitude, latitude, strict=True):
             center = SkyCoord(
-                ra=float(row["ra_deg"]) * u.deg,
-                dec=float(row["dec_deg"]) * u.deg,
+                ra=float(ra) * u.deg,
+                dec=float(dec) * u.deg,
                 frame="icrs",
             )
             outlines.append(
@@ -828,7 +839,7 @@ class NonStellar(AstronomicalObject):
                     minimum_size_arcmin=minimum_size_arcmin,
                 )
             )
-        native = concatenate(outlines).icrs
+        native = outlines[0].icrs if len(outlines) == 1 else concatenate(outlines).icrs
         splits = np.arange(1, len(table)) * samples
         return icrs_curve_arrays_to_altaz(
             np.split(native.ra.to_value(u.deg), splits),
@@ -971,7 +982,7 @@ class NonStellar(AstronomicalObject):
             longitude, latitude = catalogue_point_altaz(
                 self._observed_point_cache,
                 resolved,
-                source_table=self.source_catalog,
+                source_table=self._state_table(self.source_catalog, getattr(resolved.altaz_frame, "obstime", None)),
                 selected_table=table,
                 source_key=(self.catalog_name, self._source_revision),
             )

@@ -1107,3 +1107,27 @@ def test_native_atlas_page_layout_is_independent_of_display_dpi(native_snapshot_
     assert grid_labels(outputs[0].with_suffix('.svg')) == grid_labels(outputs[1].with_suffix('.svg'))
     np.testing.assert_array_equal(imread(outputs[0].with_suffix('.png')),
                                   imread(outputs[1].with_suffix('.png')))
+
+
+def test_kernel_galaxy_routes_preserve_accepted_atlas_pixels(native_snapshot_case, tmp_path, monkeypatch):
+    from matplotlib.image import imread
+    from wenu.atlas_design import AtlasBandTiling
+    from wenu.charts.atlas_publication import AtlasChartPresentation
+    from wenu.charts.request_generation import AtlasSheetChartRequest, generate_chart_request
+    from wenu.objects.galaxies import Galaxies
+    from wenu.objects.nonstellar import NonStellar
+    import numpy as np
+    raw, _, _, sky = native_snapshot_case
+    atlas = AtlasBandTiling.from_json(raw.decode())
+    identifier = atlas.primary_sheet_id(201.365, -43.019)
+    sheet = next(sheet for sheet in atlas.geometry.sheets if sheet.sheet_id == identifier)
+    presentation = AtlasChartPresentation(layers=('galaxies',), formats=('png', 'pdf', 'svg'), dpi=36)
+    with monkeypatch.context() as baseline:
+        baseline.setattr(Galaxies, '_native_centres', NonStellar._native_centres)
+        generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
+            presentation, tmp_path/'legacy-galaxies'), sky=sky)
+    generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
+        presentation, tmp_path/'kernel-galaxies'), sky=sky)
+    name = f'chart-{sheet.number:02d}.png'
+    np.testing.assert_array_equal(imread(tmp_path/'legacy-galaxies'/name),
+                                  imread(tmp_path/'kernel-galaxies'/name))
