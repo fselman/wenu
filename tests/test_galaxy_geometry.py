@@ -31,6 +31,62 @@ def observer():
     )
 
 
+def test_static_galaxy_admission_does_not_require_a_measurement_epoch(tmp_path):
+    """Synthetic ICRS directions: static model, no fabricated measurement date."""
+    from astropy.table import Table
+    from astropy.time import Time
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    source = Table(dict(name=['synthetic'], ra_deg=[10.], dec_deg=[-20.],
+                        major_axis_arcmin=[2.], minor_axis_arcmin=[1.], position_angle_deg=[30.]))
+    source.meta = dict(catalog='synthetic', release='synthetic-v1', coordinate_frame='ICRS',
+                       coordinate_origin='solar-system-barycenter',
+                       documentation_url='https://example.invalid/synthetic')
+    source['catalogue_position_model'] = ['source-epoch']
+    for name in source.colnames:
+        if name.endswith('_deg'):
+            source[name].unit = 'deg'
+        elif name.endswith('_arcmin'):
+            source[name].unit = 'arcmin'
+    path = tmp_path/'static-galaxy.ecsv'
+    source.write(path)
+    layer = Galaxies(None)
+    layer.load(filename=path, require_complete_metadata=True)
+    assert layer.position_model == 'static-direction'
+    assert layer.admission_missing_fields == ()
+    assert layer.require_complete_metadata() is layer.catalogue_metadata
+    assert layer.catalogue_metadata.require_complete(position_model='static-direction') is layer.catalogue_metadata
+    with pytest.raises(ValueError, match='epoch'):
+        layer.catalogue_metadata.require_complete()
+    assert layer.catalogue_metadata.to_record()['epoch'] is None
+    assert layer.catalogue_metadata.to_record()['epoch_scale'] is None
+    assert layer.source_catalog['catalogue_position_model'].tolist() == ['source-epoch']
+    positions = [layer.position(time) for time in Time([-10000., 2000., 10000.], format='jyear', scale='tt')]
+    for points in positions:
+        np.testing.assert_array_equal(points.lon_deg, [10.])
+        np.testing.assert_array_equal(points.lat_deg, [-20.])
+        assert points.coordinate_spec.epoch is None
+        assert points.coordinate_spec.model == 'static-direction'
+        assert points.metadata['catalogue_position_model'] == 'static-direction'
+    native = layer.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None)
+    assert native.coordinate_spec == positions[0].coordinate_spec
+    assert native.metadata['catalogue_position_model'] == 'static-direction'
+    # A supplied source epoch is retained as provenance; the model stays static.
+    source.meta.update(coordinate_epoch='J2016.0', coordinate_epoch_scale='tt')
+    source.write(path, overwrite=True)
+    layer.load(filename=path, require_complete_metadata=True)
+    assert layer.catalogue_metadata.to_record()['epoch'] == 'J2016.0'
+    for time in Time([-10000., 10000.], format='jyear', scale='tt'):
+        np.testing.assert_array_equal(layer.position(time).lon_deg, [10.])
+        assert layer.position(time).coordinate_spec.model == 'static-direction'
+    # Removing epoch requirements must not relax the other coordinate facts.
+    source.meta.pop('coordinate_frame')
+    source.write(path, overwrite=True)
+    previous = layer.catalog
+    with pytest.raises(ValueError, match='frame'):
+        layer.load(filename=path, require_complete_metadata=True)
+    assert layer.catalog is previous
+
+
 def test_galaxies_is_a_nonstellar_specialization():
     assert issubclass(Galaxies, NonStellar)
     assert Galaxies.layer_name == "galaxies"

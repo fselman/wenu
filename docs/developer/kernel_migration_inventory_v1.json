@@ -8025,6 +8025,66 @@
     },
     "prior_mac_acceptance": {"tested_commit": "7f1d75aa034945941f1c91fbcd9aca9406594f8b", "merged_commit": "0d25179cfefe5d2f92edf84ffe9e5ebc12aefec0", "identical_tree": "9ccd4348e4244ba546b0152e2f76bd820b719ee1", "tooling_passed": 8, "tooling_seconds": 1.135, "documentation_passed": 36, "documentation_seconds": 3.28, "nonstellar_ingestion_passed": 92, "nonstellar_ingestion_seconds": 38.63, "mac_clean_and_synchronized": true}
   },
+  "galaxy_static_model": {
+    "base_commit": "8bee0966e9b9b7276a356b72d213db91525d9b81",
+    "model": "static-direction",
+    "scope": "Galaxy chart directions are independent of requested epoch; source measurement epoch/scale remain optional provenance. Other providers retain source-epoch admission. Frame, origin, source identity, units and provenance stay required.",
+    "source_paths": [
+      "src/wenu/objects/nonstellar.py",
+      "src/wenu/objects/galaxies.py"
+    ],
+    "test_paths": [
+      "tests/test_nonstellar_catalogue.py",
+      "tests/test_galaxy_geometry.py",
+      "tests/test_reusable_canonical_sphere.py"
+    ],
+    "gate": "galaxy-static-model",
+    "source_resource_changes": [],
+    "legacy_test_moves_or_deletions": [],
+    "snapshot_schema_change": false,
+    "kernel_sdk_change": false,
+    "regression_evidence": "New synthetic galaxy strict-admission test fails on accepted base: Incomplete nonstellar metadata: epoch, epoch_scale. Current test passes without invented epoch, preserves supplied J2016 provenance, fixed positions at Julian years -10000/2000/10000, and saved-sky restoration. Source columns cannot override provider model metadata.",
+    "local_verification": {
+      "focused_passed": 78,
+      "focused_seconds": 28.45,
+      "tooling_passed": 8,
+      "tooling_seconds": 1.207,
+      "documentation_passed": 33,
+      "documentation_deselected": 3,
+      "documentation_limits": "Archive integrity checks require complete Mac checkout; links independently checked against authoritative repository tree.",
+      "mac_acceptance": "pending"
+    },
+    "source_audit": {
+      "checked_date": "2026-10-18",
+      "OpenNGC_release": "v20260501",
+      "README_blob": "11b2668f5aacd1224e932094024612435528d879",
+      "guide_blob": "7e5e1447c3cccd54cd5cbebb29387e5b30b05cc1",
+      "references": [
+        "https://github.com/mattiaverga/OpenNGC/blob/v20260501/README.md",
+        "https://github.com/mattiaverga/OpenNGC/blob/v20260501/NGC_guide.txt"
+      ],
+      "interpretation": "Mixed coordinate sources and guide J2000 wording do not establish individual measurement epochs, precise frame or origin; no resource facts inferred."
+    },
+    "remaining_limits": "Packaged galaxy frame/origin gaps remain explicit. SDK DirectionState/ObjectRecord still require source epochs; nullable epoch for explicitly static directions needs a separate contract/implementation slice before galaxy kernel routing. No exact zero-motion law or angular accuracy bound claimed.",
+    "prior_mac_acceptance": {
+      "tested_commit": "1075469e234135a22cdb39d943c02867ed8fb0bf",
+      "merged_commit": "8bee0966e9b9b7276a356b72d213db91525d9b81",
+      "identical_tree": "182def8ee6124df0ee874033a950966ff9519224",
+      "tooling_passed": 8,
+      "documentation_passed": 36,
+      "documentation_seconds": 2.24,
+      "nonstellar_admission_passed": 144,
+      "nonstellar_admission_seconds": 87.03,
+      "mac_clean_and_synchronized": true
+    },
+    "content_sha256": {
+      "src/wenu/objects/nonstellar.py": "988c504cd1b9fe85067e4d7bf267d0a4eec8f809da005423a12e6b5b833f8236",
+      "src/wenu/objects/galaxies.py": "ab3d1bc7e4a60584fe2e10e99a99790b8839a53a2534fa4ead5c7657c7bb401d",
+      "tests/test_nonstellar_catalogue.py": "cb916c501e30db0e0eb0050e7962163cbe9a581a797bc315997428dd7875e921",
+      "tests/test_galaxy_geometry.py": "15135f01a02366e60387b7934ddc553d1091dcb3c763f889ccca49f58f146663",
+      "tests/test_reusable_canonical_sphere.py": "543b879894821fef4faf7911ac8c0c33814c1017c9f6ceb52fa388002c46897b"
+    }
+  },
   "current_inventory_extension": {
     "base_commit": "e5bd7c16ab3d7089fc51420432f540b2b2fe2ef9",
     "production_python_files": 264,

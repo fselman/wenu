@@ -138,17 +138,28 @@ class NonStellarCatalogueMetadata:
 
     @property
     def missing_fields(self):
+        """Gaps for the default source-epoch model; no facts are invented."""
+        return self.missing_fields_for("source-epoch")
+
+    def missing_fields_for(self, position_model):
+        """Required facts follow the explicitly selected provider model."""
+        if position_model not in ("source-epoch", "static-direction"):
+            raise ValueError("Unsupported catalogue position model.")
         record = self.to_record()
-        missing = [key for key in ("catalogue", "edition", "frame", "origin", "epoch", "epoch_scale", "source_sha256") if record[key] is None]
+        required = ("catalogue", "edition", "frame", "origin", "source_sha256")
+        if position_model == "source-epoch":
+            required += ("epoch", "epoch_scale")
+        missing = [key for key in required if record[key] is None]
         if not record["provenance"]:
             missing.append("provenance")
         missing.extend(f"source_units.{key}" for key in sorted({"ra", "dec"} | set(record["source_units"]))
                        if record["source_units"].get(key) is None)
         return tuple(missing)
 
-    def require_complete(self):
-        if self.missing_fields:
-            raise ValueError("Incomplete nonstellar metadata: " + ", ".join(self.missing_fields))
+    def require_complete(self, *, position_model="source-epoch"):
+        missing = self.missing_fields_for(position_model)
+        if missing:
+            raise ValueError("Incomplete nonstellar metadata: " + ", ".join(missing))
         return self
 
     def validate_table(self, table, *, require_units=False):
@@ -165,7 +176,7 @@ class NonStellarCatalogueMetadata:
                 raise ValueError("Nonstellar metadata disagrees with normalized column units.")
         return self
 
-    def coordinate_spec(self, provider):
+    def coordinate_spec(self, provider, *, position_model="source-epoch"):
         record = self.to_record()
         from wenu.coordinates import CoordinateSpec
         return CoordinateSpec(frame=record["frame"] or "icrs",
@@ -173,7 +184,9 @@ class NonStellarCatalogueMetadata:
                               epoch=record["epoch"], position_status=PositionStatus.ASTROMETRIC,
                               provider=record["catalogue"] or provider,
                               provenance=tuple(record["provenance"]),
-                              model="legacy-unverified-catalogue-encoding" if self.missing_fields else None)
+                              model=("legacy-unverified-catalogue-encoding"
+                                     if self.missing_fields_for(position_model)
+                                     else "static-direction" if position_model == "static-direction" else None))
 
 
 class NonStellar(AstronomicalObject):
@@ -266,7 +279,7 @@ class NonStellar(AstronomicalObject):
                 source_units[key] = None if unit is None else str(unit)
         metadata = NonStellarCatalogueMetadata.from_table(source_catalog, source_units=source_units, source_sha256=digest)
         if require_complete_metadata:
-            metadata.require_complete()
+            metadata.require_complete(position_model=self.position_model)
         active_catalog = source_catalog
         if self.magnitude_limit is not None:
             magnitude = active_catalog["magnitude"]
@@ -297,12 +310,24 @@ class NonStellar(AstronomicalObject):
             metadata = NonStellarCatalogueMetadata.from_table(table, source_units={})
         return metadata.validate_table(table)
 
+    @property
+    def position_model(self):
+        """Default model admission still requires source epoch metadata."""
+        return "source-epoch"
+
+    @property
+    def admission_missing_fields(self):
+        return self.catalogue_metadata.missing_fields_for(self.position_model)
+
+    def require_complete_metadata(self):
+        return self.catalogue_metadata.require_complete(position_model=self.position_model)
+
     def native_coordinate_spec(self, table=None):
         """Describe admitted source facts, with explicit legacy uncertainty."""
         metadata = self.catalogue_metadata
         if table is not None:
             metadata.validate_table(table)
-        return metadata.coordinate_spec(self.catalog_name)
+        return metadata.coordinate_spec(self.catalog_name, position_model=self.position_model)
 
     def observed_coordinate_spec(self, observer):
         spec = self.native_coordinate_spec()
@@ -324,11 +349,14 @@ class NonStellar(AstronomicalObject):
             "catalog": self.catalog_name,
             "coordinate_system": "icrs",
             "catalogue_metadata": deepcopy(table.meta),
-            "catalogue_admission": self.catalogue_metadata.to_record(),
         }
         for name in table.colnames:
             if name not in ("identifier", "ra_deg", "dec_deg"):
                 metadata[name] = np.asarray(table[name])
+        # Provider admission/model metadata cannot be overwritten by a source
+        # column with the same spelling; the original column stays in the table.
+        metadata["catalogue_admission"] = self.catalogue_metadata.to_record()
+        metadata["catalogue_position_model"] = self.position_model
         return SphericalPoints(
             lon_deg=np.asarray(table["ra_deg"], dtype=float),
             lat_deg=np.asarray(table["dec_deg"], dtype=float),
@@ -727,6 +755,7 @@ class NonStellar(AstronomicalObject):
             "catalog": self.catalog_name,
             "catalogue_metadata": deepcopy(table.meta),
             "catalogue_admission": self.catalogue_metadata.to_record(),
+            "catalogue_position_model": self.position_model,
             "coordinate_system": "altaz",
             "semantic_entity_keys": semantic_keys,
             "semantic_entity_display_names": identifiers,
@@ -961,6 +990,7 @@ class NonStellar(AstronomicalObject):
                 "coordinate_system": "altaz",
                 "catalogue_metadata": deepcopy(table.meta),
                 "catalogue_admission": self.catalogue_metadata.to_record(),
+                "catalogue_position_model": self.position_model,
                 "semantic_entity_keys": semantic_keys,
                 "semantic_entity_display_names": semantic_identifiers,
                 "semantic_entity_categories": tuple(

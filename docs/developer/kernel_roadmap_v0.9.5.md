@@ -58,9 +58,15 @@ v5. Unknown epochs replace automatic J2000 stamps; old formats remain readable
 without fabricating source facts. Strict admission refuses incomplete metadata,
 while current charts retain an explicit legacy interpretation. Unitless legacy
 inputs and this compatibility mode are not evidence of complete source semantics.
-Resolve missing source frame/origin/epoch/time-scale declarations, using admitted
-source evidence or an explicitly justified model, before closing each physical
-provider. Do not manufacture epochs for static deep-sky directions. This is metadata repair;
+Required declarations depend on the model. Galaxy `static-direction` admission
+does not require a measurement epoch/scale; any supplied epoch remains provenance.
+Resolve remaining frame/origin/units/provenance gaps using source evidence rather
+than inventing source facts. Other families retain their source-epoch requirements.
+The current SDK still requires `DirectionState.source_epoch` and source epochs
+for direction capabilities. Its next bounded contract/implementation slice must
+represent an explicitly static direction with unknown/not-required source epoch,
+without weakening epoch-dependent models or fabricating a date. Then route the
+galaxy provider through the admitted interface. This is metadata repair;
 open-cluster state evaluation has not yet migrated to the kernel.
 
 Keep every existing Wenu capability while placing all scientific state access

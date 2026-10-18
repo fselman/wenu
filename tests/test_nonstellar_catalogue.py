@@ -95,6 +95,22 @@ def test_strict_metadata_refusal_retains_legacy_catalogue(catalogue):
     assert layer.catalog is table and layer.catalogue_metadata == metadata
 
 
+def test_static_epoch_exemption_is_explicit_and_does_not_relax_other_models(catalogue):
+    layer = NonStellar(None)
+    layer.load(filename=catalogue)
+    record = layer.catalogue_metadata
+    assert 'epoch' in record.missing_fields
+    assert 'epoch_scale' in layer.admission_missing_fields
+    assert 'epoch' not in record.missing_fields_for('static-direction')
+    assert 'frame' in record.missing_fields_for('static-direction')
+    with pytest.raises(ValueError, match='epoch'):
+        layer.require_complete_metadata()
+    with pytest.raises(ValueError, match='frame'):
+        record.require_complete(position_model='static-direction')
+    with pytest.raises(ValueError, match='Unsupported catalogue position model'):
+        record.require_complete(position_model='unknown')
+
+
 def test_icrs_j2000_declaration_is_not_a_measurement_epoch(catalogue):
     table = Table.read(catalogue)
     table.meta["coordinate_frame"] = "ICRS/J2000"

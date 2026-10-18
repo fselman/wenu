@@ -171,6 +171,16 @@ its admitted coverage, while physical motion uncertainty remains unknown.
 This is different from treating an unknown stellar proper motion as measured
 zero. Selection of a degraded/fixed stellar model is explicit policy/provenance.
 
+For the accepted galaxy chart model, measurement epoch/scale are optional
+provenance. Static directions must not require an artificial source epoch.
+Wenu's metadata admission now makes this model distinction. The current SDK
+implementation still requires `DirectionState.source_epoch` and a source epoch
+for direction capabilities in `ObjectRecord`; it cannot yet express this case.
+Extend that subset in a separate reviewed slice before galaxy kernel routing,
+retaining query/evaluation time, optional source provenance and the distinction
+between exact model constancy and unknown physical error. This paragraph records
+a pending implementation requirement, not a new SDK capability or acceptance.
+
 ## 5. Query and result envelopes
 
 The following Python is a signature specification, not executable Wenu API.

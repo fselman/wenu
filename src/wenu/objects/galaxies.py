@@ -18,6 +18,15 @@ class Galaxies(NonStellar):
 
     layer_name = "galaxies"
 
+    @property
+    def position_model(self):
+        """Fixed ICRS chart directions, independent of the requested epoch.
+
+        Any source measurement epoch remains provenance. This model makes
+        no exact physical proper-motion or uncertainty claim.
+        """
+        return "static-direction"
+
     _ALIASES = {
         **NonStellar._ALIASES,
         "magnitude": (

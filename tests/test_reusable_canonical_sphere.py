@@ -491,6 +491,37 @@ def test_native_snapshot_preserves_declared_nonstellar_epoch(native_snapshot_cas
     assert snapshot._records['fixed']['catalogues']['galaxies']['epoch'] == 'J2016.0'
 
 
+def test_native_snapshot_retains_static_galaxy_model_without_epoch(native_snapshot_case, tmp_path):
+    from dataclasses import replace
+    from astropy.table import Table
+    from wenu.sky import native_snapshot as snapshots
+    raw, _, _, _ = native_snapshot_case
+    source = Table(dict(name=['synthetic'], ra_deg=[10.], dec_deg=[-20.],
+                        major_axis_arcmin=[2.], minor_axis_arcmin=[1.], position_angle_deg=[30.]))
+    source.meta = dict(catalog='synthetic', catalog_version='v1', coordinate_frame='ICRS',
+                       coordinate_origin='solar-system-barycenter',
+                       documentation_url='https://example.invalid/synthetic')
+    for name, unit in (('ra_deg', 'deg'), ('dec_deg', 'deg'), ('major_axis_arcmin', 'arcmin'),
+                       ('minor_axis_arcmin', 'arcmin'), ('position_angle_deg', 'deg')):
+        source[name].unit = unit
+    path = tmp_path/'static-galaxy.ecsv'
+    source.write(path)
+    profile = replace(snapshots.CANONICAL_MAXIMAL_SPHERE_PROFILE, galaxy_filename=path)
+    destination = tmp_path/'static-galaxy'
+    _, cold = snapshots.prepare_native_sky_snapshot(raw, destination, profile=profile, return_sky=True)
+    snapshot = snapshots.read_native_sky_snapshot(destination)
+    warm = snapshot.make_sky()
+    for sky in (cold, warm):
+        assert sky.galaxies.admission_missing_fields == ()
+        sky.galaxies.require_complete_metadata()
+        points = sky.galaxies.position()
+        assert points.coordinate_spec.model == 'static-direction'
+        assert points.coordinate_spec.epoch is None
+        assert sky.galaxies.catalogue_metadata.to_record()['epoch_scale'] is None
+    _assert_native_geometry_equal(cold.galaxies.position(), warm.galaxies.position())
+    assert snapshot._records['fixed']['catalogues']['galaxies']['epoch'] is None
+
+
 @pytest.mark.parametrize('fault', ('missing-record', 'header-epoch', 'source-digest',
                                   'frame-conflict', 'table-metadata', 'column-unit', 'record-epoch'))
 def test_native_snapshot_rejects_nonstellar_metadata_conflicts(native_snapshot_case, tmp_path, fault):

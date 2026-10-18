@@ -13,6 +13,18 @@
     "environment": "User-reported Mac; plugin autoload disabled."
   },
   "gates": {
+    "galaxy-static-model": {
+      "scope": "Model-specific metadata admission: static galaxy directions do not require a measurement epoch; preserve source facts, other models, actual geometry and v5 round trips.",
+      "limits": "No SDK implementation/contracts, source resources, serialization schema, frame transform, projection/render or packaging changes. The SDK still requires a source epoch for direction states; no kernel routing or fictitious epoch is added. Frame/origin/unit/provenance gaps remain admission failures. Do not run parent ingestion/admission gates as well.",
+      "selections": [
+        {"node": "tests/test_nonstellar_catalogue.py", "reason": "Changed shared metadata owner retains default source-epoch requirements, refusals, immutability and native/observed metadata."},
+        {"node": "tests/test_galaxy_geometry.py", "reason": "Whole galaxy owner: static no-epoch admission, unchanged directions over +/-10000 Julian years, preserved source epoch, strict frame refusal and existing geometry/selection/cache seams."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_fixed_catalogue_rows_masks_units_and_subsets", "reason": "All six fixed owners retain table metadata and selected geometry after adding explicit position-model metadata."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_retains_static_galaxy_model_without_epoch", "reason": "Real preparation/read/restoration preserves strict-admissible static galaxy model without an invented epoch."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_declared_nonstellar_epoch", "reason": "A supplied source epoch remains provenance through v5."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources", "reason": "Changed inherited model metadata restores without source access in a fresh process."}
+      ]
+    },
     "nonstellar-admission": {
       "scope": "Immutable nonstellar metadata admission, explicit legacy compatibility, metadata-owned native/observed specifications and snapshot v5 with v1-v4 compatibility.",
       "limits": "No catalogue/resource replacement, SDK routing, motion/frame transformation, projection/render algorithm or dependency/build change. Full resource metadata closure is not claimed: strict admission refuses existing gaps. Reuse unchanged numerical and atlas dispatch/lifetime evidence; source-free restoration and real saved-sky CLI cover transport. No full production or SDK repeat.",

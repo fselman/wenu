@@ -254,16 +254,29 @@ are validated before publication, including supported frame/origin, ICRS equinox
 refusal and epoch syntax/scale. No source edition or epoch is inferred from a
 name, file path, release date or `ICRS/J2000` frame description. The source digest
 is checked before/after reading. `catalogue_metadata.to_record()` returns a copy;
-`missing_fields` reports gaps and `require_complete()` refuses them.
+`missing_fields` reports gaps for the default source-epoch model and
+`require_complete()` refuses them. `missing_fields_for(position_model)` and
+`require_complete(position_model=...)` apply an explicit model-specific policy.
+The supported `static-direction` model does not require a measurement epoch or
+its scale. It still requires frame, origin, source identity, units, edition and
+provenance. Supplied epoch declarations remain validated and preserved.
 
-`load(..., require_complete_metadata=True)` requires complete declared facts
-before replacing a catalogue. The default preserves legacy chart compatibility:
+`load(..., require_complete_metadata=True)` requires the facts needed by the
+provider's `position_model` before replacing a catalogue. The provider also
+exposes `admission_missing_fields` and `require_complete_metadata()` using that
+same policy. `Galaxies.position_model` is `static-direction`: source epoch is
+provenance, and changing a requested epoch does not update its native centres.
+Other nonstellar providers retain the default `source-epoch` policy.
+Geometry carries `catalogue_position_model` separately from the source record;
+a fully admitted static direction has `CoordinateSpec.model='static-direction'`.
+The default load preserves legacy chart compatibility:
 missing source facts remain null, and geometry explicitly carries the model
 `legacy-unverified-catalogue-encoding`. Its ICRS/barycentre chart interpretation
 is software compatibility policy, not evidence for missing source facts.
 The inspected packaged tables all lack a measurement epoch; several also lack
-a declared frame. They retain their existing chart output but cannot pass
-strict admission or close a physical provider merely by adopting this record.
+a declared frame/origin. Missing epoch is not a galaxy admission failure, but
+the packaged galaxy frame/origin gaps still prevent strict admission. Existing
+chart output is retained without claiming that adopting a record closes a provider.
 
 `native_coordinate_spec(table=None)` supplies native positions/outlines/symbols;
 `observed_coordinate_spec(observer)` supplies observer metadata from the same

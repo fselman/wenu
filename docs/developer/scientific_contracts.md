@@ -60,12 +60,19 @@ normalizer converts them to its canonical degrees/arcminutes before geometry.
 Incompatible declared units fail before replacing a loaded catalogue. Original
 table metadata and unconsumed fields remain available, with independent metadata
 copies on geometry. Unitless compatibility inputs are not evidence of source
-units, frame or epoch. These preserved facts do not yet constitute full
-complete scientific admission. `NonStellarCatalogueMetadata` validates and mirrors
+units, frame or epoch. These preserved facts do not yet constitute complete
+scientific admission. `NonStellarCatalogueMetadata` validates and mirrors
 declared facts and input-byte identity, reporting absent facts explicitly. Strict
-admission refuses missing frame/origin/epoch/time scale/edition/provenance/units;
+admission refuses missing frame/origin/edition/provenance/units required by the model;
 legacy chart interpretation is explicitly `legacy-unverified-catalogue-encoding`.
 An unknown measurement epoch is never replaced by an equinox or release date.
+Galaxy chart directions use the explicit `static-direction` model, independent
+of requested epoch over the intended tens-of-thousands-of-years chart use.
+Measurement epoch/scale are optional provenance for that model and must not block
+its admission. Other providers retain source-epoch requirements unless explicitly
+assigned another admitted model. This is a chart model, not an exact law of zero
+physical motion or an asserted astrometric error bound. ICRS orientation and
+observer-dependent realization remain separate from updating catalogue positions.
 Snapshot v5 derives headers from the record; v1-v4 restoration does not turn old
 J2000 stamps into source facts. These changes do not establish source frame
 precision, a motion model or provider accuracy, or close kernel routing.
