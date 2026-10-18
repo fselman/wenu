@@ -202,8 +202,10 @@ Query time is request bookkeeping; it is never an inferred source epoch.
 The shipped kit verifies time-independent lookup vectors at its supplied times.
 This does not weaken native/epoch requirements or certify physical validity.
 Domain records retain source labels without inventing a numerical time scale.
-The SDK has no catalogue-specific interpretation. Production still pins dev7;
-open-cluster routing and astrometric enrichment remain separate work.
+The SDK has no catalogue-specific interpretation. Production pins accepted
+dev8 for source-bound open-cluster lookup; astrometric enrichment and propagation
+remain separate work. The root adapter preserves qualified numerical epochs
+and unqualified source labels separately, without weakening native/epoch models.
 
 ## 5. Query and result envelopes
 

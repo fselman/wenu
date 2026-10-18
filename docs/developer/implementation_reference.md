@@ -312,9 +312,9 @@ resource metadata gaps and shared helper defaults remain explicit audit findings
 The separate candidate `wenu_kernel` package provides `Kernel`, `KernelSession`
 and `StateProvider` plus typed direction/Cartesian records in `wenu_kernel.records`. See its
 [implemented subset and independent gate](../../packages/wenu_kernel/README.md).
-Only native stellar realization, public native positions and native constellation
-endpoints have a production adapter. Preserve other existing imports until their own K3 public-path gate
-is implemented. No common observer adapter is supplied by the foundation.
+Native stellar realization/public positions/constellation endpoints, static
+galaxy centres and open-cluster source lookups have production adapters. Preserve
+other existing imports until their own K3 public-path gate is implemented. No common observer adapter is supplied by the foundation.
 
 `wenu_kernel.time.TimeService(adapters=(), admissions=())` admits one explicit
 `TimeAdapter` per directed scale pair. `convert(time, target_scale,
@@ -491,6 +491,55 @@ centre/local-orientation construction is a separately validated geometry change;
 no physical propagation of a galaxy curve is introduced here. The one-outline
 case now uses its existing coordinate array directly, avoiding an unnecessary
 concatenation that failed for a single synthetic galaxy.
+
+## Open-cluster kernel lookup
+
+`OpenClusters.position(instant=None)` and native `realize` consume
+`_native_centres(table, instant)`. Observer `spherical_geometry` queries the
+maximal catalogue through the same boundary before calling the unchanged
+`catalogue_point_altaz` transform/cache. Selected rows retain their IDs/order,
+including repeated requests. Missing coordinates remain missing. Returned kernel
+vectors control the coordinates; failures propagate without raw-source recovery,
+even when an observer cache already exists. The cache key binds the returned
+centre arrays as well as the source revision.
+
+`OpenClusterCatalogueMetadata.from_table` mirrors preserved row position sources,
+epoch labels, explicit epoch scales, frame/origin declarations and all column
+units into an immutable record. `to_record()` returns an independent JSON copy.
+`catalogue_metadata_for(table)` binds this to the source byte digest (when known)
+and a canonical derived-table ECSV digest. Canonical metadata key ordering makes
+cold/restored identities equal. The derived digest is not called an original
+catalogue digest. All retained columns, masks, descriptions and metadata enter
+that binding; motion fields remain uninterpreted source data. Geometry adds the
+record as `catalogue_admission` and `catalogue_position_model='catalogue_lookup'`;
+source arrays and raw `catalogue_metadata` remain independently copied.
+
+Per-row `position_epoch_scale` or an explicitly declared source-profile/global
+`coordinate_epoch_scale` permits numerical epoch admission. A valid epoch label
+without a scale remains preserved text and yields no invented SDK source epoch.
+The curated `RA_source` field selects its declared source profile under
+`input_catalogue_metadata`; it never supplies an epoch from a catalogue name.
+Known unsupported frames/origins/coordinate units or invalid epoch declarations
+are refused before replacing a loaded source. Missing declarations retain the
+explicit legacy ICRS encoding; the SDK origin is `legacy-unverified-origin` unless
+every admitted row declares a barycentric origin. This is not strict physical
+source-metadata closure.
+
+The shared `CatalogueDirectionProvider` accepts optional aligned `source_epochs`
+without changing existing scalar-epoch stellar/galaxy resource identities. Source
+lookup uses `catalogue_lookup`, unknown physical/numerical errors, ordered batch
+queries and the existing owned kernel/session scope. Undated lookup uses an
+internal JD 0 TT request anchor, never a measurement date; explicit `TimePoint`
+queries retain their scale, while supported Astropy/date inputs are decoded to
+TT. Unbounded lookup availability is software policy, not ancient-date accuracy.
+
+Snapshot v5 already preserves cluster tables, masks, units, source metadata and
+source digests. Restoration now forwards that existing source digest into the
+same record; no schema field or source file access is added. Older supported
+snapshots retain their previous coverage/admission. Production pins accepted SDK
+dev8 at `9dd1909f`. The provider performs no acquisition, motion propagation,
+source combination or morphology calculation. Next work must ingest omitted
+Hunt astrometry and validate source conventions before any propagation claim.
 
 ## Independent provider verification
 

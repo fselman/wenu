@@ -136,13 +136,14 @@ No acquisition, automatic cross-source merge or resource-byte change occurs in
 this prerequisite. Re-ingestion must retain the existing 513-object membership
 unless a separate selection change is requested.
 
-The SDK dev8 candidate introduces `catalogue_lookup` before cluster routing:
-it admits incomplete per-object source epochs without invoking the galaxy static
-model. It refuses physical epoch accuracy, velocity and temporal reuse. The
-production pin remains dev7; this candidate does not yet route a cluster or add
-motion. The next adapter must bind preserved source metadata to its resource
-identity and route native/public/observed/saved consumers without fallback.
-Only a later explicit propagation model may claim positions at a new epoch.
+The accepted SDK dev8 introduces `catalogue_lookup`: it admits incomplete
+per-object source epochs without invoking the galaxy static model and refuses
+physical epoch accuracy, velocity and temporal reuse. The cluster adapter now
+binds preserved metadata/fields/units/masks and original/derived digests to its
+resource identity. Native/public/observed/saved centres use returned kernel
+vectors without fallback; production pins accepted main `9dd1909f`. This is
+source lookup, not source-metadata closure or motion propagation. Only a later
+explicit propagation model may claim positions at a new epoch.
 For ancient charts, bulk cluster motion and changes to member distribution are
 different questions; translating a present-day symbol does not reconstruct the
 historical membership or morphology.

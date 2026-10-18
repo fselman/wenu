@@ -159,7 +159,7 @@ def test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_over
             sdk = [value for value in requirements if value.name.replace('_', '-').lower() == 'wenu-kernel']
             assert len(sdk) == 1
             assert sdk[0].url == ('git+https://github.com/fselman/wenu.git@'
-                '4add1447d0db5598c1b2ff7f3c231d465b2c63f0#subdirectory=packages/wenu_kernel')
+                '9dd1909f36986f8c8aa7e2a309427f7ce6ef0ee4#subdirectory=packages/wenu_kernel')
         installed = tmp_path / f'installed_{i}'
         result = subprocess.run([sys.executable, '-m', 'pip', 'install', '--no-deps',
             '--target', str(installed), str(wheel)], cwd=tmp_path, capture_output=True, text=True)
@@ -234,6 +234,13 @@ try:
     points = galaxies.position()
     np.testing.assert_array_equal(points.lon_deg, [12.])
     assert seen and seen[-1].states[0].source_epoch is None
+    clusters = OpenClusters(None)
+    clusters.load()
+    points = clusters.position()
+    np.testing.assert_array_equal(points.lon_deg, [10.])
+    assert points.metadata['catalogue_position_model'] == 'catalogue_lookup'
+    assert seen[-1].query.reference.status == 'catalogue-lookup'
+    assert seen[-1].states[0].source_epoch is None
 finally:
     KernelSession.evaluate = evaluate
 assert len(OpenClusters(None).load()) == 1

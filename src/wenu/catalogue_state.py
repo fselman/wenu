@@ -1,6 +1,6 @@
 """Shared immutable direction-table provider; no catalogue decoding or graphics.
 
-Native stellar and explicit static models share registration/value/lifetime
+Native stellar, source lookup and explicit static models share registration/value/lifetime
 mechanics. Source interpretation and model selection remain with domain owners.
 """
 from __future__ import annotations
@@ -68,13 +68,13 @@ class CatalogueDirectionProvider:
 
     def __init__(self, rows, *, namespace, source_epoch, provenance, catalogue_edition,
                  reference, capability, semantic_type, provider_id, resource_id,
-                 model_id, coverage, source_identity=()):
+                 model_id, coverage, source_identity=(), source_epochs=None):
         namespace, catalogue_edition = _text(namespace), _text(catalogue_edition)
-        if capability not in ("native_direction", "static_direction"):
+        if capability not in ("native_direction", "static_direction", "catalogue_lookup"):
             raise UnsupportedCapability("unsupported catalogue direction model")
         if source_epoch is not None and type(source_epoch) is not TimePoint:
             raise InvalidQuery("source epoch must be an explicit TimePoint or None")
-        if source_epoch is None and capability != "static_direction":
+        if source_epoch is None and capability not in ("static_direction", "catalogue_lookup"):
             raise InvalidQuery("an explicit source epoch is required")
         provenance = tuple(_text(item) for item in provenance)
         if not provenance:
@@ -87,10 +87,16 @@ class CatalogueDirectionProvider:
                 raise InvalidQuery("native directions must be finite with valid latitude")
             copied.append((identifier, float(lon), float(lat)))
         self._rows = tuple(copied)
+        epochs = ((source_epoch,) * len(self._rows) if source_epochs is None else tuple(source_epochs))
+        if (len(epochs) != len(self._rows)
+                or any(epoch is not None and type(epoch) is not TimePoint for epoch in epochs)
+                or capability == "native_direction" and any(epoch is None for epoch in epochs)):
+            raise InvalidQuery("source epochs must align with rows and the admitted model")
         keys = tuple(ObjectKey(namespace + ":" + row[0]) for row in self._rows)
         if len(set(keys)) != len(keys):
             raise InvalidQuery("duplicate native catalogue identifiers")
         self._lookup = dict(zip(keys, self._rows))
+        self._epochs = dict(zip(keys, epochs))
         self._closed = False
         self._epoch = source_epoch
         self._scale = coverage.scale
@@ -101,6 +107,9 @@ class CatalogueDirectionProvider:
                                   [(i, lon.hex(), lat.hex()) for i, lon, lat in self._rows]))
         if source_identity:
             resource_digest = _digest((resource_digest, source_identity))
+        if source_epochs is not None:
+            resource_digest = _digest((resource_digest, tuple(None if epoch is None else
+                (epoch.jd1, epoch.jd2, epoch.scale) for epoch in epochs)))
         resource = ResourceRef(resource_id, "1", resource_digest,
                                coverage, "immutable copied table; no acquisition", provenance)
         catalogue = CatalogueRef(key, (resource,), _digest([k.value for k in keys]))
@@ -108,8 +117,8 @@ class CatalogueDirectionProvider:
                          _digest(("lookup-only", resource_digest)), (resource,))
         capabilities = (capability, "batch_evaluation")
         records = tuple(ObjectRecord(k, (ExternalId(namespace, catalogue_edition, row[0]),),
-                                     semantic_type, (() if source_epoch is None else (source_epoch,)), capabilities, provenance)
-                        for k, row in zip(keys, self._rows))
+                                     semantic_type, (() if epoch is None else (epoch,)), capabilities, provenance)
+                        for k, row, epoch in zip(keys, self._rows, epochs))
         self._catalogue = CatalogueSnapshot(catalogue, records)
         self._admission = ModelAdmission(catalogue, model, reference,
                                         keys, capabilities, coverage)
@@ -160,7 +169,7 @@ class CatalogueDirectionProvider:
         if not decision.supported:
             raise UnsupportedCapability(decision.reason)
         return StateBatch(query, tuple(
-            DirectionState(key, time, self._epoch, time, query.reference,
+            DirectionState(key, time, self._epochs[key], time, query.reference,
                            self._direction(key), self._evidence)
             for time in query.times for key in query.objects
         ))

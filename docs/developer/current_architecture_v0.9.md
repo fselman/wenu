@@ -124,6 +124,16 @@ that reference; source records and public legacy specifications remain truthful.
 Strict metadata closure is still open. Shape dimensions/PA and outline sampling
 remain galaxy/domain geometry above the kernel, with the existing observer and
 projection services retained.
+Open-cluster centres now use the accepted dev8 `catalogue_lookup` capability
+for public/native geometry and the maximal table passed into the existing
+observer transform/cache. Metadata mirrors row source/epoch labels, explicit
+scales, frame/origin gaps and all column units. A canonical derived-table digest
+binds every retained field/mask, including uninterpreted motions, into the
+provider identity; loaded bytes and saved manifest source digests remain separate
+provenance. The source lookup neither propagates nor asserts zero physical motion.
+Observed cache keys include returned centre arrays; even a warm cache cannot
+suppress a failed kernel query. Selected order, duplicate requests and empty
+selections retain their behavior. Snapshot schema v5 is unchanged.
 Observed Skyfield astrometry,
 native constellation-label anchors and other families remain unmigrated. See the
 [adapter contract](implementation_reference.md#native-stellar-kernel-adapter).
@@ -135,9 +145,9 @@ than reimplemented in a new kernel.
 ## Abstraction barriers that remain incomplete
 
 1. `CelestialSphere` and `maximal_sphere` know concrete layer classes. There is
-   no uniform registry behind all epoch-state consumers; only native stellar
-   realization, public native positions and native line vertices currently use
-   the SDK registry.
+   no uniform registry behind all epoch-state consumers. Native stellar
+   realization/public positions/line vertices, galaxy centres and open-cluster
+   source lookups use the SDK; remaining state consumers still require migration.
 2. `SkyLayer.realize()` has a legacy fallback that discards the context and
    calls `spherical_geometry(observer)`. Physical state and observation are
    therefore not uniformly separated.

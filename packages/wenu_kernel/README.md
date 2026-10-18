@@ -5,8 +5,9 @@ It is not the K5 frozen SDK. Existing Wenu continues to use its current code;
 the accepted native stellar adapter uses its existing source-epoch subset.
 The SDK extension itself adds no numerical backend. Wenu now supplies a
 source-bound static galaxy direction consumer outside this package.
-The dev8 candidate adds catalogue lookup for incomplete source epochs; the
-production pin remains accepted dev7. No open-cluster consumer is migrated yet.
+Accepted dev8 adds catalogue lookup for incomplete source epochs; Wenu now
+pins that accepted SDK and supplies an open-cluster consumer outside this package.
+The source lookup preserves astrometry but performs no motion propagation.
 
 ## Implemented scope
 
@@ -247,7 +248,7 @@ query caching, source-epoch consistency, all-or-nothing publication, lifecycle
 and scale checks remain unchanged. The portable kit checks lookup vectors over
 its query/probe samples, including mixed and wholly unknown source epochs.
 
-The next open-cluster adapter may use this compatibility route while separately
+The open-cluster adapter uses this compatibility route while separately
 preserving original mean motions and their provenance. It must not apply Dias
 motions automatically to Hunt-selected centres. Propagation requires a distinct
 admitted model and validated source conventions; this SDK slice provides none.

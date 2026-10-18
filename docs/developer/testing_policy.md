@@ -51,22 +51,44 @@ adapter now pins its accepted source and supplies its own installation gate.
 
 ## Catalogue lookup SDK prerequisite
 
-Run the SDK independent unittest gate and the same tests against a fresh built
-dev8 wheel without Wenu or scientific dependencies. Record/session tests retain
-native/epoch admission and test mixed/unknown provenance, refusals before backend
-work, atomic failed batches, coverage/scale and unknown physical-model accuracy.
-The portable kit covers mixed and unknown lookup epochs, and its meta-test
-rejects deliberately time-dependent lookup vectors. The external consumer runs
-both native and lookup models using only its own synthetic provider and installed
-SDK, with site-packages disabled. No captured astronomical oracle is claimed.
+The dev8 prerequisite is accepted at main `9dd1909f`: 204 Mac SDK tests,
+36 documentation tests, eight tooling tests and 69 consumer tests plus nine
+subtests. It also passed the same 204 tests against an isolated built wheel
+without Wenu/scientific dependencies. The portable kit covers mixed/unknown
+lookup epochs, source provenance, request/evidence refusals, lifecycle and
+lookup-vector invariance; its external consumer uses only its own synthetic
+provider. These are contract checks, not captured astronomical accuracy oracles.
 
-Run `kernel-catalogue-lookup-compatibility` with the candidate SDK explicitly on
-PYTHONPATH: existing stellar state/Stars and galaxy geometry/provider consumers.
-Run documentation and tooling separately. Production pin, provider routing,
-resource bytes, snapshot schema, epoch transformations, projection, rendering,
-atlas lifetime and collection are unchanged; their broad gates and the full
-production suite are excluded. The cluster audit is a resource inspection, not
-new scientific validation or a claim that the cluster adapter is implemented.
+For a future SDK contract/implementation change, run its independent source and
+isolated-wheel gates plus affected existing consumers. A compatible provider
+composition uses accepted SDK evidence and its own owner/seam tests instead.
+`kernel-catalogue-lookup-compatibility` remains the reviewed stellar/galaxy
+selection and is extended by the cluster routing gate below. Current provider
+routing/dependency acceptance is described there; it must not be inferred from
+an earlier SDK-only gate's exclusions.
+
+## Open-cluster kernel routing
+
+`kernel-open-cluster-routes` extends the accepted stellar/galaxy compatibility
+selection because the shared direction-table adapter now supports aligned row
+epochs. It selects the existing cluster source/epoch/selection/cache/symbol owner
+seams and public position contract, plus new returned-vector/refusal/warm-cache,
+source identity, qualified/unknown epoch, mask/units and shipped conformance
+checks. The actual native page is compared pixel-for-pixel against the accepted
+raw-centre route for both cold and saved skies. Saved source identity, existing
+source-free process, older snapshot variants and public atlas-sheet consumption
+remain exercised. No snapshot schema, atlas lifecycle or render algorithm changes,
+so the long serial/spawn page batch is not repeated for this adapter.
+
+The root pin moves to accepted SDK dev8 at main `9dd1909f`. The installed
+wheel/sdist/editable consumer test therefore verifies actual cluster lookup through
+a separately installed SDK wheel, keeping its stellar and galaxy assertions.
+Run documentation and tooling separately. SDK implementation/conformance are
+unchanged from their 204-test Mac acceptance, so do not rerun that independent
+suite. Acquisition/curation, unrelated providers, observer/projection numerical
+oracles and the full production suite are excluded. Install the local accepted
+SDK package before Mac verification; an old installed dev7 cannot execute the new
+capability merely because Wenu source changed.
 
 ## Galaxy routing and shared catalogue adapter
 

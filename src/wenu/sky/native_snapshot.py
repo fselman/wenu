@@ -295,7 +295,7 @@ def _fixed_records(sky):
                         galactic_grid=dict(include_plane=True)), points=tuple(points))
 
 
-def _restore_fixed(sky, data):
+def _restore_fixed(sky, data, source_digests):
     fixed = data["fixed"]
     profile = fixed["profile"]
     sky.load_profile = CelestialSphereLoadProfile(star_magnitude_limit=sky.stars.magnitude_limit, **dict(profile))
@@ -309,6 +309,8 @@ def _restore_fixed(sky, data):
         table = _table_from_records(content["table"])
         layer.source = content["source"]
         layer.catalog = table
+        if name == 'open_clusters':
+            layer._source_sha256 = source_digests[name]
         if name != "open_clusters":
             layer.source_catalog = table
             if 'metadata' in content:
@@ -534,7 +536,7 @@ class NativeSkySnapshot:
         sky.constellations = constellation
         sky.constellation_labels = sky.add(_SnapshotLabels(stars))
         if "fixed" in data:
-            _restore_fixed(sky, data)
+            _restore_fixed(sky, data, self.source_digests)
         return sky
 
 

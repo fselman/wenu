@@ -7394,7 +7394,7 @@
   "independent_projects": [
     {
       "path": "packages/wenu_kernel",
-      "scope": "K2 native/static/catalogue-lookup direction and Cartesian states, certified/canonical reuse, explicit time and portable conformance. Production uses accepted dev7 stellar/galaxy adapters; dev8 catalogue lookup remains an SDK candidate.",
+      "scope": "K2 native/static/catalogue-lookup direction and Cartesian states, certified/canonical reuse, explicit time and portable conformance. Production pins accepted dev8 for stellar, galaxy and open-cluster adapters; remaining K3 consumers and SDK freeze pending.",
       "source_paths": [
         "packages/wenu_kernel/src/wenu_kernel/__init__.py",
         "packages/wenu_kernel/src/wenu_kernel/conformance.py",
@@ -8433,7 +8433,7 @@
   },
   "kernel_catalogue_lookup_prerequisite": {
     "base_commit": "5f8fca4c4a391ea54aba05401163bb1c245ce7ff",
-    "status": "SDK candidate; production pin unchanged at dev7; open-cluster consumers not yet migrated",
+    "status": "Accepted SDK subset at main 9dd1909f; production pin moved to dev8 by open_cluster_kernel_routing; SDK freeze remains pending",
     "capability": "catalogue_lookup",
     "reason": "Unqualified or unknown per-row source epochs cannot be replaced by invented dates or a static cluster model.",
     "scope": "SDK registration/session and portable conformance only; native/epoch semantics retained.",
@@ -8481,11 +8481,58 @@
         "Disabled lookup physical-model evidence guard: closest publication test fails",
         "Disabled lookup invariance guard: shipped harness meta-test fails"
       ],
-      "mac_acceptance": "pending",
+      "mac_acceptance": {
+        "commit": "7b130c41a61e909d94b7bd85064653d6c0f9ab33",
+        "sdk_passed": 204,
+        "sdk_seconds": 0.583,
+        "tooling_passed": 8,
+        "documentation_passed": 36,
+        "compatibility_passed": 69,
+        "compatibility_subtests": 9
+      },
       "installed_wheel_seconds": 0.323,
       "wheel_sha256": "93ddcbaf7b92f2d0972915b1112f6b8065f88b1aacbb0ebb77a53d6f844b6ee4",
       "documentation_local": "33 passed; three archive-dependent checks await complete Mac checkout; active links checked against authoritative tree",
       "tooling": "8 passed in 0.926 s"
+    }
+  },
+  "open_cluster_kernel_routing": {
+    "base_commit": "9dd1909f36986f8c8aa7e2a309427f7ce6ef0ee4",
+    "scope": "Public/native/observed/saved source-centre lookup; no propagation or acquisition",
+    "sdk_pin": "9dd1909f36986f8c8aa7e2a309427f7ce6ef0ee4",
+    "sdk_implementation_changed": false,
+    "source_bytes_changed": false,
+    "snapshot_schema_changed": false,
+    "source_paths": [
+      "src/wenu/objects/open_clusters.py",
+      "src/wenu/catalogue_state.py",
+      "src/wenu/sky/native_snapshot.py"
+    ],
+    "metadata": "Frozen record mirrors row source/epoch label/scale/frame/origin and units, binding retained fields/masks through canonical derived ECSV plus existing source digest. Missing facts are not inferred.",
+    "routes": [
+      "position",
+      "native realize",
+      "maximal source table before existing observer transform/cache",
+      "restored snapshot facades"
+    ],
+    "failures": "No raw fallback; observed cache key includes returned coordinates and failed kernel queries cannot reuse old observed output.",
+    "test_gate": "kernel-open-cluster-routes",
+    "unchanged_sdk_evidence": "204 Mac tests accepted at 7b130c41; no repeat",
+    "excluded": "No motion model, source combination, curation/network, observer/projection/render or atlas-lifecycle change; no full production gate.",
+    "verification": {
+      "source_sha256": "5ae8dc78cac51fea2bccfd6a33412bc70807bd396c60768a79100a617b2a4f54",
+      "focused_gate_passed": 96,
+      "focused_gate_subtests": 9,
+      "focused_gate_seconds": 93.04,
+      "cluster_nested_conformance_checks": 8,
+      "documentation_local_passed": 33,
+      "documentation_archive_checks_pending_mac": 3,
+      "documentation_seconds": 1.18,
+      "tooling_passed": 8,
+      "tooling_seconds": 1.397,
+      "compatibility_proof": "Pre-existing native and static scalar-epoch provider descriptors/resource identities/catalogue records/full batches exactly match accepted source",
+      "fault_injection": "Direct-source centre bypass makes returned-vector regression fail",
+      "mac_acceptance": "pending"
     }
   }
 }

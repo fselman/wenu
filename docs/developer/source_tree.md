@@ -90,7 +90,7 @@ concrete Wenu classes.
 | [`solar_system_disk_geometry.py`](../../src/wenu/solar_system_disk_geometry.py) | Renderer-neutral physical spherical geometry for apparent body disks. |
 | [`star_designations.py`](../../src/wenu/star_designations.py) | Offline, immutable HIP-linked Wikidata candidates, separate from astrometry. |
 | [`stellar_research.py`](../../src/wenu/stellar_research.py) | Immutable, offline HIP index of designation research and accepted policy. |
-| [`catalogue_state.py`](../../src/wenu/catalogue_state.py) | Shared immutable direction-table provider, vector decoding and owned kernel scope; no catalogue decoding, observer or graphics. |
+| [`catalogue_state.py`](../../src/wenu/catalogue_state.py) | Shared immutable direction-table provider with optional aligned per-row epochs, vector decoding and owned kernel scope; no catalogue decoding, observer or graphics. |
 | [`stellar_state.py`](../../src/wenu/stellar_state.py) | Source-epoch native stellar facade over the shared table/provider boundary; no propagation or acquisition. |
 | [`stellar_catalogue.py`](../../src/wenu/stellar_catalogue.py) | Validated stellar ingestion, immutable metadata mirror and standard table envelope; source facts read from data documents. |
 | [`svg_document.py`](../../src/wenu/svg_document.py) | Deterministic semantic annotations for Matplotlib SVG output. |
@@ -292,7 +292,7 @@ concrete Wenu classes.
 | [`objects/galaxies.py`](../../src/wenu/objects/galaxies.py) | Source-bound static galaxy centre provider and shape metadata; chart/observer consumers use kernel centres before domain outline construction. |
 | [`objects/globular_clusters.py`](../../src/wenu/objects/globular_clusters.py) | Milky Way globular-cluster catalogue layer. |
 | [`objects/nonstellar.py`](../../src/wenu/objects/nonstellar.py) | Atomic ingestion, immutable source admission/gap record, angular normalization and metadata-owned centre/outline specifications. |
-| [`objects/open_clusters.py`](../../src/wenu/objects/open_clusters.py) | Vectorized cluster symbols, selected row epoch/source metadata and aggregate coordinate specification. |
+| [`objects/open_clusters.py`](../../src/wenu/objects/open_clusters.py) | Source-bound cluster lookup metadata/provider, public/native/observed kernel centres and vectorized symbols; motion fields remain preserved without propagation. |
 | [`objects/planetary_nebulae.py`](../../src/wenu/objects/planetary_nebulae.py) | Planetary-nebula catalogue represented by fixed chart symbols. |
 | [`objects/stars.py`](../../src/wenu/objects/stars.py) | Stellar selection, kernel-backed native positions/HIP lookup and spherical point geometry; legacy observed route. |
 | [`objects/supernova_remnants.py`](../../src/wenu/objects/supernova_remnants.py) | Green Galactic supernova-remnant catalogue layer. |

@@ -5,6 +5,10 @@ from __future__ import annotations
 from importlib.resources import as_file
 from pathlib import Path
 from copy import deepcopy
+from dataclasses import dataclass
+from hashlib import sha256
+from io import StringIO
+import json
 
 import numpy as np
 from astropy.table import Table
@@ -17,6 +21,99 @@ from wenu.resources import nonstellar_catalog_path
 from wenu.sky.observed_cache import catalogue_point_altaz
 
 
+@dataclass(frozen=True)
+class OpenClusterCatalogueMetadata:
+    """Source-bound immutable facts for lookup, not a motion solution.
+
+    Raw columns, units and masks remain in the table. Their canonical ECSV
+    digest binds all fields, including uninterpreted proper motions, to the
+    copied provider resource. Unqualified epoch labels are never made TT.
+    """
+
+    document_json: str
+    source_epochs: tuple
+
+    @classmethod
+    def from_table(cls, table, *, source=None, source_sha256=None):
+        from astropy.time import Time
+        from wenu_kernel.records import TimePoint
+
+        def text(value):
+            if value is None or np.ma.is_masked(value):
+                return None
+            if not isinstance(value, str):
+                raise ValueError("Open-cluster source declarations must be text.")
+            return value.strip() or None
+
+        def optional_epoch(value):
+            value = text(value)
+            return None if value is None or value.casefold() == 'unknown' else value
+
+        metadata = deepcopy(table.meta)
+        source_metadata = metadata.get('input_catalogue_metadata', {})
+        facts, epochs, parsed = [], [], {}
+        identifiers = table['wenu_id'] if 'wenu_id' in table.colnames else table['identifier']
+        for index, identifier in enumerate(identifiers):
+            source_name = text(table['RA_source'][index]) if 'RA_source' in table.colnames else None
+            profile = source_metadata.get(source_name + '_metadata', {}) if source_name else {}
+            def declaration(column, key):
+                return text(table[column][index]) if column in table.colnames else text(profile.get(key, metadata.get(key)))
+            label = optional_epoch(declaration('position_epoch', 'coordinate_epoch'))
+            scale = declaration('position_epoch_scale', 'coordinate_epoch_scale')
+            frame = declaration('coordinate_frame', 'coordinate_frame')
+            origin = declaration('coordinate_origin', 'coordinate_origin')
+            if frame is not None:
+                parts = frame.casefold().split('/', 1)
+                if parts[0].strip() != 'icrs' or (len(parts) == 2 and
+                        (not parts[1].split() or parts[1].split()[0] not in ('j2000', 'j2000.0'))):
+                    raise ValueError('Unsupported declared open-cluster frame; transform before ingestion.')
+            if origin not in (None, 'solar-system-barycenter'):
+                raise ValueError('Unsupported declared open-cluster origin.')
+            if scale is not None and (label is None or scale not in ('tai', 'tt', 'tdb', 'tcb')):
+                raise ValueError('Open-cluster epoch requires a declared label and supported time scale.')
+            epoch = None
+            if label is not None:
+                if not label.startswith(('J', 'B')):
+                    raise ValueError('Invalid declared open-cluster coordinate epoch.')
+                key = label, scale
+                if key not in parsed:
+                    try:
+                        date = Time(label, **({} if scale is None else {'scale': scale}))
+                        if not np.isfinite(date.jd):
+                            raise ValueError('Nonfinite epoch.')
+                        parsed[key] = (None if scale is None else
+                            TimePoint(float(date.jd1), float(date.jd2), scale))
+                    except (TypeError, ValueError) as error:
+                        raise ValueError('Invalid declared open-cluster coordinate epoch.') from error
+                epoch = parsed[key]
+            facts.append(dict(identifier=str(identifier), position_source=source_name,
+                epoch_label=label, epoch_scale=scale, frame=frame, origin=origin))
+            epochs.append(epoch)
+        for name in ('ra_deg', 'dec_deg', 'RA', 'Dec'):
+            if name in table.colnames and table[name].unit is not None and str(table[name].unit) != 'deg':
+                raise ValueError('Open-cluster directions must be normalized to declared degrees before ingestion.')
+        canonical = table.copy(copy_data=True)
+        canonical.meta = json.loads(json.dumps(metadata, sort_keys=True, allow_nan=False))
+        stream = StringIO()
+        canonical.write(stream, format='ascii.ecsv')
+        document = dict(schema='wenu-open-cluster-catalogue/1', source=None if source is None else str(source),
+            source_sha256=source_sha256, derived_table_sha256=sha256(stream.getvalue().encode()).hexdigest(),
+            source_metadata=metadata, rows=facts,
+            column_units={name: None if table[name].unit is None else str(table[name].unit) for name in table.colnames})
+        return cls(json.dumps(document, sort_keys=True, allow_nan=False), tuple(epochs))
+
+    def to_record(self):
+        return json.loads(self.document_json)
+
+    def coordinate_spec(self):
+        record = self.to_record()
+        labels = [row['epoch_label'] for row in record['rows']]
+        common = labels[0] if labels and all(label == labels[0] for label in labels) else None
+        meta = record['source_metadata']
+        return icrs_catalogue_spec(str(meta.get('database') or meta.get('catalog') or 'open-cluster catalogue'),
+            epoch=common, provenance=() if record['source'] is None else (record['source'],))
+
+
 class OpenClusters(AstronomicalObject):
     """Established and likely optically visible Galactic open clusters."""
 
@@ -27,24 +124,32 @@ class OpenClusters(AstronomicalObject):
         self.selected = None if selected is None else tuple(selected)
         self.catalog = None
         self.source = None
+        self._source_sha256 = None
         self._source_revision = 0
         self._observed_point_cache = {}
 
     def load(self, *, filename=None):
         """Load the packaged snapshot or an explicit curated open-cluster ECSV."""
+        def read(path):
+            digest = sha256(Path(path).read_bytes()).hexdigest()
+            table = Table.read(path)
+            if sha256(Path(path).read_bytes()).hexdigest() != digest:
+                raise ValueError('Open-cluster source changed during ingestion.')
+            return table, digest
         if filename is None:
             resource = nonstellar_catalog_path("open_clusters")
             with as_file(resource) as path:
                 source = resource
-                table = Table.read(path)
+                table, digest = read(path)
         else:
             source = Path(filename)
-            table = Table.read(source)
+            table, digest = read(source)
         table = self.normalize_catalogue(table)
         self._validate(table)
-        self.native_coordinate_spec(table)
+        OpenClusterCatalogueMetadata.from_table(table, source=source, source_sha256=digest)
         table = self.mark_amateur_exclusions(table)
         self.source = source
+        self._source_sha256 = digest
         self.catalog = table
         self._source_revision += 1
         self._observed_point_cache.clear()
@@ -72,13 +177,14 @@ class OpenClusters(AstronomicalObject):
 
     def position(self, instant=None) -> SphericalPoints:
         """Return selected native open-cluster catalogue centres in ICRS."""
-        del instant
         if self.catalog is None:
             raise RuntimeError(
                 "The catalogue has not been loaded. "
                 "Call open_clusters.load() first."
             )
         table = self._selected_table(None)
+        admitted = self.catalogue_metadata_for(table)
+        longitude, latitude = self._native_centres(table, instant, admitted=admitted)
         identifiers = np.asarray(table["identifier"], dtype=object)
         metadata = {
             "catalog": "openclust",
@@ -87,53 +193,87 @@ class OpenClusters(AstronomicalObject):
         }
         for name in table.colnames:
             if name not in ("identifier", "ra_deg", "dec_deg"):
-                metadata[name] = (np.ma.array(table[name], copy=True)
-                                  if name in ('position_epoch', 'RA_source') else np.asarray(table[name]))
+                metadata[name] = self._column_metadata(table[name])
+        metadata['catalogue_admission'] = admitted.to_record()
+        metadata['catalogue_position_model'] = 'catalogue_lookup'
         return SphericalPoints(
-            lon_deg=np.asarray(table["ra_deg"], dtype=float),
-            lat_deg=np.asarray(table["dec_deg"], dtype=float),
-            coordinate_spec=self.native_coordinate_spec(table),
+            lon_deg=longitude,
+            lat_deg=latitude,
+            coordinate_spec=admitted.coordinate_spec(),
             ids=np.asarray(table["wenu_id"], dtype=object) if "wenu_id" in table.colnames else identifiers,
             labels=identifiers,
             names=identifiers,
             metadata=metadata,
         )
 
-    def native_coordinate_spec(self, table=None):
-        """Mirror selected source epochs without inventing a common epoch.
+    def catalogue_metadata_for(self, table):
+        """Mirror preserved source facts without acquisition or epoch guessing."""
+        return OpenClusterCatalogueMetadata.from_table(table, source=self.source,
+            source_sha256=self._source_sha256)
 
-        ICRS/J2000 frame descriptions are not measurements of reference epoch.
-        Keep row-level declarations and unknowns intact; a single epoch exists
-        only when every selected row declares exactly the same value.
-        """
+    def native_coordinate_spec(self, table=None):
+        """Mirror row epoch labels; a frame/equinox is not a measurement date."""
+        return self.catalogue_metadata_for(self._selected_table(None) if table is None else table).coordinate_spec()
+
+    @staticmethod
+    def _column_metadata(column):
+        return (np.ma.array(column, copy=True) if np.ma.isMaskedArray(column)
+                else np.array(column, copy=True))
+
+    def _direction_provider(self, rows, epochs, admitted, scale):
+        from wenu.catalogue_state import CatalogueDirectionProvider
+        from wenu_kernel.records import ReferenceSpec, UnboundedCoverage
+        record = admitted.to_record()
+        facts = record['rows']
+        origin = ('solar-system-barycenter' if facts and all(
+            fact['origin'] == 'solar-system-barycenter' for fact in facts) else 'legacy-unverified-origin')
+        reference = ReferenceSpec('icrs', origin, 'catalogue-lookup', 'direction', 'rad',
+            'encoded source directions; unqualified epochs and missing frame/origin remain in source record')
+        meta = record['source_metadata']
+        return CatalogueDirectionProvider(rows,
+            namespace=str(meta.get('database') or meta.get('catalog') or meta.get('catalogue') or 'unidentified-open-clusters'),
+            catalogue_edition=str(meta.get('version') or meta.get('release') or meta.get('catalog_version') or 'unidentified-source-edition'),
+            source_epoch=None, source_epochs=epochs,
+            provenance=((str(self.source),) if self.source is not None else ()) + (
+                'Wenu source lookup compatibility; no propagation or physical epoch accuracy',),
+            reference=reference, capability='catalogue_lookup', semantic_type='open-cluster',
+            provider_id='wenu.catalogue-open-clusters', resource_id='derived-open-cluster-table',
+            model_id='unpropagated-open-cluster-lookup', coverage=UnboundedCoverage(scale),
+            source_identity=(admitted.document_json,))
+
+    def _native_centres(self, table, instant=None, *, admitted=None):
+        """Use returned kernel directions; no direct-source fallback on failure."""
         from astropy.time import Time
-        table = self._selected_table(None) if table is None else table
-        epochs = (list(table['position_epoch']) if 'position_epoch' in table.colnames
-                  else [table.meta.get('coordinate_epoch')] * len(table))
-        admitted = []
-        validated = set()
-        for value in epochs:
-            if value is None or np.ma.is_masked(value) or str(value).strip().lower() in ('', 'unknown'):
-                admitted.append(None)
-            else:
-                epoch = str(value).strip()
-                if not epoch.startswith(('J', 'B')):
-                    raise ValueError('Invalid declared open-cluster coordinate epoch.')
-                try:
-                    if epoch not in validated:
-                        time = Time(epoch)
-                        if not np.isfinite(time.jd):
-                            raise ValueError('Nonfinite epoch.')
-                        validated.add(epoch)
-                except (TypeError, ValueError) as error:
-                    raise ValueError('Invalid declared open-cluster coordinate epoch.') from error
-                admitted.append(epoch)
-        common = admitted[0] if admitted and all(value == admitted[0] for value in admitted) else None
-        return icrs_catalogue_spec(
-            str(table.meta.get('database') or table.meta.get('catalog') or 'open-cluster catalogue'),
-            epoch=common,
-            provenance=() if self.source is None else (str(self.source),),
-        )
+        from wenu.catalogue_state import catalogue_direction_states, catalogue_direction_angles
+        from wenu_kernel.records import TimePoint
+        admitted = self.catalogue_metadata_for(table) if admitted is None else admitted
+        if instant is None:
+            # Undated lookup bookkeeping, never a source measurement epoch.
+            time = TimePoint(0, 0, 'tt')
+        elif type(instant) is TimePoint:
+            time = instant
+        else:
+            requested = Time(instant).tt
+            time = TimePoint(float(requested.jd1), float(requested.jd2), 'tt')
+        longitude, latitude = (np.asarray(table[name], dtype=float).copy() for name in ('ra_deg', 'dec_deg'))
+        valid = (np.isfinite(longitude) & np.isfinite(latitude)
+                 & ~np.ma.getmaskarray(table['ra_deg']) & ~np.ma.getmaskarray(table['dec_deg']))
+        longitude[~valid], latitude[~valid] = np.nan, np.nan
+        identifiers = table['wenu_id'] if 'wenu_id' in table.colnames else table['identifier']
+        unique = {}
+        for index in np.flatnonzero(valid):
+            key = str(identifiers[index])
+            value = float(longitude[index]), float(latitude[index]), admitted.source_epochs[index]
+            if key in unique and unique[key] != value:
+                raise ValueError('Conflicting open-cluster identities in selected source rows.')
+            unique[key] = value
+        rows = tuple((key, lon, lat) for key, (lon, lat, _) in unique.items())
+        epochs = tuple(value[2] for value in unique.values())
+        states = catalogue_direction_states(self._direction_provider(rows, epochs, admitted, time.scale), time)
+        angles = dict(zip(unique, catalogue_direction_angles(states, rows), strict=True))
+        for index in np.flatnonzero(valid):
+            longitude[index], latitude[index] = angles[str(identifiers[index])]
+        return longitude, latitude
 
     @staticmethod
     def normalize_catalogue(table):
@@ -291,8 +431,9 @@ class OpenClusters(AstronomicalObject):
         }
         for name in table.colnames:
             if name not in ("identifier", "ra_deg", "dec_deg"):
-                metadata[name] = (np.ma.array(table[name], copy=True)
-                                  if name in ('position_epoch', 'RA_source') else np.asarray(table[name]))
+                metadata[name] = self._column_metadata(table[name])
+        metadata['catalogue_admission'] = self.catalogue_metadata_for(table).to_record()
+        metadata['catalogue_position_model'] = 'catalogue_lookup'
 
         if len(table) == 0:
             return SphericalPoints(
@@ -309,12 +450,20 @@ class OpenClusters(AstronomicalObject):
                 metadata=metadata,
             )
 
+        instant = getattr(resolved, 't_astropy', None)
+        if instant is None:
+            instant = getattr(resolved.altaz_frame, 'obstime', None)
+        longitude, latitude = self._native_centres(self.catalog, instant)
+        source = self.catalog.copy(copy_data=True)
+        source['ra_deg'], source['dec_deg'] = longitude, latitude
+        # Changed provider output must never reuse a previous observed frame.
+        state_digest = sha256(longitude.tobytes() + latitude.tobytes()).hexdigest()
         azimuth, altitude = catalogue_point_altaz(
             self._observed_point_cache,
             resolved,
-            source_table=self.catalog,
+            source_table=source,
             selected_table=table,
-            source_key=("open_clusters", self._source_revision),
+            source_key=("open_clusters", self._source_revision, state_digest),
         )
         return SphericalPoints(
             lon_deg=azimuth,

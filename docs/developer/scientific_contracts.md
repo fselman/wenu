@@ -7,8 +7,12 @@ proofs and source receipts; moving them does not revoke a compatibility promise.
 Open clusters retain mean Dias motions in the curated table, while Wenu's Hunt
 derivatives omit the published motion fields. Current cluster positions are not
 propagated. A source lookup must not claim zero motion, date accuracy or a
-fabricated measurement epoch. SDK `catalogue_lookup` is an additive candidate
-prerequisite, not migrated production routing. See the
+fabricated measurement epoch. Public/native cluster centres and observer
+transformation inputs now use the accepted SDK `catalogue_lookup` capability.
+Qualified source epochs are retained; unqualified labels remain text, with no
+invented scale or numerical epoch. Returned positions control geometry/cache
+identity, and failures propagate. Source fields/units/masks are bound into an
+immutable derived identity without adopting a cross-source motion solution. See the
 [source and motion audit](kernel_migration_audit_v1.md#open-cluster-motion-and-lookup-audit-2026-10-18).
 
 ## Coordinates, time and resources
