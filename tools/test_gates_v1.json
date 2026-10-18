@@ -68,6 +68,111 @@
         }
       ]
     },
+    "kernel-open-cluster-routes": {
+      "scope": "Source-bound catalogue_lookup for public/native/observed/saved open-cluster centres; shared row-epoch support and accepted dev8 production pin.",
+      "limits": "No source bytes, proper-motion or observer/projection/render algorithm, snapshot schema, atlas dispatch/lifetime or SDK implementation changes. Run owner and affected shared consumers plus installed SDK dependency; no full production, unchanged SDK, curation/network or 120-second serial/spawn atlas repeat.",
+      "extends": [
+        "kernel-catalogue-lookup-compatibility"
+      ],
+      "selections": [
+        {
+          "node": "tests/test_open_clusters.py::test_native_cluster_epoch_tracks_selected_rows_and_preserves_source_metadata",
+          "reason": "Mixed/unknown/selected/masked epochs and independent metadata copies must follow source rows."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_packaged_cluster_geometry_uses_existing_epoch_and_coordinate_source_columns",
+          "reason": "Actual accepted catalogue's coordinate-source and epoch lineage reaches native geometry."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_cluster_epoch_does_not_infer_measurement_date_from_frame_name",
+          "reason": "Frame/equinox labels must not invent measurement epochs."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_invalid_cluster_epoch_is_refused_before_replacing_active_catalogue",
+          "reason": "Admission refuses invalid epoch metadata without losing the previous table/source."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_packaged_open_cluster_catalogue",
+          "reason": "Preserve installed source selection and native/observed counts."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_requested_order_and_metadata_are_preserved",
+          "reason": "Selected IDs, order and observer-facing metadata remain aligned."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_open_cluster_coordinates_are_vectorized_and_finite",
+          "reason": "Observed geometry still uses its established coordinate service."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_empty_selection_returns_empty_points",
+          "reason": "Empty selected geometry retains its public contract."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_sequential_open_cluster_selections_share_observed_catalogue",
+          "reason": "Metadata additions must preserve observed-cache and selection reuse."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_publication_style_uses_symbol_library_and_optional_labels",
+          "reason": "Preserve symbol/label consumption of the changed metadata owner."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_selected_clusters_render_as_one_path_collection",
+          "reason": "Preserve vectorized rendering of selected clusters."
+        },
+        {
+          "node": "tests/test_position_providers.py::test_open_clusters_provide_selected_native_centres",
+          "reason": "Independent public position-provider contract still returns selected centres."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_cluster_epoch_lineage_and_selected_specs",
+          "reason": "Actual cold/saved rows, masks, metadata and selected epoch specifications agree."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_kernel_cluster_lookup_preserves_row_epochs_motion_masks_and_requested_order",
+          "reason": "Kernel lookup, epoch/source identity, immutable motion metadata and failure/cache boundaries."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_kernel_cluster_vectors_drive_public_native_and_observed_paths_after_warm_cache",
+          "reason": "Kernel lookup, epoch/source identity, immutable motion metadata and failure/cache boundaries."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_kernel_cluster_refusal_reaches_all_paths_even_after_observed_cache_fill",
+          "reason": "Kernel lookup, epoch/source identity, immutable motion metadata and failure/cache boundaries."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_kernel_cluster_resource_identity_binds_retained_motion_fields_units_and_metadata",
+          "reason": "Kernel lookup, epoch/source identity, immutable motion metadata and failure/cache boundaries."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_kernel_cluster_metadata_refuses_conflicts_before_replacing_active_catalogue",
+          "reason": "Kernel lookup, epoch/source identity, immutable motion metadata and failure/cache boundaries."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_kernel_cluster_provider_passes_shipped_conformance",
+          "reason": "Kernel lookup, epoch/source identity, immutable motion metadata and failure/cache boundaries."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_kernel_cluster_routes_preserve_native_pixels_and_saved_state",
+          "reason": "Actual cold/saved provider identity and source epochs; exact native cluster pixels against accepted raw-centre route."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources",
+          "reason": "Restored catalogue must use the new provider without acquisition or original files."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_legacy_coverage_stays_truthful",
+          "reason": "Source digest forwarding must retain all four older snapshot admission variants."
+        },
+        {
+          "node": "tests/test_wenu_chart_cli.py::test_atlas_sheet_command_admits_saved_sky_and_executes_shared_request_owner",
+          "reason": "Real saved-sky public atlas-sheet path consumes the cluster adapter."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override",
+          "reason": "Accepted dev8 dependency pin and installed wheel/sdist/editable cluster queries through separate SDK wheel."
+        }
+      ]
+    },
     "kernel-catalogue-lookup-compatibility": {
       "scope": "Existing stellar and static galaxy consumers against the additive catalogue_lookup SDK candidate.",
       "limits": "Supply candidate SDK on PYTHONPATH. No root dependency pin, provider routing, resource, snapshot, numerical, projection/render, atlas or collection changes. Independent SDK source/wheel and documentation/tooling gates remain separate; no full production repeat.",

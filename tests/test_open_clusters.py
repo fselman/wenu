@@ -26,6 +26,180 @@ class _HashableLayer:
     pass
 
 
+def _synthetic_kernel_clusters():
+    """Constructed mixed astrometry; never a captured catalogue solution."""
+    from astropy.table import Table, MaskedColumn
+    layer = OpenClusters(None)
+    layer.catalog = Table(dict(identifier=['first', 'second', 'unknown'], ra_deg=[12., 24., 36.],
+        dec_deg=[-20., -25., -30.], apparent_diameter_arcmin=[1., 2., 3.],
+        object_type=['Open Cluster'] * 3, position_epoch=['J2016.0', 'J2016.0', 'unknown'],
+        RA_source=['primary', 'alternate', 'legacy']),
+        meta=dict(database='constructed', version='fixture-1', coordinate_frame='ICRS',
+                  original={'meaning': 'source-specific motions; not adopted for propagation'}))
+    layer.catalog['position_epoch_scale'] = MaskedColumn(['tt', '', ''], mask=[False, True, True])
+    for name, values in (('proper_motion_ra_mas_per_year', [1., 2., 3.]),
+                         ('proper_motion_dec_mas_per_year', [4., 5., 6.])):
+        layer.catalog[name] = MaskedColumn(values, mask=[False, True, False], unit='mas/yr')
+    layer.catalog['ra_deg'].unit = layer.catalog['dec_deg'].unit = 'deg'
+    return layer
+
+
+def test_kernel_cluster_lookup_preserves_row_epochs_motion_masks_and_requested_order(monkeypatch):
+    from wenu_kernel import KernelSession
+    from wenu_kernel.records import TimePoint
+    layer = _synthetic_kernel_clusters()
+    before = layer.catalogue_metadata_for(layer.catalog)
+    seen = []
+    evaluate = KernelSession.evaluate
+    def capture(session, query):
+        result = evaluate(session, query)
+        seen.append((query, result))
+        return result
+    monkeypatch.setattr(KernelSession, 'evaluate', capture)
+    layer.selected = ['unknown', 'first', 'second', 'first']
+    time = TimePoint(1000000, .125, 'tt')
+    geometry = layer.position(time)
+    assert geometry.ids.tolist() == ['unknown', 'first', 'second', 'first']
+    np.testing.assert_array_equal(geometry.lon_deg, [36., 12., 24., 12.])
+    query, result = seen[-1]
+    assert query.times == (time,) and len(result.states) == 3
+    expected = Time('J2016.0', scale='tt')
+    assert [row.source_epoch for row in result.states] == [None,
+        TimePoint(float(expected.jd1), float(expected.jd2), 'tt'), None]
+    assert all(row.time == row.anchor_time == time for row in result.states)
+    assert query.reference.status == 'catalogue-lookup'
+    assert query.reference.origin_id == 'legacy-unverified-origin'
+    record = geometry.metadata['catalogue_admission']
+    assert [row['epoch_label'] for row in record['rows']] == [None, 'J2016.0', 'J2016.0', 'J2016.0']
+    assert record['column_units']['proper_motion_ra_mas_per_year'] == 'mas / yr'
+    assert geometry.metadata['proper_motion_ra_mas_per_year'].mask.tolist() == [False, False, True, False]
+    geometry.metadata['proper_motion_ra_mas_per_year'][1] = 999
+    record['source_metadata']['original']['meaning'] = 'mutated consumer copy'
+    assert layer.catalogue_metadata_for(layer.catalog) == before
+
+
+def test_kernel_cluster_vectors_drive_public_native_and_observed_paths_after_warm_cache(monkeypatch):
+    from dataclasses import replace
+    from wenu_kernel import KernelSession
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    from wenu.sky.observed_cache import icrs_point_arrays_to_altaz
+    layer = _synthetic_kernel_clusters()
+    obs = observer()
+    original = layer.spherical_geometry(obs, selected=['second'])
+    evaluate = KernelSession.evaluate
+    def shifted(session, query):
+        batch = evaluate(session, query)
+        return replace(batch, states=tuple(replace(row, vector=(0., 1., 0.)) for row in batch.states))
+    monkeypatch.setattr(KernelSession, 'evaluate', shifted)
+    direct = layer.position()
+    native = layer.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None, selected=['second'])
+    np.testing.assert_array_equal(direct.lon_deg, [90.] * 3)
+    np.testing.assert_array_equal(native.lon_deg, [90.])
+    observed = layer.spherical_geometry(obs, selected=['second'])
+    expected = icrs_point_arrays_to_altaz([90.], [0.], obs, provider='constructed')
+    np.testing.assert_allclose(observed.lon_deg, expected[0], rtol=0, atol=1e-12)
+    np.testing.assert_allclose(observed.lat_deg, expected[1], rtol=0, atol=1e-12)
+    assert not np.allclose(original.lon_deg, observed.lon_deg)
+    assert len(layer._observed_point_cache) == 2
+    np.testing.assert_array_equal(layer.catalog['ra_deg'], [12., 24., 36.])
+
+
+def test_kernel_cluster_refusal_reaches_all_paths_even_after_observed_cache_fill(monkeypatch):
+    import pytest
+    from wenu_kernel import KernelSession
+    from wenu_kernel.errors import UnsupportedCapability
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    layer = _synthetic_kernel_clusters()
+    obs = observer()
+    layer.spherical_geometry(obs)
+    def refuse(session, query):
+        raise UnsupportedCapability('constructed lookup refusal')
+    monkeypatch.setattr(KernelSession, 'evaluate', refuse)
+    for call in (lambda: layer.position(),
+                 lambda: layer.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None),
+                 lambda: layer.spherical_geometry(obs)):
+        with pytest.raises(UnsupportedCapability, match='constructed lookup refusal'):
+            call()
+
+
+def test_kernel_cluster_resource_identity_binds_retained_motion_fields_units_and_metadata():
+    from dataclasses import FrozenInstanceError
+    import pytest
+    layer = _synthetic_kernel_clusters()
+    def provider():
+        admitted = layer.catalogue_metadata_for(layer.catalog)
+        rows = tuple((str(row['identifier']), float(row['ra_deg']), float(row['dec_deg'])) for row in layer.catalog)
+        return layer._direction_provider(rows, admitted.source_epochs, admitted, 'tt')
+    first = provider()
+    descriptor = first.describe()
+    with pytest.raises(FrozenInstanceError):
+        layer.catalogue_metadata_for(layer.catalog).document_json = 'mutated'
+    layer.catalog['proper_motion_ra_mas_per_year'][0] = 99.
+    second = provider()
+    assert first.describe() == descriptor and second.describe() != descriptor
+    layer.catalog['proper_motion_ra_mas_per_year'].unit = 'arcsec/yr'
+    third = provider()
+    assert third.describe() != second.describe()
+    for item in (first, second, third):
+        item.close()
+
+
+def test_kernel_cluster_metadata_refuses_conflicts_before_replacing_active_catalogue(tmp_path):
+    import pytest
+    layer = _synthetic_kernel_clusters()
+    previous = layer.catalog
+    for name, value in (('coordinate_frame', 'fk4'), ('coordinate_origin', 'observer')):
+        table = previous.copy(copy_data=True)
+        table.meta[name] = value
+        path = tmp_path / (name + '.ecsv')
+        table.write(path)
+        with pytest.raises(ValueError, match='Unsupported declared open-cluster'):
+            layer.load(filename=path)
+        assert layer.catalog is previous
+    table = previous.copy(copy_data=True)
+    from astropy.table import MaskedColumn
+    table['position_epoch_scale'] = MaskedColumn(['invalid', '', ''], mask=[False, True, True])
+    path = tmp_path / 'invalid-scale.ecsv'
+    table.write(path)
+    with pytest.raises(ValueError, match='time scale'):
+        layer.load(filename=path)
+    assert layer.catalog is previous
+
+
+def test_kernel_cluster_provider_passes_shipped_conformance():
+    import io
+    import unittest
+    from dataclasses import replace
+    from wenu_kernel.conformance import ProviderActivity, ProviderCase, provider_suite
+    from wenu_kernel.records import AccuracyRequest, StateQuery, TimePoint
+    def factory():
+        layer = _synthetic_kernel_clusters()
+        admitted = layer.catalogue_metadata_for(layer.catalog)
+        rows = [[str(row['identifier']), float(row['ra_deg']), float(row['dec_deg'])] for row in layer.catalog]
+        provider = layer._direction_provider(rows, admitted.source_epochs, admitted, 'tt')
+        descriptor = provider.describe()
+        admission = descriptor.admissions[0]
+        query = StateQuery(admission.catalogue, admission.model, tuple(reversed(admission.objects)),
+            (TimePoint(1, 0, 'tt'), TimePoint(2, .125, 'tt')), admission.reference, AccuracyRequest())
+        calls = dict(evaluate=0, close=0)
+        evaluate, close = provider.evaluate, provider.close
+        def counted(query):
+            calls['evaluate'] += 1
+            return evaluate(query)
+        def closed():
+            calls['close'] += 1
+            close()
+        def mutate():
+            rows[0][1] = 99.
+            layer.catalog['ra_deg'][0] = 99.
+        provider.evaluate, provider.close = counted, closed
+        return ProviderCase(provider, query, replace(query, times=(TimePoint(3, 0, 'tt'),)),
+            lambda: ProviderActivity(calls['evaluate'], 0, calls['close']), mutate)
+    result = unittest.TextTestRunner(stream=io.StringIO()).run(provider_suite(factory, name='ClusterLookup'))
+    assert result.wasSuccessful(), result.errors + result.failures
+    assert result.testsRun == 8 and not result.skipped
+
+
 def test_native_cluster_epoch_tracks_selected_rows_and_preserves_source_metadata():
     from astropy.table import Table
     from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC

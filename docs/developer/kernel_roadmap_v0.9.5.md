@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 5, 2026-10-18. **Status:** K3 partial stellar and galaxy centre routing;
+**Plan revision:** 5, 2026-10-18. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -70,16 +70,20 @@ chart outline/label centres and inputs to existing observer transformations.
 The compatibility reference explicitly preserves unresolved source declarations;
 strict physical metadata closure remains open. The shared immutable-table owner
 is independent of concrete stellar/galaxy classes. Galaxy shape parameters and
-late geometry stay above the kernel. Open-cluster state evaluation and remaining
-K3 families/consumers have not yet migrated.
+late geometry stay above the kernel. Open-cluster source lookup now routes
+public/native positions and inputs to existing observer transformations through
+the same kernel/session interface, including saved skies. The immutable record
+binds retained astrometry, units, masks and per-row source/epoch declarations.
+Remaining K3 families/consumers have not yet migrated.
 
 The open-cluster motion audit found retained Dias motions but omitted published
 Hunt motions. Selected-centre and motion provenance must remain separate until
 an explicit source-combination policy is admitted. Incomplete epochs also require
-the dev8 candidate `catalogue_lookup` prerequisite; native/epoch requirements
+the accepted dev8 `catalogue_lookup` prerequisite; native/epoch requirements
 remain intact and clusters do not inherit the galaxy static model. Production
-still pins dev7. Next: accept that SDK subset, route source lookups, then ingest
-complete source-bound cluster astrometry before enabling propagation. See the
+now pins accepted main `9dd1909f`. Next: ingest complete source-bound cluster
+astrometry and resolve source conventions before enabling propagation. Other
+families/consumers and the final SDK freeze remain ahead. See the
 [motion audit](kernel_migration_audit_v1.md#open-cluster-motion-and-lookup-audit-2026-10-18).
 
 Keep every existing Wenu capability while placing all scientific state access
@@ -146,7 +150,7 @@ flowchart TB
     S -. "Knows concrete implementations" .-> L
     C -. "Temporarily mutates shared layers" .-> S
     L -. "Other state consumers" .-> D
-    L -->|"Native stars, line vertices and galaxy centres"| K["Kernel session"]
+    L -->|"Native stars, line vertices, galaxy and cluster centres"| K["Kernel session"]
     K --> N["Shared table adapters: stars and galaxies"]
     N --> D
     L -. "Combines state and observation" .-> O
@@ -509,7 +513,7 @@ consumer, source-native semantics, saved/worker compatibility and a separate
 installation gate. Accepted PR #248 extends the same adapter to public positions
 and native figure vertices, with opaque-interface, changed-vector and refusal
 tests plus saved/rendered consumer checks. Static galaxy centre routing now
-uses the accepted dev7 capability through shared immutable-table mechanics;
+uses the accepted static capability through shared immutable-table mechanics;
 its source gaps remain explicit compatibility semantics. Native label anchors and observed
 astrometry remain explicit ledger entries; neither slice adds a Gaia/motion model.
 Break chart/atlas private-helper cycles with a public sheet contract while

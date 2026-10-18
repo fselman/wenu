@@ -1131,3 +1131,46 @@ def test_kernel_galaxy_routes_preserve_accepted_atlas_pixels(native_snapshot_cas
     name = f'chart-{sheet.number:02d}.png'
     np.testing.assert_array_equal(imread(tmp_path/'legacy-galaxies'/name),
                                   imread(tmp_path/'kernel-galaxies'/name))
+
+
+def test_kernel_cluster_routes_preserve_native_pixels_and_saved_state(native_snapshot_case, tmp_path, monkeypatch):
+    from matplotlib.image import imread
+    from wenu.atlas_design import AtlasBandTiling
+    from wenu.charts.atlas_publication import AtlasChartPresentation
+    from wenu.charts.request_generation import AtlasSheetChartRequest, generate_chart_request
+    from wenu.objects.open_clusters import OpenClusters
+    from wenu.sky.native_snapshot import read_native_sky_snapshot
+    from wenu_kernel import KernelSession
+    import numpy as np
+    raw, destination, _, cold = native_snapshot_case
+    warm = read_native_sky_snapshot(destination).make_sky()
+    first, second = cold.open_clusters, warm.open_clusters
+    assert first.catalogue_metadata_for(first.catalog) == second.catalogue_metadata_for(second.catalog)
+    # Check actual saved source-bound provider use, not only restored source columns.
+    seen = []
+    evaluate = KernelSession.evaluate
+    def capture(session, query):
+        result = evaluate(session, query)
+        if query.reference.status == 'catalogue-lookup':
+            seen.append(result)
+        return result
+    monkeypatch.setattr(KernelSession, 'evaluate', capture)
+    np.testing.assert_array_equal(first.position().lon_deg, second.position().lon_deg)
+    assert len(seen) == 2 and seen[0].query == seen[1].query
+    assert all(row.source_epoch is None for result in seen for row in result.states)
+    atlas = AtlasBandTiling.from_json(raw.decode())
+    row = first.catalog[0]
+    identifier = atlas.primary_sheet_id(float(row['ra_deg']), float(row['dec_deg']))
+    sheet = next(sheet for sheet in atlas.geometry.sheets if sheet.sheet_id == identifier)
+    presentation = AtlasChartPresentation(layers=('open_clusters',), formats=('png', 'pdf', 'svg'), dpi=36)
+    def legacy(self, table, instant=None, **options):
+        return np.asarray(table['ra_deg'], dtype=float), np.asarray(table['dec_deg'], dtype=float)
+    with monkeypatch.context() as baseline:
+        baseline.setattr(OpenClusters, '_native_centres', legacy)
+        generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
+            presentation, tmp_path/'legacy-clusters'), sky=cold)
+    for name, sky in (('cold-clusters', cold), ('saved-clusters', warm)):
+        generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
+            presentation, tmp_path/name), sky=sky)
+        output = f'chart-{sheet.number:02d}.png'
+        np.testing.assert_array_equal(imread(tmp_path/'legacy-clusters'/output), imread(tmp_path/name/output))

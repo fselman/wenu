@@ -72,14 +72,18 @@ Requested epoch changes leave their native centres unchanged. The SDK now suppor
 epochs; native/epoch direction models retain their epoch requirement. Galaxy
 centre routing now uses this capability for public positions, chart outlines and
 observed centres. Missing source facts remain explicit legacy compatibility;
-source frame/origin closure remains open. The accepted dev7 SDK is now the
-production dependency pin. Shape parameters stay with the galaxy layer.
+source frame/origin closure remains open. Production now pins the accepted dev8 SDK at main `9dd1909f`.
+Shape parameters stay with the galaxy layer.
 The SDK [selection manifest](../../packages/wenu_kernel/test_selection_v1.json)
 keeps the independent core gate separate from existing Wenu tests. Current
-products consume the partial native stellar and static galaxy centre adapters.
-A dev8 candidate adds explicit catalogue lookup without requiring invented
-source epochs or a static physical model. Production remains on accepted dev7;
-open-cluster routing and motion propagation are still pending. The
+products consume native stellar, static galaxy and open-cluster lookup adapters.
+Open-cluster public/native centres and observer transformation inputs now use
+`catalogue_lookup`, preserving per-row source labels, qualified numerical epochs,
+motion fields/units/masks and immutable source-bound identity. Unqualified or
+unknown epochs are never assigned a time scale. Saved skies restore the existing
+manifest source digest and use the same adapter. Returned positions enter the
+observer cache key; failures propagate even after cache fill. Cluster motion
+propagation remains pending. The
 [cluster motion audit](kernel_migration_audit_v1.md#open-cluster-motion-and-lookup-audit-2026-10-18)
 records retained Dias motions, omitted Hunt astrometry and required provenance.
 Relativistic/civil-time adapters, common realization services, Cartesian reuse

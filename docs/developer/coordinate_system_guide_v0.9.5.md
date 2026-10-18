@@ -1210,7 +1210,16 @@ unknown; these are inventory observations, not constants in the implementation.
 A mixed/unknown/masked collection has `epoch=None`, while a uniformly known
 subset retains its source label. Snapshot v4 preserves this distinction; reading
 older bundles derives cluster geometry from retained rows. This changes no
-coordinate values, motion model or observed frame transform.
+motion model or observed frame transform. Public/native centres and observer
+inputs now consume kernel `catalogue_lookup` results. The immutable source-bound
+record preserves row epoch labels separately from qualified numerical epochs:
+only an explicitly declared supported time scale permits a `TimePoint`.
+Unqualified J/B labels remain source text; unknowns remain unknown. Motion fields,
+units, masks and source profiles are retained without combining Dias motions with
+Hunt centres or treating absent motions as zero. A deterministic undated lookup
+anchor is request bookkeeping, not a source epoch. Returned vectors supply all
+migrated geometry, including restored skies; projection and frame orientation
+remain separate services above this source lookup.
 
 `stellar_state.py` supplies source-native Hipparcos lookup states. Its explicit
 source epoch J1991.25(TT) is JD 2448349.0625, using the Julian-year definition
