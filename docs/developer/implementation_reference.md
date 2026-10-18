@@ -230,6 +230,23 @@ the narrower `native-stellar-routing` gate; it does not change installation.
 
 ## Coordinate and state entry points
 
+`NonStellar.load` stages reading, normalization and magnitude selection before
+publishing the new catalogue name/source/table/revision or clearing caches.
+Rejected angular units leave the prior loaded catalogue usable. The common
+normalizer copies the source table, preserving unconsumed fields, masks,
+descriptors and an independent `Table.meta`; canonical fields retain their
+established names. Declared RA/Dec/position-angle units convert to degrees;
+declared diameter/dimension units convert to arcminutes. Incompatible units
+raise before publication. Unitless inputs retain the legacy column encoding,
+explicitly a compatibility policy rather than recovered source metadata.
+Globular core/half-light radii likewise convert to arcminutes before computing
+the half-light diameter. Numerical extra columns retain their declared units
+and descriptions. Native positions and native/observed shape/symbol metadata
+include an independent `catalogue_metadata` mirror. Snapshot v4's existing
+table transport preserves retained fields/units/descriptions and table metadata;
+no new snapshot schema is needed. Full nonstellar frame/epoch admission and
+the other M6 snapshot epoch stamps remain open; no new kernel routing follows.
+
 `OpenClusters.native_coordinate_spec(table=None)` mirrors coordinate epochs from
 the selected table's `position_epoch` column, or an explicitly declared global
 `coordinate_epoch` when that column is absent. Only a uniformly known selection

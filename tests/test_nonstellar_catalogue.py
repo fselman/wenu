@@ -18,6 +18,112 @@ from wenu.objects.nonstellar import NonStellar
 from wenu.sky.celestial_sphere import CelestialSphere
 
 
+def test_normalization_converts_declared_angles_and_preserves_source_metadata():
+    """Synthetic source: declared units control encoding, not column spelling."""
+    from astropy.table import MaskedColumn
+    source = Table(meta={"release": "synthetic-v1", "provenance": {"license": "test"}})
+    source["name"] = ["A", "B"]
+    source["ra"] = [1., 2.] * u.hourangle
+    source["ra"].description = "Synthetic right ascension"
+    source["dec"] = [-.5, .25] * u.rad
+    source["major"] = [120., 180.] * u.arcsec
+    source["minor"] = MaskedColumn([60., 90.], mask=[False, True], unit=u.arcsec)
+    source["pa"] = [np.pi / 2, np.pi] * u.rad
+    source["extra_measurement"] = MaskedColumn([3., 4.], mask=[True, False], unit=u.kpc)
+    source["extra_measurement"].description = "Preserved unconsumed source field"
+    normalized = NonStellar(None)._normalize(source)
+    assert normalized["ra_deg"].tolist() == pytest.approx([15., 30.])
+    assert normalized["dec_deg"].tolist() == pytest.approx(np.rad2deg([-.5, .25]))
+    assert normalized["major_axis_arcmin"].tolist() == pytest.approx([2., 3.])
+    assert normalized["minor_axis_arcmin"][0] == pytest.approx(1.)
+    assert np.isnan(normalized["minor_axis_arcmin"][1])
+    assert normalized["position_angle_deg"].tolist() == pytest.approx([90., 180.])
+    for name, unit in (("ra_deg", u.deg), ("dec_deg", u.deg),
+                       ("major_axis_arcmin", u.arcmin), ("minor_axis_arcmin", u.arcmin),
+                       ("position_angle_deg", u.deg)):
+        assert normalized[name].unit == unit
+    assert normalized["ra_deg"].description == source["ra"].description
+    assert normalized.meta == source.meta
+    assert normalized["extra_measurement"].unit == u.kpc
+    assert normalized["extra_measurement"].description == source["extra_measurement"].description
+    assert normalized["extra_measurement"].mask.tolist() == [True, False]
+    normalized.meta["provenance"]["license"] = "changed"
+    normalized["extra_measurement"][1] = 99.
+    assert source.meta["provenance"]["license"] == "test"
+    assert source["extra_measurement"][1] == 4.
+    assert source["ra"].unit == u.hourangle
+    assert source["ra"].tolist() == [1., 2.]
+
+
+def test_declared_dimension_unit_is_converted_without_changing_legacy_parser():
+    source = Table({"ra": [10.], "dec": [20.], "dimension": ["120 x 60"]})
+    source["dimension"].unit = u.arcsec
+    normalized = NonStellar(None)._normalize(source)
+    assert normalized["major_axis_arcmin"][0] == 2.
+    assert normalized["minor_axis_arcmin"][0] == 1.
+    assert NonStellar.parse_dimension("120 x 60") == (120., 60.)
+
+
+@pytest.mark.parametrize("field", ["ra", "dec", "major", "minor", "pa", "dimension"])
+def test_incompatible_declared_unit_refuses_reload_without_publishing(field, catalogue, tmp_path):
+    layer = NonStellar(None)
+    layer.load(filename=catalogue)
+    old = (layer.catalog_name, layer.source, layer.source_catalog, layer.catalog, layer._source_revision)
+    layer._observed_point_cache["retained"] = object()
+    cached = dict(layer._observed_point_cache)
+    source = Table({"ra": [10.], "dec": [20.], "major": [2.], "minor": [1.], "pa": [0.]})
+    if field == "dimension":
+        source.remove_columns(["major", "minor"])
+        source["dimension"] = ["2 x 1"]
+    source[field].unit = u.m
+    path = tmp_path / "invalid.ecsv"
+    source.write(path)
+    with pytest.raises(u.UnitConversionError):
+        layer.load(catalog="invalid", filename=path)
+    assert layer.catalog_name == old[0] and layer.source == old[1]
+    assert layer.source_catalog is old[2] and layer.catalog is old[3]
+    assert layer._source_revision == old[4]
+    assert layer._observed_point_cache == cached
+
+
+def test_geometry_preserves_independent_catalogue_metadata(catalogue, observer):
+    source = Table.read(catalogue)
+    source.meta = {"source": {"edition": "synthetic-v1"}}
+    source.write(catalogue, overwrite=True)
+    layer = NonStellar(observer)
+    layer.load(filename=catalogue)
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    native = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    results = [layer.position(), layer.realize(native, None),
+               layer.realize(native, None, labels_only=True), layer.spherical_geometry(observer)]
+    for result in results:
+        assert result.metadata["catalogue_metadata"] == source.meta
+        result.metadata["catalogue_metadata"]["source"]["edition"] = "changed"
+    assert layer.catalog.meta == source.meta
+
+
+@pytest.mark.parametrize("family", ["messier", "caldwell", "galaxies", "globular_clusters",
+                                  "planetary_nebulae", "supernova_remnants"])
+def test_packaged_nonstellar_families_preserve_source_metadata_and_fields(family):
+    from wenu.objects.galaxies import Galaxies
+    from wenu.objects.globular_clusters import GlobularClusters
+    from wenu.objects.planetary_nebulae import PlanetaryNebulae
+    from wenu.objects.supernova_remnants import SupernovaRemnants
+    from wenu.resources import nonstellar_catalog_path
+    owners = {"galaxies": Galaxies, "globular_clusters": GlobularClusters,
+              "planetary_nebulae": PlanetaryNebulae, "supernova_remnants": SupernovaRemnants}
+    layer = owners[family](None) if family in owners else NonStellar(None, catalog=family)
+    source = Table.read(nonstellar_catalog_path(family))
+    layer.load()
+    assert layer.source_catalog.meta == source.meta
+    assert set(source.colnames) <= set(layer.source_catalog.colnames)
+    # Source metadata must remain independent even in the PN specialization.
+    source.meta["synthetic_probe"] = {"value": 1}
+    normalized = layer._normalize(source)
+    source.meta["synthetic_probe"]["value"] = 2
+    assert normalized.meta["synthetic_probe"]["value"] == 1
+
+
 @pytest.fixture
 def catalogue(tmp_path):
     table = Table()

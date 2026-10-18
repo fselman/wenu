@@ -102,7 +102,11 @@ explicit. The metadata audit records remaining nonstellar and resource defects.
 Open-cluster geometry now mirrors preserved row epochs/source lineage and source
 metadata; a selected uniformly known epoch is scalar, otherwise it is explicitly
 unknown at collection level. Snapshot v4 validates that header and restores older
-bundles from their row facts. Other nonstellar catalogue assumptions remain open.
+bundles from their row facts. Nonstellar ingestion now preserves source table
+metadata/unconsumed columns and converts declared angular units before atomic
+publication. Geometry mirrors catalogue metadata; the existing snapshot table
+transport retains it. Unitless inputs remain a legacy compatibility path;
+full frame/epoch admission and other nonstellar snapshot epoch stamps remain open.
 Observed Skyfield astrometry,
 native constellation-label anchors and other families remain unmigrated. See the
 [adapter contract](implementation_reference.md#native-stellar-kernel-adapter).

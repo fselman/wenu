@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from importlib.resources import as_file
 from pathlib import Path
 import re
@@ -12,7 +13,7 @@ import numpy as np
 from wenu.coordinates import PositionStatus
 from wenu.coordinates import icrs_catalogue_spec, observer_altaz_spec
 from astropy.coordinates import SkyCoord, concatenate
-from astropy.table import Table
+from astropy.table import Column, Table
 
 from wenu.geometry.spherical import SphericalCurves, SphericalPoints
 from wenu.objects.astronomical_object import AstronomicalObject
@@ -79,27 +80,30 @@ class NonStellar(AstronomicalObject):
 
     def load(self, *, catalog=None, filename=None):
         """Load and normalize a non-stellar catalogue."""
-        if catalog is not None:
-            self.catalog_name = str(catalog)
+        catalog_name = self.catalog_name if catalog is None else str(catalog)
 
         if filename is not None:
-            self.source = Path(filename)
-            table = Table.read(self.source)
+            source = Path(filename)
+            table = Table.read(source)
         else:
-            resource = nonstellar_catalog_path(self.catalog_name)
+            resource = nonstellar_catalog_path(catalog_name)
             with as_file(resource) as path:
-                self.source = resource
+                source = resource
                 table = Table.read(path)
 
-        self.source_catalog = self._normalize(table)
-        self.catalog = self.source_catalog
+        source_catalog = self._normalize(table)
+        active_catalog = source_catalog
         if self.magnitude_limit is not None:
-            magnitude = self.catalog["magnitude"]
+            magnitude = active_catalog["magnitude"]
             keep = (
                 ~np.isfinite(magnitude)
                 | (magnitude <= self.magnitude_limit)
             )
-            self.catalog = self.source_catalog[keep]
+            active_catalog = source_catalog[keep]
+        self.catalog_name = catalog_name
+        self.source = source
+        self.source_catalog = source_catalog
+        self.catalog = active_catalog
         self._source_revision += 1
         self._observed_point_cache.clear()
         self._observed_outline_cache.clear()
@@ -118,6 +122,7 @@ class NonStellar(AstronomicalObject):
         metadata = {
             "catalog": self.catalog_name,
             "coordinate_system": "icrs",
+            "catalogue_metadata": deepcopy(table.meta),
         }
         for name in table.colnames:
             if name not in ("identifier", "ra_deg", "dec_deg"):
@@ -206,8 +211,10 @@ class NonStellar(AstronomicalObject):
                 )
             return None
 
-        ra = self._float_values(column("ra", required=True))
-        dec = self._float_values(column("dec", required=True))
+        ra_source = column("ra", required=True)
+        dec_source = column("dec", required=True)
+        ra = self._float_values(ra_source, unit=u.deg)
+        dec = self._float_values(dec_source, unit=u.deg)
         count = len(source)
         identifier_source = column("identifier")
         identifiers = (
@@ -222,27 +229,30 @@ class NonStellar(AstronomicalObject):
         major_source = column("major")
         minor_source = column("minor")
         if major_source is not None:
-            major = self._float_values(major_source)
+            major = self._float_values(major_source, unit=u.arcmin)
             minor = (
                 major.copy()
                 if minor_source is None
-                else self._float_values(minor_source)
+                else self._float_values(minor_source, unit=u.arcmin)
             )
         else:
             dimensions = column("dimension")
             major = np.full(count, np.nan)
             minor = np.full(count, np.nan)
             if dimensions is not None:
+                factor = self._unit_factor(dimensions, u.arcmin)
                 for index, value in enumerate(dimensions):
                     major[index], minor[index] = (
                         self.parse_dimension(value)
                     )
+                major *= factor
+                minor *= factor
 
         angle_source = column("position_angle")
         position_angle = (
             np.full(count, np.nan)
             if angle_source is None
-            else self._float_values(angle_source)
+            else self._float_values(angle_source, unit=u.deg)
         )
 
         magnitude_source = column("magnitude")
@@ -267,7 +277,11 @@ class NonStellar(AstronomicalObject):
                 dtype=object,
             )
 
-        normalized = Table()
+        # Retain source fields, masks and column descriptors, including fields
+        # this consumer does not yet understand. Canonical columns below own
+        # their output encoding; no source epoch or frame is invented here.
+        normalized = source.copy(copy_data=True)
+        normalized.meta = deepcopy(source.meta)
         normalized["identifier"] = identifiers
         normalized["ra_deg"] = ra
         normalized["dec_deg"] = dec
@@ -278,10 +292,33 @@ class NonStellar(AstronomicalObject):
         normalized["object_type"] = text_values("object_type")
         normalized["common_name"] = text_values("common_name")
         normalized["constellation"] = text_values("constellation")
+        for name, original, unit in (
+            ("ra_deg", ra_source, u.deg),
+            ("dec_deg", dec_source, u.deg),
+            ("major_axis_arcmin", major_source, u.arcmin),
+            ("minor_axis_arcmin", minor_source if minor_source is not None else major_source, u.arcmin),
+            ("position_angle_deg", angle_source, u.deg),
+        ):
+            normalized[name] = Column(
+                normalized[name], unit=unit,
+                description=None if original is None else original.description,
+                meta={} if original is None else deepcopy(original.meta),
+            )
         return normalized
 
     @staticmethod
-    def _float_values(values):
+    def _unit_factor(values, unit):
+        """Convert explicit source units; retain the legacy unitless encoding.
+
+        Unitless inputs still use this loader's historical column contract.
+        This compatibility policy is not evidence of source unit metadata.
+        """
+        source_unit = getattr(values, "unit", None)
+        return 1.0 if source_unit is None else u.Unit(source_unit).to(unit)
+
+    @staticmethod
+    def _float_values(values, *, unit=None):
+        factor = 1.0 if unit is None else NonStellar._unit_factor(values, unit)
         result = np.full(len(values), np.nan, dtype=float)
         for index, value in enumerate(values):
             if np.ma.is_masked(value):
@@ -290,7 +327,10 @@ class NonStellar(AstronomicalObject):
                 result[index] = float(value)
             except (TypeError, ValueError):
                 continue
-        return result
+        return Column(result * factor,
+                      unit=getattr(values, "unit", None) if unit is None else unit,
+                      description=getattr(values, "description", None),
+                      meta=deepcopy(getattr(values, "meta", {})))
 
     @staticmethod
     def parse_dimension(value):
@@ -487,6 +527,7 @@ class NonStellar(AstronomicalObject):
         )
         return {
             "catalog": self.catalog_name,
+            "catalogue_metadata": deepcopy(table.meta),
             "coordinate_system": "altaz",
             "semantic_entity_keys": semantic_keys,
             "semantic_entity_display_names": identifiers,
