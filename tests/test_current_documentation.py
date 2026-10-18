@@ -159,6 +159,16 @@ def test_source_map_covers_exactly_current_production_modules():
     import tomllib
     scripts = tomllib.loads(read(ROOT / "pyproject.toml"))["project"]["scripts"]
     assert audit["entry_points"] == scripts
+    projects = audit.get("independent_projects", [])
+    assert {r["path"] for r in projects} == {
+        str(p.parent.relative_to(ROOT)) for p in (ROOT / "packages").glob("*/pyproject.toml")}
+    for project in projects:
+        base = ROOT / project["path"]
+        for folder, field in (("src", "source_paths"), ("tests", "test_paths")):
+            assert set(project[field]) == {
+                str(p.relative_to(ROOT)) for p in (base / folder).rglob("*.py")}
+        assert (ROOT / project["selection_manifest"]).is_file()
+    assert tomllib.loads(read(ROOT / "pyproject.toml"))["tool"]["pytest"]["ini_options"]["testpaths"] == ["tests"]
     for record in audit["preserved_test_editions"]:
         assert git_blob((ROOT / record["archive_path"]).read_bytes()) == record["original_git_blob_sha"]
 

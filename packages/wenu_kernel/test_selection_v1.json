@@ -1,0 +1,43 @@
+{
+  "schema": "wenu-test-selection/1",
+  "owner": "wenu_kernel",
+  "slice": "K2 foundation: direction records, registry and session admission",
+  "accepted_base": "6e83705aa9e779ddd33fa823a67438d20b9d2463",
+  "runtime_dependencies": [],
+  "required": [
+    "python -m unittest discover -s packages/wenu_kernel/tests -v",
+    "isolated built-wheel install and same unittest gate without root Wenu installed",
+    "affected existing documentation/inventory pytest gate"
+  ],
+  "protected_faults": [
+    "loss of small JD fraction or implicit time-scale relabelling",
+    "mutable aliases in published values",
+    "unadmitted model/reference/object/resource or wrong ordered batch",
+    "cache publication after failed evaluation or reuse against a tighter bound",
+    "advancing one provider invokes another",
+    "live session loses its provider or failed opening leaks leases",
+    "owned/borrowed lifetime confusion or hidden backend/cleanup failure",
+    "SDK import or test collection requires Wenu, graphics or scientific backends"
+  ],
+  "legacy_tests_moved_or_removed": [],
+  "affected_consumers": [
+    "synthetic test providers only"
+  ],
+  "excluded": {
+    "legacy scientific and graphical suites": "No existing src/wenu code, catalogue, resource, backend or runtime dependency changes; no current consumer imports the new SDK.",
+    "unrelated providers": "No real provider is part of this slice; neither SDK nor test fixtures import one.",
+    "release integration": "No product routing or installed combination changes; isolated-wheel evidence is required before this foundation can be accepted. Final integration remains required for K3 production adapters."
+  },
+  "collection_change": "Root pytest testpaths is explicitly tests; new independent projects are not silently added to the legacy full-suite command.",
+  "verification": {
+    "source_digest_algorithm": "SHA-256 over sorted repository path + NUL + exact file bytes + NUL for every Python file in the named directory",
+    "source_sha256": "bed11ce39b8423fbf6d25d7e5dcd66ea57c1c276f6cbd7cf29cd939163721e5b",
+    "tests_sha256": "8978e9f5099427b31578784d56afd64d23d3d165e511054e73015df0d5ece788",
+    "source_unittest_cases": 32,
+    "installed_wheel_unittest_cases": 32,
+    "wheel_sha256": "e645e8112302894aa6e25a61c6d318ce342a082779c49d965067299257f27e9a",
+    "isolated_environment": "fresh venv, no Wenu/numpy/astropy/matplotlib/skyfield/sgp4/pandas/spiceypy installed",
+    "fault_injection": "removing row-order validation makes shared provider gate fail; original restored and 32 tests pass",
+    "mac_documentation_gate": "pending for this candidate"
+  }
+}

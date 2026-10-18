@@ -22,14 +22,23 @@ PR #234 is integrated. Its tree is identical to `ea8dc505`, which passed all
 
 ## Forward work
 
+K1 is accepted and merged in PR #236 at `6e83705a`; its amended Mac
+documentation gate passed 36 tests in 2.25 s. The first K2 candidate is a
+separate [kernel project](../../packages/wenu_kernel/README.md): standard-library
+direction records, registry and synchronous sessions with synthetic providers.
+Its [selection manifest](../../packages/wenu_kernel/test_selection_v1.json)
+keeps the independent core gate separate from existing Wenu tests. Current
+products do not consume it yet. K2 reuse/Cartesian/realization and K3 routing
+remain pending; this is not a completed kernel or frozen SDK.
+
 [Roadmap to v0.9.5: kernel and loadable packages](kernel_roadmap_v0.9.5.md)
 is the single active forward roadmap. Both architecture diagrams are in that
 document and in the [diagram index](diagrams/README.md).
 It starts with Gaia DR3, prepares a DR4 adapter, requires every existing
 functionality to use the kernel, and then extracts one package at a time.
 This is a plan, not a claim that the kernel or Gaia integration exists.
-The [K1 contract](kernel_contract_k1.md) is the current review candidate;
-its acceptance precedes the bounded K2 synthetic-provider implementation.
+The [K1 contract](kernel_contract_k1.md) is the accepted implementation target;
+K5 remains the final usable SDK freeze after all consumers migrate.
 
 The `v0.9.5` name is provisional. The old document with this version in its
 title described the completed 49B/49C coordinate work, not this new kernel.

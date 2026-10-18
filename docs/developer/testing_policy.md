@@ -5,6 +5,16 @@ are release acceptance requirements, not a claim that current Wenu satisfies the
 
 ## Current development
 
+The new `packages/wenu_kernel` project has an explicit standard-library owner
+gate, shared synthetic-provider checks and an installed-wheel isolation gate;
+see its [selection manifest](../../packages/wenu_kernel/test_selection_v1.json).
+Root `pytest` defaults to the existing `tests` directory, so adding an
+independent project does not silently enlarge the legacy full suite. Explicit
+test paths remain supported. No legacy numerical/visual test is removed.
+The K2 foundation changes no existing runtime dependency or product import;
+its review gate is the isolated core plus affected documentation/inventory.
+This scoped exception does not waive full integration for K3 production routing.
+
 Run the smallest owner suite plus directly affected contract/seam tests.
 Use `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1`; add no ambient plugin dependency.
 During iteration, do not run unrelated scientific, projection or rendering
