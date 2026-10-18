@@ -90,6 +90,9 @@ class GateTests(unittest.TestCase):
         self.assertIn("tests/test_moon_disk_sequence.py", broader)
         self.assertIn("tests/test_reference_policy.py", broader)
         self.assertNotIn("tests/test_satellite_crossing_oracle.py", broader)
+        shared = set(gate.selected_tests(gate.ROOT, "request-shared-lifecycle"))
+        self.assertIn("tests/test_atlas_cli.py::test_atlas_sheet_default_route_uses_wenu_chart", shared)
+        self.assertIn("tests/test_reusable_canonical_sphere.py::test_atlas_chart_batch_cold_saved_and_spawned_pages_match", shared)
 
     def test_repository_gates_resolve_without_product_imports(self):
         for name in gate.load_gates(gate.ROOT):

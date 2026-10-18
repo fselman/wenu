@@ -51,13 +51,17 @@ filters are accepted by the runner.
 | `documentation` | Guides, inventory, executable documentation contracts | Current documentation, user-guide and fixed-sky documentation owners |
 | `request-lifecycle` | Ownership/rollback and optional journal hooks preserving standalone behavior | Build/close/failure/retry; resource binding; standalone grids/horizon/tracks/disks; drawing and CLI; observer-time and fixed-sky callers |
 | `request-configuration` | Above plus configuration/component/cadence behavior using unchanged science services | Extends lifecycle with Moon/Venus/Mercury disk/sequence and reference-policy owners |
+| `request-shared-lifecycle` | Scope unification reaching native atlas lifetime/default dispatch | Extends lifecycle with explicit/default command paths, real serial/spawn exports and existing cold/saved/spawned output equivalence |
 
 The names are reviewed scopes, not automatic changed-file classifications.
 A numerical, renderer, atlas, shared-schema or new-routing change cannot be
 approved just because its file also appears in one of these gates. Review and
 extend the selection and retain independent owner oracles as necessary.
-The new selections await normal Mac collection/execution; no timing target or
-independent product installation is claimed. Their supporting tooling is
+The original request-configuration selection passed 286 tests in 91.56 s on
+Fernando's Mac; 36 documentation tests passed in 2.51 s and eight tooling tests
+passed in 0.083 s at `04c6ae21` (identical merge `7e1b1f9b`). The current shared-
+lifecycle changes and extending gate await normal Mac execution. No independent
+product installation is claimed. Their supporting tooling is
 independently tested with the standard library:
 
 ```bash
@@ -68,10 +72,14 @@ python tools/run_test_gate.py request-configuration --run
 
 For routine lifecycle work, choose `request-lifecycle` instead of
 `request-configuration`; do not run both, since the latter includes the former.
-Run documentation when it changes. The current tooling/manifest milestone uses
-the broader gate once to validate all newly published selectors, without a full
-production run. Future unchanged manifests do not require revalidating every
-gate. `--collect` is available for diagnosis, not an extra mandatory pass before
+Run documentation when it changes. The current shared-lifecycle milestone uses
+`request-shared-lifecycle` once,
+which includes `request-lifecycle`. Configuration algorithms are unchanged, so
+the additional disk/sequence/reference-policy owner gate is not repeated. The
+change reaches atlas execution, so retain the
+existing cold/saved/spawned comparison despite its previous approximately
+126-second cost. No full production repeat or separate narrower gate is needed.
+Future unchanged manifests do not require revalidating every gate. `--collect` is available for diagnosis, not an extra mandatory pass before
 `--run`.
 
 ## Request consumers and retained evidence
@@ -84,21 +92,24 @@ code passed all 3,415 tests. The inventory retains exact revisions and times.
 | Actual route | Implication for selection |
 |---|---|
 | `generate_chart_request` → `build_chart_request` → `_prepare_with_sphere` | Journal/rollback owner tests plus real observer-time exports and report clipping |
-| Ordinary CLI → `draw_chart_view_request` → helpers → export | Separate route without the journal; preserve standalone helper semantics and direct drawing/CLI seams |
+| Ordinary CLI → `draw_chart_view_request` → helpers → export | Separate geometry route now using the common scope; retain direct drawing/CLI, partial setup/export failure and repeated-use restoration seams |
 | Observer-time sequence → ordinary generator | Keep real two-frame export and resume, beyond mocked delegation |
 | Fixed-sky reference/reuse → ordinary generator; complete-render baseline → observer-time pipeline | Keep both delegation/observer-lifetime routes and baseline planning; these delegation tests mock the generator, so they do not establish new full fixed-scene numerical equivalence |
-| Atlas CLI → `wenu_chart atlas-sheet` → native `AtlasSheetChartRequest` branch | Preserves exact sheet geometry/paper and observer-free native sky; branches before ordinary journal/configuration. Keep public dispatch guard; full saved/spawned-page comparisons belong to atlas/snapshot/export changes or release composition |
+| Atlas CLI → `wenu_chart atlas-sheet` → native `AtlasSheetChartRequest` branch | Preserves exact sheet geometry/paper and observer-free native sky; enters common lifecycle without ordinary configuration. Native lifetime/dispatch changes select real serial/spawn and cold/saved output equivalence |
 
 Unchanged satellite crossing/acceleration/radiometry physics, catalogue curation
 and wheel/sdist packaging, native snapshot persistence and kernel internals do
 not belong to a compatible request-lifecycle gate. Their science and installed
 product tests remain in their own owners and in release integration. A changed
 resource, algorithm or interface brings the corresponding owner back into scope.
-The Python `create_atlas()` API retains a direct generator fallback when no
-chart command is supplied. The installed atlas CLI injects `wenu.cli.chart.main`
-for serial/spawn workers. Sharing the command is implemented; a common request
-lifecycle across ordinary drawing, ordinary generation and native sheets remains
-a K3 obligation. Product-specific geometry does not justify duplicated lifecycle.
+`open_chart_request_scope` owns entry, minor-body registration/resolver binding,
+configuration journaling and close/failure rollback for all three routes. Its
+returned `ChartRequestBuild` exposes `remember_attribute` to configuration owners;
+those owners do not access the private journal. Native sheets omit ordinary
+configuration and remain observer-free. Atlas serial/API/worker execution uses
+an injected chart command or `wenu_chart atlas-sheet` by default; the direct
+generator fallback is removed. Numerical realization, projection and native
+sheet geometry are not unified into one model by this lifecycle change.
 No existing tests are moved, deleted, weakened or re-marked by this selection.
 The coordinate guide remains current; test orchestration changes no astronomy.
 

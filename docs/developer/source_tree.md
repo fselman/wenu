@@ -41,7 +41,8 @@ paths and the explicit selection manifest are tracked in
 [the migration inventory](kernel_migration_inventory_v1.json).
 It is not imported by the existing product package.
 K3 request isolation remains inside the existing owners:
-`charts/request_generation.py` owns the synchronous request-state journal,
+`charts/request_generation.py` owns `open_chart_request_scope`, shared by
+ordinary generation, direct drawing and native atlas sheets, plus the journal,
 temporary layer/registry restoration and build lifetime. Horizon, disk and
 track configuration owners remember their attribute writes through that journal;
 `minor_body_resources.py` owns atomic resolver binding/restoration. No new

@@ -235,6 +235,22 @@ request; it is not silently treated as restored. This synchronous lease is not a
 thread/process concurrency contract. Observer/resource ownership remains
 separate, including its explicit cleanup failure semantics.
 
+`open_chart_request_scope(sky, *, request=None, observer=None)` is the common
+entry used by ordinary generation, view/drawing and native atlas sheets. It
+returns a `ChartRequestBuild` with `prepared=None` until ordinary preparation
+attaches a chart. Accessing `chart` before that raises `RuntimeError`. Use its
+context manager for drawing/native execution; ordinary generation transfers the
+scope to the returned prepared build. Configuration helpers receive the scope
+as `state` and call `remember_attribute(owner, name)` before writing.
+
+The opener never creates or owns an observer. A completed ordinary build adopts
+its newly created observer only after preparation succeeds; failure stays under
+the original observer creator. Supplied drawing/native resources remain borrowed.
+Setup, export and close use the same restoration and lease-retention logic;
+cleanup failures preserve the original failure as context. The native route
+omits `request` and does not configure observer-dependent layers. Every atlas
+producer route uses its injected command or defaults to `wenu_chart atlas-sheet`.
+
 No state query is routed through the kernel by this lifecycle work. The
 coordinate guide remains current; no astronomical algorithm, catalogue, frame,
 time or rendering style changes.

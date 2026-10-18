@@ -39,7 +39,11 @@ independent installed-consumer evidence. Minor-body request-resource rollback
 is accepted through PR #243, main `f5a0abf3` (3,400 Mac integration tests passed).
 PR #244, main `d36b1786`, scopes ordinary-request layer configuration to one
 active build: original layer order/identities, horizon/disk aliases and point
-label flags are restored on close/failure. No existing product is routed
+label flags are restored on close/failure. The current shared-lifecycle candidate
+extends this owner to direct view/drawing
+and native atlas sheets, and makes `wenu_chart atlas-sheet` the default producer
+route even without command injection. Its extending test gate includes real
+serial/spawn and cold/saved atlas equivalence. No existing product is routed
 through the SDK yet.
 Its [selection manifest](../../packages/wenu_kernel/test_selection_v1.json)
 keeps the independent core gate separate from existing Wenu tests. Current

@@ -105,10 +105,13 @@ than reimplemented in a new kernel.
    calls retain their persistent semantics. Catalogues/resources/scientific
    caches are not cloned or rewound. This is isolation of canonical request
    configuration, not thread safety, arbitrary caller mutations or kernel routing.
-   `charts/drawing.py::draw_chart_view_request` is a separate ordinary route
-   that calls configuration helpers directly without this journal. The installed
-   ordinary CLI uses that route. Both routes must enter the K3 consumer ledger;
-   request-generation rollback is not a universal drawing-lifecycle fix.
+   `open_chart_request_scope()` now gives ordinary generation, direct
+   `charts/drawing.py` execution and native atlas sheets the same entry/cleanup
+   owner. The view path preserves its prepared geometry and helper order while
+   journaling writes through `ChartRequestBuild.remember_attribute`. Native
+   sheets acquire the lease without an observer or ordinary configuration.
+   Atlas API/worker execution defaults to `wenu_chart atlas-sheet`, removing
+   the direct-generator fallback. This candidate still adds no kernel routing.
 5. `charts/atlas_publication.py` calls request generation, while request
    generation imports atlas-specific private furniture/report helpers.
    This creates a cycle across the intended chart/atlas barrier.

@@ -58,7 +58,7 @@ def test_ordinary_drawing_uses_packaged_product_metadata(monkeypatch, tmp_path):
     )
     monkeypatch.setattr(
         "wenu.charts.drawing.configure_chart_request_horizon",
-        lambda *args: None,
+        lambda *args, **kwargs: None,
     )
     monkeypatch.setattr(
         "wenu.charts.drawing.export_prepared_chart",
@@ -96,7 +96,7 @@ def test_explicit_drawing_product_metadata_retains_precedence(
     )
     monkeypatch.setattr(
         "wenu.charts.drawing.configure_chart_request_horizon",
-        lambda *args: None,
+        lambda *args, **kwargs: None,
     )
     monkeypatch.setattr(
         "wenu.charts.drawing.export_prepared_chart",

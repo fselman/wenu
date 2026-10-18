@@ -1218,3 +1218,115 @@ def test_failed_resource_close_keeps_request_lease_until_build_close_retry(monke
     resource.fail = False
     build.close()
     _assert_configured_sky_restored(fixture)
+
+
+
+@pytest.mark.parametrize("fail_render", [False, True])
+def test_native_atlas_sheet_shares_scope_and_restores_after_render(monkeypatch, fail_render):
+    """Synthetic native renderer checks lifecycle, not sheet geometry or science."""
+    from wenu import CelestialSphere
+    from wenu.charts import request_generation as generation
+    from wenu.sky.sky_layer import SkyLayer
+
+    class Layer(SkyLayer):
+        def spherical_geometry(self, observer):
+            raise AssertionError("scope test must not realize geometry")
+
+    class NativeRequest:
+        pass
+
+    sky = CelestialSphere(None)
+    original = sky.add(Layer())
+    native = NativeRequest()
+    result = object()
+    error = RuntimeError("synthetic native render failure")
+    monkeypatch.setattr(generation, "AtlasSheetChartRequest", NativeRequest)
+
+    def render(request, actual_sky):
+        assert request is native and actual_sky is sky
+        assert sky.observer is None
+        assert sky._active_chart_request_state is not None
+        with pytest.raises(RuntimeError, match="already active"):
+            generation.open_chart_request_scope(sky)
+        sky.add(Layer())
+        if fail_render:
+            raise error
+        return result
+
+    monkeypatch.setattr(generation, "_generate_atlas_sheet_request", render)
+    monkeypatch.setattr(generation, "Observer", lambda **kwargs: (_ for _ in ()).throw(
+        AssertionError("native sheets must remain observer-free")))
+    if fail_render:
+        with pytest.raises(RuntimeError) as caught:
+            generation.generate_chart_request(native, sky=sky)
+        assert caught.value is error
+    else:
+        assert generation.generate_chart_request(native, sky=sky) is result
+    assert len(sky.layers) == 1 and sky.layers[0] is original
+    assert sky.observer is None
+    assert not hasattr(sky, "_active_chart_request_state")
+
+
+def test_native_atlas_sheet_rejects_an_active_scope_before_render(monkeypatch):
+    from wenu import CelestialSphere
+    from wenu.charts import request_generation as generation
+
+    class NativeRequest:
+        pass
+
+    sky = CelestialSphere(None)
+    calls = []
+    monkeypatch.setattr(generation, "AtlasSheetChartRequest", NativeRequest)
+    monkeypatch.setattr(generation, "_generate_atlas_sheet_request", lambda *args: calls.append(args))
+    with generation.open_chart_request_scope(sky):
+        with pytest.raises(RuntimeError, match="already active"):
+            generation.generate_chart_request(NativeRequest(), sky=sky)
+        assert calls == []
+    assert not hasattr(sky, "_active_chart_request_state")
+
+
+def test_shared_scope_keeps_cleanup_failures_and_original_error_in_one_chain():
+    from wenu.charts.request_generation import open_chart_request_scope
+
+    original = RuntimeError("synthetic render failure")
+    binding_error = RuntimeError("synthetic resolver restore failure")
+    resource_error = RuntimeError("synthetic resource close failure")
+
+    class Point:
+        fail = True
+
+        @property
+        def source_resolver(self):
+            return None
+
+        @source_resolver.setter
+        def source_resolver(self, value):
+            if self.fail:
+                raise binding_error
+
+    class Resource:
+        fail = True
+
+        def close(self):
+            if self.fail:
+                raise resource_error
+
+    sky = SimpleNamespace(layers=[])
+    point, resource = Point(), Resource()
+    scope = open_chart_request_scope(sky)
+    scope.prior_source_resolvers = ((point, None),)
+    scope.minor_body_session = resource
+    with pytest.raises(RuntimeError) as caught:
+        with scope:
+            raise original
+    chain, current = [], caught.value
+    while current is not None:
+        assert all(current is not previous for previous in chain)
+        chain.append(current)
+        current = current.__context__
+    assert chain == [resource_error, binding_error, original]
+    with pytest.raises(RuntimeError, match="already active"):
+        open_chart_request_scope(sky)
+    point.fail = resource.fail = False
+    scope.close()
+    assert not hasattr(sky, "_active_chart_request_state")
