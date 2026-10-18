@@ -12,6 +12,13 @@ owns verified curated-resource packaging and is not a science provider.
 
 ## (root services)
 
+The independent [kernel project](../../packages/wenu_kernel/README.md) lives
+outside `src/wenu`. Its `records.py`, `errors.py`, `providers.py`, `kernel.py`
+and small `__init__.py` own candidate SDK values, errors, protocol and session
+lifecycle respectively. Its source/test paths and explicit selection manifest
+are tracked in [the migration inventory](kernel_migration_inventory_v1.json).
+It is not imported by the existing product package.
+
 | Module | Present responsibility |
 |---|---|
 | [`__init__.py`](../../src/wenu/__init__.py) | Wenu: publication-quality astronomical chart generation. |

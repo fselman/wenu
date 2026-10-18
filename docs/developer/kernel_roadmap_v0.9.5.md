@@ -15,6 +15,13 @@ immutable commit and the [cleanup ledger](documentation_cleanup_v1.json).
 
 ## Release objective
 
+**Current implementation status:** K1 is accepted (PR #236, `6e83705a`).
+The first K2 candidate implements only direction records, registration/session
+admission and exact-query full-model evaluation in the independent kernel
+project. See its [scope and gate](../../packages/wenu_kernel/README.md).
+Tolerance-certified temporal reuse, Cartesian/time/observation services and
+the K3 consumer adapters remain ahead. No current product uses the kernel yet.
+
 Keep every existing Wenu capability while placing all scientific state access
 behind a uniform kernel contract. Add Gaia DR3 astrometry for the stars already
 in Wenu by default, with configurable membership and a later DR4 adapter.

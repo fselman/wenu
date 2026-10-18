@@ -142,6 +142,13 @@ existing request/composition owners, not to new copies of their algorithms.
 
 ## Coordinate and state entry points
 
+The separate candidate `wenu_kernel` package provides `Kernel`, `KernelSession`
+and `StateProvider` plus typed records in `wenu_kernel.records`. See its
+[implemented subset and independent gate](../../packages/wenu_kernel/README.md).
+Do not replace an existing Wenu import with this SDK until the corresponding
+K3 adapter/public-path gate is implemented. No observer or numerical provider
+adapter is supplied by the foundation.
+
 - `coordinates.py`: `CoordinateSpec`, `ObservationContext` and scientific
   enum/value vocabulary. Frame, origin, status, epoch, equinox and instant
   are distinct.

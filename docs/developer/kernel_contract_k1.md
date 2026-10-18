@@ -1,9 +1,16 @@
 # K1: public kernel and provider contract
 
-**Revision:** 1, 2026-10-17. **Status:** proposed contract for scientific and
-architectural review; no implementation or accepted SDK freeze is claimed.
+**Revision:** 1, 2026-10-17. **Status:** accepted K2 implementation target
+(PR #236); final usable SDK freeze remains K5.
 **As-is base:** main `3359e9ebb430de68e68cdee8bfc40ddd6d3da692`.
 **Proposed contract identifier:** `wenu.kernel/1.0`.
+
+The first [K2 foundation candidate](../../packages/wenu_kernel/README.md)
+implements a declared direction-only subset. Remaining records/services in this
+specification are targets, not available imports. It does not claim completed
+reuse certification, observation, Gaia or production routing. No scientific
+coordinate semantics change in this foundation; the coordinate guide remains
+current. Canonical time input is validated rather than implicitly normalized.
 
 The [roadmap](kernel_roadmap_v0.9.5.md) remains the sequencing authority.
 This document specifies K1's proposed names, semantics, capabilities, errors

@@ -31,7 +31,10 @@ Styles/modes do not alter geometry. Avoid mutable cross-request state.
 Projection alignment is not an astronomical frame transform. Preserve public
 APIs and accepted atlas-print appearance unless the bounded task changes them.
 
-The kernel, Gaia DR3 and loadable packages are planned, not implemented.
+The standalone K2 foundation is a separate candidate under `packages/wenu_kernel`.
+Kernel routing of current products, Gaia DR3 and astronomical package extraction
+remain planned, not implemented. Run the new core's explicit independent gate;
+root pytest discovery intentionally remains scoped to the existing `tests` owner.
 Every existing functionality must use the kernel before kernel closure, with
 temporary adapters allowed. Extract one independently installable package at
 a time after that closure. Do not silently reclassify old snapshots as kernel states.
