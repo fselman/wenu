@@ -200,8 +200,7 @@ Developer references:
 
 - `docs/developer/README.md` (active developer-document index);
 - `docs/developer/current_architecture_v0.9.md` (implemented authority);
-- `docs/developer/post_v0.9_architecture_roadmap.md` (active coordinate, SVG,
-  and temporal roadmap);
+- `docs/developer/kernel_roadmap_v0.9.5.md` (active kernel and loadable-package roadmap);
 - `docs/developer/implementation_reference.md` (current public APIs);
 - `docs/developer/source_tree.md` (current responsibility map);
 - `docs/developer/archive/architecture_history/target_architecture_v0.9.md` (accepted design record);
@@ -212,14 +211,16 @@ Developer references:
 
 ## Tests
 
-Run the routine regression suite during development:
+During development, run the owning tests and immediate contracts; see
+[testing policy](docs/developer/testing_policy.md). The broad routine suite is:
 
 ```bash
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q \
   -m "not integration and not visual and not slow"
 ```
 
-Run the complete suite before milestone closure:
+Run the complete suite for final production integration; documentation-only
+changes use documentation/integrity checks:
 
 ```bash
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q
@@ -242,7 +243,7 @@ content but never change the center; `--constellation-mask IAU,...` controls
 only masking. The constellation vocabulary defaults to
 `--constellation-system western`, which by itself draws nothing. See the
 [regional chart guide](docs/user_guide/regional_charts.md) and the
-[CLI semantics contract](docs/developer/chart_cli_semantics_audit_50a3f.md).
+[CLI semantics contract](docs/developer/archive/milestone_history/50a_minor_bodies/chart_cli_semantics_audit_50a3f.md).
 
 Generated chart-output directories should remain outside version control.
 
@@ -255,3 +256,7 @@ Astronomical catalogue and dataset attribution is documented in
 
 Wenu builds on Astropy, Matplotlib, NumPy, Pandas, and public astronomical
 catalogues.
+
+
+Current development priority: [kernel and loadable packages](docs/developer/kernel_roadmap_v0.9.5.md),
+with Gaia DR3 and a future DR4 adapter. This is planned work, not an implemented capability.

@@ -1,54 +1,22 @@
 # Wenu developer-document archive
 
-This directory preserves superseded architecture, completed migrations,
-milestone records, audits, and human acceptance evidence. Archived documents
-are historical evidence, not current architectural authority, and assistants
-must not read them routinely when planning ordinary work.
+Use the [current developer index](../README.md) for active authority.
+Archived text preserves scientific detail, compatibility reasoning, audits and
+acceptance evidence; it is not a queue of pending commands or new authorization.
 
-## Active developer authority
+## Archive families
 
-Use the indexed active set in [the parent directory](../README.md). Direct
-children of `docs/developer/` are limited to current architecture and API
-authority, retained target direction, the active roadmap, the living
-coordinate guide, contribution rules, and current work in progress.
+- `architecture_history/`: superseded current/target architecture.
+- `migration_history/`: completed migrations and deprecations.
+- `roadmap_history/`: superseded sequencing and future-program documents.
+- `diagram_history/`: older diagrams.
+- `audits/`, `acceptance_history/`: completed audits and acceptance records.
+- `milestone_history/`: accepted 49D–49J and 50A scientific/implementation evidence.
+- `pre_versioned/`: original unversioned planning.
+- [Pre-kernel baseline, 2026-10-17](pre_kernel_20261017/INDEX.md): original
+  active editions, satellite audits/log, superseded target/roadmap and diagrams.
 
-## Archive organization
-
-- `architecture_history/` contains superseded current and target
-  architectures through the accepted v0.9 design;
-- `migration_history/` contains completed version-to-version roadmaps and
-  compatibility/deprecation records;
-- `roadmap_history/` contains superseded sequencing, feature backlogs,
-  background roadmaps, and the completed 49J/50 combined planning document;
-- `diagram_history/` contains superseded architecture diagrams;
-- `audits/` contains completed coordinate, configuration, request, interface,
-  and test-suite audits;
-- `acceptance_history/` contains completed visual and physical acceptance
-  records;
-- `milestone_history/49d_scene/` contains completed scene-dependency and
-  realization-context records;
-- `milestone_history/49e_ephemeris/` contains completed ephemeris and
-  apparent-direction records;
-- `milestone_history/49f_svg/` contains the completed SVG product program;
-- `milestone_history/49g_temporal/` contains the completed temporal-sequence
-  contracts;
-- `milestone_history/49h_fixed_sky/` contains accepted fixed-sky and
-  rotating-horizon work;
-- `milestone_history/49i_solar_system/` contains completed Venus, Mercury,
-  major-planet, and Moon audits, contracts, validation, and acceptance records;
-- `milestone_history/49j_performance/` contains the accepted 49J audit,
-  test-practice policy, test-suite changes and retained fault evidence, cold
-  baseline, bounded loaded-sphere reuse, exact equivalence measurement, and
-  final performance closure;
-- `milestone_history/50a_minor_bodies/` contains completed 50A.0 through
-  50A.5D.2C minor-body audits, implementations, validations, public-interface
-  contracts, and acceptance records, including 50A.5D.1B comet photometry and the 50A.5D.1B.1 operational
-  revision closed on 2026-10-05;
-- `pre_versioned/` contains the original unversioned architecture, roadmap,
-  and UML material;
-- files directly under this directory are older records retained from the
-  repository's initial archive layout.
-
-Consult archived material only for provenance, old compatibility reasoning, or
-when a current authority explicitly cites it. Moving a document here does not
-delete its Git history or revoke an implemented compatibility promise.
+The [cleanup ledger](../documentation_cleanup_v1.json) records exact blob
+identities and moves for the pre-kernel cleanup. Current scientific limits
+remain indexed in [scientific contracts](../scientific_contracts.md).
+No history, source data or review decision is discarded.

@@ -1,0 +1,257 @@
+# Wenu
+
+**Language:** English | [Español](README.es.md)
+
+Wenu is a Python library for producing accurate, reproducible,
+publication-quality static charts of the sky. It supports regional,
+observer-visible, and complete-sphere charts through one geometry pipeline.
+
+Wenu is intended for observing guides, books, articles, education, public
+outreach, and guided observation. It is not an interactive planetarium.
+
+*Wenu* means **sky** in Mapudungun, the language of the Mapuche people of
+southern South America.
+
+## Project status
+
+Wenu remains under active development. The v0.9 architecture is complete at
+the accepted repository baseline. Version 0.8.0 remains the latest tagged
+release; repository builds derive their version from Git through
+setuptools-scm. One composition and export workflow serves all chart types,
+styles, output modes, detail policies, and legends. Public APIs may still
+change before a future tagged release.
+
+See `LICENSE` for the current usage terms.
+
+## Implemented features
+
+- observer-independent celestial content with observer-bound sky geometry;
+- coordinate-neutral spherical and projected geometry;
+- arbitrary tangent-point stereographic projection;
+- seam-safe Galactic Mollweide projection;
+- regional chart production API;
+- full-sky chart production API with independent horizon and tangent point;
+- Hipparcos stellar catalogue;
+- Western and alternative constellation-line systems;
+- IAU constellation boundaries assembled in B1875;
+- equatorial, ecliptic, and Galactic grids;
+- celestial reference points;
+- reproducible PNG and PDF export plus editable semantic SVG output;
+- atlas and cartoon chart styles;
+- print/paper and presentation output modes;
+- render-local fixed, adaptive, and cartoon detail policies;
+- integrated object, stellar-magnitude, and contextual legends;
+- regional, visible-sky, Galactic all-sky, circumpolar, and binocular chart
+  types;
+- generic preparation and Matplotlib rendering;
+- automatic verified, immutable-cache preflight for numbered asteroids in the
+  installed CLI, with explicit offline and refresh policies;
+- package-boundary and regression tests.
+
+## Installation
+
+```bash
+git clone https://github.com/fselman/wenu.git
+cd wenu
+pip install -e .
+```
+
+Wenu requires Python 3.10 or newer. Runtime dependencies are declared in
+`pyproject.toml`: Astropy, Matplotlib, NumPy, and Pandas.
+
+To install editable copies of all six canonical example scripts in a
+`wenu_examples` directory below the current directory, run:
+
+```bash
+wenu_examples
+```
+
+The command preserves existing scripts. Use `wenu_examples --force` to
+replace them with the copies from the installed Wenu version.
+
+## Quick start: La Ligua planisphere
+
+Generate the same canonical cartoon presentation chart shown below:
+
+```bash
+python examples/planisphere.py \
+  --style cartoon --mode presentation \
+  --output output/la-ligua-planisphere.png \
+  --credits
+```
+
+![La Ligua planisphere in cartoon presentation mode](docs/user_guide/assets/la-ligua-planisphere.png)
+
+The image's exact command, source commit, dimensions, checksum, and visual
+approval are recorded in the
+[planisphere guide](docs/user_guide/planisphere.md#readme-image-provenance).
+The complete [Wenu v0.9.5 user guide](docs/user_guide/index.md) covers all five ordinary chart families, the six canonical Python examples,
+and their shared controls. The [chart examples](docs/user_guide/chart_examples.md)
+provide one runnable installed-command example per family. Use `--format svg` for
+editable vector output; see [SVG output and editing](docs/user_guide/svg_output.md)
+for the supported Inkscape workflow and font-portability limits.
+
+## Library composition
+
+```python
+import matplotlib.pyplot as plt
+
+from wenu import (
+    CelestialSphere,
+    FixedDetailPolicy,
+    LegendOptions,
+    MatplotlibRenderer,
+    Observer,
+    RegionalChart,
+    ResolvedDetail,
+    compose_chart,
+)
+
+observer = Observer(
+    location="La Ligua",
+    time="2026-08-15 21:00",
+)
+sky = CelestialSphere(observer)
+sky.add_stars(catalog="hipparcos", magnitude_limit=5.5)
+sky.add_constellations(
+    system="western",
+    selected=("Cru", "Cen"),
+)
+
+chart = RegionalChart.from_constellations(
+    sky,
+    ("Cru", "Cen"),
+    angular_radius_deg=35.0,
+    orientation="celestial-north-up",
+)
+figure, ax = plt.subplots(figsize=chart.figure_size(7.0))
+composition = compose_chart(
+    chart,
+    style="atlas",
+    mode="print",
+    detail=FixedDetailPolicy(
+        ResolvedDetail(star_magnitude_limit=5.5)
+    ),
+    legends=LegendOptions(
+        objects=True,
+        stellar_magnitudes=True,
+        context=True,
+    ),
+)
+chart.export(
+    sky,
+    MatplotlibRenderer(ax),
+    "regional.png",
+    composition=composition,
+)
+```
+
+Change the independent choices without changing chart geometry:
+
+```python
+atlas_slides = compose_chart(
+    chart, style="atlas", mode="presentation"
+)
+cartoon_print = compose_chart(
+    chart, style="cartoon", mode="print"
+)
+```
+
+The same workflow supports `RegionalChart`, `FullSkyChart`, `AllSkyChart`,
+`CircumpolarChart`, and `BinocularChart`. `FullSkyChart` may place its
+stereographic tangent point independently of the observer zenith; the observer
+continues to determine the AltAz sky and horizon.
+
+The six canonical user examples are:
+
+- `examples/all_sky.py`;
+- `examples/planisphere.py`;
+- `examples/regional_constellation_group.py`;
+- `examples/regional_constellation.py`;
+- `examples/circumpolar.py`;
+- `examples/binocular_object.py`.
+
+## Architecture
+
+The canonical pipeline is:
+
+```text
+catalogues
+  → observer-independent CelestialSphere and SkyLayer
+  → observer-bound spherical geometry
+  → projection-domain guard
+  → projection
+  → projected geometry
+  → chart preparation
+  → renderer
+  → legends and export
+```
+
+The principal packages are:
+
+- `wenu.objects`: physical astronomical catalogue objects;
+- `wenu.sky`: sky layers and canonical orchestration;
+- `wenu.geometry`: coordinate-neutral values and algorithms;
+- `wenu.projections`: map projections;
+- `wenu.charts`: chart specifications and styles;
+- `wenu.rendering`: preparation and graphical backends.
+
+Developer references:
+
+- `docs/developer/README.md` (active developer-document index);
+- `docs/developer/current_architecture_v0.9.md` (implemented authority);
+- `docs/developer/post_v0.9_architecture_roadmap.md` (active coordinate, SVG,
+  and temporal roadmap);
+- `docs/developer/implementation_reference.md` (current public APIs);
+- `docs/developer/source_tree.md` (current responsibility map);
+- `docs/developer/archive/architecture_history/target_architecture_v0.9.md` (accepted design record);
+- `docs/developer/archive/migration_history/wenu_migration_0.8_to_0.9.md` (completed migration);
+- `docs/developer/archive/README.md` (historical architecture and migration
+  index);
+- `docs/developer/archive/migration_history/deprecations_v0.5.md`.
+
+## Tests
+
+Run the routine regression suite during development:
+
+```bash
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q \
+  -m "not integration and not visual and not slow"
+```
+
+Run the complete suite before milestone closure:
+
+```bash
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q
+```
+
+Scientific, visual, and physical acceptance may additionally require real
+rendering, print inspection, or the focused commands documented by the active
+milestone. Representative manual render checks remain:
+
+```bash
+python examples/planisphere.py --style atlas --mode print
+python examples/binocular_object.py --center-on target:omega-centauri
+```
+
+The installed `wenu_chart` command keeps camera and drawing requests
+independent. Regional and binocular charts use `--center-on IDENTIFIER` (or
+one complete coordinate pair) only for framing. Options such as `--planet`,
+`--asteroid`, `--constellation-lines`, and `--constellation-labels` request
+content but never change the center; `--constellation-mask IAU,...` controls
+only masking. The constellation vocabulary defaults to
+`--constellation-system western`, which by itself draws nothing. See the
+[regional chart guide](docs/user_guide/regional_charts.md) and the
+[CLI semantics contract](docs/developer/chart_cli_semantics_audit_50a3f.md).
+
+Generated chart-output directories should remain outside version control.
+
+## Data attribution
+
+Astronomical catalogue and dataset attribution is documented in
+`DATA_ATTRIBUTION.md`.
+
+## Acknowledgements
+
+Wenu builds on Astropy, Matplotlib, NumPy, Pandas, and public astronomical
+catalogues.
