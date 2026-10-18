@@ -25,7 +25,11 @@ equations. `providers.py` also declares the optional canonical planning protocol
 time-adapter admission, conversion records and the TimeService boundary;
 [`time_adapters.py`](../../packages/wenu_kernel/src/wenu_kernel/time_adapters.py)
 owns the optional bounded TT(TAI)/TAI conversion. No implicit session conversion
-or astronomical backend import is introduced. All source/test
+or astronomical backend import is introduced.
+[`conformance.py`](../../packages/wenu_kernel/src/wenu_kernel/conformance.py)
+ships the optional portable provider test suite, case and activity vocabulary;
+it imports only the SDK and standard library, not repository fixtures.
+All source/test
 paths and the explicit selection manifest are tracked in
 [the migration inventory](kernel_migration_inventory_v1.json).
 It is not imported by the existing product package.

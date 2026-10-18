@@ -7338,9 +7338,10 @@
   "independent_projects": [
     {
       "path": "packages/wenu_kernel",
-      "scope": "K2 native direction/Cartesian states, angular certified/canonical reuse, explicit time admission and TT(TAI)/TAI; current Wenu consumers remain unmigrated",
+      "scope": "K2 native direction/Cartesian states, certified/canonical reuse, explicit time and portable provider conformance; current Wenu consumers remain unmigrated",
       "source_paths": [
         "packages/wenu_kernel/src/wenu_kernel/__init__.py",
+        "packages/wenu_kernel/src/wenu_kernel/conformance.py",
         "packages/wenu_kernel/src/wenu_kernel/errors.py",
         "packages/wenu_kernel/src/wenu_kernel/kernel.py",
         "packages/wenu_kernel/src/wenu_kernel/providers.py",
@@ -7352,6 +7353,7 @@
       "test_paths": [
         "packages/wenu_kernel/tests/synthetic_providers.py",
         "packages/wenu_kernel/tests/test_cartesian.py",
+        "packages/wenu_kernel/tests/test_conformance.py",
         "packages/wenu_kernel/tests/test_isolation.py",
         "packages/wenu_kernel/tests/test_records.py",
         "packages/wenu_kernel/tests/test_reuse.py",

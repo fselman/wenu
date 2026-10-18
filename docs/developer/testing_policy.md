@@ -67,6 +67,31 @@ or graphical suite when those owners and their test collection are unchanged.
 The accepted `ea8dc505`/`6708f54a` receipt remains production evidence, not a
 claim about a future changed production tree.
 
+## Shipped provider conformance gate
+
+`wenu_kernel.conformance` is an optional stdlib test module included in the SDK
+wheel. Provider packages build fresh offline `ProviderCase` factories and run
+`provider_suite` beside their own science tests, without importing Wenu or
+another provider's fixtures. Activity hooks must observe numerical work inside
+metadata/planning as well as full evaluation. Mutation hooks must exercise
+real potential aliases, or the owner documents that no mutable buffer exists.
+Run cases for each admitted catalogue/model/reference/subset. Advertised reuse
+requires a supplied executable case; canonical cases must exercise planning.
+
+The eight common/capability checks cover stable/pure metadata, ordered states
+and exact caching, cold/warm/request-order equivalence, immutable publication,
+owned/borrowed lifetime, invalid selection/scale admission, optional direction
+certification/refusal and optional canonical planning. The SDK applies them to
+six constructed cases and fault-tests the harness. A separate isolated consumer
+defines its own constructed provider and imports only shipped SDK modules.
+Sample conformance is not a proof of physical accuracy, interval-wide bounds,
+resource integrity or all descriptor combinations; retain those owner oracles.
+
+Existing synthetic fault/recovery assertions and test IDs remain unchanged;
+their test-side mixin is renamed to clarify that it is fixture-specific. Root
+legacy pytest discovery and numerical/render suites are unchanged. The
+coordinate guide remains current: this slice changes no time/frame science.
+
 ## Continuous migration and independent-module gates
 
 Test reorganization starts with each implementation slice, not after the
