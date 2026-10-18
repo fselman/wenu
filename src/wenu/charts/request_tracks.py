@@ -37,9 +37,11 @@ def _coincident_start_label(descriptor):
     )
 
 
-def configure_chart_request_tracks(sky, request, *, source_resolver=None):
+def configure_chart_request_tracks(sky, request, *, source_resolver=None, state=None):
     """Replace prior tracks with the request's immutable track collection."""
     for point in getattr(sky, "solar_system_bodies", {}).values():
+        if state is not None:
+            state.remember_attribute(point, "request_draw_label")
         point.request_draw_label = True
     for layer in tuple(sky.layers):
         if getattr(layer, "layer_name", None) in {
@@ -107,9 +109,9 @@ def configure_chart_request_tracks(sky, request, *, source_resolver=None):
     return tuple(layers)
 
 
-def configure_chart_request_track(sky, request, *, source_resolver=None):
+def configure_chart_request_track(sky, request, *, source_resolver=None, state=None):
     """Compatibility wrapper for callers expecting zero or one layer."""
     layers = configure_chart_request_tracks(
-        sky, request, source_resolver=source_resolver
+        sky, request, source_resolver=source_resolver, state=state
     )
     return None if not layers else layers[0] if len(layers) == 1 else layers

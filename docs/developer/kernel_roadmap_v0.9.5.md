@@ -18,9 +18,11 @@ immutable commit and the [cleanup ledger](documentation_cleanup_v1.json).
 **Current implementation status:** K1, native direction/reuse, SI Cartesian
 and explicit time subsets plus the reusable provider conformance kit are
 accepted through PR #242, main `8fea897f`. Native state queries retain their
-explicit same-scale policy. The current K3 prerequisite candidate repairs
-minor-body request registration/resolver rollback with failure injection;
-it does not yet route a product through the kernel. See the
+explicit same-scale policy. Minor-body request-resource rollback is accepted
+through PR #243, main `f5a0abf3`, with 3,400 Mac integration tests passing.
+The current K3 candidate adds synchronous ordinary-request configuration
+isolation (layer registry, horizon/disk aliases and point labels). It does not
+yet route a product through the kernel. See the
 [scope and gate](../../packages/wenu_kernel/README.md).
 Relativistic/civil-time adapters, observation services, Cartesian reuse,
 and K3 consumer adapters remain ahead. No current Wenu product uses the kernel yet.
@@ -430,11 +432,14 @@ bounded. Runtime authority is accepted one milestone at a time.
 | K8 | Extract planets, asteroids, comets and satellites separately | Preserve each current scientific capability and incomplete-science limits; isolated install/test receipts |
 | K9 | Release closure | Packaging combinations, compatibility matrix, scientific/visual/print acceptance and release naming/tag decision |
 
-K3 must address request-layer rollback before sharing kernel state. Its first
-prerequisite candidate covers temporary minor-body registration/entity aliases,
-atomic resolver binding, session setup and cleanup-error continuation. Grids,
-horizon, disks, natural tracks/label flags and broader request isolation remain
-explicit follow-up owners; no consumer is marked migrated by this repair.
+K3 must address request-layer rollback before sharing kernel state. Accepted
+minor-body registration/resolver lifetime work is followed by the current
+ordinary-request configuration journal candidate: restore original layer
+identities/order and horizon/disk/point-label attributes, reject overlapping
+builds on one sky, and preserve the lease after failed cleanup.
+This does not claim thread safety or rollback of arbitrary external mutations.
+No consumer is marked migrated by these prerequisites. Production adapters,
+instrumented state routing and all-consumer reconciliation remain ahead.
 Break chart/atlas private-helper cycles with a public sheet contract while
 preserving canonical rendering. Make changes in separate bounded slices;
 do not combine structural movement, Gaia data replacement and appearance tuning.

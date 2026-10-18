@@ -92,27 +92,31 @@ their test-side mixin is renamed to clarify that it is fixture-specific. Root
 legacy pytest discovery and numerical/render suites are unchanged. The
 coordinate guide remains current: this slice changes no time/frame science.
 
-## K3 request-resource lifetime gate
+## K3 request mutation gate
 
-The first K3 production prerequisite changes only `charts/request_generation.py`
-and `minor_body_resources.py`. Its closest owners remain
-`tests/test_request_generation.py` and `tests/test_minor_body_resources.py`;
-new assertions extend those files, with no test relocation/removal. Constructed
-lifecycle fixtures exercise ten setup failure stages, successful close, export
-failure, continued cleanup after a close error, identity-deduplicated resolver
-binding and restoration after a failing setter. Existing satellite cleanup and
-observer-lifetime assertions remain unchanged.
+Minor-body request-resource lifetime is accepted in PR #243; its focused Mac
+gate passed 56 tests and the production integration gate passed 3,400 tests.
+The current candidate extends ordinary-request isolation across
+`charts/request_generation.py`, `request_horizon.py`, `request_disks.py` and
+`request_tracks.py`. It adds fifteen cases in the existing request-generation
+owner, covering real configuration loops at non-numerical factory seams,
+partial failures, export failure, original identities/order/None/absence,
+point flags, request-order independence, overlap rejection and restoration retry.
+Twelve existing mock callback signatures accept the optional state hook;
+all prior assertions and collected test IDs remain intact. No test is relocated.
 
-Run those owner files first with durations, then one complete plugin-disabled
-legacy integration suite before merging this production candidate. Root Wenu
-test collection/import still depends on the broad installed package, so this
-slice does not claim a newly independent runtime gate. The isolated SDK tests
-are excluded: its code, dependencies, test fixtures and consumers are unchanged
-and no production import of it is added. The production full suite already
-includes documentation checks; do not add a separate repeated documentation run.
-The [inventory](kernel_migration_inventory_v1.json) records exact scope, required
-gates, local evidence and pending Mac runtime acceptance. AST-isolated seam
-execution is supplementary evidence, not normal Wenu imports or pytest.
+Run request generation, grids, horizon, tracks and generic body-machinery owner
+files with durations, then one complete plugin-disabled production integration
+suite before merging. Existing standalone configuration/science/render oracles
+remain in that full gate. The ordinary request owner still imports the broad
+Wenu package, so this slice does not claim an independent runtime installation.
+The unchanged isolated SDK suite is excluded; no production SDK import or
+routing is added. The full suite includes documentation, avoiding a separate
+repeated documentation run. The [inventory](kernel_migration_inventory_v1.json)
+records exact scope, prior acceptance, selection and pending Mac runtime gates.
+Controlled AST seam execution supplements that gate; it is not normal Wenu
+import, scientific accuracy or pytest evidence. The coordinate guide remains
+current because no astronomical model/time/frame meaning changes.
 
 ## Continuous migration and independent-module gates
 

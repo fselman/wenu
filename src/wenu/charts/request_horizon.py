@@ -7,7 +7,7 @@ from wenu.sky.horizon import HorizonReference
 from .request import ChartRequest
 
 
-def configure_chart_request_horizon(sky, request):
+def configure_chart_request_horizon(sky, request, *, state=None):
     """Replace the request-time horizon with the selected reference."""
     if not isinstance(request, ChartRequest):
         raise TypeError("request must be a ChartRequest.")
@@ -16,6 +16,8 @@ def configure_chart_request_horizon(sky, request):
     ):
         raise TypeError("sky must provide registered layers and remove().")
 
+    if state is not None:
+        state.remember_attribute(sky, "horizon_reference")
     for layer in tuple(sky.layers):
         if isinstance(layer, HorizonReference):
             sky.remove(layer)

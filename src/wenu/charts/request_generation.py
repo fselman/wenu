@@ -30,6 +30,99 @@ from .request_resolver import resolve_chart_request
 _MISSING_ATTRIBUTE = object()
 
 
+class _RequestSkyState:
+    """Synchronous lease of the request's layer registry and known attributes.
+
+    Preserve identities rather than copying catalogues, resources or scientific
+    caches. Configuration owners remember an attribute before their first write.
+    A failed restoration retains the lease so another request cannot inherit it.
+    """
+
+    _lease_attribute = "_active_chart_request_state"
+
+    def __init__(self, sky):
+        if getattr(sky, self._lease_attribute, None) is not None:
+            raise RuntimeError("A chart request is already active on this sky; close it before preparing another.")
+        self.sky = sky
+        layers = getattr(sky, "layers", None)
+        self.layers = None if layers is None else tuple(layers)
+        self.attributes = []
+        self._remembered = set()
+        self._closed = False
+        self._restored = False
+        self._cleanup_failed = False
+        self._prior_lease = getattr(sky, self._lease_attribute, _MISSING_ATTRIBUTE)
+        setattr(sky, self._lease_attribute, self)
+
+    def remember_attribute(self, owner, name):
+        if self._closed or self._restored:
+            raise RuntimeError("Request sky state is already restored.")
+        key = id(owner), name
+        if key not in self._remembered:
+            self.attributes.append((owner, name, getattr(owner, name, _MISSING_ATTRIBUTE)))
+            self._remembered.add(key)
+
+    def _restore_layers(self):
+        if self.layers is None:
+            return
+        current = tuple(self.sky.layers)
+        if len(current) == len(self.layers) and all(a is b for a, b in zip(current, self.layers)):
+            return
+        # CelestialSphere owns clear/extend. Keep the original container alive
+        # and restore its exact order, without reading a provider or catalogue.
+        clear, extend = getattr(self.sky, "clear", None), getattr(self.sky, "extend", None)
+        if callable(clear) and callable(extend):
+            clear()
+            extend(self.layers)
+            return
+        # Existing duck-typed spheres may expose the minimal add/remove API.
+        add, remove = getattr(self.sky, "add", None), getattr(self.sky, "remove", None)
+        if not callable(add) or not callable(remove):
+            raise TypeError("Restoring request layers requires clear/extend or add/remove.")
+        for layer in reversed(current):
+            remove(layer)
+        for layer in self.layers:
+            add(layer)
+
+    def run_cleanup(self, callback, *args, **kwargs):
+        try:
+            callback(*args, **kwargs)
+        except BaseException:
+            self._cleanup_failed = True
+            raise
+
+    def restore_after_rollback(self):
+        self.restore(release=not self._cleanup_failed)
+
+    def restore(self, *, release=True):
+        if self._closed:
+            return
+        if getattr(self.sky, self._lease_attribute, None) is not self:
+            raise RuntimeError("The active chart request lease was replaced.")
+        if not self._restored:
+            with ExitStack() as cleanup:
+                cleanup.callback(self._restore_layers)
+                for owner, name, previous in self.attributes:
+                    if previous is _MISSING_ATTRIBUTE:
+                        cleanup.callback(_remove_request_attribute, owner, name)
+                    else:
+                        cleanup.callback(setattr, owner, name, previous)
+            self._restored = True
+        if release:
+            self.release()
+
+    def release(self):
+        if self._closed:
+            return
+        if not self._restored or getattr(self.sky, self._lease_attribute, None) is not self:
+            raise RuntimeError("Cannot release an unrestored chart request lease.")
+        if self._prior_lease is _MISSING_ATTRIBUTE:
+            delattr(self.sky, self._lease_attribute)
+        else:
+            setattr(self.sky, self._lease_attribute, self._prior_lease)
+        self._closed = True
+
+
 def _remove_request_layers(sky, layers):
     """Detach only still-registered request-owned layers, attempting all."""
     with ExitStack() as cleanup:
@@ -104,6 +197,7 @@ class ChartRequestBuild:
     request_minor_body_layers: tuple = ()
     request_satellite_track_layers: tuple = ()
     prior_minor_body_attributes: tuple = ()
+    _request_state: object | None = field(default=None, repr=False)
     _closed: bool = field(default=False, init=False, repr=False)
 
     @property
@@ -116,6 +210,8 @@ class ChartRequestBuild:
             with ExitStack() as cleanup:
                 if self.owns_observer:
                     cleanup.callback(self.sky.observer.close)
+                if self._request_state is not None:
+                    cleanup.callback(self._request_state.restore, release=False)
                 if self.minor_body_session is not None:
                     cleanup.callback(self.minor_body_session.close)
                 cleanup.callback(_restore_minor_body_registration, self.sky,
@@ -125,6 +221,8 @@ class ChartRequestBuild:
                     from wenu.minor_body_resources import restore_sky_source_resolvers
 
                     cleanup.callback(restore_sky_source_resolvers, self.prior_source_resolvers)
+            if self._request_state is not None:
+                self._request_state.release()
         self._closed = True
 
     def __enter__(self):
@@ -343,7 +441,9 @@ def _prepare_with_sphere(
     )
 
     with ExitStack() as rollback:
-        rollback.callback(_restore_minor_body_registration, sky, request_layers, prior_attributes)
+        state = _RequestSkyState(sky)
+        rollback.callback(state.restore_after_rollback)
+        rollback.callback(state.run_cleanup, _restore_minor_body_registration, sky, request_layers, prior_attributes)
         if request_minor_body_descriptors(request):
             for descriptor in request.minor_body_descriptors:
                 if descriptor.selection_key not in sky.solar_system_bodies:
@@ -361,11 +461,11 @@ def _prepare_with_sphere(
                 request.minor_body_resource_directory,
                 resolved_observer,
             )
-            rollback.callback(session.close)
+            rollback.callback(state.run_cleanup, session.close)
             prior = bind_sky_source_resolver(sky, session.source_binding)
             from wenu.minor_body_resources import restore_sky_source_resolvers
 
-            rollback.callback(restore_sky_source_resolvers, prior)
+            rollback.callback(state.run_cleanup, restore_sky_source_resolvers, prior)
         resolved = resolve_chart_request(request, profile)
         grid_options = {"frame": getattr(resolved, "frame", None)}
         if observer is not None:
@@ -375,8 +475,8 @@ def _prepare_with_sphere(
             resolved.request,
             **grid_options,
         )
-        configure_chart_request_horizon(sky, resolved.request)
-        configure_chart_request_disks(sky, resolved.request)
+        configure_chart_request_horizon(sky, resolved.request, state=state)
+        configure_chart_request_disks(sky, resolved.request, state=state)
         from .request_tracks import configure_chart_request_track
 
         configure_chart_request_track(
@@ -385,6 +485,7 @@ def _prepare_with_sphere(
             source_resolver=(
                 None if session is None else session.source_binding
             ),
+            state=state,
         )
         from .request_satellite_tracks import (
             configure_chart_request_satellite_tracks,
@@ -393,22 +494,24 @@ def _prepare_with_sphere(
         satellite_layers = configure_chart_request_satellite_tracks(
             sky, resolved.request
         )
-        rollback.callback(_remove_request_layers, sky, tuple(reversed(satellite_layers)))
+        rollback.callback(state.run_cleanup, _remove_request_layers, sky, tuple(reversed(satellite_layers)))
         prepare_options = {}
         if observer is not None:
             prepare_options["observer"] = observer
         prepared = prepare_chart_request(sky, resolved, **prepare_options)
+        build = ChartRequestBuild(
+            sky=sky,
+            prepared=prepared,
+            owns_observer=owns_observer,
+            minor_body_session=session,
+            prior_source_resolvers=prior,
+            request_minor_body_layers=tuple(request_layers),
+            request_satellite_track_layers=tuple(satellite_layers),
+            prior_minor_body_attributes=tuple(prior_attributes),
+            _request_state=state,
+        )
         rollback.pop_all()
-    return ChartRequestBuild(
-        sky=sky,
-        prepared=prepared,
-        owns_observer=owns_observer,
-        minor_body_session=session,
-        prior_source_resolvers=prior,
-        request_minor_body_layers=tuple(request_layers),
-        request_satellite_track_layers=tuple(satellite_layers),
-        prior_minor_body_attributes=tuple(prior_attributes),
-    )
+    return build
 
 
 def build_chart_request(request, *, sky=None, profile=None, observer=None):

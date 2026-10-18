@@ -30,9 +30,12 @@ SI Cartesian states retain explicit optional velocity, independent error
 channels and source-epoch availability. TimeService admits explicit offline
 conversions, including bounded TT(TAI)/TAI. Native state queries still require
 matching scales. Provider conformance uses factory-owned fixtures and
-independent installed-consumer evidence. The current K3 prerequisite candidate
-repairs minor-body request registration/resolver rollback, including partial
-setup and normal close. It does not route any existing product through the SDK.
+independent installed-consumer evidence. Minor-body request-resource rollback
+is accepted through PR #243, main `f5a0abf3` (3,400 Mac integration tests passed).
+The current K3 candidate scopes ordinary-request layer configuration to one
+active build: original layer order/identities, horizon/disk aliases and point
+label flags are restored on close/failure. No existing product is routed
+through the SDK yet.
 Its [selection manifest](../../packages/wenu_kernel/test_selection_v1.json)
 keeps the independent core gate separate from existing Wenu tests. Current
 products do not consume it yet. Relativistic/civil-time adapters, realization

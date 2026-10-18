@@ -214,12 +214,30 @@ and visits each distinct layer once, including a separately registered Moon.
 `prior_minor_body_attributes` retains request-owned alias restoration metadata;
 it is not a catalogue/snapshot persistence format.
 
-The K3 prerequisite candidate covers early setup failures, subsequent preparation
-and export failure, normal close and cleanup-error continuation. It does not
-restore every chart configuration: grids/horizon, disk/track layers and point
-label flags remain separate migration owners. No state query is routed through
-the kernel by this lifecycle repair. The coordinate guide remains current;
-no astronomical algorithm, catalogue, frame, time or rendering style changes.
+Minor-body lifetime rollback is accepted in PR #243. The current K3 candidate
+also journals ordinary request configuration inside `_prepare_with_sphere()`.
+Use `with build_chart_request(...) as build:` or explicitly close the build:
+its sky is the supplied object, its requested configuration remains active while
+open, and close restores the original layer objects/order and remembered
+horizon/disk aliases and point-label flags. Preparing another build on that
+same sky before close raises `RuntimeError`; separate skies remain independent.
+
+Horizon/disk/track configuration helpers accept an optional keyword-only `state`
+used by this owner to remember an attribute before its first write. Omitting
+`state` preserves standalone persistent configuration. The journal uses the
+sky's existing public clear/extend (or add/remove) registry operations and does
+not copy catalogues/resources or rewind scientific caches. It covers canonical
+configuration writes, not arbitrary caller edits while a build is active.
+Restoration attempts continue after an error; failed cleanup keeps the sky
+leased. A returned build can retry `close()` after the cause is resolved. Failed
+preparation with failed cleanup leaves the supplied sky unavailable for another
+request; it is not silently treated as restored. This synchronous lease is not a
+thread/process concurrency contract. Observer/resource ownership remains
+separate, including its explicit cleanup failure semantics.
+
+No state query is routed through the kernel by this lifecycle work. The
+coordinate guide remains current; no astronomical algorithm, catalogue, frame,
+time or rendering style changes.
 
 ## Independent provider verification
 
