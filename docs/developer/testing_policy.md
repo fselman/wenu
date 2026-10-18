@@ -40,6 +40,16 @@ cache publication, while retaining all direction/reuse tests. The future-
 capability fixture now uses `cartesian_reuse_bound`, which remains unsupported;
 `cartesian_state` is implemented. No existing Wenu numerical/render test changes.
 
+The explicit TimeService extends the isolated core gate. Existing time
+record tests remain unchanged; `test_time.py` owns conversion admission,
+closed source/resource coverage, exact model/provenance identity, typed failure,
+outward numerical error, day rollover, preserved split-date precision and
+equal/one-ULP tighter bounds. TT(TAI)/TAI uses a high-precision Decimal oracle
+against the published definition; synthetic TDB-labelled adapter fixtures test
+envelopes only and are not relativistic science evidence. State queries still
+reject mismatched scales and only consume explicitly converted times. No legacy
+test is moved/removed; no production consumer or root collection changes.
+
 Run the smallest owner suite plus directly affected contract/seam tests.
 Use `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1`; add no ambient plugin dependency.
 During iteration, do not run unrelated scientific, projection or rendering

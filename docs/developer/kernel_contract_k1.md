@@ -5,17 +5,19 @@
 **As-is base:** main `3359e9ebb430de68e68cdee8bfc40ddd6d3da692`.
 **Proposed contract identifier:** `wenu.kernel/1.0`.
 
-**Current candidate extension:** Cartesian state variant, explicit optional
-velocity and `StateQuery.require_velocity`. Existing `StateProvider` methods
-remain unchanged. This additive extension is reviewed before the K5 freeze.
+**Current candidate extension:** explicit TimeService, admitted TimeAdapter
+protocol and immutable conversion admission/receipt records. Accepted Cartesian
+states and `StateQuery.require_velocity` remain unchanged. This additive time
+extension is reviewed before the K5 freeze.
 
 The [K2 implementation](../../packages/wenu_kernel/README.md) remains a declared
-native-state subset. The current candidate adds SI Cartesian full-model states
-alongside accepted direction/certificate/canonical-planning behavior. Other records/
-services in this specification are targets, not available imports. Observation,
-Gaia and production routing remain pending. No astronomical transformation
-changes; the coordinate guide remains current. Canonical time input is validated
-rather than implicitly normalized.
+native-state subset. Direction/certificate/canonical-planning and SI Cartesian
+full-model behavior are accepted through PR #240. The current candidate adds
+explicit time conversion and an optional finite-domain TT(TAI)/TAI adapter.
+Other records/services remain targets, not available imports. Observation,
+Gaia and production routing remain pending. The coordinate guide now documents
+this separate time boundary; existing Wenu transformations/parser are unchanged.
+Canonical native time input is still validated rather than implicitly normalized.
 
 The [roadmap](kernel_roadmap_v0.9.5.md) remains the sequencing authority.
 This document specifies K1's proposed names, semantics, capabilities, errors
@@ -62,6 +64,27 @@ returns its policy/resource identity, and fails when unavailable. Core v1 does
 not silently download a table, extrapolate ancient EOP or implement its own
 relativistic conversion. Near-modern string adapters remain for old APIs;
 general historical calendar interpretation belongs to K4, not this contract.
+
+The current K2 time subset implements `wenu_kernel.time.TimeService` separately
+from native state sessions. Its additive pre-freeze records are
+`TimeConversionAdmission(source_scale, target_scale, validity, model,
+maximum_error_s, provenance, contract_version)` and
+`TimeConversion(source, target, model, numerical_error_s, provenance)`.
+Validity and model-resource coverage use the source scale. Caller assembly
+explicitly admits exact descriptors; each borrowed, handle-free `TimeAdapter`
+implements `describe()` and `convert()` for one directed pair. The service
+snapshots bindings, validates complete returned envelopes and performs no
+conversion-chain search, fallback, acquisition or state-query rewriting.
+Its optional keyword-only `maximum_error_s` admits the reported bound at equality;
+same-scale identity introduces zero numerical error and needs no adapter.
+Bounds concern the introduced numerical conversion error, not input uncertainty
+or physical realization error, and do not reset a composed error budget.
+K3 consumers must preserve conversion receipts in their provenance.
+
+The optional `TaiTtAdapter` implements only the defining TT(TAI)/TAI offset with
+explicit finite source coverage and outward-safe rounding. It does not implement
+TT(BIPM), relativistic TDB/TCB, UTC, UT1 or historical atomic-time realization.
+See the [implemented time boundary](../../packages/wenu_kernel/README.md#explicit-time-conversion).
 
 `TimeSpan(start, stop)` is a closed interval on one declared converted time
 basis, start <= stop. Unbounded coverage is an explicit separate value;
@@ -160,8 +183,12 @@ class StateProvider(Protocol):
 class CanonicalDirectionProvider(StateProvider, Protocol):
     def plan_reuse(self, query: StateQuery) -> DirectionReusePlan: ...
 
+class TimeAdapter(Protocol):
+    def describe(self) -> TimeConversionAdmission: ...
+    def convert(self, time: TimePoint, target_scale: str) -> TimeConversion: ...
+
 class TimeService(Protocol):
-    def convert(self, time: TimePoint, target_scale: Literal["tai", "tt", "tdb", "tcb"]) -> TimeConversion: ...
+    def convert(self, time: TimePoint, target_scale: Literal["tai", "tt", "tdb", "tcb"], *, maximum_error_s: float | None = None) -> TimeConversion: ...
 
 class Kernel(Protocol):
     def register(self, provider: StateProvider, *, ownership: Literal["owned", "borrowed"]) -> ProviderKey: ...
@@ -560,8 +587,9 @@ coverage or provider permission is admitted merely by accepting the API.
 
 The accepted K2 foundation supplies records, registration/session admission and
 direction certificates without production rerouting. The current bounded slice
-adds optional canonical planning with synthetic providers; it does not close all
-K2 gates. Time services and the
+includes canonical direction planning and full-model Cartesian states. The
+current time slice supplies explicit adapter admission and TT(TAI)/TAI conversion;
+it does not close all K2 gates. Relativistic/civil-time adapters and the
 distributable conformance kit remain explicit work before the K5 SDK freeze.
 No Gaia acquisition, scientific-provider extraction, product rewrite or new
 satellite science is part of K1. Wenu must continue to run after every merge.

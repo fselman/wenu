@@ -614,6 +614,16 @@ The existing temporal sequence classes preserve physical versus playback time,
 but coordinate architecture must additionally preserve catalogue position epoch and
 provider evaluation instant.
 
+The separate K2 kernel candidate now provides an explicit
+[TimeService boundary](../../packages/wenu_kernel/README.md#explicit-time-conversion).
+Native state queries still require a matching scale. The optional TT(TAI)/TAI
+adapter uses the defining 32.184-second offset and returns a numerical rounding
+bound and model provenance, with finite source coverage admitted by the caller.
+This numerical error is separate from input-date and physical-clock uncertainty;
+it does not establish an ancient TAI realization. TDB/TCB, UTC/UT1, EOP, Delta-T
+and historical-calendar adapters remain pending. The existing observer parser
+and its current limits below are unchanged.
+
 <a id="51-calendars-are-historical-coordinate-systems-for-time"></a>
 
 ## 5.1 Calendars are historical coordinate systems for time

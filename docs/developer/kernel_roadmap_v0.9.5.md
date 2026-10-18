@@ -15,14 +15,14 @@ immutable commit and the [cleanup ledger](documentation_cleanup_v1.json).
 
 ## Release objective
 
-**Current implementation status:** K1 and reproducible direction reuse are
-accepted through PR #239, main `f7c361b1`. The current K2 candidate adds full-model
-Cartesian states in SI units, explicit optional velocity and source-epoch
-availability, and separate numerical position/velocity bounds. Existing direction
-and canonical reuse policies are retained. See the
+**Current implementation status:** K1, reproducible direction reuse and
+full-model SI Cartesian states are accepted through PR #240, main `1fe78a51`.
+The current K2 candidate adds explicit time-adapter admission, immutable
+conversion receipts and bounded TT(TAI)/TAI conversion; native state queries
+retain their explicit same-scale policy. See the
 [scope and gate](../../packages/wenu_kernel/README.md).
-Time/observation services, Cartesian reuse, the distributable conformance kit and K3
-consumer adapters remain ahead. No current Wenu product uses the kernel yet.
+Relativistic/civil-time adapters, observation services, Cartesian reuse,
+the distributable conformance kit and K3 consumer adapters remain ahead. No current Wenu product uses the kernel yet.
 
 Keep every existing Wenu capability while placing all scientific state access
 behind a uniform kernel contract. Add Gaia DR3 astrometry for the stars already

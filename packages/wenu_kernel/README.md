@@ -27,7 +27,8 @@ no chart, report, catalogue, snapshot or numerical backend is rerouted yet.
 `TimePoint` requires canonical integer-valued `jd1` and `jd2` in [-0.5, 0.5).
 It rejects noncanonical input instead of silently losing precision while
 normalizing. It never adds the large and small date parts for identity or
-interval comparison. Scales must already match; no conversion is implemented.
+interval comparison. Native state queries still require matching scales.
+Explicit conversion is provided separately by `wenu_kernel.time.TimeService`.
 `TimeSpan` is closed. Unbounded model coverage is an explicit value with a scale.
 All model and bound resource coverages must admit each requested sample.
 
@@ -39,15 +40,60 @@ membership digests. `StateBatch.query` carries that immutable provenance;
 rows carry source epochs and actual anchors. A provider is responsible for
 returning deterministic results from its admitted immutable sources.
 
-Cartesian temporal reuse, time conversion, observation services, real provider adapters,
+Cartesian temporal reuse, relativistic/civil-time adapters, observation services, real state-provider adapters,
 Gaia and persistent envelopes remain later slices. Requests outside the
 implemented subset fail explicitly. `StateProvider.certify` now returns the
 typed `ReuseCertificate` in `wenu_kernel.reuse`.
-Value records remain in `wenu_kernel.records`; the reuse module exports the
+Native-state value records remain in `wenu_kernel.records`; time-specific records
+belong to `wenu_kernel.time`. The reuse module exports the
 certificate type plus `make_certificate` for its content identity and admission.
 Records do not import session, hashing or provider services.
 The shared provider gate is currently a test-side mixin; the distributable
 complete conformance kit remains a K2/K5 deliverable.
+
+## Explicit time conversion
+
+`wenu_kernel.time.TimeService` is independent of state sessions. Construct it
+with explicit `adapters=(adapter, ...)` and an exact
+`admissions=(adapter.describe(), ...)` allowlist. Each borrowed, handle-free
+`TimeAdapter` supplies `describe()` and `convert(time, target_scale)` for one
+directed scale pair. Descriptors and caller lists are snapshotted at assembly;
+there is no mutable registry, automatic discovery, conversion chain, fallback,
+resource acquisition or implicit conversion inside a state query.
+
+`TimeConversionAdmission` records source/target scales, source-scale validity,
+exact model/resource identity, maximum numerical error in seconds, provenance
+and contract version. Resource dependencies also declare source-scale coverage;
+adapters are responsible for validating their actual local bytes before admission.
+`TimeConversion` returns the original `source`, converted `target`, admitted
+`model`, `numerical_error_s` and exact provenance. The service rejects malformed
+outputs, altered model/resource/policy identities and out-of-domain inputs.
+An optional `maximum_error_s` on `convert` accepts equality and rejects any
+larger reported bound. Same-scale conversion is exact identity with a distinct
+resource-free model and zero introduced error; it requires no adapter.
+
+The numerical bound covers only this conversion's introduced approximation,
+including output rounding. It does not measure input-date uncertainty, physical
+clock realization uncertainty or any previously accumulated conversion error.
+A caller composing conversions must retain receipts and compose their bounds;
+an angular state budget cannot be inferred from a time error alone. K3 adapters
+must carry the conversion receipt into product provenance rather than dropping it
+when making a native-scale query. Session policy remains `same_scale_only`.
+
+`wenu_kernel.time_adapters.TaiTtAdapter(validity)` is an optional standard-library
+implementation of TT(TAI) = TAI + 32.184 seconds, in either directed sense.
+The caller supplies a finite `TimeSpan` on its source scale. The adapter uses
+an exact rational offset and outward-rounded binary64 error bounds without
+forming a large floating Julian date. It returns TT(TAI), not TT(BIPM).
+The [USNO definition](https://aa.usno.navy.mil/faq/TT) was checked 2026-10-18;
+no external library implementation was copied or acquired. A chosen algebraic
+domain does not establish a historical atomic-clock realization. Negative-JD
+tests protect numerical representation, not ancient TAI science.
+
+TDB/TCB conversion requires a separately admitted numerical authority; none is
+supplied here. UTC/UT1, leap seconds, EOP, Delta-T and historical calendar input
+remain outside core `TimePoint`. Importing the SDK or time service loads no
+astronomy/graphics backend. The complete provider conformance kit remains next.
 
 ## Cartesian state meaning
 
