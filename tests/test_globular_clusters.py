@@ -58,6 +58,22 @@ def test_globular_clusters_specializes_nonstellar():
     assert issubclass(GlobularClusters, NonStellar)
 
 
+def test_half_light_diameter_uses_declared_radius_units():
+    source = Table({"name": ["synthetic"], "ra": [10.], "dec": [-20.]})
+    source["half_light_radius"] = [120.] * u.arcsec
+    source["core_radius"] = [30.] * u.arcsec
+    layer = GlobularClusters(None)
+    table = layer._normalize(source)
+    assert table["half_light_radius"][0] == 2.
+    assert table["core_radius"][0] == .5
+    assert table["major_axis_arcmin"][0] == 4.
+    assert table["minor_axis_arcmin"][0] == 4.
+    assert table["half_light_radius"].unit == u.arcmin
+    source["half_light_radius"].unit = u.m
+    with pytest.raises(ValueError):
+        layer._normalize(source)
+
+
 def test_catalogue_resource_exists_after_download():
     assert nonstellar_catalog_path("globular_clusters").is_file()
 

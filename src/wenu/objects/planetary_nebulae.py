@@ -71,7 +71,6 @@ class PlanetaryNebulae(NonStellar):
                 'radius_status', 'hbeta_flux_status', 'log_hbeta_surface_brightness_proxy',
                 'public_interest', 'public_review_status')):
                 normalized[name] = source[name]
-        normalized.meta.update(source.meta)
         return normalized
 
     def spherical_geometry(

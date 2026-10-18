@@ -27,15 +27,16 @@ yet route a product through the kernel. See the
 PR #246, main `e5bd7c16`, accepts shared request lifecycle and default
 `wenu_chart atlas-sheet` dispatch (247 Mac tests passed). PR #247, main
 `bf804cbb`, accepts native stellar realization through a real kernel/session and
-legacy native lookup adapter, with Mac installation/output acceptance. The next
-bounded slice routes public `Stars.position`, explicit HIP lookup and native
+legacy native lookup adapter, with Mac installation/output acceptance. PR #248
+routes public `Stars.position`, explicit HIP lookup and native
 constellation endpoints through that adapter, correcting source-epoch metadata.
 It preserves source directions; no propagation is added. Observed astrometry,
 native constellation-label anchors, other families and remaining non-chart
 consumers stay open for subsequent K3 slices.
 Relativistic/civil-time adapters, common observation services, Cartesian reuse
-and SDK freeze remain ahead. New endpoint/public-position acceptance is separate
-from the accepted adapter; neither closes K3.
+and SDK freeze remain ahead. PR #248 and the open-cluster correction in PR #249
+are accepted at main `4a14e294`, with focused Mac gates and identical merged tree.
+Neither closes K3.
 
 Catalogue ingestion is a prerequisite to further provider migration: validate
 required metadata, preserve original source fields in a Wenu standard format,
@@ -47,8 +48,11 @@ before closing those provider adapters. Do not replace absent metadata with
 catalogue-specific software literals.
 The bounded open-cluster followup now consumes existing row epoch/source fields
 and preserves source metadata in geometry and snapshot v4. Shared helper defaults,
-other nonstellar normalization and the remaining fixed-catalogue snapshot
-assumptions still require their own owner corrections. This is metadata repair;
+full nonstellar metadata admission and the remaining fixed-catalogue snapshot
+assumptions still require their own owner corrections. The current ingestion slice
+preserves nonstellar source metadata/fields and normalizes declared angular
+units, including globular radii, with atomic refusal and saved-sky checks.
+Unitless legacy inputs are not evidence of complete source semantics. This is metadata repair;
 open-cluster state evaluation has not yet migrated to the kernel.
 
 Keep every existing Wenu capability while placing all scientific state access

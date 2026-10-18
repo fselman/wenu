@@ -1149,6 +1149,15 @@ not alter the rendered chart.
 
 ## Implemented limits
 
+Nonstellar ingestion converts declared RA/Dec/position-angle units to degrees
+and dimensions/radii to the canonical arcminute encoding. This is a unit
+conversion, not a frame transformation or epoch propagation. Original table
+metadata and unconsumed fields survive normalization and saved-sky transport;
+geometry mirrors the table metadata. Unitless inputs retain the legacy column
+contract explicitly; the loader does not thereby establish missing source
+semantics. Full nonstellar frame/origin/epoch admission and the remaining
+snapshot J2000 defaults are still audit findings.
+
 The stellar-space-motion equation above describes the scientific requirement,
 not current runtime behavior. At `6708f54a`, Hipparcos stars are instantiated
 with RA/Dec only: proper motion, parallax and radial velocity are not supplied.

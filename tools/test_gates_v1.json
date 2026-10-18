@@ -13,6 +13,27 @@
     "environment": "User-reported Mac; plugin autoload disabled."
   },
   "gates": {
+    "nonstellar-ingestion": {
+      "scope": "Preserve nonstellar source tables/metadata and normalize declared angular units; atomic reload; inherited family geometry and unchanged snapshot transport.",
+      "limits": "No resource bytes, snapshot schema, native frame/epoch policy, provider numerical model, kernel routing, projection or rendering algorithm changes. Unitless columns retain explicit legacy encoding. Full metadata/frame admission and remaining M6 epoch stamps stay open. No SDK, packaging, request lifecycle or full production rerun.",
+      "selections": [
+        {"node": "tests/test_nonstellar_catalogue.py", "reason": "Whole changed normalization owner: declared units, source field/metadata preservation, native/observed geometry and refused reload isolation."},
+        {"node": "tests/test_globular_clusters.py", "reason": "Inherited normalization and half-light radius conversion own the derived symbol diameter."},
+        {"node": "tests/test_galaxy_geometry.py", "reason": "Inherited source metadata, ellipse geometry, selection and observed cache behavior."},
+        {"node": "tests/test_supernova_remnants.py", "reason": "Inherited radio metadata and equal-area outline policy remain unchanged."},
+        {"node": "tests/test_planetary_nebulae.py::test_catalogue_loads_true_and_probable_objects", "reason": "PN inheritance retains default curated membership."},
+        {"node": "tests/test_planetary_nebulae.py::test_selection_is_case_insensitive", "reason": "Selection remains ordered and case insensitive."},
+        {"node": "tests/test_planetary_nebulae.py::test_geometry_is_one_point_per_object", "reason": "Observed PN symbols retain their public geometry."},
+        {"node": "tests/test_planetary_nebulae.py::test_catalogue_measurements_are_metadata_not_glyph_size", "reason": "Converted catalogue sizes do not become display sizes."},
+        {"node": "tests/test_planetary_nebulae.py::test_empty_selection_returns_empty_points", "reason": "Empty selection still produces a valid geometry."},
+        {"node": "tests/test_planetary_nebulae.py::test_sequential_nebula_selections_share_observed_catalogue", "reason": "Inherited cache remains independent of render-local selection."},
+        {"node": "tests/test_position_providers.py::test_nonstellar_catalogues_provide_native_centres_not_morphology", "reason": "Public centre provider contract remains compatible."},
+        {"node": "tests/test_position_providers.py::test_nonstellar_subclasses_share_the_centre_provider_boundary", "reason": "Family APIs retain a common public centre interface."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_fixed_catalogue_rows_masks_units_and_subsets", "reason": "All six fixed families retain actual rows, units, descriptions, source metadata and selected geometry across saved-sky transport."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources", "reason": "Retained extra source fields/metadata decode in a clean process without catalogues."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_legacy_coverage_stays_truthful", "reason": "Existing v1-v3 compatibility remains admitted without changing historical epoch policy."}
+      ]
+    },
     "documentation": {
       "scope": "Documentation, inventory and executable examples/import contracts.",
       "limits": "No production code/resource/dependency/build/collection changes. Archive and public-import checks still run normally on the Mac.",

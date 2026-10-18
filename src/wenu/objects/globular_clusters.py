@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import numpy as np
+import astropy.units as u
 
 from wenu.objects.nonstellar import NonStellar
 
@@ -84,14 +85,17 @@ class GlobularClusters(NonStellar):
 
         for name in self._FLOAT_FIELDS:
             values = self._source_column(source, name)
+            unit = u.arcmin if name in ("core_radius", "half_light_radius") else None
             normalized[name] = (
                 np.full(count, np.nan)
                 if values is None
-                else self._float_values(values)
+                else self._float_values(values, unit=unit)
             )
+            if unit is not None:
+                normalized[name].unit = unit
 
-        # Harris radii are in arcminutes. The plotted circle represents the
-        # measured half-light diameter, not a catalogue major/minor ellipse.
+        # Normalized radii are in arcminutes. The plotted circle represents
+        # the half-light diameter, not a catalogue major/minor ellipse.
         diameter = 2.0 * np.asarray(
             normalized["half_light_radius"],
             dtype=float,
@@ -99,6 +103,9 @@ class GlobularClusters(NonStellar):
         normalized["major_axis_arcmin"] = diameter
         normalized["minor_axis_arcmin"] = diameter
         normalized["position_angle_deg"] = np.full(count, np.nan)
+        normalized["major_axis_arcmin"].unit = u.arcmin
+        normalized["minor_axis_arcmin"].unit = u.arcmin
+        normalized["position_angle_deg"].unit = u.deg
         return normalized
 
     def _geometry_metadata(

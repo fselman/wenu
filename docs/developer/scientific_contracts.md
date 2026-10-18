@@ -55,6 +55,14 @@ No historical-epoch or Gaia accuracy claim follows from this adapter.
 
 ## Catalogue identity and curation
 
+Nonstellar angular encodings use declared source units when available; the
+normalizer converts them to its canonical degrees/arcminutes before geometry.
+Incompatible declared units fail before replacing a loaded catalogue. Original
+table metadata and unconsumed fields remain available, with independent metadata
+copies on geometry. Unitless compatibility inputs are not evidence of source
+units, frame or epoch. These preserved facts do not yet constitute full
+nonstellar metadata admission or close the remaining snapshot epoch audit.
+
 An aggregate catalogue does not acquire a common reference epoch merely by
 combining rows. Open-cluster positions retain their declared row epoch and
 coordinate source; uniformly known selections expose that epoch, whereas mixed,

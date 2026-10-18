@@ -87,6 +87,21 @@ existing cold/saved/spawned comparison despite its previous approximately
 Future unchanged manifests do not require revalidating every gate. `--collect` is available for diagnosis, not an extra mandatory pass before
 `--run`.
 
+## Nonstellar ingestion gate
+
+`nonstellar-ingestion` covers the shared normalizer and its inherited galaxy,
+globular, remnant and PN seams. It retains the existing normalization/geometry
+owners and adds synthetic declared-unit, unconsumed-field, nested-metadata and
+atomic failed-reload regressions. Packaged source tables are checked directly.
+The fixed-table snapshot test covers all six families' rows/masks/units,
+descriptions, metadata and selected geometry; fresh-process and legacy admission
+checks cover the changed contents through the unchanged transport. No snapshot
+schema or frame/epoch admission is changed. SDK, source acquisition/curation,
+packaging, projection/render algorithms, atlas dispatch/workers and unrelated
+body/satellite suites reuse their existing evidence. Those owners are required
+again only if their contracts change. Run this gate once, plus documentation
+and the stdlib tooling check for the edited gate manifest.
+
 ## Native stellar kernel gate
 
 `kernel-native-stars` is independent of request-lifecycle selections. It runs

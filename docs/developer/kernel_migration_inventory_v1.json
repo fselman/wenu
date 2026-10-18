@@ -7977,6 +7977,27 @@
       "identical_merge_tree": "2d9efb84c33dedeb0ac388f85c0418c99b2bcb94"
     }
   },
+  "nonstellar_ingestion_correction": {
+    "base_commit": "4a14e294a9c49e0ba46a6574e3484c03403a0ab6",
+    "source_paths": ["src/wenu/objects/nonstellar.py", "src/wenu/objects/globular_clusters.py", "src/wenu/objects/planetary_nebulae.py"],
+    "test_paths": ["tests/test_nonstellar_catalogue.py", "tests/test_globular_clusters.py"],
+    "gate": "nonstellar-ingestion",
+    "preserved_faults": ["declared angular units ignored", "source metadata and unconsumed fields lost", "globular radii read as arcminutes regardless of declared unit", "failed reload publishes partial source identity", "nested PN metadata aliases source"],
+    "regression_evidence": "Nine new angular-unit/metadata/refusal cases failed against the original normalizer before production edits; existing normalization and family geometry assertions retained.",
+    "legacy_test_moves_or_deletions": [],
+    "source_resource_changes": [],
+    "local_verification": {"environment": "Normal Linux Python 3.12 runtime with separately installed unchanged kernel SDK", "focused_passed": 92, "focused_seconds": 24.11, "strengthened_nested_metadata_cases_passed": 6, "strengthened_seconds": 1.54, "tooling_passed": 8, "tooling_seconds": 0.856, "mac_acceptance": "pending"},
+    "remaining_limits": "Partial M5 correction only: unitless legacy encoding, missing frame/origin/epoch admission, immutable nonstellar envelope and M6 non-cluster snapshot epoch stamps remain open. No new kernel routing or package independence claim.",
+    "excluded_owners": "No changes to kernel SDK, catalogue acquisition/curation/resources, build/dependencies, snapshot schema, frame transforms, projection/render algorithms or atlas dispatch/lifetimes. Reuse their accepted evidence; no full suite rerun.",
+    "content_sha256": {
+      "src/wenu/objects/nonstellar.py": "760d3dae27835423ec4f562437b0a498656e5fa8df80566fd9a12ba6de568da9",
+      "src/wenu/objects/globular_clusters.py": "04cc155df95ece38c395c51c125d68c5d68bf278f7a06fa2398552c1a530de2e",
+      "src/wenu/objects/planetary_nebulae.py": "6e8cd928e4efbd69bf30c7542d94a675be7841e277e717530ab5c25432f3bf6a",
+      "tests/test_nonstellar_catalogue.py": "b1b6798cab99ccb868ed70e5d7fdc74f39ddaa96974cb668b518dc0539f61517",
+      "tests/test_globular_clusters.py": "bf7460197b48ebadf4f63ba2a88c61bcc24808b71e369a5d6eefa7c9b1e9ca11"
+    },
+    "prior_mac_acceptance": {"tested_commit": "e0d4e94100eaa8831409f043498d1cfd15c94c02", "merged_commit": "4a14e294a9c49e0ba46a6574e3484c03403a0ab6", "identical_tree": "0e68c59a245373adfad6bab465c55d5fdea7d462", "tooling_passed": 8, "documentation_passed": 36, "resource_retry_passed": 42, "resource_retry_seconds": 311.02, "retained_combined_passed": 79, "retained_provider_subtests": 9, "mac_clean_and_synchronized": true}
+  },
   "current_inventory_extension": {
     "base_commit": "e5bd7c16ab3d7089fc51420432f540b2b2fe2ef9",
     "production_python_files": 264,

@@ -288,7 +288,7 @@ concrete Wenu classes.
 | [`objects/astronomical_object.py`](../../src/wenu/objects/astronomical_object.py) | Base class for physical astronomical chart layers. |
 | [`objects/galaxies.py`](../../src/wenu/objects/galaxies.py) | Bright-galaxy catalogue layer. |
 | [`objects/globular_clusters.py`](../../src/wenu/objects/globular_clusters.py) | Milky Way globular-cluster catalogue layer. |
-| [`objects/nonstellar.py`](../../src/wenu/objects/nonstellar.py) | Catalogue layer for non-stellar astronomical objects. |
+| [`objects/nonstellar.py`](../../src/wenu/objects/nonstellar.py) | Atomic nonstellar ingestion, source metadata/field preservation, angular-unit normalization and centre/outline geometry. |
 | [`objects/open_clusters.py`](../../src/wenu/objects/open_clusters.py) | Vectorized cluster symbols, selected row epoch/source metadata and aggregate coordinate specification. |
 | [`objects/planetary_nebulae.py`](../../src/wenu/objects/planetary_nebulae.py) | Planetary-nebula catalogue represented by fixed chart symbols. |
 | [`objects/stars.py`](../../src/wenu/objects/stars.py) | Stellar selection, kernel-backed native positions/HIP lookup and spherical point geometry; legacy observed route. |
