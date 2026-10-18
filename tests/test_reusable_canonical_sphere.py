@@ -836,7 +836,7 @@ def test_kernel_native_stars_preserve_legacy_page_pixels(native_snapshot_case, t
     atlas = AtlasBandTiling.from_json(raw.decode())
     sheet = atlas.geometry.sheets[13]
     presentation = AtlasChartPresentation(layers=('stars', 'constellation_lines'),
-        star_magnitude_limit=6, formats=('png',), dpi=72)
+        star_magnitude_limit=6, formats=('png', 'pdf'), dpi=72)
 
     def legacy_native_rows(self, catalog):
         # Exact source-table route replaced by the first kernel adapter.

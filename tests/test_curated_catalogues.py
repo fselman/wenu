@@ -136,9 +136,12 @@ def test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_over
             assert not any(name.startswith('wenu_kernel/') for name in built.namelist())
             metadata_path = next(name for name in built.namelist() if name.endswith('.dist-info/METADATA'))
             metadata = Parser().parsestr(built.read(metadata_path).decode('utf-8'))
-            assert any(value.startswith('wenu-kernel @ git+https://github.com/fselman/wenu.git@8fea897ff8456b717d5db55a8c735a94584523b7')
-                       and '#subdirectory=packages/wenu_kernel' in value
-                       for value in metadata.get_all('Requires-Dist', []))
+            from packaging.requirements import Requirement
+            requirements = [Requirement(value) for value in metadata.get_all('Requires-Dist', [])]
+            sdk = [value for value in requirements if value.name.replace('_', '-').lower() == 'wenu-kernel']
+            assert len(sdk) == 1
+            assert sdk[0].url == ('git+https://github.com/fselman/wenu.git@'
+                '8fea897ff8456b717d5db55a8c735a94584523b7#subdirectory=packages/wenu_kernel')
         installed = tmp_path / f'installed_{i}'
         result = subprocess.run([sys.executable, '-m', 'pip', 'install', '--no-deps',
             '--target', str(installed), str(wheel)], cwd=tmp_path, capture_output=True, text=True)
