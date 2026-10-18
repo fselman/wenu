@@ -1,6 +1,6 @@
-# Wenu kernel: reproducible direction reuse candidate
+# Wenu kernel: native direction and Cartesian states
 
-This separately installable project implements a bounded direction subset of K2.
+This separately installable project implements a bounded native-state subset of K2.
 It is not the K5 frozen SDK. Existing Wenu continues to use its current code;
 no chart, report, catalogue, snapshot or numerical backend is rerouted yet.
 
@@ -19,6 +19,8 @@ no chart, report, catalogue, snapshot or numerical backend is rerouted yet.
   exact and certificate caches. Reuse never turns into a new computed anchor.
 - Optional provider-planned canonical anchors for reproducible reuse, with pure
   planning, strict envelope admission and atomic per-object anchor caching.
+- SI Cartesian full-model states with explicit optional velocity and independent
+  position/velocity uncertainty channels; the same session and ordered-batch API.
 - Standard-library tests with two constructed providers: fixed directions and
   circularly moving directions. These are not Gaia fixtures or science oracles.
 
@@ -30,13 +32,14 @@ interval comparison. Scales must already match; no conversion is implemented.
 All model and bound resource coverages must admit each requested sample.
 
 Reference registration is an explicit application allowlist, not a transform
-engine. Only direction/radian output and native/epoch direction plus batch
-and `direction_reuse_bound` capabilities are implemented. Catalogue/model references retain resource and
+engine. Direction output uses radians; Cartesian positions/velocities use SI.
+Native/epoch direction, Cartesian state, batch evaluation and optional angular
+reuse/planning capabilities are implemented. Catalogue/model references retain resource and
 membership digests. `StateBatch.query` carries that immutable provenance;
 rows carry source epochs and actual anchors. A provider is responsible for
 returning deterministic results from its admitted immutable sources.
 
-Cartesian states, time conversion, observation services, real provider adapters,
+Cartesian temporal reuse, time conversion, observation services, real provider adapters,
 Gaia and persistent envelopes remain later slices. Requests outside the
 implemented subset fail explicitly. `StateProvider.certify` now returns the
 typed `ReuseCertificate` in `wenu_kernel.reuse`.
@@ -45,6 +48,38 @@ certificate type plus `make_certificate` for its content identity and admission.
 Records do not import session, hashing or provider services.
 The shared provider gate is currently a test-side mixin; the distributable
 complete conformance kit remains a K2/K5 deliverable.
+
+## Cartesian state meaning
+
+`CartesianState.position_m` is a finite three-component position.
+`velocity_m_s` is a finite three-component velocity or explicit `None`;
+`velocity_available` distinguishes a known zero vector from absence.
+`position_evidence` and optional `velocity_evidence` carry separate measurement,
+physical-model and numerical channels. Missing velocity has no velocity evidence.
+
+Use a native `ReferenceSpec` with representation `cartesian`, units `m,m/s`,
+and an explicitly admitted frame/origin/status. The kernel performs no frame,
+origin or unit conversion. A TEME/Earth state is never relabelled barycentric
+ICRF. Adapters convert source units explicitly; frame/origin transformations
+remain owned by admitted realization services.
+
+Cartesian queries use `AccuracyRequest(metric="euclidean_norm")`, with optional
+independent `position_m` and `velocity_m_s` bounds. `require_velocity=True`
+requests velocity without requiring a numerical bound; a velocity error bound
+also requires velocity. Metadata-only `supports` must refuse unavailable velocity.
+An accepted request that omits it fails closed. Unknown/statistical uncertainty
+cannot satisfy a deterministic bound; absent physical uncertainty is not zero.
+
+An ephemeris source need not have a catalogue reference epoch. Non-direction
+object records may declare `source_epochs=()`; their Cartesian rows then use
+`source_epoch=None`. Declared epochs must be retained, and direction records
+still require their source epoch. Resource coverage start is not a replacement.
+
+This slice implements full-model Cartesian queries and identical-query caching.
+Cartesian temporal reuse fails explicitly. Each query returns only the state
+variant matching its native reference, in exact time-major order. Accepted
+list buffers are copied into immutable tuples. All rows validate before any
+cache entry is published.
 
 ## Angular reuse and reproducibility
 

@@ -1,8 +1,8 @@
 {
   "schema": "wenu-test-selection/1",
   "owner": "wenu_kernel",
-  "slice": "K2 optional canonical anchor planning for reproducible direction reuse",
-  "accepted_base": "112a0781c2993b490366a3f483ac5045cb8e600a",
+  "slice": "K2 SI Cartesian state variant, explicit optional velocity and independent bounds",
+  "accepted_base": "f7c361b1d88d4d515e3270ee2d09886e11b54f7d",
   "runtime_dependencies": [],
   "required": [
     "python -m unittest discover -s packages/wenu_kernel/tests -v",
@@ -25,7 +25,11 @@
     "canonical result or chosen anchor depends on cache history or request order",
     "canonical cache omits actual anchor time or substitutes a still-valid arbitrary anchor",
     "invalid plan query/order/identity/resource binding reaches propagation",
-    "failed canonical certification publishes new anchor cache entries"
+    "failed canonical certification publishes new anchor cache entries",
+    "missing velocity becomes a known zero or an accepted required-velocity request succeeds without velocity",
+    "Cartesian units/position and velocity bounds are conflated or ignored",
+    "a source epoch is fabricated or a declared one is hidden",
+    "direction and Cartesian variants cross native-reference admission or poison a partial cache"
   ],
   "legacy_tests_moved_or_removed": [],
   "affected_consumers": [
@@ -39,18 +43,23 @@
   "collection_change": "none; root pytest remains scoped to tests and the kernel retains its explicit independent gate",
   "verification": {
     "source_digest_algorithm": "SHA-256 over sorted repository path + NUL + exact file bytes + NUL for every Python file in the named directory",
-    "source_sha256": "d9a146185da1b73aa0e26bbb040c2ca4b67e1552503d8f353904ce88e30e11d8",
-    "tests_sha256": "ac2fb63541f660b66bd4c59af50cc7a579cd3555fbbb4ef0d8fa2db4eecda794",
-    "source_unittest_cases": 64,
-    "installed_wheel_unittest_cases": 64,
-    "wheel_sha256": "edadc189d1573f08654c85b2087615a5aa18801bd3d0b55ad5bab87dd7baf8b5",
+    "source_sha256": "cd22bf7a51b2c943211e05ec2094c7ced4440ae3fec1a08c62efe3bcdc105fc0",
+    "tests_sha256": "2e3f3b24dd26edc624da3b84b4aceb013b1174c2c22e78f65a0c135f4d89dc9f",
+    "source_unittest_cases": 80,
+    "installed_wheel_unittest_cases": 80,
+    "wheel_sha256": "66d13343490065ea6d7a3e1554d03cdc57381ba2edec919bc4fc67e8eb23d9d0",
     "isolated_environment": "fresh venv; Wenu/numpy/astropy/matplotlib/skyfield/sgp4/pandas/spiceypy absent",
     "fault_injection": [
-      "omitting anchor time from canonical cache key fails owning tests",
-      "ignoring plan query binding fails owning tests",
-      "publishing canonical anchors before complete certification fails owning tests"
+      "ignoring requested position tolerance fails owning tests",
+      "accepting missing required velocity fails owning tests",
+      "ignoring Cartesian numerical SI units fails owning tests"
     ],
     "mac_documentation_gate": "pending for this candidate"
   },
-  "existing_test_changes": []
+  "existing_test_changes": [
+    {
+      "node_id": "packages/wenu_kernel/tests/test_sessions.py::RegistryTests::test_unregistered_reference_and_future_capabilities_fail_closed",
+      "change": "The deliberately unsupported future capability is now cartesian_reuse_bound because cartesian_state is implemented; the same refusal-before-publication fault remains protected."
+    }
+  ]
 }

@@ -22,16 +22,16 @@ PR #234 is integrated. Its tree is identical to `ea8dc505`, which passed all
 
 ## Forward work
 
-K1, the K2 foundation and angular reuse are accepted through PR #238,
-main `112a0781`.
+K1, the K2 foundation and reproducible direction reuse are accepted through
+PR #239, main `f7c361b1`.
 The separate [kernel project](../../packages/wenu_kernel/README.md) owns
 standard-library direction records, registration and synchronous sessions.
-The current candidate adds optional provider-planned canonical anchors for
-reproducible reuse. Providers without an admitted plan/bound retain full-model
-fallback; explicit interactive reuse remains separately selectable.
+The current candidate adds SI Cartesian states with explicit optional velocity,
+independent error channels and source-epoch availability. Direction reuse and
+its reproducibility policies remain in place.
 Its [selection manifest](../../packages/wenu_kernel/test_selection_v1.json)
 keeps the independent core gate separate from existing Wenu tests. Current
-products do not consume it yet. Cartesian/time/realization services, the
+products do not consume it yet. Time/realization services, Cartesian reuse, the
 distributable conformance kit and K3 routing remain pending; this is not a completed
 kernel or frozen SDK.
 

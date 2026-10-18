@@ -154,7 +154,7 @@ class RegistryTests(unittest.TestCase):
         with self.assertRaises(UnsupportedCapability):
             empty.register(self.fixed, ownership="owned")
         admission = self.fixed.descriptor.admissions[0]
-        self.fixed.descriptor = replace(self.fixed.descriptor, admissions=(replace(admission, capabilities=("cartesian_state",)),))
+        self.fixed.descriptor = replace(self.fixed.descriptor, admissions=(replace(admission, capabilities=("cartesian_reuse_bound",)),))
         with self.assertRaises(UnsupportedCapability):
             self.kernel.register(self.fixed, ownership="borrowed")
 

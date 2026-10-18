@@ -15,13 +15,13 @@ immutable commit and the [cleanup ledger](documentation_cleanup_v1.json).
 
 ## Release objective
 
-**Current implementation status:** K1, the K2 foundation and angular reuse are
-accepted through PR #238, main `112a0781`. The current K2 candidate adds optional
-provider-planned canonical anchors for reproducible certified reuse, independent
-of cache warmness or request order. Providers without an admitted plan/bound
-retain full-model fallback. Explicit interactive reuse remains separately
-selectable. See the [scope and gate](../../packages/wenu_kernel/README.md).
-Cartesian/time/observation services, the distributable conformance kit and K3
+**Current implementation status:** K1 and reproducible direction reuse are
+accepted through PR #239, main `f7c361b1`. The current K2 candidate adds full-model
+Cartesian states in SI units, explicit optional velocity and source-epoch
+availability, and separate numerical position/velocity bounds. Existing direction
+and canonical reuse policies are retained. See the
+[scope and gate](../../packages/wenu_kernel/README.md).
+Time/observation services, Cartesian reuse, the distributable conformance kit and K3
 consumer adapters remain ahead. No current Wenu product uses the kernel yet.
 
 Keep every existing Wenu capability while placing all scientific state access

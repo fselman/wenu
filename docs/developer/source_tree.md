@@ -18,7 +18,9 @@ and small `__init__.py` own candidate SDK values, errors, protocol and session
 lifecycle respectively. `reuse.py` owns angular certificate identities and
 interval/error admission and canonical plan identity without physical motion
 equations. `providers.py` also declares the optional canonical planning protocol;
-`kernel.py` admits its schedule and owns atomic per-object anchor caching. All source/test
+`kernel.py` admits its schedule and owns atomic per-object anchor caching.
+`records.py` also owns SI Cartesian values and explicit velocity availability;
+`kernel.py` validates the matching native variant and independent error bounds. All source/test
 paths and the explicit selection manifest are tracked in
 [the migration inventory](kernel_migration_inventory_v1.json).
 It is not imported by the existing product package.
