@@ -71,7 +71,7 @@ def test_drawing_translates_direct_options_to_one_canonical_export(
     )
     monkeypatch.setattr(
         "wenu.charts.drawing.configure_chart_request_horizon",
-        lambda sky, request: configured_horizons.append((sky, request)),
+        lambda sky, request, *, state=None: configured_horizons.append((sky, request)),
     )
 
     def export(sky, prepared, *, observer):
@@ -131,7 +131,7 @@ def test_ordinary_drawing_uses_packaged_neutral_furniture_by_default(
     )
     monkeypatch.setattr(
         "wenu.charts.drawing.configure_chart_request_horizon",
-        lambda *args: None,
+        lambda *args, **kwargs: None,
     )
     monkeypatch.setattr(
         "wenu.charts.drawing.export_prepared_chart",
@@ -209,7 +209,7 @@ def test_python_facade_preserves_independent_horizon_controls(
     )
     monkeypatch.setattr(
         "wenu.charts.drawing.configure_chart_request_horizon",
-        lambda sky, request: requests.append(request),
+        lambda sky, request, *, state=None: requests.append(request),
     )
     monkeypatch.setattr(
         "wenu.charts.drawing.export_prepared_chart",
@@ -290,3 +290,181 @@ def test_drawing_exports_one_real_product_through_canonical_pipeline(
     assert result.output == output
     assert output.is_file()
     assert output.stat().st_size > 0
+
+
+
+def _drawing_scope_fixture(monkeypatch, tmp_path, failure_stage=None):
+    """Constructed resource/configuration seams; no provider or geometry work."""
+    from wenu.charts.drawing import chart_view_request
+    from wenu.sky.sky_layer import SkyLayer
+    from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
+
+    class Layer(SkyLayer):
+        layer_name = "scope-fixture"
+
+        def spherical_geometry(self, observer):
+            raise AssertionError("scope tests must not evaluate scientific geometry")
+
+    chart_view = view()
+    sky = chart_view.sky
+    old_resolver = object()
+    retained = Layer()
+    retained.source_resolver = old_resolver
+    sky.add(retained)
+    sky.solar_system_bodies["retained"] = retained
+    original_alias = object()
+    sky.horizon_reference = original_alias
+    descriptor = SOLAR_SYSTEM_BODY_CATALOG.resolve("ceres")
+    # Explicit None must be distinguished from an absent entity alias.
+    setattr(sky, descriptor.entity_key, None)
+    request = chart_view_request(chart_view, tmp_path / "scope.png")
+    request = SimpleNamespace(**vars(request))
+    request.minor_body_descriptors = (descriptor,)
+    sessions, observer_closes, exports, order = [], [], [], []
+    chart_view.observer.close = lambda: observer_closes.append(True)
+    error = RuntimeError("synthetic drawing scope failure: " + str(failure_stage))
+    cleanup_error = RuntimeError("synthetic drawing cleanup failure")
+
+    class Session:
+        def __init__(self, directory, observer):
+            assert observer is chart_view.observer
+            if failure_stage == "session":
+                raise error
+            self.closes = 0
+            self.fail_close = failure_stage == "export-close"
+            sessions.append(self)
+
+        def source_binding(self, *args):
+            raise AssertionError("scope tests must not resolve source state")
+
+        def close(self):
+            self.closes += 1
+            if self.fail_close:
+                raise cleanup_error
+
+    def add(descriptor):
+        point = Layer()
+        point.descriptor = descriptor
+        point.source_resolver = old_resolver
+        sky.solar_system_bodies[descriptor.selection_key] = point
+        setattr(sky, descriptor.entity_key, point)
+        sky.add(point)
+        if failure_stage == "add":
+            raise error
+        return point
+
+    monkeypatch.setattr(sky, "add_solar_system_body", add)
+    monkeypatch.setattr("wenu.minor_body_resources.request_minor_body_descriptors", lambda value: (descriptor,))
+    monkeypatch.setattr("wenu.minor_body_resources.MinorBodyResourceSession", Session)
+    monkeypatch.setattr("wenu.charts.drawing.ChartRequest", SimpleNamespace)
+    before = tuple(sky.layers)
+
+    def configure(stage):
+        def operation(actual_sky, actual_request, **options):
+            assert actual_sky is sky and actual_request is request
+            order.append(stage)
+            state = options.get("state")
+            if state is not None:
+                state.remember_attribute(sky, "horizon_reference")
+            # Grids only mutate the registry; the following helper journals its alias.
+            if stage != "grids":
+                assert state is not None and sky._active_chart_request_state is not None
+                sky.horizon_reference = object()
+            sky.add(Layer())
+            if stage == failure_stage:
+                raise error
+        return operation
+
+    for stage in ("grids", "horizon", "track", "disks"):
+        monkeypatch.setattr("wenu.charts.drawing.configure_chart_request_" + stage, configure(stage))
+
+    def export(actual_sky, prepared, *, observer):
+        assert actual_sky is sky and observer is chart_view.observer
+        assert sky._active_chart_request_state is not None
+        assert prepared.chart is chart_view.chart
+        assert retained.source_resolver.__self__ is sessions[-1]
+        exports.append(prepared)
+        if failure_stage in {"export", "export-close"}:
+            raise error
+        return SimpleNamespace(exports=(SimpleNamespace(output=tmp_path / "scope.png"),))
+
+    monkeypatch.setattr("wenu.charts.drawing.export_prepared_chart", export)
+    return SimpleNamespace(view=chart_view, sky=sky, request=request, error=error, cleanup_error=cleanup_error,
+                           before=before, alias=original_alias, descriptor=descriptor,
+                           sessions=sessions, retained=retained, old_resolver=old_resolver,
+                           observer_closes=observer_closes, exports=exports, order=order)
+
+
+def _assert_drawing_scope_restored(fixture, *, closes=1):
+    assert tuple(fixture.sky.layers) == fixture.before
+    assert fixture.sky.horizon_reference is fixture.alias
+    assert getattr(fixture.sky, fixture.descriptor.entity_key) is None
+    assert fixture.descriptor.selection_key not in fixture.sky.solar_system_bodies
+    assert fixture.retained.source_resolver is fixture.old_resolver
+    assert not hasattr(fixture.sky, "_active_chart_request_state")
+    assert fixture.observer_closes == []
+    assert all(session.closes == closes for session in fixture.sessions)
+
+
+@pytest.mark.parametrize("failure_stage", ["add", "session", "grids", "horizon", "track", "disks", "export"])
+def test_drawing_scope_restores_partial_setup_and_export_failures(monkeypatch, tmp_path, failure_stage):
+    from wenu.charts.drawing import draw_chart_view_request
+
+    fixture = _drawing_scope_fixture(monkeypatch, tmp_path, failure_stage)
+    with pytest.raises(RuntimeError) as caught:
+        draw_chart_view_request(fixture.view, fixture.request)
+    assert caught.value is fixture.error
+    _assert_drawing_scope_restored(fixture)
+
+
+def test_drawing_scope_restores_after_success_and_reuses_the_original_view(monkeypatch, tmp_path):
+    from wenu.charts.drawing import draw_chart_view_request
+
+    fixture = _drawing_scope_fixture(monkeypatch, tmp_path)
+    for _ in range(2):
+        result = draw_chart_view_request(fixture.view, fixture.request)
+        assert result.output == tmp_path / "scope.png"
+        _assert_drawing_scope_restored(fixture)
+    assert fixture.order == ["grids", "horizon", "track", "disks"] * 2
+    assert len(fixture.exports) == 2
+
+
+def test_drawing_scope_rejects_an_active_build_before_any_configuration(monkeypatch, tmp_path):
+    from wenu.charts.drawing import draw_chart_view_request
+    from wenu.charts.request_generation import open_chart_request_scope
+
+    fixture = _drawing_scope_fixture(monkeypatch, tmp_path)
+    with open_chart_request_scope(fixture.sky):
+        with pytest.raises(RuntimeError, match="already active"):
+            draw_chart_view_request(fixture.view, fixture.request)
+        assert fixture.order == []
+        assert fixture.sessions == []
+    _assert_drawing_scope_restored(fixture)
+
+
+
+def test_drawing_cleanup_failure_preserves_original_error_and_lease_for_retry(monkeypatch, tmp_path):
+    from wenu.charts import drawing
+
+    fixture = _drawing_scope_fixture(monkeypatch, tmp_path, "export-close")
+    scopes = []
+    original_open = drawing.open_chart_request_scope
+
+    def capture(*args, **kwargs):
+        scope = original_open(*args, **kwargs)
+        scopes.append(scope)
+        return scope
+
+    monkeypatch.setattr(drawing, "open_chart_request_scope", capture)
+    with pytest.raises(RuntimeError) as caught:
+        drawing.draw_chart_view_request(fixture.view, fixture.request)
+    assert caught.value is fixture.cleanup_error
+    assert caught.value.__context__ is fixture.error
+    assert tuple(fixture.sky.layers) == fixture.before
+    assert fixture.sky.horizon_reference is fixture.alias
+    assert fixture.retained.source_resolver is fixture.old_resolver
+    with pytest.raises(RuntimeError, match="already active"):
+        original_open(fixture.sky)
+    fixture.sessions[0].fail_close = False
+    scopes[0].close()
+    _assert_drawing_scope_restored(fixture, closes=2)

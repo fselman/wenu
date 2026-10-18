@@ -440,11 +440,13 @@ builds on one sky, and preserve the lease after failed cleanup.
 This does not claim thread safety or rollback of arbitrary external mutations.
 No consumer is marked migrated by these prerequisites. Production adapters,
 instrumented state routing and all-consumer reconciliation remain ahead.
-Reconcile ordinary view/drawing, ordinary generation and native atlas-sheet
-lifecycles under shared services while preserving their distinct geometry and
-observer requirements. The installed atlas CLI already injects `wenu_chart`
-for sheets; its Python API retains a direct fallback without that injection.
-Neither command sharing nor the ordinary journal alone closes this boundary.
+The current lifecycle candidate routes ordinary view/drawing, ordinary generation
+and native atlas sheets through `open_chart_request_scope`, preserving their
+geometry, helper order and observer requirements. Atlas producers use the
+injected command or default to `wenu_chart atlas-sheet`; no direct-generator
+fallback remains. Shared-scope failure tests and real serial/spawn/cold-saved
+atlas equivalence are required before acceptance. This does not close the
+chart/atlas private-helper cycle or migrate a state consumer to the kernel.
 Break chart/atlas private-helper cycles with a public sheet contract while
 preserving canonical rendering. Make changes in separate bounded slices;
 do not combine structural movement, Gaia data replacement and appearance tuning.

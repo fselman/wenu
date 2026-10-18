@@ -50,7 +50,6 @@ class _RequestSkyState:
         self._remembered = set()
         self._closed = False
         self._restored = False
-        self._cleanup_failed = False
         self._prior_lease = getattr(sky, self._lease_attribute, _MISSING_ATTRIBUTE)
         setattr(sky, self._lease_attribute, self)
 
@@ -83,16 +82,6 @@ class _RequestSkyState:
             remove(layer)
         for layer in self.layers:
             add(layer)
-
-    def run_cleanup(self, callback, *args, **kwargs):
-        try:
-            callback(*args, **kwargs)
-        except BaseException:
-            self._cleanup_failed = True
-            raise
-
-    def restore_after_rollback(self):
-        self.restore(release=not self._cleanup_failed)
 
     def restore(self, *, release=True):
         if self._closed:
@@ -187,10 +176,14 @@ class AtlasSheetChartRequest:
 
 @dataclass
 class ChartRequestBuild:
-    """Prepared request plus explicit ownership of its reusable sphere."""
+    """Shared request scope, optionally holding a prepared ordinary chart.
+
+    Resource ownership and restoration are identical for ordinary generation,
+    view drawing and native atlas sheets. Geometry preparation stays with callers.
+    """
 
     sky: object
-    prepared: PreparedChartRequest
+    prepared: PreparedChartRequest | None
     owns_observer: bool = False
     minor_body_session: object | None = None
     prior_source_resolvers: tuple = ()
@@ -202,7 +195,15 @@ class ChartRequestBuild:
 
     @property
     def chart(self):
+        if self.prepared is None:
+            raise RuntimeError("This request scope has no prepared ordinary chart.")
         return self.prepared.chart
+
+    def remember_attribute(self, owner, name):
+        """Journal a configuration write through this active request scope."""
+        if self._request_state is None or self._closed:
+            raise RuntimeError("This build has no active request configuration scope.")
+        self._request_state.remember_attribute(owner, name)
 
     def close(self):
         """Detach request-owned resources; preserve supplied observer ownership."""
@@ -228,9 +229,73 @@ class ChartRequestBuild:
     def __enter__(self):
         return self
 
+    def _close_on_failure(self, error):
+        try:
+            self.close()
+        except BaseException as cleanup_error:
+            # ExitStack inside close() can clear the caller's active exception.
+            # Append it after cleanup failures, preserving order without cycles.
+            tail, seen = cleanup_error, {id(error)}
+            while tail.__context__ is not None and id(tail) not in seen:
+                seen.add(id(tail))
+                tail = tail.__context__
+            if id(tail) not in seen:
+                tail.__context__ = error
+            raise
+
     def __exit__(self, exc_type, exc_value, traceback):
-        del exc_type, exc_value, traceback
-        self.close()
+        del exc_type, traceback
+        if exc_value is None:
+            self.close()
+        else:
+            self._close_on_failure(exc_value)
+
+
+
+def open_chart_request_scope(sky, *, request=None, observer=None):
+    """Lease one supplied sky and own any request-added minor-body resources.
+
+    Use as a context manager for drawing/native sheets, or transfer the returned
+    scope to an ordinary prepared build. No observer is created or owned here.
+    A native sheet omits request; it leases the same registry without invoking
+    observer-dependent configuration. Failed cleanup retains the lease.
+    """
+    build = ChartRequestBuild(sky=sky, prepared=None)
+    build._request_state = _RequestSkyState(sky)
+    try:
+        if request is not None:
+            from wenu.minor_body_resources import (
+                MinorBodyResourceSession,
+                bind_sky_source_resolver,
+                request_minor_body_descriptors,
+            )
+
+            if request_minor_body_descriptors(request):
+                for descriptor in request.minor_body_descriptors:
+                    if descriptor.selection_key not in sky.solar_system_bodies:
+                        build.prior_minor_body_attributes += ((
+                            descriptor.entity_key,
+                            getattr(sky, descriptor.entity_key, _MISSING_ATTRIBUTE),
+                        ),)
+                        try:
+                            sky.add_solar_system_body(descriptor)
+                        finally:
+                            # The sphere publishes registry/alias before add().
+                            # Record a partial registration before unwinding.
+                            layer = sky.solar_system_bodies.get(descriptor.selection_key)
+                            if layer is not None:
+                                build.request_minor_body_layers += (layer,)
+                build.minor_body_session = MinorBodyResourceSession(
+                    request.minor_body_resource_directory,
+                    getattr(sky, "observer", None) if observer is None else observer,
+                )
+                build.prior_source_resolvers = bind_sky_source_resolver(
+                    sky, build.minor_body_session.source_binding,
+                )
+    except BaseException as error:
+        build._close_on_failure(error)
+        raise
+    return build
 
 
 def _request_stem(prepared):
@@ -429,88 +494,38 @@ def _prepare_with_sphere(
     observer=None,
 ):
     resolved_observer = getattr(sky, "observer", None) or observer
-    session = None
-    prior = ()
-    request_layers = []
-    prior_attributes = []
-    satellite_layers = ()
-    from wenu.minor_body_resources import (
-        MinorBodyResourceSession,
-        bind_sky_source_resolver,
-        request_minor_body_descriptors,
-    )
-
-    with ExitStack() as rollback:
-        state = _RequestSkyState(sky)
-        rollback.callback(state.restore_after_rollback)
-        rollback.callback(state.run_cleanup, _restore_minor_body_registration, sky, request_layers, prior_attributes)
-        if request_minor_body_descriptors(request):
-            for descriptor in request.minor_body_descriptors:
-                if descriptor.selection_key not in sky.solar_system_bodies:
-                    prior_attributes.append((descriptor.entity_key,
-                                             getattr(sky, descriptor.entity_key, _MISSING_ATTRIBUTE)))
-                    try:
-                        sky.add_solar_system_body(descriptor)
-                    finally:
-                        # add_solar_system_body publishes its registry entry
-                        # before add(); recover that entry if add() fails.
-                        layer = sky.solar_system_bodies.get(descriptor.selection_key)
-                        if layer is not None:
-                            request_layers.append(layer)
-            session = MinorBodyResourceSession(
-                request.minor_body_resource_directory,
-                resolved_observer,
-            )
-            rollback.callback(state.run_cleanup, session.close)
-            prior = bind_sky_source_resolver(sky, session.source_binding)
-            from wenu.minor_body_resources import restore_sky_source_resolvers
-
-            rollback.callback(state.run_cleanup, restore_sky_source_resolvers, prior)
+    build = open_chart_request_scope(sky, request=request, observer=resolved_observer)
+    try:
         resolved = resolve_chart_request(request, profile)
         grid_options = {"frame": getattr(resolved, "frame", None)}
         if observer is not None:
             grid_options["observer"] = observer
-        configure_chart_request_grids(
-            sky,
-            resolved.request,
-            **grid_options,
-        )
-        configure_chart_request_horizon(sky, resolved.request, state=state)
-        configure_chart_request_disks(sky, resolved.request, state=state)
+        configure_chart_request_grids(sky, resolved.request, **grid_options)
+        configure_chart_request_horizon(sky, resolved.request, state=build)
+        configure_chart_request_disks(sky, resolved.request, state=build)
         from .request_tracks import configure_chart_request_track
 
         configure_chart_request_track(
-            sky,
-            resolved.request,
-            source_resolver=(
-                None if session is None else session.source_binding
-            ),
-            state=state,
+            sky, resolved.request,
+            source_resolver=(None if build.minor_body_session is None
+                             else build.minor_body_session.source_binding),
+            state=build,
         )
-        from .request_satellite_tracks import (
-            configure_chart_request_satellite_tracks,
-        )
+        from .request_satellite_tracks import configure_chart_request_satellite_tracks
 
-        satellite_layers = configure_chart_request_satellite_tracks(
-            sky, resolved.request
+        build.request_satellite_track_layers = tuple(
+            configure_chart_request_satellite_tracks(sky, resolved.request)
         )
-        rollback.callback(state.run_cleanup, _remove_request_layers, sky, tuple(reversed(satellite_layers)))
         prepare_options = {}
         if observer is not None:
             prepare_options["observer"] = observer
-        prepared = prepare_chart_request(sky, resolved, **prepare_options)
-        build = ChartRequestBuild(
-            sky=sky,
-            prepared=prepared,
-            owns_observer=owns_observer,
-            minor_body_session=session,
-            prior_source_resolvers=prior,
-            request_minor_body_layers=tuple(request_layers),
-            request_satellite_track_layers=tuple(satellite_layers),
-            prior_minor_body_attributes=tuple(prior_attributes),
-            _request_state=state,
-        )
-        rollback.pop_all()
+        build.prepared = prepare_chart_request(sky, resolved, **prepare_options)
+    except BaseException as error:
+        build._close_on_failure(error)
+        raise
+    # The caller closes a newly constructed observer if preparation fails.
+    # Transfer that ownership only after the complete build is ready.
+    build.owns_observer = owns_observer
     return build
 
 
@@ -586,7 +601,8 @@ def generate_chart_request(
             raise ValueError("Atlas sheet requests require an explicit observer-free prepared sky.")
         if any(value is not None for value in (profile, configuration, observer)):
             raise ValueError("Atlas sheet requests do not admit observer/configuration overrides.")
-        return _generate_atlas_sheet_request(request, sky)
+        with open_chart_request_scope(sky):
+            return _generate_atlas_sheet_request(request, sky)
     if isinstance(request, ChartRequest):
         from .request_grids import validate_equatorial_grid_marks
         validate_equatorial_grid_marks(request)
@@ -596,7 +612,7 @@ def generate_chart_request(
         profile=profile,
         observer=observer,
     )
-    try:
+    with build:
         export_options = {}
         if configuration is not None:
             export_options["configuration"] = configuration
@@ -607,8 +623,6 @@ def generate_chart_request(
             build.prepared,
             **export_options,
         )
-    finally:
-        build.close()
 
 
 

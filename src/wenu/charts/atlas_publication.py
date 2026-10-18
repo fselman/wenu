@@ -666,20 +666,19 @@ def _atlas_grid_layout(page, style, presentation, *, circular=False):
 
 
 def _render_atlas_sheet(task, sky=None, *, chart_command=None):
-    """Dispatch one immutable sheet through the supplied chart-command entry."""
-    from .request_generation import AtlasSheetChartRequest, generate_chart_request
+    """Dispatch one immutable sheet through the shared chart-command entry."""
+    from .request_generation import AtlasSheetChartRequest
     sheet, page, presentation, directory = task
     command = chart_command if chart_command is not None else (_WORKER_CHART_COMMAND if sky is None else None)
     sky = _WORKER_SKY if sky is None else sky
     request = AtlasSheetChartRequest(sheet, page, presentation, Path(directory))
     if command is None:
-        generate_chart_request(request, sky=sky)
-    else:
-        status = command(["atlas-sheet", "--chart-number", str(sheet.number),
-            "--output-dir", str(directory), "--debug"],
-            atlas_request=request, sky=sky, emit_outputs=False)
-        if type(status) is not int or status != 0:
-            raise RuntimeError(f"wenu_chart failed for chart {sheet.number}: {status}")
+        from wenu.cli.chart import main as command
+    status = command(["atlas-sheet", "--chart-number", str(sheet.number),
+        "--output-dir", str(directory), "--debug"],
+        atlas_request=request, sky=sky, emit_outputs=False)
+    if type(status) is not int or status != 0:
+        raise RuntimeError(f"wenu_chart failed for chart {sheet.number}: {status}")
     return sheet.number
 
 

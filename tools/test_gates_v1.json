@@ -1,6 +1,6 @@
 {
   "schema": "wenu-test-gates/1",
-  "reviewed_base": "d36b178668b8ae564ee410c870f1793dc7ef68b6",
+  "reviewed_base": "7e1b1f9be2d1de0dc6a9a08a8f3a31bd692210df",
   "selection_method": "Reviewed owner/consumer paths and preserved existing test IDs; explicit human impact review, not import-based automatic coverage inference.",
   "production_receipt": {
     "tested_commit": "595ff557c5972ad548eb1202f615328a5440c439",
@@ -137,17 +137,46 @@
           "reason": "Reference equinox policy reaches coupled grids; required when grid configuration behavior changes."
         }
       ]
+    },
+    "request-shared-lifecycle": {
+      "scope": "Request-lifecycle plus shared scope entry/rollback/close for view drawing/native sheets and default atlas dispatch through wenu_chart; configuration and numerical algorithms unchanged.",
+      "limits": "This gate adds native serial/spawn/cold-saved equivalence because atlas dispatch/lifetime changed. No provider numerical model, coordinate/projection meaning, render algorithm, resource schema, shared dependency/build/collection or kernel-routing change is admitted without further impact review.",
+      "extends": [
+        "request-lifecycle"
+      ],
+      "selections": [
+        {
+          "node": "tests/test_atlas_cli.py::test_atlas_sheet_default_route_uses_wenu_chart",
+          "reason": "Default Python API/worker route uses wenu_chart even without command injection; preserve exact request identities and typed command status errors."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_atlas_sheet_worker_invokes_chart_entry_and_reuses_worker_sky",
+          "reason": "Explicit command injection and worker sky reuse retain their accepted contract."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_atlas_sheet_command_runs_in_spawn_workers_without_an_observer",
+          "reason": "Real spawned native sheet exports retain observer-free execution, requested formats and exact paper dimensions."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_atlas_producer_uses_real_chart_command_and_prepares_sky_once",
+          "reason": "Actual installed atlas producer/CLI/export/book route prepares one sky and retains report/catalogue seams."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_atlas_chart_batch_cold_saved_and_spawned_pages_match",
+          "reason": "Changed native scope and default dispatch require existing real cold/saved/spawned page, report, book and pixel equivalence; previously about 126 s, not an unrelated blanket suite."
+        }
+      ]
     }
   },
   "consumer_review": [
     {
       "route": "generate_chart_request -> build_chart_request -> _prepare_with_sphere",
-      "barrier": "Journal covers canonical ordinary request configuration, not numerical cache rollback.",
+      "barrier": "open_chart_request_scope owns registration/binding/rollback; completed ordinary build adopts observer ownership only after preparation. No numerical cache rollback.",
       "gate": "request-lifecycle"
     },
     {
       "route": "CLI -> draw_chart_view_request -> configure helpers -> export_prepared_chart",
-      "barrier": "Direct drawing does not acquire the new journal; standalone helper behavior must remain compatible.",
+      "barrier": "View/drawing retains its own geometry and helper order; it now enters the same scope and journals helper writes, including failure before export.",
       "gate": "request-lifecycle"
     },
     {
@@ -161,9 +190,9 @@
       "gate": "request-lifecycle"
     },
     {
-      "route": "installed atlas CLI -> injected wenu.cli.chart.main(atlas-sheet) -> generate_chart_request(AtlasSheetChartRequest); create_atlas API without chart_command retains direct fallback",
-      "barrier": "Branches before build/journal/helper configuration; one saved-sky public dispatch guard selected. Full saved/spawned-page comparison belongs to atlas/snapshot changes or release integration. Command reuse is implemented; common lifecycle is not. Preserve exact projection/viewport/paper and native observer-free realization while consolidating lifecycle later.",
-      "gate": "request-lifecycle"
+      "route": "atlas producer/API/worker -> injected command or default wenu.cli.chart.main(atlas-sheet) -> generate_chart_request(AtlasSheetChartRequest)",
+      "barrier": "Native branch acquires the shared scope before export, without ordinary configuration or an observer. Projection/viewport/paper and native realization remain unchanged; direct generator fallback removed.",
+      "gate": "request-shared-lifecycle"
     }
   ],
   "excluded_owners": [
@@ -177,12 +206,24 @@
     },
     {
       "owner": "atlas design, book/index appearance and saved/spawned-page equivalence",
-      "reason": "Native sheet dispatch bypasses ordinary journal/helpers; no atlas/export/snapshot behavior change. Public dispatch guard retained."
+      "reason": "Excluded for compatible ordinary-only lifecycle scope. The current native dispatch/unified-lifetime change explicitly adds real atlas serial/spawn/cold-saved checks through request-shared-lifecycle; layout/index/style algorithms remain unchanged."
     },
     {
       "owner": "provider internal astrometry/orbits, projection/renderer internals and standalone kernel",
       "reason": "Unchanged services/contracts; request gates exercise their immediate consumers. Add owners when those contracts or implementations change."
     }
   ],
-  "acceptance": "Named gates are proposed until normal Mac collection/execution passes. The 3415-test receipt establishes current baseline; no performance claim for new selections before timing."
+  "acceptance": "Existing gates accepted on Mac at 04c6ae21 / identical merge 7e1b1f9b. Current shared-lifecycle changes and new extending gate await normal Mac execution; prior receipts do not cover changed routes.",
+  "accepted_gate_receipt": {
+    "tested_commit": "04c6ae21688ce8643ac2980265df2ec4a3c4b816",
+    "merged_commit": "7e1b1f9be2d1de0dc6a9a08a8f3a31bd692210df",
+    "identical_tree": "2d9efb84c33dedeb0ac388f85c0418c99b2bcb94",
+    "tooling_tests": 8,
+    "tooling_seconds": 0.083,
+    "documentation_tests": 36,
+    "documentation_seconds": 2.51,
+    "request_configuration_tests": 286,
+    "request_configuration_seconds": 91.56,
+    "environment": "User-reported Mac, 2026-10-18; gates passed under normal imports/pytest."
+  }
 }

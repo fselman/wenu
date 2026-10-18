@@ -12,7 +12,7 @@ from .request_chart import PreparedChartRequest, _chart_from_resolved
 from .request_composition import ChartProductCompositionOptions
 from .request_disks import configure_chart_request_disks
 from .request_disks import FrozenEarthSolarSystemDiskSequenceDisplayRequest
-from .request_generation import export_prepared_chart
+from .request_generation import export_prepared_chart, open_chart_request_scope
 from .request_grids import configure_chart_request_grids
 from .request_horizon import configure_chart_request_horizon
 from .request_tracks import configure_chart_request_track
@@ -319,42 +319,23 @@ def draw_chart_view_request(view, request):
     if not isinstance(request, ChartRequest):
         raise TypeError("request must be a ChartRequest.")
     _validate_load_profile(view, request.detail)
-    from wenu.minor_body_resources import (
-        MinorBodyResourceSession,
-        bind_sky_source_resolver,
-        request_minor_body_descriptors,
-        restore_sky_source_resolvers,
-    )
-
-    session = None
-    previous = ()
-    request_layers = []
-    if request_minor_body_descriptors(request):
-        for descriptor in request.minor_body_descriptors:
-            if descriptor.selection_key not in view.sky.solar_system_bodies:
-                request_layers.append(
-                    view.sky.add_solar_system_body(descriptor)
-                )
-        session = MinorBodyResourceSession(
-            request.minor_body_resource_directory,
-            view.observer,
-        )
-        previous = bind_sky_source_resolver(
-            view.sky, session.source_binding
-        )
-    try:
+    with open_chart_request_scope(
+        view.sky, request=request, observer=view.observer,
+    ) as build:
         configure_chart_request_grids(
             view.sky, request, frame=view.frame, observer=view.observer
         )
-        configure_chart_request_horizon(view.sky, request)
+        configure_chart_request_horizon(view.sky, request, state=build)
         configure_chart_request_track(
             view.sky,
             request,
             source_resolver=(
-                None if session is None else session.source_binding
+                None if build.minor_body_session is None
+                else build.minor_body_session.source_binding
             ),
+            state=build,
         )
-        configure_chart_request_disks(view.sky, request)
+        configure_chart_request_disks(view.sky, request, state=build)
         chart = view.chart
         if _is_frozen_sequence(request.solar_system_disk_sequence):
             chart = _chart_from_resolved(
@@ -374,15 +355,6 @@ def draw_chart_view_request(view, request):
             prepared,
             **export_options,
         )
-    finally:
-        restore_sky_source_resolvers(previous)
-        if session is not None:
-            session.close()
-        for layer in request_layers:
-            view.sky.remove(layer)
-            view.sky.solar_system_bodies.pop(
-                layer.descriptor.selection_key, None
-            )
     if len(generation.exports) != 1:
         raise RuntimeError("A chart-view drawing must export exactly once.")
     return generation.exports[0]

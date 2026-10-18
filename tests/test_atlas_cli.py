@@ -1610,3 +1610,39 @@ def test_atlas_cluster_diameters_match_reported_central_scale(request_data,tmp_p
     else:
         np.testing.assert_allclose(areas,[areas[0]]*3)
     with pytest.raises(ValueError): AtlasChartPresentation(open_cluster_angular_sizes='yes')
+
+
+
+@pytest.mark.parametrize("worker", [False, True])
+@pytest.mark.parametrize("status", [0, 1, True])
+def test_atlas_sheet_default_route_uses_wenu_chart(request_data, tmp_path, monkeypatch, worker, status):
+    """No injected command must still use the ordinary chart command entry."""
+    from wenu.charts import atlas_publication as publication
+    from wenu.cli import chart
+
+    atlas = AtlasDesignRequest.from_dict(request_data).resolve()
+    sheet = atlas.geometry.sheets[0]
+    presentation = publication.AtlasChartPresentation()
+    sky = object()
+    calls = []
+    monkeypatch.setattr(publication, "_WORKER_SKY", sky)
+    monkeypatch.setattr(publication, "_WORKER_CHART_COMMAND", None)
+
+    def command(argv, **options):
+        request = options["atlas_request"]
+        assert request.sheet is sheet and request.page is atlas.geometry.page
+        assert request.presentation is presentation and request.output_dir == tmp_path
+        assert options["sky"] is sky and options["emit_outputs"] is False
+        assert argv == ["atlas-sheet", "--chart-number", str(sheet.number),
+                        "--output-dir", str(tmp_path), "--debug"]
+        calls.append(request)
+        return status
+
+    monkeypatch.setattr(chart, "main", command)
+    task = (sheet, atlas.geometry.page, presentation, str(tmp_path))
+    if type(status) is int and status == 0:
+        assert publication._render_atlas_sheet(task, **({} if worker else {"sky": sky})) == sheet.number
+    else:
+        with pytest.raises(RuntimeError, match="wenu_chart failed"):
+            publication._render_atlas_sheet(task, **({} if worker else {"sky": sky}))
+    assert len(calls) == 1
