@@ -32,7 +32,8 @@ Projection alignment is not an astronomical frame transform. Preserve public
 APIs and accepted atlas-print appearance unless the bounded task changes them.
 
 The standalone K2 foundation is a separate candidate under `packages/wenu_kernel`.
-Native stellar realization has the first K3 adapter candidate; other kernel
+Native stellar realization is accepted through PR #247. Public native stellar
+positions and constellation endpoints extend that adapter; other kernel
 routing, Gaia DR3 and astronomical package extraction remain planned. Run the
 core's explicit independent gate only when its implementation/contracts change;
 root pytest discovery intentionally remains scoped to the existing `tests` owner.
@@ -41,6 +42,15 @@ temporary adapters allowed. Extract one independently installable package at
 a time after that closure. Do not silently reclassify old snapshots as kernel states.
 
 ## Scientific and provider work
+
+Catalogue facts (reference epoch/time scale, frame, centre, units, edition and
+provenance) belong to validated source metadata, preserved in a standard Wenu
+catalogue representation and mirrored in its runtime record. Consumers must
+read that record. Do not duplicate catalogue-specific literals or infer missing
+metadata from a name, filename or another catalogue. Validate before publication;
+preserve original source fields and bind metadata to source bytes. Mathematical
+definitions, supported schema identifiers and explicit model policies remain
+software contracts. See the metadata audit in `kernel_migration_audit_v1.md`.
 
 Preserve the [current scientific invariants and unresolved limits](scientific_contracts.md).
 Review/update the coordinate guide whenever meaning, ownership or provenance

@@ -1667,6 +1667,13 @@
       "description": "Offline, immutable HIP-linked Wikidata candidates, separate from astrometry."
     },
     {
+      "path": "src/wenu/stellar_catalogue.py",
+      "git_blob_sha": "a36e54ff2205b2841cc3c4bff291456fac13a063",
+      "as_is_directory": "src/wenu",
+      "description": "Validated stellar ingestion, immutable metadata mirror and standard table envelope.",
+      "baseline_relation": "Added by metadata-ingestion correction in PR248; source-specific facts live in data resources."
+    },
+    {
       "path": "src/wenu/stellar_research.py",
       "git_blob_sha": "3f6789ee94308c176d5743bacf74b7205622a8b1",
       "as_is_directory": "src/wenu",
@@ -6375,6 +6382,17 @@
       ]
     },
     {
+      "path": "tests/stellar_catalogue_fixtures.py",
+      "git_blob_sha": "1dfffba39105850324b19da29338d0d439b07d2b",
+      "test_functions": 0,
+      "marks": {},
+      "parametrize_decorators": 0,
+      "fixtures": [],
+      "peer_test_imports": [],
+      "imports": ["hashlib", "wenu.stellar_catalogue"],
+      "baseline_relation": "Shared explicit synthetic metadata for constructed stellar fixtures; no automatic production default."
+    },
+    {
       "path": "tests/test_stellar_state.py",
       "git_blob_sha": "4091695d05e542a89b3b27eb99543e920980410d",
       "test_functions": 6,
@@ -7628,7 +7646,7 @@
     },
     {
       "id": "kernel-native-stars",
-      "stage": "K3 native stellar consumer candidate; display-DPI defect reproduced and fixed; expanded Linux gate passed, Mac followup pending",
+      "stage": "Accepted through PR247; tested head 8e4be740, identical merge bf804cbb. Original per-slice unmigrated list below is historical; native-stellar-routing records the next consumer change.",
       "accepted_base": "e5bd7c16ab3d7089fc51420432f540b2b2fe2ef9",
       "source_paths": [
         "src/wenu/stellar_state.py",
@@ -7755,14 +7773,108 @@
         "failures": {
           "test_kernel_native_stars_preserve_legacy_page_pixels": "New test omitted mandatory PDF format; corrected to PNG+PDF without changing pixel equality.",
           "test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override": "New raw metadata startswith assertion rejected valid serialization; corrected to parsed exact distribution/URL identity.",
-          "test_atlas_chart_batch_cold_saved_and_spawned_pages_match": "Mac cold/serial PNG difference (990/708000 elements) exactly reproduced through ambient layout dpi 100/200 and fixed by native offscreen canvas isolation. New Mac receipt pending."
+          "test_atlas_chart_batch_cold_saved_and_spawned_pages_match": "Initial Mac cold/serial PNG difference (990/708000 elements) exactly reproduced through ambient layout dpi 100/200; fixed by native offscreen canvas isolation and accepted in the final Mac followup below."
         },
         "environment": "User-reported Mac; plugin autoload disabled; SDK and editable Wenu installations succeeded."
+      },
+      "accepted_head": "8e4be740a6786de07212c3d0897340d195ef7622",
+      "merged_commit": "bf804cbb0a15ebd7b9cce8fca1277769fa765d10",
+      "identical_merge_tree": "201da72e512bc7d6a0398a44e8c3768ae3d0d049",
+      "mac_followup_verification": {
+        "tooling_tests": 8,
+        "tooling_seconds": 0.563,
+        "documentation_tests": 36,
+        "documentation_seconds": 3.04,
+        "native_atlas_output_tests": 7,
+        "native_atlas_output_seconds": 250.81,
+        "installation": "User-reported Mac SDK/editable installation and wheel/sdist/editable native consumption passed; clean synchronized tree."
       },
       "mac_followup_gate": "native-atlas-output",
       "mac_receipts_reused": "35 initial passing native gate cases cover unchanged stellar provider, selection and state/snapshot semantics. Followup rechecks fixed failures, three display-DPI shapes and file-admitted output; no blanket full-suite repeat."
     }
   ],
+  "native_stellar_routing_extension": {
+    "stage": "Initial PR248 consumer slice at 90d51334; historical receipt. Superseded by the metadata-ingestion revision below, which removes the repeated source literals.",
+    "accepted_base": "bf804cbb0a15ebd7b9cce8fca1277769fa765d10",
+    "source_paths": ["src/wenu/objects/stars.py", "src/wenu/sky/constellation_lines.py"],
+    "test_paths": ["tests/test_position_providers.py", "tests/test_constellation_geometry.py", "tests/test_reusable_canonical_sphere.py"],
+    "public_paths": ["Stars.position(instant=None)", "Stars.native_positions(identifiers)", "ConstellationLines.realize(native_icrs_context, None)", "_SnapshotStars and _SnapshotLines inherited APIs", "native atlas cold/saved/serial/spawn consumers"],
+    "boundary": "Stars owns full-source HIP selection, metadata and kernel-backed coordinate conversion. Native lines consume only public native_positions and join identities to curated topology; no raw coordinate/Skyfield dependency on the native branch.",
+    "scientific_change": "Correct position metadata from J2000.0 default to source J1991.25; authoritative RA degrees avoid redundant hours round trip. No proper motion, epoch propagation or new accuracy model. Instant remains ignored for compatibility.",
+    "legacy_test_moves_or_deletions": [],
+    "old_assertions": "All pre-existing test IDs and assertions retained; closest legacy native-line fixture now uses the actual Stars public interface.",
+    "gate": "native-stellar-routing",
+    "local_verification": {
+      "environment": "Normal Linux Wenu/astronomy imports with separately installed unchanged SDK; plugin autoload disabled",
+      "focused_tests": 39,
+      "focused_seconds": 127.09,
+      "tooling_tests": 8,
+      "tooling_seconds": 0.368,
+      "baseline_fault_check": "Six selected regression cases failed against the accepted bf804cbb production materialization: wrong epoch, ignored kernel vectors, missing public API, table coupling and silent refusal bypass.",
+      "documentation": "33 normal pytest cases pass; three archive/materialization checks require a complete checkout. Active links additionally checked against the authoritative Git tree; unchanged archive checks retain PR247 Mac evidence."
+    },
+    "reused_evidence": {
+      "SDK": "PR242 unchanged 157-test source; no SDK/provider changes in this slice",
+      "installation_and_display_DPI": "PR247 final Mac followup above; dependencies, packaging, canvas and renderer unchanged"
+    },
+    "excluded_owners": ["nonstellar position providers", "grids and constellation boundaries", "orbital and satellite/radiometry physics", "kernel SDK internals", "wheel/sdist packaging", "request lifecycle", "full production suite"],
+    "remaining": ["native constellation-label anchors", "observed stellar astrometry", "stellar membership coordinate consumers", "other astronomical families", "reports and other non-chart consumers", "chart/atlas private-helper cycle", "Gaia DR3 and propagation", "K3 all-consumer closure and K5 freeze"],
+    "content_sha256": {
+      "src/wenu/objects/stars.py": "3f1188f6983c073ddade94a48ab07ee0ad9651ebf06caa9ec69b115f867ec92c",
+      "src/wenu/sky/constellation_lines.py": "9935a0619ca4c82d17da697bc22134bafed02834c3adae13f4dcc3e8c4acf0bb",
+      "tests/test_position_providers.py": "9568a6bee739e00ca9b98bb003f506338de00af55dd348f55f8942a4c1a79c93",
+      "tests/test_constellation_geometry.py": "e0e901b7caeb27e263197061509c47c03f9d9305fd783a64cc119c942449a61f",
+      "tests/test_reusable_canonical_sphere.py": "af3d892d9535524712f91ec31372374a231101902011012c103ba4fcd63e7a2f"
+    }
+  },
+  "stellar_metadata_ingestion_revision": {
+    "base_commit": "90d513341a344d1311f45f080f85c9403978d0fc",
+    "metadata_schema": "wenu-stellar-catalogue/1",
+    "snapshot_schema": 3,
+    "metadata_resource": "src/wenu/data/catalogs/hipparcos/metadata.json",
+    "source_description": "src/wenu/data/catalogs/hipparcos/ReadMe, Note on RAdeg, DEdeg and Note on pmRA, pmDE",
+    "boundary": "Source metadata is validated before publication, preserved in a standard table envelope and mirrored by immutable StellarCatalogueMetadata. Native stellar geometry, kernel queries, endpoint and label specifications read that record. New snapshots carry it; legacy v1/v2 profiles require exact source identity.",
+    "custom_source_policy": "Explicit metadata argument or adjacent <filename>.metadata.json, bound to source SHA256; byte-identical packaged sources may reuse the packaged profile. Missing/inconsistent epoch, scale, frame, origin, units, edition, source identity or provenance is refused.",
+    "new_owner_rationale": "stellar_catalogue.py owns ingestion/admission and metadata preservation independently of kernel state evaluation; shared synthetic fixture supplies explicit metadata for constructed tests.",
+    "audit": {
+      "report": "docs/developer/kernel_migration_audit_v1.md#catalogue-metadata-audit-2026-10-18",
+      "method": "Whole production/kernel static searches plus targeted loader, metadata document, normalized table, snapshot and consumer review; no claim of numerical revalidation of unmodified providers",
+      "fixed": ["M1 stellar source facts", "M2 native line/label metadata", "M3 stellar saved-sky metadata"],
+      "open": ["M4 mixed-source open-cluster epochs and shared J2000 default", "M5 nonstellar normalization loses metadata/units", "M6 fixed snapshot semantics stamped from literals", "M7 Ceres solution identity in code", "M8 spectral resource edition facts in code", "M9 isophote source semantics/provenance", "M10 ephemeris model inferred from filename"]
+    },
+    "gate": "native-stellar-routing",
+    "verification": {
+      "environment": "Normal Linux Wenu/astronomy imports and separately installed unchanged SDK; plugin autoload disabled",
+      "expanded_gate_tests": 105,
+      "provider_subtests": 9,
+      "expanded_gate_seconds": 230.77,
+      "additional_hemisphere_cases": 3,
+      "additional_hemisphere_seconds": 65.23,
+      "final_metadata_and_source_free_cases": 2,
+      "final_metadata_and_source_free_seconds": 11.03,
+      "tooling_tests": 8,
+      "tooling_seconds": 0.387,
+      "documentation_tests": 33,
+      "documentation_seconds": 1.08,
+      "documentation_limits": "Three unchanged historical archive/materialization checks need a complete checkout; active links verified against authoritative Git tree. No SDK or full production rerun and no new Mac execution claimed."
+    },
+    "content_sha256": {
+      "src/wenu/stellar_catalogue.py": "00b41903adc8d9c0f4e26fbcf170b6aab116cb9c12bd0f611e0d903f38208133",
+      "src/wenu/stellar_state.py": "5a2f9cda6fda5e7aece13fcb697c4871a217f7055014496953990971919efb18",
+      "src/wenu/objects/stars.py": "e8cd55b1ed3a032994faf26f5f7e94e9ade65a17b05e6626a59ec92283da59e0",
+      "src/wenu/sky/native_snapshot.py": "ce34a52a59b3f008ec9ab9b251e234b51b4839da802dd294ecb8323ca7e8c1d3",
+      "src/wenu/sky/constellation_labels.py": "d2dc556906f39580613f2d550712b5929a1214e7367c2acbc804f26f59e4de07",
+      "src/wenu/sky/constellation_lines.py": "4f525d0c79cef2386108070a4735766660028516e748474ecce1956201a99bb7",
+      "tests/test_stellar_state.py": "b8871766cbb6527d64b4bc6b1b864e35a641dfe79a7eb5ebb39ce2df0551e01e",
+      "tests/test_stars.py": "254bd5070edcfceacd1d072bff561351e1b3aaebcc89d47e935c49a8051b0e06",
+      "tests/test_constellation_geometry.py": "bc57727cebb25d93cfe0d1580325ad4c2577700794a500f51c49f8aa17c77f62",
+      "tests/test_reusable_canonical_sphere.py": "d0807abc0cabdf77dca252d164723a50a53a9d736430fca973fa758ba37ac310",
+      "tests/test_position_providers.py": "809fead6d1fa5f670a2eac59f5b089aa38ec0d3dab3f254a3d525d5bde068816",
+      "tests/test_curated_catalogues.py": "5bc40ae0e1db89c9c78dedad92ee48cd35be9d0a13188061b7f91d2c10b62a40",
+      "tests/test_atlas_cli.py": "82dcb5aaa9df38df0ef52cb8767b792c2c6fd4e54c71e71fac898f4ba08fdbd6",
+      "tests/stellar_catalogue_fixtures.py": "5ea4eb103c3fd526b27546207ef9ad65798a2b5408de2d9ae95c1db99c762a2d"
+    }
+  },
   "development_test_gates": {
     "source_paths": [
       "tools/run_test_gate.py"
@@ -7774,7 +7886,7 @@
     "reviewed_base": "d36b178668b8ae564ee410c870f1793dc7ef68b6",
     "purpose": "Explicit owner/consumer selections before package extraction; not automatic coverage or independent legacy installation.",
     "legacy_test_moves_or_deletions": [],
-    "normal_mac_acceptance": "Request gates accepted through PR #246. Native stellar initial Mac state checks passed; native-atlas-output followup pending for corrected test defects and fixed display-DPI layout.",
+    "normal_mac_acceptance": "Request gates accepted through PR246 and native adapter/output through PR247. Expanded native-stellar-routing includes metadata ingestion, snapshot v3 and installation with separate Linux verification; no new Mac receipt claimed.",
     "local_verification": {
       "stdlib_tests": 8,
       "isolation_command": "python -I -S -m unittest discover -s tools/tests -v",
@@ -7800,8 +7912,8 @@
   },
   "current_inventory_extension": {
     "base_commit": "e5bd7c16ab3d7089fc51420432f540b2b2fe2ef9",
-    "production_python_files": 263,
-    "test_side_python_files": 240,
+    "production_python_files": 264,
+    "test_side_python_files": 241,
     "limits": "Historical baseline counts/hashes remain historical. Current path inventory includes added K3 owners; per-slice hashes identify edited owners. Not a new full functionality census."
   }
 }

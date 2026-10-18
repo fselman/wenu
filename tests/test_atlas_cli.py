@@ -9,6 +9,7 @@ import subprocess
 import sys
 
 import pytest
+from stellar_catalogue_fixtures import native_table
 
 from wenu.atlas_design import AtlasBandTiling, AtlasDesignRequest
 from wenu.cli import atlas as cli
@@ -129,6 +130,7 @@ def test_hemispheric_atlas_uses_all_three_commands_and_curated_catalogue_seams(t
     stars = Stars(None, magnitude_limit=11)
     stars.source_catalog = pd.DataFrame(dict(ra_hours=[4., 4.], ra_degrees=[60., 60.],
         dec_degrees=[-30., 30.], magnitude=[1., 2.], is_constellation_vertex=[False]*2), index=[11, 12])
+    stars.source_catalog = native_table(stars.source_catalog)
     stars.catalog = stars.source_catalog.copy()
     sky.stars = sky.add(stars)
     bundles = []
@@ -1413,6 +1415,7 @@ def test_atlas_producer_uses_real_chart_command_and_prepares_sky_once(request_da
         ra_degrees=[sheet.center_ra_deg]*3,
         dec_degrees=[sheet.center_dec_deg, -80, 0],
         magnitude=[-1.0, 5.0, 9.0], is_constellation_vertex=[False]*3), index=[11,12,13])
+    stars.source_catalog = native_table(stars.source_catalog)
     stars.catalog = stars.source_catalog[stars.source_catalog.magnitude <= 6].copy()
     sky.stars = sky.add(stars)
     preparations, dispatches, profiles = [], [], []

@@ -1154,7 +1154,8 @@ not current runtime behavior. At `6708f54a`, Hipparcos stars are instantiated
 with RA/Dec only: proper motion, parallax and radial velocity are not supplied.
 `Stars.position()` ignores its instant argument. Apparent observer AltAz is
 still evaluated for the observing date; native ICRS axes do not precess.
-The two native epoch metadata routes are inconsistent and must be corrected.
+The native position/realization metadata now consistently declares J1991.25;
+this corrects the old position API's J2000.0 default, not the coordinates' epoch.
 
 `CoordinateSpec`, `ObservationContext` and `CoordinateService` exist, but their
 presence does not establish a uniform physical-state kernel or universal
@@ -1178,10 +1179,22 @@ ICRS catalogue specification. Unbounded lookup coverage does not establish
 physical accuracy away from the source epoch. No epoch propagation or time
 conversion is performed. The product helper queries only that source epoch.
 
-Native `Stars.realize` and saved-star realization use the real kernel result.
-The independent `Stars.position` route still ignores instant and carries its
-legacy default epoch metadata; observed Skyfield astrometry is also unmigrated.
-These remaining routes prevent all-consumer or kernel-freeze acceptance.
+The source-specific epoch, scale, frame, units, edition and provenance are read
+from the catalogue metadata document at ingestion. Row epochs and source bytes
+must agree with it. The immutable runtime metadata is preserved in standard
+table attributes and snapshot v3 records; geometry and kernel consumers read
+that record. A synthetic J2016 catalogue tests that no Hipparcos epoch leaks
+into these consumers. Earlier snapshot versions require an explicit,
+source-digest-bound compatibility profile rather than an inferred epoch.
+
+Native `Stars.realize`, `Stars.position`, `Stars.native_positions` and saved-star
+equivalents use the real kernel result. Native constellation endpoints consume
+the public HIP-position interface, not a second raw-table astrometric route.
+`position` still ignores instant explicitly; all these outputs declare J1991.25.
+Authoritative source RA degrees avoid an unnecessary hours-to-degrees round trip;
+hours-only constructed legacy inputs remain supported. Observed Skyfield
+astrometry and native constellation-label anchors remain unmigrated, alongside
+other families. These prevent all-consumer or kernel-freeze acceptance.
 
 Primary references checked 2026-10-18: [ESA catalogue description](https://www.cosmos.esa.int/web/hipparcos/catalogues),
 [ESA Hipparcos field definitions](https://hipparcos-tools.cosmos.esa.int/pstex/sect2_02.pdf)

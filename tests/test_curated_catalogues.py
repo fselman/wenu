@@ -185,6 +185,12 @@ stars = Stars(None)
 stars.catalog = pd.DataFrame(dict(ra_degrees=[90.], dec_degrees=[30.],
     magnitude=[1.], is_constellation_vertex=[False]), index=[11])
 stars.source_catalog = stars.catalog.copy()
+from wenu.stellar_catalogue import packaged_stellar_metadata, ingest_stellar_catalogue
+metadata = packaged_stellar_metadata('hipparcos')
+stars.catalog['epoch_year'] = float(metadata.astropy_epoch.jyear)
+stars.catalog = ingest_stellar_catalogue(stars.catalog, metadata).table
+stars.source_catalog = stars.catalog.copy()
+assert metadata.to_record()['source_metadata']['description_file'] == 'ReadMe'
 points = stars.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None)
 np.testing.assert_allclose(points.lon_deg, [90.], atol=1e-12, rtol=0)
 np.testing.assert_allclose(points.lat_deg, [30.], atol=1e-12, rtol=0)

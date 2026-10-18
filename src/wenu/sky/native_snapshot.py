@@ -35,6 +35,10 @@ from wenu import resources
 from wenu import star_designations as designations
 from wenu.stellar_research import StellarResearch
 from wenu.objects.stars import Stars
+from wenu.stellar_catalogue import (
+    ingest_stellar_catalogue, packaged_stellar_metadata, stellar_table_metadata,
+    StellarCatalogueMetadata,
+)
 from wenu.sky.celestial_sphere import CelestialSphere
 from wenu.sky.constellation_lines import ConstellationLines
 from wenu.sky.constellation_labels import ConstellationLabels
@@ -49,7 +53,8 @@ from wenu.sky.maximal_sphere import (
 LEGACY_LAYERS = ("milky_way", "magellanic_clouds", "stars",
           "constellation_lines", "constellation_labels")
 LEGACY_COMPATIBILITY = "wenu-native-sky-records-v1"
-COMPATIBILITY = "wenu-fixed-sky-records-v2"
+PRE_METADATA_COMPATIBILITY = "wenu-fixed-sky-records-v2"
+COMPATIBILITY = "wenu-fixed-sky-records-v3"
 _CATALOGUES = {"nonstellar": NonStellar, "galaxies": Galaxies,
     "open_clusters": OpenClusters, "globular_clusters": GlobularClusters,
     "supernova_remnants": SupernovaRemnants, "planetary_nebulae": PlanetaryNebulae}
@@ -334,6 +339,7 @@ def _sky_records(sky):
     stars = sky.stars
     return dict(
         star_ids=stars.source_catalog.index.to_numpy(dtype=np.int64),
+        stellar_metadata=stellar_table_metadata(stars.source_catalog).to_record(),
         columns={key: stars.source_catalog[key].to_numpy() for key in _COLUMNS},
         designation_catalogue=stars.designation_catalogue,
         research=sky.stellar_research,
@@ -422,9 +428,10 @@ def prepare_native_sky_snapshot(design_bytes, destination, *,
                     (stage / name).write_bytes(data)
                     payloads[name] = dict(sha256=_digest(data), size=len(data))
                     evidence[key] = name
-            manifest = dict(schema_version=2, document_kind="wenu-native-sky-snapshot",
+            stellar_metadata = stellar_table_metadata(sky.stars.source_catalog)
+            manifest = dict(schema_version=3, document_kind="wenu-native-sky-snapshot",
                             compatibility=COMPATIBILITY, frame="icrs",
-                            origin="solar-system-barycenter", stellar_epoch="J1991.25",
+                            origin="solar-system-barycenter", stellar_epoch=stellar_metadata.epoch_label,
                             position_status="astrometric", coordinate_units="deg",
                             full_sphere=True, layers=list(LAYERS),
                             star_magnitude_limit=profile.star_magnitude_limit,
@@ -501,6 +508,7 @@ class NativeSkySnapshot:
         stars = _SnapshotStars(None, magnitude_limit=self.star_magnitude_limit)
         stars.designation_catalogue = data["designation_catalogue"]
         source = pd.DataFrame(dict(data["columns"]), index=data["star_ids"], copy=False)
+        source = ingest_stellar_catalogue(source, self.stellar_metadata).table
         source["star_designations"] = [stars.designation_catalogue.get(int(hip)) for hip in source.index]
         stars.source_catalog = source
         stars.catalog = source[source["magnitude"] <= stars.magnitude_limit].copy()
@@ -539,11 +547,11 @@ def read_native_sky_snapshot(directory, *, expected_manifest_sha256=None):
               "layers", "star_magnitude_limit", "design_id", "design_revision",
               "payloads", "array_index", "source_digests", "evidence", "records"))
     version = m["schema_version"]
-    if type(version) is not int or version not in (1, 2):
+    if type(version) is not int or version not in (1, 2, 3):
         raise ValueError("Unsupported snapshot version.")
     expected = dict(schema_version=version, document_kind="wenu-native-sky-snapshot",
-                    compatibility=LEGACY_COMPATIBILITY if version == 1 else COMPATIBILITY, frame="icrs",
-                    origin="solar-system-barycenter", stellar_epoch="J1991.25",
+                    compatibility={1: LEGACY_COMPATIBILITY, 2: PRE_METADATA_COMPATIBILITY, 3: COMPATIBILITY}[version], frame="icrs",
+                    origin="solar-system-barycenter",
                     position_status="astrometric", coordinate_units="deg",
                     full_sphere=True, layers=list(LEGACY_LAYERS if version == 1 else LAYERS))
     if any(type(m[key]) is not type(value) or m[key] != value for key, value in expected.items()):
@@ -613,7 +621,7 @@ def read_native_sky_snapshot(directory, *, expected_manifest_sha256=None):
         raise ValueError("Invalid snapshot source identities.")
     sources = set(m["source_digests"])
     common = {"hipparcos", "western_lines", "lmc", "smc"} | _EVIDENCE
-    if version == 2:
+    if version >= 2:
         common |= set(_CATALOGUES) | {"iau_boundaries"}
     if sources not in (common | {"milky_way"}, common | {
             f"milky_way_{level}" for level in MilkyWayIsophotes.available_levels}):
@@ -627,8 +635,10 @@ def read_native_sky_snapshot(directory, *, expected_manifest_sha256=None):
         raise ValueError("Incomplete snapshot designation/research evidence.")
     data = _decode(m["records"], arrays)
     required = {"star_ids", "columns", "designation_catalogue", "research", "edges", "milky_way", "clouds"}
-    if version == 2:
+    if version >= 2:
         required.add("fixed")
+    if version >= 3:
+        required.add('stellar_metadata')
     if not isinstance(data, MappingProxyType) or set(data) != required:
         raise ValueError("Invalid native snapshot content.")
     ids, columns = data["star_ids"], data["columns"]
@@ -646,11 +656,20 @@ def read_native_sky_snapshot(directory, *, expected_manifest_sha256=None):
                           "ccdm_id", "multiple_annex"} else "f")
         if values.dtype.kind not in expected_kind:
             raise ValueError("Invalid snapshot stellar column dtype.")
+    if version >= 3:
+        metadata = StellarCatalogueMetadata.from_record(_plain_mapping(data['stellar_metadata']))
+    else:
+        # Explicit compatibility adapter: old schemas admitted only this source.
+        # Its identity must match the declared data profile; never infer an epoch.
+        metadata = packaged_stellar_metadata('hipparcos')
+    if (metadata.to_record()['source_sha256'] != m['source_digests']['hipparcos']
+            or metadata.epoch_label != m['stellar_epoch']):
+        raise ValueError('Snapshot stellar metadata disagrees with source identity/epoch.')
     ra, dec, epoch = (columns[name] for name in ("ra_degrees", "dec_degrees", "epoch_year"))
     if (np.any(np.isinf(ra)) or np.any(np.isinf(dec))
             or np.any((ra[np.isfinite(ra)] < 0) | (ra[np.isfinite(ra)] >= 360))
             or np.any(np.abs(dec[np.isfinite(dec)]) > 90)
-            or np.any(~np.isfinite(epoch)) or np.any(epoch != 1991.25)):
+            or np.any(~np.isfinite(epoch)) or np.any(epoch != float(metadata.astropy_epoch.jyear))):
         raise ValueError("Invalid snapshot native stellar coordinates/epoch.")
     if not isinstance(data["designation_catalogue"], designations.StarDesignationCatalogue):
         raise ValueError("Invalid frozen designation catalogue.")
@@ -687,9 +706,19 @@ def read_native_sky_snapshot(directory, *, expected_manifest_sha256=None):
             len(edge) != 2 or any(type(hip) is not int or hip <= 0 for hip in edge)
             for edges in data["edges"].values() for edge in edges):
         raise ValueError("Invalid constellation connectivity.")
-    if version == 2:
+    if version >= 2:
         _validate_fixed(data["fixed"])
-    return NativeSkySnapshot(directory, m, arrays, data, design_bytes, digest)
+    snapshot = NativeSkySnapshot(directory, m, arrays, data, design_bytes, digest)
+    snapshot.stellar_metadata = metadata
+    return snapshot
+
+
+def _plain_mapping(value):
+    if isinstance(value, (dict, MappingProxyType)):
+        return {key: _plain_mapping(item) for key, item in value.items()}
+    if isinstance(value, tuple):
+        return [_plain_mapping(item) for item in value]
+    return value
 
 
 def _validate_fixed(fixed):

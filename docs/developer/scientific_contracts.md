@@ -26,6 +26,14 @@ calendars, frame vocabulary and current implementation limits. The
 
 ## Native stellar lookup during migration
 
+Catalogue facts must be read from validated metadata at ingestion, preserved
+in Wenu's standard catalogue envelope and mirrored in the runtime record.
+Require reference epoch/time scale, frame/origin, units, edition, source identity
+and provenance; preserve original fields and reject missing/conflicting claims.
+Do not insert catalogue-specific defaults in a consumer. The current stellar
+implementation follows this boundary; the metadata audit in the migration
+audit records remaining providers that do not yet satisfy it.
+
 The first K3 adapter exposes finite native Hipparcos directions at source epoch
 J1991.25(TT), JD 2448349.0625. It does not propagate to a requested epoch.
 ICRS axes do not precess; source epoch is not an equinox. Its kernel reference
@@ -36,10 +44,13 @@ Measurement, model and numerical uncertainty are explicitly unevaluated.
 Finite invalid latitude is refused; missing-coordinate legacy rows remain
 outside kernel states and retain NaNs/metadata for existing downstream filters.
 
-The native realization is routed; observed Skyfield realization and
-`Stars.position(instant)` remain legacy. The latter still ignores instant and
-uses default J2000.0 epoch metadata, inconsistent with source J1991.25; that
-unresolved migration defect must be corrected with its own compatibility gate.
+Native realization, `Stars.position(instant)`, explicit HIP positions and native
+constellation endpoints use this lookup. `position` still ignores instant for
+compatibility, but now declares the correct source epoch J1991.25, not the old
+incorrect J2000.0 default. Source RA degrees are authoritative when present;
+hours-only constructed inputs retain the hours × 15 conversion. This is a
+coordinate-encoding/metadata correction, not motion propagation. Observed
+Skyfield realization and native constellation-label anchors remain unmigrated.
 No historical-epoch or Gaia accuracy claim follows from this adapter.
 
 ## Catalogue identity and curation

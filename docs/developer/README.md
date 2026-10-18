@@ -43,13 +43,22 @@ label flags are restored on close/failure. PR #246, main `e5bd7c16`, extends
 this owner to direct view/drawing and native atlas sheets, and makes
 `wenu_chart atlas-sheet` the default producer route. Its 247-test Mac gate
 passed, including real serial/spawn and cold/saved atlas equivalence.
-The current K3 candidate connects native stellar realization to the real SDK
-through `stellar_state.py`. It preserves unpropagated Hipparcos directions,
-IDs and display metadata; it does not yet propagate stars or migrate observed
-astrometry, constellation endpoints, reports or other object families.
+PR #247, main `bf804cbb`, accepts native stellar realization through the real SDK
+and `stellar_state.py`, including installation and native canvas isolation.
+The next bounded K3 slice routes `Stars.position`, explicit HIP lookup through
+`Stars.native_positions`, and native constellation endpoints through that adapter.
+These routes declare source epoch J1991.25, preserve unpropagated Hipparcos
+directions, IDs and display metadata, and do not add proper motion.
+Observed astrometry, native constellation-label anchors, reports and other
+object families remain to migrate.
+Catalogue ingestion now validates and preserves required source metadata in a
+standard table/immutable metadata envelope; snapshot v3 carries it forward.
+The [metadata audit](kernel_migration_audit_v1.md#catalogue-metadata-audit-2026-10-18)
+records duplicated epochs, lost units/provenance and other source facts still
+embedded in remaining providers, including the mixed-epoch open-cluster issue.
 The SDK [selection manifest](../../packages/wenu_kernel/test_selection_v1.json)
 keeps the independent core gate separate from existing Wenu tests. Current
-products consume only the native stellar adapter in this candidate.
+products consume only this partial native stellar adapter.
 Relativistic/civil-time adapters, common realization services, Cartesian reuse
 and remaining K3 routing are pending; this is not a completed kernel or frozen SDK.
 

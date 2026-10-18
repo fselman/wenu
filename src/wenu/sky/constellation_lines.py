@@ -9,7 +9,7 @@ import warnings
 
 import numpy as np
 
-from wenu.coordinates import PositionStatus, observer_altaz_spec, icrs_catalogue_spec
+from wenu.coordinates import PositionStatus, observer_altaz_spec
 
 from wenu.resources import constellation_lines_path
 from wenu.sky.geometrical_object import GeometricalObject
@@ -271,11 +271,11 @@ class ConstellationLines(GeometricalObject):
             raise RuntimeError(
                 "An Observer is required for constellation-line geometry."
             )
-        if self.stars is None or self.stars.catalog is None:
+        if self.stars is None or (not native_icrs and self.stars.catalog is None):
             raise RuntimeError(
                 "The stellar catalogue has not been loaded."
             )
-        if self.stars.skyfield_stars is None and not native_icrs:
+        if not native_icrs and self.stars.skyfield_stars is None:
             raise RuntimeError(
                 "The stellar Skyfield representation is unavailable."
             )
@@ -291,12 +291,16 @@ class ConstellationLines(GeometricalObject):
                 if name in requested
             )
         selected_star_ids = self.star_ids_for(selected_names)
-        available = self._catalogue_star_ids()
         if native_icrs:
-            source = self.stars.source_catalog
-            valid = np.isfinite(source["ra_degrees"]) & np.isfinite(source["dec_degrees"])
-            source = source[valid]
-            available = frozenset(int(identifier) for identifier in source.index)
+            # Query all loaded figure vertices so global resolvability metadata
+            # remains independent of the render-local constellation selection.
+            points = self.stars.native_positions(self.star_ids)
+            valid = np.isfinite(points.lon_deg) & np.isfinite(points.lat_deg)
+            source_ids = points.ids[valid]
+            az_deg, alt_deg = points.lon_deg[valid], points.lat_deg[valid]
+            available = frozenset(int(identifier) for identifier in source_ids)
+        else:
+            available = self._catalogue_star_ids()
         missing = selected_star_ids.difference(available)
         if missing:
             values = ", ".join(str(value) for value in sorted(missing))
@@ -309,18 +313,16 @@ class ConstellationLines(GeometricalObject):
 
         # Reuse the maximal stellar transformation without changing the
         # renderer-facing active stellar selection.
-        if native_icrs:
-            alt_deg = source["dec_degrees"].to_numpy(dtype=float)
-            az_deg = source["ra_degrees"].to_numpy(dtype=float)
-        else:
+        if not native_icrs:
             source, alt_deg, az_deg = self.stars.observed_altaz(observer)
+            source_ids = source.index
         source_positions = {
             int(hip_id): index
-            for index, hip_id in enumerate(source.index)
+            for index, hip_id in enumerate(source_ids)
         }
         catalogue_index = {
             int(hip_id): source_positions[int(hip_id)]
-            for hip_id in (source.index if native_icrs else self.stars.catalog.index)
+            for hip_id in (source_ids if native_icrs else self.stars.catalog.index)
         }
 
         lon_curves = []
@@ -356,7 +358,7 @@ class ConstellationLines(GeometricalObject):
         return SphericalCurves(
             lon_deg=tuple(lon_curves),
             lat_deg=tuple(lat_curves),
-            coordinate_spec=icrs_catalogue_spec("Hipparcos constellation vertices", epoch="J1991.25")
+            coordinate_spec=points.coordinate_spec
             if native_icrs else observer_altaz_spec(
                 observer,
                 position_status=PositionStatus.APPARENT,

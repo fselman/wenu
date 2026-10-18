@@ -142,6 +142,24 @@ existing request/composition owners, not to new copies of their algorithms.
 
 ## Native stellar kernel adapter
 
+`stellar_catalogue.StellarCatalogueMetadata` is an immutable mirror of a
+`wenu-stellar-catalogue/1` document. The document declares catalogue/edition,
+frame/origin, epoch value/format/time scale, column units, source digest,
+provenance and preserved original source metadata. Extra source fields survive
+round trips. `ingest_stellar_catalogue(table, metadata)` validates coordinates,
+units, identity uniqueness and row/reference-epoch agreement, copies all input
+columns, and returns a `StellarCatalogue(table, metadata)` envelope. Legacy table
+access remains available, with the same metadata preserved in table attributes.
+`Stars.catalogue_metadata` exposes the immutable runtime record.
+
+`Stars.load(..., metadata=None)` validates source identity before parsing and
+publishes a table only after ingestion. The packaged Hipparcos document is
+`wenu/data/catalogs/hipparcos/metadata.json`, derived from its retained ReadMe.
+A custom source requires a matching supplied document or adjacent
+`<filename>.metadata.json`; byte-identical packaged input can use its packaged
+profile. There is no inferred epoch/edition fallback for unidentified bytes.
+Constructed tables must also be explicitly ingested before native use.
+
 `stellar_state.LegacyNativeStellarProvider(rows, *, namespace, source_epoch,
 provenance, catalogue_edition=...)` copies identifier/longitude/latitude rows.
 It advertises `native_direction` and `batch_evaluation` only. A digest binds
@@ -158,8 +176,31 @@ vector; altered results determine the output. This preserves existing exact
 native-value assertions without bypassing the query. Source tables,
 IDs, photometry, designation metadata and missing-row behavior remain owned
 by `Stars`. `_SnapshotStars` inherits this path. No public facade export is
-added. `Stars.position`, observer astrometry and constellation table readers
-are still legacy consumers. Native snapshot serialization remains unchanged.
+added. Snapshot schema v3 preserves the complete metadata envelope. Readers
+admit v1/v2 through an explicit source-digest-bound legacy profile; they refuse
+legacy sources that cannot be identified. New snapshots restore metadata
+without consulting the original catalogue or its packaged profile.
+
+`Stars.position(instant=None)` uses the same kernel-backed helper for the stable
+marker selection. `instant` is retained for compatibility and ignored: the result
+is explicitly source-native at the admitted catalogue epoch, not a propagated
+position at that instant. No catalogue-specific epoch, edition or provenance
+literal is supplied by the stellar geometry or kernel bridge.
+`Stars.native_positions(identifiers)` queries explicit HIP IDs from the full
+source table (or the stable table for constructed legacy objects without one).
+Available rows retain source order, IDs, photometry, designations and NaNs;
+absent IDs are omitted for the consumer's missing-ID policy. Empty selections
+avoid a query. Both APIs prefer authoritative `ra_degrees`, with hours × 15
+only for hours-only constructed inputs, avoiding a redundant floating-point
+round trip. Neither mutates active marker selection.
+
+Native `ConstellationLines.realize` requests the loaded graph's vertex IDs
+through `native_positions`, then joins returned IDs to the original edge order.
+This preserves faint endpoints, warning/gap policy and global resolvability
+metadata without evaluating unrelated catalogue stars. Returned kernel vectors
+control endpoints; refusal is not replaced by raw catalogue coordinates.
+Observed astrometry and native constellation-label anchor calculation remain
+legacy consumers. No claim of all-consumer kernel closure follows.
 
 The `native-catalogue` reference explicitly means an unpropagated lookup.
 Unbounded lookup availability is not astrometric validity at arbitrary epochs;
@@ -182,15 +223,18 @@ The SDK is not yet frozen or published on PyPI. Replacing this provisional pin
 requires a reviewed compatible release and installation gate. The new
 `kernel-native-stars` gate checks separate wheel/sdist/editable consumption,
 native selection/saved-worker behavior and a legacy-versus-kernel page image.
-Normal Mac execution is pending for this candidate.
+PR #247 passed its final Mac followup at `8e4be740` (identical merge `bf804cbb`):
+eight tooling, 36 documentation and seven native-output cases, including actual
+wheel/sdist/editable consumption. The new public-position/endpoint slice uses
+the narrower `native-stellar-routing` gate; it does not change installation.
 
 ## Coordinate and state entry points
 
 The separate candidate `wenu_kernel` package provides `Kernel`, `KernelSession`
 and `StateProvider` plus typed direction/Cartesian records in `wenu_kernel.records`. See its
 [implemented subset and independent gate](../../packages/wenu_kernel/README.md).
-Only the native stellar realization below has a production adapter in this
-candidate. Preserve other existing imports until their own K3 public-path gate
+Only native stellar realization, public native positions and native constellation
+endpoints have a production adapter. Preserve other existing imports until their own K3 public-path gate
 is implemented. No common observer adapter is supplied by the foundation.
 
 `wenu_kernel.time.TimeService(adapters=(), admissions=())` admits one explicit

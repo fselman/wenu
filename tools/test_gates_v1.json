@@ -1,6 +1,6 @@
 {
   "schema": "wenu-test-gates/1",
-  "reviewed_base": "e5bd7c16ab3d7089fc51420432f540b2b2fe2ef9",
+  "reviewed_base": "bf804cbb0a15ebd7b9cce8fca1277769fa765d10",
   "selection_method": "Reviewed owner/consumer paths and preserved existing test IDs; explicit human impact review, not import-based automatic coverage inference.",
   "production_receipt": {
     "tested_commit": "595ff557c5972ad548eb1202f615328a5440c439",
@@ -181,7 +181,7 @@
         },
         {
           "node": "tests/test_position_providers.py::test_stars_provide_static_native_icrs_positions",
-          "reason": "Protect the separate unmigrated legacy position API."
+          "reason": "Protect the public source-native position API and its source-epoch metadata."
         },
         {
           "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_matches_cold_full_sphere_and_layer_options",
@@ -219,6 +219,44 @@
           "node": "tests/test_curated_catalogues.py::test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override",
           "reason": "New separate runtime dependency requires actual wheel/sdist/editable imports and native calls; preserve all existing resource/default assertions."
         }
+      ]
+    },
+    "native-stellar-routing": {
+      "scope": "Validated stellar metadata ingestion, public native positions/endpoints and label metadata, saved-sky v3 metadata preservation with legacy admission, and packaged metadata consumption.",
+      "limits": "This expanded selection follows the metadata-ingestion correction: add ingestion/refusal and snapshot schema/installation owners. Kernel SDK algorithms, observed astrometry, projections, renderer and other provider physics are unchanged. Retain display-DPI evidence from PR247; no full production or SDK rerun. Mixed owners remain selected by responsibility.",
+      "selections": [
+        {"node": "tests/test_stellar_state.py", "reason": "Metadata admission, source identity, alternate-epoch propagation of metadata, preserved source fields, real provider conformance and failure ownership."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_matches_cold_full_sphere_and_layer_options", "reason": "Changed schema preserves full native geometry and layer options."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_requires_coverage_and_preserves_completed_bundle", "reason": "Admission retains coverage limits and completed data."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_rejects_corruption_before_use", "reason": "Changed reader rejects schema, metadata, source identity and payload corruption before use."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_failure_cleans_only_owned_uncommitted_output", "reason": "Metadata/schema admission still preserves atomic publication failure behavior."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_publication_race_preserves_other_writer", "reason": "Publication preserves competing writer ownership."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_legacy_coverage_stays_truthful", "reason": "Both pre-metadata schema versions retain truthful coverage with explicit source-bound metadata admission."},
+        {"node": "tests/test_curated_catalogues.py::test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override", "reason": "New metadata resource and ingestion module must ship and execute through actual wheel/sdist/editable installations."},
+        {"node": "tests/test_atlas_cli.py::test_atlas_producer_uses_real_chart_command_and_prepares_sky_once", "reason": "Existing constructed CLI fixture now admits explicit synthetic metadata, preserving public producer execution."},
+        {"node": "tests/test_stars.py", "reason": "Whole changed stellar owner, including unchanged observed selection and native realization seams."},
+        {"node": "tests/test_position_providers.py::test_stars_provide_static_native_icrs_positions", "reason": "Legacy API retains IDs/metadata and now declares the correct source epoch through the kernel."},
+        {"node": "tests/test_position_providers.py::test_native_id_query_keeps_faint_rows_missing_coordinates_and_source_order", "reason": "Sparse source lookup is independent of marker magnitude, preserves NaNs and ordering without mutation."},
+        {"node": "tests/test_position_providers.py::test_native_position_uses_authoritative_degree_encoding_when_both_columns_exist", "reason": "Both public routes use the same source-native coordinate encoding."},
+        {"node": "tests/test_position_providers.py::test_native_position_routes_use_returned_kernel_direction_and_propagate_failure", "reason": "Returned directions, rather than catalogue fallback, control both routes; backend refusal propagates."},
+        {"node": "tests/test_position_providers.py::test_native_id_query_empty_absent_and_unloaded_policies", "reason": "Empty and unavailable identity policies do not invent states."},
+        {"node": "tests/test_constellation_geometry.py::test_constellation_lines_are_geometrical_objects", "reason": "Lines remain constructed geometry, not a separate astrometric provider."},
+        {"node": "tests/test_constellation_geometry.py::test_native_constellation_vertices_and_mean_anchors_use_same_source", "reason": "Native edges and unchanged mean-label anchors retain source coordinates."},
+        {"node": "tests/test_constellation_geometry.py::test_lines_return_one_spherical_curve_per_hip_edge", "reason": "Observed edge order and topology remain unchanged."},
+        {"node": "tests/test_constellation_geometry.py::test_geometry_is_recomputed_at_observer_time", "reason": "Observed time-dependent route remains active."},
+        {"node": "tests/test_constellation_geometry.py::test_geometry_does_not_mutate_active_star_selection", "reason": "Line geometry does not replace active marker selection."},
+        {"node": "tests/test_constellation_geometry.py::test_line_selection_is_render_local_and_ordered", "reason": "Per-render selection and stable edge order survive."},
+        {"node": "tests/test_constellation_geometry.py::test_unknown_line_selection_is_rejected", "reason": "Unknown figure selection is still rejected."},
+        {"node": "tests/test_constellation_geometry.py::test_native_edges_follow_the_same_kernel_results_as_stellar_positions", "reason": "Changed backend vectors control faint endpoints, sparse source requests, warnings and global resolvability."},
+        {"node": "tests/test_constellation_geometry.py::test_native_line_geometry_uses_only_the_public_native_id_interface", "reason": "Opaque provider and shuffled IDs prohibit raw-table or private/Skyfield coupling."},
+        {"node": "tests/test_constellation_geometry.py::test_native_line_kernel_refusal_is_not_replaced_with_catalogue_coordinates", "reason": "Failed native astrometry must not silently fall back to a second route."},
+        {"node": "tests/test_constellation_geometry.py::test_packaged_serpens_record_exposes_parts_and_preserves_bridge", "reason": "Preserve curated graph parts and bridge topology."},
+        {"node": "tests/test_constellation_geometry.py::test_active_western_scorpius_has_requested_sigma_beta1_sigma_pi_and_pi_rho_edges", "reason": "Preserve the accepted Scorpius graph."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_position_api_and_vertex_edges_match_cold_and_saved_sky", "reason": "Real full-source public positions and every endpoint agree across cold and saved skies."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources", "reason": "New inherited APIs work from an unchanged snapshot in a fresh process without acquisition."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_labels_and_gaps_use_frozen_curation", "reason": "Preserve frozen labels, HIP identities and line gaps."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_kernel_native_stars_preserve_legacy_page_pixels", "reason": "Independent raw-coordinate rendering baseline preserves exact page pixels."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_atlas_chart_batch_cold_saved_and_spawned_pages_match", "reason": "Affected native output retains real CLI/serial/saved/spawn equivalence."}
       ]
     },
     "native-atlas-output": {
@@ -293,7 +331,7 @@
       "reason": "Unchanged services/contracts; request gates exercise their immediate consumers. Add owners when those contracts or implementations change."
     }
   ],
-  "acceptance": "Existing gates accepted on Mac at 04c6ae21 / identical merge 7e1b1f9b. Current shared-lifecycle changes and new extending gate await normal Mac execution; prior receipts do not cover changed routes.",
+  "acceptance": "Request gates accepted through PR246/e5bd7c16; native adapter and output accepted through PR247/bf804cbb. Native-stellar-routing is a new bounded consumer gate with its own receipt; prior receipts cover only unchanged owners.",
   "accepted_gate_receipt": {
     "tested_commit": "04c6ae21688ce8643ac2980265df2ec4a3c4b816",
     "merged_commit": "7e1b1f9be2d1de0dc6a9a08a8f3a31bd692210df",

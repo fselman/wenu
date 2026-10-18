@@ -1,5 +1,56 @@
 # Kernel migration: as-is functionality and test audit
 
+## Catalogue metadata audit, 2026-10-18
+
+Inspected source: PR #248 head `90d51334`, based on accepted main `bf804cbb`;
+the ingestion correction in this PR follows that inspection. Static searches
+cover production Python and the separate kernel for epoch, equinox, frame,
+origin/centre, unit, catalogue edition, provenance, manifest and resource
+identity literals. The findings below trace the significant candidates into
+loaders, normalized tables, source ECSV/ReadMe/provenance documents, snapshots
+and public geometry. This is a metadata audit, not numerical revalidation of
+unmodified providers or proof that every literal is wrong.
+
+**Result:** catalogue-specific knowledge is duplicated beyond the stellar
+position bug. Wenu cannot yet claim that every scientific consumer obtains its
+metadata from a source record. The stellar path is corrected here; the remaining
+findings are explicit migration work, ordered before the affected provider can
+be considered modular or frozen. Never replace an unknown epoch by J2000.
+
+| ID / priority | Owner and evidence | Consequence and required action | Verification owner |
+|---|---|---|---|
+| M1 / fixed | `objects/stars.py` and `stellar_state.py` repeated epoch, source edition and provenance, despite `epoch_year` and the packaged Hipparcos ReadMe | Ingest through `stellar_catalogue.py`; metadata document binds exact source bytes, preserves original fields and mirrors a validated immutable record. Native geometry and kernel queries obtain their epoch/edition/provenance from it. Missing or conflicting metadata is refused. | `test_stellar_state.py`, stellar/public-position owners |
+| M2 / fixed | `sky/constellation_lines.py` and `sky/constellation_labels.py` supplied their own Hipparcos epoch/provider descriptions | Native endpoints inherit returned position specifications; label metadata comes from the stellar interface. Label-anchor computation remains a separate legacy state consumer. | Native constellation geometry and frozen label/gap consumers |
+| M3 / fixed | `sky/native_snapshot.py` embedded J1991.25 both in writing and admission and did not persist the source metadata envelope | New schema v3 persists metadata, verifies it against source identity/row epochs and restores the same runtime record. v1/v2 compatibility uses an explicit source-bound packaged profile; unidentified legacy sources are refused. Nonstellar snapshot assumptions remain M6. | Snapshot admission/corruption, v1/v2 compatibility, source-free process and serial/spawn consumers |
+| M4 / high, open | `coordinates.py::icrs_catalogue_spec` and `ICRS_ASTROMETRIC_SPEC` supply J2000.0 by default; `objects/open_clusters.py::position` uses it. Hunt–Reffert source ECSV declares `coordinate_epoch: J2016.0`; the active curated table retains this under `source_catalogues.hunt_metadata` alongside Dias provenance | The Hunt coordinates can be labelled with the wrong reference epoch. A mixed-source curated table needs per-row source/epoch lineage; do not impose either one global J2000 or one global J2016. Change the helper to require explicit epoch/unknown only after migrating its callers. | `test_open_clusters.py`, stellar/nonstellar position contracts and curated saved-sky consumers |
+| M5 / high, open | `objects/nonstellar.py::_normalize` builds a fresh `Table()` and copies numeric arrays without source `Table.meta` or column units; subclasses for galaxies/globulars/PN/SNR inherit the base route. Native `position`/outline realization assumes ICRS and the shared epoch default | OpenNGC release/license/digests and ECSV units can be lost at normalization; unsupported custom units/frame can be silently misinterpreted. Preserve metadata and column descriptions/units in a standard envelope; validate/convert declared units, and admit missing semantics explicitly. Source metadata is incomplete in some resources, so an epoch must not be invented. | Existing family normalization/geometry owners, position contracts, packaging and snapshot seams |
+| M6 / high, open | `sky/native_snapshot.py::_fixed_records` stamps every nonstellar table `icrs`, `J2000.0`, `deg`; `_validate_fixed` accepts only those values | Serialization repeats assumptions rather than preserving source semantics, even when table metadata is retained. Move these fields to each catalogue's admitted record together with M4/M5; then retain cold/saved equivalence and refusal tests. | Fixed-catalogue rows/masks/units/subsets and snapshot corruption owners |
+| M7 / medium, open | `sky/ceres.py::CERES_SOLUTION` embeds Horizons solution number/date, osculating epoch and quality fields; `minor_body_resources.py` treats this descriptor as the expected identity, while newer comet identities are manifest-derived | A Ceres resource update requires a code edit and can diverge from its acquisition evidence. Migrate the complete solution identity to a versioned data manifest; preserve the existing descriptor-to-manifest/SPK digest and frame checks. | Minor-body resources/ephemeris and Ceres public state/track owners |
+| M8 / medium, open | `satellites/radiometry.py` embeds TSIS product DOI/URL, byte digest/count, grid bounds/sampling, header and audit integral | These are edition-specific resource facts and belong to a validated resource metadata document. Current code deliberately admits one exact resource and verifies it; this is inflexibility/duplication, not evidence of corrupted radiometry. Preserve the numerical integral and malformed-resource oracles when extracting it. | Satellite radiometry resource/parser owner |
+| M9 / medium, open | `sky/milky_way.py` and `sky/magellanic_clouds.py` provide fixed source descriptions/ICRS semantics while loaders retain chiefly source paths and feature levels | Preserve dataset edition, source coordinate semantics and provenance in their own metadata envelope. `epoch=None` may be appropriate for diffuse morphology; do not turn it into a fictitious stellar epoch. | Isophote loading/native geometry and saved-ring consumers |
+| M10 / low, open | `skyfield_ephemeris.py::_model_from_filename` identifies a DE model from its filename unless explicitly supplied | Prefer the acquisition/validated resource identity. Renaming is not evidence that kernel contents changed; explicit-model admission is already supported. Coverage and digest are read from the resource. | `test_skyfield_ephemeris.py` resource identity owner |
+
+Examples already following the intended boundary include satellite OMM records
+(`satellites/elements.py` reads epoch, frame, centre and time system and validates
+its supported contract), SPK segment centre/frame/coverage checks, manifest-bound
+comet resources and hashed observer-location records. Preserve these checks.
+
+Not every literal is catalogue metadata. ICRS/TEME support restrictions, NAIF
+frame identifiers, serialization version identifiers, mathematical unit
+conversions, IAU-defined nominal constants and an explicitly selected model or
+grid equinox are contracts or definitions. They remain in their owning code or
+configuration. Catalogue edition facts, measurement epochs, acquisition dates,
+resource digests and source-specific units must come from data records. This
+distinction prevents replacing useful scientific constraints with arbitrary
+metadata acceptance.
+
+The source map and machine inventory include the new ingestion owner and shared
+synthetic metadata fixture. The expanded focused gate adds ingestion, schema
+and installation checks because those boundaries changed; unmodified M4–M10
+physics is audited statically here, not claimed newly tested or repaired.
+
+## Original functionality and test audit
+
 **Audit revision:** 1, 2026-10-18. **Inspected revision:**
 `856fed20d2e38da3e315c1b15ed9c2e14b51d678`, PR #236 before these amendments.
 Production still matches the accepted `6708f54a` baseline. No kernel runtime,

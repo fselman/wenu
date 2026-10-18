@@ -360,10 +360,17 @@ maximal_sphere.build_maximal_sphere = forbidden
 star_designations.load_star_designations = forbidden
 star_designations.load_stellar_curation = forbidden
 stellar_research.load_stellar_research = forbidden
+import wenu.sky.native_snapshot as snapshot_module
+snapshot_module.packaged_stellar_metadata = forbidden
 snapshot = read_native_sky_snapshot(sys.argv[1], expected_manifest_sha256=sys.argv[2])
 sky = snapshot.make_sky()
 points = sky.stars.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None, magnitude_limit=6)
 assert len(points) > 4000
+assert sky.stars.position().coordinate_spec.epoch == 'J1991.25'
+vertices = sky.stars.native_positions(sky.constellation_lines.star_ids)
+edges = sky.constellation_lines.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None)
+assert vertices.coordinate_spec.epoch == edges.coordinate_spec.epoch == 'J1991.25'
+assert len(edges) and set(vertices.ids) <= set(sky.stars.source_catalog.index)
 assert sky.stars.designation_catalogue.curation_sha256
 assert sky.constellation_lines.star_ids_for(("Sco",))
 context = LayerRealizationContext(NATIVE_ICRS_SPEC)
@@ -386,6 +393,29 @@ print("verified frozen native sphere")
                             env=env, text=True, capture_output=True, timeout=60)
     assert result.returncode == 0, result.stderr
     assert result.stdout.strip() == "verified frozen native sphere"
+
+
+def test_native_position_api_and_vertex_edges_match_cold_and_saved_sky(native_snapshot_case):
+    import numpy as np
+    from wenu.sky.native_snapshot import read_native_sky_snapshot
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    _, destination, _, cold = native_snapshot_case
+    saved = read_native_sky_snapshot(destination).make_sky()
+    assert saved.stars.catalogue_metadata == cold.stars.catalogue_metadata
+    assert saved.stars.catalogue_metadata.to_record()['source_metadata']['reference_epoch_jd'] == 2448349.0625
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    _assert_native_geometry_equal(cold.stars.position(), saved.stars.position())
+    identifiers = cold.constellation_lines.star_ids
+    left, right = cold.stars.native_positions(identifiers), saved.stars.native_positions(identifiers)
+    _assert_native_geometry_equal(left, right)
+    a, b = cold.constellation_lines.realize(context, None), saved.constellation_lines.realize(context, None)
+    _assert_native_geometry_equal(a, b)
+    index = {int(identifier): i for i, identifier in enumerate(left.ids)}
+    for hip_edge, lon, lat in zip(a.metadata['hip_edges'], a.lon_deg, a.lat_deg, strict=True):
+        positions = [index[int(identifier)] for identifier in hip_edge]
+        np.testing.assert_array_equal(lon, left.lon_deg[positions])
+        np.testing.assert_array_equal(lat, left.lat_deg[positions])
+    assert left.coordinate_spec.epoch == a.coordinate_spec.epoch == 'J1991.25'
 
 
 def test_native_snapshot_requires_coverage_and_preserves_completed_bundle(native_snapshot_case):
@@ -422,7 +452,8 @@ def test_native_snapshot_requires_coverage_and_preserves_completed_bundle(native
     "schema", "unknown", "frame", "epoch", "layer", "dtype", "shape", "checksum",
     "unsafe", "design", "record", "missing", "symlink", "evidence",
     "span", "overlap", "logical-shape", "fixed-frame", "boundary-equinox",
-    "fixed-shape", "reference-equinox", "moving-content"))
+    "fixed-shape", "reference-equinox", "moving-content", "stellar-metadata-missing",
+    "stellar-metadata-epoch", "stellar-metadata-digest", "stellar-metadata-frame"))
 def test_native_snapshot_rejects_corruption_before_use(native_snapshot_case, tmp_path, fault):
     import hashlib
     import json
@@ -432,6 +463,18 @@ def test_native_snapshot_rejects_corruption_before_use(native_snapshot_case, tmp
     destination = tmp_path / "broken"
     shutil.copytree(original, destination)
     manifest = json.loads((destination / "manifest.json").read_bytes())
+    if fault.startswith('stellar-metadata'):
+        from wenu.sky import native_snapshot as snapshots
+        decoded = snapshots.read_native_sky_snapshot(destination).stellar_metadata.to_record()
+        if fault == 'stellar-metadata-missing':
+            manifest['records']['mapping'] = [p for p in manifest['records']['mapping'] if p[0] != 'stellar_metadata']
+        else:
+            if fault == 'stellar-metadata-epoch': decoded['epoch']['value'] = 2000.
+            if fault == 'stellar-metadata-digest': decoded['source_sha256'] = '0' * 64
+            if fault == 'stellar-metadata-frame': decoded['frame'] = 'fk5'
+            replacement = snapshots._Encoder(destination).encode(decoded)
+            for pair in manifest['records']['mapping']:
+                if pair[0] == 'stellar_metadata': pair[1] = replacement
     array_name = next(name for name in manifest["payloads"] if name.endswith(".npy"))
     if fault == "schema":
         manifest["schema_version"] = True
@@ -616,7 +659,8 @@ def test_native_snapshot_fixed_catalogue_rows_masks_units_and_subsets(native_sna
     assert not warm.solar_system_bodies and warm.moon is None
 
 
-def test_native_snapshot_legacy_coverage_stays_truthful(native_snapshot_case, tmp_path):
+@pytest.mark.parametrize('version', (1, 2))
+def test_native_snapshot_legacy_coverage_stays_truthful(native_snapshot_case, tmp_path, version):
     import json
     import shutil
     from wenu.sky import native_snapshot as snapshots
@@ -624,19 +668,28 @@ def test_native_snapshot_legacy_coverage_stays_truthful(native_snapshot_case, tm
     directory = tmp_path / "legacy-v1"
     shutil.copytree(original, directory)
     manifest = json.loads((directory / "manifest.json").read_text())
-    manifest["schema_version"] = 1
-    manifest["compatibility"] = snapshots.LEGACY_COMPATIBILITY
-    manifest["layers"] = list(snapshots.LEGACY_LAYERS)
-    manifest["records"]["mapping"] = [pair for pair in manifest["records"]["mapping"] if pair[0] != "fixed"]
-    for key in (*snapshots._CATALOGUES, "iau_boundaries"):
-        del manifest["source_digests"][key]
+    manifest["schema_version"] = version
+    manifest["compatibility"] = snapshots.LEGACY_COMPATIBILITY if version == 1 else snapshots.PRE_METADATA_COMPATIBILITY
+    manifest["layers"] = list(snapshots.LEGACY_LAYERS if version == 1 else snapshots.LAYERS)
+    removed = {'stellar_metadata', 'fixed'} if version == 1 else {'stellar_metadata'}
+    manifest["records"]["mapping"] = [pair for pair in manifest["records"]["mapping"] if pair[0] not in removed]
+    if version == 1:
+        for key in (*snapshots._CATALOGUES, "iau_boundaries"):
+            del manifest["source_digests"][key]
     (directory / "manifest.json").write_text(json.dumps(manifest))
     legacy = snapshots.read_native_sky_snapshot(directory)
     legacy.require()
-    with pytest.raises(ValueError):
-        legacy.require(layers=("galaxies",))
+    if version == 1:
+        with pytest.raises(ValueError):
+            legacy.require(layers=("galaxies",))
+    else:
+        legacy.require(layers=('galaxies',))
     sky = legacy.make_sky()
-    assert sky.galaxies is None and sky.constellation_boundaries is None
+    if version == 1:
+        assert sky.galaxies is None and sky.constellation_boundaries is None
+    else:
+        assert sky.galaxies is not None and sky.constellation_boundaries is not None
+    assert sky.stars.catalogue_metadata.epoch_label == manifest['stellar_epoch']
 
 
 def test_atlas_chart_batch_cold_saved_and_spawned_pages_match(native_snapshot_case, tmp_path, monkeypatch):

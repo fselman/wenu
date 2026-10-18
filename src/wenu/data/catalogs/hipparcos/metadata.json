@@ -1,0 +1,23 @@
+{
+  "schema": "wenu-stellar-catalogue/1",
+  "catalogue": "hipparcos",
+  "edition": "ESA-1997-I/239",
+  "frame": "icrs",
+  "origin": "solar-system-barycenter",
+  "epoch": {"value": 1991.25, "format": "jyear", "scale": "tt"},
+  "units": {
+    "ra_degrees": "deg", "dec_degrees": "deg", "ra_hours": "hourangle",
+    "epoch_year": "Julian year", "parallax_mas": "mas",
+    "ra_mas_per_year": "mas/yr", "dec_mas_per_year": "mas/yr", "magnitude": "mag"
+  },
+  "provenance": ["ESA Hipparcos Catalogue I/239"],
+  "source_sha256": "58ceabb104d647160d9437ce6e513a02a036bb4ad9f8879a5a22fd52943616e0",
+  "source_metadata": {
+    "description_file": "ReadMe",
+    "description_sha256": "49a24be0c342a74e2357a048d2434a77cbb165690afe34b3c18989a4c24d0272",
+    "reference": "ReadMe, Note on RAdeg, DEdeg and Note on pmRA, pmDE",
+    "reference_epoch_jd": 2448349.0625,
+    "right_ascension_motion": "mu_alpha*cos(delta)",
+    "missing_astrometric_solutions": "Preserve missing coordinates; no inferred position or motion."
+  }
+}
