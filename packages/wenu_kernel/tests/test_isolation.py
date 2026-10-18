@@ -16,7 +16,7 @@ class IsolationTests(unittest.TestCase):
 import json, sys
 sys.path.insert(0, ROOT)
 import wenu_kernel
-from wenu_kernel import records, errors
+from wenu_kernel import records, errors, time, time_adapters
 for forbidden in ('wenu', 'numpy', 'astropy', 'matplotlib', 'skyfield', 'sgp4', 'pandas', 'spiceypy'):
     assert not any(name == forbidden or name.startswith(forbidden + '.') for name in sys.modules), forbidden
 print(json.dumps(wenu_kernel.__all__))

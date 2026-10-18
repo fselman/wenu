@@ -149,6 +149,18 @@ Do not replace an existing Wenu import with this SDK until the corresponding
 K3 adapter/public-path gate is implemented. No observer or numerical provider
 adapter is supplied by the foundation.
 
+`wenu_kernel.time.TimeService(adapters=(), admissions=())` admits one explicit
+`TimeAdapter` per directed scale pair. `convert(time, target_scale,
+maximum_error_s=None)` returns an immutable `TimeConversion` containing source,
+target, model/resource identity, provenance and introduced numerical error in
+seconds. `admissions` and `maximum_error_s` are keyword-only. Same-scale identity
+is exact; absent conversions fail `TimeConversionUnavailable`. There is no
+implicit session conversion, chaining or resource download.
+`wenu_kernel.time_adapters.TaiTtAdapter(validity)` supplies TT(TAI)/TAI with a
+finite source-scale `TimeSpan`; it is not a TDB/TCB or civil/calendar adapter.
+Callers retain conversion receipts and separately account for input/physical
+time uncertainty. The coordinate guide's existing observer parser remains current.
+
 `CartesianState` uses `position_m`, optional `velocity_m_s`, explicit
 `velocity_available` and separate position/velocity evidence. Native Cartesian
 references use representation `cartesian`, units `m,m/s` and an explicitly

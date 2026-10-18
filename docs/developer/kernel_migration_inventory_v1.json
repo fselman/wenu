@@ -422,19 +422,19 @@
       "path": "src/wenu/charts/magnitude_legend_matplotlib.py",
       "git_blob_sha": "07104731fa669bb972df830cf5e3c51076b00b11",
       "as_is_directory": "src/wenu/charts",
-      "description": "Matplotlib rendering for stellar magnitude\u2013size legends."
+      "description": "Matplotlib rendering for stellar magnitude–size legends."
     },
     {
       "path": "src/wenu/charts/magnitude_legend_style.py",
       "git_blob_sha": "9328fc55e2d465c8335486b72cf2273de6b5bdec",
       "as_is_directory": "src/wenu/charts",
-      "description": "Style configuration for stellar magnitude\u2013size legends."
+      "description": "Style configuration for stellar magnitude–size legends."
     },
     {
       "path": "src/wenu/charts/magnitude_legend_workflow.py",
       "git_blob_sha": "b270984666cd5b435fec7874e73135642b2d471d",
       "as_is_directory": "src/wenu/charts",
-      "description": "Chart-level workflow for stellar magnitude\u2013size legends."
+      "description": "Chart-level workflow for stellar magnitude–size legends."
     },
     {
       "path": "src/wenu/charts/modes.py",
@@ -7338,14 +7338,16 @@
   "independent_projects": [
     {
       "path": "packages/wenu_kernel",
-      "scope": "K2 native direction/Cartesian states, angular certified/canonical reuse; current Wenu consumers remain unmigrated",
+      "scope": "K2 native direction/Cartesian states, angular certified/canonical reuse, explicit time admission and TT(TAI)/TAI; current Wenu consumers remain unmigrated",
       "source_paths": [
         "packages/wenu_kernel/src/wenu_kernel/__init__.py",
         "packages/wenu_kernel/src/wenu_kernel/errors.py",
         "packages/wenu_kernel/src/wenu_kernel/kernel.py",
         "packages/wenu_kernel/src/wenu_kernel/providers.py",
         "packages/wenu_kernel/src/wenu_kernel/records.py",
-        "packages/wenu_kernel/src/wenu_kernel/reuse.py"
+        "packages/wenu_kernel/src/wenu_kernel/reuse.py",
+        "packages/wenu_kernel/src/wenu_kernel/time.py",
+        "packages/wenu_kernel/src/wenu_kernel/time_adapters.py"
       ],
       "test_paths": [
         "packages/wenu_kernel/tests/synthetic_providers.py",
@@ -7353,7 +7355,8 @@
         "packages/wenu_kernel/tests/test_isolation.py",
         "packages/wenu_kernel/tests/test_records.py",
         "packages/wenu_kernel/tests/test_reuse.py",
-        "packages/wenu_kernel/tests/test_sessions.py"
+        "packages/wenu_kernel/tests/test_sessions.py",
+        "packages/wenu_kernel/tests/test_time.py"
       ],
       "selection_manifest": "packages/wenu_kernel/test_selection_v1.json",
       "legacy_test_moves": []

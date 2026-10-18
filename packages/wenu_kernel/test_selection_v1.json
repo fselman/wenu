@@ -1,8 +1,8 @@
 {
   "schema": "wenu-test-selection/1",
   "owner": "wenu_kernel",
-  "slice": "K2 SI Cartesian state variant, explicit optional velocity and independent bounds",
-  "accepted_base": "f7c361b1d88d4d515e3270ee2d09886e11b54f7d",
+  "slice": "K2 explicit TimeService admission, conversion receipts and finite-domain TT(TAI)/TAI adapter",
+  "accepted_base": "1fe78a5158de06f33fa462eea6378f07fd50a47a",
   "runtime_dependencies": [],
   "required": [
     "python -m unittest discover -s packages/wenu_kernel/tests -v",
@@ -29,37 +29,42 @@
     "missing velocity becomes a known zero or an accepted required-velocity request succeeds without velocity",
     "Cartesian units/position and velocity bounds are conflated or ignored",
     "a source epoch is fabricated or a declared one is hidden",
-    "direction and Cartesian variants cross native-reference admission or poison a partial cache"
+    "direction and Cartesian variants cross native-reference admission or poison a partial cache",
+    "unadmitted/ambiguous time conversion, resource-coverage bypass or silent conversion chain",
+    "loss of split-date precision, incorrect TT(TAI)/TAI offset or inward-rounded error bound",
+    "conversion changes source/model/resource/provenance identity or ignores numerical tolerance",
+    "conversion discards backend cause or changes native state same-scale admission"
   ],
   "legacy_tests_moved_or_removed": [],
   "affected_consumers": [
     "synthetic test providers only"
   ],
   "excluded": {
-    "legacy scientific and graphical suites": "No existing src/wenu code, catalogue, resource, backend or runtime dependency changes; no current consumer imports the new SDK.",
+    "legacy scientific and graphical suites": "No existing src/wenu code, catalogue, resource, backend or root runtime dependency changes; no current production consumer imports the SDK or TimeService.",
     "unrelated providers": "No real provider is part of this slice; neither SDK nor test fixtures import one.",
     "release integration": "No product routing or installed combination changes; isolated-wheel evidence is required before this foundation can be accepted. Final integration remains required for K3 production adapters."
   },
   "collection_change": "none; root pytest remains scoped to tests and the kernel retains its explicit independent gate",
   "verification": {
     "source_digest_algorithm": "SHA-256 over sorted repository path + NUL + exact file bytes + NUL for every Python file in the named directory",
-    "source_sha256": "cd22bf7a51b2c943211e05ec2094c7ced4440ae3fec1a08c62efe3bcdc105fc0",
-    "tests_sha256": "2e3f3b24dd26edc624da3b84b4aceb013b1174c2c22e78f65a0c135f4d89dc9f",
-    "source_unittest_cases": 80,
-    "installed_wheel_unittest_cases": 80,
-    "wheel_sha256": "66d13343490065ea6d7a3e1554d03cdc57381ba2edec919bc4fc67e8eb23d9d0",
+    "source_sha256": "9f0b53fab1f4ef3c62709b8323c4bc793c087688d2b53b609017b27180e06c3e",
+    "tests_sha256": "2f47f8c5d96e160892cb33c7cf26666098046503f1f7791faa02f4182f3c9434",
+    "source_unittest_cases": 98,
+    "installed_wheel_unittest_cases": 98,
+    "wheel_sha256": "7c045e4c25cd9c78f4ec78e3d1ede00a0be5c28e51018829aeef8ccbb04a8ac2",
     "isolated_environment": "fresh venv; Wenu/numpy/astropy/matplotlib/skyfield/sgp4/pandas/spiceypy absent",
     "fault_injection": [
-      "ignoring requested position tolerance fails owning tests",
-      "accepting missing required velocity fails owning tests",
-      "ignoring Cartesian numerical SI units fails owning tests"
+      "wrong TT(TAI)/TAI defining offset fails owning tests",
+      "collapsing split JD into binary64 fails owning tests",
+      "ignoring conversion model/resource identity fails owning tests",
+      "ignoring requested numerical conversion bound fails owning tests"
     ],
     "mac_documentation_gate": "pending for this candidate"
   },
   "existing_test_changes": [
     {
-      "node_id": "packages/wenu_kernel/tests/test_sessions.py::RegistryTests::test_unregistered_reference_and_future_capabilities_fail_closed",
-      "change": "The deliberately unsupported future capability is now cartesian_reuse_bound because cartesian_state is implemented; the same refusal-before-publication fault remains protected."
+      "node_id": "packages/wenu_kernel/tests/test_isolation.py::IsolationTests::test_sdk_import_with_site_packages_disabled",
+      "change": "Also import the time service and optional TT(TAI)/TAI adapter under -I -S; the forbidden dependency assertions are retained."
     }
   ]
 }
