@@ -1,4 +1,4 @@
-"""Immutable identity, time, catalogue, direction and certificate vocabulary.
+"""Immutable identity, time, catalogue, native-state and certificate vocabulary.
 
 No time conversion, physical propagation or numerical backend lives here.
 Constructor failures are InvalidQuery; providers must publish these exact
@@ -219,9 +219,11 @@ class ObjectRecord:
         exact(self.key, ObjectKey)
         text(self.semantic_type)
         sequence(self, "external_ids", ExternalId, unique=True)
-        sequence(self, "source_epochs", TimePoint, unique=True, nonempty=True)
+        sequence(self, "source_epochs", TimePoint, unique=True)
         sequence(self, "capabilities", str, unique=True, nonempty=True)
         sequence(self, "provenance", str, nonempty=True)
+        if set(self.capabilities) & {"native_direction", "epoch_direction"} and not self.source_epochs:
+            raise InvalidQuery("direction sources must declare their source epoch")
 
 
 @dataclass(frozen=True, slots=True)
@@ -320,6 +322,7 @@ class StateQuery:
     accuracy: AccuracyRequest
     evaluation_policy: str = "full_model"
     coverage: TimeSpan | None = None
+    require_velocity: bool = False
 
     def __post_init__(self):
         for value, cls in ((self.catalogue, CatalogueRef), (self.model, ModelRef),
@@ -327,6 +330,8 @@ class StateQuery:
             exact(value, cls)
         sequence(self, "objects", ObjectKey, unique=True, nonempty=True)
         sequence(self, "times", TimePoint, unique=True, nonempty=True)
+        if type(self.require_velocity) is not bool:
+            raise InvalidQuery("require_velocity must be bool")
         text(self.evaluation_policy)
         if self.evaluation_policy not in ("full_model", "bounded_reuse"):
             raise InvalidQuery("unknown evaluation policy")
@@ -465,15 +470,58 @@ class DirectionState:
 
 
 @dataclass(frozen=True, slots=True)
+class CartesianState:
+    object_key: ObjectKey
+    time: TimePoint
+    source_epoch: TimePoint | None
+    anchor_time: TimePoint
+    reference: ReferenceSpec
+    position_m: tuple[float, float, float]
+    velocity_m_s: tuple[float, float, float] | None
+    position_evidence: UncertaintyEvidence
+    velocity_evidence: UncertaintyEvidence | None
+
+    def __post_init__(self):
+        for value, cls in ((self.object_key, ObjectKey), (self.time, TimePoint),
+                           (self.anchor_time, TimePoint), (self.reference, ReferenceSpec),
+                           (self.position_evidence, UncertaintyEvidence)):
+            exact(value, cls)
+        if self.source_epoch is not None:
+            exact(self.source_epoch, TimePoint)
+        if (self.reference.representation, self.reference.units) != ("cartesian", "m,m/s"):
+            raise InvalidQuery("Cartesian output requires metres and metres/second")
+        for name in ("position_m", "velocity_m_s"):
+            values = getattr(self, name)
+            if name == "velocity_m_s" and values is None:
+                continue
+            if type(values) not in (tuple, list) or len(values) != 3:
+                raise InvalidQuery("Cartesian vectors require three components")
+            object.__setattr__(self, name, tuple(finite(v) for v in values))
+        if self.velocity_m_s is None:
+            if self.velocity_evidence is not None:
+                raise InvalidQuery("absent velocity cannot carry numerical evidence")
+        else:
+            exact(self.velocity_evidence, UncertaintyEvidence)
+
+    @property
+    def velocity_available(self):
+        return self.velocity_m_s is not None
+
+
+@dataclass(frozen=True, slots=True)
 class StateBatch:
     query: StateQuery
-    states: tuple[DirectionState, ...]
+    states: tuple[DirectionState | CartesianState, ...]
     reuse_certificates: tuple[ReuseCertificate, ...] = ()
     reuse_plan: DirectionReusePlan | None = None
 
     def __post_init__(self):
         exact(self.query, StateQuery)
-        sequence(self, "states", DirectionState)
+        if type(self.states) not in (tuple, list) or any(
+            type(state) not in (DirectionState, CartesianState) for state in self.states
+        ):
+            raise InvalidQuery("state batch requires typed direction or Cartesian records")
+        object.__setattr__(self, "states", tuple(self.states))
         sequence(self, "reuse_certificates", ReuseCertificate, unique=True)
         if self.reuse_plan is not None:
             exact(self.reuse_plan, DirectionReusePlan)

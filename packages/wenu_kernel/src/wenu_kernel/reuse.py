@@ -51,16 +51,16 @@ def direction_anchor_identity(anchor):
             or anchor.query.coverage is not None):
         raise InvalidQuery("certificate anchors must be scalar full-model states")
     state = anchor.states[0]
-    if (state.time != state.anchor_time or state.certificate_id is not None
+    if (type(state) is not r.DirectionState or state.time != state.anchor_time or state.certificate_id is not None
             or state.time != anchor.query.times[0]
             or state.object_key != anchor.query.objects[0]):
         raise InvalidQuery("a reused direction cannot become a new certified anchor")
-    return _identity("wenu_kernel/session-direction-anchor/2", (anchor,))
+    return _identity("wenu_kernel/session-direction-anchor/3", (anchor,))
 
 
 def reuse_plan_identity(plan):
     r.exact(plan, r.DirectionReusePlan)
-    return _identity("wenu_kernel/session-direction-plan/1", (plan.query, plan.anchors, plan.method))
+    return _identity("wenu_kernel/session-direction-plan/2", (plan.query, plan.anchors, plan.method))
 
 
 def make_reuse_plan(query: r.StateQuery, anchors: tuple[r.AnchorSelection, ...],

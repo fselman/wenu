@@ -1,4 +1,4 @@
-"""Synchronous registry, native direction sessions and certified angular reuse."""
+"""Synchronous native-state sessions and certified angular direction reuse."""
 
 from dataclasses import replace
 
@@ -8,7 +8,7 @@ from .errors import (
     ResourceMismatch, UnknownObject, UnsupportedCapability, InvalidQuery,
 )
 from .records import (
-    CONTRACT, CapabilityDecision, CatalogueRef, CatalogueSnapshot, DirectionState,
+    CONTRACT, CapabilityDecision, CatalogueRef, CatalogueSnapshot, DirectionState, CartesianState,
     ProviderDescriptor, ProviderKey, ReferenceSpec, SessionPolicy, StateBatch,
     StateQuery, exact,
 )
@@ -63,13 +63,21 @@ class Kernel:
         for admission in descriptor.admissions:
             if admission.reference not in self._references:
                 raise UnsupportedCapability("reference has not been admitted by application assembly")
-            if (admission.reference.representation, admission.reference.units) != ("direction", "rad"):
-                raise UnsupportedCapability("only direction states are implemented in this slice")
+            reference = admission.reference
+            direction = (reference.representation, reference.units) == ("direction", "rad")
+            cartesian = (reference.representation, reference.units) == ("cartesian", "m,m/s")
+            if not direction and not cartesian:
+                raise UnsupportedCapability("unsupported native representation/units")
             if not set(admission.capabilities) <= {
                 "native_direction", "epoch_direction", "batch_evaluation", "direction_reuse_bound",
-                "canonical_direction_reuse",
+                "canonical_direction_reuse", "cartesian_state",
             }:
                 raise UnsupportedCapability("capability is outside this implementation slice")
+            direction_caps = {"native_direction", "epoch_direction", "direction_reuse_bound", "canonical_direction_reuse"}
+            if ((direction and "cartesian_state" in admission.capabilities)
+                    or (cartesian and (set(admission.capabilities) & direction_caps
+                                       or "cartesian_state" not in admission.capabilities))):
+                raise UnsupportedCapability("capabilities do not match the native representation")
             if "canonical_direction_reuse" in admission.capabilities and (
                 "direction_reuse_bound" not in admission.capabilities
                 or not callable(getattr(provider, "plan_reuse", None))
@@ -175,11 +183,19 @@ class KernelSession:
         snapshot = self.catalogue(query.catalogue)
         if query.evaluation_policy == "full_model" and query.coverage is not None:
             raise UnsupportedCapability("interval certification requires bounded_reuse")
-        if query.evaluation_policy == "bounded_reuse" and query.accuracy.angular_rad is None:
-            raise InvalidQuery("bounded angular reuse requires a positive angular bound")
-        if (query.accuracy.position_m is not None or query.accuracy.velocity_m_s is not None
-                or query.accuracy.metric != "angular_separation"):
-            raise UnsupportedCapability("direction query requires angular accuracy meaning")
+        if query.reference.representation == "direction":
+            if query.evaluation_policy == "bounded_reuse" and query.accuracy.angular_rad is None:
+                raise InvalidQuery("bounded angular reuse requires a positive angular bound")
+            if (query.accuracy.position_m is not None or query.accuracy.velocity_m_s is not None
+                    or query.accuracy.metric != "angular_separation" or query.require_velocity):
+                raise UnsupportedCapability("direction query requires angular accuracy meaning")
+        elif query.reference.representation == "cartesian":
+            if query.evaluation_policy != "full_model":
+                raise UnsupportedCapability("Cartesian temporal reuse is not implemented")
+            if query.accuracy.angular_rad is not None or query.accuracy.metric != "euclidean_norm":
+                raise UnsupportedCapability("Cartesian query requires SI Euclidean error meaning")
+        else:
+            raise UnsupportedCapability("unsupported state representation")
         records = {r.key: r for r in snapshot.objects}
         for obj in query.objects:
             if obj not in records:
@@ -191,8 +207,9 @@ class KernelSession:
         if len(admissions) != 1:
             raise UnsupportedCapability("query must match exactly one advertised model/reference/subset")
         admission = admissions[0]
-        if not set(admission.capabilities) & {"native_direction", "epoch_direction"}:
-            raise UnsupportedCapability("model has no direction capability")
+        required = {"cartesian_state"} if query.reference.representation == "cartesian" else {"native_direction", "epoch_direction"}
+        if not set(admission.capabilities) & required:
+            raise UnsupportedCapability("model lacks the requested state capability")
         coverage_points = query.times + ((query.coverage.start, query.coverage.stop) if query.coverage else ())
         for time in coverage_points:
             if not admission.coverage.contains(time) or any(
@@ -226,10 +243,19 @@ class KernelSession:
         if tuple((r.time, r.object_key) for r in batch.states) != expected:
             raise InvalidProviderResult("rows must match time-major requested order exactly")
         for row in batch.states:
-            if (type(row) is not DirectionState or row.reference != query.reference
-                    or row.anchor_time != row.time or row.certificate_id is not None
-                    or row.source_epoch not in records[row.object_key].source_epochs):
+            expected_type = CartesianState if query.reference.representation == "cartesian" else DirectionState
+            if (type(row) is not expected_type or row.reference != query.reference
+                    or row.anchor_time != row.time):
                 raise InvalidProviderResult("state provenance/reference/anchor mismatch")
+            source_epochs = records[row.object_key].source_epochs
+            if ((row.source_epoch is None and source_epochs)
+                    or (row.source_epoch is not None and row.source_epoch not in source_epochs)):
+                raise InvalidProviderResult("state source epoch does not match catalogue provenance")
+            if type(row) is CartesianState:
+                self._validate_cartesian(row, query)
+                continue
+            if row.certificate_id is not None:
+                raise InvalidProviderResult("full-model state cannot be a reused direction")
             numerical = row.evidence.numerical
             if numerical.status != "not_evaluated" and (
                 numerical.units != "rad" or numerical.meaning != "angular_separation"
@@ -241,6 +267,23 @@ class KernelSession:
         if batch.reuse_certificates or batch.reuse_plan is not None:
             raise InvalidProviderResult("full-model provider output cannot contain reuse certificates")
         return batch
+
+    @staticmethod
+    def _validate_cartesian(row, query):
+        needs_velocity = query.require_velocity or query.accuracy.velocity_m_s is not None
+        if needs_velocity and not row.velocity_available:
+            raise InvalidProviderResult("provider accepted required velocity but returned none")
+        channels = [(row.position_evidence, query.accuracy.position_m, "m")]
+        if row.velocity_available:
+            channels.append((row.velocity_evidence, query.accuracy.velocity_m_s, "m/s"))
+        for evidence, bound, units in channels:
+            numerical = evidence.numerical
+            if numerical.status != "not_evaluated" and (
+                numerical.units != units or numerical.meaning != "euclidean_norm"
+            ):
+                raise InvalidProviderResult("Cartesian numerical evidence has incompatible units/metric")
+            if bound is not None and (numerical.status != "bounded" or numerical.value > bound):
+                raise AccuracyUnavailable("provider cannot certify requested Cartesian numerical bound")
 
     def _evaluate_canonical(self, query, records, instance, descriptor, admission):
         """Evaluate only provider-chosen anchors; cache history never chooses one.

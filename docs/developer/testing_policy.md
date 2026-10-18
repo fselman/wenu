@@ -32,6 +32,14 @@ must not publish new canonical anchors. Providers without the optional planning
 capability retain the accepted full-model fallback. Synthetic schedules are
 contract evidence, not a scientific accuracy claim for a real catalogue.
 
+The Cartesian variant adds its own state-contract tests within the same core
+gate. Preserve known zero versus absent velocity, optional source epoch,
+separate SI error channels, exact tolerance boundaries and accepted-request
+failure on missing required velocity. Check mixed-variant rejection and atomic
+cache publication, while retaining all direction/reuse tests. The future-
+capability fixture now uses `cartesian_reuse_bound`, which remains unsupported;
+`cartesian_state` is implemented. No existing Wenu numerical/render test changes.
+
 Run the smallest owner suite plus directly affected contract/seam tests.
 Use `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1`; add no ambient plugin dependency.
 During iteration, do not run unrelated scientific, projection or rendering

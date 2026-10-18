@@ -5,14 +5,13 @@
 **As-is base:** main `3359e9ebb430de68e68cdee8bfc40ddd6d3da692`.
 **Proposed contract identifier:** `wenu.kernel/1.0`.
 
-**Current candidate extension:** optional canonical planning capability/protocol,
-immutable plan records and optional result provenance. Existing `StateProvider`
-methods remain unchanged. This additive extension is reviewed before the K5 freeze.
+**Current candidate extension:** Cartesian state variant, explicit optional
+velocity and `StateQuery.require_velocity`. Existing `StateProvider` methods
+remain unchanged. This additive extension is reviewed before the K5 freeze.
 
 The [K2 implementation](../../packages/wenu_kernel/README.md) remains a declared
-direction-only subset. The current candidate adds optional provider-planned
-canonical anchors for reproducible certified reuse, retaining the full-model
-fallback for providers without an admitted plan/bound. Other records/
+native-state subset. The current candidate adds SI Cartesian full-model states
+alongside accepted direction/certificate/canonical-planning behavior. Other records/
 services in this specification are targets, not available imports. Observation,
 Gaia and production routing remain pending. No astronomical transformation
 changes; the coordinate guide remains current. Canonical time input is validated
@@ -199,6 +198,7 @@ for correctness.
 | `accuracy` | AccuracyRequest described below |
 | `evaluation_policy` | `full_model` or `bounded_reuse` |
 | `coverage` | Optional TimeSpan for certification, containing every requested sample |
+| `require_velocity` | Optional bool, default false; request an available Cartesian velocity without requiring a numerical bound. Direction queries reject true. A velocity bound also requires velocity. |
 
 A mixed catalogue/source request is explicitly partitioned above this single-
 provider query, never broadcast to all installed providers. Batch logical order
@@ -214,6 +214,27 @@ Each logical state row is a tagged union:
   distance or radial velocity, explicit status/reference and source epoch.
 - `CartesianState`: finite three-component position and optional three-component
   velocity, explicit availability, centre/frame/time and SI units.
+
+The Cartesian subset uses `ReferenceSpec.representation="cartesian"` and
+`units="m,m/s"`, with named `position_m` and optional `velocity_m_s` tuples.
+`velocity_available` distinguishes absence from a known zero vector. Missing
+velocity has `velocity_m_s=None` and `velocity_evidence=None`; no zero velocity
+is inferred. `position_evidence` and `velocity_evidence` retain separate
+measurement/model/numerical channels. Cartesian accuracy uses
+`metric="euclidean_norm"` with independent position/velocity bounds in m/m/s;
+statistical or unknown channels cannot certify deterministic bounds.
+
+A provider's metadata-only `supports` must refuse required velocity when absent.
+An accepted request returning no required velocity fails `InvalidProviderResult`.
+Source epochs may be empty for non-direction `ObjectRecord` values; a Cartesian
+row then carries explicit `source_epoch=None`, meaning no epoch is declared.
+A declared epoch must be preserved, while direction sources still require it.
+No ephemeris resource-start date is fabricated as a catalogue reference epoch.
+
+Each single-reference query returns exactly the matching state variant. Native
+frame/origin/units must be explicitly admitted; the kernel performs no frame,
+origin or unit relabelling/conversion. Cartesian temporal reuse/certificates
+remain unsupported in this slice; identical full-query caching is unchanged.
 
 The logical row schema does not require scalar numerical evaluation or one
 mutable Python object per source. K2 may use vectorized internal buffers and
@@ -540,7 +561,7 @@ coverage or provider permission is admitted merely by accepting the API.
 The accepted K2 foundation supplies records, registration/session admission and
 direction certificates without production rerouting. The current bounded slice
 adds optional canonical planning with synthetic providers; it does not close all
-K2 gates. Cartesian/time services and the
+K2 gates. Time services and the
 distributable conformance kit remain explicit work before the K5 SDK freeze.
 No Gaia acquisition, scientific-provider extraction, product rewrite or new
 satellite science is part of K1. Wenu must continue to run after every merge.

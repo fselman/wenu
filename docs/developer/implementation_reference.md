@@ -143,11 +143,22 @@ existing request/composition owners, not to new copies of their algorithms.
 ## Coordinate and state entry points
 
 The separate candidate `wenu_kernel` package provides `Kernel`, `KernelSession`
-and `StateProvider` plus typed records in `wenu_kernel.records`. See its
+and `StateProvider` plus typed direction/Cartesian records in `wenu_kernel.records`. See its
 [implemented subset and independent gate](../../packages/wenu_kernel/README.md).
 Do not replace an existing Wenu import with this SDK until the corresponding
 K3 adapter/public-path gate is implemented. No observer or numerical provider
 adapter is supplied by the foundation.
+
+`CartesianState` uses `position_m`, optional `velocity_m_s`, explicit
+`velocity_available` and separate position/velocity evidence. Native Cartesian
+references use representation `cartesian`, units `m,m/s` and an explicitly
+admitted frame/origin. Query with `AccuracyRequest(metric="euclidean_norm",
+position_m=..., velocity_m_s=...)`; `require_velocity=True` requests velocity
+without imposing a numerical bound. Unknown velocity remains `None`. An absent
+declared source epoch is also explicit `None`, not a fabricated resource epoch.
+Only full-model Cartesian evaluation and identical-query reuse are available;
+temporal certificates remain direction-only. No frame or unit conversion is
+performed by the kernel.
 
 `wenu_kernel.reuse.ReuseCertificate` and the typed provider `certify` operation
 cover scalar original direction anchors. `StateBatch.reuse_certificates` lists

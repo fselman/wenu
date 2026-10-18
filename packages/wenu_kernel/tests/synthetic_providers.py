@@ -271,3 +271,83 @@ class CanonicalDirections(CertifiedDirections):
             plan = replace(plan, method=replace(plan.method, dependencies=(resource,)))
         plan = replace(plan, identity=reuse_plan_identity(plan))
         return replace(plan, identity="0" * 64) if fault == "identity" else plan
+
+
+CARTESIAN_REFERENCE = ReferenceSpec("icrf", "ssb", "geometric", "cartesian", "m,m/s", "synthetic:none")
+
+
+class SyntheticCartesian(SyntheticDirections):
+    """Constructed SI linear positions; no real orbit or catalogue is used."""
+
+    def __init__(self, name="cartesian", *, velocity_available=True, reference=CARTESIAN_REFERENCE, source_epoch=None):
+        super().__init__(name)
+        self.velocity_available = velocity_available
+        self.native_reference = reference
+        self.source_epoch = source_epoch
+        import json
+        epoch_identity = None if source_epoch is None else (source_epoch.jd1, source_epoch.jd2.hex(), source_epoch.scale)
+        self.model = replace(self.model, model_id=name + ":linear-si",
+                             configuration_digest=digest(json.dumps(["linear:2m/s", velocity_available, epoch_identity])))
+        caps = ("cartesian_state", "batch_evaluation")
+        epochs = () if source_epoch is None else (source_epoch,)
+        self.snapshot = replace(self.snapshot, objects=tuple(replace(o, capabilities=caps, source_epochs=epochs) for o in self.snapshot.objects))
+        admission = replace(self.descriptor.admissions[0], model=self.model, reference=reference, capabilities=caps)
+        self.descriptor = replace(self.descriptor, admissions=(admission,))
+
+    def query(self, **changes):
+        query = StateQuery(self.reference, self.model, self.objects, (EPOCH,), self.native_reference,
+                           AccuracyRequest(metric="euclidean_norm"))
+        return replace(query, **changes)
+
+    def supports(self, query):
+        self.calls["supports"] += 1
+        needs_velocity = query.require_velocity or query.accuracy.velocity_m_s is not None
+        available = self.velocity_available or not needs_velocity
+        return CapabilityDecision(available and self.fault != "unsupported", "constructed Cartesian availability")
+
+    def evaluate(self, query):
+        from wenu_kernel.records import CartesianState
+        self.calls["evaluate"] += 1
+        if self.fault == "backend":
+            raise RuntimeError("constructed Cartesian backend failure")
+        def evidence(units, bound):
+            unknown = UncertaintyChannel("not_evaluated", None, units, "constructed unknown")
+            numeric = UncertaintyChannel("bounded", bound, units, "euclidean_norm")
+            return UncertaintyEvidence(unknown, unknown, numeric)
+        states = []
+        for time in query.times:
+            for obj in query.objects:
+                seconds = ((time.jd1 - EPOCH.jd1) + time.jd2 - EPOCH.jd2) * 86400
+                position = [1000 + self.objects.index(obj) + 2 * seconds, 2000, 3000]
+                velocity = [2, 0, 0] if self.velocity_available and self.fault != "missing_velocity" else None
+                self.buffers.append(position)
+                if velocity is not None:
+                    self.buffers.append(velocity)
+                row = CartesianState(obj, time, self.source_epoch, time, query.reference, position, velocity,
+                                     evidence("m", .01), evidence("m/s", .001) if velocity is not None else None)
+                if self.fault == "wrong_origin":
+                    row = replace(row, reference=replace(row.reference, origin_id="earth"))
+                elif self.fault == "wrong_epoch":
+                    row = replace(row, source_epoch=EPOCH)
+                elif self.fault == "wrong_anchor":
+                    row = replace(row, anchor_time=shifted(time, -1))
+                elif self.fault == "wrong_position_units":
+                    numeric = replace(row.position_evidence.numerical, units="km")
+                    row = replace(row, position_evidence=replace(row.position_evidence, numerical=numeric))
+                elif self.fault == "wrong_velocity_units":
+                    numeric = replace(row.velocity_evidence.numerical, units="km/s")
+                    row = replace(row, velocity_evidence=replace(row.velocity_evidence, numerical=numeric))
+                elif self.fault == "unknown_position_error":
+                    numeric = replace(row.position_evidence.numerical, status="not_evaluated", value=None)
+                    row = replace(row, position_evidence=replace(row.position_evidence, numerical=numeric))
+                elif self.fault == "statistical_velocity":
+                    numeric = replace(row.velocity_evidence.numerical, status="statistical")
+                    row = replace(row, velocity_evidence=replace(row.velocity_evidence, numerical=numeric))
+                states.append(row)
+        if self.fault == "reorder":
+            states.reverse()
+        elif self.fault == "omit":
+            states.pop()
+        elif self.fault == "duplicate":
+            states.append(states[0])
+        return StateBatch(query, states)
