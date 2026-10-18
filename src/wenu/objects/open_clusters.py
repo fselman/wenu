@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from importlib.resources import as_file
 from pathlib import Path
+from copy import deepcopy
 
 import numpy as np
 from astropy.table import Table
@@ -34,14 +35,16 @@ class OpenClusters(AstronomicalObject):
         if filename is None:
             resource = nonstellar_catalog_path("open_clusters")
             with as_file(resource) as path:
-                self.source = resource
+                source = resource
                 table = Table.read(path)
         else:
-            self.source = Path(filename)
-            table = Table.read(self.source)
+            source = Path(filename)
+            table = Table.read(source)
         table = self.normalize_catalogue(table)
         self._validate(table)
+        self.native_coordinate_spec(table)
         table = self.mark_amateur_exclusions(table)
+        self.source = source
         self.catalog = table
         self._source_revision += 1
         self._observed_point_cache.clear()
@@ -80,22 +83,56 @@ class OpenClusters(AstronomicalObject):
         metadata = {
             "catalog": "openclust",
             "coordinate_system": "icrs",
+            "catalogue_metadata": deepcopy(table.meta),
         }
         for name in table.colnames:
             if name not in ("identifier", "ra_deg", "dec_deg"):
-                metadata[name] = np.asarray(table[name])
-        provenance = () if self.source is None else (str(self.source),)
+                metadata[name] = (np.ma.array(table[name], copy=True)
+                                  if name in ('position_epoch', 'RA_source') else np.asarray(table[name]))
         return SphericalPoints(
             lon_deg=np.asarray(table["ra_deg"], dtype=float),
             lat_deg=np.asarray(table["dec_deg"], dtype=float),
-            coordinate_spec=icrs_catalogue_spec(
-                str(table.meta.get("database", "Dias/HEASARC open-cluster catalogue")),
-                provenance=provenance,
-            ),
+            coordinate_spec=self.native_coordinate_spec(table),
             ids=np.asarray(table["wenu_id"], dtype=object) if "wenu_id" in table.colnames else identifiers,
             labels=identifiers,
             names=identifiers,
             metadata=metadata,
+        )
+
+    def native_coordinate_spec(self, table=None):
+        """Mirror selected source epochs without inventing a common epoch.
+
+        ICRS/J2000 frame descriptions are not measurements of reference epoch.
+        Keep row-level declarations and unknowns intact; a single epoch exists
+        only when every selected row declares exactly the same value.
+        """
+        from astropy.time import Time
+        table = self._selected_table(None) if table is None else table
+        epochs = (list(table['position_epoch']) if 'position_epoch' in table.colnames
+                  else [table.meta.get('coordinate_epoch')] * len(table))
+        admitted = []
+        validated = set()
+        for value in epochs:
+            if value is None or np.ma.is_masked(value) or str(value).strip().lower() in ('', 'unknown'):
+                admitted.append(None)
+            else:
+                epoch = str(value).strip()
+                if not epoch.startswith(('J', 'B')):
+                    raise ValueError('Invalid declared open-cluster coordinate epoch.')
+                try:
+                    if epoch not in validated:
+                        time = Time(epoch)
+                        if not np.isfinite(time.jd):
+                            raise ValueError('Nonfinite epoch.')
+                        validated.add(epoch)
+                except (TypeError, ValueError) as error:
+                    raise ValueError('Invalid declared open-cluster coordinate epoch.') from error
+                admitted.append(epoch)
+        common = admitted[0] if admitted and all(value == admitted[0] for value in admitted) else None
+        return icrs_catalogue_spec(
+            str(table.meta.get('database') or table.meta.get('catalog') or 'open-cluster catalogue'),
+            epoch=common,
+            provenance=() if self.source is None else (str(self.source),),
         )
 
     @staticmethod
@@ -248,12 +285,14 @@ class OpenClusters(AstronomicalObject):
         metadata = {
             "catalog": "openclust",
             "coordinate_system": "altaz",
+            "catalogue_metadata": deepcopy(table.meta),
             "geometry_kind": "cartographic_symbol",
             "symbol": "open_cluster",
         }
         for name in table.colnames:
             if name not in ("identifier", "ra_deg", "dec_deg"):
-                metadata[name] = np.asarray(table[name])
+                metadata[name] = (np.ma.array(table[name], copy=True)
+                                  if name in ('position_epoch', 'RA_source') else np.asarray(table[name]))
 
         if len(table) == 0:
             return SphericalPoints(

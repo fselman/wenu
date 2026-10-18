@@ -7875,6 +7875,73 @@
       "tests/stellar_catalogue_fixtures.py": "5ea4eb103c3fd526b27546207ef9ad65798a2b5408de2d9ae95c1db99c762a2d"
     }
   },
+  "open_cluster_metadata_revision": {
+    "base_commit": "c0dee24cb45e01145ab3e901c9ed5c5a1159c69a",
+    "scope": "Open-cluster portions of audit M4/M6: consume existing row epochs/coordinate-source lineage and source metadata, preserve selected/masked/unknown semantics, validate snapshot v4 and admit v1-v3 explicitly.",
+    "gate": "open-cluster-metadata",
+    "source_paths": ["src/wenu/objects/open_clusters.py", "src/wenu/sky/native_snapshot.py"],
+    "test_paths": ["tests/test_open_clusters.py", "tests/test_reusable_canonical_sphere.py"],
+    "legacy_tests_moved_or_removed": [],
+    "native_epoch_rule": "A scalar epoch exists only when all selected rows declare the same known epoch. Mixed, masked, unknown or empty selections use None; source declarations/masks remain available per row. Frame/equinox text does not imply a measurement epoch.",
+    "snapshot_compatibility": "v4 header must agree with preserved cluster rows. v2/v3 may admit their known historical J2000 stamp but restored geometry reads row facts; v1 has no fixed cluster catalogue.",
+    "inspected_active_catalogue": {"rows": 513, "hunt_J2016_rows": 509, "dias_unknown_epoch_rows": 4, "meaning": "As-is observation, never a software selection constant"},
+    "regression_evidence": "Four new metadata/refusal regressions fail against original c0dee24c OpenClusters.position/load definitions.",
+    "local_verification": {
+      "environment": "Normal Linux Wenu/astronomy runtime; plugin autoload disabled",
+      "focused_tests": 46,
+      "focused_seconds": 148.58,
+      "tooling_tests": 8,
+      "tooling_seconds": 0.564,
+      "documentation_tests": 33,
+      "documentation_seconds": 1.36,
+      "documentation_limits": "Three unchanged historical archive/materialization checks require a complete checkout; active links checked against the authoritative tree. No new Mac receipt claimed.",
+      "full_production_or_SDK_repeat": false
+    },
+    "remaining": ["shared default epoch helper and other callers", "nonstellar metadata/unit normalization", "other fixed-catalogue snapshot semantics", "open-cluster kernel routing"],
+    "excluded_owners": ["stellar ingestion/kernel SDK", "catalogue curation/member photometry/acquisition tools", "orbital and radiometry physics", "packaging/dependencies/resources", "projection and renderer internals", "full production suite"],
+    "content_sha256": {
+      "src/wenu/objects/open_clusters.py": "d107d2acd743409bab3c1c6cce173b51fce6c39f1802f15b41c7d2c287e694ea",
+      "src/wenu/sky/native_snapshot.py": "d75e939f8106b53eceecc5c2c06eac432169d56127b5922de2e22eb5c79845fa",
+      "tests/test_open_clusters.py": "2575064f60e2bb5e6c7bf5dd22194180a095ced456fcdf2fd9c52c808a72b557",
+      "tests/test_reusable_canonical_sphere.py": "b1935f35a874e39823d82ba091545ea81fe4f2d4d2f0d14c4e012408ed7532db"
+    }
+  },
+  "metadata_resource_compatibility_repair": {
+    "mac_failed_commit": "9da34fc9fe6bbf3a820403905c0788f2ac763759",
+    "mac_receipt": {
+      "tooling_passed": 8,
+      "tooling_seconds": 1.04,
+      "documentation_passed": 36,
+      "documentation_seconds": 3.61,
+      "combined_passed": 79,
+      "provider_subtests_passed": 9,
+      "combined_failed": 1,
+      "combined_setup_errors": 40,
+      "combined_seconds": 83.96,
+      "common_cause": "Python 3.11 namespace MultiplexedPath.joinpath accepts one child; the new metadata reader passed two."
+    },
+    "source_path": "src/wenu/stellar_catalogue.py",
+    "test_path": "tests/test_stellar_state.py::test_packaged_metadata_supports_single_component_namespace_traversal",
+    "repair": "Use chained single-component traversal; no metadata, astrometry, schema, selection or renderer change.",
+    "regression_evidence": "New compatibility test raises the same TypeError before the fix using real packaged metadata and the older reader signature.",
+    "retry_gate": "native-metadata-resources",
+    "retry_cases": 42,
+    "local_verification": {
+      "environment": "Normal Linux Python 3.12 runtime plus explicit older namespace-reader method-signature regression; not a Python 3.11 runtime receipt",
+      "retry_tests": 42,
+      "retry_seconds": 204.7,
+      "tooling_tests": 8,
+      "tooling_seconds": 0.826,
+      "documentation_tests": 33,
+      "documentation_seconds": 1.21,
+      "mac_retry": "pending"
+    },
+    "receipt_reuse": "Retain 79 passing combined cases and nine subtests; rerun the 41 blocked consumers plus the new regression, without full production or SDK repeat.",
+    "content_sha256": {
+      "src/wenu/stellar_catalogue.py": "30979a8c759b58f9c5208bbbe73e8dfd485e24c0f269a4022698b5a37eb423c2",
+      "tests/test_stellar_state.py": "c6879d688d2c4dbb23190d54733920da206ad6d2ff183c4ead07418141fb00f5"
+    }
+  },
   "development_test_gates": {
     "source_paths": [
       "tools/run_test_gate.py"
