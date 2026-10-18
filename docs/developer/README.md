@@ -16,6 +16,8 @@ PR #234 is integrated. Its tree is identical to `ea8dc505`, which passed all
 | [Configuration schema](configuration_schema_v2.md) | Implemented schema-v2 configuration |
 | [Satellite guide](satellite_guide.md) | Satellite science and current limitations |
 | [Testing policy](testing_policy.md) | Focused verification now and module independence target |
+| [As-is migration audit](kernel_migration_audit_v1.md) | Current functionality, pinned source/test inventory and continuous test migration |
+| [Proposed kernel contract K1](kernel_contract_k1.md) | Proposed SDK types, operations, capabilities, errors and conformance gates |
 | [Assistant instructions](assistant_instructions.md) | Contribution and delivery workflow |
 
 ## Forward work
@@ -26,6 +28,8 @@ document and in the [diagram index](diagrams/README.md).
 It starts with Gaia DR3, prepares a DR4 adapter, requires every existing
 functionality to use the kernel, and then extracts one package at a time.
 This is a plan, not a claim that the kernel or Gaia integration exists.
+The [K1 contract](kernel_contract_k1.md) is the current review candidate;
+its acceptance precedes the bounded K2 synthetic-provider implementation.
 
 The `v0.9.5` name is provisional. The old document with this version in its
 title described the completed 49B/49C coordinate work, not this new kernel.

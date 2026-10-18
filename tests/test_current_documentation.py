@@ -19,7 +19,8 @@ ACTIVE_DEVELOPER = {
     "implementation_reference.md", "source_tree.md", "configuration_schema_v2.md",
     "coordinate_system_guide_v0.9.5.md", "satellite_guide.md",
     "stellar_designation_review.md", "scientific_contracts.md",
-    "testing_policy.md", "kernel_roadmap_v0.9.5.md",
+    "testing_policy.md", "kernel_roadmap_v0.9.5.md", "kernel_contract_k1.md",
+    "kernel_migration_audit_v1.md",
 }
 OBSOLETE_IMPORTS = (
     "wenu.spherical", "wenu.projected", "wenu.spherical_frame", "wenu.clipping",
@@ -115,7 +116,8 @@ def test_historical_documentation_suite_is_preserved_but_not_collected():
 
 
 def test_documented_python_is_syntactically_valid():
-    for path in (ROOT / "README.md", DEVELOPER / "implementation_reference.md"):
+    for path in (ROOT / "README.md", DEVELOPER / "implementation_reference.md",
+                 DEVELOPER / "kernel_contract_k1.md"):
         blocks = fenced_python(path)
         assert blocks, path
         for block in blocks:
@@ -147,6 +149,18 @@ def test_source_map_covers_exactly_current_production_modules():
     listed = re.findall(r"\| \[`([^`]+\.py)`\]\(../../src/wenu/[^)]+\)", source_map)
     assert len(listed) == len(set(listed))
     assert set(listed) == actual
+    # A new source, test module or installed command must enter the migration
+    # ledger; otherwise the K5 all-consumer review could silently omit it.
+    audit = json.loads(read(DEVELOPER / "kernel_migration_inventory_v1.json"))
+    assert {r["path"] for r in audit["production_modules"]} == {
+        "src/wenu/" + path for path in actual}
+    assert {r["path"] for r in audit["test_side_python_files"]} == {
+        str(p.relative_to(ROOT)) for p in (ROOT / "tests").rglob("*.py")}
+    import tomllib
+    scripts = tomllib.loads(read(ROOT / "pyproject.toml"))["project"]["scripts"]
+    assert audit["entry_points"] == scripts
+    for record in audit["preserved_test_editions"]:
+        assert git_blob((ROOT / record["archive_path"]).read_bytes()) == record["original_git_blob_sha"]
 
 
 def test_atlas_guide_documents_all_registered_atlas_presets():

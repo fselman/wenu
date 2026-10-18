@@ -1,0 +1,287 @@
+"""Milestone 44I structured user-guide and README provenance contracts."""
+
+from hashlib import sha256
+from pathlib import Path
+import struct
+
+
+ROOT = Path(__file__).resolve().parents[1]
+GUIDE = ROOT / "docs/user_guide"
+IMAGE = GUIDE / "assets/la-ligua-planisphere.png"
+IMAGE_SHA256 = (
+    "5f4d7a17f6e7334e39cd3d28a158010ce59c80dbabd58f112a52fe62f1cedbba"
+)
+GUIDE_PAGES = (
+    "index.md",
+    "chart_examples.md",
+    "comet_discovery.md",
+    "all_sky.md",
+    "planisphere.md",
+    "regional_charts.md",
+    "circumpolar_charts.md",
+    "binocular_charts.md",
+    "styles_modes_detail.md",
+    "configuration.md",
+    "svg_output.md",
+    "temporal_sequences.md",
+    "labels.md",
+    "locations.md",
+    "atlas.md",
+    "curation.md",
+)
+
+
+EXAMPLES = (
+    "all_sky.py",
+    "planisphere.py",
+    "regional_constellation_group.py",
+    "regional_constellation.py",
+    "circumpolar.py",
+    "binocular_object.py",
+)
+
+
+
+def test_label_guide_distinguishes_implemented_controls_from_future_grid_policy():
+    text = (GUIDE / "labels.md").read_text(encoding="utf-8")
+    index = (GUIDE / "index.md").read_text(encoding="utf-8")
+    assert "(labels.md)" in index
+    for value in ("--labels-upright", "--labels-up-away-from-cp",
+                  'labels_orientation = "upright"',
+                  "proposed, not implemented by this milestone",
+                  "Implemented horizon-grid placement",
+                  "bounded simultaneous",
+                  "unresolved_label_collisions",
+                  "altitude_label_azimuths_deg",
+                  "No simulated annealing is implemented here.",
+                  "track dates retain their established anchors",
+                  "Literature and precedents", "--no-grid-label-band",
+                  "Opaque white with a black exterior frame", "padding_points = 2.0"):
+        assert value in text
+
+def png_dimensions(path):
+    data = path.read_bytes()
+    assert data[:8] == b"\x89PNG\r\n\x1a\n"
+    assert data[12:16] == b"IHDR"
+    return struct.unpack(">II", data[16:24])
+
+
+def test_structured_user_guide_has_the_target_pages():
+    assert {path.name for path in GUIDE.glob("*.md")} == set(GUIDE_PAGES)
+
+
+def test_guide_index_names_all_canonical_examples():
+    text = (GUIDE / "index.md").read_text(encoding="utf-8")
+    for filename in EXAMPLES:
+        assert f"examples/{filename}" in text
+
+
+def test_regional_guide_uses_arbitrary_constellation_sets():
+    text = (GUIDE / "regional_charts.md").read_text(encoding="utf-8")
+
+    assert "--center-on constellation:Sgr,Sco,Oph,Ser" in text
+    assert "--constellation-mask Cen,Cru,Mus" in text
+    assert "--center-on group:summer-triangle" in text
+
+def test_readme_quick_start_uses_the_canonical_planisphere_interface():
+    text = (ROOT / "README.md").read_text(encoding="utf-8")
+    assert "python examples/planisphere.py" in text
+    assert "--style cartoon --mode presentation" in text
+    assert "--output output/la-ligua-planisphere.png" in text
+    assert "--credits" in text
+    assert "docs/user_guide/assets/la-ligua-planisphere.png" in text
+
+
+def test_readme_image_matches_its_recorded_binary_contract():
+    assert png_dimensions(IMAGE) == (1129, 1030)
+    assert sha256(IMAGE.read_bytes()).hexdigest() == IMAGE_SHA256
+
+
+def test_planisphere_provenance_is_complete_and_reproducible():
+    text = (GUIDE / "planisphere.md").read_text(encoding="utf-8")
+    for value in (
+        "examples/planisphere.py",
+        "44c16fd",
+        "5fcde48",
+        "1129 × 1030",
+        IMAGE_SHA256,
+        "--style cartoon --mode presentation",
+        "--output docs/user_guide/assets/la-ligua-planisphere.png",
+        "--credits",
+        "visual approval",
+    ):
+        assert value in text
+
+
+def test_planisphere_guide_documents_disjoint_visible_masks():
+    text = (GUIDE / "planisphere.md").read_text(encoding="utf-8")
+
+    assert "--constellation-mask Cru,Cyg,UMa" in text
+    assert "wholly below" in text
+    assert "crossing" in text
+
+
+def test_all_sky_guide_documents_galactic_mollweide_geometry():
+    text = (GUIDE / "all_sky.md").read_text(encoding="utf-8")
+
+    for value in (
+        "examples/all_sky.py",
+        'family="all_sky"',
+        'projection="mollweide"',
+        'coordinate_frame="galactic"',
+        "Galactic longitude zero",
+        "180° seam",
+        "--constellation-mask Cru,Cyg,UMa",
+    ):
+        assert value in text
+
+
+def test_shared_guide_documents_independent_horizon_roles():
+    text = " ".join(
+        (GUIDE / "styles_modes_detail.md").read_text(encoding="utf-8").split()
+    )
+
+    for value in (
+        "--horizon",
+        "--horizon-mask",
+        "one translucent mask",
+        "intentional no-ops",
+        "Galactic Mollweide",
+    ):
+        assert value in text
+
+
+def test_configuration_guide_documents_template_and_profiles():
+    text = (GUIDE / "configuration.md").read_text(encoding="utf-8")
+
+    for value in (
+        "wenu_chart defaults --write profiles/publication.toml",
+        "packaged defaults.toml < --config TOML < explicit CLI arguments",
+        "`solid`",
+        "`dashed`",
+        "`dotted`",
+        "`dash_dot`",
+        "`none`",
+        "publication.toml",
+        "presentation.toml",
+        "outreach.toml",
+        "papudo.toml",
+        "binocular-observing.toml",
+        "no profile inheritance or multi-file stacking",
+        'extension = ".svg"',
+        "--format svg",
+        "prefer_vector",
+        "does not itself choose PDF or SVG",
+    ):
+        assert value in text
+
+
+def test_configuration_guide_documents_moving_object_data_authorities():
+    text = (GUIDE / "configuration.md").read_text(encoding="utf-8")
+
+    for value in (
+        "Minor Planet Center (MPC)",
+        "Planetary Data System (PDS)",
+        "10P/Tempel 2",
+        "not the tenth periodic comet discovered",
+        "does not query MPC or PDS directly",
+        "SBDB Query API",
+        "Exact `--comet` identity resolution uses the SBDB API",
+        "Horizons API",
+        "chart construction and rendering are offline",
+        "Add `--debug`",
+        "complete Python traceback",
+    ):
+        assert value in text
+
+
+def test_circumpolar_guide_documents_horizon_crossing_framing():
+    text = (GUIDE / "circumpolar_charts.md").read_text(encoding="utf-8")
+
+    assert "--limiting-declination -30 --horizon --horizon-mask" in text
+    assert "--declination-step 10" in text
+
+
+def test_english_and_spanish_readmes_link_the_structured_guide():
+    for filename in ("README.md", "README.es.md"):
+        text = (ROOT / filename).read_text(encoding="utf-8")
+        assert "docs/user_guide/index.md" in text
+
+
+def test_legacy_user_guide_paths_point_to_the_structured_guide():
+    for filename in ("docs/user_guide.md", "docs/user_guide.es.md"):
+        text = (ROOT / filename).read_text(encoding="utf-8")
+        assert "user_guide/index.md" in text
+
+
+def test_svg_guide_documents_editable_vector_contract():
+    text = " ".join(
+        (GUIDE / "svg_output.md").read_text(encoding="utf-8").split()
+    )
+
+    for value in (
+        "--format png",
+        "--format pdf",
+        "--format svg",
+        'data-wenu-edit="style"',
+        'data-wenu-edit="layout"',
+        "genuine SVG `<text>` elements",
+        "does not embed the font file",
+        "scientifically modified derivative",
+        "Inkscape",
+    ):
+        assert value in text
+
+    index = (GUIDE / "index.md").read_text(encoding="utf-8")
+    assert "--format png|pdf|svg" in index
+    assert "(svg_output.md)" in index
+
+
+def test_temporal_sequence_guide_documents_cli_and_resume_contract():
+    text = (
+        GUIDE / "temporal_sequences.md"
+    ).read_text(encoding="utf-8")
+    index = (GUIDE / "index.md").read_text(encoding="utf-8")
+    configuration = (
+        GUIDE / "configuration.md"
+    ).read_text(encoding="utf-8")
+
+    for value in (
+        "--sequence-stop",
+        "--sequence-frames",
+        "--display-timezone",
+        "--playback-duration",
+        "--frames-per-second",
+        "--restart-policy resume",
+        "wenu-sequence-manifest.json",
+        "byte count, and SHA-256",
+        "PNG compression bytes may differ",
+        "[sequence]",
+        "complete translated effective configuration",
+    ):
+        assert value in text
+
+    assert "(temporal_sequences.md)" in index
+    assert "Observer-time sequence profiles" in configuration
+    assert 'stop = "2026-08-22T03:00:00-04:00"' in configuration
+
+
+def test_atlas_guide_documents_designer_and_separate_planned_inputs():
+    text = (GUIDE / "atlas.md").read_text(encoding="utf-8")
+    index = (GUIDE / "index.md").read_text(encoding="utf-8")
+    assert "(atlas.md)" in index
+    assert "designer and index plotter accepted and merged" in text
+    assert "wenu_design_atlas --config REQUEST_TOML --output NEW_JSON" in text
+    assert "wenu-atlas-design-request" in text
+    assert "wenu-atlas-index-presentation" in text
+    assert "--output-prefix NEW_PREFIX" in text
+    assert "join_ra_hours" in text
+    assert "published atomically" in text
+    assert "```mermaid" in text
+    for command in ("wenu_design_atlas", "wenu_plot_atlas", "wenu_create_atlas"):
+        assert command in text
+    for filename in ("atlas_design_request_v1.toml", "atlas_design_v1.json",
+                     "atlas_index_style_v1.toml", "atlas_publication_v1.toml"):
+        assert filename in text
+    assert "**Only** a versioned, resolved atlas JSON" in text
+    assert "not runnable" in text
