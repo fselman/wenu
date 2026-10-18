@@ -217,3 +217,57 @@ class CertifiedDirections(SyntheticDirections):
             foreign = replace(self.model.dependencies[0], sha256="0" * 64)
             cert = replace(cert, method=replace(cert.method, dependencies=(foreign,)))
         return cert if fault == "identity" else replace(cert, identity=certificate_identity(cert))
+
+
+class CanonicalDirections(CertifiedDirections):
+    """Constructed deterministic binary date cells, not a real motion model."""
+
+    def __init__(self, name="canonical"):
+        super().__init__(name)
+        caps = self.descriptor.admissions[0].capabilities + ("canonical_direction_reuse",)
+        self.snapshot = replace(self.snapshot, objects=tuple(replace(o, capabilities=caps) for o in self.snapshot.objects))
+        self.descriptor = replace(self.descriptor, admissions=(replace(self.descriptor.admissions[0], capabilities=caps),))
+        self.plan_fault = None
+
+    def plan_reuse(self, query):
+        from fractions import Fraction
+        from math import floor
+        from wenu_kernel.errors import AccuracyUnavailable
+        from wenu_kernel.records import AnchorSelection
+        from wenu_kernel.reuse import make_reuse_plan, reuse_plan_identity
+        fault = self.plan_fault
+        if fault == "unavailable":
+            raise AccuracyUnavailable("constructed canonical schedule unavailable")
+        if fault == "unsupported":
+            raise UnsupportedCapability("constructed canonical schedule unsupported")
+        if fault == "backend":
+            raise RuntimeError("constructed planning failure")
+        if fault == "none":
+            return None
+        anchors = []
+        for time in query.times:
+            for obj in query.objects:
+                width = Fraction(1, 256 if obj == self.objects[0] else 4)
+                elapsed = Fraction(time.jd1 - EPOCH.jd1) + Fraction(time.jd2) - Fraction(EPOCH.jd2)
+                index = floor(elapsed / width + Fraction(1, 2))
+                anchor = shifted(EPOCH, index * width)
+                anchor = max((anchor, self.coverage.start), key=TimeSpan.key)
+                anchor = min((anchor, self.coverage.stop), key=TimeSpan.key)
+                anchors.append(AnchorSelection(obj, time, anchor))
+        method = ModelRef(self.key.provider_id + ":binary-cells", "1", digest("nearest binary cells; ties advance"), self.model.dependencies)
+        plan = make_reuse_plan(query, anchors, method)
+        if fault == "query":
+            plan = replace(plan, query=replace(query, accuracy=AccuracyRequest(angular_rad=2e-5)))
+        elif fault == "omit":
+            plan = replace(plan, anchors=plan.anchors[:-1])
+        elif fault == "order":
+            plan = replace(plan, anchors=tuple(reversed(plan.anchors)))
+        elif fault == "outside":
+            plan = replace(plan, anchors=(replace(plan.anchors[0], anchor_time=TimePoint(1, 0, "tt")),) + plan.anchors[1:])
+        elif fault == "scale":
+            plan = replace(plan, anchors=(replace(plan.anchors[0], anchor_time=replace(EPOCH, scale="tdb")),) + plan.anchors[1:])
+        elif fault == "method_resource":
+            resource = replace(self.model.dependencies[0], sha256="0" * 64)
+            plan = replace(plan, method=replace(plan.method, dependencies=(resource,)))
+        plan = replace(plan, identity=reuse_plan_identity(plan))
+        return replace(plan, identity="0" * 64) if fault == "identity" else plan

@@ -1,4 +1,4 @@
-# Wenu kernel: direction reuse candidate
+# Wenu kernel: reproducible direction reuse candidate
 
 This separately installable project implements a bounded direction subset of K2.
 It is not the K5 frozen SDK. Existing Wenu continues to use its current code;
@@ -17,6 +17,8 @@ no chart, report, catalogue, snapshot or numerical backend is rerouted yet.
 - Provider-supplied angular certificates and selective temporal reuse under an
   explicitly chosen interactive session policy, with atomic publication of both
   exact and certificate caches. Reuse never turns into a new computed anchor.
+- Optional provider-planned canonical anchors for reproducible reuse, with pure
+  planning, strict envelope admission and atomic per-object anchor caching.
 - Standard-library tests with two constructed providers: fixed directions and
   circularly moving directions. These are not Gaia fixtures or science oracles.
 
@@ -47,9 +49,31 @@ complete conformance kit remains a K2/K5 deliverable.
 ## Angular reuse and reproducibility
 
 `SessionPolicy.reproducibility="reproducible"` remains the default. A
-`bounded_reuse` query always evaluates the full model in this mode (or reuses
-an identical complete query). Canonical provider anchors/partitions are not
-implemented yet; arbitrary warm-cache anchors do not define reproducible output.
+`bounded_reuse` query follows a provider's canonical schedule when its model
+advertises `canonical_direction_reuse`. Otherwise it evaluates the full model
+(or reuses an identical complete query). Arbitrary warm-cache anchors never
+define reproducible output.
+
+The optional `CanonicalDirectionProvider` protocol in `wenu_kernel.providers`
+adds `plan_reuse(query) -> DirectionReusePlan`. It is not required of existing
+providers. Advertising the capability requires this operation plus angular
+certification. Planning may inspect already admitted immutable metadata; it
+must not propagate, acquire resources, consult cache history or mutate scientific
+state. A provider's science/conformance gate must demonstrate that its declared
+schedule depends only on the exact model, query and policy.
+
+The plan contains time-major `AnchorSelection` records and planner method/
+resource identity. `make_reuse_plan` constructs its content identity. The kernel
+validates every anchor and the complete plan before evaluating missing objects
+in batches by anchor time. `StateBatch.reuse_plan` records the schedule. Canonical
+cache keys include source/model/reference, object, anchor and requested accuracy.
+Changing cells chooses the planned new anchor even if an old certificate is
+still within tolerance. Certificates are checked against original computed
+states and required intervals; new anchors publish only after all rows succeed.
+Unavailable plans or insufficient admitted bounds fall back to full evaluation;
+malformed envelopes or backend failures do not become fallback successes.
+For this slice, one unavailable/insufficient planned row falls back for the
+complete query; all newly staged canonical anchors are discarded.
 
 An explicitly chosen `interactive_bounded` session may reuse certified native
 directions. Every such query needs positive `AccuracyRequest.angular_rad`;
@@ -60,7 +84,8 @@ whole-interval coverage and total numerical bound. It does not multiply proper
 motion or assume that missing motion is zero.
 
 Certificates currently cover one object at one original full-model anchor.
-The kernel batches missing objects per requested time and preserves exact
+Interactive queries batch missing objects per requested time; canonical queries
+batch by anchor time. Both preserve exact
 time-major output order. Certificate selection uses bound, anchor time and
 identity as a total order over available entries. Interactive results may
 depend on the available anchor set, always within their reported bound.

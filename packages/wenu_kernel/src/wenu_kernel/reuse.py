@@ -17,6 +17,7 @@ _IDENTITY_TYPES = {
     r.ResourceRef, r.ModelRef, r.CatalogueRef, r.ReferenceSpec, r.AccuracyRequest,
     r.StateQuery, r.DirectionState, r.StateBatch, r.UncertaintyChannel,
     r.UncertaintyEvidence,
+    r.AnchorSelection,
 }
 
 
@@ -45,7 +46,7 @@ def direction_anchor_identity(anchor):
     """Identify one actual full-model object/time state, including its error."""
     r.exact(anchor, r.StateBatch)
     if (len(anchor.states) != 1 or len(anchor.query.objects) != 1
-            or len(anchor.query.times) != 1 or anchor.reuse_certificates
+            or len(anchor.query.times) != 1 or anchor.reuse_certificates or anchor.reuse_plan is not None
             or anchor.query.evaluation_policy != "full_model"
             or anchor.query.coverage is not None):
         raise InvalidQuery("certificate anchors must be scalar full-model states")
@@ -54,7 +55,36 @@ def direction_anchor_identity(anchor):
             or state.time != anchor.query.times[0]
             or state.object_key != anchor.query.objects[0]):
         raise InvalidQuery("a reused direction cannot become a new certified anchor")
-    return _identity("wenu_kernel/session-direction-anchor/1", (anchor,))
+    return _identity("wenu_kernel/session-direction-anchor/2", (anchor,))
+
+
+def reuse_plan_identity(plan):
+    r.exact(plan, r.DirectionReusePlan)
+    return _identity("wenu_kernel/session-direction-plan/1", (plan.query, plan.anchors, plan.method))
+
+
+def make_reuse_plan(query: r.StateQuery, anchors: tuple[r.AnchorSelection, ...],
+                    method: r.ModelRef) -> r.DirectionReusePlan:
+    plan = r.DirectionReusePlan(query, anchors, method, "0" * 64)
+    return replace(plan, identity=reuse_plan_identity(plan))
+
+
+def validate_reuse_plan(plan, query, admission):
+    if (type(plan) is not r.DirectionReusePlan or plan.query != query
+            or plan.identity != reuse_plan_identity(plan)
+            or not set(plan.method.dependencies) <= set(query.catalogue.resources)):
+        raise InvalidProviderResult("canonical plan identity or source binding mismatch")
+    expected = tuple((time, obj) for time in query.times for obj in query.objects)
+    if tuple((a.requested_time, a.object_key) for a in plan.anchors) != expected:
+        raise InvalidProviderResult("canonical plan must preserve exact time-major row selection")
+    try:
+        valid = all(admission.coverage.contains(a.anchor_time)
+                    and all(resource.coverage.contains(a.anchor_time) for resource in query.catalogue.resources)
+                    for a in plan.anchors)
+    except KernelError as exc:
+        raise InvalidProviderResult("canonical anchor uses an incompatible time basis") from exc
+    if not valid:
+        raise InvalidProviderResult("canonical anchor lies outside model/resource coverage")
 
 
 def make_certificate(*, catalogue: r.CatalogueRef, model: r.ModelRef,

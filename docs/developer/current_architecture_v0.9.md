@@ -6,9 +6,9 @@ architecture lives separately in the [roadmap](kernel_roadmap_v0.9.5.md).
 
 The separate [K2 kernel project](../../packages/wenu_kernel/README.md)
 implements immutable direction records, explicit registration and synchronous
-sessions. The current candidate adds angular certificate admission and selective
-temporal reuse under `interactive_bounded`; default reproducible mode uses the
-full model, pending canonical anchors. It has no runtime dependencies or existing
+sessions. The current candidate adds provider-planned canonical anchors for
+reproducible certified reuse, alongside explicit `interactive_bounded` reuse.
+Providers without an admitted plan/bound use full-model fallback. It has no runtime dependencies or existing
 product consumers. The production pipeline below is unchanged; routing it
 through the kernel remains K3. Real providers and the SDK freeze are pending.
 

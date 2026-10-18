@@ -381,6 +381,32 @@ class UncertaintyEvidence:
 
 
 @dataclass(frozen=True, slots=True)
+class AnchorSelection:
+    object_key: ObjectKey
+    requested_time: TimePoint
+    anchor_time: TimePoint
+
+    def __post_init__(self):
+        exact(self.object_key, ObjectKey)
+        exact(self.requested_time, TimePoint)
+        exact(self.anchor_time, TimePoint)
+
+
+@dataclass(frozen=True, slots=True)
+class DirectionReusePlan:
+    query: StateQuery
+    anchors: tuple[AnchorSelection, ...]
+    method: ModelRef
+    identity: str
+
+    def __post_init__(self):
+        exact(self.query, StateQuery)
+        exact(self.method, ModelRef)
+        sequence(self, "anchors", AnchorSelection, nonempty=True)
+        digest(self.identity)
+
+
+@dataclass(frozen=True, slots=True)
 class ReuseCertificate:
     catalogue: CatalogueRef
     model: ModelRef
@@ -443,11 +469,14 @@ class StateBatch:
     query: StateQuery
     states: tuple[DirectionState, ...]
     reuse_certificates: tuple[ReuseCertificate, ...] = ()
+    reuse_plan: DirectionReusePlan | None = None
 
     def __post_init__(self):
         exact(self.query, StateQuery)
         sequence(self, "states", DirectionState)
         sequence(self, "reuse_certificates", ReuseCertificate, unique=True)
+        if self.reuse_plan is not None:
+            exact(self.reuse_plan, DirectionReusePlan)
 
 
 @dataclass(frozen=True, slots=True)

@@ -7338,7 +7338,7 @@
   "independent_projects": [
     {
       "path": "packages/wenu_kernel",
-      "scope": "K2 direction subset, registry/sessions and certified angular reuse; all current Wenu consumers remain unmigrated",
+      "scope": "K2 native directions, certified angular reuse and optional reproducible canonical planning; current Wenu consumers remain unmigrated",
       "source_paths": [
         "packages/wenu_kernel/src/wenu_kernel/__init__.py",
         "packages/wenu_kernel/src/wenu_kernel/errors.py",
