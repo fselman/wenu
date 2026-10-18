@@ -19,7 +19,7 @@ ACTIVE_DEVELOPER = {
     "implementation_reference.md", "source_tree.md", "configuration_schema_v2.md",
     "coordinate_system_guide_v0.9.5.md", "satellite_guide.md",
     "stellar_designation_review.md", "scientific_contracts.md",
-    "testing_policy.md", "kernel_roadmap_v0.9.5.md",
+    "testing_policy.md", "kernel_roadmap_v0.9.5.md", "kernel_contract_k1.md",
 }
 OBSOLETE_IMPORTS = (
     "wenu.spherical", "wenu.projected", "wenu.spherical_frame", "wenu.clipping",
@@ -115,7 +115,8 @@ def test_historical_documentation_suite_is_preserved_but_not_collected():
 
 
 def test_documented_python_is_syntactically_valid():
-    for path in (ROOT / "README.md", DEVELOPER / "implementation_reference.md"):
+    for path in (ROOT / "README.md", DEVELOPER / "implementation_reference.md",
+                 DEVELOPER / "kernel_contract_k1.md"):
         blocks = fenced_python(path)
         assert blocks, path
         for block in blocks:

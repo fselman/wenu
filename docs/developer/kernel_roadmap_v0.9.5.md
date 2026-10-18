@@ -137,6 +137,10 @@ propagating stars does not drag the official boundary with them.
 
 ## Kernel scope and public contract
 
+The [K1 contract specification](kernel_contract_k1.md) defines the proposed
+SDK names, typed records, operations, capability matrix, errors and independent
+conformance gates. It is a review candidate, not an implemented API.
+
 The kernel owns identity, typed time/state queries, capability admission,
 provider registration, resource/provenance identity, immutable results,
 validity checks and selective reuse. It may provide generic kinematic services
