@@ -1,6 +1,6 @@
 # Wenu developer documentation
 
-**Current baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`, 2026-10-17.
+**Existing Wenu production baseline:** `6708f54a0d8984c0be348b2c8cb02b311646a02b`, 2026-10-17.
 PR #234 is integrated. Its tree is identical to `ea8dc505`, which passed all
 3,606 plugin-disabled Mac tests in 1,136.74 s; 16 overlay tests passed in 4.03 s.
 
@@ -22,21 +22,24 @@ PR #234 is integrated. Its tree is identical to `ea8dc505`, which passed all
 
 ## Forward work
 
-K1 is accepted and merged in PR #236 at `6e83705a`; its amended Mac
-documentation gate passed 36 tests in 2.25 s. The first K2 candidate is a
-separate [kernel project](../../packages/wenu_kernel/README.md): standard-library
-direction records, registry and synchronous sessions with synthetic providers.
+K1 and the first K2 foundation are accepted through PR #237, main `ddd7d6c2`.
+The separate [kernel project](../../packages/wenu_kernel/README.md) owns
+standard-library direction records, registration and synchronous sessions.
+The current candidate adds provider-certified angular reuse under an explicit
+interactive policy; reproducible mode retains full-model evaluation.
 Its [selection manifest](../../packages/wenu_kernel/test_selection_v1.json)
 keeps the independent core gate separate from existing Wenu tests. Current
-products do not consume it yet. K2 reuse/Cartesian/realization and K3 routing
-remain pending; this is not a completed kernel or frozen SDK.
+products do not consume it yet. Canonical reproducible reuse, Cartesian/time/
+realization services and K3 routing remain pending; this is not a completed
+kernel or frozen SDK.
 
 [Roadmap to v0.9.5: kernel and loadable packages](kernel_roadmap_v0.9.5.md)
 is the single active forward roadmap. Both architecture diagrams are in that
 document and in the [diagram index](diagrams/README.md).
 It starts with Gaia DR3, prepares a DR4 adapter, requires every existing
 functionality to use the kernel, and then extracts one package at a time.
-This is a plan, not a claim that the kernel or Gaia integration exists.
+Kernel completion and Gaia integration remain planned; the implemented subset
+is stated above.
 The [K1 contract](kernel_contract_k1.md) is the accepted implementation target;
 K5 remains the final usable SDK freeze after all consumers migrate.
 

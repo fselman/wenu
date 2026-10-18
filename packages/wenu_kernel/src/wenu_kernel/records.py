@@ -1,9 +1,11 @@
-"""Immutable direction-state vocabulary for the first K2 implementation slice.
+"""Immutable identity, time, catalogue, direction and certificate vocabulary.
 
 No time conversion, physical propagation or numerical backend lives here.
 Constructor failures are InvalidQuery; providers must publish these exact
 record types, never mutable subclasses or opaque numerical buffers.
 """
+
+from __future__ import annotations
 
 from dataclasses import dataclass
 from math import isfinite, fsum, ulp
@@ -379,6 +381,36 @@ class UncertaintyEvidence:
 
 
 @dataclass(frozen=True, slots=True)
+class ReuseCertificate:
+    catalogue: CatalogueRef
+    model: ModelRef
+    anchor_identity: str
+    objects: tuple[ObjectKey, ...]
+    reference: ReferenceSpec
+    validity: TimeSpan
+    metric: str
+    maximum_error: float
+    method: ModelRef
+    identity: str
+
+    def __post_init__(self):
+        for value, cls in ((self.catalogue, CatalogueRef), (self.model, ModelRef),
+                           (self.reference, ReferenceSpec), (self.validity, TimeSpan),
+                           (self.method, ModelRef)):
+            exact(value, cls)
+        digest(self.anchor_identity)
+        digest(self.identity)
+        sequence(self, "objects", ObjectKey, unique=True, nonempty=True)
+        if len(self.objects) != 1:
+            raise InvalidQuery("this slice certifies one original object/time anchor")
+        text(self.metric)
+        value = finite(self.maximum_error)
+        if value < 0:
+            raise InvalidQuery("certificate error cannot be negative")
+        object.__setattr__(self, "maximum_error", value)
+
+
+@dataclass(frozen=True, slots=True)
 class DirectionState:
     object_key: ObjectKey
     time: TimePoint
@@ -387,6 +419,7 @@ class DirectionState:
     reference: ReferenceSpec
     vector: tuple[float, float, float]
     evidence: UncertaintyEvidence
+    certificate_id: str | None = None
 
     def __post_init__(self):
         for value, cls in ((self.object_key, ObjectKey), (self.time, TimePoint),
@@ -401,16 +434,20 @@ class DirectionState:
         if self.reference.representation != "direction" or self.reference.units != "rad":
             raise InvalidQuery("direction requires a radian direction reference")
         object.__setattr__(self, "vector", vector)
+        if self.certificate_id is not None:
+            digest(self.certificate_id)
 
 
 @dataclass(frozen=True, slots=True)
 class StateBatch:
     query: StateQuery
     states: tuple[DirectionState, ...]
+    reuse_certificates: tuple[ReuseCertificate, ...] = ()
 
     def __post_init__(self):
         exact(self.query, StateQuery)
         sequence(self, "states", DirectionState)
+        sequence(self, "reuse_certificates", ReuseCertificate, unique=True)
 
 
 @dataclass(frozen=True, slots=True)
@@ -424,7 +461,6 @@ class SessionPolicy:
         sequence(self, "catalogues", CatalogueRef, unique=True, nonempty=True)
         for value in (self.time_policy, self.fallback_policy, self.reproducibility):
             text(value)
-        if (self.time_policy, self.fallback_policy, self.reproducibility) != (
-            "same_scale_only", "none", "reproducible"
-        ):
+        if (self.time_policy != "same_scale_only" or self.fallback_policy != "none"
+                or self.reproducibility not in ("reproducible", "interactive_bounded")):
             raise InvalidQuery("session policy is outside the implemented foundation")

@@ -149,6 +149,16 @@ Do not replace an existing Wenu import with this SDK until the corresponding
 K3 adapter/public-path gate is implemented. No observer or numerical provider
 adapter is supplied by the foundation.
 
+`wenu_kernel.reuse.ReuseCertificate` and the typed provider `certify` operation
+cover scalar original direction anchors. `StateBatch.reuse_certificates` lists
+their immutable envelopes; reused rows carry `certificate_id`, original
+`anchor_time`, requested `time` and retained `source_epoch`. The default
+`SessionPolicy.reproducibility="reproducible"` uses full-model evaluation.
+Explicit `interactive_bounded` sessions may reuse admitted certificates for
+`bounded_reuse` queries with a positive angular tolerance. `query.coverage`
+requires a certificate covering the whole interval. No arbitrary cached anchor
+is admitted as a reproducible atlas result; canonical anchor planning is pending.
+
 - `coordinates.py`: `CoordinateSpec`, `ObservationContext` and scientific
   enum/value vocabulary. Frame, origin, status, epoch, equinox and instant
   are distinct.

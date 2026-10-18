@@ -6,6 +6,7 @@ import unittest
 from wenu_kernel import Kernel
 from wenu_kernel.errors import (
     AccuracyUnavailable, ClosedSession, IncompatibleContract, InvalidProviderResult,
+    InvalidQuery,
     OutsideCoverage, ProviderBusy, ProviderEvaluationError, ResourceMismatch,
     TimeConversionUnavailable, UnknownObject, UnsupportedCapability,
 )
@@ -196,7 +197,7 @@ class RegistryTests(unittest.TestCase):
                      ({"times": (TimePoint(1, 0, "tt"),)}, OutsideCoverage),
                      ({"times": (replace(EPOCH, scale="tdb"),)}, TimeConversionUnavailable),
                      ({"reference": replace(REFERENCE, frame_id="unknown")}, UnsupportedCapability),
-                     ({"evaluation_policy": "bounded_reuse"}, UnsupportedCapability),
+                     ({"evaluation_policy": "bounded_reuse"}, InvalidQuery),
                      ({"accuracy": AccuracyRequest(position_m=1)}, UnsupportedCapability)]
             for changes, error in cases:
                 with self.subTest(changes=changes), self.assertRaises(error):

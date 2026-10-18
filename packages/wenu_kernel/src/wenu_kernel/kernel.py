@@ -1,4 +1,6 @@
-"""Synchronous registry and immutable, direction-only full-model sessions."""
+"""Synchronous registry, native direction sessions and certified angular reuse."""
+
+from dataclasses import replace
 
 from .errors import (
     AccuracyUnavailable, ClosedSession, IncompatibleContract, InvalidProviderResult,
@@ -10,6 +12,7 @@ from .records import (
     ProviderDescriptor, ProviderKey, ReferenceSpec, SessionPolicy, StateBatch,
     StateQuery, exact,
 )
+from .reuse import validate_certificate, qualifies
 
 
 def invoke(provider, operation, *args, provider_key=None):
@@ -62,7 +65,9 @@ class Kernel:
                 raise UnsupportedCapability("reference has not been admitted by application assembly")
             if (admission.reference.representation, admission.reference.units) != ("direction", "rad"):
                 raise UnsupportedCapability("only direction states are implemented in this slice")
-            if not set(admission.capabilities) <= {"native_direction", "epoch_direction", "batch_evaluation"}:
+            if not set(admission.capabilities) <= {
+                "native_direction", "epoch_direction", "batch_evaluation", "direction_reuse_bound"
+            }:
                 raise UnsupportedCapability("capability is outside this implementation slice")
             if not set(admission.model.dependencies) <= set(admission.catalogue.resources):
                 raise ResourceMismatch("model resources are not bound by its catalogue")
@@ -139,6 +144,7 @@ class KernelSession:
         self._bindings = bindings
         self._snapshots = snapshots
         self._cache = {}
+        self._reuse = {}
         self._closed = False
 
     @property
@@ -160,8 +166,10 @@ class KernelSession:
         self._check()
         exact(query, StateQuery)
         snapshot = self.catalogue(query.catalogue)
-        if query.evaluation_policy != "full_model" or query.coverage is not None:
-            raise UnsupportedCapability("certification/temporal reuse is not implemented in this slice")
+        if query.evaluation_policy == "full_model" and query.coverage is not None:
+            raise UnsupportedCapability("interval certification requires bounded_reuse")
+        if query.evaluation_policy == "bounded_reuse" and query.accuracy.angular_rad is None:
+            raise InvalidQuery("bounded angular reuse requires a positive angular bound")
         if (query.accuracy.position_m is not None or query.accuracy.velocity_m_s is not None
                 or query.accuracy.metric != "angular_separation"):
             raise UnsupportedCapability("direction query requires angular accuracy meaning")
@@ -178,13 +186,22 @@ class KernelSession:
         admission = admissions[0]
         if not set(admission.capabilities) & {"native_direction", "epoch_direction"}:
             raise UnsupportedCapability("model has no direction capability")
-        for time in query.times:
+        coverage_points = query.times + ((query.coverage.start, query.coverage.stop) if query.coverage else ())
+        for time in coverage_points:
             if not admission.coverage.contains(time) or any(
                 not r.coverage.contains(time) for r in query.catalogue.resources
             ):
                 raise OutsideCoverage("query is outside model/resource coverage", time=time)
         if query in self._cache:
             return self._cache[query]
+        if query.evaluation_policy == "bounded_reuse":
+            return self._evaluate_bounded(query, records, instance, descriptor, admission)
+        batch = self._evaluate_full(query, records, instance, descriptor)
+        self._cache[query] = batch
+        return batch
+
+    def _evaluate_full(self, query, records, instance, descriptor):
+        """Validate a complete backend batch without publishing any cache entry."""
         decision = invoke(instance, "supports", query, provider_key=descriptor.key)
         if type(decision) is not CapabilityDecision:
             raise InvalidProviderResult("supports returned an invalid decision")
@@ -198,7 +215,7 @@ class KernelSession:
             raise InvalidProviderResult("rows must match time-major requested order exactly")
         for row in batch.states:
             if (type(row) is not DirectionState or row.reference != query.reference
-                    or row.anchor_time != row.time
+                    or row.anchor_time != row.time or row.certificate_id is not None
                     or row.source_epoch not in records[row.object_key].source_epochs):
                 raise InvalidProviderResult("state provenance/reference/anchor mismatch")
             numerical = row.evidence.numerical
@@ -209,10 +226,71 @@ class KernelSession:
             bound = query.accuracy.angular_rad
             if bound is not None and (numerical.status != "bounded" or numerical.value > bound):
                 raise AccuracyUnavailable("provider cannot certify the requested numerical bound")
-        # Publication follows complete response validation. A failed evaluation
-        # never poisons the cache; no cache crosses sessions or providers.
-        self._cache[query] = batch
+        if batch.reuse_certificates:
+            raise InvalidProviderResult("full-model provider output cannot contain reuse certificates")
         return batch
+
+    @staticmethod
+    def _reuse_key(query, obj):
+        return query.catalogue, query.model, query.reference, obj
+
+    def _evaluate_bounded(self, query, records, instance, descriptor, admission):
+        # A warmness-dependent candidate set cannot define reproducible output.
+        # Reproducible mode always falls back to the admitted full model here.
+        interactive = self.policy.reproducibility == "interactive_bounded"
+        results, certificates, staged_cache, staged_reuse = {}, {}, {}, []
+        for time in query.times:
+            missing = []
+            for obj in query.objects:
+                candidates = self._reuse.get(self._reuse_key(query, obj), {}).values() if interactive else ()
+                candidates = [(anchor, cert) for anchor, cert in candidates if qualifies(cert, query, time)]
+                if not candidates:
+                    missing.append(obj)
+                    continue
+                anchor, cert = min(candidates, key=lambda pair: (
+                    pair[1].maximum_error, pair[0].states[0].anchor_time.jd1,
+                    pair[0].states[0].anchor_time.jd2, pair[1].identity))
+                row = anchor.states[0]
+                numerical = replace(row.evidence.numerical, value=cert.maximum_error)
+                results[time, obj] = replace(row, time=time, certificate_id=cert.identity,
+                                            evidence=replace(row.evidence, numerical=numerical))
+                certificates[cert.identity] = cert
+            if not missing:
+                continue
+            # One backend batch per time for all missing objects, not one
+            # propagation call per star. Reuse never becomes a new anchor.
+            full = replace(query, objects=tuple(missing), times=(time,),
+                           evaluation_policy="full_model", coverage=None)
+            batch = self._cache.get(full)
+            if batch is None:
+                batch = self._evaluate_full(full, records, instance, descriptor)
+                staged_cache[full] = batch
+            for row in batch.states:
+                results[time, row.object_key] = row
+                cert = None
+                if "direction_reuse_bound" in admission.capabilities:
+                    scalar = replace(full, objects=(row.object_key,))
+                    anchor = StateBatch(scalar, (row,))
+                    request = replace(query, objects=(row.object_key,), times=(time,))
+                    try:
+                        cert = invoke(instance, "certify", request, anchor, provider_key=descriptor.key)
+                    except (UnsupportedCapability, AccuracyUnavailable) as exc:
+                        if query.coverage is not None:
+                            raise AccuracyUnavailable("whole-interval certification is unavailable") from exc
+                    else:
+                        validate_certificate(cert, anchor, admission)
+                        certificates[cert.identity] = cert
+                        staged_reuse.append((self._reuse_key(query, row.object_key), anchor, cert))
+                if query.coverage is not None and (cert is None or not qualifies(cert, query, time)):
+                    raise AccuracyUnavailable("certificate does not bound the whole requested interval")
+        states = tuple(results[time, obj] for time in query.times for obj in query.objects)
+        result = StateBatch(query, states, tuple(certificates[key] for key in sorted(certificates)))
+        # All rows/certificates must succeed before either cache is changed.
+        self._cache.update(staged_cache)
+        for key, anchor, cert in staged_reuse:
+            self._reuse.setdefault(key, {})[cert.identity] = anchor, cert
+        self._cache[query] = result
+        return result
 
     def close(self):
         if self._closed:
@@ -220,6 +298,7 @@ class KernelSession:
         for key in self._bindings:
             self._kernel._busy[key] -= 1
         self._cache.clear()
+        self._reuse.clear()
         self._bindings.clear()
         self._snapshots.clear()
         self._closed = True

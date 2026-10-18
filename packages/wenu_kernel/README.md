@@ -1,6 +1,6 @@
-# Wenu kernel: foundation candidate
+# Wenu kernel: direction reuse candidate
 
-This separately installable project implements the first bounded part of K2.
+This separately installable project implements a bounded direction subset of K2.
 It is not the K5 frozen SDK. Existing Wenu continues to use its current code;
 no chart, report, catalogue, snapshot or numerical backend is rerouted yet.
 
@@ -14,6 +14,9 @@ no chart, report, catalogue, snapshot or numerical backend is rerouted yet.
 - One-catalogue direction queries, time-major ordered results, exact-query
   session-local caching only after every row validates, and explicit numerical
   accuracy admission. Unknown physical uncertainty remains unknown.
+- Provider-supplied angular certificates and selective temporal reuse under an
+  explicitly chosen interactive session policy, with atomic publication of both
+  exact and certificate caches. Reuse never turns into a new computed anchor.
 - Standard-library tests with two constructed providers: fixed directions and
   circularly moving directions. These are not Gaia fixtures or science oracles.
 
@@ -26,18 +29,55 @@ All model and bound resource coverages must admit each requested sample.
 
 Reference registration is an explicit application allowlist, not a transform
 engine. Only direction/radian output and native/epoch direction plus batch
-capabilities are implemented. Catalogue/model references retain resource and
+and `direction_reuse_bound` capabilities are implemented. Catalogue/model references retain resource and
 membership digests. `StateBatch.query` carries that immutable provenance;
 rows carry source epochs and actual anchors. A provider is responsible for
 returning deterministic results from its admitted immutable sources.
 
-Bounded temporal reuse/certificates, Cartesian states, time conversion,
-observation services, real provider adapters, Gaia and persistent envelopes
-remain later slices. Requests outside the implemented subset fail explicitly.
-The `certify` protocol return is deliberately provisional `object` until the
-typed certificate is implemented; no certificate can be consumed by this slice.
+Cartesian states, time conversion, observation services, real provider adapters,
+Gaia and persistent envelopes remain later slices. Requests outside the
+implemented subset fail explicitly. `StateProvider.certify` now returns the
+typed `ReuseCertificate` in `wenu_kernel.reuse`.
+Value records remain in `wenu_kernel.records`; the reuse module exports the
+certificate type plus `make_certificate` for its content identity and admission.
+Records do not import session, hashing or provider services.
 The shared provider gate is currently a test-side mixin; the distributable
 complete conformance kit remains a K2/K5 deliverable.
+
+## Angular reuse and reproducibility
+
+`SessionPolicy.reproducibility="reproducible"` remains the default. A
+`bounded_reuse` query always evaluates the full model in this mode (or reuses
+an identical complete query). Canonical provider anchors/partitions are not
+implemented yet; arbitrary warm-cache anchors do not define reproducible output.
+
+An explicitly chosen `interactive_bounded` session may reuse certified native
+directions. Every such query needs positive `AccuracyRequest.angular_rad`;
+paper/pixel conversion remains above the kernel. The provider supplies the
+motion/error model and closed validity interval. The kernel checks source,
+model, membership, reference, method resources, original anchor identity,
+whole-interval coverage and total numerical bound. It does not multiply proper
+motion or assume that missing motion is zero.
+
+Certificates currently cover one object at one original full-model anchor.
+The kernel batches missing objects per requested time and preserves exact
+time-major output order. Certificate selection uses bound, anchor time and
+identity as a total order over available entries. Interactive results may
+depend on the available anchor set, always within their reported bound.
+
+`StateBatch.reuse_certificates` lists immutable certificates. Reused rows carry
+their `certificate_id`; `time` is the request, `anchor_time` remains the
+computed anchor, and `source_epoch` remains the catalogue epoch. Their numerical
+channel reports the certificate's total interval bound, including prior error.
+Measurement/model uncertainty stays separate. No reuse chain resets that error.
+
+An optional `StateQuery.coverage` explicitly requests certification over the
+whole interval; endpoints alone being evaluated does not satisfy it. Insufficient
+interval bounds fail `AccuracyUnavailable`. Without that request, an unavailable
+certificate falls back to full evaluation under the requested sample tolerance.
+Malformed certificates fail closed. Only fully validated batches and certificates
+enter caches, and neither cache crosses sessions. Internal versioned digest
+encodings use exact binary float values and are not a persistent format promise.
 
 ## Ownership and failure behavior
 
