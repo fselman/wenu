@@ -15,6 +15,15 @@ The K2 foundation changes no existing runtime dependency or product import;
 its review gate is the isolated core plus affected documentation/inventory.
 This scoped exception does not waive full integration for K3 production routing.
 
+The direction-reuse candidate extends the same isolated owner gate. Its tests
+cover provider-supplied total bounds, closed interval/one-ULP boundaries,
+whole-interval requests, retained original error/anchor, tighter tolerances,
+corrupt envelopes, atomic cache publication, mixed-rate updates and explicit
+reproducible full-model fallback. They use constructed circular-motion fixtures,
+not scientific accuracy evidence for Gaia or any real catalogue. No legacy test
+is moved or removed; the existing missing-tolerance case now expects
+`InvalidQuery` because bounded reuse is an implemented policy requiring a bound.
+
 Run the smallest owner suite plus directly affected contract/seam tests.
 Use `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1`; add no ambient plugin dependency.
 During iteration, do not run unrelated scientific, projection or rendering

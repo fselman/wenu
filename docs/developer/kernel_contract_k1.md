@@ -5,12 +5,14 @@
 **As-is base:** main `3359e9ebb430de68e68cdee8bfc40ddd6d3da692`.
 **Proposed contract identifier:** `wenu.kernel/1.0`.
 
-The first [K2 foundation candidate](../../packages/wenu_kernel/README.md)
-implements a declared direction-only subset. Remaining records/services in this
-specification are targets, not available imports. It does not claim completed
-reuse certification, observation, Gaia or production routing. No scientific
-coordinate semantics change in this foundation; the coordinate guide remains
-current. Canonical time input is validated rather than implicitly normalized.
+The [K2 implementation](../../packages/wenu_kernel/README.md) remains a declared
+direction-only subset. The current candidate adds typed scalar angular
+certificates and explicit interactive reuse; reproducible queries retain the
+full-model fallback until canonical anchors are implemented. Other records/
+services in this specification are targets, not available imports. Observation,
+Gaia and production routing remain pending. No astronomical transformation
+changes; the coordinate guide remains current. Canonical time input is validated
+rather than implicitly normalized.
 
 The [roadmap](kernel_roadmap_v0.9.5.md) remains the sequencing authority.
 This document specifies K1's proposed names, semantics, capabilities, errors
@@ -277,6 +279,26 @@ rounding; floating-point rounding must not turn an invalid request valid.
 
 ## 7. Determinism, cache identity and selective invalidation
 
+The current direction subset exposes `SessionPolicy.reproducibility` values
+`reproducible` (default) and explicitly selected `interactive_bounded`.
+Only the latter may use the current warmness-dependent certificate set.
+`StateBatch.reuse_certificates` carries certificate records; a reused row's
+`certificate_id` identifies its certificate, while `time` is requested and
+`anchor_time` remains the original full-model epoch. Its numerical evidence
+reports the interval-wide bound, including the original anchor error.
+Certificates currently cover one object at one original anchor; multi-object
+queries batch missing objects for evaluation and reassemble exact time-major order.
+Canonical anchor scheduling remains a named reproducible-reuse prerequisite.
+
+For this subset, optional `StateQuery.coverage` on a `bounded_reuse` request
+explicitly asks for whole-interval certification. Full evaluation of samples
+alone cannot satisfy it: unavailable or insufficient interval bounds fail
+`AccuracyUnavailable`. Model/resource interval violations fail `OutsideCoverage`.
+Without explicit interval certification, a non-certifying provider may still
+serve the requested sample through full evaluation at the requested tolerance.
+Session-local anchor/certificate digest encodings are versioned internal
+identities; they do not admit a new persistent format before K5.
+
 Session policy freezes provider/resource/model bindings, time-conversion
 policy, fallback policy and reproducibility mode. Registration does not change
 an already open session's interpretation. No implicit model/provider fallback.
@@ -481,9 +503,10 @@ encoding remains a named later freeze prerequisite, not an undocumented choice.
 No numerical tolerance, ancient accuracy, full covariance support, backend
 coverage or provider permission is admitted merely by accepting the API.
 
-After K1 acceptance and merge, propose a bounded K2 slice: core records,
-registration/session admission and two synthetic providers (moving directions
-and fixed directions), with owner/conformance tests and no production rerouting.
-Reuse certificates can follow as a separate K2 slice against the same contract.
+The accepted K2 foundation supplies records, registration/session admission and
+two synthetic providers without production rerouting. Its next bounded slice
+adds the direction certificate subset described above; it does not close all
+K2 gates. Canonical reproducible anchors, Cartesian/time services and the
+distributable conformance kit remain explicit work before the K5 SDK freeze.
 No Gaia acquisition, scientific-provider extraction, product rewrite or new
 satellite science is part of K1. Wenu must continue to run after every merge.

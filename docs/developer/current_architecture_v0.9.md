@@ -4,11 +4,13 @@
 This document describes implemented behavior. The proposed kernel and package
 architecture lives separately in the [roadmap](kernel_roadmap_v0.9.5.md).
 
-The separate [K2 foundation candidate](../../packages/wenu_kernel/README.md)
+The separate [K2 kernel project](../../packages/wenu_kernel/README.md)
 implements immutable direction records, explicit registration and synchronous
-sessions. It has no runtime dependencies or existing product consumers. The
-as-is production pipeline below is unchanged; routing it through the kernel
-remains K3. Bounded temporal reuse, real providers and the SDK freeze are pending.
+sessions. The current candidate adds angular certificate admission and selective
+temporal reuse under `interactive_bounded`; default reproducible mode uses the
+full model, pending canonical anchors. It has no runtime dependencies or existing
+product consumers. The production pipeline below is unchanged; routing it
+through the kernel remains K3. Real providers and the SDK freeze are pending.
 
 ## Canonical pipeline
 

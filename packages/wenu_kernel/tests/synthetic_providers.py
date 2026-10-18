@@ -74,7 +74,7 @@ class SyntheticDirections:
         evidence = UncertaintyEvidence(unknown, unknown, numerical)
         for time in query.times:
             for key in query.objects:
-                angle = self.rate * ((time.jd1 - EPOCH.jd1) + (time.jd2 - EPOCH.jd2))
+                angle = self.angular_rate(key) * ((time.jd1 - EPOCH.jd1) + (time.jd2 - EPOCH.jd2))
                 angle += self.objects.index(key) * 0.1
                 vector = [cos(angle), sin(angle), 0.0]
                 self.buffers.append(vector)
@@ -95,6 +95,9 @@ class SyntheticDirections:
     def certify(self, query, anchor):
         raise UnsupportedCapability("synthetic foundation has no reuse certificates")
 
+    def angular_rate(self, key):
+        return self.rate
+
     def close(self):
         self.calls["close"] += 1
         if self.fault == "close":
@@ -112,3 +115,105 @@ class FixedDirections(SyntheticDirections):
 class MovingDirections(SyntheticDirections):
     rate = pi / 2
     capability = "epoch_direction"
+
+
+def shifted(time, days):
+    """Toy fixture date arithmetic, retaining the small binary fraction."""
+    from fractions import Fraction
+    from math import floor
+    fraction = Fraction(time.jd2) + Fraction(days)
+    carry = floor(fraction + Fraction(1, 2))
+    small = float(fraction - carry)
+    if small == 0.5:
+        carry += 1
+        small = -0.5
+    return TimePoint(time.jd1 + carry, small, time.scale)
+
+
+class CertifiedDirections(SyntheticDirections):
+    """Constructed circular motions with conservative rational interval bounds.
+
+    Each source has its own motion/range. The declared numerical anchor floor
+    is fixture evidence, not an astrometric accuracy measurement.
+    """
+
+    capability = "epoch_direction"
+
+    def __init__(self, name="certified"):
+        super().__init__(name)
+        caps = (self.capability, "batch_evaluation", "direction_reuse_bound")
+        self.model = replace(self.model, configuration_digest=digest("circular:2^-10,2^-20"))
+        self.snapshot = replace(self.snapshot, objects=tuple(replace(o, capabilities=caps)
+                                                            for o in self.snapshot.objects))
+        admission = replace(self.descriptor.admissions[0], model=self.model, capabilities=caps)
+        self.descriptor = replace(self.descriptor, admissions=(admission,))
+        self.calls["certify"] = 0
+        self.evaluated_objects = []
+        self.certificate_fault = None
+        self.fail_certificate_object = None
+
+    def angular_rate(self, key):
+        return 2.0 ** (-10 if key == self.objects[0] else -20)
+
+    def evaluate(self, query):
+        self.evaluated_objects.extend((t, o) for t in query.times for o in query.objects)
+        return super().evaluate(query)
+
+    def certify(self, query, anchor):
+        from fractions import Fraction
+        from math import inf, nextafter
+        from wenu_kernel.errors import AccuracyUnavailable
+        from wenu_kernel.reuse import make_certificate, direction_anchor_identity, certificate_identity
+        self.calls["certify"] += 1
+        fault = self.certificate_fault if (self.fail_certificate_object is None
+                or anchor.states[0].object_key == self.fail_certificate_object) else None
+        if fault == "unavailable":
+            raise AccuracyUnavailable("constructed provider cannot bound this interval")
+        if fault == "unsupported":
+            raise UnsupportedCapability("constructed certificate not available")
+        if fault == "backend":
+            raise RuntimeError("constructed certificate backend failure")
+        if fault == "none":
+            return None
+        row = anchor.states[0]
+        width = 2.0 ** (-8 if row.object_key == self.objects[0] else -2)
+        start, stop = shifted(row.anchor_time, -width), shifted(row.anchor_time, width)
+        start = max((start, self.coverage.start), key=TimeSpan.key)
+        stop = min((stop, self.coverage.stop), key=TimeSpan.key)
+        elapsed = max(abs(Fraction(t.jd1 - row.anchor_time.jd1)
+                          + Fraction(t.jd2) - Fraction(row.anchor_time.jd2)) for t in (start, stop))
+        error = Fraction(row.evidence.numerical.value) + Fraction(self.angular_rate(row.object_key)) * elapsed
+        maximum = nextafter(float(error), inf)
+        method = ModelRef(self.key.provider_id + ":constant-angular-speed-bound", "1",
+                          digest("constructed-rational-outward-bound"), self.model.dependencies)
+        cert = make_certificate(catalogue=query.catalogue, model=query.model,
+                                anchor_identity=direction_anchor_identity(anchor),
+                                objects=query.objects, reference=query.reference,
+                                validity=TimeSpan(start, stop), metric="angular_separation",
+                                maximum_error=maximum, method=method)
+        if fault == "identity":
+            object.__setattr__(cert, "identity", "0" * 64)
+        elif fault == "anchor":
+            cert = replace(cert, anchor_identity="0" * 64)
+        elif fault == "model":
+            cert = replace(cert, model=replace(cert.model, configuration_digest="0" * 64))
+        elif fault == "catalogue":
+            cert = replace(cert, catalogue=replace(cert.catalogue, membership_digest="0" * 64))
+        elif fault == "objects":
+            cert = replace(cert, objects=(ObjectKey("other:object"),))
+        elif fault == "reference":
+            cert = replace(cert, reference=replace(cert.reference, correction_policy="other"))
+        elif fault == "metric":
+            cert = replace(cert, metric="wrong-metric")
+        elif fault == "anchor_error":
+            cert = replace(cert, maximum_error=0)
+        elif fault == "scale":
+            cert = replace(cert, validity=TimeSpan(replace(start, scale="tdb"), replace(stop, scale="tdb")))
+        elif fault == "outside_resource":
+            cert = replace(cert, validity=TimeSpan(TimePoint(1, 0, "tt"), stop))
+        elif fault == "omitted_anchor":
+            cert = replace(cert, validity=TimeSpan(shifted(row.time, .1), shifted(row.time, .2)))
+        elif fault == "method_resource":
+            foreign = replace(self.model.dependencies[0], sha256="0" * 64)
+            cert = replace(cert, method=replace(cert.method, dependencies=(foreign,)))
+        return cert if fault == "identity" else replace(cert, identity=certificate_identity(cert))

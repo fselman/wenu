@@ -1,8 +1,8 @@
 {
   "schema": "wenu-test-selection/1",
   "owner": "wenu_kernel",
-  "slice": "K2 foundation: direction records, registry and session admission",
-  "accepted_base": "6e83705aa9e779ddd33fa823a67438d20b9d2463",
+  "slice": "K2 direction certificates and explicit interactive bounded reuse",
+  "accepted_base": "ddd7d6c2708c776870d9a36f39b51474e9818460",
   "runtime_dependencies": [],
   "required": [
     "python -m unittest discover -s packages/wenu_kernel/tests -v",
@@ -17,7 +17,11 @@
     "advancing one provider invokes another",
     "live session loses its provider or failed opening leaks leases",
     "owned/borrowed lifetime confusion or hidden backend/cleanup failure",
-    "SDK import or test collection requires Wenu, graphics or scientific backends"
+    "SDK import or test collection requires Wenu, graphics or scientific backends",
+    "reuse interval widened by floating-point epsilon or failure to cover a requested whole interval",
+    "certificate drops original anchor error, changes source/model/reference or replaces the computed anchor",
+    "reproducible output depends on request history or interactive mode is selected implicitly",
+    "partial reuse/certification failure publishes one cache before all rows succeed"
   ],
   "legacy_tests_moved_or_removed": [],
   "affected_consumers": [
@@ -28,16 +32,26 @@
     "unrelated providers": "No real provider is part of this slice; neither SDK nor test fixtures import one.",
     "release integration": "No product routing or installed combination changes; isolated-wheel evidence is required before this foundation can be accepted. Final integration remains required for K3 production adapters."
   },
-  "collection_change": "Root pytest testpaths is explicitly tests; new independent projects are not silently added to the legacy full-suite command.",
+  "collection_change": "none; root pytest remains scoped to tests and the kernel retains its explicit independent gate",
   "verification": {
     "source_digest_algorithm": "SHA-256 over sorted repository path + NUL + exact file bytes + NUL for every Python file in the named directory",
-    "source_sha256": "bed11ce39b8423fbf6d25d7e5dcd66ea57c1c276f6cbd7cf29cd939163721e5b",
-    "tests_sha256": "8978e9f5099427b31578784d56afd64d23d3d165e511054e73015df0d5ece788",
-    "source_unittest_cases": 32,
-    "installed_wheel_unittest_cases": 32,
-    "wheel_sha256": "e645e8112302894aa6e25a61c6d318ce342a082779c49d965067299257f27e9a",
-    "isolated_environment": "fresh venv, no Wenu/numpy/astropy/matplotlib/skyfield/sgp4/pandas/spiceypy installed",
-    "fault_injection": "removing row-order validation makes shared provider gate fail; original restored and 32 tests pass",
+    "source_sha256": "017a12c193d2ce936a56de00d07538a8aef78251cc725839f8bde710fb3fcff8",
+    "tests_sha256": "5b9d257a6802ce4003bd9da0a6aad4edab0627e797ffddf881bb3ea19fc7a886",
+    "source_unittest_cases": 52,
+    "installed_wheel_unittest_cases": 52,
+    "wheel_sha256": "6172ce17c154e5b3407ed4dce8e788f7da5834bab7e22aacb5a36f41a55bd6d5",
+    "isolated_environment": "fresh venv; Wenu/numpy/astropy/matplotlib/skyfield/sgp4/pandas/spiceypy absent",
+    "fault_injection": [
+      "ignoring tolerance admission fails owning tests",
+      "ignoring whole-interval admission fails owning tests",
+      "omitting retained anchor error fails owning tests"
+    ],
     "mac_documentation_gate": "pending for this candidate"
-  }
+  },
+  "existing_test_changes": [
+    {
+      "node_id": "packages/wenu_kernel/tests/test_sessions.py::RegistryTests::test_unsupported_unknown_object_reference_coverage_and_scale_before_evaluation",
+      "change": "Missing angular bound now raises InvalidQuery: bounded_reuse is implemented and requires a tolerance. No backend evaluation remains the protected outcome."
+    }
+  ]
 }
