@@ -230,6 +230,21 @@ the narrower `native-stellar-routing` gate; it does not change installation.
 
 ## Coordinate and state entry points
 
+`OpenClusters.native_coordinate_spec(table=None)` mirrors coordinate epochs from
+the selected table's `position_epoch` column, or an explicitly declared global
+`coordinate_epoch` when that column is absent. Only a uniformly known selection
+has a scalar epoch. Mixed, masked, unknown and empty selections use `epoch=None`;
+row epoch/source declarations and masks remain aligned in geometry metadata.
+An ICRS/J2000 frame description is never parsed as a measurement epoch.
+Native and observed geometry also retain an independent copy of `Table.meta`.
+Invalid epoch declarations are refused before replacing the loaded table/source.
+
+Snapshot v4 derives its open-cluster coordinate header from this interface and
+validates it against the preserved rows. Legacy v2/v3 J2000 headers are admitted
+as historical format claims only; restored cluster geometry uses the preserved
+row facts. The v1 compatibility path has no fixed catalogue layer. Other
+nonstellar metadata/default-epoch findings remain open in the audit.
+
 The separate candidate `wenu_kernel` package provides `Kernel`, `KernelSession`
 and `StateProvider` plus typed direction/Cartesian records in `wenu_kernel.records`. See its
 [implemented subset and independent gate](../../packages/wenu_kernel/README.md).

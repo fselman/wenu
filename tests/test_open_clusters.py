@@ -26,6 +26,85 @@ class _HashableLayer:
     pass
 
 
+def test_native_cluster_epoch_tracks_selected_rows_and_preserves_source_metadata():
+    from astropy.table import Table
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    table = Table(dict(identifier=['new', 'unknown', 'other'], ra_deg=[15., 30., 45.],
+        dec_deg=[20., 25., 30.], apparent_diameter_arcmin=[1., 2., 3.],
+        object_type=['Open Cluster'] * 3, position_epoch=['J2016.0', 'unknown', 'J2025.0'],
+        RA_source=['first', 'legacy', 'second']),
+        meta={'database': 'synthetic', 'original': {'source_release': ['v1', 'v2']}})
+    layer = OpenClusters(None)
+    layer.catalog = table
+    all_rows = layer.position()
+    assert all_rows.coordinate_spec.epoch is None
+    assert all_rows.metadata['position_epoch'].tolist() == ['J2016.0', 'unknown', 'J2025.0']
+    assert all_rows.metadata['RA_source'].tolist() == ['first', 'legacy', 'second']
+    assert all_rows.metadata['catalogue_metadata'] == table.meta
+    all_rows.metadata['catalogue_metadata']['original']['source_release'].append('changed')
+    assert table.meta['original']['source_release'] == ['v1', 'v2']
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    chosen = layer.realize(context, None, selected=['other', 'new'])
+    assert chosen.ids.tolist() == ['other', 'new']
+    assert chosen.coordinate_spec.epoch is None
+    assert chosen.metadata['position_epoch'].tolist() == ['J2025.0', 'J2016.0']
+    for identifier, epoch in (('new', 'J2016.0'), ('unknown', None), ('other', 'J2025.0')):
+        layer.selected = [identifier]
+        assert layer.position().coordinate_spec.epoch == epoch
+    assert layer.realize(context, None, selected=[]).coordinate_spec.epoch is None
+    from astropy.table import MaskedColumn
+    masked = table.copy(copy_data=True)
+    masked['position_epoch'] = MaskedColumn(['J2016.0'] * 3, mask=[False, True, False])
+    layer.catalog, layer.selected = masked, None
+    assert layer.position().coordinate_spec.epoch is None
+    np.testing.assert_array_equal(np.ma.getmaskarray(layer.position().metadata['position_epoch']), [False, True, False])
+    assert len(table) == 3
+
+
+def test_packaged_cluster_geometry_uses_existing_epoch_and_coordinate_source_columns():
+    layer = OpenClusters(None)
+    table = layer.load()
+    before = table.copy(copy_data=True)
+    geometry = layer.position()
+    assert geometry.coordinate_spec.epoch is None
+    np.testing.assert_array_equal(geometry.metadata['position_epoch'], table['position_epoch'])
+    np.testing.assert_array_equal(geometry.metadata['RA_source'], table['RA_source'])
+    known = table[np.asarray(table['position_epoch']) != 'unknown']
+    assert len(known) and len(known) < len(table)
+    identifier = str(known['wenu_id'][0])
+    layer.selected = [identifier]
+    assert layer.position().coordinate_spec.epoch == str(known['position_epoch'][0])
+    assert table.meta == before.meta
+    for name in table.colnames:
+        np.testing.assert_array_equal(np.ma.getmaskarray(table[name]), np.ma.getmaskarray(before[name]))
+
+
+def test_cluster_epoch_does_not_infer_measurement_date_from_frame_name():
+    from astropy.table import Table
+    layer = OpenClusters(None)
+    layer.catalog = Table(dict(identifier=['constructed'], ra_deg=[15.], dec_deg=[20.]),
+                          meta={'coordinate_frame': 'ICRS/J2000'})
+    assert layer.position().coordinate_spec.epoch is None
+    layer.catalog.meta['coordinate_epoch'] = 'J1985.5'
+    assert layer.position().coordinate_spec.epoch == 'J1985.5'
+
+
+def test_invalid_cluster_epoch_is_refused_before_replacing_active_catalogue(tmp_path):
+    import pytest
+    from astropy.table import Table
+    layer = OpenClusters(None)
+    previous = layer.load()
+    source = layer.source
+    invalid = Table(dict(identifier=['synthetic'], ra_deg=[15.], dec_deg=[20.],
+        apparent_diameter_arcmin=[1.], object_type=['Open Cluster'], position_epoch=['invalid']),
+        meta={'database': 'synthetic'})
+    filename = tmp_path / 'invalid.ecsv'
+    invalid.write(filename)
+    with pytest.raises(ValueError, match='coordinate epoch'):
+        layer.load(filename=filename)
+    assert layer.catalog is previous and layer.source == source
+
+
 def observer():
     return SimpleNamespace(
         altaz_frame=AltAz(

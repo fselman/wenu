@@ -45,6 +45,11 @@ and snapshot v3 implement this boundary. Resolve the remaining findings in the
 especially per-source/row open-cluster epochs and nonstellar metadata loss,
 before closing those provider adapters. Do not replace absent metadata with
 catalogue-specific software literals.
+The bounded open-cluster followup now consumes existing row epoch/source fields
+and preserves source metadata in geometry and snapshot v4. Shared helper defaults,
+other nonstellar normalization and the remaining fixed-catalogue snapshot
+assumptions still require their own owner corrections. This is metadata repair;
+open-cluster state evaluation has not yet migrated to the kernel.
 
 Keep every existing Wenu capability while placing all scientific state access
 behind a uniform kernel contract. Add Gaia DR3 astrometry for the stars already

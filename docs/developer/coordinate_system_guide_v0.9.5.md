@@ -1170,6 +1170,16 @@ accuracy is claimed by the current implementation.
 
 ## Native stellar kernel lookup during K3
 
+Open-cluster metadata is a separate boundary: the accepted active table already
+contains `position_epoch` and `RA_source` per row. Geometry now uses these fields
+instead of inheriting J2000.0 from the catalogue helper. The inspected 513-row
+selection has 509 Hunt positions marked J2016.0 and four Dias epochs marked
+unknown; these are inventory observations, not constants in the implementation.
+A mixed/unknown/masked collection has `epoch=None`, while a uniformly known
+subset retains its source label. Snapshot v4 preserves this distinction; reading
+older bundles derives cluster geometry from retained rows. This changes no
+coordinate values, motion model or observed frame transform.
+
 `stellar_state.py` supplies source-native Hipparcos lookup states. Its explicit
 source epoch J1991.25(TT) is JD 2448349.0625, using the Julian-year definition
 J2000.0 minus 8.75 × 365.25 days. ICRS has no epoch-dependent equinox.

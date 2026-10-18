@@ -56,6 +56,9 @@ standard table/immutable metadata envelope; snapshot v3 carries it forward.
 The [metadata audit](kernel_migration_audit_v1.md#catalogue-metadata-audit-2026-10-18)
 records duplicated epochs, lost units/provenance and other source facts still
 embedded in remaining providers, including the mixed-epoch open-cluster issue.
+The open-cluster followup resolves that provider's epoch consumption: selected
+geometry and snapshot v4 use preserved row epochs/source lineage, including
+explicit unknowns, and retain catalogue metadata. Other audit findings stay open.
 The SDK [selection manifest](../../packages/wenu_kernel/test_selection_v1.json)
 keeps the independent core gate separate from existing Wenu tests. Current
 products consume only this partial native stellar adapter.

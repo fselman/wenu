@@ -99,6 +99,10 @@ publication and mirrors it in an immutable record. Epoch/edition/provenance come
 from the data document; native labels inherit the stellar specification too.
 Snapshot v3 preserves that metadata; source-bound legacy v1/v2 admission remains
 explicit. The metadata audit records remaining nonstellar and resource defects.
+Open-cluster geometry now mirrors preserved row epochs/source lineage and source
+metadata; a selected uniformly known epoch is scalar, otherwise it is explicitly
+unknown at collection level. Snapshot v4 validates that header and restores older
+bundles from their row facts. Other nonstellar catalogue assumptions remain open.
 Observed Skyfield astrometry,
 native constellation-label anchors and other families remain unmigrated. See the
 [adapter contract](implementation_reference.md#native-stellar-kernel-adapter).

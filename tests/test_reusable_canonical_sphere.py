@@ -418,6 +418,29 @@ def test_native_position_api_and_vertex_edges_match_cold_and_saved_sky(native_sn
     assert left.coordinate_spec.epoch == a.coordinate_spec.epoch == 'J1991.25'
 
 
+def test_native_snapshot_preserves_cluster_epoch_lineage_and_selected_specs(native_snapshot_case):
+    import numpy as np
+    from wenu.sky.native_snapshot import read_native_sky_snapshot
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    _, destination, _, cold = native_snapshot_case
+    snapshot = read_native_sky_snapshot(destination)
+    warm = snapshot.make_sky()
+    first, second = cold.open_clusters, warm.open_clusters
+    assert first.catalog.meta == second.catalog.meta
+    assert snapshot._records['fixed']['catalogues']['open_clusters']['epoch'] is None
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    for field in ('position_epoch', 'RA_source'):
+        np.testing.assert_array_equal(first.catalog[field], second.catalog[field])
+        np.testing.assert_array_equal(np.ma.getmaskarray(first.catalog[field]), np.ma.getmaskarray(second.catalog[field]))
+    for row in (first.catalog[0], next(row for row in first.catalog if str(row['position_epoch']) == 'unknown')):
+        selected = (str(row['wenu_id']),)
+        left, right = (layer.realize(context, None, selected=selected) for layer in (first, second))
+        _assert_native_geometry_equal(left, right)
+        expected = None if str(row['position_epoch']) == 'unknown' else str(row['position_epoch'])
+        assert left.coordinate_spec.epoch == right.coordinate_spec.epoch == expected
+    np.testing.assert_array_equal(first.position().lon_deg, second.position().lon_deg)
+
+
 def test_native_snapshot_requires_coverage_and_preserves_completed_bundle(native_snapshot_case):
     import hashlib
     from wenu.sky.native_snapshot import read_native_sky_snapshot, prepare_native_sky_snapshot
@@ -453,7 +476,7 @@ def test_native_snapshot_requires_coverage_and_preserves_completed_bundle(native
     "unsafe", "design", "record", "missing", "symlink", "evidence",
     "span", "overlap", "logical-shape", "fixed-frame", "boundary-equinox",
     "fixed-shape", "reference-equinox", "moving-content", "stellar-metadata-missing",
-    "stellar-metadata-epoch", "stellar-metadata-digest", "stellar-metadata-frame"))
+    "stellar-metadata-epoch", "stellar-metadata-digest", "stellar-metadata-frame", "cluster-epoch"))
 def test_native_snapshot_rejects_corruption_before_use(native_snapshot_case, tmp_path, fault):
     import hashlib
     import json
@@ -518,7 +541,7 @@ def test_native_snapshot_rejects_corruption_before_use(native_snapshot_case, tmp
         manifest["array_index"]["data-9999"] = dict(item)
     elif fault == "logical-shape":
         next(iter(manifest["array_index"].values()))["shape"] = [True]
-    elif fault in {"fixed-frame", "boundary-equinox", "fixed-shape", "reference-equinox", "moving-content"}:
+    elif fault in {"fixed-frame", "boundary-equinox", "fixed-shape", "reference-equinox", "moving-content", "cluster-epoch"}:
         def mapping(value):
             return {key: item for key, item in value["mapping"]}
         def change(value, key, item):
@@ -531,6 +554,8 @@ def test_native_snapshot_rejects_corruption_before_use(native_snapshot_case, tmp
         catalogues = mapping(fixed)["catalogues"]
         if fault == "fixed-frame":
             change(mapping(catalogues)["galaxies"], "frame", "fk5")
+        elif fault == 'cluster-epoch':
+            change(mapping(catalogues)['open_clusters'], 'epoch', 'J1900.0')
         elif fault == "boundary-equinox":
             change(mapping(fixed)["boundaries"], "equinox", "B1950.0")
         elif fault == "fixed-shape":
@@ -659,7 +684,7 @@ def test_native_snapshot_fixed_catalogue_rows_masks_units_and_subsets(native_sna
     assert not warm.solar_system_bodies and warm.moon is None
 
 
-@pytest.mark.parametrize('version', (1, 2))
+@pytest.mark.parametrize('version', (1, 2, 3))
 def test_native_snapshot_legacy_coverage_stays_truthful(native_snapshot_case, tmp_path, version):
     import json
     import shutil
@@ -669,13 +694,19 @@ def test_native_snapshot_legacy_coverage_stays_truthful(native_snapshot_case, tm
     shutil.copytree(original, directory)
     manifest = json.loads((directory / "manifest.json").read_text())
     manifest["schema_version"] = version
-    manifest["compatibility"] = snapshots.LEGACY_COMPATIBILITY if version == 1 else snapshots.PRE_METADATA_COMPATIBILITY
+    manifest["compatibility"] = {1: snapshots.LEGACY_COMPATIBILITY,
+        2: snapshots.PRE_METADATA_COMPATIBILITY, 3: snapshots.PRE_CLUSTER_METADATA_COMPATIBILITY}[version]
     manifest["layers"] = list(snapshots.LEGACY_LAYERS if version == 1 else snapshots.LAYERS)
-    removed = {'stellar_metadata', 'fixed'} if version == 1 else {'stellar_metadata'}
+    removed = {'stellar_metadata', 'fixed'} if version == 1 else {'stellar_metadata'} if version == 2 else set()
     manifest["records"]["mapping"] = [pair for pair in manifest["records"]["mapping"] if pair[0] not in removed]
     if version == 1:
         for key in (*snapshots._CATALOGUES, "iau_boundaries"):
             del manifest["source_digests"][key]
+    else:
+        fixed = dict(manifest['records']['mapping'])['fixed']
+        clusters = dict(dict(fixed['mapping'])['catalogues']['mapping'])['open_clusters']
+        for pair in clusters['mapping']:
+            if pair[0] == 'epoch': pair[1] = 'J2000.0'
     (directory / "manifest.json").write_text(json.dumps(manifest))
     legacy = snapshots.read_native_sky_snapshot(directory)
     legacy.require()
@@ -689,6 +720,7 @@ def test_native_snapshot_legacy_coverage_stays_truthful(native_snapshot_case, tm
         assert sky.galaxies is None and sky.constellation_boundaries is None
     else:
         assert sky.galaxies is not None and sky.constellation_boundaries is not None
+        assert sky.open_clusters.position().coordinate_spec.epoch is None
     assert sky.stars.catalogue_metadata.epoch_label == manifest['stellar_epoch']
 
 

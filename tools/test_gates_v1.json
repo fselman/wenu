@@ -1,6 +1,6 @@
 {
   "schema": "wenu-test-gates/1",
-  "reviewed_base": "bf804cbb0a15ebd7b9cce8fca1277769fa765d10",
+  "reviewed_base": "c0dee24cb45e01145ab3e901c9ed5c5a1159c69a",
   "selection_method": "Reviewed owner/consumer paths and preserved existing test IDs; explicit human impact review, not import-based automatic coverage inference.",
   "production_receipt": {
     "tested_commit": "595ff557c5972ad548eb1202f615328a5440c439",
@@ -219,6 +219,30 @@
           "node": "tests/test_curated_catalogues.py::test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override",
           "reason": "New separate runtime dependency requires actual wheel/sdist/editable imports and native calls; preserve all existing resource/default assertions."
         }
+      ]
+    },
+    "open-cluster-metadata": {
+      "scope": "Open-cluster row/reference-epoch and source-metadata consumption, selected geometry and snapshot v4/legacy admission.",
+      "limits": "No stellar/kernel/provider numerical, catalogue curation, acquisition, packaging/dependency, projection or rendering algorithm changes. Keep real saved/spawn/pixel consumers because shared snapshot admission changed. No full production, SDK or catalogue-curation tool rerun.",
+      "selections": [
+        {"node": "tests/test_open_clusters.py::test_native_cluster_epoch_tracks_selected_rows_and_preserves_source_metadata", "reason": "Mixed/unknown/selected/masked epochs and independent metadata copies must follow source rows."},
+        {"node": "tests/test_open_clusters.py::test_packaged_cluster_geometry_uses_existing_epoch_and_coordinate_source_columns", "reason": "Actual accepted catalogue's coordinate-source and epoch lineage reaches native geometry."},
+        {"node": "tests/test_open_clusters.py::test_cluster_epoch_does_not_infer_measurement_date_from_frame_name", "reason": "Frame/equinox labels must not invent measurement epochs."},
+        {"node": "tests/test_open_clusters.py::test_invalid_cluster_epoch_is_refused_before_replacing_active_catalogue", "reason": "Admission refuses invalid epoch metadata without losing the previous table/source."},
+        {"node": "tests/test_open_clusters.py::test_packaged_open_cluster_catalogue", "reason": "Preserve installed source selection and native/observed counts."},
+        {"node": "tests/test_open_clusters.py::test_requested_order_and_metadata_are_preserved", "reason": "Selected IDs, order and observer-facing metadata remain aligned."},
+        {"node": "tests/test_open_clusters.py::test_open_cluster_coordinates_are_vectorized_and_finite", "reason": "Observed geometry still uses its established coordinate service."},
+        {"node": "tests/test_open_clusters.py::test_empty_selection_returns_empty_points", "reason": "Empty selected geometry retains its public contract."},
+        {"node": "tests/test_open_clusters.py::test_sequential_open_cluster_selections_share_observed_catalogue", "reason": "Metadata additions must preserve observed-cache and selection reuse."},
+        {"node": "tests/test_open_clusters.py::test_publication_style_uses_symbol_library_and_optional_labels", "reason": "Preserve symbol/label consumption of the changed metadata owner."},
+        {"node": "tests/test_open_clusters.py::test_selected_clusters_render_as_one_path_collection", "reason": "Preserve vectorized rendering of selected clusters."},
+        {"node": "tests/test_position_providers.py::test_open_clusters_provide_selected_native_centres", "reason": "Independent public position-provider contract still returns selected centres."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_cluster_epoch_lineage_and_selected_specs", "reason": "Actual cold/saved rows, masks, metadata and selected epoch specifications agree."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_rejects_corruption_before_use", "reason": "Changed schema/reader rejects inconsistent epoch claims and retains all corruption guards."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_legacy_coverage_stays_truthful", "reason": "Schemas v1-v3 retain coverage; legacy J2000 cluster stamps cannot overwrite preserved row facts."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources", "reason": "New bundle loads without acquisition or source-profile fallback."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_kernel_native_stars_preserve_legacy_page_pixels", "reason": "Metadata-only correction preserves actual native atlas pixels."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_atlas_chart_batch_cold_saved_and_spawned_pages_match", "reason": "Shared reader/schema change reaches real CLI/serial/saved/spawn atlas output."}
       ]
     },
     "native-stellar-routing": {

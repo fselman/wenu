@@ -176,6 +176,28 @@ not a claim that their open findings have been repaired or numerically retested.
 
 ## Request consumers and retained evidence
 
+`open-cluster-metadata` is the bounded followup gate for selected row epochs,
+coordinate-source lineage, independent copies of source metadata and snapshot
+v4/legacy admission. It selects the cluster ingestion/geometry/render seams,
+the public position-provider contract, actual cold/saved lineage, corruption
+guards, v1-v3 compatibility, source-free resume and real native pixel/CLI/spawn
+consumers. Preserve observed selections/caches and source masks. The closest
+existing selected-order and fixed-catalogue snapshot tests remain intact; new
+regressions detect inherited J2000, metadata loss and invalid epoch publication.
+
+```bash
+python -I -S -m unittest discover -s tools/tests -v
+python tools/run_test_gate.py documentation --run
+python tools/run_test_gate.py open-cluster-metadata --run
+```
+
+Do not run the whole mixed open-cluster file: its curation, membership, photometry,
+acquisition and plotting-tool algorithms are unchanged. SDK, stellar ingestion,
+orbital/radiometry physics, dependency/build/resource bytes and renderer algorithms
+are unchanged too. Retain their accepted evidence instead of repeating their
+owner gates. The snapshot version/reader changes justify actual saved/spawn
+consumption; no full production or package-installation repeat is needed.
+
 The accepted baseline is PR #244, tested head `595ff557`, merged as `d36b1786`
 with the same tree: 104 focused Mac tests and 3,415 production tests passed.
 That receipt covers unchanged owners; it is not a claim that future changed

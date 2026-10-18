@@ -55,6 +55,13 @@ No historical-epoch or Gaia accuracy claim follows from this adapter.
 
 ## Catalogue identity and curation
 
+An aggregate catalogue does not acquire a common reference epoch merely by
+combining rows. Open-cluster positions retain their declared row epoch and
+coordinate source; uniformly known selections expose that epoch, whereas mixed,
+masked or unknown selections expose no scalar epoch. Frame orientation (such as
+ICRS/J2000) is not evidence of measurement epoch. Original row values and masks
+survive saved-sky admission; legacy collection-level stamps cannot overwrite them.
+
 Scientific source snapshots, selected atlas membership, astrometry, naming,
 component identity and appearance are independent. A new Gaia match must not
 silently change catalogue membership, visual magnitude, label or component.
