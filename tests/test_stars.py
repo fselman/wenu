@@ -262,3 +262,105 @@ def test_loaded_designations_follow_hip_through_native_and_altitude_selection(mo
     assert [r.hip for r in geometry.metadata['star_designations']] == list(geometry.ids)
     np.testing.assert_array_equal(geometry.metadata['magnitude'], [1.0, 3.0])
     assert list(stars.catalog.index) == [677, 85927]
+
+
+def _native_kernel_stars():
+    """Constructed selected rows; no catalogue download or observed astrometry."""
+    stars = Stars(None, magnitude_limit=5.0)
+    stars.source_catalog = pd.DataFrame(dict(
+        ra_degrees=[0.0, 90.0, 225.0, float('nan')],
+        ra_hours=[0.0, 6.0, 15.0, float('nan')],
+        dec_degrees=[0.0, 30.0, -30.0, 40.0],
+        magnitude=[1.0, 2.0, 9.0, 3.0],
+        is_constellation_vertex=[False, True, False, False],
+    ), index=[11, 12, 13, 14])
+    stars.catalog = stars.source_catalog[stars.source_catalog.magnitude <= 5].copy()
+    return stars
+
+
+def test_native_stars_query_real_kernel_and_keep_selection_metadata(monkeypatch):
+    from wenu_kernel import KernelSession
+    from wenu.stellar_state import HIPPARCOS_SOURCE_EPOCH
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+
+    stars = _native_kernel_stars()
+    original = stars.source_catalog.copy(deep=True)
+    calls = []
+    evaluate = KernelSession.evaluate
+
+    def capture(session, query):
+        result = evaluate(session, query)
+        calls.append((query, result))
+        return result
+
+    monkeypatch.setattr(KernelSession, "evaluate", capture)
+    points = stars.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None)
+    assert len(calls) == 1
+    query, result = calls[0]
+    assert query.times == (HIPPARCOS_SOURCE_EPOCH,)
+    assert [key.value for key in query.objects] == ["hipparcos:11", "hipparcos:12"]
+    assert all(row.source_epoch == HIPPARCOS_SOURCE_EPOCH for row in result.states)
+    np.testing.assert_array_equal(points.ids, [11, 12, 14])
+    np.testing.assert_allclose(points.lon_deg[:2], [0, 90], atol=1e-12, rtol=0)
+    np.testing.assert_allclose(points.lat_deg[:2], [0, 30], atol=1e-12, rtol=0)
+    assert np.isnan(points.lon_deg[-1]) and points.lat_deg[-1] == 40
+    np.testing.assert_array_equal(points.metadata['magnitude'], [1, 2, 3])
+    np.testing.assert_array_equal(points.metadata['is_constellation_vertex'], [False, True, False])
+    assert points.coordinate_spec.epoch == "J1991.25"
+    pd.testing.assert_frame_equal(stars.source_catalog, original)
+
+
+def test_native_stars_coordinates_are_taken_from_kernel_results(monkeypatch):
+    from dataclasses import replace
+    from wenu_kernel import KernelSession
+
+    stars = _native_kernel_stars()
+    evaluate = KernelSession.evaluate
+
+    def synthetic_quarter_turn(session, query):
+        batch = evaluate(session, query)
+        return replace(batch, states=tuple(replace(row,
+            vector=(-row.vector[1], row.vector[0], row.vector[2])) for row in batch.states))
+
+    monkeypatch.setattr(KernelSession, 'evaluate', synthetic_quarter_turn)
+    lon, lat = stars._native_catalogue_coordinates(stars.catalog)
+    np.testing.assert_allclose(lon[:2], [90, 180], atol=1e-12, rtol=0)
+    np.testing.assert_allclose(lat[:2], [0, 30], atol=1e-12, rtol=0)
+
+
+def test_native_stars_do_not_fall_back_when_kernel_evaluation_fails(monkeypatch):
+    from wenu_kernel import KernelSession
+
+    stars = _native_kernel_stars()
+    def fail(*args):
+        raise RuntimeError("synthetic kernel refusal")
+    monkeypatch.setattr(KernelSession, 'evaluate', fail)
+    with pytest.raises(RuntimeError, match="kernel refusal"):
+        stars._native_catalogue_coordinates(stars.catalog)
+
+
+def test_missing_native_positions_never_become_zero_direction_states(monkeypatch):
+    from wenu_kernel import KernelSession
+
+    stars = _native_kernel_stars()
+    missing = stars.catalog.iloc[-1:]
+    def forbidden(*args):
+        raise AssertionError("missing positions must not produce a kernel query")
+    monkeypatch.setattr(KernelSession, 'evaluate', forbidden)
+    lon, lat = stars._native_catalogue_coordinates(missing)
+    assert np.isnan(lon[0]) and lat[0] == 40
+
+
+def test_native_kernel_round_trip_preserves_wrap_and_polar_directions():
+    stars = Stars(None, magnitude_limit=5)
+    lon = np.array([0., 1e-12, 90., 225., 359.999999999, 17., 340.])
+    lat = np.array([0., -30., 89.999999, -89.999999, 45., 90., -90.])
+    source = pd.DataFrame(dict(ra_degrees=lon, dec_degrees=lat), index=np.arange(1, len(lon)+1))
+    actual_lon, actual_lat = stars._native_catalogue_coordinates(source)
+    def vectors(ra, dec):
+        ra, dec = np.deg2rad(ra), np.deg2rad(dec)
+        return np.column_stack((np.cos(dec)*np.cos(ra), np.cos(dec)*np.sin(ra), np.sin(dec)))
+    original, actual = vectors(lon, lat), vectors(actual_lon, actual_lat)
+    separation = np.arctan2(np.linalg.norm(np.cross(original, actual), axis=1),
+                            np.sum(original*actual, axis=1))
+    assert np.max(separation) < 1e-12  # Numerical compatibility test, not a physical error certificate.

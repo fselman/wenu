@@ -11,9 +11,10 @@ states with optional velocity and separate uncertainty channels. Explicit
 time-adapter admission, conversion receipts and bounded TT(TAI)/TAI conversion
 remain separate from same-scale native state queries. A reusable stdlib
 provider conformance kit verifies an external consumer with no repository fixtures.
-It has no runtime dependencies or existing
-product consumers. The production pipeline below is unchanged; routing it
-through the kernel remains K3. Real providers and the SDK freeze are pending.
+The SDK has no runtime dependencies. The current K3 candidate makes it a
+separate Wenu dependency and routes native stellar realization through it.
+Other state consumers and the SDK freeze remain pending. The canonical
+projection and rendering pipeline is retained.
 
 ## Canonical pipeline
 
@@ -40,8 +41,8 @@ astronomical frame transformation.
 | Graphics | `rendering/`, `chart_document.py` | Preparation, Matplotlib and semantic SVG/PDF/PNG |
 
 The [source map](source_tree.md) lists every production Python file.
-There is currently one installed distribution, `wenu`; these directories are
-not independent loadable astronomical packages.
+Wenu now depends on the separate `wenu-kernel` distribution. The astronomical
+directories inside Wenu are not yet independent loadable packages.
 
 ## Implemented products and independent concerns
 
@@ -80,6 +81,17 @@ not precess. The two native output routes also disagree in their epoch
 metadata (J1991.25 versus default J2000.0); this is a migration defect to fix,
 not a scientific convention to preserve. No Gaia astrometric provider exists.
 
+Native `Stars.realize()` now selects rows with the existing policy and obtains
+finite directions from `stellar_state.LegacyNativeStellarProvider` through
+`KernelSession.evaluate`. Returned kernel vectors supply the geometry; kernel
+failures propagate. Cold skies and saved `_SnapshotStars` inherit this route.
+The adapter is a source-native lookup, with J1991.25(TT) source epoch and
+explicitly unknown errors, not a proper-motion or zero-motion model.
+Missing-coordinate rows retain their legacy metadata/NaNs outside kernel
+states for downstream filtering. No acquisition occurs during evaluation.
+`Stars.position`, observed Skyfield astrometry, direct constellation-table
+readers and other families remain unmigrated. See the
+[adapter contract](implementation_reference.md#native-stellar-kernel-adapter).
 Solar-System Cartesian resources, state requests and astrometric/apparent
 direction realizers have stronger typed contracts. They solve light time
 separately from apparent corrections. These facilities must be reused rather
@@ -88,7 +100,8 @@ than reimplemented in a new kernel.
 ## Abstraction barriers that remain incomplete
 
 1. `CelestialSphere` and `maximal_sphere` know concrete layer classes. There is
-   no provider registry behind a uniform epoch-state query interface.
+   no uniform registry behind all epoch-state consumers; only native stellar
+   realization currently uses the SDK registry.
 2. `SkyLayer.realize()` has a legacy fallback that discards the context and
    calls `spherical_geometry(observer)`. Physical state and observation are
    therefore not uniformly separated.
@@ -110,8 +123,12 @@ than reimplemented in a new kernel.
    owner. The view path preserves its prepared geometry and helper order while
    journaling writes through `ChartRequestBuild.remember_attribute`. Native
    sheets acquire the lease without an observer or ordinary configuration.
+   Their export pages use an owned offscreen Agg canvas at fixed 100-dpi layout
+   resolution. This isolates grid-label measurements from GUI/display scaling;
+   the requested raster export dpi remains a separate output setting.
    Atlas API/worker execution defaults to `wenu_chart atlas-sheet`, removing
-   the direct-generator fallback. This candidate still adds no kernel routing.
+   the direct-generator fallback. This accepted lifecycle change is distinct
+   from the current native stellar kernel adapter.
 5. `charts/atlas_publication.py` calls request generation, while request
    generation imports atlas-specific private furniture/report helpers.
    This creates a cycle across the intended chart/atlas barrier.

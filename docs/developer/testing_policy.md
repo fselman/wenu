@@ -52,6 +52,8 @@ filters are accepted by the runner.
 | `request-lifecycle` | Ownership/rollback and optional journal hooks preserving standalone behavior | Build/close/failure/retry; resource binding; standalone grids/horizon/tracks/disks; drawing and CLI; observer-time and fixed-sky callers |
 | `request-configuration` | Above plus configuration/component/cadence behavior using unchanged science services | Extends lifecycle with Moon/Venus/Mercury disk/sequence and reference-policy owners |
 | `request-shared-lifecycle` | Scope unification reaching native atlas lifetime/default dispatch | Extends lifecycle with explicit/default command paths, real serial/spawn exports and existing cold/saved/spawned output equivalence |
+| `kernel-native-stars` | Native stellar state routing and separate SDK dependency | Stellar owner/conformance, saved/fresh-process/worker consumers, legacy pixel comparison and wheel/sdist/editable native calls |
+| `native-atlas-output` | Native canvas/layout/export and installed native consumption with unchanged scientific state | Three display-DPI/page-shape regressions, exact legacy pixels, real cold/saved/spawn equivalence, file-admitted CLI and installation |
 
 The names are reviewed scopes, not automatic changed-file classifications.
 A numerical, renderer, atlas, shared-schema or new-routing change cannot be
@@ -60,8 +62,9 @@ extend the selection and retain independent owner oracles as necessary.
 The original request-configuration selection passed 286 tests in 91.56 s on
 Fernando's Mac; 36 documentation tests passed in 2.51 s and eight tooling tests
 passed in 0.083 s at `04c6ae21` (identical merge `7e1b1f9b`). The current shared-
-lifecycle changes and extending gate await normal Mac execution. No independent
-product installation is claimed. Their supporting tooling is
+lifecycle gate passed 247 tests in 232.56 s, with 36 documentation tests in
+3.06 s and eight tooling tests in 0.360 s at `33c15593` (identical merge
+`e5bd7c16`). The native stellar candidate awaits its own Mac gate. Their supporting tooling is
 independently tested with the standard library:
 
 ```bash
@@ -72,7 +75,7 @@ python tools/run_test_gate.py request-configuration --run
 
 For routine lifecycle work, choose `request-lifecycle` instead of
 `request-configuration`; do not run both, since the latter includes the former.
-Run documentation when it changes. The current shared-lifecycle milestone uses
+Run documentation when it changes. Shared-lifecycle changes use
 `request-shared-lifecycle` once,
 which includes `request-lifecycle`. Configuration algorithms are unchanged, so
 the additional disk/sequence/reference-policy owner gate is not repeated. The
@@ -81,6 +84,51 @@ existing cold/saved/spawned comparison despite its previous approximately
 126-second cost. No full production repeat or separate narrower gate is needed.
 Future unchanged manifests do not require revalidating every gate. `--collect` is available for diagnosis, not an extra mandatory pass before
 `--run`.
+
+## Native stellar kernel gate
+
+`kernel-native-stars` is independent of request-lifecycle selections. It runs
+the native provider owner (including eight shipped conformance checks), the
+existing stellar owner, the unmigrated position API guard, real full-catalogue
+cold/saved/fresh-process and label/gap consumers, legacy-versus-kernel page
+pixels, serial/spawn atlas equivalence and the real public producer. The new
+external runtime dependency adds wheel/sdist/editable installation checks to
+the existing packaging owner, including an actual native call and verification
+that the SDK is not vendored inside Wenu. No prior test assertion is weakened.
+
+Install the checked-out SDK separately before running this gate:
+
+```bash
+python -m pip install --no-deps --no-build-isolation ./packages/wenu_kernel
+python -m pip install --no-deps --no-build-isolation -e .
+python -I -S -m unittest discover -s tools/tests -v
+python tools/run_test_gate.py documentation --run
+python tools/run_test_gate.py kernel-native-stars --run
+```
+
+The provisional immutable Git dependency is documented in the
+[adapter reference](implementation_reference.md#native-stellar-kernel-adapter).
+The SDK source is unchanged since accepted PR #242; its 157-test suite is not
+repeated. Adapter conformance uses the installed SDK. Native-only routing leaves
+ordinary observed astrometry, other providers and scientific projection/render
+algorithms unchanged, so unrelated orbital/radiometry/body suites and the full
+production suite are excluded. The existing stellar owner still exercises its
+observed seam. Installation and native real rendering remain Mac acceptance
+requirements; controlled local harnesses are not substitutes for those checks.
+
+The `native-atlas-output` followup selection reuses the initial Mac's 35
+passing state/selection/snapshot checks when only native canvas construction
+and the two new test-admission/metadata defects change. It runs seven cases:
+the three polar/regional/hemisphere display-DPI regressions, legacy page pixels,
+real cold/saved/spawn output equivalence, file-admitted native CLI and the
+wheel/sdist/editable installed native call. The regression deliberately changes
+ambient figure dpi from 100 to 200; all three shapes fail before the fix.
+The regional case reproduces the reported 0.54-point label shifts and 990
+mismatched image elements. The fix uses fixed 100-dpi offscreen layout rather
+than changing pixel tolerances or the renderer's placement algorithms.
+Run this smaller gate for that bounded followup; use `kernel-native-stars`
+for changed stellar adapter/routing contracts. The coordinate guide remains
+current because this followup changes display measurement ownership only.
 
 ## Request consumers and retained evidence
 
@@ -151,8 +199,9 @@ resource integrity or all descriptor combinations; retain those owner oracles.
 
 Existing synthetic fault/recovery assertions and test IDs remain unchanged;
 their test-side mixin is renamed to clarify that it is fixture-specific. Root
-legacy pytest discovery and numerical/render suites are unchanged. The
-coordinate guide remains current: this slice changes no time/frame science.
+legacy pytest discovery remains unchanged. That SDK kit does not itself change
+time/frame science; the current native adapter separately documents source
+epoch and lookup semantics in the coordinate guide.
 
 ## Continuous migration and independent-module gates
 

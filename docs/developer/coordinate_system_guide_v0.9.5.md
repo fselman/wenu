@@ -1166,3 +1166,26 @@ conversion, Earth rotation uncertainty and ephemeris coverage are separate
 problems. A modern IERS table or Python datetime parser is not evidence of
 ancient-date validity. No BCE/year-zero observational support or long-epoch
 accuracy is claimed by the current implementation.
+
+## Native stellar kernel lookup during K3
+
+`stellar_state.py` supplies source-native Hipparcos lookup states. Its explicit
+source epoch J1991.25(TT) is JD 2448349.0625, using the Julian-year definition
+J2000.0 minus 8.75 × 365.25 days. ICRS has no epoch-dependent equinox.
+`native-catalogue` is the SDK reference status for this limited lookup; it does
+not add a new value to Wenu's `PositionStatus` enum. Geometry retains its existing
+ICRS catalogue specification. Unbounded lookup coverage does not establish
+physical accuracy away from the source epoch. No epoch propagation or time
+conversion is performed. The product helper queries only that source epoch.
+
+Native `Stars.realize` and saved-star realization use the real kernel result.
+The independent `Stars.position` route still ignores instant and carries its
+legacy default epoch metadata; observed Skyfield astrometry is also unmigrated.
+These remaining routes prevent all-consumer or kernel-freeze acceptance.
+
+Primary references checked 2026-10-18: [ESA catalogue description](https://www.cosmos.esa.int/web/hipparcos/catalogues),
+[ESA Hipparcos field definitions](https://hipparcos-tools.cosmos.esa.int/pstex/sect2_02.pdf)
+and [ESA Volume 1](https://www.cosmos.esa.int/documents/532822/552851/vol1_all.pdf).
+The volume itself was unavailable to full retrieval in this environment;
+its indexed source text supplies the explicit TT designation. This is source
+metadata identification, not a new independently validated propagation model.

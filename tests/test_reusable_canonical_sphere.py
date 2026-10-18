@@ -821,3 +821,73 @@ def test_atlas_chart_batch_publication_race_preserves_other_writer(native_snapsh
     assert not (output/'manifest.json').exists()
     assert not list(tmp_path.glob('.wenu-atlas-pages-*'))
 
+
+
+def test_kernel_native_stars_preserve_legacy_page_pixels(native_snapshot_case, tmp_path, monkeypatch):
+    """Same canonical renderer; compare accepted raw native rows with kernel access."""
+    import numpy as np
+    from matplotlib.image import imread
+    from wenu.atlas_design import AtlasBandTiling
+    from wenu.charts.atlas_publication import AtlasChartPresentation
+    from wenu.charts.request_generation import AtlasSheetChartRequest, generate_chart_request
+    from wenu.objects.stars import Stars
+
+    raw, _, _, sky = native_snapshot_case
+    atlas = AtlasBandTiling.from_json(raw.decode())
+    sheet = atlas.geometry.sheets[13]
+    presentation = AtlasChartPresentation(layers=('stars', 'constellation_lines'),
+        star_magnitude_limit=6, formats=('png', 'pdf'), dpi=72)
+
+    def legacy_native_rows(self, catalog):
+        # Exact source-table route replaced by the first kernel adapter.
+        return (catalog['ra_degrees'].to_numpy(dtype=float),
+                catalog['dec_degrees'].to_numpy(dtype=float))
+
+    with monkeypatch.context() as baseline:
+        baseline.setattr(Stars, '_native_catalogue_coordinates', legacy_native_rows)
+        generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
+            presentation, tmp_path/'legacy'), sky=sky)
+    generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
+        presentation, tmp_path/'kernel'), sky=sky)
+    name = f'chart-{sheet.number:02d}.png'
+    np.testing.assert_array_equal(imread(tmp_path/'legacy'/name), imread(tmp_path/'kernel'/name))
+
+
+@pytest.mark.parametrize('layout', ('polar', 'regional', 'hemisphere'))
+def test_native_atlas_page_layout_is_independent_of_display_dpi(native_snapshot_case, tmp_path, layout):
+    """HiDPI display scaling cannot change exported native grid-label placement."""
+    import matplotlib
+    from matplotlib.image import imread
+    import numpy as np
+    import xml.etree.ElementTree as ET
+    from pathlib import Path
+    from wenu.atlas_design import AtlasBandTiling, AtlasDesignRequest
+    from wenu.charts.atlas_publication import AtlasChartPresentation
+    from wenu.charts.request_generation import AtlasSheetChartRequest, generate_chart_request
+
+    raw, _, _, sky = native_snapshot_case
+    atlas = AtlasBandTiling.from_json(raw.decode())
+    sheet = atlas.geometry.sheets[0 if layout == 'polar' else 9]
+    if layout == 'hemisphere':
+        import tomllib
+        source = Path(__file__).resolve().parents[1] / 'examples/atlas_design_hemispheres_v1.toml'
+        atlas = AtlasDesignRequest.from_dict(tomllib.loads(source.read_text())).resolve()
+        sheet = atlas.geometry.sheets[0]
+    presentation = AtlasChartPresentation(layers=('equatorial_grid',),
+        chart_legend_visible=False, dpi=36, formats=('png', 'pdf', 'svg'))
+    outputs = []
+    for ambient_dpi in (100, 200):
+        directory = tmp_path / str(ambient_dpi)
+        with matplotlib.rc_context({'figure.dpi': ambient_dpi}):
+            generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
+                presentation, directory), sky=sky)
+        outputs.append(directory / f'chart-{sheet.number:02d}')
+
+    def grid_labels(path):
+        return tuple((text.text, text.get('x'), text.get('y'), text.get('transform'))
+            for text in ET.parse(path).getroot().iter()
+            if text.tag.endswith('}text') and text.get('data-wenu-layer') == 'equatorial_grid_labels')
+    assert grid_labels(outputs[0].with_suffix('.svg'))
+    assert grid_labels(outputs[0].with_suffix('.svg')) == grid_labels(outputs[1].with_suffix('.svg'))
+    np.testing.assert_array_equal(imread(outputs[0].with_suffix('.png')),
+                                  imread(outputs[1].with_suffix('.png')))

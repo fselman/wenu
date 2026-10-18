@@ -140,14 +140,58 @@ Ordinary families are `AllSkyChart`, `FullSkyChart`, `RegionalChart`,
 `CircumpolarChart` and `BinocularChart`. Product commands delegate to the
 existing request/composition owners, not to new copies of their algorithms.
 
+## Native stellar kernel adapter
+
+`stellar_state.LegacyNativeStellarProvider(rows, *, namespace, source_epoch,
+provenance, catalogue_edition=...)` copies identifier/longitude/latitude rows.
+It advertises `native_direction` and `batch_evaluation` only. A digest binds
+materialized binary inputs, source epoch, edition and provenance; it is not an
+asserted digest of the original catalogue file. `native_stellar_states(...)`
+registers an owned provider, queries at its source epoch and closes its local
+session/kernel. Published immutable states survive close. Empty tables avoid
+a query; failed registration retains caller cleanup. There is no global cache.
+
+`Stars.realize(native_context, None)` uses this service after existing stellar
+selection. Finite returned vectors are converted to geometry. Exact source coordinate
+encoding is retained only when its canonical vector equals the returned kernel
+vector; altered results determine the output. This preserves existing exact
+native-value assertions without bypassing the query. Source tables,
+IDs, photometry, designation metadata and missing-row behavior remain owned
+by `Stars`. `_SnapshotStars` inherits this path. No public facade export is
+added. `Stars.position`, observer astrometry and constellation table readers
+are still legacy consumers. Native snapshot serialization remains unchanged.
+
+The `native-catalogue` reference explicitly means an unpropagated lookup.
+Unbounded lookup availability is not astrometric validity at arbitrary epochs;
+all uncertainty channels are `not_evaluated`. Epoch propagation, accuracy bounds,
+velocity and reuse certification are refused. The helper queries J1991.25(TT)
+for current Hipparcos rows; it never relabels them as propagated J2025.0 states.
+
+Until SDK publication, root metadata uses an immutable VCS dependency pinned
+to SDK source commit `8fea897ff8456b717d5db55a8c735a94584523b7`, subdirectory
+`packages/wenu_kernel`. This is a separate distribution, not vendored code.
+A normal install resolves that dependency at installation time; rendering does
+not acquire software or catalogue data. For a synchronized development checkout:
+
+```bash
+python -m pip install --no-deps --no-build-isolation ./packages/wenu_kernel
+python -m pip install --no-deps --no-build-isolation -e .
+```
+
+The SDK is not yet frozen or published on PyPI. Replacing this provisional pin
+requires a reviewed compatible release and installation gate. The new
+`kernel-native-stars` gate checks separate wheel/sdist/editable consumption,
+native selection/saved-worker behavior and a legacy-versus-kernel page image.
+Normal Mac execution is pending for this candidate.
+
 ## Coordinate and state entry points
 
 The separate candidate `wenu_kernel` package provides `Kernel`, `KernelSession`
 and `StateProvider` plus typed direction/Cartesian records in `wenu_kernel.records`. See its
 [implemented subset and independent gate](../../packages/wenu_kernel/README.md).
-Do not replace an existing Wenu import with this SDK until the corresponding
-K3 adapter/public-path gate is implemented. No observer or numerical provider
-adapter is supplied by the foundation.
+Only the native stellar realization below has a production adapter in this
+candidate. Preserve other existing imports until their own K3 public-path gate
+is implemented. No common observer adapter is supplied by the foundation.
 
 `wenu_kernel.time.TimeService(adapters=(), admissions=())` admits one explicit
 `TimeAdapter` per directed scale pair. `convert(time, target_scale,
@@ -250,6 +294,15 @@ Setup, export and close use the same restoration and lease-retention logic;
 cleanup failures preserve the original failure as context. The native route
 omits `request` and does not configure observer-dependent layers. Every atlas
 producer route uses its injected command or defaults to `wenu_chart atlas-sheet`.
+
+Native sheet export creates an owned `Figure`/`FigureCanvasAgg` with explicit
+100-dpi layout resolution, retaining the existing standard layout metrics.
+Interactive figure/display scaling cannot enter grid-label measurement. The
+requested `presentation.dpi` still controls raster export; no global Matplotlib
+backend is forced. The existing canonical composition/renderer/export chain
+and frame/grid geometry remain the owners of page content. Regression checks
+compare actual SVG label coordinates and PNG pixels at ambient 100/200 dpi
+for polar, regional and hemispheric pages.
 
 No state query is routed through the kernel by this lifecycle work. The
 coordinate guide remains current; no astronomical algorithm, catalogue, frame,

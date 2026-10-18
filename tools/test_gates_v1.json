@@ -1,6 +1,6 @@
 {
   "schema": "wenu-test-gates/1",
-  "reviewed_base": "7e1b1f9be2d1de0dc6a9a08a8f3a31bd692210df",
+  "reviewed_base": "e5bd7c16ab3d7089fc51420432f540b2b2fe2ef9",
   "selection_method": "Reviewed owner/consumer paths and preserved existing test IDs; explicit human impact review, not import-based automatic coverage inference.",
   "production_receipt": {
     "tested_commit": "595ff557c5972ad548eb1202f615328a5440c439",
@@ -164,6 +164,86 @@
         {
           "node": "tests/test_reusable_canonical_sphere.py::test_atlas_chart_batch_cold_saved_and_spawned_pages_match",
           "reason": "Changed native scope and default dispatch require existing real cold/saved/spawned page, report, book and pixel equivalence; previously about 126 s, not an unrelated blanket suite."
+        }
+      ]
+    },
+    "kernel-native-stars": {
+      "scope": "First real kernel consumer: unpropagated native stellar realization, saved stars/native atlas workers and separate SDK dependency; native atlas export canvas isolated from display DPI.",
+      "limits": "Not all-consumer migration, Gaia propagation, requested-epoch accuracy or SDK freeze. Native atlas canvas construction uses fixed 100-dpi Agg layout metrics; export dpi stays explicit. Observed astrometry, constellation endpoints, other-family numerical models, snapshot schemas, projection and renderer algorithms are unchanged. Add owners if those contracts change. SDK source unchanged; adapter runs shipped conformance instead of repeating the SDK suite.",
+      "selections": [
+        {
+          "node": "tests/test_stellar_state.py",
+          "reason": "Native lookup owner and the eight shipped provider-conformance checks; epoch, uncertainty, refusal, aliasing and owned cleanup."
+        },
+        {
+          "node": "tests/test_stars.py",
+          "reason": "Whole stellar owner preserves observed behavior, selection/metadata and instrumented real-kernel results/failure seams."
+        },
+        {
+          "node": "tests/test_position_providers.py::test_stars_provide_static_native_icrs_positions",
+          "reason": "Protect the separate unmigrated legacy position API."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_matches_cold_full_sphere_and_layer_options",
+          "reason": "Real full-catalogue cold/saved stellar geometry and metadata selection."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources",
+          "reason": "Saved-star reconstruction calls separately installed SDK in a fresh process without source acquisition."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_labels_and_gaps_use_frozen_curation",
+          "reason": "Native metadata/IDs retain frozen labels and line gaps."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_kernel_native_stars_preserve_legacy_page_pixels",
+          "reason": "Independent legacy direct-table baseline versus kernel path through the same canonical renderer."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_atlas_page_layout_is_independent_of_display_dpi",
+          "reason": "Polar, regional and hemispheric native pages retain identical SVG grid-label coordinates and PNG pixels under simulated 100/200-dpi display settings; reproduces the Mac discrepancy before the fix."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_atlas_chart_batch_cold_saved_and_spawned_pages_match",
+          "reason": "Real native CLI/serial/saved/spawn equivalence despite changed stellar state access."
+        },
+        {
+          "node": "tests/test_wenu_chart_cli.py::test_atlas_sheet_command_admits_saved_sky_and_executes_shared_request_owner",
+          "reason": "File-admitted public native sheet command reaches the changed offscreen canvas; retain actual grid projection/export and borrowed sky behavior."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_atlas_producer_uses_real_chart_command_and_prepares_sky_once",
+          "reason": "Public producer through wenu_chart uses native stellar consumer and preserves one sky preparation."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override",
+          "reason": "New separate runtime dependency requires actual wheel/sdist/editable imports and native calls; preserve all existing resource/default assertions."
+        }
+      ]
+    },
+    "native-atlas-output": {
+      "scope": "Native atlas offscreen canvas/layout/export and affected installed native consumption, preserving state/scientific models and canonical renderer algorithms.",
+      "limits": "For the canvas/dependency-check followup only: reuse accepted unchanged stellar provider/selection and snapshot-state evidence. Not a substitute for kernel-native-stars when stellar state routing changes, or for owning numerical/projection/render tests when those algorithms change. Covers seven cases including three page shapes; no full production or SDK rerun.",
+      "selections": [
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_kernel_native_stars_preserve_legacy_page_pixels",
+          "reason": "Independent legacy direct-table baseline versus kernel path through the same canonical renderer."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_atlas_page_layout_is_independent_of_display_dpi",
+          "reason": "Polar, regional and hemispheric native pages retain identical SVG grid-label coordinates and PNG pixels under simulated 100/200-dpi display settings; reproduces the Mac discrepancy before the fix."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_atlas_chart_batch_cold_saved_and_spawned_pages_match",
+          "reason": "Real native CLI/serial/saved/spawn equivalence despite changed stellar state access."
+        },
+        {
+          "node": "tests/test_wenu_chart_cli.py::test_atlas_sheet_command_admits_saved_sky_and_executes_shared_request_owner",
+          "reason": "File-admitted public native sheet command reaches the changed offscreen canvas; retain actual grid projection/export and borrowed sky behavior."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override",
+          "reason": "New separate runtime dependency requires actual wheel/sdist/editable imports and native calls; preserve all existing resource/default assertions."
         }
       ]
     }

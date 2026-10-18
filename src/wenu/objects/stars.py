@@ -371,8 +371,7 @@ class Stars(AstronomicalObject):
             )
             if native_icrs:
                 selected = catalog
-                alt_deg = catalog["dec_degrees"].to_numpy(dtype=float)
-                az_deg = catalog["ra_degrees"].to_numpy(dtype=float)
+                az_deg, alt_deg = self._native_catalogue_coordinates(catalog)
             else:
                 selected, alt_deg, az_deg = self._catalog_altaz(
                     catalog, observer, alt_min,
@@ -439,6 +438,29 @@ class Stars(AstronomicalObject):
             ids=hip_ids,
             metadata=metadata,
         )
+
+    def _native_catalogue_coordinates(self, catalog):
+        """Realize the admitted native stellar rows through the kernel bridge."""
+        from wenu.stellar_state import (
+            HIPPARCOS_SOURCE_EPOCH, native_stellar_states, native_stellar_angles,
+        )
+
+        lon = catalog["ra_degrees"].to_numpy(dtype=float, copy=True)
+        lat = catalog["dec_degrees"].to_numpy(dtype=float, copy=True)
+        finite = np.isfinite(lon) & np.isfinite(lat)
+        # Missing-coordinate rows retain legacy IDs/metadata for downstream
+        # finite filtering, but are never published as kernel direction states.
+        rows = tuple((str(int(identifier)), float(ra), float(dec))
+                     for identifier, ra, dec in zip(catalog.index[finite], lon[finite], lat[finite]))
+        states = native_stellar_states(
+            rows, namespace=self.catalog_name, source_epoch=HIPPARCOS_SOURCE_EPOCH,
+            catalogue_edition="ESA-1997-I/239",
+            provenance=("ESA Hipparcos Catalogue I/239; unpropagated source directions",),
+        )
+        if states:
+            angles = np.asarray(native_stellar_angles(states, rows), dtype=float)
+            lon[finite], lat[finite] = angles[:, 0], angles[:, 1]
+        return lon, lat
 
     def _render_catalog(
         self,

@@ -129,6 +129,19 @@ def test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_over
             cwd=tmp_path, capture_output=True, text=True)
         assert result.returncode == 0, result.stdout + result.stderr
         wheel = next(wheel_dir.glob('*.whl'))
+        # The SDK is a separate dependency, never copied into the Wenu wheel.
+        from zipfile import ZipFile
+        from email.parser import Parser
+        with ZipFile(wheel) as built:
+            assert not any(name.startswith('wenu_kernel/') for name in built.namelist())
+            metadata_path = next(name for name in built.namelist() if name.endswith('.dist-info/METADATA'))
+            metadata = Parser().parsestr(built.read(metadata_path).decode('utf-8'))
+            from packaging.requirements import Requirement
+            requirements = [Requirement(value) for value in metadata.get_all('Requires-Dist', [])]
+            sdk = [value for value in requirements if value.name.replace('_', '-').lower() == 'wenu-kernel']
+            assert len(sdk) == 1
+            assert sdk[0].url == ('git+https://github.com/fselman/wenu.git@'
+                '8fea897ff8456b717d5db55a8c735a94584523b7#subdirectory=packages/wenu_kernel')
         installed = tmp_path / f'installed_{i}'
         result = subprocess.run([sys.executable, '-m', 'pip', 'install', '--no-deps',
             '--target', str(installed), str(wheel)], cwd=tmp_path, capture_output=True, text=True)
@@ -161,6 +174,21 @@ for name in ('b4-landscape-five-band', 'b4-portrait'):
     assert len(layout['geometry']['sheets']) == (34 if name == 'b4-landscape-five-band' else 36)
 assert resources.configuration_preset_path('atlas-v6', kind='atlas-style').is_file()
 assert resources.configuration_preset_path('scorpius-v1', kind='chart').is_file()
+# Exercise an actual installed Wenu -> separately installed SDK native call.
+import numpy as np
+import pandas as pd
+import wenu_kernel
+from wenu.objects.stars import Stars
+from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+assert not Path(wenu_kernel.__file__).is_relative_to(Path(sys.argv[3]))
+stars = Stars(None)
+stars.catalog = pd.DataFrame(dict(ra_degrees=[90.], dec_degrees=[30.],
+    magnitude=[1.], is_constellation_vertex=[False]), index=[11])
+stars.source_catalog = stars.catalog.copy()
+points = stars.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None)
+np.testing.assert_allclose(points.lon_deg, [90.], atol=1e-12, rtol=0)
+np.testing.assert_allclose(points.lat_deg, [30.], atol=1e-12, rtol=0)
+assert points.ids.tolist() == [11] and points.coordinate_spec.epoch == 'J1991.25'
 assert len(OpenClusters(None).load()) == 1
 assert len(PlanetaryNebulae(None).load()) == 1
 for domain in ('open_clusters','planetary_nebulae'):

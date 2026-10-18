@@ -24,6 +24,24 @@ The [coordinate guide](coordinate_system_guide_v0.9.5.md) retains equations,
 calendars, frame vocabulary and current implementation limits. The
 [roadmap](kernel_roadmap_v0.9.5.md) defines the proposed broader state contract.
 
+## Native stellar lookup during migration
+
+The first K3 adapter exposes finite native Hipparcos directions at source epoch
+J1991.25(TT), JD 2448349.0625. It does not propagate to a requested epoch.
+ICRS axes do not precess; source epoch is not an equinox. Its kernel reference
+status `native-catalogue` is explicit lookup semantics, not apparent place.
+Unbounded lookup coverage is not physical validity. No zero proper motions,
+distance, velocity or angular accuracy is inferred from missing information.
+Measurement, model and numerical uncertainty are explicitly unevaluated.
+Finite invalid latitude is refused; missing-coordinate legacy rows remain
+outside kernel states and retain NaNs/metadata for existing downstream filters.
+
+The native realization is routed; observed Skyfield realization and
+`Stars.position(instant)` remain legacy. The latter still ignores instant and
+uses default J2000.0 epoch metadata, inconsistent with source J1991.25; that
+unresolved migration defect must be corrected with its own compatibility gate.
+No historical-epoch or Gaia accuracy claim follows from this adapter.
+
 ## Catalogue identity and curation
 
 Scientific source snapshots, selected atlas membership, astrometry, naming,
