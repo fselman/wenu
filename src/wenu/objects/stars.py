@@ -12,7 +12,6 @@ import numpy as np
 
 from wenu.coordinates import (
     PositionStatus,
-    icrs_catalogue_spec,
     observer_altaz_spec,
 )
 from skyfield.api import Star
@@ -23,6 +22,9 @@ from wenu.resources import catalog_path
 from wenu.star_designations import load_star_designations
 from wenu.geometry.spherical import SphericalPoints
 from wenu.sky.observed_cache import observer_geometry_key
+from wenu.stellar_catalogue import (
+    ingest_stellar_catalogue, source_stellar_metadata, stellar_table_metadata,
+)
 
 
 _HIPPARCOS_SEMANTIC_DEFAULTS = {
@@ -139,21 +141,22 @@ class Stars(AstronomicalObject):
         *,
         catalog=None,
         filename=None,
+        metadata=None,
     ):
         """Load a stellar catalogue and apply the magnitude limit."""
-        if catalog is not None:
-            self.catalog_name = catalog
+        catalogue_name = self.catalog_name if catalog is None else catalog
 
         if filename is not None:
             with open(filename, "rb") as file:
                 payload = file.read()
         else:
-            resource = catalog_path(self.catalog_name)
+            resource = catalog_path(catalogue_name)
 
             with as_file(resource) as path:
                 with open(path, "rb") as file:
                     payload = file.read()
 
+        catalogue_metadata = source_stellar_metadata(catalogue_name, payload, filename, metadata)
         source = hipparcos.load_dataframe(BytesIO(payload))
         source = _attach_hipparcos_semantics(
             source,
@@ -163,11 +166,14 @@ class Stars(AstronomicalObject):
             getattr(self, "constellation_vertex_ids", frozenset())
         )
 
-        self.designation_catalogue = load_star_designations()
+        source = ingest_stellar_catalogue(source, catalogue_metadata).table
+        designation_catalogue = load_star_designations()
         source["star_designations"] = [
-            self.designation_catalogue.get(int(hip)) for hip in source.index
+            designation_catalogue.get(int(hip)) for hip in source.index
         ]
 
+        self.catalog_name = catalogue_name
+        self.designation_catalogue = designation_catalogue
         self._constellation_membership = None
         self.source_catalog = source.copy()
         magnitude_mask = (
@@ -207,6 +213,14 @@ class Stars(AstronomicalObject):
             )
         return self._native_position_geometry(self.catalog)
 
+    @property
+    def catalogue_metadata(self):
+        source = getattr(self, 'source_catalog', None)
+        source = self.catalog if source is None else source
+        if source is None:
+            raise RuntimeError('The stellar catalogue has not been loaded.')
+        return stellar_table_metadata(source)
+
     def native_positions(self, identifiers) -> SphericalPoints:
         """Query explicit HIP identities independently of marker selection.
 
@@ -224,15 +238,16 @@ class Stars(AstronomicalObject):
         return self._native_position_geometry(source[source.index.isin(selected)])
 
     def _native_position_geometry(self, catalog) -> SphericalPoints:
+        catalogue_metadata = stellar_table_metadata(catalog)
         lon, lat = self._native_catalogue_coordinates(catalog)
         metadata = {
             "catalog": self.catalog_name,
             "coordinate_system": "icrs",
+            "catalogue_metadata": catalogue_metadata.to_record(),
         }
         for name in ("magnitude", "star_designations", *_HIPPARCOS_SEMANTIC_DEFAULTS):
             if name in catalog.columns:
                 metadata[name] = catalog[name].to_numpy(copy=True)
-        provenance = ("ESA Hipparcos Catalogue I/239",)
         if "star_designations" in catalog.columns:
             metadata["star_designations_edition"] = (
                 self.designation_catalogue.edition
@@ -244,11 +259,7 @@ class Stars(AstronomicalObject):
         return SphericalPoints(
             lon_deg=lon,
             lat_deg=lat,
-            coordinate_spec=icrs_catalogue_spec(
-                f"{self.catalog_name} stellar catalogue",
-                epoch="J1991.25",
-                provenance=provenance,
-            ),
+            coordinate_spec=catalogue_metadata.coordinate_spec(),
             ids=catalog.index.to_numpy(copy=True),
             metadata=metadata,
         )
@@ -420,6 +431,8 @@ class Stars(AstronomicalObject):
             "magnitude": magnitudes,
             "is_constellation_vertex": vertex_membership,
         }
+        if native_icrs:
+            metadata['catalogue_metadata'] = stellar_table_metadata(selected).to_record()
         for name, default in _HIPPARCOS_SEMANTIC_DEFAULTS.items():
             if name in selected.columns:
                 values = selected[name].to_numpy(copy=True)
@@ -450,11 +463,7 @@ class Stars(AstronomicalObject):
         return SphericalPoints(
             lon_deg=az_deg,
             lat_deg=alt_deg,
-            coordinate_spec=icrs_catalogue_spec(
-                f"{self.catalog_name} stellar catalogue",
-                epoch="J1991.25",
-                provenance=("ESA Hipparcos Catalogue I/239",),
-            ) if native_icrs else observer_altaz_spec(
+            coordinate_spec=stellar_table_metadata(selected).coordinate_spec() if native_icrs else observer_altaz_spec(
                 resolved_observer,
                 position_status=PositionStatus.APPARENT,
                 provider="skyfield Hipparcos",
@@ -467,8 +476,10 @@ class Stars(AstronomicalObject):
     def _native_catalogue_coordinates(self, catalog):
         """Realize the admitted native stellar rows through the kernel bridge."""
         from wenu.stellar_state import (
-            HIPPARCOS_SOURCE_EPOCH, native_stellar_states, native_stellar_angles,
+            native_stellar_states, native_stellar_angles,
         )
+        metadata = stellar_table_metadata(catalog)
+        document = metadata.to_record()
 
         lon = (catalog["ra_degrees"].to_numpy(dtype=float, copy=True)
                if "ra_degrees" in catalog.columns
@@ -480,9 +491,12 @@ class Stars(AstronomicalObject):
         rows = tuple((str(int(identifier)), float(ra), float(dec))
                      for identifier, ra, dec in zip(catalog.index[finite], lon[finite], lat[finite]))
         states = native_stellar_states(
-            rows, namespace=self.catalog_name, source_epoch=HIPPARCOS_SOURCE_EPOCH,
-            catalogue_edition="ESA-1997-I/239",
-            provenance=("ESA Hipparcos Catalogue I/239; unpropagated source directions",),
+            rows, namespace=document['catalogue'], source_epoch=metadata.source_epoch,
+            catalogue_edition=document['edition'], provenance=tuple(document['provenance']) + (
+                'catalogue-source-sha256:' + document['source_sha256'],
+                'metadata:' + metadata.document_json,
+            ),
+            reference=metadata.reference,
         )
         if states:
             angles = np.asarray(native_stellar_angles(states, rows), dtype=float)

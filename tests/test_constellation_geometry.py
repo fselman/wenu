@@ -4,6 +4,7 @@
 """Milestone 8 tests for the GeometricalObject hierarchy."""
 
 import pytest
+from stellar_catalogue_fixtures import native_table
 
 from wenu.objects.astronomical_object import AstronomicalObject
 from wenu.sky import GeometricalObject, SkyLayer
@@ -170,6 +171,7 @@ def test_native_constellation_vertices_and_mean_anchors_use_same_source(tmp_path
     # Faint vertices remain part of the figure even when their markers are
     # excluded by the catalogue magnitude cut.
     lines.stars.catalog = source.iloc[:1]
+    source = native_table(source)
     lines.stars.source_catalog = source
     lines.stars.hip_df = source
     lines.stars.skyfield_stars = None
@@ -266,6 +268,7 @@ def _native_kernel_lines(tmp_path):
     stars.source_catalog = pd.DataFrame(dict(ra_degrees=[15., 30., np.nan, 60., 75.],
         dec_degrees=[-30., 45., 0., 10., 20.], magnitude=[1., 9., 3., 9., 1.]),
         index=[100, 200, 300, 400, 500])
+    stars.source_catalog = native_table(stars.source_catalog)
     stars.catalog = stars.source_catalog.iloc[:1].copy()
     path = tmp_path / 'native.fab'
     path.write_text('Cru 3 100 200 300\nCen 2 100 400\n', encoding='utf-8')

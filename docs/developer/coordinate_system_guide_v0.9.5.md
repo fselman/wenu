@@ -1179,6 +1179,14 @@ ICRS catalogue specification. Unbounded lookup coverage does not establish
 physical accuracy away from the source epoch. No epoch propagation or time
 conversion is performed. The product helper queries only that source epoch.
 
+The source-specific epoch, scale, frame, units, edition and provenance are read
+from the catalogue metadata document at ingestion. Row epochs and source bytes
+must agree with it. The immutable runtime metadata is preserved in standard
+table attributes and snapshot v3 records; geometry and kernel consumers read
+that record. A synthetic J2016 catalogue tests that no Hipparcos epoch leaks
+into these consumers. Earlier snapshot versions require an explicit,
+source-digest-bound compatibility profile rather than an inferred epoch.
+
 Native `Stars.realize`, `Stars.position`, `Stars.native_positions` and saved-star
 equivalents use the real kernel result. Native constellation endpoints consume
 the public HIP-position interface, not a second raw-table astrometric route.

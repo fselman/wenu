@@ -21,6 +21,10 @@ endpoints through an explicit native-catalogue
 lookup reference, without altering SDK contracts or claiming epoch propagation.
 The coordinate guide documents source epoch and this separate time boundary;
 existing Wenu transformations/parser are unchanged.
+Catalogue-specific facts are admitted through a preserved metadata document and
+immutable runtime mirror, starting with stellar ingestion and snapshot v3.
+Missing or conflicting source metadata is refused before publication; remaining
+provider findings are listed in the metadata section of the migration audit.
 Canonical native time input is still validated rather than implicitly normalized.
 
 The [roadmap](kernel_roadmap_v0.9.5.md) remains the sequencing authority.

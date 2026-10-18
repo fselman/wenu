@@ -8,7 +8,7 @@ import astropy.units as u
 import numpy as np
 
 from wenu.coordinates import PositionStatus
-from wenu.coordinates import observer_altaz_spec, icrs_catalogue_spec
+from wenu.coordinates import observer_altaz_spec
 from astropy.coordinates import SkyCoord
 
 from wenu.sky.geometrical_object import GeometricalObject
@@ -146,7 +146,7 @@ class ConstellationLabels(GeometricalObject):
         return SphericalPoints(
             lon_deg=np.asarray(lon_deg, dtype=float),
             lat_deg=np.asarray(lat_deg, dtype=float),
-            coordinate_spec=icrs_catalogue_spec("Hipparcos constellation label anchors", epoch="J1991.25")
+            coordinate_spec=self.stars.native_positions(()).coordinate_spec
             if native_icrs else observer_altaz_spec(
                 observer,
                 position_status=PositionStatus.APPARENT,
@@ -189,7 +189,7 @@ class ConstellationLabels(GeometricalObject):
         return SphericalPoints(
             lon_deg=np.asarray([], dtype=float),
             lat_deg=np.asarray([], dtype=float),
-            coordinate_spec=icrs_catalogue_spec("Hipparcos constellation label anchors", epoch="J1991.25")
+            coordinate_spec=self.stars.native_positions(()).coordinate_spec
             if native_icrs else observer_altaz_spec(
                 observer,
                 position_status=PositionStatus.APPARENT,

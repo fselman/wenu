@@ -142,6 +142,24 @@ existing request/composition owners, not to new copies of their algorithms.
 
 ## Native stellar kernel adapter
 
+`stellar_catalogue.StellarCatalogueMetadata` is an immutable mirror of a
+`wenu-stellar-catalogue/1` document. The document declares catalogue/edition,
+frame/origin, epoch value/format/time scale, column units, source digest,
+provenance and preserved original source metadata. Extra source fields survive
+round trips. `ingest_stellar_catalogue(table, metadata)` validates coordinates,
+units, identity uniqueness and row/reference-epoch agreement, copies all input
+columns, and returns a `StellarCatalogue(table, metadata)` envelope. Legacy table
+access remains available, with the same metadata preserved in table attributes.
+`Stars.catalogue_metadata` exposes the immutable runtime record.
+
+`Stars.load(..., metadata=None)` validates source identity before parsing and
+publishes a table only after ingestion. The packaged Hipparcos document is
+`wenu/data/catalogs/hipparcos/metadata.json`, derived from its retained ReadMe.
+A custom source requires a matching supplied document or adjacent
+`<filename>.metadata.json`; byte-identical packaged input can use its packaged
+profile. There is no inferred epoch/edition fallback for unidentified bytes.
+Constructed tables must also be explicitly ingested before native use.
+
 `stellar_state.LegacyNativeStellarProvider(rows, *, namespace, source_epoch,
 provenance, catalogue_edition=...)` copies identifier/longitude/latitude rows.
 It advertises `native_direction` and `batch_evaluation` only. A digest binds
@@ -158,11 +176,16 @@ vector; altered results determine the output. This preserves existing exact
 native-value assertions without bypassing the query. Source tables,
 IDs, photometry, designation metadata and missing-row behavior remain owned
 by `Stars`. `_SnapshotStars` inherits this path. No public facade export is
-added. Native snapshot serialization remains unchanged.
+added. Snapshot schema v3 preserves the complete metadata envelope. Readers
+admit v1/v2 through an explicit source-digest-bound legacy profile; they refuse
+legacy sources that cannot be identified. New snapshots restore metadata
+without consulting the original catalogue or its packaged profile.
 
 `Stars.position(instant=None)` uses the same kernel-backed helper for the stable
 marker selection. `instant` is retained for compatibility and ignored: the result
-is explicitly source-native J1991.25, not a propagated position at that instant.
+is explicitly source-native at the admitted catalogue epoch, not a propagated
+position at that instant. No catalogue-specific epoch, edition or provenance
+literal is supplied by the stellar geometry or kernel bridge.
 `Stars.native_positions(identifiers)` queries explicit HIP IDs from the full
 source table (or the stable table for constructed legacy objects without one).
 Available rows retain source order, IDs, photometry, designations and NaNs;

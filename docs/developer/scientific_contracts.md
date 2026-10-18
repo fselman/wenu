@@ -26,6 +26,14 @@ calendars, frame vocabulary and current implementation limits. The
 
 ## Native stellar lookup during migration
 
+Catalogue facts must be read from validated metadata at ingestion, preserved
+in Wenu's standard catalogue envelope and mirrored in the runtime record.
+Require reference epoch/time scale, frame/origin, units, edition, source identity
+and provenance; preserve original fields and reject missing/conflicting claims.
+Do not insert catalogue-specific defaults in a consumer. The current stellar
+implementation follows this boundary; the metadata audit in the migration
+audit records remaining providers that do not yet satisfy it.
+
 The first K3 adapter exposes finite native Hipparcos directions at source epoch
 J1991.25(TT), JD 2448349.0625. It does not propagate to a requested epoch.
 ICRS axes do not precess; source epoch is not an equinox. Its kernel reference

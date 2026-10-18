@@ -9,7 +9,7 @@ import warnings
 
 import numpy as np
 
-from wenu.coordinates import PositionStatus, observer_altaz_spec, icrs_catalogue_spec
+from wenu.coordinates import PositionStatus, observer_altaz_spec
 
 from wenu.resources import constellation_lines_path
 from wenu.sky.geometrical_object import GeometricalObject
@@ -358,7 +358,7 @@ class ConstellationLines(GeometricalObject):
         return SphericalCurves(
             lon_deg=tuple(lon_curves),
             lat_deg=tuple(lat_curves),
-            coordinate_spec=icrs_catalogue_spec("Hipparcos constellation vertices", epoch=points.coordinate_spec.epoch)
+            coordinate_spec=points.coordinate_spec
             if native_icrs else observer_altaz_spec(
                 observer,
                 position_status=PositionStatus.APPARENT,

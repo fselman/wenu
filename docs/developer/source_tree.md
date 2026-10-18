@@ -89,6 +89,7 @@ concrete Wenu classes.
 | [`star_designations.py`](../../src/wenu/star_designations.py) | Offline, immutable HIP-linked Wikidata candidates, separate from astrometry. |
 | [`stellar_research.py`](../../src/wenu/stellar_research.py) | Immutable, offline HIP index of designation research and accepted policy. |
 | [`stellar_state.py`](../../src/wenu/stellar_state.py) | Immutable native stellar lookup provider and owned kernel-query scope; no propagation, observer or acquisition. |
+| [`stellar_catalogue.py`](../../src/wenu/stellar_catalogue.py) | Validated stellar ingestion, immutable metadata mirror and standard table envelope; source facts read from data documents. |
 | [`svg_document.py`](../../src/wenu/svg_document.py) | Deterministic semantic annotations for Matplotlib SVG output. |
 | [`temporal.py`](../../src/wenu/temporal.py) | Renderer-neutral temporal sequence vocabulary. |
 | [`temporal_components.py`](../../src/wenu/temporal_components.py) | Shared visibility policy for start-inclusive temporal components. |

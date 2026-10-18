@@ -94,7 +94,12 @@ looks up explicit HIP identities in source order, independently of marker
 magnitude selection. Native constellation lines consume only that public
 interface and join returned IDs to their curated topology, including faint
 vertices; they no longer read catalogue coordinates themselves. Saved stars
-inherit both APIs without a snapshot schema change. Observed Skyfield astrometry,
+inherit both APIs. `stellar_catalogue.py` validates source metadata before
+publication and mirrors it in an immutable record. Epoch/edition/provenance come
+from the data document; native labels inherit the stellar specification too.
+Snapshot v3 preserves that metadata; source-bound legacy v1/v2 admission remains
+explicit. The metadata audit records remaining nonstellar and resource defects.
+Observed Skyfield astrometry,
 native constellation-label anchors and other families remain unmigrated. See the
 [adapter contract](implementation_reference.md#native-stellar-kernel-adapter).
 Solar-System Cartesian resources, state requests and astrometric/apparent

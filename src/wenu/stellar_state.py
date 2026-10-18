@@ -25,7 +25,6 @@ NATIVE_STELLAR_REFERENCE = ReferenceSpec(
     "icrs", "solar-system-barycenter", "native-catalogue", "direction", "rad",
     "unpropagated source directions; no requested-epoch astrometry",
 )
-HIPPARCOS_SOURCE_EPOCH = TimePoint(2448349, 0.0625, "tt")  # J1991.25(TT)
 
 
 def _digest(value):
@@ -74,7 +73,8 @@ class LegacyNativeStellarProvider:
     Physical and numerical uncertainty remain explicitly unknown.
     """
 
-    def __init__(self, rows, *, namespace, source_epoch, provenance, catalogue_edition="materialized-input/1"):
+    def __init__(self, rows, *, namespace, source_epoch, provenance, catalogue_edition="materialized-input/1",
+                 reference=NATIVE_STELLAR_REFERENCE):
         namespace, catalogue_edition = _text(namespace), _text(catalogue_edition)
         if type(source_epoch) is not TimePoint:
             raise InvalidQuery("an explicit source epoch is required")
@@ -97,6 +97,8 @@ class LegacyNativeStellarProvider:
         self._epoch = source_epoch
         coverage = UnboundedCoverage(source_epoch.scale)
         key = ProviderKey("wenu.legacy-native-stars:" + namespace, "1")
+        if reference != NATIVE_STELLAR_REFERENCE:
+            raise UnsupportedCapability('Only admitted native ICRS reference semantics are supported.')
         resource_digest = _digest((namespace, catalogue_edition,
                                   (source_epoch.jd1, source_epoch.jd2, source_epoch.scale),
                                   provenance,
@@ -173,7 +175,8 @@ class LegacyNativeStellarProvider:
         self._closed = True
 
 
-def native_stellar_states(rows, *, namespace, source_epoch, provenance, catalogue_edition="materialized-input/1"):
+def native_stellar_states(rows, *, namespace, source_epoch, provenance, catalogue_edition="materialized-input/1",
+                          reference=NATIVE_STELLAR_REFERENCE):
     """Query the real kernel at the source epoch; close all owned scope state.
 
     Empty tables require no query. No global registry/session survives this
@@ -181,7 +184,7 @@ def native_stellar_states(rows, *, namespace, source_epoch, provenance, catalogu
     """
     provider = LegacyNativeStellarProvider(rows, namespace=namespace,
                                          source_epoch=source_epoch, provenance=provenance,
-                                         catalogue_edition=catalogue_edition)
+                                         catalogue_edition=catalogue_edition, reference=reference)
     caller_owned = True
     try:
         descriptor = provider.describe()

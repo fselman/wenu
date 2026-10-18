@@ -136,8 +136,8 @@ current because this followup changes display measurement ownership only.
 
 `native-stellar-routing` covers the next bounded consumer change on `bf804cbb`:
 `Stars.position`, explicit HIP lookup and native constellation-line geometry.
-It runs the stellar owner, six stellar public-position cases, twelve line cases
-from the mixed geometry owner, and five real saved/rendered consumers. The
+It runs the stellar owner, stellar public-position cases, line cases
+from the mixed geometry owner, and real saved/rendered consumers. The
 nonstellar position providers, grids and boundaries in those mixed files are
 not changed and are not rerun just because they share a file.
 
@@ -156,13 +156,23 @@ python tools/run_test_gate.py documentation --run
 python tools/run_test_gate.py native-stellar-routing --run
 ```
 
-SDK source, provider algorithm, dependency/build metadata, source resources and
-snapshot schema are unchanged. Reuse accepted PR #247 installation/display-DPI
-evidence and PR #242 SDK evidence; do not rerun packaging, the 157 SDK tests,
+The metadata-ingestion correction expands the same gate with the adapter owner
+and metadata admission tests, full-source snapshot equality, corruption/refusal,
+v1/v2 compatibility and atomic publication, plus actual wheel/sdist/editable
+installation. These checks are needed because a new metadata resource/module
+and snapshot schema v3 now ship. Alternate-epoch synthetic metadata must reach
+every native stellar API and the real kernel; missing or conflicting epoch,
+scale, units, identity or provenance must fail before publication. Original
+source fields must survive normalization and persistence.
+
+SDK source and provider numerical algorithm remain unchanged. Reuse PR #247
+display-DPI and PR #242 SDK evidence; do not rerun the 157 SDK tests,
 orbital/radiometry physics, request-lifecycle gates or the full production suite.
 The whole stellar owner still checks its observed seam; observed line tests
 protect the unmodified observer-time route. Coordinate metadata changes require
 the updated coordinate/scientific contracts, not a claim of proper motion.
+The broader metadata audit is static evidence for unmodified providers; it is
+not a claim that their open findings have been repaired or numerically retested.
 
 ## Request consumers and retained evidence
 

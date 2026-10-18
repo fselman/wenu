@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 import pytest
+from stellar_catalogue_fixtures import native_table
 from astropy.table import Table
 
 from wenu.geometry import SphericalPoints
@@ -19,7 +20,8 @@ from wenu.sky.horizon import HorizonReference
 
 def test_stars_provide_static_native_icrs_positions(monkeypatch):
     from wenu_kernel import KernelSession
-    from wenu.stellar_state import HIPPARCOS_SOURCE_EPOCH
+    from wenu_kernel.records import TimePoint
+    HIPPARCOS_SOURCE_EPOCH = TimePoint(2448349, 0.0625, 'tt')
     calls = []
     evaluate = KernelSession.evaluate
     def capture(session, query):
@@ -36,6 +38,7 @@ def test_stars_provide_static_native_icrs_positions(monkeypatch):
         index=[100, 200],
     )
 
+    stars.catalog = native_table(stars.catalog)
     geometry = stars.position("2026-08-28T00:00:00")
 
     assert isinstance(stars, PositionProvider)
@@ -57,6 +60,7 @@ def _native_star_source():
     stars.source_catalog = pd.DataFrame(dict(ra_degrees=[15., 30., np.nan],
         ra_hours=[1., 2., np.nan], dec_degrees=[-30., 45., 0.],
         magnitude=[1., 9., 3.], is_variable=[False, True, False]), index=[100, 200, 300])
+    stars.source_catalog = native_table(stars.source_catalog)
     stars.catalog = stars.source_catalog.iloc[:1].copy()
     return stars
 

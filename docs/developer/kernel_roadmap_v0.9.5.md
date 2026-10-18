@@ -37,6 +37,15 @@ Relativistic/civil-time adapters, common observation services, Cartesian reuse
 and SDK freeze remain ahead. New endpoint/public-position acceptance is separate
 from the accepted adapter; neither closes K3.
 
+Catalogue ingestion is a prerequisite to further provider migration: validate
+required metadata, preserve original source fields in a Wenu standard format,
+mirror a typed immutable record, and have consumers read it. The stellar path
+and snapshot v3 implement this boundary. Resolve the remaining findings in the
+[metadata audit](kernel_migration_audit_v1.md#catalogue-metadata-audit-2026-10-18),
+especially per-source/row open-cluster epochs and nonstellar metadata loss,
+before closing those provider adapters. Do not replace absent metadata with
+catalogue-specific software literals.
+
 Keep every existing Wenu capability while placing all scientific state access
 behind a uniform kernel contract. Add Gaia DR3 astrometry for the stars already
 in Wenu by default, with configurable membership and a later DR4 adapter.

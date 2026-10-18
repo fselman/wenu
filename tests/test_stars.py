@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from astropy.time import Time
 import pytest
+from stellar_catalogue_fixtures import native_table
 
 from wenu.objects.astronomical_object import AstronomicalObject
 from wenu.objects.stars import Stars
@@ -72,6 +73,7 @@ def make_stars():
         },
         index=[100, 200, 300],
     )
+    stars.catalog = native_table(stars.catalog)
     stars.hip_df = stars.catalog.copy()
     stars.skyfield_stars = object()
     return stars, observer
@@ -242,7 +244,10 @@ def test_loaded_designations_follow_hip_through_native_and_altitude_selection(mo
     monkeypatch.setattr(stars_module.hipparcos, 'load_dataframe', lambda stream: source.copy())
     filename = tmp_path / 'hip.dat'
     filename.write_bytes(b'')
-    stars.load(filename=filename)
+    metadata = source.attrs['wenu_stellar_catalogue'].copy()
+    from hashlib import sha256
+    metadata['source_sha256'] = sha256(b'').hexdigest()
+    stars.load(filename=filename, metadata=metadata)
 
     assert list(stars.source_catalog.index) == [677, 80763, 85927]
     assert list(stars.catalog.index) == [677, 85927]
@@ -274,13 +279,15 @@ def _native_kernel_stars():
         magnitude=[1.0, 2.0, 9.0, 3.0],
         is_constellation_vertex=[False, True, False, False],
     ), index=[11, 12, 13, 14])
+    stars.source_catalog = native_table(stars.source_catalog)
     stars.catalog = stars.source_catalog[stars.source_catalog.magnitude <= 5].copy()
     return stars
 
 
 def test_native_stars_query_real_kernel_and_keep_selection_metadata(monkeypatch):
     from wenu_kernel import KernelSession
-    from wenu.stellar_state import HIPPARCOS_SOURCE_EPOCH
+    from wenu_kernel.records import TimePoint
+    HIPPARCOS_SOURCE_EPOCH = TimePoint(2448349, 0.0625, 'tt')
     from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
 
     stars = _native_kernel_stars()
@@ -356,6 +363,7 @@ def test_native_kernel_round_trip_preserves_wrap_and_polar_directions():
     lon = np.array([0., 1e-12, 90., 225., 359.999999999, 17., 340.])
     lat = np.array([0., -30., 89.999999, -89.999999, 45., 90., -90.])
     source = pd.DataFrame(dict(ra_degrees=lon, dec_degrees=lat), index=np.arange(1, len(lon)+1))
+    source = native_table(source)
     actual_lon, actual_lat = stars._native_catalogue_coordinates(source)
     def vectors(ra, dec):
         ra, dec = np.deg2rad(ra), np.deg2rad(dec)

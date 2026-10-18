@@ -43,6 +43,15 @@ a time after that closure. Do not silently reclassify old snapshots as kernel st
 
 ## Scientific and provider work
 
+Catalogue facts (reference epoch/time scale, frame, centre, units, edition and
+provenance) belong to validated source metadata, preserved in a standard Wenu
+catalogue representation and mirrored in its runtime record. Consumers must
+read that record. Do not duplicate catalogue-specific literals or infer missing
+metadata from a name, filename or another catalogue. Validate before publication;
+preserve original source fields and bind metadata to source bytes. Mathematical
+definitions, supported schema identifiers and explicit model policies remain
+software contracts. See the metadata audit in `kernel_migration_audit_v1.md`.
+
 Preserve the [current scientific invariants and unresolved limits](scientific_contracts.md).
 Review/update the coordinate guide whenever meaning, ownership or provenance
 changes; otherwise record that it remains current. Validate scientific,
