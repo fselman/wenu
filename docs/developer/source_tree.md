@@ -10,6 +10,13 @@ directory boundary. The one Python build helper outside `wenu`,
 [`curated_catalogue_packaging.py`](../../src/curated_catalogue_packaging.py),
 owns verified curated-resource packaging and is not a science provider.
 
+The development-only [gate runner](../../tools/run_test_gate.py) and
+[reviewed selections](../../tools/test_gates_v1.json) live outside product and
+SDK packages. Its [stdlib tests](../../tools/tests/test_test_gates.py) validate
+selection/runner failures independently of Wenu. It neither discovers affected
+owners automatically nor changes root pytest collection. See the
+[testing policy](testing_policy.md) for the consumer matrix and scope limits.
+
 ## (root services)
 
 The independent [kernel project](../../packages/wenu_kernel/README.md) lives

@@ -1,0 +1,188 @@
+{
+  "schema": "wenu-test-gates/1",
+  "reviewed_base": "d36b178668b8ae564ee410c870f1793dc7ef68b6",
+  "selection_method": "Reviewed owner/consumer paths and preserved existing test IDs; explicit human impact review, not import-based automatic coverage inference.",
+  "production_receipt": {
+    "tested_commit": "595ff557c5972ad548eb1202f615328a5440c439",
+    "merged_commit": "d36b178668b8ae564ee410c870f1793dc7ef68b6",
+    "tree": "139fff5026441484e8c7e7725e598f0f79f75cff",
+    "focused_cases": 104,
+    "focused_seconds": 14.52,
+    "production_cases": 3415,
+    "production_seconds": 1035.88,
+    "environment": "User-reported Mac; plugin autoload disabled."
+  },
+  "gates": {
+    "documentation": {
+      "scope": "Documentation, inventory and executable examples/import contracts.",
+      "limits": "No production code/resource/dependency/build/collection changes. Archive and public-import checks still run normally on the Mac.",
+      "selections": [
+        {
+          "node": "tests/test_current_documentation.py",
+          "reason": "Current documentation owner and integrity contracts."
+        },
+        {
+          "node": "tests/test_user_guide.py",
+          "reason": "Current documentation owner and integrity contracts."
+        },
+        {
+          "node": "tests/test_fixed_sky_documentation.py",
+          "reason": "Current documentation owner and integrity contracts."
+        }
+      ]
+    },
+    "request-lifecycle": {
+      "scope": "Synchronous request ownership/rollback or optional journaling hooks; standalone configuration semantics, numerical models and export algorithms preserved.",
+      "limits": "Review actual diff, including tests/fixtures. Not sufficient for changed astronomy, coordinate/time meaning, state admission, configuration behavior, renderer, atlas implementation, resource schema, shared dependencies/build/collection, threading, kernel routing or new consumers. No automatic permission to skip tests based on filenames.",
+      "selections": [
+        {
+          "node": "tests/test_request_generation.py",
+          "reason": "Owns build/close/export, partial failure, lease/retry, registry/alias/label restoration, product matrix and real clipped stellar reports."
+        },
+        {
+          "node": "tests/test_minor_body_resources.py",
+          "reason": "Resource session and resolver binding/restore contract consumed by both request routes; retain failure and atomic-publication checks."
+        },
+        {
+          "node": "tests/test_request_grids.py",
+          "reason": "Grid registration/replacement and observer/frame arguments consumed by both routes."
+        },
+        {
+          "node": "tests/test_request_horizon.py",
+          "reason": "Standalone horizon replacement, real maximal-sphere order independence and optional journal-hook compatibility."
+        },
+        {
+          "node": "tests/test_chart_request_tracks.py",
+          "reason": "Single/multiple tracks, point-label suppression, start symbols and compatibility wrapper."
+        },
+        {
+          "node": "tests/test_solar_system_body_machinery.py",
+          "reason": "Descriptor-driven disk configuration including replacement, without body-specific orchestration."
+        },
+        {
+          "node": "tests/test_chart_drawing.py",
+          "reason": "Second ordinary route calls helpers directly without journal; preserves standalone signatures and one real canonical export."
+        },
+        {
+          "node": "tests/test_wenu_chart_cli.py",
+          "reason": "Installed ordinary CLI translation/delegation, sequence controls and one real saved-sky atlas-sheet dispatch guard; retain whole cheap parser owner."
+        },
+        {
+          "node": "tests/test_wenu_chart_drawing_parity.py",
+          "reason": "CLI content/options/product matrix reach the direct drawing facade."
+        },
+        {
+          "node": "tests/test_configuration_runtime_closure.py",
+          "reason": "Configured versus explicit drawing/request metadata retains precedence."
+        },
+        {
+          "node": "tests/test_chart_sequence.py",
+          "reason": "Observer-time caller of generate_chart_request, real two-frame exports and verified resume behavior."
+        },
+        {
+          "node": "tests/test_fixed_sky_sequence.py",
+          "reason": "Fixed-sky reference/reuse callers and borrowed sky/per-frame observer closing, including failure; generator is mocked in delegation checks."
+        },
+        {
+          "node": "tests/test_fixed_sky_baseline.py::test_baseline_is_an_independent_complete_observer_time_plan",
+          "reason": "Complete-render baseline preserves separate observer-time plan."
+        },
+        {
+          "node": "tests/test_fixed_sky_baseline.py::test_baseline_generation_delegates_to_observer_time_pipeline",
+          "reason": "Baseline forwards to the selected observer-time execution owner."
+        },
+        {
+          "node": "tests/test_venus_disk_display.py::test_request_disk_configuration_replaces_prior_dynamic_layers",
+          "reason": "Standalone dynamic disk replacement remains compatible without state hook."
+        },
+        {
+          "node": "tests/test_moon_disk_display.py::test_moon_disk_style_is_body_owned_not_a_venus_alias",
+          "reason": "Standalone Moon disk configuration keeps aliases/components/style independent."
+        }
+      ]
+    },
+    "request-configuration": {
+      "scope": "Request-lifecycle plus existing horizon/grid/disk/track configuration and component selection/cadence behavior, using unchanged underlying scientific services.",
+      "limits": "Add owning numerical/geometry/render tests if underlying algorithms or scientific contracts change. Not a universal chart gate or an independent installation claim; review public callers when APIs change.",
+      "extends": [
+        "request-lifecycle"
+      ],
+      "selections": [
+        {
+          "node": "tests/test_moon_disk_display.py",
+          "reason": "Moon disk admission, physical/display separation, component semantics and family matrix."
+        },
+        {
+          "node": "tests/test_venus_disk_display.py",
+          "reason": "Venus disk component semantics, display magnification and standalone replacement."
+        },
+        {
+          "node": "tests/test_moon_disk_sequence.py",
+          "reason": "Observed Moon sequence construction, shared policy and all-five-family admission."
+        },
+        {
+          "node": "tests/test_observed_venus_disk_sequence_display.py",
+          "reason": "Observed sequence shared realization, cadence and projected centres."
+        },
+        {
+          "node": "tests/test_frozen_earth_venus_sequence_display.py",
+          "reason": "Frozen-Earth sequence factory semantics, title and independent furniture."
+        },
+        {
+          "node": "tests/test_frozen_earth_mercury_sequence_display.py",
+          "reason": "Generic frozen sequence supports Mercury without body-specific branching."
+        },
+        {
+          "node": "tests/test_reference_policy.py",
+          "reason": "Reference equinox policy reaches coupled grids; required when grid configuration behavior changes."
+        }
+      ]
+    }
+  },
+  "consumer_review": [
+    {
+      "route": "generate_chart_request -> build_chart_request -> _prepare_with_sphere",
+      "barrier": "Journal covers canonical ordinary request configuration, not numerical cache rollback.",
+      "gate": "request-lifecycle"
+    },
+    {
+      "route": "CLI -> draw_chart_view_request -> configure helpers -> export_prepared_chart",
+      "barrier": "Direct drawing does not acquire the new journal; standalone helper behavior must remain compatible.",
+      "gate": "request-lifecycle"
+    },
+    {
+      "route": "observer-time sequence -> generate_chart_request",
+      "barrier": "Real frame generation selected, including cold outputs/resume; no new propagation claim.",
+      "gate": "request-lifecycle"
+    },
+    {
+      "route": "fixed-sky reference/reuse -> generate_chart_request; complete-render baseline -> observer-time sequence",
+      "barrier": "Delegation tests mock generator; selected real observer-time export is separate evidence. No new full fixed-scene numerical equivalence claim.",
+      "gate": "request-lifecycle"
+    },
+    {
+      "route": "installed atlas CLI -> injected wenu.cli.chart.main(atlas-sheet) -> generate_chart_request(AtlasSheetChartRequest); create_atlas API without chart_command retains direct fallback",
+      "barrier": "Branches before build/journal/helper configuration; one saved-sky public dispatch guard selected. Full saved/spawned-page comparison belongs to atlas/snapshot changes or release integration. Command reuse is implemented; common lifecycle is not. Preserve exact projection/viewport/paper and native observer-free realization while consolidating lifecycle later.",
+      "gate": "request-lifecycle"
+    }
+  ],
+  "excluded_owners": [
+    {
+      "owner": "satellite crossing search, acceleration and radiometry physics",
+      "reason": "No request-lifecycle dependency back into those algorithms; presentation/cleanup seams remain selected. Expand for changed satellite selection, schema, track realization or resources."
+    },
+    {
+      "owner": "catalogue wheel/sdist installation, data curation and native snapshot persistence",
+      "reason": "No catalogue bytes, packaging, native schema or installed resource change in reviewed lifecycle scope."
+    },
+    {
+      "owner": "atlas design, book/index appearance and saved/spawned-page equivalence",
+      "reason": "Native sheet dispatch bypasses ordinary journal/helpers; no atlas/export/snapshot behavior change. Public dispatch guard retained."
+    },
+    {
+      "owner": "provider internal astrometry/orbits, projection/renderer internals and standalone kernel",
+      "reason": "Unchanged services/contracts; request gates exercise their immediate consumers. Add owners when those contracts or implementations change."
+    }
+  ],
+  "acceptance": "Named gates are proposed until normal Mac collection/execution passes. The 3415-test receipt establishes current baseline; no performance claim for new selections before timing."
+}

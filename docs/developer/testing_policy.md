@@ -1,71 +1,122 @@
 # Testing policy and module independence
 
-**Current policy consolidated:** 2026-10-18. The kernel isolation rules below
-are release acceptance requirements, not a claim that current Wenu satisfies them.
+**Current policy:** 2026-10-18. Select tests from the actual change and its
+contracts/consumers. A complete production run is a release/composition gate,
+not a prerequisite for every production edit. This supersedes the blanket
+full-suite rule used through PR #244. No numerical or visual oracle is removed.
 
-## Current development
+## Choosing a gate
 
-The new `packages/wenu_kernel` project has an explicit standard-library owner
-gate, shared synthetic-provider checks and an installed-wheel isolation gate;
-see its [selection manifest](../../packages/wenu_kernel/test_selection_v1.json).
-Root `pytest` defaults to the existing `tests` directory, so adding an
-independent project does not silently enlarge the legacy full suite. Explicit
-test paths remain supported. No legacy numerical/visual test is removed.
-The K2 foundation changes no existing runtime dependency or product import;
-its review gate is the isolated core plus affected documentation/inventory.
-This scoped exception does not waive full integration for K3 production routing.
+1. Review the full diff: implementation, tests/fixtures, resources, configuration,
+   dependencies, build and collection. Identify changed behavior, its owner,
+   public contract and immediate consumers, including dynamic/delegated callers.
+2. Select the owner and affected seams. Record the named gate, added tests and
+   excluded owners with reasons in the PR. Compatible internal changes reuse
+   lower-level science evidence; composition needs its own seam/failure checks.
+3. Expand when a changed contract reaches another owner. A change to time/frame
+   meaning, SDK state/admission, resource schemas, shared dependencies, build,
+   collection or new consumers needs an explicit affected-consumer matrix.
+   Missing ownership requires investigation before accepting a narrow gate;
+   it is not permission to silently omit coverage. A full run is justified when
+   impact spans the product or cannot be bounded after review.
+4. Run the selected gate once after final edits. Fix failures and rerun the
+   closest gate; broaden only for newly demonstrated impact. Do not rerun the
+   same tests merely after an identical-tree merge.
 
-The direction-reuse candidate extends the same isolated owner gate. Its tests
-cover provider-supplied total bounds, closed interval/one-ULP boundaries,
-whole-interval requests, retained original error/anchor, tighter tolerances,
-corrupt envelopes, atomic cache publication, mixed-rate updates and explicit
-reproducible full-model fallback. They use constructed circular-motion fixtures,
-not scientific accuracy evidence for Gaia or any real catalogue. No legacy test
-is moved or removed; the existing missing-tolerance case now expects
-`InvalidQuery` because bounded reuse is an implemented policy requiring a bound.
+Broad `wenu.__init__` imports still impose collection dependencies. That prevents
+claiming independent installation; it does not mean a request cleanup edit
+requires executing satellite orbit/illumination or catalogue wheel tests.
+Package extraction must separately prove absence of unrelated dependencies.
 
-Canonical planning extends the same owner gate. Compare cold/warm sessions,
-reversed request order and multi-time batches; test cell boundaries where an
-older certificate remains valid but the provider's canonical anchor changes.
-Malformed plans must fail before propagation. Failures during certification
-must not publish new canonical anchors. Providers without the optional planning
-capability retain the accepted full-model fallback. Synthetic schedules are
-contract evidence, not a scientific accuracy claim for a real catalogue.
+Root pytest remains scoped to `tests`; the isolated kernel keeps its own
+[manifest](../../packages/wenu_kernel/test_selection_v1.json). Run that core
+only for SDK changes or affected SDK contracts. New K3 routing needs real
+consumer/compatibility evidence; adding a production SDK dependency itself
+requires build/import and consumer impact review.
 
-The Cartesian variant adds its own state-contract tests within the same core
-gate. Preserve known zero versus absent velocity, optional source epoch,
-separate SI error channels, exact tolerance boundaries and accepted-request
-failure on missing required velocity. Check mixed-variant rejection and atomic
-cache publication, while retaining all direction/reuse tests. The future-
-capability fixture now uses `cartesian_reuse_bound`, which remains unsupported;
-`cartesian_state` is implemented. No existing Wenu numerical/render test changes.
+## Executable legacy selections
 
-The explicit TimeService extends the isolated core gate. Existing time
-record tests remain unchanged; `test_time.py` owns conversion admission,
-closed source/resource coverage, exact model/provenance identity, typed failure,
-outward numerical error, day rollover, preserved split-date precision and
-equal/one-ULP tighter bounds. TT(TAI)/TAI uses a high-precision Decimal oracle
-against the published definition; synthetic TDB-labelled adapter fixtures test
-envelopes only and are not relativistic science evidence. State queries still
-reject mismatched scales and only consume explicitly converted times. No legacy
-test is moved/removed; no production consumer or root collection changes.
+[tools/test_gates_v1.json](../../tools/test_gates_v1.json) records the reviewed
+base, exact existing test selectors, protected boundaries and exclusion reasons.
+[tools/run_test_gate.py](../../tools/run_test_gate.py) prints a plan by default;
+`--collect` collects and `--run` executes the same selection once using the
+current Python. Whole-owner selections retain every parametrization. Unknown
+gates, missing tests, invalid paths and cyclic extensions fail; there is no
+fallback to zero tests or the full suite. Ambient plugin autoload and
+`PYTEST_ADDOPTS` are disabled for these reproducible gates. No arbitrary pytest
+filters are accepted by the runner.
 
-Run the smallest owner suite plus directly affected contract/seam tests.
-Use `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1`; add no ambient plugin dependency.
-During iteration, do not run unrelated scientific, projection or rendering
-tests merely because they are in the repository.
+| Gate | Change scope | Selected evidence |
+|---|---|---|
+| `documentation` | Guides, inventory, executable documentation contracts | Current documentation, user-guide and fixed-sky documentation owners |
+| `request-lifecycle` | Ownership/rollback and optional journal hooks preserving standalone behavior | Build/close/failure/retry; resource binding; standalone grids/horizon/tracks/disks; drawing and CLI; observer-time and fixed-sky callers |
+| `request-configuration` | Above plus configuration/component/cadence behavior using unchanged science services | Extends lifecycle with Moon/Venus/Mercury disk/sequence and reference-policy owners |
 
-A final production integration candidate still requires one complete suite
-until the corresponding independent-module contract gates have been accepted.
-Reuse a receipt when executable code, scientific fixtures, dependencies,
-configuration, packaging and non-documentation tests are unchanged. Record
-exact tested and delivered revisions and prove equivalence of relevant content.
+The names are reviewed scopes, not automatic changed-file classifications.
+A numerical, renderer, atlas, shared-schema or new-routing change cannot be
+approved just because its file also appears in one of these gates. Review and
+extend the selection and retain independent owner oracles as necessary.
+The new selections await normal Mac collection/execution; no timing target or
+independent product installation is claimed. Their supporting tooling is
+independently tested with the standard library:
 
-Documentation-only cleanup, including documentation-contract tests, uses the
-affected documentation and integrity gates. It does not rerun the scientific
-or graphical suite when those owners and their test collection are unchanged.
-The accepted `ea8dc505`/`6708f54a` receipt remains production evidence, not a
-claim about a future changed production tree.
+```bash
+python -I -S -m unittest discover -s tools/tests -v
+python tools/run_test_gate.py documentation --run
+python tools/run_test_gate.py request-configuration --run
+```
+
+For routine lifecycle work, choose `request-lifecycle` instead of
+`request-configuration`; do not run both, since the latter includes the former.
+Run documentation when it changes. The current tooling/manifest milestone uses
+the broader gate once to validate all newly published selectors, without a full
+production run. Future unchanged manifests do not require revalidating every
+gate. `--collect` is available for diagnosis, not an extra mandatory pass before
+`--run`.
+
+## Request consumers and retained evidence
+
+The accepted baseline is PR #244, tested head `595ff557`, merged as `d36b1786`
+with the same tree: 104 focused Mac tests and 3,415 production tests passed.
+That receipt covers unchanged owners; it is not a claim that future changed
+code passed all 3,415 tests. The inventory retains exact revisions and times.
+
+| Actual route | Implication for selection |
+|---|---|
+| `generate_chart_request` → `build_chart_request` → `_prepare_with_sphere` | Journal/rollback owner tests plus real observer-time exports and report clipping |
+| Ordinary CLI → `draw_chart_view_request` → helpers → export | Separate route without the journal; preserve standalone helper semantics and direct drawing/CLI seams |
+| Observer-time sequence → ordinary generator | Keep real two-frame export and resume, beyond mocked delegation |
+| Fixed-sky reference/reuse → ordinary generator; complete-render baseline → observer-time pipeline | Keep both delegation/observer-lifetime routes and baseline planning; these delegation tests mock the generator, so they do not establish new full fixed-scene numerical equivalence |
+| Atlas CLI → `wenu_chart atlas-sheet` → native `AtlasSheetChartRequest` branch | Preserves exact sheet geometry/paper and observer-free native sky; branches before ordinary journal/configuration. Keep public dispatch guard; full saved/spawned-page comparisons belong to atlas/snapshot/export changes or release composition |
+
+Unchanged satellite crossing/acceleration/radiometry physics, catalogue curation
+and wheel/sdist packaging, native snapshot persistence and kernel internals do
+not belong to a compatible request-lifecycle gate. Their science and installed
+product tests remain in their own owners and in release integration. A changed
+resource, algorithm or interface brings the corresponding owner back into scope.
+The Python `create_atlas()` API retains a direct generator fallback when no
+chart command is supplied. The installed atlas CLI injects `wenu.cli.chart.main`
+for serial/spawn workers. Sharing the command is implemented; a common request
+lifecycle across ordinary drawing, ordinary generation and native sheets remains
+a K3 obligation. Product-specific geometry does not justify duplicated lifecycle.
+No existing tests are moved, deleted, weakened or re-marked by this selection.
+The coordinate guide remains current; test orchestration changes no astronomy.
+
+## Integration and receipt reuse
+
+Use a full plugin-disabled production run for release closure and broad shared
+changes whose reviewed impact warrants it. State that trigger in the PR rather
+than invoking full integration automatically for every K3 revision. Include the
+isolated SDK gate only if its contract/implementation is affected. Packaging,
+visual and print acceptance remain separate checks when those outputs change.
+
+Reuse exact receipts for unchanged owners only after comparing their executable
+code, scientific fixtures/resources, dependencies, configuration, packaging and
+test collection. Record tested/delivered revisions and relevant content
+identity. Shared-service changes invalidate dependent receipts; a previously
+passing full suite is not proof for changed consumers. Documentation/tooling
+edits that preserve product sources, resources, dependencies, root collection
+and product test bodies do not require repeating scientific integration.
 
 ## Shipped provider conformance gate
 
@@ -91,32 +142,6 @@ Existing synthetic fault/recovery assertions and test IDs remain unchanged;
 their test-side mixin is renamed to clarify that it is fixture-specific. Root
 legacy pytest discovery and numerical/render suites are unchanged. The
 coordinate guide remains current: this slice changes no time/frame science.
-
-## K3 request mutation gate
-
-Minor-body request-resource lifetime is accepted in PR #243; its focused Mac
-gate passed 56 tests and the production integration gate passed 3,400 tests.
-The current candidate extends ordinary-request isolation across
-`charts/request_generation.py`, `request_horizon.py`, `request_disks.py` and
-`request_tracks.py`. It adds fifteen cases in the existing request-generation
-owner, covering real configuration loops at non-numerical factory seams,
-partial failures, export failure, original identities/order/None/absence,
-point flags, request-order independence, overlap rejection and restoration retry.
-Twelve existing mock callback signatures accept the optional state hook;
-all prior assertions and collected test IDs remain intact. No test is relocated.
-
-Run request generation, grids, horizon, tracks and generic body-machinery owner
-files with durations, then one complete plugin-disabled production integration
-suite before merging. Existing standalone configuration/science/render oracles
-remain in that full gate. The ordinary request owner still imports the broad
-Wenu package, so this slice does not claim an independent runtime installation.
-The unchanged isolated SDK suite is excluded; no production SDK import or
-routing is added. The full suite includes documentation, avoiding a separate
-repeated documentation run. The [inventory](kernel_migration_inventory_v1.json)
-records exact scope, prior acceptance, selection and pending Mac runtime gates.
-Controlled AST seam execution supplements that gate; it is not normal Wenu
-import, scientific accuracy or pytest evidence. The coordinate guide remains
-current because no astronomical model/time/frame meaning changes.
 
 ## Continuous migration and independent-module gates
 
@@ -149,9 +174,10 @@ requires impact review and the corresponding consumer seams. A test cannot
 be skipped merely because its file is outside the changed directory.
 
 Prove installation, import, collection and execution with unrelated providers
-absent. Until that owner's independent gate has been demonstrated and accepted,
-the existing final production integration requirement remains in force.
-Profile selected gates with `--durations`, separating collection, cold source
+absent before claiming package independence. Focused legacy selection can be
+reviewed before that extraction; broad imports alone do not require executing
+unrelated physics tests. Expand for actual semantic impact or unresolved
+ownership, using the procedure above. Profile selected gates with `--durations`, separating collection, cold source
 loading and warm work. No speed target is inferred from static file counts.
 
 An internal change in package A, preserving the accepted public contract,
