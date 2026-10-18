@@ -22,6 +22,25 @@ from wenu.stellar_catalogue import (
 HIPPARCOS_SOURCE_EPOCH = TimePoint(2448349, 0.0625, 'tt')
 
 
+def test_packaged_metadata_supports_single_component_namespace_traversal(monkeypatch):
+    """Python 3.11 namespace readers accept one child per joinpath call."""
+    from importlib.resources import files
+    from wenu import stellar_catalogue
+    root = files('wenu.data.catalogs')
+    class SingleComponentPath:
+        def __init__(self, path):
+            self.path = path
+        def joinpath(self, child):
+            return SingleComponentPath(self.path.joinpath(child))
+        def read_text(self):
+            return self.path.read_text()
+    monkeypatch.setattr(stellar_catalogue, 'files', lambda package: SingleComponentPath(root))
+    result = stellar_catalogue.packaged_stellar_metadata('hipparcos')
+    expected = json.loads(root.joinpath('hipparcos').joinpath('metadata.json').read_text())
+    assert result.to_record() == expected
+    assert result.source_epoch.scale == expected['epoch']['scale']
+
+
 def test_catalogue_metadata_controls_kernel_and_all_native_outputs(monkeypatch, tmp_path):
     from wenu.objects.stars import Stars
     from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC

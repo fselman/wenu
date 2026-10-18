@@ -221,6 +221,26 @@
         }
       ]
     },
+    "native-metadata-resources": {
+      "scope": "Python 3.11 single-component namespace resource traversal repair; repeat only previously blocked snapshot/installation consumers plus the new compatibility regression.",
+      "limits": "Reuse the Mac's 79 passing combined cases and nine provider subtests at 9da34fc9; all 40 snapshot setup errors and the packaging failure share one resource-reader TypeError. No numerical, schema, selection, rendering or metadata semantics change. No SDK/full production or full combined-gate repeat.",
+      "selections": [
+        {"node": "tests/test_stellar_state.py::test_packaged_metadata_supports_single_component_namespace_traversal", "reason": "Real metadata bytes must load through the one-child joinpath contract used by Python 3.11 namespace readers; fails before repair."},
+        {"node": "tests/test_curated_catalogues.py::test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override", "reason": "Failed installed resource consumption must pass for wheel/sdist/editable layouts."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_matches_cold_full_sphere_and_layer_options", "reason": "Previously blocked common fixture consumer."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_requires_coverage_and_preserves_completed_bundle", "reason": "Previously blocked admission/coverage consumer."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_rejects_corruption_before_use", "reason": "All previously blocked corruption guards must execute past source loading."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_failure_cleans_only_owned_uncommitted_output", "reason": "Previously blocked partial-publication guard."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_publication_race_preserves_other_writer", "reason": "Previously blocked publication-race guard."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_legacy_coverage_stays_truthful", "reason": "Previously blocked v1-v3 admission guards."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_position_api_and_vertex_edges_match_cold_and_saved_sky", "reason": "Previously blocked real stellar/endpoint equality."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources", "reason": "Previously blocked source-free resume."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_labels_and_gaps_use_frozen_curation", "reason": "Previously blocked frozen-label/gap consumption."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_kernel_native_stars_preserve_legacy_page_pixels", "reason": "Previously blocked exact page pixels."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_atlas_chart_batch_cold_saved_and_spawned_pages_match", "reason": "Previously blocked real CLI/serial/saved/spawn output."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_cluster_epoch_lineage_and_selected_specs", "reason": "Previously blocked cluster row metadata consumption."}
+      ]
+    },
     "open-cluster-metadata": {
       "scope": "Open-cluster row/reference-epoch and source-metadata consumption, selected geometry and snapshot v4/legacy admission.",
       "limits": "No stellar/kernel/provider numerical, catalogue curation, acquisition, packaging/dependency, projection or rendering algorithm changes. Keep real saved/spawn/pixel consumers because shared snapshot admission changed. No full production, SDK or catalogue-curation tool rerun.",

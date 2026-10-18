@@ -176,6 +176,16 @@ not a claim that their open findings have been repaired or numerically retested.
 
 ## Request consumers and retained evidence
 
+`native-metadata-resources` is the bounded Python 3.11 resource-reader repair
+gate. At `9da34fc9`, the combined Mac run passed 79 cases and nine provider
+subtests, with 40 setup errors and one installation failure all caused by the
+same multi-part namespace `joinpath` call. Tooling (8) and complete documentation
+(36) passed. Retain that evidence and repeat the 41 blocked cases plus the new
+single-component traversal regression (42 cases); do not repeat the 79 passing
+cases. The regression reads real packaged metadata through a reader with the
+older one-child method signature and fails before the fix. Chaining joins
+changes resource access only; coordinate/scientific contracts remain current.
+
 `open-cluster-metadata` is the bounded followup gate for selected row epochs,
 coordinate-source lineage, independent copies of source metadata and snapshot
 v4/legacy admission. It selects the cluster ingestion/geometry/render seams,

@@ -109,7 +109,7 @@ def packaged_stellar_metadata(name):
     if not isinstance(name, str) or not name.isidentifier():
         raise ValueError('Invalid stellar catalogue name.')
     try:
-        raw = files('wenu.data.catalogs').joinpath(name, 'metadata.json').read_text()
+        raw = files('wenu.data.catalogs').joinpath(name).joinpath('metadata.json').read_text()
     except (FileNotFoundError, ModuleNotFoundError) as error:
         raise ValueError(f'No metadata profile for stellar catalogue {name!r}.') from error
     return StellarCatalogueMetadata.from_record(json.loads(raw))

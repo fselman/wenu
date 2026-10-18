@@ -7906,6 +7906,42 @@
       "tests/test_reusable_canonical_sphere.py": "b1935f35a874e39823d82ba091545ea81fe4f2d4d2f0d14c4e012408ed7532db"
     }
   },
+  "metadata_resource_compatibility_repair": {
+    "mac_failed_commit": "9da34fc9fe6bbf3a820403905c0788f2ac763759",
+    "mac_receipt": {
+      "tooling_passed": 8,
+      "tooling_seconds": 1.04,
+      "documentation_passed": 36,
+      "documentation_seconds": 3.61,
+      "combined_passed": 79,
+      "provider_subtests_passed": 9,
+      "combined_failed": 1,
+      "combined_setup_errors": 40,
+      "combined_seconds": 83.96,
+      "common_cause": "Python 3.11 namespace MultiplexedPath.joinpath accepts one child; the new metadata reader passed two."
+    },
+    "source_path": "src/wenu/stellar_catalogue.py",
+    "test_path": "tests/test_stellar_state.py::test_packaged_metadata_supports_single_component_namespace_traversal",
+    "repair": "Use chained single-component traversal; no metadata, astrometry, schema, selection or renderer change.",
+    "regression_evidence": "New compatibility test raises the same TypeError before the fix using real packaged metadata and the older reader signature.",
+    "retry_gate": "native-metadata-resources",
+    "retry_cases": 42,
+    "local_verification": {
+      "environment": "Normal Linux Python 3.12 runtime plus explicit older namespace-reader method-signature regression; not a Python 3.11 runtime receipt",
+      "retry_tests": 42,
+      "retry_seconds": 204.7,
+      "tooling_tests": 8,
+      "tooling_seconds": 0.826,
+      "documentation_tests": 33,
+      "documentation_seconds": 1.21,
+      "mac_retry": "pending"
+    },
+    "receipt_reuse": "Retain 79 passing combined cases and nine subtests; rerun the 41 blocked consumers plus the new regression, without full production or SDK repeat.",
+    "content_sha256": {
+      "src/wenu/stellar_catalogue.py": "30979a8c759b58f9c5208bbbe73e8dfd485e24c0f269a4022698b5a37eb423c2",
+      "tests/test_stellar_state.py": "c6879d688d2c4dbb23190d54733920da206ad6d2ff183c4ead07418141fb00f5"
+    }
+  },
   "development_test_gates": {
     "source_paths": [
       "tools/run_test_gate.py"
