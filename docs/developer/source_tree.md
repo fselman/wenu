@@ -49,8 +49,10 @@ track configuration owners remember their attribute writes through that journal;
 `minor_body_resources.py` owns atomic resolver binding/restoration. No new
 catalogue clone is introduced by lifecycle isolation. The separate
 `stellar_state.py` owner now binds copied native stellar inputs and queries the
-SDK; `objects/stars.py` owns selection and geometry conversion. The kernel
-imports no concrete Wenu classes.
+SDK; `objects/stars.py` owns selection and geometry conversion. Native page
+creation in `charts/request_generation.py` also owns its fixed-resolution
+offscreen canvas, separately from raster export dpi. The kernel imports no
+concrete Wenu classes.
 
 | Module | Present responsibility |
 |---|---|

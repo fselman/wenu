@@ -53,6 +53,7 @@ filters are accepted by the runner.
 | `request-configuration` | Above plus configuration/component/cadence behavior using unchanged science services | Extends lifecycle with Moon/Venus/Mercury disk/sequence and reference-policy owners |
 | `request-shared-lifecycle` | Scope unification reaching native atlas lifetime/default dispatch | Extends lifecycle with explicit/default command paths, real serial/spawn exports and existing cold/saved/spawned output equivalence |
 | `kernel-native-stars` | Native stellar state routing and separate SDK dependency | Stellar owner/conformance, saved/fresh-process/worker consumers, legacy pixel comparison and wheel/sdist/editable native calls |
+| `native-atlas-output` | Native canvas/layout/export and installed native consumption with unchanged scientific state | Three display-DPI/page-shape regressions, exact legacy pixels, real cold/saved/spawn equivalence, file-admitted CLI and installation |
 
 The names are reviewed scopes, not automatic changed-file classifications.
 A numerical, renderer, atlas, shared-schema or new-routing change cannot be
@@ -114,6 +115,20 @@ algorithms unchanged, so unrelated orbital/radiometry/body suites and the full
 production suite are excluded. The existing stellar owner still exercises its
 observed seam. Installation and native real rendering remain Mac acceptance
 requirements; controlled local harnesses are not substitutes for those checks.
+
+The `native-atlas-output` followup selection reuses the initial Mac's 35
+passing state/selection/snapshot checks when only native canvas construction
+and the two new test-admission/metadata defects change. It runs seven cases:
+the three polar/regional/hemisphere display-DPI regressions, legacy page pixels,
+real cold/saved/spawn output equivalence, file-admitted native CLI and the
+wheel/sdist/editable installed native call. The regression deliberately changes
+ambient figure dpi from 100 to 200; all three shapes fail before the fix.
+The regional case reproduces the reported 0.54-point label shifts and 990
+mismatched image elements. The fix uses fixed 100-dpi offscreen layout rather
+than changing pixel tolerances or the renderer's placement algorithms.
+Run this smaller gate for that bounded followup; use `kernel-native-stars`
+for changed stellar adapter/routing contracts. The coordinate guide remains
+current because this followup changes display measurement ownership only.
 
 ## Request consumers and retained evidence
 

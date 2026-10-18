@@ -667,6 +667,8 @@ def _generate_atlas_sheet_request(request, sky):
 def _render_atlas_sheet_request(request, sky):
     """One isolated figure, canonical composition/export, all requested formats."""
     import matplotlib.pyplot as plt
+    from matplotlib.figure import Figure
+    from matplotlib.backends.backend_agg import FigureCanvasAgg
     from .atlas_publication import (AtlasSheetChart, _atlas_grid_layout, _atlas_grid_options,
         _draw_atlas_chart_number, _draw_atlas_magnitude_scale, _render_atlas_report)
     from pathlib import Path
@@ -734,7 +736,10 @@ def _render_atlas_sheet_request(request, sky):
     if "equatorial_grid" in presentation.layers:
         composition = replace(composition, style=grid_style)
         grid_options.update(_atlas_grid_options(chart, presentation))
-    figure = plt.figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4))
+    # Keep the existing 100-dpi layout metrics independent of GUI/Retina scaling.
+    # Raster export resolution remains presentation.dpi; no global backend change.
+    figure = Figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4), dpi=100)
+    FigureCanvasAgg(figure)
     ax = figure.add_axes(axes_bounds)
     ax.set_xticks([])
     ax.set_yticks([])

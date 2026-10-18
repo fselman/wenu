@@ -295,6 +295,15 @@ cleanup failures preserve the original failure as context. The native route
 omits `request` and does not configure observer-dependent layers. Every atlas
 producer route uses its injected command or defaults to `wenu_chart atlas-sheet`.
 
+Native sheet export creates an owned `Figure`/`FigureCanvasAgg` with explicit
+100-dpi layout resolution, retaining the existing standard layout metrics.
+Interactive figure/display scaling cannot enter grid-label measurement. The
+requested `presentation.dpi` still controls raster export; no global Matplotlib
+backend is forced. The existing canonical composition/renderer/export chain
+and frame/grid geometry remain the owners of page content. Regression checks
+compare actual SVG label coordinates and PNG pixels at ambient 100/200 dpi
+for polar, regional and hemispheric pages.
+
 No state query is routed through the kernel by this lifecycle work. The
 coordinate guide remains current; no astronomical algorithm, catalogue, frame,
 time or rendering style changes.

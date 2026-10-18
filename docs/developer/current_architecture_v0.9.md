@@ -123,6 +123,9 @@ than reimplemented in a new kernel.
    owner. The view path preserves its prepared geometry and helper order while
    journaling writes through `ChartRequestBuild.remember_attribute`. Native
    sheets acquire the lease without an observer or ordinary configuration.
+   Their export pages use an owned offscreen Agg canvas at fixed 100-dpi layout
+   resolution. This isolates grid-label measurements from GUI/display scaling;
+   the requested raster export dpi remains a separate output setting.
    Atlas API/worker execution defaults to `wenu_chart atlas-sheet`, removing
    the direct-generator fallback. This accepted lifecycle change is distinct
    from the current native stellar kernel adapter.
