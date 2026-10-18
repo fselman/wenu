@@ -5,14 +5,15 @@
 **As-is base:** main `3359e9ebb430de68e68cdee8bfc40ddd6d3da692`.
 **Proposed contract identifier:** `wenu.kernel/1.0`.
 
-**Current candidate extension:** distributable provider conformance kit,
-factory-owned cases and explicit activity/buffer hooks. Runtime state/time
-contracts remain unchanged. The kit is reviewed before the K5 freeze.
+The distributable provider conformance kit, factory-owned cases and explicit
+activity/buffer hooks are accepted through PR #242. Runtime state/time contracts
+remain unchanged by the K3 request-resource lifetime prerequisite. The final
+usable SDK freeze remains K5.
 
 The [K2 implementation](../../packages/wenu_kernel/README.md) remains a declared
 native-state subset. Direction/certificate/canonical-planning and SI Cartesian
 full-model behavior and explicit time conversion are accepted through
-PR #241. The current candidate ships reusable provider conformance checks.
+PR #241; reusable provider conformance checks are accepted through PR #242.
 Other records/services remain targets, not available imports. Observation,
 Gaia and production routing remain pending. The coordinate guide now documents
 this separate time boundary; existing Wenu transformations/parser are unchanged.
@@ -596,7 +597,7 @@ The accepted K2 foundation supplies records, registration/session admission and
 direction certificates without production rerouting. The accepted native-state
 subset includes canonical direction planning and full-model Cartesian states. The
 accepted time subset supplies explicit adapter admission and TT(TAI)/TAI
-conversion. The current slice ships the reusable provider conformance kit.
+conversion. The reusable provider conformance kit is also shipped.
 Real provider science/isolation, relativistic/civil-time adapters and complete
 consumer migration remain explicit work before the K5 SDK freeze.
 No Gaia acquisition, scientific-provider extraction, product rewrite or new

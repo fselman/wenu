@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from contextlib import ExitStack
 from dataclasses import dataclass, field, replace
 
 from wenu.observer import Observer
@@ -24,6 +25,39 @@ from .request_disks import configure_chart_request_disks
 from .request_horizon import configure_chart_request_horizon
 from .request_realization import chart_request_realization_context
 from .request_resolver import resolve_chart_request
+
+
+_MISSING_ATTRIBUTE = object()
+
+
+def _remove_request_layers(sky, layers):
+    """Detach only still-registered request-owned layers, attempting all."""
+    with ExitStack() as cleanup:
+        for layer in reversed(layers):
+            if any(value is layer for value in sky.layers):
+                cleanup.callback(sky.remove, layer)
+
+
+def _restore_minor_body_registration(sky, layers, attributes):
+    """Restore the registry and aliases even after a partial layer addition."""
+    with ExitStack() as cleanup:
+        # Execute in reverse addition order so repeated entity aliases return
+        # to their original value. Missing attributes remain absent.
+        for name, previous in attributes:
+            if previous is _MISSING_ATTRIBUTE:
+                cleanup.callback(_remove_request_attribute, sky, name)
+            else:
+                cleanup.callback(setattr, sky, name, previous)
+        for layer in layers:
+            key = layer.descriptor.selection_key
+            if sky.solar_system_bodies.get(key) is layer:
+                cleanup.callback(sky.solar_system_bodies.pop, key, None)
+        cleanup.callback(_remove_request_layers, sky, layers)
+
+
+def _remove_request_attribute(sky, name):
+    if hasattr(sky, name):
+        delattr(sky, name)
 
 
 @dataclass(frozen=True)
@@ -69,6 +103,7 @@ class ChartRequestBuild:
     prior_source_resolvers: tuple = ()
     request_minor_body_layers: tuple = ()
     request_satellite_track_layers: tuple = ()
+    prior_minor_body_attributes: tuple = ()
     _closed: bool = field(default=False, init=False, repr=False)
 
     @property
@@ -76,25 +111,20 @@ class ChartRequestBuild:
         return self.prepared.chart
 
     def close(self):
-        """Close an owned observer once; leave supplied spheres untouched."""
+        """Detach request-owned resources; preserve supplied observer ownership."""
         if not self._closed:
-            if self.prior_source_resolvers:
-                from wenu.minor_body_resources import (
-                    restore_sky_source_resolvers,
-                )
+            with ExitStack() as cleanup:
+                if self.owns_observer:
+                    cleanup.callback(self.sky.observer.close)
+                if self.minor_body_session is not None:
+                    cleanup.callback(self.minor_body_session.close)
+                cleanup.callback(_restore_minor_body_registration, self.sky,
+                                 self.request_minor_body_layers, self.prior_minor_body_attributes)
+                cleanup.callback(_remove_request_layers, self.sky, self.request_satellite_track_layers)
+                if self.prior_source_resolvers:
+                    from wenu.minor_body_resources import restore_sky_source_resolvers
 
-                restore_sky_source_resolvers(self.prior_source_resolvers)
-            if self.minor_body_session is not None:
-                self.minor_body_session.close()
-            for layer in self.request_satellite_track_layers:
-                self.sky.remove(layer)
-            for layer in self.request_minor_body_layers:
-                self.sky.remove(layer)
-                self.sky.solar_system_bodies.pop(
-                    layer.descriptor.selection_key, None
-                )
-            if self.owns_observer:
-                self.sky.observer.close()
+                    cleanup.callback(restore_sky_source_resolvers, self.prior_source_resolvers)
         self._closed = True
 
     def __enter__(self):
@@ -304,6 +334,7 @@ def _prepare_with_sphere(
     session = None
     prior = ()
     request_layers = []
+    prior_attributes = []
     satellite_layers = ()
     from wenu.minor_body_resources import (
         MinorBodyResourceSession,
@@ -311,16 +342,30 @@ def _prepare_with_sphere(
         request_minor_body_descriptors,
     )
 
-    if request_minor_body_descriptors(request):
-        for descriptor in request.minor_body_descriptors:
-            if descriptor.selection_key not in sky.solar_system_bodies:
-                request_layers.append(sky.add_solar_system_body(descriptor))
-        session = MinorBodyResourceSession(
-            request.minor_body_resource_directory,
-            resolved_observer,
-        )
-        prior = bind_sky_source_resolver(sky, session.source_binding)
-    try:
+    with ExitStack() as rollback:
+        rollback.callback(_restore_minor_body_registration, sky, request_layers, prior_attributes)
+        if request_minor_body_descriptors(request):
+            for descriptor in request.minor_body_descriptors:
+                if descriptor.selection_key not in sky.solar_system_bodies:
+                    prior_attributes.append((descriptor.entity_key,
+                                             getattr(sky, descriptor.entity_key, _MISSING_ATTRIBUTE)))
+                    try:
+                        sky.add_solar_system_body(descriptor)
+                    finally:
+                        # add_solar_system_body publishes its registry entry
+                        # before add(); recover that entry if add() fails.
+                        layer = sky.solar_system_bodies.get(descriptor.selection_key)
+                        if layer is not None:
+                            request_layers.append(layer)
+            session = MinorBodyResourceSession(
+                request.minor_body_resource_directory,
+                resolved_observer,
+            )
+            rollback.callback(session.close)
+            prior = bind_sky_source_resolver(sky, session.source_binding)
+            from wenu.minor_body_resources import restore_sky_source_resolvers
+
+            rollback.callback(restore_sky_source_resolvers, prior)
         resolved = resolve_chart_request(request, profile)
         grid_options = {"frame": getattr(resolved, "frame", None)}
         if observer is not None:
@@ -348,20 +393,12 @@ def _prepare_with_sphere(
         satellite_layers = configure_chart_request_satellite_tracks(
             sky, resolved.request
         )
+        rollback.callback(_remove_request_layers, sky, tuple(reversed(satellite_layers)))
         prepare_options = {}
         if observer is not None:
             prepare_options["observer"] = observer
         prepared = prepare_chart_request(sky, resolved, **prepare_options)
-    except BaseException:
-        for layer in reversed(satellite_layers):
-            sky.remove(layer)
-        if prior:
-            from wenu.minor_body_resources import restore_sky_source_resolvers
-
-            restore_sky_source_resolvers(prior)
-        if session is not None:
-            session.close()
-        raise
+        rollback.pop_all()
     return ChartRequestBuild(
         sky=sky,
         prepared=prepared,
@@ -370,6 +407,7 @@ def _prepare_with_sphere(
         prior_source_resolvers=prior,
         request_minor_body_layers=tuple(request_layers),
         request_satellite_track_layers=tuple(satellite_layers),
+        prior_minor_body_attributes=tuple(prior_attributes),
     )
 
 

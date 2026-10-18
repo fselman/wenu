@@ -270,22 +270,29 @@ def request_minor_body_descriptors(request):
 
 
 def bind_sky_source_resolver(sky, resolver):
-    """Bind one resolver to registered moving points and return prior values."""
+    """Atomically bind each distinct moving point and return prior values."""
     previous = []
-    for layer in getattr(sky, "solar_system_bodies", {}).values():
-        previous.append((layer, layer.source_resolver))
-        layer.source_resolver = resolver
     moon = getattr(sky, "moon", None)
-    if moon is not None and all(layer is not moon for layer, _ in previous):
-        previous.append((moon, moon.source_resolver))
-        moon.source_resolver = resolver
+    layers = (*getattr(sky, "solar_system_bodies", {}).values(), moon)
+    try:
+        for layer in layers:
+            if layer is None or any(value is layer for value, _ in previous):
+                continue
+            previous.append((layer, layer.source_resolver))
+            layer.source_resolver = resolver
+    except BaseException:
+        restore_sky_source_resolvers(tuple(reversed(previous)))
+        raise
     return tuple(previous)
 
 
 def restore_sky_source_resolvers(previous):
-    """Restore bindings after a request on a reusable sphere."""
-    for layer, resolver in previous:
-        layer.source_resolver = resolver
+    """Attempt every binding restoration; retain chained cleanup failures."""
+    from contextlib import ExitStack
+
+    with ExitStack() as cleanup:
+        for layer, resolver in reversed(tuple(previous)):
+            cleanup.callback(setattr, layer, "source_resolver", resolver)
 
 
 def _digest(path):

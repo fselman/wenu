@@ -92,6 +92,28 @@ their test-side mixin is renamed to clarify that it is fixture-specific. Root
 legacy pytest discovery and numerical/render suites are unchanged. The
 coordinate guide remains current: this slice changes no time/frame science.
 
+## K3 request-resource lifetime gate
+
+The first K3 production prerequisite changes only `charts/request_generation.py`
+and `minor_body_resources.py`. Its closest owners remain
+`tests/test_request_generation.py` and `tests/test_minor_body_resources.py`;
+new assertions extend those files, with no test relocation/removal. Constructed
+lifecycle fixtures exercise ten setup failure stages, successful close, export
+failure, continued cleanup after a close error, identity-deduplicated resolver
+binding and restoration after a failing setter. Existing satellite cleanup and
+observer-lifetime assertions remain unchanged.
+
+Run those owner files first with durations, then one complete plugin-disabled
+legacy integration suite before merging this production candidate. Root Wenu
+test collection/import still depends on the broad installed package, so this
+slice does not claim a newly independent runtime gate. The isolated SDK tests
+are excluded: its code, dependencies, test fixtures and consumers are unchanged
+and no production import of it is added. The production full suite already
+includes documentation checks; do not add a separate repeated documentation run.
+The [inventory](kernel_migration_inventory_v1.json) records exact scope, required
+gates, local evidence and pending Mac runtime acceptance. AST-isolated seam
+execution is supplementary evidence, not normal Wenu imports or pytest.
+
 ## Continuous migration and independent-module gates
 
 Test reorganization starts with each implementation slice, not after the

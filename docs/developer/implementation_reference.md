@@ -204,6 +204,23 @@ this method; existing non-planning providers retain their original protocol.
 - `sky/native_snapshot.py`: current native catalogue snapshot and reuse facade.
   Preserve coverage, resource and design binding; do not relabel it as the new kernel.
 
+## Request resource lifetime
+
+`build_chart_request()` returns `ChartRequestBuild`; use its context manager or
+call `close()`. Request-added minor-body layers, registry entries and entity
+aliases are scoped to that build. Existing registry entries/aliases and a
+supplied observer retain their original ownership. Resolver rebinding is atomic
+and visits each distinct layer once, including a separately registered Moon.
+`prior_minor_body_attributes` retains request-owned alias restoration metadata;
+it is not a catalogue/snapshot persistence format.
+
+The K3 prerequisite candidate covers early setup failures, subsequent preparation
+and export failure, normal close and cleanup-error continuation. It does not
+restore every chart configuration: grids/horizon, disk/track layers and point
+label flags remain separate migration owners. No state query is routed through
+the kernel by this lifecycle repair. The coordinate guide remains current;
+no astronomical algorithm, catalogue, frame, time or rendering style changes.
+
 ## Independent provider verification
 
 `wenu_kernel.conformance.provider_suite(factory, name=...)` returns a standard
