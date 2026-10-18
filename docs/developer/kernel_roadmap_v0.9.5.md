@@ -62,11 +62,11 @@ Required declarations depend on the model. Galaxy `static-direction` admission
 does not require a measurement epoch/scale; any supplied epoch remains provenance.
 Resolve remaining frame/origin/units/provenance gaps using source evidence rather
 than inventing source facts. Other families retain their source-epoch requirements.
-The current SDK still requires `DirectionState.source_epoch` and source epochs
-for direction capabilities. Its next bounded contract/implementation slice must
-represent an explicitly static direction with unknown/not-required source epoch,
-without weakening epoch-dependent models or fabricating a date. Then route the
-galaxy provider through the admitted interface. This is metadata repair;
+The SDK now admits explicit `static_direction` models with an optional source
+epoch, while native/epoch direction requirements remain intact. Static coverage,
+uncertainty, source identity and certified reuse retain their existing checks.
+The next provider slice must route galaxies through this interface after resolving
+the remaining source declarations and documenting the admitted compatibility policy. This is metadata repair;
 open-cluster state evaluation has not yet migrated to the kernel.
 
 Keep every existing Wenu capability while placing all scientific state access

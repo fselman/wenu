@@ -145,6 +145,7 @@ identified snapshot, not an in-place edit of an old result.
 | Capability | State returned | Required admission |
 |---|---|---|
 | `native_direction` | Unit direction with native reference meaning | Direction known, distance not implied |
+| `static_direction` | Epoch-independent direction in an admitted model/reference | Optional source epoch provenance; explicit coverage and uncertainty |
 | `epoch_direction` | Direction evaluated at a requested epoch | Declared motion model and its coverage; absent motion is not zero |
 | `cartesian_state` | Position plus optional velocity | Registered frame/origin; explicit velocity availability |
 | `direction_reuse_bound` | Bound for reusing a native direction | Model-valid angular certificate in that same reference meaning |
@@ -173,13 +174,16 @@ zero. Selection of a degraded/fixed stellar model is explicit policy/provenance.
 
 For the accepted galaxy chart model, measurement epoch/scale are optional
 provenance. Static directions must not require an artificial source epoch.
-Wenu's metadata admission now makes this model distinction. The current SDK
-implementation still requires `DirectionState.source_epoch` and a source epoch
-for direction capabilities in `ObjectRecord`; it cannot yet express this case.
-Extend that subset in a separate reviewed slice before galaxy kernel routing,
-retaining query/evaluation time, optional source provenance and the distinction
-between exact model constancy and unknown physical error. This paragraph records
-a pending implementation requirement, not a new SDK capability or acceptance.
+Wenu's metadata admission makes this model distinction. The SDK now admits
+`static_direction` models with empty `ObjectRecord.source_epochs` and nullable
+`DirectionState.source_epoch`. Native/epoch capabilities still require catalogue
+source epochs; a session rejects null direction epochs outside static admission.
+Static and native/epoch capabilities cannot share a single model admission.
+Declared epochs cannot be omitted or changed. Query time and actual anchor remain
+required. Coverage, scale, numerical error and certificate checks are unchanged;
+constancy grants neither infinite validity nor automatic temporal reuse.
+This is a backward-compatible capability extension of the candidate v1 contract,
+not K5 freeze. Galaxy routing and source-metadata closure remain separate work.
 
 ## 5. Query and result envelopes
 
@@ -273,7 +277,8 @@ A provider's metadata-only `supports` must refuse required velocity when absent.
 An accepted request returning no required velocity fails `InvalidProviderResult`.
 Source epochs may be empty for non-direction `ObjectRecord` values; a Cartesian
 row then carries explicit `source_epoch=None`, meaning no epoch is declared.
-A declared epoch must be preserved, while direction sources still require it.
+A declared epoch must be preserved. Native/epoch direction sources still require
+it; explicit static directions may omit it under the admission above.
 No ephemeris resource-start date is fabricated as a catalogue reference epoch.
 
 Each single-reference query returns exactly the matching state variant. Native

@@ -14,7 +14,7 @@ from wenu_kernel.errors import InvalidQuery
 from wenu_kernel.records import AccuracyRequest
 from synthetic_providers import (
     CanonicalDirections, CertifiedDirections, FixedDirections, MovingDirections,
-    SyntheticCartesian, EPOCH,
+    SyntheticCartesian, StaticDirections, CertifiedStaticDirections, EPOCH,
 )
 
 
@@ -46,6 +46,8 @@ FACTORIES = (
     ("CanonicalContract", make_factory(CanonicalDirections, "kit-canonical")),
     ("CartesianContract", make_factory(SyntheticCartesian, "kit-cartesian")),
     ("PositionOnlyContract", make_factory(SyntheticCartesian, "kit-position-only", velocity_available=False)),
+    ("StaticContract", make_factory(StaticDirections, "kit-static")),
+    ("CertifiedStaticContract", make_factory(CertifiedStaticDirections, "kit-certified-static")),
 )
 
 
@@ -129,6 +131,13 @@ class HarnessTests(unittest.TestCase):
                     batch = replace(batch, states=(row,)+batch.states[1:])
                 return batch
             case.provider.evaluate = history_dependent
+            return case
+        self.assert_rejects(factory, "fresh_warm_and_request_order")
+
+    def test_fault_static_direction_changes_with_time_is_detected(self):
+        def factory():
+            case = make_factory(StaticDirections, "fault-static")()
+            case.provider.rate = 1.0
             return case
         self.assert_rejects(factory, "fresh_warm_and_request_order")
 

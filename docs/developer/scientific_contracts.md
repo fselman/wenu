@@ -66,6 +66,12 @@ declared facts and input-byte identity, reporting absent facts explicitly. Stric
 admission refuses missing frame/origin/edition/provenance/units required by the model;
 legacy chart interpretation is explicitly `legacy-unverified-catalogue-encoding`.
 An unknown measurement epoch is never replaced by an equinox or release date.
+The SDK capability `static_direction` admits optional source epochs only for
+explicitly static models. It retains source provenance, required evaluation and
+anchor times, explicit coverage and separate unknown physical uncertainty.
+Native/epoch direction models still require source epochs. No temporal reuse or
+infinite validity follows from constancy alone. Galaxy kernel routing remains open.
+
 Galaxy chart directions use the explicit `static-direction` model, independent
 of requested epoch over the intended tens-of-thousands-of-years chart use.
 Measurement epoch/scale are optional provenance for that model and must not block

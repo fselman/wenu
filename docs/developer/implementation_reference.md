@@ -431,6 +431,23 @@ No state query is routed through the kernel by this lifecycle work. The
 coordinate guide remains current; no astronomical algorithm, catalogue, frame,
 time or rendering style changes.
 
+## Static kernel directions
+
+The candidate SDK adds `static_direction` as an explicit direction capability.
+Its admissions cannot also claim `native_direction` or `epoch_direction`.
+`DirectionState.source_epoch` accepts `None`; the session permits this only for
+static admissions whose catalogue has no declared source epoch. Declared epochs
+remain mandatory provenance. `ObjectRecord` retains the existing native/epoch
+source-epoch requirement. Evaluation/anchor times remain required; other record
+fields and query/result variants are unchanged.
+
+Static providers retain explicit model/resource coverage, references, accuracy
+and existing certificate admission. Static does not imply zero physical error,
+new observer transformations, infinite coverage or implicit caching. The root
+production dependency remains pinned to the accepted SDK commit above because
+no production consumer yet requires this extension; the independent dev7 wheel
+and existing native stellar adapter compatibility are verified separately.
+
 ## Independent provider verification
 
 `wenu_kernel.conformance.provider_suite(factory, name=...)` returns a standard

@@ -116,8 +116,9 @@ epochs. Admission is model-specific: `Galaxies` uses `static-direction` and does
 not require a source epoch/scale. It keeps native ICRS directions fixed while
 retaining any source epoch as provenance. Other providers keep the default
 source-epoch policy. Frame/origin/units/provenance remain required for strict
-galaxy admission. Source gaps and the kernel direction-state epoch constraint
-still prevent claiming complete galaxy kernel routing.
+galaxy admission. The SDK now admits explicit `static_direction` states with
+optional source epochs and unchanged coverage/error checks. Source gaps and
+the unimplemented galaxy adapter still prevent claiming galaxy kernel routing.
 Observed Skyfield astrometry,
 native constellation-label anchors and other families remain unmigrated. See the
 [adapter contract](implementation_reference.md#native-stellar-kernel-adapter).

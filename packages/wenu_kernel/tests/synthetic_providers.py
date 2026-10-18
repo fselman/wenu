@@ -351,3 +351,48 @@ class SyntheticCartesian(SyntheticDirections):
         elif self.fault == "duplicate":
             states.append(states[0])
         return StateBatch(query, states)
+
+
+class StaticDirections(SyntheticDirections):
+    """Explicit synthetic epoch-independent model with optional provenance."""
+
+    capability = "static_direction"
+
+    def __init__(self, name="static", *, source_epoch=None):
+        super().__init__(name)
+        self.source_epoch = source_epoch
+        epochs = () if source_epoch is None else (source_epoch,)
+        self.snapshot = replace(self.snapshot, objects=tuple(
+            replace(obj, source_epochs=epochs) for obj in self.snapshot.objects))
+
+    def evaluate(self, query):
+        batch = super().evaluate(query)
+        return replace(batch, states=tuple(replace(row, source_epoch=self.source_epoch)
+                                           for row in batch.states))
+
+
+class CertifiedStaticDirections(StaticDirections):
+    """Finite coverage and constant numerical bound; not physical certainty."""
+
+    def __init__(self, name="certified-static", **options):
+        super().__init__(name, **options)
+        caps = (self.capability, "batch_evaluation", "direction_reuse_bound", "canonical_direction_reuse")
+        self.snapshot = replace(self.snapshot, objects=tuple(replace(obj, capabilities=caps)
+                                                            for obj in self.snapshot.objects))
+        self.descriptor = replace(self.descriptor, admissions=(replace(
+            self.descriptor.admissions[0], capabilities=caps),))
+        self.calls["certify"] = 0
+
+    def plan_reuse(self, query):
+        from wenu_kernel.records import AnchorSelection
+        from wenu_kernel.reuse import make_reuse_plan
+        return make_reuse_plan(query, tuple(AnchorSelection(obj, time, self.coverage.start)
+            for time in query.times for obj in query.objects), self.model)
+
+    def certify(self, query, anchor):
+        from wenu_kernel.reuse import make_certificate, direction_anchor_identity
+        self.calls["certify"] += 1
+        return make_certificate(catalogue=query.catalogue, model=query.model,
+            anchor_identity=direction_anchor_identity(anchor), objects=anchor.query.objects,
+            reference=query.reference, validity=self.coverage, metric="angular_separation",
+            maximum_error=anchor.states[0].evidence.numerical.value, method=self.model)

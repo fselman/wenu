@@ -8085,6 +8085,68 @@
       "tests/test_reusable_canonical_sphere.py": "543b879894821fef4faf7911ac8c0c33814c1017c9f6ceb52fa388002c46897b"
     }
   },
+  "kernel_static_directions": {
+    "base_commit": "ca5cbc2190752e6749bd796b9537fc790260db41",
+    "capability": "static_direction",
+    "sdk_version": "0.0.0.dev7",
+    "contract_version": "wenu.kernel/1.0",
+    "compatibility": "Additive capability. Null source epoch is admitted only for an explicit static direction model with empty catalogue source_epochs; declared epochs retained. Native/epoch capabilities keep required epochs. Evaluation and anchor times remain explicit.",
+    "root_dependency_pin_changed": false,
+    "production_routing_changed": false,
+    "resource_or_snapshot_schema_changed": false,
+    "source_paths": [
+      "packages/wenu_kernel/src/wenu_kernel/records.py",
+      "packages/wenu_kernel/src/wenu_kernel/kernel.py",
+      "packages/wenu_kernel/src/wenu_kernel/conformance.py"
+    ],
+    "test_paths": [
+      "packages/wenu_kernel/tests/synthetic_providers.py",
+      "packages/wenu_kernel/tests/test_records.py",
+      "packages/wenu_kernel/tests/test_sessions.py",
+      "packages/wenu_kernel/tests/test_conformance.py"
+    ],
+    "gate": "independent SDK plus isolated wheel; kernel-static-compatibility; documentation; tooling",
+    "regression_evidence": "New static unknown-epoch record test errors on accepted base: expected exact TimePoint. Disabled conformance static-invariance check is detected by new faulty-provider harness test.",
+    "local_verification": {
+      "sdk_passed": 181,
+      "sdk_seconds": 0.348,
+      "isolated_wheel_passed": 181,
+      "isolated_wheel_seconds": 0.362,
+      "wheel_sha256": "812c90e5ae9a80c92b40c07d9e8a06ce36f3f92ff84b969e7b87fc02490a1384",
+      "native_consumer_passed": 49,
+      "native_consumer_subtests": 9,
+      "native_consumer_seconds": 1.51,
+      "tooling_passed": 8,
+      "tooling_seconds": 0.854,
+      "documentation_passed": 33,
+      "documentation_deselected": 3,
+      "mac_acceptance": "pending",
+      "isolation": "Fresh venv with no Wenu or astronomy backends; installed SDK imports/annotations and external consumer conformance pass."
+    },
+    "legacy_tests_removed_or_moved": [],
+    "remaining_limits": "No galaxy provider routing, source frame/origin metadata closure, new propagation, observation model or K5 freeze. Production immutable dependency pin remains on prior SDK until a production consumer requires the extension.",
+    "prior_mac_acceptance": {
+      "tested_commit": "2669ec615c61748e1773e7869374d455d579e70a",
+      "merged_commit": "ca5cbc2190752e6749bd796b9537fc790260db41",
+      "identical_tree": "5af167b61b2f33dc069223fe05b717a7ef569535",
+      "tooling_passed": 8,
+      "tooling_seconds": 1.367,
+      "documentation_passed": 36,
+      "documentation_seconds": 3.1,
+      "galaxy_static_passed": 78,
+      "galaxy_static_seconds": 46.36,
+      "clean_and_synchronized": true
+    },
+    "content_sha256": {
+      "packages/wenu_kernel/src/wenu_kernel/records.py": "9ad7ed05ec958e854d82347d6e96fc3e1b8155520e1476931176687156b1628e",
+      "packages/wenu_kernel/src/wenu_kernel/kernel.py": "8e40452bfa1de7914a8fd54a81fbfcd46a5b39b3d5a5c26b0918af972811d2ef",
+      "packages/wenu_kernel/src/wenu_kernel/conformance.py": "269b706d221f9a9a5ed1b56d589a7bb6b2986fca97e3434d95a83bba7544e44d",
+      "packages/wenu_kernel/tests/synthetic_providers.py": "990aedefbbd8d3eb0e8c7d529e55554cba0afd6def65e9ffca7b4bc34035cebe",
+      "packages/wenu_kernel/tests/test_records.py": "6bd5f65384a962fe306112b788dcc5fba651492c27e1cd3efd276cbfdf562e4d",
+      "packages/wenu_kernel/tests/test_sessions.py": "5bad6c88bfb8848db2a8335f0185b220c481529634122a02df0adbeca51db3d6",
+      "packages/wenu_kernel/tests/test_conformance.py": "3fd40598be153890292449013eae2af5f1a0630c41526a1f793418856ad58924"
+    }
+  },
   "current_inventory_extension": {
     "base_commit": "e5bd7c16ab3d7089fc51420432f540b2b2fe2ef9",
     "production_python_files": 264,

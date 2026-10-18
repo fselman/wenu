@@ -34,6 +34,20 @@ only for SDK changes or affected SDK contracts. New K3 routing needs real
 consumer/compatibility evidence; adding a production SDK dependency itself
 requires build/import and consumer impact review.
 
+## Static direction SDK extension
+
+Run the independent core gate and an isolated dev7 wheel installation without
+Wenu or astronomy dependencies for `static_direction` admission. The existing
+record/session/reuse/conformance owners cover nullable source epochs, retained
+declared epochs, refusals for other models, coverage/scale/error checks, atomic
+failed batches and certified original-anchor reuse. The portable kit includes
+plain/certified static cases and detects deliberately time-varying static output.
+Run `kernel-static-compatibility` with this candidate SDK on PYTHONPATH for the
+existing stellar adapter/Stars owners, plus documentation and tooling. No root
+dependency, resource, snapshot, product routing or graphics code changes, so
+atlas rendering, unrelated providers and the full production suite are excluded.
+The production pin remains unchanged until a consumer requires the extension.
+
 ## Executable legacy selections
 
 [tools/test_gates_v1.json](../../tools/test_gates_v1.json) records the reviewed

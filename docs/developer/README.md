@@ -68,9 +68,9 @@ J2000 measurement epoch remains in those provider/snapshot paths. Resource metad
 closure and shared helper defaults remain open audit findings. Galaxies now use
 an explicit static-direction admission policy: measurement epoch/scale are
 optional provenance, while frame/origin/units/source identity remain required.
-Requested epoch changes leave their native centres unchanged. Supporting this
-model with an unknown source epoch in kernel direction states is a separate
-next contract/implementation slice.
+Requested epoch changes leave their native centres unchanged. The SDK now supports explicit `static_direction` admissions with optional source
+epochs; native/epoch direction models retain their epoch requirement. Galaxy
+provider routing and source frame/origin closure remain the next separate slice.
 The SDK [selection manifest](../../packages/wenu_kernel/test_selection_v1.json)
 keeps the independent core gate separate from existing Wenu tests. Current
 products consume only this partial native stellar adapter.

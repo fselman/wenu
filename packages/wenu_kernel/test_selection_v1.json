@@ -1,8 +1,8 @@
 {
   "schema": "wenu-test-selection/1",
   "owner": "wenu_kernel",
-  "slice": "K2 shipped portable state-provider conformance kit and isolated external consumer",
-  "accepted_base": "a0683a43e1cdd87e91c5f60c1ccada10cacdac5d",
+  "slice": "Additive static_direction capability with optional source epoch and unchanged native/epoch admission",
+  "accepted_base": "ca5cbc2190752e6749bd796b9537fc790260db41",
   "runtime_dependencies": [],
   "required": [
     "python -m unittest discover -s packages/wenu_kernel/tests -v",
@@ -39,27 +39,33 @@
     "metadata or canonical planning performs hidden state evaluation",
     "one factory sample silently stands in for an unexercised advertised reuse capability",
     "the reusable harness accepts faulty ordering, history-dependent states or corrupt certificates",
-    "failed conformance setup leaks its caller-owned provider"
+    "failed conformance setup leaks its caller-owned provider",
+    "static source epoch forced to an invented date",
+    "static admission weakens native/epoch source-epoch requirements",
+    "static capability admits wrong state representation or ambiguous direction meaning",
+    "declared static source epoch hidden/changed or null provenance poisons partial cache",
+    "static output changes with evaluation time but passes shipped conformance",
+    "static constancy silently grants temporal reuse, infinite coverage or physical certainty"
   ],
   "legacy_tests_moved_or_removed": [],
   "affected_consumers": [
-    "SDK conformance harness, synthetic test providers and independent constructed consumer only"
+    "SDK records, registration/session, portable conformance and synthetic providers",
+    "Existing Wenu native stellar provider and Stars via kernel-static-compatibility; production pin unchanged"
   ],
   "excluded": {
-    "legacy scientific and graphical suites": "No existing src/wenu code, scientific resource, root runtime dependency or product path changes; existing Wenu does not import the SDK conformance module.",
-    "unrelated providers": "No real provider is part of this slice; neither SDK nor test fixtures import one.",
-    "release integration": "No product routing or installed combination changes; isolated-wheel evidence is required before this foundation can be accepted. Final integration remains required for K3 production adapters."
+    "other production consumers": "No production routing, resources, snapshot schema, observation/numerical model, projection/render or atlas changes. Existing native stellar consumers use unchanged required fields and retain their epochs.",
+    "release integration": "No installed production dependency pin change. Isolated SDK wheel gate and focused existing native consumer compatibility required."
   },
   "collection_change": "none; root pytest remains scoped to tests and the kernel retains its explicit independent gate",
   "verification": {
     "source_digest_algorithm": "SHA-256 over sorted repository path + NUL + exact file bytes + NUL for every Python file in the named directory",
-    "source_sha256": "604157f6f5423096fe326d9e6a2707ea78906e599486c890af246784aa8948d9",
-    "tests_sha256": "8adf51085393ff8087960442562ce8c3ad7fe2e835cd31e1244286bf984a496d",
-    "source_unittest_cases": 157,
-    "installed_wheel_unittest_cases": 157,
-    "wheel_sha256": "b815f32db19eda0b839121f5101c189d9279a046fd98f03009f6a06e6b4a4ea7",
+    "source_sha256": "d85e23513671112381324fe855de348fb6dd395f12fff930de9c3a09c1b1d551",
+    "tests_sha256": "036555b4f7a11f44513757c00fbec046235f42a5bccf9ebe5b489ba856782317",
+    "source_unittest_cases": 181,
+    "installed_wheel_unittest_cases": 181,
+    "wheel_sha256": "812c90e5ae9a80c92b40c07d9e8a06ce36f3f92ff84b969e7b87fc02490a1384",
     "isolated_environment": "fresh venv; Wenu/numpy/astropy/matplotlib/skyfield/sgp4/pandas/spiceypy absent",
-    "positive_constructed_provider_cases": 6,
+    "positive_constructed_provider_cases": 8,
     "external_consumer_conformance_cases": 8,
     "external_consumer": "separate -I -S subprocess imports only installed SDK and its own constructed provider; repository fixtures absent",
     "fault_injection": [
@@ -68,16 +74,36 @@
       "disabled failed-admission cleanup fails harness meta-tests",
       "disabled canonical planning purity guard fails harness meta-tests"
     ],
-    "mac_documentation_gate": "pending for this candidate"
+    "mac_documentation_gate": "pending for this candidate",
+    "prior_dev6_receipt": {
+      "source_digest_algorithm": "SHA-256 over sorted repository path + NUL + exact file bytes + NUL for every Python file in the named directory",
+      "source_sha256": "604157f6f5423096fe326d9e6a2707ea78906e599486c890af246784aa8948d9",
+      "tests_sha256": "8adf51085393ff8087960442562ce8c3ad7fe2e835cd31e1244286bf984a496d",
+      "source_unittest_cases": 157,
+      "installed_wheel_unittest_cases": 157,
+      "wheel_sha256": "b815f32db19eda0b839121f5101c189d9279a046fd98f03009f6a06e6b4a4ea7",
+      "isolated_environment": "fresh venv; Wenu/numpy/astropy/matplotlib/skyfield/sgp4/pandas/spiceypy absent",
+      "positive_constructed_provider_cases": 6,
+      "external_consumer_conformance_cases": 8,
+      "external_consumer": "separate -I -S subprocess imports only installed SDK and its own constructed provider; repository fixtures absent",
+      "fault_injection": [
+        "bad provider ordering, metadata propagation, history-dependent output, unobserved evaluation, missing reuse case, corrupt certificate and impure planner fail the shipped kit",
+        "disabled metadata purity guard fails harness meta-tests",
+        "disabled failed-admission cleanup fails harness meta-tests",
+        "disabled canonical planning purity guard fails harness meta-tests"
+      ],
+      "mac_documentation_gate": "pending for this candidate"
+    },
+    "source_seconds": 0.348,
+    "installed_wheel_seconds": 0.362,
+    "native_compatibility_passed": 49,
+    "native_compatibility_subtests": 9,
+    "native_compatibility_seconds": 1.51
   },
   "existing_test_changes": [
     {
-      "node_ids": "packages/wenu_kernel/tests/test_sessions.py::FixedProviderTests::* and MovingProviderTests::*; RegistryTests unchanged",
-      "change": "Rename the test-side mixin to SyntheticProviderChecks and clarify its fixture-specific scope; all existing test method ASTs, assertions and collected IDs are unchanged."
-    },
-    {
-      "node_id": "packages/wenu_kernel/tests/test_isolation.py::IsolationTests::test_sdk_import_with_site_packages_disabled",
-      "change": "Also import the optional shipped conformance module under -I -S; retain all forbidden dependency assertions."
+      "node_ids": "All pre-existing SDK test methods",
+      "change": "Retained unchanged; append record/session/harness tests and two static provider factories. Portable conformance fresh/warm method adds static-vector invariance assertions."
     }
   ]
 }
