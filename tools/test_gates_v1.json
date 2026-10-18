@@ -13,6 +13,16 @@
     "environment": "User-reported Mac; plugin autoload disabled."
   },
   "gates": {
+    "galaxy-installation-retry": {
+      "scope": "Installation-only retry for galaxy routing: isolated wheel/sdist/editable Wenu consumes an explicitly separate installed SDK wheel.",
+      "limits": "Test fixture/gate/documentation only; production code, dependency pin, SDK implementation, resources and routing unchanged from 04ad8e1e. Retain Mac evidence for 183 passed and 9 subtests; rerun only the failed installation case. No parent gate or numerical/atlas/SDK repeat.",
+      "selections": [
+        {
+          "node": "tests/test_curated_catalogues.py::test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override",
+          "reason": "Fix -I -S dependency isolation when host SDK is editable. Verify all three root install modes, actual stellar/static galaxy calls, separate SDK origin and refusal of ambient Wenu/SDK shadowing."
+        }
+      ]
+    },
     "kernel-galaxy-routes": {
       "scope": "Static galaxy kernel routing for public/native/observed centres and outline construction, with shared immutable-table provider mechanics and updated accepted SDK pin.",
       "limits": "Extends inherited nonstellar owner/geometry seams; no source resource bytes or snapshot schema, SDK implementation, coordinate-transform mathematics, projection/render algorithm or atlas lifetime changes. The single-outline concatenation edge avoids a redundant broken stack operation. Source frame/origin gaps remain explicit legacy compatibility. SDK dev7 is accepted unchanged; no SDK/full production repeat.",

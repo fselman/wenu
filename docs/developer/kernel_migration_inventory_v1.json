@@ -8226,6 +8226,40 @@
     },
     "remaining_limits": "Other family states, stellar observed astrometry and remaining all-consumer ledger entries stay open. No Gaia, proper-motion propagation, observer-service replacement, K5 freeze or independent astronomical package claim."
   },
+  "galaxy_installation_followup": {
+    "base_commit": "04ad8e1ec8437478810ab0d600e6039857d54f07",
+    "scope": "Installation-fixture correction only: isolated child receives a separate installed SDK wheel rather than relying on ambient editable .pth processing.",
+    "production_changes": [],
+    "sdk_or_dependency_pin_changes": [],
+    "gate": "galaxy-installation-retry",
+    "retained_mac_evidence": {
+      "commit": "04ad8e1ec8437478810ab0d600e6039857d54f07",
+      "tooling_passed": 8,
+      "tooling_seconds": 1.478,
+      "documentation_passed": 36,
+      "documentation_seconds": 2.35,
+      "galaxy_gate_passed": 183,
+      "subtests_passed": 9,
+      "galaxy_gate_failed": 1,
+      "galaxy_gate_seconds": 125.11,
+      "failure": "Isolated installation child cannot import editable wenu_kernel under -I -S; remaining numerical/geometry/pixel/saved-sky consumers passed."
+    },
+    "fixture_behavior": "Build local accepted SDK source into a wheel and install to a separate explicit target. Verify SDK origin and actual static galaxy plus stellar queries for Wenu wheel/sdist/editable modes. Ambient Wenu and SDK poison packages must not load; no network or ambient .pth dependency.",
+    "local_verification": {
+      "installation_passed": 1,
+      "installation_seconds": 36.54,
+      "tooling_passed": 8,
+      "tooling_seconds": 0.931,
+      "documentation_passed": 33,
+      "documentation_deselected": 3,
+      "mac_retry": "pending"
+    },
+    "existing_assertions": "All prior outer and isolated-child assertion ASTs retained; only new setup, origin/static-consumer/shadowing assertions added.",
+    "test_path": "tests/test_curated_catalogues.py::test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override",
+    "content_sha256": {
+      "tests/test_curated_catalogues.py": "782c0924b858ecf5e3ee0355d30d3e0570fe2ed375c1d9fbf0ee8193b45d81e1"
+    }
+  },
   "current_inventory_extension": {
     "base_commit": "e5bd7c16ab3d7089fc51420432f540b2b2fe2ef9",
     "production_python_files": 265,

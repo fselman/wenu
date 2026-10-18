@@ -61,6 +61,14 @@ provider conformance kit. The isolated SDK is accepted unchanged from PR #253;
 its full gate is not repeated for this provider composition. Run documentation
 and tooling separately, with no parent-gate duplicates or full production run.
 The production pin changes to accepted dev7, so installation evidence is required.
+For the installation-only followup, `galaxy-installation-retry` reruns the failed
+wheel/sdist/editable consumer case only. The Mac's other 183 tests and nine
+subtests at `04ad8e1e` remain valid. The isolated child disables ambient `.pth`
+processing; therefore the fixture builds and installs a separate local SDK wheel
+and supplies that target explicitly. Both Wenu and SDK ambient poison packages
+must remain unused. This verifies actual installed stellar and static galaxy
+queries without depending on the host's editable SDK. No production change or
+parent/SDK/scientific repeat is required.
 No catalogue bytes, snapshot schema, observer/projection mathematics, render
 algorithm or atlas lifetime changes. Single-outline geometry uses its array
 directly instead of concatenating a one-member list.
