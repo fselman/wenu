@@ -16,6 +16,7 @@ PR #234 is integrated. Its tree is identical to `ea8dc505`, which passed all
 | [Configuration schema](configuration_schema_v2.md) | Implemented schema-v2 configuration |
 | [Satellite guide](satellite_guide.md) | Satellite science and current limitations |
 | [Testing policy](testing_policy.md) | Focused verification now and module independence target |
+| [As-is migration audit](kernel_migration_audit_v1.md) | Current functionality, pinned source/test inventory and continuous test migration |
 | [Proposed kernel contract K1](kernel_contract_k1.md) | Proposed SDK types, operations, capabilities, errors and conformance gates |
 | [Assistant instructions](assistant_instructions.md) | Contribution and delivery workflow |
 

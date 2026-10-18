@@ -457,6 +457,16 @@ its documentation/integrity gate.
 
 ## 13. K1 acceptance and bounded K2 entry
 
+The [as-is audit](kernel_migration_audit_v1.md) and its pinned source/test and
+functionality inventory are prerequisites to K2. Test reorganization is a
+continuous deliverable of every implementation slice. Each slice supplies
+owner/conformance/immediate-seam selection and preserves the protected faults
+of relocated tests. K3–K5 must reconcile all current consumers; K6–K8 cannot
+close a package without isolated installation, collection and execution of its
+own tests with unrelated providers absent. Release composition remains a
+separate responsibility. Follow the [testing policy](testing_policy.md) for
+shared-contract impact and retained integration requirements.
+
 K1 review must accept or explicitly amend: names/fields, native state variants,
 time basis/precision, reference and unit policy, accuracy/certificate semantics,
 determinism, error codes, lifetime and adapter obligations. The persistence

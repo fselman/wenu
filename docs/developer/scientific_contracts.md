@@ -37,6 +37,16 @@ Star designation review cells and the research dossier remain unchanged.
 Shared-star contextual naming and accepted curated names remain in force;
 historical blank cells are not a requirement to stop normal label rendering.
 
+## Fixed celestial scenes and local time
+
+`celestial_anchor_time`, frame `simulation_time`, and `catalogue reference epoch`
+have separate owners. A fixed celestial scene and a rotating local horizon
+must retain that distinction during kernel routing. Preserve the circumpolar
+orientation reference, observer-time complete-render baseline and canonical
+fixed-sky reference sequence as distinct products; none is evidence of stellar
+proper-motion propagation. Graphical tolerance is separate from angular state tolerance.
+Native-state reuse and observation-time updates need separate scientific keys.
+
 ## Natural moving bodies
 
 Preserve descriptor-driven IDs and capabilities, the distinction between a

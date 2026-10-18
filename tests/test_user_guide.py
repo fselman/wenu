@@ -1,4 +1,4 @@
-"""Milestone 44I structured user-guide and README provenance contracts."""
+"""Operational user-guide and README provenance contracts."""
 
 from hashlib import sha256
 from pathlib import Path
@@ -266,22 +266,20 @@ def test_temporal_sequence_guide_documents_cli_and_resume_contract():
     assert 'stop = "2026-08-22T03:00:00-04:00"' in configuration
 
 
-def test_atlas_guide_documents_designer_and_separate_planned_inputs():
+def test_atlas_guide_documents_installed_commands_and_independent_inputs():
+    import tomllib
+    scripts = tomllib.loads((ROOT / "pyproject.toml").read_text())["project"]["scripts"]
     text = (GUIDE / "atlas.md").read_text(encoding="utf-8")
     index = (GUIDE / "index.md").read_text(encoding="utf-8")
     assert "(atlas.md)" in index
-    assert "designer and index plotter accepted and merged" in text
-    assert "wenu_design_atlas --config REQUEST_TOML --output NEW_JSON" in text
-    assert "wenu-atlas-design-request" in text
-    assert "wenu-atlas-index-presentation" in text
-    assert "--output-prefix NEW_PREFIX" in text
-    assert "join_ra_hours" in text
-    assert "published atomically" in text
-    assert "```mermaid" in text
+    assert "not yet installed" not in index
+    assert "not runnable" not in text
     for command in ("wenu_design_atlas", "wenu_plot_atlas", "wenu_create_atlas"):
+        assert command in scripts
         assert command in text
-    for filename in ("atlas_design_request_v1.toml", "atlas_design_v1.json",
-                     "atlas_index_style_v1.toml", "atlas_publication_v1.toml"):
-        assert filename in text
-    assert "**Only** a versioned, resolved atlas JSON" in text
-    assert "not runnable" in text
+    for option in ("--layout", "--design", "--config", "--output-prefix",
+                   "--save-sky", "--from-sky", "--jobs", "--charts"):
+        assert option in text
+    for responsibility in ("Geometry request", "index presentation",
+                           "full chart presentation", "design/snapshot identity"):
+        assert responsibility in text

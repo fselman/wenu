@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 2, 2026-10-17. **Status:** documentation for review; no
+**Plan revision:** 3, 2026-10-18. **Status:** documentation for review; no
 kernel, Gaia acquisition or package extraction is implemented by this change.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -28,6 +28,16 @@ position routes are not. This includes reports and non-chart calculations,
 not just the visible atlas or a new Gaia demonstration.
 
 ## Ordered starting point
+
+The [as-is functionality and test audit](kernel_migration_audit_v1.md) and
+[pinned inventory](kernel_migration_inventory_v1.json) extend K1 before runtime
+work starts. Test reorganization proceeds continually with the owner being
+changed. Each K2 onward slice records preserved faults, old/new test locations,
+isolated dependency evidence and its smallest justified gate. K3–K5 reconcile
+every current capability and state consumer; K6–K8 extract each package's tests
+and fixtures with its software. A package cannot close on folder separation
+alone. K9 composes accepted packages rather than discovering test isolation
+for the first time. See [testing policy](testing_policy.md).
 
 1. **Completed:** accept and integrate PR #234; pin its tested production tree.
 2. **This documentation milestone:** preserve original editions, archive
@@ -426,8 +436,16 @@ K3 records each public entry point, state source, adapter, owner and verificatio
 - Planet/Moon points, resolved disks, tracks and temporal sequences.
 - Minor-body state/point/track, acquisition-result consumers and comet reports.
 - Satellite propagation/crossing/report/track/illumination consumers, including
-  non-chart APIs and planning advisory.
-- Python API, installed CLI, examples and compatible snapshot imports.
+  non-chart APIs, planning advisory and bolometric/spectral radiometry.
+- Python API, all eight installed CLI entry points, six canonical examples,
+  packaged bilingual notebooks and compatible snapshot imports.
+- Catalogue maintenance/acquisition, criteria, resource packaging and build
+  helpers; pure copying/layout remains outside state queries.
+
+Reconcile this ledger against every entry in the
+[as-is functionality audit](kernel_migration_audit_v1.md) and its full source,
+test and operational inventory. Located tests are not runtime coverage; each
+migrated consumer needs an explicit public-path/failure acceptance receipt.
 
 Not every operation needs physical state: pure layout and PDF assembly remain
 pure. However, any operation obtaining scientific object positions/states must

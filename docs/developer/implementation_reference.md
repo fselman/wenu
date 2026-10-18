@@ -133,7 +133,7 @@ yellow in presentation and black in print.
 | `wenu_design_atlas` | Resolve/validate atlas geometry | `cli/atlas.py`, `atlas_design.py` |
 | `wenu_plot_atlas` | Standalone atlas index | `cli/atlas.py`, `charts/atlas_index.py` |
 | `wenu_create_atlas` | Sheet rendering and book assembly | `cli/atlas.py`, `charts/atlas_publication.py` |
-| `wenu_retrieve_comets` | Explicit comet acquisition maintenance | `cli/comets.py` |
+| `wenu_retrieve_comets` | Explicit SBDB comet discovery | `cli/comets.py` |
 | `wenu_satellite_crossings` | Exact local satellite-crossing file workflow | `cli/satellite_crossings.py` |
 
 Ordinary families are `AllSkyChart`, `FullSkyChart`, `RegionalChart`,
@@ -155,7 +155,7 @@ existing request/composition owners, not to new copies of their algorithms.
   apparent-place boundaries.
 - `sky/realization.py`: layer realization context; `sky/solar_system_points.py`
   supplies the shared descriptor-driven moving-body point route.
-- `native_snapshot.py`: current native catalogue snapshot and reuse facade.
+- `sky/native_snapshot.py`: current native catalogue snapshot and reuse facade.
   Preserve coverage, resource and design binding; do not relabel it as the new kernel.
 
 ## Configuration, presentation and curation
@@ -176,6 +176,21 @@ Catalogue maintenance, exact input/output identities, active selectors and
 criteria publication are documented in the [curation guide](../user_guide/curation.md).
 `resources.py::curated_catalogue_bundle()` resolves verified installed defaults;
 original scientific snapshots remain explicitly accessible.
+
+## Fixed celestial scenes and temporal products
+
+`charts/fixed_sky_sequence.py` owns `FixedSkyRotatingHorizonSequenceRequest`
+and `generate_fixed_sky_rotating_horizon_sequence`. The renderer-neutral
+`fixed_sky_circumpolar_orientation` in `charts/fixed_sky_orientation.py`
+resolves the circumpolar anchor rotation through the canonical chart request.
+`charts/fixed_sky_baseline.py` owns
+`generate_fixed_sky_complete_render_baseline` and `PngFrameComparisonTolerance`;
+the complete-render baseline is distinct from the fixed-scene reference route.
+Keep both routes and ordinary observer-time sequences during migration.
+
+The installed `wenu_examples` and `wenu_notebooks` commands copy the packaged
+examples and bilingual notebooks. Their resource/install contracts remain
+part of release acceptance even though copying does not query sky state.
 
 ## Existing advanced areas
 
