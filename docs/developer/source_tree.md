@@ -288,7 +288,7 @@ concrete Wenu classes.
 | [`objects/astronomical_object.py`](../../src/wenu/objects/astronomical_object.py) | Base class for physical astronomical chart layers. |
 | [`objects/galaxies.py`](../../src/wenu/objects/galaxies.py) | Bright-galaxy catalogue layer. |
 | [`objects/globular_clusters.py`](../../src/wenu/objects/globular_clusters.py) | Milky Way globular-cluster catalogue layer. |
-| [`objects/nonstellar.py`](../../src/wenu/objects/nonstellar.py) | Atomic nonstellar ingestion, source metadata/field preservation, angular-unit normalization and centre/outline geometry. |
+| [`objects/nonstellar.py`](../../src/wenu/objects/nonstellar.py) | Atomic ingestion, immutable source admission/gap record, angular normalization and metadata-owned centre/outline specifications. |
 | [`objects/open_clusters.py`](../../src/wenu/objects/open_clusters.py) | Vectorized cluster symbols, selected row epoch/source metadata and aggregate coordinate specification. |
 | [`objects/planetary_nebulae.py`](../../src/wenu/objects/planetary_nebulae.py) | Planetary-nebula catalogue represented by fixed chart symbols. |
 | [`objects/stars.py`](../../src/wenu/objects/stars.py) | Stellar selection, kernel-backed native positions/HIP lookup and spherical point geometry; legacy observed route. |
@@ -362,7 +362,7 @@ concrete Wenu classes.
 | [`sky/mercury.py`](../../src/wenu/sky/mercury.py) | Descriptor-only physical identity for output-neutral Mercury state. |
 | [`sky/milky_way.py`](../../src/wenu/sky/milky_way.py) | Milky Way surface-brightness isophote layer. |
 | [`sky/moon.py`](../../src/wenu/sky/moon.py) | Catalog-governed output-neutral physical identity for the Moon. |
-| [`sky/native_snapshot.py`](../../src/wenu/sky/native_snapshot.py) | Verified data-only native sky snapshots; v4 preserves cluster row semantics with explicit v1-v3 admission. |
+| [`sky/native_snapshot.py`](../../src/wenu/sky/native_snapshot.py) | Verified data-only native sky snapshots; v5 binds nonstellar metadata and retains cluster rows with explicit v1-v4 admission. |
 | [`sky/observed_cache.py`](../../src/wenu/sky/observed_cache.py) | Keys for observer-dependent spherical-geometry caches. |
 | [`sky/points.py`](../../src/wenu/sky/points.py) | Celestial reference points as spherical domain geometry. |
 | [`sky/realization.py`](../../src/wenu/sky/realization.py) | Immutable scientific input for one sky-layer realization. |

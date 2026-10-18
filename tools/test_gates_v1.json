@@ -13,6 +13,20 @@
     "environment": "User-reported Mac; plugin autoload disabled."
   },
   "gates": {
+    "nonstellar-admission": {
+      "scope": "Immutable nonstellar metadata admission, explicit legacy compatibility, metadata-owned native/observed specifications and snapshot v5 with v1-v4 compatibility.",
+      "limits": "No catalogue/resource replacement, SDK routing, motion/frame transformation, projection/render algorithm or dependency/build change. Full resource metadata closure is not claimed: strict admission refuses existing gaps. Reuse unchanged numerical and atlas dispatch/lifetime evidence; source-free restoration and real saved-sky CLI cover transport. No full production or SDK repeat.",
+      "extends": ["nonstellar-ingestion"],
+      "selections": [
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_nonstellar_admission_and_unknown_epochs", "reason": "Every affected cold/saved family retains immutable source-bound facts and explicit missing epochs."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_declared_nonstellar_epoch", "reason": "An independently declared synthetic J2016 epoch survives actual preparation/read/geometry without a J2000 default."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_rejects_nonstellar_metadata_conflicts", "reason": "V5 rejects missing records and header/epoch/frame/source digest/table-unit inconsistencies before use."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_rejects_corruption_before_use", "reason": "Whole existing schema/payload/coverage semantics corruption owner remains active for the changed reader."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_requires_coverage_and_preserves_completed_bundle", "reason": "Changed schema admission still retains source/design/coverage identity and completed bundle integrity."},
+        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_cluster_epoch_lineage_and_selected_specs", "reason": "The schema extension retains the separate accepted cluster row-epoch contract."},
+        {"node": "tests/test_wenu_chart_cli.py::test_atlas_sheet_command_admits_saved_sky_and_executes_shared_request_owner", "reason": "Real saved-sky public command consumes v5 through canonical rendering and borrowed lifetime."}
+      ]
+    },
     "nonstellar-ingestion": {
       "scope": "Preserve nonstellar source tables/metadata and normalize declared angular units; atomic reload; inherited family geometry and unchanged snapshot transport.",
       "limits": "No resource bytes, snapshot schema, native frame/epoch policy, provider numerical model, kernel routing, projection or rendering algorithm changes. Unitless columns retain explicit legacy encoding. Full metadata/frame admission and remaining M6 epoch stamps stay open. No SDK, packaging, request lifecycle or full production rerun.",

@@ -131,11 +131,7 @@ class PlanetaryNebulae(NonStellar):
             return SphericalPoints(
                 lon_deg=np.asarray([], dtype=float),
                 lat_deg=np.asarray([], dtype=float),
-                coordinate_spec=observer_altaz_spec(
-                    resolved,
-                    position_status=PositionStatus.APPARENT,
-                    provider="astropy HASH planetary nebulae"
-                ),
+                coordinate_spec=self.observed_coordinate_spec(resolved),
                 ids=identifiers,
                 labels=identifiers,
                 names=identifiers,
@@ -152,11 +148,7 @@ class PlanetaryNebulae(NonStellar):
         return SphericalPoints(
             lon_deg=azimuth,
             lat_deg=altitude,
-            coordinate_spec=observer_altaz_spec(
-                resolved,
-                position_status=PositionStatus.APPARENT,
-                provider="astropy HASH planetary nebulae"
-            ),
+            coordinate_spec=self.observed_coordinate_spec(resolved),
             ids=identifiers,
             labels=identifiers,
             names=identifiers,
@@ -191,7 +183,6 @@ class PlanetaryNebulae(NonStellar):
 
     def realize(self, context, observer, **options):
         from wenu.sky.realization import LayerRealizationContext
-        from wenu.coordinates import icrs_catalogue_spec
         if not isinstance(context, LayerRealizationContext) or not context.is_native_icrs:
             return super().realize(context, observer, **options)
         selected = options.pop("selected", None)
@@ -211,7 +202,5 @@ class PlanetaryNebulae(NonStellar):
         metadata["coordinate_system"] = "icrs"
         return SphericalPoints(lon_deg=np.asarray(table["ra_deg"], dtype=float),
             lat_deg=np.asarray(table["dec_deg"], dtype=float),
-            coordinate_spec=icrs_catalogue_spec("HASH planetary nebulae"),
+            coordinate_spec=self.native_coordinate_spec(table),
             ids=identifiers, names=identifiers, labels=identifiers, metadata=metadata)
-from wenu.coordinates import PositionStatus
-from wenu.coordinates import observer_altaz_spec

@@ -61,7 +61,14 @@ Incompatible declared units fail before replacing a loaded catalogue. Original
 table metadata and unconsumed fields remain available, with independent metadata
 copies on geometry. Unitless compatibility inputs are not evidence of source
 units, frame or epoch. These preserved facts do not yet constitute full
-nonstellar metadata admission or close the remaining snapshot epoch audit.
+complete scientific admission. `NonStellarCatalogueMetadata` validates and mirrors
+declared facts and input-byte identity, reporting absent facts explicitly. Strict
+admission refuses missing frame/origin/epoch/time scale/edition/provenance/units;
+legacy chart interpretation is explicitly `legacy-unverified-catalogue-encoding`.
+An unknown measurement epoch is never replaced by an equinox or release date.
+Snapshot v5 derives headers from the record; v1-v4 restoration does not turn old
+J2000 stamps into source facts. These changes do not establish source frame
+precision, a motion model or provider accuracy, or close kernel routing.
 
 An aggregate catalogue does not acquire a common reference epoch merely by
 combining rows. Open-cluster positions retain their declared row epoch and

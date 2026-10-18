@@ -441,6 +441,99 @@ def test_native_snapshot_preserves_cluster_epoch_lineage_and_selected_specs(nati
     np.testing.assert_array_equal(first.position().lon_deg, second.position().lon_deg)
 
 
+def test_native_snapshot_preserves_nonstellar_admission_and_unknown_epochs(native_snapshot_case):
+    from wenu.sky.native_snapshot import read_native_sky_snapshot
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    _, destination, _, cold = native_snapshot_case
+    snapshot = read_native_sky_snapshot(destination)
+    saved = snapshot.make_sky()
+    assert snapshot._manifest['schema_version'] == 5
+    for name in ('nonstellar', 'galaxies', 'globular_clusters', 'planetary_nebulae', 'supernova_remnants'):
+        first, second = getattr(cold, name), getattr(saved, name)
+        assert first.catalogue_metadata == second.catalogue_metadata
+        record = second.catalogue_metadata.to_record()
+        assert record['source_sha256'] == snapshot.source_digests[name]
+        assert record['source_metadata'] == second.source_catalog.meta
+        assert record['epoch'] is None
+        assert 'epoch' in second.catalogue_metadata.missing_fields
+        assert second.position().coordinate_spec.epoch is None
+        assert snapshot._records['fixed']['catalogues'][name]['epoch'] is None
+        with pytest.raises(ValueError, match='Incomplete nonstellar metadata'):
+            second.catalogue_metadata.require_complete()
+        geometry = second.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None,
+                                  selected=(str(second.catalog['identifier'][0]),))
+        assert geometry.coordinate_spec == second.native_coordinate_spec()
+        assert geometry.metadata['catalogue_admission'] == record
+
+
+def test_native_snapshot_preserves_declared_nonstellar_epoch(native_snapshot_case, tmp_path):
+    from dataclasses import replace
+    from astropy.table import Table
+    from wenu.sky import native_snapshot as snapshots
+    raw, _, _, _ = native_snapshot_case
+    source = Table(dict(name=['synthetic'], ra_deg=[10.], dec_deg=[-20.],
+                        major_axis_arcmin=[2.], minor_axis_arcmin=[1.], position_angle_deg=[30.]))
+    source.meta = dict(catalog='synthetic', catalog_version='v1', coordinate_frame='ICRS',
+                       coordinate_origin='solar-system-barycenter', coordinate_epoch='J2016.0',
+                       coordinate_epoch_scale='tt', documentation_url='https://example.invalid/synthetic')
+    for name, unit in (('ra_deg', 'deg'), ('dec_deg', 'deg'), ('major_axis_arcmin', 'arcmin'),
+                       ('minor_axis_arcmin', 'arcmin'), ('position_angle_deg', 'deg')):
+        source[name].unit = unit
+    path = tmp_path/'synthetic.ecsv'
+    source.write(path)
+    profile = replace(snapshots.CANONICAL_MAXIMAL_SPHERE_PROFILE, galaxy_filename=path)
+    destination = tmp_path/'known-epoch'
+    snapshots.prepare_native_sky_snapshot(raw, destination, profile=profile)
+    snapshot = snapshots.read_native_sky_snapshot(destination)
+    galaxy = snapshot.make_sky().galaxies
+    assert galaxy.catalogue_metadata.require_complete() is galaxy.catalogue_metadata
+    assert galaxy.position().coordinate_spec.epoch == 'J2016.0'
+    assert snapshot._records['fixed']['catalogues']['galaxies']['epoch'] == 'J2016.0'
+
+
+@pytest.mark.parametrize('fault', ('missing-record', 'header-epoch', 'source-digest',
+                                  'frame-conflict', 'table-metadata', 'column-unit', 'record-epoch'))
+def test_native_snapshot_rejects_nonstellar_metadata_conflicts(native_snapshot_case, tmp_path, fault):
+    import json
+    import shutil
+    from wenu.sky import native_snapshot as snapshots
+    _, original, _, _ = native_snapshot_case
+    destination = tmp_path/'broken-nonstellar'
+    shutil.copytree(original, destination)
+    manifest = json.loads((destination/'manifest.json').read_text())
+    def mapping(value):
+        return dict(value['mapping'])
+    def change(value, key, replacement):
+        for pair in value['mapping']:
+            if pair[0] == key:
+                pair[1] = replacement
+                return
+        raise AssertionError(key)
+    galaxies = mapping(mapping(mapping(manifest['records'])['fixed'])['catalogues'])['galaxies']
+    metadata = mapping(galaxies)['metadata']
+    if fault == 'missing-record':
+        galaxies['mapping'] = [pair for pair in galaxies['mapping'] if pair[0] != 'metadata']
+    elif fault == 'header-epoch':
+        change(galaxies, 'epoch', 'J2000.0')
+    elif fault == 'source-digest':
+        change(metadata, 'source_sha256', '0'*64)
+    elif fault == 'frame-conflict':
+        change(metadata, 'frame', 'fk5')
+    elif fault == 'record-epoch':
+        change(metadata, 'epoch', 'J2016.0')
+    elif fault == 'table-metadata':
+        table = mapping(galaxies)['table']
+        raw_meta = json.loads(mapping(table)['meta_json'])
+        raw_meta['coordinate_epoch'] = 'J2016.0'
+        change(table, 'meta_json', json.dumps(raw_meta))
+    else:
+        column = mapping(mapping(mapping(galaxies)['table'])['columns'])['ra_deg']
+        change(column, 'unit', 'rad')
+    (destination/'manifest.json').write_text(json.dumps(manifest))
+    with pytest.raises(ValueError):
+        snapshots.read_native_sky_snapshot(destination)
+
+
 def test_native_snapshot_requires_coverage_and_preserves_completed_bundle(native_snapshot_case):
     import hashlib
     from wenu.sky.native_snapshot import read_native_sky_snapshot, prepare_native_sky_snapshot
@@ -684,7 +777,7 @@ def test_native_snapshot_fixed_catalogue_rows_masks_units_and_subsets(native_sna
     assert not warm.solar_system_bodies and warm.moon is None
 
 
-@pytest.mark.parametrize('version', (1, 2, 3))
+@pytest.mark.parametrize('version', (1, 2, 3, 4))
 def test_native_snapshot_legacy_coverage_stays_truthful(native_snapshot_case, tmp_path, version):
     import json
     import shutil
@@ -695,7 +788,8 @@ def test_native_snapshot_legacy_coverage_stays_truthful(native_snapshot_case, tm
     manifest = json.loads((directory / "manifest.json").read_text())
     manifest["schema_version"] = version
     manifest["compatibility"] = {1: snapshots.LEGACY_COMPATIBILITY,
-        2: snapshots.PRE_METADATA_COMPATIBILITY, 3: snapshots.PRE_CLUSTER_METADATA_COMPATIBILITY}[version]
+        2: snapshots.PRE_METADATA_COMPATIBILITY, 3: snapshots.PRE_CLUSTER_METADATA_COMPATIBILITY,
+        4: snapshots.PRE_NONSTELLAR_METADATA_COMPATIBILITY}[version]
     manifest["layers"] = list(snapshots.LEGACY_LAYERS if version == 1 else snapshots.LAYERS)
     removed = {'stellar_metadata', 'fixed'} if version == 1 else {'stellar_metadata'} if version == 2 else set()
     manifest["records"]["mapping"] = [pair for pair in manifest["records"]["mapping"] if pair[0] not in removed]
@@ -704,9 +798,12 @@ def test_native_snapshot_legacy_coverage_stays_truthful(native_snapshot_case, tm
             del manifest["source_digests"][key]
     else:
         fixed = dict(manifest['records']['mapping'])['fixed']
-        clusters = dict(dict(fixed['mapping'])['catalogues']['mapping'])['open_clusters']
-        for pair in clusters['mapping']:
-            if pair[0] == 'epoch': pair[1] = 'J2000.0'
+        catalogues = dict(dict(fixed['mapping'])['catalogues']['mapping'])
+        for name, content in catalogues.items():
+            content['mapping'] = [pair for pair in content['mapping'] if pair[0] != 'metadata']
+            if name != 'open_clusters' or version < 4:
+                for pair in content['mapping']:
+                    if pair[0] == 'epoch': pair[1] = 'J2000.0'
     (directory / "manifest.json").write_text(json.dumps(manifest))
     legacy = snapshots.read_native_sky_snapshot(directory)
     legacy.require()
@@ -721,6 +818,9 @@ def test_native_snapshot_legacy_coverage_stays_truthful(native_snapshot_case, tm
     else:
         assert sky.galaxies is not None and sky.constellation_boundaries is not None
         assert sky.open_clusters.position().coordinate_spec.epoch is None
+        assert sky.galaxies.position().coordinate_spec.epoch is None
+        assert sky.galaxies.catalogue_metadata.to_record()['source_sha256'] is None
+        assert 'source_sha256' in sky.galaxies.catalogue_metadata.missing_fields
     assert sky.stars.catalogue_metadata.epoch_label == manifest['stellar_epoch']
 
 

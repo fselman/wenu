@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from dataclasses import dataclass
+import hashlib
+import json
 from importlib.resources import as_file
 from pathlib import Path
 import re
@@ -11,7 +14,7 @@ import astropy.units as u
 import numpy as np
 
 from wenu.coordinates import PositionStatus
-from wenu.coordinates import icrs_catalogue_spec, observer_altaz_spec
+from wenu.coordinates import observer_altaz_spec
 from astropy.coordinates import SkyCoord, concatenate
 from astropy.table import Column, Table
 
@@ -25,6 +28,154 @@ from wenu.sky.observed_cache import (
 )
 
 
+@dataclass(frozen=True)
+class NonStellarCatalogueMetadata:
+    """Immutable admitted facts; missing facts remain explicit.
+
+    Legacy charts can retain their existing ICRS encoding, but that policy
+    is not evidence of a source frame/origin and cannot pass strict admission.
+    """
+
+    document_json: str
+
+    def __post_init__(self):
+        record = json.loads(self.document_json)
+        required = {"schema", "catalogue", "edition", "frame", "origin", "epoch",
+                    "epoch_scale", "provenance", "source_sha256", "source_units",
+                    "normalized_units", "source_metadata"}
+        if not isinstance(record, dict) or set(record) != required:
+            raise ValueError("Invalid nonstellar metadata record.")
+        expected = self._record(record["source_metadata"], record["source_units"],
+                                record["normalized_units"], record["source_sha256"])
+        if record != expected:
+            raise ValueError("Nonstellar metadata disagrees with preserved source declarations.")
+        object.__setattr__(self, "document_json", json.dumps(record, sort_keys=True, allow_nan=False))
+
+    @staticmethod
+    def _record(meta, source_units, normalized_units, source_sha256):
+        from astropy.time import Time
+        if not isinstance(meta, dict) or not isinstance(source_units, dict) or not isinstance(normalized_units, dict):
+            raise ValueError("Invalid nonstellar metadata mappings.")
+        def text(value):
+            if value is None:
+                return None
+            if not isinstance(value, str) or not value.strip():
+                raise ValueError("Invalid nonstellar metadata text.")
+            return value.strip()
+        def source_text(*keys):
+            # General source metadata can also contain structured fields.
+            # Preserve them without treating a dictionary as a source name.
+            return next((meta[key].strip() for key in keys
+                         if isinstance(meta.get(key), str) and meta[key].strip()), None)
+        declared = text(meta.get("coordinate_frame"))
+        if declared is not None:
+            parts = declared.casefold().split("/", 1)
+            if parts[0].strip() != "icrs" or (len(parts) == 2 and
+                    (not parts[1].split() or parts[1].split()[0] not in ("j2000", "j2000.0"))):
+                raise ValueError("Unsupported declared nonstellar frame; transform before ingestion.")
+        origin = text(meta.get("coordinate_origin"))
+        if origin not in (None, "solar-system-barycenter"):
+            raise ValueError("Unsupported declared nonstellar origin.")
+        if meta.get("coordinate_equinox") is not None:
+            raise ValueError("ICRS has no defining equinox.")
+        epoch, scale = text(meta.get("coordinate_epoch")), text(meta.get("coordinate_epoch_scale"))
+        if epoch is not None:
+            if not epoch.startswith(("J", "B")):
+                raise ValueError("Invalid nonstellar coordinate epoch.")
+            try:
+                time = Time(epoch, **({} if scale is None else {"scale": scale}))
+                if not np.isfinite(time.jd):
+                    raise ValueError("Non-finite epoch.")
+            except (TypeError, ValueError) as error:
+                raise ValueError("Invalid nonstellar coordinate epoch/time scale.") from error
+        elif scale is not None:
+            raise ValueError("Epoch time scale requires a declared epoch.")
+        if source_sha256 is not None and (not isinstance(source_sha256, str) or re.fullmatch(r"[0-9a-f]{64}", source_sha256) is None):
+            raise ValueError("Invalid nonstellar source digest.")
+        for name, unit in source_units.items():
+            if not isinstance(name, str) or unit is not None and not isinstance(unit, str):
+                raise ValueError("Invalid nonstellar source units.")
+            if unit is not None:
+                u.Unit(unit).to(u.deg)
+        canonical = {"ra_deg": "deg", "dec_deg": "deg", "major_axis_arcmin": "arcmin",
+                     "minor_axis_arcmin": "arcmin", "position_angle_deg": "deg"}
+        if normalized_units != canonical:
+            raise ValueError("Invalid normalized nonstellar angular units.")
+        def source_urls(value):
+            if isinstance(value, dict):
+                for key, item in sorted(value.items()):
+                    if key == "url" or key.endswith("_url"):
+                        yield text(item)
+                    elif isinstance(item, (dict, list)):
+                        yield from source_urls(item)
+            elif isinstance(value, list):
+                for item in value:
+                    yield from source_urls(item)
+        provenance = sorted({value for value in source_urls(meta) if value is not None})
+        return dict(schema="wenu-nonstellar-catalogue/1",
+                    catalogue=source_text("catalog", "source"),
+                    edition=source_text("release", "catalog_version", "catalog_reference", "catalogue_reference"),
+                    frame=None if declared is None else "icrs", origin=origin,
+                    epoch=epoch, epoch_scale=scale, provenance=provenance,
+                    source_sha256=source_sha256, source_units=source_units,
+                    normalized_units=normalized_units, source_metadata=meta)
+
+    @classmethod
+    def from_table(cls, table, *, source_units, source_sha256=None):
+        canonical = {"ra_deg": "deg", "dec_deg": "deg", "major_axis_arcmin": "arcmin",
+                     "minor_axis_arcmin": "arcmin", "position_angle_deg": "deg"}
+        normalized_units = {name: str(table[name].unit) if name in table.colnames and table[name].unit is not None else unit
+                            for name, unit in canonical.items()}
+        record = cls._record(deepcopy(table.meta), deepcopy(source_units), normalized_units, source_sha256)
+        return cls(json.dumps(record, sort_keys=True, allow_nan=False))
+
+    @classmethod
+    def from_record(cls, record):
+        return cls(json.dumps(record, sort_keys=True, allow_nan=False))
+
+    def to_record(self):
+        return json.loads(self.document_json)
+
+    @property
+    def missing_fields(self):
+        record = self.to_record()
+        missing = [key for key in ("catalogue", "edition", "frame", "origin", "epoch", "epoch_scale", "source_sha256") if record[key] is None]
+        if not record["provenance"]:
+            missing.append("provenance")
+        missing.extend(f"source_units.{key}" for key in sorted({"ra", "dec"} | set(record["source_units"]))
+                       if record["source_units"].get(key) is None)
+        return tuple(missing)
+
+    def require_complete(self):
+        if self.missing_fields:
+            raise ValueError("Incomplete nonstellar metadata: " + ", ".join(self.missing_fields))
+        return self
+
+    def validate_table(self, table, *, require_units=False):
+        record = self.to_record()
+        if record["source_metadata"] != table.meta:
+            raise ValueError("Nonstellar metadata disagrees with table metadata.")
+        for name, unit in record["normalized_units"].items():
+            if name not in table.colnames:
+                if require_units:
+                    raise ValueError("Missing normalized nonstellar column.")
+                continue
+            actual = table[name].unit
+            if (actual is None and require_units) or (actual is not None and str(actual) != unit):
+                raise ValueError("Nonstellar metadata disagrees with normalized column units.")
+        return self
+
+    def coordinate_spec(self, provider):
+        record = self.to_record()
+        from wenu.coordinates import CoordinateSpec
+        return CoordinateSpec(frame=record["frame"] or "icrs",
+                              origin=record["origin"] or "solar-system-barycenter",
+                              epoch=record["epoch"], position_status=PositionStatus.ASTROMETRIC,
+                              provider=record["catalogue"] or provider,
+                              provenance=tuple(record["provenance"]),
+                              model="legacy-unverified-catalogue-encoding" if self.missing_fields else None)
+
+
 class NonStellar(AstronomicalObject):
     """A catalogue of extended and other non-stellar objects.
 
@@ -34,6 +185,7 @@ class NonStellar(AstronomicalObject):
     """
 
     layer_name = "nonstellar"
+    _ANGULAR_SOURCE_FIELDS = ()
 
     _ALIASES = {
         "identifier": ("name", "object", "designation", "messier"),
@@ -78,20 +230,43 @@ class NonStellar(AstronomicalObject):
         self._observed_point_cache = {}
         self._observed_outline_cache = {}
 
-    def load(self, *, catalog=None, filename=None):
+    def load(self, *, catalog=None, filename=None, require_complete_metadata=False):
         """Load and normalize a non-stellar catalogue."""
         catalog_name = self.catalog_name if catalog is None else str(catalog)
+        if type(require_complete_metadata) is not bool:
+            raise ValueError("require_complete_metadata must be boolean.")
+
+        def read(path):
+            digest = hashlib.sha256(Path(path).read_bytes()).hexdigest()
+            table = Table.read(path)
+            if hashlib.sha256(Path(path).read_bytes()).hexdigest() != digest:
+                raise ValueError("Nonstellar source changed during ingestion.")
+            return table, digest
 
         if filename is not None:
             source = Path(filename)
-            table = Table.read(source)
+            table, digest = read(source)
         else:
             resource = nonstellar_catalog_path(catalog_name)
             with as_file(resource) as path:
                 source = resource
-                table = Table.read(path)
+                table, digest = read(path)
 
         source_catalog = self._normalize(table)
+        names = {name.casefold(): name for name in table.colnames}
+        source_units = {}
+        for key in ("ra", "dec", "major", "minor", "position_angle", "dimension"):
+            actual = next((names[alias.casefold()] for alias in self._ALIASES[key] if alias.casefold() in names), None)
+            if actual is not None:
+                unit = table[actual].unit
+                source_units[key] = None if unit is None else str(unit)
+        for key in self._ANGULAR_SOURCE_FIELDS:
+            if key.casefold() in names:
+                unit = table[names[key.casefold()]].unit
+                source_units[key] = None if unit is None else str(unit)
+        metadata = NonStellarCatalogueMetadata.from_table(source_catalog, source_units=source_units, source_sha256=digest)
+        if require_complete_metadata:
+            metadata.require_complete()
         active_catalog = source_catalog
         if self.magnitude_limit is not None:
             magnitude = active_catalog["magnitude"]
@@ -104,10 +279,36 @@ class NonStellar(AstronomicalObject):
         self.source = source
         self.source_catalog = source_catalog
         self.catalog = active_catalog
+        self._catalogue_metadata = metadata
         self._source_revision += 1
         self._observed_point_cache.clear()
         self._observed_outline_cache.clear()
         return self.catalog
+
+    @property
+    def catalogue_metadata(self):
+        if self.catalog is None:
+            raise RuntimeError("The catalogue has not been loaded.")
+        table = self.source_catalog if self.source_catalog is not None else self.catalog
+        metadata = getattr(self, "_catalogue_metadata", None)
+        if metadata is None:
+            # Constructed/legacy tables have no proof of original input units
+            # or source bytes. Do not manufacture that evidence on restore.
+            metadata = NonStellarCatalogueMetadata.from_table(table, source_units={})
+        return metadata.validate_table(table)
+
+    def native_coordinate_spec(self, table=None):
+        """Describe admitted source facts, with explicit legacy uncertainty."""
+        metadata = self.catalogue_metadata
+        if table is not None:
+            metadata.validate_table(table)
+        return metadata.coordinate_spec(self.catalog_name)
+
+    def observed_coordinate_spec(self, observer):
+        spec = self.native_coordinate_spec()
+        return observer_altaz_spec(observer, position_status=PositionStatus.APPARENT,
+                                   provider=spec.provider, model=spec.model,
+                                   provenance=spec.provenance)
 
     def position(self, instant=None) -> SphericalPoints:
         """Return active native non-stellar catalogue centres in ICRS."""
@@ -123,18 +324,15 @@ class NonStellar(AstronomicalObject):
             "catalog": self.catalog_name,
             "coordinate_system": "icrs",
             "catalogue_metadata": deepcopy(table.meta),
+            "catalogue_admission": self.catalogue_metadata.to_record(),
         }
         for name in table.colnames:
             if name not in ("identifier", "ra_deg", "dec_deg"):
                 metadata[name] = np.asarray(table[name])
-        provenance = () if self.source is None else (str(self.source),)
         return SphericalPoints(
             lon_deg=np.asarray(table["ra_deg"], dtype=float),
             lat_deg=np.asarray(table["dec_deg"], dtype=float),
-            coordinate_spec=icrs_catalogue_spec(
-                f"{self.catalog_name} non-stellar catalogue",
-                provenance=provenance,
-            ),
+            coordinate_spec=self.native_coordinate_spec(table),
             ids=identifiers,
             names=identifiers,
             metadata=metadata,
@@ -189,7 +387,7 @@ class NonStellar(AstronomicalObject):
             names = [str(i) if n is None else str(n)
                      for i, n in zip(table["identifier"], table["common_name"], strict=True)]
         return geometry(lon_deg=tuple(lon), lat_deg=tuple(lat),
-                        coordinate_spec=icrs_catalogue_spec(f"{self.catalog_name} non-stellar catalogue"),
+                        coordinate_spec=self.native_coordinate_spec(table),
                         ids=identifiers, names=names,
                         **({"closed": np.ones(len(table), dtype=bool)} if geometry is SphericalCurves else {}),
                         metadata=metadata)
@@ -528,6 +726,7 @@ class NonStellar(AstronomicalObject):
         return {
             "catalog": self.catalog_name,
             "catalogue_metadata": deepcopy(table.meta),
+            "catalogue_admission": self.catalogue_metadata.to_record(),
             "coordinate_system": "altaz",
             "semantic_entity_keys": semantic_keys,
             "semantic_entity_display_names": identifiers,
@@ -705,11 +904,7 @@ class NonStellar(AstronomicalObject):
         return SphericalCurves(
             lon_deg=tuple(longitude[index] for index in positions),
             lat_deg=tuple(latitude[index] for index in positions),
-            coordinate_spec=observer_altaz_spec(
-                resolved,
-                position_status=PositionStatus.APPARENT,
-                provider="astropy OpenNGC"
-            ),
+            coordinate_spec=self.observed_coordinate_spec(resolved),
             closed=np.ones(len(table), dtype=bool),
             ids=identifiers,
             names=identifiers,
@@ -759,15 +954,13 @@ class NonStellar(AstronomicalObject):
         return SphericalPoints(
             lon_deg=longitude,
             lat_deg=latitude,
-            coordinate_spec=observer_altaz_spec(
-                resolved,
-                position_status=PositionStatus.APPARENT,
-                provider="astropy OpenNGC"
-            ),
+            coordinate_spec=self.observed_coordinate_spec(resolved),
             ids=identifiers,
             names=identifiers,
             metadata={
                 "coordinate_system": "altaz",
+                "catalogue_metadata": deepcopy(table.meta),
+                "catalogue_admission": self.catalogue_metadata.to_record(),
                 "semantic_entity_keys": semantic_keys,
                 "semantic_entity_display_names": semantic_identifiers,
                 "semantic_entity_categories": tuple(
