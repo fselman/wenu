@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 5, 2026-10-18. **Status:** K3 partial native stellar routing;
+**Plan revision:** 5, 2026-10-18. **Status:** K3 partial stellar and galaxy centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -65,9 +65,13 @@ than inventing source facts. Other families retain their source-epoch requiremen
 The SDK now admits explicit `static_direction` models with an optional source
 epoch, while native/epoch direction requirements remain intact. Static coverage,
 uncertainty, source identity and certified reuse retain their existing checks.
-The next provider slice must route galaxies through this interface after resolving
-the remaining source declarations and documenting the admitted compatibility policy. This is metadata repair;
-open-cluster state evaluation has not yet migrated to the kernel.
+Galaxy centre consumers now route through that interface: public/native lookup,
+chart outline/label centres and inputs to existing observer transformations.
+The compatibility reference explicitly preserves unresolved source declarations;
+strict physical metadata closure remains open. The shared immutable-table owner
+is independent of concrete stellar/galaxy classes. Galaxy shape parameters and
+late geometry stay above the kernel. Open-cluster state evaluation and remaining
+K3 families/consumers have not yet migrated.
 
 Keep every existing Wenu capability while placing all scientific state access
 behind a uniform kernel contract. Add Gaia DR3 astrometry for the stars already
@@ -133,8 +137,8 @@ flowchart TB
     S -. "Knows concrete implementations" .-> L
     C -. "Temporarily mutates shared layers" .-> S
     L -. "Other state consumers" .-> D
-    L -->|"Native stars, positions and line vertices"| K["Kernel session"]
-    K --> N["Native stellar provider"]
+    L -->|"Native stars, line vertices and galaxy centres"| K["Kernel session"]
+    K --> N["Shared table adapters: stars and galaxies"]
     N --> D
     L -. "Combines state and observation" .-> O
     O --> G
@@ -493,9 +497,11 @@ fallback remains. Shared-scope failure tests and real serial/spawn/cold-saved
 atlas equivalence passed on the Mac. This does not close the
 chart/atlas private-helper cycle. Accepted PR #247 supplies a real native stellar
 consumer, source-native semantics, saved/worker compatibility and a separate
-installation gate. The next slice extends the same adapter to public positions
+installation gate. Accepted PR #248 extends the same adapter to public positions
 and native figure vertices, with opaque-interface, changed-vector and refusal
-tests plus saved/rendered consumer checks. Native label anchors and observed
+tests plus saved/rendered consumer checks. Static galaxy centre routing now
+uses the accepted dev7 capability through shared immutable-table mechanics;
+its source gaps remain explicit compatibility semantics. Native label anchors and observed
 astrometry remain explicit ledger entries; neither slice adds a Gaia/motion model.
 Break chart/atlas private-helper cycles with a public sheet contract while
 preserving canonical rendering. Make changes in separate bounded slices;

@@ -3,7 +3,8 @@
 This separately installable project implements a bounded native-state subset of K2.
 It is not the K5 frozen SDK. Existing Wenu continues to use its current code;
 the accepted native stellar adapter uses its existing source-epoch subset.
-This extension adds no galaxy routing or numerical backend.
+The SDK extension itself adds no numerical backend. Wenu now supplies a
+source-bound static galaxy direction consumer outside this package.
 
 ## Implemented scope
 

@@ -183,7 +183,11 @@ Declared epochs cannot be omitted or changed. Query time and actual anchor remai
 required. Coverage, scale, numerical error and certificate checks are unchanged;
 constancy grants neither infinite validity nor automatic temporal reuse.
 This is a backward-compatible capability extension of the candidate v1 contract,
-not K5 freeze. Galaxy routing and source-metadata closure remain separate work.
+not K5 freeze. The galaxy adapter now routes its centre consumers through this
+capability with source-bound metadata and explicit legacy reference gaps.
+Source-metadata closure and remaining family/observer migration stay open.
+Galaxy axes/PA and outline construction belong above the kernel; no physical
+curve propagation capability is implied.
 
 ## 5. Query and result envelopes
 

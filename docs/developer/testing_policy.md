@@ -46,7 +46,24 @@ Run `kernel-static-compatibility` with this candidate SDK on PYTHONPATH for the
 existing stellar adapter/Stars owners, plus documentation and tooling. No root
 dependency, resource, snapshot, product routing or graphics code changes, so
 atlas rendering, unrelated providers and the full production suite are excluded.
-The production pin remains unchanged until a consumer requires the extension.
+That SDK-only slice left the production pin unchanged; the subsequent galaxy
+adapter now pins its accepted source and supplies its own installation gate.
+
+## Galaxy routing and shared catalogue adapter
+
+`kernel-galaxy-routes` selects inherited nonstellar owner/geometry seams, the
+existing stellar provider/Stars owners, public position contracts, cold/saved and
+source-free consumers, actual galaxy/stellar page pixel comparisons, saved-sky
+CLI and installed wheel/sdist consumption. It checks returned-vector influence,
+refusal without fallback for every migrated route, optional source epochs,
+explicit legacy origin, source-table immutability and the shipped eight-case
+provider conformance kit. The isolated SDK is accepted unchanged from PR #253;
+its full gate is not repeated for this provider composition. Run documentation
+and tooling separately, with no parent-gate duplicates or full production run.
+The production pin changes to accepted dev7, so installation evidence is required.
+No catalogue bytes, snapshot schema, observer/projection mathematics, render
+algorithm or atlas lifetime changes. Single-outline geometry uses its array
+directly instead of concatenating a one-member list.
 
 ## Executable legacy selections
 

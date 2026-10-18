@@ -224,3 +224,168 @@ def test_galaxies_and_messier_can_coexist_on_one_sky():
     assert galaxies in sky.layers
     assert messier.catalog_name == "messier"
     assert galaxies.catalog_name == "galaxies"
+
+
+def _synthetic_kernel_galaxies(tmp_path, *, epoch=None):
+    from astropy.table import Table
+    source = Table(dict(name=['synthetic'], ra_deg=[10.], dec_deg=[-20.],
+                        major_axis_arcmin=[2.], minor_axis_arcmin=[1.], position_angle_deg=[30.]))
+    source.meta = dict(catalog='synthetic', release='synthetic-v1', coordinate_frame='ICRS',
+                       coordinate_origin='solar-system-barycenter',
+                       documentation_url='https://example.invalid/synthetic')
+    if epoch is not None:
+        source.meta.update(coordinate_epoch=epoch, coordinate_epoch_scale='tt')
+    for name in source.colnames:
+        if name.endswith('_deg'): source[name].unit = 'deg'
+        elif name.endswith('_arcmin'): source[name].unit = 'arcmin'
+    path = tmp_path/'kernel-galaxy.ecsv'
+    source.write(path, overwrite=True)
+    layer = Galaxies(None, samples=12)
+    layer.load(filename=path, require_complete_metadata=True)
+    return layer
+
+
+@pytest.mark.parametrize('epoch', (None, 'J2016.0'))
+def test_galaxy_kernel_queries_preserve_optional_epoch_and_actual_requested_time(tmp_path, monkeypatch, epoch):
+    from wenu_kernel import KernelSession
+    from wenu_kernel.records import TimePoint
+    layer = _synthetic_kernel_galaxies(tmp_path, epoch=epoch)
+    before = layer.catalogue_metadata.document_json
+    seen = []
+    evaluate = KernelSession.evaluate
+    def capture(session, query):
+        result = evaluate(session, query)
+        seen.append((session.catalogue(query.catalogue), result))
+        return result
+    monkeypatch.setattr(KernelSession, 'evaluate', capture)
+    for year in (-10000., 10000.):
+        time = Time(year, format='jyear', scale='tt')
+        points = layer.position(time)
+        snapshot, batch = seen[-1]
+        assert batch.query.times == (TimePoint(float(time.jd1), float(time.jd2), 'tt'),)
+        assert snapshot.objects[0].capabilities == ('static_direction', 'batch_evaluation')
+        expected = None if epoch is None else TimePoint(2457389, 0, 'tt')
+        assert batch.states[0].source_epoch == expected
+        assert batch.states[0].time == batch.states[0].anchor_time == batch.query.times[0]
+        assert batch.states[0].evidence.physical_model.status == 'not_evaluated'
+        np.testing.assert_array_equal(points.lon_deg, [10.])
+        assert points.metadata['catalogue_admission'] == layer.catalogue_metadata.to_record()
+    assert layer.catalogue_metadata.document_json == before
+
+
+def test_galaxy_kernel_returned_vectors_drive_every_centre_and_outline_route(tmp_path, monkeypatch):
+    from dataclasses import replace
+    from astropy.coordinates import SkyCoord
+    from wenu_kernel import KernelSession
+    from wenu.catalogue_state import _unit_direction
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    layer = _synthetic_kernel_galaxies(tmp_path)
+    evaluate = KernelSession.evaluate
+    calls = []
+    def shifted(session, query):
+        batch = evaluate(session, query)
+        calls.append(query)
+        return replace(batch, states=tuple(replace(row, vector=_unit_direction(35., -10.))
+                                          for row in batch.states))
+    monkeypatch.setattr(KernelSession, 'evaluate', shifted)
+    np.testing.assert_allclose(layer.position().lon_deg, [35.], atol=1e-12)
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    labels = layer.realize(context, None, labels_only=True)
+    np.testing.assert_allclose(labels.lon_deg, [35.], atol=1e-12)
+    expected = layer._ellipse(SkyCoord(ra=35.*u.deg, dec=-10.*u.deg), 2., 1., 30., 12)
+    native = layer.realize(context, None)
+    np.testing.assert_allclose(native.lon_deg[0], expected.icrs.ra.deg, atol=1e-12)
+    current_observer = observer()
+    centres = layer.spherical_centers(current_observer)
+    horizontal = SkyCoord(ra=35.*u.deg, dec=-10.*u.deg).transform_to(current_observer.altaz_frame)
+    np.testing.assert_allclose(centres.lon_deg, [horizontal.az.deg], atol=1e-10)
+    observed = layer.spherical_geometry(current_observer)
+    expected_horizontal = expected.transform_to(current_observer.altaz_frame)
+    np.testing.assert_allclose(observed.lon_deg[0], expected_horizontal.az.deg, atol=1e-10)
+    assert len(calls) == 5
+    np.testing.assert_array_equal(layer.catalog['ra_deg'], [10.])
+
+
+@pytest.mark.parametrize('route', ('position', 'native-outlines', 'native-labels', 'observed-centres', 'observed-outlines'))
+def test_galaxy_kernel_refusal_has_no_direct_catalogue_fallback(tmp_path, monkeypatch, route):
+    from wenu_kernel import KernelSession
+    from wenu_kernel.errors import UnsupportedCapability
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    layer = _synthetic_kernel_galaxies(tmp_path)
+    def refuse(*args):
+        raise UnsupportedCapability('synthetic galaxy refusal')
+    monkeypatch.setattr(KernelSession, 'evaluate', refuse)
+    with pytest.raises(UnsupportedCapability, match='synthetic galaxy refusal'):
+        if route == 'position': layer.position()
+        elif route.startswith('native'):
+            layer.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None, labels_only=route=='native-labels')
+        elif route == 'observed-centres': layer.spherical_centers(observer())
+        else: layer.spherical_geometry(observer())
+
+
+def test_packaged_galaxy_kernel_reference_keeps_unknown_source_origin_explicit(monkeypatch):
+    from wenu_kernel import KernelSession
+    layer = Galaxies(None); layer.load()
+    source_record = layer.catalogue_metadata.to_record()
+    seen = []
+    evaluate = KernelSession.evaluate
+    def capture(session, query):
+        seen.append(query)
+        return evaluate(session, query)
+    monkeypatch.setattr(KernelSession, 'evaluate', capture)
+    points = layer.position()
+    assert source_record['origin'] is None
+    assert seen[0].reference.origin_id == 'legacy-unverified-origin'
+    assert seen[0].reference.status == 'legacy-unverified-catalogue-encoding'
+    assert points.coordinate_spec.model == 'legacy-unverified-catalogue-encoding'
+    assert points.metadata['catalogue_admission'] == source_record
+    assert layer.admission_missing_fields
+    with pytest.raises(ValueError): layer.require_complete_metadata()
+
+
+def test_galaxy_provider_passes_shipped_kernel_conformance(tmp_path):
+    from dataclasses import replace
+    import io
+    import unittest
+    from wenu_kernel.conformance import ProviderActivity, ProviderCase, provider_suite
+    from wenu_kernel.records import AccuracyRequest, StateQuery, TimePoint
+    layer = _synthetic_kernel_galaxies(tmp_path)
+    def factory():
+        rows = [['synthetic', 10., -20.]]
+        provider = layer._direction_provider(rows, 'tt')
+        admission = provider.describe().admissions[0]
+        query = StateQuery(admission.catalogue, admission.model, admission.objects,
+            (TimePoint(-1000000, 0, 'tt'), TimePoint(3000000, 0, 'tt')),
+            admission.reference, AccuracyRequest())
+        probe = replace(query, times=(TimePoint(4000000, 0, 'tt'),))
+        counts = {'evaluate': 0, 'close': 0}
+        evaluate, close = provider.evaluate, provider.close
+        def measured(query):
+            counts['evaluate'] += 1
+            return evaluate(query)
+        def cleanup():
+            counts['close'] += 1
+            return close()
+        provider.evaluate, provider.close = measured, cleanup
+        def mutate():
+            rows[0][1] = 99.
+        return ProviderCase(provider, query, probe,
+            lambda: ProviderActivity(counts['evaluate'], 0, counts['close']), mutate)
+    result = unittest.TextTestRunner(stream=io.StringIO()).run(provider_suite(factory, name='GalaxyStaticContract'))
+    assert result.wasSuccessful(), result.errors + result.failures
+    assert result.testsRun == 8 and not result.skipped
+
+
+def test_galaxy_unknown_epoch_scale_refuses_numeric_epoch_without_losing_metadata(tmp_path):
+    layer = _synthetic_kernel_galaxies(tmp_path, epoch='J2016.0')
+    # Source may preserve an unqualified date, but the SDK cannot invent its scale.
+    from astropy.table import Table
+    path = tmp_path/'kernel-galaxy.ecsv'
+    table = Table.read(path)
+    del table.meta['coordinate_epoch_scale']
+    table.write(path, overwrite=True)
+    layer.load(filename=path)
+    assert layer.catalogue_metadata.to_record()['epoch'] == 'J2016.0'
+    assert layer.catalogue_metadata.to_record()['epoch_scale'] is None
+    with pytest.raises(ValueError, match='explicit time scale'):
+        layer.position()

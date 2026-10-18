@@ -141,7 +141,7 @@ def test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_over
             sdk = [value for value in requirements if value.name.replace('_', '-').lower() == 'wenu-kernel']
             assert len(sdk) == 1
             assert sdk[0].url == ('git+https://github.com/fselman/wenu.git@'
-                '8fea897ff8456b717d5db55a8c735a94584523b7#subdirectory=packages/wenu_kernel')
+                '4add1447d0db5598c1b2ff7f3c231d465b2c63f0#subdirectory=packages/wenu_kernel')
         installed = tmp_path / f'installed_{i}'
         result = subprocess.run([sys.executable, '-m', 'pip', 'install', '--no-deps',
             '--target', str(installed), str(wheel)], cwd=tmp_path, capture_output=True, text=True)

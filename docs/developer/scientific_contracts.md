@@ -70,7 +70,11 @@ The SDK capability `static_direction` admits optional source epochs only for
 explicitly static models. It retains source provenance, required evaluation and
 anchor times, explicit coverage and separate unknown physical uncertainty.
 Native/epoch direction models still require source epochs. No temporal reuse or
-infinite validity follows from constancy alone. Galaxy kernel routing remains open.
+infinite validity follows from constancy alone. Galaxy centre routing is now
+implemented through the declared static chart model; physical metadata closure
+remains open. Its missing origin is explicit in the SDK reference, and all source
+facts remain preserved. Shape axes/PA remain domain metadata; only centres enter
+the kernel, while the existing geometry/observer/projection owners build outlines.
 
 Galaxy chart directions use the explicit `static-direction` model, independent
 of requested epoch over the intended tens-of-thousands-of-years chart use.

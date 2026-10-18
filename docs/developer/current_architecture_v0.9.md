@@ -117,8 +117,13 @@ not require a source epoch/scale. It keeps native ICRS directions fixed while
 retaining any source epoch as provenance. Other providers keep the default
 source-epoch policy. Frame/origin/units/provenance remain required for strict
 galaxy admission. The SDK now admits explicit `static_direction` states with
-optional source epochs and unchanged coverage/error checks. Source gaps and
-the unimplemented galaxy adapter still prevent claiming galaxy kernel routing.
+optional source epochs and unchanged coverage/error checks. Galaxy public/native
+centres, chart-outline centres and observed centre inputs now use a real kernel
+session. Missing source origins are explicitly `legacy-unverified-origin` in
+that reference; source records and public legacy specifications remain truthful.
+Strict metadata closure is still open. Shape dimensions/PA and outline sampling
+remain galaxy/domain geometry above the kernel, with the existing observer and
+projection services retained.
 Observed Skyfield astrometry,
 native constellation-label anchors and other families remain unmigrated. See the
 [adapter contract](implementation_reference.md#native-stellar-kernel-adapter).
