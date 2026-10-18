@@ -89,6 +89,17 @@ Future unchanged manifests do not require revalidating every gate. `--collect` i
 
 ## Nonstellar ingestion gate
 
+The subsequent `nonstellar-admission` gate extends this selection once. It adds
+immutable record/strict-refusal/known-versus-unknown epoch and observed-provider
+identity regressions, all existing snapshot corruption cases, seven nonstellar
+metadata/header/digest/unit conflicts, a synthetic known-epoch round trip and a
+real saved-sky CLI export. The inherited selection retains all six fixed families,
+fresh-process source-free restore and v1-v4 compatibility. Strict source metadata
+closure is not claimed by compatible chart output. Snapshot v5 changes coordinate
+meaning/serialization, so these admission and consumer seams are required; unrelated
+orbits, numerical transforms, projections, renderer algorithms, packaging and SDK
+internals are unchanged and reuse prior evidence. Do not run the parent gate too.
+
 `nonstellar-ingestion` covers the shared normalizer and its inherited galaxy,
 globular, remnant and PN seams. It retains the existing normalization/geometry
 owners and adds synthetic declared-unit, unconsumed-field, nested-metadata and

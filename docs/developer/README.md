@@ -60,8 +60,12 @@ The open-cluster followup resolves that provider's epoch consumption: selected
 geometry and snapshot v4 use preserved row epochs/source lineage, including
 explicit unknowns, and retain catalogue metadata. Nonstellar normalization now
 preserves source metadata/unconsumed fields and converts declared angular units,
-with atomic reload and existing snapshot transport checks. Full nonstellar
-metadata admission and other snapshot epoch stamps remain open audit findings.
+with atomic reload and existing snapshot transport checks. A frozen nonstellar
+record now validates declarations, exposes missing facts and controls geometry
+specifications and snapshot v5 headers. Strict admission refuses remaining source
+gaps; legacy charts retain explicitly unverified coordinate encoding. No automatic
+J2000 measurement epoch remains in those provider/snapshot paths. Resource metadata
+closure and shared helper defaults remain open audit findings.
 The SDK [selection manifest](../../packages/wenu_kernel/test_selection_v1.json)
 keeps the independent core gate separate from existing Wenu tests. Current
 products consume only this partial native stellar adapter.

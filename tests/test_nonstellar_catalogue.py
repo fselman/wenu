@@ -18,6 +18,111 @@ from wenu.objects.nonstellar import NonStellar
 from wenu.sky.celestial_sphere import CelestialSphere
 
 
+def test_undeclared_nonstellar_epoch_stays_unknown(catalogue):
+    layer = NonStellar(None)
+    layer.load(filename=catalogue)
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    for result in (layer.position(), layer.realize(context, None),
+                   layer.realize(context, None, labels_only=True)):
+        assert result.coordinate_spec.epoch is None
+        assert result.coordinate_spec.model == "legacy-unverified-catalogue-encoding"
+        assert result.metadata["catalogue_admission"]["frame"] is None
+    with pytest.raises(ValueError, match="Incomplete nonstellar metadata"):
+        layer.catalogue_metadata.require_complete()
+
+
+def test_complete_nonstellar_metadata_controls_native_routes(catalogue):
+    import hashlib
+    from dataclasses import FrozenInstanceError
+    table = Table.read(catalogue)
+    table.meta = dict(catalog="synthetic", catalog_version="synthetic-v1",
+                      documentation_url="https://example.invalid/synthetic",
+                      coordinate_frame="ICRS", coordinate_origin="solar-system-barycenter",
+                      coordinate_epoch="J2016.0", coordinate_epoch_scale="tt",
+                      original_extra={"retained": True})
+    for name, unit in (("ra", u.deg), ("dec", u.deg), ("dimension", u.arcmin), ("pa", u.deg)):
+        table[name].unit = unit
+    table.write(catalogue, overwrite=True)
+    layer = NonStellar(None)
+    layer.load(filename=catalogue, require_complete_metadata=True)
+    metadata = layer.catalogue_metadata
+    assert metadata.missing_fields == ()
+    assert metadata.require_complete() is metadata
+    record = metadata.to_record()
+    assert record["source_sha256"] == hashlib.sha256(catalogue.read_bytes()).hexdigest()
+    assert record["epoch_scale"] == "tt"
+    record["source_metadata"]["original_extra"]["retained"] = False
+    assert metadata.to_record()["source_metadata"]["original_extra"]["retained"] is True
+    with pytest.raises(FrozenInstanceError):
+        metadata.document_json = "{}"
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    for result in (layer.position(), layer.realize(context, None),
+                   layer.realize(context, None, labels_only=True)):
+        assert result.coordinate_spec.epoch == "J2016.0"
+        assert result.coordinate_spec.model is None
+        assert result.coordinate_spec.provider == "synthetic"
+        assert result.coordinate_spec.provenance == ("https://example.invalid/synthetic",)
+
+
+@pytest.mark.parametrize(("key", "value"), [
+    ("coordinate_frame", "FK5"), ("coordinate_frame", 2000),
+    ("coordinate_origin", "observer"), ("coordinate_equinox", "J2000"),
+    ("coordinate_epoch", "invalid"), ("coordinate_epoch", "Jnan"),
+    ("coordinate_epoch_scale", "not-a-scale"),
+])
+def test_invalid_declared_nonstellar_metadata_refuses_reload(key, value, catalogue, tmp_path):
+    layer = NonStellar(None)
+    layer.load(filename=catalogue)
+    original = (layer.catalog, layer.source, layer.catalogue_metadata, layer._source_revision)
+    table = Table.read(catalogue)
+    table.meta[key] = value
+    path = tmp_path / "invalid-metadata.ecsv"
+    table.write(path)
+    with pytest.raises(ValueError):
+        layer.load(filename=path)
+    assert layer.catalog is original[0] and layer.source == original[1]
+    assert layer.catalogue_metadata == original[2] and layer._source_revision == original[3]
+
+
+def test_strict_metadata_refusal_retains_legacy_catalogue(catalogue):
+    layer = NonStellar(None)
+    layer.load(filename=catalogue)
+    table, metadata = layer.catalog, layer.catalogue_metadata
+    with pytest.raises(ValueError, match="Incomplete nonstellar metadata"):
+        layer.load(filename=catalogue, require_complete_metadata=True)
+    assert layer.catalog is table and layer.catalogue_metadata == metadata
+
+
+def test_icrs_j2000_declaration_is_not_a_measurement_epoch(catalogue):
+    table = Table.read(catalogue)
+    table.meta["coordinate_frame"] = "ICRS/J2000"
+    table.write(catalogue, overwrite=True)
+    layer = NonStellar(None)
+    layer.load(filename=catalogue)
+    assert layer.catalogue_metadata.to_record()["frame"] == "icrs"
+    assert layer.catalogue_metadata.to_record()["epoch"] is None
+    assert layer.position().coordinate_spec.equinox is None
+    assert layer.position().coordinate_spec.epoch is None
+
+
+def test_observed_provider_identity_comes_from_source_metadata(catalogue, observer):
+    table = Table.read(catalogue)
+    table.meta.update(catalog='synthetic', documentation_url='https://example.invalid/source',
+                      source_files={'input': {'url': 'https://example.invalid/input'}})
+    table.write(catalogue, overwrite=True)
+    layer = NonStellar(observer)
+    layer.load(filename=catalogue)
+    record = layer.catalogue_metadata.to_record()
+    assert record['provenance'] == ['https://example.invalid/input', 'https://example.invalid/source']
+    for geometry in (layer.spherical_geometry(observer), layer.spherical_centers(observer)):
+        assert geometry.coordinate_spec.provider == 'synthetic'
+        assert geometry.coordinate_spec.model == 'legacy-unverified-catalogue-encoding'
+        assert geometry.coordinate_spec.instant is not None
+        assert geometry.metadata['catalogue_admission'] == record
+
+
 def test_normalization_converts_declared_angles_and_preserves_source_metadata():
     """Synthetic source: declared units control encoding, not column spelling."""
     from astropy.table import MaskedColumn

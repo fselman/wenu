@@ -52,7 +52,15 @@ full nonstellar metadata admission and the remaining fixed-catalogue snapshot
 assumptions still require their own owner corrections. The current ingestion slice
 preserves nonstellar source metadata/fields and normalizes declared angular
 units, including globular radii, with atomic refusal and saved-sky checks.
-Unitless legacy inputs are not evidence of complete source semantics. This is metadata repair;
+The subsequent nonstellar admission record validates declarations, reports missing
+facts, controls native/observed coordinate metadata and persists through snapshot
+v5. Unknown epochs replace automatic J2000 stamps; old formats remain readable
+without fabricating source facts. Strict admission refuses incomplete metadata,
+while current charts retain an explicit legacy interpretation. Unitless legacy
+inputs and this compatibility mode are not evidence of complete source semantics.
+Resolve missing source frame/origin/epoch/time-scale declarations, using admitted
+source evidence or an explicitly justified model, before closing each physical
+provider. Do not manufacture epochs for static deep-sky directions. This is metadata repair;
 open-cluster state evaluation has not yet migrated to the kernel.
 
 Keep every existing Wenu capability while placing all scientific state access

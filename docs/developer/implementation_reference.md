@@ -242,10 +242,44 @@ explicitly a compatibility policy rather than recovered source metadata.
 Globular core/half-light radii likewise convert to arcminutes before computing
 the half-light diameter. Numerical extra columns retain their declared units
 and descriptions. Native positions and native/observed shape/symbol metadata
-include an independent `catalogue_metadata` mirror. Snapshot v4's existing
-table transport preserves retained fields/units/descriptions and table metadata;
-no new snapshot schema is needed. Full nonstellar frame/epoch admission and
-the other M6 snapshot epoch stamps remain open; no new kernel routing follows.
+include an independent `catalogue_metadata` mirror. The snapshot table transport
+preserves retained fields/units/descriptions and table metadata;
+the record described below adds the source admission boundary; no new kernel routing follows.
+
+`NonStellarCatalogueMetadata` (in `objects/nonstellar.py`) is a frozen mirror
+of `wenu-nonstellar-catalogue/1`. It retains original table metadata, original
+angular units, normalized units, input-byte SHA256, catalogue/edition and source
+URLs, plus explicitly nullable frame/origin/epoch/time scale. Source declarations
+are validated before publication, including supported frame/origin, ICRS equinox
+refusal and epoch syntax/scale. No source edition or epoch is inferred from a
+name, file path, release date or `ICRS/J2000` frame description. The source digest
+is checked before/after reading. `catalogue_metadata.to_record()` returns a copy;
+`missing_fields` reports gaps and `require_complete()` refuses them.
+
+`load(..., require_complete_metadata=True)` requires complete declared facts
+before replacing a catalogue. The default preserves legacy chart compatibility:
+missing source facts remain null, and geometry explicitly carries the model
+`legacy-unverified-catalogue-encoding`. Its ICRS/barycentre chart interpretation
+is software compatibility policy, not evidence for missing source facts.
+The inspected packaged tables all lack a measurement epoch; several also lack
+a declared frame. They retain their existing chart output but cannot pass
+strict admission or close a physical provider merely by adopting this record.
+
+`native_coordinate_spec(table=None)` supplies native positions/outlines/symbols;
+`observed_coordinate_spec(observer)` supplies observer metadata from the same
+record while retaining the existing transform and observer instant. Provider
+identity/provenance is read from that record, including PN source identity.
+Geometry includes its `catalogue_admission` document separately from the unchanged
+raw `catalogue_metadata`. Unknown epochs produce `epoch=None`; declared source
+epochs are retained. No coordinate, motion, frame-transform or render algorithm
+is changed by this metadata boundary.
+
+Snapshot v5 stores the admission record with each nonstellar fixed table,
+binds it to the manifest's source digest, checks table metadata/units and derives
+the header from its native specification. The existing open-cluster row contract
+remains separate. Readers admit v1-v4 using their historical formats; old J2000
+headers are not promoted to source facts, original source units/digests are not
+fabricated, and restored geometry derives its meaning from preserved metadata.
 
 `OpenClusters.native_coordinate_spec(table=None)` mirrors coordinate epochs from
 the selected table's `position_epoch` column, or an explicitly declared global
@@ -256,11 +290,11 @@ An ICRS/J2000 frame description is never parsed as a measurement epoch.
 Native and observed geometry also retain an independent copy of `Table.meta`.
 Invalid epoch declarations are refused before replacing the loaded table/source.
 
-Snapshot v4 derives its open-cluster coordinate header from this interface and
-validates it against the preserved rows. Legacy v2/v3 J2000 headers are admitted
+Snapshot v4 introduced the open-cluster coordinate header from this interface;
+v5 retains it and validates it against the preserved rows. Legacy v2/v3 J2000 headers are admitted
 as historical format claims only; restored cluster geometry uses the preserved
-row facts. The v1 compatibility path has no fixed catalogue layer. Other
-nonstellar metadata/default-epoch findings remain open in the audit.
+row facts. The v1 compatibility path has no fixed catalogue layer. Nonstellar
+resource metadata gaps and shared helper defaults remain explicit audit findings.
 
 The separate candidate `wenu_kernel` package provides `Kernel`, `KernelSession`
 and `StateProvider` plus typed direction/Cartesian records in `wenu_kernel.records`. See its

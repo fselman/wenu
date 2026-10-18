@@ -20,7 +20,7 @@ from types import MappingProxyType
 import numpy as np
 import pandas as pd
 from astropy.table import Table, MaskedColumn
-from wenu.objects.nonstellar import NonStellar
+from wenu.objects.nonstellar import NonStellar, NonStellarCatalogueMetadata
 from wenu.objects.galaxies import Galaxies
 from wenu.objects.globular_clusters import GlobularClusters
 from wenu.objects.open_clusters import OpenClusters
@@ -55,7 +55,8 @@ LEGACY_LAYERS = ("milky_way", "magellanic_clouds", "stars",
 LEGACY_COMPATIBILITY = "wenu-native-sky-records-v1"
 PRE_METADATA_COMPATIBILITY = "wenu-fixed-sky-records-v2"
 PRE_CLUSTER_METADATA_COMPATIBILITY = "wenu-fixed-sky-records-v3"
-COMPATIBILITY = "wenu-fixed-sky-records-v4"
+PRE_NONSTELLAR_METADATA_COMPATIBILITY = "wenu-fixed-sky-records-v4"
+COMPATIBILITY = "wenu-fixed-sky-records-v5"
 _CATALOGUES = {"nonstellar": NonStellar, "galaxies": Galaxies,
     "open_clusters": OpenClusters, "globular_clusters": GlobularClusters,
     "supernova_remnants": SupernovaRemnants, "planetary_nebulae": PlanetaryNebulae}
@@ -274,13 +275,10 @@ def _fixed_records(sky):
     for name in _CATALOGUES:
         layer = getattr(sky, name)
         table = layer.catalog if name == "open_clusters" else layer.source_catalog
-        if name == 'open_clusters':
-            spec = layer.native_coordinate_spec(table)
-            catalogues[name] = dict(table=_table_records(table), source=str(layer.source),
-                                   frame=spec.frame, epoch=spec.epoch, units=spec.longitude_unit)
-        else:
-            catalogues[name] = dict(table=_table_records(table), source=str(layer.source),
-                                   frame="icrs", epoch="J2000.0", units="deg")
+        spec = layer.native_coordinate_spec(table)
+        catalogues[name] = dict(table=_table_records(table), source=str(layer.source),
+                               frame=spec.frame, epoch=spec.epoch, units=spec.longitude_unit,
+                               metadata=None if name == 'open_clusters' else layer.catalogue_metadata.to_record())
     boundaries = sky.constellation_boundaries
     points = []
     for point in sky.points._points:
@@ -313,6 +311,8 @@ def _restore_fixed(sky, data):
         layer.catalog = table
         if name != "open_clusters":
             layer.source_catalog = table
+            if 'metadata' in content:
+                layer._catalogue_metadata = NonStellarCatalogueMetadata.from_record(_plain_mapping(content['metadata']))
             if layer.magnitude_limit is not None:
                 magnitude = np.asarray(table["magnitude"], dtype=float)
                 layer.catalog = table[~np.isfinite(magnitude) | (magnitude <= layer.magnitude_limit)]
@@ -435,7 +435,7 @@ def prepare_native_sky_snapshot(design_bytes, destination, *,
                     payloads[name] = dict(sha256=_digest(data), size=len(data))
                     evidence[key] = name
             stellar_metadata = stellar_table_metadata(sky.stars.source_catalog)
-            manifest = dict(schema_version=4, document_kind="wenu-native-sky-snapshot",
+            manifest = dict(schema_version=5, document_kind="wenu-native-sky-snapshot",
                             compatibility=COMPATIBILITY, frame="icrs",
                             origin="solar-system-barycenter", stellar_epoch=stellar_metadata.epoch_label,
                             position_status="astrometric", coordinate_units="deg",
@@ -553,11 +553,12 @@ def read_native_sky_snapshot(directory, *, expected_manifest_sha256=None):
               "layers", "star_magnitude_limit", "design_id", "design_revision",
               "payloads", "array_index", "source_digests", "evidence", "records"))
     version = m["schema_version"]
-    if type(version) is not int or version not in (1, 2, 3, 4):
+    if type(version) is not int or version not in (1, 2, 3, 4, 5):
         raise ValueError("Unsupported snapshot version.")
     expected = dict(schema_version=version, document_kind="wenu-native-sky-snapshot",
                     compatibility={1: LEGACY_COMPATIBILITY, 2: PRE_METADATA_COMPATIBILITY,
-                                   3: PRE_CLUSTER_METADATA_COMPATIBILITY, 4: COMPATIBILITY}[version], frame="icrs",
+                                   3: PRE_CLUSTER_METADATA_COMPATIBILITY,
+                                   4: PRE_NONSTELLAR_METADATA_COMPATIBILITY, 5: COMPATIBILITY}[version], frame="icrs",
                     origin="solar-system-barycenter",
                     position_status="astrometric", coordinate_units="deg",
                     full_sphere=True, layers=list(LEGACY_LAYERS if version == 1 else LAYERS))
@@ -714,7 +715,7 @@ def read_native_sky_snapshot(directory, *, expected_manifest_sha256=None):
             for edges in data["edges"].values() for edge in edges):
         raise ValueError("Invalid constellation connectivity.")
     if version >= 2:
-        _validate_fixed(data["fixed"], legacy_cluster_epoch=version < 4)
+        _validate_fixed(data["fixed"], version=version, source_digests=m['source_digests'])
     snapshot = NativeSkySnapshot(directory, m, arrays, data, design_bytes, digest)
     snapshot.stellar_metadata = metadata
     return snapshot
@@ -728,7 +729,7 @@ def _plain_mapping(value):
     return value
 
 
-def _validate_fixed(fixed, *, legacy_cluster_epoch=False):
+def _validate_fixed(fixed, *, version=5, source_digests=None):
     if not isinstance(fixed, MappingProxyType) or set(fixed) != {"profile", "catalogues", "boundaries", "references", "points"}:
         raise ValueError("Invalid fixed snapshot component.")
     profile = fixed["profile"]
@@ -742,9 +743,10 @@ def _validate_fixed(fixed, *, legacy_cluster_epoch=False):
     if fixed["references"] != expected_refs:
         raise ValueError("Unsupported fixed reference definitions.")
     for name, content in fixed["catalogues"].items():
-        if (set(content) != {"table", "source", "frame", "epoch", "units"}
+        required = {"table", "source", "frame", "epoch", "units"} | ({"metadata"} if version >= 5 else set())
+        if (set(content) != required
                 or (content["frame"], content["units"]) != ("icrs", "deg")
-                or (name != 'open_clusters' and content['epoch'] != 'J2000.0')):
+                or (version < 5 and name != 'open_clusters' and content['epoch'] != 'J2000.0')):
             raise ValueError("Invalid fixed catalogue coordinate semantics.")
         record = content["table"]
         if set(record) != {"columns", "meta_json", "count"} or type(record["count"]) is not int or record["count"] < 0:
@@ -761,8 +763,18 @@ def _validate_fixed(fixed, *, legacy_cluster_epoch=False):
         table = _table_from_records(record)
         if name == 'open_clusters':
             spec = OpenClusters(None).native_coordinate_spec(table)
-            if content['epoch'] != spec.epoch and not (legacy_cluster_epoch and content['epoch'] == 'J2000.0'):
+            if version >= 5 and content['metadata'] is not None:
+                raise ValueError('Open-cluster row metadata must retain its separate contract.')
+            if content['epoch'] != spec.epoch and not (version < 4 and content['epoch'] == 'J2000.0'):
                 raise ValueError('Snapshot open-cluster epoch disagrees with preserved row metadata.')
+        elif version >= 5:
+            metadata = NonStellarCatalogueMetadata.from_record(_plain_mapping(content['metadata']))
+            metadata.validate_table(table, require_units=True)
+            if source_digests is None or metadata.to_record()['source_sha256'] != source_digests[name]:
+                raise ValueError('Snapshot nonstellar metadata disagrees with source digest.')
+            spec = metadata.coordinate_spec(name)
+            if (content['frame'], content['epoch'], content['units']) != (spec.frame, spec.epoch, spec.longitude_unit):
+                raise ValueError('Snapshot nonstellar header disagrees with source metadata.')
         if not {"identifier", "ra_deg", "dec_deg"} <= set(table.colnames):
             raise ValueError("Incomplete fixed catalogue directions.")
         for column, lower, upper in (("ra_deg", 0, 360), ("dec_deg", -90, 90)):

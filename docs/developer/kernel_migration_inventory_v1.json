@@ -7998,6 +7998,33 @@
     },
     "prior_mac_acceptance": {"tested_commit": "e0d4e94100eaa8831409f043498d1cfd15c94c02", "merged_commit": "4a14e294a9c49e0ba46a6574e3484c03403a0ab6", "identical_tree": "0e68c59a245373adfad6bab465c55d5fdea7d462", "tooling_passed": 8, "documentation_passed": 36, "resource_retry_passed": 42, "resource_retry_seconds": 311.02, "retained_combined_passed": 79, "retained_provider_subtests": 9, "mac_clean_and_synchronized": true}
   },
+  "nonstellar_metadata_admission": {
+    "base_commit": "0d25179cfefe5d2f92edf84ffe9e5ebc12aefec0",
+    "schema": "wenu-nonstellar-catalogue/1",
+    "snapshot_version": 5,
+    "snapshot_legacy_versions": [1, 2, 3, 4],
+    "source_paths": ["src/wenu/objects/nonstellar.py", "src/wenu/objects/galaxies.py", "src/wenu/objects/globular_clusters.py", "src/wenu/objects/planetary_nebulae.py", "src/wenu/sky/native_snapshot.py"],
+    "test_paths": ["tests/test_nonstellar_catalogue.py", "tests/test_reusable_canonical_sphere.py"],
+    "gate": "nonstellar-admission",
+    "protected_faults": ["unknown or declared source epoch replaced by J2000", "observed provider identity hardcoded", "inconsistent frame/origin/epoch/scale declarations admitted", "strict metadata refusal publishes partial state", "saved header/table/units/source identity diverge", "historical format header promoted to source fact"],
+    "regression_evidence": "Three current tests fail by assertion when accepted original position/spherical_geometry/spherical_centers methods are substituted: unknown epoch becomes J2000, J2016 is ignored, and observed provider identity is hardcoded. Normal process tests restore the unchanged installed implementation.",
+    "legacy_test_moves_or_deletions": [],
+    "source_resource_changes": [],
+    "local_verification": {"environment": "Normal Linux Python 3.12 runtime, separately installed unchanged kernel SDK", "focused_passed": 144, "focused_seconds": 60.49, "final_owner_followup_passed": 59, "final_owner_followup_seconds": 2.48, "tooling_passed": 8, "tooling_seconds": 0.929, "mac_acceptance": "pending"},
+    "source_audit": {"families": ["messier", "caldwell", "galaxies", "globular_clusters", "planetary_nebulae", "supernova_remnants"], "all_measurement_epochs_unknown": true, "declared_frames_absent": ["messier", "galaxies", "globular_clusters"], "declared_origins_absent": "all inspected families", "strict_admission": "refuses current gaps; legacy charts explicitly labelled unverified", "primary_references_checked": ["https://heasarc.gsfc.nasa.gov/w3browse/all/messier.html", "https://heasarc.gsfc.nasa.gov/w3browse/all/globclust.html"], "checked_date": "2026-10-18", "unavailable_reference": "Release-pinned OpenNGC README retrieval failed; no new frame/epoch claim derived from it."},
+    "remaining_limits": "M5 source metadata gaps and M4 shared defaults remain open. No physical provider accuracy, epoch propagation, kernel-routing or independent-package claim. Compatibility coordinates retain old interpretation with explicit legacy model.",
+    "excluded_owners": "No changed SDK, acquisition/curation/resources, dependencies/build, numerical observer/frame/motion models, projections, renderer algorithms or atlas dispatch/lifetime. Fresh-process restore and real saved-sky public CLI cover changed serialization; no full production or SDK repeat.",
+    "content_sha256": {
+      "src/wenu/objects/nonstellar.py": "ae942870b19a5b636b8b9e508f401fcb7cb526d42880b584a5c9a427dd532563",
+      "src/wenu/objects/galaxies.py": "ed112a1535c2856e3dd990be03221cb7bae9c9ebdd3d85709983b7a31db273e3",
+      "src/wenu/objects/globular_clusters.py": "ff7d558a6870bdc55c8b1424bf986acc2947ff2a61bb7adfab1b4b5d785ff435",
+      "src/wenu/objects/planetary_nebulae.py": "8cba18cd6312ae871fb8c251c937bed4e28b5bf297774066ae912f15f53032e4",
+      "src/wenu/sky/native_snapshot.py": "ca581f5635c926bed1fb9b269f92536d0eca534b45d8fda850d1d65eb00d9c03",
+      "tests/test_nonstellar_catalogue.py": "fd8f25912cdfa51dbd15eb9e0e8486ffe3ab6ca912687148b42dbc8ceed214e2",
+      "tests/test_reusable_canonical_sphere.py": "ed10130e5e1336933e007219140b1faaa9d637782444af899e75e5d984fc9055"
+    },
+    "prior_mac_acceptance": {"tested_commit": "7f1d75aa034945941f1c91fbcd9aca9406594f8b", "merged_commit": "0d25179cfefe5d2f92edf84ffe9e5ebc12aefec0", "identical_tree": "9ccd4348e4244ba546b0152e2f76bd820b719ee1", "tooling_passed": 8, "tooling_seconds": 1.135, "documentation_passed": 36, "documentation_seconds": 3.28, "nonstellar_ingestion_passed": 92, "nonstellar_ingestion_seconds": 38.63, "mac_clean_and_synchronized": true}
+  },
   "current_inventory_extension": {
     "base_commit": "e5bd7c16ab3d7089fc51420432f540b2b2fe2ef9",
     "production_python_files": 264,

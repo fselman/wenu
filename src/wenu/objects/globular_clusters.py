@@ -17,6 +17,7 @@ class GlobularClusters(NonStellar):
     """
 
     layer_name = "globular_clusters"
+    _ANGULAR_SOURCE_FIELDS = ("core_radius", "half_light_radius")
 
     _FLOAT_FIELDS = (
         "lii",
