@@ -9,9 +9,8 @@ implements immutable direction records, explicit registration and synchronous
 sessions, reproducible certified direction reuse and SI Cartesian full-model
 states with optional velocity and separate uncertainty channels. Explicit
 time-adapter admission, conversion receipts and bounded TT(TAI)/TAI conversion
-remain separate from same-scale native state queries. The current candidate
-ships a reusable stdlib provider conformance kit and verifies an external
-consumer with no repository fixtures.
+remain separate from same-scale native state queries. A reusable stdlib
+provider conformance kit verifies an external consumer with no repository fixtures.
 It has no runtime dependencies or existing
 product consumers. The production pipeline below is unchanged; routing it
 through the kernel remains K3. Real providers and the SDK freeze are pending.
@@ -96,9 +95,14 @@ than reimplemented in a new kernel.
 3. Frozen coordinate metadata does not make every geometry result immutable:
    general arrays, dictionaries and layer collections remain mutable.
 4. Request preparation temporarily installs layers and rebinds resolvers.
-   The audit identified incomplete rollback of added minor-body layers after
-   request-resolution failure. Isolate and fix this with failure injection
-   before relying on shared kernel sessions.
+   The current K3 prerequisite candidate repairs rollback of request-added
+   minor-body registry entries/entity aliases and resolver bindings, including
+   partial addition, failed session construction/binding and later preparation
+   failures. Normal close detaches those registrations; cleanup attempts continue
+   after an error and preserve exception chains. Existing satellite ownership
+   remains covered. This is not complete request isolation: grids, horizon,
+   disks, natural tracks and their label flags still have separate mutable
+   configuration paths to migrate before sharing kernel state.
 5. `charts/atlas_publication.py` calls request generation, while request
    generation imports atlas-specific private furniture/report helpers.
    This creates a cycle across the intended chart/atlas barrier.

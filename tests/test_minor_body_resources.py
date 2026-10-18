@@ -15,6 +15,60 @@ from wenu.sky.ceres import CERES_BODY
 from tools import install_comet_resource
 
 
+@pytest.mark.parametrize("fail_binding", [False, True])
+def test_resolver_binding_is_atomic_and_deduplicates_layer_identity(fail_binding):
+    from wenu.minor_body_resources import bind_sky_source_resolver, restore_sky_source_resolvers
+    old, replacement = object(), object()
+
+    class Point:
+        def __init__(self, fail=False):
+            self.value = old
+            self.fail = fail
+            self.writes = []
+
+        @property
+        def source_resolver(self):
+            return self.value
+
+        @source_resolver.setter
+        def source_resolver(self, value):
+            self.writes.append(value)
+            if self.fail and value is replacement:
+                raise RuntimeError("synthetic resolver setter failure")
+            self.value = value
+
+    first, second = Point(), Point(fail_binding)
+    sky = SimpleNamespace(solar_system_bodies={"first": first, "alias": first, "second": second}, moon=first)
+    if fail_binding:
+        with pytest.raises(RuntimeError, match="synthetic resolver setter failure"):
+            bind_sky_source_resolver(sky, replacement)
+    else:
+        previous = bind_sky_source_resolver(sky, replacement)
+        assert len(previous) == 2
+        assert first.source_resolver is second.source_resolver is replacement
+        restore_sky_source_resolvers(previous)
+    assert first.source_resolver is second.source_resolver is old
+    assert first.writes == second.writes == [replacement, old]
+
+
+def test_resolver_restore_attempts_other_bindings_after_one_setter_fails():
+    from wenu.minor_body_resources import restore_sky_source_resolvers
+    old, replacement = object(), object()
+    class FailingPoint:
+        @property
+        def source_resolver(self):
+            return replacement
+
+        @source_resolver.setter
+        def source_resolver(self, value):
+            raise RuntimeError("synthetic restoration failure")
+    first = FailingPoint()
+    second = SimpleNamespace(source_resolver=replacement)
+    with pytest.raises(RuntimeError, match="synthetic restoration failure"):
+        restore_sky_source_resolvers(((first, old), (second, old)))
+    assert second.source_resolver is old
+
+
 def manifest_directory(tmp_path, *, digest=None, target="20000001"):
     payload = b"DAF/fake Ceres kernel"
     (tmp_path / "ceres.bsp").write_bytes(payload)

@@ -23,14 +23,16 @@ PR #234 is integrated. Its tree is identical to `ea8dc505`, which passed all
 ## Forward work
 
 K1 and the K2 native-state/reuse and explicit time subsets are accepted
-through PR #241, main `a0683a43`.
+through PR #242, main `8fea897f`, including the shipped provider conformance kit.
 The separate [kernel project](../../packages/wenu_kernel/README.md) owns
 standard-library direction records, registration and synchronous sessions.
 SI Cartesian states retain explicit optional velocity, independent error
 channels and source-epoch availability. TimeService admits explicit offline
 conversions, including bounded TT(TAI)/TAI. Native state queries still require
-matching scales. The current candidate ships the reusable provider conformance
-kit with factory-owned fixtures and independent installed-consumer evidence.
+matching scales. Provider conformance uses factory-owned fixtures and
+independent installed-consumer evidence. The current K3 prerequisite candidate
+repairs minor-body request registration/resolver rollback, including partial
+setup and normal close. It does not route any existing product through the SDK.
 Its [selection manifest](../../packages/wenu_kernel/test_selection_v1.json)
 keeps the independent core gate separate from existing Wenu tests. Current
 products do not consume it yet. Relativistic/civil-time adapters, realization

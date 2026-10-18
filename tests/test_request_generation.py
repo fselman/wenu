@@ -800,3 +800,168 @@ def test_prepare_failure_removes_installed_satellite_layers(
         )
 
     assert removed == [layer]
+
+
+def _minor_body_request_fixture(monkeypatch, *, failure_stage=None, close_error=False):
+    """Constructed lifecycle fixture; no catalogue, propagation or rendering."""
+    error = RuntimeError("synthetic setup failure: " + str(failure_stage))
+    cleanup_error = RuntimeError("synthetic session close failure")
+    old_resolver = object()
+    observer_closes = []
+    sessions = []
+
+    class GuardedPoint:
+        def __init__(self):
+            self._resolver = old_resolver
+
+        @property
+        def source_resolver(self):
+            return self._resolver
+
+        @source_resolver.setter
+        def source_resolver(self, value):
+            if failure_stage == "bind" and getattr(value, "__self__", None) in sessions:
+                raise error
+            self._resolver = value
+
+    retained = SimpleNamespace(source_resolver=old_resolver)
+    moon = GuardedPoint()
+    descriptors = tuple(SimpleNamespace(selection_key=key, entity_key=alias)
+                        for key, alias in (("request-a", "first_alias"), ("request-b", "second_alias")))
+
+    class Sky:
+        def __init__(self):
+            self.observer = SimpleNamespace(close=lambda: observer_closes.append(True))
+            self.layers = [retained, moon]
+            self.solar_system_bodies = {"retained": retained}
+            self.moon = moon
+            self.first_alias = object()
+
+        def add_solar_system_body(self, descriptor):
+            layer = SimpleNamespace(descriptor=descriptor, source_resolver=None)
+            self.solar_system_bodies[descriptor.selection_key] = layer
+            setattr(self, descriptor.entity_key, layer)
+            if failure_stage == "add" and descriptor is descriptors[-1]:
+                # Match CelestialSphere's publication before its add() call.
+                raise error
+            self.layers.append(layer)
+            return layer
+
+        def remove(self, layer):
+            self.layers.remove(layer)
+
+    class Session:
+        def __init__(self, directory, observer):
+            if failure_stage == "session":
+                raise error
+            self.closes = 0
+            sessions.append(self)
+
+        def source_binding(self, *args):
+            raise AssertionError("lifecycle tests must not evaluate ephemerides")
+
+        def close(self):
+            self.closes += 1
+            if close_error:
+                raise cleanup_error
+
+    sky = Sky()
+    before = (tuple(sky.layers), dict(sky.solar_system_bodies), sky.first_alias)
+    request = SimpleNamespace(minor_body_descriptors=descriptors,
+                              minor_body_resource_directory="synthetic-offline")
+    prepared = SimpleNamespace(chart=object())
+    resolved = SimpleNamespace(request=request, frame=None)
+
+    def stage(name, result=None):
+        def operation(*args, **kwargs):
+            if failure_stage == name:
+                raise error
+            return result
+        return operation
+
+    monkeypatch.setattr("wenu.minor_body_resources.request_minor_body_descriptors", lambda value: descriptors)
+    monkeypatch.setattr("wenu.minor_body_resources.MinorBodyResourceSession", Session)
+    monkeypatch.setattr("wenu.charts.request_generation.resolve_chart_request", stage("resolve", resolved))
+    for name in ("grids", "horizon", "disks"):
+        monkeypatch.setattr("wenu.charts.request_generation.configure_chart_request_" + name, stage(name))
+    monkeypatch.setattr("wenu.charts.request_tracks.configure_chart_request_track", stage("tracks"))
+
+    def satellite_tracks(*args):
+        stage("satellite")()
+        layer = object()
+        sky.layers.append(layer)
+        return (layer,)
+
+    monkeypatch.setattr("wenu.charts.request_satellite_tracks.configure_chart_request_satellite_tracks", satellite_tracks)
+    monkeypatch.setattr("wenu.charts.request_generation.prepare_chart_request", stage("prepare", prepared))
+    return SimpleNamespace(sky=sky, request=request, before=before, sessions=sessions,
+                           observer_closes=observer_closes, old_resolver=old_resolver,
+                           error=error, cleanup_error=cleanup_error)
+
+
+def _assert_minor_body_request_restored(fixture):
+    sky = fixture.sky
+    layers, bodies, alias = fixture.before
+    assert len(sky.layers) == len(layers)
+    assert all(actual is old for actual, old in zip(sky.layers, layers))
+    assert sky.solar_system_bodies == bodies
+    assert sky.first_alias is alias
+    assert not hasattr(sky, "second_alias")
+    assert all(layer.source_resolver is fixture.old_resolver for layer in layers)
+    assert fixture.observer_closes == []
+
+
+@pytest.mark.parametrize("failure_stage", [
+    "add", "session", "bind", "resolve", "grids", "horizon", "disks",
+    "tracks", "satellite", "prepare",
+])
+def test_minor_body_request_setup_failure_restores_owned_registrations(monkeypatch, failure_stage):
+    fixture = _minor_body_request_fixture(monkeypatch, failure_stage=failure_stage)
+    with pytest.raises(RuntimeError) as caught:
+        _prepare_with_sphere(fixture.request, fixture.sky, object(), owns_observer=False)
+    assert caught.value is fixture.error
+    _assert_minor_body_request_restored(fixture)
+    assert all(session.closes == 1 for session in fixture.sessions)
+
+
+def test_minor_body_request_success_close_restores_aliases_once(monkeypatch):
+    fixture = _minor_body_request_fixture(monkeypatch)
+    build = _prepare_with_sphere(fixture.request, fixture.sky, object(), owns_observer=False)
+    assert fixture.sky.first_alias is not fixture.before[-1]
+    assert hasattr(fixture.sky, "second_alias")
+    build.close()
+    build.close()
+    _assert_minor_body_request_restored(fixture)
+    assert fixture.sessions[0].closes == 1
+
+
+def test_minor_body_export_failure_closes_and_restores_supplied_sky(monkeypatch):
+    fixture = _minor_body_request_fixture(monkeypatch)
+    build = _prepare_with_sphere(fixture.request, fixture.sky, object(), owns_observer=False)
+    monkeypatch.setattr("wenu.charts.request_generation.build_chart_request", lambda *args, **kwargs: build)
+    def fail(*args, **kwargs):
+        raise fixture.error
+    monkeypatch.setattr("wenu.charts.request_generation.export_prepared_chart", fail)
+    with pytest.raises(RuntimeError) as caught:
+        generate_chart_request(fixture.request, sky=fixture.sky)
+    assert caught.value is fixture.error
+    _assert_minor_body_request_restored(fixture)
+    assert fixture.sessions[0].closes == 1
+
+
+def test_minor_body_cleanup_error_still_restores_registrations(monkeypatch):
+    fixture = _minor_body_request_fixture(monkeypatch, failure_stage="prepare", close_error=True)
+    with pytest.raises(RuntimeError) as caught:
+        _prepare_with_sphere(fixture.request, fixture.sky, object(), owns_observer=False)
+    assert caught.value is fixture.cleanup_error
+    assert caught.value.__context__ is fixture.error
+    _assert_minor_body_request_restored(fixture)
+
+
+def test_minor_body_build_close_error_still_restores_supplied_sky(monkeypatch):
+    fixture = _minor_body_request_fixture(monkeypatch, close_error=True)
+    build = _prepare_with_sphere(fixture.request, fixture.sky, object(), owns_observer=False)
+    with pytest.raises(RuntimeError) as caught:
+        build.close()
+    assert caught.value is fixture.cleanup_error
+    _assert_minor_body_request_restored(fixture)
