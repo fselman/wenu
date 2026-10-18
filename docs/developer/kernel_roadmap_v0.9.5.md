@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 1, 2026-10-17. **Status:** documentation for review; no
+**Plan revision:** 2, 2026-10-17. **Status:** documentation for review; no
 kernel, Gaia acquisition or package extraction is implemented by this change.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -186,6 +186,127 @@ declare epoch invariance; the kernel must not falsely label them as newly
 propagated measurements. Providers declare validity/dependencies, and tests
 count evaluations to prove isolation. No in-place update of a shared snapshot.
 
+## Angular tolerance and temporal reuse
+
+A query may request an angular approximation tolerance, expressed in angular
+units and attached to a declared direction/frame/status. This is separate from
+catalogue measurement uncertainty, physical-model uncertainty, plot sampling
+and provider resource coverage. No default chart precision is frozen here.
+K1 defines explicit full-model evaluation and bounded-reuse policies.
+
+Keep three epochs distinct: catalogue reference epoch, the anchor epoch of a
+computed state, and the requested evaluation epoch. Propagation starts from the
+authoritative source solution; deciding whether an existing computed direction
+can be reused compares the request with its computed anchor, not with the
+original catalogue epoch.
+
+For a sufficiently short interval and approximately constant angular motion,
+
+\[
+\Delta\theta \simeq \mu\,|t-t_{\mathrm{anchor}}|,
+\qquad
+\Delta t_{\max}\simeq \frac{\epsilon}{\mu}.
+\]
+
+For Gaia, \(\mu=\sqrt{\mu_{\alpha *}^{\,2}+\mu_\delta^{\,2}}\); its RA
+proper-motion component already includes the cosine of declination.
+This estimate is an admission heuristic, not a universal guarantee. A provider
+must supply a conservative bound for its admitted model and interval, including
+the cached state's existing approximation error. Where applicable a bound may
+take the form
+
+\[
+e_{\mathrm{reuse}}(t)
+\le e_{\mathrm{anchor}}+
+\mu_{\max}|\Delta t|+
+\tfrac12 a_{\max}|\Delta t|^2
+\le \epsilon.
+\]
+
+Here the speed/acceleration bounds apply over the whole certified interval.
+Do not assume acceleration is zero or infinite validity merely because motion
+data are missing. Without an admitted bound, evaluate the model instead of
+silently reusing the direction. Respect resource/model coverage independently.
+
+The provider knows the physical model; the kernel admits and reuses its
+certificate without implementing stellar, asteroid or satellite equations.
+A certificate identifies the anchor, applicable objects, model/resource/policy,
+frame/status, interval, error metric and bound. The returned result preserves
+both requested epoch and anchor provenance; reuse does not relabel an old
+coordinate as an exact new evaluation. Unsupported tolerances fail explicitly
+or use the documented full-model policy, never a hidden weaker tolerance.
+Full-model evaluation means evaluation of the admitted model, not perfect
+knowledge of the physical position.
+
+### Required reuse behavior
+
+- Start with vectorized propagation and exact-request caching. Benchmark the
+  actual Wenu subset before adding per-star schedules or elaborate indexing.
+  Under a direct rectilinear model, a longer epoch interval does not require
+  integration through every intervening year; it increases scientific/model
+  concerns rather than necessarily numerical workload.
+- If beneficial, group stars by certified validity intervals or motion bounds.
+  A few fast-moving stars must not force all stars or other providers to update.
+- Refresh from the authoritative catalogue solution or an equivalent
+  full-precision state with complete provenance. Do not accumulate successive
+  rounded displacements or reset the error budget when a cache entry is reused.
+- A cached state satisfying a loose tolerance cannot serve a tighter request
+  unless its declared bound also satisfies that tighter request. Reuse from a
+  more accurate entry is allowed when all other scientific identities match.
+- For tracks or interval queries, certify the whole requested interval or
+  partition/evaluate it appropriately; an endpoint check alone is insufficient.
+- Physical-state reuse and observer-realization reuse have different keys and
+  bounds. Proper-motion validity alone does not certify parallax, aberration,
+  precession/nutation or Earth-rotation effects. Native angular bounds do not
+  automatically bound an origin-translated apparent direction; the realization
+  service must propagate the applicable state errors into its own error budget.
+- Record the combined numerical approximation budget separately from
+  measurement/model uncertainty. A 1-arcsecond reuse allowance does not
+  guarantee 1-arcsecond knowledge of an ancient stellar position.
+- Freeze deterministic anchor/selection policies where reproducible chart
+  bytes are required. Cache warmness or request ordering must not silently
+  change an accepted reproducibility contract; full-model comparisons remain
+  the independent reference.
+
+### Paper scale belongs above the kernel
+
+A chart consumer may express displacement in a fraction of a raster pixel or
+physical paper length, then convert it to an angular tolerance using the local
+projection scale. Pixel-derived requests declare raster dpi; vector PDF/SVG
+has no intrinsic pixel size. Use per-object bounds or a conservative maximum
+magnification over the chart footprint. Stereographic scale varies across a
+sheet, so a central-scale conversion alone is not a whole-chart guarantee.
+
+The kernel/provider interface receives angular or appropriate physical-state
+tolerances and scientific reference meaning, never B4/A4, dpi, fonts or
+projection settings. Projection changes cannot invalidate the physical state
+itself, although a newly tighter angular request may require reevaluation.
+A uniform physical-state envelope need not pretend that every Cartesian
+provider can certify an observer-independent apparent angular error.
+
+### Native catalogue and optional common-epoch snapshots
+
+The Wenu catalogue keeps stable identities, cross-identifications, membership
+and each source's native astrometric solution/epoch immutable. An optional
+common-epoch snapshot, for example J2025.0, is a derived cache for convenience,
+not a replacement source catalogue or an asserted universal standard epoch.
+Retain velocity/model and uncertainty/covariance information required for
+further propagation. An epoch change does not rotate the ICRS axes or improve
+the original astrometry. Ancient epochs use the original admitted solution
+and validity/error model rather than chains of modern rounded snapshots.
+
+### Acceptance evidence for K1, K2 and K4
+
+K1 specifies units, error metrics, exact versus bounded policy, epoch meanings,
+certificate composition and deterministic selection. K2 fake-provider tests
+prove inside/outside and boundary behavior, mixed motion/update rates,
+tolerance tightening, accumulated error accounting, call-count isolation,
+independent observer invalidation and immutable provenance. K4 validates
+stellar estimates against full propagation across the admitted epoch domain,
+including high-motion/nearby stars, perspective effects, incomplete inputs
+and uncertainty limits. Benchmarks must demonstrate benefit before an
+optimization replaces the simpler vectorized reference.
+
 ## Gaia DR3 first, DR4 later
 
 Keep membership separate from astrometric enrichment. Default membership is
@@ -274,11 +395,11 @@ bounded. Runtime authority is accepted one milestone at a time.
 | ID | Deliverable | Exit gate |
 |---|---|---|
 | K0 | Clean docs, pinned baseline, this roadmap and diagrams | Exact archival ledger, active links, current docs tests; no production/data changes |
-| K1 | Public kernel/state/provider/observation contract and compatibility policy | Reviewed signatures, capability/validity/failure matrix and proposed independent test gates |
-| K2 | Minimal core package, registration, immutable states and selective reuse | Fake providers prove optional-dependency isolation, lifecycle, mutation rejection and selective call counts |
+| K1 | Public kernel/state/provider/observation contract and compatibility policy | Reviewed signatures, explicit tolerance/epoch/error-budget and validity contracts, capability/failure matrix and independent test gates |
+| K2 | Minimal core package, registration, immutable states and selective reuse | Fake providers prove isolation, lifecycle, immutable state and tolerance-certified selective reuse, including boundary/tighter-request/error-accumulation cases |
 | K3 | Adapters and mandatory routing for all current functionality | Complete consumer inventory, no bypasses, isolated request rollback and baseline compatibility evidence |
 | K4a | Gaia DR3 identification and bounded local subset | Coverage/ambiguity report, exact schema/bytes/provenance, unchanged default membership/photometry |
-| K4b | Stellar propagation, historical time and admitted epoch domain | Independent numerical comparison, declared uncertainty/fallbacks and ancient constellation specimens |
+| K4b | Stellar propagation, historical time and admitted epoch domain | Independent propagation/reuse comparison over the admitted epoch domain, declared numerical versus physical uncertainty/fallbacks, measured workloads and ancient specimens |
 | K5 | Kernel and observer contract freeze | All consumers routed, conformance suite published, real star/deep-sky/moving-body coverage and accepted integration evidence |
 | K6 | Extract `wenu_stars` first | Independently installed and tested against frozen core, including Gaia; product APIs unchanged |
 | K7 | Extract one deep-sky family at a time | Each package passes its own science/conformance gate without other providers installed |
