@@ -13,6 +13,20 @@
     "environment": "User-reported Mac; plugin autoload disabled."
   },
   "gates": {
+    "kernel-static-compatibility": {
+      "scope": "Existing native stellar adapter and public Stars compatibility with the additive static-direction SDK contract.",
+      "limits": "Run with the candidate SDK explicitly installed or on PYTHONPATH. No production routing, root dependency pin, catalogue/resource, snapshot schema, numerical model, projection/render or atlas changes. Independent SDK/wheel gate is separate; no full production suite.",
+      "selections": [
+        {
+          "node": "tests/test_stellar_state.py",
+          "reason": "Existing native stellar provider, source epoch, protocol, refusals and kernel consumer remain compatible."
+        },
+        {
+          "node": "tests/test_stars.py",
+          "reason": "Public Stars selection and native positions preserve source-epoch behavior."
+        }
+      ]
+    },
     "galaxy-static-model": {
       "scope": "Model-specific metadata admission: static galaxy directions do not require a measurement epoch; preserve source facts, other models, actual geometry and v5 round trips.",
       "limits": "No SDK implementation/contracts, source resources, serialization schema, frame transform, projection/render or packaging changes. The SDK still requires a source epoch for direction states; no kernel routing or fictitious epoch is added. Frame/origin/unit/provenance gaps remain admission failures. Do not run parent ingestion/admission gates as well.",

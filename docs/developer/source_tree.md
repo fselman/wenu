@@ -27,7 +27,9 @@ interval/error admission and canonical plan identity without physical motion
 equations. `providers.py` also declares the optional canonical planning protocol;
 `kernel.py` admits its schedule and owns atomic per-object anchor caching.
 `records.py` also owns SI Cartesian values and explicit velocity availability;
-`kernel.py` validates the matching native variant and independent error bounds.
+`kernel.py` validates the matching native variant and independent error bounds,
+including optional source epochs only for explicit `static_direction` admissions.
+The conformance kit checks static invariance across supplied query/probe times.
 [`time.py`](../../packages/wenu_kernel/src/wenu_kernel/time.py) owns explicit
 time-adapter admission, conversion records and the TimeService boundary;
 [`time_adapters.py`](../../packages/wenu_kernel/src/wenu_kernel/time_adapters.py)

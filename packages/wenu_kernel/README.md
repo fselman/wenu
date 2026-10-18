@@ -2,7 +2,8 @@
 
 This separately installable project implements a bounded native-state subset of K2.
 It is not the K5 frozen SDK. Existing Wenu continues to use its current code;
-no chart, report, catalogue, snapshot or numerical backend is rerouted yet.
+the accepted native stellar adapter uses its existing source-epoch subset.
+This extension adds no galaxy routing or numerical backend.
 
 ## Implemented scope
 
@@ -21,8 +22,8 @@ no chart, report, catalogue, snapshot or numerical backend is rerouted yet.
   planning, strict envelope admission and atomic per-object anchor caching.
 - SI Cartesian full-model states with explicit optional velocity and independent
   position/velocity uncertainty channels; the same session and ordered-batch API.
-- Standard-library tests with two constructed providers: fixed directions and
-  circularly moving directions. These are not Gaia fixtures or science oracles.
+- Standard-library tests with constructed native/static/moving direction and
+  Cartesian providers. These are not Gaia fixtures or science oracles.
 
 `TimePoint` requires canonical integer-valued `jd1` and `jd2` in [-0.5, 0.5).
 It rejects noncanonical input instead of silently losing precision while
@@ -34,7 +35,7 @@ All model and bound resource coverages must admit each requested sample.
 
 Reference registration is an explicit application allowlist, not a transform
 engine. Direction output uses radians; Cartesian positions/velocities use SI.
-Native/epoch direction, Cartesian state, batch evaluation and optional angular
+Native/epoch/static direction, Cartesian state, batch evaluation and optional angular
 reuse/planning capabilities are implemented. Catalogue/model references retain resource and
 membership digests. `StateBatch.query` carries that immutable provenance;
 rows carry source epochs and actual anchors. A provider is responsible for
@@ -189,8 +190,31 @@ cannot satisfy a deterministic bound; absent physical uncertainty is not zero.
 
 An ephemeris source need not have a catalogue reference epoch. Non-direction
 object records may declare `source_epochs=()`; their Cartesian rows then use
-`source_epoch=None`. Declared epochs must be retained, and direction records
-still require their source epoch. Resource coverage start is not a replacement.
+`source_epoch=None`. Declared epochs must be retained. Resource coverage start
+is not a replacement. Native/epoch direction sources still require source epochs.
+
+### Static direction admission
+
+An explicit `static_direction` capability describes directions invariant with
+evaluation time in the admitted reference/model and coverage. Its object records
+may have `source_epochs=()` and its `DirectionState.source_epoch` may be `None`.
+A declared source epoch must still be retained and match catalogue provenance.
+`time` remains the requested evaluation instant; `anchor_time` remains the actual
+computed anchor. Neither is a substitute measurement date.
+
+Static and native/epoch direction capabilities require distinct model admissions.
+Object records may advertise multiple models, but any native/epoch direction
+capability retains its source-epoch requirement. The session permits a null
+direction source epoch only under an explicit static admission. A nullable value
+record alone does not authorize a model. No galaxy-specific code enters the SDK.
+
+Constancy is exact only relative to the selected model; missing physical
+uncertainty remains unknown. Coverage, source bindings, units, reference, scale
+and numerical accuracy checks are unchanged. Static models receive no automatic
+temporal reuse or infinite coverage. Reuse still requires the existing explicit
+capabilities and validated certificates; null and declared source epochs have
+distinct anchor identities. The portable kit checks constant vectors across its
+supplied static-model query/probe times; providers own wider scientific evidence.
 
 This slice implements full-model Cartesian queries and identical-query caching.
 Cartesian temporal reuse fails explicitly. Each query returns only the state

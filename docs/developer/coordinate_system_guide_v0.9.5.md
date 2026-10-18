@@ -1159,7 +1159,11 @@ semantics. The immutable nonstellar admission record mirrors declared source
 frame/origin/epoch/time scale, units, edition and provenance, with explicit gaps.
 Native geometry now uses an unknown epoch unless one is declared; ICRS/J2000
 does not supply a measurement epoch. Strict admission refuses facts missing for
-the selected model. Galaxies use `static-direction`: their source epoch/scale
+the selected model. The SDK `static_direction` capability permits null source
+epochs under an explicit static admission; native/epoch direction models retain
+their epoch requirement. Requested/anchor times, frame/origin, coverage and
+uncertainty checks remain distinct and required. Galaxy routing remains pending.
+Galaxies use `static-direction`: their source epoch/scale
 are optional provenance, with no requested-epoch update of native ICRS centres.
 Other providers retain source-epoch admission. An ancient date-oriented frame
 or observer can transform these fixed directions through its separate service;

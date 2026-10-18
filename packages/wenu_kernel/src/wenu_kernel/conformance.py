@@ -154,7 +154,7 @@ class ProviderConformance:
                          tuple(lookup[t, obj] for t in reverse.times for obj in reverse.objects))
 
     def test_conformance_fresh_warm_and_request_order(self):
-        case, _, session, _ = self._open_case()
+        case, _, session, admission = self._open_case()
         first = session.evaluate(case.query)
         probe = session.evaluate(case.probe)
         other, _, fresh, _ = self._open_case()
@@ -164,6 +164,11 @@ class ProviderConformance:
         self.assertEqual(fresh.evaluate(other.probe), probe)
         self.assertEqual(fresh.evaluate(other.query), first)
         self.assertEqual(session.evaluate(case.query), first)
+        if "static_direction" in admission.capabilities:
+            vectors = {}
+            for row in first.states + probe.states:
+                self.assertEqual(row.vector, vectors.setdefault(row.object_key, row.vector),
+                                 "static direction changed with evaluation time")
 
     def test_conformance_publication_and_owned_lifetime(self):
         case, kernel, session, _ = self._open_case()

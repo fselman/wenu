@@ -91,6 +91,111 @@ class MovingProviderTests(FixedProviderTests):
         self.session = self.kernel.open_session(SessionPolicy((self.provider.reference,)))
 
 
+class StaticDirectionTests(unittest.TestCase):
+    def open_provider(self, provider, *, reproducibility="reproducible"):
+        kernel = Kernel(references=(REFERENCE,))
+        self.addCleanup(kernel.close)
+        kernel.register(provider, ownership="owned")
+        session = kernel.open_session(SessionPolicy((provider.reference,), reproducibility=reproducibility))
+        self.addCleanup(session.close)
+        return session
+
+    def test_unknown_and_declared_epochs_stay_distinct_from_evaluation_time(self):
+        from synthetic_providers import StaticDirections
+        for source_epoch in (None, EPOCH):
+            with self.subTest(source_epoch=source_epoch):
+                provider = StaticDirections(source_epoch=source_epoch)
+                session = self.open_provider(provider)
+                times = (provider.coverage.start, provider.coverage.stop)
+                result = session.evaluate(provider.query(times=times))
+                for row in result.states:
+                    self.assertEqual(row.source_epoch, source_epoch)
+                    self.assertEqual(row.anchor_time, row.time)
+                    self.assertEqual(row.evidence.physical_model.status, "not_evaluated")
+                self.assertEqual(result.states[0].vector, result.states[2].vector)
+                self.assertIs(session.evaluate(result.query), result)
+
+    def test_epoch_dependent_models_cannot_omit_declared_epoch(self):
+        for cls in (FixedDirections, MovingDirections):
+            provider = cls("requires-epoch")
+            session = self.open_provider(provider)
+            evaluate = provider.evaluate
+            def missing_epoch(query):
+                batch = evaluate(query)
+                return replace(batch, states=tuple(replace(row, source_epoch=None) for row in batch.states))
+            provider.evaluate = missing_epoch
+            with self.subTest(cls=cls), self.assertRaises(InvalidProviderResult):
+                session.evaluate(provider.query())
+            provider.evaluate = evaluate
+            session.evaluate(provider.query())
+            self.assertEqual(provider.calls["evaluate"], 2)
+
+    def test_static_admission_cannot_also_claim_native_or_epoch_direction(self):
+        from synthetic_providers import StaticDirections
+        for capability in ("native_direction", "epoch_direction", "cartesian_state"):
+            provider = StaticDirections()
+            admission = provider.descriptor.admissions[0]
+            provider.descriptor = replace(provider.descriptor, admissions=(replace(
+                admission, capabilities=admission.capabilities + (capability,)),))
+            kernel = Kernel(references=(REFERENCE,))
+            self.addCleanup(kernel.close)
+            with self.subTest(capability=capability), self.assertRaises(UnsupportedCapability):
+                kernel.register(provider, ownership="owned")
+            self.assertEqual(provider.calls["close"], 0)
+            provider.close()
+
+    def test_source_epoch_mismatch_fails_whole_batch_and_does_not_cache(self):
+        from synthetic_providers import StaticDirections
+        for source_epoch, wrong_epoch in ((None, EPOCH), (EPOCH, None), (EPOCH, replace(EPOCH, jd1=1))):
+            provider = StaticDirections(source_epoch=source_epoch)
+            session = self.open_provider(provider)
+            evaluate = provider.evaluate
+            def corrupt(query):
+                batch = evaluate(query)
+                return replace(batch, states=batch.states[:-1] + (replace(batch.states[-1], source_epoch=wrong_epoch),))
+            provider.evaluate = corrupt
+            with self.subTest(source_epoch=source_epoch), self.assertRaises(InvalidProviderResult):
+                session.evaluate(provider.query())
+            provider.evaluate = evaluate
+            session.evaluate(provider.query())
+            self.assertEqual(provider.calls["evaluate"], 2)
+
+    def test_static_coverage_scale_and_error_limits_still_apply(self):
+        from synthetic_providers import StaticDirections
+        provider = StaticDirections()
+        session = self.open_provider(provider)
+        for query, error in ((provider.query(times=(TimePoint(1, 0, "tt"),)), OutsideCoverage),
+                             (provider.query(times=(replace(EPOCH, scale="tdb"),)), TimeConversionUnavailable)):
+            with self.subTest(error=error), self.assertRaises(error):
+                session.evaluate(query)
+        self.assertEqual(provider.calls["evaluate"], 0)
+        with self.assertRaises(AccuracyUnavailable):
+            session.evaluate(provider.query(accuracy=AccuracyRequest(angular_rad=1e-16)))
+        # Constancy alone does not authorize a temporal cache or certificate.
+        session.evaluate(provider.query())
+        session.evaluate(provider.query(times=(replace(EPOCH, jd2=.1),)))
+        self.assertEqual(provider.calls["evaluate"], 3)
+
+    def test_certified_static_reuse_keeps_unknown_source_epoch_and_original_anchor(self):
+        from synthetic_providers import CertifiedStaticDirections
+        from wenu_kernel.reuse import direction_anchor_identity
+        for reproducibility in ("reproducible", "interactive_bounded"):
+            provider = CertifiedStaticDirections()
+            session = self.open_provider(provider, reproducibility=reproducibility)
+            query = provider.query(accuracy=AccuracyRequest(angular_rad=1e-10), evaluation_policy="bounded_reuse")
+            first = session.evaluate(query)
+            later = session.evaluate(replace(query, times=(replace(EPOCH, jd2=.1),)))
+            self.assertEqual(provider.calls["evaluate"], 1)
+            self.assertTrue(all(row.source_epoch is None for row in later.states))
+            self.assertEqual(tuple(row.anchor_time for row in later.states),
+                             tuple(row.anchor_time for row in first.states))
+            self.assertTrue(later.reuse_certificates)
+            full = replace(query, evaluation_policy="full_model", objects=query.objects[:1], coverage=None)
+            anchor = session.evaluate(full)
+            declared = replace(anchor, states=(replace(anchor.states[0], source_epoch=EPOCH),))
+            self.assertNotEqual(direction_anchor_identity(anchor), direction_anchor_identity(declared))
+
+
 class RegistryTests(unittest.TestCase):
     def setUp(self):
         self.fixed = FixedDirections("fixed")

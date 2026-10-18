@@ -87,6 +87,20 @@ class RecordTests(unittest.TestCase):
         source[0] = 99
         self.assertEqual(row.vector, (1.0, 0.0, 0.0))
 
+    def test_static_direction_can_retain_unknown_or_declared_source_epoch(self):
+        from synthetic_providers import StaticDirections
+        provider = StaticDirections()
+        row = provider.evaluate(provider.query()).states[0]
+        self.assertIsNone(row.source_epoch)
+        self.assertEqual(provider.snapshot.objects[0].source_epochs, ())
+        self.assertEqual(replace(row, source_epoch=EPOCH).source_epoch, EPOCH)
+        for value in (False, "unknown", 2000.0):
+            with self.subTest(value=value), self.assertRaises(InvalidQuery):
+                replace(row, source_epoch=value)
+        for capability in ("native_direction", "epoch_direction"):
+            with self.subTest(capability=capability), self.assertRaises(InvalidQuery):
+                replace(provider.snapshot.objects[0], capabilities=(capability,))
+
     def test_mutable_subclasses_cannot_enter_snapshot(self):
         class MutableKey(ObjectKey):
             pass

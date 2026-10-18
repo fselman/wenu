@@ -443,9 +443,11 @@ class ReuseCertificate:
 
 @dataclass(frozen=True, slots=True)
 class DirectionState:
+    """A nullable source epoch is admitted only by a static-direction session model."""
+
     object_key: ObjectKey
     time: TimePoint
-    source_epoch: TimePoint
+    source_epoch: TimePoint | None
     anchor_time: TimePoint
     reference: ReferenceSpec
     vector: tuple[float, float, float]
@@ -454,9 +456,11 @@ class DirectionState:
 
     def __post_init__(self):
         for value, cls in ((self.object_key, ObjectKey), (self.time, TimePoint),
-                           (self.source_epoch, TimePoint), (self.anchor_time, TimePoint),
+                           (self.anchor_time, TimePoint),
                            (self.reference, ReferenceSpec), (self.evidence, UncertaintyEvidence)):
             exact(value, cls)
+        if self.source_epoch is not None:
+            exact(self.source_epoch, TimePoint)
         if type(self.vector) not in (tuple, list) or len(self.vector) != 3:
             raise InvalidQuery("direction must have three components")
         vector = tuple(finite(x) for x in self.vector)

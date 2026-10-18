@@ -69,15 +69,19 @@ class Kernel:
             if not direction and not cartesian:
                 raise UnsupportedCapability("unsupported native representation/units")
             if not set(admission.capabilities) <= {
-                "native_direction", "epoch_direction", "batch_evaluation", "direction_reuse_bound",
+                "native_direction", "epoch_direction", "static_direction", "batch_evaluation", "direction_reuse_bound",
                 "canonical_direction_reuse", "cartesian_state",
             }:
                 raise UnsupportedCapability("capability is outside this implementation slice")
-            direction_caps = {"native_direction", "epoch_direction", "direction_reuse_bound", "canonical_direction_reuse"}
+            direction_caps = {"native_direction", "epoch_direction", "static_direction", "direction_reuse_bound", "canonical_direction_reuse"}
             if ((direction and "cartesian_state" in admission.capabilities)
                     or (cartesian and (set(admission.capabilities) & direction_caps
                                        or "cartesian_state" not in admission.capabilities))):
                 raise UnsupportedCapability("capabilities do not match the native representation")
+            if "static_direction" in admission.capabilities and (
+                set(admission.capabilities) & {"native_direction", "epoch_direction"}
+            ):
+                raise UnsupportedCapability("static direction requires a distinct model admission")
             if "canonical_direction_reuse" in admission.capabilities and (
                 "direction_reuse_bound" not in admission.capabilities
                 or not callable(getattr(provider, "plan_reuse", None))
@@ -207,7 +211,7 @@ class KernelSession:
         if len(admissions) != 1:
             raise UnsupportedCapability("query must match exactly one advertised model/reference/subset")
         admission = admissions[0]
-        required = {"cartesian_state"} if query.reference.representation == "cartesian" else {"native_direction", "epoch_direction"}
+        required = {"cartesian_state"} if query.reference.representation == "cartesian" else {"native_direction", "epoch_direction", "static_direction"}
         if not set(admission.capabilities) & required:
             raise UnsupportedCapability("model lacks the requested state capability")
         coverage_points = query.times + ((query.coverage.start, query.coverage.stop) if query.coverage else ())
@@ -225,11 +229,11 @@ class KernelSession:
                 if result is not None:
                     return result
             return self._evaluate_bounded(query, records, instance, descriptor, admission)
-        batch = self._evaluate_full(query, records, instance, descriptor)
+        batch = self._evaluate_full(query, records, instance, descriptor, admission)
         self._cache[query] = batch
         return batch
 
-    def _evaluate_full(self, query, records, instance, descriptor):
+    def _evaluate_full(self, query, records, instance, descriptor, admission):
         """Validate a complete backend batch without publishing any cache entry."""
         decision = invoke(instance, "supports", query, provider_key=descriptor.key)
         if type(decision) is not CapabilityDecision:
@@ -247,6 +251,9 @@ class KernelSession:
             if (type(row) is not expected_type or row.reference != query.reference
                     or row.anchor_time != row.time):
                 raise InvalidProviderResult("state provenance/reference/anchor mismatch")
+            if (type(row) is DirectionState and row.source_epoch is None
+                    and "static_direction" not in admission.capabilities):
+                raise InvalidProviderResult("only static direction models may omit a source epoch")
             source_epochs = records[row.object_key].source_epochs
             if ((row.source_epoch is None and source_epochs)
                     or (row.source_epoch is not None and row.source_epoch not in source_epochs)):
@@ -312,7 +319,7 @@ class KernelSession:
             full = replace(query, objects=tuple(objects), times=(time,),
                            evaluation_policy="full_model", coverage=None)
             try:
-                batch = self._evaluate_full(full, records, instance, descriptor)
+                batch = self._evaluate_full(full, records, instance, descriptor, admission)
             except (UnsupportedCapability, AccuracyUnavailable):
                 return None
             for row in batch.states:
@@ -375,7 +382,7 @@ class KernelSession:
                            evaluation_policy="full_model", coverage=None)
             batch = self._cache.get(full)
             if batch is None:
-                batch = self._evaluate_full(full, records, instance, descriptor)
+                batch = self._evaluate_full(full, records, instance, descriptor, admission)
                 staged_cache[full] = batch
             for row in batch.states:
                 results[time, row.object_key] = row
