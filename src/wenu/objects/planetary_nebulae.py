@@ -18,6 +18,17 @@ class PlanetaryNebulae(NonStellar):
 
     layer_name = "planetary_nebulae"
 
+    @property
+    def _uses_catalogue_lookup(self):
+        return True
+
+    def _direction_provider(self, rows, scale):
+        """PN centre identity, independent of associated central-star motion."""
+        return self._catalogue_direction_provider(rows, scale,
+            capability="catalogue_lookup", semantic_type="planetary-nebula",
+            provider_id="wenu.planetary-nebula-lookup", resource_id="derived-planetary-nebula-table",
+            model_id="planetary-nebula-catalogue-lookup")
+
     _ALIASES = {
         **NonStellar._ALIASES,
         "identifier": (
@@ -138,12 +149,14 @@ class PlanetaryNebulae(NonStellar):
                 metadata=self._point_metadata(table),
             )
 
+        state_table = self._state_table(
+            self.source_catalog, getattr(resolved.altaz_frame, "obstime", None))
         azimuth, altitude = catalogue_point_altaz(
             self._observed_point_cache,
             resolved,
-            source_table=self.source_catalog,
+            source_table=state_table,
             selected_table=table,
-            source_key=(self.catalog_name, self._source_revision),
+            source_key=self._observed_point_source_key(state_table),
         )
         return SphericalPoints(
             lon_deg=azimuth,
@@ -200,7 +213,7 @@ class PlanetaryNebulae(NonStellar):
         identifiers = np.asarray(table["identifier"], dtype=object)
         metadata = self._point_metadata(table)
         metadata["coordinate_system"] = "icrs"
-        return SphericalPoints(lon_deg=np.asarray(table["ra_deg"], dtype=float),
-            lat_deg=np.asarray(table["dec_deg"], dtype=float),
+        longitude, latitude = self._native_centres(table)
+        return SphericalPoints(lon_deg=longitude, lat_deg=latitude,
             coordinate_spec=self.native_coordinate_spec(table),
             ids=identifiers, names=identifiers, labels=identifiers, metadata=metadata)

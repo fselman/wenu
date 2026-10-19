@@ -562,7 +562,7 @@ its returned centre arrays, ordered IDs and immutable metadata enter cache ident
 Galaxy `_observed_point_source_key` similarly binds the already-queried centre
 values. Changed kernel states invalidate a warm observation cache, and failed
 admission/query propagates even after cache fill. The generic NonStellar owner now opts into these hooks under K3.12;
-dedicated PN/SNR families preserve their existing paths. K3.13 opts the globular
+the dedicated SNR family preserves its existing path. K3.13 opts the globular
 owner into the same mechanics with its own identity. No transformation or ellipse mathematics
 changes. Cold and restored galaxies use these same methods without a schema change.
 
@@ -1381,4 +1381,24 @@ and restored sources all query the provider. Failed source admission or state
 evaluation propagates after cache fill; source coordinates are not a recovery
 route. Harris half-light diameters, structural metadata, source/active selection,
 common-name policy, sampling and glyph/observer mathematics stay with their existing
-owners. PN/SNR routes and physical motion remain separate pending work.
+owners. The PN route is implemented under K3.14 below; SNR routing and physical motion
+remain separate pending work.
+
+## Planetary-nebula kernel lookup
+
+K3.14 enables PlanetaryNebulae._uses_catalogue_lookup and a PN-owned provider
+facade to the shared NonStellar catalogue lookup owner. Source admission, copied
+rows/identity, unknown/qualified epochs, deterministic evaluation anchor and vector
+decoding retain their accepted mechanics. Unknown physical facts stay explicit.
+
+PlanetaryNebulae.realize constructs the existing SphericalPoints from returned
+_native_centres after the existing native selection/size filter. Its observed
+spherical_geometry queries _state_table on the full source before cache access
+and supplies _observed_point_source_key(state_table). The shared observation
+cache transforms the returned centres, then applies existing requested-row order.
+position and spherical_centers inherit the shared provider boundary. Source
+records, membership/flux/diameter metadata, native catalogue order, observed request
+order/duplicates and empty-symbol behavior remain unchanged. No labels-only flag
+or outline sampling is added to the PN API: symbols already carry their labels.
+Failed admission/state queries propagate even after cache fill; no direct-source
+fallback. Snapshot transport and renderer symbol scaling are unchanged.

@@ -43,7 +43,7 @@ unqualified constructed/unitless legacy sources. Unqualified source dates stay
 provenance and do not block static lookup. Galaxy outline state is queried before
 cache access, and returned centres enter outline/point cache identity. The same
 queried centres construct outlines once; unchanged returned states still reuse
-their observer transformation. Dedicated PN/SNR families retain their default cache hooks;
+their observer transformation. The SNR family retains its default cache hooks;
 the generic owner opts into returned-state hooks under K3.12 below.
 This is accepted through PR #275 and does not qualify absent physical source facts.
 
@@ -319,14 +319,30 @@ requests and non-horizontal chart frames do not adopt this opt-in.
 Accepted K3.12 (PR #276) opts the generic NonStellar owner into catalogue lookup for
 public points, native outlines/labels and observed centre/outline inputs. Galaxy
 and generic lookup share metadata admission, epoch handling and vector decoding
-mechanics while retaining distinct model/resource identities. Dedicated PN and SNR owners retain their prior routes; their milestones remain pending.
+mechanics while retaining distinct model/resource identities. The dedicated SNR owner retains its prior route; K3.15 remains pending.
 K3.13 now opts the globular owner into the same source-bound lookup/cache mechanics
 with its own globular semantic type and model/provider/resource identity. Half-light
 diameter construction, structural metadata, common names and selection are unchanged.
-The globular candidate is pending Mac acceptance.
+Globular routing is accepted through PR #277.
 Returned generic states enter both observation cache identities before reuse.
 Named ResolvedTarget coordinates similarly query immutable copied target records;
 object-centre and binocular preparation consume that public coordinate. Explicit
 user coordinates remain constructed references. Target provenance/components are
 preserved without claiming source epoch or physical origin qualification. No
 source membership, aliases, selection, observer mathematics or rendering changes.
+
+## Planetary-nebula kernel lookup
+
+The K3.14 candidate opts PlanetaryNebulae into the accepted shared lookup/cache
+mechanics with its own PN centre/provider identity. Its native point-symbol route
+uses returned centres rather than reading raw coordinates; its observed-symbol
+route queries a returned state table before cache access and includes that state
+in cache identity. Inherited public position and observed centre APIs use the same
+lookup. Empty observed selections remain empty without a query.
+
+Native catalogue order and observed requested order/duplicates retain their prior
+behavior. True/probable catalogue inclusion, curated criteria, minimum-size
+filtering, diameter/flux metadata and fixed display symbols are unchanged. No
+central-star position/motion substitutes for the nebular centre, and no motion or
+expansion is introduced. Cold/restored skies share these methods; Mac acceptance
+is pending.

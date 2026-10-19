@@ -4,6 +4,7 @@
 from types import SimpleNamespace
 
 import numpy as np
+import pytest
 from astropy import units as u
 from astropy.coordinates import AltAz, EarthLocation
 from astropy.time import Time
@@ -309,3 +310,103 @@ def test_planetary_selected_cli_exports_exact_union_and_ranked_review(monkeypatc
     with pytest.raises(ValueError, match='checksum mismatch'):
         tool.promote_catalogue(catalogue, rejected, activate=True)
     assert not rejected.exists()
+
+
+def test_pn_returned_states_control_native_points_and_warm_observation(tmp_path, monkeypatch):
+    from dataclasses import replace
+    from astropy.coordinates import SkyCoord
+    from astropy.table import Table
+    from wenu.catalogue_state import _unit_direction
+    from wenu_kernel import KernelSession
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    source = Table(dict(identifier=['PN a', 'PN b'], ra_deg=[10., 20.], dec_deg=[-20., -30.],
+        major_axis_arcmin=[2., 4.], minor_axis_arcmin=[1., 3.],
+        common_name=['synthetic A', 'synthetic B'], log_hbeta_flux=[-12., -13.],
+        in_messier=[True, False], public_interest=[False, False]))
+    source.meta = dict(catalog='syntheticPN', catalog_version='synthetic-v1',
+        documentation_url='https://example.invalid/syntheticPN')
+    for name in ('ra_deg', 'dec_deg'):
+        source[name].unit = u.deg
+    for name in ('major_axis_arcmin', 'minor_axis_arcmin'):
+        source[name].unit = u.arcmin
+    path = tmp_path/'synthetic.ecsv'; source.write(path)
+    resolved = observer(); layer = PlanetaryNebulae(resolved); layer.load(filename=path)
+    original = layer.source_catalog.copy(copy_data=True)
+    record = layer.require_catalogue_lookup_metadata().to_record()
+    selection = ['pn b', 'PN a', 'PN b', 'absent']
+    layer.spherical_geometry(resolved, selected=selection)
+    layer.spherical_centers(resolved)
+    values = {'PN a': (35., -10.), 'PN b': (75., 15.)}
+    evaluate, calls = KernelSession.evaluate, []
+    def shift(session, query):
+        batch = evaluate(session, query); calls.append(batch)
+        return replace(batch, states=tuple(replace(state, vector=_unit_direction(
+            *values[state.object_key.value.rsplit(':', 1)[-1]])) for state in batch.states))
+    monkeypatch.setattr(KernelSession, 'evaluate', shift)
+    native = layer.position()
+    np.testing.assert_allclose(native.lon_deg, [35., 75.])
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    symbols = layer.realize(context, None, selected=selection)
+    assert list(symbols.ids) == ['PN a', 'PN b']  # Native retains catalogue order.
+    np.testing.assert_allclose(symbols.lon_deg, [35., 75.])
+    filtered = layer.realize(context, None, minimum_size_arcmin=3.)
+    assert list(filtered.ids) == ['PN b']
+    np.testing.assert_allclose(filtered.lon_deg, [75.])
+    points = layer.spherical_centers(resolved)
+    expected = SkyCoord(ra=[35., 75.]*u.deg, dec=[-10., 15.]*u.deg).transform_to(resolved.altaz_frame)
+    np.testing.assert_allclose(points.lon_deg, expected.az.deg)
+    observed = layer.spherical_geometry(resolved, selected=selection)
+    assert list(observed.ids) == ['PN b', 'PN a', 'PN b']  # Observed preserves request order/duplicates.
+    np.testing.assert_allclose(observed.lon_deg, expected.az.deg[[1, 0, 1]])
+    assert observed.metadata['geometry_kind'] == 'cartographic_symbol'
+    assert observed.metadata['major_axis_arcmin'].tolist() == [4., 2., 4.]
+    assert observed.metadata['in_messier'].tolist() == [False, True, False]
+    assert len(calls) == 5
+    assert layer.catalogue_metadata.to_record() == record
+    for name in original.colnames:
+        np.testing.assert_array_equal(original[name], layer.source_catalog[name])
+    empty = layer.spherical_geometry(resolved, selected=['absent'])
+    assert len(empty) == 0 and len(calls) == 5
+
+
+@pytest.mark.parametrize('failure', ('kernel', 'lookup'))
+def test_packaged_pn_all_routes_refuse_after_warm_symbol_cache(monkeypatch, failure):
+    from wenu_kernel import KernelSession
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    resolved = observer(); layer = PlanetaryNebulae(resolved); layer.load()
+    record = layer.require_catalogue_lookup_metadata().to_record()
+    with pytest.raises(ValueError, match='Incomplete nonstellar metadata'):
+        layer.require_complete_metadata()
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    selected = ['PN G063.1+13.9']
+    actions = (layer.position, lambda: layer.realize(context, None, selected=selected),
+        lambda: layer.spherical_centers(resolved, selected=selected),
+        lambda: layer.spherical_geometry(resolved, selected=selected))
+    for action in actions:
+        action()
+    def refuse(*args, **kwargs):
+        raise RuntimeError('synthetic PN refusal')
+    if failure == 'kernel':
+        monkeypatch.setattr(KernelSession, 'evaluate', refuse)
+    else:
+        monkeypatch.setattr(layer, 'require_catalogue_lookup_metadata', refuse)
+    for action in actions:
+        with pytest.raises(RuntimeError, match='PN refusal'):
+            action()
+    assert layer.catalogue_metadata.to_record() == record
+
+
+def test_pn_lookup_identity_retains_unknown_physical_facts():
+    from wenu.catalogue_state import catalogue_direction_states
+    from wenu_kernel.records import TimePoint
+    layer = PlanetaryNebulae(None); layer.load()
+    row = layer.catalog[0]
+    rows = ((str(row['identifier']), float(row['ra_deg']), float(row['dec_deg'])),)
+    provider = layer._direction_provider(rows, 'tt')
+    admission = provider.describe().admissions[0]
+    assert 'planetary-nebula' in admission.model.model_id
+    assert 'catalogue_lookup' in admission.capabilities
+    assert admission.reference.origin_id == 'legacy-unverified-origin'
+    states = catalogue_direction_states(provider, TimePoint(0, 0, 'tt'))
+    assert len(states) == 1 and states[0].source_epoch is None
+    assert layer.catalogue_metadata.to_record()['epoch'] is None
