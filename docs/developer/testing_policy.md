@@ -178,6 +178,28 @@ observer/projection/rendering and atlas behavior are unchanged; retain their
 accepted receipts. No full SDK, broad installation, unrelated-family or full
 production rerun. Run documentation and tooling separately.
 
+## Shared astrometric engine factoring
+
+`astrometric-core-factoring` runs the new enduring generic-engine owner, the
+existing complete cluster owner, the targeted installed-wheel test and native
+consumer seams. The source adapter keeps source/unit/centre qualification;
+propagation/domain/certification move to one stdlib/SDK engine. The existing
+numerical-corruption test retains its node/assertions and now injects elapsed-time
+failure into the actual moved owner. No old oracle or test is removed.
+
+New faults protected are object-type dispatch, dependency on concrete catalogues,
+caller-owned SI buffers, inconsistent SDK bindings/error budgets and bypass of
+shared domain validation. Synthetic star/cluster/PN/SNR records share one actual
+provider and run eight portable conformance checks. A -I -S subprocess loads only
+the engine and accepted SDK, evaluates a real query and forbids Wenu/Astropy/NumPy
+imports. This is module isolation, not whole-product/package independence.
+Existing ERFA/analytic/Decimal propagation and interval proofs, cluster conformance,
+selected native vectors/refusals and real cold/saved/pixel/fresh-process consumers
+remain selected. The installed-wheel test retains its assertions and checks both
+modules in archives and actual execution. Run documentation and stdlib tooling
+separately. No SDK/source-resource/dependency/observer/projection/renderer or
+snapshot-schema change; do not rerun full SDK or production suites.
+
 ## Cluster observer contract and implementation gates
 
 The contract-only milestone adds the scientific ownership/admission contract,

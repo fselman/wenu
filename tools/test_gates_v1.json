@@ -1000,6 +1000,27 @@
           "reason": "Existing real admitted companion exercises observation refusal and source/time/model failure; no new observer numerical capability is claimed."
         }
       ]
+    },
+    "astrometric-core-factoring": {
+      "scope": "Object-independent rectilinear astrometric engine, calling cluster adapter, real mixed-family/conformance/isolation and native/install compatibility.",
+      "limits": "No SDK, source-resource, dependency, observer, projection, renderer or snapshot schema change. Reduced-input policies, Cartesian output and observer parallax remain pending. No full SDK/production repeat.",
+      "extends": [
+        "cluster-motion-native-consumers"
+      ],
+      "selections": [
+        {
+          "node": "tests/test_astrometric_state.py",
+          "reason": "New enduring generic engine: mixed family, immutable inputs, domain/binding failure, portable conformance and isolated stdlib/SDK evaluation."
+        },
+        {
+          "node": "tests/test_cluster_state.py",
+          "reason": "Preserve all independent numerical/reuse oracles, source admission and cluster conformance; fault injection follows moved numerical owner."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_cluster_motion_module_and_admission_ship_and_evaluate_from_installed_wheel",
+          "reason": "Both facade and new generic module ship and run through real installed SDK/Wenu consumption."
+        }
+      ]
     }
   },
   "consumer_review": [

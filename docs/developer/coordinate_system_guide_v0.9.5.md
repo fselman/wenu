@@ -1250,6 +1250,12 @@ the admitted binary64 SI model, including the stored anchor error. Catalogue,
 spherical-input conversion and physical-model errors remain uncertified; see the
 [bound and proof](implementation_reference.md#cluster-direction-reuse-bound). This numerical
 model is separate from observer transformations and current chart adoption.
+The complete-input rectilinear and angular-bound algorithms now live in the
+object-independent `astrometric_state` core; cluster-specific source/centre
+qualification and spherical-input conversion remain in the calling adapter.
+This ownership change preserves the accepted nominal model and source epochs.
+Other object adapters, reduced-input lookback policies and expansion are not
+implemented by this factoring.
 The [observer contract](scientific_contracts.md#cluster-observer-realization-contract)
 requires a retained Cartesian state and explicit reception/time/resource meaning
 before finite-distance observation. A time-scale conversion alone does not

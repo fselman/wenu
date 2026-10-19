@@ -95,6 +95,11 @@ now traces Hunt conventions to Gaia and the four Dias motions to D14. Centre
 epoch lineage for the latter and cluster-mean covariance/model bounds remain
 incomplete; default charts retain source lookup. See the
 [ingestion API](implementation_reference.md#open-cluster-astrometry-ingestion).
+The [shared astrometric engine](implementation_reference.md#shared-astrometric-engine)
+now owns object-independent SI propagation, domain/numerical checks and angular
+certificates. Cluster source admission/identity remains an adapter calling that
+engine. Synthetic mixed star/cluster/PN/SNR use is verified; real adapters for
+other families and reduced-input lookback policies remain planned.
 The explicit [nominal cluster motion API](implementation_reference.md#nominal-cluster-motion-provider)
 now implements source-bound immutable admission and finite-domain TCB rectilinear
 direction evaluation through the accepted SDK. It retains all 513 IDs, advertises

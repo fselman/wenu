@@ -142,7 +142,7 @@ def test_cluster_motion_module_and_admission_ship_and_evaluate_from_installed_wh
     from zipfile import ZipFile
     import wenu_kernel
     wheel = _assert_source_products_ship(tmp_path, ('open_clusters_hunt_motion_admission_v1.json',),
-        modules=('wenu/cluster_state.py',))
+        modules=('wenu/cluster_state.py', 'wenu/astrometric_state.py'))
     installed=tmp_path/'installed'
     with ZipFile(wheel) as archive: archive.extractall(installed)
     # Explicit accepted SDK path works for both regular and editable SDK hosts;
@@ -154,7 +154,9 @@ import sys,json
 from pathlib import Path
 sys.path[:0]=[sys.argv[1],sys.argv[2],*json.loads(sys.argv[3])]
 import wenu, wenu_kernel
-from wenu import cluster_state
+from wenu import cluster_state, astrometric_state
+assert Path(astrometric_state.__file__).is_relative_to(Path(sys.argv[1]))
+assert issubclass(cluster_state.ClusterMotionProvider, astrometric_state.RectilinearAstrometricProvider)
 assert Path(wenu.__file__).is_relative_to(Path(sys.argv[1]))
 assert Path(cluster_state.__file__).is_relative_to(Path(sys.argv[1]))
 assert Path(wenu_kernel.__file__).is_relative_to(Path(sys.argv[2]))

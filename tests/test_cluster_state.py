@@ -368,7 +368,7 @@ def test_cluster_certificate_boundary_coverage_refusal_and_foreign_or_reused_anc
 
 
 def test_cluster_numerical_bound_refuses_corrupted_elapsed_time(monkeypatch):
-    import wenu.cluster_state as owner
+    import wenu.astrometric_state as owner
     table,meta,coverage=synthetic();p=ClusterMotionProvider(admit_cluster_motion(table,meta,coverage=coverage))
     q=query_for(p,(TimePoint(2457754,.25,'tcb'),))
     through_kernel(p,q)  # Positive baseline before injecting an actual numerical fault.

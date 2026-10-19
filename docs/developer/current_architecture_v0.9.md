@@ -144,8 +144,13 @@ than reimplemented in a new kernel.
 
 ## Explicit nominal cluster motion API
 
-The separate `cluster_state.py` owner now admits immutable qualified cluster
-solutions and supplies a real SDK `epoch_direction` provider. It converts source
+The `cluster_state.py` source adapter now admits immutable qualified cluster
+solutions and supplies its compatibility facade over the shared
+`astrometric_state.RectilinearAstrometricProvider`. The object-independent core
+owns SI rows, domain checks, propagation, numerical verification and angular
+certificates. Object types and source facts enter through explicit SDK bindings;
+the core imports no catalogue/observer/graphics or astronomy dependencies.
+The facade supplies the same real SDK `epoch_direction` admission. It converts source
 spherical differentials through Astropy and evaluates the declared SI rectilinear
 centre model at explicit TCB instants within a required finite nominal domain.
 The runtime metadata resource binds the accepted source companion and its
