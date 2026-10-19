@@ -59,12 +59,23 @@ One numerical provider may contain different object semantic types; numerical
 work never branches on star/cluster/PN/SNR type. Existing cluster results and
 identities are preserved. Other production source adapters remain unimplemented.
 
-The agreed next reduced-model policy is configurable lookback from each source
-reference epoch: initially 200 years without measured PM, 1,000 years with PM
-but incomplete full space-motion inputs, and a separately admitted longer domain
-with complete inputs. These are planned policies, not implemented validity
-limits or accuracy guarantees. Distance availability controls whether observer
-parallax is supported; unknown motions/RV are never recorded as measured zero.
+Fernando's approved 2026-10-19 clarification supersedes the proposed universal
+1,000-year proper-motion-only limit. Known position/reference epoch plus both
+proper-motion components can admit angular propagation without distance or radial
+velocity. Tens of thousands of years may be useful for chart purposes, but no
+universal accuracy or safe duration is asserted. State the angular model, source
+uncertainties and neglected effects; assess suitability against the requested
+angular tolerance. Unknown model errors stay unknown, not zero. Optional explicit
+caller bounds are allowed, but missing distance/RV alone must not cause a fixed
+short PM-only cutoff. Do not describe this reduced model as complete space motion.
+
+Distance enables distance-dependent observer parallax; radial velocity enables
+perspective/full-space-motion treatment when combined with the other required
+inputs. These are separate capabilities, not prerequisites for angular PM-only
+propagation. The initial approximately 200-year no-measured-PM proposal remains
+pending separate reduced-model acceptance; it is not an implemented accuracy
+guarantee. No reduced-input propagation algorithm is implemented by this policy
+update. Unknown motions/RV are never recorded as measured zero.
 Reduced models require explicit approximation/error semantics and their own
 acceptance. Expansion, internal dynamics and morphology evolution are excluded.
 Stars, clusters, PNs and SNRs retain object-specific source/centre qualification;
@@ -455,3 +466,16 @@ metadata correction, not a coordinate transformation or propagation. Defining
 FK4/FK5/ecliptic equinoxes retain their existing role and values. Nonstellar
 physical admission still requires its declared model's source facts; removal of
 a shared default cannot turn an unverified source into a qualified provider.
+
+## Catalogue lookup and physical admission
+
+Approved by Fernando on 2026-10-19: baseline catalogue lookup and physical
+motion/parallax admission have distinct requirements. Lookup preserves recorded
+positions, identity, units, edition, provenance and source-byte binding. Missing
+epoch/frame/origin facts remain explicit and unverified chart interpretation
+remains labelled; lookup cannot fabricate physical qualification. Requiring an
+unknown physical measurement epoch must not block a preserved catalogue lookup.
+Strict physical admission retains the selected model's qualified input requirements.
+PN nebular centres, SNR radio centroids and associated compact/central stars remain
+distinct. Baseline acceptance with explicit compatibility limits does not recover
+missing facts, certify arbitrary-date accuracy or automatically close K5.

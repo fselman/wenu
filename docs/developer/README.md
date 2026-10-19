@@ -36,8 +36,10 @@ PR #269 completes AX.12, not K3 or the kernel freeze. K3.07 is accepted through
 PR #271. K3.08 observed stellar/figure/label routing is accepted through PR #272.
 K3.09 shared-default correction is accepted through PR #273. Its remaining
 [source assessment and admission-policy proposal](kernel_migration_audit_v1.md#m5-source-assessment-and-proposed-admission-distinction-2026-10-19)
-are documented; physical source qualification remains open and policy changes
-await Fernando’s explicit agreement. Extra scope or changed agreed order must be discussed with Fernando,
+are documented; Fernando approved the lookup/physical-admission distinction
+and PM-only policy on 2026-10-19. K3.09 explicit lookup admission is selected;
+physical source gaps remain explicit. Reduced-input numerical propagation
+remains a separate pending AX.13 implementation. Extra scope or changed agreed order must be discussed with Fernando,
 explicitly agreed and documented before implementation under the
 [mandatory agent rule](assistant_instructions.md#roadmap-control-mandatory-before-implementation).
 

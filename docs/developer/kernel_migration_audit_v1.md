@@ -113,38 +113,44 @@ model, while the SDK/shared catalogue adapter already support catalogue lookup.
 Thus some remaining refusals concern the requirements of the selected model,
 not information that another documentation search can manufacture.
 
-**Proposed; awaiting Fernando's explicit agreement:** distinguish admission for
-baseline catalogue lookup from admission for physical propagation/parallax.
-This is an interpretation of how to complete K3.09, not an implemented policy.
+**Agreed by Fernando on 2026-10-19:** distinguish baseline catalogue lookup
+from physical model admission, incorporating his proper-motion-only clarification
+and explicit instruction to incorporate the policy and proceed. Policy agreement
+is recorded before implementing the bounded K3.09 admission distinction.
 
-1. A catalogue lookup would return preserved positions through existing kernel
+1. A catalogue lookup returns preserved positions through existing kernel
    interfaces, retaining IDs, units, edition, byte binding, original reference
    labels and known metadata. Missing measurement epochs remain unknown.
    Incomplete reference evidence remains explicitly labelled compatibility
    interpretation, never strict physical qualification or a fabricated origin.
-2. Motion/parallax admission would retain its model-required epoch/time scale,
-   qualified reference semantics, distance and motion requirements. No missing
+2. Each physical capability retains its own required inputs. Known position,
+   reference epoch and both PM components suffice to admit angular propagation
+   without distance or RV; no universal PM-only time cutoff is imposed. Distance
+   is required for distance-dependent observer parallax. Full space motion has
+   separate requirements and perspective treatment. Uncertainties, approximation
+   limits and requested angular accuracy control suitability. No missing
    input becomes zero, no new lookback interval is certified, and no expansion
    or central-star/nebular-centroid substitution is introduced.
-3. Baseline routing could be accepted with those explicit limitations while the
+3. Baseline routing can be accepted with those explicit limitations while the
    unresolved physical qualification stays separately visible. This would not
    claim that source facts have been recovered or automatically close K5, the
    positional extension, or any other family's routing milestone.
 
-Alternative: retain the current stronger admission prerequisite and leave the
-remaining affected migration blocked pending independently qualified replacement
-astrometry or source-specific conversion evidence. Replacing sources or adding
-such science would itself need a bounded, separately agreed task; this assessment
-does not authorize it. Treating all J2000 labels as complete ICRS epoch/origin
-solutions is rejected because the retrieved evidence does not support that step.
+Fernando selected the lookup/physical-admission distinction rather than blocking
+baseline routing until every source has a full physical solution. Original source
+metadata and incomplete qualification remain visible. No catalogue replacement,
+coordinate conversion or new physical model is authorized by this admission slice.
 
-Before implementation, Fernando must select the policy and its bounded scope;
-then record the accepted decision in the roadmap and scientific contract. A
-future approved implementation gate would retain the current nonstellar/snapshot
-admission owners and add the affected lookup seam, missing-input refusal and
-native/observed appearance comparison. The SDK and source bytes would stay
-unchanged unless separately agreed. No new implementation gate or runtime
-milestone is activated by this documentation PR.
+Selected K3.09 implementation: extend the existing nonstellar admission owner with
+an explicit catalogue-lookup policy and public validation method. Require source
+identity, edition/provenance and angular units; retain strict physical admission
+unchanged. Lookup coordinate meaning must disclose unresolved reference facts,
+not promote missing facts to verified ICRS/barycentric states. No other family's
+kernel routing or reduced-input propagation is activated here. Gate: extend the
+existing catalogue-coordinate-defaults selection with lookup/strict separation,
+missing required lookup inputs, disclosure and source immutability coverage.
+The accepted native/observed and snapshot seams remain selected. SDK, source
+bytes, dependencies/build, snapshot schema and renderer remain unchanged.
 
 Existing well-governed satellite/SPK/comet resource admission remains unchanged.
 
