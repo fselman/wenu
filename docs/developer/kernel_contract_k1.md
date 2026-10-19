@@ -1,12 +1,12 @@
 # K1: public kernel and provider contract
 
-**Revision:** 1, 2026-10-17. **Status:** accepted K2 implementation target
-(PR #236); final usable SDK freeze remains K5.
+**Revision:** 2, 2026-10-19. **Status:** state component accepted as K2 target
+(PR #236); KG.02 geometry design is proposed for review. Final usable SDK freeze remains K5.
 **As-is base:** main `3359e9ebb430de68e68cdee8bfc40ddd6d3da692`.
 **Proposed contract identifier:** `wenu.kernel/1.0`.
 
-**Service-kernel scope clarification, 2026-10-19:** this document specifies the
-state/provider component. The [agreed broader kernel](kernel_roadmap_v0.9.5.md#proposed-architecture)
+**Service-kernel scope clarification, 2026-10-19:** sections 1–13 specify the
+state/provider component; section 14 records the KG.02 geometry-service design. The [agreed broader kernel](kernel_roadmap_v0.9.5.md#proposed-architecture)
 also supplies reusable geometry/topology, domain guards, projections/projected
 geometry and coordinate/realization services. Existing state contracts remain
 valid; they are not a universal interface for every kernel service. Diffuse
@@ -57,7 +57,8 @@ versioned migration path; old bytes are not silently reinterpreted.
 | Catalogue decoding, native state/model and validity certificates | Domain provider package | Other concrete providers or products |
 | Time-scale conversion | Admitted time service | Implicit clock, guessed calendar/scale or observer location |
 | Origin/observer, light time, apparent corrections, frame transformation | Observation service and admitted numerical backends | Projection, paper size or appearance |
-| Projection and paper/pixel tolerance conversion | Geometry/product layer | Provider implementation details |
+| Generic geometry/domain/projection mathematics | Shared kernel services | Concrete providers, products, rendering implementations |
+| Paper/pixel tolerance conversion and publication scale | Product layer using shared geometry | Provider implementation details |
 | Charts, reports and atlases | Product layer | Private provider state or alternate position routes |
 
 The core contracts and conformance kit use the Python standard library.
@@ -658,3 +659,197 @@ Real provider science/isolation, relativistic/civil-time adapters and complete
 consumer migration remain explicit work before the K5 SDK freeze.
 No Gaia acquisition, scientific-provider extraction, product rewrite or new
 satellite science is part of K1. Wenu must continue to run after every merge.
+
+## 14. KG.02 geometry-service contracts and placement plan
+
+**Design base:** main `887408aeff1731d0b1197a2226cd925f0681da44`,
+2026-10-19, accepted KG.01 through PR #282 (36 Mac documentation tests).
+**Status:** bounded design for review, not implemented imports or K5 freeze.
+Fernando selected KG.02 after the clean main/cleanup receipt. The
+[KG.01 assessment](kernel_migration_audit_v1.md#kg01-shared-geometry-service-inventory)
+and its five findings determine this plan. Existing state/provider contracts
+are retained; geometry is a separate shared-service API, not a StateQuery
+capability. No runtime, dependency declaration, source bytes or persistence
+schema changes in this document.
+
+### Placement proposal and dependency direction
+
+**Recommended concrete placement for agreement:** extend the existing
+`packages/wenu_kernel` distribution with the namespaces below; do not create
+another distribution or duplicate the numerical implementation.
+Add an optional `geometry` extra using Wenu's existing
+`numpy>=1.26,<2` constraint, keeping base `dependencies = []`.
+The root Wenu application would select that extra and pin an immutable tested
+kernel commit when the implementations ship. This optional dependency/pin plan
+is proposed explicitly for review; it is not an already authorized build edit.
+Keeping numerical geometry under the broad Wenu namespace would retain the
+observed application import coupling; a separate geometry distribution would
+add an unnecessary distribution/version boundary for this migration. Explicit
+numerical submodules plus an optional extra provide the recommended separation
+while reusing the existing kernel distribution. These are assessed alternatives,
+not a claim that only one packaging design can work.
+Approval of the architecture or passing documentation tests alone does not
+approve a dependency change. Record Fernando's explicit placement/optional-extra
+decision before KG.03 edits packaging. A different distribution boundary
+would require a revised agreed plan rather than an improvised implementation.
+
+| Proposed canonical namespace | Responsibility and imports | Current compatibility owner |
+|---|---|---|
+| `wenu_kernel.coordinates` | PositionStatus, CoordinateSpec, GENERIC_SPHERICAL_SPEC and only their stdlib validation helpers | `wenu.coordinates` re-exports the same class/enum/constant objects; retains source/observer-specific factories and ObservationContext |
+| `wenu_kernel.geometry.spherical` | Existing SphericalPoints, SphericalCurves, SphericalPolygons, SphericalGrid and SphericalGeometry; NumPy plus shared CoordinateSpec | `wenu.geometry.spherical` and `wenu.geometry` re-export identical class objects |
+| `wenu_kernel.geometry.projected`, `.frame`, `.viewport` | Existing planar records, SphericalCoordinates/SphericalFrame and Viewport; NumPy, stdlib and sibling contracts | Same-named `wenu.geometry.*` facades |
+| `wenu_kernel.geometry.topology` | Existing numerical ring-interior operation under an explicit convention; public `ring_interior(coordinates, pole_winding)` preserves the current algorithm/return pair | `sky.milky_way._native_ring_interior` delegates; the layer still interprets source rings, winding flags, holes and observer orientation |
+| `wenu_kernel.geometry.clipping` | Existing viewport/convex projected clipping and centroid functions | `wenu.geometry.clipping` delegates |
+| `wenu_kernel.geometry.domain` | Cap/latitude clipping, cap-before-projection orchestration and required numerical/topology helpers from preparation | Mathematical names remain available through `wenu.rendering.preparation` and `wenu.rendering` |
+| `wenu_kernel.projections` with existing three implementation submodules | StereographicProjection, PolarAzimuthalEquidistantProjection, MollweideProjection; only NumPy/shared geometry | `wenu.projections` and existing leaf imports re-export the same classes |
+
+This is an internal modular extension of the existing distribution, not a
+mandate to merge state and geometry APIs. `import wenu_kernel`, existing state
+records/sessions/conformance, and `wenu_kernel.coordinates` must remain usable
+without NumPy or Wenu installed. They do not eagerly import geometry.
+Explicit numerical geometry/projection imports may load NumPy, never Wenu,
+Astropy, Skyfield, Matplotlib, catalogues or products. Kernel modules do not
+import compatibility facades. The application and renderer import kernel
+contracts; the kernel does not import their implementations.
+
+Old `import wenu` retains its application facade during these slices; removing
+that facade is not required to demonstrate independent **canonical** kernel
+imports. Compatibility is proved separately. No process-global registry,
+network lookup, numerical backend discovery or geometry state cache is introduced.
+
+### Public geometry and coordinate contract
+
+Preserve existing constructor names, required keyword-only CoordinateSpec,
+collection shapes, IDs/labels/names, metadata and the current validation/empty
+behavior. Shared class identity is mandatory: do not publish parallel lookalike
+dataclasses that break isinstance dispatch or enum/spec comparisons.
+Move only the pure vocabulary; source ICRS defaults and observer factories remain
+in the domain/realization layer. Geometry neither infers an epoch nor changes
+frame/origin/status, time scale, correction ownership or physical units.
+
+| Value/operation | Contract to preserve during migration |
+|---|---|
+| Spherical collections | Longitude/latitude samples are degrees at the geometry-service boundary. Current constructors validate record type/shape, not every scientific unit or frame. Callers supply an admitted degree representation; do not silently reinterpret hours/radians or strengthen legacy validation in an extraction |
+| SphericalFrame | Mathematical unit-sphere orientation only, scalar/broadcast arrays and inverse; transformed longitude [-180,180). It is not precession, observer realization or a physical coordinate-frame conversion |
+| Projected records/Viewport | x/y are planar coordinates in the configured projection scale; the projection radius defines that scale. No implied metres, degrees, pixels or physical paper size. Product controls final mapping/size; finite masks/bounds and rectangle inclusions retain current behavior |
+| Curves | Closed flags retained where valid; nonfinite samples disconnect paths. A split curve may yield multiple open fragments rather than a false seam-spanning segment |
+| Polygons | Implicitly closed rings with at least three vertices; no repeated terminal vertex required. Compound identity and holes are metadata, not separate physical objects or an advertised general Boolean solid model |
+| ring_interior | Degree coordinate pairs and explicit pole_winding argument; returns the existing filled-side boolean and solid angle in steradians under the current native north-pole outline convention. Preserve formula/operation order, finite/domain limitations and current caller behavior; source adapter selects whether this convention applies and handles observed-orientation interpretation |
+| Validation/failure | Preserve current TypeError/ValueError distinctions and empty/None/list returns per operation. Preserve nonfinite breaks. No new universal GeometryError, stricter scientific admission or singularity “repair” is bundled into relocation |
+
+### Topology and metadata transport contract
+
+Keep these existing names during migration; no new serialization format or
+typed ring schema is required. A later incompatible redesign needs its own
+agreement. The supported current metadata convention is:
+
+| Fields | Meaning/obligation |
+|---|---|
+| ids, labels, names | Per-entity identity/display payload; for projected curve/polygon collections these are carried in collection metadata as today |
+| compound_id, ring_index, is_hole | Group source rings and preserve hole role; renderer may build compound paths without learning catalogue-specific source rules |
+| spherical_interior_left, spherical_interior_area_sr | Explicit filled side and area (steradians), supplied by the geometry producer under its admitted convention |
+| projection_cap_topology_inversion | Existing compatibility flag for cap/complement handling; preserve the current numerical interpretation, including zeroing/expansion when pieces are resolved |
+| projection_source_latitudes | Per-result-ring sample arrays matching projected vertices after seam/cap processing; cannot reuse unsplit source arrays |
+| projection_domain_clipped, projection_cap_deg | Existing result annotation for the actual cap operation |
+| source, level, semantic_entity_keys/display_names and other domain payload | Opaque to generic mathematics except structural selection/replication; kernel does not acquire or qualify the source |
+
+For splitting/filtering, output pieces preserve deterministic source order and
+the existing per-piece identity/metadata association. As in the current helpers,
+a NumPy array/list/tuple whose leading length equals input entity count is
+treated as per-entity and indexed/replicated with the source-index map; other
+values are collection payload. Preserve list versus tuple behavior and the
+current shallow-copy/alias rules. This length convention can be ambiguous for
+collection payload; document it, do not invent a semantic inference or new schema
+during extraction. Tests must cover multiple pieces, holes, nonfinite runs and
+sample-aligned latitudes, not only one-ring examples.
+
+### Projection and domain service surface
+
+The common required capability remains callable
+`project_geometry(geometry)`, producing existing projected types. Reuse
+`project_spherical(lon_deg, lat_deg)` for raw arrays and current scalar/collection
+methods. No abstract superclass, plugin registry or mandatory inverse is added.
+
+| Projection | Required preserved behavior | Optional capability actually available |
+|---|---|---|
+| StereographicProjection | Existing formula, radius/flip/frame, antipode NaN breaks, legacy project(alt_deg, az_deg), collections | transform_spherical, unproject_spherical, projected_radius, angular_radius_for_projected_radius, viewport_for_angular_radius |
+| PolarAzimuthalEquidistantProjection | Existing subclass dispatch, linear angular radius, admitted poles/domain, PA before EW flip | Existing forward/inverse and radial helpers, with its overridden formulas |
+| MollweideProjection | Existing equal-area forward math, central-longitude normalization, seam/pole splitting and metadata expansion | Existing limits and normalized_longitude; no inverse/radial/frame API is fabricated |
+
+Public domain functions retain their existing signatures:
+`project_geometry_for_viewport(spherical, *, projection, viewport=None,
+projection_cap_margin_deg=2.0)`,
+`projection_cap_for_viewport(projection, viewport, *, margin_deg=2.0,
+maximum_deg=89.999)`,
+`project_polygons_to_projection_cap(spherical, *, projection,
+angular_radius_deg=80.0)`,
+`clip_polygons_to_projection_cap(spherical, projected, *, projection,
+angular_radius_deg=80.0)`,
+`clip_polygons_to_latitude(spherical, projected, *, minimum=0.0)`,
+and `clip_to_latitude(spherical, projected, *, minimum=0.0, maximum=None)`.
+Implementation signatures must be checked against the base before moving;
+this list does not authorize adding parameters/capabilities.
+
+Use the cap-safe pre-projection operation for applicable filled polygons;
+the older matching-spherical/projected preparation remains compatible.
+Preserve near-hemisphere cap admission and current radius-inverse detection:
+missing capability returns None from cap selection and the wrapper delegates
+normally. It does not promise all projections have equivalent domain guards.
+Keep the mathematical cap margin/defaults as accepted behavior; changing them
+is not a pure ownership move.
+
+The application chooses chart field stops, horizon thresholds, projection/frame
+selection and clipping policy. Kernel functions perform the requested mathematics.
+Magnitude sizing, colors/zorders, symbols, label offsets/anchors, print scale,
+mask styling and renderer/export stay outside. Cap clipping precedes planar
+projection where required; then product preparation and renderer follow the
+existing CelestialSphere pipeline.
+
+### Ownership, mutation and compatibility
+
+The initial service contract preserves existing mutable values, not immutable
+SDK result semantics. Constructors using np.asarray can share input arrays;
+dictionary copies are shallow and nested metadata may alias. Consumers must
+not mutate shared inputs while a call is in progress or across shared request
+ownership. Functions must retain existing nonmutating behavior where currently
+tested; do not promise universal deep-copy isolation. Projection configuration
+is per-instance/request and must not become a shared mutable singleton.
+No hash-based reuse is inferred from mutable geometry identity.
+
+Legacy imports re-export canonical types/functions wherever possible. Private
+helpers remain private; retain forwarding only for demonstrated existing
+callers/tests. Existing Python APIs, dataclass equality/dispatch, source snapshots
+v1–v5 and readers remain compatible. CoordinateSpec fields preserve identity and
+meaning; no automatic conversion from geometry to SDK states. Verify saved
+serialization and any actually supported pickle/import path affected by moving
+class definitions rather than claiming universal pickle compatibility.
+
+### Incremental execution and acceptance plan
+
+These are the existing KG stages, not additional milestone IDs or permission
+to execute the whole sequence. Packaging/dependency placement above requires
+explicit agreement before affected implementation. All stages retain the
+appropriate current owners/oracles listed in KG.01.
+
+| Stage | Concrete bounded placement/result | Closest acceptance evidence |
+|---|---|---|
+| KG.03 | Move pure coordinate vocabulary and spherical/projected/frame/viewport values into agreed kernel leaves, add numerical ring helper with explicit convention, and legacy aliases. Keep projection-specific cap/seam topology for KG.04 | Existing vocabulary, spherical/projected/frame/viewport and ring-owner tests; same-class legacy/canonical dispatch; synthetic multi-ring use; input/metadata alias and unchanged formula checks; isolated installed kernel imports with Wenu and scientific/render backends unavailable |
+| KG.04 | Move projected clipping, three projections, domain/latitude/cap functions and required topology helpers. Keep magnitude/style/label preparation at Wenu owners and point old math imports at canonical services | Existing clipping/projection/domain owners, independent seam/pole/filled-side oracles, all-three projection capability tests, pre-projection order and failure/metadata cases; isolation and legacy forwarding |
+| KG.05 | Integrate established public services through canonical application path and accept representative outputs | Real atlas and polar specimens; cold/restored/source-free geometry; actual PNG/PDF/SVG and physical/label appearance. Separate product/render checks from numerical proof |
+| KG.06 | Audit each completed K delivery against these accepted services | Per-ID/PR implementation/caller/dependency and disposition matrix, including caches, failures, restored/public paths; no automatic blanket redo |
+| KG.07 | Correct demonstrated violations and verify only affected owners/seams | Enumerated corrections and focused gates; unaffected acceptance receipts retained; explicit no-code closure if audit finds none |
+
+When updating the independently installed kernel dependency, publish the kernel
+implementation commit first, test its installed wheel, then pin the root
+application to that immutable commit with the agreed extra. The root must not
+require uncommitted checkout paths or a moving task branch. Version/pin changes
+are bounded implementation delivery, not K5 final freeze or release publication.
+Stdlib-only state import/conformance must be checked without NumPy; geometry
+must be installed/tested with NumPy and without Wenu/Astropy/Skyfield/Matplotlib.
+Import blockers and cold subprocesses must actually exercise canonical service
+imports and entry points; an AST allowlist alone does not prove isolation.
+
+KG.02 acceptance is documentation review of this concrete proposal and its
+dependency/compatibility consequences, plus the existing documentation gate.
+It does not claim any of these future service tests passed or authorize KG.03.
+The final usable shared-service contract remains subject to K5 acceptance.

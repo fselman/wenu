@@ -784,8 +784,11 @@ to unit geometry tests; this inventory alone does not establish it.
 5. **KG01.F5:** writable arrays, shallow metadata copies and mutable projection
    configuration need honest lifecycle/aliasing semantics.
 
-**Next bounded milestone: KG.02**, public contracts and incremental placement
-plan, after acceptance of this assessment and explicit task selection.
+**KG.01 acceptance:** PR #282, main 887408ae; 36 Mac documentation tests
+passed at 20de328c and Fernando confirmed clean synchronized main/cleanup.
+KG.02 was subsequently selected explicitly; its
+[public contracts and placement proposal](kernel_contract_k1.md#14-kg02-geometry-service-contracts-and-placement-plan)
+address KG01.F1–KG01.F5. This is a design delivery, not runtime migration.
 Do not relocate implementations, invent a geometry query, change science,
 force a snapshot version or activate K3.16 here. The coordinate guide remains
 current because this assessment changes no scientific semantics or runtime

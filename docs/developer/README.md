@@ -57,8 +57,12 @@ for their bounded claims; the audit determines whether implementations need chan
 Complete service-kernel closure remains open. The
 [KG.01 assessment](kernel_migration_audit_v1.md#kg01-shared-geometry-service-inventory)
 now maps existing services, 66 direct-import consumer modules, test owners and
-five coupling/contract findings. KG.02 remains a separate contract/placement
-milestone; no geometry implementation has moved.
+five coupling/contract findings. KG.01 is accepted through PR #282. The
+[KG.02 contracts and placement proposal](kernel_contract_k1.md#14-kg02-geometry-service-contracts-and-placement-plan)
+are now delivered for review: explicit numerical kernel imports, legacy aliases,
+ring/metadata/ownership rules and focused acceptance. The optional NumPy extra
+and concrete namespace placement require explicit agreement before implementation.
+No geometry implementation has moved.
 Extra scope or changed agreed order must be discussed with Fernando,
 explicitly agreed and documented before implementation under the
 [mandatory agent rule](assistant_instructions.md#roadmap-control-mandatory-before-implementation).

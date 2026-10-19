@@ -1042,3 +1042,27 @@ Active links/anchors (including the state SDK README) and all 73 preserved archi
 blob hashes were verified against the remote Git tree. Full Mac documentation
 acceptance remains pending. Numerical/SDK/production reruns are not warranted by
 this documentation-only change; accepted bounded K receipts remain intact.
+
+## KG.02 geometry-service design acceptance
+
+The [KG.02 contract and placement proposal](kernel_contract_k1.md#14-kg02-geometry-service-contracts-and-placement-plan)
+is documentation only. Its acceptance gate is `documentation`; no SDK/science,
+source-resource, dependency/build, schema or test-selection changes are made.
+Numerical/topology/visual owners are assigned to the later implementation slices,
+not reported passing by this design. KG.01 source/AST inventory and its fresh
+import observation remain evidence of coupling, not service isolation.
+
+KG.03 must prove canonical kernel imports with Wenu and scientific/render
+backends unavailable, base state imports without NumPy, and numerical imports
+with the agreed NumPy installation. Preserve identical legacy/canonical
+class/enum objects, old constructor/dispatch behavior, metadata association,
+current aliasing semantics and ring convention through existing owner tests.
+KG.04 adds all-three projection, seam/cap/hole/viewport failure and
+pre-projection order gates at their existing owners. Installed packaging/pin
+tests apply only to the agreed implementation change. KG.05 accepts actual
+cold/restored atlas and polar outputs separately from geometry numerics.
+KG.06/KG.07 audit/correct completed K deliveries after those services exist.
+
+The optional `geometry` extra and canonical namespace table are concrete
+proposals for explicit agreement, not dependencies enabled by a passing docs
+gate. No final K5 API freeze or independent geometry installation is claimed.
