@@ -116,7 +116,10 @@ observer motion, CLI selection and persisted epoch states remain ahead. See the
 The [observer-motion contract](scientific_contracts.md#cluster-observer-realization-contract)
 now records the RA/Dec-only seam, required Cartesian/time/common-coordinate
 prerequisites and correction/cache acceptance matrix. It is a design deliverable;
-observer motion remains refused until the ordered runtime gates pass.
+observer motion remains refused until the ordered runtime gates pass. Explicit
+Cartesian SI output is now implemented in the core interface, preserving distance
+and velocity through a separate admission with unknown error bounds; it does not
+yet perform observer realization.
 Relativistic/civil-time adapters, common realization services, Cartesian reuse
 and remaining K3 routing are pending; this is not a completed kernel or frozen SDK.
 

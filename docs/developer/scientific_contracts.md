@@ -37,8 +37,8 @@ differentials and SI rectilinear motion in explicit TCB coordinate time. A finit
 caller-declared model domain is mandatory and is not physical validity. Measurement,
 centre/model and input-conversion errors remain unevaluated. Numerical direction
 bounds and conservative reuse certificates are now verified against the admitted
-binary64 SI rectilinear model. Requests below the numerical floor and velocity
-output are refused. This computational bound is not an absolute sky-accuracy
+binary64 SI rectilinear model. Requests below the direction numerical floor and velocity output on the direction
+admission are refused; the explicit Cartesian admission now retains SI PV. This computational bound is not an absolute sky-accuracy
 guarantee. Missing RV/epoch solutions remain visible
 and unavailable. The model deliberately omits an additional light-time correction;
 it is not a full relativistic stellar propagation or ancient cluster reconstruction.
@@ -53,7 +53,7 @@ Observer-dependent motion is refused until its realization contract is admitted.
 ## Object-independent positional astrometry
 
 The shared `astrometric_state` core now owns complete-SI-input rectilinear
-propagation and numerical/reuse certification. Cluster source ingestion supplies
+direction/Cartesian propagation and direction numerical/reuse certification. Cluster source ingestion supplies
 qualified inputs and explicit model/reference/error meaning through its adapter.
 One numerical provider may contain different object semantic types; numerical
 work never branches on star/cluster/PN/SNR type. Existing cluster results and
@@ -73,7 +73,7 @@ silently used as systemic centre motion. Observer realization remains separate.
 
 ## Cluster observer realization contract
 
-**Contract milestone, 2026-10-19; runtime not implemented.** This is the required
+**Observer contract, 2026-10-19; observer realization not implemented.** This is the required
 boundary for a future explicit nominal observed-cluster model. PR #261 remains
 the implemented native-only path. It still refuses observer-dependent motion;
 default lookup, accepted native direction/reuse semantics and saved source
@@ -81,14 +81,17 @@ snapshots do not change. This contract does not freeze a new Python signature.
 
 ### As-is assessment and ownership
 
-At main `446456a4`, `cluster_state.ClusterMotionCatalogue` retains qualified SI
-position/velocity and source TCB epochs, but `ClusterMotionProvider` calls the shared astrometric engine and advertises
-direction output only. The separate SDK already admits `cartesian_state` with
+`cluster_state.ClusterMotionCatalogue` retains qualified SI
+position/velocity and source TCB epochs, and `ClusterMotionProvider` now supplies explicit direction or Cartesian
+admissions to the shared engine. The separate SDK already admits `cartesian_state` with
 SI `CartesianState` records and explicit velocity availability. No SDK change is
-assumed merely to publish that representation. It will need its own provider
+needed for this output. Cartesian publication has its own provider/
 admission/reference/model identity, rather than adding a Cartesian flag to the
-existing direction admission. Its numerical/error contract must be verified
-independently of the angular cone certificate.
+existing direction admission. That explicit Cartesian output is now implemented:
+SI position and velocity preserve distance, source/evaluation times and separate
+unknown error channels. No Cartesian accuracy bound or temporal reuse is admitted;
+the angular cone certificate remains direction-only. Finite-distance observer
+realization and time/common-coordinate admission are still unimplemented.
 
 `OpenClusters.spherical_geometry` currently queries lookup directions and then
 uses `sky.observed_cache.catalogue_point_altaz`. That helper passes RA/Dec through

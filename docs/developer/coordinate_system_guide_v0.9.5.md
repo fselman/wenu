@@ -1254,8 +1254,13 @@ The complete-input rectilinear and angular-bound algorithms now live in the
 object-independent `astrometric_state` core; cluster-specific source/centre
 qualification and spherical-input conversion remain in the calling adapter.
 This ownership change preserves the accepted nominal model and source epochs.
-Other object adapters, reduced-input lookback policies and expansion are not
-implemented by this factoring.
+Explicit Cartesian output now retains unnormalized nominal SI position and
+velocity through a distinct kernel admission. Its source epoch and evaluation
+instant/scale remain separate; numerical/physical position and velocity bounds
+are unknown and no Cartesian temporal certificate is supplied. No extra stellar
+light time, observer parallax or apparent correction is applied by state output.
+Other object adapters, reduced-input lookback policies and expansion remain
+unimplemented.
 The [observer contract](scientific_contracts.md#cluster-observer-realization-contract)
 requires a retained Cartesian state and explicit reception/time/resource meaning
 before finite-distance observation. A time-scale conversion alone does not

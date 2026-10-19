@@ -186,6 +186,19 @@ with Kernel(references=(a.reference,)) as kernel:
         assert first.reuse_certificates and later.states[0].certificate_id
         assert later.states[0].anchor_time==request.times[0]
         assert later.states[0].vector==first.states[0].vector
+pv=cluster_state.ClusterMotionProvider(catalogue,representation='cartesian')
+pa=pv.describe().admissions[0]
+assert pa.objects==a.objects
+with Kernel(references=(pa.reference,)) as kernel:
+    kernel.register(pv,ownership='owned')
+    with kernel.open_session(SessionPolicy((pa.catalogue,))) as session:
+        query=StateQuery(pa.catalogue,pa.model,(pa.objects[0],),
+            (TimePoint(2457389,0,'tcb'),TimePoint(2457754,.25,'tcb')),pa.reference,
+            AccuracyRequest(metric='euclidean_norm'),require_velocity=True)
+        result=session.evaluate(query)
+        assert all(state.velocity_available for state in result.states)
+        assert result.states[0].position_m!=result.states[1].position_m
+        assert result.states[0].velocity_m_s==result.states[1].velocity_m_s
 from wenu.objects.open_clusters import OpenClusters
 default=OpenClusters(None)
 default.load()
