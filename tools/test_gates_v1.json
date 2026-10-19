@@ -1278,6 +1278,44 @@
           "reason": "Fresh-process restored label anchors execute without original source loading."
         }
       ]
+    },
+    "observed-stellar-routing": {
+      "scope": "K3.08 existing observed stars, constellation endpoints and mean label anchors consume kernel-backed source directions before their retained observation methods.",
+      "limits": "Preserve existing Skyfield no-deflectors star/figure and Astropy label science, hour encoding for unchanged source directions, selection and appearance. No propagation, Gaia, SDK/provider numerical implementation, source resources, dependency/build, snapshot schema, projection or renderer changes. No full SDK/production repeat.",
+      "selections": [
+        {
+          "node": "tests/test_stars.py",
+          "reason": "Changed source/query/cache/compute owner; real kernel result and refusal after cache fill, selection isolation, actual Skyfield/Astropy and PNG compatibility against pre-migration inputs."
+        },
+        {
+          "node": "tests/test_constellation_labels.py",
+          "reason": "Public full-source state controls observed/native means, faint stars, NaNs, Serpens and display policies; no raw source bypass."
+        },
+        {
+          "node": "tests/test_constellation_geometry.py",
+          "reason": "Existing endpoint cache/public native and observed topology/selection contracts."
+        },
+        {
+          "node": "tests/test_position_providers.py",
+          "reason": "Public native APIs and inherited other-family contracts remain compatible."
+        },
+        {
+          "node": "tests/test_observed_cache.py",
+          "reason": "Observation helper/cache owner compatibility; observer/resource/source invalidation."
+        },
+        {
+          "node": "tests/test_layer_realization.py",
+          "reason": "Existing realization and observation context seams remain compatible."
+        },
+        {
+          "node": "tests/test_request_realization.py",
+          "reason": "Existing request owner and cluster observation options remain isolated."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_label_kernel_route_preserves_cold_saved_anchors_and_page_pixels",
+          "reason": "Retain native/saved labels and public PNG/PDF path after shared label input refactor."
+        }
+      ]
     }
   },
   "consumer_review": [

@@ -831,3 +831,24 @@ alongside this gate. Local Python 3.12 evidence: 95 focused cases passed in
 three archive-dependent checks require the complete Mac checkout. Remote-tree
 links/anchors and all 73 preserved archive blob hashes were independently
 verified. Complete Mac acceptance remains pending.
+
+## Observed stellar routing gate
+
+K3.08 uses `python tools/run_test_gate.py observed-stellar-routing --run` with
+plugin autoload disabled. Select the stellar, label, constellation-geometry,
+public-position and observed-cache owners, existing layer/request realization
+seams and native cold/saved page regression. New real-kernel fault injection
+changes source directions after observer-cache fill and verifies changed stars
+and endpoints, then refuses direct Alt/Az/chart/figure calls without fallback.
+Public-only observed label tests forbid source-table access. An explicitly
+synthetic offline Earth PV fixture executes actual Skyfield and Astropy chains,
+compares against direct pre-migration chains, and compares actual chart geometry
+and PNG buffers; it is compatibility evidence, not ephemeris accuracy evidence.
+Existing source-only/native snapshot transport remains unchanged. Retain accepted
+lower-level SDK conformance/installation evidence; no full SDK/production repeat.
+Local Python 3.12 evidence: 124 focused cases passed in 35.91 s and eight
+tooling cases passed. Documentation: 33 cases passed; three archive-dependent
+checks require the complete Mac checkout. Active links/anchors and all 73
+preserved archive hashes were independently verified against the remote Git
+tree. Run the complete documentation and focused gates on the Mac; acceptance
+remains pending.

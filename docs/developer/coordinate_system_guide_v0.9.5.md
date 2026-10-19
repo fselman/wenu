@@ -1328,5 +1328,9 @@ K3.07 changes state ownership, not the spherical-mean definition: native label
 anchors consume the full source-native stellar query, with its returned ICRS
 angles and catalogue coordinate specification. Constellation membership and
 Serpens splitting use those same angles. No propagation or observer correction
-is added, and observed-label realization retains its existing path. The
-scientific conventions above remain current.
+is added. K3.08 also supplies those positions and their specification to the
+retained observed-label CoordinateService path. Existing observed star/figure
+Skyfield calculations receive kernel-backed input directions through their shared
+observation boundary; source-hour encoding is retained when input directions
+are unchanged. No proper motion, parallax data, radial velocity or additional
+apparent correction is introduced. The scientific conventions above remain current.

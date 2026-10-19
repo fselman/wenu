@@ -19,8 +19,11 @@ projection and rendering pipeline is retained.
 K3.07 routes native constellation-label anchors through the full-source public
 stellar query. Membership, Serpens splitting, source-order grouping and spherical
 means retain their existing rules. Labels inherit the returned coordinate spec;
-observed labels remain a separate legacy consumer. This bounded routing change
-is pending Mac acceptance and does not close K3.
+K3.07 is accepted through PR #271. K3.08 now routes observed stellar/figure
+inputs through kernel lookup before the retained Skyfield observation boundary,
+and observed label inputs through the public full-source lookup before the
+retained Astropy boundary. This candidate is pending Mac acceptance and does
+not close K3.
 
 ## Canonical pipeline
 
@@ -78,8 +81,8 @@ sky reuse, facing reports and criteria appendices. See the
 provider-specific position generation remains separate.
 
 The stellar catalogue is Hipparcos. `Stars.position(instant)` returns the
-catalogue directions and ignores `instant`. Both Skyfield `Star` construction
-sites currently supply only right ascension and declination: no catalogue
+catalogue directions and ignores `instant`. Skyfield `Star` construction
+currently supplies only right ascension and declination: no catalogue
 proper motions, parallax or radial velocity. The observed route does compute
 apparent AltAz for the requested observer/date; lack of stellar space-motion
 propagation does not mean Earth orientation is omitted. Native ICRS axes do
@@ -140,8 +143,8 @@ provenance. The source lookup neither propagates nor asserts zero physical motio
 Observed cache keys include returned centre arrays; even a warm cache cannot
 suppress a failed kernel query. Selected order, duplicate requests and empty
 selections retain their behavior. Snapshot schema v5 is unchanged.
-Observed Skyfield astrometry,
-native constellation-label anchors and other families remain unmigrated. See the
+Observed stellar/figure/label input routing is implemented as the K3.08
+candidate. Other families and remaining resource/adapter closure remain open. See the
 [adapter contract](implementation_reference.md#native-stellar-kernel-adapter).
 Solar-System Cartesian resources, state requests and astrometric/apparent
 direction realizers have stronger typed contracts. They solve light time

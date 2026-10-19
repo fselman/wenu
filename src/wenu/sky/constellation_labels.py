@@ -73,17 +73,10 @@ class ConstellationLabels(GeometricalObject):
         min_stars = (
             self.min_stars if min_stars is None else int(min_stars)
         )
-        if native_icrs:
-            positions = self.stars.native_positions()
-            coordinate_spec = positions.coordinate_spec
-            ra_deg = np.asarray(positions.lon_deg, dtype=float)
-            dec_deg = np.asarray(positions.lat_deg, dtype=float)
-        else:
-            frame = getattr(self.stars, "source_catalog", self.stars.hip_df)
-            if frame is None or len(frame) == 0:
-                return self._empty(observer)
-            ra_deg = frame["ra_degrees"].to_numpy(dtype=float)
-            dec_deg = frame["dec_degrees"].to_numpy(dtype=float)
+        positions = self.stars.native_positions()
+        coordinate_spec = positions.coordinate_spec
+        ra_deg = np.asarray(positions.lon_deg, dtype=float)
+        dec_deg = np.asarray(positions.lat_deg, dtype=float)
         valid_coordinates = np.isfinite(ra_deg) & np.isfinite(dec_deg)
         if not np.any(valid_coordinates):
             return self._empty(observer, coordinate_spec=coordinate_spec if native_icrs else None)
@@ -102,7 +95,7 @@ class ConstellationLabels(GeometricalObject):
         else:
             apparent_lon_deg, apparent_lat_deg = icrs_point_arrays_to_altaz(
                 ra_deg[valid_coordinates], dec_deg[valid_coordinates], observer,
-                provider="wenu constellation labels",
+                provider="wenu constellation labels", source_spec=coordinate_spec,
             )
         groups = defaultdict(list)
         group_labels = np.asarray(abbreviations, dtype=object).copy()

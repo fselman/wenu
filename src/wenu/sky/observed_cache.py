@@ -14,6 +14,18 @@ from wenu.coordinates import (
 from wenu.geometry.spherical import SphericalCurves, SphericalPoints
 
 
+def skyfield_stellar_altaz(stars, observer):
+    """Apply the existing stellar observation policy to an admitted target.
+
+    Skyfield owns observer subtraction and apparent corrections. This path
+    retains the historical no-deflectors policy and adds no propagation.
+    """
+    apparent = observer.skyfield.at(observer.t).observe(stars).apparent(deflectors=[])
+    altitude, azimuth, _ = apparent.altaz()
+    return (np.asarray(altitude.degrees, dtype=float),
+            np.asarray(azimuth.degrees, dtype=float))
+
+
 def observer_geometry_key(observer):
     """Return a complete stable key for one observer and instant."""
     if observer is None:
@@ -91,12 +103,13 @@ def icrs_point_arrays_to_altaz(
     observer,
     *,
     provider,
+    source_spec=None,
 ):
     """Transform ICRS point arrays through CoordinateService."""
     native = SphericalPoints(
         lon_deg=np.asarray(longitude, dtype=float),
         lat_deg=np.asarray(latitude, dtype=float),
-        coordinate_spec=icrs_catalogue_spec(provider),
+        coordinate_spec=source_spec if source_spec is not None else icrs_catalogue_spec(provider),
     )
     horizontal = CoordinateService().transform(
         native,

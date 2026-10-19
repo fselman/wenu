@@ -311,8 +311,12 @@ constellation endpoints use this lookup. `position` still ignores instant for
 compatibility, but now declares the correct source epoch J1991.25, not the old
 incorrect J2000.0 default. Source RA degrees are authoritative when present;
 hours-only constructed inputs retain the hours × 15 conversion. This is a
-coordinate-encoding/metadata correction, not motion propagation. Observed
-Skyfield realization and native constellation-label anchors remain unmigrated.
+coordinate-encoding/metadata correction, not motion propagation. Native labels
+are accepted through K3.07. The K3.08 candidate feeds returned directions into
+the existing Skyfield no-deflectors star/figure observation method and Astropy
+label method. It preserves their distinct correction policies and accepted
+source-hour encoding for unchanged inputs. No correction or motion step is added
+by the kernel adapter; kernel refusal cannot be hidden by a warm observer cache.
 No historical-epoch or Gaia accuracy claim follows from this adapter.
 
 ## Catalogue identity and curation
