@@ -3,6 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from wenu.astrometric_observation import ReceptionContext
 
 from wenu.coordinates import CoordinateSpec, ObservationContext, PositionStatus
 
@@ -31,7 +35,8 @@ class LayerRealizationContext:
 
     The context contains no projection, viewport, renderer, appearance,
     furniture, output, or cache policy. Existing layers may ignore it through
-    the compatibility adapter on SkyLayer until deliberately migrated.
+    the compatibility adapter on SkyLayer until deliberately migrated. An explicit
+    reception receipt requires deliberate support and cannot use that fallback.
     """
 
     product_coordinate_spec: CoordinateSpec
@@ -39,6 +44,7 @@ class LayerRealizationContext:
     evaluation_instant: str | None = None
     evaluation_time_scale: str | None = None
     reference_equinox: str | None = None
+    reception: ReceptionContext | None = None
 
     @property
     def is_native_icrs(self):
@@ -47,7 +53,31 @@ class LayerRealizationContext:
             self.product_coordinate_spec == NATIVE_ICRS_SPEC
             and self.observation is None
             and self.reference_equinox is None
+            and self.reception is None
         )
+
+    @staticmethod
+    def _reception_fields(reception):
+        from wenu.astrometric_observation import ReceptionContext
+        if type(reception) is not ReceptionContext or not reception.utc_isot:
+            raise TypeError("reception must be a prepared ReceptionContext.")
+        spec = CoordinateSpec(frame="altaz", origin="observer",
+            position_status=PositionStatus.OBSERVED, instant=reception.utc_isot,
+            time_scale="utc", corrections=frozenset(("parallax", "solar-deflection",
+                "aberration", "earth-orientation", "vacuum")))
+        observation = ObservationContext(*reception.site_wgs84, reception.utc_isot,
+            earth_orientation_policy="iers-final-b")
+        return spec, observation
+
+    @classmethod
+    def from_reception(cls, reception):
+        """Request vacuum AltAz from an explicit offline reception receipt.
+
+        The receipt's caller-qualified WGS84 height is never inferred from a
+        legacy Observer. Source model selection remains a per-layer option.
+        """
+        spec, observation = cls._reception_fields(reception)
+        return cls(spec, observation, reception.utc_isot, "utc", reception=reception)
 
     def __post_init__(self):
         if not isinstance(self.product_coordinate_spec, CoordinateSpec):
@@ -88,3 +118,10 @@ class LayerRealizationContext:
                 name="reference_equinox",
             ),
         )
+
+        if self.reception is not None:
+            spec, observation = self._reception_fields(self.reception)
+            if (self.product_coordinate_spec != spec or self.observation != observation
+                    or self.evaluation_instant != self.reception.utc_isot
+                    or self.evaluation_time_scale != "utc" or self.reference_equinox is not None):
+                raise ValueError("Reception context, product, site and evaluation event must agree.")

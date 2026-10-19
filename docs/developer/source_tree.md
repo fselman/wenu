@@ -296,7 +296,7 @@ concrete Wenu classes.
 | [`objects/galaxies.py`](../../src/wenu/objects/galaxies.py) | Source-bound static galaxy centre provider and shape metadata; chart/observer consumers use kernel centres before domain outline construction. |
 | [`objects/globular_clusters.py`](../../src/wenu/objects/globular_clusters.py) | Milky Way globular-cluster catalogue layer. |
 | [`objects/nonstellar.py`](../../src/wenu/objects/nonstellar.py) | Atomic ingestion, immutable source admission/gap record, angular normalization and metadata-owned centre/outline specifications. |
-| [`objects/open_clusters.py`](../../src/wenu/objects/open_clusters.py) | Source-bound cluster lookup metadata/provider, public/native/observed kernel centres and vectorized symbols; default lookup with explicit per-call nominal motion for native Python chart and restored-source consumers. |
+| [`objects/open_clusters.py`](../../src/wenu/objects/open_clusters.py) | Source-bound cluster lookup metadata/provider, public/native/observed kernel centres and vectorized symbols; default lookup with explicit per-call native or finite-distance observed nominal motion for Python chart and restored-source consumers. |
 | [`objects/planetary_nebulae.py`](../../src/wenu/objects/planetary_nebulae.py) | Planetary-nebula catalogue represented by fixed chart symbols. |
 | [`objects/stars.py`](../../src/wenu/objects/stars.py) | Stellar selection, kernel-backed native positions/HIP lookup and spherical point geometry; legacy observed route. |
 | [`objects/supernova_remnants.py`](../../src/wenu/objects/supernova_remnants.py) | Green Galactic supernova-remnant catalogue layer. |
@@ -372,7 +372,7 @@ concrete Wenu classes.
 | [`sky/native_snapshot.py`](../../src/wenu/sky/native_snapshot.py) | Verified data-only native sky snapshots; v5 binds nonstellar metadata and retains cluster rows with explicit v1-v4 admission. |
 | [`sky/observed_cache.py`](../../src/wenu/sky/observed_cache.py) | Keys for observer-dependent spherical-geometry caches. |
 | [`sky/points.py`](../../src/wenu/sky/points.py) | Celestial reference points as spherical domain geometry. |
-| [`sky/realization.py`](../../src/wenu/sky/realization.py) | Immutable scientific input for one sky-layer realization. |
+| [`sky/realization.py`](../../src/wenu/sky/realization.py) | Immutable scientific input and explicit reception receipt for one sky-layer realization. |
 | [`sky/rendering_results.py`](../../src/wenu/sky/rendering_results.py) | Results returned by generic celestial-chart orchestration. |
 | [`sky/satellite_candidate_layer.py`](../../src/wenu/sky/satellite_candidate_layer.py) | Drawable layers for normalized SatChecker sampled candidate evidence. |
 | [`sky/satellite_exact_track_layer.py`](../../src/wenu/sky/satellite_exact_track_layer.py) | Output-neutral layers for exact local satellite track evidence. |

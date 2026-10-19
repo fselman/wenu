@@ -1238,8 +1238,9 @@ pass the admitted motion catalogue and a TCB evaluation context, including on a
 restored source snapshot. Their specification records evaluation `instant` and
 scale separately from source epochs retained in kernel states; static neighbours
 keep their native source meaning. The chart guard checks returned epoch/scale
-against the explicit context. Observer motion, CLI selection and persisted epoch
-states remain outside this bounded adoption. The separate `cluster_state` API now
+against the explicit context. Explicit observed Python charts additionally accept a prepared reception context
+and use full Cartesian states through the shared realizer. CLI selection and
+persisted epoch states remain outside this bounded adoption. The separate `cluster_state` API now
 evaluates a nominal rectilinear centre model in TCB through the kernel, using
 qualified source metadata and a finite caller-declared model domain. It computes
 perspective effects from the declared distance/RV inputs but applies no additional
@@ -1282,7 +1283,10 @@ specification is observer-origin Alt/Az in radians at the retained UTC event.
 Total numerical/physical error remains unknown. See the
 [convention API](implementation_reference.md#barycentric-time-and-coordinate-conventions).
 Native angular reuse certificates
-do not certify observer-translated directions; observed motion remains unimplemented.
+do not certify observer-translated directions. Explicit observed Python chart and
+restored-source consumers therefore evaluate full Cartesian states and recompute
+observer corrections per call. The service's radians become degree geometry at
+the layer boundary, retaining source/evaluation/reception identity and unknown errors.
 
 `stellar_state.py` supplies source-native Hipparcos lookup states. Its explicit
 source epoch J1991.25(TT) is JD 2448349.0625, using the Julian-year definition

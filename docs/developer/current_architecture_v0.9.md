@@ -168,11 +168,12 @@ an explicit TCB context epoch, query a reproducible kernel session and consume
 its returned vectors. Restored v5 skies use that same inherited facade without
 reloading source catalogues or persisting evaluated states. The native chart
 guard checks returned epoch/scale against the request; unchanged static layers
-retain source epochs. Observed chart motion and CLI model selection remain pending. See the [API and limits](implementation_reference.md#nominal-cluster-motion-provider).
+retain source epochs. Explicit observed Python charts now call the shared realizer through a prepared
+reception context; CLI model selection remains pending. See the [API and limits](implementation_reference.md#nominal-cluster-motion-provider).
 
 ## Observer motion prerequisite assessment
 
-The current cluster observer seam discards distance/velocity: lookup RA/Dec enters
+The default cluster observer seam discards distance/velocity: lookup RA/Dec enters
 `catalogue_point_altaz` and `CoordinateService`. The cluster catalogue contains SI
 PV internally, and its provider now offers explicit direction or Cartesian output. The SDK already
 supports a separate Cartesian admission; adopting it does not itself solve observer
@@ -192,8 +193,12 @@ Cartesian batches into finite-range observer directions and vacuum Alt/Az.
 It preserves source states and a frozen, integrity-bound ERFA reception context;
 observer subtraction, finite-source solar deflection and annual/diurnal
 aberration each have one owner. No second propagation or target light time is
-applied. No chart consumer calls this additive service yet.
-No new time adapter or observed motion route exists yet.
+applied. `LayerRealizationContext.from_reception` carries this event into the
+canonical chart pipeline. Explicit cluster motion uses actual Cartesian SDK
+states, converts the service's radians to degree geometry and preserves the full
+observation receipt. No legacy Observer is needed for this route; unmigrated
+layers refuse reception realization rather than silently ignoring its resources.
+The chart guard checks vacuum AltAz/site-event binding before projection.
 
 ## Abstraction barriers that remain incomplete
 

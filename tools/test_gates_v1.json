@@ -1110,6 +1110,39 @@
           "reason": "Finite observer numerical, correction-ownership and complete-batch refusal evidence in the existing observer owner."
         }
       ]
+    },
+    "astrometric-observer-consumers": {
+      "scope": "Explicit finite-distance observed cluster Python chart/restored-source consumers, context/guard/refusal and installed public seam.",
+      "limits": "No observer/provider/SDK numerical implementation, source bytes, dependencies/build, snapshot schema, projection/renderer or CLI/TOML change. Reuse accepted numerical/conformance evidence; no full SDK/production repeat.",
+      "extends": [
+        "cluster-motion-native-consumers"
+      ],
+      "selections": [
+        {
+          "node": "tests/test_open_clusters.py::test_observed_cluster_motion_uses_shared_service_order_units_and_changed_states",
+          "reason": "Actual Cartesian query/shared-service/changed-state, selected order and degree geometry."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_observed_cluster_context_refusal_isolation_and_no_warm_fallback",
+          "reason": "Source/context/time/site/no-fallback admission and recovery."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_observed_chart_guard_refuses_unmigrated_and_misbound_geometry_before_projection",
+          "reason": "Shared reception opt-in and pre-projection guard."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_saved_cluster_observation_cold_saved_pixels_and_public_output",
+          "reason": "Real cold/restored geometry, identical pixels and SVG output; source remains immutable."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_saved_cluster_observation_fresh_process",
+          "reason": "Fresh process actual public drawing with no reload/network."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_cluster_motion_module_and_admission_ship_and_evaluate_from_installed_wheel",
+          "reason": "Installed real cluster layer and receipt composition retain default lookup."
+        }
+      ]
     }
   },
   "consumer_review": [

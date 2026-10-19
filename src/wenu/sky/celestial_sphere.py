@@ -118,7 +118,9 @@ class CelestialSphere:
             isinstance(realization_context, LayerRealizationContext)
             and realization_context.is_native_icrs
         )
-        if resolved_observer is None and not native_icrs:
+        if (resolved_observer is None and not native_icrs
+                and not (isinstance(realization_context, LayerRealizationContext)
+                         and realization_context.reception is not None)):
             raise TypeError("draw_chart requires an observer.")
         if (
             realization_context is not None
@@ -174,6 +176,14 @@ class CelestialSphere:
                             spec.instant != realization_context.evaluation_instant
                             or spec.time_scale != realization_context.evaluation_time_scale))):
                     raise ValueError("Native ICRS layers must return matching barycentric astrometry.")
+            if realization_context is not None and realization_context.reception is not None:
+                spec = spherical.coordinate_spec
+                expected = realization_context.product_coordinate_spec
+                if (any(getattr(spec, key) != getattr(expected, key) for key in
+                        ("frame", "origin", "position_status", "instant", "time_scale",
+                         "longitude_unit", "latitude_unit", "corrections"))
+                        or realization_context.reception.identity not in spec.provenance):
+                    raise ValueError("Observed layers must return matching reception-bound vacuum geometry.")
             project = (
                 projection.project_geometry
                 if project_geometry is None

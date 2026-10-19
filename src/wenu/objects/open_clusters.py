@@ -175,24 +175,26 @@ class OpenClusters(AstronomicalObject):
         marked = cls.mark_amateur_exclusions(table)
         return marked[~np.asarray(marked['excluded_ir_embedded'], dtype=bool)]
 
-    def position(self, instant=None, *, motion=None) -> SphericalPoints:
+    def position(self, instant=None, *, motion=None, reception=None) -> SphericalPoints:
         """Return lookup centres, or an explicit admitted nominal motion query."""
         if self.catalog is None:
             raise RuntimeError(
                 "The catalogue has not been loaded. "
                 "Call open_clusters.load() first."
             )
-        table = self._selected_table(None)
+        if reception is not None and motion is None:
+            raise ValueError('Explicit reception requires an admitted cluster motion model.')
+        table = self._selected_table(None, strict=reception is not None)
         admitted = self.catalogue_metadata_for(table)
         if motion is None:
             longitude, latitude = self._native_centres(table, instant, admitted=admitted)
             spec, state_metadata = admitted.coordinate_spec(), {}
         else:
-            longitude, latitude, spec, state_metadata = self._motion_centres(table, motion, instant)
+            longitude, latitude, spec, state_metadata = self._motion_centres(table, motion, instant, reception=reception)
         identifiers = np.asarray(table["identifier"], dtype=object)
         metadata = {
             "catalog": "openclust",
-            "coordinate_system": "icrs",
+            "coordinate_system": "altaz" if reception is not None else "icrs",
             "catalogue_metadata": deepcopy(table.meta),
         }
         for name in table.colnames:
@@ -280,7 +282,7 @@ class OpenClusters(AstronomicalObject):
             longitude[index], latitude[index] = angles[str(identifiers[index])]
         return longitude, latitude
 
-    def _motion_centres(self, table, motion, instant):
+    def _motion_centres(self, table, motion, instant, *, reception=None):
         """Compose the accepted provider and kernel; never fall back to lookup."""
         from wenu.cluster_state import ClusterMotionCatalogue, ClusterMotionProvider
         from wenu.coordinates import CoordinateSpec
@@ -301,7 +303,12 @@ class OpenClusters(AstronomicalObject):
         full_ids = tuple(map(str, self.catalog['wenu_id'] if 'wenu_id' in self.catalog.colnames else self.catalog['identifier']))
         if set(full_ids) != {row.identifier for row in motion.rows}:
             raise ValueError('Cluster motion and source catalogue identity sets differ.')
-        provider = ClusterMotionProvider(motion)
+        if reception is not None:
+            from wenu.astrometric_observation import ReceptionContext
+            if type(reception) is not ReceptionContext or instant != reception.tcb:
+                raise ValueError('Cluster evaluation must match the explicit reception TCB event.')
+        provider = ClusterMotionProvider(motion,
+            **({} if reception is None else {'representation': 'cartesian'}))
         try:
             admission = provider.describe().admissions[0]
             records = provider.catalogue(admission.catalogue).objects
@@ -312,10 +319,31 @@ class OpenClusters(AstronomicalObject):
                     kernel.register(provider, ownership='borrowed')
                     with kernel.open_session(SessionPolicy((admission.catalogue,))) as session:
                         batch = session.evaluate(StateQuery(admission.catalogue, admission.model,
-                            selected_keys, (instant,), admission.reference, AccuracyRequest()))
+                            selected_keys, (instant,), admission.reference,
+                            AccuracyRequest(**({} if reception is None else {'metric': 'euclidean_norm'})),
+                            require_velocity=reception is not None))
                 states = {state.object_key: state for state in batch.states}
             else:
                 states = {}
+            if reception is not None:
+                from dataclasses import replace
+                from wenu.astrometric_observation import NominalObservationAdmission, realize_astrometric_batch
+                if not selected_keys:
+                    # The SDK requires a non-empty query. Refuse rather than
+                    # manufacture an unvalidated observed receipt for an empty batch.
+                    raise ValueError('Explicit observed cluster selection must be non-empty.')
+                observed = realize_astrometric_batch(batch, reception,
+                    admission=NominalObservationAdmission(admission, reception.model))
+                by_key = {state.object_key: state for state in observed.states}
+                ordered_observed = tuple(by_key[keys[value]] for value in identifiers)
+                spec = replace(observed.coordinate_spec, longitude_unit='deg', latitude_unit='deg')
+                return (np.rad2deg([state.azimuth_rad for state in ordered_observed]),
+                    np.rad2deg([state.altitude_rad for state in ordered_observed]), spec,
+                    dict(catalogue_position_model=admission.model.model_id,
+                         cluster_motion_admission=metadata,
+                         cluster_motion_states=tuple(states[keys[value]] for value in identifiers),
+                         cluster_motion_model=admission.model, cluster_motion_reference=admission.reference,
+                         astrometric_observation=observed, observed_states=ordered_observed))
             ordered = tuple(states[keys[value]] for value in identifiers)
             vectors = np.asarray([state.vector for state in ordered], dtype=float).reshape(-1, 3)
             longitude = np.rad2deg(np.arctan2(vectors[:, 1], vectors[:, 0])) % 360
@@ -400,7 +428,7 @@ class OpenClusters(AstronomicalObject):
                 + ", ".join(sorted(missing))
             )
 
-    def _selected_table(self, selected):
+    def _selected_table(self, selected, *, strict=False):
         selection = self.selected if selected is None else selected
         if selection is None:
             return self.catalog
@@ -420,18 +448,25 @@ class OpenClusters(AstronomicalObject):
             )
             if matches.size:
                 indices.append(int(matches[0]))
+            elif strict:
+                raise ValueError(f'Unknown observed cluster identity: {requested!r}')
         return self.catalog[np.asarray(indices, dtype=int)]
 
     def realize(self, context, observer, **options):
         from copy import copy
         from wenu.sky.realization import LayerRealizationContext
         motion = options.pop('motion', None)
-        if not isinstance(context, LayerRealizationContext) or not context.is_native_icrs:
+        reception = context.reception if isinstance(context, LayerRealizationContext) else None
+        if reception is not None and motion is None:
+            raise ValueError('Explicit reception requires an admitted cluster motion model.')
+        if reception is None and (not isinstance(context, LayerRealizationContext) or not context.is_native_icrs):
             if motion is not None:
                 raise ValueError('Nominal cluster motion currently requires native ICRS realization.')
             return super().realize(context, observer, **options)
         instant = None
-        if motion is not None:
+        if reception is not None:
+            instant = reception.tcb
+        elif motion is not None:
             from astropy.time import Time
             from wenu_kernel.records import TimePoint
             if context.evaluation_instant is None or context.evaluation_time_scale != 'tcb':
@@ -439,7 +474,7 @@ class OpenClusters(AstronomicalObject):
             time = Time(context.evaluation_instant, scale=context.evaluation_time_scale)
             carry = int(time.jd2 >= .5)
             instant = TimePoint(int(time.jd1) + carry, float(time.jd2) - carry, time.scale)
-        table = self._selected_table(options.pop("selected", None))
+        table = self._selected_table(options.pop("selected", None), strict=reception is not None)
         table = self._amateur_filtered(table, options.pop('exclude_infrared_embedded', False))
         minimum = options.pop("minimum_size_arcmin", None)
         if options:
@@ -455,8 +490,8 @@ class OpenClusters(AstronomicalObject):
             local.catalog, local.selected = table, None
         else:
             local.selected = tuple(map(str, table['wenu_id'] if 'wenu_id' in table.colnames else table['identifier']))
-        geometry = local.position(instant, motion=motion)
-        if motion is not None:
+        geometry = local.position(instant, motion=motion, reception=reception)
+        if motion is not None and reception is None:
             from dataclasses import replace
             geometry.coordinate_spec = replace(geometry.coordinate_spec, instant=context.evaluation_instant)
         geometry.metadata.update(geometry_kind="cartographic_symbol", symbol="open_cluster")
