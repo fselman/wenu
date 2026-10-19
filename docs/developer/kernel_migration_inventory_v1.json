@@ -9075,7 +9075,7 @@
   },
   "supernova_remnant_kernel_routing": {
     "milestone": "K3.15",
-    "status": "Implemented candidate; Mac acceptance pending",
+    "status": "Accepted PR #279, main 21653198502b2b6687af8d82556a7f98922eb4fd; 126 focused Mac, 36 documentation and eight tooling cases passed",
     "base": "42adb84d1fc1323ad6a77d581a4803cae4bdb4da",
     "owner": "src/wenu/objects/supernova_remnants.py",
     "mechanics": "SNR-owned lookup facade to shared source-bound direction/state-table/outline/cache owners; own semantic/model/provider/resource identity",
@@ -9089,5 +9089,21 @@
     ],
     "gate": "supernova-remnant-routing",
     "limits": "Preserve Green signed identities, radio diameters/flux, unknown PA circle policy, selection and appearance; no compact-object substitution, motion/expansion, source bytes, SDK, build, schema, observer/projection/renderer or diffuse migration"
+  },
+  "diffuse_geometry_assessment": {
+    "milestone": "K3.16 / M9",
+    "base": "21653198502b2b6687af8d82556a7f98922eb4fd",
+    "status": "Assessment complete; proposed SDK geometry capability/metadata snapshot transport not agreed; runtime unchanged",
+    "owners": [
+      "src/wenu/sky/milky_way.py",
+      "src/wenu/sky/magellanic_clouds.py",
+      "src/wenu/sky/native_snapshot.py",
+      "packages/wenu_kernel/src/wenu_kernel/records.py",
+      "packages/wenu_kernel/src/wenu_kernel/kernel.py"
+    ],
+    "evidence": "MW provenance pins source blob/bytes but GeoJSON lacks frame/epoch declarations. Cloud GeoJSON declares ICRS/degree axes, levels/fractions and source sidecar; loaders/snapshots omit full source properties. StateBatch permits only direction/Cartesian states, not compound rings.",
+    "proposal": "Separate immutable geometry query/admission/return contract without per-vertex ObjectRecords; metadata-preserving versioned transport with explicit v1-v5 compatibility. Alternative domain geometry boundary requires explicit closure-rule exception. Neither option approved.",
+    "assessment_gate": "documentation",
+    "runtime_changes": false
   }
 }

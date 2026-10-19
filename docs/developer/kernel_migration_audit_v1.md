@@ -35,7 +35,7 @@ measurement-epoch defaults; other nonstellar source qualification remains open.
 | M6 / header defaults fixed; legacy interpretation explicit | Snapshot v5 derives fixed headers from each provider, stores nonstellar records, checks source identity/table metadata/units/header agreement and retains the separate open-cluster row contract | Readers admit v1-v4 historical formats without treating their J2000 headers as measurement epochs. Missing legacy units/digests are not reconstructed as facts. Resource gaps from M5 remain open; the shared coordinate helper correction is verified separately under M4. | Existing corruption owner plus nonstellar record/header conflicts, actual known/unknown epoch round trips and legacy admission |
 | M7 / medium, open | `sky/ceres.py::CERES_SOLUTION` embeds Horizons solution number/date, osculating epoch and quality fields; `minor_body_resources.py` treats this descriptor as the expected identity, while newer comet identities are manifest-derived | A Ceres resource update requires a code edit and can diverge from its acquisition evidence. Migrate the complete solution identity to a versioned data manifest; preserve the existing descriptor-to-manifest/SPK digest and frame checks. | Minor-body resources/ephemeris and Ceres public state/track owners |
 | M8 / medium, open | `satellites/radiometry.py` embeds TSIS product DOI/URL, byte digest/count, grid bounds/sampling, header and audit integral | These are edition-specific resource facts and belong to a validated resource metadata document. Current code deliberately admits one exact resource and verifies it; this is inflexibility/duplication, not evidence of corrupted radiometry. Preserve the numerical integral and malformed-resource oracles when extracting it. | Satellite radiometry resource/parser owner |
-| M9 / medium, open | `sky/milky_way.py` and `sky/magellanic_clouds.py` provide fixed source descriptions/ICRS semantics while loaders retain chiefly source paths and feature levels | Preserve dataset edition, source coordinate semantics and provenance in their own metadata envelope. `epoch=None` may be appropriate for diffuse morphology; do not turn it into a fictitious stellar epoch. | Isophote loading/native geometry and saved-ring consumers |
+| M9 / source assessment complete; contract decision open | `sky/milky_way.py` and `sky/magellanic_clouds.py` provide fixed source descriptions/ICRS semantics while loaders retain chiefly source paths and feature levels | Preserve dataset edition, source coordinate semantics and provenance in their own metadata envelope. `epoch=None` may be appropriate for diffuse morphology; do not turn it into a fictitious stellar epoch. | Isophote loading/native geometry and saved-ring consumers |
 | M10 / low, open | `skyfield_ephemeris.py::_model_from_filename` identifies a DE model from its filename unless explicitly supplied | Prefer the acquisition/validated resource identity. Renaming is not evidence that kernel contents changed; explicit-model admission is already supported. Coverage and digest are read from the resource. | `test_skyfield_ephemeris.py` resource identity owner |
 
 Examples already following the intended boundary include satellite OMM records
@@ -591,3 +591,89 @@ production tree; K2 has not begun.
 
 Preserved originals: [user-guide tests](archive/kernel_audit_20261018/tests/test_user_guide.py.txt)
 and [fixed-sky documentation tests](archive/kernel_audit_20261018/tests/test_fixed_sky_documentation.py.txt).
+
+## K3.16 diffuse geometry assessment and proposed contract
+
+**Inspected base:** main `21653198502b2b6687af8d82556a7f98922eb4fd`,
+2026-10-19. Fernando selected K3.16 with “proceed” after its bounded proposal.
+This assessment does not authorize a new SDK capability or snapshot format.
+No runtime, SDK, source-resource, dependency or serialization change is made here.
+K3.16 remains open pending the architecture decision below.
+
+### Source and runtime evidence
+
+| Owner/resource | Preserved evidence | Remaining admission gap |
+|---|---|---|
+| Milky Way canonical `milky_way_d3.json` and five runtime single-level GeoJSON files | D3-Celestial blob `ce06eaa01d80a4eed149c538d2d162c919b58a84`, captured provenance/BSD licence; canonical SHA-256 `c6cf082cb0ffb9a6080858f673eb8f119df585b00730a5bcfd5ea43dc3f98627`; OL1–OL5 MultiPolygons | GeoJSON has no document/feature frame or epoch declaration. README says source celestial longitude/latitude degrees. Existing runtime ICRS encoding is compatibility interpretation, not recovered source qualification. Bind the canonical/provenance and actual loaded split bytes without inventing a measurement epoch |
+| LMC/SMC derived GeoJSON | Document properties explicitly declare ICRS, RA/Dec degrees, outer-to-inner levels and `g_flux`; features retain cloud/level/fraction. Captured sidecar declares Gaia DR3, processing, ADQL and product digests | Loaders discard these document/source properties. No morphology measurement epoch, distance or physical origin is declared; do not assign Gaia's stellar reference epoch to a derived contour |
+| LMC product identity | SHA-256 `9ad2298999577bbf96a2ad743b90106c3e971948ed2cc832e2fd33cb59f2fc4e` matches the captured sidecar | Keep byte-bound identity and processing provenance in a runtime envelope |
+| SMC product identity | SHA-256 `348d0f485088d6c40efb70dd04fcad3247aa7d9a0e1fe26611b6b10e3f972695` matches the captured sidecar | Same requirement; retain cloud-specific identity and levels |
+| `sky/milky_way.py`, `sky/magellanic_clouds.py` | Existing `features` preserve compounds/rings/holes; Milky Way realization also computes filled-side, area and pole-winding metadata. Native and observed paths consume raw rings; observer cache identities use paths/revision/levels | Admit immutable source/reference/geometry identity before native output or warm-cache reuse. Preserve topology and original vertex encodings. Observation/projection/rendering remain above the kernel |
+| `sky/native_snapshot.py` | v5 records diffuse features plus source paths and Cloud fractions; manifest binds source digests. Restoration assigns those fields directly | Original GeoJSON document/feature properties and a runtime metadata envelope are not serialized. Extending source metadata transport requires an explicit format/legacy-admission design, not relabelling old snapshots as newly qualified |
+
+No acquisition was run and no captured source or licence record was changed.
+The PM/parallax selection used when deriving the Cloud maps does not turn their
+contours into member-star states or a motion model.
+
+### Kernel contract gap
+
+The accepted SDK `StateBatch` admits DirectionState and CartesianState records.
+`KernelSession._evaluate_full` validates those variants per ObjectRecord/time.
+There is no compound-ring geometry query/result/admission contract. Flattening
+each contour into artificial ObjectRecords would contradict K3.16's extended
+geometry requirement; adding metadata to raw output alone would not establish
+actual kernel routing. Existing K1 already distinguishes geometry services from
+physical objects, but it does not implement this missing dispatch surface.
+
+### Proposal requiring Fernando's agreement
+
+**Recommended:** add one separate, minimal native-geometry lookup contract to the
+existing candidate kernel under K3.16. This is a proposed capability, not accepted
+implementation scope. It would:
+
+1. Admit a source-bound immutable collection of compound rings with ordered ring
+   identities, topology/level metadata, explicit angular units and a reference
+   record. Preserve known versus unknown frame/epoch facts and source edition,
+   byte digests and provenance. Dataset/ring identities are geometry identities;
+   no physical object or state is created per vertex.
+2. Dispatch native geometry lookup through kernel-owned registration/lifetime and
+   validate returned source/reference identity, topology and complete batches.
+   Keep this interface separate from direction/Cartesian state queries. No
+   propagation, interpolation, apparent-coordinate calculation or geometric
+   simplification belongs to this capability. Exact public names remain subject
+   to the accepted contract design; no API is frozen by this assessment.
+3. Have the two existing isophote adapters supply the geometry and metadata, then
+   consume returned rings before existing topology/observation/cache realization.
+   Cache identity includes returned geometry and admitted source/reference meaning;
+   refusal must propagate after cache fill. Preserve vertices, holes, compound
+   membership, filled sides, levels, Cloud fractions and appearance.
+4. Introduce versioned metadata-preserving snapshot transport with explicit reads
+   of existing v1–v5 formats. New records preserve the admitted envelope; legacy
+   records retain only facts actually recoverable from their stored evidence and
+   expose missing properties. Do not borrow declarations from unrelated/current
+   resources or silently upgrade old source qualification. Existing source-free
+   restoration and geometry compatibility remain acceptance obligations.
+5. Change the production SDK pin only after the extension passes its independent
+   source/installed-wheel checks and the existing direction/Cartesian consumers
+   remain compatible. No new runtime scientific dependency, source replacement,
+   Gaia query, coordinate mathematics, projection or renderer change is proposed.
+
+**Alternative:** keep the kernel restricted to physical state lookup and admit
+diffuse geometry through a separate domain geometry service using source/reference
+contracts. This avoids a new SDK query capability, but requires explicit agreement
+to a geometry-specific exception to the current “every existing functionality
+must use the kernel” closure criterion. It must not be presented as completed
+kernel query routing. Neither alternative is selected by this assessment.
+
+### Proposed acceptance matrix
+
+| Changed boundary, if approved | Required evidence |
+|---|---|
+| SDK geometry contract/registration/lifetime | Independent stdlib source and isolated-wheel gate; immutable copied rings, topology/identity/order/complete-batch validation, refusal and lifecycle; existing direction/Cartesian/time compatibility |
+| Source metadata/geometry adapters | Existing `test_isophotes.py` and `test_magellanic_clouds.py`; declared versus missing source facts, byte/property tampering, atomic failed load, no fabricated epoch; returned-ring changes and warm refusal through native/observed routes |
+| Observation/topology/render composition | Retain independent Milky Way filled-side/pole-winding oracles, holes/level/Cloud fraction tests; same observer transformation and ring topology; actual legacy/cold/restored atlas PNG equality and PDF/SVG exports |
+| Snapshot metadata/version and installed consumer | Corruption/legacy/source-free process owners, full affected fixed-source/CLI and serial/spawn restoration seams; installed Wenu consumer against the accepted extended SDK; no unsupported source qualification on old formats |
+
+Until Fernando agrees to one option and it is recorded in the roadmap, only
+assessment/documentation work proceeds. K3.17 and other pending work are not
+activated, and M9/K3.16 are not marked closed.
