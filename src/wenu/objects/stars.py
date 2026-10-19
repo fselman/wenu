@@ -21,7 +21,7 @@ from wenu.objects.astronomical_object import AstronomicalObject
 from wenu.resources import catalog_path
 from wenu.star_designations import load_star_designations
 from wenu.geometry.spherical import SphericalPoints
-from wenu.sky.observed_cache import observer_geometry_key
+from wenu.sky.observed_cache import observer_geometry_key, skyfield_stellar_altaz
 from wenu.stellar_catalogue import (
     ingest_stellar_catalogue, source_stellar_metadata, stellar_table_metadata,
 )
@@ -330,24 +330,11 @@ class Stars(AstronomicalObject):
                 "An observer is required to compute stellar coordinates."
             )
 
-        apparent = (
-            resolved_observer.skyfield
-            .at(resolved_observer.t)
-            .observe(self.skyfield_stars)
-            .apparent(deflectors=[])
+        selected, altitude, azimuth = self._catalog_altaz(
+            self.catalog, resolved_observer, alt_min,
         )
-
-        alt, az, _ = apparent.altaz()
-        alt_all = np.asarray(alt.degrees)
-        az_all = np.asarray(az.degrees)
-        mask = alt_all > alt_min
-
-        # Always filter the stable catalogue, never the previous selection.
-        self.hip_df = self.catalog.iloc[
-            np.flatnonzero(mask)
-        ].copy()
-
-        return alt_all[mask], az_all[mask]
+        self.hip_df = selected
+        return altitude, azimuth
 
     def realize(self, context, observer, **geometry_options):
         """Reuse render-local selection for static native catalogue astrometry."""
@@ -606,29 +593,26 @@ class Stars(AstronomicalObject):
             raise RuntimeError(
                 "Hipparcos has not been loaded. Call stars.load() first."
             )
-        key = (
-            observer_geometry_key(resolved),
-            self.catalog_name,
-            self._source_revision,
-        )
+        # Query before every cache lookup: refusal or changed returned state
+        # cannot be concealed by a previous observer-time result.
+        longitude, latitude = self._native_catalogue_coordinates(source)
+        original = (source["ra_degrees"].to_numpy(dtype=float)
+                    if "ra_degrees" in source else source["ra_hours"].to_numpy(dtype=float) * 15.)
+        hours = source["ra_hours"].to_numpy(dtype=float, copy=True)
+        changed = ~((longitude == original) | (np.isnan(longitude) & np.isnan(original)))
+        hours[changed] = longitude[changed] / 15.
+        state_key = (tuple(source.index), hours.tobytes(), latitude.tobytes())
+        key = (observer_geometry_key(resolved), self.catalog_name,
+               self._source_revision, state_key)
         cached = self._observed_altaz_cache.get(key)
         if cached is None:
-            if source is self.catalog and self.skyfield_stars is not None:
+            unchanged = (not np.any(changed) and np.array_equal(
+                latitude, source["dec_degrees"].to_numpy(dtype=float), equal_nan=True))
+            if source is self.catalog and self.skyfield_stars is not None and unchanged:
                 stars = self.skyfield_stars
             else:
-                stars = Star(
-                    ra_hours=source["ra_hours"].to_numpy(),
-                    dec_degrees=source["dec_degrees"].to_numpy(),
-                )
-            apparent = (
-                resolved.skyfield
-                .at(resolved.t)
-                .observe(stars)
-                .apparent(deflectors=[])
-            )
-            altitude, azimuth, _ = apparent.altaz()
-            altitude = np.asarray(altitude.degrees, dtype=float)
-            azimuth = np.asarray(azimuth.degrees, dtype=float)
+                stars = Star(ra_hours=hours, dec_degrees=latitude)
+            altitude, azimuth = skyfield_stellar_altaz(stars, resolved)
             altitude.setflags(write=False)
             azimuth.setflags(write=False)
             cached = (altitude, azimuth)

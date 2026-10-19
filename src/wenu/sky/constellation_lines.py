@@ -311,8 +311,9 @@ class ConstellationLines(GeometricalObject):
                 stacklevel=2,
             )
 
-        # Reuse the maximal stellar transformation without changing the
-        # renderer-facing active stellar selection.
+        # The public stellar observation boundary queries kernel state before
+        # consulting its observer cache. Reuse that maximal transformation
+        # without changing the renderer-facing active stellar selection.
         if not native_icrs:
             source, alt_deg, az_deg = self.stars.observed_altaz(observer)
             source_ids = source.index

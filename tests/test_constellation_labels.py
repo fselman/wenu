@@ -297,6 +297,17 @@ def observer():
     )
 
 
+def label_stars(source, filtered=None):
+    """Admitted synthetic source using the actual public stellar interface."""
+    from stellar_catalogue_fixtures import native_table
+    from wenu.objects.stars import Stars
+    stars = Stars(None)
+    stars.source_catalog = native_table(source)
+    stars.catalog = stars.source_catalog.iloc[:1].copy() if filtered is None else filtered
+    stars.hip_df = stars.catalog.copy()
+    return stars
+
+
 def test_incomplete_catalogue_rows_are_ignored():
     source = pd.DataFrame(
         {
@@ -305,10 +316,7 @@ def test_incomplete_catalogue_rows_are_ignored():
         },
         index=[10, 11, 12, 13, 14],
     )
-    stars = SimpleNamespace(
-        source_catalog=source,
-        hip_df=source.iloc[:1],
-    )
+    stars = label_stars(source)
 
     geometry = ConstellationLabels(
         stars,
@@ -328,7 +336,7 @@ def test_all_incomplete_catalogue_rows_return_empty_geometry():
             "dec_degrees": [-20.0, np.nan],
         }
     )
-    stars = SimpleNamespace(source_catalog=source, hip_df=source)
+    stars = label_stars(source)
 
     geometry = ConstellationLabels(stars).spherical_geometry(observer())
 
@@ -371,10 +379,7 @@ def test_label_anchor_uses_unfiltered_source_catalog():
         index=[10, 11, 12],
     )
     filtered = source.iloc[:1].copy()
-    stars = SimpleNamespace(
-        source_catalog=source,
-        hip_df=filtered,
-    )
+    stars = label_stars(source, filtered)
     observer = SimpleNamespace(
         altaz_frame=AltAz(
             obstime=Time("2026-07-28T02:00:00"),
@@ -405,10 +410,7 @@ def test_active_star_filter_does_not_define_label_identity():
         },
         index=[10, 11, 12],
     )
-    stars = SimpleNamespace(
-        source_catalog=source,
-        hip_df=source.iloc[0:0],
-    )
+    stars = label_stars(source, source.iloc[0:0])
     labels = ConstellationLabels(stars, selected=["Oct"])
     assert labels.selected == {"Oct"}
     assert len(stars.hip_df) == 0
@@ -934,3 +936,35 @@ def test_native_empty_labels_keep_returned_spec_without_second_query():
         result = ConstellationLabels(SimpleNamespace(native_positions=positions)).realize(
             LayerRealizationContext(NATIVE_ICRS_SPEC), None)
         assert len(result) == 0 and result.coordinate_spec == spec and calls == [True]
+
+
+def test_observed_labels_use_public_returned_state_and_propagate_refusal(monkeypatch):
+    import pytest
+    from wenu.coordinates import icrs_catalogue_spec
+    from wenu.geometry.spherical import SphericalPoints
+    calls = []
+    class Source:
+        shift = 0
+        refuse = False
+        def native_positions(self):
+            if self.refuse:
+                raise RuntimeError('synthetic observed label refusal')
+            calls.append(self.shift)
+            return SphericalPoints(lon_deg=np.asarray([0., 20., 40.])+self.shift,
+                lat_deg=[-85., -84., -86.], coordinate_spec=icrs_catalogue_spec('synthetic source'))
+        @property
+        def source_catalog(self):
+            raise AssertionError('No observed label source-table bypass')
+        hip_df = catalog = source_catalog
+    source = Source()
+    monkeypatch.setattr('wenu.sky.constellation_labels.icrs_point_arrays_to_altaz',
+                        lambda lon, lat, observer, **kw: (lon+10, lat+2))
+    labels = ConstellationLabels(source, selected={'Oct'}, min_stars=3)
+    first = labels.spherical_geometry(observer())
+    source.shift = 1
+    second = labels.spherical_geometry(observer())
+    assert calls == [0, 1]
+    np.testing.assert_allclose(second.lon_deg, first.lon_deg+1, atol=1e-12)
+    source.refuse = True
+    with pytest.raises(RuntimeError, match='observed label refusal'):
+        labels.spherical_geometry(observer())

@@ -207,8 +207,30 @@ membership, Serpens splitting and the existing spherical mean. Faint source
 stars remain included independently of marker selection. Empty/all-invalid
 inputs preserve the returned coordinate specification without a second query.
 Kernel refusal propagates; there is no raw-table fallback. Snapshot label
-instances inherit this path. The observed label calculation remains unchanged.
+instances inherit this path. Observed labels now use the same public source
+positions, then retain their existing Astropy transformation and spherical mean.
+The returned source specification travels into CoordinateService; the shared
+helper’s compatibility default remains unchanged for other callers.
 No claim of all-consumer kernel closure follows.
+
+`Stars.observed_altaz(observer)` now queries the admitted kernel-backed source
+angles before every observed-cache lookup. Its cache identity includes source
+IDs, the effective RA-hour encoding and returned declinations alongside existing
+observer/resource/revision keys. A changed state misses the cache; a failed query
+propagates even after cache fill. For unchanged directions, existing source
+RA-hour encoding and prebuilt stable-table representation are retained to avoid
+an unnecessary numerical round trip. Changed returned longitudes determine new
+RA hours. `observed_cache.skyfield_stellar_altaz` owns the existing
+`at(...).observe(...).apparent(deflectors=[]).altaz()` boundary. It adds no
+motion, distance, light-time iteration or corrections of its own.
+
+`compute_altaz` uses this same maximal observation boundary, then selects from
+the stable catalogue and updates only its historical `hip_df` result. Render-local
+stars and constellation figures reuse the boundary without mutating selection.
+Figure availability/topology remains tied to the active catalogue as before;
+label means still include the complete source. The retained Skyfield and Astropy
+methods are distinct compatibility paths, not a new unified apparent-place
+science model. Observer metadata/resource closure remains K3.18.
 
 The `native-catalogue` reference explicitly means an unpropagated lookup.
 Unbounded lookup availability is not astrometric validity at arbitrary epochs;

@@ -372,3 +372,134 @@ def test_native_kernel_round_trip_preserves_wrap_and_polar_directions():
     separation = np.arctan2(np.linalg.norm(np.cross(original, actual), axis=1),
                             np.sum(original*actual, axis=1))
     assert np.max(separation) < 1e-12  # Numerical compatibility test, not a physical error certificate.
+
+
+def test_observed_star_and_figure_routes_use_kernel_state_even_after_cache_fill(tmp_path, monkeypatch):
+    from dataclasses import replace
+    from wenu_kernel import KernelSession
+    stars, observer = make_stars()
+    stars.source_catalog = stars.catalog.copy()
+    seen = []
+    class At:
+        def observe(self, target):
+            seen.append(target)
+            return FakeApparent(target.dec.degrees, target.ra.hours * 15)
+    observer.skyfield = SimpleNamespace(at=lambda t: At())
+    path = tmp_path/'observed.fab'
+    path.write_text('Cru 3 100 200 300\n')
+    lines = ConstellationLines(stars, filename=path)
+    source, active, selected = (stars.source_catalog.copy(deep=True), stars.catalog.copy(deep=True), stars.hip_df.copy(deep=True))
+    first = stars.spherical_geometry(observer, alt_min=-90)
+    lines.spherical_geometry(observer)
+    assert len(seen) == 1
+    evaluate = KernelSession.evaluate
+    def rotate(session, query):
+        batch = evaluate(session, query)
+        return replace(batch, states=tuple(replace(state,
+            vector=(-state.vector[1], state.vector[0], state.vector[2])) for state in batch.states))
+    monkeypatch.setattr(KernelSession, 'evaluate', rotate)
+    second = stars.spherical_geometry(observer, alt_min=-90)
+    geometry = lines.spherical_geometry(observer)
+    np.testing.assert_allclose(second.lon_deg, (first.lon_deg + 90) % 360, atol=1e-12)
+    np.testing.assert_allclose(geometry.lon_deg[0], second.lon_deg[:2], atol=1e-12)
+    assert len(seen) == 2
+    pd.testing.assert_frame_equal(source, stars.source_catalog)
+    pd.testing.assert_frame_equal(active, stars.catalog)
+    pd.testing.assert_frame_equal(selected, stars.hip_df)
+    def refuse(*args):
+        raise RuntimeError('synthetic observed kernel refusal')
+    monkeypatch.setattr(KernelSession, 'evaluate', refuse)
+    for route in (lambda: stars.observed_altaz(observer),
+                  lambda: stars.compute_altaz(observer=observer),
+                  lambda: stars.spherical_geometry(observer),
+                  lambda: lines.spherical_geometry(observer)):
+        with pytest.raises(RuntimeError, match='observed kernel refusal'):
+            route()
+    assert len(seen) == 2
+
+
+def test_direct_altaz_uses_stable_selection_and_kernel_boundary(monkeypatch):
+    stars, observer = make_stars()
+    calls = []
+    original = stars._native_catalogue_coordinates
+    def native(catalog):
+        calls.append(tuple(catalog.index))
+        return original(catalog)
+    monkeypatch.setattr(stars, '_native_catalogue_coordinates', native)
+    stars.compute_altaz(alt_min=0, observer=observer)
+    stars.compute_altaz(alt_min=-90, observer=observer)
+    assert calls == [(100, 200, 300), (100, 200, 300)]
+    assert list(stars.hip_df.index) == [100, 200, 300]
+    assert observer.skyfield.observe_calls == 1
+
+
+def test_observed_stellar_consumers_preserve_legacy_geometry_and_pixels(tmp_path, monkeypatch):
+    """Actual Skyfield/Astropy/render calls; synthetic offline barycentric Earth."""
+    from datetime import datetime, timezone
+    from skyfield.api import load, wgs84, Star
+    from skyfield.vectorlib import VectorFunction
+    from astropy.coordinates import EarthLocation
+    import astropy.units as u
+    from wenu.sky.celestial_sphere import CelestialSphere
+    from wenu.sky.constellation_labels import ConstellationLabels
+    from wenu.sky.observed_cache import icrs_point_arrays_to_altaz
+    from wenu.projections import StereographicProjection
+    from wenu.rendering import MatplotlibRenderer
+    import matplotlib.pyplot as plt
+    class SyntheticEarth(VectorFunction):
+        center, target = 0, 399
+        def _at(self, t):
+            return np.array([1., 0., 0.]), np.array([0., .017, 0.]), None, None
+    instant = datetime(2026, 8, 16, 1, tzinfo=timezone.utc)
+    observer = SimpleNamespace(lat_deg=-32.443342, lon_deg=-71.230289, elevation_m=52.,
+        utc_datetime=instant, t_astropy=Time(instant), ephemeris_name='synthetic Earth PV',
+        data_directory=str(tmp_path), t=load.timescale(builtin=True).from_datetime(instant))
+    observer.earth_location = EarthLocation(lat=observer.lat_deg*u.deg, lon=observer.lon_deg*u.deg, height=52*u.m)
+    observer.skyfield = SyntheticEarth() + wgs84.latlon(observer.lat_deg, observer.lon_deg, elevation_m=52)
+    stars = Stars(None)
+    stars.source_catalog = native_table(pd.DataFrame(dict(ra_degrees=[80., 82., 84.],
+        ra_hours=np.asarray([80., 82., 84.])/15, dec_degrees=[0., 1., 2.],
+        magnitude=[1., 3., 9.], is_constellation_vertex=[True]*3), index=[100, 200, 300]))
+    stars.catalog = stars.source_catalog.iloc[:2].copy()
+    stars.hip_df = stars.catalog.copy()
+    stars.skyfield_stars = Star(ra_hours=stars.catalog.ra_hours.to_numpy(), dec_degrees=stars.catalog.dec_degrees.to_numpy())
+    path = tmp_path/'offline.fab'; path.write_text('Ori 3 100 200 300\n')
+    sky = CelestialSphere(None)
+    for layer in (stars, ConstellationLines(stars, filename=path), ConstellationLabels(stars, min_stars=1)):
+        sky.add(layer)
+    def raw(self, catalog):
+        return catalog.ra_degrees.to_numpy(dtype=float), catalog.dec_degrees.to_numpy(dtype=float)
+    options = {stars: {'geometry': {'alt_min': -90}}}
+    geometries, images = [], []
+    for legacy in (True, False):
+        stars._observed_altaz_cache.clear()
+        with monkeypatch.context() as patch:
+            if legacy:
+                patch.setattr(Stars, '_native_catalogue_coordinates', raw)
+            figure, ax = plt.subplots(figsize=(3, 3), dpi=80)
+            try:
+                result = sky.draw_chart(observer=observer, projection=StereographicProjection(),
+                    renderer=MatplotlibRenderer(ax), layer_options=options)
+                geometries.append(tuple(value.spherical for value in result.layers))
+                figure.canvas.draw(); images.append(np.asarray(figure.canvas.buffer_rgba()).copy())
+                figure.savefig(tmp_path/f'observed-{legacy}.svg')
+            finally:
+                plt.close(figure)
+    for old, new in zip(*geometries, strict=True):
+        for a, b in zip(old.lon_deg, new.lon_deg, strict=True):
+            np.testing.assert_array_equal(a, b)
+        for a, b in zip(old.lat_deg, new.lat_deg, strict=True):
+            np.testing.assert_array_equal(a, b)
+        assert old.coordinate_spec == new.coordinate_spec
+    np.testing.assert_array_equal(*images)
+    assert np.any(images[0][:, :, :3] < 200)
+    # Separate direct pre-migration chains protect correction ownership.
+    direct = observer.skyfield.at(observer.t).observe(Star(
+        ra_hours=stars.catalog.ra_hours.to_numpy(), dec_degrees=stars.catalog.dec_degrees.to_numpy())).apparent(deflectors=[])
+    alt, az, _ = direct.altaz()
+    np.testing.assert_array_equal(geometries[1][0].lon_deg, az.degrees)
+    np.testing.assert_array_equal(geometries[1][0].lat_deg, alt.degrees)
+    lon, lat = icrs_point_arrays_to_altaz([80., 82., 84.], [0., 1., 2.], observer, provider='legacy label oracle')
+    expected = ConstellationLabels._spherical_mean(lon, lat)
+    np.testing.assert_array_equal([geometries[1][2].lon_deg[0], geometries[1][2].lat_deg[0]], expected)
+    assert geometries[1][1].metadata['hip_edges'] == ((100, 200),)
