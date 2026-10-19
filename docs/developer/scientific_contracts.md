@@ -11,8 +11,9 @@ astrometry companion now recovers them for the existing 509 Hunt-centred rows
 Offline enrichment leaves the selected catalogue and default charts unchanged.
 The ReadMe declares densest-point ICRS centres at epoch 2016.0 and mean cluster
 motions, with RA motion multiplied by cos(dec). Errors of means, dispersions,
-distance percentiles and masks retain their separate meanings. Epoch time scale,
-coordinate origin and cluster-mean covariances remain explicit unknowns. Current cluster positions are not
+distance percentiles and masks retain their separate meanings. The raw cluster ReadMe has no explicit epoch-scale/origin declarations; the
+qualification below records inherited conventions separately. Cluster-mean
+covariance and centre-model accuracy remain unknown. Current cluster positions are not
 propagated. A source lookup must not claim zero motion, date accuracy or a
 fabricated measurement epoch. Public/native cluster centres and observer
 transformation inputs now use the accepted SDK `catalogue_lookup` capability.
@@ -21,6 +22,14 @@ invented scale or numerical epoch. Returned positions control geometry/cache
 identity, and failures propagate. Source fields/units/masks are bound into an
 immutable derived identity without adopting a cross-source motion solution. See the
 [source and motion audit](kernel_migration_audit_v1.md#open-cluster-motion-and-lookup-audit-2026-10-18).
+
+The separate [source qualification and propagation contract](kernel_migration_audit_v1.md#cluster-propagation-qualification-and-model-contract)
+records documented inheritance rather than altering the original v1 facts. It
+resolves Hunt's Gaia time/origin conventions and the four Dias RA-motion
+conventions, while retaining unproved centre-epoch lineage and uncertainty gaps.
+A future physical provider must distinguish full and explicitly reduced models,
+source/nominal accuracy and computational reuse. A motion-derived update interval
+alone is not an absolute sky-accuracy guarantee. Default lookup remains unchanged.
 
 ## Coordinates, time and resources
 

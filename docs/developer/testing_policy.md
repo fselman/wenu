@@ -112,6 +112,20 @@ therefore remains valid; do not rerun those broad gates, the independent SDK or
 the full production suite. Run documentation and stdlib tooling separately.
 Source acquisition is an explicit one-file operation outside tests and charts.
 
+## Cluster source qualification contract
+
+`cluster-astrometry-qualification` checks the new source-evidence record against
+actual accepted catalogue/companion byte hashes and all four retained Dias rows,
+plus the existing explicit-enrichment and unqualified-epoch contracts. This is
+evidence integrity and unchanged admission, not a numerical propagation oracle.
+No source resource, active selector, implementation, dependency or SDK changes.
+The record and proposed model contract live under developer documentation.
+Run documentation and stdlib gate-tooling checks separately. Reuse the accepted
+archive/installation and chart evidence; no packaging, numerical, atlas, full
+production or independent SDK repeat. When a physical provider is implemented,
+add its independent numerical/refusal/certificate gates and actual affected
+consumer seams before claiming propagation or ancient-date accuracy.
+
 ## Galaxy routing and shared catalogue adapter
 
 `kernel-galaxy-routes` selects inherited nonstellar owner/geometry seams, the

@@ -152,8 +152,9 @@ per-cluster network queries were needed. Scientific-use policy/attribution and
 article CC BY 4.0 statements are recorded with primary-source URLs; no blanket
 CC0 or OpenNGC relicensing claim is made. Tests contain exact captured records
 and the original ReadMe, not reconstructed fixed-width provider fixtures.
-Unknown time scale/origin and unavailable cluster-mean covariances remain open;
-mean cluster motions do not redefine the densest-point centre. Numerical
+The preserved v1 time-scale/origin gaps require explicit qualification/adoption;
+unavailable cluster-mean covariances remain unknown. Mean cluster motions do not
+redefine the densest-point centre. Numerical
 propagation and default adoption require a separate reviewed model.
 
 The accepted SDK dev8 introduces `catalogue_lookup`: it admits incomplete
@@ -167,6 +168,130 @@ explicit propagation model may claim positions at a new epoch.
 For ancient charts, bulk cluster motion and changes to member distribution are
 different questions; translating a present-day symbol does not reconstruct the
 historical membership or morphology.
+
+## Cluster propagation qualification and model contract
+
+**Inspected base:** `fed1305e76455f952cca4c2a49afd14205ce30b7`.
+**Source review:** 2026-10-19 UTC. The
+[source-bound qualification record](data/cluster_astrometry_qualification_v1.json)
+separates direct declarations, inherited conventions, unresolved lineage and
+proposed model policies. It binds the accepted selected catalogue, original Dias
+snapshot and Hunt companion/specification by SHA-256. It preserves four exact
+record pairs from the original B/ocl and Dias 2014 tables, together with full-file
+hashes, sizes, URLs and source row indices. No catalogue bytes are changed.
+
+### Source qualification
+
+Hunt & Reffert [Paper II, sections 2.1 and 3.3](https://arxiv.org/html/2303.13424v2)
+uses Gaia DR3 astrometry, derives density-mode centres and calculates core-member
+mean motions. [Paper III](https://arxiv.org/html/2403.05143v2) updates this catalogue.
+ESA's [reference-system definition](https://gea.esac.esa.int/archive/documentation/GDR3/Data_processing/chap_cu3ast/sec_cu3ast_intro/ssec_cu3ast_intro_refsystems.html)
+and [DR3 data model](https://gea.esac.esa.int/archive/documentation/GDR3/Gaia_archive/chap_datamodel/sec_dm_main_source_catalogue/ssec_dm_gaia_source.html)
+define barycentric ICRS directions, TCB and Julian-year epochs. Together with the
+captured cluster ReadMe's epoch 2016.0, this supports **source-derived inheritance
+of J2016.0(TCB) and solar-system-barycentric direction conventions** for the Hunt
+aggregate. It is an inference from this specific documented chain, not an explicit
+new statement in the cluster ReadMe or a general rule inferred from a name.
+The old v1 null declarations remain preserved; adopting this qualification in a
+runtime solution requires a separate versioned ingestion/admission step.
+
+All four Dias-only entries (NGC 2239, NGC 2252, NGC 6514 and NGC 6885) identify
+D14 as their proper-motion reference in the original
+[B/ocl table and reference list](https://cdsarc.cds.unistra.fr/ftp/cats/B/ocl/).
+Their two mean motions exactly match the
+[Dias et al. (2014) table](https://cdsarc.cds.unistra.fr/ftp/J/A+A/564/A79/).
+Its ReadMe explicitly defines cluster RA motion as mu_alpha times cos(delta),
+ICRS. That convention is now resolved for these four motions. D14 labels its
+coordinates at J2000.0; they agree with the retained centres within tabular
+rounding, but the [HEASARC position description](https://heasarc.gsfc.nasa.gov/w3browse/all/openclust.html)
+establishes only J2000 equinox. The retained centre's epoch lineage and time scale
+are not yet proven, so those four numerical source epochs stay unknown.
+
+Do not import uncertainty semantics along with a matching mean value. The
+B/ocl and D14 error fields differ substantially for all four rows; both original
+values are preserved in the audit record. No conversion or interpretation is
+adopted without its original methodological evidence. D14's cluster-star
+correlation is not a full covariance matrix for the cluster mean. Hunt likewise
+has no published full cluster-mean astrometric covariance. A density maximum is
+not a material point whose trajectory has been measured independently.
+
+### Proposed propagation boundary
+
+This is a contract for the next implementation, not an enabled provider.
+Keep `catalogue_lookup` as the default until explicit adoption and compatibility
+acceptance. Register a distinct versioned cluster-centre motion model; never
+silently change the meaning of a saved lookup state.
+
+The first full model should use a coherent rectilinear barycentric astrometric
+solution, following ESA's [standard-motion definition](https://gea.esac.esa.int/archive/documentation/GDR3/Data_processing/chap_cu3ast/sec_cu3ast_intro/ssec_cu3ast_intro_motion.html).
+Given the source direction u, local east/north bases p and q, distance d and
+mu_alpha_star/mu_delta, the model construction is
+
+\[
+ b_0=d u,\qquad v=d(\mu_{\alpha *}p+\mu_\delta q)+v_r u,
+ \qquad u(t)=\frac{b_0+(t-t_0)v}{\lVert b_0+(t-t_0)v\rVert}.
+\]
+
+Angles, distance, velocity and elapsed time must first use coherent units and
+TCB conventions. This describes an astrometric chart-centre approximation;
+its time argument is light arrival at the barycentre, not a reconstructed
+simultaneous emission event. A spectroscopic RV used as an astrometric proxy
+must be declared as model policy. Use a reviewed existing numerical service
+and independent oracle rather than implementing a second chart pipeline.
+
+Distance selection is explicit: a chosen source distance estimator and its
+percentiles must not silently become inverse mean parallax or Gaussian errors.
+The 502 available RVs are candidate inputs, not 502 certified trajectories.
+The full model must refuse missing RV. An angular-only approximation, if offered,
+is a separately named opt-in model with omitted perspective effects reported;
+unknown RV must not be published as a measured zero. Four Dias-only entries
+remain unavailable for physical propagation until their missing facts are
+qualified. A mixed request must report unavailable objects explicitly, without
+silent omission or a raw-coordinate fallback labelled as propagated.
+
+Transporting today's density maximum with a mean core motion is an explicit
+modelling assumption. It does not reconstruct membership, tidal tails, internal
+motions, angular size or morphology in antiquity. Keep shape/display parameters
+above the state provider. Galactic acceleration and centre-model uncertainty
+need an evaluated budget before any ancient-date absolute-accuracy claim;
+do not invent a universal range of thousands of years.
+
+### Uncertainty, validity and reuse
+
+Keep three separate questions: measurement/model accuracy relative to the real
+sky, numerical accuracy relative to the chosen model, and the error from reusing
+an older computed state. Missing initial-centre errors, covariances or systematic
+bounds remain unknown. A small proper-motion standard error or source dispersion
+alone cannot supply the missing total uncertainty or a hard confidence bound.
+An absolute angular-accuracy request must refuse unevaluated physical errors.
+A nominal model evaluation may instead return explicitly unknown physical errors.
+
+The provider owns finite physical/model coverage and proves a reuse certificate
+over an admitted interval. For a held direction at anchor a, certify
+
+\[
+ \sup_{t\in I}\operatorname{angle}(u(t),u(a))+
+ \epsilon_{\mathrm{numerical},a}\leq\epsilon_{\mathrm{reuse}}.
+\]
+
+A proper-motion-times-elapsed-time estimate is useful for screening; full
+rectilinear motion needs a bound accounting for perspective and changing distance.
+Unknown physical validity cannot be repaired by satisfying this computational
+reuse inequality. No reuse chains: propagate from the original admitted solution,
+and associate reuse with an original computed anchor. The existing SDK checks
+certificate identities, metric, scope, time scale, coverage and error channel;
+it does not infer a physical bound from catalogue motions. Existing same-scale
+sessions require explicit TCB queries or a separately admitted time conversion,
+not a relabelled TT request. Numerical backends must establish their own coverage.
+
+Cache identities include source bytes, adopted qualification, centre/motion/
+distance/RV policy, model/backend versions, time conventions and requested subset.
+Only changed object families/solutions are invalidated. Updating cluster epochs
+must not re-evaluate static galaxies or unrelated providers. Tests must cover
+source facts, refusal, independent motion oracles, pole/wrap/zero-motion cases,
+forward/backward epochs, strict-accuracy refusal, certificate boundaries and
+unrelated-provider call counts. Add chart/saved/installation seams when routing
+or transport changes; do not pre-emptively rerun unrelated suites for this contract.
 
 ## Original functionality and test audit
 

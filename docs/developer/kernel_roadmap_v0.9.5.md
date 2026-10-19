@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 6, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 7, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -86,8 +86,12 @@ now has a versioned source-bound companion: 509 Hunt solutions, 502 radial
 velocities and four explicitly unadopted Dias-only rows. The active 513-object
 catalogue/selection and charts retain their bytes; explicit offline enrichment
 mirrors all recovered fields in the existing metadata record. Next: resolve
-remaining epoch-scale/origin facts and admit a physical propagation model, with
-uncertainty/validity policy; missing cluster-mean covariances stay unknown. Other
+the explicit source-admission and physical provider specified in the
+[qualification and propagation contract](kernel_migration_audit_v1.md#cluster-propagation-qualification-and-model-contract).
+The Hunt conventions are qualified by documented Gaia inheritance; the four
+Dias RA-motion conventions are resolved through D14, while their retained
+position-epoch/scale lineage remains incomplete. Missing centre-model bounds
+and cluster-mean covariances stay unknown. No physical provider is enabled yet. Other
 families/consumers and the final SDK freeze remain ahead. See the
 [motion audit](kernel_migration_audit_v1.md#open-cluster-motion-and-lookup-audit-2026-10-18).
 

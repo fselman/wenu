@@ -1,0 +1,275 @@
+{
+  "schema": "wenu-cluster-astrometry-qualification/1",
+  "base_commit": "fed1305e76455f952cca4c2a49afd14205ce30b7",
+  "checked_utc": "2026-10-19",
+  "resources": {
+    "src/wenu/data/curated_catalogs/open_clusters/wenu_open_clusters_v0.2.ecsv": "5f149895d29665ede5b2e0e1d410b84da80ed68a768fe495c2134f499985e35e",
+    "src/wenu/data/catalogs/open_clusters/open_clusters_hunt_astrometry_v1.ecsv": "00b001d520111dabdea337e5e243acf8c64495712aba704fb94abff89f6cd57d",
+    "src/wenu/data/catalogs/open_clusters/open_clusters_hunt_astrometry_source_v1.json": "328ca494efdfdf7e52a4d26c039c4b2155cee97d607267de5c1351c95a465654",
+    "src/wenu/data/catalogs/open_clusters/open_clusters_dias_heasarc.ecsv": "508dfdb29110957cf66e50fa2a3cca4139098a4ed396b24787128fc24057241d"
+  },
+  "sources": {
+    "B_ocl_ReadMe": {
+      "url": "https://cdsarc.cds.unistra.fr/ftp/cats/B/ocl/ReadMe",
+      "bytes": 11380,
+      "sha256": "810acbd8052beadb8d1ceeacdbfb28226a827684ad4c83792eae661cf22ad0d0"
+    },
+    "B_ocl_clusters": {
+      "url": "https://cdsarc.cds.unistra.fr/ftp/cats/B/ocl/clusters.dat",
+      "bytes": 269687,
+      "sha256": "b7dc52fd30bca59b931a6f41ca4f59d1b5d747f1513a921dde98e213baf742e2"
+    },
+    "B_ocl_references": {
+      "url": "https://cdsarc.cds.unistra.fr/ftp/cats/B/ocl/refs.dat",
+      "bytes": 9551,
+      "sha256": "5b122832f04faca9e04f6a7382b5cd81c4fbca249b87a9be86b686f8c37b6049"
+    },
+    "D14_ReadMe": {
+      "url": "https://cdsarc.cds.unistra.fr/ftp/J/A+A/564/A79/ReadMe",
+      "bytes": 27250,
+      "sha256": "e61d1c32c82164f379ea0179379d2cf5c64627ca03801156bf85f35e959f35ca"
+    },
+    "D14_table2": {
+      "url": "https://cdsarc.cds.unistra.fr/ftp/J/A+A/564/A79/table2.dat",
+      "bytes": 261809,
+      "sha256": "c15bb2cc6c4c5524ef5580b1e9b63ee04c22a546cde17125c725e0f2398574e4"
+    }
+  },
+  "primary_references": {
+    "hunt_2023": {
+      "url": "https://arxiv.org/html/2303.13424v2",
+      "doi": "10.1051/0004-6361/202346285",
+      "sections": [
+        "2.1",
+        "3.3"
+      ],
+      "finding": "Gaia DR3 astrometry; density-mode centres and core-member mean astrometry."
+    },
+    "hunt_2024": {
+      "url": "https://arxiv.org/html/2403.05143v2",
+      "doi": "10.1051/0004-6361/202348662",
+      "sections": [
+        "1",
+        "4.1"
+      ],
+      "finding": "Updated cluster catalogue based on Paper II."
+    },
+    "gaia_reference": {
+      "url": "https://gea.esac.esa.int/archive/documentation/GDR3/Data_processing/chap_cu3ast/sec_cu3ast_intro/ssec_cu3ast_intro_refsystems.html",
+      "section": "4.1.3",
+      "finding": "TCB astrometry in BCRS with solar-system-barycentric origin and ICRS-aligned axes."
+    },
+    "gaia_data_model": {
+      "url": "https://gea.esac.esa.int/archive/documentation/GDR3/Gaia_archive/chap_datamodel/sec_dm_main_source_catalogue/ssec_dm_gaia_source.html",
+      "fields": [
+        "ref_epoch",
+        "ra",
+        "dec",
+        "pmra"
+      ],
+      "finding": "Julian-year TCB reference epoch; barycentric ICRS directions and mu_alpha_star."
+    },
+    "gaia_motion": {
+      "url": "https://gea.esac.esa.int/archive/documentation/GDR3/Data_processing/chap_cu3ast/sec_cu3ast_intro/ssec_cu3ast_intro_motion.html",
+      "section": "4.1.4",
+      "finding": "Rectilinear barycentric astrometric model, perspective effects and light-arrival time convention."
+    },
+    "heasarc": {
+      "url": "https://heasarc.gsfc.nasa.gov/w3browse/all/openclust.html",
+      "finding": "J2000 equinox alone; source-coded mean motions and errors; original source references needed."
+    },
+    "D14": {
+      "url": "https://doi.org/10.1051/0004-6361/201323226",
+      "cds": "J/A+A/564/A79",
+      "finding": "Cluster pmRAc is mu_alpha*cos(delta), ICRS; table2 positions labelled at J2000.0; no epoch time scale."
+    }
+  },
+  "hunt": {
+    "rows": 509,
+    "available_rv": 502,
+    "qualification": "source-derived inheritance, not an explicit declaration in the cluster ReadMe",
+    "position_epoch_label": "J2016.0",
+    "position_epoch_scale": "tcb",
+    "coordinate_frame": "ICRS",
+    "coordinate_origin": "solar-system-barycenter",
+    "ra_motion_convention": "mu_alpha_star",
+    "proper_motion_time_unit": "Julian year of TCB",
+    "raw_readme_facts_rewritten": false,
+    "source_chain": [
+      "hunt_2024",
+      "hunt_2023",
+      "gaia_data_model",
+      "gaia_reference"
+    ],
+    "cluster_mean_covariance": null,
+    "centre_model_error": null,
+    "propagation_admitted": false
+  },
+  "dias_only": [
+    {
+      "wenu_id": "WOC00001229",
+      "identifier": "NGC 2239",
+      "motion_reference": "D14",
+      "ra_motion_convention": "mu_alpha_star",
+      "mean_motion_mas_per_year": [
+        -0.6,
+        -2.18
+      ],
+      "b_ocl_reported_errors": [
+        0.26,
+        0.34
+      ],
+      "d14_reported_errors": [
+        2.75,
+        3.7
+      ],
+      "uncertainty_adoption": "none; source-reported error fields differ; do not substitute or infer a conversion",
+      "retained_position_epoch": null,
+      "d14_position_epoch_label": "J2000.0",
+      "position_epoch_scale": null,
+      "position_lineage_status": "D14 coordinates agree within tabular rounding; B/ocl position-epoch/scale lineage not proved",
+      "d14_position_deg": [
+        97.7375,
+        4.96917
+      ],
+      "retained_position_deg": [
+        97.7375,
+        4.96916667
+      ],
+      "captured_b_ocl_record": "NGC 2239          06 30 57 +04 58 09       10.0  3900 1.10   6.70   -00.60 0.26  -02.18 0.34 00116 D14\n",
+      "captured_d14_record": "* NGC 2239           97.73750  +4.96917   6.00    126    116  -0.60  2.75  -2.18  3.70  0.00    10   1.42 10.78   1.79 16.36 -0.31 NGC_2239.dat\n",
+      "b_ocl_source_row_index": 489,
+      "d14_source_row_index": 977,
+      "propagation_admitted": false
+    },
+    {
+      "wenu_id": "WOC00001235",
+      "identifier": "NGC 2252",
+      "motion_reference": "D14",
+      "ra_motion_convention": "mu_alpha_star",
+      "mean_motion_mas_per_year": [
+        0.1,
+        -1.53
+      ],
+      "b_ocl_reported_errors": [
+        0.09,
+        0.1
+      ],
+      "d14_reported_errors": [
+        1.74,
+        2.09
+      ],
+      "uncertainty_adoption": "none; source-reported error fields differ; do not substitute or infer a conversion",
+      "retained_position_epoch": null,
+      "d14_position_epoch_label": "J2000.0",
+      "position_epoch_scale": null,
+      "position_lineage_status": "D14 coordinates agree within tabular rounding; B/ocl position-epoch/scale lineage not proved",
+      "d14_position_deg": [
+        98.675,
+        5.36667
+      ],
+      "retained_position_deg": [
+        98.675,
+        5.36666667
+      ],
+      "captured_b_ocl_record": "NGC 2252          06 34 42 +05 22 00       18.0   900 0.10   8.84   +00.10 0.09  -01.53 0.10 00410 D14                                          3-2-m-n\n",
+      "captured_d14_record": "  NGC 2252           98.67500  +5.36667  10.00    512    410   0.10  1.74  -1.53  2.09 -0.26   102  -0.67 11.82  -3.28 11.50 -0.06 NGC_2252.dat\n",
+      "b_ocl_source_row_index": 502,
+      "d14_source_row_index": 1211,
+      "propagation_admitted": false
+    },
+    {
+      "wenu_id": "WOC00001440",
+      "identifier": "NGC 6514",
+      "motion_reference": "D14",
+      "ra_motion_convention": "mu_alpha_star",
+      "mean_motion_mas_per_year": [
+        -0.77,
+        -0.7
+      ],
+      "b_ocl_reported_errors": [
+        0.08,
+        0.11
+      ],
+      "d14_reported_errors": [
+        3.05,
+        4.52
+      ],
+      "uncertainty_adoption": "none; source-reported error fields differ; do not substitute or infer a conversion",
+      "retained_position_epoch": null,
+      "d14_position_epoch_label": "J2000.0",
+      "position_epoch_scale": null,
+      "position_lineage_status": "D14 coordinates agree within tabular rounding; B/ocl position-epoch/scale lineage not proved",
+      "d14_position_deg": [
+        270.67499,
+        -22.97167
+      ],
+      "retained_position_deg": [
+        270.675,
+        -22.97166667
+      ],
+      "captured_b_ocl_record": "NGC 6514          18 02 42 -22 58 18       28.0   816 0.190  7.368  -00.77 0.08  -00.70 0.11 01638 D14  -000.83  03.25  05 D14\n",
+      "captured_d14_record": "  NGC 6514          270.67499 -22.97167  15.00   1971   1638  -0.77  3.05  -0.70  4.52  0.11   333  -3.24 30.32  -3.58 35.71  0.03 NGC_6514.dat\n",
+      "b_ocl_source_row_index": 1593,
+      "d14_source_row_index": 1352,
+      "propagation_admitted": false
+    },
+    {
+      "wenu_id": "WOC00001506",
+      "identifier": "NGC 6885",
+      "motion_reference": "D14",
+      "ra_motion_convention": "mu_alpha_star",
+      "mean_motion_mas_per_year": [
+        -3.3,
+        -5.14
+      ],
+      "b_ocl_reported_errors": [
+        0.09,
+        0.09
+      ],
+      "d14_reported_errors": [
+        2.42,
+        2.27
+      ],
+      "uncertainty_adoption": "none; source-reported error fields differ; do not substitute or infer a conversion",
+      "retained_position_epoch": null,
+      "d14_position_epoch_label": "J2000.0",
+      "position_epoch_scale": null,
+      "position_lineage_status": "D14 coordinates agree within tabular rounding; B/ocl position-epoch/scale lineage not proved",
+      "d14_position_deg": [
+        303.00418,
+        26.47833
+      ],
+      "retained_position_deg": [
+        303.00416667,
+        26.47833333
+      ],
+      "captured_b_ocl_record": "NGC 6885          20 12 01 +26 28 42       20.0   597 0.08   9.16   -03.30 0.09  -05.14 0.09 00689 D14  -001.50  00.87  06 FM09\n",
+      "captured_d14_record": "  NGC 6885          303.00418 +26.47833  11.00    947    689  -3.30  2.42  -5.14  2.27  0.25   258  -3.75 17.67  -4.80 16.51  0.24 NGC_6885.dat\n",
+      "b_ocl_source_row_index": 1860,
+      "d14_source_row_index": 1245,
+      "propagation_admitted": false
+    }
+  ],
+  "model_contract": {
+    "status": "proposed, not implemented",
+    "default": "catalogue_lookup unchanged",
+    "full_model": "versioned rectilinear barycentric centre model; coherent centre, distance and motion/RV sources; explicit TCB instants; spectroscopic RV proxy declared",
+    "missing_rv": "full model refuses missing RV; explicit angular-only approximation is a distinct opt-in model, not a silent zero RV",
+    "distance_policy": "choose and record a distance estimator explicitly; do not mix dist50 with inverse mean parallax or treat percentiles as Gaussian sigma",
+    "centre_policy": "transport a present density-mode centre with a core mean motion is an explicit approximation; not reconstruction of historical membership, morphology or density maximum",
+    "numerical_backend": "reviewed existing astrometric service; independent oracle required; no alternate chart/observer/projection pipeline",
+    "validity": "no automatic millennia coverage; provider-specific model domain and measurement/model/numerical evidence remain separate",
+    "uncertainty": "unknown centre errors/covariances/systematics stay unknown; source dispersions do not become errors of the mean",
+    "reuse": "provider certifies anchor-to-request angular separation over a finite interval within admitted coverage, with numerical error and model/resource/time identities; kernel only validates",
+    "quick_estimate": "proper motion times elapsed time is a screening estimate, not a full perspective-motion bound or absolute-accuracy certificate",
+    "strict_accuracy": "unknown measurement or physical-model bound cannot satisfy an absolute angular-accuracy request",
+    "galactic_acceleration": "unmodelled; ancient-epoch physical accuracy requires an evaluated error budget or a separate dynamical model",
+    "scope": "no SDK, source-data, default-route or rendering changes; independent object-family invalidation remains required"
+  },
+  "policy": {
+    "cds_url": "https://cds.unistra.fr/vizier-org/licences_vizier.html",
+    "route": "Five small CDS documentation/aggregate files, one request per file; no per-star queries, retry loop or member catalogue.",
+    "redistribution": "Only four exact selected record pairs and audit facts retained, with source attribution and full-source hashes; no relicensing claim."
+  }
+}
