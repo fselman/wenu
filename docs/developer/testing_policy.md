@@ -890,3 +890,27 @@ in 85.88 s and eight tooling cases passed. Documentation: 33 cases passed; three
 checks need archive files absent from the execution copy. Active links/anchors
 and 73 preserved archive hashes were independently verified against GitHub.
 Complete Mac acceptance remains pending.
+
+## Galaxy routing closure gate
+
+K3.10 uses `python tools/run_test_gate.py galaxy-routing-closure --run` with
+plugin autoload disabled. Select galaxy and shared nonstellar/cache/public-position
+owners, restored known/unknown/static epoch and source-free snapshot seams,
+actual legacy/cold/saved galaxy atlas pixels (PNG plus PDF/SVG export), and
+inherited PN/SNR/globular cache regressions. New real-kernel injections change
+centres after observed cache fill, check independent expected centre/ellipse
+positions, and verify no second outline query. All public/native/label/observed
+paths propagate lookup admission or kernel refusal after a warm result. The real
+packaged source exercises lookup validation without upgrading physical gaps.
+The optional pre-cache state hook defaults to the accepted legacy route for
+other families; no other-family migration is claimed. Reuse unchanged SDK science,
+conformance/installation and atlas lifetime evidence; no full SDK/production
+repeat. Run documentation and eight tooling checks alongside this gate. Mac
+acceptance remains pending.
+
+Local Python 3.12 evidence: 155 focused cases passed in 51.97 s, including
+restored-source warm refusal and exact legacy/cold/saved galaxy PNG equality;
+eight tooling cases passed. Documentation: 33 cases passed; three archive checks
+require files absent from the execution copy. Active links/anchors and all 73
+preserved archive hashes were independently verified against the remote Git
+tree. Complete documentation and focused Mac acceptance remain pending.

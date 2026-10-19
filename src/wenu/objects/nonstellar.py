@@ -836,12 +836,14 @@ class NonStellar(AstronomicalObject):
         *,
         samples,
         minimum_size_arcmin,
+        centres=None,
     ):
         """Transform one complete outline table in one AltAz operation."""
         if len(table) == 0:
             return (), ()
         outlines = []
-        longitude, latitude = self._native_centres(table, getattr(observer.altaz_frame, "obstime", None))
+        longitude, latitude = (self._native_centres(table, getattr(observer.altaz_frame, "obstime", None))
+                               if centres is None else centres)
         for row, ra, dec in zip(table, longitude, latitude, strict=True):
             center = SkyCoord(
                 ra=float(ra) * u.deg,
@@ -867,6 +869,13 @@ class NonStellar(AstronomicalObject):
             provider=f"astropy {self.catalog_name} outlines",
         )
 
+    def _outline_state(self, table, instant):
+        """Optional provider state before caching; legacy families retain their route."""
+        return None
+
+    def _observed_point_source_key(self, table):
+        return self.catalog_name, self._source_revision
+
     def _observed_outlines(
         self,
         observer,
@@ -881,6 +890,13 @@ class NonStellar(AstronomicalObject):
             if minimum_size_arcmin is None
             else float(minimum_size_arcmin)
         )
+        centres = self._outline_state(maximal, getattr(observer.altaz_frame, "obstime", None))
+        state_key = () if centres is None else (
+            tuple(str(value) for value in maximal["identifier"]),
+            np.asarray(centres[0], dtype=float).tobytes(),
+            np.asarray(centres[1], dtype=float).tobytes(),
+            self.catalogue_metadata.document_json,
+        )
         longitude, latitude = observed_polygon_arrays(
             self._observed_outline_cache,
             observer,
@@ -891,12 +907,13 @@ class NonStellar(AstronomicalObject):
                 self._source_revision,
                 int(samples),
                 minimum,
-            ),
+            ) + state_key,
             build=lambda: self._transform_outline_table(
                 maximal,
                 observer,
                 samples=samples,
                 minimum_size_arcmin=minimum,
+                **({"centres": centres} if centres is not None else {}),
             ),
         )
         return maximal, longitude, latitude
@@ -998,12 +1015,13 @@ class NonStellar(AstronomicalObject):
         if len(table) == 0:
             longitude = latitude = np.asarray([], dtype=float)
         else:
+            state_table = self._state_table(self.source_catalog, getattr(resolved.altaz_frame, "obstime", None))
             longitude, latitude = catalogue_point_altaz(
                 self._observed_point_cache,
                 resolved,
-                source_table=self._state_table(self.source_catalog, getattr(resolved.altaz_frame, "obstime", None)),
+                source_table=state_table,
                 selected_table=table,
-                source_key=(self.catalog_name, self._source_revision),
+                source_key=self._observed_point_source_key(state_table),
             )
         semantic_identifiers = tuple(str(value) for value in identifiers)
         semantic_keys = tuple(

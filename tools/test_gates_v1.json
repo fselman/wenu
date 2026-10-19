@@ -1357,6 +1357,64 @@
           "reason": "Explicit stellar/cluster epochs and native family positions survive the shared default correction."
         }
       ]
+    },
+    "galaxy-routing-closure": {
+      "scope": "K3.10 galaxy source-bound lookup admission and complete public/native/label/observed/saved state routing, including warm-cache refusal and changed-state reuse.",
+      "limits": "Static chart directions only; source physical frame/origin gaps remain explicit, unqualified dates stay provenance. Existing constructed/unitless legacy compatibility remains disclosed. No numerical transforms, new motion, source bytes, SDK, dependencies/build, snapshot schema, projection/renderer or other-family routing changes.",
+      "selections": [
+        {
+          "node": "tests/test_galaxy_geometry.py",
+          "reason": "Changed galaxy owner: actual admission on every path, optional/unqualified dates, changed kernel state after cache fill, refusal, topology and existing conformance."
+        },
+        {
+          "node": "tests/test_nonstellar_catalogue.py",
+          "reason": "Shared optional state/cache hooks retain legacy default behavior, explicit lookup/physical admission and other-family metadata contracts."
+        },
+        {
+          "node": "tests/test_observed_cache.py",
+          "reason": "Shared observation cache ownership and immutable arrays remain compatible."
+        },
+        {
+          "node": "tests/test_position_providers.py",
+          "reason": "Public inherited centre APIs preserve identity, source epoch and geometry meaning."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_kernel_galaxy_routes_preserve_accepted_atlas_pixels",
+          "reason": "Actual cold/saved native outlines and labels plus identical legacy/cold/saved PNG pixels and PDF/SVG output."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_nonstellar_admission_and_unknown_epochs",
+          "reason": "Restored galaxy source metadata and missing physical facts stay unchanged."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_declared_nonstellar_epoch",
+          "reason": "Explicit source epoch survives restored lookup."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_retains_static_galaxy_model_without_epoch",
+          "reason": "Cold/restored static model needs no measurement epoch."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources",
+          "reason": "Restored families run without original sources."
+        },
+        {
+          "node": "tests/test_planetary_nebulae.py::test_sequential_nebula_selections_share_observed_catalogue",
+          "reason": "Unchanged shared-hook default retains other-family cache behavior."
+        },
+        {
+          "node": "tests/test_supernova_remnants.py",
+          "reason": "Inherited outline owner retains SNR source geometry without new routing."
+        },
+        {
+          "node": "tests/test_globular_clusters.py",
+          "reason": "Inherited outline owner retains globular source geometry without new routing."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_restored_galaxy_warm_routes_do_not_hide_kernel_refusal",
+          "reason": "Restored source applies lookup validation and propagates kernel refusal through public/native/label/observed routes after both observed caches are warm, retaining source metadata."
+        }
+      ]
     }
   },
   "consumer_review": [

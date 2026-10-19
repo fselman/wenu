@@ -24,7 +24,7 @@ inputs through kernel lookup before the retained Skyfield observation boundary,
 and observed label inputs through the public full-source lookup before the
 retained Astropy boundary. K3.08 is accepted through PR #272 and does not close K3.
 
-The K3.09 candidate removes implicit J2000 measurement epochs from the shared
+Accepted K3.09 M4 removes implicit J2000 measurement epochs from the shared
 ICRS specification and helper. Unknown source epochs remain None; explicitly
 admitted stellar/cluster epochs and numerical frame transforms are unchanged.
 Nonstellar strict admission still refuses absent frame/origin and model-required
@@ -34,9 +34,17 @@ K3.09 now has explicit nonstellar catalogue-lookup validation separate from stri
 physical admission. Lookup requires preserved identity/provenance/units/byte
 binding while retaining absent physical reference/epoch facts. The explicit
 lookup spec discloses unverified reference interpretation and unknown origin.
-Existing chart geometry and strict physical admission remain unchanged. This
-implementation candidate is pending Mac acceptance; reduced-input PM algorithms
+Existing chart geometry and strict physical admission remain unchanged. K3.09 baseline admission is accepted through PR #274; reduced-input PM algorithms
 remain AX.13, under the approved no-universal-PM-cutoff policy.
+
+The K3.10 galaxy candidate applies the shared source-bound lookup validation
+when its required source evidence is present, while preserving explicitly
+unqualified constructed/unitless legacy sources. Unqualified source dates stay
+provenance and do not block static lookup. Galaxy outline state is queried before
+cache access, and returned centres enter outline/point cache identity. The same
+queried centres construct outlines once; unchanged returned states still reuse
+their observer transformation. Other families retain their default cache hooks.
+This is pending Mac acceptance and does not qualify absent physical source facts.
 
 ## Canonical pipeline
 

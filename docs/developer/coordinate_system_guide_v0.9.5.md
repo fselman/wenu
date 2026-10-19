@@ -1356,3 +1356,13 @@ remain separate capabilities. Preserve the PM convention (including cos(dec)
 where applicable), units and identity of the centre or feature being propagated.
 The AX.13 numerical implementation remains pending. Catalogue lookup itself
 returns source positions with their known/unknown metadata and is not propagation.
+
+### Galaxy static lookup and observation cache
+
+K3.10 preserves static galaxy source directions and their known/unknown reference
+metadata. Unqualified dates remain provenance, not SDK numerical source epochs.
+Queried centre values precede observed cache access and control native outline,
+label and public centre geometry. This changes state/metadata ownership only;
+source coordinate encodings, ellipse construction and observer transformation
+mathematics above remain current. It introduces no propagation, new frame
+qualification or distance-dependent correction.
