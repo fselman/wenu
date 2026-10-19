@@ -590,6 +590,70 @@ tests preserve four complete original records and the exact original ReadMe,
 with hashes and original row indices; constructed mutations are labelled faults.
 
 
+## Nominal cluster motion provider
+
+`cluster_state.load_cluster_motion(companion_path, metadata_path, *, coverage)`
+verifies the explicit companion bytes before parsing, admits qualified source
+facts/units/policies and returns a frozen `ClusterMotionCatalogue`. Its rows copy
+source-epoch `TimePoint`, SI position/velocity triples and explicit unavailable
+reasons. The original ECSV and copied JSON evidence remain immutable strings;
+`source_table()` and `to_record()` return independent copies. Original input-byte
+hashes and derived-table hashes are separate. `admit_cluster_motion(table,
+metadata, *, coverage)` is the corresponding explicit in-memory boundary,
+including constructed fixtures whose provenance must be labelled as such.
+
+`open_clusters_hunt_motion_admission_v1.json` is the versioned runtime adoption
+metadata. It binds the existing Hunt companion/selected catalogue, canonical
+source specification and accepted qualification record; the primary-source chain
+is retained. Epoch J2016.0(TCB), barycentric ICRS, mu_alpha_star, source identity
+and column mappings come from this document. No catalogue epoch or field-value
+default is embedded in the provider. Keys retain the existing Wenu object namespace
+and IDs; the motion model/reference changes without inventing new object identities. `distance` is mapped explicitly to published
+`dist50`; using that estimator rather than inverse parallax is recorded policy.
+The spectroscopic RV proxy, density-mode/core-mean approximation and omission of
+an additional light-time correction are explicit model choices.
+
+`ClusterMotionProvider(catalogue)` implements the existing SDK protocol and
+advertises `epoch_direction` and batch evaluation, with a separate model/reference
+identity. Object keys retain the existing `wenu_open_clusters` namespace and
+selected IDs across source lookup and motion models. Astropy owns the spherical
+position/differential conversion, including
+mu_alpha_star at the poles. SI rectilinear propagation applies to an elapsed TCB
+coordinate-time interval, then normalizes the resulting direction. This is the
+accepted nominal centre model, not an ERFA/SOFA relativistic star-catalogue
+propagation or a historical membership/density reconstruction. No observer,
+precession, projection, rendering, download or implicit time conversion occurs.
+Backend versions, source/qualification/policies and the explicit model domain enter
+identity. Fractional-day epochs use the SDK's canonical split without losing
+subday time differences.
+
+Admission requires an explicit finite `TimeSpan` in TCB containing the source
+epoch. This is a caller-declared nominal model domain, not certified physical
+validity. A domain numerically intersecting a zero-distance trajectory is refused.
+There is no default interval promising ancient-date accuracy. All 513 selected
+IDs remain in the catalogue; 502 have full nominal inputs. Seven missing-RV rows
+and four unqualified Dias-only rows remain explicit unavailable records; they
+cannot enter the advertised full-model subset. Mixed unsupported requests refuse
+without omission, invented zero RV or source-coordinate fallback.
+
+Query the provider through `Kernel`/`KernelSession` using its advertised catalogue,
+model and reference, selected admitted keys and explicit TCB `TimePoint` values.
+`DirectionState.time` and `anchor_time` are the requested instant; `source_epoch`
+remains the admitted original epoch. Measurement, centre/model and numerical
+bounds remain `not_evaluated`: the provider refuses strict accuracy, velocity-output
+and bounded-reuse requests and does not advertise a reuse capability. Unknown
+errors are never zero. The provider owns no catalogue acquisition or implicit
+registration and respects the existing owned/borrowed close contract.
+
+This API is explicit and additive. `OpenClusters.position`, native/observed chart
+routes, saved skies and the active v0.2 selector still use accepted source lookup.
+Chart/snapshot adoption and certified reuse are separate next slices with their
+own consumer/failure gates. The independent numerical oracle uses scalar-trig
+initial conditions and ERFA PV updates, plus an analytic perspective case, rather
+than calling the production differential conversion to construct expected data.
+The installed-wheel test exercises the actual provider/kernel while checking that
+importing it does not change the fixture's default cluster lookup.
+
 ## Independent provider verification
 
 `wenu_kernel.conformance.provider_suite(factory, name=...)` returns a standard

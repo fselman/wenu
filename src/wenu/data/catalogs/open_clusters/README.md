@@ -118,3 +118,22 @@ ESA/Gaia/DPAC. Policy checked 2026-10-19: scientific usage requires source
 acknowledgement; the source article declares CC BY 4.0. The derivative records
 its selection/reformatting. CDS reserves information-system metadata rights;
 this is not a blanket CC0 claim or permission for unrelated commercial reuse.
+
+
+## Qualified nominal motion admission v1
+
+`open_clusters_hunt_motion_admission_v1.json` binds the exact existing astrometry
+companion/selected catalogue and accepted qualification evidence for explicit
+runtime admission by `wenu.cluster_state.load_cluster_motion`. Its documented
+Gaia lineage qualifies J2016.0(TCB), barycentric ICRS and mu_alpha_star. Column
+mappings select the published `dist50` estimator, not inverse mean parallax.
+It records the spectroscopic-RV proxy and density-mode/core-mean approximation.
+Source units and source epoch are consumed from validated metadata, not software
+catalogue defaults. The v1 raw data/ReadMe gaps remain preserved unchanged.
+
+The provider's nominal rectilinear model requires explicit finite TCB coverage.
+It advertises 502 full-input solutions while retaining seven missing-RV and four
+unqualified Dias-only records as unavailable. Accuracy bounds and certified reuse
+are not supplied. No automatic download, observer correction, additional light-time
+correction or default chart/snapshot adoption occurs. See the implementation
+reference's nominal cluster provider API for ownership and limits.

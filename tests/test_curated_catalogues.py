@@ -93,7 +93,7 @@ def test_curated_manifest_refuses_escaping_selector_and_unbound_catalogue(tmp_pa
         resources.build_curated_catalogue_manifest(root)
 
 
-def test_hunt_astrometry_companion_bytes_ship_in_wheel_and_sdist(tmp_path):
+def _assert_source_products_ship(tmp_path, names, modules=()):
     # Same build seam as the installed-consumer test below, restricted to the
     # new data products: no changed runtime/dependency needs reinstalling here.
     from zipfile import ZipFile
@@ -120,15 +120,69 @@ def test_hunt_astrometry_companion_bytes_ship_in_wheel_and_sdist(tmp_path):
         result = subprocess.run(command, cwd=project, capture_output=True, text=True)
         assert result.returncode == 0, result.stdout + result.stderr
     data = ROOT/'src/wenu/data/catalogs/open_clusters'
-    names = ('open_clusters_hunt_astrometry_v1.ecsv',
-             'open_clusters_hunt_astrometry_v1.provenance.json',
-             'open_clusters_hunt_astrometry_source_v1.json')
     with ZipFile(next(release.glob('*.whl'))) as wheel, tarfile.open(next(release.glob('*.tar.gz'))) as sdist:
         for name in names:
             assert wheel.read('wenu/data/catalogs/open_clusters/' + name) == (data/name).read_bytes()
             member = next(item for item in sdist.getmembers()
                           if item.name.endswith('/src/wenu/data/catalogs/open_clusters/' + name))
             assert sdist.extractfile(member).read() == (data/name).read_bytes()
+        for module in modules:
+            assert wheel.read(module) == (ROOT/'src'/module).read_bytes()
+            member = next(item for item in sdist.getmembers() if item.name.endswith('/src/' + module))
+            assert sdist.extractfile(member).read() == (ROOT/'src'/module).read_bytes()
+    return next(release.glob('*.whl'))
+
+
+def test_hunt_astrometry_companion_bytes_ship_in_wheel_and_sdist(tmp_path):
+    _assert_source_products_ship(tmp_path, ('open_clusters_hunt_astrometry_v1.ecsv',
+        'open_clusters_hunt_astrometry_v1.provenance.json', 'open_clusters_hunt_astrometry_source_v1.json'))
+
+
+def test_cluster_motion_module_and_admission_ship_and_evaluate_from_installed_wheel(tmp_path):
+    from zipfile import ZipFile
+    import wenu_kernel
+    wheel = _assert_source_products_ship(tmp_path, ('open_clusters_hunt_motion_admission_v1.json',),
+        modules=('wenu/cluster_state.py',))
+    installed=tmp_path/'installed'
+    with ZipFile(wheel) as archive: archive.extractall(installed)
+    # Explicit accepted SDK path works for both regular and editable SDK hosts;
+    # -I -S disables ambient Wenu editable finders and .pth execution.
+    sdk_root=Path(wenu_kernel.__file__).resolve().parent.parent
+    dependencies=[p for p in sys.path if Path(p).name in ('site-packages','dist-packages')]
+    script=r'''
+import sys,json
+from pathlib import Path
+sys.path[:0]=[sys.argv[1],sys.argv[2],*json.loads(sys.argv[3])]
+import wenu, wenu_kernel
+from wenu import cluster_state
+assert Path(wenu.__file__).is_relative_to(Path(sys.argv[1]))
+assert Path(cluster_state.__file__).is_relative_to(Path(sys.argv[1]))
+assert Path(wenu_kernel.__file__).is_relative_to(Path(sys.argv[2]))
+from wenu_kernel import Kernel
+from wenu_kernel.records import TimePoint,TimeSpan,StateQuery,AccuracyRequest,SessionPolicy
+data=Path(wenu.__file__).parent/'data/catalogs/open_clusters'
+catalogue=cluster_state.load_cluster_motion(data/'open_clusters_hunt_astrometry_v1.ecsv',
+    data/'open_clusters_hunt_motion_admission_v1.json',
+    coverage=TimeSpan(TimePoint(2451545,0,'tcb'),TimePoint(2462503,-.5,'tcb')))
+provider=cluster_state.ClusterMotionProvider(catalogue)
+a=provider.describe().admissions[0]
+assert len(catalogue.rows)==513 and len(a.objects)==502
+with Kernel(references=(a.reference,)) as kernel:
+    kernel.register(provider,ownership='owned')
+    with kernel.open_session(SessionPolicy(provider.describe().catalogues)) as session:
+        q=StateQuery(a.catalogue,a.model,(a.objects[0],),
+            (TimePoint(2457389,0,'tcb'),TimePoint(2457754,.25,'tcb')),a.reference,AccuracyRequest())
+        result=session.evaluate(q)
+        assert result.states[0].vector!=result.states[1].vector
+from wenu.objects.open_clusters import OpenClusters
+default=OpenClusters(None)
+default.load()
+assert len(default.catalog)==1  # The packaging fixture's original default.
+assert default.position().metadata['catalogue_position_model']=='catalogue_lookup'
+'''
+    result=subprocess.run([sys.executable,'-I','-S','-c',script,str(installed),str(sdk_root),json.dumps(dependencies)],
+        cwd=tmp_path,capture_output=True,text=True)
+    assert result.returncode==0,result.stdout+result.stderr
 
 
 def test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override(tmp_path):

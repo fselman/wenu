@@ -93,8 +93,14 @@ and charts are unchanged. The raw ReadMe scale/origin gaps remain preserved. A s
 [source qualification and model contract](kernel_migration_audit_v1.md#cluster-propagation-qualification-and-model-contract)
 now traces Hunt conventions to Gaia and the four Dias motions to D14. Centre
 epoch lineage for the latter and cluster-mean covariance/model bounds remain
-incomplete; propagation is not enabled. See the
+incomplete; default charts retain source lookup. See the
 [ingestion API](implementation_reference.md#open-cluster-astrometry-ingestion).
+The explicit [nominal cluster motion API](implementation_reference.md#nominal-cluster-motion-provider)
+now implements source-bound immutable admission and finite-domain TCB rectilinear
+direction evaluation through the accepted SDK. It retains all 513 IDs, advertises
+502 full-input solutions and reports eleven unavailable rows. Existing chart and
+saved-sky lookup routes are unchanged; certified reuse and consumer adoption
+remain ahead. Physical and numerical accuracy bounds are unevaluated.
 Relativistic/civil-time adapters, common realization services, Cartesian reuse
 and remaining K3 routing are pending; this is not a completed kernel or frozen SDK.
 

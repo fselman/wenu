@@ -1734,6 +1734,13 @@
       "git_blob_sha": "65896806555ae4e593144975f0f0a280d28ba3c9",
       "as_is_directory": "src/wenu",
       "description": "Visibility utilities."
+    },
+    {
+      "path": "src/wenu/cluster_state.py",
+      "git_blob_sha": "b8a8249c46a7306df58557aa308be5187fe4827f",
+      "as_is_directory": "src/wenu",
+      "description": "Immutable source-bound cluster motion admission and explicit nominal rectilinear SDK direction provider.",
+      "baseline_relation": "Additive physical provider owner; current chart/saved consumers remain source lookup."
     }
   ],
   "test_side_python_files": [
@@ -6903,6 +6910,36 @@
         "wenu.charts.view_defaults",
         "wenu.cli"
       ]
+    },
+    {
+      "path": "tests/test_cluster_state.py",
+      "git_blob_sha": "f168dd62c25b2c300cd44b4d55f8844f506ff71d",
+      "as_is_directory": "tests",
+      "description": "Cluster admission, independent PV/analytic numerical oracles, refusal, portable provider conformance and family isolation.",
+      "test_functions": 11,
+      "marks": {},
+      "parametrize_decorators": 2,
+      "fixtures": [],
+      "peer_test_imports": [],
+      "imports": [
+        "astropy",
+        "astropy.table",
+        "dataclasses",
+        "erfa",
+        "io",
+        "json",
+        "math",
+        "numpy",
+        "pathlib",
+        "pytest",
+        "unittest",
+        "wenu.catalogue_state",
+        "wenu.cluster_state",
+        "wenu_kernel",
+        "wenu_kernel.conformance",
+        "wenu_kernel.errors",
+        "wenu_kernel.records"
+      ]
     }
   ],
   "operational_artifacts": [
@@ -8584,7 +8621,41 @@
       "local_documentation_passed": 33,
       "documentation_seconds": 1.39,
       "archive_checks_pending_mac": 3,
-      "mac_acceptance": "pending"
+      "mac_acceptance": "3 qualification passed in 4.24 s; 36 documentation passed in 3.00 s; 8 tooling passed in 2.263 s. Accepted at 95e1ab1c; identical tree merged at bbe11424; Mac main clean/synchronized, merged branch removed."
+    }
+  },
+  "nominal_cluster_motion_v1": {
+    "base_commit": "bbe1142484bf2daa99bb40d7df2c0593c92c881f",
+    "source_paths": [
+      "src/wenu/cluster_state.py",
+      "src/wenu/data/catalogs/open_clusters/open_clusters_hunt_motion_admission_v1.json"
+    ],
+    "test_paths": [
+      "tests/test_cluster_state.py",
+      "tests/test_curated_catalogues.py"
+    ],
+    "gate": "cluster-motion-provider",
+    "scope": "Explicit nominal provider only; no default chart/saved adoption or certified reuse.",
+    "source_rows": 513,
+    "full_input_rows": 502,
+    "unavailable_rows": 11,
+    "backend": "Astropy spherical differential conversion and SI rectilinear model; independent ERFA PV/analytic oracle",
+    "uncertainty": "Measurement/model/numerical bounds not evaluated; strict requests refused",
+    "fault_injection": "Freezing elapsed time at zero makes the independent oracle fail",
+    "verification": {
+      "focused_passed": 31,
+      "focused_seconds": 28.13,
+      "portable_conformance_checks": 8,
+      "documentation_local_passed": 33,
+      "documentation_seconds": 1.18,
+      "archive_checks_pending_mac": 3,
+      "tooling_passed": 8,
+      "tooling_seconds": 1.753,
+      "installed_scope": "Exact wheel/sdist bytes; isolated installed-wheel real kernel query; default fixture lookup unchanged.",
+      "numerical_scope": "Independent ERFA PV/analytic model agreement, not physical ancient-date accuracy or a certified numerical bound.",
+      "mac_acceptance": "pending",
+      "active_links_checked_against_authoritative_tree": 483,
+      "preserved_archive_blob_records_checked": 73
     }
   }
 }

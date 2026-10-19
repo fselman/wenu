@@ -217,12 +217,14 @@ not a material point whose trajectory has been measured independently.
 
 ### Proposed propagation boundary
 
-This is a contract for the next implementation, not an enabled provider.
+The first nominal numerical subset is now implemented through the explicit
+[cluster provider API](implementation_reference.md#nominal-cluster-motion-provider).
+Reuse certification and consumer adoption remain pending.
 Keep `catalogue_lookup` as the default until explicit adoption and compatibility
 acceptance. Register a distinct versioned cluster-centre motion model; never
 silently change the meaning of a saved lookup state.
 
-The first full model should use a coherent rectilinear barycentric astrometric
+The explicit nominal model uses a coherent rectilinear barycentric astrometric
 solution, following ESA's [standard-motion definition](https://gea.esac.esa.int/archive/documentation/GDR3/Data_processing/chap_cu3ast/sec_cu3ast_intro/ssec_cu3ast_intro_motion.html).
 Given the source direction u, local east/north bases p and q, distance d and
 mu_alpha_star/mu_delta, the model construction is
