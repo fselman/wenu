@@ -15,8 +15,9 @@ In particular:
    the governing instructions. Documents under `docs/developer/archive/` are
    historical evidence, not routine architectural authority.
 4. Perform an as-is assessment before changing anything.
-5. Implement only the smallest current milestone and preserve the canonical
-   Wenu pipeline and responsibility boundaries.
+5. Follow the [agreed roadmap](docs/developer/kernel_roadmap_v0.9.5.md) strictly,
+   identify the selected intermediate milestone ID, and implement only its
+   bounded scope. Preserve the canonical Wenu pipeline and responsibility boundaries.
 6. Before remote work begins, confirm with the user that the Mac working tree is
    clean and synchronized with the agreed GitHub base. Treat uncommitted local
    work as invisible until the user reports or publishes it.
@@ -44,3 +45,8 @@ In particular:
     Increment it when contents change, never rely on automatic `(counter)`
     suffixes, and make accompanying commands reference the exact versioned
     filename. Follow the versioned-file handoff rule in the governing instructions.
+
+14. Any extra item, unlisted prerequisite, scope expansion or change of agreed
+    order must be discussed with Fernando, explicitly agreed, and documented in
+    the roadmap before implementation. Do not silently add or activate work.
+    Follow [roadmap control](docs/developer/assistant_instructions.md#roadmap-control-mandatory-before-implementation).
