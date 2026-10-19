@@ -8908,7 +8908,7 @@
   },
   "observed_stellar_routing": {
     "milestone": "K3.08",
-    "status": "Implemented candidate; Mac acceptance pending",
+    "status": "Accepted PR #272, main d7ad9923; 124 focused Mac + 36 documentation + 8 tooling cases passed",
     "base": "23cba212c7d490bb4d5efe14e9b831f118afa59e",
     "routed": [
       "Stars.compute_altaz",
@@ -8919,5 +8919,58 @@
     "ownership": "Admitted source directions -> real kernel lookup -> retained Skyfield stellar or Astropy label observation -> existing geometry/projection/render flow. Stellar observation cache consults current returned state before lookup.",
     "gate": "observed-stellar-routing",
     "limits": "No new science, Gaia, propagation, SDK/provider numerical implementation, source resources, dependencies/build, snapshot schema or projection/renderer changes. Remaining resource closure belongs to K3.18."
+  },
+  "shared_coordinate_default_correction": {
+    "milestone": "K3.09",
+    "status": "M4 candidate, pending Mac acceptance; M5 source qualification still open",
+    "base": "d7ad99232f5653e3acdbef0b1fc79fa0fdca49fd",
+    "changed_owner": "src/wenu/coordinates.py",
+    "semantics": "Shared ICRS helper/spec epoch defaults to None. Explicit admitted epochs and all numerical frame transforms remain unchanged. No source declaration is added or inferred.",
+    "callers_reviewed": [
+      "stellar_catalogue.py",
+      "objects/open_clusters.py",
+      "charts/regional.py",
+      "sky/observed_cache.py",
+      "sky/points.py",
+      "sky/coordinate_grids.py",
+      "sky/constellation_boundaries.py",
+      "sky/milky_way.py",
+      "sky/magellanic_clouds.py"
+    ],
+    "retained_gaps": {
+      "messier": [
+        "frame",
+        "origin",
+        "epoch",
+        "epoch_scale"
+      ],
+      "caldwell": [
+        "origin",
+        "epoch",
+        "epoch_scale"
+      ],
+      "galaxies": [
+        "frame",
+        "origin"
+      ],
+      "globular_clusters": [
+        "frame",
+        "origin",
+        "epoch",
+        "epoch_scale"
+      ],
+      "planetary_nebulae": [
+        "origin",
+        "epoch",
+        "epoch_scale"
+      ],
+      "supernova_remnants": [
+        "origin",
+        "epoch",
+        "epoch_scale"
+      ]
+    },
+    "gate": "catalogue-coordinate-defaults",
+    "limits": "No family routing, science, source bytes, dependency/build, SDK, snapshot schema, projection or renderer change. Strict admission retains all required missing-field refusals."
   }
 }

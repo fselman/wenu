@@ -1334,3 +1334,12 @@ Skyfield calculations receive kernel-backed input directions through their share
 observation boundary; source-hour encoding is retained when input directions
 are unchanged. No proper motion, parallax data, radial velocity or additional
 apparent correction is introduced. The scientific conventions above remain current.
+
+### Shared ICRS measurement epoch
+
+The generic ICRS specification and catalogue helper use epoch None unless a
+source owner supplies a qualified epoch. No J2000 measurement date follows from
+ICRS axes or a J2000 frame/equinox label. This K3.09 correction leaves numerical
+transforms and actual source epochs unchanged. Constructed points, grids,
+celestial-north references and transformed boundaries need no invented
+measurement epoch; their defining frame/equinox remains explicit where required.

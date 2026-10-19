@@ -32,8 +32,10 @@ It now includes the [current position and next-item selection](kernel_roadmap_v0
 all known [intermediate milestones](kernel_roadmap_v0.9.5.md#intermediate-milestones),
 a full [K3 audit coverage map](kernel_roadmap_v0.9.5.md#k3-audit-coverage-map),
 and separate baseline/Gaia/positional-extension tracks. K3 is still partial;
-PR #269 completes AX.12, not K3 or the kernel freeze. K3.07 is accepted through PR #271. K3.08 observed stellar/figure/label routing
-is selected; its candidate remains pending Mac acceptance. Extra scope or changed agreed order must be discussed with Fernando,
+PR #269 completes AX.12, not K3 or the kernel freeze. K3.07 is accepted through
+PR #271. K3.08 observed stellar/figure/label routing is accepted through PR #272.
+K3.09 shared-default correction is selected and pending Mac acceptance;
+nonstellar source qualification remains open. Extra scope or changed agreed order must be discussed with Fernando,
 explicitly agreed and documented before implementation under the
 [mandatory agent rule](assistant_instructions.md#roadmap-control-mandatory-before-implementation).
 
@@ -64,7 +66,7 @@ directions, IDs and display metadata, and do not add proper motion.
 Native constellation-label anchors now consume full-source public kernel-backed
 positions under accepted K3.07. K3.08 now feeds kernel-returned source directions
 to the existing Skyfield star/figure and Astropy label observation methods
-(pending acceptance). Reports and other object families remain to migrate.
+(accepted PR #272). Reports and other object families remain to migrate.
 Catalogue ingestion now validates and preserves required source metadata in a
 standard table/immutable metadata envelope; snapshot v3 carries it forward.
 The [metadata audit](kernel_migration_audit_v1.md#catalogue-metadata-audit-2026-10-18)
@@ -79,7 +81,9 @@ record now validates declarations, exposes missing facts and controls geometry
 specifications and snapshot v5 headers. Strict admission refuses remaining source
 gaps; legacy charts retain explicitly unverified coordinate encoding. No automatic
 J2000 measurement epoch remains in those provider/snapshot paths. Resource metadata
-closure and shared helper defaults remain open audit findings. Galaxies now use
+qualification remains open. The K3.09 candidate removes shared implicit J2000
+measurement epochs; missing source facts stay unknown and strict admission
+continues to refuse them. Galaxies now use
 an explicit static-direction admission policy: measurement epoch/scale are
 optional provenance, while frame/origin/units/source identity remain required.
 Requested epoch changes leave their native centres unchanged. The SDK now supports explicit `static_direction` admissions with optional source

@@ -140,6 +140,20 @@ Ordinary families are `AllSkyChart`, `FullSkyChart`, `RegionalChart`,
 `CircumpolarChart` and `BinocularChart`. Product commands delegate to the
 existing request/composition owners, not to new copies of their algorithms.
 
+## Shared ICRS coordinate defaults
+
+`ICRS_ASTROMETRIC_SPEC.epoch` and `icrs_catalogue_spec(provider, epoch=None)`
+represent an unspecified measurement epoch. ICRS orientation does not establish
+that epoch. Callers with validated catalogue epochs continue to pass them
+explicitly; `epoch="J2000.0"` remains supported when it is an actual source fact.
+The helper signature remains compatible with callers that omit the argument.
+Constructed celestial references, raw observation-helper inputs and transformed
+boundary outputs gain no fabricated J2000 epoch. FK4/FK5/ecliptic defining
+equinoxes remain separate and unchanged. The coordinate service's numerical
+frame transformations, snapshot schemas and original source records are unchanged.
+This does not qualify missing nonstellar frame/origin or measurement metadata;
+`require_complete_metadata` still refuses those gaps.
+
 ## Native stellar kernel adapter
 
 `stellar_catalogue.StellarCatalogueMetadata` is an immutable mirror of a
@@ -337,7 +351,8 @@ Snapshot v4 introduced the open-cluster coordinate header from this interface;
 v5 retains it and validates it against the preserved rows. Legacy v2/v3 J2000 headers are admitted
 as historical format claims only; restored cluster geometry uses the preserved
 row facts. The v1 compatibility path has no fixed catalogue layer. Nonstellar
-resource metadata gaps and shared helper defaults remain explicit audit findings.
+resource metadata gaps remain explicit audit findings. K3.09 removes shared
+implicit J2000 measurement epochs without relaxing nonstellar admission.
 
 The separate candidate `wenu_kernel` package provides `Kernel`, `KernelSession`
 and `StateProvider` plus typed direction/Cartesian records in `wenu_kernel.records`. See its

@@ -1316,6 +1316,47 @@
           "reason": "Retain native/saved labels and public PNG/PDF path after shared label input refactor."
         }
       ]
+    },
+    "catalogue-coordinate-defaults": {
+      "scope": "K3.09 M4 shared ICRS unknown-epoch defaults and M5 source-bound nonstellar gap/refusal verification, preserving snapshot lineage.",
+      "limits": "No source qualification fabricated: M5 source gaps remain open and strict admission refuses them. Metadata defaults only; no numerical transforms, motion, family routing, SDK, resource bytes, dependencies/build, snapshot schema or renderer change.",
+      "extends": [
+        "nonstellar-admission"
+      ],
+      "selections": [
+        {
+          "node": "tests/test_coordinate_vocabulary.py",
+          "reason": "Changed default owner: unknown remains unknown, explicit epochs retained and ICRS transforms identical."
+        },
+        {
+          "node": "tests/test_coordinate_service.py",
+          "reason": "All typed transforms retain their numeric and refusal contracts."
+        },
+        {
+          "node": "tests/test_points.py",
+          "reason": "Constructed celestial points no longer inherit a fabricated measurement epoch."
+        },
+        {
+          "node": "tests/test_coordinate_grids.py",
+          "reason": "Constructed native grid specifications preserve geometry."
+        },
+        {
+          "node": "tests/test_constellation_geometry.py",
+          "reason": "B1875 boundary conversion and membership remain unchanged."
+        },
+        {
+          "node": "tests/test_regional_chart.py",
+          "reason": "Celestial north and regional chart callers retain geometry."
+        },
+        {
+          "node": "tests/test_nonstellar_points.py",
+          "reason": "Messier/Caldwell point identities and metadata remain compatible."
+        },
+        {
+          "node": "tests/test_position_providers.py",
+          "reason": "Explicit stellar/cluster epochs and native family positions survive the shared default correction."
+        }
+      ]
     }
   },
   "consumer_review": [
