@@ -1403,3 +1403,15 @@ diameters and unknown PA keep their existing equal-area circle interpretation;
 no celestial orientation is fabricated. Signed designations and radio flux
 metadata retain their meaning. Associated compact-object motion is not substituted
 for centre motion. No new coordinate transform, propagation or expansion is added.
+
+## KG.02 geometry interface boundary
+
+The [KG.02 design](kernel_contract_k1.md#14-kg02-geometry-service-contracts-and-placement-plan)
+preserves this guide's scientific meaning. Proposed geometry inputs remain
+degree samples with an explicit CoordinateSpec; projected x/y use the chosen
+projection scale, with physical page/pixel conversion owned by the product.
+SphericalFrame alignment is a mathematical orientation, not astronomical
+frame conversion or epoch propagation. Shared CoordinateSpec relocation would
+retain the same class and legacy import, without changing time/status/origin
+or correction facts. No scientific computation, frame default or runtime
+ownership changes in this documentation-only design.

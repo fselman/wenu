@@ -9128,7 +9128,7 @@
   },
   "geometry_service_assessment": {
     "id": "KG.01",
-    "status": "assessment delivered; Mac documentation acceptance pending",
+    "status": "accepted through PR #282; main 887408ae; 36 Mac documentation tests at 20de328c; clean synchronized Mac receipt",
     "base_commit": "cb40ede9ad0be68e6a4863c8d7b6d2c3dbb87a93",
     "base_tree": "c2b9ee88c80d71bf5d71c99a2b98842eeec40c91",
     "method": "Static source/AST caller inventory; 512 cached source/test files matched accepted Git blobs. Fresh-process import observation; no numerical or visual suite execution for this documentation-only assessment.",
@@ -10337,5 +10337,40 @@
     "runtime_changes": false,
     "coordinate_guide": "No scientific meaning/ownership implementation changed; existing guide remains current. KG.02 will assess interface effects.",
     "next": "KG.02 public contracts and incremental placement plan; separate bounded selection required."
+  },
+  "geometry_service_design": {
+    "id": "KG.02",
+    "status": "design delivered for review; implementation and placement/optional-extra agreement pending",
+    "base_commit": "887408aeff1731d0b1197a2226cd925f0681da44",
+    "authority": "Fernando selected KG.02 with proceed on 2026-10-19 after accepted KG.01 and clean main cleanup.",
+    "contract": "docs/developer/kernel_contract_k1.md#14-kg02-geometry-service-contracts-and-placement-plan",
+    "proposal": {
+      "distribution": "existing packages/wenu_kernel; no new distribution",
+      "namespaces": [
+        "wenu_kernel.coordinates",
+        "wenu_kernel.geometry.spherical",
+        "wenu_kernel.geometry.projected",
+        "wenu_kernel.geometry.frame",
+        "wenu_kernel.geometry.viewport",
+        "wenu_kernel.geometry.topology",
+        "wenu_kernel.geometry.clipping",
+        "wenu_kernel.geometry.domain",
+        "wenu_kernel.projections"
+      ],
+      "optional_extra": "geometry: numpy>=1.26,<2; base dependencies remain empty",
+      "application_dependency": "immutable tested kernel commit plus agreed extra; implementation-stage pin only",
+      "decision": "explicit user agreement required before affected packaging/dependency implementation"
+    },
+    "findings_resolution": {
+      "KG01.F1": "mathematical domain helpers move to kernel domain; magnitude/style/label helpers remain at Wenu owner",
+      "KG01.F2": "explicit kernel numerical leaves import without Wenu/backends; existing Wenu facade remains compatible",
+      "KG01.F3": "pure CoordinateSpec vocabulary shared by identical aliases; preserve explicit topology metadata and splitting rules",
+      "KG01.F4": "numerical ring-interior helper has explicit existing convention; source policy and observed orientation remain at source adapter",
+      "KG01.F5": "preserve writable NumPy aliases, shallow metadata and per-instance projection lifecycle; no new immutable-state claim"
+    },
+    "acceptance": "documentation gate for design; existing owner numerical/topology tests and installed isolated canonical/legacy seams assigned to KG.03/KG.04; real cold/restored outputs KG.05; completed-K audit KG.06 and demonstrated corrections KG.07",
+    "runtime_changes": false,
+    "dependency_changes": false,
+    "snapshot_changes": false
   }
 }
