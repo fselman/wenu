@@ -21,6 +21,17 @@ class SupernovaRemnants(NonStellar):
 
     layer_name = "supernova_remnants"
 
+    @property
+    def _uses_catalogue_lookup(self):
+        return True
+
+    def _direction_provider(self, rows, scale):
+        """SNR catalogue centres, independent of associated compact objects."""
+        return self._catalogue_direction_provider(rows, scale,
+            capability="catalogue_lookup", semantic_type="supernova-remnant",
+            provider_id="wenu.supernova-remnant-lookup", resource_id="derived-supernova-remnant-table",
+            model_id="supernova-remnant-catalogue-lookup")
+
     _ALIASES = {
         **NonStellar._ALIASES,
         "identifier": (

@@ -525,3 +525,16 @@ and cache identity; failed admission/evaluation propagates after cache fill.
 Missing physical frame/origin/epoch facts remain explicit. No proper motion,
 parallax model, expansion or arbitrary-date accuracy claim is introduced; AX.15
 remains separate pending work.
+
+## Supernova-remnant baseline lookup
+
+K3.15 changes Green radio-centre routing only. Original source coordinates,
+major/minor radio diameters, morphology and radio flux remain preserved facts.
+Unknown position angles retain the existing equal-area circle policy, not an
+invented celestial orientation. Radio flux is not an optical visibility measure.
+Signed Galactic designations remain distinct identities. Returned kernel centres
+control native/observed geometry and warm-cache identity; source-admission/state
+refusal propagates without falling back to raw coordinates. Unknown physical
+frame/origin/epoch facts remain explicit. No associated compact-object position
+or motion replaces the catalogue radio centre. Proper motion/parallax remains
+AX.16; expansion and morphology evolution remain excluded.

@@ -43,8 +43,8 @@ unqualified constructed/unitless legacy sources. Unqualified source dates stay
 provenance and do not block static lookup. Galaxy outline state is queried before
 cache access, and returned centres enter outline/point cache identity. The same
 queried centres construct outlines once; unchanged returned states still reuse
-their observer transformation. The SNR family retains its default cache hooks;
-the generic owner opts into returned-state hooks under K3.12 below.
+their observer transformation. Later K3.12–K3.15 adapters reuse these returned-state cache hooks;
+source ownership remains with each catalogue family.
 This is accepted through PR #275 and does not qualify absent physical source facts.
 
 ## Canonical pipeline
@@ -319,7 +319,7 @@ requests and non-horizontal chart frames do not adopt this opt-in.
 Accepted K3.12 (PR #276) opts the generic NonStellar owner into catalogue lookup for
 public points, native outlines/labels and observed centre/outline inputs. Galaxy
 and generic lookup share metadata admission, epoch handling and vector decoding
-mechanics while retaining distinct model/resource identities. The dedicated SNR owner retains its prior route; K3.15 remains pending.
+mechanics while retaining distinct model/resource identities. The dedicated SNR owner opts into the same mechanics under K3.15 below.
 K3.13 now opts the globular owner into the same source-bound lookup/cache mechanics
 with its own globular semantic type and model/provider/resource identity. Half-light
 diameter construction, structural metadata, common names and selection are unchanged.
@@ -333,7 +333,7 @@ source membership, aliases, selection, observer mathematics or rendering changes
 
 ## Planetary-nebula kernel lookup
 
-The K3.14 candidate opts PlanetaryNebulae into the accepted shared lookup/cache
+Accepted K3.14 (PR #278) opts PlanetaryNebulae into the accepted shared lookup/cache
 mechanics with its own PN centre/provider identity. Its native point-symbol route
 uses returned centres rather than reading raw coordinates; its observed-symbol
 route queries a returned state table before cache access and includes that state
@@ -344,5 +344,18 @@ Native catalogue order and observed requested order/duplicates retain their prio
 behavior. True/probable catalogue inclusion, curated criteria, minimum-size
 filtering, diameter/flux metadata and fixed display symbols are unchanged. No
 central-star position/motion substitutes for the nebular centre, and no motion or
-expansion is introduced. Cold/restored skies share these methods; Mac acceptance
-is pending.
+expansion is introduced. Cold/restored skies share these methods.
+
+## Supernova-remnant kernel lookup
+
+The K3.15 candidate opts SupernovaRemnants into accepted source-bound catalogue
+lookup and returned-state cache hooks with its own SNR provider/model/resource
+identity. Public centres, native outlines/labels, observed centre/outline inputs
+and restored sources consume returned directions. Queries precede cache access;
+changed states invalidate reuse and refusal propagates after warm results.
+
+Green radio major/minor diameters, missing PA and existing equal-area circle
+interpretation remain unchanged. Signed Galactic designations, selection, radio
+flux metadata and appearance are preserved. No associated compact-object position
+or motion substitutes for the radio-centre source, and no expansion or propagation
+is added. Mac acceptance remains pending.

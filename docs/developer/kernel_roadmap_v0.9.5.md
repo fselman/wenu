@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 28, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 29, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -32,8 +32,8 @@ new scientific features. As-built APIs remain in the
 ## Current position and next-item selection
 
 **Accepted runtime baseline:** main
-`fd6d7fa93a55d17c62781f2893f6738266743dc2`, PR #277. Its tree is identical to
-tested `7371d8e78f5c49672c92a4fcf5ad5cf61494e36d`: 125 focused Mac tests,
+`42adb84d1fc1323ad6a77d581a4803cae4bdb4da`, PR #278. Its tree is identical to
+tested `9426bdc6611ccde2f19addc9b16362e3956badc3`: 129 focused Mac tests,
 36 documentation tests and 8 tooling tests passed. Fernando confirmed clean,
 synchronized main and branch cleanup. This is focused evidence, not a claim
 that every existing function has migrated or that a new full-suite run occurred.
@@ -44,8 +44,8 @@ that every existing function has migrated or that a new full-suite run occurred.
 | Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
 | Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
 | Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
-| Current authorized task | K3.14 planetary-nebula routing, selected by Fernando’s 2026-10-19 “Proceed” after the bounded proposal |
-| Next runtime submilestone | **K3.14 selected:** route PN public/native/observed/saved centres and symbols through lookup; preserve selection, size filtering, metadata and fixed display scale. AX.15 motion remains pending |
+| Current authorized task | K3.15 supernova-remnant routing, selected by Fernando’s 2026-10-19 “Proceed” after the bounded proposal |
+| Next runtime submilestone | **K3.15 selected:** route SNR public/native/observed/saved centres, outlines and labels through lookup; preserve Green source/shape/selection/appearance. AX.16 motion remains pending |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -71,6 +71,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 29: select K3.15 | Fernando’s 2026-10-19 “Proceed” after the SNR-routing proposal; clean main receipt at PR #278 | Use SNR-owned source/provider identity with accepted shared lookup/cache mechanics. Preserve signed Green designations, radio diameters/flux, unknown PA circle policy, selected geometry and appearance. Gate: supernova-remnant-routing with changed-state/refusal and cold/restored atlas pixels. No source replacement, compact-object substitution, motion/expansion, SDK/schema/renderer or diffuse migration |
 | Revision 28: select K3.14 | Fernando’s 2026-10-19 “Proceed” after the PN-routing proposal; clean main receipt at PR #277 | Use PN-owned source/provider identity with accepted shared lookup mechanics. Close PN native raw-coordinate and observed-symbol cache inputs while preserving curated criteria, selection order, filters, metadata and fixed symbols. Gate: planetary-nebula-routing, including changed-state/refusal and cold/restored atlas pixels. No source replacement, motion/expansion, SDK/schema/renderer or SNR migration |
 | Revision 27: select K3.13 | Fernando’s 2026-10-19 “Proceed” after the globular-routing proposal; clean main receipt at PR #276 | Opt the dedicated globular owner into the accepted lookup and cache mechanics with its own source/provider identity. Preserve Harris data, half-light diameter, labels, selection and observer science. Gate: globular-routing, including changed-state/refusal, cold/restored geometry and actual atlas pixels. No source replacement, motion, SDK/schema/renderer or PN/SNR migration |
 | Revision 26: select K3.12 | Fernando’s 2026-10-19 “proceed” after the bounded generic nonstellar/Messier/Caldwell proposal; clean main receipt at PR #275 | Reuse catalogue lookup for generic points, outlines, labels and named target centres; preserve independent membership, identity, selection, observation science and appearance. Verify returned-state/refusal and cold/restored routes with nonstellar-routing. No new motion, source replacement, SDK/schema/renderer or dedicated other-family routing |
@@ -536,8 +537,8 @@ map below ensures small/non-chart capabilities do not disappear in grouped rows.
 | K3.11 | Route open-cluster source lookup/public/native/observed inputs and restored sources with row epochs/masks/order | Accepted bounded lookup routes; new motion is tracked separately in AX |
 | K3.12 | Route generic nonstellar, Messier/Caldwell label-only/scientific points, identities and object-centre consumers | Accepted PR #276, main `922da34d`; 211 focused Mac, 36 documentation and eight tooling cases passed; independent membership/label policy preserved |
 | K3.13 | Route globular-cluster centres and public/chart/saved consumers with own source admission | Accepted PR #277, main `fd6d7fa9`; 125 focused Mac, 36 documentation and eight tooling cases passed; physical source gaps remain explicit |
-| K3.14 | Route existing planetary-nebula centre/geometry/selection consumers | Implemented candidate; pending Mac acceptance. PN public/native/observed/saved lookup with returned-state symbol cache; criteria/display scaling preserved; motion remains AX.15 |
-| K3.15 | Route existing supernova-remnant centre/geometry/selection consumers | Pending; preserve source fidelity; new motion adapter is AX.16 |
+| K3.14 | Route existing planetary-nebula centre/geometry/selection consumers | Accepted PR #278, main `42adb84d`; 129 focused Mac, 36 documentation and eight tooling cases passed; motion remains AX.15 |
+| K3.15 | Route existing supernova-remnant centre/geometry/selection consumers | Implemented candidate; pending Mac acceptance. SNR public/native/observed/saved lookup with own source identity and returned-state caches; source fidelity preserved; motion remains AX.16 |
 | K3.16 | Admit Milky Way/Magellanic source metadata and route diffuse celestial geometry | Pending M9; diffuse morphology must not become fabricated point-body states |
 | K3.17 | Route constructed references: grids, equator/ecliptic/Galactic planes, poles, defining-frame boundaries, horizon/visibility/masks | Pending closure; keep construction/realization separate from physical-object providers |
 | K3.18 | Close shared state/coordinate/observer adapters, resource lifetime and observed-cache invalidation across existing families | Partial: explicit nominal service accepted in AX; legacy consumers/metadata/resource identities still open |
