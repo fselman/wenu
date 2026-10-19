@@ -65,6 +65,10 @@ def _add_observer_arguments(parser):
     parser.add_argument("--observer-height", type=float)
     parser.add_argument("--observer-timezone")
     parser.add_argument("--ephemeris")
+    parser.add_argument("--open-cluster-model", choices=("lookup", "nominal-observed"),
+        help="explicit cluster-centre model; nominal-observed requires admitted local inputs in --config")
+    parser.add_argument("--open-cluster-id", action="append",
+        help="repeat for each admitted cluster ID; overrides astrometry.open_clusters.identifiers")
     parser.add_argument("--data-directory", type=Path)
     parser.add_argument(
         "--data-policy",
@@ -727,6 +731,15 @@ def generate(arguments):
     """Generate every requested product through Wenu's ordinary facade."""
     values = load_configuration(arguments.config, family=arguments.command)
     configuration = translate_configuration_defaults(values)
+    requested_cluster_model = getattr(arguments, "open_cluster_model", None)
+    requested_cluster_ids = getattr(arguments, "open_cluster_id", None)
+    if requested_cluster_model is not None or requested_cluster_ids is not None:
+        from dataclasses import replace
+        configuration = replace(configuration, cluster_motion=replace(
+            configuration.cluster_motion,
+            model=requested_cluster_model or configuration.cluster_motion.model,
+            identifiers=(tuple(requested_cluster_ids) if requested_cluster_ids is not None
+                         else configuration.cluster_motion.identifiers)))
     observer = _observer(
         arguments,
         values,

@@ -1239,8 +1239,9 @@ restored source snapshot. Their specification records evaluation `instant` and
 scale separately from source epochs retained in kernel states; static neighbours
 keep their native source meaning. The chart guard checks returned epoch/scale
 against the explicit context. Explicit observed Python charts additionally accept a prepared reception context
-and use full Cartesian states through the shared realizer. CLI selection and
-persisted epoch states remain outside this bounded adoption. The separate `cluster_state` API now
+and use full Cartesian states through the shared realizer. Ordinary horizontal CLI/TOML selection now uses the same shared service with
+explicit per-layer resource/site/time admission; other frames and persisted epoch
+states remain outside this bounded adoption. The separate `cluster_state` API now
 evaluates a nominal rectilinear centre model in TCB through the kernel, using
 qualified source metadata and a finite caller-declared model domain. It computes
 perspective effects from the declared distance/RV inputs but applies no additional

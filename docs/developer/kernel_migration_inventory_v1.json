@@ -8850,7 +8850,6 @@
     "owner": "src/wenu/astrometric_observation.py",
     "scope": "Explicit nominal full-PV observer realization with one translation/correction sequence, immutable context binding and unknown total error.",
     "pending": [
-      "CLI/TOML selection",
       "Total physical/apparent error bounds"
     ],
     "limits": [
@@ -8871,7 +8870,6 @@
       "src/wenu/sky/celestial_sphere.py"
     ],
     "pending": [
-      "CLI/TOML selection",
       "Total physical/apparent error bounds",
       "Reduced-input models and real other-family adapters"
     ],
@@ -8880,6 +8878,23 @@
       "No observer cache or persisted evaluated states",
       "Unmigrated layers refuse explicit reception context",
       "No expansion"
+    ]
+  },
+  "cluster_astrometry_selection_v1": {
+    "base": "0d73cea7b1086e8dc2fda83a6f296ffcda75846d",
+    "gate": "cluster-astrometry-selection",
+    "scope": "Explicit ordinary horizontal request/CLI/schema-v2 TOML selected-cluster nominal observed model; layer-local public service composition and no lookup spatial pre-culling.",
+    "pending": [
+      "Reduced-input policies",
+      "Real star/PN/SNR adapters",
+      "Non-horizontal CLI model selection",
+      "Total physical error bounds"
+    ],
+    "excluded": [
+      "Expansion",
+      "New numerical models",
+      "Source resources/acquisition",
+      "Persisted evaluated states"
     ]
   }
 }

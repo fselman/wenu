@@ -1031,3 +1031,20 @@ face_color = "none"
 metadata = {}
 padding = 0.0
 
+
+
+# Explicit cluster-centre motion/parallax. Local inputs and finite caller domains
+# are mandatory for nominal-observed. Heights are WGS84 ellipsoid heights.
+[astrometry.open_clusters]
+model = "lookup"
+identifiers = []
+leap_seconds_path = "none"
+leap_seconds_sha256 = "none"
+eop_path = "none"
+eop_sha256 = "none"
+backend_identity = []
+start_jd_tt = 0.0
+stop_jd_tt = 0.0
+start_jd_tcb = 0.0
+stop_jd_tcb = 0.0
+height_wgs84_m = "none"

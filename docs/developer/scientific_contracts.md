@@ -251,7 +251,11 @@ use the accepted nominal service with full Cartesian evaluation and no fallback.
 The prepared receipt owns site/event/resources; context fields must agree, and
 geometry retains receipt identity and degree units before canonical projection.
 Unmigrated layers refuse this context. No observer state is persisted in v5;
-CLI/TOML selection and total physical-error qualification remain pending.
+Ordinary horizontal CLI/TOML selection now composes this service for selected
+clusters only; other layers retain their existing scientific routes. It requires
+explicit local resources/code identity, independent finite TT/TCB domains and
+qualified WGS84 height. Lookup pre-culling cannot decide propagated membership.
+Total physical-error qualification remains pending.
 
 Primary backend documentation checked 2026-10-19:
 [ICRS](https://docs.astropy.org/en/stable/api/astropy.coordinates.ICRS.html),

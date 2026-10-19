@@ -169,7 +169,8 @@ its returned vectors. Restored v5 skies use that same inherited facade without
 reloading source catalogues or persisting evaluated states. The native chart
 guard checks returned epoch/scale against the request; unchanged static layers
 retain source epochs. Explicit observed Python charts now call the shared realizer through a prepared
-reception context; CLI model selection remains pending. See the [API and limits](implementation_reference.md#nominal-cluster-motion-provider).
+reception context. Ordinary horizontal request/CLI/TOML selection now composes the
+same service through layer-local motion/reception geometry options. See the [API and limits](implementation_reference.md#nominal-cluster-motion-provider).
 
 ## Observer motion prerequisite assessment
 
@@ -261,3 +262,24 @@ Baseline production content passed all 3,606 plugin-disabled Mac tests at
 and print evidence are different obligations; one does not substitute for another.
 Full historical text is retained in the
 [baseline archive](archive/pre_kernel_20261017/INDEX.md).
+
+
+## Ordinary request cluster model selection
+
+`charts.request.ClusterMotionRequest` is the immutable user input contract.
+Schema-v2 translation and the installed CLI supply it to `ChartRequest` through
+the existing view/drawing path. `charts.request_realization` composes the accepted
+packaged source admission and explicit offline reception backend once per export
+request; it adds no propagation or observer mathematics. Only the cluster layer
+receives its motion/reception options. Its adapter checks chart site/time/vacuum
+meaning, then calls the same Cartesian/observer route as standalone Python use.
+Other layers retain their existing observer resources and scientific models;
+this does not claim a common new backend for every family.
+
+Spatial catalogue selection skips lookup pre-culling for this explicit model,
+retains requested cluster membership/exclusions and lets canonical projection clip
+realized positions. Model selection remains separate from style/content enabling
+and minimum angular-size filters. Request state is not installed on shared sky
+layers. Output provenance and sequence identity include active model admission;
+lookup omits the added field to retain its existing identity. Native atlas-sheet
+requests and non-horizontal chart frames do not adopt this opt-in.

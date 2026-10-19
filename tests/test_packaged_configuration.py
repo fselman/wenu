@@ -35,6 +35,7 @@ TOP_LEVEL_ORDER = (
     "furniture",
     "products",
     "export",
+    "astrometry",
 )
 LINE_STYLES = {"solid", "dashed", "dotted", "dash_dot", "none"}
 
@@ -326,3 +327,19 @@ def test_toml_syntax_diagnostic_names_its_source():
     with pytest.raises(ConfigurationError) as error:
         parse_configuration("schema_version = [", source="broken.toml")
     assert "broken.toml: invalid TOML" in str(error.value)
+
+
+def test_cluster_model_configuration_requires_explicit_scientific_admission():
+    from dataclasses import replace
+    from wenu.configuration import translate_configuration_defaults
+    from wenu.charts.request import ClusterMotionRequest
+    values=load_packaged_defaults()
+    assert translate_configuration_defaults(values).cluster_motion==ClusterMotionRequest()
+    values['astrometry']['open_clusters']['model']='automatic'
+    with pytest.raises(ConfigurationError,match='astrometry.open_clusters'):
+        validate_configuration(values)
+    values['astrometry']['open_clusters']['model']='nominal-observed'
+    with pytest.raises(ConfigurationError,match='non-empty identifiers'):
+        validate_configuration(values)
+    with pytest.raises(TypeError,match='sequences'):
+        ClusterMotionRequest(identifiers='Hunt1')

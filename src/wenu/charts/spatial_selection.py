@@ -86,6 +86,12 @@ def select_spatial_chart_content(sky, chart, resolved, *, observer=None):
         layer = getattr(sky, attribute, None)
         if layer is None:
             continue
+        if content_name == "open_clusters" and resolved.request.cluster_motion.model != "lookup":
+            # Lookup positions cannot safely pre-cull a propagated catalogue.
+            # Keep explicit membership and let canonical projection clip states.
+            if values[content_name] is not None:
+                values[content_name] = values[content_name] - resolved.request.exclusions.open_clusters
+            continue
         automatic = _visible_identifiers(
             sky, chart, layer, resolved_observer
         )

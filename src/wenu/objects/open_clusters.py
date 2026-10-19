@@ -456,7 +456,28 @@ class OpenClusters(AstronomicalObject):
         from copy import copy
         from wenu.sky.realization import LayerRealizationContext
         motion = options.pop('motion', None)
-        reception = context.reception if isinstance(context, LayerRealizationContext) else None
+        reception = options.pop('reception', None)
+        if isinstance(context, LayerRealizationContext) and context.reception is not None:
+            if reception is not None and reception != context.reception:
+                raise ValueError('Conflicting explicit reception receipts.')
+            reception = context.reception
+        if reception is not None:
+            # Ordinary mixed-layer charts retain their existing context for
+            # other families. This layer's explicitly admitted receipt must
+            # still describe exactly that same site and reception event.
+            explicit = LayerRealizationContext.from_reception(reception)
+            if isinstance(context, LayerRealizationContext) and context.reception is None:
+                from astropy.time import Time
+                observation = context.observation
+                if (observation is None or observation.refraction_policy != 'vacuum'
+                        or context.product_coordinate_spec.frame != 'altaz'
+                        or context.product_coordinate_spec.origin != 'observer'
+                        or (observation.longitude_deg,observation.latitude_deg,observation.elevation_m) != reception.site_wgs84
+                        or Time(observation.instant,scale=observation.time_scale) != Time(reception.utc_isot,scale='utc')):
+                    raise ValueError('Cluster reception must match the chart site and instant.')
+            elif not isinstance(context, LayerRealizationContext):
+                raise TypeError('Explicit cluster reception requires a LayerRealizationContext.')
+            context = explicit
         if reception is not None and motion is None:
             raise ValueError('Explicit reception requires an admitted cluster motion model.')
         if reception is None and (not isinstance(context, LayerRealizationContext) or not context.is_native_icrs):

@@ -189,7 +189,7 @@ concrete Wenu classes.
 | [`charts/request_generation.py`](../../src/wenu/charts/request_generation.py) | Canonical composition and export for declarative chart requests. |
 | [`charts/request_grids.py`](../../src/wenu/charts/request_grids.py) | Request-time semantic coordinate-grid configuration. |
 | [`charts/request_horizon.py`](../../src/wenu/charts/request_horizon.py) | Request-time semantic observer-horizon configuration. |
-| [`charts/request_realization.py`](../../src/wenu/charts/request_realization.py) | Scientific layer-realization context for ordinary chart requests. |
+| [`charts/request_realization.py`](../../src/wenu/charts/request_realization.py) | Ordinary chart realization context and composition of explicitly admitted cluster source/reception options. |
 | [`charts/request_resolver.py`](../../src/wenu/charts/request_resolver.py) | Resolution and load-profile validation for declarative chart requests. |
 | [`charts/request_satellite_tracks.py`](../../src/wenu/charts/request_satellite_tracks.py) | Request-owned presentation of already-realized exact satellite tracks. |
 | [`charts/request_tracks.py`](../../src/wenu/charts/request_tracks.py) | Request-owned registration of one drawable Solar-System track. |
@@ -198,7 +198,7 @@ concrete Wenu classes.
 | [`charts/sequence_manifest.py`](../../src/wenu/charts/sequence_manifest.py) | Deterministic manifests for canonical observer-time chart sequences. |
 | [`charts/solar_system_disk_preparation.py`](../../src/wenu/charts/solar_system_disk_preparation.py) | Projected display magnification for resolved Solar-System disks. |
 | [`charts/solar_system_track_annotations.py`](../../src/wenu/charts/solar_system_track_annotations.py) | Projected annotation and label layout for Solar-System tracks. |
-| [`charts/spatial_selection.py`](../../src/wenu/charts/spatial_selection.py) | Render-local spatial catalogue selection for resolved chart fields. |
+| [`charts/spatial_selection.py`](../../src/wenu/charts/spatial_selection.py) | Render-local field membership; explicit cluster motion bypasses lookup pre-culling before canonical clipping. |
 | [`charts/stellar_report.py`](../../src/wenu/charts/stellar_report.py) | Designation notes for stars retained by the canonical chart render. |
 | [`charts/stellar_sizing_report.py`](../../src/wenu/charts/stellar_sizing_report.py) | Stellar SVG measurements and actual-catalogue atlas count appendices. |
 | [`charts/style_components.py`](../../src/wenu/charts/style_components.py) | Typed, composable configuration for complete chart styles. |

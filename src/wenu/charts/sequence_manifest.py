@@ -80,8 +80,19 @@ def _chart_request_identity(request: ChartRequest) -> dict[str, Any]:
     if not isinstance(request, ChartRequest):
         raise TypeError("request must be a ChartRequest.")
     identity = _canonical(request)
+    if request.cluster_motion.model == "lookup":
+        identity.pop("cluster_motion")
     identity["observer"]["time"] = None
     identity["product"]["output"] = None
+    return identity
+
+
+def _configuration_identity(configuration, request):
+    if configuration is None:
+        return None
+    identity = _canonical(configuration)
+    if request.cluster_motion.model == "lookup":
+        identity.pop("cluster_motion", None)
     return identity
 
 
@@ -182,11 +193,7 @@ class ObserverTimeSequenceManifest:
         playback = sequence.playback
         return cls(
             chart_request=_chart_request_identity(sequence.chart),
-            configuration=(
-                None
-                if sequence.configuration is None
-                else _canonical(sequence.configuration)
-            ),
+            configuration=_configuration_identity(sequence.configuration, sequence.chart),
             time_scale=sequence.timeline.time_scale.value,
             display_timezone=sequence.timeline.display_timezone,
             sampling_kind=sequence.timeline.sampling_kind.value,

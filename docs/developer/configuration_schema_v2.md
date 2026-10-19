@@ -39,6 +39,7 @@ by these top-level tables in this exact order:
 14. `furniture`
 15. `products`
 16. `export`
+17. `astrometry`
 
 The packaged document is complete. A user document is a partial overlay but
 must still declare `schema_version`. Tables and keys are emitted in the order
@@ -543,3 +544,48 @@ The reported installed Mac CLI/preset discovery and initial Sco render succeeded
 The complete Mac suite at `0d9ed74734c1f0f0baf166579701cd3f3af5b49a` reported 13 failed and 3,576 passed in 995.75 seconds. It is a failed verification receipt, not merge clearance. Recovery keeps the accepted catalogue membership, print appearance and independent atlas style/layout resources intact. Existing configuration-loader mocks now accept the family keyword, export legend mocks accept the optional stellar legend style, and regional default assertions cover v6 rather than former legacy defaults. The explicit adaptive-policy isolation check uses an explicit legacy style so its fainter limits do not contradict v6's physical sizing reference.
 
 Two production seams are corrected in the existing owners: composition retains the independently resolved output-mode area multiplier after physical stellar diameter sizing, and shared export/detail application adds appearance options only for layers actually present in the sky. Thus a catalogue-free export remains empty and presentation symbol scaling still applies. No new production module, scientific data or preset is introduced. Focused verification and a fresh final-candidate complete Mac suite are required; Fernando's acceptance and authorization to merge and clean remain in effect.
+
+
+## Explicit open-cluster astrometry
+
+Schema v2 adds optional overlay table `[astrometry.open_clusters]`; the packaged
+complete schema places `astrometry` after `export`. Old partial overlays remain
+valid. Defaults preserve lookup and acquire no additional data.
+
+| Key | Default | Meaning |
+|---|---|---|
+| `model` | `"lookup"` | `lookup` or explicit `nominal-observed` |
+| `identifiers` | `[]` | Ordered selected cluster IDs; active model requires a non-empty list |
+| `leap_seconds_path`, `eop_path` | `"none"` | Local IERS leap and final IERS-B files; no downloads |
+| `leap_seconds_sha256`, `eop_sha256` | `"none"` | Expected lowercase SHA256 of those exact files |
+| `backend_identity` | `[]` | Astropy, PyERFA and ERFA versions, then SHA256 of installed `erfa.ufunc`; inspect with `wenu.astrometric_observation.reception_backend_identity()` |
+| `start_jd_tt`, `stop_jd_tt` | `0.0`, `0.0` | Increasing finite caller reception domain in TT Julian days, inside every admitted observer resource/model domain |
+| `start_jd_tcb`, `stop_jd_tcb` | `0.0`, `0.0` | Increasing finite nominal source-propagation domain in TCB Julian days |
+| `height_wgs84_m` | `"none"` | Caller-qualified WGS84 ellipsoid height, -1000..10000 m; must match ordinary observer height |
+
+Only the active model requires complete scientific admission. It uses the
+existing packaged Hunt companion/qualification and unchanged selected-catalogue
+binding; unavailable rows are never silently converted to zero motion/RV.
+Absolute resource paths avoid ambiguity. The observation instant comes from the
+ordinary observer request, with its existing calendar/timezone restrictions.
+Native propagation domains do not grant historical Earth orientation coverage.
+Unknown physical/error channels remain unknown.
+
+CLI `--open-cluster-model lookup|nominal-observed` overrides the configured model.
+Each repeated `--open-cluster-id ID` adds one ID to the replacement ordered list;
+without it, TOML identifiers are retained. A CLI lookup override does not open
+unused astrometry resources. Malformed configuration still fails validation.
+Only ordinary horizontal charts currently support the active model; all-sky
+Galactic/ecliptic/native atlas-sheet selection is not added by these flags.
+
+The model is independent of content/detail and appearance. Explicit chart cluster
+membership intersects the identifier list and exclusions apply; an empty effective
+membership disables this layer. For wide-field
+charts whose adaptive policy hides open clusters, `[detail.adaptive]` with
+`adapt_layers = false` keeps configured content layers. Existing minimum angular
+size filters still apply. Requested IDs are realized before final viewport
+clipping; source-lookup positions cannot pre-cull the propagated model.
+The cluster layer checks receipt/chart site, time and vacuum policy and uses the
+shared full-Cartesian observer service. Other families keep their existing
+observation routes. There is no expansion, implicit acquisition, epoch-state
+snapshot, shared model installation, source mutation or accuracy guarantee.

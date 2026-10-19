@@ -360,6 +360,8 @@ def export_prepared_chart(
         request,
         resolved_observer,
     )
+    from .request_realization import chart_cluster_motion_options
+    cluster_options = chart_cluster_motion_options(request, resolved_observer)
     detail = replace(
         request.detail,
         content_selection=request.content,
@@ -463,6 +465,10 @@ def export_prepared_chart(
                 composition = replace(composition, style=style)
                 export_options["composition"] = composition
                 export_options["layer_options"] = equatorial_grid_mark_options(chart, marks)
+            if cluster_options:
+                from .detail_application import merge_layer_options
+                export_options["layer_options"] = merge_layer_options(
+                    export_options.get("layer_options"), cluster_options)
             result = chart.export(
                 sky,
                 renderer,
