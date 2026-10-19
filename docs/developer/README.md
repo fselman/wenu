@@ -124,7 +124,10 @@ The explicit [TCB/TDB convention subset](implementation_reference.md#barycentric
 now supplies time receipts and spatial scaling independently of object type.
 An offline [reception context](implementation_reference.md#offline-reception-and-observer-input-context)
 now retains explicit UTC/TT/TDB/TCB events and separately identified ERFA Earth/observer
-PV with verified local leap/final EOP resources. Target parallax/apparent realization, Cartesian reuse
+PV with verified local leap/final EOP resources. The object-independent
+[finite observer realizer](implementation_reference.md#finite-distance-nominal-observer-realization)
+now returns range, parallax and corrected vacuum Alt/Az from actual kernel
+Cartesian batches. Observed chart adoption, Cartesian reuse
 and remaining K3 routing are pending; this is not a completed kernel or frozen SDK.
 
 [Roadmap to v0.9.5: kernel and loadable packages](kernel_roadmap_v0.9.5.md)

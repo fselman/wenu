@@ -1272,7 +1272,14 @@ inputs and prepares ERFA EPV00/APCO Earth/observer PV in TDB-compatible BCRS
 coordinates from caller-verified leap/final IERS-B data. WGS84 east longitude,
 geodetic latitude and ellipsoid height are explicit; legacy Observer height
 metadata is not silently adopted. No target parallax/apparent correction is
-performed. Total numerical/physical error remains unknown. See the
+performed by preparation. The separate realizer now scales actual kernel
+TCB-compatible Cartesian states to TDB-compatible coordinates, subtracts the
+observer once, and applies reception-Sun monopole deflection, combined
+annual/diurnal aberration, final-CIP CIRS orientation and vacuum horizon
+conversion. It retains geometric range/direction and original source epochs;
+no second space motion or extra target light time is applied. The output
+specification is observer-origin Alt/Az in radians at the retained UTC event.
+Total numerical/physical error remains unknown. See the
 [convention API](implementation_reference.md#barycentric-time-and-coordinate-conventions).
 Native angular reuse certificates
 do not certify observer-translated directions; observed motion remains unimplemented.

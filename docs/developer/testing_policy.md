@@ -273,6 +273,38 @@ apparent/projection/render code remain unchanged; reuse their accepted gates.
 Do not repeat the prior parent/convention/native gates, full SDK or production
 suite. Target parallax/correction/cache/public-consumer gates remain pending.
 
+## Finite observer gate
+
+`astrometric-observer` extends `astrometric-reception` without duplicating its
+installed case. The existing observer-resource owner now adds finite observer
+science/refusal cases. Its closest tests are the explicit reception, published
+ERFA observer reference and immutable resource/binding cases. Protected faults
+are double observer subtraction, lost distance, wrong TCB/TDB scaling, second
+space motion, double annual/diurnal aberration, altered context/model/time,
+partial state publication and invented apparent/range precision.
+
+Independent analytic parallax/range cases span multiple distances and the
+infinite-distance limit. An independent Lorentz boost checks aberration within
+the explicitly omitted small solar-potential difference; a separate Astropy
+finite-distance ICRS-to-AltAz route checks the full composition within the known
+final-CIP/theoretical-CIP difference. Neither is claimed as a physical ephemeris
+accuracy bound. Counts require one LD, AB and ATIOQ call per selected object,
+full recomputation on exact repeats and no `pmpx`/`atciq` call. Deliberate double
+translation and double aberration demonstrably fail the same numerical oracles.
+Actual mixed-family SDK batches preserve source epochs/order/unknown evidence;
+singular or corrupted requests fail atomically and valid requests recover.
+The existing wheel/sdist case retains all previous assertions and realizes an
+actual installed cluster batch at the prepared reception event.
+
+Reception model version 2 adds a frozen numeric ERFA handoff, Sun position,
+retained UTC label and full context digest; it does not persist these in old
+snapshots or change numerical reception input generation. Parent reception
+checks therefore run once through this gate. Run documentation and tooling
+separately. Provider/SDK/source-resource/dependency/build, native/default chart,
+projection/renderer and saved-sky implementations are unchanged. Reuse their
+accepted evidence; no parent duplicates, full SDK or production run. Observed
+chart/saved adoption and independently bounded physical errors remain separate.
+
 ## Cluster observer contract and implementation gates
 
 The contract-only milestone adds the scientific ownership/admission contract,
