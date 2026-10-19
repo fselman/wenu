@@ -312,7 +312,7 @@ compatibility, but now declares the correct source epoch J1991.25, not the old
 incorrect J2000.0 default. Source RA degrees are authoritative when present;
 hours-only constructed inputs retain the hours × 15 conversion. This is a
 coordinate-encoding/metadata correction, not motion propagation. Native labels
-are accepted through K3.07. The K3.08 candidate feeds returned directions into
+are accepted through K3.07. Accepted K3.08 feeds returned directions into
 the existing Skyfield no-deflectors star/figure observation method and Astropy
 label method. It preserves their distinct correction policies and accepted
 source-hour encoding for unchanged inputs. No correction or motion step is added
@@ -445,3 +445,13 @@ Consumed one-run external execution authorities remain consumed.
 Before changing a domain, consult its exact accepted scientific contract and
 actual implementation. Historical next-step instructions are not current
 authorization. The single forward priority is the kernel roadmap.
+
+## Shared ICRS epoch defaults
+
+K3.09 removes the shared automatic J2000.0 measurement stamp. ICRS axes have no
+equinox and imply no observation or catalogue measurement epoch. A missing epoch
+remains None; an explicitly qualified source epoch remains unchanged. This is a
+metadata correction, not a coordinate transformation or propagation. Defining
+FK4/FK5/ecliptic equinoxes retain their existing role and values. Nonstellar
+physical admission still requires its declared model's source facts; removal of
+a shared default cannot turn an unverified source into a qualified provider.

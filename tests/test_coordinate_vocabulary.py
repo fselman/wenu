@@ -115,3 +115,28 @@ def test_spherical_geometry_names_every_existing_geometry_kind():
         SphericalPolygons,
         SphericalGrid,
     }
+
+
+def test_shared_icrs_spec_does_not_invent_a_measurement_epoch():
+    from wenu.coordinates import ICRS_ASTROMETRIC_SPEC, icrs_catalogue_spec
+    assert ICRS_ASTROMETRIC_SPEC.epoch is None
+    for spec in (icrs_catalogue_spec('synthetic unknown epoch'),
+                 icrs_catalogue_spec('synthetic explicit unknown', epoch=None)):
+        assert spec.epoch is None and spec.equinox is None
+        assert spec.instant is None and spec.time_scale is None
+    known = icrs_catalogue_spec('synthetic qualified source', epoch='J2016.0',
+                                provenance=('synthetic source declaration',))
+    assert known.epoch == 'J2016.0' and known.provenance == ('synthetic source declaration',)
+
+
+def test_unknown_and_explicit_epoch_icrs_transforms_have_identical_directions():
+    from wenu.coordinate_service import CoordinateService
+    from wenu.coordinates import icrs_catalogue_spec
+    result = []
+    for epoch in (None, 'J2000.0'):
+        points = SphericalPoints(lon_deg=[0., 45., 359.], lat_deg=[-85., 20., 89.],
+            coordinate_spec=icrs_catalogue_spec('synthetic static directions', epoch=epoch))
+        result.append(CoordinateService().transform(points, CoordinateSpec(
+            frame='fk4', origin='solar-system-barycenter', equinox='B1875.0')))
+    np.testing.assert_array_equal(result[0].lon_deg, result[1].lon_deg)
+    np.testing.assert_array_equal(result[0].lat_deg, result[1].lat_deg)

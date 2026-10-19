@@ -22,8 +22,13 @@ means retain their existing rules. Labels inherit the returned coordinate spec;
 K3.07 is accepted through PR #271. K3.08 now routes observed stellar/figure
 inputs through kernel lookup before the retained Skyfield observation boundary,
 and observed label inputs through the public full-source lookup before the
-retained Astropy boundary. This candidate is pending Mac acceptance and does
-not close K3.
+retained Astropy boundary. K3.08 is accepted through PR #272 and does not close K3.
+
+The K3.09 candidate removes implicit J2000 measurement epochs from the shared
+ICRS specification and helper. Unknown source epochs remain None; explicitly
+admitted stellar/cluster epochs and numerical frame transforms are unchanged.
+Nonstellar strict admission still refuses absent frame/origin and model-required
+epoch/scale declarations. No source qualification follows from the default fix.
 
 ## Canonical pipeline
 
@@ -143,8 +148,7 @@ provenance. The source lookup neither propagates nor asserts zero physical motio
 Observed cache keys include returned centre arrays; even a warm cache cannot
 suppress a failed kernel query. Selected order, duplicate requests and empty
 selections retain their behavior. Snapshot schema v5 is unchanged.
-Observed stellar/figure/label input routing is implemented as the K3.08
-candidate. Other families and remaining resource/adapter closure remain open. See the
+Observed stellar/figure/label input routing is accepted through K3.08. Other families and remaining resource/adapter closure remain open. See the
 [adapter contract](implementation_reference.md#native-stellar-kernel-adapter).
 Solar-System Cartesian resources, state requests and astrometric/apparent
 direction realizers have stronger typed contracts. They solve light time

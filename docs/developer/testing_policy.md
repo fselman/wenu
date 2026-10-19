@@ -852,3 +852,22 @@ checks require the complete Mac checkout. Active links/anchors and all 73
 preserved archive hashes were independently verified against the remote Git
 tree. Run the complete documentation and focused gates on the Mac; acceptance
 remains pending.
+
+## Catalogue coordinate-default gate
+
+K3.09 uses `python tools/run_test_gate.py catalogue-coordinate-defaults --run`
+with plugin autoload disabled. It extends the accepted nonstellar-admission gate
+and adds coordinate vocabulary/service, constructed point/grid/boundary/regional
+callers and public position contracts. New tests reject an invented default epoch,
+preserve explicit source epochs, compare identical ICRS-to-B1875 directions under
+unknown versus explicit epoch metadata, and verify actual packaged Messier,
+Caldwell, galaxy, globular, PN and SNR source gaps remain null and strictly refused.
+Existing snapshot v5 and legacy admission/corruption, known/unknown source epoch,
+source-free restoration and public saved-sky CLI checks remain selected. No new
+provider physics, source bytes, SDK or installation boundary changes justify a
+full SDK/production repeat. Run documentation and eight tooling checks alongside
+this focused gate. Local Python 3.12 evidence: 248 cases passed in 83.83 s
+and eight tooling cases passed. Documentation: 33 cases passed; three checks
+require archive files absent from the execution copy. Active links/anchors and
+all 73 preserved archive hashes were verified against the remote Git tree.
+M5 source qualification remains open; complete Mac acceptance is pending.

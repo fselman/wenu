@@ -131,13 +131,17 @@ ICRS_ASTROMETRIC_SPEC = CoordinateSpec(
     frame="icrs",
     origin="solar-system-barycenter",
     position_status=PositionStatus.ASTROMETRIC,
-    epoch="J2000.0",
+    epoch=None,
     provider="catalogue",
 )
 
 
-def icrs_catalogue_spec(provider, *, epoch="J2000.0", provenance=()):
-    """Describe static native catalogue positions in ICRS."""
+def icrs_catalogue_spec(provider, *, epoch=None, provenance=()):
+    """Describe ICRS positions without inferring a measurement epoch.
+
+    Callers with an admitted source epoch supply it explicitly. ICRS axes
+    alone do not establish when a catalogue position was measured.
+    """
     return CoordinateSpec(
         frame="icrs",
         origin="solar-system-barycenter",

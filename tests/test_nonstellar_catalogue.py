@@ -560,3 +560,26 @@ def test_celestial_sphere_helper_loads_and_registers(
     layer = sky.add_nonstellar(filename=catalogue, samples=24)
     assert sky.nonstellar is layer
     assert layer in sky.layers
+
+
+@pytest.mark.parametrize('family', ('messier', 'caldwell', 'galaxies', 'globular_clusters', 'planetary_nebulae', 'supernova_remnants'))
+def test_packaged_nonstellar_gaps_remain_source_bound_and_strictly_refused(family):
+    from wenu.objects.galaxies import Galaxies
+    from wenu.objects.globular_clusters import GlobularClusters
+    from wenu.objects.planetary_nebulae import PlanetaryNebulae
+    from wenu.objects.supernova_remnants import SupernovaRemnants
+    cls = {'messier': NonStellar, 'caldwell': NonStellar, 'galaxies': Galaxies, 'globular_clusters': GlobularClusters,
+           'planetary_nebulae': PlanetaryNebulae, 'supernova_remnants': SupernovaRemnants}[family]
+    layer = cls(None, **({'catalog': family} if family in ('messier', 'caldwell') else {})); layer.load()
+    record = layer.catalogue_metadata.to_record()
+    assert layer.admission_missing_fields
+    for field, source_field in (('frame', 'coordinate_frame'), ('origin', 'coordinate_origin'),
+                                ('epoch', 'coordinate_epoch'), ('epoch_scale', 'coordinate_epoch_scale')):
+        if source_field not in layer.source_catalog.meta:
+            assert record[field] is None
+    with pytest.raises(ValueError, match='Incomplete nonstellar metadata'):
+        layer.require_complete_metadata()
+    geometry = layer.position()
+    assert geometry.coordinate_spec.epoch == record['epoch']
+    assert geometry.metadata['catalogue_admission'] == record
+    assert record['source_sha256'] and record['source_units']['ra'] and record['source_units']['dec']
