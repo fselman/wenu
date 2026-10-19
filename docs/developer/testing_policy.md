@@ -964,3 +964,29 @@ checks passed. Documentation: 33 passed; three archive-dependent checks need
 files absent from the execution copy. Active links/anchors and all 73 preserved
 archive blob hashes were independently verified against GitHub. Complete Mac
 documentation and globular-routing acceptance remain pending.
+
+## Planetary-nebula routing gate
+
+K3.14 uses `python tools/run_test_gate.py planetary-nebula-routing --run` with
+plugin autoload disabled. The full PN owner includes retained true/probable
+ingestion, curated selection/export contracts and fixed-symbol metadata, plus
+real kernel changed-vector/identity tests and warm admission/kernel refusal. A
+synthetic two-centre fault verifies identity-aligned native points, observed
+request order/duplicates, minimum-size filtering, unchanged source metadata and
+empty observed selections without a query. Inherited nonstellar/position/cache
+owners remain selected. Real cold/restored PN symbols and actual atlas
+legacy/cold/restored PNG pixels with PDF/SVG exports verify compatibility; restored
+warm refusal, row/mask/unit transport and source-free fresh-process resume remain
+selected. Reuse accepted shared provider science/conformance/installation and
+atlas lifetime evidence; no SDK, source resource, dependency/build, schema,
+observer/projection/renderer or SNR-route change warrants a full SDK/production
+repeat. Run documentation and eight tooling checks alongside this gate.
+
+Local Python 3.12 evidence: 129 focused cases passed in 37.76 s and eight tooling
+cases passed. PN legacy/cold/restored PNG pixels were identical with PDF/SVG
+exports; restored warm refusal and source-free process checks passed. An additional
+full true/probable catalogue public-position check returned all 1,143 objects.
+Documentation: 33 passed; three archive checks need files absent from the execution
+copy. Active links/anchors and all 73 preserved archive blob hashes were verified
+against GitHub. Complete Mac documentation and planetary-nebula-routing acceptance
+remain pending.

@@ -513,3 +513,15 @@ evolution model. Known/unknown source epochs retain shared lookup semantics.
 Native and observed shapes/labels consume returned centres; warm caches cannot
 hide refusal or changed state. No proper motion, parallax, internal dynamics,
 expansion or arbitrary-date physical validity claim is added.
+
+## Planetary-nebula baseline lookup
+
+K3.14 changes PN nebular-centre routing only. True/probable object inclusion,
+curated membership/selection criteria and angular-size filters remain unchanged.
+Catalogue flux/diameter fields are retained metadata; symbols keep their existing
+fixed display scaling. A nebular centre is not silently replaced by an associated
+central star. Returned kernel centres govern native symbols and observed inputs
+and cache identity; failed admission/evaluation propagates after cache fill.
+Missing physical frame/origin/epoch facts remain explicit. No proper motion,
+parallax model, expansion or arbitrary-date accuracy claim is introduced; AX.15
+remains separate pending work.

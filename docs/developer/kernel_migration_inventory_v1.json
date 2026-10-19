@@ -9041,7 +9041,7 @@
   },
   "globular_kernel_routing": {
     "milestone": "K3.13",
-    "status": "Implemented candidate; Mac acceptance pending",
+    "status": "Accepted PR #277, main fd6d7fa93a55d17c62781f2893f6738266743dc2; 125 focused Mac, 36 documentation and eight tooling cases passed",
     "base": "922da34d61891fbe8060e3130b233d104aaebf47",
     "owner": "src/wenu/objects/globular_clusters.py",
     "mechanics": "Accepted NonStellar source-bound direction lookup, state tables and returned-state observation cache hooks; own globular semantic/model/resource/provider identity",
@@ -9055,5 +9055,22 @@
     ],
     "gate": "globular-routing",
     "limits": "Preserve missing physical facts, Harris half-light diameters, structural data, common names, selection and appearance; no source, motion, SDK, dependency/build, schema, observer/projection/renderer or PN/SNR routing change"
+  },
+  "planetary_nebula_kernel_routing": {
+    "milestone": "K3.14",
+    "status": "Implemented candidate; Mac acceptance pending",
+    "base": "fd6d7fa93a55d17c62781f2893f6738266743dc2",
+    "owner": "src/wenu/objects/planetary_nebulae.py",
+    "mechanics": "PN-owned lookup facade; native points consume returned centres; observed symbols query full returned state table before cache access with shared state-bound key",
+    "public_paths": [
+      "position",
+      "native point symbols and labels",
+      "observed centres",
+      "observed point symbols",
+      "selection/size-filter consumers",
+      "restored sources and atlas PNG/PDF/SVG"
+    ],
+    "gate": "planetary-nebula-routing",
+    "limits": "Preserve source metadata/gaps, curated selection and fixed symbol scale; no central-star substitution, motion/expansion, source bytes, SDK, build, schema, observer/projection/renderer or SNR route change"
   }
 }

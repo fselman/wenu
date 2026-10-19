@@ -1385,3 +1385,12 @@ and common-name/structural metadata semantics are unchanged. Missing physical
 reference/epoch declarations stay unknown and do not become measured zero motion.
 Returned centres determine observation cache identity; no new frame/time, motion
 or distance-dependent observer algorithm is introduced.
+
+### Planetary-nebula lookup ownership
+
+K3.14 routes retained PN nebular centres through shared catalogue lookup before
+native point symbols or observed transformation/cache reuse. Source reference
+and epoch gaps remain unknown; associated central-star positions/motions are not
+substituted. Catalogue diameter/flux measurements retain metadata meaning and do
+not become display glyph size or expansion. The existing coordinate/observer
+mathematics is unchanged; no motion or distance-dependent correction is added.

@@ -1494,6 +1494,48 @@
           "reason": "Public restored sources execute in a fresh process without source files."
         }
       ]
+    },
+    "planetary-nebula-routing": {
+      "scope": "K3.14 PN source-bound centre lookup across public/native symbols, observed centres/symbols, selection and restored atlas consumers.",
+      "limits": "Lookup only; preserve true/probable and curated membership, order/duplicates, size filters, flux/diameter metadata and fixed glyph scale. No motion/central-star substitution, expansion, source bytes, SDK, dependency/build, snapshot schema, observer/projection/renderer or SNR routing change.",
+      "selections": [
+        {
+          "node": "tests/test_planetary_nebulae.py",
+          "reason": "Changed owner: fixed symbols, selection/order/size filters, curated criteria/exports, returned kernel state and warm refusal."
+        },
+        {
+          "node": "tests/test_nonstellar_catalogue.py",
+          "reason": "Inherited source admission/normalization/cache and family source-gap contracts."
+        },
+        {
+          "node": "tests/test_position_providers.py",
+          "reason": "Public inherited position contract and identities."
+        },
+        {
+          "node": "tests/test_observed_cache.py",
+          "reason": "Returned-state cache inputs compose with observer identities/immutable arrays."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_kernel_pn_routes_preserve_accepted_atlas_pixels",
+          "reason": "Native PN symbols/metadata and exact legacy/cold/restored atlas PNG pixels plus PDF/SVG."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_restored_pn_warm_routes_do_not_hide_kernel_refusal",
+          "reason": "Restored PN public/native/observed consumers propagate refusal after cache fill."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_fixed_catalogue_rows_masks_units_and_subsets",
+          "reason": "Retained catalogue rows/masks/units/subsets including PN curated data."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_nonstellar_admission_and_unknown_epochs",
+          "reason": "Source-bound metadata/unknown physical facts remain unchanged on restoration."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources",
+          "reason": "Restored public routes execute without original source files in a fresh process."
+        }
+      ]
     }
   },
   "consumer_review": [
