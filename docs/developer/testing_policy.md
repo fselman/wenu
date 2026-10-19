@@ -813,3 +813,21 @@ public cluster observer seam run without ambient Wenu imports.
 No provider/observer numerical algorithm, SDK, source resources, dependency/build,
 snapshot schema, projection/renderer or atlas dispatch changes. Reuse accepted
 numerical/conformance receipts; do not repeat unrelated physics or full production.
+
+## Native constellation-label routing gate
+
+K3.07 uses `python tools/run_test_gate.py native-label-routing --run` with plugin
+autoload disabled. This selects the label, constellation geometry, public position
+and stellar owners plus cold/saved native anchor and PNG comparison (including
+PDF export) and restored fresh-process execution. Fault injection changes the
+real kernel return and verifies the anchor moves; kernel failure cannot fall back
+to catalogue angles. Public-only fixtures forbid private table reads. Empty and
+missing-coordinate inputs, faint unfiltered source stars and existing observed
+label behavior remain covered. No SDK/provider numerical, installation, source
+resource, dependency, snapshot schema, projection or renderer changes require
+repeating their accepted lower-level gates. Run documentation and tooling checks
+alongside this gate. Local Python 3.12 evidence: 95 focused cases passed in
+37.96 s and 8 tooling cases passed. Documentation: 33 executable cases passed;
+three archive-dependent checks require the complete Mac checkout. Remote-tree
+links/anchors and all 73 preserved archive blob hashes were independently
+verified. Complete Mac acceptance remains pending.

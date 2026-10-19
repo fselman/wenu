@@ -1321,3 +1321,12 @@ and [ESA Volume 1](https://www.cosmos.esa.int/documents/532822/552851/vol1_all.p
 The volume itself was unavailable to full retrieval in this environment;
 its indexed source text supplies the explicit TT designation. This is source
 metadata identification, not a new independently validated propagation model.
+
+### Native constellation-label anchor inputs
+
+K3.07 changes state ownership, not the spherical-mean definition: native label
+anchors consume the full source-native stellar query, with its returned ICRS
+angles and catalogue coordinate specification. Constellation membership and
+Serpens splitting use those same angles. No propagation or observer correction
+is added, and observed-label realization retains its existing path. The
+scientific conventions above remain current.

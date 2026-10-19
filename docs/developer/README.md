@@ -32,8 +32,8 @@ It now includes the [current position and next-item selection](kernel_roadmap_v0
 all known [intermediate milestones](kernel_roadmap_v0.9.5.md#intermediate-milestones),
 a full [K3 audit coverage map](kernel_roadmap_v0.9.5.md#k3-audit-coverage-map),
 and separate baseline/Gaia/positional-extension tracks. K3 is still partial;
-PR #269 completes AX.12, not K3 or the kernel freeze. The next runtime ID is
-unselected. Extra scope or changed agreed order must be discussed with Fernando,
+PR #269 completes AX.12, not K3 or the kernel freeze. K3.07 native constellation-label routing is selected; its PR remains pending
+Mac acceptance. Extra scope or changed agreed order must be discussed with Fernando,
 explicitly agreed and documented before implementation under the
 [mandatory agent rule](assistant_instructions.md#roadmap-control-mandatory-before-implementation).
 
@@ -61,8 +61,9 @@ The accepted K3 stellar slice routes `Stars.position`, explicit HIP lookup throu
 `Stars.native_positions`, and native constellation endpoints through that adapter.
 These routes declare source epoch J1991.25, preserve unpropagated Hipparcos
 directions, IDs and display metadata, and do not add proper motion.
-Observed astrometry, native constellation-label anchors, reports and other
-object families remain to migrate.
+Native constellation-label anchors now consume full-source public kernel-backed
+positions under K3.07 (pending acceptance). Observed astrometry, reports and
+other object families remain to migrate.
 Catalogue ingestion now validates and preserves required source metadata in a
 standard table/immutable metadata envelope; snapshot v3 carries it forward.
 The [metadata audit](kernel_migration_audit_v1.md#catalogue-metadata-audit-2026-10-18)

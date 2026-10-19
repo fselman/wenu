@@ -73,19 +73,20 @@ class ConstellationLabels(GeometricalObject):
         min_stars = (
             self.min_stars if min_stars is None else int(min_stars)
         )
-        frame = getattr(
-            self.stars,
-            "source_catalog",
-            self.stars.hip_df,
-        )
-        if frame is None or len(frame) == 0:
-            return self._empty(observer, native_icrs=native_icrs)
-
-        ra_deg = frame["ra_degrees"].to_numpy(dtype=float)
-        dec_deg = frame["dec_degrees"].to_numpy(dtype=float)
+        if native_icrs:
+            positions = self.stars.native_positions()
+            coordinate_spec = positions.coordinate_spec
+            ra_deg = np.asarray(positions.lon_deg, dtype=float)
+            dec_deg = np.asarray(positions.lat_deg, dtype=float)
+        else:
+            frame = getattr(self.stars, "source_catalog", self.stars.hip_df)
+            if frame is None or len(frame) == 0:
+                return self._empty(observer)
+            ra_deg = frame["ra_degrees"].to_numpy(dtype=float)
+            dec_deg = frame["dec_degrees"].to_numpy(dtype=float)
         valid_coordinates = np.isfinite(ra_deg) & np.isfinite(dec_deg)
         if not np.any(valid_coordinates):
-            return self._empty(observer, native_icrs=native_icrs)
+            return self._empty(observer, coordinate_spec=coordinate_spec if native_icrs else None)
         coordinates = SkyCoord(
             ra=ra_deg[valid_coordinates] * u.deg,
             dec=dec_deg[valid_coordinates] * u.deg,
@@ -146,8 +147,7 @@ class ConstellationLabels(GeometricalObject):
         return SphericalPoints(
             lon_deg=np.asarray(lon_deg, dtype=float),
             lat_deg=np.asarray(lat_deg, dtype=float),
-            coordinate_spec=self.stars.native_positions(()).coordinate_spec
-            if native_icrs else observer_altaz_spec(
+            coordinate_spec=coordinate_spec if native_icrs else observer_altaz_spec(
                 observer,
                 position_status=PositionStatus.APPARENT,
                 provider="astropy Hipparcos constellation labels"
@@ -185,12 +185,11 @@ class ConstellationLabels(GeometricalObject):
             float(np.degrees(np.arcsin(mean[2]))),
         )
 
-    def _empty(self, observer, *, native_icrs=False):
+    def _empty(self, observer, *, coordinate_spec=None):
         return SphericalPoints(
             lon_deg=np.asarray([], dtype=float),
             lat_deg=np.asarray([], dtype=float),
-            coordinate_spec=self.stars.native_positions(()).coordinate_spec
-            if native_icrs else observer_altaz_spec(
+            coordinate_spec=coordinate_spec if coordinate_spec is not None else observer_altaz_spec(
                 observer,
                 position_status=PositionStatus.APPARENT,
                 provider="astropy Hipparcos constellation labels"

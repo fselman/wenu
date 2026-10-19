@@ -221,8 +221,11 @@ class Stars(AstronomicalObject):
             raise RuntimeError('The stellar catalogue has not been loaded.')
         return stellar_table_metadata(source)
 
-    def native_positions(self, identifiers) -> SphericalPoints:
-        """Query explicit HIP identities independently of marker selection.
+    def native_positions(self, identifiers=None) -> SphericalPoints:
+        """Query source-native positions independently of marker selection.
+
+        ``None`` selects the complete source, including faint stars needed for
+        constellation-label anchors. An explicit empty iterable selects no rows.
 
         Return available rows in source order, including missing-coordinate
         rows with their original metadata/NaNs. Absent identities are omitted;
@@ -234,6 +237,8 @@ class Stars(AstronomicalObject):
             source = self.catalog
         if source is None:
             raise RuntimeError("The stellar catalogue has not been loaded. Call stars.load() first.")
+        if identifiers is None:
+            return self._native_position_geometry(source)
         selected = frozenset(int(identifier) for identifier in identifiers)
         return self._native_position_geometry(source[source.index.isin(selected)])
 

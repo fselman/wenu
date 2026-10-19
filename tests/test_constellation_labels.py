@@ -854,3 +854,83 @@ def test_all_names_apply_mask_region_selection_before_anchoring():
     prepared = options[label]['prepare'](object(), ProjectedPoints([0, 0], [0, 0], labels=['Sco', 'Lib']))
     assert seen == [('Sco',)]
     assert np.isfinite(prepared.x[0]) and np.isnan(prepared.x[1])
+
+
+def test_native_label_anchors_use_only_public_full_source_positions():
+    """A metadata-only query or private-table fallback cannot satisfy this seam."""
+    from wenu.coordinates import icrs_catalogue_spec
+    from wenu.geometry.spherical import SphericalPoints
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    calls = []
+    spec = icrs_catalogue_spec('synthetic native labels', epoch='J1991.25')
+    class Source:
+        def native_positions(self, identifiers=None):
+            calls.append(identifiers)
+            return SphericalPoints(lon_deg=[0., 20., 40., np.nan],
+                lat_deg=[-85., -84., -86., 0.], ids=[10, 11, 12, 13], coordinate_spec=spec)
+        @property
+        def source_catalog(self):
+            raise AssertionError('Native labels must consume public positions')
+        catalog = hip_df = source_catalog
+    labels = ConstellationLabels(Source(), selected={'Oct'}, min_stars=3)
+    result = labels.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None)
+    assert calls == [None]
+    assert result.labels.tolist() == ['Oct'] and result.coordinate_spec == spec
+    expected = labels._spherical_mean([0., 20., 40.], [-85., -84., -86.])
+    np.testing.assert_allclose([result.lon_deg[0], result.lat_deg[0]], expected, atol=1e-12)
+    empty = labels.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None, selected={'Ori'})
+    assert len(empty) == 0 and empty.coordinate_spec == spec
+
+
+def test_native_label_anchors_follow_kernel_results_and_propagate_refusal(monkeypatch):
+    from dataclasses import replace
+    import pytest
+    from stellar_catalogue_fixtures import native_table
+    from wenu.objects.stars import Stars
+    from wenu_kernel import KernelSession
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    stars = Stars(None)
+    stars.source_catalog = native_table(pd.DataFrame(dict(ra_degrees=[0., 20., 40., np.nan],
+        dec_degrees=[-85., -84., -86., 0.], magnitude=[1., 9., 10., 4.]), index=[10, 11, 12, 13]))
+    stars.catalog = stars.source_catalog.iloc[:1].copy()
+    source, active = stars.source_catalog.copy(deep=True), stars.catalog.copy(deep=True)
+    labels = ConstellationLabels(stars, selected={'Oct'}, min_stars=3)
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    baseline = labels.realize(context, None)
+    from math import cos, sin, radians
+    evaluate, calls = KernelSession.evaluate, []
+    def rotate(session, query):
+        calls.append(query)
+        batch = evaluate(session, query)
+        return replace(batch, states=tuple(replace(state,
+            vector=(cos(radians(1))*state.vector[0] - sin(radians(1))*state.vector[1],
+                    sin(radians(1))*state.vector[0] + cos(radians(1))*state.vector[1],
+                    state.vector[2])) for state in batch.states))
+    monkeypatch.setattr(KernelSession, 'evaluate', rotate)
+    moved = labels.realize(context, None)
+    assert len(calls) == 1
+    assert tuple(key.value for key in calls[0].objects) == ('hipparcos:10', 'hipparcos:11', 'hipparcos:12')
+    np.testing.assert_allclose(moved.lon_deg, (baseline.lon_deg + 1) % 360, atol=1e-12)
+    np.testing.assert_allclose(moved.lat_deg, baseline.lat_deg, atol=1e-12)
+    pd.testing.assert_frame_equal(source, stars.source_catalog)
+    pd.testing.assert_frame_equal(active, stars.catalog)
+    def refuse(*args):
+        raise RuntimeError('synthetic label kernel refusal')
+    monkeypatch.setattr(KernelSession, 'evaluate', refuse)
+    with pytest.raises(RuntimeError, match='label kernel refusal'):
+        labels.realize(context, None)
+
+
+def test_native_empty_labels_keep_returned_spec_without_second_query():
+    from wenu.coordinates import icrs_catalogue_spec
+    from wenu.geometry.spherical import SphericalPoints
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    spec = icrs_catalogue_spec('synthetic empty source', epoch='J1991.25')
+    for lon, lat in (([], []), ([np.nan], [0.])):
+        calls = []
+        def positions():
+            calls.append(True)
+            return SphericalPoints(lon_deg=lon, lat_deg=lat, coordinate_spec=spec)
+        result = ConstellationLabels(SimpleNamespace(native_positions=positions)).realize(
+            LayerRealizationContext(NATIVE_ICRS_SPEC), None)
+        assert len(result) == 0 and result.coordinate_spec == spec and calls == [True]

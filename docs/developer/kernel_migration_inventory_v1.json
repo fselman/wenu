@@ -8896,5 +8896,14 @@
       "Source resources/acquisition",
       "Persisted evaluated states"
     ]
+  },
+  "native_constellation_label_routing": {
+    "milestone": "K3.07",
+    "status": "Implemented candidate; Mac acceptance pending",
+    "base": "d22598925ce33e56a53a445020d7e5307b3f4e92",
+    "public_path": "ConstellationLabels.realize(native_context, None) -> Stars.native_positions(None) -> existing stellar kernel adapter",
+    "semantics": "Full source, including faint stars and original NaN rows; membership/Serpens/mean rules unchanged; inherited returned coordinate specification; no fallback after refusal. Cold and saved sources use the same path.",
+    "gate": "native-label-routing",
+    "limits": "Observed consumers, propagation, Gaia, SDK, source resources, dependency/build, snapshot schema and projection/renderer unchanged."
   }
 }

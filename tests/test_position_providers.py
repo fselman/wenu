@@ -75,12 +75,14 @@ def test_native_id_query_keeps_faint_rows_missing_coordinates_and_source_order(m
         queries.append(query)
         return evaluate(session, query)
     monkeypatch.setattr(KernelSession, 'evaluate', capture)
-    points = stars.native_positions([300, 200, 100, 404])
+    points = stars.native_positions()
+    explicit = stars.native_positions([300, 200, 100, 404])
+    np.testing.assert_array_equal(points.lon_deg, explicit.lon_deg)
     np.testing.assert_array_equal(points.ids, [100, 200, 300])
     np.testing.assert_array_equal(points.lon_deg, [15., 30., np.nan])
     np.testing.assert_array_equal(points.metadata['magnitude'], [1., 9., 3.])
     np.testing.assert_array_equal(points.metadata['is_variable'], [False, True, False])
-    assert len(queries) == 1
+    assert len(queries) == 2
     assert tuple(key.value for key in queries[0].objects) == ('hipparcos:100', 'hipparcos:200')
     assert points.coordinate_spec.epoch == 'J1991.25' and points.coordinate_spec.instant is None
     pd.testing.assert_frame_equal(source, stars.source_catalog)
