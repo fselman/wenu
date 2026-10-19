@@ -60,9 +60,12 @@ now maps existing services, 66 direct-import consumer modules, test owners and
 five coupling/contract findings. KG.01 is accepted through PR #282. The
 [KG.02 contracts and placement proposal](kernel_contract_k1.md#14-kg02-geometry-service-contracts-and-placement-plan)
 are now delivered for review: explicit numerical kernel imports, legacy aliases,
-ring/metadata/ownership rules and focused acceptance. The optional NumPy extra
-and concrete namespace placement require explicit agreement before implementation.
-No geometry implementation has moved.
+ring/metadata/ownership rules and focused acceptance. KG.02 is accepted through PR #283. Fernando subsequently selected KG.03,
+including that concrete placement and optional NumPy extra. Kernel dev9 now owns
+pure CoordinateSpec vocabulary, spherical/projected records, frame/viewport and
+the existing ring helper; Wenu aliases preserve class identity. Projection and
+domain/clipping implementations remain at their existing owners for KG.04.
+KG.03 complete Mac acceptance is pending.
 Extra scope or changed agreed order must be discussed with Fernando,
 explicitly agreed and documented before implementation under the
 [mandatory agent rule](assistant_instructions.md#roadmap-control-mandatory-before-implementation).

@@ -19,9 +19,25 @@ owners automatically nor changes root pytest collection. See the
 
 The [agreed service-kernel boundary](kernel_roadmap_v0.9.5.md#proposed-architecture)
 assigns reusable geometry/topology, domain guards and projections to shared kernel
-services. Their current source locations below are unchanged. The standalone
+services. KG.03 retains the Wenu locations below as compatibility facades while
+moving the record/frame/viewport implementations and ring math into the existing
+kernel distribution. Projection/clipping/domain implementations remain in Wenu. The standalone
 state SDK is a component of that target, not the whole kernel; conceptual ownership
 does not claim completed extraction or require routing geometry through states.
+
+## Kernel geometry implementation
+
+Outside the production-facade inventory below, the existing kernel project now
+owns [pure coordinate vocabulary](../../packages/wenu_kernel/src/wenu_kernel/coordinates.py),
+[spherical records](../../packages/wenu_kernel/src/wenu_kernel/geometry/spherical.py),
+[projected records](../../packages/wenu_kernel/src/wenu_kernel/geometry/projected.py),
+[spherical frames](../../packages/wenu_kernel/src/wenu_kernel/geometry/frame.py),
+[viewports](../../packages/wenu_kernel/src/wenu_kernel/geometry/viewport.py) and
+[numerical ring interiors](../../packages/wenu_kernel/src/wenu_kernel/geometry/topology.py).
+The geometry package exports these record/frame/viewport types explicitly;
+ring math stays in its topology leaf. Numerical geometry uses an optional NumPy
+extra. Base state/coordinate imports remain dependency-free. Wenu legacy types
+are identical aliases, not copied implementations.
 
 ## (root services)
 
@@ -79,7 +95,7 @@ concrete Wenu classes.
 | [`comet_discovery.py`](../../src/wenu/comet_discovery.py) | Provider-neutral comet discovery through the NASA/JPL SBDB Query API. |
 | [`comet_photometry.py`](../../src/wenu/comet_photometry.py) | Observer-dependent comet model magnitude from NASA/JPL Horizons. |
 | [`coordinate_service.py`](../../src/wenu/coordinate_service.py) | Central astronomical transformations for typed spherical geometry. |
-| [`coordinates.py`](../../src/wenu/coordinates.py) | Astronomical coordinate vocabulary and legacy conversion functions. |
+| [`coordinates.py`](../../src/wenu/coordinates.py) | Kernel vocabulary aliases plus Wenu source/observer factories and ObservationContext. |
 | [`ephemeris.py`](../../src/wenu/ephemeris.py) | Typed Cartesian ephemeris-state boundary. |
 | [`minor_body_acquisition.py`](../../src/wenu/minor_body_acquisition.py) | Networked preflight acquisition for immutable numbered-asteroid resources. |
 | [`minor_body_ephemeris.py`](../../src/wenu/minor_body_ephemeris.py) | Offline minor-body states from one borrowed Horizons SPK resource. |
@@ -282,10 +298,10 @@ concrete Wenu classes.
 |---|---|
 | [`geometry/__init__.py`](../../src/wenu/geometry/__init__.py) | Coordinate-neutral geometry values and algorithms. |
 | [`geometry/clipping.py`](../../src/wenu/geometry/clipping.py) | Clipping. |
-| [`geometry/frame.py`](../../src/wenu/geometry/frame.py) | Coordinate-neutral rotations of the celestial sphere. |
-| [`geometry/projected.py`](../../src/wenu/geometry/projected.py) | Projected. |
-| [`geometry/spherical.py`](../../src/wenu/geometry/spherical.py) | Spherical. |
-| [`geometry/viewport.py`](../../src/wenu/geometry/viewport.py) | Viewport. |
+| [`geometry/frame.py`](../../src/wenu/geometry/frame.py) | Same-object compatibility aliases for wenu_kernel.geometry.frame. |
+| [`geometry/projected.py`](../../src/wenu/geometry/projected.py) | Same-object compatibility aliases for wenu_kernel.geometry.projected. |
+| [`geometry/spherical.py`](../../src/wenu/geometry/spherical.py) | Same-object compatibility aliases for wenu_kernel.geometry.spherical. |
+| [`geometry/viewport.py`](../../src/wenu/geometry/viewport.py) | Same-object compatibility aliases for wenu_kernel.geometry.viewport. |
 
 ## notebooks
 

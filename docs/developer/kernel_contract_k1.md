@@ -1,7 +1,8 @@
 # K1: public kernel and provider contract
 
 **Revision:** 2, 2026-10-19. **Status:** state component accepted as K2 target
-(PR #236); KG.02 geometry design is proposed for review. Final usable SDK freeze remains K5.
+(PR #236); KG.02 design accepted through PR #283. KG.03 record/vocabulary/ring
+implementation is delivered for acceptance; final usable SDK freeze remains K5.
 **As-is base:** main `3359e9ebb430de68e68cdee8bfc40ddd6d3da692`.
 **Proposed contract identifier:** `wenu.kernel/1.0`.
 
@@ -664,33 +665,37 @@ satellite science is part of K1. Wenu must continue to run after every merge.
 
 **Design base:** main `887408aeff1731d0b1197a2226cd925f0681da44`,
 2026-10-19, accepted KG.01 through PR #282 (36 Mac documentation tests).
-**Status:** bounded design for review, not implemented imports or K5 freeze.
+**Status:** design accepted through PR #283. Fernando selected KG.03 and the
+published placement/optional-extra plan on 2026-10-19. Kernel dev9 now implements
+the coordinate vocabulary, spherical/projected/frame/viewport records and ring
+helper with legacy aliases; projections/domain/clipping remain KG.04. This is
+not the K5 freeze.
 Fernando selected KG.02 after the clean main/cleanup receipt. The
 [KG.01 assessment](kernel_migration_audit_v1.md#kg01-shared-geometry-service-inventory)
 and its five findings determine this plan. Existing state/provider contracts
 are retained; geometry is a separate shared-service API, not a StateQuery
-capability. No runtime, dependency declaration, source bytes or persistence
-schema changes in this document.
+capability. KG.03 implements the bounded record/vocabulary/ring placement and optional
+NumPy extra. Source bytes, numerical formulas and persistence schemas remain
+unchanged; full service integration and completed-K audit remain pending.
 
 ### Placement proposal and dependency direction
 
-**Recommended concrete placement for agreement:** extend the existing
+**Agreed placement, selected with KG.03:** extend the existing
 `packages/wenu_kernel` distribution with the namespaces below; do not create
 another distribution or duplicate the numerical implementation.
 Add an optional `geometry` extra using Wenu's existing
 `numpy>=1.26,<2` constraint, keeping base `dependencies = []`.
 The root Wenu application would select that extra and pin an immutable tested
-kernel commit when the implementations ship. This optional dependency/pin plan
-is proposed explicitly for review; it is not an already authorized build edit.
+kernel commit when the implementations ship. The optional geometry extra and immutable kernel pin now ship in KG.03.
 Keeping numerical geometry under the broad Wenu namespace would retain the
 observed application import coupling; a separate geometry distribution would
 add an unnecessary distribution/version boundary for this migration. Explicit
 numerical submodules plus an optional extra provide the recommended separation
 while reusing the existing kernel distribution. These are assessed alternatives,
 not a claim that only one packaging design can work.
-Approval of the architecture or passing documentation tests alone does not
-approve a dependency change. Record Fernando's explicit placement/optional-extra
-decision before KG.03 edits packaging. A different distribution boundary
+The implementation authority is Fernando's explicit KG.03 proceed after the
+published KG.02 placement/extra proposal and clean main receipt, recorded in
+roadmap revision 35; it is not inferred from a test result. A different distribution boundary
 would require a revised agreed plan rather than an improvised implementation.
 
 | Proposed canonical namespace | Responsibility and imports | Current compatibility owner |
@@ -827,8 +832,8 @@ class definitions rather than claiming universal pickle compatibility.
 ### Incremental execution and acceptance plan
 
 These are the existing KG stages, not additional milestone IDs or permission
-to execute the whole sequence. Packaging/dependency placement above requires
-explicit agreement before affected implementation. All stages retain the
+to execute the whole sequence. KG.03 is selected and delivered for acceptance;
+later stages require their own task selection. All stages retain the
 appropriate current owners/oracles listed in KG.01.
 
 | Stage | Concrete bounded placement/result | Closest acceptance evidence |
@@ -849,7 +854,8 @@ must be installed/tested with NumPy and without Wenu/Astropy/Skyfield/Matplotlib
 Import blockers and cold subprocesses must actually exercise canonical service
 imports and entry points; an AST allowlist alone does not prove isolation.
 
-KG.02 acceptance is documentation review of this concrete proposal and its
-dependency/compatibility consequences, plus the existing documentation gate.
-It does not claim any of these future service tests passed or authorize KG.03.
+KG.02 acceptance was documentation review through PR #283 and its 36-case
+Mac documentation gate. KG.03 is separately selected; its implemented subset
+and actual evidence are recorded in testing policy, not inferred from the plan.
+Unimplemented KG.04–KG.07 checks remain future acceptance requirements.
 The final usable shared-service contract remains subject to K5 acceptance.

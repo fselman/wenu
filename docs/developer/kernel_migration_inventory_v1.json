@@ -429,19 +429,19 @@
       "path": "src/wenu/charts/magnitude_legend_matplotlib.py",
       "git_blob_sha": "07104731fa669bb972df830cf5e3c51076b00b11",
       "as_is_directory": "src/wenu/charts",
-      "description": "Matplotlib rendering for stellar magnitude–size legends."
+      "description": "Matplotlib rendering for stellar magnitude\u2013size legends."
     },
     {
       "path": "src/wenu/charts/magnitude_legend_style.py",
       "git_blob_sha": "9328fc55e2d465c8335486b72cf2273de6b5bdec",
       "as_is_directory": "src/wenu/charts",
-      "description": "Style configuration for stellar magnitude–size legends."
+      "description": "Style configuration for stellar magnitude\u2013size legends."
     },
     {
       "path": "src/wenu/charts/magnitude_legend_workflow.py",
       "git_blob_sha": "b270984666cd5b435fec7874e73135642b2d471d",
       "as_is_directory": "src/wenu/charts",
-      "description": "Chart-level workflow for stellar magnitude–size legends."
+      "description": "Chart-level workflow for stellar magnitude\u2013size legends."
     },
     {
       "path": "src/wenu/charts/modes.py",
@@ -7458,11 +7458,18 @@
   "independent_projects": [
     {
       "path": "packages/wenu_kernel",
-      "scope": "K2 native/static/catalogue-lookup direction and Cartesian states, certified/canonical reuse, explicit time and portable conformance. Production pins accepted dev8 for stellar, galaxy and open-cluster adapters; remaining K3 consumers and SDK freeze pending.",
+      "scope": "K2 state/time/provider services remain stdlib-only. KG.03 dev9 adds pure coordinate vocabulary and optional NumPy geometry records/frame/viewport/ring math with legacy aliases. Root pins geometry extra; projection/domain moves and full kernel freeze pending.",
       "source_paths": [
         "packages/wenu_kernel/src/wenu_kernel/__init__.py",
         "packages/wenu_kernel/src/wenu_kernel/conformance.py",
+        "packages/wenu_kernel/src/wenu_kernel/coordinates.py",
         "packages/wenu_kernel/src/wenu_kernel/errors.py",
+        "packages/wenu_kernel/src/wenu_kernel/geometry/__init__.py",
+        "packages/wenu_kernel/src/wenu_kernel/geometry/frame.py",
+        "packages/wenu_kernel/src/wenu_kernel/geometry/projected.py",
+        "packages/wenu_kernel/src/wenu_kernel/geometry/spherical.py",
+        "packages/wenu_kernel/src/wenu_kernel/geometry/topology.py",
+        "packages/wenu_kernel/src/wenu_kernel/geometry/viewport.py",
         "packages/wenu_kernel/src/wenu_kernel/kernel.py",
         "packages/wenu_kernel/src/wenu_kernel/providers.py",
         "packages/wenu_kernel/src/wenu_kernel/records.py",
@@ -10340,7 +10347,7 @@
   },
   "geometry_service_design": {
     "id": "KG.02",
-    "status": "design delivered for review; implementation and placement/optional-extra agreement pending",
+    "status": "accepted design through PR #283; KG.03 placement/optional-extra selected and implemented for acceptance",
     "base_commit": "887408aeff1731d0b1197a2226cd925f0681da44",
     "authority": "Fernando selected KG.02 with proceed on 2026-10-19 after accepted KG.01 and clean main cleanup.",
     "contract": "docs/developer/kernel_contract_k1.md#14-kg02-geometry-service-contracts-and-placement-plan",
@@ -10359,7 +10366,7 @@
       ],
       "optional_extra": "geometry: numpy>=1.26,<2; base dependencies remain empty",
       "application_dependency": "immutable tested kernel commit plus agreed extra; implementation-stage pin only",
-      "decision": "explicit user agreement required before affected packaging/dependency implementation"
+      "decision": "Selected by Fernando's KG.03 proceed after published KG.02 plan and clean main e0d56204; roadmap revision 35 records authority."
     },
     "findings_resolution": {
       "KG01.F1": "mathematical domain helpers move to kernel domain; magnitude/style/label helpers remain at Wenu owner",
@@ -10372,5 +10379,38 @@
     "runtime_changes": false,
     "dependency_changes": false,
     "snapshot_changes": false
+  },
+  "geometry_service_implementation": {
+    "id": "KG.03",
+    "status": "implemented for acceptance; complete Mac gate pending",
+    "base_commit": "e0d5620404d1b49d32158f617226667b080729f6",
+    "kernel_commit": "6d630885ab70c9b5bc6b40ceeaed2dcf90342bdc",
+    "kernel_version": "0.0.0.dev9",
+    "base_dependencies": [],
+    "optional_geometry_extra": [
+      "numpy>=1.26,<2"
+    ],
+    "canonical_modules": [
+      "wenu_kernel.coordinates",
+      "wenu_kernel.geometry",
+      "wenu_kernel.geometry.spherical",
+      "wenu_kernel.geometry.projected",
+      "wenu_kernel.geometry.frame",
+      "wenu_kernel.geometry.viewport",
+      "wenu_kernel.geometry.topology"
+    ],
+    "compatibility": "Same class/enum/constant objects exported by Wenu facades; source and observer factories retained; Milky Way ring helper delegates existing numerical body.",
+    "numerical_change": false,
+    "source_bytes_change": false,
+    "snapshot_schema_change": false,
+    "tests": {
+      "gate": "kernel-geometry-records",
+      "local_passed": 235,
+      "local_blocked": 1,
+      "blocked_reason": "Circumpolar LMC integration requires absent de440s.bsp; standard JPL download fails certificate validation in execution environment.",
+      "sdk_cases_passed": 205,
+      "metadata": "Actual isolated installed kernel wheel and root wheel/sdist/editable consumers passed; class identity, old pickle paths, aliases, ring octant/complement and source-free snapshots covered."
+    },
+    "remaining": "KG.04 projections/clipping/domain math not moved; KG.05 full-service integration and KG.06\u2013KG.07 completed-K audit/corrections remain pending."
   }
 }

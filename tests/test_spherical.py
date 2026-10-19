@@ -41,6 +41,44 @@ def test_grid_rejects_component_in_another_coordinate_system() -> None:
         )
 
 
+def test_kernel_geometry_aliases_preserve_identity_aliasing_and_pickle_paths():
+    import importlib
+    import pickle
+    from wenu_kernel import coordinates as vocabulary
+    from wenu import coordinates as legacy_vocabulary
+    from wenu.geometry import SphericalFrame
+    for module_name, names in {
+        'spherical': ('SphericalPoints','SphericalCurves','SphericalPolygons','SphericalGrid'),
+        'projected': ('ProjectedPoint','ProjectedPoints','ProjectedCurve','ProjectedCurves',
+                      'ProjectedPolygon','ProjectedPolygons','ProjectedGrid'),
+        'frame': ('SphericalCoordinates','SphericalFrame'),
+        'viewport': ('Viewport',),
+    }.items():
+        legacy = importlib.import_module('wenu.geometry.' + module_name)
+        canonical = importlib.import_module('wenu_kernel.geometry.' + module_name)
+        for name in names:
+            cls = getattr(canonical, name)
+            assert getattr(legacy, name) is cls
+            assert getattr(importlib.import_module('wenu.geometry'), name) is cls
+            assert pickle.loads(pickle.dumps(cls)) is cls
+            old = ('cwenu.geometry.' + module_name + '\n' + name + '\n.').encode()
+            assert pickle.loads(old) is cls
+    for name in ('CoordinateSpec','PositionStatus','GENERIC_SPHERICAL_SPEC'):
+        assert getattr(legacy_vocabulary,name) is getattr(vocabulary,name)
+    assert pickle.loads(b'cwenu.coordinates\nCoordinateSpec\n.') is vocabulary.CoordinateSpec
+    longitude = np.array([10.,20.]); nested = np.array([False,True])
+    metadata = {'is_hole':nested}
+    value = SphericalPoints(longitude,[0.,1.],coordinate_spec=GENERIC_SPHERICAL_SPEC,
+                            ids=['star','PN'],metadata=metadata)
+    assert value.lon_deg is longitude and value.metadata is not metadata
+    assert value.metadata['is_hole'] is nested
+    assert pickle.loads(pickle.dumps(value)).coordinate_spec == value.coordinate_spec
+    frame = SphericalFrame(20.,40.,10.)
+    result = frame.transform(value.lon_deg,value.lat_deg)
+    restored = frame.inverse_transform(result.lon_deg,result.lat_deg)
+    np.testing.assert_allclose(restored.lon_deg,longitude,atol=1e-12)
+
+
 class TestSphericalPoints:
     def test_constructs_from_python_sequences(self) -> None:
         points = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,

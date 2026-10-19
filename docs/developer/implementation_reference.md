@@ -8,7 +8,31 @@ The [agreed service-kernel boundary](kernel_roadmap_v0.9.5.md#proposed-architect
 includes the existing geometry/topology/projection interfaces as shared services.
 The state SDK is one component. Product/domain consumers call the service needed;
 source contours need no artificial ObjectRecords or universal state-query wrapper.
-Existing API names/locations and algorithms are unchanged by this documentation.
+KG.03 keeps existing Wenu API names as same-object kernel aliases. Numerical
+algorithms remain unchanged; explicit canonical geometry imports no longer
+require importing the Wenu application.
+
+## Shared kernel geometry records
+
+Kernel dev9 exposes CoordinateSpec, PositionStatus and GENERIC_SPHERICAL_SPEC
+from `wenu_kernel.coordinates` without NumPy or Wenu. Explicit
+`wenu_kernel.geometry` imports provide SphericalPoints/Curves/Polygons/Grid,
+ProjectedPoint(s)/Curve(s)/Polygon(s)/Grid, SphericalFrame,
+SphericalCoordinates and Viewport using the optional NumPy geometry extra.
+The existing leaf namespaces remain available under both canonical and legacy
+names, with identical class objects. Source/observer factories and
+ObservationContext remain in `wenu.coordinates`.
+
+`wenu_kernel.geometry.topology.ring_interior(coordinates, pole_winding)`
+retains the existing degree-input north-pole outline convention and returns the
+filled-side boolean and area in steradians. The source adapter still chooses
+the winding interpretation. Writable-array and shallow-metadata semantics remain
+unchanged; these values are not immutable SDK state batches.
+
+Kernel implementation commit: `6d630885ab70c9b5bc6b40ceeaed2dcf90342bdc`.
+Root packaging selects its `geometry` extra. State SDK imports stay stdlib-only;
+geometry imports require no Wenu/Astropy/Skyfield/Matplotlib. No canonical kernel
+projection/domain API ships in this slice; those moves remain KG.04.
 
 ## Canonical public imports
 

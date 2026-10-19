@@ -10,6 +10,7 @@ from wenu.coordinates import PositionStatus
 from wenu.coordinates import observer_altaz_spec, icrs_catalogue_spec
 
 from wenu.geometry.spherical import SphericalPolygons
+from wenu_kernel.geometry.topology import ring_interior
 from wenu.resources import milky_way_isophote_path
 from wenu.sky.observed_cache import (
     icrs_curve_arrays_to_altaz,
@@ -244,26 +245,5 @@ class MilkyWayIsophotes(SkyLayer):
 
 
 def _native_ring_interior(coordinates, pole_winding):
-    """Resolve the catalogue's filled side and its spherical area.
-
-    Longitude-winding rings enclose the opposite side of their bounded
-    north-pole planar outline. Ordinary catalogue rings enclose that outline.
-    These are intrinsic ring properties, independent of the chart pole.
-    """
-    lon, lat = np.radians(coordinates).T
-    cosine = np.cos(lat)
-    vectors = np.column_stack((
-        cosine * np.cos(lon), cosine * np.sin(lon), np.sin(lat)
-    ))
-    x = -vectors[:, 1] / (1.0 + vectors[:, 2])
-    y = vectors[:, 0] / (1.0 + vectors[:, 2])
-    signed_outline = np.sum(x * np.roll(y, -1) - y * np.roll(x, -1))
-    left = bool(signed_outline > 0.0) != bool(pole_winding)
-    following = np.roll(vectors, -1, axis=0)
-    # Oriented triangle solid angles with the native north pole.
-    left_area = np.sum(2.0 * np.arctan2(
-        np.cross(vectors, following)[:, 2],
-        1.0 + vectors[:, 2] + following[:, 2]
-        + np.sum(vectors * following, axis=1),
-    )) % (4.0 * np.pi)
-    return left, float(left_area if left else 4.0 * np.pi - left_area)
+    """Preserve the legacy source adapter seam for the shared ring math."""
+    return ring_interior(coordinates, pole_winding)

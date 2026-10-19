@@ -15,6 +15,79 @@ from wenu import resources
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def test_geometry_kernel_wheel_isolated_imports_metadata_and_numeric_consumer(tmp_path):
+    """Installed geometry must not borrow Wenu or an ambient SDK checkout."""
+    import importlib.util
+    from email.parser import Parser
+    from packaging.requirements import Requirement
+    from zipfile import ZipFile
+    project = tmp_path / 'kernel-project'
+    shutil.copytree(ROOT / 'packages/wenu_kernel', project,
+        ignore=shutil.ignore_patterns('build','dist','*.egg-info','__pycache__','tests'))
+    wheels = tmp_path / 'wheels'; wheels.mkdir()
+    build = subprocess.run([sys.executable,'-m','pip','wheel','--no-deps',
+        '--no-build-isolation','--wheel-dir',str(wheels),str(project)],
+        cwd=tmp_path,capture_output=True,text=True)
+    assert build.returncode == 0, build.stdout + build.stderr
+    wheel = next(wheels.glob('*.whl'))
+    with ZipFile(wheel) as archive:
+        metadata_file = next(p for p in archive.namelist() if p.endswith('.dist-info/METADATA'))
+        metadata = Parser().parsestr(archive.read(metadata_file).decode())
+        assert metadata['Version'] == '0.0.0.dev9'
+        requirements = [Requirement(r) for r in metadata.get_all('Requires-Dist',[])]
+        assert requirements and all(r.marker is not None for r in requirements)
+        assert all(not r.marker.evaluate({'extra':''}) for r in requirements)
+        enabled = [r for r in requirements if r.marker.evaluate({'extra':'geometry'})]
+        assert len(enabled) == 1 and enabled[0].name == 'numpy'
+        assert '1.26' in enabled[0].specifier and '2.0' not in enabled[0].specifier
+    installed = tmp_path / 'kernel-installed'
+    install = subprocess.run([sys.executable,'-m','pip','install','--no-deps','--no-index',
+        '--target',str(installed),str(wheel)],cwd=tmp_path,capture_output=True,text=True)
+    assert install.returncode == 0, install.stdout + install.stderr
+    # First process has no site packages at all, including NumPy.
+    base = r'''
+import sys
+sys.path.insert(0,sys.argv[1])
+from wenu_kernel import Kernel
+from wenu_kernel.coordinates import CoordinateSpec
+assert CoordinateSpec('icrs','ssb').epoch is None
+assert 'numpy' not in sys.modules and 'wenu' not in sys.modules
+'''
+    checked = subprocess.run([sys.executable,'-I','-S','-c',base,str(installed)],
+        cwd=tmp_path,capture_output=True,text=True)
+    assert checked.returncode == 0, checked.stdout + checked.stderr
+    numpy_root = Path(importlib.util.find_spec('numpy').origin).resolve().parent.parent
+    numeric = r'''
+import importlib.abc, pathlib, sys
+sys.path[:0]=sys.argv[1:3]
+class Block(importlib.abc.MetaPathFinder):
+    def find_spec(self,fullname,path=None,target=None):
+        if fullname.split('.')[0] in ('wenu','astropy','skyfield','matplotlib','pandas','spiceypy'):
+            raise AssertionError(fullname)
+sys.meta_path.insert(0,Block())
+import wenu_kernel, numpy as np
+assert pathlib.Path(wenu_kernel.__file__).is_relative_to(pathlib.Path(sys.argv[1]))
+from wenu_kernel.coordinates import GENERIC_SPHERICAL_SPEC
+from wenu_kernel.geometry import SphericalPolygons, SphericalFrame, ProjectedPoints
+from wenu_kernel.geometry.topology import ring_interior
+ring=np.array([[0.,0.],[90.,0.],[0.,90.]])
+area=ring_interior(ring,False)[1]
+assert np.isclose(area,np.pi/2,atol=1e-14)
+assert np.isclose(ring_interior(ring,True)[1],4*np.pi-area,atol=1e-14)
+polygons=SphericalPolygons((ring[:,0],ring[::-1,0]),(ring[:,1],ring[::-1,1]),
+    coordinate_spec=GENERIC_SPHERICAL_SPEC,ids=['outer','hole'],
+    metadata={'is_hole':np.array([False,True]),'compound_id':np.array([0,0])})
+assert polygons.metadata['is_hole'].tolist()==[False,True]
+frame=SphericalFrame(25.,45.,10.)
+q=frame.transform([10.,20.],[30.,40.]);p=frame.inverse_transform(q.lon_deg,q.lat_deg)
+assert np.allclose(p.lon_deg,[10.,20.]) and np.allclose(p.lat_deg,[30.,40.])
+assert ProjectedPoints([0.,np.nan],[0.,1.]).finite.tolist()==[True,False]
+'''
+    checked = subprocess.run([sys.executable,'-I','-S','-c',numeric,
+        str(installed),str(numpy_root)],cwd=tmp_path,capture_output=True,text=True)
+    assert checked.returncode == 0, checked.stdout + checked.stderr
+
+
 def _bundle(root, domain, *, criteria=True):
     """Synthetic accepted data/evidence; no provider capture is claimed."""
     directory = root / domain
@@ -331,8 +404,9 @@ def test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_over
             requirements = [Requirement(value) for value in metadata.get_all('Requires-Dist', [])]
             sdk = [value for value in requirements if value.name.replace('_', '-').lower() == 'wenu-kernel']
             assert len(sdk) == 1
+            assert sdk[0].extras == {"geometry"}
             assert sdk[0].url == ('git+https://github.com/fselman/wenu.git@'
-                '9dd1909f36986f8c8aa7e2a309427f7ce6ef0ee4#subdirectory=packages/wenu_kernel')
+                '6d630885ab70c9b5bc6b40ceeaed2dcf90342bdc#subdirectory=packages/wenu_kernel')
         installed = tmp_path / f'installed_{i}'
         result = subprocess.run([sys.executable, '-m', 'pip', 'install', '--no-deps',
             '--target', str(installed), str(wheel)], cwd=tmp_path, capture_output=True, text=True)
