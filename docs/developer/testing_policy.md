@@ -5,6 +5,24 @@ contracts/consumers. A complete production run is a release/composition gate,
 not a prerequisite for every production edit. This supersedes the blanket
 full-suite rule used through PR #244. No numerical or visual oracle is removed.
 
+## Shared-service kernel boundary checks
+
+The [agreed kernel](kernel_roadmap_v0.9.5.md#proposed-architecture) contains cohesive
+state/resource, coordinate/realization, geometry/topology and projection services.
+Test each service with only its necessary dependencies: projection tests need no
+stellar catalogue or renderer, catalogue admission needs no page export, and the
+state SDK retains its independent contract gate. Integration/visual tests verify
+composition separately. Pure geometry and output-specific preparation may currently
+share files; assess actual responsibility and imports rather than package labels.
+No generic service may require concrete catalogue/product/renderer implementations.
+
+Accepted bounded K receipts remain valid. An ownership/diagram correction alone
+warrants documentation checks, not wholesale numerical or SDK reruns. Run affected
+service, dependency/installation and composition gates when implementation changes.
+Do not create duplicate geometry interfaces or state-query proxies merely to make
+a service appear routed through the kernel. Final K3/K5 closure covers appropriate
+public service use, not a universal requirement to invoke KernelSession.evaluate.
+
 ## Choosing a gate
 
 1. Review the full diff: implementation, tests/fixtures, resources, configuration,
@@ -1014,3 +1032,13 @@ checks passed. Documentation: 33 passed; three archive-dependent checks require
 files absent from the execution copy. Active links/anchors and all 73 preserved
 archive blob hashes were verified against GitHub. Complete Mac documentation and
 supernova-remnant-routing acceptance remain pending.
+
+## Service-kernel architecture clarification receipt
+
+The 2026-10-19 agreed-boundary documentation changes no runtime/SDK code, source
+resource, dependency, build, schema or test selection. Local documentation: 33
+cases passed; three archive-dependent checks require omitted execution-copy files.
+Active links/anchors (including the state SDK README) and all 73 preserved archive
+blob hashes were verified against the remote Git tree. Full Mac documentation
+acceptance remains pending. Numerical/SDK/production reruns are not warranted by
+this documentation-only change; accepted bounded K receipts remain intact.

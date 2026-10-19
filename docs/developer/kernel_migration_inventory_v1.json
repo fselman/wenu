@@ -9075,7 +9075,7 @@
   },
   "supernova_remnant_kernel_routing": {
     "milestone": "K3.15",
-    "status": "Implemented candidate; Mac acceptance pending",
+    "status": "Accepted PR #279, main 21653198502b2b6687af8d82556a7f98922eb4fd; 126 focused Mac, 36 documentation and eight tooling cases passed",
     "base": "42adb84d1fc1323ad6a77d581a4803cae4bdb4da",
     "owner": "src/wenu/objects/supernova_remnants.py",
     "mechanics": "SNR-owned lookup facade to shared source-bound direction/state-table/outline/cache owners; own semantic/model/provider/resource identity",
@@ -9089,5 +9089,41 @@
     ],
     "gate": "supernova-remnant-routing",
     "limits": "Preserve Green signed identities, radio diameters/flux, unknown PA circle policy, selection and appearance; no compact-object substitution, motion/expansion, source bytes, SDK, build, schema, observer/projection/renderer or diffuse migration"
+  },
+  "diffuse_geometry_assessment": {
+    "milestone": "K3.16 / M9",
+    "base": "21653198502b2b6687af8d82556a7f98922eb4fd",
+    "status": "Source assessment retained; service-kernel boundary agreed by Fernando 2026-10-19; runtime unchanged",
+    "owners": [
+      "src/wenu/sky/milky_way.py",
+      "src/wenu/sky/magellanic_clouds.py",
+      "src/wenu/sky/native_snapshot.py",
+      "packages/wenu_kernel/src/wenu_kernel/records.py",
+      "packages/wenu_kernel/src/wenu_kernel/kernel.py"
+    ],
+    "evidence": "MW provenance pins source blob/bytes but GeoJSON lacks frame/epoch declarations. Cloud GeoJSON declares ICRS/degree axes, levels/fractions and source sidecar; loaders/snapshots omit full source properties. StateBatch permits only direction/Cartesian states, not compound rings.",
+    "proposal": "Default separate SDK geometry-query/snapshot-version prerequisite withdrawn. Reuse existing public geometry services first; M9 runtime envelope/legacy transport remains to design. New dispatch only for demonstrated discovery/lifetime need with agreement.",
+    "assessment_gate": "documentation",
+    "runtime_changes": false
+  },
+  "service_kernel_architecture": {
+    "decision_date": "2026-10-19",
+    "authority": "Fernando clarified spherical geometry/projections as kernel services and requested documenting these decisions",
+    "kernel_services": [
+      "shared contracts/provider interfaces",
+      "state/time/resource services",
+      "generic coordinate/observer realization",
+      "spherical geometry/topology",
+      "mathematical domain guards/clipping/projections/projected geometry"
+    ],
+    "outside_generic_kernel": [
+      "catalogue-specific decoding and source qualification",
+      "object-specific physical models and numerical backends",
+      "product composition/selection/labels/styles/layout",
+      "renderer/export implementations"
+    ],
+    "implemented_component": "packages/wenu_kernel state SDK; existing geometry/projection services remain in Wenu namespaces",
+    "prior_k_disposition": "Keep accepted bounded state/admission/routing/cache/science/visual receipts; no blanket redo. Review actual service contracts/dependencies under existing K3/K5 obligations.",
+    "runtime_changes": false
   }
 }

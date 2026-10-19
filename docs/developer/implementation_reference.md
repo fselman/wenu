@@ -4,6 +4,12 @@
 forward API specification. [Source map](source_tree.md) and
 [scientific contracts](scientific_contracts.md) supply the detailed owners.
 
+The [agreed service-kernel boundary](kernel_roadmap_v0.9.5.md#proposed-architecture)
+includes the existing geometry/topology/projection interfaces as shared services.
+The state SDK is one component. Product/domain consumers call the service needed;
+source contours need no artificial ObjectRecords or universal state-query wrapper.
+Existing API names/locations and algorithms are unchanged by this documentation.
+
 ## Canonical public imports
 
 ```python
