@@ -1394,3 +1394,12 @@ and epoch gaps remain unknown; associated central-star positions/motions are not
 substituted. Catalogue diameter/flux measurements retain metadata meaning and do
 not become display glyph size or expansion. The existing coordinate/observer
 mathematics is unchanged; no motion or distance-dependent correction is added.
+
+### Supernova-remnant lookup ownership
+
+K3.15 routes Green catalogue radio centres through shared source-bound lookup
+before native outlines/labels and observed cache reuse. Measured major/minor radio
+diameters and unknown PA keep their existing equal-area circle interpretation;
+no celestial orientation is fabricated. Signed designations and radio flux
+metadata retain their meaning. Associated compact-object motion is not substituted
+for centre motion. No new coordinate transform, propagation or expansion is added.

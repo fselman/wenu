@@ -562,8 +562,8 @@ its returned centre arrays, ordered IDs and immutable metadata enter cache ident
 Galaxy `_observed_point_source_key` similarly binds the already-queried centre
 values. Changed kernel states invalidate a warm observation cache, and failed
 admission/query propagates even after cache fill. The generic NonStellar owner now opts into these hooks under K3.12;
-the dedicated SNR family preserves its existing path. K3.13 opts the globular
-owner into the same mechanics with its own identity. No transformation or ellipse mathematics
+K3.13–K3.15 add globular, PN and SNR facades to the same mechanics with their
+own source/provider identities. No transformation or ellipse mathematics
 changes. Cold and restored galaxies use these same methods without a schema change.
 
 Centre, angular semiaxes and PA form the domain shape description. Catalogue
@@ -1381,8 +1381,7 @@ and restored sources all query the provider. Failed source admission or state
 evaluation propagates after cache fill; source coordinates are not a recovery
 route. Harris half-light diameters, structural metadata, source/active selection,
 common-name policy, sampling and glyph/observer mathematics stay with their existing
-owners. The PN route is implemented under K3.14 below; SNR routing and physical motion
-remain separate pending work.
+owners. PN and SNR routes are described below; physical motion remains separate pending work.
 
 ## Planetary-nebula kernel lookup
 
@@ -1402,3 +1401,21 @@ order/duplicates and empty-symbol behavior remain unchanged. No labels-only flag
 or outline sampling is added to the PN API: symbols already carry their labels.
 Failed admission/state queries propagate even after cache fill; no direct-source
 fallback. Snapshot transport and renderer symbol scaling are unchanged.
+
+## Supernova-remnant kernel lookup
+
+K3.15 enables SupernovaRemnants._uses_catalogue_lookup and supplies an SNR-owned
+_direction_provider facade to the shared NonStellar lookup owner. The semantic
+type is supernova-remnant; provider/model/resource IDs are SNR-owned. Source-bound
+admission, copied rows and metadata identity, optional source epochs, evaluation
+anchor and vector decoding use accepted shared mechanics. Physical source gaps
+remain explicit; no source frame/origin/epoch is inferred.
+
+position, native realize (including labels_only), spherical_centers and observed
+spherical_geometry query returned centres. The inherited state-table and outline
+hooks query before observed cache access and bind state values/IDs/metadata into
+cache identity. The outline builder consumes the same queried batch without a
+second lookup. Constructor/per-call selection and signed semantic keys are
+unchanged. Green radio axes/flux, unknown PA circle policy, morphology, sampling
+and renderer appearance remain with existing owners. Restored source snapshots
+use the same adapter without schema changes or hidden state/fallback.

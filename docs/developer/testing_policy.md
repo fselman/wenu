@@ -990,3 +990,27 @@ Documentation: 33 passed; three archive checks need files absent from the execut
 copy. Active links/anchors and all 73 preserved archive blob hashes were verified
 against GitHub. Complete Mac documentation and planetary-nebula-routing acceptance
 remain pending.
+
+## Supernova-remnant routing gate
+
+K3.15 uses `python tools/run_test_gate.py supernova-remnant-routing --run` with
+plugin autoload disabled. Changed SNR owner tests cover real returned directions
+through selected native/label/observed consumers after cache warming, preservation
+of signed identities, equal-area circle/radio metadata and own provider identity
+for all 310 Green rows. Source-admission/kernel faults must reach every public
+route after warm centre/outline caches. Inherited nonstellar, position and cache
+owners remain selected. Cold/restored native SNR labels/outlines and real atlas
+legacy/cold/restored PNG pixels with PDF/SVG exports verify compatibility; restored
+warm refusal, catalogue row/mask/unit transport and source-free fresh-process
+resume remain selected. Reuse accepted shared provider conformance, numerical
+science, installation and atlas lifetime evidence. No SDK, source resource, build,
+schema, observer/projection/renderer or diffuse change warrants full SDK/production
+repetition. Run documentation and eight tooling cases alongside this gate.
+
+Local Python 3.12 evidence: 126 focused cases passed in 34.48 s and eight tooling
+cases passed. The Vela-region SNR atlas page retained identical legacy/cold/restored
+PNG pixels with PDF/SVG exports; restored warm refusal and source-free process
+checks passed. Documentation: 33 passed; three archive-dependent checks require
+files absent from the execution copy. Active links/anchors and all 73 preserved
+archive blob hashes were verified against GitHub. Complete Mac documentation and
+supernova-remnant-routing acceptance remain pending.

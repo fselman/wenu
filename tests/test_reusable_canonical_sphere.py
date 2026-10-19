@@ -1669,3 +1669,72 @@ def test_kernel_pn_routes_preserve_accepted_atlas_pixels(native_snapshot_case, t
 
     np.testing.assert_array_equal(imread(tmp_path/'kernel-PN'/name),
                                   imread(tmp_path/'saved-PN'/name))
+
+
+def test_restored_snr_warm_routes_do_not_hide_kernel_refusal(native_snapshot_case, monkeypatch):
+    from astropy.coordinates import AltAz, EarthLocation
+    from astropy.time import Time
+    from wenu.sky.native_snapshot import read_native_sky_snapshot
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    from wenu_kernel import KernelSession
+    _, destination, _, _ = native_snapshot_case
+    layer = read_native_sky_snapshot(destination).make_sky().supernova_remnants
+    original = layer.catalogue_metadata.to_record()
+    assert layer.require_catalogue_lookup_metadata().to_record() == original
+    observer = SimpleNamespace(altaz_frame=AltAz(obstime=Time('2026-08-16T01:00:00'),
+        location=EarthLocation.from_geodetic(-71.5, -33., 52.)))
+    selected = ['G263.9-03.3']
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    layer.spherical_centers(observer, selected=selected)
+    layer.spherical_geometry(observer, selected=selected, samples=12)
+    def refuse(*args, **kwargs):
+        raise RuntimeError('synthetic restored SNR refusal')
+    monkeypatch.setattr(KernelSession, 'evaluate', refuse)
+    for action in (lambda: layer.position(),
+                   lambda: layer.realize(context, None, selected=selected),
+                   lambda: layer.realize(context, None, selected=selected, labels_only=True),
+                   lambda: layer.spherical_centers(observer, selected=selected),
+                   lambda: layer.spherical_geometry(observer, selected=selected, samples=12)):
+        with pytest.raises(RuntimeError, match='restored SNR refusal'):
+            action()
+    assert layer.catalogue_metadata.to_record() == original
+
+
+def test_kernel_snr_routes_preserve_accepted_atlas_pixels(native_snapshot_case, tmp_path, monkeypatch):
+    from matplotlib.image import imread
+    from wenu.atlas_design import AtlasBandTiling
+    from wenu.charts.atlas_publication import AtlasChartPresentation
+    from wenu.charts.request_generation import AtlasSheetChartRequest, generate_chart_request
+    from wenu.objects.supernova_remnants import SupernovaRemnants
+    from wenu.objects.nonstellar import NonStellar
+    import numpy as np
+    from wenu.sky.native_snapshot import read_native_sky_snapshot
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    raw, destination, _, sky = native_snapshot_case
+    saved = read_native_sky_snapshot(destination).make_sky()
+    for layer in (sky.supernova_remnants, saved.supernova_remnants):
+        layer.require_catalogue_lookup_metadata()
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    for options in (dict(selected=["G263.9-03.3"]), dict(selected=["G263.9-03.3"], labels_only=True)):
+        _assert_native_geometry_equal(sky.supernova_remnants.realize(context, None, **options),
+                                      saved.supernova_remnants.realize(context, None, **options))
+    atlas = AtlasBandTiling.from_json(raw.decode())
+    row = sky.supernova_remnants.catalog[sky.supernova_remnants.catalog["identifier"] == "G263.9-03.3"][0]
+    identifier = atlas.primary_sheet_id(float(row["ra_deg"]), float(row["dec_deg"]))
+    sheet = next(sheet for sheet in atlas.geometry.sheets if sheet.sheet_id == identifier)
+    presentation = AtlasChartPresentation(layers=('supernova_remnants',), formats=('png', 'pdf', 'svg'), dpi=36)
+    with monkeypatch.context() as baseline:
+        baseline.setattr(SupernovaRemnants, '_native_centres', lambda self, table, instant=None:
+            (np.asarray(table['ra_deg'], dtype=float), np.asarray(table['dec_deg'], dtype=float)))
+        generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
+            presentation, tmp_path/'legacy-SNR'), sky=sky)
+    generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
+        presentation, tmp_path/'kernel-SNR'), sky=sky)
+    generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
+        presentation, tmp_path/'saved-SNR'), sky=saved)
+    name = f'chart-{sheet.number:02d}.png'
+    np.testing.assert_array_equal(imread(tmp_path/'legacy-SNR'/name),
+                                  imread(tmp_path/'kernel-SNR'/name))
+
+    np.testing.assert_array_equal(imread(tmp_path/'kernel-SNR'/name),
+                                  imread(tmp_path/'saved-SNR'/name))
