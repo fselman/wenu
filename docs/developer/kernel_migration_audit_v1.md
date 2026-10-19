@@ -30,7 +30,7 @@ measurement-epoch defaults; other nonstellar source qualification remains open.
 | M1 / fixed | `objects/stars.py` and `stellar_state.py` repeated epoch, source edition and provenance, despite `epoch_year` and the packaged Hipparcos ReadMe | Ingest through `stellar_catalogue.py`; metadata document binds exact source bytes, preserves original fields and mirrors a validated immutable record. Native geometry and kernel queries obtain their epoch/edition/provenance from it. Missing or conflicting metadata is refused. | `test_stellar_state.py`, stellar/public-position owners |
 | M2 / fixed | `sky/constellation_lines.py` and `sky/constellation_labels.py` supplied their own Hipparcos epoch/provider descriptions | Native endpoints inherit returned position specifications; label metadata comes from the stellar interface. Native and observed label inputs now use the public stellar state interface through accepted K3.07/K3.08. | Native constellation geometry and frozen label/gap consumers |
 | M3 / fixed | `sky/native_snapshot.py` embedded J1991.25 both in writing and admission and did not persist the source metadata envelope | New schema v3 persists metadata, verifies it against source identity/row epochs and restores the same runtime record. v1/v2 compatibility uses an explicit source-bound packaged profile; unidentified legacy sources are refused. Nonstellar snapshot assumptions remain M6. | Snapshot admission/corruption, v1/v2 compatibility, source-free process and serial/spawn consumers |
-| M4 / shared-default candidate, pending acceptance | `icrs_catalogue_spec` now defaults to `epoch=None`; `ICRS_ASTROMETRIC_SPEC` no longer assigns J2000.0. Explicit admitted stellar and cluster epochs remain unchanged | ICRS axes alone establish no measurement epoch. Shared raw point/curve observation helpers, celestial north, constructed points, native grids and transformed B1875 boundary outputs inherit unknown epoch. Stellar/open-cluster source owners still supply their own epochs; diffuse geometry already supplies None. No numerical frame transform or source bytes change. | `catalogue-coordinate-defaults`: vocabulary/transform/point/grid/boundary/regional callers plus nonstellar and snapshot admission |
+| M4 / accepted PR #273 | `icrs_catalogue_spec` now defaults to `epoch=None`; `ICRS_ASTROMETRIC_SPEC` no longer assigns J2000.0. Explicit admitted stellar and cluster epochs remain unchanged | ICRS axes alone establish no measurement epoch. Shared raw point/curve observation helpers, celestial north, constructed points, native grids and transformed B1875 boundary outputs inherit unknown epoch. Stellar/open-cluster source owners still supply their own epochs; diffuse geometry already supplies None. No numerical frame transform or source bytes change. | `catalogue-coordinate-defaults`: vocabulary/transform/point/grid/boundary/regional callers plus nonstellar and snapshot admission |
 | M5 / mechanism implemented; source gaps open | `objects/nonstellar.py` preserves source fields/metadata/units and mirrors declared coordinate facts in a frozen `NonStellarCatalogueMetadata` record bound to input bytes. Native and observed specifications consume it; source provider identity replaces copied labels. Conflicting declarations and strict incomplete admission fail before publication | Missing facts remain null and discoverable in `missing_fields`; `require_complete()` and strict load refuse them. Legacy charts retain the explicit `legacy-unverified-catalogue-encoding` model. Actual source frame/origin and model-required epoch/scale gaps must be resolved before physical provider closure. Galaxy static directions do not require a measurement epoch. Their centre consumers now use the kernel with an explicitly unknown origin when missing; shape axes/PA remain above it. Compatibility is not evidence of accuracy. | `nonstellar-admission`: owner regressions, real family geometry, cold/saved/source-free and public CLI consumers |
 | M6 / header defaults fixed; legacy interpretation explicit | Snapshot v5 derives fixed headers from each provider, stores nonstellar records, checks source identity/table metadata/units/header agreement and retains the separate open-cluster row contract | Readers admit v1-v4 historical formats without treating their J2000 headers as measurement epochs. Missing legacy units/digests are not reconstructed as facts. Resource gaps from M5 remain open; the shared coordinate helper correction is verified separately under M4. | Existing corruption owner plus nonstellar record/header conflicts, actual known/unknown epoch round trips and legacy admission |
 | M7 / medium, open | `sky/ceres.py::CERES_SOLUTION` embeds Horizons solution number/date, osculating epoch and quality fields; `minor_body_resources.py` treats this descriptor as the expected identity, while newer comet identities are manifest-derived | A Ceres resource update requires a code edit and can diverge from its acquisition evidence. Migrate the complete solution identity to a versioned data manifest; preserve the existing descriptor-to-manifest/SPK digest and frame checks. | Minor-body resources/ephemeris and Ceres public state/track owners |
@@ -80,6 +80,71 @@ The user-selected galaxy chart model is explicitly static; measurement
 epoch/scale are provenance rather than admission prerequisites for that model.
 Other required source facts remain open and are refused in strict mode. Legacy chart
 compatibility is an explicitly labelled interpretation, not a metadata repair.
+
+### M5 source assessment and proposed admission distinction, 2026-10-19
+
+**Assessment base:** accepted main `2df8954b15ebbe36cddaf977355efdd53a65f2a8`.
+The shared-default correction is accepted through PR #273: 248 focused Mac,
+36 documentation and eight tooling cases passed. This assessment changes no
+catalogue bytes, runtime admission rule, SDK contract or numerical calculation.
+
+Primary evidence rechecked for the actual packaged editions:
+
+| Source | Supported declaration | Limit of this evidence |
+|---|---|---|
+| [HEASARC Messier](https://heasarc.gsfc.nasa.gov/w3browse/all/messier.html), RA/Dec definitions | Coordinates are expressed in the requested equinox | No common measurement date/scale is established by that wording; an equinox is not a motion-reference epoch |
+| [HEASARC Harris](https://heasarc.gsfc.nasa.gov/w3browse/all/globclust.html), RA/Dec definitions | Original cluster-centre coordinates use equinox 2000 | This is not an explicit common measurement epoch or a new precision ICRS frame solution |
+| [OpenNGC v20260501 guide](https://github.com/mattiaverga/OpenNGC/blob/v20260501/NGC_guide.txt) and [README](https://github.com/mattiaverga/OpenNGC/blob/v20260501/README.md) | Guide labels RA/Dec with J2000 epoch terminology; README identifies heterogeneous inputs, usually NED for coordinates, with per-object source information | Retain the source's terminology. These documents do not establish one common observation date/time scale or independently qualify every row's frame/origin. Pinned blobs remain `7e5e1447c3cccd54cd5cbebb29387e5b30b05cc1` and `11b2668f5aacd1224e932094024612435528d879` |
+| [HEASARC Strasbourg-ESO PN](https://heasarc.gsfc.nasa.gov/W3Browse/nebula-catalog/plnebulae.html), RA/Dec and Ref_Position definitions | Certain/probable PN originally have 1950 equatorial coordinates, while possible PN originally have 2000 coordinates; the service presents a requested equinox and retains positional references | Wenu selects certain/probable PN. Its preserved header saying ICRS/J2000 as served by TAP is acquisition metadata, not proof supplied by this overview of a precision ICRS conversion. Do not silently switch to B1950 or assert the existing numbers are wrong; conversion provenance requires separate evidence |
+| [Green 2024 October documentation](https://www.mrao.cam.ac.uk/surveys/snrs/snrs.info.html) and [CDS VII/297 ReadMe](https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/VII/297?format=html&tex=true) | J2000 equatorial positions identify source centroids, generally from radio maps, with resolution depending on remnant size | These are not automatically central-star/neutron-star coordinates or a centre-of-mass motion solution. A radio-centroid position cannot acquire a compact object's proper motion merely by cross-identification |
+
+The [HEASARC coordinate-converter help](https://heasarc.gsfc.nasa.gov/Tools/convcoord_help.html)
+uses FK5 for its J2000 option. That is evidence about that tool only; it does not
+establish the original TAP response's frame or justify rewriting Wenu's source
+records. No new TAP query, catalogue acquisition or coordinate conversion was
+performed. Initially failing raw GitHub/CDS URLs were recovered through the
+GitHub connector and the CDS HTML ReadMe; unavailable links were not treated as
+evidence. Existing packaged frame declarations remain preserved and unpromoted.
+
+**As-is admission:** `NonStellarCatalogueMetadata.missing_fields_for` requires
+frame and origin for both models, and additionally epoch/scale for its default
+source-epoch model. Galaxies already use a separate static-direction chart
+model, while the SDK/shared catalogue adapter already support catalogue lookup.
+Thus some remaining refusals concern the requirements of the selected model,
+not information that another documentation search can manufacture.
+
+**Proposed; awaiting Fernando's explicit agreement:** distinguish admission for
+baseline catalogue lookup from admission for physical propagation/parallax.
+This is an interpretation of how to complete K3.09, not an implemented policy.
+
+1. A catalogue lookup would return preserved positions through existing kernel
+   interfaces, retaining IDs, units, edition, byte binding, original reference
+   labels and known metadata. Missing measurement epochs remain unknown.
+   Incomplete reference evidence remains explicitly labelled compatibility
+   interpretation, never strict physical qualification or a fabricated origin.
+2. Motion/parallax admission would retain its model-required epoch/time scale,
+   qualified reference semantics, distance and motion requirements. No missing
+   input becomes zero, no new lookback interval is certified, and no expansion
+   or central-star/nebular-centroid substitution is introduced.
+3. Baseline routing could be accepted with those explicit limitations while the
+   unresolved physical qualification stays separately visible. This would not
+   claim that source facts have been recovered or automatically close K5, the
+   positional extension, or any other family's routing milestone.
+
+Alternative: retain the current stronger admission prerequisite and leave the
+remaining affected migration blocked pending independently qualified replacement
+astrometry or source-specific conversion evidence. Replacing sources or adding
+such science would itself need a bounded, separately agreed task; this assessment
+does not authorize it. Treating all J2000 labels as complete ICRS epoch/origin
+solutions is rejected because the retrieved evidence does not support that step.
+
+Before implementation, Fernando must select the policy and its bounded scope;
+then record the accepted decision in the roadmap and scientific contract. A
+future approved implementation gate would retain the current nonstellar/snapshot
+admission owners and add the affected lookup seam, missing-input refusal and
+native/observed appearance comparison. The SDK and source bytes would stay
+unchanged unless separately agreed. No new implementation gate or runtime
+milestone is activated by this documentation PR.
 
 Existing well-governed satellite/SPK/comet resource admission remains unchanged.
 

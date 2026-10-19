@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 22, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 23, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -32,8 +32,8 @@ new scientific features. As-built APIs remain in the
 ## Current position and next-item selection
 
 **Accepted runtime baseline:** main
-`d7ad99232f5653e3acdbef0b1fc79fa0fdca49fd`, PR #272. Its tree is identical to
-tested `e7b843b961ca79f37f3171ba3fbfaeaec8c84714`: 124 focused Mac tests,
+`2df8954b15ebbe36cddaf977355efdd53a65f2a8`, PR #273. Its tree is identical to
+tested `24f052479dad50bbfc0e3f733ee6333a46ecb7c7`: 248 focused Mac tests,
 36 documentation tests and 8 tooling tests passed. Fernando confirmed clean,
 synchronized main and branch cleanup. This is focused evidence, not a claim
 that every existing function has migrated or that a new full-suite run occurred.
@@ -44,8 +44,8 @@ that every existing function has migrated or that a new full-suite run occurred.
 | Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
 | Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
 | Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
-| Current authorized task | K3.09 shared coordinate defaults and explicit nonstellar admission gaps, selected by Fernando’s 2026-10-19 “proceed” |
-| Next runtime submilestone | **K3.09 selected.** Remove implicit shared J2000 measurement epochs; preserve explicit known epochs, missing source facts and snapshot lineage |
+| Current authorized task | K3.09 remaining source assessment, selected by Fernando’s 2026-10-19 “proceed”; document any policy proposal before runtime changes |
+| Next runtime submilestone | **No new runtime task activated.** K3.09 M4 accepted; M5 assessment proposes separating catalogue lookup from physical-motion admission, awaiting explicit agreement |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -71,6 +71,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 23: K3.09 M5 assessment | Fernando’s 2026-10-19 “proceed” after the remaining source-assessment proposal; clean main receipt at PR #273 | Documentation/evidence only. [Assessment and concrete proposal](kernel_migration_audit_v1.md#m5-source-assessment-and-proposed-admission-distinction-2026-10-19). Lookup versus physical-motion admission and baseline closure with explicit compatibility limits are proposed, not approved. No source, runtime, SDK or sequence change is authorized by this revision |
 | Revision 22: select K3.09 | Fernando’s 2026-10-19 “proceed” after the bounded K3.09 proposal; clean main receipt at PR #272 | Remove M4 shared implicit J2000 stamps without changing coordinates; audit and retain actual M5 missing source declarations and strict refusal; preserve known epochs and snapshot lineage. Gate: catalogue-coordinate-defaults with coordinate/point/grid/boundary callers and inherited nonstellar/snapshot admission tests. No source replacement, invented qualification, motion, SDK or renderer changes. K3.09 remains partial if M5 evidence is absent |
 | Revision 21: select K3.08 | Fernando’s 2026-10-19 “proceed” after the bounded observed-consumer proposal; clean main receipt at PR #271 | K3.05–K3.07 prerequisites accepted. Route existing star/figure/label observation inputs through returned kernel state, retaining observer/time, selection, Skyfield/Astropy methods and appearance. Gate: observed-stellar-routing, including changed-state/refusal after cache fill, owner regressions and real observed-output comparison. No Gaia, propagation, new physics, SDK or rendering changes |
 | Revision 20: select K3.07 | Fernando’s 2026-10-19 “Proceed” after the bounded native-label proposal | Implement K3.07 only, after accepted K3.05/K3.06. Preserve full-source membership, Serpens splitting, mean anchors, placement and appearance. Verify public-interface isolation, changed kernel results/refusal, native chart and saved-sky compatibility with the focused native-label gate; no observed migration, propagation, Gaia, projection or renderer changes |
@@ -525,7 +526,7 @@ map below ensures small/non-chart capabilities do not disappear in grouped rows.
 | K3.06 | Route native constellation figure endpoints through public stellar identities/states | Accepted PR #248; retain faint endpoints, topology, labels and line gaps |
 | K3.07 | Route native constellation-label anchor computation, preserving accepted placement | Accepted PR #271, main `23cba212`; 95 focused Mac cases, 36 documentation and 8 tooling cases passed; identical native pixels |
 | K3.08 | Route existing observed stellar/figure/label consumers through state and observation boundaries | Accepted PR #272, main `d7ad9923`; 124 focused Mac, 36 documentation and 8 tooling cases passed; existing Skyfield/Astropy methods retained |
-| K3.09 | Close nonstellar source admission/shared coordinate defaults and snapshot lineage without fabricated metadata | Partial: M4 shared-default correction implemented candidate, pending Mac acceptance; M5 source qualification stays open with strict refusal and documented gaps |
+| K3.09 | Close nonstellar source admission/shared coordinate defaults and snapshot lineage without fabricated metadata | Partial: M4 accepted PR #273; M5 primary-source assessment documented, missing facts and strict refusals retained; admission-policy distinction proposed, awaiting agreement |
 | K3.10 | Route galaxy centres/outline inputs/labels/public and saved consumers; close required source qualification | Partial: static kernel routes accepted; compatibility origin/frame gaps remain explicit |
 | K3.11 | Route open-cluster source lookup/public/native/observed inputs and restored sources with row epochs/masks/order | Accepted bounded lookup routes; new motion is tracked separately in AX |
 | K3.12 | Route generic nonstellar, Messier/Caldwell label-only/scientific points, identities and object-centre consumers | Pending; preserve independent catalogue membership/label policy; K3.09 prerequisite |

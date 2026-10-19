@@ -34,8 +34,10 @@ a full [K3 audit coverage map](kernel_roadmap_v0.9.5.md#k3-audit-coverage-map),
 and separate baseline/Gaia/positional-extension tracks. K3 is still partial;
 PR #269 completes AX.12, not K3 or the kernel freeze. K3.07 is accepted through
 PR #271. K3.08 observed stellar/figure/label routing is accepted through PR #272.
-K3.09 shared-default correction is selected and pending Mac acceptance;
-nonstellar source qualification remains open. Extra scope or changed agreed order must be discussed with Fernando,
+K3.09 shared-default correction is accepted through PR #273. Its remaining
+[source assessment and admission-policy proposal](kernel_migration_audit_v1.md#m5-source-assessment-and-proposed-admission-distinction-2026-10-19)
+are documented; physical source qualification remains open and policy changes
+await Fernando’s explicit agreement. Extra scope or changed agreed order must be discussed with Fernando,
 explicitly agreed and documented before implementation under the
 [mandatory agent rule](assistant_instructions.md#roadmap-control-mandatory-before-implementation).
 
@@ -81,7 +83,7 @@ record now validates declarations, exposes missing facts and controls geometry
 specifications and snapshot v5 headers. Strict admission refuses remaining source
 gaps; legacy charts retain explicitly unverified coordinate encoding. No automatic
 J2000 measurement epoch remains in those provider/snapshot paths. Resource metadata
-qualification remains open. The K3.09 candidate removes shared implicit J2000
+qualification remains open. Accepted K3.09 M4 removes shared implicit J2000
 measurement epochs; missing source facts stay unknown and strict admission
 continues to refuse them. Galaxies now use
 an explicit static-direction admission policy: measurement epoch/scale are
