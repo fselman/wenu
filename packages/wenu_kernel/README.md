@@ -3,16 +3,33 @@
 This separately installable project implements a bounded native-state subset of K2.
 It is one component of the [agreed shared-service kernel](../../docs/developer/kernel_roadmap_v0.9.5.md#proposed-architecture),
 whose target also includes reusable geometry/topology, coordinate/realization and
-projection services. Those existing Wenu services are not implemented in this
-wheel, and geometry consumers need not issue object-state queries. This scope
-clarification changes no SDK code, dependencies, imports or public state contract.
+projection services. KG.03 adds the existing geometry records/frame/viewport,
+pure coordinate vocabulary and explicit ring helper to dev9. Geometry consumers
+need not issue object-state queries. Projection/clipping/domain implementation
+remains in Wenu until KG.04; full service integration remains KG.05.
 It is not the K5 frozen SDK. Existing Wenu continues to use its current code;
 the accepted native stellar adapter uses its existing source-epoch subset.
 The SDK extension itself adds no numerical backend. Wenu now supplies a
 source-bound static galaxy direction consumer outside this package.
-Accepted dev8 adds catalogue lookup for incomplete source epochs; Wenu now
-pins that accepted SDK and supplies an open-cluster consumer outside this package.
+Accepted dev8 added catalogue lookup for incomplete source epochs; Wenu now
+pins the geometry-enabled dev9 SDK and supplies an open-cluster consumer outside this package.
 The source lookup preserves astrometry but performs no motion propagation.
+
+## Optional numerical geometry
+
+Install the existing distribution with its `geometry` extra to provide
+`numpy>=1.26,<2`. The base dependency list remains empty.
+`wenu_kernel.coordinates` is pure stdlib; `wenu_kernel.geometry` explicitly
+loads numerical records, rotations and viewports. Its topology leaf exports
+`ring_interior(coordinates, pole_winding)` with the unchanged native north-pole
+outline formula. Geometry imports no Wenu, concrete provider, observer backend
+or renderer. The root facade does not eagerly import geometry or NumPy.
+
+Legacy Wenu geometry imports re-export these same class objects. Mutable NumPy
+aliasing, shallow metadata and existing validation conventions are preserved;
+geometry values are not immutable physical state batches. The source adapter
+retains source ring interpretation. No geometry registry, projection move,
+snapshot version or additional numerical model is introduced.
 
 ## Implemented scope
 
