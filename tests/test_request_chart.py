@@ -278,3 +278,23 @@ def test_preparation_uses_explicit_observer_for_observerless_sphere(monkeypatch)
     prepare_chart_request(source, resolved, observer=explicit_observer)
 
     assert calls["observer"] is explicit_observer
+
+
+def test_binocular_target_coordinate_is_public_kernel_lookup(monkeypatch):
+    from dataclasses import replace
+    from wenu import ChartSubjectRequest, resolve_target
+    from wenu.charts.request_chart import _target_coordinate
+    from wenu.catalogue_state import _unit_direction
+    from wenu_kernel import KernelSession
+    target = resolve_target(ChartSubjectRequest(target="M17"))
+    evaluate = KernelSession.evaluate
+    def shift(session, query):
+        batch = evaluate(session, query)
+        return replace(batch, states=tuple(replace(s, vector=_unit_direction(35., -10.)) for s in batch.states))
+    monkeypatch.setattr(KernelSession, "evaluate", shift)
+    assert _target_coordinate(target).ra.deg == pytest.approx(35.)
+    def refuse(*args, **kwargs):
+        raise RuntimeError("synthetic binocular target refusal")
+    monkeypatch.setattr(KernelSession, "evaluate", refuse)
+    with pytest.raises(RuntimeError, match="binocular target refusal"):
+        _target_coordinate(target)

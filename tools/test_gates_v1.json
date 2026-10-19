@@ -1415,6 +1415,43 @@
           "reason": "Restored source applies lookup validation and propagates kernel refusal through public/native/label/observed routes after both observed caches are warm, retaining source metadata."
         }
       ]
+    },
+    "nonstellar-routing": {
+      "scope": "K3.12 generic nonstellar/Messier/Caldwell scientific points, labels, outlines, target/object-centre and saved consumers use returned kernel lookup directions.",
+      "limits": "Preserve membership, identifiers, selection, observation science and appearance. Source physical gaps remain explicit; no propagation, source bytes, SDK, dependency/build, snapshot schema or renderer changes. Dedicated globular/PN/SNR routes remain pending.",
+      "extends": [
+        "galaxy-routing-closure"
+      ],
+      "selections": [
+        {
+          "node": "tests/test_target_resolver.py",
+          "reason": "Named aliases, components, explicit coordinate distinction and public target coordinate."
+        },
+        {
+          "node": "tests/test_object_center.py",
+          "reason": "Real kernel-returned centre directions and refusal reach apparent object centres."
+        },
+        {
+          "node": "tests/test_request_chart.py",
+          "reason": "Binocular public coordinate seam and regional object-centre consumers."
+        },
+        {
+          "node": "tests/test_spatial_selection.py",
+          "reason": "Automatic versus explicit catalogue selection and exclusion policy."
+        },
+        {
+          "node": "tests/test_nonstellar_points.py",
+          "reason": "Scientific point symbol compatibility."
+        },
+        {
+          "node": "tests/test_chart_view.py",
+          "reason": "Public view preparation and observer-independent source reuse."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_kernel_nonstellar_cold_saved_pixels_and_warm_refusal",
+          "reason": "Real Messier/Caldwell native labels/outlines, exact legacy/cold/saved pixels, PDF/SVG and restored warm-cache refusal."
+        }
+      ]
     }
   },
   "consumer_review": [

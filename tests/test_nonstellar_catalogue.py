@@ -486,7 +486,9 @@ def test_outline_selections_share_one_quality_specific_cache(
         *,
         samples,
         minimum_size_arcmin,
+        centres=None,
     ):
+        assert centres is not None
         calls.append((len(table), samples, minimum_size_arcmin))
         return (
             tuple(np.full(samples, index) for index in range(len(table))),
@@ -532,7 +534,9 @@ def test_outline_quality_and_reload_select_distinct_realizations(
         *,
         samples,
         minimum_size_arcmin,
+        centres=None,
     ):
+        assert centres is not None
         calls.append((samples, minimum_size_arcmin))
         values = tuple(np.zeros(samples) for _ in table)
         return values, values
@@ -663,3 +667,99 @@ def test_qualified_lookup_reference_does_not_require_a_motion_epoch(catalogue):
     assert spec.origin == 'solar-system-barycenter'
     with pytest.raises(ValueError, match='epoch'):
         layer.require_complete_metadata()
+
+
+@pytest.mark.parametrize('catalog', ('messier', 'caldwell'))
+def test_generic_lookup_returned_states_control_all_consumers(catalog, observer, monkeypatch):
+    from dataclasses import replace
+    from wenu.catalogue_state import _unit_direction
+    from wenu_kernel import KernelSession
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    layer = NonStellar(observer, catalog=catalog, samples=12); layer.load()
+    source = layer.catalog.copy(copy_data=True)
+    record = layer.catalogue_metadata.to_record()
+    identifier = str(source['identifier'][0])
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    layer.spherical_centers(observer, selected=[identifier])
+    layer.spherical_geometry(observer, selected=[identifier])
+    evaluate, calls = KernelSession.evaluate, []
+    def shift(session, query):
+        batch = evaluate(session, query); calls.append(batch)
+        return replace(batch, states=tuple(replace(s, vector=_unit_direction(35., -10.)) for s in batch.states))
+    monkeypatch.setattr(KernelSession, 'evaluate', shift)
+    native = layer.position()
+    np.testing.assert_allclose(native.lon_deg, 35.)
+    labels = layer.realize(context, None, selected=[identifier], labels_only=True)
+    np.testing.assert_allclose(labels.lon_deg, [35.])
+    outline = layer.realize(context, None, selected=[identifier])
+    row = source[0]
+    expected = layer._ellipse(SkyCoord(ra=35.*u.deg, dec=-10.*u.deg),
+        row['major_axis_arcmin'], row['minor_axis_arcmin'], row['position_angle_deg'], 12)
+    np.testing.assert_allclose(outline.lon_deg[0], expected.icrs.ra.deg)
+    points = layer.spherical_centers(observer, selected=[identifier])
+    horizontal = SkyCoord(ra=35.*u.deg, dec=-10.*u.deg).transform_to(observer.altaz_frame)
+    np.testing.assert_allclose(points.lon_deg, [horizontal.az.deg])
+    outlines = layer.spherical_geometry(observer, selected=[identifier])
+    np.testing.assert_allclose(outlines.lon_deg[0], expected.transform_to(observer.altaz_frame).az.deg)
+    assert len(calls) == 5  # One query per consumer, including warm observed routes.
+    assert list(native.ids) == list(source['identifier'])
+    assert labels.metadata['semantic_entity_keys'] == (identifier,)
+    assert layer.catalogue_metadata.to_record() == record
+    for name in source.colnames:
+        np.testing.assert_array_equal(source[name], layer.catalog[name])
+    def refuse(*args, **kwargs):
+        raise RuntimeError('synthetic generic kernel refusal')
+    monkeypatch.setattr(KernelSession, 'evaluate', refuse)
+    for action in (layer.position, lambda: layer.realize(context, None, labels_only=True),
+                   lambda: layer.realize(context, None),
+                   lambda: layer.spherical_centers(observer),
+                   lambda: layer.spherical_geometry(observer)):
+        with pytest.raises(RuntimeError, match='generic kernel refusal'):
+            action()
+
+
+@pytest.mark.parametrize('catalog', ('messier', 'caldwell'))
+def test_generic_lookup_validates_source_even_after_cache_fill(catalog, observer, monkeypatch):
+    layer = NonStellar(observer, catalog=catalog, samples=12); layer.load()
+    layer.spherical_centers(observer); layer.spherical_geometry(observer)
+    def refuse():
+        raise ValueError('synthetic lookup admission refusal')
+    monkeypatch.setattr(layer, 'require_catalogue_lookup_metadata', refuse)
+    for action in (layer.position, lambda: layer.spherical_centers(observer),
+                   lambda: layer.spherical_geometry(observer)):
+        with pytest.raises(ValueError, match='lookup admission refusal'):
+            action()
+
+
+def test_generic_provider_passes_shipped_kernel_conformance(catalogue):
+    from dataclasses import replace
+    import io
+    import unittest
+    from wenu_kernel.conformance import ProviderActivity, ProviderCase, provider_suite
+    from wenu_kernel.records import AccuracyRequest, StateQuery, TimePoint
+    layer = NonStellar(None); layer.load(filename=catalogue)
+    def factory():
+        rows = [['synthetic', 10., -20.]]
+        provider = layer._direction_provider(rows, 'tt')
+        admission = provider.describe().admissions[0]
+        query = StateQuery(admission.catalogue, admission.model, admission.objects,
+            (TimePoint(-1000000, 0, 'tt'), TimePoint(3000000, 0, 'tt')),
+            admission.reference, AccuracyRequest())
+        probe = replace(query, times=(TimePoint(4000000, 0, 'tt'),))
+        counts = {'evaluate': 0, 'close': 0}
+        evaluate, close = provider.evaluate, provider.close
+        def measured(query):
+            counts['evaluate'] += 1
+            return evaluate(query)
+        def cleanup():
+            counts['close'] += 1
+            return close()
+        provider.evaluate, provider.close = measured, cleanup
+        def mutate():
+            rows[0][1] = 99.
+        return ProviderCase(provider, query, probe,
+            lambda: ProviderActivity(counts['evaluate'], 0, counts['close']), mutate)
+    result = unittest.TextTestRunner(stream=io.StringIO()).run(provider_suite(factory, name='GenericLookupContract'))
+    assert result.wasSuccessful(), result.errors + result.failures
+    assert result.testsRun == 8 and not result.skipped
+

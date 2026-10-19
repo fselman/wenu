@@ -561,8 +561,8 @@ its returned centre arrays, ordered IDs and immutable metadata enter cache ident
 `_transform_outline_table(..., centres=...)` uses that batch without a second query.
 Galaxy `_observed_point_source_key` similarly binds the already-queried centre
 values. Changed kernel states invalidate a warm observation cache, and failed
-admission/query propagates even after cache fill. Default hooks preserve every
-other nonstellar family's existing path. No transformation or ellipse mathematics
+admission/query propagates even after cache fill. The generic NonStellar owner now opts into these hooks under K3.12;
+dedicated globular/PN/SNR families preserve their existing paths. No transformation or ellipse mathematics
 changes. Cold and restored galaxies use these same methods without a schema change.
 
 Centre, angular semiaxes and PA form the domain shape description. Catalogue
@@ -1338,3 +1338,30 @@ appearance independently. Active model parameters remain in SVG provenance and
 sequence identity; lookup retains its former identity. Snapshot v5 and native
 atlas workers are unchanged. See the complete
 [configuration fields](configuration_schema_v2.md#explicit-open-cluster-astrometry).
+
+## Generic nonstellar and named-target kernel lookup
+
+K3.12 uses NonStellar._kernel_centres and _catalogue_direction_provider for the
+generic owner, including Messier and Caldwell. The galaxy facade shares these
+mechanics with its accepted static model identifiers/reference semantics retained.
+Generic lookup uses catalogue_lookup, copied source rows and full immutable source
+metadata identity. Qualified numerical epochs are retained; unknown/unqualified
+dates remain provenance. No requested-time propagation occurs. The deterministic
+undated evaluation anchor is JD 0 TT, not a measurement epoch. Missing source
+facts stay explicit; legacy constructed/unitless inputs remain disclosed.
+
+The generic _state_table and _outline_state query before observation cache access;
+returned positions, ordered IDs and metadata govern cache identity. Outlines use
+that same batch. position, realize (including label-only), spherical_centers and
+spherical_geometry preserve source order, catalogue membership, semantic identity,
+selection and geometry mathematics. Dedicated subclass routes are not activated
+by this generic-owner opt-in.
+
+ResolvedTarget.coordinate queries an immutable copied target direction through
+the same table-provider protocol before returning SkyCoord. The record identity
+binds key, coordinates, provenance and components; it does not claim a digest of
+original source bytes. Unknown physical reference/epoch facts remain explicit in
+the provider reference. Explicit-coordinate subjects keep their constructed route.
+get_object_center and binocular request preparation consume this public property,
+so refused target queries propagate through both consumers. No hidden target cache
+or catalogue cross-identification replacement is introduced.

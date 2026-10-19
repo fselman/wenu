@@ -40,7 +40,8 @@ are documented; Fernando approved the lookup/physical-admission distinction
 and PM-only policy on 2026-10-19. K3.09 explicit lookup admission is accepted through PR #274;
 physical source gaps remain explicit. Reduced-input numerical propagation
 remains a separate pending AX.13 implementation. K3.10 galaxy routing closure
-is now selected and pending Mac acceptance. Extra scope or changed agreed order must be discussed with Fernando,
+is accepted through PR #275. K3.12 generic nonstellar/Messier/Caldwell and
+object-centre routing is selected and pending Mac acceptance. Extra scope or changed agreed order must be discussed with Fernando,
 explicitly agreed and documented before implementation under the
 [mandatory agent rule](assistant_instructions.md#roadmap-control-mandatory-before-implementation).
 

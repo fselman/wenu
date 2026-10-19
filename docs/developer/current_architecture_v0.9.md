@@ -37,14 +37,15 @@ lookup spec discloses unverified reference interpretation and unknown origin.
 Existing chart geometry and strict physical admission remain unchanged. K3.09 baseline admission is accepted through PR #274; reduced-input PM algorithms
 remain AX.13, under the approved no-universal-PM-cutoff policy.
 
-The K3.10 galaxy candidate applies the shared source-bound lookup validation
+Accepted K3.10 galaxy routing applies the shared source-bound lookup validation
 when its required source evidence is present, while preserving explicitly
 unqualified constructed/unitless legacy sources. Unqualified source dates stay
 provenance and do not block static lookup. Galaxy outline state is queried before
 cache access, and returned centres enter outline/point cache identity. The same
 queried centres construct outlines once; unchanged returned states still reuse
-their observer transformation. Other families retain their default cache hooks.
-This is pending Mac acceptance and does not qualify absent physical source facts.
+their observer transformation. Dedicated globular/PN/SNR families retain their default cache hooks;
+the generic owner opts into returned-state hooks under K3.12 below.
+This is accepted through PR #275 and does not qualify absent physical source facts.
 
 ## Canonical pipeline
 
@@ -312,3 +313,17 @@ and minimum angular-size filters. Request state is not installed on shared sky
 layers. Output provenance and sequence identity include active model admission;
 lookup omits the added field to retain its existing identity. Native atlas-sheet
 requests and non-horizontal chart frames do not adopt this opt-in.
+
+## Generic nonstellar and target lookup routing
+
+The K3.12 candidate opts the generic NonStellar owner into catalogue lookup for
+public points, native outlines/labels and observed centre/outline inputs. Galaxy
+and generic lookup share metadata admission, epoch handling and vector decoding
+mechanics while retaining distinct model/resource identities. Dedicated globular,
+PN and SNR owners retain their prior routes; their milestones remain pending.
+Returned generic states enter both observation cache identities before reuse.
+Named ResolvedTarget coordinates similarly query immutable copied target records;
+object-centre and binocular preparation consume that public coordinate. Explicit
+user coordinates remain constructed references. Target provenance/components are
+preserved without claiming source epoch or physical origin qualification. No
+source membership, aliases, selection, observer mathematics or rendering changes.
