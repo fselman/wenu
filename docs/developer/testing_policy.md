@@ -914,3 +914,28 @@ eight tooling cases passed. Documentation: 33 cases passed; three archive checks
 require files absent from the execution copy. Active links/anchors and all 73
 preserved archive hashes were independently verified against the remote Git
 tree. Complete documentation and focused Mac acceptance remain pending.
+
+## Generic nonstellar routing gate
+
+K3.12 uses `python tools/run_test_gate.py nonstellar-routing --run` with plugin
+autoload disabled. It extends galaxy-routing-closure because source-bound provider
+construction/vector decoding moved to the common owner without changing the
+galaxy model or dedicated other-family defaults. Generic Messier/Caldwell tests
+inject changed real SDK results into public/native/label/observed consumers and
+refuse lookup or kernel evaluation after cache fill. The portable provider suite
+checks generic lookup protocol/lifetime. Named target/object-centre and binocular
+seams verify returned vectors/refusal, retaining explicit-coordinate construction.
+Selection and public view owners remain selected. Real Messier and Caldwell
+snapshots compare cold/restored labels/outlines and legacy/cold/saved PNG pixels
+with PDF/SVG exports, then refuse restored warm routes. Existing source-free
+process and unknown/known epoch lineage tests remain selected. Run documentation
+and eight tooling checks too. No changed SDK, source resource, dependency/build,
+schema, numerical science or renderer warrants repeating full SDK/production
+or installed-wheel gates; accepted lower-level evidence is retained.
+
+Local Python 3.12 evidence: 211 focused cases passed in 68.14 s and eight tooling
+cases passed. Messier/Caldwell legacy/cold/saved PNG pixels were identical, with
+PDF/SVG exports and restored warm refusal. Documentation: 33 passed; three checks
+need archive files absent from this execution copy. Active links/anchors and all
+73 preserved archive hashes were verified against the remote Git tree. Complete
+Mac documentation and nonstellar-routing acceptance remain pending.

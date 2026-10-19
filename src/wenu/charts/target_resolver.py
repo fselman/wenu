@@ -67,11 +67,28 @@ class ResolvedTarget:
         from astropy import units as u
         from astropy.coordinates import SkyCoord
 
-        return SkyCoord(
-            ra=self.ra_deg * u.deg,
-            dec=self.dec_deg * u.deg,
-            frame="icrs",
-        )
+        longitude, latitude = self.ra_deg, self.dec_deg
+        if self.key != "explicit-coordinate":
+            from wenu.catalogue_state import (
+                CatalogueDirectionProvider, catalogue_direction_states,
+                catalogue_direction_angles,
+            )
+            from wenu_kernel.records import ReferenceSpec, TimePoint, UnboundedCoverage
+            rows = ((self.key, float(longitude), float(latitude)),)
+            provider = CatalogueDirectionProvider(rows,
+                namespace="wenu-targets", source_epoch=None,
+                provenance=(self.provenance,), catalogue_edition="copied-target-record",
+                reference=ReferenceSpec("icrs", "legacy-unverified-origin",
+                    "legacy-unverified-catalogue-encoding", "direction", "rad",
+                    "fixed target lookup; physical reference and epoch unqualified"),
+                capability="catalogue_lookup", semantic_type="chart-target",
+                provider_id="wenu.target-lookup", resource_id="derived-target-record",
+                model_id="target-catalogue-lookup", coverage=UnboundedCoverage("tt"),
+                source_identity=(self.key, self.provenance,
+                    tuple((c.family, c.identifier) for c in self.components)))
+            states = catalogue_direction_states(provider, TimePoint(0, 0, "tt"))
+            ((longitude, latitude),) = catalogue_direction_angles(states, rows)
+        return SkyCoord(ra=longitude * u.deg, dec=latitude * u.deg, frame="icrs")
 
 
 def _alias_key(value):

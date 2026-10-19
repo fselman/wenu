@@ -1366,3 +1366,13 @@ label and public centre geometry. This changes state/metadata ownership only;
 source coordinate encodings, ellipse construction and observer transformation
 mathematics above remain current. It introduces no propagation, new frame
 qualification or distance-dependent correction.
+
+### Generic nonstellar and target lookup ownership
+
+K3.12 extends returned-direction ownership to generic scientific points, Messier
+and Caldwell outlines/labels and named chart target centres. Source coordinate
+encodings, unknown reference/epoch facts, independent memberships and the existing
+Astropy observer transformation are preserved. Explicit user coordinates remain
+constructed references. Observation uses returned centres once and binds warm
+caches to their values; no new frame conversion or propagation mathematics is
+introduced. Dedicated globular/PN/SNR migrations remain separate.

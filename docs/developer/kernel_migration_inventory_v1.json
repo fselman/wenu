@@ -8999,7 +8999,7 @@
   "galaxy_routing_closure": {
     "milestone": "K3.10",
     "base": "6e70ee1dde2cc40c12745c53a227a25e885ab839",
-    "status": "Implemented candidate; Mac acceptance pending",
+    "status": "Accepted PR #275, main a30efcdb520c4a7982ab6be5b89dd7cfad7ddc65; 155 focused Mac, 36 documentation and eight tooling cases passed.",
     "scope": "Apply shared lookup admission for source-bound records, preserve constructed/unitless legacy compatibility with explicit missing facts, retain unqualified source dates without invented SDK scale, and close warm observed outline/point state-key and refusal seams.",
     "public_paths": [
       "position",
@@ -9010,11 +9010,33 @@
       "restored sources and atlas output"
     ],
     "shared_hooks": [
-      "NonStellar._outline_state default None",
+      "NonStellar._outline_state opt-in for generic owner; default None for dedicated unmigrated families",
       "NonStellar._transform_outline_table optional returned centres",
-      "NonStellar._observed_point_source_key default legacy key"
+      "NonStellar._observed_point_source_key binds returned generic state; legacy key for unmigrated families"
     ],
     "gate": "galaxy-routing-closure",
     "limits": "Static chart model only; missing physical qualification explicit. No source bytes, SDK, dependency/build, snapshot schema, projection/renderer, new science or other-family routing change."
+  },
+  "generic_nonstellar_routing": {
+    "milestone": "K3.12",
+    "status": "Implemented candidate; Mac acceptance pending",
+    "base": "a30efcdb520c4a7982ab6be5b89dd7cfad7ddc65",
+    "owners": [
+      "src/wenu/objects/nonstellar.py",
+      "src/wenu/objects/galaxies.py",
+      "src/wenu/charts/target_resolver.py",
+      "src/wenu/charts/request_chart.py"
+    ],
+    "routes": [
+      "public position",
+      "native outlines and label-only points",
+      "observed centres/outlines before cache reuse",
+      "named target coordinate",
+      "object centre",
+      "binocular preparation",
+      "restored source consumers"
+    ],
+    "gate": "nonstellar-routing",
+    "limits": "No dedicated other-family migration, propagation, source byte, SDK, dependency/build, schema, observation science or renderer change. Unknown physical facts remain explicit."
   }
 }

@@ -4,9 +4,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-import astropy.units as u
-from astropy.coordinates import SkyCoord
-
 from .binocular import BinocularChart
 from .all_sky import AllSkyChart
 from .circumpolar import CircumpolarChart
@@ -25,11 +22,7 @@ class PreparedChartRequest:
 
 
 def _target_coordinate(target):
-    return SkyCoord(
-        ra=target.ra_deg * u.deg,
-        dec=target.dec_deg * u.deg,
-        frame="icrs",
-    )
+    return target.coordinate
 
 
 def _regional_chart(sky, resolved, observer):

@@ -1470,3 +1470,64 @@ def test_restored_galaxy_warm_routes_do_not_hide_kernel_refusal(native_snapshot_
         with pytest.raises(RuntimeError, match='restored galaxy refusal'):
             action()
     assert layer.catalogue_metadata.to_record() == original
+
+
+@pytest.mark.parametrize('catalog', ('messier', 'caldwell'))
+def test_kernel_nonstellar_cold_saved_pixels_and_warm_refusal(native_snapshot_case, tmp_path, monkeypatch, catalog):
+    from dataclasses import replace
+    import numpy as np
+    from matplotlib.image import imread
+    from astropy.coordinates import AltAz, EarthLocation
+    from astropy.time import Time
+    from wenu.atlas_design import AtlasBandTiling
+    from wenu.charts.atlas_publication import AtlasChartPresentation
+    from wenu.charts.request_generation import AtlasSheetChartRequest, generate_chart_request
+    from wenu.objects.nonstellar import NonStellar
+    from wenu.resources import nonstellar_catalog_path
+    from wenu.sky import native_snapshot as snapshots
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    from wenu_kernel import KernelSession
+    raw, destination, _, cold = native_snapshot_case
+    if catalog == 'caldwell':
+        profile = replace(snapshots.CANONICAL_MAXIMAL_SPHERE_PROFILE,
+            nonstellar_filename=nonstellar_catalog_path('caldwell'))
+        destination = tmp_path/'caldwell-sky'
+        _, cold = snapshots.prepare_native_sky_snapshot(raw, destination, profile=profile, return_sky=True)
+    saved = snapshots.read_native_sky_snapshot(destination).make_sky()
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    for options in ({}, {'labels_only': True}):
+        _assert_native_geometry_equal(cold.nonstellar.realize(context, None, **options),
+                                      saved.nonstellar.realize(context, None, **options))
+    atlas = AtlasBandTiling.from_json(raw.decode())
+    row = cold.nonstellar.catalog[0]
+    identifier = atlas.primary_sheet_id(float(row['ra_deg']), float(row['dec_deg']))
+    sheet = next(s for s in atlas.geometry.sheets if s.sheet_id == identifier)
+    presentation = AtlasChartPresentation(layers=('nonstellar',), formats=('png', 'pdf', 'svg'), dpi=36)
+    with monkeypatch.context() as baseline:
+        baseline.setattr(NonStellar, '_native_centres', lambda self, table, instant=None:
+            (np.asarray(table['ra_deg'], dtype=float), np.asarray(table['dec_deg'], dtype=float)))
+        generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
+            presentation, tmp_path/'legacy'), sky=cold)
+    for name, sky in (('cold', cold), ('saved', saved)):
+        generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
+            presentation, tmp_path/name), sky=sky)
+    filename = f'chart-{sheet.number:02d}.png'
+    for name in ('cold', 'saved'):
+        np.testing.assert_array_equal(imread(tmp_path/'legacy'/filename), imread(tmp_path/name/filename))
+    observer = SimpleNamespace(altaz_frame=AltAz(obstime=Time('2026-08-16T01:00:00'),
+        location=EarthLocation.from_geodetic(-71.5, -33., 52.)))
+    layer = saved.nonstellar
+    selected = [str(row['identifier'])]
+    layer.spherical_centers(observer, selected=selected)
+    layer.spherical_geometry(observer, selected=selected, samples=12)
+    record = layer.catalogue_metadata.to_record()
+    def refuse(*args, **kwargs):
+        raise RuntimeError('synthetic saved generic refusal')
+    monkeypatch.setattr(KernelSession, 'evaluate', refuse)
+    for action in (layer.position, lambda: layer.realize(context, None, labels_only=True),
+                   lambda: layer.realize(context, None),
+                   lambda: layer.spherical_centers(observer, selected=selected),
+                   lambda: layer.spherical_geometry(observer, selected=selected, samples=12)):
+        with pytest.raises(RuntimeError, match='saved generic refusal'):
+            action()
+    assert layer.catalogue_metadata.to_record() == record

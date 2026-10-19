@@ -57,3 +57,35 @@ def test_fixed_target_uses_the_shared_coordinate_service(monkeypatch):
     assert center.azimuth_deg == pytest.approx(123.0)
     assert center.provenance == ("test catalogue",)
     assert len(calls) == 1
+
+
+def test_named_target_center_uses_returned_kernel_state_and_refuses(monkeypatch):
+    from dataclasses import replace
+    import numpy as np
+    from astropy.coordinates import AltAz, EarthLocation, SkyCoord
+    from astropy.time import Time
+    import astropy.units as u
+    from wenu import ChartSubjectRequest, resolve_target
+    from wenu.catalogue_state import _unit_direction
+    from wenu_kernel import KernelSession
+    target = resolve_target(ChartSubjectRequest(target='M17'))
+    observer = SimpleNamespace(altaz_frame=AltAz(obstime=Time('2026-08-16T01:00:00'),
+        location=EarthLocation.from_geodetic(-71.5, -33., 52.)))
+    baseline = get_object_center(target, observer)
+    evaluate = KernelSession.evaluate
+    def shift(session, query):
+        batch = evaluate(session, query)
+        return replace(batch, states=tuple(replace(s, vector=_unit_direction(35., -10.)) for s in batch.states))
+    monkeypatch.setattr(KernelSession, 'evaluate', shift)
+    result = get_object_center(target, observer)
+    expected = SkyCoord(ra=35.*u.deg, dec=-10.*u.deg).transform_to(observer.altaz_frame)
+    np.testing.assert_allclose(result.azimuth_deg, expected.az.deg)
+    assert result.azimuth_deg != baseline.azimuth_deg
+    assert result.key == baseline.key and result.provenance == baseline.provenance
+    def refuse(*args, **kwargs):
+        raise RuntimeError('synthetic target refusal')
+    monkeypatch.setattr(KernelSession, 'evaluate', refuse)
+    with pytest.raises(RuntimeError, match='target refusal'):
+        get_object_center(target, observer)
+    explicit = resolve_target(ChartSubjectRequest(ra_deg=10., dec_deg=-20.))
+    assert explicit.coordinate.ra.deg == 10.  # Constructed coordinates remain distinct.

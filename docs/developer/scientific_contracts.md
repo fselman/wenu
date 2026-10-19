@@ -490,3 +490,15 @@ lookup or inventing a time scale. A genuinely qualified source epoch remains
 unchanged. Kernel-returned centres control public/native/label/observed geometry
 and warm-cache identity. Shape dimensions/PA, observer frame transformations and
 numerical precision/uncertainty claims are unchanged. No galaxy motion is added.
+
+## Generic nonstellar lookup and named target centres
+
+K3.12 is lookup migration only. Messier/Caldwell membership and aliases remain
+independent source declarations; one catalogue's coordinate is not substituted
+from another object family. Source-bound metadata and explicit missing physical
+facts survive cold/restored routes. Generic catalogue points and named target
+centres consume returned kernel directions before the retained observation chain;
+refusal propagates even after observed caches are warm. A copied target record
+is not proof of an original source frame, epoch, origin or measurement error.
+Explicit user coordinates remain constructed references. No motion, expansion,
+parallax algorithm or physical time-validity guarantee is added.
