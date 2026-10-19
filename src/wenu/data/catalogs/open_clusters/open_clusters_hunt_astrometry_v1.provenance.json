@@ -1,0 +1,12 @@
+{
+  "schema": "wenu-open-cluster-astrometry-receipt/1",
+  "products": {
+    "open_clusters_hunt_astrometry_v1.ecsv": {
+      "bytes": 161926,
+      "sha256": "00b001d520111dabdea337e5e243acf8c64495712aba704fb94abff89f6cd57d"
+    }
+  },
+  "selected_rows": 513,
+  "hunt_rows": 509,
+  "selected_catalogue_sha256": "5f149895d29665ede5b2e0e1d410b84da80ed68a768fe495c2134f499985e35e"
+}

@@ -1,0 +1,193 @@
+{
+  "schema": "wenu-open-cluster-astrometry-source/1",
+  "catalogue": "J/A+A/686/A42",
+  "citation": {
+    "authors": "Hunt, E. L.; Reffert, S.",
+    "title": "Improving the open cluster census. III. Using cluster masses, radii, and dynamics to create a cleaned open cluster catalogue",
+    "doi": "10.1051/0004-6361/202348662",
+    "vizier_doi": "10.26093/cds/vizier",
+    "article": "https://www.aanda.org/articles/aa/pdf/2024/06/aa48662-23.pdf"
+  },
+  "files": {
+    "ReadMe": {
+      "bytes": 25600,
+      "sha256": "b9270a8189ff26f9a93e5e6142e21e7d85a8ade3f9a7b30b7321d834166aa5e9",
+      "url": "https://cdsarc.cds.unistra.fr/ftp/J/A+A/686/A42/ReadMe"
+    },
+    "clusters.dat.gz": {
+      "bytes": 2604860,
+      "sha256": "8ca6dae60113da57768f87116dc9f7b564af98ca1750ec967a54fe188fd1b047",
+      "url": "https://cdsarc.cds.unistra.fr/ftp/J/A+A/686/A42/clusters.dat.gz"
+    }
+  },
+  "acquisition": {
+    "url": "https://cdsarc.cds.unistra.fr/ftp/J/A+A/686/A42/clusters.dat.gz",
+    "http_status": 200,
+    "bytes": 2604860,
+    "sha256": "8ca6dae60113da57768f87116dc9f7b564af98ca1750ec967a54fe188fd1b047",
+    "retrieved_utc": "2026-10-19T00:06:45.565409+00:00"
+  },
+  "policy": {
+    "checked_utc": "2026-10-19",
+    "vizier": "https://cds.unistra.fr/vizier-org/licences_vizier.html",
+    "vizier_usage": "Scientific usage with source authors/publication/publisher acknowledgement; no blanket CC0 claim.",
+    "article_license": "CC BY 4.0, as declared in the source article; retain author citation and mark the selected/reformatted derivative.",
+    "changes": "Selected 509 source rows, joined by verified IDs/names/unchanged centres to existing 513-object selection; four Dias-only rows masked. No numerical propagation.",
+    "metadata_rights": "CDS reserves information-system metadata rights; captured ReadMe retained only as attributed scientific parser/test evidence."
+  },
+  "facts": {
+    "coordinate_frame": {
+      "value": "ICRS",
+      "evidence_column": "RAdeg",
+      "evidence": "(ICRS)"
+    },
+    "coordinate_epoch_label": {
+      "value": "2016.0",
+      "evidence_column": "RAdeg",
+      "evidence": "at Ep=2016.0"
+    },
+    "coordinate_epoch_scale": null,
+    "coordinate_origin": null,
+    "ra_motion_convention": {
+      "value": "mu_alpha_star",
+      "evidence_column": "pmRA",
+      "evidence": "multiplied by cos(dec)"
+    },
+    "centre_role": {
+      "value": "densest point",
+      "evidence_column": "RAdeg",
+      "evidence": "densest point"
+    },
+    "motion_role": {
+      "value": "mean cluster motion",
+      "evidence_column": "pmRA",
+      "evidence": "Mean proper motion"
+    },
+    "covariance": null,
+    "covariance_note": "No cluster-mean astrometric correlations are published in clusters.dat. Member-star correlations are not substituted.",
+    "uncertainty_policy": "e_* is standard error of the mean; s_* is source dispersion, not an interchangeable uncertainty."
+  },
+  "columns": {
+    "ID": {
+      "source_unit": null,
+      "source_description": "Internal cluster ID"
+    },
+    "Name": {
+      "source_unit": null,
+      "source_description": "Main accepted cluster name"
+    },
+    "RAdeg": {
+      "source_unit": "deg",
+      "source_description": "Right ascension of densest point (ICRS) at Ep=2016.0"
+    },
+    "DEdeg": {
+      "source_unit": "deg",
+      "source_description": "Declination of densest point (ICRS) at Ep=2016.0"
+    },
+    "GLON": {
+      "source_unit": "deg",
+      "source_description": "Galactic longitude"
+    },
+    "GLAT": {
+      "source_unit": "deg",
+      "source_description": "Galactic latitude"
+    },
+    "pmRA": {
+      "source_unit": "mas / yr",
+      "source_description": "Mean proper motion in right ascension multiplied by cos(dec)"
+    },
+    "s_pmRA": {
+      "source_unit": "mas / yr",
+      "source_description": "Standard deviation of pmra",
+      "nonnegative": true
+    },
+    "e_pmRA": {
+      "source_unit": "mas / yr",
+      "source_description": "Standard error of pmra",
+      "nonnegative": true
+    },
+    "pmDE": {
+      "source_unit": "mas / yr",
+      "source_description": "Mean proper motion in declination"
+    },
+    "s_pmDE": {
+      "source_unit": "mas / yr",
+      "source_description": "Standard deviation of pmdec",
+      "nonnegative": true
+    },
+    "e_pmDE": {
+      "source_unit": "mas / yr",
+      "source_description": "Standard error of pmdec",
+      "nonnegative": true
+    },
+    "Plx": {
+      "source_unit": "mas",
+      "source_description": "Mean parallax"
+    },
+    "s_Plx": {
+      "source_unit": "mas",
+      "source_description": "Standard deviation of parallax",
+      "nonnegative": true
+    },
+    "e_Plx": {
+      "source_unit": "mas",
+      "source_description": "Standard error of parallax",
+      "nonnegative": true
+    },
+    "dist16": {
+      "source_unit": "pc",
+      "source_description": "16th percentile of maximum likelihood distance",
+      "nonnegative": true
+    },
+    "dist50": {
+      "source_unit": "pc",
+      "source_description": "50th percentile of maximum likelihood distance",
+      "nonnegative": true
+    },
+    "dist84": {
+      "source_unit": "pc",
+      "source_description": "84th percentile of maximum likelihood distance",
+      "nonnegative": true
+    },
+    "Ndist": {
+      "source_unit": null,
+      "source_description": "Number of stars used for distance calculation",
+      "nonnegative": true
+    },
+    "globalPlx": {
+      "source_unit": null,
+      "source_description": "[0/1] Flag indicating clusters for which a star-by-star parallax offset correction was not possible during distance calculation"
+    },
+    "X": {
+      "source_unit": "pc",
+      "source_description": "X coordinate in heliocentric galactic coordinates"
+    },
+    "Y": {
+      "source_unit": "pc",
+      "source_description": "Y coordinate in heliocentric galactic coordinates"
+    },
+    "Z": {
+      "source_unit": "pc",
+      "source_description": "Z coordinate in heliocentric galactic coordinates"
+    },
+    "RV": {
+      "source_unit": "km / s",
+      "source_description": "Mean Gaia DR3 radial velocity"
+    },
+    "s_RV": {
+      "source_unit": "km / s",
+      "source_description": "Standard deviation of radial velocity",
+      "nonnegative": true
+    },
+    "e_RV": {
+      "source_unit": "km / s",
+      "source_description": "Standard error of radial velocity",
+      "nonnegative": true
+    },
+    "n_RV": {
+      "source_unit": null,
+      "source_description": "Number of member stars with a radial velocity",
+      "nonnegative": true
+    }
+  }
+}

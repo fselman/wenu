@@ -67,7 +67,54 @@ R_V=3.1. They are not the Dias diameter/reddening measurements.
 The complete-source identifier audit matches all 29 Caldwell components and
 27 Messier clusters through normalized primary names and published aliases.
 Alternative alias claims stay in the review crosswalk. IR/E and E(B-V)<=3
-criteria leave 428 of the 431 V5<11 candidates. The installed Dias sky layer
-and atlas defaults remain unchanged. Use tools/query_hunt_reffert2024.py only
+criteria leave 428 of the 431 V5<11 candidates. These original derivatives remain
+unchanged; the current active curated catalogue is the separate 513-object Wenu
+v0.2 selection. Use tools/query_hunt_reffert2024.py only
 for explicit regeneration into a fresh candidate directory or verified cache
 reuse; it refuses existing prepared outputs.
+
+
+## Selected-cluster astrometry companion v1
+
+`open_clusters_hunt_astrometry_v1.ecsv` retains 513 selected IDs in their accepted
+order and is SHA-256-bound to the active `wenu_open_clusters_v0.2.ecsv` bytes.
+It recovers the 509 matching Hunt aggregate solutions (502 with radial velocity).
+All Hunt fields are masked for the four Dias-only clusters. The original curated
+catalogue, its selection evidence and the full member-photometry derivatives are
+unchanged. This companion is available for explicit offline enrichment; default
+charts do not consume it or propagate cluster motions yet.
+
+The `open_clusters_hunt_astrometry_source_v1.json` specification preserves the
+original CDS field descriptions/units, reviewed PM convention, source epoch label,
+SHA-256/byte counts, acquisition receipt and citation/policy URLs. The adjacent
+`open_clusters_hunt_astrometry_v1.provenance.json` binds the derived ECSV bytes.
+Source `e_*` fields are standard errors; `s_*` fields are dispersions. RV masks,
+distance percentiles/counts/flags and heliocentric Galactic XYZ remain distinct.
+The epoch time scale and coordinate origin are not declared in this ReadMe;
+cluster-mean covariances are not supplied. These remain null. Gaia member-star
+covariances are not cluster-mean covariances. Dias epochs and RA-motion conventions
+must be resolved independently before adopting those four solutions.
+
+With the small original CDS aggregate and ReadMe already acquired locally, run
+this offline command from the repository root, replacing the two source paths
+with your explicit local cache paths:
+
+```shell
+python tools/hunt_reffert_catalogue.py \
+  --selected-catalogue src/wenu/data/curated_catalogs/open_clusters/wenu_open_clusters_v0.2.ecsv \
+  --clusters /path/to/cache/clusters.dat.gz \
+  --readme /path/to/cache/ReadMe \
+  --specification src/wenu/data/catalogs/open_clusters/open_clusters_hunt_astrometry_source_v1.json \
+  --output-directory output/cluster_astrometry_regeneration_v1
+```
+
+No member-star download is needed. The exact ReadMe and aggregate digests match
+Wenu's earlier acquisition. Source schema changes require a reviewed new
+specification/version. Use `attach_cluster_astrometry` in the existing developer
+tool owner for an independent enriched table; every original column is preserved.
+See the implementation reference for the explicit adoption and runtime-record
+boundary. Cite Hunt & Reffert, A&A 686 A42 (2024), DOI above, CDS/VizieR and
+ESA/Gaia/DPAC. Policy checked 2026-10-19: scientific usage requires source
+acknowledgement; the source article declares CC BY 4.0. The derivative records
+its selection/reformatting. CDS reserves information-system metadata rights;
+this is not a blanket CC0 claim or permission for unrelated commercial reuse.

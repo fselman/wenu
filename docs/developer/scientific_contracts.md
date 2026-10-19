@@ -4,8 +4,15 @@
 cleanup and the future kernel migration. Archived audits retain detailed
 proofs and source receipts; moving them does not revoke a compatibility promise.
 
-Open clusters retain mean Dias motions in the curated table, while Wenu's Hunt
-derivatives omit the published motion fields. Current cluster positions are not
+Open clusters retain mean Dias motions in the curated table. The original Hunt
+photometric derivatives omit the published motion fields; the source-bound
+astrometry companion now recovers them for the existing 509 Hunt-centred rows
+(502 with radial velocities), preserving four Dias-only rows as unadopted.
+Offline enrichment leaves the selected catalogue and default charts unchanged.
+The ReadMe declares densest-point ICRS centres at epoch 2016.0 and mean cluster
+motions, with RA motion multiplied by cos(dec). Errors of means, dispersions,
+distance percentiles and masks retain their separate meanings. Epoch time scale,
+coordinate origin and cluster-mean covariances remain explicit unknowns. Current cluster positions are not
 propagated. A source lookup must not claim zero motion, date accuracy or a
 fabricated measurement epoch. Public/native cluster centres and observer
 transformation inputs now use the accepted SDK `catalogue_lookup` capability.

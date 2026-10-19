@@ -538,8 +538,57 @@ source digests. Restoration now forwards that existing source digest into the
 same record; no schema field or source file access is added. Older supported
 snapshots retain their previous coverage/admission. Production pins accepted SDK
 dev8 at `9dd1909f`. The provider performs no acquisition, motion propagation,
-source combination or morphology calculation. Next work must ingest omitted
-Hunt astrometry and validate source conventions before any propagation claim.
+source combination or morphology calculation. The ingestion companion below recovers omitted
+Hunt fields without changing default routing. Resolve remaining epoch/origin
+facts and admit a physical model before any propagation claim.
+
+
+## Open-cluster astrometry ingestion
+
+`tools/hunt_reffert_catalogue.py` owns offline `read_cluster_astrometry`,
+`build_astrometry_companion`, `publish_astrometry_companion` and
+`attach_cluster_astrometry`. The reader verifies local source/ReadMe byte counts
+and digests against a versioned data specification, then uses Astropy's CDS reader
+for ranges, units, descriptions and missing values. No new byte offsets, source
+epochs or units are embedded in software. Changed meanings/units, duplicate IDs,
+non-finite unmasked measurements, negative uncertainties and unordered distance
+percentiles fail before publication. Publication uses a fresh directory and
+refuses existing versions. Acquisition is separate and never implicit.
+
+`data/catalogs/open_clusters/open_clusters_hunt_astrometry_v1.ecsv` is a companion
+bound to the exact accepted `wenu_open_clusters_v0.2.ecsv` SHA-256. Its 513 rows
+retain selected IDs/order: 509 matching Hunt solutions, including 502 available
+radial velocities, and four fully masked Hunt rows for Dias-only centres. Source
+IDs, names and coordinates must match exactly; no positional crossmatch or Dias
+motion substitution is performed. The original 132 columns and metadata remain
+untouched. The complete source schema/evidence is preserved in the ECSV metadata
+and `open_clusters_hunt_astrometry_source_v1.json`; a separate receipt binds the
+product bytes. Old full/photometric v1 derivatives and the active selector retain
+their exact bytes and selection-criteria bindings.
+
+`attach_cluster_astrometry(selected_path, companion_path, receipt_path)` verifies
+both products and returns an independent table with `hunt_astrometry_*` original
+CDS fields. It does not install this table as the default. The existing
+`OpenClusterCatalogueMetadata.from_table` mirrors its source envelope, fields,
+units and masks without a new runtime adapter. Source `e_*` standard errors and
+`s_*` dispersions, distance percentiles, flags, heliocentric Galactic XYZ and
+radial-velocity availability remain separate. ICRS densest-point centres and mean
+cluster motions retain their different roles. The RA motion is explicitly
+`mu_alpha_star` from the ReadMe's cos(dec) statement. The literal source epoch
+label `2016.0` is retained without inventing its scale or origin. Cluster-mean
+covariances are unavailable; individual-star covariances are not substituted.
+This is ingestion, not a propagated or zero-motion model. Rendering, kernel,
+snapshot schema and normal catalogue loading are unchanged.
+
+Regenerate from verified local `clusters.dat.gz` and `ReadMe` using
+`python tools/hunt_reffert_catalogue.py --help`. Only the small aggregate file is
+needed; there is no need to fetch the large member table again. The adjacent
+catalogue README provides a complete offline command. Cite Hunt & Reffert (2024),
+A&A 686 A42, DOI 10.1051/0004-6361/202348662, CDS/VizieR and Gaia/DPAC. The source
+specification records the acquisition and policy checks on 2026-10-19. Frozen
+tests preserve four complete original records and the exact original ReadMe,
+with hashes and original row indices; constructed mutations are labelled faults.
+
 
 ## Independent provider verification
 

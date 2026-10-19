@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 5, 2026-10-18. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 6, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -81,8 +81,13 @@ Hunt motions. Selected-centre and motion provenance must remain separate until
 an explicit source-combination policy is admitted. Incomplete epochs also require
 the accepted dev8 `catalogue_lookup` prerequisite; native/epoch requirements
 remain intact and clusters do not inherit the galaxy static model. Production
-now pins accepted main `9dd1909f`. Next: ingest complete source-bound cluster
-astrometry and resolve source conventions before enabling propagation. Other
+now pins accepted main `9dd1909f`. The selected-cluster ingestion prerequisite
+now has a versioned source-bound companion: 509 Hunt solutions, 502 radial
+velocities and four explicitly unadopted Dias-only rows. The active 513-object
+catalogue/selection and charts retain their bytes; explicit offline enrichment
+mirrors all recovered fields in the existing metadata record. Next: resolve
+remaining epoch-scale/origin facts and admit a physical propagation model, with
+uncertainty/validity policy; missing cluster-mean covariances stay unknown. Other
 families/consumers and the final SDK freeze remain ahead. See the
 [motion audit](kernel_migration_audit_v1.md#open-cluster-motion-and-lookup-audit-2026-10-18).
 

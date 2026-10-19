@@ -44,6 +44,207 @@ def numeric(value):
     return float(value.strip()) if value.strip() else np.nan
 
 
+def _verified_bytes(path, files):
+    path = Path(path)
+    data = path.read_bytes()
+    expected = files.get(path.name, {})
+    if (expected.get('sha256') != hashlib.sha256(data).hexdigest()
+            or expected.get('bytes') != len(data)):
+        raise ValueError(f'Unverified astrometry source: {path.name}')
+    return data
+
+
+def read_cluster_astrometry(path, readme, specification):
+    """Read CDS columns using the captured ReadMe, not duplicated byte offsets.
+
+    The versioned data specification records reviewed meanings and their source
+    evidence. Units, descriptions, missing values and parsing ranges come from
+    CDS. This offline ingestion service does not evaluate physical positions.
+    """
+    from copy import deepcopy
+    from astropy import units as u
+
+    if specification.get('schema') != 'wenu-open-cluster-astrometry-source/1':
+        raise ValueError('Unsupported astrometry source specification.')
+    _verified_bytes(path, specification['files'])
+    _verified_bytes(readme, specification['files'])
+    table = Table.read(path, format='ascii.cds', readme=str(readme))
+    _verified_bytes(path, specification['files'])
+    _verified_bytes(readme, specification['files'])
+    fields = specification['columns']
+    if not fields or not set(fields).issubset(table.colnames):
+        raise ValueError('Required astrometry fields are missing.')
+    for name, record in fields.items():
+        column = table[name]
+        if column.description != record['source_description']:
+            raise ValueError(f'Changed source meaning: {name}')
+        declared = record['source_unit']
+        if (None if column.unit is None else str(column.unit)) != declared:
+            raise ValueError(f'Changed source unit: {name}')
+        if declared is not None:
+            u.Unit(declared)  # Refuse unsupported declarations before publishing.
+        if column.dtype.kind in 'iuf':
+            values = np.asarray(column)[~np.ma.getmaskarray(column)]
+            if not np.all(np.isfinite(values)):
+                raise ValueError(f'Non-finite unmasked source field: {name}')
+            if record.get('nonnegative') and np.any(values < 0):
+                raise ValueError(f'Negative source uncertainty/count/distance: {name}')
+    identity = table['ID']
+    if np.any(np.ma.getmaskarray(identity)) or len(set(identity)) != len(table):
+        raise ValueError('Missing or duplicate source cluster ID.')
+    for fact in specification['facts'].values():
+        if isinstance(fact, dict) and 'evidence_column' in fact:
+            if fact['evidence'] not in table[fact['evidence_column']].description:
+                raise ValueError('Astrometric declaration lacks source evidence.')
+    low, middle, high = (table[name] for name in ('dist16', 'dist50', 'dist84'))
+    available = ~(np.ma.getmaskarray(low) | np.ma.getmaskarray(middle) | np.ma.getmaskarray(high))
+    if np.any(low[available] > middle[available]) or np.any(middle[available] > high[available]):
+        raise ValueError('Unordered distance percentiles.')
+    output = table[list(fields)].copy(copy_data=True)
+    output.meta['astrometry_source'] = deepcopy(specification)
+    return output
+
+
+def _check_astrometry_join(catalogue, astrometry):
+    """Refuse ID, coordinate or source mixing, including a reordered companion."""
+    required = {'wenu_id', 'RA_source', 'hunt_id', 'hunt_name', 'hunt_ra_deg', 'hunt_dec_deg'}
+    if not required.issubset(catalogue.colnames):
+        raise ValueError('Selected catalogue lacks source identity/coordinate fields.')
+    ids = list(map(str, catalogue['wenu_id']))
+    if len(set(ids)) != len(ids) or ids != list(map(str, astrometry['wenu_id'])):
+        raise ValueError('Astrometry must match unique selected IDs in source order.')
+    if list(catalogue['RA_source']) != list(astrometry['centre_source']):
+        raise ValueError('Changed centre-source assignment.')
+    for index, row in enumerate(catalogue):
+        missing = np.ma.is_masked(row['hunt_id'])
+        if missing != np.ma.is_masked(astrometry['ID'][index]):
+            raise ValueError('Conflicting Hunt availability.')
+        if missing:
+            if row['RA_source'] != 'dias' or any(
+                    not np.ma.is_masked(astrometry[name][index])
+                    for name in astrometry.meta['astrometry_source']['columns']):
+                raise ValueError('Dias-only astrometry must remain unadopted and masked.')
+        else:
+            if (row['RA_source'] != 'hunt' or int(row['hunt_id']) != int(astrometry['ID'][index])
+                    or str(row['hunt_name']) != str(astrometry['Name'][index])
+                    or row['hunt_ra_deg'] != astrometry['RAdeg'][index]
+                    or row['hunt_dec_deg'] != astrometry['DEdeg'][index]):
+                raise ValueError('Source ID/name/centre mismatch; no cross-source substitution.')
+
+
+def build_astrometry_companion(catalogue_path, source_path, readme, specification):
+    """Recover only the selected clusters; all unqualified source facts stay null."""
+    from copy import deepcopy
+    from astropy.table import MaskedColumn
+
+    catalogue_path = Path(catalogue_path)
+    original_bytes = catalogue_path.read_bytes()
+    catalogue = Table.read(catalogue_path, format='ascii.ecsv')
+    source = read_cluster_astrometry(source_path, readme, specification)
+    lookup = {int(identity): index for index, identity in enumerate(source['ID'])}
+    indices, absent = [], []
+    for value in catalogue['hunt_id']:
+        missing = np.ma.is_masked(value)
+        if not missing and int(value) not in lookup:
+            raise ValueError('Selected Hunt cluster absent from source.')
+        indices.append(0 if missing else lookup[int(value)])
+        absent.append(missing)
+    result = Table(dict(wenu_id=catalogue['wenu_id'].copy(),
+                        centre_source=catalogue['RA_source'].copy()))
+    for name in source.colnames:
+        column = MaskedColumn(source[name][indices], name=name, copy=True)
+        column.mask = np.ma.getmaskarray(column) | absent
+        result.add_column(column)
+    result.meta.update(schema='wenu-open-cluster-astrometry/1',
+        selected_catalogue_sha256=hashlib.sha256(original_bytes).hexdigest(),
+        selected_catalogue_name=catalogue_path.name,
+        astrometry_source=deepcopy(specification),
+        adoption_policy='Hunt solution for Hunt centres only; not yet propagated.',
+        dias_only_policy='Retain original Dias columns in selected catalogue; epoch and RA-motion convention unresolved; no adopted solution.',
+        propagation_enabled=False)
+    _check_astrometry_join(catalogue, result)
+    if catalogue_path.read_bytes() != original_bytes:
+        raise ValueError('Selected catalogue changed during ingestion.')
+    return result
+
+
+def attach_cluster_astrometry(catalogue_path, companion_path, receipt_path):
+    """Return an enriched independent table for explicit later admission.
+
+    No default selector or source file is changed. The existing cluster metadata
+    record mirrors the returned columns and complete source envelope unchanged.
+    """
+    from copy import deepcopy
+
+    receipt = json.loads(Path(receipt_path).read_text())
+    if receipt.get('schema') != 'wenu-open-cluster-astrometry-receipt/1':
+        raise ValueError('Unsupported astrometry receipt.')
+    data = _verified_bytes(companion_path, receipt['products'])
+    companion = Table.read(data.decode('utf-8').splitlines(), format='ascii.ecsv')
+    if companion.meta.get('schema') != 'wenu-open-cluster-astrometry/1':
+        raise ValueError('Unsupported astrometry companion.')
+    if (receipt['selected_catalogue_sha256'] != companion.meta['selected_catalogue_sha256']
+            or receipt['selected_rows'] != len(companion)
+            or receipt['hunt_rows'] != int(np.count_nonzero(~np.ma.getmaskarray(companion['ID'])))):
+        raise ValueError('Conflicting astrometry receipt identity/counts.')
+    catalogue_path = Path(catalogue_path)
+    original = catalogue_path.read_bytes()
+    if hashlib.sha256(original).hexdigest() != companion.meta['selected_catalogue_sha256']:
+        raise ValueError('Astrometry belongs to different selected catalogue bytes.')
+    catalogue = Table.read(original.decode('utf-8').splitlines(), format='ascii.ecsv')
+    _check_astrometry_join(catalogue, companion)
+    output = catalogue.copy(copy_data=True)
+    for name in companion.meta['astrometry_source']['columns']:
+        target = 'hunt_astrometry_' + name
+        if target in output.colnames:
+            raise ValueError('Astrometry target column already exists.')
+        column = companion[name].copy()
+        column.name = target
+        output.add_column(column)
+    output.meta['astrometry_companion'] = deepcopy(companion.meta)
+    output.meta['astrometry_companion']['receipt'] = deepcopy(receipt)
+    return output
+
+
+def publish_astrometry_companion(table, output_directory):
+    """Publish a new versioned directory atomically; refuse existing outputs."""
+    import os
+    import tempfile
+
+    destination = Path(output_directory)
+    if destination.exists():
+        raise FileExistsError('Use a fresh versioned astrometry output directory.')
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=destination.parent) as temporary:
+        staging = Path(temporary) / 'products'
+        staging.mkdir()
+        path = staging / 'open_clusters_hunt_astrometry_v1.ecsv'
+        table.write(path, format='ascii.ecsv')
+        receipt = dict(schema='wenu-open-cluster-astrometry-receipt/1',
+            products={path.name: dict(bytes=path.stat().st_size,
+                sha256=hashlib.sha256(path.read_bytes()).hexdigest())},
+            selected_rows=len(table), hunt_rows=int(np.count_nonzero(~np.ma.getmaskarray(table['ID']))),
+            selected_catalogue_sha256=table.meta['selected_catalogue_sha256'])
+        (staging / 'open_clusters_hunt_astrometry_v1.provenance.json').write_text(
+            json.dumps(receipt, indent=2, allow_nan=False) + '\n')
+        os.rename(staging, destination)
+
+
+def astrometry_main(argv=None):
+    """Offline-only CLI; acquire the small CDS source explicitly beforehand."""
+    import argparse
+    parser = argparse.ArgumentParser(description='Recover selected cluster astrometry from verified local CDS bytes.')
+    for option in ('selected-catalogue', 'clusters', 'readme', 'specification', 'output-directory'):
+        parser.add_argument('--' + option, type=Path, required=True)
+    args = parser.parse_args(argv)
+    if args.output_directory.exists():
+        raise FileExistsError('Use a fresh versioned astrometry output directory.')
+    specification = json.loads(args.specification.read_text())
+    table = build_astrometry_companion(args.selected_catalogue, args.clusters, args.readme, specification)
+    publish_astrometry_companion(table, args.output_directory)
+    return 0
+
+
 def read_clusters(path):
     """Retain all source rows, types and aliases, plus normalized review columns."""
     rows = []
@@ -291,3 +492,7 @@ def compare_main(args, *, compare_function, plot_function, parameters, key_funct
     for path in products.values():
         print(path)
     return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(astrometry_main())

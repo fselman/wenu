@@ -1,3 +1,8 @@
 # Preserve hash-bound Matplotlib SVG products byte-for-byte.
 # SVG path serialization may contain trailing spaces; source checks stay enabled.
 src/wenu/data/curated_catalogs/**/*.svg -whitespace
+
+# Exact captured CDS records and hash-bound astrometry companion bytes.
+tests/fixtures/hunt_reffert2024_astrometry_v1/ReadMe -text
+tests/fixtures/hunt_reffert2024_astrometry_v1/clusters.dat -text -whitespace
+src/wenu/data/catalogs/open_clusters/open_clusters_hunt_astrometry* -text

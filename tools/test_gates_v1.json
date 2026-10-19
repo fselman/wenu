@@ -562,6 +562,44 @@
           "reason": "New separate runtime dependency requires actual wheel/sdist/editable imports and native calls; preserve all existing resource/default assertions."
         }
       ]
+    },
+    "open-cluster-astrometry-ingestion": {
+      "scope": "Offline source-bound Hunt aggregate astrometry recovery for the unchanged 513-cluster selection, explicit companion attachment and exact archive data bytes.",
+      "limits": "No active catalogue/selector, runtime module, dependency, SDK, snapshot, observer/projection/render, atlas or request lifecycle change. No acquisition during tests, member-table fetch, unrelated/full production or SDK rerun. Epoch scale/origin/covariance gaps remain explicit; propagation is disabled.",
+      "selections": [
+        {
+          "node": "tests/test_open_clusters.py::test_captured_hunt_astrometry_preserves_source_values_units_masks_and_mean_errors",
+          "reason": "Exact captured CDS values, units, mean-error/dispersion and missing-RV semantics."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_hunt_astrometry_ingestion_refuses_corruption_and_changed_source_meaning",
+          "reason": "Refuse source/ReadMe corruption, changed units/meaning and duplicate source IDs."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_hunt_astrometry_fixture_join_is_exact_offline_and_refuses_source_mixing",
+          "reason": "Exact selected-ID/name/centre join; four Dias-only rows remain masked; no acquisition."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_packaged_hunt_astrometry_enrichment_preserves_all_513_rows_and_runtime_metadata",
+          "reason": "Preserve all 132 original columns/masks/units/metadata, actual 513 IDs/order and runtime envelope."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_hunt_astrometry_publication_is_versioned_and_refuses_wrong_catalogue_or_product",
+          "reason": "Fresh atomic publication, explicit CLI help and digest-bound refusal."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_hunt_member_photometry_rank_policy_and_help",
+          "reason": "Extending the same offline owner must preserve existing member-photometry policy."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_packaged_hunt_crosswalk_and_fifth_member_resource",
+          "reason": "Original Hunt prepared photometry/crosswalk remains intact."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_hunt_astrometry_companion_bytes_ship_in_wheel_and_sdist",
+          "reason": "Exact three new data products ship through existing archive packaging."
+        }
+      ]
     }
   },
   "consumer_review": [

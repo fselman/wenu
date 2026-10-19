@@ -8532,7 +8532,40 @@
       "tooling_seconds": 1.397,
       "compatibility_proof": "Pre-existing native and static scalar-epoch provider descriptors/resource identities/catalogue records/full batches exactly match accepted source",
       "fault_injection": "Direct-source centre bypass makes returned-vector regression fail",
+      "mac_acceptance": "96 passed, 9 subtests in 159.08 s; documentation 36 passed; tooling 8 passed; merged main 75b943a5, clean and synchronized per user receipt."
+    }
+  },
+  "open_cluster_astrometry_ingestion_v1": {
+    "base_commit": "75b943a5cbf3a8d8662046ea2fbdf957318043e4",
+    "source": "CDS J/A+A/686/A42 clusters.dat.gz and ReadMe; exact prior source digests",
+    "selected_rows": 513,
+    "hunt_solutions": 509,
+    "available_radial_velocities": 502,
+    "dias_only_unadopted": 4,
+    "original_columns_preserved": 132,
+    "active_catalogue_bytes_changed": false,
+    "propagation": false,
+    "source_metadata": "Versioned data specification; CDS parser consumes captured ReadMe ranges/units/descriptions; unknown scale/origin/covariance remain null.",
+    "tool_owner": "tools/hunt_reffert_catalogue.py",
+    "test_gate": "open-cluster-astrometry-ingestion",
+    "runtime_contract": "Explicit offline attachment returns independent enriched table; existing OpenClusterCatalogueMetadata mirrors source envelope and units. Default loading/routing unchanged.",
+    "verification": {
+      "local_focused_passed": 8,
+      "local_focused_seconds": 25.58,
+      "extra_numeric_fault_assertions_passed": 1,
+      "local_documentation_passed": 33,
+      "archive_checks_pending_mac": 3,
+      "active_links_checked_against_authoritative_tree": 473,
+      "preserved_archive_blob_records_checked": 73,
+      "tooling_passed": 8,
+      "tooling_seconds": 1.709,
+      "source_bytes_changed": "No existing source table, selected catalogue or active selector bytes changed; three companion products added.",
       "mac_acceptance": "pending"
+    },
+    "products": {
+      "open_clusters_hunt_astrometry_source_v1.json": "328ca494efdfdf7e52a4d26c039c4b2155cee97d607267de5c1351c95a465654",
+      "open_clusters_hunt_astrometry_v1.provenance.json": "bdbc45035263392d9c620e9ee935162be00d319ebb8865602ba666dbdcd74510",
+      "open_clusters_hunt_astrometry_v1.ecsv": "00b001d520111dabdea337e5e243acf8c64495712aba704fb94abff89f6cd57d"
     }
   }
 }

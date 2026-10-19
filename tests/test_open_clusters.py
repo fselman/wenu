@@ -514,6 +514,170 @@ def test_selected_clusters_render_as_one_path_collection():
 
 
 
+def _astrometry_ingestion_inputs():
+    from pathlib import Path
+    import importlib.util
+    import json
+    root = Path(__file__).resolve().parents[1]
+    spec = importlib.util.spec_from_file_location('hunt_astrometry_owner', root/'tools/hunt_reffert_catalogue.py')
+    owner = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(owner)
+    fixture = root/'tests/fixtures/hunt_reffert2024_astrometry_v1'
+    return root, owner, fixture, json.loads((fixture/'capture_v1.json').read_text())
+
+
+def test_captured_hunt_astrometry_preserves_source_values_units_masks_and_mean_errors():
+    # Closest owner: test_hunt_member_photometry_rank_policy_and_help. Protect
+    # against omitted motions, offset/unit drift and confusing scatter with error.
+    root, owner, fixture, specification = _astrometry_ingestion_inputs()
+    table = owner.read_cluster_astrometry(fixture/'clusters.dat', fixture/'ReadMe', specification)
+    assert table['ID'].tolist() == [6, 7, 12, 1387]
+    assert table['pmRA'][0] == 0.90530141
+    assert table['s_pmRA'][0] == 0.15162631
+    assert table['e_pmRA'][0] == 0.00997628
+    assert table['Plx'][0] == 1.17058217 and table['RV'][0] == -17.28520635
+    assert table['pmRA'].unit == u.mas/u.yr and table['RV'].unit == u.km/u.s
+    assert np.ma.is_masked(table['RV'][-1]) and table['n_RV'][-1] == 0
+    assert table['pmRA'].description.endswith('multiplied by cos(dec)')
+    facts = table.meta['astrometry_source']['facts']
+    assert facts['coordinate_epoch_label']['value'] == '2016.0'
+    assert facts['ra_motion_convention']['value'] == 'mu_alpha_star'
+    assert facts['coordinate_epoch_scale'] is facts['coordinate_origin'] is facts['covariance'] is None
+    facts['centre_role']['value'] = 'consumer mutation'
+    assert specification['facts']['centre_role']['value'] == 'densest point'
+
+
+def test_hunt_astrometry_ingestion_refuses_corruption_and_changed_source_meaning(tmp_path, monkeypatch):
+    import hashlib
+    import pytest
+    from astropy.table import Table
+    from copy import deepcopy
+    root, owner, fixture, specification = _astrometry_ingestion_inputs()
+    path = tmp_path/'clusters.dat'
+    path.write_bytes((fixture/'clusters.dat').read_bytes() + b'bad')
+    with pytest.raises(ValueError, match='Unverified'):
+        owner.read_cluster_astrometry(path, fixture/'ReadMe', specification)
+    for key, value in [('source_description', 'A constructed conflicting interpretation'),
+                       ('source_unit', 'arcsec / yr')]:
+        conflict = deepcopy(specification)
+        conflict['columns']['pmRA'][key] = value
+        with pytest.raises(ValueError, match='Changed source'):
+            owner.read_cluster_astrometry(fixture/'clusters.dat', fixture/'ReadMe', conflict)
+    readme = tmp_path/'ReadMe'
+    readme.write_bytes((fixture/'ReadMe').read_bytes() + b'changed')
+    with pytest.raises(ValueError, match='Unverified'):
+        owner.read_cluster_astrometry(fixture/'clusters.dat', readme, specification)
+    # Constructed fault injection into captured records; not a new real fixture.
+    original = (fixture/'clusters.dat').read_bytes().splitlines(keepends=True)
+    path.write_bytes(b''.join([original[0], original[0], *original[2:]]))
+    conflict = deepcopy(specification)
+    conflict['files']['clusters.dat'].update(bytes=path.stat().st_size,
+        sha256=hashlib.sha256(path.read_bytes()).hexdigest())
+    with pytest.raises(ValueError, match='duplicate'):
+        owner.read_cluster_astrometry(path, fixture/'ReadMe', conflict)
+    captured = Table.read(fixture/'clusters.dat', format='ascii.cds', readme=str(fixture/'ReadMe'))
+    for name, value, message in [('pmRA', np.nan, 'Non-finite'),
+                                  ('e_pmRA', -1., 'Negative'),
+                                  ('dist16', 1e9, 'Unordered')]:
+        changed = captured.copy(copy_data=True)
+        changed[name][0] = value
+        with monkeypatch.context() as patch:
+            patch.setattr(owner.Table, 'read', lambda *args, **kwargs: changed.copy(copy_data=True))
+            with pytest.raises(ValueError, match=message):
+                owner.read_cluster_astrometry(fixture/'clusters.dat', fixture/'ReadMe', specification)
+
+
+def test_hunt_astrometry_fixture_join_is_exact_offline_and_refuses_source_mixing(tmp_path, monkeypatch):
+    from astropy.table import Table
+    import pytest
+    import urllib.request
+    root, owner, fixture, specification = _astrometry_ingestion_inputs()
+    catalogue = Table.read(root/'src/wenu/data/curated_catalogs/open_clusters/wenu_open_clusters_v0.2.ecsv')
+    wanted = [6, 7, 12, 1387]
+    keep = [np.ma.is_masked(v) or v in wanted for v in catalogue['hunt_id']]
+    selected = catalogue[keep]
+    path = tmp_path/'selected_v1.ecsv'
+    selected.write(path, format='ascii.ecsv')
+    before = path.read_bytes()
+    monkeypatch.setattr(urllib.request, 'urlopen', lambda *a, **k: pytest.fail('Offline ingestion acquired data'))
+    recovered = owner.build_astrometry_companion(path, fixture/'clusters.dat', fixture/'ReadMe', specification)
+    assert len(recovered) == 8 and sum(~np.ma.getmaskarray(recovered['ID'])) == 4
+    assert path.read_bytes() == before
+    assert recovered.meta['propagation_enabled'] is False
+    for change in ('centre', 'id', 'name', 'source'):
+        broken = selected.copy(copy_data=True)
+        index = next(i for i, row in enumerate(broken) if not np.ma.is_masked(row['hunt_id']))
+        if change == 'centre': broken['hunt_ra_deg'][index] += 1
+        if change == 'id': broken['hunt_id'][index] = 999999
+        if change == 'name': broken['hunt_name'][index] = 'wrong'
+        if change == 'source': broken['RA_source'][index] = 'dias'
+        broken.write(path, format='ascii.ecsv', overwrite=True)
+        with pytest.raises(ValueError, match='absent|mismatch|substitution'):
+            owner.build_astrometry_companion(path, fixture/'clusters.dat', fixture/'ReadMe', specification)
+
+
+def test_packaged_hunt_astrometry_enrichment_preserves_all_513_rows_and_runtime_metadata():
+    from astropy.table import Table
+    from wenu.objects.open_clusters import OpenClusterCatalogueMetadata
+    import hashlib
+    root, owner, fixture, specification = _astrometry_ingestion_inputs()
+    base = root/'src/wenu/data/curated_catalogs/open_clusters/wenu_open_clusters_v0.2.ecsv'
+    data = root/'src/wenu/data/catalogs/open_clusters'
+    companion = data/'open_clusters_hunt_astrometry_v1.ecsv'
+    receipt = data/'open_clusters_hunt_astrometry_v1.provenance.json'
+    before = base.read_bytes()
+    original = Table.read(base)
+    enriched = owner.attach_cluster_astrometry(base, companion, receipt)
+    assert len(enriched) == len(original) == 513
+    assert (base.parent/'open_star_clusters.ecsv').read_bytes() == before == base.read_bytes()
+    for name in original.colnames:
+        np.testing.assert_array_equal(np.ma.getmaskarray(enriched[name]), np.ma.getmaskarray(original[name]))
+        np.testing.assert_array_equal(np.asarray(enriched[name]), np.asarray(original[name]))
+        assert enriched[name].unit == original[name].unit
+        assert enriched[name].description == original[name].description
+    for name, value in original.meta.items():
+        assert enriched.meta[name] == value
+    adopted = ~np.ma.getmaskarray(enriched['hunt_astrometry_ID'])
+    np.testing.assert_array_equal(adopted, original['RA_source'] == 'hunt')
+    assert sum(adopted) == 509
+    assert sum(~np.ma.getmaskarray(enriched['hunt_astrometry_RV'])) == 502
+    assert sum(~np.ma.getmaskarray(original['dias_proper_motion_ra_mas_per_year'][~adopted])) == 4
+    record = OpenClusterCatalogueMetadata.from_table(enriched).to_record()
+    assert record['column_units']['hunt_astrometry_pmRA'] == 'mas / yr'
+    metadata = record['source_metadata']['astrometry_companion']
+    assert metadata['selected_catalogue_sha256'] == hashlib.sha256(before).hexdigest()
+    assert metadata['astrometry_source']['facts']['coordinate_epoch_scale'] is None
+    assert metadata['propagation_enabled'] is False
+    enriched['hunt_astrometry_pmRA'][0] = 999
+    assert owner.attach_cluster_astrometry(base, companion, receipt)['hunt_astrometry_pmRA'][0] != 999
+
+
+def test_hunt_astrometry_publication_is_versioned_and_refuses_wrong_catalogue_or_product(tmp_path):
+    from astropy.table import Table
+    import pytest
+    root, owner, fixture, specification = _astrometry_ingestion_inputs()
+    data = root/'src/wenu/data/catalogs/open_clusters'
+    companion = data/'open_clusters_hunt_astrometry_v1.ecsv'
+    table = Table.read(companion)
+    destination = tmp_path/'products_v1'
+    owner.publish_astrometry_companion(table, destination)
+    with pytest.raises(FileExistsError):
+        owner.publish_astrometry_companion(table, destination)
+    base = root/'src/wenu/data/curated_catalogs/open_clusters/wenu_open_clusters_v0.2.ecsv'
+    receipt = destination/'open_clusters_hunt_astrometry_v1.provenance.json'
+    wrong = tmp_path/'wrong_v1.ecsv'
+    wrong.write_bytes(base.read_bytes() + b'\n')
+    product = destination/companion.name
+    with pytest.raises(ValueError, match='different selected catalogue'):
+        owner.attach_cluster_astrometry(wrong, product, receipt)
+    product.write_bytes(product.read_bytes() + b'changed')
+    with pytest.raises(ValueError, match='Unverified'):
+        owner.attach_cluster_astrometry(base, product, receipt)
+    with pytest.raises(SystemExit) as error:
+        owner.astrometry_main(['--help'])
+    assert error.value.code == 0
+
+
 def test_hunt_member_photometry_rank_policy_and_help(tmp_path, capsys):
     import importlib.util
     from pathlib import Path
