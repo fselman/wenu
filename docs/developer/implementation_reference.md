@@ -595,7 +595,7 @@ with hashes and original row indices; constructed mutations are labelled faults.
 `astrometric_state.SpaceMotionRow` copies an identifier, source `TimePoint`, SI
 position/velocity triples or an explicit unavailable reason. It does not encode
 an object family. `RectilinearAstrometricProvider(rows, *, descriptor, catalogue,
-admission, evidence, reuse_method)` consumes copied typed key/row pairs and
+admission, evidence, reuse_method=None, velocity_evidence=None)` consumes copied typed key/row pairs and
 immutable SDK bindings supplied by a source adapter. It validates full identity
 sets, supported direction capabilities, numerical evidence, source scale/epoch
 and finite model domains. The engine owns full nominal rectilinear evaluation,
@@ -620,8 +620,8 @@ This proves engine reuse, not independent installation of all of Wenu or
 production stellar/PN/SNR catalogue admission. The installed-wheel cluster test
 checks that both facade and engine ship and execute together.
 
-The initial engine still requires complete admitted SI space-motion solutions;
-Cartesian output and observer parallax remain pending. The requested configurable
+The engine still requires complete admitted SI space-motion solutions. Explicit
+Cartesian output is now implemented as described below; observer parallax remains pending. The requested configurable
 200-year no-PM and 1,000-year PM-only lookback policies, measured from source
 reference epochs, remain planned reduced-model admission policies, not enabled
 models or absolute accuracy guarantees. Expansion and morphology evolution are
@@ -750,6 +750,64 @@ persisted epoch states and observer adoption remain future work. Chart calls use
 reproducible full-model sessions; interactive provider reuse remains available
 through the separate SDK API and is not a projection/paper accuracy promise.
 
+### Explicit Cartesian astrometric output
+
+`ClusterMotionProvider(catalogue, representation="cartesian")` supplies an explicit
+Cartesian admission to the same object-independent `RectilinearAstrometricProvider`.
+The default `representation="direction"` retains its accepted descriptor, model,
+reference, resource identities, numerical/reuse behavior and chart consumers.
+Cartesian output uses a distinct provider/model/reference binding, preserving
+object keys and source-resource provenance. Both representations can coexist in
+one kernel/session without sharing query/cache identities or evaluating one
+another. Cartesian source records advertise `cartesian_state` and batch evaluation;
+there is no direction-reuse capability on that admission.
+
+Query its advertised admission through the existing SDK, for example after
+explicitly loading/admitting `motion_catalogue` and choosing a covered TCB instant:
+
+```python
+from wenu.cluster_state import ClusterMotionProvider
+from wenu_kernel import Kernel
+from wenu_kernel.records import AccuracyRequest, SessionPolicy, StateQuery
+
+provider = ClusterMotionProvider(motion_catalogue, representation="cartesian")
+admission = provider.describe().admissions[0]
+with Kernel(references=(admission.reference,)) as kernel:
+    kernel.register(provider, ownership="owned")
+    with kernel.open_session(SessionPolicy((admission.catalogue,))) as session:
+        result = session.evaluate(StateQuery(
+            admission.catalogue, admission.model, selected_keys,
+            (evaluation_time,), admission.reference,
+            AccuracyRequest(metric="euclidean_norm"), require_velocity=True,
+        ))
+```
+
+`CartesianState.position_m` retains the unnormalized nominal barycentric SI
+position; its norm carries distance. `velocity_m_s` retains the full admitted
+constant space velocity and `velocity_available` is true. Source reference epoch,
+requested evaluation/anchor time and explicit scale are independent fields.
+The core evaluates exact rational arithmetic on the admitted binary64 SI PV
+and split-JD elapsed time, rounding only final position coordinates. It applies
+no additional light-time, observer translation, parallax, aberration or frame
+transformation. This is the existing nominal catalogue model, not a qualified
+geometric emission worldline or historical cluster reconstruction.
+
+Position and velocity have separate SI uncertainty evidence. Measurement,
+physical model and numerical bounds remain `not_evaluated`; independent
+numerical tests are not a universal error certificate. The direction's angular
+bound is not copied into metres or metres/second. Requests for Cartesian accuracy
+bounds, angular accuracy, temporal certificates or interval coverage are refused.
+Identical requests may use the SDK's exact cache; different times use full PV
+evaluation. A required velocity is supported for full-input solutions only.
+Unqualified/missing-input rows remain visible but unavailable; mixed selected
+queries refuse completely. The 513-row cluster source still admits 502 solutions
+and retains eleven unavailable rows. There is no source/zero-velocity fallback.
+
+This adds explicit state output only. Existing native/observed lookup, explicit
+native motion charts, snapshot formats and observer resources are unchanged.
+The [observer contract](scientific_contracts.md#cluster-observer-realization-contract)
+still requires time/common-coordinate admission before finite-distance observation.
+
 ### Observer motion: current boundary and proposed handoff
 
 Observed cluster motion is not implemented. `OpenClusters.realize` refuses a
@@ -759,8 +817,7 @@ or velocity enters that transform, so replacing those angles with propagated
 ones would not implement the finite-distance observer contract.
 
 The SDK already supports `CartesianState`/`cartesian_state`, explicit velocity
-availability and separate position/velocity evidence. The cluster provider has
-not adopted that representation. TimeService has explicit admission/receipts,
+availability and separate position/velocity evidence. The explicit cluster Cartesian representation now adopts that SDK interface. TimeService has explicit admission/receipts,
 but no ordinary-observer civil/TCB adapter is admitted for this new route.
 Solar-System `AstrometricDirection` requires retarded geometric target/emission
 semantics, which the nominal cluster model does not supply. These existing types

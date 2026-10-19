@@ -182,11 +182,14 @@ def admit_cluster_motion(table, metadata, *, coverage):
 
 class ClusterMotionProvider(RectilinearAstrometricProvider):
     """Nominal model with provider-owned angular certificates; physical error unknown."""
-    def __init__(self, catalogue):
+    def __init__(self, catalogue, *, representation="direction"):
         if type(catalogue) is not ClusterMotionCatalogue:
             raise ValueError('An admitted immutable cluster catalogue is required.')
+        if representation not in ('direction','cartesian'):
+            raise ValueError('Unsupported cluster state representation.')
+        cartesian = representation == 'cartesian'
         meta = catalogue.to_record()['source_metadata']
-        key = ProviderKey('wenu.cluster-motion', '1')
+        key = ProviderKey('wenu.cluster-motion.cartesian' if cartesian else 'wenu.cluster-motion', '1')
         coverage = catalogue.coverage
         identity = _canonical_digest((catalogue.metadata_json, tuple(
             (x.identifier, x.position_m, x.velocity_m_s) for x in catalogue.rows),
@@ -199,10 +202,16 @@ class ClusterMotionProvider(RectilinearAstrometricProvider):
         model = ModelRef('cluster-centre-rectilinear', '2', _canonical_digest((identity, meta['policies'],
             'Astropy spherical differential; SI rectilinear update; exact-rational cone/1',
             _NUMERICAL_RAD, astropy.__version__, np.__version__)), (resource,))
+        if cartesian:
+            model = ModelRef('cluster-centre-rectilinear-cartesian','1',
+                _canonical_digest((identity,meta['policies'],
+                    'exact binary64 SI rectilinear PV; final position rounding/1',
+                    astropy.__version__,np.__version__)),(resource,))
         facts = meta['astrometry']
-        frame = ReferenceSpec(facts['frame'], facts['origin'], 'nominal-astrometric', 'direction', 'rad',
+        frame = ReferenceSpec(facts['frame'], facts['origin'], 'nominal-astrometric', representation, 'm,m/s' if cartesian else 'rad',
             'density-mode centre transported by core mean motion; no additional light-time correction; unknown physical error')
-        capabilities = ('epoch_direction', 'batch_evaluation', 'direction_reuse_bound')
+        capabilities = (('cartesian_state','batch_evaluation') if cartesian else
+                        ('epoch_direction', 'batch_evaluation', 'direction_reuse_bound'))
         records = tuple(ObjectRecord(k, (ExternalId(meta['namespace'], meta['edition'], row.identifier),),
             'open-cluster', () if row.source_epoch is None else (row.source_epoch,),
             ('unavailable_motion',) if row.unavailable_reason else capabilities, (meta['provenance'],))
@@ -211,7 +220,8 @@ class ClusterMotionProvider(RectilinearAstrometricProvider):
         self._admission = ModelAdmission(reference, model, frame,
             tuple(k for k, row in zip(keys, catalogue.rows) if row.unavailable_reason is None), capabilities, coverage)
         self._descriptor = ProviderDescriptor(key, (reference,), (self._admission,),
-            'offline nominal propagation and interactive certified reuse; no default chart adoption')
+            ('offline Cartesian full-model PV; no temporal reuse or certified accuracy' if cartesian else
+             'offline nominal propagation and interactive certified reuse; no default chart adoption'))
         self._evidence = UncertaintyEvidence(*(
             UncertaintyChannel('not_evaluated', None, 'rad', meaning)
             for meaning in ('cluster-centre measurement', 'centre/rectilinear model error')),
@@ -219,6 +229,16 @@ class ClusterMotionProvider(RectilinearAstrometricProvider):
         self._reuse_method = ModelRef('cluster-rectilinear-cone', '1',
             _canonical_digest(('exact-binary64-rational-cone/1', _NUMERICAL_RAD)), (resource,))
 
+        velocity_evidence = None
+        if cartesian:
+            def unknown(unit,measurement):
+                return UncertaintyEvidence(
+                    UncertaintyChannel('not_evaluated',None,unit,measurement),
+                    UncertaintyChannel('not_evaluated',None,unit,'nominal centre/rectilinear model error'),
+                    UncertaintyChannel('not_evaluated',None,unit,'euclidean_norm'))
+            self._evidence = unknown('m','cluster-centre position measurement')
+            velocity_evidence = unknown('m/s','cluster-mean velocity measurement')
+            self._reuse_method = None
         super().__init__(tuple(self._lookup.items()), descriptor=self._descriptor,
             catalogue=self._catalogue, admission=self._admission, evidence=self._evidence,
-            reuse_method=self._reuse_method)
+            reuse_method=self._reuse_method,velocity_evidence=velocity_evidence)

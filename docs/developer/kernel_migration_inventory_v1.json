@@ -8780,5 +8780,23 @@
     "excluded": [
       "Expansion and morphology evolution"
     ]
+  },
+  "astrometric_cartesian_v1": {
+    "base": "03b9d7bf0b3d4eedae6753397320609a3d979b67",
+    "gate": "astrometric-cartesian",
+    "engine": "src/wenu/astrometric_state.py",
+    "adapter": "src/wenu/cluster_state.py",
+    "scope": "Explicit separate Cartesian admission of nominal SI PV with constant velocity, full-model evaluation and exact-request caching. Existing direction identities/defaults preserved.",
+    "errors": "Independent SI measurement/model/numerical channels remain unknown; no Cartesian accuracy or temporal certificate admission.",
+    "tests": [
+      "tests/test_astrometric_state.py",
+      "tests/test_cluster_state.py",
+      "tests/test_curated_catalogues.py::test_cluster_motion_module_and_admission_ship_and_evaluate_from_installed_wheel"
+    ],
+    "pending": [
+      "Time/common-observer-coordinate convention admission",
+      "Observer displacement/parallax/apparent realization",
+      "Reduced-input models and other real source adapters"
+    ]
   }
 }

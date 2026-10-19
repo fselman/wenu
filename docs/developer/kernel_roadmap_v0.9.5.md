@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 12, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 13, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -546,11 +546,12 @@ now records the first bounded design deliverable; no observed runtime is enabled
 Implement the following separately, preserving PR #261 defaults/native semantics:
 
 The shared direction engine and calling cluster adapter are now factored;
-synthetic mixed-family evaluation is verified. This does not adopt other source
-catalogues, reduced-input models, observer parallax or expansion. Future motion
+synthetic mixed-family evaluation is verified. Explicit Cartesian output now retains SI position/velocity through that same
+engine. This does not adopt other source catalogues, reduced-input models,
+observer parallax or expansion. Future motion
 work uses that core rather than a new engine for each family.
 
-1. Publish the existing admitted cluster SI position/velocity through a distinct
+1. **Implemented:** publish the existing admitted cluster SI position/velocity through a distinct
    Cartesian admission in the shared object-independent engine using the accepted SDK. Verify its own evidence,
    conformance, source/time/refusal, isolation and installed-consumer contract.
    Do not infer a Cartesian numerical bound from the direction cone certificate.

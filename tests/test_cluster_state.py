@@ -374,3 +374,44 @@ def test_cluster_numerical_bound_refuses_corrupted_elapsed_time(monkeypatch):
     through_kernel(p,q)  # Positive baseline before injecting an actual numerical fault.
     monkeypatch.setattr(owner,'_seconds',lambda time,epoch:0.)
     with pytest.raises(KernelError): through_kernel(p,q)
+
+
+@pytest.mark.parametrize('days',[-3652500.,-36525.,0.,365.25,3652500.])
+def test_cluster_cartesian_matches_independent_erfa_pv_and_retains_all_identities(days):
+    import erfa
+    table,meta,_=synthetic()
+    coverage=TimeSpan(TimePoint(-2000000,0,'tcb'),TimePoint(7000000,0,'tcb'))
+    catalogue=admit_cluster_motion(table,meta,coverage=coverage)
+    p=ClusterMotionProvider(catalogue,representation='cartesian')
+    direction=ClusterMotionProvider(catalogue)
+    assert p.describe().catalogues[0].provider!=direction.describe().catalogues[0].provider
+    assert p.describe().admissions[0].objects==direction.describe().admissions[0].objects
+    day=int(np.floor(days+.5));time=TimePoint(2457389+day,days-day,'tcb')
+    q=replace(query_for(p,(time,)),accuracy=AccuracyRequest(metric='euclidean_norm'),require_velocity=True)
+    result=through_kernel(p,q)
+    for source,state in zip(table,result.states):
+        a,d=radians(source['RAdeg']),radians(source['DEdeg'])
+        axis=np.array([cos(a)*cos(d),sin(a)*cos(d),sin(d)])
+        east=np.array([-sin(a),cos(a),0.]);north=np.array([-cos(a)*sin(d),-sin(a)*sin(d),cos(d)])
+        distance=source['dist50']*u.pc.to(u.m);factor=u.mas.to(u.rad)/u.yr.to(u.s)
+        pv=np.zeros((),dtype=erfa.dt_pv);pv['p']=distance*axis
+        pv['v']=distance*factor*(source['pmRA']*east+source['pmDE']*north)+source['RV']*1000*axis
+        expected=erfa.pvu(days*86400,pv)
+        np.testing.assert_allclose(state.position_m,expected['p'],rtol=2e-15,atol=1e3)
+        np.testing.assert_allclose(state.velocity_m_s,expected['v'],rtol=2e-15,atol=1e-9)
+        assert state.time==state.anchor_time==time
+        assert state.position_evidence.measurement.status=='not_evaluated'
+        assert state.velocity_evidence.numerical.units=='m/s'
+
+
+def test_real_cluster_cartesian_keeps_unavailable_rows_and_rejects_mixed_selection():
+    coverage=TimeSpan(TimePoint(2451545,0,'tcb'),TimePoint(2462503,-.5,'tcb'))
+    catalogue=load_cluster_motion(DATA/'open_clusters_hunt_astrometry_v1.ecsv',
+        DATA/'open_clusters_hunt_motion_admission_v1.json',coverage=coverage)
+    p=ClusterMotionProvider(catalogue,representation='cartesian');a=p.describe().admissions[0]
+    assert len(p.catalogue(a.catalogue).objects)==513 and len(a.objects)==502
+    unavailable=next(row.key for row in p.catalogue(a.catalogue).objects if row.key not in a.objects)
+    q=replace(query_for(p,objects=(a.objects[0],unavailable)),accuracy=AccuracyRequest(metric='euclidean_norm'))
+    assert not p.supports(q).supported
+    with pytest.raises(KernelError):through_kernel(p,q)
+    with pytest.raises(ValueError):ClusterMotionProvider(catalogue,representation='unknown')

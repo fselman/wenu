@@ -178,6 +178,28 @@ observer/projection/rendering and atlas behavior are unchanged; retain their
 accepted receipts. No full SDK, broad installation, unrelated-family or full
 production rerun. Run documentation and tooling separately.
 
+## Shared astrometric Cartesian output
+
+`astrometric-cartesian` selects the generic and cluster state owners, unchanged
+native consumer seams and the extended installed-wheel case. The shared core
+and explicit source adapter change; SDK/source resources/dependencies/observer,
+projection/rendering and snapshot schemas do not. Reuse accepted SDK evidence;
+no full production or SDK repeat. Direction default identities and independent
+ERFA/analytic/Decimal/reuse tests remain selected, not replaced.
+
+New faults protected are normalized-away distance, velocity/RV sign or SI-unit
+loss, wrong split-JD/source epochs, cross-representation cache/evaluation, hidden
+accuracy/reuse admission and unavailable mixed selections. Independent scalar
+trigonometry plus ERFA PV updates check Cartesian output at poles, wrap and
+past/future nominal times. An 80-digit Decimal oracle checks exact-input PV
+arithmetic on constructed four-family records. Numerical agreement does not
+certify physical/Cartesian absolute accuracy. A separate Cartesian portable
+conformance factory and isolated SDK-only mixed-family execution supplement
+those oracles. Installed wheel/sdist checks retain the direction/default checks
+and execute real Cartesian kernel queries as well. No old assertion is removed.
+The new tests stay in existing enduring owners. Run documentation and stdlib
+tooling separately; do not also run the parent factoring/native gates.
+
 ## Shared astrometric engine factoring
 
 `astrometric-core-factoring` runs the new enduring generic-engine owner, the

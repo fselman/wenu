@@ -160,8 +160,9 @@ unqualified Dias-only epochs. Provider-owned exact-rational cone certificates
 now bound numerical direction reuse within that declared domain. Only explicit
 interactive sessions reuse prior anchors; reproducible sessions evaluate the full
 model. The bound starts from admitted binary64 SI states and does not certify
-source conversion, measurement or physical accuracy. Velocity output remains
-unsupported. Default chart/observed/saved consumers continue to use source
+source conversion, measurement or physical accuracy. Velocity output on the direction admission remains
+unsupported. Explicit Cartesian admission now supplies SI position/velocity through
+the same core with separate unknown error evidence and no Cartesian bounds/reuse. Default chart/observed/saved consumers continue to use source
 lookup. Explicit native chart calls now accept the admitted motion catalogue and
 an explicit TCB context epoch, query a reproducible kernel session and consume
 its returned vectors. Restored v5 skies use that same inherited facade without
@@ -173,14 +174,14 @@ retain source epochs. Observed motion and CLI model selection remain pending. Se
 
 The current cluster observer seam discards distance/velocity: lookup RA/Dec enters
 `catalogue_point_altaz` and `CoordinateService`. The cluster catalogue contains SI
-PV internally, but its provider advertises only direction output. The SDK already
+PV internally, and its provider now offers explicit direction or Cartesian output. The SDK already
 supports a separate Cartesian admission; adopting it does not itself solve observer
 time/common-coordinate conventions or apparent-place realization. Existing
 Solar-System light-time realization has incompatible geometric emission semantics.
 The [observer contract](scientific_contracts.md#cluster-observer-realization-contract)
 and [ordered gates](kernel_roadmap_v0.9.5.md#cluster-observer-implementation-order)
-now specify those prerequisites. This is an as-is/design addition only: no new
-Cartesian cluster provider, time adapter or observed motion route exists yet.
+now specify those prerequisites. The explicit Cartesian prerequisite is implemented with the accepted SDK.
+No new time adapter or observed motion route exists yet.
 
 ## Abstraction barriers that remain incomplete
 

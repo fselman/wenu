@@ -1021,6 +1021,14 @@
           "reason": "Both facade and new generic module ship and run through real installed SDK/Wenu consumption."
         }
       ]
+    },
+    "astrometric-cartesian": {
+      "scope": "Explicit Cartesian SI position/velocity in shared astrometric engine and cluster adapter; independent numerical/conformance/install and native compatibility.",
+      "limits": "No SDK/source-resource/dependency, observer/parallax, projection/renderer or snapshot schema change. No Cartesian error guarantees/temporal certificates; no reduced-input models/expansion. No full SDK/production repeat.",
+      "extends": [
+        "astrometric-core-factoring"
+      ],
+      "selections": []
     }
   },
   "consumer_review": [
