@@ -1376,3 +1376,12 @@ Astropy observer transformation are preserved. Explicit user coordinates remain
 constructed references. Observation uses returned centres once and binds warm
 caches to their values; no new frame conversion or propagation mathematics is
 introduced. Dedicated globular/PN/SNR migrations remain separate.
+
+### Globular-cluster lookup ownership
+
+K3.13 routes retained globular catalogue centres through the shared direction
+lookup before native/observed geometry. The existing Harris half-light diameter
+and common-name/structural metadata semantics are unchanged. Missing physical
+reference/epoch declarations stay unknown and do not become measured zero motion.
+Returned centres determine observation cache identity; no new frame/time, motion
+or distance-dependent observer algorithm is introduced.

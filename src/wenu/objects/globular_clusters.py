@@ -19,6 +19,17 @@ class GlobularClusters(NonStellar):
     layer_name = "globular_clusters"
     _ANGULAR_SOURCE_FIELDS = ("core_radius", "half_light_radius")
 
+    @property
+    def _uses_catalogue_lookup(self):
+        return True
+
+    def _direction_provider(self, rows, scale):
+        """Globular source identity; shared owner supplies lookup mechanics."""
+        return self._catalogue_direction_provider(rows, scale,
+            capability="catalogue_lookup", semantic_type="globular-cluster",
+            provider_id="wenu.globular-lookup", resource_id="derived-globular-table",
+            model_id="globular-catalogue-lookup")
+
     _FLOAT_FIELDS = (
         "lii",
         "bii",

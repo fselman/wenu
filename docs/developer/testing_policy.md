@@ -939,3 +939,28 @@ PDF/SVG exports and restored warm refusal. Documentation: 33 passed; three check
 need archive files absent from this execution copy. Active links/anchors and all
 73 preserved archive hashes were verified against the remote Git tree. Complete
 Mac documentation and nonstellar-routing acceptance remain pending.
+
+## Globular routing gate
+
+K3.13 uses `python tools/run_test_gate.py globular-routing --run` with plugin
+autoload disabled. Changed globular owner tests inject real kernel vectors after
+cache warming and check every public/native/label/observed consumer against
+independent SkyCoord/ellipse results. Real packaged lookup/refusal tests retain
+source gaps, strict physical refusal and globular provider identity. Inherited
+nonstellar, public position and observation-cache owners remain selected. Actual
+globular atlas output compares legacy/cold/restored PNG pixels with PDF/SVG
+exports and native labels/outlines; restored warm routes must propagate refusal.
+Existing all-family row/mask/unit/subset snapshot and source-free fresh-process
+contracts remain selected. Half-light diameter/common names/structural metadata
+retain their current tests. Reuse accepted shared provider conformance, numerical
+science, installation and atlas lifetime evidence; no SDK, source resource, build,
+schema, observation or renderer change warrants full SDK/production repetition.
+Run documentation and eight tooling cases alongside this gate.
+
+Local Python 3.12 evidence: 125 focused cases passed in 34.18 s and eight tooling
+cases passed. A real globular atlas page retained identical legacy/cold/restored
+PNG pixels with PDF/SVG exports; restored warm refusal and source-free process
+checks passed. Documentation: 33 passed; three archive-dependent checks need
+files absent from the execution copy. Active links/anchors and all 73 preserved
+archive blob hashes were independently verified against GitHub. Complete Mac
+documentation and globular-routing acceptance remain pending.

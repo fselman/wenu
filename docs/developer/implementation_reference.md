@@ -562,7 +562,8 @@ its returned centre arrays, ordered IDs and immutable metadata enter cache ident
 Galaxy `_observed_point_source_key` similarly binds the already-queried centre
 values. Changed kernel states invalidate a warm observation cache, and failed
 admission/query propagates even after cache fill. The generic NonStellar owner now opts into these hooks under K3.12;
-dedicated globular/PN/SNR families preserve their existing paths. No transformation or ellipse mathematics
+dedicated PN/SNR families preserve their existing paths. K3.13 opts the globular
+owner into the same mechanics with its own identity. No transformation or ellipse mathematics
 changes. Cold and restored galaxies use these same methods without a schema change.
 
 Centre, angular semiaxes and PA form the domain shape description. Catalogue
@@ -1365,3 +1366,19 @@ the provider reference. Explicit-coordinate subjects keep their constructed rout
 get_object_center and binocular request preparation consume this public property,
 so refused target queries propagate through both consumers. No hidden target cache
 or catalogue cross-identification replacement is introduced.
+
+## Globular-cluster kernel lookup
+
+K3.13 enables GlobularClusters._uses_catalogue_lookup and supplies a globular
+_direction_provider facade to the accepted shared catalogue lookup owner. The
+semantic type is globular-cluster; provider/model/resource IDs are globular-owned.
+Source metadata admission, copied rows/identity, nullable or qualified source
+epochs, evaluation anchor, vector decoding, observation inputs and returned-state
+cache identities use the accepted NonStellar mechanics. No source fact is inferred.
+
+Public position, native outline and label realization, observed centres/outlines
+and restored sources all query the provider. Failed source admission or state
+evaluation propagates after cache fill; source coordinates are not a recovery
+route. Harris half-light diameters, structural metadata, source/active selection,
+common-name policy, sampling and glyph/observer mathematics stay with their existing
+owners. PN/SNR routes and physical motion remain separate pending work.

@@ -168,3 +168,87 @@ def test_cluster_zorder_is_between_galaxies_and_stars():
         < layers.GLOBULAR_CLUSTERS
         < layers.STARS
     )
+
+
+def test_globular_returned_kernel_centres_drive_native_and_warm_observed_routes(catalogue, observer, monkeypatch):
+    from dataclasses import replace
+    from astropy.coordinates import SkyCoord
+    from wenu.catalogue_state import _unit_direction
+    from wenu_kernel import KernelSession
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    layer = GlobularClusters(observer, samples=12, magnitude_limit=5.); layer.load(filename=catalogue)
+    record = layer.catalogue_metadata.to_record()
+    original = layer.source_catalog.copy(copy_data=True)
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    selected = ['NGC 5139']
+    layer.spherical_centers(observer, selected=selected)
+    layer.spherical_geometry(observer, selected=selected)
+    evaluate, seen = KernelSession.evaluate, []
+    def shift(session, query):
+        batch = evaluate(session, query); seen.append(batch)
+        return replace(batch, states=tuple(replace(s, vector=_unit_direction(35., -10.)) for s in batch.states))
+    monkeypatch.setattr(KernelSession, 'evaluate', shift)
+    points = layer.position()
+    assert list(points.ids) == ['NGC 104', 'NGC 5139']
+    np.testing.assert_allclose(points.lon_deg, 35.)
+    labels = layer.realize(context, None, selected=selected, labels_only=True)
+    np.testing.assert_allclose(labels.lon_deg, [35.])
+    outline = layer.realize(context, None, selected=selected)
+    expected = layer._ellipse(SkyCoord(ra=35.*u.deg, dec=-10.*u.deg), 10., 10., np.nan, 12)
+    np.testing.assert_allclose(outline.lon_deg[0], expected.icrs.ra.deg)
+    horizontal = layer.spherical_centers(observer, selected=selected)
+    np.testing.assert_allclose(horizontal.lon_deg, [SkyCoord(ra=35.*u.deg, dec=-10.*u.deg).transform_to(observer.altaz_frame).az.deg])
+    observed = layer.spherical_geometry(observer, selected=selected)
+    np.testing.assert_allclose(observed.lon_deg[0], expected.transform_to(observer.altaz_frame).az.deg)
+    assert observed.names.tolist() == ['omega Cen']
+    assert observed.metadata['size_definition'] == 'half_light_diameter'
+    assert observed.metadata['half_light_radius'].tolist() == [5.]
+    assert len(seen) == 5  # One query per consumer, including warm observation.
+    assert layer.catalogue_metadata.to_record() == record
+    for name in original.colnames:
+        np.testing.assert_array_equal(original[name], layer.source_catalog[name])
+
+
+@pytest.mark.parametrize('failure', ('kernel', 'lookup'))
+def test_packaged_globular_warm_routes_refuse_without_source_fallback(observer, monkeypatch, failure):
+    from wenu_kernel import KernelSession
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    layer = GlobularClusters(observer, samples=12); layer.load()
+    record = layer.require_catalogue_lookup_metadata().to_record()
+    assert layer.admission_missing_fields
+    with pytest.raises(ValueError, match='Incomplete nonstellar metadata'):
+        layer.require_complete_metadata()
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    actions = (layer.position, lambda: layer.realize(context, None, labels_only=True),
+               lambda: layer.realize(context, None),
+               lambda: layer.spherical_centers(observer), lambda: layer.spherical_geometry(observer))
+    for action in actions:
+        action()
+    def refuse(*args, **kwargs):
+        raise RuntimeError('synthetic globular refusal')
+    if failure == 'kernel':
+        monkeypatch.setattr(KernelSession, 'evaluate', refuse)
+    else:
+        monkeypatch.setattr(layer, 'require_catalogue_lookup_metadata', refuse)
+    for action in actions:
+        with pytest.raises(RuntimeError, match='globular refusal'):
+            action()
+    assert layer.catalogue_metadata.to_record() == record
+
+
+def test_globular_provider_keeps_own_identity_and_unknown_physical_facts():
+    from wenu_kernel.records import TimePoint
+    from wenu.catalogue_state import catalogue_direction_states
+    layer = GlobularClusters(None); layer.load()
+    record = layer.catalogue_metadata.to_record()
+    rows = tuple((str(r['identifier']), float(r['ra_deg']), float(r['dec_deg'])) for r in layer.catalog)
+    provider = layer._direction_provider(rows, 'tt')
+    descriptor = provider.describe()
+    admission = descriptor.admissions[0]
+    assert 'catalogue_lookup' in admission.capabilities
+    assert 'globular' in admission.model.model_id
+    states = catalogue_direction_states(provider, TimePoint(0, 0, 'tt'))
+    assert len(states) == len(rows)
+    assert all(state.source_epoch is None for state in states)
+    assert record['epoch'] is None and record['origin'] is None
+    assert admission.reference.origin_id == 'legacy-unverified-origin'
