@@ -1753,6 +1753,12 @@
       "git_blob_sha": "6f7675ae253d567f673a91713e6a84e981596a64",
       "description": "Object-independent explicit TCB/TDB time conversion and Cartesian coordinate scaling receipts.",
       "baseline_relation": "Additive convention boundary; no observer or product runtime adoption."
+    },
+    {
+      "path": "src/wenu/astrometric_observation.py",
+      "git_blob_sha": "3133710812f19fc31a306ca5a4e1865476284357",
+      "description": "Offline explicit UTC/TT reception, verified local leap/final EOP resources, ERFA analytic Earth/observer PV and TDB/TCB receipts.",
+      "baseline_relation": "New enduring observation-context boundary; no target or chart adoption."
     }
   ],
   "test_side_python_files": [
@@ -8820,6 +8826,22 @@
       "No observer backend or parallax",
       "No total error or temporal certificate",
       "No reduced-input model or expansion"
+    ]
+  },
+  "astrometric_reception_v1": {
+    "base": "b50b95f63b8535d15db16ab9c39ce1722da0efb9",
+    "gate": "astrometric-reception",
+    "owner": "src/wenu/astrometric_observation.py",
+    "scope": "Explicit offline reception event and star-independent ERFA context. Unknown total errors retained; independent resource coverage and identity.",
+    "pending": [
+      "Finite-distance target translation/parallax",
+      "Apparent correction/error/cache gates",
+      "Observed chart/CLI/snapshot consumers"
+    ],
+    "excluded": [
+      "New source catalogue or acquisition",
+      "Target propagation changes or expansion",
+      "Implicit global configuration or resource fallback"
     ]
   }
 }

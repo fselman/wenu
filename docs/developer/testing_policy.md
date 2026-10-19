@@ -248,6 +248,31 @@ gate. Do not repeat the parent Cartesian/native gate, independent SDK or full
 production suite. No backend/ephemeris/EOP/UTC/TT adapter, observer parallax,
 physical accuracy or supported observation domain is admitted by this subset.
 
+## Offline reception input gate
+
+`astrometric-reception` selects five additive cases in the existing observer
+resource owner and the extended installed-wheel cluster consumer. The closest
+existing tests protect observer resource identity/immutability; the existing
+Cartesian installed query protects the new reception-to-propagation handoff.
+New protected faults are UTC leap-second collapse, wrong TT offset, hidden
+scale relabelling, global leap/resource drift, predicted/extrapolated EOP use,
+wrong site/units, stale backend identity and accidental Observer/network access.
+Analytic leap/TT checks are independent of Time.tt. A published ERFA APCO13
+observer PV reference uses explicitly synthetic EOP inputs and accounts for
+that reference's TT ephemeris argument. These are numerical composition checks,
+not independent physical ephemeris or target apparent-place guarantees.
+
+A deliberate zero-DTDB fault must change the accepted event. Tests retain
+unknown total error channels, exact TDB/TCB receipts, file-copy immutability,
+site effects and warm refusal/recovery. The installed consumer preserves all
+previous source/direction/reuse/Cartesian/convention assertions and queries a
+real cluster at the actual prepared TCB event. New module bytes ship in wheel
+and sdist. Run documentation and tooling separately. The legacy Observer,
+CoordinateService, provider core, SDK, default charts/snapshots and all target
+apparent/projection/render code remain unchanged; reuse their accepted gates.
+Do not repeat the prior parent/convention/native gates, full SDK or production
+suite. Target parallax/correction/cache/public-consumer gates remain pending.
+
 ## Cluster observer contract and implementation gates
 
 The contract-only milestone adds the scientific ownership/admission contract,

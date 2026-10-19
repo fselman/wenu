@@ -1267,8 +1267,12 @@ before finite-distance observation. A time-scale conversion alone does not
 qualify common spatial coordinate scaling. The explicit convention boundary now
 implements IAU 2006 B3 TCB/TDB conversion and IERS 2010 section 1.2 length
 scaling, with unchanged coordinate velocity and separate operation-rounding
-receipts. This does not admit civil/TT reception conversion, an Earth ephemeris,
-site/EOP data or a concrete observer backend. See the
+receipts. The separate offline reception boundary now maps explicit UTC/TT
+inputs and prepares ERFA EPV00/APCO Earth/observer PV in TDB-compatible BCRS
+coordinates from caller-verified leap/final IERS-B data. WGS84 east longitude,
+geodetic latitude and ellipsoid height are explicit; legacy Observer height
+metadata is not silently adopted. No target parallax/apparent correction is
+performed. Total numerical/physical error remains unknown. See the
 [convention API](implementation_reference.md#barycentric-time-and-coordinate-conventions).
 Native angular reuse certificates
 do not certify observer-translated directions; observed motion remains unimplemented.

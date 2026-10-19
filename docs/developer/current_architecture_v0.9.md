@@ -183,9 +183,12 @@ and [ordered gates](kernel_roadmap_v0.9.5.md#cluster-observer-implementation-ord
 now specify those prerequisites. The explicit Cartesian prerequisite is implemented with the accepted SDK.
 `astrometric_coordinates` additionally supplies a resource-free TCB/TDB adapter
 for explicit SDK TimeService registration and a complete-batch spatial scaling
-view. Source states/evidence remain unchanged; civil/TT reception-time conversion,
-backend-specific common-coordinate qualification and observer realization remain
-pending. No existing chart consumer calls this additive convention boundary.
+view. `astrometric_observation` separately prepares UTC/TT reception events,
+TDB/TCB receipts and a nominal ERFA EPV00/APCO terrestrial observer context from
+explicit local leap/final IERS-B resources. It records installed code identity and
+independent coverage, never borrowing the Observer Skyfield SPK identity. Total
+errors remain unknown. No target direction is realized and no chart consumer
+calls either additive boundary.
 No new time adapter or observed motion route exists yet.
 
 ## Abstraction barriers that remain incomplete

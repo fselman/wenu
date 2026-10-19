@@ -92,8 +92,9 @@ SI position and velocity preserve distance, source/evaluation times and separate
 unknown error channels. No Cartesian accuracy bound or temporal reuse is admitted;
 the angular cone certificate remains direction-only. Finite-distance observer
 realization remains unimplemented. The resource-free TCB/TDB convention subset
-is implemented in `astrometric_coordinates`; concrete observer-backend and
-civil/reception-time admission remain open.
+is implemented in `astrometric_coordinates`. `astrometric_observation` now
+supplies the offline UTC/TT and ERFA input-context subset below. Target
+finite-distance/apparent realization and product adoption remain open.
 
 `OpenClusters.spherical_geometry` currently queries lookup directions and then
 uses `sky.observed_cache.catalogue_point_altaz`. That helper passes RA/Dec through
@@ -129,8 +130,14 @@ No implicit UTC/TT/TDB/TCB relabelling or hidden session conversion is allowed.
 `astrometric_coordinates.TcbTdbAdapter` now supplies an explicitly registered
 TCB/TDB pair to the unchanged SDK TimeService. It preserves split dates and
 conversion receipts over a caller-admitted finite source interval. It does not
-convert civil time or TT to a barycentric reception event. That remains an
-implementation prerequisite, not permission to call `.tcb` without evidence.
+convert civil time or TT to a barycentric reception event. The separate
+`ErfaReceptionBackend` now does that explicit preparation for ISO UTC strings or
+TT TimePoints using digest-verified local leap/final IERS-B tables and a
+caller-admitted installed backend identity. It preserves UTC, TAI, TT, UT1, TDB
+and TCB events, site, model/resources and the explicit SDK TDB/TCB receipt.
+TT/TDB is an approximate ERFA DTDB model. Total numerical/time-realization error
+remains unknown; therefore it is not misrepresented as a bounded SDK TT/TDB
+adapter. Only the separately exact TDB/TCB conversion uses SDK TimeService.
 Record conversion numerical error separately from reception-date uncertainty.
 An unknown conversion/physical error cannot become a zero bound.
 
@@ -144,8 +151,13 @@ TCB/TDB relation; IERS Conventions (2010) section 1.2 gives
 the factor. The generic batch converter retains original SDK states, model/source
 bindings and unknown evidence; operation-only rounding bounds are separate.
 It does not establish that a particular ephemeris/backend supplies these
-coordinates. That backend compatibility proof remains open; no new ephemeris,
-astronomical validity interval or physical accuracy threshold is inferred.
+coordinates. The input-context backend now explicitly uses ERFA EPV00 Earth
+PV and APCO observer PV, with BCRS axes, TDB-compatible au/au-day converted to
+SI by the fixed IAU au and SI speed of light. It is an analytic approximation,
+not a DE440 or DE405 SPK. No Skyfield resource is substituted. The caller
+chooses a finite TT domain, constrained by actual leap expiry and final EOP
+coverage and a conservative 1950--2050 model interval. EOP extrapolation and
+predicted data are refused. No total time/PV accuracy bound is inferred.
 Model-domain coverage, ephemeris coverage, time-adapter coverage and Earth
 orientation coverage are checked independently and intersected for observation.
 Modern observer data do not inherit the nominal model's long date domain.
@@ -169,6 +181,15 @@ Earth rotation/polar motion and local horizontal conversion. Perspective motion
 is already in nominal Cartesian propagation. Refraction remains vacuum for the
 first model, matching the current observation contract. Unsupported corrections
 are explicit omissions/refusals, not unnamed precision guarantees.
+
+The new reception context only prepares nominal Earth/observer PV and time/EOP
+inputs. It applies no target propagation, parallax, light time, aberration,
+deflection or refraction; those remain pending in a separately tested realizer.
+Its WGS84 ellipsoid-height policy is -1000..10000 m, with explicit geodetic
+latitude and east-positive longitude. It does not infer an ellipsoidal height
+from the legacy Observer elevation. No global IERS/ephemeris configuration or
+leap-table update is performed. The actual ERFA leap table must match the
+admitted bytes before and after each preparation; a changed global table refuses.
 
 Astropy's finite-distance ICRS-to-observed route is a candidate reusable backend,
 not an accepted replacement in this milestone. Its installed 7.2.3 source was

@@ -142,7 +142,7 @@ def test_cluster_motion_module_and_admission_ship_and_evaluate_from_installed_wh
     from zipfile import ZipFile
     import wenu_kernel
     wheel = _assert_source_products_ship(tmp_path, ('open_clusters_hunt_motion_admission_v1.json',),
-        modules=('wenu/cluster_state.py', 'wenu/astrometric_state.py', 'wenu/astrometric_coordinates.py'))
+        modules=('wenu/cluster_state.py', 'wenu/astrometric_state.py', 'wenu/astrometric_coordinates.py', 'wenu/astrometric_observation.py'))
     installed=tmp_path/'installed'
     with ZipFile(wheel) as archive: archive.extractall(installed)
     # Explicit accepted SDK path works for both regular and editable SDK hosts;
@@ -154,7 +154,8 @@ import sys,json
 from pathlib import Path
 sys.path[:0]=[sys.argv[1],sys.argv[2],*json.loads(sys.argv[3])]
 import wenu, wenu_kernel
-from wenu import cluster_state, astrometric_state, astrometric_coordinates
+from wenu import cluster_state, astrometric_state, astrometric_coordinates, astrometric_observation
+assert Path(astrometric_observation.__file__).is_relative_to(Path(sys.argv[1]))
 assert Path(astrometric_coordinates.__file__).is_relative_to(Path(sys.argv[1]))
 assert Path(astrometric_state.__file__).is_relative_to(Path(sys.argv[1]))
 assert issubclass(cluster_state.ClusterMotionProvider, astrometric_state.RectilinearAstrometricProvider)
@@ -210,6 +211,21 @@ with Kernel(references=(pa.reference,)) as kernel:
         assert converted.states[0].original is result.states[0]
         assert converted.states[0].position_m!=result.states[0].position_m
         assert converted.states[0].velocity_m_s==result.states[0].velocity_m_s
+        from astropy.utils import iers
+        from hashlib import sha256
+        backend=astrometric_observation.ErfaReceptionBackend(
+            leap_seconds_path=iers.IERS_LEAP_SECOND_FILE,
+            leap_seconds_sha256=sha256(Path(iers.IERS_LEAP_SECOND_FILE).read_bytes()).hexdigest(),
+            eop_path=iers.IERS_B_FILE,eop_sha256=sha256(Path(iers.IERS_B_FILE).read_bytes()).hexdigest(),
+            coverage=TimeSpan(TimePoint(2456300,0,'tt'),TimePoint(2458000,0,'tt')),
+            backend_identity=astrometric_observation.reception_backend_identity())
+        reception=backend.prepare('2016-12-31T23:59:60Z',longitude_deg=-71.23,
+                                  latitude_deg=-32.44,height_m=52.)
+        from dataclasses import replace
+        received=session.evaluate(replace(query,times=(reception.tcb,)))
+        assert received.states[0].time==reception.tcb
+        assert received.states[0].source_epoch==result.states[0].source_epoch
+        assert reception.position_error_m is None
 from wenu.objects.open_clusters import OpenClusters
 default=OpenClusters(None)
 default.load()
