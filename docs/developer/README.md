@@ -103,7 +103,11 @@ saved-sky lookup routes are unchanged. Provider-owned angular certificates now
 enable selective reuse in explicit interactive sessions; reproducible sessions
 retain full-model evaluation. The numerical bound starts from admitted binary64
 SI solutions; measurement, conversion and physical-model accuracy stay unknown.
-Consumer/snapshot adoption remains ahead.
+Explicit native Python chart consumers now adopt the motion catalogue per call,
+including restored source snapshots, with matching TCB context epochs and
+source-digest/identity admission. Default lookup and snapshot v5 are unchanged;
+observer motion, CLI selection and persisted epoch states remain ahead. See the
+[consumer API](implementation_reference.md#explicit-native-cluster-motion-consumers).
 Relativistic/civil-time adapters, common realization services, Cartesian reuse
 and remaining K3 routing are pending; this is not a completed kernel or frozen SDK.
 

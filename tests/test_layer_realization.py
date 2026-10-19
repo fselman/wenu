@@ -145,9 +145,12 @@ def test_only_explicit_static_icrs_context_allows_absent_observer():
     from wenu.sky.realization import NATIVE_ICRS_SPEC
     context = LayerRealizationContext(NATIVE_ICRS_SPEC)
     assert context.is_native_icrs
+    # Explicit native epoch directions now share the observer-free ICRS axes.
+    epoch = replace(context, evaluation_instant="2026-01-01", evaluation_time_scale="tt")
+    assert epoch.is_native_icrs
+    _draw(CelestialSphere(None), observer=None, realization_context=epoch)
     for altered in (replace(context, reference_equinox="J2000.0"),
                     replace(context, product_coordinate_spec=replace(NATIVE_ICRS_SPEC, frame="galactic")),
-                    replace(context, evaluation_instant="2026-01-01", evaluation_time_scale="tt"),
                     _context()):
         assert not altered.is_native_icrs
         with pytest.raises(TypeError, match="requires an observer"):
@@ -167,7 +170,7 @@ def test_native_icrs_rejects_misidentified_geometry_before_projection():
         def realize(self, context, observer, **options):
             return self.spherical_geometry(observer, **options)
     sphere = CelestialSphere(None); sphere.add(IncorrectLayer())
-    with pytest.raises(ValueError, match="static barycentric astrometry"):
+    with pytest.raises(ValueError, match="matching barycentric astrometry"):
         _draw(sphere, observer=None, realization_context=LayerRealizationContext(NATIVE_ICRS_SPEC))
 
 
@@ -283,3 +286,22 @@ def test_draw_chart_rejects_an_untyped_realization_context():
             observer=object(),
             realization_context=object(),
         )
+
+
+@pytest.mark.parametrize('instant,scale', [('wrong', 'tcb'), ('J2050.0', 'tt'), (None, None)])
+def test_native_epoch_guard_rejects_mismatched_layer_time_before_projection(instant, scale):
+    from wenu.sky.realization import NATIVE_ICRS_SPEC
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC,
+        evaluation_instant='J2050.0', evaluation_time_scale='tcb')
+    class EpochLayer(LegacyLayer):
+        def realize(self, context, observer, **options):
+            return SphericalPoints(lon_deg=[1.], lat_deg=[2.], coordinate_spec=CoordinateSpec(
+                frame='icrs', origin='solar-system-barycenter', position_status=PositionStatus.ASTROMETRIC,
+                instant=instant, time_scale=scale))
+    sphere = CelestialSphere(None); sphere.add(EpochLayer())
+    if instant is None:
+        # Static sources are retained without pretending they were propagated.
+        _draw(sphere, observer=None, realization_context=context)
+    else:
+        with pytest.raises(ValueError, match='matching barycentric'):
+            _draw(sphere, observer=None, realization_context=context)

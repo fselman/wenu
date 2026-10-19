@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 9, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 10, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -93,12 +93,14 @@ Dias RA-motion conventions are resolved through D14, while their retained
 position-epoch/scale lineage remains incomplete. Missing centre-model bounds
 and cluster-mean covariances stay unknown. The explicit nominal cluster provider
 now admits these qualified full-input solutions and evaluates a finite-domain rectilinear centre model through the SDK.
-No existing chart/saved consumer adopts it yet. Provider-owned exact-rational
+Explicit native Python chart and restored-source consumers now adopt it per call; defaults retain lookup. Provider-owned exact-rational
 angular certificates now bound reuse relative to admitted binary64 SI solutions
 in explicit interactive sessions, with reproducible full-model fallback. Source
-conversion and physical/measurement accuracy remain uncertified. Next: explicit
-consumer/snapshot integration with compatibility and failure gates; canonical
-provider schedules remain optional separate work. Other
+conversion and physical/measurement accuracy remain uncertified. Native epoch
+contexts and per-layer motion options now enter the canonical chart pipeline,
+with unchanged source snapshots/default lookup. Next: observer realization,
+CLI/configuration model selection and any separately admitted persisted epoch
+state format. Canonical provider schedules remain optional separate work. Other
 families/consumers and the final SDK freeze remain ahead. See the
 [motion audit](kernel_migration_audit_v1.md#open-cluster-motion-and-lookup-audit-2026-10-18).
 

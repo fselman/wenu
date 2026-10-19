@@ -170,8 +170,10 @@ class CelestialSphere:
                 spec = spherical.coordinate_spec
                 if (spec.frame != "icrs" or spec.origin != "solar-system-barycenter"
                         or spec.position_status.value != "astrometric"
-                        or spec.instant is not None):
-                    raise ValueError("Native ICRS layers must return static barycentric astrometry.")
+                        or (spec.instant is not None and (
+                            spec.instant != realization_context.evaluation_instant
+                            or spec.time_scale != realization_context.evaluation_time_scale))):
+                    raise ValueError("Native ICRS layers must return matching barycentric astrometry.")
             project = (
                 projection.project_geometry
                 if project_geometry is None

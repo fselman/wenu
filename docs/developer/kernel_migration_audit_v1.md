@@ -433,6 +433,25 @@ selection, detailed atlas object inventories, satellite reflected-light and
 detector science, and numerical Moonlight. The current
 [scientific contracts](scientific_contracts.md) govern these limits.
 
+## Explicit native cluster motion consumer boundary
+
+Native Python chart layers now accept an admitted motion catalogue per call and
+a matching explicit TCB context epoch. `OpenClusters.position` and native layer
+realization query the accepted provider/kernel and use returned vectors, retaining
+ordered/duplicate identities and original state provenance. Source digest and
+complete identity-set mismatches, unavailable selected rows and kernel failures
+refuse without lookup fallback. Default lookup, source table bytes and metadata
+remain unchanged. Observer-dependent motion is refused.
+
+Restored v5 source skies inherit the same facade; they do not reload original
+catalogues, install the model globally or become persisted epoch states. The
+canonical chart guard admits matching epoch-bearing barycentric astrometry while
+static neighbours retain source meaning. The consumer gate covers real saved/cold
+geometry/pixels, fresh-process offline use, default native page compatibility and
+the shared context/failure contracts. Provider science/SDK/reuse are unchanged;
+their accepted receipts remain separate. CLI/TOML model selection, observer
+adoption and any evaluated-state snapshot format remain open.
+
 ## Continuous test migration and closure evidence
 
 1. **K1, now:** inventory and classify before runtime work. Repair the stale

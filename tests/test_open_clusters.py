@@ -1488,3 +1488,95 @@ def test_working_data_migration_keeps_receipts_and_list_memberships(tmp_path,mon
     import pytest
     with pytest.raises(FileExistsError): copy_verified([(source,target)])
     assert source.read_bytes()==b'new' and target.read_bytes()==b'old'
+
+
+def _chart_motion_case():
+    """Real offline companion; finite interval is nominal, not physical validity."""
+    from pathlib import Path
+    from wenu.cluster_state import load_cluster_motion
+    from wenu_kernel.records import TimePoint, TimeSpan
+    root = Path(__file__).resolve().parents[1]/'src/wenu/data/catalogs/open_clusters'
+    motion = load_cluster_motion(root/'open_clusters_hunt_astrometry_v1.ecsv',
+        root/'open_clusters_hunt_motion_admission_v1.json',
+        coverage=TimeSpan(TimePoint(2400000, 0, 'tcb'), TimePoint(2500000, 0, 'tcb')))
+    layer = OpenClusters(None); layer.load()
+    ids = [row.identifier for row in motion.rows if row.unavailable_reason is None]
+    return layer, motion, ids
+
+
+def test_cluster_motion_public_native_vectors_order_metadata_and_no_mutation(monkeypatch):
+    # Closest lookup-vector test above; protect a motion-specific bypass and
+    # accidental epoch relabelling, without repeating provider numerical proofs.
+    from dataclasses import replace
+    from wenu_kernel import KernelSession
+    from wenu_kernel.records import TimePoint
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    layer, motion, ids = _chart_motion_case()
+    before = layer.catalogue_metadata_for(layer.catalog)
+    selected = [ids[1], ids[0], ids[1]]
+    layer.selected = selected
+    time = TimePoint(2469807, .25, 'tcb')
+    geometry = layer.position(time, motion=motion)
+    assert geometry.ids.tolist() == selected
+    assert geometry.coordinate_spec.epoch is None
+    assert geometry.coordinate_spec.time_scale == 'tcb'
+    states = geometry.metadata['cluster_motion_states']
+    assert all(state.time == state.anchor_time == time for state in states)
+    assert all(state.source_epoch != time for state in states)
+    assert states[0] == states[2]
+    assert all(state.evidence.measurement.status == 'not_evaluated' for state in states)
+    raw = layer.position()
+    assert np.any(np.abs(raw.lon_deg - geometry.lon_deg) > 1e-8)
+    evaluate = KernelSession.evaluate
+    def shifted(session, query):
+        result = evaluate(session, query)
+        return replace(result, states=tuple(replace(state, vector=(0., 1., 0.)) for state in result.states))
+    monkeypatch.setattr(KernelSession, 'evaluate', shifted)
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC,
+        evaluation_instant='J2050.0', evaluation_time_scale='tcb')
+    result = layer.realize(context, None, motion=motion, selected=selected)
+    np.testing.assert_array_equal(result.lon_deg, [90.] * 3)
+    np.testing.assert_array_equal(result.lat_deg, [0.] * 3)
+    assert result.coordinate_spec.instant == 'J2050.0'
+    assert result.metadata['geometry_kind'] == 'cartographic_symbol'
+    assert layer.selected is selected
+    assert layer.catalogue_metadata_for(layer.catalog) == before
+
+
+def test_cluster_motion_consumer_refuses_missing_inputs_binding_domain_and_observation(monkeypatch):
+    import pytest
+    from dataclasses import replace
+    from wenu_kernel import KernelSession
+    from wenu_kernel.errors import UnsupportedCapability
+    from wenu_kernel.records import TimePoint
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    layer, motion, ids = _chart_motion_case()
+    layer.selected = [ids[0]]
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    with pytest.raises(ValueError, match='explicit TCB'):
+        layer.realize(context, None, motion=motion)
+    with pytest.raises(ValueError, match='native ICRS'):
+        layer.realize(object(), observer(), motion=motion)
+    for time in (None, TimePoint(2460000, 0, 'tt')):
+        with pytest.raises(ValueError, match='matching-scale'):
+            layer.position(time, motion=motion)
+    with pytest.raises(ValueError, match='outside'):
+        layer.position(TimePoint(2500001, 0, 'tcb'), motion=motion)
+    digest = layer._source_sha256; layer._source_sha256 = '0'*64
+    with pytest.raises(ValueError, match='different source'):
+        layer.position(TimePoint(2460000, 0, 'tcb'), motion=motion)
+    layer._source_sha256 = digest
+    with pytest.raises(ValueError, match='identity sets'):
+        layer.position(TimePoint(2460000, 0, 'tcb'), motion=replace(motion, rows=motion.rows[:-1]))
+    layer.selected = [ids[0], next(row.identifier for row in motion.rows if row.unavailable_reason)]
+    with pytest.raises(UnsupportedCapability):
+        layer.position(TimePoint(2460000, 0, 'tcb'), motion=motion)
+    layer.selected = []
+    assert len(layer.position(TimePoint(2460000, 0, 'tcb'), motion=motion)) == 0
+    layer.selected = [ids[0]]
+    layer.position(TimePoint(2460000, 0, 'tcb'), motion=motion)  # positive baseline
+    def refused(*args, **kwargs):
+        raise UnsupportedCapability('injected motion refusal')
+    monkeypatch.setattr(KernelSession, 'evaluate', refused)
+    with pytest.raises(UnsupportedCapability, match='injected'):
+        layer.position(TimePoint(2460000, 0, 'tcb'), motion=motion)

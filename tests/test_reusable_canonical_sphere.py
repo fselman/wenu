@@ -1174,3 +1174,96 @@ def test_kernel_cluster_routes_preserve_native_pixels_and_saved_state(native_sna
             presentation, tmp_path/name), sky=sky)
         output = f'chart-{sheet.number:02d}.png'
         np.testing.assert_array_equal(imread(tmp_path/'legacy-clusters'/output), imread(tmp_path/name/output))
+
+
+def test_native_snapshot_explicit_cluster_motion_matches_cold_geometry_and_pixels(native_snapshot_case, monkeypatch):
+    # Closest native fixed-catalogue subset and pixel tests remain unchanged.
+    # Protect a saved-source bypass, mutable model installation and product guard.
+    from pathlib import Path
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from wenu.cluster_state import load_cluster_motion
+    from wenu_kernel.records import TimePoint, TimeSpan
+    from wenu.sky.native_snapshot import read_native_sky_snapshot
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    from wenu.projections import StereographicProjection
+    from wenu.rendering import MatplotlibRenderer
+    from wenu.objects.open_clusters import OpenClusters
+    _, destination, _, cold = native_snapshot_case
+    snapshot = read_native_sky_snapshot(destination)
+    saved = snapshot.make_sky()
+    root = Path(__file__).resolve().parents[1]/'src/wenu/data/catalogs/open_clusters'
+    motion = load_cluster_motion(root/'open_clusters_hunt_astrometry_v1.ecsv',
+        root/'open_clusters_hunt_motion_admission_v1.json',
+        coverage=TimeSpan(TimePoint(2400000,0,'tcb'), TimePoint(2500000,0,'tcb')))
+    selected = [row.identifier for row in motion.rows if row.unavailable_reason is None][:3]
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC,
+        evaluation_instant='J2050.0', evaluation_time_scale='tcb')
+    def forbidden(*args, **kwargs):
+        raise AssertionError('Restored consumer must not reload the selected catalogue')
+    monkeypatch.setattr(OpenClusters, 'load', forbidden)
+    options = dict(selected=selected, motion=motion)
+    a = cold.open_clusters.realize(context, None, **options)
+    b = saved.open_clusters.realize(context, None, **options)
+    _assert_native_geometry_equal(a, b)
+    plain = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    # Static neighbouring layers retain source semantics, despite the requested epoch.
+    for name in ('stars','galaxies','globular_clusters','constellation_lines'):
+        layer = getattr(saved, name)
+        _assert_native_geometry_equal(layer.realize(plain,None), layer.realize(context,None))
+    images=[]
+    for sky in (cold, saved):
+        configured = {layer: {'enabled': False} for layer in sky.layers}
+        configured[sky.open_clusters] = {'geometry': options}
+        figure, ax = plt.subplots(figsize=(3,3), dpi=100)
+        try:
+            result = sky.draw_chart(projection=StereographicProjection(), renderer=MatplotlibRenderer(ax),
+                realization_context=context, layer_options=configured)
+            assert result is not None
+            figure.canvas.draw()
+            images.append(np.asarray(figure.canvas.buffer_rgba()).copy())
+        finally:
+            plt.close(figure)
+    np.testing.assert_array_equal(*images)
+    restored = snapshot.make_sky()
+    assert restored.open_clusters.selected is None
+    assert restored.open_clusters.position().metadata['catalogue_position_model'] == 'catalogue_lookup'
+    # Requested model data never replace the saved source rows or v5 header.
+    assert snapshot._manifest['schema_version'] == 5
+    assert saved.open_clusters.catalogue_metadata_for(saved.open_clusters.catalog) == cold.open_clusters.catalogue_metadata_for(cold.open_clusters.catalog)
+
+
+def test_native_snapshot_explicit_cluster_motion_in_fresh_process(native_snapshot_case, tmp_path):
+    import os, subprocess, sys
+    from pathlib import Path
+    _, destination, _, _ = native_snapshot_case
+    root = Path(__file__).resolve().parents[1]
+    code = r"""
+from pathlib import Path
+import socket, sys
+from wenu.cluster_state import load_cluster_motion
+from wenu_kernel.records import TimePoint, TimeSpan
+from wenu.sky.native_snapshot import read_native_sky_snapshot
+from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+from wenu.objects.open_clusters import OpenClusters
+def forbidden(*args, **kwargs):
+    raise AssertionError('No source catalogue loading or network during saved consumption')
+OpenClusters.load = forbidden
+socket.socket = forbidden
+root = Path(sys.argv[2])/'src/wenu/data/catalogs/open_clusters'
+motion = load_cluster_motion(root/'open_clusters_hunt_astrometry_v1.ecsv',
+    root/'open_clusters_hunt_motion_admission_v1.json',
+    coverage=TimeSpan(TimePoint(2400000,0,'tcb'),TimePoint(2500000,0,'tcb')))
+sky = read_native_sky_snapshot(sys.argv[1]).make_sky()
+selected = [row.identifier for row in motion.rows if row.unavailable_reason is None][:3]
+context = LayerRealizationContext(NATIVE_ICRS_SPEC,evaluation_instant='J2050.0',evaluation_time_scale='tcb')
+result = sky.open_clusters.realize(context,None,motion=motion,selected=selected)
+assert result.ids.tolist() == selected
+assert result.coordinate_spec.instant == 'J2050.0'
+assert len(result.metadata['cluster_motion_states']) == 3
+assert sky.open_clusters.position().metadata['catalogue_position_model'] == 'catalogue_lookup'
+"""
+    env = dict(os.environ, PYTHONPATH=str(root/'src'))
+    completed = subprocess.run([sys.executable,'-c',code,str(destination),str(root)],
+        cwd=tmp_path, env=env, text=True, capture_output=True)
+    assert completed.returncode == 0, completed.stdout + completed.stderr

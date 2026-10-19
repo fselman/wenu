@@ -1233,7 +1233,13 @@ traces inherited Hunt conventions to Gaia's barycentric TCB astrometry; this is
 distinct from the preserved raw ReadMe gaps and is not automatically adopted.
 It also resolves the four Dias RA-motion conventions through their D14 source;
 the retained position-epoch/scale lineage remains incomplete. Current charts
-continue to use source lookup. The separate explicit `cluster_state` API now
+continue to use source lookup by default. Explicit native Python chart calls can
+pass the admitted motion catalogue and a TCB evaluation context, including on a
+restored source snapshot. Their specification records evaluation `instant` and
+scale separately from source epochs retained in kernel states; static neighbours
+keep their native source meaning. The chart guard checks returned epoch/scale
+against the explicit context. Observer motion, CLI selection and persisted epoch
+states remain outside this bounded adoption. The separate `cluster_state` API now
 evaluates a nominal rectilinear centre model in TCB through the kernel, using
 qualified source metadata and a finite caller-declared model domain. It computes
 perspective effects from the declared distance/RV inputs but applies no additional

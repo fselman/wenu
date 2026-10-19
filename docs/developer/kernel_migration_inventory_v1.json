@@ -8693,5 +8693,37 @@
       "environment": "local Python 3.12; one illustrative run, not Mac acceptance or a speed guarantee",
       "setup_anchor_source": "Certificate setup reused an existing exact full-query cache; excludes initial full evaluation time."
     }
+  },
+  "cluster_motion_native_consumers_v1": {
+    "base": "11dfa8560b8d65a6e48ae23c6b29ff4dbd5d3f51",
+    "gate": "cluster-motion-native-consumers",
+    "owners": [
+      "src/wenu/objects/open_clusters.py",
+      "src/wenu/sky/realization.py",
+      "src/wenu/sky/celestial_sphere.py"
+    ],
+    "scope": "Explicit native Python chart motion via per-call catalogue and matching TCB context; restored v5 source facades share the route. Defaults unchanged.",
+    "tests": [
+      "tests/test_open_clusters.py::test_cluster_motion_public_native_vectors_order_metadata_and_no_mutation",
+      "tests/test_open_clusters.py::test_cluster_motion_consumer_refuses_missing_inputs_binding_domain_and_observation",
+      "tests/test_open_clusters.py::test_kernel_cluster_lookup_preserves_row_epochs_motion_masks_and_requested_order",
+      "tests/test_open_clusters.py::test_kernel_cluster_vectors_drive_public_native_and_observed_paths_after_warm_cache",
+      "tests/test_open_clusters.py::test_kernel_cluster_refusal_reaches_all_paths_even_after_observed_cache_fill",
+      "tests/test_layer_realization.py",
+      "tests/test_request_realization.py",
+      "tests/test_position_providers.py::test_open_clusters_provide_selected_native_centres",
+      "tests/test_reusable_canonical_sphere.py::test_native_snapshot_explicit_cluster_motion_matches_cold_geometry_and_pixels",
+      "tests/test_reusable_canonical_sphere.py::test_native_snapshot_explicit_cluster_motion_in_fresh_process",
+      "tests/test_reusable_canonical_sphere.py::test_kernel_cluster_routes_preserve_native_pixels_and_saved_state",
+      "tests/test_reusable_canonical_sphere.py::test_native_snapshot_fixed_catalogue_rows_masks_units_and_subsets",
+      "tests/test_reusable_canonical_sphere.py::test_native_snapshot_legacy_coverage_stays_truthful"
+    ],
+    "retained_evidence": "PR #259 nominal numerical/conformance/installed provider; PR #260 numerical/reuse/installed acceptance. Those implementations and inputs are unchanged.",
+    "limits": [
+      "No observed-motion realization",
+      "No CLI/TOML selection",
+      "No persisted evaluated states",
+      "No physical accuracy guarantee"
+    ]
   }
 }
