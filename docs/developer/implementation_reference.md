@@ -590,6 +590,44 @@ tests preserve four complete original records and the exact original ReadMe,
 with hashes and original row indices; constructed mutations are labelled faults.
 
 
+## Shared astrometric engine
+
+`astrometric_state.SpaceMotionRow` copies an identifier, source `TimePoint`, SI
+position/velocity triples or an explicit unavailable reason. It does not encode
+an object family. `RectilinearAstrometricProvider(rows, *, descriptor, catalogue,
+admission, evidence, reuse_method)` consumes copied typed key/row pairs and
+immutable SDK bindings supplied by a source adapter. It validates full identity
+sets, supported direction capabilities, numerical evidence, source scale/epoch
+and finite model domains. The engine owns full nominal rectilinear evaluation,
+normalization, exact-rational numerical verification and conservative angular
+reuse certification. Semantic object types remain in ObjectRecords and never
+select numerical branches. It imports only the standard library and accepted SDK.
+No observer, projection, source loading or implicit time conversion occurs.
+
+`cluster_state.ClusterMotionProvider` is the cluster-specific facade over this
+single engine. Cluster admission retains qualification, source bytes/units,
+distance estimator, systemic-RV proxy, density-mode/core-mean policy and all
+existing catalogue/model/reference/resource identities and uncertainty meanings.
+Its existing public constructors, row name and source-table API remain available.
+`ClusterMotionRow` aliases the shared SI row type. Cluster spherical differential
+conversion remains source ingestion through Astropy; numerical time propagation
+and domain/reuse algorithms have one object-independent owner.
+
+One constructed provider containing star, cluster, PN and SNR semantic records
+is exercised through the real SDK and portable conformance kit. An isolated
+stdlib/SDK subprocess also evaluates that module with Wenu/Astropy/NumPy absent.
+This proves engine reuse, not independent installation of all of Wenu or
+production stellar/PN/SNR catalogue admission. The installed-wheel cluster test
+checks that both facade and engine ship and execute together.
+
+The initial engine still requires complete admitted SI space-motion solutions;
+Cartesian output and observer parallax remain pending. The requested configurable
+200-year no-PM and 1,000-year PM-only lookback policies, measured from source
+reference epochs, remain planned reduced-model admission policies, not enabled
+models or absolute accuracy guarantees. Expansion and morphology evolution are
+excluded. Future object adapters qualify centres/systemic motions and call this
+engine; they must not copy its propagation or certificate implementation.
+
 ## Nominal cluster motion provider
 
 `cluster_state.load_cluster_motion(companion_path, metadata_path, *, coverage)`

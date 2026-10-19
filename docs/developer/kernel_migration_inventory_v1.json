@@ -1741,6 +1741,12 @@
       "as_is_directory": "src/wenu",
       "description": "Immutable cluster-motion admission, nominal rectilinear directions and exact-rational angular reuse certificates.",
       "baseline_relation": "Additive physical provider owner; current chart/saved consumers remain source lookup."
+    },
+    {
+      "path": "src/wenu/astrometric_state.py",
+      "git_blob_sha": "72a5e338088ea3bf9ff358e82c8d58fc60a39efe",
+      "description": "Object-independent SI row/domain, rectilinear direction and angular certificate engine.",
+      "baseline_relation": "Added for enduring object-independent astrometric engine factoring."
     }
   ],
   "test_side_python_files": [
@@ -6943,6 +6949,12 @@
         "wenu_kernel.records",
         "wenu_kernel.reuse"
       ]
+    },
+    {
+      "path": "tests/test_astrometric_state.py",
+      "git_blob_sha": "ee838c49f2c1e83f88a943bca89e093e5690669d",
+      "description": "Generic mixed-object engine, conformance, immutable-domain and isolated SDK evaluation.",
+      "baseline_relation": "Added for enduring object-independent astrometric engine factoring."
     }
   ],
   "operational_artifacts": [
@@ -8749,6 +8761,24 @@
       "dependency/build/collection",
       "snapshot v5 and legacy reader",
       "default lookup and explicit native charts"
+    ]
+  },
+  "astrometric_core_factoring_v1": {
+    "base": "64edfd1c79836331b6ddca14484d3ec61cc562a6",
+    "engine": "src/wenu/astrometric_state.py",
+    "source_adapter": "src/wenu/cluster_state.py",
+    "gate": "astrometric-core-factoring",
+    "new_owner_tests": "tests/test_astrometric_state.py",
+    "preserved_tests": "tests/test_cluster_state.py; numerical fault injection now targets the moved core",
+    "scope": "Object-type-independent complete-SI nominal direction/reuse engine; source-specific cluster adapter. No new object catalogue or observer model.",
+    "pending": [
+      "Reduced-input 200/1000-year policy models",
+      "Shared Cartesian output",
+      "Observer parallax/realization",
+      "Real star/PN/SNR ingestion adapters"
+    ],
+    "excluded": [
+      "Expansion and morphology evolution"
     ]
   }
 }

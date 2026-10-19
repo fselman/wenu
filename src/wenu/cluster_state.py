@@ -6,11 +6,10 @@ or certify physical accuracy. No acquisition, observer or graphics dependency.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
-from fractions import Fraction
+from dataclasses import dataclass
 from hashlib import sha256
 import json
-from math import fsum, isfinite, sqrt
+from math import isfinite
 from pathlib import Path
 
 import numpy as np
@@ -21,15 +20,11 @@ from astropy.coordinates import (CartesianDifferential, CartesianRepresentation,
 from astropy.table import Table
 from astropy.time import Time
 
-from wenu_kernel.errors import (AccuracyUnavailable, ClosedSession, InvalidQuery,
-                                ResourceMismatch, UnsupportedCapability)
 from wenu_kernel.records import (
-    AccuracyRequest, CapabilityDecision, CatalogueRef, CatalogueSnapshot,
-    DirectionState, ExternalId, ModelAdmission, ModelRef, ObjectKey, ObjectRecord,
-    ProviderDescriptor, ProviderKey, ReferenceSpec, ResourceRef, StateBatch,
-    StateQuery, TimePoint, TimeSpan, UncertaintyChannel, UncertaintyEvidence,
+    CatalogueRef, CatalogueSnapshot, ExternalId, ModelAdmission, ModelRef,
+    ObjectKey, ObjectRecord, ProviderDescriptor, ProviderKey, ReferenceSpec,
+    ResourceRef, TimePoint, TimeSpan, UncertaintyChannel, UncertaintyEvidence,
 )
-from wenu_kernel.reuse import direction_anchor_identity, make_certificate
 
 
 def _canonical_digest(value):
@@ -37,82 +32,11 @@ def _canonical_digest(value):
                              ensure_ascii=True, allow_nan=False).encode("ascii")).hexdigest()
 
 
-def _seconds(time, epoch):
-    if time.scale != epoch.scale:
-        raise InvalidQuery('Explicit time conversion is required.')
-    return fsum((time.jd1 - epoch.jd1, time.jd2, -epoch.jd2)) * u.day.to(u.s)
-
-
-# Algorithm contracts, not catalogue data. The bound is verified for each vector
-# against exact arithmetic on the admitted binary64 SI solution and split time.
-_NUMERICAL_RAD = 2.0**-40
-
-
-def _day(time):
-    return Fraction(time.jd1) + Fraction(time.jd2)
-
-
-def _exact_position(row, time):
-    if time.scale != row.source_epoch.scale:
-        raise InvalidQuery('Explicit time conversion is required.')
-    dt = (_day(time) - _day(row.source_epoch)) * 86400
-    return tuple(Fraction(p) + dt*Fraction(v)
-                 for p, v in zip(row.position_m, row.velocity_m_s))
-
-
-def _inside_cone(vector, position, angular_rad):
-    """Exact sufficient test for angular separation <= angular_rad <= 1 rad.
-
-    Positive dot keeps the angle acute. 4*sin(angle)^2 <= tolerance^2
-    implies angle <= 2*sin(angle) <= tolerance. No libm inverse-trig
-    rounding enters admission. A circular cone of half-angle < pi/2 is convex;
-    checking both endpoints bounds every position on a rectilinear segment.
-    """
-    w = tuple(Fraction(x) for x in vector)
-    dot = sum(a*b for a, b in zip(w, position))
-    cross = (w[1]*position[2]-w[2]*position[1],
-             w[2]*position[0]-w[0]*position[2],
-             w[0]*position[1]-w[1]*position[0])
-    return (dot > 0 and 4*sum(x*x for x in cross)
-            <= Fraction(angular_rad)**2*sum(x*x for x in w)*sum(x*x for x in position))
-
-
-def _midpoint(first, second):
-    day = (_day(first) + _day(second))/2
-    whole = (day + Fraction(1, 2)).numerator // (day + Fraction(1, 2)).denominator
-    fraction = float(day - whole)
-    if fraction >= .5:
-        whole += 1
-        fraction -= 1
-    return TimePoint(whole, fraction, first.scale)
-
-
-@dataclass(frozen=True, slots=True)
-class ClusterMotionRow:
-    identifier: str
-    source_epoch: TimePoint | None
-    position_m: tuple[float, float, float] | None
-    velocity_m_s: tuple[float, float, float] | None
-    unavailable_reason: str | None
-
-    def __post_init__(self):
-        if not isinstance(self.identifier, str) or not self.identifier.strip() or self.identifier.strip() != self.identifier:
-            raise ValueError('Invalid cluster identity.')
-        if self.source_epoch is not None and type(self.source_epoch) is not TimePoint:
-            raise ValueError('Invalid source epoch.')
-        if self.unavailable_reason is not None:
-            if not isinstance(self.unavailable_reason, str) or not self.unavailable_reason:
-                raise ValueError('Unavailable rows require a reason.')
-            if self.position_m is not None or self.velocity_m_s is not None:
-                raise ValueError('Unavailable rows cannot advertise a space-motion solution.')
-        else:
-            if self.source_epoch is None:
-                raise ValueError('Space motion requires a source epoch.')
-            for name in ('position_m', 'velocity_m_s'):
-                values = tuple(map(float, getattr(self, name)))
-                if len(values) != 3 or not all(isfinite(v) for v in values):
-                    raise ValueError('Space-motion vectors must be finite triples.')
-                object.__setattr__(self, name, values)
+# Compatibility row name; object-independent SI solution type.
+from wenu.astrometric_state import (
+    SpaceMotionRow as ClusterMotionRow, RectilinearAstrometricProvider,
+    validate_space_motion_domain, _NUMERICAL_RAD,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -243,16 +167,9 @@ def admit_cluster_motion(table, metadata, *, coverage):
         cartesian = spherical.represent_as(CartesianRepresentation, CartesianDifferential)
         position = tuple(map(float, cartesian.xyz.to_value(u.m)))
         velocity = tuple(map(float, cartesian.differentials['s'].d_xyz.to_value(u.m/u.s)))
-        # Refuse a domain passing numerically through the observer origin.
-        speed2 = fsum(x*x for x in velocity)
-        if speed2:
-            closest = -fsum(p*v for p, v in zip(position, velocity))/speed2
-            lower, upper = (_seconds(t, epoch) for t in (coverage.start, coverage.stop))
-            closest = min(max(closest, lower), upper)
-            radius = sqrt(fsum((p+closest*v)**2 for p, v in zip(position, velocity)))
-            if radius <= 64*np.finfo(float).eps*values['distance']:
-                raise ValueError('Nominal model domain intersects a singular centre trajectory.')
-        rows.append(ClusterMotionRow(identifier, epoch, position, velocity, None))
+        solution = ClusterMotionRow(identifier, epoch, position, velocity, None)
+        validate_space_motion_domain(solution, coverage)
+        rows.append(solution)
     from io import StringIO
     stream = StringIO()
     copied.write(stream, format='ascii.ecsv')
@@ -263,14 +180,11 @@ def admit_cluster_motion(table, metadata, *, coverage):
         json.dumps(record, sort_keys=True, allow_nan=False), coverage)
 
 
-class ClusterMotionProvider:
+class ClusterMotionProvider(RectilinearAstrometricProvider):
     """Nominal model with provider-owned angular certificates; physical error unknown."""
     def __init__(self, catalogue):
         if type(catalogue) is not ClusterMotionCatalogue:
             raise ValueError('An admitted immutable cluster catalogue is required.')
-        self._catalogue_data = catalogue
-        self._rows = {row.identifier: row for row in catalogue.rows}
-        self._closed = False
         meta = catalogue.to_record()['source_metadata']
         key = ProviderKey('wenu.cluster-motion', '1')
         coverage = catalogue.coverage
@@ -305,113 +219,6 @@ class ClusterMotionProvider:
         self._reuse_method = ModelRef('cluster-rectilinear-cone', '1',
             _canonical_digest(('exact-binary64-rational-cone/1', _NUMERICAL_RAD)), (resource,))
 
-    def _check(self):
-        if self._closed:
-            raise ClosedSession('Cluster motion provider is closed.')
-
-    def describe(self):
-        self._check()
-        return self._descriptor
-
-    def catalogue(self, reference):
-        self._check()
-        if reference != self._catalogue.reference:
-            raise ResourceMismatch('Cluster catalogue binding mismatch.')
-        return self._catalogue
-
-    def supports(self, query):
-        self._check()
-        if type(query) is not StateQuery:
-            return CapabilityDecision(False, 'A typed state query is required.')
-        a = self._admission
-        if (query.catalogue, query.model, query.reference) != (a.catalogue, a.model, a.reference):
-            return CapabilityDecision(False, 'Cluster model/reference binding mismatch.')
-        for key in query.objects:
-            row = self._lookup.get(key)
-            if row is None or row.unavailable_reason:
-                return CapabilityDecision(False, key.value + ': ' + ('unknown object' if row is None else row.unavailable_reason))
-        if any(t.scale != a.coverage.start.scale for t in query.times):
-            return CapabilityDecision(False, 'Explicit time conversion is required.')
-        if any(not a.coverage.contains(t) for t in query.times):
-            return CapabilityDecision(False, 'Outside admitted nominal model domain.')
-        if (query.accuracy.position_m is not None or query.accuracy.velocity_m_s is not None
-                or query.accuracy.metric != 'angular_separation'
-                or query.evaluation_policy != 'full_model'
-                or query.require_velocity or query.coverage is not None):
-            return CapabilityDecision(False, 'Direction full-model evaluation only; kernel owns temporal reuse.')
-        if query.accuracy.angular_rad is not None and query.accuracy.angular_rad < _NUMERICAL_RAD:
-            return CapabilityDecision(False, 'Requested tolerance is below the verified numerical floor.')
-        return CapabilityDecision(True, 'Nominal centre propagation; unknown physical accuracy.')
-
-    def evaluate(self, query):
-        decision = self.supports(query)
-        if not decision.supported:
-            raise UnsupportedCapability(decision.reason)
-        states = []
-        for time in query.times:
-            for key in query.objects:
-                row = self._lookup[key]
-                dt = _seconds(time, row.source_epoch)
-                position = np.asarray(row.position_m) + dt*np.asarray(row.velocity_m_s)
-                norm = sqrt(fsum(float(x)*float(x) for x in position))
-                if not isfinite(norm) or norm == 0:
-                    raise ValueError('Undefined nominal cluster direction.')
-                vector = tuple(float(x)/norm for x in position)
-                if not _inside_cone(vector, _exact_position(row, time), _NUMERICAL_RAD):
-                    raise AccuracyUnavailable('Computed direction fails its exact numerical bound.')
-                states.append(DirectionState(key, time, row.source_epoch, time,
-                    query.reference, vector, self._evidence))
-        return StateBatch(query, tuple(states))
-
-    def certify(self, query, anchor):
-        self._check()
-        if type(query) is not StateQuery or query.evaluation_policy != 'bounded_reuse':
-            raise UnsupportedCapability('Certificate requires an explicit bounded-reuse query.')
-        tolerance = query.accuracy.angular_rad
-        if tolerance is None or tolerance < _NUMERICAL_RAD:
-            raise AccuracyUnavailable('Requested tolerance is below the verified numerical floor.')
-        if len(query.objects) != 1 or len(query.times) != 1:
-            raise UnsupportedCapability('Certificates require one original object/time anchor.')
-        probe = replace(query, evaluation_policy='full_model', coverage=None)
-        if not self.supports(probe).supported:
-            raise UnsupportedCapability('Unsupported certificate query binding or capability.')
-        identity = direction_anchor_identity(anchor)
-        if (replace(anchor.query, times=query.times, accuracy=query.accuracy) != probe
-                or anchor.states[0].reference != query.reference):
-            raise ResourceMismatch('Certificate anchor/query binding mismatch.')
-        state = anchor.states[0]
-        row = self._lookup[query.objects[0]]
-        if (not self._admission.coverage.contains(state.anchor_time)
-                or state.source_epoch != row.source_epoch or state.evidence != self._evidence
-                or not _inside_cone(state.vector, _exact_position(row, state.anchor_time), _NUMERICAL_RAD)):
-            raise AccuracyUnavailable('Anchor does not satisfy this model numerical bound.')
-        # The endpoints are checked against the actual stored vector, so the
-        # total bound includes its original approximation error, not just drift.
-        bound = min(tolerance, 1.0)
-        def admitted(time):
-            return _inside_cone(state.vector, _exact_position(row, time), bound)
-        if query.coverage is not None:
-            points = (query.coverage.start, query.coverage.stop, state.anchor_time)
-            start, stop = min(points, key=_day), max(points, key=_day)
-            if (not self._admission.coverage.contains(start)
-                    or not self._admission.coverage.contains(stop)
-                    or not admitted(start) or not admitted(stop)):
-                raise AccuracyUnavailable('Requested interval exceeds the admitted angular cone/domain.')
-        else:
-            def endpoint(candidate):
-                # Halving sacrifices maximum interval size, never the bound.
-                while not admitted(candidate):
-                    closer = _midpoint(candidate, state.anchor_time)
-                    if closer == candidate or closer == state.anchor_time:
-                        return state.anchor_time
-                    candidate = closer
-                return candidate
-            start = endpoint(self._admission.coverage.start)
-            stop = endpoint(self._admission.coverage.stop)
-        return make_certificate(catalogue=query.catalogue, model=query.model,
-            anchor_identity=identity, objects=query.objects, reference=query.reference,
-            validity=TimeSpan(start, stop), metric='angular_separation',
-            maximum_error=bound, method=self._reuse_method)
-
-    def close(self):
-        self._closed = True
+        super().__init__(tuple(self._lookup.items()), descriptor=self._descriptor,
+            catalogue=self._catalogue, admission=self._admission, evidence=self._evidence,
+            reuse_method=self._reuse_method)

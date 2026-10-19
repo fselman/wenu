@@ -50,6 +50,27 @@ source snapshots inherit this route without storing evaluated model states.
 Observer-dependent motion is refused until its realization contract is admitted. See the
 [implemented API](implementation_reference.md#nominal-cluster-motion-provider).
 
+## Object-independent positional astrometry
+
+The shared `astrometric_state` core now owns complete-SI-input rectilinear
+propagation and numerical/reuse certification. Cluster source ingestion supplies
+qualified inputs and explicit model/reference/error meaning through its adapter.
+One numerical provider may contain different object semantic types; numerical
+work never branches on star/cluster/PN/SNR type. Existing cluster results and
+identities are preserved. Other production source adapters remain unimplemented.
+
+The agreed next reduced-model policy is configurable lookback from each source
+reference epoch: initially 200 years without measured PM, 1,000 years with PM
+but incomplete full space-motion inputs, and a separately admitted longer domain
+with complete inputs. These are planned policies, not implemented validity
+limits or accuracy guarantees. Distance availability controls whether observer
+parallax is supported; unknown motions/RV are never recorded as measured zero.
+Reduced models require explicit approximation/error semantics and their own
+acceptance. Expansion, internal dynamics and morphology evolution are excluded.
+Stars, clusters, PNs and SNRs retain object-specific source/centre qualification;
+in particular expansion velocity or displaced compact-object motion cannot be
+silently used as systemic centre motion. Observer realization remains separate.
+
 ## Cluster observer realization contract
 
 **Contract milestone, 2026-10-19; runtime not implemented.** This is the required
@@ -61,7 +82,7 @@ snapshots do not change. This contract does not freeze a new Python signature.
 ### As-is assessment and ownership
 
 At main `446456a4`, `cluster_state.ClusterMotionCatalogue` retains qualified SI
-position/velocity and source TCB epochs, but `ClusterMotionProvider` advertises
+position/velocity and source TCB epochs, but `ClusterMotionProvider` calls the shared astrometric engine and advertises
 direction output only. The separate SDK already admits `cartesian_state` with
 SI `CartesianState` records and explicit velocity availability. No SDK change is
 assumed merely to publish that representation. It will need its own provider
