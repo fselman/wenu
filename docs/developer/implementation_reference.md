@@ -607,14 +607,13 @@ metadata. It binds the existing Hunt companion/selected catalogue, canonical
 source specification and accepted qualification record; the primary-source chain
 is retained. Epoch J2016.0(TCB), barycentric ICRS, mu_alpha_star, source identity
 and column mappings come from this document. No catalogue epoch or field-value
-default is embedded in the provider. Keys retain the existing Wenu object namespace
-and IDs; the motion model/reference changes without inventing new object identities. `distance` is mapped explicitly to published
+default is embedded in the provider. `distance` is mapped explicitly to published
 `dist50`; using that estimator rather than inverse parallax is recorded policy.
 The spectroscopic RV proxy, density-mode/core-mean approximation and omission of
 an additional light-time correction are explicit model choices.
 
 `ClusterMotionProvider(catalogue)` implements the existing SDK protocol and
-advertises `epoch_direction` and batch evaluation, with a separate model/reference
+advertises `epoch_direction`, batch evaluation and `direction_reuse_bound`, with a separate model/reference
 identity. Object keys retain the existing `wenu_open_clusters` namespace and
 selected IDs across source lookup and motion models. Astropy owns the spherical
 position/differential conversion, including
@@ -638,21 +637,80 @@ without omission, invented zero RV or source-coordinate fallback.
 
 Query the provider through `Kernel`/`KernelSession` using its advertised catalogue,
 model and reference, selected admitted keys and explicit TCB `TimePoint` values.
-`DirectionState.time` and `anchor_time` are the requested instant; `source_epoch`
-remains the admitted original epoch. Measurement, centre/model and numerical
-bounds remain `not_evaluated`: the provider refuses strict accuracy, velocity-output
-and bounded-reuse requests and does not advertise a reuse capability. Unknown
-errors are never zero. The provider owns no catalogue acquisition or implicit
+`DirectionState.time` is the requested instant; `anchor_time` identifies the
+original full-model computation and `source_epoch` retains the admitted source
+epoch. Measurement and centre/model bounds remain `not_evaluated`. Numerical
+evidence now bounds evaluation of the admitted binary64 SI solution; it excludes
+source measurement, spherical-input conversion and physical-model uncertainty.
+Velocity-output and subfloor accuracy requests are refused. Unknown errors are
+never zero. The provider owns no catalogue acquisition or implicit
 registration and respects the existing owned/borrowed close contract.
 
 This API is explicit and additive. `OpenClusters.position`, native/observed chart
 routes, saved skies and the active v0.2 selector still use accepted source lookup.
-Chart/snapshot adoption and certified reuse are separate next slices with their
-own consumer/failure gates. The independent numerical oracle uses scalar-trig
+Chart/snapshot adoption remains a separate next slice with its own
+consumer/failure gates. The independent numerical oracle uses scalar-trig
 initial conditions and ERFA PV updates, plus an analytic perspective case, rather
 than calling the production differential conversion to construct expected data.
 The installed-wheel test exercises the actual provider/kernel while checking that
 importing it does not change the fixture's default cluster lookup.
+
+### Cluster direction reuse bound
+
+The model version is now `cluster-centre-rectilinear/2`; source resources and
+object identities are unchanged. The provider verifies every computed direction
+against exact rational arithmetic on its admitted binary64 SI position/velocity
+and the exact split-JD TCB input. Python `Fraction(float)` preserves that binary
+value exactly ([Python 3.11 documentation](https://docs.python.org/3.11/library/fractions.html)).
+A fixed algorithm budget of `2**-40` radians is checked, not assumed; a numerical
+failure refuses publication. This budget is part of model identity. It starts
+after the Astropy spherical-to-Cartesian admission conversion. It is neither a
+bound on that conversion nor on the original astrometric data/model.
+
+For a stored anchor vector w and exact model position p(t), the sufficient test is
+positive w dot p and
+
+\[
+4\lVert w\times p\rVert^2
+\le \epsilon^2\lVert w\rVert^2\lVert p\rVert^2,
+\qquad 0 < \epsilon \le 1\ {\rm rad}.
+\]
+
+The angle is acute and its sine is at most epsilon/2. Since angle is at most
+twice its sine on this range, the angular separation is at most epsilon.
+All comparisons use rational operations, without inverse-trig rounding. The
+corresponding circular cone has half-angle below pi/2 and is convex. The exact
+rectilinear p(t) is a line segment, so admission of both endpoints proves the
+bound everywhere between them, including fast perspective changes and the
+original anchor approximation. Interior test samples supplement this proof;
+they do not define it. Missing motion never becomes a zero-speed certificate.
+
+`certify(query, anchor)` accepts only a scalar original full-model anchor with
+matching source/model/reference/evidence. It verifies that actual stored vector
+at the anchor, then halves each model-domain endpoint toward the anchor until
+the cone test succeeds. The returned interval is conservative, clipped to finite
+source/model coverage, and need not be the longest possible one. Halving and
+rounding a candidate time never authorize an unchecked endpoint. A requested
+whole interval is checked explicitly at its endpoints and anchor hull; an
+unprovable interval is refused. Larger requested tolerances use at most one
+radian for this proof. No catalogue-specific time step is embedded in software.
+
+Use a `bounded_reuse` query with positive `AccuracyRequest.angular_rad` through
+an explicit `interactive_bounded` kernel session. The unchanged SDK selects
+eligible original anchors per object, rejects looser old certificates for tighter
+requests and evaluates only missing objects. Reused rows carry the actual
+requested time, original anchor time and certificate identity. Source epoch is
+unchanged and reuse never creates a new anchor. The certificate method and
+identity bind source, model, reference, coverage, vector and bound. No provider
+global cache or hidden propagation in `describe`, `catalogue` or `supports` is
+introduced. Exact rational endpoint arithmetic is proof work, not another full
+normalized-direction result.
+
+No canonical schedule is advertised. Default `reproducible` sessions therefore
+use full-model evaluation, as required by the existing SDK, independent of cache
+warmness and request order. This slice neither changes that contract nor adds
+chart/snapshot integration. Bounds concern computation within the nominal model;
+physical ancient-date validity remains unevaluated.
 
 ## Independent provider verification
 

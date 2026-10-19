@@ -35,8 +35,11 @@ The explicit nominal cluster provider now implements that contract's first
 numerical subset: qualified immutable input solutions, Astropy spherical
 differentials and SI rectilinear motion in explicit TCB coordinate time. A finite
 caller-declared model domain is mandatory and is not physical validity. Measurement,
-centre/model and numerical bounds remain unevaluated; strict accuracy, velocity
-output and certified reuse are refused. Missing RV/epoch solutions remain visible
+centre/model and input-conversion errors remain unevaluated. Numerical direction
+bounds and conservative reuse certificates are now verified against the admitted
+binary64 SI rectilinear model. Requests below the numerical floor and velocity
+output are refused. This computational bound is not an absolute sky-accuracy
+guarantee. Missing RV/epoch solutions remain visible
 and unavailable. The model deliberately omits an additional light-time correction;
 it is not a full relativistic stellar propagation or ancient cluster reconstruction.
 No default chart or saved-sky source-lookup semantics change. See the

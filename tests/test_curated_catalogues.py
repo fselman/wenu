@@ -174,6 +174,16 @@ with Kernel(references=(a.reference,)) as kernel:
             (TimePoint(2457389,0,'tcb'),TimePoint(2457754,.25,'tcb')),a.reference,AccuracyRequest())
         result=session.evaluate(q)
         assert result.states[0].vector!=result.states[1].vector
+    with kernel.open_session(SessionPolicy(provider.describe().catalogues,
+            reproducibility='interactive_bounded')) as session:
+        from dataclasses import replace
+        request=replace(q,times=q.times[:1],evaluation_policy='bounded_reuse',
+                        accuracy=AccuracyRequest(angular_rad=1e-5))
+        first=session.evaluate(request)
+        later=session.evaluate(replace(request,times=(TimePoint(2457389,.001,'tcb'),)))
+        assert first.reuse_certificates and later.states[0].certificate_id
+        assert later.states[0].anchor_time==request.times[0]
+        assert later.states[0].vector==first.states[0].vector
 from wenu.objects.open_clusters import OpenClusters
 default=OpenClusters(None)
 default.load()

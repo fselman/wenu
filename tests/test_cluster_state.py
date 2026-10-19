@@ -163,13 +163,12 @@ def test_cluster_admission_refuses_invalid_source_before_publication(fault):
     with pytest.raises(ValueError): admit_cluster_motion(table,meta,coverage=coverage)
 
 
-def test_cluster_motion_refuses_accuracy_wrong_scale_domain_velocity_and_reuse():
+def test_cluster_motion_refuses_subfloor_accuracy_wrong_scale_domain_and_velocity():
     table,meta,coverage=synthetic();p=ClusterMotionProvider(admit_cluster_motion(table,meta,coverage=coverage));q=query_for(p)
-    for invalid in (replace(q,accuracy=AccuracyRequest(angular_rad=1e-5)),
+    for invalid in (replace(q,accuracy=AccuracyRequest(angular_rad=1e-15)),
                     replace(q,times=(TimePoint(2457389,0,'tt'),)),
                     replace(q,times=(TimePoint(2500001,0,'tcb'),)),
-                    replace(q,require_velocity=True),
-                    replace(q,evaluation_policy='bounded_reuse',accuracy=AccuracyRequest(angular_rad=1e-5))):
+                    replace(q,require_velocity=True)):
         assert not p.supports(invalid).supported
         with pytest.raises(KernelError): through_kernel(p,invalid)
     with pytest.raises(UnsupportedCapability): p.certify(q,through_kernel(p,q))
@@ -204,12 +203,14 @@ def test_cluster_motion_provider_passes_shipped_conformance():
         table,meta,coverage=synthetic();p=ClusterMotionProvider(admit_cluster_motion(table,meta,coverage=coverage))
         q=query_for(p,(TimePoint(2457389,0,'tcb'),TimePoint(2457754,.25,'tcb')))
         probe=replace(q,times=(TimePoint(2458120,-.5,'tcb'),))
-        counts=dict(evaluate=0,close=0);evaluate,close=p.evaluate,p.close
+        counts=dict(evaluate=0,certify=0,close=0);evaluate,certify,close=p.evaluate,p.certify,p.close
         def measured(query): counts['evaluate']+=1;return evaluate(query)
+        def certificate(query,anchor): counts['certify']+=1;return certify(query,anchor)
         def cleanup(): counts['close']+=1;return close()
-        p.evaluate,p.close=measured,cleanup
+        p.evaluate,p.certify,p.close=measured,certificate,cleanup
         def mutate(): table['RAdeg'][0]=123;meta['astrometry']['epoch_label']='J2000.0'
-        return ProviderCase(p,q,probe,lambda:ProviderActivity(counts['evaluate'],0,counts['close']),mutate)
+        return ProviderCase(p,q,probe,lambda:ProviderActivity(counts['evaluate'],counts['certify'],counts['close']),mutate,
+            replace(q,evaluation_policy='bounded_reuse',accuracy=AccuracyRequest(angular_rad=1e-5)))
     result=unittest.TextTestRunner(stream=io.StringIO()).run(provider_suite(factory,name='ClusterMotionContract'))
     assert result.wasSuccessful(),result.errors+result.failures
     assert result.testsRun==8 and not result.skipped
@@ -231,9 +232,14 @@ def test_cluster_epoch_queries_do_not_evaluate_static_galaxy_or_stellar_provider
     providers=[cluster,*unrelated];references=[p.describe().admissions[0].reference for p in providers]
     with Kernel(references=references) as kernel:
         for p in providers: kernel.register(p,ownership='borrowed')
-        with kernel.open_session(SessionPolicy(tuple(p.describe().catalogues[0] for p in providers))) as session:
-            first=session.evaluate(query_for(cluster))
-            later=session.evaluate(query_for(cluster,(TimePoint(2457754,.25,'tcb'),)))
+        with kernel.open_session(SessionPolicy(tuple(p.describe().catalogues[0] for p in providers),
+                reproducibility='interactive_bounded')) as session:
+            q=replace(query_for(cluster),evaluation_policy='bounded_reuse',accuracy=AccuracyRequest(angular_rad=1e-7))
+            first=session.evaluate(q)
+            near=session.evaluate(replace(q,times=(TimePoint(2457389,.001,'tcb'),)))
+            assert all(row.certificate_id for row in near.states)
+            assert first.states[0].vector==near.states[0].vector
+            later=session.evaluate(replace(q,times=(TimePoint(2457754,.25,'tcb'),)))
             assert first.states[0].vector!=later.states[0].vector
 
 
@@ -242,3 +248,129 @@ def test_cluster_loader_refuses_changed_companion_bytes(tmp_path):
     with pytest.raises(ValueError,match='do not match'):
         load_cluster_motion(source,DATA/'open_clusters_hunt_motion_admission_v1.json',
             coverage=TimeSpan(TimePoint(2400000,0,'tcb'),TimePoint(2500000,0,'tcb')))
+
+
+
+def reuse_query(provider, *, objects=None, tolerance=1e-5):
+    return replace(query_for(provider, objects=objects), evaluation_policy='bounded_reuse',
+                   accuracy=AccuracyRequest(angular_rad=tolerance))
+
+
+def angular_distance(first, second):
+    return np.arctan2(np.linalg.norm(np.cross(first,second)),np.dot(first,second))
+
+
+def decimal_direction(row,time):
+    # Independent high-precision arithmetic on the admitted mathematical model.
+    # Does not call production rational/cone/time helpers or normalization.
+    from decimal import Decimal, localcontext
+    with localcontext() as ctx:
+        ctx.prec=80
+        elapsed=(Decimal(time.jd1-row.source_epoch.jd1)+Decimal(time.jd2)
+                 -Decimal(row.source_epoch.jd2))*Decimal(86400)
+        p=[Decimal(x)+elapsed*Decimal(v) for x,v in zip(row.position_m,row.velocity_m_s)]
+        norm=sum(x*x for x in p).sqrt()
+        return tuple(float(x/norm) for x in p)
+
+
+@pytest.mark.parametrize('index',[0,1,2,3])
+def test_cluster_certificate_bounds_entire_interval_and_anchor_numerical_error(index):
+    from wenu_kernel.reuse import validate_certificate
+    table,meta,coverage=synthetic()
+    # Close, fast perspective case: endpoint-only drift estimates would be unsafe.
+    table['RV'][0]=-1000.; table['dist50'][0]=.3
+    admitted=admit_cluster_motion(table,meta,coverage=coverage);p=ClusterMotionProvider(admitted)
+    key=p.describe().admissions[0].objects[index]
+    q=reuse_query(p,objects=(key,),tolerance=1e-6)
+    full=replace(q,evaluation_policy='full_model')
+    anchor=through_kernel(p,full);cert=p.certify(q,anchor)
+    validate_certificate(cert,anchor,p.describe().admissions[0])
+    assert cert.maximum_error<=q.accuracy.angular_rad
+    assert cert.maximum_error>=anchor.states[0].evidence.numerical.value>0
+    assert cert.validity.contains(anchor.states[0].anchor_time)
+    assert coverage.contains(cert.validity.start) and coverage.contains(cert.validity.stop)
+    # Decimal reference and explicit interval endpoints; samples supplement the
+    # analytical convex-cone proof, not a sampled speed bound.
+    start,stop=cert.validity.start,cert.validity.stop
+    for f in np.linspace(0.,1.,41):
+        delta=(stop.jd1-start.jd1)+(stop.jd2-start.jd2)
+        value=start.jd2+f*delta;whole=int(np.floor(value+.5))
+        time=TimePoint(start.jd1+whole,float(value-whole),'tcb')
+        expected=decimal_direction(admitted.rows[index],time)
+        assert angular_distance(anchor.states[0].vector,expected)<=cert.maximum_error
+    if index==3: assert cert.validity==coverage  # Explicitly zero velocity, not missing data.
+    assert anchor.states[0].evidence.measurement.status=='not_evaluated'
+    assert anchor.states[0].evidence.physical_model.status=='not_evaluated'
+
+
+def test_cluster_reuse_skips_only_eligible_objects_and_keeps_original_anchor():
+    table,meta,coverage=synthetic();p=ClusterMotionProvider(admit_cluster_motion(table,meta,coverage=coverage))
+    a=p.describe().admissions[0];q=reuse_query(p,objects=(a.objects[0],a.objects[3]),tolerance=1e-6)
+    rows=[];evaluate=p.evaluate
+    def counted(query): rows.extend((t,k) for t in query.times for k in query.objects);return evaluate(query)
+    p.evaluate=counted
+    with Kernel(references=(q.reference,)) as kernel:
+        kernel.register(p,ownership='borrowed')
+        with kernel.open_session(SessionPolicy((q.catalogue,),reproducibility='interactive_bounded')) as session:
+            first=session.evaluate(q);assert len(rows)==2
+            near=TimePoint(2457389,.01,'tcb');later=session.evaluate(replace(q,times=(near,)))
+            assert len(rows)==2
+            assert all(x.anchor_time==q.times[0] and x.time==near and x.certificate_id for x in later.states)
+            assert tuple(x.vector for x in first.states)==tuple(x.vector for x in later.states)
+            # Every further reuse retains the original anchor, never a chain.
+            second=TimePoint(2457389,.02,'tcb');again=session.evaluate(replace(q,times=(second,)))
+            assert len(rows)==2 and all(x.anchor_time==q.times[0] for x in again.states)
+            far=TimePoint(2457389+1000,0,'tcb');outside=session.evaluate(replace(q,times=(far,)))
+            assert len(rows)==3 and rows[-1]==(far,a.objects[0])
+            assert outside.states[0].anchor_time==far
+            assert outside.states[1].anchor_time==q.times[0]
+            # A looser old certificate cannot satisfy a tighter request.
+            strict=replace(q,times=(near,),accuracy=AccuracyRequest(angular_rad=1e-9))
+            session.evaluate(strict);assert len(rows)==5
+
+
+def test_cluster_reproducible_mode_uses_full_model_and_is_order_independent():
+    table,meta,coverage=synthetic()
+    def run(order):
+        p=ClusterMotionProvider(admit_cluster_motion(table,meta,coverage=coverage));q=reuse_query(p)
+        with Kernel(references=(q.reference,)) as kernel:
+            kernel.register(p,ownership='borrowed')
+            with kernel.open_session(SessionPolicy((q.catalogue,))) as session:
+                output={}
+                for t in order: output[t]=session.evaluate(replace(q,times=(t,)))
+                return output
+    times=(TimePoint(2457389,0,'tcb'),TimePoint(2457389,.01,'tcb'))
+    first=run(times);assert first==run(tuple(reversed(times)))
+    assert all(row.anchor_time==row.time and row.certificate_id is None for result in first.values() for row in result.states)
+
+
+def test_cluster_certificate_boundary_coverage_refusal_and_foreign_or_reused_anchor():
+    table,meta,coverage=synthetic();p=ClusterMotionProvider(admit_cluster_motion(table,meta,coverage=coverage))
+    a=p.describe().admissions[0];q=reuse_query(p,objects=(a.objects[0],),tolerance=1e-6)
+    anchor=through_kernel(p,replace(q,evaluation_policy='full_model'));cert=p.certify(q,anchor)
+    with Kernel(references=(q.reference,)) as kernel:
+        kernel.register(p,ownership='borrowed')
+        with kernel.open_session(SessionPolicy((q.catalogue,),reproducibility='interactive_bounded')) as session:
+            session.evaluate(q)
+            edge=session.evaluate(replace(q,times=(cert.validity.stop,),coverage=cert.validity))
+            assert edge.states[0].anchor_time==q.times[0] and edge.states[0].certificate_id
+            assert edge.reuse_certificates[0].maximum_error<=q.accuracy.angular_rad
+            with pytest.raises(KernelError): p.certify(replace(q,times=(cert.validity.stop,)),edge)
+            with pytest.raises(KernelError): session.evaluate(replace(q,coverage=coverage))
+    foreign=replace(q,reference=replace(q.reference,status='foreign'))
+    with pytest.raises(KernelError): p.certify(foreign,anchor)
+    malformed=replace(anchor,states=(replace(anchor.states[0],vector=(0.,1.,0.)),))
+    with pytest.raises(KernelError): p.certify(q,malformed)
+    # Immediately outside a certified endpoint must not retain that anchor.
+    outside=replace(cert.validity.stop,jd2=float(np.nextafter(cert.validity.stop.jd2,.5)))
+    from wenu_kernel.reuse import qualifies
+    assert not qualifies(cert,q,outside)
+
+
+def test_cluster_numerical_bound_refuses_corrupted_elapsed_time(monkeypatch):
+    import wenu.cluster_state as owner
+    table,meta,coverage=synthetic();p=ClusterMotionProvider(admit_cluster_motion(table,meta,coverage=coverage))
+    q=query_for(p,(TimePoint(2457754,.25,'tcb'),))
+    through_kernel(p,q)  # Positive baseline before injecting an actual numerical fault.
+    monkeypatch.setattr(owner,'_seconds',lambda time,epoch:0.)
+    with pytest.raises(KernelError): through_kernel(p,q)

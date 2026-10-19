@@ -621,7 +621,7 @@
     },
     "cluster-motion-provider": {
       "scope": "Explicit immutable cluster-motion admission and nominal TCB rectilinear kernel provider, numerical/refusal/isolation and targeted installed consumption.",
-      "limits": "No default chart/saved routing, source catalogue bytes, snapshot schema, dependency/build or SDK implementation change. Full physical accuracy and reuse remain unavailable. No network, unrelated-family/atlas/full-production or full SDK rerun.",
+      "limits": "No default chart/saved routing, source catalogue bytes, snapshot schema, dependency/build or SDK implementation change. Physical accuracy remains unavailable; current provider reuse is covered explicitly by cluster-motion-reuse. No network, unrelated-family/atlas/full-production or full SDK rerun.",
       "selections": [
         {
           "node": "tests/test_cluster_state.py",
@@ -638,6 +638,20 @@
         {
           "node": "tests/test_curated_catalogues.py::test_cluster_motion_module_and_admission_ship_and_evaluate_from_installed_wheel",
           "reason": "New module/metadata ship in both archives; isolated installed-wheel query works and default source lookup is unchanged."
+        }
+      ]
+    },
+    "cluster-motion-reuse": {
+      "scope": "Provider-owned exact-rational angular certificates for nominal cluster motion; existing SDK interactive reuse and reproducible full-model fallback.",
+      "limits": "Only cluster owner, portable provider conformance, isolated installed consumption and documentation. No SDK, dependencies, source resource, chart/snapshot/observer/projection/render route changes. Bound starts from admitted binary64 SI solutions; physical/catalogue/conversion accuracy is not certified. No full production or unrelated-family rerun.",
+      "selections": [
+        {
+          "node": "tests/test_cluster_state.py",
+          "reason": "Provider motion/cone proof oracles, refusal, SDK conformance, selective and reproducible reuse."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_cluster_motion_module_and_admission_ship_and_evaluate_from_installed_wheel",
+          "reason": "Actual certificate reuse through the separately installed Wenu wheel and unchanged SDK."
         }
       ]
     }

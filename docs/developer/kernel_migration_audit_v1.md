@@ -219,7 +219,12 @@ not a material point whose trajectory has been measured independently.
 
 The first nominal numerical subset is now implemented through the explicit
 [cluster provider API](implementation_reference.md#nominal-cluster-motion-provider).
-Reuse certification and consumer adoption remain pending.
+The implemented cluster provider now also verifies numerical direction bounds
+and certifies reuse against exact arithmetic on its admitted binary64 SI model.
+Measurement, input-conversion and physical-model uncertainty remain separate and
+uncertified. Interactive selective reuse and reproducible full-model fallback use
+the unchanged SDK; chart/snapshot adoption remains open. See the
+[proof and API](implementation_reference.md#cluster-direction-reuse-bound).
 Keep `catalogue_lookup` as the default until explicit adoption and compatibility
 acceptance. Register a distinct versioned cluster-centre motion model; never
 silently change the meaning of a saved lookup state.

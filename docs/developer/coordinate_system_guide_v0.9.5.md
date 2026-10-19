@@ -1238,7 +1238,11 @@ evaluates a nominal rectilinear centre model in TCB through the kernel, using
 qualified source metadata and a finite caller-declared model domain. It computes
 perspective effects from the declared distance/RV inputs but applies no additional
 light-time correction and claims no ancient-date or absolute angular accuracy.
-Missing full inputs and strict accuracy/reuse requests are refused. This numerical
+Missing full inputs and subfloor numerical/velocity requests are refused.
+Provider-owned exact-rational cone tests now certify angular reuse relative to
+the admitted binary64 SI model, including the stored anchor error. Catalogue,
+spherical-input conversion and physical-model errors remain uncertified; see the
+[bound and proof](implementation_reference.md#cluster-direction-reuse-bound). This numerical
 model is separate from observer transformations and current chart adoption.
 
 `stellar_state.py` supplies source-native Hipparcos lookup states. Its explicit
