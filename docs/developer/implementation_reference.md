@@ -534,7 +534,8 @@ do not import a concrete stellar provider.
 The galaxy model keeps fixed native directions. Full source metadata and digest
 are bound into the derived resource identity. A source epoch with an admitted
 explicit scale is retained as a TimePoint; an unqualified date is preserved in
-metadata but refused for numerical kernel admission, never assigned a scale.
+metadata but not published as a numerical SDK source epoch, never assigned a
+scale. It does not prevent the explicitly static lookup from running.
 An undated `position()` uses JD 0 TT as a deterministic internal evaluation
 anchor, not a source measurement date. Explicit requested instants retain their
 actual evaluation meaning; supported Astropy/date inputs are decoded to TT.
@@ -546,6 +547,23 @@ origin becomes `legacy-unverified-origin` in the SDK reference; no barycentric
 source origin is inferred. Strict catalogue admission still rejects missing
 frame/origin/units/provenance. Existing public coordinate metadata retains its
 marked compatibility interpretation.
+
+K3.10 applies `require_catalogue_lookup_metadata()` before each galaxy provider
+query when the source record has the required identity/edition/provenance/units
+and byte binding. Packaged sources meet this lookup policy without qualifying
+their missing physical frame/origin. Existing constructed/unitless legacy sources
+retain explicit compatibility status with their missing lookup facts included
+in the kernel reference/provenance; errors are never caught and replaced with
+source coordinates. Strict physical admission remains unchanged.
+
+For galaxy outlines the shared owner calls `_outline_state` before cache access;
+its returned centre arrays, ordered IDs and immutable metadata enter cache identity.
+`_transform_outline_table(..., centres=...)` uses that batch without a second query.
+Galaxy `_observed_point_source_key` similarly binds the already-queried centre
+values. Changed kernel states invalidate a warm observation cache, and failed
+admission/query propagates even after cache fill. Default hooks preserve every
+other nonstellar family's existing path. No transformation or ellipse mathematics
+changes. Cold and restored galaxies use these same methods without a schema change.
 
 Centre, angular semiaxes and PA form the domain shape description. Catalogue
 major/minor diameters are converted to semiaxes by existing outline geometry;

@@ -479,3 +479,14 @@ Strict physical admission retains the selected model's qualified input requireme
 PN nebular centres, SNR radio centroids and associated compact/central stars remain
 distinct. Baseline acceptance with explicit compatibility limits does not recover
 missing facts, certify arbitrary-date accuracy or automatically close K5.
+
+## Galaxy routing under catalogue-lookup admission
+
+K3.10 retains the accepted static galaxy chart model. Source-bound lookup
+validation does not qualify absent physical frame/origin facts; legacy records
+and output remain labelled accordingly. A declared date with no admitted scale
+remains source text, with SDK source_epoch None, rather than blocking a static
+lookup or inventing a time scale. A genuinely qualified source epoch remains
+unchanged. Kernel-returned centres control public/native/label/observed geometry
+and warm-cache identity. Shape dimensions/PA, observer frame transformations and
+numerical precision/uncertainty claims are unchanged. No galaxy motion is added.

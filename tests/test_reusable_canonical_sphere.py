@@ -1119,7 +1119,16 @@ def test_kernel_galaxy_routes_preserve_accepted_atlas_pixels(native_snapshot_cas
     from wenu.objects.galaxies import Galaxies
     from wenu.objects.nonstellar import NonStellar
     import numpy as np
-    raw, _, _, sky = native_snapshot_case
+    from wenu.sky.native_snapshot import read_native_sky_snapshot
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    raw, destination, _, sky = native_snapshot_case
+    saved = read_native_sky_snapshot(destination).make_sky()
+    for layer in (sky.galaxies, saved.galaxies):
+        layer.require_catalogue_lookup_metadata()
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    for options in (dict(selected=["NGC5128"]), dict(selected=["NGC5128"], labels_only=True)):
+        _assert_native_geometry_equal(sky.galaxies.realize(context, None, **options),
+                                      saved.galaxies.realize(context, None, **options))
     atlas = AtlasBandTiling.from_json(raw.decode())
     identifier = atlas.primary_sheet_id(201.365, -43.019)
     sheet = next(sheet for sheet in atlas.geometry.sheets if sheet.sheet_id == identifier)
@@ -1130,9 +1139,14 @@ def test_kernel_galaxy_routes_preserve_accepted_atlas_pixels(native_snapshot_cas
             presentation, tmp_path/'legacy-galaxies'), sky=sky)
     generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
         presentation, tmp_path/'kernel-galaxies'), sky=sky)
+    generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
+        presentation, tmp_path/'saved-galaxies'), sky=saved)
     name = f'chart-{sheet.number:02d}.png'
     np.testing.assert_array_equal(imread(tmp_path/'legacy-galaxies'/name),
                                   imread(tmp_path/'kernel-galaxies'/name))
+
+    np.testing.assert_array_equal(imread(tmp_path/'kernel-galaxies'/name),
+                                  imread(tmp_path/'saved-galaxies'/name))
 
 
 def test_kernel_cluster_routes_preserve_native_pixels_and_saved_state(native_snapshot_case, tmp_path, monkeypatch):
@@ -1427,3 +1441,32 @@ def test_native_label_kernel_route_preserves_cold_saved_anchors_and_page_pixels(
             presentation, tmp_path/name), sky=sky)
         filename = f'chart-{sheet.number:02d}.png'
         np.testing.assert_array_equal(imread(tmp_path/'legacy-labels'/filename), imread(tmp_path/name/filename))
+
+
+def test_restored_galaxy_warm_routes_do_not_hide_kernel_refusal(native_snapshot_case, monkeypatch):
+    from astropy.coordinates import AltAz, EarthLocation
+    from astropy.time import Time
+    from wenu.sky.native_snapshot import read_native_sky_snapshot
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    from wenu_kernel import KernelSession
+    _, destination, _, _ = native_snapshot_case
+    layer = read_native_sky_snapshot(destination).make_sky().galaxies
+    original = layer.catalogue_metadata.to_record()
+    assert layer.require_catalogue_lookup_metadata().to_record() == original
+    observer = SimpleNamespace(altaz_frame=AltAz(obstime=Time('2026-08-16T01:00:00'),
+        location=EarthLocation.from_geodetic(-71.5, -33., 52.)))
+    selected = ['NGC5128']
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    layer.spherical_centers(observer, selected=selected)
+    layer.spherical_geometry(observer, selected=selected, samples=12)
+    def refuse(*args, **kwargs):
+        raise RuntimeError('synthetic restored galaxy refusal')
+    monkeypatch.setattr(KernelSession, 'evaluate', refuse)
+    for action in (lambda: layer.position(),
+                   lambda: layer.realize(context, None, selected=selected),
+                   lambda: layer.realize(context, None, selected=selected, labels_only=True),
+                   lambda: layer.spherical_centers(observer, selected=selected),
+                   lambda: layer.spherical_geometry(observer, selected=selected, samples=12)):
+        with pytest.raises(RuntimeError, match='restored galaxy refusal'):
+            action()
+    assert layer.catalogue_metadata.to_record() == original

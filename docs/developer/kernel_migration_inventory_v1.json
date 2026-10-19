@@ -8976,7 +8976,7 @@
   "nonstellar_lookup_admission": {
     "milestone": "K3.09",
     "agreement": "Fernando, 2026-10-19: Incorporate this to the policy and proceed; explicit catalogue-lookup/physical distinction and PM-only clarification",
-    "status": "Implemented candidate; Mac acceptance pending",
+    "status": "Accepted PR #274, main 6e70ee1d; 260 focused Mac, 36 documentation and eight tooling cases passed",
     "public_path": "NonStellar.require_catalogue_lookup_metadata -> NonStellarCatalogueMetadata.require_complete(position_model=catalogue-lookup)",
     "required_lookup_facts": [
       "catalogue",
@@ -8995,5 +8995,26 @@
     "pm_only_policy": "Position/reference epoch and both PMs permit angular propagation without distance/RV, no universal time cutoff; uncertainty/model suitability explicit; AX.13 implementation remains pending",
     "gate": "catalogue-coordinate-defaults",
     "limits": "No family routing, SDK, sources, dependency/build, snapshot schema, projection or renderer change"
+  },
+  "galaxy_routing_closure": {
+    "milestone": "K3.10",
+    "base": "6e70ee1dde2cc40c12745c53a227a25e885ab839",
+    "status": "Implemented candidate; Mac acceptance pending",
+    "scope": "Apply shared lookup admission for source-bound records, preserve constructed/unitless legacy compatibility with explicit missing facts, retain unqualified source dates without invented SDK scale, and close warm observed outline/point state-key and refusal seams.",
+    "public_paths": [
+      "position",
+      "native outlines",
+      "native labels",
+      "observed centres",
+      "observed outlines",
+      "restored sources and atlas output"
+    ],
+    "shared_hooks": [
+      "NonStellar._outline_state default None",
+      "NonStellar._transform_outline_table optional returned centres",
+      "NonStellar._observed_point_source_key default legacy key"
+    ],
+    "gate": "galaxy-routing-closure",
+    "limits": "Static chart model only; missing physical qualification explicit. No source bytes, SDK, dependency/build, snapshot schema, projection/renderer, new science or other-family routing change."
   }
 }

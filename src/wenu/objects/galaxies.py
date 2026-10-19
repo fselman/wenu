@@ -32,20 +32,26 @@ class Galaxies(NonStellar):
         from astropy.time import Time
         from wenu.catalogue_state import CatalogueDirectionProvider
         from wenu_kernel.records import ReferenceSpec, TimePoint, UnboundedCoverage
-        record = self.catalogue_metadata.to_record()
+        metadata = self.catalogue_metadata
+        lookup_missing = metadata.missing_fields_for("catalogue-lookup")
+        if not lookup_missing:
+            metadata = self.require_catalogue_lookup_metadata()
+        record = metadata.to_record()
         source_epoch = None
-        if record["epoch"] is not None:
-            if record["epoch_scale"] not in ("tai", "tt", "tdb", "tcb"):
-                raise ValueError("Galaxy source epoch requires an admitted explicit time scale.")
+        # A static lookup does not turn an unqualified source date into a
+        # numerical epoch. The complete original declaration stays in metadata.
+        if record["epoch"] is not None and record["epoch_scale"] in ("tai", "tt", "tdb", "tcb"):
             source = Time(record["epoch"], scale=record["epoch_scale"])
             source_epoch = TimePoint(float(source.jd1), float(source.jd2), source.scale)
-        missing = self.admission_missing_fields
+        missing = tuple(dict.fromkeys((*self.admission_missing_fields, *lookup_missing)))
         status = "legacy-unverified-catalogue-encoding" if missing else "static-catalogue-model"
         reference = ReferenceSpec(record["frame"] or "icrs",
             record["origin"] or "legacy-unverified-origin", status, "direction", "rad",
             "static chart model; missing source declarations: " + (",".join(missing) or "none"))
         provenance = tuple(record["provenance"]) + (
-            "Wenu static chart model; physical uncertainty not evaluated; " + status,)
+            "Wenu static chart model; physical uncertainty not evaluated; " + status,
+            "catalogue-lookup admission: " + ("source-bound" if not lookup_missing
+                else "legacy compatibility; missing lookup facts: " + ",".join(lookup_missing)),)
         return CatalogueDirectionProvider(rows,
             namespace=record["catalogue"] or self.catalog_name,
             source_epoch=source_epoch, provenance=provenance,
@@ -53,7 +59,7 @@ class Galaxies(NonStellar):
             reference=reference, capability="static_direction", semantic_type="galaxy",
             provider_id="wenu.static-galaxies", resource_id="derived-static-galaxy-table",
             model_id="static-galaxy-chart-directions", coverage=UnboundedCoverage(scale),
-            source_identity=(self.catalogue_metadata.document_json,))
+            source_identity=(metadata.document_json,))
 
     def _native_centres(self, table, instant=None):
         """Obtain static directions through the kernel, preserving source facts."""
@@ -90,6 +96,17 @@ class Galaxies(NonStellar):
         state_table["ra_deg"] = longitude
         state_table["dec_deg"] = latitude
         return state_table
+
+    def _outline_state(self, table, instant):
+        """Query before the observed-outline cache, including its warm path."""
+        return self._native_centres(table, instant)
+
+    def _observed_point_source_key(self, table):
+        return (super()._observed_point_source_key(table),
+                tuple(str(value) for value in table["identifier"]),
+                np.asarray(table["ra_deg"], dtype=float).tobytes(),
+                np.asarray(table["dec_deg"], dtype=float).tobytes(),
+                self.catalogue_metadata.document_json)
 
     _ALIASES = {
         **NonStellar._ALIASES,
