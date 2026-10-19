@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 26, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 27, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -32,8 +32,8 @@ new scientific features. As-built APIs remain in the
 ## Current position and next-item selection
 
 **Accepted runtime baseline:** main
-`a30efcdb520c4a7982ab6be5b89dd7cfad7ddc65`, PR #275. Its tree is identical to
-tested `a4b2822bb57e8038ec31d2abdbe271945ee85915`: 155 focused Mac tests,
+`922da34d61891fbe8060e3130b233d104aaebf47`, PR #276. Its tree is identical to
+tested `d4c5825a64dfdaa4f363c24197bf965d078b72ad`: 211 focused Mac tests,
 36 documentation tests and 8 tooling tests passed. Fernando confirmed clean,
 synchronized main and branch cleanup. This is focused evidence, not a claim
 that every existing function has migrated or that a new full-suite run occurred.
@@ -44,8 +44,8 @@ that every existing function has migrated or that a new full-suite run occurred.
 | Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
 | Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
 | Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
-| Current authorized task | K3.12 generic nonstellar/Messier/Caldwell routing, selected by Fernando’s 2026-10-19 “proceed” after the bounded proposal |
-| Next runtime submilestone | **K3.12 selected:** route generic scientific points, labels, outlines and object-centre consumers; preserve membership/selection/appearance and source gaps. AX.13 remains pending |
+| Current authorized task | K3.13 globular-cluster routing, selected by Fernando’s 2026-10-19 “Proceed” after the bounded proposal |
+| Next runtime submilestone | **K3.13 selected:** route globular centres/public/chart/saved consumers with source-bound lookup admission and returned-state caches; preserve source gaps, shapes, selection and appearance. AX.13 remains pending |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -71,6 +71,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 27: select K3.13 | Fernando’s 2026-10-19 “Proceed” after the globular-routing proposal; clean main receipt at PR #276 | Opt the dedicated globular owner into the accepted lookup and cache mechanics with its own source/provider identity. Preserve Harris data, half-light diameter, labels, selection and observer science. Gate: globular-routing, including changed-state/refusal, cold/restored geometry and actual atlas pixels. No source replacement, motion, SDK/schema/renderer or PN/SNR migration |
 | Revision 26: select K3.12 | Fernando’s 2026-10-19 “proceed” after the bounded generic nonstellar/Messier/Caldwell proposal; clean main receipt at PR #275 | Reuse catalogue lookup for generic points, outlines, labels and named target centres; preserve independent membership, identity, selection, observation science and appearance. Verify returned-state/refusal and cold/restored routes with nonstellar-routing. No new motion, source replacement, SDK/schema/renderer or dedicated other-family routing |
 | Revision 25: select K3.10 | Fernando’s 2026-10-19 “proceed” after the galaxy-closure proposal; clean main receipt at PR #274 | Apply accepted K3.09 lookup admission; preserve unqualified source dates as provenance without blocking static lookup; pre-query returned centres and bind warm observed caches to them. Verify all centre/outline/label/public/saved seams, refusal after cache fill and identical native pixels with galaxy-routing-closure. Existing constructed/unitless legacy compatibility stays disclosed. No source replacement, new physics, SDK, schema, renderer or other-family routing change |
 | Revision 24: approved admission and PM-only policy | Fernando’s 2026-10-19 “Incorporate this to the policy and proceed” following his tens-of-thousands-of-years PM-only clarification | Record before implementation: catalogue lookup may retain explicit source gaps; known position/epoch and both PM components allow angular propagation without distance/RV and without a universal short cutoff. Accuracy/uncertainty/model limits control suitability. Selected runtime slice: K3.09 lookup-admission API/disclosure/refusal in existing owner; catalogue-coordinate-defaults gate. No family routing or AX.13 numerical implementation activated |
@@ -532,8 +533,8 @@ map below ensures small/non-chart capabilities do not disappear in grouped rows.
 | K3.09 | Close nonstellar source admission/shared coordinate defaults and snapshot lineage without fabricated metadata | Accepted baseline admission PR #273–#274; 260 focused Mac, 36 documentation and eight tooling cases passed. Missing physical facts remain separately unqualified; no family routing or AX.13 numerical implementation claimed |
 | K3.10 | Route galaxy centres/outline inputs/labels/public and saved consumers; close required source qualification | Accepted PR #275, main `a30efcdb`; 155 focused Mac, 36 documentation and eight tooling cases passed. Physical source origin/frame gaps stay separately unqualified |
 | K3.11 | Route open-cluster source lookup/public/native/observed inputs and restored sources with row epochs/masks/order | Accepted bounded lookup routes; new motion is tracked separately in AX |
-| K3.12 | Route generic nonstellar, Messier/Caldwell label-only/scientific points, identities and object-centre consumers | Implemented candidate; pending Mac acceptance. Generic points/outlines/labels, returned-state caches and named target/object-centre consumers; independent membership/label policy preserved |
-| K3.13 | Route globular-cluster centres and public/chart/saved consumers with own source admission | Pending; K3.09 and source evidence required |
+| K3.12 | Route generic nonstellar, Messier/Caldwell label-only/scientific points, identities and object-centre consumers | Accepted PR #276, main `922da34d`; 211 focused Mac, 36 documentation and eight tooling cases passed; independent membership/label policy preserved |
+| K3.13 | Route globular-cluster centres and public/chart/saved consumers with own source admission | Implemented candidate; pending Mac acceptance. Own globular source/provider identity with accepted shared lookup/cache mechanics; physical source gaps remain explicit |
 | K3.14 | Route existing planetary-nebula centre/geometry/selection consumers | Pending; preserve criteria and display scaling; new motion adapter is AX.15 |
 | K3.15 | Route existing supernova-remnant centre/geometry/selection consumers | Pending; preserve source fidelity; new motion adapter is AX.16 |
 | K3.16 | Admit Milky Way/Magellanic source metadata and route diffuse celestial geometry | Pending M9; diffuse morphology must not become fabricated point-body states |

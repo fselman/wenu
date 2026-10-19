@@ -1452,6 +1452,48 @@
           "reason": "Real Messier/Caldwell native labels/outlines, exact legacy/cold/saved pixels, PDF/SVG and restored warm-cache refusal."
         }
       ]
+    },
+    "globular-routing": {
+      "scope": "K3.13 source-bound globular catalogue lookup across public/native/label/observed and restored atlas consumers.",
+      "limits": "Lookup only; preserve source gaps, half-light diameter, structural metadata, common names, selection and appearance. No motion, source bytes, SDK, dependency/build, snapshot schema, observer/projection/renderer or PN/SNR routing change. Reuse accepted shared provider conformance/installation evidence.",
+      "selections": [
+        {
+          "node": "tests/test_globular_clusters.py",
+          "reason": "Changed owner: half-light sizes, names, source identity, returned states and warm admission/kernel refusal."
+        },
+        {
+          "node": "tests/test_nonstellar_catalogue.py",
+          "reason": "Inherited source admission, geometry/cache mechanics and independent membership remain compatible."
+        },
+        {
+          "node": "tests/test_position_providers.py",
+          "reason": "Public inherited centre boundary and identity contract."
+        },
+        {
+          "node": "tests/test_observed_cache.py",
+          "reason": "Returned-state cache composition retains observer identity/immutable arrays."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_kernel_globular_routes_preserve_accepted_atlas_pixels",
+          "reason": "Native labels/outlines and real legacy/cold/restored globular PNG pixels plus PDF/SVG export."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_restored_globular_warm_routes_do_not_hide_kernel_refusal",
+          "reason": "Restored globular public/native/label/observed refusal after cache fill with preserved source metadata."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_fixed_catalogue_rows_masks_units_and_subsets",
+          "reason": "Source rows/units/masks and immutable metadata survive snapshot transport."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_nonstellar_admission_and_unknown_epochs",
+          "reason": "Restored physical source gaps remain explicit and strict physical admission still refuses."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources",
+          "reason": "Public restored sources execute in a fresh process without source files."
+        }
+      ]
     }
   },
   "consumer_review": [

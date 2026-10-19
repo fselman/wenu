@@ -1531,3 +1531,73 @@ def test_kernel_nonstellar_cold_saved_pixels_and_warm_refusal(native_snapshot_ca
         with pytest.raises(RuntimeError, match='saved generic refusal'):
             action()
     assert layer.catalogue_metadata.to_record() == record
+
+
+def test_restored_globular_warm_routes_do_not_hide_kernel_refusal(native_snapshot_case, monkeypatch):
+    from astropy.coordinates import AltAz, EarthLocation
+    from astropy.time import Time
+    from wenu.sky.native_snapshot import read_native_sky_snapshot
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    from wenu_kernel import KernelSession
+    _, destination, _, _ = native_snapshot_case
+    layer = read_native_sky_snapshot(destination).make_sky().globular_clusters
+    original = layer.catalogue_metadata.to_record()
+    assert layer.require_catalogue_lookup_metadata().to_record() == original
+    observer = SimpleNamespace(altaz_frame=AltAz(obstime=Time('2026-08-16T01:00:00'),
+        location=EarthLocation.from_geodetic(-71.5, -33., 52.)))
+    selected = ['NGC 5139']
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    layer.spherical_centers(observer, selected=selected)
+    layer.spherical_geometry(observer, selected=selected, samples=12)
+    def refuse(*args, **kwargs):
+        raise RuntimeError('synthetic restored globular refusal')
+    monkeypatch.setattr(KernelSession, 'evaluate', refuse)
+    for action in (lambda: layer.position(),
+                   lambda: layer.realize(context, None, selected=selected),
+                   lambda: layer.realize(context, None, selected=selected, labels_only=True),
+                   lambda: layer.spherical_centers(observer, selected=selected),
+                   lambda: layer.spherical_geometry(observer, selected=selected, samples=12)):
+        with pytest.raises(RuntimeError, match='restored globular refusal'):
+            action()
+    assert layer.catalogue_metadata.to_record() == original
+
+
+
+def test_kernel_globular_routes_preserve_accepted_atlas_pixels(native_snapshot_case, tmp_path, monkeypatch):
+    from matplotlib.image import imread
+    from wenu.atlas_design import AtlasBandTiling
+    from wenu.charts.atlas_publication import AtlasChartPresentation
+    from wenu.charts.request_generation import AtlasSheetChartRequest, generate_chart_request
+    from wenu.objects.globular_clusters import GlobularClusters
+    from wenu.objects.nonstellar import NonStellar
+    import numpy as np
+    from wenu.sky.native_snapshot import read_native_sky_snapshot
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    raw, destination, _, sky = native_snapshot_case
+    saved = read_native_sky_snapshot(destination).make_sky()
+    for layer in (sky.globular_clusters, saved.globular_clusters):
+        layer.require_catalogue_lookup_metadata()
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    for options in (dict(selected=["NGC 5139"]), dict(selected=["NGC 5139"], labels_only=True)):
+        _assert_native_geometry_equal(sky.globular_clusters.realize(context, None, **options),
+                                      saved.globular_clusters.realize(context, None, **options))
+    atlas = AtlasBandTiling.from_json(raw.decode())
+    identifier = atlas.primary_sheet_id(201.697, -47.480)
+    sheet = next(sheet for sheet in atlas.geometry.sheets if sheet.sheet_id == identifier)
+    presentation = AtlasChartPresentation(layers=('globular_clusters',), formats=('png', 'pdf', 'svg'), dpi=36)
+    with monkeypatch.context() as baseline:
+        baseline.setattr(GlobularClusters, '_native_centres', lambda self, table, instant=None:
+            (np.asarray(table['ra_deg'], dtype=float), np.asarray(table['dec_deg'], dtype=float)))
+        generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
+            presentation, tmp_path/'legacy-globulars'), sky=sky)
+    generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
+        presentation, tmp_path/'kernel-globulars'), sky=sky)
+    generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
+        presentation, tmp_path/'saved-globulars'), sky=saved)
+    name = f'chart-{sheet.number:02d}.png'
+    np.testing.assert_array_equal(imread(tmp_path/'legacy-globulars'/name),
+                                  imread(tmp_path/'kernel-globulars'/name))
+
+    np.testing.assert_array_equal(imread(tmp_path/'kernel-globulars'/name),
+                                  imread(tmp_path/'saved-globulars'/name))
+

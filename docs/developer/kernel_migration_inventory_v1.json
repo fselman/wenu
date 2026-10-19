@@ -9019,7 +9019,7 @@
   },
   "generic_nonstellar_routing": {
     "milestone": "K3.12",
-    "status": "Implemented candidate; Mac acceptance pending",
+    "status": "Accepted PR #276, main 922da34d61891fbe8060e3130b233d104aaebf47; 211 focused Mac, 36 documentation and eight tooling cases passed",
     "base": "a30efcdb520c4a7982ab6be5b89dd7cfad7ddc65",
     "owners": [
       "src/wenu/objects/nonstellar.py",
@@ -9038,5 +9038,22 @@
     ],
     "gate": "nonstellar-routing",
     "limits": "No dedicated other-family migration, propagation, source byte, SDK, dependency/build, schema, observation science or renderer change. Unknown physical facts remain explicit."
+  },
+  "globular_kernel_routing": {
+    "milestone": "K3.13",
+    "status": "Implemented candidate; Mac acceptance pending",
+    "base": "922da34d61891fbe8060e3130b233d104aaebf47",
+    "owner": "src/wenu/objects/globular_clusters.py",
+    "mechanics": "Accepted NonStellar source-bound direction lookup, state tables and returned-state observation cache hooks; own globular semantic/model/resource/provider identity",
+    "public_paths": [
+      "position",
+      "native outlines",
+      "native labels",
+      "observed centres/outlines",
+      "restored sources",
+      "atlas PNG/PDF/SVG"
+    ],
+    "gate": "globular-routing",
+    "limits": "Preserve missing physical facts, Harris half-light diameters, structural data, common names, selection and appearance; no source, motion, SDK, dependency/build, schema, observer/projection/renderer or PN/SNR routing change"
   }
 }

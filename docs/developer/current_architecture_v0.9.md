@@ -43,7 +43,7 @@ unqualified constructed/unitless legacy sources. Unqualified source dates stay
 provenance and do not block static lookup. Galaxy outline state is queried before
 cache access, and returned centres enter outline/point cache identity. The same
 queried centres construct outlines once; unchanged returned states still reuse
-their observer transformation. Dedicated globular/PN/SNR families retain their default cache hooks;
+their observer transformation. Dedicated PN/SNR families retain their default cache hooks;
 the generic owner opts into returned-state hooks under K3.12 below.
 This is accepted through PR #275 and does not qualify absent physical source facts.
 
@@ -316,11 +316,14 @@ requests and non-horizontal chart frames do not adopt this opt-in.
 
 ## Generic nonstellar and target lookup routing
 
-The K3.12 candidate opts the generic NonStellar owner into catalogue lookup for
+Accepted K3.12 (PR #276) opts the generic NonStellar owner into catalogue lookup for
 public points, native outlines/labels and observed centre/outline inputs. Galaxy
 and generic lookup share metadata admission, epoch handling and vector decoding
-mechanics while retaining distinct model/resource identities. Dedicated globular,
-PN and SNR owners retain their prior routes; their milestones remain pending.
+mechanics while retaining distinct model/resource identities. Dedicated PN and SNR owners retain their prior routes; their milestones remain pending.
+K3.13 now opts the globular owner into the same source-bound lookup/cache mechanics
+with its own globular semantic type and model/provider/resource identity. Half-light
+diameter construction, structural metadata, common names and selection are unchanged.
+The globular candidate is pending Mac acceptance.
 Returned generic states enter both observation cache identities before reuse.
 Named ResolvedTarget coordinates similarly query immutable copied target records;
 object-centre and binocular preparation consume that public coordinate. Explicit

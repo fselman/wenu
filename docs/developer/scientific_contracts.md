@@ -502,3 +502,14 @@ refusal propagates even after observed caches are warm. A copied target record
 is not proof of an original source frame, epoch, origin or measurement error.
 Explicit user coordinates remain constructed references. No motion, expansion,
 parallax algorithm or physical time-validity guarantee is added.
+
+## Globular-cluster baseline lookup
+
+K3.13 changes centre routing only. Catalogue lookup preserves original Harris
+source facts and missing physical declarations without substituting another
+catalogue's position. Half-light radius remains a structural measurement; the
+existing plotted diameter is twice that radius, not a motion or physical extent
+evolution model. Known/unknown source epochs retain shared lookup semantics.
+Native and observed shapes/labels consume returned centres; warm caches cannot
+hide refusal or changed state. No proper motion, parallax, internal dynamics,
+expansion or arbitrary-date physical validity claim is added.
