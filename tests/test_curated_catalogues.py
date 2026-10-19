@@ -142,7 +142,9 @@ def test_cluster_motion_module_and_admission_ship_and_evaluate_from_installed_wh
     from zipfile import ZipFile
     import wenu_kernel
     wheel = _assert_source_products_ship(tmp_path, ('open_clusters_hunt_motion_admission_v1.json',),
-        modules=('wenu/cluster_state.py', 'wenu/astrometric_state.py', 'wenu/astrometric_coordinates.py', 'wenu/astrometric_observation.py'))
+        modules=('wenu/cluster_state.py', 'wenu/astrometric_state.py', 'wenu/astrometric_coordinates.py', 'wenu/astrometric_observation.py',
+                 'wenu/configuration/defaults.toml', 'wenu/charts/request.py',
+                 'wenu/charts/request_realization.py', 'wenu/cli/chart.py'))
     installed=tmp_path/'installed'
     with ZipFile(wheel) as archive: archive.extractall(installed)
     # Explicit accepted SDK path works for both regular and editable SDK hosts;
@@ -250,6 +252,11 @@ assert geometry.ids.tolist()==selected and geometry.coordinate_spec.frame=='alta
 assert geometry.coordinate_spec.longitude_unit=='deg'
 assert geometry.metadata['astrometric_observation'].reception==reception
 assert layer.position().metadata['catalogue_position_model']=='catalogue_lookup'
+from wenu.configuration import load_configuration,translate_configuration_defaults
+from wenu.charts.request import ClusterMotionRequest
+assert translate_configuration_defaults(load_configuration()).cluster_motion==ClusterMotionRequest()
+from wenu.cli.chart import parser
+assert parser().parse_args(['planisphere','--open-cluster-model','lookup']).open_cluster_model=='lookup'
 '''
     from wenu.resources import nonstellar_catalog_path
     selected_source=tmp_path/'selected-source.ecsv'

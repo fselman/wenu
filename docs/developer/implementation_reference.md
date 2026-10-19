@@ -1055,7 +1055,8 @@ result = sky.draw_chart(
 The snippet assumes the explicitly prepared receipt, admitted motion catalogue,
 existing sky, projection and renderer. Import `LayerRealizationContext` from
 `wenu.sky.realization`. This is the existing canonical Python drawing API;
-ordinary request/CLI/TOML model selection remains a subsequent milestone.
+ordinary horizontal request/CLI/TOML model selection is now implemented as
+described in the configuration contract.
 Unmigrated layers must be disabled for this reception-context chart: their base
 adapter refuses the new request. The chart guard also rejects overridden layers
 that return a mismatched frame/status/event/units/corrections or omit the reception
@@ -1213,3 +1214,43 @@ Historical candidate or authorization language in that edition is not current st
 The existing [user examples](../user_guide/chart_examples.md),
 [configuration guide](../user_guide/configuration.md) and
 [SVG guide](../user_guide/svg_output.md) remain operational documentation.
+
+
+## Ordinary request cluster astrometry selection
+
+`ClusterMotionRequest` is imported from `wenu.charts.request`, without a new
+top-level export. `ChartRequest.cluster_motion` defaults to lookup. An active
+request selects the accepted `nominal-observed` model, ordered `identifiers`,
+local leap/EOP paths and SHA256 digests, four-part installed `backend_identity`,
+increasing finite `start_jd_tt`/`stop_jd_tt` and `start_jd_tcb`/`stop_jd_tcb`, and
+explicit `height_wgs84_m`. Paths are interpreted from the process working
+directory; absolute paths are preferable. JD bounds are user domain endpoints,
+not a high-precision reception timestamp or a physical error certificate.
+
+The configuration translator maps `astrometry.open_clusters` into this immutable
+contract. `get_chart_view` carries it into the ordinary drawing request. The CLI
+`--open-cluster-model lookup|nominal-observed` overrides TOML model selection;
+repeatable `--open-cluster-id` replaces its identifier list. `lookup` does not
+open the extra resources. The admitted model is currently limited to horizontal
+ordinary charts; unsupported frames fail instead of changing frame semantics.
+
+`chart_cluster_motion_options(request, observer)` composes public source/backend
+services and returns per-layer motion/reception/selection geometry options.
+Caller-qualified WGS84 ellipsoid height must equal the ordinary observer's
+height; it is never inferred from an unqualified legacy elevation. Source and
+reception coverage remain independent, local resource hashes and code identity
+are checked, and each requested cluster must have usable admitted inputs.
+The cluster adapter checks the receipt against the chart site/time/vacuum frame,
+then performs a full Cartesian query and the accepted shared observer realization.
+There is no fallback or shared layer mutation. Lookup spatial pre-culling is
+skipped for this explicit source model; projection/viewport clipping occurs on
+realized geometry. Other families keep their existing scientific routes.
+
+Model choice does not override layer enabling, symbol style or minimum-size
+filtering. Explicit chart cluster membership intersects the admitted identifier
+list; exclusions apply too, and an empty effective membership disables that layer.
+View centres and target-resolution definitions retain their existing meaning. Wide-field adaptive detail can hide open clusters; configure that
+appearance independently. Active model parameters remain in SVG provenance and
+sequence identity; lookup retains its former identity. Snapshot v5 and native
+atlas workers are unchanged. See the complete
+[configuration fields](configuration_schema_v2.md#explicit-open-cluster-astrometry).

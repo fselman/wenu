@@ -191,3 +191,29 @@ def test_manifest_identity_includes_effective_configuration(tmp_path):
     assert restored == configured_manifest
     with pytest.raises(ValueError, match="incompatible"):
         plain_manifest.assert_compatible(configured)
+
+
+
+def test_cluster_model_identity_retains_active_inputs_and_lookup_compatibility(tmp_path):
+    from wenu.charts.sequence_manifest import _chart_request_identity
+    from wenu.charts.request_satellite_tracks import chart_request_provenance_parameters
+    from wenu.charts.request import ClusterMotionRequest
+    base=sequence(tmp_path).chart
+    assert 'cluster_motion' not in _chart_request_identity(base)
+    assert 'cluster_motion' not in chart_request_provenance_parameters(base)
+    admitted=ClusterMotionRequest(model='nominal-observed',identifiers=('constructed',),
+        leap_seconds_path='/synthetic/leaps',leap_seconds_sha256='0'*64,
+        eop_path='/synthetic/eop',eop_sha256='1'*64,
+        backend_identity=('synthetic','synthetic','synthetic','2'*64),
+        start_jd_tt=2456000.,stop_jd_tt=2457000.,start_jd_tcb=2400000.,stop_jd_tcb=2500000.,
+        height_wgs84_m=52.)
+    active=replace(base,cluster_motion=admitted)
+    identity=_chart_request_identity(active)
+    assert identity['cluster_motion']['eop_sha256']=='1'*64
+    assert chart_request_provenance_parameters(active)['cluster_motion']['identifiers']==('constructed',)
+    assert _chart_request_identity(replace(active,cluster_motion=replace(admitted,identifiers=('other',))))!=identity
+
+    configured=replace(sequence(tmp_path/'configured'),configuration=load_configuration_defaults())
+    assert 'cluster_motion' not in ObserverTimeSequenceManifest.from_sequence(configured).configuration
+    active_configured=replace(configured,chart=replace(configured.chart,cluster_motion=admitted))
+    assert 'cluster_motion' in ObserverTimeSequenceManifest.from_sequence(active_configured).chart_request

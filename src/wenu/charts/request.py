@@ -354,6 +354,60 @@ class ChartFrameRequest:
 
 
 @dataclass(frozen=True)
+class ClusterMotionRequest:
+    """Explicit offline admission for the existing nominal observed model.
+
+    Heights are caller-qualified WGS84 ellipsoid heights. Domains are nominal
+    caller limits, not physical accuracy certificates. No resource is acquired.
+    """
+
+    model: str = "lookup"
+    identifiers: tuple[str, ...] = ()
+    leap_seconds_path: str = "none"
+    leap_seconds_sha256: str = "none"
+    eop_path: str = "none"
+    eop_sha256: str = "none"
+    backend_identity: tuple[str, ...] = ()
+    start_jd_tt: float = 0.0
+    stop_jd_tt: float = 0.0
+    start_jd_tcb: float = 0.0
+    stop_jd_tcb: float = 0.0
+    height_wgs84_m: float | None = None
+
+    def __post_init__(self):
+        if self.model not in ("lookup", "nominal-observed"):
+            raise ValueError("open-cluster model must be lookup or nominal-observed.")
+        if type(self.backend_identity) not in (tuple,list) or type(self.identifiers) not in (tuple,list):
+            raise TypeError("backend_identity and identifiers must be sequences of strings.")
+        object.__setattr__(self, "backend_identity", tuple(self.backend_identity))
+        object.__setattr__(self, "identifiers", tuple(self.identifiers))
+        if self.model == "lookup":
+            return
+        if not self.identifiers or any(not isinstance(v,str) or not v.strip() for v in self.identifiers):
+            raise ValueError("Explicit cluster astrometry requires non-empty identifiers.")
+        for name in ("leap_seconds_path", "eop_path"):
+            value = getattr(self, name)
+            if not isinstance(value, str) or value in ("", "none"):
+                raise ValueError(f"Explicit cluster astrometry requires {name}.")
+        for name in ("leap_seconds_sha256", "eop_sha256"):
+            value = getattr(self, name)
+            if not isinstance(value, str) or len(value) != 64 or any(c not in "0123456789abcdef" for c in value):
+                raise ValueError(f"Explicit cluster astrometry requires a lowercase SHA256 for {name}.")
+        if (len(self.backend_identity) != 4 or any(not isinstance(v,str) or not v for v in self.backend_identity)
+                or len(self.backend_identity[3]) != 64):
+            raise ValueError("Explicit four-part installed reception backend_identity is required.")
+        for name in ("start_jd_tt", "stop_jd_tt", "start_jd_tcb", "stop_jd_tcb", "height_wgs84_m"):
+            value = getattr(self, name)
+            if value is None or isinstance(value, bool) or not isfinite(float(value)):
+                raise ValueError(f"{name} must be finite.")
+            object.__setattr__(self,name,float(value))
+        if not -1000 <= self.height_wgs84_m <= 10000:
+            raise ValueError("height_wgs84_m must be in -1000..10000 m.")
+        if any(getattr(self,'start_jd_'+scale) >= getattr(self,'stop_jd_'+scale) for scale in ('tt','tcb')):
+            raise ValueError("Explicit finite increasing TT and TCB domains are required.")
+
+
+@dataclass(frozen=True)
 class ChartRequest:
     """Complete immutable request shared by Python and future CLI adapters."""
 
@@ -395,8 +449,13 @@ class ChartRequest:
     reference_policy: CelestialReferencePolicy = CelestialReferencePolicy()
     minor_body_resource_directory: Path | None = None
     minor_body_descriptors: tuple = ()
+    cluster_motion: ClusterMotionRequest = ClusterMotionRequest()
 
     def __post_init__(self):
+        if type(self.cluster_motion) is not ClusterMotionRequest:
+            raise TypeError("cluster_motion must be a ClusterMotionRequest.")
+        if self.cluster_motion.model != "lookup" and self.coordinate_frame != "horizontal":
+            raise ValueError("Explicit cluster observer motion currently requires a horizontal chart.")
         if not isinstance(self.stellar_report, bool):
             raise TypeError("stellar_report must be boolean")
         constellation_system = str(self.constellation_system).strip().lower()

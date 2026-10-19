@@ -176,6 +176,8 @@ def get_chart_view(
         constellation_mask=constellation_mask,
         constellation_system=constellation_system,
         product=ChartProductOptions(output=Path(".")),
+        **({} if configuration is None or getattr(configuration,"cluster_motion",None) is None
+           else {"cluster_motion":configuration.cluster_motion}),
         reference_policy=(
             configuration.reference_policy
             if configuration is not None

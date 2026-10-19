@@ -476,7 +476,8 @@ or canvas changes, so serial/spawn atlas batches are excluded. The existing defa
 native-page pixel test protects unchanged atlas output. The shared context changes
 justify the complete layer/request-context tests and static-neighbour checks.
 No historical tests are removed or moved. Run documentation and tooling separately.
-Observer-dependent motion and CLI selection remain explicitly unsupported.
+This native gate does not enable observer-dependent motion or CLI selection;
+those now have their separate observed-consumer and ordinary-selection gates.
 
 ## Native stellar kernel gate
 
@@ -783,4 +784,32 @@ Run tooling, `documentation` and `astrometric-observer-consumers`. Reuse accepte
 source propagation/convention/observer numerical oracles and installation recipe;
 no SDK, science algorithm, resource bytes, dependencies/build, snapshot schema,
 projection/renderer, atlas dispatch or CLI/TOML change. No full SDK/production
-repeat is required. CLI/configuration and total physical accuracy remain pending.
+repeat is required. Ordinary horizontal CLI/configuration selection now has its
+separate gate below; total physical accuracy remains pending.
+
+
+## Ordinary cluster model selection gate
+
+`cluster-astrometry-selection` extends the accepted observed-consumer gate and
+selects the changed configuration schema/translation, CLI/view/request/export,
+spatial-selection and sequence-identity seams. New tests live in the existing
+packaged configuration, request-realization and installed-command owners.
+
+Real TOML and CLI model/ID overrides must reach one full Cartesian query and
+actual SVG output through the ordinary mixed-layer chart pipeline. A lookup
+pre-cull/legacy observation spy must remain unused for the explicit model.
+CLI lookup override must perform no Cartesian query. Existing appearance
+controls remain independent; the real wide-field test explicitly enables
+content via its existing adaptive policy. Request/resource/site/time mismatch,
+query refusal, default restoration and immutable source metadata remain checked.
+
+Default lookup provenance/sequence identity omit the added model field, while
+active admissions are retained. Existing sequence/manifest, configuration overlay,
+shared export/lifecycle, view/drawing and public consumer tests protect this
+request-contract addition. Installed wheel/sdist bytes now also verify changed
+packaged defaults and request/CLI owners; installed parsing and the accepted
+public cluster observer seam run without ambient Wenu imports.
+
+No provider/observer numerical algorithm, SDK, source resources, dependency/build,
+snapshot schema, projection/renderer or atlas dispatch changes. Reuse accepted
+numerical/conformance receipts; do not repeat unrelated physics or full production.

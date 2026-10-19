@@ -43,6 +43,7 @@ class ConfigurationError(ValueError):
 _OPTIONAL_NUMBERS = frozenset(
     {
         "observer.elevation",
+        "astrometry.open_clusters.height_wgs84_m",
         "styles.atlas.constellation_figures.gap_points",
         "styles.cartoon.constellation_figures.gap_points",
         "sequence.playback_duration",
@@ -79,6 +80,8 @@ _OPTIONAL_LISTS = frozenset(
 _OPTIONAL_POINTS = frozenset({"grids_references.references.anchor"})
 _STRING_LISTS = frozenset(
     {
+        "astrometry.open_clusters.backend_identity",
+        "astrometry.open_clusters.identifiers",
         "detail.neutral.grid_label_layers",
         "detail.content.star_constellations",
         "detail.constellations.labels",
@@ -406,6 +409,14 @@ def _validate_semantics(configuration: Mapping[str, Any]) -> None:
             f"unsupported value {configuration.get('schema_version')!r}; "
             f"expected {SCHEMA_VERSION}",
         )
+    from wenu.charts.request import ClusterMotionRequest
+    try:
+        selection = dict(configuration["astrometry"]["open_clusters"])
+        if selection["height_wgs84_m"] == "none":
+            selection["height_wgs84_m"] = None
+        ClusterMotionRequest(**selection)
+    except (TypeError, ValueError) as error:
+        _error("astrometry.open_clusters", str(error))
     from wenu.charts.reference_policy import CelestialReferencePolicy
     try:
         CelestialReferencePolicy(

@@ -111,8 +111,8 @@ SI solutions; measurement, conversion and physical-model accuracy stay unknown.
 Explicit native Python chart consumers now adopt the motion catalogue per call,
 including restored source snapshots, with matching TCB context epochs and
 source-digest/identity admission. Default lookup and snapshot v5 are unchanged;
-explicit observed Python charts now use the shared finite-distance service. CLI
-selection and persisted epoch states remain ahead. See the
+explicit observed Python charts now use the shared finite-distance service. CLI/TOML
+selection is now available for ordinary horizontal charts; persisted epoch states remain separate. See the
 [consumer API](implementation_reference.md#explicit-native-cluster-motion-consumers).
 The [observer-motion contract](scientific_contracts.md#cluster-observer-realization-contract)
 now records the RA/Dec-only seam, required Cartesian/time/common-coordinate
@@ -168,3 +168,10 @@ receipts and superseded instructions. The
 blob identities and old-to-new paths. Read historical material only when its
 scientific detail or provenance is needed; do not append milestone diaries to
 the current architecture, coordinate guide, API reference or source map.
+
+Explicit ordinary horizontal charts can select `nominal-observed` through
+`astrometry.open_clusters` in schema-v2 TOML or `--open-cluster-model`, with
+repeatable `--open-cluster-id` selection. Verified local leap/final EOP resources,
+installed backend identity, finite TT/TCB domains and qualified WGS84 height are
+required. See the [configuration contract](configuration_schema_v2.md#explicit-open-cluster-astrometry).
+Other layers keep their existing scientific routes; no expansion is introduced.

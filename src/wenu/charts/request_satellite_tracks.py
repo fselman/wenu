@@ -181,6 +181,8 @@ def chart_request_provenance_parameters(request):
     from dataclasses import asdict, replace
 
     parameters = asdict(replace(request, satellite_exact_tracks=()))
+    if request.cluster_motion.model == "lookup":
+        parameters.pop("cluster_motion")
     parameters["satellite_exact_tracks"] = satellite_exact_track_provenance(
         request
     )

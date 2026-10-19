@@ -37,6 +37,7 @@ class ConfigurationDefaults:
     constellation_system: str = "western"
     constellation_masks: Any = None
     stellar_report: bool = False
+    cluster_motion: Any = None
 
 
 def translate_configuration_defaults(
@@ -48,7 +49,12 @@ def translate_configuration_defaults(
     resource_directory = values["observer"][
         "minor_body_resource_directory"
     ]
+    from wenu.charts.request import ClusterMotionRequest
+    selection = dict(values["astrometry"]["open_clusters"])
+    if selection["height_wgs84_m"] == "none":
+        selection["height_wgs84_m"] = None
     return ConfigurationDefaults(
+        cluster_motion=ClusterMotionRequest(**selection),
         stellar_report=values["reports"]["stellar_designations"],
         style_mode=translate_style_mode_defaults(values),
         geometry_detail=translate_geometry_detail_defaults(values),

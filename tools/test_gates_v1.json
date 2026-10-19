@@ -1143,6 +1143,111 @@
           "reason": "Installed real cluster layer and receipt composition retain default lookup."
         }
       ]
+    },
+    "cluster-astrometry-selection": {
+      "scope": "Explicit horizontal chart request/CLI/TOML cluster model selection, layer-local observer service, source membership and installed/default compatibility.",
+      "limits": "No provider/observer/SDK numerical algorithm, source bytes, dependency/build, snapshot schema, projection/renderer or atlas dispatch change. Reuse accepted science/conformance; no full production repeat.",
+      "extends": [
+        "astrometric-observer-consumers"
+      ],
+      "selections": [
+        {
+          "node": "tests/test_packaged_configuration.py",
+          "reason": "Changed configuration/request/export/selection/identity contract and its immediate ordinary public consumers."
+        },
+        {
+          "node": "tests/test_configuration_user_overlay.py",
+          "reason": "Changed configuration/request/export/selection/identity contract and its immediate ordinary public consumers."
+        },
+        {
+          "node": "tests/test_configuration_geometry_detail_translation.py",
+          "reason": "Changed configuration/request/export/selection/identity contract and its immediate ordinary public consumers."
+        },
+        {
+          "node": "tests/test_configuration_user_overlay_activation.py",
+          "reason": "Changed configuration/request/export/selection/identity contract and its immediate ordinary public consumers."
+        },
+        {
+          "node": "tests/test_configuration_runtime_closure.py",
+          "reason": "Changed configuration/request/export/selection/identity contract and its immediate ordinary public consumers."
+        },
+        {
+          "node": "tests/test_wenu_chart_cli.py",
+          "reason": "Changed configuration/request/export/selection/identity contract and its immediate ordinary public consumers."
+        },
+        {
+          "node": "tests/test_chart_view.py",
+          "reason": "Changed configuration/request/export/selection/identity contract and its immediate ordinary public consumers."
+        },
+        {
+          "node": "tests/test_chart_drawing.py",
+          "reason": "Changed configuration/request/export/selection/identity contract and its immediate ordinary public consumers."
+        },
+        {
+          "node": "tests/test_chart_request.py",
+          "reason": "Changed configuration/request/export/selection/identity contract and its immediate ordinary public consumers."
+        },
+        {
+          "node": "tests/test_request_generation.py",
+          "reason": "Changed configuration/request/export/selection/identity contract and its immediate ordinary public consumers."
+        },
+        {
+          "node": "tests/test_spatial_selection.py",
+          "reason": "Changed configuration/request/export/selection/identity contract and its immediate ordinary public consumers."
+        },
+        {
+          "node": "tests/test_sequence_manifest.py",
+          "reason": "Changed configuration/request/export/selection/identity contract and its immediate ordinary public consumers."
+        },
+        {
+          "node": "tests/test_chart_sequence.py::test_sequence_rejects_stellar_reports_before_rendering",
+          "reason": "Sequence request/configuration/resume identity contract; retained two-frame ephemeris integration uses unchanged physics and is outside this model-selection diff."
+        },
+        {
+          "node": "tests/test_chart_sequence.py::test_frame_result_has_one_stable_public_name",
+          "reason": "Sequence request/configuration/resume identity contract; retained two-frame ephemeris integration uses unchanged physics and is outside this model-selection diff."
+        },
+        {
+          "node": "tests/test_chart_sequence.py::test_sequence_pairs_one_chart_definition_with_explicit_frames",
+          "reason": "Sequence request/configuration/resume identity contract; retained two-frame ephemeris integration uses unchanged physics and is outside this model-selection diff."
+        },
+        {
+          "node": "tests/test_chart_sequence.py::test_sequence_calls_only_the_canonical_static_generator",
+          "reason": "Sequence request/configuration/resume identity contract; retained two-frame ephemeris integration uses unchanged physics and is outside this model-selection diff."
+        },
+        {
+          "node": "tests/test_chart_sequence.py::test_sequence_requires_one_explicitly_formatted_directory",
+          "reason": "Sequence request/configuration/resume identity contract; retained two-frame ephemeris integration uses unchanged physics and is outside this model-selection diff."
+        },
+        {
+          "node": "tests/test_chart_sequence.py::test_sequence_rejects_static_output_different_from_plan",
+          "reason": "Sequence request/configuration/resume identity contract; retained two-frame ephemeris integration uses unchanged physics and is outside this model-selection diff."
+        },
+        {
+          "node": "tests/test_chart_sequence.py::test_resume_reuses_only_manifest_verified_outputs",
+          "reason": "Sequence request/configuration/resume identity contract; retained two-frame ephemeris integration uses unchanged physics and is outside this model-selection diff."
+        },
+        {
+          "node": "tests/test_chart_sequence.py::test_resume_rerenders_an_altered_output_only",
+          "reason": "Sequence request/configuration/resume identity contract; retained two-frame ephemeris integration uses unchanged physics and is outside this model-selection diff."
+        },
+        {
+          "node": "tests/test_chart_sequence.py::test_resume_rejects_an_incompatible_manifest_before_rendering",
+          "reason": "Sequence request/configuration/resume identity contract; retained two-frame ephemeris integration uses unchanged physics and is outside this model-selection diff."
+        },
+        {
+          "node": "tests/test_chart_sequence.py::test_restart_renders_every_frame_even_when_manifest_is_complete",
+          "reason": "Sequence request/configuration/resume identity contract; retained two-frame ephemeris integration uses unchanged physics and is outside this model-selection diff."
+        },
+        {
+          "node": "tests/test_chart_sequence.py::test_sequence_passes_effective_configuration_to_every_static_frame",
+          "reason": "Sequence request/configuration/resume identity contract; retained two-frame ephemeris integration uses unchanged physics and is outside this model-selection diff."
+        },
+        {
+          "node": "tests/test_chart_sequence.py::test_sequence_rejects_untranslated_configuration",
+          "reason": "Sequence request/configuration/resume identity contract; retained two-frame ephemeris integration uses unchanged physics and is outside this model-selection diff."
+        }
+      ]
     }
   },
   "consumer_review": [

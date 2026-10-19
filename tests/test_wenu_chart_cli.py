@@ -899,3 +899,85 @@ def test_regional_command_and_toml_share_grid_marks_and_preserve_viewport(
     labels=[a for a in layer.artists if getattr(a,'_wenu_semantic_component',None)=='labels']
     assert labels and all(any(a.get_fontsize() == pytest.approx(size) for size in (9, 9.6, 12)) for a in labels)
 
+
+
+@pytest.mark.parametrize('source', ['toml','cli'])
+def test_explicit_cluster_model_cli_toml_real_output_and_lookup_override(source,tmp_path,monkeypatch):
+    # Closest real grid CLI/TOML rendering test; protect lost model/options,
+    # source-lookup pre-culling, stale request mutation and actual output.
+    import json
+    from dataclasses import asdict
+    from hashlib import sha256
+    import astropy.units as u
+    from astropy.coordinates import AltAz,EarthLocation
+    from astropy.time import Time
+    from astropy.utils import iers
+    from wenu import CelestialSphere,CANONICAL_MAXIMAL_SPHERE_PROFILE
+    from wenu.charts.request import ClusterMotionRequest
+    from wenu.astrometric_observation import reception_backend_identity
+    from wenu.cluster_state import load_cluster_motion
+    from wenu.objects.open_clusters import OpenClusters
+    from wenu.sky.horizon import HorizonReference
+    from wenu_kernel import KernelSession
+    from wenu_kernel.records import TimePoint,TimeSpan
+    root=Path(__file__).resolve().parents[1]/'src/wenu/data/catalogs/open_clusters'
+    motion=load_cluster_motion(root/'open_clusters_hunt_astrometry_v1.ecsv',
+        root/'open_clusters_hunt_motion_admission_v1.json',
+        coverage=TimeSpan(TimePoint(2400000,0,'tcb'),TimePoint(2500000,0,'tcb')))
+    available={row.identifier for row in motion.rows if row.unavailable_reason is None}
+    probe=OpenClusters(None);probe.load()
+    ordered=sorted(probe.catalog,key=lambda row:float(row['apparent_diameter_arcmin']),reverse=True)
+    ids=tuple(str(row['wenu_id']) for row in ordered if str(row['wenu_id']) in available)[:2]
+    selection=ClusterMotionRequest(model='nominal-observed',identifiers=ids,
+        leap_seconds_path=iers.IERS_LEAP_SECOND_FILE,
+        leap_seconds_sha256=sha256(Path(iers.IERS_LEAP_SECOND_FILE).read_bytes()).hexdigest(),
+        eop_path=iers.IERS_B_FILE,eop_sha256=sha256(Path(iers.IERS_B_FILE).read_bytes()).hexdigest(),
+        backend_identity=reception_backend_identity(),start_jd_tt=2456300.,stop_jd_tt=2458000.,
+        start_jd_tcb=2400000.,stop_jd_tcb=2500000.,height_wgs84_m=52.)
+    values=asdict(selection)
+    if source=='cli':values['model']='lookup';values['identifiers']=[]
+    config=tmp_path/'cluster_v1.toml'
+    config.write_text('schema_version=2\n[astrometry.open_clusters]\n'+
+        ''.join(f'{k} = {json.dumps(v)}\n' for k,v in values.items())+
+        '[detail.neutral]\nenabled_layers=["open_clusters","horizon"]\nopen_cluster_minimum_size=0.000001\n[detail.adaptive]\nadapt_layers=false\n')
+    instant=Time('2017-01-02T00:00:00',scale='utc')
+    observer=SimpleNamespace(utc_datetime=instant.to_datetime(timezone=timezone.utc),t_astropy=instant,
+        lat_deg=-32.44,lon_deg=-71.23,elevation_m=52.,timezone_name='UTC',
+        location_name='Synthetic offline CLI site',close=lambda:None,
+        altaz_frame=AltAz(obstime=instant,location=EarthLocation.from_geodetic(-71.23*u.deg,-32.44*u.deg,52*u.m),pressure=0*u.hPa))
+    sky=CelestialSphere(None);sky.load_profile=CANONICAL_MAXIMAL_SPHERE_PROFILE
+    layer=OpenClusters(None);layer.load();sky.open_clusters=layer;sky.add(layer)
+    horizon=HorizonReference();sky.horizon=horizon;sky.add(horizon)
+    before=layer.catalogue_metadata_for(layer.catalog)
+    monkeypatch.setattr(chart,'_observer',lambda *args,**kwargs:observer)
+    monkeypatch.setattr(chart,'generate_celestial_sphere',lambda:sky)
+    monkeypatch.setattr(chart,'_preflight_minor_body_resources',lambda *args,**kwargs:None)
+    seen=[];evaluate=KernelSession.evaluate
+    def capture(session,query):
+        result=evaluate(session,query);seen.append((query,result));return result
+    monkeypatch.setattr(KernelSession,'evaluate',capture)
+    original=layer.spherical_geometry
+    def forbidden(*args,**kwargs):raise AssertionError('No lookup pre-cull or observation for explicit model')
+    monkeypatch.setattr(layer,'spherical_geometry',forbidden)
+    output=tmp_path/f'{source}.svg'
+    argv=['regional','--center-altitude','45deg','--center-azimuth','180deg','--position-angle','0',
+        '--field-width','50','--field-height','40','--config',str(config),'--format','svg','--output',str(output),'--debug']
+    if source=='cli':
+        argv+=['--open-cluster-model','nominal-observed']
+        for identifier in ids:argv+=['--open-cluster-id',identifier]
+    with iers.earth_orientation_table.set(iers.IERS_B.open(iers.IERS_B_FILE)):
+        assert chart.main(argv,emit_outputs=False)==0
+    assert output.is_file() and output.stat().st_size>1000
+    assert 'nominal-observed' in output.read_text()
+    queries=[q for q,_ in seen if q.reference.representation=='cartesian']
+    assert len(queries)==1 and queries[0].require_velocity and len(queries[0].objects)==2
+    assert layer.catalogue_metadata_for(layer.catalog)==before
+    monkeypatch.setattr(layer,'spherical_geometry',original)
+    # Explicit CLI lookup overrides the enabled TOML model with no input use.
+    config.write_text(config.read_text().replace('model = "lookup"','model = "nominal-observed"').replace('identifiers = []','identifiers = '+json.dumps(ids)))
+    seen.clear()
+    with iers.earth_orientation_table.set(iers.IERS_B.open(iers.IERS_B_FILE)):
+        assert chart.main(['regional','--center-altitude','45deg','--center-azimuth','180deg','--position-angle','0',
+            '--field-width','50','--field-height','40','--config',str(config),'--open-cluster-model','lookup',
+            '--format','svg','--output',str(tmp_path/'lookup.svg'),'--debug'],emit_outputs=False)==0
+    assert not any(q.reference.representation=='cartesian' for q,_ in seen)

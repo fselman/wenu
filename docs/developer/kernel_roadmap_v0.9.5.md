@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 17, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 18, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -35,7 +35,7 @@ native constellation-label anchors, other families and remaining non-chart
 consumers stay open for subsequent K3 slices.
 The explicit resource-free TCB/TDB convention subset is implemented. An offline UTC/TT reception and ERFA input-context subset is also implemented.
 The nominal finite-distance observer service is implemented and independently
-checked; explicit observed Python chart/saved adoption is implemented. CLI selection, Cartesian reuse
+checked; explicit observed Python chart/saved adoption is implemented. Ordinary horizontal CLI/TOML selection is implemented; Cartesian reuse
 and SDK freeze remain ahead. PR #248 and the open-cluster correction in PR #249
 are accepted at main `4a14e294`, with focused Mac gates and identical merged tree.
 Neither closes K3.
@@ -101,8 +101,8 @@ in explicit interactive sessions, with reproducible full-model fallback. Source
 conversion and physical/measurement accuracy remain uncertified. Native epoch
 contexts and per-layer motion options now enter the canonical chart pipeline,
 with unchanged source snapshots/default lookup. Explicit observed Python chart/saved consumers now use the shared nominal
-finite-distance service. Next: CLI/configuration model selection and any separately admitted persisted epoch
-state format. Canonical provider schedules remain optional separate work. Other
+finite-distance service. Ordinary horizontal CLI/configuration selection is implemented; other frame
+selection and any separately admitted persisted epoch state format remain separate. Next: reduced-input policy models. Canonical provider schedules remain optional separate work. Other
 families/consumers and the final SDK freeze remain ahead. See the
 [motion audit](kernel_migration_audit_v1.md#open-cluster-motion-and-lookup-audit-2026-10-18).
 
@@ -577,12 +577,16 @@ uses these owners rather than a new engine for each family.
 4. **Implemented Python adoption:** explicit reception-context cluster chart/saved
    consumers query full Cartesian states and use the shared service. Cold/saved/
    fresh-process degree geometry, pixels, SVG output and refusal gates cover the
-   canonical route. Next expose explicit CLI/TOML model selection. Preserve default lookup and canonical
+   canonical route. Ordinary horizontal request/CLI/TOML selection now composes this same service
+   using selected IDs and explicit local resources/code identity, finite TT/TCB
+   domains and qualified WGS84 height. Other layers retain their existing routes. Preserve default lookup and canonical
    projection/rendering. Any evaluated-state snapshot format is separately admitted.
 
 See the [acceptance matrix](testing_policy.md#cluster-observer-contract-and-implementation-gates).
-The next step is explicit CLI/TOML model selection through the existing request
-configuration boundary. Total physical/error qualification and
+The next positional step is the separately admitted reduced-input policy work
+for missing proper motion or incomplete space-motion inputs in the shared core,
+followed by real other-family adapters. Approximate 200/1000-year lookback limits
+remain configurable model policies, not universal accuracy guarantees. Total physical/error qualification and
 additional correction policies remain separate. Native-model date coverage
 does not establish historical Earth orientation or observer accuracy.
 
