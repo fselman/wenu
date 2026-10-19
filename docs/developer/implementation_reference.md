@@ -646,14 +646,71 @@ Velocity-output and subfloor accuracy requests are refused. Unknown errors are
 never zero. The provider owns no catalogue acquisition or implicit
 registration and respects the existing owned/borrowed close contract.
 
-This API is explicit and additive. `OpenClusters.position`, native/observed chart
-routes, saved skies and the active v0.2 selector still use accepted source lookup.
-Chart/snapshot adoption remains a separate next slice with its own
-consumer/failure gates. The independent numerical oracle uses scalar-trig
+Source lookup remains the default for `OpenClusters.position`, charts and saved
+skies. Explicit native motion consumption is described below; the active v0.2
+selector and saved source records are unchanged. The independent numerical oracle uses scalar-trig
 initial conditions and ERFA PV updates, plus an analytic perspective case, rather
 than calling the production differential conversion to construct expected data.
 The installed-wheel test exercises the actual provider/kernel while checking that
 importing it does not change the fixture's default cluster lookup.
+
+### Explicit native cluster motion consumers
+
+`OpenClusters.position(instant, *, motion=catalogue)` selects the admitted nominal
+model for that call. `instant` must be a matching-scale SDK `TimePoint` inside
+the finite domain. The companion's selected-source digest must equal the loaded
+or restored layer's source digest, and complete identity sets must match. The
+kernel receives each distinct selected key once; returned vectors are joined
+back to the original order, including duplicates. An unavailable selected row
+refuses the whole query. There is no implicit omission, zero RV or lookup fallback.
+Empty selections return empty geometry after source/time admission.
+
+Native chart layers consume the same boundary via geometry option `motion` and
+an explicit `LayerRealizationContext` evaluation instant/scale. The context's
+native ICRS axes may now carry an epoch; this does not propagate static neighbours.
+The chart guard permits an epoch-bearing layer only when its returned instant
+and scale match that context. Frame, origin and astrometric status checks remain.
+The nominal reference, immutable original states, source epochs, evaluation and
+anchor times, model/resource identity and separate error channels accompany the
+geometry. The source table/selection is not changed. The coordinate specification
+has no common source `epoch`; its `instant` is the model evaluation time.
+
+For an already admitted `motion`, a cold or restored `sky` uses the same public
+pipeline (the date is illustrative and must lie inside the supplied domain):
+
+```python
+from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+
+context = LayerRealizationContext(
+    NATIVE_ICRS_SPEC,
+    evaluation_instant="J2050.0",
+    evaluation_time_scale="tcb",
+)
+options = {layer: {"enabled": False} for layer in sky.layers}
+options[sky.open_clusters] = {
+    "geometry": {"selected": selected_cluster_ids, "motion": motion},
+}
+result = sky.draw_chart(
+    projection=projection,
+    renderer=renderer,
+    realization_context=context,
+    layer_options=options,
+)
+```
+
+`read_native_sky_snapshot(...).make_sky()` restores the same source-backed
+`OpenClusters` facade. Supply `motion` and the context at consumption; neither is
+installed in shared layer state or persisted as an evaluated snapshot. Snapshot
+v5/legacy readers and default charts keep their existing semantics. No original
+selected catalogue is reloaded, and a new restored facade still defaults to lookup.
+The caller explicitly loads/adopts the motion companion separately.
+
+This bounded integration supplies observer-free native Python chart consumers.
+Observer-dependent motion is refused: this direction provider does not supply
+the Cartesian observation/error-realization contract. CLI/TOML model selection,
+persisted epoch states and observer adoption remain future work. Chart calls use
+reproducible full-model sessions; interactive provider reuse remains available
+through the separate SDK API and is not a projection/paper accuracy promise.
 
 ### Cluster direction reuse bound
 

@@ -13,7 +13,7 @@ The ReadMe declares densest-point ICRS centres at epoch 2016.0 and mean cluster
 motions, with RA motion multiplied by cos(dec). Errors of means, dispersions,
 distance percentiles and masks retain their separate meanings. The raw cluster ReadMe has no explicit epoch-scale/origin declarations; the
 qualification below records inherited conventions separately. Cluster-mean
-covariance and centre-model accuracy remain unknown. Current chart cluster positions are not
+covariance and centre-model accuracy remain unknown. Default chart cluster positions are not
 propagated. A source lookup must not claim zero motion, date accuracy or a
 fabricated measurement epoch. Public/native cluster centres and observer
 transformation inputs now use the accepted SDK `catalogue_lookup` capability.
@@ -42,7 +42,12 @@ output are refused. This computational bound is not an absolute sky-accuracy
 guarantee. Missing RV/epoch solutions remain visible
 and unavailable. The model deliberately omits an additional light-time correction;
 it is not a full relativistic stellar propagation or ancient cluster reconstruction.
-No default chart or saved-sky source-lookup semantics change. See the
+No default chart or saved-sky source-lookup semantics change. Explicit native
+Python chart calls may supply the admitted motion catalogue and a TCB evaluation
+context. Returned states retain source/evaluation/anchor times and unknown physical
+errors; neighbouring static layers are not relabelled as propagated. Restored
+source snapshots inherit this route without storing evaluated model states.
+Observer-dependent motion is refused until its realization contract is admitted. See the
 [implemented API](implementation_reference.md#nominal-cluster-motion-provider).
 
 ## Coordinates, time and resources

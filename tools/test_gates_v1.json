@@ -204,47 +204,133 @@
       "scope": "Model-specific metadata admission: static galaxy directions do not require a measurement epoch; preserve source facts, other models, actual geometry and v5 round trips.",
       "limits": "No SDK implementation/contracts, source resources, serialization schema, frame transform, projection/render or packaging changes. The SDK still requires a source epoch for direction states; no kernel routing or fictitious epoch is added. Frame/origin/unit/provenance gaps remain admission failures. Do not run parent ingestion/admission gates as well.",
       "selections": [
-        {"node": "tests/test_nonstellar_catalogue.py", "reason": "Changed shared metadata owner retains default source-epoch requirements, refusals, immutability and native/observed metadata."},
-        {"node": "tests/test_galaxy_geometry.py", "reason": "Whole galaxy owner: static no-epoch admission, unchanged directions over +/-10000 Julian years, preserved source epoch, strict frame refusal and existing geometry/selection/cache seams."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_fixed_catalogue_rows_masks_units_and_subsets", "reason": "All six fixed owners retain table metadata and selected geometry after adding explicit position-model metadata."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_retains_static_galaxy_model_without_epoch", "reason": "Real preparation/read/restoration preserves strict-admissible static galaxy model without an invented epoch."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_declared_nonstellar_epoch", "reason": "A supplied source epoch remains provenance through v5."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources", "reason": "Changed inherited model metadata restores without source access in a fresh process."}
+        {
+          "node": "tests/test_nonstellar_catalogue.py",
+          "reason": "Changed shared metadata owner retains default source-epoch requirements, refusals, immutability and native/observed metadata."
+        },
+        {
+          "node": "tests/test_galaxy_geometry.py",
+          "reason": "Whole galaxy owner: static no-epoch admission, unchanged directions over +/-10000 Julian years, preserved source epoch, strict frame refusal and existing geometry/selection/cache seams."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_fixed_catalogue_rows_masks_units_and_subsets",
+          "reason": "All six fixed owners retain table metadata and selected geometry after adding explicit position-model metadata."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_retains_static_galaxy_model_without_epoch",
+          "reason": "Real preparation/read/restoration preserves strict-admissible static galaxy model without an invented epoch."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_declared_nonstellar_epoch",
+          "reason": "A supplied source epoch remains provenance through v5."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources",
+          "reason": "Changed inherited model metadata restores without source access in a fresh process."
+        }
       ]
     },
     "nonstellar-admission": {
       "scope": "Immutable nonstellar metadata admission, explicit legacy compatibility, metadata-owned native/observed specifications and snapshot v5 with v1-v4 compatibility.",
       "limits": "No catalogue/resource replacement, SDK routing, motion/frame transformation, projection/render algorithm or dependency/build change. Full resource metadata closure is not claimed: strict admission refuses existing gaps. Reuse unchanged numerical and atlas dispatch/lifetime evidence; source-free restoration and real saved-sky CLI cover transport. No full production or SDK repeat.",
-      "extends": ["nonstellar-ingestion"],
+      "extends": [
+        "nonstellar-ingestion"
+      ],
       "selections": [
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_nonstellar_admission_and_unknown_epochs", "reason": "Every affected cold/saved family retains immutable source-bound facts and explicit missing epochs."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_declared_nonstellar_epoch", "reason": "An independently declared synthetic J2016 epoch survives actual preparation/read/geometry without a J2000 default."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_rejects_nonstellar_metadata_conflicts", "reason": "V5 rejects missing records and header/epoch/frame/source digest/table-unit inconsistencies before use."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_rejects_corruption_before_use", "reason": "Whole existing schema/payload/coverage semantics corruption owner remains active for the changed reader."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_requires_coverage_and_preserves_completed_bundle", "reason": "Changed schema admission still retains source/design/coverage identity and completed bundle integrity."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_cluster_epoch_lineage_and_selected_specs", "reason": "The schema extension retains the separate accepted cluster row-epoch contract."},
-        {"node": "tests/test_wenu_chart_cli.py::test_atlas_sheet_command_admits_saved_sky_and_executes_shared_request_owner", "reason": "Real saved-sky public command consumes v5 through canonical rendering and borrowed lifetime."}
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_nonstellar_admission_and_unknown_epochs",
+          "reason": "Every affected cold/saved family retains immutable source-bound facts and explicit missing epochs."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_declared_nonstellar_epoch",
+          "reason": "An independently declared synthetic J2016 epoch survives actual preparation/read/geometry without a J2000 default."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_rejects_nonstellar_metadata_conflicts",
+          "reason": "V5 rejects missing records and header/epoch/frame/source digest/table-unit inconsistencies before use."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_rejects_corruption_before_use",
+          "reason": "Whole existing schema/payload/coverage semantics corruption owner remains active for the changed reader."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_requires_coverage_and_preserves_completed_bundle",
+          "reason": "Changed schema admission still retains source/design/coverage identity and completed bundle integrity."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_cluster_epoch_lineage_and_selected_specs",
+          "reason": "The schema extension retains the separate accepted cluster row-epoch contract."
+        },
+        {
+          "node": "tests/test_wenu_chart_cli.py::test_atlas_sheet_command_admits_saved_sky_and_executes_shared_request_owner",
+          "reason": "Real saved-sky public command consumes v5 through canonical rendering and borrowed lifetime."
+        }
       ]
     },
     "nonstellar-ingestion": {
       "scope": "Preserve nonstellar source tables/metadata and normalize declared angular units; atomic reload; inherited family geometry and unchanged snapshot transport.",
       "limits": "No resource bytes, snapshot schema, native frame/epoch policy, provider numerical model, kernel routing, projection or rendering algorithm changes. Unitless columns retain explicit legacy encoding. Full metadata/frame admission and remaining M6 epoch stamps stay open. No SDK, packaging, request lifecycle or full production rerun.",
       "selections": [
-        {"node": "tests/test_nonstellar_catalogue.py", "reason": "Whole changed normalization owner: declared units, source field/metadata preservation, native/observed geometry and refused reload isolation."},
-        {"node": "tests/test_globular_clusters.py", "reason": "Inherited normalization and half-light radius conversion own the derived symbol diameter."},
-        {"node": "tests/test_galaxy_geometry.py", "reason": "Inherited source metadata, ellipse geometry, selection and observed cache behavior."},
-        {"node": "tests/test_supernova_remnants.py", "reason": "Inherited radio metadata and equal-area outline policy remain unchanged."},
-        {"node": "tests/test_planetary_nebulae.py::test_catalogue_loads_true_and_probable_objects", "reason": "PN inheritance retains default curated membership."},
-        {"node": "tests/test_planetary_nebulae.py::test_selection_is_case_insensitive", "reason": "Selection remains ordered and case insensitive."},
-        {"node": "tests/test_planetary_nebulae.py::test_geometry_is_one_point_per_object", "reason": "Observed PN symbols retain their public geometry."},
-        {"node": "tests/test_planetary_nebulae.py::test_catalogue_measurements_are_metadata_not_glyph_size", "reason": "Converted catalogue sizes do not become display sizes."},
-        {"node": "tests/test_planetary_nebulae.py::test_empty_selection_returns_empty_points", "reason": "Empty selection still produces a valid geometry."},
-        {"node": "tests/test_planetary_nebulae.py::test_sequential_nebula_selections_share_observed_catalogue", "reason": "Inherited cache remains independent of render-local selection."},
-        {"node": "tests/test_position_providers.py::test_nonstellar_catalogues_provide_native_centres_not_morphology", "reason": "Public centre provider contract remains compatible."},
-        {"node": "tests/test_position_providers.py::test_nonstellar_subclasses_share_the_centre_provider_boundary", "reason": "Family APIs retain a common public centre interface."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_fixed_catalogue_rows_masks_units_and_subsets", "reason": "All six fixed families retain actual rows, units, descriptions, source metadata and selected geometry across saved-sky transport."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources", "reason": "Retained extra source fields/metadata decode in a clean process without catalogues."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_legacy_coverage_stays_truthful", "reason": "Existing v1-v3 compatibility remains admitted without changing historical epoch policy."}
+        {
+          "node": "tests/test_nonstellar_catalogue.py",
+          "reason": "Whole changed normalization owner: declared units, source field/metadata preservation, native/observed geometry and refused reload isolation."
+        },
+        {
+          "node": "tests/test_globular_clusters.py",
+          "reason": "Inherited normalization and half-light radius conversion own the derived symbol diameter."
+        },
+        {
+          "node": "tests/test_galaxy_geometry.py",
+          "reason": "Inherited source metadata, ellipse geometry, selection and observed cache behavior."
+        },
+        {
+          "node": "tests/test_supernova_remnants.py",
+          "reason": "Inherited radio metadata and equal-area outline policy remain unchanged."
+        },
+        {
+          "node": "tests/test_planetary_nebulae.py::test_catalogue_loads_true_and_probable_objects",
+          "reason": "PN inheritance retains default curated membership."
+        },
+        {
+          "node": "tests/test_planetary_nebulae.py::test_selection_is_case_insensitive",
+          "reason": "Selection remains ordered and case insensitive."
+        },
+        {
+          "node": "tests/test_planetary_nebulae.py::test_geometry_is_one_point_per_object",
+          "reason": "Observed PN symbols retain their public geometry."
+        },
+        {
+          "node": "tests/test_planetary_nebulae.py::test_catalogue_measurements_are_metadata_not_glyph_size",
+          "reason": "Converted catalogue sizes do not become display sizes."
+        },
+        {
+          "node": "tests/test_planetary_nebulae.py::test_empty_selection_returns_empty_points",
+          "reason": "Empty selection still produces a valid geometry."
+        },
+        {
+          "node": "tests/test_planetary_nebulae.py::test_sequential_nebula_selections_share_observed_catalogue",
+          "reason": "Inherited cache remains independent of render-local selection."
+        },
+        {
+          "node": "tests/test_position_providers.py::test_nonstellar_catalogues_provide_native_centres_not_morphology",
+          "reason": "Public centre provider contract remains compatible."
+        },
+        {
+          "node": "tests/test_position_providers.py::test_nonstellar_subclasses_share_the_centre_provider_boundary",
+          "reason": "Family APIs retain a common public centre interface."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_fixed_catalogue_rows_masks_units_and_subsets",
+          "reason": "All six fixed families retain actual rows, units, descriptions, source metadata and selected geometry across saved-sky transport."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources",
+          "reason": "Retained extra source fields/metadata decode in a clean process without catalogues."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_legacy_coverage_stays_truthful",
+          "reason": "Existing v1-v3 compatibility remains admitted without changing historical epoch policy."
+        }
       ]
     },
     "documentation": {
@@ -459,82 +545,274 @@
       "scope": "Python 3.11 single-component namespace resource traversal repair; repeat only previously blocked snapshot/installation consumers plus the new compatibility regression.",
       "limits": "Reuse the Mac's 79 passing combined cases and nine provider subtests at 9da34fc9; all 40 snapshot setup errors and the packaging failure share one resource-reader TypeError. No numerical, schema, selection, rendering or metadata semantics change. No SDK/full production or full combined-gate repeat.",
       "selections": [
-        {"node": "tests/test_stellar_state.py::test_packaged_metadata_supports_single_component_namespace_traversal", "reason": "Real metadata bytes must load through the one-child joinpath contract used by Python 3.11 namespace readers; fails before repair."},
-        {"node": "tests/test_curated_catalogues.py::test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override", "reason": "Failed installed resource consumption must pass for wheel/sdist/editable layouts."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_matches_cold_full_sphere_and_layer_options", "reason": "Previously blocked common fixture consumer."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_requires_coverage_and_preserves_completed_bundle", "reason": "Previously blocked admission/coverage consumer."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_rejects_corruption_before_use", "reason": "All previously blocked corruption guards must execute past source loading."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_failure_cleans_only_owned_uncommitted_output", "reason": "Previously blocked partial-publication guard."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_publication_race_preserves_other_writer", "reason": "Previously blocked publication-race guard."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_legacy_coverage_stays_truthful", "reason": "Previously blocked v1-v3 admission guards."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_position_api_and_vertex_edges_match_cold_and_saved_sky", "reason": "Previously blocked real stellar/endpoint equality."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources", "reason": "Previously blocked source-free resume."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_labels_and_gaps_use_frozen_curation", "reason": "Previously blocked frozen-label/gap consumption."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_kernel_native_stars_preserve_legacy_page_pixels", "reason": "Previously blocked exact page pixels."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_atlas_chart_batch_cold_saved_and_spawned_pages_match", "reason": "Previously blocked real CLI/serial/saved/spawn output."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_cluster_epoch_lineage_and_selected_specs", "reason": "Previously blocked cluster row metadata consumption."}
+        {
+          "node": "tests/test_stellar_state.py::test_packaged_metadata_supports_single_component_namespace_traversal",
+          "reason": "Real metadata bytes must load through the one-child joinpath contract used by Python 3.11 namespace readers; fails before repair."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override",
+          "reason": "Failed installed resource consumption must pass for wheel/sdist/editable layouts."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_matches_cold_full_sphere_and_layer_options",
+          "reason": "Previously blocked common fixture consumer."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_requires_coverage_and_preserves_completed_bundle",
+          "reason": "Previously blocked admission/coverage consumer."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_rejects_corruption_before_use",
+          "reason": "All previously blocked corruption guards must execute past source loading."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_failure_cleans_only_owned_uncommitted_output",
+          "reason": "Previously blocked partial-publication guard."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_publication_race_preserves_other_writer",
+          "reason": "Previously blocked publication-race guard."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_legacy_coverage_stays_truthful",
+          "reason": "Previously blocked v1-v3 admission guards."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_position_api_and_vertex_edges_match_cold_and_saved_sky",
+          "reason": "Previously blocked real stellar/endpoint equality."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources",
+          "reason": "Previously blocked source-free resume."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_labels_and_gaps_use_frozen_curation",
+          "reason": "Previously blocked frozen-label/gap consumption."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_kernel_native_stars_preserve_legacy_page_pixels",
+          "reason": "Previously blocked exact page pixels."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_atlas_chart_batch_cold_saved_and_spawned_pages_match",
+          "reason": "Previously blocked real CLI/serial/saved/spawn output."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_cluster_epoch_lineage_and_selected_specs",
+          "reason": "Previously blocked cluster row metadata consumption."
+        }
       ]
     },
     "open-cluster-metadata": {
       "scope": "Open-cluster row/reference-epoch and source-metadata consumption, selected geometry and snapshot v4/legacy admission.",
       "limits": "No stellar/kernel/provider numerical, catalogue curation, acquisition, packaging/dependency, projection or rendering algorithm changes. Keep real saved/spawn/pixel consumers because shared snapshot admission changed. No full production, SDK or catalogue-curation tool rerun.",
       "selections": [
-        {"node": "tests/test_open_clusters.py::test_native_cluster_epoch_tracks_selected_rows_and_preserves_source_metadata", "reason": "Mixed/unknown/selected/masked epochs and independent metadata copies must follow source rows."},
-        {"node": "tests/test_open_clusters.py::test_packaged_cluster_geometry_uses_existing_epoch_and_coordinate_source_columns", "reason": "Actual accepted catalogue's coordinate-source and epoch lineage reaches native geometry."},
-        {"node": "tests/test_open_clusters.py::test_cluster_epoch_does_not_infer_measurement_date_from_frame_name", "reason": "Frame/equinox labels must not invent measurement epochs."},
-        {"node": "tests/test_open_clusters.py::test_invalid_cluster_epoch_is_refused_before_replacing_active_catalogue", "reason": "Admission refuses invalid epoch metadata without losing the previous table/source."},
-        {"node": "tests/test_open_clusters.py::test_packaged_open_cluster_catalogue", "reason": "Preserve installed source selection and native/observed counts."},
-        {"node": "tests/test_open_clusters.py::test_requested_order_and_metadata_are_preserved", "reason": "Selected IDs, order and observer-facing metadata remain aligned."},
-        {"node": "tests/test_open_clusters.py::test_open_cluster_coordinates_are_vectorized_and_finite", "reason": "Observed geometry still uses its established coordinate service."},
-        {"node": "tests/test_open_clusters.py::test_empty_selection_returns_empty_points", "reason": "Empty selected geometry retains its public contract."},
-        {"node": "tests/test_open_clusters.py::test_sequential_open_cluster_selections_share_observed_catalogue", "reason": "Metadata additions must preserve observed-cache and selection reuse."},
-        {"node": "tests/test_open_clusters.py::test_publication_style_uses_symbol_library_and_optional_labels", "reason": "Preserve symbol/label consumption of the changed metadata owner."},
-        {"node": "tests/test_open_clusters.py::test_selected_clusters_render_as_one_path_collection", "reason": "Preserve vectorized rendering of selected clusters."},
-        {"node": "tests/test_position_providers.py::test_open_clusters_provide_selected_native_centres", "reason": "Independent public position-provider contract still returns selected centres."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_cluster_epoch_lineage_and_selected_specs", "reason": "Actual cold/saved rows, masks, metadata and selected epoch specifications agree."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_rejects_corruption_before_use", "reason": "Changed schema/reader rejects inconsistent epoch claims and retains all corruption guards."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_legacy_coverage_stays_truthful", "reason": "Schemas v1-v3 retain coverage; legacy J2000 cluster stamps cannot overwrite preserved row facts."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources", "reason": "New bundle loads without acquisition or source-profile fallback."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_kernel_native_stars_preserve_legacy_page_pixels", "reason": "Metadata-only correction preserves actual native atlas pixels."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_atlas_chart_batch_cold_saved_and_spawned_pages_match", "reason": "Shared reader/schema change reaches real CLI/serial/saved/spawn atlas output."}
+        {
+          "node": "tests/test_open_clusters.py::test_native_cluster_epoch_tracks_selected_rows_and_preserves_source_metadata",
+          "reason": "Mixed/unknown/selected/masked epochs and independent metadata copies must follow source rows."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_packaged_cluster_geometry_uses_existing_epoch_and_coordinate_source_columns",
+          "reason": "Actual accepted catalogue's coordinate-source and epoch lineage reaches native geometry."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_cluster_epoch_does_not_infer_measurement_date_from_frame_name",
+          "reason": "Frame/equinox labels must not invent measurement epochs."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_invalid_cluster_epoch_is_refused_before_replacing_active_catalogue",
+          "reason": "Admission refuses invalid epoch metadata without losing the previous table/source."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_packaged_open_cluster_catalogue",
+          "reason": "Preserve installed source selection and native/observed counts."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_requested_order_and_metadata_are_preserved",
+          "reason": "Selected IDs, order and observer-facing metadata remain aligned."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_open_cluster_coordinates_are_vectorized_and_finite",
+          "reason": "Observed geometry still uses its established coordinate service."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_empty_selection_returns_empty_points",
+          "reason": "Empty selected geometry retains its public contract."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_sequential_open_cluster_selections_share_observed_catalogue",
+          "reason": "Metadata additions must preserve observed-cache and selection reuse."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_publication_style_uses_symbol_library_and_optional_labels",
+          "reason": "Preserve symbol/label consumption of the changed metadata owner."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_selected_clusters_render_as_one_path_collection",
+          "reason": "Preserve vectorized rendering of selected clusters."
+        },
+        {
+          "node": "tests/test_position_providers.py::test_open_clusters_provide_selected_native_centres",
+          "reason": "Independent public position-provider contract still returns selected centres."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_preserves_cluster_epoch_lineage_and_selected_specs",
+          "reason": "Actual cold/saved rows, masks, metadata and selected epoch specifications agree."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_rejects_corruption_before_use",
+          "reason": "Changed schema/reader rejects inconsistent epoch claims and retains all corruption guards."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_legacy_coverage_stays_truthful",
+          "reason": "Schemas v1-v3 retain coverage; legacy J2000 cluster stamps cannot overwrite preserved row facts."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources",
+          "reason": "New bundle loads without acquisition or source-profile fallback."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_kernel_native_stars_preserve_legacy_page_pixels",
+          "reason": "Metadata-only correction preserves actual native atlas pixels."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_atlas_chart_batch_cold_saved_and_spawned_pages_match",
+          "reason": "Shared reader/schema change reaches real CLI/serial/saved/spawn atlas output."
+        }
       ]
     },
     "native-stellar-routing": {
       "scope": "Validated stellar metadata ingestion, public native positions/endpoints and label metadata, saved-sky v3 metadata preservation with legacy admission, and packaged metadata consumption.",
       "limits": "This expanded selection follows the metadata-ingestion correction: add ingestion/refusal and snapshot schema/installation owners. Kernel SDK algorithms, observed astrometry, projections, renderer and other provider physics are unchanged. Retain display-DPI evidence from PR247; no full production or SDK rerun. Mixed owners remain selected by responsibility.",
       "selections": [
-        {"node": "tests/test_stellar_state.py", "reason": "Metadata admission, source identity, alternate-epoch propagation of metadata, preserved source fields, real provider conformance and failure ownership."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_matches_cold_full_sphere_and_layer_options", "reason": "Changed schema preserves full native geometry and layer options."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_requires_coverage_and_preserves_completed_bundle", "reason": "Admission retains coverage limits and completed data."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_rejects_corruption_before_use", "reason": "Changed reader rejects schema, metadata, source identity and payload corruption before use."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_failure_cleans_only_owned_uncommitted_output", "reason": "Metadata/schema admission still preserves atomic publication failure behavior."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_publication_race_preserves_other_writer", "reason": "Publication preserves competing writer ownership."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_legacy_coverage_stays_truthful", "reason": "Both pre-metadata schema versions retain truthful coverage with explicit source-bound metadata admission."},
-        {"node": "tests/test_curated_catalogues.py::test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override", "reason": "New metadata resource and ingestion module must ship and execute through actual wheel/sdist/editable installations."},
-        {"node": "tests/test_atlas_cli.py::test_atlas_producer_uses_real_chart_command_and_prepares_sky_once", "reason": "Existing constructed CLI fixture now admits explicit synthetic metadata, preserving public producer execution."},
-        {"node": "tests/test_stars.py", "reason": "Whole changed stellar owner, including unchanged observed selection and native realization seams."},
-        {"node": "tests/test_position_providers.py::test_stars_provide_static_native_icrs_positions", "reason": "Legacy API retains IDs/metadata and now declares the correct source epoch through the kernel."},
-        {"node": "tests/test_position_providers.py::test_native_id_query_keeps_faint_rows_missing_coordinates_and_source_order", "reason": "Sparse source lookup is independent of marker magnitude, preserves NaNs and ordering without mutation."},
-        {"node": "tests/test_position_providers.py::test_native_position_uses_authoritative_degree_encoding_when_both_columns_exist", "reason": "Both public routes use the same source-native coordinate encoding."},
-        {"node": "tests/test_position_providers.py::test_native_position_routes_use_returned_kernel_direction_and_propagate_failure", "reason": "Returned directions, rather than catalogue fallback, control both routes; backend refusal propagates."},
-        {"node": "tests/test_position_providers.py::test_native_id_query_empty_absent_and_unloaded_policies", "reason": "Empty and unavailable identity policies do not invent states."},
-        {"node": "tests/test_constellation_geometry.py::test_constellation_lines_are_geometrical_objects", "reason": "Lines remain constructed geometry, not a separate astrometric provider."},
-        {"node": "tests/test_constellation_geometry.py::test_native_constellation_vertices_and_mean_anchors_use_same_source", "reason": "Native edges and unchanged mean-label anchors retain source coordinates."},
-        {"node": "tests/test_constellation_geometry.py::test_lines_return_one_spherical_curve_per_hip_edge", "reason": "Observed edge order and topology remain unchanged."},
-        {"node": "tests/test_constellation_geometry.py::test_geometry_is_recomputed_at_observer_time", "reason": "Observed time-dependent route remains active."},
-        {"node": "tests/test_constellation_geometry.py::test_geometry_does_not_mutate_active_star_selection", "reason": "Line geometry does not replace active marker selection."},
-        {"node": "tests/test_constellation_geometry.py::test_line_selection_is_render_local_and_ordered", "reason": "Per-render selection and stable edge order survive."},
-        {"node": "tests/test_constellation_geometry.py::test_unknown_line_selection_is_rejected", "reason": "Unknown figure selection is still rejected."},
-        {"node": "tests/test_constellation_geometry.py::test_native_edges_follow_the_same_kernel_results_as_stellar_positions", "reason": "Changed backend vectors control faint endpoints, sparse source requests, warnings and global resolvability."},
-        {"node": "tests/test_constellation_geometry.py::test_native_line_geometry_uses_only_the_public_native_id_interface", "reason": "Opaque provider and shuffled IDs prohibit raw-table or private/Skyfield coupling."},
-        {"node": "tests/test_constellation_geometry.py::test_native_line_kernel_refusal_is_not_replaced_with_catalogue_coordinates", "reason": "Failed native astrometry must not silently fall back to a second route."},
-        {"node": "tests/test_constellation_geometry.py::test_packaged_serpens_record_exposes_parts_and_preserves_bridge", "reason": "Preserve curated graph parts and bridge topology."},
-        {"node": "tests/test_constellation_geometry.py::test_active_western_scorpius_has_requested_sigma_beta1_sigma_pi_and_pi_rho_edges", "reason": "Preserve the accepted Scorpius graph."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_position_api_and_vertex_edges_match_cold_and_saved_sky", "reason": "Real full-source public positions and every endpoint agree across cold and saved skies."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources", "reason": "New inherited APIs work from an unchanged snapshot in a fresh process without acquisition."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_labels_and_gaps_use_frozen_curation", "reason": "Preserve frozen labels, HIP identities and line gaps."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_kernel_native_stars_preserve_legacy_page_pixels", "reason": "Independent raw-coordinate rendering baseline preserves exact page pixels."},
-        {"node": "tests/test_reusable_canonical_sphere.py::test_atlas_chart_batch_cold_saved_and_spawned_pages_match", "reason": "Affected native output retains real CLI/serial/saved/spawn equivalence."}
+        {
+          "node": "tests/test_stellar_state.py",
+          "reason": "Metadata admission, source identity, alternate-epoch propagation of metadata, preserved source fields, real provider conformance and failure ownership."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_matches_cold_full_sphere_and_layer_options",
+          "reason": "Changed schema preserves full native geometry and layer options."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_requires_coverage_and_preserves_completed_bundle",
+          "reason": "Admission retains coverage limits and completed data."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_rejects_corruption_before_use",
+          "reason": "Changed reader rejects schema, metadata, source identity and payload corruption before use."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_failure_cleans_only_owned_uncommitted_output",
+          "reason": "Metadata/schema admission still preserves atomic publication failure behavior."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_publication_race_preserves_other_writer",
+          "reason": "Publication preserves competing writer ownership."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_legacy_coverage_stays_truthful",
+          "reason": "Both pre-metadata schema versions retain truthful coverage with explicit source-bound metadata admission."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override",
+          "reason": "New metadata resource and ingestion module must ship and execute through actual wheel/sdist/editable installations."
+        },
+        {
+          "node": "tests/test_atlas_cli.py::test_atlas_producer_uses_real_chart_command_and_prepares_sky_once",
+          "reason": "Existing constructed CLI fixture now admits explicit synthetic metadata, preserving public producer execution."
+        },
+        {
+          "node": "tests/test_stars.py",
+          "reason": "Whole changed stellar owner, including unchanged observed selection and native realization seams."
+        },
+        {
+          "node": "tests/test_position_providers.py::test_stars_provide_static_native_icrs_positions",
+          "reason": "Legacy API retains IDs/metadata and now declares the correct source epoch through the kernel."
+        },
+        {
+          "node": "tests/test_position_providers.py::test_native_id_query_keeps_faint_rows_missing_coordinates_and_source_order",
+          "reason": "Sparse source lookup is independent of marker magnitude, preserves NaNs and ordering without mutation."
+        },
+        {
+          "node": "tests/test_position_providers.py::test_native_position_uses_authoritative_degree_encoding_when_both_columns_exist",
+          "reason": "Both public routes use the same source-native coordinate encoding."
+        },
+        {
+          "node": "tests/test_position_providers.py::test_native_position_routes_use_returned_kernel_direction_and_propagate_failure",
+          "reason": "Returned directions, rather than catalogue fallback, control both routes; backend refusal propagates."
+        },
+        {
+          "node": "tests/test_position_providers.py::test_native_id_query_empty_absent_and_unloaded_policies",
+          "reason": "Empty and unavailable identity policies do not invent states."
+        },
+        {
+          "node": "tests/test_constellation_geometry.py::test_constellation_lines_are_geometrical_objects",
+          "reason": "Lines remain constructed geometry, not a separate astrometric provider."
+        },
+        {
+          "node": "tests/test_constellation_geometry.py::test_native_constellation_vertices_and_mean_anchors_use_same_source",
+          "reason": "Native edges and unchanged mean-label anchors retain source coordinates."
+        },
+        {
+          "node": "tests/test_constellation_geometry.py::test_lines_return_one_spherical_curve_per_hip_edge",
+          "reason": "Observed edge order and topology remain unchanged."
+        },
+        {
+          "node": "tests/test_constellation_geometry.py::test_geometry_is_recomputed_at_observer_time",
+          "reason": "Observed time-dependent route remains active."
+        },
+        {
+          "node": "tests/test_constellation_geometry.py::test_geometry_does_not_mutate_active_star_selection",
+          "reason": "Line geometry does not replace active marker selection."
+        },
+        {
+          "node": "tests/test_constellation_geometry.py::test_line_selection_is_render_local_and_ordered",
+          "reason": "Per-render selection and stable edge order survive."
+        },
+        {
+          "node": "tests/test_constellation_geometry.py::test_unknown_line_selection_is_rejected",
+          "reason": "Unknown figure selection is still rejected."
+        },
+        {
+          "node": "tests/test_constellation_geometry.py::test_native_edges_follow_the_same_kernel_results_as_stellar_positions",
+          "reason": "Changed backend vectors control faint endpoints, sparse source requests, warnings and global resolvability."
+        },
+        {
+          "node": "tests/test_constellation_geometry.py::test_native_line_geometry_uses_only_the_public_native_id_interface",
+          "reason": "Opaque provider and shuffled IDs prohibit raw-table or private/Skyfield coupling."
+        },
+        {
+          "node": "tests/test_constellation_geometry.py::test_native_line_kernel_refusal_is_not_replaced_with_catalogue_coordinates",
+          "reason": "Failed native astrometry must not silently fall back to a second route."
+        },
+        {
+          "node": "tests/test_constellation_geometry.py::test_packaged_serpens_record_exposes_parts_and_preserves_bridge",
+          "reason": "Preserve curated graph parts and bridge topology."
+        },
+        {
+          "node": "tests/test_constellation_geometry.py::test_active_western_scorpius_has_requested_sigma_beta1_sigma_pi_and_pi_rho_edges",
+          "reason": "Preserve the accepted Scorpius graph."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_position_api_and_vertex_edges_match_cold_and_saved_sky",
+          "reason": "Real full-source public positions and every endpoint agree across cold and saved skies."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources",
+          "reason": "New inherited APIs work from an unchanged snapshot in a fresh process without acquisition."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_labels_and_gaps_use_frozen_curation",
+          "reason": "Preserve frozen labels, HIP identities and line gaps."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_kernel_native_stars_preserve_legacy_page_pixels",
+          "reason": "Independent raw-coordinate rendering baseline preserves exact page pixels."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_atlas_chart_batch_cold_saved_and_spawned_pages_match",
+          "reason": "Affected native output retains real CLI/serial/saved/spawn equivalence."
+        }
       ]
     },
     "native-atlas-output": {
@@ -652,6 +930,64 @@
         {
           "node": "tests/test_curated_catalogues.py::test_cluster_motion_module_and_admission_ship_and_evaluate_from_installed_wheel",
           "reason": "Actual certificate reuse through the separately installed Wenu wheel and unchanged SDK."
+        }
+      ]
+    },
+    "cluster-motion-native-consumers": {
+      "scope": "Explicit per-call nominal cluster motion in native Python chart and restored-source consumers; default lookup compatibility.",
+      "limits": "No provider/SDK numerical implementation, source bytes, dependency/build, snapshot schema, observer motion, CLI/TOML or worker-dispatch change. Reuse accepted science/conformance/installation; no full production or SDK repeat.",
+      "selections": [
+        {
+          "node": "tests/test_open_clusters.py::test_cluster_motion_public_native_vectors_order_metadata_and_no_mutation",
+          "reason": "Changed consumer boundary, shared native epoch contract or default/saved compatibility seam."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_cluster_motion_consumer_refuses_missing_inputs_binding_domain_and_observation",
+          "reason": "Changed consumer boundary, shared native epoch contract or default/saved compatibility seam."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_kernel_cluster_lookup_preserves_row_epochs_motion_masks_and_requested_order",
+          "reason": "Changed consumer boundary, shared native epoch contract or default/saved compatibility seam."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_kernel_cluster_vectors_drive_public_native_and_observed_paths_after_warm_cache",
+          "reason": "Changed consumer boundary, shared native epoch contract or default/saved compatibility seam."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_kernel_cluster_refusal_reaches_all_paths_even_after_observed_cache_fill",
+          "reason": "Changed consumer boundary, shared native epoch contract or default/saved compatibility seam."
+        },
+        {
+          "node": "tests/test_layer_realization.py",
+          "reason": "Changed consumer boundary, shared native epoch contract or default/saved compatibility seam."
+        },
+        {
+          "node": "tests/test_request_realization.py",
+          "reason": "Changed consumer boundary, shared native epoch contract or default/saved compatibility seam."
+        },
+        {
+          "node": "tests/test_position_providers.py::test_open_clusters_provide_selected_native_centres",
+          "reason": "Changed consumer boundary, shared native epoch contract or default/saved compatibility seam."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_explicit_cluster_motion_matches_cold_geometry_and_pixels",
+          "reason": "Changed consumer boundary, shared native epoch contract or default/saved compatibility seam."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_explicit_cluster_motion_in_fresh_process",
+          "reason": "Changed consumer boundary, shared native epoch contract or default/saved compatibility seam."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_kernel_cluster_routes_preserve_native_pixels_and_saved_state",
+          "reason": "Changed consumer boundary, shared native epoch contract or default/saved compatibility seam."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_fixed_catalogue_rows_masks_units_and_subsets",
+          "reason": "Changed consumer boundary, shared native epoch contract or default/saved compatibility seam."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_legacy_coverage_stays_truthful",
+          "reason": "Changed consumer boundary, shared native epoch contract or default/saved compatibility seam."
         }
       ]
     }

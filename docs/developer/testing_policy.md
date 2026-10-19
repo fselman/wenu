@@ -292,6 +292,28 @@ body/satellite suites reuse their existing evidence. Those owners are required
 again only if their contracts change. Run this gate once, plus documentation
 and the stdlib tooling check for the edited gate manifest.
 
+## Native cluster motion consumer gate
+
+`cluster-motion-native-consumers` selects the changed open-cluster public/native
+seams, layer-realization and request-context owners, saved-source cold/restored
+geometry, actual PNG equality and fresh-process offline consumption. Existing
+default cluster pixel and legacy/fixed-row snapshot tests remain selected. New
+faults are source/digest mismatch, unavailable row fallback, ignored returned
+vectors, wrong requested epoch/scale, lost order/duplicates/provenance and shared
+model installation. The former static-only context assertion now positively
+admits explicit native evaluation epochs; all observation/frame/equinox refusals
+remain. The native geometry guard additionally refuses mismatched returned time.
+
+The provider model, numerical/reuse implementation, source bytes, SDK, dependency,
+snapshot serialization and observer mathematics are unchanged. Reuse their
+accepted numerical/conformance/installation evidence; do not rerun their owner
+gates, broad packaging, full SDK or production suites. No CLI/atlas worker dispatch
+or canvas changes, so serial/spawn atlas batches are excluded. The existing default
+native-page pixel test protects unchanged atlas output. The shared context changes
+justify the complete layer/request-context tests and static-neighbour checks.
+No historical tests are removed or moved. Run documentation and tooling separately.
+Observer-dependent motion and CLI selection remain explicitly unsupported.
+
 ## Native stellar kernel gate
 
 `kernel-native-stars` is independent of request-lifecycle selections. It runs

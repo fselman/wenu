@@ -156,8 +156,13 @@ now bound numerical direction reuse within that declared domain. Only explicit
 interactive sessions reuse prior anchors; reproducible sessions evaluate the full
 model. The bound starts from admitted binary64 SI states and does not certify
 source conversion, measurement or physical accuracy. Velocity output remains
-unsupported. This is additive: existing default chart/observed/saved consumers
-continue to use source lookup. See the [API and limits](implementation_reference.md#nominal-cluster-motion-provider).
+unsupported. Default chart/observed/saved consumers continue to use source
+lookup. Explicit native chart calls now accept the admitted motion catalogue and
+an explicit TCB context epoch, query a reproducible kernel session and consume
+its returned vectors. Restored v5 skies use that same inherited facade without
+reloading source catalogues or persisting evaluated states. The native chart
+guard checks returned epoch/scale against the request; unchanged static layers
+retain source epochs. Observed motion and CLI model selection remain pending. See the [API and limits](implementation_reference.md#nominal-cluster-motion-provider).
 
 ## Abstraction barriers that remain incomplete
 

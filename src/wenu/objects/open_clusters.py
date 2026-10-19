@@ -175,8 +175,8 @@ class OpenClusters(AstronomicalObject):
         marked = cls.mark_amateur_exclusions(table)
         return marked[~np.asarray(marked['excluded_ir_embedded'], dtype=bool)]
 
-    def position(self, instant=None) -> SphericalPoints:
-        """Return selected native open-cluster catalogue centres in ICRS."""
+    def position(self, instant=None, *, motion=None) -> SphericalPoints:
+        """Return lookup centres, or an explicit admitted nominal motion query."""
         if self.catalog is None:
             raise RuntimeError(
                 "The catalogue has not been loaded. "
@@ -184,7 +184,11 @@ class OpenClusters(AstronomicalObject):
             )
         table = self._selected_table(None)
         admitted = self.catalogue_metadata_for(table)
-        longitude, latitude = self._native_centres(table, instant, admitted=admitted)
+        if motion is None:
+            longitude, latitude = self._native_centres(table, instant, admitted=admitted)
+            spec, state_metadata = admitted.coordinate_spec(), {}
+        else:
+            longitude, latitude, spec, state_metadata = self._motion_centres(table, motion, instant)
         identifiers = np.asarray(table["identifier"], dtype=object)
         metadata = {
             "catalog": "openclust",
@@ -196,10 +200,11 @@ class OpenClusters(AstronomicalObject):
                 metadata[name] = self._column_metadata(table[name])
         metadata['catalogue_admission'] = admitted.to_record()
         metadata['catalogue_position_model'] = 'catalogue_lookup'
+        metadata.update(state_metadata)
         return SphericalPoints(
             lon_deg=longitude,
             lat_deg=latitude,
-            coordinate_spec=admitted.coordinate_spec(),
+            coordinate_spec=spec,
             ids=np.asarray(table["wenu_id"], dtype=object) if "wenu_id" in table.colnames else identifiers,
             labels=identifiers,
             names=identifiers,
@@ -274,6 +279,57 @@ class OpenClusters(AstronomicalObject):
         for index in np.flatnonzero(valid):
             longitude[index], latitude[index] = angles[str(identifiers[index])]
         return longitude, latitude
+
+    def _motion_centres(self, table, motion, instant):
+        """Compose the accepted provider and kernel; never fall back to lookup."""
+        from wenu.cluster_state import ClusterMotionCatalogue, ClusterMotionProvider
+        from wenu.coordinates import CoordinateSpec
+        from wenu_kernel import Kernel
+        from wenu_kernel.records import AccuracyRequest, SessionPolicy, StateQuery, TimePoint
+        if type(motion) is not ClusterMotionCatalogue:
+            raise TypeError('motion must be an admitted ClusterMotionCatalogue.')
+        if type(instant) is not TimePoint or instant.scale != motion.coverage.start.scale:
+            raise ValueError('Nominal cluster motion requires an explicit matching-scale TimePoint.')
+        if not motion.coverage.contains(instant):
+            raise ValueError('Cluster evaluation instant is outside the nominal model domain.')
+        metadata = motion.to_record()
+        source = metadata['source_metadata']
+        if self._source_sha256 is None or self._source_sha256 != source['selected_catalogue_sha256']:
+            raise ValueError('Cluster motion is bound to a different source catalogue.')
+        identifiers = tuple(map(str, table['wenu_id'] if 'wenu_id' in table.colnames else table['identifier']))
+        # Validate the complete layer identity set, not only the visible subset.
+        full_ids = tuple(map(str, self.catalog['wenu_id'] if 'wenu_id' in self.catalog.colnames else self.catalog['identifier']))
+        if set(full_ids) != {row.identifier for row in motion.rows}:
+            raise ValueError('Cluster motion and source catalogue identity sets differ.')
+        provider = ClusterMotionProvider(motion)
+        try:
+            admission = provider.describe().admissions[0]
+            records = provider.catalogue(admission.catalogue).objects
+            keys = {row.external_ids[0].identifier: row.key for row in records}
+            selected_keys = tuple(keys[value] for value in dict.fromkeys(identifiers))
+            if selected_keys:
+                with Kernel(references=(admission.reference,)) as kernel:
+                    kernel.register(provider, ownership='borrowed')
+                    with kernel.open_session(SessionPolicy((admission.catalogue,))) as session:
+                        batch = session.evaluate(StateQuery(admission.catalogue, admission.model,
+                            selected_keys, (instant,), admission.reference, AccuracyRequest()))
+                states = {state.object_key: state for state in batch.states}
+            else:
+                states = {}
+            ordered = tuple(states[keys[value]] for value in identifiers)
+            vectors = np.asarray([state.vector for state in ordered], dtype=float).reshape(-1, 3)
+            longitude = np.rad2deg(np.arctan2(vectors[:, 1], vectors[:, 0])) % 360
+            latitude = np.rad2deg(np.arctan2(vectors[:, 2], np.hypot(vectors[:, 0], vectors[:, 1])))
+            spec = CoordinateSpec(frame=admission.reference.frame_id,
+                origin=admission.reference.origin_id, position_status=PositionStatus.ASTROMETRIC,
+                instant=f'JD {instant.jd1} {instant.jd2:+}', time_scale=instant.scale,
+                provider='wenu.cluster-motion', model=admission.model.model_id,
+                provenance=(source['provenance'],))
+            return longitude, latitude, spec, dict(catalogue_position_model=admission.model.model_id,
+                cluster_motion_admission=metadata, cluster_motion_states=ordered,
+                cluster_motion_model=admission.model, cluster_motion_reference=admission.reference)
+        finally:
+            provider.close()
 
     @staticmethod
     def normalize_catalogue(table):
@@ -369,8 +425,20 @@ class OpenClusters(AstronomicalObject):
     def realize(self, context, observer, **options):
         from copy import copy
         from wenu.sky.realization import LayerRealizationContext
+        motion = options.pop('motion', None)
         if not isinstance(context, LayerRealizationContext) or not context.is_native_icrs:
+            if motion is not None:
+                raise ValueError('Nominal cluster motion currently requires native ICRS realization.')
             return super().realize(context, observer, **options)
+        instant = None
+        if motion is not None:
+            from astropy.time import Time
+            from wenu_kernel.records import TimePoint
+            if context.evaluation_instant is None or context.evaluation_time_scale != 'tcb':
+                raise ValueError('Nominal cluster motion requires an explicit TCB evaluation context.')
+            time = Time(context.evaluation_instant, scale=context.evaluation_time_scale)
+            carry = int(time.jd2 >= .5)
+            instant = TimePoint(int(time.jd1) + carry, float(time.jd2) - carry, time.scale)
         table = self._selected_table(options.pop("selected", None))
         table = self._amateur_filtered(table, options.pop('exclude_infrared_embedded', False))
         minimum = options.pop("minimum_size_arcmin", None)
@@ -383,8 +451,14 @@ class OpenClusters(AstronomicalObject):
             sizes = np.asarray(table["apparent_diameter_arcmin"], dtype=float)
             table = table[np.isfinite(sizes) & (sizes >= minimum)]
         local = copy(self)
-        local.catalog, local.selected = table, None
-        geometry = local.position()
+        if motion is None:
+            local.catalog, local.selected = table, None
+        else:
+            local.selected = tuple(map(str, table['wenu_id'] if 'wenu_id' in table.colnames else table['identifier']))
+        geometry = local.position(instant, motion=motion)
+        if motion is not None:
+            from dataclasses import replace
+            geometry.coordinate_spec = replace(geometry.coordinate_spec, instant=context.evaluation_instant)
         geometry.metadata.update(geometry_kind="cartographic_symbol", symbol="open_cluster")
         return geometry
 

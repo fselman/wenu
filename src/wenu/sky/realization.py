@@ -42,12 +42,10 @@ class LayerRealizationContext:
 
     @property
     def is_native_icrs(self):
-        """Explicit static catalogue product, without observation or propagation."""
+        """Native ICRS axes; an explicit epoch may be consumed by admitted layers."""
         return (
             self.product_coordinate_spec == NATIVE_ICRS_SPEC
             and self.observation is None
-            and self.evaluation_instant is None
-            and self.evaluation_time_scale is None
             and self.reference_equinox is None
         )
 
