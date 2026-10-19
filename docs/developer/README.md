@@ -111,15 +111,15 @@ SI solutions; measurement, conversion and physical-model accuracy stay unknown.
 Explicit native Python chart consumers now adopt the motion catalogue per call,
 including restored source snapshots, with matching TCB context epochs and
 source-digest/identity admission. Default lookup and snapshot v5 are unchanged;
-observer motion, CLI selection and persisted epoch states remain ahead. See the
+explicit observed Python charts now use the shared finite-distance service. CLI
+selection and persisted epoch states remain ahead. See the
 [consumer API](implementation_reference.md#explicit-native-cluster-motion-consumers).
 The [observer-motion contract](scientific_contracts.md#cluster-observer-realization-contract)
 now records the RA/Dec-only seam, required Cartesian/time/common-coordinate
-prerequisites and correction/cache acceptance matrix. It is a design deliverable;
-observer motion remains refused until the ordered runtime gates pass. Explicit
+prerequisites and correction/cache acceptance matrix. The explicit Python
+consumer now admits a prepared reception receipt and the motion catalogue. Explicit
 Cartesian SI output is now implemented in the core interface, preserving distance
-and velocity through a separate admission with unknown error bounds; it does not
-yet perform observer realization.
+and velocity through a separate admission with unknown error bounds; the separate shared observer service performs observer realization.
 The explicit [TCB/TDB convention subset](implementation_reference.md#barycentric-time-and-coordinate-conventions)
 now supplies time receipts and spatial scaling independently of object type.
 An offline [reception context](implementation_reference.md#offline-reception-and-observer-input-context)
@@ -127,7 +127,8 @@ now retains explicit UTC/TT/TDB/TCB events and separately identified ERFA Earth/
 PV with verified local leap/final EOP resources. The object-independent
 [finite observer realizer](implementation_reference.md#finite-distance-nominal-observer-realization)
 now returns range, parallax and corrected vacuum Alt/Az from actual kernel
-Cartesian batches. Observed chart adoption, Cartesian reuse
+Cartesian batches. Explicit observed Python chart and restored-source consumers
+now call it through `LayerRealizationContext.from_reception`; Cartesian reuse
 and remaining K3 routing are pending; this is not a completed kernel or frozen SDK.
 
 [Roadmap to v0.9.5: kernel and loadable packages](kernel_roadmap_v0.9.5.md)

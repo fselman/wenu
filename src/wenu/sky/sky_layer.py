@@ -27,6 +27,8 @@ class SkyLayer(ABC):
 
         if isinstance(context, LayerRealizationContext) and context.is_native_icrs:
             raise TypeError(f"{type(self).__name__} does not support native ICRS realization.")
+        if isinstance(context, LayerRealizationContext) and context.reception is not None:
+            raise TypeError(f"{type(self).__name__} does not support explicit reception realization.")
         del context
         return self.spherical_geometry(observer, **geometry_options)
 

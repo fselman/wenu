@@ -303,7 +303,8 @@ checks therefore run once through this gate. Run documentation and tooling
 separately. Provider/SDK/source-resource/dependency/build, native/default chart,
 projection/renderer and saved-sky implementations are unchanged. Reuse their
 accepted evidence; no parent duplicates, full SDK or production run. Observed
-chart/saved adoption and independently bounded physical errors remain separate.
+chart/saved adoption has its separate consumer gate below; independently bounded
+physical errors remain pending.
 
 ## Cluster observer contract and implementation gates
 
@@ -311,7 +312,8 @@ The contract-only milestone adds the scientific ownership/admission contract,
 as-is inventory and future gate matrix. Run `documentation`, stdlib tooling and
 `cluster-observer-contract` once. The latter retains the existing real
 `test_cluster_motion_consumer_refuses_missing_inputs_binding_domain_and_observation`
-case from the native consumer owner: its observation refusal remains required.
+case from the native consumer owner: motion without a valid explicit native or
+reception context still refuses.
 It is current refusal evidence, not an observer numerical test. No production
 code, provider/SDK, resources, dependency, serialization, build or collection
 changes; do not repeat provider numerical/installation, full SDK, atlas or full
@@ -758,3 +760,27 @@ operational checks are retained or replaced explicitly. The subsequent audit
 repairs stale user-guide/fixed-sky documentation tests and preserves their
 original editions in its inventory; scientific and product test files remain
 unchanged. See the [cleanup ledger](documentation_cleanup_v1.json).
+
+
+## Explicit observed cluster Python consumer gate
+
+`astrometric-observer-consumers` covers the changed cluster adapter, shared layer
+context and pre-projection admission guard. The closest native motion, layer and
+request realization tests remain selected. New owner tests protect Cartesian
+query bypass, wrong units, lost source/reception identities, changed site/time,
+tampered receipts, unavailable input and query refusal after a successful call.
+Changed returned Cartesian positions must change geometry and range; a fake
+unmigrated/misbound layer must fail before projection/rendering.
+
+Cold and restored source skies must produce identical degree geometry and
+raster pixels through `CelestialSphere.draw_chart`, plus actual SVG files. A
+fresh process repeats public drawing with source reload and network blocked.
+The existing installed-wheel cluster test additionally calls this layer API
+with real selected source bytes and an explicit independently prepared context;
+its packaging fixture's one-row default remains a lookup catalogue.
+
+Run tooling, `documentation` and `astrometric-observer-consumers`. Reuse accepted
+source propagation/convention/observer numerical oracles and installation recipe;
+no SDK, science algorithm, resource bytes, dependencies/build, snapshot schema,
+projection/renderer, atlas dispatch or CLI/TOML change. No full SDK/production
+repeat is required. CLI/configuration and total physical accuracy remain pending.

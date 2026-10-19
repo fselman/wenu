@@ -74,8 +74,9 @@ silently used as systemic centre motion. Observer realization remains separate.
 ## Cluster observer realization contract
 
 **Observer contract, 2026-10-19; nominal finite observer service implemented,
-chart adoption pending.** The service below is independent of object type.
-PR #261 remains the chart motion path and still refuses observer-dependent motion;
+explicit Python chart/saved adoption implemented.** The service below is independent of object type.
+PR #261 supplies native chart motion; the explicit reception-context path now
+adds observed Python chart/saved motion through the shared finite observer service;
 default lookup, accepted native direction/reuse semantics and saved source
 snapshots do not change. This contract does not freeze a new Python signature.
 
@@ -245,7 +246,12 @@ downloads. Owned/borrowed resource lifetimes follow the existing request owner.
 
 The [acceptance matrix](testing_policy.md#cluster-observer-contract-and-implementation-gates)
 and [ordered implementation](kernel_roadmap_v0.9.5.md#cluster-observer-implementation-order)
-define the remaining gates. No numerical observer implementation is claimed here.
+define the remaining gates. Explicit observed Python chart/saved consumers now
+use the accepted nominal service with full Cartesian evaluation and no fallback.
+The prepared receipt owns site/event/resources; context fields must agree, and
+geometry retains receipt identity and degree units before canonical projection.
+Unmigrated layers refuse this context. No observer state is persisted in v5;
+CLI/TOML selection and total physical-error qualification remain pending.
 
 Primary backend documentation checked 2026-10-19:
 [ICRS](https://docs.astropy.org/en/stable/api/astropy.coordinates.ICRS.html),

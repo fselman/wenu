@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 16, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 17, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -35,7 +35,7 @@ native constellation-label anchors, other families and remaining non-chart
 consumers stay open for subsequent K3 slices.
 The explicit resource-free TCB/TDB convention subset is implemented. An offline UTC/TT reception and ERFA input-context subset is also implemented.
 The nominal finite-distance observer service is implemented and independently
-checked; observed product adoption, Cartesian reuse
+checked; explicit observed Python chart/saved adoption is implemented. CLI selection, Cartesian reuse
 and SDK freeze remain ahead. PR #248 and the open-cluster correction in PR #249
 are accepted at main `4a14e294`, with focused Mac gates and identical merged tree.
 Neither closes K3.
@@ -100,8 +100,8 @@ angular certificates now bound reuse relative to admitted binary64 SI solutions
 in explicit interactive sessions, with reproducible full-model fallback. Source
 conversion and physical/measurement accuracy remain uncertified. Native epoch
 contexts and per-layer motion options now enter the canonical chart pipeline,
-with unchanged source snapshots/default lookup. Next: observer realization,
-CLI/configuration model selection and any separately admitted persisted epoch
+with unchanged source snapshots/default lookup. Explicit observed Python chart/saved consumers now use the shared nominal
+finite-distance service. Next: CLI/configuration model selection and any separately admitted persisted epoch
 state format. Canonical provider schedules remain optional separate work. Other
 families/consumers and the final SDK freeze remain ahead. See the
 [motion audit](kernel_migration_audit_v1.md#open-cluster-motion-and-lookup-audit-2026-10-18).
@@ -544,13 +544,13 @@ K4 may develop alongside adapters, but K5 cannot close before both are accepted.
 ## Cluster observer implementation order
 
 The [observer contract](scientific_contracts.md#cluster-observer-realization-contract)
-now records the first bounded design deliverable; no observed runtime is enabled.
+records the admitted nominal service and explicit Python chart/saved adoption.
 Implement the following separately, preserving PR #261 defaults/native semantics:
 
 The shared direction engine and calling cluster adapter are now factored;
 synthetic mixed-family evaluation is verified. Explicit Cartesian output now retains SI position/velocity through that same
 engine. This does not adopt other source catalogues, reduced-input models,
-expansion or observed chart adoption. The separate object-independent observer
+expansion or other-family chart adoption. The separate object-independent observer
 service now supplies parallax/apparent vacuum directions. Future motion work
 uses these owners rather than a new engine for each family.
 
@@ -574,13 +574,15 @@ uses these owners rather than a new engine for each family.
    gates cover this slice. Observer corrections recompute each call; no
    observer cache, temporal certificate, total accuracy guarantee, retarded
    target model or additional stellar light time is admitted.
-4. Connect that service to explicit observed Python chart/saved consumers; then
-   expose explicit CLI/TOML model selection. Preserve default lookup and canonical
+4. **Implemented Python adoption:** explicit reception-context cluster chart/saved
+   consumers query full Cartesian states and use the shared service. Cold/saved/
+   fresh-process degree geometry, pixels, SVG output and refusal gates cover the
+   canonical route. Next expose explicit CLI/TOML model selection. Preserve default lookup and canonical
    projection/rendering. Any evaluated-state snapshot format is separately admitted.
 
 See the [acceptance matrix](testing_policy.md#cluster-observer-contract-and-implementation-gates).
-The next step is explicit observed Python chart/saved adoption and its cold/
-saved/fresh-process/public-output gates. Total physical/error qualification and
+The next step is explicit CLI/TOML model selection through the existing request
+configuration boundary. Total physical/error qualification and
 additional correction policies remain separate. Native-model date coverage
 does not establish historical Earth orientation or observer accuracy.
 

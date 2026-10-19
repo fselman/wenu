@@ -240,8 +240,21 @@ default=OpenClusters(None)
 default.load()
 assert len(default.catalog)==1  # The packaging fixture's original default.
 assert default.position().metadata['catalogue_position_model']=='catalogue_lookup'
+from wenu.sky.realization import LayerRealizationContext
+layer=OpenClusters(None)
+layer.load(filename=sys.argv[4])
+selected=[row.identifier for row in catalogue.rows if row.unavailable_reason is None][:2]
+geometry=layer.realize(LayerRealizationContext.from_reception(reception),None,
+    motion=catalogue,selected=selected)
+assert geometry.ids.tolist()==selected and geometry.coordinate_spec.frame=='altaz'
+assert geometry.coordinate_spec.longitude_unit=='deg'
+assert geometry.metadata['astrometric_observation'].reception==reception
+assert layer.position().metadata['catalogue_position_model']=='catalogue_lookup'
 '''
-    result=subprocess.run([sys.executable,'-I','-S','-c',script,str(installed),str(sdk_root),json.dumps(dependencies)],
+    from wenu.resources import nonstellar_catalog_path
+    selected_source=tmp_path/'selected-source.ecsv'
+    shutil.copyfile(nonstellar_catalog_path('open_clusters'),selected_source)
+    result=subprocess.run([sys.executable,'-I','-S','-c',script,str(installed),str(sdk_root),json.dumps(dependencies),str(selected_source)],
         cwd=tmp_path,capture_output=True,text=True)
     assert result.returncode==0,result.stdout+result.stderr
 

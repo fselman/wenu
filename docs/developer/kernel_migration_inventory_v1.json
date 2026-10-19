@@ -8850,7 +8850,6 @@
     "owner": "src/wenu/astrometric_observation.py",
     "scope": "Explicit nominal full-PV observer realization with one translation/correction sequence, immutable context binding and unknown total error.",
     "pending": [
-      "Explicit observed Python/chart/saved consumers",
       "CLI/TOML selection",
       "Total physical/apparent error bounds"
     ],
@@ -8859,6 +8858,28 @@
       "No observer cache/temporal certificate",
       "No planetary/multipole/retarded deflector model",
       "No expansion or new source adapters"
+    ]
+  },
+  "astrometric_observer_consumers_v1": {
+    "base": "e439990dbf287515b77748869bbb8dc723804c8f",
+    "gate": "astrometric-observer-consumers",
+    "scope": "Explicit reception-context cluster Python chart/saved adoption through shared full-Cartesian nominal observer service; default lookup/native snapshot unchanged.",
+    "owners": [
+      "src/wenu/objects/open_clusters.py",
+      "src/wenu/sky/realization.py",
+      "src/wenu/sky/sky_layer.py",
+      "src/wenu/sky/celestial_sphere.py"
+    ],
+    "pending": [
+      "CLI/TOML selection",
+      "Total physical/apparent error bounds",
+      "Reduced-input models and real other-family adapters"
+    ],
+    "limits": [
+      "Non-empty admitted complete-input selection",
+      "No observer cache or persisted evaluated states",
+      "Unmigrated layers refuse explicit reception context",
+      "No expansion"
     ]
   }
 }

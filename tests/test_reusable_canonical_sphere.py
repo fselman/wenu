@@ -1267,3 +1267,118 @@ assert sky.open_clusters.position().metadata['catalogue_position_model'] == 'cat
     completed = subprocess.run([sys.executable,'-c',code,str(destination),str(root)],
         cwd=tmp_path, env=env, text=True, capture_output=True)
     assert completed.returncode == 0, completed.stdout + completed.stderr
+
+
+def _saved_cluster_observation(root):
+    """Prepare explicit offline per-process resources; nothing saved as state."""
+    from pathlib import Path
+    from hashlib import sha256
+    from astropy.utils import iers
+    from wenu.astrometric_observation import ErfaReceptionBackend, reception_backend_identity
+    from wenu.cluster_state import load_cluster_motion
+    from wenu.sky.realization import LayerRealizationContext
+    from wenu_kernel.records import TimePoint, TimeSpan
+    backend = ErfaReceptionBackend(leap_seconds_path=iers.IERS_LEAP_SECOND_FILE,
+        leap_seconds_sha256=sha256(Path(iers.IERS_LEAP_SECOND_FILE).read_bytes()).hexdigest(),
+        eop_path=iers.IERS_B_FILE, eop_sha256=sha256(Path(iers.IERS_B_FILE).read_bytes()).hexdigest(),
+        coverage=TimeSpan(TimePoint(2456300,0,'tt'),TimePoint(2458000,0,'tt')),
+        backend_identity=reception_backend_identity())
+    context = LayerRealizationContext.from_reception(backend.prepare('2016-12-31T23:59:60Z',
+        longitude_deg=-71.23,latitude_deg=-32.44,height_m=52.))
+    data = Path(root)/'src/wenu/data/catalogs/open_clusters'
+    motion = load_cluster_motion(data/'open_clusters_hunt_astrometry_v1.ecsv',
+        data/'open_clusters_hunt_motion_admission_v1.json',
+        coverage=TimeSpan(TimePoint(2400000,0,'tcb'),TimePoint(2500000,0,'tcb')))
+    return context, motion
+
+
+def test_saved_cluster_observation_cold_saved_pixels_and_public_output(native_snapshot_case, tmp_path, monkeypatch):
+    # Closest native snapshot motion test; protect a restored-source bypass,
+    # changed projection units, missing actual output and persisted context.
+    from pathlib import Path
+    from wenu.sky.native_snapshot import read_native_sky_snapshot
+    from wenu.objects.open_clusters import OpenClusters
+    from wenu.projections import StereographicProjection
+    from wenu.rendering import MatplotlibRenderer
+    import matplotlib.pyplot as plt
+    import numpy as np
+    _, destination, _, cold = native_snapshot_case
+    snapshot = read_native_sky_snapshot(destination)
+    saved = snapshot.make_sky()
+    context, motion = _saved_cluster_observation(Path(__file__).resolve().parents[1])
+    selected = [row.identifier for row in motion.rows if row.unavailable_reason is None][:3]
+    options = dict(motion=motion, selected=selected)
+    original_record = saved.open_clusters.catalogue_metadata_for(saved.open_clusters.catalog)
+    def forbidden(*args, **kwargs):
+        raise AssertionError('No reload or legacy observation in restored motion route')
+    monkeypatch.setattr(OpenClusters, 'load', forbidden)
+    monkeypatch.setattr(OpenClusters, 'spherical_geometry', forbidden)
+    geometries = [sky.open_clusters.realize(context, None, **options) for sky in (cold,saved)]
+    _assert_native_geometry_equal(*geometries)
+    images = []
+    for index, sky in enumerate((cold,saved)):
+        configured = {layer: {'enabled': False} for layer in sky.layers}
+        configured[sky.open_clusters] = {'geometry': options}
+        figure, ax = plt.subplots(figsize=(3,3), dpi=100)
+        try:
+            sky.draw_chart(projection=StereographicProjection(), renderer=MatplotlibRenderer(ax),
+                realization_context=context, layer_options=configured)
+            figure.canvas.draw()
+            images.append(np.asarray(figure.canvas.buffer_rgba()).copy())
+            output = tmp_path/f'observed-{index}.svg'
+            figure.savefig(output)
+            assert '<path' in output.read_text() and output.stat().st_size > 1000
+        finally:
+            plt.close(figure)
+    np.testing.assert_array_equal(*images)
+    assert np.any(images[0][:,:,:3] < 200)
+    assert snapshot._manifest['schema_version'] == 5
+    assert saved.open_clusters.catalogue_metadata_for(saved.open_clusters.catalog) == original_record
+    assert snapshot.make_sky().open_clusters.position().metadata['catalogue_position_model'] == 'catalogue_lookup'
+
+
+def test_saved_cluster_observation_fresh_process(native_snapshot_case, tmp_path):
+    import inspect, json, os, subprocess, sys
+    from pathlib import Path
+    _, destination, _, _ = native_snapshot_case
+    root = Path(__file__).resolve().parents[1]
+    context, motion = _saved_cluster_observation(root)
+    selected = [row.identifier for row in motion.rows if row.unavailable_reason is None][:3]
+    from wenu.sky.native_snapshot import read_native_sky_snapshot
+    expected = read_native_sky_snapshot(destination).make_sky().open_clusters.realize(
+        context,None,motion=motion,selected=selected)
+    code = inspect.getsource(_saved_cluster_observation) + r'''
+import json,socket,sys
+from wenu.sky.native_snapshot import read_native_sky_snapshot
+from wenu.objects.open_clusters import OpenClusters
+from wenu.projections import StereographicProjection
+from wenu.rendering import MatplotlibRenderer
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+def forbidden(*args,**kwargs):
+    raise AssertionError('No network/catalogue reload/legacy observer')
+socket.socket=forbidden
+OpenClusters.load=forbidden
+OpenClusters.spherical_geometry=forbidden
+context,motion=_saved_cluster_observation(sys.argv[2])
+sky=read_native_sky_snapshot(sys.argv[1]).make_sky()
+selected=[r.identifier for r in motion.rows if r.unavailable_reason is None][:3]
+options=dict(motion=motion,selected=selected)
+geometry=sky.open_clusters.realize(context,None,**options)
+configured={layer:{'enabled':False} for layer in sky.layers}
+configured[sky.open_clusters]={'geometry':options}
+figure,ax=plt.subplots()
+sky.draw_chart(projection=StereographicProjection(),renderer=MatplotlibRenderer(ax),
+    realization_context=context,layer_options=configured)
+figure.savefig(sys.argv[3])
+plt.close(figure)
+print(json.dumps(dict(lon=geometry.lon_deg.tolist(),lat=geometry.lat_deg.tolist(),ids=geometry.ids.tolist())))
+'''
+    output = tmp_path/'fresh-observed.svg'
+    completed = subprocess.run([sys.executable,'-c',code,str(destination),str(root),str(output)],
+        cwd=tmp_path, env=dict(os.environ,PYTHONPATH=str(root/'src')),text=True,capture_output=True)
+    assert completed.returncode == 0, completed.stdout+completed.stderr
+    result = json.loads(completed.stdout)
+    assert result == dict(lon=expected.lon_deg.tolist(),lat=expected.lat_deg.tolist(),ids=selected)
+    assert output.stat().st_size > 1000

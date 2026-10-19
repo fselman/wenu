@@ -1580,3 +1580,144 @@ def test_cluster_motion_consumer_refuses_missing_inputs_binding_domain_and_obser
     monkeypatch.setattr(KernelSession, 'evaluate', refused)
     with pytest.raises(UnsupportedCapability, match='injected'):
         layer.position(TimePoint(2460000, 0, 'tcb'), motion=motion)
+
+
+def _observed_chart_context(reception='2016-12-31T23:59:60Z', **site):
+    """Explicit local test admission; resources are never downloaded."""
+    from hashlib import sha256
+    from pathlib import Path
+    from astropy.utils import iers
+    from wenu.astrometric_observation import ErfaReceptionBackend, reception_backend_identity
+    from wenu.sky.realization import LayerRealizationContext
+    from wenu_kernel.records import TimePoint, TimeSpan
+    backend = ErfaReceptionBackend(leap_seconds_path=iers.IERS_LEAP_SECOND_FILE,
+        leap_seconds_sha256=sha256(Path(iers.IERS_LEAP_SECOND_FILE).read_bytes()).hexdigest(),
+        eop_path=iers.IERS_B_FILE, eop_sha256=sha256(Path(iers.IERS_B_FILE).read_bytes()).hexdigest(),
+        coverage=TimeSpan(TimePoint(2456300,0,'tt'), TimePoint(2458000,0,'tt')),
+        backend_identity=reception_backend_identity())
+    location = dict(longitude_deg=-71.23, latitude_deg=-32.44, height_m=52.)
+    location.update(site)
+    return LayerRealizationContext.from_reception(backend.prepare(reception, **location))
+
+
+def test_observed_cluster_motion_uses_shared_service_order_units_and_changed_states(monkeypatch):
+    # Closest native motion seam above; protect Cartesian bypass, dropped
+    # finite distance and accidental radian coordinates in degree geometry.
+    from dataclasses import replace
+    from wenu_kernel import KernelSession
+    import wenu.astrometric_observation as observation
+    layer, motion, ids = _chart_motion_case()
+    context = _observed_chart_context()
+    before = layer.catalogue_metadata_for(layer.catalog)
+    selected = [ids[1], ids[0], ids[1]]
+    seen = []
+    original = observation.realize_astrometric_batch
+    def capture(batch, reception, **kwargs):
+        result = original(batch, reception, **kwargs)
+        seen.append(result)
+        return result
+    monkeypatch.setattr(observation, 'realize_astrometric_batch', capture)
+    def forbidden(*args, **kwargs):
+        raise AssertionError('No legacy AltAz transformation or motion fallback')
+    monkeypatch.setattr(layer, 'spherical_geometry', forbidden)
+    monkeypatch.setattr(layer, '_native_centres', forbidden)
+    result = layer.realize(context, None, motion=motion, selected=selected)
+    assert result.ids.tolist() == selected
+    assert result.coordinate_spec.longitude_unit == result.coordinate_spec.latitude_unit == 'deg'
+    assert result.coordinate_spec.instant == context.reception.utc_isot
+    assert result.metadata['astrometric_observation'] is seen[0]
+    assert len(seen[0].states) == 2
+    np.testing.assert_array_equal(result.lon_deg,
+        np.rad2deg([seen[0].states[i].azimuth_rad for i in (0,1,0)]))
+    assert result.metadata['observed_states'][0] == result.metadata['observed_states'][2]
+    assert all(s.reference.representation == 'cartesian' for s in seen[0].original.states)
+    assert all(s.time == context.reception.tcb and s.source_epoch != s.time for s in seen[0].original.states)
+    evaluate = KernelSession.evaluate
+    def shifted(session, query):
+        batch = evaluate(session, query)
+        return replace(batch, states=tuple(replace(s, position_m=(2e12, 3e12, 4e12)) for s in batch.states))
+    monkeypatch.setattr(KernelSession, 'evaluate', shifted)
+    changed = layer.realize(context, None, motion=motion, selected=selected)
+    assert np.max(np.abs(changed.lon_deg-result.lon_deg)) > .01
+    assert np.max(np.abs(changed.metadata['observed_states'][0].range_m-result.metadata['observed_states'][0].range_m)) > 1e12
+    assert layer.catalogue_metadata_for(layer.catalog) == before
+    assert layer.selected is None
+
+
+def test_observed_cluster_context_refusal_isolation_and_no_warm_fallback(monkeypatch):
+    import pytest
+    from dataclasses import replace
+    from wenu_kernel import KernelSession
+    from wenu_kernel.errors import ResourceMismatch, UnsupportedCapability
+    from wenu.sky.realization import LayerRealizationContext
+    layer, motion, ids = _chart_motion_case()
+    context = _observed_chart_context()
+    options = dict(motion=motion, selected=ids[:2])
+    first = layer.realize(context, None, **options)
+    for altered in (dict(observation=replace(context.observation, elevation_m=0)),
+                    dict(evaluation_instant='2017-01-02'), dict(reference_equinox='J2000'),
+                    dict(product_coordinate_spec=replace(context.product_coordinate_spec, frame='icrs'))):
+        with pytest.raises(ValueError, match='must agree'):
+            replace(context, **altered)
+    with pytest.raises(ValueError, match='requires an admitted'):
+        layer.realize(context, None, selected=ids[:2])
+    with pytest.raises(ValueError, match='match the explicit reception'):
+        layer.position(motion.coverage.start, motion=motion, reception=context.reception)
+    with pytest.raises(ValueError, match='Unknown observed'):
+        layer.realize(context, None, motion=motion, selected=[ids[0], 'nonexistent-object'])
+    digest = layer._source_sha256
+    layer._source_sha256 = '0'*64
+    with pytest.raises(ValueError, match='different source'):
+        layer.realize(context, None, **options)
+    layer._source_sha256 = digest
+    with pytest.raises(ValueError, match='outside'):
+        layer.realize(context, None, motion=replace(motion,
+            coverage=replace(motion.coverage, start=motion.coverage.stop)), selected=ids[:2])
+    corrupted = replace(context, reception=replace(context.reception, identity='0'*64))
+    with pytest.raises(ResourceMismatch):
+        layer.realize(corrupted, None, **options)
+    unavailable = next(row.identifier for row in motion.rows if row.unavailable_reason)
+    with pytest.raises(UnsupportedCapability):
+        layer.realize(context, None, motion=motion, selected=[ids[0], unavailable])
+    with pytest.raises(ValueError, match='non-empty'):
+        layer.realize(context, None, motion=motion, selected=[])
+    for changed in (_observed_chart_context(longitude_deg=20.),
+                    _observed_chart_context(reception='2017-01-02T00:00:00Z')):
+        result = layer.realize(changed, None, **options)
+        assert not np.array_equal(result.lon_deg, first.lon_deg)
+        assert result.metadata['astrometric_observation'].reception == changed.reception
+    repeat = layer.realize(context, None, **options)
+    np.testing.assert_array_equal(first.lon_deg, repeat.lon_deg)
+    evaluate = KernelSession.evaluate
+    def refused(*args, **kwargs):
+        raise UnsupportedCapability('injected observed query refusal')
+    monkeypatch.setattr(KernelSession, 'evaluate', refused)
+    with pytest.raises(UnsupportedCapability, match='injected observed'):
+        layer.realize(context, None, **options)
+    monkeypatch.setattr(KernelSession, 'evaluate', evaluate)
+    np.testing.assert_array_equal(layer.realize(context, None, **options).lon_deg, first.lon_deg)
+
+
+def test_observed_chart_guard_refuses_unmigrated_and_misbound_geometry_before_projection():
+    import pytest
+    from dataclasses import replace
+    from wenu.sky.celestial_sphere import CelestialSphere
+    from wenu.sky.sky_layer import SkyLayer
+    context = _observed_chart_context()
+    class Legacy(SkyLayer):
+        def spherical_geometry(self, observer, **options):
+            raise AssertionError('Legacy fallback must not run')
+    class Incorrect(Legacy):
+        def realize(self, context, observer, **options):
+            return SphericalPoints([0.], [0.], coordinate_spec=context.product_coordinate_spec)
+    class Projection:
+        def project_geometry(self, geometry):
+            raise AssertionError('Invalid receipt must refuse before projection')
+    class Renderer:
+        def draw(self, *args, **kwargs):
+            raise AssertionError('Invalid receipt must refuse before rendering')
+    for layer, error, message in ((Legacy(), TypeError, 'explicit reception'),
+                                  (Incorrect(), ValueError, 'reception-bound')):
+        sphere = CelestialSphere(None); sphere.add(layer)
+        with pytest.raises(error, match=message):
+            sphere.draw_chart(projection=Projection(),renderer=Renderer(),realization_context=context)

@@ -621,7 +621,7 @@ production stellar/PN/SNR catalogue admission. The installed-wheel cluster test
 checks that both facade and engine ship and execute together.
 
 The engine still requires complete admitted SI space-motion solutions. Explicit
-Cartesian output and the separate nominal finite observer service are now implemented as described below; observed chart adoption remains pending. The requested configurable
+Cartesian output and the separate nominal finite observer service are now implemented as described below; explicit observed Python chart/saved adoption is implemented. The requested configurable
 200-year no-PM and 1,000-year PM-only lookback policies, measured from source
 reference epochs, remain planned reduced-model admission policies, not enabled
 models or absolute accuracy guarantees. Expansion and morphology evolution are
@@ -994,8 +994,8 @@ range and warm refusal tests. Deliberate double translation and double
 aberration must fail those same numerical oracles. A real installed cluster
 query exercises this exact public function. These are model/composition tests,
 not independent physical ephemeris or universal ancient-date accuracy proofs.
-The default chart pipeline, native snapshots and observer-motion refusal remain
-unchanged until the separate observed-consumer milestone.
+Default lookup charts and native snapshots retain their existing semantics.
+Explicit observed Python consumers now adopt this service as described below.
 
 Primary correction authorities reviewed 2026-10-19:
 [ERFA LD](https://github.com/liberfa/erfa/blob/master/src/ld.c),
@@ -1006,9 +1006,8 @@ Wenu calls the installed library; it does not copy these implementations.
 
 ### Observer motion: current boundary and proposed handoff
 
-Observed cluster chart adoption is not implemented. The standalone finite
-observer service above is implemented; `OpenClusters.realize` still refuses a
-motion catalogue outside native ICRS realization. The existing observed lookup
+Explicit observed cluster chart adoption is implemented through the same
+`OpenClusters.realize` owner as native motion. The existing observed lookup
 calls `catalogue_point_altaz` and `CoordinateService` with RA/Dec only. No distance
 or velocity enters that transform, so replacing those angles with propagated
 ones would not implement the finite-distance observer contract.
@@ -1028,8 +1027,58 @@ owns the proposed handoff, correction/time/resource requirements, output evidenc
 failure and reuse policy. The [roadmap](kernel_roadmap_v0.9.5.md#cluster-observer-implementation-order)
 separates Cartesian, time/common-convention, observer and product adoption.
 The offline input context and nominal finite observer service above are
-implemented. Observed chart/saved/public-output gates and total physical-error
-qualification remain pending.
+implemented. Cold/saved/fresh-process Python chart and actual SVG output gates
+cover consumer adoption. Total physical-error qualification remains pending.
+
+### Explicit observed cluster Python consumers
+
+Prepare a `ReceptionContext` through the offline backend above, using explicit
+local leap/final EOP bytes, digests, installed backend identity, finite TT domain
+and caller-qualified WGS84 site. Then construct
+`LayerRealizationContext.from_reception(reception)` and call:
+
+```python
+context = LayerRealizationContext.from_reception(reception)
+geometry = sky.open_clusters.realize(
+    context, None, motion=motion, selected=selected_ids,
+)
+options = {layer: {"enabled": False} for layer in sky.layers}
+options[sky.open_clusters] = {
+    "geometry": {"motion": motion, "selected": selected_ids},
+}
+result = sky.draw_chart(
+    projection=projection, renderer=renderer,
+    realization_context=context, layer_options=options,
+)
+```
+
+The snippet assumes the explicitly prepared receipt, admitted motion catalogue,
+existing sky, projection and renderer. Import `LayerRealizationContext` from
+`wenu.sky.realization`. This is the existing canonical Python drawing API;
+ordinary request/CLI/TOML model selection remains a subsequent milestone.
+Unmigrated layers must be disabled for this reception-context chart: their base
+adapter refuses the new request. The chart guard also rejects overridden layers
+that return a mismatched frame/status/event/units/corrections or omit the reception
+identity, before projection. A legacy Observer, if present, is not the authority
+for this explicit receipt's site/time/resources.
+
+`OpenClusters.position(reception.tcb, motion=motion, reception=reception)` supplies
+the same observed centre data without drawing. Both paths require non-empty
+selection, the matching TCB instant and the unchanged complete source binding.
+Selected order and duplicates survive a unique-key full Cartesian SDK query
+with SI Euclidean error meaning and required velocity. No native angular
+certificate is reused. The result converts radians to degrees only at the
+`SphericalPoints` boundary and retains `astrometric_observation` (the complete
+immutable batch/receipt) and ordered `observed_states` in metadata. Existing
+source fields/epochs remain distinct from evaluation and reception events.
+All selected rows must be usable; unavailable inputs, source/domain/context
+mismatch and query refusal fail completely, including after a prior good call.
+
+Source snapshot v5 is unchanged. A restored sky receives the motion catalogue
+and newly prepared reception context per call; no evaluated states, local
+resource handles or observation receipt are persisted. Cold, restored and fresh
+processes use the same public route without reloading source catalogues.
+Default lookup, explicit native motion and existing appearance remain available.
 
 ### Cluster direction reuse bound
 
