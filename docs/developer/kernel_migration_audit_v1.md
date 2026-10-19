@@ -592,13 +592,14 @@ production tree; K2 has not begun.
 Preserved originals: [user-guide tests](archive/kernel_audit_20261018/tests/test_user_guide.py.txt)
 and [fixed-sky documentation tests](archive/kernel_audit_20261018/tests/test_fixed_sky_documentation.py.txt).
 
-## K3.16 diffuse geometry assessment and proposed contract
+## K3.16 diffuse geometry assessment and architectural resolution
 
 **Inspected base:** main `21653198502b2b6687af8d82556a7f98922eb4fd`,
 2026-10-19. Fernando selected K3.16 with “proceed” after its bounded proposal.
-This assessment does not authorize a new SDK capability or snapshot format.
+This assessment did not authorize a new SDK capability or snapshot format;
+the subsequent service-kernel clarification is recorded below.
 No runtime, SDK, source-resource, dependency or serialization change is made here.
-K3.16 remains open pending the architecture decision below.
+K3.16 remains open for runtime work under the architectural resolution below.
 
 ### Source and runtime evidence
 
@@ -615,65 +616,48 @@ No acquisition was run and no captured source or licence record was changed.
 The PM/parallax selection used when deriving the Cloud maps does not turn their
 contours into member-star states or a motion model.
 
-### Kernel contract gap
+### Architectural resolution: agreed service kernel
 
-The accepted SDK `StateBatch` admits DirectionState and CartesianState records.
-`KernelSession._evaluate_full` validates those variants per ObjectRecord/time.
-There is no compound-ring geometry query/result/admission contract. Flattening
-each contour into artificial ObjectRecords would contradict K3.16's extended
-geometry requirement; adding metadata to raw output alone would not establish
-actual kernel routing. Existing K1 already distinguishes geometry services from
-physical objects, but it does not implement this missing dispatch surface.
+Fernando clarified on 2026-10-19 that spherical geometry and projections belong
+to the shared service kernel, and subsequently requested these architectural
+decisions be documented. The [agreed target and prior-K disposition](kernel_roadmap_v0.9.5.md#proposed-architecture)
+are authoritative. The existing state SDK remains one component of that kernel.
+Its lack of a compound-ring StateBatch variant is not, by itself, a missing
+prerequisite for diffuse geometry migration.
 
-### Proposal requiring Fernando's agreement
+The earlier proposal to add a new SDK geometry query/result/admission capability
+and require a new snapshot format was not approved or implemented. It is withdrawn
+as the default solution. Direct use of shared spherical geometry/topology and
+projection services is valid kernel routing, not an exception to closure.
 
-**Recommended:** add one separate, minimal native-geometry lookup contract to the
-existing candidate kernel under K3.16. This is a proposed capability, not accepted
-implementation scope. It would:
+K3.16 will start from existing SphericalPolygons and the current geometry,
+coordinate/observation and projection interfaces. Source-specific contour ingestion,
+levels, fractions and qualification remain domain responsibilities; generic ring
+operations and projection mathematics belong to reusable kernel services. No
+artificial body/ObjectRecord is created for each contour vertex. A new query
+protocol needs a concrete discovery/lifetime/dispatch requirement before it can
+be proposed again; naming something a kernel does not establish that requirement.
 
-1. Admit a source-bound immutable collection of compound rings with ordered ring
-   identities, topology/level metadata, explicit angular units and a reference
-   record. Preserve known versus unknown frame/epoch facts and source edition,
-   byte digests and provenance. Dataset/ring identities are geometry identities;
-   no physical object or state is created per vertex.
-2. Dispatch native geometry lookup through kernel-owned registration/lifetime and
-   validate returned source/reference identity, topology and complete batches.
-   Keep this interface separate from direction/Cartesian state queries. No
-   propagation, interpolation, apparent-coordinate calculation or geometric
-   simplification belongs to this capability. Exact public names remain subject
-   to the accepted contract design; no API is frozen by this assessment.
-3. Have the two existing isophote adapters supply the geometry and metadata, then
-   consume returned rings before existing topology/observation/cache realization.
-   Cache identity includes returned geometry and admitted source/reference meaning;
-   refusal must propagate after cache fill. Preserve vertices, holes, compound
-   membership, filled sides, levels, Cloud fractions and appearance.
-4. Introduce versioned metadata-preserving snapshot transport with explicit reads
-   of existing v1–v5 formats. New records preserve the admitted envelope; legacy
-   records retain only facts actually recoverable from their stored evidence and
-   expose missing properties. Do not borrow declarations from unrelated/current
-   resources or silently upgrade old source qualification. Existing source-free
-   restoration and geometry compatibility remain acceptance obligations.
-5. Change the production SDK pin only after the extension passes its independent
-   source/installed-wheel checks and the existing direction/Cartesian consumers
-   remain compatible. No new runtime scientific dependency, source replacement,
-   Gaia query, coordinate mathematics, projection or renderer change is proposed.
+The M9 source and snapshot evidence above remains valid. The runtime envelope
+must preserve declared versus absent coordinate facts and byte-bound provenance;
+metadata-preserving transport and explicit legacy/source-free behavior still
+require a concrete bounded design. This architecture decision does not choose a
+snapshot version, alter existing schemas, relocate code or authorize acquisition.
 
-**Alternative:** keep the kernel restricted to physical state lookup and admit
-diffuse geometry through a separate domain geometry service using source/reference
-contracts. This avoids a new SDK query capability, but requires explicit agreement
-to a geometry-specific exception to the current “every existing functionality
-must use the kernel” closure criterion. It must not be presented as completed
-kernel query routing. Neither alternative is selected by this assessment.
+### K3.16 acceptance direction under the agreed boundary
 
-### Proposed acceptance matrix
+- Source/geometry owners: `test_isophotes.py` and `test_magellanic_clouds.py` retain
+  exact vertex/topology/level/Cloud fraction and source-metadata/refusal coverage.
+- Geometry, observer and projection seams: retain independent filled-side,
+  pole-winding and hole oracles; test public geometry-service use, source/returned
+  geometry identity and warm-cache refusal where admission changes.
+- Snapshot/product composition: preserve native/observed cold/restored geometry,
+  actual atlas PNG/PDF/SVG, legacy admission and source-free process evidence for
+  each transport change actually implemented.
+- Dependency/installation checks: demonstrate the changed service boundary without
+  concrete catalogue/product/renderer imports. Run independent SDK tests only if
+  that component's code/contracts actually change; a new SDK release/pin is not
+  automatically required for calling existing geometry services.
 
-| Changed boundary, if approved | Required evidence |
-|---|---|
-| SDK geometry contract/registration/lifetime | Independent stdlib source and isolated-wheel gate; immutable copied rings, topology/identity/order/complete-batch validation, refusal and lifecycle; existing direction/Cartesian/time compatibility |
-| Source metadata/geometry adapters | Existing `test_isophotes.py` and `test_magellanic_clouds.py`; declared versus missing source facts, byte/property tampering, atomic failed load, no fabricated epoch; returned-ring changes and warm refusal through native/observed routes |
-| Observation/topology/render composition | Retain independent Milky Way filled-side/pole-winding oracles, holes/level/Cloud fraction tests; same observer transformation and ring topology; actual legacy/cold/restored atlas PNG equality and PDF/SVG exports |
-| Snapshot metadata/version and installed consumer | Corruption/legacy/source-free process owners, full affected fixed-source/CLI and serial/spawn restoration seams; installed Wenu consumer against the accepted extended SDK; no unsupported source qualification on old formats |
-
-Until Fernando agrees to one option and it is recorded in the roadmap, only
-assessment/documentation work proceeds. K3.17 and other pending work are not
-activated, and M9/K3.16 are not marked closed.
+The current change is documentation only. K3.16 runtime admission/transport remains
+unimplemented; no other pending milestone is activated.

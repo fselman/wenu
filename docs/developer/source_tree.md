@@ -17,6 +17,12 @@ selection/runner failures independently of Wenu. It neither discovers affected
 owners automatically nor changes root pytest collection. See the
 [testing policy](testing_policy.md) for the consumer matrix and scope limits.
 
+The [agreed service-kernel boundary](kernel_roadmap_v0.9.5.md#proposed-architecture)
+assigns reusable geometry/topology, domain guards and projections to shared kernel
+services. Their current source locations below are unchanged. The standalone
+state SDK is a component of that target, not the whole kernel; conceptual ownership
+does not claim completed extraction or require routing geometry through states.
+
 ## (root services)
 
 The independent [kernel project](../../packages/wenu_kernel/README.md) lives

@@ -80,9 +80,21 @@ positions and constellation endpoints extend that adapter; other kernel
 routing, Gaia DR3 and astronomical package extraction remain planned. Run the
 core's explicit independent gate only when its implementation/contracts change;
 root pytest discovery intentionally remains scoped to the existing `tests` owner.
-Every existing functionality must use the kernel before kernel closure, with
-temporary adapters allowed. Extract one independently installable package at
-a time after that closure. Do not silently reclassify old snapshots as kernel states.
+The agreed kernel is a modular shared-service layer, including state/time/resource
+services, generic coordinate/observer realization, spherical geometry/topology,
+domain guards, projections and projected geometry. The separately installed
+state SDK is one implemented component, not the whole target kernel. Follow the
+[agreed service boundary](kernel_roadmap_v0.9.5.md#proposed-architecture).
+Every consumer must use its appropriate shared service/domain interface before
+closure, with temporary adapters allowed. Geometry consumers may call public
+geometry services directly; do not force contours, grids or projections through
+object-state queries or invent physical objects per vertex. Reuse existing
+geometry/projection interfaces first. A new geometry-query protocol requires a
+demonstrated need and the normal explicit scope agreement. Keep astronomical
+source/model knowledge, product policy and renderer implementations outside
+generic kernel services. Internal components remain independently testable;
+conceptual ownership does not mandate one class/wheel or eager dependencies.
+Extract one independently installable package at a time after that closure. Do not silently reclassify old snapshots as kernel states.
 
 ## Scientific and provider work
 

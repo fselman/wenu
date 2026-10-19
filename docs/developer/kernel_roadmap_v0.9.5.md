@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 30, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 31, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -44,8 +44,8 @@ that every existing function has migrated or that a new full-suite run occurred.
 | Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
 | Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
 | Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
-| Current authorized task | K3.16 diffuse geometry, selected by Fernando’s 2026-10-19 “proceed”; source/contract assessment complete, new capability decision pending |
-| Next runtime submilestone | **K3.16 selected for assessment:** existing SDK lacks compound-ring geometry lookup. Proposed separate SDK geometry capability and versioned metadata transport require agreement before runtime implementation; no artificial point-body states |
+| Current authorized task | Document Fernando’s agreed service-kernel boundary and prior-K impact; K3.16 remains the selected runtime milestone, not implemented |
+| Next runtime submilestone | **K3.16:** reassess M9 and diffuse consumers against the agreed geometry-service boundary. Reuse existing spherical geometry; a new geometry query or snapshot version is not a prerequisite by default. No runtime change is made by this architecture documentation |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -71,7 +71,8 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
-| Revision 30: select and assess K3.16 | Fernando’s 2026-10-19 “proceed” after the diffuse-geometry proposal; clean main receipt at PR #279 | Record [source/contract assessment and alternatives](kernel_migration_audit_v1.md#k316-diffuse-geometry-assessment-and-proposed-contract). Existing state-only SDK lacks geometry dispatch; new geometry capability and snapshot transport are proposed, not agreed. Runtime implementation waits for the architecture decision; no SDK/schema/source/renderer change is authorized by this assessment |
+| Revision 31: agreed service-kernel boundary | Fernando’s 2026-10-19 clarification that spherical geometry/projections belong in the service kernel, followed by “Add these architectural decisions to wenu” | The state SDK is one kernel component. Shared geometry/topology/domain guards/projections and coordinate/realization services form the broader service kernel; catalogue science, product policy and rendering implementations retain separate owners. Withdraw the default geometry-query extension proposal. Preserve accepted bounded K receipts; K3.16 reuses existing geometry contracts first. Documentation only; no relocation, new package/API, snapshot version or automatic backlog activation |
+| Revision 30: select and assess K3.16 | Fernando’s 2026-10-19 “proceed” after the diffuse-geometry proposal; clean main receipt at PR #279 | Record [source/contract assessment and alternatives](kernel_migration_audit_v1.md#k316-diffuse-geometry-assessment-and-architectural-resolution). Existing state-only SDK lacks geometry dispatch; new geometry capability and snapshot transport are proposed, not agreed. The decision is resolved by revision 31 below; the original new-capability proposal was not approved or implemented. No SDK/schema/source/renderer change was authorized by this assessment |
 | Revision 29: select K3.15 | Fernando’s 2026-10-19 “Proceed” after the SNR-routing proposal; clean main receipt at PR #278 | Use SNR-owned source/provider identity with accepted shared lookup/cache mechanics. Preserve signed Green designations, radio diameters/flux, unknown PA circle policy, selected geometry and appearance. Gate: supernova-remnant-routing with changed-state/refusal and cold/restored atlas pixels. No source replacement, compact-object substitution, motion/expansion, SDK/schema/renderer or diffuse migration |
 | Revision 28: select K3.14 | Fernando’s 2026-10-19 “Proceed” after the PN-routing proposal; clean main receipt at PR #277 | Use PN-owned source/provider identity with accepted shared lookup mechanics. Close PN native raw-coordinate and observed-symbol cache inputs while preserving curated criteria, selection order, filters, metadata and fixed symbols. Gate: planetary-nebula-routing, including changed-state/refusal and cold/restored atlas pixels. No source replacement, motion/expansion, SDK/schema/renderer or SNR migration |
 | Revision 27: select K3.13 | Fernando’s 2026-10-19 “Proceed” after the globular-routing proposal; clean main receipt at PR #276 | Opt the dedicated globular owner into the accepted lookup and cache mechanics with its own source/provider identity. Preserve Harris data, half-light diameter, labels, selection and observer science. Gate: globular-routing, including changed-state/refusal, cold/restored geometry and actual atlas pixels. No source replacement, motion, SDK/schema/renderer or PN/SNR migration |
@@ -116,7 +117,8 @@ own science and conformance gate; integration/release checks have separate owner
 
 Arrows show calls/dependencies; dashed edges identify coupling to remove.
 The existing projection and graphics pipeline is retained. The kernel edge
-shows partial native stellar/galaxy/cluster routing; dashed source paths remain
+shows the implemented state SDK component, not the whole intended service kernel;
+shared geometry/projections remain in existing Wenu namespaces. Other source paths remain
 to migrate. The accepted explicit cluster observer subset does not close the
 legacy observation paths.
 
@@ -146,8 +148,8 @@ flowchart TB
     S -. "Knows concrete implementations" .-> L
     C -. "Temporarily mutates shared layers" .-> S
     L -. "Other state consumers" .-> D
-    L -->|"Native stars, line vertices, galaxy and cluster centres"| K["Kernel session"]
-    K --> N["Shared table adapters: stars and galaxies"]
+    L -->|"Stellar and fixed catalogue centres"| K["State SDK session"]
+    K --> N["Shared table/provider adapters"]
     N --> D
     L -. "Combines state and observation" .-> O
     O --> G
@@ -169,73 +171,112 @@ See [current architecture](current_architecture_v0.9.md) for precise limits.
 
 ## Proposed architecture
 
-Arrows show requests/dependencies. The registry invokes providers through a
-public protocol; application assembly discovers/registers concrete packages.
-There is no static kernel import of stars, galaxies, orbits or drawing code.
+**Agreed target boundary, 2026-10-19 (revision 31).** “Kernel” means a modular
+collection of shared services for upper-level astronomical/product modules.
+The existing separately installed state/provider SDK is one implemented component,
+not the complete kernel. The target ownership below does not claim that services
+have already moved packages or passed final K5 interface/dependency acceptance.
+
+Arrows below are **source-code dependencies**, not a forced data-processing
+sequence. State services may invoke registered providers through kernel-owned
+interfaces without importing their concrete modules. Application assembly supplies
+providers/backends; it is the boundary allowed to know concrete implementations.
 
 ```mermaid
 flowchart TB
-    subgraph Products["Products"]
-        A["Atlas"]
-        C["Charts, planispheres and reports"]
+    A["Application assembly"]
+    U["Atlas, charts, planispheres and reports"]
+    D["Astronomical modules: catalogue adapters and physical models"]
+    R["Rendering and export backends"]
+    subgraph Kernel["Shared service kernel"]
+        C["Shared contracts and provider interfaces"]
+        S["State, time and resource services"]
+        O["Coordinate and observer-realization services"]
+        G["Spherical geometry and topology"]
+        P["Domain guards, projections and projected geometry"]
+        S --> C
+        O --> C
+        O --> S
+        G --> C
+        P --> G
     end
-    subgraph Representation["Representation barrier"]
-        P["Projection and geometry preparation"]
-        R["Drawing and export"]
-    end
-    subgraph Observation["Observation barrier"]
-        O["Origin, observer, instant and corrections"]
-    end
-    subgraph Kernel["Kernel: versioned public contracts"]
-        K["Object and state queries"]
-        E["Immutable states by epoch and model"]
-        V["Provider and resource registry"]
-    end
-    subgraph Providers["Registered providers"]
-        L["Adapters for current implementations"]
-        S["Stellar and deep-sky packages"]
-        M["Moving-body packages"]
-    end
-    A --> C
-    C --> P
-    C --> R
-    R --> P
-    P --> O
-    O --> K
-    K --> E
-    E --> V
-    V -->|"Provider contract"| L
-    V -->|"Same contract"| S
-    V -->|"Same contract"| M
+    A --> U
+    A --> D
+    A --> R
+    U --> S
+    U --> O
+    U --> P
+    U --> R
+    D --> C
+    D --> G
+    R --> C
 ```
 
-Non-chart consumers query the same kernel/observation contracts without loading
-projection or graphics. Constructed grids, cultural figures and reference
-planes remain geometry services; they do not become fictitious physical bodies.
-Constellation figures reference stellar identities, so endpoints follow the
-selected stellar states. IAU boundaries retain their official defining frame;
-propagating stars does not drag the official boundary with them.
+The renderer depends on shared geometry/output contracts, not astronomical
+catalogues or concrete state providers. Output-backend implementations remain
+outside the kernel. Product-specific preparation (symbol sizes, labels, legends,
+layout) stays outside generic geometry/clipping/projection services even where
+those responsibilities currently share a file. A data-flow diagram alone is not
+proof of a clean dependency boundary.
+
+| Responsibility | Agreed owner | Boundary |
+|---|---|---|
+| Identity, typed state/time/reference/resource contracts, registration and lifetime | Shared kernel services; current state SDK is the implemented subset | No mandatory catalogue, concrete provider, acquisition or renderer import |
+| Generic spherical geometry, topology, mathematical clipping/domain guards, projections and projected geometry | Shared kernel services | Know coordinates/geometry/contracts, not Harris/Gaia fields, atlas pages or Matplotlib artists |
+| Generic coordinate/observer realization contracts and reusable orchestration | Shared service-kernel boundary | Explicit selected backends/resources; catalogue-specific/ephemeris algorithms remain provider/backend responsibilities; preserve existing scientific authorities |
+| Catalogue decoding, source qualification, physical models and isophote ingestion | Astronomical modules/adapters | Produce admitted states or geometry and metadata; do not duplicate generic geometry/projection services |
+| Chart/atlas composition, selection, labels, styles, layout and publication policy | Product modules | Compose public services; no kernel dependency on particular products |
+| Matplotlib/SVG/PDF/PNG implementations and export | Rendering/output backends | Consume shared output contracts; do not own physical models or generic projection mathematics |
 
 ## Kernel scope and public contract
 
-The [K1 contract specification](kernel_contract_k1.md) defines the proposed
-SDK names, typed records, operations, capability matrix, errors and independent
-conformance gates. Its accepted implemented subset is documented in the SDK;
-K5 all-consumer acceptance and final contract freeze remain open.
+The [K1 specification](kernel_contract_k1.md) describes state/provider contracts
+within this broader kernel, not every shared service's full API. K5 must review
+all applicable public service contracts and dependency boundaries. Preserve
+existing accepted state APIs and geometry/projection interfaces as the starting
+point; do not build parallel equivalents to satisfy a diagram.
 
-The kernel owns identity, typed time/state queries, capability admission,
-provider registration, resource/provenance identity, immutable results,
-validity checks and selective reuse. It may provide generic kinematic services
-used by modules. Catalogue-specific decoding, Gaia cross-identification,
-planetary ephemerides, SGP4 and object-specific models belong to providers or
-their admitted numerical backends. No catalogue or renderer is mandatory for
-importing the kernel.
+The kernel is internally modular. Consumers call the particular service they
+need; there is no mandatory universal manager, state query, registry dispatch or
+serialization round trip for a geometry operation. The state-contract component
+can retain its stdlib-only isolation; this does not impose that dependency policy
+on every numerical geometry component. Optional scientific backends remain
+explicit. A conceptual kernel is not a demand for one class, one file, one wheel,
+or eagerly importing all services. Package/dependency extraction remains governed
+by the existing K3/K5–K9 milestones; this decision performs none of it.
 
-The companion observer-realization layer owns origin selection, reception
-instant, astrometric/apparent conventions, light time and supported corrections.
-It may request multiple physical states, including retarded emission instants,
-without mutating the catalogue. Reuse current coordinate and direction
-authorities; moving an algorithm must not create a second scientific model.
+Catalogue-specific decoding, Gaia cross-identification, planetary ephemerides,
+SGP4 and object-specific models belong to providers or admitted backends. Generic
+coordinate/observer realization uses their public contracts and preserves current
+origin, reception-time and correction ownership. Moving responsibility must not
+create a second scientific implementation.
+
+Diffuse contours, constructed grids and reference planes use geometry services
+without becoming artificial physical objects. Constellation figure endpoints
+still consume stellar states where those states are required; IAU boundaries
+retain their official defining frame. Kernel closure means each consumer uses
+its **appropriate shared service and domain interface**, not that every feature
+must issue a state query. Direct use of a public geometry service is valid routing.
+A separate geometry-query protocol is considered only if a demonstrated discovery,
+resource-lifetime or dispatch need cannot be met by existing interfaces, then uses
+ordinary discussion/agreement/documentation before implementation.
+
+### Effect on accepted K work
+
+| Existing work | Disposition under the agreed boundary |
+|---|---|
+| K0 documentation/baseline and K1 initial state contracts | Keep receipts; correct scope/diagrams and include broader service contracts in final review |
+| K2 state/time/resource/registration/reuse/conformance foundation | Retain as a kernel component; no reimplementation or wholesale test rerun from a documentation change |
+| Accepted stellar, galaxy, cluster, generic nonstellar, globular, PN and SNR centre routes | Retain returned-state/source-admission/cache/refusal and compatibility evidence; physical/catalogue centres legitimately use state lookup |
+| Existing spherical geometry, topology, clipping and projections | Retain implementations and scientific/visual tests; review service ownership/public imports and dependency isolation under K3.17/K3.18/K3.19/K3.39/K3.40 and K5 as applicable |
+| K3.16 assessment | Keep M9 source/snapshot evidence. Withdraw the new geometry-query contract as default. Reassess through existing geometry interfaces; metadata transport still needs concrete design, without predetermining a new snapshot version |
+| Remaining K3 and K5–K9 | Remain open. Accepted bounded routes do not certify complete service-kernel integration, extraction or final freeze |
+
+There is **no blanket redo**. A specific adapter, interface or placement changes
+only if its dependency/semantic assessment identifies a concrete violation, with
+its own bounded evidence. Conceptual ownership does not automatically require
+moving files. The current task records the architecture; it changes no runtime,
+SDK capability, source bytes, dependency, snapshot schema or numerical behavior.
 
 The interface must uniformly express:
 
@@ -251,7 +292,8 @@ The interface must uniformly express:
 - Deterministic registration, optional-dependency isolation, resource/session
   lifetime, unload behavior and typed unsupported-capability failures.
 
-The final names/signatures are frozen in K1, not invented by this roadmap.
+The state/provider vocabulary comes from K1; final public service APIs freeze
+only after K5 acceptance. This roadmap does not freeze new signatures.
 Avoid requiring every object family to implement meaningless operations. A
 common query/result envelope with explicit capabilities is uniformity;
 pretending every source has a known six-dimensional state is not.
@@ -481,9 +523,9 @@ bounded. Runtime authority is accepted one milestone at a time.
 | ID | Deliverable | Status / closure requirement |
 |---|---|---|
 | K0 | Consolidated documentation and pinned functional baseline | Accepted; exact archive ledger and baseline preserved |
-| K1 | Kernel/state/provider/observation contracts | Initial contracts accepted; final public freeze remains K5 |
-| K2 | Standalone kernel foundation, immutable states, registration, selective reuse and conformance | Accepted foundation; optional capabilities are not automatically promised |
-| K3 | Route all existing scientific functionality through kernel/realization interfaces | Partial; every consumer below needs its own acceptance, including non-chart paths |
+| K1 | Shared service-kernel contracts, including state/provider/observation and geometry/projection services | Initial state contracts accepted; broader service review/final public freeze remains K5 |
+| K2 | Standalone state-SDK component: immutable states, registration, selective reuse and conformance | Accepted foundation; optional capabilities are not automatically promised |
+| K3 | Route existing functionality through appropriate shared state, geometry, projection and realization services | Partial; every consumer below needs its own acceptance, including non-chart paths |
 | K4a | Bounded offline Gaia DR3 identification/subset for current Wenu stars | Pending; membership, visual photometry and identifiers preserved |
 | K4b | Real stellar propagation, incomplete-input policies, historical time and admitted epoch domain | Pending real-star acceptance; shared positional groundwork exists in AX |
 | K5 | Close routing and freeze kernel/observer contracts | Pending; requires K3 + K4 and real provider/compatibility evidence |
@@ -540,7 +582,7 @@ map below ensures small/non-chart capabilities do not disappear in grouped rows.
 | K3.13 | Route globular-cluster centres and public/chart/saved consumers with own source admission | Accepted PR #277, main `fd6d7fa9`; 125 focused Mac, 36 documentation and eight tooling cases passed; physical source gaps remain explicit |
 | K3.14 | Route existing planetary-nebula centre/geometry/selection consumers | Accepted PR #278, main `42adb84d`; 129 focused Mac, 36 documentation and eight tooling cases passed; motion remains AX.15 |
 | K3.15 | Route existing supernova-remnant centre/geometry/selection consumers | Accepted PR #279, main `21653198`; 126 focused Mac, 36 documentation and eight tooling cases passed; motion remains AX.16 |
-| K3.16 | Admit Milky Way/Magellanic source metadata and route diffuse celestial geometry | Selected; M9 source/SDK/snapshot assessment complete. Separate geometry capability versus explicit domain-service exception awaits agreement; no runtime change and no fabricated point-body states |
+| K3.16 | Admit Milky Way/Magellanic source metadata and route diffuse celestial geometry | Selected; M9 assessment retained. Agreed geometry-service boundary replaces the default SDK geometry-query proposal. Runtime admission/transport implementation pending; no fabricated point-body states |
 | K3.17 | Route constructed references: grids, equator/ecliptic/Galactic planes, poles, defining-frame boundaries, horizon/visibility/masks | Pending closure; keep construction/realization separate from physical-object providers |
 | K3.18 | Close shared state/coordinate/observer adapters, resource lifetime and observed-cache invalidation across existing families | Partial: explicit nominal service accepted in AX; legacy consumers/metadata/resource identities still open |
 | K3.19 | Decouple central sky/factory from concrete providers through application assembly; cover saved/loaded skies and workers | Partial: source snapshots/reconstruction accepted; uniform registry/consumer closure pending |
@@ -564,7 +606,7 @@ map below ensures small/non-chart capabilities do not disappear in grouped rows.
 | K3.37 | Close public Python, all eight installed commands, six examples, five notebooks/installers, overlays/presets and translations | Partial selected APIs/cluster CLI accepted; complete public-surface audit/acceptance pending |
 | K3.38 | Close maintenance/curation/acquisition and resource/build consumer boundaries | Pending review; classify pure copy/layout separately; no automatic network execution |
 | K3.39 | Verify geometry topology, domain guards, clipping, three projections, renderer/furniture/PNG/PDF/SVG stay pure and compatible | Partial existing tests/appearance accepted; final migrated-consumer verification pending, no graphics rewrite |
-| K3.40 | Reconcile every audited source/public/operational consumer to a route and acceptance receipt, with no state bypass | Pending final K3 gate; all applicable rows above must close before K5 |
+| K3.40 | Reconcile every audited source/public/operational consumer to a route and acceptance receipt, with no applicable service bypass | Pending final K3 gate; all applicable rows above must close before K5 |
 
 For each row, the specific task identifies source and test owners from the
 [audit](kernel_migration_audit_v1.md) and

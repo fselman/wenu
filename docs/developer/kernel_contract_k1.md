@@ -5,6 +5,15 @@
 **As-is base:** main `3359e9ebb430de68e68cdee8bfc40ddd6d3da692`.
 **Proposed contract identifier:** `wenu.kernel/1.0`.
 
+**Service-kernel scope clarification, 2026-10-19:** this document specifies the
+state/provider component. The [agreed broader kernel](kernel_roadmap_v0.9.5.md#proposed-architecture)
+also supplies reusable geometry/topology, domain guards, projections/projected
+geometry and coordinate/realization services. Existing state contracts remain
+valid; they are not a universal interface for every kernel service. Diffuse
+geometry does not require ObjectRecords or state queries per vertex. No new
+geometry-query API is introduced here; reuse current public geometry interfaces
+and review the complete service surface at K5.
+
 The distributable provider conformance kit, factory-owned cases and explicit
 activity/buffer hooks are accepted through PR #242. Runtime state/time contracts
 remain unchanged by the K3 request-resource lifetime prerequisite. The final

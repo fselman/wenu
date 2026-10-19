@@ -18,6 +18,9 @@ In particular:
 5. Follow the [agreed roadmap](docs/developer/kernel_roadmap_v0.9.5.md) strictly,
    identify the selected intermediate milestone ID, and implement only its
    bounded scope. Preserve the canonical Wenu pipeline and responsibility boundaries.
+   Treat the state SDK as one component of the broader shared-service kernel;
+   geometry/projection consumers use their appropriate public services, not
+   artificial object-state queries. Follow the roadmap’s agreed service boundary.
 6. Before remote work begins, confirm with the user that the Mac working tree is
    clean and synchronized with the agreed GitHub base. Treat uncommitted local
    work as invisible until the user reports or publishes it.

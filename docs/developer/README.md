@@ -43,9 +43,14 @@ remains a separate pending AX.13 implementation. K3.10 galaxy routing closure
 is accepted through PR #275. K3.12 generic nonstellar/Messier/Caldwell and
 object-centre routing is accepted through PR #276. K3.13 globular routing is
 accepted through PR #277. K3.14 PN routing is accepted through PR #278.
-K3.15 SNR routing is accepted through PR #279. K3.16 source/contract assessment
-is complete; its [geometry contract proposal](kernel_migration_audit_v1.md#k316-diffuse-geometry-assessment-and-proposed-contract)
-requires an architecture decision before runtime implementation. Extra scope or changed agreed order must be discussed with Fernando,
+K3.15 SNR routing is accepted through PR #279. Fernando clarified and agreed the
+[broader shared-service kernel](kernel_roadmap_v0.9.5.md#proposed-architecture),
+including geometry/topology/projections, on 2026-10-19. The state SDK is one
+component. K3.16’s default geometry-query extension proposal is withdrawn; its
+[source assessment and resolution](kernel_migration_audit_v1.md#k316-diffuse-geometry-assessment-and-architectural-resolution)
+retain M9 evidence and direct the work toward existing public geometry services.
+Accepted bounded K receipts remain valid; complete service-kernel closure is open.
+Extra scope or changed agreed order must be discussed with Fernando,
 explicitly agreed and documented before implementation under the
 [mandatory agent rule](assistant_instructions.md#roadmap-control-mandatory-before-implementation).
 

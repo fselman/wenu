@@ -1,6 +1,11 @@
 # Wenu kernel: native direction and Cartesian states
 
 This separately installable project implements a bounded native-state subset of K2.
+It is one component of the [agreed shared-service kernel](../../docs/developer/kernel_roadmap_v0.9.5.md#proposed-architecture),
+whose target also includes reusable geometry/topology, coordinate/realization and
+projection services. Those existing Wenu services are not implemented in this
+wheel, and geometry consumers need not issue object-state queries. This scope
+clarification changes no SDK code, dependencies, imports or public state contract.
 It is not the K5 frozen SDK. Existing Wenu continues to use its current code;
 the accepted native stellar adapter uses its existing source-epoch subset.
 The SDK extension itself adds no numerical backend. Wenu now supplies a

@@ -16,6 +16,17 @@ separate Wenu dependency and routes native stellar realization through it.
 Other state consumers and the SDK freeze remain pending. The canonical
 projection and rendering pipeline is retained.
 
+The agreed target service kernel also includes generic spherical geometry/topology,
+domain guards, projections/projected geometry and coordinate/observer realization
+services. Those implementations currently remain in existing Wenu namespaces; this
+documentation does not move or reimplement them. The installed state SDK is one
+component, and its accepted subset does not establish the full kernel boundary.
+See the [agreed target and accepted-work disposition](kernel_roadmap_v0.9.5.md#proposed-architecture).
+Geometry consumers can call public geometry services directly. There is no accepted
+new SDK geometry-query capability or required snapshot-version change from K3.16’s
+initial assessment. Source envelopes/legacy transport still need runtime work.
+
+
 K3.07 routes native constellation-label anchors through the full-source public
 stellar query. Membership, Serpens splitting, source-order grouping and spherical
 means retain their existing rules. Labels inherit the returned coordinate spec;
