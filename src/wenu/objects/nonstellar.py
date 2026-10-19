@@ -143,10 +143,12 @@ class NonStellarCatalogueMetadata:
 
     def missing_fields_for(self, position_model):
         """Required facts follow the explicitly selected provider model."""
-        if position_model not in ("source-epoch", "static-direction"):
+        if position_model not in ("source-epoch", "static-direction", "catalogue-lookup"):
             raise ValueError("Unsupported catalogue position model.")
         record = self.to_record()
-        required = ("catalogue", "edition", "frame", "origin", "source_sha256")
+        required = ("catalogue", "edition", "source_sha256")
+        if position_model != "catalogue-lookup":
+            required += ("frame", "origin")
         if position_model == "source-epoch":
             required += ("epoch", "epoch_scale")
         missing = [key for key in required if record[key] is None]
@@ -179,14 +181,22 @@ class NonStellarCatalogueMetadata:
     def coordinate_spec(self, provider, *, position_model="source-epoch"):
         record = self.to_record()
         from wenu.coordinates import CoordinateSpec
+        missing = self.missing_fields_for(position_model)
+        unqualified_lookup = (position_model == "catalogue-lookup" and
+                              (record["frame"] is None or record["origin"] is None))
+        if position_model == "catalogue-lookup":
+            model = ("catalogue-lookup-legacy-unverified-encoding"
+                     if missing or unqualified_lookup else "catalogue-lookup")
+        else:
+            model = ("legacy-unverified-catalogue-encoding" if missing
+                     else "static-direction" if position_model == "static-direction" else None)
         return CoordinateSpec(frame=record["frame"] or "icrs",
-                              origin=record["origin"] or "solar-system-barycenter",
+                              origin=record["origin"] or ("legacy-unverified-origin"
+                                  if position_model == "catalogue-lookup" else "solar-system-barycenter"),
                               epoch=record["epoch"], position_status=PositionStatus.ASTROMETRIC,
                               provider=record["catalogue"] or provider,
                               provenance=tuple(record["provenance"]),
-                              model=("legacy-unverified-catalogue-encoding"
-                                     if self.missing_fields_for(position_model)
-                                     else "static-direction" if position_model == "static-direction" else None))
+                              model=model)
 
 
 class NonStellar(AstronomicalObject):
@@ -321,6 +331,15 @@ class NonStellar(AstronomicalObject):
 
     def require_complete_metadata(self):
         return self.catalogue_metadata.require_complete(position_model=self.position_model)
+
+    def require_catalogue_lookup_metadata(self):
+        """Admit preserved chart lookup without claiming physical qualification.
+
+        Source identity, edition/provenance and angular units remain required.
+        Missing physical reference/epoch facts stay in the immutable record;
+        require_complete_metadata() retains its stricter model requirements.
+        """
+        return self.catalogue_metadata.require_complete(position_model="catalogue-lookup")
 
     def native_coordinate_spec(self, table=None):
         """Describe admitted source facts, with explicit legacy uncertainty."""

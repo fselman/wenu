@@ -871,3 +871,22 @@ and eight tooling cases passed. Documentation: 33 cases passed; three checks
 require archive files absent from the execution copy. Active links/anchors and
 all 73 preserved archive hashes were verified against the remote Git tree.
 M5 source qualification remains open; complete Mac acceptance is pending.
+
+## Approved catalogue-lookup admission and PM policy
+
+The K3.09 lookup-admission slice reuses `catalogue-coordinate-defaults`; its
+selection already contains the changed nonstellar owner and accepted family,
+coordinate and snapshot seams. Added cases exercise explicit lookup acceptance
+for all six real catalogue selections without altering source data/default
+geometry, strict physical refusal after lookup, absent identity/edition/byte
+binding/provenance/units, and a qualified angular reference without a motion
+epoch. Input-declaration validation remains unchanged. Run the documentation
+and eight tooling checks too. No full SDK/provider/production repeat is needed.
+The PM-only policy clarification is documentation for AX.13; no new propagation
+algorithm or interval accuracy claim is tested or implemented in this slice.
+
+Local evidence for the approved lookup-admission slice: 260 focused cases passed
+in 85.88 s and eight tooling cases passed. Documentation: 33 cases passed; three
+checks need archive files absent from the execution copy. Active links/anchors
+and 73 preserved archive hashes were independently verified against GitHub.
+Complete Mac acceptance remains pending.

@@ -1343,3 +1343,16 @@ ICRS axes or a J2000 frame/equinox label. This K3.09 correction leaves numerical
 transforms and actual source epochs unchanged. Constructed points, grids,
 celestial-north references and transformed boundaries need no invented
 measurement epoch; their defining frame/equinox remains explicit where required.
+
+### Proper-motion-only angular policy
+
+Fernando approved long-interval angular PM-only propagation on 2026-10-19:
+known position/reference epoch and both PM components do not require distance or
+radial velocity. There is no universal 1,000-year cutoff. Intervals of tens of
+thousands of years may be useful where uncertainties and neglected effects are
+acceptable for the requested angular accuracy, without a general safety guarantee.
+Distance-dependent observer parallax and perspective/full-space-motion treatment
+remain separate capabilities. Preserve the PM convention (including cos(dec)
+where applicable), units and identity of the centre or feature being propagated.
+The AX.13 numerical implementation remains pending. Catalogue lookup itself
+returns source positions with their known/unknown metadata and is not propagation.

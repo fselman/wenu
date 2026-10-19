@@ -30,6 +30,14 @@ admitted stellar/cluster epochs and numerical frame transforms are unchanged.
 Nonstellar strict admission still refuses absent frame/origin and model-required
 epoch/scale declarations. No source qualification follows from the default fix.
 
+K3.09 now has explicit nonstellar catalogue-lookup validation separate from strict
+physical admission. Lookup requires preserved identity/provenance/units/byte
+binding while retaining absent physical reference/epoch facts. The explicit
+lookup spec discloses unverified reference interpretation and unknown origin.
+Existing chart geometry and strict physical admission remain unchanged. This
+implementation candidate is pending Mac acceptance; reduced-input PM algorithms
+remain AX.13, under the approved no-universal-PM-cutoff policy.
+
 ## Canonical pipeline
 
 Catalogue/provider → spherical geometry → projection-domain guard → projection

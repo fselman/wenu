@@ -1318,8 +1318,8 @@
       ]
     },
     "catalogue-coordinate-defaults": {
-      "scope": "K3.09 M4 shared ICRS unknown-epoch defaults and M5 source-bound nonstellar gap/refusal verification, preserving snapshot lineage.",
-      "limits": "No source qualification fabricated: M5 source gaps remain open and strict admission refuses them. Metadata defaults only; no numerical transforms, motion, family routing, SDK, resource bytes, dependencies/build, snapshot schema or renderer change.",
+      "scope": "K3.09 shared unknown-epoch defaults plus explicit catalogue-lookup admission separate from strict physical models, source-gap disclosure and snapshot lineage.",
+      "limits": "Missing physical facts remain unqualified. Lookup requires source identity/provenance/units/byte binding; strict physical admission remains unchanged. No PM-only algorithm, universal PM cutoff, numerical transforms, family routing, SDK, source bytes, dependency/build, snapshot schema or renderer change.",
       "extends": [
         "nonstellar-admission"
       ],
