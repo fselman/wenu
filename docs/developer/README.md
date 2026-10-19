@@ -120,7 +120,9 @@ observer motion remains refused until the ordered runtime gates pass. Explicit
 Cartesian SI output is now implemented in the core interface, preserving distance
 and velocity through a separate admission with unknown error bounds; it does not
 yet perform observer realization.
-Relativistic/civil-time adapters, common realization services, Cartesian reuse
+The explicit [TCB/TDB convention subset](implementation_reference.md#barycentric-time-and-coordinate-conventions)
+now supplies time receipts and spatial scaling independently of object type.
+Civil/TT reception-time and concrete observer-backend admission, common realization services, Cartesian reuse
 and remaining K3 routing are pending; this is not a completed kernel or frozen SDK.
 
 [Roadmap to v0.9.5: kernel and loadable packages](kernel_roadmap_v0.9.5.md)

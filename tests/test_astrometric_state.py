@@ -12,15 +12,15 @@ from wenu_kernel import Kernel
 from wenu_kernel.records import AccuracyRequest, StateQuery, SessionPolicy, TimePoint
 
 
-def mixed_provider(provider_class, row_class, representation="direction"):
+def mixed_provider(provider_class, row_class, representation="direction", scale="tcb"):
     """Constructed inputs for four families, with no catalogue-specific fixture."""
     from wenu_kernel.records import (
         CatalogueRef, CatalogueSnapshot, ExternalId, ModelAdmission, ModelRef,
         ObjectKey, ObjectRecord, ProviderDescriptor, ProviderKey, ReferenceSpec,
         ResourceRef, TimePoint, TimeSpan, UncertaintyChannel, UncertaintyEvidence,
     )
-    epoch = TimePoint(2451545, 0, 'tcb')
-    span = TimeSpan(TimePoint(2451544, 0, 'tcb'), TimePoint(2451546, 0, 'tcb'))
+    epoch = TimePoint(2451545, 0, scale)
+    span = TimeSpan(TimePoint(2451544, 0, scale), TimePoint(2451546, 0, scale))
     cartesian = representation == 'cartesian'
     key = ProviderKey('constructed-mixed-astrometry'+('.pv' if cartesian else ''), '1')
     resource = ResourceRef('constructed-si-solutions', '1', 'a'*64, span,
@@ -82,8 +82,16 @@ def test_generic_engine_runs_without_wenu_catalogues_or_scientific_dependencies(
     # accepted SDK under -I -S; no ambient Wenu/Astropy/NumPy can satisfy imports.
     import wenu_kernel
     core = Path(__file__).resolve().parents[1]/'src/wenu/astrometric_state.py'
+    # Keep only the accepted SDK in the injected path. A legacy pathlib
+    # backport there must not shadow the interpreter's standard library.
+    import shutil
+    sdk_root = tmp_path/'sdk-root'
+    shutil.copytree(Path(wenu_kernel.__file__).resolve().parent, sdk_root/'wenu_kernel',
+                    ignore=shutil.ignore_patterns('__pycache__'))
+    (sdk_root/'pathlib.py').write_text("raise ImportError('ambient pathlib shadow must never load')\n")
     script = '''
 import sys,importlib.util
+import pathlib  # Resolve stdlib before adding a caller-supplied SDK path.
 sys.path.insert(0,sys.argv[2])
 spec=importlib.util.spec_from_file_location('isolated_astrometry',sys.argv[1])
 m=importlib.util.module_from_spec(spec);sys.modules[spec.name]=m;spec.loader.exec_module(m)
@@ -103,11 +111,20 @@ q=StateQuery(a.catalogue,a.model,a.objects,(TimePoint(2451545,.1,'tcb'),),a.refe
 with Kernel(references=(a.reference,)) as k:
     k.register(p,ownership='owned')
     with k.open_session(SessionPolicy((a.catalogue,))) as s:
-        assert all(row.velocity_available for row in s.evaluate(q).states)
+        batch=s.evaluate(q)
+        assert all(row.velocity_available for row in batch.states)
+boundary_path=pathlib.Path(sys.argv[1]).with_name('astrometric_coordinates.py')
+bspec=importlib.util.spec_from_file_location('isolated_conventions',boundary_path)
+b=importlib.util.module_from_spec(bspec);sys.modules[bspec.name]=b;bspec.loader.exec_module(b)
+adapter=b.TcbTdbAdapter(a.coverage)
+receipts=tuple(adapter.convert(t,'tdb') for t in q.times)
+result=b.convert_barycentric_batch(batch,admission=a,
+    source_coordinate_scale='tcb',time_admission=adapter.describe(),conversions=receipts)
+assert len(result.states)==4
 assert not any(n.split('.')[0] in ('wenu','astropy','numpy') for n in sys.modules)
 '''
     result = subprocess.run([sys.executable,'-I','-S','-c',script,str(core),
-        str(Path(wenu_kernel.__file__).resolve().parent.parent),inspect.getsource(mixed_provider)],
+        str(sdk_root),inspect.getsource(mixed_provider)],
         cwd=tmp_path,text=True,capture_output=True)
     assert result.returncode == 0, result.stdout+result.stderr
 
@@ -256,3 +273,160 @@ def test_cartesian_and_direction_bindings_coexist_without_cross_evaluation():
             assert calls==[]
             assert session.evaluate(dq).states[0].vector
             assert len(calls)==1 and session.evaluate(cq) is first
+
+
+# Convention-boundary coverage extends the closest existing Cartesian batch,
+# independent Decimal PV, immutable identity and isolated-module cases above.
+def _assert_barycentric_time_reference(adapter, time):
+    from decimal import Decimal, localcontext
+    from wenu_kernel.time import TimeService
+    receipt = TimeService((adapter,), admissions=(adapter.describe(),)).convert(
+        time, adapter.describe().target_scale)
+    with localcontext() as ctx:
+        ctx.prec = 90
+        day = Decimal(time.jd1) + Decimal(time.jd2)
+        lb, t0 = Decimal('1.550519768e-8'), Decimal('2443144.5003725')
+        offset = Decimal('-0.0000655') / Decimal(86400)
+        expected = (day-lb*(day-t0)+offset if time.scale=='tcb'
+                    else (day-lb*t0-offset)/(1-lb))
+        actual = Decimal(receipt.target.jd1)+Decimal(receipt.target.jd2)
+        assert abs(actual-expected)*Decimal(86400) <= Decimal(receipt.numerical_error_s)
+    return receipt
+
+
+@pytest.mark.parametrize('scale', ['tcb','tdb'])
+@pytest.mark.parametrize('day,small', [(1000000,-.5),(2443145,-.4996275),
+    (2451545,0.),(2462503,.49999999999999994),(4000000,-.125)])
+def test_barycentric_time_matches_independent_decimal_and_erfa(scale, day, small):
+    import erfa
+    from math import fsum
+    from wenu.astrometric_coordinates import TcbTdbAdapter
+    from wenu_kernel.records import TimeSpan
+    time=TimePoint(day,small,scale)
+    adapter=TcbTdbAdapter(TimeSpan(TimePoint(day-1,0,scale),TimePoint(day+1,0,scale)))
+    receipt=_assert_barycentric_time_reference(adapter,time)
+    oracle=(erfa.tcbtdb if scale=='tcb' else erfa.tdbtcb)(day,small)
+    # Independent ERFA uses binary64 defining constants, not our exact decimals.
+    assert abs(fsum((receipt.target.jd1-oracle[0],receipt.target.jd2,-oracle[1])))*86400 < 1e-8
+    assert -0.5 <= receipt.target.jd2 < 0.5
+    assert receipt.source is time and receipt.target.scale!=time.scale
+    assert receipt.numerical_error_s <= adapter.describe().maximum_error_s
+
+
+def test_barycentric_time_admission_boundaries_and_corruption_detection(monkeypatch):
+    import wenu.astrometric_coordinates as boundary
+    from math import nextafter, inf
+    from wenu_kernel.records import TimeSpan
+    from wenu_kernel.time import TimeService
+    from wenu_kernel.errors import KernelError
+    start,stop=TimePoint(2451545,-.5,'tcb'),TimePoint(2451545,.25,'tcb')
+    adapter=boundary.TcbTdbAdapter(TimeSpan(start,stop))
+    for time in (start,stop):_assert_barycentric_time_reference(adapter,time)
+    for time in (TimePoint(start.jd1-1,nextafter(.5,-inf),'tcb'),
+                 TimePoint(stop.jd1,nextafter(stop.jd2,inf),'tcb')):
+        with pytest.raises(KernelError):adapter.convert(time,'tdb')
+    with pytest.raises(KernelError):TimeService((adapter,))
+    with pytest.raises(KernelError):TimeService().convert(start,'tdb')
+    with pytest.raises(KernelError):adapter.convert(replace(start,scale='tt'),'tdb')
+    with pytest.raises(KernelError):adapter.convert(start,'tt')
+    with pytest.raises(KernelError):boundary.TcbTdbAdapter(replace(adapter.describe().validity,
+        start=replace(start,scale='tt'),stop=replace(stop,scale='tt')))
+    _assert_barycentric_time_reference(adapter,stop)
+    monkeypatch.setattr(boundary,'_LB',0)  # deliberate scale relabelling fault
+    with pytest.raises(AssertionError):_assert_barycentric_time_reference(adapter,stop)
+
+
+def _converted_mixed_batch(scale="tcb"):
+    from wenu.astrometric_coordinates import TcbTdbAdapter,convert_barycentric_batch
+    from wenu_kernel.time import TimeService
+    p=mixed_provider(RectilinearAstrometricProvider,SpaceMotionRow,'cartesian',scale)
+    a=p.describe().admissions[0]
+    q=StateQuery(a.catalogue,a.model,tuple(reversed(a.objects)),
+        (TimePoint(2451545,.125,scale),TimePoint(2451545,-.25,scale)),a.reference,
+        AccuracyRequest(metric='euclidean_norm'),require_velocity=True)
+    with Kernel(references=(a.reference,)) as k:
+        k.register(p,ownership='owned')
+        with k.open_session(SessionPolicy((a.catalogue,))) as session:batch=session.evaluate(q)
+    adapter=TcbTdbAdapter(a.coverage)
+    service=TimeService((adapter,),admissions=(adapter.describe(),))
+    receipts=tuple(service.convert(t,adapter.describe().target_scale) for t in q.times)
+    converted=convert_barycentric_batch(batch,admission=a,source_coordinate_scale=scale,time_admission=adapter.describe(),conversions=receipts)
+    return batch,a,receipts,converted
+
+
+@pytest.mark.parametrize('scale',['tcb','tdb'])
+def test_barycentric_scaling_preserves_actual_kernel_batch_evidence_and_order(scale):
+    from decimal import Decimal,localcontext
+    from dataclasses import FrozenInstanceError
+    batch,a,receipts,converted=_converted_mixed_batch(scale)
+    assert converted.original is batch and converted.admission is a
+    assert converted.time_admission.validity==a.coverage
+    assert len(converted.states)==8
+    for original,state in zip(batch.states,converted.states):
+        assert state.original is original
+        assert state.time in tuple(r.target for r in receipts)
+        assert state.coordinate_scale!=scale
+        assert state.velocity_m_s is original.velocity_m_s
+        assert state.original.source_epoch==TimePoint(2451545,0,scale)
+        assert state.original.position_evidence.physical_model.status=='not_evaluated'
+        with localcontext() as ctx:
+            ctx.prec=90
+            for x,y,error in zip(original.position_m,state.position_m,state.position_rounding_m):
+                factor=1-Decimal('1.550519768e-8')
+                exact=Decimal(x)*(factor if scale=='tcb' else 1/factor)
+                assert abs(Decimal(y)-exact) <= Decimal(error)
+        assert state.position_m!=original.position_m
+    with pytest.raises(FrozenInstanceError):converted.states[0].position_m=(0,0,0)
+    assert [s.original.object_key for s in converted.states]==list(batch.query.objects)*2
+
+
+def test_barycentric_batch_refuses_wrong_bindings_partial_and_warm_faults():
+    from wenu.astrometric_coordinates import convert_barycentric_batch
+    from wenu_kernel.errors import KernelError
+    batch,a,receipts,converted=_converted_mixed_batch()
+    def run(b=batch,admission=a,scale='tcb',conversions=receipts,time_admission=converted.time_admission):
+        return convert_barycentric_batch(b,admission=admission,
+            source_coordinate_scale=scale,time_admission=time_admission,conversions=conversions)
+    model=replace(a.model,configuration_digest='f'*64)
+    faults=[lambda:run(admission=replace(a,model=model)),
+        lambda:run(admission=replace(a,reference=replace(a.reference,origin_id='earth'))),
+        lambda:run(admission=replace(a,catalogue=replace(a.catalogue,membership_digest='f'*64))),
+        lambda:run(time_admission=replace(converted.time_admission,model=model)),
+        lambda:run(time_admission=replace(converted.time_admission,validity=replace(
+            a.coverage,stop=TimePoint(2451545,0,'tcb')))),
+        lambda:run(scale='tdb'),lambda:run(scale='tt'),lambda:run(conversions=receipts[:-1]),
+        lambda:run(conversions=tuple(reversed(receipts))),
+        lambda:run(conversions=(replace(receipts[0],model=model),receipts[1])),
+        lambda:run(conversions=(replace(receipts[0],numerical_error_s=0.),receipts[1])),
+        lambda:run(replace(batch,states=batch.states[:-1])),
+        lambda:run(replace(batch,states=tuple(reversed(batch.states)))),
+        lambda:run(replace(batch,states=(replace(batch.states[0],velocity_m_s=None,
+            velocity_evidence=None),*batch.states[1:]))),
+        lambda:run(replace(batch,states=(replace(batch.states[0],anchor_time=batch.query.times[1]),
+            *batch.states[1:])))]
+    for fault in faults:
+        with pytest.raises(KernelError):fault()
+        assert run()==converted  # failures do not poison a subsequent valid call
+
+
+def test_barycentric_space_time_scaling_commutes_with_linear_motion():
+    # Independent analytic construction: scaling time and position leaves the
+    # coordinate derivative unchanged; no second propagation belongs here.
+    from decimal import Decimal,localcontext
+    from wenu.astrometric_coordinates import TcbTdbAdapter
+    from wenu_kernel.records import TimeSpan
+    batch,a,receipts,converted=_converted_mixed_batch()
+    epoch=TimePoint(2451545,0,'tcb')
+    epoch_tdb=TcbTdbAdapter(a.coverage).convert(epoch,'tdb')
+    with localcontext() as ctx:
+        ctx.prec=90
+        f=1-Decimal('1.550519768e-8')
+        for s in converted.states:
+            # Exact convention relations, independently evaluated using Decimal.
+            dt=(Decimal(s.original.time.jd1-epoch.jd1)+Decimal(s.original.time.jd2))*86400
+            expected=tuple(float(Decimal(p)*f+Decimal(v)*dt*f)
+                for p,v in zip((1e12,0,0),(1000,2000,0)))
+            assert s.position_m==expected
+            actual_dt=(Decimal(s.time.jd1-epoch_tdb.target.jd1)+Decimal(s.time.jd2)
+                       -Decimal(epoch_tdb.target.jd2))*86400
+            assert abs(actual_dt-dt*f) <= Decimal(s.conversion.numerical_error_s)+Decimal(epoch_tdb.numerical_error_s)

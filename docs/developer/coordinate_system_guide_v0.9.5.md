@@ -1264,7 +1264,13 @@ unimplemented.
 The [observer contract](scientific_contracts.md#cluster-observer-realization-contract)
 requires a retained Cartesian state and explicit reception/time/resource meaning
 before finite-distance observation. A time-scale conversion alone does not
-qualify common spatial coordinate scaling. Native angular reuse certificates
+qualify common spatial coordinate scaling. The explicit convention boundary now
+implements IAU 2006 B3 TCB/TDB conversion and IERS 2010 section 1.2 length
+scaling, with unchanged coordinate velocity and separate operation-rounding
+receipts. This does not admit civil/TT reception conversion, an Earth ephemeris,
+site/EOP data or a concrete observer backend. See the
+[convention API](implementation_reference.md#barycentric-time-and-coordinate-conventions).
+Native angular reuse certificates
 do not certify observer-translated directions; observed motion remains unimplemented.
 
 `stellar_state.py` supplies source-native Hipparcos lookup states. Its explicit

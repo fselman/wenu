@@ -142,7 +142,7 @@ def test_cluster_motion_module_and_admission_ship_and_evaluate_from_installed_wh
     from zipfile import ZipFile
     import wenu_kernel
     wheel = _assert_source_products_ship(tmp_path, ('open_clusters_hunt_motion_admission_v1.json',),
-        modules=('wenu/cluster_state.py', 'wenu/astrometric_state.py'))
+        modules=('wenu/cluster_state.py', 'wenu/astrometric_state.py', 'wenu/astrometric_coordinates.py'))
     installed=tmp_path/'installed'
     with ZipFile(wheel) as archive: archive.extractall(installed)
     # Explicit accepted SDK path works for both regular and editable SDK hosts;
@@ -154,7 +154,8 @@ import sys,json
 from pathlib import Path
 sys.path[:0]=[sys.argv[1],sys.argv[2],*json.loads(sys.argv[3])]
 import wenu, wenu_kernel
-from wenu import cluster_state, astrometric_state
+from wenu import cluster_state, astrometric_state, astrometric_coordinates
+assert Path(astrometric_coordinates.__file__).is_relative_to(Path(sys.argv[1]))
 assert Path(astrometric_state.__file__).is_relative_to(Path(sys.argv[1]))
 assert issubclass(cluster_state.ClusterMotionProvider, astrometric_state.RectilinearAstrometricProvider)
 assert Path(wenu.__file__).is_relative_to(Path(sys.argv[1]))
@@ -199,6 +200,16 @@ with Kernel(references=(pa.reference,)) as kernel:
         assert all(state.velocity_available for state in result.states)
         assert result.states[0].position_m!=result.states[1].position_m
         assert result.states[0].velocity_m_s==result.states[1].velocity_m_s
+        from wenu_kernel.time import TimeService
+        adapter=astrometric_coordinates.TcbTdbAdapter(pa.coverage)
+        service=TimeService((adapter,),admissions=(adapter.describe(),))
+        receipts=tuple(service.convert(t,'tdb') for t in query.times)
+        converted=astrometric_coordinates.convert_barycentric_batch(result,admission=pa,
+            source_coordinate_scale='tcb',time_admission=adapter.describe(),conversions=receipts)
+        assert converted.original is result and len(converted.states)==2
+        assert converted.states[0].original is result.states[0]
+        assert converted.states[0].position_m!=result.states[0].position_m
+        assert converted.states[0].velocity_m_s==result.states[0].velocity_m_s
 from wenu.objects.open_clusters import OpenClusters
 default=OpenClusters(None)
 default.load()

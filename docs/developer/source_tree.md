@@ -63,6 +63,7 @@ concrete Wenu classes.
 | [`__init__.py`](../../src/wenu/__init__.py) | Wenu: publication-quality astronomical chart generation. |
 | [`_satellite_tabular_reports.py`](../../src/wenu/_satellite_tabular_reports.py) | Lossless in-memory tabular interchange for exact crossing reports. |
 | [`antisolar.py`](../../src/wenu/antisolar.py) | Observer-relative apparent antisolar direction geometry. |
+| [`astrometric_coordinates.py`](../../src/wenu/astrometric_coordinates.py) | Object-independent explicit TCB/TDB time conversion and barycentric Cartesian scaling receipts; no propagation, observer backend or graphics. |
 | [`astrometric_state.py`](../../src/wenu/astrometric_state.py) | Object-independent immutable SI rows, nominal rectilinear direction/Cartesian evaluation, domain validation and direction numerical/reuse certification through the SDK; no catalogue or observer dependencies. |
 | [`atlas_design.py`](../../src/wenu/atlas_design.py) | Observer-independent atlas geometry specimens and strict versioned JSON. |
 | [`chart_document.py`](../../src/wenu/chart_document.py) | Neutral records shared by chart orchestration and renderers. |

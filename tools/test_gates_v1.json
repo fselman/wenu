@@ -1029,6 +1029,20 @@
         "astrometric-core-factoring"
       ],
       "selections": []
+    },
+    "astrometric-conventions": {
+      "scope": "Object-independent explicit TCB/TDB time receipts and common barycentric Cartesian convention scaling; kernel batch/refusal/isolation and installed cluster consumption.",
+      "limits": "Resource-free algebraic subset only. No SDK, source-resource, dependency/build, provider propagation, chart/snapshot or observer backend change. Civil/TT reception admission, ephemeris/EOP qualification and parallax remain pending. Reuse accepted Cartesian/native evidence; no parent/full SDK/production repeat.",
+      "selections": [
+        {
+          "node": "tests/test_astrometric_state.py",
+          "reason": "Existing generic engine owner plus independent time/scaling oracles, actual mixed-family SDK batch, refusal, mutation and isolation."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_cluster_motion_module_and_admission_ship_and_evaluate_from_installed_wheel",
+          "reason": "Retain direction/reuse/Cartesian queries and verify the new module ships and converts actual installed cluster states."
+        }
+      ]
     }
   },
   "consumer_review": [
