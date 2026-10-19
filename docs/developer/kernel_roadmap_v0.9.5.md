@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 18, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 19, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -15,134 +15,99 @@ immutable commit and the [cleanup ledger](documentation_cleanup_v1.json).
 
 ## Release objective
 
-**Current implementation status:** K1, native direction/reuse, SI Cartesian
-and explicit time subsets plus the reusable provider conformance kit are
-accepted through PR #242, main `8fea897f`. Native state queries retain their
-explicit same-scale policy. Minor-body request-resource rollback is accepted
-through PR #243, main `f5a0abf3`, with 3,400 Mac integration tests passing.
-PR #244, main `d36b1786`, adds synchronous ordinary-request configuration
-isolation (layer registry, horizon/disk aliases and point labels). It does not
-yet route a product through the kernel. See the
-[scope and gate](../../packages/wenu_kernel/README.md).
-PR #246, main `e5bd7c16`, accepts shared request lifecycle and default
-`wenu_chart atlas-sheet` dispatch (247 Mac tests passed). PR #247, main
-`bf804cbb`, accepts native stellar realization through a real kernel/session and
-legacy native lookup adapter, with Mac installation/output acceptance. PR #248
-routes public `Stars.position`, explicit HIP lookup and native
-constellation endpoints through that adapter, correcting source-epoch metadata.
-It preserves source directions; no propagation is added. Observed astrometry,
-native constellation-label anchors, other families and remaining non-chart
-consumers stay open for subsequent K3 slices.
-The explicit resource-free TCB/TDB convention subset is implemented. An offline UTC/TT reception and ERFA input-context subset is also implemented.
-The nominal finite-distance observer service is implemented and independently
-checked; explicit observed Python chart/saved adoption is implemented. Ordinary horizontal CLI/TOML selection is implemented; Cartesian reuse
-and SDK freeze remain ahead. PR #248 and the open-cluster correction in PR #249
-are accepted at main `4a14e294`, with focused Mac gates and identical merged tree.
-Neither closes K3.
+Refactor existing Wenu functionality into kernel plus astronomical modules while
+preserving its accepted behaviour and appearance. Gaia DR3 and the shared
+proper-motion/parallax work are agreed scientific additions; they are identified
+separately below rather than used to enlarge baseline migration implicitly.
+No object expansion or morphology evolution is included.
 
-Catalogue ingestion is a prerequisite to further provider migration: validate
-required metadata, preserve original source fields in a Wenu standard format,
-mirror a typed immutable record, and have consumers read it. The stellar path
-and snapshot v3 implement this boundary. Resolve the remaining findings in the
-[metadata audit](kernel_migration_audit_v1.md#catalogue-metadata-audit-2026-10-18),
-especially per-source/row open-cluster epochs and nonstellar metadata loss,
-before closing those provider adapters. Do not replace absent metadata with
-catalogue-specific software literals.
-The bounded open-cluster followup now consumes existing row epoch/source fields
-and preserves source metadata in geometry and snapshot v4. Shared helper defaults,
-full nonstellar metadata admission and the remaining fixed-catalogue snapshot
-assumptions still require their own owner corrections. The current ingestion slice
-preserves nonstellar source metadata/fields and normalizes declared angular
-units, including globular radii, with atomic refusal and saved-sky checks.
-The subsequent nonstellar admission record validates declarations, reports missing
-facts, controls native/observed coordinate metadata and persists through snapshot
-v5. Unknown epochs replace automatic J2000 stamps; old formats remain readable
-without fabricating source facts. Strict admission refuses incomplete metadata,
-while current charts retain an explicit legacy interpretation. Unitless legacy
-inputs and this compatibility mode are not evidence of complete source semantics.
-Required declarations depend on the model. Galaxy `static-direction` admission
-does not require a measurement epoch/scale; any supplied epoch remains provenance.
-Resolve remaining frame/origin/units/provenance gaps using source evidence rather
-than inventing source facts. Other families retain their source-epoch requirements.
-The SDK now admits explicit `static_direction` models with an optional source
-epoch, while native/epoch direction requirements remain intact. Static coverage,
-uncertainty, source identity and certified reuse retain their existing checks.
-Galaxy centre consumers now route through that interface: public/native lookup,
-chart outline/label centres and inputs to existing observer transformations.
-The compatibility reference explicitly preserves unresolved source declarations;
-strict physical metadata closure remains open. The shared immutable-table owner
-is independent of concrete stellar/galaxy classes. Galaxy shape parameters and
-late geometry stay above the kernel. Open-cluster source lookup now routes
-public/native positions and inputs to existing observer transformations through
-the same kernel/session interface, including saved skies. The immutable record
-binds retained astrometry, units, masks and per-row source/epoch declarations.
-Remaining K3 families/consumers have not yet migrated.
+This is the single authoritative roadmap. The detailed ledger below expands the
+already documented scope in the [functionality audit](kernel_migration_audit_v1.md#current-functionality-ledger)
+and [source/test inventory](kernel_migration_inventory_v1.json); it does not add
+new scientific features. As-built APIs remain in the
+[implementation reference](implementation_reference.md), scientific limits in
+[scientific contracts](scientific_contracts.md), and verification in
+[testing policy](testing_policy.md). Their roles do not replace user agreement.
 
-The open-cluster motion audit found retained Dias motions but omitted published
-Hunt motions. Selected-centre and motion provenance must remain separate until
-an explicit source-combination policy is admitted. Incomplete epochs also require
-the accepted dev8 `catalogue_lookup` prerequisite; native/epoch requirements
-remain intact and clusters do not inherit the galaxy static model. Production
-now pins accepted main `9dd1909f`. The selected-cluster ingestion prerequisite
-now has a versioned source-bound companion: 509 Hunt solutions, 502 radial
-velocities and four explicitly unadopted Dias-only rows. The active 513-object
-catalogue/selection and charts retain their bytes; explicit offline enrichment
-mirrors all recovered fields in the existing metadata record. The explicit
-source-admission and provider follow the
-[qualification and propagation contract](kernel_migration_audit_v1.md#cluster-propagation-qualification-and-model-contract).
-The Hunt conventions are qualified by documented Gaia inheritance; the four
-Dias RA-motion conventions are resolved through D14, while their retained
-position-epoch/scale lineage remains incomplete. Missing centre-model bounds
-and cluster-mean covariances stay unknown. The explicit nominal cluster provider
-now admits these qualified full-input solutions and evaluates a finite-domain rectilinear centre model through the SDK.
-Explicit native Python chart and restored-source consumers now adopt it per call; defaults retain lookup. Provider-owned exact-rational
-angular certificates now bound reuse relative to admitted binary64 SI solutions
-in explicit interactive sessions, with reproducible full-model fallback. Source
-conversion and physical/measurement accuracy remain uncertified. Native epoch
-contexts and per-layer motion options now enter the canonical chart pipeline,
-with unchanged source snapshots/default lookup. Explicit observed Python chart/saved consumers now use the shared nominal
-finite-distance service. Ordinary horizontal CLI/configuration selection is implemented; other frame
-selection and any separately admitted persisted epoch state format remain separate. Next: reduced-input policy models. Canonical provider schedules remain optional separate work. Other
-families/consumers and the final SDK freeze remain ahead. See the
-[motion audit](kernel_migration_audit_v1.md#open-cluster-motion-and-lookup-audit-2026-10-18).
+## Current position and next-item selection
 
-Keep every existing Wenu capability while placing all scientific state access
-behind a uniform kernel contract. Add Gaia DR3 astrometry for the stars already
-in Wenu by default, with configurable membership and a later DR4 adapter.
-Then extract astronomical families one by one into independently installable
-Python packages. A compatible internal change in one package must require its
-own tests and kernel conformance tests, not the tests of unrelated packages.
+**Accepted runtime baseline:** main
+`30583f3345cb76cabb396fd7d7030392c618b6ba`, PR #269. Its tree is identical to
+tested `3f8ff7af86d9e4cf348a04c2d1823b3f478edc7d`: 300 focused Mac tests,
+36 documentation tests and 8 tooling tests passed. Fernando confirmed clean,
+synchronized main and branch cleanup. This is focused evidence, not a claim
+that every existing function has migrated or that a new full-suite run occurred.
 
-The kernel is complete only when all existing functionality consumes it.
-Temporary adapters for old implementations are allowed; permanent parallel
-position routes are not. This includes reports and non-chart calculations,
-not just the visible atlas or a new Gaia demonstration.
+| Track | Position |
+|---|---|
+| Baseline migration | K0 complete; K1 initial contracts and K2 foundation accepted; **K3 partial** |
+| Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
+| Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
+| Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
+| Current authorized task | This roadmap/instruction documentation revision, requested by Fernando on 2026-10-19 |
+| Next runtime submilestone | **Not selected.** Discuss/select an existing bounded ID and its gate before implementation |
+
+Reduced-input models (AX.13) are agreed capability scope, but their placement as
+the immediate next task was an agent sequencing decision, not a separate user
+agreement. This revision removes that automatic next-step designation. Continuing
+remaining K3 migration and continuing the positional extension are distinct
+choices. Neither is silently selected by this documentation change.
+
+## Roadmap agreement and change control
+
+Follow the [mandatory agent procedure](assistant_instructions.md#roadmap-control-mandatory-before-implementation).
+Before implementing any extra item or changing agreed scope/order, discuss the
+reason, alternatives, consequences, dependencies and acceptance gate with Fernando;
+obtain explicit agreement; then document that agreement and the revised milestone
+**before implementation**. An agent cannot authorize its own addition by editing
+this document. A proposal may be recorded as proposed while awaiting a decision.
+
+Stable IDs below identify reviewable deliverables. Numbering groups responsibility;
+it does not claim that independent pending rows have an agreed serial priority.
+Dependencies constrain execution. The selected next ID must be stated explicitly.
+Existing scope may be decomposed in this documentation review without granting
+blanket execution authority. Routine choices/fixes inside an agreed bounded item
+remain part of that item; new deliverables or reordered work require change control.
+
+| Plan change | Authority and scope | Effect on runtime authority |
+|---|---|---|
+| Revision 19: detailed intermediate ledger and strict governance | Fernando's 2026-10-19 request to write the full roadmap, expose intermediate milestones and require discussion/agreement/documentation for extra work | Documentation/instructions only; no new runtime item activated |
+
+Future accepted changes record a change ID/date, the specific user agreement
+(or accepted PR documenting it), affected milestone IDs, scope/dependency/order
+changes and acceptance criteria. Do not record invented agreement or retroactively
+mark work agreed merely because it was implemented.
+
+Status vocabulary: **Accepted** means the bounded deliverable has an acceptance
+receipt; **Partial** means named pieces work but the whole row/parent is open;
+**Pending** means existing agreed scope without implementation acceptance;
+**Optional/proposed** means not an activated obligation; **Excluded** means outside
+this plan. Existing functionality in a pending migration row still works through
+its current implementation; pending does not mean that feature is absent.
 
 ## Ordered starting point
 
-The [as-is functionality and test audit](kernel_migration_audit_v1.md) and
-[pinned inventory](kernel_migration_inventory_v1.json) extend K1 before runtime
-work starts. Test reorganization proceeds continually with the owner being
-changed. Each K2 onward slice records preserved faults, old/new test locations,
-isolated dependency evidence and its smallest justified gate. K3–K5 reconcile
-every current capability and state consumer; K6–K8 extract each package's tests
-and fixtures with its software. A package cannot close on folder separation
-alone. K9 composes accepted packages rather than discovering test isolation
-for the first time. See [testing policy](testing_policy.md).
+The baseline, archival documentation and original coarse roadmap are complete
+(K0). Use the detailed IDs and dependencies below for remaining work. Preserve
+the canonical catalogue/provider → spherical → domain guard → projection →
+projected → preparation → renderer → furniture/export flow. Every existing
+scientific state consumer must migrate before closure; pure layout, copying and
+PDF assembly remain pure services rather than artificial state providers.
 
-1. **Completed:** accept and integrate PR #234; pin its tested production tree.
-2. **This documentation milestone:** preserve original editions, archive
-   superseded plans/diaries, consolidate current authority and repair active links.
-3. **This documentation milestone:** publish this roadmap and both diagrams
-   on the cleaned base. Review it before scientific runtime work begins.
-4. Implement the bounded milestones below, each with an owner, explicit
-   compatibility boundary and measurable exit gate.
+K3 may use temporary adapters, but permanent state bypasses are not closure.
+K4 can proceed alongside K3 after explicit task selection. **Both K3 and K4 must
+close before K5; extraction follows K5 → K6 → K7 → K8, then K9 release closure.**
+Test ownership/isolation work accompanies each migration/extraction rather than becoming an unrelated
+science or appearance project. A compatible provider change eventually runs its
+own science and conformance gate; integration/release checks have separate owners.
 
 ## Current architecture
 
 Arrows show calls/dependencies; dashed edges identify coupling to remove.
 The existing projection and graphics pipeline is retained. The kernel edge
-shows partial native stellar routing; dashed source paths remain to migrate.
+shows partial native stellar/galaxy/cluster routing; dashed source paths remain
+to migrate. The accepted explicit cluster observer subset does not close the
+legacy observation paths.
 
 ```mermaid
 flowchart TB
@@ -502,50 +467,263 @@ epochs/capabilities fail explicitly while supported stellar-only requests work.
 Each row is a reviewable milestone, subdivided further if its diff cannot be
 bounded. Runtime authority is accepted one milestone at a time.
 
-| ID | Deliverable | Exit gate |
+| ID | Deliverable | Status / closure requirement |
 |---|---|---|
-| K0 | Clean docs, pinned baseline, this roadmap and diagrams | Exact archival ledger, active links, current docs tests; no production/data changes |
-| K1 | Public kernel/state/provider/observation contract and compatibility policy | Reviewed signatures, explicit tolerance/epoch/error-budget and validity contracts, capability/failure matrix and independent test gates |
-| K2 | Minimal core package, registration, immutable states and selective reuse | Fake providers prove isolation, lifecycle, immutable state and tolerance-certified selective reuse, including boundary/tighter-request/error-accumulation cases |
-| K3 | Adapters and mandatory routing for all current functionality | Complete consumer inventory, no bypasses, isolated request rollback and baseline compatibility evidence |
-| K4a | Gaia DR3 identification and bounded local subset | Coverage/ambiguity report, exact schema/bytes/provenance, unchanged default membership/photometry |
-| K4b | Stellar propagation, historical time and admitted epoch domain | Independent propagation/reuse comparison over the admitted epoch domain, declared numerical versus physical uncertainty/fallbacks, measured workloads and ancient specimens |
-| K5 | Kernel and observer contract freeze | All consumers routed, conformance suite published, real star/deep-sky/moving-body coverage and accepted integration evidence |
-| K6 | Extract `wenu_stars` first | Independently installed and tested against frozen core, including Gaia; product APIs unchanged |
-| K7 | Extract one deep-sky family at a time | Each package passes its own science/conformance gate without other providers installed |
-| K8 | Extract planets, asteroids, comets and satellites separately | Preserve each current scientific capability and incomplete-science limits; isolated install/test receipts |
-| K9 | Release closure | Packaging combinations, compatibility matrix, scientific/visual/print acceptance and release naming/tag decision |
+| K0 | Consolidated documentation and pinned functional baseline | Accepted; exact archive ledger and baseline preserved |
+| K1 | Kernel/state/provider/observation contracts | Initial contracts accepted; final public freeze remains K5 |
+| K2 | Standalone kernel foundation, immutable states, registration, selective reuse and conformance | Accepted foundation; optional capabilities are not automatically promised |
+| K3 | Route all existing scientific functionality through kernel/realization interfaces | Partial; every consumer below needs its own acceptance, including non-chart paths |
+| K4a | Bounded offline Gaia DR3 identification/subset for current Wenu stars | Pending; membership, visual photometry and identifiers preserved |
+| K4b | Real stellar propagation, incomplete-input policies, historical time and admitted epoch domain | Pending real-star acceptance; shared positional groundwork exists in AX |
+| K5 | Close routing and freeze kernel/observer contracts | Pending; requires K3 + K4 and real provider/compatibility evidence |
+| K6 | Extract `wenu_stars` first | Pending; isolated install/science/conformance and unchanged product APIs |
+| K7 | Extract deep-sky families one at a time | Pending; each independently installed/tested against frozen interfaces |
+| K8 | Extract planets, asteroids, comets and satellites separately | Pending; preserve each existing scientific capability and its limits |
+| K9 | Release composition and acceptance | Pending; packaging, science, visual/print/classroom checks and explicit release naming |
 
-K3 must address request-layer rollback before sharing kernel state. Accepted
-minor-body registration/resolver lifetime and ordinary-request configuration
-journal (PR #244) restore original layer
-identities/order and horizon/disk/point-label attributes, reject overlapping
-builds on one sky, and preserve the lease after failed cleanup.
-This does not claim thread safety or rollback of arbitrary external mutations.
-No consumer is marked migrated by these prerequisites. PR #246 routes ordinary view/drawing, ordinary generation
-and native atlas sheets through `open_chart_request_scope`, preserving their
-geometry, helper order and observer requirements. Atlas producers use the
-injected command or default to `wenu_chart atlas-sheet`; no direct-generator
-fallback remains. Shared-scope failure tests and real serial/spawn/cold-saved
-atlas equivalence passed on the Mac. This does not close the
-chart/atlas private-helper cycle. Accepted PR #247 supplies a real native stellar
-consumer, source-native semantics, saved/worker compatibility and a separate
-installation gate. Accepted PR #248 extends the same adapter to public positions
-and native figure vertices, with opaque-interface, changed-vector and refusal
-tests plus saved/rendered consumer checks. Static galaxy centre routing now
-uses the accepted static capability through shared immutable-table mechanics;
-its source gaps remain explicit compatibility semantics. Native label anchors and observed
-astrometry remain explicit ledger entries; neither slice adds a Gaia/motion model.
-Break chart/atlas private-helper cycles with a public sheet contract while
-preserving canonical rendering. Make changes in separate bounded slices;
-do not combine structural movement, Gaia data replacement and appearance tuning.
-K4 may develop alongside adapters, but K5 cannot close before both are accepted.
+## Intermediate milestones
+
+The following is the complete known decomposition at the accepted repository
+position above. It makes existing obligations visible; it is not a claim that
+future source inspection cannot reveal a missing prerequisite. Such a discovery
+uses change control before implementation rather than becoming hidden work.
+
+### K0–K2: documentation, contract and foundation
+
+| ID | Bounded result and exit evidence | Status / dependency |
+|---|---|---|
+| K0.01 | Pin the accepted baseline and preserve its exact tree/test receipt | Accepted: PR #234 / frozen baseline above |
+| K0.02 | Archive superseded editions, consolidate current authority, repair links/inventory | Accepted: cleanup ledger and documentation gate |
+| K0.03 | Publish the roadmap, architecture diagrams and contribution instructions | Accepted initial plan; revision 19 is the current documentation review |
+| K1.01 | Inventory all existing capabilities, sources, public/operational consumers and test owners | Accepted audit/inventory baseline; reconcile continuously through K3 |
+| K1.02 | Define identities, units, frames/origins/status, source/evaluation/observer epochs and failure capabilities | Initial contract accepted; no blanket physical-accuracy claim |
+| K1.03 | Define numerical/physical uncertainty, validity, reproducibility and selective-reuse semantics | Accepted implemented subsets; final contract review in K5 |
+| K2.01 | Provider registration, owned/borrowed resources, synchronous session lifetime and immutable records | Accepted foundation through PR #242 |
+| K2.02 | Native direction evaluation, exact caching and provider-certified angular reuse | Accepted; boundary/tighter-query/order/isolation faults covered |
+| K2.03 | Separate SI Cartesian state/velocity and independent error channels | Accepted SDK capability; no implicit Cartesian reuse guarantee |
+| K2.04 | Explicit TimeService conversion admission, receipts and coverage | Accepted SDK subsets; concrete astrometric conventions/reception are AX.08–AX.09 |
+| K2.05 | Shipped provider conformance kit and isolated installed consumer | Accepted; each new provider must satisfy its advertised capabilities |
+
+### K3: migrate the complete existing functionality
+
+Closure in this table means **routing/compatibility acceptance**, not new physics
+or extraction into a package. Metadata source gaps remain visible; compatibility
+admission is not a measured source fact. Each pending row is bounded further in
+its agreed task proposal if necessary, before implementation. The audit coverage
+map below ensures small/non-chart capabilities do not disappear in grouped rows.
+
+| ID | Intermediate deliverable and completion criterion | Status / dependencies |
+|---|---|---|
+| K3.01 | Restore minor-body registry/resolver/resource state after setup, evaluation, export or close failure | Accepted PR #243; lifecycle prerequisite, not consumer routing |
+| K3.02 | Journal ordinary-request layer order, aliases, horizon/disk/label configuration; reject overlapping builds | Accepted PR #244; no claim of general thread safety |
+| K3.03 | Route ordinary generation, view/drawing and native atlas sheets through one request scope and installed dispatch | Accepted PR #246; chart/atlas helper cycle remains K3.21 |
+| K3.04 | Bind stellar source metadata/epochs/units/provenance and source snapshots to immutable records | Accepted PR #248 and compatibility repair; M1–M3 addressed |
+| K3.05 | Route native stellar geometry, public `Stars.position` and explicit HIP lookup through returned kernel states | Accepted PR #247–#248; source-native lookup, not stellar propagation |
+| K3.06 | Route native constellation figure endpoints through public stellar identities/states | Accepted PR #248; retain faint endpoints, topology, labels and line gaps |
+| K3.07 | Route native constellation-label anchor computation, preserving accepted placement | Pending; metadata inheritance alone does not complete this consumer |
+| K3.08 | Route existing observed stellar/figure/label consumers through state and observation boundaries | Pending; preserve current Skyfield science first; new Gaia propagation is K4b |
+| K3.09 | Close nonstellar source admission/shared coordinate defaults and snapshot lineage without fabricated metadata | Partial: preservation/record/snapshot v5 mechanisms accepted; M4 shared defaults and M5 source gaps remain |
+| K3.10 | Route galaxy centres/outline inputs/labels/public and saved consumers; close required source qualification | Partial: static kernel routes accepted; compatibility origin/frame gaps remain explicit |
+| K3.11 | Route open-cluster source lookup/public/native/observed inputs and restored sources with row epochs/masks/order | Accepted bounded lookup routes; new motion is tracked separately in AX |
+| K3.12 | Route generic nonstellar, Messier/Caldwell label-only/scientific points, identities and object-centre consumers | Pending; preserve independent catalogue membership/label policy; K3.09 prerequisite |
+| K3.13 | Route globular-cluster centres and public/chart/saved consumers with own source admission | Pending; K3.09 and source evidence required |
+| K3.14 | Route existing planetary-nebula centre/geometry/selection consumers | Pending; preserve criteria and display scaling; new motion adapter is AX.15 |
+| K3.15 | Route existing supernova-remnant centre/geometry/selection consumers | Pending; preserve source fidelity; new motion adapter is AX.16 |
+| K3.16 | Admit Milky Way/Magellanic source metadata and route diffuse celestial geometry | Pending M9; diffuse morphology must not become fabricated point-body states |
+| K3.17 | Route constructed references: grids, equator/ecliptic/Galactic planes, poles, defining-frame boundaries, horizon/visibility/masks | Pending closure; keep construction/realization separate from physical-object providers |
+| K3.18 | Close shared state/coordinate/observer adapters, resource lifetime and observed-cache invalidation across existing families | Partial: explicit nominal service accepted in AX; legacy consumers/metadata/resource identities still open |
+| K3.19 | Decouple central sky/factory from concrete providers through application assembly; cover saved/loaded skies and workers | Partial: source snapshots/reconstruction accepted; uniform registry/consumer closure pending |
+| K3.20 | Close all five ordinary chart families, target/group centres, masks, content, styles/detail and furniture state access | Partial: common scope and selected routes accepted; remaining consumers not certified migrated |
+| K3.21 | Replace chart/atlas private-helper cycle with a public sheet contract; close atlas design/index/publication/report consumers | Partial dispatch/saved/worker paths accepted; public boundary and complete state routing pending |
+| K3.22 | Migrate physical polar pairs, calendars, pages, pouches and sheet products without print/scene changes | Pending routing acceptance; retain both projections and classroom baseline |
+| K3.23 | Close ordinary temporal sequence state/realization routes, playback and resume identities | Partial request/configuration seams accepted; complete state routing remains open |
+| K3.24 | Close fixed-sky/frozen-baseline and rotating-horizon consumers with distinct anchor/local instants | Pending; preserve scientific and graphical references |
+| K3.25 | Route major-planet/Moon states and apparent directions; preserve body/barycentre and one light-time owner | Pending; ephemeris identity cleanup M10 belongs here/K3.18 |
+| K3.26 | Route resolved disks/appearance and observed/frozen-Earth sequences | Pending; preserve physical versus magnified display and chronology |
+| K3.27 | Route natural-body tracks and temporal components through requested state samples | Pending; keep fixed chart axes and existing component admission |
+| K3.28 | Route asteroid identities/states/tracks and offline resource consumers; move Ceres solution facts to a manifest | Pending; preserve coverage/digests/close semantics; M7 |
+| K3.29 | Route comet identity/state/track/report/photometry consumers; keep discovery/acquisition outside deterministic rendering | Pending; preserve current models and unfinished-selection limits |
+| K3.30 | Route antisolar constructed-reference consumers with observer-relative provenance | Pending; not a new physical body |
+| K3.31 | Route satellite snapshots/elements/SGP4/TEME and observer transformations | Pending; preserve Vallado evidence, EOP/time/resource domains |
+| K3.32 | Route sampled-provider satellite candidate evidence through explicit provider/maintenance boundaries | Pending; retain licensing/coverage and candidate-versus-exact distinction |
+| K3.33 | Route exact satellite crossings, conservative batch selection and solved-track consumers | Pending; non-chart completeness and evidence routes are mandatory |
+| K3.34 | Route satellite reports, lossless tabular interchange, CLI and planning advisories | Pending; preserve identities, nulls/Unicode, atomic output and offline behaviour |
+| K3.35 | Route satellite illumination/finite-Sun shadow consumers without changing physical models | Pending; retain independent transition/orientation/domain oracles |
+| K3.36 | Route bolometric/spectral solar radiometry and move edition-specific TSIS facts into resource metadata | Pending M8; preserve native sampling/integrals and current uncertainty limits |
+| K3.37 | Close public Python, all eight installed commands, six examples, five notebooks/installers, overlays/presets and translations | Partial selected APIs/cluster CLI accepted; complete public-surface audit/acceptance pending |
+| K3.38 | Close maintenance/curation/acquisition and resource/build consumer boundaries | Pending review; classify pure copy/layout separately; no automatic network execution |
+| K3.39 | Verify geometry topology, domain guards, clipping, three projections, renderer/furniture/PNG/PDF/SVG stay pure and compatible | Partial existing tests/appearance accepted; final migrated-consumer verification pending, no graphics rewrite |
+| K3.40 | Reconcile every audited source/public/operational consumer to a route and acceptance receipt, with no state bypass | Pending final K3 gate; all applicable rows above must close before K5 |
+
+For each row, the specific task identifies source and test owners from the
+[audit](kernel_migration_audit_v1.md) and
+[inventory](kernel_migration_inventory_v1.json), selected public entry points,
+model/reference/resource semantics, compatibility/failure limits and its focused
+science/conformance/consumer gate. Cold/saved/fresh-process/installed/output
+checks apply where the changed boundary requires them, not as an automatic full
+suite tax on every compatible provider revision.
+
+Metadata audit closure maps explicitly: M1–M3 → K3.04–K3.07; M4/M5/M6 →
+K3.09 and each affected family; M7 → K3.28; M8 → K3.36; M9 → K3.16;
+M10 → K3.18/K3.25. Header/default repairs do not close unresolved source facts.
+
+### K3 audit coverage map
+
+Every capability in the pinned functionality ledger is represented below.
+Coverage mapping is an obligation, not proof of implementation or acceptance.
+
+| Existing audited capability | Detailed milestone IDs |
+|---|---|
+| Time, frame, origin, status, epoch/equinox | K1.02, K3.17–K3.18 |
+| Position and Cartesian ephemeris protocols | K2.03, K3.18, K3.25–K3.31 |
+| Observer lifetime, site and observed cache | K3.01–K3.03, K3.18 |
+| Native catalogue assembly and reusable sky | K3.19 |
+| Stars and visual symbols | K3.05, K3.08, K3.39, K4b.01 |
+| Names, components and research policy | K3.04, K3.06–K3.08, K3.37 |
+| Constellation figures, labels and official boundaries | K3.06–K3.08, K3.17 |
+| Nonstellar/Messier points and object identity | K3.12 |
+| Open clusters and curated selection | K3.11, K3.38, AX |
+| Globular clusters | K3.13 |
+| Galaxies and extended geometry | K3.10 |
+| Planetary nebulae | K3.14, AX.15 |
+| Supernova remnants | K3.15, AX.16 |
+| Milky Way and Magellanic isophotes | K3.16 |
+| Equatorial, ecliptic, Galactic and AltAz grids | K3.17 |
+| Horizon, visibility and masks | K3.17 |
+| Spherical/projected geometry and clipping | K3.39 |
+| All three projection implementations | K3.39 |
+| Five ordinary chart families and target/group centres | K3.20 |
+| Styles, detail, modes, independent layer selection | K3.20, K3.37, K3.39 |
+| Furniture, labels, references and physical legends | K3.20, K3.39 |
+| Matplotlib and PNG/PDF/SVG export | K3.39 |
+| Polar planisphere pairs and calendar | K3.22 |
+| Polar pages, pouches, sheet assembly | K3.22 |
+| Ordinary temporal sequences, resume and playback | K3.23 |
+| Fixed-sky baseline and rotating-horizon reference | K3.24 |
+| Major planets, Moon and apparent directions | K3.25 |
+| Resolved disks, appearance and frozen/observed sequences | K3.26 |
+| Natural-body tracks and temporal components | K3.27 |
+| Numbered asteroids and offline minor-body resources | K3.28 |
+| Comet discovery, identity, acquisition and photometry | K3.29 |
+| Antisolar reference | K3.30 |
+| Satellite element snapshots and SGP4/TEME | K3.31 |
+| Sampled-provider satellite candidates | K3.32 |
+| Exact crossings, batch selection and tracks | K3.33 |
+| Exact reports, tabular interchange, CLI and advisories | K3.34 |
+| Satellite illumination and finite-Sun shadows | K3.35 |
+| Bolometric and spectral solar radiometry | K3.36 |
+| Atlas geometry, layouts and standalone index | K3.21 |
+| Atlas publication, reports, saved sky and workers | K3.19, K3.21 |
+| Configuration overlays, preset resources and translations | K3.37 |
+| Canonical examples and installers | K3.37 |
+| Curation/acquisition, resource packaging and offline tools | K3.38 |
+
+### AX: agreed shared positional extension
+
+This track implements Fernando's explicit motion/parallax request using an
+object-independent core and object-dependent source/centre adapters. It is
+separate from baseline K3 routing; no pending AX row automatically blocks
+unrelated K3 migration. Real stellar Gaia work is cross-referenced to K4b,
+not counted as a second independent implementation.
+
+| ID | Bounded deliverable and exit evidence | Status / dependency |
+|---|---|---|
+| AX.01 | Recover/source-bind cluster motion fields and qualify epochs, conventions, centre, distance and systemic-RV policy | Accepted companion/admission; 513 IDs retained, 502 complete-input solutions, eleven unavailable |
+| AX.02 | Complete-input nominal rectilinear cluster provider through the SDK, finite explicit domain and honest errors | Accepted; qualification/numerical/conformance/installed evidence in inventory |
+| AX.03 | Provider-certified angular reuse with reproducible full-model fallback | Accepted for native direction only; no translated apparent/Cartesian guarantee |
+| AX.04 | Explicit native Python chart and restored-source motion adoption | Accepted PR #261; default lookup and source snapshots preserved |
+| AX.05 | Document the observer handoff/correction/resource/coverage acceptance contract | Accepted PR #262; document alone did not enable runtime |
+| AX.06 | Factor propagation into object-independent core and calling cluster adapter | Accepted PR #263; synthetic mixed-family reuse, not real star/PN/SNR ingestion |
+| AX.07 | Publish distinct full Cartesian SI position/velocity admission from that same core | Accepted PR #264; independent numerical/conformance/install evidence |
+| AX.08 | Explicit TCB/TDB time and spatial-convention conversion of actual SDK batches | Accepted PR #265; no relabelling or implicit source propagation |
+| AX.09 | Explicit offline UTC/TT reception, local leap/final EOP and nominal ERFA observer inputs | Accepted PR #266; independent resource/code coverage, unknown total errors |
+| AX.10 | Shared finite-distance observer realization: one translation, admitted deflection/aberration and vacuum AltAz | Accepted PR #267; independent parallax/Lorentz/composition/refusal evidence |
+| AX.11 | Explicit observed Python chart/restored-source adoption and real output | Accepted PR #268; cold/saved/fresh-process geometry/pixels/output/refusal |
+| AX.12 | Ordinary horizontal request/CLI/TOML model and ID selection with unchanged defaults | Accepted PR #269; selected local resources/domains/height and actual output; other frames not enabled |
+| AX.13 | Configurable reduced-input models in the shared core: no-PM source-position approximation and PM with incomplete full inputs | Pending; agreed approximate 200/1000-year lookback from source epoch, unknown values retained, separate model admission/oracles/refusal; immediate execution order not selected |
+| AX.14 | Real stellar source adapter to the shared motion/parallax core | Pending; same work as K4b.01/K4b.02, using K4a source qualification |
+| AX.15 | Real PN positional adapter to the shared core | Pending; qualify nebular centre/central-star identity and available systemic inputs; no expansion |
+| AX.16 | Real SNR positional adapter to the shared core | Pending; qualify shell centre/systemic motion; pulsar displacement or expansion RV is not automatically systemic centre motion |
+
+Missing PM/RV/distance remains unknown, never a measured zero. Distance
+availability governs observer parallax; missing-distance direction models cannot
+invent finite-distance Cartesian state. Longer complete-input domains remain
+explicit nominal/model admissions, not universal historical accuracy guarantees.
+Expansion, internal cluster dynamics, morphology evolution and Galactic orbits
+are excluded. Source-dependent qualification stays outside the generic core.
+
+### K4a–K4b: Gaia and real stellar propagation
+
+| ID | Intermediate deliverable and exit evidence | Status / dependency |
+|---|---|---|
+| K4a.01 | Fix current Wenu membership/component/photometry contract and edition-qualified schema, including future DR4 adapter boundary | Pending; no full Gaia mirror or silent V-to-G substitution |
+| K4a.02 | Agree bounded acquisition/matching/quality/missing-data policy after checking current primary API/terms/licensing | Pending; before any acquisition; rendering/tests remain offline |
+| K4a.03 | Cross-identify the required DR3 sources with epoch/PM-aware evidence and explicit ambiguous/unmatched/component cases | Pending; K4a.01–K4a.02; no nearest-neighbour guess silently accepted |
+| K4a.04 | Publish immutable bounded DR3 subset with exact bytes, edition/epoch/units/provenance, uncertainties/correlations and match evidence | Pending; K4a.03 and redistribution admission |
+| K4a.05 | Accept coverage/ambiguity report and unchanged default membership, names, cross-IDs and visual photometry | Pending K4a closure; bright/multiple/unmatched stars cannot disappear |
+| K4b.01 | Real star adapter/full-input propagation through the shared core | Pending; K4a source admission, AX.06–AX.10; same work as AX.14 |
+| K4b.02 | Adopt admitted incomplete-input models and configured lookback/error/refusal policies for real stars | Pending; AX.13 and source availability/quality; no invented measurements |
+| K4b.03 | Admit explicit historical time/calendar/year-zero/BCE and source/input-date uncertainty semantics | Pending; native ancient state must not require modern observer resources unnecessarily |
+| K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Pending; independent model/domain/uncertainty admission, not extrapolated modern EOP |
+| K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references | Pending; K4b.01–K4b.04; no universal DR4 improvement factor |
+| K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | Pending K4b closure; K3 stellar/figure/label consumers and accepted science/visual criteria |
+
+### K5–K9: freeze, extraction and release
+
+| ID | Intermediate deliverable and exit evidence | Status / dependency |
+|---|---|---|
+| K5.01 | Reconcile all K3 consumers and K4 source/propagation acceptance; no hidden state bypass | Pending K3 + K4 closure |
+| K5.02 | Review final state/time/observer/error/capability/failure/serialization/lifecycle contract | Pending; unqualified errors remain unknown and unsupported capabilities explicit |
+| K5.03 | Accept real star/deep-sky/moving-body conformance, isolation, installation and legacy compatibility matrix | Pending; real providers, not only synthetic demonstrations |
+| K5.04 | Explicitly approve/version the frozen SDK/observer contract and its compatibility rules | Pending K5.01–K5.03; package extraction cannot precede this gate |
+| K6.01 | Extract stellar source/data/provider/tests into `wenu_stars`, preserving names/components/Gaia/provenance and legacy facade | Pending K5; first astronomical package |
+| K6.02 | Independently install/import/collect/run stellar science and conformance without unrelated providers | Pending K6.01; no broad-facade dependency disguised as isolation |
+| K6.03 | Accept application assembly and existing Python/CLI/chart/saved star consumers against the extracted package | Pending K6.02; unchanged product APIs and accepted outputs |
+| K7.01 | Extract galaxy responsibilities and their own resources/science/conformance/install/consumer gate | Pending K5 and first stellar extraction; no fixed order among later independent families selected |
+| K7.02 | Extract open-cluster responsibilities and their own source/lookup/motion/install/consumer gates | Pending same prerequisites; retain shared core/service use |
+| K7.03 | Extract globular-cluster responsibilities with independent science/install/consumer acceptance | Pending same prerequisites |
+| K7.04 | Extract PN responsibilities with qualified source/criteria/display separation and independent gate | Pending same prerequisites; no expansion |
+| K7.05 | Extract SNR responsibilities with independent source/geometry/science/install gate | Pending same prerequisites; no expansion |
+| K7.06 | Place remaining nonstellar/Messier/diffuse responsibilities at justified package boundaries and prove isolation/consumer parity | Pending; no new package is invented merely to match a filename |
+| K8.01 | Extract planets/natural satellites with existing state/apparent/disk/track science and independent installed gate | Pending K5–K7 closure; then one agreed package at a time |
+| K8.02 | Extract asteroids with identity/resource/acquisition separation and science/conformance/install gate | Pending same prerequisites |
+| K8.03 | Extract comets with current physical/photometric/maintenance contracts and independent gate | Pending same prerequisites |
+| K8.04 | Extract artificial satellites with current propagation/crossing/report/illumination/radiometry capabilities and independent gates | Pending same prerequisites; no new reflected-light/detector/Moonlight science |
+| K8.05 | Accept explicit application provider allowlist/loading and cross-package composition with compatible facades | Pending extracted-provider receipts; core imports no concrete astronomical package |
+| K9.01 | Validate installed package combinations and compatibility/version/resource matrix | Pending extraction/composition closure |
+| K9.02 | Run justified release science/integration and preserved functionality checks | Pending; focused per-provider receipts do not substitute for release integration |
+| K9.03 | Accept visual, print and classroom specimens separately from numerical acceptance | Pending; preserve atlas/planisphere physical sizes, labels, symbols and fonts |
+| K9.04 | Close release documentation/configuration/eight commands/six examples/five notebooks and installation/distribution | Pending; reconcile shipped artifacts with accepted source and dependencies |
+| K9.05 | Confirm release name/version against existing tags, approve release and tag/publish | Pending explicit release decision; provisional v0.9.5 label is not permission to publish |
+
+K7/K8 list known family obligations, not an automatically agreed serial family
+order or permission to change package boundaries. Each extraction needs its
+bounded task and actual dependency/conformance gate. Package names below remain
+proposals until that boundary is agreed; the required independent responsibilities
+and preservation of existing capabilities are the roadmap obligations.
+
+### Optional proposals and exclusions
+
+These were mentioned in earlier roadmap text, but are **not activated milestones**
+or automatic prerequisites: Cartesian temporal reuse/error certificates,
+canonical provider schedules, persisted evaluated/common-epoch state formats,
+additional observer correction/absolute-error research, and extending the new
+cluster motion CLI to additional frames. If one is needed, discuss, agree and
+record its scope/dependencies/gate before implementation. This does not defer
+K3's obligation to preserve/reroute all already-existing chart frames or K4's
+agreed scientific-domain qualification.
+
+The existing source snapshots remain immutable source catalogues. No optional
+optimization may replace source facts or retroactively reclassify old snapshots.
+Non-goals at the end of this document remain excluded; a roadmap revision cannot
+silently activate them.
 
 ## Cluster observer implementation order
 
 The [observer contract](scientific_contracts.md#cluster-observer-realization-contract)
 records the admitted nominal service and explicit Python chart/saved adoption.
-Implement the following separately, preserving PR #261 defaults/native semantics:
+The following implemented boundaries correspond to AX.07–AX.12, preserving
+PR #261 defaults/native semantics. They are acceptance context, not a new task queue:
 
 The shared direction engine and calling cluster adapter are now factored;
 synthetic mixed-family evaluation is verified. Explicit Cartesian output now retains SI position/velocity through that same
@@ -583,12 +761,12 @@ uses these owners rather than a new engine for each family.
    projection/rendering. Any evaluated-state snapshot format is separately admitted.
 
 See the [acceptance matrix](testing_policy.md#cluster-observer-contract-and-implementation-gates).
-The next positional step is the separately admitted reduced-input policy work
-for missing proper motion or incomplete space-motion inputs in the shared core,
-followed by real other-family adapters. Approximate 200/1000-year lookback limits
-remain configurable model policies, not universal accuracy guarantees. Total physical/error qualification and
-additional correction policies remain separate. Native-model date coverage
-does not establish historical Earth orientation or observer accuracy.
+AX.13 records the agreed reduced-input policy scope; AX.14–AX.16 record real
+other-family adapters. Their next execution order is not selected by this document.
+Approximate 200/1000-year lookback limits are configurable model policies, not
+universal accuracy guarantees. Native-model coverage does not establish historical
+Earth orientation or observer accuracy. Additional error/correction proposals
+require the explicit change-control procedure above.
 
 ## Mandatory all-consumer migration ledger
 

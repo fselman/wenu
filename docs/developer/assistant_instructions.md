@@ -14,10 +14,53 @@ User instructions take precedence; history is evidence, not a current task queue
    [scientific contracts](scientific_contracts.md), [testing policy](testing_policy.md)
    and the [active roadmap](kernel_roadmap_v0.9.5.md). Read relevant scientific
    guide sections; archive material only for necessary detail/provenance.
-3. Perform the as-is assessment and implement the smallest authorized milestone.
+3. Perform the as-is assessment, identify the agreed roadmap submilestone ID,
+   and implement only that bounded item under the roadmap-control rules below.
 4. Before creating/updating a remote task branch, confirm Fernando's Mac is
    clean and synchronized with the exact agreed base. Uncommitted local work
    is invisible until Fernando reports or publishes it.
+
+## Roadmap control: mandatory before implementation
+
+The [active roadmap](kernel_roadmap_v0.9.5.md) is the single authoritative plan.
+Follow its scope, dependencies, agreed sequence and intermediate milestone ledger
+strictly. A status of pending records agreed scope; it does not authorize the
+agent to activate the whole backlog. Before a task, state its existing ID,
+intended result, scope limits, prerequisites and smallest acceptance gate.
+A general "proceed" applies to the bounded milestone just discussed, not to
+unmentioned additional milestones. If the next item/order has not been selected,
+propose it explicitly rather than choosing or rewriting the order silently.
+
+If an extra item, unlisted prerequisite, scope expansion, changed scientific
+policy, new package/capability or change of agreed order is needed:
+
+1. Stop the affected implementation. Read-only assessment may continue.
+2. Discuss the concrete proposal with Fernando: why it is needed, which existing
+   milestone it affects, alternatives, compatibility/scientific consequences,
+   dependencies and the proposed acceptance gate.
+3. Obtain Fernando's explicit agreement. Do not infer it from a prior broad
+   migration approval or a passing test. Mark an unresolved proposal as proposed,
+   never agreed or next.
+4. Document the agreed change, its stable ID, scope, order/dependencies,
+   acceptance criteria and agreement reference in the roadmap **before** starting
+   the additional implementation. Update linked contracts/inventory if affected.
+5. Proceed only within that newly agreed, documented boundary.
+
+Routine implementation choices and necessary fixes that remain inside the
+already agreed milestone do not create an extra milestone or require repeated
+permission. They still preserve its limits and receive appropriate verification.
+Do not disguise extra science or architectural work as such a choice. Further
+roadmap subdivisions that alter deliverables/order follow the same discussion,
+agreement and documentation rule; no hidden intermediate work queue is allowed.
+
+Keep completed, partial, pending, optional/proposed and excluded work distinct.
+Record the tested commit/PR and limitations when closing a bounded item. A
+partial slice cannot close its parent, and a proposed or optional item is not a
+new prerequisite for migration closure. Do not silently promote the positional
+extension to a mandatory predecessor of the remaining K3 baseline migration.
+Update the current-position/next-item fields after acceptance; publishing a plan
+change is not itself user agreement to implement it. This roadmap/instruction
+update does not itself authorize new runtime work.
 
 ## Architecture
 

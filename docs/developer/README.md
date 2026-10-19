@@ -25,6 +25,18 @@ The [executable test selections](../../tools/test_gates_v1.json) and
 gates. See the testing policy for scope, exclusions and pending normal-runtime
 acceptance; focused selection does not claim independent product installation.
 
+## Roadmap and scope control
+
+The [agreed roadmap](kernel_roadmap_v0.9.5.md) is the single forward-work authority.
+It now includes the [current position and next-item selection](kernel_roadmap_v0.9.5.md#current-position-and-next-item-selection),
+all known [intermediate milestones](kernel_roadmap_v0.9.5.md#intermediate-milestones),
+a full [K3 audit coverage map](kernel_roadmap_v0.9.5.md#k3-audit-coverage-map),
+and separate baseline/Gaia/positional-extension tracks. K3 is still partial;
+PR #269 completes AX.12, not K3 or the kernel freeze. The next runtime ID is
+unselected. Extra scope or changed agreed order must be discussed with Fernando,
+explicitly agreed and documented before implementation under the
+[mandatory agent rule](assistant_instructions.md#roadmap-control-mandatory-before-implementation).
+
 ## Forward work
 
 K1 and the K2 native-state/reuse and explicit time subsets are accepted
