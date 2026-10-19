@@ -8725,5 +8725,30 @@
       "No persisted evaluated states",
       "No physical accuracy guarantee"
     ]
+  },
+  "cluster_observer_contract_v1": {
+    "base": "446456a42bb570a4b5fb22b76d39f28e74cf2df9",
+    "status": "contract-only; no runtime adoption",
+    "authority": "docs/developer/scientific_contracts.md#cluster-observer-realization-contract",
+    "gate": "cluster-observer-contract",
+    "as_is": {
+      "cluster_provider": "direction-only; SI inputs retained privately",
+      "sdk": "existing distinct cartesian_state admission; no implicit scale conversion",
+      "observed_cluster_path": "lookup RA/Dec only through catalogue_point_altaz/CoordinateService",
+      "solar_system": "retarded geometric target semantics; not a nominal catalogue adapter"
+    },
+    "next": [
+      "Cartesian provider admission and own numerical/conformance/installation evidence",
+      "Explicit reception time and common spatial-convention admission",
+      "Finite-distance observer realization, independent oracle/correction/cache gates",
+      "Observed Python consumer adoption, then CLI/TOML selection"
+    ],
+    "unchanged": [
+      "production and SDK implementation",
+      "catalogue/source resources",
+      "dependency/build/collection",
+      "snapshot v5 and legacy reader",
+      "default lookup and explicit native charts"
+    ]
   }
 }

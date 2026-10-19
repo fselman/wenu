@@ -1250,6 +1250,11 @@ the admitted binary64 SI model, including the stored anchor error. Catalogue,
 spherical-input conversion and physical-model errors remain uncertified; see the
 [bound and proof](implementation_reference.md#cluster-direction-reuse-bound). This numerical
 model is separate from observer transformations and current chart adoption.
+The [observer contract](scientific_contracts.md#cluster-observer-realization-contract)
+requires a retained Cartesian state and explicit reception/time/resource meaning
+before finite-distance observation. A time-scale conversion alone does not
+qualify common spatial coordinate scaling. Native angular reuse certificates
+do not certify observer-translated directions; observed motion remains unimplemented.
 
 `stellar_state.py` supplies source-native Hipparcos lookup states. Its explicit
 source epoch J1991.25(TT) is JD 2448349.0625, using the Julian-year definition

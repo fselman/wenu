@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 10, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 11, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -538,6 +538,32 @@ Break chart/atlas private-helper cycles with a public sheet contract while
 preserving canonical rendering. Make changes in separate bounded slices;
 do not combine structural movement, Gaia data replacement and appearance tuning.
 K4 may develop alongside adapters, but K5 cannot close before both are accepted.
+
+## Cluster observer implementation order
+
+The [observer contract](scientific_contracts.md#cluster-observer-realization-contract)
+now records the first bounded design deliverable; no observed runtime is enabled.
+Implement the following separately, preserving PR #261 defaults/native semantics:
+
+1. Publish the existing admitted cluster SI position/velocity through a distinct
+   Cartesian provider admission using the accepted SDK. Verify its own evidence,
+   conformance, source/time/refusal, isolation and installed-consumer contract.
+   Do not infer a Cartesian numerical bound from the direction cone certificate.
+2. Admit explicit reception-time conversions and a common observer/cluster spatial
+   convention. Pin/check ephemeris and EOP identity/coverage; no hidden UTC-to-TCB
+   conversion, TDB-compatible vector relabelling or resource substitution.
+3. Implement the finite-distance nominal observer service through existing
+   numerical authorities, with single ownership of parallax/apparent corrections
+   and retained no-additional-stellar-light-time policy. Pass independent observer,
+   correction-fault, uncertainty, cache/invalidation and lifecycle gates.
+4. Connect that service to explicit observed Python chart/saved consumers; then
+   expose explicit CLI/TOML model selection. Preserve default lookup and canonical
+   projection/rendering. Any evaluated-state snapshot format is separately admitted.
+
+See the [acceptance matrix](testing_policy.md#cluster-observer-contract-and-implementation-gates).
+Backend convention/accuracy/coverage qualification is still required before
+runtime acceptance. Native-model date coverage does not establish historical
+Earth orientation or observer accuracy.
 
 ## Mandatory all-consumer migration ledger
 

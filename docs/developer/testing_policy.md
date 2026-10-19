@@ -178,6 +178,41 @@ observer/projection/rendering and atlas behavior are unchanged; retain their
 accepted receipts. No full SDK, broad installation, unrelated-family or full
 production rerun. Run documentation and tooling separately.
 
+## Cluster observer contract and implementation gates
+
+The contract-only milestone adds the scientific ownership/admission contract,
+as-is inventory and future gate matrix. Run `documentation`, stdlib tooling and
+`cluster-observer-contract` once. The latter retains the existing real
+`test_cluster_motion_consumer_refuses_missing_inputs_binding_domain_and_observation`
+case from the native consumer owner: its observation refusal remains required.
+It is current refusal evidence, not an observer numerical test. No production
+code, provider/SDK, resources, dependency, serialization, build or collection
+changes; do not repeat provider numerical/installation, full SDK, atlas or full
+production suites for this documentation milestone.
+
+Future runtime gates are separate bounded changes, selected from their actual
+diffs. They must retain the following independent faults/oracles; writing this
+matrix does not create tests or mark them passed.
+
+| Future slice | Required acceptance evidence |
+|---|---|
+| Cartesian cluster admission/evaluation | Actual SDK-returned SI PV, velocity availability and separate model/reference; independent scalar-trig/analytic or ERFA PV oracle; multiple epochs/poles/wrap; unavailable mixed batches, source/time/coverage refusal; immutability, lifecycle, ordered duplicates and source identity |
+| Cartesian provider conformance/installation | Shipped Cartesian conformance case with full evaluation and explicit unsupported reuse/accuracy; isolated installed Wenu/SDK consumption and no unrelated provider evaluation; repeat SDK core only if its contracts/code change |
+| Time and common-coordinate admission | Explicit conversion receipts, independent scale references and boundaries, equivalent reception events, wrong-scale/model/resource refusal; qualified spatial/time convention and TCB/TDB scaling where needed, not a change of labels |
+| Finite-distance observer realization | Independent analytic observer-translation/parallax cases at different ranges; infinite-distance limit; separately admitted apparent-place oracle, resource-bound time/EOP/ephemeris evidence and vacuum horizon conversion |
+| Correction ownership | Faults that double-apply proper motion, observer subtraction, aberration or an extra stellar light-time delay must fail; same-backend self-comparison alone is insufficient |
+| Numerical versus physical error | Retain all unknown source/model channels; a native angular certificate must be refused as a translated apparent bound; no invented zero range/time/observer uncertainty |
+| Cache and lifecycle | Count full state/observer evaluations; exact-repeat behavior; change site/time/EOP/ephemeris/model/policy separately, including equal RA/Dec but changed distance; warm failures and partial batches refuse; unrelated provider calls remain zero |
+| Canonical chart/saved consumption | Real cold/saved/fresh-process geometry and observer-context equivalence, actual public chart output and query-failure tests; original source rows/masks/digests/default lookup unchanged; no persisted-state reinterpretation |
+
+Use the existing cluster, coordinate-service, observation/resource and reusable-sky
+test owners after inspecting their closest tests; add a new owner only for a real
+enduring service boundary. Freeze constructed fixtures as synthetic; capture a
+real backend oracle only with exact bytes/version/provenance and actual execution.
+An IERS warning or network-disabled execution alone does not prove coverage.
+No observer model is accepted until its specific resource/backend/numerical
+criteria are recorded and executed; physical cluster accuracy remains separate.
+
 ## Galaxy routing and shared catalogue adapter
 
 `kernel-galaxy-routes` selects inherited nonstellar owner/geometry seams, the
