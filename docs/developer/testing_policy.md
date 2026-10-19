@@ -137,7 +137,7 @@ baselines. An analytic perspective case checks RV sign/effect. Frozen-time fault
 injection must fail this oracle. These checks validate the mathematical model,
 not physical accuracy in antiquity. Other cases cover source metadata/units,
 canonical half-day/subday times, unavailable inputs, singular-domain refusal,
-immutable copies, wrong bindings, accuracy/time/coverage/reuse refusal, lifecycle
+immutable copies, wrong bindings, unsupported accuracy/time/coverage refusal, lifecycle
 and the SDK's eight portable provider-conformance checks. Cluster epoch queries
 in a shared session must leave stellar and static galaxy evaluation counts at zero.
 
@@ -149,6 +149,34 @@ Run documentation and stdlib tooling separately. Do not repeat the full SDK,
 unrelated family, broad installation, atlas pixel/serial-spawn or production gates:
 no default consumer, observer/projection/render algorithm or snapshot schema
 changes. Those seams become required when the new physical model is adopted.
+
+## Cluster motion reuse gate
+
+`cluster-motion-reuse` selects the enduring `test_cluster_state.py` owner and
+the targeted isolated installed-wheel consumer. It retains ERFA/analytic motion
+oracles and adds independent 80-digit Decimal direction checks over certified
+intervals, including both endpoints, poles, perspective approach and zero
+velocity. The analytical convex-cone proof lives in the API reference; finite
+sampling alone is not accepted as a certificate proof. A frozen elapsed-time
+fault must be rejected by the verified numerical floor.
+
+The changed portable conformance factory supplies an actual bounded-reuse query
+and certification activity hooks for the advertised capability; all eight SDK
+checks run through that factory. Owner tests count exact object/time evaluations:
+inside-interval reuse does no full evaluation, a fast object alone recomputes
+outside its interval, stricter requests reject old looser certificates, and
+repeated reuse retains the original anchor. Foreign/reused/corrupted anchors,
+whole-interval and out-of-domain requests fail closed. Reproducible-mode results
+remain independent of request order. The existing prohibited-family spies now
+exercise bounded queries as well; no unrelated stellar/galaxy evaluation occurs.
+
+The existing packaging case additionally executes actual certificate reuse in
+an isolated installed Wenu wheel against the accepted unchanged SDK. Run it once
+through this gate, not also through the parent provider gate. Source ingestion,
+resources, dependencies/build, SDK implementation, chart/snapshot routes,
+observer/projection/rendering and atlas behavior are unchanged; retain their
+accepted receipts. No full SDK, broad installation, unrelated-family or full
+production rerun. Run documentation and tooling separately.
 
 ## Galaxy routing and shared catalogue adapter
 

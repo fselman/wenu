@@ -1737,9 +1737,9 @@
     },
     {
       "path": "src/wenu/cluster_state.py",
-      "git_blob_sha": "b8a8249c46a7306df58557aa308be5187fe4827f",
+      "git_blob_sha": "66cb5faa44d8b75a4d746c84f7aaeac4f359bb44",
       "as_is_directory": "src/wenu",
-      "description": "Immutable source-bound cluster motion admission and explicit nominal rectilinear SDK direction provider.",
+      "description": "Immutable cluster-motion admission, nominal rectilinear directions and exact-rational angular reuse certificates.",
       "baseline_relation": "Additive physical provider owner; current chart/saved consumers remain source lookup."
     }
   ],
@@ -6913,18 +6913,19 @@
     },
     {
       "path": "tests/test_cluster_state.py",
-      "git_blob_sha": "f168dd62c25b2c300cd44b4d55f8844f506ff71d",
+      "git_blob_sha": "c83403a10d09ebe05b9267a0d8da558a135740c0",
       "as_is_directory": "tests",
       "description": "Cluster admission, independent PV/analytic numerical oracles, refusal, portable provider conformance and family isolation.",
-      "test_functions": 11,
+      "test_functions": 16,
       "marks": {},
-      "parametrize_decorators": 2,
+      "parametrize_decorators": 3,
       "fixtures": [],
       "peer_test_imports": [],
       "imports": [
         "astropy",
         "astropy.table",
         "dataclasses",
+        "decimal",
         "erfa",
         "io",
         "json",
@@ -6935,10 +6936,12 @@
         "unittest",
         "wenu.catalogue_state",
         "wenu.cluster_state",
+        "wenu.objects.open_clusters",
         "wenu_kernel",
         "wenu_kernel.conformance",
         "wenu_kernel.errors",
-        "wenu_kernel.records"
+        "wenu_kernel.records",
+        "wenu_kernel.reuse"
       ]
     }
   ],
@@ -8653,9 +8656,42 @@
       "tooling_seconds": 1.753,
       "installed_scope": "Exact wheel/sdist bytes; isolated installed-wheel real kernel query; default fixture lookup unchanged.",
       "numerical_scope": "Independent ERFA PV/analytic model agreement, not physical ancient-date accuracy or a certified numerical bound.",
-      "mac_acceptance": "pending",
+      "mac_acceptance": "31 focused passed in 59.25 s; 36 documentation passed in 3.57 s; 8 tooling passed in 2.874 s. Accepted at a0aaaff1; identical tree merged at 7c268e91. Mac main clean/synchronized and merged branch removed.",
       "active_links_checked_against_authoritative_tree": 483,
       "preserved_archive_blob_records_checked": 73
+    }
+  },
+  "cluster_motion_reuse_v1": {
+    "base_commit": "7c268e918ff721ae1ab400fd5e4aade7af2e3f9c",
+    "owner": "src/wenu/cluster_state.py",
+    "gate": "cluster-motion-reuse",
+    "scope": "Existing SDK interactive certified direction reuse; reproducible full-model fallback; no chart/snapshot adoption.",
+    "proof": "Exact rational sufficient cone checks at endpoints; cone convexity bounds the complete rectilinear interval. Stored anchor vector error is included directly.",
+    "numerical_floor_rad": 9.094947017729282e-13,
+    "bound_reference": "Admitted binary64 SI position/velocity and exact split-JD time; source conversion, measurement and physical-model errors excluded.",
+    "identity": "Model version 2; source/object identity preserved; numerical algorithm and certificate method versioned.",
+    "verification": {
+      "focused_passed": 37,
+      "focused_seconds": 26.87,
+      "portable_conformance_checks": 8,
+      "tooling_passed": 8,
+      "tooling_seconds": 1.566,
+      "local_documentation_passed": 33,
+      "archive_checks_pending_mac": 3,
+      "mac_acceptance": "pending",
+      "documentation_seconds": 1.26,
+      "active_links_checked_against_authoritative_tree": 485,
+      "preserved_archive_blob_records_checked": 73,
+      "fault_check": "Disabling cone admission makes the independent Decimal interval oracle fail; corrupted elapsed time is rejected after a passing baseline."
+    },
+    "illustrative_local_benchmark": {
+      "rows": 502,
+      "full_seconds": 0.030207496994989924,
+      "cold_certificate_seconds": 0.32297085999744013,
+      "warm_seconds": 0.00837291199422907,
+      "warm_full_evaluations": 0,
+      "environment": "local Python 3.12; one illustrative run, not Mac acceptance or a speed guarantee",
+      "setup_anchor_source": "Certificate setup reused an existing exact full-query cache; excludes initial full evaluation time."
     }
   }
 }

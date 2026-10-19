@@ -133,7 +133,8 @@ catalogue defaults. The v1 raw data/ReadMe gaps remain preserved unchanged.
 
 The provider's nominal rectilinear model requires explicit finite TCB coverage.
 It advertises 502 full-input solutions while retaining seven missing-RV and four
-unqualified Dias-only records as unavailable. Accuracy bounds and certified reuse
-are not supplied. No automatic download, observer correction, additional light-time
+unqualified Dias-only records as unavailable. Numerical evaluation and reuse
+bounds now refer to the admitted binary64 SI rectilinear model. Source conversion,
+measurement and physical-model accuracy are not certified. No automatic download, observer correction, additional light-time
 correction or default chart/snapshot adoption occurs. See the implementation
 reference's nominal cluster provider API for ownership and limits.

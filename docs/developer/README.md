@@ -99,8 +99,11 @@ The explicit [nominal cluster motion API](implementation_reference.md#nominal-cl
 now implements source-bound immutable admission and finite-domain TCB rectilinear
 direction evaluation through the accepted SDK. It retains all 513 IDs, advertises
 502 full-input solutions and reports eleven unavailable rows. Existing chart and
-saved-sky lookup routes are unchanged; certified reuse and consumer adoption
-remain ahead. Physical and numerical accuracy bounds are unevaluated.
+saved-sky lookup routes are unchanged. Provider-owned angular certificates now
+enable selective reuse in explicit interactive sessions; reproducible sessions
+retain full-model evaluation. The numerical bound starts from admitted binary64
+SI solutions; measurement, conversion and physical-model accuracy stay unknown.
+Consumer/snapshot adoption remains ahead.
 Relativistic/civil-time adapters, common realization services, Cartesian reuse
 and remaining K3 routing are pending; this is not a completed kernel or frozen SDK.
 

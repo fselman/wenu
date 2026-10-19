@@ -151,8 +151,12 @@ centre model at explicit TCB instants within a required finite nominal domain.
 The runtime metadata resource binds the accepted source companion and its
 qualification; unsupported rows and unevaluated physical errors remain explicit.
 The actual 513-row source has 502 full-input solutions, seven missing RVs and four
-unqualified Dias-only epochs. No accuracy, velocity-output or reuse certificate
-is advertised. This is additive: existing default chart/observed/saved consumers
+unqualified Dias-only epochs. Provider-owned exact-rational cone certificates
+now bound numerical direction reuse within that declared domain. Only explicit
+interactive sessions reuse prior anchors; reproducible sessions evaluate the full
+model. The bound starts from admitted binary64 SI states and does not certify
+source conversion, measurement or physical accuracy. Velocity output remains
+unsupported. This is additive: existing default chart/observed/saved consumers
 continue to use source lookup. See the [API and limits](implementation_reference.md#nominal-cluster-motion-provider).
 
 ## Abstraction barriers that remain incomplete
