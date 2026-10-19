@@ -85,7 +85,13 @@ manifest source digest and use the same adapter. Returned positions enter the
 observer cache key; failures propagate even after cache fill. Cluster motion
 propagation remains pending. The
 [cluster motion audit](kernel_migration_audit_v1.md#open-cluster-motion-and-lookup-audit-2026-10-18)
-records retained Dias motions, omitted Hunt astrometry and required provenance.
+records retained Dias motions and required provenance. A source-bound, versioned
+Hunt astrometry companion now recovers 509 matching solutions (502 radial
+velocities) for the existing 513 selected clusters. Four Dias-only solutions stay
+unadopted. Offline attachment preserves all original fields; the default catalogue
+and charts are unchanged. Epoch scale/origin and cluster-mean covariance remain
+explicitly unresolved; propagation is not enabled. See the
+[ingestion API](implementation_reference.md#open-cluster-astrometry-ingestion).
 Relativistic/civil-time adapters, common realization services, Cartesian reuse
 and remaining K3 routing are pending; this is not a completed kernel or frozen SDK.
 

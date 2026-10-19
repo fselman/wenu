@@ -136,6 +136,26 @@ No acquisition, automatic cross-source merge or resource-byte change occurs in
 this prerequisite. Re-ingestion must retain the existing 513-object membership
 unless a separate selection change is requested.
 
+The ingestion prerequisite now recovers the published aggregate astrometry in a
+versioned companion bound to the accepted 513-row catalogue bytes. All 509 Hunt
+IDs/names/centres match exactly; 502 have radial velocities. The four Dias-only
+rows have masked Hunt fields and an explicit unresolved-adoption policy. Existing
+Dias columns, member photometry, masks, selection and active resource are unchanged.
+The reader consumes the captured CDS ReadMe through Astropy; source byte offsets,
+units and descriptions are not reimplemented for this recovery. All retained
+fields and reviewed meanings enter the source-bound metadata envelope. Explicit
+offline attachment is checked through the existing immutable cluster record.
+
+ReadMe and aggregate gzip checksums exactly match the earlier photometric
+acquisition. The aggregate was retrieved once on 2026-10-19; no member table or
+per-cluster network queries were needed. Scientific-use policy/attribution and
+article CC BY 4.0 statements are recorded with primary-source URLs; no blanket
+CC0 or OpenNGC relicensing claim is made. Tests contain exact captured records
+and the original ReadMe, not reconstructed fixed-width provider fixtures.
+Unknown time scale/origin and unavailable cluster-mean covariances remain open;
+mean cluster motions do not redefine the densest-point centre. Numerical
+propagation and default adoption require a separate reviewed model.
+
 The accepted SDK dev8 introduces `catalogue_lookup`: it admits incomplete
 per-object source epochs without invoking the galaxy static model and refuses
 physical epoch accuracy, velocity and temporal reuse. The cluster adapter now

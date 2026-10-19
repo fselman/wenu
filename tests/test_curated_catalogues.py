@@ -93,6 +93,44 @@ def test_curated_manifest_refuses_escaping_selector_and_unbound_catalogue(tmp_pa
         resources.build_curated_catalogue_manifest(root)
 
 
+def test_hunt_astrometry_companion_bytes_ship_in_wheel_and_sdist(tmp_path):
+    # Same build seam as the installed-consumer test below, restricted to the
+    # new data products: no changed runtime/dependency needs reinstalling here.
+    from zipfile import ZipFile
+    import tarfile
+    project = tmp_path/'project'
+    project.mkdir()
+    shutil.copytree(ROOT/'src/wenu', project/'src/wenu',
+        ignore=shutil.ignore_patterns('__pycache__', 'curated_catalogs', 'observing_lists'))
+    for name in ('pyproject.toml', 'MANIFEST.in', 'README.md'):
+        shutil.copyfile(ROOT/name, project/name)
+    shutil.copyfile(ROOT/'src/curated_catalogue_packaging.py', project/'src/curated_catalogue_packaging.py')
+    for domain in ('open_clusters', 'planetary_nebulae'):
+        _bundle(project/'src/wenu/data/curated_catalogs', domain)
+    with (project/'MANIFEST.in').open('a') as stream:
+        stream.write('recursive-include src/wenu *\n')
+    release = tmp_path/'release'
+    release.mkdir()
+    commands = [
+        [sys.executable, '-c', 'from setuptools.build_meta import build_sdist; build_sdist(' + repr(str(release)) + ')'],
+        [sys.executable, '-m', 'pip', 'wheel', '--no-deps', '--no-build-isolation',
+         '--wheel-dir', str(release), str(project)],
+    ]
+    for command in commands:
+        result = subprocess.run(command, cwd=project, capture_output=True, text=True)
+        assert result.returncode == 0, result.stdout + result.stderr
+    data = ROOT/'src/wenu/data/catalogs/open_clusters'
+    names = ('open_clusters_hunt_astrometry_v1.ecsv',
+             'open_clusters_hunt_astrometry_v1.provenance.json',
+             'open_clusters_hunt_astrometry_source_v1.json')
+    with ZipFile(next(release.glob('*.whl'))) as wheel, tarfile.open(next(release.glob('*.tar.gz'))) as sdist:
+        for name in names:
+            assert wheel.read('wenu/data/catalogs/open_clusters/' + name) == (data/name).read_bytes()
+            member = next(item for item in sdist.getmembers()
+                          if item.name.endswith('/src/wenu/data/catalogs/open_clusters/' + name))
+            assert sdist.extractfile(member).read() == (data/name).read_bytes()
+
+
 def test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override(tmp_path):
     # -I -S intentionally ignores editable .pth finders. Install the accepted
     # SDK wheel into an explicit, separate target instead of borrowing an

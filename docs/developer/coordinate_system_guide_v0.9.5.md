@@ -1221,6 +1221,15 @@ anchor is request bookkeeping, not a source epoch. Returned vectors supply all
 migrated geometry, including restored skies; projection and frame orientation
 remain separate services above this source lookup.
 
+The separate source-bound astrometry companion recovers the matching Hunt mean
+motions, parallax/distance and available radial velocities without adopting them
+in default charts. Its original ReadMe says `2016.0` without a time scale; that
+literal evidence does not qualify the existing epoch labels numerically. The
+ReadMe's cos(dec) convention identifies RA motion as mu_alpha_star. Densest-point
+centres, mean motions, dispersions and standard errors retain distinct roles.
+Cluster-mean covariance/origin remain unknown. Four Dias-only rows retain their
+existing source data without borrowing a Hunt solution.
+
 `stellar_state.py` supplies source-native Hipparcos lookup states. Its explicit
 source epoch J1991.25(TT) is JD 2448349.0625, using the Julian-year definition
 J2000.0 minus 8.75 × 365.25 days. ICRS has no epoch-dependent equinox.

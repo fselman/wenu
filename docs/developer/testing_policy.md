@@ -90,6 +90,28 @@ oracles and the full production suite are excluded. Install the local accepted
 SDK package before Mac verification; an old installed dev7 cannot execute the new
 capability merely because Wenu source changed.
 
+## Selected-cluster astrometry ingestion
+
+`open-cluster-astrometry-ingestion` runs the existing Hunt photometry/packaged-data
+seams, five focused source-ingestion/attachment tests and one archive packaging
+check. Captured source records verify PM convention, units, actual values, missing
+RV and the distinction between standard errors and dispersion. Constructed faults
+exercise changed digests/ReadMe/unit/meaning, duplicate IDs, absent clusters,
+wrong names/centres/source assignments, a changed selected-catalogue byte stream
+and corrupt product bytes. All 513 IDs/order and all 132 original columns, masks,
+units, descriptions and metadata must remain identical after explicit enrichment;
+the existing immutable runtime record must mirror recovered provenance/units.
+Four Dias-only solutions remain unadopted. A fresh output directory and refusal
+of existing versions protect publication. Ingestion tests forbid network access.
+
+The new archive-only test checks exact companion/specification/receipt bytes in
+wheel and sdist using the existing packaging owner. No runtime module, dependency,
+active curated bundle, SDK, snapshot, coordinate/projection/render algorithm or
+request lifetime changes. Accepted installed-consumer and atlas pixel evidence
+therefore remains valid; do not rerun those broad gates, the independent SDK or
+the full production suite. Run documentation and stdlib tooling separately.
+Source acquisition is an explicit one-file operation outside tests and charts.
+
 ## Galaxy routing and shared catalogue adapter
 
 `kernel-galaxy-routes` selects inherited nonstellar owner/geometry seams, the
