@@ -226,6 +226,15 @@ with Kernel(references=(pa.reference,)) as kernel:
         assert received.states[0].time==reception.tcb
         assert received.states[0].source_epoch==result.states[0].source_epoch
         assert reception.position_error_m is None
+        observed=astrometric_observation.realize_astrometric_batch(received,reception,
+            admission=astrometric_observation.NominalObservationAdmission(pa,backend.model))
+        assert observed.original is received and len(observed.states)==1
+        assert observed.states[0].object_key==pa.objects[0]
+        assert observed.states[0].range_m>0 and observed.states[0].emission_time is None
+        assert 0<=observed.states[0].azimuth_rad<2*3.141592653589793
+        assert observed.coordinate_spec.frame=='altaz'
+        assert observed.coordinate_spec.origin=='observer'
+        assert observed.converted.states[0].original.source_epoch==received.states[0].source_epoch
 from wenu.objects.open_clusters import OpenClusters
 default=OpenClusters(None)
 default.load()

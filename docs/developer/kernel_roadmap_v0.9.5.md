@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 15, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 16, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -34,7 +34,8 @@ It preserves source directions; no propagation is added. Observed astrometry,
 native constellation-label anchors, other families and remaining non-chart
 consumers stay open for subsequent K3 slices.
 The explicit resource-free TCB/TDB convention subset is implemented. An offline UTC/TT reception and ERFA input-context subset is also implemented.
-Target finite-distance/apparent realization, common observation services, Cartesian reuse
+The nominal finite-distance observer service is implemented and independently
+checked; observed product adoption, Cartesian reuse
 and SDK freeze remain ahead. PR #248 and the open-cluster correction in PR #249
 are accepted at main `4a14e294`, with focused Mac gates and identical merged tree.
 Neither closes K3.
@@ -549,8 +550,9 @@ Implement the following separately, preserving PR #261 defaults/native semantics
 The shared direction engine and calling cluster adapter are now factored;
 synthetic mixed-family evaluation is verified. Explicit Cartesian output now retains SI position/velocity through that same
 engine. This does not adopt other source catalogues, reduced-input models,
-observer parallax or expansion. Future motion
-work uses that core rather than a new engine for each family.
+expansion or observed chart adoption. The separate object-independent observer
+service now supplies parallax/apparent vacuum directions. Future motion work
+uses these owners rather than a new engine for each family.
 
 1. **Implemented:** publish the existing admitted cluster SI position/velocity through a distinct
    Cartesian admission in the shared object-independent engine using the accepted SDK. Verify its own evidence,
@@ -562,21 +564,25 @@ work uses that core rather than a new engine for each family.
    EPV00/APCO Earth/observer PV is explicitly TDB-compatible BCRS, separate from
    the legacy Skyfield SPK. Caller TT coverage is checked against every resource;
    total numerical/physical errors remain unknown.
-   **Still pending:** target finite-distance/apparent correction admission and
-   its independent numerical/error/cache gates. The input context alone does
-   not enable parallax or establish a universal observation accuracy/date range.
-3. Implement the finite-distance nominal observer service through existing
-   numerical authorities, with single ownership of parallax/apparent corrections
-   and retained no-additional-stellar-light-time policy. Pass independent observer,
-   correction-fault, uncertainty, cache/invalidation and lifecycle gates.
+   The input context alone does not establish a universal observation accuracy/date range.
+3. **Implemented nominal service:** explicit source/reception model admission;
+   one common-coordinate subtraction; finite-source solar monopole deflection;
+   combined annual/diurnal aberration; final-CIP CIRS and vacuum horizon output.
+   Source/evaluation/reception records and unknown errors are retained.
+   Independent parallax/range and Lorentz checks, separate Astropy finite-path
+   comparison, actual kernel/installed-cluster queries and corruption/refusal
+   gates cover this slice. Observer corrections recompute each call; no
+   observer cache, temporal certificate, total accuracy guarantee, retarded
+   target model or additional stellar light time is admitted.
 4. Connect that service to explicit observed Python chart/saved consumers; then
    expose explicit CLI/TOML model selection. Preserve default lookup and canonical
    projection/rendering. Any evaluated-state snapshot format is separately admitted.
 
 See the [acceptance matrix](testing_policy.md#cluster-observer-contract-and-implementation-gates).
-Backend convention/accuracy/coverage qualification is still required before
-runtime acceptance. Native-model date coverage does not establish historical
-Earth orientation or observer accuracy.
+The next step is explicit observed Python chart/saved adoption and its cold/
+saved/fresh-process/public-output gates. Total physical/error qualification and
+additional correction policies remain separate. Native-model date coverage
+does not establish historical Earth orientation or observer accuracy.
 
 ## Mandatory all-consumer migration ledger
 

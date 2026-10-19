@@ -621,7 +621,7 @@ production stellar/PN/SNR catalogue admission. The installed-wheel cluster test
 checks that both facade and engine ship and execute together.
 
 The engine still requires complete admitted SI space-motion solutions. Explicit
-Cartesian output is now implemented as described below; observer parallax remains pending. The requested configurable
+Cartesian output and the separate nominal finite observer service are now implemented as described below; observed chart adoption remains pending. The requested configurable
 200-year no-PM and 1,000-year PM-only lookback policies, measured from source
 reference epochs, remain planned reduced-model admission policies, not enabled
 models or absolute accuracy guarantees. Expansion and morphology evolution are
@@ -806,7 +806,8 @@ and retains eleven unavailable rows. There is no source/zero-velocity fallback.
 This adds explicit state output only. Existing native/observed lookup, explicit
 native motion charts, snapshot formats and observer resources are unchanged.
 The [observer contract](scientific_contracts.md#cluster-observer-realization-contract)
-still requires time/common-coordinate admission before finite-distance observation.
+now has implemented time/common-coordinate and nominal finite-observer services;
+observed chart/saved adoption remains separate.
 
 ### Barycentric time and coordinate conventions
 
@@ -860,9 +861,8 @@ Independent Decimal/ERFA time references, Decimal position scaling, synthetic
 mixed-family real kernel queries, isolation and an installed real-cluster
 consumer validate this subset. This does not prove that a selected observer
 backend supplies the declared convention. The following offline reception
-context now supplies one explicit nominal backend/input subset. Target
-finite-distance/apparent correction admission remains required before observer
-realization.
+context now supplies one explicit nominal backend/input subset, consumed by
+the separately admitted finite observer service below.
 
 ### Offline reception and observer input context
 
@@ -890,7 +890,12 @@ Site coordinates explicitly mean WGS84 east-positive longitude, geodetic
 latitude and ellipsoid height in -1000..10000 m. No legacy Observer elevation
 is silently treated as a qualified ellipsoid height.
 
-The frozen `ReceptionContext` retains the original input; split UTC, TAI, TT,
+The frozen `ReceptionContext` (backend model version 2) additionally retains
+the complete numeric ERFA astrometry tuple, nominal Sun position, UTC label and
+an integrity digest over all its content. These fields bind the subsequent
+realizer to the actual prepared site/event/resources and prevent silent context
+replacement. They are not serialized into existing sky snapshots.
+It retains the original input; split UTC, TAI, TT,
 UT1, TDB and TCB dates; WGS84 site; model/resource/code identities; final
 UT1-UTC, polar motion and CIP dX/dY values; the explicit SDK TDB/TCB admission
 and receipt; nominal Earth and observer position/velocity in TDB-compatible
@@ -911,13 +916,14 @@ positions/velocities) are reference comparisons, not a complete bound for a
 particular observer or a promise outside admitted coverage.
 
 No target state is propagated or translated, and no apparent/horizontal
-direction is returned. This slice prepares the inputs for the next finite-range
-realizer; it does not add a second space-motion or stellar light-time step.
+direction is returned by preparation. The finite-range realizer below consumes
+that frozen context without rebuilding Earth/site states or adding a second
+space-motion or stellar light-time step.
 Independent analytic leap/TT checks, a published ERFA observer reference with
 explicitly synthetic EOP inputs, site/range checks, corruption/refusal recovery
 and actual installed cluster queries at the returned TCB event validate this
-input boundary. They do not constitute the pending target parallax/aberration/
-deflection/horizontal or physical-error acceptance.
+input boundary. The finite observer gate below adds target correction checks;
+physical-error bounds remain unknown.
 
 Primary authorities reviewed 2026-10-19:
 [ERFA DTDB](https://github.com/liberfa/erfa/blob/master/src/dtdb.c),
@@ -927,9 +933,81 @@ Primary authorities reviewed 2026-10-19:
 and [Astropy IERS data handling](https://docs.astropy.org/en/stable/utils/iers.html).
 No authority implementation or data file is copied into Wenu.
 
+### Finite-distance nominal observer realization
+
+`NominalObservationAdmission(state_admission, reception_model)` explicitly binds
+one full nominal Cartesian source admission to the prepared backend model.
+The first policy is `light_time="no-additional-correction"` and
+`corrections="solar-monopole-aberration-vacuum/1"`; unsupported policies refuse.
+Source coordinates must be TCB-compatible nominal barycentric ICRS Cartesian
+states, qualified by their source adapter. This is not a retarded geometric
+Solar-System model. Source/centre qualification remains outside the realizer.
+
+`realize_astrometric_batch(batch, reception, admission=...)` consumes actual
+SDK results for exactly one reception TCB event. It checks full query/model/
+resource/reference bindings, ordered completeness, velocity availability,
+reception integrity/backend identity and the exact time receipt. It preserves
+the original batch and its source/evaluation epochs. It does no provider lookup
+or second propagation. Wrong time, changed context, partial/reordered state
+arrays and singular observer/source or Sun/source geometry refuse atomically.
+Requested apparent bounds (`maximum_error_rad`) and native accuracy requests
+cannot be promoted to observer bounds and are refused. Native temporal/reuse
+certificates do not qualify observer directions.
+
+The fixed sequence is explicit convention scaling; one observer subtraction;
+finite-source solar-monopole LD; AB with combined annual/diurnal velocity and
+its solar-potential term; final-CIP CIRS rotation; vacuum ATIOQ. The latter's
+`diurab`, `refa` and `refb` must be zero to prevent double aberration/refraction.
+The Sun is evaluated at reception. Its conventional ERFA limiter is retained;
+deflector retardation, planetary/multipole deflection, extra target light time,
+refraction and solar occultation/visibility are not modelled. No `atciq`,
+`pmpx`, `apply_space_motion`, `observe()` or retarded-time solver is called.
+
+The frozen `ObservedAstrometricBatch` retains original and convention-converted
+states, reception/context identity, explicit admission and a separate observer
+`ModelRef` with source and backend resources. It returns ordered
+`ObservedAstrometricState` records: object key, synchronous nominal `range_m`,
+observer-origin BCRS-oriented `geometric_vector`, solar-deflected
+`natural_vector`, `proper_bcrs_vector`, topocentric `apparent_cirs_vector`, and
+vacuum `azimuth_rad` (north through east)/`altitude_rad`. The `CoordinateSpec`
+states observer-origin observed Alt/Az, radians and the retained UTC reception
+label. No chart geometry or projection is constructed by this service.
+
+Angular/range error fields and emission time remain `None`. Original source
+measurement/model/numerical evidence, approximate reception uncertainty,
+operation-only scaling/addition rounding and exact time receipts retain separate
+meanings. No total apparent/range bound is inferred. The inverse TCB/TDB view
+may differ from the retained reception TDB split by round-trip rounding; both
+receipts are retained and no extra propagation is applied to conceal it.
+
+The service has no observation cache or handles. Exact repeats recompute each
+correction per object; the upstream SDK may still cache exact source requests.
+A future observation cache must bind full state content, reception identity,
+source/backend model/resources and correction policy, including distance.
+There is no fallback from a failed source query or partially realized batch.
+
+The `astrometric-observer` gate retains reception/installed checks and adds
+independent analytic parallax/range at several distances, the distant-source
+limit, independent Lorentz aberration, a separate Astropy finite-distance
+AltAz comparison, exact correction counts, no-second-motion spies, changed
+range and warm refusal tests. Deliberate double translation and double
+aberration must fail those same numerical oracles. A real installed cluster
+query exercises this exact public function. These are model/composition tests,
+not independent physical ephemeris or universal ancient-date accuracy proofs.
+The default chart pipeline, native snapshots and observer-motion refusal remain
+unchanged until the separate observed-consumer milestone.
+
+Primary correction authorities reviewed 2026-10-19:
+[ERFA LD](https://github.com/liberfa/erfa/blob/master/src/ld.c),
+[solar limiter](https://github.com/liberfa/erfa/blob/master/src/ldsun.c),
+[AB](https://github.com/liberfa/erfa/blob/master/src/ab.c), and
+[ATIOQ](https://github.com/liberfa/erfa/blob/master/src/atioq.c).
+Wenu calls the installed library; it does not copy these implementations.
+
 ### Observer motion: current boundary and proposed handoff
 
-Observed cluster motion is not implemented. `OpenClusters.realize` refuses a
+Observed cluster chart adoption is not implemented. The standalone finite
+observer service above is implemented; `OpenClusters.realize` still refuses a
 motion catalogue outside native ICRS realization. The existing observed lookup
 calls `catalogue_point_altaz` and `CoordinateService` with RA/Dec only. No distance
 or velocity enters that transform, so replacing those angles with propagated
@@ -949,8 +1027,9 @@ The [scientific contract](scientific_contracts.md#cluster-observer-realization-c
 owns the proposed handoff, correction/time/resource requirements, output evidence,
 failure and reuse policy. The [roadmap](kernel_roadmap_v0.9.5.md#cluster-observer-implementation-order)
 separates Cartesian, time/common-convention, observer and product adoption.
-The offline input context above is implemented; target finite-distance/apparent
-realization and its scientific/product gates remain pending.
+The offline input context and nominal finite observer service above are
+implemented. Observed chart/saved/public-output gates and total physical-error
+qualification remain pending.
 
 ### Cluster direction reuse bound
 

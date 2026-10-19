@@ -168,7 +168,7 @@ an explicit TCB context epoch, query a reproducible kernel session and consume
 its returned vectors. Restored v5 skies use that same inherited facade without
 reloading source catalogues or persisting evaluated states. The native chart
 guard checks returned epoch/scale against the request; unchanged static layers
-retain source epochs. Observed motion and CLI model selection remain pending. See the [API and limits](implementation_reference.md#nominal-cluster-motion-provider).
+retain source epochs. Observed chart motion and CLI model selection remain pending. See the [API and limits](implementation_reference.md#nominal-cluster-motion-provider).
 
 ## Observer motion prerequisite assessment
 
@@ -187,8 +187,12 @@ view. `astrometric_observation` separately prepares UTC/TT reception events,
 TDB/TCB receipts and a nominal ERFA EPV00/APCO terrestrial observer context from
 explicit local leap/final IERS-B resources. It records installed code identity and
 independent coverage, never borrowing the Observer Skyfield SPK identity. Total
-errors remain unknown. No target direction is realized and no chart consumer
-calls either additive boundary.
+errors remain unknown. The same observation owner now realizes full nominal
+Cartesian batches into finite-range observer directions and vacuum Alt/Az.
+It preserves source states and a frozen, integrity-bound ERFA reception context;
+observer subtraction, finite-source solar deflection and annual/diurnal
+aberration each have one owner. No second propagation or target light time is
+applied. No chart consumer calls this additive service yet.
 No new time adapter or observed motion route exists yet.
 
 ## Abstraction barriers that remain incomplete

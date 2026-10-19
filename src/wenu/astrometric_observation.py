@@ -1,32 +1,34 @@
 """Offline, explicitly admitted reception inputs for catalogue astrometry.
 
-This service prepares times and terrestrial observer PV, never object motion,
-light time, apparent directions or chart geometry. No acquisition or globals
-are configured. ERFA EPV00 is an analytic model, not the Observer's JPL SPK.
+This service prepares reception inputs and realizes already-evaluated nominal
+Cartesian batches. It never propagates objects, solves light time or draws
+charts. ERFA EPV00 is an analytic model, not the Observer's JPL SPK.
 """
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass, replace
 from fractions import Fraction
 from hashlib import sha256
 import json
-from math import hypot, isfinite, radians
+from math import hypot, isfinite, pi, radians
 from pathlib import Path
 import re
 import warnings
 
 import astropy
+import numpy as np
 from astropy import units as u
 from astropy.time import Time
 from astropy.utils import iers
 import erfa
 
-from wenu.astrometric_coordinates import TcbTdbAdapter, _upper
-from wenu_kernel.errors import InvalidQuery, OutsideCoverage, ResourceMismatch
-from wenu_kernel.records import ModelRef, ResourceRef, TimePoint, TimeSpan
+from wenu.astrometric_coordinates import BarycentricBatchConversion, TcbTdbAdapter, convert_barycentric_batch, _upper
+from wenu.coordinates import CoordinateSpec, PositionStatus
+from wenu_kernel.errors import AccuracyUnavailable, InvalidQuery, OutsideCoverage, ResourceMismatch
+from wenu_kernel.records import ModelAdmission, ModelRef, ObjectKey, ResourceRef, StateBatch, TimePoint, TimeSpan
 from wenu_kernel.time import TimeConversion, TimeConversionAdmission, TimeService
 
 
 def _digest(value):
-    return sha256(json.dumps(value, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+    return sha256(json.dumps(value, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()).hexdigest()
 
 
 def reception_backend_identity():
@@ -88,6 +90,16 @@ class ReceptionContext:
         'explicit TDB-to-TCB', 'EPV00 Earth PV', 'final IERS-B orientation', 'WGS84 APCO observer PV')
     unapplied: tuple[str, ...] = ('target propagation', 'parallax', 'target light time',
         'target aberration/deflection', 'refraction')
+    astrometry: tuple[tuple[str, tuple[float, ...]], ...] = ()
+    sun_position_tdb_m: tuple[float, float, float] | None = None
+    utc_isot: str | None = None
+    identity: str = ''
+
+
+def _context_identity(context):
+    record = asdict(context)
+    record.pop('identity')
+    return _digest(record)
 
 
 class ErfaReceptionBackend:
@@ -144,9 +156,9 @@ class ErfaReceptionBackend:
             ResourceRef('iers-final-eop-b', '1', expected[1], eop_span, 'Final IERS-B interpolation only', provenance),
             ResourceRef('erfa-compiled-backend', self._identity[2], self._identity[3], model_span,
                         'EPV00 analytic Earth model and DTDB approximation; not a JPL SPK', provenance))
-        self.model = ModelRef('wenu.astrometry:erfa-reception', '1', _digest(dict(
+        self.model = ModelRef('wenu.astrometry:erfa-reception', '2', _digest(dict(
             backend=self._identity, coverage=[(t.jd1, t.jd2, t.scale) for t in (coverage.start, coverage.stop)],
-            policy='final-IERS-B;WGS84-height-minus1000-to10000m;EPV00;DTDB-topocentric;CIP-dX-dY;APCO;vacuum;no-target')), resources)
+            policy='final-IERS-B;WGS84-height-minus1000-to10000m;EPV00;DTDB-topocentric;CIP-dX-dY;APCO;vacuum;frozen-astrom-context/1;no-target')), resources)
 
     def prepare(self, reception, *, longitude_deg, latitude_deg, height_m):
         """Prepare one event. Return no target direction; retain unknown errors."""
@@ -202,8 +214,152 @@ class ErfaReceptionBackend:
         if self._leaps != _leap_rows():
             raise ResourceMismatch('Global leap table changed during reception preparation.')
         au, c = 149597870700., 299792458.  # IAU 2012 au; SI speed of light
-        return ReceptionContext(reception, site, (float(utc.jd1), float(utc.jd2)), tai, tt, ut1,
+        utc.precision = 9
+        context = ReceptionContext(reception, site, (float(utc.jd1), float(utc.jd2)), tai, tt, ut1,
             tdb, conversion.target, conversion, adapter.describe(), self.model, self._identity,
             (dut1, xp, yp, dx, dy), tuple(map(float, pvb['p']*au)),
             tuple(map(float, pvb['v']*(au/86400))), tuple(map(float, astrom['eb']*au)),
-            tuple(map(float, astrom['v']*c)), offset, rounding)
+            tuple(map(float, astrom['v']*c)), offset, rounding,
+            astrometry=tuple((name, tuple(float(x) for x in np.asarray(astrom[name]).flat))
+                             for name in astrom.dtype.names),
+            sun_position_tdb_m=tuple(map(float, (pvb['p']-pvh['p'])*au)), utc_isot=utc.isot)
+        return replace(context, identity=_context_identity(context))
+
+
+FINITE_OBSERVER_POLICY = 'solar-monopole-aberration-vacuum/1'
+
+
+@dataclass(frozen=True, slots=True)
+class NominalObservationAdmission:
+    """Explicit binding of source and reception models, with one correction policy."""
+    state: ModelAdmission
+    reception_model: ModelRef
+    light_time: str = 'no-additional-correction'
+    corrections: str = FINITE_OBSERVER_POLICY
+
+    def __post_init__(self):
+        if (type(self.state) is not ModelAdmission or type(self.reception_model) is not ModelRef
+                or self.reception_model.model_id != 'wenu.astrometry:erfa-reception'
+                or self.reception_model.version != '2' or self.light_time != 'no-additional-correction'
+                or self.corrections != FINITE_OBSERVER_POLICY):
+            raise InvalidQuery('Unsupported nominal observation admission or correction policy.')
+
+
+@dataclass(frozen=True, slots=True)
+class ObservedAstrometricState:
+    object_key: ObjectKey
+    range_m: float
+    geometric_vector: tuple[float, float, float]
+    natural_vector: tuple[float, float, float]
+    proper_bcrs_vector: tuple[float, float, float]
+    apparent_cirs_vector: tuple[float, float, float]
+    azimuth_rad: float
+    altitude_rad: float
+    angular_error_rad: None = None
+    range_error_m: None = None
+    emission_time: None = None
+
+
+@dataclass(frozen=True, slots=True)
+class ObservedAstrometricBatch:
+    original: StateBatch
+    converted: BarycentricBatchConversion
+    reception: ReceptionContext
+    admission: NominalObservationAdmission
+    model: ModelRef
+    coordinate_spec: CoordinateSpec
+    states: tuple[ObservedAstrometricState, ...]
+    applied: tuple[str, ...] = ('observer displacement/parallax', 'finite-source solar monopole',
+        'annual/diurnal aberration with solar potential', 'IAU2006/2000A plus final CIP offsets',
+        'Earth rotation/polar motion', 'vacuum local horizon')
+    omitted: tuple[str, ...] = ('additional target light time', 'deflector retardation',
+        'planetary deflection', 'multipoles', 'refraction')
+
+
+def _unit(vector):
+    values = tuple(map(float, vector))
+    radius = hypot(*values)
+    if len(values) != 3 or not isfinite(radius) or radius <= 0:
+        raise InvalidQuery('Singular or non-finite observer/deflector geometry.')
+    return tuple(x/radius for x in values), radius
+
+
+def _admitted_astrometry(context, model):
+    if (type(context) is not ReceptionContext or context.model != model
+            or context.backend_identity != reception_backend_identity() or not context.utc_isot
+            or context.sun_position_tdb_m is None or not context.astrometry):
+        raise ResourceMismatch('Reception context does not match the admitted backend/model.')
+    try:
+        if context.identity != _context_identity(context):
+            raise ResourceMismatch('Reception context binding changed.')
+    except (ValueError, TypeError) as exc:
+        raise ResourceMismatch('Invalid reception context binding.') from exc
+    if any(not resource.coverage.contains(context.tt) for resource in model.dependencies):
+        raise OutsideCoverage('Reception resources do not cover this event.', time=context.tt)
+    adapter = TcbTdbAdapter(context.tdb_time_admission.validity)
+    if (adapter.describe() != context.tdb_time_admission
+            or adapter.convert(context.tdb, 'tcb') != context.tdb_tcb_conversion
+            or context.tdb_tcb_conversion.target != context.tcb):
+        raise ResourceMismatch('Reception conversion does not bind the evaluation event.')
+    astrom = np.zeros((), dtype=erfa.dt_eraASTROM)
+    if tuple(name for name, _ in context.astrometry) != astrom.dtype.names:
+        raise ResourceMismatch('Unsupported frozen ERFA astrometry layout.')
+    for name, values in context.astrometry:
+        data = np.asarray(values, dtype=float)
+        if not np.isfinite(data).all():
+            raise InvalidQuery('Non-finite astrometry context.')
+        astrom[name] = data.reshape(astrom[name].shape)
+    if (any(float(astrom[name]) != 0 for name in ('diurab', 'refa', 'refb'))
+            or tuple(map(float, astrom['eb']*149597870700.)) != context.observer_position_tdb_m
+            or tuple(map(float, astrom['v']*299792458.)) != context.observer_velocity_tdb_m_s):
+        raise ResourceMismatch('Observer PV, vacuum or aberration ownership mismatch.')
+    return astrom
+
+
+def realize_astrometric_batch(batch, reception, *, admission, maximum_error_rad=None):
+    """Realize one complete kernel batch at one admitted reception event.
+
+    No provider callbacks, second space motion, retarded-time solver, fallback
+    or observation cache. Every call performs the corrections once per object.
+    The synchronous nominal range is not a measured/retarded range certificate.
+    """
+    if maximum_error_rad is not None:
+        raise AccuracyUnavailable('Observed numerical/physical error bounds are not qualified.')
+    if type(batch) is not StateBatch or type(admission) is not NominalObservationAdmission:
+        raise InvalidQuery('Typed kernel batch and explicit nominal observation admission required.')
+    astrom = _admitted_astrometry(reception, admission.reception_model)
+    if batch.query.times != (reception.tcb,):
+        raise ResourceMismatch('Kernel states must be evaluated at the admitted reception TCB event.')
+    accuracy = batch.query.accuracy
+    if any(value is not None for value in (accuracy.angular_rad, accuracy.position_m, accuracy.velocity_m_s)):
+        raise AccuracyUnavailable('Native state requests do not certify translated observed accuracy.')
+    adapter = TcbTdbAdapter(admission.state.coverage)
+    receipt = adapter.convert(reception.tcb, 'tdb')
+    converted = convert_barycentric_batch(batch, admission=admission.state,
+        source_coordinate_scale='tcb', time_admission=adapter.describe(), conversions=(receipt,))
+    dependencies = tuple(dict.fromkeys((*admission.state.catalogue.resources,
+        *admission.state.model.dependencies, *reception.model.dependencies)))
+    model = ModelRef('wenu.astrometry:finite-observer', '1', _digest(dict(
+        admission=asdict(admission), solar_body_epoch='reception',
+        limiter='1e-6/max(1,solar-range-au-squared)', cache='none')), dependencies)
+    states = []
+    for state in converted.states:
+        geometric, radius = _unit(tuple(p-o for p,o in zip(state.position_m, reception.observer_position_tdb_m)))
+        source_from_sun, _ = _unit(tuple(p-s for p,s in zip(state.position_m, reception.sun_position_tdb_m)))
+        em = float(astrom['em'])
+        natural, _ = _unit(erfa.ld(1., geometric, source_from_sun, astrom['eh'], em,
+                                   1e-6/max(1., em*em)))
+        proper, _ = _unit(erfa.ab(natural, astrom['v'], em, float(astrom['bm1'])))
+        cirs, _ = _unit(astrom['bpn'] @ np.asarray(proper))
+        ra, dec = erfa.c2s(cirs)
+        az, zenith, _, _, _ = erfa.atioq(ra, dec, astrom)
+        if not all(isfinite(float(x)) for x in (az, zenith)):
+            raise InvalidQuery('Non-finite observed direction.')
+        states.append(ObservedAstrometricState(state.original.object_key, radius,
+            geometric, natural, proper, cirs, float(az) % (2*pi), pi/2-float(zenith)))
+    spec = CoordinateSpec(frame='altaz', origin='observer', position_status=PositionStatus.OBSERVED,
+        instant=reception.utc_isot, time_scale='utc', longitude_unit='rad', latitude_unit='rad',
+        provider='ERFA', model=model.model_id+'/'+model.version,
+        provenance=(model.configuration_digest, reception.identity),
+        corrections=frozenset(('parallax', 'solar-deflection', 'aberration', 'earth-orientation', 'vacuum')))
+    return ObservedAstrometricBatch(batch, converted, reception, admission, model, spec, tuple(states))

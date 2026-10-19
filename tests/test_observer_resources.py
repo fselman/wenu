@@ -324,3 +324,217 @@ def test_reception_published_erfa_observer_reference_with_synthetic_eop(monkeypa
     expected_p+=np.array(r.earth_velocity_tdb_m_s)*r.tdb_minus_tt_s
     assert np.max(np.abs(np.array(r.observer_position_tdb_m)-expected_p))<.2
     assert np.max(np.abs(np.array(r.observer_velocity_tdb_m_s)-expected_v))<2e-5
+
+
+# Extend the existing reception/observer numerical owner. Protect translation,
+# correction ownership and refusal on actual SDK-returned Cartesian batches.
+def _finite_batch(context, positions=None):
+    from dataclasses import replace
+    from wenu.astrometric_state import RectilinearAstrometricProvider,SpaceMotionRow
+    from wenu_kernel import Kernel
+    from wenu_kernel.records import (ProviderKey,ResourceRef,CatalogueRef,ModelRef,ReferenceSpec,
+        ObjectKey,ObjectRecord,ExternalId,CatalogueSnapshot,ModelAdmission,ProviderDescriptor,
+        TimeSpan,UncertaintyChannel,UncertaintyEvidence,StateQuery,AccuracyRequest,SessionPolicy)
+    positions=positions or tuple((d,0.,0.) for d in (2e12,5e13,1e15,1e27))
+    epoch=replace(context.tcb,jd1=context.tcb.jd1-1)
+    span=TimeSpan(replace(epoch,jd1=epoch.jd1-1),replace(context.tcb,jd1=context.tcb.jd1+1))
+    pk=ProviderKey('constructed-finite-observer','1')
+    resource=ResourceRef('constructed-pv','1','1'*64,span,'synthetic nominal inputs',('Constructed test inputs',))
+    catalogue=CatalogueRef(pk,(resource,),'2'*64)
+    model=ModelRef('constructed-rectilinear','1','3'*64,(resource,))
+    reference=ReferenceSpec('icrs','solar-system-barycenter','nominal-astrometric','cartesian','m,m/s',
+                            'synthetic no additional light-time correction')
+    caps=('cartesian_state','batch_evaluation')
+    kinds=('star','open-cluster','planetary-nebula','supernova-remnant')
+    keys=tuple(ObjectKey('constructed:'+k) for k in kinds[:len(positions)])
+    records=tuple(ObjectRecord(k,(ExternalId('constructed','1',kind),),kind,(epoch,),caps,
+                  ('Constructed test inputs',)) for k,kind in zip(keys,kinds))
+    snapshot=CatalogueSnapshot(catalogue,records)
+    admission=ModelAdmission(catalogue,model,reference,keys,caps,span)
+    def unknown(unit):return UncertaintyEvidence(*(UncertaintyChannel('not_evaluated',None,unit,s)
+        for s in ('source measurement','nominal model','euclidean_norm')))
+    velocity=(1000.,-2000.,300.)
+    rows=tuple((key,SpaceMotionRow(str(key),epoch,tuple(x-v*86400 for x,v in zip(p,velocity)),
+                                 velocity,None)) for key,p in zip(keys,positions))
+    provider=RectilinearAstrometricProvider(rows,descriptor=ProviderDescriptor(pk,(catalogue,),
+        (admission,),'synthetic mixed-family provider'),catalogue=snapshot,admission=admission,
+        evidence=unknown('m'),velocity_evidence=unknown('m/s'))
+    query=StateQuery(catalogue,model,tuple(reversed(keys)),(context.tcb,),reference,
+                     AccuracyRequest(metric='euclidean_norm'),require_velocity=True)
+    with Kernel(references=(reference,)) as kernel:
+        kernel.register(provider,ownership='owned')
+        with kernel.open_session(SessionPolicy((catalogue,))) as session:batch=session.evaluate(query)
+    return batch,admission
+
+
+def _realize_finite(batch, source, context, **kwargs):
+    from wenu.astrometric_observation import NominalObservationAdmission,realize_astrometric_batch
+    return realize_astrometric_batch(batch,context,
+        admission=NominalObservationAdmission(source,context.model),**kwargs)
+
+
+def test_finite_observer_analytic_parallax_range_order_and_unknown_errors():
+    from decimal import Decimal,localcontext
+    from math import atan2,hypot,ulp
+    from dataclasses import FrozenInstanceError
+    import pytest
+    context=_prepare_reception(_reception_backend())
+    batch,a=_finite_batch(context)
+    result=_realize_finite(batch,a,context)
+    assert result.original is batch and result.reception is context
+    assert [s.object_key for s in result.states]==list(batch.query.objects)
+    for original,state,converted in zip(batch.states,result.states,result.converted.states):
+        with localcontext() as ctx:
+            ctx.prec=90
+            position=tuple(float(Decimal(x)*(1-Decimal('1.550519768e-8'))) for x in original.position_m)
+        delta=tuple(p-o for p,o in zip(position,context.observer_position_tdb_m))
+        expected_ra=atan2(delta[1],delta[0]);expected_dec=atan2(delta[2],hypot(*delta[:2]))
+        assert abs(atan2(state.geometric_vector[1],state.geometric_vector[0])-expected_ra)<2e-15
+        assert abs(atan2(state.geometric_vector[2],hypot(*state.geometric_vector[:2]))-expected_dec)<2e-15
+        assert abs(state.range_m-hypot(*delta))<=2*ulp(state.range_m)
+        assert converted.original is original
+        assert original.source_epoch!=context.tcb  # model was already propagated once
+        assert state.angular_error_rad is state.range_error_m is state.emission_time is None
+        assert original.position_evidence.physical_model.status=='not_evaluated'
+    assert hypot(result.states[0].geometric_vector[1],result.states[0].geometric_vector[2])<2e-16
+    # Same native RA/Dec at different ranges gives different observer directions.
+    assert result.states[-1].geometric_vector!=result.states[-2].geometric_vector
+    assert result.coordinate_spec.frame=='altaz' and result.coordinate_spec.origin=='observer'
+    assert result.coordinate_spec.longitude_unit==result.coordinate_spec.latitude_unit=='rad'
+    assert result.coordinate_spec.time_scale=='utc' and '60.' in result.coordinate_spec.instant
+    assert result.coordinate_spec.position_status.value=='observed'
+    with pytest.raises(FrozenInstanceError):result.states[0].range_m=0
+
+
+def test_finite_observer_aberration_matches_independent_lorentz_boost():
+    from math import sqrt,hypot
+    context=_prepare_reception(_reception_backend())
+    batch,a=_finite_batch(context)
+    result=_realize_finite(batch,a,context)
+    beta=tuple(v/299792458. for v in context.observer_velocity_tdb_m_s)
+    gamma=1/sqrt(1-sum(b*b for b in beta))
+    for state in result.states:
+        p=state.natural_vector;dot=sum(x*b for x,b in zip(p,beta))
+        boosted=tuple((x/gamma+b+gamma/(gamma+1)*dot*b)/(1+dot) for x,b in zip(p,beta))
+        expected=tuple(x/hypot(*boosted) for x in boosted)
+        # ERFA also includes the documented small solar-potential term.
+        assert hypot(*(x-y for x,y in zip(state.proper_bcrs_vector,expected)))<3e-12
+
+
+def test_finite_observer_matches_separate_astropy_finite_distance_path():
+    import numpy as np
+    from astropy import units as u
+    from astropy.coordinates import SkyCoord,AltAz,EarthLocation,solar_system_ephemeris
+    from astropy.time import Time
+    from astropy.utils import iers
+    from math import cos,sin,hypot
+    backend=_reception_backend();context=_prepare_reception(backend)
+    positions=((1e17,2e17,3e17),(-2e17,1e17,1e17),(1e16,-1e17,1e17),(-1e17,-2e17,1e17))
+    batch,a=_finite_batch(context,positions);result=_realize_finite(batch,a,context)
+    location=EarthLocation.from_geodetic(*context.site_wgs84[:2]*u.deg,
+        height=context.site_wgs84[2]*u.m)
+    utc=Time(*context.utc_jd,format='jd',scale='utc',location=location)
+    utc.delta_ut1_utc=context.earth_orientation[0]
+    with iers.conf.set_temp('auto_download',False),iers.earth_orientation_table.set(backend._eop),solar_system_ephemeris.set('builtin'):
+        for source,actual in zip(result.converted.states,result.states):
+            xyz=source.position_m
+            coordinate=SkyCoord(x=xyz[0]*u.m,y=xyz[1]*u.m,z=xyz[2]*u.m,
+                                representation_type='cartesian',frame='icrs')
+            expected=coordinate.transform_to(AltAz(obstime=utc,location=location,pressure=0*u.hPa))
+            direction=lambda az,alt:(cos(alt)*sin(az),cos(alt)*cos(az),sin(alt))
+            p=direction(actual.azimuth_rad,actual.altitude_rad)
+            q=direction(expected.az.rad,expected.alt.rad)
+            # Astropy uses theoretical CIP without the final dX/dY offsets.
+            assert hypot(*(x-y for x,y in zip(p,q)))<3e-9
+
+
+def test_finite_observer_correction_counts_no_second_motion_or_hidden_cache(monkeypatch):
+    import wenu.astrometric_observation as module
+    context=_prepare_reception(_reception_backend());batch,a=_finite_batch(context)
+    counts=dict(ld=0,ab=0,atioq=0)
+    for name in counts:
+        fn=getattr(module.erfa,name)
+        def counted(*args,_fn=fn,_name=name,**kwargs):
+            counts[_name]+=1
+            return _fn(*args,**kwargs)
+        monkeypatch.setattr(module.erfa,name,counted)
+    def forbidden(*a,**k):raise AssertionError('Second motion or alternate apparent pipeline')
+    monkeypatch.setattr(module.erfa,'pmpx',forbidden)
+    monkeypatch.setattr(module.erfa,'atciq',forbidden)
+    first=_realize_finite(batch,a,context)
+    assert counts==dict(ld=4,ab=4,atioq=4)
+    assert _realize_finite(batch,a,context)==first
+    assert counts==dict(ld=8,ab=8,atioq=8)  # explicit full recomputation, no observer cache
+    from dataclasses import replace
+    changed=replace(batch,states=tuple(replace(s,position_m=tuple(2*x for x in s.position_m)) for s in batch.states))
+    assert _realize_finite(changed,a,context).states[-1].geometric_vector!=first.states[-1].geometric_vector
+
+
+def test_finite_observer_refuses_tampered_context_state_bounds_and_policies():
+    from dataclasses import replace
+    import pytest
+    from wenu.astrometric_observation import NominalObservationAdmission,realize_astrometric_batch
+    from wenu_kernel.errors import KernelError
+    context=_prepare_reception(_reception_backend());batch,a=_finite_batch(context)
+    accepted=NominalObservationAdmission(a,context.model)
+    first=realize_astrometric_batch(batch,context,admission=accepted)
+    for bad in (replace(context,observer_position_tdb_m=(0.,0.,0.)),
+                replace(context,site_wgs84=(0.,0.,0.)),replace(context,tt=replace(context.tt,jd2=0.)),
+                replace(context,backend_identity=('wrong',)*4),replace(context,identity='0'*64),
+                replace(context,astrometry=()),replace(context,utc_isot='2000-01-01T00:00:00')):
+        with pytest.raises(KernelError):realize_astrometric_batch(batch,bad,admission=accepted)
+        assert realize_astrometric_batch(batch,context,admission=accepted)==first
+    from wenu_kernel.records import AccuracyRequest
+    for bad in (replace(batch,query=replace(batch.query,accuracy=AccuracyRequest(angular_rad=1e-5))),
+                replace(batch,states=batch.states[:-1]),replace(batch,states=tuple(reversed(batch.states))),
+                replace(batch,query=replace(batch.query,times=(replace(context.tcb,jd2=0.),))),
+                replace(batch,states=(replace(batch.states[0],velocity_m_s=None,velocity_evidence=None),*batch.states[1:]))):
+        with pytest.raises(KernelError):realize_astrometric_batch(bad,context,admission=accepted)
+    with pytest.raises(KernelError):realize_astrometric_batch(batch,context,admission=accepted,maximum_error_rad=1.)
+    for policy in (dict(light_time='retarded'),dict(corrections='double-aberration')):
+        with pytest.raises(KernelError):NominalObservationAdmission(a,context.model,**policy)
+    wrong=replace(a,model=replace(a.model,configuration_digest='f'*64))
+    with pytest.raises(KernelError):_realize_finite(batch,wrong,context)
+
+
+def test_finite_observer_singular_geometry_refuses_complete_batch():
+    from fractions import Fraction
+    from math import nextafter,inf
+    from dataclasses import replace
+    import pytest
+    from wenu_kernel.errors import KernelError
+    context=_prepare_reception(_reception_backend());batch,a=_finite_batch(context)
+    f=1-Fraction('1.550519768e-8')
+    def inverse(value):
+        guess=float(Fraction(value)/f)
+        return next(x for x in (guess,nextafter(guess,inf),nextafter(guess,-inf))
+                    if float(Fraction(x)*f)==value)
+    for position in (context.observer_position_tdb_m,context.sun_position_tdb_m):
+        bad=replace(batch,states=(*batch.states[:-1],replace(batch.states[-1],
+            position_m=tuple(inverse(x) for x in position))))
+        with pytest.raises(KernelError,match='Singular'):_realize_finite(bad,a,context)
+    assert len(_realize_finite(batch,a,context).states)==4
+
+
+
+def test_finite_observer_double_translation_and_aberration_break_oracles(monkeypatch):
+    from dataclasses import replace
+    import pytest
+    import wenu.astrometric_observation as module
+    # Establish each real oracle before injecting the corresponding science fault.
+    test_finite_observer_analytic_parallax_range_order_and_unknown_errors()
+    test_finite_observer_aberration_matches_independent_lorentz_boost()
+    original=module.convert_barycentric_batch
+    context=_prepare_reception(_reception_backend())
+    def already_topocentric(*a,**k):
+        result=original(*a,**k)
+        return replace(result,states=tuple(replace(s,position_m=tuple(p-o for p,o in
+            zip(s.position_m,context.observer_position_tdb_m))) for s in result.states))
+    with monkeypatch.context() as patch:
+        patch.setattr(module,'convert_barycentric_batch',already_topocentric)
+        with pytest.raises(AssertionError):test_finite_observer_analytic_parallax_range_order_and_unknown_errors()
+    ab=module.erfa.ab
+    def doubled(p,v,s,bm1):return ab(ab(p,v,s,bm1),v,s,bm1)
+    with monkeypatch.context() as patch:
+        patch.setattr(module.erfa,'ab',doubled)
+        with pytest.raises(AssertionError):test_finite_observer_aberration_matches_independent_lorentz_boost()

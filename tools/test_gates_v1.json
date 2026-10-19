@@ -1073,6 +1073,43 @@
           "reason": "Ship the new module and evaluate actual installed cluster Cartesian state at returned reception TCB, retaining all existing assertions."
         }
       ]
+    },
+    "astrometric-observer": {
+      "scope": "Object-independent finite-distance nominal observer realization from actual SDK Cartesian batches; independent parallax/aberration, correction ownership, refusal and installed cluster seam.",
+      "limits": "No chart/CLI/snapshot/provider/SDK/source-resource/dependency/build change. Unknown total apparent/range errors; no observer cache, temporal certificate or extra target light time. Reuse accepted native/propagation evidence; no full SDK/production repeat.",
+      "extends": [
+        "astrometric-reception"
+      ],
+      "selections": [
+        {
+          "node": "tests/test_observer_resources.py::test_finite_observer_analytic_parallax_range_order_and_unknown_errors",
+          "reason": "Finite observer numerical, correction-ownership and complete-batch refusal evidence in the existing observer owner."
+        },
+        {
+          "node": "tests/test_observer_resources.py::test_finite_observer_aberration_matches_independent_lorentz_boost",
+          "reason": "Finite observer numerical, correction-ownership and complete-batch refusal evidence in the existing observer owner."
+        },
+        {
+          "node": "tests/test_observer_resources.py::test_finite_observer_matches_separate_astropy_finite_distance_path",
+          "reason": "Finite observer numerical, correction-ownership and complete-batch refusal evidence in the existing observer owner."
+        },
+        {
+          "node": "tests/test_observer_resources.py::test_finite_observer_correction_counts_no_second_motion_or_hidden_cache",
+          "reason": "Finite observer numerical, correction-ownership and complete-batch refusal evidence in the existing observer owner."
+        },
+        {
+          "node": "tests/test_observer_resources.py::test_finite_observer_refuses_tampered_context_state_bounds_and_policies",
+          "reason": "Finite observer numerical, correction-ownership and complete-batch refusal evidence in the existing observer owner."
+        },
+        {
+          "node": "tests/test_observer_resources.py::test_finite_observer_singular_geometry_refuses_complete_batch",
+          "reason": "Finite observer numerical, correction-ownership and complete-batch refusal evidence in the existing observer owner."
+        },
+        {
+          "node": "tests/test_observer_resources.py::test_finite_observer_double_translation_and_aberration_break_oracles",
+          "reason": "Finite observer numerical, correction-ownership and complete-batch refusal evidence in the existing observer owner."
+        }
+      ]
     }
   },
   "consumer_review": [

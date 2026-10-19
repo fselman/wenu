@@ -73,9 +73,9 @@ silently used as systemic centre motion. Observer realization remains separate.
 
 ## Cluster observer realization contract
 
-**Observer contract, 2026-10-19; observer realization not implemented.** This is the required
-boundary for a future explicit nominal observed-cluster model. PR #261 remains
-the implemented native-only path. It still refuses observer-dependent motion;
+**Observer contract, 2026-10-19; nominal finite observer service implemented,
+chart adoption pending.** The service below is independent of object type.
+PR #261 remains the chart motion path and still refuses observer-dependent motion;
 default lookup, accepted native direction/reuse semantics and saved source
 snapshots do not change. This contract does not freeze a new Python signature.
 
@@ -90,11 +90,10 @@ admission/reference/model identity, rather than adding a Cartesian flag to the
 existing direction admission. That explicit Cartesian output is now implemented:
 SI position and velocity preserve distance, source/evaluation times and separate
 unknown error channels. No Cartesian accuracy bound or temporal reuse is admitted;
-the angular cone certificate remains direction-only. Finite-distance observer
-realization remains unimplemented. The resource-free TCB/TDB convention subset
-is implemented in `astrometric_coordinates`. `astrometric_observation` now
-supplies the offline UTC/TT and ERFA input-context subset below. Target
-finite-distance/apparent realization and product adoption remain open.
+the angular cone certificate remains direction-only. The resource-free TCB/TDB
+convention subset is implemented in `astrometric_coordinates`. The observation
+owner now supplies reception preparation and the separately admitted nominal
+finite-range realizer below. Product adoption remains open.
 
 `OpenClusters.spherical_geometry` currently queries lookup directions and then
 uses `sky.observed_cache.catalogue_point_altaz`. That helper passes RA/Dec through
@@ -184,20 +183,35 @@ are explicit omissions/refusals, not unnamed precision guarantees.
 
 The new reception context only prepares nominal Earth/observer PV and time/EOP
 inputs. It applies no target propagation, parallax, light time, aberration,
-deflection or refraction; those remain pending in a separately tested realizer.
+deflection or refraction. The separate realizer consumes its integrity-bound
+frozen ERFA context; backend model version 2 identifies this prepared handoff.
 Its WGS84 ellipsoid-height policy is -1000..10000 m, with explicit geodetic
 latitude and east-positive longitude. It does not infer an ellipsoidal height
 from the legacy Observer elevation. No global IERS/ephemeris configuration or
 leap-table update is performed. The actual ERFA leap table must match the
 admitted bytes before and after each preparation; a changed global table refuses.
 
-Astropy's finite-distance ICRS-to-observed route is a candidate reusable backend,
-not an accepted replacement in this milestone. Its installed 7.2.3 source was
-inspected: distance-bearing inputs and unit-spherical inputs take different
-parallax branches. The exact supported backend/version, ephemeris/EOP bindings,
-conventions and numerical oracle must pass admission before runtime adoption.
-Do not silently use the Observer's Skyfield DE resource as evidence for an
-Astropy backend whose Earth state came from a different ephemeris.
+The implemented `realize_astrometric_batch` takes a complete actual SDK batch
+for exactly the reception TCB event plus `NominalObservationAdmission`, binding
+its full source admission and reception model to the no-additional-correction
+light-time policy and `solar-monopole-aberration-vacuum/1`. It converts nominal
+TCB-compatible position into the observer's TDB convention and subtracts the
+observer exactly once. It retains geometric range and direction, then uses
+finite-source ERFA LD with the Sun at reception, ERFA AB with the observer's
+combined barycentric velocity, the final-CIP BPN matrix and vacuum ATIOQ.
+APCO's diurnal-aberration field must be zero: diurnal velocity was already
+included in AB. No `pmpx`, `atciq`, `observe()` or second space motion is used.
+
+The solar limiter is the conventional ERFA solar limiter
+`1e-6/max(1,solar_range_au**2)` applied to finite-source LD. Solar reception
+position, neglected deflector retardation, planetary deflection and multipoles
+are explicit model limits. Solar occultation/visibility is not modelled.
+Singular observer/source or Sun/source geometry refuses the complete batch.
+Astropy's finite-distance ICRS-to-AltAz path provides a separate composition
+comparison; its theoretical CIP differs from this service's final dX/dY.
+Independent analytic parallax/range and Lorentz-boost checks remain required;
+a same-backend comparison alone does not establish physical accuracy.
+No Skyfield SPK resource is substituted for this analytic ERFA model.
 
 ### Results, errors, caching and failure
 
@@ -214,7 +228,8 @@ resources and numerical-realization errors retain separate meanings. Unknown
 channels stay unknown. The current angular certificate bounds only the admitted
 native direction; it does not bound range, velocity or translated apparent
 directions. Therefore initial observed motion uses full Cartesian evaluation
-and full observer realization, with identical-request reuse only. No temporal
+and full observer realization. The SDK may reuse exact source queries; this
+realizer has no observer cache and recomputes corrections even on exact repeats. No temporal
 reuse or absolute apparent-accuracy request is admitted without its own proof.
 
 Observation keys must bind returned Cartesian state identity/content/time and

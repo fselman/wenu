@@ -1756,8 +1756,8 @@
     },
     {
       "path": "src/wenu/astrometric_observation.py",
-      "git_blob_sha": "3133710812f19fc31a306ca5a4e1865476284357",
-      "description": "Offline explicit UTC/TT reception, verified local leap/final EOP resources, ERFA analytic Earth/observer PV and TDB/TCB receipts.",
+      "git_blob_sha": "7c7bec383a5cc34feba529d23088fbf774174468",
+      "description": "Explicit reception/resource context and object-independent finite-distance nominal parallax/apparent vacuum Alt/Az realization from SDK batches.",
       "baseline_relation": "New enduring observation-context boundary; no target or chart adoption."
     }
   ],
@@ -8842,6 +8842,23 @@
       "New source catalogue or acquisition",
       "Target propagation changes or expansion",
       "Implicit global configuration or resource fallback"
+    ]
+  },
+  "astrometric_observer_v1": {
+    "base": "0dd7188dd75e6807ea44c8e35b04d1b6515de4d3",
+    "gate": "astrometric-observer",
+    "owner": "src/wenu/astrometric_observation.py",
+    "scope": "Explicit nominal full-PV observer realization with one translation/correction sequence, immutable context binding and unknown total error.",
+    "pending": [
+      "Explicit observed Python/chart/saved consumers",
+      "CLI/TOML selection",
+      "Total physical/apparent error bounds"
+    ],
+    "limits": [
+      "No second propagation or additional target light time",
+      "No observer cache/temporal certificate",
+      "No planetary/multipole/retarded deflector model",
+      "No expansion or new source adapters"
     ]
   }
 }
