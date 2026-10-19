@@ -96,6 +96,13 @@ generic kernel services. Internal components remain independently testable;
 conceptual ownership does not mandate one class/wheel or eager dependencies.
 Extract one independently installable package at a time after that closure. Do not silently reclassify old snapshots as kernel states.
 
+Revision 32 orders KG.01–KG.05 geometry-service assessment/contracts/migration
+and acceptance before KG.06 completed-K audit and KG.07 demonstrated corrections,
+then K3.16. Follow the roadmap's KG ledger; do not resume diffuse runtime work
+or presume prior migrations compliant before those prerequisites are accepted.
+Audit actual implementations and preserve prior receipts only where applicable.
+This sequence agreement is not blanket execution authority for every KG item.
+
 ## Scientific and provider work
 
 Catalogue facts (reference epoch/time scale, frame, centre, units, edition and

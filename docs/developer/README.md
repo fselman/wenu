@@ -49,7 +49,12 @@ including geometry/topology/projections, on 2026-10-19. The state SDK is one
 component. K3.16’s default geometry-query extension proposal is withdrawn; its
 [source assessment and resolution](kernel_migration_audit_v1.md#k316-diffuse-geometry-assessment-and-architectural-resolution)
 retain M9 evidence and direct the work toward existing public geometry services.
-Accepted bounded K receipts remain valid; complete service-kernel closure is open.
+PR #280 accepts the architecture documentation. Revision 32 now places
+[KG.01–KG.07](kernel_roadmap_v0.9.5.md#kg-shared-geometry-services-and-completed-k-audit)
+before K3.16: assess and migrate geometry services, audit completed K work,
+then apply and verify demonstrated corrections. Previous receipts remain evidence
+for their bounded claims; the audit determines whether implementations need changes.
+Complete service-kernel closure remains open.
 Extra scope or changed agreed order must be discussed with Fernando,
 explicitly agreed and documented before implementation under the
 [mandatory agent rule](assistant_instructions.md#roadmap-control-mandatory-before-implementation).
