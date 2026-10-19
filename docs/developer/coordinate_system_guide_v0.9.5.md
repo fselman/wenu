@@ -1227,8 +1227,13 @@ in default charts. Its original ReadMe says `2016.0` without a time scale; that
 literal evidence does not qualify the existing epoch labels numerically. The
 ReadMe's cos(dec) convention identifies RA motion as mu_alpha_star. Densest-point
 centres, mean motions, dispersions and standard errors retain distinct roles.
-Cluster-mean covariance/origin remain unknown. Four Dias-only rows retain their
-existing source data without borrowing a Hunt solution.
+Cluster-mean covariance and centre-model error remain unknown. The separate
+[qualification contract](kernel_migration_audit_v1.md#cluster-propagation-qualification-and-model-contract)
+traces inherited Hunt conventions to Gaia's barycentric TCB astrometry; this is
+distinct from the preserved raw ReadMe gaps and is not automatically adopted.
+It also resolves the four Dias RA-motion conventions through their D14 source;
+the retained position-epoch/scale lineage remains incomplete. Current charts
+continue to use source lookup.
 
 `stellar_state.py` supplies source-native Hipparcos lookup states. Its explicit
 source epoch J1991.25(TT) is JD 2448349.0625, using the Julian-year definition

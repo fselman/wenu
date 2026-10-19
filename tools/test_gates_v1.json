@@ -600,6 +600,24 @@
           "reason": "Exact three new data products ship through existing archive packaging."
         }
       ]
+    },
+    "cluster-astrometry-qualification": {
+      "scope": "Source qualification evidence and proposed propagation contract; current source lookup remains unchanged.",
+      "limits": "Documentation/evidence and focused data-integrity test only. No source product, runtime/SDK, dependency, routing or physical model implementation changes. No acquisition in tests or packaging/atlas/full-suite repeat.",
+      "selections": [
+        {
+          "node": "tests/test_open_clusters.py::test_cluster_astrometry_qualification_is_source_bound_without_adopting_motion",
+          "reason": "Pin evidence to actual source bytes/selected rows and preserve the distinction between qualification and current numerical admission."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_packaged_hunt_astrometry_enrichment_preserves_all_513_rows_and_runtime_metadata",
+          "reason": "Existing explicit attachment preserves raw facts and original catalogue; no automatic adoption."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_cluster_epoch_does_not_infer_measurement_date_from_frame_name",
+          "reason": "D14/HEASARC equinox evidence must not become an invented measurement epoch."
+        }
+      ]
     }
   },
   "consumer_review": [

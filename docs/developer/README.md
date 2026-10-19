@@ -89,8 +89,11 @@ records retained Dias motions and required provenance. A source-bound, versioned
 Hunt astrometry companion now recovers 509 matching solutions (502 radial
 velocities) for the existing 513 selected clusters. Four Dias-only solutions stay
 unadopted. Offline attachment preserves all original fields; the default catalogue
-and charts are unchanged. Epoch scale/origin and cluster-mean covariance remain
-explicitly unresolved; propagation is not enabled. See the
+and charts are unchanged. The raw ReadMe scale/origin gaps remain preserved. A separate
+[source qualification and model contract](kernel_migration_audit_v1.md#cluster-propagation-qualification-and-model-contract)
+now traces Hunt conventions to Gaia and the four Dias motions to D14. Centre
+epoch lineage for the latter and cluster-mean covariance/model bounds remain
+incomplete; propagation is not enabled. See the
 [ingestion API](implementation_reference.md#open-cluster-astrometry-ingestion).
 Relativistic/civil-time adapters, common realization services, Cartesian reuse
 and remaining K3 routing are pending; this is not a completed kernel or frozen SDK.

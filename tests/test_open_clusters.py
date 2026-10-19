@@ -514,6 +514,45 @@ def test_selected_clusters_render_as_one_path_collection():
 
 
 
+def test_cluster_astrometry_qualification_is_source_bound_without_adopting_motion():
+    # Closest owner: packaged enrichment test below. This is evidence integrity,
+    # not a numerical oracle or proof of a paper's scientific conclusions.
+    from pathlib import Path
+    from astropy.table import Table
+    from wenu.objects.open_clusters import OpenClusterCatalogueMetadata
+    import hashlib
+    import json
+    root = Path(__file__).resolve().parents[1]
+    record = json.loads((root/'docs/developer/data/cluster_astrometry_qualification_v1.json').read_text())
+    assert record['schema'] == 'wenu-cluster-astrometry-qualification/1'
+    for path, expected in record['resources'].items():
+        assert hashlib.sha256((root/path).read_bytes()).hexdigest() == expected, path
+    selected = next(root/path for path in record['resources'] if path.endswith('wenu_open_clusters_v0.2.ecsv'))
+    table = Table.read(selected)
+    actual = {str(row['wenu_id']): row for row in table[table['RA_source'] == 'dias']}
+    assert set(actual) == {row['wenu_id'] for row in record['dias_only']}
+    for row in record['dias_only']:
+        source = actual[row['wenu_id']]
+        assert row['identifier'] == source['identifier']
+        assert row['mean_motion_mas_per_year'] == [source['dias_proper_motion_ra_mas_per_year'],
+                                                  source['dias_proper_motion_dec_mas_per_year']]
+        assert row['retained_position_deg'] == [source['ra_deg'], source['dec_deg']]
+        assert row['captured_b_ocl_record'].startswith(row['identifier'])
+        assert row['captured_d14_record'][2:].startswith(row['identifier'])
+        assert row['motion_reference'] in row['captured_b_ocl_record']
+        assert row['b_ocl_reported_errors'] != row['d14_reported_errors']
+        assert row['position_epoch_scale'] is None and not row['propagation_admitted']
+    hunt = record['hunt']
+    assert sum(table['RA_source'] == 'hunt') == hunt['rows']
+    assert hunt['position_epoch_scale'] == 'tcb' and hunt['coordinate_origin'] == 'solar-system-barycenter'
+    assert hunt['qualification'].startswith('source-derived inheritance')
+    assert hunt['cluster_mean_covariance'] is None and hunt['centre_model_error'] is None
+    # Qualification is separate evidence: it must not silently change v1 data or
+    # turn the current lookup into propagated positions or a numerical epoch.
+    assert all(epoch is None for epoch in OpenClusterCatalogueMetadata.from_table(table).source_epochs)
+    assert table['position_epoch'][table['RA_source'] == 'dias'].tolist() == ['unknown'] * len(actual)
+
+
 def _astrometry_ingestion_inputs():
     from pathlib import Path
     import importlib.util

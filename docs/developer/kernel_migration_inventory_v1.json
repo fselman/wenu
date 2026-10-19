@@ -8560,12 +8560,31 @@
       "tooling_passed": 8,
       "tooling_seconds": 1.709,
       "source_bytes_changed": "No existing source table, selected catalogue or active selector bytes changed; three companion products added.",
-      "mac_acceptance": "pending"
+      "mac_acceptance": "8 focused passed in 49.71 s; 36 documentation passed in 2.30 s; 8 tooling passed in 2.184 s. Accepted at decdabe48433; identical tree merged at fed1305e. Mac main clean/synchronized and merged branch removed."
     },
     "products": {
       "open_clusters_hunt_astrometry_source_v1.json": "328ca494efdfdf7e52a4d26c039c4b2155cee97d607267de5c1351c95a465654",
       "open_clusters_hunt_astrometry_v1.provenance.json": "bdbc45035263392d9c620e9ee935162be00d319ebb8865602ba666dbdcd74510",
       "open_clusters_hunt_astrometry_v1.ecsv": "00b001d520111dabdea337e5e243acf8c64495712aba704fb94abff89f6cd57d"
+    }
+  },
+  "cluster_astrometry_qualification_v1": {
+    "base_commit": "fed1305e76455f952cca4c2a49afd14205ce30b7",
+    "evidence": "docs/developer/data/cluster_astrometry_qualification_v1.json",
+    "scope": "Source review and proposed physical/uncertainty/reuse contract; no source-resource or runtime change",
+    "hunt": "Explicit source-derived Gaia inheritance: J2016.0 TCB, barycentric ICRS; raw ReadMe null declarations preserved",
+    "dias": "All four mean motions exactly match cited D14 source; mu_alpha_star resolved; retained centre epoch/scale still not adopted; different source error fields preserved",
+    "test_gate": "cluster-astrometry-qualification",
+    "propagation_implemented": false,
+    "verification": {
+      "local_focused_passed": 3,
+      "local_focused_seconds": 2.84,
+      "tooling_passed": 8,
+      "tooling_seconds": 1.997,
+      "local_documentation_passed": 33,
+      "documentation_seconds": 1.39,
+      "archive_checks_pending_mac": 3,
+      "mac_acceptance": "pending"
     }
   }
 }
