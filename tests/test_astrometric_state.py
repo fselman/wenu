@@ -82,8 +82,16 @@ def test_generic_engine_runs_without_wenu_catalogues_or_scientific_dependencies(
     # accepted SDK under -I -S; no ambient Wenu/Astropy/NumPy can satisfy imports.
     import wenu_kernel
     core = Path(__file__).resolve().parents[1]/'src/wenu/astrometric_state.py'
+    # Keep only the accepted SDK in the injected path. A legacy pathlib
+    # backport there must not shadow the interpreter's standard library.
+    import shutil
+    sdk_root = tmp_path/'sdk-root'
+    shutil.copytree(Path(wenu_kernel.__file__).resolve().parent, sdk_root/'wenu_kernel',
+                    ignore=shutil.ignore_patterns('__pycache__'))
+    (sdk_root/'pathlib.py').write_text("raise ImportError('ambient pathlib shadow must never load')\n")
     script = '''
 import sys,importlib.util
+import pathlib  # Resolve stdlib before adding a caller-supplied SDK path.
 sys.path.insert(0,sys.argv[2])
 spec=importlib.util.spec_from_file_location('isolated_astrometry',sys.argv[1])
 m=importlib.util.module_from_spec(spec);sys.modules[spec.name]=m;spec.loader.exec_module(m)
@@ -105,7 +113,7 @@ with Kernel(references=(a.reference,)) as k:
     with k.open_session(SessionPolicy((a.catalogue,))) as s:
         batch=s.evaluate(q)
         assert all(row.velocity_available for row in batch.states)
-boundary_path=__import__('pathlib').Path(sys.argv[1]).with_name('astrometric_coordinates.py')
+boundary_path=pathlib.Path(sys.argv[1]).with_name('astrometric_coordinates.py')
 bspec=importlib.util.spec_from_file_location('isolated_conventions',boundary_path)
 b=importlib.util.module_from_spec(bspec);sys.modules[bspec.name]=b;bspec.loader.exec_module(b)
 adapter=b.TcbTdbAdapter(a.coverage)
@@ -116,7 +124,7 @@ assert len(result.states)==4
 assert not any(n.split('.')[0] in ('wenu','astropy','numpy') for n in sys.modules)
 '''
     result = subprocess.run([sys.executable,'-I','-S','-c',script,str(core),
-        str(Path(wenu_kernel.__file__).resolve().parent.parent),inspect.getsource(mixed_provider)],
+        str(sdk_root),inspect.getsource(mixed_provider)],
         cwd=tmp_path,text=True,capture_output=True)
     assert result.returncode == 0, result.stdout+result.stderr
 
