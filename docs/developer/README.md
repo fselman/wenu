@@ -108,6 +108,10 @@ including restored source snapshots, with matching TCB context epochs and
 source-digest/identity admission. Default lookup and snapshot v5 are unchanged;
 observer motion, CLI selection and persisted epoch states remain ahead. See the
 [consumer API](implementation_reference.md#explicit-native-cluster-motion-consumers).
+The [observer-motion contract](scientific_contracts.md#cluster-observer-realization-contract)
+now records the RA/Dec-only seam, required Cartesian/time/common-coordinate
+prerequisites and correction/cache acceptance matrix. It is a design deliverable;
+observer motion remains refused until the ordered runtime gates pass.
 Relativistic/civil-time adapters, common realization services, Cartesian reuse
 and remaining K3 routing are pending; this is not a completed kernel or frozen SDK.
 

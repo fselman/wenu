@@ -990,6 +990,16 @@
           "reason": "Changed consumer boundary, shared native epoch contract or default/saved compatibility seam."
         }
       ]
+    },
+    "cluster-observer-contract": {
+      "scope": "Observer contract/as-is documentation with retained actual observer-motion refusal.",
+      "limits": "Documentation, inventory and test selection only. No production/SDK/resource/dependency/build/serialization or runtime observation change. No full provider/SDK/installation/atlas/production repeat.",
+      "selections": [
+        {
+          "node": "tests/test_open_clusters.py::test_cluster_motion_consumer_refuses_missing_inputs_binding_domain_and_observation",
+          "reason": "Existing real admitted companion exercises observation refusal and source/time/model failure; no new observer numerical capability is claimed."
+        }
+      ]
     }
   },
   "consumer_review": [

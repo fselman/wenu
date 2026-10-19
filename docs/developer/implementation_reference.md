@@ -712,6 +712,29 @@ persisted epoch states and observer adoption remain future work. Chart calls use
 reproducible full-model sessions; interactive provider reuse remains available
 through the separate SDK API and is not a projection/paper accuracy promise.
 
+### Observer motion: current boundary and proposed handoff
+
+Observed cluster motion is not implemented. `OpenClusters.realize` refuses a
+motion catalogue outside native ICRS realization. The existing observed lookup
+calls `catalogue_point_altaz` and `CoordinateService` with RA/Dec only. No distance
+or velocity enters that transform, so replacing those angles with propagated
+ones would not implement the finite-distance observer contract.
+
+The SDK already supports `CartesianState`/`cartesian_state`, explicit velocity
+availability and separate position/velocity evidence. The cluster provider has
+not adopted that representation. TimeService has explicit admission/receipts,
+but no ordinary-observer civil/TCB adapter is admitted for this new route.
+Solar-System `AstrometricDirection` requires retarded geometric target/emission
+semantics, which the nominal cluster model does not supply. These existing types
+are not permission for a consumer to read private cluster PV or relabel states.
+
+The [scientific contract](scientific_contracts.md#cluster-observer-realization-contract)
+owns the proposed handoff, correction/time/resource requirements, output evidence,
+failure and reuse policy. The [roadmap](kernel_roadmap_v0.9.5.md#cluster-observer-implementation-order)
+separates Cartesian, time/common-convention, observer and product adoption.
+No new public function, observer backend or supported date domain is claimed by
+this contract milestone.
+
 ### Cluster direction reuse bound
 
 The model version is now `cluster-centre-rectilinear/2`; source resources and

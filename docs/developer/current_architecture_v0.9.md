@@ -164,6 +164,19 @@ reloading source catalogues or persisting evaluated states. The native chart
 guard checks returned epoch/scale against the request; unchanged static layers
 retain source epochs. Observed motion and CLI model selection remain pending. See the [API and limits](implementation_reference.md#nominal-cluster-motion-provider).
 
+## Observer motion prerequisite assessment
+
+The current cluster observer seam discards distance/velocity: lookup RA/Dec enters
+`catalogue_point_altaz` and `CoordinateService`. The cluster catalogue contains SI
+PV internally, but its provider advertises only direction output. The SDK already
+supports a separate Cartesian admission; adopting it does not itself solve observer
+time/common-coordinate conventions or apparent-place realization. Existing
+Solar-System light-time realization has incompatible geometric emission semantics.
+The [observer contract](scientific_contracts.md#cluster-observer-realization-contract)
+and [ordered gates](kernel_roadmap_v0.9.5.md#cluster-observer-implementation-order)
+now specify those prerequisites. This is an as-is/design addition only: no new
+Cartesian cluster provider, time adapter or observed motion route exists yet.
+
 ## Abstraction barriers that remain incomplete
 
 1. `CelestialSphere` and `maximal_sphere` know concrete layer classes. There is

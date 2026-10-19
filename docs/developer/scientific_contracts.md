@@ -50,6 +50,141 @@ source snapshots inherit this route without storing evaluated model states.
 Observer-dependent motion is refused until its realization contract is admitted. See the
 [implemented API](implementation_reference.md#nominal-cluster-motion-provider).
 
+## Cluster observer realization contract
+
+**Contract milestone, 2026-10-19; runtime not implemented.** This is the required
+boundary for a future explicit nominal observed-cluster model. PR #261 remains
+the implemented native-only path. It still refuses observer-dependent motion;
+default lookup, accepted native direction/reuse semantics and saved source
+snapshots do not change. This contract does not freeze a new Python signature.
+
+### As-is assessment and ownership
+
+At main `446456a4`, `cluster_state.ClusterMotionCatalogue` retains qualified SI
+position/velocity and source TCB epochs, but `ClusterMotionProvider` advertises
+direction output only. The separate SDK already admits `cartesian_state` with
+SI `CartesianState` records and explicit velocity availability. No SDK change is
+assumed merely to publish that representation. It will need its own provider
+admission/reference/model identity, rather than adding a Cartesian flag to the
+existing direction admission. Its numerical/error contract must be verified
+independently of the angular cone certificate.
+
+`OpenClusters.spherical_geometry` currently queries lookup directions and then
+uses `sky.observed_cache.catalogue_point_altaz`. That helper passes RA/Dec through
+`CoordinateService`; its `SkyCoord` has no distance or velocity. It cannot carry
+the admitted cluster Cartesian state or certify finite-distance parallax.
+`CoordinateService` owns frame transformations, not epoch propagation. Existing
+Solar-System realization solves retarded geometric ephemeris states and has
+different timing/units/target semantics; its light-time solver and mandatory
+emission-time result are not a catalogue-astrometry adapter.
+
+| Responsibility | Required owner and retained evidence |
+|---|---|
+| Source admission | Existing cluster metadata/catalogue; same 513 IDs and unavailable-row reasons, original source digests, distance estimator/RV/centre policies |
+| Nominal Cartesian evaluation | Cluster provider through the SDK; explicit TCB time/domain, SI position and velocity, original source epoch, model/resource identity, separate error channels |
+| Reception/time conversion | Explicit time service/backend admission; original reception instant and every converted instant, split JD/scale, model/resource/coverage and conversion receipt |
+| Observer realization | Observation service using admitted backend; observer/site and Earth state, ephemeris/EOP identities, correction policy, coverage and backend versions |
+| Projection and output | Existing spherical/domain/projection/preparation/render pipeline; no propagation, time conversion, parallax or apparent corrections in chart style/furniture |
+
+### State and time admission
+
+The Cartesian handoff must consume actual kernel-returned states, not read the
+provider's private input rows or rebuild positions from RA/Dec. Preserve selected
+order/duplicates and stable object identity. Missing RV/epoch, unknown identity,
+wrong source digest, unsupported frame/origin/model, out-of-domain time and a
+failed kernel query refuse the complete selected request; no direction-only or
+lookup fallback is implicit. Source catalogues remain immutable inputs.
+
+Keep source reference epoch, Cartesian evaluation time and observation reception
+time separate. The first nominal observed model evaluates the catalogue model
+at the reception event expressed explicitly in its admitted TCB convention.
+It must not run a second `apply_space_motion`/proper-motion update downstream.
+No implicit UTC/TT/TDB/TCB relabelling or hidden session conversion is allowed.
+TimeService currently has no admitted civil/TCB adapter for this route; that is
+an implementation prerequisite, not permission to call `.tcb` without evidence.
+Record conversion numerical error separately from reception-date uncertainty.
+An unknown conversion/physical error cannot become a zero bound.
+
+An observer ephemeris time-scale label alone does not prove that its position,
+velocity and coordinate scaling are compatible with the nominal cluster state.
+The chosen backend must document and test the common spatial/time convention,
+including any TCB/TDB-compatible scaling, before subtraction or translation.
+This compatibility proof is open; the contract supplies no guessed constants,
+new ephemeris, astronomical validity interval or physical accuracy threshold.
+Model-domain coverage, ephemeris coverage, time-adapter coverage and Earth
+orientation coverage are checked independently and intersected for observation.
+Modern observer data do not inherit the nominal model's long date domain.
+
+### Apply corrections exactly once
+
+The initial model retains the admitted catalogue policy
+`light_time=no-additional-correction`. Its transported density-mode/core-mean
+solution is nominal catalogue astrometry, not a qualified geometric emission
+worldline. Do not feed it into the Solar-System retarded-time solver, apply
+`observe()` again or manufacture a light-time/emission timestamp. A future
+retarded cluster model requires a separately qualified source/model contract.
+
+The observation service must retain finite distance through the parallax owner.
+Use one admitted finite-distance backend path, or an independently admitted
+translation plus subsequent correction path; never subtract the observer and
+then submit that topocentric vector as barycentric ICRS for a second subtraction.
+Choose and record exactly one owner each for observer displacement/parallax,
+annual/diurnal aberration, admitted gravitational deflection, frame orientation,
+Earth rotation/polar motion and local horizontal conversion. Perspective motion
+is already in nominal Cartesian propagation. Refraction remains vacuum for the
+first model, matching the current observation contract. Unsupported corrections
+are explicit omissions/refusals, not unnamed precision guarantees.
+
+Astropy's finite-distance ICRS-to-observed route is a candidate reusable backend,
+not an accepted replacement in this milestone. Its installed 7.2.3 source was
+inspected: distance-bearing inputs and unit-spherical inputs take different
+parallax branches. The exact supported backend/version, ephemeris/EOP bindings,
+conventions and numerical oracle must pass admission before runtime adoption.
+Do not silently use the Observer's Skyfield DE resource as evidence for an
+Astropy backend whose Earth state came from a different ephemeris.
+
+### Results, errors, caching and failure
+
+Results must preserve the original Cartesian states and their source/evaluation
+times, original reception time and conversions, reference/model/resource IDs,
+observer/site, EOP/ephemeris identities, backend versions and applied/omitted
+correction policies. The output spherical specification states its actual
+observer origin, reception instant/scale and admitted apparent/observed status;
+it is not relabelled barycentric astrometry. Range and unavailable emission-time
+evidence remain explicit. No existing snapshot is reclassified as an epoch state.
+
+Measurement, centre/physical-model, input conversion, time conversion, observer
+resources and numerical-realization errors retain separate meanings. Unknown
+channels stay unknown. The current angular certificate bounds only the admitted
+native direction; it does not bound range, velocity or translated apparent
+directions. Therefore initial observed motion uses full Cartesian evaluation
+and full observer realization, with identical-request reuse only. No temporal
+reuse or absolute apparent-accuracy request is admitted without its own proof.
+
+Observation keys must bind returned Cartesian state identity/content/time and
+all observer/time/resource/correction inputs above. Lookup and motion results
+cannot share a key merely because their normalized RA/Dec agree. A changed site
+or EOP/ephemeris/backend invalidates observation, not unrelated provider states.
+Validate current provider/time/resource admission before serving a warm cache;
+failure cannot be concealed by a previous result. Publish only complete batches.
+No global mutable model/backend configuration, implicit downloads, silent
+resource substitutions or fallback beyond coverage are permitted. Offline IERS
+selection must also reject degraded/out-of-range use rather than merely disable
+downloads. Owned/borrowed resource lifetimes follow the existing request owner.
+
+The [acceptance matrix](testing_policy.md#cluster-observer-contract-and-implementation-gates)
+and [ordered implementation](kernel_roadmap_v0.9.5.md#cluster-observer-implementation-order)
+define the remaining gates. No numerical observer implementation is claimed here.
+
+Primary backend documentation checked 2026-10-19:
+[ICRS](https://docs.astropy.org/en/stable/api/astropy.coordinates.ICRS.html),
+[AltAz](https://docs.astropy.org/en/stable/api/astropy.coordinates.AltAz.html),
+[time conversions](https://docs.astropy.org/en/stable/time/index.html), and
+[offline IERS policy](https://docs.astropy.org/en/stable/utils/iers.html).
+These are backend capabilities/policy references, not a dependency upgrade,
+captured numerical oracle, redistribution authorization or proof of the open
+spatial-convention admission. Existing deterministic tests acquire no data.
+
 ## Coordinates, time and resources
 
 Frame, origin, position status, catalogue epoch, equinox, evaluation instant
