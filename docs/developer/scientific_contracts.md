@@ -13,7 +13,7 @@ The ReadMe declares densest-point ICRS centres at epoch 2016.0 and mean cluster
 motions, with RA motion multiplied by cos(dec). Errors of means, dispersions,
 distance percentiles and masks retain their separate meanings. The raw cluster ReadMe has no explicit epoch-scale/origin declarations; the
 qualification below records inherited conventions separately. Cluster-mean
-covariance and centre-model accuracy remain unknown. Current cluster positions are not
+covariance and centre-model accuracy remain unknown. Current chart cluster positions are not
 propagated. A source lookup must not claim zero motion, date accuracy or a
 fabricated measurement epoch. Public/native cluster centres and observer
 transformation inputs now use the accepted SDK `catalogue_lookup` capability.
@@ -30,6 +30,17 @@ conventions, while retaining unproved centre-epoch lineage and uncertainty gaps.
 A future physical provider must distinguish full and explicitly reduced models,
 source/nominal accuracy and computational reuse. A motion-derived update interval
 alone is not an absolute sky-accuracy guarantee. Default lookup remains unchanged.
+
+The explicit nominal cluster provider now implements that contract's first
+numerical subset: qualified immutable input solutions, Astropy spherical
+differentials and SI rectilinear motion in explicit TCB coordinate time. A finite
+caller-declared model domain is mandatory and is not physical validity. Measurement,
+centre/model and numerical bounds remain unevaluated; strict accuracy, velocity
+output and certified reuse are refused. Missing RV/epoch solutions remain visible
+and unavailable. The model deliberately omits an additional light-time correction;
+it is not a full relativistic stellar propagation or ancient cluster reconstruction.
+No default chart or saved-sky source-lookup semantics change. See the
+[implemented API](implementation_reference.md#nominal-cluster-motion-provider).
 
 ## Coordinates, time and resources
 

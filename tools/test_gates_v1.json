@@ -618,6 +618,28 @@
           "reason": "D14/HEASARC equinox evidence must not become an invented measurement epoch."
         }
       ]
+    },
+    "cluster-motion-provider": {
+      "scope": "Explicit immutable cluster-motion admission and nominal TCB rectilinear kernel provider, numerical/refusal/isolation and targeted installed consumption.",
+      "limits": "No default chart/saved routing, source catalogue bytes, snapshot schema, dependency/build or SDK implementation change. Full physical accuracy and reuse remain unavailable. No network, unrelated-family/atlas/full-production or full SDK rerun.",
+      "selections": [
+        {
+          "node": "tests/test_cluster_state.py",
+          "reason": "Independent ERFA and analytic motion oracles; metadata/masks/refusal, finite-domain timing, immutable state, shipped conformance and unrelated-provider isolation."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_cluster_astrometry_qualification_is_source_bound_without_adopting_motion",
+          "reason": "Accepted qualification remains bound to actual source files and leaves default lookup unadopted."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_packaged_hunt_astrometry_enrichment_preserves_all_513_rows_and_runtime_metadata",
+          "reason": "Existing raw source and all selected IDs/metadata remain intact."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_cluster_motion_module_and_admission_ship_and_evaluate_from_installed_wheel",
+          "reason": "New module/metadata ship in both archives; isolated installed-wheel query works and default source lookup is unchanged."
+        }
+      ]
     }
   },
   "consumer_review": [

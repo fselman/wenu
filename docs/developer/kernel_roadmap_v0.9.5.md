@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 7, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 8, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -85,13 +85,17 @@ now pins accepted main `9dd1909f`. The selected-cluster ingestion prerequisite
 now has a versioned source-bound companion: 509 Hunt solutions, 502 radial
 velocities and four explicitly unadopted Dias-only rows. The active 513-object
 catalogue/selection and charts retain their bytes; explicit offline enrichment
-mirrors all recovered fields in the existing metadata record. Next: resolve
-the explicit source-admission and physical provider specified in the
+mirrors all recovered fields in the existing metadata record. The explicit
+source-admission and provider follow the
 [qualification and propagation contract](kernel_migration_audit_v1.md#cluster-propagation-qualification-and-model-contract).
 The Hunt conventions are qualified by documented Gaia inheritance; the four
 Dias RA-motion conventions are resolved through D14, while their retained
 position-epoch/scale lineage remains incomplete. Missing centre-model bounds
-and cluster-mean covariances stay unknown. No physical provider is enabled yet. Other
+and cluster-mean covariances stay unknown. The explicit nominal cluster provider
+now admits these qualified full-input solutions and evaluates a finite-domain rectilinear centre model through the SDK.
+No existing chart/saved consumer adopts it yet, and no strict accuracy or temporal
+reuse is certified. Next: provider-owned reuse evidence and then explicit
+consumer/snapshot integration with compatibility and failure gates. Other
 families/consumers and the final SDK freeze remain ahead. See the
 [motion audit](kernel_migration_audit_v1.md#open-cluster-motion-and-lookup-audit-2026-10-18).
 

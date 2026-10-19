@@ -1,0 +1,92 @@
+{
+  "schema": "wenu-cluster-motion-admission/1",
+  "namespace": "wenu_open_clusters",
+  "edition": "hunt-selected-astrometry-v1-qualified-v1",
+  "source_name": "hunt",
+  "provenance": "Hunt & Reffert 2024, DOI 10.1051/0004-6361/202348662; Gaia DR3 lineage qualified by Hunt 2023 and ESA DR3 definitions; nominal centre model.",
+  "companion_sha256": "00b001d520111dabdea337e5e243acf8c64495712aba704fb94abff89f6cd57d",
+  "selected_catalogue_sha256": "5f149895d29665ede5b2e0e1d410b84da80ed68a768fe495c2134f499985e35e",
+  "source_spec_digest": "aeaafcdef6610190e5c35a4ee0a0a1ae9ca51ac784fd59eb18ac40a8cbcc70c7",
+  "qualification_record_sha256": "4e1c61a87226af8ef7eb849b2212c98ff1ef46ed3fa14b7ba824879d877f308c",
+  "source_chain": {
+    "hunt_2023": {
+      "url": "https://arxiv.org/html/2303.13424v2",
+      "doi": "10.1051/0004-6361/202346285",
+      "sections": [
+        "2.1",
+        "3.3"
+      ],
+      "finding": "Gaia DR3 astrometry; density-mode centres and core-member mean astrometry."
+    },
+    "hunt_2024": {
+      "url": "https://arxiv.org/html/2403.05143v2",
+      "doi": "10.1051/0004-6361/202348662",
+      "sections": [
+        "1",
+        "4.1"
+      ],
+      "finding": "Updated cluster catalogue based on Paper II."
+    },
+    "gaia_reference": {
+      "url": "https://gea.esac.esa.int/archive/documentation/GDR3/Data_processing/chap_cu3ast/sec_cu3ast_intro/ssec_cu3ast_intro_refsystems.html",
+      "section": "4.1.3",
+      "finding": "TCB astrometry in BCRS with solar-system-barycentric origin and ICRS-aligned axes."
+    },
+    "gaia_data_model": {
+      "url": "https://gea.esac.esa.int/archive/documentation/GDR3/Gaia_archive/chap_datamodel/sec_dm_main_source_catalogue/ssec_dm_gaia_source.html",
+      "fields": [
+        "ref_epoch",
+        "ra",
+        "dec",
+        "pmra"
+      ],
+      "finding": "Julian-year TCB reference epoch; barycentric ICRS directions and mu_alpha_star."
+    },
+    "gaia_motion": {
+      "url": "https://gea.esac.esa.int/archive/documentation/GDR3/Data_processing/chap_cu3ast/sec_cu3ast_intro/ssec_cu3ast_intro_motion.html",
+      "section": "4.1.4",
+      "finding": "Rectilinear barycentric astrometric model, perspective effects and light-arrival time convention."
+    },
+    "heasarc": {
+      "url": "https://heasarc.gsfc.nasa.gov/w3browse/all/openclust.html",
+      "finding": "J2000 equinox alone; source-coded mean motions and errors; original source references needed."
+    },
+    "D14": {
+      "url": "https://doi.org/10.1051/0004-6361/201323226",
+      "cds": "J/A+A/564/A79",
+      "finding": "Cluster pmRAc is mu_alpha*cos(delta), ICRS; table2 positions labelled at J2000.0; no epoch time scale."
+    }
+  },
+  "qualification_basis": "source-derived inheritance, not an explicit declaration in the cluster ReadMe",
+  "astrometry": {
+    "frame": "icrs",
+    "origin": "solar-system-barycenter",
+    "epoch_label": "J2016.0",
+    "epoch_scale": "tcb",
+    "ra_motion_convention": "mu_alpha_star"
+  },
+  "columns": {
+    "identifier": "wenu_id",
+    "source": "centre_source",
+    "ra": "RAdeg",
+    "dec": "DEdeg",
+    "distance": "dist50",
+    "pm_ra": "pmRA",
+    "pm_dec": "pmDE",
+    "rv": "RV"
+  },
+  "policies": {
+    "distance": "declared-source-estimator",
+    "radial_velocity": "spectroscopic-proxy",
+    "centre": "density-mode-transported-by-core-mean",
+    "physical_accuracy": "not-evaluated",
+    "light_time": "no-additional-correction"
+  },
+  "limits": {
+    "coverage": "Explicit finite nominal model domain required at admission; not certified physical validity.",
+    "uncertainty": "Centre measurement/model/numerical bounds and cluster-mean covariance remain not evaluated.",
+    "source": "Four Dias-only rows have no qualified physical epoch; missing RV refuses the full model.",
+    "adoption": "Explicit API only; source lookup and existing charts are unchanged."
+  },
+  "distance_estimator": "dist50, published 50th percentile of maximum-likelihood cluster distance; not inverse mean parallax or a Gaussian error model"
+}

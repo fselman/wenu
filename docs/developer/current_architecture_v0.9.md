@@ -142,6 +142,19 @@ direction realizers have stronger typed contracts. They solve light time
 separately from apparent corrections. These facilities must be reused rather
 than reimplemented in a new kernel.
 
+## Explicit nominal cluster motion API
+
+The separate `cluster_state.py` owner now admits immutable qualified cluster
+solutions and supplies a real SDK `epoch_direction` provider. It converts source
+spherical differentials through Astropy and evaluates the declared SI rectilinear
+centre model at explicit TCB instants within a required finite nominal domain.
+The runtime metadata resource binds the accepted source companion and its
+qualification; unsupported rows and unevaluated physical errors remain explicit.
+The actual 513-row source has 502 full-input solutions, seven missing RVs and four
+unqualified Dias-only epochs. No accuracy, velocity-output or reuse certificate
+is advertised. This is additive: existing default chart/observed/saved consumers
+continue to use source lookup. See the [API and limits](implementation_reference.md#nominal-cluster-motion-provider).
+
 ## Abstraction barriers that remain incomplete
 
 1. `CelestialSphere` and `maximal_sphere` know concrete layer classes. There is

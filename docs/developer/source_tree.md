@@ -65,6 +65,7 @@ concrete Wenu classes.
 | [`antisolar.py`](../../src/wenu/antisolar.py) | Observer-relative apparent antisolar direction geometry. |
 | [`atlas_design.py`](../../src/wenu/atlas_design.py) | Observer-independent atlas geometry specimens and strict versioned JSON. |
 | [`chart_document.py`](../../src/wenu/chart_document.py) | Neutral records shared by chart orchestration and renderers. |
+| [`cluster_state.py`](../../src/wenu/cluster_state.py) | Source-bound immutable cluster-motion admission and explicit nominal rectilinear direction provider; no chart adoption or certified reuse. |
 | [`comet_designations.py`](../../src/wenu/comet_designations.py) | Lossless IAU/MPC comet-designation identity vocabulary. |
 | [`comet_discovery.py`](../../src/wenu/comet_discovery.py) | Provider-neutral comet discovery through the NASA/JPL SBDB Query API. |
 | [`comet_photometry.py`](../../src/wenu/comet_photometry.py) | Observer-dependent comet model magnitude from NASA/JPL Horizons. |

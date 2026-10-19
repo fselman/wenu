@@ -122,9 +122,33 @@ No source resource, active selector, implementation, dependency or SDK changes.
 The record and proposed model contract live under developer documentation.
 Run documentation and stdlib gate-tooling checks separately. Reuse the accepted
 archive/installation and chart evidence; no packaging, numerical, atlas, full
-production or independent SDK repeat. When a physical provider is implemented,
-add its independent numerical/refusal/certificate gates and actual affected
-consumer seams before claiming propagation or ancient-date accuracy.
+production or independent SDK repeat. The nominal provider gate below supplies independent numerical/refusal and
+isolation checks. Add certificate proofs and actual affected consumer seams when
+those features are implemented; neither nominal motion nor source qualification
+alone establishes ancient-date accuracy.
+
+## Nominal cluster provider gate
+
+`cluster-motion-provider` selects the new enduring motion owner, existing
+source-qualification/enrichment seams and one targeted archive/installed-wheel
+check. Scalar-trig initial PV data plus ERFA PV updates form an independent
+numerical oracle, including both poles, RA wrap, forward/backward and long nominal
+baselines. An analytic perspective case checks RV sign/effect. Frozen-time fault
+injection must fail this oracle. These checks validate the mathematical model,
+not physical accuracy in antiquity. Other cases cover source metadata/units,
+canonical half-day/subday times, unavailable inputs, singular-domain refusal,
+immutable copies, wrong bindings, accuracy/time/coverage/reuse refusal, lifecycle
+and the SDK's eight portable provider-conformance checks. Cluster epoch queries
+in a shared session must leave stellar and static galaxy evaluation counts at zero.
+
+The existing archive scaffold is reused without removing its previous assertions.
+The new case checks exact module/admission bytes in wheel and sdist and performs
+an isolated installed-wheel kernel query against the explicit accepted SDK path;
+default fixture lookup remains unchanged. No root dependency/build/SDK changes.
+Run documentation and stdlib tooling separately. Do not repeat the full SDK,
+unrelated family, broad installation, atlas pixel/serial-spawn or production gates:
+no default consumer, observer/projection/render algorithm or snapshot schema
+changes. Those seams become required when the new physical model is adopted.
 
 ## Galaxy routing and shared catalogue adapter
 
