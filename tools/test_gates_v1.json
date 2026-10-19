@@ -1248,6 +1248,36 @@
           "reason": "Sequence request/configuration/resume identity contract; retained two-frame ephemeris integration uses unchanged physics and is outside this model-selection diff."
         }
       ]
+    },
+    "native-label-routing": {
+      "scope": "K3.07 native constellation-label anchors consume full-source public kernel-backed stellar positions, preserving placement and native output.",
+      "limits": "No observed migration, SDK/provider numerical changes, source resources, dependency/build, snapshot schema, Gaia, propagation, projection or renderer change. Reuse accepted lower-level conformance/installation evidence; no full SDK/production repeat.",
+      "selections": [
+        {
+          "node": "tests/test_constellation_labels.py",
+          "reason": "Whole label owner: public-only native access, full-source means, kernel-result/refusal, empty inputs and existing observed/display policies."
+        },
+        {
+          "node": "tests/test_constellation_geometry.py",
+          "reason": "Native line/label and existing geometric owner compatibility."
+        },
+        {
+          "node": "tests/test_position_providers.py",
+          "reason": "Full-source query retains explicit-ID, missing-row and selection contracts."
+        },
+        {
+          "node": "tests/test_stars.py",
+          "reason": "Stellar facade retains current native and observed selection behavior."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_label_kernel_route_preserves_cold_saved_anchors_and_page_pixels",
+          "reason": "Legacy/cold/saved native label geometry and actual PNG pixels, with PDF export."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources",
+          "reason": "Fresh-process restored label anchors execute without original source loading."
+        }
+      ]
     }
   },
   "consumer_review": [

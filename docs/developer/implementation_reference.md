@@ -186,10 +186,12 @@ marker selection. `instant` is retained for compatibility and ignored: the resul
 is explicitly source-native at the admitted catalogue epoch, not a propagated
 position at that instant. No catalogue-specific epoch, edition or provenance
 literal is supplied by the stellar geometry or kernel bridge.
-`Stars.native_positions(identifiers)` queries explicit HIP IDs from the full
+`Stars.native_positions(identifiers=None)` queries explicit HIP IDs from the full
 source table (or the stable table for constructed legacy objects without one).
 Available rows retain source order, IDs, photometry, designations and NaNs;
-absent IDs are omitted for the consumer's missing-ID policy. Empty selections
+absent IDs are omitted for the consumer's missing-ID policy. `None` requests the
+complete source, independently of marker selection; an explicit empty iterable
+still requests no rows. Empty selections
 avoid a query. Both APIs prefer authoritative `ra_degrees`, with hours × 15
 only for hours-only constructed inputs, avoiding a redundant floating-point
 round trip. Neither mutates active marker selection.
@@ -199,8 +201,14 @@ through `native_positions`, then joins returned IDs to the original edge order.
 This preserves faint endpoints, warning/gap policy and global resolvability
 metadata without evaluating unrelated catalogue stars. Returned kernel vectors
 control endpoints; refusal is not replaced by raw catalogue coordinates.
-Observed astrometry and native constellation-label anchor calculation remain
-legacy consumers. No claim of all-consumer kernel closure follows.
+Native `ConstellationLabels.realize` requests all source positions through
+`native_positions()` once and uses those returned angles for constellation
+membership, Serpens splitting and the existing spherical mean. Faint source
+stars remain included independently of marker selection. Empty/all-invalid
+inputs preserve the returned coordinate specification without a second query.
+Kernel refusal propagates; there is no raw-table fallback. Snapshot label
+instances inherit this path. The observed label calculation remains unchanged.
+No claim of all-consumer kernel closure follows.
 
 The `native-catalogue` reference explicitly means an unpropagated lookup.
 Unbounded lookup availability is not astrometric validity at arbitrary epochs;

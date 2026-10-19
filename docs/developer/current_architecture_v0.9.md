@@ -16,6 +16,12 @@ separate Wenu dependency and routes native stellar realization through it.
 Other state consumers and the SDK freeze remain pending. The canonical
 projection and rendering pipeline is retained.
 
+K3.07 routes native constellation-label anchors through the full-source public
+stellar query. Membership, Serpens splitting, source-order grouping and spherical
+means retain their existing rules. Labels inherit the returned coordinate spec;
+observed labels remain a separate legacy consumer. This bounded routing change
+is pending Mac acceptance and does not close K3.
+
 ## Canonical pipeline
 
 Catalogue/provider → spherical geometry → projection-domain guard → projection

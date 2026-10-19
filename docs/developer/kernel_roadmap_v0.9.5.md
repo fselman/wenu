@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 19, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 20, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -44,14 +44,14 @@ that every existing function has migrated or that a new full-suite run occurred.
 | Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
 | Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
 | Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
-| Current authorized task | This roadmap/instruction documentation revision, requested by Fernando on 2026-10-19 |
-| Next runtime submilestone | **Not selected.** Discuss/select an existing bounded ID and its gate before implementation |
+| Current authorized task | K3.07 native constellation-label anchor routing, selected by Fernando’s 2026-10-19 “Proceed” |
+| Next runtime submilestone | **K3.07 selected.** Native label anchors consume public kernel-backed stellar positions; observed paths remain outside this task |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
 agreement. This revision removes that automatic next-step designation. Continuing
 remaining K3 migration and continuing the positional extension are distinct
-choices. Neither is silently selected by this documentation change.
+choices. K3.07 baseline migration was subsequently proposed explicitly and selected by Fernando; AX.13 remains pending.
 
 ## Roadmap agreement and change control
 
@@ -71,6 +71,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 20: select K3.07 | Fernando’s 2026-10-19 “Proceed” after the bounded native-label proposal | Implement K3.07 only, after accepted K3.05/K3.06. Preserve full-source membership, Serpens splitting, mean anchors, placement and appearance. Verify public-interface isolation, changed kernel results/refusal, native chart and saved-sky compatibility with the focused native-label gate; no observed migration, propagation, Gaia, projection or renderer changes |
 | Revision 19: detailed intermediate ledger and strict governance | Fernando's 2026-10-19 request to write the full roadmap, expose intermediate milestones and require discussion/agreement/documentation for extra work | Documentation/instructions only; no new runtime item activated |
 
 Future accepted changes record a change ID/date, the specific user agreement
@@ -520,7 +521,7 @@ map below ensures small/non-chart capabilities do not disappear in grouped rows.
 | K3.04 | Bind stellar source metadata/epochs/units/provenance and source snapshots to immutable records | Accepted PR #248 and compatibility repair; M1–M3 addressed |
 | K3.05 | Route native stellar geometry, public `Stars.position` and explicit HIP lookup through returned kernel states | Accepted PR #247–#248; source-native lookup, not stellar propagation |
 | K3.06 | Route native constellation figure endpoints through public stellar identities/states | Accepted PR #248; retain faint endpoints, topology, labels and line gaps |
-| K3.07 | Route native constellation-label anchor computation, preserving accepted placement | Pending; metadata inheritance alone does not complete this consumer |
+| K3.07 | Route native constellation-label anchor computation, preserving accepted placement | Implemented candidate; pending Mac acceptance. Actual public kernel-backed positions now control anchors; placement preserved by focused native-label gate |
 | K3.08 | Route existing observed stellar/figure/label consumers through state and observation boundaries | Pending; preserve current Skyfield science first; new Gaia propagation is K4b |
 | K3.09 | Close nonstellar source admission/shared coordinate defaults and snapshot lineage without fabricated metadata | Partial: preservation/record/snapshot v5 mechanisms accepted; M4 shared defaults and M5 source gaps remain |
 | K3.10 | Route galaxy centres/outline inputs/labels/public and saved consumers; close required source qualification | Partial: static kernel routes accepted; compatibility origin/frame gaps remain explicit |

@@ -371,6 +371,8 @@ vertices = sky.stars.native_positions(sky.constellation_lines.star_ids)
 edges = sky.constellation_lines.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None)
 assert vertices.coordinate_spec.epoch == edges.coordinate_spec.epoch == 'J1991.25'
 assert len(edges) and set(vertices.ids) <= set(sky.stars.source_catalog.index)
+anchors = sky.constellation_labels.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None)
+assert len(anchors) >= 88 and anchors.coordinate_spec.epoch == 'J1991.25'
 assert sky.stars.designation_catalogue.curation_sha256
 assert sky.constellation_lines.star_ids_for(("Sco",))
 context = LayerRealizationContext(NATIVE_ICRS_SPEC)
@@ -1382,3 +1384,46 @@ print(json.dumps(dict(lon=geometry.lon_deg.tolist(),lat=geometry.lat_deg.tolist(
     result = json.loads(completed.stdout)
     assert result == dict(lon=expected.lon_deg.tolist(),lat=expected.lat_deg.tolist(),ids=selected)
     assert output.stat().st_size > 1000
+
+
+def test_native_label_kernel_route_preserves_cold_saved_anchors_and_page_pixels(native_snapshot_case, tmp_path, monkeypatch):
+    """Compare the previous raw anchor inputs with public kernel positions."""
+    import numpy as np
+    from matplotlib.image import imread
+    from wenu.atlas_design import AtlasBandTiling
+    from wenu.charts.atlas_publication import AtlasChartPresentation
+    from wenu.charts.request_generation import AtlasSheetChartRequest, generate_chart_request
+    from wenu.geometry.spherical import SphericalPoints
+    from wenu.objects.stars import Stars
+    from wenu.sky.native_snapshot import read_native_sky_snapshot
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    raw, destination, _, cold = native_snapshot_case
+    saved = read_native_sky_snapshot(destination).make_sky()
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    query = Stars.native_positions
+    def previous_anchor_inputs(self, identifiers=None):
+        if identifiers is not None:
+            return query(self, identifiers)
+        source = self.source_catalog
+        return SphericalPoints(lon_deg=source['ra_degrees'].to_numpy(dtype=float),
+            lat_deg=source['dec_degrees'].to_numpy(dtype=float),
+            coordinate_spec=query(self, ()).coordinate_spec)
+    with monkeypatch.context() as baseline:
+        baseline.setattr(Stars, 'native_positions', previous_anchor_inputs)
+        previous = cold.constellation_labels.realize(context, None)
+    current = cold.constellation_labels.realize(context, None)
+    _assert_native_geometry_equal(previous, current)
+    _assert_native_geometry_equal(current, saved.constellation_labels.realize(context, None))
+    atlas = AtlasBandTiling.from_json(raw.decode())
+    sheet = atlas.geometry.sheets[13]
+    presentation = AtlasChartPresentation(layers=('stars', 'constellation_lines', 'constellation_labels'),
+        star_magnitude_limit=6, formats=('png', 'pdf'), dpi=72)
+    with monkeypatch.context() as baseline:
+        baseline.setattr(Stars, 'native_positions', previous_anchor_inputs)
+        generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
+            presentation, tmp_path/'legacy-labels'), sky=cold)
+    for name, sky in (('kernel-labels', cold), ('saved-labels', saved)):
+        generate_chart_request(AtlasSheetChartRequest(sheet, atlas.geometry.page,
+            presentation, tmp_path/name), sky=sky)
+        filename = f'chart-{sheet.number:02d}.png'
+        np.testing.assert_array_equal(imread(tmp_path/'legacy-labels'/filename), imread(tmp_path/name/filename))
