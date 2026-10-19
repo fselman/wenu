@@ -122,7 +122,9 @@ and velocity through a separate admission with unknown error bounds; it does not
 yet perform observer realization.
 The explicit [TCB/TDB convention subset](implementation_reference.md#barycentric-time-and-coordinate-conventions)
 now supplies time receipts and spatial scaling independently of object type.
-Civil/TT reception-time and concrete observer-backend admission, common realization services, Cartesian reuse
+An offline [reception context](implementation_reference.md#offline-reception-and-observer-input-context)
+now retains explicit UTC/TT/TDB/TCB events and separately identified ERFA Earth/observer
+PV with verified local leap/final EOP resources. Target parallax/apparent realization, Cartesian reuse
 and remaining K3 routing are pending; this is not a completed kernel or frozen SDK.
 
 [Roadmap to v0.9.5: kernel and loadable packages](kernel_roadmap_v0.9.5.md)

@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 14, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 15, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -33,8 +33,8 @@ constellation endpoints through that adapter, correcting source-epoch metadata.
 It preserves source directions; no propagation is added. Observed astrometry,
 native constellation-label anchors, other families and remaining non-chart
 consumers stay open for subsequent K3 slices.
-The explicit resource-free TCB/TDB convention subset is implemented. Civil/TT
-reception-time and concrete observer-backend admission, common observation services, Cartesian reuse
+The explicit resource-free TCB/TDB convention subset is implemented. An offline UTC/TT reception and ERFA input-context subset is also implemented.
+Target finite-distance/apparent realization, common observation services, Cartesian reuse
 and SDK freeze remain ahead. PR #248 and the open-cluster correction in PR #249
 are accepted at main `4a14e294`, with focused Mac gates and identical merged tree.
 Neither closes K3.
@@ -556,13 +556,15 @@ work uses that core rather than a new engine for each family.
    Cartesian admission in the shared object-independent engine using the accepted SDK. Verify its own evidence,
    conformance, source/time/refusal, isolation and installed-consumer contract.
    Do not infer a Cartesian numerical bound from the direction cone certificate.
-2. **Partly implemented:** explicit TCB/TDB TimeService adapter and
-   object-independent Cartesian convention scaling with retained receipts.
-   **Still pending:** civil/TT reception-time admission and proof that a selected
-   observer backend supplies the declared common spatial convention. Pin/check
-   ephemeris and EOP identity/coverage; no hidden UTC-to-TCB conversion,
-   TDB-compatible vector relabelling or resource substitution. This algebraic
-   subset does not enable parallax or qualify an observer date domain.
+2. **Implemented input-context subset:** explicit TCB/TDB TimeService adapter,
+   Cartesian convention scaling, and an offline UTC/TT reception service with
+   caller-verified leap/final IERS-B data and installed ERFA identity. Its analytic
+   EPV00/APCO Earth/observer PV is explicitly TDB-compatible BCRS, separate from
+   the legacy Skyfield SPK. Caller TT coverage is checked against every resource;
+   total numerical/physical errors remain unknown.
+   **Still pending:** target finite-distance/apparent correction admission and
+   its independent numerical/error/cache gates. The input context alone does
+   not enable parallax or establish a universal observation accuracy/date range.
 3. Implement the finite-distance nominal observer service through existing
    numerical authorities, with single ownership of parallax/apparent corrections
    and retained no-additional-stellar-light-time policy. Pass independent observer,

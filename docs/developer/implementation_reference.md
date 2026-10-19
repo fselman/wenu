@@ -859,9 +859,73 @@ No source code or tabulation from those authorities is bundled.
 Independent Decimal/ERFA time references, Decimal position scaling, synthetic
 mixed-family real kernel queries, isolation and an installed real-cluster
 consumer validate this subset. This does not prove that a selected observer
-backend supplies the declared convention. Civil/TT reception conversion and
-backend ephemeris/EOP coverage/correction admission remain required before
-finite-distance observer realization.
+backend supplies the declared convention. The following offline reception
+context now supplies one explicit nominal backend/input subset. Target
+finite-distance/apparent correction admission remains required before observer
+realization.
+
+### Offline reception and observer input context
+
+`astrometric_observation.ErfaReceptionBackend` prepares one event independently
+of object type. Construct it with explicit `leap_seconds_path`,
+`leap_seconds_sha256`, `eop_path`, `eop_sha256`, finite TT `coverage`, and
+`backend_identity`. `reception_backend_identity()` inspects the installed
+Astropy/PyERFA/ERFA versions and compiled ERFA SHA-256 for caller admission.
+No new files, backend version pins or source downloads are installed implicitly.
+
+Only local IERS Leap_Second.dat and final IERS-B formats are read. Their bytes
+are checked before/after parsing; data are copied into the service. Every
+resource has its own TT coverage retained in `model.dependencies`. The caller
+span must fit the intersection of final EOP support, leap expiry and the
+conservative 1950--2050 model interval. Leap expiry is interpreted using its
+actual Astropy TAI convention, never relabelled UTC. The installed ERFA leap
+rows from 1972 onward must equal the admitted IERS rows before and after a
+call. The service does not update them, modify global Astropy settings or use
+IERS_Auto, predictions, extrapolation, network acquisition or Observer handles.
+
+`prepare(reception, longitude_deg=..., latitude_deg=..., height_m=...)` accepts
+an ISO UTC string ending in Z (including valid leap seconds), or an SDK TT
+`TimePoint`. Local timezone/DST resolution remains a caller responsibility.
+Site coordinates explicitly mean WGS84 east-positive longitude, geodetic
+latitude and ellipsoid height in -1000..10000 m. No legacy Observer elevation
+is silently treated as a qualified ellipsoid height.
+
+The frozen `ReceptionContext` retains the original input; split UTC, TAI, TT,
+UT1, TDB and TCB dates; WGS84 site; model/resource/code identities; final
+UT1-UTC, polar motion and CIP dX/dY values; the explicit SDK TDB/TCB admission
+and receipt; nominal Earth and observer position/velocity in TDB-compatible
+BCRS SI coordinates; operations and unapplied target corrections. TT/TDB uses
+ERFA DTDB's topocentric approximation with UT1 and the WGS84 site. EPV00 supplies
+analytic Earth heliocentric/barycentric PV; measured final CIP offsets augment
+the IAU 2006/2000A orientation before APCO prepares terrestrial observer PV.
+The fixed IAU au and SI speed of light perform unit conversions. This is not
+the legacy Observer's Skyfield SPK and carries no DE440 resource claim.
+
+All total numerical/physical time and PV error fields remain `None` (unknown).
+The final addition of the returned DTDB offset has its own rationally checked
+rounding bound; that is not a DTDB/clock/EOP accuracy bound. The SDK's exact
+TDB/TCB receipt remains separate. A finite-bound TT/TDB TimeService adapter is
+not published while its total numerical bound is unqualified. ERFA's published
+model comparisons (DTDB versus DE405 time integrations; EPV00 versus DE405
+positions/velocities) are reference comparisons, not a complete bound for a
+particular observer or a promise outside admitted coverage.
+
+No target state is propagated or translated, and no apparent/horizontal
+direction is returned. This slice prepares the inputs for the next finite-range
+realizer; it does not add a second space-motion or stellar light-time step.
+Independent analytic leap/TT checks, a published ERFA observer reference with
+explicitly synthetic EOP inputs, site/range checks, corruption/refusal recovery
+and actual installed cluster queries at the returned TCB event validate this
+input boundary. They do not constitute the pending target parallax/aberration/
+deflection/horizontal or physical-error acceptance.
+
+Primary authorities reviewed 2026-10-19:
+[ERFA DTDB](https://github.com/liberfa/erfa/blob/master/src/dtdb.c),
+[EPV00](https://github.com/liberfa/erfa/blob/master/src/epv00.c),
+[APCO](https://github.com/liberfa/erfa/blob/master/src/apco.c),
+[published numerical checks](https://github.com/liberfa/erfa/blob/master/src/t_erfa_c.c),
+and [Astropy IERS data handling](https://docs.astropy.org/en/stable/utils/iers.html).
+No authority implementation or data file is copied into Wenu.
 
 ### Observer motion: current boundary and proposed handoff
 
@@ -873,7 +937,10 @@ ones would not implement the finite-distance observer contract.
 
 The SDK already supports `CartesianState`/`cartesian_state`, explicit velocity
 availability and separate position/velocity evidence. The explicit cluster Cartesian representation now adopts that SDK interface. TimeService has explicit admission/receipts,
-but no ordinary-observer civil/TCB adapter is admitted for this new route.
+and the separate offline reception context now maps UTC/TT explicitly. It
+retains unknown approximate-conversion error rather than advertising an
+unqualified bounded TT/TDB SDK adapter. Default Observer/chart time handling
+is unchanged.
 Solar-System `AstrometricDirection` requires retarded geometric target/emission
 semantics, which the nominal cluster model does not supply. These existing types
 are not permission for a consumer to read private cluster PV or relabel states.
@@ -882,8 +949,8 @@ The [scientific contract](scientific_contracts.md#cluster-observer-realization-c
 owns the proposed handoff, correction/time/resource requirements, output evidence,
 failure and reuse policy. The [roadmap](kernel_roadmap_v0.9.5.md#cluster-observer-implementation-order)
 separates Cartesian, time/common-convention, observer and product adoption.
-No new public function, observer backend or supported date domain is claimed by
-this contract milestone.
+The offline input context above is implemented; target finite-distance/apparent
+realization and its scientific/product gates remain pending.
 
 ### Cluster direction reuse bound
 

@@ -1043,6 +1043,36 @@
           "reason": "Retain direction/reuse/Cartesian queries and verify the new module ships and converts actual installed cluster states."
         }
       ]
+    },
+    "astrometric-reception": {
+      "scope": "Explicit offline UTC/TT reception context, local leap/final EOP/backend admission, nominal ERFA Earth/observer PV and installed cluster TCB handoff.",
+      "limits": "No target parallax/apparent direction, production consumer, SDK, dependency/build, source-resource or snapshot change. Unknown total time/PV errors. Reuse accepted propagation/convention/native tests; no parent/full SDK/production repeat.",
+      "selections": [
+        {
+          "node": "tests/test_observer_resources.py::test_reception_leap_second_analytic_tt_tai_and_equivalent_tt_input",
+          "reason": "New additive reception resource/time/backend contract in the existing observer resource owner."
+        },
+        {
+          "node": "tests/test_observer_resources.py::test_reception_resources_backend_coverage_and_global_leaps_refuse",
+          "reason": "New additive reception resource/time/backend contract in the existing observer resource owner."
+        },
+        {
+          "node": "tests/test_observer_resources.py::test_reception_offline_local_copy_survives_file_changes_and_never_loads_observer",
+          "reason": "New additive reception resource/time/backend contract in the existing observer resource owner."
+        },
+        {
+          "node": "tests/test_observer_resources.py::test_reception_observer_displacement_and_time_depend_on_site_and_eop",
+          "reason": "New additive reception resource/time/backend contract in the existing observer resource owner."
+        },
+        {
+          "node": "tests/test_observer_resources.py::test_reception_published_erfa_observer_reference_with_synthetic_eop",
+          "reason": "New additive reception resource/time/backend contract in the existing observer resource owner."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_cluster_motion_module_and_admission_ship_and_evaluate_from_installed_wheel",
+          "reason": "Ship the new module and evaluate actual installed cluster Cartesian state at returned reception TCB, retaining all existing assertions."
+        }
+      ]
     }
   },
   "consumer_review": [
