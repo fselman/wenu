@@ -54,7 +54,11 @@ PR #280 accepts the architecture documentation. Revision 32 now places
 before K3.16: assess and migrate geometry services, audit completed K work,
 then apply and verify demonstrated corrections. Previous receipts remain evidence
 for their bounded claims; the audit determines whether implementations need changes.
-Complete service-kernel closure remains open.
+Complete service-kernel closure remains open. The
+[KG.01 assessment](kernel_migration_audit_v1.md#kg01-shared-geometry-service-inventory)
+now maps existing services, 66 direct-import consumer modules, test owners and
+five coupling/contract findings. KG.02 remains a separate contract/placement
+milestone; no geometry implementation has moved.
 Extra scope or changed agreed order must be discussed with Fernando,
 explicitly agreed and documented before implementation under the
 [mandatory agent rule](assistant_instructions.md#roadmap-control-mandatory-before-implementation).

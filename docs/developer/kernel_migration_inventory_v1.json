@@ -429,19 +429,19 @@
       "path": "src/wenu/charts/magnitude_legend_matplotlib.py",
       "git_blob_sha": "07104731fa669bb972df830cf5e3c51076b00b11",
       "as_is_directory": "src/wenu/charts",
-      "description": "Matplotlib rendering for stellar magnitude\u2013size legends."
+      "description": "Matplotlib rendering for stellar magnitude–size legends."
     },
     {
       "path": "src/wenu/charts/magnitude_legend_style.py",
       "git_blob_sha": "9328fc55e2d465c8335486b72cf2273de6b5bdec",
       "as_is_directory": "src/wenu/charts",
-      "description": "Style configuration for stellar magnitude\u2013size legends."
+      "description": "Style configuration for stellar magnitude–size legends."
     },
     {
       "path": "src/wenu/charts/magnitude_legend_workflow.py",
       "git_blob_sha": "b270984666cd5b435fec7874e73135642b2d471d",
       "as_is_directory": "src/wenu/charts",
-      "description": "Chart-level workflow for stellar magnitude\u2013size legends."
+      "description": "Chart-level workflow for stellar magnitude–size legends."
     },
     {
       "path": "src/wenu/charts/modes.py",
@@ -9125,5 +9125,1217 @@
     "implemented_component": "packages/wenu_kernel state SDK; existing geometry/projection services remain in Wenu namespaces",
     "prior_k_disposition": "Keep accepted bounded state/admission/routing/cache/science/visual receipts; no blanket redo. Review actual service contracts/dependencies under existing K3/K5 obligations.",
     "runtime_changes": false
+  },
+  "geometry_service_assessment": {
+    "id": "KG.01",
+    "status": "assessment delivered; Mac documentation acceptance pending",
+    "base_commit": "cb40ede9ad0be68e6a4863c8d7b6d2c3dbb87a93",
+    "base_tree": "c2b9ee88c80d71bf5d71c99a2b98842eeec40c91",
+    "method": "Static source/AST caller inventory; 512 cached source/test files matched accepted Git blobs. Fresh-process import observation; no numerical or visual suite execution for this documentation-only assessment.",
+    "limits": "Absolute ImportFrom references include imports inside functions; no claim of dynamic runtime coverage, exhaustive dispatch edges or completed-K compliance. Relative package exports inspected separately. KG.06 owns the later delivery-by-delivery audit.",
+    "inspected_owners": [
+      {
+        "path": "src/wenu/geometry/__init__.py",
+        "sha": "1d9f90a376058553a73c708a45aa98fba611751e"
+      },
+      {
+        "path": "src/wenu/geometry/spherical.py",
+        "sha": "6615a6c71e2c931c9b1936471afd162a046b02cd"
+      },
+      {
+        "path": "src/wenu/geometry/projected.py",
+        "sha": "f7ba1753ddf040ff00420b668c0594388e48704f"
+      },
+      {
+        "path": "src/wenu/geometry/frame.py",
+        "sha": "e390c2695de363dba6763e55beaf16cd35d02738"
+      },
+      {
+        "path": "src/wenu/geometry/viewport.py",
+        "sha": "042d11fa9579662278a610b0bdc47dbad5d43182"
+      },
+      {
+        "path": "src/wenu/geometry/clipping.py",
+        "sha": "ccef8ec4c2de27017fe7fac6260671af91917258"
+      },
+      {
+        "path": "src/wenu/projections/__init__.py",
+        "sha": "a49b74b4908c67a64682cc9901a51f7a14983d93"
+      },
+      {
+        "path": "src/wenu/projections/stereographic.py",
+        "sha": "583d40a3ff0a34e6dbc30f5ed4a7522276628509"
+      },
+      {
+        "path": "src/wenu/projections/polar_azimuthal_equidistant.py",
+        "sha": "518a16a8c648a714a54890f498473ba4e47a2a1a"
+      },
+      {
+        "path": "src/wenu/projections/mollweide.py",
+        "sha": "8a849fde9d495734c4ccb934f41f8b1cb60565ce"
+      },
+      {
+        "path": "src/wenu/rendering/preparation.py",
+        "sha": "1368f8f9f993ce198fea7112a121411f49cf61a8"
+      },
+      {
+        "path": "src/wenu/rendering/__init__.py",
+        "sha": "a58dffd1eda6d99cfa7668ea5768267245226aa7"
+      },
+      {
+        "path": "src/wenu/__init__.py",
+        "sha": "9f0057b4b035a4219286887834606e7e26075679"
+      },
+      {
+        "path": "src/wenu/coordinates.py",
+        "sha": "9f024ffa1baa6fe95836d4adf9de822ff0c14968"
+      },
+      {
+        "path": "src/wenu/coordinate_service.py",
+        "sha": "c7c233b107e3947c70b4fbce1f3037e1f9ff0b5d"
+      },
+      {
+        "path": "src/wenu/charts/styles.py",
+        "sha": "8eb05f55bd4062ae065c51306a476a26ddefcd33"
+      },
+      {
+        "path": "src/wenu/charts/projection_selection.py",
+        "sha": "64d43539bcd705761e573da17cd3711fda1555c6"
+      },
+      {
+        "path": "src/wenu/charts/boundaries.py",
+        "sha": "131fe3d15829bad3baea58b9cf8a4f6d7b79c4a3"
+      },
+      {
+        "path": "src/wenu/sky/milky_way.py",
+        "sha": "627bba271f015d08a07ad0b7b1fab2b4768d1417"
+      },
+      {
+        "path": "src/wenu/sky/magellanic_clouds.py",
+        "sha": "165b67def2dcd456336fb58e5be1c07ddf157413"
+      },
+      {
+        "path": "src/wenu/sky/celestial_sphere.py",
+        "sha": "dd525603ce8e5efbbd2da9d57a1ef9e79f91d4c8"
+      }
+    ],
+    "direct_absolute_import_consumers": [
+      {
+        "path": "src/wenu/__init__.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve",
+              "ProjectedPoint",
+              "ProjectedPolygon"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/atlas_design.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.frame",
+            "names": [
+              "SphericalFrame"
+            ]
+          },
+          {
+            "module": "wenu.geometry.viewport",
+            "names": [
+              "Viewport"
+            ]
+          },
+          {
+            "module": "wenu.projections.stereographic",
+            "names": [
+              "StereographicProjection"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/_masking.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedPolygons"
+            ]
+          },
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPolygons"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/all_sky.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve"
+            ]
+          },
+          {
+            "module": "wenu.geometry.viewport",
+            "names": [
+              "Viewport"
+            ]
+          },
+          {
+            "module": "wenu.projections.mollweide",
+            "names": [
+              "MollweideProjection"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/atlas_index.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve",
+              "ProjectedPoints",
+              "ProjectedPolygon"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/atlas_publication.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedPoints"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/boundaries.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve"
+            ]
+          },
+          {
+            "module": "wenu.geometry.viewport",
+            "names": [
+              "Viewport"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/circumpolar.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalCurves"
+            ]
+          },
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/constellation_label_placement.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.clipping",
+            "names": [
+              "clip_polygon_to_convex_boundary",
+              "polygon_centroid"
+            ]
+          },
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve",
+              "ProjectedPoints"
+            ]
+          },
+          {
+            "module": "wenu.rendering.preparation",
+            "names": [
+              "project_geometry_for_viewport"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/context.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.viewport",
+            "names": [
+              "Viewport"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/detail_application.py",
+        "imports": [
+          {
+            "module": "wenu.rendering.preparation",
+            "names": [
+              "configured_magnitude_sizes"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/fixed_sky_orientation.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPoints"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/full_sky.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.frame",
+            "names": [
+              "SphericalFrame"
+            ]
+          },
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve"
+            ]
+          },
+          {
+            "module": "wenu.geometry.viewport",
+            "names": [
+              "Viewport"
+            ]
+          },
+          {
+            "module": "wenu.projections.stereographic",
+            "names": [
+              "StereographicProjection"
+            ]
+          },
+          {
+            "module": "wenu.rendering.preparation",
+            "names": [
+              "project_geometry_for_viewport"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/horizon_mask.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve",
+              "ProjectedPolygon",
+              "ProjectedPolygons"
+            ]
+          },
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPolygons"
+            ]
+          },
+          {
+            "module": "wenu.geometry.viewport",
+            "names": [
+              "Viewport"
+            ]
+          },
+          {
+            "module": "wenu.rendering.preparation",
+            "names": [
+              "project_geometry_for_viewport"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/legend_metadata.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPoints"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/magnitude_legend.py",
+        "imports": [
+          {
+            "module": "wenu.rendering.preparation",
+            "names": [
+              "configured_magnitude_sizes",
+              "magnitude_sizes"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/object_center.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPoints"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/polar_horizon_overlay.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalCurves",
+              "SphericalPoints"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/polar_page_export.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPoints"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/polar_planisphere.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.frame",
+            "names": [
+              "SphericalFrame"
+            ]
+          },
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedPoints"
+            ]
+          },
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPolygons"
+            ]
+          },
+          {
+            "module": "wenu.geometry.viewport",
+            "names": [
+              "Viewport"
+            ]
+          },
+          {
+            "module": "wenu.rendering.preparation",
+            "names": [
+              "clip_to_latitude",
+              "project_polygons_to_projection_cap"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/projection_selection.py",
+        "imports": [
+          {
+            "module": "wenu.projections",
+            "names": [
+              "PolarAzimuthalEquidistantProjection"
+            ]
+          },
+          {
+            "module": "wenu.projections",
+            "names": [
+              "StereographicProjection"
+            ]
+          },
+          {
+            "module": "wenu.projections",
+            "names": [
+              "MollweideProjection"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/reference_furniture.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve",
+              "ProjectedCurves"
+            ]
+          },
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalGrid"
+            ]
+          },
+          {
+            "module": "wenu.rendering.preparation",
+            "names": [
+              "project_geometry_for_viewport"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/regional.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPoints"
+            ]
+          },
+          {
+            "module": "wenu.projections.stereographic",
+            "names": [
+              "StereographicProjection"
+            ]
+          },
+          {
+            "module": "wenu.geometry.frame",
+            "names": [
+              "SphericalFrame"
+            ]
+          },
+          {
+            "module": "wenu.geometry.viewport",
+            "names": [
+              "Viewport"
+            ]
+          },
+          {
+            "module": "wenu.rendering.preparation",
+            "names": [
+              "project_geometry_for_viewport"
+            ]
+          },
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve"
+            ]
+          },
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve"
+            ]
+          },
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/request_grids.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/solar_system_disk_preparation.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve",
+              "ProjectedCurves",
+              "ProjectedPoints",
+              "ProjectedPolygon",
+              "ProjectedPolygons"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/solar_system_track_annotations.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve",
+              "ProjectedCurves",
+              "ProjectedGrid"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/stellar_sizing_report.py",
+        "imports": [
+          {
+            "module": "wenu.rendering.preparation",
+            "names": [
+              "configured_magnitude_sizes"
+            ]
+          },
+          {
+            "module": "wenu.rendering.preparation",
+            "names": [
+              "configured_magnitude_sizes"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/charts/styles.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedPoints"
+            ]
+          },
+          {
+            "module": "wenu.rendering.preparation",
+            "names": [
+              "clip_polygons_to_latitude",
+              "clip_to_latitude",
+              "magnitude_sizes",
+              "point_styles"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/coordinate_service.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalCurves",
+              "SphericalGeometry",
+              "SphericalGrid",
+              "SphericalPoints",
+              "SphericalPolygons"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/geometry/clipping.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedPoint",
+              "ProjectedCurve",
+              "ProjectedPolygon"
+            ]
+          },
+          {
+            "module": "wenu.geometry.viewport",
+            "names": [
+              "Viewport"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/objects/galaxies.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPolygons"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/objects/nonstellar.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalCurves",
+              "SphericalPoints"
+            ]
+          },
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPolygons"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/objects/open_clusters.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPoints"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/objects/planetary_nebulae.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPoints"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/objects/stars.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPoints"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/positions.py",
+        "imports": [
+          {
+            "module": "wenu.geometry",
+            "names": [
+              "SphericalPoints"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/projections/mollweide.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve",
+              "ProjectedCurves",
+              "ProjectedGrid",
+              "ProjectedPoint",
+              "ProjectedPoints",
+              "ProjectedPolygon",
+              "ProjectedPolygons"
+            ]
+          },
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalCurves",
+              "SphericalGrid",
+              "SphericalPoints",
+              "SphericalPolygons"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/projections/polar_azimuthal_equidistant.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.frame",
+            "names": [
+              "SphericalCoordinates",
+              "SphericalFrame"
+            ]
+          },
+          {
+            "module": "wenu.projections.stereographic",
+            "names": [
+              "StereographicProjection"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/projections/stereographic.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve",
+              "ProjectedCurves",
+              "ProjectedGrid",
+              "ProjectedPoint",
+              "ProjectedPoints",
+              "ProjectedPolygon",
+              "ProjectedPolygons"
+            ]
+          },
+          {
+            "module": "wenu.geometry.frame",
+            "names": [
+              "SphericalCoordinates",
+              "SphericalFrame"
+            ]
+          },
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalCurves",
+              "SphericalGrid",
+              "SphericalPoints",
+              "SphericalPolygons"
+            ]
+          },
+          {
+            "module": "wenu.geometry.viewport",
+            "names": [
+              "Viewport"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/rendering/_matplotlib_axes.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.viewport",
+            "names": [
+              "Viewport"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/rendering/_matplotlib_primitives.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve",
+              "ProjectedPoint",
+              "ProjectedPolygon"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/rendering/label_placement.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/rendering/matplotlib.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve",
+              "ProjectedCurves",
+              "ProjectedGrid",
+              "ProjectedPoint",
+              "ProjectedPoints",
+              "ProjectedPolygon",
+              "ProjectedPolygons"
+            ]
+          },
+          {
+            "module": "wenu.rendering.preparation",
+            "names": [
+              "cull_points_to_viewport"
+            ]
+          },
+          {
+            "module": "wenu.rendering.preparation",
+            "names": [
+              "diameter_marker_areas"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/rendering/preparation.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.projected",
+            "names": [
+              "ProjectedCurve",
+              "ProjectedCurves",
+              "ProjectedGrid",
+              "ProjectedPolygon",
+              "ProjectedPolygons",
+              "ProjectedPoints"
+            ]
+          },
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalCurves",
+              "SphericalGrid",
+              "SphericalPoints",
+              "SphericalPolygons"
+            ]
+          },
+          {
+            "module": "wenu.geometry.viewport",
+            "names": [
+              "Viewport"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/sky/constellation_boundaries.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalCurves",
+              "SphericalPoints",
+              "SphericalPolygons"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/sky/constellation_labels.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPoints"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/sky/constellation_lines.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalCurves"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/sky/coordinate_grids.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalCurves",
+              "SphericalGrid"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/sky/frozen_earth_disk_sequences.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPoints"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/sky/frozen_earth_reference_grids.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalCurves",
+              "SphericalGrid"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/sky/frozen_earth_venus_disk_sequence.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalCurves",
+              "SphericalPoints",
+              "SphericalPolygons"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/sky/horizon.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPolygons"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/sky/magellanic_clouds.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPolygons"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/sky/milky_way.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPolygons"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/sky/observed_cache.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalCurves",
+              "SphericalPoints"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/sky/points.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPoints"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/sky/satellite_candidate_layer.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalCurves",
+              "SphericalPoints"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/sky/satellite_exact_track_layer.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalCurves",
+              "SphericalPoints"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/sky/solar_system_points.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPoints"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/sky/solar_system_track_layer.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPoints"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/sky/solar_system_tracks.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalCurves"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/sky/venus_disk_sequence.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalCurves",
+              "SphericalPoints",
+              "SphericalPolygons"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/skyfield_ephemeris.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPoints"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/solar_system_directions.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalPoints"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/solar_system_disk_geometry.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalCurves",
+              "SphericalPoints",
+              "SphericalPolygons"
+            ]
+          }
+        ]
+      },
+      {
+        "path": "src/wenu/temporal_components.py",
+        "imports": [
+          {
+            "module": "wenu.geometry.spherical",
+            "names": [
+              "SphericalCurves",
+              "SphericalPoints"
+            ]
+          }
+        ]
+      }
+    ],
+    "import_observation": {
+      "request": "import wenu.geometry.spherical",
+      "loaded": [
+        "wenu.observer",
+        "wenu.objects.nonstellar",
+        "wenu.charts.regional",
+        "wenu.rendering.matplotlib",
+        "matplotlib",
+        "astropy",
+        "skyfield"
+      ],
+      "meaning": "Current public import path is not independently isolated; does not prove algorithm bodies require these dependencies."
+    },
+    "findings": [
+      {
+        "id": "KG01.F1",
+        "owner": "src/wenu/rendering/preparation.py",
+        "finding": "Mathematical cap/topology/clipping operations share a module with magnitude/style/label helpers.",
+        "next": "KG.02 separates mathematical service contracts from appearance policy; KG.03/KG.04 implement accepted placement."
+      },
+      {
+        "id": "KG01.F2",
+        "owner": "src/wenu/__init__.py",
+        "finding": "Broad application initialization on geometry imports defeats independent service import.",
+        "next": "KG.02 proposes concrete import/placement compatibility plan; no new package presumed approved."
+      },
+      {
+        "id": "KG01.F3",
+        "owner": "src/wenu/geometry/spherical.py",
+        "finding": "Geometry requires CoordinateSpec from Wenu vocabulary; metadata dictionaries carry implicit topology and identity semantics.",
+        "next": "KG.02 defines contract ownership, metadata expansion and coordinate semantics without relabelling frames."
+      },
+      {
+        "id": "KG01.F4",
+        "owner": "src/wenu/sky/milky_way.py",
+        "finding": "Source-specific filled-side interpretation and numerical ring area/orientation are combined.",
+        "next": "KG.02 distinguishes source interpretation from reusable math; no blind relocation of source policy."
+      },
+      {
+        "id": "KG01.F5",
+        "owner": "src/wenu/geometry/projected.py",
+        "finding": "Mutable geometry, NumPy aliases and shallow metadata copies require explicit lifetime/ownership semantics.",
+        "next": "KG.02 records compatibility and mutation rules before extraction."
+      }
+    ],
+    "runtime_changes": false,
+    "coordinate_guide": "No scientific meaning/ownership implementation changed; existing guide remains current. KG.02 will assess interface effects.",
+    "next": "KG.02 public contracts and incremental placement plan; separate bounded selection required."
   }
 }

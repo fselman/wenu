@@ -661,3 +661,133 @@ snapshot version, alter existing schemas, relocate code or authorize acquisition
 
 The current change is documentation only. K3.16 runtime admission/transport remains
 unimplemented; no other pending milestone is activated.
+
+## KG.01 shared geometry service inventory
+
+**Assessment base:** main `cb40ede9ad0be68e6a4863c8d7b6d2c3dbb87a93`,
+2026-10-19; tree `c2b9ee88c80d71bf5d71c99a2b98842eeec40c91`.
+Fernando selected KG.01 after accepting revision 32. This is an assessment,
+not the KG.02 interface decision, a runtime migration or the KG.06 completed-K
+audit. The [machine inventory](kernel_migration_inventory_v1.json) records
+`geometry_service_assessment`, inspected owner blob hashes and 66 direct
+absolute-import consumer modules. All 512 locally available production/test
+Python files were checked against accepted Git blobs with no mismatch.
+Imports inside functions are included; relative package exports were inspected
+separately. Import references locate potential callers, not executed coverage.
+
+### Existing services and dependency boundaries
+
+All paths below are relative to `src/wenu/`. These are current owners, not
+proposed final package names.
+
+| Current owner and public entry points | Actual responsibility/dependencies | KG.02 disposition to resolve |
+|---|---|---|
+| `geometry/spherical.py`: SphericalPoints, SphericalCurves, SphericalPolygons, SphericalGrid | NumPy arrays in degrees, required CoordinateSpec from `coordinates.py`, per-entity IDs/labels/names and metadata; validates dimensions/counts and grid spec equality | Reuse the data model first. Decide shared CoordinateSpec ownership and explicit topology/metadata contracts; arrays are not admitted physical state batches |
+| `geometry/projected.py`: ProjectedPoint(s), ProjectedCurve(s), ProjectedPolygon(s), ProjectedGrid | NumPy planar records, finite masks and bounds; no source/provider/renderer imports in this module | Preserve collection identity and metadata after splitting; define planar scale and mutable ownership rather than treating these as immutable SDK states |
+| `geometry/frame.py`: SphericalFrame, SphericalCoordinates | NumPy spherical rotations, inverse and matrix construction; frame transform normalizes longitude to [-180,180) | Generic geometry service; distinguish this orientation rotation from astronomical frame/time conversion |
+| `geometry/viewport.py`: Viewport | Frozen dataclass, finite rectangular bounds, contains/size/centre helpers, NumPy | Mathematical rectangle is reusable; product chooses its extent/aspect/physical page scale |
+| `geometry/clipping.py`: clip_point_to_viewport, clip_curve_to_viewport, clip_polygon_to_viewport, clip_polygon_to_convex_boundary, clip_line_segment_to_viewport, polygon_centroid | NumPy plus projected records/Viewport; nonfinite breaks and fragmented curves; convex-boundary polygon operations | Retain existing supported algorithms and their failure/empty/fragment semantics; do not claim a general spherical Boolean polygon engine |
+| `projections/stereographic.py`: StereographicProjection | NumPy, spherical/projected records, SphericalFrame and Viewport; vector/scalar and collection dispatch, forward/inverse, radius helpers, legacy AltAz wrapper | Existing public service starting point; preserve EW orientation, position-angle order and antipode NaN breaks |
+| `projections/polar_azimuthal_equidistant.py`: PolarAzimuthalEquidistantProjection | Subclasses StereographicProjection; overrides forward/inverse/radial math and domain checks | Preserve inherited dispatch and linear angular-radius behavior; explicitly specify supported projection capabilities rather than assuming all APIs identical |
+| `projections/mollweide.py`: MollweideProjection | NumPy and geometry records; equal-area forward projection, seam-aware curve/polygon splitting, pole/winding handling, per-piece metadata expansion | Keep seam preparation with applicable mathematics. This class does not expose the same inverse/radius interface as stereographic |
+| `rendering/preparation.py`: project_geometry_for_viewport, projection_cap_for_viewport, project_polygons_to_projection_cap, clip_polygons_to_projection_cap, clip_polygons_to_latitude, clip_to_latitude | Imports NumPy and geometry records; contains spherical cap clipping/intersection/slerp, filled-side complements, winding-band stitching and metadata propagation | **Mixed owner:** reusable mathematical services coexist with magnitude sizing, point_styles, radial_label_offset and diameter_marker_areas. Extract responsibilities through agreed interfaces; moving the whole module would move appearance policy into the kernel |
+| `sky/milky_way.py`: _native_ring_interior and layer realization | Numerical solid-angle/orientation math combined with source ring interpretation, hole/level metadata, observed-cache and resource loading | Identify the reusable math separately from catalogue filled-side convention and source qualification; K3.16 still owns M9 admission/transport |
+| `coordinates.py`, `coordinate_service.py` | CoordinateSpec/status vocabulary versus Astropy-backed scientific realization and metadata propagation | Geometry depends on the vocabulary today. Scientific conversion is a separate service/backend boundary; do not pull Astropy conversion into a plain spherical rotation |
+| `charts/projection_selection.py`, `charts/boundaries.py`, `charts/styles.py` | Projection/frame allowlist and lazy construction; boundary construction plus label-anchor/style policy; horizon threshold and appearance preparation | Product selection, labels and policy stay outside; review generic boundary primitives individually. A chart's horizon cut is not the projection singularity guard |
+| `rendering/matplotlib.py`, `_matplotlib_primitives.py`, `_matplotlib_axes.py` | Draw projected values, compound paths and viewport artists | Renderer remains outside; geometric service must not depend on Matplotlib |
+| `sky/celestial_sphere.py`: draw_chart | Orders layer realization → selected projection callback → preparation → renderer; owns concrete layers | Retain canonical orchestration. Correct ownership/imports without introducing a parallel scientific/rendering pipeline |
+
+### Topology and domain contracts that already cross boundaries
+
+SphericalPolygons represents implicitly closed rings, with at least three
+vertices; holes and compound-polygon identity are not dedicated typed fields.
+Existing consumers use metadata such as `is_hole`,
+`spherical_interior_left`, `spherical_interior_area_sr`,
+`projection_cap_topology_inversion` and projection-source latitude arrays.
+Mollweide seam splitting and cap clipping can turn one source entity into
+several pieces. IDs, labels and per-ring attributes must expand with those pieces;
+they cannot be blindly zipped against the original unsplit arrays.
+
+The cap service performs spherical clipping **before** unsafe planar polygon
+projection. Its viewport entry point derives a near-hemisphere cap using the
+projection's radial inverse capability; it delegates normally when that
+capability or a polygon/viewport is absent. Later viewport clipping and
+chart-specific horizon/mask policy remain distinct. The current capability is
+duck-typed, not a frozen common protocol. KG.02 must document those supported
+branches before KG.04 changes ownership.
+
+Geometry dataclasses generally retain writable NumPy arrays using
+`np.asarray`; metadata dictionaries are shallow copies. The frozen
+SphericalFrame does not imply every returned array is immutable; supplied
+rotation matrices are copied and marked read-only, while construction validates
+their shape, not a general arbitrary-matrix orthogonality guarantee.
+Projection instances hold mutable configuration fields. KG.02 must state
+ownership/lifetime/aliasing and compatibility rules; KG.01 neither changes
+these semantics nor promises an immutable kernel geometry API.
+
+### Callers and import isolation
+
+The machine inventory records exact import names for every detected direct
+absolute-import consumer, grouped conceptually here:
+
+| Consumer group | Observed use | Boundary consequence |
+|---|---|---|
+| Object facades: stars, nonstellar, galaxies, open clusters and PN | Produce/consume spherical collections; dedicated globular/SNR behavior also inherits shared nonstellar mechanics | Keep object identity/source/model decisions outside shared math. Indirect inheritance and dynamic calls require later KG.06 review, not just import counts |
+| Sky layers: points, constellation figures/labels/boundaries, grids, horizon, diffuse contours, solar-system/satellite/sequence layers | Construct spherical values and use existing observation/preparation helpers | Preserve supported coordinate status/spec and source identity; not every ring vertex is a physical provider object |
+| Regional/full/all-sky/polar/circumpolar charts, atlas design/index/publication, reference and mask helpers | Construct projections/boundaries; call cap-safe projection, clipping and label anchoring | Chart policy remains outside; mathematical service calls should become explicit public dependencies |
+| CoordinateService, positions, solar-system directions/disk geometry, temporal components and ephemeris adapters | Exchange geometry or frame rotations across science/product seams | Separate numerical geometry from backend-specific realization; do not infer identical scientific semantics from array shape |
+| Renderer/primitives/label placement and geometry/projection implementations | Consume projected records or apply shared geometry | Kernel interfaces may be imported by a renderer, never the reverse |
+
+A fresh subprocess importing `wenu.geometry.spherical` loaded
+`wenu.observer`, `wenu.objects.nonstellar`, `wenu.charts.regional`,
+`wenu.rendering.matplotlib`, Matplotlib, Astropy and Skyfield.
+This confirms the broad `wenu/__init__.py` application facade defeats independent
+geometry import today. Separately, `rendering/__init__.py` eagerly exports
+Matplotlib implementations and preparation functions together. The algorithm
+bodies' narrow direct imports do not establish package isolation. The existing
+stdlib state SDK stays separate; no new geometry wheel or dependency is selected
+by this finding. KG.02 must propose concrete placement/import compatibility.
+
+### Existing test owners and protected faults
+
+These tests were inspected/located, **not rerun as numerical acceptance** in
+this documentation-only assessment. Their current success is not asserted here.
+No new test selection, production resource, dependency or build change is made.
+
+| Existing owners under tests/ | Evidence/faults to retain in the corresponding migration |
+|---|---|
+| test_spherical.py, test_projected.py, test_projected_collections.py | Dimensions/counts, grid grouping, metadata copying, finite/bounds and collection identity |
+| test_spherical_frame.py | Identity, inverse round trip, orthogonal constructed rotations, scalar input and public import |
+| test_projection_regression.py, test_projected_geometry_projection.py, test_projection_geometry.py | Existing stereographic formula, EW flip, dispatch/types/metadata, argument refusal and antipode disconnected breaks |
+| test_polar_azimuthal_equidistant_projection.py | Known pole/quadrants, forward/inverse round trip, linear radius, PA/flip order and invalid-domain refusal |
+| test_mollweide_projection.py | Known centre/equator/seam/pole coordinates, local equal-area scale, seam splits, finite breaks and winding closure |
+| test_clipping.py, test_viewport.py, test_projection_and_clipping_contracts.py | Viewport/convex clipping, split curves, cap-before-projection ordering, four-corner cap coverage, horizon composition, filled-side complements and winding-band fragments |
+| test_viewport_rendering.py, test_projection_selection.py | Renderer viewport composition and product projection/frame admission |
+| test_isophotes.py, test_magellanic_clouds.py | Real/source and synthetic rings, hole/level/fraction selection, independent filled-side/raster membership and observed-cache behavior |
+| test_reusable_canonical_sphere.py and affected atlas/polar product owners | Source-free/cold/restored geometry and output equivalence at integration acceptance; exact specimens chosen from the actual later diff |
+
+KG.02 must map these owners to the concrete interface/placement diff and add
+only missing seam/isolation evidence. Numerical oracles must remain independent
+of the service implementation. KG.05 needs actual output acceptance in addition
+to unit geometry tests; this inventory alone does not establish it.
+
+### Findings and next bounded work
+
+1. **KG01.F1:** mathematical clipping/topology shares rendering preparation with
+   appearance helpers; split by responsibility rather than moving the whole file.
+2. **KG01.F2:** geometry import runs the broad application facade; establish an
+   independent service import with compatibility for old callers.
+3. **KG01.F3:** CoordinateSpec ownership and implicit topology/metadata expansion
+   need explicit public contracts.
+4. **KG01.F4:** generic ring math is mixed with source-specific interior policy;
+   preserve source facts while identifying the reusable operation.
+5. **KG01.F5:** writable arrays, shallow metadata copies and mutable projection
+   configuration need honest lifecycle/aliasing semantics.
+
+**Next bounded milestone: KG.02**, public contracts and incremental placement
+plan, after acceptance of this assessment and explicit task selection.
+Do not relocate implementations, invent a geometry query, change science,
+force a snapshot version or activate K3.16 here. The coordinate guide remains
+current because this assessment changes no scientific semantics or runtime
+ownership. The later KG.06 audit will determine modifications to completed K
+deliveries using the established services, retaining their applicable receipts.
