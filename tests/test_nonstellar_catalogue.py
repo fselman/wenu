@@ -583,3 +583,83 @@ def test_packaged_nonstellar_gaps_remain_source_bound_and_strictly_refused(famil
     assert geometry.coordinate_spec.epoch == record['epoch']
     assert geometry.metadata['catalogue_admission'] == record
     assert record['source_sha256'] and record['source_units']['ra'] and record['source_units']['dec']
+
+
+@pytest.mark.parametrize('family', ('messier', 'caldwell', 'galaxies', 'globular_clusters', 'planetary_nebulae', 'supernova_remnants'))
+def test_explicit_lookup_admission_preserves_physical_gaps_and_default_geometry(family):
+    from wenu.objects.galaxies import Galaxies
+    from wenu.objects.globular_clusters import GlobularClusters
+    from wenu.objects.planetary_nebulae import PlanetaryNebulae
+    from wenu.objects.supernova_remnants import SupernovaRemnants
+    cls = {'messier': NonStellar, 'caldwell': NonStellar, 'galaxies': Galaxies,
+           'globular_clusters': GlobularClusters, 'planetary_nebulae': PlanetaryNebulae,
+           'supernova_remnants': SupernovaRemnants}[family]
+    layer = cls(None, **({'catalog': family} if family in ('messier', 'caldwell') else {}))
+    layer.load()
+    original = layer.catalog.copy(copy_data=True)
+    record = layer.catalogue_metadata.to_record()
+    before = layer.position()
+    metadata = layer.require_catalogue_lookup_metadata()
+    assert metadata.to_record() == record
+    assert metadata.missing_fields_for('catalogue-lookup') == ()
+    assert layer.admission_missing_fields
+    with pytest.raises(ValueError, match='Incomplete nonstellar metadata'):
+        layer.require_complete_metadata()
+    spec = metadata.coordinate_spec(layer.catalog_name, position_model='catalogue-lookup')
+    assert spec.epoch == record['epoch']
+    assert spec.model == 'catalogue-lookup-legacy-unverified-encoding'
+    assert spec.origin == 'legacy-unverified-origin'
+    assert spec.instant is None and spec.time_scale is None
+    assert layer.catalog.meta == original.meta
+    for name in layer.catalog.colnames:
+        np.testing.assert_array_equal(layer.catalog[name], original[name])
+    after = layer.position()
+    np.testing.assert_array_equal(before.lon_deg, after.lon_deg)
+    np.testing.assert_array_equal(before.lat_deg, after.lat_deg)
+    assert before.coordinate_spec == after.coordinate_spec
+    assert after.metadata['catalogue_admission'] == record
+
+
+@pytest.mark.parametrize('fault', ('catalogue', 'edition', 'provenance', 'digest', 'ra_unit'))
+def test_lookup_admission_still_refuses_missing_source_evidence(fault):
+    from wenu.objects.nonstellar import NonStellarCatalogueMetadata
+    layer = NonStellar(None); layer.load()
+    record = layer.catalogue_metadata.to_record()
+    meta = record['source_metadata']
+    units = dict(record['source_units'])
+    digest = record['source_sha256']
+    if fault == 'catalogue':
+        for key in ('catalog', 'source'):
+            meta.pop(key, None)
+    elif fault == 'edition':
+        for key in ('release', 'catalog_version', 'catalog_reference', 'catalogue_reference'):
+            meta.pop(key, None)
+    elif fault == 'provenance':
+        for key in tuple(meta):
+            if key == 'url' or key.endswith('_url'):
+                meta.pop(key)
+    elif fault == 'digest':
+        digest = None
+    else:
+        units['ra'] = None
+    table = layer.source_catalog.copy(copy_data=True); table.meta = meta
+    candidate = NonStellarCatalogueMetadata.from_table(table, source_units=units, source_sha256=digest)
+    with pytest.raises(ValueError, match='Incomplete nonstellar metadata'):
+        candidate.require_complete(position_model='catalogue-lookup')
+
+
+def test_qualified_lookup_reference_does_not_require_a_motion_epoch(catalogue):
+    table = Table.read(catalogue)
+    table.meta = dict(catalog='synthetic', catalog_version='synthetic-v1',
+        documentation_url='https://example.invalid/synthetic',
+        coordinate_frame='ICRS', coordinate_origin='solar-system-barycenter')
+    for name, unit in (('ra', u.deg), ('dec', u.deg), ('dimension', u.arcmin), ('pa', u.deg)):
+        table[name].unit = unit
+    table.write(catalogue, overwrite=True)
+    layer = NonStellar(None); layer.load(filename=catalogue)
+    metadata = layer.require_catalogue_lookup_metadata()
+    spec = metadata.coordinate_spec('synthetic', position_model='catalogue-lookup')
+    assert spec.model == 'catalogue-lookup' and spec.epoch is None
+    assert spec.origin == 'solar-system-barycenter'
+    with pytest.raises(ValueError, match='epoch'):
+        layer.require_complete_metadata()

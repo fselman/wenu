@@ -81,7 +81,9 @@ epoch/scale are provenance rather than admission prerequisites for that model.
 Other required source facts remain open and are refused in strict mode. Legacy chart
 compatibility is an explicitly labelled interpretation, not a metadata repair.
 
-### M5 source assessment and proposed admission distinction, 2026-10-19
+<a id="m5-source-assessment-and-proposed-admission-distinction-2026-10-19"></a>
+
+### M5 source assessment and agreed admission distinction, 2026-10-19
 
 **Assessment base:** accepted main `2df8954b15ebbe36cddaf977355efdd53a65f2a8`.
 The shared-default correction is accepted through PR #273: 248 focused Mac,

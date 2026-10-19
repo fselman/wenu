@@ -140,6 +140,27 @@ Ordinary families are `AllSkyChart`, `FullSkyChart`, `RegionalChart`,
 `CircumpolarChart` and `BinocularChart`. Product commands delegate to the
 existing request/composition owners, not to new copies of their algorithms.
 
+## Explicit nonstellar catalogue-lookup admission
+
+`NonStellar.require_catalogue_lookup_metadata()` validates the existing immutable
+record for baseline chart lookup. `missing_fields_for("catalogue-lookup")` and
+`require_complete(position_model="catalogue-lookup")` require catalogue identity,
+edition, byte binding, provenance and declared source angular units. Missing
+frame/origin or measurement epoch/scale remain in the record; they do not block
+this explicitly selected lookup capability. Conflicting/unsupported declarations
+still fail during ingestion. `require_complete_metadata()` retains the original
+strict physical/source-model requirements and is not relaxed by a lookup call.
+
+An explicit `metadata.coordinate_spec(provider, position_model="catalogue-lookup")`
+uses model `catalogue-lookup` for a qualified reference, or
+`catalogue-lookup-legacy-unverified-encoding` for incomplete reference evidence.
+Missing origin is `legacy-unverified-origin`, never an invented barycentre.
+The existing ICRS chart interpretation is not promoted into a verified source
+frame. No evaluation instant or zero motion is asserted. Existing public position
+and observed/native geometry policies stay unchanged; this admission API does not
+perform another family's kernel routing or add angular propagation. Its source
+record and known/unknown fields survive existing snapshot transport unchanged.
+
 ## Shared ICRS coordinate defaults
 
 `ICRS_ASTROMETRIC_SPEC.epoch` and `icrs_catalogue_spec(provider, epoch=None)`

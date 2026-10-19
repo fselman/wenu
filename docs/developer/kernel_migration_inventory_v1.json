@@ -8972,5 +8972,28 @@
     },
     "gate": "catalogue-coordinate-defaults",
     "limits": "No family routing, science, source bytes, dependency/build, SDK, snapshot schema, projection or renderer change. Strict admission retains all required missing-field refusals."
+  },
+  "nonstellar_lookup_admission": {
+    "milestone": "K3.09",
+    "agreement": "Fernando, 2026-10-19: Incorporate this to the policy and proceed; explicit catalogue-lookup/physical distinction and PM-only clarification",
+    "status": "Implemented candidate; Mac acceptance pending",
+    "public_path": "NonStellar.require_catalogue_lookup_metadata -> NonStellarCatalogueMetadata.require_complete(position_model=catalogue-lookup)",
+    "required_lookup_facts": [
+      "catalogue",
+      "edition",
+      "source_sha256",
+      "provenance",
+      "declared source angular units"
+    ],
+    "retained_unknowns": [
+      "frame",
+      "origin",
+      "epoch",
+      "epoch_scale"
+    ],
+    "strict_physical_admission": "Unchanged; lookup does not qualify absent physical facts or modify default geometry",
+    "pm_only_policy": "Position/reference epoch and both PMs permit angular propagation without distance/RV, no universal time cutoff; uncertainty/model suitability explicit; AX.13 implementation remains pending",
+    "gate": "catalogue-coordinate-defaults",
+    "limits": "No family routing, SDK, sources, dependency/build, snapshot schema, projection or renderer change"
   }
 }
