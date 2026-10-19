@@ -181,6 +181,11 @@ Solar-System light-time realization has incompatible geometric emission semantic
 The [observer contract](scientific_contracts.md#cluster-observer-realization-contract)
 and [ordered gates](kernel_roadmap_v0.9.5.md#cluster-observer-implementation-order)
 now specify those prerequisites. The explicit Cartesian prerequisite is implemented with the accepted SDK.
+`astrometric_coordinates` additionally supplies a resource-free TCB/TDB adapter
+for explicit SDK TimeService registration and a complete-batch spatial scaling
+view. Source states/evidence remain unchanged; civil/TT reception-time conversion,
+backend-specific common-coordinate qualification and observer realization remain
+pending. No existing chart consumer calls this additive convention boundary.
 No new time adapter or observed motion route exists yet.
 
 ## Abstraction barriers that remain incomplete

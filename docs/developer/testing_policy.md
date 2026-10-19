@@ -222,6 +222,32 @@ modules in archives and actual execution. Run documentation and stdlib tooling
 separately. No SDK/source-resource/dependency/observer/projection/renderer or
 snapshot-schema change; do not rerun full SDK or production suites.
 
+## Barycentric convention subset
+
+`astrometric-conventions` selects the existing generic astrometric owner and
+extends the existing isolated installed-wheel cluster consumer. New protected
+faults are time relabelling, wrong defining constants/sign, collapsed split JD,
+position scaling omission, incorrect velocity scaling, altered conversion
+receipts, mismatched source/model/resource and incomplete/reordered batches.
+The closest existing tests are the Cartesian exact-input Decimal, binding/refusal,
+actual SDK batch and isolated-module cases in `test_astrometric_state.py`.
+
+Independent 90-digit Decimal time references and ERFA conversions cover both
+directions, past/future dates and half-day boundaries. An injected zero-L_B
+fault demonstrably fails the same Decimal oracle. Position scaling in both
+directions has independent Decimal references and a linear-trajectory commutation
+check. Synthetic four-family kernel queries and SDK-only isolated execution
+retain evidence/order and refuse warm faults. The existing wheel/sdist owner
+checks the new module and converts actual installed cluster Cartesian output.
+No existing assertions/oracles are removed.
+
+Run documentation and tooling separately. Provider propagation, direction reuse,
+native charts/snapshots, observer/projection/renderer and SDK implementation are
+unchanged; reuse their accepted receipts, including the 89-case Cartesian Mac
+gate. Do not repeat the parent Cartesian/native gate, independent SDK or full
+production suite. No backend/ephemeris/EOP/UTC/TT adapter, observer parallax,
+physical accuracy or supported observation domain is admitted by this subset.
+
 ## Cluster observer contract and implementation gates
 
 The contract-only milestone adds the scientific ownership/admission contract,

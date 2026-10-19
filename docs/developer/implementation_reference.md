@@ -808,6 +808,61 @@ native motion charts, snapshot formats and observer resources are unchanged.
 The [observer contract](scientific_contracts.md#cluster-observer-realization-contract)
 still requires time/common-coordinate admission before finite-distance observation.
 
+### Barycentric time and coordinate conventions
+
+`astrometric_coordinates.TcbTdbAdapter(validity)` accepts a finite SDK `TimeSpan`
+on either TCB or TDB. Register the adapter and `adapter.describe()` explicitly
+with SDK `TimeService`; no automatic chain/session conversion is introduced.
+`TimeService.convert(time, target_scale)` returns its original input event,
+canonical split-JD target, exact model identity, provenance and a numerical
+rounding bound. Identity remains owned by the SDK. Other scale pairs refuse.
+
+The implementation evaluates the exact decimal defining constants of IAU 2006 B3
+using rational arithmetic: `L_B=1.550519768e-8`, `T_0=2443144.5003725`,
+`TDB_0=-0.0000655 s`. Only the final small date part is rounded to binary64.
+The exact rounding discrepancy is rounded upward in the receipt; the adapter's
+maximum numerical error is `2**-36 s` (the canonical half-day fraction has
+absolute rounding error at most `2**-55 day`). This bounds this coordinate
+operation on admitted input numbers, not reception-date uncertainty or a clock
+realization. The chosen finite domain is a caller policy, not an ephemeris or
+historical-observation coverage claim. No resource bytes, network or backend
+version enter this resource-free algebraic model.
+
+`convert_barycentric_batch(batch, admission=..., source_coordinate_scale=...,
+time_admission=..., conversions=...)` consumes a complete actual SDK `StateBatch`. Callers explicitly
+supply the expected `ModelAdmission`, the spatial convention (`"tcb"` or `"tdb"`),
+the explicit time-adapter admission with its independent finite coverage,
+and one matching adapter receipt per query time. It checks catalogue/model/resource,
+frame/origin/status/units, source/model coverage, full-model evaluation, ordered
+object/time completeness, source epochs and full velocity. Wrong bindings,
+missing states, reuse or altered receipts refuse the whole conversion. The SDK
+already requires unique requested object/time keys; their order is preserved.
+
+The returned immutable `BarycentricBatchConversion` is a derived convention
+view, not a replacement SDK admission or observed state. It retains the original
+batch, state and time admissions, states, epochs and uncertainty evidence. Each state view has
+`original`, `conversion`, scaled `position_m`, operation-only component
+`position_rounding_m`, unchanged `velocity_m_s`, target `time` and
+`coordinate_scale`. Scaling uses exact rational `1-L_B` (or its reciprocal),
+then rounds final components once. IERS Conventions (2010) section 1.2 scales
+TCB-compatible length and elapsed time by the same factor; coordinate velocity
+therefore remains unchanged. There is no second propagation, origin translation,
+observer subtraction, apparent correction or additional stellar light time.
+Scaling-rounding bounds do not certify total Cartesian uncertainty or a temporal
+interval. Time-conversion rounding is retained separately and is not folded into
+a claimed position bound. Original unknown channels stay unknown.
+
+Authorities reviewed 2026-10-19:
+[IAU 2006 B3](https://iau-a3.gitlab.io/res.html) and
+[IERS Conventions (2010), section 1.2](https://iers-conventions.obspm.fr/content/tn36.pdf#page=17).
+No source code or tabulation from those authorities is bundled.
+Independent Decimal/ERFA time references, Decimal position scaling, synthetic
+mixed-family real kernel queries, isolation and an installed real-cluster
+consumer validate this subset. This does not prove that a selected observer
+backend supplies the declared convention. Civil/TT reception conversion and
+backend ephemeris/EOP coverage/correction admission remain required before
+finite-distance observer realization.
+
 ### Observer motion: current boundary and proposed handoff
 
 Observed cluster motion is not implemented. `OpenClusters.realize` refuses a

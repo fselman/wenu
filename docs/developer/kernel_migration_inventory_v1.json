@@ -1747,6 +1747,12 @@
       "git_blob_sha": "72a5e338088ea3bf9ff358e82c8d58fc60a39efe",
       "description": "Object-independent SI row/domain, rectilinear direction and angular certificate engine.",
       "baseline_relation": "Added for enduring object-independent astrometric engine factoring."
+    },
+    {
+      "path": "src/wenu/astrometric_coordinates.py",
+      "git_blob_sha": "6f7675ae253d567f673a91713e6a84e981596a64",
+      "description": "Object-independent explicit TCB/TDB time conversion and Cartesian coordinate scaling receipts.",
+      "baseline_relation": "Additive convention boundary; no observer or product runtime adoption."
     }
   ],
   "test_side_python_files": [
@@ -8797,6 +8803,23 @@
       "Time/common-observer-coordinate convention admission",
       "Observer displacement/parallax/apparent realization",
       "Reduced-input models and other real source adapters"
+    ]
+  },
+  "astrometric_conventions_v1": {
+    "base": "4d6c7612982edd31993a5435936fbc2b3be4d64e",
+    "gate": "astrometric-conventions",
+    "owner": "src/wenu/astrometric_coordinates.py",
+    "scope": "Resource-free IAU 2006 B3 TCB/TDB adapter and IERS 2010 spatial scaling of actual admitted SDK batches.",
+    "pending": [
+      "Civil/TT reception-time admission",
+      "Concrete observer/backend common-coordinate and ephemeris/EOP qualification",
+      "Finite-distance observer realization"
+    ],
+    "limits": [
+      "No propagation or source-resource change",
+      "No observer backend or parallax",
+      "No total error or temporal certificate",
+      "No reduced-input model or expansion"
     ]
   }
 }

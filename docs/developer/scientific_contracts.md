@@ -91,7 +91,9 @@ existing direction admission. That explicit Cartesian output is now implemented:
 SI position and velocity preserve distance, source/evaluation times and separate
 unknown error channels. No Cartesian accuracy bound or temporal reuse is admitted;
 the angular cone certificate remains direction-only. Finite-distance observer
-realization and time/common-coordinate admission are still unimplemented.
+realization remains unimplemented. The resource-free TCB/TDB convention subset
+is implemented in `astrometric_coordinates`; concrete observer-backend and
+civil/reception-time admission remain open.
 
 `OpenClusters.spherical_geometry` currently queries lookup directions and then
 uses `sky.observed_cache.catalogue_point_altaz`. That helper passes RA/Dec through
@@ -124,8 +126,11 @@ time separate. The first nominal observed model evaluates the catalogue model
 at the reception event expressed explicitly in its admitted TCB convention.
 It must not run a second `apply_space_motion`/proper-motion update downstream.
 No implicit UTC/TT/TDB/TCB relabelling or hidden session conversion is allowed.
-TimeService currently has no admitted civil/TCB adapter for this route; that is
-an implementation prerequisite, not permission to call `.tcb` without evidence.
+`astrometric_coordinates.TcbTdbAdapter` now supplies an explicitly registered
+TCB/TDB pair to the unchanged SDK TimeService. It preserves split dates and
+conversion receipts over a caller-admitted finite source interval. It does not
+convert civil time or TT to a barycentric reception event. That remains an
+implementation prerequisite, not permission to call `.tcb` without evidence.
 Record conversion numerical error separately from reception-date uncertainty.
 An unknown conversion/physical error cannot become a zero bound.
 
@@ -133,8 +138,14 @@ An observer ephemeris time-scale label alone does not prove that its position,
 velocity and coordinate scaling are compatible with the nominal cluster state.
 The chosen backend must document and test the common spatial/time convention,
 including any TCB/TDB-compatible scaling, before subtraction or translation.
-This compatibility proof is open; the contract supplies no guessed constants,
-new ephemeris, astronomical validity interval or physical accuracy threshold.
+The convention transformation is now explicit: IAU 2006 B3 defines the linear
+TCB/TDB relation; IERS Conventions (2010) section 1.2 gives
+`x_TDB = (1-L_B) x_TCB`. Velocity is unchanged because time and length share
+the factor. The generic batch converter retains original SDK states, model/source
+bindings and unknown evidence; operation-only rounding bounds are separate.
+It does not establish that a particular ephemeris/backend supplies these
+coordinates. That backend compatibility proof remains open; no new ephemeris,
+astronomical validity interval or physical accuracy threshold is inferred.
 Model-domain coverage, ephemeris coverage, time-adapter coverage and Earth
 orientation coverage are checked independently and intersected for observation.
 Modern observer data do not inherit the nominal model's long date domain.
