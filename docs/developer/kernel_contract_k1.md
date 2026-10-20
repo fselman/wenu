@@ -1,8 +1,8 @@
 # K1: public kernel and provider contract
 
 **Revision:** 2, 2026-10-19. **Status:** state component accepted as K2 target
-(PR #236); KG.02 design accepted through PR #283. KG.03 record/vocabulary/ring
-implementation is delivered for acceptance; final usable SDK freeze remains K5.
+(PR #236); KG.02 design accepted through PR #283. KG.03 is accepted through PR #284; KG.04 projection/clipping/domain
+implementation is delivered for acceptance. Final usable SDK freeze remains K5.
 **As-is base:** main `3359e9ebb430de68e68cdee8bfc40ddd6d3da692`.
 **Proposed contract identifier:** `wenu.kernel/1.0`.
 
@@ -668,14 +668,15 @@ satellite science is part of K1. Wenu must continue to run after every merge.
 **Status:** design accepted through PR #283. Fernando selected KG.03 and the
 published placement/optional-extra plan on 2026-10-19. Kernel dev9 now implements
 the coordinate vocabulary, spherical/projected/frame/viewport records and ring
-helper with legacy aliases; projections/domain/clipping remain KG.04. This is
+helper with legacy aliases; KG.04 dev10 now implements the projections and
+clipping/domain mathematics with unchanged bodies and legacy aliases. This is
 not the K5 freeze.
 Fernando selected KG.02 after the clean main/cleanup receipt. The
 [KG.01 assessment](kernel_migration_audit_v1.md#kg01-shared-geometry-service-inventory)
 and its five findings determine this plan. Existing state/provider contracts
 are retained; geometry is a separate shared-service API, not a StateQuery
 capability. KG.03 implements the bounded record/vocabulary/ring placement and optional
-NumPy extra. Source bytes, numerical formulas and persistence schemas remain
+NumPy extra; KG.04 implements the mathematical projection/clipping/domain placement. Source bytes, numerical formulas and persistence schemas remain
 unchanged; full service integration and completed-K audit remain pending.
 
 ### Placement proposal and dependency direction
@@ -832,7 +833,7 @@ class definitions rather than claiming universal pickle compatibility.
 ### Incremental execution and acceptance plan
 
 These are the existing KG stages, not additional milestone IDs or permission
-to execute the whole sequence. KG.03 is selected and delivered for acceptance;
+to execute the whole sequence. KG.03 is accepted and KG.04 is selected/delivered for acceptance;
 later stages require their own task selection. All stages retain the
 appropriate current owners/oracles listed in KG.01.
 
@@ -855,7 +856,7 @@ Import blockers and cold subprocesses must actually exercise canonical service
 imports and entry points; an AST allowlist alone does not prove isolation.
 
 KG.02 acceptance was documentation review through PR #283 and its 36-case
-Mac documentation gate. KG.03 is separately selected; its implemented subset
-and actual evidence are recorded in testing policy, not inferred from the plan.
-Unimplemented KG.04–KG.07 checks remain future acceptance requirements.
+Mac documentation gate. KG.03 is separately accepted through PR #284; KG.04's implemented mathematical
+services and actual evidence are recorded in testing policy, not inferred from
+the plan. KG.05–KG.07 checks remain future acceptance requirements.
 The final usable shared-service contract remains subject to K5 acceptance.

@@ -1102,3 +1102,47 @@ not algorithms, source bytes, observer science, snapshot schemas or rendering.
 No full production suite is warranted by this bounded ownership move.
 Documentation uses its normal gate; archive-copy limitations are stated
 separately. Mac acceptance at the delivered branch is pending.
+
+## KG.04 projection, clipping and domain service gate
+
+Use `kernel-geometry-projections` and the separate kernel unittest suite.
+This move preserves the exact numerical ASTs of projected clipping, all three
+projections, and each domain/latitude/cap/topology function. Appearance helper
+bodies are also unchanged and remain at Wenu owners. Public legacy classes and
+mathematical functions are identical kernel aliases; old class/function pickle
+GLOBAL paths and the existing private polyline test seam are preserved.
+
+Existing numerical owners cover known projection coordinates, inverse/radius
+behavior, EW/position-angle order, seam/pole/antipode breaks, cap-before-projection,
+filled-side/holes/winding and per-fragment metadata. Existing product/preparation,
+style, renderer viewport and constellation-label owners protect their immediate
+consumer seams. The single-cleanup instrumentation now patches the canonical
+kernel private helper while its tested public call still uses the Wenu facade;
+the original once-only assertion remains. This corrects the test's owner after
+relocation rather than duplicating a private numerical implementation in Wenu.
+
+The explicit isolated numerical subprocess and actual installed kernel wheel
+exercise all three projections, viewport clipping and cap selection/projection
+with Wenu/Astropy/Skyfield/Matplotlib imports blocked. Base installed SDK executes
+204 state cases with NumPy absent; its optional numerical case is intentionally
+skipped there and passes separately with the geometry extra available. Root
+wheel/sdist/editable installation verifies the final immutable dev10 geometry
+dependency pin, distinct SDK origin and unchanged legacy state consumers.
+Cold/restored native label anchors and actual atlas PNG pixels plus source-free
+fresh-process snapshot reconstruction are retained in the focused gate.
+
+Local Python 3.12 evidence: 205 kernel cases passed with optional geometry
+available; isolated installed base collected 205, passed 204 and skipped the
+single optional geometry case. Eight tooling cases passed. Focused gate has
+295 cases: 294 passed in 84.22 s; the environment's missing de440s.bsp blocks the existing circumpolar
+LMC example at JPL certificate validation. No ephemeris substitution or weakened
+integration assertion is used. The complete gate remains required on the Mac.
+Documentation: 33 passed; three omitted-archive checks require the complete
+checkout. All active links/anchors and 73 preserved archive hashes were checked
+against GitHub. Complete Mac acceptance is pending.
+
+KG.03 record evidence is retained. No source bytes, scientific observation model,
+snapshot schema or renderer/style algorithm changed. This immediate numerical/
+consumer acceptance does not close KG.05's composed-service review and
+representative polar/PNG/PDF/SVG acceptance, or KG.06/KG.07's completed-K audit.
+No full production suite is warranted by this bounded ownership move.

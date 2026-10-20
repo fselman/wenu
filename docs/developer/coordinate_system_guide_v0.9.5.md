@@ -1416,3 +1416,15 @@ into the kernel with identical legacy aliases. Source factories, defaults and
 observer realization stay with Wenu. Ring math is delegated under the same
 explicit winding convention. Degree units, status/origin/time/corrections,
 frame defaults and numerical algorithms remain unchanged.
+
+## KG.04 mathematical projection and clipping ownership
+
+The existing three projection formulas, projected clipping and spherical
+latitude/cap topology now reside in kernel services. Legacy imports preserve
+class/function identity. Projection alignment remains a unit-sphere rotation,
+not an astronomical frame conversion; degree inputs and projection-scale outputs
+retain their meaning. Mathematical cap clipping still precedes unsafe filled
+polygon projection where applicable, separately from chart horizon/field-stop
+policy. Holes, winding and sample-aligned metadata retain their existing
+conventions. No source qualification, observer correction, numerical algorithm
+or snapshot meaning changes in this ownership move.

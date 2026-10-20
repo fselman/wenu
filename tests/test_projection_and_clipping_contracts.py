@@ -16,6 +16,34 @@ from wenu.geometry.spherical import SphericalPoints
 from wenu.geometry.frame import SphericalFrame
 
 
+def test_kernel_projection_clipping_domain_aliases_and_policy_boundary():
+    import importlib
+    import pickle
+    from wenu_kernel.geometry import domain, clipping
+    from wenu.rendering import preparation
+    classes = {
+        'stereographic': 'StereographicProjection',
+        'polar_azimuthal_equidistant': 'PolarAzimuthalEquidistantProjection',
+        'mollweide': 'MollweideProjection',
+    }
+    for module_name, name in classes.items():
+        cls = getattr(importlib.import_module('wenu_kernel.projections.' + module_name),name)
+        assert getattr(importlib.import_module('wenu.projections.' + module_name),name) is cls
+        assert getattr(importlib.import_module('wenu.projections'),name) is cls
+        assert pickle.loads(('cwenu.projections.'+module_name+'\n'+name+'\n.').encode()) is cls
+    for name in domain.__all__:
+        assert getattr(preparation,name) is getattr(domain,name)
+        assert getattr(importlib.import_module('wenu.rendering'),name) is getattr(domain,name)
+        assert pickle.loads(('cwenu.rendering.preparation\n'+name+'\n.').encode()) is getattr(domain,name)
+    for name in ('clip_point_to_viewport','clip_curve_to_viewport','clip_polygon_to_convex_boundary',
+                 'clip_polygon_to_viewport','clip_line_segment_to_viewport','polygon_centroid'):
+        assert getattr(importlib.import_module('wenu.geometry.clipping'),name) is getattr(clipping,name)
+    for name in ('magnitude_sizes','configured_magnitude_sizes','cull_points_to_viewport',
+                 'point_styles','radial_label_offset','diameter_marker_areas'):
+        assert getattr(preparation,name).__module__ == 'wenu.rendering.preparation'
+        assert not hasattr(domain,name)
+
+
 def test_default_frame_preserves_existing_projection_exactly():
     lon_deg = np.array([0.0, 30.0, 90.0, 180.0])
     lat_deg = np.array([90.0, 60.0, 30.0, 0.0])

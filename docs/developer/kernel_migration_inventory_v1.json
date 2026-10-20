@@ -7458,19 +7458,25 @@
   "independent_projects": [
     {
       "path": "packages/wenu_kernel",
-      "scope": "K2 state/time/provider services remain stdlib-only. KG.03 dev9 adds pure coordinate vocabulary and optional NumPy geometry records/frame/viewport/ring math with legacy aliases. Root pins geometry extra; projection/domain moves and full kernel freeze pending.",
+      "scope": "State/time/provider services stay stdlib-only; KG.03 records/vocabulary/ring math and KG.04 projections/clipping/domain services use optional NumPy geometry. Wenu compatibility aliases and immutable pin; complete integration/freeze pending.",
       "source_paths": [
         "packages/wenu_kernel/src/wenu_kernel/__init__.py",
         "packages/wenu_kernel/src/wenu_kernel/conformance.py",
         "packages/wenu_kernel/src/wenu_kernel/coordinates.py",
         "packages/wenu_kernel/src/wenu_kernel/errors.py",
         "packages/wenu_kernel/src/wenu_kernel/geometry/__init__.py",
+        "packages/wenu_kernel/src/wenu_kernel/geometry/clipping.py",
+        "packages/wenu_kernel/src/wenu_kernel/geometry/domain.py",
         "packages/wenu_kernel/src/wenu_kernel/geometry/frame.py",
         "packages/wenu_kernel/src/wenu_kernel/geometry/projected.py",
         "packages/wenu_kernel/src/wenu_kernel/geometry/spherical.py",
         "packages/wenu_kernel/src/wenu_kernel/geometry/topology.py",
         "packages/wenu_kernel/src/wenu_kernel/geometry/viewport.py",
         "packages/wenu_kernel/src/wenu_kernel/kernel.py",
+        "packages/wenu_kernel/src/wenu_kernel/projections/__init__.py",
+        "packages/wenu_kernel/src/wenu_kernel/projections/mollweide.py",
+        "packages/wenu_kernel/src/wenu_kernel/projections/polar_azimuthal_equidistant.py",
+        "packages/wenu_kernel/src/wenu_kernel/projections/stereographic.py",
         "packages/wenu_kernel/src/wenu_kernel/providers.py",
         "packages/wenu_kernel/src/wenu_kernel/records.py",
         "packages/wenu_kernel/src/wenu_kernel/reuse.py",
@@ -10382,7 +10388,7 @@
   },
   "geometry_service_implementation": {
     "id": "KG.03",
-    "status": "implemented for acceptance; complete Mac gate pending",
+    "status": "accepted through PR #284; main 59a4f2f9; Mac 205 kernel, 8 tooling, 36 documentation and 236 focused cases; clean synchronized main receipt",
     "base_commit": "e0d5620404d1b49d32158f617226667b080729f6",
     "kernel_commit": "6d630885ab70c9b5bc6b40ceeaed2dcf90342bdc",
     "kernel_version": "0.0.0.dev9",
@@ -10412,5 +10418,54 @@
       "metadata": "Actual isolated installed kernel wheel and root wheel/sdist/editable consumers passed; class identity, old pickle paths, aliases, ring octant/complement and source-free snapshots covered."
     },
     "remaining": "KG.04 projections/clipping/domain math not moved; KG.05 full-service integration and KG.06\u2013KG.07 completed-K audit/corrections remain pending."
+  },
+  "geometry_projection_implementation": {
+    "id": "KG.04",
+    "status": "implemented for acceptance; complete Mac gate pending",
+    "base_commit": "59a4f2f961a67eca74ad8e5f1afbf8f3978b87a1",
+    "kernel_commit": "ba591f156573324c3e08f9fb4d7bf626e2197f9c",
+    "kernel_version": "0.0.0.dev10",
+    "canonical_modules": [
+      "wenu_kernel.geometry.clipping",
+      "wenu_kernel.geometry.domain",
+      "wenu_kernel.projections",
+      "wenu_kernel.projections.stereographic",
+      "wenu_kernel.projections.polar_azimuthal_equidistant",
+      "wenu_kernel.projections.mollweide"
+    ],
+    "semantics": "Unchanged numerical ASTs and retained Wenu appearance functions. Same class/function aliases; demonstrated old private polyline seam forwards. Single-cleanup instrumentation moved to canonical private owner while public call remains through Wenu.",
+    "base_dependencies": [],
+    "optional_dependencies": {
+      "geometry": [
+        "numpy>=1.26,<2"
+      ]
+    },
+    "policy_retained": [
+      "magnitude_sizes",
+      "configured_magnitude_sizes",
+      "cull_points_to_viewport",
+      "point_styles",
+      "radial_label_offset",
+      "diameter_marker_areas"
+    ],
+    "gate": "kernel-geometry-projections",
+    "runtime_algorithm_change": false,
+    "source_bytes_change": false,
+    "snapshot_schema_change": false,
+    "remaining": "KG.05 composed service acceptance and KG.06/KG.07 completed-K audit/corrections; no automatic activation.",
+    "local_evidence": {
+      "focused_passed": 294,
+      "focused_blocked": 1,
+      "focused_seconds": 84.22,
+      "blocked_reason": "Absent de440s.bsp; existing circumpolar LMC example fails standard JPL download certificate validation. Full 295-case Mac gate remains required.",
+      "source_kernel_passed": 205,
+      "installed_base_passed": 204,
+      "installed_base_optional_skip": 1,
+      "tooling_passed": 8,
+      "documentation_passed": 33,
+      "documentation_omitted_archive_checks": 3,
+      "retained_outputs": "cold/restored atlas PNG pixels and source-free fresh-process snapshots passed",
+      "fault_preservation": "single-cleanup private instrumentation retargeted canonical owner; once-only assertion still runs via legacy public call"
+    }
   }
 }

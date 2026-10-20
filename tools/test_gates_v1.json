@@ -1656,6 +1656,96 @@
           "reason": "Canonical class aliases preserve saved rows/masks/units/subsets across families."
         }
       ]
+    },
+    "kernel-geometry-projections": {
+      "scope": "KG.04 shared kernel projected clipping, three projections and spherical domain/topology mathematics; independent installed isolation and legacy/product composition.",
+      "limits": "No numerical algorithms, source bytes, observation science, snapshot schemas or renderer/style policy changes. Base state SDK remains stdlib-only. Reuse accepted KG.03 record evidence; separate kernel unittest gate; KG.05 broader service integration and KG.06/KG.07 audit remain pending. No full production repeat.",
+      "selections": [
+        {
+          "node": "tests/test_clipping.py",
+          "reason": "Moved projected clipping and retained tested private polyline seam."
+        },
+        {
+          "node": "tests/test_projection_regression.py",
+          "reason": "Unchanged stereographic formulas and EW orientation."
+        },
+        {
+          "node": "tests/test_projected_geometry_projection.py",
+          "reason": "Legacy scalar collection APIs forward to canonical projections."
+        },
+        {
+          "node": "tests/test_projection_geometry.py",
+          "reason": "Geometry dispatch, metadata and antipode behavior."
+        },
+        {
+          "node": "tests/test_polar_azimuthal_equidistant_projection.py",
+          "reason": "Moved polar subclass forward/inverse/domain contracts."
+        },
+        {
+          "node": "tests/test_mollweide_projection.py",
+          "reason": "Moved equal-area math and seam/pole topology."
+        },
+        {
+          "node": "tests/test_projection_and_clipping_contracts.py",
+          "reason": "Canonical/legacy identity and policy boundary, cap-before-projection, holes/winding and chart seams."
+        },
+        {
+          "node": "tests/test_geometry_pipeline.py",
+          "reason": "Retained canonical project/prepare/render flow and latitude preparation."
+        },
+        {
+          "node": "tests/test_projection_selection.py",
+          "reason": "Product projection/frame selection retains the same classes."
+        },
+        {
+          "node": "tests/test_isophotes.py",
+          "reason": "Independent real contour/raster and filled-side oracles after domain move."
+        },
+        {
+          "node": "tests/test_magellanic_clouds.py",
+          "reason": "Compound rings, selection and projection-dependent consumers."
+        },
+        {
+          "node": "tests/test_full_sky_chart.py",
+          "reason": "Full-sky cap/projection integration."
+        },
+        {
+          "node": "tests/test_regional_chart.py",
+          "reason": "Regional viewport and domain guards through canonical callback."
+        },
+        {
+          "node": "tests/test_polar_planisphere_chart.py",
+          "reason": "Polar chart and horizon domain integration."
+        },
+        {
+          "node": "tests/test_polar_planisphere_style.py",
+          "reason": "Sizing/label/style policy remains outside mathematical services."
+        },
+        {
+          "node": "tests/test_viewport_rendering.py",
+          "reason": "Renderer composition with shared clipping/viewport records."
+        },
+        {
+          "node": "tests/test_constellation_labels.py",
+          "reason": "Convex clipping/centroid callers and public labels."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_geometry_kernel_wheel_isolated_imports_metadata_and_numeric_consumer",
+          "reason": "Actual installed canonical projection/clipping/domain consumer without Wenu or backends."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override",
+          "reason": "Final immutable geometry-extra pin in wheel/sdist/editable Wenu."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_label_kernel_route_preserves_cold_saved_anchors_and_page_pixels",
+          "reason": "Affected projection/clipping path preserves saved/native labels and real atlas pixels."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources",
+          "reason": "Preserve fresh-process source-free reconstruction and legacy aliases."
+        }
+      ]
     }
   },
   "consumer_review": [
