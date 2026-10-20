@@ -33,7 +33,7 @@ def test_geometry_kernel_wheel_isolated_imports_metadata_and_numeric_consumer(tm
     with ZipFile(wheel) as archive:
         metadata_file = next(p for p in archive.namelist() if p.endswith('.dist-info/METADATA'))
         metadata = Parser().parsestr(archive.read(metadata_file).decode())
-        assert metadata['Version'] == '0.0.0.dev9'
+        assert metadata['Version'] == '0.0.0.dev10'
         requirements = [Requirement(r) for r in metadata.get_all('Requires-Dist',[])]
         assert requirements and all(r.marker is not None for r in requirements)
         assert all(not r.marker.evaluate({'extra':''}) for r in requirements)
@@ -82,6 +82,23 @@ frame=SphericalFrame(25.,45.,10.)
 q=frame.transform([10.,20.],[30.,40.]);p=frame.inverse_transform(q.lon_deg,q.lat_deg)
 assert np.allclose(p.lon_deg,[10.,20.]) and np.allclose(p.lat_deg,[30.,40.])
 assert ProjectedPoints([0.,np.nan],[0.,1.]).finite.tolist()==[True,False]
+from wenu_kernel.projections import StereographicProjection, PolarAzimuthalEquidistantProjection, MollweideProjection
+from wenu_kernel.geometry import domain
+from wenu_kernel.geometry.clipping import clip_curve_to_viewport
+from wenu_kernel.geometry import ProjectedCurve, Viewport
+stereo=StereographicProjection(radius=2.,flip_ew=False)
+assert np.allclose(stereo.project_spherical(90.,0.),(2.,0.),atol=1e-14)
+assert np.allclose(PolarAzimuthalEquidistantProjection(radius=2.,flip_ew=False).project_spherical(90.,0.),(2.,0.),atol=1e-14)
+assert np.allclose(MollweideProjection().project_spherical(0.,0.),(0.,0.),atol=1e-14)
+curve=ProjectedCurve([-2.,2.],[0.,0.])
+pieces=clip_curve_to_viewport(curve,Viewport(-1.,1.,-1.,1.))
+assert len(pieces)==1 and np.allclose(pieces[0].x,[-1.,1.])
+near=SphericalPolygons(([0.,90.,180.],),([70.,70.,70.],),coordinate_spec=GENERIC_SPHERICAL_SPEC,ids=['ring'])
+safe=domain.project_geometry_for_viewport(near,projection=stereo,viewport=Viewport(-.5,.5,-.5,.5))
+assert len(safe)==1 and safe.metadata['ids'].tolist()==['ring']
+assert safe.metadata['projection_domain_clipped']
+assert domain.projection_cap_for_viewport(MollweideProjection(),Viewport(-1.,1.,-1.,1.)) is None
+assert not hasattr(domain,'magnitude_sizes')
 '''
     checked = subprocess.run([sys.executable,'-I','-S','-c',numeric,
         str(installed),str(numpy_root)],cwd=tmp_path,capture_output=True,text=True)
@@ -406,7 +423,7 @@ def test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_over
             assert len(sdk) == 1
             assert sdk[0].extras == {"geometry"}
             assert sdk[0].url == ('git+https://github.com/fselman/wenu.git@'
-                '6d630885ab70c9b5bc6b40ceeaed2dcf90342bdc#subdirectory=packages/wenu_kernel')
+                'ba591f156573324c3e08f9fb4d7bf626e2197f9c#subdirectory=packages/wenu_kernel')
         installed = tmp_path / f'installed_{i}'
         result = subprocess.run([sys.executable, '-m', 'pip', 'install', '--no-deps',
             '--target', str(installed), str(wheel)], cwd=tmp_path, capture_output=True, text=True)

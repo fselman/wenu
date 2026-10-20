@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 35, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 36, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -32,11 +32,11 @@ new scientific features. As-built APIs remain in the
 ## Current position and next-item selection
 
 **Accepted runtime baseline:** main
-`21653198502b2b6687af8d82556a7f98922eb4fd`, PR #279. Its tree is identical to
-tested `28215d48d4e88dd2e9f66477afc1872c7de386ff`: 126 focused Mac tests,
-36 documentation tests and 8 tooling tests passed. Fernando confirmed clean,
-synchronized main and branch cleanup. This is focused evidence, not a claim
-that every existing function has migrated or that a new full-suite run occurred.
+`59a4f2f961a67eca74ad8e5f1afbf8f3978b87a1`, PR #284, tree identical to
+tested `72ef09e2ac5cc2ea6c0bc3eedaa53c5c2aaea492`. Mac acceptance: 205 kernel,
+8 tooling, 36 documentation and 236 focused geometry cases passed. Fernando
+confirmed clean synchronized main and branch cleanup. This bounded receipt does
+not close K3, the complete shared-service boundary or K5.
 
 | Track | Position |
 |---|---|
@@ -44,8 +44,8 @@ that every existing function has migrated or that a new full-suite run occurred.
 | Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
 | Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
 | Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
-| Current authorized task | KG.03 geometry records/vocabulary/ring helper and optional geometry extra implemented for acceptance; projections/domain clipping remain KG.04 |
-| Next bounded submilestone | **KG.04**, only after KG.03 acceptance and explicit task selection: migrate clipping, projections and projection-specific topology. KG.04–KG.07 still precede K3.16 |
+| Current authorized task | KG.04 projected clipping, three projections and spherical domain/topology mathematics implemented for acceptance; appearance policy remains in Wenu |
+| Next bounded submilestone | **KG.05**, only after KG.04 acceptance and explicit selection: accept composed service boundaries and representative application/output integration. KG.05–KG.07 still precede K3.16 |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -76,6 +76,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 36: select KG.04 implementation | Fernando’s 2026-10-19 proceed after accepted PR #284 and clean main 59a4f2f9, following explicit clipping/three-projection/domain-topology proposal | Move existing mathematics behind agreed kernel leaves and legacy aliases. Preserve all formulas, domain/cap/hole/seam semantics and numerical dependencies; keep marker sizing/culling margin, label and chart/render policy in Wenu. Verify isolated installed services and affected consumers; no new algorithm, source bytes, observation model or snapshot schema |
 | Revision 35: select KG.03 implementation and KG.02 placement | Fernando’s 2026-10-19 “proceed” after merging/reviewing PR #283 and clean main e0d56204, following the explicit KG.03 proposal to use the documented contracts and placement | Implement pure coordinate vocabulary, spherical/projected/frame/viewport records and current ring helper in existing wenu-kernel numerical leaves; optional geometry NumPy extra and immutable root pin follow the published KG.02 plan. Preserve stdlib base imports and same-object legacy aliases. Projections/clipping remain KG.04; no new scientific algorithm, source bytes or snapshot schema |
 | Revision 34: select KG.02 design | Fernando’s 2026-10-19 “proceed” after accepting KG.01 and clean main at PR #282 | Define public geometry semantics, compatibility/dependency rules and concrete placement proposal. Extend existing kernel distribution with explicit numerical leaves and optional NumPy geometry extra as a proposal requiring explicit agreement before packaging edits. No implementation, dependency pin or new distribution is authorized by the design publication |
 | Revision 33: select KG.01 assessment | Fernando’s 2026-10-19 “proceed” after clean main/cleanup receipt at PR #281 and the explicit KG.01 inventory proposal | Document existing services, source-verified dependencies/callers, import coupling, mutation semantics and located test oracles. Assessment only; KG.02 contracts/placement and KG.06 completed-K audit remain separate later work |
@@ -722,14 +723,16 @@ Execute KG.01 → KG.02 → KG.03 → KG.04 → KG.05 → KG.06 → KG.07,
 then resume K3.16. KG.01 is accepted through PR #282, main 887408ae; 36 Mac documentation tests
 passed at 20de328c. KG.02 is accepted through PR #283, main e0d56204, with 36 Mac documentation
 tests. Fernando selected KG.03 and its published placement/optional-extra plan.
-KG.03 implementation is delivered for acceptance; KG.04–KG.07 remain pending. Select and accept one bounded task at a time.
+KG.03 is accepted through PR #284, main 59a4f2f9: 205 kernel, 8 tooling,
+36 documentation and 236 focused Mac cases passed. KG.04 is selected and
+implemented for acceptance; KG.05–KG.07 remain pending. Select and accept one bounded task at a time.
 
 | ID | Intermediate deliverable | Acceptance and dependency |
 |---|---|---|
 | KG.01 | Inventory existing spherical/projected geometry, topology, clipping/domain guards and projection implementations; map public imports, dependencies, callers, mutable state and tests | [Assessment delivered](kernel_migration_audit_v1.md#kg01-shared-geometry-service-inventory) against main cb40ede9; accepted through PR #282, main 887408ae, with 36 Mac documentation tests. Source-verified owners, 66 direct absolute-import consumer modules and five boundary findings recorded. No runtime migration or numerical acceptance claimed |
 | KG.02 | Establish public kernel geometry contracts and a concrete incremental placement/dependency plan | [Design delivered](kernel_contract_k1.md#14-kg02-geometry-service-contracts-and-placement-plan), accepted through PR #283; placement/optional-extra implementation selected by Fernando’s subsequent KG.03 proceed. Specifies existing units/rings/metadata/aliasing, projection capabilities/failures and canonical/legacy identity. KG.03 implementation remains separate; no numerical or packaging change made |
-| KG.03 | Migrate existing spherical geometry and topology behind the agreed public kernel interfaces | Implemented for acceptance: kernel dev9 pure vocabulary, records/frame/viewport, explicit ring helper, optional geometry NumPy extra and same-class legacy facades; root pins kernel 6d630885. Geometry/isolated installation/state-SDK checks recorded in testing policy; complete Mac acceptance pending. Projection-specific topology/clipping stays KG.04 |
-| KG.04 | Migrate mathematical domain guards, clipping, projections and projected geometry behind the agreed services | KG.03 accepted. Separate mathematical projection-domain rules from chart framing/publication policy. Preserve all three existing projections, singularity handling, orientation and numerical results with existing owner oracles and affected seams |
+| KG.03 | Migrate existing spherical geometry and topology behind the agreed public kernel interfaces | Implemented for acceptance: kernel dev9 pure vocabulary, records/frame/viewport, explicit ring helper, optional geometry NumPy extra and same-class legacy facades; root pins kernel 6d630885. Accepted through PR #284, main 59a4f2f9: 205 kernel, 8 tooling, 36 docs and 236 focused Mac cases. Projection-specific topology/clipping is addressed separately in KG.04 |
+| KG.04 | Migrate mathematical domain guards, clipping, projections and projected geometry behind the agreed services | Implemented for acceptance: kernel dev10 geometry.clipping/domain and all-three projections; legacy aliases, unchanged AST bodies, installed isolated numerical consumers and explicit owner/consumer gate. Root pins ba591f15. Complete Mac acceptance pending; chart/render policy retained outside kernel |
 | KG.05 | Accept the composed geometry-service boundary and representative application integration | KG.04 accepted. Demonstrate permitted imports and independent service testing without concrete catalogues/products/renderers; test installed service access where packaging changes. Verify representative cold/restored atlas and planisphere geometry and actual PNG/PDF/SVG outputs using closest existing owners. No graphics rewrite or full-suite repeat by default |
 | KG.06 | Audit all completed K deliveries against the established service boundary | KG.05 accepted. Record each completed K ID/PR, actual implementation/callers, dependency direction, appropriate state/geometry service use, and disposition: no change, concrete correction, or unresolved proposal. Cover accepted state/time/resource foundations, source/provider admission, migrated stellar/figure/label and deep-sky consumers, request/cache/restored paths. Review AX composition only where it affects those K seams; do not activate new AX science. Retain evidence only for claims it still supports |
 | KG.07 | Apply and accept the audit’s demonstrated corrections within existing K obligations | KG.06 accepted. Enumerate each correction, owner, affected public consumers and focused gate before editing. Preserve numerical/scientific behavior, identities, refusal/cache semantics, legacy APIs and atlas appearance. Rerun affected owner/seam/output checks; retain unaffected receipts. Explicitly close with no code change if the audit proves none necessary. Extra scope returns to change control |

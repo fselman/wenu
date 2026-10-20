@@ -63,9 +63,11 @@ are now delivered for review: explicit numerical kernel imports, legacy aliases,
 ring/metadata/ownership rules and focused acceptance. KG.02 is accepted through PR #283. Fernando subsequently selected KG.03,
 including that concrete placement and optional NumPy extra. Kernel dev9 now owns
 pure CoordinateSpec vocabulary, spherical/projected records, frame/viewport and
-the existing ring helper; Wenu aliases preserve class identity. Projection and
-domain/clipping implementations remain at their existing owners for KG.04.
-KG.03 complete Mac acceptance is pending.
+the existing ring helper; Wenu aliases preserve class identity. KG.03 is accepted through PR #284. KG.04 now places projected clipping,
+all three projections and cap/latitude/topology mathematics in kernel dev10;
+legacy imports alias the same services. Appearance helpers remain in Wenu.
+KG.04 complete Mac acceptance is pending; KG.05 integration and KG.06/KG.07
+completed-K audit/corrections remain separate tasks.
 Extra scope or changed agreed order must be discussed with Fernando,
 explicitly agreed and documented before implementation under the
 [mandatory agent rule](assistant_instructions.md#roadmap-control-mandatory-before-implementation).

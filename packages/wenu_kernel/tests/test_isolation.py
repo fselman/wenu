@@ -64,6 +64,21 @@ polygons = SphericalPolygons((ring[:,0], ring[::-1,0]), (ring[:,1], ring[::-1,1]
 assert polygons.metadata['is_hole'].tolist() == [False,True]
 assert Viewport.centered(width=2.,height=2.).contains(0.,0.)
 assert ProjectedPoints([0.,np.nan],[0.,1.]).finite.tolist() == [True,False]
+from wenu_kernel.projections import StereographicProjection, MollweideProjection, PolarAzimuthalEquidistantProjection
+from wenu_kernel.geometry.clipping import clip_point_to_viewport
+from wenu_kernel.geometry.projected import ProjectedPoint
+from wenu_kernel.geometry import domain
+stereo = StereographicProjection(radius=2., flip_ew=False)
+assert np.allclose(stereo.project_spherical(90.,0.), (2.,0.), atol=1e-14)
+assert np.allclose(PolarAzimuthalEquidistantProjection(radius=2.,flip_ew=False).project_spherical(90.,0.), (2.,0.), atol=1e-14)
+assert np.allclose(MollweideProjection().project_spherical(0.,0.), (0.,0.), atol=1e-14)
+assert domain.projection_cap_for_viewport(MollweideProjection(), Viewport(-1.,1.,-1.,1.)) is None
+assert clip_point_to_viewport(ProjectedPoint(2.,0.),Viewport(-1.,1.,-1.,1.)) is None
+near = SphericalPolygons(([0.,90.,180.],),([70.,70.,70.],),coordinate_spec=GENERIC_SPHERICAL_SPEC, ids=['ring'])
+safe = domain.project_geometry_for_viewport(near,projection=stereo,viewport=Viewport(-.5,.5,-.5,.5))
+assert len(safe) == 1 and safe.metadata['ids'].tolist() == ['ring']
+assert safe.metadata['projection_domain_clipped']
+assert not any(hasattr(domain,n) for n in ('magnitude_sizes','point_styles','radial_label_offset','cull_points_to_viewport'))
 assert 'wenu' not in sys.modules and 'matplotlib' not in sys.modules
 print('Independent numerical geometry consumer passed')
 '''.replace('SDK_ROOT', repr(sdk_root)).replace('NUMPY_ROOT', repr(numpy_root))

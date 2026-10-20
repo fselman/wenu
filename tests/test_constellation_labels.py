@@ -622,7 +622,9 @@ def test_discrete_position_mode_uses_center_alignment():
 from types import SimpleNamespace
 
 import numpy as np
-import wenu.geometry.clipping as clipping_module
+# Instrument the mathematical owner; the public call below still uses Wenu's
+# compatibility facade and must invoke this canonical implementation once.
+import wenu_kernel.geometry.clipping as clipping_module
 
 from wenu.charts.boundaries import circular_boundary
 from wenu.charts.constellation_label_placement import (

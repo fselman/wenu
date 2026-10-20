@@ -21,7 +21,8 @@ The [agreed service-kernel boundary](kernel_roadmap_v0.9.5.md#proposed-architect
 assigns reusable geometry/topology, domain guards and projections to shared kernel
 services. KG.03 retains the Wenu locations below as compatibility facades while
 moving the record/frame/viewport implementations and ring math into the existing
-kernel distribution. Projection/clipping/domain implementations remain in Wenu. The standalone
+kernel distribution. KG.04 additionally moves projection/clipping/domain mathematics into canonical
+kernel services, retaining Wenu compatibility facades. The standalone
 state SDK is a component of that target, not the whole kernel; conceptual ownership
 does not claim completed extraction or require routing geometry through states.
 
@@ -38,6 +39,15 @@ The geometry package exports these record/frame/viewport types explicitly;
 ring math stays in its topology leaf. Numerical geometry uses an optional NumPy
 extra. Base state/coordinate imports remain dependency-free. Wenu legacy types
 are identical aliases, not copied implementations.
+
+The same kernel project now also owns
+[projected clipping](../../packages/wenu_kernel/src/wenu_kernel/geometry/clipping.py),
+[spherical domain/topology mathematics](../../packages/wenu_kernel/src/wenu_kernel/geometry/domain.py),
+[stereographic projection](../../packages/wenu_kernel/src/wenu_kernel/projections/stereographic.py),
+[polar azimuthal equidistant projection](../../packages/wenu_kernel/src/wenu_kernel/projections/polar_azimuthal_equidistant.py)
+and [Mollweide projection](../../packages/wenu_kernel/src/wenu_kernel/projections/mollweide.py).
+Projection-domain math is separated from marker sizing/label/culling policy,
+which remains in Wenu rendering preparation.
 
 ## (root services)
 
@@ -297,7 +307,7 @@ concrete Wenu classes.
 | Module | Present responsibility |
 |---|---|
 | [`geometry/__init__.py`](../../src/wenu/geometry/__init__.py) | Coordinate-neutral geometry values and algorithms. |
-| [`geometry/clipping.py`](../../src/wenu/geometry/clipping.py) | Clipping. |
+| [`geometry/clipping.py`](../../src/wenu/geometry/clipping.py) | Compatibility aliases for canonical kernel projected clipping and centroid operations. |
 | [`geometry/frame.py`](../../src/wenu/geometry/frame.py) | Same-object compatibility aliases for wenu_kernel.geometry.frame. |
 | [`geometry/projected.py`](../../src/wenu/geometry/projected.py) | Same-object compatibility aliases for wenu_kernel.geometry.projected. |
 | [`geometry/spherical.py`](../../src/wenu/geometry/spherical.py) | Same-object compatibility aliases for wenu_kernel.geometry.spherical. |
@@ -328,9 +338,9 @@ concrete Wenu classes.
 | Module | Present responsibility |
 |---|---|
 | [`projections/__init__.py`](../../src/wenu/projections/__init__.py) | Coordinate-neutral map projections. |
-| [`projections/mollweide.py`](../../src/wenu/projections/mollweide.py) | Coordinate-neutral Mollweide projection with longitude-seam topology. |
-| [`projections/polar_azimuthal_equidistant.py`](../../src/wenu/projections/polar_azimuthal_equidistant.py) | Polar azimuthal-equidistant projection for physical sky disks. |
-| [`projections/stereographic.py`](../../src/wenu/projections/stereographic.py) | Stereographic. |
+| [`projections/mollweide.py`](../../src/wenu/projections/mollweide.py) | Same-class legacy alias for kernel Mollweide projection. |
+| [`projections/polar_azimuthal_equidistant.py`](../../src/wenu/projections/polar_azimuthal_equidistant.py) | Same-class legacy alias for kernel polar azimuthal equidistant projection. |
+| [`projections/stereographic.py`](../../src/wenu/projections/stereographic.py) | Same-class legacy alias for kernel stereographic projection. |
 
 ## rendering
 
@@ -343,7 +353,7 @@ concrete Wenu classes.
 | [`rendering/layers.py`](../../src/wenu/rendering/layers.py) | Backward-compatible numeric names for Wenu paint roles. |
 | [`rendering/matplotlib.py`](../../src/wenu/rendering/matplotlib.py) | Generic Matplotlib renderer for projected Cartesian geometry. |
 | [`rendering/paint_roles.py`](../../src/wenu/rendering/paint_roles.py) | Typed paint-order roles shared by chart rendering and documents. |
-| [`rendering/preparation.py`](../../src/wenu/rendering/preparation.py) | Generic preparation between projection and rendering. |
+| [`rendering/preparation.py`](../../src/wenu/rendering/preparation.py) | Wenu appearance helpers and identical shared kernel domain/latitude/cap service aliases. |
 | [`rendering/symbols.py`](../../src/wenu/rendering/symbols.py) | Reusable, independently constructed astronomical chart symbols. |
 
 ## satellites

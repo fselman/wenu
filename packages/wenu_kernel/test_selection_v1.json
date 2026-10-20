@@ -1,8 +1,8 @@
 {
   "schema": "wenu-test-selection/1",
   "owner": "wenu_kernel",
-  "slice": "KG.03 optional numerical geometry records/frame/viewport/ring helper and pure coordinate vocabulary; same-object Wenu aliases; no projection/domain algorithm change",
-  "accepted_base": "e0d5620404d1b49d32158f617226667b080729f6",
+  "slice": "KG.04 existing projected clipping, three projections and domain/latitude/cap topology; legacy aliases; appearance policies remain outside kernel.",
+  "accepted_base": "59a4f2f961a67eca74ad8e5f1afbf8f3978b87a1",
   "runtime_dependencies": [],
   "required": [
     "python -m unittest discover -s packages/wenu_kernel/tests -v",
@@ -55,39 +55,40 @@
     "base state/coordinate import eagerly requires optional NumPy",
     "legacy class/enum aliases fail isinstance or old pickle GLOBAL lookup",
     "ring helper changes independent octant area or winding complement",
-    "numerical record relocation changes writable-array or shallow-metadata semantics"
+    "numerical record relocation changes writable-array or shallow-metadata semantics",
+    "projection, clipping or cap service imports Wenu products/renderer despite canonical namespace",
+    "legacy projection classes or preparation function aliases diverge",
+    "cap clipping happens after unsafe projection or hole/seam metadata loses identity",
+    "marker sizing, label policy or culling margin is moved into mathematical domain services"
   ],
   "legacy_tests_moved_or_removed": [],
   "affected_consumers": [
-    "Existing state/time/conformance suite unchanged; optional numerical service tested in isolated subprocess",
-    "Wenu coordinate/geometry legacy facades, Milky Way numerical helper, all-three projection dispatch, root installed wheel/sdist/editable and source-free snapshot consumers"
+    "Canonical projection/clipping/domain service numerical consumers and independent wheel imports",
+    "Legacy Wenu projection/clipping/preparation facades; regional/full/polar/contour/label/saved consumers"
   ],
   "excluded": {
-    "later geometry services": "Projection/clipping/domain implementations remain at Wenu owners for KG.04; no new algorithm, source bytes, observer science or snapshot schema.",
-    "release integration": "KG.05 complete service integration and KG.06/KG.07 completed-K audit remain pending; no full production run."
+    "later acceptance": "KG.05 broader service integration and KG.06/KG.07 completed-K audit/corrections remain pending.",
+    "scientific scope": "No new math algorithms, observation science, source bytes, snapshot format, graphics or publication policy change."
   },
   "collection_change": "none; root pytest remains scoped to tests and the kernel retains its explicit independent gate",
   "verification": {
     "source_digest_algorithm": "SHA-256 over sorted repository path + NUL + exact file bytes + NUL for every Python file in the named directory",
-    "source_sha256": "5d10612fce82881689b5624b8c41bc52975b504f9ded07bccc5303fd6161c420",
-    "tests_sha256": "903fba242a3a687932bfc5cac8bcc857c78130e938653b9dc91ad97a588b1f3b",
+    "source_sha256": "b611029bce48892692bfe3f1da880121c09bc350a6614341dc678486568e8bb6",
+    "tests_sha256": "cc7fc798d4524717372e39caf8fcf3c531dc8efcdda31fb8a05f1acb490cf06a",
     "source_unittest_cases": 205,
-    "source_seconds": 0.447,
+    "source_seconds": 0.466,
     "installed_base_collected_cases": 205,
     "installed_base_passed_cases": 204,
     "installed_base_skips": 1,
-    "installed_base_skip_reason": "Optional numerical geometry requires NumPy; absent intentionally in -I -S base SDK acceptance.",
-    "installed_base_seconds": 0.291,
-    "installed_geometry": "Actual wheel with optional extra metadata; numerical octant/frame/mixed-ring consumer passes with NumPy and Wenu/science/renderer imports blocked.",
-    "legacy_consumer_gate": "kernel-geometry-records: 235 passed, 1 blocked by absent de440s.bsp/JPL certificate validation in execution environment; full 236 required on Mac",
-    "documentation_local": "33 passed; three omitted-archive checks; active links and 73 preserved blobs verified against GitHub",
-    "tooling": "8 passed",
+    "installed_base_skip_reason": "NumPy deliberately unavailable; optional numerical service tested separately.",
+    "installed_geometry": "Built dev10 wheel imports and executes all-three projections, projected clipping and cap service with Wenu/science/graphics imports blocked.",
+    "initial_owner_checks": "97 existing numerical/contour/preparation cases passed; 2 canonical-legacy/installed seam cases passed.",
     "mac_acceptance": "pending"
   },
   "existing_test_changes": [
     {
-      "node_ids": "packages/wenu_kernel/tests/test_isolation.py",
-      "change": "Retain base state tests; prove pure vocabulary without site packages and optional numerical service in blocked-backend subprocess. No NumPy imports during test collection."
+      "node_ids": "packages/wenu_kernel/tests/test_isolation.py::IsolationTests.test_geometry_explicit_import_without_wenu_or_backends",
+      "change": "Extend existing numerical subprocess to all-three projections, viewport clipping and cap service. Base collection/import barriers retained."
     }
   ],
   "optional_dependencies": {

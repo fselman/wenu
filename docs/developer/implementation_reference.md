@@ -14,7 +14,7 @@ require importing the Wenu application.
 
 ## Shared kernel geometry records
 
-Kernel dev9 exposes CoordinateSpec, PositionStatus and GENERIC_SPHERICAL_SPEC
+Kernel dev10 exposes CoordinateSpec, PositionStatus and GENERIC_SPHERICAL_SPEC
 from `wenu_kernel.coordinates` without NumPy or Wenu. Explicit
 `wenu_kernel.geometry` imports provide SphericalPoints/Curves/Polygons/Grid,
 ProjectedPoint(s)/Curve(s)/Polygon(s)/Grid, SphericalFrame,
@@ -29,10 +29,22 @@ filled-side boolean and area in steradians. The source adapter still chooses
 the winding interpretation. Writable-array and shallow-metadata semantics remain
 unchanged; these values are not immutable SDK state batches.
 
-Kernel implementation commit: `6d630885ab70c9b5bc6b40ceeaed2dcf90342bdc`.
+Kernel implementation commit: `ba591f156573324c3e08f9fb4d7bf626e2197f9c`.
 Root packaging selects its `geometry` extra. State SDK imports stay stdlib-only;
-geometry imports require no Wenu/Astropy/Skyfield/Matplotlib. No canonical kernel
-projection/domain API ships in this slice; those moves remain KG.04.
+geometry imports require no Wenu/Astropy/Skyfield/Matplotlib. KG.04 additionally exports StereographicProjection,
+PolarAzimuthalEquidistantProjection and MollweideProjection through
+`wenu_kernel.projections` and their existing leaf modules.
+`wenu_kernel.geometry.clipping` owns existing projected viewport/convex clipping
+and centroid functions; `wenu_kernel.geometry.domain` owns the six public
+latitude/cap/viewport-projection operations specified in the
+[geometry contract](kernel_contract_k1.md#14-kg02-geometry-service-contracts-and-placement-plan).
+Existing Wenu projection classes and mathematical preparation functions are
+identical aliases. The demonstrated private `_clip_polyline_to_viewport`
+legacy test seam also forwards without becoming a public API. Projection
+formulas, capability differences and failure behavior are unchanged.
+`wenu.rendering.preparation` retains magnitude/diameter sizing, point styles,
+marker-margin culling and radial label offsets. No kernel rendering dependency
+or automatic object-state query is introduced.
 
 ## Canonical public imports
 

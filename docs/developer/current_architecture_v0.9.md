@@ -23,8 +23,12 @@ services. KG.03 now places the pure CoordinateSpec/PositionStatus vocabulary,
 spherical/projected records, SphericalFrame/Viewport and the existing numerical
 ring helper in kernel dev9. Legacy Wenu imports alias the same classes; the
 Milky Way layer retains source policy and delegates the unchanged ring math.
-Projections, mathematical clipping and cap/topology preparation still remain
-in Wenu for KG.04. The installed state SDK is one
+KG.04 now places the three projection implementations, projected clipping and
+spherical domain/latitude/cap topology in kernel dev10. Wenu projection/clipping
+modules and mathematical preparation names delegate to those same services.
+Magnitude/diameter sizing, marker-margin culling, label offsets and chart/render
+policy remain at Wenu owners. Base kernel imports remain stdlib-only; explicit
+geometry/projection imports use the existing optional NumPy extra. The installed state SDK is one
 component, and its accepted subset does not establish the full kernel boundary.
 See the [agreed target and accepted-work disposition](kernel_roadmap_v0.9.5.md#proposed-architecture).
 Geometry consumers can call public geometry services directly. There is no accepted
