@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 45, 2026-10-20. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 46, 2026-10-20. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -31,11 +31,11 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Accepted baseline:** main `89756d957696b8baf2cd69f52f6a6878cc3a8484`,
-PR #293, tree identical to tested `bd3971f75982c24638d1a540f2438eb88f5a39af`.
-K3.20 passed 389 focused, 36 documentation and eight tooling Mac cases. Fernando
-confirmed clean synchronized main and branch cleanup. K3.21 is selected under
-revision 45; K3/K5 remain partial.
+**Accepted baseline:** main `8d4b1ed593eaf19f4ad7594b64983ccde2b0e724`, PR #294,
+tree identical to tested `c6f9223d2bc37e4b6e8a2ccadf7103259bb457a0`.
+K3.21 passed 425 focused, 36 documentation and eight tooling Mac cases.
+Fernando confirmed clean synchronized main and branch cleanup. K3.22 is selected
+under revision 46; K3/K5 remain partial.
 
 | Track | Position |
 |---|---|
@@ -43,8 +43,8 @@ revision 45; K3/K5 remain partial.
 | Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
 | Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
 | Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
-| Current authorized task | K3.21 public atlas sheet contract and consumers; selected 2026-10-20 |
-| Next bounded submilestone | K3.22 remains pending; select separately after K3.21 acceptance |
+| Current authorized task | K3.22 physical polar product service routing; selected 2026-10-20 |
+| Next bounded submilestone | K3.23 remains pending; select separately after K3.22 acceptance |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -75,6 +75,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 46: select K3.22 physical polar products | Fernando’s 2026-10-20 “Proceed” after PR #294 Mac acceptance/cleanup and explicit agreement that shared mathematics belong in the kernel while polar pairs/calendars/pages/pouches/sheets remain Wenu products | Inspect existing product owners; reuse current coordinate, kernel geometry/domain/projection, canonical chart and export services. Refactor demonstrated bypasses only; no rewrite where routes already comply. Verify returned-value/refusal consumption at paired registration/calendar projection, observer horizon overlay, reference anchors and page export, plus retained classroom/physical layout and both projection owners. Gate: polar-product-routing plus documentation/tooling. Retain accepted KG/K3.16 real four-polar cold/restored PNG/PDF/SVG and K3.21 installation/atlas receipts for unchanged services. Preserve common-year sidereal calibration, both projections, scene/print appearance, physical assembly and APIs. No new science, SDK/dependency, source bytes, snapshot v6, renderer algorithm, product extraction or later milestone activation. |
 | Revision 45: select K3.21 atlas contract and consumer closure | Fernando’s 2026-10-20 “proceed” after PR #293 acceptance and cleanup, following the explicit public sheet contract/design/index/publication/report proposal | Place existing sheet types, rendering and report helpers in a lower-level atlas_sheet service owner shared by batch publication and generic request execution; retain legacy publication/request imports as aliases and generic request scope/staging ownership. Use a public sheet render result contract instead of cross-owner private helpers. Route catalogue-count position availability through full-source public stellar native positions, preserving deduplication/photometry/count semantics. Verify dependency direction, returned results/refusal, index/report/CLI/worker and real cold/saved/spawned outputs with atlas-sheet-routing plus documentation. No new science, SDK, source bytes, dependency, snapshot format, layout/appearance or package extraction; K3.22 remains separate. |
 | Revision 44: select K3.20 ordinary chart consumers | Fernando’s 2026-10-20 “Proceed” after PR #292 acceptance and cleanup, following the explicit five-family/centre/mask/content/style/detail/furniture proposal | Inspect existing consumers and reuse admitted layer/coordinate/geometry services; refactor demonstrated bypasses only. Preserve mathematics, membership, independent presentation policy and output. Verify changed returned values, refusal, request isolation and existing public family/mask/presentation owners with ordinary-chart-routing plus documentation. No SDK, resource, dependency, schema, renderer, new science or package extraction. K3.21 chart/atlas boundary and later moving-body provider obligations remain separate. |
 | Revision 43: select K3.19 application assembly | Fernando’s 2026-10-20 “Proceed” after PR #291 acceptance/cleanup, following the explicit explanation of separating component creation from central sky orchestration | Move existing construction and source-free reconstruction bodies to one application-assembly owner; keep public sky convenience/factory/snapshot calls as delegates, layer order, aliases, source-free workers, validation and v6 format. Verify supplied assembly is consumed/refusal propagated plus existing cold/saved/spawned atlas output. No scientific, SDK/dependency, resource bytes, renderer or schema change; no plugin-discovery framework or package extraction. Gate: sky-application-assembly plus documentation. |
@@ -609,8 +610,8 @@ map below ensures small/non-chart capabilities do not disappear in grouped rows.
 | K3.18 | Close shared state/coordinate/observer adapters, resource lifetime and observed-cache invalidation across existing families | Accepted PR #291/main 37bcb851 after 402 focused, 36 documentation and eight tooling Mac cases; clean branch cleanup confirmed. K5.02 final placement and K3.25 model qualification remain separate |
 | K3.19 | Decouple central sky/factory from concrete providers through application assembly; cover saved/loaded skies and workers | Accepted PR #292 at main 2bdbc4a9 after 169 focused, 36 documentation and eight tooling Mac cases; existing construction moved unchanged to application assembly; source-free restoration/workers retained |
 | K3.20 | Close all five ordinary chart families, target/group centres, masks, content, styles/detail and furniture state access | Accepted PR #293 at main 89756d95 after 389 focused, 36 documentation and eight tooling Mac cases; existing ordinary consumers use shared services; no runtime rewrite |
-| K3.21 | Replace chart/atlas private-helper cycle with a public sheet contract; close atlas design/index/publication/report consumers | Implemented for acceptance: public sheet request/render result replaces the private-helper cycle; native full-source stellar geometry controls count availability. Design/index/report and cold/saved/worker/installed gates preserve existing output; complete Mac acceptance pending |
-| K3.22 | Migrate physical polar pairs, calendars, pages, pouches and sheet products without print/scene changes | Pending routing acceptance; retain both projections and classroom baseline |
+| K3.21 | Replace chart/atlas private-helper cycle with a public sheet contract; close atlas design/index/publication/report consumers | Accepted through PR #294 at main 8d4b1ed5 after 425 focused, 36 documentation and eight tooling Mac cases; clean main and branch cleanup confirmed. Public sheet leaf and native full-source count availability preserve existing output |
+| K3.22 | Migrate physical polar pairs, calendars, pages, pouches and sheet products without print/scene changes | Implemented for acceptance under revision 46: existing service routes retained unchanged; paired returned-value/refusal and actual fabrication export evidence added. Preserve both projections and classroom baseline; complete Mac polar-product-routing acceptance pending |
 | K3.23 | Close ordinary temporal sequence state/realization routes, playback and resume identities | Partial request/configuration seams accepted; complete state routing remains open |
 | K3.24 | Close fixed-sky/frozen-baseline and rotating-horizon consumers with distinct anchor/local instants | Pending; preserve scientific and graphical references |
 | K3.25 | Route major-planet/Moon states and apparent directions; preserve body/barycentre and one light-time owner | Pending; ephemeris identity cleanup M10 belongs here/K3.18 |

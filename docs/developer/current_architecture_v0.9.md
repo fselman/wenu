@@ -97,7 +97,8 @@ are dropped and no missing direction is published as a state. The real equidista
 polar specimens now require success without expected-failure markers. Complete
 Mac acceptance of this correction is pending.
 Observer/cache identity and application assembly are accepted through K3.18/K3.19.
-K3.21 now implements the lower-level public atlas sheet contract; its Mac
+K3.21's lower-level public atlas sheet contract is accepted through PR #294.
+K3.22 verifies existing physical polar product service consumers; its Mac
 acceptance remains pending. No K3/K5 freeze is claimed.
 
 ## Canonical pipeline
@@ -133,7 +134,11 @@ directories inside Wenu are not yet independent loadable packages.
 Ordinary charts include Galactic all-sky, observer-visible planisphere,
 regional, circumpolar and binocular products. Physical polar-planisphere and
 time-sequence products retain their separate product contracts while sharing
-geometry, projection, preparation and export.
+geometry, projection, preparation and export. The physical pair, common-year
+calendar, A4 page, pouch and imposed sheet remain Wenu product owners. Their
+existing coordinate-service and kernel projection/domain calls are retained;
+K3.22 adds consumer/refusal and fabrication-output evidence, not a new numerical
+implementation or a product move into the kernel.
 
 Chart family owns projection/framing/boundary. Detail owns selection. Style
 owns appearance. Output mode owns physical display adaptation. Furniture and

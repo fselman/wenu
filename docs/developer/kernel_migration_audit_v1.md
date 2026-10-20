@@ -1231,3 +1231,50 @@ both allowances; no tolerance widening or production layout change is used.
 Independent full packaged-Hipparcos comparison with the old count function
 returned identical report data, IDs and magnitudes: 5,041 selected, 263 invalid
 and 112,914 fainter rows at magnitude 6.
+
+## K3.22 physical polar product service assessment
+
+Base: main `8d4b1ed593eaf19f4ad7594b64983ccde2b0e724`, accepted PR #294.
+Fernando confirmed synchronized clean main and cleanup, then selected K3.22
+after the kernel/product distinction. Plan revision 46 was committed before
+test implementation. This bounded item does not activate K3.23.
+
+| Existing owner | Service/caller finding | Disposition |
+|---|---|---|
+| polar_planisphere / polar_planisphere_pair | Canonical sky draw, CoordinateService observer conversion, ProjectionSelection and same-class kernel projections; cap/latitude functions alias kernel domain services | Retain unchanged; existing both-pole/projection/domain owners remain selected |
+| polar_calendar / polar_calendar_furniture | Existing Astropy mean sidereal standard-midnight calibration and product 365-day scale; face projection supplies paper direction | Retain calibration; new returned-kernel-direction/refusal consumer check |
+| polar_horizon_overlay | HorizonReference and CoordinateService supply ICRS horizon/reference geometry; public face/kernel projection precedes physical placement | New changed-coordinate/refusal checks for both projections and downstream pouch consumption |
+| polar_page_export | CoordinateService returns ecliptic reference anchors, kernel projection maps them; existing composed chart export and finally-close own physical face output | New returned-anchor/refusal and second-face-failure figure-cleanup checks |
+| polar_page_furniture/rendering, magnitude scale, style/detail/curation | Immutable physical/presentation records and existing canonical renderer/furniture boundaries | Retain classroom scene, physical dimensions, label clearances and single-save owners |
+| polar_pouch_furniture/rendering/export, polar_pouch_sheet/rendering/export/preview | Consume resolved horizon/furniture; physical translation/rotation, fold/window/text and image previews are product policy | Retain unchanged; actual two-face and imposed-sheet PNG/PDF/SVG exports with A4 dimensions for both projection choices |
+
+No raw catalogue-position bypass or duplicated shared projection implementation
+was found in these owners. No production refactoring is necessary in this slice.
+Geometry products do not require artificial object-state queries. Source-model
+qualification, the final common coordinate/observer API freeze and astronomical
+package extraction remain their existing later obligations.
+
+New tests extend four existing owner modules. A fault injection bypassing the
+public kernel projection result fails both calendar consumer cases (0-degree
+change instead of the required returned 90-degree change). Unmodified routes
+pass. Returned coordinate changes reach both pouch horizons; later coordinate,
+projection and reference failures propagate. Existing calibrated calendar,
+physical page/registration, pouch/window/hour/fold and classroom tests remain.
+
+The focused physical-product gate passes 162 cases locally in 9.70 s, including
+18 actual fabrication files (two projections, two faces plus one imposed sheet,
+three formats). Retain accepted KG/K3.16 four real cold/restored polar scene
+PNG/PDF/SVG and K3.21 installed/atlas receipts: no production bytes changed.
+
+An exploratory overbroad selection also included the ordinary observer-visible
+FullSkyChart planisphere owner, which belongs to accepted K3.20 rather than
+physical K3.22. Exact-array comparisons there failed intermittently even with
+all new K3.22 tests excluded. This is not reported as passing evidence or fixed
+here; the final gate selects all physical polar owners and no ordinary
+FullSkyChart owner. No production change or weakened assertion hides that
+separate observation. Any additional correction needs its own agreed scope.
+
+The coordinate guide and scientific contracts remain current. Eight tooling
+cases pass; 31 documentation cases pass locally and five complete-checkout
+archive/asset/inventory checks remain for Mac. All 20 polar production blobs
+are exact accepted-base bytes; complete remote production/test inventories match.

@@ -45,6 +45,61 @@ def empty_sky():
     )
 
 
+@pytest.mark.parametrize("projection_name", ("polar_azimuthal_equidistant", "stereographic"))
+def test_page_reference_anchor_uses_returned_coordinates_and_refuses(monkeypatch, projection_name):
+    import numpy as np
+    from wenu.charts import polar_page_export as module
+    from wenu.geometry.spherical import SphericalPoints
+    from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+
+    pair = PolarPlanispherePairRequest(projection_name=projection_name).resolve()
+    site = SimpleNamespace(t_astropy="2026-01-01", location=None)
+    returned = SphericalPoints(lon_deg=[47.0], lat_deg=[-12.0], coordinate_spec=GENERIC_SPHERICAL_SPEC)
+    calls = []
+
+    def transform(self, source, target):
+        calls.append((source, target))
+        return returned
+
+    monkeypatch.setattr(module.CoordinateService, "transform", transform)
+    # Preserve the scientific target constructor; the minimal site provides its date.
+    for chart in pair.faces:
+        actual = module._projected_anchor(chart, site, frame="ecliptic", angle_deg=91.0)
+        x, y = chart.projection.project_spherical(returned.lon_deg, returned.lat_deg)
+        np.testing.assert_allclose(actual, (float(x[0]), float(y[0])))
+    assert len(calls) == 2
+    assert all(source.lon_deg[0] == 91.0 for source, _ in calls)
+
+    def refuse(*args, **kwargs):
+        raise RuntimeError("reference refused")
+
+    monkeypatch.setattr(module.CoordinateService, "transform", refuse)
+    with pytest.raises(RuntimeError, match="reference refused"):
+        module._projected_anchor(pair.south, site, frame="ecliptic", angle_deg=91.0)
+
+
+def test_paired_export_propagates_second_face_refusal_and_closes_figures(monkeypatch, tmp_path):
+    import matplotlib.pyplot as plt
+    from wenu.charts import polar_page_export as module
+
+    pair, calendar, pages = resolved_values()
+    monkeypatch.setattr(module, "_polar_reference_annotations", lambda *args: ReferenceAnnotations())
+    initial = set(plt.get_fignums())
+    calls = []
+
+    def export(self, sky, renderer, path, **kwargs):
+        calls.append(self.pole)
+        if self.pole == "north":
+            raise RuntimeError("north refused")
+        return ChartExportResult(rendering=object(), output=path, composition=kwargs["composition"], layer_options={}, export_options=kwargs["export_options"])
+
+    monkeypatch.setattr(PolarPlanisphereChart, "export", export)
+    with pytest.raises(RuntimeError, match="north refused"):
+        export_polar_planisphere_pages(pair, calendar, pages, object(), object(), south_path=tmp_path / "s.pdf", north_path=tmp_path / "n.pdf")
+    assert calls == ["south", "north"]
+    assert set(plt.get_fignums()) == initial
+
+
 def test_paired_export_uses_canonical_face_export_once_per_a4_page(
     monkeypatch,
     tmp_path,
@@ -195,3 +250,4 @@ def test_actual_size_review_tool_uses_paired_export_and_no_direct_save():
     assert 'manifest = destination / "manifest.json"' in source
     assert "calendar_radius_mm=86.0" in source
     assert '"stellar_aperture_diameter_mm"' in source
+

@@ -20,6 +20,49 @@ def resolved_sheet():
     return value, PolarPouchSheetRequest().resolve(value)
 
 
+@pytest.mark.parametrize("projection_name", ("polar_azimuthal_equidistant", "stereographic"))
+def test_real_overlay_pouch_and_imposed_sheet_exports_keep_a4_dimensions(tmp_path, projection_name):
+    """Exercise real coordinate/kernel services and actual fabrication savers."""
+    import re
+    import xml.etree.ElementTree as ET
+    import matplotlib.image as mpimg
+    import matplotlib.pyplot as plt
+    from pypdf import PdfReader
+    from wenu import (
+        PolarPlanispherePairRequest, PolarPageFurnitureRequest,
+        PolarHorizonOverlayRequest, PolarPouchFurnitureRequest,
+        export_polar_pouch_pages,
+    )
+    from test_polar_horizon_overlay import observer
+
+    pair = PolarPlanispherePairRequest(projection_name=projection_name).resolve()
+    pages = PolarPageFurnitureRequest(source_revision="test").resolve(pair)
+    overlays = PolarHorizonOverlayRequest(samples=73).resolve(pair, pages, observer())
+    furniture = PolarPouchFurnitureRequest().resolve(overlays)
+    sheet = PolarPouchSheetRequest().resolve(furniture)
+    initial = set(plt.get_fignums())
+    for extension in ("png", "pdf", "svg"):
+        south = tmp_path / f"south.{extension}"
+        north = tmp_path / f"north.{extension}"
+        result = export_polar_pouch_pages(furniture, south_path=south, north_path=north, source_revision="test", dpi=40)
+        imposed = export_polar_pouch_sheet(sheet, furniture, tmp_path / f"sheet.{extension}", source_revision="test", dpi=40)
+        for path in (result.south.output, result.north.output, imposed.output):
+            assert path.stat().st_size > 1000
+            if extension == "png":
+                height, width = mpimg.imread(path).shape[:2]
+                assert (width, height) == (int(210 / 25.4 * 40), int(297 / 25.4 * 40))
+            elif extension == "pdf":
+                document = PdfReader(path)
+                assert len(document.pages) == 1
+                box = document.pages[0].mediabox
+                np.testing.assert_allclose((float(box.width), float(box.height)), np.asarray((210, 297)) / 25.4 * 72, atol=1e-7)
+            else:
+                root = ET.parse(path).getroot()
+                points = tuple(float(re.sub(r"pt$", "", root.get(key))) for key in ("width", "height"))
+                np.testing.assert_allclose(points, np.asarray((210, 297)) / 25.4 * 72, atol=1e-6)
+    assert set(plt.get_fignums()) == initial
+
+
 def test_sheet_places_top_south_and_inverted_bottom_north_around_spine():
     _, sheet = resolved_sheet()
 
@@ -120,3 +163,4 @@ def test_sheet_request_and_public_contracts_are_validated():
         "compose_polar_pouch_sheet_preview",
     ):
         assert name in wenu.__all__
+

@@ -11944,6 +11944,126 @@
       "installation": "Root wheel/sdist ship exact changed modules including atlas_sheet; isolated -I -S installed consumer verifies public/legacy aliases, native count values and refusal without source checkout.",
       "tooling_seconds": 5.284,
       "documentation_seconds": 1.17
+    },
+    "mac_acceptance": {
+      "tested_commit": "c6f9223d2bc37e4b6e8a2ccadf7103259bb457a0",
+      "merged_commit": "8d4b1ed593eaf19f4ad7594b64983ccde2b0e724",
+      "pr": 294,
+      "focused_passed": 425,
+      "focused_seconds": 927.16,
+      "documentation_passed": 36,
+      "tooling_passed": 8,
+      "cleanup": "Fernando confirmed clean synchronized main and deletion of both feature branches."
     }
+  },
+  "polar_product_routing": {
+    "milestone": "K3.22",
+    "base_commit": "8d4b1ed593eaf19f4ad7594b64983ccde2b0e724",
+    "plan_commit": "17ff9031b6b32e57d94c1a210bad4c274a816b6e",
+    "agreement": "Fernando's Proceed after accepted K3.21 cleanup and the explicit shared-kernel mathematics/Wenu physical-products distinction.",
+    "disposition": "Existing service consumers already comply in this bounded slice; production code retained unchanged.",
+    "owners": [
+      {
+        "path": "src/wenu/charts/polar_binocular_targets.py",
+        "sha": "dd6c97edfd7484e88989f5141d4709424b649062"
+      },
+      {
+        "path": "src/wenu/charts/polar_calendar.py",
+        "sha": "d1f5175c5e46f6538e9f5a572f550204b17524aa"
+      },
+      {
+        "path": "src/wenu/charts/polar_calendar_furniture.py",
+        "sha": "6dbd8fe345dbfb6bcd6af65b642bb007a179c6c2"
+      },
+      {
+        "path": "src/wenu/charts/polar_horizon_overlay.py",
+        "sha": "ca4bf59ca4cad11916838c0b6df8b0adcb6a7f58"
+      },
+      {
+        "path": "src/wenu/charts/polar_label_curation.py",
+        "sha": "a3a739fdefce6442ee23f65455e61426b87cb371"
+      },
+      {
+        "path": "src/wenu/charts/polar_magnitude_scale.py",
+        "sha": "a5198d52aae37e0ec5a9c3e9abe128edf8ce24b9"
+      },
+      {
+        "path": "src/wenu/charts/polar_magnitude_scale_rendering.py",
+        "sha": "3bd82633a2a501f1bdd393af4d84e44cc5716179"
+      },
+      {
+        "path": "src/wenu/charts/polar_page_export.py",
+        "sha": "47c9ff77896e0f322adef207fc352973c96a3dc4"
+      },
+      {
+        "path": "src/wenu/charts/polar_page_furniture.py",
+        "sha": "1126ca4b1dbe9daffdef302761baf7e971f6bd1f"
+      },
+      {
+        "path": "src/wenu/charts/polar_page_rendering.py",
+        "sha": "9b5d8247f862b70674b7bac730e5e1fb436e9724"
+      },
+      {
+        "path": "src/wenu/charts/polar_planisphere.py",
+        "sha": "bc5ad9a351d21913947ef823c563508dd7992a13"
+      },
+      {
+        "path": "src/wenu/charts/polar_planisphere_pair.py",
+        "sha": "f82337ed7b90bb7da086ce037343d20405ab5199"
+      },
+      {
+        "path": "src/wenu/charts/polar_planisphere_style.py",
+        "sha": "9d5d311c75e596afb41852445a579fc59c74ab48"
+      },
+      {
+        "path": "src/wenu/charts/polar_pouch_export.py",
+        "sha": "3e0673a99055dd7547e81bbf4b1a7edafb8b2868"
+      },
+      {
+        "path": "src/wenu/charts/polar_pouch_furniture.py",
+        "sha": "0f73f2d9466c73053ed54922ad09131d1f96f843"
+      },
+      {
+        "path": "src/wenu/charts/polar_pouch_preview.py",
+        "sha": "920ec61af31dd44bad8c813bed5ca38238cfa9b8"
+      },
+      {
+        "path": "src/wenu/charts/polar_pouch_rendering.py",
+        "sha": "2bcce15edc82042551c97fd3685a16e1b1e56451"
+      },
+      {
+        "path": "src/wenu/charts/polar_pouch_sheet.py",
+        "sha": "5f1effd5da4b4bba0cc922a6f476a2269bef425e"
+      },
+      {
+        "path": "src/wenu/charts/polar_pouch_sheet_export.py",
+        "sha": "80a8e86f68226213e91742fe413d94442ca58770"
+      },
+      {
+        "path": "src/wenu/charts/polar_pouch_sheet_rendering.py",
+        "sha": "7c6aaecba350393a46c265224d40bf64d114e103"
+      }
+    ],
+    "gate": "polar-product-routing",
+    "new_evidence": [
+      "Canonical kernel projection returned directions/refusal reach both calendar faces.",
+      "CoordinateService changed geometry/refusal reaches horizon overlays and pouch horizons for both projections.",
+      "Returned ecliptic directions/refusal reach both physical page anchors.",
+      "Second-face export failure propagates and closes figures.",
+      "18 real PNG/PDF/SVG fabrication exports: two projection choices, two pouch faces plus imposed sheet, exact A4 format bounds."
+    ],
+    "retained_evidence": "KG/K3.16 real four-polar cold/restored scenes; K3.21 installed public contract and atlas/worker output. No production/SDK/package changes.",
+    "local_receipt": {
+      "focused_passed": 162,
+      "focused_seconds": 9.7,
+      "fault_injection_failed": 2,
+      "tooling_passed": 8,
+      "tooling_seconds": 4.649,
+      "documentation_passed": 31,
+      "documentation_complete_checkout_required": 5,
+      "production_blobs_exact": 20
+    },
+    "separate_observation": "Exploratory ordinary FullSkyChart planisphere exact-array assertions failed even with new K3.22 tests excluded. That K3.20 owner is outside physical K3.22, unchanged and not claimed passing here; no scope expansion activated.",
+    "limits": "No new science/source bytes/dependency/SDK/snapshot v6/renderer/product extraction; common-year calibration retained. Complete Mac focused/documentation acceptance pending. K3.23 remains unselected."
   }
 }

@@ -21,7 +21,9 @@ leaving central sky/factory/snapshot APIs as delegates. Source-free restoration 
 
 K3.20 now verifies [ordinary chart consumer routing](kernel_migration_audit_v1.md#k320-ordinary-chart-consumer-assessment) through existing services, without production rewrites. Accepted through PR #293 after 389 focused, 36 documentation and eight tooling Mac cases.
 
-K3.21 now exposes the [public atlas sheet contract](implementation_reference.md#public-atlas-sheet-contract) and routes catalogue-count availability through full-source native stellar positions. Focused Mac acceptance is pending; K3.22 remains separate.
+K3.21 now exposes the [public atlas sheet contract](implementation_reference.md#public-atlas-sheet-contract) and routes catalogue-count availability through full-source native stellar positions. Accepted through PR #294 after 425 focused, 36 documentation and eight tooling Mac cases.
+
+K3.22 now verifies [physical polar product service routing](kernel_migration_audit_v1.md#k322-physical-polar-product-service-assessment) without production rewrites. Products retain their Wenu owners; coordinate/kernel geometry services already supply their scientific geometry. Complete Mac acceptance is pending.
 
 ## Read for current work
 
