@@ -67,6 +67,18 @@ their observer transformation. Later K3.12–K3.15 adapters reuse these returned
 source ownership remains with each catalogue family.
 This is accepted through PR #275 and does not qualify absent physical source facts.
 
+## Completed-K service-boundary audit
+
+At main 52c8315c, [KG.06](kernel_migration_audit_v1.md#kg06-completed-k-service-boundary-audit)
+finds no need to redo accepted state/catalogue routing. Source adapters call the
+state SDK; geometry consumers use canonical mathematical services through public
+compatibility aliases. Kernel imports no application/catalogue/backend/renderer.
+One composition defect remains: missing-coordinate point geometry reaches the
+strict equidistant numerical operation before filtering. G06.C1 specifies its
+shared projection-adapter correction for KG.07; it is not implemented here.
+Observer/cache identity, concrete assembly and private atlas helpers retain their
+existing partial K3.18/K3.19/K3.21 obligations. No K3/K5 freeze is claimed.
+
 ## Canonical pipeline
 
 Catalogue/provider → spherical geometry → projection-domain guard → projection

@@ -1165,3 +1165,17 @@ The report must disclose these separately from passing output cases. The marker
 is not a corrected implementation or a general planisphere acceptance claim.
 KG.06/KG.07 own audit/correction. Existing KG.03/KG.04 numerical, SDK and root
 installation receipts remain bounded evidence for unchanged implementations.
+
+
+## KG.06 audit verification
+
+This delivery changes audit/roadmap/inventory documentation only. Run the existing
+`documentation` gate. Verify that every accepted K0/K1/K2/K3.01–K3.15 and KG.01–KG.05
+ID has a machine-readable owner/caller/service/disposition/evidence record, that
+all owner/test paths exist in the complete Git tree, and that only G06.C1 is a
+demonstrated correction. AX.01–AX.12 records review composition only. Retain prior
+numerical/installation/output receipts; do not rerun full SDK/provider/production
+suites merely because an audit describes them. The read-only G05-1 reproduction
+does not convert expected failure into a passing output claim. KG.07 must add
+the missing point-batch evidence and remove both strict expected-failure markers
+with actual successful equidistant output, using the audit’s owner/gate map.

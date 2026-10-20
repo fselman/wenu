@@ -844,3 +844,156 @@ links/anchors passed; complete Mac documentation and composition gates are pendi
 The coordinate guide remains current: this task changes evidence, not numerical
 semantics or ownership. A low-DPI rendered polar specimen was visually inspected;
 this is not a new print/style approval or a classroom/production-suite claim.
+
+
+## KG.06 completed-K service-boundary audit
+
+**Inspected base:** main `52c8315cd3bd58386c105f3edf05ee2354292796`, selected
+by Fernando’s 2026-10-20 proceed after PR #286 and clean synchronized main.
+This is a read-only implementation/caller assessment and documentation delivery.
+No production, dependency, resource, schema or test assertion changes.
+
+**Decision:** retain the accepted state/catalogue routes; they do not need a
+blanket redo. One demonstrated geometry-composition correction, **G06.C1**, is
+assigned to KG.07. Known partial K3 work remains partial. This audit does not
+activate KG.07, K3.16, new AX science or package extraction.
+
+### Method and service direction
+
+The complete GitHub tree has 291 production/SDK Python files; every local blob
+matched the inspected base. Actual definitions/callers were followed through
+Kernel/Session/TimeService, catalogue adapters, public positions, observed-cache
+inputs, request scopes, native reconstruction and projection dispatch. An AST
+import scan of all 22 kernel modules found no application, catalogue, backend or
+renderer imports; only numerical geometry/projection leaves use optional NumPy.
+These static checks establish placement/import facts, not numerical accuracy.
+
+Application assembly/source adapters may call state and geometry services.
+Kernel code must not import them. Geometry records and polygon vertices do not
+need ObjectRecords or state queries. Source-specific ellipse/glyph definitions,
+constellation membership/anchor policy and page layout remain above the shared
+geometry operations. The label mean helper is not bypassing a public kernel mean
+service (none exists); this audit demonstrates no need for an additional API.
+Broad `wenu` legacy imports still assemble application dependencies; canonical
+`wenu_kernel` imports, not the broad facade, carry the independent-service claim.
+
+### Per-deliverable dispositions
+
+Each completed K0/K1/K2/K3 and KG item has an entry below and a machine-readable
+record in `completed_k_service_audit.deliverables` in the migration inventory.
+That record names actual owner paths, callers, services, test owners and remaining
+limits. PR numbers identify bounded acceptance, not automatic parent closure.
+
+| ID / accepted PRs | Actual boundary reviewed | Disposition / retained evidence |
+|---|---|---|
+| K0.01 / #234, #235 | Pinned baseline tree and preserved receipt | Retain; no redo; test_current_documentation.py |
+| K0.02 / #235 | Exact preserved Git blob ledger; no runtime dependency | Retain; no redo; test_current_documentation.py |
+| K0.03 / #235, #270, #280, #281 | Shared-service diagrams and explicit scope control | Retain; no redo; test_current_documentation.py |
+| K1.01 / #236 | Inventory describes source/test/operational owners; not routing proof | Retain; no redo; test_current_documentation.py |
+| K1.02 / #236, #237, #240, #241, #255, #283 | State/reference and coordinate contracts distinguish physical and geometry domains | Retain; no redo; test_records.py |
+| K1.03 / #236, #238, #239, #240 | Independent error channels, exact cache and certified angular reuse; unknown is not zero | Retain; no redo; test_reuse.py |
+| K2.01 / #237, #242 | Explicit references/provider ownership; synchronous session lifecycle | Retain; no redo; test_sessions.py |
+| K2.02 / #237, #238, #239 | Validate admission before exact cache; bounded/canonical reuse requires provider certificates | Retain; no redo; test_reuse.py |
+| K2.03 / #240 | SI Cartesian representation separate from angular direction and velocity availability | Retain; no redo; test_cartesian.py |
+| K2.04 / #241 | Explicit directed time conversion admission, coverage and rounding receipt; no implicit chain | Retain; no redo; test_time.py |
+| K2.05 / #242, #255 | Provider supplies offline cases/activity/mutation hooks; core imports no concrete provider | Retain; no redo; test_conformance.py |
+| K3.01 / #243 | Application owns SPK/session/resolver rollback; kernel does not acquire resources | Retain; no redo; test_minor_body_resources.py |
+| K3.02 / #244 | Request-local mutation journal/lease and ordered cleanup; no kernel/product reverse dependency | Retain; no redo; test_request_generation.py |
+| K3.03 / #246 | Shared request scope; native observer-free realization and existing composed export | Retain; no redo; test_request_generation.py |
+| K3.04 / #248 | Source-bound metadata and immutable rows; application snapshot is not a persisted StateBatch | Retain; no redo; test_stellar_state.py |
+| K3.05 / #247, #248 | Finite rows -> owned Kernel/Session -> returned states; NaN source rows retained only as geometry | Retain; no redo; test_stars.py |
+| K3.06 / #248 | Public Stars.native_positions; finite endpoints and inherited coordinate specification | Retain; no redo; test_constellation_geometry.py |
+| K3.07 / #271 | Public full-source native positions; constellation grouping/minimum/anchor placement remain product policy | Retain; no redo; test_constellation_labels.py |
+| K3.08 / #272 | Kernel-derived inputs precede cache lookup; retained Skyfield no-deflectors stars/figures and Astropy labels | Retain; no redo; test_stars.py |
+| K3.09 / #249, #250, #251, #273, #274 | Unknown epochs remain None; source-bound lookup admission is distinct from physical qualification | Retain; no redo; test_nonstellar_catalogue.py |
+| K3.10 / #252, #253, #254, #275 | static_direction; returned centres feed native/observed points/outlines before caches | Retain; no redo; test_galaxy_geometry.py |
+| K3.11 / #249, #255, #256 | catalogue_lookup; row epochs/masks/order preserved; returned vectors precede observation cache | Retain; no redo; test_open_clusters.py |
+| K3.12 / #276 | catalogue_lookup; generic/Messier/Caldwell membership and target-centre consumers use returned states | Retain; no redo; test_nonstellar_catalogue.py |
+| K3.13 / #277 | family catalogue_lookup; half-light/structure/common-name policy remains source/product owned | Retain; no redo; test_globular_clusters.py |
+| K3.14 / #278 | family catalogue_lookup; native points/observed symbol centres use returned states; fixed glyph scale remains product owned | Retain; no redo; test_planetary_nebulae.py |
+| K3.15 / #279 | family catalogue_lookup; signed IDs and source shell centres; missing-PA circle remains product policy | Retain; no redo; test_supernova_remnants.py |
+| KG.01 / #282 | Five original coupling/contract findings mapped to actual owners | Retain; no redo; test_current_documentation.py |
+| KG.02 / #283 | Explicit geometry/state separation, units/topology/aliasing and optional dependency contract | Retain; no redo; test_current_documentation.py |
+| KG.03 / #284 | Canonical records/frame/viewport/ring mathematics; identical legacy aliases | Retain; no redo; test_spherical.py |
+| KG.04 / #285 | Numerical services moved unchanged; appearance retained in application | **KG.07 correction G06.C1**; test_projection_and_clipping_contracts.py |
+| KG.05 / #286 | Real cold/saved atlas and stereographic polar composition; strict equidistant failing specimen | **KG.07 correction G06.C1**; test_projection_and_clipping_contracts.py |
+
+### Accepted AX composition affecting K seams
+
+No new science is reviewed for enablement. Each accepted AX ID also has its own
+machine-readable disposition; the grouped table only keeps this view compact.
+
+| Accepted items / PRs | Composition and retained limits | Disposition |
+|---|---|---|
+| AX.01–AX.03 / #257–#260 | Source qualification stays cluster-owned; object-independent complete-input core uses SDK state/reuse; angular certificates do not become apparent/Cartesian guarantees | Retain source, numerical, conformance and refusal receipts |
+| AX.04–AX.05 / #261–#262 | Per-call native adoption and observer contract; default lookup remains unchanged | Retain; contract alone enables no runtime |
+| AX.06–AX.08 / #263–#265 | Generic rectilinear core, actual Cartesian batches and explicit TimeService/convention receipt; cluster adapter calls the core | Retain; no family-specific duplicate propagation required |
+| AX.09–AX.10 / #266–#267 | Concrete ERFA/Astropy backend owns leap/EOP/code/site admission; shared realization consumes evaluated state once | Retain independent parallax/Lorentz/resource/correction-count evidence; no hidden extra light time |
+| AX.11–AX.12 / #268–#269 | Explicit reception guards before projection and horizontal request/CLI selection; saved sky reconstructs sources | Retain; no new frame/model or real stellar/PN/SNR motion |
+
+### G06.C1 correction contract for KG.07
+
+**Origin G05-1; affected acceptance KG.04/KG.05, downstream of K3.05.**
+`Stars._native_catalogue_coordinates` queries only finite rows through the state
+provider. Missing-coordinate rows deliberately retain IDs/metadata as geometry,
+never DirectionStates. `SphericalPoints.finite` exposes this distinction.
+`StereographicProjection.project_points` currently passes the entire coordinate
+array to `project_spherical`; its equidistant subclass rejects non-finite
+longitude in `_project_aligned`. `PolarPlanisphereChart` reaches this before
+latitude filtering. This is the shared point-geometry dispatch boundary, not a
+reason to change catalogue membership or state admission. The numerical guard
+was retained unchanged by KG.04; the failure is not evidence of altered formulas.
+
+The existing strict north/south failing specimens reproduced at this base
+(two expected failures, 20.13 s). Additional read-only probes of real native
+stars, figures, anchors and Milky Way polygons found the same stellar failure
+on both poles; figures, anchors and polygons projected successfully. A temporary
+finite-only point view isolated that failure and projected successfully on both
+poles. This diagnostic is not an implemented workaround or full output acceptance.
+
+The bounded correction belongs in the existing shared point-projection adapter:
+project finite input rows, retain missing-row slots and entity metadata, and
+keep strict scalar/domain checks. Preserve all finite formula/order/flip/frame
+behavior, empty batches and invalid finite latitude/opposite-pole refusal. Do
+not fabricate zero vectors, drop source IDs, relax `_project_aligned` validation,
+modify scientific sources or compensate in Matplotlib/chart appearance policy.
+
+| KG.07 verification owner | Required fault/evidence |
+|---|---|
+| `test_projected_geometry_projection.py` | Mixed/all-missing/empty points preserve row order, IDs, names, labels and metadata; finite coordinates agree with direct numerical calls; source arrays remain unchanged |
+| `test_polar_azimuthal_equidistant_projection.py`, `test_projection_and_clipping_contracts.py` | Strict numerical invalid-domain refusal, both poles/frame/flip and canonical/legacy identity remain intact |
+| `test_stars.py::test_missing_native_positions_never_become_zero_direction_states` | Missing source positions stay out of state publication; no catalogue membership repair |
+| `test_reusable_canonical_sphere.py::test_kernel_geometry_polar_cold_saved_outputs` | Remove both strict xfail markers only with correction; both equidistant and stereographic poles must export cold/restored identical geometry/PNG pixels and real PDF/SVG sizes |
+| Installed consumers in `test_curated_catalogues.py` | If kernel bytes/version/pin change, verify isolated numerical wheel plus root immutable pin/wheel/sdist/editable access; retain unrelated state/time/provider science receipts |
+
+### Unresolved work already assigned elsewhere
+
+| Finding | Actual owner / disposition |
+|---|---|
+| G06.U1: observer resource/cache identity | `sky/observed_cache.py::observer_geometry_key` includes site/time/name/path, not full admitted EOP/backend/ephemeris bytes. M10 and K3.18/K3.25 already retain this gap. Changed-state/no-warm-fallback receipts remain valid for their tested inputs, not universal identity closure. No new KG.07 expansion |
+| G06.U2: assembly and atlas private helpers | `sky/native_snapshot.py` reconstructs concrete families; `charts/request_generation.py::_render_atlas_sheet_request` imports private atlas helpers. K3.19/K3.21 stay partial; K3.03 lifetime/dispatch receipt never closed them |
+| G06.U3: generic realization placement | The object-independent core/time/observer adapters remain transitional Wenu owners consuming the SDK; no kernel reverse import was found. Concrete ERFA/Astropy realization stays outside the stdlib core. Complete service/facade placement review remains K3.18/K5.02; no new module/protocol is selected |
+| G06.U4: source qualification and remaining geometry | Nonstellar physical gaps and constructed/unitless compatibility are disclosed, not qualified by passing lookup. Diffuse metadata/transport is K3.16; constructed references K3.17; product closure K3.20–K3.24/K3.39–K3.40. KG services do not close those pending consumers |
+
+### Evidence retention and audit limits
+
+Retain the exact accepted PR receipts only for the services/routes they tested.
+K3.04–K3.15 returned-state, source admission, mutation, identity/order, cache
+refusal and restored-source tests still protect the intended faults. KG.03/04
+finite-data numerical/isolation/install evidence remains applicable; KG.05 adds
+real composed atlas and stereographic output while exposing G05-1. None proves
+Gaia propagation, all observer resource identities, every K3 consumer, final
+print/classroom appearance or a frozen SDK. No lower-level science suite was
+repeated for this documentation-only audit. The coordinate guide remains current:
+no scientific meaning, ownership or numerical implementation changes here.
+
+
+
+Audit integrity checks: 43 unique deliverable IDs cover all 31 accepted K/KG
+items and AX.01–AX.12; all 91 referenced owner/test paths exist in the inspected
+Git tree. All 73 archived blobs match the preservation ledger. Present active
+Markdown links/anchors pass; omitted local archive/evidence targets are checked
+against the complete tree. The documentation gate has 33 local passes; its
+three archive/evidence checks require the complete Mac checkout. No SDK/provider
+numerical suite rerun is claimed. Complete Mac documentation acceptance remains
+pending on this audit branch.
