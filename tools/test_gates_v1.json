@@ -2382,6 +2382,48 @@
           "reason": "Unchanged shared coordinate semantics consumed by orientation/circumpolar routes."
         }
       ]
+    },
+    "major-planet-moon-routing": {
+      "scope": "K3.25 default major-planet/Moon geometric state and apparent point routing through the existing Cartesian kernel.",
+      "limits": "Retain raw geometric evaluation, one light-time owner, apparent corrections and body/barycentre identity. No SDK, dependencies, source bytes, snapshot/manifest, renderer or physical-model change. Unqualified SPK models remain explicit; real eight-body parity requires existing offline DE440s. Resolved disks, tracks and minor-body adoption remain separate.",
+      "selections": [
+        {
+          "node": "tests/test_ephemeris.py",
+          "reason": "Existing contract/science/point owner and bounded adapter/identity seams."
+        },
+        {
+          "node": "tests/test_skyfield_ephemeris.py",
+          "reason": "Existing contract/science/point owner and bounded adapter/identity seams."
+        },
+        {
+          "node": "tests/test_solar_system_directions.py",
+          "reason": "Existing contract/science/point owner and bounded adapter/identity seams."
+        },
+        {
+          "node": "tests/test_apparent_directions.py",
+          "reason": "Existing contract/science/point owner and bounded adapter/identity seams."
+        },
+        {
+          "node": "tests/test_solar_system_point_layer.py",
+          "reason": "Existing contract/science/point owner and bounded adapter/identity seams."
+        },
+        {
+          "node": "tests/test_apparent_major_planets.py",
+          "reason": "Existing contract/science/point owner and bounded adapter/identity seams."
+        },
+        {
+          "node": "tests/test_moon_direction_validation.py",
+          "reason": "Existing contract/science/point owner and bounded adapter/identity seams."
+        },
+        {
+          "node": "tests/test_moon_layer.py",
+          "reason": "Existing contract/science/point owner and bounded adapter/identity seams."
+        },
+        {
+          "node": "tests/test_venus_layer.py",
+          "reason": "Existing contract/science/point owner and bounded adapter/identity seams."
+        }
+      ]
     }
   },
   "consumer_review": [

@@ -232,3 +232,93 @@ def test_observer_altaz_spec_requires_explicit_position_status():
 
     with pytest.raises(TypeError, match="position_status"):
         observer_altaz_spec(Observer())
+
+
+def test_kernel_ephemeris_consumes_returned_si_states_and_refuses_after_success(monkeypatch):
+    from dataclasses import replace
+    from wenu.ephemeris_state import KernelEphemerisStateSource
+    from wenu_kernel.kernel import KernelSession
+    from wenu_kernel.errors import UnsupportedCapability, ResourceMismatch
+    from astropy import units as u
+
+    resource = _resource()
+    calls = []
+
+    class Source:
+        def __init__(self):
+            self.resource = resource
+        def state(self, request):
+            calls.append(request)
+            return _state(request=request, resource=self.resource,
+                          position_unit='au', velocity_unit='au/day')
+        def close(self):
+            pytest.fail('adapter must never close a borrowed backend')
+
+    source = Source()
+    wrapper = KernelEphemerisStateSource(source)
+    request = _request(frame='icrf')
+    original_evaluate = KernelSession.evaluate
+    seen = []
+
+    def changed(session, query):
+        batch = original_evaluate(session, query)
+        seen.append(query)
+        row = batch.states[0]
+        assert row.source_epoch is None
+        assert row.position_evidence.physical_model.status == 'not_evaluated'
+        return replace(batch, states=(replace(
+            row, position_m=(4 * u.au.to(u.m), 0.0, 0.0),
+            velocity_m_s=(0.0, 0.0, 0.0)),))
+
+    monkeypatch.setattr(KernelSession, 'evaluate', changed)
+    state = wrapper.state(request)
+    assert state.position == (4.0, 0.0, 0.0)
+    assert state.velocity == (0.0, 0.0, 0.0)
+    assert state.provider_target_id == '299'
+    assert state.resource is resource
+    assert calls == [request]
+    assert seen[0].reference.origin_id == request.centre
+    assert seen[0].reference.frame_id == 'icrf'
+    assert seen[0].times[0].scale == 'tdb'
+    assert seen[0].require_velocity
+
+    def refuse(session, query):
+        raise UnsupportedCapability('deliberate kernel refusal')
+    monkeypatch.setattr(KernelSession, 'evaluate', refuse)
+    with pytest.raises(UnsupportedCapability, match='deliberate kernel refusal'):
+        wrapper.state(request)
+    assert calls == [request]
+    source.resource = replace(resource, sha256='b' * 64)
+    with pytest.raises(ResourceMismatch, match='identity changed'):
+        wrapper.state(request)
+
+
+def test_kernel_ephemeris_checks_returned_request_resource_units_and_coverage():
+    from dataclasses import replace
+    from wenu.ephemeris_state import KernelEphemerisStateSource
+    from wenu_kernel.errors import KernelError, OutsideCoverage
+
+    resource = _resource()
+    request = _request(frame='icrf')
+
+    class Source:
+        def __init__(self, change):
+            self.resource = resource
+            self.change = change
+        def state(self, actual):
+            return self.change(_state(request=actual, resource=resource,
+                                     position_unit='au', velocity_unit='au/day'))
+
+    for change in (
+        lambda state: replace(state, request=replace(request, target='moon')),
+        lambda state: replace(state, resource=replace(resource, sha256='b' * 64)),
+        lambda state: replace(state, position_unit='km'),
+    ):
+        with pytest.raises(KernelError):
+            KernelEphemerisStateSource(Source(change)).state(request)
+
+    def forbidden(state):
+        pytest.fail('outside coverage must refuse before backend evaluation')
+    with pytest.raises(OutsideCoverage):
+        KernelEphemerisStateSource(Source(forbidden)).state(
+            replace(request, instant='2200-01-01T00:00:00'))

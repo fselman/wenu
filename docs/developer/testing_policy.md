@@ -1445,3 +1445,20 @@ K3.24 documentation: 31 available cases pass; five archive/asset/full-inventory
 checks require the complete Mac checkout. The complete remote source/test
 inventory and changed production blob are verified separately. Scientific
 contracts, coordinate guide and source map remain current.
+
+## Major-planet and Moon routing gate
+
+`major-planet-moon-routing` is K3.25's bounded gate: existing ephemeris, raw Skyfield,
+light-time/apparent, shared point, planet/Moon identity and layer owners. New tests
+exercise returned Cartesian SI position/velocity, request/resource/unit refusal,
+coverage-before-backend, borrowed ownership and refusal after success. The eight-body
+constructed default-point seam changes returned kernel positions and verifies
+retarded requests and apparent geometry; its observation backend is synthetic,
+not a physical accuracy oracle. Bypassing assembly demonstrably fails that test.
+
+The real DE440s test compares all eight raw versus routed light-time/range/velocity
+and apparent directions at a fixed instant/site. It requires the existing offline
+resource and does not download or skip it. Full Mac acceptance remains pending.
+Retain accepted lower-level kernel conformance/geometry/installation and rendering
+receipts; no SDK, dependency, source-resource, snapshot, renderer or numerical
+algorithm changed. Resolved disks and moving-body tracks are separate milestones.

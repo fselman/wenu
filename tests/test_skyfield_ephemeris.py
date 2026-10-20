@@ -112,7 +112,8 @@ def test_resolved_resource_hashes_exact_borrowed_file_once(resolved):
     identity = source.resource
 
     assert identity.provider == "Skyfield/JPL SPK"
-    assert identity.model == "DE440"
+    assert identity.model == "unqualified SPK model"
+    assert "filename is not model evidence" in identity.provenance[-1]
     assert identity.filename == "de440s.bsp"
     assert identity.sha256 == sha256(path.read_bytes()).hexdigest()
     assert identity.coverage_start == "JD 2410000.50000000"
@@ -182,19 +183,26 @@ def test_adapter_rejects_instant_outside_aggregate_coverage(resolved):
         source.state(request())
 
 
-def test_non_de_filename_requires_explicit_model(tmp_path):
+def test_filename_does_not_qualify_model_and_explicit_declaration_is_labelled(tmp_path):
     path = tmp_path / "custom.bsp"
     path.write_bytes(b"custom")
     kernel = FakeKernel(path)
 
-    with pytest.raises(ValueError, match="model must be supplied"):
-        resolve_skyfield_resource_identity(kernel)
+    unknown = resolve_skyfield_resource_identity(kernel)
+    assert unknown.model == "unqualified SPK model"
+    renamed = tmp_path / "de999.bsp"
+    path.rename(renamed)
+    kernel.path = str(renamed)
+    same_bytes = resolve_skyfield_resource_identity(kernel)
+    assert same_bytes.sha256 == unknown.sha256
+    assert same_bytes.model == unknown.model
 
     identity = resolve_skyfield_resource_identity(
         kernel,
         model="research solution",
     )
     assert identity.model == "research solution"
+    assert "not independently qualified" in identity.provenance[-1]
 
 
 def test_adapter_does_not_claim_or_close_borrowed_resource(resolved):
@@ -243,3 +251,20 @@ def test_observer_state_adapter_requires_the_same_borrowed_kernel(resolved):
 
     with pytest.raises(ValueError, match="same ephemeris"):
         skyfield_observer_barycentric_state(observer, source=source)
+
+
+@pytest.mark.parametrize('centre', ['solar system barycenter', 'earth'])
+def test_cartesian_kernel_transport_preserves_existing_raw_geometric_state(resolved, centre):
+    from wenu.ephemeris_state import KernelEphemerisStateSource
+    source, kernel, _, _ = resolved
+    query = request(centre=centre)
+    raw = source.state(query)
+    routed = KernelEphemerisStateSource(source).state(query)
+    assert routed.position == pytest.approx(raw.position, rel=5e-16, abs=1e-16)
+    assert routed.velocity == pytest.approx(raw.velocity, rel=5e-16, abs=1e-16)
+    assert routed.request is query
+    assert routed.provider_target_id == raw.provider_target_id == '299'
+    assert routed.provider_centre_id == raw.provider_centre_id
+    assert routed.resource is raw.resource
+    assert routed.provenance[:-1] == raw.provenance
+    assert source._kernel is kernel

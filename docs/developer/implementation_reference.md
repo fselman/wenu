@@ -1654,3 +1654,26 @@ corrects a reference orientation; this is not a new physically frozen stellar
 model or a guarantee of exact all-object invariance. K3.24 changes only observer
 cleanup and verification of service consumers, source/projected geometry and
 actual PNG/SVG/rendered-PDF cold/reuse equivalence.
+
+## Major-planet and Moon point states
+
+`ephemeris_state.KernelEphemerisStateSource` adapts the existing
+`EphemerisStateSource` protocol to the existing Cartesian kernel records. Each
+geometric request gets a borrowed, request-scoped registration/session; returned
+SI position/velocity are converted to the protocol's AU/AU-day output. The original
+backend evaluates the original request once. No cache, light-time solver or
+physical uncertainty bound is added. Kernel failures propagate without raw fallback.
+
+Default major-planet/Moon point assembly opts into this adapter. The raw Skyfield
+source remains the reception-observer/apparent backend. Custom source injections,
+tracks, resolved disks and minor-body bindings retain their existing routes pending
+their separate milestones. The existing direction solver remains the sole
+light-time authority; apparent correction constructs Skyfield Astrometric directly
+and never calls observe a second time. Descriptor targets (including planetary
+barycentres) remain distinct from physical body IDs.
+
+`resolve_skyfield_resource_identity` hashes exact bytes and retains segment coverage.
+It now reports `unqualified SPK model` without an explicit model argument. An explicit
+argument is labelled caller-declared, not independently qualified. Renaming a BSP
+cannot qualify its physical model; a verified acquisition/model receipt remains
+necessary for such a claim. No source bytes or numerical formula changed.
