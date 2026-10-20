@@ -9,7 +9,8 @@ import numpy as np
 from wenu.coordinates import PositionStatus
 from wenu.coordinates import observer_altaz_spec, icrs_catalogue_spec
 
-from wenu.geometry.spherical import SphericalPolygons
+from wenu_kernel.geometry.spherical import SphericalPolygons
+from wenu.sky.isophote_sources import IsophoteSourceMetadata, source_receipt, packaged_evidence
 from wenu_kernel.geometry.topology import ring_interior
 from wenu.resources import milky_way_isophote_path
 from wenu.sky.observed_cache import (
@@ -33,6 +34,7 @@ class MilkyWayIsophotes(SkyLayer):
     def __init__(self, observer, *, levels=None):
         self.observer = observer
         self.levels = self._validate_levels(levels)
+        self.catalogue_metadata = None
         self.features = None
         self.source = None
         self.sources = {}
@@ -59,6 +61,7 @@ class MilkyWayIsophotes(SkyLayer):
     def load(self, filename=None):
         """Load and validate the canonical GeoJSON snapshot."""
         features = {}
+        receipts = {}
         sources = {}
         paths = (
             tuple(milky_way_isophote_path(level) for level in self.available_levels)
@@ -66,8 +69,9 @@ class MilkyWayIsophotes(SkyLayer):
             else (filename,)
         )
         for path in paths:
-            with open(path, encoding="utf-8") as stream:
-                document = json.load(stream)
+            with open(path, "rb") as stream:
+                raw = stream.read()
+            document = json.loads(raw)
             if document.get("type") != "FeatureCollection":
                 raise ValueError("Milky Way data must be a FeatureCollection.")
             for feature in document.get("features", ()):
@@ -84,16 +88,30 @@ class MilkyWayIsophotes(SkyLayer):
                     raise ValueError(
                         f"{level} must use GeoJSON MultiPolygon geometry."
                     )
+                receipts[level] = source_receipt(raw, document, feature)
                 features[level] = geometry["coordinates"]
                 sources[level] = str(path)
         if tuple(level for level in self.available_levels if level in features) != self.available_levels:
             raise ValueError("Milky Way data must contain ol1 through ol5.")
+        evidence = ()
+        if filename is None:
+            from pathlib import Path
+            evidence = packaged_evidence(Path(paths[0]).parent / "milky_way_d3.provenance.json", receipts=receipts)
+        metadata = IsophoteSourceMetadata.admit("milky_way", receipts, evidence=evidence)
+        metadata.validate("milky_way", features)
+        self.catalogue_metadata = metadata
         self.features = features
         self.sources = sources
         self.source = tuple(sources[level] for level in self.available_levels)
         self._source_revision += 1
         self._observed_polygon_cache.clear()
         return self
+
+    def validate_source(self, *, source_digests=None):
+        """Refuse mismatched data before native output or observed cache reuse."""
+        if not isinstance(self.catalogue_metadata, IsophoteSourceMetadata):
+            raise ValueError("Missing admitted isophote source metadata.")
+        self.catalogue_metadata.validate("milky_way", self.features, source_digests=source_digests)
 
     def spherical_geometry(self, observer, *, levels=None):
         return self._spherical_geometry(observer, levels=levels)
@@ -110,6 +128,7 @@ class MilkyWayIsophotes(SkyLayer):
             raise RuntimeError(
                 "The isophotes have not been loaded. Call load() first."
             )
+        self.validate_source()
         resolved = self.observer if observer is None else observer
         if not native_icrs and (resolved is None or not hasattr(resolved, "altaz_frame")):
             raise ValueError("An observer with an altaz_frame is required.")
@@ -189,7 +208,8 @@ class MilkyWayIsophotes(SkyLayer):
         else:
             longitude, latitude = observed_polygon_arrays(
                 self._observed_polygon_cache, resolved,
-                source_key=(self.layer_name, self.source, self._source_revision, selected_levels),
+                source_key=(self.layer_name, self.source, self._source_revision,
+                            self.catalogue_metadata.fingerprint, selected_levels),
                 build=lambda: self._transform_rings(native_rings, resolved),
             )
         positions = list(range(len(level_values)))
@@ -197,15 +217,16 @@ class MilkyWayIsophotes(SkyLayer):
         return SphericalPolygons(
             lon_deg=tuple(longitude[index] for index in positions),
             lat_deg=tuple(latitude[index] for index in positions),
-            coordinate_spec=icrs_catalogue_spec("D3-Celestial Milky Way isophotes", epoch=None)
+            coordinate_spec=icrs_catalogue_spec(self.catalogue_metadata.provider, epoch=None)
             if native_icrs else observer_altaz_spec(
                 resolved,
                 position_status=PositionStatus.APPARENT,
-                provider="astropy Milky Way isophotes"
+                provider=f"astropy {self.catalogue_metadata.provider}"
             ),
             ids=[ids[index] for index in positions],
             metadata={
                 "source": np.asarray(source_values, dtype=object)[positions],
+                "source_metadata": self.catalogue_metadata.record_json,
                 "coordinate_system": "icrs" if native_icrs else "altaz",
                 "level": np.asarray(level_values, dtype=object)[positions],
                 "compound_id": np.asarray(compounds, dtype=object)[positions],
@@ -232,15 +253,14 @@ class MilkyWayIsophotes(SkyLayer):
             },
         )
 
-    @staticmethod
-    def _transform_rings(rings, observer):
+    def _transform_rings(self, rings, observer):
         if not rings:
             return (), ()
         return icrs_curve_arrays_to_altaz(
             tuple(np.asarray(ring[:, 0], dtype=float) for ring in rings),
             tuple(np.asarray(ring[:, 1], dtype=float) for ring in rings),
             observer,
-            provider="Milky Way isophotes",
+            provider=self.catalogue_metadata.provider,
         )
 
 

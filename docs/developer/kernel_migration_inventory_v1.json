@@ -1759,6 +1759,13 @@
       "git_blob_sha": "7c7bec383a5cc34feba529d23088fbf774174468",
       "description": "Explicit reception/resource context and object-independent finite-distance nominal parallax/apparent vacuum Alt/Az realization from SDK batches.",
       "baseline_relation": "New enduring observation-context boundary; no target or chart adoption."
+    },
+    {
+      "path": "src/wenu/sky/isophote_sources.py",
+      "as_is_directory": "src/wenu/sky",
+      "description": "Immutable diffuse source receipts and explicit legacy metadata admission.",
+      "baseline_relation": "K3.16 metadata preservation addition; numerical geometry remains in established kernel services.",
+      "git_blob_sha": "0f34c5645f560431817e7a3e66148406e0f41631"
     }
   ],
   "test_side_python_files": [
@@ -9106,7 +9113,7 @@
   "diffuse_geometry_assessment": {
     "milestone": "K3.16 / M9",
     "base": "21653198502b2b6687af8d82556a7f98922eb4fd",
-    "status": "Source assessment retained; service-kernel boundary agreed by Fernando 2026-10-19; runtime unchanged",
+    "status": "Source assessment retained; K3.16 runtime metadata/v6 transport now implemented after explicit 2026-10-20 agreement; acceptance pending.",
     "owners": [
       "src/wenu/sky/milky_way.py",
       "src/wenu/sky/magellanic_clouds.py",
@@ -9115,7 +9122,7 @@
       "packages/wenu_kernel/src/wenu_kernel/kernel.py"
     ],
     "evidence": "MW provenance pins source blob/bytes but GeoJSON lacks frame/epoch declarations. Cloud GeoJSON declares ICRS/degree axes, levels/fractions and source sidecar; loaders/snapshots omit full source properties. StateBatch permits only direction/Cartesian states, not compound rings.",
-    "proposal": "Default separate SDK geometry-query/snapshot-version prerequisite withdrawn. Reuse existing public geometry services first; M9 runtime envelope/legacy transport remains to design. New dispatch only for demonstrated discovery/lifetime need with agreement.",
+    "proposal": "Use existing kernel geometry/topology/domain/projection services. Explicitly agreed v6 source metadata transport with source-free v1-v5 legacy admission; no new SDK query or release.",
     "assessment_gate": "documentation",
     "runtime_changes": false
   },
@@ -11593,6 +11600,42 @@
       "installed_base_collected": 205,
       "installed_base_passed": 204,
       "installed_base_optional_skip": 1
+    }
+  },
+  "diffuse_source_metadata": {
+    "milestone": "K3.16 / M9",
+    "base": "2b607d7190816173b44096f7d2f5211ad4c17656",
+    "agreement": "Fernando 2026-10-20: Agreed. Proceed. after v6/v1-v5 explanation.",
+    "source_paths": [
+      "src/wenu/sky/isophote_sources.py",
+      "src/wenu/sky/milky_way.py",
+      "src/wenu/sky/magellanic_clouds.py",
+      "src/wenu/sky/native_snapshot.py"
+    ],
+    "gate": "diffuse-geometry-routing",
+    "snapshot_version": 6,
+    "legacy_versions": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "boundary": "Existing science reused. Wenu-owned metadata receipts preserve original source properties, loaded byte digests, captured provenance and normalized ring/topology identity. Admission occurs before output/cache reuse; source-free restore validates receipt against manifest/geometry. Legacy receipts expose missing properties without inventing facts.",
+    "limits": "No new algorithm, motion, morphology, kernel/SDK/API, dependency, source-resource or renderer change. Physical frame/epoch/origin gaps remain explicit compatibility interpretation.",
+    "local_validation": {
+      "runtime_passed": 82,
+      "runtime_selection": "diffuse-geometry-routing, executed as focused source/codec, writer/legacy/corruption and real export seams",
+      "tooling_passed": 8,
+      "documentation_available_passed": 31,
+      "documentation_limit": "Five full-checkout integrity/asset checks not available in reconstructed local cache. Authoritative GitHub tree source/test inventory and developer links checked; complete documentation gate required on Mac.",
+      "fault_injection": "Bypassing Milky Way admission causes the warm-cache mutation refusal test to fail."
+    },
+    "source_blobs": {
+      "src/wenu/sky/isophote_sources.py": "0f34c5645f560431817e7a3e66148406e0f41631",
+      "src/wenu/sky/milky_way.py": "36caff81aa2c5f7667da6b994ab868a947957147",
+      "src/wenu/sky/magellanic_clouds.py": "c04b77a3ad96a1cb9d4fdfcf68770806886af029",
+      "src/wenu/sky/native_snapshot.py": "89fcb2d7dc8231fcb851b715a886c31e0153e507"
     }
   }
 }

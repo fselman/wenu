@@ -4,6 +4,10 @@
 PR #234 is integrated. Its tree is identical to `ea8dc505`, which passed all
 3,606 plugin-disabled Mac tests in 1,136.74 s; 16 overlay tests passed in 4.03 s.
 
+K3.16 now implements [diffuse source metadata and v6 saved-sky transport](implementation_reference.md#diffuse-contour-source-admission-and-saved-skies),
+following Fernando’s explicit 2026-10-20 agreement. Mac acceptance is pending.
+Older v1–v5 skies remain readable with honest legacy metadata limits.
+
 ## Read for current work
 
 | Document | Authority |
@@ -236,3 +240,4 @@ repeatable `--open-cluster-id` selection. Verified local leap/final EOP resource
 installed backend identity, finite TT/TCB domains and qualified WGS84 height are
 required. See the [configuration contract](configuration_schema_v2.md#explicit-open-cluster-astrometry).
 Other layers keep their existing scientific routes; no expansion is introduced.
+

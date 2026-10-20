@@ -5,6 +5,19 @@ contracts/consumers. A complete production run is a release/composition gate,
 not a prerequisite for every production edit. This supersedes the blanket
 full-suite rule used through PR #244. No numerical or visual oracle is removed.
 
+## K3.16 diffuse admission and transport gate
+
+Run `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python tools/run_test_gate.py diffuse-geometry-routing --run`.
+The existing isophote/Cloud owners protect exact source properties/digests,
+atomic load, unsupported declarations, unselected-level mutation and refusal
+before a warm cache. The existing native-snapshot owner protects real data-only
+codec and fresh source-free process, v1–v5 legacy limits, full v6 writer/reader,
+corruption, cold/restored/worker atlas PNG/PDF/SVG and both polar projections.
+Independent filled-side/pole/hole raster oracles remain in `test_isophotes.py`.
+Run the documentation gate and tooling tests too. The kernel code/pin is unchanged;
+reuse accepted KG numerical/isolation evidence rather than rerunning its SDK gate.
+Local focused seams pass 82 runtime cases and eight tooling cases. The 31 available documentation cases pass; full checkout asset/archive integrity remains for the complete Mac documentation gate. Implementation acceptance remains pending the Mac receipt.
+
 ## Shared-service kernel boundary checks
 
 The [agreed kernel](kernel_roadmap_v0.9.5.md#proposed-architecture) contains cohesive
@@ -1199,3 +1212,4 @@ tests verify the changed dev11 immutable geometry-extra pin. Source SDK tests
 and gate-tooling tests run separately; no unrelated provider/full production
 repeat is required. The existing LMC example still requires de440s.bsp normally
 available on the Mac; the local TLS/download limitation is not a test waiver.
+

@@ -50,6 +50,16 @@ source snapshots inherit this route without storing evaluated model states.
 Observer-dependent motion is refused until its realization contract is admitted. See the
 [implemented API](implementation_reference.md#nominal-cluster-motion-provider).
 
+## Diffuse contour metadata limits
+
+K3.16 preserves original diffuse source properties and byte/geometry identity.
+Milky Way source frame/epoch declarations remain absent; existing ICRS/degree
+chart encoding is a compatibility policy. Cloud products explicitly declare
+ICRS/degree axes, but Gaia DR3 derivation does not establish a morphology epoch,
+distance or physical origin. No motion or morphology evolution is introduced.
+New v6 saved skies preserve the envelope; v1–v5 retain explicit legacy gaps.
+See the [single runtime/format contract](implementation_reference.md#diffuse-contour-source-admission-and-saved-skies).
+
 ## Object-independent positional astrometry
 
 The shared `astrometric_state` core now owns complete-SI-input rectilinear
@@ -538,3 +548,4 @@ refusal propagates without falling back to raw coordinates. Unknown physical
 frame/origin/epoch facts remain explicit. No associated compact-object position
 or motion replaces the catalogue radio centre. Proper motion/parallax remains
 AX.16; expansion and morphology evolution remain excluded.
+

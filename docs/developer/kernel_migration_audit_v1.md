@@ -35,7 +35,7 @@ measurement-epoch defaults; other nonstellar source qualification remains open.
 | M6 / header defaults fixed; legacy interpretation explicit | Snapshot v5 derives fixed headers from each provider, stores nonstellar records, checks source identity/table metadata/units/header agreement and retains the separate open-cluster row contract | Readers admit v1-v4 historical formats without treating their J2000 headers as measurement epochs. Missing legacy units/digests are not reconstructed as facts. Resource gaps from M5 remain open; the shared coordinate helper correction is verified separately under M4. | Existing corruption owner plus nonstellar record/header conflicts, actual known/unknown epoch round trips and legacy admission |
 | M7 / medium, open | `sky/ceres.py::CERES_SOLUTION` embeds Horizons solution number/date, osculating epoch and quality fields; `minor_body_resources.py` treats this descriptor as the expected identity, while newer comet identities are manifest-derived | A Ceres resource update requires a code edit and can diverge from its acquisition evidence. Migrate the complete solution identity to a versioned data manifest; preserve the existing descriptor-to-manifest/SPK digest and frame checks. | Minor-body resources/ephemeris and Ceres public state/track owners |
 | M8 / medium, open | `satellites/radiometry.py` embeds TSIS product DOI/URL, byte digest/count, grid bounds/sampling, header and audit integral | These are edition-specific resource facts and belong to a validated resource metadata document. Current code deliberately admits one exact resource and verifies it; this is inflexibility/duplication, not evidence of corrupted radiometry. Preserve the numerical integral and malformed-resource oracles when extracting it. | Satellite radiometry resource/parser owner |
-| M9 / source assessment complete; contract decision open | `sky/milky_way.py` and `sky/magellanic_clouds.py` provide fixed source descriptions/ICRS semantics while loaders retain chiefly source paths and feature levels | Preserve dataset edition, source coordinate semantics and provenance in their own metadata envelope. `epoch=None` may be appropriate for diffuse morphology; do not turn it into a fictitious stellar epoch. | Isophote loading/native geometry and saved-ring consumers |
+| M9 / runtime metadata and v6 transport implemented; acceptance pending | `sky/milky_way.py` and `sky/magellanic_clouds.py` provide fixed source descriptions/ICRS semantics while loaders retain chiefly source paths and feature levels | The K3.16 source envelope now preserves original properties, byte/geometry identity and captured provenance; v6 transports it and v1–v5 retain explicit legacy gaps. Physical declarations absent from sources remain absent. No fictitious stellar epoch is assigned. | Isophote loading/native geometry and saved-ring consumers |
 | M10 / low, open | `skyfield_ephemeris.py::_model_from_filename` identifies a DE model from its filename unless explicitly supplied | Prefer the acquisition/validated resource identity. Renaming is not evidence that kernel contents changed; explicit-model admission is already supported. Coverage and digest are read from the resource. | `test_skyfield_ephemeris.py` resource identity owner |
 
 Examples already following the intended boundary include satellite OMM records
@@ -659,8 +659,14 @@ snapshot version, alter existing schemas, relocate code or authorize acquisition
   that component's code/contracts actually change; a new SDK release/pin is not
   automatically required for calling existing geometry services.
 
-The current change is documentation only. K3.16 runtime admission/transport remains
-unimplemented; no other pending milestone is activated.
+K3.16 runtime admission/transport is now implemented under Fernando’s explicit
+2026-10-20 agreement to the v6 design; acceptance is pending. The Wenu-owned
+`sky/isophote_sources.py` receipt preserves original properties, byte/geometry
+identity and captured provenance. New v6 snapshots require and validate that
+receipt; v1–v5 restore explicit legacy metadata without source access or invented
+qualification. Shared kernel services retain all existing geometry mathematics.
+The original assessment above records the as-is v5 evidence, not the current
+transport implementation. No other pending milestone is activated.
 
 ## KG.01 shared geometry service inventory
 
@@ -1053,3 +1059,4 @@ passed and one optional numerical test skipped with NumPy deliberately absent.
 The separate installed numerical consumer exercises the corrected service with
 NumPy present and application/backend/render imports blocked. The SDK selection
 manifest records current source/test digests and this bounded acceptance.
+

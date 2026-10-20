@@ -31,11 +31,12 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Accepted baseline:** main `9e71ab49ce7cc51410428ca79a5c43bd5d293f2f`,
-PR #287, tree identical to tested `ef7783d6f894a5e1f12bde51dac543e09b4b2b07`.
-KG.06 Mac documentation acceptance: 36 passed. Fernando confirmed clean synchronized
-main and branch cleanup. The audit retains earlier runtime receipts and identifies
-one demonstrated correction G06.C1 (G05-1); it does not close K3/K5.
+**Accepted baseline:** main `2b607d7190816173b44096f7d2f5211ad4c17656`,
+PR #288, tree identical to tested `26487957c90f009c1e250b3bd5d9450256e4cab9`.
+KG.07 accepted G06.C1 with 103 focused Mac cases, 205 independent SDK cases,
+36 documentation cases and eight tooling cases; no xfail. Fernando confirmed
+clean synchronized main and branch cleanup. K3.16 is now selected under revision
+40; implementation acceptance remains pending. K3/K5 remain open.
 
 | Track | Position |
 |---|---|

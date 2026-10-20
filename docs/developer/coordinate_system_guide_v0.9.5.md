@@ -3,6 +3,16 @@
 **Scientific reference, consolidated 2026-10-17.** The filename is retained for
 compatibility with existing links; it does not assert that the new kernel exists.
 
+## Diffuse contour metadata limits
+
+K3.16 preserves original diffuse source properties and byte/geometry identity.
+Milky Way source frame/epoch declarations remain absent; existing ICRS/degree
+chart encoding is a compatibility policy. Cloud products explicitly declare
+ICRS/degree axes, but Gaia DR3 derivation does not establish a morphology epoch,
+distance or physical origin. No motion or morphology evolution is introduced.
+New v6 saved skies preserve the envelope; v1–v5 retain explicit legacy gaps.
+See the [single runtime/format contract](implementation_reference.md#diffuse-contour-source-admission-and-saved-skies).
+
 ## Contents
 
 - [Scientific vocabulary](#1-scientific-vocabulary)
@@ -1439,3 +1449,4 @@ preserves its slot as NaN x/y while projecting the finite rows. This changes no
 epoch, frame, source membership or astrometric model. Direct numerical projection
 and finite invalid-domain validation remain strict. See the
 [geometry contract](kernel_contract_k1.md#public-geometry-and-coordinate-contract).
+

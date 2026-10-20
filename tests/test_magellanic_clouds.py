@@ -269,3 +269,38 @@ def test_native_clouds_preserve_source_rings_selection_and_observed_cache(cloud,
     again = layer.spherical_geometry(None)
     for old, new in zip(observed.lon_deg, again.lon_deg):
         np.testing.assert_array_equal(old, new)
+
+
+@pytest.mark.parametrize('cloud', ('lmc', 'smc'))
+def test_cloud_metadata_preserves_morphology_provenance_without_stellar_epoch(cloud):
+    import hashlib
+    from pathlib import Path
+    layer = MagellanicCloudIsophotes(None, cloud=cloud).load()
+    record = layer.catalogue_metadata.to_record()
+    digest = hashlib.sha256(Path(layer.source).read_bytes()).hexdigest()
+    for level, receipt in record['levels'].items():
+        assert receipt['source_sha256'] == digest
+        assert receipt['properties']['frame'] == 'ICRS'
+        assert 'epoch' not in receipt['properties'] and 'origin' not in receipt['properties']
+        assert receipt['feature_properties']['level'] == int(level)
+        assert receipt['feature_properties']['fraction_of_peak'] == layer.fractions[int(level)]
+    evidence = json.loads(record['evidence'][0]['text'])
+    assert evidence['source']['release'] == 'Gaia DR3'
+    assert layer.catalogue_metadata.provider == evidence['title']
+
+
+def test_cloud_fraction_and_metadata_refuse_after_cache_fill(tmp_path):
+    from wenu.sky.isophote_sources import IsophoteSourceMetadata
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    layer = MagellanicCloudIsophotes(Observer(), cloud='lmc').load(_catalogue(tmp_path/'lmc.json', 'lmc'))
+    layer.spherical_geometry(Observer())
+    assert layer._observed_polygon_cache
+    layer.fractions[1] = 0.9
+    with pytest.raises(ValueError, match='fraction'):
+        layer.spherical_geometry(Observer())
+    with pytest.raises(ValueError, match='fraction'):
+        layer.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None)
+    record = layer.catalogue_metadata.to_record()
+    record['levels']['1']['properties']['frame'] = 'galactic'
+    with pytest.raises(ValueError, match='frame'):
+        IsophoteSourceMetadata.from_record(record)

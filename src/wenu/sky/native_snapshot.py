@@ -45,6 +45,7 @@ from wenu.sky.constellation_labels import ConstellationLabels
 from wenu.sky.constellations import Constellations
 from wenu.sky.magellanic_clouds import MagellanicCloudIsophotes
 from wenu.sky.milky_way import MilkyWayIsophotes
+from wenu.sky.isophote_sources import IsophoteSourceMetadata
 from wenu.sky.maximal_sphere import (
     CANONICAL_MAXIMAL_SPHERE_PROFILE, CelestialSphereLoadProfile,
     generate_native_icrs_sphere, _require_native_profile,
@@ -56,7 +57,8 @@ LEGACY_COMPATIBILITY = "wenu-native-sky-records-v1"
 PRE_METADATA_COMPATIBILITY = "wenu-fixed-sky-records-v2"
 PRE_CLUSTER_METADATA_COMPATIBILITY = "wenu-fixed-sky-records-v3"
 PRE_NONSTELLAR_METADATA_COMPATIBILITY = "wenu-fixed-sky-records-v4"
-COMPATIBILITY = "wenu-fixed-sky-records-v5"
+PRE_DIFFUSE_METADATA_COMPATIBILITY = "wenu-fixed-sky-records-v5"
+COMPATIBILITY = "wenu-fixed-sky-records-v6"
 _CATALOGUES = {"nonstellar": NonStellar, "galaxies": Galaxies,
     "open_clusters": OpenClusters, "globular_clusters": GlobularClusters,
     "supernova_remnants": SupernovaRemnants, "planetary_nebulae": PlanetaryNebulae}
@@ -345,6 +347,9 @@ def _restore_fixed(sky, data, source_digests):
 
 def _sky_records(sky):
     stars = sky.stars
+    sky.milky_way_isophotes.validate_source()
+    for layer in sky.magellanic_cloud_isophotes.values():
+        layer.validate_source()
     return dict(
         star_ids=stars.source_catalog.index.to_numpy(dtype=np.int64),
         stellar_metadata=stellar_table_metadata(stars.source_catalog).to_record(),
@@ -352,11 +357,11 @@ def _sky_records(sky):
         designation_catalogue=stars.designation_catalogue,
         research=sky.stellar_research,
         edges=dict(sky.constellation_lines.edges_by_constellation),
-        milky_way=dict(features=_rings(sky.milky_way_isophotes.features),
+        milky_way=dict(metadata=sky.milky_way_isophotes.catalogue_metadata.to_record(), features=_rings(sky.milky_way_isophotes.features),
                        source=sky.milky_way_isophotes.source,
                        sources=sky.milky_way_isophotes.sources),
         fixed=_fixed_records(sky),
-        clouds={cloud: dict(features=_rings(layer.features), fractions=layer.fractions,
+        clouds={cloud: dict(metadata=layer.catalogue_metadata.to_record(), features=_rings(layer.features), fractions=layer.fractions,
                             source=layer.source)
                 for cloud, layer in sky.magellanic_cloud_isophotes.items()},
     )
@@ -437,7 +442,7 @@ def prepare_native_sky_snapshot(design_bytes, destination, *,
                     payloads[name] = dict(sha256=_digest(data), size=len(data))
                     evidence[key] = name
             stellar_metadata = stellar_table_metadata(sky.stars.source_catalog)
-            manifest = dict(schema_version=5, document_kind="wenu-native-sky-snapshot",
+            manifest = dict(schema_version=6, document_kind="wenu-native-sky-snapshot",
                             compatibility=COMPATIBILITY, frame="icrs",
                             origin="solar-system-barycenter", stellar_epoch=stellar_metadata.epoch_label,
                             position_status="astrometric", coordinate_units="deg",
@@ -507,11 +512,15 @@ class NativeSkySnapshot:
         mw = _SnapshotMilkyWay(None, levels=MilkyWayIsophotes.available_levels)
         mw.features, mw.source, mw.sources = (
             data["milky_way"][key] for key in ("features", "source", "sources"))
+        mw.catalogue_metadata = _diffuse_metadata(data["milky_way"], "milky_way",
+            self._manifest["schema_version"], self.source_digests)
         sky.milky_way_isophotes = sky.add(mw)
         for cloud, content in data["clouds"].items():
             layer = _SnapshotCloud(None, cloud=cloud)
             layer.features, layer.fractions, layer.source = (
                 content[key] for key in ("features", "fractions", "source"))
+            layer.catalogue_metadata = _diffuse_metadata(content, cloud,
+                self._manifest["schema_version"], self.source_digests)
             sky.magellanic_cloud_isophotes[cloud] = sky.add(layer)
         stars = _SnapshotStars(None, magnitude_limit=self.star_magnitude_limit)
         stars.designation_catalogue = data["designation_catalogue"]
@@ -555,12 +564,13 @@ def read_native_sky_snapshot(directory, *, expected_manifest_sha256=None):
               "layers", "star_magnitude_limit", "design_id", "design_revision",
               "payloads", "array_index", "source_digests", "evidence", "records"))
     version = m["schema_version"]
-    if type(version) is not int or version not in (1, 2, 3, 4, 5):
+    if type(version) is not int or version not in (1, 2, 3, 4, 5, 6):
         raise ValueError("Unsupported snapshot version.")
     expected = dict(schema_version=version, document_kind="wenu-native-sky-snapshot",
                     compatibility={1: LEGACY_COMPATIBILITY, 2: PRE_METADATA_COMPATIBILITY,
                                    3: PRE_CLUSTER_METADATA_COMPATIBILITY,
-                                   4: PRE_NONSTELLAR_METADATA_COMPATIBILITY, 5: COMPATIBILITY}[version], frame="icrs",
+                                   4: PRE_NONSTELLAR_METADATA_COMPATIBILITY,
+                                   5: PRE_DIFFUSE_METADATA_COMPATIBILITY, 6: COMPATIBILITY}[version], frame="icrs",
                     origin="solar-system-barycenter",
                     position_status="astrometric", coordinate_units="deg",
                     full_sphere=True, layers=list(LEGACY_LAYERS if version == 1 else LAYERS))
@@ -712,6 +722,9 @@ def read_native_sky_snapshot(directory, *, expected_manifest_sha256=None):
                             or not np.all(np.isfinite(ring))
                             or np.any(np.abs(ring[:, 1]) > 90)):
                         raise ValueError("Invalid snapshot polygon ring.")
+    _diffuse_metadata(data["milky_way"], "milky_way", version, m["source_digests"])
+    for cloud, content in data["clouds"].items():
+        _diffuse_metadata(content, cloud, version, m["source_digests"])
     if not data["edges"] or any(
             len(edge) != 2 or any(type(hip) is not int or hip <= 0 for hip in edge)
             for edges in data["edges"].values() for edge in edges):
@@ -721,6 +734,26 @@ def read_native_sky_snapshot(directory, *, expected_manifest_sha256=None):
     snapshot = NativeSkySnapshot(directory, m, arrays, data, design_bytes, digest)
     snapshot.stellar_metadata = metadata
     return snapshot
+
+
+def _diffuse_metadata(content, family, version, source_digests):
+    expected = {"features", "source", "sources"} if family == "milky_way" else {"features", "source", "fractions"}
+    if version >= 6:
+        expected.add("metadata")
+    if set(content) != expected:
+        raise ValueError("Invalid diffuse snapshot fields.")
+    bindings = {str(level): source_digests[
+        ("milky_way" if "milky_way" in source_digests else f"milky_way_{level}")
+        if family == "milky_way" else family] for level in content["features"]}
+    if family != "milky_way" and set(content["fractions"]) != set(content["features"]):
+        raise ValueError("Invalid Cloud fraction coverage.")
+    metadata = (IsophoteSourceMetadata.from_record(content["metadata"]) if version >= 6
+                else IsophoteSourceMetadata.legacy(family, content["features"], bindings))
+    if version >= 6 and metadata.to_record()["admission"] != "source":
+        raise ValueError("New snapshots require captured diffuse source metadata.")
+    metadata.validate(family, content["features"], fractions=content.get("fractions"),
+                      source_digests=bindings)
+    return metadata
 
 
 def _plain_mapping(value):

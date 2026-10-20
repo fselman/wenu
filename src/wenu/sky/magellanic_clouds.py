@@ -10,7 +10,8 @@ from wenu.coordinates import PositionStatus
 from wenu.coordinates import observer_altaz_spec
 from wenu.coordinates import icrs_catalogue_spec
 
-from wenu.geometry.spherical import SphericalPolygons
+from wenu_kernel.geometry.spherical import SphericalPolygons
+from wenu.sky.isophote_sources import IsophoteSourceMetadata, source_receipt, packaged_evidence
 from wenu.resources import magellanic_cloud_isophotes_path
 from wenu.sky.observed_cache import (
     icrs_curve_arrays_to_altaz,
@@ -31,6 +32,7 @@ class MagellanicCloudIsophotes(SkyLayer):
         self.observer = observer
         self.cloud = self._validate_cloud(cloud)
         self.levels = self._validate_levels(levels)
+        self.catalogue_metadata = None
         self.features = None
         self.fractions = None
         self.source = None
@@ -74,8 +76,9 @@ class MagellanicCloudIsophotes(SkyLayer):
             if filename is None
             else filename
         )
-        with open(path, encoding="utf-8") as stream:
-            document = json.load(stream)
+        with open(path, "rb") as stream:
+            raw = stream.read()
+        document = json.loads(raw)
         if document.get("type") != "FeatureCollection":
             raise ValueError(
                 "Magellanic Cloud data must be a FeatureCollection."
@@ -91,6 +94,7 @@ class MagellanicCloudIsophotes(SkyLayer):
             )
 
         features = {}
+        receipts = {}
         fractions = {}
         for feature in document.get("features", ()):
             properties = feature.get("properties", {})
@@ -122,6 +126,7 @@ class MagellanicCloudIsophotes(SkyLayer):
                     f"Level {level} must use GeoJSON MultiPolygon "
                     "geometry."
                 )
+            receipts[str(level)] = source_receipt(raw, document, feature)
             features[level] = geometry["coordinates"]
             fractions[level] = float(
                 properties.get("fraction_of_peak", np.nan)
@@ -134,12 +139,25 @@ class MagellanicCloudIsophotes(SkyLayer):
             raise ValueError(
                 "Magellanic Cloud data must contain levels 1 through 4."
             )
+        evidence = ()
+        if filename is None:
+            from pathlib import Path
+            evidence = packaged_evidence(Path(path).parent / "magellanic_clouds_gaia_dr3.provenance.json", receipts=receipts, cloud=self.cloud)
+        metadata = IsophoteSourceMetadata.admit(self.cloud, receipts, evidence=evidence)
+        metadata.validate(self.cloud, features, fractions=fractions)
+        self.catalogue_metadata = metadata
         self.features = features
         self.fractions = fractions
         self.source = str(path)
         self._source_revision += 1
         self._observed_polygon_cache.clear()
         return self
+
+    def validate_source(self, *, source_digests=None):
+        """Refuse mismatched data before native output or observed cache reuse."""
+        if not isinstance(self.catalogue_metadata, IsophoteSourceMetadata):
+            raise ValueError("Missing admitted isophote source metadata.")
+        self.catalogue_metadata.validate(self.cloud, self.features, fractions=self.fractions, source_digests=source_digests)
 
     def spherical_geometry(self, observer, *, levels=None):
         """Transform the selected ICRS isophote rings to observer Alt/Az."""
@@ -156,6 +174,7 @@ class MagellanicCloudIsophotes(SkyLayer):
             raise RuntimeError(
                 "The isophotes have not been loaded. Call load() first."
             )
+        self.validate_source()
         resolved = self.observer if observer is None else observer
         if not native_icrs and (resolved is None or not hasattr(resolved, "altaz_frame")):
             raise ValueError("An observer with an altaz_frame is required.")
@@ -214,6 +233,7 @@ class MagellanicCloudIsophotes(SkyLayer):
                     self.cloud,
                     self.source,
                     self._source_revision,
+                    self.catalogue_metadata.fingerprint,
                 ),
                 build=lambda: self._transform_rings(
                     native_rings, resolved
@@ -228,15 +248,16 @@ class MagellanicCloudIsophotes(SkyLayer):
         return SphericalPolygons(
             lon_deg=tuple(longitude[index] for index in positions),
             lat_deg=tuple(latitude[index] for index in positions),
-            coordinate_spec=icrs_catalogue_spec("Gaia-derived Magellanic Cloud isophotes", epoch=None)
+            coordinate_spec=icrs_catalogue_spec(self.catalogue_metadata.provider, epoch=None)
             if native_icrs else observer_altaz_spec(
                 resolved,
                 position_status=PositionStatus.APPARENT,
-                provider="astropy Magellanic Cloud isophotes"
+                provider=f"astropy {self.catalogue_metadata.provider}"
             ),
             ids=[ids[index] for index in positions],
             metadata={
                 "source": self.source,
+                "source_metadata": self.catalogue_metadata.record_json,
                 "coordinate_system": "icrs" if native_icrs else "altaz",
                 "cloud": np.asarray(clouds, dtype=object)[positions],
                 "level": np.asarray(level_values, dtype=int)[positions],
@@ -255,13 +276,12 @@ class MagellanicCloudIsophotes(SkyLayer):
             },
         )
 
-    @staticmethod
-    def _transform_rings(rings, observer):
+    def _transform_rings(self, rings, observer):
         if not rings:
             return (), ()
         return icrs_curve_arrays_to_altaz(
             tuple(np.asarray(ring[:, 0], dtype=float) for ring in rings),
             tuple(np.asarray(ring[:, 1], dtype=float) for ring in rings),
             observer,
-            provider="Magellanic Clouds isophotes",
+            provider=self.catalogue_metadata.provider,
         )
