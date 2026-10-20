@@ -98,8 +98,9 @@ polar specimens now require success without expected-failure markers. Complete
 Mac acceptance of this correction is pending.
 Observer/cache identity and application assembly are accepted through K3.18/K3.19.
 K3.21's lower-level public atlas sheet contract is accepted through PR #294.
-K3.22 verifies existing physical polar product service consumers; its Mac
-acceptance remains pending. No K3/K5 freeze is claimed.
+K3.22 physical polar product service consumers are accepted through PR #295.
+K3.23 verifies ordinary temporal sequence consumers; complete Mac acceptance
+remains pending. No K3/K5 freeze is claimed.
 
 ## Canonical pipeline
 
@@ -475,3 +476,23 @@ read projected output. The [K3.20 assessment](kernel_migration_audit_v1.md#k320-
 records these actual seams and their verification without changing production
 mathematics. The chart/atlas helper boundary remains K3.21; no full K3/K5 or
 independent astronomical-package closure is implied.
+
+## Ordinary temporal sequence consumers
+
+`charts/sequence.py` replaces only the observer instant and deterministic
+output path in each immutable chart request, then calls the ordinary static
+generator with the same effective configuration. That generator owns
+observer/resource cleanup and constructs the frame's realization context.
+Timeline UTC sampling, civil display time and playback cadence remain distinct.
+
+Schema-v1 manifests retain declared request/configuration, physical/display
+instants and playback identity, plus completed output sizes/hashes. Resume
+checks compatibility before generation and reuses only verified files;
+a failed frame cannot acquire a completion record. This verifies a declared
+plan and saved bytes, not a certificate of current external source/backend
+accuracy or identity. Later moving-body models remain separate.
+
+A frozen `FullSkyChart` now retains the immutable viewport produced by its
+existing circle fit. Recomputing that fit could differ numerically and trigger
+the strict same-chart composition guard. The formula, guard, horizon arrays,
+projection and renderer algorithms are unchanged.

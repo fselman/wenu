@@ -1362,11 +1362,50 @@ no full SDK/production or repeated catalogue-scene export gate is warranted.
 The ordinary observer-visible FullSkyChart planisphere belongs to K3.20,
 not this physical product gate. Its exploratory exact-array failure remains
 disclosed in the audit, including reproduction without the new tests.
-Run tooling and documentation too; complete Mac acceptance remains pending.
+Mac acceptance at 4739841d passed 162 focused, 36 documentation and eight
+tooling cases; PR #295 is merged and branch cleanup confirmed.
 
 K3.22 tooling: eight cases passed in 4.649 s. Documentation: 31 cases passed;
 five checks fail only because this execution copy omits archive/assets/test files.
 Full remote source/test inventory matches; all 20 polar production blobs match
-the accepted base exactly. Full 36-case documentation acceptance remains required
+the accepted base exactly. All 36 documentation cases subsequently passed
 on the Mac. The coordinate guide and scientific contracts were reviewed and
 remain current: no frame/time/calibration/model meaning changed.
+
+## Observer-time sequence routing gate
+
+Run `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python tools/run_test_gate.py observer-time-sequence-routing --run`.
+K3.23 selects timeline/CLI arguments, sequence and manifest owners, affected
+planisphere/composition owners, ordinary request/layer-realization contracts
+and the two public CLI sequence seams. Preserve the existing real two-frame
+canonical catalogue PNG export/resume case; synthetic-backend integration does
+not replace its Mac acceptance.
+
+New actual-generator checks use a labelled synthetic observation backend with
+real kernel/native stellar directions, request/context/projection/render/export.
+They require each frame's simulation instant in the realization context,
+changed kernel directions in both outputs, partial progress and close/release
+after second-frame refusal, and selective completion on resume. Existing
+configuration forwarding remains selected. Manifest tests protect playback,
+display versus physical time, reference/configuration identity and offset-aware
+repeated civil hours; same-size corruption must regenerate after a hash mismatch.
+Deliberately removing hash verification fails the new resume case.
+
+The planisphere's existing immutable viewport is reused on its frozen chart.
+No numerical function body or strict composition comparison changes. Restoring
+the uncached property makes the real sequence consumer fail again; the new
+full-sky test retains immutability and changed-chart refusal. This is an
+application reuse correction, not a new kernel capability or renderer algorithm.
+
+Local gate: 150 passed; one real-catalogue integration case failed only because
+DE440s is absent and its attempted JPL download fails certificate validation.
+The complete 151-case Mac gate is mandatory and contains no new skip/xfail.
+Eight tooling cases pass. Retain accepted source/SDK/observer numerical and
+package receipts; no full production/SDK or unrelated atlas export repetition.
+K3.24 and subsequent provider-model routes remain separate.
+
+Final K3.23 local checks: 48 temporal/manifest/argument cases passed (the one
+resource-dependent real case excluded from this local-only invocation); 31
+available documentation cases passed. Five complete-checkout documentation
+checks remain for the Mac. Source map and complete remote production/test
+inventories are unchanged; the changed full-sky source blob is updated.

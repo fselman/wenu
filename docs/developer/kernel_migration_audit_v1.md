@@ -1278,3 +1278,51 @@ The coordinate guide and scientific contracts remain current. Eight tooling
 cases pass; 31 documentation cases pass locally and five complete-checkout
 archive/asset/inventory checks remain for Mac. All 20 polar production blobs
 are exact accepted-base bytes; complete remote production/test inventories match.
+
+## K3.23 observer-time sequence consumer assessment
+
+Base: accepted PR #295/main `738c4fc6581be337cc4d0fa521ae52d6c33c3a92`.
+Fernando confirmed clean main/branch cleanup and selected the ordinary temporal
+sequence proposal. Revision 47 was committed before tests; the demonstrated
+viewport correction was documented before editing its implementation.
+
+| Existing owner | Assessment and disposition |
+|---|---|
+| temporal.py / sequence_arguments / configuration sequence translation | Retain existing UTC normalization, physical sampling, display timezone, frame naming and playback validation |
+| charts/sequence.py | Already substitutes every frame instant and calls the canonical static generator with effective configuration; no duplicate numerical implementation found |
+| request_generation / layer realization | Retain per-frame observer/context, resource ownership, common state/coordinate/geometry and canonical export pipeline |
+| sequence_manifest.py | Retain schema 1, portable declared-plan identity, completion hashes, compatibility-before-render and selective resume |
+| cli/chart.py | Retain existing sequence request dispatch and translated effective configuration |
+| FullSkyChart.viewport | Same-chart frame export failed at strict composition validation after independently recomputed circle fits. Reuse its existing immutable result on the frozen chart; preserve every function body/formula and guard |
+
+Two new sequence tests use a labelled synthetic observation backend with real
+KernelSession, Stars, request preparation, realization, projection, renderer
+and actual PNG saver paths. They establish consumption and time/cleanup routing,
+not an observational numerical oracle. Simulation instants reach each context;
+changed kernel-returned directions reach both frames and change PNG bytes.
+A second-frame kernel refusal preserves only the first completion; owned
+observers/leases close and resume renders only the unfinished frame.
+
+Manifest checks distinguish physical versus civil instants (including repeated
+civil hours), playback cadence, reference equinox and effective configuration.
+Same-size corruption must fail SHA-256 verification, missing files regenerate,
+and untouched frames reuse. Removing the hash check fails this regression.
+Restoring uncached viewport computation fails the actual sequence consumer;
+the corrected path passes. All FullSkyChart function bodies match the base AST:
+only the import and viewport decorator change. Viewport immutability and strict
+refusal for changed chart parameters are tested.
+
+Focused local gate: 150 cases pass; the existing real two-frame catalogue
+export/resume case is blocked by missing DE440s and a certificate-failed JPL
+download (151 cases remain required on Mac). No ephemeris is substituted and
+no skip/xfail is added. Eight tooling checks pass. Retain accepted lower-level
+SDK/observer numerical and source/package/atlas receipts; the Mac real sequence
+case separately establishes real integration at this revision.
+
+Resume identity remains the existing declared request/configuration/timeline/
+playback contract and verified output bytes. It does not establish automatic
+current backend/resource equivalence or universal physical accuracy. K3.24
+fixed-sky, K3.25 onward moving-body model work and K5 freeze remain open.
+The separate exploratory ordinary horizon exact-array observation recorded in
+K3.22 is not declared closed by this viewport fix. Coordinate/scientific guides
+remain current; no frame, epoch, time-scale or observation formula changes.

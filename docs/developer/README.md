@@ -23,7 +23,7 @@ K3.20 now verifies [ordinary chart consumer routing](kernel_migration_audit_v1.m
 
 K3.21 now exposes the [public atlas sheet contract](implementation_reference.md#public-atlas-sheet-contract) and routes catalogue-count availability through full-source native stellar positions. Accepted through PR #294 after 425 focused, 36 documentation and eight tooling Mac cases.
 
-K3.22 now verifies [physical polar product service routing](kernel_migration_audit_v1.md#k322-physical-polar-product-service-assessment) without production rewrites. Products retain their Wenu owners; coordinate/kernel geometry services already supply their scientific geometry. Complete Mac acceptance is pending.
+K3.22 now verifies [physical polar product service routing](kernel_migration_audit_v1.md#k322-physical-polar-product-service-assessment) without production rewrites. Products retain their Wenu owners; coordinate/kernel geometry services already supply their scientific geometry. Accepted through PR #295 after 162 focused, 36 documentation and eight tooling Mac cases.
 
 ## Read for current work
 
@@ -258,3 +258,9 @@ installed backend identity, finite TT/TCB domains and qualified WGS84 height are
 required. See the [configuration contract](configuration_schema_v2.md#explicit-open-cluster-astrometry).
 Other layers keep their existing scientific routes; no expansion is introduced.
 
+
+K3.23 now verifies [ordinary observer-time sequences](kernel_migration_audit_v1.md#k323-observer-time-sequence-consumer-assessment)
+through the canonical static generator. Planisphere viewport reuse fixes a
+demonstrated same-chart composition refusal without changing its calculation.
+Per-frame context/kernel-result, partial-progress/refusal and resume-identity
+checks are implemented; complete Mac acceptance remains pending.

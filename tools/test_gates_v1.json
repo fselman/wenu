@@ -2314,6 +2314,52 @@
           "reason": "Existing physical polar product owner and retained science/layout/export contracts."
         }
       ]
+    },
+    "observer-time-sequence-routing": {
+      "scope": "K3.23 ordinary observer-time sequence canonical state/realization consumption, playback/declared-plan identity, verified resume and immutable planisphere viewport stability.",
+      "limits": "Retain UTC sampling/civil display, existing schema-v1 manifest, numerical formulas and strict composition guard. No SDK/source/dependency/snapshot/renderer algorithm change. Include real two-frame export/resume; synthetic-backend kernel seams do not establish new observational science. K3.24 fixed-sky and K3.25 onward moving-body models remain separate; resume verifies declared plan/output bytes, not current external resources or physical accuracy.",
+      "selections": [
+        {
+          "node": "tests/test_temporal.py",
+          "reason": "Existing temporal/request or affected composition owner; preserve public routes, scientific time and failure boundaries."
+        },
+        {
+          "node": "tests/test_sequence_arguments.py",
+          "reason": "Existing temporal/request or affected composition owner; preserve public routes, scientific time and failure boundaries."
+        },
+        {
+          "node": "tests/test_chart_sequence.py",
+          "reason": "Existing temporal/request or affected composition owner; preserve public routes, scientific time and failure boundaries."
+        },
+        {
+          "node": "tests/test_sequence_manifest.py",
+          "reason": "Existing temporal/request or affected composition owner; preserve public routes, scientific time and failure boundaries."
+        },
+        {
+          "node": "tests/test_full_sky_chart.py",
+          "reason": "Existing temporal/request or affected composition owner; preserve public routes, scientific time and failure boundaries."
+        },
+        {
+          "node": "tests/test_chart_composition.py",
+          "reason": "Existing temporal/request or affected composition owner; preserve public routes, scientific time and failure boundaries."
+        },
+        {
+          "node": "tests/test_request_generation.py",
+          "reason": "Existing temporal/request or affected composition owner; preserve public routes, scientific time and failure boundaries."
+        },
+        {
+          "node": "tests/test_layer_realization.py",
+          "reason": "Existing temporal/request or affected composition owner; preserve public routes, scientific time and failure boundaries."
+        },
+        {
+          "node": "tests/test_wenu_chart_cli.py::test_family_help_exposes_temporal_sequence_controls",
+          "reason": "Existing temporal/request or affected composition owner; preserve public routes, scientific time and failure boundaries."
+        },
+        {
+          "node": "tests/test_wenu_chart_cli.py::test_sequence_cli_delegates_to_canonical_sequence_api",
+          "reason": "Existing temporal/request or affected composition owner; preserve public routes, scientific time and failure boundaries."
+        }
+      ]
     }
   },
   "consumer_review": [
