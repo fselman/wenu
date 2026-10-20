@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 44, 2026-10-20. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 45, 2026-10-20. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -31,11 +31,11 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Accepted baseline:** main `2bdbc4a9963690f7c78cea483357292521a90f3a`,
-PR #292, tree identical to tested `f1bd63f387c9a42b9b4c2bedd22614ac8d5823b5`.
-K3.19 passed 169 focused, 36 documentation and eight tooling Mac cases. Fernando
-confirmed clean synchronized main and branch cleanup. K3.20 is selected under
-revision 44; K3/K5 remain partial.
+**Accepted baseline:** main `89756d957696b8baf2cd69f52f6a6878cc3a8484`,
+PR #293, tree identical to tested `bd3971f75982c24638d1a540f2438eb88f5a39af`.
+K3.20 passed 389 focused, 36 documentation and eight tooling Mac cases. Fernando
+confirmed clean synchronized main and branch cleanup. K3.21 is selected under
+revision 45; K3/K5 remain partial.
 
 | Track | Position |
 |---|---|
@@ -43,8 +43,8 @@ revision 44; K3/K5 remain partial.
 | Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
 | Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
 | Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
-| Current authorized task | K3.20 ordinary chart consumer closure; selected 2026-10-20 |
-| Next bounded submilestone | K3.21 remains pending; select separately after K3.20 acceptance |
+| Current authorized task | K3.21 public atlas sheet contract and consumers; selected 2026-10-20 |
+| Next bounded submilestone | K3.22 remains pending; select separately after K3.21 acceptance |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -75,6 +75,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 45: select K3.21 atlas contract and consumer closure | Fernando’s 2026-10-20 “proceed” after PR #293 acceptance and cleanup, following the explicit public sheet contract/design/index/publication/report proposal | Place existing sheet types, rendering and report helpers in a lower-level atlas_sheet service owner shared by batch publication and generic request execution; retain legacy publication/request imports as aliases and generic request scope/staging ownership. Use a public sheet render result contract instead of cross-owner private helpers. Route catalogue-count position availability through full-source public stellar native positions, preserving deduplication/photometry/count semantics. Verify dependency direction, returned results/refusal, index/report/CLI/worker and real cold/saved/spawned outputs with atlas-sheet-routing plus documentation. No new science, SDK, source bytes, dependency, snapshot format, layout/appearance or package extraction; K3.22 remains separate. |
 | Revision 44: select K3.20 ordinary chart consumers | Fernando’s 2026-10-20 “Proceed” after PR #292 acceptance and cleanup, following the explicit five-family/centre/mask/content/style/detail/furniture proposal | Inspect existing consumers and reuse admitted layer/coordinate/geometry services; refactor demonstrated bypasses only. Preserve mathematics, membership, independent presentation policy and output. Verify changed returned values, refusal, request isolation and existing public family/mask/presentation owners with ordinary-chart-routing plus documentation. No SDK, resource, dependency, schema, renderer, new science or package extraction. K3.21 chart/atlas boundary and later moving-body provider obligations remain separate. |
 | Revision 43: select K3.19 application assembly | Fernando’s 2026-10-20 “Proceed” after PR #291 acceptance/cleanup, following the explicit explanation of separating component creation from central sky orchestration | Move existing construction and source-free reconstruction bodies to one application-assembly owner; keep public sky convenience/factory/snapshot calls as delegates, layer order, aliases, source-free workers, validation and v6 format. Verify supplied assembly is consumed/refusal propagated plus existing cold/saved/spawned atlas output. No scientific, SDK/dependency, resource bytes, renderer or schema change; no plugin-discovery framework or package extraction. Gate: sky-application-assembly plus documentation. |
 | Revision 42: select K3.18 observer/resource lifecycle | Fernando’s 2026-10-20 “Proceed” after PR #290 acceptance and clean main 56f5e8ff, following the explicit observer/resource/cache proposal | Reuse existing state/coordinate/finite-observer services and request ownership. Correct demonstrated missing backend/EOP/leap/ephemeris cache identity and closed-resource admission in existing owners. Verify resource changes, warm refusal, legacy families and owned/borrowed cleanup with observer-resource-lifecycle plus documentation. Preserve mathematics, source bytes, appearance, SDK/dependency pins and snapshot v6. No new package, physics or solar-system model admission; M10 model qualification remains K3.25. |
@@ -135,14 +136,15 @@ own science and conformance gate; integration/release checks have separate owner
 Arrows show calls/dependencies; dashed edges identify coupling to remove.
 The existing projection and graphics pipeline is retained. The kernel edge
 shows the implemented state SDK component, not the whole intended service kernel;
-shared geometry/projections remain in existing Wenu namespaces. Other source paths remain
+shared geometry/projections now use kernel services through compatible Wenu aliases. Other source paths remain
 to migrate. The accepted explicit cluster observer subset does not close the
 legacy observation paths.
 
 ```mermaid
 flowchart TB
     subgraph Products["Products"]
-        A["Atlas"]
+        A["Atlas batch and book"]
+        T["Public atlas sheet service"]
         C["Chart request generation"]
         R["Preparation, drawing and export"]
     end
@@ -156,14 +158,17 @@ flowchart TB
         O["Observer and apparent realization"]
         D["Catalogues and ephemeris providers"]
     end
-    A --> C
-    C -. "Imports atlas-private helpers" .-> A
+    A -->|"Public chart command"| C
+    C --> T
+    T --> S
+    T --> R
     C --> S
     S --> G
     G --> P
     P --> R
-    S -. "Knows concrete implementations" .-> L
-    C -. "Temporarily mutates shared layers" .-> S
+    S --> B["Application sky assembly"]
+    B --> L
+    C -->|"Request-owned scope"| S
     L -. "Other state consumers" .-> D
     L -->|"Stellar and fixed catalogue centres"| K["State SDK session"]
     K --> N["Shared table/provider adapters"]
@@ -176,9 +181,9 @@ flowchart TB
 |---|---|---|
 | Source catalogue / epoch state | Stellar native position ignores instant; moving bodies use different contracts | Typed state queries with explicit capabilities |
 | Physical state / observer realization | Legacy layer fallback discards context | Common realization service over state interfaces |
-| Kernel / domain packages | Central factory imports concrete classes | Registration against contracts; explicit application assembly |
+| Kernel / domain packages | Application assembly now owns concrete construction; independent extraction remains pending | Preserve public contracts and extract only after K5 acceptance |
 | Immutable state / request | Mutable arrays, dictionaries, layers and resolver bindings | Immutable snapshots and request-owned sessions |
-| Chart / atlas | Bidirectional imports and private furniture/report helpers | Public sheet-rendering contract owned below atlas |
+| Chart / atlas | Public sheet leaf now shared by execution and batch publication; Mac acceptance pending | Retain legacy aliases, request scope and unchanged output |
 | Package / independent test gate | Shared installation and historical documentation assertions | Isolated environments, provider conformance and owner suites |
 
 The source evidence is in `sky/celestial_sphere.py`, `sky/maximal_sphere.py`,
@@ -603,8 +608,8 @@ map below ensures small/non-chart capabilities do not disappear in grouped rows.
 | K3.17 | Route constructed references: grids, equator/ecliptic/Galactic planes, poles, defining-frame boundaries, horizon/visibility/masks | Accepted PR #290/main 56f5e8ff after 99 focused, 36 documentation and eight tooling Mac cases; clean branch cleanup confirmed. Existing service routes retained without production rewrite |
 | K3.18 | Close shared state/coordinate/observer adapters, resource lifetime and observed-cache invalidation across existing families | Accepted PR #291/main 37bcb851 after 402 focused, 36 documentation and eight tooling Mac cases; clean branch cleanup confirmed. K5.02 final placement and K3.25 model qualification remain separate |
 | K3.19 | Decouple central sky/factory from concrete providers through application assembly; cover saved/loaded skies and workers | Accepted PR #292 at main 2bdbc4a9 after 169 focused, 36 documentation and eight tooling Mac cases; existing construction moved unchanged to application assembly; source-free restoration/workers retained |
-| K3.20 | Close all five ordinary chart families, target/group centres, masks, content, styles/detail and furniture state access | Implemented for acceptance: existing five-family/centre/mask/content/presentation owners already consume shared services; no production bypass demonstrated. Returned-value/refusal and existing owner evidence selected by ordinary-chart-routing. No runtime rewrite; complete Mac acceptance pending; K3.21 remains separate |
-| K3.21 | Replace chart/atlas private-helper cycle with a public sheet contract; close atlas design/index/publication/report consumers | Partial dispatch/saved/worker paths accepted; public boundary and complete state routing pending |
+| K3.20 | Close all five ordinary chart families, target/group centres, masks, content, styles/detail and furniture state access | Accepted PR #293 at main 89756d95 after 389 focused, 36 documentation and eight tooling Mac cases; existing ordinary consumers use shared services; no runtime rewrite |
+| K3.21 | Replace chart/atlas private-helper cycle with a public sheet contract; close atlas design/index/publication/report consumers | Implemented for acceptance: public sheet request/render result replaces the private-helper cycle; native full-source stellar geometry controls count availability. Design/index/report and cold/saved/worker/installed gates preserve existing output; complete Mac acceptance pending |
 | K3.22 | Migrate physical polar pairs, calendars, pages, pouches and sheet products without print/scene changes | Pending routing acceptance; retain both projections and classroom baseline |
 | K3.23 | Close ordinary temporal sequence state/realization routes, playback and resume identities | Partial request/configuration seams accepted; complete state routing remains open |
 | K3.24 | Close fixed-sky/frozen-baseline and rotating-horizon consumers with distinct anchor/local instants | Pending; preserve scientific and graphical references |

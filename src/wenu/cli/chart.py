@@ -839,7 +839,8 @@ def _atlas_sheet(arguments, *, atlas_request=None, sky=None):
     """Admit files or an explicitly prepared batch request before execution."""
     from wenu.atlas_design import AtlasBandTiling
     from wenu.charts.atlas_publication import AtlasChartPresentation
-    from wenu.charts.request_generation import AtlasSheetChartRequest, generate_chart_request
+    from wenu.charts.atlas_sheet import AtlasSheetChartRequest
+    from wenu.charts.request_generation import generate_chart_request
     if atlas_request is None:
         if any(value is None for value in (arguments.design, arguments.config, arguments.from_sky)):
             raise ValueError("atlas-sheet requires --design, --config and --from-sky.")
