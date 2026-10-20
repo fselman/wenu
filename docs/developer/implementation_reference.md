@@ -1633,3 +1633,24 @@ parameters receive a fresh calculation. This prevents numerical refitting from
 making a valid composition appear to belong to another chart. Strict composition
 mismatch refusal remains unchanged. No timeline, manifest or snapshot schema
 changes, new propagation, or fixed-sky/rotating-horizon adoption occur here.
+
+## Fixed-sky service consumers and observer ownership
+
+`resolve_fixed_sky_rotating_horizon_frame` constructs anchor and local observers
+under one cleanup scope. Both are released if construction, orientation or
+cleanup fails. Returned `FixedSkyCircumpolarOrientation` is retained as provenance
+and supplies the canonical request position angle; the request observer uses the
+local frame instant. Source catalogue epoch is not replaced by the anchor.
+
+`generate_fixed_sky_rotating_horizon_sequence` retains explicit `cold` and
+`reuse_loaded_sphere` modes. Both call the same static generator and effective
+configuration. Reuse keeps an unbound catalogue container and closes the
+per-frame observer; it claims no evaluated-state reuse or temporal certificate.
+The independently generated complete-render baseline remains an ordinary
+observer-time sequence with its own output directory and resume contract.
+
+Existing reference geometry and numerical tolerances are preserved. The anchor
+corrects a reference orientation; this is not a new physically frozen stellar
+model or a guarantee of exact all-object invariance. K3.24 changes only observer
+cleanup and verification of service consumers, source/projected geometry and
+actual PNG/SVG/rendered-PDF cold/reuse equivalence.

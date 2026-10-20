@@ -367,7 +367,7 @@
     },
     {
       "path": "src/wenu/charts/fixed_sky_sequence.py",
-      "git_blob_sha": "8601cea349964d0ad419aed2dcac0d00fe8e5d62",
+      "git_blob_sha": "f1e094f91d5b4f878c1eb486527b81472e3cae5f",
       "as_is_directory": "src/wenu/charts",
       "description": "Planning contract for a fixed celestial scene and rotating local horizon."
     },
@@ -12120,6 +12120,53 @@
       "viewport_fault_failed": 1,
       "resume_hash_fault_failed": 1
     },
-    "limits": "No new physics, numerical formula, kernel/SDK/dependency/source, manifest/snapshot schema, renderer algorithm or package extraction. Resume verifies declared plan/output bytes, not current external backend/resource identities or physical accuracy. K3.24/future moving-body models remain separate."
+    "limits": "No new physics, numerical formula, kernel/SDK/dependency/source, manifest/snapshot schema, renderer algorithm or package extraction. Resume verifies declared plan/output bytes, not current external backend/resource identities or physical accuracy. K3.24/future moving-body models remain separate.",
+    "mac_acceptance": {
+      "tested_commit": "2942df1eea535c2befb169d09079c5bf8e0a2444",
+      "merged_commit": "4e62f47abdd4b341a40038697fdb601ecd1dbf99",
+      "pr": 296,
+      "focused_passed": 151,
+      "focused_seconds": 80.77,
+      "documentation_passed": 36,
+      "tooling_passed": 8,
+      "cleanup": "Fernando confirmed clean synchronized main and both feature branches deleted."
+    }
+  },
+  "fixed_sky_routing": {
+    "milestone": "K3.24",
+    "base_commit": "4e62f47abdd4b341a40038697fdb601ecd1dbf99",
+    "plan_commit": "297cdecc2d69c8d09e2a2ff306b457244f0645ee",
+    "agreement": "Fernando's proceed after K3.23 acceptance/cleanup and the explicit fixed-sky/frozen-baseline/rotating-horizon proposal.",
+    "owners": [
+      "src/wenu/charts/fixed_sky_sequence.py",
+      "src/wenu/charts/fixed_sky_orientation.py",
+      "src/wenu/charts/fixed_sky_baseline.py"
+    ],
+    "disposition": "Retain existing coordinate/canonical static and observer-time routes. Correct observer acquisition/cleanup only; other sequence function bodies and numerical orientation call unchanged.",
+    "source_change": {
+      "path": "src/wenu/charts/fixed_sky_sequence.py",
+      "git_blob_sha": "f1e094f91d5b4f878c1eb486527b81472e3cae5f",
+      "change": "Immediately register each constructed anchor/local observer in ExitStack so second-construction or close failure cannot leak the other."
+    },
+    "gate": "fixed-sky-routing",
+    "evidence": [
+      "Original cleanup regression: two failed/three passed; all five pass after correction.",
+      "Returned CoordinateService values/refusal and distinct anchor/local contexts reach orientation and canonical request.",
+      "Constructed two-star real kernel/request/coordinate/projection/render/saver cold/reuse source/projected agreement plus actual PNG/SVG/rendered-PDF equality.",
+      "Separate observer-time baseline generation/identity; no inherited anchor-relative rotation.",
+      "Warm kernel refusal preserves prior outputs and releases owned observers/request lease."
+    ],
+    "local_receipt": {
+      "available_passed": 45,
+      "available_seconds": 6.29,
+      "full_gate_cases": 53,
+      "resource_blocked_cases": 8,
+      "blocked_reason": "Existing real Observer tests require absent DE440s; JPL download fails certificate validation. All eight remain in Mac gate without skip/xfail.",
+      "tooling_passed": 8,
+      "tooling_seconds": 5.424,
+      "documentation_passed": 31,
+      "documentation_complete_checkout_required": 5
+    },
+    "limits": "Synthetic observation backend is labelled; not new physical accuracy evidence or a true frozen evaluated-state cache. Existing projected-reference numerical tolerance retained. No SDK/dependency/source resource/snapshot/manifest/renderer formula changes. K3.25 and K5 remain separate."
   }
 }

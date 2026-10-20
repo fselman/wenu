@@ -1402,10 +1402,46 @@ DE440s is absent and its attempted JPL download fails certificate validation.
 The complete 151-case Mac gate is mandatory and contains no new skip/xfail.
 Eight tooling cases pass. Retain accepted source/SDK/observer numerical and
 package receipts; no full production/SDK or unrelated atlas export repetition.
-K3.24 and subsequent provider-model routes remain separate.
+Mac acceptance at 2942df1e passed all 151 focused, 36 documentation and eight
+tooling cases; PR #296 is merged and branch cleanup confirmed. K3.24 and
+subsequent provider-model routes remain separate.
 
 Final K3.23 local checks: 48 temporal/manifest/argument cases passed (the one
 resource-dependent real case excluded from this local-only invocation); 31
 available documentation cases passed. Five complete-checkout documentation
 checks remain for the Mac. Source map and complete remote production/test
 inventories are unchanged; the changed full-sky source blob is updated.
+
+## Fixed-sky routing gate
+
+Run `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python tools/run_test_gate.py fixed-sky-routing --run`.
+K3.24 selects orientation, fixed-sky sequence, complete-render baseline and shared
+coordinate owners. Keep all real-Observer reference-orientation/horizon oracles;
+new frame-only CoordinateService and constructed-output tests do not replace
+their Mac acceptance. Retain the established 1e-5 relative/1e-12 absolute
+projected-reference oracle rather than claiming exact all-object invariance.
+
+New cleanup regressions failed on the original resolver for local-construction
+and anchor-close errors; scoped acquisition makes all observers release.
+Returned orientation/coordinate values and refusal must reach canonical frame
+requests. Anchor, frame instant and source epoch retain distinct meanings.
+All other numerical/generation/baseline bodies remain unchanged.
+
+Actual constructed cold/loaded runs cover PNG, normalized SVG and rasterized
+PDF output, exact source/projected agreement and warm kernel refusal without
+prior output damage or leaked observer/lease. A separately generated complete
+observer-time baseline remains distinct from anchor-corrected output. Fixtures
+explicitly label their synthetic observation backend; real kernel, coordinate,
+request, projection, renderer and saver paths execute.
+
+Local final gate subset: 45 passed in 6.29 s; eight resource-dependent existing
+cases remain required in the complete 53-case Mac gate. Missing DE440s and a
+certificate-failed JPL download prevent those local executions; no replacement
+ephemeris, new skip or xfail is used. Eight tooling cases passed in 5.424 s.
+Retain accepted SDK/observer science, resource and installation receipts; no
+unchanged full SDK/production/atlas repetition is warranted.
+
+K3.24 documentation: 31 available cases pass; five archive/asset/full-inventory
+checks require the complete Mac checkout. The complete remote source/test
+inventory and changed production blob are verified separately. Scientific
+contracts, coordinate guide and source map remain current.

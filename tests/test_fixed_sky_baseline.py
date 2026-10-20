@@ -114,6 +114,19 @@ def test_baseline_is_an_independent_complete_observer_time_plan(tmp_path):
     )
 
 
+def test_complete_baseline_identity_is_independent_of_celestial_anchor(tmp_path):
+    from wenu.charts.sequence_manifest import ObserverTimeSequenceManifest
+
+    fixed = fixed_request(tmp_path / "candidate")
+    changed = replace(fixed, celestial_anchor_time=datetime(2035, 1, 1, tzinfo=timezone.utc))
+    first = fixed_sky_complete_render_baseline_request(fixed, tmp_path / "baseline")
+    second = fixed_sky_complete_render_baseline_request(changed, tmp_path / "another-baseline")
+    assert ObserverTimeSequenceManifest.from_sequence(first).identity_sha256 == (
+        ObserverTimeSequenceManifest.from_sequence(second).identity_sha256)
+    assert first.timeline.instants == fixed.timeline.instants
+    assert first.chart.frame.position_angle_deg == fixed.chart.frame.position_angle_deg
+
+
 def test_baseline_generation_delegates_to_observer_time_pipeline(
     tmp_path,
     monkeypatch,

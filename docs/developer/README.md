@@ -263,4 +263,9 @@ K3.23 now verifies [ordinary observer-time sequences](kernel_migration_audit_v1.
 through the canonical static generator. Planisphere viewport reuse fixes a
 demonstrated same-chart composition refusal without changing its calculation.
 Per-frame context/kernel-result, partial-progress/refusal and resume-identity
-checks are implemented; complete Mac acceptance remains pending.
+checks are accepted through PR #296 after 151 focused, 36 documentation and eight tooling Mac cases.
+
+K3.24 now verifies [fixed-sky and rotating-horizon service consumers](kernel_migration_audit_v1.md#k324-fixed-sky-consumer-assessment)
+and fixes observer cleanup during frame resolution. Anchor orientation and local
+frame realization remain separate; cold/reuse geometry and graphical outputs are
+checked. Complete Mac acceptance remains pending.

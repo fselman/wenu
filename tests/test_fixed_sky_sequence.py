@@ -51,6 +51,202 @@ def timeline():
     )
 
 
+@pytest.mark.parametrize("failure", ("local_construction", "orientation", "anchor_close", "local_close"))
+def test_frame_resolution_releases_every_constructed_observer_on_failure(tmp_path, monkeypatch, failure):
+    from wenu.charts import fixed_sky_sequence as module
+    from wenu.charts.fixed_sky_orientation import FixedSkyCircumpolarOrientation
+
+    frame = FixedSkyRotatingHorizonSequenceRequest(
+        chart=chart_request(tmp_path / "frames"), timeline=timeline(),
+        celestial_anchor_time=timeline().instants[0],
+    ).frames[-1]
+    constructed, closed = [], []
+
+    def observer(**kwargs):
+        index = len(constructed)
+        if index == 1 and failure == "local_construction":
+            raise RuntimeError("local construction refused")
+        value = SimpleNamespace(time=kwargs["time"])
+
+        def close():
+            closed.append(index)
+            if failure == ("anchor_close" if index == 0 else "local_close"):
+                raise RuntimeError("observer close refused")
+
+        value.close = close
+        constructed.append(value)
+        return value
+
+    def orientation(anchor, local, **kwargs):
+        assert anchor.time == frame.celestial_request.observer.time
+        assert local.time == frame.local_observer.time
+        if failure == "orientation":
+            raise RuntimeError("orientation refused")
+        return FixedSkyCircumpolarOrientation("south", 0, 12, 12)
+
+    monkeypatch.setattr(module, "Observer", observer)
+    monkeypatch.setattr(module, "fixed_sky_circumpolar_orientation", orientation)
+    with pytest.raises(RuntimeError, match="refused"):
+        resolve_fixed_sky_rotating_horizon_frame(frame)
+    assert sorted(closed) == list(range(len(constructed)))
+
+
+def test_frame_resolution_consumes_returned_orientation_without_changing_anchor(tmp_path, monkeypatch):
+    from wenu.charts import fixed_sky_sequence as module
+    from wenu.charts.fixed_sky_orientation import FixedSkyCircumpolarOrientation
+
+    sequence = FixedSkyRotatingHorizonSequenceRequest(
+        chart=chart_request(tmp_path / "frames"), timeline=timeline(),
+        celestial_anchor_time=datetime(2025, 1, 1, tzinfo=timezone.utc),
+    )
+    observers = []
+    def observer(**kwargs):
+        value = SimpleNamespace(time=kwargs["time"], closed=False)
+        value.close = lambda: setattr(value, "closed", True)
+        observers.append(value)
+        return value
+    returned = FixedSkyCircumpolarOrientation("south", 14, 33, 27)
+    monkeypatch.setattr(module, "Observer", observer)
+    monkeypatch.setattr(module, "fixed_sky_circumpolar_orientation", lambda *args, **kwargs: returned)
+    frame = sequence.frames[-1]
+    resolved = resolve_fixed_sky_rotating_horizon_frame(frame)
+    assert resolved.orientation is returned
+    assert resolved.chart_request.frame.position_angle_deg == 27
+    assert resolved.chart_request.observer.time == frame.simulation_time
+    assert resolved.frame.celestial_request.observer.time == sequence.celestial_anchor_time
+    assert all(value.closed for value in observers)
+
+
+def _fixed_kernel_environment(monkeypatch):
+    """Constructed stars and synthetic observation backend; real shared services."""
+    from test_chart_sequence import _kernel_sequence_environment
+    from test_stars import FakeApparent
+    from wenu.charts import fixed_sky_sequence as module, request_generation
+    from wenu.sky.maximal_sphere import CANONICAL_MAXIMAL_SPHERE_PROFILE
+    from astropy.coordinates import SkyCoord
+    import astropy.units as u
+
+    observers, skies, realized = _kernel_sequence_environment(monkeypatch)
+    create_observer = request_generation.Observer
+    create_sphere = request_generation.build_maximal_sphere
+
+    def observer(**kwargs):
+        value = create_observer(**kwargs)
+        def observe(target):
+            # Synthetic Skyfield-like seam using real Astropy coordinates.
+            horizontal = SkyCoord(ra=target.ra.hours * 15 * u.deg,
+                dec=target.dec.degrees * u.deg, frame="icrs").transform_to(value.altaz_frame)
+            return FakeApparent(horizontal.alt.deg, horizontal.az.deg)
+        value.skyfield = SimpleNamespace(at=lambda time: SimpleNamespace(observe=observe))
+        return value
+
+    def sphere(observer, *, profile=CANONICAL_MAXIMAL_SPHERE_PROFILE):
+        sky = create_sphere(observer, profile=profile)
+        sky.stars.source_catalog.loc[:, "dec_degrees"] = [-80., -75.]
+        sky.stars.catalog = sky.stars.source_catalog.copy(deep=True)
+        return sky
+
+    monkeypatch.setattr(request_generation, "Observer", observer)
+    monkeypatch.setattr(module, "Observer", observer)
+    monkeypatch.setattr(request_generation, "build_maximal_sphere", sphere)
+    monkeypatch.setattr("wenu.sky.maximal_sphere.generate_celestial_sphere", lambda: sphere(None))
+    return observers, skies, realized
+
+
+@pytest.mark.parametrize("output_format", (OutputFormat.PNG, OutputFormat.SVG, OutputFormat.PDF))
+def test_fixed_sky_real_kernel_cold_and_loaded_outputs_agree(tmp_path, monkeypatch, output_format):
+    import numpy as np
+    from wenu.charts.detail import DetailOverrides
+    from wenu.configuration import load_configuration_defaults
+    from wenu.charts.fixed_sky_baseline import compare_png_frames, compare_normalized_svg, render_pdf_page_rgba
+    from wenu.charts import request_generation
+
+    observers, skies, realized = _fixed_kernel_environment(monkeypatch)
+    instants = timeline().instants[::2]
+    configuration = load_configuration_defaults()
+    planned = FixedSkyRotatingHorizonSequenceRequest(
+        chart=ChartRequest(family="circumpolar",
+            observer=ChartObserverRequest(time="2000-01-01T00:00:00Z", lat_deg=-33, lon_deg=-71),
+            frame=ChartFrameRequest(pole="south", limiting_declination_deg=-60),
+            product=ChartProductOptions(output=tmp_path / "cold", output_format=output_format),
+            detail=DetailOverrides(enabled_layers=frozenset({"stars"}))),
+        timeline=TemporalTimeline(instants, display_timezone="America/Santiago"),
+        celestial_anchor_time=instants[0] - timedelta(hours=1), configuration=configuration)
+    original = request_generation.generate_chart_request
+    calls = []
+    def generate(request, **kwargs):
+        calls.append((request, kwargs))
+        return original(request, **kwargs)
+    monkeypatch.setattr(request_generation, "generate_chart_request", generate)
+    cold = generate_fixed_sky_rotating_horizon_sequence(planned)
+    reused = generate_fixed_sky_rotating_horizon_sequence(replace(planned,
+        chart=replace(planned.chart, product=replace(planned.chart.product, output=tmp_path / "reused"))),
+        execution="reuse_loaded_sphere")
+    assert cold.canonical_sphere_build_count == 2
+    assert reused.canonical_sphere_build_count == 1
+    assert len(skies) == 3
+    assert skies[-1].observer is None
+    assert all(value.closed for value in observers)
+    assert all(not hasattr(sky, "_active_chart_request_state") for sky in skies)
+    assert all(options["configuration"] is configuration for _, options in calls)
+    assert tuple(request.observer.time for request, _ in calls) == instants * 2
+    assert all(frame.resolved.frame.celestial_request.observer.time == planned.celestial_anchor_time
+        for frame in (*cold.frames, *reused.frames))
+    assert tuple(context.evaluation_instant for context, _, _ in realized[:2]) == tuple(
+        context.evaluation_instant for context, _, _ in realized[2:])
+    from astropy.time import Time
+    assert tuple(context.evaluation_instant for context, _, _ in realized[:2]) == tuple(
+        Time(instant).utc.isot for instant in instants)
+    assert all(context.evaluation_instant != Time(planned.celestial_anchor_time).utc.isot
+        for context, _, _ in realized)
+    assert all(sky.layers == (sky.stars,) for sky in skies)
+    for (_, _, left), (_, _, right) in zip(realized[:2], realized[2:], strict=True):
+        np.testing.assert_array_equal(left.ids, right.ids)
+        np.testing.assert_allclose(left.lon_deg, right.lon_deg, atol=0, rtol=0)
+        np.testing.assert_allclose(left.lat_deg, right.lat_deg, atol=0, rtol=0)
+    for left_frame, right_frame in zip(cold.frames, reused.frames, strict=True):
+        def layers(frame):
+            rendering = frame.generation.exports[0].rendering
+            return getattr(rendering, "rendering", rendering).layers
+        left_layers, right_layers = layers(left_frame), layers(right_frame)
+        assert len(left_layers) == len(right_layers) == 1
+        left, right = left_layers[0], right_layers[0]
+        assert left.layer.layer_name == right.layer.layer_name == "stars"
+        np.testing.assert_array_equal(left.projected.ids, right.projected.ids)
+        np.testing.assert_array_equal(left.projected.x, right.projected.x)
+        np.testing.assert_array_equal(left.projected.y, right.projected.y)
+    for index, (left, right) in enumerate(zip(cold.outputs, reused.outputs, strict=True)):
+        assert left.is_file() and right.is_file()
+        if output_format is OutputFormat.SVG:
+            assert compare_normalized_svg(left, right)
+        else:
+            if output_format is OutputFormat.PDF:
+                left = render_pdf_page_rgba(left, tmp_path / f"cold-{index}.png", dpi=40)
+                right = render_pdf_page_rgba(right, tmp_path / f"reused-{index}.png", dpi=40)
+            assert compare_png_frames(left, right).changed_pixels == 0
+    if output_format is OutputFormat.PNG:
+        from wenu.charts.fixed_sky_baseline import generate_fixed_sky_complete_render_baseline
+        baseline = generate_fixed_sky_complete_render_baseline(planned, tmp_path / "baseline")
+        assert tuple(frame.frame.simulation_time for frame in baseline.frames) == instants
+        assert all(path.is_file() for path in baseline.outputs)
+        assert compare_png_frames(baseline.outputs[-1], cold.outputs[-1]).changed_pixels > 0
+
+    from wenu_kernel import KernelSession
+    warm_sky = skies[2]
+    before = tuple(path.read_bytes() for path in reused.outputs)
+    monkeypatch.setattr("wenu.sky.maximal_sphere.generate_celestial_sphere", lambda: warm_sky)
+    def refuse(*args, **kwargs):
+        raise RuntimeError("fixed-sky kernel refusal")
+    monkeypatch.setattr(KernelSession, "evaluate", refuse)
+    with pytest.raises(RuntimeError, match="fixed-sky kernel refusal"):
+        generate_fixed_sky_rotating_horizon_sequence(replace(planned,
+            chart=replace(planned.chart, product=replace(planned.chart.product, output=tmp_path / "reused"))),
+            execution="reuse_loaded_sphere")
+    assert tuple(path.read_bytes() for path in reused.outputs) == before
+    assert all(value.closed for value in observers)
+    assert not hasattr(warm_sky, "_active_chart_request_state")
+
+
 def test_fixed_sky_plan_separates_anchor_and_local_observer_time(tmp_path):
     anchor = datetime(
         2026, 8, 21, 21, tzinfo=timezone(timedelta(hours=-4))

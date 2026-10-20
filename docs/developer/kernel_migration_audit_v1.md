@@ -1326,3 +1326,52 @@ fixed-sky, K3.25 onward moving-body model work and K5 freeze remain open.
 The separate exploratory ordinary horizon exact-array observation recorded in
 K3.22 is not declared closed by this viewport fix. Coordinate/scientific guides
 remain current; no frame, epoch, time-scale or observation formula changes.
+
+## K3.24 fixed-sky consumer assessment
+
+Base: accepted PR #296/main `4e62f47abdd4b341a40038697fdb601ecd1dbf99`.
+Fernando confirmed clean main and branch cleanup, then selected the explicit
+fixed-sky/frozen-baseline/rotating-horizon proposal. Revision 48 was committed
+before implementation.
+
+| Existing owner | As-is finding and disposition |
+|---|---|
+| fixed_sky_orientation.py | Already transforms constructed FK5/J2000 references through CoordinateService at anchor and local instants; retains the established tangent-angle correction, not a solar-hour shortcut. Production bytes unchanged |
+| fixed_sky_sequence.py frame resolution | Observer construction preceded the cleanup try; local construction failure leaked the anchor. Anchor close failure also prevented local close. Register each successful acquisition in ExitStack; numerical orientation call and canonical request replacement remain unchanged |
+| fixed_sky_sequence.py generation | Cold and loaded-sphere modes already call canonical static generation with effective configuration and frame-local time; retain generation body unchanged |
+| fixed_sky_baseline.py | Independent observer-time complete-render baseline and PNG/SVG/PDF comparison helpers already use appropriate services; retain production bytes unchanged |
+
+Before correction, the four cleanup-failure cases plus returned-orientation test
+produced two failures and three passes: leaked anchor after local construction
+refusal and unattempted local close after anchor close refusal. All five pass
+after the scoped ownership correction. Every other function body in the sequence
+module is identical; the orientation call is AST-identical. Original orientation
+and baseline source files match the base bytes.
+
+Coordinate-service instrumentation changes returned local geometry and observes
+the resulting angle change; later refusal propagates. Anchor and local contexts
+are recorded independently; J2000 equinox remains distinct from source epoch.
+The existing independent projected-reference oracle retains its original
+relative/absolute tolerances (1e-5/1e-12). This does not establish exact all-object
+fixed-scene physics or new state propagation.
+
+Constructed two-star output checks use a labelled synthetic observation backend
+with real kernel/native stellar directions, Astropy coordinate services,
+canonical request/layer/projected/renderer/saver paths. Cold versus loaded-sphere
+runs agree in source/selected IDs, spherical and projected coordinates, PNG
+pixels, normalized SVG graphics and actual rasterized PDF pixels. Realization
+contexts use frame instants rather than the different anchor. The complete
+observer-time baseline is generated separately and differs from the anchored
+candidate; changing only the anchor leaves baseline plan identity unchanged.
+
+A kernel refusal after warm reuse propagates without overwriting prior outputs;
+owned observers close and the reused sky's request lease is released. Reuse
+keeps one unbound container versus two cold builds, not cached evaluated states.
+Effective configuration, layer registry and returned orientation are preserved.
+
+Local final available gate: 45 passed in 6.29 s; eight existing real-Observer
+cases are blocked by missing DE440s and certificate-failed JPL download. The
+53-case Mac gate retains all eight without skip/xfail. Eight tooling cases pass.
+No catalogue bytes, dependency/SDK, snapshot/manifest schema, numerical formula,
+renderer algorithm or extraction changes. Coordinate/scientific guides remain
+current; K3.25 and K5 remain separate.
