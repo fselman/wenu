@@ -2038,6 +2038,68 @@
           "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
         }
       ]
+    },
+    "sky-application-assembly": {
+      "scope": "K3.19 central sky/factory/snapshot delegates and application-owned existing construction, including source-free restore, workers and real cold/saved/spawned atlas output.",
+      "limits": "Move existing construction only; preserve APIs/defaults/order/aliases, source validation, v1-v6 reading/v6 writing and observer ownership. No SDK/dependency, resource bytes, scientific/renderer calculation or plugin-discovery/package extraction change. Retain accepted lower-level geometry/observer numerics; no full SDK/production repeat.",
+      "selections": [
+        {
+          "node": "tests/test_sky_layer.py",
+          "reason": "Protect supplied assembly/refusal, construction order, source-free restoration, request ownership and existing real output/installation boundaries."
+        },
+        {
+          "node": "tests/test_maximal_sphere.py",
+          "reason": "Protect supplied assembly/refusal, construction order, source-free restoration, request ownership and existing real output/installation boundaries."
+        },
+        {
+          "node": "tests/test_dependency_boundaries.py",
+          "reason": "Protect supplied assembly/refusal, construction order, source-free restoration, request ownership and existing real output/installation boundaries."
+        },
+        {
+          "node": "tests/test_request_generation.py",
+          "reason": "Protect supplied assembly/refusal, construction order, source-free restoration, request ownership and existing real output/installation boundaries."
+        },
+        {
+          "node": "tests/test_layer_realization.py",
+          "reason": "Protect supplied assembly/refusal, construction order, source-free restoration, request ownership and existing real output/installation boundaries."
+        },
+        {
+          "node": "tests/test_request_realization.py",
+          "reason": "Protect supplied assembly/refusal, construction order, source-free restoration, request ownership and existing real output/installation boundaries."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_matches_cold_full_sphere_and_layer_options",
+          "reason": "Protect supplied assembly/refusal, construction order, source-free restoration, request ownership and existing real output/installation boundaries."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources",
+          "reason": "Protect supplied assembly/refusal, construction order, source-free restoration, request ownership and existing real output/installation boundaries."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_fixed_catalogue_rows_masks_units_and_subsets",
+          "reason": "Protect supplied assembly/refusal, construction order, source-free restoration, request ownership and existing real output/installation boundaries."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_legacy_coverage_stays_truthful",
+          "reason": "Protect supplied assembly/refusal, construction order, source-free restoration, request ownership and existing real output/installation boundaries."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_rejects_corruption_before_use",
+          "reason": "Protect supplied assembly/refusal, construction order, source-free restoration, request ownership and existing real output/installation boundaries."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_atlas_chart_batch_cold_saved_and_spawned_pages_match",
+          "reason": "Protect supplied assembly/refusal, construction order, source-free restoration, request ownership and existing real output/installation boundaries."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_atlas_chart_batch_failure_preserves_saved_data",
+          "reason": "Protect supplied assembly/refusal, construction order, source-free restoration, request ownership and existing real output/installation boundaries."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_application_assembly_ships_and_runs_without_source_checkout",
+          "reason": "Protect supplied assembly/refusal, construction order, source-free restoration, request ownership and existing real output/installation boundaries."
+        }
+      ]
     }
   },
   "consumer_review": [

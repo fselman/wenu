@@ -144,3 +144,16 @@ def test_tools_and_examples_use_no_retired_coordinate_authorities():
                         f"{source.path.relative_to(ROOT)} contains {token}"
                     )
     assert violations == []
+
+
+def test_central_sky_and_factory_do_not_construct_concrete_layers():
+    # The compatibility API may delegate lazily to application assembly; no
+    # catalogue/astronomical layer constructor belongs to these generic owners.
+    for name in ('celestial_sphere.py', 'maximal_sphere.py'):
+        tree = ast.parse((ROOT / 'src/wenu/sky' / name).read_text())
+        assert not any(imported.startswith('wenu.objects') for imported in _imports(tree))
+        forbidden = {'Stars', 'NonStellar', 'Galaxies', 'OpenClusters', 'GlobularClusters',
+            'PlanetaryNebulae', 'SupernovaRemnants', 'Constellations', 'ConstellationBoundaries',
+            'MilkyWayIsophotes', 'MagellanicCloudIsophotes', 'MoonLayer', 'VenusLayer'}
+        assert not any(isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
+                       and node.func.id in forbidden for node in ast.walk(tree))

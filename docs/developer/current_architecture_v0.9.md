@@ -79,8 +79,8 @@ FK4/B1875 boundary, horizon/mask and furniture implementations: they already use
 the shared coordinate/geometry/domain/projection services. Source-free restored
 references use those same owners. New closure tests verify returned values and
 refusal; there is no new production route or numerical algorithm. Complete
-observer resource/cache checks are now implemented under K3.18, with Mac
-acceptance pending. See the
+observer resource/cache checks are accepted under K3.18/PR #291 after the
+402-case focused Mac gate. See the
 [routing ledger](kernel_migration_audit_v1.md#k317-constructed-reference-service-routing-assessment).
 
 ## Completed-K service-boundary audit
@@ -429,3 +429,24 @@ service retains verified offline reception receipts and full recomputation.
 These backend adapters remain transitional Wenu owners with the accepted SDK and
 kernel geometry dependencies; K5.02 reviews final facade/packaging placement.
 No reverse dependency into Wenu is introduced in the standalone kernel.
+
+## Application sky assembly
+
+`sky/assembly.py::SkyAssembly` owns the existing concrete layer construction and
+source-free reconstruction bodies. `CelestialSphere` owns ordered `SkyLayer`
+registration and chart orchestration; its `add_*` methods are compatibility
+delegates. `maximal_sphere.py` keeps the immutable load profile and public factory
+entry points, delegating builds to application assembly. `NativeSkySnapshot`
+keeps verified data/codec admission and delegates facade reconstruction.
+
+The ordinary factory, native factory and snapshot reconstruction accept a local
+`assembly=` override. The default is stateless and selected lazily. Existing
+atlas worker initialization already calls `snapshot.make_sky()`, so cold, saved
+and spawned construction reach the same owner without passing live sky objects
+between processes. No executable factory or assembly object is stored in v6.
+Layer order, compatibility attributes and existing observer ownership remain.
+
+This is application composition, not a new kernel service or independently
+installed module. The broad Wenu package facade still exports concrete families;
+package isolation/extraction and remaining chart/private-helper work retain
+their later roadmap milestones. No numerical or rendering algorithm moves here.

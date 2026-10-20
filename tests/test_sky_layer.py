@@ -77,3 +77,41 @@ def test_clear_removes_all_layers():
     sphere.clear()
 
     assert sphere.layers == ()
+
+
+@pytest.mark.parametrize('operation,arguments', [
+    ('add_stars', ()), ('add_venus', ()), ('add_moon', ()),
+    ('add_solar_system_body', (object(),)), ('add_nonstellar', ()),
+    ('add_galaxies', ()), ('add_open_clusters', ()),
+    ('add_globular_clusters', ()), ('add_supernova_remnants', ()),
+    ('add_planetary_nebulae', ()), ('add_milky_way_isophotes', ()),
+    ('add_magellanic_cloud_isophotes', ('lmc',)), ('add_points', ()),
+    ('add_constellations', ()), ('add_constellation_boundaries', ()),
+    ('add_equatorial_grid', ()), ('add_altaz_grid', ()),
+    ('add_horizon_reference', ()), ('add_ecliptic_grid', ()),
+    ('add_galactic_grid', ()),
+])
+def test_convenience_methods_consume_supplied_assembly_without_fallback(operation, arguments):
+    """Protect against silently constructing a concrete default in the core."""
+    calls = []
+    expected = ExampleLayer()
+    class Assembly:
+        def __getattr__(self, name):
+            assert name == operation
+            def construct(sky, *args, **kwargs):
+                calls.append((sky, args, kwargs))
+                return sky.add(expected)
+            return construct
+    sky = CelestialSphere(None, assembly=Assembly())
+    assert getattr(sky, operation)(*arguments) is expected
+    assert sky.layers == (expected,)
+    assert calls[0][0] is sky and calls[0][1][:len(arguments)] == arguments
+    class Refusing:
+        def __getattr__(self, name):
+            def refuse(*args, **kwargs):
+                raise RuntimeError('assembly refused')
+            return refuse
+    sky = CelestialSphere(None, assembly=Refusing())
+    with pytest.raises(RuntimeError, match='assembly refused'):
+        getattr(sky, operation)(*arguments)
+    assert sky.layers == ()

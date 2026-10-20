@@ -976,8 +976,8 @@ modify scientific sources or compensate in Matplotlib/chart appearance policy.
 
 | Finding | Actual owner / disposition |
 |---|---|
-| G06.U1: observer resource/cache identity | K3.18 now adds active EOP/leap/backend content and live SPK descriptor admission before shared cache lookup; focused Mac acceptance pending. M10 model/source qualification remains K3.25. Earlier receipts retain their original limits. |
-| G06.U2: assembly and atlas private helpers | `sky/native_snapshot.py` reconstructs concrete families; `charts/request_generation.py::_render_atlas_sheet_request` imports private atlas helpers. K3.19/K3.21 stay partial; K3.03 lifetime/dispatch receipt never closed them |
+| G06.U1: observer resource/cache identity | K3.18 now adds active EOP/leap/backend content and live SPK descriptor admission before shared cache lookup, accepted PR #291 after 402 focused Mac cases. M10 model/source qualification remains K3.25. Earlier receipts retain their original limits. |
+| G06.U2: assembly and atlas private helpers | K3.19 now delegates concrete reconstruction to application assembly (Mac verification pending); `charts/request_generation.py::_render_atlas_sheet_request` still imports private atlas helpers under K3.21. K3.03 lifetime/dispatch receipt did not close these boundaries |
 | G06.U3: generic realization placement | The object-independent core/time/observer adapters remain transitional Wenu owners consuming the SDK; no kernel reverse import was found. Concrete ERFA/Astropy realization stays outside the stdlib core. Complete service/facade placement review remains K3.18/K5.02; no new module/protocol is selected |
 | G06.U4: source qualification and remaining geometry | Nonstellar physical gaps and constructed/unitless compatibility are disclosed, not qualified by passing lookup. Diffuse metadata/transport is K3.16; constructed references K3.17; product closure K3.20–K3.24/K3.39–K3.40. KG services do not close those pending consumers |
 
@@ -1123,3 +1123,30 @@ algorithm, observation model or snapshot schema is introduced. Final facade/
 packaging review remains K5.02, M10 model qualification remains K3.25, and K3.19
 assembly stays pending. The coordinate guide remains current: coordinate meaning,
 mathematics, correction ownership and source provenance are unchanged.
+
+## K3.19 application construction assessment
+
+Base: accepted PR #291/main `37bcb851`; selected by Fernando’s 2026-10-20
+“Proceed” after the concrete application-assembly explanation and clean receipt.
+
+| Existing coupling | Refactoring |
+|---|---|
+| `CelestialSphere.add_*` directly imports/constructs astronomical classes | Move all 20 existing bodies to application `SkyAssembly`; retain explicit convenience delegates and generic ordered layer registry/chart pipeline. |
+| `maximal_sphere.py` mixes profile/public entry points with concrete build sequences | Keep profiles/admission/facades; move the two existing ordinary/native sequences to the same application owner. |
+| `NativeSkySnapshot.make_sky`, frozen facade classes and `_restore_fixed` reconstruct concrete families | Move construction/frozen facades to assembly; keep data encoding, validation, mapped records and v1-v6 semantics in the snapshot owner. |
+| Atlas worker initialization calls `snapshot.make_sky()` | Retain this common route; verify supplied restore/refusal and real spawned output rather than add another worker factory. |
+
+All 20 moved constructor bodies and both complete factory executable bodies
+match the baseline AST after receiver/assembly-argument normalization. Their
+mathematics, ordering and source policies are retained. The new module is an
+enduring application composition boundary, not a scientific provider or kernel
+leaf. Concrete snapshot metadata validation remains with the existing source
+codec; the broad Wenu facade still imports families. Independent astronomical
+package extraction is not claimed by this change.
+
+Owner tests protect supplied assembly results, refusal/no fallback, defaults and
+layer order. Existing full cold/restored geometry, source-free fresh process,
+legacy/corruption and atlas PNG/PDF/SVG cold/saved/spawned tests remain selected.
+The root wheel/sdist owner verifies the moved module and isolated installed use.
+The coordinate guide remains current: no coordinate meaning, provenance,
+correction ownership or scientific calculation changed.

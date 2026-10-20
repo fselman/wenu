@@ -555,3 +555,36 @@ print('Independent installed defaults, evidence and explicit scientific override
     result = subprocess.run([sys.executable, '-I', '-S', '-c', script, str(editable),
         json.dumps(dependencies), str(project / 'src'), str(sdk_installed)], cwd=tmp_path, capture_output=True, text=True)
     assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_application_assembly_ships_and_runs_without_source_checkout(tmp_path):
+    """Existing root build owner: moved construction must ship in wheel/sdist."""
+    from zipfile import ZipFile
+    import wenu_kernel
+    wheel = _assert_source_products_ship(tmp_path, (), modules=(
+        'wenu/sky/assembly.py', 'wenu/sky/celestial_sphere.py',
+        'wenu/sky/maximal_sphere.py', 'wenu/sky/native_snapshot.py'))
+    installed = tmp_path/'installed'
+    with ZipFile(wheel) as archive:archive.extractall(installed)
+    sdk_root = Path(wenu_kernel.__file__).resolve().parent.parent
+    dependencies = [p for p in sys.path if Path(p).name in ('site-packages', 'dist-packages')]
+    script = r'''
+import sys,json
+from pathlib import Path
+sys.path[:0]=[sys.argv[1],sys.argv[2],*json.loads(sys.argv[3])]
+from wenu.sky import assembly, maximal_sphere, native_snapshot
+from wenu.sky.celestial_sphere import CelestialSphere
+for module in (assembly,maximal_sphere,native_snapshot):
+    assert Path(module.__file__).is_relative_to(Path(sys.argv[1]))
+sky=CelestialSphere(None)
+points=sky.add_points()
+assert sky.layers==(points,) and sky.points is points
+assert points.__class__.__module__=='wenu.sky.points'
+class Supplied:
+    def restore_snapshot(self,snapshot):return snapshot
+snapshot=object.__new__(native_snapshot.NativeSkySnapshot)
+assert snapshot.make_sky(assembly=Supplied()) is snapshot
+'''
+    result = subprocess.run([sys.executable,'-I','-S','-c',script,str(installed),
+        str(sdk_root),json.dumps(dependencies)], cwd=tmp_path, capture_output=True,text=True)
+    assert result.returncode == 0, result.stdout+result.stderr

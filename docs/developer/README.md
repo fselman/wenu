@@ -14,7 +14,10 @@ this task adds closure evidence and preserves production implementations. Focuse
 Mac acceptance is complete through PR #290 (99 focused, 36 documentation and eight tooling cases).
 
 K3.18 now corrects [observer resource checks and shared warm-cache identity](implementation_reference.md#observer-resource-lifetime-and-geometry-cache-identity) in existing owners.
-Focused Mac acceptance remains pending; no new observation mathematics or package extraction is included.
+K3.18 is accepted through PR #291 after 402 focused, 36 documentation and eight tooling Mac cases.
+
+K3.19 moves existing concrete construction into [application assembly](implementation_reference.md#application-sky-assembly),
+leaving central sky/factory/snapshot APIs as delegates. Source-free restoration and worker paths use that owner; focused Mac acceptance is pending.
 
 ## Read for current work
 

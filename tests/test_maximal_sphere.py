@@ -11,7 +11,7 @@ from wenu import (
     build_maximal_sphere,
     generate_celestial_sphere,
 )
-from wenu.sky import maximal_sphere
+from wenu.sky import maximal_sphere, assembly
 
 
 def test_load_profile_is_immutable_comparable_and_normalizes_sources():
@@ -58,7 +58,7 @@ def test_factory_registers_complete_content_without_chart_decisions(
     calls = []
 
     class RecordingSphere:
-        def __init__(self, observer):
+        def __init__(self, observer, *, assembly):
             self.observer = observer
             self.load_profile = None
 
@@ -71,7 +71,7 @@ def test_factory_registers_complete_content_without_chart_decisions(
 
             return record
 
-    monkeypatch.setattr(maximal_sphere, "CelestialSphere", RecordingSphere)
+    monkeypatch.setattr(assembly, "CelestialSphere", RecordingSphere)
     observer = object()
 
     sphere = build_maximal_sphere(observer)
@@ -183,7 +183,51 @@ def test_native_profile_rejects_unadmitted_fields_before_source_loading(changes,
     from dataclasses import replace
     def forbidden(*args, **kwargs):
         raise AssertionError("Invalid native profile must fail before sphere creation")
-    monkeypatch.setattr(maximal_sphere, "CelestialSphere", forbidden)
+    monkeypatch.setattr(assembly, "CelestialSphere", forbidden)
     profile = replace(CANONICAL_MAXIMAL_SPHERE_PROFILE, **changes)
     with pytest.raises(ValueError):
         maximal_sphere.generate_native_icrs_sphere(profile=profile)
+
+
+def test_factory_and_native_entry_points_use_request_local_assembly():
+    from types import SimpleNamespace
+    sentinel = object(); observer = object(); calls = []
+    def build(actual, *, profile):
+        calls.append(('ordinary', actual, profile)); return sentinel
+    def native(*, profile):
+        calls.append(('native', profile)); return sentinel
+    supplied = SimpleNamespace(build_maximal_sphere=build, generate_native_icrs_sphere=native)
+    assert build_maximal_sphere(observer, assembly=supplied) is sentinel
+    assert generate_celestial_sphere(assembly=supplied) is sentinel
+    assert maximal_sphere.generate_native_icrs_sphere(assembly=supplied) is sentinel
+    profile = CANONICAL_MAXIMAL_SPHERE_PROFILE
+    assert calls == [('ordinary', observer, profile), ('ordinary', None, profile), ('native', profile)]
+    def refused(*args, **kwargs):raise RuntimeError('assembly refused')
+    supplied.build_maximal_sphere = supplied.generate_native_icrs_sphere = refused
+    for action in (lambda: build_maximal_sphere(observer, assembly=supplied),
+                   lambda: generate_celestial_sphere(assembly=supplied),
+                   lambda: maximal_sphere.generate_native_icrs_sphere(assembly=supplied)):
+        with pytest.raises(RuntimeError, match='assembly refused'):action()
+
+
+def test_snapshot_and_worker_share_the_application_assembly(monkeypatch):
+    from types import SimpleNamespace
+    from wenu.sky import native_snapshot
+    from wenu.charts import atlas_publication
+    snapshot = object.__new__(native_snapshot.NativeSkySnapshot)
+    expected = object(); calls = []
+    def restore(actual):
+        calls.append(actual); return expected
+    supplied = SimpleNamespace(restore_snapshot=restore)
+    assert snapshot.make_sky(assembly=supplied) is expected
+    monkeypatch.setattr(assembly, 'DEFAULT_SKY_ASSEMBLY', supplied)
+    monkeypatch.setattr(native_snapshot, 'read_native_sky_snapshot', lambda *a, **k: snapshot)
+    monkeypatch.setattr(atlas_publication, '_WORKER_SKY', None)
+    monkeypatch.setattr(atlas_publication, '_WORKER_CHART_COMMAND', None)
+    atlas_publication._initialize_atlas_worker('synthetic directory', 'synthetic digest')
+    assert atlas_publication._WORKER_SKY is expected
+    assert calls == [snapshot, snapshot]
+    def refused(*args, **kwargs):raise RuntimeError('restore assembly refused')
+    supplied.restore_snapshot = refused
+    with pytest.raises(RuntimeError, match='restore assembly refused'):
+        atlas_publication._initialize_atlas_worker('synthetic directory', 'synthetic digest')

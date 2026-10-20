@@ -1252,3 +1252,20 @@ be repeated. The Mac gate includes real Observer open/close cases and the explic
 curated-cluster request case. Local execution cannot substitute synthetic files
 for DE440s or fabricate the missing curated bundle; those cases remain explicit
 Mac acceptance obligations. Full production/SDK/atlas export repeats are excluded.
+
+## Application sky assembly gate
+
+`sky-application-assembly` selects the existing sky-layer/factory/dependency,
+request lifecycle and reusable-sky owners. New tests require every convenience
+entry to consume its supplied assembly and propagate refusal, and require
+ordinary/native factories and snapshot/worker restoration to honor the same
+per-request dependency. The central owners may not construct concrete families.
+Existing test doubles now patch the assembly owner where construction moved.
+
+Retain full cold/restored geometry, all fixed catalogue rows/masks/units, legacy
+v1-v5 coverage and corruption refusal. Execute the real cold/saved/spawned atlas
+PNG/PDF/SVG gate because construction/lifetime paths changed; earlier numerical
+kernel/observer receipts do not replace this composition evidence. An isolated
+root wheel/sdist consumer protects the new assembly module and preserved entry
+points. No unchanged SDK/full production repeat or new source acquisition is
+required. Full Mac documentation integrity remains part of acceptance.

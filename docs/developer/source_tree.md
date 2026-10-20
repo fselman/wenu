@@ -382,6 +382,7 @@ concrete Wenu classes.
 | Module | Present responsibility |
 |---|---|
 | [`sky/__init__.py`](../../src/wenu/sky/__init__.py) | Package exports and initialization. |
+| [`sky/assembly.py`](../../src/wenu/sky/assembly.py) | Application-owned concrete layer construction and source-free restored-sky assembly; existing algorithms retained. |
 | [`sky/celestial_sphere.py`](../../src/wenu/sky/celestial_sphere.py) | Celestial-sphere layer ownership and chart orchestration. |
 | [`sky/ceres.py`](../../src/wenu/sky/ceres.py) | Catalog-owned identity for the first drawable asteroid. |
 | [`sky/constellation_boundaries.py`](../../src/wenu/sky/constellation_boundaries.py) | Official IAU constellation boundaries as spherical domain geometry. |
