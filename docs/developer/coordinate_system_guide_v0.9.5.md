@@ -1428,3 +1428,14 @@ polygon projection where applicable, separately from chart horizon/field-stop
 policy. Holes, winding and sample-aligned metadata retain their existing
 conventions. No source qualification, observer correction, numerical algorithm
 or snapshot meaning changes in this ownership move.
+
+
+## Missing-coordinate point geometry
+
+A missing catalogue coordinate is not a zero direction vector or an admitted
+physical state. Source adapters may retain that row and its identity in spherical
+geometry for downstream finite filtering. KG.07’s shared point-projection adapter
+preserves its slot as NaN x/y while projecting the finite rows. This changes no
+epoch, frame, source membership or astrometric model. Direct numerical projection
+and finite invalid-domain validation remain strict. See the
+[geometry contract](kernel_contract_k1.md#public-geometry-and-coordinate-contract).

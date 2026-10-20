@@ -7,10 +7,13 @@ projection services. KG.03 added the existing geometry records/frame/viewport,
 pure coordinate vocabulary and explicit ring helper; KG.04 dev10 adds projections
 and clipping/domain mathematics. Geometry consumers
 need not issue object-state queries. KG.04 now supplies the existing projected clipping, all three projections and
-spherical domain/latitude/cap topology. Full service integration remains KG.05.
+spherical domain/latitude/cap topology. KG.05 composition evidence is accepted with its disclosed missing-point finding.
+Kernel dev11 implements the bounded KG.07 correction: shared point-batch projection
+retains missing-row slots and metadata, calls numerics only for finite rows and
+preserves direct numerical/domain refusal. Complete KG.07 Mac acceptance is pending.
 It is not the K5 frozen SDK. Existing Wenu continues to use its current code;
 the accepted native stellar adapter uses its existing source-epoch subset.
-The SDK extension itself adds no numerical backend. Wenu now supplies a
+The state-provider component adds no astronomical backend. Wenu now supplies a
 source-bound static galaxy direction consumer outside this package.
 Accepted dev8 added catalogue lookup for incomplete source epochs; Wenu now
 pins the geometry-enabled dev10 SDK and supplies an open-cluster consumer outside this package.

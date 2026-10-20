@@ -10492,7 +10492,7 @@
       "id": "G05-1",
       "symptom": "Equidistant full-catalogue polar composition rejects non-finite native stellar longitudes before latitude filtering, both poles",
       "regression": "two strict expected-failure cases in test_kernel_geometry_polar_cold_saved_outputs",
-      "disposition": "KG.06 boundary audit and KG.07 demonstrated correction; no algorithm or source filtering changed here"
+      "disposition": "KG.07 implements G06.C1; current real polar test requires four passing specimens without xfail; complete Mac correction acceptance pending"
     },
     "remaining": "KG.06/KG.07 before K3.16; no K3/K5 closure",
     "local_evidence": {
@@ -10518,7 +10518,7 @@
   },
   "completed_k_service_audit": {
     "id": "KG.06",
-    "status": "audit delivered for acceptance; no runtime correction implemented",
+    "status": "accepted through PR #287, main 9e71ab49; correction implemented separately in KG.07",
     "base_commit": "52c8315cd3bd58386c105f3edf05ee2354292796",
     "method": "Read actual definitions/callers/tests; all 291 local production/SDK Python blobs matched complete GitHub base; AST scan of all 22 kernel modules found no non-stdlib imports outside optional NumPy geometry/projections. Accepted tests remain bounded evidence, not newly rerun numerical claims.",
     "deliverables": [
@@ -11539,6 +11539,60 @@
       "owner_evidence_paths_checked": 91,
       "archive_git_blobs_checked": 73,
       "archive_mismatches": 0
+    },
+    "mac_receipt": {
+      "tested_commit": "ef7783d6f894a5e1f12bde51dac543e09b4b2b07",
+      "merged_commit": "9e71ab49ce7cc51410428ca79a5c43bd5d293f2f",
+      "documentation_passed": 36
+    }
+  },
+  "geometry_point_correction": {
+    "id": "KG.07",
+    "finding": "G06.C1 / G05-1",
+    "status": "implemented for acceptance; complete Mac gate pending",
+    "base_commit": "9e71ab49ce7cc51410428ca79a5c43bd5d293f2f",
+    "kernel_version": "0.0.0.dev11",
+    "kernel_commit": "f0a2e247d9ed0061d256891fcf4962d1c41fd4f9",
+    "owner": "packages/wenu_kernel/src/wenu_kernel/projections/stereographic.py::StereographicProjection.project_points",
+    "semantics": "Project finite point rows; preserve missing-row NaN x/y slots and all entity metadata. Entirely finite calls/formulas and direct numerical/domain refusal unchanged. No source filtering or missing state publication.",
+    "source_resources_changed": false,
+    "snapshot_schema_changed": false,
+    "gate": "kernel-point-projection",
+    "fault_proof": {
+      "before_failed": 10,
+      "before_passed": 4,
+      "owner": "tests/test_projected_geometry_projection.py"
+    },
+    "new_output_requirement": "All four cold/restored real polar specimens must pass with both xfail markers removed.",
+    "retained_evidence": "Unaffected state/time/provider science and KG.05 full atlas serial/spawn/book receipts; affected isolated kernel/root installs explicitly repeated.",
+    "remaining": "Complete Mac acceptance, then explicit selection of K3.16; G06.U1\u2013U4 retain assigned K3 scope.",
+    "local_verification": {
+      "selected_cases": 103,
+      "passed_unique_cases": 102,
+      "blocked_cases": 1,
+      "blocked_test": "tests/test_projection_and_clipping_contracts.py::test_circumpolar_lmc_boundary_crosses_projected_lmc",
+      "blocked_reason": "Missing local de440s.bsp; normal JPL download fails TLS certificate validation. Retain the unchanged test for complete Mac gate.",
+      "execution": "Component executions cover all selected nodes; not a repeated full gate.",
+      "unit_passed": 78,
+      "compatibility_passed": 18,
+      "installed_kernel_passed": 1,
+      "root_install_passed": 1,
+      "real_polar_passed": 4,
+      "real_polar_seconds": 452.72,
+      "real_polar_expected_failures": 0,
+      "stereographic_legacy_finite_comparison_passed": 6,
+      "sdk_passed": 205,
+      "sdk_seconds": 1.471,
+      "tooling_passed": 8,
+      "documentation_passed": 33,
+      "documentation_cache_omissions": 3,
+      "changed_projection_methods": [
+        "project_points"
+      ],
+      "mac_acceptance": "pending",
+      "installed_base_collected": 205,
+      "installed_base_passed": 204,
+      "installed_base_optional_skip": 1
     }
   }
 }

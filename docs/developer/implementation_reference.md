@@ -14,7 +14,16 @@ require importing the Wenu application.
 
 ## Shared kernel geometry records
 
-Kernel dev10 exposes CoordinateSpec, PositionStatus and GENERIC_SPHERICAL_SPEC
+`StereographicProjection.project_points` (also used by the equidistant subclass)
+preserves the collection length and IDs/names/labels/metadata. It projects finite
+coordinate rows; missing input rows produce NaN x/y slots. Entirely finite input
+uses the unchanged numerical call, and empty collections retain their existing
+behavior. Direct `project_spherical` validation is unchanged; missing rows cannot
+hide a finite invalid latitude or opposite-pole coordinate elsewhere in a batch.
+Source tables and missing-state admission are unaffected by this geometry repair.
+
+
+Kernel dev11 exposes CoordinateSpec, PositionStatus and GENERIC_SPHERICAL_SPEC
 from `wenu_kernel.coordinates` without NumPy or Wenu. Explicit
 `wenu_kernel.geometry` imports provide SphericalPoints/Curves/Polygons/Grid,
 ProjectedPoint(s)/Curve(s)/Polygon(s)/Grid, SphericalFrame,

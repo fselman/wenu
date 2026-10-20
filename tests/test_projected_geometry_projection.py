@@ -164,3 +164,71 @@ def test_project_polygon_requires_three_vertices(
         )
 
 
+
+
+@pytest.mark.parametrize('kind', ('stereographic', 'north', 'south'))
+@pytest.mark.parametrize('flip', (False, True))
+def test_point_batches_preserve_missing_rows_identity_and_source(kind, flip):
+    from wenu_kernel.coordinates import GENERIC_SPHERICAL_SPEC
+    from wenu_kernel.geometry import SphericalPoints, SphericalFrame
+    from wenu_kernel.projections import PolarAzimuthalEquidistantProjection
+    if kind == 'stereographic':
+        projection = StereographicProjection(frame=SphericalFrame(13., 42., 17.), flip_ew=flip)
+    else:
+        projection = PolarAzimuthalEquidistantProjection(pole=kind, position_angle_deg=17., flip_ew=flip)
+    lon = np.array([20., np.nan, 60., np.inf, 110.])
+    lat = np.array([45., 30., -10., 20., np.nan])
+    before = (lon.copy(), lat.copy())
+    lon.setflags(write=False); lat.setflags(write=False)
+    values = np.array([3., 2., 1., 0., -1.]); values.setflags(write=False)
+    points = SphericalPoints(lon, lat, coordinate_spec=GENERIC_SPHERICAL_SPEC,
+        ids=['a', 'missing-a', 'a', 'missing-b', 'missing-c'],
+        names=['A', 'B', 'C', 'D', 'E'], labels=['one', '', 'three', '', ''],
+        metadata={'weight': values, 'catalogue_note': 'synthetic missing positions'})
+    result = projection.project_geometry(points)
+    valid = np.array([True, False, True, False, False])
+    expected = projection.project_spherical(lon[valid], lat[valid])
+    np.testing.assert_array_equal(result.x[valid], expected[0])
+    np.testing.assert_array_equal(result.y[valid], expected[1])
+    if kind == 'stereographic':
+        # The old stereographic batch sent missing rows through the numeric
+        # operation. Its surviving finite coordinates must stay identical.
+        with np.errstate(invalid='ignore'):
+            legacy_x, legacy_y = projection.project_spherical(lon, lat)
+        np.testing.assert_array_equal(result.x[valid], legacy_x[valid])
+        np.testing.assert_array_equal(result.y[valid], legacy_y[valid])
+    assert np.all(np.isnan(result.x[~valid])) and np.all(np.isnan(result.y[~valid]))
+    np.testing.assert_array_equal(result.finite, valid)
+    for name in ('ids', 'labels', 'names'):
+        np.testing.assert_array_equal(getattr(result, name), getattr(points, name))
+    assert result.metadata['catalogue_note'] == points.metadata['catalogue_note']
+    np.testing.assert_array_equal(result.metadata['weight'], values)
+    np.testing.assert_array_equal(lon, before[0]); np.testing.assert_array_equal(lat, before[1])
+    assert not lon.flags.writeable and not lat.flags.writeable and not values.flags.writeable
+
+
+@pytest.mark.parametrize('pole', ('south', 'north'))
+@pytest.mark.parametrize('longitude,latitude', (([], []), ([np.nan, np.inf], [0., np.nan])))
+def test_equidistant_empty_and_missing_point_batches(pole, longitude, latitude):
+    from wenu_kernel.coordinates import GENERIC_SPHERICAL_SPEC
+    from wenu_kernel.geometry import SphericalPoints
+    from wenu_kernel.projections import PolarAzimuthalEquidistantProjection
+    points = SphericalPoints(longitude, latitude, coordinate_spec=GENERIC_SPHERICAL_SPEC,
+        ids=[f'row-{i}' for i in range(len(longitude))], metadata={'source': 'synthetic'})
+    result = PolarAzimuthalEquidistantProjection(pole=pole).project_geometry(points)
+    assert len(result) == len(points)
+    assert np.all(np.isnan(result.x)) and np.all(np.isnan(result.y))
+    np.testing.assert_array_equal(result.ids, points.ids)
+    assert result.metadata == points.metadata
+
+
+@pytest.mark.parametrize('pole', ('south', 'north'))
+@pytest.mark.parametrize('invalid', ('latitude', 'opposite-pole'))
+def test_missing_point_row_does_not_hide_invalid_finite_domain(pole, invalid):
+    from wenu_kernel.coordinates import GENERIC_SPHERICAL_SPEC
+    from wenu_kernel.geometry import SphericalPoints
+    from wenu_kernel.projections import PolarAzimuthalEquidistantProjection
+    latitude = 91. if invalid == 'latitude' else (-90. if pole == 'north' else 90.)
+    points = SphericalPoints([np.nan, 20.], [0., latitude], coordinate_spec=GENERIC_SPHERICAL_SPEC)
+    with pytest.raises(ValueError, match='latitude must|opposite pole'):
+        PolarAzimuthalEquidistantProjection(pole=pole).project_geometry(points)

@@ -183,10 +183,19 @@ class StereographicProjection:
         self,
         points: SphericalPoints,
     ) -> ProjectedPoints:
-        x, y = self.project_spherical(
-            points.lon_deg,
-            points.lat_deg,
-        )
+        # Missing geometry rows retain their entity slots, but must not enter
+        # strict numerical projection operations. Finite invalid-domain inputs
+        # still reach those operations and retain their normal refusal.
+        finite = points.finite
+        if np.all(finite):
+            x, y = self.project_spherical(points.lon_deg, points.lat_deg)
+        else:
+            x = np.full(points.lon_deg.shape, np.nan)
+            y = np.full(points.lat_deg.shape, np.nan)
+            if np.any(finite):
+                x[finite], y[finite] = self.project_spherical(
+                    points.lon_deg[finite], points.lat_deg[finite],
+                )
         return ProjectedPoints(
             x=x,
             y=y,

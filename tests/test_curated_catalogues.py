@@ -33,7 +33,7 @@ def test_geometry_kernel_wheel_isolated_imports_metadata_and_numeric_consumer(tm
     with ZipFile(wheel) as archive:
         metadata_file = next(p for p in archive.namelist() if p.endswith('.dist-info/METADATA'))
         metadata = Parser().parsestr(archive.read(metadata_file).decode())
-        assert metadata['Version'] == '0.0.0.dev10'
+        assert metadata['Version'] == '0.0.0.dev11'
         requirements = [Requirement(r) for r in metadata.get_all('Requires-Dist',[])]
         assert requirements and all(r.marker is not None for r in requirements)
         assert all(not r.marker.evaluate({'extra':''}) for r in requirements)
@@ -99,6 +99,23 @@ assert len(safe)==1 and safe.metadata['ids'].tolist()==['ring']
 assert safe.metadata['projection_domain_clipped']
 assert domain.projection_cap_for_viewport(MollweideProjection(),Viewport(-1.,1.,-1.,1.)) is None
 assert not hasattr(domain,'magnitude_sizes')
+# Actual corrected mixed point batch from the isolated installed wheel.
+from wenu_kernel.geometry import SphericalPoints
+points=SphericalPoints([20.,np.nan,60.],[45.,0.,-10.],
+    coordinate_spec=GENERIC_SPHERICAL_SPEC,ids=['a','missing','b'])
+for pole in ('south','north'):
+    projection=PolarAzimuthalEquidistantProjection(pole=pole)
+    projected=projection.project_geometry(points)
+    assert projected.ids.tolist()==['a','missing','b']
+    assert projected.finite.tolist()==[True,False,True]
+    x,y=projection.project_spherical([20.,60.],[45.,-10.])
+    assert np.array_equal(projected.x[[0,2]],x) and np.array_equal(projected.y[[0,2]],y)
+    try:
+        projection.project_spherical(np.nan,0.)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError('strict numerical validation must remain')
 '''
     checked = subprocess.run([sys.executable,'-I','-S','-c',numeric,
         str(installed),str(numpy_root)],cwd=tmp_path,capture_output=True,text=True)
@@ -423,7 +440,7 @@ def test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_over
             assert len(sdk) == 1
             assert sdk[0].extras == {"geometry"}
             assert sdk[0].url == ('git+https://github.com/fselman/wenu.git@'
-                'ba591f156573324c3e08f9fb4d7bf626e2197f9c#subdirectory=packages/wenu_kernel')
+                'f0a2e247d9ed0061d256891fcf4962d1c41fd4f9#subdirectory=packages/wenu_kernel')
         installed = tmp_path / f'installed_{i}'
         result = subprocess.run([sys.executable, '-m', 'pip', 'install', '--no-deps',
             '--target', str(installed), str(wheel)], cwd=tmp_path, capture_output=True, text=True)

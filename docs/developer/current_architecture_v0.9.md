@@ -24,7 +24,7 @@ spherical/projected records, SphericalFrame/Viewport and the existing numerical
 ring helper in kernel dev9. Legacy Wenu imports alias the same classes; the
 Milky Way layer retains source policy and delegates the unchanged ring math.
 KG.04 now places the three projection implementations, projected clipping and
-spherical domain/latitude/cap topology in kernel dev10. Wenu projection/clipping
+spherical domain/latitude/cap topology in kernel dev11. Wenu projection/clipping
 modules and mathematical preparation names delegate to those same services.
 Magnitude/diameter sizing, marker-margin culling, label offsets and chart/render
 policy remain at Wenu owners. Base kernel imports remain stdlib-only; explicit
@@ -73,9 +73,13 @@ At main 52c8315c, [KG.06](kernel_migration_audit_v1.md#kg06-completed-k-service-
 finds no need to redo accepted state/catalogue routing. Source adapters call the
 state SDK; geometry consumers use canonical mathematical services through public
 compatibility aliases. Kernel imports no application/catalogue/backend/renderer.
-One composition defect remains: missing-coordinate point geometry reaches the
-strict equidistant numerical operation before filtering. G06.C1 specifies its
-shared projection-adapter correction for KG.07; it is not implemented here.
+KG.07 implements G06.C1 in the shared point-projection adapter: missing-coordinate
+rows retain NaN projected slots and entity metadata; only finite coordinate rows
+enter strict numerical operations. Direct invalid numerical inputs, finite
+invalid latitudes and the opposite-pole domain still refuse. No catalogue rows
+are dropped and no missing direction is published as a state. The real equidistant
+polar specimens now require success without expected-failure markers. Complete
+Mac acceptance of this correction is pending.
 Observer/cache identity, concrete assembly and private atlas helpers retain their
 existing partial K3.18/K3.19/K3.21 obligations. No K3/K5 freeze is claimed.
 
