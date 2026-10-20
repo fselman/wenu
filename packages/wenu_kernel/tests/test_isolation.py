@@ -5,6 +5,7 @@ from pathlib import Path
 import subprocess
 import sys
 import unittest
+import importlib.util
 
 import wenu_kernel
 
@@ -17,6 +18,9 @@ import json, sys
 sys.path.insert(0, ROOT)
 import wenu_kernel
 from wenu_kernel import records, errors, time, time_adapters, conformance
+from wenu_kernel.coordinates import CoordinateSpec, PositionStatus, GENERIC_SPHERICAL_SPEC
+assert CoordinateSpec('icrs', 'ssb').epoch is None
+assert GENERIC_SPHERICAL_SPEC.position_status is PositionStatus.GEOMETRIC
 for forbidden in ('wenu', 'numpy', 'astropy', 'matplotlib', 'skyfield', 'sgp4', 'pandas', 'spiceypy'):
     assert not any(name == forbidden or name.startswith(forbidden + '.') for name in sys.modules), forbidden
 print(json.dumps(wenu_kernel.__all__))
@@ -24,6 +28,49 @@ print(json.dumps(wenu_kernel.__all__))
         result = subprocess.run([sys.executable, "-I", "-S", "-c", code],
                                 capture_output=True, text=True, check=True)
         self.assertIn("Kernel", json.loads(result.stdout))
+
+    def test_geometry_explicit_import_without_wenu_or_backends(self):
+        # Optional numerical service: collection and base-state execution must
+        # remain stdlib-only. NumPy is loaded only in this external consumer.
+        numpy_spec = importlib.util.find_spec('numpy')
+        if numpy_spec is None:
+            self.skipTest('optional geometry extra not installed')
+        sdk_root = str(Path(wenu_kernel.__file__).resolve().parent.parent)
+        numpy_root = str(Path(numpy_spec.origin).resolve().parent.parent)
+        script = r'''
+import importlib.abc, sys
+sys.path[:0] = [SDK_ROOT, NUMPY_ROOT]
+class Block(importlib.abc.MetaPathFinder):
+    def find_spec(self, fullname, path=None, target=None):
+        if fullname.split('.')[0] in ('wenu','astropy','skyfield','matplotlib','pandas','sgp4','spiceypy'):
+            raise AssertionError('Forbidden service dependency: ' + fullname)
+sys.meta_path.insert(0, Block())
+import numpy as np
+from wenu_kernel.coordinates import GENERIC_SPHERICAL_SPEC
+from wenu_kernel.geometry import SphericalPoints, SphericalPolygons, SphericalFrame, ProjectedPoints, Viewport
+from wenu_kernel.geometry.topology import ring_interior
+points = SphericalPoints(np.array([0.,90.,180.]), np.array([0.,20.,-30.]),
+    coordinate_spec=GENERIC_SPHERICAL_SPEC, ids=['star','PN','SNR'])
+frame = SphericalFrame(35., 50., 17.)
+rotated = frame.transform(points.lon_deg, points.lat_deg)
+restored = frame.inverse_transform(rotated.lon_deg, rotated.lat_deg)
+assert np.allclose((restored.lon_deg-points.lon_deg+180)%360-180, 0, atol=1e-12)
+assert np.allclose(restored.lat_deg, points.lat_deg, atol=1e-12)
+ring = np.array([[0.,0.],[90.,0.],[0.,90.]])
+left, area = ring_interior(ring, False)
+assert isinstance(left, bool) and np.isclose(area, np.pi/2, atol=1e-14)
+polygons = SphericalPolygons((ring[:,0], ring[::-1,0]), (ring[:,1], ring[::-1,1]),
+    coordinate_spec=GENERIC_SPHERICAL_SPEC, metadata={'is_hole':np.array([False,True])})
+assert polygons.metadata['is_hole'].tolist() == [False,True]
+assert Viewport.centered(width=2.,height=2.).contains(0.,0.)
+assert ProjectedPoints([0.,np.nan],[0.,1.]).finite.tolist() == [True,False]
+assert 'wenu' not in sys.modules and 'matplotlib' not in sys.modules
+print('Independent numerical geometry consumer passed')
+'''.replace('SDK_ROOT', repr(sdk_root)).replace('NUMPY_ROOT', repr(numpy_root))
+        result = subprocess.run([sys.executable, '-I', '-S', '-c', script],
+            cwd='/tmp', capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('Independent numerical geometry consumer passed', result.stdout)
 
     def test_external_consumer_uses_shipped_kit_without_repository_fixtures(self):
         root = str(Path(wenu_kernel.__file__).resolve().parent.parent)

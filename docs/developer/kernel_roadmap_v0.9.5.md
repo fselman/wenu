@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 34, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 35, 2026-10-19. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -44,8 +44,8 @@ that every existing function has migrated or that a new full-suite run occurred.
 | Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
 | Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
 | Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
-| Current authorized task | KG.02 public geometry contracts and incremental placement plan delivered for review; documentation only, runtime unchanged |
-| Next bounded submilestone | **KG.03**, only after KG.02 acceptance, explicit placement/optional-NumPy-extra agreement and bounded implementation selection. KG.03–KG.07 still precede K3.16; no implementation or packaging change is activated by this design |
+| Current authorized task | KG.03 geometry records/vocabulary/ring helper and optional geometry extra implemented for acceptance; projections/domain clipping remain KG.04 |
+| Next bounded submilestone | **KG.04**, only after KG.03 acceptance and explicit task selection: migrate clipping, projections and projection-specific topology. KG.04–KG.07 still precede K3.16 |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -76,6 +76,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 35: select KG.03 implementation and KG.02 placement | Fernando’s 2026-10-19 “proceed” after merging/reviewing PR #283 and clean main e0d56204, following the explicit KG.03 proposal to use the documented contracts and placement | Implement pure coordinate vocabulary, spherical/projected/frame/viewport records and current ring helper in existing wenu-kernel numerical leaves; optional geometry NumPy extra and immutable root pin follow the published KG.02 plan. Preserve stdlib base imports and same-object legacy aliases. Projections/clipping remain KG.04; no new scientific algorithm, source bytes or snapshot schema |
 | Revision 34: select KG.02 design | Fernando’s 2026-10-19 “proceed” after accepting KG.01 and clean main at PR #282 | Define public geometry semantics, compatibility/dependency rules and concrete placement proposal. Extend existing kernel distribution with explicit numerical leaves and optional NumPy geometry extra as a proposal requiring explicit agreement before packaging edits. No implementation, dependency pin or new distribution is authorized by the design publication |
 | Revision 33: select KG.01 assessment | Fernando’s 2026-10-19 “proceed” after clean main/cleanup receipt at PR #281 and the explicit KG.01 inventory proposal | Document existing services, source-verified dependencies/callers, import coupling, mutation semantics and located test oracles. Assessment only; KG.02 contracts/placement and KG.06 completed-K audit remain separate later work |
 | Revision 32: geometry services before diffuse migration, followed by completed-K audit | Fernando’s 2026-10-19 agreement: “Indeed, and then audit what has already been migrated to the kernel to see whether it will need modification”, followed by “Proceed” to documenting the sequence | Insert KG.01–KG.07 before K3.16: assess services, establish interfaces, migrate spherical/topology and projection/domain services, audit completed K work, then apply and verify demonstrated corrections. Retain valid prior evidence without assuming every implementation is compliant. This task documents the sequence only; no new science, automatic package extraction or runtime backlog activation |
@@ -719,14 +720,15 @@ This agreed prerequisite sequence refines existing K1/K3/K5 responsibilities;
 it does not replace their IDs or mark their parent milestones complete.
 Execute KG.01 → KG.02 → KG.03 → KG.04 → KG.05 → KG.06 → KG.07,
 then resume K3.16. KG.01 is accepted through PR #282, main 887408ae; 36 Mac documentation tests
-passed at 20de328c. KG.02 design is selected and delivered for review; KG.03–KG.07
-remain pending. Select and accept one bounded task at a time.
+passed at 20de328c. KG.02 is accepted through PR #283, main e0d56204, with 36 Mac documentation
+tests. Fernando selected KG.03 and its published placement/optional-extra plan.
+KG.03 implementation is delivered for acceptance; KG.04–KG.07 remain pending. Select and accept one bounded task at a time.
 
 | ID | Intermediate deliverable | Acceptance and dependency |
 |---|---|---|
 | KG.01 | Inventory existing spherical/projected geometry, topology, clipping/domain guards and projection implementations; map public imports, dependencies, callers, mutable state and tests | [Assessment delivered](kernel_migration_audit_v1.md#kg01-shared-geometry-service-inventory) against main cb40ede9; accepted through PR #282, main 887408ae, with 36 Mac documentation tests. Source-verified owners, 66 direct absolute-import consumer modules and five boundary findings recorded. No runtime migration or numerical acceptance claimed |
-| KG.02 | Establish public kernel geometry contracts and a concrete incremental placement/dependency plan | [Design delivered](kernel_contract_k1.md#14-kg02-geometry-service-contracts-and-placement-plan), pending acceptance and explicit placement/optional-extra decision. Specifies existing units/rings/metadata/aliasing, projection capabilities/failures and canonical/legacy identity. KG.03 implementation remains separate; no numerical or packaging change made |
-| KG.03 | Migrate existing spherical geometry and topology behind the agreed public kernel interfaces | KG.02 accepted. Preserve points/curves/polygons, ring closure/interiors/holes, longitude wrapping and pole behavior as supported by the actual implementation. Use existing owner tests plus focused public-interface/dependency checks. Preserve legacy facades; no new geometry algorithm or astronomical model |
+| KG.02 | Establish public kernel geometry contracts and a concrete incremental placement/dependency plan | [Design delivered](kernel_contract_k1.md#14-kg02-geometry-service-contracts-and-placement-plan), accepted through PR #283; placement/optional-extra implementation selected by Fernando’s subsequent KG.03 proceed. Specifies existing units/rings/metadata/aliasing, projection capabilities/failures and canonical/legacy identity. KG.03 implementation remains separate; no numerical or packaging change made |
+| KG.03 | Migrate existing spherical geometry and topology behind the agreed public kernel interfaces | Implemented for acceptance: kernel dev9 pure vocabulary, records/frame/viewport, explicit ring helper, optional geometry NumPy extra and same-class legacy facades; root pins kernel 6d630885. Geometry/isolated installation/state-SDK checks recorded in testing policy; complete Mac acceptance pending. Projection-specific topology/clipping stays KG.04 |
 | KG.04 | Migrate mathematical domain guards, clipping, projections and projected geometry behind the agreed services | KG.03 accepted. Separate mathematical projection-domain rules from chart framing/publication policy. Preserve all three existing projections, singularity handling, orientation and numerical results with existing owner oracles and affected seams |
 | KG.05 | Accept the composed geometry-service boundary and representative application integration | KG.04 accepted. Demonstrate permitted imports and independent service testing without concrete catalogues/products/renderers; test installed service access where packaging changes. Verify representative cold/restored atlas and planisphere geometry and actual PNG/PDF/SVG outputs using closest existing owners. No graphics rewrite or full-suite repeat by default |
 | KG.06 | Audit all completed K deliveries against the established service boundary | KG.05 accepted. Record each completed K ID/PR, actual implementation/callers, dependency direction, appropriate state/geometry service use, and disposition: no change, concrete correction, or unresolved proposal. Cover accepted state/time/resource foundations, source/provider admission, migrated stellar/figure/label and deep-sky consumers, request/cache/restored paths. Review AX composition only where it affects those K seams; do not activate new AX science. Retain evidence only for claims it still supports |

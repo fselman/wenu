@@ -1,8 +1,8 @@
 {
   "schema": "wenu-test-selection/1",
   "owner": "wenu_kernel",
-  "slice": "Additive catalogue_lookup without physical epoch-model accuracy; mixed/unknown source epochs; native/epoch/static admission unchanged",
-  "accepted_base": "5f8fca4c4a391ea54aba05401163bb1c245ce7ff",
+  "slice": "KG.03 optional numerical geometry records/frame/viewport/ring helper and pure coordinate vocabulary; same-object Wenu aliases; no projection/domain algorithm change",
+  "accepted_base": "e0d5620404d1b49d32158f617226667b080729f6",
   "runtime_dependencies": [],
   "required": [
     "python -m unittest discover -s packages/wenu_kernel/tests -v",
@@ -50,46 +50,49 @@
     "Lookup admission mixed with propagation, static model or temporal reuse",
     "Lookup accuracy/velocity/interval request reaches backend",
     "Lookup state hides declared epoch or claims physical epoch-model accuracy",
-    "Lookup vectors vary with request time while shipped kit accepts them"
+    "Lookup vectors vary with request time while shipped kit accepts them",
+    "canonical geometry imports require Wenu, an astronomy backend or Matplotlib",
+    "base state/coordinate import eagerly requires optional NumPy",
+    "legacy class/enum aliases fail isinstance or old pickle GLOBAL lookup",
+    "ring helper changes independent octant area or winding complement",
+    "numerical record relocation changes writable-array or shallow-metadata semantics"
   ],
   "legacy_tests_moved_or_removed": [],
   "affected_consumers": [
-    "SDK registration/session, records, portable conformance and synthetic/external consumer cases",
-    "Existing Wenu shared catalogue provider via stellar and static galaxy consumers; production SDK pin unchanged"
+    "Existing state/time/conformance suite unchanged; optional numerical service tested in isolated subprocess",
+    "Wenu coordinate/geometry legacy facades, Milky Way numerical helper, all-three projection dispatch, root installed wheel/sdist/editable and source-free snapshot consumers"
   ],
   "excluded": {
-    "other production consumers": "No production routing, resources, snapshot schema, observation/numerical model, projection/render or atlas changes. Existing native stellar consumers use unchanged required fields and retain their epochs.",
-    "release integration": "No installed production dependency pin change. Isolated SDK wheel gate and focused existing native consumer compatibility required."
+    "later geometry services": "Projection/clipping/domain implementations remain at Wenu owners for KG.04; no new algorithm, source bytes, observer science or snapshot schema.",
+    "release integration": "KG.05 complete service integration and KG.06/KG.07 completed-K audit remain pending; no full production run."
   },
   "collection_change": "none; root pytest remains scoped to tests and the kernel retains its explicit independent gate",
   "verification": {
     "source_digest_algorithm": "SHA-256 over sorted repository path + NUL + exact file bytes + NUL for every Python file in the named directory",
-    "source_sha256": "6c152ea2b206f8d96153c4de41bbe00226c94207947da642fb322ecf652f84a4",
-    "tests_sha256": "25f0ec6b53e253ca30a4fbb8652172bd1696ca386c27de44e6febd75ad0f004f",
-    "source_unittest_cases": 204,
-    "source_seconds": 0.33,
-    "installed_wheel_unittest_cases": 204,
-    "isolated_environment": "fresh venv; Wenu/numpy/astropy/matplotlib/skyfield/sgp4/pandas/spiceypy absent",
-    "positive_constructed_provider_cases": 10,
-    "external_consumer_conformance_cases": 16,
-    "consumer_passed": 69,
-    "consumer_subtests": 9,
-    "consumer_seconds": 6.1,
-    "fault_injection": [
-      "Disabled lookup accuracy/refusal guard: closest query test fails",
-      "Disabled lookup physical-model evidence guard: closest publication test fails",
-      "Disabled lookup invariance guard: shipped harness meta-test fails"
-    ],
-    "mac_acceptance": "pending",
-    "installed_wheel_seconds": 0.323,
-    "wheel_sha256": "93ddcbaf7b92f2d0972915b1112f6b8065f88b1aacbb0ebb77a53d6f844b6ee4",
-    "documentation_local": "33 passed; three archive-dependent checks await complete Mac checkout; active links checked against authoritative tree",
-    "tooling": "8 passed in 0.926 s"
+    "source_sha256": "5d10612fce82881689b5624b8c41bc52975b504f9ded07bccc5303fd6161c420",
+    "tests_sha256": "903fba242a3a687932bfc5cac8bcc857c78130e938653b9dc91ad97a588b1f3b",
+    "source_unittest_cases": 205,
+    "source_seconds": 0.447,
+    "installed_base_collected_cases": 205,
+    "installed_base_passed_cases": 204,
+    "installed_base_skips": 1,
+    "installed_base_skip_reason": "Optional numerical geometry requires NumPy; absent intentionally in -I -S base SDK acceptance.",
+    "installed_base_seconds": 0.291,
+    "installed_geometry": "Actual wheel with optional extra metadata; numerical octant/frame/mixed-ring consumer passes with NumPy and Wenu/science/renderer imports blocked.",
+    "legacy_consumer_gate": "kernel-geometry-records: 235 passed, 1 blocked by absent de440s.bsp/JPL certificate validation in execution environment; full 236 required on Mac",
+    "documentation_local": "33 passed; three omitted-archive checks; active links and 73 preserved blobs verified against GitHub",
+    "tooling": "8 passed",
+    "mac_acceptance": "pending"
   },
   "existing_test_changes": [
     {
-      "node_ids": "Existing SDK tests",
-      "change": "Retain existing assertions; extend portable invariance check to explicit lookup and external consumer subprocess to exercise both native and lookup capabilities. Add owner tests and two lookup factory cases."
+      "node_ids": "packages/wenu_kernel/tests/test_isolation.py",
+      "change": "Retain base state tests; prove pure vocabulary without site packages and optional numerical service in blocked-backend subprocess. No NumPy imports during test collection."
     }
-  ]
+  ],
+  "optional_dependencies": {
+    "geometry": [
+      "numpy>=1.26,<2"
+    ]
+  }
 }

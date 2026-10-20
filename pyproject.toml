@@ -17,7 +17,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 
 dependencies = [
-    "wenu-kernel @ git+https://github.com/fselman/wenu.git@9dd1909f36986f8c8aa7e2a309427f7ce6ef0ee4#subdirectory=packages/wenu_kernel",
+    "wenu-kernel[geometry] @ git+https://github.com/fselman/wenu.git@6d630885ab70c9b5bc6b40ceeaed2dcf90342bdc#subdirectory=packages/wenu_kernel",
     "astropy>=7,<8",
     "matplotlib",
     "pypdf>=6,<7",

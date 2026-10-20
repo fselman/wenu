@@ -1578,6 +1578,84 @@
           "reason": "Public restored source execution remains source-file independent in a fresh process."
         }
       ]
+    },
+    "kernel-geometry-records": {
+      "scope": "KG.03 shared kernel coordinate vocabulary, geometry records/frame/viewport and unchanged ring helper; real installed optional geometry and legacy compatibility.",
+      "limits": "No projection/clipping/observer algorithm, source bytes, snapshot schema, renderer or object physics changes. Existing state SDK remains stdlib-only. Run separate kernel unittest gate; no full production repeat. KG.04 domain/projection migration and KG.05 whole-service integration remain pending.",
+      "selections": [
+        {
+          "node": "tests/test_coordinate_vocabulary.py",
+          "reason": "Moved CoordinateSpec enum/constructor identity and unknown epoch rules."
+        },
+        {
+          "node": "tests/test_spherical.py",
+          "reason": "Geometry records and actual canonical/legacy identity, pickle paths and array ownership."
+        },
+        {
+          "node": "tests/test_projected.py",
+          "reason": "Planar records, finite and bounds behavior."
+        },
+        {
+          "node": "tests/test_projected_collections.py",
+          "reason": "Collection identity and metadata behavior."
+        },
+        {
+          "node": "tests/test_spherical_frame.py",
+          "reason": "Unchanged rotation and inverse conventions."
+        },
+        {
+          "node": "tests/test_viewport.py",
+          "reason": "Migrated rectangle behavior."
+        },
+        {
+          "node": "tests/test_projection_regression.py",
+          "reason": "Unmoved projection consumes identical moved classes."
+        },
+        {
+          "node": "tests/test_projected_geometry_projection.py",
+          "reason": "Legacy scalar geometry seam."
+        },
+        {
+          "node": "tests/test_projection_geometry.py",
+          "reason": "Dispatch and metadata compatibility; antipode behavior."
+        },
+        {
+          "node": "tests/test_polar_azimuthal_equidistant_projection.py",
+          "reason": "Polar subclass consumes canonical frame/geometry."
+        },
+        {
+          "node": "tests/test_mollweide_projection.py",
+          "reason": "Seam splitting consumes canonical records."
+        },
+        {
+          "node": "tests/test_projection_and_clipping_contracts.py",
+          "reason": "Cap/hole/pre-projection semantics remain unchanged across moved records."
+        },
+        {
+          "node": "tests/test_isophotes.py",
+          "reason": "Delegated ring math retains independent native membership/raster oracles."
+        },
+        {
+          "node": "tests/test_magellanic_clouds.py",
+          "reason": "Shared ring records and compound hole handling."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_geometry_kernel_wheel_isolated_imports_metadata_and_numeric_consumer",
+          "reason": "Actual installed optional-extra/core isolation and independent numerical consumer."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override",
+          "reason": "Immutable geometry-extra pin across wheel/sdist/editable and legacy installed state calls."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources",
+          "reason": "Source-free installed-class/snapshot compatibility."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_fixed_catalogue_rows_masks_units_and_subsets",
+          "reason": "Canonical class aliases preserve saved rows/masks/units/subsets across families."
+        }
+      ]
     }
   },
   "consumer_review": [

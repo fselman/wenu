@@ -11,15 +11,20 @@ states with optional velocity and separate uncertainty channels. Explicit
 time-adapter admission, conversion receipts and bounded TT(TAI)/TAI conversion
 remain separate from same-scale native state queries. A reusable stdlib
 provider conformance kit verifies an external consumer with no repository fixtures.
-The SDK has no runtime dependencies. Accepted PR #247 makes it a
+The base state SDK has no runtime dependencies; explicit numerical geometry
+imports use the optional NumPy geometry extra. Accepted PR #247 makes it a
 separate Wenu dependency and routes native stellar realization through it.
 Other state consumers and the SDK freeze remain pending. The canonical
 projection and rendering pipeline is retained.
 
 The agreed target service kernel also includes generic spherical geometry/topology,
 domain guards, projections/projected geometry and coordinate/observer realization
-services. Those implementations currently remain in existing Wenu namespaces; this
-documentation does not move or reimplement them. The installed state SDK is one
+services. KG.03 now places the pure CoordinateSpec/PositionStatus vocabulary,
+spherical/projected records, SphericalFrame/Viewport and the existing numerical
+ring helper in kernel dev9. Legacy Wenu imports alias the same classes; the
+Milky Way layer retains source policy and delegates the unchanged ring math.
+Projections, mathematical clipping and cap/topology preparation still remain
+in Wenu for KG.04. The installed state SDK is one
 component, and its accepted subset does not establish the full kernel boundary.
 See the [agreed target and accepted-work disposition](kernel_roadmap_v0.9.5.md#proposed-architecture).
 Geometry consumers can call public geometry services directly. There is no accepted

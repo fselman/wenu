@@ -1407,11 +1407,12 @@ for centre motion. No new coordinate transform, propagation or expansion is adde
 ## KG.02 geometry interface boundary
 
 The [KG.02 design](kernel_contract_k1.md#14-kg02-geometry-service-contracts-and-placement-plan)
-preserves this guide's scientific meaning. Proposed geometry inputs remain
+preserves this guide's scientific meaning. Geometry inputs remain
 degree samples with an explicit CoordinateSpec; projected x/y use the chosen
 projection scale, with physical page/pixel conversion owned by the product.
 SphericalFrame alignment is a mathematical orientation, not astronomical
-frame conversion or epoch propagation. Shared CoordinateSpec relocation would
-retain the same class and legacy import, without changing time/status/origin
-or correction facts. No scientific computation, frame default or runtime
-ownership changes in this documentation-only design.
+frame conversion or epoch propagation. KG.03 now relocates the pure CoordinateSpec vocabulary and geometry records
+into the kernel with identical legacy aliases. Source factories, defaults and
+observer realization stay with Wenu. Ring math is delegated under the same
+explicit winding convention. Degree units, status/origin/time/corrections,
+frame defaults and numerical algorithms remain unchanged.

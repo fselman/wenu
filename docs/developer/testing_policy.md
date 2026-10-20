@@ -1066,3 +1066,39 @@ KG.06/KG.07 audit/correct completed K deliveries after those services exist.
 The optional `geometry` extra and canonical namespace table are concrete
 proposals for explicit agreement, not dependencies enabled by a passing docs
 gate. No final K5 API freeze or independent geometry installation is claimed.
+
+## KG.03 kernel geometry records gate
+
+KG.03 uses `kernel-geometry-records` from the explicit runner and the separate
+kernel unittest suite. The moved numerical code is unchanged: AST comparison
+against the accepted base found identical spherical/projected/frame/viewport
+implementations except the CoordinateSpec import, and identical ring-helper
+body except its public name. Source/observer factories remain in Wenu.
+NumPy is optional for geometry; the base SDK dependency list remains empty.
+
+Closest owners preserve vocabulary validation, geometry/metadata shapes and
+aliasing, rotation/inverse, all-three projection dispatch, seam/cap/hole behavior,
+independent ring raster membership and unchanged source-free snapshots.
+New coverage at existing owners protects same-object legacy/canonical class and
+enum dispatch, old pickle GLOBAL lookup paths, shallow metadata/array aliasing,
+a right-octant ring's independently known pi/2 solid angle and winding complement,
+and actual installed wheel extra/dependency metadata. Cold -I -S consumers prove
+base coordinate/state imports without NumPy, and numerical geometry without Wenu,
+Astropy, Skyfield, Matplotlib or other product/science backends. Root
+wheel/sdist/editable packaging still exercises its separate immutable kernel pin.
+
+Local Python 3.12 evidence: 205 kernel unittest cases passed, including the
+numerical service isolation subprocess; eight tooling cases are run separately.
+Focused gate: 235 passed, one blocked by the execution environment's missing
+de440s.bsp. The retained circumpolar LMC integration example tries the standard
+JPL download and receives certificate validation failure here. Its data/model
+is not substituted or the test weakened; the complete 236-case gate remains
+required on the Mac. Installed wheel/sdist/editable and source-free snapshot
+cases passed within those 235. Real contour/raster oracles passed; broader
+whole-service PNG/PDF/SVG/polar integration still belongs to KG.05.
+
+This changes optional kernel numerical packaging and the root immutable pin,
+not algorithms, source bytes, observer science, snapshot schemas or rendering.
+No full production suite is warranted by this bounded ownership move.
+Documentation uses its normal gate; archive-copy limitations are stated
+separately. Mac acceptance at the delivered branch is pending.
