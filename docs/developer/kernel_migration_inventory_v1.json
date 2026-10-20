@@ -10421,7 +10421,7 @@
   },
   "geometry_projection_implementation": {
     "id": "KG.04",
-    "status": "implemented for acceptance; complete Mac gate pending",
+    "status": "accepted through PR #285, main 608bc91d",
     "base_commit": "59a4f2f961a67eca74ad8e5f1afbf8f3978b87a1",
     "kernel_commit": "ba591f156573324c3e08f9fb4d7bf626e2197f9c",
     "kernel_version": "0.0.0.dev10",
@@ -10466,6 +10466,44 @@
       "documentation_omitted_archive_checks": 3,
       "retained_outputs": "cold/restored atlas PNG pixels and source-free fresh-process snapshots passed",
       "fault_preservation": "single-cleanup private instrumentation retargeted canonical owner; once-only assertion still runs via legacy public call"
+    },
+    "mac_receipt": {
+      "tested_commit": "f7866a52dbc1a6024d90597f9486a247f5a3db33",
+      "main": "608bc91deb3dd2e723787610ad373edcc235e2c1",
+      "kernel_passed": 205,
+      "tooling_passed": 8,
+      "documentation_passed": 36,
+      "focused_passed": 295
+    }
+  },
+  "geometry_composition_acceptance": {
+    "id": "KG.05",
+    "status": "evidence delivered for acceptance; G05-1 unresolved",
+    "base_commit": "608bc91deb3dd2e723787610ad373edcc235e2c1",
+    "gate": "kernel-geometry-composition",
+    "production_change": false,
+    "kernel_change": false,
+    "representatives": [
+      "real cold/saved/serial/spawn two-chart atlas PNG/PDF/SVG",
+      "real cold/saved north/south stereographic polar PNG/PDF/SVG",
+      "installed base and numerical geometry without Wenu/backends/renderers"
+    ],
+    "finding": {
+      "id": "G05-1",
+      "symptom": "Equidistant full-catalogue polar composition rejects non-finite native stellar longitudes before latitude filtering, both poles",
+      "regression": "two strict expected-failure cases in test_kernel_geometry_polar_cold_saved_outputs",
+      "disposition": "KG.06 boundary audit and KG.07 demonstrated correction; no algorithm or source filtering changed here"
+    },
+    "remaining": "KG.06/KG.07 before K3.16; no K3/K5 closure",
+    "local_evidence": {
+      "passed": 15,
+      "strict_expected_failures": 2,
+      "combined_run_seconds": 196.98,
+      "cache_retry": "One unchanged review-tool file fetched from exact GitHub base; failed static check then passed in 0.93 seconds.",
+      "tooling_passed": 8,
+      "documentation_passed": 33,
+      "documentation_cache_omissions": 3,
+      "mac_acceptance": "pending complete documentation and composition gates"
     }
   }
 }

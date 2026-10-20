@@ -794,3 +794,53 @@ force a snapshot version or activate K3.16 here. The coordinate guide remains
 current because this assessment changes no scientific semantics or runtime
 ownership. The later KG.06 audit will determine modifications to completed K
 deliveries using the established services, retaining their applicable receipts.
+
+
+## KG.05 composed geometry acceptance
+
+Selected on 2026-10-20 after PR #285 and clean main 608bc91d. This is
+integration/evidence work within the agreed KG sequence. No production code,
+mathematics, dependencies, catalogue bytes or snapshot schema change.
+
+| Evidence | Owner and claim |
+|---|---|
+| Canonical and compatibility identity | Existing spherical and projection/clipping contract tests retain exact public aliases and keep appearance policy outside kernel |
+| Independent installed services | Existing isolated kernel-wheel consumer runs base imports without NumPy and numerical geometry with NumPy, blocking Wenu, Astropy, Skyfield, Matplotlib, pandas and SPICE |
+| Real atlas composition | Existing two-chart cold/saved/serial/spawn test exports PNG/PDF/SVG, compares PNG pixels and verifies physical PDF pages and book assembly |
+| Real polar composition | New north/south cold/restored test uses actual catalogues, native realization, composed stereographic geometry and real PNG/PDF/SVG; compares source/projected records and PNG pixels, checks vector document sizes, and forbids source reload |
+| Physical page policy | Existing polar-page export/rendering owners retain A4 composition, calendar, registration and text-layout checks |
+| Retained lower-level evidence | PR #284 and #285 Mac receipts cover unchanged numerical tests, source-free subprocess reconstruction and root wheel/sdist/editable packaging; no blanket repeat |
+
+### G05-1: equidistant full-catalogue composition gap
+
+The same real polar specimen with `polar_azimuthal_equidistant` fails on both
+poles with `ValueError: longitude must be finite`. The magnitude-4 specimen has 519 stellar rows, including one non-finite
+position (HIP 55203); `PolarPlanisphereChart.project_equatorial_geometry` sends
+points to projection before latitude filtering, and the equidistant numerical
+service requires finite longitude. The stereographic path accepts these inputs.
+This discovery is **not** a licence to filter sources or relax numerical guards
+inside KG.05. Its scope is a concrete audit/correction candidate for KG.06/KG.07.
+The existing finite-input projection tests remain valid; they did not establish
+this full-catalogue composition claim. No general equidistant output acceptance
+is claimed. Strict expected-failure cases keep the failing specimen executable;
+an unexpected pass requires review and removal of the marker with the correction.
+
+KG.05 delivers the evidence and this explicit finding; it does not close all
+geometry integration, K3 or K5. KG.06 must determine the responsible boundary
+and whether correction is needed in previously accepted deliverables. KG.07
+must verify any agreed correction, including the unmarked equidistant specimen.
+
+
+Local verification: 15 selected composition cases passed and the two precise
+G05-1 cases were expected failures. The 196.98-second combined run had 14 passes,
+two expected failures and one missing-cache-file failure; fetching the unchanged
+`tools/render_48e4_polar_pages.py` from the exact GitHub base resolved that final
+case (1 pass, 0.93 seconds). No test or repository tool was changed to resolve it.
+After tightening the expected-failure guard to require the exact diagnosed
+message, both G05-1 cases still reproduced (8.79 seconds). Eight tooling cases
+passed. Documentation: 33 passed; three checks require archive/evidence files
+omitted from this local cache and remain for the complete Mac checkout. New
+links/anchors passed; complete Mac documentation and composition gates are pending.
+The coordinate guide remains current: this task changes evidence, not numerical
+semantics or ownership. A low-DPI rendered polar specimen was visually inspected;
+this is not a new print/style approval or a classroom/production-suite claim.

@@ -1746,6 +1746,40 @@
           "reason": "Preserve fresh-process source-free reconstruction and legacy aliases."
         }
       ]
+    },
+    "kernel-geometry-composition": {
+      "scope": "KG.05 composed public services, isolated installed access and representative real cold/restored atlas and stereographic polar PNG/PDF/SVG outputs.",
+      "limits": "Test/evidence only. Reuse accepted KG.03/KG.04 numerical, SDK and root packaging receipts. No production, dependency, source or schema change. Equidistant full-catalogue non-finite input finding remains explicit for KG.06/KG.07; this gate does not close that finding or K3/K5.",
+      "selections": [
+        {
+          "node": "tests/test_spherical.py::test_kernel_geometry_aliases_preserve_identity_aliasing_and_pickle_paths",
+          "reason": "Canonical/legacy record identity and serialized compatibility."
+        },
+        {
+          "node": "tests/test_projection_and_clipping_contracts.py::test_kernel_projection_clipping_domain_aliases_and_policy_boundary",
+          "reason": "Composition ownership and retained appearance policy."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_geometry_kernel_wheel_isolated_imports_metadata_and_numeric_consumer",
+          "reason": "Real isolated base and optional numerical imports without Wenu/science/render products."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_atlas_chart_batch_cold_saved_and_spawned_pages_match",
+          "reason": "Real two-page atlas composition, CLI/serial/spawn reuse, identical PNGs and physical PDF/SVG exports."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_kernel_geometry_polar_cold_saved_outputs",
+          "reason": "Real north/south stereographic composed geometry, frozen source-free reuse, exact PNG pixels and physical PDF/SVG size."
+        },
+        {
+          "node": "tests/test_polar_page_export.py",
+          "reason": "Retained physical paired-page export contract."
+        },
+        {
+          "node": "tests/test_polar_page_rendering.py",
+          "reason": "Real physical page, calendar and registration geometry/furniture."
+        }
+      ]
     }
   },
   "consumer_review": [
