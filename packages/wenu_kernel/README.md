@@ -3,16 +3,17 @@
 This separately installable project implements a bounded native-state subset of K2.
 It is one component of the [agreed shared-service kernel](../../docs/developer/kernel_roadmap_v0.9.5.md#proposed-architecture),
 whose target also includes reusable geometry/topology, coordinate/realization and
-projection services. KG.03 adds the existing geometry records/frame/viewport,
-pure coordinate vocabulary and explicit ring helper to dev9. Geometry consumers
-need not issue object-state queries. Projection/clipping/domain implementation
-remains in Wenu until KG.04; full service integration remains KG.05.
+projection services. KG.03 added the existing geometry records/frame/viewport,
+pure coordinate vocabulary and explicit ring helper; KG.04 dev10 adds projections
+and clipping/domain mathematics. Geometry consumers
+need not issue object-state queries. KG.04 now supplies the existing projected clipping, all three projections and
+spherical domain/latitude/cap topology. Full service integration remains KG.05.
 It is not the K5 frozen SDK. Existing Wenu continues to use its current code;
 the accepted native stellar adapter uses its existing source-epoch subset.
 The SDK extension itself adds no numerical backend. Wenu now supplies a
 source-bound static galaxy direction consumer outside this package.
 Accepted dev8 added catalogue lookup for incomplete source epochs; Wenu now
-pins the geometry-enabled dev9 SDK and supplies an open-cluster consumer outside this package.
+pins the geometry-enabled dev10 SDK and supplies an open-cluster consumer outside this package.
 The source lookup preserves astrometry but performs no motion propagation.
 
 ## Optional numerical geometry
@@ -28,8 +29,13 @@ or renderer. The root facade does not eagerly import geometry or NumPy.
 Legacy Wenu geometry imports re-export these same class objects. Mutable NumPy
 aliasing, shallow metadata and existing validation conventions are preserved;
 geometry values are not immutable physical state batches. The source adapter
-retains source ring interpretation. No geometry registry, projection move,
-snapshot version or additional numerical model is introduced.
+retains source ring interpretation. KG.04 exposes StereographicProjection, PolarAzimuthalEquidistantProjection and
+MollweideProjection through `wenu_kernel.projections`; projected clipping is in
+`wenu_kernel.geometry.clipping`, and spherical cap/latitude topology services in
+`wenu_kernel.geometry.domain`. Legacy Wenu imports alias the same implementations.
+Marker magnitude/diameter sizing, radial label offsets, culling margins and
+chart/render policy remain outside the kernel. No geometry registry, snapshot
+version or additional numerical algorithm is introduced.
 
 ## Implemented scope
 
