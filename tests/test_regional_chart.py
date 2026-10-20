@@ -357,3 +357,36 @@ def test_regional_horizon_mask_uses_rectangular_chart_viewport(monkeypatch):
     assert calls["horizon_mask"] is True
     assert calls["viewport"] == chart.viewport
     assert calls["boundary"] is None
+
+
+@pytest.mark.parametrize("official_regions", (False, True))
+def test_group_framing_consumes_returned_geometry_and_propagates_refusal(monkeypatch, official_regions):
+    # Raw source coordinates are deliberately unavailable: the public layer
+    # result, not its catalogue, owns the observer-horizontal directions.
+    state = {"longitude": 20.0, "refuse": False}
+    calls = []
+    def geometry(observer, **options):
+        calls.append((observer, options))
+        if state["refuse"] and (not official_regions or "selected" in options):
+            raise RuntimeError("synthetic framing refusal")
+        longitude = state["longitude"] if not official_regions or "selected" in options else 200.
+        return SimpleNamespace(ids=np.asarray([1, 2]),
+            lon_deg=np.asarray([longitude-2, longitude+2]),
+            lat_deg=np.asarray([0., 0.]))
+    observing = object()
+    source = SimpleNamespace(observer=observing,
+        stars=SimpleNamespace(spherical_geometry=geometry),
+        constellation_lines=SimpleNamespace(edges_by_constellation={"Test": [(1, 2)]}),
+        constellation_boundaries=SimpleNamespace(spherical_geometry=lambda observer, **options: SimpleNamespace(
+            lon_deg=(geometry(observer, **options).lon_deg,), lat_deg=(np.asarray([0., 0.]),))))
+    monkeypatch.setattr("wenu.charts.regional.celestial_north_position_angle", lambda *a, **k: 0.)
+    options = {"framing_constellations": ("TestRegion",)} if official_regions else {}
+    for longitude in (20., 80.):
+        state["longitude"] = longitude
+        chart = RegionalChart.from_constellations(source, ("Test",), **options)
+        assert chart.center_az_deg == pytest.approx(longitude)
+        assert chart.center_alt_deg == pytest.approx(0.)
+    assert all(observer is observing for observer, _ in calls)
+    state["refuse"] = True
+    with pytest.raises(RuntimeError, match="framing refusal"):
+        RegionalChart.from_constellations(source, ("Test",), **options)

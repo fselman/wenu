@@ -450,3 +450,16 @@ This is application composition, not a new kernel service or independently
 installed module. The broad Wenu package facade still exports concrete families;
 package isolation/extraction and remaining chart/private-helper work retain
 their later roadmap milestones. No numerical or rendering algorithm moves here.
+
+
+## Ordinary chart consumer boundary
+
+The five ordinary chart families share request preparation and render-local
+composition. Targets enter through admitted lookup and CoordinateService;
+group framing and automatic catalogue selection consume public returned layer
+geometry. Masks use the existing coordinate/domain services. Styles, detail,
+mode and furniture keep their separate policy roles; rendered magnitude counts
+read projected output. The [K3.20 assessment](kernel_migration_audit_v1.md#k320-ordinary-chart-consumer-assessment)
+records these actual seams and their verification without changing production
+mathematics. The chart/atlas helper boundary remains K3.21; no full K3/K5 or
+independent astronomical-package closure is implied.

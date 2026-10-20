@@ -1269,3 +1269,31 @@ kernel/observer receipts do not replace this composition evidence. An isolated
 root wheel/sdist consumer protects the new assembly module and preserved entry
 points. No unchanged SDK/full production repeat or new source acquisition is
 required. Full Mac documentation integrity remains part of acceptance.
+
+
+## Ordinary chart routing gate
+
+Run `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python tools/run_test_gate.py ordinary-chart-routing --run`.
+K3.20 selects existing five-family request/view/render, centre, field selection,
+mask, composition/style/detail/furniture and request-scope owners. New owner
+cases require actual changed kernel directions to move regional/binocular
+centres, returned group/official-region geometry to control framing, all six
+fixed-family returned centres to control selection, and service results to
+appear in title/context text. Each seam must propagate synthetic refusal after
+success. A raw-target-coordinate bypass must break the new preparation oracle.
+
+This delivery changes tests and evidence only. Retain accepted numerical,
+installation and real cold/saved/spawned atlas output receipts; no full SDK or
+production repeat is warranted. Run documentation and eight tooling cases too.
+The local execution copy lacks DE440s and the curated cluster bundle: the full
+Mac gate retains the style Observer case and real mixed-cluster request case.
+These are environment limits, not skips or expected failures added to the gate.
+K3.21 atlas contract/report work and later moving-body qualification are separate.
+
+Local Python 3.12 evidence: 387 focused cases passed in the 389-case selection;
+the DE440s style case was resource-blocked and the curated-cluster case was
+excluded locally only. Both remain in the complete Mac gate. The final 47-case
+changed-owner seam suite passed in 1.70 s; the deliberate raw-target bypass
+failed both new preparation cases. Eight tooling cases and 31 available
+documentation cases passed. Five documentation checks need complete-checkout
+archive/asset/test-inventory contents; all 36 remain required on Mac.

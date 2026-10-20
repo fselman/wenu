@@ -298,3 +298,39 @@ def test_binocular_target_coordinate_is_public_kernel_lookup(monkeypatch):
     monkeypatch.setattr(KernelSession, "evaluate", refuse)
     with pytest.raises(RuntimeError, match="binocular target refusal"):
         _target_coordinate(target)
+
+
+@pytest.mark.parametrize("family", ("regional", "binocular"))
+def test_prepared_target_chart_consumes_changed_kernel_directions_and_refuses(monkeypatch, family):
+    from dataclasses import replace
+    from astropy.coordinates import AltAz, EarthLocation, SkyCoord
+    from astropy.time import Time
+    import astropy.units as u
+    from wenu.catalogue_state import _unit_direction
+    from wenu_kernel import KernelSession
+    source = sky()
+    source.observer = SimpleNamespace(
+        altaz_frame=AltAz(obstime=Time("2026-08-16T01:00:00"),
+                         location=EarthLocation.from_geodetic(-71*u.deg, -32*u.deg)),
+    )
+    resolved = resolve(request(family, subject=ChartSubjectRequest(target="M57"),
+        frame=ChartFrameRequest(field_width_deg=20., field_height_deg=15.) if family == "regional" else None))
+    evaluate = KernelSession.evaluate
+    longitude = [35.0]
+    def changed(session, query):
+        batch = evaluate(session, query)
+        return replace(batch, states=tuple(
+            replace(state, vector=_unit_direction(longitude[0], -10.0))
+            for state in batch.states))
+    monkeypatch.setattr(KernelSession, "evaluate", changed)
+    for angle in (35.0, 75.0):
+        longitude[0] = angle
+        prepared = prepare_chart_request(source, resolved)
+        expected = SkyCoord(angle*u.deg, -10*u.deg, frame="icrs").transform_to(source.observer.altaz_frame)
+        assert prepared.chart.center_az_deg == pytest.approx(expected.az.deg)
+        assert prepared.chart.center_alt_deg == pytest.approx(expected.alt.deg)
+    def refuse(*args, **kwargs):
+        raise RuntimeError("synthetic target service refusal")
+    monkeypatch.setattr(KernelSession, "evaluate", refuse)
+    with pytest.raises(RuntimeError, match="target service refusal"):
+        prepare_chart_request(source, resolved)

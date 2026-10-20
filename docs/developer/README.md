@@ -17,7 +17,9 @@ K3.18 now corrects [observer resource checks and shared warm-cache identity](imp
 K3.18 is accepted through PR #291 after 402 focused, 36 documentation and eight tooling Mac cases.
 
 K3.19 moves existing concrete construction into [application assembly](implementation_reference.md#application-sky-assembly),
-leaving central sky/factory/snapshot APIs as delegates. Source-free restoration and worker paths use that owner; focused Mac acceptance is pending.
+leaving central sky/factory/snapshot APIs as delegates. Source-free restoration and worker paths use that owner; accepted through PR #292 after 169 focused, 36 documentation and eight tooling Mac cases.
+
+K3.20 now verifies [ordinary chart consumer routing](kernel_migration_audit_v1.md#k320-ordinary-chart-consumer-assessment) through existing services, without production rewrites. Complete Mac acceptance is pending; K3.21 remains separate.
 
 ## Read for current work
 
