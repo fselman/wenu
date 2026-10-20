@@ -1738,3 +1738,109 @@ def test_kernel_snr_routes_preserve_accepted_atlas_pixels(native_snapshot_case, 
 
     np.testing.assert_array_equal(imread(tmp_path/'kernel-SNR'/name),
                                   imread(tmp_path/'saved-SNR'/name))
+
+
+@pytest.mark.parametrize('projection_name', (
+    'stereographic',
+    pytest.param('polar_azimuthal_equidistant', marks=pytest.mark.xfail(
+        strict=True, raises=ValueError,
+        reason='KG.05 finding G05-1: real stellar non-finite coordinates reach strict equidistant projection; audit/correction pending')),
+))
+@pytest.mark.parametrize('pole', ('south', 'north'))
+def test_kernel_geometry_polar_cold_saved_outputs(native_snapshot_case, tmp_path, monkeypatch, pole, projection_name):
+    """Compose real kernel geometry with source-free sky and actual exports."""
+    import dataclasses
+    import xml.etree.ElementTree as ET
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from matplotlib.image import imread
+    from pypdf import PdfReader
+    from wenu.charts.composition import compose_chart
+    from wenu.charts.detail import DetailOverrides
+    from wenu.charts.modes import PrintMode
+    from wenu.charts.polar_planisphere import PolarPlanisphereChart
+    from wenu.charts.regional import ExportOptions
+    from wenu.rendering.matplotlib import MatplotlibRenderer
+    from wenu.sky import native_snapshot
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    from wenu_kernel.geometry import projected as kernel_projected
+    from wenu_kernel.projections import StereographicProjection, PolarAzimuthalEquidistantProjection
+
+    _, bundle, _, cold = native_snapshot_case
+    def forbidden(*args, **kwargs):
+        raise AssertionError('Saved polar output must not reload a source')
+    monkeypatch.setattr(native_snapshot, 'generate_native_icrs_sphere', forbidden)
+    for layer in cold.layers:
+        if callable(getattr(type(layer), 'load', None)):
+            monkeypatch.setattr(type(layer), 'load', forbidden)
+    restored = native_snapshot.read_native_sky_snapshot(bundle).make_sky()
+    face = PolarPlanisphereChart(pole=pole, projection_name=projection_name)
+    assert type(face.projection) is {'stereographic': StereographicProjection,
+        'polar_azimuthal_equidistant': PolarAzimuthalEquidistantProjection}[projection_name]
+    composition = compose_chart(face, style='atlas',
+        mode=PrintMode(width_inches=210/25.4, height_inches=297/25.4, dpi=36),
+        detail_overrides=DetailOverrides(star_magnitude_limit=4,
+            enabled_layers=frozenset({'stars', 'constellation_lines',
+                'constellation_labels', 'milky_way_isophotes', 'magellanic_clouds'})))
+
+    def equal_record(a, b):
+        # Projected dataclasses include nested curves/polygons/grids and metadata.
+        assert type(a) is type(b)
+        if dataclasses.is_dataclass(a):
+            assert type(a).__module__.startswith(kernel_projected.__name__)
+            for field in dataclasses.fields(a):
+                equal_record(getattr(a, field.name), getattr(b, field.name))
+        elif isinstance(a, dict):
+            assert a.keys() == b.keys()
+            for key in a:
+                equal_record(a[key], b[key])
+        elif isinstance(a, (tuple, list)):
+            assert len(a) == len(b)
+            for left, right in zip(a, b, strict=True):
+                equal_record(left, right)
+        elif isinstance(a, np.ndarray):
+            if a.dtype.kind == 'f':
+                np.testing.assert_allclose(a, b, rtol=1e-13, atol=1e-15, equal_nan=True)
+            else:
+                np.testing.assert_array_equal(a, b)
+        else:
+            assert a == b
+
+    baselines = {}
+    for name, sky in (('cold', cold), ('saved', restored)):
+        for suffix in ('png', 'pdf', 'svg'):
+            path = tmp_path / f'{pole}-{name}.{suffix}'
+            figure, ax = plt.subplots()
+            try:
+                try:
+                    exported = face.export(sky, MatplotlibRenderer(ax), path,
+                        composition=composition,
+                        realization_context=LayerRealizationContext(NATIVE_ICRS_SPEC),
+                        export_options=ExportOptions(dpi=36, bbox_inches=None, padding=0))
+                except ValueError as exc:
+                    # Only this diagnosed failure may use the strict marker.
+                    assert projection_name == 'polar_azimuthal_equidistant'
+                    assert str(exc) == 'longitude must be finite.'
+                    raise
+                layers = exported.rendering.layers
+                assert layers and any(type(item.projected).__name__ == 'ProjectedPolygons' for item in layers)
+                if suffix not in baselines:
+                    baselines[suffix] = layers
+                else:
+                    for first, second in zip(baselines[suffix], layers, strict=True):
+                        _assert_native_geometry_equal(first.spherical, second.spherical)
+                        equal_record(first.projected, second.projected)
+            finally:
+                plt.close(figure)
+            assert path.stat().st_size > 1000
+            if suffix == 'pdf':
+                pages = PdfReader(path).pages
+                assert len(pages) == 1
+                np.testing.assert_allclose([float(pages[0].mediabox.width), float(pages[0].mediabox.height)],
+                    [210*72/25.4, 297*72/25.4])
+            elif suffix == 'svg':
+                root = ET.parse(path).getroot()
+                np.testing.assert_allclose([float(root.attrib[k].removesuffix('pt')) for k in ('width', 'height')],
+                    [210*72/25.4, 297*72/25.4])
+                assert root.findall('.//{http://www.w3.org/2000/svg}path')
+    np.testing.assert_array_equal(imread(tmp_path/f'{pole}-cold.png'), imread(tmp_path/f'{pole}-saved.png'))

@@ -1146,3 +1146,22 @@ snapshot schema or renderer/style algorithm changed. This immediate numerical/
 consumer acceptance does not close KG.05's composed-service review and
 representative polar/PNG/PDF/SVG acceptance, or KG.06/KG.07's completed-K audit.
 No full production suite is warranted by this bounded ownership move.
+
+
+## KG.05 composition acceptance gate
+
+Run `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python tools/run_test_gate.py kernel-geometry-composition --run`.
+This selects existing alias/ownership and isolated installed-kernel seams, real
+two-chart cold/saved/serial/spawn atlas output, new real north/south polar output,
+and retained physical page owners. The new specimen compares realized source
+and projected geometry, exact PNG pixels and PDF/SVG physical dimensions. It
+uses frozen native catalogue directions; no observer, propagation or new diffuse
+transport acceptance is implied. PNG/PDF/SVG saves are real, not mocked.
+
+[KG.05 finding G05-1](kernel_migration_audit_v1.md#g05-1-equidistant-full-catalogue-composition-gap)
+is retained as two strict expected failures for equidistant full-catalogue input;
+stereographic outputs are required to pass. Unexpected passes fail the gate.
+The report must disclose these separately from passing output cases. The marker
+is not a corrected implementation or a general planisphere acceptance claim.
+KG.06/KG.07 own audit/correction. Existing KG.03/KG.04 numerical, SDK and root
+installation receipts remain bounded evidence for unchanged implementations.

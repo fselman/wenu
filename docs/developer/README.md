@@ -66,8 +66,10 @@ pure CoordinateSpec vocabulary, spherical/projected records, frame/viewport and
 the existing ring helper; Wenu aliases preserve class identity. KG.03 is accepted through PR #284. KG.04 now places projected clipping,
 all three projections and cap/latitude/topology mathematics in kernel dev10;
 legacy imports alias the same services. Appearance helpers remain in Wenu.
-KG.04 complete Mac acceptance is pending; KG.05 integration and KG.06/KG.07
-completed-K audit/corrections remain separate tasks.
+KG.04 is accepted through PR #285 (205 kernel, 8 tooling, 36 documentation and
+295 focused Mac cases). KG.05 now verifies composed services and real atlas/polar
+outputs. Its [evidence and equidistant input finding](kernel_migration_audit_v1.md#kg05-composed-geometry-acceptance)
+are explicit; KG.06/KG.07 completed-K audit/corrections remain separate tasks.
 Extra scope or changed agreed order must be discussed with Fernando,
 explicitly agreed and documented before implementation under the
 [mandatory agent rule](assistant_instructions.md#roadmap-control-mandatory-before-implementation).
