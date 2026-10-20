@@ -2100,6 +2100,92 @@
           "reason": "Protect supplied assembly/refusal, construction order, source-free restoration, request ownership and existing real output/installation boundaries."
         }
       ]
+    },
+    "ordinary-chart-routing": {
+      "scope": "K3.20 existing five ordinary chart families, target/group centres, field selection, masks, independent content/style/detail and furniture service consumption.",
+      "limits": "Test/evidence closure only; inspected owners already use admitted layer/coordinate/kernel geometry services. No production, SDK, resource, dependency, snapshot, scientific or renderer change. Retain accepted numerical/installation/cold-saved-spawned atlas receipts; K3.21 atlas boundary and later moving-body provider obligations remain separate.",
+      "selections": [
+        {
+          "node": "tests/test_request_chart.py",
+          "reason": "All five request constructors; actual kernel-returned target changes and refusal in regional/binocular preparation."
+        },
+        {
+          "node": "tests/test_regional_chart.py",
+          "reason": "Group and official-region returned geometry, changed centres and refusal; existing framing/orientation and viewport contracts."
+        },
+        {
+          "node": "tests/test_spatial_selection.py",
+          "reason": "Every fixed-catalogue centre result controls field membership; changed results and warm refusal, unions/exclusions/immutability."
+        },
+        {
+          "node": "tests/test_request_furniture.py",
+          "reason": "Kernel-returned target title and shared coordinate-service context text; refusal and independent furniture options."
+        },
+        {
+          "node": "tests/test_chart_view.py",
+          "reason": "Public five-family view defaults, explicit geometry, unsupported-frame admission and observer-independent sky."
+        },
+        {
+          "node": "tests/test_full_sky_chart.py",
+          "reason": "Planisphere projection/horizon/render/export contracts."
+        },
+        {
+          "node": "tests/test_all_sky_chart.py",
+          "reason": "All-sky transform-before-projection and galactic masks."
+        },
+        {
+          "node": "tests/test_chart_composition.py",
+          "reason": "Independent chart/style/mode/detail composition and family presets."
+        },
+        {
+          "node": "tests/test_chart_furniture.py",
+          "reason": "Physical legends count rendered geometry; independent furniture and no-furniture contracts."
+        },
+        {
+          "node": "tests/test_detail_policy.py",
+          "reason": "Content membership, explicit/vertex stars and per-layer detail application."
+        },
+        {
+          "node": "tests/test_style_contracts.py",
+          "reason": "Styles/modes preserve geometry/content and established rendering appearance."
+        },
+        {
+          "node": "tests/test_object_center.py",
+          "reason": "Shared-service target and descriptor centre results and refusal."
+        },
+        {
+          "node": "tests/test_target_resolver.py",
+          "reason": "Named/explicit target provenance, aliases and membership."
+        },
+        {
+          "node": "tests/test_composed_chart_masks.py",
+          "reason": "Constellation/horizon mask composition and rendered winding."
+        },
+        {
+          "node": "tests/test_constellation_outside_mask.py",
+          "reason": "Official-region masks and domain geometry."
+        },
+        {
+          "node": "tests/test_horizon_mask_geometry.py",
+          "reason": "Observer horizon altitude service, field and polar visibility."
+        },
+        {
+          "node": "tests/test_request_horizon.py",
+          "reason": "Repeated requests preserve horizon state independently of request order."
+        },
+        {
+          "node": "tests/test_request_generation.py",
+          "reason": "Request-local state/lifetime, per-product composition/export and public build paths."
+        },
+        {
+          "node": "tests/test_layer_realization.py",
+          "reason": "Layer product-frame admission and shared realization dispatch."
+        },
+        {
+          "node": "tests/test_request_realization.py",
+          "reason": "Request frames, explicit cluster motion and mixed-chart/refusal seams."
+        }
+      ]
     }
   },
   "consumer_review": [

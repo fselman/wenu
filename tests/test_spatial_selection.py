@@ -4,6 +4,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import numpy as np
+import pytest
 
 from wenu import (
     CANONICAL_MAXIMAL_SPHERE_PROFILE,
@@ -188,3 +189,26 @@ def test_complete_sphere_selection_does_not_reject_catalogue_centers():
     assert selected.request.content.open_clusters == {
         "near", "far", "explicit"
     }
+
+@pytest.mark.parametrize("attribute", ("nonstellar", "galaxies", "open_clusters", "globular_clusters", "planetary_nebulae", "supernova_remnants"))
+def test_field_selection_consumes_returned_centres_without_warm_fallback(attribute):
+    from wenu.charts.spatial_selection import FIELD_CATALOGUE_LAYERS
+    source = SimpleNamespace(observer=object(), **{name: None for name in FIELD_CATALOGUE_LAYERS.values()})
+    layer = Layer(["first", "second"], [0., 5.], [0., 0.])
+    # Dedicated families expose centres independently of outline/symbol shape.
+    layer.spherical_centers = layer.spherical_geometry
+    setattr(source, attribute, layer)
+    chart = SimpleNamespace(projection=Projection(), viewport=Viewport.centered(width=2., height=2.))
+    content = next(name for name, value in FIELD_CATALOGUE_LAYERS.items() if value == attribute)
+    request = resolved()
+    for visible, longitude in (("first", [0., 5.]), ("second", [5., 0.])):
+        layer.geometry = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
+            lon_deg=longitude, lat_deg=[0., 0.], ids=["first", "second"])
+        selected = select_spatial_chart_content(source, chart, request)
+        expected = {visible} | ({"explicit"} if attribute == "open_clusters" else set())
+        assert getattr(selected.request.content, content) == expected
+    def refuse(observer):
+        raise RuntimeError("synthetic field-centre refusal")
+    layer.spherical_centers = refuse
+    with pytest.raises(RuntimeError, match="field-centre refusal"):
+        select_spatial_chart_content(source, chart, request)

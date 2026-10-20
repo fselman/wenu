@@ -447,19 +447,19 @@
       "path": "src/wenu/charts/magnitude_legend_matplotlib.py",
       "git_blob_sha": "07104731fa669bb972df830cf5e3c51076b00b11",
       "as_is_directory": "src/wenu/charts",
-      "description": "Matplotlib rendering for stellar magnitude\u2013size legends."
+      "description": "Matplotlib rendering for stellar magnitude–size legends."
     },
     {
       "path": "src/wenu/charts/magnitude_legend_style.py",
       "git_blob_sha": "9328fc55e2d465c8335486b72cf2273de6b5bdec",
       "as_is_directory": "src/wenu/charts",
-      "description": "Style configuration for stellar magnitude\u2013size legends."
+      "description": "Style configuration for stellar magnitude–size legends."
     },
     {
       "path": "src/wenu/charts/magnitude_legend_workflow.py",
       "git_blob_sha": "b270984666cd5b435fec7874e73135642b2d471d",
       "as_is_directory": "src/wenu/charts",
-      "description": "Chart-level workflow for stellar magnitude\u2013size legends."
+      "description": "Chart-level workflow for stellar magnitude–size legends."
     },
     {
       "path": "src/wenu/charts/modes.py",
@@ -10430,7 +10430,7 @@
       "sdk_cases_passed": 205,
       "metadata": "Actual isolated installed kernel wheel and root wheel/sdist/editable consumers passed; class identity, old pickle paths, aliases, ring octant/complement and source-free snapshots covered."
     },
-    "remaining": "KG.04 projections/clipping/domain math not moved; KG.05 full-service integration and KG.06\u2013KG.07 completed-K audit/corrections remain pending."
+    "remaining": "KG.04 projections/clipping/domain math not moved; KG.05 full-service integration and KG.06–KG.07 completed-K audit/corrections remain pending."
   },
   "geometry_projection_implementation": {
     "id": "KG.04",
@@ -11539,7 +11539,7 @@
         "issue": "Source physical facts, constructed/unitless compatibility and diffuse metadata/transport remain explicitly partial; lookup and geometry movement did not fabricate qualification."
       }
     ],
-    "retained_evidence": "PR #234\u2013#286 bounded receipts and named owners; KG.05 complete Mac receipt accepted. This audit does not revalidate all numerical science or release/visual/classroom acceptance.",
+    "retained_evidence": "PR #234–#286 bounded receipts and named owners; KG.05 complete Mac receipt accepted. This audit does not revalidate all numerical science or release/visual/classroom acceptance.",
     "guide": "Coordinate guide remains current: no scientific semantics, numerical implementation or runtime ownership changed.",
     "verification": {
       "kernel_import_scan_modules": 22,
@@ -11578,7 +11578,7 @@
     },
     "new_output_requirement": "All four cold/restored real polar specimens must pass with both xfail markers removed.",
     "retained_evidence": "Unaffected state/time/provider science and KG.05 full atlas serial/spawn/book receipts; affected isolated kernel/root installs explicitly repeated.",
-    "remaining": "Complete Mac acceptance, then explicit selection of K3.16; G06.U1\u2013U4 retain assigned K3 scope.",
+    "remaining": "Complete Mac acceptance, then explicit selection of K3.16; G06.U1–U4 retain assigned K3 scope.",
     "local_verification": {
       "selected_cases": 103,
       "passed_unique_cases": 102,
@@ -11767,7 +11767,7 @@
     "milestone": "K3.19",
     "base_commit": "37bcb851dbc2d1a8f77765f7458315ec4b31db10",
     "agreement": "Fernando 2026-10-20 Proceed after application-assembly explanation and clean PR #291 receipt; roadmap revision 43.",
-    "status": "Verified locally; focused Mac acceptance pending.",
+    "status": "Accepted through PR #292; Mac gates passed and branch cleanup confirmed.",
     "new_owner": "src/wenu/sky/assembly.py",
     "scope": "Move existing concrete constructors/factories/source-free restored facades; preserve central ordered registry/chart pipeline, public convenience/factory entry points, v6 codec and worker restoration.",
     "gate": "sky-application-assembly",
@@ -11785,6 +11785,59 @@
       "fault_evidence": "Ignoring supplied assembly fails the new add_points consumer contract; baseline passes.",
       "exports": "Real cold/saved/spawned atlas PNG/PDF/SVG and source-free fresh-process restoration passed.",
       "installation": "Root wheel/sdist contain moved modules; -I -S installed consumer imports only installed Wenu and uses assembly without source checkout."
+    },
+    "acceptance": {
+      "pull_request": 292,
+      "tested_commit": "f1bd63f387c9a42b9b4c2bedd22614ac8d5823b5",
+      "merged_commit": "2bdbc4a9963690f7c78cea483357292521a90f3a",
+      "mac_focused": 169,
+      "mac_documentation": 36,
+      "mac_tooling": 8,
+      "cleanup": "User confirmed clean synchronized main and both branch deletions."
     }
+  },
+  "ordinary_chart_routing": {
+    "milestone": "K3.20",
+    "base_commit": "2bdbc4a9963690f7c78cea483357292521a90f3a",
+    "status": "Implemented verification; Mac acceptance pending",
+    "production_changes": [],
+    "assessment": "docs/developer/kernel_migration_audit_v1.md#k320-ordinary-chart-consumer-assessment",
+    "gate": "ordinary-chart-routing",
+    "owners": [
+      "src/wenu/charts/request_chart.py",
+      "src/wenu/charts/regional.py",
+      "src/wenu/charts/binocular.py",
+      "src/wenu/charts/spatial_selection.py",
+      "src/wenu/charts/view.py",
+      "src/wenu/charts/composition.py",
+      "src/wenu/charts/detail_application.py",
+      "src/wenu/charts/request_furniture.py",
+      "src/wenu/charts/legend_metadata.py",
+      "src/wenu/charts/request_generation.py"
+    ],
+    "new_test_owners": [
+      "tests/test_request_chart.py",
+      "tests/test_regional_chart.py",
+      "tests/test_spatial_selection.py",
+      "tests/test_request_furniture.py"
+    ],
+    "local_receipt": {
+      "focused_passed": 387,
+      "unavailable": [
+        "tests/test_style_contracts.py::test_atlas_presentation_title_uses_foreground_palette (DE440s absent)",
+        "tests/test_request_realization.py::test_cluster_selection_request_real_kernel_mixed_chart_and_refusal (curated cluster bundle absent)"
+      ],
+      "fault": "Raw named-target coordinate bypass: both public preparation oracles fail (2 failed in 0.57 s); unmodified 47-case seam suite passes.",
+      "focused_total": 389,
+      "focused_seconds": 21.66,
+      "new_seam_rerun_passed": 47,
+      "new_seam_rerun_seconds": 1.7,
+      "tooling_passed": 8,
+      "tooling_seconds": 4.616,
+      "documentation_available_passed": 31,
+      "documentation_seconds": 1.12,
+      "documentation_limit": "Five full-checkout archive/asset/test-inventory checks remain required on Mac."
+    },
+    "limits": "Existing chart orchestration verified, no new science. K3.21 and later provider/model obligations remain separate; source gaps unchanged."
   }
 }

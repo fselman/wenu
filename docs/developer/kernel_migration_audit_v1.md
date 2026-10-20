@@ -1150,3 +1150,33 @@ legacy/corruption and atlas PNG/PDF/SVG cold/saved/spawned tests remain selected
 The root wheel/sdist owner verifies the moved module and isolated installed use.
 The coordinate guide remains current: no coordinate meaning, provenance,
 correction ownership or scientific calculation changed.
+
+
+## K3.20 ordinary chart consumer assessment
+
+Assessed at main `2bdbc4a9963690f7c78cea483357292521a90f3a` after
+K3.19 Mac acceptance and cleanup. This is a test/evidence closure of existing
+ordinary chart consumers, not a new implementation of their mathematics.
+
+| Consumer | Existing owner and service route | Verification |
+|---|---|---|
+| Five families | `request_chart.py` constructs FullSkyChart (planisphere), AllSkyChart, RegionalChart, CircumpolarChart and BinocularChart; `view.py` enters the same preparation owner | Request/view/family owner gates |
+| Named and explicit centres | ResolvedTarget.coordinate uses the admitted catalogue lookup for named source records; explicit coordinates remain caller input. Object centre and RegionalChart.from_coordinate use CoordinateService | Actual KernelSession result changes alter regional/binocular centres; kernel refusal reaches preparation after success |
+| Constellation/group framing | RegionalChart.from_constellations reads returned stellar layer geometry and optional official boundary geometry, retaining endpoint IDs and framing policy | Changed public geometry moves the centre; each selected geometry owner can refuse, without raw catalogue fallback |
+| Field membership | spatial_selection reads spherical_centers where available, otherwise spherical_geometry; geometry IDs and the chart projection/viewport determine selection | All six fixed families follow changed centre results and refuse after success; unions/exclusions and explicit motion pre-cull exemption retained |
+| Masks | Chart render owners pass constellation and horizon restrictions to existing domain/coordinate services and mask composition | Existing complete mask/horizon owner suites retain frames, winding and projection order |
+| Content/detail/style/mode | Composition and detail application select/configure layers; they do not calculate catalogue positions. Canonical draw_chart asks layers for realized geometry | Existing layer/realization, detail, composition and style suites protect independence and render-local state |
+| Context/title furniture | Target titles consume target.coordinate; legend centre coordinates use CoordinateService; magnitude counts consume rendered ProjectedPoints | Injected returned values appear in title/context, refusal propagates; existing legend count tests protect final viewport membership |
+| Export and repeated requests | request_generation owns the existing request scope, composition and export; view/drawing share established lifecycle | Existing request owner suites protect rollback/order/ownership and per-product export |
+
+No production bypass was demonstrated in these owners. No runtime relocation,
+new coordinate protocol, numerical rewrite or kernel release is needed here.
+The coordinate guide and scientific contracts remain current: source gaps,
+lookup limits and observation methods are unchanged. Accepted K3.16/KG output
+receipts and K3.19 real cold/saved/spawned atlas PNG/PDF/SVG and installation
+receipts remain applicable because this delivery changes no production bytes.
+The new tests label injected geometry and state changes as synthetic; they do
+not claim physical model accuracy. K3.21 retains the chart/atlas private-helper
+cycle, design/index/publication/report closure. Moving-body model qualification
+and remaining provider migrations retain their separate K3 rows. K3/K5 remain
+partial; this does not certify all Wenu functionality or independent packages.
