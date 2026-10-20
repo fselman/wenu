@@ -549,3 +549,14 @@ frame/origin/epoch facts remain explicit. No associated compact-object position
 or motion replaces the catalogue radio centre. Proper motion/parallax remains
 AX.16; expansion and morphology evolution remain excluded.
 
+
+## Existing observer resource and warm-cache boundary
+
+Legacy observed geometry now checks the actual active EOP/leap/backend inputs
+before shared cache reuse. `Observer` geometry admission binds loaded ephemeris
+bytes and refuses a closed or changed admitted file descriptor. This is cache
+correctness and resource lifetime, not new physical-source qualification or an
+absolute-accuracy certificate. The legacy Astropy/Skyfield resource-selection and
+observation policies are preserved; strict offline reception remains distinct.
+Request-owned resources close on success/failure; borrowed resources retain caller
+ownership. No observer resource is serialized as a native catalogue state.

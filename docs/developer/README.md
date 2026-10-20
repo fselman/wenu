@@ -11,7 +11,10 @@ Older v1–v5 skies remain readable with honest legacy metadata limits.
 K3.17 now verifies [existing constructed-reference service routes](kernel_migration_audit_v1.md#k317-constructed-reference-service-routing-assessment).
 The as-is assessment found established coordinate/geometry routes already in use;
 this task adds closure evidence and preserves production implementations. Focused
-Mac acceptance remains pending; K3.18 remains separately pending.
+Mac acceptance is complete through PR #290 (99 focused, 36 documentation and eight tooling cases).
+
+K3.18 now corrects [observer resource checks and shared warm-cache identity](implementation_reference.md#observer-resource-lifetime-and-geometry-cache-identity) in existing owners.
+Focused Mac acceptance remains pending; no new observation mathematics or package extraction is included.
 
 ## Read for current work
 

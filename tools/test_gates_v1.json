@@ -1948,6 +1948,96 @@
           "reason": "Actual saved/cold source-free geometry consumes shared returned values and propagates refusal."
         }
       ]
+    },
+    "observer-resource-lifecycle": {
+      "scope": "K3.18 existing observer/resource lifetime and shared observed-cache inputs across stellar, catalogue, diffuse and constructed-reference consumers.",
+      "limits": "Preserve existing coordinate/observation mathematics and request ownership. No SDK, dependency, source bytes, snapshot v6, renderer or package extraction change. Explicit reception numeric/refusal gates retained; M10 source model qualification remains K3.25. No full production/SDK/atlas export repeat.",
+      "selections": [
+        {
+          "node": "tests/test_observed_cache.py",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        },
+        {
+          "node": "tests/test_observer_resources.py",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        },
+        {
+          "node": "tests/test_observer_boundaries.py",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        },
+        {
+          "node": "tests/test_coordinate_service.py",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        },
+        {
+          "node": "tests/test_stars.py",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        },
+        {
+          "node": "tests/test_constellation_geometry.py",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        },
+        {
+          "node": "tests/test_constellation_labels.py",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        },
+        {
+          "node": "tests/test_position_providers.py",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        },
+        {
+          "node": "tests/test_nonstellar_catalogue.py",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        },
+        {
+          "node": "tests/test_galaxy_geometry.py",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        },
+        {
+          "node": "tests/test_globular_clusters.py",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        },
+        {
+          "node": "tests/test_supernova_remnants.py",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        },
+        {
+          "node": "tests/test_isophotes.py",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        },
+        {
+          "node": "tests/test_magellanic_clouds.py",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        },
+        {
+          "node": "tests/test_layer_realization.py",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        },
+        {
+          "node": "tests/test_request_realization.py",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        },
+        {
+          "node": "tests/test_request_generation.py",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        },
+        {
+          "node": "tests/test_planetary_nebulae.py::test_sequential_nebula_selections_share_observed_catalogue",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        },
+        {
+          "node": "tests/test_planetary_nebulae.py::test_pn_returned_states_control_native_points_and_warm_observation",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        },
+        {
+          "node": "tests/test_planetary_nebulae.py::test_packaged_pn_all_routes_refuse_after_warm_symbol_cache",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_saved_reference_warm_cache_follows_active_eop",
+          "reason": "Protect active resource changes, warm refusal, existing service consumers and owned/borrowed request cleanup."
+        }
+      ]
     }
   },
   "consumer_review": [

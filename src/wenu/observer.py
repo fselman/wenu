@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import unicodedata
 import weakref
 from datetime import datetime, timezone
@@ -225,6 +226,39 @@ class Observer:
 
         # Optional descriptive alias.
         self.topos = self.skyfield
+
+    def geometry_resource_identity(self):
+        """Identify the live loaded resource, refusing use after close/change.
+
+        Hash the loaded SPK once per observer. Recheck its open descriptor on
+        reuse; replacing the pathname does not replace this observer's handle.
+        """
+        if not self._ephemeris_finalizer.alive:
+            raise RuntimeError("Observer ephemeris is closed.")
+        handle = self.ephemeris.spk.daf.file
+        stat = os.fstat(handle.fileno())
+        signature = (stat.st_dev, stat.st_ino, stat.st_size,
+                     stat.st_mtime_ns, stat.st_ctime_ns)
+        admitted = getattr(self, "_geometry_ephemeris_identity", None)
+        if admitted is None:
+            path = Path(self.ephemeris.path)
+            digest = hashlib.sha256()
+            with path.open("rb") as stream:
+                before = os.fstat(stream.fileno())
+                if (before.st_dev, before.st_ino, before.st_size,
+                    before.st_mtime_ns, before.st_ctime_ns) != signature:
+                    raise RuntimeError("Observer ephemeris changed before admission.")
+                for block in iter(lambda: stream.read(1024 * 1024), b""):
+                    digest.update(block)
+            after = os.fstat(handle.fileno())
+            if (after.st_dev, after.st_ino, after.st_size,
+                after.st_mtime_ns, after.st_ctime_ns) != signature:
+                raise RuntimeError("Observer ephemeris changed during admission.")
+            admitted = (self.ephemeris, signature, digest.hexdigest())
+            self._geometry_ephemeris_identity = admitted
+        if admitted[:2] != (self.ephemeris, signature):
+            raise RuntimeError("Observer ephemeris changed after admission.")
+        return admitted[2]
 
     def close(self) -> None:
         """Close the loaded ephemeris resource, if it is still open."""
