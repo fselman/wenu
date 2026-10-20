@@ -10478,7 +10478,7 @@
   },
   "geometry_composition_acceptance": {
     "id": "KG.05",
-    "status": "evidence delivered for acceptance; G05-1 unresolved",
+    "status": "accepted evidence through PR #286, main 52c8315c; G05-1 unresolved",
     "base_commit": "608bc91deb3dd2e723787610ad373edcc235e2c1",
     "gate": "kernel-geometry-composition",
     "production_change": false,
@@ -10503,7 +10503,1042 @@
       "tooling_passed": 8,
       "documentation_passed": 33,
       "documentation_cache_omissions": 3,
-      "mac_acceptance": "pending complete documentation and composition gates"
+      "mac_acceptance": "accepted; see mac_receipt"
+    },
+    "mac_receipt": {
+      "tested_commit": "eceda16d5f2695e56eddc94f26c7a5b4278a9933",
+      "merged_commit": "52c8315cd3bd58386c105f3edf05ee2354292796",
+      "tree": "ec7edd8e7e2ac13ab753a751d779fff07c23698c",
+      "tooling_passed": 8,
+      "documentation_passed": 36,
+      "composition_passed": 15,
+      "strict_expected_failures": 2,
+      "composition_seconds": 281.12
+    }
+  },
+  "completed_k_service_audit": {
+    "id": "KG.06",
+    "status": "audit delivered for acceptance; no runtime correction implemented",
+    "base_commit": "52c8315cd3bd58386c105f3edf05ee2354292796",
+    "method": "Read actual definitions/callers/tests; all 291 local production/SDK Python blobs matched complete GitHub base; AST scan of all 22 kernel modules found no non-stdlib imports outside optional NumPy geometry/projections. Accepted tests remain bounded evidence, not newly rerun numerical claims.",
+    "deliverables": [
+      {
+        "id": "K0.01",
+        "prs": [
+          234,
+          235
+        ],
+        "owners": [
+          "docs/developer/documentation_cleanup_v1.json"
+        ],
+        "callers": [
+          "release/documentation consumers"
+        ],
+        "service": "Pinned baseline tree and preserved receipt",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_current_documentation.py"
+        ],
+        "remaining": "No change to this accepted bounded deliverable."
+      },
+      {
+        "id": "K0.02",
+        "prs": [
+          235
+        ],
+        "owners": [
+          "docs/developer/documentation_cleanup_v1.json"
+        ],
+        "callers": [
+          "active documentation/archives"
+        ],
+        "service": "Exact preserved Git blob ledger; no runtime dependency",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_current_documentation.py"
+        ],
+        "remaining": "No change to this accepted bounded deliverable."
+      },
+      {
+        "id": "K0.03",
+        "prs": [
+          235,
+          270,
+          280,
+          281
+        ],
+        "owners": [
+          "AGENTS.md",
+          "docs/developer/assistant_instructions.md",
+          "docs/developer/kernel_roadmap_v0.9.5.md"
+        ],
+        "callers": [
+          "contributors and task selection"
+        ],
+        "service": "Shared-service diagrams and explicit scope control",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_current_documentation.py"
+        ],
+        "remaining": "No change to this accepted bounded deliverable."
+      },
+      {
+        "id": "K1.01",
+        "prs": [
+          236
+        ],
+        "owners": [
+          "docs/developer/kernel_migration_inventory_v1.json",
+          "docs/developer/kernel_migration_audit_v1.md"
+        ],
+        "callers": [
+          "K3 reconciliation"
+        ],
+        "service": "Inventory describes source/test/operational owners; not routing proof",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_current_documentation.py"
+        ],
+        "remaining": "Continuous reconciliation and K3.40 remain open."
+      },
+      {
+        "id": "K1.02",
+        "prs": [
+          236,
+          237,
+          240,
+          241,
+          255,
+          283
+        ],
+        "owners": [
+          "packages/wenu_kernel/src/wenu_kernel/records.py",
+          "packages/wenu_kernel/src/wenu_kernel/coordinates.py",
+          "docs/developer/kernel_contract_k1.md"
+        ],
+        "callers": [
+          "provider descriptors, source adapters, geometry consumers"
+        ],
+        "service": "State/reference and coordinate contracts distinguish physical and geometry domains",
+        "disposition": "no_change",
+        "evidence": [
+          "packages/wenu_kernel/tests/test_records.py",
+          "tests/test_coordinate_vocabulary.py"
+        ],
+        "remaining": "Initial/implemented contracts only; K5 final freeze remains open."
+      },
+      {
+        "id": "K1.03",
+        "prs": [
+          236,
+          238,
+          239,
+          240
+        ],
+        "owners": [
+          "packages/wenu_kernel/src/wenu_kernel/records.py",
+          "packages/wenu_kernel/src/wenu_kernel/reuse.py"
+        ],
+        "callers": [
+          "KernelSession and provider conformance"
+        ],
+        "service": "Independent error channels, exact cache and certified angular reuse; unknown is not zero",
+        "disposition": "no_change",
+        "evidence": [
+          "packages/wenu_kernel/tests/test_reuse.py",
+          "packages/wenu_kernel/tests/test_cartesian.py"
+        ],
+        "remaining": "No Cartesian reuse certificate, physical-accuracy guarantee or final freeze inferred."
+      },
+      {
+        "id": "K2.01",
+        "prs": [
+          237,
+          242
+        ],
+        "owners": [
+          "packages/wenu_kernel/src/wenu_kernel/kernel.py",
+          "packages/wenu_kernel/src/wenu_kernel/records.py",
+          "packages/wenu_kernel/src/wenu_kernel/providers.py"
+        ],
+        "callers": [
+          "Wenu adapters and independently installed consumers"
+        ],
+        "service": "Explicit references/provider ownership; synchronous session lifecycle",
+        "disposition": "no_change",
+        "evidence": [
+          "packages/wenu_kernel/tests/test_sessions.py",
+          "packages/wenu_kernel/tests/test_records.py"
+        ],
+        "remaining": "Accepted implemented SDK subset retained; final K5 review is not closed."
+      },
+      {
+        "id": "K2.02",
+        "prs": [
+          237,
+          238,
+          239
+        ],
+        "owners": [
+          "packages/wenu_kernel/src/wenu_kernel/kernel.py",
+          "packages/wenu_kernel/src/wenu_kernel/reuse.py"
+        ],
+        "callers": [
+          "Wenu adapters and independently installed consumers"
+        ],
+        "service": "Validate admission before exact cache; bounded/canonical reuse requires provider certificates",
+        "disposition": "no_change",
+        "evidence": [
+          "packages/wenu_kernel/tests/test_reuse.py"
+        ],
+        "remaining": "Accepted implemented SDK subset retained; final K5 review is not closed."
+      },
+      {
+        "id": "K2.03",
+        "prs": [
+          240
+        ],
+        "owners": [
+          "packages/wenu_kernel/src/wenu_kernel/records.py",
+          "packages/wenu_kernel/src/wenu_kernel/kernel.py"
+        ],
+        "callers": [
+          "Wenu adapters and independently installed consumers"
+        ],
+        "service": "SI Cartesian representation separate from angular direction and velocity availability",
+        "disposition": "no_change",
+        "evidence": [
+          "packages/wenu_kernel/tests/test_cartesian.py"
+        ],
+        "remaining": "Accepted implemented SDK subset retained; final K5 review is not closed."
+      },
+      {
+        "id": "K2.04",
+        "prs": [
+          241
+        ],
+        "owners": [
+          "packages/wenu_kernel/src/wenu_kernel/time.py",
+          "packages/wenu_kernel/src/wenu_kernel/time_adapters.py"
+        ],
+        "callers": [
+          "Wenu adapters and independently installed consumers"
+        ],
+        "service": "Explicit directed time conversion admission, coverage and rounding receipt; no implicit chain",
+        "disposition": "no_change",
+        "evidence": [
+          "packages/wenu_kernel/tests/test_time.py"
+        ],
+        "remaining": "Accepted implemented SDK subset retained; final K5 review is not closed."
+      },
+      {
+        "id": "K2.05",
+        "prs": [
+          242,
+          255
+        ],
+        "owners": [
+          "packages/wenu_kernel/src/wenu_kernel/conformance.py"
+        ],
+        "callers": [
+          "Wenu adapters and independently installed consumers"
+        ],
+        "service": "Provider supplies offline cases/activity/mutation hooks; core imports no concrete provider",
+        "disposition": "no_change",
+        "evidence": [
+          "packages/wenu_kernel/tests/test_conformance.py",
+          "packages/wenu_kernel/tests/test_isolation.py"
+        ],
+        "remaining": "Accepted implemented SDK subset retained; final K5 review is not closed."
+      },
+      {
+        "id": "K3.01",
+        "prs": [
+          243
+        ],
+        "owners": [
+          "src/wenu/minor_body_resources.py",
+          "src/wenu/charts/request_generation.py"
+        ],
+        "callers": [
+          "build_chart_request/generate_chart_request/ChartRequestBuild.close"
+        ],
+        "service": "Application owns SPK/session/resolver rollback; kernel does not acquire resources",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_minor_body_resources.py",
+          "tests/test_request_generation.py"
+        ],
+        "remaining": "Lifetime prerequisite only; minor-body numerical routing remains K3.28/K3.29."
+      },
+      {
+        "id": "K3.02",
+        "prs": [
+          244
+        ],
+        "owners": [
+          "src/wenu/charts/request_generation.py"
+        ],
+        "callers": [
+          "ordinary chart preparation and failures"
+        ],
+        "service": "Request-local mutation journal/lease and ordered cleanup; no kernel/product reverse dependency",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_request_generation.py"
+        ],
+        "remaining": "No general thread-safety or cache-rollback promise."
+      },
+      {
+        "id": "K3.03",
+        "prs": [
+          246
+        ],
+        "owners": [
+          "src/wenu/charts/request_generation.py",
+          "src/wenu/charts/view.py",
+          "src/wenu/cli/chart.py"
+        ],
+        "callers": [
+          "ordinary/view/native atlas sheet API/CLI/worker dispatch"
+        ],
+        "service": "Shared request scope; native observer-free realization and existing composed export",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_request_generation.py",
+          "tests/test_wenu_chart_cli.py",
+          "tests/test_reusable_canonical_sphere.py"
+        ],
+        "remaining": "Private atlas helper cycle remains K3.21; accepted lifetime/dispatch is not full atlas migration."
+      },
+      {
+        "id": "K3.04",
+        "prs": [
+          248
+        ],
+        "owners": [
+          "src/wenu/stellar_catalogue.py",
+          "src/wenu/stellar_state.py",
+          "src/wenu/sky/native_snapshot.py"
+        ],
+        "callers": [
+          "Stars native state, figure/label inputs, restored sky"
+        ],
+        "service": "Source-bound metadata and immutable rows; application snapshot is not a persisted StateBatch",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_stellar_state.py",
+          "tests/test_reusable_canonical_sphere.py"
+        ],
+        "remaining": "Compatibility repair and native-metadata-resources receipt retained; physical stellar propagation remains K4b."
+      },
+      {
+        "id": "K3.05",
+        "prs": [
+          247,
+          248
+        ],
+        "owners": [
+          "src/wenu/objects/stars.py",
+          "src/wenu/stellar_state.py",
+          "src/wenu/catalogue_state.py"
+        ],
+        "callers": [
+          "Stars.position/native_positions/native realization"
+        ],
+        "service": "Finite rows -> owned Kernel/Session -> returned states; NaN source rows retained only as geometry",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_stars.py",
+          "tests/test_stellar_state.py"
+        ],
+        "remaining": "G06.C1 affects downstream point projection, not provider state admission or catalogue membership."
+      },
+      {
+        "id": "K3.06",
+        "prs": [
+          248
+        ],
+        "owners": [
+          "src/wenu/sky/constellation_lines.py",
+          "src/wenu/objects/stars.py"
+        ],
+        "callers": [
+          "native figure endpoints and faint vertices"
+        ],
+        "service": "Public Stars.native_positions; finite endpoints and inherited coordinate specification",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_constellation_geometry.py",
+          "tests/test_stars.py"
+        ],
+        "remaining": "No propagation or source topology change."
+      },
+      {
+        "id": "K3.07",
+        "prs": [
+          271
+        ],
+        "owners": [
+          "src/wenu/sky/constellation_labels.py",
+          "src/wenu/objects/stars.py"
+        ],
+        "callers": [
+          "native mean label anchors and cold/restored pages"
+        ],
+        "service": "Public full-source native positions; constellation grouping/minimum/anchor placement remain product policy",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_constellation_labels.py",
+          "tests/test_reusable_canonical_sphere.py"
+        ],
+        "remaining": "Private anchor mean is not a duplicate call bypass of an existing kernel service; new generic mean API is not required by this audit."
+      },
+      {
+        "id": "K3.08",
+        "prs": [
+          272
+        ],
+        "owners": [
+          "src/wenu/objects/stars.py",
+          "src/wenu/sky/constellation_lines.py",
+          "src/wenu/sky/constellation_labels.py",
+          "src/wenu/sky/observed_cache.py"
+        ],
+        "callers": [
+          "observed stars, figures and mean anchors"
+        ],
+        "service": "Kernel-derived inputs precede cache lookup; retained Skyfield no-deflectors stars/figures and Astropy labels",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_stars.py",
+          "tests/test_constellation_labels.py",
+          "tests/test_observed_cache.py"
+        ],
+        "remaining": "Backend/resource-complete common observer/cache closure remains K3.18; no new AX realization silently substituted."
+      },
+      {
+        "id": "K3.09",
+        "prs": [
+          249,
+          250,
+          251,
+          273,
+          274
+        ],
+        "owners": [
+          "src/wenu/coordinates.py",
+          "src/wenu/objects/nonstellar.py",
+          "src/wenu/sky/native_snapshot.py"
+        ],
+        "callers": [
+          "catalogue load/admission, coordinate factories and saved schemas"
+        ],
+        "service": "Unknown epochs remain None; source-bound lookup admission is distinct from physical qualification",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_nonstellar_catalogue.py",
+          "tests/test_coordinate_vocabulary.py",
+          "tests/test_reusable_canonical_sphere.py"
+        ],
+        "remaining": "M5 physical source gaps and historical compatibility remain explicit; no invented J2000 or measured zero motion."
+      },
+      {
+        "id": "K3.10",
+        "prs": [
+          252,
+          253,
+          254,
+          275
+        ],
+        "owners": [
+          "src/wenu/objects/galaxies.py",
+          "src/wenu/catalogue_state.py",
+          "src/wenu/objects/nonstellar.py"
+        ],
+        "callers": [
+          "public position/native/observed/labels/selection and restored sources"
+        ],
+        "service": "static_direction; returned centres feed native/observed points/outlines before caches",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_galaxy_geometry.py",
+          "tests/test_position_providers.py",
+          "tests/test_reusable_canonical_sphere.py"
+        ],
+        "remaining": "Retain changed-returned-state and warm-cache refusal evidence. Source gaps/constructed legacy admission stay disclosed; no new physical motion/shape evolution."
+      },
+      {
+        "id": "K3.11",
+        "prs": [
+          249,
+          255,
+          256
+        ],
+        "owners": [
+          "src/wenu/objects/open_clusters.py",
+          "src/wenu/catalogue_state.py",
+          "src/wenu/objects/nonstellar.py"
+        ],
+        "callers": [
+          "public position/native/observed/labels/selection and restored sources"
+        ],
+        "service": "catalogue_lookup; row epochs/masks/order preserved; returned vectors precede observation cache",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_open_clusters.py",
+          "tests/test_position_providers.py",
+          "tests/test_reusable_canonical_sphere.py"
+        ],
+        "remaining": "Retain changed-returned-state and warm-cache refusal evidence. Source gaps/constructed legacy admission stay disclosed; no new physical motion/shape evolution."
+      },
+      {
+        "id": "K3.12",
+        "prs": [
+          276
+        ],
+        "owners": [
+          "src/wenu/objects/nonstellar.py",
+          "src/wenu/catalogue_state.py",
+          "src/wenu/charts/target_resolver.py",
+          "src/wenu/charts/request_chart.py"
+        ],
+        "callers": [
+          "public position/native/observed/labels/selection and restored sources"
+        ],
+        "service": "catalogue_lookup; generic/Messier/Caldwell membership and target-centre consumers use returned states",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_nonstellar_catalogue.py",
+          "tests/test_position_providers.py",
+          "tests/test_reusable_canonical_sphere.py"
+        ],
+        "remaining": "Retain changed-returned-state and warm-cache refusal evidence. Source gaps/constructed legacy admission stay disclosed; no new physical motion/shape evolution."
+      },
+      {
+        "id": "K3.13",
+        "prs": [
+          277
+        ],
+        "owners": [
+          "src/wenu/objects/globular_clusters.py",
+          "src/wenu/catalogue_state.py",
+          "src/wenu/objects/nonstellar.py"
+        ],
+        "callers": [
+          "public position/native/observed/labels/selection and restored sources"
+        ],
+        "service": "family catalogue_lookup; half-light/structure/common-name policy remains source/product owned",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_globular_clusters.py",
+          "tests/test_position_providers.py",
+          "tests/test_reusable_canonical_sphere.py"
+        ],
+        "remaining": "Retain changed-returned-state and warm-cache refusal evidence. Source gaps/constructed legacy admission stay disclosed; no new physical motion/shape evolution."
+      },
+      {
+        "id": "K3.14",
+        "prs": [
+          278
+        ],
+        "owners": [
+          "src/wenu/objects/planetary_nebulae.py",
+          "src/wenu/catalogue_state.py",
+          "src/wenu/objects/nonstellar.py"
+        ],
+        "callers": [
+          "public position/native/observed/labels/selection and restored sources"
+        ],
+        "service": "family catalogue_lookup; native points/observed symbol centres use returned states; fixed glyph scale remains product owned",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_planetary_nebulae.py",
+          "tests/test_position_providers.py",
+          "tests/test_reusable_canonical_sphere.py"
+        ],
+        "remaining": "Retain changed-returned-state and warm-cache refusal evidence. Source gaps/constructed legacy admission stay disclosed; no new physical motion/shape evolution."
+      },
+      {
+        "id": "K3.15",
+        "prs": [
+          279
+        ],
+        "owners": [
+          "src/wenu/objects/supernova_remnants.py",
+          "src/wenu/catalogue_state.py",
+          "src/wenu/objects/nonstellar.py"
+        ],
+        "callers": [
+          "public position/native/observed/labels/selection and restored sources"
+        ],
+        "service": "family catalogue_lookup; signed IDs and source shell centres; missing-PA circle remains product policy",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_supernova_remnants.py",
+          "tests/test_position_providers.py",
+          "tests/test_reusable_canonical_sphere.py"
+        ],
+        "remaining": "Retain changed-returned-state and warm-cache refusal evidence. Source gaps/constructed legacy admission stay disclosed; no new physical motion/shape evolution."
+      },
+      {
+        "id": "KG.01",
+        "prs": [
+          282
+        ],
+        "owners": [
+          "docs/developer/kernel_migration_audit_v1.md",
+          "docs/developer/kernel_migration_inventory_v1.json"
+        ],
+        "callers": [
+          "application geometry consumers and isolated kernel consumers"
+        ],
+        "service": "Five original coupling/contract findings mapped to actual owners",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_current_documentation.py"
+        ],
+        "remaining": "Accepted bounded evidence retained; no freeze or astronomical package extraction."
+      },
+      {
+        "id": "KG.02",
+        "prs": [
+          283
+        ],
+        "owners": [
+          "docs/developer/kernel_contract_k1.md"
+        ],
+        "callers": [
+          "application geometry consumers and isolated kernel consumers"
+        ],
+        "service": "Explicit geometry/state separation, units/topology/aliasing and optional dependency contract",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_current_documentation.py"
+        ],
+        "remaining": "Accepted bounded evidence retained; no freeze or astronomical package extraction."
+      },
+      {
+        "id": "KG.03",
+        "prs": [
+          284
+        ],
+        "owners": [
+          "packages/wenu_kernel/src/wenu_kernel/coordinates.py",
+          "packages/wenu_kernel/src/wenu_kernel/geometry/spherical.py",
+          "packages/wenu_kernel/src/wenu_kernel/geometry/projected.py",
+          "packages/wenu_kernel/src/wenu_kernel/geometry/frame.py",
+          "packages/wenu_kernel/src/wenu_kernel/geometry/viewport.py",
+          "packages/wenu_kernel/src/wenu_kernel/geometry/topology.py"
+        ],
+        "callers": [
+          "application geometry consumers and isolated kernel consumers"
+        ],
+        "service": "Canonical records/frame/viewport/ring mathematics; identical legacy aliases",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_spherical.py",
+          "tests/test_spherical_frame.py",
+          "tests/test_curated_catalogues.py"
+        ],
+        "remaining": "Accepted bounded evidence retained; no freeze or astronomical package extraction."
+      },
+      {
+        "id": "KG.04",
+        "prs": [
+          285
+        ],
+        "owners": [
+          "packages/wenu_kernel/src/wenu_kernel/geometry/domain.py",
+          "packages/wenu_kernel/src/wenu_kernel/geometry/clipping.py",
+          "packages/wenu_kernel/src/wenu_kernel/projections/stereographic.py",
+          "packages/wenu_kernel/src/wenu_kernel/projections/polar_azimuthal_equidistant.py",
+          "packages/wenu_kernel/src/wenu_kernel/projections/mollweide.py",
+          "src/wenu/rendering/preparation.py"
+        ],
+        "callers": [
+          "atlas/polar charts, canonical and legacy imports"
+        ],
+        "service": "Numerical services moved unchanged; appearance retained in application",
+        "disposition": "correction",
+        "evidence": [
+          "tests/test_projection_and_clipping_contracts.py",
+          "tests/test_polar_azimuthal_equidistant_projection.py",
+          "tests/test_reusable_canonical_sphere.py"
+        ],
+        "remaining": "G06.C1/G05-1: point-batch finite-row handling must compose with strict equidistant numerics. Retain finite-input numerical and successful output evidence, not full equidistant acceptance."
+      },
+      {
+        "id": "KG.05",
+        "prs": [
+          286
+        ],
+        "owners": [
+          "tests/test_reusable_canonical_sphere.py",
+          "src/wenu/charts/polar_planisphere.py"
+        ],
+        "callers": [
+          "atlas/polar charts, canonical and legacy imports"
+        ],
+        "service": "Real cold/saved atlas and stereographic polar composition; strict equidistant failing specimen",
+        "disposition": "correction",
+        "evidence": [
+          "tests/test_projection_and_clipping_contracts.py",
+          "tests/test_polar_azimuthal_equidistant_projection.py",
+          "tests/test_reusable_canonical_sphere.py"
+        ],
+        "remaining": "G06.C1/G05-1: point-batch finite-row handling must compose with strict equidistant numerics. Retain finite-input numerical and successful output evidence, not full equidistant acceptance."
+      },
+      {
+        "id": "AX.01",
+        "prs": [
+          257,
+          258
+        ],
+        "owners": [
+          "src/wenu/cluster_state.py",
+          "src/wenu/objects/open_clusters.py"
+        ],
+        "callers": [
+          "accepted cluster state/realization/request seams only"
+        ],
+        "service": "Source-specific centre/epoch/systemic input admission remains adapter-owned",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_astrometric_state.py",
+          "tests/test_cluster_state.py",
+          "tests/test_observer_resources.py",
+          "tests/test_open_clusters.py",
+          "tests/test_request_realization.py"
+        ],
+        "remaining": "Composition audit only. Retain accepted independent science/resource/refusal receipts; no real star/PN/SNR adapter, reduced-input model or new backend enabled. Generic realization packaging remains K3.18."
+      },
+      {
+        "id": "AX.02",
+        "prs": [
+          259
+        ],
+        "owners": [
+          "src/wenu/cluster_state.py",
+          "src/wenu/astrometric_state.py"
+        ],
+        "callers": [
+          "accepted cluster state/realization/request seams only"
+        ],
+        "service": "Complete-input nominal provider advertises finite explicit domain and honest errors",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_astrometric_state.py",
+          "tests/test_cluster_state.py",
+          "tests/test_observer_resources.py",
+          "tests/test_open_clusters.py",
+          "tests/test_request_realization.py"
+        ],
+        "remaining": "Composition audit only. Retain accepted independent science/resource/refusal receipts; no real star/PN/SNR adapter, reduced-input model or new backend enabled. Generic realization packaging remains K3.18."
+      },
+      {
+        "id": "AX.03",
+        "prs": [
+          260
+        ],
+        "owners": [
+          "src/wenu/astrometric_state.py"
+        ],
+        "callers": [
+          "accepted cluster state/realization/request seams only"
+        ],
+        "service": "Angular native certificates only; not translated apparent/Cartesian guarantees",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_astrometric_state.py",
+          "tests/test_cluster_state.py",
+          "tests/test_observer_resources.py",
+          "tests/test_open_clusters.py",
+          "tests/test_request_realization.py"
+        ],
+        "remaining": "Composition audit only. Retain accepted independent science/resource/refusal receipts; no real star/PN/SNR adapter, reduced-input model or new backend enabled. Generic realization packaging remains K3.18."
+      },
+      {
+        "id": "AX.04",
+        "prs": [
+          261
+        ],
+        "owners": [
+          "src/wenu/objects/open_clusters.py",
+          "src/wenu/sky/native_snapshot.py"
+        ],
+        "callers": [
+          "accepted cluster state/realization/request seams only"
+        ],
+        "service": "Explicit per-call native motion; default lookup unchanged",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_astrometric_state.py",
+          "tests/test_cluster_state.py",
+          "tests/test_observer_resources.py",
+          "tests/test_open_clusters.py",
+          "tests/test_request_realization.py"
+        ],
+        "remaining": "Composition audit only. Retain accepted independent science/resource/refusal receipts; no real star/PN/SNR adapter, reduced-input model or new backend enabled. Generic realization packaging remains K3.18."
+      },
+      {
+        "id": "AX.05",
+        "prs": [
+          262
+        ],
+        "owners": [
+          "docs/developer/scientific_contracts.md"
+        ],
+        "callers": [
+          "accepted cluster state/realization/request seams only"
+        ],
+        "service": "Observer handoff contract remains distinct from runtime enablement",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_astrometric_state.py",
+          "tests/test_cluster_state.py",
+          "tests/test_observer_resources.py",
+          "tests/test_open_clusters.py",
+          "tests/test_request_realization.py"
+        ],
+        "remaining": "Composition audit only. Retain accepted independent science/resource/refusal receipts; no real star/PN/SNR adapter, reduced-input model or new backend enabled. Generic realization packaging remains K3.18."
+      },
+      {
+        "id": "AX.06",
+        "prs": [
+          263
+        ],
+        "owners": [
+          "src/wenu/astrometric_state.py",
+          "src/wenu/cluster_state.py"
+        ],
+        "callers": [
+          "accepted cluster state/realization/request seams only"
+        ],
+        "service": "Object-independent rectilinear core called by source-specific cluster adapter",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_astrometric_state.py",
+          "tests/test_cluster_state.py",
+          "tests/test_observer_resources.py",
+          "tests/test_open_clusters.py",
+          "tests/test_request_realization.py"
+        ],
+        "remaining": "Composition audit only. Retain accepted independent science/resource/refusal receipts; no real star/PN/SNR adapter, reduced-input model or new backend enabled. Generic realization packaging remains K3.18."
+      },
+      {
+        "id": "AX.07",
+        "prs": [
+          264
+        ],
+        "owners": [
+          "src/wenu/astrometric_state.py",
+          "src/wenu/cluster_state.py"
+        ],
+        "callers": [
+          "accepted cluster state/realization/request seams only"
+        ],
+        "service": "Separate actual Cartesian batches through SDK; no implicit direction-to-distance conversion",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_astrometric_state.py",
+          "tests/test_cluster_state.py",
+          "tests/test_observer_resources.py",
+          "tests/test_open_clusters.py",
+          "tests/test_request_realization.py"
+        ],
+        "remaining": "Composition audit only. Retain accepted independent science/resource/refusal receipts; no real star/PN/SNR adapter, reduced-input model or new backend enabled. Generic realization packaging remains K3.18."
+      },
+      {
+        "id": "AX.08",
+        "prs": [
+          265
+        ],
+        "owners": [
+          "src/wenu/astrometric_coordinates.py"
+        ],
+        "callers": [
+          "accepted cluster state/realization/request seams only"
+        ],
+        "service": "Explicit TCB/TDB TimeService receipt and Cartesian convention conversion",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_astrometric_state.py",
+          "tests/test_cluster_state.py",
+          "tests/test_observer_resources.py",
+          "tests/test_open_clusters.py",
+          "tests/test_request_realization.py"
+        ],
+        "remaining": "Composition audit only. Retain accepted independent science/resource/refusal receipts; no real star/PN/SNR adapter, reduced-input model or new backend enabled. Generic realization packaging remains K3.18."
+      },
+      {
+        "id": "AX.09",
+        "prs": [
+          266
+        ],
+        "owners": [
+          "src/wenu/astrometric_observation.py"
+        ],
+        "callers": [
+          "accepted cluster state/realization/request seams only"
+        ],
+        "service": "Concrete offline ERFA/Astropy backend admits local leap/EOP/code/site/coverage",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_astrometric_state.py",
+          "tests/test_cluster_state.py",
+          "tests/test_observer_resources.py",
+          "tests/test_open_clusters.py",
+          "tests/test_request_realization.py"
+        ],
+        "remaining": "Composition audit only. Retain accepted independent science/resource/refusal receipts; no real star/PN/SNR adapter, reduced-input model or new backend enabled. Generic realization packaging remains K3.18."
+      },
+      {
+        "id": "AX.10",
+        "prs": [
+          267
+        ],
+        "owners": [
+          "src/wenu/astrometric_observation.py"
+        ],
+        "callers": [
+          "accepted cluster state/realization/request seams only"
+        ],
+        "service": "Realization consumes evaluated Cartesian batch once; no second propagation/light-time owner",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_astrometric_state.py",
+          "tests/test_cluster_state.py",
+          "tests/test_observer_resources.py",
+          "tests/test_open_clusters.py",
+          "tests/test_request_realization.py"
+        ],
+        "remaining": "Composition audit only. Retain accepted independent science/resource/refusal receipts; no real star/PN/SNR adapter, reduced-input model or new backend enabled. Generic realization packaging remains K3.18."
+      },
+      {
+        "id": "AX.11",
+        "prs": [
+          268
+        ],
+        "owners": [
+          "src/wenu/objects/open_clusters.py",
+          "src/wenu/sky/realization.py",
+          "src/wenu/sky/celestial_sphere.py"
+        ],
+        "callers": [
+          "accepted cluster state/realization/request seams only"
+        ],
+        "service": "Explicit reception/geometry guards before projection; no warm fallback",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_astrometric_state.py",
+          "tests/test_cluster_state.py",
+          "tests/test_observer_resources.py",
+          "tests/test_open_clusters.py",
+          "tests/test_request_realization.py"
+        ],
+        "remaining": "Composition audit only. Retain accepted independent science/resource/refusal receipts; no real star/PN/SNR adapter, reduced-input model or new backend enabled. Generic realization packaging remains K3.18."
+      },
+      {
+        "id": "AX.12",
+        "prs": [
+          269
+        ],
+        "owners": [
+          "src/wenu/charts/request_realization.py",
+          "src/wenu/charts/request.py"
+        ],
+        "callers": [
+          "accepted cluster state/realization/request seams only"
+        ],
+        "service": "CLI/TOML request composes qualified model/reception, IDs and horizontal-only admission",
+        "disposition": "no_change",
+        "evidence": [
+          "tests/test_astrometric_state.py",
+          "tests/test_cluster_state.py",
+          "tests/test_observer_resources.py",
+          "tests/test_open_clusters.py",
+          "tests/test_request_realization.py"
+        ],
+        "remaining": "Composition audit only. Retain accepted independent science/resource/refusal receipts; no real star/PN/SNR adapter, reduced-input model or new backend enabled. Generic realization packaging remains K3.18."
+      }
+    ],
+    "corrections": [
+      {
+        "id": "G06.C1",
+        "origin": "G05-1",
+        "affected_deliverables": [
+          "K3.05 downstream composition",
+          "KG.04",
+          "KG.05"
+        ],
+        "owner": "packages/wenu_kernel/src/wenu_kernel/projections/stereographic.py::StereographicProjection.project_points",
+        "strict_numerical_owner": "packages/wenu_kernel/src/wenu_kernel/projections/polar_azimuthal_equidistant.py::_project_aligned",
+        "consumer": "src/wenu/charts/polar_planisphere.py::project_equatorial_geometry",
+        "scope": "At shared point-geometry dispatch, project finite coordinate rows and preserve missing-coordinate slots/IDs/labels/names/metadata as non-finite projected rows. Preserve finite-data formula/order, empty input, scalar strict validation, invalid finite latitude/opposite-pole refusal and canonical/legacy identity. Do not filter or change source membership, publish missing states, weaken scalar guards or alter chart/style policy.",
+        "tests": [
+          "tests/test_projected_geometry_projection.py",
+          "tests/test_polar_azimuthal_equidistant_projection.py",
+          "tests/test_projection_and_clipping_contracts.py",
+          "tests/test_stars.py::test_missing_native_positions_never_become_zero_direction_states",
+          "tests/test_reusable_canonical_sphere.py::test_kernel_geometry_polar_cold_saved_outputs"
+        ],
+        "acceptance": "Add focused mixed/all-missing/empty point-batch compatibility tests in existing owner; retain direct numerical refusals. Both real equidistant pole specimens must pass with strict xfail markers removed; retain cold/restored records/pixels and real PNG/PDF/SVG. Recheck affected isolated kernel wheel, root immutable pin installation and alias consumers after kernel version/pin changes. No repeat of unrelated provider science/full production by default.",
+        "execution": "KG.07 only after this audit acceptance and explicit selection"
+      }
+    ],
+    "unresolved": [
+      {
+        "id": "G06.U1",
+        "milestones": [
+          "K3.18",
+          "K3.25"
+        ],
+        "owner": "src/wenu/sky/observed_cache.py",
+        "issue": "Legacy observer key uses site/time/name/path, not complete admitted resource/backend identity; existing no-warm-fallback claims remain valid for their tested inputs, not universal scientific cache identity. M10 was already open."
+      },
+      {
+        "id": "G06.U2",
+        "milestones": [
+          "K3.19",
+          "K3.21"
+        ],
+        "owner": "src/wenu/charts/request_generation.py",
+        "issue": "Concrete assembly and private atlas helper cycle remain known partial obligations; accepted dispatch/lifetime is not full module decoupling."
+      },
+      {
+        "id": "G06.U3",
+        "milestones": [
+          "K3.18",
+          "K5.02"
+        ],
+        "owner": "src/wenu/astrometric_observation.py",
+        "issue": "Generic realization/core contracts are composed through transitional Wenu adapters; no reverse kernel dependency found. Future placement/contract closure remains pending, not a new AX prerequisite."
+      },
+      {
+        "id": "G06.U4",
+        "milestones": [
+          "K3.09",
+          "K3.16",
+          "K3.40"
+        ],
+        "owner": "src/wenu/objects/nonstellar.py",
+        "issue": "Source physical facts, constructed/unitless compatibility and diffuse metadata/transport remain explicitly partial; lookup and geometry movement did not fabricate qualification."
+      }
+    ],
+    "retained_evidence": "PR #234\u2013#286 bounded receipts and named owners; KG.05 complete Mac receipt accepted. This audit does not revalidate all numerical science or release/visual/classroom acceptance.",
+    "guide": "Coordinate guide remains current: no scientific semantics, numerical implementation or runtime ownership changed.",
+    "verification": {
+      "kernel_import_scan_modules": 22,
+      "forbidden_imports": 0,
+      "matched_source_blobs": 291,
+      "g05_expected_failures_reproduced": 2,
+      "g05_probe_seconds": 20.13,
+      "documentation_gate": "33 local passes; three archive/evidence cache omissions; complete Mac gate pending. Active present anchors and all complete-tree link destinations checked.",
+      "audited_deliverables": 43,
+      "owner_evidence_paths_checked": 91,
+      "archive_git_blobs_checked": 73,
+      "archive_mismatches": 0
     }
   }
 }
