@@ -71,8 +71,16 @@ K3.16 admits diffuse source declarations in the Wenu-owned immutable
 `sky/isophote_sources.py` envelope before shared kernel spherical/topology services.
 Saved-sky v6 preserves it; v1–v5 use explicit source-free legacy receipts. Source
 properties absent in older files remain unavailable. Observation/projection/render
-science and the kernel distribution are unchanged; K3.16 acceptance is pending.
+science and the kernel distribution are unchanged; K3.16 is accepted through PR #289.
 See [diffuse admission](implementation_reference.md#diffuse-contour-source-admission-and-saved-skies).
+
+K3.17’s constructed-reference assessment retains existing grid, pole/keypoint,
+FK4/B1875 boundary, horizon/mask and furniture implementations: they already use
+the shared coordinate/geometry/domain/projection services. Source-free restored
+references use those same owners. New closure tests verify returned values and
+refusal; there is no new production route or numerical algorithm. Complete
+observer resource/cache identity remains K3.18. See the
+[routing ledger](kernel_migration_audit_v1.md#k317-constructed-reference-service-routing-assessment).
 
 ## Completed-K service-boundary audit
 

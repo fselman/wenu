@@ -12,6 +12,17 @@ KG.03 keeps existing Wenu API names as same-object kernel aliases. Numerical
 algorithms remain unchanged; explicit canonical geometry imports no longer
 require importing the Wenu application.
 
+## Constructed reference service routes
+
+K3.17 verifies the existing implementations: grids and planes construct typed
+source curves then use `CoordinateService`; poles/keypoints preserve their
+defining frame before native/observer transformation. IAU boundaries sample and
+test membership in FK4/B1875. Horizon/visibility remain observer-local, using
+shared geometry/domain/projection services for chart masks. Existing saved skies
+restore those same classes through the layer registry. No new algorithm or API
+is introduced. See the [routing assessment](kernel_migration_audit_v1.md#k317-constructed-reference-service-routing-assessment)
+for ownership, returned-value/refusal evidence and remaining limits.
+
 ## Diffuse contour source admission and saved skies
 
 K3.16 uses `sky/isophote_sources.py` for immutable, byte-bound source receipts.

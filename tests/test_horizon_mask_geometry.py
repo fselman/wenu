@@ -161,3 +161,28 @@ def test_complete_sphere_transforms_then_uses_mollweide_seam_topology():
     assert result.projected.metadata["coordinate_system"] == "galactic"
     assert result.projected.metadata["mask_opening"] == "above_horizon"
     assert all(np.all(polygon.finite) for polygon in result.projected)
+
+
+def test_crossing_horizon_consumes_shared_domain_result_and_refusal(monkeypatch):
+    from wenu.charts import horizon_mask
+    from wenu.geometry.projected import ProjectedPolygons
+    from wenu_kernel.geometry.domain import project_geometry_for_viewport
+    assert horizon_mask.project_geometry_for_viewport is project_geometry_for_viewport
+    chart = RegionalChart(center_alt_deg=0, center_az_deg=90,
+                          field_width_deg=10, field_height_deg=10)
+    returned = ProjectedPolygons(items=[], metadata={'service_result': 'synthetic'})
+    calls = []
+    def changed(source, *, projection, viewport):
+        assert source.coordinate_spec.frame == 'altaz'
+        assert source.metadata['mask_opening'] == 'above_horizon'
+        calls.append((source, projection, viewport))
+        return returned
+    monkeypatch.setattr(horizon_mask, 'project_geometry_for_viewport', changed)
+    result = prepared(chart)
+    assert result.projected is returned and result.visibility == 'crossing'
+    assert len(calls) == 1
+    def refused(*args, **kwargs):
+        raise RuntimeError('horizon domain service refused')
+    monkeypatch.setattr(horizon_mask, 'project_geometry_for_viewport', refused)
+    with pytest.raises(RuntimeError, match='service refused'):
+        prepared(chart)

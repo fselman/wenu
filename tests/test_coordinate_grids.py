@@ -101,3 +101,45 @@ def test_native_equatorial_tick_curves_keep_exact_cadence_and_local_state():
     assert grid.ra is None and grid.dec is None and not hasattr(grid,"_native_realization")
     assert set(grid.realize(context,None).components) == {"reference"}
 
+
+
+def test_constructed_native_planes_consume_shared_results_and_refusals(monkeypatch):
+    import pytest
+    from wenu.coordinate_service import CoordinateService
+    from wenu.sky.coordinate_grids import EquatorialGrid, EclipticGrid, GalacticGrid
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    from wenu_kernel.geometry.spherical import SphericalGrid
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    grids = (EquatorialGrid(None, frame='fk5', equinox='J2000', samples=13, include_equator=True),
+             EclipticGrid(None, equinox='J2000', samples=13, include_ecliptic=True),
+             GalacticGrid(None, samples=13, include_plane=True))
+    baseline = [grid.realize(context, None) for grid in grids]
+    original = CoordinateService.transform
+    calls = []
+    def changed(service, source, target, observation=None):
+        calls.append((source.coordinate_spec, target, observation))
+        result = original(service, source, target, observation)
+        result.lon_deg = tuple((a + 0.125) % 360 for a in result.lon_deg)
+        return result
+    monkeypatch.setattr(CoordinateService, 'transform', changed)
+    for grid, previous in zip(grids, baseline, strict=True):
+        geometry = grid.realize(context, None)
+        assert isinstance(geometry, SphericalGrid)
+        assert not hasattr(grid, '_native_realization')
+        for name, curves in geometry.components.items():
+            old = previous.components[name]
+            for actual, expected in zip(curves.lon_deg, old.lon_deg, strict=True):
+                np.testing.assert_array_equal(actual, (expected + 0.125) % 360)
+            for actual, expected in zip(curves.lat_deg, old.lat_deg, strict=True):
+                np.testing.assert_array_equal(actual, expected)
+            np.testing.assert_array_equal(curves.names, old.names)
+            np.testing.assert_array_equal(curves.closed, old.closed)
+            assert curves.metadata == old.metadata
+    assert {source.frame for source, _, _ in calls} == {'fk5', 'barycentric-true-ecliptic', 'galactic'}
+    assert all(target.frame == 'icrs' and observation is None for _, target, observation in calls)
+    def refused(*args, **kwargs):
+        raise RuntimeError('constructed reference service refused')
+    monkeypatch.setattr(CoordinateService, 'transform', refused)
+    for grid in grids:
+        with pytest.raises(RuntimeError, match='service refused'):
+            grid.realize(context, None)

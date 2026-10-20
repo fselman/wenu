@@ -67,3 +67,10 @@ def test_celestial_sphere_registers_horizon_without_an_altaz_grid():
 def test_horizon_sample_count_is_validated():
     with pytest.raises(ValueError, match="at least 4"):
         HorizonReference(samples=3)
+
+
+def test_local_horizon_refuses_fixed_native_atlas_realization():
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    layer = HorizonReference(coordinate_observer(), samples=9)
+    with pytest.raises(TypeError, match='does not support native ICRS'):
+        layer.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None)

@@ -211,3 +211,58 @@ def test_native_boundary_realization_preserves_fk4_sources_and_matches_astropy()
         np.testing.assert_allclose(geometry.lat_deg[i], expected.dec.deg, atol=1e-11, rtol=0)
     for key, value in before.items():
         np.testing.assert_array_equal(boundary.vertices[key], value)
+
+
+@pytest.mark.parametrize('native', (True, False))
+def test_boundary_consumers_use_shared_returned_geometry_and_refuse(monkeypatch, native):
+    from wenu.coordinate_service import CoordinateService
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    from wenu_kernel.geometry.spherical import SphericalPolygons as KernelPolygons
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    def realize(boundary):
+        return (boundary.realize(context, None) if native else
+                boundary.spherical_geometry(make_observer()))
+    previous = realize(make_boundaries())
+    original = CoordinateService.transform
+    calls = []
+    def changed(service, source, target, observation=None):
+        assert source.coordinate_spec.frame == 'fk4'
+        assert source.coordinate_spec.equinox == 'B1875.0'
+        result = original(service, source, target, observation)
+        result.lon_deg = tuple((a + 0.125) % 360 for a in result.lon_deg)
+        calls.append(result)
+        return result
+    monkeypatch.setattr(CoordinateService, 'transform', changed)
+    result = realize(make_boundaries())
+    assert isinstance(result, KernelPolygons) and len(calls) == 1
+    for actual, expected in zip(result.lon_deg, previous.lon_deg, strict=True):
+        np.testing.assert_array_equal(actual, (expected + 0.125) % 360)
+    for actual, expected in zip(result.lat_deg, previous.lat_deg, strict=True):
+        np.testing.assert_array_equal(actual, expected)
+    np.testing.assert_array_equal(result.ids, previous.ids)
+    assert result.metadata == previous.metadata
+    def refused(*args, **kwargs):
+        raise RuntimeError('boundary coordinate service refused')
+    monkeypatch.setattr(CoordinateService, 'transform', refused)
+    with pytest.raises(RuntimeError, match='service refused'):
+        realize(make_boundaries())
+
+
+def test_boundary_membership_consumes_defining_frame_service_output(monkeypatch):
+    from wenu.coordinate_service import CoordinateService
+    from wenu.geometry.spherical import SphericalPoints
+    boundary = make_boundaries()
+    longitude = [22.5]
+    def transformed(service, source, target, observation=None):
+        assert source.coordinate_spec.frame == 'icrs'
+        assert target.frame == 'fk4' and target.equinox == 'B1875.0'
+        return SphericalPoints(lon_deg=longitude, lat_deg=[-15.0], coordinate_spec=target)
+    monkeypatch.setattr(CoordinateService, 'transform', transformed)
+    assert boundary.region_of(180.0, 45.0) == 'TST'
+    longitude[0] = 120.0
+    assert boundary.region_of(180.0, 45.0) is None
+    def refused(*args, **kwargs):
+        raise RuntimeError('membership coordinate service refused')
+    monkeypatch.setattr(CoordinateService, 'transform', refused)
+    with pytest.raises(RuntimeError, match='service refused'):
+        boundary.region_of(180.0, 45.0)

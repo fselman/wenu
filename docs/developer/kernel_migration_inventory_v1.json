@@ -11658,6 +11658,75 @@
       "local_affected_whole_sphere_passed": 1,
       "fault_proof": "Original helper reproduces masked == masked failure on synthetic object metadata; corrected helper accepts matching masks.",
       "mac_retry_gate": "diffuse-snapshot-comparison-retry"
+    },
+    "acceptance": {
+      "pr": 289,
+      "merged_commit": "6e6fcd964a23d7aa5a4bc4e398e43381ad93977f",
+      "tested_commit": "9589a1391e2f8ad06a9f2c70753b887f40171ed5",
+      "mac_retry_passed": 7,
+      "mac_retry_seconds": 47.92,
+      "documentation_passed": 36,
+      "documentation_seconds": 3.52,
+      "tooling_passed": 8,
+      "tooling_seconds": 6.297,
+      "cleanup": "User confirmed clean synchronized main, local and remote feature branches deleted."
     }
+  },
+  "constructed_reference_routing": {
+    "milestone": "K3.17",
+    "base_commit": "6e6fcd964a23d7aa5a4bc4e398e43381ad93977f",
+    "agreement": "Fernando 2026-10-20 proceed after explicit constructed-reference proposal and clean main receipt. Roadmap revision 41.",
+    "status": "Existing production routes verified locally; focused Mac acceptance pending.",
+    "production_changes": false,
+    "as_is": "Grids/planes/poles/keypoints and defining-frame boundaries already use CoordinateService and canonical kernel geometry. Horizon/masks use native AltAz construction and shared domain/projection services. Chart appearance/composition remains at chart owners. Existing v6 snapshots restore the same classes through the layer registry.",
+    "inspected_source_blobs": {
+      "src/wenu/sky/coordinate_grids.py": "e4baf7aea255b8668d684abbb188309ec0de6873",
+      "src/wenu/sky/points.py": "b99f5e903f50a25747a4cff526442c6801d42897",
+      "src/wenu/sky/constellation_boundaries.py": "0293af85040f7b2627f2598ff53d0b4d571a8070",
+      "src/wenu/sky/horizon.py": "490960927450af1baa53d8cc9a14abaf6485ab24",
+      "src/wenu/charts/horizon_mask.py": "fbc74965b8952b3db0d4a43fcffe74094319dcd6",
+      "src/wenu/charts/_masking.py": "ae7d85b7f72a1ef1f13236dce7dee7ddc0306c5f",
+      "src/wenu/charts/reference_furniture.py": "443fdcd5de5d8f99266df254199ba2482499da42",
+      "src/wenu/charts/reference_policy.py": "a6a57dc3147b791e53b1b9d841042226b1263bb0",
+      "src/wenu/sky/realization.py": "78ba79ef2b7ea76eb2061e47e161d0c035d6dab4",
+      "src/wenu/coordinate_service.py": "c7c233b107e3947c70b4fbce1f3037e1f9ff0b5d",
+      "src/wenu/sky/native_snapshot.py": "89fcb2d7dc8231fcb851b715a886c31e0153e507",
+      "src/wenu/sky/celestial_sphere.py": "dd525603ce8e5efbbd2da9d57a1ef9e79f91d4c8"
+    },
+    "test_paths": [
+      "tests/test_coordinate_grids.py",
+      "tests/test_points.py",
+      "tests/test_constellation_boundaries.py",
+      "tests/test_horizon_reference.py",
+      "tests/test_horizon_mask_geometry.py",
+      "tests/test_constellation_outside_mask.py",
+      "tests/test_composed_chart_masks.py",
+      "tests/test_reference_policy.py",
+      "tests/test_reference_annotations.py",
+      "tests/test_reference_furniture_semantics.py",
+      "tests/test_request_horizon.py",
+      "tests/test_frozen_earth_reference_grids.py",
+      "tests/test_reusable_canonical_sphere.py"
+    ],
+    "gate": "constructed-reference-routing",
+    "protected_faults": [
+      "consumer discards transformed service coordinates",
+      "boundary membership uses raw ICRS as FK4",
+      "cold or saved service refusal falls back to untransformed geometry",
+      "horizon opening ignores shared-domain result",
+      "observer-local horizon silently becomes fixed native atlas content"
+    ],
+    "local_receipt": {
+      "runtime_passed": 99,
+      "runtime_seconds": 11.56,
+      "fault_injection": "Grid construction forced to bypass supplied service results fails the new returned-value contract.",
+      "tooling_passed": 8,
+      "tooling_seconds": 4.528,
+      "documentation_available_passed": 31,
+      "documentation_seconds": 1.14,
+      "documentation_limit": "Five full-checkout asset/archive/inventory checks remain for the complete Mac gate; source and test path inventories and changed active links also verified against the authoritative tree."
+    },
+    "retained_mac_evidence": "K3.16 accepted PR #289: 81 runtime cases plus seven comparison retry cases, 36 documentation and eight tooling cases. Atlas/four polar PNG/PDF/SVG and source-free process evidence applies unchanged; no production implementation changed.",
+    "remaining": "K3.18 complete resource/backend/observer-cache identity, K3.19 application assembly and K3.39/K3.40 review remain open. Not a kernel freeze or physical-object extension."
   }
 }
