@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 42, 2026-10-20. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 43, 2026-10-20. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -31,11 +31,11 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Accepted baseline:** main `56f5e8ff3779bf1e0b6a05464e762826d0e7dfd2`,
-PR #290, tree identical to tested `9e540f99155e17fb42308226857ad1f97f564420`.
-K3.17 passed 99 focused, 36 documentation and eight tooling Mac cases. Fernando
-confirmed clean synchronized main and branch cleanup. K3.18 is selected under
-revision 42; this does not activate K3.19 or close K3/K5.
+**Accepted baseline:** main `37bcb851dbc2d1a8f77765f7458315ec4b31db10`,
+PR #291, tree identical to tested `e8eab340f2e81e0880237ff467924ec688879368`.
+K3.18 passed 402 focused, 36 documentation and eight tooling Mac cases. Fernando
+confirmed clean synchronized main and branch cleanup. K3.19 is selected under
+revision 43; K3/K5 remain partial.
 
 | Track | Position |
 |---|---|
@@ -43,8 +43,8 @@ revision 42; this does not activate K3.19 or close K3/K5.
 | Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
 | Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
 | Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
-| Current authorized task | K3.18 observer/resource lifetime and observed-cache invalidation; selected 2026-10-20 |
-| Next bounded submilestone | K3.19 remains pending; select separately after K3.18 acceptance |
+| Current authorized task | K3.19 application sky assembly; selected 2026-10-20 |
+| Next bounded submilestone | K3.20 remains pending; select separately after K3.19 acceptance |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -75,6 +75,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 43: select K3.19 application assembly | Fernando’s 2026-10-20 “Proceed” after PR #291 acceptance/cleanup, following the explicit explanation of separating component creation from central sky orchestration | Move existing construction and source-free reconstruction bodies to one application-assembly owner; keep public sky convenience/factory/snapshot calls as delegates, layer order, aliases, source-free workers, validation and v6 format. Verify supplied assembly is consumed/refusal propagated plus existing cold/saved/spawned atlas output. No scientific, SDK/dependency, resource bytes, renderer or schema change; no plugin-discovery framework or package extraction. Gate: sky-application-assembly plus documentation. |
 | Revision 42: select K3.18 observer/resource lifecycle | Fernando’s 2026-10-20 “Proceed” after PR #290 acceptance and clean main 56f5e8ff, following the explicit observer/resource/cache proposal | Reuse existing state/coordinate/finite-observer services and request ownership. Correct demonstrated missing backend/EOP/leap/ephemeris cache identity and closed-resource admission in existing owners. Verify resource changes, warm refusal, legacy families and owned/borrowed cleanup with observer-resource-lifecycle plus documentation. Preserve mathematics, source bytes, appearance, SDK/dependency pins and snapshot v6. No new package, physics or solar-system model admission; M10 model qualification remains K3.25. |
 | Revision 41: select K3.17 constructed references | Fernando’s 2026-10-20 “proceed” after PR #289 acceptance and clean main 6e6fcd96, following the explicit grids/planes/poles/boundaries/horizon/visibility/masks proposal | Inspect and reuse existing CoordinateService and kernel geometry/domain/projection routes; change only demonstrated routing gaps. Preserve definitions, sampling, frame/equinox meaning, observer-local horizon, masks, styles and pixels. Add owner/consumer returned-value/refusal and saved-sky evidence where absent; retain valid prior receipts. No new mathematics, scientific policy, SDK capability, dependency, source bytes or snapshot schema. Gate: constructed-reference-routing plus documentation; K3.18 resource/cache-lifetime work remains separate |
 | Revision 40: select K3.16 metadata and v6 transport | Fernando’s 2026-10-20 “Agreed. Proceed.” after explicit explanation of saved-sky versions and the bounded v6 proposal; clean main 2b607d71 after PR #288 | Preserve byte-bound original diffuse source properties, distinguish declarations from compatibility interpretation, validate geometry before native output/warm reuse, and write v6 metadata transport. Read v1–v5 without source reload or invented metadata; older readers reject v6. Reuse established geometry services and unchanged science/topology/appearance. Gate: diffuse-geometry-routing plus documentation, covering admission/refusal, legacy/source-free transport and real atlas/polar output. No new SDK API/release, source bytes, physics or renderer change |
