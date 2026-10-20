@@ -399,9 +399,10 @@ concrete Wenu classes.
 | [`sky/major_planets.py`](../../src/wenu/sky/major_planets.py) | Catalog data for ordinary apparent major-planet symbolic points. |
 | [`sky/maximal_sphere.py`](../../src/wenu/sky/maximal_sphere.py) | Canonical loading profile and maximal celestial-sphere factory. |
 | [`sky/mercury.py`](../../src/wenu/sky/mercury.py) | Descriptor-only physical identity for output-neutral Mercury state. |
+| [`sky/isophote_sources.py`](../../src/wenu/sky/isophote_sources.py) | Immutable diffuse source receipts, provenance/geometry binding and explicit legacy admission; no numerical projection or catalogue acquisition. |
 | [`sky/milky_way.py`](../../src/wenu/sky/milky_way.py) | Milky Way surface-brightness isophote layer. |
 | [`sky/moon.py`](../../src/wenu/sky/moon.py) | Catalog-governed output-neutral physical identity for the Moon. |
-| [`sky/native_snapshot.py`](../../src/wenu/sky/native_snapshot.py) | Verified data-only native sky snapshots; v5 binds nonstellar metadata and retains cluster rows with explicit v1-v4 admission. |
+| [`sky/native_snapshot.py`](../../src/wenu/sky/native_snapshot.py) | Verified data-only native sky snapshots; v6 preserves diffuse metadata, with explicit v1-v5 legacy admission. |
 | [`sky/observed_cache.py`](../../src/wenu/sky/observed_cache.py) | Keys for observer-dependent spherical-geometry caches. |
 | [`sky/points.py`](../../src/wenu/sky/points.py) | Celestial reference points as spherical domain geometry. |
 | [`sky/realization.py`](../../src/wenu/sky/realization.py) | Immutable scientific input and explicit reception receipt for one sky-layer realization. |
@@ -426,3 +427,4 @@ concrete Wenu classes.
 |---|---|
 | [`utils/__init__.py`](../../src/wenu/utils/__init__.py) | Package exports and initialization. |
 | [`utils/visible.py`](../../src/wenu/utils/visible.py) | Visible. |
+

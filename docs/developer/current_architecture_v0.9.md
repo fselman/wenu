@@ -32,8 +32,8 @@ geometry/projection imports use the existing optional NumPy extra. The installed
 component, and its accepted subset does not establish the full kernel boundary.
 See the [agreed target and accepted-work disposition](kernel_roadmap_v0.9.5.md#proposed-architecture).
 Geometry consumers can call public geometry services directly. There is no accepted
-new SDK geometry-query capability or required snapshot-version change from K3.16’s
-initial assessment. Source envelopes/legacy transport still need runtime work.
+new SDK geometry-query capability from K3.16’s
+initial assessment. The subsequently agreed K3.16 metadata/v6 transport now supplies source envelopes and explicit legacy admission.
 
 
 K3.07 routes native constellation-label anchors through the full-source public
@@ -66,6 +66,13 @@ queried centres construct outlines once; unchanged returned states still reuse
 their observer transformation. Later K3.12–K3.15 adapters reuse these returned-state cache hooks;
 source ownership remains with each catalogue family.
 This is accepted through PR #275 and does not qualify absent physical source facts.
+
+K3.16 admits diffuse source declarations in the Wenu-owned immutable
+`sky/isophote_sources.py` envelope before shared kernel spherical/topology services.
+Saved-sky v6 preserves it; v1–v5 use explicit source-free legacy receipts. Source
+properties absent in older files remain unavailable. Observation/projection/render
+science and the kernel distribution are unchanged; K3.16 acceptance is pending.
+See [diffuse admission](implementation_reference.md#diffuse-contour-source-admission-and-saved-skies).
 
 ## Completed-K service-boundary audit
 
@@ -395,3 +402,4 @@ interpretation remain unchanged. Signed Galactic designations, selection, radio
 flux metadata and appearance are preserved. No associated compact-object position
 or motion substitutes for the radio-centre source, and no expansion or propagation
 is added. Mac acceptance remains pending.
+

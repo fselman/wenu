@@ -461,3 +461,58 @@ def test_level_selections_transform_and_cache_only_requested_files(
     assert set(complete.metadata["level"]) == set(layer.available_levels)
     assert calls == [len(selected), len(complete)]
     assert len(layer._observed_polygon_cache) == 2
+
+
+def test_diffuse_metadata_preserves_declarations_and_exact_source_identity(tmp_path):
+    import hashlib
+    from dataclasses import FrozenInstanceError
+    from pathlib import Path as FilePath
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    from wenu.sky.isophote_sources import IsophoteSourceMetadata
+    layer = MilkyWayIsophotes(None).load()
+    metadata = layer.catalogue_metadata
+    record = metadata.to_record()
+    assert record['admission'] == 'source'
+    assert len(record['evidence']) == 1
+    for level, receipt in record['levels'].items():
+        source = FilePath(layer.sources[level]).read_bytes()
+        assert receipt['source_sha256'] == hashlib.sha256(source).hexdigest()
+        assert receipt['properties'] == {} and receipt['feature_properties'] == {}
+    assert layer.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None).coordinate_spec.epoch is None
+    with pytest.raises(FrozenInstanceError):
+        metadata.record_json = '{}'
+    record['family'] = 'lmc'
+    assert metadata.to_record()['family'] == 'milky_way'
+    with pytest.raises(ValueError):
+        IsophoteSourceMetadata.from_record(record)
+
+
+def test_diffuse_admission_refuses_mutation_before_native_and_warm_observed_output(monkeypatch):
+    from copy import deepcopy
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    layer = MilkyWayIsophotes(Observer(), levels=('ol5',)).load()
+    layer.spherical_geometry(Observer())
+    assert layer._observed_polygon_cache
+    layer.features = deepcopy(layer.features)
+    # Even a hidden level is part of the admitted source, and must not be
+    # concealed by a selected-level cache hit.
+    layer.features['ol1'][0][0][0][0] += 0.1
+    for call in (lambda: layer.spherical_geometry(Observer()),
+                 lambda: layer.realize(LayerRealizationContext(NATIVE_ICRS_SPEC), None)):
+        with pytest.raises(ValueError, match='geometry differs'):
+            call()
+
+
+def test_diffuse_load_is_atomic_and_rejects_declared_frame(tmp_path):
+    from copy import deepcopy
+    layer = MilkyWayIsophotes(None).load()
+    before = layer.catalogue_metadata, layer.features, layer._source_revision
+    document = {'type': 'FeatureCollection', 'properties': {'frame': 'Galactic'},
+                'features': [{'id': level, 'properties': {}, 'geometry':
+                    {'type': 'MultiPolygon', 'coordinates': deepcopy(rings)}}
+                    for level, rings in layer.features.items()]}
+    path = tmp_path/'synthetic.json'
+    path.write_text(json.dumps(document))
+    with pytest.raises(ValueError, match='frame'):
+        layer.load(path)
+    assert (layer.catalogue_metadata, layer.features, layer._source_revision) == before

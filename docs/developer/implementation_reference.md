@@ -12,6 +12,39 @@ KG.03 keeps existing Wenu API names as same-object kernel aliases. Numerical
 algorithms remain unchanged; explicit canonical geometry imports no longer
 require importing the Wenu application.
 
+## Diffuse contour source admission and saved skies
+
+K3.16 uses `sky/isophote_sources.py` for immutable, byte-bound source receipts.
+Each level retains original GeoJSON document/feature properties and IDs, the
+loaded document SHA-256 and a normalized geometry digest covering compounds,
+ring order, holes and original longitude encodings. Captured packaged provenance
+is retained with its checksum. Milky Way split contours are checked against the
+hash-verified canonical D3 source; Cloud product digests must match their sidecar.
+Custom sources retain their own declarations without acquiring packaged provenance.
+
+Milky Way source frame/epoch declarations are absent. ICRS/degree rendering remains
+an explicit compatibility interpretation. Cloud products declare ICRS/degree axes;
+the Gaia DR3 release and proper-motion selection describe derivation, not a contour
+measurement epoch or motion model. Physical origin, distance and morphology epoch
+remain unqualified. The native CoordinateSpec retains the existing ICRS chart
+encoding convention, not a newly measured physical origin. Unsupported explicit
+frame/units/epoch/origin declarations refuse rather than being silently transformed.
+
+Loaders validate before publishing new data. Native and observed realization check
+metadata, geometry and Cloud fractions before cache lookup. Public kernel spherical
+records and existing topology/domain/projection services carry the same vertices;
+source interpretation stays in Wenu. Geometry metadata exposes the source envelope
+as `source_metadata`; layer `catalogue_metadata` owns the immutable record.
+
+New saved skies use **v6** (`wenu-fixed-sky-records-v6`) and require these envelopes.
+Admission checks their level coverage, geometry and manifest source digests before
+restoration. v1–v5 remain readable without original source/provenance files, but
+receive explicit legacy receipts with unavailable original properties and no
+captured provenance envelope. Existing source digests remain useful integrity
+facts; they do not recover discarded declarations. Older readers reject v6.
+No observer state, morphology evolution, new SDK API or kernel release is added.
+
+
 ## Shared kernel geometry records
 
 `StereographicProjection.project_points` (also used by the equidistant subclass)
@@ -1470,3 +1503,4 @@ second lookup. Constructor/per-call selection and signed semantic keys are
 unchanged. Green radio axes/flux, unknown PA circle policy, morphology, sampling
 and renderer appearance remain with existing owners. Restored source snapshots
 use the same adapter without schema changes or hidden state/fallback.
+

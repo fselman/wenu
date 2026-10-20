@@ -1830,6 +1830,66 @@
           "reason": "Changed immutable geometry-extra pin works in wheel/sdist/editable root installs."
         }
       ]
+    },
+    "diffuse-geometry-routing": {
+      "scope": "K3.16 byte-bound Milky Way/Magellanic source admission, unchanged shared geometry and v6 saved-sky transport with explicit v1-v5 compatibility.",
+      "limits": "No source-resource, kernel/SDK, dependency, numerical observation/projection, renderer or morphology-motion change. Reuse accepted kernel isolation/science receipts.",
+      "selections": [
+        {
+          "node": "tests/test_isophotes.py",
+          "reason": "Source identity, atomic/refusal paths and independent filled-side/pole/hole raster oracles."
+        },
+        {
+          "node": "tests/test_magellanic_clouds.py",
+          "reason": "Cloud-specific declarations/fractions, source binding and warm cache contracts."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_diffuse_snapshot_metadata_codec_is_source_free",
+          "reason": "Real metadata/ring codec, fresh source-free process, legacy and corruption refusal."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_matches_cold_full_sphere_and_layer_options",
+          "reason": "Full v6 writer/read/restore equality and native selected layers."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_resumes_in_fresh_process_without_sources",
+          "reason": "Whole-sky source-free installed process seam."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_legacy_coverage_stays_truthful",
+          "reason": "Explicit v1-v5 admission without new diffuse qualification."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_rejects_corruption_before_use",
+          "reason": "Manifest/array/source metadata admission remains strict."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_atlas_chart_batch_cold_saved_and_spawned_pages_match",
+          "reason": "Real atlas PNG/PDF/SVG cold/restored/worker output."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_kernel_geometry_polar_cold_saved_outputs",
+          "reason": "Both poles and projections, actual diffuse PNG/PDF/SVG output."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_geometry_comparison_preserves_object_masks",
+          "reason": "Object metadata compares mask status explicitly, refusing lost masks or changed ordinary values."
+        }
+      ]
+    },
+    "diffuse-snapshot-comparison-retry": {
+      "scope": "K3.16 test-helper repair after Mac 81 runtime passes and one masked-scalar comparison failure.",
+      "limits": "Test/gate/documentation only. Retain accepted Mac atlas/polar/fresh-process/legacy/source evidence; no production, dependency, resource, SDK or snapshot-format change, and no parent gate repeat.",
+      "selections": [
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_geometry_comparison_preserves_object_masks",
+          "reason": "Six cases accept equal masks/NaNs/values and refuse mask loss in either direction or changed values."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_matches_cold_full_sphere_and_layer_options",
+          "reason": "Rerun the single failed full-sphere cold/restored comparison with original loaders disabled."
+        }
+      ]
     }
   },
   "consumer_review": [

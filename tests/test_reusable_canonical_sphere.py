@@ -4,6 +4,7 @@ from dataclasses import fields
 from datetime import datetime, timezone
 from types import SimpleNamespace
 
+import numpy as np
 import pytest
 
 from wenu import Observer, generate_celestial_sphere, get_chart_view
@@ -272,7 +273,9 @@ def _assert_native_geometry_equal(first, second):
             elif a.dtype.kind == "O":
                 assert a.shape == b.shape
                 for left, right in zip(a.flat, b.flat, strict=True):
-                    if isinstance(left, (float, np.floating)) and np.isnan(left):
+                    if np.ma.is_masked(left) or np.ma.is_masked(right):
+                        assert np.ma.is_masked(left) and np.ma.is_masked(right)
+                    elif isinstance(left, (float, np.floating)) and np.isnan(left):
                         assert isinstance(right, (float, np.floating)) and np.isnan(right)
                     else:
                         assert left == right
@@ -280,6 +283,28 @@ def _assert_native_geometry_equal(first, second):
                 np.testing.assert_array_equal(a, b)
         else:
             assert a == b
+
+
+@pytest.mark.parametrize('left,right,equal', (
+    (np.ma.masked, np.ma.masked, True),
+    (np.ma.masked, 1.0, False),
+    (1.0, np.ma.masked, False),
+    (1.0, 2.0, False),
+    (np.nan, np.nan, True),
+    (1.0, 1.0, True),
+))
+def test_native_snapshot_geometry_comparison_preserves_object_masks(left, right, equal):
+    from wenu.geometry.spherical import SphericalPoints
+    from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+    def geometry(value):
+        return SphericalPoints(lon_deg=[1.0], lat_deg=[2.0],
+            coordinate_spec=GENERIC_SPHERICAL_SPEC,
+            metadata={'measurement': np.array([value], dtype=object)})
+    if equal:
+        _assert_native_geometry_equal(geometry(left), geometry(right))
+    else:
+        with pytest.raises(AssertionError):
+            _assert_native_geometry_equal(geometry(left), geometry(right))
 
 
 def test_native_snapshot_matches_cold_full_sphere_and_layer_options(native_snapshot_case, monkeypatch):
@@ -449,7 +474,7 @@ def test_native_snapshot_preserves_nonstellar_admission_and_unknown_epochs(nativ
     _, destination, _, cold = native_snapshot_case
     snapshot = read_native_sky_snapshot(destination)
     saved = snapshot.make_sky()
-    assert snapshot._manifest['schema_version'] == 5
+    assert snapshot._manifest['schema_version'] == 6
     for name in ('nonstellar', 'galaxies', 'globular_clusters', 'planetary_nebulae', 'supernova_remnants'):
         first, second = getattr(cold, name), getattr(saved, name)
         assert first.catalogue_metadata == second.catalogue_metadata
@@ -810,7 +835,7 @@ def test_native_snapshot_fixed_catalogue_rows_masks_units_and_subsets(native_sna
     assert not warm.solar_system_bodies and warm.moon is None
 
 
-@pytest.mark.parametrize('version', (1, 2, 3, 4))
+@pytest.mark.parametrize('version', (1, 2, 3, 4, 5))
 def test_native_snapshot_legacy_coverage_stays_truthful(native_snapshot_case, tmp_path, version):
     import json
     import shutil
@@ -822,14 +847,18 @@ def test_native_snapshot_legacy_coverage_stays_truthful(native_snapshot_case, tm
     manifest["schema_version"] = version
     manifest["compatibility"] = {1: snapshots.LEGACY_COMPATIBILITY,
         2: snapshots.PRE_METADATA_COMPATIBILITY, 3: snapshots.PRE_CLUSTER_METADATA_COMPATIBILITY,
-        4: snapshots.PRE_NONSTELLAR_METADATA_COMPATIBILITY}[version]
+        4: snapshots.PRE_NONSTELLAR_METADATA_COMPATIBILITY,
+        5: snapshots.PRE_DIFFUSE_METADATA_COMPATIBILITY}[version]
     manifest["layers"] = list(snapshots.LEGACY_LAYERS if version == 1 else snapshots.LAYERS)
     removed = {'stellar_metadata', 'fixed'} if version == 1 else {'stellar_metadata'} if version == 2 else set()
     manifest["records"]["mapping"] = [pair for pair in manifest["records"]["mapping"] if pair[0] not in removed]
+    records = dict(manifest['records']['mapping'])
+    for content in (records['milky_way'], *(v for _, v in records['clouds']['mapping'])):
+        content['mapping'] = [pair for pair in content['mapping'] if pair[0] != 'metadata']
     if version == 1:
         for key in (*snapshots._CATALOGUES, "iau_boundaries"):
             del manifest["source_digests"][key]
-    else:
+    elif version < 5:
         fixed = dict(manifest['records']['mapping'])['fixed']
         catalogues = dict(dict(fixed['mapping'])['catalogues']['mapping'])
         for name, content in catalogues.items():
@@ -852,8 +881,13 @@ def test_native_snapshot_legacy_coverage_stays_truthful(native_snapshot_case, tm
         assert sky.galaxies is not None and sky.constellation_boundaries is not None
         assert sky.open_clusters.position().coordinate_spec.epoch is None
         assert sky.galaxies.position().coordinate_spec.epoch is None
-        assert sky.galaxies.catalogue_metadata.to_record()['source_sha256'] is None
-        assert 'source_sha256' in sky.galaxies.catalogue_metadata.missing_fields
+        if version < 5:
+            assert sky.galaxies.catalogue_metadata.to_record()['source_sha256'] is None
+            assert 'source_sha256' in sky.galaxies.catalogue_metadata.missing_fields
+    for layer in (sky.milky_way_isophotes, *sky.magellanic_cloud_isophotes.values()):
+        record = layer.catalogue_metadata.to_record()
+        assert record['admission'] == 'legacy' and not record['evidence']
+        assert all(v['properties'] is None for v in record['levels'].values())
     assert sky.stars.catalogue_metadata.epoch_label == manifest['stellar_epoch']
 
 
@@ -1245,7 +1279,7 @@ def test_native_snapshot_explicit_cluster_motion_matches_cold_geometry_and_pixel
     assert restored.open_clusters.selected is None
     assert restored.open_clusters.position().metadata['catalogue_position_model'] == 'catalogue_lookup'
     # Requested model data never replace the saved source rows or v5 header.
-    assert snapshot._manifest['schema_version'] == 5
+    assert snapshot._manifest['schema_version'] == 6
     assert saved.open_clusters.catalogue_metadata_for(saved.open_clusters.catalog) == cold.open_clusters.catalogue_metadata_for(cold.open_clusters.catalog)
 
 
@@ -1348,7 +1382,7 @@ def test_saved_cluster_observation_cold_saved_pixels_and_public_output(native_sn
             plt.close(figure)
     np.testing.assert_array_equal(*images)
     assert np.any(images[0][:,:,:3] < 200)
-    assert snapshot._manifest['schema_version'] == 5
+    assert snapshot._manifest['schema_version'] == 6
     assert saved.open_clusters.catalogue_metadata_for(saved.open_clusters.catalog) == original_record
     assert snapshot.make_sky().open_clusters.position().metadata['catalogue_position_model'] == 'catalogue_lookup'
 
@@ -1836,3 +1870,83 @@ def test_kernel_geometry_polar_cold_saved_outputs(native_snapshot_case, tmp_path
                     [210*72/25.4, 297*72/25.4])
                 assert root.findall('.//{http://www.w3.org/2000/svg}path')
     np.testing.assert_array_equal(imread(tmp_path/f'{pole}-cold.png'), imread(tmp_path/f'{pole}-saved.png'))
+
+
+@pytest.mark.parametrize('family', ('milky_way', 'lmc', 'smc'))
+def test_diffuse_snapshot_metadata_codec_is_source_free(tmp_path, monkeypatch, family):
+    """Real source rings and properties survive the existing data-only codec."""
+    import json
+    import subprocess
+    import sys
+    import numpy as np
+    from wenu.sky import native_snapshot as snapshots
+    from wenu.sky.milky_way import MilkyWayIsophotes
+    from wenu.sky.magellanic_clouds import MagellanicCloudIsophotes
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    layer = (MilkyWayIsophotes(None).load() if family == 'milky_way'
+             else MagellanicCloudIsophotes(None, cloud=family).load())
+    content = dict(features=snapshots._rings(layer.features), source=layer.source,
+                   metadata=layer.catalogue_metadata.to_record())
+    content['sources' if family == 'milky_way' else 'fractions'] = (
+        layer.sources if family == 'milky_way' else layer.fractions)
+    receipts = content['metadata']['levels']
+    digests = ({'milky_way_'+level: r['source_sha256'] for level, r in receipts.items()}
+               if family == 'milky_way' else {family: receipts['1']['source_sha256']})
+    encoder = snapshots._Encoder(tmp_path)
+    encoded = encoder.encode(content)
+    encoder.flush()
+    arrays = {}
+    for name, item in encoder.array_index.items():
+        packed = np.load(tmp_path/item['payload'], mmap_mode='r', allow_pickle=False)
+        size = int(np.prod(item['shape']))
+        arrays[name] = packed[item['offset']:item['offset']+size].reshape(item['shape'])
+    decoded = snapshots._decode(encoded, arrays)
+    metadata = snapshots._diffuse_metadata(decoded, family, 6, digests)
+    assert metadata == layer.catalogue_metadata
+    for version in range(1, 6):
+        legacy = {k:v for k,v in decoded.items() if k != 'metadata'}
+        admitted = snapshots._diffuse_metadata(legacy, family, version, digests)
+        assert admitted.to_record()['admission'] == 'legacy'
+        assert not admitted.to_record()['evidence']
+        with pytest.raises(ValueError, match='fields'):
+            snapshots._diffuse_metadata(legacy, family, 6, digests)
+    broken = dict(digests)
+    broken[next(iter(broken))] = '0'*64
+    with pytest.raises(ValueError, match='source digest'):
+        snapshots._diffuse_metadata(decoded, family, 6, broken)
+    changed = dict(decoded)
+    changed['features'] = dict(decoded['features'])
+    level = next(iter(changed['features']))
+    compounds = [[np.array(ring, copy=True) for ring in polygon] for polygon in changed['features'][level]]
+    compounds[0][0][0, 0] += 0.5
+    changed['features'][level] = compounds
+    with pytest.raises(ValueError, match='geometry differs'):
+        snapshots._diffuse_metadata(changed, family, 6, digests)
+    # A new process reconstructs through the same frozen layer owners with
+    # original loaders explicitly disabled. No source/provenance access occurs.
+    record_path = tmp_path/'contours.json'
+    record_path.write_text(json.dumps(dict(encoded=encoded, index=encoder.array_index,
+                                         family=family, digests=digests)))
+    script = r'''
+import json,sys,numpy as np
+from pathlib import Path
+from wenu.sky import native_snapshot as s
+from wenu.sky.realization import LayerRealizationContext,NATIVE_ICRS_SPEC
+p=Path(sys.argv[1]); data=json.loads(p.read_text()); arrays={}
+for name,item in data['index'].items():
+ a=np.load(p.parent/item['payload'],mmap_mode='r',allow_pickle=False)
+ arrays[name]=a[item['offset']:item['offset']+int(np.prod(item['shape']))].reshape(item['shape'])
+content=s._decode(data['encoded'],arrays); family=data['family']
+def forbidden(*a,**k): raise AssertionError('Source-free contour restore opened a source')
+s.MilkyWayIsophotes.load=forbidden; s.MagellanicCloudIsophotes.load=forbidden
+Path.read_bytes=forbidden
+layer=s._SnapshotMilkyWay(None) if family=='milky_way' else s._SnapshotCloud(None,cloud=family)
+for key in ('features','source','sources' if family=='milky_way' else 'fractions'): setattr(layer,key,content[key])
+layer.catalogue_metadata=s._diffuse_metadata(content,family,6,data['digests'])
+g=layer.realize(LayerRealizationContext(NATIVE_ICRS_SPEC),None)
+assert len(g)>0 and g.metadata['source_metadata']==layer.catalogue_metadata.record_json
+print(layer.catalogue_metadata.fingerprint)
+'''
+    result = subprocess.run([sys.executable, '-c', script, str(record_path)],
+                            capture_output=True, text=True, check=True)
+    assert result.stdout.strip() == metadata.fingerprint

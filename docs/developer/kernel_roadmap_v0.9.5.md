@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 39, 2026-10-20. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 40, 2026-10-20. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -31,11 +31,12 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Accepted baseline:** main `9e71ab49ce7cc51410428ca79a5c43bd5d293f2f`,
-PR #287, tree identical to tested `ef7783d6f894a5e1f12bde51dac543e09b4b2b07`.
-KG.06 Mac documentation acceptance: 36 passed. Fernando confirmed clean synchronized
-main and branch cleanup. The audit retains earlier runtime receipts and identifies
-one demonstrated correction G06.C1 (G05-1); it does not close K3/K5.
+**Accepted baseline:** main `2b607d7190816173b44096f7d2f5211ad4c17656`,
+PR #288, tree identical to tested `26487957c90f009c1e250b3bd5d9450256e4cab9`.
+KG.07 accepted G06.C1 with 103 focused Mac cases, 205 independent SDK cases,
+36 documentation cases and eight tooling cases; no xfail. Fernando confirmed
+clean synchronized main and branch cleanup. K3.16 is now selected under revision
+40; implementation acceptance remains pending. K3/K5 remain open.
 
 | Track | Position |
 |---|---|
@@ -43,8 +44,8 @@ one demonstrated correction G06.C1 (G05-1); it does not close K3/K5.
 | Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
 | Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
 | Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
-| Current authorized task | KG.07 correction G06.C1: missing-coordinate shared point-batch dispatch; preserve strict numerical validation and accepted output |
-| Next bounded submilestone | **K3.16**, only after KG.07 acceptance and explicit selection: resume diffuse source metadata/geometry transport through established services |
+| Current authorized task | K3.16 diffuse metadata admission and v6 saved-sky transport, explicitly agreed 2026-10-20 after the format explanation |
+| Next bounded submilestone | K3.17 remains pending; select separately after K3.16 acceptance |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -75,6 +76,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 40: select K3.16 metadata and v6 transport | Fernando’s 2026-10-20 “Agreed. Proceed.” after explicit explanation of saved-sky versions and the bounded v6 proposal; clean main 2b607d71 after PR #288 | Preserve byte-bound original diffuse source properties, distinguish declarations from compatibility interpretation, validate geometry before native output/warm reuse, and write v6 metadata transport. Read v1–v5 without source reload or invented metadata; older readers reject v6. Reuse established geometry services and unchanged science/topology/appearance. Gate: diffuse-geometry-routing plus documentation, covering admission/refusal, legacy/source-free transport and real atlas/polar output. No new SDK API/release, source bytes, physics or renderer change |
 | Revision 39: select KG.07 correction | Fernando’s 2026-10-20 proceed after accepted PR #287 and clean main 9e71ab49 | Implement only G06.C1 at shared point projection; preserve source rows/IDs/metadata, strict numerical domains and finite formulas. Verify point batches, both real equidistant outputs without xfail, compatibility and isolated installed access; immutable corrected-kernel pin follows changed package bytes. No other G06.U item, new science or K3.16 activated |
 | Revision 38: select KG.06 audit | Fernando’s 2026-10-20 proceed after accepted PR #286 and clean main 52c8315c | Audit every completed K deliverable and relevant accepted AX composition against actual service/caller boundaries. Record retained evidence, corrections and unresolved scope. Documentation/read-only probes only; KG.07 runtime correction remains separate |
 | Revision 37: select KG.05 acceptance | Fernando’s 2026-10-20 proceed after accepted PR #285 and clean main 608bc91d | Compose existing services and verify isolated installed access plus real cold/restored atlas and polar PNG/PDF/SVG outputs. Reuse accepted numerical/packaging evidence; no production mathematics, dependency, source, schema or policy change. KG.06 remains separate |
@@ -594,7 +596,7 @@ map below ensures small/non-chart capabilities do not disappear in grouped rows.
 | K3.13 | Route globular-cluster centres and public/chart/saved consumers with own source admission | Accepted PR #277, main `fd6d7fa9`; 125 focused Mac, 36 documentation and eight tooling cases passed; physical source gaps remain explicit |
 | K3.14 | Route existing planetary-nebula centre/geometry/selection consumers | Accepted PR #278, main `42adb84d`; 129 focused Mac, 36 documentation and eight tooling cases passed; motion remains AX.15 |
 | K3.15 | Route existing supernova-remnant centre/geometry/selection consumers | Accepted PR #279, main `21653198`; 126 focused Mac, 36 documentation and eight tooling cases passed; motion remains AX.16 |
-| K3.16 | Admit Milky Way/Magellanic source metadata and route diffuse celestial geometry | Deferred until KG.01–KG.07 acceptance. M9 assessment retained; metadata/transport implementation pending. Consume established shared geometry services; no fabricated point-body states |
+| K3.16 | Admit Milky Way/Magellanic source metadata and route diffuse celestial geometry | Selected after accepted KG.01–KG.07. Implement byte-bound metadata and agreed v6 transport with explicit v1–v5 legacy admission; reuse established shared geometry services. Pending acceptance; no fabricated point-body states |
 | K3.17 | Route constructed references: grids, equator/ecliptic/Galactic planes, poles, defining-frame boundaries, horizon/visibility/masks | Pending closure; keep construction/realization separate from physical-object providers |
 | K3.18 | Close shared state/coordinate/observer adapters, resource lifetime and observed-cache invalidation across existing families | Partial: explicit nominal service accepted in AX; legacy consumers/metadata/resource identities still open |
 | K3.19 | Decouple central sky/factory from concrete providers through application assembly; cover saved/loaded skies and workers | Partial: source snapshots/reconstruction accepted; uniform registry/consumer closure pending |
@@ -954,3 +956,4 @@ new Moonlight execution, or broad feature additions during structural migration.
 Current science and appearance remain the baseline except for separately
 reviewed astrometric corrections and bug fixes. Deferred work is retained in
 the archived roadmap and [current scientific limits](scientific_contracts.md).
+
