@@ -157,3 +157,17 @@ def test_central_sky_and_factory_do_not_construct_concrete_layers():
             'MilkyWayIsophotes', 'MagellanicCloudIsophotes', 'MoonLayer', 'VenusLayer'}
         assert not any(isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
                        and node.func.id in forbidden for node in ast.walk(tree))
+
+
+def test_chart_executor_and_atlas_publication_use_public_sheet_boundary():
+    generation = ast.parse((ROOT/'src/wenu/charts/request_generation.py').read_text())
+    for node in ast.walk(generation):
+        if isinstance(node, ast.ImportFrom) and node.module:
+            assert not node.module.endswith('atlas_publication')
+            if node.module.endswith('atlas_sheet'):
+                assert all(not name.name.startswith('_') for name in node.names)
+    for name in ('atlas_sheet.py', 'atlas_publication.py'):
+        tree = ast.parse((ROOT/'src/wenu/charts'/name).read_text())
+        forbidden = ('request_generation', 'atlas_publication') if name == 'atlas_sheet.py' else ('request_generation',)
+        assert not any(isinstance(node, ast.ImportFrom) and node.module
+            and node.module.endswith(forbidden) for node in ast.walk(tree))

@@ -136,14 +136,15 @@ own science and conformance gate; integration/release checks have separate owner
 Arrows show calls/dependencies; dashed edges identify coupling to remove.
 The existing projection and graphics pipeline is retained. The kernel edge
 shows the implemented state SDK component, not the whole intended service kernel;
-shared geometry/projections remain in existing Wenu namespaces. Other source paths remain
+shared geometry/projections now use kernel services through compatible Wenu aliases. Other source paths remain
 to migrate. The accepted explicit cluster observer subset does not close the
 legacy observation paths.
 
 ```mermaid
 flowchart TB
     subgraph Products["Products"]
-        A["Atlas"]
+        A["Atlas batch and book"]
+        T["Public atlas sheet service"]
         C["Chart request generation"]
         R["Preparation, drawing and export"]
     end
@@ -157,14 +158,17 @@ flowchart TB
         O["Observer and apparent realization"]
         D["Catalogues and ephemeris providers"]
     end
-    A --> C
-    C -. "Imports atlas-private helpers" .-> A
+    A -->|"Public chart command"| C
+    C --> T
+    T --> S
+    T --> R
     C --> S
     S --> G
     G --> P
     P --> R
-    S -. "Knows concrete implementations" .-> L
-    C -. "Temporarily mutates shared layers" .-> S
+    S --> B["Application sky assembly"]
+    B --> L
+    C -->|"Request-owned scope"| S
     L -. "Other state consumers" .-> D
     L -->|"Stellar and fixed catalogue centres"| K["State SDK session"]
     K --> N["Shared table/provider adapters"]
@@ -177,9 +181,9 @@ flowchart TB
 |---|---|---|
 | Source catalogue / epoch state | Stellar native position ignores instant; moving bodies use different contracts | Typed state queries with explicit capabilities |
 | Physical state / observer realization | Legacy layer fallback discards context | Common realization service over state interfaces |
-| Kernel / domain packages | Central factory imports concrete classes | Registration against contracts; explicit application assembly |
+| Kernel / domain packages | Application assembly now owns concrete construction; independent extraction remains pending | Preserve public contracts and extract only after K5 acceptance |
 | Immutable state / request | Mutable arrays, dictionaries, layers and resolver bindings | Immutable snapshots and request-owned sessions |
-| Chart / atlas | Bidirectional imports and private furniture/report helpers | Public sheet-rendering contract owned below atlas |
+| Chart / atlas | Public sheet leaf now shared by execution and batch publication; Mac acceptance pending | Retain legacy aliases, request scope and unchanged output |
 | Package / independent test gate | Shared installation and historical documentation assertions | Isolated environments, provider conformance and owner suites |
 
 The source evidence is in `sky/celestial_sphere.py`, `sky/maximal_sphere.py`,
@@ -605,7 +609,7 @@ map below ensures small/non-chart capabilities do not disappear in grouped rows.
 | K3.18 | Close shared state/coordinate/observer adapters, resource lifetime and observed-cache invalidation across existing families | Accepted PR #291/main 37bcb851 after 402 focused, 36 documentation and eight tooling Mac cases; clean branch cleanup confirmed. K5.02 final placement and K3.25 model qualification remain separate |
 | K3.19 | Decouple central sky/factory from concrete providers through application assembly; cover saved/loaded skies and workers | Accepted PR #292 at main 2bdbc4a9 after 169 focused, 36 documentation and eight tooling Mac cases; existing construction moved unchanged to application assembly; source-free restoration/workers retained |
 | K3.20 | Close all five ordinary chart families, target/group centres, masks, content, styles/detail and furniture state access | Accepted PR #293 at main 89756d95 after 389 focused, 36 documentation and eight tooling Mac cases; existing ordinary consumers use shared services; no runtime rewrite |
-| K3.21 | Replace chart/atlas private-helper cycle with a public sheet contract; close atlas design/index/publication/report consumers | Selected revision 45: public sheet boundary and count-appendix routing; preserve design/index/publication/report and real worker/export outputs. Complete acceptance pending |
+| K3.21 | Replace chart/atlas private-helper cycle with a public sheet contract; close atlas design/index/publication/report consumers | Implemented for acceptance: public sheet request/render result replaces the private-helper cycle; native full-source stellar geometry controls count availability. Design/index/report and cold/saved/worker/installed gates preserve existing output; complete Mac acceptance pending |
 | K3.22 | Migrate physical polar pairs, calendars, pages, pouches and sheet products without print/scene changes | Pending routing acceptance; retain both projections and classroom baseline |
 | K3.23 | Close ordinary temporal sequence state/realization routes, playback and resume identities | Partial request/configuration seams accepted; complete state routing remains open |
 | K3.24 | Close fixed-sky/frozen-baseline and rotating-horizon consumers with distinct anchor/local instants | Pending; preserve scientific and graphical references |

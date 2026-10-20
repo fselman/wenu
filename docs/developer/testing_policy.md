@@ -1297,3 +1297,43 @@ changed-owner seam suite passed in 1.70 s; the deliberate raw-target bypass
 failed both new preparation cases. Eight tooling cases and 31 available
 documentation cases passed. Five documentation checks need complete-checkout
 archive/asset/test-inventory contents; all 36 remain required on Mac.
+
+
+## Atlas sheet routing gate
+
+Run `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python tools/run_test_gate.py atlas-sheet-routing --run`.
+K3.21 selects atlas design/style/CLI and existing generic request/dependency
+owners; real cold/saved/spawned publication, failure/race and layout checks;
+and an isolated wheel/sdist public-contract consumer. The moved body has an
+AST-equivalence receipt, not a rewritten numerical implementation.
+
+New owner tests require public sheet render results and refusal to be consumed
+under the existing request lease/staging; old and canonical request imports
+must name the same class. A structural test requires generic execution to use the public sheet leaf,
+forbids reverse imports from that leaf into batch publication/request execution,
+and prevents batch publication from importing the generic request owner.
+Full-source count tests preserve duplicates/NaNs/photometry and require returned
+native rows plus refusal after success. Actual KernelSession changes reach
+standalone index rendering; refusal reaches index and appendix after warm use.
+Restoring the old raw-count implementation must fail the new consumer test.
+
+Run eight tooling and full documentation checks too. Reuse accepted SDK/observer/
+geometry numerical and conformance receipts. No dependency or package extraction
+change warrants repeating the full SDK/production suites. Test output evidence
+must include actual PNG/PDF/SVG exports, cold/restored/worker agreement and
+unchanged publication failure cleanup; a passing synthetic seam is insufficient.
+
+The portrait review checks a fixed-aspect fit inside font-derived frame
+allowances. It must not require both dimensions to be saturated simultaneously.
+The prior assertion failed identically with the accepted pre-refactor render
+body; the corrected geometric oracle retains exact dimension/aspect/containment
+checks and does not change production layout or broaden tolerances.
+
+Final local Python 3.12 evidence: the complete 425-case atlas-sheet-routing gate
+passed in 540.18 s without exclusions or expected failures. This includes real
+cold/restored/serial/spawned chart/report/index/book PNG/PDF/SVG outputs,
+failure/race cleanup, display-DPI invariance and isolated installed wheel/sdist
+access to the new sheet leaf. Eight tooling and 31 available documentation
+cases passed; five archive/asset/test-inventory checks need the complete Mac
+checkout. All 272 production source paths match source map and inventory.
+Full Mac documentation and focused acceptance remain pending.

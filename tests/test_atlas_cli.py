@@ -1207,8 +1207,14 @@ def test_requested_portrait_review_sheets_render_through_chart_command(number, t
     assert frame['width'] == pytest.approx(bounds[2] * page.width_mm)
     assert frame['height'] == pytest.approx(bounds[3] * page.height_mm)
     horizontal, vertical = _atlas_frame_widths(AtlasChartStyle(), request.presentation)
-    assert frame['width'] + 2*vertical*25.4/72 == pytest.approx(page.useful_width_mm)
-    assert frame['height'] + 2*horizontal*25.4/72 == pytest.approx(page.useful_height_mm)
+    # The fixed sheet aspect is fitted inside both frame allowances. Font
+    # metrics can make one dimension limiting; the other need not fill it.
+    available_width = page.useful_width_mm - 2*vertical*25.4/72
+    available_height = page.useful_height_mm - 2*horizontal*25.4/72
+    assert frame['width'] == pytest.approx(min(available_width, available_height*page.aspect_ratio))
+    assert frame['height'] == pytest.approx(frame['width']/page.aspect_ratio)
+    assert frame['width'] <= available_width + 1e-9
+    assert frame['height'] <= available_height + 1e-9
     assert report['layout']['central_scale_mm_per_degree'] == pytest.approx(
         frame['width'] / sheet.viewport(page).width * sheet.projection.projected_radius(1e-5)/1e-5)
 
@@ -1552,7 +1558,12 @@ def test_atlas_catalogue_counts_use_unique_actual_photometry_and_finite_position
     source = pd.DataFrame(dict(magnitude=[-1,-1,0,2,7,1],
         ra_hours=[0,0,2,3,4,np.nan], dec_degrees=[0]*6), index=[1,1,2,3,4,5])
     before=source.copy(deep=True)
-    data, identifiers, values=catalogue_star_counts(SimpleNamespace(source_catalog=source),6)
+    from wenu.geometry.spherical import SphericalPoints
+    from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+    geometry = SphericalPoints(source.ra_hours.to_numpy()*15, source.dec_degrees.to_numpy(),
+        ids=source.index.to_numpy(), metadata={"magnitude": source.magnitude.to_numpy()},
+        coordinate_spec=GENERIC_SPHERICAL_SPEC)
+    data, identifiers, values=catalogue_star_counts(SimpleNamespace(native_positions=lambda: geometry),6)
     assert identifiers.tolist()==[1,2,3] and values.tolist()==[-1,0,2]
     assert data['selected_count']==3 and data['cumulative_count']==[1,2,3]
     assert data['invalid_count']==1 and data['fainter_count']==1
@@ -1649,3 +1660,114 @@ def test_atlas_sheet_default_route_uses_wenu_chart(request_data, tmp_path, monke
         with pytest.raises(RuntimeError, match="wenu_chart failed"):
             publication._render_atlas_sheet(task, **({} if worker else {"sky": sky}))
     assert len(calls) == 1
+
+
+@pytest.mark.parametrize("refuse", (False, True))
+def test_sheet_executor_consumes_public_render_result_and_preserves_scope(request_data, tmp_path, monkeypatch, refuse):
+    import pickle
+    from wenu import CelestialSphere
+    from wenu.charts import atlas_sheet as publication
+    from wenu.charts import request_generation as generation
+    from wenu.charts.export_workflow import ChartExportResult
+    from wenu.charts.atlas_publication import AtlasSheetChartRequest as legacy
+    assert generation.AtlasSheetChartRequest is publication.AtlasSheetChartRequest is legacy
+    atlas = AtlasDesignRequest.from_dict(request_data).resolve()
+    request = publication.AtlasSheetChartRequest(atlas.geometry.sheets[0], atlas.geometry.page,
+        publication.AtlasChartPresentation(layers=("equatorial_grid",), formats=("pdf",)), tmp_path/'sheet')
+    assert pickle.loads(pickle.dumps(request)) == request
+    sky = CelestialSphere(None)
+    marker = object()
+    calls = []
+    def render(staged, actual_sky):
+        calls.append(staged)
+        assert actual_sky is sky and sky._active_chart_request_state is not None
+        assert staged.sheet is request.sheet and staged.presentation is request.presentation
+        assert staged.output_dir != request.output_dir
+        if refuse:
+            raise RuntimeError("synthetic public sheet refusal")
+        output = staged.output_dir/'chart-01.pdf'
+        report = staged.output_dir/'chart-01_report_data.json'
+        output.write_bytes(b'synthetic sheet result')
+        report.write_bytes(b'synthetic report result')
+        return ChartExportResult(marker, output, marker, {}, marker, report_outputs=(report,))
+    monkeypatch.setattr(publication, "render_atlas_sheet", render)
+    if refuse:
+        with pytest.raises(RuntimeError, match="public sheet refusal"):
+            generation.generate_chart_request(request, sky=sky)
+        assert not request.output_dir.exists()
+    else:
+        result = generation.generate_chart_request(request, sky=sky)
+        assert result.exports[0].rendering is marker
+        assert tuple(p.name for p in result.outputs) == ('chart-01.pdf','chart-01_report_data.json')
+        assert [p.read_bytes() for p in result.outputs] == [b'synthetic sheet result', b'synthetic report result']
+    assert len(calls) == 1
+    assert not hasattr(sky, '_active_chart_request_state')
+    assert not list(tmp_path.glob('.wenu-chart-*'))
+
+
+def test_catalogue_counts_consume_returned_native_rows_and_propagate_refusal():
+    import numpy as np
+    from types import SimpleNamespace
+    from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+    from wenu.geometry.spherical import SphericalPoints
+    from wenu.charts.stellar_sizing_report import catalogue_star_counts
+    geometry = SphericalPoints([10.,20.], [30.,40.], ids=[11,12],
+        metadata={"magnitude": [1.,2.]}, coordinate_spec=GENERIC_SPHERICAL_SPEC)
+    stars = SimpleNamespace(native_positions=lambda: geometry)
+    assert catalogue_star_counts(stars,6)[1].tolist() == [11,12]
+    geometry = replace(geometry, lon_deg=np.asarray([np.nan,20.]))
+    data, ids, values = catalogue_star_counts(stars,6)
+    assert ids.tolist() == [12] and values.tolist() == [2.]
+    assert data['selected_count'] == 1 and data['invalid_count'] == 1
+    def refuse():
+        raise RuntimeError('synthetic native count refusal')
+    stars.native_positions = refuse
+    with pytest.raises(RuntimeError, match='native count refusal'):
+        catalogue_star_counts(stars,6)
+
+
+def test_index_and_catalogue_appendix_use_real_kernel_results_and_refuse(request_data, monkeypatch):
+    import numpy as np
+    import pandas as pd
+    from matplotlib.figure import Figure
+    from matplotlib.backends.backend_agg import FigureCanvasAgg
+    from wenu import CelestialSphere
+    from wenu.objects.stars import Stars
+    from wenu.charts import atlas_index as index
+    from wenu.charts.stellar_sizing_report import catalogue_star_counts
+    from wenu.catalogue_state import _unit_direction
+    from wenu_kernel import KernelSession
+    stars = Stars(None, magnitude_limit=6)
+    stars.source_catalog = native_table(pd.DataFrame(dict(ra_hours=[1.], dec_degrees=[30.],
+        magnitude=[2.], is_constellation_vertex=[False]),index=[11]))
+    stars.catalog = stars.source_catalog.copy()
+    sky = CelestialSphere(None); sky.stars = sky.add(stars)
+    evaluate = KernelSession.evaluate
+    def shifted(session, query):
+        batch = evaluate(session, query)
+        return replace(batch, states=tuple(replace(state, vector=_unit_direction(45.,50.)) for state in batch.states))
+    monkeypatch.setattr(KernelSession, 'evaluate', shifted)
+    atlas = AtlasDesignRequest.from_dict(request_data).resolve()
+    face = index.overview_face(atlas.geometry.overview, 'north')
+    presentation = replace(index.AtlasIndexPresentation(), layers=('stars',), veil_enabled=False)
+    realized = []
+    realize = stars.realize
+    def capture(*args, **kwargs):
+        result = realize(*args, **kwargs); realized.append(result); return result
+    monkeypatch.setattr(stars, 'realize', capture)
+    def draw():
+        figure = Figure(); FigureCanvasAgg(figure)
+        index._draw_face(figure.add_subplot(), atlas, face, footprints=False, sky=sky,
+            presentation=presentation, star_magnitude_limit=6)
+    draw()
+    assert realized and realized[0].ids.tolist() == [11]
+    np.testing.assert_allclose(realized[0].lon_deg,[45.])
+    np.testing.assert_allclose(realized[0].lat_deg,[50.])
+    assert catalogue_star_counts(stars,6)[1].tolist() == [11]
+    def refuse(*a, **k):
+        raise RuntimeError('synthetic atlas kernel refusal')
+    monkeypatch.setattr(KernelSession, 'evaluate', refuse)
+    with pytest.raises(RuntimeError, match='atlas kernel refusal'):
+        draw()
+    with pytest.raises(RuntimeError, match='atlas kernel refusal'):
+        catalogue_star_counts(stars,6)

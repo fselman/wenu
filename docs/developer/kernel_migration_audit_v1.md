@@ -1180,3 +1180,54 @@ not claim physical model accuracy. K3.21 retains the chart/atlas private-helper
 cycle, design/index/publication/report closure. Moving-body model qualification
 and remaining provider migrations retain their separate K3 rows. K3/K5 remain
 partial; this does not certify all Wenu functionality or independent packages.
+
+
+## K3.21 atlas sheet and consumer assessment
+
+Base: main `89756d957696b8baf2cd69f52f6a6878cc3a8484`, accepted K3.20.
+The generic request owner previously imported six private atlas drawing/report
+helpers and constructed the atlas sheet chart itself; atlas publication imported
+its request type from that generic owner. The existing sheet chart/presentation,
+validated request and render/report bodies now live in `atlas_sheet`. Both batch
+publication and generic request execution consume its public contract. The
+generic executor keeps scope, safe temporary staging and atomic no-clobber
+publication. The new module separates one-sheet rendering from batch scheduling/book
+publication and request-resource lifecycle. No new package or scientific
+capability is introduced; legacy imports remain aliases.
+
+AST comparison against the base confirms the moved request record and render
+body are identical except owner imports, public-entry guards and replacing the
+generic generation wrapper with its single existing ChartExportResult. The
+executor wraps that result identically. Fourteen existing sheet/presentation/
+report/layout definitions have identical ASTs after relocation; the leaf imports
+neither the batch publication module nor generic request execution.
+Layout, native frame, grid/label rules,
+figures, report composition, PNG/PDF/SVG settings and finally-close are unchanged.
+
+| Consumer | Disposition and evidence owner |
+|---|---|
+| Design/tiling/footprints | Existing constructed geometry with kernel projections; no catalogue state query required. Keep `test_atlas_design.py` |
+| Standalone index | Existing canonical PolarPlanisphereChart/layer realization. New actual-kernel changed-vector and after-success refusal test in `test_atlas_cli.py`; retain index CLI/veil/scene tests |
+| Sheet execution | Public validated request and render result; test executor consumes actual returned paths/results under its active lease, and refusal cleans staging without output |
+| Sheet report and magnitude scale | Existing completed rendered-star geometry; retain count/area/physical-frame tests |
+| Whole-catalogue appendix | Demonstrated raw-coordinate availability read replaced by full-source public native positions, IDs and magnitude metadata. Preserve first-HIP deduplication, source order, finite/magnitude filtering and values. Test returned NaNs, missing source fallback and real-kernel refusal |
+| Publication/book | Existing CLI dispatch, exact design binding, deterministic page order, PDF assembly, no-clobber/race/failure contracts retained |
+| Saved sky and workers | Existing source-free assembly, request scope and native realization; real cold/saved/serial/spawned PNG/PDF/SVG comparisons and cleanup gates remain required |
+| Installed access | Existing wheel/sdist owner verifies changed module bytes and isolated public alias/count-result/refusal consumption without source checkout |
+
+The coordinate guide and scientific contracts remain current: no numerical
+formula, physical model, source bytes, dependency, SDK, snapshot v6 transport,
+layout or rendering algorithm changes. Retain accepted lower-level numerical/
+conformance receipts. Catalogue-count availability is not an evaluated-epoch
+claim. K3.22 physical polar products and later moving-body/provider rows remain
+separate; this does not freeze K3/K5 or extract astronomical packages.
+
+An inherited portrait-review assertion required both frame dimensions to fill
+the page exactly. The unchanged layout instead fits a fixed aspect ratio inside
+both font-derived allowances. Running the original accepted rendering body
+reproduced the same 219.797294 mm versus 220 mm assertion failure. The test now
+requires the limiting-dimension fit, unchanged page aspect and containment in
+both allowances; no tolerance widening or production layout change is used.
+Independent full packaged-Hipparcos comparison with the old count function
+returned identical report data, IDs and magnitudes: 5,041 selected, 263 invalid
+and 112,914 fainter rows at magnitude 6.

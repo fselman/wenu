@@ -229,9 +229,15 @@
     },
     {
       "path": "src/wenu/charts/atlas_publication.py",
-      "git_blob_sha": "a943af031657f175b17e7adee2e5c36744af8d09",
+      "git_blob_sha": "ba3f589b3c03f20be93fef4bb25379591ac1c7b1",
       "as_is_directory": "src/wenu/charts",
       "description": "Design-bound atlas planning and canonical chart-page publication."
+    },
+    {
+      "path": "src/wenu/charts/atlas_sheet.py",
+      "git_blob_sha": "ec464408cbed20c8ddf9154df8c484ae98d30b9d",
+      "as_is_directory": "src/wenu/charts",
+      "description": "Single-sheet atlas contract, composition, furniture and report service below batch publication."
     },
     {
       "path": "src/wenu/charts/automatic_legends.py",
@@ -673,7 +679,7 @@
     },
     {
       "path": "src/wenu/charts/request_generation.py",
-      "git_blob_sha": "bc9e7c2f73631b425a8551f5575729db97d897c3",
+      "git_blob_sha": "109e4f206bc900177cc58aa38fecee0978981fff",
       "as_is_directory": "src/wenu/charts",
       "description": "Canonical composition and export for declarative chart requests."
     },
@@ -757,7 +763,7 @@
     },
     {
       "path": "src/wenu/charts/stellar_sizing_report.py",
-      "git_blob_sha": "de4fdadc21bb67f368485edbecd2154f999d3f12",
+      "git_blob_sha": "a64060cff7912f48049457d6c579c3de9c51c556",
       "as_is_directory": "src/wenu/charts",
       "description": "Stellar SVG measurements and actual-catalogue atlas count appendices."
     },
@@ -817,7 +823,7 @@
     },
     {
       "path": "src/wenu/cli/chart.py",
-      "git_blob_sha": "6e483f6e44ff2590c5e0d1f8c0932d85c2910603",
+      "git_blob_sha": "f1b23587a1b69d5ecf2c275c05ba60f49341753c",
       "as_is_directory": "src/wenu/cli",
       "description": "Installed command-line interface for ordinary Wenu chart generation."
     },
@@ -11799,7 +11805,7 @@
   "ordinary_chart_routing": {
     "milestone": "K3.20",
     "base_commit": "2bdbc4a9963690f7c78cea483357292521a90f3a",
-    "status": "Implemented verification; Mac acceptance pending",
+    "status": "Accepted through PR #293; Mac gates and cleanup confirmed.",
     "production_changes": [],
     "assessment": "docs/developer/kernel_migration_audit_v1.md#k320-ordinary-chart-consumer-assessment",
     "gate": "ordinary-chart-routing",
@@ -11838,6 +11844,106 @@
       "documentation_seconds": 1.12,
       "documentation_limit": "Five full-checkout archive/asset/test-inventory checks remain required on Mac."
     },
-    "limits": "Existing chart orchestration verified, no new science. K3.21 and later provider/model obligations remain separate; source gaps unchanged."
+    "limits": "Existing chart orchestration verified, no new science. K3.21 and later provider/model obligations remain separate; source gaps unchanged.",
+    "acceptance": {
+      "pull_request": 293,
+      "tested_commit": "bd3971f75982c24638d1a540f2438eb88f5a39af",
+      "merged_commit": "89756d957696b8baf2cd69f52f6a6878cc3a8484",
+      "mac_focused": 389,
+      "mac_focused_seconds": 36.64,
+      "mac_documentation": 36,
+      "mac_tooling": 8,
+      "cleanup": "User confirmed clean synchronized main and both branch deletions."
+    }
+  },
+  "atlas_sheet_routing": {
+    "milestone": "K3.21",
+    "base_commit": "89756d957696b8baf2cd69f52f6a6878cc3a8484",
+    "plan_commit": "47ba46eb918c87a488f9d6c98992eda3cf3fb17e",
+    "status": "Verified locally; full Mac acceptance pending.",
+    "agreement": "Fernando’s 2026-10-20 proceed after the explicit K3.21 proposal and PR #293 cleanup.",
+    "gate": "atlas-sheet-routing",
+    "assessment": "docs/developer/kernel_migration_audit_v1.md#k321-atlas-sheet-and-consumer-assessment",
+    "production_modules": [
+      {
+        "path": "src/wenu/charts/atlas_sheet.py",
+        "git_blob_sha": "ec464408cbed20c8ddf9154df8c484ae98d30b9d"
+      },
+      {
+        "path": "src/wenu/charts/atlas_publication.py",
+        "git_blob_sha": "ba3f589b3c03f20be93fef4bb25379591ac1c7b1"
+      },
+      {
+        "path": "src/wenu/charts/request_generation.py",
+        "git_blob_sha": "109e4f206bc900177cc58aa38fecee0978981fff"
+      },
+      {
+        "path": "src/wenu/charts/stellar_sizing_report.py",
+        "git_blob_sha": "a64060cff7912f48049457d6c579c3de9c51c556"
+      },
+      {
+        "path": "src/wenu/cli/chart.py",
+        "git_blob_sha": "f1b23587a1b69d5ecf2c275c05ba60f49341753c"
+      }
+    ],
+    "contract": {
+      "request": "wenu.charts.atlas_sheet.AtlasSheetChartRequest",
+      "legacy_alias": "wenu.charts.request_generation.AtlasSheetChartRequest",
+      "renderer": "wenu.charts.atlas_sheet.render_atlas_sheet",
+      "result": "wenu.charts.export_workflow.ChartExportResult",
+      "scope_and_publication": "wenu.charts.request_generation.generate_chart_request",
+      "publication_alias": "wenu.charts.atlas_publication.AtlasSheetChartRequest"
+    },
+    "consumer_dispositions": [
+      {
+        "consumer": "design/tiling/footprints",
+        "disposition": "Retain constructed geometry and existing kernel projection services; no catalogue state needed."
+      },
+      {
+        "consumer": "standalone index",
+        "disposition": "Retain canonical polar/layer service route; add actual changed kernel result and refusal evidence."
+      },
+      {
+        "consumer": "sheet publication",
+        "disposition": "Move existing rendering/request/presentation/report bodies to lower-level atlas_sheet; batch publication and generic execution consume its public contract, retaining old aliases and scope/staging/CLI/worker routes."
+      },
+      {
+        "consumer": "sheet report/legend",
+        "disposition": "Retain completed rendered geometry and physical frame/count/area policies."
+      },
+      {
+        "consumer": "catalogue count appendix",
+        "disposition": "Replace raw RA/Dec availability reads with returned full-source native geometry, IDs and magnitude metadata; preserve first-HIP/source order and counts."
+      },
+      {
+        "consumer": "saved/worker/book/install",
+        "disposition": "Verify actual cold/saved/spawned output, race/failure and isolated installed contract."
+      }
+    ],
+    "structural_proof": "Fourteen moved sheet/presentation/report/layout ASTs equal the accepted base exactly. Request record and render body equal base after owner imports, public-entry guards and result-wrapper normalization. Sheet leaf imports neither batch publication nor request execution.",
+    "limits": "No new physical model, SDK/dependency/source bytes/snapshot version/layout/renderer algorithm or extraction. K3.22 and remaining K3/K5 obligations stay separate.",
+    "placement_plan_commit": "799865172f4d618bcdae010acf6c406dc4e99b14",
+    "local_receipt": {
+      "focused_passed": 425,
+      "focused_seconds": 540.18,
+      "selection": "Complete atlas-sheet-routing gate in one final run, no exclusions/xfails.",
+      "tooling_passed": 8,
+      "documentation_available_passed": 31,
+      "documentation_limit": "Five complete-checkout archive/asset/test-inventory checks remain required on Mac. All 272 production modules match source map and inventory.",
+      "structural": "Fourteen moved sheet/presentation/report/layout definitions retain identical ASTs. Moved request/render bodies retain original statements except owner imports, public-entry guards and result wrapper.",
+      "full_hipparcos_baseline_equivalence": {
+        "selected": 5041,
+        "invalid": 263,
+        "fainter": 112914,
+        "magnitude_limit": 6,
+        "comparison": "Exact report data, IDs and magnitude arrays equal pre-refactor implementation."
+      },
+      "inherited_test_correction": "Original render body reproduces identical 219.797294 mm vs 220 mm failure. Portrait test now checks limiting-dimension fit, fixed aspect and both containment bounds without widening tolerance or changing layout code.",
+      "fault": "Restoring old raw-count implementation fails the new returned-native-row consumer; unmodified consumer suite passes.",
+      "outputs": "Actual cold/restored/serial/spawned atlas charts, reports, index and book PNG/PDF/SVG, failure/race cleanup and display-DPI invariance passed.",
+      "installation": "Root wheel/sdist ship exact changed modules including atlas_sheet; isolated -I -S installed consumer verifies public/legacy aliases, native count values and refusal without source checkout.",
+      "tooling_seconds": 5.284,
+      "documentation_seconds": 1.17
+    }
   }
 }

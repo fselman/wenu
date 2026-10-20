@@ -28,11 +28,15 @@ GAUSS_T = (GAUSS_X + 1) / 2
 
 def catalogue_star_counts(stars, magnitude_limit):
     """Cumulative actual catalogue counts, independent of page appearances."""
-    source = stars.source_catalog
-    source = source.loc[~source.index.duplicated(keep="first")]
-    magnitudes = source["magnitude"].to_numpy(dtype=float)
-    ra = source["ra_hours"].to_numpy(dtype=float)
-    dec = source["dec_degrees"].to_numpy(dtype=float)
+    geometry = stars.native_positions()
+    identifiers = np.asarray(geometry.ids)
+    # Preserve first-HIP/source order without re-reading raw source positions.
+    _, first = np.unique(identifiers, return_index=True)
+    first.sort()
+    identifiers = identifiers[first]
+    magnitudes = np.asarray(geometry.metadata["magnitude"], dtype=float)[first]
+    ra = np.asarray(geometry.lon_deg, dtype=float)[first]
+    dec = np.asarray(geometry.lat_deg, dtype=float)[first]
     finite = np.isfinite(magnitudes) & np.isfinite(ra) & np.isfinite(dec)
     selected = finite & (magnitudes <= magnitude_limit)
     values, frequency = np.unique(magnitudes[selected], return_counts=True)
@@ -43,7 +47,7 @@ def catalogue_star_counts(stars, magnitude_limit):
         invalid_count=int(np.count_nonzero(~finite)),
         fainter_count=int(np.count_nonzero(finite & ~selected)),
         magnitude=values.tolist(), cumulative_count=cumulative.tolist(),
-        log10_cumulative_count=np.log10(cumulative).tolist()), source.index.to_numpy()[selected], magnitudes[selected]
+        log10_cumulative_count=np.log10(cumulative).tolist()), identifiers[selected], magnitudes[selected]
 
 
 def render_catalogue_star_counts(stars, output_prefix, *, magnitude_limit, page, dpi, provenance):

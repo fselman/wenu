@@ -145,6 +145,7 @@ concrete Wenu classes.
 | [`charts/atlas_index.py`](../../src/wenu/charts/atlas_index.py) | Resolved atlas index presentation through canonical chart/render/export owners. |
 | [`charts/atlas_modes.py`](../../src/wenu/charts/atlas_modes.py) | Print and presentation realizations of the atlas chart style. |
 | [`charts/atlas_publication.py`](../../src/wenu/charts/atlas_publication.py) | Design-bound atlas planning and canonical chart-page publication. |
+| [`charts/atlas_sheet.py`](../../src/wenu/charts/atlas_sheet.py) | Single-sheet atlas request, rendering, furniture and report service below batch publication. |
 | [`charts/automatic_legends.py`](../../src/wenu/charts/automatic_legends.py) | High-level automatic composition of chart legends. |
 | [`charts/binocular.py`](../../src/wenu/charts/binocular.py) | Circular binocular-field chart type. |
 | [`charts/boundaries.py`](../../src/wenu/charts/boundaries.py) | Reusable projected boundaries and coordinate-label anchors. |

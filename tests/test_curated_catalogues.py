@@ -588,3 +588,41 @@ assert snapshot.make_sky(assembly=Supplied()) is snapshot
     result = subprocess.run([sys.executable,'-I','-S','-c',script,str(installed),
         str(sdk_root),json.dumps(dependencies)], cwd=tmp_path, capture_output=True,text=True)
     assert result.returncode == 0, result.stdout+result.stderr
+
+
+def test_atlas_sheet_contract_ships_and_runs_without_source_checkout(tmp_path):
+    from zipfile import ZipFile
+    import wenu_kernel
+    wheel = _assert_source_products_ship(tmp_path, (), modules=(
+        'wenu/charts/atlas_sheet.py', 'wenu/charts/atlas_publication.py', 'wenu/charts/request_generation.py',
+        'wenu/charts/stellar_sizing_report.py', 'wenu/cli/chart.py'))
+    installed = tmp_path/'installed'
+    with ZipFile(wheel) as archive:
+        archive.extractall(installed)
+    sdk_root = Path(wenu_kernel.__file__).resolve().parent.parent
+    dependencies = [p for p in sys.path if Path(p).name in ('site-packages','dist-packages')]
+    script = r'''
+import sys,json
+from pathlib import Path
+sys.path[:0]=[sys.argv[1],sys.argv[2],*json.loads(sys.argv[3])]
+from types import SimpleNamespace
+from wenu.charts import atlas_sheet, atlas_publication, request_generation, stellar_sizing_report
+from wenu.geometry.spherical import SphericalPoints
+from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+for module in (atlas_sheet,atlas_publication,request_generation,stellar_sizing_report):
+    assert Path(module.__file__).is_relative_to(Path(sys.argv[1]))
+assert atlas_sheet.AtlasSheetChartRequest is atlas_publication.AtlasSheetChartRequest is request_generation.AtlasSheetChartRequest
+assert callable(atlas_publication.render_atlas_sheet)
+geometry=SphericalPoints([10.],[20.],ids=[1],metadata={"magnitude":[2.]},coordinate_spec=GENERIC_SPHERICAL_SPEC)
+source=SimpleNamespace(native_positions=lambda:geometry)
+data,ids,values=stellar_sizing_report.catalogue_star_counts(source,6)
+assert data["selected_count"]==1 and ids.tolist()==[1] and values.tolist()==[2.]
+def refuse():raise RuntimeError("installed native refusal")
+source.native_positions=refuse
+try:stellar_sizing_report.catalogue_star_counts(source,6)
+except RuntimeError as exc:assert str(exc)=="installed native refusal"
+else:raise AssertionError("installed count consumer concealed refusal")
+'''
+    result = subprocess.run([sys.executable,'-I','-S','-c',script,str(installed),
+        str(sdk_root),json.dumps(dependencies)],cwd=tmp_path,capture_output=True,text=True)
+    assert result.returncode == 0, result.stdout+result.stderr

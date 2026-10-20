@@ -1554,3 +1554,34 @@ unchanged. Green radio axes/flux, unknown PA circle policy, morphology, sampling
 and renderer appearance remain with existing owners. Restored source snapshots
 use the same adapter without schema changes or hidden state/fallback.
 
+
+
+## Public atlas sheet contract
+
+`charts.atlas_sheet.AtlasSheetChartRequest(sheet, page, presentation,
+output_dir)` owns the existing validated immutable sheet request.
+`charts.atlas_publication.AtlasSheetChartRequest` and
+`charts.request_generation.AtlasSheetChartRequest` remain aliases of the same class
+for existing imports and old pickle GLOBAL paths. Validation, defaults
+and normalized Path output directory are unchanged. The chart CLI and atlas
+workers use the sheet-service contract. Existing publication imports of
+AtlasSheetChart, AtlasChartPresentation and private sheet helpers remain aliases.
+
+`charts.atlas_sheet.render_atlas_sheet(request, sky)` renders one
+observer-free prepared sky into the supplied directory and returns the existing
+`ChartExportResult`. Its `output` is the first requested format; `report_outputs`
+contains remaining chart formats and report files in the established order.
+This is the sheet rendering service, not the atomic publication entry point:
+call `generate_chart_request(request, sky=sky)` for request scope, safe staging,
+no-clobber publication and cleanup. The renderer uses the unchanged native-ICRS
+realization, composition, grid/furniture/report policies and one offscreen Agg
+figure. Exceptions still close that figure and reach the request executor.
+
+`catalogue_star_counts(stars, magnitude_limit)` now obtains full-source geometry
+through `stars.native_positions()`, including its HIP IDs and magnitude metadata.
+It retains first-HIP/source order, finite position/photometry filtering and
+cumulative counts; unavailable or refused native states cannot fall back to
+raw RA/Dec. This is source-native catalogue availability, not propagation or a
+new epoch/observer model. Per-sheet report statistics still consume completed
+rendered geometry. Atlas design remains geometry-only and the standalone index
+continues through canonical polar/layer/coordinate/domain/projection services.

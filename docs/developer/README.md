@@ -19,7 +19,9 @@ K3.18 is accepted through PR #291 after 402 focused, 36 documentation and eight 
 K3.19 moves existing concrete construction into [application assembly](implementation_reference.md#application-sky-assembly),
 leaving central sky/factory/snapshot APIs as delegates. Source-free restoration and worker paths use that owner; accepted through PR #292 after 169 focused, 36 documentation and eight tooling Mac cases.
 
-K3.20 now verifies [ordinary chart consumer routing](kernel_migration_audit_v1.md#k320-ordinary-chart-consumer-assessment) through existing services, without production rewrites. Complete Mac acceptance is pending; K3.21 remains separate.
+K3.20 now verifies [ordinary chart consumer routing](kernel_migration_audit_v1.md#k320-ordinary-chart-consumer-assessment) through existing services, without production rewrites. Accepted through PR #293 after 389 focused, 36 documentation and eight tooling Mac cases.
+
+K3.21 now exposes the [public atlas sheet contract](implementation_reference.md#public-atlas-sheet-contract) and routes catalogue-count availability through full-source native stellar positions. Focused Mac acceptance is pending; K3.22 remains separate.
 
 ## Read for current work
 

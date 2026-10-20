@@ -96,8 +96,9 @@ invalid latitudes and the opposite-pole domain still refuse. No catalogue rows
 are dropped and no missing direction is published as a state. The real equidistant
 polar specimens now require success without expected-failure markers. Complete
 Mac acceptance of this correction is pending.
-Observer/cache identity, concrete assembly and private atlas helpers retain their
-existing partial K3.18/K3.19/K3.21 obligations. No K3/K5 freeze is claimed.
+Observer/cache identity and application assembly are accepted through K3.18/K3.19.
+K3.21 now implements the lower-level public atlas sheet contract; its Mac
+acceptance remains pending. No K3/K5 freeze is claimed.
 
 ## Canonical pipeline
 
@@ -316,9 +317,15 @@ The chart guard checks vacuum AltAz/site-event binding before projection.
    Atlas API/worker execution defaults to `wenu_chart atlas-sheet`, removing
    the direct-generator fallback. This accepted lifecycle change is distinct
    from the current native stellar kernel adapter.
-5. `charts/atlas_publication.py` calls request generation, while request
-   generation imports atlas-specific private furniture/report helpers.
-   This creates a cycle across the intended chart/atlas barrier.
+5. `charts/atlas_sheet.py` owns the validated public sheet request,
+   presentation, chart adapter, rendering, furniture and report service.
+   Both batch publication and generic request execution depend on that leaf. Generic request
+   execution consumes that public result while retaining scope/staging and
+   atomic publication. The former private furniture/report-helper cycle is
+   removed. Publication workers use the public chart command and the same
+   request type; the old request-generation import remains an identical alias.
+   Whole-catalogue count appendices now consume full-source native stellar
+   geometry and its photometry, retaining unique-HIP/source-order counts.
 6. Native snapshots are existing transport/reuse objects, not a universal
    physical-state store. A saved design-bound snapshot is not interchangeable
    with an arbitrary epoch/observer request.
