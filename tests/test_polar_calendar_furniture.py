@@ -11,6 +11,37 @@ from wenu import (
 )
 
 
+@pytest.mark.parametrize("projection_name", ("polar_azimuthal_equidistant", "stereographic"))
+def test_paired_calendar_consumes_kernel_projection_results_and_refusal(monkeypatch, projection_name):
+    """A product must use returned paper directions, including after prior use."""
+    pair = PolarPlanispherePairRequest(projection_name=projection_name).resolve()
+    request = PolarCalendarFurnitureRequest()
+    baseline = request.resolve(pair)
+    kind = type(pair.south.projection)
+    assert kind.__module__.startswith("wenu_kernel.")
+    original = kind.project_spherical
+
+    def rotated(self, *args, **kwargs):
+        x, y = original(self, *args, **kwargs)
+        return -y, x
+
+    monkeypatch.setattr(kind, "project_spherical", rotated)
+    changed = request.resolve(pair)
+    for before, after in zip(baseline.faces, changed.faces, strict=True):
+        assert len(after.ticks) == 365
+        for left, right in zip(before.day_labels, after.day_labels, strict=True):
+            assert circular_difference(right.angle_deg, left.angle_deg) == pytest.approx(90.0)
+            assert (right.month, right.day, right.text) == (left.month, left.day, left.text)
+        assert after.outer_radius_mm == before.outer_radius_mm
+
+    def refuse(*args, **kwargs):
+        raise RuntimeError("projection refused")
+
+    monkeypatch.setattr(kind, "project_spherical", refuse)
+    with pytest.raises(RuntimeError, match="projection refused"):
+        request.resolve(pair)
+
+
 def circular_difference(left, right):
     return (float(left) - float(right) + 180.0) % 360.0 - 180.0
 
@@ -213,3 +244,4 @@ def projected_ra_angle(chart, right_ascension_deg):
 
 def paper_calendar_angle(chart, right_ascension_deg):
     return (projected_ra_angle(chart, right_ascension_deg) + 180.0) % 360.0
+

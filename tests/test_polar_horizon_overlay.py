@@ -20,6 +20,52 @@ from wenu import (
 LATITUDE = -32.443342
 
 
+@pytest.mark.parametrize("projection_name", ("polar_azimuthal_equidistant", "stereographic"))
+def test_returned_coordinate_geometry_reaches_pouch_and_sheet_and_refuses(monkeypatch, projection_name):
+    from dataclasses import replace
+    from wenu import PolarPouchFurnitureRequest, PolarPouchSheetRequest
+    from wenu.coordinate_service import CoordinateService
+
+    pair = PolarPlanispherePairRequest(projection_name=projection_name).resolve()
+    pages = PolarPageFurnitureRequest(source_revision="test").resolve(pair)
+    request = PolarHorizonOverlayRequest(samples=73)
+    site = observer()
+    original = CoordinateService.transform_observer_geometry
+    before = request.resolve(pair, pages, site)
+    baseline = PolarPouchFurnitureRequest().resolve(before)
+    calls = []
+
+    def changed(self, geometry, obs, target_frame, **kwargs):
+        calls.append((geometry, obs, target_frame))
+        result = original(self, geometry, obs, target_frame, **kwargs)
+        if isinstance(result, SphericalCurves):
+            return replace(result, lat_deg=tuple(np.clip(values + 3.0, -90, 90) for values in result.lat_deg))
+        return result
+
+    from wenu.geometry.spherical import SphericalCurves
+    monkeypatch.setattr(CoordinateService, "transform_observer_geometry", changed)
+    overlay = request.resolve(pair, pages, site)
+    pouches = PolarPouchFurnitureRequest().resolve(overlay)
+    sheet = PolarPouchSheetRequest().resolve(pouches)
+    assert len(calls) == 2
+    assert all(obs is site and frame == "icrs" for _, obs, frame in calls)
+    for old, new, face in zip(baseline.faces, pouches.faces, overlay.faces, strict=True):
+        assert new.horizon_segments_mm != old.horizon_segments_mm
+        offset = np.asarray(new.disk_center_mm) - np.asarray(face.disk_center_mm)
+        for returned, consumed in zip(face.horizon_segments_mm, new.horizon_segments_mm, strict=True):
+            np.testing.assert_allclose(consumed, np.asarray(returned) + offset)
+        assert new.disk_radius_mm == old.disk_radius_mm
+    assert sheet.south.rotation_deg == 0
+    assert sheet.north.rotation_deg == 180
+
+    def refuse(*args, **kwargs):
+        raise RuntimeError("coordinates refused")
+
+    monkeypatch.setattr(CoordinateService, "transform_observer_geometry", refuse)
+    with pytest.raises(RuntimeError, match="coordinates refused"):
+        request.resolve(pair, pages, site)
+
+
 def observer(latitude=LATITUDE):
     location = EarthLocation.from_geodetic(
         lon=-71.230289 * u.deg,
@@ -129,3 +175,4 @@ def test_request_validates_identity_and_is_immutable_and_public():
         "PolarHorizonPairOverlay",
     ):
         assert name in wenu.__all__
+

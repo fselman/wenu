@@ -1585,3 +1585,26 @@ raw RA/Dec. This is source-native catalogue availability, not propagation or a
 new epoch/observer model. Per-sheet report statistics still consume completed
 rendered geometry. Atlas design remains geometry-only and the standalone index
 continues through canonical polar/layer/coordinate/domain/projection services.
+
+## Physical polar product service boundary
+
+`PolarPlanispherePairRequest.resolve()` retains both equidistant and stereographic
+faces, handedness and registration. `PolarPlanisphereChart.render()` delegates
+to the canonical sky/layer pipeline; observed inputs use `CoordinateService`
+before public kernel projection/domain services through the existing aliases.
+Native ICRS rendering retains its explicit realization context.
+
+`CommonYearCalendarRequest` retains its existing Astropy mean-sidereal calibration
+at standard-time local midnight and its deterministic 365-day ring. This is
+product calibration, not a new universal kernel calendar/time API. Calendar
+furniture uses each face's returned projection directions.
+`PolarHorizonOverlayRequest` uses canonical horizon/coordinate results before
+projection and millimetre placement; resolved horizons feed
+`PolarPouchFurnitureRequest` and `PolarPouchSheetRequest`.
+
+`export_polar_planisphere_pages` uses the existing chart composition/export
+boundary and closes each face figure even on failure. The pouch face/sheet
+exporters save resolved physical furniture with existing `ExportOptions`.
+Page dimensions, duplex alignment, fonts, windows, folds, previews and assembly
+remain Wenu policy. K3.22 changes verification only; public APIs and production
+implementations are unchanged.

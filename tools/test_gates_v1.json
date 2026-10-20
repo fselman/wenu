@@ -2232,6 +2232,88 @@
           "reason": "Changed modules ship exactly; isolated installed public alias/count/refusal contract."
         }
       ]
+    },
+    "polar-product-routing": {
+      "scope": "K3.22 physical polar pair/calendar/page/overlay/pouch/sheet consumers, returned shared-service values/refusal and actual fabrication outputs.",
+      "limits": "Test/evidence closure only; existing products already use coordinate/kernel geometry/domain/projection and canonical export services. Preserve both projections, common-year calibration, classroom scene, physical/duplex layout, rendering and snapshot v6. No production/SDK/dependency/source change. Retain accepted KG/K3.16 four-polar cold/restored and K3.21 atlas/installation receipts; ordinary observer-visible planisphere is K3.20, not this physical product. K3.23 remains separate.",
+      "selections": [
+        {
+          "node": "tests/test_polar_binocular_targets.py",
+          "reason": "Existing physical polar product owner and retained science/layout/export contracts."
+        },
+        {
+          "node": "tests/test_polar_calendar.py",
+          "reason": "Existing physical polar product owner and retained science/layout/export contracts."
+        },
+        {
+          "node": "tests/test_polar_calendar_furniture.py",
+          "reason": "Existing physical polar product owner and retained science/layout/export contracts."
+        },
+        {
+          "node": "tests/test_polar_classroom_disk_freeze.py",
+          "reason": "Existing physical polar product owner and retained science/layout/export contracts."
+        },
+        {
+          "node": "tests/test_polar_horizon_overlay.py",
+          "reason": "Existing physical polar product owner and retained science/layout/export contracts."
+        },
+        {
+          "node": "tests/test_polar_magnitude_scale.py",
+          "reason": "Existing physical polar product owner and retained science/layout/export contracts."
+        },
+        {
+          "node": "tests/test_polar_page_export.py",
+          "reason": "Existing physical polar product owner and retained science/layout/export contracts."
+        },
+        {
+          "node": "tests/test_polar_page_furniture.py",
+          "reason": "Existing physical polar product owner and retained science/layout/export contracts."
+        },
+        {
+          "node": "tests/test_polar_page_rendering.py",
+          "reason": "Existing physical polar product owner and retained science/layout/export contracts."
+        },
+        {
+          "node": "tests/test_polar_planisphere_chart.py",
+          "reason": "Existing physical polar product owner and retained science/layout/export contracts."
+        },
+        {
+          "node": "tests/test_polar_planisphere_detail.py",
+          "reason": "Existing physical polar product owner and retained science/layout/export contracts."
+        },
+        {
+          "node": "tests/test_polar_planisphere_pair.py",
+          "reason": "Existing physical polar product owner and retained science/layout/export contracts."
+        },
+        {
+          "node": "tests/test_polar_planisphere_style.py",
+          "reason": "Existing physical polar product owner and retained science/layout/export contracts."
+        },
+        {
+          "node": "tests/test_polar_planisphere_visual_checkpoint.py",
+          "reason": "Existing physical polar product owner and retained science/layout/export contracts."
+        },
+        {
+          "node": "tests/test_polar_pouch_export.py",
+          "reason": "Existing physical polar product owner and retained science/layout/export contracts."
+        },
+        {
+          "node": "tests/test_polar_pouch_furniture.py",
+          "reason": "Existing physical polar product owner and retained science/layout/export contracts."
+        },
+        {
+          "node": "tests/test_polar_pouch_preview.py",
+          "reason": "Existing physical polar product owner and retained science/layout/export contracts."
+        },
+        {
+          "node": "tests/test_polar_pouch_rendering.py",
+          "reason": "Existing physical polar product owner and retained science/layout/export contracts."
+        },
+        {
+          "node": "tests/test_polar_pouch_sheet.py",
+          "reason": "Existing physical polar product owner and retained science/layout/export contracts."
+        }
+      ]
     }
   },
   "consumer_review": [

@@ -1336,4 +1336,37 @@ failure/race cleanup, display-DPI invariance and isolated installed wheel/sdist
 access to the new sheet leaf. Eight tooling and 31 available documentation
 cases passed; five archive/asset/test-inventory checks need the complete Mac
 checkout. All 272 production source paths match source map and inventory.
-Full Mac documentation and focused acceptance remain pending.
+Full Mac acceptance at c6f9223d passed 425 focused, 36 documentation and eight
+tooling cases; PR #294 is merged and Mac cleanup confirmed.
+
+## Physical polar product routing gate
+
+Run `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python tools/run_test_gate.py polar-product-routing --run`.
+K3.22 selects every existing physical polar product owner: both-face/projection
+chart and pair, common-year calendar/furniture, classroom scene/detail/style,
+reference overlays, page furniture/render/export, magnitude scale, curated
+targets, pouch furniture/render/export/preview and imposed sheet.
+
+New checks require changed canonical kernel projection directions to reach both
+calendar faces, changed CoordinateService geometry to reach both pouch horizons,
+and returned ecliptic coordinates to control both page reference anchors.
+Refusal must propagate after success; second-face export failure must close
+figures. A bypass fault fails both new calendar cases. Actual pouch face and
+imposed sheet exports produce 18 PNG/PDF/SVG files across the two projections;
+PNG dimensions and PDF/SVG A4 physical bounds are checked without mocking saves.
+
+Local focused evidence: 162 passed in 9.70 s. Production/SDK/dependencies/source
+resources/snapshot v6/renderer bytes are unchanged. Retain KG/K3.16 actual
+four-polar cold/restored scene outputs and K3.21 atlas/worker/installed evidence;
+no full SDK/production or repeated catalogue-scene export gate is warranted.
+The ordinary observer-visible FullSkyChart planisphere belongs to K3.20,
+not this physical product gate. Its exploratory exact-array failure remains
+disclosed in the audit, including reproduction without the new tests.
+Run tooling and documentation too; complete Mac acceptance remains pending.
+
+K3.22 tooling: eight cases passed in 4.649 s. Documentation: 31 cases passed;
+five checks fail only because this execution copy omits archive/assets/test files.
+Full remote source/test inventory matches; all 20 polar production blobs match
+the accepted base exactly. Full 36-case documentation acceptance remains required
+on the Mac. The coordinate guide and scientific contracts were reviewed and
+remain current: no frame/time/calibration/model meaning changed.
