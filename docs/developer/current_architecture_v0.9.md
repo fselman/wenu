@@ -99,8 +99,9 @@ Mac acceptance of this correction is pending.
 Observer/cache identity and application assembly are accepted through K3.18/K3.19.
 K3.21's lower-level public atlas sheet contract is accepted through PR #294.
 K3.22 physical polar product service consumers are accepted through PR #295.
-K3.23 verifies ordinary temporal sequence consumers; complete Mac acceptance
-remains pending. No K3/K5 freeze is claimed.
+K3.23 ordinary temporal sequence consumers are accepted through PR #296.
+K3.24 fixed-sky consumer verification and observer cleanup are implemented;
+complete Mac acceptance remains pending. No K3/K5 freeze is claimed.
 
 ## Canonical pipeline
 
@@ -496,3 +497,22 @@ A frozen `FullSkyChart` now retains the immutable viewport produced by its
 existing circle fit. Recomputing that fit could differ numerically and trigger
 the strict same-chart composition guard. The formula, guard, horizon arrays,
 projection and renderer algorithms are unchanged.
+
+## Fixed-sky and rotating-horizon consumers
+
+The fixed-sky sequence retains two observer instants: the celestial anchor
+determines the reference orientation; each frame's local observer supplies the
+ordinary realization, horizon, visibility and furniture time. CoordinateService
+transforms the constructed FK5/J2000 reference independently at both instants.
+The established signed angle correction is consumed by the canonical request.
+
+Cold execution builds each frame independently. Loaded-sphere execution reuses
+only the unbound catalogue container, with a fresh local observer, request lease,
+realization, projection and export per frame. It does not cache evaluated
+celestial states or introduce proper motion. The independent complete-render
+baseline remains an ordinary observer-time sequence, without inheriting the
+anchor-relative rotation. Its graphical comparison helpers are unchanged.
+
+Frame resolution now registers each successfully created observer for cleanup
+immediately. A failed second construction or one failing close cannot leave
+the other observer open. No orientation, provider or rendering formula changes.

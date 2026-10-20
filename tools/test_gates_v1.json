@@ -2360,6 +2360,28 @@
           "reason": "Existing temporal/request or affected composition owner; preserve public routes, scientific time and failure boundaries."
         }
       ]
+    },
+    "fixed-sky-routing": {
+      "scope": "K3.24 fixed-sky orientation/anchor and local-time consumers, cold/loaded-sphere/reference-baseline routes, graphical comparison and observer cleanup.",
+      "limits": "Preserve actual astronomical orientation, independent observer-time baseline and canonical static generator; loaded-sphere reuse is not evaluated-state caching. Only correct observer acquisition/cleanup ownership. No SDK/dependency/source, numerical formula, manifest/snapshot schema or renderer algorithm change. Include real Observer orientation tests on Mac; constructed output seams use an explicitly synthetic observation backend. K3.25 moving-body models remain separate.",
+      "selections": [
+        {
+          "node": "tests/test_fixed_sky_orientation.py",
+          "reason": "Retained actual astronomical reference/horizon oracles plus returned coordinate-service contexts and refusal."
+        },
+        {
+          "node": "tests/test_fixed_sky_sequence.py",
+          "reason": "Anchor/local distinction, canonical cold/reuse delegation, real kernel/renderer outputs and acquisition/close refusal."
+        },
+        {
+          "node": "tests/test_fixed_sky_baseline.py",
+          "reason": "Independent complete observer-time plan, unchanged graphical PNG/SVG/PDF comparison and benchmark contracts."
+        },
+        {
+          "node": "tests/test_coordinate_service.py",
+          "reason": "Unchanged shared coordinate semantics consumed by orientation/circumpolar routes."
+        }
+      ]
     }
   },
   "consumer_review": [

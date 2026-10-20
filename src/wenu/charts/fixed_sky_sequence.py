@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from contextlib import ExitStack
 from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from enum import Enum
@@ -73,13 +74,15 @@ def resolve_fixed_sky_rotating_horizon_frame(
         raise ValueError(
             "Fixed-sky frame resolution currently supports circumpolar charts."
         )
-    anchor_observer = Observer(
-        **request.observer.observer_kwargs()
-    )
-    local_observer = Observer(
-        **frame.local_observer.observer_kwargs()
-    )
-    try:
+    with ExitStack() as resources:
+        anchor_observer = Observer(
+            **request.observer.observer_kwargs()
+        )
+        resources.callback(anchor_observer.close)
+        local_observer = Observer(
+            **frame.local_observer.observer_kwargs()
+        )
+        resources.callback(local_observer.close)
         anchor_position_angle = request.frame.position_angle_deg or 0.0
         orientation = fixed_sky_circumpolar_orientation(
             anchor_observer,
@@ -87,9 +90,6 @@ def resolve_fixed_sky_rotating_horizon_frame(
             pole=request.frame.pole,
             anchor_position_angle_deg=anchor_position_angle,
         )
-    finally:
-        anchor_observer.close()
-        local_observer.close()
     chart_request = replace(
         request,
         observer=frame.local_observer,
