@@ -143,13 +143,6 @@
   },
   "production_modules": [
     {
-      "path": "src/wenu/catalogue_state.py",
-      "git_blob_sha": "5e52c0e4564371a7fc7164a9c6d4312874723e4f",
-      "as_is_directory": "src/wenu",
-      "description": "Shared immutable direction-table provider, vector decoding and owned kernel scope; no catalogue decoding or graphics.",
-      "baseline_relation": "Extracted from the accepted native stellar adapter for shared star/static-galaxy mechanics; new in galaxy-routing slice."
-    },
-    {
       "path": "src/wenu/__init__.py",
       "git_blob_sha": "9f0057b4b035a4219286887834606e7e26075679",
       "as_is_directory": "src/wenu",
@@ -168,10 +161,35 @@
       "description": "Observer-relative apparent antisolar direction geometry."
     },
     {
+      "path": "src/wenu/astrometric_coordinates.py",
+      "git_blob_sha": "6f7675ae253d567f673a91713e6a84e981596a64",
+      "description": "Object-independent explicit TCB/TDB time conversion and Cartesian coordinate scaling receipts.",
+      "baseline_relation": "Additive convention boundary; no observer or product runtime adoption."
+    },
+    {
+      "path": "src/wenu/astrometric_observation.py",
+      "git_blob_sha": "7c7bec383a5cc34feba529d23088fbf774174468",
+      "description": "Explicit reception/resource context and object-independent finite-distance nominal parallax/apparent vacuum Alt/Az realization from SDK batches.",
+      "baseline_relation": "New enduring observation-context boundary; no target or chart adoption."
+    },
+    {
+      "path": "src/wenu/astrometric_state.py",
+      "git_blob_sha": "72a5e338088ea3bf9ff358e82c8d58fc60a39efe",
+      "description": "Object-independent SI row/domain, rectilinear direction and angular certificate engine.",
+      "baseline_relation": "Added for enduring object-independent astrometric engine factoring."
+    },
+    {
       "path": "src/wenu/atlas_design.py",
       "git_blob_sha": "c132151fdb9e1b9abb023e18bdc7bdb6c8adbfb9",
       "as_is_directory": "src/wenu",
       "description": "Observer-independent atlas geometry specimens and strict versioned JSON."
+    },
+    {
+      "path": "src/wenu/catalogue_state.py",
+      "git_blob_sha": "5e52c0e4564371a7fc7164a9c6d4312874723e4f",
+      "as_is_directory": "src/wenu",
+      "description": "Shared immutable direction-table provider, vector decoding and owned kernel scope; no catalogue decoding or graphics.",
+      "baseline_relation": "Extracted from the accepted native stellar adapter for shared star/static-galaxy mechanics; new in galaxy-routing slice."
     },
     {
       "path": "src/wenu/chart_document.py",
@@ -828,6 +846,13 @@
       "description": "Offline CLI and two-call file protocol for exact satellite crossings."
     },
     {
+      "path": "src/wenu/cluster_state.py",
+      "git_blob_sha": "66cb5faa44d8b75a4d746c84f7aaeac4f359bb44",
+      "as_is_directory": "src/wenu",
+      "description": "Immutable cluster-motion admission, nominal rectilinear directions and exact-rational angular reuse certificates.",
+      "baseline_relation": "Additive physical provider owner; current chart/saved consumers remain source lookup."
+    },
+    {
       "path": "src/wenu/comet_designations.py",
       "git_blob_sha": "6d17798e72ff989b1ae4461735b467072b2c6722",
       "as_is_directory": "src/wenu",
@@ -1422,6 +1447,12 @@
       "description": ""
     },
     {
+      "path": "src/wenu/sky/assembly.py",
+      "git_blob_sha": "516160e04b72a4b35360cf1de94418fc446a320f",
+      "as_is_directory": "src/wenu/sky",
+      "description": "Application-owned concrete sky construction and source-free restored-facade assembly; moved existing implementations."
+    },
+    {
       "path": "src/wenu/sky/celestial_sphere.py",
       "git_blob_sha": "3d1a6b4731845da22481bacd112af2db12bbd3e5",
       "as_is_directory": "src/wenu/sky",
@@ -1498,6 +1529,13 @@
       "git_blob_sha": "490960927450af1baa53d8cc9a14abaf6485ab24",
       "as_is_directory": "src/wenu/sky",
       "description": "Observer-local altitude-zero reference geometry."
+    },
+    {
+      "path": "src/wenu/sky/isophote_sources.py",
+      "as_is_directory": "src/wenu/sky",
+      "description": "Immutable diffuse source receipts and explicit legacy metadata admission.",
+      "baseline_relation": "K3.16 metadata preservation addition; numerical geometry remains in established kernel services.",
+      "git_blob_sha": "0f34c5645f560431817e7a3e66148406e0f41631"
     },
     {
       "path": "src/wenu/sky/magellanic_clouds.py",
@@ -1734,38 +1772,6 @@
       "git_blob_sha": "65896806555ae4e593144975f0f0a280d28ba3c9",
       "as_is_directory": "src/wenu",
       "description": "Visibility utilities."
-    },
-    {
-      "path": "src/wenu/cluster_state.py",
-      "git_blob_sha": "66cb5faa44d8b75a4d746c84f7aaeac4f359bb44",
-      "as_is_directory": "src/wenu",
-      "description": "Immutable cluster-motion admission, nominal rectilinear directions and exact-rational angular reuse certificates.",
-      "baseline_relation": "Additive physical provider owner; current chart/saved consumers remain source lookup."
-    },
-    {
-      "path": "src/wenu/astrometric_state.py",
-      "git_blob_sha": "72a5e338088ea3bf9ff358e82c8d58fc60a39efe",
-      "description": "Object-independent SI row/domain, rectilinear direction and angular certificate engine.",
-      "baseline_relation": "Added for enduring object-independent astrometric engine factoring."
-    },
-    {
-      "path": "src/wenu/astrometric_coordinates.py",
-      "git_blob_sha": "6f7675ae253d567f673a91713e6a84e981596a64",
-      "description": "Object-independent explicit TCB/TDB time conversion and Cartesian coordinate scaling receipts.",
-      "baseline_relation": "Additive convention boundary; no observer or product runtime adoption."
-    },
-    {
-      "path": "src/wenu/astrometric_observation.py",
-      "git_blob_sha": "7c7bec383a5cc34feba529d23088fbf774174468",
-      "description": "Explicit reception/resource context and object-independent finite-distance nominal parallax/apparent vacuum Alt/Az realization from SDK batches.",
-      "baseline_relation": "New enduring observation-context boundary; no target or chart adoption."
-    },
-    {
-      "path": "src/wenu/sky/isophote_sources.py",
-      "as_is_directory": "src/wenu/sky",
-      "description": "Immutable diffuse source receipts and explicit legacy metadata admission.",
-      "baseline_relation": "K3.16 metadata preservation addition; numerical geometry remains in established kernel services.",
-      "git_blob_sha": "0f34c5645f560431817e7a3e66148406e0f41631"
     }
   ],
   "test_side_python_files": [
@@ -11733,7 +11739,7 @@
     "milestone": "K3.18",
     "base_commit": "56f5e8ff3779bf1e0b6a05464e762826d0e7dfd2",
     "agreement": "Fernando 2026-10-20 Proceed after explicit observer/resource/cache proposal; roadmap revision 42.",
-    "status": "Implemented in existing owners; focused Mac acceptance pending.",
+    "status": "Accepted PR #291/main 37bcb851; Mac 402 focused (96.94 s), 36 documentation (3.37 s), eight tooling (7.166 s), clean main and branch cleanup confirmed.",
     "production_owners": [
       "src/wenu/observer.py",
       "src/wenu/sky/observed_cache.py"
@@ -11755,6 +11761,30 @@
       "documentation_limit": "Five full-checkout archive/asset/inventory integrity checks remain for the complete Mac gate.",
       "tooling_passed": 8,
       "tooling_seconds": 5.236
+    }
+  },
+  "application_sky_assembly": {
+    "milestone": "K3.19",
+    "base_commit": "37bcb851dbc2d1a8f77765f7458315ec4b31db10",
+    "agreement": "Fernando 2026-10-20 Proceed after application-assembly explanation and clean PR #291 receipt; roadmap revision 43.",
+    "status": "Verified locally; focused Mac acceptance pending.",
+    "new_owner": "src/wenu/sky/assembly.py",
+    "scope": "Move existing concrete constructors/factories/source-free restored facades; preserve central ordered registry/chart pipeline, public convenience/factory entry points, v6 codec and worker restoration.",
+    "gate": "sky-application-assembly",
+    "limits": "No scientific, source bytes, SDK/dependency, renderer, schema, plugin-discovery or independent package change. Broad package facade/source codecs retain existing family knowledge.",
+    "structural_proof": "20 moved constructor bodies and both factory executable bodies match baseline AST after receiver/injection normalization.",
+    "local_receipt": {
+      "focused_passed": 168,
+      "focused_seconds": 230.16,
+      "mac_runtime_pending": "One explicit curated-cluster mixed request/refusal case requires the missing local curated source bundle; retained in complete Mac gate.",
+      "tooling_passed": 8,
+      "tooling_seconds": 5.097,
+      "documentation_available_passed": 31,
+      "documentation_seconds": 1.21,
+      "documentation_limit": "Five complete-checkout archive/asset/test-inventory checks remain in Mac documentation gate. All 271 actual production modules match source map and inventory; changed available anchors verified.",
+      "fault_evidence": "Ignoring supplied assembly fails the new add_points consumer contract; baseline passes.",
+      "exports": "Real cold/saved/spawned atlas PNG/PDF/SVG and source-free fresh-process restoration passed.",
+      "installation": "Root wheel/sdist contain moved modules; -I -S installed consumer imports only installed Wenu and uses assembly without source checkout."
     }
   }
 }

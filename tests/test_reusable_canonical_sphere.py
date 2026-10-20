@@ -230,7 +230,8 @@ def native_snapshot_case(tmp_path_factory):
         patch.setattr(snapshots, "generate_native_icrs_sphere", factory)
         patch.setattr(Stars, "load", counted_load)
         patch.setattr(socket, "socket", forbidden)
-        for owner in (snapshots.NonStellar, snapshots.OpenClusters, snapshots.ConstellationBoundaries):
+        from wenu.sky import assembly
+        for owner in (assembly.NonStellar, assembly.OpenClusters, assembly.ConstellationBoundaries):
             patch.setattr(owner, "load", count_fixed_load(owner.load))
         digest = snapshots.prepare_native_sky_snapshot(raw, destination)
     assert counts == dict(spheres=1, catalogues=1)
@@ -368,7 +369,7 @@ from wenu.sky.constellation_lines import ConstellationLines
 from wenu.sky.milky_way import MilkyWayIsophotes
 from wenu.sky.magellanic_clouds import MagellanicCloudIsophotes
 from wenu.sky import maximal_sphere
-from wenu.sky.native_snapshot import _CATALOGUES, ConstellationBoundaries
+from wenu.sky.assembly import _CATALOGUES, ConstellationBoundaries
 from wenu import star_designations
 from wenu import stellar_research
 from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC

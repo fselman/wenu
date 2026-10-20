@@ -155,6 +155,24 @@ The legacy Astropy resource-loading policy is unchanged; the explicit offline
 reception backend remains the separate strict admitted path. No observer/resource
 handles or process-local keys are persisted in native snapshot v6.
 
+### Application sky assembly
+
+`wenu.sky.assembly.SkyAssembly` contains the existing construction bodies.
+`CelestialSphere(observer, assembly=None)` continues to accept arbitrary
+`SkyLayer` instances through `add`/`extend`; convenience `add_*` calls delegate
+to the supplied assembly (or lazily selected stateless default). Construction
+arguments/defaults, source loading, registration order and compatibility aliases
+are retained. Failures propagate without substituting a default implementation.
+
+`build_maximal_sphere`, `generate_celestial_sphere`,
+`generate_native_icrs_sphere` and `NativeSkySnapshot.make_sky` also accept the
+optional per-call `assembly=`. A build delegates to its corresponding assembly
+method; the default binds itself to the resulting sky. Saved reconstruction
+uses `restore_snapshot(snapshot)` and the existing validated records. Snapshot
+codec/source checks remain in `native_snapshot.py`; no data/schema or original
+source-loading behavior changes. Workers use this same restoration entry point.
+No global plugin registration/discovery or new package protocol is introduced.
+
 ## 3. Canonical composition and export
 
 ```python

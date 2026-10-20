@@ -20,29 +20,17 @@ from types import MappingProxyType
 import numpy as np
 import pandas as pd
 from astropy.table import Table, MaskedColumn
-from wenu.objects.nonstellar import NonStellar, NonStellarCatalogueMetadata
-from wenu.objects.galaxies import Galaxies
-from wenu.objects.globular_clusters import GlobularClusters
+from wenu.objects.nonstellar import NonStellarCatalogueMetadata
 from wenu.objects.open_clusters import OpenClusters
-from wenu.objects.supernova_remnants import SupernovaRemnants
-from wenu.objects.planetary_nebulae import PlanetaryNebulae
-from wenu.sky.constellation_boundaries import ConstellationBoundaries
-from wenu.sky.points import CelestialPoints
-from wenu.sky.coordinate_grids import EquatorialGrid, EclipticGrid, GalacticGrid
 
 from wenu.atlas_design import AtlasBandTiling
 from wenu import resources
 from wenu import star_designations as designations
 from wenu.stellar_research import StellarResearch
-from wenu.objects.stars import Stars
 from wenu.stellar_catalogue import (
     ingest_stellar_catalogue, packaged_stellar_metadata, stellar_table_metadata,
     StellarCatalogueMetadata,
 )
-from wenu.sky.celestial_sphere import CelestialSphere
-from wenu.sky.constellation_lines import ConstellationLines
-from wenu.sky.constellation_labels import ConstellationLabels
-from wenu.sky.constellations import Constellations
 from wenu.sky.magellanic_clouds import MagellanicCloudIsophotes
 from wenu.sky.milky_way import MilkyWayIsophotes
 from wenu.sky.isophote_sources import IsophoteSourceMetadata
@@ -59,11 +47,9 @@ PRE_CLUSTER_METADATA_COMPATIBILITY = "wenu-fixed-sky-records-v3"
 PRE_NONSTELLAR_METADATA_COMPATIBILITY = "wenu-fixed-sky-records-v4"
 PRE_DIFFUSE_METADATA_COMPATIBILITY = "wenu-fixed-sky-records-v5"
 COMPATIBILITY = "wenu-fixed-sky-records-v6"
-_CATALOGUES = {"nonstellar": NonStellar, "galaxies": Galaxies,
-    "open_clusters": OpenClusters, "globular_clusters": GlobularClusters,
-    "supernova_remnants": SupernovaRemnants, "planetary_nebulae": PlanetaryNebulae}
-_REFERENCES = {"equatorial_grid": EquatorialGrid, "ecliptic_grid": EclipticGrid,
-               "galactic_grid": GalacticGrid}
+_CATALOGUES = ("nonstellar", "galaxies", "open_clusters", "globular_clusters",
+               "supernova_remnants", "planetary_nebulae")
+_REFERENCES = ("equatorial_grid", "ecliptic_grid", "galactic_grid")
 LAYERS = LEGACY_LAYERS + tuple(_CATALOGUES) + ("constellation_boundaries",) + tuple(_REFERENCES) + ("celestial_points",)
 _RECORDS = {c.__name__: c for c in (
     designations.HipLink, designations.DesignationStatement,
@@ -205,39 +191,16 @@ def _decode(value, arrays):
     raise ValueError("Unsupported snapshot record tag.")
 
 
-class _NativeOnly:
-    def load(self, *args, **kwargs):
-        raise RuntimeError("Frozen snapshot layers cannot reload source catalogues.")
-
-    def spherical_geometry(self, observer, **options):
-        raise ValueError("A persisted native sky requires native ICRS realization.")
 
 
-class _SnapshotStars(_NativeOnly, Stars):
-    def _render_catalog(self, *, magnitude_limit=None, **options):
-        limit = self.magnitude_limit if magnitude_limit is None else magnitude_limit
-        if isinstance(limit, bool) or not np.isfinite(limit) or limit > self.magnitude_limit:
-            raise ValueError("Insufficient snapshot stellar magnitude coverage; prepare a new revision.")
-        identifiers = options.get("include_ids")
-        if identifiers is not None and not set(identifiers) <= set(self.source_catalog.index):
-            raise ValueError("Requested stellar identities are absent from the snapshot.")
-        return super()._render_catalog(magnitude_limit=magnitude_limit, **options)
 
 
-class _SnapshotLines(_NativeOnly, ConstellationLines):
-    pass
 
 
-class _SnapshotMilkyWay(_NativeOnly, MilkyWayIsophotes):
-    pass
 
 
-class _SnapshotCloud(_NativeOnly, MagellanicCloudIsophotes):
-    pass
 
 
-class _SnapshotLabels(_NativeOnly, ConstellationLabels):
-    pass
 
 
 def _rings(features):
@@ -297,52 +260,6 @@ def _fixed_records(sky):
                         galactic_grid=dict(include_plane=True)), points=tuple(points))
 
 
-def _restore_fixed(sky, data, source_digests):
-    fixed = data["fixed"]
-    profile = fixed["profile"]
-    sky.load_profile = CelestialSphereLoadProfile(star_magnitude_limit=sky.stars.magnitude_limit, **dict(profile))
-    for name, owner in _CATALOGUES.items():
-        content = fixed["catalogues"][name]
-        kwargs = (dict(catalog=profile["nonstellar_catalog"], magnitude_limit=profile["nonstellar_magnitude_limit"], samples=profile["extended_object_samples"])
-                  if name == "nonstellar" else dict(magnitude_limit=profile["galaxy_magnitude_limit" if name == "galaxies" else "globular_cluster_magnitude_limit"], samples=profile["extended_object_samples"])
-                  if name in {"galaxies", "globular_clusters"} else dict(samples=profile["extended_object_samples"])
-                  if name == "supernova_remnants" else {})
-        layer = owner(None, **kwargs)
-        table = _table_from_records(content["table"])
-        layer.source = content["source"]
-        layer.catalog = table
-        if name == 'open_clusters':
-            layer._source_sha256 = source_digests[name]
-        if name != "open_clusters":
-            layer.source_catalog = table
-            if 'metadata' in content:
-                layer._catalogue_metadata = NonStellarCatalogueMetadata.from_record(_plain_mapping(content['metadata']))
-            if layer.magnitude_limit is not None:
-                magnitude = np.asarray(table["magnitude"], dtype=float)
-                layer.catalog = table[~np.isfinite(magnitude) | (magnitude <= layer.magnitude_limit)]
-        setattr(sky, name, sky.add(layer))
-    content = fixed["boundaries"]
-    boundary = object.__new__(ConstellationBoundaries)
-    boundary.observer, boundary.boundaries_name, boundary.semantic_system_key = None, "iau", "iau"
-    boundary.filename, boundary.constellations = None, None
-    boundary.sampling_step_deg = content["sampling_step_deg"]
-    boundary.vertices, boundary.sampled_vertices = dict(content["vertices"]), {}
-    boundary._source_revision, boundary._observed_polygon_cache = 1, {}
-    sky.constellation_boundaries = sky.add(boundary)
-    sky.constellations.set_boundaries(boundary)
-    sky.constellation_labels.set_boundaries(boundary)
-    for name, owner in _REFERENCES.items():
-        sky.add(owner(None, **dict(fixed["references"][name])))
-    from astropy.coordinates import SkyCoord, BarycentricMeanEcliptic
-    from astropy.time import Time
-    import astropy.units as u
-    points = sky.add_points()
-    for record in fixed["points"]:
-        name = record["frame"]
-        frame = BarycentricMeanEcliptic(equinox=Time(record["equinox"])) if name == "barycentricmeanecliptic" else name
-        coord = SkyCoord(record["lon"] * u.deg, record["lat"] * u.deg, frame=frame)
-        points._append_point(coord, record["label"], record["marker"], record["size"], record["color"],
-                             record["zorder"], **dict(record["style"]))
 
 
 def _sky_records(sky):
@@ -503,50 +420,12 @@ class NativeSkySnapshot:
             raise ValueError("Snapshot is bound to a different design.")
         return self
 
-    def make_sky(self):
-        """Reconstruct local native facades, never original catalogue loading."""
-        data = self._records
-        sky = CelestialSphere(None)
-        sky.stellar_research = data["research"]
-        sky.load_profile = CelestialSphereLoadProfile(star_magnitude_limit=self.star_magnitude_limit)
-        mw = _SnapshotMilkyWay(None, levels=MilkyWayIsophotes.available_levels)
-        mw.features, mw.source, mw.sources = (
-            data["milky_way"][key] for key in ("features", "source", "sources"))
-        mw.catalogue_metadata = _diffuse_metadata(data["milky_way"], "milky_way",
-            self._manifest["schema_version"], self.source_digests)
-        sky.milky_way_isophotes = sky.add(mw)
-        for cloud, content in data["clouds"].items():
-            layer = _SnapshotCloud(None, cloud=cloud)
-            layer.features, layer.fractions, layer.source = (
-                content[key] for key in ("features", "fractions", "source"))
-            layer.catalogue_metadata = _diffuse_metadata(content, cloud,
-                self._manifest["schema_version"], self.source_digests)
-            sky.magellanic_cloud_isophotes[cloud] = sky.add(layer)
-        stars = _SnapshotStars(None, magnitude_limit=self.star_magnitude_limit)
-        stars.designation_catalogue = data["designation_catalogue"]
-        source = pd.DataFrame(dict(data["columns"]), index=data["star_ids"], copy=False)
-        source = ingest_stellar_catalogue(source, self.stellar_metadata).table
-        source["star_designations"] = [stars.designation_catalogue.get(int(hip)) for hip in source.index]
-        stars.source_catalog = source
-        stars.catalog = source[source["magnitude"] <= stars.magnitude_limit].copy()
-        stars.hip_df = stars.catalog.copy()
-        stars.constellation_vertex_ids = frozenset(
-            hip for edges in data["edges"].values() for edge in edges for hip in edge)
-        sky.stars = sky.add(stars)
-        lines = object.__new__(_SnapshotLines)
-        lines.stars, lines.system, lines.semantic_system_key = stars, "western", "western"
-        lines.filename, lines.constellations = None, None
-        lines.edges_by_constellation = dict(data["edges"])
-        lines.edges = [edge for edges in lines.edges_by_constellation.values() for edge in edges]
-        sky.constellation_lines = sky.add(lines)
-        constellation = object.__new__(Constellations)
-        constellation.stars, constellation.observer, constellation.system = stars, None, "western"
-        constellation.selected, constellation.lines, constellation.boundaries = None, lines, None
-        sky.constellations = constellation
-        sky.constellation_labels = sky.add(_SnapshotLabels(stars))
-        if "fixed" in data:
-            _restore_fixed(sky, data, self.source_digests)
-        return sky
+    def make_sky(self, *, assembly=None):
+        """Reconstruct local native facades through application assembly."""
+        if assembly is None:
+            from wenu.sky.assembly import DEFAULT_SKY_ASSEMBLY
+            assembly = DEFAULT_SKY_ASSEMBLY
+        return assembly.restore_snapshot(self)
 
 
 def read_native_sky_snapshot(directory, *, expected_manifest_sha256=None):

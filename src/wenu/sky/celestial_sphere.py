@@ -7,38 +7,15 @@ from collections.abc import Iterable
 from wenu.sky.rendering_results import ChartRenderingResult, LayerRenderingResult
 from wenu.sky.semantic_identity import semantic_layer_identity
 from wenu.sky.realization import LayerRealizationContext
-from wenu.objects.nonstellar import NonStellar
-from wenu.objects.galaxies import Galaxies
-from wenu.objects.globular_clusters import GlobularClusters
-from wenu.objects.open_clusters import OpenClusters
-from wenu.objects.supernova_remnants import SupernovaRemnants
-from wenu.objects.planetary_nebulae import PlanetaryNebulae
-from wenu.objects.stars import Stars
-from wenu.sky.milky_way import MilkyWayIsophotes
-from wenu.sky.magellanic_clouds import MagellanicCloudIsophotes
-from wenu.sky.constellation_boundaries import ConstellationBoundaries
-from wenu.sky.constellation_labels import ConstellationLabels
-from wenu.sky.constellations import Constellations
-from wenu.sky.horizon import HorizonReference
-from wenu.sky.coordinate_grids import (
-    AltAzGrid,
-    EclipticGrid,
-    EquatorialGrid,
-    GalacticGrid,
-)
-from wenu.sky.moon import MoonLayer
-from wenu.sky.points import CelestialPoints
 from wenu.sky.sky_layer import SkyLayer
-from wenu.sky.solar_system_bodies import SolarSystemBodyDescriptor
-from wenu.sky.solar_system_points import SolarSystemPointLayer
-from wenu.sky.venus import VENUS_POINT, VenusLayer
 
 
 class CelestialSphere:
     """The ordered collection of sky layers, optionally bound to an observer."""
 
-    def __init__(self, observer) -> None:
+    def __init__(self, observer, *, assembly=None) -> None:
         self.observer = observer
+        self._assembly = assembly
         self.load_profile = None
         self.stars = None
         self.nonstellar = None
@@ -261,343 +238,89 @@ class CelestialSphere:
             return dict(options[name])
         return {}
 
-    def add_stars(
-        self,
-        catalog="hipparcos",
-        magnitude_limit=5.5,
-        *,
-        filename=None,
-    ) -> Stars:
+    def _assemble(self, operation, *args, **kwargs):
+        assembly = self._assembly
+        if assembly is None:
+            from wenu.sky.assembly import DEFAULT_SKY_ASSEMBLY
+            assembly = DEFAULT_SKY_ASSEMBLY
+        return getattr(assembly, operation)(self, *args, **kwargs)
+
+    def add_stars(self, catalog='hipparcos', magnitude_limit=5.5, *, filename=None):
         """Load and register a stellar catalogue layer."""
-        self.stars = Stars(
-            observer=self.observer,
-            catalog=catalog,
-            magnitude_limit=magnitude_limit,
-        )
-        self.stars.load(filename=filename)
-        self.add(self.stars)
-        return self.stars
+        return self._assemble('add_stars', catalog, magnitude_limit, filename=filename)
 
-    def add_venus(self) -> VenusLayer:
+    def add_venus(self):
         """Register the opt-in apparent Venus layer."""
-        self.venus = self.add_solar_system_body(VENUS_POINT)
-        return self.venus
+        return self._assemble('add_venus')
 
-    def add_solar_system_body(
-        self, descriptor: SolarSystemBodyDescriptor
-    ) -> SolarSystemPointLayer:
+    def add_solar_system_body(self, descriptor):
         """Register one descriptor-driven apparent moving-body layer."""
-        if not isinstance(descriptor, SolarSystemBodyDescriptor):
-            raise TypeError("descriptor must be a SolarSystemBodyDescriptor.")
-        layer = SolarSystemPointLayer(descriptor)
-        self.solar_system_bodies[descriptor.selection_key] = layer
-        setattr(self, descriptor.entity_key, layer)
-        self.add(layer)
-        return layer
+        return self._assemble('add_solar_system_body', descriptor)
 
-    def add_moon(self) -> MoonLayer:
+    def add_moon(self):
         """Register the opt-in apparent Moon symbolic-point layer."""
-        self.moon = MoonLayer()
-        self.add(self.moon)
-        return self.moon
+        return self._assemble('add_moon')
 
-    def add_nonstellar(
-        self,
-        catalog="messier",
-        *,
-        filename=None,
-        magnitude_limit=None,
-        samples=73,
-    ) -> NonStellar:
+    def add_nonstellar(self, catalog='messier', *, filename=None, magnitude_limit=None, samples=73):
         """Load and register a non-stellar catalogue layer."""
-        self.nonstellar = NonStellar(
-            observer=self.observer,
-            catalog=catalog,
-            magnitude_limit=magnitude_limit,
-            samples=samples,
-        )
-        self.nonstellar.load(filename=filename)
-        self.add(self.nonstellar)
-        return self.nonstellar
+        return self._assemble('add_nonstellar', catalog, filename=filename, magnitude_limit=magnitude_limit, samples=samples)
 
-    def add_galaxies(
-        self,
-        *,
-        filename=None,
-        magnitude_limit=12.0,
-        samples=73,
-    ) -> Galaxies:
+    def add_galaxies(self, *, filename=None, magnitude_limit=12.0, samples=73):
         """Load and register the bright-galaxy catalogue layer."""
-        self.galaxies = Galaxies(
-            observer=self.observer,
-            magnitude_limit=magnitude_limit,
-            samples=samples,
-        )
-        self.galaxies.load(filename=filename)
-        self.add(self.galaxies)
-        return self.galaxies
+        return self._assemble('add_galaxies', filename=filename, magnitude_limit=magnitude_limit, samples=samples)
 
-    def add_milky_way_isophotes(
-        self,
-        *,
-        filename=None,
-        levels=None,
-    ) -> MilkyWayIsophotes:
+    def add_milky_way_isophotes(self, *, filename=None, levels=None):
         """Load and register nested Milky Way isophotes."""
-        self.milky_way_isophotes = MilkyWayIsophotes(
-            observer=self.observer,
-            levels=levels,
-        )
-        self.milky_way_isophotes.load(filename=filename)
-        self.add(self.milky_way_isophotes)
-        return self.milky_way_isophotes
+        return self._assemble('add_milky_way_isophotes', filename=filename, levels=levels)
 
-    def add_magellanic_cloud_isophotes(
-        self,
-        cloud,
-        *,
-        filename=None,
-        levels=None,
-    ) -> MagellanicCloudIsophotes:
+    def add_magellanic_cloud_isophotes(self, cloud, *, filename=None, levels=None):
         """Load and register one Magellanic Cloud isophote layer."""
-        layer = MagellanicCloudIsophotes(
-            observer=self.observer,
-            cloud=cloud,
-            levels=levels,
-        )
-        if layer.cloud in self.magellanic_cloud_isophotes:
-            raise ValueError(
-                f"{layer.cloud.upper()} isophotes are already registered."
-            )
-        layer.load(filename=filename)
-        self.magellanic_cloud_isophotes[layer.cloud] = layer
-        self.add(layer)
-        return layer
+        return self._assemble('add_magellanic_cloud_isophotes', cloud, filename=filename, levels=levels)
 
-    def add_open_clusters(
-        self,
-        *,
-        filename=None,
-        selected=None,
-    ) -> OpenClusters:
+    def add_open_clusters(self, *, filename=None, selected=None):
         """Load and register established/likely Galactic open clusters."""
-        self.open_clusters = OpenClusters(
-            observer=self.observer,
-            selected=selected,
-        )
-        self.open_clusters.load(filename=filename)
-        self.add(self.open_clusters)
-        return self.open_clusters
+        return self._assemble('add_open_clusters', filename=filename, selected=selected)
 
-    def add_globular_clusters(
-        self,
-        *,
-        filename=None,
-        magnitude_limit=12.0,
-        samples=73,
-    ) -> GlobularClusters:
+    def add_globular_clusters(self, *, filename=None, magnitude_limit=12.0, samples=73):
         """Load and register Galactic globular clusters."""
-        self.globular_clusters = GlobularClusters(
-            observer=self.observer,
-            magnitude_limit=magnitude_limit,
-            samples=samples,
-        )
-        self.globular_clusters.load(filename=filename)
-        self.add(self.globular_clusters)
-        return self.globular_clusters
+        return self._assemble('add_globular_clusters', filename=filename, magnitude_limit=magnitude_limit, samples=samples)
 
-    def add_supernova_remnants(
-        self,
-        *,
-        selected=None,
-        filename=None,
-        samples=73,
-    ) -> SupernovaRemnants:
+    def add_supernova_remnants(self, *, selected=None, filename=None, samples=73):
         """Load and register confirmed Galactic supernova remnants."""
-        self.supernova_remnants = SupernovaRemnants(
-            observer=self.observer,
-            selected=selected,
-            samples=samples,
-        )
-        self.supernova_remnants.load(filename=filename)
-        self.add(self.supernova_remnants)
-        return self.supernova_remnants
+        return self._assemble('add_supernova_remnants', selected=selected, filename=filename, samples=samples)
 
-    def add_planetary_nebulae(
-        self,
-        *,
-        selected=None,
-        filename=None,
-        samples=73,
-    ) -> PlanetaryNebulae:
+    def add_planetary_nebulae(self, *, selected=None, filename=None, samples=73):
         """Load and register true/probable Galactic planetary nebulae."""
-        self.planetary_nebulae = PlanetaryNebulae(
-            observer=self.observer,
-            samples=samples,
-            selected=selected,
-        )
-        self.planetary_nebulae.load(filename=filename)
-        self.add(self.planetary_nebulae)
-        return self.planetary_nebulae
+        return self._assemble('add_planetary_nebulae', selected=selected, filename=filename, samples=samples)
 
-    def add_points(self) -> CelestialPoints:
+    def add_points(self):
         """Create and register a celestial-reference-point layer."""
-        self.points = CelestialPoints(obs=self.observer)
-        self.add(self.points)
-        return self.points
+        return self._assemble('add_points')
 
-    def add_constellations(
-        self,
-        system="western",
-        lines_file=None,
-        selected=None,
-    ) -> Constellations:
+    def add_constellations(self, system='western', lines_file=None, selected=None):
         """Create and register constellation lines and label anchors."""
-        if self.stars is None:
-            raise RuntimeError(
-                "Stars must be added before constellations."
-            )
-        self.constellations = Constellations(
-            stars=self.stars,
-            observer=self.observer,
-            system=system,
-            lines_file=lines_file,
-            selected=selected,
-        )
-        self.constellation_lines = self.constellations.lines
-        self.stars.set_constellation_vertices(
-            self.constellation_lines.star_ids
-        )
-        self.constellation_labels = ConstellationLabels(
-            self.stars,
-            selected=selected,
-            boundaries=self.constellation_boundaries,
-            system=system,
-        )
-        self.add(self.constellation_lines)
-        self.add(self.constellation_labels)
-        return self.constellations
+        return self._assemble('add_constellations', system, lines_file, selected)
 
-    def add_constellation_boundaries(
-        self,
-        boundaries="iau",
-        filename=None,
-        *,
-        constellations=None,
-        **kwargs,
-    ) -> ConstellationBoundaries:
+    def add_constellation_boundaries(self, boundaries='iau', filename=None, *, constellations=None, **kwargs):
         """Create and register IAU constellation-boundary geometry."""
-        if self.constellations is None:
-            raise RuntimeError(
-                "Call add_constellations() before "
-                "add_constellation_boundaries()."
-            )
-        layer = ConstellationBoundaries(
-            observer=self.observer,
-            boundaries=boundaries,
-            filename=filename,
-            constellations=constellations,
-            **kwargs,
-        )
-        self.constellation_boundaries = layer
-        self.constellations.set_boundaries(layer)
-        if self.constellation_labels is not None:
-            self.constellation_labels.set_boundaries(layer)
-        self.add(layer)
-        return layer
+        return self._assemble('add_constellation_boundaries', boundaries, filename, constellations=constellations, **kwargs)
 
-    def add_equatorial_grid(
-        self,
-        *,
-        ra=None,
-        dec=None,
-        include_equator=False,
-        frame="fk5",
-        equinox="of_date",
-        samples=721,
-        meridian_dec_min=-90.0,
-        meridian_dec_max=90.0,
-    ) -> EquatorialGrid:
+    def add_equatorial_grid(self, *, ra=None, dec=None, include_equator=False, frame='fk5', equinox='of_date', samples=721, meridian_dec_min=-90.0, meridian_dec_max=90.0):
         """Create and register an equatorial coordinate grid."""
-        layer = EquatorialGrid(
-            observer=self.observer,
-            frame=frame,
-            equinox=equinox,
-            samples=samples,
-            ra=ra,
-            dec=dec,
-            include_equator=include_equator,
-            meridian_dec_min=meridian_dec_min,
-            meridian_dec_max=meridian_dec_max,
-        )
-        self.add(layer)
-        return layer
+        return self._assemble('add_equatorial_grid', ra=ra, dec=dec, include_equator=include_equator, frame=frame, equinox=equinox, samples=samples, meridian_dec_min=meridian_dec_min, meridian_dec_max=meridian_dec_max)
 
-    def add_altaz_grid(
-        self,
-        *,
-        azimuth=None,
-        altitude=None,
-        include_horizon=False,
-        samples=721,
-    ) -> AltAzGrid:
+    def add_altaz_grid(self, *, azimuth=None, altitude=None, include_horizon=False, samples=721):
         """Create and register an observer-local AltAz coordinate grid."""
-        layer = AltAzGrid(
-            observer=self.observer,
-            samples=samples,
-            azimuth=azimuth,
-            altitude=altitude,
-            include_horizon=include_horizon,
-        )
-        self.add(layer)
-        return layer
+        return self._assemble('add_altaz_grid', azimuth=azimuth, altitude=altitude, include_horizon=include_horizon, samples=samples)
 
-    def add_horizon_reference(self, *, samples=721) -> HorizonReference:
+    def add_horizon_reference(self, *, samples=721):
         """Create and register the semantic observer horizon."""
-        layer = HorizonReference(
-            observer=self.observer,
-            samples=samples,
-        )
-        self.horizon_reference = layer
-        self.add(layer)
-        return layer
+        return self._assemble('add_horizon_reference', samples=samples)
 
-    def add_ecliptic_grid(
-        self,
-        *,
-        longitude=None,
-        latitude=None,
-        include_ecliptic=False,
-        equinox="of_date",
-        samples=721,
-    ) -> EclipticGrid:
+    def add_ecliptic_grid(self, *, longitude=None, latitude=None, include_ecliptic=False, equinox='of_date', samples=721):
         """Create and register an ecliptic coordinate grid."""
-        layer = EclipticGrid(
-            observer=self.observer,
-            equinox=equinox,
-            samples=samples,
-            longitude=longitude,
-            latitude=latitude,
-            include_ecliptic=include_ecliptic,
-        )
-        self.add(layer)
-        return layer
+        return self._assemble('add_ecliptic_grid', longitude=longitude, latitude=latitude, include_ecliptic=include_ecliptic, equinox=equinox, samples=samples)
 
-    def add_galactic_grid(
-        self,
-        *,
-        longitude=None,
-        latitude=None,
-        include_plane=False,
-        samples=721,
-    ) -> GalacticGrid:
+    def add_galactic_grid(self, *, longitude=None, latitude=None, include_plane=False, samples=721):
         """Create and register a galactic coordinate grid."""
-        layer = GalacticGrid(
-            observer=self.observer,
-            samples=samples,
-            longitude=longitude,
-            latitude=latitude,
-            include_plane=include_plane,
-        )
-        self.add(layer)
-        return layer
+        return self._assemble('add_galactic_grid', longitude=longitude, latitude=latitude, include_plane=include_plane, samples=samples)
