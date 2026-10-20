@@ -5,8 +5,13 @@ PR #234 is integrated. Its tree is identical to `ea8dc505`, which passed all
 3,606 plugin-disabled Mac tests in 1,136.74 s; 16 overlay tests passed in 4.03 s.
 
 K3.16 now implements [diffuse source metadata and v6 saved-sky transport](implementation_reference.md#diffuse-contour-source-admission-and-saved-skies),
-following Fernando’s explicit 2026-10-20 agreement. Mac acceptance is pending.
+following Fernando’s explicit 2026-10-20 agreement. Accepted through PR #289 after the Mac comparison retry.
 Older v1–v5 skies remain readable with honest legacy metadata limits.
+
+K3.17 now verifies [existing constructed-reference service routes](kernel_migration_audit_v1.md#k317-constructed-reference-service-routing-assessment).
+The as-is assessment found established coordinate/geometry routes already in use;
+this task adds closure evidence and preserves production implementations. Focused
+Mac acceptance remains pending; K3.18 remains separately pending.
 
 ## Read for current work
 

@@ -1890,6 +1890,64 @@
           "reason": "Rerun the single failed full-sphere cold/restored comparison with original loaders disabled."
         }
       ]
+    },
+    "constructed-reference-routing": {
+      "scope": "K3.17 closure evidence for existing grid/plane/pole, defining-frame boundary/membership, horizon/visibility/mask, reference-furniture and cold/restored shared-service routes.",
+      "limits": "No production rewrite: inspected consumers already use CoordinateService and established kernel records/domain/projections. Preserve all science, frames/equinoxes, sampling, styles, masks and snapshot v6. Retain accepted K3.16 atlas/polar PNG/PDF/SVG/fresh-process receipts and KG numerics/isolation; K3.18 complete observer resource/cache lifetime remains open.",
+      "selections": [
+        {
+          "node": "tests/test_coordinate_grids.py",
+          "reason": "Returned-service values/refusal, explicit native equinox and local state/cadence."
+        },
+        {
+          "node": "tests/test_points.py",
+          "reason": "Constructed poles/keypoints/native and observed service results; no physical state provider."
+        },
+        {
+          "node": "tests/test_constellation_boundaries.py",
+          "reason": "FK4/B1875 sampling, independent Astropy oracle, returned native/observed values, defining-frame membership and refusal."
+        },
+        {
+          "node": "tests/test_horizon_reference.py",
+          "reason": "Altitude-zero observer-local geometry and explicit observer requirement."
+        },
+        {
+          "node": "tests/test_horizon_mask_geometry.py",
+          "reason": "Above/crossing/below fields, native visibility openings, shared domain returned values/refusal."
+        },
+        {
+          "node": "tests/test_constellation_outside_mask.py",
+          "reason": "Existing constellation masks and domain/renderer boundaries."
+        },
+        {
+          "node": "tests/test_composed_chart_masks.py",
+          "reason": "Independent horizon/constellation restrictions draw once."
+        },
+        {
+          "node": "tests/test_reference_policy.py",
+          "reason": "Coupled frame/equinox policy remains unchanged."
+        },
+        {
+          "node": "tests/test_reference_annotations.py",
+          "reason": "Reference furniture construction/labels/appearance and native contexts."
+        },
+        {
+          "node": "tests/test_reference_furniture_semantics.py",
+          "reason": "Reference marker identity stays at chart owner."
+        },
+        {
+          "node": "tests/test_request_horizon.py",
+          "reason": "Ordinary request reuse/horizon selection remains independent."
+        },
+        {
+          "node": "tests/test_frozen_earth_reference_grids.py",
+          "reason": "Retain existing fixed-axis reference geometry semantics."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_constructed_reference_services_reach_cold_and_source_free_saved_skies",
+          "reason": "Actual saved/cold source-free geometry consumes shared returned values and propagates refusal."
+        }
+      ]
     }
   },
   "consumer_review": [

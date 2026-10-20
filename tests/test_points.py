@@ -143,3 +143,37 @@ def test_domain_layer_has_no_projection_or_rendering_api():
     points = CelestialPoints(make_observer())
     for name in ("draw", "project", "artist", "artists"):
         assert not hasattr(points, name)
+
+
+def test_constructed_points_consume_native_and_observed_service_results(monkeypatch):
+    from wenu.coordinate_service import CoordinateService
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    observer = make_observer()
+    points = CelestialPoints(observer)
+    points.add_equatorial_pole(pole='north')
+    points.add_galactic_center()
+    points.add_ecliptic_keypoints(frame=BarycentricTrueEcliptic(equinox=Time('J2000')))
+    original = CoordinateService.transform
+    results = []
+    def changed(service, source, target, observation=None):
+        result = original(service, source, target, observation)
+        if target.frame == 'icrs':
+            result.lon_deg = (result.lon_deg + 0.125) % 360
+        results.append((source.coordinate_spec, result))
+        return result
+    monkeypatch.setattr(CoordinateService, 'transform', changed)
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    native = points.realize(context, None)
+    assert {source.frame for source, _ in results} == {'icrs', 'galactic', 'barycentric-true-ecliptic'}
+    np.testing.assert_array_equal(native.lon_deg, [r.lon_deg[0] for _, r in results])
+    assert native.labels.tolist() == ['NCP', 'GC', '♈', '♋', '♎', '♑']
+    results.clear()
+    observed = points.spherical_geometry(observer)
+    assert observed is results[-1][1] and observed.coordinate_spec.frame == 'altaz'
+    np.testing.assert_array_equal(results[-1][1].labels, native.labels)
+    def refused(*args, **kwargs):
+        raise RuntimeError('reference point service refused')
+    monkeypatch.setattr(CoordinateService, 'transform', refused)
+    for call in (lambda: points.realize(context, None), lambda: points.spherical_geometry(observer)):
+        with pytest.raises(RuntimeError, match='service refused'):
+            call()

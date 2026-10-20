@@ -35,7 +35,7 @@ measurement-epoch defaults; other nonstellar source qualification remains open.
 | M6 / header defaults fixed; legacy interpretation explicit | Snapshot v5 derives fixed headers from each provider, stores nonstellar records, checks source identity/table metadata/units/header agreement and retains the separate open-cluster row contract | Readers admit v1-v4 historical formats without treating their J2000 headers as measurement epochs. Missing legacy units/digests are not reconstructed as facts. Resource gaps from M5 remain open; the shared coordinate helper correction is verified separately under M4. | Existing corruption owner plus nonstellar record/header conflicts, actual known/unknown epoch round trips and legacy admission |
 | M7 / medium, open | `sky/ceres.py::CERES_SOLUTION` embeds Horizons solution number/date, osculating epoch and quality fields; `minor_body_resources.py` treats this descriptor as the expected identity, while newer comet identities are manifest-derived | A Ceres resource update requires a code edit and can diverge from its acquisition evidence. Migrate the complete solution identity to a versioned data manifest; preserve the existing descriptor-to-manifest/SPK digest and frame checks. | Minor-body resources/ephemeris and Ceres public state/track owners |
 | M8 / medium, open | `satellites/radiometry.py` embeds TSIS product DOI/URL, byte digest/count, grid bounds/sampling, header and audit integral | These are edition-specific resource facts and belong to a validated resource metadata document. Current code deliberately admits one exact resource and verifies it; this is inflexibility/duplication, not evidence of corrupted radiometry. Preserve the numerical integral and malformed-resource oracles when extracting it. | Satellite radiometry resource/parser owner |
-| M9 / runtime metadata and v6 transport implemented; acceptance pending | `sky/milky_way.py` and `sky/magellanic_clouds.py` provide fixed source descriptions/ICRS semantics while loaders retain chiefly source paths and feature levels | The K3.16 source envelope now preserves original properties, byte/geometry identity and captured provenance; v6 transports it and v1–v5 retain explicit legacy gaps. Physical declarations absent from sources remain absent. No fictitious stellar epoch is assigned. | Isophote loading/native geometry and saved-ring consumers |
+| M9 / runtime metadata and v6 transport accepted PR #289 | `sky/milky_way.py` and `sky/magellanic_clouds.py` provide fixed source descriptions/ICRS semantics while loaders retain chiefly source paths and feature levels | The K3.16 source envelope now preserves original properties, byte/geometry identity and captured provenance; v6 transports it and v1–v5 retain explicit legacy gaps. Physical declarations absent from sources remain absent. No fictitious stellar epoch is assigned. | Isophote loading/native geometry and saved-ring consumers |
 | M10 / low, open | `skyfield_ephemeris.py::_model_from_filename` identifies a DE model from its filename unless explicitly supplied | Prefer the acquisition/validated resource identity. Renaming is not evidence that kernel contents changed; explicit-model admission is already supported. Coverage and digest are read from the resource. | `test_skyfield_ephemeris.py` resource identity owner |
 
 Examples already following the intended boundary include satellite OMM records
@@ -659,8 +659,8 @@ snapshot version, alter existing schemas, relocate code or authorize acquisition
   that component's code/contracts actually change; a new SDK release/pin is not
   automatically required for calling existing geometry services.
 
-K3.16 runtime admission/transport is now implemented under Fernando’s explicit
-2026-10-20 agreement to the v6 design; acceptance is pending. The Wenu-owned
+K3.16 runtime admission/transport is accepted through PR #289 after Fernando’s explicit
+2026-10-20 agreement to the v6 design and successful Mac comparison retry. The Wenu-owned
 `sky/isophote_sources.py` receipt preserves original properties, byte/geometry
 identity and captured provenance. New v6 snapshots require and validate that
 receipt; v1–v5 restore explicit legacy metadata without source access or invented
@@ -1060,3 +1060,38 @@ The separate installed numerical consumer exercises the corrected service with
 NumPy present and application/backend/render imports blocked. The SDK selection
 manifest records current source/test digests and this bounded acceptance.
 
+
+## K3.17 constructed-reference service routing assessment
+
+**Base:** main `6e6fcd964a23d7aa5a4bc4e398e43381ad93977f`, after accepted
+PR #289 and clean synchronized Mac receipt. Fernando selected K3.17 on
+2026-10-20 following its explicit constructed-reference proposal (roadmap revision 41).
+
+The inspected production paths already use the established services. No runtime
+routing defect was demonstrated, so this delivery retains their implementations
+and adds missing consumer/refusal evidence rather than replacing working science.
+
+| Existing owner/consumer | As-is route and retained responsibility | Closure evidence |
+|---|---|---|
+| `sky/coordinate_grids.py` | Source-specific meridian/parallel/plane sampling and equinox selection stay with the grid; typed kernel curves pass through `CoordinateService` to native ICRS or observer AltAz. Native realization uses a local copy | Existing cadence/equinox/local-state contracts plus changed service results/refusal across FK5, true ecliptic and Galactic planes |
+| `sky/points.py` | Pole/keypoint definitions retain their defining frames; existing service handles native ICRS and the subsequent observer transformation. No physical provider query is created | Changed native service coordinates reach the point collection; observed consumers return the actual service result; refusal reaches both paths |
+| `sky/constellation_boundaries.py` | Sample official constant-RA/Dec edges in FK4/B1875, including existing pole-closure handling, before transformation. Membership maps ICRS queries back to that defining frame | Independent Astropy/source preservation tests retained; changed native/observed return coordinates and membership results are consumed; refusal has no raw-coordinate fallback |
+| `sky/horizon.py`, `charts/horizon_mask.py` | Altitude-zero and visible hemisphere remain observer-local geometry. Existing kernel records, inverse projections and domain projection service feed above/crossing/below chart policy | Local horizon refuses fixed native realization; existing visibility/round-trip/complete-sphere tests retained; crossing-mask preparation uses returned shared-domain geometry and propagates refusal |
+| `charts/_masking.py`, `charts/reference_furniture.py`, `charts/reference_policy.py` | Mask composition/appearance and furniture/keypoint/label policy remain chart responsibilities. Boundaries/grids/points use the owners above; projection/domain calls use established shared services | Existing independent mask composition, frame/equinox, appearance, label/semantic and request-reuse contracts |
+| `sky/native_snapshot.py` | Existing v6 restoration reconstructs original reference classes through the sky layer registry, preserving grid definitions and FK4 boundary data; no new schema or special reference-state format | Real cold/restored reference geometry agrees, altered shared-service values reach both paths, and service refusal reaches both without original-source loading |
+
+Source geometry, transformations, sampling, mask algorithms, renderer, dependencies,
+SDK code/pin, resources and snapshot format are unchanged. Kernel geometry aliases
+already denote the canonical classes. Accepted K3.16 atlas/four-polar PNG/PDF/SVG
+and source-free-process receipts remain applicable because their production tree
+is unchanged. No full SDK, parent export or production-suite repeat is required.
+
+This is bounded reference routing evidence, not a full kernel freeze. K3.18 still
+owns complete observer/backend/resource identity and cache invalidation; accepted
+maximal boundary caches are not recertified against those broader identities here.
+K3.19 application assembly and K3.39/K3.40 remaining geometry/consumer review stay
+open. Product construction does not become physical-object propagation.
+
+The coordinate guide remains current: no coordinate meaning, frame/equinox,
+provenance or correction ownership changed. Gate: `constructed-reference-routing`,
+plus tooling and documentation. Acceptance remains pending the focused Mac receipt.

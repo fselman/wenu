@@ -1950,3 +1950,53 @@ print(layer.catalogue_metadata.fingerprint)
     result = subprocess.run([sys.executable, '-c', script, str(record_path)],
                             capture_output=True, text=True, check=True)
     assert result.stdout.strip() == metadata.fingerprint
+
+
+def test_constructed_reference_services_reach_cold_and_source_free_saved_skies(native_snapshot_case, monkeypatch):
+    from wenu.coordinate_service import CoordinateService
+    from wenu.sky import native_snapshot as snapshots
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    from wenu.sky.coordinate_grids import EquatorialGrid, EclipticGrid, GalacticGrid
+    from wenu.sky.constellation_boundaries import ConstellationBoundaries
+    _, bundle, _, cold = native_snapshot_case
+    def forbidden(*args, **kwargs):
+        raise AssertionError('Reference restore attempted original source loading')
+    monkeypatch.setattr(ConstellationBoundaries, 'load', forbidden)
+    saved = snapshots.read_native_sky_snapshot(bundle).make_sky()
+    context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+    owners = (EquatorialGrid, EclipticGrid, GalacticGrid, ConstellationBoundaries)
+    def geometry(sky, name):
+        layer = next(layer for layer in sky.layers if isinstance(layer, name))
+        return layer.realize(context, None, **({'selected': ('Sco',)} if name is ConstellationBoundaries else {}))
+    baseline = {name: geometry(cold, name) for name in owners}
+    for name in owners:
+        _assert_native_geometry_equal(baseline[name], geometry(saved, name))
+    original = CoordinateService.transform
+    frames = []
+    def changed(service, source, target, observation=None):
+        frames.append(source.coordinate_spec.frame)
+        result = original(service, source, target, observation)
+        result.lon_deg = tuple((a + 0.125) % 360 for a in result.lon_deg)
+        return result
+    monkeypatch.setattr(CoordinateService, 'transform', changed)
+    for sky in (cold, saved):
+        for name in owners:
+            actual = geometry(sky, name)
+            previous = baseline[name]
+            pairs = (zip(actual.components.values(), previous.components.values(), strict=True)
+                     if hasattr(actual, 'components') else ((actual, previous),))
+            for curves, old in pairs:
+                for actual_lon, expected_lon in zip(curves.lon_deg, old.lon_deg, strict=True):
+                    np.testing.assert_array_equal(actual_lon, (expected_lon + 0.125) % 360)
+                for actual_lat, expected_lat in zip(curves.lat_deg, old.lat_deg, strict=True):
+                    np.testing.assert_array_equal(actual_lat, expected_lat)
+                assert curves.coordinate_spec == old.coordinate_spec
+        assert all(not hasattr(next(layer for layer in sky.layers if isinstance(layer, name)), '_native_realization') for name in owners[:3])
+    assert set(frames) == {'icrs', 'barycentric-true-ecliptic', 'galactic', 'fk4'}
+    def refused(*args, **kwargs):
+        raise RuntimeError('saved reference coordinate service refused')
+    monkeypatch.setattr(CoordinateService, 'transform', refused)
+    for sky in (cold, saved):
+        for name in owners:
+            with pytest.raises(RuntimeError, match='service refused'):
+                geometry(sky, name)

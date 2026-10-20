@@ -5,6 +5,20 @@ contracts/consumers. A complete production run is a release/composition gate,
 not a prerequisite for every production edit. This supersedes the blanket
 full-suite rule used through PR #244. No numerical or visual oracle is removed.
 
+## K3.17 constructed-reference routing gate
+
+Run `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python tools/run_test_gate.py constructed-reference-routing --run`.
+The existing grid/point/boundary/horizon/mask/reference owners retain independent
+frame/equinox, sampling, membership, visibility, appearance and request semantics.
+New seam tests force changed service outputs and refusals; the existing native
+snapshot owner verifies the same for real cold/restored source-free reference
+classes. Horizon remains observer-local and refuses fixed native ICRS output.
+A grid-consumer bypass fault must fail the returned-value test. Run tooling and
+documentation too. Production bytes are unchanged; retain accepted K3.16 real
+atlas/four-polar PNG/PDF/SVG/fresh-process evidence and KG numerical/isolation
+receipts. Do not repeat the SDK or full production/export gates for these tests.
+Focused Mac acceptance remains pending.
+
 ## K3.16 diffuse admission and transport gate
 
 Run `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python tools/run_test_gate.py diffuse-geometry-routing --run`.
@@ -23,7 +37,7 @@ compares mask status before ordinary value/NaN equality. Retry only
 `diffuse-snapshot-comparison-retry` (six comparison contract cases and the failed
 whole-sphere case); retain the other accepted Mac evidence. Production code,
 source data and v6 transport are unchanged by this test repair. K3.16 acceptance
-remains pending that retry.
+was completed by seven passing Mac retry cases in 47.92 s at `9589a139`, plus 36 documentation and eight tooling cases; PR #289 is accepted.
 
 ## Shared-service kernel boundary checks
 
