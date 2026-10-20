@@ -62,6 +62,150 @@ def timeline(count=3):
     )
 
 
+def _kernel_sequence_environment(monkeypatch):
+    """Synthetic observation backend; real kernel, request, draw and saver paths."""
+    import numpy as np
+    import pandas as pd
+    from astropy.time import Time
+    from astropy.coordinates import AltAz, EarthLocation, ICRS
+    import astropy.units as u
+    from stellar_catalogue_fixtures import native_table
+    from test_stars import FakeApparent
+    from wenu.objects.stars import Stars
+    from wenu.sky.celestial_sphere import CelestialSphere
+    from wenu.charts import request_generation
+
+    observers, skies, realized = [], [], []
+
+    def observer(**kwargs):
+        instant = kwargs["time"]
+        site = EarthLocation.from_geodetic(-71 * u.deg, -33 * u.deg, 0 * u.m)
+        value = SimpleNamespace(
+            utc_datetime=instant, local_datetime=instant, timezone_name="UTC",
+            lat_deg=-33.0, lon_deg=-71.0, elevation_m=0.0,
+            t_astropy=Time(instant), t=instant, icrs_frame=ICRS(), closed=False,
+        )
+        value.altaz_frame = AltAz(obstime=value.t_astropy, location=site)
+
+        def observe(target):
+            # Deliberately synthetic observation, not an astronomical oracle.
+            return FakeApparent(
+                np.asarray(target.dec.degrees) + 60,
+                (np.asarray(target.ra.hours) * 15 + instant.hour * 15) % 360,
+            )
+
+        value.skyfield = SimpleNamespace(at=lambda time: SimpleNamespace(observe=observe))
+        value.close = lambda: setattr(value, "closed", True)
+        observers.append(value)
+        return value
+
+    def sphere(observer, *, profile):
+        sky = CelestialSphere(observer)
+        sky.load_profile = profile
+        stars = Stars(observer, magnitude_limit=5)
+        stars.source_catalog = native_table(pd.DataFrame(
+            dict(ra_hours=[1.0, 4.0], dec_degrees=[-10.0, -20.0], magnitude=[1.0, 2.0]),
+            index=[100, 200],
+        ))
+        stars.catalog = stars.source_catalog.copy(deep=True)
+        sky.stars = sky.add(stars)
+        skies.append(sky)
+        return sky
+
+    original = Stars.realize
+
+    def realize(self, context, observer, **kwargs):
+        result = original(self, context, observer, **kwargs)
+        realized.append((context, observer, result))
+        return result
+
+    monkeypatch.setattr(request_generation, "Observer", observer)
+    monkeypatch.setattr(request_generation, "build_maximal_sphere", sphere)
+    monkeypatch.setattr(Stars, "realize", realize)
+    return observers, skies, realized
+
+
+def _kernel_sequence_request(output):
+    from wenu.charts.detail import DetailOverrides
+
+    chart = ChartRequest(
+        family="planisphere",
+        observer=ChartObserverRequest(time="2000-01-01T00:00:00Z", lat_deg=-33, lon_deg=-71),
+        product=ChartProductOptions(output=output, output_format=OutputFormat.PNG),
+        detail=DetailOverrides(enabled_layers=frozenset({"stars"})),
+    )
+    return ObserverTimeChartSequenceRequest(chart=chart, timeline=timeline(2))
+
+
+def test_sequence_real_generator_consumes_kernel_results_at_each_frame_time(tmp_path, monkeypatch):
+    import numpy as np
+    from wenu_kernel import KernelSession
+
+    observers, skies, realized = _kernel_sequence_environment(monkeypatch)
+    planned = _kernel_sequence_request(tmp_path / "baseline")
+    baseline = generate_observer_time_chart_sequence(planned)
+    first = tuple(result.lon_deg.copy() for _, _, result in realized)
+    assert len(first) == 2
+    assert not np.array_equal(first[0], first[1])
+    assert tuple(observer.utc_datetime for observer in observers) == planned.timeline.instants
+    for context, observer, _ in realized:
+        assert context.evaluation_instant == observer.t_astropy.utc.isot
+        assert context.observation.instant == context.evaluation_instant
+        assert context.product_coordinate_spec.instant == context.evaluation_instant
+    evaluate = KernelSession.evaluate
+    queries = []
+
+    def rotate(session, query):
+        queries.append(query)
+        batch = evaluate(session, query)
+        return replace(batch, states=tuple(replace(state,
+            vector=(-state.vector[1], state.vector[0], state.vector[2])) for state in batch.states))
+
+    monkeypatch.setattr(KernelSession, "evaluate", rotate)
+    changed = generate_observer_time_chart_sequence(replace(planned,
+        chart=replace(planned.chart, product=replace(planned.chart.product, output=tmp_path / "changed"))))
+    assert len(queries) == 2
+    for before, (_, _, after) in zip(first, realized[2:], strict=True):
+        np.testing.assert_allclose(after.lon_deg, (before + 90) % 360, atol=1e-10)
+    assert all(a.read_bytes() != b.read_bytes() for a, b in zip(baseline.outputs, changed.outputs, strict=True))
+    assert all(value.closed for value in observers)
+    assert all(not hasattr(sky, "_active_chart_request_state") for sky in skies)
+    assert all(sky.layers == (sky.stars,) for sky in skies)
+
+
+def test_sequence_kernel_refusal_keeps_partial_manifest_and_resumes_missing_frame(tmp_path, monkeypatch):
+    from wenu_kernel import KernelSession
+    from wenu.charts.sequence_manifest import read_observer_time_sequence_manifest, SEQUENCE_MANIFEST_NAME
+
+    observers, skies, _ = _kernel_sequence_environment(monkeypatch)
+    planned = _kernel_sequence_request(tmp_path / "frames")
+    evaluate = KernelSession.evaluate
+    calls = []
+
+    def second_refuses(session, query):
+        calls.append(query)
+        if len(calls) == 2:
+            raise RuntimeError("second frame kernel refusal")
+        return evaluate(session, query)
+
+    monkeypatch.setattr(KernelSession, "evaluate", second_refuses)
+    with pytest.raises(RuntimeError, match="second frame kernel refusal"):
+        generate_observer_time_chart_sequence(planned)
+    manifest_path = planned.chart.product.output / SEQUENCE_MANIFEST_NAME
+    progress = read_observer_time_sequence_manifest(manifest_path)
+    assert tuple(frame.is_complete for frame in progress.frames) == (True, False)
+    first_bytes = planned.frames[0].expected_output.read_bytes()
+    assert not planned.frames[1].expected_output.exists()
+    assert all(value.closed for value in observers)
+    assert all(not hasattr(sky, "_active_chart_request_state") for sky in skies)
+    monkeypatch.setattr(KernelSession, "evaluate", evaluate)
+    resumed = generate_observer_time_chart_sequence(planned, restart_policy="resume")
+    assert (resumed.rendered_count, resumed.reused_count) == (1, 1)
+    assert resumed.outputs[0].read_bytes() == first_bytes
+    assert observers[-1].utc_datetime == planned.timeline.instants[1]
+    assert all(value.closed for value in observers)
+
+
 
 def test_frame_result_has_one_stable_public_name():
     assert (
@@ -309,6 +453,22 @@ def test_resume_rerenders_an_altered_output_only(tmp_path, monkeypatch):
     assert resumed.reused_count == 1
     assert not resumed.frames[0].reused
     assert resumed.frames[1].reused
+
+
+def test_resume_checks_same_size_corruption_and_missing_outputs(tmp_path, monkeypatch):
+    planned = ObserverTimeChartSequenceRequest(chart=chart_request(tmp_path / "frames"), timeline=timeline())
+    monkeypatch.setattr(sequence_module, "generate_chart_request", _file_generator([]))
+    first = generate_observer_time_chart_sequence(planned)
+    payload = first.outputs[0].read_bytes()
+    first.outputs[0].write_bytes(bytes([payload[0] ^ 1]) + payload[1:])
+    assert first.outputs[0].stat().st_size == len(payload)
+    first.outputs[1].unlink()
+    calls = []
+    monkeypatch.setattr(sequence_module, "generate_chart_request", _file_generator(calls))
+    resumed = generate_observer_time_chart_sequence(planned, restart_policy="resume")
+    assert calls == list(first.outputs[:2])
+    assert (resumed.rendered_count, resumed.reused_count) == (2, 1)
+    assert resumed.outputs[0].read_bytes() == payload
 
 
 def test_resume_rejects_an_incompatible_manifest_before_rendering(

@@ -1608,3 +1608,28 @@ exporters save resolved physical furniture with existing `ExportOptions`.
 Page dimensions, duplex alignment, fonts, windows, folds, previews and assembly
 remain Wenu policy. K3.22 changes verification only; public APIs and production
 implementations are unchanged.
+
+## Observer-time sequence generation and resume
+
+`ObserverTimeChartSequenceRequest.frames` retains chart semantics and effective
+configuration while substituting each UTC simulation instant and deterministic
+frame output. `generate_observer_time_chart_sequence` delegates each uncached
+frame to `generate_chart_request`; it does not implement a second scientific
+rendering route. The static generator owns context construction, request leases,
+owned observer cleanup and canonical export.
+
+`TemporalTimeline` separates UTC instants from civil display times;
+`PlaybackSpec` supplies a presentation cadence with matching frame count.
+`ObserverTimeSequenceManifest` schema 1 preserves request/configuration,
+timeline/display/playback identity and per-output byte count/SHA-256. Completion
+records are written after successful static generation. Resume refuses a
+changed declared plan before rendering, regenerates missing or altered files,
+and does not claim new generation for reused frames. Output-directory
+portability and the legacy lookup identity remain intact.
+
+The existing planisphere viewport calculation now runs once per frozen chart
+and returns its existing immutable kernel `Viewport`; callers replacing chart
+parameters receive a fresh calculation. This prevents numerical refitting from
+making a valid composition appear to belong to another chart. Strict composition
+mismatch refusal remains unchanged. No timeline, manifest or snapshot schema
+changes, new propagation, or fixed-sky/rotating-horizon adoption occur here.

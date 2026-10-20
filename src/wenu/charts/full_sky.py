@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import cached_property
 
 import numpy as np
 
@@ -127,7 +128,7 @@ class FullSkyChart:
             name="horizon",
         )
 
-    @property
+    @cached_property
     def viewport(self) -> Viewport:
         """Return exact bounds of the projected horizon circle."""
         horizon = self.horizon

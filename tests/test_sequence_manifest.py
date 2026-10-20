@@ -193,6 +193,46 @@ def test_manifest_identity_includes_effective_configuration(tmp_path):
         plain_manifest.assert_compatible(configured)
 
 
+@pytest.mark.parametrize("change", ("playback", "display", "physical", "reference", "configuration"))
+def test_resume_identity_rejects_changed_time_presentation_and_realization_inputs(tmp_path, change):
+    from wenu.charts.reference_policy import CelestialReferencePolicy
+
+    planned = sequence(tmp_path / "frames")
+    if change == "playback":
+        changed = replace(planned, playback=PlaybackSpec(timedelta(seconds=2), 1))
+        assert changed.timeline == planned.timeline
+    elif change == "display":
+        changed = replace(planned, timeline=replace(planned.timeline, display_timezone="UTC"))
+        assert changed.timeline.instants == planned.timeline.instants
+    elif change == "physical":
+        changed = replace(planned, timeline=TemporalTimeline.uniform(
+            planned.timeline.instants[0], planned.timeline.instants[-1] + timedelta(seconds=1), 2,
+            display_timezone=planned.timeline.display_timezone))
+    elif change == "reference":
+        changed = replace(planned, chart=replace(planned.chart,
+            reference_policy=CelestialReferencePolicy("of_date")))
+    else:
+        changed = replace(planned, configuration=load_configuration_defaults())
+    manifest = ObserverTimeSequenceManifest.from_sequence(planned)
+    assert manifest.identity_sha256 != ObserverTimeSequenceManifest.from_sequence(changed).identity_sha256
+    with pytest.raises(ValueError, match="incompatible"):
+        manifest.assert_compatible(changed)
+
+
+def test_repeated_civil_hour_keeps_distinct_physical_frame_identity(tmp_path):
+    planned = sequence(tmp_path / "frames")
+    instants = (datetime(2026, 11, 1, 5, 30, tzinfo=timezone.utc),
+                datetime(2026, 11, 1, 6, 30, tzinfo=timezone.utc))
+    planned = replace(planned, timeline=TemporalTimeline(instants,
+        display_timezone="America/New_York"))
+    manifest = ObserverTimeSequenceManifest.from_sequence(planned)
+    assert tuple(frame.simulation_time for frame in manifest.frames) == tuple(t.isoformat() for t in instants)
+    assert manifest.frames[0].display_time != manifest.frames[1].display_time
+    assert tuple(datetime.fromisoformat(frame.display_time).astimezone(timezone.utc)
+        for frame in manifest.frames) == instants
+    assert ObserverTimeSequenceManifest.from_json(manifest.to_json()) == manifest
+
+
 
 def test_cluster_model_identity_retains_active_inputs_and_lookup_compatibility(tmp_path):
     from wenu.charts.sequence_manifest import _chart_request_identity

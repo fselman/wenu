@@ -379,7 +379,7 @@
     },
     {
       "path": "src/wenu/charts/full_sky.py",
-      "git_blob_sha": "08a0caba3298a1a902b46ec31e93b9d563cf193d",
+      "git_blob_sha": "09be5467fc3761c686ca6352ee9452d6a85a5b71",
       "as_is_directory": "src/wenu/charts",
       "description": "Production configuration and orchestration for full-sky charts."
     },
@@ -12064,6 +12064,62 @@
       "production_blobs_exact": 20
     },
     "separate_observation": "Exploratory ordinary FullSkyChart planisphere exact-array assertions failed even with new K3.22 tests excluded. That K3.20 owner is outside physical K3.22, unchanged and not claimed passing here; no scope expansion activated.",
-    "limits": "No new science/source bytes/dependency/SDK/snapshot v6/renderer/product extraction; common-year calibration retained. Complete Mac focused/documentation acceptance pending. K3.23 remains unselected."
+    "limits": "No new science/source bytes/dependency/SDK/snapshot v6/renderer/product extraction; common-year calibration retained. Complete Mac focused/documentation acceptance pending. K3.23 remains unselected.",
+    "mac_acceptance": {
+      "tested_commit": "4739841d01fc7c080c5e30ff37f5acb4110ae585",
+      "merged_commit": "738c4fc6581be337cc4d0fa521ae52d6c33c3a92",
+      "pr": 295,
+      "focused_passed": 162,
+      "focused_seconds": 19.6,
+      "documentation_passed": 36,
+      "tooling_passed": 8,
+      "cleanup": "Fernando confirmed clean synchronized main and both feature branches removed."
+    }
+  },
+  "observer_time_sequence_routing": {
+    "milestone": "K3.23",
+    "base_commit": "738c4fc6581be337cc4d0fa521ae52d6c33c3a92",
+    "plan_commit": "2922bf5297757194a9c2f780a968e248aa15f90a",
+    "viewport_refinement_plan_commit": "0d667848bffe361dbcaa4447ef4a5c145fd66b9b",
+    "agreement": "Fernando's Proceed after K3.22 acceptance/cleanup and the explicit ordinary temporal sequence proposal.",
+    "owners": [
+      "src/wenu/temporal.py",
+      "src/wenu/charts/sequence.py",
+      "src/wenu/charts/sequence_manifest.py",
+      "src/wenu/charts/sequence_arguments.py",
+      "src/wenu/configuration/sequence_translation.py",
+      "src/wenu/charts/request_generation.py",
+      "src/wenu/charts/request_realization.py",
+      "src/wenu/cli/chart.py"
+    ],
+    "disposition": "Retain canonical per-frame generator and existing schema-v1 identities. Reuse immutable FullSkyChart viewport to prevent demonstrated same-chart export refusal.",
+    "production_change": {
+      "path": "src/wenu/charts/full_sky.py",
+      "sha": "09be5467fc3761c686ca6352ee9452d6a85a5b71",
+      "change": "Add cached_property import and replace viewport property decorator; every function body/formula and strict composition guard unchanged."
+    },
+    "gate": "observer-time-sequence-routing",
+    "evidence": [
+      "Real kernel/request/context/projection/renderer/saver consumers with explicitly synthetic observation backend.",
+      "Per-frame UTC realization times and changed returned directions reach PNG output.",
+      "Second-frame kernel refusal closes owned observers/leases and preserves only first completion; resume generates only unfinished frame.",
+      "Declared physical/display/playback/reference/configuration identity and same-size hash corruption/missing output checks.",
+      "Removing output SHA verification fails new resume regression; restoring uncached viewport fails actual sequence consumer."
+    ],
+    "local_receipt": {
+      "focused_passed": 150,
+      "full_gate_cases": 151,
+      "blocked_case": "tests/test_chart_sequence.py::test_observer_time_sequence_generates_real_canonical_frames",
+      "blocked_reason": "Missing DE440s; JPL download fails TLS certificate validation. Case remains required on Mac.",
+      "tooling_passed": 8,
+      "tooling_seconds": 4.958,
+      "documentation_passed": 31,
+      "documentation_complete_checkout_required": 5,
+      "temporal_owner_passed": 48,
+      "temporal_owner_seconds": 3.29,
+      "viewport_fault_failed": 1,
+      "resume_hash_fault_failed": 1
+    },
+    "limits": "No new physics, numerical formula, kernel/SDK/dependency/source, manifest/snapshot schema, renderer algorithm or package extraction. Resume verifies declared plan/output bytes, not current external backend/resource identities or physical accuracy. K3.24/future moving-body models remain separate."
   }
 }

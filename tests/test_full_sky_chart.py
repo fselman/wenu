@@ -8,6 +8,25 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 
+
+def test_repeated_composition_keeps_stable_geometry_and_rejects_changed_chart():
+    from dataclasses import replace, FrozenInstanceError
+    from wenu.charts.composition import compose_chart
+    from wenu.charts.export_workflow import _validate_composition
+
+    chart = FullSkyChart()
+    composition = compose_chart(chart, style="atlas", mode="print")
+    before = composition.context.viewport
+    for _ in range(5):
+        _validate_composition(chart, composition)
+        assert chart.chart_context.viewport == before
+    with pytest.raises(FrozenInstanceError):
+        before.x_min = 0
+    changed = replace(chart, projection_radius=chart.projection_radius * 2)
+    with pytest.raises(ValueError, match="different chart"):
+        _validate_composition(changed, composition)
+    assert changed.viewport.width == pytest.approx(before.width * 2)
+
 from wenu import FullSkyChart
 from wenu.coordinates import GENERIC_SPHERICAL_SPEC
 
