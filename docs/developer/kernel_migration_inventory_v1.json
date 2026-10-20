@@ -11676,7 +11676,7 @@
     "milestone": "K3.17",
     "base_commit": "6e6fcd964a23d7aa5a4bc4e398e43381ad93977f",
     "agreement": "Fernando 2026-10-20 proceed after explicit constructed-reference proposal and clean main receipt. Roadmap revision 41.",
-    "status": "Existing production routes verified locally; focused Mac acceptance pending.",
+    "status": "Accepted PR #290/main 56f5e8ff; Mac 99 focused (25.96 s), 36 documentation (3.51 s), eight tooling (6.972 s); clean synchronized main and branch cleanup confirmed.",
     "production_changes": false,
     "as_is": "Grids/planes/poles/keypoints and defining-frame boundaries already use CoordinateService and canonical kernel geometry. Horizon/masks use native AltAz construction and shared domain/projection services. Chart appearance/composition remains at chart owners. Existing v6 snapshots restore the same classes through the layer registry.",
     "inspected_source_blobs": {
@@ -11728,5 +11728,33 @@
     },
     "retained_mac_evidence": "K3.16 accepted PR #289: 81 runtime cases plus seven comparison retry cases, 36 documentation and eight tooling cases. Atlas/four polar PNG/PDF/SVG and source-free process evidence applies unchanged; no production implementation changed.",
     "remaining": "K3.18 complete resource/backend/observer-cache identity, K3.19 application assembly and K3.39/K3.40 review remain open. Not a kernel freeze or physical-object extension."
+  },
+  "observer_resource_lifecycle": {
+    "milestone": "K3.18",
+    "base_commit": "56f5e8ff3779bf1e0b6a05464e762826d0e7dfd2",
+    "agreement": "Fernando 2026-10-20 Proceed after explicit observer/resource/cache proposal; roadmap revision 42.",
+    "status": "Implemented in existing owners; focused Mac acceptance pending.",
+    "production_owners": [
+      "src/wenu/observer.py",
+      "src/wenu/sky/observed_cache.py"
+    ],
+    "gate": "observer-resource-lifecycle",
+    "scope": "Active EOP/leap/backend and live observer/SPK identity before maximal observed-cache reuse; preserve existing service calculations and request ownership.",
+    "limits": "Process-local compatibility cache, not physical-source qualification or an accuracy certificate. No new package/SDK/dependency/source/schema/renderer change. Final facade review K5.02 and M10 model qualification K3.25 remain open.",
+    "fault_evidence": "Removing _backend_geometry_key makes real warm/cold UT1 contract fail; unchanged baseline passes.",
+    "local_receipt": {
+      "available_gate_passed": 399,
+      "seconds": 48.51,
+      "mac_cases_pending": [
+        "Real Observer DE440s close/idempotence",
+        "Real Observer DE440s context-manager close",
+        "Explicit curated-cluster mixed request/refusal"
+      ],
+      "documentation_available_passed": 31,
+      "documentation_seconds": 1.21,
+      "documentation_limit": "Five full-checkout archive/asset/inventory integrity checks remain for the complete Mac gate.",
+      "tooling_passed": 8,
+      "tooling_seconds": 5.236
+    }
   }
 }

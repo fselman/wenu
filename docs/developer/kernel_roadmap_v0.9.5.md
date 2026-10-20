@@ -43,8 +43,8 @@ revision 42; this does not activate K3.19 or close K3/K5.
 | Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
 | Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
 | Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
-| Current authorized task | K3.17 constructed reference routing: inspect existing services, close demonstrated gaps and verify remaining consumers; selected 2026-10-20 |
-| Next bounded submilestone | K3.18 selected: observer/resource lifetime and observed-cache invalidation |
+| Current authorized task | K3.18 observer/resource lifetime and observed-cache invalidation; selected 2026-10-20 |
+| Next bounded submilestone | K3.19 remains pending; select separately after K3.18 acceptance |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -283,7 +283,7 @@ ordinary discussion/agreement/documentation before implementation.
 | K0 documentation/baseline and K1 initial state contracts | Keep receipts; correct scope/diagrams and include broader service contracts in final review |
 | K2 state/time/resource/registration/reuse/conformance foundation | Retain as a kernel component; no reimplementation or wholesale test rerun from a documentation change |
 | Accepted stellar, galaxy, cluster, generic nonstellar, globular, PN and SNR centre routes | Retain returned-state/source-admission/cache/refusal and compatibility evidence; physical/catalogue centres legitimately use state lookup |
-| Existing spherical geometry, topology, clipping and projections | Retain implementations and scientific/visual tests; establish ownership/public imports and dependency isolation under KG.01–KG.05 before K3.16, then audit/correct completed K deliveries under KG.06–KG.07. Remaining K3.17/K3.18/K3.19/K3.39/K3.40 and K5 obligations stay open |
+| Existing spherical geometry, topology, clipping and projections | Retain implementations and scientific/visual tests; establish ownership/public imports and dependency isolation under KG.01–KG.05 before K3.16, then audit/correct completed K deliveries under KG.06–KG.07. Remaining K3.18/K3.19/K3.39/K3.40 and K5 obligations stay open |
 | K3.16 assessment | Keep M9 source/snapshot evidence. Withdraw the new geometry-query contract as default. Reassess through existing geometry interfaces; metadata transport still needs concrete design, without predetermining a new snapshot version |
 | Remaining K3 and K5–K9 | Remain open. Accepted bounded routes do not certify complete service-kernel integration, extraction or final freeze |
 
@@ -598,8 +598,8 @@ map below ensures small/non-chart capabilities do not disappear in grouped rows.
 | K3.14 | Route existing planetary-nebula centre/geometry/selection consumers | Accepted PR #278, main `42adb84d`; 129 focused Mac, 36 documentation and eight tooling cases passed; motion remains AX.15 |
 | K3.15 | Route existing supernova-remnant centre/geometry/selection consumers | Accepted PR #279, main `21653198`; 126 focused Mac, 36 documentation and eight tooling cases passed; motion remains AX.16 |
 | K3.16 | Admit Milky Way/Magellanic source metadata and route diffuse celestial geometry | Accepted PR #289, main 6e6fcd96. Byte-bound metadata and v6 transport; explicit v1–v5 legacy admission. Mac 81 retained + seven retry, 36 documentation and eight tooling cases; unchanged kernel mathematics and no fabricated point-body states |
-| K3.17 | Route constructed references: grids, equator/ecliptic/Galactic planes, poles, defining-frame boundaries, horizon/visibility/masks | Selected after K3.16 acceptance. Existing reference owners already use shared coordinate/geometry services; inspect remaining consumer/snapshot seams and verify closure. Preserve construction/realization separation from physical-object providers; acceptance pending |
-| K3.18 | Close shared state/coordinate/observer adapters, resource lifetime and observed-cache invalidation across existing families | Partial: explicit nominal service accepted in AX; legacy consumers/metadata/resource identities still open |
+| K3.17 | Route constructed references: grids, equator/ecliptic/Galactic planes, poles, defining-frame boundaries, horizon/visibility/masks | Accepted PR #290/main 56f5e8ff after 99 focused, 36 documentation and eight tooling Mac cases; clean branch cleanup confirmed. Existing service routes retained without production rewrite |
+| K3.18 | Close shared state/coordinate/observer adapters, resource lifetime and observed-cache invalidation across existing families | Selected revision 42. Existing adapter/ownership routes retained; active EOP/leap/backend and live ephemeris cache checks implemented in existing owners, focused Mac acceptance pending. K5.02 final placement and K3.25 model qualification remain separate |
 | K3.19 | Decouple central sky/factory from concrete providers through application assembly; cover saved/loaded skies and workers | Partial: source snapshots/reconstruction accepted; uniform registry/consumer closure pending |
 | K3.20 | Close all five ordinary chart families, target/group centres, masks, content, styles/detail and furniture state access | Partial: common scope and selected routes accepted; remaining consumers not certified migrated |
 | K3.21 | Replace chart/atlas private-helper cycle with a public sheet contract; close atlas design/index/publication/report consumers | Partial dispatch/saved/worker paths accepted; public boundary and complete state routing pending |

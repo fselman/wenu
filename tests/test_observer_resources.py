@@ -538,3 +538,49 @@ def test_finite_observer_double_translation_and_aberration_break_oracles(monkeyp
     with monkeypatch.context() as patch:
         patch.setattr(module.erfa,'ab',doubled)
         with pytest.raises(AssertionError):test_finite_observer_aberration_matches_independent_lorentz_boost()
+
+
+def test_observer_geometry_resource_binds_loaded_bytes_and_refuses_change(tmp_path):
+    """Synthetic byte resource exercises real descriptor lifetime, not SPK science."""
+    import hashlib
+    import weakref
+    from types import SimpleNamespace
+    import pytest
+    path = tmp_path / 'synthetic.bsp'
+    path.write_bytes(b'synthetic resource; not a valid ephemeris')
+    handle = path.open('rb')
+    observer = Observer.__new__(Observer)
+    observer.ephemeris = SimpleNamespace(path=str(path),
+        spk=SimpleNamespace(daf=SimpleNamespace(file=handle)))
+    observer._ephemeris_finalizer = weakref.finalize(observer, handle.close)
+    try:
+        identity = observer.geometry_resource_identity()
+        assert identity == hashlib.sha256(path.read_bytes()).hexdigest()
+        assert observer.geometry_resource_identity() == identity
+        # A same-name in-place edit cannot be concealed by a cached digest.
+        path.write_bytes(b'changed synthetic resource')
+        with pytest.raises(RuntimeError, match='changed after admission'):
+            observer.geometry_resource_identity()
+    finally:
+        observer.close()
+    observer.close()
+    with pytest.raises(RuntimeError, match='closed'):
+        observer.geometry_resource_identity()
+
+
+def test_observer_geometry_resource_refuses_mismatched_loaded_handle(tmp_path):
+    import weakref
+    from types import SimpleNamespace
+    import pytest
+    first = tmp_path / 'first'; second = tmp_path / 'second'
+    first.write_bytes(b'synthetic first'); second.write_bytes(b'synthetic second')
+    handle = first.open('rb')
+    observer = Observer.__new__(Observer)
+    observer.ephemeris = SimpleNamespace(path=str(second),
+        spk=SimpleNamespace(daf=SimpleNamespace(file=handle)))
+    observer._ephemeris_finalizer = weakref.finalize(observer, handle.close)
+    try:
+        with pytest.raises(RuntimeError, match='changed before admission'):
+            observer.geometry_resource_identity()
+    finally:
+        observer.close()

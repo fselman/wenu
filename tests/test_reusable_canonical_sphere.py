@@ -2000,3 +2000,29 @@ def test_constructed_reference_services_reach_cold_and_source_free_saved_skies(n
         for name in owners:
             with pytest.raises(RuntimeError, match='service refused'):
                 geometry(sky, name)
+
+
+def test_saved_reference_warm_cache_follows_active_eop(native_snapshot_case, monkeypatch):
+    from astropy.utils import iers
+    from astropy import units as u
+    from astropy.time import Time
+    from wenu.sky import native_snapshot as snapshots
+    from wenu.sky.constellation_boundaries import ConstellationBoundaries
+    _, bundle, _, cold = native_snapshot_case
+    def forbidden(*args, **kwargs):
+        raise AssertionError('Saved reference attempted source reload')
+    monkeypatch.setattr(ConstellationBoundaries, 'load', forbidden)
+    saved = snapshots.read_native_sky_snapshot(bundle).make_sky()
+    observer = SimpleNamespace(t_astropy=Time('2017-01-02T00:00:00'),
+        lat_deg=-33., lon_deg=-71.5, elevation_m=52.)
+    table = iers.IERS_B.read(iers.IERS_B_FILE).copy(copy_data=True)
+    def geometry(sky):
+        layer = next(item for item in sky.layers if isinstance(item, ConstellationBoundaries))
+        return layer.spherical_geometry(observer, selected=('Sco',))
+    with iers.conf.set_temp('auto_download', False), iers.earth_orientation_table.set(table):
+        before = geometry(saved)
+        _assert_native_geometry_equal(before, geometry(cold))
+        table['UT1_UTC'] += 1 * u.s  # explicit synthetic offset, not source data
+        after = geometry(saved)
+        _assert_native_geometry_equal(after, geometry(cold))
+        assert any(np.max(np.abs(a - b)) > .001 for a, b in zip(before.lon_deg, after.lon_deg))

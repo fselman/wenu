@@ -79,7 +79,8 @@ FK4/B1875 boundary, horizon/mask and furniture implementations: they already use
 the shared coordinate/geometry/domain/projection services. Source-free restored
 references use those same owners. New closure tests verify returned values and
 refusal; there is no new production route or numerical algorithm. Complete
-observer resource/cache identity remains K3.18. See the
+observer resource/cache checks are now implemented under K3.18, with Mac
+acceptance pending. See the
 [routing ledger](kernel_migration_audit_v1.md#k317-constructed-reference-service-routing-assessment).
 
 ## Completed-K service-boundary audit
@@ -411,3 +412,20 @@ flux metadata and appearance are preserved. No associated compact-object positio
 or motion substitutes for the radio-centre source, and no expansion or propagation
 is added. Mac acceptance remains pending.
 
+
+## Observer resources and observed caches
+
+`Observer` still owns one Skyfield ephemeris; existing request owners close only
+resources they own. Its geometry-resource check binds the loaded SPK bytes and
+open file descriptor, refuses closed/changed resources and does not reload a
+replacement pathname. Shared point/polygon caches and the stellar maximal cache
+now include effective EOP data/masks/units, leap data, installed backend versions,
+Astropy ephemeris selection and live Skyfield time/backend inputs. Resource changes
+cannot reuse an old geometry entry merely because site/time/name/path match.
+
+`CoordinateService` retains Astropy transformations. `skyfield_stellar_altaz`
+retains the no-deflectors stellar calculation; the explicit nominal observer
+service retains verified offline reception receipts and full recomputation.
+These backend adapters remain transitional Wenu owners with the accepted SDK and
+kernel geometry dependencies; K5.02 reviews final facade/packaging placement.
+No reverse dependency into Wenu is introduced in the standalone kernel.

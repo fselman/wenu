@@ -1234,3 +1234,21 @@ and gate-tooling tests run separately; no unrelated provider/full production
 repeat is required. The existing LMC example still requires de440s.bsp normally
 available on the Mac; the local TLS/download limitation is not a test waiver.
 
+
+## Observer resource lifecycle gate
+
+`observer-resource-lifecycle` selects existing observer/resource/cache, state/
+coordinate, affected stellar/catalogue/diffuse/reference consumers and request
+ownership tests. New tests extend those owners: same-site/time warm reuse must
+follow in-place EOP edits, ERFA leap changes and backend replacement; closed or
+changed SPK admission must refuse before point/polygon cache lookup. Real IERS-B
+plus synthetic UT1 perturbation compares warm and cold boundaries, including a
+source-free restored sky. Fault injection omitting the resource key must fail.
+
+Retain the explicit offline reception/finite-distance numerical and refusal
+contracts, accepted native atlas/polar exports and kernel installation evidence.
+No dependency, SDK, source or snapshot schema changes require those receipts to
+be repeated. The Mac gate includes real Observer open/close cases and the explicit
+curated-cluster request case. Local execution cannot substitute synthetic files
+for DE440s or fabricate the missing curated bundle; those cases remain explicit
+Mac acceptance obligations. Full production/SDK/atlas export repeats are excluded.

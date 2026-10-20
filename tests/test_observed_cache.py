@@ -199,3 +199,95 @@ def test_polygon_quality_selects_a_distinct_cache_entry():
 
     assert len(calls) == 2
     assert len(cache) == 2
+
+
+def test_warm_point_and_polygon_caches_follow_active_resources(monkeypatch):
+    """Same site/time/path must not conceal changed effective backend inputs."""
+    import erfa
+    from astropy.utils import iers
+    from astropy.coordinates import solar_system_ephemeris
+    from astropy import units as u
+
+    # Synthetic EOP table: the transform below is deliberately a test double.
+    eop = Table({'MJD': [60000., 60001.], 'UT1_UTC': [.1, .2]})
+    eop['UT1_UTC'].unit = u.s
+    monkeypatch.setattr(iers.earth_orientation_table, 'get', lambda: eop)
+    observer = SimpleNamespace(lat_deg=-33., lon_deg=-71., elevation_m=52.,
+                               t_astropy=Time('2026-08-16T01:00:00'))
+    source = catalogue()
+    points, polygons, calls = {}, {}, []
+    value = [1.]
+    def transform(*args):
+        calls.append(value[0])
+        return np.full(3, value[0]), np.full(3, -value[0])
+    monkeypatch.setattr(observed_cache, '_icrs_catalogue_altaz', transform)
+    def evaluate():
+        result = observed_cache.catalogue_point_altaz(points, observer,
+            source_table=source, selected_table=source[[2, 0]], source_key='synthetic')
+        outline = observed_cache.observed_polygon_arrays(polygons, observer,
+            source_key='synthetic', build=lambda: (([value[0]],), ([-value[0]],)))
+        np.testing.assert_array_equal(result[0], [value[0], value[0]])
+        assert outline[0][0][0] == value[0]
+    evaluate(); evaluate()
+    assert len(calls) == len(points) == len(polygons) == 1
+    # In-place EOP edits retain the exact same table object and provenance.
+    value[0] = 2.; eop['UT1_UTC'][0] += .5
+    evaluate()
+    leaps = erfa.leap_seconds.get().copy()
+    leaps['tai_utc'][-1] += 1  # synthetic key input only, never installed globally
+    monkeypatch.setattr(erfa.leap_seconds, 'get', lambda: leaps)
+    value[0] = 3.; evaluate()
+    monkeypatch.setattr(solar_system_ephemeris, 'get', lambda: 'synthetic-other-backend')
+    value[0] = 4.; evaluate()
+    assert len(calls) == len(points) == len(polygons) == 4
+
+
+def test_observer_resource_refusal_precedes_warm_cache(monkeypatch):
+    import pytest
+    source = catalogue(); cache = {}; polygons = {}; calls = []
+    admitted = [True]
+    def identity():
+        if not admitted[0]:
+            raise RuntimeError('synthetic closed resource')
+        return 'synthetic admitted resource'
+    observer = SimpleNamespace(geometry_resource_identity=identity)
+    monkeypatch.setattr(observed_cache, '_icrs_catalogue_altaz',
+                        lambda *a: (calls.append(1) or np.arange(3), np.arange(3)))
+    def evaluate():
+        return observed_cache.catalogue_point_altaz(cache, observer,
+            source_table=source, selected_table=source, source_key='synthetic')
+    evaluate()
+    observed_cache.observed_polygon_arrays(polygons, observer, source_key='synthetic',
+        build=lambda: (([1.],), ([2.],)))
+    admitted[0] = False
+    with pytest.raises(RuntimeError, match='closed resource'):
+        evaluate()
+    with pytest.raises(RuntimeError, match='closed resource'):
+        observed_cache.observed_polygon_arrays(polygons, observer, source_key='synthetic',
+            build=lambda: pytest.fail('refused resource must not build'))
+    assert len(cache) == len(polygons) == len(calls) == 1
+
+
+def test_skyfield_time_and_backend_replacement_invalidate_geometry_key():
+    observer = SimpleNamespace(timescale=SimpleNamespace(
+        leap_dates=np.array([1., 2.]), leap_offsets=np.array([10., 11.])),
+        t=object(), skyfield=object(), ephemeris=object())
+    first = observed_cache.observer_geometry_key(observer)
+    observer.timescale.leap_offsets[0] += 1
+    second = observed_cache.observer_geometry_key(observer)
+    observer.skyfield = object()
+    third = observed_cache.observer_geometry_key(observer)
+    assert first != second != third
+
+
+def test_frame_only_observer_key_tracks_the_context_consumed_by_service():
+    from astropy.coordinates import AltAz, EarthLocation
+    from astropy import units as u
+    site = EarthLocation.from_geodetic(-71*u.deg, -33*u.deg, 52*u.m)
+    observer = SimpleNamespace(altaz_frame=AltAz(obstime=Time('2017-01-02'), location=site))
+    first = observed_cache.observer_geometry_key(observer)
+    observer.altaz_frame = AltAz(obstime=Time('2017-01-03'), location=site)
+    second = observed_cache.observer_geometry_key(observer)
+    observer.altaz_frame = AltAz(obstime=Time('2017-01-03'),
+        location=EarthLocation.from_geodetic(-70*u.deg, -33*u.deg, 52*u.m))
+    assert first != second != observed_cache.observer_geometry_key(observer)

@@ -61,3 +61,24 @@ def test_boundary_geometry_is_evaluated_at_observer_time():
     assert not np.allclose(first.lat_deg[0], second.lat_deg[0])
     assert first.metadata["source_equinox"] == "B1875.0"
     assert second.metadata["source_equinox"] == "B1875.0"
+
+
+def test_warm_boundary_cache_tracks_real_eop_changes():
+    """An in-place synthetic UT1 offset must agree with a new cold transform."""
+    from astropy.utils import iers
+    from astropy import units as u
+    table = iers.IERS_B.read(iers.IERS_B_FILE).copy(copy_data=True)
+    observer = make_observer('2017-01-02T00:00:00')
+    boundaries = make_boundaries()
+    with iers.conf.set_temp('auto_download', False), iers.earth_orientation_table.set(table):
+        first = boundaries.spherical_geometry(observer)
+        repeated = boundaries.spherical_geometry(observer)
+        assert len(boundaries._observed_polygon_cache) == 1
+        np.testing.assert_array_equal(first.lon_deg[0], repeated.lon_deg[0])
+        table['UT1_UTC'] += 1 * u.s  # synthetic perturbation, no source-file rewrite
+        changed = boundaries.spherical_geometry(observer)
+        cold = make_boundaries().spherical_geometry(observer)
+        assert len(boundaries._observed_polygon_cache) == 2
+        assert np.max(np.abs(first.lon_deg[0] - changed.lon_deg[0])) > .001
+        np.testing.assert_array_equal(changed.lon_deg[0], cold.lon_deg[0])
+        np.testing.assert_array_equal(changed.lat_deg[0], cold.lat_deg[0])

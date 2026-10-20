@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from hashlib import sha256
+
 import numpy as np
 
 from wenu.coordinate_service import CoordinateService
@@ -26,8 +28,52 @@ def skyfield_stellar_altaz(stars, observer):
             np.asarray(azimuth.degrees, dtype=float))
 
 
+def _array_identity(values):
+    array = np.ma.asarray(values)
+    return (str(array.dtype), array.shape,
+            sha256(np.ascontiguousarray(array.data).tobytes()).hexdigest(),
+            sha256(np.ascontiguousarray(np.ma.getmaskarray(array)).tobytes()).hexdigest())
+
+
+def _backend_geometry_key(observer):
+    """Describe active inputs, rather than their mutable names or paths.
+
+    Astropy remains responsible for its existing resource-loading policy. This
+    key neither chooses an EOP product nor changes the observation calculation.
+    """
+    import astropy
+    import erfa
+    import skyfield
+    from astropy.coordinates import solar_system_ephemeris
+    from astropy.utils import iers
+
+    resources = getattr(observer, "geometry_resource_identity", None)
+    ephemeris = resources() if callable(resources) else None
+    table = iers.earth_orientation_table.get()
+    eop = (type(table), repr(table.meta), tuple((name, str(table[name].unit),
+                              _array_identity(table[name])) for name in table.colnames))
+    time = getattr(observer, "t", None)
+    timescale = getattr(time, "ts", getattr(observer, "timescale", None))
+    time_inputs = tuple((name, _array_identity(getattr(timescale, name)))
+                        for name in ("leap_dates", "leap_offsets", "_leap_utc",
+                                     "_leap_offsets", "_leap_tai", "delta_t_table",
+                                     "polar_motion_table")
+                        if getattr(timescale, name, None) is not None)
+    event = tuple((name, _array_identity(getattr(time, name)))
+                  for name in ("tt", "ut1") if hasattr(time, name))
+    return (astropy.__version__, erfa.__version__, skyfield.__version__,
+            eop, (iers.conf.auto_download, iers.conf.auto_max_age,
+                  iers.conf.iers_degraded_accuracy),
+            _array_identity(erfa.leap_seconds.get()),
+            solar_system_ephemeris.get(), id(solar_system_ephemeris._kernel),
+            ephemeris, id(getattr(observer, "ephemeris", None)),
+            id(getattr(observer, "skyfield", None)),
+            id(time), event, time_inputs,
+            id(getattr(timescale, "delta_t_function", None)))
+
+
 def observer_geometry_key(observer):
-    """Return a complete stable key for one observer and instant."""
+    """Return a process-local reuse key after current resource checks."""
     if observer is None:
         raise ValueError("An observer is required for observed geometry.")
 
@@ -53,11 +99,20 @@ def observer_geometry_key(observer):
     if all(value is None for value in coordinates):
         coordinates = (id(observer),)
 
+    # Frame-only compatibility observers must follow the same normalized
+    # site/event consumed by CoordinateService, not just object identity.
+    try:
+        context = observation_context(observer)
+    except (TypeError, AttributeError):
+        context = None  # opaque test/legacy observer: existing identity fallback
+
     return (
+        context,
         coordinates,
         instant,
         getattr(observer, "ephemeris_name", None),
         str(getattr(observer, "data_directory", "")),
+        _backend_geometry_key(observer),
     )
 
 

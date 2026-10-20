@@ -976,7 +976,7 @@ modify scientific sources or compensate in Matplotlib/chart appearance policy.
 
 | Finding | Actual owner / disposition |
 |---|---|
-| G06.U1: observer resource/cache identity | `sky/observed_cache.py::observer_geometry_key` includes site/time/name/path, not full admitted EOP/backend/ephemeris bytes. M10 and K3.18/K3.25 already retain this gap. Changed-state/no-warm-fallback receipts remain valid for their tested inputs, not universal identity closure. No new KG.07 expansion |
+| G06.U1: observer resource/cache identity | K3.18 now adds active EOP/leap/backend content and live SPK descriptor admission before shared cache lookup; focused Mac acceptance pending. M10 model/source qualification remains K3.25. Earlier receipts retain their original limits. |
 | G06.U2: assembly and atlas private helpers | `sky/native_snapshot.py` reconstructs concrete families; `charts/request_generation.py::_render_atlas_sheet_request` imports private atlas helpers. K3.19/K3.21 stay partial; K3.03 lifetime/dispatch receipt never closed them |
 | G06.U3: generic realization placement | The object-independent core/time/observer adapters remain transitional Wenu owners consuming the SDK; no kernel reverse import was found. Concrete ERFA/Astropy realization stays outside the stdlib core. Complete service/facade placement review remains K3.18/K5.02; no new module/protocol is selected |
 | G06.U4: source qualification and remaining geometry | Nonstellar physical gaps and constructed/unitless compatibility are disclosed, not qualified by passing lookup. Diffuse metadata/transport is K3.16; constructed references K3.17; product closure K3.20–K3.24/K3.39–K3.40. KG services do not close those pending consumers |
@@ -1095,3 +1095,31 @@ open. Product construction does not become physical-object propagation.
 The coordinate guide remains current: no coordinate meaning, frame/equinox,
 provenance or correction ownership changed. Gate: `constructed-reference-routing`,
 plus tooling and documentation. Acceptance remains pending the focused Mac receipt.
+
+## K3.18 observer resource and cache assessment
+
+Base: accepted PR #290/main `56f5e8ff`. Fernando selected this existing milestone
+on 2026-10-20 after the bounded observer/resource/cache proposal.
+
+| Existing owner | Finding and disposition |
+|---|---|
+| `observer.py` | Already owns/finalizes one ephemeris and closes idempotently. Add byte/descriptor admission at geometry reuse, refusing closed/changed resources; retain request ownership. |
+| `sky/observed_cache.py` | Site/time/name/path alone concealed changed EOP/leap/backend inputs. Extend its existing key rather than introduce another cache or transform service. |
+| `objects/stars.py`, `sky/constellation_lines.py` | Existing maximal stellar cache/figure consumers already share that key and query native state before lookup; retain no-deflectors Skyfield science. |
+| Nonstellar/cluster points/outlines, PN symbols, boundaries, MW/Clouds | Existing shared point/polygon helpers already reach the same key. Keep source/selection/topology policies with their owners. |
+| `coordinate_service.py`, `astrometric_coordinates.py`, `astrometric_observation.py` | Retain the generic backend adapters, explicit time conversions and offline receipt/correction ownership. The nominal observer realizer has no warm observer cache. No scientific rewrite or state-SDK change is needed here. |
+| `charts/request_generation.py` | Existing owned/borrowed lifetime, rollback and cleanup contracts are retained and selected in the gate. |
+
+The new boundary test applies an explicitly synthetic one-second UT1 offset to a
+real local IERS-B table in memory. Warm transformed boundaries must change and
+match a cold transformation; removing the resource-key contribution fails this
+contract. A source-free restored-sky test exercises the same resource change.
+Synthetic file tests protect byte/descriptor binding and refusal, not ephemeris
+science. A local probe also verified the descriptor path against an actual SPK
+shipped in the installed Skyfield test data, without downloading resources.
+
+No new module/package, source bytes, kernel API/pin, geometry/projection/renderer
+algorithm, observation model or snapshot schema is introduced. Final facade/
+packaging review remains K5.02, M10 model qualification remains K3.25, and K3.19
+assembly stays pending. The coordinate guide remains current: coordinate meaning,
+mathematics, correction ownership and source provenance are unchanged.

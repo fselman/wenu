@@ -135,6 +135,26 @@ provider package may depend on this broad product-level facade.
 `Observer` owns its loaded ephemeris: use it as a context manager or call
 `close()` when its lifetime ends.
 
+### Observer resource lifetime and geometry cache identity
+
+`Observer.geometry_resource_identity()` checks the live owned SPK descriptor.
+It hashes its bytes on first geometry admission and guards device/inode, size,
+mtime and ctime thereafter. A closed, replaced or modified admitted handle refuses
+before warm-cache lookup. Closing stays idempotent; create a new Observer to adopt
+a different ephemeris. A filename/model guess is not source qualification (M10).
+
+`observer_geometry_key` is process-local, not a serialized scientific receipt.
+It conservatively binds active EOP columns, units, masks and metadata, IERS policy,
+ERFA leaps, backend versions, Astropy ephemeris selection/kernel and live Skyfield
+observer/time/Timescale inputs. Point/polygon helpers and `Stars.observed_altaz`
+share it. Existing provider admission still precedes geometry reuse. Unchanged
+inputs retain maximal-selection reuse; changed resources recompute or propagate
+refusal. Duck-typed test/legacy observers keep their existing compatibility route;
+this does not qualify unknown resources or establish apparent-place accuracy.
+The legacy Astropy resource-loading policy is unchanged; the explicit offline
+reception backend remains the separate strict admitted path. No observer/resource
+handles or process-local keys are persisted in native snapshot v6.
+
 ## 3. Canonical composition and export
 
 ```python
@@ -360,7 +380,8 @@ stars and constellation figures reuse the boundary without mutating selection.
 Figure availability/topology remains tied to the active catalogue as before;
 label means still include the complete source. The retained Skyfield and Astropy
 methods are distinct compatibility paths, not a new unified apparent-place
-science model. Observer metadata/resource closure remains K3.18.
+science model. Shared resource/cache checks are described below; solar-system
+model/source qualification remains K3.25.
 
 The `native-catalogue` reference explicitly means an unpropagated lookup.
 Unbounded lookup availability is not astrometric validity at arbitrary epochs;
