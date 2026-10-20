@@ -1159,13 +1159,11 @@ uses frozen native catalogue directions; no observer, propagation or new diffuse
 transport acceptance is implied. PNG/PDF/SVG saves are real, not mocked.
 
 [KG.05 finding G05-1](kernel_migration_audit_v1.md#g05-1-equidistant-full-catalogue-composition-gap)
-is retained as two strict expected failures for equidistant full-catalogue input;
-stereographic outputs are required to pass. Unexpected passes fail the gate.
-The report must disclose these separately from passing output cases. The marker
-is not a corrected implementation or a general planisphere acceptance claim.
-KG.06/KG.07 own audit/correction. Existing KG.03/KG.04 numerical, SDK and root
+was retained as two strict expected failures in the accepted KG.05 receipt.
+KG.07 removes those markers with the shared point-batch correction; the current
+test requires all four real polar specimens to pass. No expected failure is
+allowed in the new correction gate. Existing KG.03/KG.04 numerical, SDK and root
 installation receipts remain bounded evidence for unchanged implementations.
-
 
 ## KG.06 audit verification
 
@@ -1179,3 +1177,25 @@ suites merely because an audit describes them. The read-only G05-1 reproduction
 does not convert expected failure into a passing output claim. KG.07 must add
 the missing point-batch evidence and remove both strict expected-failure markers
 with actual successful equidistant output, using the audit’s owner/gate map.
+
+
+## KG.07 point-projection correction gate
+
+Run `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python tools/run_test_gate.py kernel-point-projection --run`.
+G06.C1 changes only shared point-batch dispatch. Existing owner tests now cover
+mixed/all-missing/empty geometry, read-only source arrays, duplicate IDs, metadata,
+both poles/flip/frame and finite invalid latitude/opposite-pole refusal. The new
+regressions were first run on the unchanged implementation: ten failures exposed
+the fault; four existing-compatible cases passed. Finite formulas and direct
+numerical validation are unchanged. No missing source row becomes a state.
+
+Real cold/restored output must pass for north/south equidistant and stereographic
+specimens: geometry, identical PNG pixels and actual PDF/SVG dimensions. No xfail
+markers remain. The selected atlas page protects the affected application path;
+KG.05 serial/spawn/book evidence is retained rather than repeated. The isolated
+kernel-wheel test executes a corrected mixed batch with Wenu/backends/renderers
+blocked, and checks direct invalid numerical refusal. Root wheel/sdist/editable
+tests verify the changed dev11 immutable geometry-extra pin. Source SDK tests
+and gate-tooling tests run separately; no unrelated provider/full production
+repeat is required. The existing LMC example still requires de440s.bsp normally
+available on the Mac; the local TLS/download limitation is not a test waiver.

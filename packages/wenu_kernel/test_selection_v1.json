@@ -1,13 +1,14 @@
 {
   "schema": "wenu-test-selection/1",
   "owner": "wenu_kernel",
-  "slice": "KG.04 existing projected clipping, three projections and domain/latitude/cap topology; legacy aliases; appearance policies remain outside kernel.",
-  "accepted_base": "59a4f2f961a67eca74ad8e5f1afbf8f3978b87a1",
+  "slice": "KG.07 G06.C1: shared point-batch missing-coordinate handling, unchanged strict numerical domains, canonical/legacy and installed output compatibility.",
+  "accepted_base": "9e71ab49ce7cc51410428ca79a5c43bd5d293f2f",
   "runtime_dependencies": [],
   "required": [
     "python -m unittest discover -s packages/wenu_kernel/tests -v",
     "isolated built-wheel install and same unittest gate without root Wenu installed",
-    "affected existing documentation/inventory pytest gate"
+    "affected existing documentation/inventory pytest gate",
+    "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python tools/run_test_gate.py kernel-point-projection --run"
   ],
   "protected_faults": [
     "loss of small JD fraction or implicit time-scale relabelling",
@@ -59,36 +60,53 @@
     "projection, clipping or cap service imports Wenu products/renderer despite canonical namespace",
     "legacy projection classes or preparation function aliases diverge",
     "cap clipping happens after unsafe projection or hole/seam metadata loses identity",
-    "marker sizing, label policy or culling margin is moved into mathematical domain services"
+    "marker sizing, label policy or culling margin is moved into mathematical domain services",
+    "missing point coordinate reaches strict numerical operation and aborts valid rows",
+    "missing rows are dropped or lose entity identity/metadata",
+    "missing row hides another finite invalid latitude/opposite-pole coordinate",
+    "point-batch repair changes surviving finite stereographic results or source arrays"
   ],
   "legacy_tests_moved_or_removed": [],
   "affected_consumers": [
-    "Canonical projection/clipping/domain service numerical consumers and independent wheel imports",
-    "Legacy Wenu projection/clipping/preparation facades; regional/full/polar/contour/label/saved consumers"
+    "Shared stereographic/equidistant point batches and legacy projection facades",
+    "Real cold/restored north/south polar PNG/PDF/SVG and native atlas page",
+    "Independent corrected kernel wheel and immutable root pin wheel/sdist/editable installs"
   ],
   "excluded": {
-    "later acceptance": "KG.05 broader service integration and KG.06/KG.07 completed-K audit/corrections remain pending.",
+    "later acceptance": "KG.07 complete Mac acceptance pending; K3.16 and existing K3/K5 partial obligations remain separate.",
     "scientific scope": "No new math algorithms, observation science, source bytes, snapshot format, graphics or publication policy change."
   },
   "collection_change": "none; root pytest remains scoped to tests and the kernel retains its explicit independent gate",
   "verification": {
     "source_digest_algorithm": "SHA-256 over sorted repository path + NUL + exact file bytes + NUL for every Python file in the named directory",
-    "source_sha256": "b611029bce48892692bfe3f1da880121c09bc350a6614341dc678486568e8bb6",
+    "source_sha256": "1ce1ea99d7f84e560ffd37e219382ebfba1fb5683412bd6383e466c36b5ee181",
     "tests_sha256": "cc7fc798d4524717372e39caf8fcf3c531dc8efcdda31fb8a05f1acb490cf06a",
     "source_unittest_cases": 205,
-    "source_seconds": 0.466,
+    "source_seconds": 1.471,
     "installed_base_collected_cases": 205,
     "installed_base_passed_cases": 204,
     "installed_base_skips": 1,
-    "installed_base_skip_reason": "NumPy deliberately unavailable; optional numerical service tested separately.",
-    "installed_geometry": "Built dev10 wheel imports and executes all-three projections, projected clipping and cap service with Wenu/science/graphics imports blocked.",
-    "initial_owner_checks": "97 existing numerical/contour/preparation cases passed; 2 canonical-legacy/installed seam cases passed.",
+    "installed_base_skip_reason": "NumPy deliberately unavailable; corrected numerical geometry tested separately in isolated wheel consumer.",
+    "installed_geometry": "Actual dev11 wheel executes mixed point batches for both poles and strict direct validation with Wenu/backend/render imports blocked.",
+    "focused_unique_passed": 102,
+    "focused_blocked": 1,
+    "blocked_reason": "Local de440s.bsp absent; existing LMC example fails normal JPL TLS download. Complete 103-case Mac gate retained.",
+    "real_polar_passed": 4,
+    "real_polar_expected_failures": 0,
     "mac_acceptance": "pending"
   },
   "existing_test_changes": [
     {
-      "node_ids": "packages/wenu_kernel/tests/test_isolation.py::IsolationTests.test_geometry_explicit_import_without_wenu_or_backends",
-      "change": "Extend existing numerical subprocess to all-three projections, viewport clipping and cap service. Base collection/import barriers retained."
+      "node_ids": "tests/test_projected_geometry_projection.py",
+      "change": "Add mixed/all-missing/empty/finite-invalid point-batch faults; ten failures before correction, all fourteen pass after."
+    },
+    {
+      "node_ids": "tests/test_reusable_canonical_sphere.py::test_kernel_geometry_polar_cold_saved_outputs",
+      "change": "Remove two strict xfail markers; require all four real polar outputs."
+    },
+    {
+      "node_ids": "tests/test_curated_catalogues.py",
+      "change": "Check dev11 metadata, corrected installed point batches, unchanged strict numerical refusal and final immutable root pin."
     }
   ],
   "optional_dependencies": {

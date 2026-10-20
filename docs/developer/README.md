@@ -73,7 +73,11 @@ are explicit; KG.06/KG.07 completed-K audit/corrections remain separate tasks.
 The [KG.06 per-deliverable audit](kernel_migration_audit_v1.md#kg06-completed-k-service-boundary-audit)
 now retains the accepted state/catalogue routes and identifies one demonstrated
 point-projection correction for KG.07. Known partial K3 obligations remain open;
-KG.06 changes documentation/evidence only.
+KG.06 changes documentation/evidence only and is accepted through PR #287.
+KG.07 now implements that single correction in kernel dev11: point batches
+retain missing-row slots while strict numerical operations receive finite
+coordinates. The real polar tests require both projections to pass without
+expected-failure markers; complete Mac acceptance is pending.
 Extra scope or changed agreed order must be discussed with Fernando,
 explicitly agreed and documented before implementation under the
 [mandatory agent rule](assistant_instructions.md#roadmap-control-mandatory-before-implementation).

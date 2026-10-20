@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 38, 2026-10-20. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 39, 2026-10-20. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -31,12 +31,11 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Accepted runtime baseline:** main
-`52c8315cd3bd58386c105f3edf05ee2354292796`, PR #286, tree identical to
-tested `eceda16d5f2695e56eddc94f26c7a5b4278a9933`. Mac acceptance: eight tooling,
-36 documentation and 15 composition cases passed; two strict expected failures
-retain G05-1. Fernando confirmed clean synchronized main and branch cleanup.
-KG.05 evidence is accepted with that disclosed finding, not full integration closure.
+**Accepted baseline:** main `9e71ab49ce7cc51410428ca79a5c43bd5d293f2f`,
+PR #287, tree identical to tested `ef7783d6f894a5e1f12bde51dac543e09b4b2b07`.
+KG.06 Mac documentation acceptance: 36 passed. Fernando confirmed clean synchronized
+main and branch cleanup. The audit retains earlier runtime receipts and identifies
+one demonstrated correction G06.C1 (G05-1); it does not close K3/K5.
 
 | Track | Position |
 |---|---|
@@ -44,8 +43,8 @@ KG.05 evidence is accepted with that disclosed finding, not full integration clo
 | Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
 | Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
 | Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
-| Current authorized task | KG.06 completed-K service-boundary audit; documentation/evidence only |
-| Next bounded submilestone | **KG.07**, after KG.06 acceptance and explicit selection: apply demonstrated correction G06.C1; no blanket redo. KG.07 still precedes K3.16 |
+| Current authorized task | KG.07 correction G06.C1: missing-coordinate shared point-batch dispatch; preserve strict numerical validation and accepted output |
+| Next bounded submilestone | **K3.16**, only after KG.07 acceptance and explicit selection: resume diffuse source metadata/geometry transport through established services |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -76,6 +75,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 39: select KG.07 correction | Fernando’s 2026-10-20 proceed after accepted PR #287 and clean main 9e71ab49 | Implement only G06.C1 at shared point projection; preserve source rows/IDs/metadata, strict numerical domains and finite formulas. Verify point batches, both real equidistant outputs without xfail, compatibility and isolated installed access; immutable corrected-kernel pin follows changed package bytes. No other G06.U item, new science or K3.16 activated |
 | Revision 38: select KG.06 audit | Fernando’s 2026-10-20 proceed after accepted PR #286 and clean main 52c8315c | Audit every completed K deliverable and relevant accepted AX composition against actual service/caller boundaries. Record retained evidence, corrections and unresolved scope. Documentation/read-only probes only; KG.07 runtime correction remains separate |
 | Revision 37: select KG.05 acceptance | Fernando’s 2026-10-20 proceed after accepted PR #285 and clean main 608bc91d | Compose existing services and verify isolated installed access plus real cold/restored atlas and polar PNG/PDF/SVG outputs. Reuse accepted numerical/packaging evidence; no production mathematics, dependency, source, schema or policy change. KG.06 remains separate |
 | Revision 36: select KG.04 implementation | Fernando’s 2026-10-19 proceed after accepted PR #284 and clean main 59a4f2f9, following explicit clipping/three-projection/domain-topology proposal | Move existing mathematics behind agreed kernel leaves and legacy aliases. Preserve all formulas, domain/cap/hole/seam semantics and numerical dependencies; keep marker sizing/culling margin, label and chart/render policy in Wenu. Verify isolated installed services and affected consumers; no new algorithm, source bytes, observation model or snapshot schema |
@@ -729,7 +729,8 @@ KG.03 is accepted through PR #284, main 59a4f2f9: 205 kernel, 8 tooling,
 36 documentation and 236 focused Mac cases passed. KG.04 is accepted through PR #285, main 608bc91d: 205 kernel, 8 tooling,
 36 documentation and 295 focused Mac cases. KG.05 evidence is accepted through PR #286, main 52c8315c: 15 composition,
 36 documentation and eight tooling Mac cases, with two disclosed expected failures.
-KG.06 is selected for audit; KG.07 remains pending. Select and accept one bounded task at a time.
+KG.06 is accepted through PR #287, main 9e71ab49, with 36 Mac documentation
+cases. KG.07 is selected for the single G06.C1 correction. Select and accept one bounded task at a time.
 
 | ID | Intermediate deliverable | Acceptance and dependency |
 |---|---|---|
@@ -738,8 +739,8 @@ KG.06 is selected for audit; KG.07 remains pending. Select and accept one bounde
 | KG.03 | Migrate existing spherical geometry and topology behind the agreed public kernel interfaces | Implemented for acceptance: kernel dev9 pure vocabulary, records/frame/viewport, explicit ring helper, optional geometry NumPy extra and same-class legacy facades; root pins kernel 6d630885. Accepted through PR #284, main 59a4f2f9: 205 kernel, 8 tooling, 36 docs and 236 focused Mac cases. Projection-specific topology/clipping is addressed separately in KG.04 |
 | KG.04 | Migrate mathematical domain guards, clipping, projections and projected geometry behind the agreed services | Implemented for acceptance: kernel dev10 geometry.clipping/domain and all-three projections; legacy aliases, unchanged AST bodies, installed isolated numerical consumers and explicit owner/consumer gate. Root pins ba591f15. Accepted through PR #285, main 608bc91d: 205 kernel, 8 tooling, 36 docs and 295 focused Mac cases; chart/render policy retained outside kernel |
 | KG.05 | Accept the composed geometry-service boundary and representative application integration | Accepted through PR #286 at main 52c8315c (15 composition passes, two strict expected failures, 36 documentation and eight tooling Mac passes); [evidence and G05-1 finding](kernel_migration_audit_v1.md#kg05-composed-geometry-acceptance) accepted with the disclosed gap. Stereographic polar and atlas outputs are checked; equidistant full-catalogue composition remains an explicit strict expected failure for KG.06/KG.07, not closed integration. KG.04 accepted. Demonstrate permitted imports and independent service testing without concrete catalogues/products/renderers; test installed service access where packaging changes. Verify representative cold/restored atlas and planisphere geometry and actual PNG/PDF/SVG outputs using closest existing owners. No graphics rewrite or full-suite repeat by default |
-| KG.06 | Audit all completed K deliveries against the established service boundary | [Per-deliverable audit](kernel_migration_audit_v1.md#kg06-completed-k-service-boundary-audit) delivered for acceptance at base 52c8315c. One demonstrated correction G06.C1 (G05-1) and explicit retained/open scopes; no blanket redo. KG.05 accepted. Record each completed K ID/PR, actual implementation/callers, dependency direction, appropriate state/geometry service use, and disposition: no change, concrete correction, or unresolved proposal. Cover accepted state/time/resource foundations, source/provider admission, migrated stellar/figure/label and deep-sky consumers, request/cache/restored paths. Review AX composition only where it affects those K seams; do not activate new AX science. Retain evidence only for claims it still supports |
-| KG.07 | Apply and accept the audit’s demonstrated corrections within existing K obligations | Pending KG.06 acceptance and explicit selection. Bounded candidate G06.C1: repair shared point-geometry finite-row dispatch, preserve strict scalar/domain validation, source membership/IDs/metadata and output compatibility, remove the two G05-1 expected-failure markers after real acceptance. See the audit’s correction contract and owner/gate map. No other runtime item is activated. KG.06 accepted is the prerequisite. Enumerate each correction, owner, affected public consumers and focused gate before editing. Preserve numerical/scientific behavior, identities, refusal/cache semantics, legacy APIs and atlas appearance. Rerun affected owner/seam/output checks; retain unaffected receipts. Explicitly close with no code change if the audit proves none necessary. Extra scope returns to change control |
+| KG.06 | Audit all completed K deliveries against the established service boundary | [Per-deliverable audit](kernel_migration_audit_v1.md#kg06-completed-k-service-boundary-audit) accepted through PR #287 at main 9e71ab49; 36 Mac documentation cases. One demonstrated correction G06.C1 (G05-1) and explicit retained/open scopes; no blanket redo. KG.05 accepted. Record each completed K ID/PR, actual implementation/callers, dependency direction, appropriate state/geometry service use, and disposition: no change, concrete correction, or unresolved proposal. Cover accepted state/time/resource foundations, source/provider admission, migrated stellar/figure/label and deep-sky consumers, request/cache/restored paths. Review AX composition only where it affects those K seams; do not activate new AX science. Retain evidence only for claims it still supports |
+| KG.07 | Apply and accept the audit’s demonstrated corrections within existing K obligations | Implemented for acceptance in kernel dev11, immutable pin f0a2e247. New point-batch regressions fail before the fix; all four real polar specimens now require success without xfail. Complete Mac acceptance pending. Selected following KG.06 acceptance. Bounded correction G06.C1: repair shared point-geometry finite-row dispatch, preserve strict scalar/domain validation, source membership/IDs/metadata and output compatibility, remove the two G05-1 expected-failure markers after real acceptance. See the audit’s correction contract and owner/gate map. No other runtime item is activated. KG.06 accepted is the prerequisite. Enumerate each correction, owner, affected public consumers and focused gate before editing. Preserve numerical/scientific behavior, identities, refusal/cache semantics, legacy APIs and atlas appearance. Rerun affected owner/seam/output checks; retain unaffected receipts. Explicitly close with no code change if the audit proves none necessary. Extra scope returns to change control |
 
 The audit is not a blanket redo, nor a presumption that earlier work needs no
 changes. KG.06 supplies evidence for that decision. KG.07 cannot conceal an

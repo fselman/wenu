@@ -1742,9 +1742,7 @@ def test_kernel_snr_routes_preserve_accepted_atlas_pixels(native_snapshot_case, 
 
 @pytest.mark.parametrize('projection_name', (
     'stereographic',
-    pytest.param('polar_azimuthal_equidistant', marks=pytest.mark.xfail(
-        strict=True, raises=ValueError,
-        reason='KG.05 finding G05-1: real stellar non-finite coordinates reach strict equidistant projection; audit/correction pending')),
+    'polar_azimuthal_equidistant',
 ))
 @pytest.mark.parametrize('pole', ('south', 'north'))
 def test_kernel_geometry_polar_cold_saved_outputs(native_snapshot_case, tmp_path, monkeypatch, pole, projection_name):
@@ -1812,16 +1810,10 @@ def test_kernel_geometry_polar_cold_saved_outputs(native_snapshot_case, tmp_path
             path = tmp_path / f'{pole}-{name}.{suffix}'
             figure, ax = plt.subplots()
             try:
-                try:
-                    exported = face.export(sky, MatplotlibRenderer(ax), path,
-                        composition=composition,
-                        realization_context=LayerRealizationContext(NATIVE_ICRS_SPEC),
-                        export_options=ExportOptions(dpi=36, bbox_inches=None, padding=0))
-                except ValueError as exc:
-                    # Only this diagnosed failure may use the strict marker.
-                    assert projection_name == 'polar_azimuthal_equidistant'
-                    assert str(exc) == 'longitude must be finite.'
-                    raise
+                exported = face.export(sky, MatplotlibRenderer(ax), path,
+                    composition=composition,
+                    realization_context=LayerRealizationContext(NATIVE_ICRS_SPEC),
+                    export_options=ExportOptions(dpi=36, bbox_inches=None, padding=0))
                 layers = exported.rendering.layers
                 assert layers and any(type(item.projected).__name__ == 'ProjectedPolygons' for item in layers)
                 if suffix not in baselines:

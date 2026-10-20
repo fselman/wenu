@@ -1749,7 +1749,7 @@
     },
     "kernel-geometry-composition": {
       "scope": "KG.05 composed public services, isolated installed access and representative real cold/restored atlas and stereographic polar PNG/PDF/SVG outputs.",
-      "limits": "Test/evidence only. Reuse accepted KG.03/KG.04 numerical, SDK and root packaging receipts. No production, dependency, source or schema change. Equidistant full-catalogue non-finite input finding remains explicit for KG.06/KG.07; this gate does not close that finding or K3/K5.",
+      "limits": "Retain accepted KG.05 receipt (15 passed, two disclosed expected failures). KG.07 corrects G05-1 in shared point-batch dispatch; its updated polar test now requires all four specimens to pass without expected-failure markers. No catalogue/source/schema or unrelated science change.",
       "selections": [
         {
           "node": "tests/test_spherical.py::test_kernel_geometry_aliases_preserve_identity_aliasing_and_pickle_paths",
@@ -1778,6 +1778,56 @@
         {
           "node": "tests/test_polar_page_rendering.py",
           "reason": "Real physical page, calendar and registration geometry/furniture."
+        }
+      ]
+    },
+    "kernel-point-projection": {
+      "scope": "KG.07 G06.C1 corrected missing-coordinate point-batch dispatch, strict numerical domains, both real polar projections, canonical/legacy and installed consumers.",
+      "limits": "Finite formulas, source membership/state admission, resource bytes, snapshot schema, observation and renderer policy unchanged. Reuse accepted provider/SDK science and KG.05 serial/spawn atlas evidence; no full production repeat. Kernel dev11/root immutable pin installation explicitly checked.",
+      "selections": [
+        {
+          "node": "tests/test_projected_geometry_projection.py",
+          "reason": "Mixed/all-missing/empty point slots, entity metadata/read-only inputs; finite invalid domains still refuse."
+        },
+        {
+          "node": "tests/test_projection_geometry.py",
+          "reason": "Existing vectorized points/curves/grid/polygon dispatch and attributes."
+        },
+        {
+          "node": "tests/test_projection_regression.py",
+          "reason": "Existing finite stereographic numerical compatibility."
+        },
+        {
+          "node": "tests/test_polar_azimuthal_equidistant_projection.py",
+          "reason": "Both poles, radial law, flip/angle/frame and strict direct invalid-domain refusal."
+        },
+        {
+          "node": "tests/test_projection_and_clipping_contracts.py",
+          "reason": "Public alias policy and domain/clip consumer composition, including existing real LMC example."
+        },
+        {
+          "node": "tests/test_spherical.py::test_kernel_geometry_aliases_preserve_identity_aliasing_and_pickle_paths",
+          "reason": "Unchanged canonical record identity and compatibility."
+        },
+        {
+          "node": "tests/test_stars.py::test_missing_native_positions_never_become_zero_direction_states",
+          "reason": "Missing source rows never become finite state vectors."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_kernel_geometry_polar_cold_saved_outputs",
+          "reason": "All four real cold/restored polar specimens must pass: exact PNGs, geometry and physical PDF/SVG; no xfail."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_label_kernel_route_preserves_cold_saved_anchors_and_page_pixels",
+          "reason": "Native atlas label/page pixels through corrected shared point projection."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_geometry_kernel_wheel_isolated_imports_metadata_and_numeric_consumer",
+          "reason": "Actual installed corrected mixed batch without Wenu/science/render dependencies; direct numerical refusal retained."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_override",
+          "reason": "Changed immutable geometry-extra pin works in wheel/sdist/editable root installs."
         }
       ]
     }

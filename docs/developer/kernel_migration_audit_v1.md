@@ -997,3 +997,59 @@ against the complete tree. The documentation gate has 33 local passes; its
 three archive/evidence checks require the complete Mac checkout. No SDK/provider
 numerical suite rerun is claimed. Complete Mac documentation acceptance remains
 pending on this audit branch.
+
+
+## KG.07 G06.C1 point-projection correction
+
+Selected on 2026-10-20 after accepted PR #287, main 9e71ab49 and clean Mac
+cleanup. This implements only the demonstrated G06.C1/G05-1 correction. G06.U1–U4
+remain with their existing K3 obligations; no new science, source qualification,
+schema, renderer/style policy or diffuse transport is activated.
+
+`StereographicProjection.project_points`, shared by the equidistant subclass,
+now preserves missing-coordinate rows as NaN projected slots and calls the same
+numerical operation for finite rows only. Entirely finite input retains the
+original call and operation order. The numerical equidistant guard itself is
+unchanged: direct missing/invalid numerical input and finite invalid latitude or
+opposite-pole geometry still refuse. Source IDs/names/labels/metadata and original
+read-only arrays remain intact; the stellar adapter still admits only finite
+rows as states. No source row is deleted and no zero vector is fabricated.
+
+The existing projected-geometry owner gains mixed, empty, all-missing and
+finite-invalid-domain regressions. On the old implementation ten cases failed
+and four passed; the failure was reproduced before changing the owner. The real
+north/south polar export test removes both expected-failure markers. It requires
+successful cold/restored outputs for both projections, including exact PNG
+pixels, source/projected records and physical PDF/SVG dimensions. The installed
+isolated numerical consumer also executes the corrected mixed batch and retains
+strict direct numerical refusal.
+
+Kernel dev11 is pinned by immutable commit `f0a2e247d9ed0061d256891fcf4962d1c41fd4f9`.
+The root distribution requests the same optional geometry extra. Changed kernel
+bytes justify isolated wheel and root wheel/sdist/editable verification; no new
+dependency or package is introduced. Numerical formulas, resource bytes,
+observation/correction ownership and native snapshot schema remain unchanged.
+Complete Mac acceptance is pending. The coordinate guide records the missing
+geometry/state distinction without changing scientific coordinate semantics.
+
+
+Local verification covers all 103 correction-gate cases through focused
+component executions: 102 unique cases passed; the unchanged LMC example is
+blocked by missing local de440s.bsp and standard JPL TLS download validation.
+The 102 include all four real polar specimens (452.72 s, no expected failures),
+18 finite/alias/native-atlas compatibility cases, 78 unit/domain/source-admission
+cases and both isolated-kernel/root-installation cases. A six-case followup also
+verifies that finite stereographic results exactly match the old full-batch
+numerical call with missing rows present. Only `project_points` differs in the
+projection method ASTs. All 205 source SDK and eight gate-tooling tests pass.
+Documentation has 33 local passes; three checks need archive/evidence files
+omitted from this cache. Present active anchors are checked separately against
+actual documents and missing destinations against the complete Git tree. North
+and south equidistant PNG specimens were visually inspected as render evidence,
+not a new print/style/classroom approval. Complete Mac gates remain pending.
+
+The built dev11 wheel also passed the complete isolated stdlib SDK gate: 204
+passed and one optional numerical test skipped with NumPy deliberately absent.
+The separate installed numerical consumer exercises the corrected service with
+NumPy present and application/backend/render imports blocked. The SDK selection
+manifest records current source/test digests and this bounded acceptance.
