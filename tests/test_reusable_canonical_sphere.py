@@ -4,6 +4,7 @@ from dataclasses import fields
 from datetime import datetime, timezone
 from types import SimpleNamespace
 
+import numpy as np
 import pytest
 
 from wenu import Observer, generate_celestial_sphere, get_chart_view
@@ -272,7 +273,9 @@ def _assert_native_geometry_equal(first, second):
             elif a.dtype.kind == "O":
                 assert a.shape == b.shape
                 for left, right in zip(a.flat, b.flat, strict=True):
-                    if isinstance(left, (float, np.floating)) and np.isnan(left):
+                    if np.ma.is_masked(left) or np.ma.is_masked(right):
+                        assert np.ma.is_masked(left) and np.ma.is_masked(right)
+                    elif isinstance(left, (float, np.floating)) and np.isnan(left):
                         assert isinstance(right, (float, np.floating)) and np.isnan(right)
                     else:
                         assert left == right
@@ -280,6 +283,28 @@ def _assert_native_geometry_equal(first, second):
                 np.testing.assert_array_equal(a, b)
         else:
             assert a == b
+
+
+@pytest.mark.parametrize('left,right,equal', (
+    (np.ma.masked, np.ma.masked, True),
+    (np.ma.masked, 1.0, False),
+    (1.0, np.ma.masked, False),
+    (1.0, 2.0, False),
+    (np.nan, np.nan, True),
+    (1.0, 1.0, True),
+))
+def test_native_snapshot_geometry_comparison_preserves_object_masks(left, right, equal):
+    from wenu.geometry.spherical import SphericalPoints
+    from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+    def geometry(value):
+        return SphericalPoints(lon_deg=[1.0], lat_deg=[2.0],
+            coordinate_spec=GENERIC_SPHERICAL_SPEC,
+            metadata={'measurement': np.array([value], dtype=object)})
+    if equal:
+        _assert_native_geometry_equal(geometry(left), geometry(right))
+    else:
+        with pytest.raises(AssertionError):
+            _assert_native_geometry_equal(geometry(left), geometry(right))
 
 
 def test_native_snapshot_matches_cold_full_sphere_and_layer_options(native_snapshot_case, monkeypatch):

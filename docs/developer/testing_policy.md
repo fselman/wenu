@@ -16,7 +16,14 @@ corruption, cold/restored/worker atlas PNG/PDF/SVG and both polar projections.
 Independent filled-side/pole/hole raster oracles remain in `test_isophotes.py`.
 Run the documentation gate and tooling tests too. The kernel code/pin is unchanged;
 reuse accepted KG numerical/isolation evidence rather than rerunning its SDK gate.
-Local focused seams pass 82 runtime cases and eight tooling cases. The 31 available documentation cases pass; full checkout asset/archive integrity remains for the complete Mac documentation gate. Implementation acceptance remains pending the Mac receipt.
+Local focused seams pass 82 runtime cases and eight tooling cases. The 31 available documentation cases pass; full checkout asset/archive integrity remains for the complete Mac documentation gate. The first complete Mac receipt at `61ceca37` passed 36 documentation,
+eight tooling and 81 runtime cases; one whole-sphere equality assertion failed
+because NumPy masked scalars do not Boolean-compare equal. The test helper now
+compares mask status before ordinary value/NaN equality. Retry only
+`diffuse-snapshot-comparison-retry` (six comparison contract cases and the failed
+whole-sphere case); retain the other accepted Mac evidence. Production code,
+source data and v6 transport are unchanged by this test repair. K3.16 acceptance
+remains pending that retry.
 
 ## Shared-service kernel boundary checks
 

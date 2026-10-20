@@ -1870,6 +1870,24 @@
         {
           "node": "tests/test_reusable_canonical_sphere.py::test_kernel_geometry_polar_cold_saved_outputs",
           "reason": "Both poles and projections, actual diffuse PNG/PDF/SVG output."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_geometry_comparison_preserves_object_masks",
+          "reason": "Object metadata compares mask status explicitly, refusing lost masks or changed ordinary values."
+        }
+      ]
+    },
+    "diffuse-snapshot-comparison-retry": {
+      "scope": "K3.16 test-helper repair after Mac 81 runtime passes and one masked-scalar comparison failure.",
+      "limits": "Test/gate/documentation only. Retain accepted Mac atlas/polar/fresh-process/legacy/source evidence; no production, dependency, resource, SDK or snapshot-format change, and no parent gate repeat.",
+      "selections": [
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_geometry_comparison_preserves_object_masks",
+          "reason": "Six cases accept equal masks/NaNs/values and refuse mask loss in either direction or changed values."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_native_snapshot_matches_cold_full_sphere_and_layer_options",
+          "reason": "Rerun the single failed full-sphere cold/restored comparison with original loaders disabled."
         }
       ]
     }

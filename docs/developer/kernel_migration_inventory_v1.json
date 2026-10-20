@@ -11636,6 +11636,28 @@
       "src/wenu/sky/milky_way.py": "36caff81aa2c5f7667da6b994ab868a947957147",
       "src/wenu/sky/magellanic_clouds.py": "c04b77a3ad96a1cb9d4fdfcf68770806886af029",
       "src/wenu/sky/native_snapshot.py": "89fcb2d7dc8231fcb851b715a886c31e0153e507"
+    },
+    "mac_receipt": {
+      "tested_commit": "61ceca37dd086e0630351f1f404cfc2e10fb0551",
+      "tooling_passed": 8,
+      "tooling_seconds": 6.664,
+      "documentation_passed": 36,
+      "documentation_seconds": 4.05,
+      "runtime_passed": 81,
+      "runtime_failed": 1,
+      "runtime_seconds": 495.31,
+      "failure": "Existing comparison helper evaluates masked == masked as a Boolean assertion for open-cluster object metadata; masks compare by missingness, not numeric equality.",
+      "retry_gate": "diffuse-snapshot-comparison-retry",
+      "retained_evidence": "Atlas/polar PNG/PDF/SVG, fresh processes, legacy admission, corruption and diffuse source/codec paths passed. Repair touches only comparison tests/gates/docs."
+    },
+    "comparison_helper_repair": {
+      "production_changed": false,
+      "helper": "tests/test_reusable_canonical_sphere.py::_assert_native_geometry_equal",
+      "rule": "Object metadata compares both mask statuses before ordinary value and NaN equality. Matching masks pass; mask loss in either direction or changed ordinary values refuses.",
+      "regression_cases": 6,
+      "local_affected_whole_sphere_passed": 1,
+      "fault_proof": "Original helper reproduces masked == masked failure on synthetic object metadata; corrected helper accepts matching masks.",
+      "mac_retry_gate": "diffuse-snapshot-comparison-retry"
     }
   }
 }
