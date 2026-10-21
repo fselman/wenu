@@ -423,6 +423,17 @@ Preserve immutable digest-bound OMM/TLE snapshots, SGP4/WGS-72 and split-JD
 evaluation, geometric TEME versus Earth-fixed/topocentric states, EOP policy,
 and independent Vallado/topocentric numerical evidence.
 
+Scalar and array propagation use existing Cartesian kernel transport for returned
+geocentric TEME PV. The original split UTC JD remains the SGP4 time argument;
+explicit installed-leap TAI labels serve only SDK identity/admission. Exact
+finite request coverage is not orbital prediction validity. Complete supplied
+record identity, optional snapshot receipt and original element epoch/age remain
+explicit; uncertainty/covariance is not evaluated, not zero. No temporal reuse
+certificate, freshness cutoff, frame relabelling or new physical model is added.
+The original nonzero SGP4 status API and the existing EOP/observer/refraction
+refusals remain authoritative. Direct constructed records/states retain their
+legacy meaning without new captured-source qualification.
+
 Sampled SatChecker candidates are not exact local connected visits. A
 conservative selector cannot discard an exact crossing; fallbacks and
 completeness claims must retain their accepted bounded domains. A zero-crossing

@@ -2674,6 +2674,40 @@
           "reason": "Existing fixture-bound Encke/161P SPKs and DE440s: raw Sun chain versus adapted fallback, retained PV/direction/angle and public consumers."
         }
       ]
+    },
+    "satellite-state-routing": {
+      "scope": "K3.31 immutable satellite snapshots/elements, scalar/array geometric TEME Cartesian transport and existing Earth-fixed/topocentric observer services.",
+      "limits": "Retain Vallado WGS-72/split-UTC-JD calculations, full NORAD and source/snapshot identity, ordered duplicate samples, source epoch/age and original SGP4 status errors. Explicit installed-leap TAI labels only at the existing SDK boundary; finite exact requests, no invented prediction validity or reuse/uncertainty certificate. Existing Astropy/EOP observer mathematics remains unchanged. No SDK, dependency, module/package, source bytes, acquisition policy, schema or renderer change. The one retained installed-snapshot scan protects state/observer assembly; it does not close K3.33 crossing completeness. K3.32 onward remain separate.",
+      "selections": [
+        {
+          "node": "tests/test_satellite_elements.py",
+          "reason": "Canonical immutable snapshot/record semantics, full identifiers, digest corruption, local directory validation and provenance."
+        },
+        {
+          "node": "tests/test_satellite_sgp4.py",
+          "reason": "Independent pinned Vallado near/deep-space vectors, original status errors, scalar/accelerated fallback and order/duplicates, returned SI states/refusal, full record/snapshot/time identity."
+        },
+        {
+          "node": "tests/test_satellite_topocentric.py",
+          "reason": "Independent Skyfield/Astropy observer chains, ITRS/GCRS-axis/AltAz conventions, returned kernel PV consumption and EOP policy/coverage/refusal."
+        },
+        {
+          "node": "tests/test_satellite_snapshot_admission.py",
+          "reason": "Retain explicit external snapshot admission, exact token identity and atomic failure before evaluation."
+        },
+        {
+          "node": "tests/test_satellite_snapshot_evidence.py",
+          "reason": "Validated offline selection and evidence identities remain records outside positional queries; all inputs explicitly synthetic."
+        },
+        {
+          "node": "tests/test_satellite_snapshot_acquisition.py",
+          "reason": "Retained acquisition/preflight/cache/publication boundaries with injected fake transports; no network or policy change."
+        },
+        {
+          "node": "tests/test_satellite_crossing_oracle.py::test_installed_snapshot_scan_is_complete_ordered_and_provenanced",
+          "reason": "One existing end-to-end public assembly sentinel for installed snapshot -> SGP4 -> observer services; retain K3.33 completeness obligations separately."
+        }
+      ]
     }
   },
   "consumer_review": [

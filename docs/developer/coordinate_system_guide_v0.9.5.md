@@ -278,8 +278,17 @@ Artificial-satellite providers may produce TEME states from SGP4. TEME is not
 ICRS and must never be relabelled as ordinary equatorial coordinates. A
 satellite path requires explicit TEME-to-Earth-fixed/celestial transformation,
 UT1 and polar-motion information where required, and a topocentric observer
-step. Architecture 0.9.5 reserves this through `CoordinateSpec`; it does not
-implement satellite propagation.
+step. The existing satellite services implement SGP4 geometric TEME and the
+admitted Astropy/EOP chain through ITRS and observer subtraction. They retain
+vacuum AltAz and explicitly labelled topocentric GCRS-axis directions.
+
+The SGP4 owner now transports returned PV through the existing Cartesian SDK
+with an explicit Earth-centred TEME reference, not the ICRF-only ephemeris
+adapter. The original split UTC JD remains the numerical input. Installed-leap
+UTC-to-TAI conversion supplies SDK labels only, with its resource identity;
+it is not a change of SGP4 time convention. Exact finite request admission
+adds no orbital validity or uncertainty certificate. Source epoch, evaluation
+time, element age, EOP evidence and observer site retain their distinct roles.
 
 <a id="27-equinox-applicability-by-system-and-frame"></a>
 

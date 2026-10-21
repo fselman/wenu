@@ -465,3 +465,49 @@ def test_field_center_altitude_uses_governed_gcrs_axis_rotation():
     assert evidence.source_sha256 == sha256(
         Path(IERS_A_FILE).read_bytes()
     ).hexdigest()
+
+
+def test_observer_services_consume_returned_kernel_teme_and_recheck_eop(monkeypatch):
+    """Returned geocentric PV must reach both existing observer services."""
+    from wenu.satellites.topocentric import SatelliteGeocentricItrsTransformer
+    import wenu.satellites.topocentric as module
+    from wenu_kernel.kernel import KernelSession
+    from wenu_kernel.errors import UnsupportedCapability
+    owner = Sgp4TemePropagator(vanguard_record())
+    epoch = owner.record.epoch_utc
+    state = owner.propagate(epoch)
+    transform = SatelliteTopocentricTransformer()
+    before = transform.transform(state, observer())
+    original = KernelSession.evaluate
+    calls = []
+    def moved(session, query):
+        calls.append(query)
+        batch = original(session, query)
+        return replace(batch, states=tuple(replace(row,
+            position_m=tuple(value + offset for value, offset in zip(row.position_m, (50000., -20000., 10000.))),
+            velocity_m_s=tuple(value + offset for value, offset in zip(row.velocity_m_s, (10., -20., 30.)))) for row in batch.states))
+    monkeypatch.setattr(KernelSession, 'evaluate', moved)
+    changed = owner.propagate(epoch)
+    assert calls, 'the propagator bypassed kernel admission'
+    actual = transform.transform(changed, observer())
+    expected_state = replace(state,
+        position_km=tuple(value + offset for value, offset in zip(state.position_km, (50., -20., 10.))),
+        velocity_km_per_s=tuple(value + offset for value, offset in zip(state.velocity_km_per_s, (.01, -.02, .03))))
+    expected = transform.transform(expected_state, observer())
+    for name in ('range_km', 'azimuth_deg', 'altitude_deg', 'gcrs_axis_longitude_deg', 'gcrs_axis_latitude_deg'):
+        assert getattr(actual, name) == pytest.approx(getattr(expected, name), abs=1e-9)
+    assert abs(actual.range_km - before.range_km) > 1.
+    geocentric = SatelliteGeocentricItrsTransformer().transform(changed)
+    assert geocentric.satellite_itrs_position_km == pytest.approx(actual.satellite_itrs_position_km, abs=1e-9)
+    assert geocentric.satellite_itrs_velocity_km_per_s == pytest.approx(actual.satellite_itrs_velocity_km_per_s, abs=1e-12)
+    assert actual.earth_orientation == before.earth_orientation
+    def refused(*args, **kwargs):
+        raise UnsupportedCapability('satellite state refused')
+    monkeypatch.setattr(KernelSession, 'evaluate', refused)
+    with pytest.raises(UnsupportedCapability, match='satellite state refused'):
+        transform.transform(owner.propagate(epoch), observer())
+    def unavailable(time):
+        raise SatelliteEarthOrientationError('changed EOP is unavailable')
+    monkeypatch.setattr(module, '_earth_orientation', unavailable)
+    with pytest.raises(SatelliteEarthOrientationError, match='changed EOP'):
+        transform.transform(changed, observer())
