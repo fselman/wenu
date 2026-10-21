@@ -1070,37 +1070,37 @@
     },
     {
       "path": "src/wenu/example_scripts/all_sky.py",
-      "git_blob_sha": "aef2057aac5f48dbfc9ce69ff75fb94eddcdbb9f",
+      "git_blob_sha": "31a361cce16543f971e11c13ecdbb7046f2a973b",
       "as_is_directory": "src/wenu/example_scripts",
       "description": "Generate the canonical Galactic Mollweide all-sky map."
     },
     {
       "path": "src/wenu/example_scripts/binocular_object.py",
-      "git_blob_sha": "87c2dbdb7be5130dd5f74af90007b8515c9690e7",
+      "git_blob_sha": "d5b4b9bccc40a7f076cb874fd3cc6bd1e3b7de40",
       "as_is_directory": "src/wenu/example_scripts",
       "description": "Generate a binocular chart centered on any packaged object."
     },
     {
       "path": "src/wenu/example_scripts/circumpolar.py",
-      "git_blob_sha": "a3d644bed23f7aa8acbdad694b0d77a2cc0661dc",
+      "git_blob_sha": "f9256dcd1f813412b203a07c1e3f5fd3da4593bf",
       "as_is_directory": "src/wenu/example_scripts",
       "description": "Generate the canonical southern circumpolar chart."
     },
     {
       "path": "src/wenu/example_scripts/planisphere.py",
-      "git_blob_sha": "34d7f3e95e6fbb8ca0471e042c5c90d6e6e3ba39",
+      "git_blob_sha": "d5cccd332337e561a3ae4bccb1090007087977b8",
       "as_is_directory": "src/wenu/example_scripts",
       "description": "Generate the canonical visible-sky planisphere for La Ligua."
     },
     {
       "path": "src/wenu/example_scripts/regional_constellation.py",
-      "git_blob_sha": "8df592058c912c6075c942ea5252270419e542d8",
+      "git_blob_sha": "9a42d112d35473d66144d806e615328829056f0d",
       "as_is_directory": "src/wenu/example_scripts",
       "description": "Generate a regional chart for one IAU constellation."
     },
     {
       "path": "src/wenu/example_scripts/regional_constellation_group.py",
-      "git_blob_sha": "7f1fa0539512e5a08708ef631942e81ac9365bf5",
+      "git_blob_sha": "e8fcb446d80891ca49792e6b1ae4cf89cbf11271",
       "as_is_directory": "src/wenu/example_scripts",
       "description": "Generate a regional chart for an arbitrary constellation group."
     },
@@ -12685,7 +12685,7 @@
       "wrong same-length CSV reaches parser without digest admission"
     ],
     "receipt_reuse": "Accepted external TSIS source/native integral at d1edeb46 runtime 8e930db2; unchanged parser/math/byte facts. K3.35 Sun/EOP/SDK science retained. New installed metadata test required.",
-    "limits": "Complete Mac acceptance pending. No current source permission, redistribution, acquisition, source edition/physics, SDK/dependency/build-rule/science-record-schema/renderer or paused/consumed execution change. Coordinate meanings unchanged. M8 does not close other findings or K3/K5; K3.37 onward separate.",
+    "limits": "Accepted through PR #309; clean main and cleanup confirmed. No current source permission, redistribution, acquisition, source edition/physics, SDK/dependency/build-rule/science-record-schema/renderer or paused/consumed execution change. Coordinate meanings unchanged. M8 does not close other findings or K3/K5; K3.37 onward separate.",
     "local_receipt": {
       "focused_cases": 61,
       "focused_seconds": 32.16,
@@ -12698,6 +12698,74 @@
       "complete_mac_acceptance": "pending",
       "documentation_seconds": 1.39,
       "tooling_seconds": 5.99
+    },
+    "mac_receipt": {
+      "tested_commit": "ddc1a16685da585d7c8681250acedf038b477247",
+      "merged_commit": "fc535c3b525e5a657e9f64845e2d1551e394b142",
+      "focused_cases": 61,
+      "focused_seconds": 74.02,
+      "documentation_cases": 36,
+      "documentation_seconds": 4.75,
+      "tooling_cases": 8,
+      "tooling_seconds": 12.61,
+      "clean_main_and_cleanup": "confirmed by Fernando"
     }
+  },
+  "public_surface_routing": {
+    "milestone": "K3.37",
+    "base_commit": "fc535c3b525e5a657e9f64845e2d1551e394b142",
+    "plan_commit": "3907a83e7a7044dada79dba4c6ebf343e2609c94",
+    "gate": "public-surface-routing",
+    "source_blobs": {
+      "examples/all_sky.py": "31a361cce16543f971e11c13ecdbb7046f2a973b",
+      "examples/binocular_object.py": "d5b4b9bccc40a7f076cb874fd3cc6bd1e3b7de40",
+      "examples/circumpolar.py": "f9256dcd1f813412b203a07c1e3f5fd3da4593bf",
+      "examples/planisphere.py": "d5cccd332337e561a3ae4bccb1090007087977b8",
+      "examples/regional_constellation.py": "9a42d112d35473d66144d806e615328829056f0d",
+      "examples/regional_constellation_group.py": "e8fcb446d80891ca49792e6b1ae4cf89cbf11271",
+      "pyproject.toml": "aaa1d19a07afbaa96f9fde6bb3e08e8a041da510",
+      "src/wenu/example_scripts/all_sky.py": "31a361cce16543f971e11c13ecdbb7046f2a973b",
+      "src/wenu/example_scripts/binocular_object.py": "d5b4b9bccc40a7f076cb874fd3cc6bd1e3b7de40",
+      "src/wenu/example_scripts/circumpolar.py": "f9256dcd1f813412b203a07c1e3f5fd3da4593bf",
+      "src/wenu/example_scripts/planisphere.py": "d5cccd332337e561a3ae4bccb1090007087977b8",
+      "src/wenu/example_scripts/regional_constellation.py": "9a42d112d35473d66144d806e615328829056f0d",
+      "src/wenu/example_scripts/regional_constellation_group.py": "e8fcb446d80891ca49792e6b1ae4cf89cbf11271",
+      "src/wenu/notebooks/en/01_wenu_first_chart.ipynb": "2b482e4a3d5b53822114cecce1b149acd32bb07a",
+      "src/wenu/notebooks/en/02_wenu_planisphere_publication.ipynb": "f0ce65a560e13a299aff0a0d1b46d6a51dee2f48",
+      "src/wenu/notebooks/es/01_primera_carta_celeste.ipynb": "56b8f11678544915d68e7ad319b3c8af333550db",
+      "src/wenu/notebooks/es/01_wenu_first_chart.ipynb": "40d0e4774e875a6029eb2e87e6bee1dff961103b",
+      "src/wenu/notebooks/es/02_wenu_planisphere_publication.ipynb": "d5001ce2ed0b92473610733a242e3c5959b1a290"
+    },
+    "public_exports": 290,
+    "installed_commands": {
+      "wenu_chart": "wenu.cli.chart:main",
+      "wenu_design_atlas": "wenu.cli.atlas:design_main",
+      "wenu_plot_atlas": "wenu.cli.atlas:plot_main",
+      "wenu_create_atlas": "wenu.cli.atlas:create_main",
+      "wenu_retrieve_comets": "wenu.cli.comets:main",
+      "wenu_examples": "wenu.cli.examples:main",
+      "wenu_notebooks": "wenu.cli.notebooks:main",
+      "wenu_satellite_crossings": "wenu.cli.satellite_crossings:main"
+    },
+    "canonical_examples": 6,
+    "packaged_notebooks": 5,
+    "new_python_modules": [],
+    "disposition": "Retain existing public consumers; repair demonstrated teaching notebook retired APIs, explicit notebook resource delivery, and example observer failure ownership.",
+    "local_receipt": {
+      "focused_cases": 238,
+      "focused_seconds": 45.01,
+      "notebook_png_outputs": 5,
+      "installation": "sdist-to-wheel, generated scripts and installer operations passed without checkout/network",
+      "complete_mac_acceptance": "pending",
+      "deliberate_fault_experiments": 3,
+      "expected_fault_failures": 3,
+      "documentation_cases": 31,
+      "documentation_deselected": 5,
+      "documentation_seconds": 1.26,
+      "tooling_cases": 8,
+      "tooling_seconds": 7.095,
+      "normal_execution_ast": "All six original example ASTs unchanged after flattening cleanup guards; packaged copies byte-identical."
+    },
+    "limits": "No new numerical model, shared service, dependency, public API, source catalogue bytes, acquisition/schema/renderer algorithm or astronomical package extraction. Notebook canonical styling replaces obsolete direct rendering; no pixel parity. K3.38 and K3/K5 remain open."
   }
 }

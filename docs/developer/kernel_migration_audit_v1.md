@@ -495,13 +495,13 @@ need multiple eventual packages. Existing public names remain supported.
 | Atlas geometry, layouts and standalone index | `atlas_design.py`, `charts/atlas_index.py`; `test_atlas_design.py`, `test_atlas_cli.py` | Public chart contract below atlas; all registered layouts including hemispheres |
 | Atlas publication, reports, saved sky and workers | `charts/atlas_publication.py`, `sky/native_snapshot.py`; `test_atlas_cli.py` | Preserve frozen resources/coverage/design binding, chart numbering, physical sheets, PDF assembly and atomic failure cleanup |
 | Configuration overlays, preset resources and translations | `configuration/`, `resources.py`, `translations.py`; `test_configuration_user_overlay.py`, `test_configuration_runtime_closure.py`, `test_translations.py` | Keep schema/precedence, separate layout/index/style protocols and localized labels |
-| Canonical examples and installers | `example_scripts/`, `cli/examples.py`, `cli/notebooks.py`; `test_canonical_examples.py`, `test_example_installer.py` | Six examples, eight commands and five packaged notebooks remain release obligations; notebook installer lacks located direct test |
+| Canonical examples and installers | `example_scripts/`, `cli/examples.py`, `cli/notebooks.py`; `test_canonical_examples.py`, `test_example_installer.py` | K3.37 repairs retired notebook consumers and verifies direct notebook installer/package delivery; complete Mac acceptance pending |
 | Curation/acquisition, resource packaging and offline tools | `resources.py`, `src/curated_catalogue_packaging.py` (outside Wenu), `tools/`; `test_curated_catalogues.py`, `test_repository_sources.py`, `test_open_clusters.py` | Separate maintenance/build gates, exact resource identity and offline fixtures; do not automatically execute network tools |
 
 Full inventory prevents silent disappearance of small modules or operational
 scripts not individually named above. Not every maintenance script is an
 accepted public API or independently tested tool: classify each before changing
-it. Five packaged notebooks are inventoried; no direct notebook-installer test
+it. Five packaged notebooks were inventoried; at the baseline no direct notebook-installer test
 reference was located in the 239 Python test files. Treat that as a coverage
 review item, not proof that all notebook behavior fails or is untested indirectly.
 
@@ -1771,3 +1771,43 @@ SDK/dependencies, source CSV/SPK bytes, science-record schemas and renderer do
 not. Source map and satellite guide record ownership; coordinate meanings and
 the coordinate guide remain current. Complete Mac acceptance remains pending.
 M8 closure does not close other metadata findings, K3/K5, extraction or K3.37.
+
+## K3.37 public consumer assessment
+
+Base `fc535c3b` includes accepted K3.36/PR #309: 61 focused cases in 74.02 s,
+36 documentation cases in 4.75 s and eight tooling cases in 12.610 s. Fernando
+confirmed clean main/upstream equality and both branch deletions.
+
+As-is assessment found current command owners already compose accepted services:
+chart/view/request, atlas-sheet publication, comet records/acquisition boundary,
+satellite coordinator/report, and resource-only installers. No replacement
+command, SDK protocol or scientific pipeline is needed. Public exports,
+configuration/preset translation and generated labels remain unchanged.
+
+Demonstrated corrections inside K3.37:
+
+* All five notebooks fail on retired imports; they also contain retired direct
+  renderer/sky methods and debugging recipes. Migrate their teaching requests to
+  current public composition; preserve filenames/date/site/magnitude/reversal,
+  but explicitly retire manual artist layout rather than claim visual parity.
+* An sdist built with unmodified rules omits the notebooks. Explicit package-data
+  patterns deliver all five through sdist-to-wheel installation.
+* Six example view-preparation refusals leak owned observers. Close on failure;
+  keep successful returned-view ownership. Planisphere furniture and binocular
+  title setup also move inside existing cleanup guards. No request/math changes.
+
+Existing owner tests cover public aliases, six example/CLI view parity, immutable
+configuration/default/preset translation, precedence/isolation and labels. New
+tests execute every notebook cell with returned-value/refusal seams, direct
+installer bytes/skip/force and five actual canonical PNG exports using explicitly
+constructed catalogue/observer data. They establish composition, not new
+astronomical accuracy. An isolated installed process resolves all eight generated
+command helps, all exports, six installed examples and both installer operations;
+it cannot borrow the source checkout and prohibits network calls.
+
+Retain K3.19 application assembly, K3.20 ordinary chart, K3.21 atlas, K3.22–24
+polar/temporal, K3.29 comet, K3.31/33/34 satellite and K3.36 resource/science
+receipts for unchanged owners. Installed help is not a new full product or
+provider run. No acquisition, paused Moonlight or consumed external authority
+is executed. Coordinate meanings are unchanged; the coordinate guide remains
+current. K3.38 maintenance/acquisition/build consumers and K3/K5 remain open.

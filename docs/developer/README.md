@@ -314,5 +314,8 @@ through the existing Cartesian adapter, retaining the physical models. Accepted
 through PR #308 after 62 focused, 36 documentation and eight tooling Mac cases,
 including offline DE440s parity; clean main and cleanup confirmed.
 K3.36 now moves [TSIS resource facts into validated metadata](implementation_reference.md#solar-radiometry-resource-admission)
-while retaining radiometry calculations. Complete satellite-radiometry-routing
-Mac acceptance and K3/K5 closure remain pending.
+while retaining radiometry calculations. Accepted through PR #309 after 61 focused,
+36 documentation and eight tooling Mac cases; clean main and cleanup confirmed.
+K3.37 repairs [public teaching/installer consumers](implementation_reference.md#public-consumer-and-teaching-surfaces),
+with the [public-surface-routing gate](testing_policy.md#public-surface-routing-gate).
+Complete Mac acceptance and K3/K5 closure remain pending.

@@ -685,3 +685,19 @@ energy integration retain their algorithms and original tolerances. Missing or
 invalid packaged metadata fails rather than reconstructing embedded source
 facts. Public identity fields and constant values remain compatible. No
 redistribution permission or current source acquisition follows from this move.
+
+## Public consumer and teaching boundary
+
+K3.37 retains the existing public Python facade, eight command entry points,
+configuration schema/precedence and translations. The six canonical examples and
+their packaged copies still delegate to public sky/view/drawing services. They
+now close the owned observer when view preparation fails, as well as during
+product setup/drawing failures; no accepted example request changes.
+
+All five shipped notebooks had retired imports and low-level render calls.
+They now declare their existing La Ligua date, stereographic east-west reversal,
+magnitude limit and references through current atlas composition and canonical
+export. They do not reproduce the obsolete manual renderer's pixel layout.
+Notebook data are explicitly included in both source and wheel distributions.
+No astronomical calculation, shared service, dependency or public API changes.
+Complete Mac acceptance is pending; K3.38 and K3/K5 remain separate.

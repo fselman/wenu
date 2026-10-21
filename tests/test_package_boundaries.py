@@ -241,3 +241,17 @@ def test_intentional_top_level_exports_are_available():
     assert set(PUBLIC_EXPORTS) <= set(wenu.__all__)
     for name in PUBLIC_EXPORTS:
         assert getattr(wenu, name) is not None
+
+
+def test_all_declared_public_exports_resolve_and_geometry_aliases_keep_identity():
+    """Public facade compatibility; no new eager exports are introduced."""
+    from wenu_kernel.geometry.frame import SphericalCoordinates, SphericalFrame
+    from wenu_kernel.geometry.projected import ProjectedPoint
+    from wenu_kernel.projections.stereographic import StereographicProjection
+    assert len(wenu.__all__) == len(set(wenu.__all__))
+    for name in wenu.__all__:
+        assert getattr(wenu, name) is not None, name
+    assert wenu.SphericalCoordinates is SphericalCoordinates
+    assert wenu.SphericalFrame is SphericalFrame
+    assert wenu.ProjectedPoint is ProjectedPoint
+    assert wenu.StereographicProjection is StereographicProjection

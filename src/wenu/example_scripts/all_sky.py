@@ -19,14 +19,18 @@ def chart_view(arguments, *, sky=None):
     configuration = chart_configuration(arguments)
     sky = generate_celestial_sphere() if sky is None else sky
     observer = Observer(location="La Ligua", time=LOCAL_TIME)
-    mask = tuple(
-        name for group in arguments.constellation_mask for name in group
-    ) or None
-    return get_chart_view(
-        sky, observer, family="all_sky", projection="mollweide",
-        coordinate_frame="galactic", position_angle_deg=0.0,
-        constellation_mask=mask, configuration=configuration,
-    )
+    try:
+        mask = tuple(
+            name for group in arguments.constellation_mask for name in group
+        ) or None
+        return get_chart_view(
+            sky, observer, family="all_sky", projection="mollweide",
+            coordinate_frame="galactic", position_angle_deg=0.0,
+            constellation_mask=mask, configuration=configuration,
+        )
+    except BaseException:
+        observer.close()
+        raise
 
 
 def generate(arguments):

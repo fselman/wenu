@@ -21,24 +21,28 @@ def chart_view(arguments, *, sky=None):
     configuration = chart_configuration(arguments)
     sky = generate_celestial_sphere() if sky is None else sky
     observer = Observer(location="La Ligua", time=LOCAL_TIME)
-    center = resolve_named_center(arguments.center_on)
-    if not center.is_constellation:
-        raise ValueError("This example requires a constellation center.")
-    mask = tuple(
-        name for group in arguments.constellation_mask for name in group
-    ) or None
-    orientation = arguments.orientation or (
-        None if arguments.position_angle is not None else "celestial-north-up")
-    return get_chart_view(
-        sky, observer, family="regional",
-        constellations=center.value.constellations,
-        field_width_deg=arguments.field_width,
-        field_height_deg=arguments.field_height,
-        orientation=orientation,
-        position_angle_deg=arguments.position_angle,
-        projection="stereographic",
-        constellation_mask=mask, configuration=configuration,
-    )
+    try:
+        center = resolve_named_center(arguments.center_on)
+        if not center.is_constellation:
+            raise ValueError("This example requires a constellation center.")
+        mask = tuple(
+            name for group in arguments.constellation_mask for name in group
+        ) or None
+        orientation = arguments.orientation or (
+            None if arguments.position_angle is not None else "celestial-north-up")
+        return get_chart_view(
+            sky, observer, family="regional",
+            constellations=center.value.constellations,
+            field_width_deg=arguments.field_width,
+            field_height_deg=arguments.field_height,
+            orientation=orientation,
+            position_angle_deg=arguments.position_angle,
+            projection="stereographic",
+            constellation_mask=mask, configuration=configuration,
+        )
+    except BaseException:
+        observer.close()
+        raise
 
 
 def generate(arguments):
@@ -54,7 +58,6 @@ def generate(arguments):
         return tuple(result.output for result in results)
     finally:
         view.observer.close()
-
 
 def parser():
     value = add_chart_cli_arguments(argparse.ArgumentParser(description=__doc__),

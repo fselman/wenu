@@ -715,3 +715,100 @@ else:raise AssertionError('missing external spectrum admitted')
     refused = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True)
     assert refused.returncode != 0 and "solar_spectral_resource_tsis1_hsrs_v2.json" in refused.stderr
     assert "FileNotFoundError" in refused.stderr
+
+
+def test_public_commands_teaching_and_configuration_ship_without_checkout(tmp_path):
+    """Build from the sdist; run generated scripts with checkout access absent."""
+    import tarfile
+    import tomllib
+    from zipfile import ZipFile
+    import wenu_kernel
+    project = tmp_path / "project"
+    project.mkdir()
+    shutil.copytree(ROOT / "src/wenu", project / "src/wenu",
+                    ignore=shutil.ignore_patterns("__pycache__", "curated_catalogs", "observing_lists"))
+    for name in ("pyproject.toml", "MANIFEST.in", "README.md"):
+        shutil.copyfile(ROOT / name, project / name)
+    shutil.copyfile(ROOT / "src/curated_catalogue_packaging.py", project / "src/curated_catalogue_packaging.py")
+    for domain in ("open_clusters", "planetary_nebulae"):
+        _bundle(project / "src/wenu/data/curated_catalogs", domain)
+    release = tmp_path / "release"
+    release.mkdir()
+    result = subprocess.run([sys.executable, "-c", "from setuptools.build_meta import build_sdist; build_sdist("+repr(str(release))+")"],
+                            cwd=project, capture_output=True, text=True)
+    assert result.returncode == 0, result.stdout + result.stderr
+    resources = {}
+    for pattern in ("notebooks/**/*.ipynb", "example_scripts/*.py", "configuration/defaults.toml",
+                    "configuration/presets/*.toml", "configuration/presets/*.json", "data/translations.json"):
+        resources.update({str(p.relative_to(ROOT / "src")): p.read_bytes()
+                          for p in (ROOT / "src/wenu").glob(pattern)})
+    assert len([p for p in resources if p.endswith(".ipynb")]) == 5
+    assert len([p for p in resources if p.endswith(".py") and not p.endswith("__init__.py")]) == 6
+    with tarfile.open(next(release.glob("*.tar.gz"))) as archive:
+        members = {m.name.split("/src/", 1)[1]: m for m in archive.getmembers() if "/src/" in m.name}
+        for path, payload in resources.items():
+            assert path in members, f"sdist omits {path}"
+            assert archive.extractfile(members[path]).read() == payload
+    wheel_build = subprocess.run([sys.executable, "-m", "pip", "wheel", "--no-index", "--no-deps", "--no-build-isolation",
+                                 "--wheel-dir", str(release), str(next(release.glob("*.tar.gz")))],
+                                cwd=tmp_path, capture_output=True, text=True)
+    assert wheel_build.returncode == 0, wheel_build.stdout + wheel_build.stderr
+    wheel = next(release.glob("*.whl"))
+    with ZipFile(wheel) as archive:
+        for path, payload in resources.items():
+            assert archive.read(path) == payload
+    installed = tmp_path / "installed"
+    result = subprocess.run([sys.executable, "-m", "pip", "install", "--no-index", "--no-deps", "--target", str(installed), str(wheel)],
+                            cwd=tmp_path, capture_output=True, text=True)
+    assert result.returncode == 0, result.stdout + result.stderr
+    # The test does not execute acquisition commands beyond --help.
+    script = r'''
+import sys,json,runpy,socket,os
+from pathlib import Path
+sys.path[:0]=[sys.argv[1],sys.argv[2],*json.loads(sys.argv[3])]
+installed=Path(sys.argv[1]); destination=Path(sys.argv[4])
+expected=json.loads(sys.argv[5])
+import wenu
+assert Path(wenu.__file__).is_relative_to(installed)
+for name in wenu.__all__: assert getattr(wenu,name) is not None,name
+from importlib.metadata import distribution
+entries={e.name:e.value for e in distribution('wenu').entry_points if e.group=='console_scripts'}
+assert entries==expected
+def no_network(*args,**kwargs):raise AssertionError('public smoke attempted network')
+socket.create_connection=no_network;socket.socket.connect=no_network
+for name in expected:
+    sys.argv=[name,'--help']
+    try:runpy.run_path(str(installed/'bin'/name),run_name='__main__')
+    except SystemExit as exc:assert exc.code==0,(name,exc.code)
+    else:raise AssertionError('help did not exit: '+name)
+destination.mkdir();os.chdir(destination)
+for name,args in [('wenu_examples',[]),('wenu_notebooks',['notebooks'])]:
+    for options in (args,args,[*args,'--force']):
+        sys.argv=[name,*options]
+        try:runpy.run_path(str(installed/'bin'/name),run_name='__main__')
+        except SystemExit as exc:assert exc.code==0
+from importlib.resources import files
+for path in (installed/'wenu/example_scripts').glob('*.py'):
+    if path.name!='__init__.py':
+        assert (destination/'wenu_examples'/path.name).read_bytes()==path.read_bytes()
+        sys.argv=[str(path),'--help']
+        try:runpy.run_path(str(destination/'wenu_examples'/path.name),run_name='__main__')
+        except SystemExit as exc:assert exc.code==0
+for path in (installed/'wenu/notebooks').rglob('*.ipynb'):
+    copied=destination/'notebooks'/path.relative_to(installed/'wenu/notebooks')
+    assert copied.read_bytes()==path.read_bytes()
+    for cell in json.loads(copied.read_text())['cells']:
+        if cell['cell_type']=='code':compile(''.join(cell['source']),str(copied),'exec')
+from wenu.configuration import load_packaged_defaults,validate_configuration
+validate_configuration(load_packaged_defaults())
+from wenu.translations import translate_label
+assert translate_label('Ecliptic','es')=='Eclíptica'
+'''
+    dependencies = [p for p in sys.path if Path(p).name in ("site-packages", "dist-packages")]
+    sdk = Path(wenu_kernel.__file__).resolve().parent.parent
+    entries = tomllib.loads((ROOT / "pyproject.toml").read_text())["project"]["scripts"]
+    assert len(entries) == 8
+    result = subprocess.run([sys.executable, "-I", "-S", "-c", script, str(installed), str(sdk),
+                             json.dumps(dependencies), str(tmp_path / "consumer"), json.dumps(entries)],
+                            cwd=tmp_path, capture_output=True, text=True)
+    assert result.returncode == 0, result.stdout + result.stderr

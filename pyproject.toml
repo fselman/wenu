@@ -75,6 +75,7 @@ py-modules = []
 "*" = ["observing_lists/*", "observing_lists/**/*", "curated_catalogs/*", "curated_catalogs/**/*"]
 
 [tool.setuptools.package-data]
+"wenu.notebooks" = ["en/*.ipynb", "es/*.ipynb"]
 "wenu.data.catalogs.hipparcos" = ["*.json", "ReadMe", "ReadMe_hip_main", "*.dat"]
 "wenu.data.catalogs.caldwell" = ["*.ecsv", "*.csv", "*.json", "*.txt", "README.md"]
 "wenu.data.catalogs.open_clusters" = ["*.ecsv", "*.csv", "*.json", "README.md"]

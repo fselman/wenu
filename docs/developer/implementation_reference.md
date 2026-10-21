@@ -1992,3 +1992,44 @@ integration, explicit off-grid refusal, pointwise uncertainty scaling and
 packaged using existing JSON build rules; wheel/sdist and isolated import tests
 verify its exact bytes and fail if it is absent. There is no fallback resource,
 CSV vendoring, acquisition, new source edition or kernel/SDK API.
+
+## Public consumer and teaching surfaces
+
+The existing `wenu.__all__` facade resolves all 290 declared exports; shared
+geometry/projection aliases remain the same kernel class objects. This does not
+make astronomical directories independently installable or freeze the facade.
+
+| Installed command | Existing application owner | K3.37 acceptance route |
+|---|---|---|
+| `wenu_chart` | `cli/chart.py`, public view/request composition | Installed help, existing three-stage delegate/configuration tests |
+| `wenu_design_atlas` | `cli/atlas.py::design_main` | Installed help; retain K3.21 design/publication receipt |
+| `wenu_plot_atlas` | `cli/atlas.py::plot_main` | Installed help; retain K3.21 sheet/output receipt |
+| `wenu_create_atlas` | `cli/atlas.py::create_main` | Installed help; retain K3.21 batch/worker/output receipt |
+| `wenu_retrieve_comets` | `cli/comets.py` | Installed help only; retain K3.29 provider/CLI receipt, no acquisition |
+| `wenu_satellite_crossings` | `cli/satellite_crossings.py` | Installed help; retain K3.34 direct/two-call report receipt |
+| `wenu_examples` | `cli/examples.py` | Actual installed copy/skip/force and six script help paths |
+| `wenu_notebooks` | `cli/notebooks.py` | Actual installed copy/skip/force, five relative paths/bytes |
+
+Six examples keep their accepted requests and public service delegation. View
+construction now releases its observer on refusal; callers still own observers
+after successful `chart_view()`. `generate()` releases it after product setup or
+drawing. Packaged example copies remain byte-identical.
+
+Five notebooks retain filenames and intended La Ligua/local date (2026-08-15
+21:00), stereographic east-west reversal, magnitude 5.5 for first-chart or 6 for
+publication, and constellation/reference requests. First-chart notebooks explicitly retain
+`of_date` references; publication notebooks use the canonical J2000 default.
+Retired renderer recipes are
+replaced by explicit atlas/print requests through `get_chart_view()` and
+`draw_chart_view_from_arguments()`. Current canonical style/export replaces
+manual artist styling, hard-coded projection radius, debug introspection and
+repeated save calls. This is a runnable teaching migration, not pixel parity
+with a broken historical notebook. English/Spanish folders now select their
+respective language. Cells ship without stale outputs and release observers on
+failure. Open the reported PNG; rerun from the first cell after editing settings.
+
+Existing strict configuration overlays, named preset protocols, family/CLI
+precedence, style/detail/product translation and immutable generated-label
+dictionary remain unchanged. The installed-resource test compares exact bytes,
+builds a wheel from the sdist and runs generated scripts under `-I -S` without
+checkout access or network. Numerical/product receipts remain with their owners.
