@@ -1708,3 +1708,36 @@ formula or admission tolerance changes. Complete Mac acceptance remains pending.
 K3.32 complete Mac acceptance passed at 08b4733a through PR #305: 61 focused
 (2.91 s), 36 documentation (4.38 s), eight tooling (7.200 s), followed by clean
 synchronized main and branch cleanup confirmation.
+
+## Satellite report routing gate
+
+`satellite-report-routing` selects the existing exact report/tabular, satellite
+crossing CLI and planning advisory test owners. The 68 cases retain strict
+schema/digest/semantic decoding, null/Unicode interchange, protocol partition,
+status/path handling, half-open overlaps, unsupported profiles and the offline
+advisory tool. Ten added cases verify returned scientific values and refusal
+through actual CLI/coordinator/kernel composition, all three report formats,
+report-only advisory consumption, serialized corruption and publication cleanup.
+
+The three CLI modes use installed synthetic elements and real Cartesian kernel,
+SGP4 and observer services; altitude admission alone is explicitly synthetic.
+The validated-subset mode first produces the real invalid/valid partition, then
+runs only its explicit derived request and rechecks current service admission.
+Single-instant positive/zero fields do not qualify continuous completeness.
+Network access is prohibited. Solved-report/advisory tests prohibit state
+recomputation; they preserve changed values, warnings, Unicode labels, null
+future-science fields and exact identities. Staged-write/race cases preserve
+no-clobber atomicity, owned-stage cleanup and the competing writer.
+
+Deliberate faults separately bypass Cartesian transport in both search owners,
+discard a returned range in the report, ignore a VOTable null flag, discard an
+advisory closest-approach value and disable bundle-stage cleanup. Each experiment
+must fail its closest test before restoration. Normal gates run only after
+restoring the production files.
+
+No production, source-resource, SDK/dependency/build/collection, schema or
+renderer changes. Retain accepted K3.31 propagation/observer numerical evidence
+and K3.33 independent crossing/domain/worker evidence; no unrelated orbital,
+illumination, radiometry, SDK or installation repeat. The historical production
+benchmark authority remains consumed. Complete documentation and focused Mac
+acceptance remain required; this gate does not close K3.35 or K3/K5.
