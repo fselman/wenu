@@ -1412,7 +1412,7 @@
     },
     {
       "path": "src/wenu/satellites/radiometry.py",
-      "git_blob_sha": "04f803463fbc18b7242646dcfe65d2a963d652bb",
+      "git_blob_sha": "c569baf8e1cf97b94f85848dc30f9eadbcf5fdce",
       "as_is_directory": "src/wenu/satellites",
       "description": "Offline direct-Sun spectral radiometry for artificial satellites."
     },
@@ -12631,7 +12631,7 @@
       "Three deliberate faults fail before restoration.",
       "Whole existing analytic/transition/domain/bolometric owner retained; real offline raw-versus-kernel composition requires existing Mac DE440s."
     ],
-    "limits": "Complete Mac acceptance pending. Synthetic seams are composition evidence, not physical accuracy or captured source qualification. No SDK/dependency/module/package, source bytes, schema, renderer, physical model or K3.36 radiometry-resource change. Retain unchanged historical SPICE/Skyfield and accepted shared-service/installation receipts; no acquisition/benchmark/consumed authority reuse. K3.36 onward and K3/K5 remain separate.",
+    "limits": "Accepted PR #308 after complete Mac gate and cleanup confirmation. Synthetic seams are composition evidence, not physical accuracy or captured source qualification. No SDK/dependency/module/package, source bytes, schema, renderer, physical model or K3.36 radiometry-resource change. Retain unchanged historical SPICE/Skyfield and accepted shared-service/installation receipts; no acquisition/benchmark/consumed authority reuse. K3.36 onward and K3/K5 remain separate.",
     "local_receipt": {
       "full_gate_cases": 62,
       "passed_cases": 61,
@@ -12647,6 +12647,57 @@
       "expected_fault_failures": 3,
       "numerical_patch_boundary": "Exact base restored after removing only the source assembly helper/two constructor assignments, KernelError import and typed propagation catch.",
       "complete_mac_acceptance": "pending; includes real offline DE440s parity"
+    },
+    "mac_receipt": {
+      "tested_commit": "bde9d8f4866f62d83f2ceaee5e54edde141da63d",
+      "merged_commit": "3463c10211055a8b08505a676edaf8071e6a9917",
+      "focused_cases": 62,
+      "focused_seconds": 60.54,
+      "documentation_cases": 36,
+      "documentation_seconds": 4.95,
+      "tooling_cases": 8,
+      "tooling_seconds": 8.009,
+      "offline_de440s_parity": "passed",
+      "clean_main_and_branch_cleanup": "user-confirmed"
+    }
+  },
+  "solar_radiometry_routing": {
+    "milestone": "K3.36 / M8",
+    "base_commit": "3463c10211055a8b08505a676edaf8071e6a9917",
+    "plan_commit": "cc21c465f9373444936da3c0a257f92ef84ab9c0",
+    "gate": "satellite-radiometry-routing",
+    "production_changes": [
+      "src/wenu/satellites/radiometry.py",
+      "src/wenu/data/solar_spectral_resource_tsis1_hsrs_v2.json"
+    ],
+    "source_blobs": {
+      "src/wenu/satellites/radiometry.py": "c569baf8e1cf97b94f85848dc30f9eadbcf5fdce",
+      "src/wenu/data/solar_spectral_resource_tsis1_hsrs_v2.json": "dda1aafb14dede23115cca40bda131a660dc1765"
+    },
+    "disposition": "Retain accepted geometry consumers and all numerical expressions; move exact edition facts to packaged declaration and immutable metadata record, preserving public fields/constants/default values.",
+    "metadata_schema_version": 1,
+    "external_csv_sha256": "1cf3b07e6ac9669c429ad7ce9e92d50dfd741422efcfffa3d1e0eeb5f901616f",
+    "external_csv_vendored": false,
+    "new_python_modules": [],
+    "protected_faults": [
+      "stale/fallback metadata ignores returned facts",
+      "duplicate metadata silently admitted",
+      "wrong same-length CSV reaches parser without digest admission"
+    ],
+    "receipt_reuse": "Accepted external TSIS source/native integral at d1edeb46 runtime 8e930db2; unchanged parser/math/byte facts. K3.35 Sun/EOP/SDK science retained. New installed metadata test required.",
+    "limits": "Complete Mac acceptance pending. No current source permission, redistribution, acquisition, source edition/physics, SDK/dependency/build-rule/science-record-schema/renderer or paused/consumed execution change. Coordinate meanings unchanged. M8 does not close other findings or K3/K5; K3.37 onward separate.",
+    "local_receipt": {
+      "focused_cases": 61,
+      "focused_seconds": 32.16,
+      "installed_metadata_case": "passed in wheel/sdist and isolated fresh process; missing metadata refused",
+      "deliberate_fault_experiments": 3,
+      "expected_fault_failures": 3,
+      "documentation_cases": 31,
+      "documentation_deselected": 5,
+      "tooling_cases": 8,
+      "complete_mac_acceptance": "pending",
+      "documentation_seconds": 1.39,
+      "tooling_seconds": 5.99
     }
   }
 }

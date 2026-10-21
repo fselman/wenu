@@ -34,7 +34,7 @@ measurement-epoch defaults; other nonstellar source qualification remains open.
 | M5 / mechanism implemented; source gaps open | `objects/nonstellar.py` preserves source fields/metadata/units and mirrors declared coordinate facts in a frozen `NonStellarCatalogueMetadata` record bound to input bytes. Native and observed specifications consume it; source provider identity replaces copied labels. Conflicting declarations and strict incomplete admission fail before publication | Missing facts remain null and discoverable in `missing_fields`; `require_complete()` and strict load refuse them. Legacy charts retain the explicit `legacy-unverified-catalogue-encoding` model. Actual source frame/origin and model-required epoch/scale gaps must be resolved before physical provider closure. Galaxy static directions do not require a measurement epoch. Their centre consumers now use the kernel with an explicitly unknown origin when missing; shape axes/PA remain above it. Compatibility is not evidence of accuracy. | `nonstellar-admission`: owner regressions, real family geometry, cold/saved/source-free and public CLI consumers |
 | M6 / header defaults fixed; legacy interpretation explicit | Snapshot v5 derives fixed headers from each provider, stores nonstellar records, checks source identity/table metadata/units/header agreement and retains the separate open-cluster row contract | Readers admit v1-v4 historical formats without treating their J2000 headers as measurement epochs. Missing legacy units/digests are not reconstructed as facts. Resource gaps from M5 remain open; the shared coordinate helper correction is verified separately under M4. | Existing corruption owner plus nonstellar record/header conflicts, actual known/unknown epoch round trips and legacy admission |
 | M7 / accepted PR #301 | `sky/ceres.py::CERES_SOLUTION` loads complete source facts from `data/ceres_solution_v1.json`; numbered/comet installed identities retain their acquisition manifests | Ceres schema and descriptor identity are validated; existing receipt/SPK digest/target/frame checks remain. Source facts no longer require a Python-literal edit. Complete Mac acceptance passed (211 focused, 36 documentation, eight tooling). | Minor-body resources/ephemeris and Ceres public state/track owners |
-| M8 / medium, open | `satellites/radiometry.py` embeds TSIS product DOI/URL, byte digest/count, grid bounds/sampling, header and audit integral | These are edition-specific resource facts and belong to a validated resource metadata document. Current code deliberately admits one exact resource and verifies it; this is inflexibility/duplication, not evidence of corrupted radiometry. Preserve the numerical integral and malformed-resource oracles when extracting it. | Satellite radiometry resource/parser owner |
+| M8 / medium, correction implemented for acceptance | TSIS edition facts were embedded in `satellites/radiometry.py` | K3.36 moves the unchanged facts into packaged JSON and an immutable validated record, retaining public aliases, exact external byte admission and numerical/malformed-resource oracles. Complete Mac acceptance remains pending; no spectrum redistribution is admitted | Satellite radiometry resource/parser owner |
 | M9 / runtime metadata and v6 transport accepted PR #289 | `sky/milky_way.py` and `sky/magellanic_clouds.py` provide fixed source descriptions/ICRS semantics while loaders retain chiefly source paths and feature levels | The K3.16 source envelope now preserves original properties, byte/geometry identity and captured provenance; v6 transports it and v1–v5 retain explicit legacy gaps. Physical declarations absent from sources remain absent. No fictitious stellar epoch is assigned. | Isophote loading/native geometry and saved-ring consumers |
 | M10 / inference repaired; physical qualification unknown | `skyfield_ephemeris.py` retains byte/coverage identity, reports unqualified model by default and labels explicit caller declarations | K3.25 removes filename inference. Independent source/model qualification remains unknown rather than fabricated. | `test_skyfield_ephemeris.py` rename/explicit declaration owner |
 
@@ -1720,3 +1720,54 @@ coordinate and satellite guides record unchanged scientific meaning with the new
 assembly ownership. SDK/dependency/build, source bytes, schemas, renderer and
 radiometry-resource facts are unchanged. Complete Mac acceptance remains pending;
 K3.36 onward, package extraction and K3/K5 closure remain separate.
+
+## K3.36 solar radiometry and M8 assessment
+
+Assessment base: main `3463c10211055a8b08505a676edaf8071e6a9917`, PR #308,
+identical tree to tested `bde9d8f4`. K3.35 is accepted after 62 focused cases
+(60.54 s), 36 documentation cases (4.95 s) and eight tooling cases (8.009 s)
+on Fernando's Mac, including real offline DE440s parity, followed by confirmed
+clean main and branch cleanup. Revision 60 records this bounded task first.
+
+Bolometric and spectral consumers already use the appropriate accepted geometry
+interface. They need no additional state queries. M8 is the demonstrated gap:
+TSIS DOI/URL/date, byte identity, header/units, grid and audit integral were
+Python source facts. The new packaged declaration moves those values unchanged
+and is validated before a private frozen runtime record, compatibility aliases
+and public identity defaults are published. Duplicate/unknown/missing fields,
+invalid schema/type/date/digest/units/grid/integral or a fabricated redistribution
+status refuse. No missing-data fallback is admitted. Existing public identity
+fields/default values and provenance output remain compatible.
+
+Existing parser, external CSV guard, resource validation, native trapezoidal
+integration and all scaling expressions are AST-identical. The spectral
+evaluator's only body change derives its two source-provenance strings from the
+admitted metadata. Bolometric source and numerical policy are untouched. The
+whole spectral owner retains malformed-resource/grid/uncertainty tests and safe
+mocked LIME protocol cases; no LIME binary or other external tool is executed.
+New complete-geometry cases prohibit state re-evaluation and retain distinct
+bolometric/spectral integrals and uncertainty meaning. Same-length wrong CSV
+bytes must fail digest admission before reaching the parser.
+
+Metadata tests protect original byte identity, legacy constants/defaults,
+immutability, strict admission and authoritative returned facts without fallback.
+An installed-consumer test uses unmodified build rules: exact metadata bytes
+ship in wheel and sdist, an isolated process imports and consumes the installed
+metadata/numerical owner, and deleting the declaration makes a fresh import
+fail. Only synthetic curated build fixtures and numerical specimens are used;
+no captured spectrum is fabricated or redistributed.
+
+Three deliberate faults return a stale metadata record, ignore duplicate keys
+or bypass the external CSV digest; each must fail its closest case before
+restoration. The original external TSIS receipt at accepted d1edeb46 (runtime
+8e930db2) remains applicable to unchanged source bytes, admission values and
+parser/integration mathematics. Its independent integral agrees within the
+retained 1e-9 W/m² receipt tolerance. No fresh retrieval, new external CSV run,
+current permission or additional physical accuracy is claimed. K3.35 observer/
+Sun and shared SDK numerical/isolation receipts remain applicable.
+
+One production owner and one declaration change; build rules, public exports,
+SDK/dependencies, source CSV/SPK bytes, science-record schemas and renderer do
+not. Source map and satellite guide record ownership; coordinate meanings and
+the coordinate guide remain current. Complete Mac acceptance remains pending.
+M8 closure does not close other metadata findings, K3/K5, extraction or K3.37.

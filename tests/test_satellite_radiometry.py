@@ -447,3 +447,131 @@ def test_lime_inspection_serializes_nonfinite_external_values_as_strict_json():
     assert json.loads(encoded) == {
         "values": ["NaN", "Infinity", "-Infinity"]
     }
+
+
+METADATA_NAME = "solar_spectral_resource_tsis1_hsrs_v2.json"
+
+
+def metadata_document():
+    from importlib.resources import files
+    return json.loads(files("wenu.data").joinpath(METADATA_NAME).read_text(encoding="utf-8"))
+
+
+def supplied_metadata(monkeypatch, text):
+    class Supplied:
+        def joinpath(self, name):
+            assert name == METADATA_NAME
+            return self
+        def read_text(self, *, encoding):
+            assert encoding == "utf-8"
+            return text
+    monkeypatch.setattr(radiometry_module.resources, "files", lambda name: Supplied())
+
+
+def test_packaged_metadata_retains_accepted_identity_and_compatibility_aliases():
+    from dataclasses import asdict
+    document = metadata_document()
+    record = radiometry_module._load_solar_spectral_metadata()
+    for key, value in asdict(TSIS1_HSRS_V2_IDENTITY).items():
+        assert value == (tuple(document[key]) if key == "header" else document[key])
+    assert document["schema_version"] == 1
+    assert document["content_sha256"] == "1cf3b07e6ac9669c429ad7ce9e92d50dfd741422efcfffa3d1e0eeb5f901616f"
+    assert document["byte_count"] == 1298915
+    assert document["access_date"] == "2026-09-22"
+    assert document["doi"] == "10.25980/ta3f-7h90"
+    assert document["native_integral_w_m2"] == 1325.759295697943
+    assert document["redistribution_status"] == "not_established_external_install_only"
+    for name, field_name in (("PRODUCT", "product"), ("SHA256", "content_sha256"),
+                             ("SOURCE_URL", "source_url"), ("DOI", "doi"),
+                             ("BYTE_COUNT", "byte_count"), ("SAMPLE_COUNT", "sample_count"),
+                             ("MINIMUM_NM", "minimum_wavelength_nm"), ("MAXIMUM_NM", "maximum_wavelength_nm"),
+                             ("SAMPLING_NM", "sampling_nm"), ("RESOLUTION_FWHM_NM", "resolution_fwhm_nm"),
+                             ("INTEGRAL_W_M2", "native_integral_w_m2"), ("HEADER", "header")):
+        assert getattr(radiometry_module, "TSIS1_HSRS_V2_"+name) == getattr(record, field_name)
+    with pytest.raises(FrozenInstanceError):
+        record.sample_count = 0
+
+
+@pytest.mark.parametrize("mutation", ("missing", "unknown", "schema", "boolean_count", "digest", "header",
+                                      "units", "nonfinite", "grid", "integral", "date", "redistribution"))
+def test_metadata_admission_refuses_malformed_facts_without_fallback(monkeypatch, mutation):
+    document = metadata_document()
+    if mutation == "missing": del document["doi"]
+    elif mutation == "unknown": document["extra"] = "not admitted"
+    elif mutation == "schema": document["schema_version"] = True
+    elif mutation == "boolean_count": document["byte_count"] = True
+    elif mutation == "digest": document["content_sha256"] = "A" * 64
+    elif mutation == "header": document["header"] = "not an array"
+    elif mutation == "units": document["wavelength_unit"] = "angstrom"
+    elif mutation == "nonfinite": document["sampling_nm"] = float("inf")
+    elif mutation == "grid": document["sample_count"] -= 1
+    elif mutation == "integral": document["native_integral_w_m2"] = -1.
+    elif mutation == "date": document["access_date"] = "2026-99-22"
+    elif mutation == "redistribution": document["redistribution_status"] = "permission invented"
+    supplied_metadata(monkeypatch, json.dumps(document))
+    with pytest.raises(ValueError):
+        radiometry_module._load_solar_spectral_metadata()
+    assert TSIS1_HSRS_V2_IDENTITY.content_sha256 == radiometry_module.TSIS1_HSRS_V2_SHA256
+
+
+@pytest.mark.parametrize("kind", ("duplicate", "nonfinite", "nonobject"))
+def test_metadata_decoder_rejects_duplicate_nonfinite_and_nonobject(monkeypatch, kind):
+    text = json.dumps(metadata_document())
+    if kind == "duplicate":
+        text = text.replace('"schema_version": 1', '"schema_version": 1, "schema_version": 1')
+    elif kind == "nonfinite":
+        text = text.replace('"sampling_nm": 0.1', '"sampling_nm": NaN')
+    else:
+        text = '[]'
+    supplied_metadata(monkeypatch, text)
+    with pytest.raises(ValueError):
+        radiometry_module._load_solar_spectral_metadata()
+
+
+def test_metadata_loader_uses_returned_facts_and_missing_resource_refuses(monkeypatch):
+    document = metadata_document()
+    document["byte_count"] += 1
+    supplied_metadata(monkeypatch, json.dumps(document))
+    returned = radiometry_module._load_solar_spectral_metadata()
+    assert returned.byte_count == 1298916
+    assert radiometry_module._TSIS1_HSRS_V2_METADATA.byte_count == 1298915
+    def missing(*_args, **_kwargs):
+        raise FileNotFoundError("packaged metadata unavailable")
+    monkeypatch.setattr(radiometry_module.resources, "files", missing)
+    with pytest.raises(FileNotFoundError, match="metadata unavailable"):
+        radiometry_module._load_solar_spectral_metadata()
+
+
+@pytest.mark.parametrize(("distance", "fraction"), ((.5, 1.), (2., .25), (1., 0.)))
+def test_bolometric_and_spectral_consumers_use_complete_geometry_without_requery(monkeypatch, distance, fraction):
+    """Real typed geometry plus synthetic flat spectrum; not provider CSV."""
+    from test_satellite_illumination import irradiance_geometry
+    from wenu.satellites.illumination import DirectSolarIrradianceEvaluator
+    from wenu_kernel.kernel import KernelSession
+    source = spectral_resource()
+    accepted = irradiance_geometry(distance_au=distance, visible_fraction=fraction)
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("radiometry must consume accepted geometry without state evaluation")
+    monkeypatch.setattr(KernelSession, "evaluate", forbidden)
+    spectral = DirectSolarSpectralIrradianceEvaluator(source).evaluate(accepted)
+    bolometric = DirectSolarIrradianceEvaluator().evaluate(accepted)
+    assert spectral.geometry is bolometric.geometry is accepted
+    assert spectral.integrate_energy() == pytest.approx(TSIS1_HSRS_V2_INTEGRAL_W_M2 * fraction / distance**2)
+    assert bolometric.incident_normal_irradiance_w_m2 == pytest.approx(1361. * fraction / distance**2)
+    assert spectral.integrated_uncertainty_status == "not_evaluated"
+    assert bolometric.physical_model_uncertainty_status == "not_evaluated"
+    assert spectral.provenance[:2] == (
+        "TSIS-1 HSRS v2 tsis1_hsrs_1nm external installed resource.",
+        "Native 0.1 nm grid; 1 nm FWHM spectral resolution.")
+    assert spectral.pointwise_uncertainty_w_m2_nm[0] == pytest.approx(.1 * fraction / distance**2)
+
+
+def test_external_csv_digest_refuses_same_length_wrong_bytes_before_parsing(tmp_path, monkeypatch):
+    path = tmp_path / "wrong-external.csv"
+    path.write_bytes(b" " * TSIS1_HSRS_V2_IDENTITY.byte_count)
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("unadmitted bytes reached parser")
+    monkeypatch.setattr(radiometry_module, "_parse_verified_spectral_payload", forbidden)
+    with pytest.raises(SolarSpectralRadiometryError) as caught:
+        load_solar_spectral_irradiance_resource(path)
+    assert caught.value.code is SolarSpectralRadiometryFailureCode.RESOURCE_IDENTITY_MISMATCH

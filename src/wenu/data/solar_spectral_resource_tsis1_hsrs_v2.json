@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "label": "TSIS-1 HSRS v2",
+  "doi": "10.25980/ta3f-7h90",
+  "product": "tsis1_hsrs_1nm",
+  "source_url": "https://lasp.colorado.edu/lisird/latis/dap/tsis1_hsrs_1nm.csv",
+  "access_date": "2026-09-22",
+  "byte_count": 1298915,
+  "content_sha256": "1cf3b07e6ac9669c429ad7ce9e92d50dfd741422efcfffa3d1e0eeb5f901616f",
+  "header": [
+    "wavelength (nm)",
+    "irradiance (W/m^2/nm)",
+    "uncertainty (W/m^2/nm)",
+    "bandwidth (nm)"
+  ],
+  "wavelength_unit": "nm",
+  "irradiance_unit": "W m-2 nm-1",
+  "uncertainty_unit": "W m-2 nm-1",
+  "sample_count": 25281,
+  "minimum_wavelength_nm": 202.0,
+  "maximum_wavelength_nm": 2730.0,
+  "sampling_nm": 0.1,
+  "resolution_fwhm_nm": 1.0,
+  "native_integral_w_m2": 1325.759295697943,
+  "redistribution_status": "not_established_external_install_only"
+}

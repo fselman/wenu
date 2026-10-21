@@ -667,3 +667,21 @@ Illumination and transitions use the same Sun assembly boundary. The original
 finite-Sun/WGS-84 quadrature, twilight mathematics, continuous limb margins,
 contact subdivision/bracketing and physical domains remain unchanged. This is
 K3.35 routing, not new illumination, radiometry, brightness or visibility science.
+
+## Solar radiometry resource boundary
+
+Bolometric and spectral radiometry consume accepted immutable illumination
+geometry; they do not re-query or propagate physical states. K3.36 retains those
+calculation owners. TSIS edition facts now live in packaged
+`data/solar_spectral_resource_tsis1_hsrs_v2.json`, validated into a private frozen
+record in `satellites/radiometry.py` before compatibility constants and the
+existing public resource identity defaults are published. Mathematical models,
+integration/error policies and unit support remain software contracts.
+
+The external spectrum is still loaded only from an explicit caller path after
+exact byte-count/digest admission. Metadata is shipped; the spectrum is not.
+The parser, native grid, inverse-square/visible-fraction scaling and native
+energy integration retain their algorithms and original tolerances. Missing or
+invalid packaged metadata fails rather than reconstructing embedded source
+facts. Public identity fields and constant values remain compatible. No
+redistribution permission or current source acquisition follows from this move.

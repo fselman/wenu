@@ -1964,3 +1964,31 @@ gate retains analytic overlap/contact, independent observer altitude and
 adversarial transition tests, and requires a real offline Sun-source parity case
 on the Mac. Source-free custom-protocol geometry remains compatible. Radiometry
 resource metadata, reflected light and paused Moonlight work remain separate.
+
+## Solar radiometry resource admission
+
+`DirectSolarIrradianceEvaluator` and `DirectSolarSpectralIrradianceEvaluator`
+consume the existing `SatelliteIlluminationGeometry`. Accepted distance and
+uniform-disk visible fraction control the retained scalar/array scaling. No
+state query is needed for these already evaluated values. The nominal
+bolometric 1361 W/m² at 1 au remains separate from the TSIS native spectral
+integral and its finite wavelength coverage.
+
+`data/solar_spectral_resource_tsis1_hsrs_v2.json` owns the existing edition label,
+DOI/product/source URL, historical access date, byte count/SHA-256, exact header,
+units, count/endpoints/spacing/resolution, audit integral and unresolved
+redistribution status. The current radiometry owner decodes a closed version-1
+metadata object, rejects duplicate/non-finite/malformed facts and validates the
+supported units and consistent grid before creating a private frozen record.
+The existing `TSIS1_HSRS_V2_*` names remain value-compatible aliases, and
+`SolarSpectralIrradianceResourceIdentity` retains its public fields/signature.
+Its defaults mirror the admitted record. Source-derived provenance text remains
+unchanged in meaning and output.
+
+`load_solar_spectral_irradiance_resource(path)` still admits only the exact
+external CSV bytes and then invokes the unchanged parser. Native-grid energy
+integration, explicit off-grid refusal, pointwise uncertainty scaling and
+`not_evaluated` integrated uncertainty remain unchanged. The metadata file is
+packaged using existing JSON build rules; wheel/sdist and isolated import tests
+verify its exact bytes and fail if it is absent. There is no fallback resource,
+CSV vendoring, acquisition, new source edition or kernel/SDK API.
