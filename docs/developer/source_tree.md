@@ -107,6 +107,7 @@ concrete Wenu classes.
 | [`coordinate_service.py`](../../src/wenu/coordinate_service.py) | Central astronomical transformations for typed spherical geometry. |
 | [`coordinates.py`](../../src/wenu/coordinates.py) | Kernel vocabulary aliases plus Wenu source/observer factories and ObservationContext. |
 | [`ephemeris.py`](../../src/wenu/ephemeris.py) | Typed Cartesian ephemeris-state boundary. |
+| [`ephemeris_state.py`](../../src/wenu/ephemeris_state.py) | Borrowed request-scoped adapter from the existing geometric ephemeris protocol to returned Cartesian SDK states; no numerical model or light-time solver. |
 | [`minor_body_acquisition.py`](../../src/wenu/minor_body_acquisition.py) | Networked preflight acquisition for immutable numbered-asteroid resources. |
 | [`minor_body_ephemeris.py`](../../src/wenu/minor_body_ephemeris.py) | Offline minor-body states from one borrowed Horizons SPK resource. |
 | [`minor_body_identity.py`](../../src/wenu/minor_body_identity.py) | Exact installed/provider identity resolution for minor bodies. |

@@ -1450,3 +1450,12 @@ epoch, frame, source membership or astrometric model. Direct numerical projectio
 and finite invalid-domain validation remain strict. See the
 [geometry contract](kernel_contract_k1.md#public-geometry-and-coordinate-contract).
 
+## Major-planet and Moon state adapter
+
+K3.25 retains simultaneous geometric ICRF target-minus-centre states, TDB emission
+queries and reception-time observer PV. The adapter expresses position/velocity as
+SI Cartesian kernel records and converts returned values to the existing AU/AU-day
+protocol. This is unit transport, not a frame transform or second propagation.
+One-way light time remains in AstrometricDirectionRealizer; Skyfield apparent
+corrections retain their accepted policy. No epoch, equinox, physical body centre
+or error bound is inferred from a descriptor label or SPK filename.

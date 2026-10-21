@@ -73,16 +73,6 @@ def _sha256(path):
     return digest.hexdigest()
 
 
-def _model_from_filename(filename):
-    match = re.fullmatch(r"de(\d+)[a-z]*\.bsp", filename, flags=re.IGNORECASE)
-    if match is None:
-        raise ValueError(
-            "model must be supplied when the kernel filename is not a "
-            "DE-series BSP name."
-        )
-    return f"DE{match.group(1)}"
-
-
 def resolve_skyfield_resource_identity(kernel, *, model=None):
     """Fingerprint one already-open Skyfield kernel without opening another."""
     try:
@@ -93,7 +83,7 @@ def resolve_skyfield_resource_identity(kernel, *, model=None):
         ) from error
     coverage_start, coverage_end = _kernel_coverage(kernel)
     resolved_model = (
-        _model_from_filename(path.name)
+        "unqualified SPK model"
         if model is None
         else str(model).strip()
     )
@@ -110,6 +100,8 @@ def resolve_skyfield_resource_identity(kernel, *, model=None):
         provenance=(
             f"resolved path: {path}",
             f"SPK segments: {len(kernel.segments)}",
+            ("physical model unqualified; filename is not model evidence"
+             if model is None else "model explicitly declared by caller; not independently qualified"),
         ),
     )
 

@@ -560,3 +560,14 @@ absolute-accuracy certificate. The legacy Astropy/Skyfield resource-selection an
 observation policies are preserved; strict offline reception remains distinct.
 Request-owned resources close on success/failure; borrowed resources retain caller
 ownership. No observer resource is serialized as a native catalogue state.
+
+## Ephemeris model identity and geometric state transport
+
+A DE-like filename is not evidence of a physical ephemeris model. Resolved SPK
+identity retains exact SHA-256 and segment coverage; absent model qualification
+is explicit. Caller-declared model text is provenance, not independent validation.
+K3.25 default planet/Moon point states pass through the existing Cartesian SDK
+before the retained light-time/apparent chain. Measurement, physical-model and
+numerical error channels remain not evaluated; unit conversion supplies no bound.
+Targets such as Mars barycentre are preserved and are not replaced by the physical
+planet ID. No new apparent correction, distance, motion or disk science is admitted.

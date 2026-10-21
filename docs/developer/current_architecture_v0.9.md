@@ -100,8 +100,8 @@ Observer/cache identity and application assembly are accepted through K3.18/K3.1
 K3.21's lower-level public atlas sheet contract is accepted through PR #294.
 K3.22 physical polar product service consumers are accepted through PR #295.
 K3.23 ordinary temporal sequence consumers are accepted through PR #296.
-K3.24 fixed-sky consumer verification and observer cleanup are implemented;
-complete Mac acceptance remains pending. No K3/K5 freeze is claimed.
+K3.24 fixed-sky consumer verification and observer cleanup are accepted through
+PR #297 after 53 focused Mac cases. No K3/K5 freeze is claimed.
 
 ## Canonical pipeline
 
@@ -516,3 +516,11 @@ anchor-relative rotation. Its graphical comparison helpers are unchanged.
 Frame resolution now registers each successfully created observer for cleanup
 immediately. A failed second construction or one failing close cannot leave
 the other observer open. No orientation, provider or rendering formula changes.
+
+K3.25 adds a Wenu ephemeris-to-Cartesian-SDK adapter for default major-planet
+and Moon point assembly. Ephemeris backend/model knowledge remains outside the
+generic kernel. Request-scoped borrowed sessions return SI states to the retained
+light-time and apparent services through the existing AU protocol. Tracks/disks
+and minor-body adoption remain separate. Filename-based DE-model inference is
+removed; unknown models remain explicitly unqualified. Complete Mac acceptance
+is pending; this does not close K3/K5.

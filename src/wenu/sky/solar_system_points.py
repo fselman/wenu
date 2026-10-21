@@ -47,10 +47,13 @@ class EphemerisSourceBinding:
     observer_source: object
 
 
-def skyfield_source_binding(descriptor, observer):
+def skyfield_source_binding(descriptor, observer, *, kernel_states=False):
     """Resolve the ordinary one-source Skyfield binding."""
-    del descriptor
     source = SkyfieldEphemerisStateSource.from_observer(observer)
+    if kernel_states and getattr(descriptor, "body_class", None) in {"planet", "natural_satellite"}:
+        from wenu.ephemeris_state import KernelEphemerisStateSource
+
+        return EphemerisSourceBinding(KernelEphemerisStateSource(source), source)
     return EphemerisSourceBinding(source, source)
 
 
@@ -202,7 +205,9 @@ class SolarSystemPointLayer(SkyLayer):
             source = self.source_factory(observer)
             binding = EphemerisSourceBinding(source, source)
         else:
-            binding = skyfield_source_binding(self.descriptor, observer)
+            binding = skyfield_source_binding(
+                self.descriptor, observer, kernel_states=True
+            )
         if not isinstance(binding, EphemerisSourceBinding):
             raise TypeError(
                 "source_resolver must return an EphemerisSourceBinding."

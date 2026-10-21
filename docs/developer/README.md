@@ -268,4 +268,9 @@ checks are accepted through PR #296 after 151 focused, 36 documentation and eigh
 K3.24 now verifies [fixed-sky and rotating-horizon service consumers](kernel_migration_audit_v1.md#k324-fixed-sky-consumer-assessment)
 and fixes observer cleanup during frame resolution. Anchor orientation and local
 frame realization remain separate; cold/reuse geometry and graphical outputs are
-checked. Complete Mac acceptance remains pending.
+checked. Accepted through PR #297 after 53 focused Mac cases.
+
+K3.25 implements [major-planet and Moon state routing](kernel_migration_audit_v1.md#k325-major-planet-and-moon-state-assessment)
+through the existing Cartesian SDK before the retained light-time/apparent chain.
+Focused Mac acceptance is pending. K3.24 was accepted in PR #297 after 53 focused,
+36 documentation and eight tooling Mac cases. K3.26 remains pending separate selection.

@@ -1057,6 +1057,12 @@
       "description": "Typed Cartesian ephemeris-state boundary."
     },
     {
+      "path": "src/wenu/ephemeris_state.py",
+      "git_blob_sha": "2b28f5fb927b80819e8791f5f0e22352df340140",
+      "as_is_directory": "src/wenu",
+      "description": "Borrowed request-scoped geometric ephemeris adapter to Cartesian SDK states."
+    },
+    {
       "path": "src/wenu/example_scripts/__init__.py",
       "git_blob_sha": "042226dbea3fb8eb33f2db9328206203f1e6981f",
       "as_is_directory": "src/wenu/example_scripts",
@@ -1653,7 +1659,7 @@
     },
     {
       "path": "src/wenu/sky/solar_system_points.py",
-      "git_blob_sha": "ed063762c523156fdfaaf39db46ed88de412660d",
+      "git_blob_sha": "38770b950b87feaf72f6a810d6e33fec6bf26d90",
       "as_is_directory": "src/wenu/sky",
       "description": "Shared renderer-neutral orchestration for symbolic Solar-System points."
     },
@@ -1689,7 +1695,7 @@
     },
     {
       "path": "src/wenu/skyfield_ephemeris.py",
-      "git_blob_sha": "117411d75cb1327f88ee3bfd75f59323d3ff57d6",
+      "git_blob_sha": "6d7be5bfb8d096e69d77a9e7e117380efb2e3779",
       "as_is_directory": "src/wenu",
       "description": "Skyfield adapter for one already-resolved JPL SPK resource."
     },
@@ -12167,6 +12173,47 @@
       "documentation_passed": 31,
       "documentation_complete_checkout_required": 5
     },
-    "limits": "Synthetic observation backend is labelled; not new physical accuracy evidence or a true frozen evaluated-state cache. Existing projected-reference numerical tolerance retained. No SDK/dependency/source resource/snapshot/manifest/renderer formula changes. K3.25 and K5 remain separate."
+    "limits": "Synthetic observation backend is labelled; not new physical accuracy evidence or a true frozen evaluated-state cache. Existing projected-reference numerical tolerance retained. No SDK/dependency/source resource/snapshot/manifest/renderer formula changes. K3.25 and K5 remain separate.",
+    "mac_acceptance": {
+      "pr": 297,
+      "main": "938d0a02d2d46d50b2606ee76d712585120dccb5",
+      "focused_passed": 53,
+      "documentation_passed": 36,
+      "tooling_passed": 8,
+      "clean_main_and_branch_cleanup_confirmed": true
+    }
+  },
+  "major_planet_moon_routing": {
+    "milestone": "K3.25",
+    "base_commit": "938d0a02d2d46d50b2606ee76d712585120dccb5",
+    "plan_commit": "d351eb47bf44dfe2e5ae9c5988c5c7ba38fee136",
+    "owners": [
+      "src/wenu/ephemeris_state.py",
+      "src/wenu/sky/solar_system_points.py",
+      "src/wenu/skyfield_ephemeris.py"
+    ],
+    "gate": "major-planet-moon-routing",
+    "disposition": "Adapt existing geometric protocol; retain light-time/apparent algorithms and targets. Remove filename model inference; qualification remains unknown.",
+    "evidence": [
+      "Existing focused contracts retained.",
+      "Changed kernel SI results and refusals reach eight default body point consumers.",
+      "Bypass fault fails changed-direction test.",
+      "Real offline eight-body raw/routed parity requires Mac DE440s; no skip or acquisition."
+    ],
+    "limits": "No SDK/source/dependency/snapshot/renderer change. No physical accuracy bound, evaluated-state cache, second light time, disk/track/minor-body adoption. Complete Mac acceptance pending.",
+    "source_blobs": {
+      "src/wenu/ephemeris_state.py": "2b28f5fb927b80819e8791f5f0e22352df340140",
+      "src/wenu/sky/solar_system_points.py": "38770b950b87feaf72f6a810d6e33fec6bf26d90",
+      "src/wenu/skyfield_ephemeris.py": "6d7be5bfb8d096e69d77a9e7e117380efb2e3779"
+    },
+    "local_receipt": {
+      "focused_available_passed": 82,
+      "offline_resource_required_cases": 1,
+      "tooling_passed": 8,
+      "documentation_available_passed": 31,
+      "documentation_complete_checkout_required": 5,
+      "fault_injection": "Bypassing point adapter fails changed kernel direction assertion.",
+      "unchanged_ast": "Raw Skyfield state class, reception PV and apparent class identical to base."
+    }
   }
 }

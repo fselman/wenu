@@ -347,3 +347,23 @@ def test_provider_psang_is_typed_and_has_precedence_contract():
         _provider_gas_tail_position_angle(
             InvalidSource(), "request", "observer-state"
         )
+
+
+def test_point_kernel_opt_in_preserves_existing_track_and_other_family_binding(monkeypatch):
+    from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
+    from wenu.sky.solar_system_points import skyfield_source_binding
+    from wenu.skyfield_ephemeris import SkyfieldEphemerisStateSource
+    from wenu.ephemeris_state import KernelEphemerisStateSource
+    source = SimpleNamespace(resource=object())
+    monkeypatch.setattr(SkyfieldEphemerisStateSource, 'from_observer',
+                        classmethod(lambda cls, observer: source))
+    descriptor = SOLAR_SYSTEM_BODY_CATALOG.resolve('moon')
+    retained = skyfield_source_binding(descriptor, object())
+    assert retained.target_source is retained.observer_source is source
+    selected = skyfield_source_binding(descriptor, object(), kernel_states=True)
+    assert isinstance(selected.target_source, KernelEphemerisStateSource)
+    assert selected.observer_source is source
+    assert selected.target_source.source is source
+    other = skyfield_source_binding(SolarSystemPointDescriptor(
+        'sun', 'sun', 'Sun', 'sun'), object(), kernel_states=True)
+    assert other.target_source is other.observer_source is source

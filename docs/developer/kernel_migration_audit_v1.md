@@ -36,7 +36,7 @@ measurement-epoch defaults; other nonstellar source qualification remains open.
 | M7 / medium, open | `sky/ceres.py::CERES_SOLUTION` embeds Horizons solution number/date, osculating epoch and quality fields; `minor_body_resources.py` treats this descriptor as the expected identity, while newer comet identities are manifest-derived | A Ceres resource update requires a code edit and can diverge from its acquisition evidence. Migrate the complete solution identity to a versioned data manifest; preserve the existing descriptor-to-manifest/SPK digest and frame checks. | Minor-body resources/ephemeris and Ceres public state/track owners |
 | M8 / medium, open | `satellites/radiometry.py` embeds TSIS product DOI/URL, byte digest/count, grid bounds/sampling, header and audit integral | These are edition-specific resource facts and belong to a validated resource metadata document. Current code deliberately admits one exact resource and verifies it; this is inflexibility/duplication, not evidence of corrupted radiometry. Preserve the numerical integral and malformed-resource oracles when extracting it. | Satellite radiometry resource/parser owner |
 | M9 / runtime metadata and v6 transport accepted PR #289 | `sky/milky_way.py` and `sky/magellanic_clouds.py` provide fixed source descriptions/ICRS semantics while loaders retain chiefly source paths and feature levels | The K3.16 source envelope now preserves original properties, byte/geometry identity and captured provenance; v6 transports it and v1–v5 retain explicit legacy gaps. Physical declarations absent from sources remain absent. No fictitious stellar epoch is assigned. | Isophote loading/native geometry and saved-ring consumers |
-| M10 / low, open | `skyfield_ephemeris.py::_model_from_filename` identifies a DE model from its filename unless explicitly supplied | Prefer the acquisition/validated resource identity. Renaming is not evidence that kernel contents changed; explicit-model admission is already supported. Coverage and digest are read from the resource. | `test_skyfield_ephemeris.py` resource identity owner |
+| M10 / inference repaired; physical qualification unknown | `skyfield_ephemeris.py` retains byte/coverage identity, reports unqualified model by default and labels explicit caller declarations | K3.25 removes filename inference. Independent source/model qualification remains unknown rather than fabricated. | `test_skyfield_ephemeris.py` rename/explicit declaration owner |
 
 Examples already following the intended boundary include satellite OMM records
 (`satellites/elements.py` reads epoch, frame, centre and time system and validates
@@ -1375,3 +1375,26 @@ cases are blocked by missing DE440s and certificate-failed JPL download. The
 No catalogue bytes, dependency/SDK, snapshot/manifest schema, numerical formula,
 renderer algorithm or extraction changes. Coordinate/scientific guides remain
 current; K3.25 and K5 remain separate.
+
+## K3.25 major-planet and Moon state assessment
+
+The existing SolarSystemPointLayer, AstrometricDirectionRealizer and
+SkyfieldApparentDirectionRealizer already separate geometric state, one-way light
+time and apparent correction. Retain those algorithms. Default point assembly had
+called the raw EphemerisStateSource directly. A Wenu adapter now uses the existing
+Cartesian SDK without changing it; each borrowed session is scoped to one original
+request, with no reuse cache or ownership transfer. Custom injections and later
+track/disk/minor-body consumers retain their separate obligations.
+
+M10 filename inference is repaired: both DE-looking and arbitrary renamed files
+remain unqualified unless a caller supplies a declaration, which is explicitly
+labelled. Exact byte digest and segment coverage remain recorded. Independent
+physical-model qualification is still unknown; this repair does not invent an
+acquisition manifest or assert that any renamed file is a particular DE release.
+
+Existing direction/apparent/point owners plus the new adapter seams protect returned
+SI values, velocity, resource/request mismatches, out-of-coverage refusal, warm
+refusal, retarded time, all seven planet targets and Moon, and single apparent
+correction. Deliberately bypassing the default adapter fails the changed-direction
+assertion. The real eight-body raw-versus-routed comparison requires installed
+DE440s on Mac and refuses absent offline resources rather than downloading.
