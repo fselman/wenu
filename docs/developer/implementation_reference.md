@@ -325,6 +325,12 @@ This does not qualify missing nonstellar frame/origin or measurement metadata;
 
 ## Native stellar kernel adapter
 
+The [K4a.02 acquisition/matching policy review](scientific_contracts.md#gaia-dr3-acquisition-and-matching-policy-review)
+and [dated audit](data/gaia_dr3_acquisition_policy_v1.json) are design documents.
+No Gaia TAP client, matcher, runtime dependency or new provider is implemented.
+Current terms/usage and service preflight remain unresolved; proposed local
+workload caps are not provider quotas or execution authority.
+
 K4a.01 now specifies the [stellar membership and enrichment contract](scientific_contracts.md#stellar-membership-and-enrichment-contract)
 and [source-bound census/logical schema](data/stellar_enrichment_contract_v1.json).
 It is a design artifact only. There is no Gaia loader, match decision,

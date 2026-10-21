@@ -825,7 +825,7 @@ remain its separate responsibilities.
 | ID | Intermediate deliverable and exit evidence | Status / dependency |
 |---|---|---|
 | K4a.01 | Fix current Wenu membership/component/photometry contract and edition-qualified schema, including future DR4 adapter boundary | Accepted PR #315/main d447565d after 35 focused cases/nine subtests, 36 documentation and eight tooling Mac cases; clean main/cleanup confirmed. No full Gaia mirror or silent V-to-G substitution |
-| K4a.02 | Agree bounded acquisition/matching/quality/missing-data policy after checking current primary API/terms/licensing | Pending; before any acquisition; rendering/tests remain offline |
+| K4a.02 | Agree bounded acquisition/matching/quality/missing-data policy after checking current primary API/terms/licensing | Dated audit and bounded proposal delivered for review; complete ESA terms/intended-use rights, endpoint limits and flag metadata unresolved. No acquisition authority; rendering/tests remain offline |
 | K4a.03 | Cross-identify the required DR3 sources with epoch/PM-aware evidence and explicit ambiguous/unmatched/component cases | Pending; K4a.01–K4a.02; no nearest-neighbour guess silently accepted |
 | K4a.04 | Publish immutable bounded DR3 subset with exact bytes, edition/epoch/units/provenance, uncertainties/correlations and match evidence | Pending; K4a.03 and redistribution admission |
 | K4a.05 | Accept coverage/ambiguity report and unchanged default membership, names, cross-IDs and visual photometry | Pending K4a closure; bright/multiple/unmatched stars cannot disappear |
