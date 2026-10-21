@@ -1729,3 +1729,30 @@ and closed resources or a failed fresh query cannot return previous geometry.
 Public chart admission is unchanged: existing planetary chart families and
 natural-satellite track refusal remain. Moon tests cover the existing scientific
 sampler API, not a newly admitted chart/CLI capability.
+
+## Asteroid state and offline resource routing
+
+`MinorBodyResourceSession.source_binding()` wraps known asteroid
+`SkyfieldMinorBodyStateSource` targets with the existing
+`KernelEphemerisStateSource`; its observer/apparent source remains raw planetary
+science. Ceres and manifest-derived numbered objects use this same assembly.
+Comet state adoption is separate. Explicit generic protocol injection remains
+compatible; it does not claim the default offline-session route.
+
+The Cartesian adapter accepts an `EphemerisResourceChain`, registers every
+ordered resource/digest/coverage and admits only their coverage intersection.
+The original backend still selects exact segments and performs the existing
+small-body-plus-planetary composition. Returned SI position/velocity replace
+those fields on the original state record, retaining `MinorBodyEphemerisState`,
+solution, segment, chain and provider IDs. Registration borrows resources;
+the resource session remains their owner. No new light-time solver is added.
+
+`sky.ceres.CERES_SOLUTION` remains import-compatible and loads the complete
+unchanged facts from `wenu.data/ceres_solution_v1.json`. Schema and descriptor
+identity are checked before publication; the offline session retains acquisition
+receipt, SPK digest/target/frame checks. The packaged manifest does not qualify
+new physical accuracy or replace an installed acquisition receipt.
+
+Warm asteroid track components recheck their resolver/session before reuse;
+changed binding identities require fresh realization and closed sessions refuse.
+The observer key alone cannot establish the lifetime of a separately owned SPK.

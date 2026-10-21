@@ -286,3 +286,9 @@ through the existing adapter, including known planetary bindings in mixed reques
 Sampling, fixed chart axes, temporal policy and annotations remain unchanged.
 The `natural-body-track-routing` Mac gate is pending. Existing satellite-track
 chart refusal remains; Moon sampling is scientific-API coverage, not a new CLI product.
+
+K3.27 is accepted through PR #300 after 83 focused, 36 documentation and eight
+tooling Mac cases, with clean main and branch cleanup confirmed. K3.28 now
+implements [asteroid state/offline resource routing](implementation_reference.md#asteroid-state-and-offline-resource-routing)
+and manifest-backed Ceres solution facts for acceptance. Complete Mac acceptance
+remains pending; K3.29 comet adoption and K3/K5 closure remain separate.

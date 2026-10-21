@@ -541,3 +541,12 @@ track component owner checks the existing observer-resource key before same-cont
 sharing; an equal-valued separate context performs fresh admission. Exact sampling,
 tick insertion, one fixed-product-axis transformation and temporal/annotation
 algorithms are retained. Complete Mac acceptance is pending; K3/K5 remain partial.
+
+Asteroid offline sessions now supply kernel-backed geometric target bindings to
+the existing point and sampled-track consumers. The common Cartesian adapter
+retains both small-body and planetary resource identities and the original
+minor-body solution/segment record. Numerical composition, apparent corrections,
+projection and renderer remain their existing owners. Ceres solution facts live
+in a versioned packaged manifest, with the legacy constant retained. Warm track
+sharing checks the asteroid resolver's lifetime as well as the observer key.
+Comet migration and astronomical package extraction remain pending.

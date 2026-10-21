@@ -1509,4 +1509,34 @@ synthetic apparent backend. Real ephemeris parity remains separate from those se
 no new absolute physical accuracy or satellite-track chart admission is claimed.
 Retain accepted adapter/SDK, observer, geometry and installation receipts: no SDK,
 dependency, source bytes, schema, renderer or sampling/annotation algorithm changed.
-Complete Mac acceptance remains pending.
+Complete K3.27 Mac acceptance passed at c837171e through PR #300: 83 focused,
+36 documentation and eight tooling cases; clean main and cleanup confirmed.
+
+## Asteroid routing gate
+
+Run `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python tools/run_test_gate.py asteroid-routing --run`.
+The gate selects existing ephemeris/minor-body identity/resource/acquisition,
+point/track/layer/CLI/request and temporal-policy owners, plus the isolated
+installed-manifest wheel/sdist seam. No new test owner or SDK suite is needed.
+
+New checks preserve minor-body state type/solution/segment, both resource digests,
+dependency coverage refusal before backend evaluation, returned kernel PV and
+refusal after success. Ceres and numbered-asteroid synthetic offline sessions
+exercise actual point/track consumers and public request/canonical PNG drawing;
+changed returned positions move both geometries. Their synthetic apparent
+backend is labelled. Actual nonempty raw/routed PNG pixels agree. A closed warm
+session regression fails before correction for both identities; resolver
+admission precedes component reuse. Adapter bypass fails both consumer cases.
+
+The real offline Ceres test uses the existing 50a2 acquisition receipt/SPK and
+DE440s to compare raw/routed PV, apparent point and sampled track science.
+Neither resource is acquired during testing. The existing real eight-body track
+parity case protects the changed common transport adapter. Complete Mac gates
+must run these normally; absent local resources are not skips added to the gate.
+Retain accepted underlying CSPICE/Horizons and observer/apparent numerical
+oracles, SDK/geometry/install and atlas receipts. No full production/SDK repeat.
+
+Local K3.28 evidence: 208 available focused cases passed, plus the installed
+manifest wheel/sdist consumer. Two real offline cases require Mac resources.
+Eight tooling and 31 available documentation cases passed; five complete-checkout
+archive/asset/inventory cases remain in the normal 36-case Mac documentation gate.

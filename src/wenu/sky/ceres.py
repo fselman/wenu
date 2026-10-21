@@ -1,4 +1,4 @@
-"""Catalog-owned identity for the first drawable asteroid."""
+"""Ceres descriptor and manifest-backed solution identity."""
 
 from wenu.minor_body_ephemeris import MinorBodySolutionIdentity
 from wenu.sky.solar_system_bodies import (
@@ -23,25 +23,32 @@ CERES_BODY = SolarSystemBodyDescriptor(
     ephemeris_source_key="minor_body_spk",
 )
 
-CERES_SOLUTION = MinorBodySolutionIdentity(
-    provider="NASA/JPL Horizons API",
-    service_version="1.2",
-    wenu_target="ceres",
-    object_class="asteroid",
-    primary_designation="1 Ceres",
-    horizons_command="1;",
-    provider_spk_id="20000001",
-    orbit_solution_id="JPL#48",
-    solution_date="2021-Apr-13_11:04:44",
-    osculating_epoch="2458849.5 TDB",
-    reference_system="ICRF/J2000",
-    iau_number=1,
-    name="Ceres",
-    quality_fields=(
-        ("observations", "1075 (1995-2021)"),
-        ("residual_rms_arcsec", "0.24563"),
-        ("condition_code", "0"),
-        ("radar", "60 delay, 0 Doppler"),
-    ),
-    provenance=("accepted 50A.2 Ceres solution identity",),
-)
+
+def _load_solution():
+    """Read the preserved source facts; keep the legacy public constant."""
+    import json
+    from importlib.resources import files
+
+    document = json.loads(
+        files("wenu.data").joinpath("ceres_solution_v1.json").read_text(encoding="utf-8")
+    )
+    if (
+        not isinstance(document, dict)
+        or set(document) != {"schema_version", "solution"}
+        or type(document["schema_version"]) is not int
+        or document["schema_version"] != 1
+    ):
+        raise ValueError("unsupported Ceres solution manifest schema")
+    solution = MinorBodySolutionIdentity(**document["solution"])
+    if (
+        solution.wenu_target, solution.object_class,
+        solution.provider_spk_id, solution.iau_number,
+    ) != (
+        CERES_BODY.target, CERES_BODY.body_class,
+        CERES_BODY.physical_body_id, CERES_BODY.iau_number,
+    ):
+        raise ValueError("Ceres solution manifest differs from body identity")
+    return solution
+
+
+CERES_SOLUTION = _load_solution()

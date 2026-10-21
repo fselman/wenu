@@ -1,6 +1,7 @@
 """Manifest-backed minor-body source resolution and lifecycle contracts."""
 
 import json
+from pathlib import Path
 from hashlib import sha256
 from types import SimpleNamespace
 
@@ -230,6 +231,220 @@ def test_collection_rejects_uninstalled_name(tmp_path):
 
     with pytest.raises(KeyError, match="no installed object"):
         collection.resolve("not present")
+
+
+def test_real_offline_ceres_kernel_route_matches_retained_science(tmp_path):
+    """Use existing captured SPK evidence only; never acquire a test resource."""
+    import shutil
+    from dataclasses import replace
+    import numpy as np
+    from wenu.observer import Observer, DEFAULT_DATA_DIRECTORY, DEFAULT_EPHEMERIS
+    from wenu.ephemeris import EphemerisStateRequest
+    from wenu.ephemeris_state import KernelEphemerisStateSource
+    from wenu.sky.solar_system_points import EphemerisSourceBinding, SolarSystemPointLayer
+    from wenu.sky.solar_system_tracks import SolarSystemTrackRealizer
+    from test_solar_system_tracks import CONTEXT, request
+    data = Path(DEFAULT_DATA_DIRECTORY)
+    directory = data/'minor_bodies'/'50a2'
+    report = directory/'acquisition-report.json'
+    for path in (report, data/DEFAULT_EPHEMERIS):
+        if not path.is_file():
+            raise FileNotFoundError(f'offline asteroid acceptance requires {path}')
+    document = json.loads(report.read_text())
+    record = next(r for r in document['resources'] if r['key']=='ceres')
+    shutil.copyfile(directory/record['filename'],tmp_path/record['filename'])
+    (tmp_path/'acquisition-report.json').write_text(json.dumps({'resources':[record]}))
+    context = replace(CONTEXT,evaluation_instant='2026-08-30T00:00:00',evaluation_time_scale='utc')
+    with Observer(location='La Ligua',time='2026-08-30T00:00:00Z') as observer:
+        with MinorBodyResourceSession(tmp_path,observer) as session:
+            binding=session.source_binding(CERES_BODY,observer)
+            assert isinstance(binding.target_source,KernelEphemerisStateSource)
+            raw=binding.target_source.source
+            query=EphemerisStateRequest('ceres',CERES_BODY.centre,'icrf','2026-08-30T00:00:00','tdb')
+            expected=raw.state(query);actual=binding.target_source.state(query)
+            np.testing.assert_allclose(actual.position,expected.position,rtol=0,atol=1e-14)
+            np.testing.assert_allclose(actual.velocity,expected.velocity,rtol=0,atol=1e-16)
+            assert actual.solution is expected.solution and actual.segment is expected.segment
+            resolver=lambda d,o:EphemerisSourceBinding(raw,binding.observer_source)
+            before=SolarSystemPointLayer(CERES_BODY,source_resolver=resolver).realize(context,observer)
+            after=SolarSystemPointLayer(CERES_BODY,source_resolver=session.source_binding).realize(context,observer)
+            np.testing.assert_allclose(after.lon_deg,before.lon_deg,rtol=0,atol=1e-11)
+            np.testing.assert_allclose(after.lat_deg,before.lat_deg,rtol=0,atol=1e-11)
+            value=request(descriptor=CERES_BODY,sample_step_days=.5,tick_step_days=.75,tick_count=1)
+            before=SolarSystemTrackRealizer(source_resolver=resolver).curve(value,context=context,observer=observer)
+            after=SolarSystemTrackRealizer(source_resolver=session.source_binding).curve(value,context=context,observer=observer)
+            assert after.sample_instants==before.sample_instants
+            assert after.tick_sample_indices==before.tick_sample_indices
+            np.testing.assert_allclose(after.geometry.lon_deg[0],before.geometry.lon_deg[0],rtol=0,atol=1e-11)
+            np.testing.assert_allclose(after.geometry.lat_deg[0],before.geometry.lat_deg[0],rtol=0,atol=1e-11)
+
+
+def test_ceres_manifest_preserves_frozen_facts_and_validates_identity(monkeypatch):
+    from importlib.resources import files
+    from dataclasses import asdict
+    from wenu.sky import ceres
+    document = json.loads(files('wenu.data').joinpath('ceres_solution_v1.json').read_text())
+    expected = json.loads(json.dumps(asdict(ceres.CERES_SOLUTION)))
+    assert document == {'schema_version': 1, 'solution': expected}
+    fixture = json.loads(Path('tests/fixtures/horizons_asteroid_validation_50a2.json').read_text())
+    record = fixture['objects'][0]
+    for key in ('provider_spk_id','orbit_solution_id','solution_date','osculating_epoch'):
+        assert document['solution'][key] == record[key]
+    assert dict(ceres.CERES_SOLUTION.quality_fields) == record['quality_fields']
+    class Resource:
+        def joinpath(self, name):
+            return self
+        def read_text(self, **kwargs):
+            return json.dumps(document)
+    monkeypatch.setattr('importlib.resources.files', lambda name: Resource())
+    document['solution']['provider_spk_id'] = '20000002'
+    with pytest.raises(ValueError, match='differs from body identity'):
+        ceres._load_solution()
+    document['schema_version'] = 2
+    with pytest.raises(ValueError, match='unsupported Ceres'):
+        ceres._load_solution()
+
+
+@pytest.mark.parametrize('numbered', [False, True])
+def test_asteroid_session_point_and_track_consume_kernel_and_refuse(tmp_path, monkeypatch, numbered):
+    """Synthetic SPK/observer inputs; real composition, kernel and light-time paths."""
+    from dataclasses import replace
+    from astropy.time import Time
+    import numpy as np
+    from wenu.ephemeris import EphemerisState, EphemerisStateRequest
+    from wenu.ephemeris_state import KernelEphemerisStateSource
+    from wenu.sky.solar_system_points import SolarSystemPointLayer, EphemerisSourceBinding
+    from wenu.sky.solar_system_tracks import SolarSystemTrackRealizer
+    from wenu_kernel.kernel import KernelSession
+    from wenu_kernel.errors import UnsupportedCapability, ProviderEvaluationError
+    from test_solar_system_tracks import RESOURCE, CONTEXT, ApparentRealizer, observer_state, sample_observer, request
+    CONTEXT = replace(CONTEXT, evaluation_instant='2026-08-30T00:00:00', evaluation_time_scale='utc')
+    directory = numbered_manifest_directory(tmp_path) if numbered else manifest_directory(tmp_path)
+    if numbered:
+        payload = b'DAF/synthetic numbered asteroid'
+        (tmp_path/'79989.bsp').write_bytes(payload)
+        path = tmp_path/'acquisition-report.json'
+        doc = json.loads(path.read_text());doc['resources'][0]['sha256'] = sha256(payload).hexdigest()
+        path.write_text(json.dumps(doc))
+    target = 20079989 if numbered else 20000001
+    class Segment:
+        center=10; frame_id=1; data_type=21
+        start_jd=2460000.5; end_jd=2470000.5
+        def at(self, time):
+            if kernel._closed:
+                raise ValueError('synthetic asteroid SPK is closed')
+            angle = float(time.tdb)-2461282.5
+            return SimpleNamespace(position=SimpleNamespace(au=(2*np.cos(angle),2*np.sin(angle),.2)),
+                velocity=SimpleNamespace(au_per_d=(0.,0.,0.)))
+        @property
+        def spk_segment(self):
+            return self
+    segment=Segment();segment.target=target
+    class Kernel:
+        def __init__(self, path):
+            nonlocal kernel
+            kernel=self;self.path=path;self.segments=(segment,);self._closed=False;self.closes=0
+        def close(self):
+            self._closed=True;self.closes+=1
+    kernel=None
+    planetary=SimpleNamespace(resource=RESOURCE)
+    planetary.state=lambda q: EphemerisState(q,(0.,0.,0.),(0.,0.,0.),'au','au/day',RESOURCE,q.target,'0')
+    monkeypatch.setattr('wenu.minor_body_resources.SpiceMinorBodyKernel',Kernel)
+    monkeypatch.setattr('wenu.minor_body_resources.SkyfieldEphemerisStateSource.from_observer',lambda observer:planetary)
+    observer=SimpleNamespace(t_astropy=Time('2026-08-30T00:00:00',scale='utc'),
+        timescale=SimpleNamespace(from_astropy=lambda t:SimpleNamespace(tdb=float(t.tdb.jd))))
+    session=MinorBodyResourceSession(directory,observer)
+    descriptor=session.collection.resolve('79989' if numbered else '1')
+    binding=session.source_binding(descriptor,observer)
+    assert isinstance(binding.target_source,KernelEphemerisStateSource)
+    assert binding.observer_source is planetary
+    assert session.source_binding(descriptor,observer).target_source is binding.target_source
+    options=dict(observer_state_factory=observer_state,apparent_realizer=ApparentRealizer())
+    raw_resolver=lambda d,o:EphemerisSourceBinding(binding.target_source.source,planetary)
+    point=SolarSystemPointLayer(descriptor,source_resolver=session.source_binding,**options)
+    track=SolarSystemTrackRealizer(source_resolver=session.source_binding,sample_observer_factory=sample_observer,**options)
+    value=request(descriptor=descriptor)
+    baseline=SolarSystemTrackRealizer(source_resolver=raw_resolver,sample_observer_factory=sample_observer,**options).curve(value,context=CONTEXT,observer=observer)
+    p=point.realize(CONTEXT,observer)
+    actual=track.curve(value,context=CONTEXT,observer=observer)
+    np.testing.assert_allclose(actual.geometry.lon_deg[0],baseline.geometry.lon_deg[0],rtol=0,atol=1e-11)
+    assert actual.sample_instants == baseline.sample_instants
+    assert actual.tick_sample_indices == baseline.tick_sample_indices
+    # Compare actual canonical pixels, including sample-derived symbols. The
+    # apparent backend above is synthetic; this is a routing/output oracle.
+    import matplotlib.pyplot as plt
+    from matplotlib.image import imread
+    from test_chart_request_tracks import request as chart_request
+    from wenu.sky.celestial_sphere import CelestialSphere
+    from wenu.charts.request_tracks import configure_chart_request_track
+    from wenu.charts.detail_application import composition_layer_options
+    from wenu.charts.styles import PublicationStyle
+    from wenu.charts.detail import ResolvedDetail
+    from wenu.charts.context import Viewport, BoundaryKind
+    from wenu.projections import StereographicProjection
+    from wenu.rendering import MatplotlibRenderer
+    projection=StereographicProjection()
+    projected=projection.project_geometry(baseline.geometry)[0]
+    cx,cy=float(np.mean(projected.x)),float(np.mean(projected.y))
+    viewport=Viewport(cx-1.,cx+1.,cy-1.,cy+1.)
+    composition=SimpleNamespace(style=PublicationStyle(),detail=ResolvedDetail(),
+        context=SimpleNamespace(boundary_kind=BoundaryKind.RECTANGULAR,viewport=viewport))
+    images=[]
+    for routed in (False,True):
+        sky=CelestialSphere(None)
+        chart=replace(chart_request('regional'),solar_system_tracks=(value,),
+            minor_body_descriptors=(descriptor,),minor_body_resource_directory=directory,
+            solar_system_track_symbols='major',solar_system_track_labels='major')
+        layer=configure_chart_request_track(sky,chart)
+        owner=layer.track_realization.realizer
+        owner.source_resolver=session.source_binding if routed else raw_resolver
+        owner.observer_state_factory=observer_state
+        owner.sample_observer_factory=sample_observer
+        owner.apparent_realizer=ApparentRealizer()
+        configured=composition_layer_options(composition,sky,reload_catalogues=False)
+        figure,axes=plt.subplots(figsize=(4,3),dpi=90)
+        try:
+            sky.draw_chart(observer=observer,realization_context=CONTEXT,
+                projection=projection,renderer=MatplotlibRenderer(axes),
+                layer_options=configured.layer_options,viewport=viewport)
+            axes.set_axis_off()
+            output=tmp_path/f'asteroid-{routed}.png';figure.savefig(output)
+            images.append(imread(output))
+        finally:
+            plt.close(figure)
+    np.testing.assert_array_equal(images[0],images[1])
+    assert np.any(images[0][:,:,:3]<.5)
+    original=KernelSession.evaluate;queries=[]
+    def changed(s,q):
+        queries.append(q);batch=original(s,q);row=batch.states[0];x,y,z=row.position_m
+        return replace(batch,states=(replace(row,position_m=(-y,x,z)),))
+    monkeypatch.setattr(KernelSession,'evaluate',changed)
+    moved=point.realize(CONTEXT,observer)
+    np.testing.assert_allclose(moved.lon_deg,(p.lon_deg+90)%360,rtol=0,atol=1e-9)
+    moved_track=track.curve(value,context=CONTEXT,observer=observer)
+    np.testing.assert_allclose(moved_track.geometry.lon_deg[0],(actual.geometry.lon_deg[0]+90)%360,rtol=0,atol=1e-9)
+    assert queries and all(len(q.catalogue.resources)==2 for q in queries)
+    def refuse(s,q):
+        raise UnsupportedCapability('asteroid state refused')
+    monkeypatch.setattr(KernelSession,'evaluate',refuse)
+    with pytest.raises(UnsupportedCapability,match='asteroid state refused'):
+        point.realize(CONTEXT,observer)
+    with pytest.raises(UnsupportedCapability,match='asteroid state refused'):
+        track.curve(value,context=CONTEXT,observer=observer)
+    monkeypatch.setattr(KernelSession,'evaluate',original)
+    from wenu.sky.solar_system_track_layer import SolarSystemTrackRealization
+    shared=SolarSystemTrackRealization(value,realizer=track)
+    shared.realize(CONTEXT,observer)
+    session.close();session.close()
+    assert kernel.closes==1
+    with pytest.raises(ValueError,match='session is closed'):
+        point.realize(CONTEXT,observer)
+    with pytest.raises(ValueError,match='session is closed'):
+        shared.realize(CONTEXT,observer)
+    with pytest.raises(ProviderEvaluationError) as closed:
+        binding.target_source.state(EphemerisStateRequest(
+            descriptor.target,descriptor.centre,'icrf','2026-08-30T00:00:00','tdb'))
+    assert 'SPK is closed' in str(closed.value.__cause__)
 
 
 def comet_manifest_directory(

@@ -590,6 +590,37 @@ assert snapshot.make_sky(assembly=Supplied()) is snapshot
     assert result.returncode == 0, result.stdout+result.stderr
 
 
+def test_ceres_solution_manifest_ships_and_loads_without_source_checkout(tmp_path):
+    from zipfile import ZipFile
+    import wenu_kernel
+    wheel = _assert_source_products_ship(tmp_path, (), modules=(
+        'wenu/data/ceres_solution_v1.json', 'wenu/sky/ceres.py',
+        'wenu/ephemeris_state.py', 'wenu/minor_body_resources.py'))
+    installed = tmp_path/'installed'
+    with ZipFile(wheel) as archive:
+        archive.extractall(installed)
+    sdk_root = Path(wenu_kernel.__file__).resolve().parent.parent
+    dependencies = [p for p in sys.path if Path(p).name in ('site-packages','dist-packages')]
+    script = r'''
+import sys,json
+from pathlib import Path
+sys.path[:0]=[sys.argv[1],sys.argv[2],*json.loads(sys.argv[3])]
+from importlib.resources import files
+from wenu.sky import ceres
+from wenu.ephemeris_state import KernelEphemerisStateSource
+assert Path(ceres.__file__).is_relative_to(Path(sys.argv[1]))
+manifest=files('wenu.data').joinpath('ceres_solution_v1.json')
+assert Path(str(manifest)).is_relative_to(Path(sys.argv[1]))
+document=json.loads(manifest.read_text())
+assert document['schema_version']==1
+assert ceres.CERES_SOLUTION.orbit_solution_id==document['solution']['orbit_solution_id']=='JPL#48'
+assert ceres.CERES_SOLUTION.provider_spk_id==ceres.CERES_BODY.physical_body_id=='20000001'
+'''
+    result = subprocess.run([sys.executable,'-I','-S','-c',script,str(installed),
+        str(sdk_root),json.dumps(dependencies)],cwd=tmp_path,capture_output=True,text=True)
+    assert result.returncode == 0, result.stdout+result.stderr
+
+
 def test_atlas_sheet_contract_ships_and_runs_without_source_checkout(tmp_path):
     from zipfile import ZipFile
     import wenu_kernel

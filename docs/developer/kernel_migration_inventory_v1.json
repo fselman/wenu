@@ -453,19 +453,19 @@
       "path": "src/wenu/charts/magnitude_legend_matplotlib.py",
       "git_blob_sha": "07104731fa669bb972df830cf5e3c51076b00b11",
       "as_is_directory": "src/wenu/charts",
-      "description": "Matplotlib rendering for stellar magnitude–size legends."
+      "description": "Matplotlib rendering for stellar magnitude\u2013size legends."
     },
     {
       "path": "src/wenu/charts/magnitude_legend_style.py",
       "git_blob_sha": "9328fc55e2d465c8335486b72cf2273de6b5bdec",
       "as_is_directory": "src/wenu/charts",
-      "description": "Style configuration for stellar magnitude–size legends."
+      "description": "Style configuration for stellar magnitude\u2013size legends."
     },
     {
       "path": "src/wenu/charts/magnitude_legend_workflow.py",
       "git_blob_sha": "b270984666cd5b435fec7874e73135642b2d471d",
       "as_is_directory": "src/wenu/charts",
-      "description": "Chart-level workflow for stellar magnitude–size legends."
+      "description": "Chart-level workflow for stellar magnitude\u2013size legends."
     },
     {
       "path": "src/wenu/charts/modes.py",
@@ -1058,7 +1058,7 @@
     },
     {
       "path": "src/wenu/ephemeris_state.py",
-      "git_blob_sha": "2b28f5fb927b80819e8791f5f0e22352df340140",
+      "git_blob_sha": "a24f12942421d15fe7acf3647676ea0e08648813",
       "as_is_directory": "src/wenu",
       "description": "Borrowed request-scoped geometric ephemeris adapter to Cartesian SDK states."
     },
@@ -1160,7 +1160,7 @@
     },
     {
       "path": "src/wenu/minor_body_resources.py",
-      "git_blob_sha": "80778a763df33bb0ffe2e2f0ed6cd4cfcfa7937d",
+      "git_blob_sha": "0a1d6d84ad6dd727ef6c305a07d3a421b56721b6",
       "as_is_directory": "src/wenu",
       "description": "Explicit offline resolution and lifecycle for minor-body resources."
     },
@@ -1472,9 +1472,9 @@
     },
     {
       "path": "src/wenu/sky/ceres.py",
-      "git_blob_sha": "8cb3f6a9febbdeb33873ad12a00f74180effb523",
+      "git_blob_sha": "154dcfdccf4313bf99b79f9b86bf022d31cca173",
       "as_is_directory": "src/wenu/sky",
-      "description": "Catalog-owned identity for the first drawable asteroid."
+      "description": "Ceres descriptor and manifest-backed solution identity."
     },
     {
       "path": "src/wenu/sky/constellation_boundaries.py",
@@ -1665,7 +1665,7 @@
     },
     {
       "path": "src/wenu/sky/solar_system_track_layer.py",
-      "git_blob_sha": "ba7595ea6270f64d0b72a0bf3800729094527da1",
+      "git_blob_sha": "134f6a760936ff7745434ecd3776ad0c8a588a94",
       "as_is_directory": "src/wenu/sky",
       "description": "Scientific Solar-System track layer."
     },
@@ -10442,7 +10442,7 @@
       "sdk_cases_passed": 205,
       "metadata": "Actual isolated installed kernel wheel and root wheel/sdist/editable consumers passed; class identity, old pickle paths, aliases, ring octant/complement and source-free snapshots covered."
     },
-    "remaining": "KG.04 projections/clipping/domain math not moved; KG.05 full-service integration and KG.06–KG.07 completed-K audit/corrections remain pending."
+    "remaining": "KG.04 projections/clipping/domain math not moved; KG.05 full-service integration and KG.06\u2013KG.07 completed-K audit/corrections remain pending."
   },
   "geometry_projection_implementation": {
     "id": "KG.04",
@@ -11551,7 +11551,7 @@
         "issue": "Source physical facts, constructed/unitless compatibility and diffuse metadata/transport remain explicitly partial; lookup and geometry movement did not fabricate qualification."
       }
     ],
-    "retained_evidence": "PR #234–#286 bounded receipts and named owners; KG.05 complete Mac receipt accepted. This audit does not revalidate all numerical science or release/visual/classroom acceptance.",
+    "retained_evidence": "PR #234\u2013#286 bounded receipts and named owners; KG.05 complete Mac receipt accepted. This audit does not revalidate all numerical science or release/visual/classroom acceptance.",
     "guide": "Coordinate guide remains current: no scientific semantics, numerical implementation or runtime ownership changed.",
     "verification": {
       "kernel_import_scan_modules": 22,
@@ -11590,7 +11590,7 @@
     },
     "new_output_requirement": "All four cold/restored real polar specimens must pass with both xfail markers removed.",
     "retained_evidence": "Unaffected state/time/provider science and KG.05 full atlas serial/spawn/book receipts; affected isolated kernel/root installs explicitly repeated.",
-    "remaining": "Complete Mac acceptance, then explicit selection of K3.16; G06.U1–U4 retain assigned K3 scope.",
+    "remaining": "Complete Mac acceptance, then explicit selection of K3.16; G06.U1\u2013U4 retain assigned K3 scope.",
     "local_verification": {
       "selected_cases": 103,
       "passed_unique_cases": 102,
@@ -11867,7 +11867,7 @@
     "base_commit": "89756d957696b8baf2cd69f52f6a6878cc3a8484",
     "plan_commit": "47ba46eb918c87a488f9d6c98992eda3cf3fb17e",
     "status": "Verified locally; full Mac acceptance pending.",
-    "agreement": "Fernando’s 2026-10-20 proceed after the explicit K3.21 proposal and PR #293 cleanup.",
+    "agreement": "Fernando\u2019s 2026-10-20 proceed after the explicit K3.21 proposal and PR #293 cleanup.",
     "gate": "atlas-sheet-routing",
     "assessment": "docs/developer/kernel_migration_audit_v1.md#k321-atlas-sheet-and-consumer-assessment",
     "production_modules": [
@@ -12299,6 +12299,43 @@
       "documentation_complete_checkout_required": 5,
       "tooling_passed": 8
     },
-    "limits": "Complete Mac acceptance pending. Scientific-API Moon sampling does not change satellite-track chart refusal. No SDK/new module/dependency/source/schema/renderer/sampling change, acquisition, asteroid/comet state adoption or K3/K5 closure."
+    "limits": "Accepted PR #300: Mac 83 focused, 36 documentation and eight tooling cases; clean main and branch cleanup confirmed. No satellite-track chart admission or K3/K5 closure."
+  },
+  "asteroid_routing": {
+    "milestone": "K3.28 / M7",
+    "base_commit": "c3ff9bb7a16987fb387d3dc5306aba308b708734",
+    "plan_commit": "8a3f0393482a2883e2f3af9f79b9f3ed8dc40572",
+    "gate": "asteroid-routing",
+    "owners": [
+      "src/wenu/ephemeris_state.py",
+      "src/wenu/minor_body_resources.py",
+      "src/wenu/sky/ceres.py",
+      "src/wenu/sky/solar_system_track_layer.py"
+    ],
+    "source_blobs": {
+      "src/wenu/ephemeris_state.py": "a24f12942421d15fe7acf3647676ea0e08648813",
+      "src/wenu/minor_body_resources.py": "0a1d6d84ad6dd727ef6c305a07d3a421b56721b6",
+      "src/wenu/sky/ceres.py": "154dcfdccf4313bf99b79f9b86bf022d31cca173",
+      "src/wenu/sky/solar_system_track_layer.py": "134f6a760936ff7745434ecd3776ad0c8a588a94"
+    },
+    "manifest": "src/wenu/data/ceres_solution_v1.json",
+    "manifest_sha256": "4c7163c25c9ec67800c775acdde217584f35f4f85875595538178016a1edcf03",
+    "disposition": "Reuse existing Cartesian adapter with complete resource-chain admission and original minor-body state lineage. Offline asteroid session assembly supplies wrapped targets and raw observer sources. Preserve Ceres constant via validated packaged data. Re-admit asteroid resolver before warm track sharing.",
+    "evidence": [
+      "Both closed-session warm regressions fail before the correction.",
+      "Adapter bypass fails both Ceres and numbered consumer seams.",
+      "Returned states move point/track geometry; refusal propagates after success.",
+      "Canonical public request raw/routed PNG pixels agree with labelled synthetic apparent inputs.",
+      "Wheel/sdist and isolated installed consumer retain complete Ceres manifest facts."
+    ],
+    "limits": "Complete Mac acceptance pending, including offline DE440s/Ceres 50a2 point/track parity. No new science/acquisition/comet adoption/SDK/dependency/snapshot/renderer change. Existing CSPICE composition and numerical direction algorithms unchanged.",
+    "local_receipt": {
+      "focused_available_passed": 208,
+      "installed_manifest_passed": 1,
+      "offline_ceres_and_de440s_required_cases": 2,
+      "documentation_available_passed": 31,
+      "documentation_complete_checkout_required": 5,
+      "tooling_passed": 8
+    }
   }
 }

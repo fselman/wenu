@@ -5,6 +5,7 @@ Each request has a short-lived, borrowed registration: no cross-request state or
 resource cache, temporal certificate, acquisition or ephemeris ownership.
 """
 
+from dataclasses import replace
 from hashlib import sha256
 import json
 from math import floor
@@ -12,7 +13,10 @@ from math import floor
 from astropy.time import Time
 from astropy import units as u
 
-from wenu.ephemeris import EphemerisResourceIdentity, EphemerisState, EphemerisStateRequest
+from wenu.ephemeris import (
+    EphemerisResourceChain, EphemerisResourceIdentity,
+    EphemerisState, EphemerisStateRequest,
+)
 from wenu_kernel.kernel import Kernel
 from wenu_kernel.errors import ResourceMismatch, UnsupportedCapability
 from wenu_kernel.records import (
@@ -44,8 +48,8 @@ class _EphemerisProvider:
 
     def __init__(self, source, request):
         resource = source.resource
-        if not isinstance(resource, EphemerisResourceIdentity):
-            raise TypeError("Cartesian adapter requires one ephemeris resource.")
+        if not isinstance(resource, (EphemerisResourceIdentity, EphemerisResourceChain)):
+            raise TypeError("Cartesian adapter requires an ephemeris resource or chain.")
         self.source = source
         self.original_resource = resource
         self.request = request
@@ -56,24 +60,40 @@ class _EphemerisProvider:
             [request.target, request.centre, request.frame],
             separators=(",", ":"), ensure_ascii=False,
         ).encode()
-        if resource.coverage_time_scale != "tdb":
-            raise UnsupportedCapability("ephemeris coverage requires TDB")
+        resources = (
+            (resource.primary,) + resource.dependencies
+            if isinstance(resource, EphemerisResourceChain) else (resource,)
+        )
+
         def endpoint(value):
             if value.startswith("JD "):
                 return _time_point(Time(float(value[3:]), format="jd", scale="tdb"))
             return _time_point(Time(value, scale="tdb"))
-        coverage = TimeSpan(endpoint(resource.coverage_start), endpoint(resource.coverage_end))
-        self.resource = ResourceRef(
-            "ephemeris:spk", resource.model, resource.sha256, coverage,
-            "borrowed resolved offline resource; no acquisition",
-            resource.provenance or ("caller supplied ephemeris identity",),
+        references = []
+        for index, item in enumerate(resources):
+            if item.coverage_time_scale != "tdb":
+                raise UnsupportedCapability("ephemeris coverage requires TDB")
+            domain = TimeSpan(endpoint(item.coverage_start), endpoint(item.coverage_end))
+            references.append(ResourceRef(
+                ("ephemeris:spk" if index == 0 else f"ephemeris:spk:{index}"),
+                item.model, item.sha256, domain,
+                "borrowed resolved offline resource; no acquisition",
+                item.provenance or ("caller supplied ephemeris identity",),
+            ))
+        # Composition can be admitted only where every dependency is covered.
+        # Exact segment gaps remain the existing backend's responsibility.
+        coverage = TimeSpan(
+            max((ref.coverage.start for ref in references), key=TimeSpan.key),
+            min((ref.coverage.stop for ref in references), key=TimeSpan.key),
         )
+        self.resources = tuple(references)
+        self.resource = self.resources[0]
         self.catalogue_ref = CatalogueRef(
-            self.key, (self.resource,), sha256(identity).hexdigest(),
+            self.key, self.resources, sha256(identity).hexdigest(),
         )
         self.model = ModelRef(
             "wenu:geometric-ephemeris", "1", sha256(identity).hexdigest(),
-            (self.resource,),
+            self.resources,
         )
         self.reference = ReferenceSpec(
             request.frame, request.centre, "geometric", "cartesian", "m,m/s",
@@ -129,7 +149,7 @@ class _EphemerisProvider:
         raise UnsupportedCapability("ephemeris temporal reuse is not admitted")
 
     def close(self):
-        # The observer owns the backend; this registration never closes it.
+        # The caller owns the backend; this registration never closes it.
         pass
 
 
@@ -153,10 +173,9 @@ class KernelEphemerisStateSource:
             with kernel.open_session(SessionPolicy((provider.catalogue_ref,))) as session:
                 returned = session.evaluate(provider.query).states[0]
         original = provider.original
-        return EphemerisState(
-            request, tuple(x / u.au.to(u.m) for x in returned.position_m),
-            tuple(x / (u.au / u.day).to(u.m / u.s) for x in returned.velocity_m_s),
-            "au", "au/day", self.resource,
-            original.provider_target_id, original.provider_centre_id,
-            original.provenance + ("returned kernel Cartesian state",),
+        return replace(
+            original,
+            position=tuple(x / u.au.to(u.m) for x in returned.position_m),
+            velocity=tuple(x / (u.au / u.day).to(u.m / u.s) for x in returned.velocity_m_s),
+            provenance=original.provenance + ("returned kernel Cartesian state",),
         )
