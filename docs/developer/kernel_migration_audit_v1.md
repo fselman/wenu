@@ -34,7 +34,7 @@ measurement-epoch defaults; other nonstellar source qualification remains open.
 | M5 / mechanism implemented; source gaps open | `objects/nonstellar.py` preserves source fields/metadata/units and mirrors declared coordinate facts in a frozen `NonStellarCatalogueMetadata` record bound to input bytes. Native and observed specifications consume it; source provider identity replaces copied labels. Conflicting declarations and strict incomplete admission fail before publication | Missing facts remain null and discoverable in `missing_fields`; `require_complete()` and strict load refuse them. Legacy charts retain the explicit `legacy-unverified-catalogue-encoding` model. Actual source frame/origin and model-required epoch/scale gaps must be resolved before physical provider closure. Galaxy static directions do not require a measurement epoch. Their centre consumers now use the kernel with an explicitly unknown origin when missing; shape axes/PA remain above it. Compatibility is not evidence of accuracy. | `nonstellar-admission`: owner regressions, real family geometry, cold/saved/source-free and public CLI consumers |
 | M6 / header defaults fixed; legacy interpretation explicit | Snapshot v5 derives fixed headers from each provider, stores nonstellar records, checks source identity/table metadata/units/header agreement and retains the separate open-cluster row contract | Readers admit v1-v4 historical formats without treating their J2000 headers as measurement epochs. Missing legacy units/digests are not reconstructed as facts. Resource gaps from M5 remain open; the shared coordinate helper correction is verified separately under M4. | Existing corruption owner plus nonstellar record/header conflicts, actual known/unknown epoch round trips and legacy admission |
 | M7 / accepted PR #301 | `sky/ceres.py::CERES_SOLUTION` loads complete source facts from `data/ceres_solution_v1.json`; numbered/comet installed identities retain their acquisition manifests | Ceres schema and descriptor identity are validated; existing receipt/SPK digest/target/frame checks remain. Source facts no longer require a Python-literal edit. Complete Mac acceptance passed (211 focused, 36 documentation, eight tooling). | Minor-body resources/ephemeris and Ceres public state/track owners |
-| M8 / medium, correction implemented for acceptance | TSIS edition facts were embedded in `satellites/radiometry.py` | K3.36 moves the unchanged facts into packaged JSON and an immutable validated record, retaining public aliases, exact external byte admission and numerical/malformed-resource oracles. Complete Mac acceptance remains pending; no spectrum redistribution is admitted | Satellite radiometry resource/parser owner |
+| M8 / accepted PR #309 | TSIS edition facts were embedded in `satellites/radiometry.py` | K3.36 moves the unchanged facts into packaged JSON and an immutable validated record, retaining public aliases, exact external byte admission and numerical/malformed-resource oracles. Mac: 61 focused, 36 documentation, eight tooling; no spectrum redistribution is admitted | Satellite radiometry resource/parser owner |
 | M9 / runtime metadata and v6 transport accepted PR #289 | `sky/milky_way.py` and `sky/magellanic_clouds.py` provide fixed source descriptions/ICRS semantics while loaders retain chiefly source paths and feature levels | The K3.16 source envelope now preserves original properties, byte/geometry identity and captured provenance; v6 transports it and v1–v5 retain explicit legacy gaps. Physical declarations absent from sources remain absent. No fictitious stellar epoch is assigned. | Isophote loading/native geometry and saved-ring consumers |
 | M10 / inference repaired; physical qualification unknown | `skyfield_ephemeris.py` retains byte/coverage identity, reports unqualified model by default and labels explicit caller declarations | K3.25 removes filename inference. Independent source/model qualification remains unknown rather than fabricated. | `test_skyfield_ephemeris.py` rename/explicit declaration owner |
 
@@ -1896,3 +1896,49 @@ and K3.16/K3.21/K3.22 real cold/restored/worker product receipts remain applicab
 to unchanged source/SDK/projection/renderer implementations. No new source,
 numerical/graphics algorithm, SDK/dependency/module/package, schema, acquisition,
 network, performance benchmark or external execution. K3.40 and K3/K5 remain open.
+
+## K3.40 complete consumer and receipt reconciliation
+
+Base main `0deca8c31d170914d1f913bb22c1a0038d68e95f` after PR #312; the Mac
+receipt at `c43369a1` passed 247 focused cases in 18.47 s, 36 documentation in
+3.87 s and eight tooling in 9.015 s. Fernando confirmed clean synchronized main,
+branch cleanup and the order K3.40, six real products, then Gaia. Revision 64
+records this bounded scope before implementation.
+
+The exact current tree reconciles 388 Python files, all 290 root exports,
+20 declared-export modules, eight command targets and five notebooks. Every
+source path is assigned a responsibility/route and bounded accepted evidence;
+all K3.01–K3.39 IDs link to their original records and merged delivery revisions.
+Explicit source/AST review covers the retained raw state and coordinate calls,
+not just import counts. No new applicable baseline service bypass was found;
+production implementations and original test definitions remain unchanged.
+
+| Assessment finding | Resolution |
+|---|---|
+| Historical counts and partial statuses still looked current | Add an exact current census and receipt graph; preserve original per-slice history, failures and retries |
+| K3.36/K3.37/K3.39 still said Mac pending in some current sections | Reconcile accepted PR #309/#310/#312 receipts and current roadmap/architecture |
+| Legacy data-directory acquisition helper is outside the tools-only census | Classify its import-time download/write effects explicitly; inspect source without importing or executing it |
+| Original full KG.07 Mac total is not persisted | Retain original local/component/isolation evidence and applicable unchanged core receipts; use accepted K3.16 real four-polar and K3.39 row/domain/alias evidence for affected scopes, without inventing the missing total |
+| Whole-K3 wording could conceal remaining scientific obligations | Keep M5/M10 source/model gaps, Gaia/AX limits, legacy transport, satellite domains, ownership/error/reuse and K5/extraction exclusions explicit |
+
+Closest existing protection is the complete repository-source inventory,
+K3.38 maintenance census and K3.37 public export identity tests. Three added
+tests in the same inventory owner reject omitted paths/exports, stale source or
+notebook hashes, missing family receipt links, unreconciled sensitive calls and
+erased scientific limits. Deliberately removing one source, corrupting one source
+hash, removing a public export or erasing a model limit each fails its intended
+contract. All faults are restored before the final gate.
+
+The focused consumer-reconciliation gate retains dependency, assembly, public
+sheet and canonical/legacy alias contracts. It does not rerun unchanged physical
+oracles, full SDK/installations or catalogue/product export matrices. Import/call
+evidence locates responsibility; accepted independent numerical and real product
+receipts support the numerical/compatibility claims. Complete Mac reconciliation
+and documentation acceptance remain pending. Candidate K3 closure means baseline
+routing/compatibility only, not a frozen contract, new scientific qualification,
+independent astronomical package or authorization for new resource acquisition.
+
+The consumer-reconciliation Mac gate also retains the original LMC boundary
+composition case that was locally blocked by missing DE440s in KG.07. It uses
+the already installed offline resource; no acquisition or full lower-level
+gate repeat is part of this reconciliation.

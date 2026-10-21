@@ -14,8 +14,9 @@ provider conformance kit verifies an external consumer with no repository fixtur
 The base state SDK has no runtime dependencies; explicit numerical geometry
 imports use the optional NumPy geometry extra. Accepted PR #247 makes it a
 separate Wenu dependency and routes native stellar realization through it.
-Other state consumers and the SDK freeze remain pending. The canonical
-projection and rendering pipeline is retained.
+The existing state/geometry consumer routes are now reconciled for K3.40
+acceptance; the final SDK freeze remains pending. The canonical projection and
+rendering pipeline is retained.
 
 The agreed target service kernel also includes generic spherical geometry/topology,
 domain guards, projections/projected geometry and coordinate/observer realization
@@ -94,8 +95,11 @@ rows retain NaN projected slots and entity metadata; only finite coordinate rows
 enter strict numerical operations. Direct invalid numerical inputs, finite
 invalid latitudes and the opposite-pole domain still refuse. No catalogue rows
 are dropped and no missing direction is published as a state. The real equidistant
-polar specimens now require success without expected-failure markers. Complete
-Mac acceptance of this correction is pending.
+polar specimens now require success without expected-failure markers. The
+correction is merged through PR #288. K3.16 subsequently accepted all four real
+cold/restored polar outputs; K3.39 accepted point-row/domain compatibility.
+The original 103-case KG.07 Mac total is not persisted and is not invented here;
+the reconciliation records the applicable original/component and later evidence.
 Observer/cache identity and application assembly are accepted through K3.18/K3.19.
 K3.21's lower-level public atlas sheet contract is accepted through PR #294.
 K3.22 physical polar product service consumers are accepted through PR #295.
@@ -293,15 +297,21 @@ The chart guard checks vacuum AltAz/site-event binding before projection.
 
 ## Abstraction barriers that remain incomplete
 
-1. `CelestialSphere` and `maximal_sphere` know concrete layer classes. There is
-   no uniform registry behind all epoch-state consumers. Native stellar
-   realization/public positions/line vertices, galaxy centres and open-cluster
-   source lookups use the SDK; remaining state consumers still require migration.
-2. `SkyLayer.realize()` has a legacy fallback that discards the context and
-   calls `spherical_geometry(observer)`. Physical state and observation are
-   therefore not uniformly separated.
+The following are retained compatibility properties or later K5/extraction
+obligations, not unresolved baseline routing bypasses. K3.40's current ledger
+supersedes the earlier partial-consumer status.
+
+1. Application `sky/assembly.py` owns concrete layer construction; central sky,
+   factory and snapshot APIs delegate to it. Astronomical packages are not yet
+   independently extracted or discovered through a plugin registry.
+2. `SkyLayer.realize()` retains its documented legacy fallback to
+   `spherical_geometry(observer)` for compatible geometry layers. Applicable
+   physical/catalogue consumers use their admitted state/observation routes;
+   constructed geometry need not become an object-state query. Final uniform
+   facade/lifecycle placement is a K5 review, not a new capability claim.
 3. Frozen coordinate metadata does not make every geometry result immutable:
-   general arrays, dictionaries and layer collections remain mutable.
+   general arrays, dictionaries and layer collections retain their documented
+   mutability/aliasing contract. This does not imply general thread safety.
 4. Request preparation temporarily installs layers and rebinds resolvers.
    Minor-body registration/alias and atomic resolver rollback is accepted in
    PR #243. PR #244 adds a synchronous request-state journal
@@ -424,7 +434,7 @@ Green radio major/minor diameters, missing PA and existing equal-area circle
 interpretation remain unchanged. Signed Galactic designations, selection, radio
 flux metadata and appearance are preserved. No associated compact-object position
 or motion substitutes for the radio-centre source, and no expansion or propagation
-is added. Mac acceptance remains pending.
+is added. K3.15 is accepted through PR #279; physical source qualification remains explicit.
 
 
 ## Observer resources and observed caches
@@ -700,7 +710,7 @@ magnitude limit and references through current atlas composition and canonical
 export. They do not reproduce the obsolete manual renderer's pixel layout.
 Notebook data are explicitly included in both source and wheel distributions.
 No astronomical calculation, shared service, dependency or public API changes.
-Complete Mac acceptance is pending; K3.38 and K3/K5 remain separate.
+K3.37 is accepted through PR #310; subsequent K3.38/K3.39 acceptance is recorded in the current reconciliation. K5 remains separate.
 
 ## Maintenance and resource consumer boundary
 
@@ -740,3 +750,27 @@ part of the generic renderer. Legends consume returned rendering/metadata and
 footers consume resolved text. No production correction was demonstrated in this
 bounded audit. Existing dependency direction, scientific meaning and physical
 appearance are retained. K3.40 reconciliation and K3/K5 closure remain separate.
+
+## Complete consumer reconciliation
+
+K3.40 pins the current source/public/operational census at main `0deca8c3`:
+274 root production Python files, 22 kernel files, 86 operational tools and six
+source examples (388 files total); the six packaged example copies are already
+within production. It also records all 290 root exports, 20 modules declaring
+`__all__`, eight installed commands and five packaged notebooks. Historical
+inventory counts and per-slice receipts remain historical, rather than being
+silently relabelled as a new full census.
+
+Each path has an exact source blob, responsibility group, appropriate route and
+accepted evidence IDs. All 39 preceding K3 obligations are reconciled; raw state
+and coordinate calls remain in the appropriate provider/shared-service owners.
+No new applicable baseline bypass was demonstrated. No production implementation
+changes are needed. The candidate closure is routing/compatibility acceptance,
+not complete physical source qualification, Gaia propagation or SDK freeze.
+The source namespace includes a legacy explicit Hipparcos ReadMe downloader
+with import-time network/write effects; it is source-inspected only, outside
+deterministic import/test/render routes. This is not new acquisition authority.
+
+Complete Mac audit/documentation acceptance is pending. After acceptance,
+Fernando's six-product review precedes Gaia. K5 final contract review/freeze and
+independent astronomical package extraction remain separate.

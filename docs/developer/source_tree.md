@@ -468,3 +468,15 @@ exact blob IDs in `geometry_rendering_routing.owners` in the migration inventory
 Kernel numerical services retain their placement; Wenu retains appearance,
 product reference construction, legends and backend/export ownership. New
 composition/purity tests extend existing test modules only.
+
+## Current complete consumer census
+
+K3.40 records the exact current 388 Python paths under `src/`, kernel source,
+`tools/` and `examples/` in `consumer_reconciliation.sources`, together with
+owning routes and accepted evidence IDs. Counts: 274 root production (273 Wenu
+modules plus the build helper), 22 kernel, 86 operational and six source
+examples. Six packaged examples are already included in production.
+It separately lists 290 root exports, 20 declared export modules, eight commands
+and five notebooks. Historical counts above retain their original baseline.
+No production or test module is introduced. The legacy data-directory ReadMe
+downloader is explicitly classified, source-inspected and never imported/run.

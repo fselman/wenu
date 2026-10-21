@@ -3224,6 +3224,36 @@
           "reason": "Retain supplied rendered-geometry legend bridge and canonical one-save composition across chart families/formats."
         }
       ]
+    },
+    "consumer-reconciliation": {
+      "scope": "K3.40 exact current source/public/operational census, accepted route/receipt/limit reconciliation and retained dependency/alias contracts.",
+      "limits": "Audit/tests/docs only; no production implementation change. All 388 Python owners, 290 root exports, 20 declared export modules, eight commands and five notebooks are reconciled without executing maintenance/acquisition tools. Preserve accepted bounded service/scientific/installation/product receipts; do not repeat full SDK, catalogue numerics or production exports. Static import/call evidence is not numerical proof. Unknown physical source/model facts, compatibility and satellite/reuse domains remain explicit. Six-product review follows acceptance and precedes Gaia; K4/K5/extraction and external execution remain separate. The retained real LMC case requires existing offline DE440s on Mac; no resource acquisition is part of this task.",
+      "selections": [
+        {
+          "node": "tests/test_repository_sources.py",
+          "reason": "Exact source/notebook identities, complete path/export/command census, family route receipts, sensitive-call sites and explicit scientific limits; four deliberate audit corruption faults."
+        },
+        {
+          "node": "tests/test_dependency_boundaries.py",
+          "reason": "Retain domain direction, concrete assembly and public sheet leaf contracts plus pure kernel/graphics helpers."
+        },
+        {
+          "node": "tests/test_package_boundaries.py",
+          "reason": "Retain actual public imports/exports, package direction and obsolete-path exclusions."
+        },
+        {
+          "node": "tests/test_spherical.py::test_kernel_geometry_aliases_preserve_identity_aliasing_and_pickle_paths",
+          "reason": "Canonical/legacy record/frame/viewport identity remains a required appropriate shared-service route."
+        },
+        {
+          "node": "tests/test_projection_and_clipping_contracts.py::test_kernel_projection_clipping_domain_aliases_and_policy_boundary",
+          "reason": "All projection/domain/clipping facades share kernel identity while Wenu appearance remains application owned."
+        },
+        {
+          "node": "tests/test_projection_and_clipping_contracts.py::test_circumpolar_lmc_boundary_crosses_projected_lmc",
+          "reason": "Close the single locally resource-blocked original KG.07 composition case using the already installed offline DE440s on Mac, without repeating the full kernel/product gate."
+        }
+      ]
     }
   },
   "consumer_review": [

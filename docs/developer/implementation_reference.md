@@ -2098,3 +2098,43 @@ Existing numerical/topology, physical label/tick/band, legend single-save and
 semantic-vector contracts remain in their original test owners. Coordinate
 meaning is unchanged; the coordinate guide remains current. No new geometry
 query, renderer algorithm, schema, dependency or astronomical package is added.
+
+## Complete consumer reconciliation
+
+`consumer_reconciliation` in the migration inventory is the current K3.40 view.
+Its per-file source blobs and source/import/call review map the complete present
+census to accepted service routes and bounded receipt IDs. It supersedes stale
+current-status wording in historical per-slice records without erasing those
+original results, failed runs, retries or limitations.
+
+| Surface | Reconciled evidence |
+|---|---|
+| 274 production + 22 kernel + 86 tools + six source examples | 388 exact source identities, purpose, responsibility and appropriate route; packaged copies counted within production |
+| 290 root Python exports and 20 declared export modules | Exact declared names, owning modules and runtime identity/resolution |
+| Eight commands and five notebooks | Current pyproject target/owner and exact notebook identities; retain accepted installed-command/resource/cell evidence |
+| K3.01–K3.39 | Original bounded records, delivery PR/head/merge and retained Mac acceptance, with KG/AX service evidence only where already adopted |
+| 21 sensitive scientific call expressions | Raw provider/state/coordinate ownership or explicit public delegation; import adjacency alone is not numerical proof |
+
+Source processing, build copying, independent numerical oracles and explicit
+acquisition remain distinct from application state consumers. Geometry services
+do not query fictitious physical objects. Custom injected protocols and the
+legacy geometry fallback remain their existing documented compatibility routes.
+The audit found no production correction to implement.
+
+The original KG.07 full Mac gate total is not present in the persistent record.
+The ledger preserves that distinction: original local component/isolation and
+unchanged core receipts, accepted K3.16 real atlas/four-polar cold/restored
+outputs, and K3.39 missing-row/strict-domain/alias checks supply the affected
+scopes. It does not assert an unobserved 103-case Mac run.
+
+Unqualified physical source/model facts, unpropagated stellar lookup, honest
+legacy snapshot interpretation, satellite exact-versus-candidate/visibility
+domains, synchronous ownership, unknown errors and bounded reuse remain explicit.
+No SDK freeze, new acquisition/model, astronomical package extraction or Gaia
+activation follows from K3.40. The separate six-product review is the agreed
+next acceptance step before Gaia; exact requests/resources are resolved then.
+
+The consumer-reconciliation Mac gate also retains the original LMC boundary
+composition case that was locally blocked by missing DE440s in KG.07. It uses
+the already installed offline resource; no acquisition or full lower-level
+gate repeat is part of this reconciliation.
