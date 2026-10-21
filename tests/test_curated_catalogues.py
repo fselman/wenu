@@ -33,7 +33,7 @@ def test_geometry_kernel_wheel_isolated_imports_metadata_and_numeric_consumer(tm
     with ZipFile(wheel) as archive:
         metadata_file = next(p for p in archive.namelist() if p.endswith('.dist-info/METADATA'))
         metadata = Parser().parsestr(archive.read(metadata_file).decode())
-        assert metadata['Version'] == '0.0.0.dev11'
+        assert metadata['Version'] == '0.0.0.dev12'
         requirements = [Requirement(r) for r in metadata.get_all('Requires-Dist',[])]
         assert requirements and all(r.marker is not None for r in requirements)
         assert all(not r.marker.evaluate({'extra':''}) for r in requirements)
@@ -86,6 +86,12 @@ from wenu_kernel.projections import StereographicProjection, PolarAzimuthalEquid
 from wenu_kernel.geometry import domain
 from wenu_kernel.geometry.clipping import clip_curve_to_viewport
 from wenu_kernel.geometry import ProjectedCurve, Viewport
+from wenu_kernel.geometry import SphericalCurves
+segments=SphericalCurves(([0.,180.],),([-80.,-80.],),
+    coordinate_spec=GENERIC_SPHERICAL_SPEC,ids=['far'],
+    metadata={'segment_geometry':'minor_great_circle'})
+assert len(domain.project_geometry_for_viewport(segments,
+    projection=StereographicProjection(),viewport=Viewport(-.8,.8,-.7,.7)))==0
 stereo=StereographicProjection(radius=2.,flip_ew=False)
 assert np.allclose(stereo.project_spherical(90.,0.),(2.,0.),atol=1e-14)
 assert np.allclose(PolarAzimuthalEquidistantProjection(radius=2.,flip_ew=False).project_spherical(90.,0.),(2.,0.),atol=1e-14)

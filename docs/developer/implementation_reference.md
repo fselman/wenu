@@ -1,5 +1,20 @@
 # Wenu implementation reference
 
+## Finite constellation segments in regional products
+
+Product-review correction PR.03 marks constellation endpoint curves with
+`segment_geometry = "minor_great_circle"`. Kernel dev12's existing
+`project_geometry_for_viewport` boundary clips those explicitly declared
+segments to the safe spherical cap before projection. Wholly interior
+segments retain their exact endpoint chords; distant antipodal chords cannot
+cross the visible field. Both-outside arcs that enter the cap are retained,
+and per-edge IDs, names and HIP metadata follow the surviving geometry.
+Sampled curves and grids retain their existing projection path. No source
+topology, observer transformation, renderer, cluster sizing or label placement
+is changed. Source-free restored constellations acquire the same declaration
+when realized. The focused gate is `finite-constellation-segments`; final Mac
+visual acceptance remains the reported Sco/Lib/Sgr/Oph replot.
+
 **Implemented baseline:** `6708f54a`. This is an entry-point reference, not a
 forward API specification. [Source map](source_tree.md) and
 [scientific contracts](scientific_contracts.md) supply the detailed owners.

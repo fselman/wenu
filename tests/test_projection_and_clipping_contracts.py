@@ -474,6 +474,91 @@ def test_viewport_cap_contains_all_four_corners():
     assert cap < 90.0
 
 
+@pytest.mark.parametrize("flip", [False, True])
+@pytest.mark.parametrize("rotated", [False, True])
+def test_finite_constellation_segments_cannot_wrap_across_regional_view(flip, rotated):
+    from wenu.geometry.spherical import SphericalCurves
+    frame = SphericalFrame(254.0, -12.0, 17.0) if rotated else None
+    projection = StereographicProjection(frame=frame, flip_ew=flip)
+    viewport = Viewport(-0.8, 0.8, -0.7, 0.7)
+    # Synthetic far-side endpoints have a projected chord through the
+    # viewport although their finite minor arc stays behind the observer.
+    lon = ([0, 180], [20, 40], [0, 0], [0, 180])
+    lat = ([-80, -80], [80, 75], [85, 10], [40, 40])
+    if frame is not None:
+        values = [frame.inverse_transform(a, b) for a, b in zip(lon, lat)]
+        lon = [v.lon_deg for v in values]
+        lat = [v.lat_deg for v in values]
+    source = SphericalCurves(lon, lat, coordinate_spec=GENERIC_SPHERICAL_SPEC,
+        ids=["far", "near", "enter", "through"],
+        names=["far", "near", "enter", "through"],
+        metadata={"segment_geometry": "minor_great_circle", "hip_edges": ((1,2),(3,4),(5,6),(7,8))})
+    raw = projection.project_geometry(source)
+    assert clip_curve_to_viewport(raw[0], viewport)  # the original fault
+    result = project_geometry_for_viewport(source, projection=projection, viewport=viewport)
+    assert list(result.metadata["ids"]) == ["near", "enter", "through"]
+    assert result.metadata["hip_edges"] == ((3,4),(5,6),(7,8))
+    np.testing.assert_array_equal(result[0].x, raw[1].x)
+    np.testing.assert_array_equal(result[0].y, raw[1].y)
+    cap = projection_cap_for_viewport(projection, viewport)
+    radius = projection.projected_radius(cap)
+    for curve in result:
+        assert np.isfinite(curve.x).all() and np.isfinite(curve.y).all()
+        assert np.all(np.hypot(curve.x, curve.y) <= radius + 1e-12)
+    assert clip_curve_to_viewport(result[2], viewport)  # both endpoints outside
+    # Sampled curves have no implied endpoint-arc semantics.
+    source.metadata.pop("segment_geometry")
+    unchanged = project_geometry_for_viewport(source, projection=projection, viewport=viewport)
+    np.testing.assert_array_equal(unchanged[0].x, raw[0].x)
+
+
+def test_finite_segment_cap_keeps_empty_collections_and_refuses_ambiguous_arcs():
+    from wenu.geometry.spherical import SphericalCurves
+    projection = StereographicProjection()
+    viewport = Viewport(-0.5, 0.5, -0.5, 0.5)
+    empty = SphericalCurves((), (), coordinate_spec=GENERIC_SPHERICAL_SPEC,
+        metadata={"segment_geometry": "minor_great_circle"})
+    assert len(project_geometry_for_viewport(empty, projection=projection, viewport=viewport)) == 0
+    ambiguous = SphericalCurves(([0,180],), ([0,0],), coordinate_spec=GENERIC_SPHERICAL_SPEC,
+        metadata={"segment_geometry": "minor_great_circle"})
+    with pytest.raises(ValueError, match="Antipodal"):
+        project_geometry_for_viewport(ambiguous, projection=projection, viewport=viewport)
+
+
+def test_real_taurus_edge_cannot_cross_scorpius_sagittarius_region():
+    from wenu.objects.stars import Stars
+    from wenu.sky.constellation_lines import ConstellationLines
+    stars = Stars(None, magnitude_limit=12)
+    stars.load()
+    layer = ConstellationLines(stars, constellations=["Tau", "Sco"])
+    source = layer._spherical_geometry(None, native_icrs=True)
+    projection = StereographicProjection(frame=SphericalFrame(255.0, -25.0))
+    viewport = Viewport(-projection.projected_radius(47.5), projection.projected_radius(47.5),
+                        -projection.projected_radius(42.5), projection.projected_radius(42.5))
+    index = list(source.ids).index("Tau:10:20889-25428")
+    raw = projection.project_geometry(source)
+    assert clip_curve_to_viewport(raw[index], viewport)
+    fixed = project_geometry_for_viewport(source, projection=projection, viewport=viewport)
+    assert not any(str(identifier).startswith("Tau:") for identifier in fixed.metadata["ids"])
+    assert any(str(identifier).startswith("Sco:") for identifier in fixed.metadata["ids"])
+
+
+def test_wide_view_finite_arc_splits_at_antipode_without_dropping_valid_far_side():
+    from wenu.geometry.spherical import SphericalCurves
+    source = SphericalCurves(([0,180], [30,40]), ([-40,-40], [-10,-15]),
+        coordinate_spec=GENERIC_SPHERICAL_SPEC, ids=["split", "valid-far"],
+        metadata={"segment_geometry":"minor_great_circle"})
+    projection = StereographicProjection()
+    viewport = Viewport(-3,3,-3,3)
+    result = project_geometry_for_viewport(source, projection=projection, viewport=viewport)
+    assert list(result.metadata["ids"]) == ["split", "split", "valid-far"]
+    # The two fragments live on opposite sides, never bridge the centre.
+    assert result[0].y.min() > 3 and result[1].y.max() < -3
+    raw = projection.project_geometry(source)
+    np.testing.assert_array_equal(result[2].x, raw[1].x)
+    np.testing.assert_array_equal(result[2].y, raw[1].y)
+
+
 def test_polygons_are_clipped_before_the_unsafe_full_projection():
     projection = StereographicProjection()
     viewport = Viewport(-0.6, 0.6, -0.6, 0.6)

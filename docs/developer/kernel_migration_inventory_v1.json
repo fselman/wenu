@@ -14131,7 +14131,7 @@
         ]
       },
       "packages/wenu_kernel/src/wenu_kernel/geometry/domain.py": {
-        "git_blob_sha": "f4a1ff12340376082602c5727156b23ff32e8f12",
+        "git_blob_sha": "526d165a01a10da94e6db11937641c12753e9ded",
         "group": "kernel-geometry",
         "evidence_ids": [
           "KG.03",
@@ -18864,7 +18864,7 @@
         ]
       },
       "src/wenu/sky/constellation_lines.py": {
-        "git_blob_sha": "ac4b7d50998f21dcf79c1b87695d8af52425808e",
+        "git_blob_sha": "ca97552dcefa21dd64d8d711613a61ba36206140",
         "group": "constellations",
         "evidence_ids": [
           "K3.06",
@@ -26134,5 +26134,27 @@
       "tooling_seconds": 7.247,
       "deliberate_faults_detected": 4
     }
+  },
+  "finite_constellation_segment_correction": {
+    "id": "PR.03",
+    "base_commit": "301eb7cbb01eb0935ec0113974b73c329b235200",
+    "status": "candidate; Mac visual acceptance pending",
+    "gate": "finite-constellation-segments",
+    "source_example": "Packaged Tau:10:20889-25428 falsely crosses a 95x85-degree region tangent at RA255 Dec-25 before the guard.",
+    "ownership": "Explicit Wenu finite-edge declaration; shared kernel cap intersection before projection; unchanged renderer.",
+    "limits": [
+      "Preserve fully interior endpoint chords and HIP source topology.",
+      "Retain sampled curves/grids and metadata identity.",
+      "Cluster sizing and coordinate-label placement deferred.",
+      "No acquisition, Gaia or physical model change.",
+      "Wide-view finite arcs split around an excluded antipodal cap without discarding valid far-side endpoints; polygon cap semantics stay unchanged."
+    ],
+    "local_receipt": [
+      "179 focused/installation/boundary/census cases passed; one offline DE440s-dependent LMC case not run locally.",
+      "205 kernel unittests passed against the modified source.",
+      "Installed dev12 numerical consumer passed without Wenu/scientific backends.",
+      "Disabling the finite-segment guard fails five regression cases.",
+      "31 documentation cases passed; five full-checkout archive/image/census checks require Mac checkout; active available document anchors verified."
+    ]
   }
 }

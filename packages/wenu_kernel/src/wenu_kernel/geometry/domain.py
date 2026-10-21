@@ -274,13 +274,18 @@ def project_geometry_for_viewport(
     full-sky polygon rings can otherwise cross its antipode and wrap back
     across a regional chart.  When a viewport is known, spherical polygons
     are clipped to a cap that contains the complete viewport before any
-    planar coordinates are calculated.  Other geometry retains the normal
-    projection path.
+    planar coordinates are calculated. Explicit minor-great-circle endpoint
+    segments receive the same protection; ordinary sampled curves and grids
+    retain their normal projection path.
 
     The projected viewport and any chart-specific field stop remain later
     clipping stages.  This function only protects projection topology.
     """
-    if viewport is None or not isinstance(spherical, SphericalPolygons):
+    finite_segments = (
+        isinstance(spherical, SphericalCurves)
+        and spherical.metadata.get("segment_geometry") == "minor_great_circle"
+    )
+    if viewport is None or not (isinstance(spherical, SphericalPolygons) or finite_segments):
         return projection.project_geometry(spherical)
 
     angular_radius_deg = projection_cap_for_viewport(
@@ -290,11 +295,87 @@ def project_geometry_for_viewport(
     )
     if angular_radius_deg is None:
         return projection.project_geometry(spherical)
+    if finite_segments:
+        # Segment clipping also supports wide viewports reaching beyond
+        # the near hemisphere. Polygon cap semantics stay unchanged.
+        corner_radius = np.hypot(max(abs(viewport.x_min), abs(viewport.x_max)),
+                                 max(abs(viewport.y_min), abs(viewport.y_max)))
+        angular_radius_deg = min(179.999,
+            projection.angular_radius_for_projected_radius(corner_radius)
+            + float(projection_cap_margin_deg))
+        return _project_finite_segments_to_cap(spherical, projection, angular_radius_deg)
     return project_polygons_to_projection_cap(
         spherical,
         projection=projection,
         angular_radius_deg=angular_radius_deg,
     )
+
+
+def _project_finite_segments_to_cap(spherical, projection, angular_radius_deg):
+    """Keep finite minor arcs out of the stereographic antipodal domain.
+
+    This opt-in contract is for endpoint segments, not arbitrary sampled
+    curves. Fully interior segments retain their exact historical chords.
+    """
+    minimum_z = np.cos(np.radians(angular_radius_deg))
+    items, source_indices = [], []
+    for index, (longitude, latitude, closed) in enumerate(zip(
+        spherical.lon_deg, spherical.lat_deg, spherical.closed
+    )):
+        if closed or len(longitude) != 2:
+            raise ValueError("Minor great-circle segments require two open endpoints.")
+        lon, lat = _projection_aligned_coordinates(projection, longitude, latitude)
+        start, end = _unit_vectors(lon, lat)
+        name = None if spherical.names is None else spherical.names[index]
+        angle = np.arccos(np.clip(np.dot(start, end), -1.0, 1.0))
+        if np.pi - angle < 1e-10:
+            raise ValueError("Antipodal endpoints do not define a unique minor arc.")
+        if angle < 1e-12:
+            if start[2] >= minimum_z:
+                items.append(projection.project_curve(longitude, latitude, name=name))
+                source_indices.append(index)
+            continue
+        tangent = (end - np.cos(angle) * start) / np.sin(angle)
+        # z(t) = start.z*cos(t) + tangent.z*sin(t). Split at its
+        # extrema so neither an entering-and-leaving arc nor an excursion
+        # through the excluded antipodal cap is missed between endpoints.
+        peak = np.arctan2(tangent[2], start[2]) % (2 * np.pi)
+        vertices = [start]
+        extrema = sorted(t for t in (peak, (peak + np.pi) % (2 * np.pi)) if 0 < t < angle)
+        vertices.extend(_slerp(start, end, t / angle) for t in extrema)
+        vertices.append(end)
+        if all(v[2] >= minimum_z for v in vertices):
+            items.append(projection.project_curve(longitude, latitude, name=name))
+            source_indices.append(index)
+            continue
+        fragments = []
+        for first, second in zip(vertices[:-1], vertices[1:]):
+            first_in, second_in = first[2] >= minimum_z, second[2] >= minimum_z
+            retained = []
+            if first_in:
+                retained.append(first)
+            if first_in != second_in:
+                retained.append(_cap_intersection(first, second, minimum_z))
+            if second_in:
+                retained.append(second)
+            retained = _deduplicate_vectors(retained)
+            if len(retained) < 2:
+                continue
+            if fragments and np.allclose(fragments[-1][-1], retained[0]):
+                fragments[-1].extend(retained[1:])
+            else:
+                fragments.append(retained)
+        for retained in fragments:
+            # Retain the established straight figure convention per fragment.
+            source = _source_vectors_for_aligned_arc(np.asarray([retained[0], retained[-1]]), projection)
+            lon = np.degrees(np.arctan2(source[:, 1], source[:, 0]))
+            lat = np.degrees(np.arcsin(np.clip(source[:, 2], -1, 1)))
+            items.append(projection.project_curve(lon, lat, name=name))
+            source_indices.append(index)
+    metadata = _subset_metadata(_spherical_collection_metadata(spherical), source_indices, len(spherical))
+    metadata["projection_domain_clipped"] = True
+    metadata["projection_cap_deg"] = angular_radius_deg
+    return ProjectedCurves(items=items, metadata=metadata)
 
 
 def projection_cap_for_viewport(
