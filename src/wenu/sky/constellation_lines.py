@@ -370,6 +370,7 @@ class ConstellationLines(GeometricalObject):
             names=names,
             metadata={
                 "system": self.system,
+                "segment_geometry": "minor_great_circle",
                 "semantic_entity_keys": tuple(
                     semantic_key(name, field="constellation key")
                     for name in names

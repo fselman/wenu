@@ -3254,6 +3254,44 @@
           "reason": "Close the single locally resource-blocked original KG.07 composition case using the already installed offline DE440s on Mac, without repeating the full kernel/product gate."
         }
       ]
+    },
+    "finite-constellation-segments": {
+      "scope": "PR.03 finite constellation endpoint arcs clipped before regional projection; real Taurus antipodal chord, rotated/EW/interior/crossing/empty cases and installed kernel isolation.",
+      "limits": "No catalogue bytes/topology, observer science, renderer, cluster sizing, coordinate-label placement or Gaia change. Opt-in segment metadata only; sampled curves/grids remain unchanged. Kernel dev12 must be installed through the new pinned dependency. Mac acceptance includes the existing offline LMC case and the reported regional visual replot.",
+      "selections": [
+        {
+          "node": "tests/test_projection_and_clipping_contracts.py",
+          "reason": "Finite-arc regression and retained projection/domain/clipping contracts."
+        },
+        {
+          "node": "tests/test_constellation_geometry.py",
+          "reason": "Observed/native HIP endpoints, source declarations and retained constellation semantics."
+        },
+        {
+          "node": "tests/test_geometry_pipeline.py",
+          "reason": "Canonical domain/projection/preparation ordering and metadata."
+        },
+        {
+          "node": "tests/test_regional_chart.py",
+          "reason": "Regional framing, viewport and orientation contracts."
+        },
+        {
+          "node": "tests/test_renderer_contracts.py",
+          "reason": "Prepared geometry and renderer/export compatibility."
+        },
+        {
+          "node": "tests/test_dependency_boundaries.py",
+          "reason": "Kernel/application ownership and import direction."
+        },
+        {
+          "node": "tests/test_repository_sources.py",
+          "reason": "Reconciled exact current source identities."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_geometry_kernel_wheel_isolated_imports_metadata_and_numeric_consumer",
+          "reason": "Isolated installed dev12 wheel executes the correction without Wenu."
+        }
+      ]
     }
   },
   "consumer_review": [

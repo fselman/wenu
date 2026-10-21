@@ -184,6 +184,7 @@ def test_native_constellation_vertices_and_mean_anchors_use_same_source(tmp_path
     np.testing.assert_array_equal(geometry.lon_deg[0], [80., 82.])
     np.testing.assert_array_equal(geometry.lat_deg[1], [1., 2.])
     assert geometry.metadata["hip_edges"] == ((100, 200), (200, 300))
+    assert geometry.metadata["segment_geometry"] == "minor_great_circle"
     labels = ConstellationLabels(lines.stars, min_stars=1)
     anchor = labels.realize(context, None)
     assert anchor.labels.tolist() == ["Ori"]
