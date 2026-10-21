@@ -2726,6 +2726,32 @@
           "reason": "Typed reports/labels/semantic identities; shared-service values and warm refusal through track/sample/singleton canonical drawing, existing PNG/PDF/SVG outputs."
         }
       ]
+    },
+    "exact-satellite-routing": {
+      "scope": "K3.33 exhaustive/adaptive exact crossings, conservative tri-state selection, atomic multi-field admission/solving, strict matrix/worker evidence and solved-track consumers.",
+      "limits": "Evidence closure; retain existing numerical bodies and accepted SGP4 Cartesian/observer/coordinate/kernel geometry services. Preserve snapshot/time/EOP identities, tolerances/limits, no-false-negative and exact-fallback domains, event anchors and bounded track sampling claims. Includes actual small synthetic fresh-process equivalence and canonical solved-track PNG/PDF/SVG; no medium production benchmark or revival of consumed run authority. No production, SDK/dependency/resource, acquisition/network/policy, schema or renderer change. K3.34 onward remains separate.",
+      "selections": [
+        {
+          "node": "tests/test_satellite_crossing_oracle.py",
+          "reason": "Independent analytic/adversarial exhaustive crossing roots, grazes/tangency, disconnected visits, seam/poles, tolerances/limits and real installed synthetic snapshot scan."
+        },
+        {
+          "node": "tests/test_satellite_crossing_acceleration.py",
+          "reason": "No-false-negative selector domains, tri-state/exact fallback/evidence identity, actual equivalence and returned kernel PV/refusal at default exhaustive/selector/track services."
+        },
+        {
+          "node": "tests/test_satellite_crossing_batch.py",
+          "reason": "Atomic same-observer field admission, whole-interval airmass and ordered chunking, including current service values/refusal after prior success."
+        },
+        {
+          "node": "tests/test_satellite_exact_tracks.py",
+          "reason": "Snapshot/model/observer bindings, event anchors, adaptive samples/limits, independent presentation controls and actual shared-coordinate path/event/singleton drawing/refusal/exports."
+        },
+        {
+          "node": "tests/test_satellite_crossing_matrix.py",
+          "reason": "Strict receipt/result/fallback/publication/worker protocol contracts plus real small synthetic snapshot fresh exhaustive/accelerated workers, without a production benchmark."
+        }
+      ]
     }
   },
   "consumer_review": [

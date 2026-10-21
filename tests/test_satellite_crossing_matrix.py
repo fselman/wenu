@@ -560,3 +560,31 @@ def test_complete_production_path_uses_one_fake_measured_run(tmp_path):
     assert destination.is_dir()
     assert len(executor.calls) == 20
     assert all(call[2:] == (0, True) for call in executor.calls)
+
+
+def test_small_synthetic_snapshot_fresh_workers_preserve_exhaustive_accelerated_results(tmp_path):
+    """Real offline workers, not the historical medium production benchmark."""
+    from importlib.resources import files
+    from wenu.satellites.crossing_matrix_execution import _jsonable
+    from wenu.satellites.crossing_oracle import LocalSatelliteCrossingOracle
+    root=files('wenu.data.satellites.snapshots').joinpath('synthetic_50s4b_v1')
+    directory=tmp_path/'synthetic';directory.mkdir()
+    for name in ('manifest.json','records.json'):
+        (directory/name).write_bytes(root.joinpath(name).read_bytes())
+    snapshot=load_snapshot_directory(directory)
+    value=LocalSatelliteCrossingQuery(snapshot,observer(),
+        replace(field('synthetic-all-sky',0.),angular_radius_deg=180.),
+        InclusiveTimeInterval(iso(START),iso(START)),time_tolerance_seconds=.1,angular_tolerance_deg=1e-4)
+    expected=_jsonable(LocalSatelliteCrossingOracle().solve(value))
+    assert len(expected)==len(snapshot.records)
+    executor=FreshSubprocessMatrixExecutor(directory,timeout_seconds=120.)
+    exhaustive=executor('exhaustive',value,0,True)
+    accelerated=executor('accelerated',value,0,True)
+    assert list(exhaustive.results)==list(accelerated.results)==expected
+    assert accelerated.acceleration_evidence.fallback_to_exhaustive is False
+    assert accelerated.acceleration_evidence.rejected_norad_catalog_ids==()
+    assert accelerated.acceleration_evidence.exact_solver_norad_catalog_ids==tuple(record.norad_catalog_id for record in snapshot.records)
+    for result in (exhaustive,accelerated):
+        assert result.resource.exit_status==0
+        assert result.resource.snapshot_sha256==snapshot.manifest.content_sha256
+        assert result.resource.result_sha256==sha256_hex(canonical_json_bytes(expected))

@@ -604,3 +604,24 @@ polyline; a singleton remains one point. No interpolation, propagated state,
 continuous containment, entry/exit event or new physical accuracy is inferred.
 Rendering does not acquire data or invoke SGP4. Existing source-inferred frame
 meaning and provider licensing/coverage limitations remain explicit.
+
+## Exact satellite consumers
+
+Exhaustive solving, conservative cone/shell selection and default exact-track
+realization use the accepted `Sgp4TemePropagator` Cartesian-kernel route and
+existing topocentric observer service. Their numerical algorithms remain their
+existing owners. The selector's retain/indeterminate outcomes reach exact solving;
+only admitted rejection evidence can omit a record. Existing explicit exhaustive
+fallback or fail-closed policy remains authoritative.
+
+Multi-field coordination validates the complete request and current whole-interval
+airmass admission before any solve, preserving input order and chunking. Strict
+matrix evidence and fresh-process execution use the same scientific services.
+Historical production-matrix receipts retain their pinned provenance; the small
+synthetic worker check is not a new production performance/capacity qualification.
+
+Solved-track path/event layers consume immutable retained samples, then shared
+coordinate/kernel geometry and canonical drawing services. Event views select
+existing sample anchors without propagation or resampling. Same-spec native
+geometry remains a valid identity path. Exact events, bounded sampling tests and
+the absence of a global continuous-error proof remain distinct metadata claims.

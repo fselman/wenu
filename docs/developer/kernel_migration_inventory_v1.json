@@ -453,19 +453,19 @@
       "path": "src/wenu/charts/magnitude_legend_matplotlib.py",
       "git_blob_sha": "07104731fa669bb972df830cf5e3c51076b00b11",
       "as_is_directory": "src/wenu/charts",
-      "description": "Matplotlib rendering for stellar magnitude\u2013size legends."
+      "description": "Matplotlib rendering for stellar magnitude–size legends."
     },
     {
       "path": "src/wenu/charts/magnitude_legend_style.py",
       "git_blob_sha": "9328fc55e2d465c8335486b72cf2273de6b5bdec",
       "as_is_directory": "src/wenu/charts",
-      "description": "Style configuration for stellar magnitude\u2013size legends."
+      "description": "Style configuration for stellar magnitude–size legends."
     },
     {
       "path": "src/wenu/charts/magnitude_legend_workflow.py",
       "git_blob_sha": "b270984666cd5b435fec7874e73135642b2d471d",
       "as_is_directory": "src/wenu/charts",
-      "description": "Chart-level workflow for stellar magnitude\u2013size legends."
+      "description": "Chart-level workflow for stellar magnitude–size legends."
     },
     {
       "path": "src/wenu/charts/modes.py",
@@ -10442,7 +10442,7 @@
       "sdk_cases_passed": 205,
       "metadata": "Actual isolated installed kernel wheel and root wheel/sdist/editable consumers passed; class identity, old pickle paths, aliases, ring octant/complement and source-free snapshots covered."
     },
-    "remaining": "KG.04 projections/clipping/domain math not moved; KG.05 full-service integration and KG.06\u2013KG.07 completed-K audit/corrections remain pending."
+    "remaining": "KG.04 projections/clipping/domain math not moved; KG.05 full-service integration and KG.06–KG.07 completed-K audit/corrections remain pending."
   },
   "geometry_projection_implementation": {
     "id": "KG.04",
@@ -11551,7 +11551,7 @@
         "issue": "Source physical facts, constructed/unitless compatibility and diffuse metadata/transport remain explicitly partial; lookup and geometry movement did not fabricate qualification."
       }
     ],
-    "retained_evidence": "PR #234\u2013#286 bounded receipts and named owners; KG.05 complete Mac receipt accepted. This audit does not revalidate all numerical science or release/visual/classroom acceptance.",
+    "retained_evidence": "PR #234–#286 bounded receipts and named owners; KG.05 complete Mac receipt accepted. This audit does not revalidate all numerical science or release/visual/classroom acceptance.",
     "guide": "Coordinate guide remains current: no scientific semantics, numerical implementation or runtime ownership changed.",
     "verification": {
       "kernel_import_scan_modules": 22,
@@ -11590,7 +11590,7 @@
     },
     "new_output_requirement": "All four cold/restored real polar specimens must pass with both xfail markers removed.",
     "retained_evidence": "Unaffected state/time/provider science and KG.05 full atlas serial/spawn/book receipts; affected isolated kernel/root installs explicitly repeated.",
-    "remaining": "Complete Mac acceptance, then explicit selection of K3.16; G06.U1\u2013U4 retain assigned K3 scope.",
+    "remaining": "Complete Mac acceptance, then explicit selection of K3.16; G06.U1–U4 retain assigned K3 scope.",
     "local_verification": {
       "selected_cases": 103,
       "passed_unique_cases": 102,
@@ -11867,7 +11867,7 @@
     "base_commit": "89756d957696b8baf2cd69f52f6a6878cc3a8484",
     "plan_commit": "47ba46eb918c87a488f9d6c98992eda3cf3fb17e",
     "status": "Verified locally; full Mac acceptance pending.",
-    "agreement": "Fernando\u2019s 2026-10-20 proceed after the explicit K3.21 proposal and PR #293 cleanup.",
+    "agreement": "Fernando’s 2026-10-20 proceed after the explicit K3.21 proposal and PR #293 cleanup.",
     "gate": "atlas-sheet-routing",
     "assessment": "docs/developer/kernel_migration_audit_v1.md#k321-atlas-sheet-and-consumer-assessment",
     "production_modules": [
@@ -12477,7 +12477,7 @@
       "Dropping a supplied RA value fails the cached-receipt replay/report/layer case.",
       "Presentation seams prohibit acquisition, SGP4 and fabricated positional state queries; sampled candidate semantics and actual PNG/PDF/SVG exports are retained."
     ],
-    "limits": "Complete Mac acceptance pending. All new provider inputs are synthetic. Existing licensing/coverage constraints and source-inferred coordinate meaning remain unchanged, not newly qualified. No production, SDK/dependency/resource/policy/schema/rendering changes. K3.33 onward and K3/K5 closure remain separate.",
+    "limits": "Accepted PR #305/main 3b2fde48: Mac 61 focused (2.91 s), 36 documentation (4.38 s), eight tooling (7.200 s); clean synchronized main and cleanup confirmed. No new physical model/permission qualification or K3/K5 closure.",
     "local_receipt": {
       "focused_cases": 61,
       "focused_passed": 61,
@@ -12487,6 +12487,55 @@
       "documentation_complete_checkout_required": 5,
       "tooling_passed": 8,
       "tooling_seconds": 5.443
+    }
+  },
+  "exact_satellite_routing": {
+    "milestone": "K3.33",
+    "base_commit": "3b2fde48995957ca113e9cc4424f771cdcc502c3",
+    "plan_commit": "e4caa21c52e9c7a33d0ef70bb6a93cb17f0b21df",
+    "gate": "exact-satellite-routing",
+    "production_changes": [],
+    "retained_owners": [
+      "src/wenu/satellites/crossing_oracle.py",
+      "src/wenu/satellites/crossing_acceleration.py",
+      "src/wenu/satellites/crossing_batch.py",
+      "src/wenu/satellites/exact_tracks.py",
+      "src/wenu/satellites/crossing_matrix.py",
+      "src/wenu/satellites/crossing_matrix_execution.py",
+      "src/wenu/sky/satellite_exact_track_layer.py",
+      "src/wenu/charts/request_satellite_tracks.py"
+    ],
+    "source_blobs": {
+      "src/wenu/satellites/crossing_oracle.py": "f8a726252f3b1deddd9567b72a05105e318725d3",
+      "src/wenu/satellites/crossing_acceleration.py": "aed5001550c2fdcf35f37577116764be2bb37fb5",
+      "src/wenu/satellites/crossing_batch.py": "2ec8164653ee9f813ae21453f27520b82c9294c7",
+      "src/wenu/satellites/exact_tracks.py": "0dc45ffc1bc099a89c24e0de6b7f9ed3edfeb86c",
+      "src/wenu/satellites/crossing_matrix.py": "550e18fe067139784de2d9a56b8b066c6579365e",
+      "src/wenu/satellites/crossing_matrix_execution.py": "c4a081483c223b2109f264b4835019ddff980dfc",
+      "src/wenu/sky/satellite_exact_track_layer.py": "646de90f80b4e9fec83f4812c9ac287ce366361f",
+      "src/wenu/charts/request_satellite_tracks.py": "a3fc40761f889c7f257a13da27823b862817f0be"
+    },
+    "disposition": "Existing accepted SGP4 Cartesian/observer routes, independent exhaustive solver, conservative selector, atomic batch admission, solved-track coordinate/kernel geometry and strict matrix/worker interfaces already comply. Add composition/fault and positive synthetic evidence; no numerical rewrite.",
+    "evidence": [
+      "Bypassing kernel propagation separately in exhaustive, selector and track-realizer owners fails the returned-PV seam.",
+      "Discarded coordinate results fail all three path/event/singleton canonical drawing cases.",
+      "Cross-request stale batch admissions fail the current-altitude/refusal case.",
+      "Narrow positive-duration canonical synthetic pass agrees exhaustively and accelerated; small actual fresh subprocess workers preserve result/evidence identity without production benchmark execution.",
+      "Existing independent analytic/adversarial/domain/fallback/atomicity/matrix contracts retained."
+    ],
+    "test_repair": "Allow either explicit refusal message at theoretical 30-degree airmass boundary because libm rounding can select the exceeds or uncertifiable branch. Numerical policy unchanged.",
+    "limits": "Complete Mac acceptance pending. Preserve original scientific domains/tolerances and bounded sampling claims; no global continuous-error, new physical accuracy or production capacity qualification. Historical production matrix receipts remain pinned; no consumed authority revived. No production, SDK/dependency/resource/policy/schema/renderer changes. K3.34 onward and K3/K5 remain separate.",
+    "local_receipt": {
+      "gate_cases": 86,
+      "gate_seconds": 132.55,
+      "documentation_cases": 31,
+      "documentation_deselected": 5,
+      "documentation_seconds": 1.5,
+      "tooling_cases": 8,
+      "tooling_seconds": 6.096,
+      "deliberate_fault_experiments": 5,
+      "expected_fault_failures": 7,
+      "complete_mac_acceptance": "pending"
     }
   }
 }

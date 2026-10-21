@@ -513,3 +513,83 @@ def test_candidate_coordinator_contracts_are_package_exports():
     assert ExportedEvidence is acceleration_module.AcceleratedCrossingEvidence
     assert ExportedPolicy is AcceleratedCrossingPolicy
     assert ExportedOracle is AcceleratedLocalSatelliteCrossingOracle
+
+
+def test_exact_selector_and_default_track_routes_consume_kernel_states_and_refuse(monkeypatch):
+    """Synthetic installed snapshot; real kernel, SGP4 and observer services."""
+    from wenu_kernel.kernel import KernelSession
+    from wenu_kernel.errors import UnsupportedCapability
+    from wenu.satellites.exact_tracks import ExactLocalSatelliteTrackRealizer, ExactLocalTrackError
+    snapshot = load_snapshot()
+    state = start_state(snapshot, snapshot.records[0])
+    request = query(snapshot, field(state.gcrs_axis_longitude_deg, state.gcrs_axis_latitude_deg), seconds=0.)
+    identifier = snapshot.records[0].norad_catalog_id
+    original = KernelSession.evaluate
+    queries = []
+    def tracked(session, value):
+        queries.append(value)
+        return original(session, value)
+    monkeypatch.setattr(KernelSession, 'evaluate', tracked)
+    oracle = LocalSatelliteCrossingOracle()
+    selector = ConservativeConeShellSelector()
+    visits = oracle.solve(request)
+    visit = next(item for item in visits if item.candidate.satellite.norad_catalog_id == identifier)
+    assert selector.select(request).decisions[0].outcome == 'retain'
+    realizer = ExactLocalSatelliteTrackRealizer()
+    before = realizer.realize(visit, snapshot)
+    assert queries and all(item.reference.frame_id == 'teme' for item in queries)
+    assert all(item.evaluation_policy == 'full_model' for item in queries)
+    def mirrored(session, value):
+        batch = tracked(session, value)
+        return replace(batch, states=tuple(replace(row,
+            position_m=tuple(-x for x in row.position_m),
+            velocity_m_s=tuple(-x for x in row.velocity_m_s)) for row in batch.states))
+    monkeypatch.setattr(KernelSession, 'evaluate', mirrored)
+    moved = oracle.solve(request)
+    assert identifier not in tuple(item.candidate.satellite.norad_catalog_id for item in moved)
+    assert selector.select(request).decisions[0].outcome == 'reject'
+    after = realizer.realize(visit, snapshot)
+    assert not np.allclose(before.samples[0].direction, after.samples[0].direction, rtol=0, atol=1e-6)
+    assert after.samples[0].instant_utc == before.samples[0].instant_utc
+    assert after.crossing is before.crossing is visit
+    assert after.crossing.candidate.snapshot_sha256 == snapshot.manifest.content_sha256
+    def unavailable(*args, **kwargs):
+        raise UnsupportedCapability('exact satellite state unavailable')
+    monkeypatch.setattr(KernelSession, 'evaluate', unavailable)
+    selection = selector.select(request)
+    assert all(item.outcome == 'indeterminate' for item in selection.decisions)
+    assert selection.exact_solver_norad_catalog_ids == tuple(record.norad_catalog_id for record in snapshot.records)
+    with pytest.raises(SatelliteCrossingConvergenceError, match='evaluation failed'):
+        oracle.solve(request)
+    with pytest.raises(SatelliteCrossingConvergenceError, match='evaluation failed'):
+        AcceleratedLocalSatelliteCrossingOracle().solve(request)
+    with pytest.raises(ExactLocalTrackError, match='evaluation failed'):
+        realizer.realize(visit, snapshot)
+
+
+def test_narrow_positive_duration_synthetic_pass_matches_exhaustive():
+    """Real SGP4/observer events on a canonical one-record synthetic snapshot."""
+    from dataclasses import asdict
+    from wenu.satellites.elements import canonical_json_bytes, sha256_hex
+    from wenu.satellites.snapshots import snapshot_from_bytes
+    from test_satellite_crossing_matrix import mapping
+    installed = load_snapshot()
+    record = installed.records[0]
+    payload = canonical_json_bytes([mapping(record)])
+    manifest = replace(installed.manifest, record_count=1, content_sha256=sha256_hex(payload))
+    snapshot = snapshot_from_bytes(canonical_json_bytes(asdict(manifest)), payload)
+    midpoint = START + timedelta(seconds=3.)
+    state = SatelliteTopocentricTransformer().transform(
+        Sgp4TemePropagator(record,snapshot_sha256=snapshot.manifest.content_sha256).propagate(iso(midpoint)),observer())
+    request = query(snapshot,field(state.gcrs_axis_longitude_deg,state.gcrs_axis_latitude_deg,radius=.005),seconds=6.)
+    exhaustive = LocalSatelliteCrossingOracle().solve(request)
+    accelerated,evidence = AcceleratedLocalSatelliteCrossingOracle().solve_with_evidence(request)
+    assert len(exhaustive) == 1 and accelerated == exhaustive
+    visit = exhaustive[0]
+    assert request.interval.start < visit.entry_instant < visit.closest_approach_instant < visit.exit_instant < request.interval.stop
+    assert visit.time_in_field_seconds > 0.
+    assert abs((datetime.fromisoformat(visit.closest_approach_instant.replace('Z','+00:00'))-midpoint).total_seconds()) < .02
+    assert visit.closest_approach_deg <= request.angular_tolerance_deg
+    assert evidence.fallback_to_exhaustive is False
+    assert evidence.rejected_norad_catalog_ids == ()
+    assert evidence.exact_solver_norad_catalog_ids == (record.norad_catalog_id,)

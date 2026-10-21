@@ -151,7 +151,9 @@ def test_inaccessible_or_uncertain_centre_fails_closed():
         FieldAirmassCertifier(
             evaluator=FakeAltitudeEvaluator(29.0)
         ).certify(query("below-limit"))
-    with pytest.raises(ValueError, match="cannot be certified"):
+    # The theoretical 30-degree boundary may round just below the computed
+    # threshold. Both explicit refusal branches preserve strict admission.
+    with pytest.raises(ValueError, match="cannot be certified|exceeds the maximum airmass"):
         FieldAirmassCertifier(
             evaluator=FakeAltitudeEvaluator(30.0)
         ).certify(query("on-boundary"))
@@ -265,4 +267,35 @@ def test_public_validation_composes_existing_atomic_check_without_solving():
 
     assert tuple(value.field_id for value in admissions) == ("one", "two")
     assert certifier.calls == ["one", "two"]
+    assert oracle.calls == []
+
+
+def test_batch_rechecks_current_altitude_service_and_refuses_atomically_after_success(monkeypatch):
+    """Synthetic altitude values at the real default certifier boundary."""
+    from wenu.satellites.topocentric import SatelliteFieldCenterAltitudeEvaluator
+    altitude = [60.]
+    calls = []
+    def evaluate(_self, field, site, instant):
+        calls.append((field.field_id, site, instant))
+        return altitude[0], SimpleNamespace(source_sha256='b' * 64)
+    monkeypatch.setattr(SatelliteFieldCenterAltitudeEvaluator, 'evaluate', evaluate)
+    requests = MultiFieldCrossingRequest((query('first'), query('second')))
+    oracle = FakeOracle()
+    coordinator = MultiFieldSatelliteCrossingCoordinator(single_field_oracle=oracle)
+    results = coordinator.solve(requests)
+    assert tuple(row.field_id for row in results) == ('first', 'second')
+    assert all(row.airmass_admission.earth_orientation_sha256 == ('b' * 64,) for row in results)
+    assert all(row.airmass_admission.certified_lower_bound_deg > 30. for row in results)
+    assert {row[0] for row in calls} == {'first', 'second'}
+    oracle.calls.clear();calls.clear();altitude[0] = 29.
+    with pytest.raises(MultiFieldCrossingValidationError) as failed:
+        coordinator.solve(requests)
+    assert tuple(row.field_id for row in failed.value.failures) == ('first', 'second')
+    assert oracle.calls == [] and calls
+    def refused(*args, **kwargs):
+        raise ValueError('current EOP service refused')
+    monkeypatch.setattr(SatelliteFieldCenterAltitudeEvaluator, 'evaluate', refused)
+    with pytest.raises(MultiFieldCrossingValidationError) as failed:
+        coordinator.solve(requests)
+    assert all('current EOP service refused' in row.message for row in failed.value.failures)
     assert oracle.calls == []

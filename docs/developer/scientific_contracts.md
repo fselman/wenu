@@ -439,6 +439,16 @@ conservative selector cannot discard an exact crossing; fallbacks and
 completeness claims must retain their accepted bounded domains. A zero-crossing
 field is a valid result, not evidence for untested positive cases or capacity.
 
+Exact/accelerated migration retains the existing independent complete-scan
+reference and zero-false-negative invariant within admitted domains, including
+explicit indeterminate-to-exact behavior and selector-failure policy. Batch
+admission uses current whole-interval altitude/EOP service values before solving.
+Solved tracks preserve exact event anchors and bounded midpoint/maximum-step
+sampling tests; these do not become a global continuous-error certificate.
+Synthetic positive-duration and fresh-process equivalence cases protect service
+composition, not new physical accuracy, production capacity or external-source
+qualification. Historical production receipts remain pinned historical evidence.
+
 Sampled-provider presentations retain immutable supplied records and their
 source-inferred coordinate convention; shared coordinate/geometry services
 consume returned values without acquiring or propagating data. Per-sample
