@@ -646,7 +646,7 @@ map below ensures small/non-chart capabilities do not disappear in grouped rows.
 | K3.36 | Route bolometric/spectral solar radiometry and move edition-specific TSIS facts into resource metadata | Implemented for acceptance under revision 60; M8 validated packaged metadata and compatibility aliases, unchanged numerical bodies. Complete satellite-radiometry-routing Mac gate pending |
 | K3.37 | Close public Python, all eight installed commands, six examples, five notebooks/installers, overlays/presets and translations | Public-surface audit, notebook compatibility/package delivery and example lifecycle fixes implemented; complete Mac acceptance pending |
 | K3.38 | Close maintenance/curation/acquisition and resource/build consumer boundaries | Accepted through PR #311, main 3df69c4a; 49 focused, 36 documentation and eight tooling Mac cases; no network execution |
-| K3.39 | Verify geometry topology, domain guards, clipping, three projections, renderer/furniture/PNG/PDF/SVG stay pure and compatible | Partial existing tests/appearance accepted; final migrated-consumer verification pending, no graphics rewrite |
+| K3.39 | Verify geometry topology, domain guards, clipping, three projections, renderer/furniture/PNG/PDF/SVG stay pure and compatible | Boundary audit retains production implementations; nine added seam/purity/export cases and focused geometry-rendering-routing gate pass locally; complete Mac acceptance pending, no graphics rewrite |
 | K3.40 | Reconcile every audited source/public/operational consumer to a route and acceptance receipt, with no applicable service bypass | Pending final K3 gate; all applicable rows above must close before K5 |
 
 For each row, the specific task identifies source and test owners from the

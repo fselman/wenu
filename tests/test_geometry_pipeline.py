@@ -6,6 +6,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
+import pytest
 
 from wenu.coordinates import GENERIC_SPHERICAL_SPEC
 
@@ -249,3 +250,84 @@ def test_radial_label_offset():
         offset(3.0, 4.0),
         (0.06, 0.08),
     )
+
+
+@pytest.mark.parametrize("family", ("regional", "full-sky"))
+def test_chart_domain_return_controls_prepare_and_draw_after_success(monkeypatch, family):
+    """Protect the canonical guard seam, including refusal after a warm draw."""
+    from wenu.charts import regional, full_sky
+
+    module = regional if family == "regional" else full_sky
+    chart = (regional.RegionalChart(center_alt_deg=90, center_az_deg=0,
+             field_width_deg=30, field_height_deg=30)
+             if family == "regional" else full_sky.FullSkyChart())
+    sky = CelestialSphere(object())
+    layer = sky.add(Layer())
+    renderer = Renderer()
+    renderer.apply_viewport = lambda viewport: None
+    renderer.set_clip_boundary = lambda boundary, **kwargs: None
+    prepared = []
+    calls = []
+    returned = ProjectedPoints(x=[0.11, -0.23], y=[-0.17, 0.19],
+                               ids=["first", "second"], metadata={"receipt": "synthetic guard"})
+
+    def guard(spherical, *, projection, viewport):
+        calls.append((spherical, projection, viewport))
+        if len(calls) > 1:
+            raise ValueError("synthetic domain refusal")
+        return returned
+
+    def prepare(spherical, projected):
+        prepared.append((spherical, projected))
+        assert projected is returned
+        return ProjectedPoints(x=projected.x + 0.01, y=projected.y,
+                               ids=projected.ids, metadata=projected.metadata)
+
+    monkeypatch.setattr(module, "project_geometry_for_viewport", guard)
+    options = {layer: {"prepare": prepare, "render": {"style": {"color": "red"}}}}
+    result = chart.render(sky, renderer=renderer, layer_options=options)
+    assert len(calls) == len(prepared) == len(renderer.calls) == 1
+    assert calls[0][0] is result.layers[0].spherical
+    assert calls[0][2] == chart.viewport
+    assert renderer.calls[0][0] is result.layers[0].projected
+    np.testing.assert_allclose(renderer.calls[0][0].x, [0.12, -0.22])
+    assert renderer.calls[0][0].ids.tolist() == ["first", "second"]
+    assert renderer.calls[0][0].metadata["receipt"] == "synthetic guard"
+    with pytest.raises(ValueError, match="synthetic domain refusal"):
+        chart.render(sky, renderer=renderer, layer_options=options)
+    assert len(calls) == 2
+    assert len(prepared) == len(renderer.calls) == 1
+
+
+@pytest.mark.parametrize("kind", ("stereographic", "polar_azimuthal_equidistant", "mollweide"))
+def test_kernel_projection_return_controls_canonical_render_and_refusal(monkeypatch, kind):
+    import importlib
+    from dataclasses import replace
+
+    names = {"stereographic": "StereographicProjection",
+             "polar_azimuthal_equidistant": "PolarAzimuthalEquidistantProjection",
+             "mollweide": "MollweideProjection"}
+    cls = getattr(importlib.import_module("wenu_kernel.projections." + kind), names[kind])
+    original = cls.project_geometry
+    calls = []
+
+    def returned_projection(self, spherical):
+        calls.append(spherical)
+        if len(calls) > 1:
+            raise ValueError("synthetic projection refusal")
+        # Deliberately change a real return: a consumer recomputing the original
+        # projection or reusing the first draw must not pass this contract.
+        return replace(original(self, spherical), x=np.array([0.17, -0.29]))
+
+    monkeypatch.setattr(cls, "project_geometry", returned_projection)
+    sky = CelestialSphere(object())
+    sky.add(Layer())
+    renderer = Renderer()
+    projection = cls()
+    result = sky.draw_chart(projection=projection, renderer=renderer)
+    assert len(calls) == 1
+    np.testing.assert_array_equal(renderer.calls[0][0].x, [0.17, -0.29])
+    assert renderer.calls[0][0] is result.layers[0].projected
+    with pytest.raises(ValueError, match="synthetic projection refusal"):
+        sky.draw_chart(projection=projection, renderer=renderer)
+    assert len(calls) == 2 and len(renderer.calls) == 1

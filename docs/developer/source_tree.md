@@ -459,3 +459,12 @@ layout, independent numerical references and explicit external development
 helpers are classified separately from application scientific consumers.
 The two corrected tools are `render_zodiac_constellations.py` (CoordinateService)
 and `benchmark_reusable_sphere.py` (partial observer acquisition/cleanup).
+
+## Geometry and graphics boundary verification
+
+K3.39 adds no production module. The 48 existing geometry/projection/facade,
+rendering-helper, chart/furniture and export/semantic owners are recorded with
+exact blob IDs in `geometry_rendering_routing.owners` in the migration inventory.
+Kernel numerical services retain their placement; Wenu retains appearance,
+product reference construction, legends and backend/export ownership. New
+composition/purity tests extend existing test modules only.

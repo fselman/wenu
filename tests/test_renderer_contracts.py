@@ -95,6 +95,107 @@ def test_renderer_has_no_astronomical_or_projection_dependency():
     assert "wenu.projection" not in source
 
 
+@pytest.mark.parametrize("kind", ("stereographic", "polar_azimuthal_equidistant", "mollweide"))
+def test_prepared_kernel_scene_exports_without_scientific_reentry(monkeypatch, tmp_path, kind):
+    """Synthetic geometry tests graphics composition, not observational science."""
+    from types import SimpleNamespace
+    from wenu import (StereographicProjection, PolarAzimuthalEquidistantProjection,
+                      MollweideProjection)
+    from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+    from wenu.geometry.spherical import SphericalPoints, SphericalCurves, SphericalPolygons
+    from wenu.rendering.preparation import project_geometry_for_viewport
+    from wenu.coordinate_service import CoordinateService
+    from wenu_kernel import KernelSession
+    from wenu.charts.regional import ExportOptions
+    from wenu.charts.furniture import FooterOptions
+    from wenu.charts.footer_furniture import draw_chart_footer
+    from wenu.chart_document import assign_canvas_semantics, assign_furniture_semantics
+    from svg_inspection import inspect_svg
+    import xml.etree.ElementTree as ET
+
+    classes = {"stereographic": StereographicProjection,
+               "polar_azimuthal_equidistant": PolarAzimuthalEquidistantProjection,
+               "mollweide": MollweideProjection}
+    projection = classes[kind]()
+    viewport = Viewport(-2, 2, -2, 2)
+    points = SphericalPoints(lon_deg=[10, 25, np.nan], lat_deg=[55, 65, np.nan],
+        coordinate_spec=GENERIC_SPHERICAL_SPEC, ids=["A", "B", "missing"],
+        labels=["Alpha", "Beta", "Missing"], metadata={"source": "synthetic scene"})
+    # Equidistant numerical inputs are strictly finite; separate components
+    # express the gap without relaxing that existing projection contract.
+    curves = SphericalCurves(lon_deg=([5, 15], [25, 35]),
+        lat_deg=([50, 60], [60, 50]), coordinate_spec=GENERIC_SPHERICAL_SPEC)
+    polygons = SphericalPolygons(lon_deg=([5, 30, 30, 5],), lat_deg=([40, 40, 70, 70],),
+        coordinate_spec=GENERIC_SPHERICAL_SPEC, names=["Synthetic polygon"])
+    prepared = [project_geometry_for_viewport(g, projection=projection, viewport=viewport)
+                for g in (points, curves, polygons)]
+    snapshots = [(p.x.copy(), p.y.copy()) for p in prepared[0:1]]
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Graphics re-entered a scientific service")
+
+    for name in ("transform", "transform_skycoord", "transform_observer_geometry"):
+        monkeypatch.setattr(CoordinateService, name, forbidden)
+    monkeypatch.setattr(KernelSession, "evaluate", forbidden)
+    for cls in classes.values():
+        monkeypatch.setattr(cls, "project_geometry", forbidden)
+        monkeypatch.setattr(cls, "project_spherical", forbidden)
+
+    figure, ax = plt.subplots(figsize=(3, 3), dpi=80)
+    try:
+        renderer = MatplotlibRenderer(ax)
+        renderer.apply_viewport(viewport)
+        artists = renderer.draw(prepared[0], style={"s": [12, 24, 36], "color": "black"},
+                                draw_labels=True)
+        np.testing.assert_allclose(artists[0].get_offsets(),
+            np.column_stack((prepared[0].x[:2], prepared[0].y[:2])))
+        np.testing.assert_array_equal(artists[0].get_sizes(), [12, 24])
+        line_artists = renderer.draw(prepared[1], style={"color": "blue", "linewidth": 0.8})
+        assert line_artists
+        assert renderer.draw(prepared[2], style={"facecolor": "lightblue", "edgecolor": "blue"})
+        ax.set_title("Synthetic geometry")
+        footer = draw_chart_footer(renderer,
+            FooterOptions(application=True, include_version=False, copyright="Synthetic fixture"),
+            SimpleNamespace(font_scale=1.0), color="black")
+        assert footer.application_text == "Wenu"
+        renderer.finalize_graphics()
+        assign_canvas_semantics(renderer)
+        assign_furniture_semantics(renderer, SimpleNamespace(), footer_rendering=footer)
+        original_limits = (ax.get_xlim(), ax.get_ylim())
+        saves = []
+        savefig = figure.savefig
+
+        def save_once(*args, **kwargs):
+            saves.append(args[0])
+            return savefig(*args, **kwargs)
+
+        monkeypatch.setattr(figure, "savefig", save_once)
+        options = ExportOptions(dpi=80, bbox_inches=None)
+        for extension in ("png", "pdf", "svg"):
+            path = options.save(figure, tmp_path / f"{kind}.{extension}")
+            assert path.stat().st_size > 1000
+            assert (ax.get_xlim(), ax.get_ylim()) == original_limits
+            if extension == "png":
+                pixels = plt.imread(path)
+                assert pixels.shape[:2] == (240, 240)
+                assert float(np.std(pixels[:, :, :3])) > 0.01
+            elif extension == "pdf":
+                assert path.read_bytes().startswith(b"%PDF-")
+            else:
+                inspection = inspect_svg(path)
+                assert inspection.has_svg_root and not inspection.has_raster_images
+                assert inspection.view_box == pytest.approx((0, 0, 216, 216))
+                text = " ".join(ET.parse(path).getroot().itertext())
+                assert "Synthetic geometry" in text and "Synthetic fixture" in text
+                assert "Alpha" in text and "Beta" in text
+        assert len(saves) == 3
+        np.testing.assert_array_equal(prepared[0].x, snapshots[0][0])
+        np.testing.assert_array_equal(prepared[0].y, snapshots[0][1])
+        assert points.ids.tolist() == ["A", "B", "missing"]
+    finally:
+        plt.close(figure)
+
+
 def test_vectorized_points_and_style_forwarding():
     figure, ax = plt.subplots()
     renderer = MatplotlibRenderer(ax)
@@ -687,4 +788,3 @@ def test_boundary_ticks_are_slanted_physical_marks_without_interior_curves(dpi):
         assert gap*72/dpi == pytest.approx(2.4, abs=1e-8)
         assert abs(np.tan(np.radians(text.get_rotation()))) == pytest.approx(4)
     plt.close(figure)
-

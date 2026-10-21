@@ -13353,7 +13353,7 @@
       "build trusts stale admitted source bytes"
     ],
     "receipt_reuse": "K3.37 installed commands/sdist-to-wheel resources; K3.16 source contours; K3.28/29 minor-body resources; K3.31/32/33/34 satellite contracts and independent numerical receipts. Unchanged science/installation owners do not repeat full production workloads.",
-    "limits": "Complete Mac acceptance pending. Source-native catalogue normalization/crossmatch and independent raw oracles stay outside application-state queries. No new source/model/selection, SDK/dependency/module/package, source bytes/schema/renderer algorithm, acquisition/retry/cache/redistribution policy or provider permission claim. No network, external benchmark, paused Moonlight or consumed authority execution. K3.39 and K3/K5 remain open.",
+    "limits": "Complete Mac acceptance through PR #311. Source-native catalogue normalization/crossmatch and independent raw oracles stay outside application-state queries. No new source/model/selection, SDK/dependency/module/package, source bytes/schema/renderer algorithm, acquisition/retry/cache/redistribution policy or provider permission claim. No network, external benchmark, paused Moonlight or consumed authority execution. K3.39 and K3/K5 remain open.",
     "local_receipt": {
       "focused_cases": 49,
       "focused_seconds": 7.0,
@@ -13365,6 +13365,296 @@
       "deliberate_fault_experiments": 4,
       "expected_fault_failures": 4,
       "complete_mac_acceptance": "pending"
+    },
+    "mac_acceptance": {
+      "tested_commit": "6c7f487c05afeba84a857ace17c2b21283ae331a",
+      "merged_commit": "3df69c4adcda182af197f155f398da612c7686e1",
+      "pull_request": 311,
+      "focused_cases": 49,
+      "focused_seconds": 30.74,
+      "documentation_cases": 36,
+      "documentation_seconds": 7.71,
+      "tooling_cases": 8,
+      "tooling_seconds": 10.743,
+      "tooling_revision": "6d1615676cc6b5fb98c8d0d9ef7eeb1bc66fee61; before documentation-only repair",
+      "cleanup": "Both branches deleted; clean synchronized Mac main confirmed by Fernando."
     }
+  },
+  "geometry_rendering_routing": {
+    "milestone": "K3.39",
+    "base_commit": "3df69c4adcda182af197f155f398da612c7686e1",
+    "plan_commit": "4be90b4eadeb67ad425bb5375eb39d1386d57021",
+    "gate": "geometry-rendering-routing",
+    "owners": {
+      "packages/wenu_kernel/src/wenu_kernel/geometry/__init__.py": {
+        "git_blob_sha": "1d9f90a376058553a73c708a45aa98fba611751e",
+        "route": "Pure NumPy kernel geometry/projection service; no concrete Wenu/provider/renderer dependency.",
+        "disposition": "retain unchanged"
+      },
+      "packages/wenu_kernel/src/wenu_kernel/geometry/clipping.py": {
+        "git_blob_sha": "760ed9fad51757a81909f9b24e9603499fa5d6cb",
+        "route": "Pure NumPy kernel geometry/projection service; no concrete Wenu/provider/renderer dependency.",
+        "disposition": "retain unchanged"
+      },
+      "packages/wenu_kernel/src/wenu_kernel/geometry/domain.py": {
+        "git_blob_sha": "f4a1ff12340376082602c5727156b23ff32e8f12",
+        "route": "Pure NumPy kernel geometry/projection service; no concrete Wenu/provider/renderer dependency.",
+        "disposition": "retain unchanged"
+      },
+      "packages/wenu_kernel/src/wenu_kernel/geometry/frame.py": {
+        "git_blob_sha": "e390c2695de363dba6763e55beaf16cd35d02738",
+        "route": "Pure NumPy kernel geometry/projection service; no concrete Wenu/provider/renderer dependency.",
+        "disposition": "retain unchanged"
+      },
+      "packages/wenu_kernel/src/wenu_kernel/geometry/projected.py": {
+        "git_blob_sha": "f7ba1753ddf040ff00420b668c0594388e48704f",
+        "route": "Pure NumPy kernel geometry/projection service; no concrete Wenu/provider/renderer dependency.",
+        "disposition": "retain unchanged"
+      },
+      "packages/wenu_kernel/src/wenu_kernel/geometry/spherical.py": {
+        "git_blob_sha": "7d2f4f4625e25740a14043e96ecf6e783061d69e",
+        "route": "Pure NumPy kernel geometry/projection service; no concrete Wenu/provider/renderer dependency.",
+        "disposition": "retain unchanged"
+      },
+      "packages/wenu_kernel/src/wenu_kernel/geometry/topology.py": {
+        "git_blob_sha": "7c9a338dfb6724b2d5a38f2e457631f553feeddb",
+        "route": "Pure NumPy kernel geometry/projection service; no concrete Wenu/provider/renderer dependency.",
+        "disposition": "retain unchanged"
+      },
+      "packages/wenu_kernel/src/wenu_kernel/geometry/viewport.py": {
+        "git_blob_sha": "042d11fa9579662278a610b0bdc47dbad5d43182",
+        "route": "Pure NumPy kernel geometry/projection service; no concrete Wenu/provider/renderer dependency.",
+        "disposition": "retain unchanged"
+      },
+      "packages/wenu_kernel/src/wenu_kernel/projections/__init__.py": {
+        "git_blob_sha": "a49b74b4908c67a64682cc9901a51f7a14983d93",
+        "route": "Pure NumPy kernel geometry/projection service; no concrete Wenu/provider/renderer dependency.",
+        "disposition": "retain unchanged"
+      },
+      "packages/wenu_kernel/src/wenu_kernel/projections/mollweide.py": {
+        "git_blob_sha": "840617c88af60399682eacba7645fd90d9acb41a",
+        "route": "Pure NumPy kernel geometry/projection service; no concrete Wenu/provider/renderer dependency.",
+        "disposition": "retain unchanged"
+      },
+      "packages/wenu_kernel/src/wenu_kernel/projections/polar_azimuthal_equidistant.py": {
+        "git_blob_sha": "73a065f91c071dd918dcb34189bcd911608c1d12",
+        "route": "Pure NumPy kernel geometry/projection service; no concrete Wenu/provider/renderer dependency.",
+        "disposition": "retain unchanged"
+      },
+      "packages/wenu_kernel/src/wenu_kernel/projections/stereographic.py": {
+        "git_blob_sha": "c7b43be4b36207188b6d9fd0b1cea33c8dc83e69",
+        "route": "Pure NumPy kernel geometry/projection service; no concrete Wenu/provider/renderer dependency.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/chart_document.py": {
+        "git_blob_sha": "14c62772936589e8f0358a87c7001faf839dc574",
+        "route": "Canonical chart/viewport/orchestration or export/semantic document owner; preserves established public geometry/projection and graphics boundaries.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/charts/all_sky.py": {
+        "git_blob_sha": "5ff5fe16134e1f574e1faea70bfe09479dfa5f4c",
+        "route": "Canonical chart/viewport/orchestration or export/semantic document owner; preserves established public geometry/projection and graphics boundaries.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/charts/boundaries.py": {
+        "git_blob_sha": "131fe3d15829bad3baea58b9cf8a4f6d7b79c4a3",
+        "route": "Canonical chart/viewport/orchestration or export/semantic document owner; preserves established public geometry/projection and graphics boundaries.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/charts/chart_legend_workflow.py": {
+        "git_blob_sha": "731f30a6770f915470b214c7ba0665f77fdd70e3",
+        "route": "Application legend assembly consumes existing metadata/rendering; coordinate descriptions use CoordinateService above graphics.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/charts/export_workflow.py": {
+        "git_blob_sha": "af44d38efbaa62b566d3fde2cd9501c5d614f83d",
+        "route": "Canonical chart/viewport/orchestration or export/semantic document owner; preserves established public geometry/projection and graphics boundaries.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/charts/footer_furniture.py": {
+        "git_blob_sha": "1f3b8262e724a846bb5b1757f7f725f57f395410",
+        "route": "Application reference construction through established coordinate/geometry/projection services, or resolved text footer; generic renderer only receives prepared geometry.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/charts/full_sky.py": {
+        "git_blob_sha": "09be5467fc3761c686ca6352ee9452d6a85a5b71",
+        "route": "Canonical chart/viewport/orchestration or export/semantic document owner; preserves established public geometry/projection and graphics boundaries.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/charts/legend_metadata.py": {
+        "git_blob_sha": "bbfe1c1dfb7663f63442ce60c3804911c31e151b",
+        "route": "Application legend assembly consumes existing metadata/rendering; coordinate descriptions use CoordinateService above graphics.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/charts/magnitude_legend_matplotlib.py": {
+        "git_blob_sha": "07104731fa669bb972df830cf5e3c51076b00b11",
+        "route": "Application legend assembly consumes existing metadata/rendering; coordinate descriptions use CoordinateService above graphics.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/charts/magnitude_legend_workflow.py": {
+        "git_blob_sha": "b270984666cd5b435fec7874e73135642b2d471d",
+        "route": "Application legend assembly consumes existing metadata/rendering; coordinate descriptions use CoordinateService above graphics.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/charts/polar_planisphere.py": {
+        "git_blob_sha": "bc5ad9a351d21913947ef823c563508dd7992a13",
+        "route": "Canonical chart/viewport/orchestration or export/semantic document owner; preserves established public geometry/projection and graphics boundaries.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/charts/reference_furniture.py": {
+        "git_blob_sha": "443fdcd5de5d8f99266df254199ba2482499da42",
+        "route": "Application reference construction through established coordinate/geometry/projection services, or resolved text footer; generic renderer only receives prepared geometry.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/charts/regional.py": {
+        "git_blob_sha": "1ab20490767a9eca51fede72126bcdfe339bcce2",
+        "route": "Canonical chart/viewport/orchestration or export/semantic document owner; preserves established public geometry/projection and graphics boundaries.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/charts/rendered_legend_composition.py": {
+        "git_blob_sha": "239a4884150524c3651831b175a7efb7980e72ed",
+        "route": "Application legend assembly consumes existing metadata/rendering; coordinate descriptions use CoordinateService above graphics.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/geometry/__init__.py": {
+        "git_blob_sha": "1d9f90a376058553a73c708a45aa98fba611751e",
+        "route": "Public compatibility facade aliases the same kernel service class/function; no copied numerical implementation.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/geometry/clipping.py": {
+        "git_blob_sha": "59e69c362e7e0edd5d90c905d0cb5d56e8769d71",
+        "route": "Public compatibility facade aliases the same kernel service class/function; no copied numerical implementation.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/geometry/frame.py": {
+        "git_blob_sha": "aea0af33fa27c34c0fe63bbef9268db1a7fb03c1",
+        "route": "Public compatibility facade aliases the same kernel service class/function; no copied numerical implementation.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/geometry/projected.py": {
+        "git_blob_sha": "136196ae9fdecce38d6d5d9747657d025f90c204",
+        "route": "Public compatibility facade aliases the same kernel service class/function; no copied numerical implementation.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/geometry/spherical.py": {
+        "git_blob_sha": "b6cd018f04373e7faa2d79f156302711c725f34e",
+        "route": "Public compatibility facade aliases the same kernel service class/function; no copied numerical implementation.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/geometry/viewport.py": {
+        "git_blob_sha": "348c36f7b00990749a33b7d679a6c7b33b333c76",
+        "route": "Public compatibility facade aliases the same kernel service class/function; no copied numerical implementation.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/output_policy.py": {
+        "git_blob_sha": "6eb668679217f11bf3fd6068260e122619579e08",
+        "route": "Canonical chart/viewport/orchestration or export/semantic document owner; preserves established public geometry/projection and graphics boundaries.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/projections/__init__.py": {
+        "git_blob_sha": "a49b74b4908c67a64682cc9901a51f7a14983d93",
+        "route": "Public compatibility facade aliases the same kernel service class/function; no copied numerical implementation.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/projections/mollweide.py": {
+        "git_blob_sha": "79eae631925e9a925de5c26dc35491465afe2e8c",
+        "route": "Public compatibility facade aliases the same kernel service class/function; no copied numerical implementation.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/projections/polar_azimuthal_equidistant.py": {
+        "git_blob_sha": "bb417c92cf887907272eec82f295bb6fbf81c7da",
+        "route": "Public compatibility facade aliases the same kernel service class/function; no copied numerical implementation.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/projections/stereographic.py": {
+        "git_blob_sha": "9d89ebf5abfc396be2bc790b81c6b3e0d25ecb11",
+        "route": "Public compatibility facade aliases the same kernel service class/function; no copied numerical implementation.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/rendering/__init__.py": {
+        "git_blob_sha": "a58dffd1eda6d99cfa7668ea5768267245226aa7",
+        "route": "Wenu appearance/graphics consumes supplied geometry; numerical domain aliases delegate to kernel, no physical-state lookup.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/rendering/_matplotlib_axes.py": {
+        "git_blob_sha": "ab347a9a0093b6f6ec77103120e09cadf14039fe",
+        "route": "Wenu appearance/graphics consumes supplied geometry; numerical domain aliases delegate to kernel, no physical-state lookup.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/rendering/_matplotlib_primitives.py": {
+        "git_blob_sha": "d93a1bd8a41cc35a5aeb614f22a8b9a1a58b9f48",
+        "route": "Wenu appearance/graphics consumes supplied geometry; numerical domain aliases delegate to kernel, no physical-state lookup.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/rendering/label_placement.py": {
+        "git_blob_sha": "8c133c9391a40952a71fbaee55b5532c5c06eee9",
+        "route": "Wenu appearance/graphics consumes supplied geometry; numerical domain aliases delegate to kernel, no physical-state lookup.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/rendering/layers.py": {
+        "git_blob_sha": "6eaab50023208206c3f1f568abccddc0f4d3a3f4",
+        "route": "Wenu appearance/graphics consumes supplied geometry; numerical domain aliases delegate to kernel, no physical-state lookup.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/rendering/matplotlib.py": {
+        "git_blob_sha": "95e109c8268c6cf1eaf1700b06a433b111eb16e2",
+        "route": "Wenu appearance/graphics consumes supplied geometry; numerical domain aliases delegate to kernel, no physical-state lookup.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/rendering/paint_roles.py": {
+        "git_blob_sha": "b4c44b75e8912ad4c234fa7042f35d7a76a8b4d6",
+        "route": "Wenu appearance/graphics consumes supplied geometry; numerical domain aliases delegate to kernel, no physical-state lookup.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/rendering/preparation.py": {
+        "git_blob_sha": "bbb28eed2302c229e0f2cf68ef42c2c7438e2b96",
+        "route": "Wenu appearance/graphics consumes supplied geometry; numerical domain aliases delegate to kernel, no physical-state lookup.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/rendering/symbols.py": {
+        "git_blob_sha": "12a849f99597505f698028c8516fa1923e438eb2",
+        "route": "Wenu appearance/graphics consumes supplied geometry; numerical domain aliases delegate to kernel, no physical-state lookup.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/sky/celestial_sphere.py": {
+        "git_blob_sha": "f639334d88f3dc7b8d6cf8e4d22aa4bb689cd77f",
+        "route": "Canonical chart/viewport/orchestration or export/semantic document owner; preserves established public geometry/projection and graphics boundaries.",
+        "disposition": "retain unchanged"
+      },
+      "src/wenu/svg_document.py": {
+        "git_blob_sha": "59b3690d22469659e4d9eec2fe4665fd1d002cf4",
+        "route": "Canonical chart/viewport/orchestration or export/semantic document owner; preserves established public geometry/projection and graphics boundaries.",
+        "disposition": "retain unchanged"
+      }
+    },
+    "production_changes": [],
+    "new_python_modules": [],
+    "local_receipt": {
+      "focused_cases": 247,
+      "focused_seconds": 11.94,
+      "added_cases": 9,
+      "deliberate_faults_detected": 4,
+      "complete_mac_acceptance": "pending",
+      "documentation_cases": 31,
+      "documentation_seconds": 1.46,
+      "documentation_deselected": 5,
+      "active_document_links": "38 active documents pass using complete GitHub tree for target existence",
+      "tooling_cases": 8,
+      "tooling_seconds": 5.789
+    },
+    "protected_faults": [
+      "guard bypass before preparation",
+      "discarded returned kernel projection",
+      "graphics re-enters scientific services",
+      "relative reverse import in helper leaf"
+    ],
+    "retained_receipts": [
+      "KG.03/KG.04 numerical, aliases and isolated installation",
+      "KG.07 missing point rows and strict finite/domain admission",
+      "K3.16 real atlas/four-polar cold/restored PNG/PDF/SVG",
+      "K3.21 real atlas cold/saved/spawned and installed sheet contract",
+      "K3.22 physical polar/calendar/page/pouch/sheet outputs"
+    ],
+    "limits": "Synthetic geometry composition is not observational validation. Existing reference furniture may construct coordinates through admitted application services before graphics. No production, numerical/renderer algorithm, SDK/dependency/module/package/source bytes/schema/acquisition/network/benchmark/external execution change. K3.40/K4/K5 remain separate."
   }
 }

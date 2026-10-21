@@ -721,3 +721,22 @@ Resources/build adapters retain digest-bound admission and pure copying. No
 runtime provider, source catalogue, dependency or build-rule changes occur.
 Explicit provider policy/preflight tests use synthetic transport; they establish
 mechanism, not renewed provider permission. No external workload is executed.
+
+## Geometry and graphics consumer boundary
+
+K3.39 retains the existing kernel geometry/topology/domain/clipping and three
+projection implementations. Wenu compatibility imports remain identical aliases.
+Regional/full-sky charts pass spherical geometry through the canonical viewport
+guard before preparation; Mollweide owns map seams and polar products use their
+existing face-cap/latitude paths. Equidistant numerical curves remain strictly
+finite; separate components express disconnected curves. Missing point rows
+retain their accepted NaN slots and entity metadata.
+
+Preparation owns marker sizing, culling and label offsets; Matplotlib consumes
+projected records. Graphics helpers and SVG serialization have no astronomical
+provider role. Application reference furniture may construct/transform coordinate
+grids through CoordinateService and shared projections before drawing; it is not
+part of the generic renderer. Legends consume returned rendering/metadata and
+footers consume resolved text. No production correction was demonstrated in this
+bounded audit. Existing dependency direction, scientific meaning and physical
+appearance are retained. K3.40 reconciliation and K3/K5 closure remain separate.

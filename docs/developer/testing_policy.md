@@ -1859,7 +1859,43 @@ or new redistribution permission occurs. Keep accepted K3.37 installation,
 K3.16 contour, K3.28/29 minor-body, satellite and independent science receipts
 for unchanged implementations. K3.39 onward and K3/K5 remain separate.
 
-Local final gate: 49 passed in 7.00 s; 31 available documentation cases passed
-(five full-checkout archive/asset checks deselected), and eight tooling cases
-passed. Four deliberate faults each failed their closest contract and were
-restored before the final gate. Complete Mac acceptance remains pending.
+Local final gate: 49 passed in 7.00 s. Four deliberate faults each failed
+their closest contract and were restored. Complete Mac acceptance at `6c7f487c`
+passed 49 focused in 30.74 s and 36 documentation in 7.71 s, with eight tooling
+cases passed in the preceding run. PR #311 is merged and cleanup confirmed.
+
+## Geometry rendering routing gate
+
+Use `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python tools/run_test_gate.py geometry-rendering-routing --run`,
+plus documentation and tooling. This is K3.39 bounded verification of unchanged
+implementations, not an SDK/package or renderer rewrite. The 39 reviewed
+selections collect 247 cases in existing owners, including nine added cases.
+
+Guard/projection seams alter returned geometry and then refuse after success.
+The dependency check covers kernel geometry/projections and every Wenu rendering
+helper, resolving relative as well as absolute imports. Three synthetic scenes
+use the real projections, then prohibit CoordinateService/state evaluation and
+projection re-entry while drawing supplied geometry, footer, semantics and
+PNG/PDF/SVG. Assert physical page/view limits, marker areas/positions, labels,
+missing rows, vector structure and one save per output. These scenes do not
+qualify observational science or replace full-product appearance receipts.
+
+Retain existing independent topology/complement/winding/domain/clipping,
+Mollweide seam, missing-row, physical label/tick/band, style/mode/content,
+legend-rendering reuse, canonical single-save and semantic export contracts.
+Equidistant curve inputs remain strictly finite, with separate components;
+no new NaN numerical input capability is claimed. Application reference furniture
+continues constructing coordinates above the generic renderer, as already
+accepted under K3.17/K3.22.
+
+Four deliberate faults failed independently and were restored before the final
+gate. Local focused result: 247 passed in 11.94 s. Preserve accepted KG numerical,
+alias/installation/isolation and real K3.16/K3.21/K3.22 cold/restored/worker
+atlas/polar outputs where implementations are unchanged; do not repeat full SDK,
+installation, catalogue, production benchmark or external workloads for this
+test-only change. Full Mac documentation/focused acceptance remains required.
+K3.40 reconciliation and K4/K5 remain separate.
+
+Available local documentation: 31 passed in 1.46 s, with five full-checkout
+archive/asset checks left for Mac. All 38 active documents pass link/anchor
+checks against the complete GitHub tree. Eight tooling tests passed in 5.789 s.

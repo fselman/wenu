@@ -171,3 +171,39 @@ def test_chart_executor_and_atlas_publication_use_public_sheet_boundary():
         forbidden = ('request_generation', 'atlas_publication') if name == 'atlas_sheet.py' else ('request_generation',)
         assert not any(isinstance(node, ast.ImportFrom) and node.module
             and node.module.endswith(forbidden) for node in ast.walk(tree))
+
+
+def test_geometry_and_renderer_leaves_keep_their_dependency_boundary():
+    """Cover helper leaves too, rather than checking only renderer.py text."""
+    kernel = ROOT / "packages/wenu_kernel/src/wenu_kernel"
+    groups = (
+        (tuple(sources_below(kernel / "geometry")) + tuple(sources_below(kernel / "projections")),
+         ("wenu", "astropy", "skyfield", "matplotlib", "pandas", "sgp4",
+          "wenu_kernel.kernel", "wenu_kernel.providers")),
+        (tuple(sources_below(ROOT / "src/wenu/rendering")),
+         ("wenu.objects", "wenu.sky", "wenu.charts", "wenu.projections",
+          "wenu.coordinate_service", "wenu.observer", "wenu.ephemeris",
+          "wenu.resources", "wenu_kernel.kernel", "wenu_kernel.providers")),
+    )
+    violations = []
+    for sources, forbidden in groups:
+        for source in sources:
+            for node in ast.walk(source.tree):
+                imported = []
+                if isinstance(node, ast.Import):
+                    imported = [a.name for a in node.names]
+                elif isinstance(node, ast.ImportFrom):
+                    module = node.module or ""
+                    if node.level:
+                        import importlib.util
+                        relative = source.path.relative_to(ROOT).as_posix()
+                        prefix = "wenu_kernel" if relative.startswith("packages/") else "wenu"
+                        parts = relative.split("/" + prefix + "/", 1)[1].split("/")[:-1]
+                        module = importlib.util.resolve_name("." * node.level + module,
+                                  ".".join((prefix, *parts)))
+                    imported = [module]
+                    imported += [module + "." + a.name for a in node.names]
+                for name in imported:
+                    if any(name == p or name.startswith(p + ".") for p in forbidden):
+                        violations.append(f"{source.path.relative_to(ROOT)}:{node.lineno} {name}")
+    assert violations == []
