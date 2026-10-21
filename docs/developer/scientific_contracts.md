@@ -439,6 +439,16 @@ conservative selector cannot discard an exact crossing; fallbacks and
 completeness claims must retain their accepted bounded domains. A zero-crossing
 field is a valid result, not evidence for untested positive cases or capacity.
 
+Sampled-provider presentations retain immutable supplied records and their
+source-inferred coordinate convention; shared coordinate/geometry services
+consume returned values without acquiring or propagating data. Per-sample
+UTC/UT1, exact response identity and nullable provider illumination are evidence,
+not a new physical-model or covariance qualification. A sampled open polyline
+or singleton does not establish continuous containment, entry/exit times or
+absence between samples. Existing audited provider constraints and unresolved
+redistribution permissions remain unchanged; no current service permission is
+inferred from synthetic tests or old receipts.
+
 Exact reports retain canonical JSON identity, strict decoding, ECSV/VOTable
 losslessness, explicit nullable Unicode handling, atomic no-clobber file
 publication and the distinction between geometric crossing and visibility.

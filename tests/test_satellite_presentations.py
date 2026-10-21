@@ -429,3 +429,82 @@ def test_presentation_rejects_untyped_response_evidence():
     )
     with pytest.raises(TypeError, match="SatCheckerCandidateEvidence"):
         SatCheckerPresentation(query(), malformed)
+
+
+@pytest.mark.parametrize('kind', ['track', 'samples', 'singleton'])
+def test_candidate_shared_services_control_geometry_drawing_and_warm_refusal(monkeypatch, kind):
+    """Synthetic supplied samples; actual shared geometry and canonical renderer."""
+    from dataclasses import replace
+    from wenu.coordinate_service import CoordinateService
+    from wenu.coordinates import ObservationContext
+    from wenu_kernel.kernel import KernelSession
+    from wenu.satellites.sgp4 import Sgp4TemePropagator
+    import wenu.satchecker as provider
+    def prohibited(*args, **kwargs):
+        pytest.fail('drawing supplied candidates must not acquire or propagate states')
+    monkeypatch.setattr(provider, '_fetch', prohibited)
+    monkeypatch.setattr(provider, 'urlopen', prohibited)
+    monkeypatch.setattr(KernelSession, 'evaluate', prohibited)
+    monkeypatch.setattr(Sgp4TemePropagator, 'propagate', prohibited)
+    value = evidence(samples=(sample(0),) if kind == 'singleton' else None)
+    layer = SatelliteCandidateSamplesLayer(value) if kind == 'samples' else SatelliteCandidateTrackLayer(value)
+    site = value.candidate.observer
+    observation = ObservationContext(longitude_deg=site.longitude_deg, latitude_deg=site.latitude_deg,
+        elevation_m=site.elevation_m, instant=value.samples[0].instant_utc, time_scale='utc')
+    context = LayerRealizationContext(product_spec(), observation=observation)
+    sphere = CelestialSphere(object());sphere.add(layer)
+    original = CoordinateService.transform
+    calls = []
+    shift = [0.]
+    def transformed(service, geometry, target, observation=None):
+        calls.append((geometry, target, observation))
+        result = original(service, geometry, target, observation)
+        lon = tuple(row + shift[0] for row in result.lon_deg) if isinstance(result, SphericalCurves) else result.lon_deg + shift[0]
+        return replace(result, lon_deg=lon, metadata={**result.metadata, 'returned_service_marker': shift[0]})
+    monkeypatch.setattr(CoordinateService, 'transform', transformed)
+    images = []
+    bounds = None
+    results = []
+    for offset in (0., 3.):
+        shift[0] = offset
+        figure, axes = plt.subplots(figsize=(4,3), dpi=90)
+        try:
+            result = sphere.draw_chart(projection=StereographicProjection(flip_ew=False),
+                renderer=MatplotlibRenderer(axes), realization_context=context,
+                layer_options={layer: {'style': {'color':'black'}}})
+            geometry = result.layers[0].spherical
+            assert geometry.metadata['returned_service_marker'] == offset
+            assert geometry.metadata['sample_instants_utc'] == tuple(s.instant_utc for s in value.samples)
+            assert geometry.metadata['response_sha256'] == value.response_sha256
+            assert geometry.metadata['continuous_containment_verified'] is False
+            assert geometry.metadata['exact_crossing_events'] is False
+            assert geometry.coordinate_spec == product_spec()
+            np.testing.assert_allclose(np.asarray(geometry.lon_deg).ravel(),
+                np.asarray([s.right_ascension_deg for s in value.samples]) + offset)
+            assert result.layers[0].artists
+            results.append(geometry)
+            if bounds is None:
+                x,y,width,height = axes.dataLim.bounds
+                bounds = (x-.5,x+width+.5,y-.5,y+height+.5)
+            axes.set_xlim(bounds[:2]);axes.set_ylim(bounds[2:]);axes.set_axis_off()
+            figure.canvas.draw()
+            images.append(np.asarray(figure.canvas.buffer_rgba()).copy())
+        finally:
+            plt.close(figure)
+        context = replace(context, observation=replace(observation, instant='2026-09-15T01:00:02Z'))
+    assert len(calls) == 2
+    assert calls[0][2] is observation and calls[1][2].instant != observation.instant
+    assert calls[0][0].coordinate_spec.instant is None
+    assert calls[0][0].coordinate_spec.time_scale is None
+    assert not np.array_equal(images[0], images[1])
+    assert all(np.any(image[:,:,:3] < 128) for image in images)
+    def refused(*args, **kwargs):
+        raise RuntimeError('candidate coordinate service refused')
+    monkeypatch.setattr(CoordinateService, 'transform', refused)
+    figure, axes = plt.subplots()
+    try:
+        with pytest.raises(RuntimeError, match='candidate coordinate service refused'):
+            sphere.draw_chart(projection=StereographicProjection(), renderer=MatplotlibRenderer(axes),
+                realization_context=context)
+    finally:
+        plt.close(figure)

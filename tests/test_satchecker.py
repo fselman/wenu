@@ -488,3 +488,44 @@ def test_exact_cache_rejects_conflicting_same_query_chain(tmp_path):
 
     with pytest.raises(FileExistsError, match="different exact receipts"):
         cache.store(query(), (changed_response,))
+
+
+def test_cached_synthetic_receipt_replay_reaches_reports_and_layers_without_acquisition(tmp_path, monkeypatch):
+    """Keep exact sampled evidence at the maintenance/presentation boundary."""
+    import numpy as np
+    from wenu.satellite_presentations import SatCheckerPresentation
+    from wenu.sky.satellite_candidate_layer import SatelliteCandidateSamplesLayer, SatelliteCandidateTrackLayer
+    from wenu.sky.realization import LayerRealizationContext
+    from wenu_kernel.kernel import KernelSession
+    import wenu.satchecker as provider
+    def prohibited(*args, **kwargs):
+        pytest.fail('offline replay must not acquire or fabricate object states')
+    monkeypatch.setattr(provider, 'urlopen', prohibited)
+    monkeypatch.setattr(provider, '_fetch', prohibited)
+    monkeypatch.setattr(KernelSession, 'evaluate', prohibited)
+    payload = success_payload()
+    positions = payload['result']['data']['satellites']['TEST SAT (123456)']['positions']
+    positions[1].update(ra=159.1, dec=18.2, illuminated=False)
+    terminal = parse_response(query(), receipt(payload), expected_task_id='task-1', ut1_jd_to_utc=sample_time)
+    cache = SatCheckerCache(tmp_path);cache.store(query(), (terminal,))
+    cached = cache.load(query())
+    replayed = parse_response(query(), cached.receipts[-1], expected_task_id='task-1', ut1_jd_to_utc=sample_time)
+    report = SatCheckerPresentation(query(), replayed, cache_provenance=('offline exact receipt replay',))
+    row = report.document['candidates'][0]
+    assert row['samples'][1]['right_ascension_deg'] == 159.1
+    assert row['samples'][1]['declination_deg'] == 18.2
+    assert row['samples'][1]['provider_illuminated'] is False
+    assert row['response_sha256'] == terminal.receipt.body_sha256
+    assert 'not verified crossings' in report.to_text()
+    for cls in (SatelliteCandidateTrackLayer, SatelliteCandidateSamplesLayer):
+        geometry = cls(replayed.evidence[0]).realize(LayerRealizationContext(query().field_of_view.coordinate_spec), None)
+        np.testing.assert_allclose(np.asarray(geometry.lon_deg).ravel(), [157.,159.1], rtol=0, atol=1e-12)
+        assert geometry.metadata['response_sha256'] == row['response_sha256']
+        assert geometry.metadata['provider_illumination'] == (None,False)
+        assert geometry.metadata['exact_crossing_events'] is False
+        assert geometry.metadata['sample_instants_utc'] == tuple(sample.instant_utc for sample in replayed.evidence[0].samples)
+        assert all('entry' not in key and 'exit' not in key for key in geometry.metadata)
+    blob = tmp_path/'blobs'/terminal.receipt.body_sha256
+    blob.write_bytes(b'corrupt after successful replay')
+    with pytest.raises(ValueError, match='corrupt'):
+        cache.load(query())

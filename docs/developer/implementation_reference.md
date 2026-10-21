@@ -1839,3 +1839,28 @@ Snapshot loading, canonical source-content validation, immutable element records
 and external admission tokens remain their existing owners. Direct hand-authored
 records are not promoted to independently validated captured provider evidence.
 No new module, public export, SDK/dependency pin or serialized schema is added.
+
+## Sampled satellite candidate services
+
+`SatCheckerQuery`, `submit()` and `poll()` retain the existing provider boundary:
+one explicit request per call, no polling loop or automatic retry. Exact receipt
+bytes and request/EOP identity remain in `SatCheckerCache`. Replaying a cached
+receipt explicitly calls the same `parse_response()` normalizer; no new replay
+API or serialized schema is added.
+
+`SatCheckerPresentation` consumes normalized immutable evidence for deterministic
+text/JSON reports. `SatelliteCandidateTrackLayer` and
+`SatelliteCandidateSamplesLayer` use `CoordinateService.transform()` and public
+kernel spherical records, then `CelestialSphere.draw_chart()` supplies the
+canonical domain/projection/rendering route. Returned coordinates and service
+refusal reach drawing even after successful use; there is no transformed-state
+cache in these owners.
+
+Response digest/version, full NORAD identity, source-inferred geometric
+ICRF/ICRS-oriented topocentric convention, provider sample order, UTC labels,
+UT1 Julian dates, nullable provider illumination and candidate warnings are
+retained. Per-sample times remain metadata rather than a fictitious single
+track epoch. A singleton has no invented segment. Supplied records are neither
+new SGP4 evaluations nor exact crossing events. Loading or drawing them requires
+no positional SDK query and cannot establish provider-data redistribution
+permission, physical accuracy or continuous coverage.
