@@ -137,6 +137,7 @@ class FrozenEarthSolarSystemDiskSequenceRealization:
         self.geometry_realizer = (
             geometry_realizer or SolarSystemDiskGeometryRealizer()
         )
+        self._resource_key = None
         self._context = self._observer = self._transformed = None
 
     @property
@@ -159,9 +160,16 @@ class FrozenEarthSolarSystemDiskSequenceRealization:
                 "frozen-Earth sequence requires the fixed ecliptic product "
                 "frame."
             )
+        # This geometric construction needs the live SPK, not observer EOP.
+        identity = getattr(observer, "geometry_resource_identity", None)
+        resource_key = (
+            id(getattr(observer, "ephemeris", None)),
+            identity() if callable(identity) else None,
+        )
         if (
             self._transformed is not None
-            and self._context == context
+            and self._context is context
+            and self._resource_key == resource_key
             and self._observer is observer
         ):
             return self._transformed
@@ -171,6 +179,7 @@ class FrozenEarthSolarSystemDiskSequenceRealization:
             for disk in sequence.disks
         )
         self._transformed = _combine(sequence, geometries)
+        self._resource_key = resource_key
         self._context, self._observer = context, observer
         return self._transformed
 

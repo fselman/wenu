@@ -14,6 +14,7 @@ from wenu.coordinates import CoordinateSpec, PositionStatus
 from wenu.ephemeris import EphemerisState, EphemerisStateRequest
 from wenu.geometry.spherical import SphericalPoints
 from wenu.sky.solar_system_points import SolarSystemPointDescriptor
+from wenu.ephemeris_state import KernelEphemerisStateSource
 from wenu.skyfield_ephemeris import SkyfieldEphemerisStateSource
 from wenu.solar_system_appearance import AU_KM
 
@@ -413,10 +414,14 @@ class FrozenEarthDiskSequenceRealizer:
     def __init__(
         self,
         *,
-        source_factory=SkyfieldEphemerisStateSource.from_observer,
+        source_factory=None,
         coordinate_service=None,
     ):
-        self.source_factory = source_factory
+        self._kernel_states = source_factory is None
+        self.source_factory = (
+            SkyfieldEphemerisStateSource.from_observer
+            if source_factory is None else source_factory
+        )
         self.coordinate_service = coordinate_service or CoordinateService()
 
     def sequence(self, request, *, observer):
@@ -425,12 +430,16 @@ class FrozenEarthDiskSequenceRealizer:
                 "request must be a FrozenEarthDiskSequenceRequest."
             )
         source = self.source_factory(observer)
+        states = (
+            KernelEphemerisStateSource(source)
+            if self._kernel_states else source
+        )
         start = Time(request.start_instant, scale=request.start_time_scale)
         earth_request = EphemerisStateRequest(
             target="earth", centre="sun", frame="icrf",
             instant=_isot(start), time_scale=start.scale,
         )
-        earth_state = source.state(earth_request)
+        earth_state = states.state(earth_request)
         self._validate_state(earth_state, earth_request, source.resource)
         earth = _vector(earth_state.position, name="frozen Earth position")
         sun_vector = -earth
@@ -447,7 +456,7 @@ class FrozenEarthDiskSequenceRealizer:
                 target=request.descriptor.target, centre="sun", frame="icrf",
                 instant=isot, time_scale=instant.scale,
             )
-            planet_state = source.state(planet_request)
+            planet_state = states.state(planet_request)
             self._validate_state(
                 planet_state,
                 planet_request,

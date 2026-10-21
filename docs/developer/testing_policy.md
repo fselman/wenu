@@ -1458,7 +1458,32 @@ not a physical accuracy oracle. Bypassing assembly demonstrably fails that test.
 
 The real DE440s test compares all eight raw versus routed light-time/range/velocity
 and apparent directions at a fixed instant/site. It requires the existing offline
-resource and does not download or skip it. Full Mac acceptance remains pending.
-Retain accepted lower-level kernel conformance/geometry/installation and rendering
+resource and does not download or skip it. Full K3.25 Mac acceptance passed at 7c80812c through PR #298: 83 focused,
+36 documentation and eight tooling cases. Retain accepted lower-level kernel conformance/geometry/installation and rendering
 receipts; no SDK, dependency, source-resource, snapshot, renderer or numerical
 algorithm changed. Resolved disks and moving-body tracks are separate milestones.
+
+## Resolved disk and sequence routing gate
+
+`resolved-disk-routing` is K3.26's focused scientific/display gate. It preserves
+existing appearance, lunar/planetary descriptor, observed/frozen chronology,
+geometry, capability and display/magnification tests. New seams cover returned
+kernel state/refusal, Sun phase input, frozen Earth and planet vectors, resource
+closure/change before shared reuse, equal-valued new request admission and frozen
+SPK admission without observer EOP.
+Three stale-resource regression cases fail before correction and pass afterward;
+bypassing observed kernel assembly fails both new returned-state body cases.
+
+Available local gate: 137 passed, one offline DE440s parity case excluded only from
+the local invocation. The full Mac gate includes it without skip/xfail and refuses
+missing offline resources before acquisition. Actual raw/routed single, observed
+and frozen PNGs have equal nonempty pixels through the canonical draw/projection/
+post-projection magnification/renderer pipeline, with labelled synthetic observation
+inputs. The real DE440s test separately compares physical diameter/phase/bright limb,
+ranges and frozen vectors for the already supported body/model combinations.
+No new absolute physical accuracy claim follows from parity.
+
+Retain accepted K3.25 adapter/kernel conformance and installation, KG geometry and
+prior atlas/sequence rendering receipts. SDK, dependencies, source bytes, renderer,
+geometry algorithms and snapshot/manifest formats are unchanged; no broad SDK or
+production repeat is justified. Complete Mac acceptance remains pending.

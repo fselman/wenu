@@ -2424,6 +2424,60 @@
           "reason": "Existing contract/science/point owner and bounded adapter/identity seams."
         }
       ]
+    },
+    "resolved-disk-routing": {
+      "scope": "K3.26 single physical disks, observed sequences and frozen-Earth sequences consume existing Cartesian kernel states before retained appearance/geometry/display services.",
+      "limits": "Preserve supported body/family capabilities, physical/display size, sample chronology, single observed light time and geometric frozen Earth. Default source assembly only; custom injected protocol compatibility retained. Existing observer-resource checks precede request-owned component reuse. No SDK, numerical model, source bytes, dependency, snapshot/manifest, renderer or track/minor-body adoption change. Real parity requires existing offline DE440s.",
+      "selections": [
+        {
+          "node": "tests/test_solar_system_appearance.py",
+          "reason": "Existing scientific, descriptor or public display owner; bounded returned-state/refusal, resource reuse, numerical/output parity seams."
+        },
+        {
+          "node": "tests/test_moon_appearance_state.py",
+          "reason": "Existing scientific, descriptor or public display owner; bounded returned-state/refusal, resource reuse, numerical/output parity seams."
+        },
+        {
+          "node": "tests/test_mercury_catalog_state.py",
+          "reason": "Existing scientific, descriptor or public display owner; bounded returned-state/refusal, resource reuse, numerical/output parity seams."
+        },
+        {
+          "node": "tests/test_solar_system_disk_sequences.py",
+          "reason": "Existing scientific, descriptor or public display owner; bounded returned-state/refusal, resource reuse, numerical/output parity seams."
+        },
+        {
+          "node": "tests/test_frozen_earth_disk_sequences.py",
+          "reason": "Existing scientific, descriptor or public display owner; bounded returned-state/refusal, resource reuse, numerical/output parity seams."
+        },
+        {
+          "node": "tests/test_venus_disk_display.py",
+          "reason": "Existing scientific, descriptor or public display owner; bounded returned-state/refusal, resource reuse, numerical/output parity seams."
+        },
+        {
+          "node": "tests/test_moon_disk_display.py",
+          "reason": "Existing scientific, descriptor or public display owner; bounded returned-state/refusal, resource reuse, numerical/output parity seams."
+        },
+        {
+          "node": "tests/test_moon_disk_sequence.py",
+          "reason": "Existing scientific, descriptor or public display owner; bounded returned-state/refusal, resource reuse, numerical/output parity seams."
+        },
+        {
+          "node": "tests/test_observed_venus_disk_sequence_display.py",
+          "reason": "Existing scientific, descriptor or public display owner; bounded returned-state/refusal, resource reuse, numerical/output parity seams."
+        },
+        {
+          "node": "tests/test_frozen_earth_venus_sequence_display.py",
+          "reason": "Existing scientific, descriptor or public display owner; bounded returned-state/refusal, resource reuse, numerical/output parity seams."
+        },
+        {
+          "node": "tests/test_frozen_earth_mercury_sequence_display.py",
+          "reason": "Existing scientific, descriptor or public display owner; bounded returned-state/refusal, resource reuse, numerical/output parity seams."
+        },
+        {
+          "node": "tests/test_solar_system_body_machinery.py",
+          "reason": "Existing scientific, descriptor or public display owner; bounded returned-state/refusal, resource reuse, numerical/output parity seams."
+        }
+      ]
     }
   },
   "consumer_review": [

@@ -272,5 +272,10 @@ checked. Accepted through PR #297 after 53 focused Mac cases.
 
 K3.25 implements [major-planet and Moon state routing](kernel_migration_audit_v1.md#k325-major-planet-and-moon-state-assessment)
 through the existing Cartesian SDK before the retained light-time/apparent chain.
-Focused Mac acceptance is pending. K3.24 was accepted in PR #297 after 53 focused,
-36 documentation and eight tooling Mac cases. K3.26 remains pending separate selection.
+Accepted through PR #298 after 83 focused, 36 documentation and eight tooling Mac
+cases; clean synchronized main and branch cleanup confirmed. K3.26 is selected separately below.
+
+K3.26 now routes [physical disk and sequence consumers](kernel_migration_audit_v1.md#k326-disk-and-sequence-consumer-assessment)
+through the existing Cartesian adapter before retained appearance/geometry services.
+Component sharing checks live observer resources and is scoped to one request context.
+The `resolved-disk-routing` Mac gate remains pending; K3.27 is not activated.

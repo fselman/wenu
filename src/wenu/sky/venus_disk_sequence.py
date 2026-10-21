@@ -9,6 +9,7 @@ import numpy as np
 
 from wenu.coordinate_service import CoordinateService
 from wenu.geometry.spherical import SphericalCurves, SphericalPoints, SphericalPolygons
+from wenu.sky.observed_cache import observer_geometry_key
 from wenu.sky.realization import LayerRealizationContext
 from wenu.sky.sky_layer import SkyLayer
 from wenu.sky.solar_system_disk_sequences import (
@@ -125,6 +126,7 @@ class ObservedSolarSystemDiskSequenceRealization:
             sequence_realizer or ObservedSolarSystemDiskSequenceRealizer()
         )
         self.coordinate_service = coordinate_service or CoordinateService()
+        self._resource_key = None
         self._context = self._observer = self._transformed = None
 
     @property
@@ -143,9 +145,11 @@ class ObservedSolarSystemDiskSequenceRealization:
             raise ValueError(
                 "observed body disk sequence requires an observation context."
             )
+        resource_key = observer_geometry_key(observer)
         if (
             self._transformed is not None
-            and self._context == context
+            and self._context is context
+            and self._resource_key == resource_key
             and self._observer is observer
         ):
             return self._transformed
@@ -169,6 +173,7 @@ class ObservedSolarSystemDiskSequenceRealization:
                 ),
             ))
         self._transformed = _combine(sequence, tuple(samples))
+        self._resource_key = resource_key
         self._context, self._observer = context, observer
         return self._transformed
 
