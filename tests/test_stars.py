@@ -94,6 +94,49 @@ def test_stars_is_concrete_astronomical_object():
     assert stars.layer_name == "stars"
 
 
+def test_enrichment_baseline_keeps_full_source_membership_and_visual_photometry():
+    """A future enrichment join cannot truncate membership or substitute G for V."""
+    import hashlib
+    import json
+    import math
+    from pathlib import Path
+
+    contract = json.loads((Path(__file__).resolve().parents[1] /
+        'docs/developer/data/stellar_enrichment_contract_v1.json').read_text())
+    baseline = contract['baseline']
+    stars = Stars(None, magnitude_limit=baseline['default_magnitude_limit'])
+    stars.load()
+    source = stars.source_catalog
+    assert stars.catalogue_metadata.to_record()['source_sha256'] == baseline['source_sha256']
+    assert source.index.is_unique and len(source) == baseline['rows']
+    identities = ('\n'.join(map(str, source.index)) + '\n').encode()
+    assert hashlib.sha256(identities).hexdigest() == baseline['ordered_hip_ids_sha256']
+    photometry = [[int(hip), 'missing' if math.isnan(float(value)) else float(value).hex()]
+                  for hip, value in source.magnitude.items()]
+    payload = json.dumps(photometry, separators=(',', ':')).encode()
+    assert hashlib.sha256(payload).hexdigest() == baseline['hip_magnitude_pairs_sha256']
+    assert int((source.ra_degrees.isna() | source.dec_degrees.isna()).sum()) == baseline['missing_coordinate_rows']
+    assert int(source.magnitude.isna().sum()) == baseline['missing_visual_magnitude_rows']
+    assert int(source.is_multiple.sum()) == baseline['multiple_flag_rows']
+    assert int(source.is_variable.sum()) == baseline['variable_flag_rows']
+    assert set(contract['preserved_columns']) <= set(source.columns)
+    assert len(stars.catalog) == baseline['default_selected_rows']
+
+    # Force a second, much brighter selection while retaining separate faint
+    # explicit and vertex rows. Full-source membership and names survive reload.
+    faint = list(source.index[source.magnitude > 8])[:2]
+    before = source.copy(deep=True)
+    stars.magnitude_limit = 1.0
+    stars.set_constellation_vertices([faint[1]], reload=False)
+    stars.configure_selection(include_ids=[faint[0]],
+                              include_constellation_vertices=True)
+    pd.testing.assert_frame_equal(stars.source_catalog.drop(columns='is_constellation_vertex'),
+                                 before.drop(columns='is_constellation_vertex'))
+    expected = (source.magnitude <= 1.0) | source.index.isin(faint)
+    assert list(stars.catalog.index) == list(source.index[expected])
+    assert bool(stars.catalog.loc[faint[1], 'is_constellation_vertex'])
+
+
 def test_native_icrs_selection_preserves_catalogue_and_ignores_bound_observer(monkeypatch):
     from wenu.sky.realization import NATIVE_ICRS_SPEC
     from wenu.sky.realization import LayerRealizationContext

@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 65, 2026-10-21. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 66, 2026-10-21. **Status:** K3 routing receipts and six-product checkpoint accepted; K4a.01 selected;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -25,8 +25,9 @@ curves, grids, polygons and other projections compatible; no cluster sizing,
 coordinate-label placement, source bytes, acquisition, Gaia or new science.
 Acceptance: synthetic far-side/crossing/interior/rotated-frame regression cases,
 existing constellation/projection/geometry and kernel gates, plus Mac replot
-of the reported Sco/Lib/Sgr/Oph field. Atlas and pouch products were accepted
-visually by Fernando; the regional review remains open pending this correction.
+of the reported Sco/Lib/Sgr/Oph field. All six product specimens were subsequently accepted by Fernando; colours,
+formats, symbol sizes and coordinate-label placement remain deferred. This is a
+bounded functional/visual checkpoint, not final K9 publication acceptance.
 
 ## Release objective
 
@@ -46,20 +47,21 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Accepted baseline:** main `0deca8c31d170914d1f913bb22c1a0038d68e95f`, PR #312,
-tree identical to tested `c43369a116ea73b8671f44ebd4398875f59f81f4`.
-K3.39 passed 247 focused cases in 18.47 s, 36 documentation cases in 3.87 s
-and eight tooling cases in 9.015 s on Mac. Fernando confirmed clean synchronized
-main and branch cleanup, then selected K3.40 with “Proceed”. K3/K5 remain partial.
+**Accepted baseline:** main `2988f75436c93a6ee060c10cb464031fd3ce96ce`.
+K3.40 was accepted through PR #313 after 25 consumer-reconciliation, 36
+documentation and eight tooling Mac cases. PR #314 corrected finite constellation
+segments; 205 kernel, 180 focused and 36 documentation Mac cases passed, and
+Fernando confirmed the regional replot fixed the problem. Branch cleanup and
+clean synchronized main are confirmed.
 
 | Track | Position |
 |---|---|
-| Baseline migration | K0 complete; K1 initial contracts and K2 foundation accepted; **K3 partial** |
-| Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
-| Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
-| Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
-| Current authorized task | K3.40 complete consumer/evidence reconciliation; selected 2026-10-21 |
-| Next bounded submilestone | Six-product acceptance before Gaia, agreed by Fernando; recover concrete requests/resources after K3.40 acceptance |
+| Baseline migration | K0 complete; K1 initial contracts/K2 foundation and bounded K3.01–K3.40 routes accepted; final reconciliation remains K5 |
+| Gaia | K4a.01 selected; acquisition, matching and real propagation remain pending |
+| Shared positional extension | AX.01–AX.12 accepted; AX.13–AX.16 pending; AX.14 overlaps K4b |
+| Freeze/extraction/release | K5–K9 pending |
+| Current authorized task | K4a.01 retained membership/component/photometry contract and edition-qualified enrichment schema |
+| Next bounded submilestone | K4a.02 requires separate selection after K4a.01 acceptance |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -83,7 +85,9 @@ identity or offline resource coverage before producing each output. Preserve
 current product/scientific policies; a new resource/model/acquisition need must
 be assessed explicitly rather than silently enabled. This review is separate
 from K3 routing closure and does not freeze the SDK, activate K4 science or
-permit astronomical package extraction. No product execution is part of K3.40.
+permit astronomical package extraction. No product execution is part of K3.40. All six specimens are now reviewed and
+accepted with the recorded presentation caveats; Fernando selected K4a.01 after
+reviewing its place and scope in the full roadmap.
 
 ## Roadmap agreement and change control
 
@@ -103,6 +107,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 66: select K4a.01 | Fernando’s “Proceed” after the full roadmap and six-product acceptance; clean synchronized main at 2988f754 confirmed | Define the retained Hipparcos membership, component/photometry invariants and edition-qualified enrichment record/schema. Bind an offline census to source bytes and verify existing selection contracts in current stellar test owners. Documentation/data contract and regression evidence only; no acquisition route, match decisions, production astrometry/photometry/selection change, new dependency, SDK or package extraction. K4a.02 onward remains separate. |
 | Revision 64: select K3.40 complete consumer reconciliation | Fernando’s “Proceed” after PR #312 acceptance/cleanup and explicit order K3.40, six products, Gaia | Reconcile every current production/kernel, public export/command, example/notebook and operational consumer to appropriate route and accepted bounded evidence; refresh stale current statuses while preserving historical receipts and explicit scientific/compatibility limits. Pin exact current source hashes and dependency/call evidence; extend existing inventory/architecture test owners to reject orphan paths/exports, stale source identities, missing receipt links and erased limits. Reuse unchanged service/product numerical/installation receipts; use a focused consumer-reconciliation gate plus documentation/tooling. Correct only demonstrated baseline bypasses within existing contracts; extra science/architecture returns to scope control. No new SDK/dependency/module/package, source bytes/schema, provider/acquisition/network, renderer/numerical algorithm, product export or external benchmark execution. K3.40 acceptance is routing/compatibility closure only; six-product review precedes Gaia and K5 remains separate. |
 | Revision 63: select K3.39 geometry and rendering boundary verification | Fernando’s “Proceed” after PR #311 complete Mac acceptance and confirmed cleanup | Audit existing kernel topology/domain/clipping and all three projections, Wenu preparation, canonical chart consumers, renderer/furniture and PNG/PDF/SVG export. Retain accepted KG numerical/alias/isolation and K3 product receipts for unchanged implementations. Verify guarded returned geometry reaches preparation/drawing, refusal remains live after prior success, rendering/export operates on supplied geometry without provider/state/coordinate calls, metadata/topology/NaN segmentation and physical presentation remain compatible. Use existing test owners and a focused geometry-rendering-routing gate plus documentation/tooling; actual small synthetic scenes cover all three projections and output formats. Correct only demonstrated in-scope gaps; no graphics/science rewrite, SDK/dependency/module/package, source bytes, schema, acquisition/network, production benchmark, new geometry-query protocol or extraction. K3.40/K4/K5 and paused/consumed external execution remain separate. |
 | Revision 62: select K3.38 maintenance and resource consumers | Fernando’s “Proceed” after PR #310 complete Mac acceptance and confirmed cleanup | Inventory every operational Python tool plus resource/acquisition/build owners; classify pure source normalization/crossmatch/copy/layout, explicit acquisition, independent numerical oracles and application scientific consumers separately. Preserve current source policies and independent raw comparison paths. Route the demonstrated zodiac application-coordinate transforms through existing CoordinateService with unchanged mean-ecliptic J2000/FK5/AltAz meaning and formatting; correct partial observer acquisition/cleanup in the existing reusable-sphere benchmark. Verify returned service values/refusal and Astropy parity, bounded synthetic benchmark lifecycle (no production timing run), strict offline curation/promotion/copy and build-resource admission/delegation without importing runtime providers. Use maintenance-resource-routing plus documentation/tooling; retain accepted unchanged installation/numerical receipts. No new catalogue selection/science, provider route/retry/cache/redistribution policy, SDK/dependency/module/package, source bytes, schema, renderer algorithm, acquisition/network, external benchmark or paused/consumed execution. K3.39 and K3/K5 remain separate. |
@@ -594,7 +599,7 @@ bounded. Runtime authority is accepted one milestone at a time.
 | K0 | Consolidated documentation and pinned functional baseline | Accepted; exact archive ledger and baseline preserved |
 | K1 | Shared service-kernel contracts, including state/provider/observation and geometry/projection services | Initial state contracts accepted; broader service review/final public freeze remains K5 |
 | K2 | Standalone state-SDK component: immutable states, registration, selective reuse and conformance | Accepted foundation; optional capabilities are not automatically promised |
-| K3 | Route existing functionality through appropriate shared state, geometry, projection and realization services | Partial; every consumer below needs its own acceptance, including non-chart paths |
+| K3 | Route existing functionality through appropriate shared state, geometry, projection and realization services | K3.01–K3.40 bounded receipts accepted; final K3/K4 reconciliation and contract freeze remain K5 |
 | K4a | Bounded offline Gaia DR3 identification/subset for current Wenu stars | Pending; membership, visual photometry and identifiers preserved |
 | K4b | Real stellar propagation, incomplete-input policies, historical time and admitted epoch domain | Pending real-star acceptance; shared positional groundwork exists in AX |
 | K5 | Close routing and freeze kernel/observer contracts | Pending; requires K3 + K4 and real provider/compatibility evidence |
@@ -675,7 +680,7 @@ map below ensures small/non-chart capabilities do not disappear in grouped rows.
 | K3.37 | Close public Python, all eight installed commands, six examples, five notebooks/installers, overlays/presets and translations | Accepted PR #310, main 73118315; 238 focused, 36 documentation and eight tooling Mac cases, including installed commands/notebook delivery |
 | K3.38 | Close maintenance/curation/acquisition and resource/build consumer boundaries | Accepted through PR #311, main 3df69c4a; 49 focused, 36 documentation and eight tooling Mac cases; no network execution |
 | K3.39 | Verify geometry topology, domain guards, clipping, three projections, renderer/furniture/PNG/PDF/SVG stay pure and compatible | Accepted PR #312, main 0deca8c3; 247 focused, 36 documentation and eight tooling Mac cases; unchanged production implementations |
-| K3.40 | Reconcile every audited source/public/operational consumer to a route and acceptance receipt, with no applicable service bypass | Complete current census and bounded receipt/route/limit reconciliation delivered; no new baseline bypass demonstrated, production unchanged. Complete Mac consumer-reconciliation/documentation acceptance pending; six-product review precedes Gaia |
+| K3.40 | Reconcile every audited source/public/operational consumer to a route and acceptance receipt, with no applicable service bypass | Accepted PR #313/main 301eb7cb after 25 focused, 36 documentation and eight tooling Mac cases; cleanup confirmed. Six-product checkpoint subsequently accepted, with presentation caveats; K5 reconciliation remains separate |
 
 For each row, the specific task identifies source and test owners from the
 [audit](kernel_migration_audit_v1.md) and
@@ -815,7 +820,7 @@ remain its separate responsibilities.
 
 | ID | Intermediate deliverable and exit evidence | Status / dependency |
 |---|---|---|
-| K4a.01 | Fix current Wenu membership/component/photometry contract and edition-qualified schema, including future DR4 adapter boundary | Pending; no full Gaia mirror or silent V-to-G substitution |
+| K4a.01 | Fix current Wenu membership/component/photometry contract and edition-qualified schema, including future DR4 adapter boundary | Design contract and source-bound census delivered for review; 35 focused cases/nine subtests and eight tooling cases pass locally; full Mac documentation/contract acceptance pending. No full Gaia mirror or silent V-to-G substitution |
 | K4a.02 | Agree bounded acquisition/matching/quality/missing-data policy after checking current primary API/terms/licensing | Pending; before any acquisition; rendering/tests remain offline |
 | K4a.03 | Cross-identify the required DR3 sources with epoch/PM-aware evidence and explicit ambiguous/unmatched/component cases | Pending; K4a.01–K4a.02; no nearest-neighbour guess silently accepted |
 | K4a.04 | Publish immutable bounded DR3 subset with exact bytes, edition/epoch/units/provenance, uncertainties/correlations and match evidence | Pending; K4a.03 and redistribution admission |

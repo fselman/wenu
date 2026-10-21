@@ -392,6 +392,126 @@ Star designation review cells and the research dossier remain unchanged.
 Shared-star contextual naming and accepted curated names remain in force;
 historical blank cells are not a requirement to stop normal label rendering.
 
+## Stellar membership and enrichment contract
+
+K4a.01 defines the logical record `wenu-stellar-enrichment/1` and its
+[machine-readable contract and baseline census](data/stellar_enrichment_contract_v1.json).
+This is a design contract, not a loaded Gaia catalogue, implemented codec,
+matching decision, astrometric provider or new saved-sky format. K4a.02 must
+qualify current primary source conventions, API/terms and acquisition/matching
+policies before any source request; K4a.03–05 admit matches and actual data.
+
+### Retained population and identity
+
+The acquisition target population is the complete original `Stars.source_catalog`,
+before magnitude, constellation, viewport, horizon or latest-chart selection.
+At the pinned baseline it contains 118,218 unique ordered HIP rows, including
+263 rows lacking a coordinate pair and one lacking visual magnitude. The
+5.5-magnitude default selects 2,851 rows. The 23,447 multiple-flag and 23,898
+variable-flag rows are catalogue classifications, not counts of physical
+components or confirmed variable systems. The census is bound to the preserved
+Hipparcos source digest and tested separately from the last rendered field.
+
+The retained identity is `(catalogue, edition, identifier, component)`; HIP
+identifiers remain the existing public chart/constellation keys. Decimal IDs are
+serialized as strings, never floating-point numbers. Component is explicitly
+null until supported by component evidence. A HIP entry, CCDM designation,
+Wikidata label and Gaia source need not describe the same resolved component.
+Null does not mean primary, single star, photocentre or barycentre. Preserve all
+original multiple/variable classifications, component measurements and naming
+records. Do not split, merge, rename or replace a baseline row through a join.
+
+Each retained row has zero or more edition-qualified candidate counterparts.
+Several candidates do not expand chart membership. A foreign source shared by
+multiple baseline rows is a conflict requiring explicit evidence/review, not
+permission to collapse HIP rows. Cross-release source IDs never imply identity.
+Component associations and adopted solutions remain separate from display names.
+At most one solution per established component may be adopted by an explicit
+policy; adoption does not automatically enable its use by current consumers.
+
+Current chart selection remains the existing magnitude cut OR explicit IDs OR
+enabled constellation vertices, followed by the existing detail/visibility rules.
+These selections do not define acquisition membership. An explicitly requested
+HIP absent from the source, or a missing constellation endpoint, is an unresolved
+source obligation: report it without inventing a star or coordinate. Gaia
+non-detections, ambiguity, unusable solutions and missing fields never delete a
+retained row. Existing lookup remains available; propagated fallback capability
+requires its own K4b admission.
+
+### Logical snapshot and row schema
+
+The following names are required logical fields for the future codec. This
+contract does not prescribe a container/transport, provider column spelling,
+query strategy or numerical matching threshold. Changes of meaning require a
+schema version; a Gaia release changes the edition adapter and source metadata,
+not the kernel or product API. Unknown top-level extension fields must be
+namespaced and preserved; unsupported schema versions must be refused.
+
+| Record / field | Meaning and admission rule |
+|---|---|
+| Snapshot `schema` | Exact version `wenu-stellar-enrichment/1` |
+| `membership_source`, `membership_digest` | Original catalogue/edition, source bytes, ordered retained identities; independent of foreign matches |
+| `edition_adapters` | Versioned decoding maps and evidence for each foreign release, including original column names, units, masks and conventions |
+| `resources` | Exact source payload digests, provenance and row locators; source facts do not come from filenames |
+| `policy_versions` | Explicit matching, component and usability policies, distinct from acquisition receipts |
+| `rows` | Exactly one record per retained baseline identity, in original order |
+| `coverage_report` | Counts partitioned by match status, missing inputs, ambiguous components and absent requested IDs; not a physical-accuracy certificate |
+| Row `identity` | Retained catalogue/edition/identifier/component tuple |
+| Row `original` | Unmodified original source fields, missing masks and naming/photometry/component lineage |
+| Row `match_status` | One of the six states below; never inferred from non-null numeric values |
+| Row `candidates` | Zero or more foreign identities and their source-bound matching evidence |
+| Row `adopted_solution` | Null or an explicit reference to an admitted candidate solution; valid only for `adopted` status |
+| Row `foreign_photometry` | Separate measurements with passband, source/release, value, unit, error and missingness |
+
+`not_searched` means no matching attempt; `unmatched` means a documented search
+found none; `ambiguous` means identity is unresolved; `component_conflict` means
+the proposed association has unresolved component/cardinality evidence;
+`identified_unusable` means identity is established but astrometry fails the
+declared usability policy; `adopted` means an explicit decision accepts a
+particular source solution. The first five statuses require a null adopted
+solution. An adopted solution must identify its candidate and policy decision;
+it cannot silently become a blended or averaged solution. Candidate rejection
+reasons survive publication. Search completeness and usability remain separate.
+
+| Candidate solution / evidence | Required content |
+|---|---|
+| Identity | Foreign catalogue, release, decimal source ID and established component or explicit unknown |
+| Reference | Frame, origin, epoch value/format/time scale and spatial convention, each bound to primary source evidence |
+| Parameters | Original position, both proper motions, parallax and radial velocity when supplied; names, values, units and masks preserved |
+| Uncertainty | Supplied parameter errors and correlations; any derived covariance has explicit parameter order, units, derivation and source lineage |
+| Quality | Original solution type and quality fields; versioned usability result/reasons |
+| Match evidence | Source resource/row, method, comparison epoch/frame, separation with units, criteria, component evidence, decision/reason and policy version |
+
+Comparison coordinates/epochs used in matching are derived evidence and cannot
+overwrite source reference epochs or original values. A separation alone is
+insufficient evidence for adoption. Unknown uncertainties/correlations are null
+or masked, never a zero-error or independent-error assumption. Missing PM, RV or
+distance is not zero; non-positive parallax is preserved without being turned
+into a physical distance. A mixed row must retain the separate source and epoch
+of each input; a foreign RV must not inherit another solution's epoch/scale.
+Preserve PM cosine-declination conventions explicitly at the edition boundary.
+The subset retains sufficient source fields to revisit future model admission;
+K4a.01 does not choose a propagation or distance-estimation model.
+
+### Photometry, compatibility and acceptance
+
+`Stars.magnitude` remains the existing Hipparcos visual magnitude used for
+selection and symbol sizing. Original V values and missingness remain exact.
+Foreign G/BP/RP or other bands are separately identified measurements, with no
+implicit substitution or colour conversion. Existing contextual naming, curated
+labels, legacy IDs, topology and unknown source facts are preserved. Gaia
+enrichment must be opt-in at an explicitly admitted consumer boundary; current
+native/observed routes and saved-sky v6 do not consume this design record.
+
+The [stellar-enrichment-contract gate](testing_policy.md#stellar-enrichment-contract-gate)
+checks the exact full population/photometry census and existing explicit-ID,
+vertex and naming selection behavior. The protected faults are population
+truncation to the last chart, photometric substitution, or loss of a faint
+explicit/vertex row. No fabricated Gaia fixture is presented as a real match.
+Current coordinate conventions and numerical implementations are unchanged;
+the coordinate guide remains current. Full source qualification, matching,
+redistribution/publication, propagation and historical accuracy remain open.
+
 ## Fixed celestial scenes and local time
 
 `celestial_anchor_time`, frame `simulation_time`, and `catalogue reference epoch`

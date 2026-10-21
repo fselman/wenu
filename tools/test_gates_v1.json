@@ -13,6 +13,24 @@
     "environment": "User-reported Mac; plugin autoload disabled."
   },
   "gates": {
+    "stellar-enrichment-contract": {
+      "scope": "K4a.01 full retained stellar population, visual photometry and explicit-ID/vertex/naming selection contracts before Gaia enrichment.",
+      "limits": "Design contract, source-bound census and regression evidence only. No production, provider, source bytes, dependencies, SDK, acquisition/matching, astrometric model, snapshot format or renderer change. K4a.02 onward and K5 remain separate; no catalogue download or output export.",
+      "selections": [
+        {
+          "node": "tests/test_stars.py::test_enrichment_baseline_keeps_full_source_membership_and_visual_photometry",
+          "reason": "Protect exact full-source identities and V values/masks independently of chart selection, including missing-coordinate and multiple/variable rows; preserve faint explicit and enabled vertex selections on reload."
+        },
+        {
+          "node": "tests/test_stars.py::test_loaded_designations_follow_hip_through_native_and_altitude_selection",
+          "reason": "Retain HIP-linked designation identity through magnitude, explicit-ID and observer selection."
+        },
+        {
+          "node": "tests/test_stellar_state.py",
+          "reason": "Retain source metadata/digest admission, native lookup semantics, missing-coordinate handling and kernel facade contracts."
+        }
+      ]
+    },
     "galaxy-installation-retry": {
       "scope": "Installation-only retry for galaxy routing: isolated wheel/sdist/editable Wenu consumes an explicitly separate installed SDK wheel.",
       "limits": "Test fixture/gate/documentation only; production code, dependency pin, SDK implementation, resources and routing unchanged from 04ad8e1e. Retain Mac evidence for 183 passed and 9 subtests; rerun only the failed installation case. No parent gate or numerical/atlas/SDK repeat.",
