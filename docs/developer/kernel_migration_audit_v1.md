@@ -1595,3 +1595,42 @@ and audited limitations are unchanged. K3.31 is accepted through PR #304 after
 77 focused, 36 documentation and eight tooling Mac cases, followed by clean
 main/cleanup confirmation. K3.32 complete Mac acceptance and K3/K5 closure remain
 pending; K3.33 completeness/product obligations are separate.
+
+## K3.33 exact satellite consumer assessment
+
+| Existing route | Disposition |
+|---|---|
+| Complete/adaptive scan → SGP4 → observer service | Already consumes returned Cartesian kernel TEME states through the accepted public propagator and existing topocentric chain |
+| Cone/shell selector → shared exact solver | Retain tri-state domains, no-false-negative invariant, complete ordered selection identity and explicit fallback/fail-closed policy |
+| Multi-field coordinator → field-altitude service/admission/solver | Revalidate complete request and current airmass values before solving; retain order, independent intervals, chunks and atomic failure |
+| Solved event → track realizer | Keep exact snapshot/object/model/epoch checks, event anchors, bounded adaptive sampling, original limits and returned state/refusal consumption |
+| Retained track → path/event/singleton → chart | Existing coordinate/kernel geometry/domain/projection/rendering interfaces; no resampling or propagation during presentation |
+| Matrix evidence and fresh worker | Existing strict bytes, identities, refusal/publication and explicit execution boundaries retained; new small synthetic workers exercise actual services |
+
+No production rewrite is needed. New state seams require changed kernel PV to
+change exhaustive events, selector outcomes and default track vertices; refusal
+reaches exact solving and track realization after prior success. Separately
+bypassing the kernel route at each of those three owners fails the seam.
+Discarding coordinate results fails path/event/singleton drawing checks. A
+cross-request stale-admission fault fails the current-service batch check.
+
+Existing independent analytic/adversarial tests remain selected for tangent,
+grazing, between-sample, disconnected, endpoint, seam/pole, tolerance and limit
+behavior. A canonical one-record synthetic snapshot additionally produces a
+narrow positive-duration pass whose exhaustive and accelerated events agree.
+Fresh exhaustive/accelerated workers agree on actual positive synthetic results,
+without invoking the historical medium production benchmark.
+
+One existing airmass-boundary assertion assumed a particular refusal message.
+The theoretical 30-degree boundary can round just below the computed threshold;
+both the explicit exceeds and uncertifiable branches correctly refuse it. The
+test now accepts those two refusal messages; numerical policy is unchanged.
+
+Production/kernel sources, source bytes, numerical formulas, acquisition/policy,
+SDK/dependencies, schemas and rendering algorithms remain unchanged. Coordinate
+and satellite scientific guides remain current. Historical production matrix
+receipts retain their original version/domain/performance meaning; this gate
+makes no new production capacity or global continuous-error claim. K3.32 is
+accepted through PR #305 after 61 focused, 36 documentation and eight tooling
+Mac cases, followed by clean main/cleanup confirmation. Complete K3.33 Mac
+acceptance and K3/K5 closure remain pending; K3.34 onward remains separate.

@@ -301,4 +301,8 @@ Mac cases; clean main and cleanup confirmed. K3.31
 is accepted through PR #304 after 77 focused, 36 documentation and eight tooling
 Mac cases; clean main and cleanup confirmed. K3.32 now verifies
 [sampled satellite candidate consumers](implementation_reference.md#sampled-satellite-candidate-services)
-without production changes. Complete candidate Mac acceptance and K3/K5 closure remain pending.
+without production changes, accepted through PR #305 after 61 focused,
+36 documentation and eight tooling Mac cases; clean main and cleanup confirmed.
+K3.33 now verifies [exact satellite service consumers](implementation_reference.md#exact-satellite-service-consumers)
+without production changes. Complete exact-satellite-routing Mac acceptance and
+K3/K5 closure remain pending.

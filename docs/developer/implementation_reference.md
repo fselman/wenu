@@ -1864,3 +1864,35 @@ track epoch. A singleton has no invented segment. Supplied records are neither
 new SGP4 evaluations nor exact crossing events. Loading or drawing them requires
 no positional SDK query and cannot establish provider-data redistribution
 permission, physical accuracy or continuous coverage.
+
+## Exact satellite service consumers
+
+`LocalSatelliteCrossingOracle.solve()` retains the adaptive complete-scan owner.
+`ConservativeConeShellSelector.select()` uses the same default SGP4/observer
+services for its initial state and returns ordered retain/reject/indeterminate
+evidence. State-evaluation refusal becomes indeterminate, never a false negative.
+`AcceleratedLocalSatelliteCrossingOracle` validates complete selection identity,
+uses the shared exact-record solver for every non-rejected record, and preserves
+its explicit selector-failure fallback policy.
+
+`MultiFieldSatelliteCrossingCoordinator` obtains current field-altitude service
+values through `FieldAirmassCertifier`. Request/domain and whole-interval airmass
+validation precede every solve, including reuse of a coordinator after success.
+Failures remain atomic and ordered; independent intervals and processing chunks
+retain their existing meaning.
+
+`ExactLocalSatelliteTrackRealizer.realize()` validates snapshot/object/model/epoch
+bindings and uses the same default state/observer chain at retained event anchors
+and adaptive vertices. `SatelliteExactTrackLayer` and
+`SatelliteExactTrackEventsLayer` consume that immutable evidence through existing
+coordinate and kernel geometry services. A singleton has no invented segment;
+event labels/path controls do not alter sampling. Drawing never repropagates a
+solved track. Equal native/product specifications retain the existing identity
+path; changed representations consume the returned coordinate result/refusal.
+
+`FreshSubprocessMatrixExecutor` reconstructs a validated offline snapshot/query
+and uses the existing exhaustive or accelerated owner in a fresh process. Strict
+request/result/evidence hashes and publication contracts remain unchanged. The
+small synthetic snapshot worker test does not execute the historical medium
+production benchmark or renew consumed execution authority. No new public API,
+serialized schema, numerical model or package is added.

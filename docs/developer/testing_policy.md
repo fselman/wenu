@@ -1667,3 +1667,44 @@ licensing limits remain unchanged. Complete Mac acceptance remains pending.
 K3.31 passed complete Mac acceptance at 945245b5 through PR #304: 77 focused
 (76.16 s), 36 documentation (4.18 s), eight tooling (8.901 s), followed by clean
 synchronized main and branch cleanup confirmation.
+
+## Exact satellite routing gate
+
+`exact-satellite-routing` selects the existing exhaustive oracle, conservative
+acceleration, multi-field batch, exact-track and matrix owners: 86 cases.
+These include the retained independent analytic/adversarial reference, domain/
+fallback/evidence identity, admission/atomicity, event sampling/limits, request
+controls and strict matrix/publication contracts. Lower-level Vallado, generic
+SDK/isolation and installation receipts remain applicable to unchanged owners;
+no full SDK/production or unrelated atlas/polar repeat is needed.
+
+Returned kernel PV/refusal must control actual default exhaustive, selector and
+track-realizer consumers. Separately replacing their public propagation calls
+with raw backend calls fails the new seam at the corresponding assertion.
+Selector state failure must retain every record for exact evaluation; exact and
+track refusal remains explicit. Current altitude/EOP service changes after
+successful batch use must trigger fresh atomic admission. A deliberately stale
+admission cache makes that test fail.
+
+Synthetic solved path/event/singleton drawings must use returned coordinates,
+preserve event/time/snapshot identity and bounded sampling claims, and propagate
+service refusal after success. Discarding transformed results fails all three.
+Actual canonical PNG/PDF/SVG exports retain semantic identities. Presentation
+prohibits SGP4 and fabricated positional queries: immutable solved evidence is
+not re-evaluated by drawing.
+
+A canonical one-record synthetic snapshot protects a narrow positive-duration
+pass with matching exhaustive/accelerated event results. A separate small
+synthetic snapshot uses actual fresh subprocess workers for both routes, with
+matching result hashes and no fallback. It is not a medium production benchmark,
+new throughput/capacity qualification or renewal of consumed run authority.
+Historical production receipts remain pinned evidence.
+
+The broad gate exposed one wording-only assertion at the theoretical 30-degree
+airmass boundary: floating-point rounding can select either explicit refusal
+branch. Accept those two messages while retaining strict rejection; no numerical
+formula or admission tolerance changes. Complete Mac acceptance remains pending.
+
+K3.32 complete Mac acceptance passed at 08b4733a through PR #305: 61 focused
+(2.91 s), 36 documentation (4.38 s), eight tooling (7.200 s), followed by clean
+synchronized main and branch cleanup confirmation.

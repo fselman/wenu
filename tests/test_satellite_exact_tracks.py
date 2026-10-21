@@ -672,3 +672,71 @@ def test_exact_track_provenance_is_bounded_and_ordered():
     assert summaries[0]["label_events"] is True
     assert "samples" not in summaries[0]
     assert "track" not in summaries[0]
+
+
+@pytest.mark.parametrize('kind', ['path', 'events', 'singleton'])
+def test_solved_track_drawing_consumes_coordinate_results_and_warm_refusal(monkeypatch, kind):
+    """Synthetic solved evidence; actual canonical drawing/export services."""
+    import matplotlib.pyplot as plt
+    from io import BytesIO
+    from wenu.coordinate_service import CoordinateService
+    from wenu.sky.celestial_sphere import CelestialSphere
+    from wenu.projections import StereographicProjection
+    from wenu.rendering import MatplotlibRenderer
+    from wenu.satellites.sgp4 import Sgp4TemePropagator
+    from wenu_kernel.kernel import KernelSession
+    def forbidden(*args, **kwargs):
+        pytest.fail('drawing solved evidence must not recompute satellite states')
+    monkeypatch.setattr(Sgp4TemePropagator, 'propagate', forbidden)
+    monkeypatch.setattr(KernelSession, 'evaluate', forbidden)
+    value = (_realize_track(crossing(entry=2.,closest=2.,exit_=2.), policy(),longitude_evaluator())
+             if kind == 'singleton' else track())
+    layer = SatelliteExactTrackEventsLayer(value, label_events=True) if kind == 'events' else SatelliteExactTrackLayer(value)
+    target = CoordinateSpec(frame='icrs',origin='topocentric-direction',position_status=PositionStatus.GEOMETRIC,provider='synthetic chart seam')
+    context = LayerRealizationContext(target)
+    original = CoordinateService.transform
+    offset = [0.]
+    returned = []
+    def changed(service, geometry, target_spec, observation=None):
+        transformed = original(service,geometry,target_spec,observation)
+        lon = tuple(row+offset[0] for row in transformed.lon_deg) if isinstance(transformed,SphericalCurves) else transformed.lon_deg+offset[0]
+        result = replace(transformed,lon_deg=lon,metadata={**transformed.metadata,'returned_service_marker':offset[0]})
+        returned.append(result)
+        return result
+    monkeypatch.setattr(CoordinateService,'transform',changed)
+    sphere = CelestialSphere(object());sphere.add(layer)
+    images=[];bounds=None
+    for shift in (0.,7.):
+        offset[0]=shift
+        figure,axes=plt.subplots(figsize=(4,3),dpi=90)
+        try:
+            result=sphere.draw_chart(projection=StereographicProjection(flip_ew=False),renderer=MatplotlibRenderer(axes),
+                realization_context=context,layer_options={layer:{'style':{'color':'black'}}})
+            geometry=result.layers[0].spherical
+            assert geometry.metadata['returned_service_marker']==shift
+            assert geometry.metadata['track_identity_sha256']==value.track_identity_sha256
+            assert geometry.metadata['sample_instants_utc']==tuple(row.instant_utc for row in value.samples)
+            assert geometry.metadata['global_continuous_error_proven'] is False
+            assert geometry.metadata['exact_crossing_events'] is True
+            assert geometry.metadata['snapshot_sha256']==value.crossing.candidate.snapshot_sha256
+            np.testing.assert_allclose(np.asarray(geometry.lon_deg).ravel(),np.asarray(layer._native_geometry().lon_deg).ravel()+shift,rtol=0,atol=1e-12)
+            assert result.layers[0].semantic_artists
+            if bounds is None:
+                x,y,width,height=axes.dataLim.bounds;bounds=(x-.5,x+width+.5,y-.5,y+height+.5)
+            axes.set_xlim(bounds[:2]);axes.set_ylim(bounds[2:]);axes.set_axis_off();figure.canvas.draw()
+            images.append(np.asarray(figure.canvas.buffer_rgba()).copy())
+            if shift==0.:
+                for format_ in ('png','pdf','svg'):
+                    stream=BytesIO();figure.savefig(stream,format=format_);data=stream.getvalue()
+                    assert data
+                    if format_=='svg':assert result.layers[0].semantic_identity.svg_id.encode() in data
+        finally:plt.close(figure)
+    assert len(returned)==2 and not np.array_equal(images[0],images[1])
+    assert all(np.any(image[:,:,:3]<128) for image in images)
+    def refused(*args,**kwargs):raise RuntimeError('exact track coordinate service refused')
+    monkeypatch.setattr(CoordinateService,'transform',refused)
+    figure,axes=plt.subplots()
+    try:
+        with pytest.raises(RuntimeError,match='exact track coordinate service refused'):
+            sphere.draw_chart(projection=StereographicProjection(),renderer=MatplotlibRenderer(axes),realization_context=context)
+    finally:plt.close(figure)
