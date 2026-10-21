@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 63, 2026-10-21. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 64, 2026-10-21. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -31,12 +31,11 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Accepted baseline:** main `3df69c4adcda182af197f155f398da612c7686e1`, PR #311,
-tree identical to tested `6c7f487c05afeba84a857ace17c2b21283ae331a`.
-K3.38 passed 49 focused cases in 30.74 s, 36 documentation cases in 7.71 s,
-and eight tooling cases in 10.743 s (the preceding test/gate-identical revision).
-Fernando confirmed clean synchronized main and branch cleanup, then selected
-K3.39 with “Proceed”. K3/K5 remain partial.
+**Accepted baseline:** main `0deca8c31d170914d1f913bb22c1a0038d68e95f`, PR #312,
+tree identical to tested `c43369a116ea73b8671f44ebd4398875f59f81f4`.
+K3.39 passed 247 focused cases in 18.47 s, 36 documentation cases in 3.87 s
+and eight tooling cases in 9.015 s on Mac. Fernando confirmed clean synchronized
+main and branch cleanup, then selected K3.40 with “Proceed”. K3/K5 remain partial.
 
 | Track | Position |
 |---|---|
@@ -44,8 +43,8 @@ K3.39 with “Proceed”. K3/K5 remain partial.
 | Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
 | Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
 | Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
-| Current authorized task | K3.39 geometry, projection, rendering and furniture boundary verification; selected 2026-10-21 |
-| Next bounded submilestone | K3.40 remains pending; select separately after K3.39 acceptance |
+| Current authorized task | K3.40 complete consumer/evidence reconciliation; selected 2026-10-21 |
+| Next bounded submilestone | Six-product acceptance before Gaia, agreed by Fernando; recover concrete requests/resources after K3.40 acceptance |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -57,6 +56,19 @@ The architecture documentation is accepted through PR #280, main
 `abb68d9127068f9cc9ace6db8be0a8132a9f22ba`; 36 Mac documentation tests
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
+
+## Agreed product acceptance before Gaia
+
+Fernando requested six real products before Gaia, and explicitly agreed the
+order **K3.40 → six-product review → Gaia** on 2026-10-21. The review comprises
+the B4 landscape atlas, pouched polar planisphere (disk/pouch/print sheets), a
+regional chart, the earlier Venus chart, a comet chart and asteroid 79989.
+Recover existing design/request settings and resolve any missing target/date,
+identity or offline resource coverage before producing each output. Preserve
+current product/scientific policies; a new resource/model/acquisition need must
+be assessed explicitly rather than silently enabled. This review is separate
+from K3 routing closure and does not freeze the SDK, activate K4 science or
+permit astronomical package extraction. No product execution is part of K3.40.
 
 ## Roadmap agreement and change control
 
@@ -76,6 +88,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 64: select K3.40 complete consumer reconciliation | Fernando’s “Proceed” after PR #312 acceptance/cleanup and explicit order K3.40, six products, Gaia | Reconcile every current production/kernel, public export/command, example/notebook and operational consumer to appropriate route and accepted bounded evidence; refresh stale current statuses while preserving historical receipts and explicit scientific/compatibility limits. Pin exact current source hashes and dependency/call evidence; extend existing inventory/architecture test owners to reject orphan paths/exports, stale source identities, missing receipt links and erased limits. Reuse unchanged service/product numerical/installation receipts; use a focused consumer-reconciliation gate plus documentation/tooling. Correct only demonstrated baseline bypasses within existing contracts; extra science/architecture returns to scope control. No new SDK/dependency/module/package, source bytes/schema, provider/acquisition/network, renderer/numerical algorithm, product export or external benchmark execution. K3.40 acceptance is routing/compatibility closure only; six-product review precedes Gaia and K5 remains separate. |
 | Revision 63: select K3.39 geometry and rendering boundary verification | Fernando’s “Proceed” after PR #311 complete Mac acceptance and confirmed cleanup | Audit existing kernel topology/domain/clipping and all three projections, Wenu preparation, canonical chart consumers, renderer/furniture and PNG/PDF/SVG export. Retain accepted KG numerical/alias/isolation and K3 product receipts for unchanged implementations. Verify guarded returned geometry reaches preparation/drawing, refusal remains live after prior success, rendering/export operates on supplied geometry without provider/state/coordinate calls, metadata/topology/NaN segmentation and physical presentation remain compatible. Use existing test owners and a focused geometry-rendering-routing gate plus documentation/tooling; actual small synthetic scenes cover all three projections and output formats. Correct only demonstrated in-scope gaps; no graphics/science rewrite, SDK/dependency/module/package, source bytes, schema, acquisition/network, production benchmark, new geometry-query protocol or extraction. K3.40/K4/K5 and paused/consumed external execution remain separate. |
 | Revision 62: select K3.38 maintenance and resource consumers | Fernando’s “Proceed” after PR #310 complete Mac acceptance and confirmed cleanup | Inventory every operational Python tool plus resource/acquisition/build owners; classify pure source normalization/crossmatch/copy/layout, explicit acquisition, independent numerical oracles and application scientific consumers separately. Preserve current source policies and independent raw comparison paths. Route the demonstrated zodiac application-coordinate transforms through existing CoordinateService with unchanged mean-ecliptic J2000/FK5/AltAz meaning and formatting; correct partial observer acquisition/cleanup in the existing reusable-sphere benchmark. Verify returned service values/refusal and Astropy parity, bounded synthetic benchmark lifecycle (no production timing run), strict offline curation/promotion/copy and build-resource admission/delegation without importing runtime providers. Use maintenance-resource-routing plus documentation/tooling; retain accepted unchanged installation/numerical receipts. No new catalogue selection/science, provider route/retry/cache/redistribution policy, SDK/dependency/module/package, source bytes, schema, renderer algorithm, acquisition/network, external benchmark or paused/consumed execution. K3.39 and K3/K5 remain separate. |
 | Revision 61: select K3.37 public consumer surfaces | Fernando’s “Proceed” after PR #309 complete Mac acceptance and confirmed cleanup | Audit public Python exports, all eight installed commands, six canonical examples, five packaged notebooks and both installers, configuration overlays/presets and translations. Retain already compliant delegation and lower-level numerical/product receipts. Repair demonstrated notebook retired imports/render calls through current public composition; preserve intended teaching requests and filenames, with no alternate renderer/science. Verify every notebook cell executes in order with controlled service seams, returned values/refusal and observer cleanup; actual package resource bytes, command help, installer skip/force behavior and public imports without checkout access. Protect real configuration precedence/translation and example routes with existing owners. Use public-surface-routing plus documentation/tooling; fix demonstrated packaging gaps only. No new science, SDK/dependency/module/package, source catalogue bytes, acquisition/network, numerical/renderer algorithm, snapshot/manifest schema, or K3.38 maintenance/acquisition work. Historical Moonlight/consumed authority remains separate. |
@@ -643,10 +656,10 @@ map below ensures small/non-chart capabilities do not disappear in grouped rows.
 | K3.33 | Route exact satellite crossings, conservative batch selection and solved-track consumers | Accepted PR #306, tested 8db716de: 86 focused, 36 documentation and eight tooling Mac cases; clean main/cleanup confirmed. Existing numerical implementations retained |
 | K3.34 | Route satellite reports, lossless tabular interchange, CLI and planning advisories | Accepted PR #307, tested 11ccdb2f: 68 focused, 36 documentation and eight tooling Mac cases; clean main/cleanup confirmed |
 | K3.35 | Route satellite illumination/finite-Sun shadow consumers without changing physical models | Accepted PR #308, tested bde9d8f4: 62 focused, 36 documentation and eight tooling Mac cases including offline DE440s parity; clean main/cleanup confirmed |
-| K3.36 | Route bolometric/spectral solar radiometry and move edition-specific TSIS facts into resource metadata | Implemented for acceptance under revision 60; M8 validated packaged metadata and compatibility aliases, unchanged numerical bodies. Complete satellite-radiometry-routing Mac gate pending |
-| K3.37 | Close public Python, all eight installed commands, six examples, five notebooks/installers, overlays/presets and translations | Public-surface audit, notebook compatibility/package delivery and example lifecycle fixes implemented; complete Mac acceptance pending |
+| K3.36 | Route bolometric/spectral solar radiometry and move edition-specific TSIS facts into resource metadata | Accepted PR #309, main fc535c3b; 61 focused, 36 documentation and eight tooling Mac cases; validated M8 metadata, unchanged numerical bodies |
+| K3.37 | Close public Python, all eight installed commands, six examples, five notebooks/installers, overlays/presets and translations | Accepted PR #310, main 73118315; 238 focused, 36 documentation and eight tooling Mac cases, including installed commands/notebook delivery |
 | K3.38 | Close maintenance/curation/acquisition and resource/build consumer boundaries | Accepted through PR #311, main 3df69c4a; 49 focused, 36 documentation and eight tooling Mac cases; no network execution |
-| K3.39 | Verify geometry topology, domain guards, clipping, three projections, renderer/furniture/PNG/PDF/SVG stay pure and compatible | Boundary audit retains production implementations; nine added seam/purity/export cases and focused geometry-rendering-routing gate pass locally; complete Mac acceptance pending, no graphics rewrite |
+| K3.39 | Verify geometry topology, domain guards, clipping, three projections, renderer/furniture/PNG/PDF/SVG stay pure and compatible | Accepted PR #312, main 0deca8c3; 247 focused, 36 documentation and eight tooling Mac cases; unchanged production implementations |
 | K3.40 | Reconcile every audited source/public/operational consumer to a route and acceptance receipt, with no applicable service bypass | Pending final K3 gate; all applicable rows above must close before K5 |
 
 For each row, the specific task identifies source and test owners from the
