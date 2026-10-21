@@ -386,7 +386,7 @@ concrete Wenu classes.
 | [`sky/__init__.py`](../../src/wenu/sky/__init__.py) | Package exports and initialization. |
 | [`sky/assembly.py`](../../src/wenu/sky/assembly.py) | Application-owned concrete layer construction and source-free restored-sky assembly; existing algorithms retained. |
 | [`sky/celestial_sphere.py`](../../src/wenu/sky/celestial_sphere.py) | Celestial-sphere layer ownership and chart orchestration. |
-| [`sky/ceres.py`](../../src/wenu/sky/ceres.py) | Catalog-owned identity for the first drawable asteroid. |
+| [`sky/ceres.py`](../../src/wenu/sky/ceres.py) | Ceres descriptor and manifest-backed solution identity, retaining the legacy constant. |
 | [`sky/constellation_boundaries.py`](../../src/wenu/sky/constellation_boundaries.py) | Official IAU constellation boundaries as spherical domain geometry. |
 | [`sky/constellation_labels.py`](../../src/wenu/sky/constellation_labels.py) | Constellation label anchors represented as spherical point geometry. |
 | [`sky/constellation_lines.py`](../../src/wenu/sky/constellation_lines.py) | Curated edge topology joined to public native HIP positions or legacy observer-time geometry. |

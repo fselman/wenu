@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 51, 2026-10-20. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 52, 2026-10-21. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -31,11 +31,11 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Accepted baseline:** main `b4e7e0475640baf6332f35b191d6a79f52b7b847`, PR #299,
-tree identical to tested `9aec9cf74e0fa8ebde0e81c03c9e4456d354d349`.
-K3.26 passed 138 focused, 36 documentation and eight tooling Mac cases.
-Fernando confirmed clean synchronized main and branch cleanup. K3.27 is selected
-under revision 51; K3/K5 remain partial.
+**Accepted baseline:** main `c3ff9bb7a16987fb387d3dc5306aba308b708734`, PR #300,
+tree identical to tested `c837171ec14b6a43355e58ee9a432849c277e1f2`.
+K3.27 passed 83 focused, 36 documentation and eight tooling Mac cases.
+Fernando confirmed clean synchronized main and branch cleanup, then selected
+K3.28 with “proceed”. K3/K5 remain partial.
 
 | Track | Position |
 |---|---|
@@ -43,8 +43,8 @@ under revision 51; K3/K5 remain partial.
 | Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
 | Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
 | Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
-| Current authorized task | K3.27 natural-body tracks and temporal components; selected 2026-10-20 |
-| Next bounded submilestone | K3.28 remains pending; select separately after K3.27 acceptance |
+| Current authorized task | K3.28 asteroid identity/state/track and offline resource routing; selected 2026-10-21 |
+| Next bounded submilestone | K3.29 remains pending; select separately after K3.28 acceptance |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -75,6 +75,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 52: select K3.28 asteroid consumers | Fernando’s “proceed” after PR #300 acceptance and confirmed Mac cleanup | Extend the existing Cartesian adapter to explicit resource chains and preserve the returned minor-body solution/segment record. Adapt known asteroid sources at offline session assembly; retain raw observer/apparent roles and custom protocol compatibility. Move the complete Ceres solution facts unchanged into a versioned packaged manifest with validation and legacy import compatibility. Preserve SPK digest/target/frame/coverage checks, aliases, one light-time owner, exact samples and canonical output. Use asteroid-routing plus documentation/tooling and installed-manifest evidence. No new propagation, acquisition, comet adoption, SDK, dependency, snapshot/manifest schema or renderer algorithm. K3.29 remains separate. |
 | Revision 51: select K3.27 natural-body track consumers | Fernando’s 2026-10-20 “Proceed” after PR #299 complete Mac acceptance/cleanup and the explicit natural-body track/temporal-component proposal | Reuse the existing Cartesian adapter for known Skyfield planet/Moon target bindings, including default and mixed-request resolver bindings; keep raw observer/apparent roles and custom protocol injection compatible. Preserve exact sample/tick chronology, the existing single light-time/apparent calculations, one transform into fixed chart axes, and independent path/tick/symbol/date selections. Apply the accepted live observer-key and same-context component-sharing rule at the shared track owner, with existing minor-body/comet compatibility tests; this is not their state adoption. Verify returned states/refusal, mixed binding roles, fresh-request/resource refusal, shared sample-derived symbols, public request/CLI/cadence behavior, actual canonical output and offline real-ephemeris parity through natural-body-track-routing plus documentation/tooling. No SDK, new module, source bytes, dependency, schema, renderer/annotation/sampling algorithm, acquisition or minor-body/comet state migration. K3.28/K3.29 remain separate. |
 | Revision 50: select K3.26 disk and appearance consumers | Fernando’s 2026-10-20 “proceed” after PR #298 complete Mac acceptance/cleanup and the explicit resolved-disk/physical-appearance/observed-frozen-Earth proposal | Reuse K3.25’s existing Cartesian adapter at default single-disk, observed-sequence and frozen-Earth sequence assembly. Keep raw reception/apparent backend separate; route target/Sun geometric queries, including the reception-Sun appearance query and frozen initial Earth vector. Preserve the existing light-time, phase, diameter, bright-limb, geometry, sample chronology, physical/display scale and magnification algorithms; no new physics. Preserve component sharing within one request context, check existing live observer-resource keys before reuse (SPK only for frozen geometric output), and prevent equal-valued separate request contexts from hiding fresh admission/refusal. Custom injected protocol owners retain compatibility. Verify returned state/refusal, source/time/centre identity, shared-component lifecycle, physical-versus-display invariants, existing scientific/display owners and real offline DE440s parity through resolved-disk-routing plus documentation/tooling. No new SDK, module/package, dependency, source bytes, snapshot/manifest schema, renderer algorithm or track/minor-body adoption. K3.27 remains separate. |
 | Revision 49: select K3.25 major-planet/Moon state routing | Fernando’s 2026-10-20 “Proceed” after PR #297 Mac acceptance/cleanup and the explicit major-planet/Moon proposal | Reuse existing EphemerisStateSource, one-way light-time solver and Skyfield apparent correction service. Add a thin Wenu adapter to the existing kernel Cartesian-state contract for default major-planet/Moon point consumers; preserve numeric provider targets versus physical body IDs, reception/emission times, geometric target-minus-centre evaluation and borrowed-resource ownership. No new SDK capability or numerical model. Repair M10 filename inference: hash exact bytes, retain coverage and explicit caller model declarations, mark otherwise unqualified; do not invent DE-model qualification. Verify returned states/refusal, identities, SI/AU conversion, lifecycle, existing numerical and point-layer consumers through major-planet-moon-routing plus documentation/tooling. Preserve default science, source bytes, dependencies, snapshot/manifest formats, renderer and package placement. Resolved disks/appearance K3.26 and minor-body adoption remain separate. |
@@ -621,8 +622,8 @@ map below ensures small/non-chart capabilities do not disappear in grouped rows.
 | K3.24 | Close fixed-sky/frozen-baseline and rotating-horizon consumers with distinct anchor/local instants | Accepted PR #297/main 938d0a02 after 53 focused, 36 documentation and eight tooling Mac cases; clean synchronized main and branch cleanup confirmed |
 | K3.25 | Route major-planet/Moon states and apparent directions; preserve body/barycentre and one light-time owner | Accepted PR #298/main b02fd884 after 83 focused, 36 documentation and eight tooling Mac cases; clean synchronized main/branch cleanup confirmed. Physical model qualification stays unknown |
 | K3.26 | Route resolved disks/appearance and observed/frozen-Earth sequences | Accepted PR #299/main b4e7e047 after 138 focused, 36 documentation and eight tooling Mac cases; clean synchronized main and branch cleanup confirmed |
-| K3.27 | Route natural-body tracks and temporal components through requested state samples | Implemented for acceptance under revision 51: known Skyfield natural-body bindings use the existing adapter, shared components check live resources and same request context. Sampling/axes/cadences retained; complete Mac natural-body-track-routing acceptance pending |
-| K3.28 | Route asteroid identities/states/tracks and offline resource consumers; move Ceres solution facts to a manifest | Pending; preserve coverage/digests/close semantics; M7 |
+| K3.27 | Route natural-body tracks and temporal components through requested state samples | Accepted PR #300: 83 focused, 36 documentation and eight tooling Mac cases; clean main/cleanup confirmed |
+| K3.28 | Route asteroid identities/states/tracks and offline resource consumers; move Ceres solution facts to a manifest | Implemented for acceptance under revision 52; preserve coverage/digests/close semantics and complete solution/segment lineage; M7 manifest-backed. Complete asteroid-routing Mac acceptance pending |
 | K3.29 | Route comet identity/state/track/report/photometry consumers; keep discovery/acquisition outside deterministic rendering | Pending; preserve current models and unfinished-selection limits |
 | K3.30 | Route antisolar constructed-reference consumers with observer-relative provenance | Pending; not a new physical body |
 | K3.31 | Route satellite snapshots/elements/SGP4/TEME and observer transformations | Pending; preserve Vallado evidence, EOP/time/resource domains |

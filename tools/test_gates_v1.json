@@ -2504,6 +2504,60 @@
           "reason": "Existing scientific, annotation, CLI/request or shared temporal-policy owner, with bounded returned-state/refusal, resource reuse and output seams."
         }
       ]
+    },
+    "asteroid-routing": {
+      "scope": "K3.28 Ceres/numbered-asteroid manifest identity, chained Cartesian states, point/track consumers and offline session lifetime.",
+      "limits": "Refactor existing science only. Preserve both SPK identities, solution/segment lineage, one light-time owner, sample chronology, aliases, digest/frame/coverage/close checks and canonical output. Ceres facts move unchanged to packaged manifest; legacy import remains. No acquisition, comet state adoption, SDK, dependency, snapshot schema, propagation or renderer change. Real parity requires existing offline DE440s and Ceres 50a2 evidence; never acquire during tests.",
+      "selections": [
+        {
+          "node": "tests/test_ephemeris.py",
+          "reason": "Existing identity/resource/state/point/track/public-request owner or installed-manifest seam; retain unchanged acquisition and comet compatibility contracts."
+        },
+        {
+          "node": "tests/test_minor_body_ephemeris.py",
+          "reason": "Existing identity/resource/state/point/track/public-request owner or installed-manifest seam; retain unchanged acquisition and comet compatibility contracts."
+        },
+        {
+          "node": "tests/test_minor_body_resources.py",
+          "reason": "Existing identity/resource/state/point/track/public-request owner or installed-manifest seam; retain unchanged acquisition and comet compatibility contracts."
+        },
+        {
+          "node": "tests/test_minor_body_identity.py",
+          "reason": "Existing identity/resource/state/point/track/public-request owner or installed-manifest seam; retain unchanged acquisition and comet compatibility contracts."
+        },
+        {
+          "node": "tests/test_minor_body_acquisition.py",
+          "reason": "Existing identity/resource/state/point/track/public-request owner or installed-manifest seam; retain unchanged acquisition and comet compatibility contracts."
+        },
+        {
+          "node": "tests/test_solar_system_tracks.py",
+          "reason": "Existing identity/resource/state/point/track/public-request owner or installed-manifest seam; retain unchanged acquisition and comet compatibility contracts."
+        },
+        {
+          "node": "tests/test_solar_system_track_layer.py",
+          "reason": "Existing identity/resource/state/point/track/public-request owner or installed-manifest seam; retain unchanged acquisition and comet compatibility contracts."
+        },
+        {
+          "node": "tests/test_solar_system_track_cli.py",
+          "reason": "Existing identity/resource/state/point/track/public-request owner or installed-manifest seam; retain unchanged acquisition and comet compatibility contracts."
+        },
+        {
+          "node": "tests/test_chart_request_tracks.py",
+          "reason": "Existing identity/resource/state/point/track/public-request owner or installed-manifest seam; retain unchanged acquisition and comet compatibility contracts."
+        },
+        {
+          "node": "tests/test_solar_system_point_layer.py",
+          "reason": "Existing identity/resource/state/point/track/public-request owner or installed-manifest seam; retain unchanged acquisition and comet compatibility contracts."
+        },
+        {
+          "node": "tests/test_temporal_components.py",
+          "reason": "Existing identity/resource/state/point/track/public-request owner or installed-manifest seam; retain unchanged acquisition and comet compatibility contracts."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_ceres_solution_manifest_ships_and_loads_without_source_checkout",
+          "reason": "Existing identity/resource/state/point/track/public-request owner or installed-manifest seam; retain unchanged acquisition and comet compatibility contracts."
+        }
+      ]
     }
   },
   "consumer_review": [

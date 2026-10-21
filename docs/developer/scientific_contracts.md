@@ -594,3 +594,19 @@ component visibility cannot change the samples. Shared component results are
 request-scoped admissions checked against current observer resources. Existing
 chart capability refusals, including natural-satellite tracks, remain unchanged;
 scientific-API Moon parity does not admit a new chart product.
+
+## Asteroid resource-chain invariants
+
+Asteroid Cartesian admission retains the primary small-body SPK and every
+planetary dependency, including byte digests and coverage on TDB. Their coverage
+intersection is necessary; it does not fill segment gaps or invent a validity
+domain. Existing backend segment/frame/centre checks still apply. Kernel-returned
+PV must reach point and track consumers while preserving orbit solution,
+selected segment, provider IDs and resource lineage. Unknown physical/model
+errors remain unknown; transport parity is not an absolute accuracy claim.
+
+Ceres's complete accepted solution facts move unchanged to the versioned source
+manifest. Its osculating epoch is a source fact, distinct from each evaluation
+or reception instant. Installed SPK bytes remain checked against their own
+acquisition receipt. No new source acquisition, orbit propagation, physical
+qualification or comet adoption follows from this refactor.

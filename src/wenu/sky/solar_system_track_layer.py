@@ -43,7 +43,23 @@ class SolarSystemTrackRealization:
             and self._resource_key == resource_key
             and self._observer is observer
         ):
-            return self._result
+            if (
+                getattr(self.request.descriptor, "body_class", None) == "asteroid"
+                and self.realizer.source_resolver is not None
+            ):
+                # The observer key cannot admit the separately owned asteroid
+                # session. Recheck that owner before sharing warm components.
+                binding = self.realizer.source_resolver(
+                    self.request.descriptor, observer
+                )
+                previous = self._result.source_binding
+                if (
+                    binding.target_source is previous.target_source
+                    and binding.observer_source is previous.observer_source
+                ):
+                    return self._result
+            else:
+                return self._result
         self._result = self.realizer.curve(
             self.request, context=context, observer=observer
         )

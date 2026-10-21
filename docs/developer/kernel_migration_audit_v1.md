@@ -33,7 +33,7 @@ measurement-epoch defaults; other nonstellar source qualification remains open.
 | M4 / accepted PR #273 | `icrs_catalogue_spec` now defaults to `epoch=None`; `ICRS_ASTROMETRIC_SPEC` no longer assigns J2000.0. Explicit admitted stellar and cluster epochs remain unchanged | ICRS axes alone establish no measurement epoch. Shared raw point/curve observation helpers, celestial north, constructed points, native grids and transformed B1875 boundary outputs inherit unknown epoch. Stellar/open-cluster source owners still supply their own epochs; diffuse geometry already supplies None. No numerical frame transform or source bytes change. | `catalogue-coordinate-defaults`: vocabulary/transform/point/grid/boundary/regional callers plus nonstellar and snapshot admission |
 | M5 / mechanism implemented; source gaps open | `objects/nonstellar.py` preserves source fields/metadata/units and mirrors declared coordinate facts in a frozen `NonStellarCatalogueMetadata` record bound to input bytes. Native and observed specifications consume it; source provider identity replaces copied labels. Conflicting declarations and strict incomplete admission fail before publication | Missing facts remain null and discoverable in `missing_fields`; `require_complete()` and strict load refuse them. Legacy charts retain the explicit `legacy-unverified-catalogue-encoding` model. Actual source frame/origin and model-required epoch/scale gaps must be resolved before physical provider closure. Galaxy static directions do not require a measurement epoch. Their centre consumers now use the kernel with an explicitly unknown origin when missing; shape axes/PA remain above it. Compatibility is not evidence of accuracy. | `nonstellar-admission`: owner regressions, real family geometry, cold/saved/source-free and public CLI consumers |
 | M6 / header defaults fixed; legacy interpretation explicit | Snapshot v5 derives fixed headers from each provider, stores nonstellar records, checks source identity/table metadata/units/header agreement and retains the separate open-cluster row contract | Readers admit v1-v4 historical formats without treating their J2000 headers as measurement epochs. Missing legacy units/digests are not reconstructed as facts. Resource gaps from M5 remain open; the shared coordinate helper correction is verified separately under M4. | Existing corruption owner plus nonstellar record/header conflicts, actual known/unknown epoch round trips and legacy admission |
-| M7 / medium, open | `sky/ceres.py::CERES_SOLUTION` embeds Horizons solution number/date, osculating epoch and quality fields; `minor_body_resources.py` treats this descriptor as the expected identity, while newer comet identities are manifest-derived | A Ceres resource update requires a code edit and can diverge from its acquisition evidence. Migrate the complete solution identity to a versioned data manifest; preserve the existing descriptor-to-manifest/SPK digest and frame checks. | Minor-body resources/ephemeris and Ceres public state/track owners |
+| M7 / implemented for acceptance in K3.28 | `sky/ceres.py::CERES_SOLUTION` loads complete source facts from `data/ceres_solution_v1.json`; numbered/comet installed identities retain their acquisition manifests | Ceres schema and descriptor identity are validated; existing receipt/SPK digest/target/frame checks remain. Source facts no longer require a Python-literal edit. Complete Mac acceptance remains pending. | Minor-body resources/ephemeris and Ceres public state/track owners |
 | M8 / medium, open | `satellites/radiometry.py` embeds TSIS product DOI/URL, byte digest/count, grid bounds/sampling, header and audit integral | These are edition-specific resource facts and belong to a validated resource metadata document. Current code deliberately admits one exact resource and verifies it; this is inflexibility/duplication, not evidence of corrupted radiometry. Preserve the numerical integral and malformed-resource oracles when extracting it. | Satellite radiometry resource/parser owner |
 | M9 / runtime metadata and v6 transport accepted PR #289 | `sky/milky_way.py` and `sky/magellanic_clouds.py` provide fixed source descriptions/ICRS semantics while loaders retain chiefly source paths and feature levels | The K3.16 source envelope now preserves original properties, byte/geometry identity and captured provenance; v6 transports it and v1–v5 retain explicit legacy gaps. Physical declarations absent from sources remain absent. No fictitious stellar epoch is assigned. | Isophote loading/native geometry and saved-ring consumers |
 | M10 / inference repaired; physical qualification unknown | `skyfield_ephemeris.py` retains byte/coverage identity, reports unqualified model by default and labels explicit caller declarations | K3.25 removes filename inference. Independent source/model qualification remains unknown rather than fabricated. | `test_skyfield_ephemeris.py` rename/explicit declaration owner |
@@ -1464,3 +1464,31 @@ fixed site/date for eight scientific-API tracks. Local DE440s is absent; that ca
 refuses preflight rather than skipping/downloading. Existing chart admission still
 rejects satellite tracks, so Moon API coverage is not a new UI capability.
 K3.28/K3.29 state adoption and K5 freeze remain separate.
+
+## K3.28 asteroid routing assessment
+
+As-is inspection found `MinorBodyResourceSession` already owns manifest-derived
+numbered identity, receipt/digest/frame admission, one SPK opening and borrowed
+planetary composition. Point and track consumers already receive that binding.
+The missing boundary was kernel transport: the accepted adapter admitted only
+one resource and reconstructed a base state, which would discard minor-body
+solution/segment fields. It now admits all explicit chain resources and uses
+the original record with returned PV. The astronomical backend and its numerical
+formulas remain unchanged.
+
+M7 is implemented for acceptance: complete Ceres facts have moved verbatim into
+`src/wenu/data/ceres_solution_v1.json`; the public constant and descriptor remain
+compatible. Installed acquisition receipts/SPK hashes are still checked by the
+existing owner. No new source facts or physical qualification are inferred.
+
+The observer-only warm track key did not cover an independently closed asteroid
+session. Both Ceres and numbered-asteroid regression cases returned stale warm
+geometry before correction. The existing sharing owner now asks the resolver
+to re-admit the binding before reuse. Changed source identities evaluate afresh;
+the same admitted binding still shares samples within one request.
+
+Local evidence includes retained state/lineage, returned-state/refusal and
+dependency-domain tests; real synthetic-backend public request PNG parity for
+both identities; deliberate adapter-bypass failures; and isolated installed
+manifest access. Complete Mac acceptance, including real offline Ceres/DE440s
+parity, remains pending. Comet state/report adoption is K3.29; K3/K5 stay partial.

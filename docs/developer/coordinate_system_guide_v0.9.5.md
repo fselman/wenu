@@ -1480,3 +1480,12 @@ assembled in apparent ICRS and transformed once into fixed chart product axes;
 its per-vertex reception times remain metadata, not a fictitious common epoch.
 Exact major ticks and regular sampling are unchanged. Selecting paths, ticks,
 symbols or dates neither resamples nor propagates the scientific trajectory.
+
+Asteroid target states now traverse the same Cartesian transport adapter, with
+both small-body and planetary SPK references retained. TDB coverage intersection
+does not replace exact segment admission. The original simultaneous geometric
+composition, one-way light time, apparent corrections and final fixed-axis
+transformation are unchanged. The original minor-body state retains its solution
+and selected segment after returned SI PV is converted back to AU/AU per day.
+Ceres's existing osculating epoch/frame facts are read from a versioned manifest;
+they are neither a new observation date nor new physical-model qualification.

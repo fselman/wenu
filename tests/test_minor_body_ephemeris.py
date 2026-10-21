@@ -196,6 +196,54 @@ def test_solution_identity_keeps_identity_roles_separate():
     assert identity.quality_fields == (("condition code", "0"),)
 
 
+def test_kernel_minor_body_preserves_chain_solution_segment_and_returned_values(resolved, monkeypatch):
+    from dataclasses import replace
+    from wenu.ephemeris_state import KernelEphemerisStateSource
+    from wenu_kernel.kernel import KernelSession
+    from wenu_kernel.errors import UnsupportedCapability, ResourceMismatch
+    from astropy import units as u
+    source, planetary, _, _ = resolved
+    raw = source.state(request())
+    wrapper = KernelEphemerisStateSource(source)
+    original = KernelSession.evaluate
+    seen = []
+    def changed(session, query):
+        seen.append(query)
+        batch = original(session, query)
+        return replace(batch, states=(replace(batch.states[0],
+            position_m=(4*u.au.to(u.m), 0., 0.), velocity_m_s=(0., 0., 0.)),))
+    monkeypatch.setattr(KernelSession, 'evaluate', changed)
+    result = wrapper.state(request())
+    assert type(result) is MinorBodyEphemerisState
+    assert result.solution is raw.solution
+    assert result.segment is raw.segment
+    assert result.resource is raw.resource
+    assert result.position == (4., 0., 0.)
+    assert result.velocity == (0., 0., 0.)
+    assert result.provider_target_id == raw.provider_target_id
+    assert [r.sha256 for r in seen[0].catalogue.resources] == [source.resource.primary.sha256, planetary.resource.sha256]
+    def refuse(session, query):
+        raise UnsupportedCapability('asteroid kernel refusal')
+    monkeypatch.setattr(KernelSession, 'evaluate', refuse)
+    with pytest.raises(UnsupportedCapability, match='asteroid kernel refusal'):
+        wrapper.state(request())
+    source.resource = replace(source.resource, dependencies=(replace(planetary.resource, sha256='d'*64),))
+    with pytest.raises(ResourceMismatch, match='identity changed'):
+        wrapper.state(request())
+
+
+def test_kernel_minor_body_dependency_coverage_refuses_before_backend(resolved):
+    from dataclasses import replace
+    from wenu.ephemeris_state import KernelEphemerisStateSource
+    from wenu_kernel.errors import OutsideCoverage
+    source, planetary, _, _ = resolved
+    source.resource = replace(source.resource, dependencies=(replace(planetary.resource,
+        coverage_start='JD 2460000.5', coverage_end='JD 2460001.5'),))
+    with pytest.raises(OutsideCoverage):
+        KernelEphemerisStateSource(source).state(request())
+    assert planetary.requests == []
+
+
 @pytest.mark.parametrize("object_class", ("planet", "", "active asteroid"))
 def test_solution_identity_rejects_unsupported_object_class(object_class):
     with pytest.raises(ValueError, match="object_class"):
