@@ -1849,5 +1849,50 @@ They preserve cache/no-retry, identity and atomic publication mechanisms without
 new source permission, acquisition or external model claims. Existing install,
 science and independent validation receipts are reused for unchanged owners;
 no full benchmark, Moonlight or consumed external execution is authorized.
-Coordinate meaning is unchanged; the coordinate guide remains current. Complete
-Mac acceptance is pending, and K3.39/K3.40 and K3/K5 remain open.
+Coordinate meaning is unchanged; the coordinate guide remains current. K3.38
+is accepted through PR #311 at main `3df69c4a`, tested `6c7f487c`: 49 focused
+cases in 30.74 s and 36 documentation cases in 7.71 s; eight tooling cases
+passed in the preceding run. Branch cleanup and synchronized main are confirmed.
+K3.39/K3.40 and K3/K5 remain open.
+
+## K3.39 geometry and graphics boundary assessment
+
+Base `3df69c4adcda182af197f155f398da612c7686e1`, after accepted K3.38/PR #311.
+The bounded audit inspects 48 source owners: all kernel geometry/projection
+leaves, Wenu legacy facades and renderer helpers, canonical chart adapters and
+the relevant reference/legend/footer/export/semantic owners. Exact base blob
+identities and routes are recorded in `geometry_rendering_routing.owners`.
+
+**Disposition: retain existing production implementations.** KG already placed
+the mathematics in the kernel. Wenu facades alias those same objects; appearance
+policy remains in Wenu. Projection alignment is not a frame transformation.
+Regional/full-sky guards already run before preparation. All-sky coordinate
+realization precedes Mollweide; polar face-cap/latitude preparation precedes
+drawing. Source lookup is not repeated by generic geometry or graphics helpers.
+Application reference furniture legitimately uses CoordinateService/grid and
+projection services; forcing it through object-state queries would be a regression.
+Legends reuse supplied rendering; export retains the canonical one-save owner.
+
+Closest existing coverage is `test_draw_chart_supports_geometry_and_preparation_options`,
+`test_regional_chart_uses_canonical_projection_before_prepare`,
+`test_renderer_has_no_astronomical_or_projection_dependency`, physical renderer
+label/band contracts and `test_composed_export_renders_legends_and_saves_once`.
+New tests extend these same owners: altered guard/projection returns reach
+preparation and drawing; refusal after success cannot draw stale geometry;
+helper-leaf imports include relative imports; prepared real-projection synthetic
+scenes export all three formats with scientific re-entry forbidden.
+
+Four deliberate faults each fail the closest new contract: bypass the chart
+guard, discard a returned projection, re-enter CoordinateService in graphics,
+and introduce a relative reverse import into a rendering helper. All are
+restored before the final gate. All original test definitions remain unchanged.
+The focused gate retains existing independent cap/complement/winding/clipping,
+missing-row/domain/seam, physical layout, style independence, semantic SVG and
+legend/export contracts. No lower-level numerical or visual oracle is replaced.
+
+Local focused acceptance: 247 passed in 11.94 s. Complete Mac documentation and
+focused acceptance remain pending. Accepted KG isolation/installation/numerical
+and K3.16/K3.21/K3.22 real cold/restored/worker product receipts remain applicable
+to unchanged source/SDK/projection/renderer implementations. No new source,
+numerical/graphics algorithm, SDK/dependency/module/package, schema, acquisition,
+network, performance benchmark or external execution. K3.40 and K3/K5 remain open.

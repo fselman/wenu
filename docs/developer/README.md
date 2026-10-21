@@ -322,4 +322,8 @@ K3.37 is accepted through PR #310 after 238 focused, 36 documentation and eight
 tooling Mac cases, with clean main and branch cleanup confirmed.
 K3.38 now verifies [maintenance/resource consumers](implementation_reference.md#maintenance-and-resource-consumers),
 with the [maintenance-resource-routing gate](testing_policy.md#maintenance-resource-routing-gate).
-Its complete Mac acceptance and K3/K5 closure remain pending.
+K3.38 is accepted through PR #311 after 49 focused, 36 documentation and eight
+tooling Mac cases, with clean main and branch cleanup confirmed.
+K3.39 verifies [geometry and graphics boundaries](implementation_reference.md#geometry-and-graphics-consumer-boundary)
+without production changes, using the [geometry-rendering-routing gate](testing_policy.md#geometry-rendering-routing-gate).
+Complete Mac acceptance and K3/K5 closure remain pending.

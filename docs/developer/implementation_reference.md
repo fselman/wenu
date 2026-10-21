@@ -2070,3 +2070,31 @@ wheel/sdist acceptance from K3.37 remains applicable to unchanged build rules.
 `openai_model.py` performs a remote model-list request if imported; it is an
 external development utility, not imported or executed by this audit/gate.
 No provider acquisition or present-day permission is certified here.
+
+## Geometry and graphics consumer boundary
+
+K3.39 inspects 48 unchanged source owners, pinned under
+`geometry_rendering_routing.owners` in the migration inventory. No new API or
+implementation is introduced. The existing boundary is:
+
+| Responsibility | Existing owner / public route |
+|---|---|
+| Records, alignment, topology, domain and clipping | `wenu_kernel.geometry`; identical `wenu.geometry` and preparation mathematical aliases |
+| Stereographic, polar equidistant, Mollweide | `wenu_kernel.projections`; identical Wenu public classes |
+| Guarded chart orchestration | Regional/full-sky viewport guard, all-sky coordinate/map route, polar face-cap/latitude route, then `CelestialSphere.draw_chart` |
+| Appearance preparation | `wenu.rendering.preparation`: supplied magnitudes/diameters, viewport marker margin, style and label offsets |
+| Graphics | `MatplotlibRenderer` and helper leaves consume projected records, with backend clipping/label layout |
+| Furniture | Application reference grids use appropriate coordinate/projection services; legends reuse rendered geometry; footer uses resolved strings |
+| Export | `export_composed_chart` / `ExportOptions.save`, chart/SVG semantic documents and one save per output |
+
+New seams force altered guard/projection returns and failure after success, so
+recomputation, bypass or stale first-draw reuse fails. Three explicitly synthetic
+prepared scenes use each real projection and produce PNG/PDF/SVG, preserving
+point IDs/missing rows, label text, areas, viewport and physical page size.
+After projection, coordinate transforms, kernel state evaluation and further
+projection calls are forbidden during renderer/footer/semantic/export execution.
+These scenes verify graphics composition, not source or observational accuracy.
+Existing numerical/topology, physical label/tick/band, legend single-save and
+semantic-vector contracts remain in their original test owners. Coordinate
+meaning is unchanged; the coordinate guide remains current. No new geometry
+query, renderer algorithm, schema, dependency or astronomical package is added.

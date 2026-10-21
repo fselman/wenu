@@ -3062,6 +3062,168 @@
           "reason": "Existing fake-transport snapshot/policy receipt/header/identity/atomic publication and cache behavior; mechanism evidence only, no current provider permission claim."
         }
       ]
+    },
+    "geometry-rendering-routing": {
+      "scope": "K3.39 existing topology/domain/clipping, all three projections and prepared geometry to renderer/furniture/PNG/PDF/SVG boundary.",
+      "limits": "Test/evidence closure only; no production or numerical/renderer algorithm change. Preserve pure service ownership, canonical/legacy imports, missing rows, topology, style/content/mode independence, semantics and physical sizing. Small scenes are explicitly synthetic geometry, not observational science. Retain accepted KG independent installation/numerical and K3.16/K3.21/K3.22 real cold/saved/worker product receipts. No SDK/dependency/module/resource/schema, acquisition/network, production benchmark or external execution; no full SDK/product rerun. K3.40/K4/K5 remain separate.",
+      "selections": [
+        {
+          "node": "tests/test_geometry_pipeline.py",
+          "reason": "Canonical guarded/projection returns, prepare/style forwarding, metadata clipping and warm refusal; new deliberate-return seams."
+        },
+        {
+          "node": "tests/test_dependency_boundaries.py",
+          "reason": "Domain/application boundaries and new helper-leaf relative/absolute import directions."
+        },
+        {
+          "node": "tests/test_renderer_contracts.py",
+          "reason": "All projected geometry kinds, NaN breaks, physical label/tick/band layout and three-projection real PNG/PDF/SVG with scientific re-entry forbidden."
+        },
+        {
+          "node": "tests/test_clipping.py",
+          "reason": "Existing projected viewport/segment/curve/polygon clipping and non-finite contracts."
+        },
+        {
+          "node": "tests/test_projection_geometry.py",
+          "reason": "Existing vectorized geometry dispatch, identity, grid components and stereographic antipode segmentation."
+        },
+        {
+          "node": "tests/test_projected_geometry_projection.py",
+          "reason": "Existing points/curves/polygons, missing-row preservation and strict finite-invalid-domain refusal."
+        },
+        {
+          "node": "tests/test_mollweide_projection.py",
+          "reason": "Existing all-sky equal-area map, seams, winding, finite breaks and metadata."
+        },
+        {
+          "node": "tests/test_polar_azimuthal_equidistant_projection.py",
+          "reason": "Existing north/south radial law, round trips, domain and metadata."
+        },
+        {
+          "node": "tests/test_viewport_rendering.py",
+          "reason": "Existing viewport limits and equal-aspect rendering."
+        },
+        {
+          "node": "tests/test_chart_furniture.py",
+          "reason": "Furniture policy independence, supplied-geometry counts, titles/legends/footer and physical margin ownership."
+        },
+        {
+          "node": "tests/test_reference_furniture_semantics.py",
+          "reason": "Cardinality-independent semantic identity of existing coordinate furniture."
+        },
+        {
+          "node": "tests/test_projection_and_clipping_contracts.py::test_kernel_projection_clipping_domain_aliases_and_policy_boundary",
+          "reason": "Retain independent canonical topology/cap/latitude/winding and exact legacy service-alias evidence."
+        },
+        {
+          "node": "tests/test_projection_and_clipping_contracts.py::test_default_frame_preserves_existing_projection_exactly",
+          "reason": "Retain independent canonical topology/cap/latitude/winding and exact legacy service-alias evidence."
+        },
+        {
+          "node": "tests/test_projection_and_clipping_contracts.py::test_polygons_are_clipped_before_the_unsafe_full_projection",
+          "reason": "Retain independent canonical topology/cap/latitude/winding and exact legacy service-alias evidence."
+        },
+        {
+          "node": "tests/test_projection_and_clipping_contracts.py::test_regional_chart_uses_canonical_projection_before_prepare",
+          "reason": "Retain independent canonical topology/cap/latitude/winding and exact legacy service-alias evidence."
+        },
+        {
+          "node": "tests/test_projection_and_clipping_contracts.py::test_projection_domain_and_horizon_clipping_remain_composable",
+          "reason": "Retain independent canonical topology/cap/latitude/winding and exact legacy service-alias evidence."
+        },
+        {
+          "node": "tests/test_projection_and_clipping_contracts.py::test_complete_sphere_latitude_floor_preserves_seam_topology",
+          "reason": "Retain independent canonical topology/cap/latitude/winding and exact legacy service-alias evidence."
+        },
+        {
+          "node": "tests/test_projection_and_clipping_contracts.py::test_inverted_cap_ring_closes_along_planisphere_horizon",
+          "reason": "Retain independent canonical topology/cap/latitude/winding and exact legacy service-alias evidence."
+        },
+        {
+          "node": "tests/test_projection_and_clipping_contracts.py::test_intrinsic_ring_interior_preserves_cap_complements",
+          "reason": "Retain independent canonical topology/cap/latitude/winding and exact legacy service-alias evidence."
+        },
+        {
+          "node": "tests/test_projection_and_clipping_contracts.py::test_opposite_winding_boundaries_are_stitched_into_one_band",
+          "reason": "Retain independent canonical topology/cap/latitude/winding and exact legacy service-alias evidence."
+        },
+        {
+          "node": "tests/test_projection_and_clipping_contracts.py::test_winding_band_preserves_an_extra_visible_outer_fragment",
+          "reason": "Retain independent canonical topology/cap/latitude/winding and exact legacy service-alias evidence."
+        },
+        {
+          "node": "tests/test_spherical.py::test_kernel_geometry_aliases_preserve_identity_aliasing_and_pickle_paths",
+          "reason": "Canonical and legacy record/frame/viewport imports retain class identity, metadata aliasing and pickle paths."
+        },
+        {
+          "node": "tests/test_style_contracts.py::test_visual_style_does_not_own_chart_type_mode_or_content_policy",
+          "reason": "Retain independent geometry, content, style, mode and resolved frame appearance."
+        },
+        {
+          "node": "tests/test_style_contracts.py::test_mode_resolution_changes_no_chart_geometry_or_content",
+          "reason": "Retain independent geometry, content, style, mode and resolved frame appearance."
+        },
+        {
+          "node": "tests/test_style_contracts.py::test_planisphere_keeps_horizon_geometry_independent_of_style",
+          "reason": "Retain independent geometry, content, style, mode and resolved frame appearance."
+        },
+        {
+          "node": "tests/test_style_contracts.py::test_circular_renderer_suppresses_rectangular_axes_frame",
+          "reason": "Retain independent geometry, content, style, mode and resolved frame appearance."
+        },
+        {
+          "node": "tests/test_style_contracts.py::test_atlas_boundary_uses_resolved_grid_appearance",
+          "reason": "Retain independent geometry, content, style, mode and resolved frame appearance."
+        },
+        {
+          "node": "tests/test_style_contracts.py::test_explicit_boundary_style_retains_precedence",
+          "reason": "Retain independent geometry, content, style, mode and resolved frame appearance."
+        },
+        {
+          "node": "tests/test_svg_output.py::test_existing_export_path_produces_parseable_editable_vector_svg",
+          "reason": "Retain editable vector structure, physical page, semantic identities and export metadata without catalogue acquisition."
+        },
+        {
+          "node": "tests/test_svg_output.py::test_svg_translates_pdf_subject_to_description",
+          "reason": "Retain editable vector structure, physical page, semantic identities and export metadata without catalogue acquisition."
+        },
+        {
+          "node": "tests/test_svg_output.py::test_svg_records_standard_and_wenu_provenance",
+          "reason": "Retain editable vector structure, physical page, semantic identities and export metadata without catalogue acquisition."
+        },
+        {
+          "node": "tests/test_svg_output.py::test_non_svg_export_preserves_subject_metadata",
+          "reason": "Retain editable vector structure, physical page, semantic identities and export metadata without catalogue acquisition."
+        },
+        {
+          "node": "tests/test_svg_output.py::test_non_tight_export_preserves_requested_physical_page",
+          "reason": "Retain editable vector structure, physical page, semantic identities and export metadata without catalogue acquisition."
+        },
+        {
+          "node": "tests/test_svg_output.py::test_matplotlib_semantic_anchors_survive_svg_serialization",
+          "reason": "Retain editable vector structure, physical page, semantic identities and export metadata without catalogue acquisition."
+        },
+        {
+          "node": "tests/test_svg_output.py::test_canvas_semantics_group_independent_svg_parents",
+          "reason": "Retain editable vector structure, physical page, semantic identities and export metadata without catalogue acquisition."
+        },
+        {
+          "node": "tests/test_svg_output.py::test_figure_margin_credits_and_version_belong_to_footer_furniture",
+          "reason": "Retain editable vector structure, physical page, semantic identities and export metadata without catalogue acquisition."
+        },
+        {
+          "node": "tests/test_legend_export.py::test_rendered_coordinator_reuses_geometry",
+          "reason": "Retain supplied rendered-geometry legend bridge and canonical one-save composition across chart families/formats."
+        },
+        {
+          "node": "tests/test_legend_export.py::test_composed_export_renders_legends_and_saves_once",
+          "reason": "Retain supplied rendered-geometry legend bridge and canonical one-save composition across chart families/formats."
+        },
+        {
+          "node": "tests/test_legend_export.py::test_legend_symbols_and_labels_receive_matching_semantic_names",
+          "reason": "Retain supplied rendered-geometry legend bridge and canonical one-save composition across chart families/formats."
+        }
+      ]
     }
   },
   "consumer_review": [
