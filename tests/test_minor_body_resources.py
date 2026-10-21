@@ -279,6 +279,88 @@ def test_real_offline_ceres_kernel_route_matches_retained_science(tmp_path):
             np.testing.assert_allclose(after.geometry.lat_deg[0],before.geometry.lat_deg[0],rtol=0,atol=1e-11)
 
 
+@pytest.mark.parametrize('fixture_name,raw_name', [
+    ('horizons_comet_validation_50a4.json','50a4-raw-v2'),
+    ('horizons_comet_validation_50a5c.json','50a5c-161p-raw'),
+])
+def test_real_offline_comet_kernel_routes_preserve_science(fixture_name, raw_name):
+    """Captured SPK and fixture oracles; no acquisition or substituted resources."""
+    from dataclasses import replace
+    from astropy.time import Time
+    import numpy as np
+    from wenu.observer import Observer, DEFAULT_DATA_DIRECTORY, DEFAULT_EPHEMERIS
+    from wenu.ephemeris import EphemerisStateRequest
+    from wenu.ephemeris_state import KernelEphemerisStateSource
+    from wenu.minor_body_ephemeris import SpiceMinorBodyKernel, SkyfieldMinorBodyStateSource
+    from wenu.skyfield_ephemeris import SkyfieldEphemerisStateSource
+    from wenu.sky.solar_system_points import SolarSystemPointLayer, EphemerisSourceBinding
+    from wenu.sky.solar_system_tracks import SolarSystemTrackRealizer
+    from wenu.sky.solar_system_bodies import SolarSystemBodyDescriptor, SYMBOLIC_POINT, APPARENT_TRACK
+    from tools.validate_50a2_asteroids import _solution
+    from test_solar_system_tracks import CONTEXT, request
+    fixture=json.loads((Path('tests/fixtures')/fixture_name).read_text())
+    record=fixture['objects'][0];epoch=record['epochs'][0]
+    data=Path(DEFAULT_DATA_DIRECTORY)
+    path=data/'minor_bodies'/raw_name/record['spk']['filename']
+    for required in (path,data/DEFAULT_EPHEMERIS):
+        if not required.is_file():
+            raise FileNotFoundError(f'offline comet acceptance requires {required}')
+    assert sha256(path.read_bytes()).hexdigest()==record['spk']['sha256']
+    key=record['primary_designation'].casefold()
+    descriptor=SolarSystemBodyDescriptor(target=key,entity_key='comet_'+key,
+        display_name=record['name'],selection_key=key,body_class='comet',
+        physical_body_id=record['provider_spk_id'],canonical_designation=record['primary_designation'],
+        iau_number=record['iau_number'],classifications=frozenset({'comet'}),
+        capabilities=frozenset({SYMBOLIC_POINT,APPARENT_TRACK}),ephemeris_source_key='minor_body_spk')
+    # Use the existing numerical fixture conversion, with explicit API target
+    # mapping and only aliases actually present in the source fixture.
+    solution=replace(_solution(record,fixture['authority']['horizons_version']),
+        wenu_target=key,aliases=tuple(record.get('aliases',())))
+    with Observer(location='La Ligua',time=epoch['calendar']+'Z') as observer:
+        planetary=SkyfieldEphemerisStateSource.from_observer(observer)
+        with SpiceMinorBodyKernel(path) as kernel:
+            raw=SkyfieldMinorBodyStateSource.from_kernels(small_body_kernel=kernel,
+                planetary_source=planetary,timescale=observer.timescale,
+                solution=solution,model='Horizons '+solution.orbit_solution_id,
+                provider_gas_tail_position_angles=tuple((e['calendar_utc'],e['horizons_psang_deg'])
+                    for e in fixture.get('antisolar',{}).get('epochs',())))
+            source=KernelEphemerisStateSource(raw)
+            instant=Time(epoch['vector_jd_tdb'],format='jd',scale='tdb');instant.precision=9
+            query=EphemerisStateRequest(key,descriptor.centre,'icrf',instant.isot,'tdb')
+            before=raw.state(query);after=source.state(query)
+            np.testing.assert_allclose(after.position,before.position,rtol=0,atol=1e-14)
+            np.testing.assert_allclose(after.velocity,before.velocity,rtol=0,atol=1e-16)
+            np.testing.assert_allclose(after.position,epoch['position_au'],rtol=0,atol=fixture['tolerances']['position_au'])
+            np.testing.assert_allclose(after.velocity,epoch['velocity_au_per_day'],rtol=0,atol=fixture['tolerances']['velocity_au_per_day'])
+            assert after.solution is before.solution is solution
+            assert after.segment is before.segment
+            assert {'A1','A2'}.issubset(dict(after.solution.model_parameters))
+            context=replace(CONTEXT,evaluation_instant=epoch['calendar'],evaluation_time_scale='utc',
+                observation=replace(CONTEXT.observation,instant=epoch['calendar']))
+            raw_resolver=lambda d,o:EphemerisSourceBinding(raw,planetary)
+            resolver=lambda d,o:EphemerisSourceBinding(source,planetary)
+            point=SolarSystemPointLayer(descriptor,source_resolver=resolver).realize(context,observer)
+            expected=SolarSystemPointLayer(descriptor,source_resolver=raw_resolver).realize(context,observer)
+            np.testing.assert_allclose(point.lon_deg,expected.lon_deg,rtol=0,atol=1e-11)
+            np.testing.assert_allclose(point.lat_deg,expected.lat_deg,rtol=0,atol=1e-11)
+            assert abs(((point.lon_deg[0]-epoch['topocentric']['apparent_ra_deg']+180)%360)-180)<1e-5
+            assert abs(point.lat_deg[0]-epoch['topocentric']['apparent_dec_deg'])<1e-5
+            assert point.metadata['comet_tail_orientation_source']==expected.metadata['comet_tail_orientation_source']
+            from wenu.charts.object_center import get_object_center
+            center=get_object_center(descriptor,observer,source_resolver=resolver)
+            expected_center=get_object_center(descriptor,observer,source_resolver=raw_resolver)
+            assert center.key==key and len(center.geometry.lon_deg)==1
+            np.testing.assert_allclose(center.geometry.lon_deg,expected_center.geometry.lon_deg,rtol=0,atol=1e-10)
+            np.testing.assert_allclose(center.geometry.lat_deg,expected_center.geometry.lat_deg,rtol=0,atol=1e-10)
+            value=request(descriptor=descriptor,start_instant=epoch['calendar']+'Z',sample_step_days=.5,tick_step_days=.75,tick_count=1)
+            actual=SolarSystemTrackRealizer(source_resolver=resolver).curve(value,context=context,observer=observer)
+            expected=SolarSystemTrackRealizer(source_resolver=raw_resolver).curve(value,context=context,observer=observer)
+            assert actual.sample_instants==expected.sample_instants
+            assert actual.tick_sample_indices==expected.tick_sample_indices
+            np.testing.assert_allclose(actual.geometry.lon_deg[0],expected.geometry.lon_deg[0],rtol=0,atol=1e-11)
+            np.testing.assert_allclose(actual.geometry.lat_deg[0],expected.geometry.lat_deg[0],rtol=0,atol=1e-11)
+
+
 def test_ceres_manifest_preserves_frozen_facts_and_validates_identity(monkeypatch):
     from importlib.resources import files
     from dataclasses import asdict
@@ -307,9 +389,19 @@ def test_ceres_manifest_preserves_frozen_facts_and_validates_identity(monkeypatc
 
 @pytest.mark.parametrize('numbered', [False, True])
 def test_asteroid_session_point_and_track_consume_kernel_and_refuse(tmp_path, monkeypatch, numbered):
+    _assert_minor_body_session_consumers(tmp_path, monkeypatch, numbered=numbered)
+
+
+@pytest.mark.parametrize('comet', ['2P', '161P', 'C/2006 P1'])
+def test_comet_session_point_track_symbols_consume_kernel_and_refuse(tmp_path, monkeypatch, comet):
+    _assert_minor_body_session_consumers(tmp_path, monkeypatch, comet=comet)
+
+
+def _assert_minor_body_session_consumers(tmp_path, monkeypatch, *, numbered=False, comet=None):
     """Synthetic SPK/observer inputs; real composition, kernel and light-time paths."""
     from dataclasses import replace
     from astropy.time import Time
+    from astropy import units as u
     import numpy as np
     from wenu.ephemeris import EphemerisState, EphemerisStateRequest
     from wenu.ephemeris_state import KernelEphemerisStateSource
@@ -327,6 +419,25 @@ def test_asteroid_session_point_and_track_consume_kernel_and_refuse(tmp_path, mo
         doc = json.loads(path.read_text());doc['resources'][0]['sha256'] = sha256(payload).hexdigest()
         path.write_text(json.dumps(doc))
     target = 20079989 if numbered else 20000001
+    selection = '79989' if numbered else '1'
+    if comet is not None:
+        target = {'2P':1000025, '161P':1000042, 'C/2006 P1':1002410}[comet]
+        directory = comet_manifest_directory(tmp_path,
+            designation='2P' if comet == 'C/2006 P1' else comet,
+            target=str(target), name={'2P':'Encke','161P':'Hartley-IRAS','C/2006 P1':'McNaught'}[comet])
+        path = directory/'acquisition-report.json'
+        doc = json.loads(path.read_text());record=doc['resources'][0]
+        record['actual_coverage']={'start_jd_tdb':2460000.5,'stop_jd_tdb':2470000.5}
+        if comet == 'C/2006 P1':
+            record['identity'].update(permanent_number=None,primary_designation='2006 P1',designation_class='C')
+            record['solution'].update(primary_designation='2006 P1',aliases=['C/2006 P1','McNaught'])
+        record['horizons_result'] = (record['solution']['primary_designation'] +
+            '\nSoln.date: '+record['solution']['solution_date']+'\nsoln ref.= JPL#'+record['solution']['orbit_solution_id'])
+        # Exact synthetic UTC samples for the unchanged source-owned hook.
+        record['provider_gas_tail_position_angles']=[
+            {'calendar_utc':(Time('2026-08-30T00:00:00',scale='utc')+u.day*offset).strftime('%Y-%m-%dT%H:%M:%S'),
+             'position_angle_deg':65.412} for offset in request().sample_offsets_days]
+        path.write_text(json.dumps(doc));selection=comet
     class Segment:
         center=10; frame_id=1; data_type=21
         start_jd=2460000.5; end_jd=2470000.5
@@ -348,13 +459,13 @@ def test_asteroid_session_point_and_track_consume_kernel_and_refuse(tmp_path, mo
             self._closed=True;self.closes+=1
     kernel=None
     planetary=SimpleNamespace(resource=RESOURCE)
-    planetary.state=lambda q: EphemerisState(q,(0.,0.,0.),(0.,0.,0.),'au','au/day',RESOURCE,q.target,'0')
+    planetary.state=lambda q: EphemerisState(q,((-.5,0.,0.) if comet else (0.,0.,0.)),(0.,0.,0.),'au','au/day',RESOURCE,q.target,'0')
     monkeypatch.setattr('wenu.minor_body_resources.SpiceMinorBodyKernel',Kernel)
     monkeypatch.setattr('wenu.minor_body_resources.SkyfieldEphemerisStateSource.from_observer',lambda observer:planetary)
     observer=SimpleNamespace(t_astropy=Time('2026-08-30T00:00:00',scale='utc'),
         timescale=SimpleNamespace(from_astropy=lambda t:SimpleNamespace(tdb=float(t.tdb.jd))))
     session=MinorBodyResourceSession(directory,observer)
-    descriptor=session.collection.resolve('79989' if numbered else '1')
+    descriptor=session.collection.resolve(selection)
     binding=session.source_binding(descriptor,observer)
     assert isinstance(binding.target_source,KernelEphemerisStateSource)
     assert binding.observer_source is planetary
@@ -366,6 +477,15 @@ def test_asteroid_session_point_and_track_consume_kernel_and_refuse(tmp_path, mo
     value=request(descriptor=descriptor)
     baseline=SolarSystemTrackRealizer(source_resolver=raw_resolver,sample_observer_factory=sample_observer,**options).curve(value,context=CONTEXT,observer=observer)
     p=point.realize(CONTEXT,observer)
+    if comet is not None:
+        assert p.metadata['comet_tail_orientation_source']=='provider PsAng'
+        assert p.metadata['antisolar_position_angle_deg']==65.412
+        original_state=binding.target_source.state(EphemerisStateRequest(
+            descriptor.target,descriptor.centre,'icrf','2026-08-30T00:00:00','tdb'))
+        assert original_state.solution is session.collection.solution_for(descriptor)
+        assert original_state.solution.model_parameters==(('A1','radial'),('A2','transverse'))
+        assert original_state.segment.target_id==target
+
     actual=track.curve(value,context=CONTEXT,observer=observer)
     np.testing.assert_allclose(actual.geometry.lon_deg[0],baseline.geometry.lon_deg[0],rtol=0,atol=1e-11)
     assert actual.sample_instants == baseline.sample_instants
@@ -402,11 +522,25 @@ def test_asteroid_session_point_and_track_consume_kernel_and_refuse(tmp_path, mo
         owner.sample_observer_factory=sample_observer
         owner.apparent_realizer=ApparentRealizer()
         configured=composition_layer_options(composition,sky,reload_catalogues=False)
+        if comet is not None:
+            sky.add(SolarSystemPointLayer(descriptor,
+                source_resolver=session.source_binding if routed else raw_resolver,**options))
+            sky.solar_system_bodies[descriptor.selection_key]=sky.layers[-1]
+            configured=composition_layer_options(composition,sky,reload_catalogues=False)
+
         figure,axes=plt.subplots(figsize=(4,3),dpi=90)
         try:
             sky.draw_chart(observer=observer,realization_context=CONTEXT,
                 projection=projection,renderer=MatplotlibRenderer(axes),
                 layer_options=configured.layer_options,viewport=viewport)
+            if comet is not None:
+                from wenu.sky.solar_system_track_layer import CometTrackSymbolLayer
+                symbols=[x for x in sky.layers if isinstance(x,CometTrackSymbolLayer)]
+                assert len(symbols)==value.tick_count+1
+                for symbol in symbols:
+                    geometry=symbol.realize(CONTEXT,observer)
+                    assert geometry.metadata['comet_tail_orientation_source']=='provider PsAng'
+                    assert geometry.metadata['antisolar_position_angle_deg']==65.412
             axes.set_axis_off()
             output=tmp_path/f'asteroid-{routed}.png';figure.savefig(output)
             images.append(imread(output))
@@ -414,6 +548,19 @@ def test_asteroid_session_point_and_track_consume_kernel_and_refuse(tmp_path, mo
             plt.close(figure)
     np.testing.assert_array_equal(images[0],images[1])
     assert np.any(images[0][:,:,:3]<.5)
+    if comet is not None:
+        source=binding.target_source.source
+        hook=source.apparent_gas_tail_position_angle_deg
+        def refused_hook(**kwargs):
+            raise ValueError('provider tail sample refused after warm use')
+        source.apparent_gas_tail_position_angle_deg=refused_hook
+        try:
+            with pytest.raises(ValueError,match='provider tail sample refused'):
+                point.realize(CONTEXT,observer)
+            with pytest.raises(ValueError,match='provider tail sample refused'):
+                symbols[0].realize(CONTEXT,observer)
+        finally:
+            source.apparent_gas_tail_position_angle_deg=hook
     original=KernelSession.evaluate;queries=[]
     def changed(s,q):
         queries.append(q);batch=original(s,q);row=batch.states[0];x,y,z=row.position_m

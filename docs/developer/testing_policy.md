@@ -1537,6 +1537,50 @@ Retain accepted underlying CSPICE/Horizons and observer/apparent numerical
 oracles, SDK/geometry/install and atlas receipts. No full production/SDK repeat.
 
 Local K3.28 evidence: 208 available focused cases passed, plus the installed
-manifest wheel/sdist consumer. Two real offline cases require Mac resources.
+manifest wheel/sdist consumer. Two real offline cases were required on the Mac.
 Eight tooling and 31 available documentation cases passed; five complete-checkout
 archive/asset/inventory cases remain in the normal 36-case Mac documentation gate.
+
+## Comet routing gate
+
+Run `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python tools/run_test_gate.py comet-routing --run`.
+K3.29 selects existing ephemeris/minor-body identity/resource/acquisition and
+point/track/CLI/temporal/centre owners, comet symbols, fixture/numerical-validator and
+discovery/photometry/report contracts. No new owner file or full SDK/production
+repeat is warranted. No package/data/dependency change requires a new installation
+gate; retain K3.28 installed-consumer and lower-level numerical receipts.
+
+Three source-session cases cover Encke, Hartley-IRAS and an installed provisional
+designation, reusing the existing asteroid seam setup. Returned kernel values
+must move point/track directions; refusals reach both after success. Actual
+canonical request/style/draw output has identical nonempty raw/routed PNG pixels,
+including comet points and sample-derived symbols, with explicitly synthetic
+SPK/apparent inputs. Model/segment/chain identity and provider PsAng are retained;
+provider-hook failure propagates after warm point/symbol use. A hook regression
+fails before forwarding. Removing comet session re-admission fails all three
+closed warm-cache cases.
+
+The real offline Encke/161P cases require the existing fixture-bound SPK bytes
+and DE440s. They preserve raw/routed PV, apparent points, sampled tracks,
+source/non-gravitational parameters, public horizontal centres and the existing captured vector/direction
+oracles. Existing Ceres and natural-track parity cases protect shared assembly.
+No resource is downloaded, skipped or substituted by the Mac gate.
+
+Report seams instrument validated model samples through the actual
+characterization and table/JSON CLI path: late brightest samples, missing nuclear
+values, epochs/identity/provenance and an unchanged existing output after refusal.
+They prohibit positional queries and observer construction. Retain existing
+sample caps, cache validation, sequential progress, explicit transport and
+selection limits. These are provider-model contracts, not new physical accuracy.
+
+K3.28 complete Mac acceptance passed at dae9c502 through PR #301: 211 focused,
+36 documentation and eight tooling cases; clean main and branch cleanup confirmed.
+K3.29 complete Mac acceptance remains pending.
+
+Local K3.29 evidence: all 269 available focused cases passed in 9.46 seconds,
+including five existing centre/date consumer cases. Four offline cases remain in the complete Mac gate,
+including the two new real comet routes. Eight tooling and 31 available
+documentation cases passed; five full-checkout documentation checks remain on Mac.
+Six numerical/provider-record owners are byte-identical to the base; the existing
+ephemeris provider and state method have unchanged ASTs. Only source assembly,
+optional-hook forwarding and comet session re-admission change production behavior.

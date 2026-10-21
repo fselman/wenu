@@ -1058,7 +1058,7 @@
     },
     {
       "path": "src/wenu/ephemeris_state.py",
-      "git_blob_sha": "a24f12942421d15fe7acf3647676ea0e08648813",
+      "git_blob_sha": "bc1aa48e26ebe7a1e772cc5530eecf64664b4ab8",
       "as_is_directory": "src/wenu",
       "description": "Borrowed request-scoped geometric ephemeris adapter to Cartesian SDK states."
     },
@@ -1160,7 +1160,7 @@
     },
     {
       "path": "src/wenu/minor_body_resources.py",
-      "git_blob_sha": "0a1d6d84ad6dd727ef6c305a07d3a421b56721b6",
+      "git_blob_sha": "f436b3016f47a073eca40a29fcc61c3ecbe29f89",
       "as_is_directory": "src/wenu",
       "description": "Explicit offline resolution and lifecycle for minor-body resources."
     },
@@ -1665,7 +1665,7 @@
     },
     {
       "path": "src/wenu/sky/solar_system_track_layer.py",
-      "git_blob_sha": "134f6a760936ff7745434ecd3776ad0c8a588a94",
+      "git_blob_sha": "0974a3a3ed1cd903f6332f54263b2e3d82ba7c91",
       "as_is_directory": "src/wenu/sky",
       "description": "Scientific Solar-System track layer."
     },
@@ -12328,7 +12328,7 @@
       "Canonical public request raw/routed PNG pixels agree with labelled synthetic apparent inputs.",
       "Wheel/sdist and isolated installed consumer retain complete Ceres manifest facts."
     ],
-    "limits": "Complete Mac acceptance pending, including offline DE440s/Ceres 50a2 point/track parity. No new science/acquisition/comet adoption/SDK/dependency/snapshot/renderer change. Existing CSPICE composition and numerical direction algorithms unchanged.",
+    "limits": "Accepted PR #301/main 74b31d84: Mac 211 focused (62.35 s), 36 documentation (4.14 s), eight tooling (8.196 s); clean synchronized main and cleanup confirmed. No new numerical science or K3/K5 closure.",
     "local_receipt": {
       "focused_available_passed": 208,
       "installed_manifest_passed": 1,
@@ -12336,6 +12336,46 @@
       "documentation_available_passed": 31,
       "documentation_complete_checkout_required": 5,
       "tooling_passed": 8
+    }
+  },
+  "comet_routing": {
+    "milestone": "K3.29",
+    "base_commit": "74b31d845ed27f44452b6e252e839ccbaa9a8485",
+    "plan_commit": "3bceeb234b446bc78388d7ca5e9442133337b863",
+    "gate": "comet-routing",
+    "owners": [
+      "src/wenu/ephemeris_state.py",
+      "src/wenu/minor_body_resources.py",
+      "src/wenu/sky/solar_system_track_layer.py"
+    ],
+    "source_blobs": {
+      "src/wenu/ephemeris_state.py": "bc1aa48e26ebe7a1e772cc5530eecf64664b4ab8",
+      "src/wenu/minor_body_resources.py": "f436b3016f47a073eca40a29fcc61c3ecbe29f89",
+      "src/wenu/sky/solar_system_track_layer.py": "0974a3a3ed1cd903f6332f54263b2e3d82ba7c91"
+    },
+    "retained_record_owners": [
+      "src/wenu/comet_discovery.py",
+      "src/wenu/comet_photometry.py",
+      "src/wenu/cli/comets.py"
+    ],
+    "disposition": "Reuse known minor-body target assembly for comets; preserve chain/solution/segment/model records, forward optional source PsAng and extend existing separate-session warm admission. Retain typed discovery/photometry/report boundaries without invented positional queries.",
+    "evidence": [
+      "Three session consumer cases failed before comet adapter assembly.",
+      "Optional provider hook regression failed before forwarding.",
+      "Removing comet warm session re-admission fails all three closure cases.",
+      "Ceres/numbered tests retain prior coverage via shared setup; Encke/161P/provisional canonical raw/routed point/track/symbol PNGs agree with labelled synthetic inputs.",
+      "Table/JSON CLI consumes changed validated model samples, unknowns/epochs/provenance and preserves an existing output after refusal; positional queries and observer construction forbidden."
+    ],
+    "limits": "Complete Mac acceptance pending, including real Encke/161P fixture-bound SPKs and DE440s. Existing numerical provider, point/track algorithms, model records, acquisition, source bytes, SDK, dependency, schema and renderer unchanged. K3.30/K3/K5 remain separate.",
+    "local_receipt": {
+      "focused_available_passed": 269,
+      "focused_seconds": 9.46,
+      "offline_resource_cases_required_on_mac": 4,
+      "documentation_available_passed": 31,
+      "documentation_seconds": 1.28,
+      "documentation_complete_checkout_required": 5,
+      "tooling_passed": 8,
+      "tooling_seconds": 5.115
     }
   }
 }

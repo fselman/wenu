@@ -160,6 +160,13 @@ class KernelEphemerisStateSource:
         self.source = source
         self.resource = source.resource
 
+    def apparent_gas_tail_position_angle_deg(self, *, request, observer_state):
+        """Retain the source-owned optional sample alongside state transport."""
+        resolve = getattr(self.source, "apparent_gas_tail_position_angle_deg", None)
+        if not callable(resolve):
+            return None
+        return resolve(request=request, observer_state=observer_state)
+
     def state(self, request):
         if not isinstance(request, EphemerisStateRequest):
             raise TypeError("request must be an EphemerisStateRequest.")

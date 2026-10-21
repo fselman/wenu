@@ -1714,7 +1714,7 @@ planet/natural-satellite target bindings to `KernelEphemerisStateSource` after
 binding resolution. This covers default binding and the planetary source returned
 by `MinorBodyResourceSession.source_binding` in a mixed request. The observer and
 apparent roles retain their raw source. An already-adapted or explicit generic
-protocol source is preserved; asteroid/comet target adoption remains K3.28/K3.29.
+protocol source is preserved; minor-body session assembly is described below.
 No minor-body resource acquisition or numerical model is moved here.
 
 Sampling and major tick insertion are unchanged. Every sample keeps its observer,
@@ -1736,7 +1736,7 @@ sampler API, not a newly admitted chart/CLI capability.
 `SkyfieldMinorBodyStateSource` targets with the existing
 `KernelEphemerisStateSource`; its observer/apparent source remains raw planetary
 science. Ceres and manifest-derived numbered objects use this same assembly.
-Comet state adoption is separate. Explicit generic protocol injection remains
+Comet bindings now use this same session route. Explicit generic protocol injection remains
 compatible; it does not claim the default offline-session route.
 
 The Cartesian adapter accepts an `EphemerisResourceChain`, registers every
@@ -1756,3 +1756,28 @@ new physical accuracy or replace an installed acquisition receipt.
 Warm asteroid track components recheck their resolver/session before reuse;
 changed binding identities require fresh realization and closed sessions refuse.
 The observer key alone cannot establish the lifetime of a separately owned SPK.
+
+## Comet consumers and provider records
+
+`MinorBodyResourceSession` adapts all known `SkyfieldMinorBodyStateSource`
+targets, including manifest-derived periodic and installed provisional comets.
+It preserves the raw planetary observer/apparent binding. Existing model
+parameters, quality fields, exact solution/segment selection and both resource
+identities remain on the returned minor-body state. No numerical backend or
+light-time implementation is replaced.
+
+`KernelEphemerisStateSource.apparent_gas_tail_position_angle_deg` forwards the
+optional source-owned sample using the original request and observer state.
+An absent sample remains `None`; provider refusal propagates. Existing point
+and track-symbol consumers validate/use it or retain their original apparent
+Sun fallback. This transport is not K3.30 antisolar-reference migration.
+Warm components now recheck both asteroid and comet resource sessions before
+sharing, while retaining one target trajectory for path and major symbols.
+
+`comet_discovery` and `comet_photometry` retain their existing validated provider
+result records. `cli.comets.table_text`, `json_text` and `main` consume those
+returned rows, missing values, sampled extrema, epochs and provenance. Magnitude
+samples are provider model values, not position queries, continuous minima or
+visibility predictions. Existing explicit acquisition, bounded sequential
+workload, validated raw-response cache and report failure behavior are unchanged.
+Automatic/provisional selection limits remain as documented.

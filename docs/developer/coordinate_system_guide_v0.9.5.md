@@ -1489,3 +1489,11 @@ transformation are unchanged. The original minor-body state retains its solution
 and selected segment after returned SI PV is converted back to AU/AU per day.
 Ceres's existing osculating epoch/frame facts are read from a versioned manifest;
 they are neither a new observation date nor new physical-model qualification.
+
+Comet offline states now use that same chain-preserving transport. Their existing
+source model, simultaneous composition, retarded direction, apparent corrections
+and fixed-axis sampling remain unchanged. The adapter forwards optional provider
+tail-angle samples in their existing request/observer context; it adds no angular
+or antisolar calculation. Model photometry retains its separate provider records,
+observer/site and UTC sample times; no positional SDK state is fabricated for a
+magnitude, and no new accuracy or visibility claim follows.

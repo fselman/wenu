@@ -880,3 +880,60 @@ def test_console_entry_point_is_packaged():
     project = Path("pyproject.toml").read_text(encoding="utf-8")
 
     assert 'wenu_retrieve_comets = "wenu.cli.comets:main"' in project
+
+
+@pytest.mark.parametrize('format', ['table', 'json'])
+def test_cli_consumes_validated_model_samples_without_positional_queries(tmp_path, monkeypatch, capsys, format):
+    """Synthetic provider sample changes reach the real characterization/report path."""
+    from functools import partial
+    from wenu_kernel.kernel import KernelSession
+    discovery = short_mcnaught_discovery()
+    parser = comet_photometry.parse_photometry_response
+    returned = []
+    def samples(raw, **kwargs):
+        version, values, notices = parser(raw, **kwargs)
+        # Deliberately put the brightest sample last; keep missing nuclear
+        # values so a report cannot silently recompute or fill them.
+        values = tuple(replace(row, total_magnitude=-17.25 if i==len(values)-1 else 4.5,
+            nuclear_magnitude=6.75 if i==0 else None) for i,row in enumerate(values))
+        returned.append(values)
+        return version, values, notices
+    monkeypatch.setattr(comet_photometry, 'parse_photometry_response', samples)
+    monkeypatch.setattr(comets, 'discover_comets', lambda *args, **kwargs: discovery)
+    characterize = comet_photometry.characterize_discovery_photometry
+    payloads = []
+    def fetch(url, parameters):
+        raw = synthetic_photometry_response(parameters)
+        payloads.append(raw)
+        return raw
+    monkeypatch.setattr(comets,'characterize_discovery_photometry',partial(characterize,fetch=fetch))
+    def forbidden(*args, **kwargs):
+        pytest.fail('photometry/reporting must not query positional states or open an observer')
+    monkeypatch.setattr(KernelSession,'evaluate',forbidden)
+    monkeypatch.setattr(comet_photometry.Observer,'__init__',forbidden)
+    output=tmp_path/f'comets.{format}'
+    arguments=['2007-01-12','2007-01-12','--observer-location','La Ligua',
+        '--magnitude-step','12h','--photometry-cache',str(tmp_path/'cache'),
+        '--format',format,'--output',str(output)]
+    assert comets.main(arguments)==0
+    before=output.read_bytes()
+    if format=='json':
+        document=json.loads(before)
+        model=document['records'][0]['observer_model_photometry']
+        assert model['brightest_sampled_total']['value']==-17.25
+        assert model['brightest_sampled_total']['epoch_utc']==returned[0][-1].epoch_utc.isoformat()
+        assert model['brightest_sampled_nuclear']['value']==6.75
+        assert model['samples'][1]['nuclear_model_magnitude']['value'] is None
+        assert model['provider']['raw_sha256']==sha256(payloads[0]).hexdigest()
+        assert model['target']['provider_spk_id']==discovery.records[0].spk_id
+        assert model['target']['orbit_solution_id']==discovery.records[0].orbit_solution_id
+        assert model['sampling']['sample_count']==len(returned[0])
+    else:
+        assert b'-17.250' in before and b'6.750' in before
+        assert b'provider models' in before and b'not continuous minima' in before
+    def refused(*args, **kwargs):
+        raise ValueError('validated photometry refused')
+    monkeypatch.setattr(comets,'characterize_discovery_photometry',refused)
+    assert comets.main(arguments)==2
+    assert output.read_bytes()==before
+    assert 'validated photometry refused' in capsys.readouterr().err

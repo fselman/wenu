@@ -44,10 +44,10 @@ class SolarSystemTrackRealization:
             and self._observer is observer
         ):
             if (
-                getattr(self.request.descriptor, "body_class", None) == "asteroid"
+                getattr(self.request.descriptor, "body_class", None) in {"asteroid", "comet"}
                 and self.realizer.source_resolver is not None
             ):
-                # The observer key cannot admit the separately owned asteroid
+                # The observer key cannot admit the separately owned minor-body
                 # session. Recheck that owner before sharing warm components.
                 binding = self.realizer.source_resolver(
                     self.request.descriptor, observer

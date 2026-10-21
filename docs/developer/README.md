@@ -289,6 +289,8 @@ chart refusal remains; Moon sampling is scientific-API coverage, not a new CLI p
 
 K3.27 is accepted through PR #300 after 83 focused, 36 documentation and eight
 tooling Mac cases, with clean main and branch cleanup confirmed. K3.28 now
-implements [asteroid state/offline resource routing](implementation_reference.md#asteroid-state-and-offline-resource-routing)
-and manifest-backed Ceres solution facts for acceptance. Complete Mac acceptance
-remains pending; K3.29 comet adoption and K3/K5 closure remain separate.
+accepts [asteroid state/offline resource routing](implementation_reference.md#asteroid-state-and-offline-resource-routing)
+and manifest-backed Ceres solution facts through PR #301 after 211 focused,
+36 documentation and eight tooling Mac cases, with cleanup confirmed. K3.29 now
+implements [comet consumers and provider-record routing](implementation_reference.md#comet-consumers-and-provider-records)
+for acceptance. Complete comet Mac acceptance and K3/K5 closure remain pending.
