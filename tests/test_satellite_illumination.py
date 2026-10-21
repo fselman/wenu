@@ -1051,3 +1051,183 @@ def test_transition_finder_returns_identity_bound_directed_events(monkeypatch):
     assert all(item.evaluation_count == results[0].evaluation_count for item in results)
     assert all(item.achieved_bracket_width_seconds <= 0.01 for item in results)
     assert all("not a brightness" in item.warnings[0] for item in results)
+
+
+
+def _known_synthetic_sun_source():
+    """Known-source assembly seam; values are synthetic, not captured SPK."""
+    from wenu.skyfield_ephemeris import SkyfieldEphemerisStateSource
+    class KnownSyntheticSun(SyntheticSunSource, SkyfieldEphemerisStateSource):
+        def __init__(self):
+            SyntheticSunSource.__init__(self)
+            self.resource = resource()
+    return KnownSyntheticSun()
+
+
+def _short_shadow_query():
+    return SatelliteShadowTransitionQuery(
+        snapshot=_transition_snapshot(), norad_catalog_id=5,
+        interval=InclusiveTimeInterval("2000-06-27T18:50:19.733568Z",
+                                       "2000-06-27T18:50:19.743568Z"))
+
+
+def test_known_sun_illumination_consumes_kernel_states_and_preserves_custom_protocol(monkeypatch):
+    from wenu_kernel.kernel import KernelSession
+    from wenu.ephemeris_state import KernelEphemerisStateSource
+    topocentric = transformed_state()
+    source = _known_synthetic_sun_source()
+    evaluator = SatelliteIlluminationGeometryEvaluator(source)
+    assert isinstance(evaluator.source, KernelEphemerisStateSource)
+    original = KernelSession.evaluate
+    calls = []
+    def tracked(session, query):
+        calls.append(query)
+        return original(session, query)
+    monkeypatch.setattr(KernelSession, "evaluate", tracked)
+    before = evaluator.evaluate(topocentric)
+    assert calls and all(q.reference.frame_id == "icrf" and q.reference.origin_id == "earth" for q in calls)
+    assert before.sun_ephemeris_state.provider_target_id == "10"
+    assert before.sun_ephemeris_state.provider_centre_id == "399"
+    assert before.sun_ephemeris_state.resource == source.resource
+    assert "returned kernel Cartesian state" in before.sun_ephemeris_state.provenance
+    assert before.evaluation_utc == topocentric.teme_state.evaluation_utc
+    def mirrored(session, query):
+        batch = tracked(session, query)
+        return replace(batch, states=tuple(replace(row,
+            position_m=tuple(-x for x in row.position_m),
+            velocity_m_s=tuple(-x for x in row.velocity_m_s)) for row in batch.states))
+    monkeypatch.setattr(KernelSession, "evaluate", mirrored)
+    after = evaluator.evaluate(topocentric)
+    assert after.earth_to_sun_itrs_km == pytest.approx(-np.asarray(before.earth_to_sun_itrs_km))
+    assert after.observer_twilight_class is not before.observer_twilight_class
+    assert after.solar_occultation.occultation_class is not before.solar_occultation.occultation_class
+    assert after.topocentric_state is before.topocentric_state is topocentric
+    assert after.lunar_occultor_status is LunarOccultorStatus.NOT_EVALUATED
+    # Caller-injected protocol objects are not assumed to expose SDK resources.
+    custom = SyntheticSunSource()
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("custom source must retain its own protocol")
+    monkeypatch.setattr(KernelSession, "evaluate", forbidden)
+    custom_evaluator = SatelliteIlluminationGeometryEvaluator(custom)
+    assert custom_evaluator.source is custom
+    assert custom_evaluator.evaluate(topocentric).sun_ephemeris_state.request is custom.request
+
+
+def test_shadow_finder_consumes_returned_sun_and_satellite_states(monkeypatch):
+    from wenu_kernel.kernel import KernelSession
+    query = _short_shadow_query()
+    source = _known_synthetic_sun_source()
+    finder = SatelliteShadowTransitionFinder(source)
+    original = KernelSession.evaluate
+    contact = illumination_module.evaluate_solar_occultation_contact
+    captures, queries = [], []
+    mode = {"value": "original"}
+    def tracked(session, value):
+        queries.append(value)
+        batch = original(session, value)
+        if value.reference.frame_id == "icrf" and mode["value"] == "sun":
+            return replace(batch, states=tuple(replace(row, position_m=tuple(-x for x in row.position_m)) for row in batch.states))
+        if value.reference.frame_id == "teme" and mode["value"] == "satellite":
+            return replace(batch, states=tuple(replace(row, position_m=tuple(1.05*x for x in row.position_m)) for row in batch.states))
+        return batch
+    def captured(satellite, sun, **options):
+        result = contact(satellite, sun, **options)
+        captures.append((np.asarray(satellite).copy(), np.asarray(sun).copy(), result.occultation_class))
+        return result
+    monkeypatch.setattr(KernelSession, "evaluate", tracked)
+    monkeypatch.setattr(illumination_module, "evaluate_solar_occultation_contact", captured)
+    assert finder.find(query) == ()
+    before = captures[0]
+    assert {q.reference.frame_id for q in queries} == {"teme", "icrf"}
+    for value in ("sun", "satellite"):
+        mode["value"] = value
+        captures.clear()
+        assert finder.find(query) == ()
+        after = captures[0]
+        if value == "sun":
+            assert after[1] == pytest.approx(-before[1])
+            assert after[2] is not before[2]
+        else:
+            assert after[0] == pytest.approx(1.05*before[0])
+    assert all(q.evaluation_policy == "full_model" for q in queries)
+
+
+@pytest.mark.parametrize("consumer", ("illumination", "transitions"))
+@pytest.mark.parametrize("failure", ("sun", "resource", "orientation"))
+def test_illumination_consumers_recheck_live_services_after_success(monkeypatch, consumer, failure):
+    from wenu_kernel.kernel import KernelSession
+    from wenu_kernel.errors import UnsupportedCapability
+    from wenu.satellites.topocentric import SatelliteEarthOrientationError
+    source = _known_synthetic_sun_source()
+    if consumer == "illumination":
+        topocentric = transformed_state()
+        evaluator = SatelliteIlluminationGeometryEvaluator(source)
+        execute = lambda: evaluator.evaluate(topocentric)
+    else:
+        finder = SatelliteShadowTransitionFinder(source)
+        query = _short_shadow_query()
+        execute = lambda: finder.find(query)
+    execute()
+    if failure == "sun":
+        original = KernelSession.evaluate
+        def unavailable(session, query):
+            if query.reference.frame_id == "icrf":
+                raise UnsupportedCapability("current Sun state refused")
+            return original(session, query)
+        monkeypatch.setattr(KernelSession, "evaluate", unavailable)
+        code = SatelliteIlluminationFailureCode.EPHEMERIS_COVERAGE_UNAVAILABLE
+    elif failure == "resource":
+        source.resource = replace(source.resource, sha256="f" * 64)
+        code = SatelliteIlluminationFailureCode.EPHEMERIS_COVERAGE_UNAVAILABLE
+    else:
+        def unavailable(*_args, **_kwargs):
+            raise SatelliteEarthOrientationError("current EOP refused")
+        monkeypatch.setattr(illumination_module, "geocentric_gcrs_axis_position_to_itrs", unavailable)
+        code = SatelliteIlluminationFailureCode.EARTH_ORIENTATION_UNAVAILABLE
+    with pytest.raises(SatelliteIlluminationGeometryError) as caught:
+        execute()
+    assert caught.value.code is code
+
+
+def test_shadow_finder_preserves_typed_kernel_propagation_refusal(monkeypatch):
+    from wenu_kernel.kernel import KernelSession
+    from wenu_kernel.errors import UnsupportedCapability
+    finder = SatelliteShadowTransitionFinder(SyntheticSunSource())
+    query = _short_shadow_query()
+    assert finder.find(query) == ()
+    def unavailable(*_args, **_kwargs):
+        raise UnsupportedCapability("satellite propagation unavailable")
+    monkeypatch.setattr(KernelSession, "evaluate", unavailable)
+    with pytest.raises(SatelliteIlluminationGeometryError) as caught:
+        finder.find(query)
+    assert caught.value.code is SatelliteIlluminationFailureCode.PROPAGATION_FAILURE
+    assert isinstance(caught.value.__cause__, UnsupportedCapability)
+
+
+def test_real_offline_illumination_routes_match_retained_raw_geometry():
+    """Mac acceptance requires the already installed DE440s; never acquires."""
+    from pathlib import Path
+    from wenu.observer import Observer, DEFAULT_DATA_DIRECTORY, DEFAULT_EPHEMERIS
+    from wenu.skyfield_ephemeris import SkyfieldEphemerisStateSource
+    path = Path(DEFAULT_DATA_DIRECTORY) / DEFAULT_EPHEMERIS
+    if not path.is_file():
+        raise FileNotFoundError(f"Offline DE440s acceptance requires {path}")
+    with Observer(lat_deg=-32.443342, lon_deg=-71.230289, elevation_m=52.,
+                  timezone_name="UTC", time="2000-06-27T18:50:19.733568") as observer:
+        source = SkyfieldEphemerisStateSource.from_observer(observer)
+        class RawProtocol:
+            def state(self, request):
+                return source.state(request)
+        topocentric = transformed_state()
+        expected = SatelliteIlluminationGeometryEvaluator(RawProtocol()).evaluate(topocentric)
+        actual = SatelliteIlluminationGeometryEvaluator(source).evaluate(topocentric)
+        assert actual.sun_ephemeris_state.resource == expected.sun_ephemeris_state.resource
+        assert actual.sun_ephemeris_state.request == expected.sun_ephemeris_state.request
+        assert actual.earth_to_sun_itrs_km == pytest.approx(expected.earth_to_sun_itrs_km, rel=0., abs=1e-7)
+        assert actual.satellite_to_sun_itrs_km == pytest.approx(expected.satellite_to_sun_itrs_km, rel=0., abs=1e-7)
+        assert actual.solar_occultation.occultation_class is expected.solar_occultation.occultation_class
+        assert actual.solar_occultation.visible_disk_fraction == pytest.approx(expected.solar_occultation.visible_disk_fraction, abs=1e-12)
+        assert actual.observer_sun_altitude_deg == pytest.approx(expected.observer_sun_altitude_deg, abs=1e-10)
+        assert "returned kernel Cartesian state" in actual.sun_ephemeris_state.provenance
+        query = _short_shadow_query()
+        assert SatelliteShadowTransitionFinder(source).find(query) == SatelliteShadowTransitionFinder(RawProtocol()).find(query)

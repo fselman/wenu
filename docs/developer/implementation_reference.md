@@ -1932,3 +1932,35 @@ K3.34 adds service-value/refusal and actual bundle/interchange/advisory evidence
 in the existing test owners. No API, numerical model, schema or production
 module changes. The [satellite guide](satellite_guide.md#17-exact-crossing-reports)
 retains the scientific report contract.
+
+## Satellite illumination and shadow services
+
+`SatelliteIlluminationGeometryEvaluator(source, policy=None)` retains its typed
+`SatelliteTopocentricState` input and same-instant geometric Earth-to-Sun request.
+`SatelliteShadowTransitionFinder(source).find(query)` retains its observer-free
+`SatelliteShadowTransitionQuery` and directed resource-bound event records.
+Both constructors adapt known resolved Skyfield Sun sources with the existing
+`KernelEphemerisStateSource`. Injected custom protocols and existing adapters
+remain supported; no new public interface or wrapper protocol is added.
+
+The adapter supplies returned geometric ICRF/Earth-centred Cartesian values,
+converted through the existing AU protocol and accepted ITRS/EOP orientation.
+It introduces neither light time nor apparent corrections. Each Sun request
+retains exact UTC input, source/resource identity, target/centre IDs and the
+adapter's existing provenance. The adapter borrows the source and never closes
+its owner. Changed borrowed source identity or failed evaluation refuses; no
+cross-call state cache suppresses the current query.
+
+The finder uses public SGP4 propagation at every evaluated instant. Both original
+SGP4 status failures and kernel failures are exposed through
+`SatelliteIlluminationGeometryError` with `PROPAGATION_FAILURE`, preserving the
+cause. Existing Sun-source and EOP error codes remain authoritative. Finite
+visible-disk quadrature and continuous contact-margin root search retain their
+separate algorithms and original tolerances. Event completeness remains bounded
+by the existing admitted envelope and fail-closed search limits.
+
+No report schema, renderer, public export or resource bytes change. The focused
+gate retains analytic overlap/contact, independent observer altitude and
+adversarial transition tests, and requires a real offline Sun-source parity case
+on the Mac. Source-free custom-protocol geometry remains compatible. Radiometry
+resource metadata, reflected light and paused Moonlight work remain separate.

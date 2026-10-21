@@ -553,6 +553,14 @@ accepted physical model distinguishes sunlight, penumbra, and umbra using the
 finite angular size of the Sun. Model inputs, ephemeris, Earth shape, and
 boundary tolerance are retained.
 
+The illumination and shadow-transition owners adapt known resolved Skyfield Sun
+sources through the existing Cartesian kernel interface. Returned simultaneous
+geometric Earth-to-Sun states enter the same ITRS/EOP orientation and physical
+models; this adds no light time or apparent correction. Custom injected source
+protocols remain supported. SGP4 satellite inputs already use their accepted
+Cartesian transport, and transition propagation refusal retains typed failure.
+No new brightness, visibility, radiometric or Moonlight model follows.
+
 Atmospheric refraction and absorption near shadow ingress and egress can
 modify observed brightness. They remain separate from the minimum geometric
 shadow state until a model is selected and empirically validated.

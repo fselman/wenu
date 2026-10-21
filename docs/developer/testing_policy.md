@@ -1741,3 +1741,34 @@ and K3.33 independent crossing/domain/worker evidence; no unrelated orbital,
 illumination, radiometry, SDK or installation repeat. The historical production
 benchmark authority remains consumed. Complete documentation and focused Mac
 acceptance remain required; this gate does not close K3.35 or K3/K5.
+
+## Satellite illumination routing gate
+
+`satellite-illumination-routing` selects the whole existing illumination test
+owner: 62 cases, including ten new cases. Retain the independent analytic
+spherical overlap/contact, quadrature refusal, WGS-84 orientation/altitude,
+twilight boundaries, all six directed transitions, hidden event pairs, empty
+interval, budget/tangent refusal, event identity and bolometric compatibility
+oracles. No numerical body or tolerance is changed.
+
+Nine synthetic composition/refusal cases exercise returned kernel Sun/satellite
+values, exact source/resource/EOP identity, current refusal after successful use,
+custom-protocol compatibility and typed kernel propagation failure. Two closest
+regressions fail on the unchanged base. Three deliberate bypass/refusal faults
+must fail after implementation, then restore production before normal tests.
+Synthetic source values are not SPK accuracy or continuous-event qualification.
+
+The tenth added case requires the existing offline DE440s on Fernando's Mac:
+compare actual Skyfield raw-protocol and adapted illumination geometry and a
+short observer-independent transition result. It fails if that resource is
+missing and never downloads. Locally the resource-free owner gate excludes only
+that case; full Mac acceptance must include it. Keep the unchanged historical
+SPICE/Skyfield transition/orientation receipts within their original domains;
+do not rerun external tools or revive paused/consumed execution authority.
+
+The only production diff is source assembly and typed refusal in the existing
+illumination owner. Shared adapter/SDK, SGP4/observer mathematics, build/import
+surface, dependencies, resource bytes, collection and renderer remain unchanged.
+Retain their accepted K3.25/K3.31/SDK/isolation/install receipts. K3.36 spectral
+radiometry/resource migration and later consumer closure remain separate.
+Run documentation and tooling gates too; K3/K5 remain partial.
