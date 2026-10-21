@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 64, 2026-10-21. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 65, 2026-10-21. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -12,6 +12,21 @@ describes already accepted 49B/49C work; it does not implement this kernel.
 Confirm the new release name against existing tags before creating a release.
 No tag or package-version change is made here. The baseline is pinned by its
 immutable commit and the [cleanup ledger](documentation_cleanup_v1.json).
+
+## Product review correction PR.03: finite constellation segments
+
+Fernando requested the regional-chart correction on 2026-10-21 after reviewing
+the six-product acceptance outputs, then explicitly said "Please fix the code."
+The bounded correction clips explicitly declared finite constellation segments
+to the shared spherical projection cap before their planar chords can wrap
+across a regional viewport. Preserve wholly interior endpoints, source HIP
+topology, metadata, observer/native routing and style independence. Keep sampled
+curves, grids, polygons and other projections compatible; no cluster sizing,
+coordinate-label placement, source bytes, acquisition, Gaia or new science.
+Acceptance: synthetic far-side/crossing/interior/rotated-frame regression cases,
+existing constellation/projection/geometry and kernel gates, plus Mac replot
+of the reported Sco/Lib/Sgr/Oph field. Atlas and pouch products were accepted
+visually by Fernando; the regional review remains open pending this correction.
 
 ## Release objective
 
