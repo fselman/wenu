@@ -2770,6 +2770,16 @@
           "reason": "Offline report consumers preserve changed solved values, half-open overlaps, identities, order, labels and unknown visibility without state recomputation or facility writes."
         }
       ]
+    },
+    "satellite-illumination-routing": {
+      "scope": "K3.35 existing satellite illumination, observer twilight and observer-independent finite-Sun shadow transitions using accepted Cartesian Sun/satellite services.",
+      "limits": "Thin known Skyfield source assembly and typed kernel propagation refusal only. Preserve custom protocols, exact UTC/source/resource/EOP identities, original WGS-84 finite-Sun quadrature, continuous limb/contact search, domains and numerical tolerances. Includes all existing analytic/transition/bolometric compatibility cases and one real offline DE440s raw-versus-kernel composition case. No acquisition, SDK/dependency/module/package, source bytes, schema, renderer, physical-model or K3.36 radiometry-resource change. Retain unchanged independent SPICE/Skyfield historical receipts; no external benchmark or consumed/paused execution authority reuse. Full Mac gate requires the already installed DE440s; tests never acquire.",
+      "selections": [
+        {
+          "node": "tests/test_satellite_illumination.py",
+          "reason": "Independent spherical overlap/contact, WGS-84 orientation, twilight, complete analytic/adversarial transitions, source/domain refusal and new returned-value/resource-failure composition; include real offline raw-science parity."
+        }
+      ]
     }
   },
   "consumer_review": [

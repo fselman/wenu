@@ -307,5 +307,8 @@ K3.33 now verifies [exact satellite service consumers](implementation_reference.
 without production changes, accepted through PR #306 after 86 focused,
 36 documentation and eight tooling Mac cases; clean main and cleanup confirmed.
 K3.34 verifies [satellite report consumers](implementation_reference.md#satellite-report-consumers)
-without production changes. Complete satellite-report-routing Mac acceptance
-and K3/K5 closure remain pending.
+without production changes, accepted through PR #307 after 68 focused,
+36 documentation and eight tooling Mac cases; clean main and cleanup confirmed.
+K3.35 routes [illumination and shadow Sun inputs](implementation_reference.md#satellite-illumination-and-shadow-services)
+through the existing Cartesian adapter, retaining the physical models. Complete
+satellite-illumination-routing Mac acceptance and K3/K5 closure remain pending.

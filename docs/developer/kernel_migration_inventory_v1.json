@@ -1406,7 +1406,7 @@
     },
     {
       "path": "src/wenu/satellites/illumination.py",
-      "git_blob_sha": "116792096f838cdf76bcb55eca8adf8cc1b26987",
+      "git_blob_sha": "8cbc8326839905a7dfb12571a9caa7cd7fd683ba",
       "as_is_directory": "src/wenu/satellites",
       "description": "Direct-Sun occultation and observer-night geometry for satellites."
     },
@@ -12574,7 +12574,7 @@
       "ECSV value corruption and contradictory VOTable null flags refuse.",
       "Staged write and competing publication failures preserve atomicity and other writer."
     ],
-    "limits": "Complete Mac acceptance pending. Synthetic elements/altitude admission and instant CLI fields verify composition, not new accuracy/completeness/capacity. Retain K3.31/K3.33 science/worker and unchanged installation receipts; no historical benchmark or consumed authority reuse. No production/SDK/dependency/resource/policy/schema/renderer change. K3.35 onward and K3/K5 remain separate.",
+    "limits": "Accepted PR #307 after complete Mac gate, clean main and branch cleanup. Synthetic elements/altitude admission and instant CLI fields verify composition, not new accuracy/completeness/capacity. Retain K3.31/K3.33 science/worker and unchanged installation receipts; no historical benchmark or consumed authority reuse. No production/SDK/dependency/resource/policy/schema/renderer change. K3.35 onward and K3/K5 remain separate.",
     "local_receipt": {
       "gate_cases": 68,
       "gate_seconds": 18.47,
@@ -12599,6 +12599,54 @@
         "staging_cleanup_disabled": 2
       },
       "production_restored": true
+    },
+    "mac_receipt": {
+      "tested_commit": "11ccdb2f9728d91c27e3c0272429dd48fae560fb",
+      "merged_commit": "054176b9e1612c2f1138c72ddeabab96786b2c6b",
+      "focused_cases": 68,
+      "focused_seconds": 28.39,
+      "documentation_cases": 36,
+      "documentation_seconds": 3.87,
+      "tooling_cases": 8,
+      "tooling_seconds": 7.888,
+      "clean_main_and_branch_cleanup": "user-confirmed"
+    }
+  },
+  "satellite_illumination_routing": {
+    "milestone": "K3.35",
+    "base_commit": "054176b9e1612c2f1138c72ddeabab96786b2c6b",
+    "plan_commit": "9c91842ffd5bb2d5c9195d9971ce6e67a46dfabd",
+    "gate": "satellite-illumination-routing",
+    "production_changes": [
+      "src/wenu/satellites/illumination.py"
+    ],
+    "source_blobs": {
+      "src/wenu/satellites/illumination.py": "8cbc8326839905a7dfb12571a9caa7cd7fd683ba"
+    },
+    "disposition": "Thin known Skyfield Sun assembly via existing Cartesian adapter in both constructors; existing SGP4 transport retained with typed kernel refusal. Custom protocols and all original numerical/policy/result definitions retained.",
+    "evidence": [
+      "Two closest regressions fail before the change.",
+      "Returned Sun vectors control twilight/occultation and Sun/satellite states reach real continuous contact geometry.",
+      "Current Sun/resource/EOP refusal after success and typed propagation refusal with cause; custom protocols supported.",
+      "Three deliberate faults fail before restoration.",
+      "Whole existing analytic/transition/domain/bolometric owner retained; real offline raw-versus-kernel composition requires existing Mac DE440s."
+    ],
+    "limits": "Complete Mac acceptance pending. Synthetic seams are composition evidence, not physical accuracy or captured source qualification. No SDK/dependency/module/package, source bytes, schema, renderer, physical model or K3.36 radiometry-resource change. Retain unchanged historical SPICE/Skyfield and accepted shared-service/installation receipts; no acquisition/benchmark/consumed authority reuse. K3.36 onward and K3/K5 remain separate.",
+    "local_receipt": {
+      "full_gate_cases": 62,
+      "passed_cases": 61,
+      "deselected_offline_resource_cases": 1,
+      "seconds": 24.05,
+      "documentation_cases": 31,
+      "documentation_deselected": 5,
+      "documentation_seconds": 1.73,
+      "tooling_cases": 8,
+      "tooling_seconds": 6.106,
+      "prechange_regressions_failed": 2,
+      "deliberate_fault_experiments": 3,
+      "expected_fault_failures": 3,
+      "numerical_patch_boundary": "Exact base restored after removing only the source assembly helper/two constructor assignments, KernelError import and typed propagation catch.",
+      "complete_mac_acceptance": "pending; includes real offline DE440s parity"
     }
   }
 }

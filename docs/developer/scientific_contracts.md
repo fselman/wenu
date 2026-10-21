@@ -478,6 +478,16 @@ direct solar irradiance are implemented. Preserve the IAU nominal 1361 W/m²
 at 1 au, inverse-square scaling and accepted visible-disk fraction. A nominal
 constant does not mean zero physical uncertainty.
 
+Known Skyfield Sun sources for illumination/shadow consumers use the accepted
+Cartesian adapter, preserving simultaneous geometric Earth-to-Sun ICRF meaning,
+exact source/request/resource identity and existing ITRS/EOP orientation. No
+light-time or apparent correction is added to this geometric input. Custom
+injected protocols retain their declared meaning. Satellite states retain the
+accepted SGP4 transport; typed propagation failures include kernel refusal.
+Original finite-disk quadrature, WGS-84 limb/contact geometry and continuous
+transition domains/tolerances remain unchanged. Synthetic returned-value seams
+verify composition, not new physical accuracy or orbital prediction validity.
+
 The external TSIS-1 HSRS v2 product retains its exact digest, 25,281 native
 0.1-nm samples over 202–2730 nm, 1-nm FWHM, pointwise uncertainties and exact
 endpoint integration. No interpolation, extrapolation or normalization to the

@@ -1676,3 +1676,47 @@ remain current. Existing K3.31/K3.33 numerical/SDK/worker and unchanged installa
 receipts are retained; no production benchmark or consumed external authority is
 reused. Complete K3.34 Mac acceptance remains pending. K3.35 onward, extraction
 and K3/K5 closure remain separate.
+
+## K3.35 satellite illumination and shadow assessment
+
+Assessment base: main `054176b9e1612c2f1138c72ddeabab96786b2c6b`, PR #307,
+identical tree to tested `11ccdb2f`. K3.34 is accepted after 68 focused cases
+(28.39 s), 36 documentation cases (3.87 s) and eight tooling cases (7.888 s)
+on Fernando's Mac, followed by confirmed clean main and branch cleanup.
+Revision 59 records the bounded K3.35 plan before implementation.
+
+| Existing owner/boundary | Finding and disposition |
+|---|---|
+| Illumination evaluator Sun source | Known Skyfield source was called directly. Assemble the existing Cartesian adapter in the current constructor owner; preserve injected protocols and already adapted sources |
+| Transition finder Sun source | Same direct Sun source gap. Use the same assembly helper; retain exact time/resource/EOP provenance |
+| Transition satellite state | Public SGP4 already uses accepted Cartesian transport. Preserve it; map kernel refusal to the existing typed propagation failure with cause |
+| Occultation, twilight, contact and complete transition numerics | Existing algorithms and policies comply; retain unchanged implementations and independent oracles |
+| Bolometric evaluator and spectral/resource owners | No algorithm/resource change; retained bolometric compatibility cases run with the owner. K3.36 resource metadata remains separate |
+
+The two new boundary checks fail before the changes: known Sun input has no
+Cartesian assembly and kernel propagation refusal escapes the existing typed
+illumination API. After the thin adapter/exception changes, returned Sun vectors
+control twilight and occultation; returned Sun/satellite vectors reach the real
+contact evaluator. Repeated use rechecks Sun query/resource and EOP refusal.
+Custom sources retain their protocol and no mandatory resource attribute.
+These fixtures are explicitly synthetic; they do not qualify captured SPK data
+or physical accuracy. A separate real offline DE440s case compares the retained
+raw-protocol geometry and short transition result with the adapted route.
+
+Three deliberate faults bypass the Sun adapter, bypass the satellite state
+transport or drop the typed kernel-refusal mapping; each must fail its closest
+case before restoration. The original numerical/policy/result definitions are
+AST-identical, and the final patch is checked against the exact base to exclude
+other scientific changes. Existing independent spherical overlap, Sun altitude,
+WGS-84/contact classification, hidden-pair transition, empty interval, budget,
+tangent and directed-event evidence remains in the gate. Unchanged historical
+SPICE/Skyfield validation tools/receipts are retained for their original domains;
+no new external validation run, benchmark or consumed execution authority is
+claimed. The real offline composition case requires the existing Mac resource
+and never acquires it.
+
+One production owner changes; source map responsibility remains current. The
+coordinate and satellite guides record unchanged scientific meaning with the new
+assembly ownership. SDK/dependency/build, source bytes, schemas, renderer and
+radiometry-resource facts are unchanged. Complete Mac acceptance remains pending;
+K3.36 onward, package extraction and K3/K5 closure remain separate.

@@ -10,6 +10,8 @@ from typing import Final
 
 import numpy as np
 
+from wenu_kernel.errors import KernelError
+
 from wenu.ephemeris import (
     EphemerisResourceChain,
     EphemerisResourceIdentity,
@@ -1043,6 +1045,16 @@ def _observer_sun_altitude(topocentric_state, earth_to_sun_itrs):
     )
 
 
+def _illumination_source(source):
+    """Adapt known resolved SPK inputs; preserve injected source protocols."""
+    from wenu.ephemeris_state import KernelEphemerisStateSource
+    from wenu.skyfield_ephemeris import SkyfieldEphemerisStateSource
+
+    if isinstance(source, SkyfieldEphemerisStateSource):
+        return KernelEphemerisStateSource(source)
+    return source
+
+
 class SatelliteIlluminationGeometryEvaluator:
     """Compose accepted satellite, ephemeris, and Earth-orientation owners."""
 
@@ -1054,7 +1066,7 @@ class SatelliteIlluminationGeometryEvaluator:
         )
         if not isinstance(resolved_policy, SolarOccultationPolicy):
             raise TypeError("policy must be a SolarOccultationPolicy.")
-        self.source = source
+        self.source = _illumination_source(source)
         self.policy = resolved_policy
 
     def evaluate(self, topocentric_state):
@@ -1950,7 +1962,7 @@ class SatelliteShadowTransitionFinder:
     def __init__(self, source):
         if not isinstance(source, EphemerisStateSource):
             raise TypeError("source must implement EphemerisStateSource.")
-        self.source = source
+        self.source = _illumination_source(source)
 
     def find(self, query):
         if not isinstance(query, SatelliteShadowTransitionQuery):
@@ -1970,7 +1982,7 @@ class SatelliteShadowTransitionFinder:
             instant_utc = _utc_instant(instant)
             try:
                 teme = propagator.propagate(instant_utc)
-            except SatellitePropagationError as error:
+            except (SatellitePropagationError, KernelError) as error:
                 raise SatelliteIlluminationGeometryError(
                     SatelliteIlluminationFailureCode.PROPAGATION_FAILURE,
                     str(error),

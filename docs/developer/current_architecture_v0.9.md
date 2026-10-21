@@ -648,3 +648,22 @@ planning contexts. Existing half-open interval overlap, labels and scientific
 status remain in the advisory owner. They neither propagate satellites nor
 contact observatory systems. K3.34 verifies these existing boundaries without
 production changes; package extraction and K3/K5 closure remain separate.
+
+## Satellite illumination and shadow boundary
+
+The existing illumination owner composes typed satellite states, geometric
+Earth-to-Sun ephemeris and installed-EOP orientation in ITRS. Known
+`SkyfieldEphemerisStateSource` inputs now use the existing request-scoped
+`KernelEphemerisStateSource` before the retained geometry. Already adapted
+sources are not wrapped twice; custom injected state protocols retain their
+existing path. Source/model knowledge remains in Wenu, not the generic kernel.
+The borrowed ephemeris remains caller-owned; this adds no source cache or
+resource acquisition.
+
+The observer-independent shadow finder already obtains satellite states from
+the accepted SGP4 Cartesian route. Kernel failures there now map to its existing
+typed propagation-failure code, retaining the original exception as cause.
+Illumination and transitions use the same Sun assembly boundary. The original
+finite-Sun/WGS-84 quadrature, twilight mathematics, continuous limb margins,
+contact subdivision/bracketing and physical domains remain unchanged. This is
+K3.35 routing, not new illumination, radiometry, brightness or visibility science.

@@ -1521,3 +1521,15 @@ Explicit reference antipodes retain the existing Astropy geocentric GCRS
 source convention and construction observation even when the stored point is
 later displayed at another observer time. This documents the existing legacy
 calculation and does not add finite-distance/topocentric model qualification.
+
+### Satellite illumination Sun-state ownership
+
+K3.35 routes known Skyfield Earth-to-Sun inputs through the existing Cartesian
+adapter before illumination and shadow-transition geometry. This preserves the
+same simultaneous geometric ICRF/Earth-centred AU state, exact UTC request and
+source/resource identity. The existing accepted ICRF/GCRS-compatible-axis to ITRS
+rotation and EOP evidence remain authoritative; no new origin translation,
+light time, aberration or frame qualification is introduced. Satellite TEME
+transport and observer/geocentric ITRS transforms retain their current meanings.
+Constructed custom-protocol sources remain compatible. Finite-Sun occultation,
+observer twilight and continuous contact search keep their existing mathematics.
