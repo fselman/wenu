@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 66, 2026-10-21. **Status:** K3 routing receipts and six-product checkpoint accepted; K4a.01 selected;
+**Plan revision:** 67, 2026-10-21. **Status:** K3 routing/product checkpoint and K4a.01 accepted; K4a.02 policy review selected;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -47,7 +47,10 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Accepted baseline:** main `2988f75436c93a6ee060c10cb464031fd3ce96ce`.
+**Accepted baseline:** main `d447565d12c3405eab462fac268c441f5a4b2bd4`.
+K4a.01 is accepted through PR #315 after 35 focused cases/nine subtests,
+36 documentation and eight tooling Mac cases. Clean synchronized main and
+branch cleanup are confirmed. Fernando selected K4a.02 with “Proceed”.
 K3.40 was accepted through PR #313 after 25 consumer-reconciliation, 36
 documentation and eight tooling Mac cases. PR #314 corrected finite constellation
 segments; 205 kernel, 180 focused and 36 documentation Mac cases passed, and
@@ -57,11 +60,11 @@ clean synchronized main are confirmed.
 | Track | Position |
 |---|---|
 | Baseline migration | K0 complete; K1 initial contracts/K2 foundation and bounded K3.01–K3.40 routes accepted; final reconciliation remains K5 |
-| Gaia | K4a.01 selected; acquisition, matching and real propagation remain pending |
+| Gaia | K4a.01 design/census accepted; K4a.02 policy review selected; acquisition/matching/propagation pending |
 | Shared positional extension | AX.01–AX.12 accepted; AX.13–AX.16 pending; AX.14 overlaps K4b |
 | Freeze/extraction/release | K5–K9 pending |
-| Current authorized task | K4a.01 retained membership/component/photometry contract and edition-qualified enrichment schema |
-| Next bounded submilestone | K4a.02 requires separate selection after K4a.01 acceptance |
+| Current authorized task | K4a.02 primary API/terms review and bounded acquisition/matching/quality/missing-data policy; no catalogue acquisition |
+| Next bounded submilestone | Resolve K4a.02 policy/permission gaps and accept the policy before separately selecting K4a.03 |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -107,6 +110,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 67: select K4a.02 | Fernando’s “Proceed” after PR #315 Mac acceptance, merge and confirmed clean main/branch cleanup | Review current primary API/terms and propose bounded offline acquisition, match/component, quality and missing-data policies. Record dated URLs, evidence limits and unresolved permission/service constraints honestly. Documentation/policy only: no live TAP catalogue query, downloaded subset, new dependency, matching implementation, propagation or runtime change. Policy acceptance and later acquisition remain separate. |
 | Revision 66: select K4a.01 | Fernando’s “Proceed” after the full roadmap and six-product acceptance; clean synchronized main at 2988f754 confirmed | Define the retained Hipparcos membership, component/photometry invariants and edition-qualified enrichment record/schema. Bind an offline census to source bytes and verify existing selection contracts in current stellar test owners. Documentation/data contract and regression evidence only; no acquisition route, match decisions, production astrometry/photometry/selection change, new dependency, SDK or package extraction. K4a.02 onward remains separate. |
 | Revision 64: select K3.40 complete consumer reconciliation | Fernando’s “Proceed” after PR #312 acceptance/cleanup and explicit order K3.40, six products, Gaia | Reconcile every current production/kernel, public export/command, example/notebook and operational consumer to appropriate route and accepted bounded evidence; refresh stale current statuses while preserving historical receipts and explicit scientific/compatibility limits. Pin exact current source hashes and dependency/call evidence; extend existing inventory/architecture test owners to reject orphan paths/exports, stale source identities, missing receipt links and erased limits. Reuse unchanged service/product numerical/installation receipts; use a focused consumer-reconciliation gate plus documentation/tooling. Correct only demonstrated baseline bypasses within existing contracts; extra science/architecture returns to scope control. No new SDK/dependency/module/package, source bytes/schema, provider/acquisition/network, renderer/numerical algorithm, product export or external benchmark execution. K3.40 acceptance is routing/compatibility closure only; six-product review precedes Gaia and K5 remains separate. |
 | Revision 63: select K3.39 geometry and rendering boundary verification | Fernando’s “Proceed” after PR #311 complete Mac acceptance and confirmed cleanup | Audit existing kernel topology/domain/clipping and all three projections, Wenu preparation, canonical chart consumers, renderer/furniture and PNG/PDF/SVG export. Retain accepted KG numerical/alias/isolation and K3 product receipts for unchanged implementations. Verify guarded returned geometry reaches preparation/drawing, refusal remains live after prior success, rendering/export operates on supplied geometry without provider/state/coordinate calls, metadata/topology/NaN segmentation and physical presentation remain compatible. Use existing test owners and a focused geometry-rendering-routing gate plus documentation/tooling; actual small synthetic scenes cover all three projections and output formats. Correct only demonstrated in-scope gaps; no graphics/science rewrite, SDK/dependency/module/package, source bytes, schema, acquisition/network, production benchmark, new geometry-query protocol or extraction. K3.40/K4/K5 and paused/consumed external execution remain separate. |
@@ -820,8 +824,8 @@ remain its separate responsibilities.
 
 | ID | Intermediate deliverable and exit evidence | Status / dependency |
 |---|---|---|
-| K4a.01 | Fix current Wenu membership/component/photometry contract and edition-qualified schema, including future DR4 adapter boundary | Design contract and source-bound census delivered for review; 35 focused cases/nine subtests and eight tooling cases pass locally; full Mac documentation/contract acceptance pending. No full Gaia mirror or silent V-to-G substitution |
-| K4a.02 | Agree bounded acquisition/matching/quality/missing-data policy after checking current primary API/terms/licensing | Pending; before any acquisition; rendering/tests remain offline |
+| K4a.01 | Fix current Wenu membership/component/photometry contract and edition-qualified schema, including future DR4 adapter boundary | Accepted PR #315/main d447565d after 35 focused cases/nine subtests, 36 documentation and eight tooling Mac cases; clean main/cleanup confirmed. No full Gaia mirror or silent V-to-G substitution |
+| K4a.02 | Agree bounded acquisition/matching/quality/missing-data policy after checking current primary API/terms/licensing | Dated audit and bounded proposal delivered for review; complete ESA terms/intended-use rights, endpoint limits and flag metadata unresolved. No acquisition authority; rendering/tests remain offline |
 | K4a.03 | Cross-identify the required DR3 sources with epoch/PM-aware evidence and explicit ambiguous/unmatched/component cases | Pending; K4a.01–K4a.02; no nearest-neighbour guess silently accepted |
 | K4a.04 | Publish immutable bounded DR3 subset with exact bytes, edition/epoch/units/provenance, uncertainties/correlations and match evidence | Pending; K4a.03 and redistribution admission |
 | K4a.05 | Accept coverage/ambiguity report and unchanged default membership, names, cross-IDs and visual photometry | Pending K4a closure; bright/multiple/unmatched stars cannot disappear |

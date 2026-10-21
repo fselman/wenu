@@ -1,0 +1,98 @@
+{
+  "schema": "wenu-gaia-acquisition-policy/1",
+  "milestone": "K4a.02",
+  "review_date": "2026-10-21",
+  "status": "proposed; permission and service preflight unresolved; not execution authority",
+  "baseline_commit": "d447565d12c3405eab462fac268c441f5a4b2bd4",
+  "membership_contract": "stellar_enrichment_contract_v1.json",
+  "catalogue_release": "Gaia DR3",
+  "preferred_route": {
+    "provider": "ESA Gaia Archive",
+    "protocol": "TAP/ADQL asynchronous bounded joins",
+    "candidate_endpoint": "https://gea.esac.esa.int/tap-server/tap",
+    "live_endpoint_tested": false,
+    "client_implementation": "deferred; no new runtime dependency selected",
+    "automatic_mirror_fallback": false,
+    "tables": ["gaiadr3.hipparcos2_best_neighbour", "gaiadr3.hipparcos2_neighbourhood", "gaiadr3.gaia_source"],
+    "before_execution": ["capture readable current provider terms and intended-use admission", "capture current capabilities, account/anonymous quotas and required table/column metadata", "confirm exact table and flag meanings on selected endpoint", "accept policy and separately select execution task"]
+  },
+  "local_workload_proposal": {
+    "provider_limits_verified": false,
+    "limits_are": "Wenu stop caps only; never service permission or asserted quota",
+    "population_rows": 118218,
+    "pilot_hip_ids_max": 100,
+    "hip_ids_per_batch_max": 5000,
+    "candidate_source_ids_per_batch_max": 5000,
+    "active_jobs_max": 1,
+    "new_jobs_per_run_max": 128,
+    "total_result_rows_max": 1000000,
+    "total_download_bytes_max": 524288000,
+    "byte_accounting": "both transport and expanded local payload budgets; stop on either",
+    "poll_intervals_seconds": [10, 20, 40, 60],
+    "poll_wait_max_seconds_per_job": 1800,
+    "poll_requests_max_per_job": 40,
+    "idempotent_request_attempts_max": 2,
+    "transient_retry_min_wait_seconds": 60,
+    "retry_after": "honour provider delay even above local wait limit; stop/resume later instead of early retry",
+    "ambiguous_job_submission": "journal job identity or stop for reconciliation; never blindly repeat POST",
+    "budget_overflow": "stop with incomplete receipt; no truncation, widening, new account or mirror escape",
+    "effective_limits": "stricter of accepted local caps and verified provider limits"
+  },
+  "retrieval_plan": [
+    "Sort/deduplicate full retained HIP population; record original membership order and digest separately.",
+    "Retrieve bounded best-neighbour and all neighbourhood evidence for those HIP identifiers; preserve both tables and every candidate.",
+    "Deduplicate union of returned Gaia DR3 source IDs, then retrieve explicit source columns in bounded ID batches.",
+    "Reconcile all original HIP rows locally with a left join; no match or unusable astrometry does not delete a row.",
+    "No SELECT *, whole Gaia mirror, per-star cone loop, spectra or epoch-photometry acquisition in this first pass."
+  ],
+  "source_column_groups": {
+    "identity_reference": ["solution_id", "designation", "source_id", "ref_epoch"],
+    "astrometry": ["ra", "dec", "parallax", "pmra", "pmdec"],
+    "errors": ["ra_error", "dec_error", "parallax_error", "pmra_error", "pmdec_error"],
+    "correlations": ["ra_dec_corr", "ra_parallax_corr", "ra_pmra_corr", "ra_pmdec_corr", "dec_parallax_corr", "dec_pmra_corr", "dec_pmdec_corr", "parallax_pmra_corr", "parallax_pmdec_corr", "pmra_pmdec_corr"],
+    "six_parameter_auxiliary": ["pseudocolour", "pseudocolour_error", "ra_pseudocolour_corr", "dec_pseudocolour_corr", "parallax_pseudocolour_corr", "pmra_pseudocolour_corr", "pmdec_pseudocolour_corr", "nu_eff_used_in_astrometry"],
+    "quality": ["astrometric_params_solved", "ruwe", "astrometric_excess_noise", "astrometric_excess_noise_sig", "visibility_periods_used", "duplicated_source", "ipd_frac_multi_peak", "ipd_frac_odd_win", "non_single_star"],
+    "radial_velocity": ["radial_velocity", "radial_velocity_error", "rv_method_used", "rv_nb_transits", "rv_expected_sig_to_noise", "rv_renormalised_gof", "rv_chisq_pvalue", "rv_time_duration", "rv_amplitude_robust"],
+    "foreign_photometry": ["phot_g_mean_mag", "phot_bp_mean_mag", "phot_rp_mean_mag", "phot_g_mean_flux", "phot_g_mean_flux_error", "phot_bp_mean_flux", "phot_bp_mean_flux_error", "phot_rp_mean_flux", "phot_rp_mean_flux_error", "phot_bp_rp_excess_factor", "phot_variable_flag"]
+  },
+  "matching": {
+    "evidence": "provider best-neighbour plus neighbourhood; not a nearest-cone decision",
+    "bridge": "original Hipparcos I/239 membership to Hipparcos-2 I/311 HIP identifiers; preserve edition and component distinction",
+    "review_eligible": "known flag meanings, one consistent candidate, no shared-Gaia/component conflict, documented common-epoch consistency and usable fields; eligibility is not adoption",
+    "automatic_adoption": false,
+    "manual_review": "bright/multiple, missing-PM/coordinate, inconsistent or shared candidates; preserve unresolved cases",
+    "followup_search": "not enabled; define bounded epoch/PM-aware search separately if first-pass gaps require it",
+    "unmatched_scope": "no candidate in this provider crossmatch, not proof that Gaia has no physical counterpart"
+  },
+  "quality_missing_policy": {
+    "retain_all_input_rows": true,
+    "retain_all_candidate_solution_types": true,
+    "ruwe_policy": "preserve as diagnostic; no universal 1.4 rejection cut",
+    "unknown_flags_or_solution_codes": "preserve and refuse adoption until decoded from edition metadata",
+    "numeric_admission": "finite coordinates/ranges, preserved nulls/units, declared PM convention and epoch; uncertainties/covariance consistency checked before model use",
+    "parallax": "retain non-positive values; no naive distance inversion",
+    "missing_motion_or_rv": "retain unknown; no zero fill, no borrowed unqualified component RV",
+    "fallback": "retain existing source-native lookup and original V; K4b separately admits propagated alternatives",
+    "corrections": "no parallax zero-point, RV, photometric or binary-model correction selected"
+  },
+  "cache_receipt": ["exact ADQL and endpoint", "release/table/column metadata", "membership and batch digests", "job URL/phase and request times", "response status and QUERY_STATUS including overflow", "raw and expanded byte counts/digests", "row counts and ID reconciliation", "client version and policy version", "terms/credit evidence and intended-use status"],
+  "publication": {
+    "data_license_reported": "CC BY-NC 3.0 IGO",
+    "commercial_use": "unresolved; no commercial permission inferred",
+    "redistribution": "not admitted in this task; K4a.04 must qualify use/distribution and preserve credits/terms",
+    "repository_payloads": "policy declarations only; no Gaia result rows bundled",
+    "credit_rule": "retain release-specific ESA/Gaia/DPAC acknowledgement and relevant catalogue/crossmatch citations; do not infer ESA endorsement"
+  },
+  "sources": [
+    {"url": "https://www.cosmos.esa.int/web/gaia-users/license", "access": "search-index excerpt only; direct fetch returned HTTP 451", "finding": "ESA indexed licence states CC BY-NC 3.0 IGO and links commercial-use terms"},
+    {"url": "https://www.cosmos.esa.int/web/esdc/terms-and-conditions", "access": "search-index excerpts only; direct fetch returned HTTP 451", "finding": "commercial-use provisions exist; complete conditions not verified"},
+    {"url": "https://www.cosmos.esa.int/web/gaia-users/archive/programmatic-access", "access": "search-index excerpt only; direct fetch returned HTTP 451", "finding": "ESA documents programmatic archive access; current detailed service rules not fully verified"},
+    {"url": "https://astroquery.readthedocs.io/en/latest/gaia/gaia.html", "access": "primary software documentation read", "finding": "TAP asynchronous jobs, uploaded-table joins, result formats, quotas and job removal documented; synchronous results limited to 2000 rows in this documentation"},
+    {"url": "https://gaia.aip.de/metadata/gaiadr3/hipparcos2_best_neighbour/", "access": "archive metadata read", "finding": "Hipparcos-2 to Gaia best-neighbour evidence, not symmetric; table fields and NC licence documented"},
+    {"url": "https://gaia.aip.de/metadata/gaiadr3/hipparcos2_neighbourhood/", "access": "archive metadata read", "finding": "all good-neighbour candidates and score/flag fields documented"},
+    {"url": "https://gaia.aip.de/metadata/gaiadr3/gaia_source/", "access": "archive metadata read", "finding": "source column vocabulary, units, errors/correlations and diagnostics; exact selected-endpoint metadata still required"},
+    {"url": "https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/I/311?format=html&tex=true", "access": "primary catalogue description indexed", "finding": "Hipparcos new reduction uses HIP identifiers; distinct edition, 117955 astrometric entries"},
+    {"url": "https://www.cosmos.esa.int/web/gaia/data-release-3", "access": "primary release page indexed", "finding": "release-specific acknowledgement and citations required"}
+  ],
+  "open_items": ["read and preserve complete current ESA terms and resolve intended-use/commercial/redistribution status", "verify live endpoint capabilities, quotas and exact table/flag/column metadata before execution", "accept this proposed policy; no acquisition authority supplied", "K4a.03 actual identity decisions and component/epoch evidence", "K4a.04 source subset publication admission"]
+}

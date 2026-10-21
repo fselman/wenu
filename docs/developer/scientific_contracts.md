@@ -512,6 +512,147 @@ Current coordinate conventions and numerical implementations are unchanged;
 the coordinate guide remains current. Full source qualification, matching,
 redistribution/publication, propagation and historical accuracy remain open.
 
+## Gaia DR3 acquisition and matching policy review
+
+K4a.02 delivers the [dated policy proposal and source audit](data/gaia_dr3_acquisition_policy_v1.json),
+reviewed on 2026-10-21 against K4a.01 and main `d447565d`. It does not download
+catalogue rows, execute TAP jobs, select a client dependency or implement a
+matcher. The proposed rules below require policy acceptance. Permission and
+service-preflight gaps remain explicit; K4a.02 is not closed merely by publishing
+this review. K4a.03 actual cross-identification and K4a.04 subset publication
+remain separate. Current coordinate mathematics and the coordinate guide are
+unchanged.
+
+### Primary-source findings and permission boundary
+
+ESA's [indexed Gaia licence page](https://www.cosmos.esa.int/web/gaia-users/license)
+states CC BY-NC 3.0 IGO and refers commercial use to the
+[ESDC terms](https://www.cosmos.esa.int/web/esdc/terms-and-conditions).
+The Gaia@AIP table metadata independently displays that licence. Direct ESA
+licence, terms and programmatic-help fetches returned HTTP 451 during this audit;
+the indexed excerpts are evidence of a restriction, not a complete terms review.
+Do not infer commercial rights from public access, an older permissive summary,
+an alternate mirror, or the software licence. Intended use, redistribution and
+complete current terms must be recorded before authorizing acquisition or
+publication. Commercial Wenu/book/chart use is not cleared by this task.
+No provider contact or permission request was sent.
+
+The [ESA DR3 release page](https://www.cosmos.esa.int/web/gaia/data-release-3)
+requires release-specific credits/citations. Future receipts must preserve the
+then-current ESA/Gaia/DPAC acknowledgement and relevant catalogue/crossmatch
+citations. Data attribution must accompany a distributed subset and its
+applicable products; it must not imply ESA endorsement. No Gaia rows or full
+provider document copies are redistributed in this PR.
+
+The [primary Astroquery Gaia documentation](https://astroquery.readthedocs.io/en/latest/gaia/gaia.html)
+documents asynchronous TAP jobs, uploads/joins and local result retrieval. It
+describes a 2,000-row synchronous result limit and server-side result quotas;
+these are not evidence of current capacity for Fernando's selected endpoint or
+account. No live endpoint/capability or quota probe was run. Exact service rules
+must be captured before execution. AIP documentation is scientific/schema
+evidence here, not authorization to switch acquisition providers automatically.
+
+### Proposed bounded acquisition
+
+Prefer the ESA Archive TAP/ADQL asynchronous route, conditional on successful
+terms/capability admission. Use supported bounded ID joins/uploads, with no
+whole-catalogue mirror, per-star query loop, spectra or epoch-photometry fetch.
+Renderers/tests remain offline. No acquisition runs on import or chart creation.
+The first pass targets the complete retained Hipparcos population, independently
+of the last chart and V limit, as required by K4a.01.
+
+1. Record the original ordered HIP population/digest. Sort and deduplicate the
+   request identities separately without changing membership order.
+2. Fetch the corresponding best-neighbour and complete neighbourhood evidence
+   in bounded HIP batches. Keep all candidates and flag/score fields.
+3. Deduplicate the union of returned DR3 source IDs and retrieve explicit source
+   columns only. The JSON proposal lists identity/reference, astrometry,
+   uncertainties/correlations, six-parameter auxiliary fields, quality, RV and
+   separately named foreign-photometry groups. Verify each field/type/unit on the
+   selected endpoint before submission; missing columns stop schema admission.
+4. Reconcile locally using the retained population as the left side. A missing
+   provider crossmatch remains a retained unresolved row. Count requested IDs,
+   returned candidates, shared sources and unmatched/ambiguous cases explicitly.
+
+Proposed **Wenu workload stop caps**, not provider limits or permission:
+
+| Item | Proposed cap / behavior |
+|---|---|
+| Pilot | At most 100 HIP IDs; inspect schema, cardinality and response status before the full population |
+| Batch | At most 5,000 HIP IDs or candidate Gaia IDs per job |
+| Concurrency | One active job; no parallel accounts/endpoints |
+| Run envelope | At most 128 new jobs, 1,000,000 returned rows and 500 MiB of transport bytes; separately cap expanded payload bytes at 500 MiB |
+| Polling | Wait 10, 20, 40, then 60 seconds between polls; at most 40 polls and 30 minutes per job, whichever limit comes first |
+| Transient errors | At most two attempts for idempotent requests, at least 60 seconds apart; honor longer `Retry-After` and stop/resume if it exceeds the current run's wait budget |
+| Job creation uncertainty | Persist job identity/URL; reconcile an ambiguous POST before any new submission |
+| Server or local limit | Stop with an incomplete receipt; never publish a truncated subset as complete |
+
+Use the stricter verified provider limit whenever it is below a proposed local
+cap. Lack of readable service rules is an unresolved preflight, not permission
+to assume that one job is allowed. Provider refusal, quota errors, authentication
+failure and unknown submission state stop the run. No infinite retry, automatic
+mirror fallback, silent batch widening or account rotation. Pilot/full batch
+submissions and any replacement jobs all count against the run envelope.
+
+Cache by exact endpoint/release/query, membership/batch digest, field schema and
+policy version. Preserve raw response bytes before normalization, digest both
+raw/expanded representations, and record HTTP/TAP status, job identity, times,
+counts and client version. Check result `QUERY_STATUS`, including overflow and
+trailing errors, rather than trusting HTTP success. An incomplete/failed batch
+cannot become a successful empty match. Validate local cache identity before
+reuse. Clean up only this task's own completed jobs after verified local receipt;
+never remove unrelated user jobs or infer indefinite server retention.
+
+### Proposed identification and quality rules
+
+The published [best-neighbour](https://gaia.aip.de/metadata/gaiadr3/hipparcos2_best_neighbour/)
+and [neighbourhood](https://gaia.aip.de/metadata/gaiadr3/hipparcos2_neighbourhood/)
+tables concern **Hipparcos-2**, whereas Wenu retains ESA 1997 I/239. The
+[I/311 source description](https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/I/311?format=html&tex=true)
+identifies the new reduction's HIP key. A shared HIP label supports entry
+linkage; it does not establish unchanged component/photocentre semantics or
+replace Wenu's original astrometry/photometry. Preserve the intermediate edition
+and missing Hipparcos-2 entries in the evidence. Do not substitute a DR2 table
+description for DR3 flag decoding.
+
+Use both match tables as candidate evidence; do not identify by angular distance
+alone or by an unrestricted nearest-neighbour cone. A row becomes eligible for
+review only when flag meanings are qualified, best/neighbourhood evidence is
+consistent, candidate cardinality is explicit, no other retained row claims the
+same Gaia source incompatibly, and a documented common-epoch check supports the
+association. Unqualified flags, source sharing, multiple components, missing
+coordinates/PM or conflicting evidence require review. No automatic adoption is
+authorized by this policy. K4a.03 must record each accepted/rejected decision
+and the component and epoch evidence under the K4a.01 schema.
+
+First-pass `unmatched` means no counterpart in this admitted crossmatch, not
+proof of physical absence from Gaia. Any subsequent positional recovery search
+needs its own bounded domain, epoch/PM treatment and acceptance criteria; it is
+not silently enabled by a missing row.
+
+Retain all candidate solution types and diagnostics; evaluate identity separately
+from numerical usability. Preserve original errors, correlations and all supplied
+six-parameter auxiliary correlations. Unknown covariance is not diagonal/zero
+covariance. Unknown solution codes/units/conventions cannot be adopted. Validate
+finite supplied values, coordinate ranges, masks and covariance consistency
+before any later model use. Acquisition never imposes a universal RUWE 1.4 cut,
+positive-parallax cut or complete-RV requirement that deletes membership.
+RUWE, duplication, excess-noise, multi-peak and non-single-star diagnostics are
+retained for explicit model-specific review. No parallax zero-point, RV, binary
+or colour correction is selected here.
+
+Missing PM/RV/distance remains unknown; non-positive parallax remains a measured
+value without naive inversion. Do not borrow an unqualified other-component RV.
+Existing Hipparcos source-native lookup and V photometry remain available for
+all retained rows. Neither this fallback nor a unique Gaia candidate grants
+propagated accuracy; K4b admits those capabilities. Photometry remains governed
+by K4a.01, with Gaia bands separate from the original V values.
+
+Acceptance for this review is documentation/tooling integrity and source-policy
+review, not a live network test. Full current terms, intended-use permission,
+endpoint/flag metadata and service limits remain unresolved execution gates.
+The source audit records what was read directly versus indexed or unavailable.
+
 ## Fixed celestial scenes and local time
 
 `celestial_anchor_time`, frame `simulation_time`, and `catalogue reference epoch`

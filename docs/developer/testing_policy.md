@@ -61,6 +61,14 @@ public service use, not a universal requirement to invoke KernelSession.evaluate
 
 ### Stellar enrichment contract gate
 
+K4a.02 changes documentation/policy declarations only. Run the existing
+`documentation` gate and tooling integrity checks; do not rerun stellar/kernel
+numerics or execute acquisition to validate policy text. Source-review evidence
+and unresolved permission/service gaps are in the [dated audit](data/gaia_dr3_acquisition_policy_v1.json).
+No test establishes provider permission. Synthetic/live client tests belong to
+the separately selected implementation task; no new acquisition test gate is
+implied here.
+
 Run `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python tools/run_test_gate.py stellar-enrichment-contract --run`.
 K4a.01 is a design/census delivery. Existing `test_stars.py` protects the
 complete original source identities and visual magnitudes/masks, plus faint
