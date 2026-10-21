@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 55, 2026-10-21. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 56, 2026-10-21. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -31,11 +31,11 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Accepted baseline:** main `f4ae0fb723def9b605e2961f24f4df2c2bcb0e63`, PR #303,
-tree identical to tested `899a0f2f178c086e2ad92dd082c5cccfa259c32c`.
-K3.30 passed 117 focused, 36 documentation and eight tooling Mac cases.
+**Accepted baseline:** main `a15da4b9425823a44c976ee473fd73f35f83f07e`, PR #304,
+tree identical to tested `945245b516616f6193cceed263b15f883b3741ce`.
+K3.31 passed 77 focused, 36 documentation and eight tooling Mac cases.
 Fernando confirmed clean synchronized main and branch cleanup, then selected
-K3.31 with “Proceed”. K3/K5 remain partial.
+K3.32 with “proceed”. K3/K5 remain partial.
 
 | Track | Position |
 |---|---|
@@ -43,8 +43,8 @@ K3.31 with “Proceed”. K3/K5 remain partial.
 | Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
 | Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
 | Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
-| Current authorized task | K3.31 satellite snapshots/elements, SGP4/TEME and observer transformations; selected 2026-10-21 |
-| Next bounded submilestone | K3.32 remains pending; select separately after K3.31 acceptance |
+| Current authorized task | K3.32 sampled-provider satellite candidate evidence; selected 2026-10-21 |
+| Next bounded submilestone | K3.33 remains pending; select separately after K3.32 acceptance |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -75,6 +75,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 56: select K3.32 sampled satellite candidates | Fernando’s “proceed” after PR #304 complete Mac acceptance and confirmed cleanup | Test/evidence closure of existing SatChecker receipt/parser/cache, typed sampled candidate, presentation and canonical chart routes. As-is consumers already use CoordinateService and public kernel geometry/domain/projection services. Refactor demonstrated gaps only; no production rewrite planned. Instrument returned coordinate values/refusal after prior use across track/sample/singleton geometry and actual drawing; verify cached exact synthetic receipt replay reaches reports/layers with response identity, UTC/UT1 samples, provider warnings and candidate-only semantics. Preserve one explicit submission/poll, no automatic retry, local exact receipt cache, coverage/licensing restrictions, source-inferred coordinate convention and per-sample time. Do not create propagated object states, interpolate, claim exact boundary events or new provider accuracy/permission. Gate sampled-satellite-candidate-routing plus documentation/tooling; preserve numerical/SDK/installation receipts for unchanged owners. No new network request, acquisition route/policy, resource bytes, SDK/dependency/module/package, schema, renderer algorithm or later satellite migration. K3.33 onward remains separate. |
 | Revision 55: select K3.31 satellite state services | Fernando’s “Proceed” after PR #303 complete Mac acceptance and confirmed cleanup | Retain validated immutable snapshots/elements, exact source/snapshot identity and offline admission. Add thin transport to the existing Cartesian SDK in the current SGP4 owner, keeping Earth-centred geometric TEME separate from the ICRF-only ephemeris adapter. Preserve scalar/accelerated-array SGP4 WGS-72, split-UTC JD, input order/duplicates, source epoch/age, provenance and original nonzero-status error API. Use explicit installed-leap UTC-to-TAI labels only at the SDK boundary; admit only the exact requested finite batch, with unknown physical/numerical uncertainty and no reuse certificate or invented orbital validity range. Keep existing TEME-to-ITRS/topocentric Astropy/EOP services and formulas; verify they consume returned SI states and propagate refusal, with independent Vallado and Skyfield/Astropy oracles. Gate satellite-state-routing plus documentation/tooling covers snapshot corruption/admission, scalar/array transport, identity, returned PV/refusal and observer/EOP domains. No new numerical model, acquisition/policy, SDK/module/package, dependency, resource bytes, schema, renderer algorithm or later satellite product migration. K3.32–K3.36 remain separate. |
 | Revision 54: select K3.30 antisolar constructed references | Fernando’s “Proceed” after PR #302 complete Mac acceptance and confirmed cleanup | Reuse the existing Cartesian adapter for known Skyfield apparent-Sun fallback inputs, preserving raw observer/apparent roles and custom protocol compatibility. Factor the duplicated Sun realization into the existing shared point owner. Preserve provider PsAng precedence, missing-angle fallback, conjunction/opposition exclusion, tangent offset, per-sample observer time, fixed axes, symbol preparation and rendering. Explicit CelestialPoints antisolar antipodes retain their existing Astropy get_sun/CoordinateService calculations and construction-time anchoring, with source observation/frame/provenance retained instead of an unqualified physical-state claim. Add constructed-reference provenance at point/symbol boundaries; never query an antisolar pseudo-body. Verify returned Sun/refusal, provider no-unnecessary-query behavior, native/observed construction metadata, actual canonical output and existing offline angle/science oracles through antisolar-reference-routing plus documentation/tooling. No new astronomical model, SDK/package, acquisition, resource bytes, dependency, snapshot schema or renderer algorithm; K3.31 remains separate. |
 | Revision 53: select K3.29 comet consumers | Fernando’s “proceed” after PR #301 complete Mac acceptance and confirmed cleanup | Reuse the existing minor-body Cartesian adapter at offline comet session assembly, preserve solution/model/segment and both SPK references, and forward the existing optional provider tail-angle hook. Extend the existing separate-session warm-track admission to comets. Preserve one light-time owner, sample/tick chronology, shared sample symbols and appearance. Audit existing discovery/identity/photometry/report consumers: retain validated provider records and magnitude-model semantics outside positional state queries, acquisition outside rendering, and existing workload/cache/failure behavior. Gate comet-routing plus documentation/tooling covers state values/refusal, provider hook, session closure, real canonical output, report/CLI data consumption and existing offline Encke/161P parity. No new numerical model, acquisition policy, SDK, module/package, dependency, resource bytes, schema, renderer algorithm or K3.30 antisolar migration. |
@@ -629,8 +630,8 @@ map below ensures small/non-chart capabilities do not disappear in grouped rows.
 | K3.28 | Route asteroid identities/states/tracks and offline resource consumers; move Ceres solution facts to a manifest | Accepted PR #301: 211 focused, 36 documentation and eight tooling Mac cases; clean main and branch cleanup confirmed |
 | K3.29 | Route comet identity/state/track/report/photometry consumers; keep discovery/acquisition outside deterministic rendering | Accepted PR #302: 273 focused, 36 documentation and eight tooling Mac cases; clean main and branch cleanup confirmed |
 | K3.30 | Route antisolar constructed-reference consumers with observer-relative provenance | Accepted PR #303: 117 focused, 36 documentation and eight tooling Mac cases; clean main and branch cleanup confirmed |
-| K3.31 | Route satellite snapshots/elements/SGP4/TEME and observer transformations | Implemented for acceptance under revision 55; original SGP4 and observer calculations retained, existing Cartesian SDK carries returned Earth-centred TEME PV. Complete satellite-state-routing Mac gate pending |
-| K3.32 | Route sampled-provider satellite candidate evidence through explicit provider/maintenance boundaries | Pending; retain licensing/coverage and candidate-versus-exact distinction |
+| K3.31 | Route satellite snapshots/elements/SGP4/TEME and observer transformations | Accepted PR #304: 77 focused, 36 documentation and eight tooling Mac cases; clean main and branch cleanup confirmed |
+| K3.32 | Route sampled-provider satellite candidate evidence through explicit provider/maintenance boundaries | Selected revision 56; existing typed records and shared coordinate/geometry routes assessed; sampled-satellite-candidate-routing evidence gate |
 | K3.33 | Route exact satellite crossings, conservative batch selection and solved-track consumers | Pending; non-chart completeness and evidence routes are mandatory |
 | K3.34 | Route satellite reports, lossless tabular interchange, CLI and planning advisories | Pending; preserve identities, nulls/Unicode, atomic output and offline behaviour |
 | K3.35 | Route satellite illumination/finite-Sun shadow consumers without changing physical models | Pending; retain independent transition/orientation/domain oracles |
