@@ -701,3 +701,18 @@ Their receipt preserves that source convention and the construction site/time;
 it does not qualify the legacy unit-direction conversion as a new finite-distance
 or topocentric physical Sun model. Display at another time retains the original
 construction anchor. No antisolar object-state query or new motion is introduced.
+
+## Routing closure and retained qualification limits
+
+K3.40 reconciles existing consumers with their appropriate source/state,
+coordinate/observer, geometry/projection and graphics services. Routing acceptance
+does not qualify missing source frame/origin/epoch facts, infer an SPK physical
+model, propagate Hipparcos stars, replace unknown uncertainty by zero, or expand
+bounded satellite/reuse claims. Those limits remain in this document and the
+current inventory's `consumer_reconciliation.limits`.
+
+Legacy snapshots remain source transport with explicit absent facts; request
+journals remain synchronous ownership rather than general thread safety.
+No acquisition/redistribution permission or paused/consumed external execution
+is renewed. Product review of the requested atlas, pouched planisphere, regional,
+Venus, comet and asteroid 79989 outputs follows K3.40 and precedes Gaia.

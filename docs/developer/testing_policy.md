@@ -1899,3 +1899,40 @@ K3.40 reconciliation and K4/K5 remain separate.
 Available local documentation: 31 passed in 1.46 s, with five full-checkout
 archive/asset checks left for Mac. All 38 active documents pass link/anchor
 checks against the complete GitHub tree. Eight tooling tests passed in 5.789 s.
+
+## Consumer reconciliation gate
+
+Run `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python tools/run_test_gate.py consumer-reconciliation --run`,
+plus documentation and tooling. K3.40 changes only the audit, tests and gate.
+Three added tests in `test_repository_sources.py` bind the exact current source
+census and family routes to accepted receipts; resolve all root exports,
+declared-export modules and command targets; bind notebook bytes; and reconcile
+actual sensitive call expressions and explicit qualification limits.
+
+Four independent audit-corruption experiments fail: orphan source, stale source
+hash, orphan public export and erased model limit. Faults are restored before
+the final gate. Existing dependency/package and geometry/projection alias tests
+remain selected. This is integrity/ownership proof, not import-derived numerical
+coverage or a fresh physical accuracy claim. Never import all operational/data
+helpers to inventory them: some intentionally perform network/write effects.
+
+Retain the accepted per-owner numerical, installation, cold/restored/worker and
+real PNG/PDF/SVG product receipts for unchanged implementations. The original
+KG.07 full Mac total is unavailable in the persistent record; preserve the
+explicit original/component and later K3.16/K3.39 scope reconciliation rather
+than fabricating that run. Do not repeat full SDK, catalogue/product or external
+workloads for a test/documentation ledger change. Complete Mac audit and full
+documentation integrity remain required; six-product review follows acceptance
+and precedes Gaia. K5 freeze/extraction and scientific qualifications stay open.
+
+The consumer-reconciliation Mac gate also retains the original LMC boundary
+composition case that was locally blocked by missing DE440s in KG.07. It uses
+the already installed offline resource; no acquisition or full lower-level
+gate repeat is part of this reconciliation.
+
+Local final audit/dependency/alias selection: 24 passed in 6.77 s; the one
+retained LMC composition case is not executed locally because DE440s is absent.
+The complete Mac gate collects 25 cases. Available documentation: 31 passed
+in 1.68 s, with five full-checkout archive/asset checks reserved for Mac; all
+38 active-document links/anchors pass against the full repository tree.
+Eight tooling tests passed in 7.247 s. No full production acceptance is claimed.

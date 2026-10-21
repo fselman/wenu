@@ -326,4 +326,9 @@ K3.38 is accepted through PR #311 after 49 focused, 36 documentation and eight
 tooling Mac cases, with clean main and branch cleanup confirmed.
 K3.39 verifies [geometry and graphics boundaries](implementation_reference.md#geometry-and-graphics-consumer-boundary)
 without production changes, using the [geometry-rendering-routing gate](testing_policy.md#geometry-rendering-routing-gate).
-Complete Mac acceptance and K3/K5 closure remain pending.
+K3.39 is accepted through PR #312 at main `0deca8c3`: 247 focused,
+36 documentation and eight tooling Mac cases; branch cleanup confirmed.
+K3.40 delivers the [complete consumer reconciliation](implementation_reference.md#complete-consumer-reconciliation)
+and [focused audit gate](testing_policy.md#consumer-reconciliation-gate).
+Its Mac acceptance remains pending. The agreed next work is six real product
+outputs before Gaia; SDK freeze and astronomical package extraction remain later.
