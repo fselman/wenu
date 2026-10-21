@@ -1398,3 +1398,36 @@ refusal, retarded time, all seven planet targets and Moon, and single apparent
 correction. Deliberately bypassing the default adapter fails the changed-direction
 assertion. The real eight-body raw-versus-routed comparison requires installed
 DE440s on Mac and refuses absent offline resources rather than downloading.
+
+## K3.26 disk and sequence consumer assessment
+
+Three existing default construction owners called raw EphemerisStateSource directly:
+`sky/venus_disk.py`, `sky/solar_system_disk_sequences.py` and
+`sky/frozen_earth_disk_sequences.py`. They now adapt geometric queries through the
+existing K3.25 Cartesian service. Keep the raw reception/apparent backend and
+explicit injected-factory compatibility. No numerical solver or geometry engine
+is rewritten. The appearance and physical disk geometry modules are byte-identical;
+sequence numerical ASTs are identical after normalizing adapter assembly and the
+source variable. The Sun phase query at reception and frozen Earth/planet states
+consume returned kernel values, not reconstructed provider inputs.
+
+The three component display owners reused results on context equality and observer
+identity before checking live resources. A new regression reproduced all three
+returning cached geometry after resource closure. Existing observer-resource keys
+now precede reuse (live SPK only for frozen geometry, without observer EOP); the same context object shares components, while a separate
+context performs fresh source/kernel admission. All three regression cases pass.
+The observer remains borrowed and no resource is closed by these adapters.
+
+Returned-value/refusal seams cover existing single/observed Venus and Moon and
+frozen Venus/Mercury routes, including exact epoch order, initial Earth vector,
+Sun phase input and unchanged display-capability restrictions. Deliberately
+bypassing default observed kernel assembly fails both body cases. Constructed
+backend raw/routed comparisons generate equal nonempty PNG pixels via the canonical
+CelestialSphere/projection/magnification/renderer pipeline for all three models.
+Those seams are labelled synthetic and do not establish physical accuracy.
+
+The full `resolved-disk-routing` gate includes real offline DE440s raw/routed
+appearance and sequence parity at a fixed site/date. Local DE440s is absent, so
+that case fails its explicit offline preflight and remains required on Mac with
+no skip/download. K3.27 tracks, new capabilities, SDK changes and extraction are
+outside this assessment; K3/K5 remain partial.

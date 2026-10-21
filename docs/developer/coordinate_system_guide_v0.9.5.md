@@ -1459,3 +1459,14 @@ protocol. This is unit transport, not a frame transform or second propagation.
 One-way light time remains in AstrometricDirectionRealizer; Skyfield apparent
 corrections retain their accepted policy. No epoch, equinox, physical body centre
 or error bound is inferred from a descriptor label or SPK filename.
+
+## Disk and sequence state ownership
+
+K3.26 reuses the K3.25 SI/AU transport at default disk/sequence assembly. Observed
+body/Sun queries retain retarded emission times and reception observer PV; the
+phase construction retains its reception-Sun state. Frozen Earth retains one
+start-time heliocentric Earth vector, same-epoch heliocentric planet states and
+fixed ecliptic axes, with geometric rather than apparent semantics. These models
+remain distinct. Phase, angular diameter, bright-limb conventions and physical
+sampling are unchanged. Display magnification acts only after projection and
+never changes physical radius, range, phase or source epochs.

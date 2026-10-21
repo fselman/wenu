@@ -1514,7 +1514,7 @@
     },
     {
       "path": "src/wenu/sky/frozen_earth_disk_sequences.py",
-      "git_blob_sha": "d462112d9bf1cf3174bba5f66f545567a452fc9a",
+      "git_blob_sha": "70eaac61f3cfe15ddfc4805e231762d015353e71",
       "as_is_directory": "src/wenu/sky",
       "description": "Frozen-Earth geometric planet-disk sequence state."
     },
@@ -1526,7 +1526,7 @@
     },
     {
       "path": "src/wenu/sky/frozen_earth_venus_disk_sequence.py",
-      "git_blob_sha": "c0ebce419649f61cff80674f8149c287af87864d",
+      "git_blob_sha": "6285503b02ce0d8837b6699d3492c2f22d130085",
       "as_is_directory": "src/wenu/sky",
       "description": "Generic drawable frozen-Earth body sequence in fixed ecliptic axes."
     },
@@ -1653,7 +1653,7 @@
     },
     {
       "path": "src/wenu/sky/solar_system_disk_sequences.py",
-      "git_blob_sha": "c2489f39f74dab3ae8c0b65ee84bcc8241c61fac",
+      "git_blob_sha": "0b95ca2a20a10c1956058d702b45caf1b5cc9754",
       "as_is_directory": "src/wenu/sky",
       "description": "Observed multi-epoch physical Solar-System disk sequences."
     },
@@ -1683,13 +1683,13 @@
     },
     {
       "path": "src/wenu/sky/venus_disk.py",
-      "git_blob_sha": "089ad3b5e98dc41ff956972d8b0dedd4e12f9540",
+      "git_blob_sha": "8cc227fe6955a6926b130ecc968f965be1451f1d",
       "as_is_directory": "src/wenu/sky",
       "description": "Generic request-owned resolved-body disk component layers."
     },
     {
       "path": "src/wenu/sky/venus_disk_sequence.py",
-      "git_blob_sha": "94f46921bfc394d09a1930ba79bc63c7ba0e7f06",
+      "git_blob_sha": "31a907230935534aa6cc6eab7389f8fbfda6cfe9",
       "as_is_directory": "src/wenu/sky",
       "description": "Generic drawable observed-body disk sequence in one chart frame."
     },
@@ -12214,6 +12214,52 @@
       "documentation_complete_checkout_required": 5,
       "fault_injection": "Bypassing point adapter fails changed kernel direction assertion.",
       "unchanged_ast": "Raw Skyfield state class, reception PV and apparent class identical to base."
+    },
+    "mac_acceptance": {
+      "pr": 298,
+      "tested_commit": "7c80812c1a6c6f9d40e068b63b648022e7f70e5f",
+      "main": "b02fd8846d09cf1dd9141ba575c78e685b9f83b7",
+      "focused_passed": 83,
+      "documentation_passed": 36,
+      "tooling_passed": 8,
+      "clean_main_and_branch_cleanup_confirmed": true
     }
+  },
+  "resolved_disk_routing": {
+    "milestone": "K3.26",
+    "base_commit": "b02fd8846d09cf1dd9141ba575c78e685b9f83b7",
+    "plan_commit": "5a1bc14f80845fbcd5d77ae19a7ef936545b7c9d",
+    "gate": "resolved-disk-routing",
+    "owners": [
+      "src/wenu/sky/venus_disk.py",
+      "src/wenu/sky/solar_system_disk_sequences.py",
+      "src/wenu/sky/frozen_earth_disk_sequences.py",
+      "src/wenu/sky/venus_disk_sequence.py",
+      "src/wenu/sky/frozen_earth_venus_disk_sequence.py"
+    ],
+    "source_blobs": {
+      "src/wenu/sky/venus_disk.py": "8cc227fe6955a6926b130ecc968f965be1451f1d",
+      "src/wenu/sky/solar_system_disk_sequences.py": "0b95ca2a20a10c1956058d702b45caf1b5cc9754",
+      "src/wenu/sky/frozen_earth_disk_sequences.py": "70eaac61f3cfe15ddfc4805e231762d015353e71",
+      "src/wenu/sky/venus_disk_sequence.py": "31a907230935534aa6cc6eab7389f8fbfda6cfe9",
+      "src/wenu/sky/frozen_earth_venus_disk_sequence.py": "6285503b02ce0d8837b6699d3492c2f22d130085"
+    },
+    "disposition": "Reuse existing Cartesian adapter at default geometric state assembly; preserve raw reception/apparent backend and explicit injected protocol compatibility. Check resource identity before same-context component sharing; separate contexts re-admit.",
+    "evidence": [
+      "Three closed-resource regressions fail before correction and pass after.",
+      "Changed target/Sun/frozen-Earth kernel states control existing physical results; fresh refusal propagates.",
+      "Bypassing observed default kernel assembly fails both body cases.",
+      "Three real canonical raw/routed PNG comparisons have equal nonempty pixels with labelled constructed observation inputs.",
+      "Appearance/disk geometry/shared observer-key source bytes unchanged; numerical sequence AST unchanged after adapter assembly normalization.",
+      "Frozen geometric component admission verifies live SPK without querying observer EOP."
+    ],
+    "local_receipt": {
+      "focused_available_passed": 137,
+      "offline_de440s_required_cases": 1,
+      "documentation_available_passed": 31,
+      "documentation_complete_checkout_required": 5,
+      "tooling_passed": 8
+    },
+    "limits": "Complete Mac acceptance pending. Retain existing body/family capabilities, physical/display size and chronology. No new physics/error bounds/SDK/modules/dependencies/source resources/snapshot/manifest/renderer change or track/minor-body adoption."
   }
 }

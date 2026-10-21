@@ -522,5 +522,12 @@ and Moon point assembly. Ephemeris backend/model knowledge remains outside the
 generic kernel. Request-scoped borrowed sessions return SI states to the retained
 light-time and apparent services through the existing AU protocol. Tracks/disks
 and minor-body adoption remain separate. Filename-based DE-model inference is
-removed; unknown models remain explicitly unqualified. Complete Mac acceptance
-is pending; this does not close K3/K5.
+removed; unknown models remain explicitly unqualified. K3.25 is accepted through PR #298 after 83 focused Mac cases; this does not close K3/K5.
+
+K3.26 extends the existing adapter at default single-disk, observed-sequence and
+frozen-Earth sequence assembly. Target/Sun states and the initial frozen Earth
+vector feed the unchanged appearance/disk algorithms; raw reception/apparent
+backends retain their separate role. Component owners check live resources (SPK only for the frozen geometric path)
+before reuse and share only within the same context object. Equal
+values in a separate request context trigger fresh admission. No long-lived
+evaluated-state cache or new astronomical model is added; Mac acceptance is pending.

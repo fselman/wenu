@@ -571,3 +571,15 @@ before the retained light-time/apparent chain. Measurement, physical-model and
 numerical error channels remain not evaluated; unit conversion supplies no bound.
 Targets such as Mars barycentre are preserved and are not replaced by the physical
 planet ID. No new apparent correction, distance, motion or disk science is admitted.
+
+## Resolved-body migration invariants
+
+K3.26 changes default state transport and request-component reuse, preserving the
+existing single/observed and frozen-Earth scientific models. The observed service
+remains the single light-time authority; no light-time/apparent correction is
+introduced into the frozen geometric construction. Radius/model, physical angular
+diameter, phase and bright-limb angle remain independent of display magnification.
+Unknown ephemeris-model qualification and error channels remain unknown. A shared
+component result is an admission within one request context, revalidated against
+live observer resources; a different context requires fresh admission. Numerical
+parity against the retained raw route is not a new physical accuracy guarantee.

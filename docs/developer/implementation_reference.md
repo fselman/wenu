@@ -1677,3 +1677,32 @@ It now reports `unqualified SPK model` without an explicit model argument. An ex
 argument is labelled caller-declared, not independently qualified. Renaming a BSP
 cannot qualify its physical model; a verified acquisition/model receipt remains
 necessary for such a claim. No source bytes or numerical formula changed.
+
+## Resolved-disk and sequence state routing
+
+Default `SolarSystemDiskRealization`, `ObservedSolarSystemDiskSequenceRealizer`
+and `FrozenEarthDiskSequenceRealizer` now reuse `KernelEphemerisStateSource`.
+Constructors accept `source_factory=None` for that default assembly. Explicit
+injected factories retain their existing EphemerisStateSource compatibility;
+they remain caller-owned protocol boundaries. The default observed paths use
+the adapted source for target/Sun light-time queries and the appearance service's
+reception-Sun state. The raw Skyfield source still supplies reception observer PV
+and apparent corrections. The frozen construction adapts its one initial
+Earth-relative-to-Sun query and each same-epoch target-relative-to-Sun query.
+It remains geometric and does not call the observed light-time/apparent services.
+
+Single/observed display owners check `observer_geometry_key` before sharing a
+component result. Frozen geometric display checks only the existing live SPK
+identity hook; it does not acquire or require observer EOP data. They retain one coherent result for the same context object,
+observer and resource key, rather than treating equal-valued separate request
+contexts as one admission. Resource changes rebuild; closed/changed resources
+refuse before reuse. A fresh request retries source/kernel admission and cannot
+return a previous request's geometry after refusal. Within one admitted context,
+face, limb, terminator and date components continue sharing their exact result.
+This is request component sharing, not a persisted/evaluated-state cache.
+
+Radius, angular diameter, phase, illuminated fraction, bright-limb orientation,
+physical disk sampling and sample chronology retain their existing owners and
+formulas. Magnification remains post-projection preparation. No capability is
+expanded: current single/observed Venus and Moon and frozen Venus/Mercury policies
+remain as before; custom generic protocol seams do not admit new public products.

@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from math import isfinite
 
 from wenu.coordinate_service import CoordinateService
+from wenu.sky.observed_cache import observer_geometry_key
 from wenu.sky.realization import LayerRealizationContext
 from wenu.sky.sky_layer import SkyLayer
 from wenu.sky.solar_system_bodies import (
@@ -13,6 +14,7 @@ from wenu.sky.solar_system_bodies import (
     SolarSystemBodyDescriptor,
 )
 from wenu.sky.venus import VENUS_POINT
+from wenu.ephemeris_state import KernelEphemerisStateSource
 from wenu.skyfield_ephemeris import (
     SkyfieldApparentDirectionRealizer,
     SkyfieldEphemerisStateSource,
@@ -48,7 +50,7 @@ class SolarSystemDiskRealization:
         self,
         descriptor,
         *,
-        source_factory=SkyfieldEphemerisStateSource.from_observer,
+        source_factory=None,
         observer_state_factory=skyfield_observer_barycentric_state,
         astrometric_realizer=None,
         apparent_realizer=None,
@@ -63,7 +65,11 @@ class SolarSystemDiskRealization:
                 f"{descriptor.display_name} does not support resolved disks."
             )
         self.descriptor = descriptor
-        self.source_factory = source_factory
+        self._kernel_states = source_factory is None
+        self.source_factory = (
+            SkyfieldEphemerisStateSource.from_observer
+            if source_factory is None else source_factory
+        )
         self.observer_state_factory = observer_state_factory
         self.astrometric_realizer = (
             AstrometricDirectionRealizer()
@@ -85,6 +91,7 @@ class SolarSystemDiskRealization:
             CoordinateService()
             if coordinate_service is None else coordinate_service
         )
+        self._resource_key = None
         self._context = None
         self._observer = None
         self._transformed = None
@@ -117,14 +124,20 @@ class SolarSystemDiskRealization:
                 "evaluation instant and "
                 "time scale."
             )
+        resource_key = observer_geometry_key(observer)
         if (
             self._transformed is not None
-            and self._context == context
+            and self._context is context
+            and self._resource_key == resource_key
             and self._observer is observer
         ):
             return self._transformed
 
         source = self.source_factory(observer)
+        states = (
+            KernelEphemerisStateSource(source)
+            if self._kernel_states else source
+        )
         observer_state = self.observer_state_factory(
             observer,
             source=source,
@@ -142,12 +155,12 @@ class SolarSystemDiskRealization:
             reception_time_scale=context.evaluation_time_scale,
         )
         body_astrometric = self.astrometric_realizer.direction(
-            source,
+            states,
             body_request,
             observer_state,
         )
         sun_astrometric = self.astrometric_realizer.direction(
-            source,
+            states,
             sun_request,
             observer_state,
         )
@@ -164,7 +177,7 @@ class SolarSystemDiskRealization:
             policy=ApparentCorrectionPolicy(),
         )
         appearance = self.appearance_realizer.appearance(
-            source,
+            states,
             body_apparent,
             sun_apparent,
             display_name=self.descriptor.display_name,
@@ -197,6 +210,7 @@ class SolarSystemDiskRealization:
                 observation,
             ),
         )
+        self._resource_key = resource_key
         self._context = context
         self._observer = observer
         self._transformed = transformed

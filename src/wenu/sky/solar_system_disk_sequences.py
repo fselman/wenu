@@ -11,6 +11,7 @@ from types import SimpleNamespace
 from astropy.time import Time, TimeDelta
 
 from wenu.sky.solar_system_points import SolarSystemPointDescriptor
+from wenu.ephemeris_state import KernelEphemerisStateSource
 from wenu.skyfield_ephemeris import (
     SkyfieldApparentDirectionRealizer,
     SkyfieldEphemerisStateSource,
@@ -270,7 +271,7 @@ class ObservedSolarSystemDiskSequenceRealizer:
     def __init__(
         self,
         *,
-        source_factory=SkyfieldEphemerisStateSource.from_observer,
+        source_factory=None,
         sample_observer_factory=None,
         observer_state_factory=skyfield_observer_barycentric_state,
         astrometric_realizer=None,
@@ -278,7 +279,11 @@ class ObservedSolarSystemDiskSequenceRealizer:
         appearance_realizer=None,
         disk_realizer=None,
     ):
-        self.source_factory = source_factory
+        self._kernel_states = source_factory is None
+        self.source_factory = (
+            SkyfieldEphemerisStateSource.from_observer
+            if source_factory is None else source_factory
+        )
         self.sample_observer_factory = (
             _observer_at_time
             if sample_observer_factory is None
@@ -314,6 +319,10 @@ class ObservedSolarSystemDiskSequenceRealizer:
                 "ObservedSolarSystemDiskSequenceRequest."
             )
         source = self.source_factory(observer)
+        states = (
+            KernelEphemerisStateSource(source)
+            if self._kernel_states else source
+        )
         start = Time(
             request.start_instant,
             scale=request.start_time_scale,
@@ -347,12 +356,12 @@ class ObservedSolarSystemDiskSequenceRealizer:
                 reception_time_scale=sample_time.scale,
             )
             target_astrometric = self.astrometric_realizer.direction(
-                source,
+                states,
                 target_request,
                 observer_state,
             )
             sun_astrometric = self.astrometric_realizer.direction(
-                source,
+                states,
                 sun_request,
                 observer_state,
             )
@@ -369,7 +378,7 @@ class ObservedSolarSystemDiskSequenceRealizer:
                 policy=ApparentCorrectionPolicy(),
             )
             appearance = self.appearance_realizer.appearance(
-                source,
+                states,
                 target_apparent,
                 sun_apparent,
                 display_name=request.display_name,

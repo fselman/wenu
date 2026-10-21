@@ -210,3 +210,78 @@ def test_realizer_rejects_wrong_request_type():
             source_factory=lambda observer: Source(),
             coordinate_service=CoordinateServiceStub(),
         ).sequence(object(), observer=object())
+
+
+@pytest.mark.parametrize('body', ('venus', 'mercury'))
+def test_default_frozen_sequence_consumes_kernel_earth_and_target_states(monkeypatch, body):
+    from test_solar_system_disk_sequences import _kernel_disk_dependencies
+    from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
+    from wenu_kernel.kernel import KernelSession
+    from wenu_kernel.errors import UnsupportedCapability
+    from astropy import units as u
+    source, observer, _, _ = _kernel_disk_dependencies(monkeypatch)
+    descriptor = SOLAR_SYSTEM_BODY_CATALOG.resolve(body)
+    value = request(descriptor=descriptor, display_name=descriptor.display_name,
+        physical_radius_km=descriptor.physical_radius_km, radius_model=descriptor.radius_model,
+        start_time_scale='tdb', step_days=1.)
+    baseline = FrozenEarthDiskSequenceRealizer(source_factory=lambda observer: source).sequence(value, observer=observer)
+    calls = []
+    evaluate = KernelSession.evaluate
+    def record(session, query):
+        calls.append(query)
+        return evaluate(session, query)
+    monkeypatch.setattr(KernelSession, 'evaluate', record)
+    owner = FrozenEarthDiskSequenceRealizer()
+    actual = owner.sequence(value, observer=observer)
+    assert len(calls) == 4
+    assert [q.objects[0].value for q in calls] == ['ephemeris:earth'] + ['ephemeris:' + body] * 3
+    assert all(q.reference.origin_id == 'sun' for q in calls)
+    assert actual.sample_instants == baseline.sample_instants
+    for disk, expected in zip(actual.disks, baseline.disks):
+        assert disk.direction.vector_icrf_au == pytest.approx(expected.direction.vector_icrf_au, abs=1e-15)
+        assert disk.angular_diameter_arcsec == pytest.approx(expected.angular_diameter_arcsec, rel=1e-12)
+        assert disk.phase_angle_deg == pytest.approx(expected.phase_angle_deg, abs=1e-11)
+        assert disk.direction.geometry.coordinate_spec.corrections == frozenset()
+    def change_earth(session, query):
+        batch = record(session, query)
+        row = batch.states[0]
+        if query.objects[0].value == 'ephemeris:earth':
+            x, y, z = row.position_m
+            row = replace(row, position_m=(x, y + .1 * u.au.to(u.m), z))
+        return replace(batch, states=(row,))
+    monkeypatch.setattr(KernelSession, 'evaluate', change_earth)
+    changed = owner.sequence(value, observer=observer)
+    assert changed.frozen_earth_state.position == pytest.approx((1., .1, 0.))
+    assert all(d.direction.frozen_earth_heliocentric_icrf_au == changed.frozen_earth_state.position
+               for d in changed.disks)
+    assert not np.allclose(changed.disks[0].direction.vector_icrf_au, actual.disks[0].direction.vector_icrf_au)
+    def refuse(session, query):
+        raise UnsupportedCapability('frozen state refusal')
+    monkeypatch.setattr(KernelSession, 'evaluate', refuse)
+    with pytest.raises(UnsupportedCapability, match='frozen state refusal'):
+        owner.sequence(value, observer=observer)
+
+
+def test_frozen_component_resource_admission_does_not_require_observer_eop(monkeypatch):
+    from types import SimpleNamespace
+    from astropy.utils import iers
+    from wenu.coordinates import CoordinateSpec
+    from wenu.sky.realization import LayerRealizationContext
+    from wenu.sky.frozen_earth_venus_disk_sequence import FrozenEarthSolarSystemDiskSequenceRealization
+    def forbidden(*args, **kwargs):
+        pytest.fail('geometric frozen construction must not request observer EOP')
+    monkeypatch.setattr(iers.earth_orientation_table, 'get', forbidden)
+    owner = FrozenEarthSolarSystemDiskSequenceRealization(request(),
+        sequence_realizer=FrozenEarthDiskSequenceRealizer(source_factory=lambda observer: Source(),
+                                                         coordinate_service=CoordinateServiceStub()))
+    resources = []
+    def live_spk():
+        resources.append('SPK')
+        return RESOURCE.sha256
+    observer = SimpleNamespace(geometry_resource_identity=live_spk)
+    context = LayerRealizationContext(product_coordinate_spec=CoordinateSpec(
+        frame='barycentric-mean-ecliptic', origin='frozen-earth',
+        position_status=PositionStatus.GEOMETRIC, equinox='J2000.0'))
+    result = owner.realize(context, observer)
+    assert owner.realize(context, observer) is result
+    assert resources == ['SPK', 'SPK']
