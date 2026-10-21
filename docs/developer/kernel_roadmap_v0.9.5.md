@@ -806,4 +806,179 @@ remain its separate responsibilities.
 | K6.01 | Extract stellar source/data/provider/tests into `wenu_stars`, preserving names/components/Gaia/provenance and legacy facade | Pending K5; first astronomical package |
 | K6.02 | Independently install/import/collect/run stellar science and conformance without unrelated providers | Pending K6.01; no broad-facade dependency disguised as isolation |
 | K6.03 | Accept application assembly and existing Python/CLI/chart/saved star consumers against the extracted package | Pending K6.02; unchanged product APIs and accepted outputs |
-| K7.01 | Extract galaxy responsibilities and their own resources/science/conformance/install/consumer
+| K7.01 | Extract galaxy responsibilities and their own resources/science/conformance/install/consumer gate | Pending K5 and first stellar extraction; no fixed order among later independent families selected |
+| K7.02 | Extract open-cluster responsibilities and their own source/lookup/motion/install/consumer gates | Pending same prerequisites; retain shared core/service use |
+| K7.03 | Extract globular-cluster responsibilities with independent science/install/consumer acceptance | Pending same prerequisites |
+| K7.04 | Extract PN responsibilities with qualified source/criteria/display separation and independent gate | Pending same prerequisites; no expansion |
+| K7.05 | Extract SNR responsibilities with independent source/geometry/science/install gate | Pending same prerequisites; no expansion |
+| K7.06 | Place remaining nonstellar/Messier/diffuse responsibilities at justified package boundaries and prove isolation/consumer parity | Pending; no new package is invented merely to match a filename |
+| K8.01 | Extract planets/natural satellites with existing state/apparent/disk/track science and independent installed gate | Pending K5–K7 closure; then one agreed package at a time |
+| K8.02 | Extract asteroids with identity/resource/acquisition separation and science/conformance/install gate | Pending same prerequisites |
+| K8.03 | Extract comets with current physical/photometric/maintenance contracts and independent gate | Pending same prerequisites |
+| K8.04 | Extract artificial satellites with current propagation/crossing/report/illumination/radiometry capabilities and independent gates | Pending same prerequisites; no new reflected-light/detector/Moonlight science |
+| K8.05 | Accept explicit application provider allowlist/loading and cross-package composition with compatible facades | Pending extracted-provider receipts; core imports no concrete astronomical package |
+| K9.01 | Validate installed package combinations and compatibility/version/resource matrix | Pending extraction/composition closure |
+| K9.02 | Run justified release science/integration and preserved functionality checks | Pending; focused per-provider receipts do not substitute for release integration |
+| K9.03 | Accept visual, print and classroom specimens separately from numerical acceptance | Pending; preserve atlas/planisphere physical sizes, labels, symbols and fonts |
+| K9.04 | Close release documentation/configuration/eight commands/six examples/five notebooks and installation/distribution | Pending; reconcile shipped artifacts with accepted source and dependencies |
+| K9.05 | Confirm release name/version against existing tags, approve release and tag/publish | Pending explicit release decision; provisional v0.9.5 label is not permission to publish |
+
+K7/K8 list known family obligations, not an automatically agreed serial family
+order or permission to change package boundaries. Each extraction needs its
+bounded task and actual dependency/conformance gate. Package names below remain
+proposals until that boundary is agreed; the required independent responsibilities
+and preservation of existing capabilities are the roadmap obligations.
+
+### Optional proposals and exclusions
+
+These were mentioned in earlier roadmap text, but are **not activated milestones**
+or automatic prerequisites: Cartesian temporal reuse/error certificates,
+canonical provider schedules, persisted evaluated/common-epoch state formats,
+additional observer correction/absolute-error research, and extending the new
+cluster motion CLI to additional frames. If one is needed, discuss, agree and
+record its scope/dependencies/gate before implementation. This does not defer
+K3's obligation to preserve/reroute all already-existing chart frames or K4's
+agreed scientific-domain qualification.
+
+The existing source snapshots remain immutable source catalogues. No optional
+optimization may replace source facts or retroactively reclassify old snapshots.
+Non-goals at the end of this document remain excluded; a roadmap revision cannot
+silently activate them.
+
+## Cluster observer implementation order
+
+The [observer contract](scientific_contracts.md#cluster-observer-realization-contract)
+records the admitted nominal service and explicit Python chart/saved adoption.
+The following implemented boundaries correspond to AX.07–AX.12, preserving
+PR #261 defaults/native semantics. They are acceptance context, not a new task queue:
+
+The shared direction engine and calling cluster adapter are now factored;
+synthetic mixed-family evaluation is verified. Explicit Cartesian output now retains SI position/velocity through that same
+engine. This does not adopt other source catalogues, reduced-input models,
+expansion or other-family chart adoption. The separate object-independent observer
+service now supplies parallax/apparent vacuum directions. Future motion work
+uses these owners rather than a new engine for each family.
+
+1. **Implemented:** publish the existing admitted cluster SI position/velocity through a distinct
+   Cartesian admission in the shared object-independent engine using the accepted SDK. Verify its own evidence,
+   conformance, source/time/refusal, isolation and installed-consumer contract.
+   Do not infer a Cartesian numerical bound from the direction cone certificate.
+2. **Implemented input-context subset:** explicit TCB/TDB TimeService adapter,
+   Cartesian convention scaling, and an offline UTC/TT reception service with
+   caller-verified leap/final IERS-B data and installed ERFA identity. Its analytic
+   EPV00/APCO Earth/observer PV is explicitly TDB-compatible BCRS, separate from
+   the legacy Skyfield SPK. Caller TT coverage is checked against every resource;
+   total numerical/physical errors remain unknown.
+   The input context alone does not establish a universal observation accuracy/date range.
+3. **Implemented nominal service:** explicit source/reception model admission;
+   one common-coordinate subtraction; finite-source solar monopole deflection;
+   combined annual/diurnal aberration; final-CIP CIRS and vacuum horizon output.
+   Source/evaluation/reception records and unknown errors are retained.
+   Independent parallax/range and Lorentz checks, separate Astropy finite-path
+   comparison, actual kernel/installed-cluster queries and corruption/refusal
+   gates cover this slice. Observer corrections recompute each call; no
+   observer cache, temporal certificate, total accuracy guarantee, retarded
+   target model or additional stellar light time is admitted.
+4. **Implemented Python adoption:** explicit reception-context cluster chart/saved
+   consumers query full Cartesian states and use the shared service. Cold/saved/
+   fresh-process degree geometry, pixels, SVG output and refusal gates cover the
+   canonical route. Ordinary horizontal request/CLI/TOML selection now composes this same service
+   using selected IDs and explicit local resources/code identity, finite TT/TCB
+   domains and qualified WGS84 height. Other layers retain their existing routes. Preserve default lookup and canonical
+   projection/rendering. Any evaluated-state snapshot format is separately admitted.
+
+See the [acceptance matrix](testing_policy.md#cluster-observer-contract-and-implementation-gates).
+AX.13 records the agreed reduced-input policy scope; AX.14–AX.16 record real
+other-family adapters. Their next execution order is not selected by this document.
+The former 1,000-year PM-only proposal is superseded by Fernando’s 2026-10-19
+clarification: PM-only propagation may span tens of thousands of years where
+adequate for the requested angular accuracy; no universal cutoff or accuracy
+guarantee follows. Distance/RV are optional for angular PM-only propagation,
+with separate parallax/perspective capabilities. The initial no-PM ~200-year
+proposal remains pending acceptance. Native-model coverage does not establish historical
+Earth orientation or observer accuracy. Additional error/correction proposals
+require the explicit change-control procedure above.
+
+## Mandatory all-consumer migration ledger
+
+K3 records each public entry point, state source, adapter, owner and verification:
+
+- Ordinary chart families, constellation labels/lines, static deep-sky objects.
+- Physical polar planispheres, reference grids/planes/horizon and fixed-sky use.
+- Atlas design/index/publication, loaded/saved sky and worker reconstruction.
+- Planet/Moon points, resolved disks, tracks and temporal sequences.
+- Minor-body state/point/track, acquisition-result consumers and comet reports.
+- Satellite propagation/crossing/report/track/illumination consumers, including
+  non-chart APIs, planning advisory and bolometric/spectral radiometry.
+- Python API, all eight installed CLI entry points, six canonical examples,
+  packaged bilingual notebooks and compatible snapshot imports.
+- Catalogue maintenance/acquisition, criteria, resource packaging and build
+  helpers; pure copying/layout remains outside state queries.
+
+Reconcile this ledger against every entry in the
+[as-is functionality audit](kernel_migration_audit_v1.md) and its full source,
+test and operational inventory. Located tests are not runtime coverage; each
+migrated consumer needs an explicit public-path/failure acceptance receipt.
+
+Not every operation needs physical state: pure layout and PDF assembly remain
+pure. However, any operation obtaining scientific object positions/states must
+go through the admitted kernel/provider route. Tests use instrumented providers
+and prohibited-import/direct-access checks to detect bypasses; documentation
+claims or wrapper naming alone are insufficient.
+
+## Package layout and loading
+
+Initially use a monorepository with separate project directories, each with
+its own `pyproject.toml`, import namespace, dependencies and tests. Independent
+packages do not require independent repositories. Names below are proposed.
+
+| Package | Responsibility |
+|---|---|
+| `wenu_kernel` | Contracts, identity/time, registry, immutable state and resource lifecycle |
+| `wenu_observation` | Common observer/origin/apparent realization over kernel interfaces |
+| `wenu_stars` | Stellar source adapters, Gaia subsets and propagation policy |
+| `wenu_open_clusters` | Open-cluster catalogues, membership/morphology and state capability |
+| `wenu_globular_clusters` | Globular clusters |
+| `wenu_galaxies` | Galaxy directions and morphology |
+| `wenu_nebulae` | Nebular families; split only for genuine independent ownership |
+| `wenu_planets` | Planets and natural satellites through admitted backends |
+| `wenu_asteroids` | Asteroid resources and models |
+| `wenu_comets` | Comet resources, models and capabilities |
+| `wenu_satellites` | Artificial-satellite snapshots, propagation and supported products |
+
+Application assembly selects an explicit allowlist of installed providers,
+validates interface version/capabilities and registers them. Discovery may use
+Python entry points; importing the core must not eagerly import every provider.
+Do not use `wenu.__init__` as a common SDK that imports products and graphics.
+One provider cannot depend on the concrete implementation of another; use
+declared shared services/interfaces. Preserve legacy facades until callers
+have a documented compatibility/migration path.
+
+## Freeze and independent testing
+
+Freeze contract semantics, error types, capability negotiation, serialization
+versions, units and lifecycle as well as method signatures. Publish a small
+conformance suite and example fake provider. Internal optimization may evolve
+without breaking that contract; incompatible changes require a new explicit
+kernel contract version and affected-consumer plan.
+
+After acceptance, changing one provider internally runs that provider's science
+and kernel conformance suite only. It must not require executing other provider
+suites or their dependencies. Charts/atlases have their own public-contract
+gates using deterministic admitted states. Integration/release checks are a
+separate responsibility, not a routine tax on every module change.
+
+During migration, select owner/contract/consumer gates from the actual diff.
+Full integration is required for release closure or reviewed broad shared impact,
+not automatically for each K3 revision. Independent package installation remains
+a separate exit requirement. See the [testing matrix](testing_policy.md).
+Do not promise universal independence while shared internals remain mutable.
+
+## Explicit non-goals for this roadmap's first steps
+
+No full Gaia mirror, new public-interest curation, wholesale graphics rewrite,
+new ancient-calendar historical scholarship engine, expanded satellite science,
+new Moonlight execution, or broad feature additions during structural migration.
+Current science and appearance remain the baseline except for separately
+reviewed astrometric corrections and bug fixes. Deferred work is retained in
+the archived roadmap and [current scientific limits](scientific_contracts.md).
