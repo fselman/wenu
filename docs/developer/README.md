@@ -294,5 +294,8 @@ and manifest-backed Ceres solution facts through PR #301 after 211 focused,
 36 documentation and eight tooling Mac cases, with cleanup confirmed. K3.29 now
 implements [comet consumers and provider-record routing](implementation_reference.md#comet-consumers-and-provider-records)
 through PR #302 after 273 focused, 36 documentation and eight tooling Mac cases;
-cleanup is confirmed. K3.30 implements [antisolar reference routing](implementation_reference.md#antisolar-constructed-reference-routing)
-for acceptance. Complete antisolar Mac acceptance and K3/K5 closure remain pending.
+cleanup is confirmed. K3.30 [antisolar reference routing](implementation_reference.md#antisolar-constructed-reference-routing)
+is accepted through PR #303 after 117 focused, 36 documentation and eight tooling
+Mac cases; clean main and cleanup confirmed. K3.31 implements
+[satellite state and observer services](implementation_reference.md#satellite-state-and-observer-services)
+for acceptance. Complete satellite-state-routing Mac acceptance and K3/K5 closure remain pending.

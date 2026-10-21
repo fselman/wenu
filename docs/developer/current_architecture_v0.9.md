@@ -568,3 +568,23 @@ construction receipts retain the source frame/resource and actual sample
 observation before transformation into fixed product axes. Explicit Astropy
 antisolar points retain their construction-time antipodes and receipt when
 later displayed with another observer; they are not physical SDK objects.
+
+## Satellite state and observer boundary
+
+The existing `Sgp4TemePropagator` now transports scalar and array results through
+the existing Cartesian SDK in its current owner. The retained SGP4 backend still
+receives the original split UTC Julian dates and produces geometric Earth-centred
+TEME, never ICRF. The adapter returns admitted SI PV through the original typed
+kilometre API, preserving source/snapshot identity, epoch/age and status errors.
+
+Request-scoped borrowed registration binds the complete canonical element record,
+optional caller snapshot digest, propagator implementation and installed leap-table
+identity. UTC-to-TAI conversion labels the SDK query only; it changes no SGP4
+input. Admission is limited to the exact finite request, with unknown uncertainty
+and no temporal reuse or invented prediction-validity interval.
+
+The existing Astropy TEME-to-ITRS and observer-subtraction services retain their
+formulas, installed EOP evidence, WGS-84 site and geometric vacuum policy.
+Snapshot validation/external admission remains upstream; acquisition remains
+separate from evaluation. Later candidate/crossing/report/illumination/radiometry
+migration and astronomical package extraction remain pending.

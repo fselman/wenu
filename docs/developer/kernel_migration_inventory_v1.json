@@ -1418,7 +1418,7 @@
     },
     {
       "path": "src/wenu/satellites/sgp4.py",
-      "git_blob_sha": "e295cbd62e512ad0bbe690691ed0b9fb3c499a48",
+      "git_blob_sha": "3cd2ecec482ba914e2bb947da9f680446baab806",
       "as_is_directory": "src/wenu/satellites",
       "description": "Validated Vallado-compatible SGP4 propagation into geometric TEME."
     },
@@ -12402,7 +12402,7 @@
       "Actual canonical point and sampled-symbol fallback PNGs match retained raw input paths with explicitly synthetic apparent backends.",
       "All original antisolar numerical function ASTs unchanged; no SDK/dependency/resource/schema/renderer changes."
     ],
-    "limits": "Complete Mac acceptance pending. Explicit Astropy geocentric unit-direction antipode remains legacy compatibility, not new physical model qualification. Retain independent 50A.5B evidence and unchanged SDK/numerical/installation receipts. Three selected offline cases require existing Mac resources. K3.31/K3/K5 remain separate.",
+    "limits": "Accepted PR #303/main f4ae0fb7: Mac 117 focused (11.48 s), 36 documentation (4.02 s), eight tooling (7.256 s); clean synchronized main and cleanup confirmed. No new physical model qualification or K3/K5 closure.",
     "local_receipt": {
       "focused_available_passed": 114,
       "focused_seconds": 4.34,
@@ -12412,6 +12412,45 @@
       "documentation_complete_checkout_required": 5,
       "tooling_passed": 8,
       "tooling_seconds": 5.393
+    }
+  },
+  "satellite_state_routing": {
+    "milestone": "K3.31",
+    "base_commit": "f4ae0fb723def9b605e2961f24f4df2c2bcb0e63",
+    "plan_commit": "b2555fadd19d32d6028af0b551279be629e66afc",
+    "gate": "satellite-state-routing",
+    "owners": [
+      "src/wenu/satellites/sgp4.py"
+    ],
+    "source_blobs": {
+      "src/wenu/satellites/sgp4.py": "3cd2ecec482ba914e2bb947da9f680446baab806"
+    },
+    "retained_owners": [
+      "src/wenu/satellites/elements.py",
+      "src/wenu/satellites/snapshots.py",
+      "src/wenu/satellites/snapshot_admission.py",
+      "src/wenu/satellites/snapshot_acquisition.py",
+      "src/wenu/satellites/topocentric.py",
+      "packages/wenu_kernel/src/wenu_kernel/records.py",
+      "packages/wenu_kernel/src/wenu_kernel/kernel.py"
+    ],
+    "disposition": "Retain numerical SGP4 scalar/array calculation bodies and original typed-state API; transport returned SI PV through existing Cartesian SDK with Earth-centred geometric TEME, complete supplied record/snapshot/time identities and exact finite batch admission. Existing Astropy/EOP observation services consume these states unchanged.",
+    "evidence": [
+      "Scalar/array and observer returned-PV seam cases fail before routing.",
+      "Returning raw PV after successful kernel admission fails all three seam cases.",
+      "Original initialization/state/scalar/array ASTs unchanged apart from private dispatch names.",
+      "Retain pinned Vallado and separate Skyfield/Astropy observer oracles, ordering/duplicates/scalar fallback, original SGP4 errors and offline snapshot/admission integrity."
+    ],
+    "limits": "Complete Mac acceptance pending. UTC split-JD remains the SGP4 input; offline TAI labels serve SDK transport only. Finite exact requests are not physical validity/covariance/reuse certificates. No SDK, dependency, module/package, acquisition, resource bytes, schema or renderer changes. K3.32 onward and K3/K5 remain separate.",
+    "local_receipt": {
+      "gate_collected": 77,
+      "focused_passed": 77,
+      "focused_seconds": 41.21,
+      "documentation_available_passed": 31,
+      "documentation_seconds": 1.39,
+      "documentation_complete_checkout_required": 5,
+      "tooling_passed": 8,
+      "tooling_seconds": 5.773
     }
   }
 }

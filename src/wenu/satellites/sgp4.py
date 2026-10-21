@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field, replace
 from datetime import datetime, timezone
 from importlib.metadata import version
 from math import isfinite
@@ -206,7 +206,7 @@ class Sgp4TemePropagator:
             ),
         )
 
-    def propagate(self, evaluation_utc: str) -> SatelliteTemeState:
+    def _propagate(self, evaluation_utc: str) -> SatelliteTemeState:
         """Propagate one UTC instant with split Julian-date input."""
         normalized, jd, fraction = split_julian_date(evaluation_utc)
         code, position, velocity = self._satellite.sgp4(jd, fraction)
@@ -219,7 +219,7 @@ class Sgp4TemePropagator:
             velocity,
         )
 
-    def propagate_many(
+    def _propagate_many(
         self, evaluation_instants_utc
     ) -> tuple[SatelliteTemeState, ...]:
         """Propagate ordered UTC instants with accelerated parity if present."""
@@ -247,4 +247,135 @@ class Sgp4TemePropagator:
                 )
                 for index in range(len(converted))
             )
-        return tuple(self.propagate(item[0]) for item in converted)
+        return tuple(self._propagate(item[0]) for item in converted)
+
+
+    def propagate(self, evaluation_utc: str) -> SatelliteTemeState:
+        """Return one admitted kernel TEME state through the legacy API."""
+        return self._kernel_states(
+            (evaluation_utc,), lambda: (self._propagate(evaluation_utc),)
+        )[0]
+
+    def propagate_many(self, evaluation_instants_utc) -> tuple[SatelliteTemeState, ...]:
+        """Retain ordered scalar/accelerated evaluation, including duplicates."""
+        instants = tuple(evaluation_instants_utc)
+        return self._kernel_states(instants, lambda: self._propagate_many(instants))
+
+    def _kernel_states(self, instants, evaluate):
+        # UTC/split-JD remains the SGP4 input. TAI is only the explicit SDK
+        # transport label; conversion never downloads or alters orbital inputs.
+        from hashlib import sha256
+        import erfa
+        from astropy.time import Time
+        from astropy.utils import iers
+        from wenu.ephemeris_state import _time_point, _unknown
+        from wenu.satellites.elements import canonical_json_bytes
+        from wenu_kernel.kernel import Kernel
+        from wenu_kernel.errors import ProviderEvaluationError, ResourceMismatch, UnsupportedCapability
+        from wenu_kernel.records import (
+            AccuracyRequest, CapabilityDecision, CartesianState, CatalogueRef,
+            CatalogueSnapshot, ModelAdmission, ModelRef, ObjectKey, ObjectRecord,
+            ProviderDescriptor, ProviderKey, ReferenceSpec, ResourceRef,
+            SessionPolicy, StateBatch, StateQuery, TimeSpan,
+        )
+
+        normalized = tuple(split_julian_date(value)[0] for value in instants)
+        if not normalized:
+            return ()
+        with iers.conf.set_temp("auto_download", False):
+            labels = tuple(_time_point(time) for time in Time(normalized, scale="utc").tai)
+            epoch = _time_point(Time(self.record.epoch_utc, scale="utc").tai)
+        leap_bytes = erfa.leap_seconds.get().tobytes()
+        # This finite registration is not a prediction-validity certificate.
+        first_indices = {}
+        for index, time in enumerate(labels):
+            first_indices.setdefault(time, index)
+        times = tuple(first_indices)
+        domain = TimeSpan(min(times, key=TimeSpan.key), max(times, key=TimeSpan.key))
+        record_bytes = canonical_json_bytes(asdict(self.record))
+        record_digest = sha256(record_bytes).hexdigest()
+        snapshot_digest = self._snapshot_sha256
+        resources = [ResourceRef(
+            "satellite:elements", self.record.source_identity, record_digest,
+            domain, "borrowed immutable canonical element record",
+            ("Exact canonical record; source digest " + self.record.source_record_sha256,),
+        )]
+        if snapshot_digest is not None:
+            resources.append(ResourceRef(
+                "satellite:snapshot", "caller-supplied snapshot identity", snapshot_digest,
+                domain, "snapshot validation remains the loader/admission owner",
+                ("Snapshot identity supplied to the existing propagator API.",),
+            ))
+        resources.append(ResourceRef(
+            "time:utc-tai-leaps", "installed ERFA leap table", sha256(leap_bytes).hexdigest(),
+            domain, "offline transport labels only; no SGP4 time conversion",
+            ("Astropy " + version("astropy") + "; pyerfa " + version("pyerfa"),),
+        ))
+        resources = tuple(resources)
+        key = ProviderKey("wenu:sgp4-teme", self._version)
+        obj = ObjectKey("satellite:norad:" + str(self.record.norad_catalog_id))
+        catalogue = CatalogueRef(key, resources, record_digest)
+        model_digest = sha256(canonical_json_bytes((record_digest, self._version,
+            self._implementation, "WGS-72", "improved"))).hexdigest()
+        model = ModelRef("wenu:sgp4-teme", self._version, model_digest, resources)
+        reference = ReferenceSpec("teme", "earth-center", "geometric", "cartesian", "m,m/s",
+                                  "SGP4 WGS-72 improved; UTC split-JD; no observer/apparent corrections")
+        admission = ModelAdmission(catalogue, model, reference, (obj,), ("cartesian_state",), domain)
+        query = StateQuery(catalogue, model, (obj,), times, reference,
+                           AccuracyRequest(metric="euclidean_norm"), require_velocity=True)
+        originals = []
+        owner = self
+
+        class Provider:
+            def describe(self):
+                return ProviderDescriptor(key, (catalogue,), (admission,),
+                                          "borrowed; exact finite request; no temporal reuse")
+
+            def catalogue(self, requested):
+                if requested != catalogue:
+                    raise ResourceMismatch("satellite element catalogue differs")
+                return CatalogueSnapshot(catalogue, (ObjectRecord(
+                    obj, (), "artificial satellite", (epoch,), ("cartesian_state",),
+                    (owner.record.source_identity, "Geometric TEME; uncertainty not evaluated."),
+                ),))
+
+            def supports(self, requested):
+                return CapabilityDecision(requested == query, "one exact TEME batch")
+
+            def evaluate(self, requested):
+                if requested != query:
+                    raise UnsupportedCapability("satellite query differs from admission")
+                if (canonical_json_bytes(asdict(owner.record)) != record_bytes
+                        or owner._snapshot_sha256 != snapshot_digest
+                        or erfa.leap_seconds.get().tobytes() != leap_bytes):
+                    raise ResourceMismatch("satellite record/snapshot/time identity changed")
+                originals.extend(evaluate())
+                return StateBatch(query, tuple(CartesianState(
+                    obj, time, epoch, time, reference,
+                    tuple(value * 1000.0 for value in originals[first_indices[time]].position_km),
+                    tuple(value * 1000.0 for value in originals[first_indices[time]].velocity_km_per_s),
+                    _unknown("m"), _unknown("m/s"),
+                ) for time in times))
+
+            def certify(self, *args):
+                raise UnsupportedCapability("satellite temporal reuse is not admitted")
+
+            def close(self):
+                pass  # Neither the elements nor the propagator are owned here.
+
+        provider = Provider()
+        try:
+            with Kernel(references=(reference,)) as kernel:
+                kernel.register(provider, ownership="borrowed")
+                with kernel.open_session(SessionPolicy((catalogue,))) as session:
+                    returned = session.evaluate(query)
+        except ProviderEvaluationError as error:
+            # Keep the established public SGP4 error code/target/instant API.
+            if isinstance(error.__cause__, SatellitePropagationError):
+                raise error.__cause__ from None
+            raise
+        rows = dict(zip(times, returned.states))
+        return tuple(replace(original,
+            position_km=tuple(value / 1000.0 for value in rows[time].position_m),
+            velocity_km_per_s=tuple(value / 1000.0 for value in rows[time].velocity_m_s),
+        ) for original, time in zip(originals, labels))

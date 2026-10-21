@@ -1807,3 +1807,35 @@ geometry; ordinary rows contain `None`. The antisolar row records construction
 observation and the original geocentric GCRS Sun convention. Rebinding for later
 display transforms the stored point; it does not recompute the Sun. No new public
 argument, physical pseudo-body, SDK contract or saved-snapshot schema is added.
+
+## Satellite state and observer services
+
+`Sgp4TemePropagator.propagate()` and `propagate_many()` retain their signatures and
+`SatelliteTemeState` results. Private numerical methods contain the original
+scalar/accelerated-array calculation bodies; public calls admit their returned
+PV through a borrowed, request-scoped Cartesian SDK registration in the same
+existing module. The original SGP4 nonzero-status exception retains its code,
+NORAD identifier and evaluation instant across the adapter.
+
+The reference is geometric Earth-centred TEME in SI units. Complete canonical
+record content, the separately retained source-record digest, optional caller
+snapshot digest and SGP4 implementation/version/model bind identity. The SDK
+query uses explicit TAI labels converted offline from the original UTC strings;
+source epoch and installed ERFA leap-table identity are retained. The orbital
+calculation still receives the unchanged split UTC JD. Registration admits only
+the exact finite batch. Duplicate samples share transport rows and are restored
+in their original order; the backend retains its original scalar/array route.
+No physical validity interval, covariance, evaluated-state cache or reuse
+certificate is inferred.
+
+`SatelliteGeocentricItrsTransformer` and `SatelliteTopocentricTransformer` consume
+the returned typed TEME state through their existing Astropy/EOP chain. Earth
+orientation is re-read/admitted by the existing service; no warm transformation
+cache is introduced. TEME, ITRS, topocentric GCRS-axis directions and vacuum AltAz
+retain their distinct meanings. A constructed typed TEME input remains compatible;
+it is not retroactively labelled as a kernel-evaluated state.
+
+Snapshot loading, canonical source-content validation, immutable element records
+and external admission tokens remain their existing owners. Direct hand-authored
+records are not promoted to independently validated captured provider evidence.
+No new module, public export, SDK/dependency pin or serialized schema is added.

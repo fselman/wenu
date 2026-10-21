@@ -1610,3 +1610,32 @@ cases and full-checkout documentation limitations are recorded in the inventory.
 K3.29 complete Mac acceptance passed through PR #302: 273 focused (21.12 s),
 36 documentation (3.64 s), eight tooling (8.031 s), with cleanup confirmed.
 K3.30 complete Mac acceptance remains pending.
+
+## Satellite state routing gate
+
+`satellite-state-routing` selects the existing element/snapshot, SGP4,
+topocentric, external-admission, evidence and fake-transport acquisition owners,
+plus one existing installed-snapshot scan. It collects 77 cases. The integration
+sentinel protects snapshot-to-propagator-to-observer assembly; it does not close
+K3.33 crossing completeness or later product obligations.
+
+Preserve the pinned independent Vallado near/deep-space vectors, separate
+Skyfield/Astropy observer chains and numerical tolerances. New seams require
+returned SI PV to control both public propagation routes and the geocentric/
+topocentric services, preserve source/snapshot/model/epoch/age identity and
+original status errors, and propagate kernel/EOP refusal after successful use.
+Array tests retain ordering, duplicates, generator input and scalar fallback.
+Resource substitutions refuse before evaluation. Unknown uncertainty remains
+unknown, and exact finite batch admission never certifies prediction validity.
+
+All three returned-PV seams fail before implementation; deliberately returning
+raw values after kernel admission also fails all three. The original numerical
+bodies are structurally unchanged apart from private dispatch naming. Unchanged
+source, observer and generic SDK owners retain prior lower-level evidence.
+No SDK/package/dependency/resource/schema change requires another installation,
+full SDK, atlas/polar export or full-production repeat. Acquisition tests use
+fake transports; no external data or current provider permission is inferred.
+
+K3.30 complete Mac acceptance passed at 899a0f2f through PR #303: 117 focused
+(11.48 s), 36 documentation (4.02 s), eight tooling (7.256 s), followed by clean
+main/cleanup confirmation. K3.31 complete Mac acceptance remains pending.

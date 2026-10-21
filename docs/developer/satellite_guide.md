@@ -403,6 +403,15 @@ The SGP4 Cartesian result is geometric TEME position and velocity. TEME is not
 ICRS, GCRS, ITRS, or topocentric AltAz. It must remain typed until a declared
 transformation consumes it.
 
+The current SGP4 owner routes scalar/array PV through the existing Cartesian
+kernel with an explicit Earth-centred TEME reference. Public typed states retain
+kilometres and kilometres per second; the transport uses SI units. Split UTC JD,
+WGS-72/improved SGP4 and nonzero status errors remain unchanged. Explicit offline
+TAI labels and installed leap-table identity describe SDK queries only. Finite
+request admission does not certify orbital validity, covariance or freshness.
+Snapshot/source identities, source epoch and actual UTC evaluation remain explicit.
+The observer chain below retains its independent Astropy/EOP service owner.
+
 The transformation chain declares:
 
 - input and output frames;

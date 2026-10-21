@@ -1534,3 +1534,35 @@ original antisolar numerical function ASTs are unchanged. Independent retained
 compares the original raw Sun chain with the adapted fallback using offline SPKs.
 K3.29 is accepted through PR #302 (273 focused, 36 documentation, eight tooling
 Mac cases); K3.30 complete Mac acceptance and K3/K5 closure remain pending.
+
+## K3.31 satellite state service assessment
+
+| Existing boundary | Disposition |
+|---|---|
+| Snapshot bytes and canonical OMM records | Existing digest/schema/ordering/full-NORAD validation, immutable data and external admission retained; no positional query invented for loading or selection |
+| Scalar/accelerated SGP4 | Original calculation bodies retained privately; public calls transport returned SI Cartesian states through existing SDK in the current SGP4 owner |
+| TEME native state | Explicit Earth-centred geometric reference; the ICRF-only ephemeris adapter is not reused by relabelling frames |
+| Time/model/resource identity | Original split UTC JD, source epoch/age and model/version retained; explicit offline TAI transport labels bind installed leap-table identity, complete canonical record and optional supplied snapshot receipt |
+| Array order and duplicates | Backend route and input sequence retained; unique SDK time rows restored to original ordered outputs |
+| Geocentric/topocentric transformations | Existing Astropy TEME/ITRS, WGS-84 subtraction, EOP evidence/coverage and vacuum policies retained; consume returned kernel PV |
+| Later products | One retained installed-snapshot scan protects assembly; K3.32–K3.36 completeness/product migration remains separate |
+
+Before correction, both scalar/array transport seam cases and the observer
+returned-PV case failed. Deliberately returning raw values after kernel admission
+also fails all three cases: registration alone cannot satisfy the contract.
+Original initialization, state construction and scalar/array calculation ASTs
+are unchanged except private method names/dispatch. Element, snapshot,
+external-admission, acquisition, Earth-fixed/topocentric and SDK owners are
+byte-identical to the base. Existing Vallado near/deep-space vectors and separate
+Skyfield/Astropy transformation evidence remain selected.
+
+Registration is request-scoped and borrowed, with unknown uncertainty and no
+reuse certificate or invented prediction-validity range. The original SGP4
+status exception is preserved. Changed snapshot/time receipts before evaluation
+refuse; successful earlier use cannot mask a later kernel or EOP refusal.
+No new physical model, package/module, dependency, resource bytes, schema,
+acquisition policy or renderer algorithm is introduced.
+
+K3.30 is accepted through PR #303 (117 focused, 36 documentation and eight
+tooling Mac cases), with clean main and branch cleanup confirmed. Complete
+K3.31 Mac acceptance and K3/K5 closure remain pending.
