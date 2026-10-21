@@ -161,3 +161,40 @@ def test_tests_do_not_reference_deleted_user_examples():
         source = test.read_text(encoding="utf-8")
         for name in deleted:
             assert f"examples/{name}" not in source
+
+
+@pytest.mark.parametrize("path", EXAMPLE_PATHS)
+def test_example_preparation_refusal_releases_owned_observer(path, monkeypatch):
+    from types import SimpleNamespace
+    module = load_example(path)
+    closed = []
+    active = SimpleNamespace(close=lambda: closed.append(True))
+    monkeypatch.setattr(module, "Observer", lambda **kwargs: active)
+    monkeypatch.setattr(module, "generate_celestial_sphere", object)
+    def refuse(*args, **kwargs):
+        raise RuntimeError("public view refusal")
+    monkeypatch.setattr(module, "get_chart_view", refuse)
+    with pytest.raises(RuntimeError, match="public view refusal"):
+        module.chart_view(module.parser().parse_args([]))
+    assert closed == [True]
+
+
+@pytest.mark.parametrize("filename", ("planisphere.py", "binocular_object.py"))
+def test_example_product_setup_refusal_releases_prepared_observer(filename, monkeypatch):
+    from types import SimpleNamespace
+    module = load_example(ROOT / "examples" / filename)
+    closed = []
+    def refuse(*args, **kwargs): raise RuntimeError("product setup refusal")
+    if filename == "planisphere.py":
+        view = SimpleNamespace(observer=SimpleNamespace(close=lambda: closed.append(True)))
+        monkeypatch.setattr(module, "chart_cli_furniture", refuse)
+    else:
+        class View:
+            observer = SimpleNamespace(close=lambda: closed.append(True))
+            @property
+            def target(self): return refuse()
+        view = View()
+    monkeypatch.setattr(module, "chart_view", lambda arguments: view)
+    with pytest.raises(RuntimeError, match="product setup refusal"):
+        module.generate(module.parser().parse_args([]))
+    assert closed == [True]

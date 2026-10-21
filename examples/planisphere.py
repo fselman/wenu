@@ -19,31 +19,35 @@ def chart_view(arguments, *, sky=None):
     configuration = chart_configuration(arguments)
     sky = generate_celestial_sphere() if sky is None else sky
     observer = Observer(location="La Ligua", time=LOCAL_TIME)
-    mask = tuple(
-        name for group in arguments.constellation_mask for name in group
-    ) or None
-    return get_chart_view(
-        sky, observer, family="planisphere", projection="stereographic",
-        constellation_mask=mask,
-        configuration=configuration,
-    )
+    try:
+        mask = tuple(
+            name for group in arguments.constellation_mask for name in group
+        ) or None
+        return get_chart_view(
+            sky, observer, family="planisphere", projection="stereographic",
+            constellation_mask=mask,
+            configuration=configuration,
+        )
+    except BaseException:
+        observer.close()
+        raise
 
 
 def generate(arguments):
     view = chart_view(arguments)
-    furniture = chart_cli_furniture(
-        arguments,
-        language="es",
-        copyright="© Fernando Selman",
-        symbol_labels=(("open_cluster", "Cúmulo abierto"),
-                       ("globular_cluster", "Cúmulo globular"),
-                       ("planetary_nebula", "Nebulosa planetaria"),
-                       ("supernova_remnant", "Remanente de supernova"),
-                       ("galaxy", "Galaxia"), ("milky_way", "Vía Láctea")),
-        stellar_title="Estrellas",
-        configuration=getattr(view, "configuration", None),
-        family=getattr(view, "family", None))
     try:
+        furniture = chart_cli_furniture(
+            arguments,
+            language="es",
+            copyright="© Fernando Selman",
+            symbol_labels=(("open_cluster", "Cúmulo abierto"),
+                           ("globular_cluster", "Cúmulo globular"),
+                           ("planetary_nebula", "Nebulosa planetaria"),
+                           ("supernova_remnant", "Remanente de supernova"),
+                           ("galaxy", "Galaxia"), ("milky_way", "Vía Láctea")),
+            stellar_title="Estrellas",
+            configuration=getattr(view, "configuration", None),
+            family=getattr(view, "family", None))
         results = draw_chart_view_from_arguments(
             view, arguments, stem="planisphere",
             furniture=furniture,

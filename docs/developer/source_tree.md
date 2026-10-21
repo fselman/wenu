@@ -438,3 +438,13 @@ contains the existing admitted TSIS edition/byte/schema/grid/integral facts.
 The current `satellites/radiometry.py` owns strict metadata loading and the
 immutable runtime record; numerical scaling/integration remain in that owner.
 This is a packaged declaration, not a vendored spectrum or a new Python module.
+
+## Packaged teaching resources
+
+`example_scripts/` contains the byte-identical installed copies of the six
+canonical `examples/*.py` requests. `notebooks/en/` contains two notebooks and
+`notebooks/es/` three. The existing `cli/examples.py` and `cli/notebooks.py`
+install those resources; notebook package-data inclusion is explicit in
+`pyproject.toml`. K3.37 introduces no Python module or command. Notebook and
+example orchestration uses current public composition and retains observer
+cleanup on failure; numerical and renderer owners remain unchanged.

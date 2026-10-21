@@ -1803,3 +1803,35 @@ new synthetic spectra are labelled composition specimens, not provider captures.
 No acquisition or redistribution-policy change, Moonlight or external execution.
 Documentation/tooling and complete focused Mac acceptance remain required.
 K3.37 onward and K3/K5 closure remain separate.
+
+## Public surface routing gate
+
+Run `python tools/run_test_gate.py public-surface-routing --run` with plugin
+autoload disabled, plus tooling and the documentation gate. The focused gate
+covers public exports, all six canonical examples and resolved-view CLI parity,
+configuration overlays/presets/style/detail/product translation and isolation,
+translations, both installers and notebook execution/cleanup.
+
+The packaging case uses unchanged dependency/build helper policy with synthetic
+curated build fixtures, builds a wheel from its sdist, compares exact notebook,
+example, defaults/preset and translation bytes, then pip-installs it. A `-I -S`
+process runs all eight generated command help paths, six installed example help
+paths and actual installer copy/skip/force operations without checkout access or
+network. This does not execute comet acquisition or repeat accepted atlas and
+satellite product numerics.
+
+Notebook cell seams test returned sky/view/results, magnitude/reversal/language,
+and refusal at sphere/view/drawing construction, always releasing the observer.
+Five canonical PNG exports use a constructed two-star catalogue and synthetic
+observer backend through real shared kernel/composition/render/export services.
+These are composition tests, not an observational accuracy or historical-pixel
+parity claim. The notebooks replace obsolete manual renderer demos with current
+atlas requests. Existing accepted numerical and physical product receipts remain
+applicable to unchanged implementations. Complete Mac acceptance is pending;
+K3.38 onward and K3/K5 closure are separate.
+
+Local final focused gate: 238 passed in 45.01 s. Three deliberate faults each
+failed the closest contract and were restored; affected owners passed afterward.
+Available documentation: 31 passed, five full-checkout archive/asset checks
+deselected; tooling: eight passed. Notebook execution cases also verify
+format-4.5 cell IDs. Complete Mac acceptance remains pending.

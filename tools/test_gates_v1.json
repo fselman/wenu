@@ -2826,6 +2826,120 @@
           "reason": "Unmodified build rules ship exact metadata in wheel/sdist; isolated installed import/numerical consumer works and missing packaged metadata refuses without fallback."
         }
       ]
+    },
+    "public-surface-routing": {
+      "scope": "K3.37 public Python/command and teaching/configuration consumers, notebook migration, example cleanup and installed resource delivery.",
+      "limits": "Preserve public APIs, request defaults and six example output/science paths. Five obsolete notebooks now express their teaching requests through current canonical atlas composition; no pixel parity with retired renderer demos is claimed. Constructed catalogue/observation notebook exports are synthetic composition evidence. Only explicit notebook package-data and demonstrated lifecycle fixes; no SDK/dependency/science/source/acquisition/schema/renderer algorithm or later maintenance migration. Retain accepted chart/atlas/satellite numerical/product and installation receipts; no external execution. K3.38 and K3/K5 remain separate.",
+      "selections": [
+        {
+          "node": "tests/test_canonical_examples.py",
+          "reason": "Existing public consumer owner: execute requests, enforce delegation, immutable configuration/precedence or compatibility and failure ownership."
+        },
+        {
+          "node": "tests/test_canonical_example_controls.py",
+          "reason": "Existing public consumer owner: execute requests, enforce delegation, immutable configuration/precedence or compatibility and failure ownership."
+        },
+        {
+          "node": "tests/test_canonical_all_sky_example.py",
+          "reason": "Existing public consumer owner: execute requests, enforce delegation, immutable configuration/precedence or compatibility and failure ownership."
+        },
+        {
+          "node": "tests/test_canonical_binocular_example.py",
+          "reason": "Existing public consumer owner: execute requests, enforce delegation, immutable configuration/precedence or compatibility and failure ownership."
+        },
+        {
+          "node": "tests/test_canonical_circumpolar_example.py",
+          "reason": "Existing public consumer owner: execute requests, enforce delegation, immutable configuration/precedence or compatibility and failure ownership."
+        },
+        {
+          "node": "tests/test_canonical_regional_examples.py",
+          "reason": "Existing public consumer owner: execute requests, enforce delegation, immutable configuration/precedence or compatibility and failure ownership."
+        },
+        {
+          "node": "tests/test_example_installer.py",
+          "reason": "Existing public consumer owner: execute requests, enforce delegation, immutable configuration/precedence or compatibility and failure ownership."
+        },
+        {
+          "node": "tests/test_wenu_chart_example_parity.py",
+          "reason": "Existing public consumer owner: execute requests, enforce delegation, immutable configuration/precedence or compatibility and failure ownership."
+        },
+        {
+          "node": "tests/test_wenu_chart_configuration_isolation.py",
+          "reason": "Existing public consumer owner: execute requests, enforce delegation, immutable configuration/precedence or compatibility and failure ownership."
+        },
+        {
+          "node": "tests/test_configuration_user_overlay.py",
+          "reason": "Existing public consumer owner: execute requests, enforce delegation, immutable configuration/precedence or compatibility and failure ownership."
+        },
+        {
+          "node": "tests/test_configuration_user_overlay_activation.py",
+          "reason": "Existing public consumer owner: execute requests, enforce delegation, immutable configuration/precedence or compatibility and failure ownership."
+        },
+        {
+          "node": "tests/test_configuration_runtime_closure.py",
+          "reason": "Existing public consumer owner: execute requests, enforce delegation, immutable configuration/precedence or compatibility and failure ownership."
+        },
+        {
+          "node": "tests/test_configuration_geometry_detail_translation.py",
+          "reason": "Existing public consumer owner: execute requests, enforce delegation, immutable configuration/precedence or compatibility and failure ownership."
+        },
+        {
+          "node": "tests/test_configuration_style_mode_translation.py",
+          "reason": "Existing public consumer owner: execute requests, enforce delegation, immutable configuration/precedence or compatibility and failure ownership."
+        },
+        {
+          "node": "tests/test_configuration_furniture_product_export_translation.py",
+          "reason": "Existing public consumer owner: execute requests, enforce delegation, immutable configuration/precedence or compatibility and failure ownership."
+        },
+        {
+          "node": "tests/test_configuration_furniture_product_export_activation.py",
+          "reason": "Existing public consumer owner: execute requests, enforce delegation, immutable configuration/precedence or compatibility and failure ownership."
+        },
+        {
+          "node": "tests/test_packaged_configuration.py",
+          "reason": "Existing public consumer owner: execute requests, enforce delegation, immutable configuration/precedence or compatibility and failure ownership."
+        },
+        {
+          "node": "tests/test_translations.py",
+          "reason": "Existing public consumer owner: execute requests, enforce delegation, immutable configuration/precedence or compatibility and failure ownership."
+        },
+        {
+          "node": "tests/test_package_boundaries.py",
+          "reason": "Existing public consumer owner: execute requests, enforce delegation, immutable configuration/precedence or compatibility and failure ownership."
+        },
+        {
+          "node": "tests/test_wenu_chart_cli.py::test_parser_exposes_one_family_subcommand_set",
+          "reason": "Existing installed command contract without repeating accepted astronomical product gates."
+        },
+        {
+          "node": "tests/test_wenu_chart_cli.py::test_regular_chart_command_discovers_installed_presets",
+          "reason": "Existing installed command contract without repeating accepted astronomical product gates."
+        },
+        {
+          "node": "tests/test_wenu_chart_cli.py::test_command_delegates_to_three_stage_library_interface",
+          "reason": "Existing installed command contract without repeating accepted astronomical product gates."
+        },
+        {
+          "node": "tests/test_wenu_chart_cli.py::test_invalid_configuration_fails_before_observer_or_sphere",
+          "reason": "Existing installed command contract without repeating accepted astronomical product gates."
+        },
+        {
+          "node": "tests/test_wenu_chart_cli.py::test_defaults_prints_packaged_authority_without_generation",
+          "reason": "Existing installed command contract without repeating accepted astronomical product gates."
+        },
+        {
+          "node": "tests/test_wenu_chart_cli.py::test_defaults_write_is_an_exact_deterministic_editable_copy",
+          "reason": "Existing installed command contract without repeating accepted astronomical product gates."
+        },
+        {
+          "node": "tests/test_wenu_chart_cli.py::test_family_help_exposes_public_output_formats_only",
+          "reason": "Existing installed command contract without repeating accepted astronomical product gates."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_public_commands_teaching_and_configuration_ship_without_checkout",
+          "reason": "Actual sdist-to-wheel installation, eight generated commands, six examples, five notebooks, exact configuration resources, public imports and installer calls in -I -S without checkout/network."
+        }
+      ]
     }
   },
   "consumer_review": [

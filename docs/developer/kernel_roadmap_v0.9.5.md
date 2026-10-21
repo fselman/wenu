@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 60, 2026-10-21. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 61, 2026-10-21. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -31,11 +31,11 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Accepted baseline:** main `3463c10211055a8b08505a676edaf8071e6a9917`, PR #308,
-tree identical to tested `bde9d8f4866f62d83f2ceaee5e54edde141da63d`.
-K3.35 passed 62 focused, 36 documentation and eight tooling Mac cases, including
-real offline DE440s parity. Fernando confirmed clean synchronized main and branch
-cleanup, then selected K3.36 with “Proceed”. K3/K5 remain partial.
+**Accepted baseline:** main `fc535c3b525e5a657e9f64845e2d1551e394b142`, PR #309,
+tree identical to tested `ddc1a16685da585d7c8681250acedf038b477247`.
+K3.36 passed 61 focused, 36 documentation and eight tooling Mac cases, including
+wheel/sdist resource delivery. Fernando confirmed clean synchronized main and
+branch cleanup, then selected K3.37 with “Proceed”. K3/K5 remain partial.
 
 | Track | Position |
 |---|---|
@@ -43,8 +43,8 @@ cleanup, then selected K3.36 with “Proceed”. K3/K5 remain partial.
 | Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
 | Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
 | Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
-| Current authorized task | K3.36 bolometric/spectral solar radiometry and TSIS resource metadata; selected 2026-10-21 |
-| Next bounded submilestone | K3.37 remains pending; select separately after K3.36 acceptance |
+| Current authorized task | K3.37 public interfaces and shipped examples/notebooks/configuration; selected 2026-10-21 |
+| Next bounded submilestone | K3.38 remains pending; select separately after K3.37 acceptance |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -75,6 +75,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 61: select K3.37 public consumer surfaces | Fernando’s “Proceed” after PR #309 complete Mac acceptance and confirmed cleanup | Audit public Python exports, all eight installed commands, six canonical examples, five packaged notebooks and both installers, configuration overlays/presets and translations. Retain already compliant delegation and lower-level numerical/product receipts. Repair demonstrated notebook retired imports/render calls through current public composition; preserve intended teaching requests and filenames, with no alternate renderer/science. Verify every notebook cell executes in order with controlled service seams, returned values/refusal and observer cleanup; actual package resource bytes, command help, installer skip/force behavior and public imports without checkout access. Protect real configuration precedence/translation and example routes with existing owners. Use public-surface-routing plus documentation/tooling; fix demonstrated packaging gaps only. No new science, SDK/dependency/module/package, source catalogue bytes, acquisition/network, numerical/renderer algorithm, snapshot/manifest schema, or K3.38 maintenance/acquisition work. Historical Moonlight/consumed authority remains separate. |
 | Revision 60: select K3.36 radiometry and M8 resource metadata | Fernando’s “Proceed” after PR #308 complete Mac acceptance and confirmed cleanup | Audit existing bolometric/spectral consumers; retain accepted illumination geometry and no state re-evaluation. Move exact TSIS edition/source/digest/count/header/grid/unit/resolution/audit-integral/redistribution facts unchanged into packaged JSON, validate into an immutable record in the existing radiometry owner and mirror defaults through existing public identity/constants. Preserve exact external-CSV admission and old API; parser, native trapezoidal integration, inverse-square/fraction scaling, IAU 1361 nominal bolometric model and uncertainty policies remain unchanged. Verify metadata malformed/missing/duplicate/non-finite/type/unit/grid refusal, authoritative returned metadata and no fallback, compatibility aliases, actual geometry-to-radiometry consumption, and exact metadata bytes/import/numerical consumer in wheel/sdist without checkout access. Use satellite-radiometry-routing plus documentation/tooling. Existing external TSIS byte/integral and K3.35 Sun/EOP/independent numerical receipts remain applicable to unchanged sources/math. No CSV vendoring/acquisition, current permission claim, new source edition/physics, SDK/dependency/module/package, build rules, schema for existing science records, renderer or paused/consumed external execution. K3.37 onward remains separate. |
 | Revision 59: select K3.35 illumination and shadows | Fernando’s “Proceed” after PR #307 complete Mac acceptance and confirmed cleanup | Audit existing illumination, Sun/EOP orientation and observer-independent transition consumers. Satellite inputs already use accepted SGP4 Cartesian transport; route known Skyfield Sun sources through the existing KernelEphemerisStateSource in the current illumination owner and preserve custom injected protocols. Preserve typed propagation refusal at the new kernel boundary. Keep numerical occultation/quadrature, observer twilight, continuous limb/contact/root search, WGS-84 and finite-Sun policies unchanged. Verify returned Sun/satellite state consumption, exact times/source/resource/EOP identities, warm refusal, custom-source compatibility, and retained independent analytic/orientation/transition/domain oracles. Use satellite-illumination-routing plus documentation/tooling and a real offline DE440s parity case on Mac; no acquisition or external benchmark execution. No new physics, numerical policy, SDK/dependency/module/package, source bytes, schema, renderer or radiometry-resource change; K3.36 onward and paused/consumed external authorities remain separate. |
 | Revision 58: select K3.34 satellite report consumers | Fernando’s “Proceed” after PR #306 complete Mac acceptance and confirmed cleanup | Audit immutable exact reports, lossless JSON/ECSV/VOTable projection, two-call/direct CLI assembly and offline planning advisories. Existing owners consume admitted exact results or compose the accepted coordinator; preserve implementations and refactor demonstrated gaps only. Verify returned scientific values and refusal through the real CLI/coordinator boundary, report-to-interchange-to-advisory composition, ordered positive/zero fields, complete source/observer/time/EOP identities, nullable Unicode, strict corruption refusal, current validation after prior success and atomic no-clobber publication/failure cleanup. Protect faults in actual values, null indicators, advisory overlap and publication, using existing test owners. Gate satellite-report-routing plus documentation/tooling; retain unchanged lower-level K3.31/K3.33 numerical, worker and SDK/install receipts. No new science, numerical policy, provider acquisition/network, facility writes, source bytes, SDK/dependency/module/package, schema or renderer change. Do not rerun historical production benchmarks or revive consumed execution authority. K3.35 onward remains separate. |
@@ -640,7 +641,7 @@ map below ensures small/non-chart capabilities do not disappear in grouped rows.
 | K3.34 | Route satellite reports, lossless tabular interchange, CLI and planning advisories | Accepted PR #307, tested 11ccdb2f: 68 focused, 36 documentation and eight tooling Mac cases; clean main/cleanup confirmed |
 | K3.35 | Route satellite illumination/finite-Sun shadow consumers without changing physical models | Accepted PR #308, tested bde9d8f4: 62 focused, 36 documentation and eight tooling Mac cases including offline DE440s parity; clean main/cleanup confirmed |
 | K3.36 | Route bolometric/spectral solar radiometry and move edition-specific TSIS facts into resource metadata | Implemented for acceptance under revision 60; M8 validated packaged metadata and compatibility aliases, unchanged numerical bodies. Complete satellite-radiometry-routing Mac gate pending |
-| K3.37 | Close public Python, all eight installed commands, six examples, five notebooks/installers, overlays/presets and translations | Partial selected APIs/cluster CLI accepted; complete public-surface audit/acceptance pending |
+| K3.37 | Close public Python, all eight installed commands, six examples, five notebooks/installers, overlays/presets and translations | Public-surface audit, notebook compatibility/package delivery and example lifecycle fixes implemented; complete Mac acceptance pending |
 | K3.38 | Close maintenance/curation/acquisition and resource/build consumer boundaries | Pending review; classify pure copy/layout separately; no automatic network execution |
 | K3.39 | Verify geometry topology, domain guards, clipping, three projections, renderer/furniture/PNG/PDF/SVG stay pure and compatible | Partial existing tests/appearance accepted; final migrated-consumer verification pending, no graphics rewrite |
 | K3.40 | Reconcile every audited source/public/operational consumer to a route and acceptance receipt, with no applicable service bypass | Pending final K3 gate; all applicable rows above must close before K5 |

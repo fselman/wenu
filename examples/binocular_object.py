@@ -18,14 +18,18 @@ def chart_view(arguments, *, sky=None):
     configuration = chart_configuration(arguments)
     sky = generate_celestial_sphere() if sky is None else sky
     observer = Observer(location="La Ligua", time="2026-05-15 22:00")
-    center = resolve_named_center(arguments.center_on)
-    if center.is_constellation or not hasattr(center.value, "key"):
-        raise ValueError("This example requires a packaged fixed target.")
-    return get_chart_view(
-        sky, observer, family="binocular", target=center.value.key,
-        field_diameter_deg=arguments.field_diameter, projection="stereographic",
-        configuration=configuration,
-    )
+    try:
+        center = resolve_named_center(arguments.center_on)
+        if center.is_constellation or not hasattr(center.value, "key"):
+            raise ValueError("This example requires a packaged fixed target.")
+        return get_chart_view(
+            sky, observer, family="binocular", target=center.value.key,
+            field_diameter_deg=arguments.field_diameter, projection="stereographic",
+            configuration=configuration,
+        )
+    except BaseException:
+        observer.close()
+        raise
 
 
 def _details(view):
@@ -44,13 +48,13 @@ def _details(view):
 
 def generate(arguments):
     view = chart_view(arguments)
-    target = view.target
-    name = target.display_name + (
-        "" if target.primary_identifier is None else f" ({target.primary_identifier})")
-    title = binocular_product_title(target, view.frame.field_diameter_deg, display_name=name)
-    sizing = StellarMagnitudeSizing(reference="limiting_magnitude", scale=1.0, exponent=0.35,
-                                    minimum_area=1.0, maximum_area=40.0)
     try:
+        target = view.target
+        name = target.display_name + (
+            "" if target.primary_identifier is None else f" ({target.primary_identifier})")
+        title = binocular_product_title(target, view.frame.field_diameter_deg, display_name=name)
+        sizing = StellarMagnitudeSizing(reference="limiting_magnitude", scale=1.0, exponent=0.35,
+                                        minimum_area=1.0, maximum_area=40.0)
         results = draw_chart_view_from_arguments(
             view, arguments, stem="binocular-object",
             product_details=_details(view), title=title,

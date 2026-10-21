@@ -17,12 +17,16 @@ def chart_view(arguments, *, sky=None):
     configuration = chart_configuration(arguments)
     sky = generate_celestial_sphere() if sky is None else sky
     observer = Observer(location="La Ligua", time=LOCAL_TIME)
-    return get_chart_view(
-        sky, observer, family="circumpolar",
-        limiting_declination_deg=arguments.limiting_declination,
-        projection="stereographic",
-        configuration=configuration,
-    )
+    try:
+        return get_chart_view(
+            sky, observer, family="circumpolar",
+            limiting_declination_deg=arguments.limiting_declination,
+            projection="stereographic",
+            configuration=configuration,
+        )
+    except BaseException:
+        observer.close()
+        raise
 
 
 def generate(arguments):
