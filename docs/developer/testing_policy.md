@@ -59,6 +59,23 @@ public service use, not a universal requirement to invoke KernelSession.evaluate
 
 ## Choosing a gate
 
+### Stellar enrichment contract gate
+
+Run `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python tools/run_test_gate.py stellar-enrichment-contract --run`.
+K4a.01 is a design/census delivery. Existing `test_stars.py` protects the
+complete original source identities and visual magnitudes/masks, plus faint
+explicit/vertex rows and naming through selection. `test_stellar_state.py`
+retains the source metadata/identity and native lookup contracts. No production
+or SDK implementation changes; no acquisition, matching, propagation or page
+export is exercised. Run tooling/documentation checks too. The census uses
+SHA-256 of ordered HIP lines and compact JSON HIP/magnitude pairs (binary64
+`float.hex`, or `missing`), avoiding display/CSV formatting differences.
+Its counts describe the existing parser output, not Gaia coverage or accuracy.
+Full Mac acceptance is pending. Future acquisition and codec implementation
+must add their own evidence; this gate does not validate a future Gaia payload.
+
+### Gate selection procedure
+
 1. Review the full diff: implementation, tests/fixtures, resources, configuration,
    dependencies, build and collection. Identify changed behavior, its owner,
    public contract and immediate consumers, including dynamic/delegated callers.

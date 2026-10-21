@@ -325,6 +325,15 @@ This does not qualify missing nonstellar frame/origin or measurement metadata;
 
 ## Native stellar kernel adapter
 
+K4a.01 now specifies the [stellar membership and enrichment contract](scientific_contracts.md#stellar-membership-and-enrichment-contract)
+and [source-bound census/logical schema](data/stellar_enrichment_contract_v1.json).
+It is a design artifact only. There is no Gaia loader, match decision,
+propagation adapter, public API addition or saved-sky codec change. Existing
+`source_catalog` owns the full retained population; `catalog` and `hip_df` are
+selected/observed views. The contract keeps foreign astrometry and photometry
+separate from those baseline rows and reserves explicit release-qualified
+identities and component/match evidence for later K4a source admission.
+
 `stellar_catalogue.StellarCatalogueMetadata` is an immutable mirror of a
 `wenu-stellar-catalogue/1` document. The document declares catalogue/edition,
 frame/origin, epoch value/format/time scale, column units, source digest,

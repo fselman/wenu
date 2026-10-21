@@ -176,6 +176,14 @@ not precess. The native position/realization routes now consistently declare
 source epoch J1991.25; the former default J2000.0 metadata was incorrect.
 No Gaia astrometric provider exists.
 
+The [K4a.01 enrichment contract](scientific_contracts.md#stellar-membership-and-enrichment-contract)
+now records the complete 118,218-row source population, its visual-photometry
+identity and the logical edition/component/matching schema. This design does
+not alter the runtime table, source bytes or native/observed routes. Current
+chart selections remain independent of future enrichment membership; current
+saved-sky v6 does not carry Gaia solutions. Acquisition and real matching remain
+K4a.02 onward; real stellar propagation remains K4b.
+
 Native `Stars.realize()` now selects rows with the existing policy and obtains
 finite directions from `stellar_state.LegacyNativeStellarProvider` through
 `KernelSession.evaluate`. Returned kernel vectors supply the geometry; kernel

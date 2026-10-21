@@ -599,7 +599,7 @@ bounded. Runtime authority is accepted one milestone at a time.
 | K0 | Consolidated documentation and pinned functional baseline | Accepted; exact archive ledger and baseline preserved |
 | K1 | Shared service-kernel contracts, including state/provider/observation and geometry/projection services | Initial state contracts accepted; broader service review/final public freeze remains K5 |
 | K2 | Standalone state-SDK component: immutable states, registration, selective reuse and conformance | Accepted foundation; optional capabilities are not automatically promised |
-| K3 | Route existing functionality through appropriate shared state, geometry, projection and realization services | Partial; every consumer below needs its own acceptance, including non-chart paths |
+| K3 | Route existing functionality through appropriate shared state, geometry, projection and realization services | K3.01–K3.40 bounded receipts accepted; final K3/K4 reconciliation and contract freeze remain K5 |
 | K4a | Bounded offline Gaia DR3 identification/subset for current Wenu stars | Pending; membership, visual photometry and identifiers preserved |
 | K4b | Real stellar propagation, incomplete-input policies, historical time and admitted epoch domain | Pending real-star acceptance; shared positional groundwork exists in AX |
 | K5 | Close routing and freeze kernel/observer contracts | Pending; requires K3 + K4 and real provider/compatibility evidence |
@@ -680,7 +680,7 @@ map below ensures small/non-chart capabilities do not disappear in grouped rows.
 | K3.37 | Close public Python, all eight installed commands, six examples, five notebooks/installers, overlays/presets and translations | Accepted PR #310, main 73118315; 238 focused, 36 documentation and eight tooling Mac cases, including installed commands/notebook delivery |
 | K3.38 | Close maintenance/curation/acquisition and resource/build consumer boundaries | Accepted through PR #311, main 3df69c4a; 49 focused, 36 documentation and eight tooling Mac cases; no network execution |
 | K3.39 | Verify geometry topology, domain guards, clipping, three projections, renderer/furniture/PNG/PDF/SVG stay pure and compatible | Accepted PR #312, main 0deca8c3; 247 focused, 36 documentation and eight tooling Mac cases; unchanged production implementations |
-| K3.40 | Reconcile every audited source/public/operational consumer to a route and acceptance receipt, with no applicable service bypass | Complete current census and bounded receipt/route/limit reconciliation delivered; no new baseline bypass demonstrated, production unchanged. Complete Mac consumer-reconciliation/documentation acceptance pending; six-product review precedes Gaia |
+| K3.40 | Reconcile every audited source/public/operational consumer to a route and acceptance receipt, with no applicable service bypass | Accepted PR #313/main 301eb7cb after 25 focused, 36 documentation and eight tooling Mac cases; cleanup confirmed. Six-product checkpoint subsequently accepted, with presentation caveats; K5 reconciliation remains separate |
 
 For each row, the specific task identifies source and test owners from the
 [audit](kernel_migration_audit_v1.md) and
@@ -820,7 +820,7 @@ remain its separate responsibilities.
 
 | ID | Intermediate deliverable and exit evidence | Status / dependency |
 |---|---|---|
-| K4a.01 | Fix current Wenu membership/component/photometry contract and edition-qualified schema, including future DR4 adapter boundary | Pending; no full Gaia mirror or silent V-to-G substitution |
+| K4a.01 | Fix current Wenu membership/component/photometry contract and edition-qualified schema, including future DR4 adapter boundary | Design contract and source-bound census delivered for review; 35 focused cases/nine subtests and eight tooling cases pass locally; full Mac documentation/contract acceptance pending. No full Gaia mirror or silent V-to-G substitution |
 | K4a.02 | Agree bounded acquisition/matching/quality/missing-data policy after checking current primary API/terms/licensing | Pending; before any acquisition; rendering/tests remain offline |
 | K4a.03 | Cross-identify the required DR3 sources with epoch/PM-aware evidence and explicit ambiguous/unmatched/component cases | Pending; K4a.01–K4a.02; no nearest-neighbour guess silently accepted |
 | K4a.04 | Publish immutable bounded DR3 subset with exact bytes, edition/epoch/units/provenance, uncertainties/correlations and match evidence | Pending; K4a.03 and redistribution admission |

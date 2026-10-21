@@ -1,5 +1,12 @@
 # Wenu developer documentation
 
+**Current selected work:** K4a.01 [stellar membership and enrichment contract](scientific_contracts.md#stellar-membership-and-enrichment-contract).
+The complete source census and logical schema are delivered for review; no Gaia
+data is acquired or consumed. K3.40 Mac acceptance and all six product specimens
+are complete; presentation refinements remain deferred. Finite constellation
+segments were corrected and accepted through PR #314, main `2988f754`.
+K4a.02 onward, K4b and K5 freeze/extraction remain separate future work.
+
 **Existing Wenu production baseline:** `6708f54a0d8984c0be348b2c8cb02b311646a02b`, 2026-10-17.
 PR #234 is integrated. Its tree is identical to `ea8dc505`, which passed all
 3,606 plugin-disabled Mac tests in 1,136.74 s; 16 overlay tests passed in 4.03 s.
@@ -330,5 +337,6 @@ K3.39 is accepted through PR #312 at main `0deca8c3`: 247 focused,
 36 documentation and eight tooling Mac cases; branch cleanup confirmed.
 K3.40 delivers the [complete consumer reconciliation](implementation_reference.md#complete-consumer-reconciliation)
 and [focused audit gate](testing_policy.md#consumer-reconciliation-gate).
-Its Mac acceptance remains pending. The agreed next work is six real product
-outputs before Gaia; SDK freeze and astronomical package extraction remain later.
+K3.40 is accepted through PR #313 after 25 focused, 36 documentation and eight
+tooling Mac cases. Fernando completed the six-product review and selected K4a.01;
+SDK freeze and astronomical package extraction remain later.

@@ -1,0 +1,55 @@
+{
+  "schema": "wenu-stellar-enrichment-contract/1",
+  "status": "design-contract-only; no Gaia data or runtime adapter",
+  "milestone": "K4a.01",
+  "baseline": {
+    "commit": "2988f75436c93a6ee060c10cb464031fd3ce96ce",
+    "catalogue": "hipparcos",
+    "edition": "ESA-1997-I/239",
+    "source_sha256": "58ceabb104d647160d9437ce6e513a02a036bb4ad9f8879a5a22fd52943616e0",
+    "rows": 118218,
+    "ordered_hip_ids_sha256": "00a19eebab5b617a16cb26657996ab4475548a715705a80373937e06e4d49b80",
+    "hip_magnitude_pairs_sha256": "4c1753b01ec9789ceea85ce683905310d642eb8aa03873838e7f520ae361d0d2",
+    "missing_coordinate_rows": 263,
+    "missing_visual_magnitude_rows": 1,
+    "multiple_flag_rows": 23447,
+    "variable_flag_rows": 23898,
+    "default_magnitude_limit": 5.5,
+    "default_selected_rows": 2851
+  },
+  "record_schema": "wenu-stellar-enrichment/1",
+  "row_fields": ["identity", "original", "match_status", "candidates", "adopted_solution", "foreign_photometry"],
+  "serialization_rules": "IDs are decimal strings; unknowns are explicit null/masks; numeric values must be finite; provider unknown fields survive in original source records",
+  "identity_fields": ["catalogue", "edition", "identifier", "component"],
+  "identity_rules": {
+    "identifier_encoding": "decimal string; never binary64",
+    "baseline_identity": "hipparcos + ESA-1997-I/239 + HIP; component null unless independently established",
+    "foreign_identity": "catalogue + release + source_id; never equate identifiers across releases",
+    "component_null": "unknown or unresolved; not an asserted single star, barycentre or primary",
+    "cardinality": "one membership row per original HIP; zero or more candidate counterparts; at most one explicitly adopted astrometric solution per component"
+  },
+  "membership": {
+    "population": "complete Stars.source_catalog before any chart selection",
+    "chart_selection": "existing magnitude cut OR explicit include_ids OR enabled constellation vertices; later visibility/detail selection remains independent",
+    "outside_source": "report absent explicit IDs and missing constellation endpoints; do not fabricate source rows or coordinates",
+    "unmatched": "retain original membership and source-native lookup; no implicit new propagation capability"
+  },
+  "match_statuses": ["not_searched", "unmatched", "ambiguous", "component_conflict", "identified_unusable", "adopted"],
+  "solution_fields": {
+    "identity": "edition-qualified foreign identity",
+    "reference": "frame, origin, reference epoch value/format/scale, spatial convention and primary-source evidence",
+    "parameters": "original names/values/units/masks for position, PM, parallax and radial velocity when supplied",
+    "uncertainty": "parameter errors, all supplied correlations, covariance ordering/units and derivation when constructed; unknowns explicit",
+    "quality": "solution type and preserved original quality fields; usability policy version and reasons",
+    "source": "resource digest, row identity and provenance; original fields preserved"
+  },
+  "match_evidence_fields": ["candidate_identity", "source_resource", "method", "comparison_epoch", "comparison_frame", "separation", "criteria", "component_evidence", "decision", "reason", "policy_version"],
+  "photometry": {
+    "existing_magnitude": "original Hipparcos visual magnitude used for selection and symbol sizing",
+    "gaia_bands": "separate measurements with passband/release/source provenance; no implicit G-to-V substitution",
+    "missing": "explicit null/mask; never zero"
+  },
+  "preserved_columns": ["magnitude", "variability_type", "variability_annex", "light_curve_annex", "is_variable", "ccdm_id", "ccdm_entry_count", "component_count", "multiple_annex", "component_position_angle_deg", "component_separation_arcsec", "component_magnitude_difference", "is_multiple", "star_designations"],
+  "snapshot_fields": ["schema", "membership_source", "membership_digest", "edition_adapters", "resources", "policy_versions", "rows", "coverage_report"],
+  "deferred": ["API/terms and acquisition policy K4a.02", "crossmatch decisions K4a.03", "immutable source subset publication K4a.04", "coverage acceptance K4a.05", "propagation and historical domains K4b", "saved-sky schema integration", "kernel freeze K5"]
+}

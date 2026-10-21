@@ -1,5 +1,10 @@
 # Wenu production source map
 
+K4a.01 adds no production module. Its [enrichment contract and census](data/stellar_enrichment_contract_v1.json)
+belong to documentation/data design; `stellar_catalogue.py` and `objects/stars.py`
+retain ingestion and membership ownership. The [scientific contract](scientific_contracts.md#stellar-membership-and-enrichment-contract)
+defines future edition adapters without activating them.
+
 **As-is baseline:** `6708f54a`, 2026-10-17. This inventory covers every Python
 file under `src/wenu`; it describes current ownership, not future package names.
 The [architecture](current_architecture_v0.9.md) explains cross-cutting seams;
