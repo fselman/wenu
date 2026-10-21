@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 49, 2026-10-20. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 50, 2026-10-20. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -31,11 +31,11 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Accepted baseline:** main `938d0a02d2d46d50b2606ee76d712585120dccb5`, PR #297,
-tree identical to tested `ff5b5fbdfecc4701dbb172ec596b69a99ead3af5`.
-K3.24 passed 53 focused, 36 documentation and eight tooling Mac cases.
-Fernando confirmed clean synchronized main and branch cleanup. K3.25 is selected
-under revision 49; K3/K5 remain partial.
+**Accepted baseline:** main `b02fd8846d09cf1dd9141ba575c78e685b9f83b7`, PR #298,
+tree identical to tested `7c80812c1a6c6f9d40e068b63b648022e7f70e5f`.
+K3.25 passed 83 focused, 36 documentation and eight tooling Mac cases.
+Fernando confirmed clean synchronized main and branch cleanup. K3.26 is selected
+under revision 50; K3/K5 remain partial.
 
 | Track | Position |
 |---|---|
@@ -43,8 +43,8 @@ under revision 49; K3/K5 remain partial.
 | Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
 | Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
 | Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
-| Current authorized task | K3.25 major-planet/Moon state and apparent-direction routing; selected 2026-10-20 |
-| Next bounded submilestone | K3.26 remains pending; select separately after K3.25 acceptance |
+| Current authorized task | K3.26 resolved disks/appearance and observed/frozen-Earth sequences; selected 2026-10-20 |
+| Next bounded submilestone | K3.27 remains pending; select separately after K3.26 acceptance |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -75,6 +75,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 50: select K3.26 disk and appearance consumers | Fernando’s 2026-10-20 “proceed” after PR #298 complete Mac acceptance/cleanup and the explicit resolved-disk/physical-appearance/observed-frozen-Earth proposal | Reuse K3.25’s existing Cartesian adapter at default single-disk, observed-sequence and frozen-Earth sequence assembly. Keep raw reception/apparent backend separate; route target/Sun geometric queries, including the reception-Sun appearance query and frozen initial Earth vector. Preserve the existing light-time, phase, diameter, bright-limb, geometry, sample chronology, physical/display scale and magnification algorithms; no new physics. Preserve component sharing within one request context, check existing live observer-resource keys before reuse, and prevent equal-valued separate request contexts from hiding fresh admission/refusal. Custom injected protocol owners retain compatibility. Verify returned state/refusal, source/time/centre identity, shared-component lifecycle, physical-versus-display invariants, existing scientific/display owners and real offline DE440s parity through resolved-disk-routing plus documentation/tooling. No new SDK, module/package, dependency, source bytes, snapshot/manifest schema, renderer algorithm or track/minor-body adoption. K3.27 remains separate. |
 | Revision 49: select K3.25 major-planet/Moon state routing | Fernando’s 2026-10-20 “Proceed” after PR #297 Mac acceptance/cleanup and the explicit major-planet/Moon proposal | Reuse existing EphemerisStateSource, one-way light-time solver and Skyfield apparent correction service. Add a thin Wenu adapter to the existing kernel Cartesian-state contract for default major-planet/Moon point consumers; preserve numeric provider targets versus physical body IDs, reception/emission times, geometric target-minus-centre evaluation and borrowed-resource ownership. No new SDK capability or numerical model. Repair M10 filename inference: hash exact bytes, retain coverage and explicit caller model declarations, mark otherwise unqualified; do not invent DE-model qualification. Verify returned states/refusal, identities, SI/AU conversion, lifecycle, existing numerical and point-layer consumers through major-planet-moon-routing plus documentation/tooling. Preserve default science, source bytes, dependencies, snapshot/manifest formats, renderer and package placement. Resolved disks/appearance K3.26 and minor-body adoption remain separate. |
 | Revision 48: select K3.24 fixed-sky consumers | Fernando’s 2026-10-20 “proceed” after PR #296 Mac acceptance/cleanup and the explicit fixed-sky/frozen-baseline/rotating-horizon proposal | Retain existing CoordinateService orientation and canonical static/observer-time generators. Keep celestial anchor, local frame time and catalogue epoch distinct; preserve actual astronomical orientation and independent complete-render baseline. Correct the demonstrated observer ownership gap when local construction or cleanup fails, without changing calculations. Verify returned service results/refusal, time/context/configuration forwarding, cold versus loaded-sphere geometry and PNG/SVG/rendered-PDF outputs through existing owners, plus scientific reference and graphical-comparison tests. Gate: fixed-sky-routing plus documentation/tooling. No new science, true frozen evaluated-state cache, temporal certificate, SDK/dependency/source bytes, snapshot/manifest schema, renderer algorithm or extraction. K3.25 moving-body models remain separate. |
 | Revision 47: select K3.23 ordinary temporal sequences | Fernando’s 2026-10-20 “Proceed” after PR #295 Mac acceptance/cleanup and the explicit ordinary-sequence/state-realization/playback/resume proposal | Inspect existing timeline/sequence/manifest/CLI/configuration owners and reuse the canonical static generator. Refactor demonstrated bypasses only. Verify per-frame simulation/context times and returned kernel directions, refusal with partial progress and resource cleanup, selective output-hash resume, and declared chart/configuration/timeline/display/playback identity. Preserve schema-v1 manifest portability, UTC sampling versus civil display, existing source/observation mathematics and appearance. Gate: observer-time-sequence-routing plus documentation/tooling, including the retained real two-frame output/resume case. A demonstrated per-frame composition failure permits reusing the existing immutable FullSkyChart viewport rather than recomputing its numerical fit; preserve the exact formulas and strict composition guard, and verify the affected full-sky/composition/export owners. No new science, SDK/dependency, source bytes, snapshot/manifest schema, renderer algorithm or extraction. Fixed-sky K3.24, moving-body source/model routing K3.25 onward and universal resource/code identity certificates remain separate; saved output reuse verifies the declared plan and bytes, not current physical-model accuracy. |
@@ -617,8 +618,8 @@ map below ensures small/non-chart capabilities do not disappear in grouped rows.
 | K3.22 | Migrate physical polar pairs, calendars, pages, pouches and sheet products without print/scene changes | Accepted through PR #295 at main 738c4fc6 after 162 focused, 36 documentation and eight tooling Mac cases; clean main and branch cleanup confirmed. Existing production routes retained unchanged |
 | K3.23 | Close ordinary temporal sequence state/realization routes, playback and resume identities | Accepted through PR #296 at main 4e62f47a after 151 focused, 36 documentation and eight tooling Mac cases; clean main and branch cleanup confirmed. Later fixed-sky/moving-body provider obligations remain separate |
 | K3.24 | Close fixed-sky/frozen-baseline and rotating-horizon consumers with distinct anchor/local instants | Accepted PR #297/main 938d0a02 after 53 focused, 36 documentation and eight tooling Mac cases; clean synchronized main and branch cleanup confirmed |
-| K3.25 | Route major-planet/Moon states and apparent directions; preserve body/barycentre and one light-time owner | Implemented for acceptance under revision 49; request-scoped existing Cartesian SDK adapter and M10 inference repair. Full Mac gate remains pending; physical model qualification stays unknown |
-| K3.26 | Route resolved disks/appearance and observed/frozen-Earth sequences | Pending; preserve physical versus magnified display and chronology |
+| K3.25 | Route major-planet/Moon states and apparent directions; preserve body/barycentre and one light-time owner | Accepted PR #298/main b02fd884 after 83 focused, 36 documentation and eight tooling Mac cases; clean synchronized main/branch cleanup confirmed. Physical model qualification stays unknown |
+| K3.26 | Route resolved disks/appearance and observed/frozen-Earth sequences | Selected revision 50 after K3.25 acceptance; existing adapter adoption and request-owned component reuse checks. Implementation/acceptance pending |
 | K3.27 | Route natural-body tracks and temporal components through requested state samples | Pending; keep fixed chart axes and existing component admission |
 | K3.28 | Route asteroid identities/states/tracks and offline resource consumers; move Ceres solution facts to a manifest | Pending; preserve coverage/digests/close semantics; M7 |
 | K3.29 | Route comet identity/state/track/report/photometry consumers; keep discovery/acquisition outside deterministic rendering | Pending; preserve current models and unfinished-selection limits |
