@@ -515,7 +515,7 @@ def test_curated_wheel_and_sdist_install_same_defaults_reports_and_explicit_over
             assert len(sdk) == 1
             assert sdk[0].extras == {"geometry"}
             assert sdk[0].url == ('git+https://github.com/fselman/wenu.git@'
-                'f0a2e247d9ed0061d256891fcf4962d1c41fd4f9#subdirectory=packages/wenu_kernel')
+                'f0694a0ca06487d6a4752ba1fe3ce31afebc9b65#subdirectory=packages/wenu_kernel')
         installed = tmp_path / f'installed_{i}'
         result = subprocess.run([sys.executable, '-m', 'pip', 'install', '--no-deps',
             '--target', str(installed), str(wheel)], cwd=tmp_path, capture_output=True, text=True)
