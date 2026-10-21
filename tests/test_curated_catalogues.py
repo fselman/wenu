@@ -184,6 +184,7 @@ def test_curated_manifest_refuses_escaping_selector_and_unbound_catalogue(tmp_pa
     selector.symlink_to('../outside.ecsv')
     with pytest.raises(ValueError, match='filename'):
         resources.build_curated_catalogue_manifest(root)
+
     selector.unlink(); selector.symlink_to(catalogue.name)
     before = catalogue.read_bytes()
     catalogue.write_bytes(before + b'corrupted')
@@ -198,6 +199,74 @@ def test_curated_manifest_refuses_escaping_selector_and_unbound_catalogue(tmp_pa
     criteria.write_text(json.dumps(changed))
     with pytest.raises(ValueError, match='Criteria catalogue checksum'):
         resources.build_curated_catalogue_manifest(root)
+
+
+def test_build_publication_consumes_returned_manifest_and_rechecks_before_replacement(tmp_path, monkeypatch):
+    """The build adapter delegates admission; it never interprets catalogue rows."""
+    import importlib.util
+    from types import SimpleNamespace
+    spec = importlib.util.spec_from_file_location("curated_build_consumer", ROOT / "src/curated_catalogue_packaging.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    source = tmp_path / "source"
+    catalogue, evidence = _bundle(source, "open_clusters")
+    _bundle(source, "planetary_nebulae")
+    admitted = resources.build_curated_catalogue_manifest(source)
+    selected = dict(admitted, catalogues={"open_clusters": admitted["catalogues"]["open_clusters"]})
+    calls = []
+    def admission(root):
+        calls.append(root)
+        resources.build_curated_catalogue_manifest(root)  # actual fresh byte admission
+        return selected
+    monkeypatch.setattr(module, "_resources", lambda: SimpleNamespace(
+        build_curated_catalogue_manifest=admission,
+        _verify_curated_products=resources._verify_curated_products))
+    destination = tmp_path / "published"
+    outputs = module._publish(source, destination)
+    assert calls == [source]
+    assert json.loads((destination / "manifest.json").read_text()) == selected
+    assert not (destination / "planetary_nebulae").exists()
+    expected = selected["catalogues"]["open_clusters"]["products"]
+    assert set(outputs) == {str(destination / "open_clusters" / name) for name in expected} | {str(destination / "manifest.json")}
+    assert all((destination / "open_clusters" / name).read_bytes() == (catalogue.parent / name).read_bytes() for name in expected)
+    before = {p.relative_to(destination):p.read_bytes() for p in destination.rglob("*") if p.is_file()}
+    evidence.write_bytes(evidence.read_bytes() + b"corruption")
+    with pytest.raises(ValueError, match="checksum"):
+        module._publish(source, destination)
+    assert calls == [source, source]
+    assert {p.relative_to(destination):p.read_bytes() for p in destination.rglob("*") if p.is_file()} == before
+
+
+def test_build_resource_admission_runs_without_wenu_or_numerical_runtime(tmp_path):
+    """Build-only source loader must not import the Wenu application facade."""
+    source = tmp_path / "source"
+    _bundle(source, "open_clusters")
+    expected = resources.build_curated_catalogue_manifest(source)
+    dependencies = [p for p in sys.path if Path(p).name in ("site-packages", "dist-packages")]
+    script = r'''
+import sys,json,importlib.util,importlib.abc
+from pathlib import Path
+sys.path.extend(json.loads(sys.argv[1]))
+blocked=('wenu','wenu_kernel','astropy','numpy','pandas','matplotlib','skyfield','sgp4','spiceypy')
+class NoRuntime(importlib.abc.MetaPathFinder):
+    def find_spec(self,fullname,path=None,target=None):
+        if fullname.split('.')[0] in blocked:raise AssertionError('build imported runtime: '+fullname)
+sys.meta_path.insert(0,NoRuntime())
+spec=importlib.util.spec_from_file_location('isolated_curated_build',sys.argv[2])
+module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+reader=module._resources()
+source,destination=Path(sys.argv[3]),Path(sys.argv[4])
+expected=json.loads(sys.argv[5])
+assert reader.build_curated_catalogue_manifest(source)==expected
+module._publish(source,destination)
+assert json.loads((destination/'manifest.json').read_text())==expected
+assert not any(name.split('.')[0] in blocked for name in sys.modules)
+'''
+    result = subprocess.run([sys.executable, "-I", "-S", "-c", script,
+        json.dumps(dependencies), str(ROOT / "src/curated_catalogue_packaging.py"),
+        str(source), str(tmp_path / "destination"), json.dumps(expected)],
+        cwd=tmp_path, capture_output=True, text=True)
+    assert result.returncode == 0, result.stdout + result.stderr
 
 
 def _assert_source_products_ship(tmp_path, names, modules=()):

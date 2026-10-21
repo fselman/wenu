@@ -38,6 +38,114 @@ GALACTIC_SPEC = CoordinateSpec(
 )
 
 
+def _zodiac_tool():
+    import importlib.util
+    from pathlib import Path
+    path = Path(__file__).parents[1] / "tools/render_zodiac_constellations.py"
+    spec = importlib.util.spec_from_file_location("zodiac_coordinate_consumer", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _zodiac_observer():
+    from types import SimpleNamespace
+    location = EarthLocation.from_geodetic(-71 * u.deg, -33 * u.deg, 52 * u.m)
+    instant = Time("2026-08-16T01:00:00", scale="utc")
+    return SimpleNamespace(altaz_frame=AltAz(location=location, obstime=instant, pressure=0*u.hPa),
+                           t_astropy=instant, lon_deg=-71., lat_deg=-33., elevation_m=52.)
+
+
+def test_zodiac_maintenance_coordinates_match_retained_astropy_frames():
+    from types import SimpleNamespace
+    from astropy.coordinates import BarycentricMeanEcliptic
+    module, observer = _zodiac_tool(), _zodiac_observer()
+    expected = SkyCoord(lon=0*u.deg, lat=90*u.deg,
+        frame=BarycentricMeanEcliptic(equinox=Time("J2000"))).transform_to(observer.altaz_frame)
+    actual = module._north_ecliptic_pole(observer)
+    assert actual.separation(expected).to_value(u.arcsec) < 1e-7
+    view = SimpleNamespace(chart=SimpleNamespace(center_alt_deg=35., center_az_deg=123.), observer=observer)
+    expected = SkyCoord(alt=35*u.deg, az=123*u.deg, frame=observer.altaz_frame).transform_to(FK5(equinox=Time("J2000")))
+    actual = module._center_coordinate(view)
+    assert actual.separation(expected).to_value(u.arcsec) < 1e-7
+
+
+@pytest.mark.parametrize("route", ("pole", "title"))
+def test_zodiac_maintenance_consumes_returned_coordinates_and_warm_refusal(route, monkeypatch):
+    from types import SimpleNamespace
+    from wenu.charts.regional import target_up_position_angle
+    module, observer = _zodiac_tool(), _zodiac_observer()
+    returned = (112., 25.) if route == "pole" else (234.5, -12.25)
+    calls, views = [], []
+    refuse = False
+    def transform(self, source, target, observation=None):
+        calls.append((source, target, observation))
+        assert target.frame == ("altaz" if route == "pole" else "fk5")
+        assert observation.instant == observer.t_astropy.utc.isot
+        assert target.instant == observation.instant and target.time_scale == observation.time_scale
+        if refuse: raise RuntimeError("maintenance coordinate refusal")
+        return SphericalPoints(lon_deg=np.array([returned[0]]), lat_deg=np.array([returned[1]]), coordinate_spec=target)
+    monkeypatch.setattr(CoordinateService, "transform_skycoord", transform)
+    view = SimpleNamespace(chart=SimpleNamespace(center_alt_deg=35., center_az_deg=123.), observer=observer)
+    def get_view(*args, **kwargs):
+        views.append(kwargs)
+        return view
+    monkeypatch.setattr(module, "get_chart_view", get_view)
+    def consume():
+        return (module._chart_view(object(), observer, None, "Ari", False) if route == "pole"
+                else module._title(view, "Ari"))
+    result = consume()
+    if route == "pole":
+        expected = target_up_position_angle(center_alt_deg=35., center_az_deg=123.,
+                    target_alt_deg=returned[1], target_az_deg=returned[0])
+        assert views[-1]["position_angle_deg"] == pytest.approx(expected)
+        assert result is view
+    else:
+        assert result == "Aries — RA 15:38, Dec -12:15"
+    assert len(calls) == 1
+    refuse = True
+    with pytest.raises(RuntimeError, match="maintenance coordinate refusal"):
+        consume()
+
+
+@pytest.mark.parametrize("refusal_at", (None, 1, 2))
+def test_zodiac_review_request_consumes_service_angle_title_and_closes_on_refusal(tmp_path, monkeypatch, refusal_at):
+    from types import SimpleNamespace
+    module, observer = _zodiac_tool(), _zodiac_observer()
+    closed, views, drawings, calls = [], [], [], []
+    observer.close = lambda: closed.append(True)
+    monkeypatch.setattr(module, "Observer", lambda **options: observer)
+    monkeypatch.setattr(module, "generate_celestial_sphere", object)
+    def transform(self, source, target, observation=None):
+        calls.append(target.frame)
+        if len(calls) == refusal_at: raise RuntimeError("review service refusal")
+        lon, lat = (112., 25.) if target.frame == "altaz" else (234.5, -12.25)
+        return SphericalPoints(lon_deg=np.array([lon]), lat_deg=np.array([lat]), coordinate_spec=target)
+    monkeypatch.setattr(CoordinateService, "transform_skycoord", transform)
+    def get_view(sky, active, **options):
+        assert active is observer
+        views.append(options)
+        return SimpleNamespace(observer=active, family="regional",
+            chart=SimpleNamespace(center_alt_deg=35., center_az_deg=123.))
+    monkeypatch.setattr(module, "get_chart_view", get_view)
+    def draw(view, arguments, **options):
+        drawings.append((arguments, options))
+        return (SimpleNamespace(output=arguments.output),)
+    monkeypatch.setattr(module, "draw_chart_view_from_arguments", draw)
+    arguments = module.parser().parse_args(["--constellations", "Ari", "--output", str(tmp_path)])
+    if refusal_at:
+        with pytest.raises(RuntimeError, match="review service refusal"):
+            module.render_zodiac(arguments)
+        assert drawings == []
+    else:
+        assert module.render_zodiac(arguments) == (tmp_path / "01-ari.png",)
+        assert calls == ["altaz", "fk5"]
+        assert drawings[0][1]["title"] == "Aries — RA 15:38, Dec -12:15"
+        assert views[-1]["position_angle_deg"] == pytest.approx(module.target_up_position_angle(
+            center_alt_deg=35., center_az_deg=123., target_alt_deg=25., target_az_deg=112.))
+    assert closed == [True]
+
+
 def test_points_match_astropy_and_preserve_semantics():
     points = SphericalPoints(
         lon_deg=np.array([0.0, 83.6331]),

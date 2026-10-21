@@ -2033,3 +2033,40 @@ precedence, style/detail/product translation and immutable generated-label
 dictionary remain unchanged. The installed-resource test compares exact bytes,
 builds a wheel from the sdist and runs generated scripts under `-I -S` without
 checkout access or network. Numerical/product receipts remain with their owners.
+
+## Maintenance and resource consumers
+
+The migration inventory explicitly classifies all 93 K3.38 paths:
+86 operational Python tools and seven resource/acquisition/build
+owners. The classification records responsibility, not blanket run authority.
+
+| Responsibility | Existing examples | Boundary |
+|---|---|---|
+| Source maintenance | Hunt/Dias union, observing membership, Wikidata compilation, curation and criteria pages | Source metadata, IDs, masks, selection and exact bytes; source-native crossmatch/layout stays here |
+| Explicit acquisition/preflight | `minor_body_acquisition`, snapshot acquisition, SatChecker, query/acquire/install tools | Existing provider policy, receipts, byte/identity admission and offline cache boundaries; no rendering-time acquisition added |
+| Build/resource | `resources.py`, `curated_catalogue_packaging.py` | Same admitted manifest drives copying; build source loader avoids application/numerical imports |
+| Application review | Zodiac/polar/atlas rendering adapters and report tools | Existing public composition, coordinate/state or kernel geometry services |
+| Independent validation/fixtures | `validate_*`, captured or constructed fixture builders | Preserve raw/reference comparison legs and original evidence domains |
+| Manual benchmarks/development | Benchmark scripts, OpenAI diagnostic/translation utilities | Explicit standalone work; no historical execution authority revived |
+
+Zodiac pole/centre transformations use `CoordinateService.transform_skycoord()`
+with the original mean-ecliptic J2000 pole, vacuum AltAz observer and FK5 J2000
+centre label. Returned typed longitudes/latitudes control the retained SkyCoord
+compatibility result, target-up angle and formatted Spanish title. Refusal is
+propagated through the review request, with observer cleanup. No transform
+formula, source reference, output style or selection changes.
+
+`benchmark_reusable_sphere.py` now registers observer close callbacks as each
+construction succeeds. Later construction/view failure releases all prior
+resources; one failed close does not prevent other cleanup attempts. Timing,
+view matrix, export and cache-report computations are unchanged. Tests exercise
+synthetic failures only, not the production benchmark.
+
+Build admission remains a direct source load of stdlib-only `resources.py`.
+The returned manifest selects the exact files copied, and source corruption
+must refuse before replacing a prior publication. This resource contract does
+not interpret catalogue rows or claim physical precision. Existing installed
+wheel/sdist acceptance from K3.37 remains applicable to unchanged build rules.
+`openai_model.py` performs a remote model-list request if imported; it is an
+external development utility, not imported or executed by this audit/gate.
+No provider acquisition or present-day permission is certified here.

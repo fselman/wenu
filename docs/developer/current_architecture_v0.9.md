@@ -701,3 +701,23 @@ export. They do not reproduce the obsolete manual renderer's pixel layout.
 Notebook data are explicitly included in both source and wheel distributions.
 No astronomical calculation, shared service, dependency or public API changes.
 Complete Mac acceptance is pending; K3.38 and K3/K5 remain separate.
+
+## Maintenance and resource consumer boundary
+
+K3.38 distinguishes application consumers from source-maintenance, explicit
+acquisition, independent validation and build-only publication. Raw source-table
+normalization/crossmatch and separately expressed scientific oracles retain
+their existing owners; wrapping them as application state queries would alter
+responsibilities or invalidate comparison independence.
+
+The zodiac review adapter now obtains its mean-ecliptic J2000 pole and FK5 J2000
+centre label through CoordinateService, keeping the same Astropy transforms,
+vacuum observer context, orientation formula and title formatting. Its private
+helpers still return SkyCoord compatibility values. The reusable-sphere manual
+benchmark registers each successfully constructed observer for cleanup before
+the next acquisition; all cleanup callbacks run even if one close fails.
+
+Resources/build adapters retain digest-bound admission and pure copying. No
+runtime provider, source catalogue, dependency or build-rule changes occur.
+Explicit provider policy/preflight tests use synthetic transport; they establish
+mechanism, not renewed provider permission. No external workload is executed.

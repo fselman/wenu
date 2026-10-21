@@ -1835,3 +1835,31 @@ failed the closest contract and were restored; affected owners passed afterward.
 Available documentation: 31 passed, five full-checkout archive/asset checks
 deselected; tooling: eight passed. Notebook execution cases also verify
 format-4.5 cell IDs. Complete Mac acceptance remains pending.
+
+## Maintenance resource routing gate
+
+Use `python tools/run_test_gate.py maintenance-resource-routing --run` with
+plugin autoload disabled, plus tooling and documentation. The gate combines
+the complete operational source inventory with closest existing curation,
+receipt/hash/mask/selector, migration and synthetic acquisition owners.
+
+New coordinate seams verify returned pole/centre values control zodiac angle
+and title, then refusal after success and through actual review orchestration.
+The retained Astropy expressions independently verify both exact frame choices.
+Benchmark cases are synthetic constructor/view/close failures, not a timing or
+external performance run. Build tests consume returned admitted manifests,
+recheck corruption before replacing previous products, and block Wenu/SDK,
+Astropy, NumPy, pandas, Matplotlib, Skyfield, SGP4 and SPICE imports in a fresh
+build-admission process.
+
+Do not import all maintenance tools to collect them: some are explicit network
+or external development commands. Inventory uses source inspection. No provider
+request, policy refresh, resource acquisition, catalogue science/selection change
+or new redistribution permission occurs. Keep accepted K3.37 installation,
+K3.16 contour, K3.28/29 minor-body, satellite and independent science receipts
+for unchanged implementations. K3.39 onward and K3/K5 remain separate.
+
+Local final gate: 49 passed in 7.00 s; 31 available documentation cases passed
+(five full-checkout archive/asset checks deselected), and eight tooling cases
+passed. Four deliberate faults each failed their closest contract and were
+restored before the final gate. Complete Mac acceptance remains pending.

@@ -27,6 +27,10 @@ from wenu import (
     resolve_constellation_label_offsets,
 )
 from wenu.charts.regional import target_up_position_angle
+from wenu.coordinate_service import CoordinateService
+from wenu.coordinates import (
+    CoordinateSpec, PositionStatus, observation_context, observer_altaz_spec,
+)
 from wenu.translations import translate_label
 
 
@@ -76,7 +80,14 @@ def _north_ecliptic_pole(observer):
         lat=90.0 * u.deg,
         frame=BarycentricMeanEcliptic(equinox=Time("J2000")),
     )
-    return pole.transform_to(observer.altaz_frame)
+    points = CoordinateService().transform_skycoord(
+        pole,
+        observer_altaz_spec(observer, position_status=PositionStatus.APPARENT,
+                            provider="astropy", model="mean-ecliptic J2000 pole"),
+        observation_context(observer),
+    )
+    return SkyCoord(az=points.lon_deg[0] * u.deg, alt=points.lat_deg[0] * u.deg,
+                    frame=observer.altaz_frame)
 
 
 def _review_figures(constellation):
@@ -138,12 +149,22 @@ def _chart_view(sky, observer, configuration, constellation, mask):
 
 def _center_coordinate(view):
     chart = view.chart
+    observation = observation_context(view.observer)
     horizontal = SkyCoord(
         alt=float(chart.center_alt_deg) * u.deg,
         az=float(chart.center_az_deg) * u.deg,
         frame=view.observer.altaz_frame,
     )
-    return horizontal.transform_to(FK5(equinox=Time("J2000")))
+    points = CoordinateService().transform_skycoord(
+        horizontal,
+        CoordinateSpec(frame="fk5", origin="topocentric-direction",
+                       position_status=PositionStatus.ASTROMETRIC, equinox="J2000",
+                       instant=observation.instant, time_scale=observation.time_scale,
+                       provider="astropy", model="zodiac chart centre label"),
+        observation,
+    )
+    return SkyCoord(ra=points.lon_deg[0] * u.deg, dec=points.lat_deg[0] * u.deg,
+                    frame=FK5(equinox=Time("J2000")))
 
 
 def _title(view, constellation):
