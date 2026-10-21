@@ -318,4 +318,8 @@ while retaining radiometry calculations. Accepted through PR #309 after 61 focus
 36 documentation and eight tooling Mac cases; clean main and cleanup confirmed.
 K3.37 repairs [public teaching/installer consumers](implementation_reference.md#public-consumer-and-teaching-surfaces),
 with the [public-surface-routing gate](testing_policy.md#public-surface-routing-gate).
-Complete Mac acceptance and K3/K5 closure remain pending.
+K3.37 is accepted through PR #310 after 238 focused, 36 documentation and eight
+tooling Mac cases, with clean main and branch cleanup confirmed.
+K3.38 now verifies [maintenance/resource consumers](implementation_reference.md#maintenance-and-resource-consumers),
+with the [maintenance-resource-routing gate](testing_policy.md#maintenance-resource-routing-gate).
+Its complete Mac acceptance and K3/K5 closure remain pending.

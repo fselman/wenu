@@ -2940,6 +2940,128 @@
           "reason": "Actual sdist-to-wheel installation, eight generated commands, six examples, five notebooks, exact configuration resources, public imports and installer calls in -I -S without checkout/network."
         }
       ]
+    },
+    "maintenance-resource-routing": {
+      "scope": "K3.38 complete operational-tool/resource/build classification, zodiac coordinate delegation and bounded benchmark observer lifetime, curation/hash-bound publication and synthetic preflight contracts.",
+      "limits": "Preserve source normalization/crossmatch/selection and independent raw numerical oracles in their existing owners. Only two existing tools change. No source catalogue bytes, numerical/renderer algorithm, SDK/dependency/module/package, acquisition route/retry/cache/redistribution policy, schema, network or production benchmark/external execution. Acquisition fixtures are synthetic; existing policy receipts do not establish renewed permission. Retain accepted unchanged numerical/installation receipts. K3.39 onward and K3/K5 remain separate.",
+      "selections": [
+        {
+          "node": "tests/test_repository_sources.py",
+          "reason": "Complete source inventory and explicit per-path maintenance/resource classification; never import network tools for discovery."
+        },
+        {
+          "node": "tests/test_coordinate_service.py::test_zodiac_maintenance_coordinates_match_retained_astropy_frames",
+          "reason": "Existing frame mathematics versus retained Astropy; returned values/refusal reach zodiac orientation/title and public review request."
+        },
+        {
+          "node": "tests/test_coordinate_service.py::test_zodiac_maintenance_consumes_returned_coordinates_and_warm_refusal",
+          "reason": "Existing frame mathematics versus retained Astropy; returned values/refusal reach zodiac orientation/title and public review request."
+        },
+        {
+          "node": "tests/test_coordinate_service.py::test_zodiac_review_request_consumes_service_angle_title_and_closes_on_refusal",
+          "reason": "Existing frame mathematics versus retained Astropy; returned values/refusal reach zodiac orientation/title and public review request."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_reusable_benchmark_releases_partial_observer_acquisition",
+          "reason": "Bounded synthetic constructor/view/close failures; no production benchmark or timing claim."
+        },
+        {
+          "node": "tests/test_reusable_canonical_sphere.py::test_reusable_benchmark_attempts_all_cleanup_after_view_refusal",
+          "reason": "Bounded synthetic constructor/view/close failures; no production benchmark or timing claim."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_curated_manifest_admits_all_bound_evidence_and_rejects_corruption",
+          "reason": "Resource/criteria admission, authoritative returned build manifest, warm corruption and stdlib-only isolated build reader/publication. Reuse unchanged installed-wheel/sdist receipts."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_curated_manifest_refuses_escaping_selector_and_unbound_catalogue",
+          "reason": "Resource/criteria admission, authoritative returned build manifest, warm corruption and stdlib-only isolated build reader/publication. Reuse unchanged installed-wheel/sdist receipts."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_build_publication_consumes_returned_manifest_and_rechecks_before_replacement",
+          "reason": "Resource/criteria admission, authoritative returned build manifest, warm corruption and stdlib-only isolated build reader/publication. Reuse unchanged installed-wheel/sdist receipts."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_build_resource_admission_runs_without_wenu_or_numerical_runtime",
+          "reason": "Resource/criteria admission, authoritative returned build manifest, warm corruption and stdlib-only isolated build reader/publication. Reuse unchanged installed-wheel/sdist receipts."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_open_cluster_union_preserves_rows_parameters_ids_and_compound_references",
+          "reason": "Retain existing source/curation policy, exact IDs/masks/units, hash-bound promotion/criteria, no-clobber migration and synthetic acquisition/no-retry mechanism; no source download."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_open_cluster_union_registry_conflicts_fail_closed",
+          "reason": "Retain existing source/curation policy, exact IDs/masks/units, hash-bound promotion/criteria, no-clobber migration and synthetic acquisition/no-retry mechanism; no source download."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_open_cluster_positional_audit_counts_pairs_and_unique_unmatched_objects",
+          "reason": "Retain existing source/curation policy, exact IDs/masks/units, hash-bound promotion/criteria, no-clobber migration and synthetic acquisition/no-retry mechanism; no source download."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_open_cluster_positional_audit_spherical_units_boundary_and_missing",
+          "reason": "Retain existing source/curation policy, exact IDs/masks/units, hash-bound promotion/criteria, no-clobber migration and synthetic acquisition/no-retry mechanism; no source download."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_observing_membership_uses_names_preserves_compounds_and_masks_conflicts",
+          "reason": "Retain existing source/curation policy, exact IDs/masks/units, hash-bound promotion/criteria, no-clobber migration and synthetic acquisition/no-retry mechanism; no source download."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_converted_membership_hash_validation_and_converter_help",
+          "reason": "Retain existing source/curation policy, exact IDs/masks/units, hash-bound promotion/criteria, no-clobber migration and synthetic acquisition/no-retry mechanism; no source download."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_supplementary_membership_absence_is_unknown_and_nearby_stars_are_not_clusters",
+          "reason": "Retain existing source/curation policy, exact IDs/masks/units, hash-bound promotion/criteria, no-clobber migration and synthetic acquisition/no-retry mechanism; no source download."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_v01_selection_mandatory_override_and_strict_log_radius_boundaries",
+          "reason": "Retain existing source/curation policy, exact IDs/masks/units, hash-bound promotion/criteria, no-clobber migration and synthetic acquisition/no-retry mechanism; no source download."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_v01_positional_pairing_preserves_source_values_and_id_lineage",
+          "reason": "Retain existing source/curation policy, exact IDs/masks/units, hash-bound promotion/criteria, no-clobber migration and synthetic acquisition/no-retry mechanism; no source download."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_depurated_catalogue_preserves_sources_masks_and_active_selector",
+          "reason": "Retain existing source/curation policy, exact IDs/masks/units, hash-bound promotion/criteria, no-clobber migration and synthetic acquisition/no-retry mechanism; no source download."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_working_data_migration_keeps_receipts_and_list_memberships",
+          "reason": "Retain existing source/curation policy, exact IDs/masks/units, hash-bound promotion/criteria, no-clobber migration and synthetic acquisition/no-retry mechanism; no source download."
+        },
+        {
+          "node": "tests/test_open_clusters.py::test_hunt_acquisition_receipt_and_no_argument_help",
+          "reason": "Retain existing source/curation policy, exact IDs/masks/units, hash-bound promotion/criteria, no-clobber migration and synthetic acquisition/no-retry mechanism; no source download."
+        },
+        {
+          "node": "tests/test_minor_body_acquisition.py::test_policy_reuses_warm_cache_without_acquisition",
+          "reason": "Synthetic/offline preflight, explicit policy/cache boundary, typed identity/coverage, atomic publication and canonical request handoff. No provider request."
+        },
+        {
+          "node": "tests/test_minor_body_acquisition.py::test_offline_policy_fails_before_any_acquisition",
+          "reason": "Synthetic/offline preflight, explicit policy/cache boundary, typed identity/coverage, atomic publication and canonical request handoff. No provider request."
+        },
+        {
+          "node": "tests/test_minor_body_acquisition.py::test_publication_is_content_addressed_and_leaves_no_staging_directory",
+          "reason": "Synthetic/offline preflight, explicit policy/cache boundary, typed identity/coverage, atomic publication and canonical request handoff. No provider request."
+        },
+        {
+          "node": "tests/test_minor_body_acquisition.py::test_cli_preflight_installs_resolved_directory_before_chart_build",
+          "reason": "Synthetic/offline preflight, explicit policy/cache boundary, typed identity/coverage, atomic publication and canonical request handoff. No provider request."
+        },
+        {
+          "node": "tests/test_minor_body_acquisition.py::test_typed_preflight_reuses_warm_comet_cache_without_network",
+          "reason": "Synthetic/offline preflight, explicit policy/cache boundary, typed identity/coverage, atomic publication and canonical request handoff. No provider request."
+        },
+        {
+          "node": "tests/test_minor_body_acquisition.py::test_typed_offline_preflight_reports_identity_and_coverage",
+          "reason": "Synthetic/offline preflight, explicit policy/cache boundary, typed identity/coverage, atomic publication and canonical request handoff. No provider request."
+        },
+        {
+          "node": "tests/test_satellite_snapshot_acquisition.py",
+          "reason": "Existing fake-transport snapshot/policy receipt/header/identity/atomic publication and cache behavior; mechanism evidence only, no current provider permission claim."
+        }
+      ]
     }
   },
   "consumer_review": [

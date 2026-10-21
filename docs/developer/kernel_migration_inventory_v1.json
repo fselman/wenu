@@ -12766,6 +12766,605 @@
       "tooling_seconds": 7.095,
       "normal_execution_ast": "All six original example ASTs unchanged after flattening cleanup guards; packaged copies byte-identical."
     },
-    "limits": "No new numerical model, shared service, dependency, public API, source catalogue bytes, acquisition/schema/renderer algorithm or astronomical package extraction. Notebook canonical styling replaces obsolete direct rendering; no pixel parity. K3.38 and K3/K5 remain open."
+    "limits": "No new numerical model, shared service, dependency, public API, source catalogue bytes, acquisition/schema/renderer algorithm or astronomical package extraction. Notebook canonical styling replaces obsolete direct rendering; no pixel parity. K3.38 and K3/K5 remain open.",
+    "mac_receipt": {
+      "tested_commit": "e5295b0989293739626422d121022840e1cc545e",
+      "merged_commit": "73118315921258731297d869d755dfb6f1e19c29",
+      "focused_cases": 238,
+      "focused_seconds": 160.98,
+      "documentation_cases": 36,
+      "documentation_seconds": 10.23,
+      "tooling_cases": 8,
+      "tooling_seconds": 36.194,
+      "clean_main_and_cleanup": "confirmed by Fernando"
+    }
+  },
+  "maintenance_resource_routing": {
+    "milestone": "K3.38",
+    "base_commit": "73118315921258731297d869d755dfb6f1e19c29",
+    "plan_commit": "894c7d7fcff2db74e7bd1bbf28ca5dd1d7a145fb",
+    "gate": "maintenance-resource-routing",
+    "consumers": {
+      "src/curated_catalogue_packaging.py": {
+        "classification": "build-resource",
+        "boundary": "Digest/selector/criteria-bound resource admission or build-only copying. Delegate to resources.py and keep numerical/provider/application imports out of build admission.",
+        "git_blob_sha": "947bd28924d44cd69efbfb839b2e7a9a8e8692bf",
+        "action": "retain existing owner"
+      },
+      "src/wenu/comet_discovery.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "ba7c87b180313dc35bdd66c39bc755190ff44b56",
+        "action": "retain existing owner"
+      },
+      "src/wenu/minor_body_acquisition.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "90768e389fa9c1ad4ceea44ec97355fbbdda479b",
+        "action": "retain existing owner"
+      },
+      "src/wenu/minor_body_resources.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "f436b3016f47a073eca40a29fcc61c3ecbe29f89",
+        "action": "retain existing owner"
+      },
+      "src/wenu/resources.py": {
+        "classification": "build-resource",
+        "boundary": "Digest/selector/criteria-bound resource admission or build-only copying. Delegate to resources.py and keep numerical/provider/application imports out of build admission.",
+        "git_blob_sha": "6dfd103da6e138e99b1ec7e57d5721666adb89dc",
+        "action": "retain existing owner"
+      },
+      "src/wenu/satchecker.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "11b83f2ac0de804ff4f497c7865d690726b22767",
+        "action": "retain existing owner"
+      },
+      "src/wenu/satellites/snapshot_acquisition.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "8a4c1bba3b1baddee10052baf7b98e2086aa4cfc",
+        "action": "retain existing owner"
+      },
+      "tools/acquire_50a2_asteroid_resources.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "580693cebb78c79906ce0dd1a306b1e4e9d94416",
+        "action": "retain existing owner"
+      },
+      "tools/acquire_50a4_comet_evidence.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "e256f3bc6a485fab0ec58673b362551f5db9b624",
+        "action": "retain existing owner"
+      },
+      "tools/acquire_50a5b_antisolar_evidence.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "0aee4c1cbcbc2991809c685c3c5f6d793c42a18b",
+        "action": "retain existing owner"
+      },
+      "tools/acquire_50a5c_comet_evidence.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "fac973dbff467e84d109d4f4a1eab885aa352d83",
+        "action": "retain existing owner"
+      },
+      "tools/acquire_50a5c_comet_identity.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "32c3661313055904b00ff0a6316d42ed0eb2fde2",
+        "action": "retain existing owner"
+      },
+      "tools/acquire_numbered_asteroids.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "bcc982b9a5a35a08af05b9b249329b44b702e956",
+        "action": "retain existing owner"
+      },
+      "tools/analyze_atlas_star_areas.py": {
+        "classification": "application-consumer",
+        "boundary": "Review/report/render adapter consumes existing public Wenu application, coordinate, state or kernel geometry services; never invent a physical object per plotted vertex.",
+        "git_blob_sha": "425b1370d6766246edff13327cdbb1920d541b8a",
+        "action": "retain existing owner"
+      },
+      "tools/benchmark_cold_frames.py": {
+        "classification": "manual-benchmark",
+        "boundary": "Explicit manual timing/reuse application consumer; workload and cache observations unchanged. Only bounded synthetic admission/cleanup seams executed here, no production benchmark.",
+        "git_blob_sha": "7f621d662e2839b5b23c86ac5efc3fc3aa5a9bc2",
+        "action": "retain existing owner"
+      },
+      "tools/benchmark_fixed_sky_reuse.py": {
+        "classification": "manual-benchmark",
+        "boundary": "Explicit manual timing/reuse application consumer; workload and cache observations unchanged. Only bounded synthetic admission/cleanup seams executed here, no production benchmark.",
+        "git_blob_sha": "2a332ecf4d8799e54f07c2cb5a5d05724e2192ee",
+        "action": "retain existing owner"
+      },
+      "tools/benchmark_reusable_sphere.py": {
+        "classification": "manual-benchmark",
+        "boundary": "Explicit manual timing/reuse application consumer; workload and cache observations unchanged. Only bounded synthetic admission/cleanup seams executed here, no production benchmark.",
+        "git_blob_sha": "e31864d2e1ffe89e5233c3cc8535fcc19030d58a",
+        "action": "partial-observer cleanup correction"
+      },
+      "tools/build_50a4_comet_fixture.py": {
+        "classification": "fixture-preparation",
+        "boundary": "Explicit captured or constructed fixture preparation, retaining receipt identity and source bytes. No acquisition or external production execution in this gate.",
+        "git_blob_sha": "4daabed62ae27037aa4ed99763fff101f094705a",
+        "action": "retain existing owner"
+      },
+      "tools/build_50a5b_antisolar_fixture.py": {
+        "classification": "fixture-preparation",
+        "boundary": "Explicit captured or constructed fixture preparation, retaining receipt identity and source bytes. No acquisition or external production execution in this gate.",
+        "git_blob_sha": "caeeada3195d20e95901ac9e66ff830fc85a0610",
+        "action": "retain existing owner"
+      },
+      "tools/build_50a5c_comet_fixture.py": {
+        "classification": "fixture-preparation",
+        "boundary": "Explicit captured or constructed fixture preparation, retaining receipt identity and source bytes. No acquisition or external production execution in this gate.",
+        "git_blob_sha": "9263bf3a70e77d367507033fc2e257fd812ad185",
+        "action": "retain existing owner"
+      },
+      "tools/build_50s4_satellite_specimens.py": {
+        "classification": "fixture-preparation",
+        "boundary": "Explicit captured or constructed fixture preparation, retaining receipt identity and source bytes. No acquisition or external production execution in this gate.",
+        "git_blob_sha": "03e236746ac5396ec2782bf82308749b60ffa274",
+        "action": "retain existing owner"
+      },
+      "tools/build_satellite_snapshot.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "4abb218162bfbb9022e8ac97b93e265ba7ed4322",
+        "action": "retain existing owner"
+      },
+      "tools/build_wikidata_star_designations.py": {
+        "classification": "source-maintenance",
+        "boundary": "Offline source normalization, identities, crossmatch, selection or source-native diagnostic layout. Preserve metadata/row lineage and selection policy; no application observer/state query is required.",
+        "git_blob_sha": "9edb8df5d3cc463ce499a7f850bda544b01b60f0",
+        "action": "retain existing owner"
+      },
+      "tools/catalogue_data_layout.py": {
+        "classification": "source-maintenance",
+        "boundary": "Offline source normalization, identities, crossmatch, selection or source-native diagnostic layout. Preserve metadata/row lineage and selection policy; no application observer/state query is required.",
+        "git_blob_sha": "d70cda30f3fd6f04e31dd2986b0d566cd56832ff",
+        "action": "retain existing owner"
+      },
+      "tools/compare_open_clusters.py": {
+        "classification": "source-maintenance",
+        "boundary": "Offline source normalization, identities, crossmatch, selection or source-native diagnostic layout. Preserve metadata/row lineage and selection policy; no application observer/state query is required.",
+        "git_blob_sha": "d90d62c24a91820f95003a0384aa95c4ca41e818",
+        "action": "retain existing owner"
+      },
+      "tools/compare_planetary_nebulae.py": {
+        "classification": "source-maintenance",
+        "boundary": "Offline source normalization, identities, crossmatch, selection or source-native diagnostic layout. Preserve metadata/row lineage and selection policy; no application observer/state query is required.",
+        "git_blob_sha": "92a213c7ed51b4d290881cbe092c3c5dbc186a05",
+        "action": "retain existing owner"
+      },
+      "tools/convert_observing_catalogues.py": {
+        "classification": "source-maintenance",
+        "boundary": "Offline source normalization, identities, crossmatch, selection or source-native diagnostic layout. Preserve metadata/row lineage and selection policy; no application observer/state query is required.",
+        "git_blob_sha": "fc19349e53e1106f716d4546b2abd485769fcb9d",
+        "action": "retain existing owner"
+      },
+      "tools/curate_open_clusters.py": {
+        "classification": "source-maintenance",
+        "boundary": "Offline source normalization, identities, crossmatch, selection or source-native diagnostic layout. Preserve metadata/row lineage and selection policy; no application observer/state query is required.",
+        "git_blob_sha": "34bdb028e63c367e6031509588b98177d5e5ea2c",
+        "action": "retain existing owner"
+      },
+      "tools/diagnose_49i2d2_venus_track_labels.py": {
+        "classification": "application-consumer",
+        "boundary": "Review/report/render adapter consumes existing public Wenu application, coordinate, state or kernel geometry services; never invent a physical object per plotted vertex.",
+        "git_blob_sha": "be0abcfff4af5197880fddec3f21955e3bae2973",
+        "action": "retain existing owner"
+      },
+      "tools/hunt_reffert_catalogue.py": {
+        "classification": "source-maintenance",
+        "boundary": "Offline source normalization, identities, crossmatch, selection or source-native diagnostic layout. Preserve metadata/row lineage and selection policy; no application observer/state query is required.",
+        "git_blob_sha": "ffc58db7141449786899b180d7e237c164abe307",
+        "action": "retain existing owner"
+      },
+      "tools/install_50a5b_encke_resource.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "2ba303d4524cee547f22c20d20def64ebe500ab9",
+        "action": "retain existing owner"
+      },
+      "tools/install_comet_resource.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "27e8412d934ea13499ca78d4bdf7c151b1578711",
+        "action": "retain existing owner"
+      },
+      "tools/merge_open_clusters.py": {
+        "classification": "source-maintenance",
+        "boundary": "Offline source normalization, identities, crossmatch, selection or source-native diagnostic layout. Preserve metadata/row lineage and selection policy; no application observer/state query is required.",
+        "git_blob_sha": "f3d62162422f88397db574b5a68fffe38523bcc4",
+        "action": "retain existing owner"
+      },
+      "tools/migrate_catalogue_data.py": {
+        "classification": "source-maintenance",
+        "boundary": "Offline source normalization, identities, crossmatch, selection or source-native diagnostic layout. Preserve metadata/row lineage and selection policy; no application observer/state query is required.",
+        "git_blob_sha": "fca2f2dd9af075471c2909c021fa28c9d02ebafd",
+        "action": "retain existing owner"
+      },
+      "tools/observing_list_additions.py": {
+        "classification": "source-maintenance",
+        "boundary": "Offline source normalization, identities, crossmatch, selection or source-native diagnostic layout. Preserve metadata/row lineage and selection policy; no application observer/state query is required.",
+        "git_blob_sha": "61b5388a283214e6a2417efee6fdf7eb9d54d107",
+        "action": "retain existing owner"
+      },
+      "tools/observing_list_membership.py": {
+        "classification": "source-maintenance",
+        "boundary": "Offline source normalization, identities, crossmatch, selection or source-native diagnostic layout. Preserve metadata/row lineage and selection policy; no application observer/state query is required.",
+        "git_blob_sha": "b3678f0cc51eb21e89ea54a8f58809a315c6ebef",
+        "action": "retain existing owner"
+      },
+      "tools/openai_model.py": {
+        "classification": "external-development-helper",
+        "boundary": "Standalone OpenAI development/translation utility, outside Wenu runtime science. Inspect as source only: openai_model.py executes a model-list request when imported; this audit does not import/run it or authorize that request.",
+        "git_blob_sha": "bc4fe32edd81010359eaaffeae39ee75cb69ae27",
+        "action": "retain existing owner"
+      },
+      "tools/plot_merged_open_clusters.py": {
+        "classification": "source-maintenance",
+        "boundary": "Offline source normalization, identities, crossmatch, selection or source-native diagnostic layout. Preserve metadata/row lineage and selection policy; no application observer/state query is required.",
+        "git_blob_sha": "4777ad0da0082be2048f15f93ffb2bb8d4ac37ea",
+        "action": "retain existing owner"
+      },
+      "tools/prepare_open_cluster_catalogue.py": {
+        "classification": "source-maintenance",
+        "boundary": "Offline source normalization, identities, crossmatch, selection or source-native diagnostic layout. Preserve metadata/row lineage and selection policy; no application observer/state query is required.",
+        "git_blob_sha": "8a57ee71288f8d73de7b1b9127ee4e59b2a3983a",
+        "action": "retain existing owner"
+      },
+      "tools/preview_stellar_sizes.py": {
+        "classification": "application-consumer",
+        "boundary": "Review/report/render adapter consumes existing public Wenu application, coordinate, state or kernel geometry services; never invent a physical object per plotted vertex.",
+        "git_blob_sha": "d309c62d89c4da84863fdc34d16cc58cd46f63bf",
+        "action": "retain existing owner"
+      },
+      "tools/query_caldwell_openngc.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "7cab708e8bb0be5b6074adfa64949b563d11577c",
+        "action": "retain existing owner"
+      },
+      "tools/query_galaxies_openngc.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "ce784a7549d7b591f90715d068e1be918e3b72f2",
+        "action": "retain existing owner"
+      },
+      "tools/query_globular_clusters_heasarc.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "f9a43734598e177ec33c092f6562c84dfdec77b5",
+        "action": "retain existing owner"
+      },
+      "tools/query_hunt_reffert2024.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "8c9cb53cf63feb0fe3f44e8810a5b53ddb55e658",
+        "action": "retain existing owner"
+      },
+      "tools/query_magellanic_clouds_gaia.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "bd53cd592c024de4eb55abd345872d2330f7fb33",
+        "action": "retain existing owner"
+      },
+      "tools/query_messier_heasarc.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "1f88104276ef9f1cc4114fa7a27cd80e2f443d65",
+        "action": "retain existing owner"
+      },
+      "tools/query_milky_way_isophotes_d3.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "5517fd36acfa56bcb72337bcc31157c474cd8a08",
+        "action": "retain existing owner"
+      },
+      "tools/query_open_cluster_photometry.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "f10dea73fa2ae8bdf94402f892f556ca5c834644",
+        "action": "retain existing owner"
+      },
+      "tools/query_open_clusters_heasarc.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "68e609cbdd90d68a98081679a0c66150a0fd7f50",
+        "action": "retain existing owner"
+      },
+      "tools/query_planetary_nebulae_heasarc.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "752c7dafd0914d88701db1834eb530564cfaf1cc",
+        "action": "retain existing owner"
+      },
+      "tools/query_supernova_remnants_green.py": {
+        "classification": "explicit-acquisition",
+        "boundary": "Caller-invoked provider/file acquisition, installation or preflight/cache admission. Preserve exact existing route/policy and typed evidence. Only synthetic transports/offline fixtures in this gate; no new permission claim.",
+        "git_blob_sha": "52ab81e87fee06adeb3c5d9eb695b0430e2080a8",
+        "action": "retain existing owner"
+      },
+      "tools/render_46d8_visual_matrix.py": {
+        "classification": "application-consumer",
+        "boundary": "Review/report/render adapter consumes existing public Wenu application, coordinate, state or kernel geometry services; never invent a physical object per plotted vertex.",
+        "git_blob_sha": "1c0396bbd76ee416378eb9086827abec8538857e",
+        "action": "retain existing owner"
+      },
+      "tools/render_48e2_polar_preview.py": {
+        "classification": "application-consumer",
+        "boundary": "Review/report/render adapter consumes existing public Wenu application, coordinate, state or kernel geometry services; never invent a physical object per plotted vertex.",
+        "git_blob_sha": "bd80db386b52f6ebc6a46378fce3f087cb8fd765",
+        "action": "retain existing owner"
+      },
+      "tools/render_48e4_polar_pages.py": {
+        "classification": "application-consumer",
+        "boundary": "Review/report/render adapter consumes existing public Wenu application, coordinate, state or kernel geometry services; never invent a physical object per plotted vertex.",
+        "git_blob_sha": "a10dbc3bfd2c643bc28d465efe5932b79c2359a4",
+        "action": "retain existing owner"
+      },
+      "tools/render_48g2_polar_pouch.py": {
+        "classification": "application-consumer",
+        "boundary": "Review/report/render adapter consumes existing public Wenu application, coordinate, state or kernel geometry services; never invent a physical object per plotted vertex.",
+        "git_blob_sha": "e7bcc4b2e86b92b9a9d3c50b501495731120b444",
+        "action": "retain existing owner"
+      },
+      "tools/render_49f6_svg_matrix.py": {
+        "classification": "application-consumer",
+        "boundary": "Review/report/render adapter consumes existing public Wenu application, coordinate, state or kernel geometry services; never invent a physical object per plotted vertex.",
+        "git_blob_sha": "511f60a0e53af1632503c029995d5e7c06addc24",
+        "action": "retain existing owner"
+      },
+      "tools/render_49h2_complete_render_baseline.py": {
+        "classification": "application-consumer",
+        "boundary": "Review/report/render adapter consumes existing public Wenu application, coordinate, state or kernel geometry services; never invent a physical object per plotted vertex.",
+        "git_blob_sha": "d10ad08a1d0045144a8313a31c2dcaeb1a5078ee",
+        "action": "retain existing owner"
+      },
+      "tools/render_49h3_fixed_sky_reference.py": {
+        "classification": "application-consumer",
+        "boundary": "Review/report/render adapter consumes existing public Wenu application, coordinate, state or kernel geometry services; never invent a physical object per plotted vertex.",
+        "git_blob_sha": "35eb86432bc87dcbace3bdfd2f30f443ac7b9cdb",
+        "action": "retain existing owner"
+      },
+      "tools/render_49i3e2_resolved_moon_review.py": {
+        "classification": "application-consumer",
+        "boundary": "Review/report/render adapter consumes existing public Wenu application, coordinate, state or kernel geometry services; never invent a physical object per plotted vertex.",
+        "git_blob_sha": "d6268a7456957b8a0d24aa4d11112a7ca4be8ff8",
+        "action": "retain existing owner"
+      },
+      "tools/render_49i3e3_observed_moon_sequence_review.py": {
+        "classification": "application-consumer",
+        "boundary": "Review/report/render adapter consumes existing public Wenu application, coordinate, state or kernel geometry services; never invent a physical object per plotted vertex.",
+        "git_blob_sha": "c5dd9335c0f6e16a4b7250b79b7917961629ce15",
+        "action": "retain existing owner"
+      },
+      "tools/render_50a3g_cli_contract_matrix.py": {
+        "classification": "application-consumer",
+        "boundary": "Review/report/render adapter consumes existing public Wenu application, coordinate, state or kernel geometry services; never invent a physical object per plotted vertex.",
+        "git_blob_sha": "b1bd706249467bf59b42fa8029f368e3446a3032",
+        "action": "retain existing owner"
+      },
+      "tools/render_atlas_band_overview_v1.py": {
+        "classification": "application-consumer",
+        "boundary": "Review/report/render adapter consumes existing public Wenu application, coordinate, state or kernel geometry services; never invent a physical object per plotted vertex.",
+        "git_blob_sha": "fe34f9b8dea7d9ec36d3d8d45d15c927a06918cc",
+        "action": "retain existing owner"
+      },
+      "tools/render_circumpolar_movie.py": {
+        "classification": "application-consumer",
+        "boundary": "Review/report/render adapter consumes existing public Wenu application, coordinate, state or kernel geometry services; never invent a physical object per plotted vertex.",
+        "git_blob_sha": "9a0aa3ddb12e1f944fb2376955b2e838352e3e95",
+        "action": "retain existing owner"
+      },
+      "tools/render_zodiac_constellations.py": {
+        "classification": "application-consumer",
+        "boundary": "Review/report/render adapter consumes existing public Wenu application, coordinate, state or kernel geometry services; never invent a physical object per plotted vertex.",
+        "git_blob_sha": "70f6aa4f19a77be9ddaa7077bf846597c41529f3",
+        "action": "shared-coordinate correction"
+      },
+      "tools/run_test_gate.py": {
+        "classification": "test-tooling",
+        "boundary": "Local source inventory, test selection and tooling; no scientific production or acquisition execution.",
+        "git_blob_sha": "268f102ef7f5ee1345a7a6c6824f038296de410b",
+        "action": "retain existing owner"
+      },
+      "tools/tests/test_test_gates.py": {
+        "classification": "test-tooling",
+        "boundary": "Local source inventory, test selection and tooling; no scientific production or acquisition execution.",
+        "git_blob_sha": "4b93f7633e554731ac176fa79245db6d0fe01ade",
+        "action": "retain existing owner"
+      },
+      "tools/translate_notebook.py": {
+        "classification": "external-development-helper",
+        "boundary": "Standalone OpenAI development/translation utility, outside Wenu runtime science. Inspect as source only: openai_model.py executes a model-list request when imported; this audit does not import/run it or authorize that request.",
+        "git_blob_sha": "a9bfaddef5ded1e26f9caf56c7d1597ea59ae07c",
+        "action": "retain existing owner"
+      },
+      "tools/validate_49e3_skyfield_adapter.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "4bea090e8e29fb6adb87d94c3e37827720a6e660",
+        "action": "retain existing owner"
+      },
+      "tools/validate_49e5_astrometric_direction.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "7971eee509e1db2a7c12f17d37b27308245ba7b6",
+        "action": "retain existing owner"
+      },
+      "tools/validate_49e6_apparent_direction.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "ad931cc9a0a9560e8de0ec7085773708021b05e1",
+        "action": "retain existing owner"
+      },
+      "tools/validate_49i2a_moon_direction.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "9ada8459d4ef7de43d610707a25e3b10d2b4bcc5",
+        "action": "retain existing owner"
+      },
+      "tools/validate_49i2d1_venus_track.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "d511b1dc2f4f0a14eb292178f394073a1c04f3ab",
+        "action": "retain existing owner"
+      },
+      "tools/validate_49i3b_venus_appearance.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "18dfdd73b0cbce72c9043bab44750e56d1a1580a",
+        "action": "retain existing owner"
+      },
+      "tools/validate_49i3c1_venus_disk_geometry.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "10e9124780b444a6a4a83db30a71398f51405914",
+        "action": "retain existing owner"
+      },
+      "tools/validate_49i3c3_1a_observed_venus_sequence.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "516d9ceca80a6cf531c2f96da8436bdfcf94a5fe",
+        "action": "retain existing owner"
+      },
+      "tools/validate_49i3c3_2a_frozen_earth_venus.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "f7914e461c0a25669ac9b643c4ce4da1b729b1b3",
+        "action": "retain existing owner"
+      },
+      "tools/validate_49i3c3_3b_mercury.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "956a5334d7da8b20f55eeda76c55a81ebc51b640",
+        "action": "retain existing owner"
+      },
+      "tools/validate_49i3d1_apparent_major_planets.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "0dfc6d8f59f0c21a7e6ddec50da727af1b5bd941",
+        "action": "retain existing owner"
+      },
+      "tools/validate_49i3e1_lunar_appearance.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "3ced08a4c6cebf0baa3e9bcccb5a37cf031df3db",
+        "action": "retain existing owner"
+      },
+      "tools/validate_49i3e3_observed_moon_sequence.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "8d13c7701892142a539d39933e44f2714b353756",
+        "action": "retain existing owner"
+      },
+      "tools/validate_50a2_asteroids.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "59eff42b7ebcab8014f0f93ad95efe8b121cb616",
+        "action": "retain existing owner"
+      },
+      "tools/validate_50a4_comet.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "7a4bb92f0140e33fad524721cc2bbb0427aa260f",
+        "action": "retain existing owner"
+      },
+      "tools/validate_50a5b_antisolar.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "8683a2a21b10cb00a594020e88ec21e2efbf2536",
+        "action": "retain existing owner"
+      },
+      "tools/validate_50a5c_comet.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "ceb3d5496798aff9a279bdfe4efaf6415fce0b3d",
+        "action": "retain existing owner"
+      },
+      "tools/validate_50s3b_satellite_presentations.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "dcf90965c2bc992919f6266e9045773cf4b634a3",
+        "action": "retain existing owner"
+      },
+      "tools/validate_50s6g3b_exact_satellite_charts.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "ea34a8271f74d0209cb069eed9d2c70fc7ea651e",
+        "action": "retain existing owner"
+      },
+      "tools/validate_50s6g4b_exact_satellite_planisphere.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "1d8052967ce5684ad241ee7568cce2fdee00b9a2",
+        "action": "retain existing owner"
+      },
+      "tools/validate_50s6h_offline_planning_advisory.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "556c8d8e6fc12006d6614ee3d57cd18dcf78ecb9",
+        "action": "retain existing owner"
+      },
+      "tools/validate_50s7b_illumination_geometry.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "fb8ea6a71f03490aad1912ebaff039245ca0c2b9",
+        "action": "retain existing owner"
+      },
+      "tools/validate_50s7c_shadow_transitions.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "5e545084e900e89b27125051f3eed77497f88de4",
+        "action": "retain existing owner"
+      },
+      "tools/validate_50s7d1_direct_solar_irradiance.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "2230189688393b67cffdce00a7a10822c7971dd4",
+        "action": "retain existing owner"
+      },
+      "tools/validate_50s7d2_spectral_solar_radiometry.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "6e15cdbbc7930c4463682d7ad9dce481b9dd31d0",
+        "action": "retain existing owner"
+      },
+      "tools/validate_50s7d3b_lime_offline_inspection.py": {
+        "classification": "independent-validation",
+        "boundary": "Retain separately expressed reference/raw numerical comparison leg and captured-evidence domain. Do not route an independent expected result through the subject adapter; historical execution authority is not renewed.",
+        "git_blob_sha": "68353aa56453d0f89523e04148a6079d3055ab60",
+        "action": "retain existing owner"
+      }
+    },
+    "disposition": "Retain source-maintenance, explicit acquisition, resource/build and independent validation boundaries. Correct zodiac application-coordinate delegation and partial observer ownership in existing benchmark.",
+    "new_python_modules": [],
+    "protected_faults": [
+      "bypassed coordinate values/refusal",
+      "partial observer acquisition leak",
+      "build imports Wenu runtime",
+      "build trusts stale admitted source bytes"
+    ],
+    "receipt_reuse": "K3.37 installed commands/sdist-to-wheel resources; K3.16 source contours; K3.28/29 minor-body resources; K3.31/32/33/34 satellite contracts and independent numerical receipts. Unchanged science/installation owners do not repeat full production workloads.",
+    "limits": "Complete Mac acceptance pending. Source-native catalogue normalization/crossmatch and independent raw oracles stay outside application-state queries. No new source/model/selection, SDK/dependency/module/package, source bytes/schema/renderer algorithm, acquisition/retry/cache/redistribution policy or provider permission claim. No network, external benchmark, paused Moonlight or consumed authority execution. K3.39 and K3/K5 remain open.",
+    "local_receipt": {
+      "focused_cases": 49,
+      "focused_seconds": 7.0,
+      "documentation_cases": 31,
+      "documentation_seconds": 1.6,
+      "documentation_deselected": 5,
+      "tooling_cases": 8,
+      "tooling_seconds": 6.822,
+      "deliberate_fault_experiments": 4,
+      "expected_fault_failures": 4,
+      "complete_mac_acceptance": "pending"
+    }
   }
 }

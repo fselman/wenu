@@ -1811,3 +1811,43 @@ receipts for unchanged owners. Installed help is not a new full product or
 provider run. No acquisition, paused Moonlight or consumed external authority
 is executed. Coordinate meanings are unchanged; the coordinate guide remains
 current. K3.38 maintenance/acquisition/build consumers and K3/K5 remain open.
+
+## K3.38 maintenance and resource assessment
+
+Base `73118315` includes accepted K3.37/PR #310: 238 focused cases in 160.98 s,
+36 documentation cases in 10.23 s and eight tooling cases in 36.194 s. Fernando
+confirmed clean main/upstream equality and both branch deletions.
+
+The as-is audit covers every one of the 86 Python files under tools
+plus seven explicit resource/acquisition/build owners (93 paths total).
+Per-path classifications are executable inventory, not inferred numerical
+acceptance from imports. Source normalization/crossmatch, source-native layout,
+immutable copying and standalone external helpers are separated from application
+science; independent raw comparison legs remain independent. Existing query,
+acquire/install/preflight policies are retained and not run against providers.
+
+Two demonstrated corrections use existing owners only:
+
+* Zodiac application helpers directly transformed the ecliptic pole and chart
+  centre. Route both through CoordinateService; keep mean-ecliptic J2000,
+  vacuum AltAz and FK5 J2000, same target-up formula/RA-Dec title and SkyCoord
+  compatibility returns. Existing Astropy expressions remain parity oracles.
+* The reusable benchmark constructed three observers before its cleanup guard.
+  Constructor two/three failures leaked prior resources. ExitStack callbacks
+  register each successful acquisition and attempt all closes, including after
+  a view refusal or one close failure. Workload/report bodies are unchanged.
+
+Existing curation/promotion/migration tests preserve source rows/units/masks,
+cross-identifications, strict selection rules, versioned selectors and evidence
+hashes. New build seams verify authoritative admitted products, fresh corruption
+refusal before replacing a prior publication, and build admission/publication in
+an isolated process that prohibits Wenu/SDK/numerical-provider imports. Catalogue
+source preprocessing is not redefined as object-state evaluation.
+
+Acquisition tests use synthetic transports and explicit temporary resources only.
+They preserve cache/no-retry, identity and atomic publication mechanisms without
+new source permission, acquisition or external model claims. Existing install,
+science and independent validation receipts are reused for unchanged owners;
+no full benchmark, Moonlight or consumed external execution is authorized.
+Coordinate meaning is unchanged; the coordinate guide remains current. Complete
+Mac acceptance is pending, and K3.39/K3.40 and K3/K5 remain open.

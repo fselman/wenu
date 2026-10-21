@@ -448,3 +448,14 @@ install those resources; notebook package-data inclusion is explicit in
 `pyproject.toml`. K3.37 introduces no Python module or command. Notebook and
 example orchestration uses current public composition and retains observer
 cleanup on failure; numerical and renderer owners remain unchanged.
+
+## Maintenance and operational consumers
+
+K3.38 inventories 86 Python files under `tools/` and seven explicit
+resource/acquisition/build owners. Their per-path classifications and exact blob
+identities are recorded under `maintenance_resource_routing.consumers` in the
+migration inventory. No Python module or command is added. Source maintenance,
+layout, independent numerical references and explicit external development
+helpers are classified separately from application scientific consumers.
+The two corrected tools are `render_zodiac_constellations.py` (CoordinateService)
+and `benchmark_reusable_sphere.py` (partial observer acquisition/cleanup).

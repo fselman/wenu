@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import cProfile
+from contextlib import ExitStack
 from dataclasses import asdict, dataclass
 import json
 from pathlib import Path
@@ -143,48 +144,51 @@ def benchmark(destination):
     _progress(step, total, "catalogue_loading")
     sky, timing = _timed("catalogue_loading", generate_celestial_sphere)
     operations.append(timing)
-    observers = (
-        Observer(location="La Ligua", time="2026-08-15 21:00"),
-        Observer(location="La Ligua", time="2026-08-16 00:00"),
-        Observer(location="Papudo", time="2026-08-15 21:00"),
-    )
-    profile = cProfile.Profile()
-    try:
-        profile.enable()
-        views = []
-        for observer_index, observer in enumerate(observers):
-            for name, arguments in VIEW_REQUESTS:
+    with ExitStack() as cleanup:
+        observers = []
+        for location, instant in (
+            ("La Ligua", "2026-08-15 21:00"),
+            ("La Ligua", "2026-08-16 00:00"),
+            ("Papudo", "2026-08-15 21:00"),
+        ):
+            observer = Observer(location=location, time=instant)
+            cleanup.callback(observer.close)
+            observers.append(observer)
+        profile = cProfile.Profile()
+        try:
+            profile.enable()
+            views = []
+            for observer_index, observer in enumerate(observers):
+                for name, arguments in VIEW_REQUESTS:
+                    step += 1
+                    operation_name = f"view.{observer_index}.{name}"
+                    _progress(step, total, operation_name)
+                    view, timing = _timed(
+                        operation_name,
+                        lambda arguments=arguments, observer=observer: (
+                            get_chart_view(sky, observer, **arguments)
+                        ),
+                    )
+                    views.append((observer_index, name, view))
+                    operations.append(timing)
+            for observer_index, name, view in views:
+                output = destination / f"{observer_index}-{name}.png"
                 step += 1
-                operation_name = f"view.{observer_index}.{name}"
+                operation_name = f"draw_export.{observer_index}.{name}"
                 _progress(step, total, operation_name)
-                view, timing = _timed(
+                _result, timing = _timed(
                     operation_name,
-                    lambda arguments=arguments, observer=observer: (
-                        get_chart_view(sky, observer, **arguments)
+                    lambda view=view, output=output: draw_chart_view(
+                        view, output, style="atlas", mode="print"
                     ),
                 )
-                views.append((observer_index, name, view))
                 operations.append(timing)
-        for observer_index, name, view in views:
-            output = destination / f"{observer_index}-{name}.png"
-            step += 1
-            operation_name = f"draw_export.{observer_index}.{name}"
-            _progress(step, total, operation_name)
-            _result, timing = _timed(
-                operation_name,
-                lambda view=view, output=output: draw_chart_view(
-                    view, output, style="atlas", mode="print"
-                ),
-            )
-            operations.append(timing)
-        profile.disable()
-        before_repeat = _cache_counts(sky)
-        sky.stars.observed_altaz(observers[0])
-        after_repeat = _cache_counts(sky)
-    finally:
-        profile.disable()
-        for observer in observers:
-            observer.close()
+            profile.disable()
+            before_repeat = _cache_counts(sky)
+            sky.stars.observed_altaz(observers[0])
+            after_repeat = _cache_counts(sky)
+        finally:
+            profile.disable()
 
     return {
         "canonical_sphere_build_count": 1,

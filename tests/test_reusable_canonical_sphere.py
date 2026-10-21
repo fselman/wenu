@@ -56,6 +56,60 @@ VIEW_REQUESTS = (
 )
 
 
+@pytest.mark.parametrize("failed_construction", (2, 3))
+def test_reusable_benchmark_releases_partial_observer_acquisition(tmp_path, monkeypatch, failed_construction):
+    """No timing workload: fail while constructing synthetic observers."""
+    import importlib.util
+    import sys
+    from pathlib import Path
+    spec = importlib.util.spec_from_file_location("reusable_benchmark_owner",
+        Path(__file__).parents[1] / "tools/benchmark_reusable_sphere.py")
+    module = importlib.util.module_from_spec(spec)
+    monkeypatch.setitem(sys.modules, spec.name, module)
+    spec.loader.exec_module(module)
+    acquired, closed = [], []
+    def observer(**kwargs):
+        index = len(acquired) + 1
+        if index == failed_construction:
+            raise RuntimeError("observer admission refusal")
+        acquired.append(index)
+        return SimpleNamespace(close=lambda: closed.append(index))
+    monkeypatch.setattr(module, "Observer", observer)
+    monkeypatch.setattr(module, "generate_celestial_sphere", object)
+    monkeypatch.setattr(module, "get_chart_view", lambda *a, **k: pytest.fail("benchmark workload started"))
+    with pytest.raises(RuntimeError, match="observer admission refusal"):
+        module.benchmark(tmp_path / "benchmark")
+    assert sorted(closed) == acquired
+
+
+@pytest.mark.parametrize("close_failure", (False, True))
+def test_reusable_benchmark_attempts_all_cleanup_after_view_refusal(tmp_path, monkeypatch, close_failure):
+    import importlib.util
+    import sys
+    from pathlib import Path
+    spec = importlib.util.spec_from_file_location("reusable_benchmark_cleanup",
+        Path(__file__).parents[1] / "tools/benchmark_reusable_sphere.py")
+    module = importlib.util.module_from_spec(spec)
+    monkeypatch.setitem(sys.modules, spec.name, module)
+    spec.loader.exec_module(module)
+    acquired, closed = [], []
+    def observer(**kwargs):
+        index = len(acquired)
+        acquired.append(index)
+        def close():
+            closed.append(index)
+            if close_failure and index == 2: raise ValueError("close refusal")
+        return SimpleNamespace(close=close)
+    def refuse(*args, **kwargs): raise RuntimeError("view refusal")
+    monkeypatch.setattr(module, "Observer", observer)
+    monkeypatch.setattr(module, "generate_celestial_sphere", object)
+    monkeypatch.setattr(module, "get_chart_view", refuse)
+    with pytest.raises(ValueError if close_failure else RuntimeError,
+                       match="close refusal" if close_failure else "view refusal"):
+        module.benchmark(tmp_path / "benchmark")
+    assert sorted(closed) == acquired == [0, 1, 2]
+
+
 @pytest.fixture(scope="module")
 def canonical_sphere():
     return generate_celestial_sphere()
