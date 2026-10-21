@@ -33,4 +33,3 @@ def test_maintenance_inventory_covers_tools_and_explicit_resource_owners():
         "independent-validation", "fixture-preparation", "manual-benchmark",
         "build-resource", "test-tooling", "external-development-helper",
     } and row["boundary"] for row in rows.values())
-
