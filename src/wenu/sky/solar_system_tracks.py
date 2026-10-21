@@ -12,6 +12,7 @@ from astropy.time import Time, TimeDelta
 
 from wenu.coordinate_service import CoordinateService
 from wenu.coordinates import CoordinateSpec, PositionStatus
+from wenu.ephemeris_state import KernelEphemerisStateSource
 from wenu.geometry.spherical import SphericalCurves
 from wenu.sky.realization import LayerRealizationContext
 from wenu.sky.solar_system_points import (
@@ -306,6 +307,16 @@ class SolarSystemTrackRealizer:
         if not isinstance(binding, EphemerisSourceBinding):
             raise TypeError(
                 "source_resolver must return an EphemerisSourceBinding."
+            )
+        if (
+            getattr(request.descriptor, "body_class", None)
+            in {"planet", "natural_satellite"}
+            and isinstance(binding.target_source, SkyfieldEphemerisStateSource)
+        ):
+            # Includes the planetary binding in a mixed minor-body request.
+            binding = EphemerisSourceBinding(
+                KernelEphemerisStateSource(binding.target_source),
+                binding.observer_source,
             )
         source = binding.target_source
         observer_source = binding.observer_source

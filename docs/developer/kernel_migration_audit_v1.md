@@ -1431,3 +1431,36 @@ appearance and sequence parity at a fixed site/date. Local DE440s is absent, so
 that case fails its explicit offline preflight and remains required on Mac with
 no skip/download. K3.27 tracks, new capabilities, SDK changes and extraction are
 outside this assessment; K3/K5 remain partial.
+
+## K3.27 natural-body track consumer assessment
+
+The existing sampler already evaluates each exact requested sample, inserts major
+anchors, assembles apparent ICRS directions and performs one fixed-product-axis
+transform. Retain it. Default binding and mixed-request planetary binding exposed
+raw Skyfield target sources. The track owner now adapts these known planet/Moon
+bindings through the existing Cartesian interface, preserving raw observer/apparent
+roles and explicit generic protocol compatibility. No asteroid/comet source or
+acquisition implementation changes. The actual mixed resource-session binding
+method is exercised with constructed offline state fixtures, including closed
+session refusal.
+
+The shared component owner had reused geometry by context equality and observer
+identity before live resource admission. A regression reproduced cached return
+after resource closure; it now checks the established observer key and shares only
+within the same context object. Paths and major symbols still share one trajectory;
+a new equal-valued request must re-admit and can refuse without stale fallback.
+
+Sixteen constructed returned-state/refusal cases cover eight natural-body
+descriptors through default and mixed bindings. Bypassing the adapter fails all
+sixteen; those fixtures are not physical-accuracy evidence. Two actual canonical
+PNG comparisons cover full versus start-only components via public request
+registration, style, preparation and drawing, preserving exact pixels and samples.
+The sampling/one-transform function AST is unchanged after removing binding
+adapter assembly; temporal policy, request registration and annotations are
+byte-identical. Existing Ceres/comet compatibility cases remain in the gate.
+
+The full natural-body-track-routing gate includes real offline DE440s parity at a
+fixed site/date for eight scientific-API tracks. Local DE440s is absent; that case
+refuses preflight rather than skipping/downloading. Existing chart admission still
+rejects satellite tracks, so Moon API coverage is not a new UI capability.
+K3.28/K3.29 state adoption and K5 freeze remain separate.

@@ -2478,6 +2478,32 @@
           "reason": "Existing scientific, descriptor or public display owner; bounded returned-state/refusal, resource reuse, numerical/output parity seams."
         }
       ]
+    },
+    "natural-body-track-routing": {
+      "scope": "K3.27 natural-body track state samples, fixed product axes and shared temporal display components, including known Skyfield planetary bindings in mixed requests.",
+      "limits": "Retain scalar light-time/apparent mathematics, exact sampling/ticks and public chart admission. Moon remains scientific-API sampling only; existing chart-request satellite-track refusal is retained. No SDK, source bytes, dependencies, schema, renderer/annotation/sampling algorithm, acquisition or asteroid/comet state adoption. Full gate includes offline DE440s parity.",
+      "selections": [
+        {
+          "node": "tests/test_solar_system_tracks.py",
+          "reason": "Existing scientific, annotation, CLI/request or shared temporal-policy owner, with bounded returned-state/refusal, resource reuse and output seams."
+        },
+        {
+          "node": "tests/test_solar_system_track_layer.py",
+          "reason": "Existing scientific, annotation, CLI/request or shared temporal-policy owner, with bounded returned-state/refusal, resource reuse and output seams."
+        },
+        {
+          "node": "tests/test_solar_system_track_cli.py",
+          "reason": "Existing scientific, annotation, CLI/request or shared temporal-policy owner, with bounded returned-state/refusal, resource reuse and output seams."
+        },
+        {
+          "node": "tests/test_chart_request_tracks.py",
+          "reason": "Existing scientific, annotation, CLI/request or shared temporal-policy owner, with bounded returned-state/refusal, resource reuse and output seams."
+        },
+        {
+          "node": "tests/test_temporal_components.py",
+          "reason": "Existing scientific, annotation, CLI/request or shared temporal-policy owner, with bounded returned-state/refusal, resource reuse and output seams."
+        }
+      ]
     }
   },
   "consumer_review": [

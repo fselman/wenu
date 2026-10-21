@@ -411,3 +411,159 @@ def test_realizer_requires_typed_context_with_observation():
             context=without_observation,
             observer=object(),
         )
+
+
+def test_track_component_sharing_checks_resource_and_fresh_context_before_reuse():
+    source = TrackSource()
+    calls = []
+    def acquire(observer):
+        calls.append(observer)
+        return source
+    shared = SolarSystemTrackRealization(request(), realizer=SolarSystemTrackRealizer(
+        source_factory=acquire, sample_observer_factory=sample_observer,
+        observer_state_factory=observer_state, apparent_realizer=ApparentRealizer()))
+    generation = [0]
+    def identity():
+        if generation[0] == 'closed':
+            raise RuntimeError('track ephemeris closed')
+        return generation[0]
+    observer = SimpleNamespace(geometry_resource_identity=identity)
+    first = shared.realize(CONTEXT, observer)
+    assert shared.realize(CONTEXT, observer) is first
+    assert len(calls) == 1
+    generation[0] = 'closed'
+    with pytest.raises(RuntimeError, match='ephemeris closed'):
+        shared.realize(CONTEXT, observer)
+    generation[0] = 1
+    assert shared.realize(CONTEXT, observer) is not first
+    assert len(calls) == 2
+    def refused(observer):
+        raise RuntimeError('fresh track admission refused')
+    shared.realizer.source_factory = refused
+    with pytest.raises(RuntimeError, match='fresh track admission refused'):
+        shared.realize(replace(CONTEXT), observer)
+
+
+NATURAL_TARGET_IDS = {
+    'mercury': '199', 'venus': '299', 'mars barycenter': '4',
+    'jupiter barycenter': '5', 'saturn barycenter': '6',
+    'uranus barycenter': '7', 'neptune barycenter': '8', 'moon': '301',
+}
+
+
+def _kernel_track_backend(monkeypatch):
+    """Synthetic ephemeris implementing the existing Skyfield adapter boundary."""
+    from wenu.skyfield_ephemeris import SkyfieldEphemerisStateSource
+    raw = TrackSource()
+    state = raw.state
+    raw.state = lambda query: replace(state(query), provider_target_id=NATURAL_TARGET_IDS[query.target])
+    backend = object.__new__(SkyfieldEphemerisStateSource)
+    backend.resource = raw.resource
+    backend.state = raw.state
+    monkeypatch.setattr(SkyfieldEphemerisStateSource, 'from_observer',
+                        classmethod(lambda cls, observer: backend))
+    return raw, backend
+
+
+@pytest.mark.parametrize('body', ('mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'moon'))
+@pytest.mark.parametrize('binding_kind', ('default', 'mixed'))
+def test_natural_track_default_and_mixed_bindings_consume_kernel_samples(monkeypatch, body, binding_kind):
+    from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
+    from wenu.ephemeris_state import KernelEphemerisStateSource
+    from wenu_kernel.kernel import KernelSession
+    from wenu_kernel.errors import UnsupportedCapability
+    raw, backend = _kernel_track_backend(monkeypatch)
+    descriptor = SOLAR_SYSTEM_BODY_CATALOG.resolve(body)
+    value = request(descriptor=descriptor)
+    options = dict(sample_observer_factory=sample_observer, observer_state_factory=observer_state,
+                   apparent_realizer=ApparentRealizer())
+    baseline = SolarSystemTrackRealizer(source_factory=lambda observer: raw, **options).curve(
+        value, context=CONTEXT, observer=object())
+    inputs = {}
+    base_observer = object()
+    resource_session = None
+    if binding_kind == 'mixed':
+        from wenu.minor_body_resources import MinorBodyResourceSession
+        resource_session = object.__new__(MinorBodyResourceSession)
+        resource_session._closed = False
+        resource_session.observer = base_observer
+        resource_session.planetary_source = backend
+        inputs['source_resolver'] = resource_session.source_binding
+    calls = []
+    transforms = []
+    class FixedAxes:
+        def transform(self, geometry, target, observation):
+            transforms.append((target, observation))
+            return SphericalCurves(geometry.lon_deg, geometry.lat_deg,
+                coordinate_spec=target, ids=geometry.ids, labels=geometry.labels,
+                names=geometry.names, closed=geometry.closed, metadata=dict(geometry.metadata))
+    original = KernelSession.evaluate
+    def record(session, query):
+        calls.append(query)
+        return original(session, query)
+    monkeypatch.setattr(KernelSession, 'evaluate', record)
+    owner = SolarSystemTrackRealizer(**inputs, coordinate_service=FixedAxes(), **options)
+    result = owner.curve(value, context=CONTEXT, observer=base_observer)
+    assert calls
+    assert all(q.objects[0].value == 'ephemeris:' + descriptor.target for q in calls)
+    assert all(q.times[0].scale == 'tdb' and q.reference.origin_id == descriptor.centre for q in calls)
+    assert isinstance(result.source_binding.target_source, KernelEphemerisStateSource)
+    assert result.source_binding.observer_source is backend
+    assert result.tick_sample_indices == baseline.tick_sample_indices == (0, 2, 5)
+    assert result.sample_instants == baseline.sample_instants
+    np.testing.assert_allclose(result.geometry.lon_deg[0], baseline.geometry.lon_deg[0], rtol=0, atol=1e-11)
+    assert transforms == [(PRODUCT_SPEC, OBSERVATION)]
+    assert result.geometry.coordinate_spec is PRODUCT_SPEC
+    assert all(d.target_provider_id == NATURAL_TARGET_IDS[descriptor.target]
+               for d in (a.astrometric for a in result.apparent_directions))
+    def changed(session, query):
+        batch = record(session, query)
+        row = batch.states[0]
+        x, y, z = row.position_m
+        return replace(batch, states=(replace(row, position_m=(-y, x, z)),))
+    monkeypatch.setattr(KernelSession, 'evaluate', changed)
+    moved = owner.curve(value, context=CONTEXT, observer=base_observer)
+    np.testing.assert_allclose(moved.geometry.lon_deg[0], (result.geometry.lon_deg[0] + 90) % 360,
+                               rtol=0, atol=1e-10)
+    def refuse(session, query):
+        raise UnsupportedCapability('track state refusal')
+    monkeypatch.setattr(KernelSession, 'evaluate', refuse)
+    with pytest.raises(UnsupportedCapability, match='track state refusal'):
+        owner.curve(value, context=CONTEXT, observer=base_observer)
+
+    if resource_session is not None:
+        resource_session._closed = True
+        with pytest.raises(ValueError, match='resource session is closed'):
+            owner.curve(value, context=CONTEXT, observer=base_observer)
+
+
+def test_real_offline_natural_tracks_match_retained_raw_direction_chain():
+    from pathlib import Path
+    from wenu.observer import Observer, DEFAULT_DATA_DIRECTORY, DEFAULT_EPHEMERIS
+    from wenu.skyfield_ephemeris import SkyfieldEphemerisStateSource
+    from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
+    path = Path(DEFAULT_DATA_DIRECTORY) / DEFAULT_EPHEMERIS
+    if not path.is_file():
+        raise FileNotFoundError(f'Offline track acceptance requires {path}')
+    observer = Observer(lat_deg=OBSERVATION.latitude_deg, lon_deg=OBSERVATION.longitude_deg, elevation_m=52.,
+                        timezone_name='UTC', time='2026-08-30T00:00:00')
+    try:
+        raw = SkyfieldEphemerisStateSource.from_observer(observer)
+        protocol = SimpleNamespace(resource=raw.resource, state=raw.state)
+        for body in ('mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'moon'):
+            descriptor = SOLAR_SYSTEM_BODY_CATALOG.resolve(body)
+            value = request(descriptor=descriptor, sample_step_days=.5, tick_step_days=.75, tick_count=1)
+            # Explicit generic protocol injection preserves the pre-migration raw target route.
+            expected = SolarSystemTrackRealizer(source_resolver=lambda descriptor, observer:
+                EphemerisSourceBinding(protocol, raw)).curve(value, context=CONTEXT, observer=observer)
+            actual = SolarSystemTrackRealizer().curve(value, context=CONTEXT, observer=observer)
+            assert actual.sample_instants == expected.sample_instants
+            assert actual.tick_sample_indices == expected.tick_sample_indices
+            np.testing.assert_allclose(actual.geometry.lon_deg[0], expected.geometry.lon_deg[0], rtol=0, atol=1e-10)
+            np.testing.assert_allclose(actual.geometry.lat_deg[0], expected.geometry.lat_deg[0], rtol=0, atol=1e-10)
+            for a, b in zip(actual.apparent_directions, expected.apparent_directions):
+                assert a.astrometric.target_provider_id == b.astrometric.target_provider_id == NATURAL_TARGET_IDS[descriptor.target]
+                assert a.astrometric.distance_au == pytest.approx(b.astrometric.distance_au, rel=1e-12, abs=1e-15)
+                assert a.astrometric.light_time_days == pytest.approx(b.astrometric.light_time_days, rel=1e-12, abs=1e-15)
+    finally:
+        observer.close()

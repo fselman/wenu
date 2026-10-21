@@ -1470,3 +1470,13 @@ fixed ecliptic axes, with geometric rather than apparent semantics. These models
 remain distinct. Phase, angular diameter, bright-limb conventions and physical
 sampling are unchanged. Display magnification acts only after projection and
 never changes physical radius, range, phase or source epochs.
+
+## Natural-body trajectory sampling
+
+K3.27 transports the existing geometric target samples through the accepted
+Cartesian adapter before the retained scalar light-time/apparent services. Source
+reference and per-sample reception/emission times remain distinct. A trajectory is
+assembled in apparent ICRS and transformed once into fixed chart product axes;
+its per-vertex reception times remain metadata, not a fictitious common epoch.
+Exact major ticks and regular sampling are unchanged. Selecting paths, ticks,
+symbols or dates neither resamples nor propagates the scientific trajectory.

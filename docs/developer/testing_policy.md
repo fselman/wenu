@@ -1486,4 +1486,27 @@ No new absolute physical accuracy claim follows from parity.
 Retain accepted K3.25 adapter/kernel conformance and installation, KG geometry and
 prior atlas/sequence rendering receipts. SDK, dependencies, source bytes, renderer,
 geometry algorithms and snapshot/manifest formats are unchanged; no broad SDK or
-production repeat is justified. Complete Mac acceptance remains pending.
+production repeat is justified. K3.26 complete Mac acceptance passed at 9aec9cf7
+through PR #299: 138 focused, 36 documentation and eight tooling cases.
+
+## Natural-body track routing gate
+
+`natural-body-track-routing` selects existing sampled-track, projected-annotation,
+CLI, chart-request and temporal-component owners. Retained tests protect exact
+sample/tick indices, start-inclusive cadence, independent presentation flags,
+fixed-axis transformation, family/body refusal and existing Ceres/comet seams.
+New tests cover kernel values/refusal for eight scientific descriptors via default
+and actual mixed-session planetary bindings, resource closure/change before shared
+reuse, fresh-context admission, sample-derived symbols and closed mixed sessions.
+One cache regression fails before correction and passes after. Deliberately
+bypassing the adapter fails all sixteen default/mixed returned-state cases.
+
+Local focused gate: 82 passed, one offline DE440s case excluded from the local
+invocation only. The complete Mac gate retains it without skip/xfail or acquisition.
+Two actual canonical raw/routed PNG comparisons have exact nonempty pixels for full
+and start-only components through public registration/style/draw, with a labelled
+synthetic apparent backend. Real ephemeris parity remains separate from those seams;
+no new absolute physical accuracy or satellite-track chart admission is claimed.
+Retain accepted adapter/SDK, observer, geometry and installation receipts: no SDK,
+dependency, source bytes, schema, renderer or sampling/annotation algorithm changed.
+Complete Mac acceptance remains pending.
