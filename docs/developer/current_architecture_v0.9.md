@@ -625,3 +625,26 @@ coordinate/kernel geometry and canonical drawing services. Event views select
 existing sample anchors without propagation or resampling. Same-spec native
 geometry remains a valid identity path. Exact events, bounded sampling tests and
 the absence of a global continuous-error proof remain distinct metadata claims.
+
+## Satellite report consumer boundary
+
+Exact reports are immutable scientific evidence, built from the coordinator's
+ordered `MultiFieldCrossingResult` values. The report owner validates source,
+observer, field, interval, airmass and acceleration identity before publishing a
+canonical payload. It performs no orbit or coordinate evaluation. The private
+tabular owner projects that same payload to ECSV/VOTable and reconstructs the
+same validated report; these are interchange views, not alternate science.
+
+The satellite CLI assembles the existing snapshot admission, typed requests and
+multi-field coordinator, then calls the report owner. Direct, initial-file and
+validated-subset modes use the same services. Validation is current on each call;
+a prior validation file is not permission to bypass changed resource/domain
+refusal. Report bundles are staged and round-trip checked before atomic
+no-clobber publication. A failed write or competing publisher leaves no partial
+Wenu bundle and preserves the other writer.
+
+Planning advisories consume only validated exact reports and caller-owned
+planning contexts. Existing half-open interval overlap, labels and scientific
+status remain in the advisory owner. They neither propagate satellites nor
+contact observatory systems. K3.34 verifies these existing boundaries without
+production changes; package extraction and K3/K5 closure remain separate.

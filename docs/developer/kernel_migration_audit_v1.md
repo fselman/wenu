@@ -1634,3 +1634,45 @@ makes no new production capacity or global continuous-error claim. K3.32 is
 accepted through PR #305 after 61 focused, 36 documentation and eight tooling
 Mac cases, followed by clean main/cleanup confirmation. Complete K3.33 Mac
 acceptance and K3/K5 closure remain pending; K3.34 onward remains separate.
+
+## K3.34 satellite report consumer assessment
+
+Assessment base: main `0cde175ae859e172301936562fbab950f3be8892` (PR #306),
+identical tree to tested `8db716de`. K3.33 is accepted after 86 focused cases
+(221.47 s), 36 documentation cases (3.44 s) and eight tooling cases (6.958 s)
+on Fernando's Mac, followed by confirmed clean main and branch cleanup.
+Revision 58 selects this bounded consumer audit before implementation.
+
+| Existing owner | Service boundary and disposition |
+|---|---|
+| `satellite_crossing_reports.py` | Validates ordered solved batch/domain values, source and context identity; canonical immutable report, no state recomputation. Retain implementation |
+| `_satellite_tabular_reports.py` | One schema-derived projection of the report, strict reconstruction and explicit masks/Unicode null flags. Retain implementation |
+| `cli/satellite_crossings.py` | Application-owned assembly of existing snapshot admission/coordinator, current validation, report and atomic no-clobber publication. Retain implementation |
+| `satellite_planning_advisories.py` | Validated reports and caller-owned planning units, existing half-open overlaps and neutral general-profile output; no network/facility writes. Retain implementation |
+
+The closest existing tests cover report identity/strict decoding, tabular round
+trips, CLI protocol partition/status/path behavior and advisory overlap/profile
+validation. New evidence extends those same owners: three real CLI input modes
+consume changed Cartesian kernel values through the existing coordinator and
+refuse state failure or changed altitude admission after success. All published
+format identities/bytes are checked, with ordered positive/zero fields and a
+real two-call validation subset. The installed elements are explicitly synthetic;
+only altitude admission is replaced with a labelled synthetic service result.
+Single-instant specimens test composition, not continuous events or physical
+accuracy. K3.33 retains the independent adaptive/completeness/worker evidence.
+
+Three solved-report/interchange/advisory cases preserve changed values, warnings,
+Unicode labels, identities, order and null future-science fields while state and
+network access are prohibited. Serialized ECSV corruption and a contradictory
+VOTable null flag refuse. Staged-write and publication-race faults preserve
+atomicity and the other writer. Deliberate implementation faults are checked
+separately: all five experiments fail their closest cases (12 expected failures),
+then every production file is restored and compared with the base.
+
+No production change is necessary: these consumers already use their appropriate
+result/service boundaries. Reports and offline overlap do not need artificial
+state queries. Coordinate and satellite guides, source map and scientific models
+remain current. Existing K3.31/K3.33 numerical/SDK/worker and unchanged installation
+receipts are retained; no production benchmark or consumed external authority is
+reused. Complete K3.34 Mac acceptance remains pending. K3.35 onward, extraction
+and K3/K5 closure remain separate.

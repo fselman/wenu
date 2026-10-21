@@ -317,3 +317,170 @@ def test_packaged_protocol_schemas_close_every_declared_object():
                 pending.extend(value.values())
             elif isinstance(value, list):
                 pending.extend(value)
+
+
+@pytest.mark.parametrize("mode", ("direct", "request", "validated-request"))
+def test_cli_bundles_consume_kernel_results_and_recheck_live_services(
+    tmp_path, monkeypatch, capsys, mode
+):
+    """Installed synthetic elements; actual CLI/coordinator/kernel/observer chain.
+
+    Altitude admission alone is synthetic, not an observational certificate.
+    Single-instant fields test transport, not continuous crossing completeness.
+    """
+    from dataclasses import asdict, replace
+    from importlib import resources
+    from types import SimpleNamespace
+    import socket
+    from wenu_kernel.errors import UnsupportedCapability
+    from wenu_kernel.kernel import KernelSession
+    from wenu.satellites import load_snapshot
+    from wenu.satellites.topocentric import SatelliteFieldCenterAltitudeEvaluator
+    from test_satellite_crossing_acceleration import field, observer, start_state, START, iso
+
+    snapshot = load_snapshot()
+    state = start_state(snapshot, snapshot.records[0])
+    directory = tmp_path / "snapshot"
+    directory.mkdir()
+    source = resources.files("wenu.data.satellites.snapshots.synthetic_50s4b_v1")
+    for name in ("manifest.json", "records.json"):
+        (directory / name).write_bytes(source.joinpath(name).read_bytes())
+    request = request_document()
+    request.pop("request_identity_sha256")
+    request["snapshot"] = dict(directory=str(directory), snapshot_id=snapshot.manifest.snapshot_id,
+                               content_sha256=snapshot.manifest.content_sha256)
+    request["observer"] = asdict(observer())
+    request["fields"] = []
+    for name, longitude, latitude in (
+        ("positive — Ω", state.gcrs_axis_longitude_deg, state.gcrs_axis_latitude_deg),
+        ("opposite — 零", (state.gcrs_axis_longitude_deg + 180.) % 360., -state.gcrs_axis_latitude_deg),
+    ):
+        fov = replace(field(longitude, latitude), field_id=name)
+        spec = asdict(fov.coordinate_spec)
+        spec["position_status"] = fov.coordinate_spec.position_status.value
+        spec["corrections"] = sorted(spec["corrections"])
+        spec["provenance"] = list(spec["provenance"])
+        request["fields"].append(dict(
+            field_id=name, center_longitude_deg=longitude, center_latitude_deg=latitude,
+            angular_radius_deg=fov.angular_radius_deg, coordinate_spec=spec, boundary=fov.boundary,
+            interval=dict(start=iso(START), stop=iso(START), time_scale="utc", boundary="inclusive"),
+            time_tolerance_seconds=.01, angular_tolerance_deg=1e-5))
+    request = cli._signed(request)
+    phase = {"altitude": 60., "invalid": None}
+    def altitude(_self, fov, site, instant):
+        assert site == observer() and instant == iso(START)
+        return (0. if fov.field_id == phase["invalid"] else phase["altitude"],
+                SimpleNamespace(source_sha256="e" * 64))
+    monkeypatch.setattr(SatelliteFieldCenterAltitudeEvaluator, "evaluate", altitude)
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("network access is forbidden")
+    monkeypatch.setattr(socket.socket, "connect", forbidden)
+    request_path = tmp_path / "request.json"
+    request_path.write_text(cli._pretty(request), encoding="utf-8")
+    if mode == "direct":
+        inputs = ["--direct", "--snapshot-directory", str(directory),
+                  "--snapshot-id", snapshot.manifest.snapshot_id,
+                  "--snapshot-sha256", snapshot.manifest.content_sha256,
+                  "--created-utc", request["created_utc"],
+                  "--observer-json", cli._canonical(request["observer"]),
+                  "--policy-json", cli._canonical(request["policy"])]
+        for fov in request["fields"]:
+            inputs.extend(("--field", cli._canonical(fov)))
+    elif mode == "request":
+        inputs = ["--request", str(request_path)]
+    else:
+        validation_path = tmp_path / "validation.json"
+        phase["invalid"] = "opposite — 零"
+        assert cli.main(["--request", str(request_path), "--output", str(tmp_path / "not-published"),
+                         "--validation-output", str(validation_path)]) == 4
+        assert not (tmp_path / "not-published").exists()
+        validation = json.loads(validation_path.read_text(encoding="utf-8"))
+        assert [v["status"] for v in validation["results"]] == ["valid", "invalid"]
+        assert validation["source_bytes_sha256"] == sha256(request_path.read_bytes()).hexdigest()
+        inputs = ["--validated-request", str(validation_path)]
+    original = KernelSession.evaluate
+    calls = []
+    def tracked(session, query):
+        calls.append(query)
+        return original(session, query)
+    monkeypatch.setattr(KernelSession, "evaluate", tracked)
+    def execute(name, status):
+        destination = tmp_path / name
+        assert cli.main([*inputs, "--output", str(destination)]) == status
+        if status:
+            assert not destination.exists()
+            assert not tuple(tmp_path.glob(f".{name}.*"))
+            return None
+        manifest = json.loads((destination / "manifest.json").read_text(encoding="utf-8"))
+        cli._identity(manifest)
+        for item in manifest["files"]:
+            raw = (destination / item["filename"]).read_bytes()
+            assert len(raw) == item["byte_count"] and sha256(raw).hexdigest() == item["sha256"]
+        reports = (
+            cli.ExactSatelliteCrossingReport.from_json((destination / "report.json").read_bytes()),
+            cli.ExactSatelliteCrossingReport.from_ecsv((destination / "report.ecsv").read_bytes()),
+            cli.ExactSatelliteCrossingReport.from_votable((destination / "report.vot").read_bytes()))
+        assert reports[0] == reports[1] == reports[2]
+        assert reports[0].report_identity_sha256 == manifest["report_identity_sha256"]
+        assert manifest["snapshot_content_sha256"] == snapshot.manifest.content_sha256
+        return reports[0]
+    before = execute("before", 0)
+    fields = before.document["fields"]
+    assert fields[0]["crossings"][0]["norad_catalog_id"] == snapshot.records[0].norad_catalog_id
+    assert fields[0]["airmass_admission"]["earth_orientation_sha256"] == ["e" * 64]
+    if mode != "validated-request":
+        assert fields[1]["crossings"] == []
+    assert calls and all(q.reference.frame_id == "teme" for q in calls)
+    def mirrored(session, query):
+        batch = tracked(session, query)
+        return replace(batch, states=tuple(replace(row,
+            position_m=tuple(-x for x in row.position_m),
+            velocity_m_s=tuple(-x for x in row.velocity_m_s)) for row in batch.states))
+    monkeypatch.setattr(KernelSession, "evaluate", mirrored)
+    after = execute("after", 0)
+    assert after.document["fields"][0]["crossings"] == []
+    assert after.report_identity_sha256 != before.report_identity_sha256
+    preserved = {p.name: p.read_bytes() for p in (tmp_path / "before").iterdir()}
+    def unavailable(*_args, **_kwargs):
+        raise UnsupportedCapability("current satellite state refused")
+    monkeypatch.setattr(KernelSession, "evaluate", unavailable)
+    execute("refused", 7)
+    phase["altitude"] = 29.
+    if mode == "request":
+        # Initial invalid file requests require a separate validation destination.
+        assert cli.main([*inputs, "--output", str(tmp_path / "stale"),
+                         "--validation-output", str(tmp_path / "stale-validation.json")]) == 4
+        assert not (tmp_path / "stale").exists()
+    else:
+        execute("stale", 5 if mode == "validated-request" else 4)
+    assert preserved == {p.name: p.read_bytes() for p in (tmp_path / "before").iterdir()}
+    assert "Traceback" not in capsys.readouterr().err
+
+
+@pytest.mark.parametrize("failure", ("write", "race"))
+def test_bundle_failure_is_atomic_and_preserves_other_writer(tmp_path, monkeypatch, failure):
+    from test_satellite_crossing_reports import report, field_result
+    value = report(field_result("publication — Ω"))
+    destination = tmp_path / "bundle"
+    if failure == "write":
+        original = cli._write_exclusive
+        def failed(path, data):
+            if path.name == "report.ecsv":
+                raise OSError("injected staged write failure")
+            return original(path, data)
+        monkeypatch.setattr(cli, "_write_exclusive", failed)
+    else:
+        original = cli._rename_noreplace
+        def raced(source, target):
+            target.mkdir()
+            (target / "other-writer").write_bytes(b"retained")
+            return original(source, target)
+        monkeypatch.setattr(cli, "_rename_noreplace", raced)
+    with pytest.raises(OSError):
+        cli._publish_bundle(destination, value, request_mode="direct", request_identity="a" * 64)
+    assert not tuple(tmp_path.glob(".bundle.*"))
+    if failure == "write":
+        assert not destination.exists()
+    else:
+        assert [p.name for p in destination.iterdir()] == ["other-writer"]
+        assert (destination / "other-writer").read_bytes() == b"retained"

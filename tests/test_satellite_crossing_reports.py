@@ -395,3 +395,27 @@ def test_votable_decoder_rejects_doctype_and_external_entity_before_parsing():
 
     with pytest.raises(ValueError, match="unsafe XML"):
         ExactSatelliteCrossingReport.from_votable(unsafe)
+
+
+@pytest.mark.parametrize("format_name", ("ecsv", "votable"))
+def test_tabular_corruption_cannot_reclassify_nulls_or_scientific_values(format_name):
+    """Exercise serialized carriers, not just the logical JSON round trip."""
+    from io import StringIO
+    value = report(field_result("field — Ω 零"), field_result("zero", crossings=False))
+    if format_name == "ecsv":
+        table = ascii.read(value.to_ecsv(), format="ecsv")
+        table["crossing__range_km"][2] = 1234.5
+        output = StringIO()
+        ascii.write(table, output, format="ecsv")
+        with pytest.raises(ValueError, match="does not match"):
+            ExactSatelliteCrossingReport.from_ecsv(output.getvalue())
+    else:
+        votable = parse(BytesIO(value.to_votable()), verify="exception", invalid="exception")
+        crossing_table = votable.resources[0].tables[2]
+        # Non-null Unicode must not become null by changing its explicit flag.
+        assert not crossing_table.array["crossing__object_name__is_null"][0]
+        crossing_table.array["crossing__object_name__is_null"][0] = True
+        output = BytesIO()
+        votable.to_xml(output, tabledata_format="binary2")
+        with pytest.raises(ValueError, match="contradicts its carrier"):
+            ExactSatelliteCrossingReport.from_votable(output.getvalue())

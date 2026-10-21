@@ -2752,6 +2752,24 @@
           "reason": "Strict receipt/result/fallback/publication/worker protocol contracts plus real small synthetic snapshot fresh exhaustive/accelerated workers, without a production benchmark."
         }
       ]
+    },
+    "satellite-report-routing": {
+      "scope": "K3.34 immutable exact reports, lossless JSON/ECSV/VOTable, direct/two-call CLI assembly and offline planning advisories.",
+      "limits": "Test/evidence closure; existing consumers already compose accepted result/coordinator/state services. Preserve identity, field/visit order, Unicode/nulls, strict decoding, geometric-versus-visibility status, atomic no-clobber publication, current validation and offline behavior. Includes actual CLI/coordinator/kernel transport on installed synthetic elements; altitude admission is explicitly synthetic and instant fields do not qualify continuous events. No production, SDK/dependency/module/resource, acquisition/network/facility-write, numerical policy, schema or renderer change. Retain K3.31/K3.33 numerical/worker and unchanged installation receipts; no historical production benchmark or consumed authority reuse. K3.35 onward remains separate.",
+      "selections": [
+        {
+          "node": "tests/test_satellite_crossing_reports.py",
+          "reason": "Canonical immutable solved-result identity, strict JSON, lossless typed tabular projection, null/Unicode carriers and corruption refusal."
+        },
+        {
+          "node": "tests/test_satellite_crossing_cli.py",
+          "reason": "Direct/file/validated-subset CLI reaches real coordinator/kernel states; current resource refusal and atomic staged/no-clobber publication with failure cleanup."
+        },
+        {
+          "node": "tests/test_satellite_planning_advisories.py",
+          "reason": "Offline report consumers preserve changed solved values, half-open overlaps, identities, order, labels and unknown visibility without state recomputation or facility writes."
+        }
+      ]
     }
   },
   "consumer_review": [

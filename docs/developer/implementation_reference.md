@@ -1896,3 +1896,39 @@ request/result/evidence hashes and publication contracts remain unchanged. The
 small synthetic snapshot worker test does not execute the historical medium
 production benchmark or renew consumed execution authority. No new public API,
 serialized schema, numerical model or package is added.
+
+## Satellite report consumers
+
+`ExactSatelliteCrossingReport.from_results()` accepts ordered immutable
+`MultiFieldCrossingResult` values and the explicit batch policy, creation time
+and implementation identities. It validates snapshot/element, observer, field,
+interval, airmass and acceleration context, then stores canonical compact JSON.
+`document` returns a detached copy. `to_json`/`from_json`, `to_ecsv`/`from_ecsv`
+and `to_votable`/`from_votable` preserve the same logical identity. The private
+`_satellite_tabular_reports` owner derives the fixed columns from the existing
+schema; ECSV masks and VOTable Unicode null indicators retain explicit nulls.
+These interfaces consume solved records; they do not query physical states.
+
+`cli.satellite_crossings.run()` loads and validates the selected local snapshot,
+constructs typed queries and the existing `MultiFieldSatelliteCrossingCoordinator`,
+and runs complete current validation before solving. `main()` exposes direct,
+initial-request and validated-request modes with the retained status mapping.
+An invalid initial file request publishes an ordered validation partition and
+explicit derived subset; it never silently executes that subset. A separate
+validated-request call checks its signed content and current validation again.
+The existing report bundle includes JSON, ECSV, VOTable and a digest-bound file
+manifest. Round trips precede staged writes and the no-replace rename; failure
+cleanup removes only the owned staging directory.
+
+`SatellitePlanningAdvisory.from_report()` takes a validated report and an
+`ObservatoryPlanningContext` of `PlanningObservationUnit` values. It preserves
+planning-unit/report visit order and exact report/snapshot/field identities,
+computes the retained half-open interval intersection and emits detached,
+canonical advisory JSON. Only the existing general profile version 1 is
+supported. Illumination, brightness, detector effect and operational disposition
+remain unknown; no facility system is contacted or modified.
+
+K3.34 adds service-value/refusal and actual bundle/interchange/advisory evidence
+in the existing test owners. No API, numerical model, schema or production
+module changes. The [satellite guide](satellite_guide.md#17-exact-crossing-reports)
+retains the scientific report contract.

@@ -463,7 +463,15 @@ Exact reports retain canonical JSON identity, strict decoding, ECSV/VOTable
 losslessness, explicit nullable Unicode handling, atomic no-clobber file
 publication and the distinction between geometric crossing and visibility.
 Tracks consume accepted solved evidence through the existing chart pipeline.
-The planning advisory does not write to observatory systems.
+The planning advisory does not write to observatory systems. Report and tabular
+consumers preserve already solved scientific values without propagation or
+coordinate reevaluation. Null future-science fields remain not evaluated;
+Unicode text, array order, UTC labels and source/report identities survive all
+three interchange forms. CLI validated-subset files are revalidated against
+current services and do not certify continued external-resource validity.
+Planning overlap remains half-open and does not establish visibility or an
+operational action. Synthetic altitude admission and single-instant CLI specimens
+verify composition only, not new observation accuracy or crossing completeness.
 
 Direct-Sun geometry, twilight, finite-Sun/WGS-84 shadow transitions and bounded
 direct solar irradiance are implemented. Preserve the IAU nominal 1361 W/m²

@@ -12524,7 +12524,7 @@
       "Existing independent analytic/adversarial/domain/fallback/atomicity/matrix contracts retained."
     ],
     "test_repair": "Allow either explicit refusal message at theoretical 30-degree airmass boundary because libm rounding can select the exceeds or uncertifiable branch. Numerical policy unchanged.",
-    "limits": "Complete Mac acceptance pending. Preserve original scientific domains/tolerances and bounded sampling claims; no global continuous-error, new physical accuracy or production capacity qualification. Historical production matrix receipts remain pinned; no consumed authority revived. No production, SDK/dependency/resource/policy/schema/renderer changes. K3.34 onward and K3/K5 remain separate.",
+    "limits": "Accepted PR #306 at main 0cde175a, tested 8db716de: Mac 86 focused/221.47 s, 36 documentation/3.44 s and eight tooling/6.958 s; clean main and branch cleanup confirmed. Preserve original scientific domains/tolerances and bounded sampling claims; no global continuous-error, new physical accuracy or production capacity qualification. Historical production matrix receipts remain pinned; no consumed authority revived. No production, SDK/dependency/resource/policy/schema/renderer changes. K3.34 onward and K3/K5 remain separate.",
     "local_receipt": {
       "gate_cases": 86,
       "gate_seconds": 132.55,
@@ -12536,6 +12536,69 @@
       "deliberate_fault_experiments": 5,
       "expected_fault_failures": 7,
       "complete_mac_acceptance": "pending"
+    },
+    "mac_receipt": {
+      "tested_commit": "8db716def169748a5991309c8c66a46d62360263",
+      "merged_commit": "0cde175ae859e172301936562fbab950f3be8892",
+      "focused_cases": 86,
+      "focused_seconds": 221.47,
+      "documentation_cases": 36,
+      "documentation_seconds": 3.44,
+      "tooling_cases": 8,
+      "tooling_seconds": 6.958,
+      "clean_main_and_branch_cleanup": "user-confirmed"
+    }
+  },
+  "satellite_report_routing": {
+    "milestone": "K3.34",
+    "base_commit": "0cde175ae859e172301936562fbab950f3be8892",
+    "plan_commit": "d305438effe2eb9a7e269ee2ddd927bb9cf2fc7a",
+    "gate": "satellite-report-routing",
+    "production_changes": [],
+    "retained_owners": [
+      "src/wenu/satellite_crossing_reports.py",
+      "src/wenu/_satellite_tabular_reports.py",
+      "src/wenu/cli/satellite_crossings.py",
+      "src/wenu/satellite_planning_advisories.py"
+    ],
+    "source_blobs": {
+      "src/wenu/satellite_crossing_reports.py": "378d1118aa2fc383d23f41fff3cc4b19d74e9452",
+      "src/wenu/_satellite_tabular_reports.py": "cf7c8a47b149585c1eaba97552a09c71b9259693",
+      "src/wenu/cli/satellite_crossings.py": "5866ce2f72ecdad2052c25460d1cc0739ce305b2",
+      "src/wenu/satellite_planning_advisories.py": "66530770cb942fc2c790c4e04c76a0cbe4072891"
+    },
+    "disposition": "Existing immutable result/report/tabular/advisory and CLI coordinator/service composition complies; no rewrite.",
+    "evidence": [
+      "Three actual CLI modes consume changed kernel states, preserve positive/zero order and all format/bundle identities, and refuse state failure or changed current altitude after success.",
+      "Three solved report-to-interchange-to-advisory cases preserve returned values, nulls, Unicode, identities and overlaps without propagation/network.",
+      "ECSV value corruption and contradictory VOTable null flags refuse.",
+      "Staged write and competing publication failures preserve atomicity and other writer."
+    ],
+    "limits": "Complete Mac acceptance pending. Synthetic elements/altitude admission and instant CLI fields verify composition, not new accuracy/completeness/capacity. Retain K3.31/K3.33 science/worker and unchanged installation receipts; no historical benchmark or consumed authority reuse. No production/SDK/dependency/resource/policy/schema/renderer change. K3.35 onward and K3/K5 remain separate.",
+    "local_receipt": {
+      "gate_cases": 68,
+      "gate_seconds": 18.47,
+      "documentation_cases": 31,
+      "documentation_deselected": 5,
+      "documentation_seconds": 1.62,
+      "tooling_cases": 8,
+      "tooling_seconds": 7.495,
+      "deliberate_fault_experiments": 5,
+      "expected_fault_failures": 12,
+      "environment": "Unchanged kernel dev11 installed locally for the existing isolated tool subprocess; no repository dependency/build changes.",
+      "complete_mac_acceptance": "pending"
+    },
+    "deliberate_faults": {
+      "experiments": 5,
+      "expected_failures": 12,
+      "results": {
+        "state_bypass": 3,
+        "report_range_discard": 3,
+        "votable_null_flag_ignored": 1,
+        "advisory_value_discard": 3,
+        "staging_cleanup_disabled": 2
+      },
+      "production_restored": true
     }
   }
 }

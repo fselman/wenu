@@ -526,3 +526,49 @@ def test_offline_validation_tool_writes_positive_zero_and_manifest(tmp_path):
     assert "OFFLINE_ADVISORY=positive rows 1; zero rows 0" in (
         completed.stdout
     )
+
+
+@pytest.mark.parametrize("format_name", ("json", "ecsv", "votable"))
+def test_advisory_consumes_changed_solved_values_without_state_or_network_access(monkeypatch, format_name):
+    """Constructed solved evidence; no new orbital/visibility qualification."""
+    from dataclasses import replace
+    import socket
+    from wenu_kernel.kernel import KernelSession
+    from wenu.satellites.sgp4 import Sgp4TemePropagator
+    identifier = "field — Ω 零"
+    original = field_result(identifier)
+    crossing = original.crossings[0]
+    changed = replace(crossing, entry_instant=iso(START + timedelta(seconds=11)),
+                      exit_instant=iso(START + timedelta(seconds=13)),
+                      closest_approach_deg=.125, range_km=1234.5,
+                      warnings=("synthetic — Ω provenance",))
+    source = report(replace(original, crossings=(changed,)),
+                    field_result("validated zero — 零", crossings=False))
+    planning = context(unit("later — Ω", field_id=identifier, start=12, stop=14),
+                       unit("earlier — 零", field_id=identifier, start=10, stop=12),
+                       unit("zero", field_id="validated zero — 零"))
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("solved report consumers must not evaluate states or access network")
+    monkeypatch.setattr(KernelSession, "evaluate", forbidden)
+    monkeypatch.setattr(Sgp4TemePropagator, "propagate", forbidden)
+    monkeypatch.setattr(socket.socket, "connect", forbidden)
+    encoded = getattr(source, "to_" + format_name)()
+    decoded = getattr(ExactSatelliteCrossingReport, "from_" + format_name)(encoded)
+    assert decoded == source and decoded.to_json() == source.to_json()
+    transported = decoded.document["fields"][0]["crossings"][0]
+    assert transported["range_km"] == 1234.5
+    assert transported["warnings"] == ["synthetic — Ω provenance"]
+    for key in ("illumination", "apparent_magnitude", "detector_effect", "exact_track_samples"):
+        assert transported[key] is None
+    value = advisory(source=decoded, planning=planning)
+    rows = value.document["rows"]
+    assert [r["observation_unit_id"] for r in rows] == ["later — Ω", "earlier — 零"]
+    assert [r["overlap_duration_seconds"] for r in rows] == [1., 1.]
+    assert all(r["closest_approach_deg"] == .125 for r in rows)
+    assert all(r["crossing_entry_utc"] == changed.entry_instant and
+               r["crossing_exit_utc"] == changed.exit_instant for r in rows)
+    assert all(r["report_identity_sha256"] == source.report_identity_sha256 for r in rows)
+    assert all(r["snapshot_identity_sha256"] == original.query.snapshot.manifest.content_sha256 for r in rows)
+    assert all("unknown" in r["scientific_status"] for r in rows)
+    assert value.document["planning_context"]["observation_units"][0]["labels"] == {"programme": "test — retained"}
+    assert SatellitePlanningAdvisory.from_json(value.to_json()) == value
