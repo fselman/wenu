@@ -293,4 +293,6 @@ accepts [asteroid state/offline resource routing](implementation_reference.md#as
 and manifest-backed Ceres solution facts through PR #301 after 211 focused,
 36 documentation and eight tooling Mac cases, with cleanup confirmed. K3.29 now
 implements [comet consumers and provider-record routing](implementation_reference.md#comet-consumers-and-provider-records)
-for acceptance. Complete comet Mac acceptance and K3/K5 closure remain pending.
+through PR #302 after 273 focused, 36 documentation and eight tooling Mac cases;
+cleanup is confirmed. K3.30 implements [antisolar reference routing](implementation_reference.md#antisolar-constructed-reference-routing)
+for acceptance. Complete antisolar Mac acceptance and K3/K5 closure remain pending.

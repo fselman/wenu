@@ -1512,3 +1512,25 @@ knowledge and product reporting remain outside generic state services. Automatic
 selection/visibility and physical accuracy limits remain explicit. Synthetic
 session/output seams do not replace the complete Mac gate's real Encke/161P
 SPK and DE440s comparisons. K3.30 antisolar routing and K3/K5 closure remain open.
+
+## K3.30 antisolar constructed-reference assessment
+
+| Existing consumer | Disposition |
+|---|---|
+| Comet point missing-angle fallback | Replace raw Sun target input with existing Cartesian adapter for known Skyfield; retain raw observer/apparent roles and original direction calculations |
+| Sampled comet symbol fallback | Reuse the same existing point-owner helper, keeping actual sample observer/time and fixed product axes |
+| Provider PsAng | Preserve optional value, precedence and refusal; never perform an unnecessary Sun query |
+| Conjunction/opposition exclusion | Preserve thresholds and head-only geometry; record unavailable constructed tangent |
+| Explicit `CelestialPoints` antipode | Retain Astropy/unit-direction conversion and construction-time anchoring; transport immutable source/observation receipt on native and observed geometry |
+
+No physical antisolar object, numerical rewrite, SDK/package/dependency change,
+resource acquisition, saved-schema change or renderer algorithm is needed.
+Before correction, all six point/symbol provenance/routing seam cases failed and
+the explicit antipode receipt case failed. Bypassing the adapter after correction
+fails both fallback cases. Raw/routed point and sampled-symbol PNGs agree through
+the actual canonical renderer with labelled synthetic apparent inputs. All
+original antisolar numerical function ASTs are unchanged. Independent retained
+50A.5B evidence tests remain selected; real Encke/161P acceptance additionally
+compares the original raw Sun chain with the adapted fallback using offline SPKs.
+K3.29 is accepted through PR #302 (273 focused, 36 documentation, eight tooling
+Mac cases); K3.30 complete Mac acceptance and K3/K5 closure remain pending.

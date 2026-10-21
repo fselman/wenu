@@ -16,6 +16,8 @@ from wenu.sky.observed_cache import observer_geometry_key
 from wenu.sky.sky_layer import SkyLayer
 from wenu.sky.solar_system_points import (
     _provider_gas_tail_position_angle,
+    _apparent_sun_geometry,
+    _antisolar_provenance,
 )
 from wenu.sky.solar_system_tracks import (
     SolarSystemTrackRealizer,
@@ -198,6 +200,7 @@ class CometTrackSymbolLayer(SolarSystemTrackSymbolLayer):
         angle = _provider_gas_tail_position_angle(
             binding.target_source, request, observer_state
         )
+        provider_angle = angle
         sun = None
         separation = None
         suppressed = False
@@ -207,15 +210,13 @@ class CometTrackSymbolLayer(SolarSystemTrackSymbolLayer):
                 reception_instant=request.reception_instant,
                 reception_time_scale=request.reception_time_scale,
             )
-            astrometric = self.track_realization.realizer.astrometric_realizer.direction(
-                binding.observer_source, sun_request, observer_state
-            )
-            sun_geometry = self.track_realization.realizer.apparent_realizer.direction(
-                astrometric,
-                observer=result.sample_observers[sample_index],
-                source=binding.observer_source,
+            sun_geometry = _apparent_sun_geometry(
+                binding.observer_source, sun_request, observer_state,
+                result.sample_observers[sample_index],
+                astrometric_realizer=self.track_realization.realizer.astrometric_realizer,
+                apparent_realizer=self.track_realization.realizer.apparent_realizer,
                 policy=self.descriptor.correction_policy,
-            ).geometry
+            )
             sun = (float(sun_geometry.lon_deg[0]), float(sun_geometry.lat_deg[0]))
             separation = angular_separation_deg(comet, sun)
             suppressed = (
@@ -226,6 +227,12 @@ class CometTrackSymbolLayer(SolarSystemTrackSymbolLayer):
                 angle = antisolar_position_angle_deg(comet, sun)
         metadata = {
             **dict(primary.metadata),
+            "antisolar_reference_provenance": _antisolar_provenance(
+                context, request, observer_state,
+                binding.target_source if provider_angle is not None else binding.observer_source,
+                apparent.geometry if provider_angle is not None else sun_geometry,
+                provider_angle=provider_angle is not None, available=not suppressed,
+            ),
             "comet_tail_suppressed": suppressed,
             "apparent_sun_comet_separation_deg": separation,
             "sun_apparent_icrf_deg": sun,

@@ -628,3 +628,22 @@ position queries for scalar model quantities. Existing explicit acquisition,
 workload and cache policies are unchanged and stay outside deterministic drawing.
 No new comet propagation, physical accuracy, selection or visibility capability
 is admitted. K3.30 reference routing and full K3/K5 closure remain separate.
+
+## Antisolar construction provenance
+
+An antisolar reference is derived geometry, never an independent physical body.
+Comet provider PsAng retains priority; absent angles use the same apparent
+Sun-comet separation, conjunction/opposition exclusion, position angle and tangent
+offset. Known Skyfield Sun states pass through the existing Cartesian adapter,
+with one original light-time owner and unchanged apparent corrections. Resource
+identity is provenance, not independent qualification of an SPK model.
+Sampled symbols retain their actual sample observation rather than claiming the
+fixed chart-axis instant as their evaluation time. Suppression means no available
+tangent, not a fabricated direction. No morphological tail evolution is implied.
+
+Explicit `CelestialPoints` antisolar points retain the legacy Astropy `get_sun`
+geocentric GCRS unit-direction conversion and ICRS antipode at construction time.
+Their receipt preserves that source convention and the construction site/time;
+it does not qualify the legacy unit-direction conversion as a new finite-distance
+or topocentric physical Sun model. Display at another time retains the original
+construction anchor. No antisolar object-state query or new motion is introduced.

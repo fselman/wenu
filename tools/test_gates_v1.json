@@ -2636,6 +2636,44 @@
           "reason": "Retain independent centre date and observer lifecycle at the chart CLI."
         }
       ]
+    },
+    "antisolar-reference-routing": {
+      "scope": "K3.30 apparent-Sun fallback inputs and explicit antisolar constructed-reference provenance across points and sampled symbols.",
+      "limits": "Refactor existing services only. Preserve provider PsAng precedence, raw observer/apparent roles, one light-time owner, exclusion/tangent formulas, per-sample instants, fixed axes and construction-time Astropy antipodes. No antisolar pseudo-body, numerical model, SDK, dependency, resource bytes, schema, acquisition or renderer algorithm change. Real parity requires existing offline DE440s and Encke/161P fixture SPKs; tests do not acquire resources. K3.31 remains separate.",
+      "selections": [
+        {
+          "node": "tests/test_points.py",
+          "reason": "Constructed antipode values, native/observed receipts, construction-time anchoring and coordinate-service refusal."
+        },
+        {
+          "node": "tests/test_solar_system_point_layer.py",
+          "reason": "Shared point and sampled-symbol fallback consumes returned Sun states/refusal; provider precedence, exclusions, per-sample provenance and canonical PNG parity."
+        },
+        {
+          "node": "tests/test_solar_system_tracks.py",
+          "reason": "Retained sampling, mixed bindings, resource lifetime and independent offline natural-body parity."
+        },
+        {
+          "node": "tests/test_solar_system_track_layer.py",
+          "reason": "Fixed product axes and sampled temporal components."
+        },
+        {
+          "node": "tests/test_comet_symbol.py",
+          "reason": "Independent tangent orientation, exclusion and prepared/rendered comet symbol contracts."
+        },
+        {
+          "node": "tests/test_50a5b_antisolar_evidence.py",
+          "reason": "Independent frozen antisolar angle and provider PsAng evidence contracts."
+        },
+        {
+          "node": "tests/test_chart_request_tracks.py",
+          "reason": "Existing public component, style, selection and canonical track output consumers."
+        },
+        {
+          "node": "tests/test_minor_body_resources.py::test_real_offline_comet_kernel_routes_preserve_science",
+          "reason": "Existing fixture-bound Encke/161P SPKs and DE440s: raw Sun chain versus adapted fallback, retained PV/direction/angle and public consumers."
+        }
+      ]
     }
   },
   "consumer_review": [

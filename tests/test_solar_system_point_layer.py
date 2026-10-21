@@ -349,6 +349,113 @@ def test_provider_psang_is_typed_and_has_precedence_contract():
         )
 
 
+@pytest.mark.parametrize('consumer', ['point','symbol'])
+@pytest.mark.parametrize('mode', ['fallback','provider','suppressed'])
+def test_antisolar_consumers_use_returned_sun_and_retain_reference_provenance(monkeypatch, tmp_path, consumer, mode):
+    """Synthetic geometry/backend inputs with actual kernel and light-time services."""
+    from dataclasses import replace
+    import numpy as np
+    from astropy.time import Time
+    from wenu.ephemeris import EphemerisResourceChain, EphemerisState
+    from wenu.skyfield_ephemeris import SkyfieldEphemerisStateSource
+    from wenu.sky.ceres import CERES_BODY
+    from wenu.sky.solar_system_tracks import SolarSystemTrackRealizer
+    from wenu.sky.solar_system_track_layer import SolarSystemTrackRealization, CometTrackSymbolLayer
+    from wenu_kernel.kernel import KernelSession
+    from wenu_kernel.errors import UnsupportedCapability
+    from test_solar_system_tracks import RESOURCE, CONTEXT, ApparentRealizer, observer_state, sample_observer, request
+    descriptor=replace(CERES_BODY,target='2p',selection_key='2p',entity_key='comet_2p',
+        display_name='2P/Encke',body_class='comet',physical_body_id='1000025',canonical_designation='2P')
+    primary=replace(RESOURCE,filename='synthetic-comet.bsp',sha256='c'*64)
+    class Comet:
+        resource=EphemerisResourceChain(primary,(RESOURCE,))
+        def state(self, query):
+            return EphemerisState(query,(1.,0.,.1),(0.,0.,0.),'au','au/day',self.resource,'1000025','0')
+        def apparent_gas_tail_position_angle_deg(self, **kwargs):
+            return 65.412 if mode=='provider' else None
+    comet=Comet()
+    sun=object.__new__(SkyfieldEphemerisStateSource);sun.resource=RESOURCE
+    sun.state=lambda q:EphemerisState(q,(1.,0.,.1) if mode=='suppressed' else (0.,1.,.2),
+        (0.,0.,0.),'au','au/day',RESOURCE,'10','0')
+    protocol=SimpleNamespace(resource=RESOURCE,state=sun.state)
+    context=replace(CONTEXT,evaluation_instant='2026-08-30T00:00:00',evaluation_time_scale='utc')
+    observer=SimpleNamespace(t_astropy=Time(context.evaluation_instant,scale='utc'))
+    def make(source):
+        options=dict(source_resolver=lambda d,o:EphemerisSourceBinding(comet,source),
+            observer_state_factory=observer_state,apparent_realizer=ApparentRealizer())
+        if consumer=='point':
+            return SolarSystemPointLayer(descriptor,**options)
+        realizer=SolarSystemTrackRealizer(sample_observer_factory=sample_observer,**options)
+        shared=SolarSystemTrackRealization(request(descriptor=descriptor),realizer=realizer)
+        return CometTrackSymbolLayer(shared,1)
+    baseline=make(protocol).realize(context,observer)
+    owner=make(sun);queries=[];original=KernelSession.evaluate
+    def evaluated(session,query):
+        queries.append(query)
+        return original(session,query)
+    monkeypatch.setattr(KernelSession,'evaluate',evaluated)
+    actual=owner.realize(context,observer)
+    np.testing.assert_allclose(actual.lon_deg,baseline.lon_deg,rtol=0,atol=1e-11)
+    np.testing.assert_allclose(actual.lat_deg,baseline.lat_deg,rtol=0,atol=1e-11)
+    if mode=='provider':
+        assert queries==[]
+    else:
+        assert queries and all(q.objects[0].value=='ephemeris:sun' for q in queries)
+    receipt=actual.metadata['antisolar_reference_provenance']
+    assert receipt.kind=='comet-tail-axis'
+    assert receipt.observation.instant==('2026-08-30T00:00:00' if consumer=='point'
+        else owner.track_realization._result.sample_instants[owner.track_realization._result.tick_sample_indices[1]])
+    assert receipt.observation.time_scale=='utc'
+    assert receipt.source_resource==(comet.resource if mode=='provider' else RESOURCE)
+    assert receipt.observer_resource==RESOURCE
+    assert receipt.available==(mode!='suppressed')
+    assert len(actual.lon_deg)==(1 if mode=='suppressed' else 2)
+    if mode=='fallback':
+        # Actual canonical rendering, with a deliberately synthetic apparent backend.
+        import matplotlib.pyplot as plt
+        from matplotlib.image import imread
+        from wenu.sky.celestial_sphere import CelestialSphere
+        from wenu.charts.detail_application import composition_layer_options
+        from wenu.charts.styles import PublicationStyle
+        from wenu.charts.detail import ResolvedDetail
+        from wenu.charts.context import Viewport, BoundaryKind
+        from wenu.projections import StereographicProjection
+        from wenu.rendering import MatplotlibRenderer
+        viewport=Viewport(-2.,2.,-2.,2.)
+        composition=SimpleNamespace(style=PublicationStyle(),detail=ResolvedDetail(),
+            context=SimpleNamespace(boundary_kind=BoundaryKind.RECTANGULAR,viewport=viewport))
+        images=[]
+        for index,layer in enumerate((make(protocol),owner)):
+            sky=CelestialSphere(None);sky.add(layer)
+            if consumer=='point':
+                sky.solar_system_bodies[descriptor.selection_key]=layer
+            options=composition_layer_options(composition,sky,reload_catalogues=False)
+            figure,axes=plt.subplots(figsize=(4,3),dpi=90)
+            try:
+                sky.draw_chart(observer=observer,realization_context=context,
+                    projection=StereographicProjection(),renderer=MatplotlibRenderer(axes),
+                    layer_options=options.layer_options,viewport=viewport)
+                axes.set_axis_off()
+                output=tmp_path/f'fallback-{consumer}-{index}.png';figure.savefig(output)
+                images.append(imread(output))
+            finally:
+                plt.close(figure)
+        np.testing.assert_array_equal(images[0],images[1])
+        assert np.any(images[0][:,:,:3]<.5)
+        def changed(session,query):
+            batch=evaluated(session,query);row=batch.states[0];x,y,z=row.position_m
+            return replace(batch,states=(replace(row,position_m=(-y,x,z)),))
+        monkeypatch.setattr(KernelSession,'evaluate',changed)
+        moved=owner.realize(context,observer)
+        np.testing.assert_allclose(moved.lon_deg[:1],actual.lon_deg[:1],rtol=0,atol=1e-11)
+        assert not np.allclose(moved.lon_deg[1:],actual.lon_deg[1:],rtol=0,atol=1e-10)
+        def refused(*args,**kwargs):
+            raise UnsupportedCapability('antisolar Sun query refused')
+        monkeypatch.setattr(KernelSession,'evaluate',refused)
+        with pytest.raises(UnsupportedCapability,match='Sun query refused'):
+            owner.realize(context,observer)
+
+
 def test_point_kernel_opt_in_preserves_existing_track_and_other_family_binding(monkeypatch):
     from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
     from wenu.sky.solar_system_points import skyfield_source_binding
