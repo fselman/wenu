@@ -156,7 +156,7 @@
     },
     {
       "path": "src/wenu/antisolar.py",
-      "git_blob_sha": "4ac65527c6f821148abfa9e8548cc725c18222f6",
+      "git_blob_sha": "5cbf6cfc59e51b67b06d4416f1958b8914b11a01",
       "as_is_directory": "src/wenu",
       "description": "Observer-relative apparent antisolar direction geometry."
     },
@@ -1599,7 +1599,7 @@
     },
     {
       "path": "src/wenu/sky/points.py",
-      "git_blob_sha": "b99f5e903f50a25747a4cff526442c6801d42897",
+      "git_blob_sha": "9004486d4c326b72c429105b90be0de1237c1ccc",
       "as_is_directory": "src/wenu/sky",
       "description": "Celestial reference points as spherical domain geometry."
     },
@@ -1659,13 +1659,13 @@
     },
     {
       "path": "src/wenu/sky/solar_system_points.py",
-      "git_blob_sha": "38770b950b87feaf72f6a810d6e33fec6bf26d90",
+      "git_blob_sha": "7a60a561155b026f43d5516e2299b0b6529eeae9",
       "as_is_directory": "src/wenu/sky",
       "description": "Shared renderer-neutral orchestration for symbolic Solar-System points."
     },
     {
       "path": "src/wenu/sky/solar_system_track_layer.py",
-      "git_blob_sha": "0974a3a3ed1cd903f6332f54263b2e3d82ba7c91",
+      "git_blob_sha": "510e74e45938c73ff321ac677186325f1b14bce7",
       "as_is_directory": "src/wenu/sky",
       "description": "Scientific Solar-System track layer."
     },
@@ -12366,7 +12366,7 @@
       "Ceres/numbered tests retain prior coverage via shared setup; Encke/161P/provisional canonical raw/routed point/track/symbol PNGs agree with labelled synthetic inputs.",
       "Table/JSON CLI consumes changed validated model samples, unknowns/epochs/provenance and preserves an existing output after refusal; positional queries and observer construction forbidden."
     ],
-    "limits": "Complete Mac acceptance pending, including real Encke/161P fixture-bound SPKs and DE440s. Existing numerical provider, point/track algorithms, model records, acquisition, source bytes, SDK, dependency, schema and renderer unchanged. K3.30/K3/K5 remain separate.",
+    "limits": "Accepted PR #302/main 4212f28e: Mac 273 focused (21.12 s), 36 documentation (3.64 s), eight tooling (8.031 s); clean synchronized main and cleanup confirmed. No new numerical science or K3/K5 closure.",
     "local_receipt": {
       "focused_available_passed": 269,
       "focused_seconds": 9.46,
@@ -12376,6 +12376,42 @@
       "documentation_complete_checkout_required": 5,
       "tooling_passed": 8,
       "tooling_seconds": 5.115
+    }
+  },
+  "antisolar_reference_routing": {
+    "milestone": "K3.30",
+    "base_commit": "4212f28e2f6178ad97123d5322eb8d94037d6b01",
+    "plan_commit": "c3e0f96695e1dd4f10914dd1a1b8413ba3a0bd2a",
+    "gate": "antisolar-reference-routing",
+    "owners": [
+      "src/wenu/antisolar.py",
+      "src/wenu/sky/points.py",
+      "src/wenu/sky/solar_system_points.py",
+      "src/wenu/sky/solar_system_track_layer.py"
+    ],
+    "source_blobs": {
+      "src/wenu/antisolar.py": "5cbf6cfc59e51b67b06d4416f1958b8914b11a01",
+      "src/wenu/sky/points.py": "9004486d4c326b72c429105b90be0de1237c1ccc",
+      "src/wenu/sky/solar_system_points.py": "7a60a561155b026f43d5516e2299b0b6529eeae9",
+      "src/wenu/sky/solar_system_track_layer.py": "510e74e45938c73ff321ac677186325f1b14bce7"
+    },
+    "disposition": "Reuse existing Cartesian adapter for known Skyfield apparent-Sun fallback inputs in shared point owner; retain raw observer/apparent roles, provider PsAng precedence and numerical formulas. Transport immutable per-sample and explicit construction-time source/observation receipts.",
+    "evidence": [
+      "Six point/symbol seam cases fail before routing/provenance changes; explicit antipode receipt case fails before correction.",
+      "Adapter bypass fails both fallback cases.",
+      "Actual canonical point and sampled-symbol fallback PNGs match retained raw input paths with explicitly synthetic apparent backends.",
+      "All original antisolar numerical function ASTs unchanged; no SDK/dependency/resource/schema/renderer changes."
+    ],
+    "limits": "Complete Mac acceptance pending. Explicit Astropy geocentric unit-direction antipode remains legacy compatibility, not new physical model qualification. Retain independent 50A.5B evidence and unchanged SDK/numerical/installation receipts. Three selected offline cases require existing Mac resources. K3.31/K3/K5 remain separate.",
+    "local_receipt": {
+      "focused_available_passed": 114,
+      "focused_seconds": 4.34,
+      "offline_resource_cases_required_on_mac": 3,
+      "documentation_available_passed": 31,
+      "documentation_seconds": 1.36,
+      "documentation_complete_checkout_required": 5,
+      "tooling_passed": 8,
+      "tooling_seconds": 5.393
     }
   }
 }

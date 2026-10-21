@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from math import acos, asin, atan2, cos, degrees, radians, sin
 
 
@@ -10,6 +11,20 @@ MAXIMUM_ANTISOLAR_SEPARATION_DEG = (
     180.0 - MINIMUM_ANTISOLAR_SEPARATION_DEG
 )
 ANTISOLAR_TANGENT_OFFSET_DEG = 1.0 / 60.0
+
+
+@dataclass(frozen=True)
+class AntisolarReferenceProvenance:
+    """Construction receipt, without a live observer or a physical pseudo-body."""
+
+    kind: str
+    method: str
+    observation: object
+    source_coordinate_spec: object
+    source_resource: object | None = None
+    observer_resource: object | None = None
+    available: bool = True
+    provenance: tuple[str, ...] = ()
 
 
 def position_angle_deg(origin, destination):

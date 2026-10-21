@@ -1584,3 +1584,29 @@ documentation cases passed; five full-checkout documentation checks remain on Ma
 Six numerical/provider-record owners are byte-identical to the base; the existing
 ephemeris provider and state method have unchanged ASTs. Only source assembly,
 optional-hook forwarding and comet session re-admission change production behavior.
+
+## Antisolar reference routing gate
+
+`antisolar-reference-routing` selects existing point, track, comet-symbol,
+50A.5B evidence and public request owners plus the existing two real offline comet
+cases. No new test module or SDK/installation/full-production repeat is needed:
+no SDK, dependency, module, package data, resource bytes or schema changes.
+
+The eight new seam cases protect construction receipt loss, substituted service
+values/refusal, provider precedence, tangent suppression and actual sample-time
+provenance. Existing numerical formulas remain unchanged. Synthetic apparent
+backends are explicitly identified; point and sampled-symbol fallback PNGs use
+canonical composition/style/domain/projection/rendering. Adapter bypass fails
+both fallback cases. Explicit antipodes retain legacy values, construction-time
+anchor and the original geocentric source frame on native/observed rows; a failed
+coordinate service cannot append a new point.
+
+The complete gate collects 117 cases. Three require existing offline resources:
+one retained natural-body DE440s parity case and two Encke/161P fixture-SPK cases.
+The latter additionally compare raw versus adapted apparent Sun and derived
+angles before existing comet PV/direction/track checks. Never download, substitute
+or silently skip those resources in the Mac acceptance command. Local available
+cases and full-checkout documentation limitations are recorded in the inventory.
+K3.29 complete Mac acceptance passed through PR #302: 273 focused (21.12 s),
+36 documentation (3.64 s), eight tooling (8.031 s), with cleanup confirmed.
+K3.30 complete Mac acceptance remains pending.

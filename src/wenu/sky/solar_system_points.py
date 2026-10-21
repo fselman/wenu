@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from math import isfinite
 
 import numpy as np
 
 from wenu.coordinate_service import CoordinateService
 from wenu.antisolar import (
+    AntisolarReferenceProvenance,
     ANTISOLAR_TANGENT_OFFSET_DEG,
     angular_separation_deg,
     antisolar_position_angle_deg,
@@ -55,6 +56,35 @@ def skyfield_source_binding(descriptor, observer, *, kernel_states=False):
 
         return EphemerisSourceBinding(KernelEphemerisStateSource(source), source)
     return EphemerisSourceBinding(source, source)
+
+
+def _apparent_sun_geometry(source, request, observer_state, observer, *,
+                           astrometric_realizer, apparent_realizer, policy):
+    """Reuse the Cartesian adapter while retaining raw apparent-backend ownership."""
+    target_source = source
+    if isinstance(source, SkyfieldEphemerisStateSource):
+        from wenu.ephemeris_state import KernelEphemerisStateSource
+
+        target_source = KernelEphemerisStateSource(source)
+    astrometric = astrometric_realizer.direction(target_source, request, observer_state)
+    return apparent_realizer.direction(
+        astrometric, observer=observer, source=source, policy=policy
+    ).geometry
+
+
+def _antisolar_provenance(context, request, observer_state, source, geometry, *,
+                          provider_angle, available):
+    return AntisolarReferenceProvenance(
+        kind="comet-tail-axis",
+        method=("provider PsAng" if provider_angle else "Wenu apparent Sun-comet fallback"),
+        observation=replace(context.observation, instant=request.reception_instant,
+                            time_scale=request.reception_time_scale),
+        source_coordinate_spec=geometry.coordinate_spec,
+        source_resource=getattr(source, "resource", None),
+        observer_resource=getattr(observer_state, "resource", None),
+        available=available,
+        provenance=("Constructed orientation reference; not a physical body state.",),
+    )
 
 
 def _primary_resource_sha256(resource):
@@ -262,17 +292,12 @@ class SolarSystemPointLayer(SkyLayer):
                     reception_instant=context.evaluation_instant,
                     reception_time_scale=context.evaluation_time_scale,
                 )
-                sun_astrometric = self.astrometric_realizer.direction(
-                    observer_source,
-                    sun_request,
-                    observer_state,
-                )
-                sun_apparent = self.apparent_realizer.direction(
-                    sun_astrometric,
-                    observer=observer,
-                    source=observer_source,
+                sun_apparent = _apparent_sun_geometry(
+                    observer_source, sun_request, observer_state, observer,
+                    astrometric_realizer=self.astrometric_realizer,
+                    apparent_realizer=self.apparent_realizer,
                     policy=self.descriptor.correction_policy,
-                ).geometry
+                )
                 sun_direction = (
                     float(sun_apparent.lon_deg[0]),
                     float(sun_apparent.lat_deg[0]),
@@ -305,6 +330,13 @@ class SolarSystemPointLayer(SkyLayer):
                 display_names = (self.descriptor.display_name, None)
                 labels = (labels[0], None)
             orientation_metadata = {
+                "antisolar_reference_provenance": _antisolar_provenance(
+                    context, request, observer_state,
+                    source if provider_angle is not None else observer_source,
+                    native if provider_angle is not None else sun_apparent,
+                    provider_angle=provider_angle is not None,
+                    available=not tail_suppressed,
+                ),
                 "comet_tail_suppressed": tail_suppressed,
                 "apparent_sun_comet_separation_deg": separation,
                 "comet_symbol_orientation_reference_index": (

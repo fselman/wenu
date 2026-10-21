@@ -337,6 +337,24 @@ def test_real_offline_comet_kernel_routes_preserve_science(fixture_name, raw_nam
             assert {'A1','A2'}.issubset(dict(after.solution.model_parameters))
             context=replace(CONTEXT,evaluation_instant=epoch['calendar'],evaluation_time_scale='utc',
                 observation=replace(CONTEXT.observation,instant=epoch['calendar']))
+            # Independent retained raw Sun chain versus the adapted fallback.
+            from wenu.sky.solar_system_points import _apparent_sun_geometry
+            from wenu.skyfield_ephemeris import SkyfieldApparentDirectionRealizer, skyfield_observer_barycentric_state
+            from wenu.solar_system_directions import AstrometricDirectionRealizer, AstrometricDirectionRequest
+            from wenu.antisolar import antisolar_position_angle_deg
+            reception=skyfield_observer_barycentric_state(observer,source=planetary)
+            sun_request=AstrometricDirectionRequest('sun',descriptor.centre,epoch['calendar'],'utc')
+            astrometric=AstrometricDirectionRealizer();apparent=SkyfieldApparentDirectionRealizer()
+            retained_sun=apparent.direction(astrometric.direction(planetary,sun_request,reception),
+                observer=observer,source=planetary,policy=descriptor.correction_policy).geometry
+            routed_sun=_apparent_sun_geometry(planetary,sun_request,reception,observer,
+                astrometric_realizer=astrometric,apparent_realizer=apparent,policy=descriptor.correction_policy)
+            np.testing.assert_allclose(routed_sun.lon_deg,retained_sun.lon_deg,rtol=0,atol=1e-11)
+            np.testing.assert_allclose(routed_sun.lat_deg,retained_sun.lat_deg,rtol=0,atol=1e-11)
+            head=(epoch['topocentric']['apparent_ra_deg'],epoch['topocentric']['apparent_dec_deg'])
+            raw_angle=antisolar_position_angle_deg(head,(retained_sun.lon_deg[0],retained_sun.lat_deg[0]))
+            routed_angle=antisolar_position_angle_deg(head,(routed_sun.lon_deg[0],routed_sun.lat_deg[0]))
+            assert abs(((routed_angle-raw_angle+180)%360)-180)<1e-9
             raw_resolver=lambda d,o:EphemerisSourceBinding(raw,planetary)
             resolver=lambda d,o:EphemerisSourceBinding(source,planetary)
             point=SolarSystemPointLayer(descriptor,source_resolver=resolver).realize(context,observer)

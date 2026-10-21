@@ -1781,3 +1781,29 @@ samples are provider model values, not position queries, continuous minima or
 visibility predictions. Existing explicit acquisition, bounded sequential
 workload, validated raw-response cache and report failure behavior are unchanged.
 Automatic/provisional selection limits remain as documented.
+
+## Antisolar constructed-reference routing
+
+`AntisolarReferenceProvenance` in the existing `wenu.antisolar` owner is an
+immutable construction receipt: kind, method, observation, source coordinate
+specification, optional source/observer resource identities, availability and
+provenance text. It holds no live observer/backend. The numerical functions in
+that module are unchanged.
+
+`SolarSystemPointLayer` and `CometTrackSymbolLayer` share the point owner's
+private apparent-Sun realization. Known Skyfield Sun inputs use
+`KernelEphemerisStateSource`; custom protocol injections remain compatible.
+Raw observer/apparent sources and the existing single light-time calculation
+retain ownership. Provider PsAng wins without a Sun query. Returned Sun values
+control the fallback tangent; refusal propagates after prior success.
+`antisolar_reference_provenance` records the actual reception/sample instant
+and source frame/resource before fixed-axis projection. A suppressed tangent
+retains its receipt with `available=False` and the existing head-only geometry.
+
+`CelestialPoints.add_antisolar_point()` retains Astropy `get_sun`, the existing
+unit-direction conversion through `CoordinateService`, and the same antipode.
+`constructed_reference_provenance` is a row-aligned tuple on native and observed
+geometry; ordinary rows contain `None`. The antisolar row records construction
+observation and the original geocentric GCRS Sun convention. Rebinding for later
+display transforms the stored point; it does not recompute the Sun. No new public
+argument, physical pseudo-body, SDK contract or saved-snapshot schema is added.

@@ -16,6 +16,7 @@ from astropy.coordinates import (
     get_sun,
 )
 
+from wenu.antisolar import AntisolarReferenceProvenance
 from wenu.coordinate_service import CoordinateService
 from wenu.coordinates import (
     CoordinateSpec,
@@ -37,6 +38,7 @@ class _CelestialPoint:
     color: Any = "white"
     zorder: float | None = None
     style: dict[str, Any] = field(default_factory=dict)
+    reference_provenance: AntisolarReferenceProvenance | None = None
 
 
 class CelestialPoints(GeometricalObject):
@@ -303,13 +305,14 @@ class CelestialPoints(GeometricalObject):
         zorder=None,
         **style,
     ):
-        sun = self._to_icrs(get_sun(self.obs.t_astropy))
+        sun_coordinate = get_sun(self.obs.t_astropy)
+        sun = self._to_icrs(sun_coordinate)
         coord = SkyCoord(
             ra=(sun.lon_deg[0] + 180.0) % 360.0 * u.deg,
             dec=-sun.lat_deg[0] * u.deg,
             frame=ICRS(),
         )
-        return self._append_point(
+        self._append_point(
             coord,
             label,
             marker,
@@ -318,6 +321,13 @@ class CelestialPoints(GeometricalObject):
             zorder,
             **style,
         )
+        self._points[-1].reference_provenance = AntisolarReferenceProvenance(
+            kind="antisolar-point", method="Astropy get_sun antipode",
+            observation=observation_context(self.obs),
+            source_coordinate_spec=self._native_spec(sun_coordinate),
+            provenance=("Construction-time unit-direction antipode; retained legacy conversion.",),
+        )
+        return self
 
     def spherical_geometry(self, observer) -> SphericalPoints:
         """Return all points as one observer-dependent Alt/Az collection."""
@@ -429,6 +439,9 @@ class CelestialPoints(GeometricalObject):
 
     def _style_metadata(self):
         return {
+            "constructed_reference_provenance": tuple(
+                point.reference_provenance for point in self._points
+            ),
             "marker": np.asarray(
                 [point.marker for point in self._points],
                 dtype=object,

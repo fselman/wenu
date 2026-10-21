@@ -556,5 +556,15 @@ symbols keep their existing orientation/fallback algorithms. Warm track reuse
 re-admits either asteroid or comet sessions. Discovery and model photometry retain
 validated provider records, which the existing CLI/report owners consume directly;
 they do not invent positional states for scalar magnitudes. Acquisition stays
-outside deterministic rendering. Complete comet Mac acceptance and astronomical
-package extraction remain pending.
+outside deterministic rendering. Comet routing is accepted through PR #302 after 273 focused Mac cases.
+Astronomical package extraction remains pending.
+
+Antisolar references remain constructed geometry. The existing shared point
+owner supplies apparent Sun fallback geometry to both comet points and sampled
+symbols. Known Skyfield Sun states use the existing Cartesian adapter; observer
+and apparent-correction backends retain raw ownership. Optional provider PsAng
+continues to take precedence and does not trigger a fallback Sun query. Immutable
+construction receipts retain the source frame/resource and actual sample
+observation before transformation into fixed product axes. Explicit Astropy
+antisolar points retain their construction-time antipodes and receipt when
+later displayed with another observer; they are not physical SDK objects.

@@ -177,3 +177,64 @@ def test_constructed_points_consume_native_and_observed_service_results(monkeypa
     for call in (lambda: points.realize(context, None), lambda: points.spherical_geometry(observer)):
         with pytest.raises(RuntimeError, match='service refused'):
             call()
+
+
+def test_antisolar_point_retains_construction_observation_and_legacy_values(monkeypatch):
+    from dataclasses import FrozenInstanceError
+    from astropy.coordinates import get_sun
+    from wenu.coordinates import observation_context
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    from wenu_kernel.kernel import KernelSession
+    observer=make_observer();observer.t_astropy=Time('2026-08-28T00:00:00',scale='utc')
+    points=CelestialPoints(observer)
+    original=points._to_icrs(get_sun(observer.t_astropy))
+    def forbidden(*args,**kwargs):
+        pytest.fail('a constructed antipode must not become a physical state query')
+    monkeypatch.setattr(KernelSession,'evaluate',forbidden)
+    points.add_equatorial_point(12.,34.,label='fixed')
+    assert points.add_antisolar_point(label='anti',fontsize=13) is points
+    native=points.realize(LayerRealizationContext(NATIVE_ICRS_SPEC),None)
+    np.testing.assert_array_equal(native.lon_deg,[12.,(original.lon_deg[0]+180.)%360.])
+    np.testing.assert_array_equal(native.lat_deg,[34.,-original.lat_deg[0]])
+    records=native.metadata['constructed_reference_provenance']
+    assert records[0] is None
+    receipt=records[1]
+    assert receipt.kind=='antisolar-point'
+    assert receipt.observation==observation_context(observer)
+    assert receipt.source_coordinate_spec.frame=='gcrs'
+    assert receipt.source_coordinate_spec.origin=='earth-center'
+    assert receipt.source_resource is None
+    assert receipt.available
+    with pytest.raises(FrozenInstanceError):
+        receipt.method='new numerical model'
+    # Rebinding the display observer preserves the construction-time anchor.
+    later=make_observer();later.t_astropy=Time('2026-08-29T00:00:00',scale='utc')
+    observed=points.spherical_geometry(later)
+    assert observed.metadata['constructed_reference_provenance'][1]==receipt
+    assert observed.coordinate_spec.instant!=receipt.observation.instant
+    assert native.labels.tolist()==['fixed','anti']
+    assert native.metadata['style'][1]['fontsize']==13
+    assert points.clear() is points
+    assert points.realize(LayerRealizationContext(NATIVE_ICRS_SPEC),None).metadata['constructed_reference_provenance']==()
+
+
+def test_antisolar_point_consumes_coordinate_result_and_refuses_before_append(monkeypatch):
+    from wenu.coordinate_service import CoordinateService
+    observer=make_observer();observer.t_astropy=Time('2026-08-28T00:00:00',scale='utc')
+    points=CelestialPoints(observer)
+    original=CoordinateService.transform
+    def changed(service,source,target,observation=None):
+        value=original(service,source,target,observation)
+        if source.coordinate_spec.frame=='gcrs':
+            value.lon_deg[:]=42.;value.lat_deg[:]=17.
+        return value
+    monkeypatch.setattr(CoordinateService,'transform',changed)
+    points.add_antisolar_point()
+    assert points._points[0].coord.ra.deg==222.
+    assert points._points[0].coord.dec.deg==-17.
+    def refused(*args,**kwargs):
+        raise ValueError('antisolar source conversion refused')
+    monkeypatch.setattr(CoordinateService,'transform',refused)
+    with pytest.raises(ValueError,match='source conversion refused'):
+        points.add_antisolar_point()
+    assert len(points)==1

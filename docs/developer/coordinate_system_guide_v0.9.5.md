@@ -1497,3 +1497,18 @@ tail-angle samples in their existing request/observer context; it adds no angula
 or antisolar calculation. Model photometry retains its separate provider records,
 observer/site and UTC sample times; no positional SDK state is fabricated for a
 magnitude, and no new accuracy or visibility claim follows.
+
+### Antisolar reference conventions
+
+Comet fallback orientation retains apparent ICRF Sun/comet directions at the
+actual reception/sample instant. The Sun geometric input now uses the existing
+Cartesian adapter for known Skyfield sources; light time, apparent corrections,
+exclusions and tangent math are unchanged. Provider PsAng retains its own
+source receipt and avoids a Sun query. Construction metadata survives the
+subsequent transform into fixed chart axes; no antisolar physical state is created.
+
+Explicit reference antipodes retain the existing Astropy geocentric GCRS
+`get_sun` unit-direction conversion to ICRS. Their row receipt records that
+source convention and construction observation even when the stored point is
+later displayed at another observer time. This documents the existing legacy
+calculation and does not add finite-distance/topocentric model qualification.
