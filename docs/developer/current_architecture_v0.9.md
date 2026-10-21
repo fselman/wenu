@@ -588,3 +588,19 @@ formulas, installed EOP evidence, WGS-84 site and geometric vacuum policy.
 Snapshot validation/external admission remains upstream; acquisition remains
 separate from evaluation. Later candidate/crossing/report/illumination/radiometry
 migration and astronomical package extraction remain pending.
+
+## Sampled satellite candidate boundary
+
+SatChecker maintenance explicitly submits or polls once and retains local exact
+receipts. Its existing parser publishes immutable typed candidate/sample evidence.
+Presentations consume those records; candidate track/sample layers call the shared
+`CoordinateService` and kernel spherical geometry before the canonical domain,
+projection and renderer pipeline. These routes already meet their service boundary
+and require no production rewrite.
+
+Supplied samples keep their individual UTC/UT1 times, response digest, provider
+version, warnings and candidate-only semantics. Track geometry is an open sampled
+polyline; a singleton remains one point. No interpolation, propagated state,
+continuous containment, entry/exit event or new physical accuracy is inferred.
+Rendering does not acquire data or invoke SGP4. Existing source-inferred frame
+meaning and provider licensing/coverage limitations remain explicit.

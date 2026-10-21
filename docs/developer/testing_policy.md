@@ -1639,3 +1639,31 @@ fake transports; no external data or current provider permission is inferred.
 K3.30 complete Mac acceptance passed at 899a0f2f through PR #303: 117 focused
 (11.48 s), 36 documentation (4.02 s), eight tooling (7.256 s), followed by clean
 main/cleanup confirmation. K3.31 complete Mac acceptance remains pending.
+
+## Sampled satellite candidate routing gate
+
+`sampled-satellite-candidate-routing` selects the existing SatChecker,
+provider-neutral satellite contracts and candidate presentation owners: 61 cases.
+This is evidence closure with no production rewrite. Retain accepted numerical,
+SDK/isolation, installation and satellite-state receipts for unchanged owners;
+no full SDK/production or unrelated atlas/polar repeat is warranted.
+
+Instrumented track, sample and singleton drawings must consume changed returned
+coordinate geometry, preserve per-sample provenance and propagate refusal after
+success. Actual canonical images change while supplied source records and
+candidate-only metadata remain unchanged. Network acquisition, SGP4 and invented
+positional SDK queries are forbidden. Discarding returned geometry fails all
+three cases. A fourth case explicitly replays a cached synthetic receipt into
+the existing parser, reports and layers; dropping supplied RA makes it fail.
+It also rejects raw-byte corruption on a subsequent cache load.
+
+Existing cases preserve exact-cache integrity/request identity, typed admission,
+provider failure/count/task/time refusal, no automatic retry, labels and stable
+semantic identities, singleton policy and actual PNG/PDF/SVG exports. Inputs are
+synthetic; none establish current provider permission, physical accuracy or exact
+crossing completeness. Source-inferred coordinate meaning and audited coverage/
+licensing limits remain unchanged. Complete Mac acceptance remains pending.
+
+K3.31 passed complete Mac acceptance at 945245b5 through PR #304: 77 focused
+(76.16 s), 36 documentation (4.18 s), eight tooling (8.901 s), followed by clean
+synchronized main and branch cleanup confirmation.

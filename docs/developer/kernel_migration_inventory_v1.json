@@ -12441,7 +12441,7 @@
       "Original initialization/state/scalar/array ASTs unchanged apart from private dispatch names.",
       "Retain pinned Vallado and separate Skyfield/Astropy observer oracles, ordering/duplicates/scalar fallback, original SGP4 errors and offline snapshot/admission integrity."
     ],
-    "limits": "Complete Mac acceptance pending. UTC split-JD remains the SGP4 input; offline TAI labels serve SDK transport only. Finite exact requests are not physical validity/covariance/reuse certificates. No SDK, dependency, module/package, acquisition, resource bytes, schema or renderer changes. K3.32 onward and K3/K5 remain separate.",
+    "limits": "Accepted PR #304/main a15da4b9: Mac 77 focused (76.16 s), 36 documentation (4.18 s), eight tooling (8.901 s); clean synchronized main and cleanup confirmed. No new physical model qualification or K3/K5 closure.",
     "local_receipt": {
       "gate_collected": 77,
       "focused_passed": 77,
@@ -12451,6 +12451,42 @@
       "documentation_complete_checkout_required": 5,
       "tooling_passed": 8,
       "tooling_seconds": 5.773
+    }
+  },
+  "sampled_satellite_candidate_routing": {
+    "milestone": "K3.32",
+    "base_commit": "a15da4b9425823a44c976ee473fd73f35f83f07e",
+    "plan_commit": "ab465b460a92387f7e8d0e3df1d4e9ffd61dc22a",
+    "gate": "sampled-satellite-candidate-routing",
+    "production_changes": [],
+    "retained_owners": [
+      "src/wenu/satchecker.py",
+      "src/wenu/satellite_crossings.py",
+      "src/wenu/satellite_presentations.py",
+      "src/wenu/sky/satellite_candidate_layer.py"
+    ],
+    "source_blobs": {
+      "src/wenu/satchecker.py": "11b83f2ac0de804ff4f497c7865d690726b22767",
+      "src/wenu/satellite_crossings.py": "14965b88aff46c894761a67b938a5253181769db",
+      "src/wenu/satellite_presentations.py": "1c99e75ab4e048f90332407616c80e6b2040ef41",
+      "src/wenu/sky/satellite_candidate_layer.py": "b13ae6bf82d010466c13a74dff69e636f0c65711"
+    },
+    "disposition": "Existing typed provider receipts/samples and shared coordinate/kernel geometry/canonical rendering already satisfy this boundary. Verify actual returned values/refusal and exact synthetic receipt replay; no production rewrite.",
+    "evidence": [
+      "Discarded coordinate-service results fail all three track/sample/singleton draw seams.",
+      "Dropping a supplied RA value fails the cached-receipt replay/report/layer case.",
+      "Presentation seams prohibit acquisition, SGP4 and fabricated positional state queries; sampled candidate semantics and actual PNG/PDF/SVG exports are retained."
+    ],
+    "limits": "Complete Mac acceptance pending. All new provider inputs are synthetic. Existing licensing/coverage constraints and source-inferred coordinate meaning remain unchanged, not newly qualified. No production, SDK/dependency/resource/policy/schema/rendering changes. K3.33 onward and K3/K5 closure remain separate.",
+    "local_receipt": {
+      "focused_cases": 61,
+      "focused_passed": 61,
+      "focused_seconds": 1.55,
+      "documentation_available_passed": 31,
+      "documentation_seconds": 1.44,
+      "documentation_complete_checkout_required": 5,
+      "tooling_passed": 8,
+      "tooling_seconds": 5.443
     }
   }
 }

@@ -296,6 +296,9 @@ implements [comet consumers and provider-record routing](implementation_referenc
 through PR #302 after 273 focused, 36 documentation and eight tooling Mac cases;
 cleanup is confirmed. K3.30 [antisolar reference routing](implementation_reference.md#antisolar-constructed-reference-routing)
 is accepted through PR #303 after 117 focused, 36 documentation and eight tooling
-Mac cases; clean main and cleanup confirmed. K3.31 implements
+Mac cases; clean main and cleanup confirmed. K3.31
 [satellite state and observer services](implementation_reference.md#satellite-state-and-observer-services)
-for acceptance. Complete satellite-state-routing Mac acceptance and K3/K5 closure remain pending.
+is accepted through PR #304 after 77 focused, 36 documentation and eight tooling
+Mac cases; clean main and cleanup confirmed. K3.32 now verifies
+[sampled satellite candidate consumers](implementation_reference.md#sampled-satellite-candidate-services)
+without production changes. Complete candidate Mac acceptance and K3/K5 closure remain pending.

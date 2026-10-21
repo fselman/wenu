@@ -2708,6 +2708,24 @@
           "reason": "One existing end-to-end public assembly sentinel for installed snapshot -> SGP4 -> observer services; retain K3.33 completeness obligations separately."
         }
       ]
+    },
+    "sampled-satellite-candidate-routing": {
+      "scope": "K3.32 existing sampled-provider candidate receipt/cache/typed evidence, shared coordinate/kernel geometry and canonical report/drawing routes.",
+      "limits": "Test/evidence closure only; inspected consumers already use appropriate services. Preserve audited provider constraints, source-inferred frame meaning, per-sample UTC/UT1, candidate-versus-exact distinction, one explicit submit/poll and local exact cache. All seams use synthetic evidence and no network; no new permission/accuracy/coverage claim. No production, SDK, dependency, resource, acquisition policy, schema or renderer change. Retain accepted lower-level science/installation receipts; K3.33 onward remains separate.",
+      "selections": [
+        {
+          "node": "tests/test_satchecker.py",
+          "reason": "Existing request/normalizer/task/time/provider/cache integrity contracts plus synthetic exact-receipt replay into reports and geometry without acquisition or propagated states."
+        },
+        {
+          "node": "tests/test_satellite_crossings.py",
+          "reason": "Provider-neutral immutable identity, observer, field, interval and candidate-versus-exact event distinctions."
+        },
+        {
+          "node": "tests/test_satellite_presentations.py",
+          "reason": "Typed reports/labels/semantic identities; shared-service values and warm refusal through track/sample/singleton canonical drawing, existing PNG/PDF/SVG outputs."
+        }
+      ]
     }
   },
   "consumer_review": [

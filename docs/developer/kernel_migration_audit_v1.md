@@ -1566,3 +1566,32 @@ acquisition policy or renderer algorithm is introduced.
 K3.30 is accepted through PR #303 (117 focused, 36 documentation and eight
 tooling Mac cases), with clean main and branch cleanup confirmed. Complete
 K3.31 Mac acceptance and K3/K5 closure remain pending.
+
+## K3.32 sampled satellite candidate assessment
+
+| Existing route | Disposition |
+|---|---|
+| Explicit query → submit/poll | Existing one-call provider boundary retained; no automatic retry or new network/acquisition policy |
+| Exact receipt → normalizer → typed evidence | Existing identity, count, task/time/order/refusal validation retained |
+| Exact local cache → explicit receipt replay | Original bytes and request/EOP identity retained; successful replay consumes the same parser, and later corrupt cache loads refuse |
+| Typed evidence → text/JSON presentation | Existing record interface retained; changed synthetic sample values and response identity reach reports |
+| Candidate track/sample/singleton → drawing | Already uses CoordinateService, kernel spherical records and canonical domain/projection/rendering; no production rewrite required |
+| Licensing/coverage and physical meaning | Existing audited limitations retained; sampled candidates remain distinct from exact crossings, propagation and continuous coverage |
+
+Three instrumented canonical-draw cases require returned coordinate values and
+refusal after prior success. Discarding the returned service geometry fails all
+three. A synthetic exact-receipt replay case requires changed provider values,
+UTC/UT1 samples, response identity and candidate-only semantics in reports and
+layers; dropping supplied RA fails that case. Network acquisition, SGP4 and
+fabricated positional SDK queries are prohibited in these presentation seams.
+Existing tests retain PNG/PDF/SVG exports, semantic identities, labels, error
+states, corrupt-cache refusal and single explicit request behavior.
+
+Production, source resources, numerical models, SDK/dependencies, serialization,
+provider policy and rendering algorithms remain byte-identical to the base.
+No live provider interaction or current permission/accuracy claim is made.
+The coordinate and satellite scientific guides remain current: their meanings
+and audited limitations are unchanged. K3.31 is accepted through PR #304 after
+77 focused, 36 documentation and eight tooling Mac cases, followed by clean
+main/cleanup confirmation. K3.32 complete Mac acceptance and K3/K5 closure remain
+pending; K3.33 completeness/product obligations are separate.
