@@ -540,7 +540,7 @@ raw; custom protocol and asteroid/comet state routes retain compatibility. The
 track component owner checks the existing observer-resource key before same-context
 sharing; an equal-valued separate context performs fresh admission. Exact sampling,
 tick insertion, one fixed-product-axis transformation and temporal/annotation
-algorithms are retained. Complete Mac acceptance is pending; K3/K5 remain partial.
+algorithms are retained. Accepted through PR #300 after 83 focused Mac cases; K3/K5 remain partial.
 
 Asteroid offline sessions now supply kernel-backed geometric target bindings to
 the existing point and sampled-track consumers. The common Cartesian adapter
@@ -549,4 +549,12 @@ minor-body solution/segment record. Numerical composition, apparent corrections,
 projection and renderer remain their existing owners. Ceres solution facts live
 in a versioned packaged manifest, with the legacy constant retained. Warm track
 sharing checks the asteroid resolver's lifetime as well as the observer key.
-Comet migration and astronomical package extraction remain pending.
+Comet offline sessions now use the same target adapter, preserving their original
+solution/non-gravitational parameters, segment and resource chain. The adapter
+forwards the existing optional provider tail-angle sample; point and sampled
+symbols keep their existing orientation/fallback algorithms. Warm track reuse
+re-admits either asteroid or comet sessions. Discovery and model photometry retain
+validated provider records, which the existing CLI/report owners consume directly;
+they do not invent positional states for scalar magnitudes. Acquisition stays
+outside deterministic rendering. Complete comet Mac acceptance and astronomical
+package extraction remain pending.

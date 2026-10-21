@@ -437,7 +437,7 @@ class MinorBodyResourceSession:
             kernel.close()
             raise
         self._kernels[key] = kernel
-        if solution.object_class == "asteroid" and isinstance(source, SkyfieldMinorBodyStateSource):
+        if isinstance(source, SkyfieldMinorBodyStateSource):
             from wenu.ephemeris_state import KernelEphemerisStateSource
 
             return KernelEphemerisStateSource(source)

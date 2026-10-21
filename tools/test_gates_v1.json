@@ -2558,6 +2558,84 @@
           "reason": "Existing identity/resource/state/point/track/public-request owner or installed-manifest seam; retain unchanged acquisition and comet compatibility contracts."
         }
       ]
+    },
+    "comet-routing": {
+      "scope": "K3.29 manifest-derived comet identities, Cartesian state/point/track/symbol consumers, source tail-angle forwarding and existing discovery/model-photometry/report/CLI boundaries.",
+      "limits": "Refactor existing services only. Preserve SPK chains, orbit/non-gravitational model/segment facts, one light-time owner, exact samples, provider PsAng and retained fallback, model-magnitude meaning, workload/cache/failure behavior and unfinished-selection limits. No acquisition, SDK/module/dependency/resource/schema/renderer or numerical-model change; K3.30 antisolar migration remains separate. Full gate requires existing offline Ceres, DE440s, Encke 50a4-raw-v2 and Hartley-IRAS 50a5c-161p-raw resources; tests do not acquire them.",
+      "selections": [
+        {
+          "node": "tests/test_ephemeris.py",
+          "reason": "Existing minor-body/provider-record/scientific/point/track/CLI/output contract owner; retain asteroid and natural-body shared-service compatibility."
+        },
+        {
+          "node": "tests/test_minor_body_ephemeris.py",
+          "reason": "Existing minor-body/provider-record/scientific/point/track/CLI/output contract owner; retain asteroid and natural-body shared-service compatibility."
+        },
+        {
+          "node": "tests/test_minor_body_resources.py",
+          "reason": "Existing minor-body/provider-record/scientific/point/track/CLI/output contract owner; retain asteroid and natural-body shared-service compatibility."
+        },
+        {
+          "node": "tests/test_minor_body_identity.py",
+          "reason": "Existing minor-body/provider-record/scientific/point/track/CLI/output contract owner; retain asteroid and natural-body shared-service compatibility."
+        },
+        {
+          "node": "tests/test_minor_body_acquisition.py",
+          "reason": "Existing minor-body/provider-record/scientific/point/track/CLI/output contract owner; retain asteroid and natural-body shared-service compatibility."
+        },
+        {
+          "node": "tests/test_comet_discovery.py",
+          "reason": "Existing minor-body/provider-record/scientific/point/track/CLI/output contract owner; retain asteroid and natural-body shared-service compatibility."
+        },
+        {
+          "node": "tests/test_comet_symbol.py",
+          "reason": "Existing minor-body/provider-record/scientific/point/track/CLI/output contract owner; retain asteroid and natural-body shared-service compatibility."
+        },
+        {
+          "node": "tests/test_comet_numerical_validation.py",
+          "reason": "Existing minor-body/provider-record/scientific/point/track/CLI/output contract owner; retain asteroid and natural-body shared-service compatibility."
+        },
+        {
+          "node": "tests/test_50a5c_comet_validation.py",
+          "reason": "Existing minor-body/provider-record/scientific/point/track/CLI/output contract owner; retain asteroid and natural-body shared-service compatibility."
+        },
+        {
+          "node": "tests/test_solar_system_tracks.py",
+          "reason": "Existing minor-body/provider-record/scientific/point/track/CLI/output contract owner; retain asteroid and natural-body shared-service compatibility."
+        },
+        {
+          "node": "tests/test_solar_system_track_layer.py",
+          "reason": "Existing minor-body/provider-record/scientific/point/track/CLI/output contract owner; retain asteroid and natural-body shared-service compatibility."
+        },
+        {
+          "node": "tests/test_solar_system_track_cli.py",
+          "reason": "Existing minor-body/provider-record/scientific/point/track/CLI/output contract owner; retain asteroid and natural-body shared-service compatibility."
+        },
+        {
+          "node": "tests/test_chart_request_tracks.py",
+          "reason": "Existing minor-body/provider-record/scientific/point/track/CLI/output contract owner; retain asteroid and natural-body shared-service compatibility."
+        },
+        {
+          "node": "tests/test_solar_system_point_layer.py",
+          "reason": "Existing minor-body/provider-record/scientific/point/track/CLI/output contract owner; retain asteroid and natural-body shared-service compatibility."
+        },
+        {
+          "node": "tests/test_temporal_components.py",
+          "reason": "Existing minor-body/provider-record/scientific/point/track/CLI/output contract owner; retain asteroid and natural-body shared-service compatibility."
+        },
+        {
+          "node": "tests/test_object_center.py",
+          "reason": "Retained public point-centre consumption and returned-state/refusal contracts."
+        },
+        {
+          "node": "tests/test_wenu_chart_cli.py::test_moving_center_accepts_an_independent_evaluation_date",
+          "reason": "Retain moving-centre date selection at the public chart parser."
+        },
+        {
+          "node": "tests/test_wenu_chart_cli.py::test_center_date_becomes_the_chart_observer_instant",
+          "reason": "Retain independent centre date and observer lifecycle at the chart CLI."
+        }
+      ]
     }
   },
   "consumer_review": [

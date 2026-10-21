@@ -244,6 +244,27 @@ def test_kernel_minor_body_dependency_coverage_refuses_before_backend(resolved):
     assert planetary.requests == []
 
 
+def test_kernel_wrapper_preserves_optional_provider_tail_sample_and_refusal(resolved):
+    from wenu.ephemeris_state import KernelEphemerisStateSource
+    from wenu.sky.solar_system_points import _provider_gas_tail_position_angle
+    source, _, _, _ = resolved
+    source._provider_gas_tail_position_angles = {'2026-10-02T00:00:00': 65.412}
+    wrapper = KernelEphemerisStateSource(source)
+    query = SimpleNamespace(reception_instant='2026-10-02T00:00:00', reception_time_scale='utc')
+    observer = object()
+    assert _provider_gas_tail_position_angle(wrapper,query,observer)==65.412
+    absent = SimpleNamespace(reception_instant='2026-10-03T00:00:00', reception_time_scale='utc')
+    assert _provider_gas_tail_position_angle(wrapper,absent,observer) is None
+    assert _provider_gas_tail_position_angle(KernelEphemerisStateSource(
+        SimpleNamespace(resource=source.resource)),query,observer) is None
+    def refuse(**kwargs):
+        assert kwargs=={'request':query,'observer_state':observer}
+        raise ValueError('provider tail sample refused')
+    source.apparent_gas_tail_position_angle_deg=refuse
+    with pytest.raises(ValueError,match='provider tail sample refused'):
+        _provider_gas_tail_position_angle(wrapper,query,observer)
+
+
 @pytest.mark.parametrize("object_class", ("planet", "", "active asteroid"))
 def test_solution_identity_rejects_unsupported_object_class(object_class):
     with pytest.raises(ValueError, match="object_class"):

@@ -609,4 +609,22 @@ Ceres's complete accepted solution facts move unchanged to the versioned source
 manifest. Its osculating epoch is a source fact, distinct from each evaluation
 or reception instant. Installed SPK bytes remain checked against their own
 acquisition receipt. No new source acquisition, orbit propagation, physical
-qualification or comet adoption follows from this refactor.
+qualification follows from this state-transport refactor.
+
+## Comet routing invariants
+
+The comet adapter retains the selected orbit solution and its non-gravitational
+model/quality parameters; it does not reimplement the model from A1/A2. Returned
+Cartesian PV feeds the existing one-way-light-time and apparent services before
+point/track consumers. Exact per-sample times and fixed product axes are retained.
+An existing provider PsAng sample remains source-owned data with its original
+request/observer context. Missing samples preserve the established fallback;
+refusal is never converted into a fabricated angle or a raw-state fallback.
+
+Discovery/photometry/reporting retain validated provider identities and their
+sampled model magnitudes, missing values, UTC epochs, observer coordinates,
+solution/resource provenance and stated uncertainty limits. They do not generate
+position queries for scalar model quantities. Existing explicit acquisition,
+workload and cache policies are unchanged and stay outside deterministic drawing.
+No new comet propagation, physical accuracy, selection or visibility capability
+is admitted. K3.30 reference routing and full K3/K5 closure remain separate.
