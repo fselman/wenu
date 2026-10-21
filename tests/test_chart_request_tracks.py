@@ -332,3 +332,78 @@ def test_numbered_asteroid_start_label_places_number_after_official_name(
     )
 
     assert _coincident_start_label(descriptor) == expected
+
+
+@pytest.mark.parametrize('components', ('all', 'start-only'))
+def test_request_track_components_preserve_raw_kernel_png_and_fixed_samples(monkeypatch, tmp_path, components):
+    """Public registration/style/draw path with a labelled synthetic ephemeris."""
+    from types import SimpleNamespace
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from matplotlib.image import imread
+    from test_solar_system_tracks import (
+        _kernel_track_backend, ApparentRealizer, observer_state, sample_observer,
+        request as sampled_request, CONTEXT,
+    )
+    from wenu.sky.solar_system_tracks import SolarSystemTrackRealizer
+    from wenu.projections import StereographicProjection
+    from wenu.rendering import MatplotlibRenderer
+    from wenu.charts.styles import PublicationStyle
+    from wenu.charts.detail import ResolvedDetail
+    from wenu.charts.detail_application import composition_layer_options
+    from wenu.charts.context import Viewport, BoundaryKind
+
+    raw, backend = _kernel_track_backend(monkeypatch)
+    value = sampled_request(descriptor=VENUS_POINT)
+    dependencies = dict(sample_observer_factory=sample_observer,
+                        observer_state_factory=observer_state, apparent_realizer=ApparentRealizer())
+    observer = object()
+    projection = StereographicProjection()
+    reference = SolarSystemTrackRealizer(source_factory=lambda observer: raw, **dependencies).curve(
+        value, context=CONTEXT, observer=observer)
+    projected = projection.project_geometry(reference.geometry)[0]
+    cx, cy = float(np.mean(projected.x)), float(np.mean(projected.y))
+    viewport = Viewport(cx-.08, cx+.08, cy-.08, cy+.08)
+    composition = SimpleNamespace(style=PublicationStyle(), detail=ResolvedDetail(),
+        context=SimpleNamespace(boundary_kind=BoundaryKind.RECTANGULAR, viewport=viewport))
+    images, receipts = [], []
+    for routed in (False, True):
+        chart = replace(request('regional', value), solar_system_track=None,
+            solar_system_track_symbols='major' if components == 'all' else 'start',
+            solar_system_track_labels='major' if components == 'all' else 'start',
+            solar_system_track_path=components == 'all', solar_system_track_ticks=components == 'all')
+        sky = CelestialSphere(None)
+        layer = configure_chart_request_track(sky, chart)
+        realizer = layer.track_realization.realizer
+        realizer.sample_observer_factory = sample_observer
+        realizer.observer_state_factory = observer_state
+        realizer.apparent_realizer = ApparentRealizer()
+        if not routed:
+            realizer.source_factory = lambda observer: raw
+        configured = composition_layer_options(composition, sky, reload_catalogues=False)
+        symbols = tuple(x for x in sky.layers if isinstance(x, SolarSystemTrackSymbolLayer))
+        assert len(symbols) == (3 if components == 'all' else 1)
+        start_count = len(raw.requests)
+        figure, axes = plt.subplots(figsize=(4, 3), dpi=90)
+        try:
+            result = sky.draw_chart(observer=observer, realization_context=CONTEXT,
+                projection=projection, renderer=MatplotlibRenderer(axes),
+                layer_options=configured.layer_options, viewport=viewport)
+            axes.set_axis_off()
+            path = tmp_path / f'track-{components}-{routed}.png'
+            figure.savefig(path)
+            images.append(imread(path))
+            receipts.append(layer.last_result)
+            assert len(raw.requests) - start_count == 2 * len(value.sample_offsets_days)
+            for symbol in symbols:
+                points = symbol.realize(CONTEXT, observer)
+                i = layer.last_result.tick_sample_indices[symbol.major_index]
+                assert points.lon_deg[0] == layer.last_result.geometry.lon_deg[0][i]
+            assert len(raw.requests) - start_count == 2 * len(value.sample_offsets_days)
+            assert result.layers
+        finally:
+            plt.close(figure)
+    np.testing.assert_array_equal(images[0], images[1])
+    assert np.any(images[0][:, :, :3] < .5)
+    assert receipts[0].sample_instants == receipts[1].sample_instants
+    np.testing.assert_allclose(receipts[0].geometry.lon_deg[0], receipts[1].geometry.lon_deg[0], rtol=0, atol=1e-11)

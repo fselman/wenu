@@ -278,4 +278,11 @@ cases; clean synchronized main and branch cleanup confirmed. K3.26 is selected s
 K3.26 now routes [physical disk and sequence consumers](kernel_migration_audit_v1.md#k326-disk-and-sequence-consumer-assessment)
 through the existing Cartesian adapter before retained appearance/geometry services.
 Component sharing checks live observer resources and is scoped to one request context.
-The `resolved-disk-routing` Mac gate remains pending; K3.27 is not activated.
+Accepted through PR #299 after 138 focused, 36 documentation and eight tooling Mac
+cases; clean synchronized main/branch cleanup confirmed. K3.27 is selected separately below.
+
+K3.27 now routes [natural-body track state samples](kernel_migration_audit_v1.md#k327-natural-body-track-consumer-assessment)
+through the existing adapter, including known planetary bindings in mixed requests.
+Sampling, fixed chart axes, temporal policy and annotations remain unchanged.
+The `natural-body-track-routing` Mac gate is pending. Existing satellite-track
+chart refusal remains; Moon sampling is scientific-API coverage, not a new CLI product.

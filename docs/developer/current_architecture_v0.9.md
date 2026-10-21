@@ -530,4 +530,14 @@ vector feed the unchanged appearance/disk algorithms; raw reception/apparent
 backends retain their separate role. Component owners check live resources (SPK only for the frozen geometric path)
 before reuse and share only within the same context object. Equal
 values in a separate request context trigger fresh admission. No long-lived
-evaluated-state cache or new astronomical model is added; Mac acceptance is pending.
+evaluated-state cache or new astronomical model is added. K3.26 is accepted through
+PR #299 after 138 focused Mac cases.
+
+K3.27 adapts known Skyfield planet/natural-satellite target bindings inside the
+existing track realizer, covering both default assembly and the planetary binding
+returned by a mixed minor-body resource session. Observer/apparent sources remain
+raw; custom protocol and asteroid/comet state routes retain compatibility. The
+track component owner checks the existing observer-resource key before same-context
+sharing; an equal-valued separate context performs fresh admission. Exact sampling,
+tick insertion, one fixed-product-axis transformation and temporal/annotation
+algorithms are retained. Complete Mac acceptance is pending; K3/K5 remain partial.

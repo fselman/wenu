@@ -583,3 +583,14 @@ Unknown ephemeris-model qualification and error channels remain unknown. A share
 component result is an admission within one request context, revalidated against
 live observer resources; a different context requires fresh admission. Numerical
 parity against the retained raw route is not a new physical accuracy guarantee.
+
+## Natural-body track migration invariants
+
+Natural-body track sampling retains the existing geometric/light-time/apparent
+chain, body versus barycentre targets, individual observer states and exact major
+time anchors. State unit transport adds no correction, model or uncertainty bound.
+The fixed chart frame is distinct from moving physical sample times; temporal
+component visibility cannot change the samples. Shared component results are
+request-scoped admissions checked against current observer resources. Existing
+chart capability refusals, including natural-satellite tracks, remain unchanged;
+scientific-API Moon parity does not admit a new chart product.

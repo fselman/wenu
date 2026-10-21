@@ -12,6 +12,7 @@ from wenu.antisolar import (
     offset_direction_deg,
 )
 from wenu.geometry.spherical import SphericalPoints
+from wenu.sky.observed_cache import observer_geometry_key
 from wenu.sky.sky_layer import SkyLayer
 from wenu.sky.solar_system_points import (
     _provider_gas_tail_position_angle,
@@ -31,18 +32,22 @@ class SolarSystemTrackRealization:
             raise TypeError("request must be a SolarSystemTrackRequest.")
         self.request = request
         self.realizer = realizer or SolarSystemTrackRealizer()
+        self._resource_key = None
         self._context = self._observer = self._result = None
 
     def realize(self, context, observer):
+        resource_key = observer_geometry_key(observer)
         if (
             self._result is not None
-            and self._context == context
+            and self._context is context
+            and self._resource_key == resource_key
             and self._observer is observer
         ):
             return self._result
         self._result = self.realizer.curve(
             self.request, context=context, observer=observer
         )
+        self._resource_key = resource_key
         self._context, self._observer = context, observer
         return self._result
 

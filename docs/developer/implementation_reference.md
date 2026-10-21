@@ -1706,3 +1706,26 @@ physical disk sampling and sample chronology retain their existing owners and
 formulas. Magnification remains post-projection preparation. No capability is
 expanded: current single/observed Venus and Moon and frozen Venus/Mercury policies
 remain as before; custom generic protocol seams do not admit new public products.
+
+## Natural-body track state routing
+
+`SolarSystemTrackRealizer.curve` adapts known `SkyfieldEphemerisStateSource`
+planet/natural-satellite target bindings to `KernelEphemerisStateSource` after
+binding resolution. This covers default binding and the planetary source returned
+by `MinorBodyResourceSession.source_binding` in a mixed request. The observer and
+apparent roles retain their raw source. An already-adapted or explicit generic
+protocol source is preserved; asteroid/comet target adoption remains K3.28/K3.29.
+No minor-body resource acquisition or numerical model is moved here.
+
+Sampling and major tick insertion are unchanged. Every sample keeps its observer,
+reception instant, retarded target direction and source identity. The assembled
+curve transforms once into the request's fixed product axes; per-vertex times stay
+in metadata rather than being collapsed into one physical epoch. Path and major
+symbols consume the same returned samples. Temporal path/tick/symbol/date choices
+change presentation only. The shared component owner checks live observer inputs
+before reusing a result within the same context object; separate requests re-admit,
+and closed resources or a failed fresh query cannot return previous geometry.
+
+Public chart admission is unchanged: existing planetary chart families and
+natural-satellite track refusal remain. Moon tests cover the existing scientific
+sampler API, not a newly admitted chart/CLI capability.

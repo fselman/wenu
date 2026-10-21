@@ -1665,13 +1665,13 @@
     },
     {
       "path": "src/wenu/sky/solar_system_track_layer.py",
-      "git_blob_sha": "6e64d15bb5f4615eb9d3801ff3451fe9c64f85d4",
+      "git_blob_sha": "ba7595ea6270f64d0b72a0bf3800729094527da1",
       "as_is_directory": "src/wenu/sky",
       "description": "Scientific Solar-System track layer."
     },
     {
       "path": "src/wenu/sky/solar_system_tracks.py",
-      "git_blob_sha": "fefcadb2fd20346b35a1650a88f102c82532aee8",
+      "git_blob_sha": "b787960012f68458f7049ac86e6d50ffa20ca31f",
       "as_is_directory": "src/wenu/sky",
       "description": "Renderer-neutral scientific Solar-System trajectory realization."
     },
@@ -12260,6 +12260,45 @@
       "documentation_complete_checkout_required": 5,
       "tooling_passed": 8
     },
-    "limits": "Complete Mac acceptance pending. Retain existing body/family capabilities, physical/display size and chronology. No new physics/error bounds/SDK/modules/dependencies/source resources/snapshot/manifest/renderer change or track/minor-body adoption."
+    "limits": "Complete Mac acceptance pending. Retain existing body/family capabilities, physical/display size and chronology. No new physics/error bounds/SDK/modules/dependencies/source resources/snapshot/manifest/renderer change or track/minor-body adoption.",
+    "mac_acceptance": {
+      "pr": 299,
+      "tested_commit": "9aec9cf74e0fa8ebde0e81c03c9e4456d354d349",
+      "main": "b4e7e0475640baf6332f35b191d6a79f52b7b847",
+      "focused_passed": 138,
+      "documentation_passed": 36,
+      "tooling_passed": 8,
+      "clean_main_and_branch_cleanup_confirmed": true
+    }
+  },
+  "natural_body_track_routing": {
+    "milestone": "K3.27",
+    "base_commit": "b4e7e0475640baf6332f35b191d6a79f52b7b847",
+    "plan_commit": "42835ed8ec9f11207b31f4c7cff43cd369a4d992",
+    "gate": "natural-body-track-routing",
+    "owners": [
+      "src/wenu/sky/solar_system_tracks.py",
+      "src/wenu/sky/solar_system_track_layer.py"
+    ],
+    "source_blobs": {
+      "src/wenu/sky/solar_system_tracks.py": "b787960012f68458f7049ac86e6d50ffa20ca31f",
+      "src/wenu/sky/solar_system_track_layer.py": "ba7595ea6270f64d0b72a0bf3800729094527da1"
+    },
+    "disposition": "Adapt known Skyfield natural-body targets after binding resolution, preserving raw observer/apparent and generic protocol roles. Live observer key and same-context sharing replace unchecked context-equality reuse.",
+    "evidence": [
+      "Cache closure regression fails before correction, passes after.",
+      "Sixteen default/mixed state value/refusal cases; actual mixed binding method and closed-session checks.",
+      "Adapter bypass fails all sixteen selected returned-state cases.",
+      "Public request/style/canonical draw produces equal nonempty raw/kernel PNGs for full and start-only components; synthetic apparent backend labelled.",
+      "Sampling/fixed-axis function AST unchanged after adapter assembly removal; temporal policy/request registration/annotations byte-identical."
+    ],
+    "local_receipt": {
+      "focused_available_passed": 82,
+      "offline_de440s_required_cases": 1,
+      "documentation_available_passed": 31,
+      "documentation_complete_checkout_required": 5,
+      "tooling_passed": 8
+    },
+    "limits": "Complete Mac acceptance pending. Scientific-API Moon sampling does not change satellite-track chart refusal. No SDK/new module/dependency/source/schema/renderer/sampling change, acquisition, asteroid/comet state adoption or K3/K5 closure."
   }
 }
