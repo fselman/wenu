@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 57, 2026-10-21. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
+**Plan revision:** 58, 2026-10-21. **Status:** K3 partial stellar, galaxy and open-cluster centre routing;
 Gaia acquisition and astronomical package extraction remain planned.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
@@ -31,11 +31,11 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Accepted baseline:** main `3b2fde48995957ca113e9cc4424f771cdcc502c3`, PR #305,
-tree identical to tested `08b4733aa19e48565c6862215bdc7f8466053a1a`.
-K3.32 passed 61 focused, 36 documentation and eight tooling Mac cases.
+**Accepted baseline:** main `0cde175ae859e172301936562fbab950f3be8892`, PR #306,
+tree identical to tested `8db716def169748a5991309c8c66a46d62360263`.
+K3.33 passed 86 focused, 36 documentation and eight tooling Mac cases.
 Fernando confirmed clean synchronized main and branch cleanup, then selected
-K3.33 with “Proceed”. K3/K5 remain partial.
+K3.34 with “Proceed”. K3/K5 remain partial.
 
 | Track | Position |
 |---|---|
@@ -43,8 +43,8 @@ K3.33 with “Proceed”. K3/K5 remain partial.
 | Gaia | K4a not implemented; K4b real stellar propagation/historical acceptance not implemented |
 | Shared positional extension | AX.01–AX.12 accepted, ending with horizontal cluster CLI/TOML selection; reduced-input policies and real other-family adapters remain pending |
 | Freeze/extraction/release | K5–K9 not complete; astronomical package extraction has not begun |
-| Current authorized task | K3.33 exact crossings, conservative batch selection and solved-track consumers; selected 2026-10-21 |
-| Next bounded submilestone | K3.34 remains pending; select separately after K3.33 acceptance |
+| Current authorized task | K3.34 satellite reports, lossless tabular interchange, CLI and planning advisories; selected 2026-10-21 |
+| Next bounded submilestone | K3.35 remains pending; select separately after K3.34 acceptance |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -75,6 +75,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 58: select K3.34 satellite report consumers | Fernando’s “Proceed” after PR #306 complete Mac acceptance and confirmed cleanup | Audit immutable exact reports, lossless JSON/ECSV/VOTable projection, two-call/direct CLI assembly and offline planning advisories. Existing owners consume admitted exact results or compose the accepted coordinator; preserve implementations and refactor demonstrated gaps only. Verify returned scientific values and refusal through the real CLI/coordinator boundary, report-to-interchange-to-advisory composition, ordered positive/zero fields, complete source/observer/time/EOP identities, nullable Unicode, strict corruption refusal, current validation after prior success and atomic no-clobber publication/failure cleanup. Protect faults in actual values, null indicators, advisory overlap and publication, using existing test owners. Gate satellite-report-routing plus documentation/tooling; retain unchanged lower-level K3.31/K3.33 numerical, worker and SDK/install receipts. No new science, numerical policy, provider acquisition/network, facility writes, source bytes, SDK/dependency/module/package, schema or renderer change. Do not rerun historical production benchmarks or revive consumed execution authority. K3.35 onward remains separate. |
 | Revision 57: select K3.33 exact satellite consumers | Fernando’s “Proceed” after PR #305 complete Mac acceptance and confirmed cleanup | Audit exhaustive/adaptive solving, conservative tri-state selection, atomic multi-field airmass/solver coordination, strict matrix evidence/worker and solved-track realization/display. Existing owners already use accepted SGP4 Cartesian/observer services and shared coordinate/kernel geometry; preserve numerical bodies and refactor demonstrated gaps only. Verify returned kernel PV and refusal at exhaustive/selector/default-track boundaries, indeterminate-to-exact behavior, no false-negative/fallback/domain regressions through existing independent/adversarial owners, current-service batch admission after prior success, actual solved-track/event/singleton drawing and a small fresh-process synthetic snapshot equivalence case. Retain event anchors, samples, time/resource/snapshot identities, exact request admission, bounded certificates, original tolerances/limits, atomic failure and candidate-versus-exact distinction. Gate exact-satellite-routing plus documentation/tooling. No new physics, acquisition/network/policy, source bytes, SDK/dependency/module/package, schema or renderer change. Preserve historical accepted production matrix receipts; do not rerun the medium production benchmark or revive consumed execution authority. K3.34 onward remains separate. |
 | Revision 56: select K3.32 sampled satellite candidates | Fernando’s “proceed” after PR #304 complete Mac acceptance and confirmed cleanup | Test/evidence closure of existing SatChecker receipt/parser/cache, typed sampled candidate, presentation and canonical chart routes. As-is consumers already use CoordinateService and public kernel geometry/domain/projection services. Refactor demonstrated gaps only; no production rewrite planned. Instrument returned coordinate values/refusal after prior use across track/sample/singleton geometry and actual drawing; verify cached exact synthetic receipt replay reaches reports/layers with response identity, UTC/UT1 samples, provider warnings and candidate-only semantics. Preserve one explicit submission/poll, no automatic retry, local exact receipt cache, coverage/licensing restrictions, source-inferred coordinate convention and per-sample time. Do not create propagated object states, interpolate, claim exact boundary events or new provider accuracy/permission. Gate sampled-satellite-candidate-routing plus documentation/tooling; preserve numerical/SDK/installation receipts for unchanged owners. No new network request, acquisition route/policy, resource bytes, SDK/dependency/module/package, schema, renderer algorithm or later satellite migration. K3.33 onward remains separate. |
 | Revision 55: select K3.31 satellite state services | Fernando’s “Proceed” after PR #303 complete Mac acceptance and confirmed cleanup | Retain validated immutable snapshots/elements, exact source/snapshot identity and offline admission. Add thin transport to the existing Cartesian SDK in the current SGP4 owner, keeping Earth-centred geometric TEME separate from the ICRF-only ephemeris adapter. Preserve scalar/accelerated-array SGP4 WGS-72, split-UTC JD, input order/duplicates, source epoch/age, provenance and original nonzero-status error API. Use explicit installed-leap UTC-to-TAI labels only at the SDK boundary; admit only the exact requested finite batch, with unknown physical/numerical uncertainty and no reuse certificate or invented orbital validity range. Keep existing TEME-to-ITRS/topocentric Astropy/EOP services and formulas; verify they consume returned SI states and propagate refusal, with independent Vallado and Skyfield/Astropy oracles. Gate satellite-state-routing plus documentation/tooling covers snapshot corruption/admission, scalar/array transport, identity, returned PV/refusal and observer/EOP domains. No new numerical model, acquisition/policy, SDK/module/package, dependency, resource bytes, schema, renderer algorithm or later satellite product migration. K3.32–K3.36 remain separate. |
@@ -633,8 +634,8 @@ map below ensures small/non-chart capabilities do not disappear in grouped rows.
 | K3.30 | Route antisolar constructed-reference consumers with observer-relative provenance | Accepted PR #303: 117 focused, 36 documentation and eight tooling Mac cases; clean main and branch cleanup confirmed |
 | K3.31 | Route satellite snapshots/elements/SGP4/TEME and observer transformations | Accepted PR #304: 77 focused, 36 documentation and eight tooling Mac cases; clean main and branch cleanup confirmed |
 | K3.32 | Route sampled-provider satellite candidate evidence through explicit provider/maintenance boundaries | Accepted PR #305: 61 focused, 36 documentation and eight tooling Mac cases; clean main and branch cleanup confirmed |
-| K3.33 | Route exact satellite crossings, conservative batch selection and solved-track consumers | Evidence ready for acceptance under revision 57; existing state/observer/geometry routes and numerical algorithms retained without production changes. Complete exact-satellite-routing Mac gate pending |
-| K3.34 | Route satellite reports, lossless tabular interchange, CLI and planning advisories | Pending; preserve identities, nulls/Unicode, atomic output and offline behaviour |
+| K3.33 | Route exact satellite crossings, conservative batch selection and solved-track consumers | Accepted PR #306, tested 8db716de: 86 focused, 36 documentation and eight tooling Mac cases; clean main/cleanup confirmed. Existing numerical implementations retained |
+| K3.34 | Route satellite reports, lossless tabular interchange, CLI and planning advisories | Selected under revision 58; audit existing result/service composition, preserve identities, nulls/Unicode, atomic output and offline behaviour. Refactor demonstrated gaps only |
 | K3.35 | Route satellite illumination/finite-Sun shadow consumers without changing physical models | Pending; retain independent transition/orientation/domain oracles |
 | K3.36 | Route bolometric/spectral solar radiometry and move edition-specific TSIS facts into resource metadata | Pending M8; preserve native sampling/integrals and current uncertainty limits |
 | K3.37 | Close public Python, all eight installed commands, six examples, five notebooks/installers, overlays/presets and translations | Partial selected APIs/cluster CLI accepted; complete public-surface audit/acceptance pending |
