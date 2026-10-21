@@ -818,3 +818,18 @@ of LIME's DE421 conventions with the independent DE440/SPICE comparison.
 The paused Phase-B protocol has unresolved case-state, frame/load-order,
 signed-phase and EOP/uncertainty questions. Do not repeat consumed external
 runs or infer new execution authority from an archived checkpoint.
+
+## Solar radiometry metadata ownership
+
+The accepted TSIS-1 HSRS v2 resource facts are preserved in a validated packaged
+JSON declaration and immutable runtime record. Source digest/count, native
+25,281 samples from 202 to 2730 nm, 0.1 nm sampling, 1 nm FWHM and audit integral
+are unchanged. The original access date is provenance, not a fresh retrieval.
+The spectrum remains an external installed resource with unresolved
+redistribution permission; packaging metadata does not authorize vendoring.
+
+Bolometric and spectral calculations consume the same accepted illumination
+geometry. The IAU nominal bolometric constant is not a target normalization for
+the incomplete spectral domain. Native-coordinate integration, pointwise
+uncertainty scaling and unknown integrated uncertainty remain as implemented.
+No source acquisition, Moonlight, reflected-light or detector model is added.

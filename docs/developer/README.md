@@ -310,5 +310,9 @@ K3.34 verifies [satellite report consumers](implementation_reference.md#satellit
 without production changes, accepted through PR #307 after 68 focused,
 36 documentation and eight tooling Mac cases; clean main and cleanup confirmed.
 K3.35 routes [illumination and shadow Sun inputs](implementation_reference.md#satellite-illumination-and-shadow-services)
-through the existing Cartesian adapter, retaining the physical models. Complete
-satellite-illumination-routing Mac acceptance and K3/K5 closure remain pending.
+through the existing Cartesian adapter, retaining the physical models. Accepted
+through PR #308 after 62 focused, 36 documentation and eight tooling Mac cases,
+including offline DE440s parity; clean main and cleanup confirmed.
+K3.36 now moves [TSIS resource facts into validated metadata](implementation_reference.md#solar-radiometry-resource-admission)
+while retaining radiometry calculations. Complete satellite-radiometry-routing
+Mac acceptance and K3/K5 closure remain pending.

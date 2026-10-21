@@ -1772,3 +1772,34 @@ surface, dependencies, resource bytes, collection and renderer remain unchanged.
 Retain their accepted K3.25/K3.31/SDK/isolation/install receipts. K3.36 spectral
 radiometry/resource migration and later consumer closure remain separate.
 Run documentation and tooling gates too; K3/K5 remain partial.
+
+## Satellite radiometry routing gate
+
+`satellite-radiometry-routing` selects the complete existing spectral radiometry
+owner, the eight existing bolometric contract/scaling/geometry/uncertainty test
+functions (12 cases), and one installed metadata consumer in the existing
+packaging owner. Total: 61 cases. Retain all original native-grid, header/count/
+order/non-finite/value/bandwidth/integral/off-grid/refusal oracles. Existing LIME
+cases exercise mocked reader/protocol boundaries only; they do not execute an
+external binary or renew paused/consumed authority.
+
+New metadata admission checks pin accepted defaults/byte identity, immutable
+records, malformed/duplicate/non-finite/missing/unknown facts, supported units,
+consistent native grid, historical date and unchanged external-only policy.
+Returned metadata must be authoritative; missing packaged data has no fallback.
+Same-length wrong external CSV bytes refuse before parser entry. Complete typed
+geometry-to-radiometry cases prohibit positional queries and preserve distinct
+bolometric/spectral calculations, pointwise scaling and unknown uncertainty.
+
+Wheel/sdist checks use unchanged build rules, compare exact metadata bytes and
+run an isolated installed consumer without checkout access. A fresh process
+fails if the packaged declaration is deleted. Three deliberate metadata/digest
+faults must fail before restoring production and running this complete gate.
+
+No numerical model, parser, source CSV/SPK bytes, SDK/dependency, new module,
+build rules, science-record schema or renderer changes. Retain the original
+accepted external TSIS byte/native-integral receipt and K3.35 Sun/EOP science;
+new synthetic spectra are labelled composition specimens, not provider captures.
+No acquisition or redistribution-policy change, Moonlight or external execution.
+Documentation/tooling and complete focused Mac acceptance remain required.
+K3.37 onward and K3/K5 closure remain separate.

@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import csv
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
+from datetime import date
+from importlib import resources
+import json
 from enum import Enum
 from hashlib import sha256
 from io import StringIO
@@ -18,27 +21,109 @@ from wenu.satellites.illumination import (
 )
 
 
-TSIS1_HSRS_V2_PRODUCT: Final = "tsis1_hsrs_1nm"
-TSIS1_HSRS_V2_SHA256: Final = (
-    "1cf3b07e6ac9669c429ad7ce9e92d50dfd741422efcfffa3d1e0eeb5f901616f"
-)
-TSIS1_HSRS_V2_SOURCE_URL: Final = (
-    "https://lasp.colorado.edu/lisird/latis/dap/tsis1_hsrs_1nm.csv"
-)
-TSIS1_HSRS_V2_DOI: Final = "10.25980/ta3f-7h90"
-TSIS1_HSRS_V2_BYTE_COUNT: Final = 1_298_915
-TSIS1_HSRS_V2_SAMPLE_COUNT: Final = 25_281
-TSIS1_HSRS_V2_MINIMUM_NM: Final = 202.0
-TSIS1_HSRS_V2_MAXIMUM_NM: Final = 2730.0
-TSIS1_HSRS_V2_SAMPLING_NM: Final = 0.1
-TSIS1_HSRS_V2_RESOLUTION_FWHM_NM: Final = 1.0
-TSIS1_HSRS_V2_INTEGRAL_W_M2: Final = 1325.759295697943
-TSIS1_HSRS_V2_HEADER: Final = (
-    "wavelength (nm)",
-    "irradiance (W/m^2/nm)",
-    "uncertainty (W/m^2/nm)",
-    "bandwidth (nm)",
-)
+@dataclass(frozen=True)
+class _SolarSpectralResourceMetadata:
+    """Validated edition facts; immutable and separate from numerical policy."""
+
+    schema_version: int
+    label: str
+    doi: str
+    product: str
+    source_url: str
+    access_date: str
+    byte_count: int
+    content_sha256: str
+    header: tuple[str, ...]
+    wavelength_unit: str
+    irradiance_unit: str
+    uncertainty_unit: str
+    sample_count: int
+    minimum_wavelength_nm: float
+    maximum_wavelength_nm: float
+    sampling_nm: float
+    resolution_fwhm_nm: float
+    native_integral_w_m2: float
+    redistribution_status: str
+
+    def __post_init__(self):
+        if type(self.schema_version) is not int or self.schema_version != 1:
+            raise ValueError("unsupported solar spectral metadata schema")
+        for name in ("label", "doi", "product", "source_url", "access_date"):
+            value = getattr(self, name)
+            if not isinstance(value, str) or not value.strip():
+                raise ValueError(f"metadata {name} must be non-empty text")
+        if date.fromisoformat(self.access_date).isoformat() != self.access_date:
+            raise ValueError("metadata access_date must be an ISO date")
+        if (not isinstance(self.content_sha256, str)
+                or len(self.content_sha256) != 64
+                or any(c not in "0123456789abcdef" for c in self.content_sha256)):
+            raise ValueError("metadata content_sha256 must be lowercase SHA-256")
+        for name in ("byte_count", "sample_count"):
+            value = getattr(self, name)
+            if type(value) is not int or value <= (1 if name == "sample_count" else 0):
+                raise ValueError(f"metadata {name} must be a positive integer")
+        if (not isinstance(self.header, tuple) or len(self.header) != 4
+                or any(not isinstance(x, str) or not x.strip() for x in self.header)
+                or len(set(self.header)) != 4):
+            raise ValueError("metadata header must contain four distinct columns")
+        if (self.wavelength_unit != "nm" or self.irradiance_unit != "W m-2 nm-1"
+                or self.uncertainty_unit != "W m-2 nm-1"):
+            raise ValueError("unsupported solar spectral metadata units")
+        if self.redistribution_status != "not_established_external_install_only":
+            raise ValueError("metadata must retain external-install-only policy")
+        for name in ("minimum_wavelength_nm", "maximum_wavelength_nm", "sampling_nm",
+                     "resolution_fwhm_nm", "native_integral_w_m2"):
+            value = getattr(self, name)
+            if type(value) not in (int, float) or not isfinite(value) or value <= 0:
+                raise ValueError(f"metadata {name} must be positive and finite")
+        span = self.maximum_wavelength_nm - self.minimum_wavelength_nm
+        if span <= 0 or abs(span - (self.sample_count - 1) * self.sampling_nm) > 1e-9:
+            raise ValueError("metadata count, endpoints and native spacing disagree")
+
+
+def _metadata_pairs(values):
+    result = {}
+    for key, value in values:
+        if key in result:
+            raise ValueError(f"duplicate solar spectral metadata key: {key}")
+        result[key] = value
+    return result
+
+
+def _metadata_constant(value):
+    raise ValueError(f"non-finite solar spectral metadata value: {value}")
+
+
+def _load_solar_spectral_metadata():
+    """Load only the packaged declaration; never infer or acquire a spectrum."""
+    text = resources.files("wenu.data").joinpath(
+        "solar_spectral_resource_tsis1_hsrs_v2.json"
+    ).read_text(encoding="utf-8")
+    document = json.loads(text, object_pairs_hook=_metadata_pairs,
+                          parse_constant=_metadata_constant)
+    expected = {item.name for item in fields(_SolarSpectralResourceMetadata)}
+    if not isinstance(document, dict) or set(document) != expected:
+        raise ValueError("solar spectral metadata has missing or unknown fields")
+    if not isinstance(document["header"], list):
+        raise ValueError("solar spectral metadata header must be an array")
+    document["header"] = tuple(document["header"])
+    return _SolarSpectralResourceMetadata(**document)
+
+
+_TSIS1_HSRS_V2_METADATA: Final = _load_solar_spectral_metadata()
+# Compatibility names retain the accepted public values; source facts live in data.
+TSIS1_HSRS_V2_PRODUCT: Final = _TSIS1_HSRS_V2_METADATA.product
+TSIS1_HSRS_V2_SHA256: Final = _TSIS1_HSRS_V2_METADATA.content_sha256
+TSIS1_HSRS_V2_SOURCE_URL: Final = _TSIS1_HSRS_V2_METADATA.source_url
+TSIS1_HSRS_V2_DOI: Final = _TSIS1_HSRS_V2_METADATA.doi
+TSIS1_HSRS_V2_BYTE_COUNT: Final = _TSIS1_HSRS_V2_METADATA.byte_count
+TSIS1_HSRS_V2_SAMPLE_COUNT: Final = _TSIS1_HSRS_V2_METADATA.sample_count
+TSIS1_HSRS_V2_MINIMUM_NM: Final = _TSIS1_HSRS_V2_METADATA.minimum_wavelength_nm
+TSIS1_HSRS_V2_MAXIMUM_NM: Final = _TSIS1_HSRS_V2_METADATA.maximum_wavelength_nm
+TSIS1_HSRS_V2_SAMPLING_NM: Final = _TSIS1_HSRS_V2_METADATA.sampling_nm
+TSIS1_HSRS_V2_RESOLUTION_FWHM_NM: Final = _TSIS1_HSRS_V2_METADATA.resolution_fwhm_nm
+TSIS1_HSRS_V2_INTEGRAL_W_M2: Final = _TSIS1_HSRS_V2_METADATA.native_integral_w_m2
+TSIS1_HSRS_V2_HEADER: Final = _TSIS1_HSRS_V2_METADATA.header
 DIRECT_SOLAR_SPECTRAL_MODEL: Final = (
     "tsis-1-hsrs-v2-native-grid-uniform-disk-v1"
 )
@@ -75,19 +160,19 @@ class SolarSpectralIrradianceResourceIdentity:
     doi: str = TSIS1_HSRS_V2_DOI
     product: str = TSIS1_HSRS_V2_PRODUCT
     source_url: str = TSIS1_HSRS_V2_SOURCE_URL
-    access_date: str = "2026-09-22"
+    access_date: str = _TSIS1_HSRS_V2_METADATA.access_date
     byte_count: int = TSIS1_HSRS_V2_BYTE_COUNT
     content_sha256: str = TSIS1_HSRS_V2_SHA256
     header: tuple[str, ...] = TSIS1_HSRS_V2_HEADER
-    wavelength_unit: str = "nm"
-    irradiance_unit: str = "W m-2 nm-1"
-    uncertainty_unit: str = "W m-2 nm-1"
+    wavelength_unit: str = _TSIS1_HSRS_V2_METADATA.wavelength_unit
+    irradiance_unit: str = _TSIS1_HSRS_V2_METADATA.irradiance_unit
+    uncertainty_unit: str = _TSIS1_HSRS_V2_METADATA.uncertainty_unit
     sample_count: int = TSIS1_HSRS_V2_SAMPLE_COUNT
     minimum_wavelength_nm: float = TSIS1_HSRS_V2_MINIMUM_NM
     maximum_wavelength_nm: float = TSIS1_HSRS_V2_MAXIMUM_NM
     sampling_nm: float = TSIS1_HSRS_V2_SAMPLING_NM
     resolution_fwhm_nm: float = TSIS1_HSRS_V2_RESOLUTION_FWHM_NM
-    redistribution_status: str = "not_established_external_install_only"
+    redistribution_status: str = _TSIS1_HSRS_V2_METADATA.redistribution_status
 
     def __post_init__(self):
         expected = (
@@ -502,8 +587,10 @@ class DirectSolarSpectralIrradianceEvaluator:
                 policy.integrated_uncertainty_status
             ),
             provenance=(
-                "TSIS-1 HSRS v2 tsis1_hsrs_1nm external installed resource.",
-                "Native 0.1 nm grid; 1 nm FWHM spectral resolution.",
+                f"{_TSIS1_HSRS_V2_METADATA.label} {self.resource.identity.product} "
+                "external installed resource.",
+                f"Native {self.resource.identity.sampling_nm:g} nm grid; "
+                f"{self.resource.identity.resolution_fwhm_nm:g} nm FWHM spectral resolution.",
                 "Inverse-square distance and achromatic accepted "
                 "uniform-disk visible-fraction scaling.",
             ),

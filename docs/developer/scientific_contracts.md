@@ -490,7 +490,12 @@ verify composition, not new physical accuracy or orbital prediction validity.
 
 The external TSIS-1 HSRS v2 product retains its exact digest, 25,281 native
 0.1-nm samples over 202–2730 nm, 1-nm FWHM, pointwise uncertainties and exact
-endpoint integration. No interpolation, extrapolation or normalization to the
+endpoint integration. Edition facts are now read from the validated packaged
+metadata record and mirrored in the existing public identity/constants; their
+values and external byte admission are unchanged. The source access date remains
+historical and redistribution remains not established. Only the declaration is
+packaged, not the spectrum. Radiometry consumes accepted geometry without
+re-evaluating physical states. No interpolation, extrapolation or normalization to the
 bolometric nominal constant; integrated physical uncertainty remains not evaluated.
 
 Numerical Moonlight, reflected-light fields, spacecraft surface/BRDF response,

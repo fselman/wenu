@@ -2780,6 +2780,52 @@
           "reason": "Independent spherical overlap/contact, WGS-84 orientation, twilight, complete analytic/adversarial transitions, source/domain refusal and new returned-value/resource-failure composition; include real offline raw-science parity."
         }
       ]
+    },
+    "satellite-radiometry-routing": {
+      "scope": "K3.36 bolometric/spectral geometry consumers, M8 validated immutable TSIS edition metadata and installed wheel/sdist resource delivery.",
+      "limits": "Preserve accepted 1361 nominal bolometric model, native spectral grid/bytes/integral, inverse-square/fraction scaling, exact external CSV admission and unknown integrated/model uncertainty. Existing public constants/identity defaults remain compatible. New metadata JSON contains declarations only; no spectrum redistribution, acquisition/current permission claim, source edition/physics, SDK/dependency/module/package, build-rule, science-record schema, renderer or Moonlight change. Existing LIME tests are mocked reader/protocol tests, not external execution. Retain unchanged K3.35 and historical real TSIS numerical receipts; no consumed/paused authority reuse. K3.37 onward and K3/K5 remain separate.",
+      "selections": [
+        {
+          "node": "tests/test_satellite_radiometry.py",
+          "reason": "Complete native spectral owner: metadata truth/immutability/refusal, exact CSV guard/parser, native integration, composition/uncertainty and retained safe mocked LIME boundaries."
+        },
+        {
+          "node": "tests/test_satellite_illumination.py::test_direct_solar_policy_freezes_iau_nominal_bolometric_contract",
+          "reason": "Retain independent bolometric contract, scaling and accepted-geometry/uncertainty compatibility; no orbit/Sun/EOP repeat."
+        },
+        {
+          "node": "tests/test_satellite_illumination.py::test_direct_solar_irradiance_uses_exact_inverse_square_scaling",
+          "reason": "Retain independent bolometric contract, scaling and accepted-geometry/uncertainty compatibility; no orbit/Sun/EOP repeat."
+        },
+        {
+          "node": "tests/test_satellite_illumination.py::test_direct_solar_irradiance_composes_evaluated_visible_fraction",
+          "reason": "Retain independent bolometric contract, scaling and accepted-geometry/uncertainty compatibility; no orbit/Sun/EOP repeat."
+        },
+        {
+          "node": "tests/test_satellite_illumination.py::test_direct_solar_result_retains_geometry_convergence_and_uncertainty",
+          "reason": "Retain independent bolometric contract, scaling and accepted-geometry/uncertainty compatibility; no orbit/Sun/EOP repeat."
+        },
+        {
+          "node": "tests/test_satellite_illumination.py::test_direct_solar_identity_changes_with_geometry_and_policy",
+          "reason": "Retain independent bolometric contract, scaling and accepted-geometry/uncertainty compatibility; no orbit/Sun/EOP repeat."
+        },
+        {
+          "node": "tests/test_satellite_illumination.py::test_direct_solar_contract_has_no_surface_spectral_or_output_fields",
+          "reason": "Retain independent bolometric contract, scaling and accepted-geometry/uncertainty compatibility; no orbit/Sun/EOP repeat."
+        },
+        {
+          "node": "tests/test_satellite_illumination.py::test_direct_solar_evaluator_rejects_unsupported_or_inconsistent_models",
+          "reason": "Retain independent bolometric contract, scaling and accepted-geometry/uncertainty compatibility; no orbit/Sun/EOP repeat."
+        },
+        {
+          "node": "tests/test_satellite_illumination.py::test_direct_solar_evaluator_rejects_not_same_instant_geometry",
+          "reason": "Retain independent bolometric contract, scaling and accepted-geometry/uncertainty compatibility; no orbit/Sun/EOP repeat."
+        },
+        {
+          "node": "tests/test_curated_catalogues.py::test_solar_spectral_metadata_ships_and_loads_without_source_checkout",
+          "reason": "Unmodified build rules ship exact metadata in wheel/sdist; isolated installed import/numerical consumer works and missing packaged metadata refuses without fallback."
+        }
+      ]
     }
   },
   "consumer_review": [

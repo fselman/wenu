@@ -657,3 +657,61 @@ else:raise AssertionError("installed count consumer concealed refusal")
     result = subprocess.run([sys.executable,'-I','-S','-c',script,str(installed),
         str(sdk_root),json.dumps(dependencies)],cwd=tmp_path,capture_output=True,text=True)
     assert result.returncode == 0, result.stdout+result.stderr
+
+
+
+def test_solar_spectral_metadata_ships_and_loads_without_source_checkout(tmp_path):
+    """Use unmodified build rules; packaged metadata is an import dependency."""
+    from zipfile import ZipFile
+    import tarfile
+    import wenu_kernel
+    project = tmp_path / "project"
+    project.mkdir()
+    shutil.copytree(ROOT / "src/wenu", project / "src/wenu",
+                    ignore=shutil.ignore_patterns("__pycache__", "curated_catalogs", "observing_lists"))
+    for name in ("pyproject.toml", "MANIFEST.in", "README.md"):
+        shutil.copyfile(ROOT / name, project / name)
+    shutil.copyfile(ROOT / "src/curated_catalogue_packaging.py", project / "src/curated_catalogue_packaging.py")
+    for domain in ("open_clusters", "planetary_nebulae"):
+        _bundle(project / "src/wenu/data/curated_catalogs", domain)
+    release = tmp_path / "release"
+    release.mkdir()
+    for command in ([sys.executable, "-c", "from setuptools.build_meta import build_sdist; build_sdist("+repr(str(release))+")"],
+                    [sys.executable, "-m", "pip", "wheel", "--no-index", "--no-deps", "--no-build-isolation", "--wheel-dir", str(release), str(project)]):
+        result = subprocess.run(command, cwd=project, capture_output=True, text=True)
+        assert result.returncode == 0, result.stdout + result.stderr
+    resource = "wenu/data/solar_spectral_resource_tsis1_hsrs_v2.json"
+    payload = (ROOT / "src" / resource).read_bytes()
+    installed = tmp_path / "installed"
+    with ZipFile(next(release.glob("*.whl"))) as wheel, tarfile.open(next(release.glob("*.tar.gz"))) as sdist:
+        assert wheel.read(resource) == payload
+        member = next(m for m in sdist.getmembers() if m.name.endswith("/src/"+resource))
+        assert sdist.extractfile(member).read() == payload
+        wheel.extractall(installed)
+    dependencies = [p for p in sys.path if Path(p).name in ("site-packages", "dist-packages")]
+    sdk = Path(wenu_kernel.__file__).resolve().parent.parent
+    script = r"""
+import sys,json
+from pathlib import Path
+sys.path[:0]=[sys.argv[1],sys.argv[2],*json.loads(sys.argv[3])]
+from importlib.resources import files
+from wenu.satellites import radiometry as r
+assert Path(r.__file__).is_relative_to(Path(sys.argv[1]))
+path=files('wenu.data').joinpath('solar_spectral_resource_tsis1_hsrs_v2.json')
+assert Path(str(path)).is_relative_to(Path(sys.argv[1]))
+assert r.TSIS1_HSRS_V2_IDENTITY.sample_count==25281
+assert r.TSIS1_HSRS_V2_IDENTITY.content_sha256==json.loads(path.read_text())['content_sha256']
+assert abs(r._native_integral((202.,202.1,202.2),(1.,2.,3.),202.,202.2)-.4)<1e-12
+try:r.load_solar_spectral_irradiance_resource(Path(sys.argv[1])/'missing.csv')
+except r.SolarSpectralRadiometryError as e:assert e.code is r.SolarSpectralRadiometryFailureCode.RESOURCE_NOT_FOUND
+else:raise AssertionError('missing external spectrum admitted')
+"""
+    command = [sys.executable, "-I", "-S", "-c", script, str(installed), str(sdk), json.dumps(dependencies)]
+    result = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True)
+    assert result.returncode == 0, result.stdout + result.stderr
+    # A fresh process must fail instead of falling back to embedded edition facts.
+    packaged = installed / resource
+    packaged.unlink()
+    refused = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True)
+    assert refused.returncode != 0 and "solar_spectral_resource_tsis1_hsrs_v2.json" in refused.stderr
+    assert "FileNotFoundError" in refused.stderr

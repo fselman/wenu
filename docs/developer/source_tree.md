@@ -431,3 +431,10 @@ concrete Wenu classes.
 | [`utils/__init__.py`](../../src/wenu/utils/__init__.py) | Package exports and initialization. |
 | [`utils/visible.py`](../../src/wenu/utils/visible.py) | Visible. |
 
+## Solar spectral resource declaration
+
+[`data/solar_spectral_resource_tsis1_hsrs_v2.json`](../../src/wenu/data/solar_spectral_resource_tsis1_hsrs_v2.json)
+contains the existing admitted TSIS edition/byte/schema/grid/integral facts.
+The current `satellites/radiometry.py` owns strict metadata loading and the
+immutable runtime record; numerical scaling/integration remain in that owner.
+This is a packaged declaration, not a vendored spectrum or a new Python module.
