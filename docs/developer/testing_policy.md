@@ -106,6 +106,8 @@ retry, checkpoint reuse after simulated DNS failure, source/plan corruption,
 Hip2 fixed-width/weights/special-solution retention, five-/six-/position-only
 coverage, missing Hip2 fallback, unchanged membership/photometry/associations and
 actual public acquisition/v4 report composition with sockets blocked.
+Synthetic Gaia-style VOTables also protect FIELD-name versus XML-ID decoding,
+including refusal of a renamed FIELD even if its XML ID matches the requested name.
 Fixtures are synthetic. Actual Hip2 source parsing and a real bounded ESA metadata
 POST are separate source-preflight evidence; the combined real-data capture and
 coverage report require the Mac cache. Run focused documentation and tooling

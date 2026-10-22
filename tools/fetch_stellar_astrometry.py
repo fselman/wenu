@@ -88,7 +88,9 @@ def votable(raw):
               if e.tag.split('}')[-1] == 'INFO' and e.attrib.get('name') == 'QUERY_STATUS']
     audit.require(bool(status) and all(s == 'OK' for s in status),
                   'Missing/failed/overflow TAP QUERY_STATUS')
-    return Table.read(BytesIO(raw), format='votable')
+    # Gaia uses XML IDs SOURCE_ID/DESIGNATION alongside lowercase ADQL names.
+    # XML IDs identify elements; FIELD names identify the requested columns.
+    return Table.read(BytesIO(raw), format='votable', use_names_over_ids=True)
 
 
 def query(sql, maxrec):

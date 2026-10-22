@@ -432,7 +432,11 @@ provider review and exact corrected CDS I/311 ReadMe/compressed/expanded identit
 The explicit client makes sequential anonymous synchronous TAP requests with at
 most 500 source IDs and MAXREC=batch+1, validates QUERY_STATUS including trailing
 overflow, exact integer ID reconciliation, source units and reference epoch, and
-captures TAP_SCHEMA datatype/unit/UCD/description metadata. Requests have bounded
+captures TAP_SCHEMA datatype/unit/UCD/description metadata. VOTable parsing uses
+FIELD names rather than XML IDs: ESA supplies uppercase SOURCE_ID/DESIGNATION
+IDs with lowercase ADQL names. Exact requested names remain mandatory; no blanket
+case folding or unknown-column admission is used. Raw response bytes stay intact.
+Requests have bounded
 bytes/timeouts, no redirects, automatic retries, mirrors or account fallback.
 Failures stop the invocation. A manual rerun of the same command reuses only
 completed digest-verified source/query batches with the identical input plan;

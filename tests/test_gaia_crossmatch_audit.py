@@ -772,6 +772,30 @@ def test_capture_response_byte_cap():
         stellar_fetch.NoRedirect().redirect_request(None,None,None,None,None,None)
 
 
+@pytest.mark.parametrize('changed_name', [False, True])
+def test_votable_field_names_define_schema_not_xml_ids(changed_name):
+    """Synthetic Gaia-style XML IDs; names remain the exact ADQL contract."""
+    import xml.etree.ElementTree as ET
+    original = gaia_table([9007199254740993])
+    root = ET.fromstring(synthetic_vot(original))
+    for field in root.iter():
+        if field.tag.split('}')[-1] == 'FIELD' and field.attrib.get('name') == 'source_id':
+            field.set('ID', 'SOURCE_ID' if not changed_name else 'source_id')
+            if changed_name:
+                field.set('name', 'unexpected_source_column')
+    raw = ET.tostring(root)
+    parsed = stellar_fetch.votable(raw)
+    reference = json.loads(stellar_fetch.PROFILE.read_bytes())['gaia']['reference']
+    if changed_name:
+        with pytest.raises(ValueError, match='schema differs'):
+            stellar_fetch.validate_gaia(parsed, ['9007199254740993'], original.colnames, reference)
+    else:
+        stellar_fetch.validate_gaia(parsed, ['9007199254740993'], original.colnames, reference)
+        assert parsed.colnames == original.colnames
+        assert int(parsed['source_id'][0]) == 9007199254740993
+    assert b'SOURCE_ID' in raw or changed_name
+
+
 @pytest.mark.parametrize('fault',['schema','duplicate','float_identifier'])
 def test_gaia_metadata_faults_refused(fault):
     table=metadata_table(['source_id','solution_id'])

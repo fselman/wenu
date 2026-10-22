@@ -6995,7 +6995,7 @@
     },
     {
       "path": "tests/test_gaia_crossmatch_audit.py",
-      "git_blob_sha": "d8395419544c6063ac6c61038e21b5f9ffc42f92",
+      "git_blob_sha": "1df0b25bc1e5e6373305f804bb72778caad796ce",
       "imports": [
         "astropy.table",
         "copy",
@@ -7012,11 +7012,12 @@
         "pytest",
         "socket",
         "sys",
-        "types"
+        "types",
+        "xml.etree.ElementTree"
       ],
-      "test_functions": 35,
+      "test_functions": 36,
       "marks": {},
-      "parametrize_decorators": 13,
+      "parametrize_decorators": 14,
       "fixtures": [
         "cache",
         "kervella_bundle",
@@ -7508,7 +7509,7 @@
     },
     {
       "path": "tools/fetch_stellar_astrometry.py",
-      "git_blob_sha": "cdc7b219f40140edcf370988c5a1afc6290cedcf"
+      "git_blob_sha": "f830f44088857d50ae3374c96787f3484d0ed1fd"
     }
   ],
   "preserved_test_editions": [
@@ -21837,7 +21838,7 @@
         ]
       },
       "tools/fetch_stellar_astrometry.py": {
-        "git_blob_sha": "cdc7b219f40140edcf370988c5a1afc6290cedcf",
+        "git_blob_sha": "f830f44088857d50ae3374c96787f3484d0ed1fd",
         "group": "maintenance",
         "evidence_ids": [
           "K4a.03S2"
@@ -26359,11 +26360,11 @@
         "gate": "gaia-crossmatch-audit"
       },
       "tools/fetch_stellar_astrometry.py": {
-        "git_blob_sha": "cdc7b219f40140edcf370988c5a1afc6290cedcf",
+        "git_blob_sha": "f830f44088857d50ae3374c96787f3484d0ed1fd",
         "gate": "gaia-crossmatch-audit"
       },
       "tests/test_gaia_crossmatch_audit.py": {
-        "git_blob_sha": "d8395419544c6063ac6c61038e21b5f9ffc42f92",
+        "git_blob_sha": "1df0b25bc1e5e6373305f804bb72778caad796ce",
         "gate": "gaia-crossmatch-audit"
       }
     },
@@ -26373,7 +26374,24 @@
     "gaia_preflight": "Actual bounded metadata-only ESA POST HTTP200; source ID integer datatype and epoch/PM units verified",
     "mac_capture_and_report": "pending; original source/cache only on Mac",
     "limits": "No production module, model, propagation, redistribution, renderer, SDK or saved-sky change. Input availability is not model/quality admission; Hip2 scale/convention qualification remains explicit.",
-    "focused_synthetic_cases": 86,
-    "local_tooling_receipt": "Six independent synthetic runner cases, nine subtests passed; two full-tree runner checks deferred to Mac."
+    "focused_synthetic_cases": 88,
+    "local_tooling_receipt": "Six independent synthetic runner cases, nine subtests passed; two full-tree runner checks deferred to Mac.",
+    "mac_validation_receipt": {
+      "head": "3efb3d02fc66087bd80b3d98419ebf9c78bed6b9",
+      "focused_passed": 86,
+      "documentation_passed": 36,
+      "tooling_passed": 8,
+      "tooling_subtests": 80,
+      "required_associated_sources": 117211,
+      "reused_source_rows": 99525,
+      "source_rows_to_fetch": 17686,
+      "acquisition_status": "Stopped on first data-batch validation: default Astropy FIELD-ID decoding selected uppercase SOURCE_ID/DESIGNATION; verified Hip2 and metadata captures reusable; v4 not executed."
+    },
+    "votable_name_correction": {
+      "policy": "Use FIELD names over XML IDs while retaining exact schema/units/integer checks and original raw bytes",
+      "local_focused_passed": 88,
+      "real_response": "One captured full-column ESA source response passed exact schema, integer ID, unit and epoch validation after correction",
+      "mac_resume_and_report": "pending; profile/plan identity unchanged"
+    }
   }
 }
