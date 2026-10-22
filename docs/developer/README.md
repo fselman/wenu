@@ -1,6 +1,6 @@
 # Wenu developer documentation
 
-**Current selected work:** K4b.02/AX.13 [explicit proper-motion angular model](implementation_reference.md#explicit-proper-motion-angular-model).
+**Current accepted slice:** K4b.02/AX.13 [explicit proper-motion angular model](implementation_reference.md#explicit-proper-motion-angular-model).
 Main `08a58b22` and merged-branch cleanup were confirmed clean/synchronized on
 the Mac. K4b.01 remains accepted: 97,710 complete-input stellar models and all
 118,218 original objects retained. The shared engine now separately types angular
@@ -9,8 +9,13 @@ The explicit Gaia angular adapter needs position, epoch and both PM components;
 parallax and RV remain untouched source facts. Full-input SI/model bindings and
 ordinary charts/source lookup remain unchanged. The normalized tangent model
 omits perspective/parallax and retains unknown source/physical errors; its finite
-caller-selected domain has no universal short PM cutoff. Actual Mac angular
-acceptance remains pending. Missing-PM approximations, Hip2 qualification,
+caller-selected domain has no universal short PM cutoff. Mac acceptance at `41c47e16` (PR #323) passed: 173 motion/cluster cases plus
+nine subtests, 125 source-audit, 36 documentation and eight tooling cases plus
+81 subtests. The unchanged snapshot admits 115,105 angular models, including
+17,395 additional to the full-input subset; all 118,218 objects remain. Fifteen
+sampled directions agree with the independent Decimal oracle within
+`1.5700939560399132e-16` vector chord difference. The original full-input SI
+digest is unchanged. PR merge and branch cleanup remain separate actions. Missing-PM approximations, Hip2 qualification,
 observer/product adoption and external redistribution remain separate.
 
 **Existing Wenu production baseline:** `6708f54a0d8984c0be348b2c8cb02b311646a02b`, 2026-10-17.
@@ -72,8 +77,8 @@ K3.09 shared-default correction is accepted through PR #273. Its remaining
 [source assessment and agreed admission policy](kernel_migration_audit_v1.md#m5-source-assessment-and-proposed-admission-distinction-2026-10-19)
 are documented; Fernando approved the lookup/physical-admission distinction
 and PM-only policy on 2026-10-19. K3.09 explicit lookup admission is accepted through PR #274;
-physical source gaps remain explicit. The measured-PM angular slice of AX.13 is implemented for explicit
-admission and awaits Mac acceptance; missing-PM approximation and Hip2
+physical source gaps remain explicit. The measured-PM angular slice of AX.13 passed Mac acceptance for explicit
+admission through PR #323; missing-PM approximation and Hip2
 qualification remain pending. K3.10 galaxy routing closure
 is accepted through PR #275. K3.12 generic nonstellar/Messier/Caldwell and
 object-centre routing is accepted through PR #276. K3.13 globular routing is

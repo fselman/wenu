@@ -183,8 +183,15 @@ cluster-state numerical/ERFA/real-source/reuse owner; its production adapter and
 source/metadata files are unchanged. Source-audit regressions retain immutable
 payload admission. The partial local checkout excludes three native-star and
 one full `OpenClusters` application-composition case; the complete Mac gate must
-run all four. Documentation/tooling integrity and the actual external snapshot
-angular coverage/queries remain Mac acceptance. No SDK, dependency/build,
+run all four. The complete Mac result at `41c47e16` (PR #323) passed all
+173 stellar/core/cluster cases plus nine subtests, 125 source-audit cases,
+36 documentation cases and eight tooling cases plus 81 subtests. Actual snapshot
+admission retained 118,218 objects and admitted 115,105 angular models (17,395
+additional to full input). Five sampled HIP entries at three epochs produced
+15 states with maximum independent Decimal-oracle chord difference
+`1.5700939560399132e-16`; the original full-input SI digest was unchanged.
+The +/-50,000-year nominal domain establishes arithmetic behavior only, with
+physical/source error still unknown. No SDK, dependency/build,
 renderer/product or source-snapshot schema change is made; broader no-PM/Hip2
 qualification work is not closed by this measured-PM implementation.
 

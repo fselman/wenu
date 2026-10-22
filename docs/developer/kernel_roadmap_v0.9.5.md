@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 75, 2026-10-22. **Status:** merge/Mac synchronization/branch cleanup complete at 08a58b22; K4b.02/AX.13 proper-motion angular model selected. Full-input results remain accepted; reduced/no-PM and product scopes stay distinct.
+**Plan revision:** 76, 2026-10-22. **Status:** K4b.02/AX.13 measured-PM angular slice passed complete Mac tests and actual snapshot acceptance at 41c47e16 (PR #323). Merge remains separate; no-PM/Hip2 and product scopes stay pending. No further implementation selected.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -62,14 +62,14 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current authorized task | K4b.02/AX.13 measured-PM angular model in the shared core and explicit Gaia stellar adapter |
-| Next bounded submilestone | Admit position/epoch/both-PM direction models without distance/RV; retain unknowns, explicit finite domain/refusals and unchanged full/default routes |
+| Current bounded result | K4b.02/AX.13 measured-PM angular slice passed Mac acceptance through PR #323 at 41c47e16; parent milestones remain partial |
+| Next bounded submilestone | Not selected; merge/cleanup and remaining no-PM, Hip2 qualification or product scopes need their corresponding explicit instruction |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
 agreement. This revision removes that automatic next-step designation. Continuing
 remaining K3 migration and continuing the positional extension are distinct
-choices. K3.07 baseline migration was subsequently proposed explicitly and selected by Fernando; AX.13 remains pending.
+choices. K3.07 baseline migration was subsequently proposed explicitly and selected by Fernando. AX.13 now has an accepted measured-PM slice, while its remaining scopes stay pending.
 
 The architecture documentation is accepted through PR #280, main
 `abb68d9127068f9cc9ace6db8be0a8132a9f22ba`; 36 Mac documentation tests
@@ -78,6 +78,28 @@ cleanup. This documentation merge adds no runtime acceptance.
 
 
 ## K4b.02 / AX.13: measured-proper-motion angular model
+
+**Mac acceptance:** Fernando supplied the complete result on 2026-10-22 for
+`41c47e1680e65a506862acfd19f96e4f03433c1d`, PR #323. All 173 stellar/shared-core/
+cluster cases and nine subtests passed (9.91 s), all 125 source-audit cases
+(5.37 s), 36 documentation cases (2.66 s), and eight tooling cases plus 81
+subtests (8.94 s). The actual immutable source manifest `8747349e…4d365`
+retains 118,218 HIP entries and admits 115,105 angular models: 17,395 additional
+to the full-input subset. The 2,106 Gaia position-only and 1,007 unassociated
+entries remain unavailable to this explicit angular adapter. Existing fallback
+source records remain preserved; no product policy is activated.
+
+The full-input SI digest remains
+`032f76e398eadf136fd9aa59a3c2b3a66d4dc25d9da74bc995b4bdb6088cfe8f`.
+Angular coefficient digest:
+`6d3e46ff0aa8bd707ea4b8f169b55fdd41c3bc85d65250d7a801c541ebb38602`.
+Five HIP entries (1, 59096, 118322, 3, 58925), evaluated at the source epoch
+and both +/-50,000-Julian-year nominal-domain endpoints, produced 15 states;
+maximum independent Decimal-oracle vector chord difference was
+`1.5700939560399132e-16`. This is numerical evidence for the declared model,
+not a long-epoch physical-accuracy guarantee. Source/physical errors stay unknown.
+This measured-PM slice is accepted; all K4b.02/AX.13 parent scopes are not closed.
+Merge/cleanup remains separate; no further runtime scope is selected.
 
 Fernando selected incomplete-input propagation with "Proceed" after the Mac
 cleanup receipt on 2026-10-22: clean synchronized main
@@ -1062,8 +1084,8 @@ not counted as a second independent implementation.
 | AX.10 | Shared finite-distance observer realization: one translation, admitted deflection/aberration and vacuum AltAz | Accepted PR #267; independent parallax/Lorentz/composition/refusal evidence |
 | AX.11 | Explicit observed Python chart/restored-source adoption and real output | Accepted PR #268; cold/saved/fresh-process geometry/pixels/output/refusal |
 | AX.12 | Ordinary horizontal request/CLI/TOML model and ID selection with unchanged defaults | Accepted PR #269; selected local resources/domains/height and actual output; other frames not enabled |
-| AX.13 | Configurable reduced-input models in the shared core: no-PM source-position approximation and PM with incomplete full inputs | Measured-PM angular deliverable selected with K4b.02; position/epoch/both PMs, no distance/RV or universal short cutoff. No-PM initial ~200-year proposal remains pending; no parent closure |
-| AX.14 | Real stellar source adapter to the shared motion/parallax core | Full-input K4b.01 subset accepted through PR #321 at ec6a35e2; incomplete-input K4b.02 remains pending |
+| AX.13 | Configurable reduced-input models in the shared core: no-PM source-position approximation and PM with incomplete full inputs | Measured-PM angular slice passed Mac acceptance in PR #323 at 41c47e16; position/epoch/both PMs, no distance/RV or universal short cutoff. No-PM initial ~200-year proposal remains pending; no parent closure |
+| AX.14 | Real stellar source adapter to the shared motion/parallax core | Full-input K4b.01 subset accepted through PR #321 at ec6a35e2; measured-PM K4b.02 slice passed Mac acceptance in PR #323; other incomplete-input scopes remain pending |
 | AX.15 | Real PN positional adapter to the shared core | Pending; qualify nebular centre/central-star identity and available systemic inputs; no expansion |
 | AX.16 | Real SNR positional adapter to the shared core | Pending; qualify shell centre/systemic motion; pulsar displacement or expansion RV is not automatically systemic centre motion |
 
@@ -1123,7 +1145,7 @@ remain its separate responsibilities.
 | K4a.04 | Publish immutable bounded subset with exact bytes, edition/epoch/units/provenance, uncertainties/correlations and match evidence | Accepted local Mac publication/reload at 3fed5483 with manifest 8747349e; 125 focused, 36 documentation and eight tooling/80 subtests. External redistribution remains deferred |
 | K4a.05 | Accept coverage/ambiguity report and unchanged default membership, names, cross-IDs and visual photometry | Accepted local v4_source_v1 report and full-field/membership/V/association snapshot checks at 3fed5483; no default consumer change |
 | K4b.01 | Real star adapter/full-input propagation through the shared core | Accepted Mac receipt at PR #321/ec6a35e2: 86 stellar/core cases + nine subtests, 125 source audit, 36 documentation, eight tooling + 81 subtests; 97,710 full-input models, all 118,218 HIP objects retained. Reduced models/product adoption separate |
-| K4b.02 | Adopt admitted incomplete-input models and configured lookback/error/refusal policies for real stars | Measured-PM angular deliverable selected with AX.13; no-PM/Hip2 qualification/other missing-input scopes remain pending. No invented measurements |
+| K4b.02 | Adopt admitted incomplete-input models and configured lookback/error/refusal policies for real stars | Measured-PM angular slice passed Mac acceptance in PR #323 at 41c47e16; no-PM/Hip2 qualification/other missing-input scopes remain pending. No invented measurements |
 | K4b.03 | Admit explicit historical time/calendar/year-zero/BCE and source/input-date uncertainty semantics | Pending; native ancient state must not require modern observer resources unnecessarily |
 | K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Pending; independent model/domain/uncertainty admission, not extrapolated modern EOP |
 | K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references | Pending; K4b.01–K4b.04; no universal DR4 improvement factor |

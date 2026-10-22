@@ -26645,7 +26645,7 @@
       "K4b.02",
       "AX.13"
     ],
-    "scope_status": "Measured-PM deliverable implemented; no parent closure; actual Mac angular source acceptance pending",
+    "scope_status": "Measured-PM slice passed complete Mac tests and actual snapshot acceptance; broader K4b.02/AX.13 partial; merge separate",
     "base_commit": "08a58b226d4267ce97292c2dc19c2ed939377a51",
     "plan_commit": "41bf6d3c096fe796a1c971c9feb80bdb10e62001",
     "gate": "stellar-motion-provider",
@@ -26699,7 +26699,66 @@
       "oracles": "Independent Decimal affine direction and analytic/source-unit references, short and +/-50,000-year nominal domains; no physical-accuracy claim.",
       "isolation": "Fresh -I -S source snapshot reload and full/Cartesian/angular queries after source files removed, with sockets blocked and no scientific/graphics imports."
     },
-    "mac_acceptance": "Pending complete owner/documentation/tooling gates and actual source angular counts/long-epoch sampled queries; full-input real SI digest must remain 032f76e398eadf136fd9aa59a3c2b3a66d4dc25d9da74bc995b4bdb6088cfe8f.",
+    "mac_acceptance": {
+      "date": "2026-10-22",
+      "tested_commit": "41c47e1680e65a506862acfd19f96e4f03433c1d",
+      "pull_request": 323,
+      "receipt_file": "Pasted text(20261022-150927).txt",
+      "receipt_sha256": "110e668e5a24c2c378a796255ebc7dc4b367ca8955cef778e1ba449bf7a3c813",
+      "gates": {
+        "stellar-motion-provider": {
+          "passed": 173,
+          "subtests": 9,
+          "seconds": 9.91
+        },
+        "gaia-crossmatch-audit": {
+          "passed": 125,
+          "seconds": 5.37
+        },
+        "documentation": {
+          "passed": 36,
+          "seconds": 2.66
+        },
+        "tooling": {
+          "passed": 8,
+          "subtests": 81,
+          "seconds": 8.94
+        }
+      },
+      "source_manifest_sha256": "8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365",
+      "retained_objects": 118218,
+      "angular_models": 115105,
+      "additional_angular_models": 17395,
+      "unavailable_by_reason": {
+        "gaia_position_only": 2106,
+        "no_published_gaia_association": 1007
+      },
+      "angular_solutions_sha256": "6d3e46ff0aa8bd707ea4b8f169b55fdd41c3bc85d65250d7a801c541ebb38602",
+      "full_input_si_digest_unchanged": "032f76e398eadf136fd9aa59a3c2b3a66d4dc25d9da74bc995b4bdb6088cfe8f",
+      "sample_HIP": [
+        "1",
+        "59096",
+        "118322",
+        "3",
+        "58925"
+      ],
+      "sample_states": 15,
+      "maximum_chord_difference_from_decimal_affine_oracle": 1.5700939560399132e-16,
+      "domain_tcb": [
+        [
+          -15805111,
+          0.0,
+          "tcb"
+        ],
+        [
+          20719889,
+          0.0,
+          "tcb"
+        ]
+      ],
+      "nominal_half_width_Julian_years": 50000,
+      "physical_accuracy": "not-evaluated; long nominal domain is not a validity guarantee"
+    },
     "limits": [
       "No no-PM approximation or inferred Hip2 conventions",
       "No source snapshot bytes/schema/adoption rewrite",
