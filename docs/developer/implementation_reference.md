@@ -512,23 +512,78 @@ The output is a local external source, not data bundled in Git, a wheel or a
 saved sky. Original defaults, propagation/model and redistribution admission are
 unchanged. The coordinate guide remains current; no coordinate model changes.
 
+## Explicit full-input stellar motion
+
+`stellar_state.admit_stellar_motion(source, *, coverage, distance_policy,
+radial_velocity_policy)` derives an immutable `StellarMotionCatalogue` from a
+validated `StellarEnrichmentSnapshot`. The source remains verbatim and its
+`model_admission=none` and null adopted-solution fields are not rewritten.
+The distinct admission record binds its manifest, original membership/V identity,
+association ledger, source reference facts, SI solution digest, finite TCB domain
+and explicit model policies. `to_record()` returns a detached record; `rows`
+contains all original HIP entries in source order, including unavailable rows.
+
+The supported explicit policy strings are `positive-parallax-reciprocal` and
+`spectroscopic-proxy`. Linked DR3 five-/six-parameter rows require finite position,
+both proper motions, positive parallax and measured radial velocity. The sixth
+Gaia astrometric parameter is not an RV. A reciprocal positive parallax supplies
+a nominal distance; no distance posterior, parallax zero-point or binary/systemic
+RV correction is inferred. Six-parameter solutions with RV may be admitted.
+RUWE, duplicated-source and component flags do not veto published identities.
+Negative/zero parallax, absent measurements and unknown solution codes remain
+explicit unavailable reasons; no neighbourhood alternative or different source
+is silently selected. Hip2/original fallback records remain in the source but
+are not promoted through their unresolved conventions or invented RVs.
+
+The adapter reads declared Gaia reference/units, converts its Julian-year TCB
+epoch and spherical differentials once into immutable SI position/velocity, then
+`StellarMotionProvider(catalogue, representation='direction')` or the explicit
+`representation='cartesian'` delegates to `RectilinearAstrometricProvider`.
+These are distinct SDK models/resources/references. `describe()`, `catalogue()`,
+`supports()`, `evaluate()`, `certify()` and `close()` retain the existing provider
+protocol/lifecycle. Objects use original catalogue/HIP keys; external IDs preserve
+original catalogue/edition and published Gaia edition plus the explicitly bridged
+DR3 identity. Query objects must be available model objects; unknown/unavailable
+objects refuse rather than falling back. Register the provider and its exact
+reference with the SDK, then query through an owned session.
+
+Direction results retain source/evaluation/anchor times and the shared core's
+`2**-40` rad numerical bound relative to the admitted binary64 SI trajectory.
+The core owns its existing angular reuse certificates. This bound excludes
+source-to-SI conversion, measurement, distance/RV-estimator and physical-model
+errors, which remain unknown. Cartesian results retain SI PV with separate
+unknown position/velocity error channels and no temporal certificate. Supplied
+source errors/correlations remain available verbatim; covariance propagation is
+not implemented. No extra light-time, observer parallax, apparent correction,
+frame precession, binary orbit or historical-date accuracy is introduced.
+The caller's finite TCB domain is a nominal computational admission, not a claim
+of physical validity or absolute angular accuracy.
+
+The source codec, original/native facade and ordinary `Stars`/figure/label/chart
+consumers remain unchanged. No automatic source replacement, top-level export,
+CLI option, dependency, SDK or saved-sky format change accompanies this API.
+The closest gate is `stellar-motion-provider`, followed by documentation and
+source-audit/tooling integrity. Actual real-source Mac acceptance is separate
+from constructed offline tests.
+
 ## Native stellar kernel adapter
 
 The [K4a.02 acquisition/matching policy review](scientific_contracts.md#gaia-dr3-acquisition-and-matching-policy-review)
 and [dated audit](data/gaia_dr3_acquisition_policy_v1.json) are design documents.
-No production Gaia TAP client, match adopter, runtime dependency or new provider is implemented.
+No production Gaia TAP client or automatic consumer adoption is implemented;
+the separate explicit full-input provider above uses only a validated local source.
 Current terms/usage and service preflight remain unresolved; proposed local
 workload caps are not provider quotas or execution authority.
 
 K4a.01 now specifies the [stellar membership and enrichment contract](scientific_contracts.md#stellar-membership-and-enrichment-contract)
 and [source-bound census/logical schema](data/stellar_enrichment_contract_v1.json).
 It remains a logical enrichment design: the separate maintenance report now
-retains the accepted published associations. There is no production Gaia loader,
-propagation adapter, public API addition or saved-sky codec change. Existing
+retains the accepted published associations. The separate explicit full-input adapter consumes the local enrichment snapshot;
+there is no default Gaia loader or saved-sky codec change. Existing
 `source_catalog` owns the full retained population; `catalog` and `hip_df` are
 selected/observed views. The contract keeps foreign astrometry and photometry
 separate from those baseline rows and reserves explicit release-qualified
-identities and component/match evidence for later K4a source admission.
+identities and component/match evidence in the admitted local source snapshot.
 
 `stellar_catalogue.StellarCatalogueMetadata` is an immutable mirror of a
 `wenu-stellar-catalogue/1` document. The document declares catalogue/edition,
@@ -881,8 +936,9 @@ all downstream geometry.
 
 `catalogue_state.py` owns copied immutable rows, content-bound identities,
 standard provider protocol, vector decoding and owned kernel/session lifetime.
-`stellar_state.py` remains a native stellar facade; its descriptor/resource
-identities, required source epochs and returned states are preserved. Galaxies
+The native facade in `stellar_state.py` retains its descriptor/resource
+identities, required source epochs and returned states; its separate explicit
+stellar motion adapter uses the shared astrometric engine. Galaxies
 do not import a concrete stellar provider.
 
 The galaxy model keeps fixed native directions. Full source metadata and digest

@@ -174,7 +174,8 @@ apparent AltAz for the requested observer/date; lack of stellar space-motion
 propagation does not mean Earth orientation is omitted. Native ICRS axes do
 not precess. The native position/realization routes now consistently declare
 source epoch J1991.25; the former default J2000.0 metadata was incorrect.
-No Gaia astrometric provider exists.
+An explicit Gaia full-input nominal provider now exists separately; the default
+`Stars` lookup/observed routes do not adopt it.
 
 The [K4a.01 enrichment contract](scientific_contracts.md#stellar-membership-and-enrichment-contract)
 now records the complete 118,218-row source population, its visual-photometry
@@ -201,7 +202,15 @@ audit owns explicit normalization and no-clobber publication; source-free reload
 validates bytes, references, units and membership. Native ingestion and production
 providers do not consume the snapshot automatically.
 Association retention and measurement availability are distinct
-from production astrometric-solution admission; real stellar propagation remains K4b.
+from physical-model admission. The explicit `stellar_state.StellarMotionCatalogue`
+now consumes that immutable source and retains every original object, recording
+unavailable reasons for missing/unqualified inputs. `StellarMotionProvider`
+extends the existing `RectilinearAstrometricProvider`; it does not duplicate its
+numerical engine. Explicit source-unit/TCB conversion, reciprocal positive-parallax
+distance and spectroscopic RV proxy policies qualify nominal direction/Cartesian
+queries through the SDK. Measurement/input-conversion/physical errors remain
+unknown. No default star/figure/label/chart/saved-sky or observer path changes;
+reduced-input and historical-model admission remain separate.
 
 Native `Stars.realize()` now selects rows with the existing policy and obtains
 finite directions from `stellar_state.LegacyNativeStellarProvider` through

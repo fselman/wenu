@@ -440,8 +440,8 @@ equinox.
 > | Build ICRS/ICRF3 from raw VLBI observations | IAU/IERS and ICRF analysis centres, outside Wenu | **Delegated.** Wenu consumes the published ICRS realization through Astropy; it does not solve VLBI delays or no-net-rotation constraints. |
 > | Build Gaia-CRF3 and solve Gaia source astrometry | Gaia Data Processing and Analysis Consortium AGIS, outside Wenu | **Delegated upstream.** Wenu does not solve Gaia CCD observations, attitude, calibration, or frame spin. |
 > | Load current stellar positions | `objects/stars.py::Stars`; current Hipparcos/Skyfield path | **Implemented for the current catalogue.** Skyfield supplies the existing apparent topocentric stellar realization. |
-> | Load Gaia stellar astrometry with edition, reference epoch, covariance and motion | Planned stellar provider under the kernel roadmap | **Planned.** Start with DR3; Gaia-derived Magellanic isophotes are morphology, not stellar astrometry. |
-> | Propagate stellar positions to another epoch | Future catalogue-provider method behind `PositionProvider.position(instant=...)` | **Future.** It must use proper motion, parallax, radial velocity, covariance, and provider provenance where applicable; `CelestialReferencePolicy` must not do this. |
+> | Load Gaia stellar astrometry with edition, reference epoch, covariance and motion | `stellar_enrichment` source codec and explicit `stellar_state` adapter | **Implemented explicit source/admission path.** Preserve errors/correlations and release identities; covariance propagation and default consumer adoption remain separate. |
+> | Propagate stellar positions to another epoch | Explicit `stellar_state.StellarMotionProvider` through the shared `astrometric_state` core and SDK | **Implemented nominal complete-input model.** Requires explicit distance/RV policies and finite TCB domain; unknown physical/input errors, no covariance propagation, reduced model or default chart adoption. `CelestialReferencePolicy` does not propagate. |
 > | Generate planet, Moon, and supported natural-satellite states | `ephemeris.py`, `skyfield_ephemeris.py` and descriptor-driven Solar-System providers | **Implemented for admitted bodies/resources.** Uniform kernel access remains planned. |
 > | Generate artificial-satellite states | `satellites/elements.py`, `snapshots.py`, `sgp4.py` | **Implemented.** Explicit SGP4 geometric TEME states and pinned validation; not a universal epoch propagator. |
 > | Record observer location, time, and Astropy/Skyfield compatibility state | `observer.py::Observer`; `coordinates.py::observation_context()` | **Implemented.** `Observer` constructs context but is not a competing transformation authority. |
@@ -1218,6 +1218,28 @@ conversion, Earth rotation uncertainty and ephemeris coverage are separate
 problems. A modern IERS table or Python datetime parser is not evidence of
 ancient-date validity. No BCE/year-zero observational support or long-epoch
 accuracy is claimed by the current implementation.
+
+## Explicit stellar nominal propagation
+
+The source-native stellar lookup below remains the default. Separately,
+`stellar_state` now admits an immutable linked Gaia source into the existing
+full-input shared SI model, using explicit positive-parallax reciprocal distance
+and spectroscopic-RV proxy policies. Its TCB source epoch, frame/origin, units
+and mu-alpha-star convention come from validated source metadata. A caller must
+provide a finite nominal TCB domain; it is not physical-validity coverage.
+Every original HIP entry remains in the admitted catalogue; missing or unqualified
+solutions stay unavailable with reasons. Hip2/original fallback availability does
+not fabricate full inputs or resolve unknown source conventions.
+
+The [explicit API](implementation_reference.md#explicit-full-input-stellar-motion)
+queries SDK direction/Cartesian states with separate source/evaluation/anchor
+times. Perspective effects follow its nominal distance and RV inputs, with no
+additional stellar light-time correction. Measurement, source-to-SI conversion,
+distance/RV-estimator and physical errors remain unknown; source correlations
+are retained but covariance propagation is not implemented. The existing angular
+numerical certificate is relative only to the admitted SI trajectory. No
+observer realization, precession, reduced-input algorithm or ordinary stellar
+chart/saved-sky consumer changes accompany this explicit model.
 
 ## Native stellar kernel lookup during K3
 

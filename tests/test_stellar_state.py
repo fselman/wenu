@@ -267,5 +267,315 @@ class TestNativeStellarAdapter(unittest.TestCase):
             self.assertEqual(close.call_count, 1)
 
 
+@pytest.fixture
+def motion_source():
+    """Small self-contained synthetic snapshot; no real catalogue or network."""
+    from collections import Counter
+    from hashlib import sha256
+    from pathlib import Path
+    from wenu.stellar_enrichment import StellarEnrichmentSnapshot, PRODUCTS, encode, identity
+    def build(change=None, *, epoch=2016., original_v=2., edr3=False):
+        sources = []
+        for i in (1, 2, 3, 4, 6, 7, 8):
+            src = dict(source_id=str(9007199254740992+i), solution_id='9007199254740999',
+                ra=0., dec=90. if i==6 else 0., ref_epoch=epoch, parallax=100.,
+                pmra=1000., pmdec=2000., radial_velocity=30.,
+                astrometric_params_solved=95 if i in (2,6) else 31,
+                ruwe=8.5, duplicated_source=True, phot_g_mean_mag=12., ra_dec_corr=.4)
+            if i==2: src['radial_velocity']=None
+            if i==3: src['parallax']=-1.
+            if i==4: src.update(astrometric_params_solved=3, pmra=None, pmdec=None)
+            if i==7: src['astrometric_params_solved']=999
+            if i==8: src['parallax']=0.
+            if i==1 and change: src.update(change)
+            sources.append(src)
+        gaia={str(i):s for i,s in zip((1,2,3,4,6,7,8),sources)}
+        # One unassociated entry has a complete Hip2 source record, whose
+        # unresolved time convention cannot be silently upgraded to motion.
+        profile=json.loads((Path(__file__).parents[1]/'docs/developer/data/stellar_astrometry_acquisition_v1.json').read_text())['hipparcos2']
+        h=dict(HIP='5',Sn=5,So=0,Nc=1,RArad=.2,DErad=-.3,Plx=10.,pmRA=0.,pmDE=1.,
+               e_RArad=1.,e_DErad=1.,e_Plx=1.,e_pmRA=1.,e_pmDE=1.,UW=[1.]*15)
+        native=bytearray(b' '*276)
+        for name,spec in profile['columns'].items():
+            a,b=spec['first_byte']-1,spec['last_byte']
+            raw=''.join(f'{v:7.2f}'for v in h[name])if name=='UW'else str(h[name]).rjust(b-a)
+            native[a:b]=raw.encode()
+        h.update(original_record_ascii=native.decode(),record_sha256=sha256(native).hexdigest())
+        stars=[]; candidates=[]; photometry=[]; choices=Counter()
+        for i in range(1,10):
+            hip=str(i); src=gaia.get(hip)
+            link=(dict(hip=hip,catalogue='Gaia',release='DR3',source_id=src['source_id'])if src else None)
+            choice=('gaia'if src and src['astrometric_params_solved']in(31,95)and
+                all(src.get(k)is not None for k in ('ra','dec','ref_epoch','parallax','pmra','pmdec'))
+                else 'hipparcos2'if i==5 else 'original_1997_lookup')
+            if edr3 and i==1:
+                link.update(release='EDR3',equivalent_dr3_identity=dict(release='DR3',source_id=src['source_id'],
+                    bridge={'policy':'ESA-explicit-identical-source-list'}))
+            original=dict(hip=hip,magnitude=original_v if i==1 else None, designation={'names':['Synthetic star']})
+            row=dict(schema='wenu-stellar-enrichment/1',
+                identity=dict(catalogue='hipparcos',edition='synthetic-1997',identifier=hip,component=None),
+                original=original,published_association=link,match_status='identified'if link else'unmatched',
+                adopted_solution=None,input_availability=dict(model_adopted=False,preferred_available_input=choice),
+                candidates=[src['source_id']]if src else [],source_references=dict(gaia=src['source_id']if src else None,
+                    hipparcos2=hip if i==5 else None),foreign_photometry={'phot_g_mean_mag':src['phot_g_mean_mag']}if src else None)
+            stars.append(row);choices[choice]+=1
+            photometry.append([i,'missing'if original['magnitude']is None else float(original['magnitude']).hex()])
+            if src: candidates.append(dict(hip=hip,source_id=src['source_id']))
+        baseline=dict(catalogue='hipparcos',edition='synthetic-1997',source_sha256='a'*64,rows=9,
+            ordered_hip_ids_sha256=sha256(('\n'.join(map(str,range(1,10)))+'\n').encode()).hexdigest(),
+            hip_magnitude_pairs_sha256=sha256(json.dumps(photometry,separators=(',',':')).encode()).hexdigest())
+        units={'ra':'deg','dec':'deg','ref_epoch':'yr','parallax':'mas',
+               'pmra':'mas / yr','pmdec':'mas / yr','radial_velocity':'km / s'}
+        metadata=dict(schema='wenu-stellar-enrichment-metadata/1',row_schema='wenu-stellar-enrichment/1',
+            model_admission='none',baseline=baseline,original_columns=list(stars[0]['original']),
+            required_preserved_columns=['magnitude','designation'],
+            original_metadata=dict(catalogue='hipparcos',edition='synthetic-1997',source_sha256='a'*64,
+                frame='icrs',origin='solar-system-barycenter',epoch=dict(value=1991.25,format='jyear',scale='tt'),units={'magnitude':'mag'}),
+            gaia_reference=dict(frame='icrs',origin='solar-system-barycenter',epoch_scale='tcb',release='DR3',
+                right_ascension_motion='mu_alpha*cos(delta)',expected_ref_epoch=epoch),
+            gaia_columns=list(sources[0]),gaia_column_units={k:units.get(k)for k in sources[0]},
+            hipparcos2_profile=profile,
+            original_rows_sha256=sha256(b''.join(encode(r['original'])+b'\n'for r in stars)).hexdigest(),
+            association_ledger_sha256=sha256(b''.join(encode(dict(hip=r['identity']['identifier'],association=r['published_association']))+b'\n'for r in stars)).hexdigest(),
+            counts=dict(retained_hip_rows=9,published_associations=7,gaia_source_rows=7,hipparcos2_rows=1,
+                candidate_pairs=7,preferred_available_inputs=dict(choices)))
+        values=[encode(metadata),*[b''.join(encode(r)+b'\n'for r in rs)for rs in (stars,sources,[h],candidates)]]
+        products=tuple(zip(PRODUCTS,values))
+        manifest=encode(dict(schema='wenu-stellar-enrichment-snapshot/1',complete=True,
+            products={name:identity(raw)for name,raw in products}))
+        return StellarEnrichmentSnapshot(products,manifest)
+    return build
+
+
+def stellar_motion_case(source, *, representation='direction', coverage=None):
+    from wenu_kernel.records import TimeSpan
+    coverage=coverage or TimeSpan(TimePoint(2400000,0,'tcb'),TimePoint(2500000,0,'tcb'))
+    catalogue=bridge.admit_stellar_motion(source,coverage=coverage,
+        distance_policy='positive-parallax-reciprocal',radial_velocity_policy='spectroscopic-proxy')
+    provider=bridge.StellarMotionProvider(catalogue,representation=representation)
+    a=provider.describe().admissions[0]
+    return catalogue,provider,StateQuery(a.catalogue,a.model,a.objects,
+        (TimePoint(2457389,0,'tcb'),),a.reference,
+        AccuracyRequest(metric='euclidean_norm')if representation=='cartesian'else AccuracyRequest())
+
+
+def test_stellar_motion_admission_preserves_source_population_and_explicit_gaps(motion_source):
+    """Protect source loss/zero filling; closest existing native input-copy test."""
+    from dataclasses import FrozenInstanceError
+    source=motion_source();before=source.products
+    cat,p,q=stellar_motion_case(source)
+    assert [r.identifier for r in cat.rows]==list(map(str,range(1,10)))
+    assert [r.unavailable_reason for r in cat.rows]==[None,'missing_gaia_radial_velocity',
+        'nonpositive_gaia_parallax','gaia_position_only','no_published_gaia_association',
+        None,'unsupported_gaia_solution','nonpositive_gaia_parallax','no_published_gaia_association']
+    assert cat.to_record()['counts']['full_input_models']==2
+    objects=p.catalogue(q.catalogue).objects
+    assert len(objects)==9 and [k.value for k in q.objects]==['hipparcos:1','hipparcos:6']
+    assert objects[0].external_ids[1].identifier=='9007199254740993'
+    assert objects[0].external_ids[1].edition=='DR3'
+    assert cat.source is source and source.products==before
+    assert cat.source.metadata['model_admission']=='none'
+    assert next(cat.source.records())['original']['magnitude']==2.
+    assert list(cat.source.records())[4]['source_references']['hipparcos2']=='5'
+    detached=cat.to_record();detached['policies']['distance']='changed'
+    assert cat.to_record()['policies']['distance']=='positive-parallax-reciprocal'
+    with pytest.raises(FrozenInstanceError):cat.rows=()
+    p.close()
+    with pytest.raises(ClosedSession):p.describe()
+
+
+@pytest.mark.parametrize('representation',['direction','cartesian'])
+def test_stellar_motion_kernel_axis_oracle_and_order(motion_source,representation):
+    """Independent equatorial axes protect SI scale, RA cosine and PM/RV signs."""
+    import numpy as np
+    from wenu_kernel.records import ObjectKey
+    cat,p,q=stellar_motion_case(motion_source(),representation=representation)
+    # The same source vector is at x; RA differential goes toward +y and Dec
+    # toward +z. Expected scalar conversions are independent Astropy units.
+    from astropy import units as u
+    d=(10*u.pc).to_value(u.m);year=(1*u.yr).to_value(u.s)
+    velocity=(30000.,d*(1*u.arcsec).to_value(u.rad)/year,d*(2*u.arcsec).to_value(u.rad)/year)
+    np.testing.assert_allclose(cat.rows[0].position_m,(d,0,0),rtol=4e-16,atol=0)
+    np.testing.assert_allclose(cat.rows[0].velocity_m_s,velocity,rtol=4e-16,atol=0)
+    t=TimePoint(2457754,.25,'tcb')
+    q=replace(q,objects=(ObjectKey('hipparcos:6'),ObjectKey('hipparcos:1')),times=(t,))
+    with Kernel(references=(q.reference,))as k:
+        k.register(p,ownership='owned')
+        with k.open_session(SessionPolicy((q.catalogue,)))as s:
+            batch=s.evaluate(q)
+    assert [r.object_key for r in batch.states]==list(q.objects)
+    expected=np.array((d,0,0))+np.array(velocity)*year
+    state=batch.states[1]
+    assert state.source_epoch==TimePoint(2457389,0,'tcb') and state.time==state.anchor_time==t
+    if representation=='direction':
+        np.testing.assert_allclose(state.vector,expected/np.linalg.norm(expected),rtol=1e-14,atol=1e-16)
+        assert state.evidence.numerical.value==2**-40
+    else:
+        np.testing.assert_allclose(state.position_m,expected,rtol=1e-14,atol=1.)
+        np.testing.assert_allclose(state.velocity_m_s,velocity,rtol=4e-16,atol=0)
+        assert state.velocity_evidence.numerical.status=='not_evaluated'
+    evidence=state.position_evidence if representation=='cartesian'else state.evidence
+    assert evidence.measurement.status==evidence.physical_model.status=='not_evaluated'
+    with pytest.raises(ClosedSession):p.describe()
+
+
+@pytest.mark.parametrize('ra,dec',[(123.,-45.),(359.9,89.999999),(10.,-90.)])
+def test_stellar_motion_source_conversion_matches_independent_spherical_differential(motion_source,ra,dec):
+    import numpy as np
+    from astropy import units as u
+    from astropy.coordinates import (SphericalRepresentation,SphericalCosLatDifferential,
+                                     CartesianRepresentation,CartesianDifferential)
+    cat,p,q=stellar_motion_case(motion_source(dict(ra=ra,dec=dec,pmra=-111.,pmdec=23.,radial_velocity=-44.)))
+    independent=SphericalRepresentation(ra*u.deg,dec*u.deg,10*u.pc,
+        differentials=SphericalCosLatDifferential(-111*u.mas/u.yr,23*u.mas/u.yr,-44*u.km/u.s))
+    cart=independent.represent_as(CartesianRepresentation,CartesianDifferential)
+    np.testing.assert_allclose(cat.rows[0].position_m,cart.xyz.to_value(u.m),rtol=2e-15,atol=30.)
+    np.testing.assert_allclose(cat.rows[0].velocity_m_s,cart.differentials['s'].d_xyz.to_value(u.m/u.s),rtol=2e-15,atol=2e-10)
+    p.close()
+
+
+@pytest.mark.parametrize('change,reason',[
+    ({'radial_velocity':None},'missing_gaia_radial_velocity'),
+    ({'pmra':None},'missing_gaia_pmra'),({'parallax':None},'missing_gaia_parallax'),
+    ({'parallax':0.},'nonpositive_gaia_parallax'),({'parallax':-1.},'nonpositive_gaia_parallax'),
+    ({'astrometric_params_solved':95,'radial_velocity':None},'missing_gaia_radial_velocity'),
+])
+def test_stellar_motion_incomplete_or_nonpositive_inputs_are_not_invented(motion_source,change,reason):
+    from wenu_kernel.records import ObjectKey
+    cat,p,q=stellar_motion_case(motion_source(change))
+    assert cat.rows[0].unavailable_reason==reason
+    assert cat.rows[0].position_m is cat.rows[0].velocity_m_s is None
+    assert len(p.catalogue(q.catalogue).objects)==9
+    bad=replace(q,objects=(ObjectKey('hipparcos:1'),))
+    assert not p.supports(bad).supported
+    with pytest.raises(UnsupportedCapability):p.evaluate(bad)
+    p.close()
+
+
+@pytest.mark.parametrize('fault',['wrong_scale','outside','unknown','unavailable','source_binding','subfloor','velocity'])
+def test_stellar_motion_refuses_invalid_queries_after_success(motion_source,fault):
+    from wenu_kernel.records import ObjectKey
+    cat,p,q=stellar_motion_case(motion_source())
+    assert p.evaluate(q).states
+    if fault=='wrong_scale':bad=replace(q,times=(TimePoint(2457389,0,'tt'),))
+    if fault=='outside':bad=replace(q,times=(TimePoint(2500001,0,'tcb'),))
+    if fault=='unknown':bad=replace(q,objects=(ObjectKey('hipparcos:999'),))
+    if fault=='unavailable':bad=replace(q,objects=(ObjectKey('hipparcos:2'),))
+    if fault=='source_binding':
+        _,other,_=stellar_motion_case(motion_source(original_v=3.))
+        bad=replace(q,catalogue=other.describe().admissions[0].catalogue);other.close()
+    if fault=='subfloor':bad=replace(q,accuracy=AccuracyRequest(angular_rad=2**-41))
+    if fault=='velocity':bad=replace(q,require_velocity=True)
+    assert not p.supports(bad).supported
+    with pytest.raises(UnsupportedCapability):p.evaluate(bad)
+    assert p.evaluate(q).states
+    p.close()
+
+
+@pytest.mark.parametrize('fault',['domain','scale','distance','rv','source','representation'])
+def test_stellar_motion_admission_refuses_unsupported_context(motion_source,fault):
+    from wenu_kernel.records import TimeSpan
+    source=motion_source()
+    kwargs=dict(coverage=TimeSpan(TimePoint(2400000,0,'tcb'),TimePoint(2500000,0,'tcb')),
+                distance_policy='positive-parallax-reciprocal',radial_velocity_policy='spectroscopic-proxy')
+    if fault=='domain':kwargs['coverage']=TimeSpan(TimePoint(2400000,0,'tcb'),TimePoint(2400001,0,'tcb'))
+    if fault=='scale':kwargs['coverage']=TimeSpan(TimePoint(2400000,0,'tt'),TimePoint(2500000,0,'tt'))
+    if fault=='distance':kwargs['distance_policy']='invented Bayesian distance'
+    if fault=='rv':kwargs['radial_velocity_policy']='missing-is-zero'
+    if fault=='source':source={}
+    if fault=='representation':
+        cat=bridge.admit_stellar_motion(source,**kwargs)
+        with pytest.raises(ValueError):bridge.StellarMotionProvider(cat,representation='observed')
+    else:
+        with pytest.raises(ValueError):bridge.admit_stellar_motion(source,**kwargs)
+
+
+def test_stellar_motion_source_epoch_and_model_identity_are_not_hard_coded(motion_source):
+    cat,p,q=stellar_motion_case(motion_source(epoch=2015.5))
+    assert cat.rows[0].source_epoch==TimePoint(2457206,.375,'tcb')
+    original,other,_=stellar_motion_case(motion_source())
+    assert p.describe().admissions[0].model!=other.describe().admissions[0].model
+    assert cat.source.metadata['gaia_reference']['expected_ref_epoch']==2015.5
+    p.close();other.close()
+
+
+def test_stellar_motion_provider_passes_sdk_conformance_and_reuse(motion_source):
+    """Reuse/lifetime uses inherited core, while bindings come from real adapter."""
+    import io
+    from wenu_kernel.conformance import provider_suite
+    def factory():
+        cat,p,q=stellar_motion_case(motion_source())
+        q=replace(q,times=(TimePoint(2457389,0,'tcb'),TimePoint(2457389,.01,'tcb')))
+        probe=replace(q,times=(TimePoint(2457389,.1,'tcb'),))
+        counts=dict(evaluate=0,certify=0,close=0)
+        evaluate,certify,close=p.evaluate,p.certify,p.close
+        def measured(q):counts['evaluate']+=1;return evaluate(q)
+        def certified(q,a):counts['certify']+=1;return certify(q,a)
+        def closed():counts['close']+=1;return close()
+        p.evaluate,p.certify,p.close=measured,certified,closed
+        def mutate():
+            record=next(cat.source.records());record['published_association']['source_id']='1'
+            meta=cat.to_record();meta['policies']['distance']='changed'
+        reuse=replace(q,evaluation_policy='bounded_reuse',
+                      accuracy=AccuracyRequest(angular_rad=1e-5))
+        return ProviderCase(p,q,probe,lambda:ProviderActivity(counts['evaluate'],counts['certify'],counts['close']),mutate,reuse)
+    result=unittest.TextTestRunner(stream=io.StringIO()).run(provider_suite(factory,name='StellarFullInputs'))
+    assert result.wasSuccessful(),result.errors+result.failures
+    assert result.testsRun==8 and not result.skipped
+
+
+def test_stellar_motion_cold_source_reload_and_query_without_science_stack(motion_source,tmp_path):
+    """Protect eager facade/provider/graphics dependencies and hidden source I/O."""
+    import shutil,subprocess,sys
+    from pathlib import Path
+    import wenu_kernel
+    root=Path(__file__).parents[1]
+    isolated=tmp_path/'isolated';isolated.mkdir()
+    package=isolated/'wenu';package.mkdir();(package/'__init__.py').write_text('')
+    for name in ('stellar_state','catalogue_state','stellar_enrichment','astrometric_state'):
+        shutil.copyfile(root/'src/wenu'/f'{name}.py',package/f'{name}.py')
+    shutil.copytree(Path(wenu_kernel.__file__).parent,isolated/'wenu_kernel',ignore=shutil.ignore_patterns('__pycache__'))
+    source=motion_source();snapshot=tmp_path/'snapshot_v1';snapshot.mkdir()
+    for name,payload in source.products:(snapshot/name).write_bytes(payload)
+    (snapshot/'source_manifest_v1.json').write_bytes(source.manifest)
+    script='''
+import sys,socket,shutil
+sys.path.insert(0,sys.argv[1])
+def forbidden(*a,**k):raise AssertionError('network forbidden')
+socket.socket=forbidden
+from wenu.stellar_enrichment import load_stellar_enrichment
+from wenu.stellar_state import admit_stellar_motion,StellarMotionProvider
+from wenu_kernel import Kernel
+from wenu_kernel.records import TimePoint,TimeSpan,StateQuery,AccuracyRequest,SessionPolicy
+source=load_stellar_enrichment(sys.argv[2])
+c=admit_stellar_motion(source,coverage=TimeSpan(TimePoint(2400000,0,'tcb'),TimePoint(2500000,0,'tcb')),
+ distance_policy='positive-parallax-reciprocal',radial_velocity_policy='spectroscopic-proxy')
+shutil.rmtree(sys.argv[2])
+for representation in ('direction','cartesian'):
+ p=StellarMotionProvider(c,representation=representation);a=p.describe().admissions[0]
+ q=StateQuery(a.catalogue,a.model,a.objects,(TimePoint(2457389,0,'tcb'),),a.reference,
+  AccuracyRequest(metric='euclidean_norm')if representation=='cartesian'else AccuracyRequest())
+ with Kernel(references=(a.reference,))as k:
+  k.register(p,ownership='owned')
+  with k.open_session(SessionPolicy((a.catalogue,)))as s:assert len(s.evaluate(q).states)==2
+assert not any(name.split('.')[0]in('astropy','numpy','pandas','skyfield','matplotlib')for name in sys.modules)
+assert not any(name.startswith(('wenu.objects','wenu.sky','wenu.rendering'))for name in sys.modules)
+print('cold source-to-kernel admission passed')
+'''
+    result=subprocess.run([sys.executable,'-I','-S','-c',script,str(isolated),str(snapshot)],
+                          text=True,capture_output=True,check=False)
+    assert result.returncode==0,result.stdout+result.stderr
+    assert 'cold source-to-kernel admission passed'in result.stdout
+
+
+def test_stellar_motion_preserves_published_edr3_and_bridged_dr3_external_ids(motion_source):
+    cat,p,q=stellar_motion_case(motion_source(edr3=True))
+    ids=p.catalogue(q.catalogue).objects[0].external_ids
+    assert [(i.catalogue,i.edition,i.identifier)for i in ids]==[
+        ('hipparcos','synthetic-1997','1'),('Gaia','EDR3','9007199254740993'),('Gaia','DR3','9007199254740993')]
+    assert next(cat.source.records())['published_association']['release']=='EDR3'
+    p.close()
+
+
 if __name__ == "__main__":
     unittest.main()

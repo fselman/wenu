@@ -88,7 +88,7 @@ track configuration owners remember their attribute writes through that journal;
 `minor_body_resources.py` owns atomic resolver binding/restoration. No new
 catalogue clone is introduced by lifecycle isolation. The separate
 `catalogue_state.py` owner now binds immutable copied direction tables and
-queries the SDK. `stellar_state.py` retains the native stellar facade; `objects/stars.py` owns selection, public source-native HIP lookup and
+queries the SDK. `stellar_state.py` retains the native stellar facade and owns explicit stellar source-to-motion admission; `objects/stars.py` owns selection, public source-native HIP lookup and
 geometry conversion. Native constellation lines consume that public lookup,
 not source-table coordinates. Native page
 creation in `charts/request_generation.py` also owns its fixed-resolution
@@ -133,7 +133,7 @@ concrete Wenu classes.
 | [`star_designations.py`](../../src/wenu/star_designations.py) | Offline, immutable HIP-linked Wikidata candidates, separate from astrometry. |
 | [`stellar_research.py`](../../src/wenu/stellar_research.py) | Immutable, offline HIP index of designation research and accepted policy. |
 | [`catalogue_state.py`](../../src/wenu/catalogue_state.py) | Shared immutable direction-table provider with optional aligned per-row epochs, vector decoding and owned kernel scope; no catalogue decoding, observer or graphics. |
-| [`stellar_state.py`](../../src/wenu/stellar_state.py) | Source-epoch native stellar facade over the shared table/provider boundary; no propagation or acquisition. |
+| [`stellar_state.py`](../../src/wenu/stellar_state.py) | Native lookup facade plus explicit full-input stellar admission/provider over the shared SI astrometric engine; no acquisition or automatic consumer adoption. |
 | [`stellar_catalogue.py`](../../src/wenu/stellar_catalogue.py) | Validated stellar ingestion, immutable metadata mirror and standard table envelope; source facts read from data documents. |
 | [`stellar_enrichment.py`](../../src/wenu/stellar_enrichment.py) | Immutable multi-edition source snapshot codec, strict byte/identity/unit/membership admission and source-free local reload; no propagation or acquisition. |
 | [`svg_document.py`](../../src/wenu/svg_document.py) | Deterministic semantic annotations for Matplotlib SVG output. |

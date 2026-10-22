@@ -67,7 +67,8 @@ direction/Cartesian propagation and direction numerical/reuse certification. Clu
 qualified inputs and explicit model/reference/error meaning through its adapter.
 One numerical provider may contain different object semantic types; numerical
 work never branches on star/cluster/PN/SNR type. Existing cluster results and
-identities are preserved. Other production source adapters remain unimplemented.
+identities are preserved. The explicit full-input stellar adapter now also uses
+that same engine; ordinary stellar consumers retain their source lookup.
 
 Fernando's approved 2026-10-19 clarification supersedes the proposed universal
 1,000-year proper-motion-only limit. Known position/reference epoch plus both
@@ -91,6 +92,40 @@ acceptance. Expansion, internal dynamics and morphology evolution are excluded.
 Stars, clusters, PNs and SNRs retain object-specific source/centre qualification;
 in particular expansion velocity or displaced compact-object motion cannot be
 silently used as systemic centre motion. Observer realization remains separate.
+
+## Explicit stellar full-input nominal model
+
+The [stellar adapter](implementation_reference.md#explicit-full-input-stellar-motion)
+reads the validated immutable multi-edition snapshot; accepting published identity
+and input availability does not turn every Gaia row into a complete motion model.
+Only linked five-/six-parameter DR3 rows with position, both proper motions,
+positive parallax and measured RV supply the first nominal SI model. The caller
+explicitly selects reciprocal-positive-parallax distance and a spectroscopic RV
+proxy. Neither is a certified distance/systemic-velocity inference. No zero-point,
+binary, companion, perspective-RV calibration or missing-measurement correction
+is silently applied. Hip2/original records and all original HIP objects remain
+visible; unresolved source conventions and missing full inputs yield unavailable
+reasons, never fabricated zero values or independently chosen identities.
+
+Source frame/origin/TCB epoch/units/RA-motion conventions are consumed from the
+snapshot metadata. The adapter performs source-to-SI conversion once; the shared
+core supplies the existing nominal rectilinear direction/Cartesian model, with
+no additional stellar light-time correction. Initial spherical conversion,
+measurement/correlations and physical errors remain unbounded/unevaluated; the
+core's angular numerical/reuse certificate applies only to its admitted binary64
+SI trajectory. Supplied covariance evidence is retained but not propagated.
+A finite caller-declared TCB domain is required; no physical-validity date range,
+absolute accuracy or historical observer/precession guarantee follows. Quality
+and component flags remain evidence and do not veto published links.
+
+Primary source review, 2026-10-22: ESA [DR3 contents](https://www.cosmos.esa.int/web/gaia/dr3)
+and [gaia_source data model](https://gea.esac.esa.int/archive/documentation/GDR3/Gaia_archive/chap_datamodel/sec_dm_main_source_catalogue/ssec_dm_gaia_source.html)
+declare the Julian-year TCB reference epoch, mu-alpha-star proper motion and
+spectroscopic barycentric RV. The six-parameter astrometric solution adds
+pseudocolour, not RV. These conventions qualify the input interpretation, not
+this nominal model's physical accuracy. The first adapter has no acquisition,
+observer or product adoption. Reduced-input algorithms remain K4b.02/AX.13;
+current star/figure/label/chart/saved-sky behaviour remains unchanged.
 
 ## Cluster observer realization contract
 
