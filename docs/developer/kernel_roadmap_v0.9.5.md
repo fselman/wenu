@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 70, 2026-10-21. **Status:** K4a.03 published-association report accepted on Mac; K4a.03S1 Kervella published supplemental associations selected. Source publication and propagation remain pending.
+**Plan revision:** 71, 2026-10-22. **Status:** K4a.03S1 combined Mac report accepted; K4a.03S2 Gaia parameters, Hipparcos-2 fallback and offline coverage selected. Source publication and propagation remain pending.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -62,8 +62,8 @@ clean synchronized main are confirmed.
 | Gaia | K4a.01 accepted; raw acquisition/integrity reported on Mac; K4a.03 offline audit selected; identity decisions/publication/propagation pending |
 | Shared positional extension | AX.01–AX.12 accepted; AX.13–AX.16 pending; AX.14 overlaps K4b |
 | Freeze/extraction/release | K5–K9 pending |
-| Current authorized task | K4a.03S1 assess and retain Kervella et al. 2022 published supplemental HIP–Gaia associations, preserving existing accepted best-neighbour links |
-| Next bounded submilestone | Review source-bound Kervella supplement coverage/conflicts and the real Mac combined report. K4a.04 publication and K4b remain separate |
+| Current authorized task | K4a.03S2 complete missing Gaia DR3 source parameters, acquire Hipparcos-2 fallback astrometry, and report offline coverage |
+| Next bounded submilestone | Accept source capture and per-HIP availability/fallback report on Mac. K4a.04 publication and K4b remain separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -76,6 +76,38 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4a.03S2: astrometric inputs and fallback coverage
+
+Fernando explicitly agreed on 2026-10-22 to fetch parameters for supplemental
+published Gaia identities, reusing already cached source rows; acquire Hipparcos-2
+astrometry for fallback; and produce an offline coverage report before changing
+production propagation. The Mac base was confirmed clean and synchronized at
+`39a9c7d3d711d1a48c0d871a06072d80a636cda4`.
+
+K4a.03S1 passed 54 focused and 36 documentation Mac tests. The combined report
+retains 117,211 associations: 99,525 primary plus 17,686 supplemental, leaving
+1,007 unassociated HIP entries. No conflicts or shared sources were reported.
+These are user-run real-data receipts, not assistant-run combined results.
+
+Scope: explicit bounded, sequential source acquisition outside rendering/tests;
+verify the v3 report and original cache, request only deduplicated missing DR3
+IDs, preserve exact raw responses and metadata/units/nulls/errors/correlations;
+capture the published CDS I/311 astrometric table with edition-bound provenance.
+Produce a separate offline per-HIP coverage report retaining all original rows,
+published associations and original visual/descriptive fields. Distinguish Gaia
+five-/six-parameter and position-only records, incomplete/unknown solutions,
+Hipparcos-2 fallback availability and absent Hipparcos-2 entries. Missing inputs
+remain unknown, never zero-filled; no association is vetoed by quality flags.
+Hipparcos-2 acquisition serves fallback, not a repeated positional crossmatch.
+
+Acceptance: synthetic transport, resumable verified batch cache, truncated/overflow
+refusal, exact integer ID/unit/reference admission, fallback/missing-input and
+membership preservation tests in the existing offline audit owner; documentation
+and tooling integrity; then actual capture and coverage report on the Mac.
+No provider/model, propagation, binary orbit, companion-parallax substitution,
+renderer, SDK, saved-sky, dependency or redistribution change is selected.
+K4a.04 immutable source publication and K4b model admission remain separate.
 
 ## Selected offline Gaia candidate audit
 
@@ -954,6 +986,7 @@ remain its separate responsibilities.
 | K4a.02 | Agree bounded acquisition/matching/quality/missing-data policy after checking current primary API/terms/licensing | Dated audit and bounded proposal delivered for review; complete ESA terms/intended-use rights, endpoint limits and flag metadata unresolved. No acquisition authority; rendering/tests remain offline |
 | K4a.03 | Cross-identify the required DR3 sources with epoch/PM-aware evidence and explicit ambiguous/unmatched/component cases | Mac v1 audit accepted as evidence; Fernando now explicitly accepts published Hipparcos-2 Gaia associations. V2 exact best-neighbour retention/report acceptance pending; no independent nearest-neighbour selection |
 | K4a.03S1 | Retain published Kervella Table A.1 supplemental associations through exact HIP keys, preserving primary associations and release provenance | Selected by Fernando; current source captured/verified: 116,017 rows, 115,928 unique EDR3 identities and 89 DR2-only rows. 54 synthetic focused checks passed. Combined Mac report and revised documentation/tooling acceptance pending; no own matching or model adoption |
+| K4a.03S2 | Complete missing Gaia DR3 parameters, acquire Hipparcos-2 fallback and report per-HIP availability without model adoption | Selected by Fernando 2026-10-22; exact base clean/synchronized; synthetic gates and Mac capture/report pending |
 | K4a.04 | Publish immutable bounded DR3 subset with exact bytes, edition/epoch/units/provenance, uncertainties/correlations and match evidence | Pending; K4a.03 and redistribution admission |
 | K4a.05 | Accept coverage/ambiguity report and unchanged default membership, names, cross-IDs and visual photometry | Pending K4a closure; bright/multiple/unmatched stars cannot disappear |
 | K4b.01 | Real star adapter/full-input propagation through the shared core | Pending; K4a source admission, AX.06–AX.10; same work as AX.14 |
@@ -1150,4 +1183,3 @@ new Moonlight execution, or broad feature additions during structural migration.
 Current science and appearance remain the baseline except for separately
 reviewed astrometric corrections and bug fixes. Deferred work is retained in
 the archived roadmap and [current scientific limits](scientific_contracts.md).
-
