@@ -1,7 +1,7 @@
 # Wenu developer documentation
 
 **Current accepted slice:** K4b.02/AX.13 [explicit proper-motion angular model](implementation_reference.md#explicit-proper-motion-angular-model).
-Main `08a58b22` and merged-branch cleanup were confirmed clean/synchronized on
+Main `8167bb39` and PR #323 merged-branch cleanup were confirmed clean/synchronized on
 the Mac. K4b.01 remains accepted: 97,710 complete-input stellar models and all
 118,218 original objects retained. The shared engine now separately types angular
 unit-direction/tangent inputs, with no fabricated physical distance or velocity.
@@ -15,8 +15,17 @@ nine subtests, 125 source-audit, 36 documentation and eight tooling cases plus
 17,395 additional to the full-input subset; all 118,218 objects remain. Fifteen
 sampled directions agree with the independent Decimal oracle within
 `1.5700939560399132e-16` vector chord difference. The original full-input SI
-digest is unchanged. PR merge and branch cleanup remain separate actions. Missing-PM approximations, Hip2 qualification,
+digest is unchanged. PR #323 is merged and Mac branch cleanup is complete. Missing-PM approximations, Hip2 qualification,
 observer/product adoption and external redistribution remain separate.
+
+**Current selected work:** K4b.02 Hipparcos-2 fallback qualification,
+authorized after the clean Mac receipt at `8167bb39`. The source hashes and
+ICRS/J1991.25/angular-unit declarations are checked; an explicit 2007 epoch
+time-scale statement has not yet been established from accessible primary
+material. Runtime admission remains blocked at that prerequisite. The 2,850
+fallback candidates and 263 original lookup entries stay preserved; no model,
+source bytes or ordinary charts change. See the
+[qualification review](kernel_roadmap_v0.9.5.md#k4b02-hipparcos-2-fallback-qualification).
 
 **Existing Wenu production baseline:** `6708f54a0d8984c0be348b2c8cb02b311646a02b`, 2026-10-17.
 PR #234 is integrated. Its tree is identical to `ea8dc505`, which passed all

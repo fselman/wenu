@@ -358,6 +358,36 @@ These are backend capabilities/policy references, not a dependency upgrade,
 captured numerical oracle, redistribution authorization or proof of the open
 spatial-convention admission. Existing deterministic tests acquire no data.
 
+## Hipparcos-2 fallback qualification boundary
+
+The K4b.02 fallback task is selected after PR #323, but convention review has
+not yet admitted new propagation. The existing captured I/311 ReadMe and table
+match the acquisition profile digests; the immutable snapshot remains unchanged.
+CDS's [I/311 ReadMe](https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/I/311?format=html&tex=true),
+[NASA HEASARC HIPNEWCAT](https://heasarc.gsfc.nasa.gov/W3Browse/all/hipnewcat.html)
+and [ESA external I/311 datamodel](https://gea.esac.esa.int/archive/documentation/GDR1/datamodel/Ch4/hipparcos_newreduction.html)
+state ICRS/J1991.25 and angular units, but the consulted text does not explicitly
+name an epoch time scale. The [2007 validation paper](https://arxiv.org/pdf/0708.1752)
+uses mu-alpha-star; the author's
+[2009 paper](https://doi.org/10.1051/0004-6361/200811382) explicitly defines the
+cos(delta) convention in primary indexed text. The latter is indexed evidence,
+not a claim to have read an inaccessible full PDF.
+
+The [1997 ESA catalogue documentation](https://www.cosmos.esa.int/documents/532822/552851/vol1_all.pdf)
+specifies TT in primary indexed text. This does not by itself qualify the
+2007 declaration. The relevant chapter of the
+[2007 book](https://link.springer.com/book/10.1007/978-1-4020-6342-8)
+was not accessible for this review; no claim is made about unread chapter text.
+The 2007 source epoch remains unqualified in Wenu until direct evidence resolves
+that field, or an explicitly agreed nominal-convention policy is recorded.
+This is not a finding that Hipparcos-2 actually uses a different time scale.
+
+No TT/TCB relabelling, inferred epoch conversion, replacement Gaia identity,
+binary/component correction or physical-error claim is introduced. All 2,850
+fallback candidates and 263 original lookup entries remain source records;
+Gaia full/angular admissions stay unchanged. The existing coordinate guide
+remains current because no scientific runtime semantics have changed.
+
 ## Coordinates, time and resources
 
 Frame, origin, position status, catalogue epoch, equinox, evaluation instant

@@ -100,6 +100,32 @@ blocked and record exactly the verified facts, missing evidence and next
 qualification action. Do not replace the prerequisite with an unapproved
 nominal-convention assumption.
 
+**Qualification review, 2026-10-22:** The captured corrected I/311 table
+and ReadMe hashes were independently rechecked against the existing acquisition
+profile: 117,955 rows, 276 bytes per row. CDS and NASA HEASARC document ICRS
+positions, J1991.25 and angular PM units. The 2007 author paper uses
+mu-alpha-star notation; the author's 2009 paper explicitly defines it as
+mu-alpha times cos(delta), available in the primary publisher's indexed text.
+No motion convention has been inferred merely from the column name.
+
+The captured CDS ReadMe, HEASARC new-catalogue documentation and ESA's external
+I/311 datamodel do not explicitly identify the epoch time scale. ESA's
+1997 documentation specifies TT for that catalogue; direct continuity to the
+2007 product has not been established from the consulted primary material.
+The relevant 2007 book's astrometry chapter could not be read through the
+available access route. The book landing page/front matter and the accessible
+validation paper do not resolve this specific statement. This is an evidence
+gap, not evidence that the 2007 catalogue used a different scale.
+
+**Runtime admission is blocked at this prerequisite.** No production source,
+model, snapshot, tests or selection gate is changed. A primary statement for
+the 2007 convention (for example the relevant astrometry pages from van
+Leeuwen's book) would let the authorized qualification continue. Adopting TT
+as an explicit nominal convention would instead require Fernando's agreement
+and a recorded policy change before implementation. No such agreement is
+claimed. Source/context and exact checks are recorded in the
+[migration inventory](kernel_migration_inventory_v1.json).
+
 Acceptance owner: the existing stellar-state/shared-core gate, source-audit
 regressions and documentation/tooling checks, with independent source-unit and
 propagation references, identity/immutability/fallback/refusal coverage and

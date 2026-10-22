@@ -26747,12 +26747,12 @@
       "domain_tcb": [
         [
           -15805111,
-          0.0,
+          0,
           "tcb"
         ],
         [
           20719889,
-          0.0,
+          0,
           "tcb"
         ]
       ],
@@ -26767,5 +26767,79 @@
       "No SDK/dependency/build/astronomical extraction/acquisition change",
       "No historical calendar/precession or physical-validity guarantee"
     ]
+  },
+  "hipparcos2_fallback_qualification": {
+    "milestone": "K4b.02",
+    "review_date": "2026-10-22",
+    "base_commit": "8167bb39f4377f7f486a027662d203ff149bab36",
+    "plan_commit": "b37b2e0600b654427ba4e62255f393ad92f50df5",
+    "status": "Selected; primary convention review incomplete; runtime admission blocked by unqualified 2007 epoch time scale",
+    "authorization": "Fernando's Proceed after explicit fallback proposal and clean synchronized main receipt at 8167bb39",
+    "source_integrity": {
+      "catalogue": "CDS I/311/hip2",
+      "rows": 117955,
+      "record_length": 276,
+      "readme_sha256": "6c017925d658447d40983da3b459ba16bf9789c8f7573e263952c75692622499",
+      "expanded_table_sha256": "c45d6325bd59dd691764af173a9702e543804a2b6c1d9fea59210e8332e50a4a",
+      "capture": "Pre-existing external exact bytes rechecked offline; no new acquisition or redistribution"
+    },
+    "verified_facts": {
+      "frame": "icrs",
+      "epoch_jyear": 1991.25,
+      "position_units": "rad",
+      "proper_motion_units": "mas per Julian year",
+      "RA_differential_evidence": "Author's 2007 paper uses mu-alpha-star; author's 2009 primary indexed text defines mu-alpha*cos(delta). Runtime mapping not admitted while time convention unresolved."
+    },
+    "sources": [
+      {
+        "url": "https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/I/311?format=html&tex=true",
+        "access": "Read directly; captured ReadMe bytes independently hash-verified",
+        "supports": "Catalogue edition, fields, ICRS, epoch value, units, solution/component flags; no explicit time scale"
+      },
+      {
+        "url": "https://heasarc.gsfc.nasa.gov/W3Browse/all/hipnewcat.html",
+        "access": "Read directly",
+        "supports": "Independent primary archive description of I/311, ICRS/J1991.25 and Julian-year PM units; no explicit time scale"
+      },
+      {
+        "url": "https://gea.esac.esa.int/archive/documentation/GDR1/datamodel/Ch4/hipparcos_newreduction.html",
+        "access": "Read directly",
+        "supports": "ESA external I/311 field definitions; no explicit epoch time scale"
+      },
+      {
+        "url": "https://arxiv.org/pdf/0708.1752",
+        "access": "Read directly",
+        "supports": "Author's validation and mu-alpha-star notation; not proof of epoch time scale"
+      },
+      {
+        "url": "https://doi.org/10.1051/0004-6361/200811382",
+        "access": "Primary publisher indexed text; full PDF not accessed",
+        "supports": "Author defines mu-alpha-star = mu-alpha*cos(delta)"
+      },
+      {
+        "url": "https://www.cosmos.esa.int/documents/532822/552851/vol1_all.pdf",
+        "access": "Primary indexed text; direct PDF fetch refused",
+        "supports": "1997 TT convention only; not claimed as direct 2007 declaration"
+      },
+      {
+        "url": "https://link.springer.com/book/10.1007/978-1-4020-6342-8",
+        "access": "Book landing page and front matter read; astrometry chapter not accessible",
+        "supports": "Identifies book and relevant chapter; no proof of unread convention text"
+      }
+    ],
+    "unresolved": [
+      "Explicit 2007 epoch time-scale evidence",
+      "Qualified source/model convention binding before any runtime admission"
+    ],
+    "next_qualification_action": "Obtain the relevant primary 2007 astrometry statement; alternatively discuss an explicit nominal-convention policy with Fernando before implementation.",
+    "preservation": {
+      "hip2_fallback_candidates": 2850,
+      "original_lookup_entries": 263,
+      "Gaia_models": "Existing full-input and angular adapters/digests unchanged",
+      "source_snapshot": "Unchanged immutable bytes/schema/null-adoption record",
+      "coordinate_guide": "Reviewed; remains current because no runtime semantic change"
+    },
+    "runtime_or_Mac_acceptance": "Not run or claimed; no new model exists",
+    "limits": "Documentation-only assessment. No production/test/gate/source bytes changed; no no-PM, orbit, physical accuracy, acquisition, default/chart/observer adoption."
   }
 }
