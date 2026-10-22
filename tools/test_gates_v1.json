@@ -3312,12 +3312,12 @@
       ]
     },
     "gaia-crossmatch-audit": {
-      "scope": "K4a.03/K4a.03S1 offline published HIP-Gaia primary and Kervella supplemental associations; explicit static acquisition owner verified with synthetic transports only.",
-      "limits": "No independent rematching, Gaia source-parameter acquisition, production propagation, source distribution, SDK or renderer change. Raw providers stay outside deterministic tests; actual Mac combined result separate.",
+      "scope": "K4a.03/S1/S2 offline published associations, bounded explicit astrometric-input capture and fallback coverage.",
+      "limits": "Synthetic transports only in tests; no independent rematching, propagation, source distribution, SDK or renderer change. Actual Mac capture/report remains separate.",
       "selections": [
         {
           "node": "tests/test_gaia_crossmatch_audit.py",
-          "reason": "Exact published-link preservation and supplemental HIP/EDR3 identity provenance, bounded source admission/acquisition and v2/v3 report publication without network or guessed associations."
+          "reason": "Source/identity/unit/refusal admission; exact published-link retention; resumable missing-ID Gaia capture; Hip2 parsing and fallback; public capture/v2/v3/v4 report composition offline."
         }
       ]
     }

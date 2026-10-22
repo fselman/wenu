@@ -984,8 +984,8 @@ remain its separate responsibilities.
 |---|---|---|
 | K4a.01 | Fix current Wenu membership/component/photometry contract and edition-qualified schema, including future DR4 adapter boundary | Accepted PR #315/main d447565d after 35 focused cases/nine subtests, 36 documentation and eight tooling Mac cases; clean main/cleanup confirmed. No full Gaia mirror or silent V-to-G substitution |
 | K4a.02 | Agree bounded acquisition/matching/quality/missing-data policy after checking current primary API/terms/licensing | Dated audit and bounded proposal delivered for review; complete ESA terms/intended-use rights, endpoint limits and flag metadata unresolved. No acquisition authority; rendering/tests remain offline |
-| K4a.03 | Cross-identify the required DR3 sources with epoch/PM-aware evidence and explicit ambiguous/unmatched/component cases | Mac v1 audit accepted as evidence; Fernando now explicitly accepts published Hipparcos-2 Gaia associations. V2 exact best-neighbour retention/report acceptance pending; no independent nearest-neighbour selection |
-| K4a.03S1 | Retain published Kervella Table A.1 supplemental associations through exact HIP keys, preserving primary associations and release provenance | Selected by Fernando; current source captured/verified: 116,017 rows, 115,928 unique EDR3 identities and 89 DR2-only rows. 54 synthetic focused checks passed. Combined Mac report and revised documentation/tooling acceptance pending; no own matching or model adoption |
+| K4a.03 | Retain published primary DR3 associations and explicit alternative/component evidence | Mac v2 report accepted at 3111bb1a; 99,525 links retained, no independent nearest-neighbour selection |
+| K4a.03S1 | Retain published Kervella Table A.1 supplemental associations through exact HIP keys, preserving primary associations and release provenance | Accepted Mac report at 39a9c7d3: 54 focused and 36 documentation tests; 17,686 added, 117,211 total, 1,007 unassociated; no conflicts/shared sources or model adoption |
 | K4a.03S2 | Complete missing Gaia DR3 parameters, acquire Hipparcos-2 fallback and report per-HIP availability without model adoption | Selected by Fernando 2026-10-22; exact base clean/synchronized; synthetic gates and Mac capture/report pending |
 | K4a.04 | Publish immutable bounded DR3 subset with exact bytes, edition/epoch/units/provenance, uncertainties/correlations and match evidence | Pending; K4a.03 and redistribution admission |
 | K4a.05 | Accept coverage/ambiguity report and unchanged default membership, names, cross-IDs and visual photometry | Pending K4a closure; bright/multiple/unmatched stars cannot disappear |
@@ -1183,3 +1183,4 @@ new Moonlight execution, or broad feature additions during structural migration.
 Current science and appearance remain the baseline except for separately
 reviewed astrometric corrections and bug fixes. Deferred work is retained in
 the archived roadmap and [current scientific limits](scientific_contracts.md).
+

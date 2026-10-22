@@ -189,7 +189,12 @@ Its same offline owner now optionally supplements missing identities from the
 published Kervella Table A.1 through exact HIP keys, preserving primary links and
 EDR3/DR2 provenance. A separate explicit bounded static-file acquisition tool
 captures that publication; no production provider/network path is added.
-Association retention is distinct
+The explicit astrometric-input capture now reuses existing Gaia rows, requests only
+missing published IDs and captures the corrected Hipparcos-2 table. The same
+offline audit can produce a v4 measurement-coverage/fallback inventory. It keeps
+position-only and incomplete Gaia solutions distinct, retains original 1997 lookup
+where Hip2 is absent/incomplete, and does not activate any production provider.
+Association retention and measurement availability are distinct
 from production astrometric-solution admission; real stellar propagation remains K4b.
 
 Native `Stars.realize()` now selects rows with the existing policy and obtains

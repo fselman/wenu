@@ -6995,9 +6995,11 @@
     },
     {
       "path": "tests/test_gaia_crossmatch_audit.py",
-      "git_blob_sha": "e5ffe6162a45966122c5e05aa478733d7145b6c3",
+      "git_blob_sha": "d8395419544c6063ac6c61038e21b5f9ffc42f92",
       "imports": [
         "astropy.table",
+        "copy",
+        "fetch_stellar_astrometry",
         "gzip",
         "hashlib",
         "importlib.util",
@@ -7012,12 +7014,13 @@
         "sys",
         "types"
       ],
-      "test_functions": 23,
+      "test_functions": 35,
       "marks": {},
-      "parametrize_decorators": 8,
+      "parametrize_decorators": 13,
       "fixtures": [
         "cache",
-        "kervella_bundle"
+        "kervella_bundle",
+        "hip2_bundle"
       ],
       "peer_test_imports": []
     }
@@ -7497,11 +7500,15 @@
     },
     {
       "path": "tools/gaia_crossmatch_audit.py",
-      "git_blob_sha": "996208a7cb0d24d53d0c57d3804cc1f7956d103f"
+      "git_blob_sha": "aa1d85481bd7d6a76d91c2f31f22a5720435d020"
     },
     {
       "path": "tools/fetch_kervella_catalogue.py",
       "git_blob_sha": "02406a0cc16413a471a55a115c1d87b9fccd7820"
+    },
+    {
+      "path": "tools/fetch_stellar_astrometry.py",
+      "git_blob_sha": "cdc7b219f40140edcf370988c5a1afc6290cedcf"
     }
   ],
   "preserved_test_editions": [
@@ -21776,12 +21783,12 @@
         ]
       },
       "tools/gaia_crossmatch_audit.py": {
-        "git_blob_sha": "996208a7cb0d24d53d0c57d3804cc1f7956d103f",
+        "git_blob_sha": "aa1d85481bd7d6a76d91c2f31f22a5720435d020",
         "group": "maintenance",
         "evidence_ids": [
-          "K4a.03S1"
+          "K4a.03S2"
         ],
-        "purpose": "Offline primary-preserving Kervella published association supplement and report.",
+        "purpose": "Offline published association preservation and astrometric input/fallback coverage.",
         "operational_classification": "offline-source-evidence",
         "operational_boundary": "Exact published identities only; primary preservation, edition/provenance and report publication without independent matching or production realization.",
         "imports": [
@@ -21795,6 +21802,7 @@
           "copy",
           "csv",
           "fetch_kervella_catalogue",
+          "fetch_stellar_astrometry",
           "hashlib",
           "json",
           "math",
@@ -21826,6 +21834,32 @@
           "shutil",
           "tempfile",
           "urllib.request"
+        ]
+      },
+      "tools/fetch_stellar_astrometry.py": {
+        "git_blob_sha": "cdc7b219f40140edcf370988c5a1afc6290cedcf",
+        "group": "maintenance",
+        "evidence_ids": [
+          "K4a.03S2"
+        ],
+        "purpose": "Explicit source-parameter/Hipparcos-2 capture and exact-query checkpoint reuse.",
+        "operational_classification": "explicit-acquisition",
+        "operational_boundary": "Sequential bounded source capture outside rendering/tests; no matching or model admission.",
+        "imports": [
+          "__future__",
+          "argparse",
+          "astropy.table",
+          "datetime",
+          "gaia_crossmatch_audit",
+          "gzip",
+          "hashlib",
+          "io",
+          "json",
+          "pathlib",
+          "tempfile",
+          "urllib.parse",
+          "urllib.request",
+          "xml.etree.ElementTree"
         ]
       }
     },
@@ -26296,12 +26330,50 @@
     "source_profile": "docs/developer/data/kervella_association_source_v1.json",
     "assessment": "docs/developer/data/kervella_assessment_v1.json",
     "focused_synthetic_cases": 54,
-    "mac_combined_report": "pending; original retained source/cache not present here",
+    "mac_combined_report": {
+      "head": "39a9c7d3d711d1a48c0d871a06072d80a636cda4",
+      "focused_passed": 54,
+      "documentation_passed": 36,
+      "retained_associations": 117211,
+      "new_associations": 17686,
+      "unassociated": 1007,
+      "conflicts": 0,
+      "shared_gaia_sources": 0,
+      "evidence": "Fernando user-run Mac report; all primary associations preserved"
+    },
     "limits": "All primary associations preserved, source/DR2/EDR3 identities explicit; no new positional matching, derived astrometry, production propagation or source distribution.",
     "real_source_rows": 116017,
     "real_source_edr3_associations": 115928,
     "real_source_dr2_only": 89,
     "source_admission": "Full gzip CRC, exact source/ReadMe hashes, 650-byte layout, row count and HIP/EDR3 identity checks passed",
     "source_sample_discrepancy": "Paper describes 116343 PMa objects; current CDS Table A.1 has 116017 rows; no invented reconciliation"
+  },
+  "stellar_astrometric_input_coverage": {
+    "milestone": "K4a.03S2",
+    "base_commit": "39a9c7d3d711d1a48c0d871a06072d80a636cda4",
+    "gate": "gaia-crossmatch-audit",
+    "profile": "docs/developer/data/stellar_astrometry_acquisition_v1.json",
+    "owners": {
+      "tools/gaia_crossmatch_audit.py": {
+        "git_blob_sha": "aa1d85481bd7d6a76d91c2f31f22a5720435d020",
+        "gate": "gaia-crossmatch-audit"
+      },
+      "tools/fetch_stellar_astrometry.py": {
+        "git_blob_sha": "cdc7b219f40140edcf370988c5a1afc6290cedcf",
+        "gate": "gaia-crossmatch-audit"
+      },
+      "tests/test_gaia_crossmatch_audit.py": {
+        "git_blob_sha": "d8395419544c6063ac6c61038e21b5f9ffc42f92",
+        "gate": "gaia-crossmatch-audit"
+      }
+    },
+    "status": "Candidate; focused synthetic and source preflight separate from Mac combined acceptance",
+    "real_hip2_rows": 117955,
+    "source_admission": "Full source hashes, gzip CRC, layout/count, exact integer HIPs and raw weights parsed successfully",
+    "gaia_preflight": "Actual bounded metadata-only ESA POST HTTP200; source ID integer datatype and epoch/PM units verified",
+    "mac_capture_and_report": "pending; original source/cache only on Mac",
+    "limits": "No production module, model, propagation, redistribution, renderer, SDK or saved-sky change. Input availability is not model/quality admission; Hip2 scale/convention qualification remains explicit.",
+    "focused_synthetic_cases": 86,
+    "local_tooling_receipt": "Six independent synthetic runner cases, nine subtests passed; two full-tree runner checks deferred to Mac."
   }
 }

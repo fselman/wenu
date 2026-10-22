@@ -397,10 +397,123 @@ def audit(hips, best, neighbours, sources, hip_metadata, gaia_profile, *, diagno
     return summary, hip_records, candidates
 
 
+def parse_hipparcos2(payload, readme, profile):
+    """Source-bound Hip2 values; native radians and upper-triangular weights retained."""
+    def identity(raw):
+        return {'bytes': len(raw), 'sha256': sha256(raw).hexdigest()}
+    require(identity(payload) == profile['expanded_table'], 'Hipparcos-2 table identity differs')
+    spec = next(r for r in profile['resources'] if r['filename'] == 'ReadMe')
+    require(identity(readme) == {k: spec[k] for k in ('bytes', 'sha256')},
+            'Hipparcos-2 ReadMe identity differs')
+    section = readme.decode('ascii').split('Byte-by-byte Description of file: hip2.dat', 1)[1]
+    section = section.split('Note (1):', 1)[0]
+    declared = {}
+    for line in section.splitlines():
+        m = re.match(r'^\s*(\d+)(?:-\s*(\d+))?\s+\S+\s+(\S+)\s+(\S+)\s+', line)
+        if m:
+            declared[m[4]] = (int(m[1]), int(m[2] or m[1]), m[3])
+    for name, spec in profile['columns'].items():
+        require(declared.get(name) == (spec['first_byte'], spec['last_byte'], spec['unit']),
+                'Hipparcos-2 column layout differs: ' + name)
+    lines = payload.splitlines()
+    require(len(lines) == profile['rows'], 'Hipparcos-2 row count differs')
+    output = {}
+    for number, line in enumerate(lines, 1):
+        require(len(line) == profile['record_length'], 'Hipparcos-2 record length differs')
+        row = {'source_row_number': number, 'record_sha256': sha256(line).hexdigest(),
+               'original_record_ascii': line.decode('ascii')}
+        for name, spec in profile['columns'].items():
+            text = line[spec['first_byte']-1:spec['last_byte']].decode('ascii').strip()
+            if name == 'HIP':
+                require(text.isascii() and text.isdigit() and int(text) > 0, 'Invalid Hipparcos-2 HIP')
+                value = str(int(text))
+            elif spec['kind'] == 'integer':
+                require(text.isdigit(), 'Invalid Hipparcos-2 integer')
+                value = int(text)
+            elif name == 'UW':
+                value = [float(line[i:i+7]) for i in range(spec['first_byte']-1, spec['last_byte'], 7)]
+                require(len(value) == 15 and all(math.isfinite(v) for v in value), 'Invalid Hip2 weights')
+            else:
+                value = float(text) if text else None
+                require(value is None or math.isfinite(value), 'Non-finite Hipparcos-2 value')
+            row[name] = value
+        key = row['HIP']
+        require(key not in output, 'Duplicate Hipparcos-2 HIP')
+        require(row['RArad'] is not None and 0 <= row['RArad'] < 2*math.pi
+            and row['DErad'] is not None and abs(row['DErad']) <= math.pi/2,
+            'Hipparcos-2 coordinates outside domain')
+        output[key] = row
+    return output
+
+
+def astrometric_coverage(summary, hips, sources, hip2, profile):
+    """Inventory available measurements, never admit a propagation model."""
+    by_source = {s['source_id']: s for s in sources}
+    require(len(by_source) == len(sources), 'Duplicate coverage Gaia source')
+    counts, gaia_counts, fallback_reasons = Counter(), Counter(), Counter()
+    output = []
+    for original in hips:
+        row = deepcopy(original)
+        association = row['published_association']
+        s = by_source.get(association['source_id']) if association else None
+        require(association is None or s is not None, 'Associated Gaia source parameters missing')
+        def available(source, fields):
+            return source is not None and all(source.get(k) is not None
+                and isinstance(source[k], (int, float)) and math.isfinite(source[k]) for k in fields)
+        position = available(s, ('ra', 'dec', 'ref_epoch'))
+        if position:
+            require(0 <= s['ra'] < 360 and abs(s['dec']) <= 90
+                    and s['ref_epoch'] == summary['gaia_reference']['expected_ref_epoch'],
+                    'Invalid Gaia reference coordinates')
+        full = position and available(s, ('pmra', 'pmdec', 'parallax'))
+        code = s.get('astrometric_params_solved') if s else None
+        status = ('unassociated' if s is None else
+            'five_parameter' if code == 31 and full else
+            'six_parameter' if code == 95 and full else
+            'position_only' if code == 3 and position else
+            'unknown_solution_type' if code not in (3, 31, 95) else 'incomplete_astrometry')
+        gaia_counts[status] += 1
+        use_gaia = status in ('five_parameter', 'six_parameter')
+        fallback = hip2.get(row['hip'])
+        hip2_motion = available(fallback, ('RArad', 'DErad', 'Plx', 'pmRA', 'pmDE'))
+        choice = 'gaia' if use_gaia else 'hipparcos2' if hip2_motion else 'original_1997_lookup'
+        counts[choice] += 1
+        if not use_gaia:
+            fallback_reasons[status] += 1
+        row['astrometric_coverage'] = {
+            'gaia_status': status, 'gaia_solution_type': code,
+            'preferred_available_input': choice, 'model_adopted': False,
+            'gaia_source': s, 'gaia_reference': summary['gaia_reference'],
+            'gaia_positive_parallax': bool(s and s.get('parallax') is not None and s['parallax'] > 0),
+            'gaia_radial_velocity_available': available(s, ('radial_velocity',)),
+            'hipparcos2_present': fallback is not None,
+            'hipparcos2_motion_inputs_available': hip2_motion,
+            'hipparcos2_solution_type': fallback['Sn'] if fallback else None,
+            'hipparcos2_requires_special_model': bool(fallback and fallback['Sn'] % 10 != 5),
+            'hipparcos2_fallback_source': fallback if not use_gaia else None,
+            'hipparcos2_reference': profile['reference'],
+            'fallback_reason': None if use_gaia else status,
+            'radial_velocity_policy': 'No Hip2 RV; no component or companion RV is borrowed',
+            'limits': 'Measurement availability only; quality, covariance, distance inference and model admission separate'}
+        output.append(row)
+    report = deepcopy(summary)
+    report['astrometric_coverage'] = {
+        'gaia_statuses': dict(gaia_counts), 'preferred_available_inputs': dict(counts),
+        'fallback_reasons': dict(fallback_reasons),
+        'hipparcos2_rows': len(hip2),
+        'retained_entries_absent_from_hipparcos2': sum(r['hip'] not in hip2 for r in hips),
+        'adopted_astrometric_solutions': 0,
+        'policy': 'Gaia 31/95 with position/parallax/PM inputs; otherwise Hip2 inputs; original lookup retained if absent/incomplete',
+        'quality_policy': 'Flags retained; no RUWE threshold or independent identity veto',
+        'limits': 'Input inventory is not scientific model or production-provider admission'}
+    require(len(output) == len(hips), 'Coverage changed membership')
+    return report, output
+
+
 def publish(output, summary, hips, candidates, provenance, *, version=2):
     """Refuse overwrite; publish the completion manifest last; clean up on failure."""
     output = Path(output)
-    require(version in (2, 3), 'Unsupported audit report version')
+    require(version in (2, 3, 4), 'Unsupported audit report version')
     require(not output.exists(), 'Report output already exists; choose a new version')
     output.parent.mkdir(parents=True, exist_ok=True)
     temporary = Path(tempfile.mkdtemp(prefix='.' + output.name + '-', dir=output.parent))
@@ -445,7 +558,11 @@ def main(argv=None):
                         help='Optional 1997/Gaia motion diagnostics; never veto published associations')
     parser.add_argument('--kervella-source', type=Path,
                         help='Verified external Kervella Table A.1 capture; supplement unassociated HIP entries')
+    parser.add_argument('--astrometry-source', type=Path,
+                        help='Verified explicit Gaia/Hipparcos-2 capture; report measurement coverage only')
     args = parser.parse_args(argv)
+    require(args.astrometry_source is None or args.kervella_source is not None,
+            'Astrometry coverage requires the published Kervella associations')
     require(not args.output.exists(), 'Report output already exists; choose a new version')
     data = ROOT / 'docs/developer/data'
     contract_payload = (data / 'stellar_enrichment_contract_v1.json').read_bytes()
@@ -510,15 +627,36 @@ def main(argv=None):
         provenance['kervella_capture'] = capture
         provenance['kervella_profile_sha256'] = sha256(supplement_payload).hexdigest()
         version = 3
+    if args.astrometry_source is not None:
+        from fetch_stellar_astrometry import plan, verify_capture
+        astrometry_payload = (data / 'stellar_astrometry_acquisition_v1.json').read_bytes()
+        astrometry_profile = json.loads(astrometry_payload)
+        identity = plan(hip_rows, tables[PRODUCTS[2]], manifest['identity']['columns'],
+                        receipt['download_manifest_sha256'], astrometry_payload)
+        hip2, extra, capture_receipt = verify_capture(args.astrometry_source.expanduser(), identity,
+                                                     astrometry_profile)
+        summary, hip_rows = astrometric_coverage(summary, hip_rows, sources + extra, hip2,
+                                                astrometry_profile['hipparcos2'])
+        summary['astrometric_coverage']['additional_gaia_source_rows'] = len(extra)
+        summary['astrometric_coverage']['total_cached_gaia_source_rows'] = len(sources) + len(extra)
+        summary['kervella_supplement']['new_gaia_source_parameters'] = (
+            'Acquired separately in the verified astrometry capture; see astrometric_coverage')
+        summary['limits'] = [v for v in summary['limits']
+                             if v != 'Published associations retained without downloading 2007 astrometry']
+        summary['limits'].append('Hipparcos-2 captured for fallback only; published associations unchanged')
+        provenance['astrometry_capture'] = capture_receipt
+        version = 4
     publish(args.output, summary, hip_rows, candidate_rows, provenance, version=version)
     display = {k: summary[k] for k in ('retained_hip_rows', 'gaia_source_rows',
         'candidate_pairs', 'categories', 'shared_gaia_sources', 'retained_published_associations',
         'hip_without_published_association', 'adopted_astrometric_solutions')}
-    if version == 3:
+    if version >= 3:
         display['primary_candidate_categories'] = display.pop('categories')
     print(json.dumps(display, indent=2))
-    if version == 3:
+    if version >= 3:
         print(json.dumps(summary['kervella_supplement'], indent=2))
+    if version == 4:
+        print(json.dumps(summary['astrometric_coverage'], indent=2))
     print('AUDIT COMPLETE:', args.output.resolve())
 
 
