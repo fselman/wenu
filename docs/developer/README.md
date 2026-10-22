@@ -18,7 +18,7 @@ sampled directions agree with the independent Decimal oracle within
 digest is unchanged. PR #323 is merged and Mac branch cleanup is complete. Missing-PM approximations, Hip2 qualification,
 observer/product adoption and external redistribution remain separate.
 
-**Current selected work:** K4b.02 Hipparcos-2 angular fallback. Fernando
+**Current bounded result:** K4b.02 Hipparcos-2 angular fallback passed Mac acceptance in PR #325 at `d71ee8da`. Fernando
 explicitly adopted a nominal TCB convention and deferred the source epoch/rate
 qualification to [issue #326](https://github.com/fselman/wenu/issues/326).
 `admit_stellar_hipparcos2_motion` now admits measured Hip2 position/PM where
@@ -26,8 +26,12 @@ Gaia angular inputs are unavailable, through the same angular engine. Its
 separate identity binds the explicit nominal policy while preserving the
 original null source scale. No TT-to-TCB conversion, physical PV or accuracy
 bound is claimed. All HIP records and accepted Gaia bindings remain unchanged.
-Constructed checks pass; actual combined-snapshot Mac acceptance is pending.
+The complete Mac gates passed: 203 stellar/shared-core/cluster cases (nine
+subtests), 125 source-audit, 36 documentation and eight tooling cases (81
+subtests). Actual admission adds 2,850 Hip2 angular models to 115,105 Gaia
+models: 117,955 total; all 118,218 records remain. Both Gaia digests are unchanged.
 The 263 original lookup entries stay preserved; no ordinary chart changes.
+PR #325 remains unmerged; no next runtime item is selected.
 See the
 [qualification review](kernel_roadmap_v0.9.5.md#k4b02-hipparcos-2-fallback-qualification).
 

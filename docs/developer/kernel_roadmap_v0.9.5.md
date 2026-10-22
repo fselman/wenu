@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 78, 2026-10-22. **Status:** K4b.02 Hipparcos-2 angular fallback selected; Fernando explicitly adopts nominal TCB and defers source time-scale qualification to issue #326. Implementation may proceed within the bounded fallback scope; no-PM/product scopes remain pending.
+**Plan revision:** 79, 2026-10-22. **Status:** The bounded K4b.02 Hipparcos-2 nominal-TCB fallback passed complete Mac acceptance at d71ee8da in PR #325, which remains unmerged. Source time-scale qualification stays open in issue #326. Parent milestones remain partial; no next runtime item is selected.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -62,8 +62,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.02/AX.13 measured-PM angular slice passed Mac acceptance through PR #323 at 41c47e16; parent milestones remain partial |
-| Next bounded submilestone | K4b.02 Hipparcos-2 fallback qualification selected by Fernando; admit only convention-qualified records from the 2,850 fallback candidates, preserve the 263 original lookup entries and accepted Gaia results |
+| Current bounded result | K4b.02 nominal-TCB Hip2 fallback passed Mac acceptance in PR #325 at d71ee8da: 2,850 Hip2 plus 115,105 Gaia angular models; 263 original lookup entries retained. Parent milestones remain partial |
+| Next bounded submilestone | Not selected. PR #325 is ready for review after receipt recording; merge/cleanup requires Fernando’s separate instruction. Source time-scale qualification remains issue #326 |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -166,8 +166,18 @@ remain distinct from constructed tests. Implementation result: the separate
 nominal-TCB Hip2 angular fallback is present in the existing owner, with the
 shared engine unchanged. Local partial-checkout checks passed 324 cases and
 nine subtests; four complete-tree cases remain in the unfiltered Mac gate.
-Actual combined-snapshot fallback counts/directions and complete Mac gates
-remain pending. This is not parent milestone closure.
+**Mac acceptance, 2026-10-22:** Fernando supplied the complete receipt for
+`d71ee8daf9870c0e77d8ef1c39e3111bd9110072`, PR #325. All 203 stellar/shared-core/
+cluster cases (nine subtests), 125 source-audit, 36 documentation and eight
+tooling cases (81 subtests) passed. The actual immutable snapshot admits 2,850
+Hip2 fallback models alongside 115,105 Gaia angular models; 117,955 total, with
+263 original lookup entries and all 118,218 records preserved. Both accepted
+Gaia digests are unchanged. Twenty-four sampled states (eight HIPs at the
+nominal source epoch and +/-50,000 Julian years) agree with the independent
+80-digit Decimal affine oracle within `1.594436429147036e-16` vector chord
+difference. This checks implementation arithmetic, not physical or time-scale
+accuracy over that domain. Original null source scale is retained; issue #326
+remains open. PR #325 is unmerged. This is not parent milestone closure.
 
 ## K4b.02 / AX.13: measured-proper-motion angular model
 
@@ -1237,7 +1247,7 @@ remain its separate responsibilities.
 | K4a.04 | Publish immutable bounded subset with exact bytes, edition/epoch/units/provenance, uncertainties/correlations and match evidence | Accepted local Mac publication/reload at 3fed5483 with manifest 8747349e; 125 focused, 36 documentation and eight tooling/80 subtests. External redistribution remains deferred |
 | K4a.05 | Accept coverage/ambiguity report and unchanged default membership, names, cross-IDs and visual photometry | Accepted local v4_source_v1 report and full-field/membership/V/association snapshot checks at 3fed5483; no default consumer change |
 | K4b.01 | Real star adapter/full-input propagation through the shared core | Accepted Mac receipt at PR #321/ec6a35e2: 86 stellar/core cases + nine subtests, 125 source audit, 36 documentation, eight tooling + 81 subtests; 97,710 full-input models, all 118,218 HIP objects retained. Reduced models/product adoption separate |
-| K4b.02 | Adopt admitted incomplete-input models and configured lookback/error/refusal policies for real stars | Measured-PM angular slice passed Mac acceptance in PR #323 at 41c47e16; no-PM/Hip2 qualification/other missing-input scopes remain pending. No invented measurements |
+| K4b.02 | Adopt admitted incomplete-input models and configured lookback/error/refusal policies for real stars | Measured-PM angular slice passed Mac acceptance in PR #323 at 41c47e16; nominal-TCB Hip2 fallback also passed Mac acceptance in PR #325 at d71ee8da; source time-scale qualification remains issue #326, and no-PM/other missing-input scopes remain pending. No invented measurements |
 | K4b.03 | Admit explicit historical time/calendar/year-zero/BCE and source/input-date uncertainty semantics | Pending; native ancient state must not require modern observer resources unnecessarily |
 | K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Pending; independent model/domain/uncertainty admission, not extrapolated modern EOP |
 | K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references | Pending; K4b.01–K4b.04; no universal DR4 improvement factor |

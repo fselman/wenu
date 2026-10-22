@@ -212,11 +212,22 @@ Local partial-checkout result: 324 passed, nine subtests, four native/applicatio
 cases deselected for the same missing complete-tree routes as PR #323. No Mac
 exclusions are added. All 117,955 pre-existing corrected Hip2 source rows also
 have finite angular fields and valid source coordinate ranges; this is not an
-actual combined-snapshot runtime receipt. Mac must run complete owner/source/
-documentation/tooling gates and separately count/sample the external snapshot,
-rechecking both accepted Gaia digests. No new acquisition or physical-accuracy
-qualification is inferred. The original time convention remains deferred to
-issue #326 under the explicit nominal-TCB policy.
+actual combined-snapshot runtime receipt.
+
+Complete Mac acceptance at `d71ee8daf9870c0e77d8ef1c39e3111bd9110072`, PR #325,
+passed 203 stellar/shared-core/cluster cases and nine subtests (20.00 s), 125
+source-audit cases (2.62 s), 36 documentation cases (2.68 s), and eight tooling
+cases with 81 subtests (8.62 s), with no exclusions. The immutable snapshot
+admits 2,850 Hip2 fallback models alongside 115,105 Gaia angular models; all
+118,218 objects remain, including 263 original lookup entries. Both accepted
+Gaia digests are unchanged. Eight sampled HIPs at the nominal source epoch and
++/-50,000 Julian years give 24 states; the maximum independent 80-digit Decimal
+affine-oracle vector chord difference is `1.594436429147036e-16`. This validates
+arithmetic, not physical/time-convention accuracy. Exact receipt and coefficient
+digests are recorded under `hipparcos2_fallback_qualification.mac_acceptance` in
+the migration inventory. No new acquisition or physical-accuracy qualification
+is inferred. The original time convention remains deferred to issue #326 under
+the explicit nominal-TCB policy.
 
 ### Stellar enrichment contract gate
 

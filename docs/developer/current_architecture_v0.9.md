@@ -286,7 +286,8 @@ capabilities are refused. Original source epoch remains the extrapolation anchor
 Finite caller coverage is required without a universal short PM cutoff; unknown
 source/physical/perspective errors remain unknown. Default star/figure/label/
 chart/saved consumers, full-input SI/model identities and cluster adapters are
-unchanged. No-PM/Hip2 qualification and product adoption remain pending.
+unchanged. The separately explicit Hip2 fallback is described below; no-PM,
+original Hip2 time-scale qualification and product adoption remain pending.
 
 ## Explicit Hipparcos-2 angular fallback
 
@@ -299,8 +300,11 @@ bound in the model identity, with unknown convention error and
 [issue #326](https://github.com/fselman/wenu/issues/326) for later qualification.
 No actual time conversion, distance/velocity inference, component correction or
 automatic consumer adoption occurs. Existing Gaia admission bindings and all HIP
-objects remain. Constructed/source-free checks pass; actual Mac fallback counts
-and sampled directions remain pending. See the
+objects remain. Complete Mac acceptance at `d71ee8da` in PR #325 passed:
+2,850 Hip2 fallback models plus 115,105 Gaia angular models, with 263 original
+lookup entries retained. Both Gaia digests are unchanged; 24 sampled directions
+passed the independent Decimal arithmetic check. Physical/time-convention
+accuracy remains unevaluated. See the
 [API](implementation_reference.md#explicit-hipparcos-2-angular-fallback).
 
 ## Explicit nominal cluster motion API
