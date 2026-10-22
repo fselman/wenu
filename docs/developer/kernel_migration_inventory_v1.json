@@ -453,19 +453,19 @@
       "path": "src/wenu/charts/magnitude_legend_matplotlib.py",
       "git_blob_sha": "07104731fa669bb972df830cf5e3c51076b00b11",
       "as_is_directory": "src/wenu/charts",
-      "description": "Matplotlib rendering for stellar magnitude\u2013size legends."
+      "description": "Matplotlib rendering for stellar magnitude–size legends."
     },
     {
       "path": "src/wenu/charts/magnitude_legend_style.py",
       "git_blob_sha": "9328fc55e2d465c8335486b72cf2273de6b5bdec",
       "as_is_directory": "src/wenu/charts",
-      "description": "Style configuration for stellar magnitude\u2013size legends."
+      "description": "Style configuration for stellar magnitude–size legends."
     },
     {
       "path": "src/wenu/charts/magnitude_legend_workflow.py",
       "git_blob_sha": "b270984666cd5b435fec7874e73135642b2d471d",
       "as_is_directory": "src/wenu/charts",
-      "description": "Chart-level workflow for stellar magnitude\u2013size legends."
+      "description": "Chart-level workflow for stellar magnitude–size legends."
     },
     {
       "path": "src/wenu/charts/modes.py",
@@ -1738,9 +1738,9 @@
     },
     {
       "path": "src/wenu/stellar_state.py",
-      "git_blob_sha": "ec20dcd321b81c270cff6a6a4b11fae675712760",
+      "git_blob_sha": "ead1a3c10d39e7d1a2bc9ea59ce69ee22e36cdd6",
       "as_is_directory": "src/wenu",
-      "description": "Immutable native stellar lookup provider and owned kernel-query scope; no propagation, observer or acquisition.",
+      "description": "Native stellar lookup plus explicit immutable full-input source admission/provider through the existing shared SI astrometric engine; no automatic consumer adoption.",
       "baseline_relation": "Added in K3 native-stellar candidate; not present in pinned historical census."
     },
     {
@@ -6461,22 +6461,47 @@
     },
     {
       "path": "tests/test_stellar_state.py",
-      "git_blob_sha": "4091695d05e542a89b3b27eb99543e920980410d",
-      "test_functions": 6,
-      "marks": {},
-      "parametrize_decorators": 0,
-      "fixtures": [],
+      "git_blob_sha": "b76689484c3a972c893f3595f968827ed5066da3",
+      "test_functions": 22,
+      "marks": {
+        "parametrize": 7
+      },
+      "parametrize_decorators": 7,
+      "fixtures": [
+        "motion_source"
+      ],
       "peer_test_imports": [],
       "imports": [
+        "astropy",
+        "astropy.coordinates",
+        "collections",
         "dataclasses",
+        "hashlib",
+        "importlib.resources",
+        "io",
+        "json",
         "math",
+        "numpy",
+        "pandas",
+        "pathlib",
+        "pytest",
+        "shutil",
+        "stellar_catalogue_fixtures",
+        "subprocess",
+        "sys",
         "unittest",
         "unittest.mock",
+        "wenu",
+        "wenu.objects.stars",
+        "wenu.sky.constellation_labels",
+        "wenu.sky.constellation_lines",
+        "wenu.sky.realization",
+        "wenu.stellar_catalogue",
+        "wenu.stellar_enrichment",
         "wenu_kernel",
         "wenu_kernel.conformance",
         "wenu_kernel.errors",
-        "wenu_kernel.records",
-        "wenu"
+        "wenu_kernel.records"
       ],
       "baseline_relation": "Added in K3 native-stellar candidate; eight inherited ProviderConformance tests are additional to six explicit owner methods."
     },
@@ -7002,7 +7027,7 @@
     },
     {
       "path": "tests/test_gaia_crossmatch_audit.py",
-      "git_blob_sha": "855853837ff0caccab7bc1392127c94f165cceae",
+      "git_blob_sha": "4a94fc7142972455aa129f714fcad55e2df49f5e",
       "imports": [
         "astropy.table",
         "copy",
@@ -7025,7 +7050,9 @@
         "xml.etree.ElementTree"
       ],
       "test_functions": 44,
-      "marks": {},
+      "marks": {
+        "parametrize": 18
+      },
       "parametrize_decorators": 18,
       "fixtures": [
         "cache",
@@ -10496,7 +10523,7 @@
       "sdk_cases_passed": 205,
       "metadata": "Actual isolated installed kernel wheel and root wheel/sdist/editable consumers passed; class identity, old pickle paths, aliases, ring octant/complement and source-free snapshots covered."
     },
-    "remaining": "KG.04 projections/clipping/domain math not moved; KG.05 full-service integration and KG.06\u2013KG.07 completed-K audit/corrections remain pending."
+    "remaining": "KG.04 projections/clipping/domain math not moved; KG.05 full-service integration and KG.06–KG.07 completed-K audit/corrections remain pending."
   },
   "geometry_projection_implementation": {
     "id": "KG.04",
@@ -11605,7 +11632,7 @@
         "issue": "Source physical facts, constructed/unitless compatibility and diffuse metadata/transport remain explicitly partial; lookup and geometry movement did not fabricate qualification."
       }
     ],
-    "retained_evidence": "PR #234\u2013#286 bounded receipts and named owners; KG.05 complete Mac receipt accepted. This audit does not revalidate all numerical science or release/visual/classroom acceptance.",
+    "retained_evidence": "PR #234–#286 bounded receipts and named owners; KG.05 complete Mac receipt accepted. This audit does not revalidate all numerical science or release/visual/classroom acceptance.",
     "guide": "Coordinate guide remains current: no scientific semantics, numerical implementation or runtime ownership changed.",
     "verification": {
       "kernel_import_scan_modules": 22,
@@ -11644,7 +11671,7 @@
     },
     "new_output_requirement": "All four cold/restored real polar specimens must pass with both xfail markers removed.",
     "retained_evidence": "Unaffected state/time/provider science and KG.05 full atlas serial/spawn/book receipts; affected isolated kernel/root installs explicitly repeated.",
-    "remaining": "Complete Mac acceptance, then explicit selection of K3.16; G06.U1\u2013U4 retain assigned K3 scope.",
+    "remaining": "Complete Mac acceptance, then explicit selection of K3.16; G06.U1–U4 retain assigned K3 scope.",
     "local_verification": {
       "selected_cases": 103,
       "passed_unique_cases": 102,
@@ -11921,7 +11948,7 @@
     "base_commit": "89756d957696b8baf2cd69f52f6a6878cc3a8484",
     "plan_commit": "47ba46eb918c87a488f9d6c98992eda3cf3fb17e",
     "status": "Verified locally; full Mac acceptance pending.",
-    "agreement": "Fernando\u2019s 2026-10-20 proceed after the explicit K3.21 proposal and PR #293 cleanup.",
+    "agreement": "Fernando’s 2026-10-20 proceed after the explicit K3.21 proposal and PR #293 cleanup.",
     "gate": "atlas-sheet-routing",
     "assessment": "docs/developer/kernel_migration_audit_v1.md#k321-atlas-sheet-and-consumer-assessment",
     "production_modules": [
@@ -15657,7 +15684,7 @@
           "K3.37",
           "K3.39"
         ],
-        "purpose": "Matplotlib rendering for stellar magnitude\u2013size legends.",
+        "purpose": "Matplotlib rendering for stellar magnitude–size legends.",
         "imports": [
           "__future__",
           "math",
@@ -15678,7 +15705,7 @@
           "K3.37",
           "K3.39"
         ],
-        "purpose": "Style configuration for stellar magnitude\u2013size legends.",
+        "purpose": "Style configuration for stellar magnitude–size legends.",
         "imports": [
           "__future__",
           "dataclasses",
@@ -15694,7 +15721,7 @@
           "K3.37",
           "K3.39"
         ],
-        "purpose": "Chart-level workflow for stellar magnitude\u2013size legends.",
+        "purpose": "Chart-level workflow for stellar magnitude–size legends.",
         "imports": [
           "__future__",
           "dataclasses",
@@ -19759,19 +19786,27 @@
         ]
       },
       "src/wenu/stellar_state.py": {
-        "git_blob_sha": "09c779a253255db33d5a465d9488f02d3e8627c9",
+        "git_blob_sha": "ead1a3c10d39e7d1a2bc9ea59ce69ee22e36cdd6",
         "group": "catalogue-core",
         "evidence_ids": [
           "K3.04",
           "K3.05",
           "K3.09",
           "K3.11",
-          "K3.12"
+          "K3.12",
+          "K4b.01"
         ],
-        "purpose": "Kernel adapter for explicit, unpropagated native catalogue directions.\n\nA time-independent lookup is not a zero-proper-motion model. This adapter's\nnative-catalogue reference never advertises epoch_direction, physical accuracy,\ntemporal reuse, distance or velocity. Coverage describes lookup availabi",
+        "purpose": "Native stellar lookup and explicit immutable complete-input source-to-SI admission; nominal stellar provider delegates to the shared rectilinear SDK engine.",
         "imports": [
           "__future__",
+          "collections",
+          "dataclasses",
+          "fractions",
+          "hashlib",
+          "math",
+          "wenu.astrometric_state",
           "wenu.catalogue_state",
+          "wenu.stellar_enrichment",
           "wenu_kernel.errors",
           "wenu_kernel.records"
         ]
@@ -21186,7 +21221,7 @@
         "evidence_ids": [
           "K3.38"
         ],
-        "purpose": "Translate Markdown cells in Wenu notebooks from English to Spanish.\n\nThis is a repository tool, not part of the installed ``wenu`` package.\n\nExpected repository layout:\n\n    wenu/\n    \u251c\u2500\u2500 pyproject.toml\n    \u251c\u2500\u2500 tools/\n    \u2502   \u251c\u2500\u2500 translate_notebook.py\n    \u2502   \u2514\u2500\u2500 glossaries/\n    \u2502       \u2514\u2500\u2500 en_es.js",
+        "purpose": "Translate Markdown cells in Wenu notebooks from English to Spanish.\n\nThis is a repository tool, not part of the installed ``wenu`` package.\n\nExpected repository layout:\n\n    wenu/\n    ├── pyproject.toml\n    ├── tools/\n    │   ├── translate_notebook.py\n    │   └── glossaries/\n    │       └── en_es.js",
         "operational_classification": "external-development-helper",
         "operational_boundary": "Standalone OpenAI development/translation utility, outside Wenu runtime science. Inspect as source only: openai_model.py executes a model-list request when imported; this audit does not import/run it or authorize that request.",
         "imports": [
@@ -26462,12 +26497,30 @@
     "source_record_schema": "wenu-stellar-enrichment/1",
     "responsibility": "Mixed-edition snapshot codec separate from source-native ingestion; existing audit owns normalization/staged publication.",
     "preservation": "Full loaded original columns/designations; original membership/order/V; all candidate/linked Gaia fields with units and uncertainties; native Hip2 rows/weights; published links and null adoption.",
-    "mac_source_publication": "Pending against actual external caches; original data not present here",
+    "mac_source_publication": {
+      "tested_commit": "3fed5483bcb162a1437cd9cae48804e8b61b9a0b",
+      "report": "gaia_crossmatch_audit_v4_source_v1",
+      "snapshot": "stellar_enrichment_source_v1",
+      "source_manifest_sha256": "8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365",
+      "focused_cases": 125,
+      "documentation_cases": 36,
+      "tooling_cases": 8,
+      "tooling_subtests": 80,
+      "retained_hip_rows": 118218,
+      "published_associations": 117211,
+      "unassociated": 1007,
+      "preferred_available_inputs": {
+        "gaia": 115105,
+        "hipparcos2": 2850,
+        "original_1997_lookup": 263
+      },
+      "limits": "User-reported actual Mac normalization and source-free validated reload, not assistant-run physical-model acceptance."
+    },
     "limits": [
       "Hip2 unknown epoch scale/RA convention stay explicit",
       "No covariance/distance/physical model inferred",
       "Raw parent resources remain external and digest-identified; snapshot normalizes parsed values",
-      "External redistribution remains deferred; K4a.05 and K4b separate"
+      "External redistribution remains deferred; K4a.05 local preservation/coverage accepted; K4b separate."
     ],
     "local_receipt": {
       "focused_synthetic_cases": 125,
@@ -26477,5 +26530,53 @@
       "isolation": "Actual -I -S process loads codec and constructed snapshot without Wenu/astronomy/catalogue/network imports",
       "preflight": "Changed active links/anchors, source map and complete GitHub production census verified; captured real ESA response units match the codec vocabulary"
     }
+  },
+  "stellar_full_input_motion": {
+    "milestone": "K4b.01",
+    "base_commit": "3fed5483bcb162a1437cd9cae48804e8b61b9a0b",
+    "plan_commit": "95e16ddc258241a406e34d5aec8abf4a6b3e63b9",
+    "gate": "stellar-motion-provider",
+    "owners": {
+      "src/wenu/stellar_state.py": {
+        "git_blob_sha": "ead1a3c10d39e7d1a2bc9ea59ce69ee22e36cdd6"
+      },
+      "tests/test_stellar_state.py": {
+        "git_blob_sha": "b76689484c3a972c893f3595f968827ed5066da3"
+      },
+      "tests/test_gaia_crossmatch_audit.py": {
+        "git_blob_sha": "4a94fc7142972455aa129f714fcad55e2df49f5e"
+      }
+    },
+    "existing_numerical_owner": "src/wenu/astrometric_state.py",
+    "responsibility": "Extend the existing stellar adapter; source qualification/conversion here, unchanged shared SI engine owns propagation and reuse.",
+    "policies": {
+      "distance": "positive-parallax-reciprocal",
+      "radial_velocity": "spectroscopic-proxy",
+      "light_time": "no-additional-correction",
+      "coverage": "explicit caller finite TCB domain, not physical validity"
+    },
+    "scope": "Explicit full-input nominal model, all HIP objects retained with unavailable reasons; source snapshot unchanged. No default/product/observer/reduced model adoption.",
+    "source_model_separation": "Local source model_admission=none/null adoption stays verbatim; the distinct immutable motion catalogue binds source manifest, ledger, SI solutions, domain and policy.",
+    "local_receipt": {
+      "status": "Passed focused local source/native/adapter/core and runner checks; static documentation preflight passed",
+      "environment": "Python 3.12, Astropy 7.2.0, NumPy 1.26.4, pytest 9.1.1; partial checkout with namespace bootstrap",
+      "limits": "Three original native-owner cases require complete Mac Wenu tree; actual real source model admission/query remains pending.",
+      "owner_source_core_cases": 208,
+      "owner_source_core_subtests": 9,
+      "deselected_native_cases": 3,
+      "new_stellar_adapter_cases": 29,
+      "embedded_sdk_conformance_cases": 8,
+      "tooling_cases": 6,
+      "tooling_subtests": 9,
+      "preflight": "Changed active links/anchors, Python/JSON syntax, source map and 274-module remote production census."
+    },
+    "mac_acceptance": "Pending complete focused/documentation/tooling gates and explicit offline actual source admission/kernel evaluation.",
+    "limits": [
+      "No physical/source-to-SI/covariance error bound",
+      "Hip2 unresolved conventions and missing RV not guessed",
+      "No binary or companion substitution",
+      "No reduced model/observer/renderer/CLI/dependency/SDK change",
+      "External redistribution remains deferred"
+    ]
   }
 }

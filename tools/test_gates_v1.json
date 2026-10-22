@@ -3320,6 +3320,20 @@
           "reason": "Cache/source identity, unit/mask/refusal and published-link preservation; exact-query capture/resume; Hip2 fallback; immutable source normalization/publication/source-free reload through the public v2/v3/v4 command path."
         }
       ]
+    },
+    "stellar-motion-provider": {
+      "scope": "K4b.01 explicit complete-input stellar source admission and nominal direction/Cartesian propagation through the existing shared SI core.",
+      "limits": "Constructed offline source/model and actual SDK composition only in tests. No reduced models, default/chart/observer/saved-sky adoption, acquisition, physical accuracy, dependency or SDK implementation change. Actual real-source Mac admission remains separate.",
+      "selections": [
+        {
+          "node": "tests/test_stellar_state.py",
+          "reason": "Changed adapter owner: preserve native lookup, validate full source-to-SI admission, all original objects/identities/gaps and query/refusal/isolation/conformance."
+        },
+        {
+          "node": "tests/test_astrometric_state.py",
+          "reason": "The stellar adapter delegates to this existing unchanged shared core; retain direction/Cartesian, numerical/reuse and convention seam contracts."
+        }
+      ]
     }
   },
   "consumer_review": [

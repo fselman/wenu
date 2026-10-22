@@ -25,9 +25,15 @@ sys.path.insert(0, str(Path(__file__).parents[1] / 'tools'))
 import fetch_stellar_astrometry as stellar_fetch
 ENRICHMENT_SPEC = importlib.util.spec_from_file_location('wenu.stellar_enrichment',
     Path(__file__).parents[1] / 'src/wenu/stellar_enrichment.py')
-enrichment = importlib.util.module_from_spec(ENRICHMENT_SPEC)
-sys.modules[ENRICHMENT_SPEC.name] = enrichment
-ENRICHMENT_SPEC.loader.exec_module(enrichment)
+# Share the canonical class when another owner already imported the codec.
+# Replacing it would make real stellar-adapter isinstance/type checks fail
+# solely because pytest collected this source-only owner afterwards.
+if ENRICHMENT_SPEC.name in sys.modules:
+    enrichment = sys.modules[ENRICHMENT_SPEC.name]
+else:
+    enrichment = importlib.util.module_from_spec(ENRICHMENT_SPEC)
+    sys.modules[ENRICHMENT_SPEC.name] = enrichment
+    ENRICHMENT_SPEC.loader.exec_module(enrichment)
 
 HIP_METADATA = {'frame': 'icrs', 'origin': 'solar-system-barycenter',
                 'epoch': {'value': 1991.25, 'format': 'jyear', 'scale': 'tt'}}

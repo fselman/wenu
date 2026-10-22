@@ -1,14 +1,16 @@
 # Wenu developer documentation
 
-**Current selected work:** K4a.04 [local immutable stellar source admission](implementation_reference.md#local-stellar-enrichment-snapshot).
-The completed Mac capture/v4_run2 report preserves all 118,218 HIP entries:
-115,105 Gaia motion-input rows, 2,850 Hipparcos-2 fallback rows and 263 original
-lookup rows. The data-only snapshot codec now validates and preserves full loaded
-original fields/designations, linked/candidate Gaia measurements, Hip2 raw rows,
-units/uncertainties/provenance and association/availability evidence. Explicit
-local publication and source-free reload do not enable a production provider or
-change chart defaults. Real Mac snapshot acceptance remains separate; external
-redistribution review, K4a.05 and K4b remain open.
+**Current selected work:** K4b.01 [explicit full-input stellar motion](implementation_reference.md#explicit-full-input-stellar-motion).
+The Mac source snapshot and coverage/preservation checks are accepted at
+`3fed5483`: all 118,218 HIP entries, 117,211 published associations, original
+loaded fields/designations and visual photometry survive validated reload.
+The stellar adapter now derives explicit complete-input nominal SI solutions
+from the immutable source and queries the existing shared core. Positive-parallax
+reciprocal distance and spectroscopic-RV proxy policies require explicit caller
+selection. Missing/unqualified rows remain visible and unavailable. Default
+charts/source lookup, reduced models and observer realization are unchanged.
+Actual Mac model admission/evaluation remains pending; external redistribution
+review stays deferred.
 
 **Existing Wenu production baseline:** `6708f54a0d8984c0be348b2c8cb02b311646a02b`, 2026-10-17.
 PR #234 is integrated. Its tree is identical to `ea8dc505`, which passed all

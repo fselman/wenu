@@ -127,9 +127,38 @@ staged publication and reload with socket creation blocked. An isolated `-I -S`
 process loads the new codec and snapshot without Wenu, astronomy dependencies,
 original catalogues or a network client. Constructed fixtures remain synthetic.
 Run documentation and tooling integrity too; unchanged native ingestion/kernel
-numerics/graphics and packaging configuration retain their prior receipts. Actual
-118,218-entry normalization/round-trip acceptance requires Fernando's Mac cache.
-No real-data source publication or physical-model validation is claimed here.
+numerics/graphics and packaging configuration retain their prior receipts. Fernando reported successful actual
+118,218-entry Mac normalization/reload at `3fed5483`, with manifest `8747349e`.
+This source receipt does not claim physical-model validation.
+
+### Explicit full-input stellar motion gate
+
+Run `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python tools/run_test_gate.py stellar-motion-provider --run`.
+The changed owner is `stellar_state.py`; it extends the existing source/native
+adapter boundary and delegates to the unchanged shared SI engine. The closest
+prior tests are native provider input-copy/conformance/closure and the mixed
+astrometric engine's kernel/refusal tests. New cases in `test_stellar_state.py`
+protect source-to-SI unit/sign/cos(dec)/epoch admission, complete versus missing
+RV/parallax/PM, five-/six-parameter distinctions, original HIP/V/name/fallback
+preservation, large edition-qualified IDs, separate references/model identities,
+finite domain/scale, refusal after success, and actual SDK direction/Cartesian
+ordering/closure. Independent equatorial axes and Astropy spherical differential
+conversion protect the adapter rather than reproducing lower-level engine proofs.
+The shipped eight-case provider conformance exercises reuse/lifetime. A real
+`-I -S` subprocess reloads the constructed snapshot and evaluates both model
+representations with socket creation forbidden and no NumPy/Astropy/Pandas/
+Skyfield/graphics imports or original catalogues. Source bytes may be removed
+after admission; evaluation must use immutable retained solutions.
+
+The same gate retains native-owner tests and the existing shared-core owner.
+Run `gaia-crossmatch-audit` because its test-only direct codec import now reuses
+a previously imported canonical module, preventing class identity replacement
+when owner suites are collected together. This changes no production codec.
+Documentation/tooling integrity remain required. Local partial checkout results
+explicitly exclude three original native cases requiring the complete Wenu tree;
+Mac runs the complete focused gate and actual external snapshot admission/query.
+No renderer/product, installed dependency/build or SDK implementation change is
+made; reduced models, observer corrections and physical accuracy remain separate.
 
 ### Stellar enrichment contract gate
 
