@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Audit a completed Wenu Gaia cache offline; never adopt a counterpart.
+"""Retain published Hipparcos-2 Gaia associations from a verified offline cache.
 
-Candidate evidence is separate from identity and astrometric usability. This
+Published associations are separate from astrometric-solution usability. This
 maintenance tool is not a production provider or a stellar propagation API.
 """
 from __future__ import annotations
@@ -137,7 +137,7 @@ def table_rows(table, id_columns):
         yield result
 
 
-def audit(hips, best, neighbours, sources, hip_metadata, gaia_profile):
+def audit(hips, best, neighbours, sources, hip_metadata, gaia_profile, *, diagnostics=False):
     """Yield summary plus per-HIP/per-candidate evidence without input mutation."""
     require(gaia_profile['frame'] == hip_metadata['frame'] == 'icrs', 'Unsupported frame')
     require(gaia_profile['origin'] == hip_metadata['origin'] == 'solar-system-barycenter',
@@ -157,11 +157,13 @@ def audit(hips, best, neighbours, sources, hip_metadata, gaia_profile):
             by_hip[label][hip][sid] = row
             claims[sid].add(hip)
     require(set(claims) == set(source_map), 'Unreferenced or missing Gaia source')
+    require(all(len(rows) == 1 for rows in by_hip['best'].values()),
+            'Contradictory published best-neighbour rows for one HIP')
     epoch = hip_metadata['epoch']
-    hip_time = Time(epoch['value'], format=epoch['format'], scale=epoch['scale'])
-    hip_target = float(getattr(hip_time, gaia_profile['epoch_scale']).jyear)
+    hip_time = Time(epoch['value'], format=epoch['format'], scale=epoch['scale']) if diagnostics else None
+    hip_target = float(getattr(hip_time, gaia_profile['epoch_scale']).jyear) if diagnostics else None
     # Conversion is only between catalogue epochs: no UTC, IERS or observer data.
-    epochs = sorted({row['ref_epoch'] for row in sources if row['ref_epoch'] is not None})
+    epochs = sorted({row['ref_epoch'] for row in sources if row['ref_epoch'] is not None}) if diagnostics else []
     epoch_deltas = {t: float(getattr(Time(t, format='jyear', scale=gaia_profile['epoch_scale']),
                                    epoch['scale']).jyear) - float(hip_time.jyear) for t in epochs}
     counts = Counter()
@@ -175,7 +177,7 @@ def audit(hips, best, neighbours, sources, hip_metadata, gaia_profile):
         counts[category] += 1
         reasons = []
         if ids:
-            reasons = ['crossmatch_flags_unqualified']
+            reasons = []
             if set(b) - set(n) or len(b) != 1:
                 reasons.append('best_neighbourhood_inconsistent')
             if any(len(claims[sid]) > 1 for sid in ids):
@@ -185,22 +187,38 @@ def audit(hips, best, neighbours, sources, hip_metadata, gaia_profile):
                 reasons.append('component_identity_needs_review')
         for reason in reasons:
             warnings[reason] += 1
-        original = unit_direction(hip['ra_degrees'], hip['dec_degrees'])
+        association = None
+        if b:
+            sid = next(iter(b))
+            association = {'catalogue': 'Gaia', 'release': 'DR3', 'source_id': sid,
+                'hip': key, 'intermediate_catalogue': 'Hipparcos-2',
+                'method': 'gaiadr3.hipparcos2_best_neighbour',
+                'decision': 'retained_published_association', 'evidence': b[sid]}
+            counts['retained_published_associations'] += 1
         hip_records.append({'hip': key, 'category': category, 'candidate_count': len(ids),
                             'candidate_source_ids': ids, 'review_reasons': reasons,
                             'pivot': 'exact HIP key: ESA-1997-I/239 -> Hipparcos-2 -> Gaia DR3',
                             'pivot_evidence_present': bool(ids),
+                            'published_association': association,
                             'original': hip, 'adopted_solution': None})
         for sid in ids:
             source = source_map[sid]
-            gaia_native = unit_direction(source['ra'], source['dec'])
             t = source['ref_epoch']
-            require(t is None or t == gaia_profile['expected_ref_epoch'], 'Unexpected Gaia reference epoch')
-            back = None if t is None else unit_direction(source['ra'], source['dec'],
-                    source['pmra'], source['pmdec'], hip_target - t)
-            forward = None if t is None else unit_direction(hip['ra_degrees'], hip['dec_degrees'],
-                    hip['ra_mas_per_year'], hip['dec_mas_per_year'], epoch_deltas[t])
-            at_hip, at_gaia = separation(original, back), separation(forward, gaia_native)
+            at_hip, at_gaia = None, None
+            diagnostic_status = 'not_requested'
+            if diagnostics:
+                try:
+                    require(t is None or t == gaia_profile['expected_ref_epoch'], 'Unexpected Gaia reference epoch')
+                    original = unit_direction(hip['ra_degrees'], hip['dec_degrees'])
+                    gaia_native = unit_direction(source['ra'], source['dec'])
+                    back = None if t is None else unit_direction(source['ra'], source['dec'],
+                        source['pmra'], source['pmdec'], hip_target - t)
+                    forward = None if t is None else unit_direction(hip['ra_degrees'], hip['dec_degrees'],
+                        hip['ra_mas_per_year'], hip['dec_mas_per_year'], epoch_deltas[t])
+                    at_hip, at_gaia = separation(original, back), separation(forward, gaia_native)
+                    diagnostic_status = 'evaluated' if at_hip is not None and at_gaia is not None else 'missing_input'
+                except ValueError as error:
+                    diagnostic_status = 'unavailable: ' + str(error)
             if at_hip is not None:
                 counts['candidates_with_gaia_back_diagnostic'] += 1
             if at_gaia is not None:
@@ -211,10 +229,15 @@ def audit(hips, best, neighbours, sources, hip_metadata, gaia_profile):
                 'shared_hip_ids': sorted(claims[sid], key=int),
                 'separation_at_hip_epoch_arcsec': at_hip,
                 'separation_at_gaia_epoch_arcsec': at_gaia,
+                'diagnostic_status': diagnostic_status,
                 'diagnostic_missing_input': at_hip is None or at_gaia is None,
-                'decision': 'unresolved', 'adopted_solution': None})
+                'decision': 'retained_published_association' if sid in b else 'neighbourhood_alternative',
+                'adopted_solution': None})
     summary = {'retained_hip_rows': len(hips), 'gaia_source_rows': len(sources),
-               'candidate_pairs': len(candidates), 'adopted_matches': 0,
+               'candidate_pairs': len(candidates), 'adopted_astrometric_solutions': 0,
+               'retained_published_associations': counts['retained_published_associations'],
+               'hip_without_published_association': len(hips) - counts['retained_published_associations'],
+               'association_policy': 'retain-published-hipparcos2-best-neighbour/1',
                'hip_with_crossmatch_candidates': len(hips) - counts['unmatched'],
                'hip_without_crossmatch_candidates': counts['unmatched'],
                'categories': {k: counts[k] for k in ('unmatched', 'unique_candidate', 'multiple_candidates')},
@@ -224,12 +247,15 @@ def audit(hips, best, neighbours, sources, hip_metadata, gaia_profile):
                'pivot': 'exact HIP identifier; no 1997-to-Hipparcos-2 positional rematching',
                'hip_review_reasons': dict(warnings),
                'hip_epoch': epoch, 'gaia_reference': gaia_profile,
+               'diagnostics_requested': diagnostics,
                'diagnostic_model': 'normalized linear tangent direction; PM-only; source-scale Julian years',
-               'limits': ['No identity decisions or automatic adoption',
+               'limits': ['Published best-neighbour association retained; no independent rematching',
+                          'Alternative neighbourhood candidates preserved without selecting them',
+                          'Association retention is separate from astrometric-solution/model admission',
                           'No distance/RV/perspective/binary or covariance model',
                           'Separations are diagnostics, not match thresholds or accuracy claims',
                           'Missing candidate is not physical absence from Gaia',
-                          'Hipparcos-2 source solutions/components not acquired or verified']}
+                          'Published associations retained without downloading 2007 astrometry']}
     summary['quality_inventory'] = {
         'solution_types': dict(Counter(str(s.get('astrometric_params_solved')) for s in sources)),
         'sources_missing_pm': sum(s['pmra'] is None or s['pmdec'] is None for s in sources),
@@ -248,26 +274,30 @@ def publish(output, summary, hips, candidates, provenance):
     output.parent.mkdir(parents=True, exist_ok=True)
     temporary = Path(tempfile.mkdtemp(prefix='.' + output.name + '-', dir=output.parent))
     try:
-        for name, rows in (('hip_review_v1.jsonl', hips), ('candidate_evidence_v1.jsonl', candidates)):
+        for name, rows in (('hip_review_v2.jsonl', hips), ('candidate_evidence_v2.jsonl', candidates)):
             with (temporary / name).open('w') as stream:
                 for row in rows:
                     stream.write(json.dumps(row, allow_nan=False) + '\n')
         fields = ['hip', 'source_id', 'separation_at_hip_epoch_arcsec', 'separation_at_gaia_epoch_arcsec']
-        with (temporary / 'candidate_separations_v1.csv').open('w', newline='') as stream:
+        with (temporary / 'candidate_separations_v2.csv').open('w', newline='') as stream:
             writer = csv.DictWriter(stream, fieldnames=fields)
             writer.writeheader()
             for row in candidates:
                 writer.writerow({k: row[k] for k in fields})
         summary = dict(summary, provenance=provenance)
-        (temporary / 'summary_v1.json').write_text(json.dumps(summary, indent=2, allow_nan=False) + '\n')
+        (temporary / 'summary_v2.json').write_text(json.dumps(summary, indent=2, allow_nan=False) + '\n')
+        with (temporary / 'published_associations_v2.jsonl').open('w') as stream:
+            for row in hips:
+                if row.get('published_association') is not None:
+                    stream.write(json.dumps(row['published_association'], allow_nan=False) + '\n')
         products = {p.name: {'sha256': sha256(p.read_bytes()).hexdigest(), 'bytes': p.stat().st_size}
                     for p in temporary.iterdir()}
-        (temporary / 'audit_manifest_v1.json').write_text(json.dumps(
-            {'schema': 'wenu-gaia-candidate-audit/1', 'complete': True, 'products': products}, indent=2) + '\n')
+        (temporary / 'audit_manifest_v2.json').write_text(json.dumps(
+            {'schema': 'wenu-gaia-candidate-audit/2', 'complete': True, 'products': products}, indent=2) + '\n')
         # mkdir reserves the destination without clobbering another invocation.
         output.mkdir()
         try:
-            for p in sorted(temporary.iterdir(), key=lambda p: p.name == 'audit_manifest_v1.json'):
+            for p in sorted(temporary.iterdir(), key=lambda p: p.name == 'audit_manifest_v2.json'):
                 p.replace(output / p.name)
         except BaseException:
             shutil.rmtree(output)
@@ -280,6 +310,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--cache', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--diagnostics', action='store_true',
+                        help='Optional 1997/Gaia motion diagnostics; never veto published associations')
     args = parser.parse_args(argv)
     require(not args.output.exists(), 'Report output already exists; choose a new version')
     data = ROOT / 'docs/developer/data'
@@ -317,7 +349,8 @@ def main(argv=None):
     best = list(table_rows(tables[PRODUCTS[0]], ('original_ext_source_id', 'source_id')))
     neighbours = list(table_rows(tables[PRODUCTS[1]], ('original_ext_source_id', 'source_id')))
     sources = list(table_rows(tables[PRODUCTS[2]], ('source_id', 'solution_id')))
-    summary, hip_rows, candidate_rows = audit(hips, best, neighbours, sources, metadata, profile)
+    summary, hip_rows, candidate_rows = audit(hips, best, neighbours, sources, metadata, profile,
+                                             diagnostics=args.diagnostics)
     for name in ('retained_hip_rows', 'gaia_source_rows', 'hip_with_crossmatch_candidates',
                  'hip_without_crossmatch_candidates'):
         require(summary[name] == manifest['counts'][name], 'Download count mismatch: ' + name)
@@ -333,7 +366,8 @@ def main(argv=None):
         policy_sha256=sha256(policy_payload).hexdigest())
     publish(args.output, summary, hip_rows, candidate_rows, provenance)
     print(json.dumps({k: summary[k] for k in ('retained_hip_rows', 'gaia_source_rows',
-        'candidate_pairs', 'categories', 'shared_gaia_sources', 'diagnostics', 'adopted_matches')}, indent=2))
+        'candidate_pairs', 'categories', 'shared_gaia_sources', 'retained_published_associations',
+        'hip_without_published_association', 'adopted_astrometric_solutions')}, indent=2))
     print('AUDIT COMPLETE:', args.output.resolve())
 
 

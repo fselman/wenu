@@ -183,9 +183,10 @@ not alter the runtime table, source bytes or native/observed routes. Current
 chart selections remain independent of future enrichment membership; current
 saved-sky v6 does not carry Gaia solutions. The external Gaia acquisition has
 completed on Mac; the separate [offline candidate audit](implementation_reference.md#offline-gaia-candidate-audit)
-checks cached bytes, exact-HIP candidate linkage and nominal PM-only diagnostics.
-It has no network client, match-adoption path or production provider. Identity
-acceptance remains K4a.03; real stellar propagation remains K4b.
+checks cached bytes and retains published Hipparcos-2 Gaia best-neighbour links
+through exact HIP keys. Optional 1997-motion diagnostics cannot veto links.
+It has no network client or production provider. Association retention is distinct
+from production astrometric-solution admission; real stellar propagation remains K4b.
 
 Native `Stars.realize()` now selects rows with the existing policy and obtains
 finite directions from `stellar_state.LegacyNativeStellarProvider` through

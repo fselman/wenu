@@ -509,8 +509,9 @@ vertex and naming selection behavior. The protected faults are population
 truncation to the last chart, photometric substitution, or loss of a faint
 explicit/vertex row. No fabricated Gaia fixture is presented as a real match.
 Current coordinate conventions and numerical implementations are unchanged;
-the coordinate guide remains current. Full source qualification, matching,
-redistribution/publication, propagation and historical accuracy remain open.
+the coordinate guide remains current. Full source/model qualification,
+redistribution/publication, propagation and historical accuracy remain open; the
+published-association retention policy below is now accepted.
 
 ## Offline Gaia candidate evidence
 
@@ -530,8 +531,15 @@ review's delivery, not the current absence of raw downloaded data.
 Common-epoch separations are explicitly nominal angular PM-only consistency
 diagnostics, not match criteria, a covariance statistic or a physical propagation
 capability. Missing inputs stay null; no RUWE/parallax/RV filter removes a HIP row.
-No candidate is adopted by the audit. Flag decoding and identity decisions remain
-unresolved until separately evidenced/reviewed; K4a.03 remains partial.
+Fernando subsequently explicitly accepted the published best-neighbour associations.
+The v2 audit retains the `gaiadr3.hipparcos2_best_neighbour` source ID per exact HIP
+key and preserves neighbourhood alternatives separately. No additional threshold,
+flag decoding, component review or 1997-motion check is required to retain a
+published association. Missing best rows stay unassociated; contradictory best
+rows are an integrity error, not a new identity decision. Unusable or uncertain
+astrometry does not erase an accepted association; physical/model admission is
+separate. Diagnostics are optional, off by default, and cannot veto links.
+No 2007 position/PM acquisition or repeat of the published crossmatch is required.
 
 ## Gaia DR3 acquisition and matching policy review
 
@@ -636,15 +644,15 @@ component/photocentre conflicts. Preserve the intermediate edition
 and missing Hipparcos-2 entries in the evidence. Do not substitute a DR2 table
 description for DR3 flag decoding.
 
-Use both match tables as candidate evidence; do not identify by angular distance
-alone or by an unrestricted nearest-neighbour cone. A row becomes eligible for
-review only when flag meanings are qualified, best/neighbourhood evidence is
-consistent, candidate cardinality is explicit, no other retained row claims the
-same Gaia source incompatibly, and a documented common-epoch check supports the
-association. Unqualified flags, source sharing, multiple components, missing
-coordinates/PM or conflicting evidence require review. No automatic adoption is
-authorized by this policy. K4a.03 must record each accepted/rejected decision
-and the component and epoch evidence under the K4a.01 schema.
+Fernando's association-retention instruction supersedes the earlier proposed
+manual identity-acceptance gate. Trust the published best-neighbour association
+through exact HIP keys; preserve full neighbourhood evidence without promoting
+alternatives. Do not independently identify by distance, require a common-epoch
+check or reject published links for flags/components/quality. Those facts remain
+annotations and later astrometric-model admission inputs. No ambiguous-best-row
+selection or new positional recovery search is authorized. The frozen JSON
+acquisition proposal is retained byte-for-byte because its digest identifies the
+completed cache; its earlier proposed identity gates are superseded by this rule.
 
 First-pass `unmatched` means no counterpart in this admitted crossmatch, not
 proof of physical absence from Gaia. Any subsequent positional recovery search

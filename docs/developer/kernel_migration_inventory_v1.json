@@ -6995,7 +6995,7 @@
     },
     {
       "path": "tests/test_gaia_crossmatch_audit.py",
-      "git_blob_sha": "779a6bc037953d25198dbeaf091cc66b408632c4",
+      "git_blob_sha": "f238f938a46cbe8bc5af439b26bd30b10155b49c",
       "imports": [
         "astropy.table",
         "hashlib",
@@ -7010,9 +7010,9 @@
         "sys",
         "types"
       ],
-      "test_functions": 12,
+      "test_functions": 15,
       "marks": {},
-      "parametrize_decorators": 4,
+      "parametrize_decorators": 5,
       "fixtures": [
         "cache"
       ],
@@ -7494,7 +7494,7 @@
     },
     {
       "path": "tools/gaia_crossmatch_audit.py",
-      "git_blob_sha": "76e9053c7cc73243b0d1b2247c50a3bc5fc4723f"
+      "git_blob_sha": "6f7f9343028fb953d1543b062c53b90469541313"
     }
   ],
   "preserved_test_editions": [
@@ -21769,14 +21769,14 @@
         ]
       },
       "tools/gaia_crossmatch_audit.py": {
-        "git_blob_sha": "76e9053c7cc73243b0d1b2247c50a3bc5fc4723f",
+        "git_blob_sha": "6f7f9343028fb953d1543b062c53b90469541313",
         "group": "maintenance",
         "evidence_ids": [
           "K4a.03"
         ],
-        "purpose": "Offline Gaia cache and candidate evidence audit; no identity adoption or production propagation.",
+        "purpose": "Retain published Hipparcos-2 Gaia associations through exact HIP keys; preserve alternatives and optional diagnostics.",
         "operational_classification": "offline-source-evidence",
-        "operational_boundary": "Explicit read-only source matching evidence and nominal independent diagnostic, with no provider network or renderer/state evaluation.",
+        "operational_boundary": "Read-only verified cache and published-association retention; no independent rematching, acquisition or production realization.",
         "imports": [
           "__future__",
           "argparse",
@@ -26216,23 +26216,30 @@
   },
   "gaia_candidate_audit": {
     "tools/gaia_crossmatch_audit.py": {
-      "git_blob_sha": "76e9053c7cc73243b0d1b2247c50a3bc5fc4723f",
+      "git_blob_sha": "6f7f9343028fb953d1543b062c53b90469541313",
       "gate": "gaia-crossmatch-audit"
     },
     "tests/test_gaia_crossmatch_audit.py": {
-      "git_blob_sha": "779a6bc037953d25198dbeaf091cc66b408632c4",
+      "git_blob_sha": "f238f938a46cbe8bc5af439b26bd30b10155b49c",
       "gate": "gaia-crossmatch-audit"
     },
-    "status": "29 local synthetic cases passed; actual Mac report and documentation/tooling gates pending",
-    "limits": "Exact HIP pivot through Hipparcos-2; zero adoptions. New maintenance owner, no production/science route change. Terms review remains deferred; publication separate.",
+    "status": "36 revised local synthetic cases passed; v2 Mac association report pending. V1 Mac receipt: 29 focused, 36 documentation, eight tooling/80 subtests.",
+    "limits": "Published best-neighbour associations retained by exact HIP key. Optional diagnostic and quality/component annotations cannot veto links. No 2007 astrometry download or rematching. Model/propagation/publication separate.",
     "verification": {
-      "synthetic_cases": 29,
+      "synthetic_cases": 36,
       "astropy": "7.2.3",
       "numpy": "1.26.4",
       "tooling_synthetic_cases": 6,
       "tooling_subtests": 9,
-      "full_documentation_and_tooling": "pending Mac",
-      "real_data_audit": "pending Mac"
+      "full_documentation_and_tooling": "v1 passed on Mac; revised v2 pending",
+      "real_data_audit": "v1 complete on Mac; v2 pending",
+      "prior_v1_mac_receipt": {
+        "focused": 29,
+        "documentation": 36,
+        "tooling": 8,
+        "subtests": 80,
+        "head": "60fff03cbb1b7ff9abcf756bafb0ea8f4fc9d9f6"
+      }
     }
   }
 }

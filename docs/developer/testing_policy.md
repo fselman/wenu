@@ -65,12 +65,16 @@ K4a.03's `gaia-crossmatch-audit` gate selects the independent maintenance owner
 `tests/test_gaia_crossmatch_audit.py`. It protects integer IDs/masks, exact candidate
 sets/cardinality, shared sources, missing data, source/epoch/unit admission,
 corrupted cache bytes, nominal analytic motion oracles including poles/RA wrap,
-no-adoption/no-input-mutation and report completion/no-clobber behavior. The full
+published-best-link retention/no-input-mutation and report completion/no-clobber behavior. The full
 synthetic ECSV-to-report path blocks socket creation and injects only Wenu source
 loading. Fixtures are constructed synthetic evidence, never claimed provider bytes.
-No production/kernel numerical or visual changes require repeating those gates.
-Run documentation and existing tooling integrity too. The actual Mac cache report
-is a separate pending acceptance gate, not implied by synthetic checks.
+The revised gate also verifies retention despite poor/missing astrometry, large
+optional diagnostic separations, original multiple flags and shared sources;
+neighbourhood-only alternatives are never guessed. Contradictory published best
+rows refuse integrity admission. No production/kernel numerical or visual changes
+require repeating those gates.
+Run documentation and existing tooling integrity too. The v1 Mac report and 29/36/8 acceptance receipt are recorded in the roadmap;
+the association-preserving v2 Mac report is a separate pending acceptance gate.
 
 ### Stellar enrichment contract gate
 

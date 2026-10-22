@@ -39,7 +39,7 @@ def pair(i, sid, **kwargs):
 
 
 def evaluate(hips, best, neighbours, sources):
-    return audit.audit(hips, best, neighbours, sources, HIP_METADATA, PROFILE)
+    return audit.audit(hips, best, neighbours, sources, HIP_METADATA, PROFILE, diagnostics=True)
 
 
 def test_cardinality_shared_sources_and_unmatched_are_distinct():
@@ -61,7 +61,7 @@ def test_cardinality_shared_sources_and_unmatched_are_distinct():
     assert all(r['adopted_solution'] is None for r in rows + candidates)
     assert candidates[0]['gaia_source']['parallax'] == -1
     assert candidates[0]['gaia_source']['radial_velocity'] is None
-    assert summary['adopted_matches'] == 0
+    assert summary['adopted_astrometric_solutions'] == 0
     assert json.dumps([h, best, n, s]) == before
 
 
@@ -69,6 +69,38 @@ def test_missing_best_or_neighbourhood_is_reported_not_adopted():
     for b, n in [([pair(1, 100)], []), ([], [pair(1, 100)])]:
         _, rows, _ = evaluate([hip(1)], b, n, [source(100)])
         assert 'best_neighbourhood_inconsistent' in rows[0]['review_reasons']
+
+
+@pytest.mark.parametrize('patch', [dict(pmra=None, pmdec=None), dict(ruwe=99.),
+    dict(parallax=-10.), dict(ra=90.), dict(radial_velocity=None)])
+def test_published_best_association_survives_quality_or_diagnostic_warnings(patch):
+    h = hip(1)
+    h['is_multiple'] = True
+    summary, rows, candidates = evaluate([h], [pair(1, 100, number_of_neighbours=2)],
+        [pair(1, 100), pair(1, 101)], [source(100, **patch), source(101)])
+    assert summary['retained_published_associations'] == 1
+    assert rows[0]['published_association']['source_id'] == '100'
+    assert candidates[0]['decision'] == 'retained_published_association'
+    assert candidates[1]['decision'] == 'neighbourhood_alternative'
+    assert candidates[0]['best']['number_of_neighbours'] == 2
+    assert rows[0]['adopted_solution'] is None
+
+
+def test_neighbourhood_only_is_not_guessed_and_shared_best_links_survive():
+    summary, rows, candidates = evaluate([hip(1), hip(2), hip(3)],
+        [pair(1, 100), pair(2, 100)], [pair(1, 100), pair(2, 100), pair(3, 101)],
+        [source(100), source(101)])
+    assert summary['retained_published_associations'] == 2
+    assert rows[2]['published_association'] is None
+    assert summary['hip_without_published_association'] == 1
+    assert summary['shared_gaia_sources'] == 1
+    assert candidates[2]['decision'] == 'neighbourhood_alternative'
+
+
+def test_conflicting_published_best_rows_are_not_arbitrarily_selected():
+    with pytest.raises(ValueError, match='Contradictory published best'):
+        evaluate([hip(1)], [pair(1, 100), pair(1, 101)],
+                 [pair(1, 100), pair(1, 101)], [source(100), source(101)])
 
 
 @pytest.mark.parametrize('fault', ['duplicate_pair', 'foreign_hip', 'missing_source', 'extra_source', 'duplicate_source'])
@@ -122,9 +154,11 @@ def test_nonzero_motion_reaches_both_common_epoch_diagnostics():
 
 
 @pytest.mark.parametrize('patch', [{'ref_epoch': 2015.5}, {'ra': 360.}, {'dec': 91.}])
-def test_edition_epoch_and_coordinate_domain_refused(patch):
-    with pytest.raises(ValueError):
-        evaluate([hip(1)], [pair(1, 100)], [pair(1, 100)], [source(100, **patch)])
+def test_bad_diagnostic_inputs_never_veto_published_association(patch):
+    summary, hips, rows = evaluate([hip(1)], [pair(1, 100)], [pair(1, 100)], [source(100, **patch)])
+    assert summary['retained_published_associations'] == 1
+    assert hips[0]['published_association']['source_id'] == '100'
+    assert rows[0]['diagnostic_status'].startswith('unavailable:')
 
 
 def test_units_require_exact_semantics():
@@ -138,7 +172,7 @@ def test_units_require_exact_semantics():
 
 def test_publish_no_clobber_and_failure_cleanup(tmp_path):
     out = tmp_path / 'audit_v1'
-    audit.publish(out, {}, [{'hip': '1'}], [], {})
+    audit.publish(out, {}, [{'hip': '1', 'published_association': None}], [], {})
     before = {p.name: p.read_bytes() for p in out.iterdir()}
     with pytest.raises(ValueError): audit.publish(out, {}, [], [], {})
     assert before == {p.name: p.read_bytes() for p in out.iterdir()}
@@ -235,13 +269,17 @@ def test_main_real_ecsv_to_report_offline(cache, tmp_path, monkeypatch):
     before = {p.name: p.read_bytes() for p in root.iterdir()}
     out = tmp_path / 'report_v1'
     audit.main(['--cache', str(root), '--output', str(out)])
-    summary = json.loads((out / 'summary_v1.json').read_text())
-    assert summary['adopted_matches'] == 0 and summary['retained_hip_rows'] == 1
-    row = json.loads((out / 'candidate_evidence_v1.jsonl').read_text())
+    summary = json.loads((out / 'summary_v2.json').read_text())
+    assert summary['adopted_astrometric_solutions'] == 0 and summary['retained_hip_rows'] == 1
+    row = json.loads((out / 'candidate_evidence_v2.jsonl').read_text())
     assert row['source_id'] == '9007199254740993'
-    assert row['separation_at_hip_epoch_arcsec'] == 0
-    assert row['decision'] == 'unresolved'
-    for name, record in json.loads((out / 'audit_manifest_v1.json').read_text())['products'].items():
+    assert row['separation_at_hip_epoch_arcsec'] is None
+    assert row['diagnostic_status'] == 'not_requested'
+    assert summary['retained_published_associations'] == 1
+    assert row['decision'] == 'retained_published_association'
+    association = json.loads((out / 'published_associations_v2.jsonl').read_text())
+    assert association['source_id'] == row['source_id']
+    for name, record in json.loads((out / 'audit_manifest_v2.json').read_text())['products'].items():
         raw = (out / name).read_bytes()
         assert record == dict(sha256=sha256(raw).hexdigest(), bytes=len(raw))
     assert before == {p.name: p.read_bytes() for p in root.iterdir()}

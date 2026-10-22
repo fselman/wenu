@@ -332,35 +332,39 @@ raw-query bytes, integer IDs, ECSV angular/motion/epoch units and actual candida
 sets/counts. It loads the full original Wenu source through `Stars.source_catalog`;
 chart magnitude selection never defines the audit population.
 
-Exact HIP identifiers link ESA-1997-I/239 entries to the published Hipparcos-2
-Gaia candidate tables. No positional rematch or blanket edition ambiguity is
-introduced. Unique, multiple and absent candidates are distinct from shared Gaia
-sources, original multiple-system warnings and inconsistent best/neighbourhood
-evidence. Every candidate keeps the original crossmatch/source fields, masks,
-quality flags, errors/correlations and separately named Gaia photometry. Flags
-remain undecoded pending qualification; no identity is automatically adopted.
+Exact HIP identifiers link ESA-1997-I/239 entries to Gaia's published Hipparcos-2
+crossmatch. Fernando explicitly accepts `gaiadr3.hipparcos2_best_neighbour` as the
+association authority. For each HIP, retain exactly that published best-neighbour
+source ID and original evidence in `published_association`; zero best rows means
+no published association. Multiple contradictory best rows stop integrity admission;
+never choose a neighbourhood alternative by proximity or score. Retain all
+neighbourhood alternatives, source fields, masks, flags, errors/correlations and
+foreign photometry. Original multiple-system/shared-source/consistency annotations
+and poor/missing astrometric inputs do not revoke the published association.
+This does not adopt an astrometric solution/model or component-specific RV.
 
-The [source profile](data/gaia_dr3_audit_reference_v1.json) declares Gaia DR3
-ICRS/TCB reference conventions and its evidence limits. Row epochs are checked,
-not replaced. Both common-epoch diagnostic separations use normalized
-`r + dt * (mu_alpha_star * east + mu_delta * north)`. The interval is expressed
-in each source's time scale using Astropy TT/TCB catalogue-event conversion;
-no UTC/EOP/observer resources are needed. This independent source diagnostic
-is not the production propagation engine or an AX.13 implementation. It omits
-distance, perspective, binaries and covariance, uses no separation acceptance
-threshold, and reports missing inputs as null. Production coordinates are unchanged.
-The coordinate guide remains current; its mathematical/scientific policies are
-not changed by this diagnostic.
+No 2007 positions/proper-motion catalogue is downloaded or reprocessed. The
+[source profile](data/gaia_dr3_audit_reference_v1.json) declares the Gaia reference
+conventions used only by optional `--diagnostics`. That flag adds the old nominal
+1997/Gaia tangent-linear comparisons; it is off by default. Diagnostic failures,
+large separations, missing PM or unexpected numerical epochs are annotations,
+never association acceptance gates. This independent source diagnostic is not
+production propagation or AX.13. Its model omits distance, perspective, binaries
+and covariance and uses no separation threshold. The coordinate guide remains
+current; production geometry and scientific policies are unchanged.
 
-Explicit `--cache` and `--output` arguments are required. Use a new output
-version; existing output refuses overwrite. Products are `summary_v1.json`,
-`hip_review_v1.jsonl` (all original HIP rows), `candidate_evidence_v1.jsonl`,
-`candidate_separations_v1.csv` and `audit_manifest_v1.json`. The last is the
-completion marker and is published last; consumers must require it. Exceptions
-remove partial outputs. Provenance binds inputs, membership, tool and source
-profile. The original cache is read-only. The real Mac report is pending; zero
-adoptions is enforced, and neither source publication nor K4a.03 closure follows
-from a successful report.
+Explicit `--cache` and `--output` arguments are required. Use a new output version;
+existing output refuses overwrite. V2 products are `summary_v2.json`,
+`hip_review_v2.jsonl` (all HIP rows), `candidate_evidence_v2.jsonl`,
+`published_associations_v2.jsonl` (one retained published best link per associated
+HIP), `candidate_separations_v2.csv` and `audit_manifest_v2.json`. The last is the
+completion marker, published last. Exceptions remove partial output. Provenance
+binds input bytes, source/membership/visual-photometry identities, tool/profile and
+software versions; the summary declares the exact association-policy version.
+The original cache and v1 report remain untouched. The v1 Mac receipt is accepted;
+the association-preserving v2 Mac report remains pending. Association count is
+reported separately from `adopted_astrometric_solutions`, which remains zero.
+Source publication and production/model admission are separate later work.
 
 ## Native stellar kernel adapter
 
@@ -372,7 +376,8 @@ workload caps are not provider quotas or execution authority.
 
 K4a.01 now specifies the [stellar membership and enrichment contract](scientific_contracts.md#stellar-membership-and-enrichment-contract)
 and [source-bound census/logical schema](data/stellar_enrichment_contract_v1.json).
-It is a design artifact only. There is no Gaia loader, match decision,
+It remains a logical enrichment design: the separate maintenance report now
+retains the accepted published associations. There is no production Gaia loader,
 propagation adapter, public API addition or saved-sky codec change. Existing
 `source_catalog` owns the full retained population; `catalog` and `hip_df` are
 selected/observed views. The contract keeps foreign astrometry and photometry

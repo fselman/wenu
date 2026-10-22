@@ -489,7 +489,8 @@ downloader is explicitly classified, source-inspected and never imported/run.
 ## Offline stellar crossmatch maintenance
 
 [`tools/gaia_crossmatch_audit.py`](../../tools/gaia_crossmatch_audit.py) owns the
-K4a.03 explicit offline cache/candidate audit. Its enduring boundary is source
+K4a.03 explicit offline cache/association audit. It retains published best-neighbour
+links and preserves alternatives; optional numerical diagnostics cannot veto links. Its enduring boundary is source
 evidence assessment and report publication, separate from source acquisition,
 production realization/rendering and designation research. A new
 [`test_gaia_crossmatch_audit.py`](../../tests/test_gaia_crossmatch_audit.py) owner
