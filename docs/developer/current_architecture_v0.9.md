@@ -181,8 +181,12 @@ now records the complete 118,218-row source population, its visual-photometry
 identity and the logical edition/component/matching schema. This design does
 not alter the runtime table, source bytes or native/observed routes. Current
 chart selections remain independent of future enrichment membership; current
-saved-sky v6 does not carry Gaia solutions. Acquisition and real matching remain
-K4a.02 onward; real stellar propagation remains K4b.
+saved-sky v6 does not carry Gaia solutions. The external Gaia acquisition has
+completed on Mac; the separate [offline candidate audit](implementation_reference.md#offline-gaia-candidate-audit)
+checks cached bytes and retains published Hipparcos-2 Gaia best-neighbour links
+through exact HIP keys. Optional 1997-motion diagnostics cannot veto links.
+It has no network client or production provider. Association retention is distinct
+from production astrometric-solution admission; real stellar propagation remains K4b.
 
 Native `Stars.realize()` now selects rows with the existing policy and obtains
 finite directions from `stellar_state.LegacyNativeStellarProvider` through

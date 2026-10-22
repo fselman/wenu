@@ -453,19 +453,19 @@
       "path": "src/wenu/charts/magnitude_legend_matplotlib.py",
       "git_blob_sha": "07104731fa669bb972df830cf5e3c51076b00b11",
       "as_is_directory": "src/wenu/charts",
-      "description": "Matplotlib rendering for stellar magnitude–size legends."
+      "description": "Matplotlib rendering for stellar magnitude\u2013size legends."
     },
     {
       "path": "src/wenu/charts/magnitude_legend_style.py",
       "git_blob_sha": "9328fc55e2d465c8335486b72cf2273de6b5bdec",
       "as_is_directory": "src/wenu/charts",
-      "description": "Style configuration for stellar magnitude–size legends."
+      "description": "Style configuration for stellar magnitude\u2013size legends."
     },
     {
       "path": "src/wenu/charts/magnitude_legend_workflow.py",
       "git_blob_sha": "b270984666cd5b435fec7874e73135642b2d471d",
       "as_is_directory": "src/wenu/charts",
-      "description": "Chart-level workflow for stellar magnitude–size legends."
+      "description": "Chart-level workflow for stellar magnitude\u2013size legends."
     },
     {
       "path": "src/wenu/charts/modes.py",
@@ -6992,6 +6992,31 @@
       "git_blob_sha": "ee838c49f2c1e83f88a943bca89e093e5690669d",
       "description": "Generic mixed-object engine, conformance, immutable-domain and isolated SDK evaluation.",
       "baseline_relation": "Added for enduring object-independent astrometric engine factoring."
+    },
+    {
+      "path": "tests/test_gaia_crossmatch_audit.py",
+      "git_blob_sha": "f238f938a46cbe8bc5af439b26bd30b10155b49c",
+      "imports": [
+        "astropy.table",
+        "hashlib",
+        "importlib.util",
+        "json",
+        "math",
+        "numpy",
+        "pandas",
+        "pathlib",
+        "pytest",
+        "socket",
+        "sys",
+        "types"
+      ],
+      "test_functions": 15,
+      "marks": {},
+      "parametrize_decorators": 5,
+      "fixtures": [
+        "cache"
+      ],
+      "peer_test_imports": []
     }
   ],
   "operational_artifacts": [
@@ -7466,6 +7491,10 @@
     {
       "path": "tools/validate_50s7d3b_lime_offline_inspection.py",
       "git_blob_sha": "68353aa56453d0f89523e04148a6079d3055ab60"
+    },
+    {
+      "path": "tools/gaia_crossmatch_audit.py",
+      "git_blob_sha": "6f7f9343028fb953d1543b062c53b90469541313"
     }
   ],
   "preserved_test_editions": [
@@ -10442,7 +10471,7 @@
       "sdk_cases_passed": 205,
       "metadata": "Actual isolated installed kernel wheel and root wheel/sdist/editable consumers passed; class identity, old pickle paths, aliases, ring octant/complement and source-free snapshots covered."
     },
-    "remaining": "KG.04 projections/clipping/domain math not moved; KG.05 full-service integration and KG.06–KG.07 completed-K audit/corrections remain pending."
+    "remaining": "KG.04 projections/clipping/domain math not moved; KG.05 full-service integration and KG.06\u2013KG.07 completed-K audit/corrections remain pending."
   },
   "geometry_projection_implementation": {
     "id": "KG.04",
@@ -11551,7 +11580,7 @@
         "issue": "Source physical facts, constructed/unitless compatibility and diffuse metadata/transport remain explicitly partial; lookup and geometry movement did not fabricate qualification."
       }
     ],
-    "retained_evidence": "PR #234–#286 bounded receipts and named owners; KG.05 complete Mac receipt accepted. This audit does not revalidate all numerical science or release/visual/classroom acceptance.",
+    "retained_evidence": "PR #234\u2013#286 bounded receipts and named owners; KG.05 complete Mac receipt accepted. This audit does not revalidate all numerical science or release/visual/classroom acceptance.",
     "guide": "Coordinate guide remains current: no scientific semantics, numerical implementation or runtime ownership changed.",
     "verification": {
       "kernel_import_scan_modules": 22,
@@ -11590,7 +11619,7 @@
     },
     "new_output_requirement": "All four cold/restored real polar specimens must pass with both xfail markers removed.",
     "retained_evidence": "Unaffected state/time/provider science and KG.05 full atlas serial/spawn/book receipts; affected isolated kernel/root installs explicitly repeated.",
-    "remaining": "Complete Mac acceptance, then explicit selection of K3.16; G06.U1–U4 retain assigned K3 scope.",
+    "remaining": "Complete Mac acceptance, then explicit selection of K3.16; G06.U1\u2013U4 retain assigned K3 scope.",
     "local_verification": {
       "selected_cases": 103,
       "passed_unique_cases": 102,
@@ -11867,7 +11896,7 @@
     "base_commit": "89756d957696b8baf2cd69f52f6a6878cc3a8484",
     "plan_commit": "47ba46eb918c87a488f9d6c98992eda3cf3fb17e",
     "status": "Verified locally; full Mac acceptance pending.",
-    "agreement": "Fernando’s 2026-10-20 proceed after the explicit K3.21 proposal and PR #293 cleanup.",
+    "agreement": "Fernando\u2019s 2026-10-20 proceed after the explicit K3.21 proposal and PR #293 cleanup.",
     "gate": "atlas-sheet-routing",
     "assessment": "docs/developer/kernel_migration_audit_v1.md#k321-atlas-sheet-and-consumer-assessment",
     "production_modules": [
@@ -15603,7 +15632,7 @@
           "K3.37",
           "K3.39"
         ],
-        "purpose": "Matplotlib rendering for stellar magnitude–size legends.",
+        "purpose": "Matplotlib rendering for stellar magnitude\u2013size legends.",
         "imports": [
           "__future__",
           "math",
@@ -15624,7 +15653,7 @@
           "K3.37",
           "K3.39"
         ],
-        "purpose": "Style configuration for stellar magnitude–size legends.",
+        "purpose": "Style configuration for stellar magnitude\u2013size legends.",
         "imports": [
           "__future__",
           "dataclasses",
@@ -15640,7 +15669,7 @@
           "K3.37",
           "K3.39"
         ],
-        "purpose": "Chart-level workflow for stellar magnitude–size legends.",
+        "purpose": "Chart-level workflow for stellar magnitude\u2013size legends.",
         "imports": [
           "__future__",
           "dataclasses",
@@ -21132,7 +21161,7 @@
         "evidence_ids": [
           "K3.38"
         ],
-        "purpose": "Translate Markdown cells in Wenu notebooks from English to Spanish.\n\nThis is a repository tool, not part of the installed ``wenu`` package.\n\nExpected repository layout:\n\n    wenu/\n    ├── pyproject.toml\n    ├── tools/\n    │   ├── translate_notebook.py\n    │   └── glossaries/\n    │       └── en_es.js",
+        "purpose": "Translate Markdown cells in Wenu notebooks from English to Spanish.\n\nThis is a repository tool, not part of the installed ``wenu`` package.\n\nExpected repository layout:\n\n    wenu/\n    \u251c\u2500\u2500 pyproject.toml\n    \u251c\u2500\u2500 tools/\n    \u2502   \u251c\u2500\u2500 translate_notebook.py\n    \u2502   \u2514\u2500\u2500 glossaries/\n    \u2502       \u2514\u2500\u2500 en_es.js",
         "operational_classification": "external-development-helper",
         "operational_boundary": "Standalone OpenAI development/translation utility, outside Wenu runtime science. Inspect as source only: openai_model.py executes a model-list request when imported; this audit does not import/run it or authorize that request.",
         "imports": [
@@ -21737,6 +21766,34 @@
           "subprocess",
           "sys",
           "tempfile"
+        ]
+      },
+      "tools/gaia_crossmatch_audit.py": {
+        "git_blob_sha": "6f7f9343028fb953d1543b062c53b90469541313",
+        "group": "maintenance",
+        "evidence_ids": [
+          "K4a.03"
+        ],
+        "purpose": "Retain published Hipparcos-2 Gaia associations through exact HIP keys; preserve alternatives and optional diagnostics.",
+        "operational_classification": "offline-source-evidence",
+        "operational_boundary": "Read-only verified cache and published-association retention; no independent rematching, acquisition or production realization.",
+        "imports": [
+          "__future__",
+          "argparse",
+          "astropy",
+          "astropy.table",
+          "astropy.time",
+          "astropy.units",
+          "collections",
+          "csv",
+          "hashlib",
+          "json",
+          "math",
+          "numpy",
+          "pathlib",
+          "shutil",
+          "tempfile",
+          "wenu.objects.stars"
         ]
       }
     },
@@ -26156,5 +26213,33 @@
       "Disabling the finite-segment guard fails five regression cases.",
       "31 documentation cases passed; five full-checkout archive/image/census checks require Mac checkout; active available document anchors verified."
     ]
+  },
+  "gaia_candidate_audit": {
+    "tools/gaia_crossmatch_audit.py": {
+      "git_blob_sha": "6f7f9343028fb953d1543b062c53b90469541313",
+      "gate": "gaia-crossmatch-audit"
+    },
+    "tests/test_gaia_crossmatch_audit.py": {
+      "git_blob_sha": "f238f938a46cbe8bc5af439b26bd30b10155b49c",
+      "gate": "gaia-crossmatch-audit"
+    },
+    "status": "36 revised local synthetic cases passed; v2 Mac association report pending. V1 Mac receipt: 29 focused, 36 documentation, eight tooling/80 subtests.",
+    "limits": "Published best-neighbour associations retained by exact HIP key. Optional diagnostic and quality/component annotations cannot veto links. No 2007 astrometry download or rematching. Model/propagation/publication separate.",
+    "verification": {
+      "synthetic_cases": 36,
+      "astropy": "7.2.3",
+      "numpy": "1.26.4",
+      "tooling_synthetic_cases": 6,
+      "tooling_subtests": 9,
+      "full_documentation_and_tooling": "v1 passed on Mac; revised v2 pending",
+      "real_data_audit": "v1 complete on Mac; v2 pending",
+      "prior_v1_mac_receipt": {
+        "focused": 29,
+        "documentation": 36,
+        "tooling": 8,
+        "subtests": 80,
+        "head": "60fff03cbb1b7ff9abcf756bafb0ea8f4fc9d9f6"
+      }
+    }
   }
 }

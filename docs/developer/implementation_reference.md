@@ -323,17 +323,61 @@ frame transformations, snapshot schemas and original source records are unchange
 This does not qualify missing nonstellar frame/origin or measurement metadata;
 `require_complete_metadata` still refuses those gaps.
 
+## Offline Gaia candidate audit
+
+[`tools/gaia_crossmatch_audit.py`](../../tools/gaia_crossmatch_audit.py) is the
+K4a.03 maintenance owner for the versioned external downloader cache. It validates
+manifest identity, policy/source/membership digests, all product and completed
+raw-query bytes, integer IDs, ECSV angular/motion/epoch units and actual candidate
+sets/counts. It loads the full original Wenu source through `Stars.source_catalog`;
+chart magnitude selection never defines the audit population.
+
+Exact HIP identifiers link ESA-1997-I/239 entries to Gaia's published Hipparcos-2
+crossmatch. Fernando explicitly accepts `gaiadr3.hipparcos2_best_neighbour` as the
+association authority. For each HIP, retain exactly that published best-neighbour
+source ID and original evidence in `published_association`; zero best rows means
+no published association. Multiple contradictory best rows stop integrity admission;
+never choose a neighbourhood alternative by proximity or score. Retain all
+neighbourhood alternatives, source fields, masks, flags, errors/correlations and
+foreign photometry. Original multiple-system/shared-source/consistency annotations
+and poor/missing astrometric inputs do not revoke the published association.
+This does not adopt an astrometric solution/model or component-specific RV.
+
+No 2007 positions/proper-motion catalogue is downloaded or reprocessed. The
+[source profile](data/gaia_dr3_audit_reference_v1.json) declares the Gaia reference
+conventions used only by optional `--diagnostics`. That flag adds the old nominal
+1997/Gaia tangent-linear comparisons; it is off by default. Diagnostic failures,
+large separations, missing PM or unexpected numerical epochs are annotations,
+never association acceptance gates. This independent source diagnostic is not
+production propagation or AX.13. Its model omits distance, perspective, binaries
+and covariance and uses no separation threshold. The coordinate guide remains
+current; production geometry and scientific policies are unchanged.
+
+Explicit `--cache` and `--output` arguments are required. Use a new output version;
+existing output refuses overwrite. V2 products are `summary_v2.json`,
+`hip_review_v2.jsonl` (all HIP rows), `candidate_evidence_v2.jsonl`,
+`published_associations_v2.jsonl` (one retained published best link per associated
+HIP), `candidate_separations_v2.csv` and `audit_manifest_v2.json`. The last is the
+completion marker, published last. Exceptions remove partial output. Provenance
+binds input bytes, source/membership/visual-photometry identities, tool/profile and
+software versions; the summary declares the exact association-policy version.
+The original cache and v1 report remain untouched. The v1 Mac receipt is accepted;
+the association-preserving v2 Mac report remains pending. Association count is
+reported separately from `adopted_astrometric_solutions`, which remains zero.
+Source publication and production/model admission are separate later work.
+
 ## Native stellar kernel adapter
 
 The [K4a.02 acquisition/matching policy review](scientific_contracts.md#gaia-dr3-acquisition-and-matching-policy-review)
 and [dated audit](data/gaia_dr3_acquisition_policy_v1.json) are design documents.
-No Gaia TAP client, matcher, runtime dependency or new provider is implemented.
+No production Gaia TAP client, match adopter, runtime dependency or new provider is implemented.
 Current terms/usage and service preflight remain unresolved; proposed local
 workload caps are not provider quotas or execution authority.
 
 K4a.01 now specifies the [stellar membership and enrichment contract](scientific_contracts.md#stellar-membership-and-enrichment-contract)
 and [source-bound census/logical schema](data/stellar_enrichment_contract_v1.json).
-It is a design artifact only. There is no Gaia loader, match decision,
+It remains a logical enrichment design: the separate maintenance report now
+retains the accepted published associations. There is no production Gaia loader,
 propagation adapter, public API addition or saved-sky codec change. Existing
 `source_catalog` owns the full retained population; `catalog` and `hip_df` are
 selected/observed views. The contract keeps foreign astrometry and photometry
@@ -2168,3 +2212,4 @@ The consumer-reconciliation Mac gate also retains the original LMC boundary
 composition case that was locally blocked by missing DE440s in KG.07. It uses
 the already installed offline resource; no acquisition or full lower-level
 gate repeat is part of this reconciliation.
+

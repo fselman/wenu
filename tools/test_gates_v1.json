@@ -3310,6 +3310,16 @@
           "reason": "Isolated installed dev12 wheel executes the correction without Wenu."
         }
       ]
+    },
+    "gaia-crossmatch-audit": {
+      "scope": "K4a.03 verified offline retention of published Hipparcos-2 Gaia best-neighbour associations.",
+      "limits": "No new acquisition or independent rematching. Optional 1997-motion diagnostics and quality/component flags never veto published links; neighbourhood alternatives are not guessed. No production propagation, source publication, SDK or renderer change.",
+      "selections": [
+        {
+          "node": "tests/test_gaia_crossmatch_audit.py",
+          "reason": "Exact published association retention despite adverse/missing diagnostics and flags; no neighbourhood-only guess; contradictory-best refusal; cache identities, integer IDs/masks and no-clobber report publication."
+        }
+      ]
     }
   },
   "consumer_review": [
