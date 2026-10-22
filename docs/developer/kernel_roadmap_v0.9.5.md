@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 76, 2026-10-22. **Status:** K4b.02/AX.13 measured-PM angular slice passed complete Mac tests and actual snapshot acceptance at 41c47e16 (PR #323). Merge remains separate; no-PM/Hip2 and product scopes stay pending. No further implementation selected.
+**Plan revision:** 77, 2026-10-22. **Status:** PR #323 merged; clean Mac main/branch cleanup confirmed at 8167bb39 with 36 final documentation passes. Fernando selected the K4b.02 Hipparcos-2 fallback qualification slice. Its catalogue-convention evidence must qualify before runtime admission; other scopes remain pending.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -63,7 +63,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.02/AX.13 measured-PM angular slice passed Mac acceptance through PR #323 at 41c47e16; parent milestones remain partial |
-| Next bounded submilestone | Not selected; merge/cleanup and remaining no-PM, Hip2 qualification or product scopes need their corresponding explicit instruction |
+| Next bounded submilestone | K4b.02 Hipparcos-2 fallback qualification selected by Fernando; admit only convention-qualified records from the 2,850 fallback candidates, preserve the 263 original lookup entries and accepted Gaia results |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -76,6 +76,36 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4b.02: Hipparcos-2 fallback qualification
+
+Fernando approved this bounded step with "Proceed" on 2026-10-22 after the
+clean synchronized Mac main/merged-branch cleanup receipt at
+`8167bb39f4377f7f486a027662d203ff149bab36` (36 documentation cases passed).
+Selected scope: verify Hipparcos-2 position/epoch/time-scale/proper-motion
+conventions against primary documentation, then admit qualified records from
+the 2,850 fallback candidates through the existing shared motion engine.
+Preserve the 263 original lookup entries and all original HIP/V/designations,
+published identities, source bytes, error/solution/component flags and accepted
+Gaia full/angular model digests. Missing measurements remain missing. No-PM,
+new associations, acquisition, source rewriting, binary/orbit corrections,
+physical-accuracy promises, SDK/dependency and chart/default/product adoption
+are excluded. This slice does not close K4b.02/AX.13.
+
+Prerequisite: an evidence-backed source convention record. In particular,
+J1991.25 without a time-scale label cannot be silently relabelled TT or TCB;
+the original-1997 convention alone does not establish the 2007 declaration.
+If a required convention cannot be established, leave that runtime admission
+blocked and record exactly the verified facts, missing evidence and next
+qualification action. Do not replace the prerequisite with an unapproved
+nominal-convention assumption.
+
+Acceptance owner: the existing stellar-state/shared-core gate, source-audit
+regressions and documentation/tooling checks, with independent source-unit and
+propagation references, identity/immutability/fallback/refusal coverage and
+unchanged Gaia binding checks. Actual Mac fallback counts and sampled directions
+remain distinct from constructed tests. A documentation-only assessment of a
+blocked prerequisite needs documentation integrity, not new numerical tests.
 
 ## K4b.02 / AX.13: measured-proper-motion angular model
 
