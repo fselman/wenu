@@ -23,6 +23,11 @@ fetcher = importlib.util.module_from_spec(FETCH_SPEC)
 FETCH_SPEC.loader.exec_module(fetcher)
 sys.path.insert(0, str(Path(__file__).parents[1] / 'tools'))
 import fetch_stellar_astrometry as stellar_fetch
+ENRICHMENT_SPEC = importlib.util.spec_from_file_location('wenu.stellar_enrichment',
+    Path(__file__).parents[1] / 'src/wenu/stellar_enrichment.py')
+enrichment = importlib.util.module_from_spec(ENRICHMENT_SPEC)
+sys.modules[ENRICHMENT_SPEC.name] = enrichment
+ENRICHMENT_SPEC.loader.exec_module(enrichment)
 
 HIP_METADATA = {'frame': 'icrs', 'origin': 'solar-system-barycenter',
                 'epoch': {'value': 1991.25, 'format': 'jyear', 'scale': 'tt'}}
@@ -232,20 +237,28 @@ def test_cache_identity_and_corruption(cache, fault):
         with pytest.raises(ValueError): audit.verify_cache(root, contract, policy)
 
 
-@pytest.mark.parametrize('supplement,coverage', [(False, False), (True, False), (True, True)])
+@pytest.mark.parametrize('supplement,coverage,publish_source',
+    [(False, False, False), (True, False, False), (True, True, False), (True, True, True)])
 def test_main_real_ecsv_to_report_offline(cache, tmp_path, monkeypatch, kervella_bundle,
-                                         hip2_bundle, supplement, coverage):
+                                         hip2_bundle, supplement, coverage, publish_source):
     """Actual parser/publication path; Wenu source loading alone is synthetic."""
     import pandas as pd
     root, contract, policy, manifest = cache
     local = tmp_path / 'checkout'
     data = local / 'docs/developer/data'
     data.mkdir(parents=True)
+    if publish_source:
+        contract['baseline'].update(catalogue='hipparcos',edition='synthetic-original')
+        contract['preserved_columns'] = ['magnitude','star_designations','ccdm_id']
     (data / 'stellar_enrichment_contract_v1.json').write_text(json.dumps(contract))
     (data / 'gaia_dr3_acquisition_policy_v1.json').write_bytes(policy)
-    (data / 'gaia_dr3_audit_reference_v1.json').write_text(json.dumps(PROFILE))
+    (data / 'gaia_dr3_audit_reference_v1.json').write_text(json.dumps(dict(PROFILE,
+        release='DR3', right_ascension_motion='mu_alpha*cos(delta)')))
     table = Table({'source_id': [9007199254740993], 'solution_id': [100],
                    'ref_epoch': [2016.], 'ra': [10.], 'dec': [0.], 'pmra': [0.], 'pmdec': [0.]})
+    if publish_source:
+        table['parallax'] = [-1.]
+        table['parallax'].unit = 'mas'
     for name, unit in {'ref_epoch': 'yr', 'ra': 'deg', 'dec': 'deg', 'pmra': 'mas/yr', 'pmdec': 'mas/yr'}.items():
         table[name].unit = unit
     table.write(root / audit.PRODUCTS[2], format='ascii.ecsv', overwrite=True)
@@ -262,18 +275,25 @@ def test_main_real_ecsv_to_report_offline(cache, tmp_path, monkeypatch, kervella
     (root / 'crossmatch_unmatched_hip_ids_v1.json').write_text('[]')
     h = hip(1)
     h.update(component_count=0, multiple_annex='', ccdm_id='', is_variable=False)
+    if publish_source:
+        h.update(star_designations={'names':['Synthetic Unicode \u03b1'], 'unknown_extra':None},
+                 unconsumed_extra={'nullable':None,'vector':[1,2]})
     metadata = dict(HIP_METADATA, source_sha256=contract['baseline']['source_sha256'],
-        units={'ra_mas_per_year': 'mas/yr', 'dec_mas_per_year': 'mas/yr'})
+        catalogue='hipparcos', edition='synthetic-original',
+        units={'ra_mas_per_year': 'mas/yr', 'dec_mas_per_year': 'mas/yr','magnitude':'mag','ra_degrees':'deg','dec_degrees':'deg'})
     class Stars:
         def __init__(self, observer): pass
         def load(self):
             self.source_catalog = pd.DataFrame([{k:v for k,v in h.items() if k != 'hip'}], index=[1])
             self.catalogue_metadata = type('Metadata', (), {'to_record': lambda self: metadata})()
+            self.designation_catalogue = type('Designations', (),
+                {'edition':'synthetic-names','source_sha256':'d'*64})()
     fake = ModuleType('wenu.objects.stars')
     fake.Stars = Stars
     monkeypatch.setitem(sys.modules, 'wenu', ModuleType('wenu'))
     monkeypatch.setitem(sys.modules, 'wenu.objects', ModuleType('wenu.objects'))
     monkeypatch.setitem(sys.modules, 'wenu.objects.stars', fake)
+    monkeypatch.setitem(sys.modules, 'wenu.stellar_enrichment', enrichment)
     monkeypatch.setattr(audit, 'ROOT', local)
     monkeypatch.setattr(socket, 'socket', lambda *a, **k: pytest.fail('Unexpected network'))
     extra = []
@@ -308,6 +328,8 @@ def test_main_real_ecsv_to_report_offline(cache, tmp_path, monkeypatch, kervella
             transport=lambda url: ((hreadme if url.endswith('ReadMe') else hcompressed), {}),
             tap=lambda *a: (synthetic_vot(metadata_table(table.colnames)), {}))
         extra += ['--astrometry-source', str(captured)]
+    if publish_source:
+        extra += ['--source-output', str(tmp_path/'source_v1')]
     audit.main(['--cache', str(root), '--output', str(out), *extra])
     version = 4 if coverage else 3 if supplement else 2
     summary = json.loads((out / f'summary_v{version}.json').read_text())
@@ -327,6 +349,13 @@ def test_main_real_ecsv_to_report_offline(cache, tmp_path, monkeypatch, kervella
         assert summary['astrometric_coverage']['preferred_available_inputs'] == {'hipparcos2':1}
         reviewed = json.loads((out / 'hip_review_v4.jsonl').read_text())
         assert reviewed['astrometric_coverage']['hipparcos2_fallback_source']['HIP'] == '1'
+    if publish_source:
+        snapshot = enrichment.load_stellar_enrichment(tmp_path/'source_v1')
+        record = next(snapshot.records())
+        assert record['original']['star_designations'] == h['star_designations']
+        assert record['original']['unconsumed_extra'] == h['unconsumed_extra']
+        assert record['source_references']['gaia'] == '9007199254740993'
+        assert snapshot.metadata['counts']['preferred_available_inputs'] == {'hipparcos2':1}
     for name, record in json.loads((out / f'audit_manifest_v{version}.json').read_text())['products'].items():
         raw = (out / name).read_bytes()
         assert record == dict(sha256=sha256(raw).hexdigest(), bytes=len(raw))
@@ -804,3 +833,209 @@ def test_gaia_metadata_faults_refused(fault):
     if fault=='float_identifier':table['datatype']=['double','long']
     with pytest.raises(ValueError):
         stellar_fetch.validate_metadata(synthetic_vot(table),['source_id','solution_id'])
+
+
+@pytest.fixture
+def enrichment_snapshot(hip2_bundle,monkeypatch):
+    """Synthetic multi-edition input catalogue, including absent and position-only rows."""
+    from types import SimpleNamespace
+    from dataclasses import dataclass
+    import pandas as pd
+    profile,raw,readme,_=hip2_bundle
+    hip2=audit.parse_hipparcos2(raw,readme,profile['hipparcos2'])
+    reference=dict(PROFILE,release='DR3',right_ascension_motion='mu_alpha*cos(delta)')
+    table=gaia_table([9007199254740993,200,400,500,600])
+    table['astrometric_params_solved']=[31,3,95,999,31]
+    table['pmra']=MaskedColumn([0.,0.,0.,0.,0.],mask=[False,True,False,False,False],unit='mas/yr')
+    table['pmdec']=MaskedColumn([0.,0.,0.,0.,0.],mask=[False,True,False,False,False],unit='mas/yr')
+    table['phot_g_mean_mag']=[10.,11.,12.,13.,14.];table['phot_g_mean_mag'].unit='mag'
+    table['ra_dec_corr']=[.1,.2,.3,.4,.5]
+    sources=list(audit.table_rows(table,('source_id','solution_id')))
+    hips=[hip(i)for i in range(1,6)];hips[3]['magnitude']=None
+    best=[pair(i,sid)for i,sid in [(1,9007199254740993),(2,200),(4,400),(5,500)]]
+    summary,rows,candidates=audit.audit(hips,best,best+[pair(2,600)],sources,HIP_METADATA,reference)
+    for row in rows:row['primary_candidate_category']=row['category']
+    summary,rows=audit.astrometric_coverage(summary,rows,sources,hip2,profile['hipparcos2'])
+    @dataclass(frozen=True)
+    class Names:
+        hip:int
+        names:tuple
+    originals=[]
+    for h in hips:
+        h=dict(h,star_designations=Names(int(h['hip']),('Synthetic \u03b1',)),
+               unconsumed_column={'extra':None,'original_flag':False})
+        originals.append({k:v for k,v in h.items()if k!='hip'})
+    frame=pd.DataFrame(originals,index=range(1,6))
+    meta=dict(HIP_METADATA,catalogue='hipparcos',edition='synthetic-original',source_sha256='a'*64,
+              units={'magnitude':'mag','ra_degrees':'deg','dec_degrees':'deg','ra_mas_per_year':'mas/yr','dec_mas_per_year':'mas/yr'},provenance=['Constructed fixture; not provider data'])
+    stars=SimpleNamespace(source_catalog=frame,
+        catalogue_metadata=SimpleNamespace(to_record=lambda:meta),
+        designation_catalogue=SimpleNamespace(edition='synthetic-names',source_sha256='d'*64))
+    ids=[str(i)for i in frame.index]
+    photometry=[[int(h['hip']),'missing'if h['magnitude']is None else float(h['magnitude']).hex()]for h in hips]
+    contract=dict(baseline=dict(catalogue='hipparcos',edition='synthetic-original',source_sha256='a'*64,
+        rows=5,ordered_hip_ids_sha256=sha256(('\n'.join(ids)+'\n').encode()).hexdigest(),
+        hip_magnitude_pairs_sha256=sha256(json.dumps(photometry,separators=(',',':')).encode()).hexdigest()),
+        preserved_columns=['magnitude','star_designations','unconsumed_column'])
+    tables={audit.PRODUCTS[2]:table,audit.PRODUCTS[3]:metadata_table(table.colnames)}
+    monkeypatch.setitem(sys.modules,'wenu.stellar_enrichment',enrichment)
+    result=audit.enrichment_snapshot(stars,summary,rows,sources,hip2,candidates,tables,contract,
+        {'source_kind':'constructed-synthetic','raw_sha256':'b'*64},profile)
+    return result
+
+
+def snapshot_mutation(snapshot,product,mutate):
+    products=dict(snapshot.products)
+    if product.endswith('jsonl'):
+        rows=[enrichment.decode(line)for line in products[product].splitlines()]
+        mutate(rows)
+        products[product]=b''.join(enrichment.encode(r)+b'\n'for r in rows)
+    else:
+        row=enrichment.decode(products[product]);mutate(row)
+        products[product]=enrichment.encode(row)+b'\n'
+    manifest=enrichment.encode(dict(schema='wenu-stellar-enrichment-snapshot/1',complete=True,
+        products={name:enrichment.identity(raw)for name,raw in products.items()}))
+    return enrichment.StellarEnrichmentSnapshot(tuple((name,products[name])for name in enrichment.PRODUCTS),manifest)
+
+
+def test_enrichment_round_trip_immutable_values_and_fallback(enrichment_snapshot,tmp_path):
+    from dataclasses import FrozenInstanceError
+    snapshot=enrichment_snapshot
+    audit.publish_enrichment(tmp_path/'source_v1',snapshot)
+    loaded=enrichment.load_stellar_enrichment(tmp_path/'source_v1',
+        expected_manifest_sha256=sha256(snapshot.manifest).hexdigest())
+    assert loaded==snapshot
+    rows=list(loaded.records())
+    assert [r['identity']['identifier']for r in rows]==['1','2','3','4','5']
+    assert [r['input_availability']['preferred_available_input']for r in rows]==[
+        'gaia','hipparcos2','original_1997_lookup','gaia','original_1997_lookup']
+    assert rows[0]['original']['star_designations']=={'hip':1,'names':['Synthetic \u03b1']}
+    assert rows[3]['original']['magnitude']is None
+    assert rows[0]['foreign_photometry']['phot_g_mean_mag']==10.
+    assert rows[0]['original']['magnitude']==5.
+    gaia=list(loaded.records('gaia_sources_v1.jsonl'))
+    assert gaia[0]['source_id']=='9007199254740993'and gaia[0]['parallax']==-1.
+    assert gaia[1]['pmra']is None and gaia[0]['ra_dec_corr']==.1
+    assert loaded.metadata['hipparcos2_profile']['reference']['epoch']['scale']is None
+    rows[0]['original']['magnitude']=99
+    meta=loaded.metadata;meta['counts']['retained_hip_rows']=99
+    assert next(loaded.records())['original']['magnitude']==5.
+    assert loaded.metadata['counts']['retained_hip_rows']==5
+    with pytest.raises(FrozenInstanceError):loaded.manifest=b'changed'
+    with pytest.raises(ValueError,match='manifest identity'):
+        enrichment.load_stellar_enrichment(tmp_path/'source_v1',expected_manifest_sha256='0'*64)
+    before={p.name:p.read_bytes()for p in (tmp_path/'source_v1').iterdir()}
+    with pytest.raises(ValueError,match='already exists'):audit.publish_enrichment(tmp_path/'source_v1',snapshot)
+    assert before=={p.name:p.read_bytes()for p in (tmp_path/'source_v1').iterdir()}
+
+
+@pytest.mark.parametrize('fault',['membership','order','photometry','column','float_id','association',
+    'unit','reference','epoch','gaia_duplicate','gaia_missing','candidate_duplicate','candidate_foreign',
+    'hip2_record','hip2_field','fallback','counts','adoption','adoption_flag','foreign_photometry','bridge'])
+def test_enrichment_semantic_corruption_refused_even_with_rehashed_products(enrichment_snapshot,fault):
+    product='stars_v1.jsonl'
+    def mutate(rows):
+        if fault=='membership':rows.pop()
+        if fault=='order':rows.reverse()
+        if fault=='photometry':rows[0]['original']['magnitude']=10.
+        if fault=='column':del rows[0]['original']['unconsumed_column']
+        if fault=='float_id':rows[0]['identity']['identifier']=1.
+        if fault=='association':rows[0]['published_association']['source_id']='600'
+        if fault=='fallback':rows[1]['input_availability']['preferred_available_input']='gaia'
+        if fault=='adoption':rows[0]['adopted_solution']={'invented':True}
+        if fault=='adoption_flag':rows[0]['input_availability']['model_adopted']=True
+        if fault=='foreign_photometry':rows[0]['foreign_photometry']['phot_g_mean_mag']=5.
+        if fault=='bridge':rows[0]['published_association']['release']='EDR3'
+    if fault in ('unit','reference','counts'):
+        product='metadata_v1.json'
+        def mutate(meta):
+            if fault=='unit':meta['gaia_column_units']['pmra']='deg / yr'
+            if fault=='reference':meta['gaia_reference']['epoch_scale']='utc'
+            if fault=='counts':meta['counts']['retained_hip_rows']=4
+    if fault in ('epoch','gaia_duplicate','gaia_missing'):
+        product='gaia_sources_v1.jsonl'
+        def mutate(rows):
+            if fault=='epoch':rows[0]['ref_epoch']=2000.
+            if fault=='gaia_duplicate':rows.append(rows[0])
+            if fault=='gaia_missing':rows.pop()
+    if fault in ('candidate_duplicate','candidate_foreign'):
+        product='candidate_evidence_v1.jsonl'
+        def mutate(rows):
+            if fault=='candidate_duplicate':rows.append(rows[0])
+            if fault=='candidate_foreign':rows[0]['hip']='999'
+    if fault in ('hip2_record','hip2_field'):
+        product='hipparcos2_sources_v1.jsonl'
+        def mutate(rows):
+            if fault=='hip2_record':rows[0]['original_record_ascii']='x'+rows[0]['original_record_ascii'][1:]
+            if fault=='hip2_field':rows[0]['pmRA']=99.
+    with pytest.raises((ValueError,KeyError)):
+        snapshot_mutation(enrichment_snapshot,product,mutate)
+
+
+@pytest.mark.parametrize('raw',[b'{"x":NaN}',b'{"x":1e999}',b'{"x":1,"x":2}'])
+def test_enrichment_strict_json_refuses_unknown_nonfinite_and_duplicate_fields(raw):
+    with pytest.raises(ValueError):enrichment.decode(raw)
+
+
+def test_enrichment_publication_failure_removes_only_owned_output(enrichment_snapshot,tmp_path,monkeypatch):
+    output=tmp_path/'source_v1';existing=tmp_path/'keep.txt';existing.write_text('unchanged')
+    replace=Path.replace
+    def fail(path,target):
+        if path.name=='gaia_sources_v1.jsonl':raise OSError('Synthetic disk failure')
+        return replace(path,target)
+    monkeypatch.setattr(Path,'replace',fail)
+    with pytest.raises(OSError):audit.publish_enrichment(output,enrichment_snapshot)
+    assert not output.exists()and existing.read_text()=='unchanged'
+    assert not list(tmp_path.glob('.source_v1-*'))
+
+
+def test_enrichment_loader_standalone_without_wenu_or_astronomy(enrichment_snapshot,tmp_path):
+    import subprocess
+    output=tmp_path/'source_v1';audit.publish_enrichment(output,enrichment_snapshot)
+    script='''import importlib.util,sys
+from pathlib import Path
+spec=importlib.util.spec_from_file_location('standalone_enrichment',sys.argv[1])
+m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+s=m.load_stellar_enrichment(sys.argv[2])
+assert s.metadata['counts']['retained_hip_rows']==5
+assert len(list(s.records()))==5
+assert not any(n.split('.')[0] in {'wenu','wenu_kernel','numpy','astropy','pandas','matplotlib','skyfield'} for n in sys.modules)
+print('Standalone source reload passed')
+'''
+    code=tmp_path/'check.py';code.write_text(script)
+    result=subprocess.run([sys.executable,'-I','-S',str(code),str(Path(__file__).parents[1]/'src/wenu/stellar_enrichment.py'),str(output)],capture_output=True,text=True)
+    assert result.returncode==0,result.stderr
+    assert 'Standalone source reload passed'in result.stdout
+
+
+@pytest.mark.parametrize('product',enrichment.PRODUCTS)
+def test_enrichment_product_bytes_corruption_refused(enrichment_snapshot,tmp_path,product):
+    root=tmp_path/'source_v1';audit.publish_enrichment(root,enrichment_snapshot)
+    p=root/product;p.write_bytes(p.read_bytes()+b' ')
+    with pytest.raises(ValueError,match='digest differs'):enrichment.load_stellar_enrichment(root)
+
+
+def test_source_value_copies_dataclasses_mappings_masks_and_rejects_unknowns():
+    from dataclasses import dataclass
+    from types import MappingProxyType
+    @dataclass(frozen=True)
+    class Record:
+        names:tuple
+        evidence:object
+    mutable={'extra':[1,None]}
+    value=Record(('Synthetic \u03b1',),MappingProxyType(mutable))
+    copied=audit.source_value(value);mutable['extra'][0]=99
+    assert copied=={'names':['Synthetic \u03b1'],'evidence':{'extra':[1,None]}}
+    assert audit.source_value(np.ma.masked)is None
+    assert audit.source_value(float('nan'))is None
+    with pytest.raises(ValueError):audit.source_value(object())
+
+
+@pytest.mark.parametrize('nested',['same','source_inside_report','report_inside_source'])
+def test_source_publication_output_paths_must_be_disjoint(tmp_path,nested):
+    source=tmp_path/'source';report=source
+    if nested=='source_inside_report':report=tmp_path;source=tmp_path/'source'
+    if nested=='report_inside_source':report=source/'report'
+    with pytest.raises(ValueError,match='separate directories'):
+        audit.main(['--cache','unused','--kervella-source','unused','--astrometry-source','unused',
+            '--source-output',str(source),'--output',str(report)])

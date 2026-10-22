@@ -1,6 +1,6 @@
 {
   "schema": "wenu-stellar-enrichment-contract/1",
-  "status": "design-contract-only; no Gaia data or runtime adapter",
+  "status": "local-source-snapshot-codec-implemented; no production astrometric model or saved-sky adoption",
   "milestone": "K4a.01",
   "baseline": {
     "commit": "2988f75436c93a6ee060c10cb464031fd3ce96ce",
@@ -18,15 +18,34 @@
     "default_selected_rows": 2851
   },
   "record_schema": "wenu-stellar-enrichment/1",
-  "row_fields": ["identity", "original", "match_status", "candidates", "adopted_solution", "foreign_photometry"],
+  "row_fields": [
+    "schema",
+    "identity",
+    "original",
+    "match_status",
+    "published_association",
+    "candidates",
+    "primary_candidate_category",
+    "review_reasons",
+    "adopted_solution",
+    "source_references",
+    "input_availability",
+    "foreign_photometry"
+  ],
   "serialization_rules": "IDs are decimal strings; unknowns are explicit null/masks; numeric values must be finite; provider unknown fields survive in original source records",
-  "identity_fields": ["catalogue", "edition", "identifier", "component"],
+  "identity_fields": [
+    "catalogue",
+    "edition",
+    "identifier",
+    "component"
+  ],
   "identity_rules": {
     "identifier_encoding": "decimal string; never binary64",
     "baseline_identity": "hipparcos + ESA-1997-I/239 + HIP; component null unless independently established",
     "foreign_identity": "catalogue + release + source_id; never equate identifiers across releases",
     "component_null": "unknown or unresolved; not an asserted single star, barycentre or primary",
-    "cardinality": "one membership row per original HIP; zero or more candidate counterparts; at most one explicitly adopted astrometric solution per component"
+    "cardinality": "one membership row per original HIP; zero or more candidate counterparts; at most one explicitly adopted astrometric solution per component",
+    "identified": "Published identity retained independently of physical/model admission; adopted_solution remains null in input snapshots."
   },
   "membership": {
     "population": "complete Stars.source_catalog before any chart selection",
@@ -34,7 +53,15 @@
     "outside_source": "report absent explicit IDs and missing constellation endpoints; do not fabricate source rows or coordinates",
     "unmatched": "retain original membership and source-native lookup; no implicit new propagation capability"
   },
-  "match_statuses": ["not_searched", "unmatched", "ambiguous", "component_conflict", "identified_unusable", "adopted"],
+  "match_statuses": [
+    "not_searched",
+    "unmatched",
+    "ambiguous",
+    "component_conflict",
+    "identified",
+    "identified_unusable",
+    "adopted"
+  ],
   "solution_fields": {
     "identity": "edition-qualified foreign identity",
     "reference": "frame, origin, reference epoch value/format/scale, spatial convention and primary-source evidence",
@@ -43,13 +70,68 @@
     "quality": "solution type and preserved original quality fields; usability policy version and reasons",
     "source": "resource digest, row identity and provenance; original fields preserved"
   },
-  "match_evidence_fields": ["candidate_identity", "source_resource", "method", "comparison_epoch", "comparison_frame", "separation", "criteria", "component_evidence", "decision", "reason", "policy_version"],
+  "match_evidence_fields": [
+    "candidate_identity",
+    "source_resource",
+    "method",
+    "comparison_epoch",
+    "comparison_frame",
+    "separation",
+    "criteria",
+    "component_evidence",
+    "decision",
+    "reason",
+    "policy_version"
+  ],
   "photometry": {
     "existing_magnitude": "original Hipparcos visual magnitude used for selection and symbol sizing",
     "gaia_bands": "separate measurements with passband/release/source provenance; no implicit G-to-V substitution",
     "missing": "explicit null/mask; never zero"
   },
-  "preserved_columns": ["magnitude", "variability_type", "variability_annex", "light_curve_annex", "is_variable", "ccdm_id", "ccdm_entry_count", "component_count", "multiple_annex", "component_position_angle_deg", "component_separation_arcsec", "component_magnitude_difference", "is_multiple", "star_designations"],
-  "snapshot_fields": ["schema", "membership_source", "membership_digest", "edition_adapters", "resources", "policy_versions", "rows", "coverage_report"],
-  "deferred": ["API/terms and acquisition policy K4a.02", "crossmatch decisions K4a.03", "immutable source subset publication K4a.04", "coverage acceptance K4a.05", "propagation and historical domains K4b", "saved-sky schema integration", "kernel freeze K5"]
+  "preserved_columns": [
+    "magnitude",
+    "variability_type",
+    "variability_annex",
+    "light_curve_annex",
+    "is_variable",
+    "ccdm_id",
+    "ccdm_entry_count",
+    "component_count",
+    "multiple_annex",
+    "component_position_angle_deg",
+    "component_separation_arcsec",
+    "component_magnitude_difference",
+    "is_multiple",
+    "star_designations"
+  ],
+  "snapshot_fields": [
+    "schema",
+    "complete",
+    "products"
+  ],
+  "deferred": [
+    "API/terms and acquisition policy K4a.02",
+    "crossmatch decisions K4a.03",
+    "immutable source subset publication K4a.04",
+    "coverage acceptance K4a.05",
+    "propagation and historical domains K4b",
+    "saved-sky schema integration",
+    "kernel freeze K5"
+  ],
+  "implemented_source_snapshot": {
+    "schema": "wenu-stellar-enrichment-snapshot/1",
+    "owner": "src/wenu/stellar_enrichment.py",
+    "publication_owner": "tools/gaia_crossmatch_audit.py --source-output",
+    "scope": "Local external cache only; full source fields and designation data preserved; no provider/model or redistribution admission.",
+    "match_status": "identified for accepted published identities; unmatched otherwise",
+    "round_trip": "JSON decimal-string primary identities; finite numbers; source masks/unknowns as null; designation dataclass fields as objects and tuples as arrays; original edition/resource identity retained.",
+    "products": [
+      "metadata_v1.json",
+      "stars_v1.jsonl",
+      "gaia_sources_v1.jsonl",
+      "hipparcos2_sources_v1.jsonl",
+      "candidate_evidence_v1.jsonl"
+    ],
+    "metadata": "Original membership/source/field/photometry identity; edition/reference/unit records; captured-source provenance; association ledger identity; explicit availability counts and null model admission."
+  }
 }

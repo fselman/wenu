@@ -135,6 +135,7 @@ concrete Wenu classes.
 | [`catalogue_state.py`](../../src/wenu/catalogue_state.py) | Shared immutable direction-table provider with optional aligned per-row epochs, vector decoding and owned kernel scope; no catalogue decoding, observer or graphics. |
 | [`stellar_state.py`](../../src/wenu/stellar_state.py) | Source-epoch native stellar facade over the shared table/provider boundary; no propagation or acquisition. |
 | [`stellar_catalogue.py`](../../src/wenu/stellar_catalogue.py) | Validated stellar ingestion, immutable metadata mirror and standard table envelope; source facts read from data documents. |
+| [`stellar_enrichment.py`](../../src/wenu/stellar_enrichment.py) | Immutable multi-edition source snapshot codec, strict byte/identity/unit/membership admission and source-free local reload; no propagation or acquisition. |
 | [`svg_document.py`](../../src/wenu/svg_document.py) | Deterministic semantic annotations for Matplotlib SVG output. |
 | [`temporal.py`](../../src/wenu/temporal.py) | Renderer-neutral temporal sequence vocabulary. |
 | [`temporal_components.py`](../../src/wenu/temporal_components.py) | Shared visibility policy for start-inclusive temporal components. |
@@ -515,3 +516,10 @@ Hipparcos-2 raw capture. It has a different lifecycle and variable-ID query
 boundary from the fixed Kervella publication capture; no generic provider/runtime
 module is introduced. The existing offline audit test owner covers transport,
 source admission and public acquisition-to-report seams with synthetic bytes.
+
+K4a.04 uses `stellar_enrichment.py` for the immutable linked-source snapshot;
+its mixed-edition, nullable source facts and self-contained codec differ from the
+single-edition native-direction ingestion contract in `stellar_catalogue.py`.
+The existing offline audit owns normalization/staged local publication and its
+existing tests own corruption, source-free reload and public-command seams.
+This adds no new kernel route, provider, dependency or installed command.

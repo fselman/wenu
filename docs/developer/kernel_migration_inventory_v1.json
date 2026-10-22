@@ -1784,6 +1784,13 @@
       "git_blob_sha": "65896806555ae4e593144975f0f0a280d28ba3c9",
       "as_is_directory": "src/wenu",
       "description": "Visibility utilities."
+    },
+    {
+      "path": "src/wenu/stellar_enrichment.py",
+      "git_blob_sha": "54abee9fc9c7f2023ac80aed403ed2c0d79f47e6",
+      "as_is_directory": "src/wenu",
+      "description": "Immutable multi-edition stellar source snapshot codec; standard-library only.",
+      "baseline_relation": "K4a.04 local source admission; independent of native-direction ingestion, providers and propagation."
     }
   ],
   "test_side_python_files": [
@@ -6995,10 +7002,11 @@
     },
     {
       "path": "tests/test_gaia_crossmatch_audit.py",
-      "git_blob_sha": "1df0b25bc1e5e6373305f804bb72778caad796ce",
+      "git_blob_sha": "855853837ff0caccab7bc1392127c94f165cceae",
       "imports": [
         "astropy.table",
         "copy",
+        "dataclasses",
         "fetch_stellar_astrometry",
         "gzip",
         "hashlib",
@@ -7011,17 +7019,19 @@
         "pathlib",
         "pytest",
         "socket",
+        "subprocess",
         "sys",
         "types",
         "xml.etree.ElementTree"
       ],
-      "test_functions": 36,
+      "test_functions": 44,
       "marks": {},
-      "parametrize_decorators": 14,
+      "parametrize_decorators": 18,
       "fixtures": [
         "cache",
         "kervella_bundle",
-        "hip2_bundle"
+        "hip2_bundle",
+        "enrichment_snapshot"
       ],
       "peer_test_imports": []
     }
@@ -7501,7 +7511,7 @@
     },
     {
       "path": "tools/gaia_crossmatch_audit.py",
-      "git_blob_sha": "aa1d85481bd7d6a76d91c2f31f22a5720435d020"
+      "git_blob_sha": "27c99f21f3a56919579220f729025b13d6b7087a"
     },
     {
       "path": "tools/fetch_kervella_catalogue.py",
@@ -21784,12 +21794,12 @@
         ]
       },
       "tools/gaia_crossmatch_audit.py": {
-        "git_blob_sha": "aa1d85481bd7d6a76d91c2f31f22a5720435d020",
+        "git_blob_sha": "27c99f21f3a56919579220f729025b13d6b7087a",
         "group": "maintenance",
         "evidence_ids": [
-          "K4a.03S2"
+          "K4a.04"
         ],
-        "purpose": "Offline published association preservation and astrometric input/fallback coverage.",
+        "purpose": "Offline cache/association/availability audit plus explicit immutable local source normalization and publication.",
         "operational_classification": "offline-source-evidence",
         "operational_boundary": "Exact published identities only; primary preservation, edition/provenance and report publication without independent matching or production realization.",
         "imports": [
@@ -21800,8 +21810,10 @@
           "astropy.time",
           "astropy.units",
           "collections",
+          "collections.abc",
           "copy",
           "csv",
+          "dataclasses",
           "fetch_kervella_catalogue",
           "fetch_stellar_astrometry",
           "hashlib",
@@ -21812,7 +21824,8 @@
           "re",
           "shutil",
           "tempfile",
-          "wenu.objects.stars"
+          "wenu.objects.stars",
+          "wenu.stellar_enrichment"
         ]
       },
       "tools/fetch_kervella_catalogue.py": {
@@ -21861,6 +21874,24 @@
           "urllib.parse",
           "urllib.request",
           "xml.etree.ElementTree"
+        ]
+      },
+      "src/wenu/stellar_enrichment.py": {
+        "git_blob_sha": "54abee9fc9c7f2023ac80aed403ed2c0d79f47e6",
+        "group": "catalogue-core",
+        "evidence_ids": [
+          "K4a.04"
+        ],
+        "purpose": "Immutable local stellar input snapshot and independent source-free codec.",
+        "operational_classification": "source-admission",
+        "operational_boundary": "No network, astronomical models, kernel, catalogue loading, graphics or default consumer adoption.",
+        "imports": [
+          "collections",
+          "dataclasses",
+          "hashlib",
+          "json",
+          "math",
+          "pathlib"
         ]
       }
     },
@@ -26368,11 +26399,24 @@
         "gate": "gaia-crossmatch-audit"
       }
     },
-    "status": "Candidate; focused synthetic and source preflight separate from Mac combined acceptance",
+    "status": "Accepted actual Mac capture and v4_run2 coverage at dba60b2e; no model adoption",
     "real_hip2_rows": 117955,
     "source_admission": "Full source hashes, gzip CRC, layout/count, exact integer HIPs and raw weights parsed successfully",
     "gaia_preflight": "Actual bounded metadata-only ESA POST HTTP200; source ID integer datatype and epoch/PM units verified",
-    "mac_capture_and_report": "pending; original source/cache only on Mac",
+    "mac_capture_and_report": {
+      "head": "dba60b2e2bd0725066bdcfa84963cc777306d515",
+      "focused_passed": 88,
+      "documentation_passed": 36,
+      "additional_batches": 36,
+      "additional_sources": 17686,
+      "gaia_motion_inputs": 115105,
+      "hipparcos2_fallback": 2850,
+      "original_lookup": 263,
+      "retained_rows": 118218,
+      "adopted_astrometric_solutions": 0,
+      "output": "~/wenu-output/gaia_crossmatch_audit_v4_run2",
+      "evidence": "Fernando user-run real data receipt"
+    },
     "limits": "No production module, model, propagation, redistribution, renderer, SDK or saved-sky change. Input availability is not model/quality admission; Hip2 scale/convention qualification remains explicit.",
     "focused_synthetic_cases": 88,
     "local_tooling_receipt": "Six independent synthetic runner cases, nine subtests passed; two full-tree runner checks deferred to Mac.",
@@ -26392,6 +26436,46 @@
       "local_focused_passed": 88,
       "real_response": "One captured full-column ESA source response passed exact schema, integer ID, unit and epoch validation after correction",
       "mac_resume_and_report": "pending; profile/plan identity unchanged"
+    }
+  },
+  "stellar_enrichment_source_admission": {
+    "milestone": "K4a.04",
+    "base_commit": "dba60b2e2bd0725066bdcfa84963cc777306d515",
+    "gate": "gaia-crossmatch-audit",
+    "owners": {
+      "src/wenu/stellar_enrichment.py": {
+        "git_blob_sha": "54abee9fc9c7f2023ac80aed403ed2c0d79f47e6",
+        "gate": "gaia-crossmatch-audit"
+      },
+      "tools/gaia_crossmatch_audit.py": {
+        "git_blob_sha": "27c99f21f3a56919579220f729025b13d6b7087a",
+        "gate": "gaia-crossmatch-audit"
+      },
+      "tests/test_gaia_crossmatch_audit.py": {
+        "git_blob_sha": "855853837ff0caccab7bc1392127c94f165cceae",
+        "gate": "gaia-crossmatch-audit"
+      }
+    },
+    "scope": "Local immutable source snapshot only; no external distribution/model/default consumer adoption",
+    "contract": "docs/developer/data/stellar_enrichment_contract_v1.json",
+    "source_snapshot_schema": "wenu-stellar-enrichment-snapshot/1",
+    "source_record_schema": "wenu-stellar-enrichment/1",
+    "responsibility": "Mixed-edition snapshot codec separate from source-native ingestion; existing audit owns normalization/staged publication.",
+    "preservation": "Full loaded original columns/designations; original membership/order/V; all candidate/linked Gaia fields with units and uncertainties; native Hip2 rows/weights; published links and null adoption.",
+    "mac_source_publication": "Pending against actual external caches; original data not present here",
+    "limits": [
+      "Hip2 unknown epoch scale/RA convention stay explicit",
+      "No covariance/distance/physical model inferred",
+      "Raw parent resources remain external and digest-identified; snapshot normalizes parsed values",
+      "External redistribution remains deferred; K4a.05 and K4b separate"
+    ],
+    "local_receipt": {
+      "focused_synthetic_cases": 125,
+      "tooling_cases": 6,
+      "tooling_subtests": 9,
+      "limits": "Two full-tree runner checks and complete documentation gate require Mac; real normalized source publication/round trip not run here",
+      "isolation": "Actual -I -S process loads codec and constructed snapshot without Wenu/astronomy/catalogue/network imports",
+      "preflight": "Changed active links/anchors, source map and complete GitHub production census verified; captured real ESA response units match the codec vocabulary"
     }
   }
 }
