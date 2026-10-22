@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 68, 2026-10-21. **Status:** K4a.03 offline candidate audit selected after the user-reported raw acquisition and integrity check. Match decisions, source publication and propagation remain pending.
+**Plan revision:** 69, 2026-10-21. **Status:** K4a.03 offline candidate audit selected after the user-reported raw acquisition and integrity check. Published best-neighbour associations are now accepted as the source of identity linkage; source publication and propagation remain pending.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -62,8 +62,8 @@ clean synchronized main are confirmed.
 | Gaia | K4a.01 accepted; raw acquisition/integrity reported on Mac; K4a.03 offline audit selected; identity decisions/publication/propagation pending |
 | Shared positional extension | AX.01–AX.12 accepted; AX.13–AX.16 pending; AX.14 overlaps K4b |
 | Freeze/extraction/release | K5–K9 pending |
-| Current authorized task | K4a.03 offline integrity, candidate cardinality/component and common-epoch diagnostic audit; no adopted matches or production changes |
-| Next bounded submilestone | Review the reproducible K4a.03 report; resolve flags, component/edition and identity evidence before match adoption. K4a.02 terms review remains deferred and K4a.04 publication unselected |
+| Current authorized task | K4a.03 retain published Hipparcos-2–Gaia best-neighbour associations via exact HIP keys; diagnostics and quality flags do not veto them; no production propagation |
+| Next bounded submilestone | Accept the association-preserving v2 report. K4a.02 terms review remains deferred and K4a.04 publication unselected |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -89,26 +89,42 @@ real-data audit here. The prior policy-only status did not reflect that external
 run. Terms/licensing review was deferred in the external downloader workflow;
 this receipt neither closes K4a.02 nor authorizes distribution.
 
-Scope: implement one offline maintenance audit of the existing verified cache,
-with one row per original HIP and per-candidate evidence. Count unique/ambiguous/
-shared-source cases, preserve source flags and component warnings, and calculate
-nominal PM-only common-epoch angular diagnostics where both inputs are available.
-The 1997 source and Hipparcos-2 crossmatch edition remain distinct in provenance.
-Fernando clarified the route: exact HIP-key linkage from 1997 to Hipparcos-2,
-then the published Hipparcos-2-to-Gaia candidate bridge. Do not invent an
-edition-wide identity ambiguity or rematch the two Hipparcos editions by position.
-Retain specific multiple/component, shared-source and candidate conflicts. No candidate
-is automatically adopted; a diagnostic or unique candidate is not identity proof.
-No new acquisition, positional recovery search, production provider/propagation,
-chart/photometry/selection change, source distribution or package extraction.
+Fernando subsequently instructed: “Just trust the 2007 paper work and keep those
+associations.” This explicitly supersedes the original all-unresolved audit
+policy: retain the published Gaia DR3 hipparcos2_best_neighbour association for
+each exact HIP key, without independently repeating that crossmatch or acquiring
+the 2007 positions/proper motions. Preserve all neighbourhood alternatives and
+original flags as evidence. A missing best-neighbour row remains unassociated;
+never select a neighbourhood alternative by proximity. Multiple contradictory
+best-neighbour rows are a data-integrity error, never resolved by guessing.
 
-Prerequisites: exact clean synchronized base above, completed cache with verified
-products/raw responses, original retained-source membership and metadata. Smallest
-acceptance: synthetic offline cardinality/identity/mask/corruption and common-epoch
-oracles plus no-clobber report publication; focused documentation/tooling integrity;
-then the actual Mac report with every original HIP retained and zero adoptions.
-K4a.03 remains partial until flag qualification, component evidence, explicit
-identity decisions and real-data report review are accepted. K4a.04 remains separate.
+Retain published associations even when 1997-motion diagnostic separations are
+large or unavailable, Gaia PM/RV/parallax is missing, the original entry is a
+multiple, or a source is shared. These are annotations, not identity vetoes.
+Accepting a published association does not adopt an astrometric propagation
+model, measurement quality, component-specific RV or a new V magnitude.
+Original HIP membership and descriptive/photometric fields remain intact.
+
+The Mac v1 audit completed at 60fff03c with 29 focused, 36 documentation and
+eight tooling cases (80 subtests). It retained 99,042 one-candidate HIP entries,
+483 multiple-candidate entries and 18,693 unmatched entries; 100,010 pairs and
+no shared Gaia sources. Gaia-back diagnostics existed for 98,011 pairs and
+1997-forward diagnostics for all 100,010. These diagnostic counts/percentiles
+are historical v1 evidence, not a new acceptance requirement for published links.
+
+Scope: update the same offline maintenance audit and report to record exactly
+the published best-neighbour links and alternatives with source/digest/policy
+provenance. Produce a new v2 report without overwriting v1. The existing raw cache
+stays read-only. No new acquisition, 2007 catalogue reprocessing, positional
+recovery search, provider/propagation, chart/photometry/selection change, source
+distribution or package extraction.
+
+Acceptance: existing corruption/integer/membership and report-publication checks,
+plus exact best-neighbour retention despite adverse/missing diagnostics or flags,
+no adoption of neighbourhood-only alternatives, contradictory-best-row refusal,
+and an exact per-HIP association ledger. Run focused documentation/tooling checks
+and the real v2 Mac report. This is association acceptance; K4a.04 immutable-source
+publication and K4b model/quality admission remain separate.
 
 ## Agreed product acceptance before Gaia
 
@@ -143,6 +159,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 69: retain published associations | Fernando’s “Just trust the 2007 paper work and keep those associations” | Trust the published DR3 Hipparcos-2 best-neighbour links via exact HIP key. No 2007 astrometry download or independent re-crossmatch; diagnostic/quality annotations never veto published associations. Alternatives remain evidence; propagated-solution admission stays separate. |
 | Revision 68: select K4a.03 offline audit | Fernando’s “Proceed” after the successful downloader and offline integrity receipt | Offline report only, with cardinality/component/edition warnings and common-epoch diagnostics; zero automatic adoptions. K4a.02 terms review remains deferred, without permission claims; no acquisition/publication/production propagation. |
 | Revision 67: select K4a.02 | Fernando’s “Proceed” after PR #315 Mac acceptance, merge and confirmed clean main/branch cleanup | Review current primary API/terms and propose bounded offline acquisition, match/component, quality and missing-data policies. Record dated URLs, evidence limits and unresolved permission/service constraints honestly. Documentation/policy only: no live TAP catalogue query, downloaded subset, new dependency, matching implementation, propagation or runtime change. Policy acceptance and later acquisition remain separate. |
 | Revision 66: select K4a.01 | Fernando’s “Proceed” after the full roadmap and six-product acceptance; clean synchronized main at 2988f754 confirmed | Define the retained Hipparcos membership, component/photometry invariants and edition-qualified enrichment record/schema. Bind an offline census to source bytes and verify existing selection contracts in current stellar test owners. Documentation/data contract and regression evidence only; no acquisition route, match decisions, production astrometry/photometry/selection change, new dependency, SDK or package extraction. K4a.02 onward remains separate. |
@@ -860,7 +877,7 @@ remain its separate responsibilities.
 |---|---|---|
 | K4a.01 | Fix current Wenu membership/component/photometry contract and edition-qualified schema, including future DR4 adapter boundary | Accepted PR #315/main d447565d after 35 focused cases/nine subtests, 36 documentation and eight tooling Mac cases; clean main/cleanup confirmed. No full Gaia mirror or silent V-to-G substitution |
 | K4a.02 | Agree bounded acquisition/matching/quality/missing-data policy after checking current primary API/terms/licensing | Dated audit and bounded proposal delivered for review; complete ESA terms/intended-use rights, endpoint limits and flag metadata unresolved. No acquisition authority; rendering/tests remain offline |
-| K4a.03 | Cross-identify the required DR3 sources with epoch/PM-aware evidence and explicit ambiguous/unmatched/component cases | Offline candidate audit selected by Fernando; raw acquisition/integrity user-reported. Identity decisions, qualified flags/components and real-data acceptance pending; no nearest-neighbour guess silently accepted |
+| K4a.03 | Cross-identify the required DR3 sources with epoch/PM-aware evidence and explicit ambiguous/unmatched/component cases | Mac v1 audit accepted as evidence; Fernando now explicitly accepts published Hipparcos-2 Gaia associations. V2 exact best-neighbour retention/report acceptance pending; no independent nearest-neighbour selection |
 | K4a.04 | Publish immutable bounded DR3 subset with exact bytes, edition/epoch/units/provenance, uncertainties/correlations and match evidence | Pending; K4a.03 and redistribution admission |
 | K4a.05 | Accept coverage/ambiguity report and unchanged default membership, names, cross-IDs and visual photometry | Pending K4a closure; bright/multiple/unmatched stars cannot disappear |
 | K4b.01 | Real star adapter/full-input propagation through the shared core | Pending; K4a source admission, AX.06–AX.10; same work as AX.14 |
