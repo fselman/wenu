@@ -194,6 +194,12 @@ missing published IDs and captures the corrected Hipparcos-2 table. The same
 offline audit can produce a v4 measurement-coverage/fallback inventory. It keeps
 position-only and incomplete Gaia solutions distinct, retains original 1997 lookup
 where Hip2 is absent/incomplete, and does not activate any production provider.
+The independent data-only `stellar_enrichment.py` codec now admits an immutable
+local linked-source snapshot, preserving original loaded fields/designations,
+Gaia and Hip2 source records and association/availability evidence. The offline
+audit owns explicit normalization and no-clobber publication; source-free reload
+validates bytes, references, units and membership. Native ingestion and production
+providers do not consume the snapshot automatically.
 Association retention and measurement availability are distinct
 from production astrometric-solution admission; real stellar propagation remains K4b.
 

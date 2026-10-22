@@ -1,13 +1,14 @@
 # Wenu developer documentation
 
-**Current selected work:** K4a.03S2 [astrometric input acquisition and coverage](implementation_reference.md#astrometric-input-acquisition-and-coverage).
-The accepted Mac Kervella report retains 117,211 published associations with
-1,007 unassociated HIP entries; all 99,525 primary links remain unchanged.
-Explicit acquisition now requests only missing Gaia DR3 IDs and captures the
-corrected Hipparcos-2 table for fallback. The separate offline v4 report inventories
-measurement availability without adopting a propagation model. Original HIP
-membership, names and visual magnitudes remain intact. Production charts retain
-their existing source lookup; K4a.04 publication and K4b remain separate.
+**Current selected work:** K4a.04 [local immutable stellar source admission](implementation_reference.md#local-stellar-enrichment-snapshot).
+The completed Mac capture/v4_run2 report preserves all 118,218 HIP entries:
+115,105 Gaia motion-input rows, 2,850 Hipparcos-2 fallback rows and 263 original
+lookup rows. The data-only snapshot codec now validates and preserves full loaded
+original fields/designations, linked/candidate Gaia measurements, Hip2 raw rows,
+units/uncertainties/provenance and association/availability evidence. Explicit
+local publication and source-free reload do not enable a production provider or
+change chart defaults. Real Mac snapshot acceptance remains separate; external
+redistribution review, K4a.05 and K4b remain open.
 
 **Existing Wenu production baseline:** `6708f54a0d8984c0be348b2c8cb02b311646a02b`, 2026-10-17.
 PR #234 is integrated. Its tree is identical to `ea8dc505`, which passed all

@@ -470,6 +470,48 @@ v1/v2/v3 report and production module remains unchanged. Companion parallaxes,
 component RV borrowing, source distribution and production propagation remain
 separate. The coordinate guide remains current: no mathematical model is changed.
 
+## Local stellar enrichment snapshot
+
+[`stellar_enrichment.py`](../../src/wenu/stellar_enrichment.py) is the data-only
+multi-edition snapshot codec. It is separate from `stellar_catalogue.py` because
+that native-direction owner requires one qualified source epoch; the linked
+snapshot must preserve different editions/epochs and explicitly unknown Hip2
+conventions without asserting a model. It imports only the standard library and
+has no acquisition, observer, kernel, catalogue-loader or renderer dependency.
+
+`StellarEnrichmentSnapshot(products, manifest)` admits immutable byte tuples only.
+The fixed product set is metadata, per-HIP enrichment rows, Gaia sources, Hip2
+sources and candidate evidence. The version-1 completion manifest binds each
+exact byte payload. Admission checks strict JSON (duplicate fields and non-finite
+numbers refuse), edition-qualified decimal-string primary IDs, original source
+identity, membership/order/V digests, complete original column preservation,
+original-field and published-ledger digests, source references, parameter units,
+epochs, raw Hip2 field/weight agreement, candidate/source reconciliation and
+availability counts. Five-/six-parameter measurements do not imply valid distance
+or full physical motion. Every `adopted_solution` remains null.
+
+`load_stellar_enrichment(directory, expected_manifest_sha256=None)` reads the fixed
+filenames only and validates before returning. Supply the published manifest hash
+to bind a particular source identity. `snapshot.metadata` and
+`snapshot.records(product='stars_v1.jsonl')` return detached decoded values;
+underlying data remain immutable bytes. Source masks/unknowns are null, designation
+dataclass fields are JSON objects and tuples become arrays; their source edition
+and digest remain metadata. All loaded original columns, including unused fields,
+are retained. Gaia original values/errors/correlations/quality/photometry live in
+one source product with exact-ID references; Hip2 retains original 276-byte row
+text and all 15 weights. Covariance and distance are not constructed.
+
+The existing offline command accepts an optional `--source-output NEW_DIRECTORY`
+alongside `--astrometry-source` and the required new audit `--output` directory.
+It normalizes only already verified caches and the current full original source,
+validates the snapshot, stages it, reloads/compares every byte and publishes its
+completion manifest last with no-clobber semantics. Failure removes only the owned
+staging/new incomplete directory. Existing caches/reports remain read-only.
+Candidate Gaia parameters are referenced rather than duplicated inside evidence.
+The output is a local external source, not data bundled in Git, a wheel or a
+saved sky. Original defaults, propagation/model and redistribution admission are
+unchanged. The coordinate guide remains current; no coordinate model changes.
+
 ## Native stellar kernel adapter
 
 The [K4a.02 acquisition/matching policy review](scientific_contracts.md#gaia-dr3-acquisition-and-matching-policy-review)

@@ -396,8 +396,8 @@ historical blank cells are not a requirement to stop normal label rendering.
 
 K4a.01 defines the logical record `wenu-stellar-enrichment/1` and its
 [machine-readable contract and baseline census](data/stellar_enrichment_contract_v1.json).
-This is a design contract, not a loaded Gaia catalogue, implemented codec,
-matching decision, astrometric provider or new saved-sky format. K4a.02 must
+The logical source contract now has a K4a.04 local snapshot codec. This does not
+admit a Gaia physical model/provider or change the saved-sky format. K4a.02 must
 qualify current primary source conventions, API/terms and acquisition/matching
 policies before any source request; K4a.03–05 admit matches and actual data.
 
@@ -589,6 +589,27 @@ propagation. Runtime source selection, uncertainty/covariance admission, K4a.04
 publication and K4b propagation remain separate; current charts are unchanged.
 The earlier policy review below is historical scope, not a prohibition on this
 newly selected bounded acquisition. Its deferred redistribution review remains open.
+
+## Local enrichment source admission
+
+K4a.04 preserves the accepted original population and published identity links in
+an immutable local source snapshot. The [codec and publication contract](implementation_reference.md#local-stellar-enrichment-snapshot)
+validates original membership/order/visual magnitude, complete loaded original
+columns/designations, exact foreign IDs and references, source units/epochs,
+uncertainties/correlations/raw Hip2 weights and fallback evidence before publication.
+Published identity uses `match_status=identified`; this explicitly separates
+association acceptance from `adopted_solution`, which stays null. Missing inputs
+and unknown Hip2 time-scale/RA differential declarations remain unknown. No
+coordinate conversion, covariance construction, distance inversion, source quality
+threshold, component/barycentre inference or new matching occurs.
+
+Snapshot byte identity and detached immutable source reads qualify transport and
+source availability only. The full original/captured raw resources stay in their
+existing external caches and are identified by digests; the normalized snapshot
+preserves parsed values plus native Hip2 record text and source metadata. It is
+not a byte copy of every raw response. Local publication does not clear deferred
+external redistribution review or activate K4b. Default charts/native lookup,
+visual photometry, designation policy and saved-sky v6 remain unchanged.
 
 ## Gaia DR3 acquisition and matching policy review
 

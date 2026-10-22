@@ -510,6 +510,118 @@ def astrometric_coverage(summary, hips, sources, hip2, profile):
     return report, output
 
 
+def source_value(value):
+    """Copy loaded source fields including immutable designation dataclasses."""
+    from dataclasses import fields, is_dataclass
+    from collections.abc import Mapping
+    if is_dataclass(value) and not isinstance(value, type):
+        return {field.name: source_value(getattr(value, field.name)) for field in fields(value)}
+    if isinstance(value, Mapping):
+        require(all(type(k) is str for k in value), 'Non-string source mapping key')
+        return {k:source_value(v) for k,v in value.items()}
+    if isinstance(value, (tuple, list)):
+        return [source_value(v) for v in value]
+    result = scalar(value)
+    require(result is None or type(result) in (str, int, float, bool),
+            'Unsupported original source field: ' + type(result).__name__)
+    return result
+
+
+def enrichment_snapshot(stars, summary, hips, sources, hip2, candidates, tables,
+                        contract, provenance, profile):
+    """Normalize already verified inputs; no match/model/photometric decision."""
+    from wenu.stellar_enrichment import StellarEnrichmentSnapshot, PRODUCTS as SOURCE_PRODUCTS, encode, identity
+    original_table = stars.source_catalog
+    full = {identifier(i):dict(hip=identifier(i), **{str(k):source_value(v) for k,v in row.items()})
+            for i, row in original_table.iterrows()}
+    require(list(full) == [r['hip'] for r in hips], 'Full source membership/order differs')
+    require(set(contract['preserved_columns']) <= set(original_table.columns),
+            'Required original descriptive columns missing')
+    source_map = {s['source_id']:s for s in sources}
+    normalized = []
+    for row in hips:
+        key, association = row['hip'], row['published_association']
+        source = source_map[association['source_id']] if association else None
+        ids = list(row['candidate_source_ids'])
+        if association and association['source_id'] not in ids:
+            ids.append(association['source_id'])
+        coverage = row['astrometric_coverage']
+        normalized.append({'schema':'wenu-stellar-enrichment/1',
+            'identity':{'catalogue':contract['baseline']['catalogue'],
+                'edition':contract['baseline']['edition'], 'identifier':key, 'component':None},
+            'original':full[key], 'match_status':'identified' if association else 'unmatched',
+            'published_association':association, 'candidates':ids,
+            'primary_candidate_category':row['primary_candidate_category'],
+            'review_reasons':row['review_reasons'], 'adopted_solution':None,
+            'source_references':{'gaia':association['source_id'] if association else None,
+                                 'hipparcos2':key if key in hip2 else None},
+            'input_availability':{k:v for k,v in coverage.items()
+                if k not in ('gaia_source','hipparcos2_fallback_source','gaia_reference','hipparcos2_reference')},
+            'foreign_photometry':({k:v for k,v in source.items() if k.startswith('phot_')} if source else None)})
+    selected_hip2 = [hip2[key] for key in full if key in hip2]
+    evidence = [{k:v for k,v in row.items() if k != 'gaia_source'} for row in candidates]
+    original_digest, association_digest = sha256(), sha256()
+    for row in normalized:
+        original_digest.update(encode(row['original'])+b'\n')
+        association_digest.update(encode({'hip':row['identity']['identifier'],
+                                         'association':row['published_association']})+b'\n')
+    meta = {'schema':'wenu-stellar-enrichment-metadata/1', 'row_schema':'wenu-stellar-enrichment/1',
+        'baseline':contract['baseline'], 'original_metadata':stars.catalogue_metadata.to_record(),
+        'original_columns':['hip', *map(str,original_table.columns)],
+        'required_preserved_columns':contract['preserved_columns'],
+        'original_rows_sha256':original_digest.hexdigest(),
+        'association_ledger_sha256':association_digest.hexdigest(),
+        'designations':{'edition':stars.designation_catalogue.edition,
+                         'source_sha256':stars.designation_catalogue.source_sha256},
+        'gaia_reference':summary['gaia_reference'],
+        'gaia_columns':tables[PRODUCTS[2]].colnames,
+        'gaia_column_units':{name:str(tables[PRODUCTS[2]][name].unit)
+            if tables[PRODUCTS[2]][name].unit is not None else None for name in tables[PRODUCTS[2]].colnames},
+        'gaia_column_metadata':list(table_rows(tables[PRODUCTS[3]], ())),
+        'hipparcos2_profile':profile['hipparcos2'], 'provenance':provenance,
+        'counts':{'retained_hip_rows':len(normalized),
+            'published_associations':summary['retained_published_associations'],
+            'gaia_source_rows':len(sources), 'hipparcos2_rows':len(selected_hip2),
+            'candidate_pairs':len(evidence),
+            'preferred_available_inputs':summary['astrometric_coverage']['preferred_available_inputs']},
+        'model_admission':'none', 'publication_scope':'local-external-source; redistribution not admitted',
+        'uncertainty_policy':'Original errors/correlations/UW retained; no covariance, distance or model error inferred',
+        'missing_policy':'Explicit nulls; original membership and V preserved; unavailable astrometry never deletes an entry'}
+    def jsonl(rows):
+        return b''.join(encode(row)+b'\n' for row in rows)
+    payloads = (encode(meta)+b'\n', jsonl(normalized), jsonl(sources), jsonl(selected_hip2), jsonl(evidence))
+    products = tuple(zip(SOURCE_PRODUCTS,payloads))
+    manifest = encode({'schema':'wenu-stellar-enrichment-snapshot/1', 'complete':True,
+                       'products':{name:identity(raw) for name,raw in products}})+b'\n'
+    return StellarEnrichmentSnapshot(products, manifest)
+
+
+def publish_enrichment(output, snapshot):
+    """Publish immutable source bytes only after validation; never clobber."""
+    from wenu.stellar_enrichment import StellarEnrichmentSnapshot, load_stellar_enrichment
+    require(type(snapshot) is StellarEnrichmentSnapshot, 'A validated source snapshot is required')
+    output = Path(output)
+    require(not output.exists(), 'Source output already exists; choose a new version')
+    output.parent.mkdir(parents=True, exist_ok=True)
+    temporary = Path(tempfile.mkdtemp(prefix='.'+output.name+'-',dir=output.parent))
+    try:
+        for name,raw in snapshot.products:
+            (temporary/name).write_bytes(raw)
+        (temporary/'source_manifest_v1.json').write_bytes(snapshot.manifest)
+        checked = load_stellar_enrichment(temporary, expected_manifest_sha256=sha256(snapshot.manifest).hexdigest())
+        require(checked.products == snapshot.products, 'Staged source round trip differs')
+        output.mkdir()
+        try:
+            for name,_ in snapshot.products:
+                (temporary/name).replace(output/name)
+            (temporary/'source_manifest_v1.json').replace(output/'source_manifest_v1.json')
+        except BaseException:
+            shutil.rmtree(output)
+            raise
+    finally:
+        shutil.rmtree(temporary)
+
+
 def publish(output, summary, hips, candidates, provenance, *, version=2):
     """Refuse overwrite; publish the completion manifest last; clean up on failure."""
     output = Path(output)
@@ -560,9 +672,19 @@ def main(argv=None):
                         help='Verified external Kervella Table A.1 capture; supplement unassociated HIP entries')
     parser.add_argument('--astrometry-source', type=Path,
                         help='Verified explicit Gaia/Hipparcos-2 capture; report measurement coverage only')
+    parser.add_argument('--source-output', type=Path,
+                        help='Publish a separate immutable local enrichment input snapshot; no runtime adoption')
     args = parser.parse_args(argv)
     require(args.astrometry_source is None or args.kervella_source is not None,
             'Astrometry coverage requires the published Kervella associations')
+    require(args.source_output is None or args.astrometry_source is not None,
+            'Source publication requires verified astrometric inputs')
+    require(args.source_output is None or not args.source_output.expanduser().exists(),
+            'Source output already exists; choose a new version')
+    if args.source_output is not None:
+        source_path, report_path = args.source_output.expanduser().resolve(), args.output.resolve()
+        require(source_path != report_path and source_path not in report_path.parents
+                and report_path not in source_path.parents, 'Source and report outputs must be separate directories')
     require(not args.output.exists(), 'Report output already exists; choose a new version')
     data = ROOT / 'docs/developer/data'
     contract_payload = (data / 'stellar_enrichment_contract_v1.json').read_bytes()
@@ -646,7 +768,15 @@ def main(argv=None):
         summary['limits'].append('Hipparcos-2 captured for fallback only; published associations unchanged')
         provenance['astrometry_capture'] = capture_receipt
         version = 4
+    snapshot = None
+    if args.source_output is not None:
+        snapshot = enrichment_snapshot(stars, summary, hip_rows, sources+extra, hip2, candidate_rows,
+            tables, contract, provenance, astrometry_profile)
     publish(args.output, summary, hip_rows, candidate_rows, provenance, version=version)
+    if snapshot is not None:
+        publish_enrichment(args.source_output.expanduser(), snapshot)
+        print('LOCAL STELLAR SOURCE COMPLETE:', args.source_output.expanduser().resolve())
+        print('Source manifest SHA256:', sha256(snapshot.manifest).hexdigest())
     display = {k: summary[k] for k in ('retained_hip_rows', 'gaia_source_rows',
         'candidate_pairs', 'categories', 'shared_gaia_sources', 'retained_published_associations',
         'hip_without_published_association', 'adopted_astrometric_solutions')}

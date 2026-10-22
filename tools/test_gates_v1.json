@@ -3312,12 +3312,12 @@
       ]
     },
     "gaia-crossmatch-audit": {
-      "scope": "K4a.03/S1/S2 offline published associations, bounded explicit astrometric-input capture and fallback coverage.",
-      "limits": "Synthetic transports only in tests; no independent rematching, propagation, source distribution, SDK or renderer change. Actual Mac capture/report remains separate.",
+      "scope": "K4a offline published associations, explicit input capture/coverage and immutable local source snapshot admission.",
+      "limits": "Constructed offline/transport tests; actual Mac source publication separate. No propagation, default source/provider, external redistribution, SDK or renderer change.",
       "selections": [
         {
           "node": "tests/test_gaia_crossmatch_audit.py",
-          "reason": "Source/identity/unit/refusal admission; exact published-link retention; resumable missing-ID Gaia capture; Hip2 parsing and fallback; public capture/v2/v3/v4 report composition offline."
+          "reason": "Cache/source identity, unit/mask/refusal and published-link preservation; exact-query capture/resume; Hip2 fallback; immutable source normalization/publication/source-free reload through the public v2/v3/v4 command path."
         }
       ]
     }

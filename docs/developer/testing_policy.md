@@ -114,6 +114,23 @@ coverage report require the Mac cache. Run focused documentation and tooling
 integrity too. No production/kernel numerical, visual or installed dependency
 change justifies repeating those gates. No test establishes redistribution rights.
 
+### Local immutable stellar source gate
+
+K4a.04 extends the same `gaia-crossmatch-audit` owner/gate. The closest existing
+checks are source corruption, no-clobber report publication and the real synthetic
+ECSV-to-v4 command path. New cases protect immutable/detached reads, strict JSON,
+manifest/payload corruption, membership/order/V and original-column/field changes,
+exact IDs and association references, source units/epochs, duplicate/foreign
+candidates, Hip2 raw-record/parsed-field consistency, missing fallback and refusal
+of model adoption. Full public command composition includes snapshot normalization,
+staged publication and reload with socket creation blocked. An isolated `-I -S`
+process loads the new codec and snapshot without Wenu, astronomy dependencies,
+original catalogues or a network client. Constructed fixtures remain synthetic.
+Run documentation and tooling integrity too; unchanged native ingestion/kernel
+numerics/graphics and packaging configuration retain their prior receipts. Actual
+118,218-entry normalization/round-trip acceptance requires Fernando's Mac cache.
+No real-data source publication or physical-model validation is claimed here.
+
 ### Stellar enrichment contract gate
 
 K4a.02 changes documentation/policy declarations only. Run the existing
