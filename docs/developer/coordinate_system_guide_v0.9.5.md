@@ -1241,6 +1241,27 @@ numerical certificate is relative only to the admitted SI trajectory. No
 observer realization, precession, reduced-input algorithm or ordinary stellar
 chart/saved-sky consumer changes accompany this explicit model.
 
+## Proper-motion angular approximation without distance or RV
+
+The separate `admit_stellar_angular_motion` API now admits source position,
+reference TCB epoch and both measured PMs to the shared core as a unit direction
+and transverse derivative, not fictitious physical Cartesian coordinates. It
+reads mu-alpha-star and units from the validated source. The nominal formula is
+`normalize(u0 + dt*w)` at explicit source-scale instants, retaining the original
+source epoch and evaluated/anchor times. It omits perspective and observer
+parallax and is not a constant-angular-speed rotation. Missing measurements stay
+unknown; supplied negative/null parallaxes and RVs remain untouched source facts.
+
+The [API and approximation limits](implementation_reference.md#explicit-proper-motion-angular-model)
+require finite caller-selected coverage without a universal short PM cutoff.
+Numerical/reuse bounds certify only the admitted binary64 angular formula;
+measurement/input-conversion/date and physical/model errors remain unknown.
+The angular row cannot supply distance, velocity or the full Cartesian state
+required by the observer service. Existing full-input stellar/cluster models and
+ordinary chart/saved-sky defaults are unchanged. Missing-PM approximations,
+Hip2 convention qualification, historical calendars and long-term frame/orientation
+admission remain separate; a long native TCB computation does not qualify them.
+
 ## Native stellar kernel lookup during K3
 
 Open-cluster metadata is a separate boundary: the accepted active table already

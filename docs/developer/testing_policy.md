@@ -160,6 +160,34 @@ Mac runs the complete focused gate and actual external snapshot admission/query.
 No renderer/product, installed dependency/build or SDK implementation change is
 made; reduced models, observer corrections and physical accuracy remain separate.
 
+### Measured-PM angular model extension
+
+K4b.02/AX.13 extends `stellar-motion-provider` to the existing shared-core,
+stellar-state and cluster-state owners. The closest prior checks are the mixed
+core oracle, direction/Cartesian capability separation, exact cone reuse and
+stellar full-input source-preservation tests. Angular cases protect separately
+typed unit/tangent admission (no fake SI PV), independent Decimal affine and
+analytic normal-triad references, short and +/-50,000-year nominal epochs,
+source poles/wrap/zero measured PM, missing PM versus omitted RV/parallax,
+immutability/source/HIP/V preservation, distinct model/reference/resource identity,
+wrong-domain/scale/capability refusal after success, actual SDK bounded reuse and
+closure, and unchanged complete-input metadata/model/SI bindings. The existing
+fresh `-I -S` snapshot-load/kernel test now also queries the angular adapter after
+source files are removed, with sockets blocked and scientific/graphics imports
+absent. The shipped stellar conformance fixture covers both full and angular
+admissions. Constructed long-epoch tests certify nominal arithmetic, not physical
+star accuracy, observer coverage, calendar or precession admission.
+
+Because the common coefficient accessor is extended, retain the whole existing
+cluster-state numerical/ERFA/real-source/reuse owner; its production adapter and
+source/metadata files are unchanged. Source-audit regressions retain immutable
+payload admission. The partial local checkout excludes three native-star and
+one full `OpenClusters` application-composition case; the complete Mac gate must
+run all four. Documentation/tooling integrity and the actual external snapshot
+angular coverage/queries remain Mac acceptance. No SDK, dependency/build,
+renderer/product or source-snapshot schema change is made; broader no-PM/Hip2
+qualification work is not closed by this measured-PM implementation.
+
 ### Stellar enrichment contract gate
 
 K4a.02 changes documentation/policy declarations only. Run the existing

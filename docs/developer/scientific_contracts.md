@@ -85,13 +85,49 @@ perspective/full-space-motion treatment when combined with the other required
 inputs. These are separate capabilities, not prerequisites for angular PM-only
 propagation. The initial approximately 200-year no-measured-PM proposal remains
 pending separate reduced-model acceptance; it is not an implemented accuracy
-guarantee. No reduced-input propagation algorithm is implemented by this policy
-update. Unknown motions/RV are never recorded as measured zero.
+guarantee. The explicit measured-PM angular model below is now implemented;
+no-PM approximation remains unimplemented. Unknown motions/RV are never recorded
+as measured zero.
 Reduced models require explicit approximation/error semantics and their own
 acceptance. Expansion, internal dynamics and morphology evolution are excluded.
 Stars, clusters, PNs and SNRs retain object-specific source/centre qualification;
 in particular expansion velocity or displaced compact-object motion cannot be
 silently used as systemic centre motion. Observer realization remains separate.
+
+## Explicit measured-PM angular approximation
+
+The [angular adapter/core contract](implementation_reference.md#explicit-proper-motion-angular-model)
+implements the selected measured-PM part of K4b.02/AX.13. It uses declared source
+position/epoch and both mu-alpha-star/mu-delta components to admit a unit
+source vector `u0` and transverse angular derivative `w` per second. Its nominal
+model is `normalize(u0 + dt*w)`, evaluated against the original source epoch;
+it is not constant angular speed or repeated extrapolation from previous results.
+No distance/RV is inferred or changed in the source. A measured zero PM remains
+a measurement; a missing PM stays unavailable. Supplied negative/null parallax,
+RV, uncertainty/correlation and quality/component fields remain original facts.
+
+This mathematical approximation omits radial perspective, observer parallax,
+light-time changes, binaries and Galactic dynamics. It does not reconstruct a
+full physical trajectory. The separately typed angular row has no SI position/
+velocity fields and cannot admit Cartesian/observer-PV capabilities. The same
+generic affine/cone owner evaluates direction and numerical reuse; object family
+does not dispatch numerical work. Its direction rounding/certificate bound is
+relative only to admitted binary64 angular coefficients, not source-conversion,
+measurement, neglected perspective, age/date uncertainty or physical accuracy.
+Those errors remain unknown. Finite caller-declared TCB coverage has no universal
+short PM cutoff and is not a physical-validity promise. Constructed tests span
+short intervals and +/-50,000 Julian years without claiming real-star accuracy.
+
+Primary reference reviewed 2026-10-22: ESA [DR3 astrometric transformations,
+section 4.1.7](https://gea.esac.esa.int/archive/documentation/GDR3/Data_processing/chap_cu3ast/sec_cu3ast_intro/ssec_cu3ast_intro_tansforms.html),
+especially its normal triad and normalized-direction relation (equations 4.12
+and 4.14). Omitting its radial term gives this declared approximation; it does
+not establish that an unknown radial velocity is measured zero. The ESA full
+six-dimensional reversible propagation/covariance treatment is distinct; this
+angular approximation has no propagated total covariance or external physical
+accuracy certification. Existing complete-input stellar/cluster results remain
+unchanged. Source-position/no-PM approximations, unresolved Hip2 qualification,
+observer/product adoption and historical precession/calendar work stay pending.
 
 ## Explicit stellar full-input nominal model
 

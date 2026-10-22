@@ -272,13 +272,29 @@ direction realizers have stronger typed contracts. They solve light time
 separately from apparent corrections. These facilities must be reused rather
 than reimplemented in a new kernel.
 
+## Explicit stellar angular approximation
+
+`stellar_state.admit_stellar_angular_motion` now admits linked Gaia position,
+source TCB epoch and both PMs without distance/RV. It retains every original
+object and unchanged source facts, including missing/nonpositive parallax and
+missing RV. The catalogue records the normalized tangent approximation and
+unavailable rows separately from the accepted full-input model. The shared core's
+new `AngularMotionRow` carries unit direction/transverse derivative, with no
+physical PV. It uses the existing affine numerical/reuse implementation and a
+distinct provider/model/reference/resource binding; Cartesian/velocity/observer
+capabilities are refused. Original source epoch remains the extrapolation anchor.
+Finite caller coverage is required without a universal short PM cutoff; unknown
+source/physical/perspective errors remain unknown. Default star/figure/label/
+chart/saved consumers, full-input SI/model identities and cluster adapters are
+unchanged. No-PM/Hip2 qualification and product adoption remain pending.
+
 ## Explicit nominal cluster motion API
 
 The `cluster_state.py` source adapter now admits immutable qualified cluster
 solutions and supplies its compatibility facade over the shared
 `astrometric_state.RectilinearAstrometricProvider`. The object-independent core
-owns SI rows, domain checks, propagation, numerical verification and angular
-certificates. Object types and source facts enter through explicit SDK bindings;
+owns separately typed SI/angular rows, domain checks, affine evaluation, numerical
+verification and angular certificates. Object types and source facts enter through explicit SDK bindings;
 the core imports no catalogue/observer/graphics or astronomy dependencies.
 The facade supplies the same real SDK `epoch_direction` admission. It converts source
 spherical differentials through Astropy and evaluates the declared SI rectilinear

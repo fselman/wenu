@@ -2,7 +2,7 @@
 
 Adapters qualify source astrometry, construct immutable SI rows and bind SDK
 identities/evidence. This engine knows no catalogue, stellar/object family,
-observer, projection or renderer. Its initial model requires complete PV inputs.
+observer, projection or renderer. It admits complete SI PV or explicit angular tangent inputs.
 """
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ def _seconds(time, epoch):
 
 
 # Algorithm contracts, not catalogue data. The bound is verified for each vector
-# against exact arithmetic on the admitted binary64 SI solution and split time.
+# against exact arithmetic on admitted binary64 SI/angular affine inputs and split time.
 _NUMERICAL_RAD = 2.0**-40
 
 
@@ -38,8 +38,9 @@ def _exact_position(row, time):
     if time.scale != row.source_epoch.scale:
         raise InvalidQuery('Explicit time conversion is required.')
     dt = (_day(time) - _day(row.source_epoch)) * 86400
+    position, derivative = _motion_coefficients(row)
     return tuple(Fraction(p) + dt*Fraction(v)
-                 for p, v in zip(row.position_m, row.velocity_m_s))
+                 for p, v in zip(position, derivative))
 
 
 def _inside_cone(vector, position, angular_rad):
@@ -99,6 +100,59 @@ class SpaceMotionRow:
 
 
 
+@dataclass(frozen=True, slots=True)
+class AngularMotionRow:
+    """Measured direction and transverse angular derivative; no physical PV.
+
+    The nominal model is normalize(direction + dt*tangent_per_s). Missing
+    distance/RV stays outside this representation, not encoded as measured zero.
+    The initial derivative is transverse within source-conversion rounding;
+    the numerical core evaluates the exact admitted binary64 affine vector.
+    """
+    identifier: str
+    source_epoch: TimePoint | None
+    direction: tuple[float, float, float] | None
+    tangent_per_s: tuple[float, float, float] | None
+    unavailable_reason: str | None
+
+    def __post_init__(self):
+        if not isinstance(self.identifier, str) or not self.identifier.strip() or self.identifier.strip() != self.identifier:
+            raise ValueError('Invalid angular astrometric identity.')
+        if self.source_epoch is not None and type(self.source_epoch) is not TimePoint:
+            raise ValueError('Invalid angular source epoch.')
+        if self.unavailable_reason is not None:
+            if not isinstance(self.unavailable_reason, str) or not self.unavailable_reason:
+                raise ValueError('Unavailable angular rows require a reason.')
+            if self.direction is not None or self.tangent_per_s is not None:
+                raise ValueError('Unavailable rows cannot advertise an angular solution.')
+            return
+        if self.source_epoch is None:
+            raise ValueError('Angular motion requires a source epoch.')
+        for name in ('direction', 'tangent_per_s'):
+            original = getattr(self, name)
+            if type(original) not in (tuple, list) or len(original) != 3:
+                raise ValueError('Angular inputs require finite triples.')
+            if any(type(v) not in (int, float) or not isfinite(v) for v in original):
+                raise ValueError('Angular inputs require finite triples.')
+            object.__setattr__(self, name, tuple(map(float, original)))
+        norm2 = fsum(x*x for x in self.direction)
+        speed = sqrt(fsum(x*x for x in self.tangent_per_s))
+        dot = fsum(a*b for a, b in zip(self.direction, self.tangent_per_s))
+        if abs(norm2 - 1) > 8*float_info.epsilon:
+            raise ValueError('Angular source direction must be a unit vector.')
+        if not isfinite(speed) or abs(dot) > 64*float_info.epsilon*speed:
+            raise ValueError('Angular derivative must be transverse to its source direction.')
+
+
+def _motion_coefficients(row):
+    """The common affine-vector mathematics has separately typed input units."""
+    if type(row) is AngularMotionRow:
+        return row.direction, row.tangent_per_s
+    if type(row) is SpaceMotionRow:
+        return row.position_m, row.velocity_m_s
+    raise ValueError('Unsupported immutable astrometric row representation.')
+
+
 def validate_space_motion_domain(row, coverage):
     """Reject scale/epoch gaps and a rectilinear domain crossing the origin."""
     if type(coverage) is not TimeSpan:
@@ -107,24 +161,26 @@ def validate_space_motion_domain(row, coverage):
         return
     if row.source_epoch.scale != coverage.start.scale or not coverage.contains(row.source_epoch):
         raise ValueError('Source epoch is outside the explicit model domain/scale.')
-    distance = sqrt(fsum(p*p for p in row.position_m))
-    speed2 = fsum(v*v for v in row.velocity_m_s)
+    position, derivative = _motion_coefficients(row)
+    distance = sqrt(fsum(p*p for p in position))
+    speed2 = fsum(v*v for v in derivative)
     closest = 0.
     if speed2:
-        closest = -fsum(p*v for p,v in zip(row.position_m,row.velocity_m_s))/speed2
+        closest = -fsum(p*v for p,v in zip(position,derivative))/speed2
         lower, upper = (_seconds(t,row.source_epoch) for t in (coverage.start,coverage.stop))
         closest = min(max(closest,lower),upper)
-    radius = sqrt(fsum((p+closest*v)**2 for p,v in zip(row.position_m,row.velocity_m_s)))
+    radius = sqrt(fsum((p+closest*v)**2 for p,v in zip(position,derivative)))
     if not isfinite(radius) or radius <= 64*float_info.epsilon*distance:
         raise ValueError('Nominal model domain intersects a singular centre trajectory.')
 
 
 class RectilinearAstrometricProvider:
-    """One engine for qualified SI solutions of any object type.
+    """One affine direction/Cartesian engine for independently qualified inputs.
 
     Semantic types are carried by supplied ObjectRecords and never dispatch
     numerical work. The adapter owns all source/model identity and error meaning.
-    Direction or Cartesian output uses the same complete-PV nominal model.
+    Full SI rows admit direction/Cartesian output. Explicit angular rows admit
+    direction only; neither distances nor velocities are manufactured.
     """
     def __init__(self, rows, *, descriptor, catalogue, admission, evidence, reuse_method=None,
                  velocity_evidence=None):
@@ -138,10 +194,12 @@ class RectilinearAstrometricProvider:
                     ('direction','rad'),('cartesian','m,m/s'))
                 or type(admission.coverage) is not TimeSpan):
             raise ValueError('Inconsistent astrometric provider bindings.')
-        if any(type(key) is not ObjectKey or type(row) is not SpaceMotionRow for key,row in pairs):
-            raise ValueError('Astrometric rows require typed immutable keys and SI solutions.')
+        if any(type(key) is not ObjectKey or type(row) not in (SpaceMotionRow, AngularMotionRow) for key,row in pairs):
+            raise ValueError('Astrometric rows require typed immutable keys and supported solutions.')
         lookup = dict(pairs)
         direction = admission.reference.representation == 'direction'
+        if not direction and any(type(row) is AngularMotionRow for row in lookup.values()):
+            raise ValueError('Angular motion cannot advertise Cartesian distance or velocity.')
         capabilities = ({'epoch_direction','batch_evaluation','direction_reuse_bound'} if direction
                         else {'cartesian_state','batch_evaluation'})
         if (len(lookup) != len(pairs) or set(lookup) != {row.key for row in catalogue.objects}
@@ -231,7 +289,8 @@ class RectilinearAstrometricProvider:
                         query.reference,position,row.velocity_m_s,self._evidence,self._velocity_evidence))
                     continue
                 dt = _seconds(time, row.source_epoch)
-                position = tuple(p + dt*v for p, v in zip(row.position_m, row.velocity_m_s))
+                initial, derivative = _motion_coefficients(row)
+                position = tuple(p + dt*v for p, v in zip(initial, derivative))
                 norm = sqrt(fsum(float(x)*float(x) for x in position))
                 if not isfinite(norm) or norm == 0:
                     raise ValueError('Undefined nominal astrometric direction.')

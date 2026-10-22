@@ -1,19 +1,17 @@
 # Wenu developer documentation
 
-**Accepted:** K4b.01 [explicit full-input stellar motion](implementation_reference.md#explicit-full-input-stellar-motion).
-The Mac source snapshot and coverage/preservation checks are accepted at
-`3fed5483`: all 118,218 HIP entries, 117,211 published associations, original
-loaded fields/designations and visual photometry survive validated reload.
-The stellar adapter now derives explicit complete-input nominal SI solutions
-from the immutable source and queries the existing shared core. Positive-parallax
-reciprocal distance and spectroscopic-RV proxy policies require explicit caller
-selection. Missing/unqualified rows remain visible and unavailable. Default
-charts/source lookup, reduced models and observer realization are unchanged.
-Actual Mac acceptance at `ec6a35e2` retained all 118,218 objects and admitted
-97,710 complete-input models. All 86 stellar/core, 125 source-audit, 36 documentation
-and eight tooling cases passed. Merge/synchronization/merged-branch cleanup is
-the current authorized task; incomplete-input propagation remains proposed.
-External redistribution review stays deferred.
+**Current selected work:** K4b.02/AX.13 [explicit proper-motion angular model](implementation_reference.md#explicit-proper-motion-angular-model).
+Main `08a58b22` and merged-branch cleanup were confirmed clean/synchronized on
+the Mac. K4b.01 remains accepted: 97,710 complete-input stellar models and all
+118,218 original objects retained. The shared engine now separately types angular
+unit-direction/tangent inputs, with no fabricated physical distance or velocity.
+The explicit Gaia angular adapter needs position, epoch and both PM components;
+parallax and RV remain untouched source facts. Full-input SI/model bindings and
+ordinary charts/source lookup remain unchanged. The normalized tangent model
+omits perspective/parallax and retains unknown source/physical errors; its finite
+caller-selected domain has no universal short PM cutoff. Actual Mac angular
+acceptance remains pending. Missing-PM approximations, Hip2 qualification,
+observer/product adoption and external redistribution remain separate.
 
 **Existing Wenu production baseline:** `6708f54a0d8984c0be348b2c8cb02b311646a02b`, 2026-10-17.
 PR #234 is integrated. Its tree is identical to `ea8dc505`, which passed all
@@ -74,8 +72,9 @@ K3.09 shared-default correction is accepted through PR #273. Its remaining
 [source assessment and agreed admission policy](kernel_migration_audit_v1.md#m5-source-assessment-and-proposed-admission-distinction-2026-10-19)
 are documented; Fernando approved the lookup/physical-admission distinction
 and PM-only policy on 2026-10-19. K3.09 explicit lookup admission is accepted through PR #274;
-physical source gaps remain explicit. Reduced-input numerical propagation
-remains a separate pending AX.13 implementation. K3.10 galaxy routing closure
+physical source gaps remain explicit. The measured-PM angular slice of AX.13 is implemented for explicit
+admission and awaits Mac acceptance; missing-PM approximation and Hip2
+qualification remain pending. K3.10 galaxy routing closure
 is accepted through PR #275. K3.12 generic nonstellar/Messier/Caldwell and
 object-centre routing is accepted through PR #276. K3.13 globular routing is
 accepted through PR #277. K3.14 PN routing is accepted through PR #278.
