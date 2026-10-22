@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 77, 2026-10-22. **Status:** PR #323 merged; clean Mac main/branch cleanup confirmed at 8167bb39 with 36 final documentation passes. Fernando selected the K4b.02 Hipparcos-2 fallback qualification slice. Its catalogue-convention evidence must qualify before runtime admission; other scopes remain pending.
+**Plan revision:** 78, 2026-10-22. **Status:** K4b.02 Hipparcos-2 angular fallback selected; Fernando explicitly adopts nominal TCB and defers source time-scale qualification to issue #326. Implementation may proceed within the bounded fallback scope; no-PM/product scopes remain pending.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -79,6 +79,44 @@ cleanup. This documentation merge adds no runtime acceptance.
 
 ## K4b.02: Hipparcos-2 fallback qualification
 
+**Policy agreement before implementation:** Fernando instructed, "So we should
+use TCB. If the difference from Hipparcos is small we should not worry too much
+and resolved the issue later, and open a ticket about it." He clarified that
+1991.5 was a typo: the intended epoch is J1991.25. This explicitly supersedes
+the time-scale evidence blocker below. Follow-up
+[issue #326](https://github.com/fselman/wenu/issues/326) remains open: verify the
+2007 epoch and Julian-year rate convention and quantify any needed conversion.
+
+Use the source-declared J1991.25 value on a nominal TCB model axis, not an
+assertion that the original source declared TCB or an actual TT-to-TCB
+conversion. Retain its original null time scale, all original row bytes and
+unknown convention/source/physical errors. Bind the explicit nominal policy
+and follow-up issue into model metadata/resource/provenance. Do not silently
+reuse this policy for other sources.
+
+Implementation: extend the existing stellar owner with a separately explicit
+Hipparcos-2 angular-fallback admission over finite caller-selected TCB coverage.
+Use only matched HIP records with measured position and both PM components
+when the accepted Gaia angular input route is unavailable. The source's
+position/epoch and pmRA=mu-alpha-star/pmDE supply the already accepted shared
+AngularMotionRow and affine engine. This is nominal tangent extrapolation;
+distance/RV/parallax, binary/acceleration/photocentre/systemic corrections and
+physical PV remain outside this model. Preserve flags/weights and published
+associations without inventing measurements or replacing Gaia choices.
+All original HIP entries remain, including the 263 original lookup entries.
+Preserve existing Gaia full/angular coefficients, metadata and model identities;
+their APIs and default/chart routes remain unchanged. Use distinct fallback
+model/resource/reference identities, and reject Cartesian/velocity output.
+
+The existing stellar/shared-core/source-audit owners protect source-unit/pole/
+epoch conversion, fallback precedence and all-HIP preservation, wrong-policy/
+domain/scale/capability refusal, immutable original metadata, distinct cache
+identity, actual SDK conformance/reuse and cold source-free offline evaluation.
+No numerical-core rewrite or new module, dependency, acquisition, source-schema,
+CLI, renderer or product adoption is selected. Mac acceptance must separately
+count actual fallback admissions and sample independent directions while
+rechecking both accepted Gaia digests.
+
 Fernando approved this bounded step with "Proceed" on 2026-10-22 after the
 clean synchronized Mac main/merged-branch cleanup receipt at
 `8167bb39f4377f7f486a027662d203ff149bab36` (36 documentation cases passed).
@@ -117,7 +155,7 @@ available access route. The book landing page/front matter and the accessible
 validation paper do not resolve this specific statement. This is an evidence
 gap, not evidence that the 2007 catalogue used a different scale.
 
-**Runtime admission is blocked at this prerequisite.** No production source,
+**Initial review result, superseded by the nominal-TCB agreement above:** No production source,
 model, snapshot, tests or selection gate is changed. A primary statement for
 the 2007 convention (for example the relevant astrometry pages from van
 Leeuwen's book) would let the authorized qualification continue. Adopting TT
