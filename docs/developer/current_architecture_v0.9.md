@@ -288,6 +288,21 @@ source/physical/perspective errors remain unknown. Default star/figure/label/
 chart/saved consumers, full-input SI/model identities and cluster adapters are
 unchanged. No-PM/Hip2 qualification and product adoption remain pending.
 
+## Explicit Hipparcos-2 angular fallback
+
+The same stellar owner now exposes `admit_stellar_hipparcos2_motion` with an
+explicit `nominal-tcb-deferred-qualification` epoch policy. It admits only
+position/both-PM Hip2 rows where Gaia angular inputs are unavailable, then uses
+the unchanged shared angular engine. The original unknown source scale and
+all raw source evidence stay intact; nominal TCB interpretation is separately
+bound in the model identity, with unknown convention error and
+[issue #326](https://github.com/fselman/wenu/issues/326) for later qualification.
+No actual time conversion, distance/velocity inference, component correction or
+automatic consumer adoption occurs. Existing Gaia admission bindings and all HIP
+objects remain. Constructed/source-free checks pass; actual Mac fallback counts
+and sampled directions remain pending. See the
+[API](implementation_reference.md#explicit-hipparcos-2-angular-fallback).
+
 ## Explicit nominal cluster motion API
 
 The `cluster_state.py` source adapter now admits immutable qualified cluster

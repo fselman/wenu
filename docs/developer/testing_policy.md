@@ -195,6 +195,29 @@ physical/source error still unknown. No SDK, dependency/build,
 renderer/product or source-snapshot schema change is made; broader no-PM/Hip2
 qualification work is not closed by this measured-PM implementation.
 
+### Hipparcos-2 nominal-TCB fallback extension
+
+The existing `stellar-motion-provider` gate retains all stellar/shared-core/
+cluster owners; `gaia-crossmatch-audit` protects unchanged source admission.
+New cases extend the existing stellar fixture and conformance/cold-load checks:
+explicit nominal policy versus original null scale, source epoch/units and
+independent Astropy unit-spherical differentials, short/long directions, Gaia
+precedence independent of parallax/RV/inventory preference, no new associations,
+missing Hip2/PM and all-HIP preservation, zero PM and flags, immutable source,
+distinct identities, policy/domain/scale/Cartesian/velocity/warm-cache refusals,
+SDK conformance/reuse and source removal before isolated offline evaluation.
+Existing fixed Gaia metadata/model/coefficients remain regression references.
+
+Local partial-checkout result: 324 passed, nine subtests, four native/application
+cases deselected for the same missing complete-tree routes as PR #323. No Mac
+exclusions are added. All 117,955 pre-existing corrected Hip2 source rows also
+have finite angular fields and valid source coordinate ranges; this is not an
+actual combined-snapshot runtime receipt. Mac must run complete owner/source/
+documentation/tooling gates and separately count/sample the external snapshot,
+rechecking both accepted Gaia digests. No new acquisition or physical-accuracy
+qualification is inferred. The original time convention remains deferred to
+issue #326 under the explicit nominal-TCB policy.
+
 ### Stellar enrichment contract gate
 
 K4a.02 changes documentation/policy declarations only. Run the existing

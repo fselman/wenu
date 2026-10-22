@@ -130,13 +130,10 @@ new associations, acquisition, source rewriting, binary/orbit corrections,
 physical-accuracy promises, SDK/dependency and chart/default/product adoption
 are excluded. This slice does not close K4b.02/AX.13.
 
-Prerequisite: an evidence-backed source convention record. In particular,
-J1991.25 without a time-scale label cannot be silently relabelled TT or TCB;
-the original-1997 convention alone does not establish the 2007 declaration.
-If a required convention cannot be established, leave that runtime admission
-blocked and record exactly the verified facts, missing evidence and next
-qualification action. Do not replace the prerequisite with an unapproved
-nominal-convention assumption.
+The source convention record distinguishes verified facts from the explicit
+nominal-TCB policy. J1991.25 does not silently acquire a verified source time
+scale; the authorized approximation is separately bound in the model. Unknown
+convention error remains unknown and later source qualification stays issue #326.
 
 **Qualification review, 2026-10-22:** The captured corrected I/311 table
 and ReadMe hashes were independently rechecked against the existing acquisition
@@ -155,21 +152,22 @@ available access route. The book landing page/front matter and the accessible
 validation paper do not resolve this specific statement. This is an evidence
 gap, not evidence that the 2007 catalogue used a different scale.
 
-**Initial review result, superseded by the nominal-TCB agreement above:** No production source,
-model, snapshot, tests or selection gate is changed. A primary statement for
-the 2007 convention (for example the relevant astrometry pages from van
-Leeuwen's book) would let the authorized qualification continue. Adopting TT
-as an explicit nominal convention would instead require Fernando's agreement
-and a recorded policy change before implementation. No such agreement is
-claimed. Source/context and exact checks are recorded in the
-[migration inventory](kernel_migration_inventory_v1.json).
+The initial qualification block is resolved for this nominal model by
+Fernando's explicit TCB policy, not by claiming new source evidence. Full
+primary time-convention qualification remains deferred. The current
+[migration inventory](kernel_migration_inventory_v1.json) binds this distinction
+and the source/owner checks.
 
 Acceptance owner: the existing stellar-state/shared-core gate, source-audit
 regressions and documentation/tooling checks, with independent source-unit and
 propagation references, identity/immutability/fallback/refusal coverage and
 unchanged Gaia binding checks. Actual Mac fallback counts and sampled directions
-remain distinct from constructed tests. A documentation-only assessment of a
-blocked prerequisite needs documentation integrity, not new numerical tests.
+remain distinct from constructed tests. Implementation result: the separate
+nominal-TCB Hip2 angular fallback is present in the existing owner, with the
+shared engine unchanged. Local partial-checkout checks passed 324 cases and
+nine subtests; four complete-tree cases remain in the unfiltered Mac gate.
+Actual combined-snapshot fallback counts/directions and complete Mac gates
+remain pending. This is not parent milestone closure.
 
 ## K4b.02 / AX.13: measured-proper-motion angular model
 

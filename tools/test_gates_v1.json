@@ -3322,8 +3322,8 @@
       ]
     },
     "stellar-motion-provider": {
-      "scope": "K4b.01/K4b.02 explicit complete-input and measured-PM angular stellar admission through the shared affine engine; affected cluster regression.",
-      "limits": "Constructed offline/SDK/cluster numerical checks; actual external stellar snapshot acceptance remains Mac-only. Measured-PM angular approximation only: no fake distance/RV, no no-PM/Hip2 convention inference, default/chart/observer/saved-sky adoption, source schema, acquisition, physical accuracy, dependency or SDK implementation change.",
+      "scope": "K4b.01/K4b.02 explicit Gaia full/angular and nominal-TCB Hipparcos-2 angular fallback through the shared affine engine; affected cluster regression.",
+      "limits": "Constructed offline/SDK/cluster checks; actual external snapshot acceptance remains Mac-only. Hip2 original time scale stays unresolved under explicit nominal TCB policy (issue #326). No fake distance/RV, no-PM/default/chart/observer/saved-sky adoption, source schema/acquisition/physical accuracy/dependency/SDK implementation change.",
       "selections": [
         {
           "node": "tests/test_stellar_state.py",

@@ -358,35 +358,48 @@ These are backend capabilities/policy references, not a dependency upgrade,
 captured numerical oracle, redistribution authorization or proof of the open
 spatial-convention admission. Existing deterministic tests acquire no data.
 
-## Hipparcos-2 fallback qualification boundary
+## Hipparcos-2 angular fallback and nominal TCB convention
 
-The K4b.02 fallback task is selected after PR #323, but convention review has
-not yet admitted new propagation. The existing captured I/311 ReadMe and table
-match the acquisition profile digests; the immutable snapshot remains unchanged.
-CDS's [I/311 ReadMe](https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/I/311?format=html&tex=true),
-[NASA HEASARC HIPNEWCAT](https://heasarc.gsfc.nasa.gov/W3Browse/all/hipnewcat.html)
-and [ESA external I/311 datamodel](https://gea.esac.esa.int/archive/documentation/GDR1/datamodel/Ch4/hipparcos_newreduction.html)
-state ICRS/J1991.25 and angular units, but the consulted text does not explicitly
-name an epoch time scale. The [2007 validation paper](https://arxiv.org/pdf/0708.1752)
-uses mu-alpha-star; the author's
-[2009 paper](https://doi.org/10.1051/0004-6361/200811382) explicitly defines the
-cos(delta) convention in primary indexed text. The latter is indexed evidence,
-not a claim to have read an inaccessible full PDF.
+Fernando explicitly authorized TCB as a nominal model convention on 2026-10-22,
+deferring qualification of the original epoch/time-rate convention to
+[issue #326](https://github.com/fselman/wenu/issues/326). He confirmed that
+J1991.25 is the intended source epoch; the earlier 1991.5 text was a typo.
+The earlier prerequisite block is superseded by this policy agreement.
 
-The [1997 ESA catalogue documentation](https://www.cosmos.esa.int/documents/532822/552851/vol1_all.pdf)
-specifies TT in primary indexed text. This does not by itself qualify the
-2007 declaration. The relevant chapter of the
-[2007 book](https://link.springer.com/book/10.1007/978-1-4020-6342-8)
-was not accessible for this review; no claim is made about unread chapter text.
-The 2007 source epoch remains unqualified in Wenu until direct evidence resolves
-that field, or an explicitly agreed nominal-convention policy is recorded.
-This is not a finding that Hipparcos-2 actually uses a different time scale.
+The separate `admit_stellar_hipparcos2_motion` admission requires the explicit
+`nominal-tcb-deferred-qualification` epoch policy. The source-declared Julian
+epoch value is used on the nominal TCB axis. This is neither a verified source
+TCB declaration nor a TT-to-TCB conversion. Captured source metadata retains
+its null scale and source bytes/weights/solution/component flags unchanged.
+Time-convention, measurement, conversion, covariance and physical errors remain
+not evaluated. Later qualification/conversion needs a distinct admitted identity.
 
-No TT/TCB relabelling, inferred epoch conversion, replacement Gaia identity,
-binary/component correction or physical-error claim is introduced. All 2,850
-fallback candidates and 263 original lookup entries remain source records;
-Gaia full/angular admissions stay unchanged. The existing coordinate guide
-remains current because no scientific runtime semantics have changed.
+Qualified Gaia angular inputs take precedence based on position/both PM and
+solution code, independently of parallax/RV or the earlier inventory preference.
+Otherwise finite Hip2 radian positions and mu-alpha-star/mu-delta in mas per
+Julian year supply separately typed angular coefficients to the existing affine
+engine. This nominal tangent approximation omits perspective, acceleration,
+binary/orbit/systemic and observer-parallax effects. Nonstandard/photocentre
+flags remain evidence, not new component identities or an orbit solution.
+No distance, RV, physical velocity or Cartesian/observer PV is fabricated.
+All original HIP records and unavailable reasons remain; the 263 original lookup
+entries are preserved. Existing Gaia APIs, coefficients and bindings remain
+unchanged. No default/chart/observer/saved-sky consumer adoption is added.
+
+Primary review, 2026-10-22:
+[CDS I/311](https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/I/311?format=html&tex=true),
+[NASA HIPNEWCAT](https://heasarc.gsfc.nasa.gov/W3Browse/all/hipnewcat.html) and
+[ESA I/311 datamodel](https://gea.esac.esa.int/archive/documentation/GDR1/datamodel/Ch4/hipparcos_newreduction.html)
+were read for ICRS/J1991.25 and angular units. The
+[2007 author paper](https://arxiv.org/pdf/0708.1752) uses mu-alpha-star; the
+[2009 author paper](https://doi.org/10.1051/0004-6361/200811382) defines the
+cos(delta) convention in primary indexed text (full PDF not read).
+[ESA 1997](https://www.cosmos.esa.int/documents/532822/552851/vol1_all.pdf)
+provides TT in primary indexed text, not direct proof of the 2007 declaration.
+The [2007 book](https://link.springer.com/book/10.1007/978-1-4020-6342-8)
+astrometry chapter remained inaccessible. This is an evidence gap, not evidence
+that the 2007 product uses a different scale. The ticket distinguishes an epoch
+offset from the time-rate difference and tracks independent catalogue checks.
 
 ## Coordinates, time and resources
 

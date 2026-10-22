@@ -18,13 +18,17 @@ sampled directions agree with the independent Decimal oracle within
 digest is unchanged. PR #323 is merged and Mac branch cleanup is complete. Missing-PM approximations, Hip2 qualification,
 observer/product adoption and external redistribution remain separate.
 
-**Current selected work:** K4b.02 Hipparcos-2 fallback qualification,
-authorized after the clean Mac receipt at `8167bb39`. The source hashes and
-ICRS/J1991.25/angular-unit declarations are checked; an explicit 2007 epoch
-time-scale statement has not yet been established from accessible primary
-material. Runtime admission remains blocked at that prerequisite. The 2,850
-fallback candidates and 263 original lookup entries stay preserved; no model,
-source bytes or ordinary charts change. See the
+**Current selected work:** K4b.02 Hipparcos-2 angular fallback. Fernando
+explicitly adopted a nominal TCB convention and deferred the source epoch/rate
+qualification to [issue #326](https://github.com/fselman/wenu/issues/326).
+`admit_stellar_hipparcos2_motion` now admits measured Hip2 position/PM where
+Gaia angular inputs are unavailable, through the same angular engine. Its
+separate identity binds the explicit nominal policy while preserving the
+original null source scale. No TT-to-TCB conversion, physical PV or accuracy
+bound is claimed. All HIP records and accepted Gaia bindings remain unchanged.
+Constructed checks pass; actual combined-snapshot Mac acceptance is pending.
+The 263 original lookup entries stay preserved; no ordinary chart changes.
+See the
 [qualification review](kernel_roadmap_v0.9.5.md#k4b02-hipparcos-2-fallback-qualification).
 
 **Existing Wenu production baseline:** `6708f54a0d8984c0be348b2c8cb02b311646a02b`, 2026-10-17.

@@ -1738,9 +1738,9 @@
     },
     {
       "path": "src/wenu/stellar_state.py",
-      "git_blob_sha": "caf8281aeef86b01acc0987d2a0b716c27357e7a",
+      "git_blob_sha": "78e8ab33d804ddfd5be5f31d48be9d310bbad4a7",
       "as_is_directory": "src/wenu",
-      "description": "Stellar source-native lookup and separate full-input/angular admissions/providers through one shared typed affine engine.",
+      "description": "Native lookup and distinct Gaia full/angular and nominal-TCB Hipparcos-2 angular fallback admission/provider through the shared typed affine engine.",
       "baseline_relation": "Added in K3 native-stellar candidate; not present in pinned historical census."
     },
     {
@@ -6461,12 +6461,12 @@
     },
     {
       "path": "tests/test_stellar_state.py",
-      "git_blob_sha": "08af33214cf66ac41384de6c497d499e7bc4af1c",
-      "test_functions": 29,
+      "git_blob_sha": "4552f5434dcc624246fe5cb55f3d4e32f01bce17",
+      "test_functions": 35,
       "marks": {
-        "parametrize": 14
+        "parametrize": 18
       },
-      "parametrize_decorators": 14,
+      "parametrize_decorators": 18,
       "fixtures": [
         "motion_source"
       ],
@@ -19815,7 +19815,7 @@
         ]
       },
       "src/wenu/stellar_state.py": {
-        "git_blob_sha": "caf8281aeef86b01acc0987d2a0b716c27357e7a",
+        "git_blob_sha": "78e8ab33d804ddfd5be5f31d48be9d310bbad4a7",
         "group": "catalogue-core",
         "evidence_ids": [
           "K3.04",
@@ -19827,7 +19827,7 @@
           "K4b.02",
           "AX.13"
         ],
-        "purpose": "Stellar source-native lookup and separate full-input/angular admissions/providers through one shared typed affine engine.",
+        "purpose": "Native lookup and distinct Gaia full/angular and nominal-TCB Hipparcos-2 angular fallback admission/provider through the shared typed affine engine.",
         "imports": [
           "__future__",
           "collections",
@@ -26773,7 +26773,7 @@
     "review_date": "2026-10-22",
     "base_commit": "8167bb39f4377f7f486a027662d203ff149bab36",
     "plan_commit": "b37b2e0600b654427ba4e62255f393ad92f50df5",
-    "status": "Selected; primary convention review incomplete; runtime admission blocked by unqualified 2007 epoch time scale",
+    "status": "Explicit nominal-TCB fallback implemented; original source time-scale qualification deferred to issue #326; actual Mac runtime acceptance pending",
     "authorization": "Fernando's Proceed after explicit fallback proposal and clean synchronized main receipt at 8167bb39",
     "source_integrity": {
       "catalogue": "CDS I/311/hip2",
@@ -26828,10 +26828,10 @@
       }
     ],
     "unresolved": [
-      "Explicit 2007 epoch time-scale evidence",
-      "Qualified source/model convention binding before any runtime admission"
+      "Direct original 2007 epoch/time-rate declaration and any future conversion; deferred issue #326",
+      "Actual combined-snapshot Mac fallback counts and sampled directions"
     ],
-    "next_qualification_action": "Obtain the relevant primary 2007 astrometry statement; alternatively discuss an explicit nominal-convention policy with Fernando before implementation.",
+    "next_qualification_action": "Issue #326: verify primary 2007 convention and assess epoch-offset/time-rate effects; not a blocker for authorized nominal TCB model.",
     "preservation": {
       "hip2_fallback_candidates": 2850,
       "original_lookup_entries": 263,
@@ -26839,7 +26839,30 @@
       "source_snapshot": "Unchanged immutable bytes/schema/null-adoption record",
       "coordinate_guide": "Reviewed; remains current because no runtime semantic change"
     },
-    "runtime_or_Mac_acceptance": "Not run or claimed; no new model exists",
-    "limits": "Documentation-only assessment. No production/test/gate/source bytes changed; no no-PM, orbit, physical accuracy, acquisition, default/chart/observer adoption."
+    "runtime_or_Mac_acceptance": "Constructed adapter/SDK/oracle/source-free checks passed; actual external combined-snapshot admission remains Mac acceptance.",
+    "limits": "No source bytes/schema/adoption changes, Gaia binding changes, acquisition, no-PM, physical PV/orbit/accuracy or default/chart/observer adoption.",
+    "nominal_policy_agreement": "Fernando explicitly selected TCB and deferred qualification on 2026-10-22; clarified 1991.5 was a typo for J1991.25",
+    "follow_up_issue": "https://github.com/fselman/wenu/issues/326",
+    "implementation": {
+      "api": "admit_stellar_hipparcos2_motion",
+      "motion_policy": "hipparcos2-angular-fallback",
+      "epoch_policy": "nominal-tcb-deferred-qualification",
+      "admission_schema": "wenu-stellar-hipparcos2-motion-admission/1",
+      "source_epoch_scale": "unchanged null source fact",
+      "model_epoch_scale": "nominal tcb; not a TT-to-TCB conversion",
+      "precedence": "Gaia angular input availability, independently of parallax/RV/old inventory preference",
+      "owners": {
+        "src/wenu/stellar_state.py": "78e8ab33d804ddfd5be5f31d48be9d310bbad4a7",
+        "tests/test_stellar_state.py": "4552f5434dcc624246fe5cb55f3d4e32f01bce17"
+      },
+      "shared_engine": "Existing AngularMotionRow and affine direction/reuse engine unchanged",
+      "uncertainty": "Measurement/conversion/convention/physical errors not evaluated",
+      "source_reference": "Original source facts retained separately from nominal model_reference",
+      "local_passes": 324,
+      "local_subtests": 9,
+      "local_deselected_cases": 4,
+      "environment": "Python 3.12 / Astropy 7.2.0 / NumPy 1.26.4 / pytest 9.1.1; partial checkout namespace bootstrap"
+    },
+    "nominal_policy_plan_commit": "3bc081f42bfee32418cc26ec94b6ef1079cf9434"
   }
 }
