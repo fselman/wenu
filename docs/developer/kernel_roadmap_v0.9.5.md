@@ -177,6 +177,17 @@ not needed; no renderer, SDK, package extraction or runtime source adoption.
 Source acquisition is explicit and bounded (100 MiB transport and 100 MiB
 expanded per static table; at most one request per declared resource, no retry,
 mirror/account fallback, per-star query loop or import/test-time network).
+The assessment's first advertised static-file response declared 23,902,236 bytes
+but the connection ended at 23,898,311 bytes (3,925 bytes missing); gzip integrity
+refused it. The same server explicitly advertises Accept-Ranges: bytes and an
+ETag. An explicit assessment-only range request may retrieve exactly the missing
+tail using If-Range and that ETag, accepting only HTTP 206 with exact matching
+Content-Range/total/ETag/length before concatenation and full gzip CRC/hash
+validation. Record both HTTP receipts and never interpret the partial payload.
+This is a validated byte-resume of the same resource, not a new source/mirror,
+whole-file blind retry or automatic retry policy. The shipped acquisition tool
+continues to stop on a truncated response with no automatic retry.
+
 Review dated primary provider usage/attribution and article/corrigendum terms;
 respect existing deferred Gaia licensing review and claim no broader clearance
 or redistribution. Raw provider data stay external to the repository.
