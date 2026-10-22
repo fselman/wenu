@@ -102,7 +102,7 @@ concrete Wenu classes.
 | [`antisolar.py`](../../src/wenu/antisolar.py) | Observer-relative apparent antisolar direction geometry. |
 | [`astrometric_coordinates.py`](../../src/wenu/astrometric_coordinates.py) | Object-independent explicit TCB/TDB time conversion and barycentric Cartesian scaling receipts; no propagation, observer backend or graphics. |
 | [`astrometric_observation.py`](../../src/wenu/astrometric_observation.py) | Offline UTC/TT reception and integrity-bound ERFA context; explicit model/resource admission and object-independent finite-distance parallax/apparent vacuum Alt/Az realization from kernel batches. No source propagation or chart adoption. |
-| [`astrometric_state.py`](../../src/wenu/astrometric_state.py) | Object-independent immutable SI rows, nominal rectilinear direction/Cartesian evaluation, domain validation and direction numerical/reuse certification through the SDK; no catalogue or observer dependencies. |
+| [`astrometric_state.py`](../../src/wenu/astrometric_state.py) | Object-independent separately typed SI/angular rows, shared affine direction/Cartesian evaluation, domain and numerical/reuse certification; angular rows cannot claim physical PV; no source/observer dependencies. |
 | [`atlas_design.py`](../../src/wenu/atlas_design.py) | Observer-independent atlas geometry specimens and strict versioned JSON. |
 | [`chart_document.py`](../../src/wenu/chart_document.py) | Neutral records shared by chart orchestration and renderers. |
 | [`cluster_state.py`](../../src/wenu/cluster_state.py) | Cluster-specific source qualification, unit conversion, centre policy and provider identity facade over the shared astrometric engine; native chart adaptation remains with the object layer. |
@@ -133,7 +133,7 @@ concrete Wenu classes.
 | [`star_designations.py`](../../src/wenu/star_designations.py) | Offline, immutable HIP-linked Wikidata candidates, separate from astrometry. |
 | [`stellar_research.py`](../../src/wenu/stellar_research.py) | Immutable, offline HIP index of designation research and accepted policy. |
 | [`catalogue_state.py`](../../src/wenu/catalogue_state.py) | Shared immutable direction-table provider with optional aligned per-row epochs, vector decoding and owned kernel scope; no catalogue decoding, observer or graphics. |
-| [`stellar_state.py`](../../src/wenu/stellar_state.py) | Native lookup facade plus explicit full-input stellar admission/provider over the shared SI astrometric engine; no acquisition or automatic consumer adoption. |
+| [`stellar_state.py`](../../src/wenu/stellar_state.py) | Native lookup plus explicit full-input and measured-PM angular admission/provider through the shared affine engine; no acquisition or automatic consumer adoption. |
 | [`stellar_catalogue.py`](../../src/wenu/stellar_catalogue.py) | Validated stellar ingestion, immutable metadata mirror and standard table envelope; source facts read from data documents. |
 | [`stellar_enrichment.py`](../../src/wenu/stellar_enrichment.py) | Immutable multi-edition source snapshot codec, strict byte/identity/unit/membership admission and source-free local reload; no propagation or acquisition. |
 | [`svg_document.py`](../../src/wenu/svg_document.py) | Deterministic semantic annotations for Matplotlib SVG output. |

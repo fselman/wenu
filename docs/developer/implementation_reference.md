@@ -568,6 +568,63 @@ complete-input models and all 118,218 original objects retained; five HIPs at
 two epochs passed direction/Cartesian comparison. These user-run receipts are
 separate from the constructed offline tests and do not establish physical accuracy.
 
+## Explicit proper-motion angular model
+
+`stellar_state.admit_stellar_angular_motion(source, *, coverage)` is a separate
+explicit admission over the unchanged `StellarEnrichmentSnapshot`. It returns
+the existing immutable `StellarMotionCatalogue` with `motion_policy` equal to
+`proper-motion-angular`, distance/RV policies `not-used`, and separately typed
+`AngularMotionRow` records. The default `admit_stellar_motion` path and its full
+input metadata/SI digests/model/reference identities remain unchanged.
+
+The angular adapter admits linked Gaia five-/six-parameter positions with a
+qualified TCB source epoch and both measured PMs. Parallax/RV may be missing,
+zero or negative where the source permits them; they do not enter angular math.
+Supplied values/errors/correlations/quality flags remain intact in the immutable
+source. Missing position/PM, position-only/unknown solution codes and missing
+associations retain visible unavailable reasons. All original HIP objects,
+photometry, designations and release-qualified identities remain present.
+Unknown Hip2 conventions are not inferred and neighbourhood alternatives are
+not substituted. This API does not implement a no-measured-PM approximation.
+
+At admission, declared degree/mas-per-Julian-year/mu-alpha-star source facts
+supply a unit vector `u0` and transverse derivative `w` per SI second. The model
+is `normalize(u0 + dt*w)` using elapsed source-scale seconds from the original
+source epoch. This normalized tangent approximation is not constant angular
+speed and is not re-anchored incrementally at each request. It omits radial
+perspective and observer parallax; no physical distance, Cartesian position,
+velocity or measured zero RV is manufactured. The schema
+`wenu-stellar-angular-motion-admission/1` separately records policies, source/
+ledger identities, caller domain, `angular_solutions_sha256`, `angular_models`
+coverage and explicit unavailable counts. The source schema/null adoption is
+unchanged; `to_record()` returns detached metadata.
+
+`StellarMotionProvider(catalogue)` consumes this angular catalogue through the
+same shared core/SDK as the full model, using a distinct `.angular` provider,
+`stellar-angular-tangent` model, reference and resource identities. It admits
+`epoch_direction`, batch evaluation and the existing numerical angular-reuse
+capability. Cartesian construction, physical velocity/range accuracy, unsupported
+scale/domain/reference/source bindings and unavailable objects are refused.
+Finite TCB `coverage` is mandatory, with no built-in universal 1,000-year limit;
+a long nominal domain does not certify physical suitability. No observer,
+historical-calendar/precession, chart/CLI/saved-sky or default-source adoption
+is implied.
+
+The shared exact-rational affine/cone verification now handles typed SI PV and
+angular direction/derivative inputs. The `2**-40` rad numerical floor and reuse
+bound apply only to the admitted binary64 affine model, including stored anchor
+rounding; measurement/source-conversion, omitted perspective and other physical
+errors remain unknown. Full Cartesian states remain SI-only, and no angular
+certificate is presented as a distance, velocity or total sky-accuracy bound.
+Measured zero PM is valid; absent PM is unavailable. Only interactive bounded
+SDK sessions reuse certified anchors; reproducible sessions retain full-model
+queries against the original immutable coefficients.
+
+Run `stellar-motion-provider` (stellar, shared core and affected cluster owner),
+source-audit regression, documentation and tooling checks. Actual external-source
+Mac angular coverage/queries remain separate from constructed tests. This is
+the measured-PM part of K4b.02/AX.13, not closure of their no-PM/fallback scopes.
+
 ## Native stellar kernel adapter
 
 The [K4a.02 acquisition/matching policy review](scientific_contracts.md#gaia-dr3-acquisition-and-matching-policy-review)
@@ -1091,7 +1148,9 @@ with hashes and original row indices; constructed mutations are labelled faults.
 
 `astrometric_state.SpaceMotionRow` copies an identifier, source `TimePoint`, SI
 position/velocity triples or an explicit unavailable reason. It does not encode
-an object family. `RectilinearAstrometricProvider(rows, *, descriptor, catalogue,
+an object family. `AngularMotionRow` separately copies a unit direction and
+transverse derivative per second, with no physical position/distance/velocity.
+`RectilinearAstrometricProvider(rows, *, descriptor, catalogue,
 admission, evidence, reuse_method=None, velocity_evidence=None)` consumes copied typed key/row pairs and
 immutable SDK bindings supplied by a source adapter. It validates full identity
 sets, supported direction capabilities, numerical evidence, source scale/epoch
@@ -1117,13 +1176,15 @@ This proves engine reuse, not independent installation of all of Wenu or
 production stellar/PN/SNR catalogue admission. The installed-wheel cluster test
 checks that both facade and engine ship and execute together.
 
-The engine still requires complete admitted SI space-motion solutions. Explicit
-Cartesian output and the separate nominal finite observer service are now implemented as described below; explicit observed Python chart/saved adoption is implemented. The requested configurable
-200-year no-PM and 1,000-year PM-only lookback policies, measured from source
-reference epochs, remain planned reduced-model admission policies, not enabled
-models or absolute accuracy guarantees. Expansion and morphology evolution are
-excluded. Future object adapters qualify centres/systemic motions and call this
-engine; they must not copy its propagation or certificate implementation.
+Complete admitted SI PV remains mandatory for Cartesian/observer output. Explicit
+angular rows now use the same affine direction/reuse mathematics without claiming
+physical PV. The separate nominal finite observer and explicit observed cluster
+consumers retain their existing full-PV admission. The proposed no-PM model is
+still pending; Fernando superseded the old universal 1,000-year PM-only proposal
+with explicit caller domains and honest unknown errors. The angular model above
+implements that measured-PM scope, with no total accuracy guarantee. Expansion
+and morphology evolution remain excluded. Other adapters qualify their own
+source/centre semantics and reuse this engine, not copied mathematics.
 
 ## Nominal cluster motion provider
 

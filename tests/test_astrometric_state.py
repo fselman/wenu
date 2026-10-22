@@ -12,7 +12,7 @@ from wenu_kernel import Kernel
 from wenu_kernel.records import AccuracyRequest, StateQuery, SessionPolicy, TimePoint
 
 
-def mixed_provider(provider_class, row_class, representation="direction", scale="tcb"):
+def mixed_provider(provider_class, row_class, representation="direction", scale="tcb", angular=False):
     """Constructed inputs for four families, with no catalogue-specific fixture."""
     from wenu_kernel.records import (
         CatalogueRef, CatalogueSnapshot, ExternalId, ModelAdmission, ModelRef,
@@ -21,16 +21,19 @@ def mixed_provider(provider_class, row_class, representation="direction", scale=
     )
     epoch = TimePoint(2451545, 0, scale)
     span = TimeSpan(TimePoint(2451544, 0, scale), TimePoint(2451546, 0, scale))
+    if angular:
+        span = TimeSpan(TimePoint(2451545-18262500,0,scale),TimePoint(2451545+18262500,0,scale))
     cartesian = representation == 'cartesian'
-    key = ProviderKey('constructed-mixed-astrometry'+('.pv' if cartesian else ''), '1')
+    key = ProviderKey('constructed-mixed-astrometry'+('.angular' if angular else '.pv' if cartesian else ''), '1')
     resource = ResourceRef('constructed-si-solutions', '1', 'a'*64, span,
                            'synthetic nominal domain', ('Constructed test inputs',))
     kinds = ('star', 'open-cluster', 'planetary-nebula', 'supernova-remnant')
     keys = tuple(ObjectKey('constructed:'+kind) for kind in kinds)
     ref = CatalogueRef(key, (resource,), 'b'*64)
-    model = ModelRef('constructed-rectilinear', '1', 'c'*64, (resource,))
+    model = ModelRef('constructed-angular' if angular else 'constructed-rectilinear', '1', 'c'*64, (resource,))
     frame = ReferenceSpec('icrs','solar-system-barycenter','nominal-astrometric',
-                          representation,'m,m/s' if cartesian else 'rad','synthetic no additional light time')
+                          representation,'m,m/s' if cartesian else 'rad',
+                          'synthetic normalized tangent angular approximation' if angular else 'synthetic no additional light time')
     caps = (('cartesian_state','batch_evaluation') if cartesian else
             ('epoch_direction','batch_evaluation','direction_reuse_bound'))
     objects = tuple(ObjectRecord(k,(ExternalId('constructed','1',kind),),kind,
@@ -43,7 +46,8 @@ def mixed_provider(provider_class, row_class, representation="direction", scale=
         UncertaintyChannel('not_evaluated',None,'rad','nominal model'),
         UncertaintyChannel('bounded',2**-40,'rad','angular_separation'))
     reuse = ModelRef('constructed-cone','1','d'*64,(resource,))
-    rows = [(k,row_class(kind,epoch,(1e12,0.,0.),(1000.,2000.,0.),None))
+    rows = [(k,row_class(kind,epoch,(1.,0.,0.) if angular else (1e12,0.,0.),
+                         (0.,2e-12,1e-12) if angular else (1000.,2000.,0.),None))
             for k,kind in zip(keys,kinds)]
     velocity_evidence = None
     if cartesian:
@@ -430,3 +434,81 @@ def test_barycentric_space_time_scaling_commutes_with_linear_motion():
             actual_dt=(Decimal(s.time.jd1-epoch_tdb.target.jd1)+Decimal(s.time.jd2)
                        -Decimal(epoch_tdb.target.jd2))*86400
             assert abs(actual_dt-dt*f) <= Decimal(s.conversion.numerical_error_s)+Decimal(epoch_tdb.numerical_error_s)
+
+
+@pytest.mark.parametrize('years',[-50000,-10000,-1,0,1,10000,50000])
+def test_angular_shared_core_matches_independent_decimal_affine_oracle(years):
+    """Protect reduced-model math across long domains; closest mixed-engine oracle."""
+    from decimal import Decimal,localcontext
+    from wenu.astrometric_state import AngularMotionRow
+    from wenu_kernel.records import TimeSpan
+    p=mixed_provider(RectilinearAstrometricProvider,AngularMotionRow,angular=True)
+    a=p.describe().admissions[0]
+    from math import floor
+    days=365.25*years;whole=floor(days+.5)
+    time=TimePoint(2451545+whole,days-whole,'tcb')
+    q=StateQuery(a.catalogue,a.model,tuple(reversed(a.objects)),(time,),a.reference,AccuracyRequest())
+    with Kernel(references=(a.reference,))as k:
+        k.register(p,ownership='owned')
+        with k.open_session(SessionPolicy((a.catalogue,)))as session:batch=session.evaluate(q)
+    with localcontext()as ctx:
+        ctx.prec=90
+        dt=Decimal(years)*Decimal('365.25')*86400
+        xyz=(Decimal(1),Decimal(2e-12)*dt,Decimal(1e-12)*dt)
+        norm=sum(v*v for v in xyz).sqrt()
+        oracle=tuple(float(v/norm)for v in xyz)
+    for s in batch.states:
+        assert max(abs(x-y)for x,y in zip(s.vector,oracle)) < 2**-48
+        assert s.source_epoch==TimePoint(2451545,0,'tcb')
+        assert s.evidence.physical_model.status=='not_evaluated'
+    assert [s.object_key for s in batch.states]==list(reversed(a.objects))
+    assert not hasattr(batch.states[0],'position_m')
+
+
+@pytest.mark.parametrize('fault',['epoch','unit','radial','nonfinite','missing','unavailable_vectors','cartesian'])
+def test_angular_rows_and_cartesian_masquerade_refuse(fault):
+    from wenu.astrometric_state import AngularMotionRow
+    args=['angular',TimePoint(2451545,0,'tcb'),(1.,0.,0.),(0.,1e-12,0.),None]
+    if fault=='epoch':args[1]=None
+    if fault=='unit':args[2]=(2.,0.,0.)
+    if fault=='radial':args[3]=(1e-12,1e-12,0.)
+    if fault=='nonfinite':args[3]=(0.,float('nan'),0.)
+    if fault=='missing':args[3]=None
+    if fault=='unavailable_vectors':args[4]='missing PM'
+    with pytest.raises(ValueError):
+        if fault=='cartesian':mixed_provider(RectilinearAstrometricProvider,AngularMotionRow,'cartesian',angular=True)
+        else:AngularMotionRow(*args)
+
+
+def test_angular_shared_core_numerical_fault_reuse_and_immutable_coefficients(monkeypatch):
+    import wenu.astrometric_state as core
+    from dataclasses import FrozenInstanceError
+    p=mixed_provider(RectilinearAstrometricProvider,core.AngularMotionRow,angular=True)
+    a=p.describe().admissions[0]
+    row=p._lookup[a.objects[0]]
+    assert type(row) is core.AngularMotionRow and not hasattr(row,'position_m')
+    with pytest.raises(FrozenInstanceError):row.tangent_per_s=(0,0,0)
+    q=StateQuery(a.catalogue,a.model,(a.objects[0],),(TimePoint(2451545,0,'tcb'),),a.reference,
+                 AccuracyRequest(angular_rad=1e-5),evaluation_policy='bounded_reuse')
+    calls=[];evaluate=p.evaluate
+    def counted(q):calls.append(q);return evaluate(q)
+    p.evaluate=counted
+    with Kernel(references=(a.reference,))as k:
+        k.register(p,ownership='owned')
+        with k.open_session(SessionPolicy((a.catalogue,),reproducibility='interactive_bounded'))as session:
+            first=session.evaluate(q)
+            second=session.evaluate(replace(q,times=(TimePoint(2451545,.01,'tcb'),)))
+            assert len(calls)==1 and second.states[0].anchor_time==first.states[0].anchor_time
+            assert second.reuse_certificates
+    # The exact affine-oracle check must detect a deliberate computed-vector fault.
+    p=mixed_provider(RectilinearAstrometricProvider,core.AngularMotionRow,angular=True)
+    a=p.describe().admissions[0]
+    q=StateQuery(a.catalogue,a.model,(a.objects[0],),(TimePoint(2451545,.1,'tcb'),),a.reference,AccuracyRequest())
+    baseline=p.evaluate(q)
+    original=core._exact_position
+    monkeypatch.setattr(core,'_exact_position',lambda r,t:(1,1,0))
+    from wenu_kernel.errors import AccuracyUnavailable
+    with pytest.raises(AccuracyUnavailable):p.evaluate(q)
+    monkeypatch.setattr(core,'_exact_position',original)
+    assert p.evaluate(q)==baseline
+    p.close()

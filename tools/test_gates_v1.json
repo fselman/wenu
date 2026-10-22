@@ -3322,16 +3322,20 @@
       ]
     },
     "stellar-motion-provider": {
-      "scope": "K4b.01 explicit complete-input stellar source admission and nominal direction/Cartesian propagation through the existing shared SI core.",
-      "limits": "Constructed offline source/model and actual SDK composition only in tests. No reduced models, default/chart/observer/saved-sky adoption, acquisition, physical accuracy, dependency or SDK implementation change. Actual real-source Mac admission remains separate.",
+      "scope": "K4b.01/K4b.02 explicit complete-input and measured-PM angular stellar admission through the shared affine engine; affected cluster regression.",
+      "limits": "Constructed offline/SDK/cluster numerical checks; actual external stellar snapshot acceptance remains Mac-only. Measured-PM angular approximation only: no fake distance/RV, no no-PM/Hip2 convention inference, default/chart/observer/saved-sky adoption, source schema, acquisition, physical accuracy, dependency or SDK implementation change.",
       "selections": [
         {
           "node": "tests/test_stellar_state.py",
-          "reason": "Changed adapter owner: preserve native lookup, validate full source-to-SI admission, all original objects/identities/gaps and query/refusal/isolation/conformance."
+          "reason": "Stellar adapter source/identity preservation, unchanged full-input bindings, angular unit/tangent admission, missing inputs, domain/capability refusal, SDK conformance and isolated source-free reload."
         },
         {
           "node": "tests/test_astrometric_state.py",
-          "reason": "The stellar adapter delegates to this existing unchanged shared core; retain direction/Cartesian, numerical/reuse and convention seam contracts."
+          "reason": "Changed shared affine coefficient representation: independent SI/angular numerical oracles, long epochs, type/capability separation, exact reuse and standard-library isolation."
+        },
+        {
+          "node": "tests/test_cluster_state.py",
+          "reason": "The complete existing cluster adapter owner protects unchanged SI/source/epoch/ERFA/real-source/Cartesian/reuse behavior after shared coefficient access changes."
         }
       ]
     }

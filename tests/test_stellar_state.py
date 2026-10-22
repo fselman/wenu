@@ -499,12 +499,14 @@ def test_stellar_motion_source_epoch_and_model_identity_are_not_hard_coded(motio
     p.close();other.close()
 
 
-def test_stellar_motion_provider_passes_sdk_conformance_and_reuse(motion_source):
+@pytest.mark.parametrize('motion_kind',['full','angular'])
+def test_stellar_motion_provider_passes_sdk_conformance_and_reuse(motion_source,motion_kind):
     """Reuse/lifetime uses inherited core, while bindings come from real adapter."""
     import io
     from wenu_kernel.conformance import provider_suite
     def factory():
-        cat,p,q=stellar_motion_case(motion_source())
+        case=stellar_angular_case if motion_kind=='angular'else stellar_motion_case
+        cat,p,q=case(motion_source())
         q=replace(q,times=(TimePoint(2457389,0,'tcb'),TimePoint(2457389,.01,'tcb')))
         probe=replace(q,times=(TimePoint(2457389,.1,'tcb'),))
         counts=dict(evaluate=0,certify=0,close=0)
@@ -544,20 +546,21 @@ sys.path.insert(0,sys.argv[1])
 def forbidden(*a,**k):raise AssertionError('network forbidden')
 socket.socket=forbidden
 from wenu.stellar_enrichment import load_stellar_enrichment
-from wenu.stellar_state import admit_stellar_motion,StellarMotionProvider
+from wenu.stellar_state import admit_stellar_motion,admit_stellar_angular_motion,StellarMotionProvider
 from wenu_kernel import Kernel
 from wenu_kernel.records import TimePoint,TimeSpan,StateQuery,AccuracyRequest,SessionPolicy
 source=load_stellar_enrichment(sys.argv[2])
 c=admit_stellar_motion(source,coverage=TimeSpan(TimePoint(2400000,0,'tcb'),TimePoint(2500000,0,'tcb')),
  distance_policy='positive-parallax-reciprocal',radial_velocity_policy='spectroscopic-proxy')
+angular=admit_stellar_angular_motion(source,coverage=TimeSpan(TimePoint(-15000000,0,'tcb'),TimePoint(20000000,0,'tcb')))
 shutil.rmtree(sys.argv[2])
-for representation in ('direction','cartesian'):
- p=StellarMotionProvider(c,representation=representation);a=p.describe().admissions[0]
+for catalogue,representation,expected in ((c,'direction',2),(c,'cartesian',2),(angular,'direction',5)):
+ p=StellarMotionProvider(catalogue,representation=representation);a=p.describe().admissions[0]
  q=StateQuery(a.catalogue,a.model,a.objects,(TimePoint(2457389,0,'tcb'),),a.reference,
   AccuracyRequest(metric='euclidean_norm')if representation=='cartesian'else AccuracyRequest())
  with Kernel(references=(a.reference,))as k:
   k.register(p,ownership='owned')
-  with k.open_session(SessionPolicy((a.catalogue,)))as s:assert len(s.evaluate(q).states)==2
+  with k.open_session(SessionPolicy((a.catalogue,)))as s:assert len(s.evaluate(q).states)==expected
 assert not any(name.split('.')[0]in('astropy','numpy','pandas','skyfield','matplotlib')for name in sys.modules)
 assert not any(name.startswith(('wenu.objects','wenu.sky','wenu.rendering'))for name in sys.modules)
 print('cold source-to-kernel admission passed')
@@ -577,5 +580,146 @@ def test_stellar_motion_preserves_published_edr3_and_bridged_dr3_external_ids(mo
     p.close()
 
 
-if __name__ == "__main__":
+def stellar_angular_case(source, *, coverage=None):
+    from wenu_kernel.records import TimeSpan
+    epoch=bridge._stellar_epoch(source.metadata['gaia_reference']['expected_ref_epoch'],'tcb')
+    coverage=coverage or TimeSpan(TimePoint(epoch.jd1-18262500,epoch.jd2,'tcb'),TimePoint(epoch.jd1+18262500,epoch.jd2,'tcb'))
+    catalogue=bridge.admit_stellar_angular_motion(source,coverage=coverage)
+    provider=bridge.StellarMotionProvider(catalogue)
+    a=provider.describe().admissions[0]
+    return catalogue,provider,StateQuery(a.catalogue,a.model,a.objects,
+        (catalogue.rows[0].source_epoch,),a.reference,AccuracyRequest())
+
+
+def test_stellar_angular_admission_retains_unknown_inputs_and_full_model_bindings(motion_source):
+    """Protect silent zero filling/adoption; closest full-input source-preservation test."""
+    from hashlib import sha256
+    source=motion_source();original=source.products
+    full,fp,fq=stellar_motion_case(source)
+    angular,ap,aq=stellar_angular_case(source)
+    assert sha256(full.metadata_json).hexdigest()=='96f0acec6ae9d826d90aa661442bb6e1e0886a56b5b5938c5b8f85919ac45229'
+    assert fp.describe().admissions[0].model.configuration_digest=='2ef257cbff0465eaab84c45bf7e10399543664a5d86f8bbc6115917e262c1ccf'
+    assert angular.source is source and source.products==original
+    assert angular.to_record()['counts']==dict(retained_objects=9,angular_models=5,
+        unavailable_by_reason={'gaia_position_only':1,'no_published_gaia_association':2,'unsupported_gaia_solution':1})
+    assert [k.value for k in aq.objects]==['hipparcos:1','hipparcos:2','hipparcos:3','hipparcos:6','hipparcos:8']
+    assert len(ap.catalogue(aq.catalogue).objects)==9
+    assert len(fp.catalogue(fq.catalogue).objects)==9
+    assert all(type(r)is bridge.AngularMotionRow for r in angular.rows)
+    assert not hasattr(angular.rows[1],'position_m')and not hasattr(angular.rows[1],'velocity_m_s')
+    gaia=list(source.records('gaia_sources_v1.jsonl'))
+    assert gaia[1]['radial_velocity']is None and gaia[2]['parallax']==-1 and gaia[6]['parallax']==0
+    assert aq.catalogue!=fq.catalogue and aq.model!=fq.model and aq.reference!=fq.reference
+    assert next(source.records())['original']['magnitude']==2.
+    assert next(source.records())['adopted_solution']is None
+    assert angular.to_record()['policies']['perspective']=='omitted'
+    fp.close();ap.close()
+
+
+@pytest.mark.parametrize('changes',[{'parallax':None,'radial_velocity':None},
+    {'parallax':-5.,'radial_velocity':None},{'parallax':0.,'radial_velocity':None},
+    {'parallax':500.,'radial_velocity':-2000.}])
+def test_stellar_angular_math_is_independent_of_unused_distance_and_rv(motion_source,changes):
+    first,p,q=stellar_angular_case(motion_source())
+    other,op,oq=stellar_angular_case(motion_source(changes))
+    assert first.rows==other.rows
+    assert first.to_record()['angular_solutions_sha256']==other.to_record()['angular_solutions_sha256']
+    # Retained source identity still distinguishes changed supplied facts.
+    assert q.catalogue!=oq.catalogue and q.model!=oq.model
+    assert p.evaluate(q).states[0].vector==op.evaluate(oq).states[0].vector
+    p.close();op.close()
+
+
+@pytest.mark.parametrize('days',[-18262500,-365.25,0.,365.25,18262500])
+def test_stellar_angular_short_long_epoch_analytic_direction_oracle(motion_source,days):
+    from math import floor,hypot
+    from astropy import units as u
+    cat,p,q=stellar_angular_case(motion_source())
+    epoch=cat.rows[0].source_epoch
+    whole=floor(epoch.jd2+days+.5)
+    time=TimePoint(epoch.jd1+whole,epoch.jd2+days-whole,'tcb')
+    q=replace(q,objects=(q.objects[0],),times=(time,))
+    with Kernel(references=(q.reference,))as kernel:
+        kernel.register(p,ownership='owned')
+        with kernel.open_session(SessionPolicy((q.catalogue,)))as session:state=session.evaluate(q).states[0]
+    # Equatorial analytic normal triad: east=y, north=z. Unit conversion is
+    # independently supplied by Astropy, without a mock distance or RV.
+    x,y,z=1.,(days*u.day*(1*u.arcsec/u.yr)).to_value(u.rad),(days*u.day*(2*u.arcsec/u.yr)).to_value(u.rad)
+    norm=hypot(x,y,z)
+    assert max(abs(v-w/norm)for v,w in zip(state.vector,(x,y,z)))<2e-15
+    assert state.source_epoch==epoch and state.time==state.anchor_time==time
+    assert state.evidence.measurement.status==state.evidence.physical_model.status=='not_evaluated'
+    assert state.evidence.numerical.value==2**-40
+    # The long result is the declared normalized tangent model, not a
+    # constant-angular-speed rotation or repeated incremental re-anchoring.
+
+
+@pytest.mark.parametrize('changes,reason',[({'pmra':None},'missing_gaia_pmra'),
+    ({'pmra':None,'pmdec':None},'missing_gaia_pmra,pmdec'),
+    ({'astrometric_params_solved':3},'gaia_position_only'),
+    ({'astrometric_params_solved':999},'unsupported_gaia_solution')])
+def test_stellar_angular_missing_pm_or_unqualified_solution_stays_unavailable(motion_source,changes,reason):
+    from wenu_kernel.records import ObjectKey
+    cat,p,q=stellar_angular_case(motion_source(changes))
+    assert cat.rows[0].unavailable_reason==reason
+    assert cat.rows[0].direction is cat.rows[0].tangent_per_s is None
+    assert len(p.catalogue(q.catalogue).objects)==9
+    with pytest.raises(UnsupportedCapability):p.evaluate(replace(q,objects=(ObjectKey('hipparcos:1'),)))
+    p.close()
+
+
+@pytest.mark.parametrize('ra,dec',[(359.999,89.999999),(10.,90.),(321.,-90.),(0.,0.)])
+def test_stellar_angular_pole_wrap_zero_pm_and_unknown_distance_are_explicit(motion_source,ra,dec):
+    from math import cos,sin,radians
+    cat,p,q=stellar_angular_case(motion_source(dict(ra=ra,dec=dec,pmra=0.,pmdec=0.,parallax=None,radial_velocity=None)))
+    row=cat.rows[0]
+    assert row.unavailable_reason is None and row.tangent_per_s==(0,0,0)
+    late=TimePoint(2451545+18000000,0,'tcb')
+    q=replace(q,objects=(q.objects[0],),times=(q.times[0],late))
+    states=p.evaluate(q).states
+    assert states[0].vector==states[1].vector
+    expected=(cos(radians(dec))*cos(radians(ra)),cos(radians(dec))*sin(radians(ra)),sin(radians(dec)))
+    assert max(abs(a-b)for a,b in zip(states[0].vector,expected))<5e-16
+    p.close()
+
+
+@pytest.mark.parametrize('fault',['cartesian','velocity','position_bound','scale','domain','unavailable','full_binding'])
+def test_stellar_angular_capability_and_warm_refusal(motion_source,fault):
+    from wenu_kernel.records import ObjectKey
+    cat,p,q=stellar_angular_case(motion_source())
+    baseline=p.evaluate(q)
+    if fault=='cartesian':
+        with pytest.raises(ValueError):bridge.StellarMotionProvider(cat,representation='cartesian')
+    else:
+        if fault=='velocity':bad=replace(q,require_velocity=True)
+        if fault=='position_bound':bad=replace(q,accuracy=AccuracyRequest(position_m=1.,metric='euclidean_norm'))
+        if fault=='scale':bad=replace(q,times=(TimePoint(2457389,0,'tt'),))
+        if fault=='domain':bad=replace(q,times=(TimePoint(cat.coverage.stop.jd1+1,0,'tcb'),))
+        if fault=='unavailable':bad=replace(q,objects=(ObjectKey('hipparcos:5'),))
+        if fault=='full_binding':
+            _,fp,fq=stellar_motion_case(motion_source());bad=replace(q,model=fq.model);fp.close()
+        assert not p.supports(bad).supported
+        with pytest.raises(UnsupportedCapability):p.evaluate(bad)
+    assert p.evaluate(q)==baseline
+    p.close()
+
+
+@pytest.mark.parametrize('fault',['scale','epoch_outside','policy','distance'])
+def test_stellar_angular_admission_context_refuses_without_inference(motion_source,fault):
+    from wenu_kernel.records import TimeSpan
+    source=motion_source()
+    if fault=='scale':
+        span=TimeSpan(TimePoint(2400000,0,'tt'),TimePoint(2500000,0,'tt'))
+        with pytest.raises(ValueError):bridge.admit_stellar_angular_motion(source,coverage=span)
+    elif fault=='epoch_outside':
+        span=TimeSpan(TimePoint(2400000,0,'tcb'),TimePoint(2400001,0,'tcb'))
+        with pytest.raises(ValueError):bridge.admit_stellar_angular_motion(source,coverage=span)
+    else:
+        span=TimeSpan(TimePoint(2400000,0,'tcb'),TimePoint(2500000,0,'tcb'))
+        with pytest.raises(ValueError):bridge.StellarMotionCatalogue(source,span,
+            'positive-parallax-reciprocal'if fault=='distance'else'not-used','not-used',
+            'proper-motion-angular'if fault=='distance'else'invented-model')
+
+
+if __name__ == '__main__':
     unittest.main()

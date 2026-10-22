@@ -174,8 +174,8 @@
     },
     {
       "path": "src/wenu/astrometric_state.py",
-      "git_blob_sha": "72a5e338088ea3bf9ff358e82c8d58fc60a39efe",
-      "description": "Object-independent SI row/domain, rectilinear direction and angular certificate engine.",
+      "git_blob_sha": "77afec40b6c46f2096418cee14708104227eb929",
+      "description": "Object-independent typed SI PV/angular direction-tangent rows, common affine evaluation, exact numerical/reuse verification; no fabricated physical PV for angular models.",
       "baseline_relation": "Added for enduring object-independent astrometric engine factoring."
     },
     {
@@ -1738,9 +1738,9 @@
     },
     {
       "path": "src/wenu/stellar_state.py",
-      "git_blob_sha": "ead1a3c10d39e7d1a2bc9ea59ce69ee22e36cdd6",
+      "git_blob_sha": "caf8281aeef86b01acc0987d2a0b716c27357e7a",
       "as_is_directory": "src/wenu",
-      "description": "Native stellar lookup plus explicit immutable full-input source admission/provider through the existing shared SI astrometric engine; no automatic consumer adoption.",
+      "description": "Stellar source-native lookup and separate full-input/angular admissions/providers through one shared typed affine engine.",
       "baseline_relation": "Added in K3 native-stellar candidate; not present in pinned historical census."
     },
     {
@@ -6461,12 +6461,12 @@
     },
     {
       "path": "tests/test_stellar_state.py",
-      "git_blob_sha": "b76689484c3a972c893f3595f968827ed5066da3",
-      "test_functions": 22,
+      "git_blob_sha": "08af33214cf66ac41384de6c497d499e7bc4af1c",
+      "test_functions": 29,
       "marks": {
-        "parametrize": 7
+        "parametrize": 14
       },
-      "parametrize_decorators": 7,
+      "parametrize_decorators": 14,
       "fixtures": [
         "motion_source"
       ],
@@ -7021,9 +7021,36 @@
     },
     {
       "path": "tests/test_astrometric_state.py",
-      "git_blob_sha": "ee838c49f2c1e83f88a943bca89e093e5690669d",
+      "git_blob_sha": "d3b206392125afe8750820224cca30b14246d820",
       "description": "Generic mixed-object engine, conformance, immutable-domain and isolated SDK evaluation.",
-      "baseline_relation": "Added for enduring object-independent astrometric engine factoring."
+      "baseline_relation": "Added for enduring object-independent astrometric engine factoring.",
+      "imports": [
+        "dataclasses",
+        "decimal",
+        "erfa",
+        "inspect",
+        "io",
+        "math",
+        "pathlib",
+        "pytest",
+        "shutil",
+        "subprocess",
+        "sys",
+        "unittest",
+        "wenu.astrometric_coordinates",
+        "wenu.astrometric_state",
+        "wenu_kernel",
+        "wenu_kernel.conformance",
+        "wenu_kernel.errors",
+        "wenu_kernel.records",
+        "wenu_kernel.time"
+      ],
+      "test_functions": 17,
+      "parametrize_decorators": 5,
+      "marks": {
+        "parametrize": 5
+      },
+      "fixtures": []
     },
     {
       "path": "tests/test_gaia_crossmatch_audit.py",
@@ -14690,16 +14717,18 @@
         ]
       },
       "src/wenu/astrometric_state.py": {
-        "git_blob_sha": "4eb07ed5580685a67c2db4cdd72865802874e10e",
+        "git_blob_sha": "77afec40b6c46f2096418cee14708104227eb929",
         "group": "astrometry",
         "evidence_ids": [
           "AX.06",
           "AX.07",
           "AX.08",
           "AX.09",
-          "AX.10"
+          "AX.10",
+          "K4b.02",
+          "AX.13"
         ],
-        "purpose": "Object-independent nominal space-motion directions and angular certificates.\n\nAdapters qualify source astrometry, construct immutable SI rows and bind SDK\nidentities/evidence. This engine knows no catalogue, stellar/object family,\nobserver, projection or renderer. Its initial model requires complete",
+        "purpose": "Object-independent typed SI PV/angular direction-tangent rows, common affine evaluation, exact numerical/reuse verification; no fabricated physical PV for angular models.",
         "imports": [
           "__future__",
           "dataclasses",
@@ -19786,7 +19815,7 @@
         ]
       },
       "src/wenu/stellar_state.py": {
-        "git_blob_sha": "ead1a3c10d39e7d1a2bc9ea59ce69ee22e36cdd6",
+        "git_blob_sha": "caf8281aeef86b01acc0987d2a0b716c27357e7a",
         "group": "catalogue-core",
         "evidence_ids": [
           "K3.04",
@@ -19794,9 +19823,11 @@
           "K3.09",
           "K3.11",
           "K3.12",
-          "K4b.01"
+          "K4b.01",
+          "K4b.02",
+          "AX.13"
         ],
-        "purpose": "Native stellar lookup and explicit immutable complete-input source-to-SI admission; nominal stellar provider delegates to the shared rectilinear SDK engine.",
+        "purpose": "Stellar source-native lookup and separate full-input/angular admissions/providers through one shared typed affine engine.",
         "imports": [
           "__future__",
           "collections",
@@ -26607,6 +26638,134 @@
       "No binary or companion substitution",
       "No reduced model/observer/renderer/CLI/dependency/SDK change",
       "External redistribution remains deferred"
+    ]
+  },
+  "stellar_angular_motion": {
+    "milestones": [
+      "K4b.02",
+      "AX.13"
+    ],
+    "scope_status": "Measured-PM slice passed complete Mac tests and actual snapshot acceptance; broader K4b.02/AX.13 partial; merge separate",
+    "base_commit": "08a58b226d4267ce97292c2dc19c2ed939377a51",
+    "plan_commit": "41bf6d3c096fe796a1c971c9feb80bdb10e62001",
+    "gate": "stellar-motion-provider",
+    "owners": {
+      "src/wenu/stellar_state.py": {
+        "git_blob_sha": "caf8281aeef86b01acc0987d2a0b716c27357e7a"
+      },
+      "src/wenu/astrometric_state.py": {
+        "git_blob_sha": "77afec40b6c46f2096418cee14708104227eb929"
+      },
+      "tests/test_stellar_state.py": {
+        "git_blob_sha": "08af33214cf66ac41384de6c497d499e7bc4af1c"
+      },
+      "tests/test_astrometric_state.py": {
+        "git_blob_sha": "d3b206392125afe8750820224cca30b14246d820"
+      }
+    },
+    "unchanged_affected_owner": "src/wenu/cluster_state.py",
+    "responsibility": "New mathematical row representation in the existing generic affine engine; existing stellar source adapter owns conversion/policy/metadata. No family dispatch in numerical code.",
+    "mathematics": "normalize(u0 + elapsed_source_scale_seconds * transverse_derivative_per_s); not constant angular speed; source epoch remains fixed",
+    "representation": "AngularMotionRow(direction,tangent_per_s), distinct from SI SpaceMotionRow; no fabricated physical distance/velocity fields",
+    "source": "Unchanged immutable linked DR3 snapshot; declared units/ICRS/barycentre/mu-alpha-star/TCB; position/epoch/both measured PMs required; parallax/RV unused source facts retained",
+    "admission_schema": "wenu-stellar-angular-motion-admission/1",
+    "policies": {
+      "distance": "not-used",
+      "radial_velocity": "not-used",
+      "perspective": "omitted",
+      "observer_parallax": "unavailable",
+      "coverage": "explicit finite caller TCB domain; no universal short PM cutoff",
+      "physical_accuracy": "not-evaluated"
+    },
+    "preservation": "All original objects/HIP/order/V/designations/links/errors retained; full input SI digest and model configuration verified unchanged on a fixed constructed snapshot.",
+    "capabilities": [
+      "epoch_direction",
+      "batch_evaluation",
+      "direction_reuse_bound"
+    ],
+    "refusals": [
+      "missing PM/position/unqualified solution",
+      "wrong epoch scale/domain/source/model/reference",
+      "Cartesian distance/PV/physical velocity/position accuracy",
+      "unknown physical accuracy is not a zero error"
+    ],
+    "local_receipt": {
+      "cases": 294,
+      "subtests": 9,
+      "deselected_cases": 4,
+      "gate_scope": "Stellar/shared core/cluster/source-audit owners",
+      "environment": "Python 3.12, Astropy 7.2.0, NumPy 1.26.4, pytest 9.1.1; partial checkout namespace bootstrap",
+      "limits": "Three native-star and one full OpenClusters composition case require complete Mac tree. Real combined stellar angular catalogue not present here.",
+      "oracles": "Independent Decimal affine direction and analytic/source-unit references, short and +/-50,000-year nominal domains; no physical-accuracy claim.",
+      "isolation": "Fresh -I -S source snapshot reload and full/Cartesian/angular queries after source files removed, with sockets blocked and no scientific/graphics imports."
+    },
+    "mac_acceptance": {
+      "date": "2026-10-22",
+      "tested_commit": "41c47e1680e65a506862acfd19f96e4f03433c1d",
+      "pull_request": 323,
+      "receipt_file": "Pasted text(20261022-150927).txt",
+      "receipt_sha256": "110e668e5a24c2c378a796255ebc7dc4b367ca8955cef778e1ba449bf7a3c813",
+      "gates": {
+        "stellar-motion-provider": {
+          "passed": 173,
+          "subtests": 9,
+          "seconds": 9.91
+        },
+        "gaia-crossmatch-audit": {
+          "passed": 125,
+          "seconds": 5.37
+        },
+        "documentation": {
+          "passed": 36,
+          "seconds": 2.66
+        },
+        "tooling": {
+          "passed": 8,
+          "subtests": 81,
+          "seconds": 8.94
+        }
+      },
+      "source_manifest_sha256": "8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365",
+      "retained_objects": 118218,
+      "angular_models": 115105,
+      "additional_angular_models": 17395,
+      "unavailable_by_reason": {
+        "gaia_position_only": 2106,
+        "no_published_gaia_association": 1007
+      },
+      "angular_solutions_sha256": "6d3e46ff0aa8bd707ea4b8f169b55fdd41c3bc85d65250d7a801c541ebb38602",
+      "full_input_si_digest_unchanged": "032f76e398eadf136fd9aa59a3c2b3a66d4dc25d9da74bc995b4bdb6088cfe8f",
+      "sample_HIP": [
+        "1",
+        "59096",
+        "118322",
+        "3",
+        "58925"
+      ],
+      "sample_states": 15,
+      "maximum_chord_difference_from_decimal_affine_oracle": 1.5700939560399132e-16,
+      "domain_tcb": [
+        [
+          -15805111,
+          0.0,
+          "tcb"
+        ],
+        [
+          20719889,
+          0.0,
+          "tcb"
+        ]
+      ],
+      "nominal_half_width_Julian_years": 50000,
+      "physical_accuracy": "not-evaluated; long nominal domain is not a validity guarantee"
+    },
+    "limits": [
+      "No no-PM approximation or inferred Hip2 conventions",
+      "No source snapshot bytes/schema/adoption rewrite",
+      "No physical input/covariance/perspective/absolute error bound",
+      "No observer/product/default/CLI/saved-sky adoption",
+      "No SDK/dependency/build/astronomical extraction/acquisition change",
+      "No historical calendar/precession or physical-validity guarantee"
     ]
   }
 }
