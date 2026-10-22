@@ -1,6 +1,6 @@
 # Wenu developer documentation
 
-**Current selected work:** K4b.01 [explicit full-input stellar motion](implementation_reference.md#explicit-full-input-stellar-motion).
+**Accepted:** K4b.01 [explicit full-input stellar motion](implementation_reference.md#explicit-full-input-stellar-motion).
 The Mac source snapshot and coverage/preservation checks are accepted at
 `3fed5483`: all 118,218 HIP entries, 117,211 published associations, original
 loaded fields/designations and visual photometry survive validated reload.
@@ -9,8 +9,11 @@ from the immutable source and queries the existing shared core. Positive-paralla
 reciprocal distance and spectroscopic-RV proxy policies require explicit caller
 selection. Missing/unqualified rows remain visible and unavailable. Default
 charts/source lookup, reduced models and observer realization are unchanged.
-Actual Mac model admission/evaluation remains pending; external redistribution
-review stays deferred.
+Actual Mac acceptance at `ec6a35e2` retained all 118,218 objects and admitted
+97,710 complete-input models. All 86 stellar/core, 125 source-audit, 36 documentation
+and eight tooling cases passed. Merge/synchronization/merged-branch cleanup is
+the current authorized task; incomplete-input propagation remains proposed.
+External redistribution review stays deferred.
 
 **Existing Wenu production baseline:** `6708f54a0d8984c0be348b2c8cb02b311646a02b`, 2026-10-17.
 PR #234 is integrated. Its tree is identical to `ea8dc505`, which passed all

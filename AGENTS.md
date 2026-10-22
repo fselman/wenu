@@ -42,8 +42,13 @@ In particular:
     Use the documented ZIP fallback only when the user specifically requests it
     or direct GitHub delivery is genuinely unavailable.
 12. Whenever Fernando must run local shell commands, provide every command in
-    complete, copy-and-paste-ready blocks through the chat. Never ask him to
-    edit repository files manually or compose an error-prone command himself.
+    complete, copy-and-paste-ready blocks through the chat. Every Wenu command
+    block intended for his Mac must begin with a macOS/Darwin check that stops
+    all subsequent commands on failure. Fernando also works on wenu-imaging
+    on Linux chapman3 and may paste into the wrong terminal. Retain exact Wenu
+    repository path and applicable branch/SHA/clean/upstream checks; follow the
+    guard pattern in the governing instructions. Never ask him to edit repository
+    files manually or compose an error-prone command himself.
 13. Give every downloadable file an explicit version number in its filename.
     Increment it when contents change, never rely on automatic `(counter)`
     suffixes, and make accompanying commands reference the exact versioned

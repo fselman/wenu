@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 73, 2026-10-22. **Status:** K4a.04 local source snapshot and K4a.05 coverage/preservation accepted on Mac; K4b.01 explicit full-input stellar adapter selected. Reduced models, product adoption and external redistribution remain separate.
+**Plan revision:** 74, 2026-10-22. **Status:** K4a local source/coverage and K4b.01 explicit full-input stellar model accepted on Mac; authorized merge/synchronization/merged-branch cleanup in progress. No further runtime milestone activated.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -59,11 +59,11 @@ clean synchronized main are confirmed.
 | Track | Position |
 |---|---|
 | Baseline migration | K0 complete; K1 initial contracts/K2 foundation and bounded K3.01–K3.40 routes accepted; final reconciliation remains K5 |
-| Gaia | K4a.01 accepted; raw acquisition/integrity reported on Mac; K4a.03 offline audit selected; identity decisions/publication/propagation pending |
-| Shared positional extension | AX.01–AX.12 accepted; AX.13–AX.16 pending; AX.14 overlaps K4b |
+| Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
+| Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current authorized task | K4b.01 explicit real stellar full-input adapter through the existing shared astrometric core |
-| Next bounded submilestone | Accept explicit Gaia complete-input nominal motion, unavailable-row evidence, shared-core direction/Cartesian queries and unchanged default consumers |
+| Current authorized task | Merge accepted PR stack #317–#322, synchronize the Mac and remove only verified merged branches |
+| Next bounded submilestone | No new runtime task selected; K4b.02/AX.13 incomplete-input propagation proposed for discussion after cleanup |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -91,6 +91,21 @@ Coverage remains 118,218 HIP entries, 117,211 published associations, 115,105
 Gaia motion-input rows, 2,850 Hip2 fallback rows and 263 original lookup rows.
 Motion-input availability is not a count of complete adopted physical models.
 External redistribution review remains deferred.
+
+Mac acceptance completed at `ec6a35e2a8363d9f511121bb4f661680ea35c187` (PR #321):
+86 stellar/core cases and nine subtests, 125 source-audit cases, 36 documentation
+cases and eight tooling cases/81 subtests passed. The actual source admits
+97,710 complete-input models while retaining all 118,218 original objects.
+Unavailable reasons: 17,380 missing Gaia RV, 2,106 position-only, 1,007 without
+published association and 15 nonpositive-parallax rows. Five HIPs at two epochs
+passed direction/Cartesian comparison; maximum unit-vector chord difference
+`1.5700924820799756e-16`. Source manifest remains `8747349e`; SI solution digest
+is `032f76e398eadf136fd9aa59a3c2b3a66d4dc25d9da74bc995b4bdb6088cfe8f`.
+Caller-declared J2000–J2100 TCB coverage is nominal computation, not physical
+validity. These are user-run Mac receipts, not assistant-run full-source science.
+Fernando then explicitly requested merging what is ready, updating the Mac and
+cleaning merged branches before further work. K4b.02/AX.13 is a proposal, not
+new execution authority; no runtime scope/order is expanded by this closure.
 
 Scope: extend the existing stellar state adapter to admit explicit immutable
 source snapshots into the already accepted object-independent SI rectilinear
@@ -1002,7 +1017,7 @@ not counted as a second independent implementation.
 | AX.11 | Explicit observed Python chart/restored-source adoption and real output | Accepted PR #268; cold/saved/fresh-process geometry/pixels/output/refusal |
 | AX.12 | Ordinary horizontal request/CLI/TOML model and ID selection with unchanged defaults | Accepted PR #269; selected local resources/domains/height and actual output; other frames not enabled |
 | AX.13 | Configurable reduced-input models in the shared core: no-PM source-position approximation and PM with incomplete full inputs | Pending implementation; approved PM-only angular model needs position/epoch and both PMs, not distance/RV; no universal PM cutoff. No-PM initial ~200-year proposal remains pending acceptance; uncertainty/model limits explicit; execution order not selected |
-| AX.14 | Real stellar source adapter to the shared motion/parallax core | Pending; same work as K4b.01/K4b.02, using K4a source qualification |
+| AX.14 | Real stellar source adapter to the shared motion/parallax core | Full-input K4b.01 subset accepted through PR #321 at ec6a35e2; incomplete-input K4b.02 remains pending |
 | AX.15 | Real PN positional adapter to the shared core | Pending; qualify nebular centre/central-star identity and available systemic inputs; no expansion |
 | AX.16 | Real SNR positional adapter to the shared core | Pending; qualify shell centre/systemic motion; pulsar displacement or expansion RV is not automatically systemic centre motion |
 
@@ -1061,7 +1076,7 @@ remain its separate responsibilities.
 | K4a.03S2 | Complete missing Gaia DR3 parameters, acquire Hipparcos-2 fallback and report per-HIP availability without model adoption | Accepted Mac capture/v4_run2 report at dba60b2e: 88 focused, 36 documentation, eight retained tooling cases/80 subtests; full population retained |
 | K4a.04 | Publish immutable bounded subset with exact bytes, edition/epoch/units/provenance, uncertainties/correlations and match evidence | Accepted local Mac publication/reload at 3fed5483 with manifest 8747349e; 125 focused, 36 documentation and eight tooling/80 subtests. External redistribution remains deferred |
 | K4a.05 | Accept coverage/ambiguity report and unchanged default membership, names, cross-IDs and visual photometry | Accepted local v4_source_v1 report and full-field/membership/V/association snapshot checks at 3fed5483; no default consumer change |
-| K4b.01 | Real star adapter/full-input propagation through the shared core | Selected explicit full-input nominal adapter after K4a.04/.05 local acceptance; AX.06–AX.10 retained. Same full-input scope as AX.14; reduced models separate |
+| K4b.01 | Real star adapter/full-input propagation through the shared core | Accepted Mac receipt at PR #321/ec6a35e2: 86 stellar/core cases + nine subtests, 125 source audit, 36 documentation, eight tooling + 81 subtests; 97,710 full-input models, all 118,218 HIP objects retained. Reduced models/product adoption separate |
 | K4b.02 | Adopt admitted incomplete-input models and configured lookback/error/refusal policies for real stars | Pending; AX.13 and source availability/quality; no invented measurements |
 | K4b.03 | Admit explicit historical time/calendar/year-zero/BCE and source/input-date uncertainty semantics | Pending; native ancient state must not require modern observer resources unnecessarily |
 | K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Pending; independent model/domain/uncertainty admission, not extrapolated modern EOP |

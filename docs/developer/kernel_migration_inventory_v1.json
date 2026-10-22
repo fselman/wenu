@@ -13437,7 +13437,7 @@
     "limits": "Complete Mac acceptance through PR #311. Source-native catalogue normalization/crossmatch and independent raw oracles stay outside application-state queries. No new source/model/selection, SDK/dependency/module/package, source bytes/schema/renderer algorithm, acquisition/retry/cache/redistribution policy or provider permission claim. No network, external benchmark, paused Moonlight or consumed authority execution. K3.39 and K3/K5 remain open.",
     "local_receipt": {
       "focused_cases": 49,
-      "focused_seconds": 7.0,
+      "focused_seconds": 7,
       "documentation_cases": 31,
       "documentation_seconds": 1.6,
       "documentation_deselected": 5,
@@ -26560,7 +26560,7 @@
     "local_receipt": {
       "status": "Passed focused local source/native/adapter/core and runner checks; static documentation preflight passed",
       "environment": "Python 3.12, Astropy 7.2.0, NumPy 1.26.4, pytest 9.1.1; partial checkout with namespace bootstrap",
-      "limits": "Three original native-owner cases require complete Mac Wenu tree; actual real source model admission/query remains pending.",
+      "limits": "The local partial checkout excluded three original native-owner cases; the complete Mac gate subsequently passed them. Actual-source acceptance is recorded separately below.",
       "owner_source_core_cases": 208,
       "owner_source_core_subtests": 9,
       "deselected_native_cases": 3,
@@ -26570,7 +26570,37 @@
       "tooling_subtests": 9,
       "preflight": "Changed active links/anchors, Python/JSON syntax, source map and 274-module remote production census."
     },
-    "mac_acceptance": "Pending complete focused/documentation/tooling gates and explicit offline actual source admission/kernel evaluation.",
+    "mac_acceptance": {
+      "tested_commit": "ec6a35e2a8363d9f511121bb4f661680ea35c187",
+      "pull_request": 321,
+      "stellar_core_cases": 86,
+      "stellar_core_subtests": 9,
+      "source_audit_cases": 125,
+      "documentation_cases": 36,
+      "tooling_cases": 8,
+      "tooling_subtests": 81,
+      "retained_objects": 118218,
+      "full_input_models": 97710,
+      "unavailable_by_reason": {
+        "missing_gaia_radial_velocity": 17380,
+        "gaia_position_only": 2106,
+        "no_published_gaia_association": 1007,
+        "nonpositive_gaia_parallax": 15
+      },
+      "source_manifest_sha256": "8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365",
+      "si_solutions_sha256": "032f76e398eadf136fd9aa59a3c2b3a66d4dc25d9da74bc995b4bdb6088cfe8f",
+      "sample_hip": [
+        "118321",
+        "88305",
+        "59117",
+        "29351",
+        "1"
+      ],
+      "checked_states_per_representation": 10,
+      "maximum_unit_vector_chord_difference": 1.5700924820799756e-16,
+      "nominal_tcb_coverage": "J2000–J2100; caller computational domain, not physical validity",
+      "limits": "Fernando's actual Mac receipt; no default/product/observer adoption or absolute physical accuracy established."
+    },
     "limits": [
       "No physical/source-to-SI/covariance error bound",
       "Hip2 unresolved conventions and missing RV not guessed",
