@@ -96,6 +96,24 @@ counts from the source catalogue total or from the paper. Run documentation and
 existing tooling integrity as affected; no production/kernel numerical, visual
 or full integration repeat is justified by these explicit maintenance owners.
 
+### Astrometric input capture and coverage gate
+
+K4a.03S2 extends the same `gaia-crossmatch-audit` gate and existing test file.
+The closest prior checks are the source-corruption/capture-reuse and real
+ECSV-to-report cases. New cases protect exact missing-ID deduplication/reuse,
+source unit/epoch/integer admission, truncated/overflow/refused transport with no
+retry, checkpoint reuse after simulated DNS failure, source/plan corruption,
+Hip2 fixed-width/weights/special-solution retention, five-/six-/position-only
+coverage, missing Hip2 fallback, unchanged membership/photometry/associations and
+actual public acquisition/v4 report composition with sockets blocked.
+Synthetic Gaia-style VOTables also protect FIELD-name versus XML-ID decoding,
+including refusal of a renamed FIELD even if its XML ID matches the requested name.
+Fixtures are synthetic. Actual Hip2 source parsing and a real bounded ESA metadata
+POST are separate source-preflight evidence; the combined real-data capture and
+coverage report require the Mac cache. Run focused documentation and tooling
+integrity too. No production/kernel numerical, visual or installed dependency
+change justifies repeating those gates. No test establishes redistribution rights.
+
 ### Stellar enrichment contract gate
 
 K4a.02 changes documentation/policy declarations only. Run the existing

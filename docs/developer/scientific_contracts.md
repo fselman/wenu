@@ -567,6 +567,29 @@ Current attribution/usage evidence and access limits are recorded in the source
 profile. The existing deferred Gaia redistribution review remains deferred; the
 assessment introduces no broad commercial/redistribution clearance.
 
+## Astrometric input coverage and fallback
+
+Fernando selected K4a.03S2 on 2026-10-22 after accepting the Kervella v3 report:
+117,211 published links, 1,007 without an association. Hipparcos-2 is the agreed
+fallback input for absent or incomplete Gaia astrometry. An accepted identity is
+preserved even when its Gaia fields cannot support motion. Availability is not
+model/quality admission; five- and six-parameter solutions, position-only,
+incomplete and unknown codes remain distinct. Missing PM/RV is never zero;
+non-positive parallax is retained without inversion. No universal RUWE threshold
+or companion/component substitution is introduced.
+
+[Explicit capture and offline coverage](implementation_reference.md#astrometric-input-acquisition-and-coverage)
+retain original membership, names and visual photometry and bind new inputs to
+the original cache and published ledger. Hip2 has fewer rows than original Wenu:
+missing/incomplete Hip2 entries remain visible with original 1997 lookup. Hip2
+special solution types and full original records/weights remain evidence, without
+pretending that every entry is a standard single-star solution. The captured CDS
+ReadMe's undeclared epoch scale and RA differential convention must qualify before
+propagation. Runtime source selection, uncertainty/covariance admission, K4a.04
+publication and K4b propagation remain separate; current charts are unchanged.
+The earlier policy review below is historical scope, not a prohibition on this
+newly selected bounded acquisition. Its deferred redistribution review remains open.
+
 ## Gaia DR3 acquisition and matching policy review
 
 K4a.02 delivers the [dated policy proposal and source audit](data/gaia_dr3_acquisition_policy_v1.json),
@@ -886,150 +909,4 @@ parallax algorithm or physical time-validity guarantee is added.
 ## Globular-cluster baseline lookup
 
 K3.13 changes centre routing only. Catalogue lookup preserves original Harris
-source facts and missing physical declarations without substituting another
-catalogue's position. Half-light radius remains a structural measurement; the
-existing plotted diameter is twice that radius, not a motion or physical extent
-evolution model. Known/unknown source epochs retain shared lookup semantics.
-Native and observed shapes/labels consume returned centres; warm caches cannot
-hide refusal or changed state. No proper motion, parallax, internal dynamics,
-expansion or arbitrary-date physical validity claim is added.
-
-## Planetary-nebula baseline lookup
-
-K3.14 changes PN nebular-centre routing only. True/probable object inclusion,
-curated membership/selection criteria and angular-size filters remain unchanged.
-Catalogue flux/diameter fields are retained metadata; symbols keep their existing
-fixed display scaling. A nebular centre is not silently replaced by an associated
-central star. Returned kernel centres govern native symbols and observed inputs
-and cache identity; failed admission/evaluation propagates after cache fill.
-Missing physical frame/origin/epoch facts remain explicit. No proper motion,
-parallax model, expansion or arbitrary-date accuracy claim is introduced; AX.15
-remains separate pending work.
-
-## Supernova-remnant baseline lookup
-
-K3.15 changes Green radio-centre routing only. Original source coordinates,
-major/minor radio diameters, morphology and radio flux remain preserved facts.
-Unknown position angles retain the existing equal-area circle policy, not an
-invented celestial orientation. Radio flux is not an optical visibility measure.
-Signed Galactic designations remain distinct identities. Returned kernel centres
-control native/observed geometry and warm-cache identity; source-admission/state
-refusal propagates without falling back to raw coordinates. Unknown physical
-frame/origin/epoch facts remain explicit. No associated compact-object position
-or motion replaces the catalogue radio centre. Proper motion/parallax remains
-AX.16; expansion and morphology evolution remain excluded.
-
-
-## Existing observer resource and warm-cache boundary
-
-Legacy observed geometry now checks the actual active EOP/leap/backend inputs
-before shared cache reuse. `Observer` geometry admission binds loaded ephemeris
-bytes and refuses a closed or changed admitted file descriptor. This is cache
-correctness and resource lifetime, not new physical-source qualification or an
-absolute-accuracy certificate. The legacy Astropy/Skyfield resource-selection and
-observation policies are preserved; strict offline reception remains distinct.
-Request-owned resources close on success/failure; borrowed resources retain caller
-ownership. No observer resource is serialized as a native catalogue state.
-
-## Ephemeris model identity and geometric state transport
-
-A DE-like filename is not evidence of a physical ephemeris model. Resolved SPK
-identity retains exact SHA-256 and segment coverage; absent model qualification
-is explicit. Caller-declared model text is provenance, not independent validation.
-K3.25 default planet/Moon point states pass through the existing Cartesian SDK
-before the retained light-time/apparent chain. Measurement, physical-model and
-numerical error channels remain not evaluated; unit conversion supplies no bound.
-Targets such as Mars barycentre are preserved and are not replaced by the physical
-planet ID. No new apparent correction, distance, motion or disk science is admitted.
-
-## Resolved-body migration invariants
-
-K3.26 changes default state transport and request-component reuse, preserving the
-existing single/observed and frozen-Earth scientific models. The observed service
-remains the single light-time authority; no light-time/apparent correction is
-introduced into the frozen geometric construction. Radius/model, physical angular
-diameter, phase and bright-limb angle remain independent of display magnification.
-Unknown ephemeris-model qualification and error channels remain unknown. A shared
-component result is an admission within one request context, revalidated against
-live observer resources; a different context requires fresh admission. Numerical
-parity against the retained raw route is not a new physical accuracy guarantee.
-
-## Natural-body track migration invariants
-
-Natural-body track sampling retains the existing geometric/light-time/apparent
-chain, body versus barycentre targets, individual observer states and exact major
-time anchors. State unit transport adds no correction, model or uncertainty bound.
-The fixed chart frame is distinct from moving physical sample times; temporal
-component visibility cannot change the samples. Shared component results are
-request-scoped admissions checked against current observer resources. Existing
-chart capability refusals, including natural-satellite tracks, remain unchanged;
-scientific-API Moon parity does not admit a new chart product.
-
-## Asteroid resource-chain invariants
-
-Asteroid Cartesian admission retains the primary small-body SPK and every
-planetary dependency, including byte digests and coverage on TDB. Their coverage
-intersection is necessary; it does not fill segment gaps or invent a validity
-domain. Existing backend segment/frame/centre checks still apply. Kernel-returned
-PV must reach point and track consumers while preserving orbit solution,
-selected segment, provider IDs and resource lineage. Unknown physical/model
-errors remain unknown; transport parity is not an absolute accuracy claim.
-
-Ceres's complete accepted solution facts move unchanged to the versioned source
-manifest. Its osculating epoch is a source fact, distinct from each evaluation
-or reception instant. Installed SPK bytes remain checked against their own
-acquisition receipt. No new source acquisition, orbit propagation, physical
-qualification follows from this state-transport refactor.
-
-## Comet routing invariants
-
-The comet adapter retains the selected orbit solution and its non-gravitational
-model/quality parameters; it does not reimplement the model from A1/A2. Returned
-Cartesian PV feeds the existing one-way-light-time and apparent services before
-point/track consumers. Exact per-sample times and fixed product axes are retained.
-An existing provider PsAng sample remains source-owned data with its original
-request/observer context. Missing samples preserve the established fallback;
-refusal is never converted into a fabricated angle or a raw-state fallback.
-
-Discovery/photometry/reporting retain validated provider identities and their
-sampled model magnitudes, missing values, UTC epochs, observer coordinates,
-solution/resource provenance and stated uncertainty limits. They do not generate
-position queries for scalar model quantities. Existing explicit acquisition,
-workload and cache policies are unchanged and stay outside deterministic drawing.
-No new comet propagation, physical accuracy, selection or visibility capability
-is admitted. K3.30 reference routing and full K3/K5 closure remain separate.
-
-## Antisolar construction provenance
-
-An antisolar reference is derived geometry, never an independent physical body.
-Comet provider PsAng retains priority; absent angles use the same apparent
-Sun-comet separation, conjunction/opposition exclusion, position angle and tangent
-offset. Known Skyfield Sun states pass through the existing Cartesian adapter,
-with one original light-time owner and unchanged apparent corrections. Resource
-identity is provenance, not independent qualification of an SPK model.
-Sampled symbols retain their actual sample observation rather than claiming the
-fixed chart-axis instant as their evaluation time. Suppression means no available
-tangent, not a fabricated direction. No morphological tail evolution is implied.
-
-Explicit `CelestialPoints` antisolar points retain the legacy Astropy `get_sun`
-geocentric GCRS unit-direction conversion and ICRS antipode at construction time.
-Their receipt preserves that source convention and the construction site/time;
-it does not qualify the legacy unit-direction conversion as a new finite-distance
-or topocentric physical Sun model. Display at another time retains the original
-construction anchor. No antisolar object-state query or new motion is introduced.
-
-## Routing closure and retained qualification limits
-
-K3.40 reconciles existing consumers with their appropriate source/state,
-coordinate/observer, geometry/projection and graphics services. Routing acceptance
-does not qualify missing source frame/origin/epoch facts, infer an SPK physical
-model, propagate Hipparcos stars, replace unknown uncertainty by zero, or expand
-bounded satellite/reuse claims. Those limits remain in this document and the
-current inventory's `consumer_reconciliation.limits`.
-
-Legacy snapshots remain source transport with explicit absent facts; request
-journals remain synchronous ownership rather than general thread safety.
-No acquisition/redistribution permission or paused/consumed external execution
-is renewed. Product review of the requested atlas, pouched planisphere, regional,
-Venus, comet and asteroid 79989 outputs follows K3.40 and precedes Gaia.
-
+source facts and 

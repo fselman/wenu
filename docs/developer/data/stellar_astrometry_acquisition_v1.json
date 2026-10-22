@@ -1,0 +1,204 @@
+{
+  "schema": "wenu-stellar-astrometry-acquisition/1",
+  "milestone": "K4a.03S2",
+  "review_date": "2026-10-22",
+  "gaia": {
+    "endpoint": "https://gea.esac.esa.int/tap-server/tap",
+    "table": "gaiadr3.gaia_source",
+    "release": "DR3",
+    "reference": {
+      "frame": "icrs",
+      "origin": "solar-system-barycenter",
+      "epoch": {
+        "value": 2016.0,
+        "format": "jyear",
+        "scale": "tcb"
+      },
+      "pmra_convention": "mu_alpha_star"
+    },
+    "route": "Sequential anonymous synchronous TAP/ADQL; 500 exact IDs per query; MAXREC=batch+1; explicit original source columns only",
+    "limits": {
+      "batch_size": 500,
+      "max_batches": 128,
+      "active_requests": 1,
+      "response_bytes": 67108864,
+      "total_capture_bytes": 536870912,
+      "timeout_seconds": 60,
+      "automatic_retries": 0
+    },
+    "resume": "Manual rerun reuses digest-verified completed exact-query batches; HTTP/DNS/timeout/429/503/Retry-After stops invocation. No redirect/mirror/account fallback.",
+    "metadata": "Capture TAP_SCHEMA column datatype/unit/UCD/description; validate exact IDs, unit-bearing fields, reference epoch and no QUERY_STATUS overflow before admission."
+  },
+  "hipparcos2": {
+    "catalogue": "CDS I/311/hip2",
+    "citation": "van Leeuwen 2007, A&A 474, 653; corrected CDS files dated 2008-09-16",
+    "rows": 117955,
+    "record_length": 276,
+    "columns": {
+      "HIP": {
+        "first_byte": 1,
+        "last_byte": 6,
+        "unit": "---",
+        "kind": "integer"
+      },
+      "Sn": {
+        "first_byte": 8,
+        "last_byte": 10,
+        "unit": "---",
+        "kind": "integer"
+      },
+      "So": {
+        "first_byte": 12,
+        "last_byte": 12,
+        "unit": "---",
+        "kind": "integer"
+      },
+      "Nc": {
+        "first_byte": 14,
+        "last_byte": 14,
+        "unit": "---",
+        "kind": "integer"
+      },
+      "RArad": {
+        "first_byte": 16,
+        "last_byte": 28,
+        "unit": "rad",
+        "kind": "number"
+      },
+      "DErad": {
+        "first_byte": 30,
+        "last_byte": 42,
+        "unit": "rad",
+        "kind": "number"
+      },
+      "Plx": {
+        "first_byte": 44,
+        "last_byte": 50,
+        "unit": "mas",
+        "kind": "number"
+      },
+      "pmRA": {
+        "first_byte": 52,
+        "last_byte": 59,
+        "unit": "mas/yr",
+        "kind": "number"
+      },
+      "pmDE": {
+        "first_byte": 61,
+        "last_byte": 68,
+        "unit": "mas/yr",
+        "kind": "number"
+      },
+      "e_RArad": {
+        "first_byte": 70,
+        "last_byte": 75,
+        "unit": "mas",
+        "kind": "number"
+      },
+      "e_DErad": {
+        "first_byte": 77,
+        "last_byte": 82,
+        "unit": "mas",
+        "kind": "number"
+      },
+      "e_Plx": {
+        "first_byte": 84,
+        "last_byte": 89,
+        "unit": "mas",
+        "kind": "number"
+      },
+      "e_pmRA": {
+        "first_byte": 91,
+        "last_byte": 96,
+        "unit": "mas/yr",
+        "kind": "number"
+      },
+      "e_pmDE": {
+        "first_byte": 98,
+        "last_byte": 103,
+        "unit": "mas/yr",
+        "kind": "number"
+      },
+      "UW": {
+        "first_byte": 172,
+        "last_byte": 276,
+        "unit": "---",
+        "kind": "number"
+      }
+    },
+    "resources": [
+      {
+        "filename": "ReadMe",
+        "url": "https://cdsarc.cds.unistra.fr/ftp/I/311/ReadMe",
+        "bytes": 10375,
+        "sha256": "6c017925d658447d40983da3b459ba16bf9789c8f7573e263952c75692622499"
+      },
+      {
+        "filename": "hip2.dat.gz",
+        "url": "https://cdsarc.cds.unistra.fr/ftp/I/311/hip2.dat.gz",
+        "bytes": 8977907,
+        "sha256": "8e624f843d4254a9b7c2e8dda8e3158dbe825bf98f6bf3dbbae7f0d0b73d6858"
+      }
+    ],
+    "expanded_table": {
+      "bytes": 32673535,
+      "sha256": "c45d6325bd59dd691764af173a9702e543804a2b6c1d9fea59210e8332e50a4a"
+    },
+    "reference": {
+      "frame": "icrs",
+      "origin": "solar-system-barycenter",
+      "epoch": {
+        "value": 1991.25,
+        "format": "jyear",
+        "scale": null
+      },
+      "epoch_scale_status": "Not declared in captured CDS ReadMe; must qualify before propagation",
+      "coordinate_units": "rad",
+      "proper_motion_units": "mas/yr",
+      "proper_motion_convention_status": "Original pmRA/pmDE retained; catalogue convention must qualify before model admission",
+      "uncertainties": "Formal errors and all 15 UW weights retained with full original 276-byte row; covariance not constructed",
+      "solution_types": "Sn=10*d+s; s=1 stochastic,3 VIM,5 standard,7/9 acceleration; d includes photocentre/secondary flags; retained without admitting any model"
+    },
+    "assessment": "Actual source capture completed: 117955 unique fixed-width rows; parser and source hashes verified separately from synthetic tests and Mac combined coverage."
+  },
+  "provider_review": [
+    {
+      "url": "https://www.cosmos.esa.int/web/gaia/faqs",
+      "finding": "ESA primary indexed FAQ lists anonymous sync timeout 30 seconds and row limits; other ESA tutorial gives different timeout wording. Local 500-row batches remain below both documented 2000-row lower caps; service refusal stops, never widens.",
+      "access": "Primary indexed text; live Mac queries/metadata still separate"
+    },
+    {
+      "url": "https://www.cosmos.esa.int/web/gaia-users/archive/programmatic-access",
+      "finding": "ESA documents anonymous TAP/ADQL POST routes; sync route used for small exact-ID queries."
+    },
+    {
+      "url": "https://www.cosmos.esa.int/web/gaia-users/license",
+      "finding": "Earlier primary indexed licence review retained; complete intended-use/redistribution review remains deferred by Fernando. This capture adds no distribution admission."
+    },
+    {
+      "url": "https://cds.unistra.fr/vizier-org/licences_vizier.html",
+      "finding": "Scientific use with original authors/publication and VizieR acknowledgement; commercial use depends on origin. Raw capture stays external."
+    },
+    {
+      "url": "https://cdsarc.cds.unistra.fr/ftp/I/311/ReadMe",
+      "finding": "Actual HTTP200 10375-byte corrected-edition source description captured; exact epoch/units/field slices/solution types retained."
+    },
+    {
+      "url": "https://gea.esac.esa.int/tap-server/tap/sync",
+      "access": "Actual anonymous POST HTTP200 on 2026-10-22; bounded metadata-only query",
+      "query": "SELECT column_name,datatype,unit,ucd,description FROM TAP_SCHEMA.columns WHERE table_name='gaiadr3.gaia_source' AND column_name IN ('source_id','solution_id','pmra','ref_epoch')",
+      "finding": "Four requested metadata rows returned with QUERY_STATUS OK. Real data batches remain a separate Mac acceptance gate.",
+      "captured_metadata": {
+        "bytes": 3041,
+        "sha256": "18fa1fdd81a6346410a79b8b000ddcf029a5bafff0d134cb78cc56bd40753427"
+      }
+    }
+  ],
+  "exclusions": [
+    "No new crossmatch or association veto",
+    "No production provider, numerical propagation or chart change",
+    "No companion distance or component RV substitution",
+    "No parallax inversion or zero-point correction",
+    "No full Gaia mirror, source publication or commercial/redistribution clearance"
+  ]
+}

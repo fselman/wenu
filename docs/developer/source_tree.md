@@ -506,3 +506,12 @@ bounded source acquisition/verified cache publication; it does not perform
 matching, source propagation or rendering. Existing stellar-audit tests own its
 synthetic transport/failure and supplement/publication seams. No production
 module, installed command, dependency or independent package is added.
+
+K4a.03S2 extends the offline audit with source-bound Hipparcos-2 parsing and
+measurement-availability/fallback reporting. The separate
+[`fetch_stellar_astrometry.py`](../../tools/fetch_stellar_astrometry.py) owns
+explicit sequential Gaia-parameter capture, exact-query checkpoints/resume and
+Hipparcos-2 raw capture. It has a different lifecycle and variable-ID query
+boundary from the fixed Kervella publication capture; no generic provider/runtime
+module is introduced. The existing offline audit test owner covers transport,
+source admission and public acquisition-to-report seams with synthetic bytes.

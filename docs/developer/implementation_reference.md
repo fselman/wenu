@@ -416,6 +416,60 @@ against Fernando's original full source/cache. No production provider, model,
 photometry/name selection, renderer, SDK or saved-sky format changes. The
 coordinate guide remains current; no numerical coordinate/model policy changes.
 
+## Astrometric input acquisition and coverage
+
+K4a.03S2 separates explicit source acquisition from the existing offline audit.
+[`tools/fetch_stellar_astrometry.py`](../../tools/fetch_stellar_astrometry.py)
+accepts `--cache`, `--association-report` (the verified v3 report), and a new
+`--output` capture directory. It verifies the original raw cache, report products,
+original membership/V identity and published ledger before deriving sorted unique
+missing DR3 IDs. Already cached Gaia rows are reused. The original explicit source
+column selection includes errors/correlations, auxiliary parameters and quality/RV
+fields; raw returned VOTables retain all units, masks and field metadata.
+
+The [source profile](data/stellar_astrometry_acquisition_v1.json) records the dated
+provider review and exact corrected CDS I/311 ReadMe/compressed/expanded identities.
+The explicit client makes sequential anonymous synchronous TAP requests with at
+most 500 source IDs and MAXREC=batch+1, validates QUERY_STATUS including trailing
+overflow, exact integer ID reconciliation, source units and reference epoch, and
+captures TAP_SCHEMA datatype/unit/UCD/description metadata. VOTable parsing uses
+FIELD names rather than XML IDs: ESA supplies uppercase SOURCE_ID/DESIGNATION
+IDs with lowercase ADQL names. Exact requested names remain mandatory; no blanket
+case folding or unknown-column admission is used. Raw response bytes stay intact.
+Requests have bounded
+bytes/timeouts, no redirects, automatic retries, mirrors or account fallback.
+Failures stop the invocation. A manual rerun of the same command reuses only
+completed digest-verified source/query batches with the identical input plan;
+changed inputs or corrupted completed products refuse. The completion manifest
+is published last. Partial batches are never admitted as empty results.
+
+The Hipparcos-2 parser validates pinned bytes, 117,955 unique 276-byte records and
+ReadMe field slices. It retains native radians, original PM/parallax, formal errors,
+Sn/component flags, all 15 upper-triangular weights and the full original row.
+The captured ReadMe does not state the epoch time scale or explicitly qualify the
+RA differential convention: those remain unresolved before model admission. No
+covariance is constructed and acceleration/VIM/stochastic/orbital models are not
+adopted merely because their measurement fields exist.
+
+`gaia_crossmatch_audit.py --cache CACHE --kervella-source KERVELLA
+--astrometry-source CAPTURE --output NEW_REPORT` recomputes and preserves the
+published ledger, verifies the capture against exactly those associations and the
+original cache, and writes version-4 products. Per-HIP `astrometric_coverage`
+distinguishes five-parameter (31), six-parameter (95), position-only (3), incomplete,
+unknown and unassociated Gaia records. Five/six-parameter rows require available
+position/epoch/parallax/both PM values; this does not require positive parallax or
+RV and makes no physical distance/error claim. Otherwise complete Hip2 measurement
+inputs are inventoried as fallback; missing/incomplete Hip2 keeps original 1997
+lookup visible. Original associations, membership/order, names and V stay intact.
+`preferred_available_input` records source availability, not runtime adoption;
+`adopted_astrometric_solutions` stays zero. Quality flags never erase identities.
+
+The summary counts original versus additional cached Gaia rows separately, and
+reports source/fallback availability and missing Hip2 membership. Every raw cache,
+v1/v2/v3 report and production module remains unchanged. Companion parallaxes,
+component RV borrowing, source distribution and production propagation remain
+separate. The coordinate guide remains current: no mathematical model is changed.
+
 ## Native stellar kernel adapter
 
 The [K4a.02 acquisition/matching policy review](scientific_contracts.md#gaia-dr3-acquisition-and-matching-policy-review)

@@ -1,16 +1,13 @@
 # Wenu developer documentation
 
-**Current selected work:** K4a.03S1 [Kervella published association supplement](implementation_reference.md#kervella-published-association-supplement).
-Fernando selected Kervella et al. 2022 Table A.1 to supplement the missing links,
-without repeating their crossmatch. All 99,525 accepted Gaia best-neighbour links
-are preserved; disagreements are recorded, never silently overwritten. DR2-only
-identifiers remain distinct from EDR3. The dated source profile binds the CDS
-ReadMe, compressed/expanded table and explicit ESA EDR3/DR3 source-list bridge.
-Acquisition is explicit and bounded; reports and numerical/rendering tests stay
-offline. Real source assessment found 116,017 rows, 115,928 unique EDR3 identities and
-89 DR2-only rows; 54 focused synthetic checks pass here. The full combined report
-requires Fernando's Mac-only original cache and remains a separate acceptance gate.
-K4a.04 source publication and K4b production propagation remain separate.
+**Current selected work:** K4a.03S2 [astrometric input acquisition and coverage](implementation_reference.md#astrometric-input-acquisition-and-coverage).
+The accepted Mac Kervella report retains 117,211 published associations with
+1,007 unassociated HIP entries; all 99,525 primary links remain unchanged.
+Explicit acquisition now requests only missing Gaia DR3 IDs and captures the
+corrected Hipparcos-2 table for fallback. The separate offline v4 report inventories
+measurement availability without adopting a propagation model. Original HIP
+membership, names and visual magnitudes remain intact. Production charts retain
+their existing source lookup; K4a.04 publication and K4b remain separate.
 
 **Existing Wenu production baseline:** `6708f54a0d8984c0be348b2c8cb02b311646a02b`, 2026-10-17.
 PR #234 is integrated. Its tree is identical to `ea8dc505`, which passed all
