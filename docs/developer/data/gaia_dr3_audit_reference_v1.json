@@ -1,0 +1,19 @@
+{
+  "schema": "wenu-gaia-audit-reference/1",
+  "catalogue": "Gaia",
+  "release": "DR3",
+  "table": "gaiadr3.gaia_source",
+  "frame": "icrs",
+  "origin": "solar-system-barycenter",
+  "epoch_scale": "tcb",
+  "expected_ref_epoch": 2016.0,
+  "right_ascension_motion": "mu_alpha*cos(delta)",
+  "review_date": "2026-10-21",
+  "evidence": [
+    {"url": "https://www.cosmos.esa.int/web/gaia/dr3", "access": "primary ESA search-index excerpt", "scope": "DR3 reference epoch 2016.0"},
+    {"url": "https://www.gaia.ac.uk/data-releases/gaia-early-data-release-3/", "access": "primary Gaia UK release description indexed", "scope": "EDR3 astrometry, common DR3 epoch, ICRS and TCB"},
+    {"url": "https://gaia.aip.de/metadata/gaiadr3/gaia_source/", "access": "primary archive metadata read", "scope": "column names/units; exact endpoint metadata remains in the downloaded receipt"},
+    {"url": "https://gea.esac.esa.int/archive/documentation/GDR3/Gaia_archive/chap_datamodel/sec_dm_main_source_catalogue/ssec_dm_gaia_source.html", "access": "direct fetch failed HTTP 503", "scope": "not claimed as directly read evidence"}
+  ],
+  "limits": "This source profile qualifies a nominal offline angular diagnostic only; no flag decoder, physical propagation, covariance, identity adoption or redistribution admission. The raw source row epoch is checked against this edition profile and never replaced."
+}

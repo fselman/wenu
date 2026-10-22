@@ -323,11 +323,50 @@ frame transformations, snapshot schemas and original source records are unchange
 This does not qualify missing nonstellar frame/origin or measurement metadata;
 `require_complete_metadata` still refuses those gaps.
 
+## Offline Gaia candidate audit
+
+[`tools/gaia_crossmatch_audit.py`](../../tools/gaia_crossmatch_audit.py) is the
+K4a.03 maintenance owner for the versioned external downloader cache. It validates
+manifest identity, policy/source/membership digests, all product and completed
+raw-query bytes, integer IDs, ECSV angular/motion/epoch units and actual candidate
+sets/counts. It loads the full original Wenu source through `Stars.source_catalog`;
+chart magnitude selection never defines the audit population.
+
+Exact HIP identifiers link ESA-1997-I/239 entries to the published Hipparcos-2
+Gaia candidate tables. No positional rematch or blanket edition ambiguity is
+introduced. Unique, multiple and absent candidates are distinct from shared Gaia
+sources, original multiple-system warnings and inconsistent best/neighbourhood
+evidence. Every candidate keeps the original crossmatch/source fields, masks,
+quality flags, errors/correlations and separately named Gaia photometry. Flags
+remain undecoded pending qualification; no identity is automatically adopted.
+
+The [source profile](data/gaia_dr3_audit_reference_v1.json) declares Gaia DR3
+ICRS/TCB reference conventions and its evidence limits. Row epochs are checked,
+not replaced. Both common-epoch diagnostic separations use normalized
+`r + dt * (mu_alpha_star * east + mu_delta * north)`. The interval is expressed
+in each source's time scale using Astropy TT/TCB catalogue-event conversion;
+no UTC/EOP/observer resources are needed. This independent source diagnostic
+is not the production propagation engine or an AX.13 implementation. It omits
+distance, perspective, binaries and covariance, uses no separation acceptance
+threshold, and reports missing inputs as null. Production coordinates are unchanged.
+The coordinate guide remains current; its mathematical/scientific policies are
+not changed by this diagnostic.
+
+Explicit `--cache` and `--output` arguments are required. Use a new output
+version; existing output refuses overwrite. Products are `summary_v1.json`,
+`hip_review_v1.jsonl` (all original HIP rows), `candidate_evidence_v1.jsonl`,
+`candidate_separations_v1.csv` and `audit_manifest_v1.json`. The last is the
+completion marker and is published last; consumers must require it. Exceptions
+remove partial outputs. Provenance binds inputs, membership, tool and source
+profile. The original cache is read-only. The real Mac report is pending; zero
+adoptions is enforced, and neither source publication nor K4a.03 closure follows
+from a successful report.
+
 ## Native stellar kernel adapter
 
 The [K4a.02 acquisition/matching policy review](scientific_contracts.md#gaia-dr3-acquisition-and-matching-policy-review)
 and [dated audit](data/gaia_dr3_acquisition_policy_v1.json) are design documents.
-No Gaia TAP client, matcher, runtime dependency or new provider is implemented.
+No production Gaia TAP client, match adopter, runtime dependency or new provider is implemented.
 Current terms/usage and service preflight remain unresolved; proposed local
 workload caps are not provider quotas or execution authority.
 
@@ -2168,3 +2207,4 @@ The consumer-reconciliation Mac gate also retains the original LMC boundary
 composition case that was locally blocked by missing DE440s in KG.07. It uses
 the already installed offline resource; no acquisition or full lower-level
 gate repeat is part of this reconciliation.
+

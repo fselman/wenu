@@ -512,6 +512,27 @@ Current coordinate conventions and numerical implementations are unchanged;
 the coordinate guide remains current. Full source qualification, matching,
 redistribution/publication, propagation and historical accuracy remain open.
 
+## Offline Gaia candidate evidence
+
+K4a.03 now supplies the [offline audit](implementation_reference.md#offline-gaia-candidate-audit).
+Fernando selected it after reporting the completed raw acquisition and integrity
+check, and explicitly chose the exact HIP-key pivot from the original 1997
+catalogue through Hipparcos-2 to Gaia. This is entry linkage, not a new positional
+match between the Hipparcos editions. Preserve each edition's provenance and
+specific multiple/component/shared-source conflicts. Do not label every linked
+row ambiguous merely because the edition differs.
+
+The acquisition receipt is user-run evidence, not an independently rerun real
+catalogue validation here. The terms review below remains deferred; neither it
+nor redistribution is declared cleared. The old policy-only text describes that
+review's delivery, not the current absence of raw downloaded data.
+
+Common-epoch separations are explicitly nominal angular PM-only consistency
+diagnostics, not match criteria, a covariance statistic or a physical propagation
+capability. Missing inputs stay null; no RUWE/parallax/RV filter removes a HIP row.
+No candidate is adopted by the audit. Flag decoding and identity decisions remain
+unresolved until separately evidenced/reviewed; K4a.03 remains partial.
+
 ## Gaia DR3 acquisition and matching policy review
 
 K4a.02 delivers the [dated policy proposal and source audit](data/gaia_dr3_acquisition_policy_v1.json),
@@ -609,9 +630,9 @@ The published [best-neighbour](https://gaia.aip.de/metadata/gaiadr3/hipparcos2_b
 and [neighbourhood](https://gaia.aip.de/metadata/gaiadr3/hipparcos2_neighbourhood/)
 tables concern **Hipparcos-2**, whereas Wenu retains ESA 1997 I/239. The
 [I/311 source description](https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/I/311?format=html&tex=true)
-identifies the new reduction's HIP key. A shared HIP label supports entry
-linkage; it does not establish unchanged component/photocentre semantics or
-replace Wenu's original astrometry/photometry. Preserve the intermediate edition
+identifies the new reduction's HIP key. The exact HIP key is the agreed entry-linkage pivot to the published Gaia
+crossmatch. It does not replace original photometry or resolve specific flagged
+component/photocentre conflicts. Preserve the intermediate edition
 and missing Hipparcos-2 entries in the evidence. Do not substitute a DR2 table
 description for DR3 flag decoding.
 
@@ -977,3 +998,4 @@ journals remain synchronous ownership rather than general thread safety.
 No acquisition/redistribution permission or paused/consumed external execution
 is renewed. Product review of the requested atlas, pouched planisphere, regional,
 Venus, comet and asteroid 79989 outputs follows K3.40 and precedes Gaia.
+

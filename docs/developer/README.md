@@ -1,13 +1,15 @@
 # Wenu developer documentation
 
-**Current selected work:** K4a.02 [Gaia acquisition and matching policy review](scientific_contracts.md#gaia-dr3-acquisition-and-matching-policy-review).
-The [dated proposal/source audit](data/gaia_dr3_acquisition_policy_v1.json) records
-bounded technical policies and unresolved current terms, intended-use and service
-preflight. No Gaia rows are acquired or consumed. K4a.01 is accepted through
-PR #315/main `d447565d` after 35 focused cases/nine subtests, 36 documentation
-and eight tooling Mac cases; clean main/cleanup confirmed. K3.40 and the six-product
-checkpoint are accepted, with presentation refinements deferred. Policy approval
-and open preflight items precede actual K4a.03 work; K4b and K5 remain later.
+**Current selected work:** K4a.03 [offline Gaia candidate audit](implementation_reference.md#offline-gaia-candidate-audit).
+The external downloader and user-run integrity check completed on Mac: 118,218
+retained HIP rows, 100,010 Gaia sources, 99,525 HIP rows with candidates and
+18,693 without. No matches are adopted. The new maintenance audit uses exact HIP
+keys to pivot through Hipparcos-2 and produces candidate/component/quality and
+common-epoch diagnostic reports. Synthetic checks pass locally; actual Mac report
+and documentation acceptance remain pending. K4a.02 terms review remains deferred;
+K4a.04 source publication and K4b production propagation remain separate.
+K4a.01 is accepted through PR #315/main `d447565d`; K3.40 and the six-product
+checkpoint are accepted, with presentation refinements deferred.
 
 **Existing Wenu production baseline:** `6708f54a0d8984c0be348b2c8cb02b311646a02b`, 2026-10-17.
 PR #234 is integrated. Its tree is identical to `ea8dc505`, which passed all

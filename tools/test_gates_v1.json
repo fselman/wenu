@@ -3310,6 +3310,16 @@
           "reason": "Isolated installed dev12 wheel executes the correction without Wenu."
         }
       ]
+    },
+    "gaia-crossmatch-audit": {
+      "scope": "K4a.03 offline cached Gaia candidate evidence and common-epoch diagnostic report.",
+      "limits": "Synthetic offline admission/report checks only. No source acquisition, automatic identity decisions, production propagation, source publication, SDK or renderer change; actual Mac report remains separate.",
+      "selections": [
+        {
+          "node": "tests/test_gaia_crossmatch_audit.py",
+          "reason": "Corruption, exact HIP/Gaia cardinality, large integer IDs/masks, angular diagnostics and real ECSV-to-report no-network/no-adoption/no-clobber contracts."
+        }
+      ]
     }
   },
   "consumer_review": [
