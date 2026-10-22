@@ -563,8 +563,10 @@ The source codec, original/native facade and ordinary `Stars`/figure/label/chart
 consumers remain unchanged. No automatic source replacement, top-level export,
 CLI option, dependency, SDK or saved-sky format change accompanies this API.
 The closest gate is `stellar-motion-provider`, followed by documentation and
-source-audit/tooling integrity. Actual real-source Mac acceptance is separate
-from constructed offline tests.
+source-audit/tooling integrity. Actual real-source Mac acceptance completed at `ec6a35e2` (PR #321): 97,710
+complete-input models and all 118,218 original objects retained; five HIPs at
+two epochs passed direction/Cartesian comparison. These user-run receipts are
+separate from the constructed offline tests and do not establish physical accuracy.
 
 ## Native stellar kernel adapter
 
