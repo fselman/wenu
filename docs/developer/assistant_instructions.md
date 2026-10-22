@@ -194,6 +194,32 @@ Give Mac commands completely, copy/paste ready, one group at a time, then wait
 for the result. Confirm exact branch/SHA, clean state and upstream equality.
 Do not delete an old branch merely because a new task starts.
 
+### Mac terminal guard
+
+Fernando also works on the separate wenu-imaging project on Linux host
+chapman3 and may paste a Wenu command block into that terminal. Every command
+block intended for his Mac, including read-only diagnostics, tests, Git and
+acceptance commands, must start with a Darwin check before changing directory
+or executing any other operation. Use an explicit nonzero exit rather than a
+Python assert, which optimization can disable:
+
+```bash
+python -c 'import platform,sys; sys.exit(0 if platform.system() == "Darwin" else "STOP: run this in your Mac terminal, not chapman3.")' &&
+cd /Users/fselman/odrive/Dropbox/software/wenu &&
+git status -sb
+```
+
+Chain every subsequent dependent command with `&&` (including the final
+Python heredoc invocation), or use an equivalent shell structure that aborts
+the entire block on guard failure. A standalone check followed by independently
+executed lines is insufficient. Missing Python must also stop the block.
+Retain the exact repository path and applicable branch, SHA, clean-state and
+upstream checks after the platform check. Do not rely only on the visible
+terminal prompt. Do not change files, install software or attempt to repair the
+Linux environment when this guard refuses. Commands explicitly requested for
+Linux wenu-imaging belong to that separate project and must not be relabelled
+as Mac Wenu commands.
+
 Downloadable outputs require explicit `_v1`, `_v2`, etc. names, incremented
 when contents change; commands must reference exact filenames. Preserve
 review pairs and avoid overwrite. Temporary scripts, patch artifacts,
