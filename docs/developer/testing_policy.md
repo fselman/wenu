@@ -76,6 +76,26 @@ require repeating those gates.
 Run documentation and existing tooling integrity too. The v1 Mac report and 29/36/8 acceptance receipt are recorded in the roadmap;
 the association-preserving v2 Mac report is a separate pending acceptance gate.
 
+### Kervella supplemental publication gate
+
+K4a.03S1 extends the existing `gaia-crossmatch-audit` owner/gate. Synthetic cases
+protect exact fixed-width decimal IDs (including beyond binary64 exact integer
+range), masks/DR2-vs-EDR3 separation, changed bytes/layout/counts, duplicate HIPs,
+primary-link preservation on agreement/conflict, supplement-only missing links,
+shared sources, original membership/order and original-V histogram counts.
+Explicit acquisition uses synthetic responses: caps, hash admission, reuse without
+network, partial-publication cleanup and one failed request without retries.
+The actual ECSV-to-v3 public command path composes verified synthetic captures
+with Wenu source loading injected and socket creation blocked. Fixtures are
+labelled synthetic and never claimed as captured provider bytes.
+
+Real source row/layout/identifier counts and source hashes form a separate source
+assessment receipt. The actual combined association report still requires the
+Mac's retained membership and original cache; do not infer its new-link/conflict
+counts from the source catalogue total or from the paper. Run documentation and
+existing tooling integrity as affected; no production/kernel numerical, visual
+or full integration repeat is justified by these explicit maintenance owners.
+
 ### Stellar enrichment contract gate
 
 K4a.02 changes documentation/policy declarations only. Run the existing

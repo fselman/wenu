@@ -185,7 +185,11 @@ saved-sky v6 does not carry Gaia solutions. The external Gaia acquisition has
 completed on Mac; the separate [offline candidate audit](implementation_reference.md#offline-gaia-candidate-audit)
 checks cached bytes and retains published Hipparcos-2 Gaia best-neighbour links
 through exact HIP keys. Optional 1997-motion diagnostics cannot veto links.
-It has no network client or production provider. Association retention is distinct
+Its same offline owner now optionally supplements missing identities from the
+published Kervella Table A.1 through exact HIP keys, preserving primary links and
+EDR3/DR2 provenance. A separate explicit bounded static-file acquisition tool
+captures that publication; no production provider/network path is added.
+Association retention is distinct
 from production astrometric-solution admission; real stellar propagation remains K4b.
 
 Native `Stars.realize()` now selects rows with the existing policy and obtains

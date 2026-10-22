@@ -1,0 +1,92 @@
+{
+  "schema": "wenu-kervella-source-assessment/1",
+  "milestone": "K4a.03S1",
+  "source_profile": "kervella_association_source_v1.json",
+  "source_profile_sha256": "cd62f24f478bd536f24ce138a8a45f21861c44f102296ffd4809cd51682fc9d9",
+  "source_catalogue": "CDS J/A+A/657/A7/tablea1",
+  "rows": 116017,
+  "unique_hip_ids": 116017,
+  "rows_with_edr3_id": 115928,
+  "rows_without_edr3_id": 89,
+  "rows_with_dr2_id": 115345,
+  "dr2_only_rows": 89,
+  "rows_without_either_id": 0,
+  "unique_edr3_ids": 115928,
+  "edr3_ids_shared_by_multiple_hip_rows": 0,
+  "hip_rows_with_shared_edr3_id": 0,
+  "record_lengths": [
+    650
+  ],
+  "gzip_crc": "passed after validated missing-tail resume",
+  "parser": "tools/gaia_crossmatch_audit.py:parse_kervella_table",
+  "capture_manifest_sha256": "62cb2e2a82a4f63e71b0b9901a7c6232b84b60baae274634b4943db4273bb469",
+  "products": {
+    "ReadMe": {
+      "bytes": 19295,
+      "sha256": "d52cb6eb24364567954efc8ed8b9a4b5c3f4e39b6784417a2b5a9d233a2e886e"
+    },
+    "tablea1.dat.gz": {
+      "bytes": 23902236,
+      "sha256": "8dcf2821481833f862342b6b474f500ba9424d131b61d8c1ee7d31b64d91eb8b"
+    },
+    "tablea1.dat": {
+      "bytes": 75527067,
+      "sha256": "b3b28d070f1381f3e9b34e8f08c43d26aee91b3bc17684162816580449ff97cd"
+    }
+  },
+  "http_receipts": [
+    {
+      "url": "https://cdsarc.cds.unistra.fr/ftp/J/A+A/657/A7/tablea1.dat.gz",
+      "final_url": "https://cdsarc.cds.unistra.fr/ftp/J/A+A/657/A7/tablea1.dat.gz",
+      "status": 200,
+      "headers": {
+        "date": "Thu, 22 Oct 2026 01:53:20 GMT",
+        "server": "envoy",
+        "accept-ranges": "bytes",
+        "access-control-allow-headers": "X-Requested-With, content-type",
+        "access-control-allow-methods": "GET, OPTIONS, POST",
+        "access-control-allow-origin": "*",
+        "content-length": "23902236",
+        "content-type": "application/x-gzip",
+        "etag": "\"16cb81c-5d34483dba4c0\"",
+        "last-modified": "Thu, 16 Dec 2021 14:48:27 GMT",
+        "x-envoy-upstream-service-time": "578",
+        "connection": "close"
+      }
+    },
+    {
+      "status": 206,
+      "url": "https://cdsarc.cds.unistra.fr/ftp/J/A+A/657/A7/tablea1.dat.gz",
+      "headers": {
+        "date": "Thu, 22 Oct 2026 02:05:22 GMT",
+        "server": "envoy",
+        "accept-ranges": "bytes",
+        "access-control-allow-headers": "X-Requested-With, content-type",
+        "access-control-allow-methods": "GET, OPTIONS, POST",
+        "access-control-allow-origin": "*",
+        "content-length": "3925",
+        "content-range": "bytes 23898311-23902235/23902236",
+        "content-type": "application/x-gzip",
+        "etag": "\"16cb81c-5d34483dba4c0\"",
+        "last-modified": "Thu, 16 Dec 2021 14:48:27 GMT",
+        "x-envoy-upstream-service-time": "755",
+        "connection": "close"
+      },
+      "range_start": 23898311,
+      "bytes": 3925,
+      "sha256": "a62c7ce28f162396ee67d1f00279f2a0d4356eebc49dad7a76607950f6ac0aec"
+    }
+  ],
+  "article_sample_count": 116343,
+  "published_table_rows": 116017,
+  "sample_count_difference": 326,
+  "sample_count_reconciliation": "Unresolved; current table count is the parser contract. Do not infer EDR3 completeness from article PMa count.",
+  "current_primary_mac_associations": 99525,
+  "combined_mac_result": "Pending. The original primary HIP/source cache is only on Fernando's Mac; source totals are not inferred new-link or conflict totals.",
+  "limits": [
+    "Source assessment is real captured provider evidence; synthetic tests are separate.",
+    "GaiaDR2 and GaiaEDR3 source IDs remain distinct.",
+    "Published corrected/derived astrometry is not adopted.",
+    "No original source membership or V magnitude is replaced."
+  ]
+}

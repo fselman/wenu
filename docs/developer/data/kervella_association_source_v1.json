@@ -1,0 +1,120 @@
+{
+  "schema": "wenu-kervella-association-source/1",
+  "milestone": "K4a.03S1",
+  "catalogue": "CDS J/A+A/657/A7",
+  "table": "tablea1.dat",
+  "citation": "Kervella, Arenou & Thevenin 2022, A&A 657 A7, doi:10.1051/0004-6361/202142146",
+  "bibcode": "2022A&A...657A...7K",
+  "review_date": "2026-10-21",
+  "rows": 116017,
+  "record_length": 650,
+  "resources": [
+    {
+      "filename": "ReadMe",
+      "url": "https://cdsarc.cds.unistra.fr/ftp/J/A+A/657/A7/ReadMe",
+      "bytes": 19295,
+      "sha256": "d52cb6eb24364567954efc8ed8b9a4b5c3f4e39b6784417a2b5a9d233a2e886e"
+    },
+    {
+      "filename": "tablea1.dat.gz",
+      "url": "https://cdsarc.cds.unistra.fr/ftp/J/A+A/657/A7/tablea1.dat.gz",
+      "bytes": 23902236,
+      "sha256": "8dcf2821481833f862342b6b474f500ba9424d131b61d8c1ee7d31b64d91eb8b"
+    }
+  ],
+  "expanded_table": {
+    "bytes": 75527067,
+    "sha256": "b3b28d070f1381f3e9b34e8f08c43d26aee91b3bc17684162816580449ff97cd"
+  },
+  "transport_cap_bytes": 104857600,
+  "expanded_cap_bytes": 104857600,
+  "columns": {
+    "HIP": {
+      "first_byte": 1,
+      "last_byte": 6,
+      "kind": "identifier",
+      "unit": "---"
+    },
+    "GaiaDR2": {
+      "first_byte": 8,
+      "last_byte": 26,
+      "kind": "identifier",
+      "unit": "---"
+    },
+    "GaiaEDR3": {
+      "first_byte": 28,
+      "last_byte": 46,
+      "kind": "identifier",
+      "unit": "---"
+    },
+    "Name": {
+      "first_byte": 48,
+      "last_byte": 70,
+      "kind": "text",
+      "unit": "---"
+    },
+    "DMS": {
+      "first_byte": 104,
+      "last_byte": 104,
+      "kind": "text",
+      "unit": "---"
+    },
+    "Vmag": {
+      "first_byte": 112,
+      "last_byte": 117,
+      "kind": "number",
+      "unit": "mag"
+    },
+    "Hpmag": {
+      "first_byte": 119,
+      "last_byte": 125,
+      "kind": "number",
+      "unit": "mag"
+    },
+    "Gmag": {
+      "first_byte": 134,
+      "last_byte": 140,
+      "kind": "number",
+      "unit": "mag"
+    },
+    "RUWE": {
+      "first_byte": 230,
+      "last_byte": 235,
+      "kind": "number",
+      "unit": "---"
+    }
+  },
+  "gaia_identity_bridge": {
+    "from_release": "EDR3",
+    "to_release": "DR3",
+    "policy": "ESA-explicit-identical-source-list",
+    "url": "https://www.cosmos.esa.int/web/gaia/dr3",
+    "evidence": "Primary ESA release page explicitly states the EDR3 and DR3 source lists are identical; astrometry is the same published EDR3 data.",
+    "access": "Primary search excerpt verified with both search engines; only this EDR3/DR3 bridge is admitted."
+  },
+  "usage_review": [
+    {
+      "url": "https://cds.unistra.fr/vizier-org/licences_vizier.html",
+      "access": "Direct HTTP 200 captured; scientific use allowed with original author/publication citation and VizieR acknowledgement. Commercial use depends on data origin."
+    },
+    {
+      "url": "https://www.aanda.org/articles/aa/abs/2022/01/aa42146-21/aa42146-21.html",
+      "access": "Primary publisher indexed excerpt: article CC BY 4.0. This is not a declaration that all upstream Gaia data redistribution is cleared."
+    }
+  ],
+  "source_version_caveat": "Current CDS ReadMe/table has 116017 rows; paper describes a 116343-source PMa catalogue. No invented row reconciliation or completeness promise.",
+  "corrigendum": {
+    "doi": "10.1051/0004-6361/202450066e",
+    "url": "https://www.aanda.org/articles/aa/abs/2024/04/aa50066e-24/aa50066e-24.html",
+    "primary_access": "HTTP 403 for publisher HTML/PDF; existence/title identified but primary text not retrieved. No changes to published table IDs are inferred."
+  },
+  "preservation_policy": "Preserve primary published best-neighbour association on agreement or conflict; only supplement currently unassociated HIP with published non-null GaiaEDR3 ID; DR2-only values remain evidence.",
+  "exclusions": [
+    "No positional or component rematching",
+    "No companion tables A.2/A.3",
+    "No derived/corrected astrometry adoption",
+    "No Gaia source-parameter acquisition",
+    "No production provider/model/renderer change",
+    "No general redistribution/commercial clearance"
+  ]
+}

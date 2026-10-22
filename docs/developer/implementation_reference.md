@@ -366,6 +366,56 @@ the association-preserving v2 Mac report remains pending. Association count is
 reported separately from `adopted_astrometric_solutions`, which remains zero.
 Source publication and production/model admission are separate later work.
 
+## Kervella published association supplement
+
+K4a.03S1 adds the source-bound published Kervella et al. 2022 CDS J/A+A/657/A7
+Table A.1 supplement to the same offline audit owner. The
+[source profile](data/kervella_association_source_v1.json) binds exact original
+ReadMe/compressed/expanded bytes, record count/length and selected field slices.
+The current CDS table has 116,017 rows, distinct from the paper's 116,343 PMa
+catalogue count; no number from the paper is used as a promised EDR3-link total.
+Missing/duplicate/float identifiers, changed bytes/layout or incomplete receipts
+refuse source admission. IDs are parsed directly from ASCII decimal fields into
+strings; no binary64 conversion. Original source rows remain recoverable through
+the raw resource digest, row number and row digest.
+
+[`tools/fetch_kervella_catalogue.py`](../../tools/fetch_kervella_catalogue.py) is
+the explicit acquisition owner, separate from the offline audit. It reads only
+the profile's two advertised CDS HTTPS static resources, sequentially, with
+100 MiB transport/expanded caps, no redirect/retry/mirror/account fallback or
+per-star query. It validates original/expanded hashes before publishing the last
+completion receipt and reuses an existing verified capture without network.
+Unknown/partial directories refuse overwrite. No network occurs on import or
+inside tests/rendering. Raw source files are external, not vendored.
+
+`gaia_crossmatch_audit.py --kervella-source DIRECTORY` validates that capture and
+joins exact HIP keys. Existing published primary associations remain byte-for-byte
+equal on agreement or disagreement. For previously unassociated HIP entries only,
+a published non-null `GaiaEDR3` value supplies the supplemental identity; no cone
+search, magnitude/quality threshold, component rematching or motion calculation is
+performed. DR2-only values are preserved as evidence and never cast into DR3.
+New associations retain their EDR3 edition and the explicit profile-bound ESA
+statement that the EDR3/DR3 source list is identical. That bridge does not extend
+to DR2, DR4 or arbitrary releases. Companion tables A.2/A.3 are excluded.
+
+The v3 report preserves all original HIP rows/order/photometry and primary
+candidate evidence, annotates Kervella agreements/conflicts/missing rows and IDs,
+and writes the combined published-association ledger. Shared sources are annotated,
+not used to erase a published association. It reports newly associated and still
+unassociated counts plus original-V half-magnitude histograms before/added/after,
+including missing magnitudes separately. Primary Gaia source-parameter/candidate
+counts remain those of the original raw cache; the supplement adds identities,
+not Gaia astrometric rows or Kervella corrected/derived astrometry. Adopted
+astrometric solutions stay zero. The cache and older v1/v2 reports are read-only;
+v3 filenames/manifest and a new output directory prevent overwrites.
+
+The actual source assessment is in the
+[dated receipt](data/kervella_assessment_v1.json). Its real source counts must not
+be confused with the combined Mac result, which remains pending until executed
+against Fernando's original full source/cache. No production provider, model,
+photometry/name selection, renderer, SDK or saved-sky format changes. The
+coordinate guide remains current; no numerical coordinate/model policy changes.
+
 ## Native stellar kernel adapter
 
 The [K4a.02 acquisition/matching policy review](scientific_contracts.md#gaia-dr3-acquisition-and-matching-policy-review)

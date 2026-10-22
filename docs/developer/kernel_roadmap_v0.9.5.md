@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 69, 2026-10-21. **Status:** K4a.03 offline candidate audit selected after the user-reported raw acquisition and integrity check. Published best-neighbour associations are now accepted as the source of identity linkage; source publication and propagation remain pending.
+**Plan revision:** 70, 2026-10-21. **Status:** K4a.03 published-association report accepted on Mac; K4a.03S1 Kervella published supplemental associations selected. Source publication and propagation remain pending.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -62,8 +62,8 @@ clean synchronized main are confirmed.
 | Gaia | K4a.01 accepted; raw acquisition/integrity reported on Mac; K4a.03 offline audit selected; identity decisions/publication/propagation pending |
 | Shared positional extension | AX.01–AX.12 accepted; AX.13–AX.16 pending; AX.14 overlaps K4b |
 | Freeze/extraction/release | K5–K9 pending |
-| Current authorized task | K4a.03 retain published Hipparcos-2–Gaia best-neighbour associations via exact HIP keys; diagnostics and quality flags do not veto them; no production propagation |
-| Next bounded submilestone | Accept the association-preserving v2 report. K4a.02 terms review remains deferred and K4a.04 publication unselected |
+| Current authorized task | K4a.03S1 assess and retain Kervella et al. 2022 published supplemental HIP–Gaia associations, preserving existing accepted best-neighbour links |
+| Next bounded submilestone | Review source-bound Kervella supplement coverage/conflicts and the real Mac combined report. K4a.04 publication and K4b remain separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -126,6 +126,80 @@ and an exact per-HIP association ledger. Run focused documentation/tooling check
 and the real v2 Mac report. This is association acceptance; K4a.04 immutable-source
 publication and K4b model/quality admission remain separate.
 
+## K4a.03S1: Kervella published supplemental associations
+
+Fernando explicitly selected this work with “Please proceed with Kervella's work”
+after the magnitude histogram exposed incomplete published best-neighbour coverage.
+He will review the results tomorrow; this authorizes preparing the bounded work
+now, not scheduling an unattended future run or merging a PR.
+Base: accepted Mac branch feat/gaia-dr3-offline-match-audit at
+3111bb1ae8fd2805c15b6e945c167ffe3996bb83 (PR #317, not yet merged). Use a dedicated
+stacked branch/PR; preserve the existing branch and all 99,525 published links.
+
+Acquire/read only the published CDS J/A+A/657/A7 main table A.1 and its ReadMe
+using the advertised HTTPS static-file route, one sequential transfer at a time.
+No own cone/positional matching or Hipparcos-2 position/PM acquisition. Pin the
+captured raw/expanded bytes and exact column layout, positive integer HIP and
+nullable integer GaiaEDR3/GaiaDR2 identities. Scope excludes the much larger
+companion tables A.2/A.3 and any Gaia source-parameter acquisition.
+
+The current CDS ReadMe reports 116,017 A.1 rows; the paper describes 116,343 in its
+PM-anomaly catalogue. Do not silently equate these counts or promise that many
+new EDR3 links. Use captured rows and record the discrepancy. Check the 2024
+corrigendum for relevant changes. The EDR3 identifiers retain their edition;
+record ESA's explicit shared EDR3/DR3 source-list statement as the bridge, never
+apply an assumed same-number bridge to DR2 or future releases.
+
+Supplement only HIP entries without an already accepted published association.
+Keep the existing association unchanged on agreement or conflict and record
+Kervella's alternative evidence/conflict. Never invent an EDR3 ID from a DR2-only
+row, a coordinate neighbour, component name or a companion-table entry. Missing
+Kervella row/ID remains explicitly unassociated; membership, original V/name/
+component fields and all original candidate evidence stay intact. Identity
+association does not adopt Kervella's corrected parallaxes, long-term proper
+motions, PM anomalies, RVs or production propagation.
+
+Real source assessment: the completed compressed source is 23,902,236 bytes,
+expanding to 75,527,067 bytes and 116,017 exact 650-byte records. Full gzip CRC,
+pinned hashes, HIP uniqueness and column-layout admission passed. There are
+115,928 rows with unique EDR3 IDs and 89 DR2-only rows; no EDR3 ID is shared
+between HIP rows in this captured source. These are source-only counts, not the
+number of new links in the combined Mac result. Record both initial and exact
+missing-tail HTTP receipts; no partial archive was used as accepted evidence.
+
+Deliver: source profile/receipts and reproducible explicit acquisition/offline
+supplement/report tooling; coverage, agreements/conflicts, newly linked and
+remaining-unlinked counts, magnitude-bin data where the retained original
+population is available, and precise source/edition/provenance. All old reports/
+caches stay read-only; outputs use a new version and refuse overwrite.
+Retain actual available source assessment now; full comparison with Fernando's
+Mac-only cache/report remains a local acceptance gate, never claim it ran here.
+
+Acceptance: real source row/layout/identity counts and hashes; synthetic exact
+HIP linkage, existing-link preservation/conflict, nullable/large integer IDs,
+DR2-vs-EDR3 separation, missing/shared-source cases, corruption and bounded
+acquisition/publication failure gates in the existing offline stellar-audit test
+owner. Closest existing gates: gaia-crossmatch-audit plus documentation/tooling
+integrity where changed. New provider/production numerical or visual suites are
+not needed; no renderer, SDK, package extraction or runtime source adoption.
+Source acquisition is explicit and bounded (100 MiB transport and 100 MiB
+expanded per static table; at most one request per declared resource, no retry,
+mirror/account fallback, per-star query loop or import/test-time network).
+The assessment's first advertised static-file response declared 23,902,236 bytes
+but the connection ended at 23,898,311 bytes (3,925 bytes missing); gzip integrity
+refused it. The same server explicitly advertises Accept-Ranges: bytes and an
+ETag. An explicit assessment-only range request may retrieve exactly the missing
+tail using If-Range and that ETag, accepting only HTTP 206 with exact matching
+Content-Range/total/ETag/length before concatenation and full gzip CRC/hash
+validation. Record both HTTP receipts and never interpret the partial payload.
+This is a validated byte-resume of the same resource, not a new source/mirror,
+whole-file blind retry or automatic retry policy. The shipped acquisition tool
+continues to stop on a truncated response with no automatic retry.
+
+Review dated primary provider usage/attribution and article/corrigendum terms;
+respect existing deferred Gaia licensing review and claim no broader clearance
+or redistribution. Raw provider data stay external to the repository.
+
 ## Agreed product acceptance before Gaia
 
 Fernando requested six real products before Gaia, and explicitly agreed the
@@ -159,6 +233,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 70: select K4a.03S1 | Fernando’s “Please proceed with Kervella's work” after the missing-association magnitude histogram | Source-bound published A.1 association supplement and report, preserving accepted links. Explicit bounded source acquisition only; no independent rematching, derived astrometry/model adoption, Gaia source enrichment or merging. |
 | Revision 69: retain published associations | Fernando’s “Just trust the 2007 paper work and keep those associations” | Trust the published DR3 Hipparcos-2 best-neighbour links via exact HIP key. No 2007 astrometry download or independent re-crossmatch; diagnostic/quality annotations never veto published associations. Alternatives remain evidence; propagated-solution admission stays separate. |
 | Revision 68: select K4a.03 offline audit | Fernando’s “Proceed” after the successful downloader and offline integrity receipt | Offline report only, with cardinality/component/edition warnings and common-epoch diagnostics; zero automatic adoptions. K4a.02 terms review remains deferred, without permission claims; no acquisition/publication/production propagation. |
 | Revision 67: select K4a.02 | Fernando’s “Proceed” after PR #315 Mac acceptance, merge and confirmed clean main/branch cleanup | Review current primary API/terms and propose bounded offline acquisition, match/component, quality and missing-data policies. Record dated URLs, evidence limits and unresolved permission/service constraints honestly. Documentation/policy only: no live TAP catalogue query, downloaded subset, new dependency, matching implementation, propagation or runtime change. Policy acceptance and later acquisition remain separate. |
@@ -878,6 +953,7 @@ remain its separate responsibilities.
 | K4a.01 | Fix current Wenu membership/component/photometry contract and edition-qualified schema, including future DR4 adapter boundary | Accepted PR #315/main d447565d after 35 focused cases/nine subtests, 36 documentation and eight tooling Mac cases; clean main/cleanup confirmed. No full Gaia mirror or silent V-to-G substitution |
 | K4a.02 | Agree bounded acquisition/matching/quality/missing-data policy after checking current primary API/terms/licensing | Dated audit and bounded proposal delivered for review; complete ESA terms/intended-use rights, endpoint limits and flag metadata unresolved. No acquisition authority; rendering/tests remain offline |
 | K4a.03 | Cross-identify the required DR3 sources with epoch/PM-aware evidence and explicit ambiguous/unmatched/component cases | Mac v1 audit accepted as evidence; Fernando now explicitly accepts published Hipparcos-2 Gaia associations. V2 exact best-neighbour retention/report acceptance pending; no independent nearest-neighbour selection |
+| K4a.03S1 | Retain published Kervella Table A.1 supplemental associations through exact HIP keys, preserving primary associations and release provenance | Selected by Fernando; current source captured/verified: 116,017 rows, 115,928 unique EDR3 identities and 89 DR2-only rows. 54 synthetic focused checks passed. Combined Mac report and revised documentation/tooling acceptance pending; no own matching or model adoption |
 | K4a.04 | Publish immutable bounded DR3 subset with exact bytes, edition/epoch/units/provenance, uncertainties/correlations and match evidence | Pending; K4a.03 and redistribution admission |
 | K4a.05 | Accept coverage/ambiguity report and unchanged default membership, names, cross-IDs and visual photometry | Pending K4a closure; bright/multiple/unmatched stars cannot disappear |
 | K4b.01 | Real star adapter/full-input propagation through the shared core | Pending; K4a source admission, AX.06–AX.10; same work as AX.14 |
@@ -1074,3 +1150,4 @@ new Moonlight execution, or broad feature additions during structural migration.
 Current science and appearance remain the baseline except for separately
 reviewed astrometric corrections and bug fixes. Deferred work is retained in
 the archived roadmap and [current scientific limits](scientific_contracts.md).
+

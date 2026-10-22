@@ -15,6 +15,8 @@ import math
 from pathlib import Path
 import shutil
 import tempfile
+import re
+from copy import deepcopy
 
 import numpy as np
 import astropy
@@ -135,6 +137,134 @@ def table_rows(table, id_columns):
         for name in id_columns:
             result[name] = identifier(row[name])
         yield result
+
+
+def parse_kervella_table(payload, readme, profile):
+    """Read published A.1 identifiers exactly; never recompute the crossmatch."""
+    require(sha256(payload).hexdigest() == profile['expanded_table']['sha256']
+            and len(payload) == profile['expanded_table']['bytes'], 'Kervella table identity differs')
+    metadata = next(r for r in profile['resources'] if r['filename'] == 'ReadMe')
+    require(sha256(readme).hexdigest() == metadata['sha256'] and len(readme) == metadata['bytes'],
+            'Kervella ReadMe identity differs')
+    description = readme.decode('ascii')
+    require('Byte-by-byte Description of file: tablea1.dat' in description,
+            'Kervella table description missing')
+    section = description.split('Byte-by-byte Description of file: tablea1.dat', 1)[1].split('Note (1):', 1)[0]
+    declared = {}
+    for line in section.splitlines():
+        m = re.match(r'^\s*(\d+)(?:-\s*(\d+))?\s+\S+\s+(\S+)\s+(\S+)\s+', line)
+        if m:
+            declared[m[4]] = (int(m[1]), int(m[2] or m[1]), m[3])
+    for name, spec in profile['columns'].items():
+        require(declared.get(name) == (spec['first_byte'], spec['last_byte'], spec['unit']),
+                'Published Kervella column layout differs: ' + name)
+    lines = payload.splitlines()
+    require(len(lines) == profile['rows'], 'Published Kervella row count differs')
+    result, seen = [], set()
+    for number, line in enumerate(lines, 1):
+        require(len(line) == profile['record_length'], 'Kervella record length differs')
+        record = {'source_row_number': number, 'record_sha256': sha256(line).hexdigest()}
+        for name, spec in profile['columns'].items():
+            text = line[spec['first_byte']-1:spec['last_byte']].decode('ascii').strip()
+            if spec['kind'] == 'identifier':
+                require(not text or (text.isdigit() and int(text) > 0), 'Invalid Kervella integer ID: ' + name)
+                record[name] = str(int(text)) if text else None
+            elif spec['kind'] == 'number':
+                value = float(text) if text else None
+                require(value is None or math.isfinite(value), 'Non-finite Kervella field: ' + name)
+                record[name] = value
+            else:
+                record[name] = text or None
+        require(record['HIP'] is not None and record['HIP'] not in seen, 'Missing/duplicate Kervella HIP')
+        seen.add(record['HIP'])
+        result.append(record)
+    return result
+
+
+def supplement_kervella(summary, hips, records, profile):
+    """Supplement exact HIP keys while preserving every accepted primary link."""
+    require(profile['gaia_identity_bridge']['from_release'] == 'EDR3'
+            and profile['gaia_identity_bridge']['to_release'] == 'DR3'
+            and profile['gaia_identity_bridge']['policy'] == 'ESA-explicit-identical-source-list',
+            'Missing explicit EDR3/DR3 source-list bridge')
+    by_hip = {r['HIP']: r for r in records}
+    require(len(by_hip) == len(records), 'Duplicate Kervella HIP')
+    old_hip_ids = [r['hip'] for r in hips]
+    require(len(set(old_hip_ids)) == len(old_hip_ids), 'Duplicate retained HIP')
+    retained = set(old_hip_ids)
+    counts = Counter()
+    output = []
+    primary = {r['hip']: deepcopy(r['published_association']) for r in hips if r['published_association']}
+    for original in hips:
+        row = dict(original)
+        row['primary_candidate_category'] = original['category']
+        evidence = by_hip.get(row['hip'])
+        association = row['published_association']
+        row['kervella_evidence'] = evidence
+        if evidence is None:
+            state = 'not_in_published_table'
+        elif evidence['GaiaEDR3'] is None:
+            state = 'no_published_edr3_id'
+            if evidence['GaiaDR2'] is not None:
+                counts['dr2_only_evidence'] += 1
+        elif association:
+            state = 'agreement' if association['source_id'] == evidence['GaiaEDR3'] else 'conflict_primary_preserved'
+        else:
+            state = 'supplement_added'
+            row['published_association'] = {
+                'hip': row['hip'], 'catalogue': 'Gaia', 'release': 'EDR3',
+                'source_id': evidence['GaiaEDR3'],
+                'equivalent_dr3_identity': {'release': 'DR3', 'source_id': evidence['GaiaEDR3'],
+                    'bridge': profile['gaia_identity_bridge']},
+                'method': 'Kervella et al. 2022 published Table A.1; exact HIP key',
+                'decision': 'retained_kervella_published_association',
+                'citation': profile['citation'], 'source_catalogue': profile['catalogue'],
+                'source_table_sha256': profile['expanded_table']['sha256'],
+                'evidence': evidence}
+        row['kervella_status'] = state
+        row['association_status'] = ('primary_retained' if row['hip'] in primary
+                                     else 'supplemented' if state == 'supplement_added'
+                                     else 'unassociated')
+        counts[state] += 1
+        output.append(row)
+    require([r['hip'] for r in output] == old_hip_ids, 'Supplement changed HIP membership/order')
+    require(all(r['published_association'] == primary[r['hip']] for r in output if r['hip'] in primary),
+            'Supplement changed an accepted primary association')
+    associated = [r for r in output if r['published_association'] is not None]
+    source_claims = defaultdict(list)
+    for row in associated:
+        source_claims[row['published_association']['source_id']].append(row['hip'])
+    for row in output:
+        association = row['published_association']
+        row['association_shared_hip_ids'] = source_claims[association['source_id']] if association else []
+    report = deepcopy(summary)
+    report['primary_published_associations'] = len(primary)
+    report['retained_published_associations'] = len(associated)
+    report['hip_without_published_association'] = len(output) - len(associated)
+    report['association_policy'] = 'primary-best-neighbour-plus-kervella-table-a1/1'
+    report['primary_candidate_categories'] = deepcopy(report['categories'])
+    report['categories_scope'] = 'Original primary candidate tables only; combined coverage uses retained_published_associations and hip_without_published_association'
+    report['kervella_supplement'] = {
+        'catalogue': profile['catalogue'], 'citation': profile['citation'], 'rows': len(records),
+        'rows_with_edr3_id': sum(r['GaiaEDR3'] is not None for r in records),
+        'rows_outside_retained_hip_population': sum(r['HIP'] not in retained for r in records),
+        'statuses': dict(counts), 'new_associations': counts['supplement_added'],
+        'dr2_only_evidence': counts['dr2_only_evidence'],
+        'shared_gaia_sources_after_supplement': sum(len(v) > 1 for v in source_claims.values()),
+        'primary_associations_preserved': True,
+        'new_gaia_source_parameters': 'not acquired; this supplement retains published identities only'}
+    # Fixed half-magnitude bins preserve original V; missing values remain separate.
+    def histogram(rows):
+        values = [r['original']['magnitude'] for r in rows if r['original']['magnitude'] is not None]
+        bins = Counter(math.floor(v * 2) for v in values)
+        return {'missing_magnitude': len(rows)-len(values), 'bins': [
+            {'v_min': k/2, 'v_max': (k+1)/2, 'count': bins[k]}
+            for k in range(min(bins, default=0), max(bins, default=-1)+1)]}
+    report['association_magnitude_histograms'] = {
+        'unassociated_before': histogram([r for r in hips if r['published_association'] is None]),
+        'newly_associated': histogram([r for r in output if r['kervella_status'] == 'supplement_added']),
+        'unassociated_after': histogram([r for r in output if r['published_association'] is None])}
+    return report, output
 
 
 def audit(hips, best, neighbours, sources, hip_metadata, gaia_profile, *, diagnostics=False):
@@ -267,37 +397,38 @@ def audit(hips, best, neighbours, sources, hip_metadata, gaia_profile, *, diagno
     return summary, hip_records, candidates
 
 
-def publish(output, summary, hips, candidates, provenance):
+def publish(output, summary, hips, candidates, provenance, *, version=2):
     """Refuse overwrite; publish the completion manifest last; clean up on failure."""
     output = Path(output)
+    require(version in (2, 3), 'Unsupported audit report version')
     require(not output.exists(), 'Report output already exists; choose a new version')
     output.parent.mkdir(parents=True, exist_ok=True)
     temporary = Path(tempfile.mkdtemp(prefix='.' + output.name + '-', dir=output.parent))
     try:
-        for name, rows in (('hip_review_v2.jsonl', hips), ('candidate_evidence_v2.jsonl', candidates)):
+        for name, rows in ((f'hip_review_v{version}.jsonl', hips), (f'candidate_evidence_v{version}.jsonl', candidates)):
             with (temporary / name).open('w') as stream:
                 for row in rows:
                     stream.write(json.dumps(row, allow_nan=False) + '\n')
         fields = ['hip', 'source_id', 'separation_at_hip_epoch_arcsec', 'separation_at_gaia_epoch_arcsec']
-        with (temporary / 'candidate_separations_v2.csv').open('w', newline='') as stream:
+        with (temporary / f'candidate_separations_v{version}.csv').open('w', newline='') as stream:
             writer = csv.DictWriter(stream, fieldnames=fields)
             writer.writeheader()
             for row in candidates:
                 writer.writerow({k: row[k] for k in fields})
         summary = dict(summary, provenance=provenance)
-        (temporary / 'summary_v2.json').write_text(json.dumps(summary, indent=2, allow_nan=False) + '\n')
-        with (temporary / 'published_associations_v2.jsonl').open('w') as stream:
+        (temporary / f'summary_v{version}.json').write_text(json.dumps(summary, indent=2, allow_nan=False) + '\n')
+        with (temporary / f'published_associations_v{version}.jsonl').open('w') as stream:
             for row in hips:
                 if row.get('published_association') is not None:
                     stream.write(json.dumps(row['published_association'], allow_nan=False) + '\n')
         products = {p.name: {'sha256': sha256(p.read_bytes()).hexdigest(), 'bytes': p.stat().st_size}
                     for p in temporary.iterdir()}
-        (temporary / 'audit_manifest_v2.json').write_text(json.dumps(
-            {'schema': 'wenu-gaia-candidate-audit/2', 'complete': True, 'products': products}, indent=2) + '\n')
+        (temporary / f'audit_manifest_v{version}.json').write_text(json.dumps(
+            {'schema': f'wenu-gaia-candidate-audit/{version}', 'complete': True, 'products': products}, indent=2) + '\n')
         # mkdir reserves the destination without clobbering another invocation.
         output.mkdir()
         try:
-            for p in sorted(temporary.iterdir(), key=lambda p: p.name == 'audit_manifest_v2.json'):
+            for p in sorted(temporary.iterdir(), key=lambda p: p.name == f'audit_manifest_v{version}.json'):
                 p.replace(output / p.name)
         except BaseException:
             shutil.rmtree(output)
@@ -312,6 +443,8 @@ def main(argv=None):
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--diagnostics', action='store_true',
                         help='Optional 1997/Gaia motion diagnostics; never veto published associations')
+    parser.add_argument('--kervella-source', type=Path,
+                        help='Verified external Kervella Table A.1 capture; supplement unassociated HIP entries')
     args = parser.parse_args(argv)
     require(not args.output.exists(), 'Report output already exists; choose a new version')
     data = ROOT / 'docs/developer/data'
@@ -364,10 +497,28 @@ def main(argv=None):
         contract_sha256=sha256(contract_payload).hexdigest(),
         reference_profile_sha256=sha256(profile_payload).hexdigest(),
         policy_sha256=sha256(policy_payload).hexdigest())
-    publish(args.output, summary, hip_rows, candidate_rows, provenance)
-    print(json.dumps({k: summary[k] for k in ('retained_hip_rows', 'gaia_source_rows',
+    version = 2
+    if args.kervella_source is not None:
+        from fetch_kervella_catalogue import verify_capture
+        supplement_payload = (data / 'kervella_association_source_v1.json').read_bytes()
+        supplement_profile = json.loads(supplement_payload)
+        source_dir = args.kervella_source.expanduser()
+        capture = verify_capture(source_dir, supplement_payload)
+        kervella_rows = parse_kervella_table((source_dir / 'tablea1.dat').read_bytes(),
+            (source_dir / 'ReadMe').read_bytes(), supplement_profile)
+        summary, hip_rows = supplement_kervella(summary, hip_rows, kervella_rows, supplement_profile)
+        provenance['kervella_capture'] = capture
+        provenance['kervella_profile_sha256'] = sha256(supplement_payload).hexdigest()
+        version = 3
+    publish(args.output, summary, hip_rows, candidate_rows, provenance, version=version)
+    display = {k: summary[k] for k in ('retained_hip_rows', 'gaia_source_rows',
         'candidate_pairs', 'categories', 'shared_gaia_sources', 'retained_published_associations',
-        'hip_without_published_association', 'adopted_astrometric_solutions')}, indent=2))
+        'hip_without_published_association', 'adopted_astrometric_solutions')}
+    if version == 3:
+        display['primary_candidate_categories'] = display.pop('categories')
+    print(json.dumps(display, indent=2))
+    if version == 3:
+        print(json.dumps(summary['kervella_supplement'], indent=2))
     print('AUDIT COMPLETE:', args.output.resolve())
 
 

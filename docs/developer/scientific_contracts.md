@@ -541,6 +541,32 @@ astrometry does not erase an accepted association; physical/model admission is
 separate. Diagnostics are optional, off by default, and cannot veto links.
 No 2007 position/PM acquisition or repeat of the published crossmatch is required.
 
+## Kervella supplemental association contract
+
+Fernando selected K4a.03S1 after reviewing the magnitude distribution of HIP rows
+without published associations. The [published supplement](implementation_reference.md#kervella-published-association-supplement)
+uses only Table A.1's explicitly published `HIP`/`GaiaEDR3` association; it does not
+repeat Kervella's positional/magnitude/parallax matching. Preserve the accepted
+99,525 primary links. Existing-link disagreements are evidence, not automatic
+replacement. Missing Kervella entries or missing EDR3 IDs remain unassociated;
+DR2-only IDs cannot become DR3 by numerical equality. Every original HIP entry,
+V magnitude, name and component/variability field remains intact.
+
+Record the published EDR3 identity and its resource/row/provenance. The source
+profile's primary ESA EDR3/DR3 shared-source-list statement is an explicit bridge,
+not an assumption that Gaia IDs persist between all releases. Do not adopt the
+paper's corrected parallaxes, calibrated PMs, long-term motions, PM anomalies,
+component RVs or physical propagation merely because its identity link is retained.
+Source parameter acquisition and K4b model admission remain separate.
+
+Use the captured current table count (116,017), not the paper's 116,343 PMa
+sample count, as the parser contract. Record that source-version discrepancy
+without inventing a reconciliation. The much larger candidate companion tables
+are excluded to prevent confusing a companion's source ID with its HIP parent.
+Current attribution/usage evidence and access limits are recorded in the source
+profile. The existing deferred Gaia redistribution review remains deferred; the
+assessment introduces no broad commercial/redistribution clearance.
+
 ## Gaia DR3 acquisition and matching policy review
 
 K4a.02 delivers the [dated policy proposal and source audit](data/gaia_dr3_acquisition_policy_v1.json),

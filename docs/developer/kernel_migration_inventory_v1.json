@@ -6995,11 +6995,13 @@
     },
     {
       "path": "tests/test_gaia_crossmatch_audit.py",
-      "git_blob_sha": "f238f938a46cbe8bc5af439b26bd30b10155b49c",
+      "git_blob_sha": "e5ffe6162a45966122c5e05aa478733d7145b6c3",
       "imports": [
         "astropy.table",
+        "gzip",
         "hashlib",
         "importlib.util",
+        "io",
         "json",
         "math",
         "numpy",
@@ -7010,11 +7012,12 @@
         "sys",
         "types"
       ],
-      "test_functions": 15,
+      "test_functions": 23,
       "marks": {},
-      "parametrize_decorators": 5,
+      "parametrize_decorators": 8,
       "fixtures": [
-        "cache"
+        "cache",
+        "kervella_bundle"
       ],
       "peer_test_imports": []
     }
@@ -7494,7 +7497,11 @@
     },
     {
       "path": "tools/gaia_crossmatch_audit.py",
-      "git_blob_sha": "6f7f9343028fb953d1543b062c53b90469541313"
+      "git_blob_sha": "996208a7cb0d24d53d0c57d3804cc1f7956d103f"
+    },
+    {
+      "path": "tools/fetch_kervella_catalogue.py",
+      "git_blob_sha": "02406a0cc16413a471a55a115c1d87b9fccd7820"
     }
   ],
   "preserved_test_editions": [
@@ -21769,14 +21776,14 @@
         ]
       },
       "tools/gaia_crossmatch_audit.py": {
-        "git_blob_sha": "6f7f9343028fb953d1543b062c53b90469541313",
+        "git_blob_sha": "996208a7cb0d24d53d0c57d3804cc1f7956d103f",
         "group": "maintenance",
         "evidence_ids": [
-          "K4a.03"
+          "K4a.03S1"
         ],
-        "purpose": "Retain published Hipparcos-2 Gaia associations through exact HIP keys; preserve alternatives and optional diagnostics.",
+        "purpose": "Offline primary-preserving Kervella published association supplement and report.",
         "operational_classification": "offline-source-evidence",
-        "operational_boundary": "Read-only verified cache and published-association retention; no independent rematching, acquisition or production realization.",
+        "operational_boundary": "Exact published identities only; primary preservation, edition/provenance and report publication without independent matching or production realization.",
         "imports": [
           "__future__",
           "argparse",
@@ -21785,15 +21792,40 @@
           "astropy.time",
           "astropy.units",
           "collections",
+          "copy",
           "csv",
+          "fetch_kervella_catalogue",
           "hashlib",
           "json",
           "math",
           "numpy",
           "pathlib",
+          "re",
           "shutil",
           "tempfile",
           "wenu.objects.stars"
+        ]
+      },
+      "tools/fetch_kervella_catalogue.py": {
+        "git_blob_sha": "02406a0cc16413a471a55a115c1d87b9fccd7820",
+        "group": "maintenance",
+        "evidence_ids": [
+          "K4a.03S1"
+        ],
+        "purpose": "Bounded explicit published-source capture.",
+        "operational_classification": "explicit-acquisition",
+        "operational_boundary": "No import/test-time network; explicit bounded static-file capture with pins/caps and no retry/fallback.",
+        "imports": [
+          "__future__",
+          "argparse",
+          "gzip",
+          "hashlib",
+          "io",
+          "json",
+          "pathlib",
+          "shutil",
+          "tempfile",
+          "urllib.request"
         ]
       }
     },
@@ -26240,6 +26272,36 @@
         "subtests": 80,
         "head": "60fff03cbb1b7ff9abcf756bafb0ea8f4fc9d9f6"
       }
-    }
+    },
+    "receipt_scope": "Accepted v2 implementation/receipts at 3111bb1ae8fd2805c15b6e945c167ffe3996bb83; current source extension and hashes are in kervella_published_supplement."
+  },
+  "kervella_published_supplement": {
+    "owners": {
+      "tools/gaia_crossmatch_audit.py": {
+        "git_blob_sha": "996208a7cb0d24d53d0c57d3804cc1f7956d103f",
+        "gate": "gaia-crossmatch-audit"
+      },
+      "tools/fetch_kervella_catalogue.py": {
+        "git_blob_sha": "02406a0cc16413a471a55a115c1d87b9fccd7820",
+        "gate": "gaia-crossmatch-audit"
+      },
+      "tests/test_gaia_crossmatch_audit.py": {
+        "git_blob_sha": "e5ffe6162a45966122c5e05aa478733d7145b6c3",
+        "gate": "gaia-crossmatch-audit"
+      }
+    },
+    "milestone": "K4a.03S1",
+    "base_commit": "3111bb1ae8fd2805c15b6e945c167ffe3996bb83",
+    "gate": "gaia-crossmatch-audit",
+    "source_profile": "docs/developer/data/kervella_association_source_v1.json",
+    "assessment": "docs/developer/data/kervella_assessment_v1.json",
+    "focused_synthetic_cases": 54,
+    "mac_combined_report": "pending; original retained source/cache not present here",
+    "limits": "All primary associations preserved, source/DR2/EDR3 identities explicit; no new positional matching, derived astrometry, production propagation or source distribution.",
+    "real_source_rows": 116017,
+    "real_source_edr3_associations": 115928,
+    "real_source_dr2_only": 89,
+    "source_admission": "Full gzip CRC, exact source/ReadMe hashes, 650-byte layout, row count and HIP/EDR3 identity checks passed",
+    "source_sample_discrepancy": "Paper describes 116343 PMa objects; current CDS Table A.1 has 116017 rows; no invented reconciliation"
   }
 }

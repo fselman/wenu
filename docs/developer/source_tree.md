@@ -498,3 +498,11 @@ is justified by that independent corruption/cardinality/common-epoch/publication
 contract; existing stellar-state tests exercise production adapters, not this
 maintenance path. No production module, installed command or dependency is added.
 The migration inventory registers both paths and retains earlier K3 receipts.
+
+K4a.03S1 extends that same offline owner with the published fixed-width Table A.1
+reader and exact-HIP supplement. The separate
+[`fetch_kervella_catalogue.py`](../../tools/fetch_kervella_catalogue.py) owns explicit
+bounded source acquisition/verified cache publication; it does not perform
+matching, source propagation or rendering. Existing stellar-audit tests own its
+synthetic transport/failure and supplement/publication seams. No production
+module, installed command, dependency or independent package is added.
