@@ -625,6 +625,47 @@ source-audit regression, documentation and tooling checks. Actual external-sourc
 Mac angular coverage/queries remain separate from constructed tests. This is
 the measured-PM part of K4b.02/AX.13, not closure of their no-PM/fallback scopes.
 
+## Explicit Hipparcos-2 angular fallback
+
+`wenu.stellar_state.admit_stellar_hipparcos2_motion(source, *, coverage,
+epoch_policy)` extends the existing immutable `StellarMotionCatalogue` with the
+`hipparcos2-angular-fallback` motion policy. The caller must pass
+`epoch_policy="nominal-tcb-deferred-qualification"` and a finite TCB `TimeSpan`
+containing the source epoch. `StellarMotionProvider(catalogue)` supplies direction
+and the existing conservative angular reuse certificate; Cartesian/velocity
+requests refuse. The shared engine and SDK implementation are unchanged.
+
+The adapter reads original Hip2 frame/origin/epoch/units from the validated
+snapshot. It uses the declared Julian epoch value on the nominal TCB axis,
+without rewriting the original null epoch scale or claiming an actual TT/TCB
+conversion. A later explicitly declared source scale refuses this unresolved-
+source policy rather than silently replacing known facts. This is Fernando's
+2026-10-22 agreement, with original epoch/rate qualification deferred to
+[issue #326](https://github.com/fselman/wenu/issues/326).
+
+Rows with usable linked Gaia five-/six-parameter position and both PM components
+remain excluded from this fallback admission, regardless of RV/parallax or the
+old inventory preference. For the remaining rows, matching HIP keys select only
+finite Hip2 RArad/DErad/pmRA/pmDE inputs. Radians and mas per Julian year are
+converted to unit direction/transverse angular derivative per nominal second;
+the existing `AngularMotionRow` follows `normalize(u0 + dt*w)`. Missing Hip2 or
+angular fields stay unavailable. Negative/missing parallax is unused, not zero.
+Source flags, weights, V/designations, Gaia links and all original objects remain.
+The 7/9-parameter, stochastic, VIM/photocentre/secondary flags are retained;
+the nominal tangent model does not implement their extra physical terms.
+
+Admission schema: `wenu-stellar-hipparcos2-motion-admission/1`. The record retains
+`hipparcos2_reference` exactly and separately declares `model_reference`, epoch
+policy, follow-up ticket, unknown convention/source/physical error, coefficient
+digest and unavailable counts. Provider/model/resource/reference/reuse identities
+are distinct from both Gaia admissions. External IDs retain original HIP,
+published Gaia and source-bound Hip2 edition evidence without new associations.
+All uncertainty beyond admitted-coefficient arithmetic stays unknown. A wide
+nominal domain is not a physical-validity guarantee. Existing Gaia full/angular
+metadata and model identities, source snapshot schema/bytes and default charts
+are unchanged. The 263 original lookup entries and no-PM approximation remain
+outside this admission; it does not close all K4b.02/AX.13.
+
 ## Native stellar kernel adapter
 
 The [K4a.02 acquisition/matching policy review](scientific_contracts.md#gaia-dr3-acquisition-and-matching-policy-review)

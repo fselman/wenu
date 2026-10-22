@@ -1738,9 +1738,9 @@
     },
     {
       "path": "src/wenu/stellar_state.py",
-      "git_blob_sha": "caf8281aeef86b01acc0987d2a0b716c27357e7a",
+      "git_blob_sha": "78e8ab33d804ddfd5be5f31d48be9d310bbad4a7",
       "as_is_directory": "src/wenu",
-      "description": "Stellar source-native lookup and separate full-input/angular admissions/providers through one shared typed affine engine.",
+      "description": "Native lookup and distinct Gaia full/angular and nominal-TCB Hipparcos-2 angular fallback admission/provider through the shared typed affine engine.",
       "baseline_relation": "Added in K3 native-stellar candidate; not present in pinned historical census."
     },
     {
@@ -6461,12 +6461,12 @@
     },
     {
       "path": "tests/test_stellar_state.py",
-      "git_blob_sha": "08af33214cf66ac41384de6c497d499e7bc4af1c",
-      "test_functions": 29,
+      "git_blob_sha": "4552f5434dcc624246fe5cb55f3d4e32f01bce17",
+      "test_functions": 35,
       "marks": {
-        "parametrize": 14
+        "parametrize": 18
       },
-      "parametrize_decorators": 14,
+      "parametrize_decorators": 18,
       "fixtures": [
         "motion_source"
       ],
@@ -19815,7 +19815,7 @@
         ]
       },
       "src/wenu/stellar_state.py": {
-        "git_blob_sha": "caf8281aeef86b01acc0987d2a0b716c27357e7a",
+        "git_blob_sha": "78e8ab33d804ddfd5be5f31d48be9d310bbad4a7",
         "group": "catalogue-core",
         "evidence_ids": [
           "K3.04",
@@ -19827,7 +19827,7 @@
           "K4b.02",
           "AX.13"
         ],
-        "purpose": "Stellar source-native lookup and separate full-input/angular admissions/providers through one shared typed affine engine.",
+        "purpose": "Native lookup and distinct Gaia full/angular and nominal-TCB Hipparcos-2 angular fallback admission/provider through the shared typed affine engine.",
         "imports": [
           "__future__",
           "collections",
@@ -26747,12 +26747,12 @@
       "domain_tcb": [
         [
           -15805111,
-          0.0,
+          0,
           "tcb"
         ],
         [
           20719889,
-          0.0,
+          0,
           "tcb"
         ]
       ],
@@ -26767,5 +26767,169 @@
       "No SDK/dependency/build/astronomical extraction/acquisition change",
       "No historical calendar/precession or physical-validity guarantee"
     ]
+  },
+  "hipparcos2_fallback_qualification": {
+    "milestone": "K4b.02",
+    "review_date": "2026-10-22",
+    "base_commit": "8167bb39f4377f7f486a027662d203ff149bab36",
+    "plan_commit": "b37b2e0600b654427ba4e62255f393ad92f50df5",
+    "status": "Explicit nominal-TCB fallback passed complete Mac acceptance at d71ee8da in PR #325; unmerged; original source time-scale qualification deferred to open issue #326",
+    "authorization": "Fernando's Proceed after explicit fallback proposal and clean synchronized main receipt at 8167bb39",
+    "source_integrity": {
+      "catalogue": "CDS I/311/hip2",
+      "rows": 117955,
+      "record_length": 276,
+      "readme_sha256": "6c017925d658447d40983da3b459ba16bf9789c8f7573e263952c75692622499",
+      "expanded_table_sha256": "c45d6325bd59dd691764af173a9702e543804a2b6c1d9fea59210e8332e50a4a",
+      "capture": "Pre-existing external exact bytes rechecked offline; no new acquisition or redistribution"
+    },
+    "verified_facts": {
+      "frame": "icrs",
+      "epoch_jyear": 1991.25,
+      "position_units": "rad",
+      "proper_motion_units": "mas per Julian year",
+      "RA_differential_evidence": "Author's 2007 paper uses mu-alpha-star; author's 2009 primary indexed text defines mu-alpha*cos(delta). Runtime mapping uses this convention under the explicit nominal-TCB epoch policy."
+    },
+    "sources": [
+      {
+        "url": "https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/I/311?format=html&tex=true",
+        "access": "Read directly; captured ReadMe bytes independently hash-verified",
+        "supports": "Catalogue edition, fields, ICRS, epoch value, units, solution/component flags; no explicit time scale"
+      },
+      {
+        "url": "https://heasarc.gsfc.nasa.gov/W3Browse/all/hipnewcat.html",
+        "access": "Read directly",
+        "supports": "Independent primary archive description of I/311, ICRS/J1991.25 and Julian-year PM units; no explicit time scale"
+      },
+      {
+        "url": "https://gea.esac.esa.int/archive/documentation/GDR1/datamodel/Ch4/hipparcos_newreduction.html",
+        "access": "Read directly",
+        "supports": "ESA external I/311 field definitions; no explicit epoch time scale"
+      },
+      {
+        "url": "https://arxiv.org/pdf/0708.1752",
+        "access": "Read directly",
+        "supports": "Author's validation and mu-alpha-star notation; not proof of epoch time scale"
+      },
+      {
+        "url": "https://doi.org/10.1051/0004-6361/200811382",
+        "access": "Primary publisher indexed text; full PDF not accessed",
+        "supports": "Author defines mu-alpha-star = mu-alpha*cos(delta)"
+      },
+      {
+        "url": "https://www.cosmos.esa.int/documents/532822/552851/vol1_all.pdf",
+        "access": "Primary indexed text; direct PDF fetch refused",
+        "supports": "1997 TT convention only; not claimed as direct 2007 declaration"
+      },
+      {
+        "url": "https://link.springer.com/book/10.1007/978-1-4020-6342-8",
+        "access": "Book landing page and front matter read; astrometry chapter not accessible",
+        "supports": "Identifies book and relevant chapter; no proof of unread convention text"
+      }
+    ],
+    "unresolved": [
+      "Direct original 2007 epoch/time-rate declaration and any future conversion; deferred issue #326"
+    ],
+    "next_qualification_action": "Issue #326: verify primary 2007 convention and assess epoch-offset/time-rate effects; not a blocker for authorized nominal TCB model.",
+    "preservation": {
+      "hip2_fallback_candidates": 2850,
+      "original_lookup_entries": 263,
+      "Gaia_models": "Existing full-input and angular adapters/digests unchanged",
+      "source_snapshot": "Unchanged immutable bytes/schema/null-adoption record",
+      "coordinate_guide": "Reviewed; remains current because no runtime semantic change"
+    },
+    "runtime_or_Mac_acceptance": "Complete Mac gates and actual immutable snapshot fallback/direction/Gaia digest checks passed; see mac_acceptance. Physical and time-convention accuracy not evaluated.",
+    "limits": "No source bytes/schema/adoption changes, Gaia binding changes, acquisition, no-PM, physical PV/orbit/accuracy or default/chart/observer adoption.",
+    "nominal_policy_agreement": "Fernando explicitly selected TCB and deferred qualification on 2026-10-22; clarified 1991.5 was a typo for J1991.25",
+    "follow_up_issue": "https://github.com/fselman/wenu/issues/326",
+    "implementation": {
+      "api": "admit_stellar_hipparcos2_motion",
+      "motion_policy": "hipparcos2-angular-fallback",
+      "epoch_policy": "nominal-tcb-deferred-qualification",
+      "admission_schema": "wenu-stellar-hipparcos2-motion-admission/1",
+      "source_epoch_scale": "unchanged null source fact",
+      "model_epoch_scale": "nominal tcb; not a TT-to-TCB conversion",
+      "precedence": "Gaia angular input availability, independently of parallax/RV/old inventory preference",
+      "owners": {
+        "src/wenu/stellar_state.py": "78e8ab33d804ddfd5be5f31d48be9d310bbad4a7",
+        "tests/test_stellar_state.py": "4552f5434dcc624246fe5cb55f3d4e32f01bce17"
+      },
+      "shared_engine": "Existing AngularMotionRow and affine direction/reuse engine unchanged",
+      "uncertainty": "Measurement/conversion/convention/physical errors not evaluated",
+      "source_reference": "Original source facts retained separately from nominal model_reference",
+      "local_passes": 324,
+      "local_subtests": 9,
+      "local_deselected_cases": 4,
+      "environment": "Python 3.12 / Astropy 7.2.0 / NumPy 1.26.4 / pytest 9.1.1; partial checkout namespace bootstrap"
+    },
+    "nominal_policy_plan_commit": "3bc081f42bfee32418cc26ec94b6ef1079cf9434",
+    "mac_acceptance": {
+      "date": "2026-10-22",
+      "tested_commit": "d71ee8daf9870c0e77d8ef1c39e3111bd9110072",
+      "pull_request": 325,
+      "receipt_sha256": "8284a901c86f857684e397c92990aac89e63278997d042682fbf1801120afdf7",
+      "gates": {
+        "stellar-motion-provider": {
+          "passed": 203,
+          "subtests": 9,
+          "seconds": 20.0
+        },
+        "gaia-crossmatch-audit": {
+          "passed": 125,
+          "seconds": 2.62
+        },
+        "documentation": {
+          "passed": 36,
+          "seconds": 2.68
+        },
+        "tools/tests/test_test_gates.py": {
+          "passed": 8,
+          "subtests": 81,
+          "seconds": 8.62
+        }
+      },
+      "source_manifest_sha256": "8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365",
+      "retained_objects": 118218,
+      "gaia_angular_models": 115105,
+      "hipparcos2_angular_models": 2850,
+      "combined_angular_models": 117955,
+      "remaining_original_lookup_entries": 263,
+      "gaia_digests_unchanged": true,
+      "gaia_full_coefficient_sha256": "032f76e398eadf136fd9aa59a3c2b3a66d4dc25d9da74bc995b4bdb6088cfe8f",
+      "gaia_angular_coefficient_sha256": "6d3e46ff0aa8bd707ea4b8f169b55fdd41c3bc85d65250d7a801c541ebb38602",
+      "hipparcos2_angular_coefficient_sha256": "b5b6cfe20919eec5c815f50b348b55579e2b2631e8f0510be201d874e85875c1",
+      "association_ledger_sha256": "3cc8cbaa18f3bf8371802d170b8e2c71918058fe2de5bc33f2bd0821ae148e08",
+      "coverage": [
+        [
+          -16000000,
+          0.0,
+          "tcb"
+        ],
+        [
+          21000000,
+          0.0,
+          "tcb"
+        ]
+      ],
+      "sample_HIP": [
+        "32349",
+        "30438",
+        "69673",
+        "71683",
+        "91262",
+        "25",
+        "61996",
+        "118310"
+      ],
+      "sample_states": 24,
+      "sample_epochs": "Nominal source epoch and +/-50000 Julian years",
+      "oracle": "Independent 80-digit Decimal affine evaluation of admitted coefficients",
+      "maximum_vector_chord_difference": 1.594436429147036e-16,
+      "source_epoch_scale": null,
+      "model_epoch_policy": "nominal-tcb-deferred-qualification",
+      "physical_and_time_convention_accuracy": "not evaluated; nominal TCB convention and long domain are not accuracy guarantees",
+      "follow_up_issue_status": "#326 remains open; not closed by this PR",
+      "acceptance_scope": "Bounded K4b.02 slice only; no parent closure or default/product adoption"
+    }
   }
 }

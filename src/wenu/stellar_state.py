@@ -91,7 +91,7 @@ class StellarMotionCatalogue:
     """Explicit nominal model derived from an unchanged immutable source snapshot.
 
     All original objects remain present. Missing inputs do not acquire a model;
-    Hip2 and original-1997 fallbacks remain source records for later admission.
+    Hip2 fallback admission is separate; original-1997 lookup stays unchanged.
     The source snapshot is retained verbatim, including uncertainties and flags.
     """
     source: StellarEnrichmentSnapshot
@@ -99,6 +99,7 @@ class StellarMotionCatalogue:
     distance_policy: str
     radial_velocity_policy: str
     motion_policy: str = 'full-input-rectilinear'
+    epoch_policy: str | None = None
     rows: tuple[SpaceMotionRow | AngularMotionRow, ...] = field(init=False)
     metadata_json: bytes = field(init=False)
 
@@ -107,13 +108,19 @@ class StellarMotionCatalogue:
             raise ValueError('A validated immutable stellar source snapshot is required.')
         if type(self.coverage) is not TimeSpan or self.coverage.start.scale != 'tcb':
             raise ValueError('An explicit finite TCB nominal model domain is required.')
-        angular = self.motion_policy == 'proper-motion-angular'
-        if self.motion_policy not in ('full-input-rectilinear', 'proper-motion-angular'):
+        hip2 = self.motion_policy == 'hipparcos2-angular-fallback'
+        angular = self.motion_policy in ('proper-motion-angular', 'hipparcos2-angular-fallback')
+        if self.motion_policy not in ('full-input-rectilinear', 'proper-motion-angular', 'hipparcos2-angular-fallback'):
             raise ValueError('Unsupported stellar motion policy.')
         expected_policies = ('not-used', 'not-used') if angular else (
             'positive-parallax-reciprocal', 'spectroscopic-proxy')
         if (self.distance_policy, self.radial_velocity_policy) != expected_policies:
             raise ValueError('Unsupported explicit stellar distance/radial-velocity policy.')
+        if hip2:
+            _admit_hipparcos2_fallback(self)
+            return
+        if self.epoch_policy is not None:
+            raise ValueError('A nominal Hipparcos-2 epoch policy cannot relabel Gaia inputs.')
         row_type = AngularMotionRow if angular else SpaceMotionRow
         meta = self.source.metadata
         facts = meta['gaia_reference']
@@ -221,6 +228,97 @@ def admit_stellar_angular_motion(source, *, coverage):
     return StellarMotionCatalogue(source, coverage, 'not-used', 'not-used', 'proper-motion-angular')
 
 
+def _admit_hipparcos2_fallback(catalogue):
+    """Source interpretation only; evaluation stays in the shared angular core."""
+    if catalogue.epoch_policy != 'nominal-tcb-deferred-qualification':
+        raise ValueError('Explicit nominal-TCB Hipparcos-2 epoch policy is required; see issue #326.')
+    source = catalogue.source
+    meta = source.metadata
+    profile = meta['hipparcos2_profile']
+    facts = profile['reference']
+    epoch_fact = facts['epoch']
+    if ((facts['frame'], facts['origin'], epoch_fact['format']) !=
+            ('icrs', 'solar-system-barycenter', 'jyear')
+            or epoch_fact['scale'] is not None
+            or type(epoch_fact['value']) not in (int, float)
+            or not isfinite(epoch_fact['value'])):
+        raise ValueError('Unsupported Hipparcos-2 source convention; nominal policy does not replace a declared scale.')
+    for name, unit in (('RArad','rad'), ('DErad','rad'), ('pmRA','mas/yr'), ('pmDE','mas/yr')):
+        if profile['columns'][name]['unit'] != unit:
+            raise ValueError('Unsupported Hipparcos-2 angular unit: ' + name)
+    epoch = _stellar_epoch(epoch_fact['value'], 'tcb')
+    if not catalogue.coverage.contains(epoch):
+        raise ValueError('Hipparcos-2 nominal source epoch is outside the model domain.')
+    hip_sources = {r['HIP']: r for r in source.records('hipparcos2_sources_v1.jsonl')}
+    gaia_sources = {r['source_id']: r for r in source.records('gaia_sources_v1.jsonl')}
+    rows = []
+    for star in source.records():
+        hip = star['identity']['identifier']
+        link = star['published_association']
+        gaia = None if link is None else gaia_sources[link['source_id']]
+        # Fallback selection follows actual angular inputs, not parallax/RV or
+        # the earlier full-input inventory preference. Published links survive.
+        if (gaia is not None and gaia.get('astrometric_params_solved') in (31, 95)
+                and all(gaia.get(k) is not None for k in ('ra','dec','pmra','pmdec'))):
+            rows.append(AngularMotionRow(hip, None, None, None, 'gaia_angular_model_available'))
+            continue
+        src = hip_sources.get(hip)
+        if src is None:
+            rows.append(AngularMotionRow(hip, None, None, None, 'no_hipparcos2_source'))
+            continue
+        fields = ('RArad','DErad','pmRA','pmDE')
+        missing = [k for k in fields if src.get(k) is None]
+        if missing:
+            rows.append(AngularMotionRow(hip, epoch, None, None, 'missing_hipparcos2_' + ','.join(missing)))
+            continue
+        if any(type(src[k]) not in (int, float) or not isfinite(src[k]) for k in fields):
+            raise ValueError('Invalid Hipparcos-2 angular parameter.')
+        ra, dec = src['RArad'], src['DErad']
+        if not (0 <= ra < 2*pi and -pi/2 <= dec <= pi/2):
+            raise ValueError('Hipparcos-2 angular position outside source range.')
+        u = (cos(dec)*cos(ra), cos(dec)*sin(ra), sin(dec))
+        east, north = (-sin(ra), cos(ra), 0.), (-sin(dec)*cos(ra), -sin(dec)*sin(ra), cos(dec))
+        mas_to_rad = pi / (180 * 3600 * 1000)
+        pma, pmd = (src[k] * mas_to_rad / (365.25 * 86400) for k in ('pmRA','pmDE'))
+        derivative = tuple(pma*a + pmd*d for a,d in zip(east,north))
+        row = AngularMotionRow(hip, epoch, u, derivative, None)
+        validate_space_motion_domain(row, catalogue.coverage)
+        rows.append(row)
+    policies = dict(distance='not-used', radial_velocity='not-used',
+        motion='normalized-tangent-angular', perspective='omitted', observer_parallax='unavailable',
+        light_time='no-additional-correction', binaries='no-orbit-or-systemic-correction',
+        acceleration='not-modelled', covariance_propagation='not-implemented',
+        physical_accuracy='not-evaluated', source_to_angular_error='not-evaluated',
+        epoch=catalogue.epoch_policy, time_convention_error='not-evaluated',
+        follow_up='https://github.com/fselman/wenu/issues/326')
+    record = dict(schema='wenu-stellar-hipparcos2-motion-admission/1',
+        source_manifest_sha256=sha256(source.manifest).hexdigest(), original_baseline=meta['baseline'],
+        association_ledger_sha256=meta['association_ledger_sha256'],
+        hipparcos2_reference=facts,
+        model_reference=dict(frame=facts['frame'], origin=facts['origin'], epoch_scale='tcb',
+            epoch_value=epoch_fact['value'], right_ascension_motion='mu_alpha*cos(delta)',
+            qualification='explicit nominal time convention; original epoch scale unresolved'),
+        policies=policies,
+        coverage=[[t.jd1,t.jd2,t.scale] for t in (catalogue.coverage.start,catalogue.coverage.stop)],
+        angular_solutions_sha256=_stellar_digest([(r.identifier,
+            None if r.source_epoch is None else [r.source_epoch.jd1,r.source_epoch.jd2,r.source_epoch.scale],
+            r.direction,r.tangent_per_s,r.unavailable_reason) for r in rows]),
+        counts=dict(retained_objects=len(rows), angular_models=sum(r.unavailable_reason is None for r in rows),
+            unavailable_by_reason=dict(Counter(r.unavailable_reason for r in rows if r.unavailable_reason))))
+    object.__setattr__(catalogue, 'rows', tuple(rows))
+    object.__setattr__(catalogue, 'metadata_json', encode(record))
+
+
+def admit_stellar_hipparcos2_motion(source, *, coverage, epoch_policy):
+    """Opt in to separate angular fallback with an explicit nominal TCB policy.
+
+    Source time-scale facts stay unchanged; this performs no TT/TCB conversion.
+    Qualified Gaia angular inputs take precedence. No physical PV is inferred.
+    """
+    return StellarMotionCatalogue(source, coverage, 'not-used', 'not-used',
+                                  'hipparcos2-angular-fallback', epoch_policy)
+
+
 class StellarMotionProvider(RectilinearAstrometricProvider):
     """Stellar source adapter to the shared, separately typed affine engine."""
     def __init__(self, catalogue, *, representation='direction'):
@@ -229,19 +327,22 @@ class StellarMotionProvider(RectilinearAstrometricProvider):
         if representation not in ('direction', 'cartesian'):
             raise ValueError('Unsupported stellar motion representation.')
         cartesian = representation == 'cartesian'
-        angular = catalogue.motion_policy == 'proper-motion-angular'
+        hip2 = catalogue.motion_policy == 'hipparcos2-angular-fallback'
+        angular = catalogue.motion_policy in ('proper-motion-angular', 'hipparcos2-angular-fallback')
         if angular and cartesian:
             raise ValueError('Angular stellar motion has no admitted Cartesian distance or velocity.')
         meta = catalogue.source.metadata
         record = catalogue.to_record()
         identity = _stellar_digest(record)
         namespace, edition = meta['baseline']['catalogue'], meta['baseline']['edition']
-        key = ProviderKey('wenu.stellar-motion' + ('.angular' if angular else '.cartesian' if cartesian else ''), '1')
+        key = ProviderKey('wenu.stellar-motion' + ('.hipparcos2-angular' if hip2 else '.angular' if angular else '.cartesian' if cartesian else ''), '1')
         provenance = ('Immutable stellar source manifest SHA-256 ' + record['source_manifest_sha256'],
                       'Explicit nominal rectilinear model; source/physical/input-conversion errors unknown')
         if angular:
             provenance = (provenance[0], 'Explicit normalized tangent angular model; perspective/parallax omitted; unknown physical error')
-        resource = ResourceRef('stellar-angular-motion-inputs' if angular else 'stellar-motion-inputs', '1', identity, catalogue.coverage,
+        if hip2:
+            provenance += ('Hipparcos-2 source epoch on nominal TCB axis; original scale unresolved; time-convention error unknown; issue #326',)
+        resource = ResourceRef('stellar-hipparcos2-angular-inputs' if hip2 else 'stellar-angular-motion-inputs' if angular else 'stellar-motion-inputs', '1', identity, catalogue.coverage,
             'caller-declared nominal domain; not certified physical validity', provenance)
         keys = tuple(ObjectKey(namespace + ':' + row.identifier) for row in catalogue.rows)
         reference = CatalogueRef(key, (resource,), _stellar_digest([k.value for k in keys]))
@@ -249,11 +350,13 @@ class StellarMotionProvider(RectilinearAstrometricProvider):
             _stellar_digest((identity, 'source-spherical-SI/1', 'shared-exact-binary64-SI-rectilinear/1',
                              _NUMERICAL_RAD if not cartesian else None)), (resource,))
         if angular:
-            model = ModelRef('stellar-angular-tangent', '1',
-                _stellar_digest((identity, 'source-spherical-angular/1',
+            model = ModelRef('stellar-hipparcos2-angular-tangent' if hip2 else 'stellar-angular-tangent', '1',
+                _stellar_digest((identity, 'source-hipparcos2-angular/1' if hip2 else 'source-spherical-angular/1',
                     'shared-exact-binary64-angular-affine/1', _NUMERICAL_RAD)), (resource,))
-        frame = ReferenceSpec(meta['gaia_reference']['frame'], meta['gaia_reference']['origin'],
+        facts = record['model_reference'] if hip2 else meta['gaia_reference']
+        frame = ReferenceSpec(facts['frame'], facts['origin'],
             'nominal-astrometric', representation, 'm,m/s' if cartesian else 'rad',
+            'Hipparcos-2 normalized tangent; nominal TCB epoch/rate convention; unresolved original scale; issue #326; no physical PV' if hip2 else
             'normalized tangent angular approximation; perspective/parallax omitted; no physical distance/RV' if angular else
             'catalogue astrometry; reciprocal positive parallax; spectroscopic RV proxy; no additional light time')
         caps = (('cartesian_state', 'batch_evaluation') if cartesian else
@@ -261,6 +364,9 @@ class StellarMotionProvider(RectilinearAstrometricProvider):
         objects = []
         for objkey, row, star in zip(keys, catalogue.rows, catalogue.source.records(), strict=True):
             ids = [ExternalId(namespace, edition, row.identifier)]
+            if hip2 and star['source_references']['hipparcos2'] is not None:
+                profile = meta['hipparcos2_profile']
+                ids.append(ExternalId(profile['catalogue'], profile['citation'], row.identifier))
             if star['published_association']:
                 link = star['published_association']
                 ids.append(ExternalId(link['catalogue'], link['release'], link['source_id']))
@@ -275,6 +381,7 @@ class StellarMotionProvider(RectilinearAstrometricProvider):
             tuple(k for k, row in zip(keys, catalogue.rows) if row.unavailable_reason is None),
             caps, catalogue.coverage)
         descriptor = ProviderDescriptor(key, (reference,), (admission,),
+            'explicit offline Hipparcos-2 angular fallback; nominal TCB; issue #326; no default adoption' if hip2 else
             'explicit offline stellar angular motion; no default/chart/observer adoption' if angular else
             'explicit offline full-input stellar motion; no default/chart/observer adoption')
         if cartesian:
@@ -287,13 +394,14 @@ class StellarMotionProvider(RectilinearAstrometricProvider):
         else:
             evidence = UncertaintyEvidence(
                 UncertaintyChannel('not_evaluated', None, 'rad',
+                    'Hipparcos-2 measurement, angular conversion and nominal time-convention uncertainty' if hip2 else
                     'stellar measurement and source-to-angular conversion' if angular else
                     'stellar measurement and source-to-SI conversion'),
                 UncertaintyChannel('not_evaluated', None, 'rad',
                     'normalized tangent approximation; perspective omitted' if angular else 'nominal rectilinear model'),
                 UncertaintyChannel('bounded', _NUMERICAL_RAD, 'rad', 'angular_separation'))
             velocity_evidence = None
-            reuse = ModelRef('stellar-angular-tangent-cone' if angular else 'stellar-rectilinear-cone', '1',
+            reuse = ModelRef('stellar-hipparcos2-angular-tangent-cone' if hip2 else 'stellar-angular-tangent-cone' if angular else 'stellar-rectilinear-cone', '1',
                             _stellar_digest(('exact-binary64-rational-cone/1', _NUMERICAL_RAD)), (resource,))
         super().__init__(tuple(zip(keys, catalogue.rows)), descriptor=descriptor, catalogue=snapshot,
                          admission=admission, evidence=evidence, reuse_method=reuse,

@@ -274,7 +274,8 @@ def motion_source():
     from hashlib import sha256
     from pathlib import Path
     from wenu.stellar_enrichment import StellarEnrichmentSnapshot, PRODUCTS, encode, identity
-    def build(change=None, *, epoch=2016., original_v=2., edr3=False):
+    def build(change=None, *, epoch=2016., original_v=2., edr3=False,
+              hip2_change=None, hip2_hips=(5,), hip2_epoch=1991.25, hip2_scale=None):
         sources = []
         for i in (1, 2, 3, 4, 6, 7, 8):
             src = dict(source_id=str(9007199254740992+i), solution_id='9007199254740999',
@@ -293,21 +294,29 @@ def motion_source():
         # One unassociated entry has a complete Hip2 source record, whose
         # unresolved time convention cannot be silently upgraded to motion.
         profile=json.loads((Path(__file__).parents[1]/'docs/developer/data/stellar_astrometry_acquisition_v1.json').read_text())['hipparcos2']
-        h=dict(HIP='5',Sn=5,So=0,Nc=1,RArad=.2,DErad=-.3,Plx=10.,pmRA=0.,pmDE=1.,
-               e_RArad=1.,e_DErad=1.,e_Plx=1.,e_pmRA=1.,e_pmDE=1.,UW=[1.]*15)
-        native=bytearray(b' '*276)
-        for name,spec in profile['columns'].items():
-            a,b=spec['first_byte']-1,spec['last_byte']
-            raw=''.join(f'{v:7.2f}'for v in h[name])if name=='UW'else str(h[name]).rjust(b-a)
-            native[a:b]=raw.encode()
-        h.update(original_record_ascii=native.decode(),record_sha256=sha256(native).hexdigest())
+        profile['reference']['epoch'].update(value=hip2_epoch,scale=hip2_scale)
+        hip_rows=[]
+        for number in hip2_hips:
+            h=dict(HIP=str(number),Sn=5,So=0,Nc=1,RArad=.2,DErad=-.3,Plx=10.,pmRA=0.,pmDE=1.,
+                   e_RArad=1.,e_DErad=1.,e_Plx=1.,e_pmRA=1.,e_pmDE=1.,UW=[1.]*15)
+            h.update(hip2_change or {})
+            native=bytearray(b' '*276)
+            for name,spec in profile['columns'].items():
+                a,b=spec['first_byte']-1,spec['last_byte']
+                raw=(''.join(f'{v:7.2f}'for v in h[name])if name=='UW'else
+                     (''if h[name]is None else str(h[name])).rjust(b-a))
+                native[a:b]=raw.encode()
+            h.update(original_record_ascii=native.decode(),record_sha256=sha256(native).hexdigest())
+            hip_rows.append(h)
+        hip_map={r['HIP']:r for r in hip_rows}
         stars=[]; candidates=[]; photometry=[]; choices=Counter()
         for i in range(1,10):
             hip=str(i); src=gaia.get(hip)
             link=(dict(hip=hip,catalogue='Gaia',release='DR3',source_id=src['source_id'])if src else None)
             choice=('gaia'if src and src['astrometric_params_solved']in(31,95)and
                 all(src.get(k)is not None for k in ('ra','dec','ref_epoch','parallax','pmra','pmdec'))
-                else 'hipparcos2'if i==5 else 'original_1997_lookup')
+                else 'hipparcos2'if str(i)in hip_map and all(hip_map[str(i)].get(k)is not None
+                    for k in ('RArad','DErad','Plx','pmRA','pmDE'))else 'original_1997_lookup')
             if edr3 and i==1:
                 link.update(release='EDR3',equivalent_dr3_identity=dict(release='DR3',source_id=src['source_id'],
                     bridge={'policy':'ESA-explicit-identical-source-list'}))
@@ -317,7 +326,7 @@ def motion_source():
                 original=original,published_association=link,match_status='identified'if link else'unmatched',
                 adopted_solution=None,input_availability=dict(model_adopted=False,preferred_available_input=choice),
                 candidates=[src['source_id']]if src else [],source_references=dict(gaia=src['source_id']if src else None,
-                    hipparcos2=hip if i==5 else None),foreign_photometry={'phot_g_mean_mag':src['phot_g_mean_mag']}if src else None)
+                    hipparcos2=hip if hip in hip_map else None),foreign_photometry={'phot_g_mean_mag':src['phot_g_mean_mag']}if src else None)
             stars.append(row);choices[choice]+=1
             photometry.append([i,'missing'if original['magnitude']is None else float(original['magnitude']).hex()])
             if src: candidates.append(dict(hip=hip,source_id=src['source_id']))
@@ -337,9 +346,9 @@ def motion_source():
             hipparcos2_profile=profile,
             original_rows_sha256=sha256(b''.join(encode(r['original'])+b'\n'for r in stars)).hexdigest(),
             association_ledger_sha256=sha256(b''.join(encode(dict(hip=r['identity']['identifier'],association=r['published_association']))+b'\n'for r in stars)).hexdigest(),
-            counts=dict(retained_hip_rows=9,published_associations=7,gaia_source_rows=7,hipparcos2_rows=1,
+            counts=dict(retained_hip_rows=9,published_associations=7,gaia_source_rows=7,hipparcos2_rows=len(hip_rows),
                 candidate_pairs=7,preferred_available_inputs=dict(choices)))
-        values=[encode(metadata),*[b''.join(encode(r)+b'\n'for r in rs)for rs in (stars,sources,[h],candidates)]]
+        values=[encode(metadata),*[b''.join(encode(r)+b'\n'for r in rs)for rs in (stars,sources,hip_rows,candidates)]]
         products=tuple(zip(PRODUCTS,values))
         manifest=encode(dict(schema='wenu-stellar-enrichment-snapshot/1',complete=True,
             products={name:identity(raw)for name,raw in products}))
@@ -499,13 +508,13 @@ def test_stellar_motion_source_epoch_and_model_identity_are_not_hard_coded(motio
     p.close();other.close()
 
 
-@pytest.mark.parametrize('motion_kind',['full','angular'])
+@pytest.mark.parametrize('motion_kind',['full','angular','hip2'])
 def test_stellar_motion_provider_passes_sdk_conformance_and_reuse(motion_source,motion_kind):
     """Reuse/lifetime uses inherited core, while bindings come from real adapter."""
     import io
     from wenu_kernel.conformance import provider_suite
     def factory():
-        case=stellar_angular_case if motion_kind=='angular'else stellar_motion_case
+        case=stellar_hip2_case if motion_kind=='hip2'else stellar_angular_case if motion_kind=='angular'else stellar_motion_case
         cat,p,q=case(motion_source())
         q=replace(q,times=(TimePoint(2457389,0,'tcb'),TimePoint(2457389,.01,'tcb')))
         probe=replace(q,times=(TimePoint(2457389,.1,'tcb'),))
@@ -546,15 +555,17 @@ sys.path.insert(0,sys.argv[1])
 def forbidden(*a,**k):raise AssertionError('network forbidden')
 socket.socket=forbidden
 from wenu.stellar_enrichment import load_stellar_enrichment
-from wenu.stellar_state import admit_stellar_motion,admit_stellar_angular_motion,StellarMotionProvider
+from wenu.stellar_state import admit_stellar_motion,admit_stellar_angular_motion,admit_stellar_hipparcos2_motion,StellarMotionProvider
 from wenu_kernel import Kernel
 from wenu_kernel.records import TimePoint,TimeSpan,StateQuery,AccuracyRequest,SessionPolicy
 source=load_stellar_enrichment(sys.argv[2])
 c=admit_stellar_motion(source,coverage=TimeSpan(TimePoint(2400000,0,'tcb'),TimePoint(2500000,0,'tcb')),
  distance_policy='positive-parallax-reciprocal',radial_velocity_policy='spectroscopic-proxy')
 angular=admit_stellar_angular_motion(source,coverage=TimeSpan(TimePoint(-15000000,0,'tcb'),TimePoint(20000000,0,'tcb')))
+hip2=admit_stellar_hipparcos2_motion(source,coverage=TimeSpan(TimePoint(-15000000,0,'tcb'),TimePoint(20000000,0,'tcb')),
+ epoch_policy='nominal-tcb-deferred-qualification')
 shutil.rmtree(sys.argv[2])
-for catalogue,representation,expected in ((c,'direction',2),(c,'cartesian',2),(angular,'direction',5)):
+for catalogue,representation,expected in ((c,'direction',2),(c,'cartesian',2),(angular,'direction',5),(hip2,'direction',1)):
  p=StellarMotionProvider(catalogue,representation=representation);a=p.describe().admissions[0]
  q=StateQuery(a.catalogue,a.model,a.objects,(TimePoint(2457389,0,'tcb'),),a.reference,
   AccuracyRequest(metric='euclidean_norm')if representation=='cartesian'else AccuracyRequest())
@@ -721,5 +732,130 @@ def test_stellar_angular_admission_context_refuses_without_inference(motion_sour
             'proper-motion-angular'if fault=='distance'else'invented-model')
 
 
+def stellar_hip2_case(source, *, coverage=None):
+    from wenu_kernel.records import TimeSpan
+    coverage=coverage or TimeSpan(TimePoint(-16000000,0,'tcb'),TimePoint(21000000,0,'tcb'))
+    cat=bridge.admit_stellar_hipparcos2_motion(source,coverage=coverage,
+        epoch_policy='nominal-tcb-deferred-qualification')
+    p=bridge.StellarMotionProvider(cat);a=p.describe().admissions[0]
+    q=(StateQuery(a.catalogue,a.model,a.objects,(TimePoint(2448349,.0625,'tcb'),),a.reference,AccuracyRequest())
+       if a.objects else None)
+    return cat,p,q
+
+
+def test_hip2_nominal_policy_preserves_source_and_separates_gaia_bindings(motion_source):
+    """Protect relabelling original facts; extend prior all-HIP angular admission check."""
+    from hashlib import sha256
+    source=motion_source();before=source.products
+    full,fp,fq=stellar_motion_case(source);gaia,gp,gq=stellar_angular_case(source)
+    cat,p,q=stellar_hip2_case(source);record=cat.to_record()
+    assert source.products==before and cat.source is source
+    assert len(cat.rows)==len(p.catalogue(q.catalogue).objects)==9
+    assert [k.value for k in q.objects]==['hipparcos:5']
+    assert cat.rows[4].source_epoch==TimePoint(2448349,.0625,'tcb')
+    assert source.metadata['hipparcos2_profile']['reference']['epoch']['scale']is None
+    assert record['hipparcos2_reference']['epoch']['scale']is None
+    assert record['model_reference']['epoch_scale']=='tcb'
+    assert record['policies']['time_convention_error']=='not-evaluated'
+    assert record['policies']['follow_up'].endswith('/326')
+    assert record['counts']['angular_models']==1
+    assert next(source.records())['adopted_solution']is None
+    assert sha256(full.metadata_json).hexdigest()=='96f0acec6ae9d826d90aa661442bb6e1e0886a56b5b5938c5b8f85919ac45229'
+    assert gaia.to_record()['angular_solutions_sha256']=='77882ffac3502df789859de3ff8552a6b1fffb3bfadbbc093ac00da1836c103b'
+    assert len({q.catalogue,gq.catalogue,fq.catalogue})==3
+    state=p.evaluate(q).states[0]
+    assert state.evidence.measurement.status==state.evidence.physical_model.status=='not_evaluated'
+    assert 'time-convention' in state.evidence.measurement.meaning
+    obj=p.catalogue(q.catalogue).objects[4]
+    assert any(i.catalogue=='CDS I/311/hip2'and i.identifier=='5'for i in obj.external_ids)
+    record['hipparcos2_reference']['epoch']['scale']='changed'
+    assert cat.to_record()['hipparcos2_reference']['epoch']['scale']is None
+    assert not hasattr(cat.rows[4],'position_m')and not hasattr(cat.rows[4],'velocity_m_s')
+    fp.close();gp.close();p.close()
+
+
+@pytest.mark.parametrize('change',[None,{'radial_velocity':None},{'parallax':None},
+    {'parallax':-1.},{'parallax':0.},{'pmra':None},{'astrometric_params_solved':3}])
+def test_hip2_fallback_uses_gaia_angular_availability_not_old_inventory_preference(motion_source,change):
+    cat,p,q=stellar_hip2_case(motion_source(change,hip2_hips=(1,4,5,7)))
+    selected={k.value for k in q.objects}
+    use_hip1=change is not None and ('pmra'in change or 'astrometric_params_solved'in change)
+    assert selected=={'hipparcos:4','hipparcos:5','hipparcos:7'}|({'hipparcos:1'}if use_hip1 else set())
+    assert len(cat.rows)==9
+    assert next(cat.source.records())['published_association']is not None
+    p.close()
+
+
+@pytest.mark.parametrize('days',[-18262500,-365.25,0.,365.25,18262500])
+def test_hip2_angular_normal_triad_has_independent_astropy_unit_oracle(motion_source,days):
+    from astropy import units as u
+    from astropy.coordinates import (UnitSphericalRepresentation,UnitSphericalCosLatDifferential,
+                                     CartesianRepresentation,CartesianDifferential)
+    from math import floor,hypot
+    cat,p,q=stellar_hip2_case(motion_source(hip2_change=dict(RArad=.9,DErad=1.,pmRA=1000.,pmDE=-2000.)))
+    row=cat.rows[4];epoch=row.source_epoch
+    sky=UnitSphericalRepresentation(.9*u.rad,1.*u.rad,
+        differentials=UnitSphericalCosLatDifferential(1000*u.mas/u.yr,-2000*u.mas/u.yr))
+    cart=sky.represent_as(CartesianRepresentation,CartesianDifferential)
+    initial=cart.xyz.value;derivative=cart.differentials['s'].d_xyz.to_value(1/u.s)
+    assert max(abs(a-b)for a,b in zip(row.tangent_per_s,derivative))<1e-27
+    whole=floor(epoch.jd2+days+.5)
+    time=TimePoint(epoch.jd1+whole,epoch.jd2+days-whole,'tcb')
+    expected=initial+days*86400*derivative;expected/=hypot(*expected)
+    with Kernel(references=(q.reference,))as kernel:
+        kernel.register(p,ownership='owned')
+        with kernel.open_session(SessionPolicy((q.catalogue,)))as session:
+            state=session.evaluate(replace(q,times=(time,))).states[0]
+    assert max(abs(a-b)for a,b in zip(state.vector,expected))<2e-15
+    assert state.source_epoch==epoch and state.time==time
+
+
+@pytest.mark.parametrize('changes',[{'pmRA':None},{'DErad':None},{'pmRA':0.,'pmDE':0.},
+    {'Plx':None},{'Plx':-1.},{'Sn':0},{'Sn':159,'Nc':2}])
+def test_hip2_missing_angular_fields_stay_unavailable_and_unused_fields_do_not_veto(motion_source,changes):
+    cat,p,q=stellar_hip2_case(motion_source(hip2_change=changes))
+    selected=p.describe().admissions[0].objects
+    assert bool(selected)==(not any(k in changes and changes[k]is None for k in ('pmRA','DErad')))
+    src=next(cat.source.records('hipparcos2_sources_v1.jsonl'))
+    assert all(src[k]==v for k,v in changes.items())
+    if not selected:assert cat.rows[4].unavailable_reason.startswith('missing_hipparcos2_')
+    p.close()
+
+
+@pytest.mark.parametrize('fault',['policy','scale','outside','declared_source_scale','cartesian','velocity','warm_scale','foreign_model'])
+def test_hip2_policy_and_capability_refusals_after_valid_baseline(motion_source,fault):
+    from wenu_kernel.records import TimeSpan
+    source=motion_source();cat,p,q=stellar_hip2_case(source);baseline=p.evaluate(q)
+    if fault=='policy':
+        with pytest.raises(ValueError):bridge.admit_stellar_hipparcos2_motion(source,coverage=cat.coverage,epoch_policy='verified-tcb')
+    elif fault=='scale':
+        with pytest.raises(ValueError):stellar_hip2_case(source,coverage=TimeSpan(TimePoint(2400000,0,'tt'),TimePoint(2500000,0,'tt')))
+    elif fault=='outside':
+        with pytest.raises(ValueError):stellar_hip2_case(source,coverage=TimeSpan(TimePoint(2451545,0,'tcb'),TimePoint(2451546,0,'tcb')))
+    elif fault=='declared_source_scale':
+        with pytest.raises(ValueError):stellar_hip2_case(motion_source(hip2_scale='tt'))
+    elif fault=='cartesian':
+        with pytest.raises(ValueError):bridge.StellarMotionProvider(cat,representation='cartesian')
+    else:
+        bad=replace(q,require_velocity=True)if fault=='velocity'else replace(q,times=(TimePoint(2448349,.0625,'tt'),))
+        if fault=='foreign_model':
+            _,gp,gq=stellar_angular_case(source);bad=replace(q,model=gq.model);gp.close()
+        assert not p.supports(bad).supported
+        with pytest.raises(UnsupportedCapability):p.evaluate(bad)
+    assert p.evaluate(q)==baseline
+    p.close()
+
+
+def test_hip2_reads_source_epoch_and_accepts_pole_zero_pm_without_default_literals(motion_source):
+    cat,p,q=stellar_hip2_case(motion_source(hip2_epoch=1992.,hip2_change=dict(RArad=0.,DErad=1.5707963267,pmRA=0.,pmDE=0.)))
+    row=cat.rows[4]
+    assert row.source_epoch==TimePoint(2448623,0.,'tcb')
+    q=replace(q,times=(row.source_epoch,cat.coverage.start,cat.coverage.stop))
+    states=p.evaluate(q).states
+    assert all(s.vector==states[0].vector for s in states)
+    p.close()
+
+
 if __name__ == '__main__':
     unittest.main()
+

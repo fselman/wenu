@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 76, 2026-10-22. **Status:** K4b.02/AX.13 measured-PM angular slice passed complete Mac tests and actual snapshot acceptance at 41c47e16 (PR #323). Merge remains separate; no-PM/Hip2 and product scopes stay pending. No further implementation selected.
+**Plan revision:** 79, 2026-10-22. **Status:** The bounded K4b.02 Hipparcos-2 nominal-TCB fallback passed complete Mac acceptance at d71ee8da in PR #325, which remains unmerged. Source time-scale qualification stays open in issue #326. Parent milestones remain partial; no next runtime item is selected.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -62,8 +62,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.02/AX.13 measured-PM angular slice passed Mac acceptance through PR #323 at 41c47e16; parent milestones remain partial |
-| Next bounded submilestone | Not selected; merge/cleanup and remaining no-PM, Hip2 qualification or product scopes need their corresponding explicit instruction |
+| Current bounded result | K4b.02 nominal-TCB Hip2 fallback passed Mac acceptance in PR #325 at d71ee8da: 2,850 Hip2 plus 115,105 Gaia angular models; 263 original lookup entries retained. Parent milestones remain partial |
+| Next bounded submilestone | Not selected. PR #325 is ready for review after receipt recording; merge/cleanup requires Fernando’s separate instruction. Source time-scale qualification remains issue #326 |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -76,6 +76,108 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4b.02: Hipparcos-2 fallback qualification
+
+**Policy agreement before implementation:** Fernando instructed, "So we should
+use TCB. If the difference from Hipparcos is small we should not worry too much
+and resolved the issue later, and open a ticket about it." He clarified that
+1991.5 was a typo: the intended epoch is J1991.25. This explicitly supersedes
+the time-scale evidence blocker below. Follow-up
+[issue #326](https://github.com/fselman/wenu/issues/326) remains open: verify the
+2007 epoch and Julian-year rate convention and quantify any needed conversion.
+
+Use the source-declared J1991.25 value on a nominal TCB model axis, not an
+assertion that the original source declared TCB or an actual TT-to-TCB
+conversion. Retain its original null time scale, all original row bytes and
+unknown convention/source/physical errors. Bind the explicit nominal policy
+and follow-up issue into model metadata/resource/provenance. Do not silently
+reuse this policy for other sources.
+
+Implementation: extend the existing stellar owner with a separately explicit
+Hipparcos-2 angular-fallback admission over finite caller-selected TCB coverage.
+Use only matched HIP records with measured position and both PM components
+when the accepted Gaia angular input route is unavailable. The source's
+position/epoch and pmRA=mu-alpha-star/pmDE supply the already accepted shared
+AngularMotionRow and affine engine. This is nominal tangent extrapolation;
+distance/RV/parallax, binary/acceleration/photocentre/systemic corrections and
+physical PV remain outside this model. Preserve flags/weights and published
+associations without inventing measurements or replacing Gaia choices.
+All original HIP entries remain, including the 263 original lookup entries.
+Preserve existing Gaia full/angular coefficients, metadata and model identities;
+their APIs and default/chart routes remain unchanged. Use distinct fallback
+model/resource/reference identities, and reject Cartesian/velocity output.
+
+The existing stellar/shared-core/source-audit owners protect source-unit/pole/
+epoch conversion, fallback precedence and all-HIP preservation, wrong-policy/
+domain/scale/capability refusal, immutable original metadata, distinct cache
+identity, actual SDK conformance/reuse and cold source-free offline evaluation.
+No numerical-core rewrite or new module, dependency, acquisition, source-schema,
+CLI, renderer or product adoption is selected. Mac acceptance must separately
+count actual fallback admissions and sample independent directions while
+rechecking both accepted Gaia digests.
+
+Fernando approved this bounded step with "Proceed" on 2026-10-22 after the
+clean synchronized Mac main/merged-branch cleanup receipt at
+`8167bb39f4377f7f486a027662d203ff149bab36` (36 documentation cases passed).
+Selected scope: verify Hipparcos-2 position/epoch/time-scale/proper-motion
+conventions against primary documentation, then admit qualified records from
+the 2,850 fallback candidates through the existing shared motion engine.
+Preserve the 263 original lookup entries and all original HIP/V/designations,
+published identities, source bytes, error/solution/component flags and accepted
+Gaia full/angular model digests. Missing measurements remain missing. No-PM,
+new associations, acquisition, source rewriting, binary/orbit corrections,
+physical-accuracy promises, SDK/dependency and chart/default/product adoption
+are excluded. This slice does not close K4b.02/AX.13.
+
+The source convention record distinguishes verified facts from the explicit
+nominal-TCB policy. J1991.25 does not silently acquire a verified source time
+scale; the authorized approximation is separately bound in the model. Unknown
+convention error remains unknown and later source qualification stays issue #326.
+
+**Qualification review, 2026-10-22:** The captured corrected I/311 table
+and ReadMe hashes were independently rechecked against the existing acquisition
+profile: 117,955 rows, 276 bytes per row. CDS and NASA HEASARC document ICRS
+positions, J1991.25 and angular PM units. The 2007 author paper uses
+mu-alpha-star notation; the author's 2009 paper explicitly defines it as
+mu-alpha times cos(delta), available in the primary publisher's indexed text.
+No motion convention has been inferred merely from the column name.
+
+The captured CDS ReadMe, HEASARC new-catalogue documentation and ESA's external
+I/311 datamodel do not explicitly identify the epoch time scale. ESA's
+1997 documentation specifies TT for that catalogue; direct continuity to the
+2007 product has not been established from the consulted primary material.
+The relevant 2007 book's astrometry chapter could not be read through the
+available access route. The book landing page/front matter and the accessible
+validation paper do not resolve this specific statement. This is an evidence
+gap, not evidence that the 2007 catalogue used a different scale.
+
+The initial qualification block is resolved for this nominal model by
+Fernando's explicit TCB policy, not by claiming new source evidence. Full
+primary time-convention qualification remains deferred. The current
+[migration inventory](kernel_migration_inventory_v1.json) binds this distinction
+and the source/owner checks.
+
+Acceptance owner: the existing stellar-state/shared-core gate, source-audit
+regressions and documentation/tooling checks, with independent source-unit and
+propagation references, identity/immutability/fallback/refusal coverage and
+unchanged Gaia binding checks. Actual Mac fallback counts and sampled directions
+remain distinct from constructed tests. Implementation result: the separate
+nominal-TCB Hip2 angular fallback is present in the existing owner, with the
+shared engine unchanged. Local partial-checkout checks passed 324 cases and
+nine subtests; four complete-tree cases remain in the unfiltered Mac gate.
+**Mac acceptance, 2026-10-22:** Fernando supplied the complete receipt for
+`d71ee8daf9870c0e77d8ef1c39e3111bd9110072`, PR #325. All 203 stellar/shared-core/
+cluster cases (nine subtests), 125 source-audit, 36 documentation and eight
+tooling cases (81 subtests) passed. The actual immutable snapshot admits 2,850
+Hip2 fallback models alongside 115,105 Gaia angular models; 117,955 total, with
+263 original lookup entries and all 118,218 records preserved. Both accepted
+Gaia digests are unchanged. Twenty-four sampled states (eight HIPs at the
+nominal source epoch and +/-50,000 Julian years) agree with the independent
+80-digit Decimal affine oracle within `1.594436429147036e-16` vector chord
+difference. This checks implementation arithmetic, not physical or time-scale
+accuracy over that domain. Original null source scale is retained; issue #326
+remains open. PR #325 is unmerged. This is not parent milestone closure.
 
 ## K4b.02 / AX.13: measured-proper-motion angular model
 
@@ -1145,7 +1247,7 @@ remain its separate responsibilities.
 | K4a.04 | Publish immutable bounded subset with exact bytes, edition/epoch/units/provenance, uncertainties/correlations and match evidence | Accepted local Mac publication/reload at 3fed5483 with manifest 8747349e; 125 focused, 36 documentation and eight tooling/80 subtests. External redistribution remains deferred |
 | K4a.05 | Accept coverage/ambiguity report and unchanged default membership, names, cross-IDs and visual photometry | Accepted local v4_source_v1 report and full-field/membership/V/association snapshot checks at 3fed5483; no default consumer change |
 | K4b.01 | Real star adapter/full-input propagation through the shared core | Accepted Mac receipt at PR #321/ec6a35e2: 86 stellar/core cases + nine subtests, 125 source audit, 36 documentation, eight tooling + 81 subtests; 97,710 full-input models, all 118,218 HIP objects retained. Reduced models/product adoption separate |
-| K4b.02 | Adopt admitted incomplete-input models and configured lookback/error/refusal policies for real stars | Measured-PM angular slice passed Mac acceptance in PR #323 at 41c47e16; no-PM/Hip2 qualification/other missing-input scopes remain pending. No invented measurements |
+| K4b.02 | Adopt admitted incomplete-input models and configured lookback/error/refusal policies for real stars | Measured-PM angular slice passed Mac acceptance in PR #323 at 41c47e16; nominal-TCB Hip2 fallback also passed Mac acceptance in PR #325 at d71ee8da; source time-scale qualification remains issue #326, and no-PM/other missing-input scopes remain pending. No invented measurements |
 | K4b.03 | Admit explicit historical time/calendar/year-zero/BCE and source/input-date uncertainty semantics | Pending; native ancient state must not require modern observer resources unnecessarily |
 | K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Pending; independent model/domain/uncertainty admission, not extrapolated modern EOP |
 | K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references | Pending; K4b.01–K4b.04; no universal DR4 improvement factor |

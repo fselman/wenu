@@ -133,7 +133,7 @@ concrete Wenu classes.
 | [`star_designations.py`](../../src/wenu/star_designations.py) | Offline, immutable HIP-linked Wikidata candidates, separate from astrometry. |
 | [`stellar_research.py`](../../src/wenu/stellar_research.py) | Immutable, offline HIP index of designation research and accepted policy. |
 | [`catalogue_state.py`](../../src/wenu/catalogue_state.py) | Shared immutable direction-table provider with optional aligned per-row epochs, vector decoding and owned kernel scope; no catalogue decoding, observer or graphics. |
-| [`stellar_state.py`](../../src/wenu/stellar_state.py) | Native lookup plus explicit full-input and measured-PM angular admission/provider through the shared affine engine; no acquisition or automatic consumer adoption. |
+| [`stellar_state.py`](../../src/wenu/stellar_state.py) | Native lookup plus explicit Gaia full/angular and nominal-TCB Hipparcos-2 angular fallback admissions/providers through the shared affine engine; no acquisition or automatic consumer adoption. |
 | [`stellar_catalogue.py`](../../src/wenu/stellar_catalogue.py) | Validated stellar ingestion, immutable metadata mirror and standard table envelope; source facts read from data documents. |
 | [`stellar_enrichment.py`](../../src/wenu/stellar_enrichment.py) | Immutable multi-edition source snapshot codec, strict byte/identity/unit/membership admission and source-free local reload; no propagation or acquisition. |
 | [`svg_document.py`](../../src/wenu/svg_document.py) | Deterministic semantic annotations for Matplotlib SVG output. |

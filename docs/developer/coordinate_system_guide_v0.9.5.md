@@ -1262,6 +1262,21 @@ ordinary chart/saved-sky defaults are unchanged. Missing-PM approximations,
 Hip2 convention qualification, historical calendars and long-term frame/orientation
 admission remain separate; a long native TCB computation does not qualify them.
 
+### Hipparcos-2 nominal TCB fallback
+
+The explicit Hip2 fallback uses the same normalized tangent mathematics, with
+source radian coordinates and mu-alpha-star/mu-delta converted from mas per
+Julian year. It does not divide pmRA by cos(delta). Fernando's 2026-10-22 policy
+places the source-declared J1991.25 epoch and elapsed Julian-year convention on
+a nominal TCB model axis; the raw source epoch scale remains null. This is a
+model interpretation, not verified source metadata or a TT-to-TCB conversion.
+[Issue #326](https://github.com/fselman/wenu/issues/326) tracks epoch/rate
+qualification and any later conversion. Offset and rate effects must be assessed
+separately; neither is silently assigned a zero error. Source/physical and
+convention errors remain unknown. The fallback cannot advertise physical PV,
+observer parallax or binary/acceleration corrections. Qualified Gaia angular
+inputs retain precedence and their accepted identities.
+
 ## Native stellar kernel lookup during K3
 
 Open-cluster metadata is a separate boundary: the accepted active table already
