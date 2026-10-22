@@ -93,7 +93,11 @@ Scope: implement one offline maintenance audit of the existing verified cache,
 with one row per original HIP and per-candidate evidence. Count unique/ambiguous/
 shared-source cases, preserve source flags and component warnings, and calculate
 nominal PM-only common-epoch angular diagnostics where both inputs are available.
-The 1997 source and Hipparcos-2 crossmatch edition remain distinct. No candidate
+The 1997 source and Hipparcos-2 crossmatch edition remain distinct in provenance.
+Fernando clarified the route: exact HIP-key linkage from 1997 to Hipparcos-2,
+then the published Hipparcos-2-to-Gaia candidate bridge. Do not invent an
+edition-wide identity ambiguity or rematch the two Hipparcos editions by position.
+Retain specific multiple/component, shared-source and candidate conflicts. No candidate
 is automatically adopted; a diagnostic or unique candidate is not identity proof.
 No new acquisition, positional recovery search, production provider/propagation,
 chart/photometry/selection change, source distribution or package extraction.
