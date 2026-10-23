@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 92, 2026-10-23. **Status:** The bounded offline Hipparcos-2 covariance diagnostic in PR #334 passed complete Mac acceptance at `32c13c1a`: 173 audit, 36 documentation and eight tooling cases/81 subtests, plus the actual source/fallback report. Fernando accepted merge/cleanup. The plan preceded implementation at `33f158dc`. Issue #333 records unresolved diagonal outliers; covariance propagation/provider uncertainty admission and source mutation remain outside this accepted slice.
+**Plan revision:** 93, 2026-10-23. **Status:** PR #334 is merged; Fernando confirmed clean synchronized Mac main `ffa7d7a7`, merged-branch cleanup and 36 documentation tests in 3.11 s. He selected the bounded K4b.05 issue #333 source-precision investigation with “Proceed”. Primary-source review and read-only numerical diagnostics only; no covariance admission or production changes.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -63,7 +63,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.05 Hipparcos-2 diagnostic report passed complete Mac gates and actual source/fallback review at 32c13c1a in PR #334; 2,682 standard fallback reconstructions and 168 nonstandard gaps. Source covariance admission remains unqualified |
-| Next bounded submilestone | Record accepted diagnostic receipts, merge PR #334, synchronize the Mac and clean the merged branch. Issue #333 source interpretation, issue #326 and K4b.05 parent remain open; no further implementation or K4b.06 adoption is selected |
+| Next bounded submilestone | K4b.05 issue #333: investigate F2=99 and printed weight/error precision using primary references and already cached bytes; document supported conclusions and remaining gaps. No error propagation, empirical normalization or K4b.06 adoption |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -76,6 +76,29 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4b.05: Hipparcos-2 source precision investigation
+
+Fernando selected this bounded follow-up with “Proceed” after the proposal to
+investigate F2 exactly 99 and catalogue precision. Prerequisite: PR #334
+diagnostic acceptance and clean synchronized Mac main `ffa7d7a7`, with branch
+cleanup and 36 documentation tests in 3.11 s, are confirmed.
+
+Review the corrected CDS layout, Michalik et al. Appendix B and original
+reduction documentation. Distinguish documented saturation/normalization from
+hypotheses. Check the effect of stored decimal precision, including ill-conditioned
+matrices and non-99 exceptions, using existing cached source bytes and explicitly
+labelled exploratory calculations. Record source identities, reproducible method,
+actual results and limitations in the existing audit and issue #333.
+Keep diagnostic consistency distinct from physical uncertainty qualification.
+
+This is an assessment/documentation slice: no production/report algorithm or
+pass threshold, forced rescaling, source/acquisition/snapshot changes, additional
+catalogue/annex capture, contact messages, propagated errors or physical accuracy
+certificate. Issue #326 and K4b.05 parent remain open.
+Acceptance: verify primary references and any claimed numerical experiment;
+run the closest available documentation checks, then the complete Mac
+documentation gate. Commit this plan before assessment outputs.
 
 ## K4b.05: Hipparcos-2 standard covariance qualification
 
