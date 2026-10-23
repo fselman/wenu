@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 84, 2026-10-23. **Status:** K4b.04 is merged through PR #328; clean synchronized Mac main `90e2d1e6d6c5114fa50b607ebcfa3099a8998636` and branch cleanup are confirmed. ESA constellation comparisons are added to the pending K4b.05 qualification plan below. No new runtime item is selected; K4b.06, physical/total accuracy and issue #326 remain separate.
+**Plan revision:** 85, 2026-10-23. **Status:** K4b.04 is merged through PR #328; clean synchronized Mac main `90e2d1e6d6c5114fa50b607ebcfa3099a8998636` and branch cleanup are confirmed. Fernando selected the bounded K4b.05 reference/method assessment with “Proceed”; ESA comparisons and propagation-reference review are documentation-only work. No new runtime item is selected; K4b.06, physical/total accuracy and issue #326 remain separate.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -63,7 +63,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.04 explicit long-term mean axes passed Mac acceptance in PR #328 at 97921fe8: 311 focused, 125 audit, 36 documentation, eight tooling/81 subtests and 48 actual derived directions; accepted stellar digests unchanged |
-| Next bounded submilestone | Runtime not selected. K4b.04 is merged and Mac cleanup confirmed at 90e2d1e6. ESA Orion/Ursa Major comparison work is recorded under pending K4b.05; this documentation change does not authorize implementation. K4b.06 and issue #326 remain separate |
+| Next bounded submilestone | K4b.05 bounded reference/method assessment selected by Fernando’s “Proceed”: ESA reconstruction evidence and mathematical-reference compatibility, documented in the existing audit. Runtime/acquisition not selected; K4b.06 and issue #326 remain separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -77,12 +77,18 @@ passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
 
-## K4b.05: ESA constellation comparison plan
+## K4b.05: reference assessment and ESA constellation comparison plan
 
 Fernando requested “Please add the ESA work comparison to the roadmap” on
 2026-10-23, after discussion of existing constellation reconstructions.
-This adds comparison criteria to pending K4b.05; it does not select runtime
-implementation, catalogue acquisition or K4b.06 chart adoption.
+This adds comparison criteria to pending K4b.05. Fernando subsequently selected
+its bounded reference/method assessment with “Proceed”: review the published ESA
+products and Butkevich & Lindegren (2014) against actual Wenu source/test owners,
+record recoverable inputs and missing evidence, and propose the smallest numerical
+and qualitative comparison gate. Use the existing migration audit for findings.
+Acceptance is documentation integrity and source-backed assessment; no runtime
+implementation, catalogue acquisition, physical-model change or K4b.06 chart
+adoption is selected. This plan is committed before assessment findings.
 
 Start with these published ESA products (reference discovery checked 2026-10-23):
 
@@ -718,6 +724,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 85: select bounded K4b.05 assessment | Fernando’s 2026-10-23 “Proceed” after the ESA/Butkevich–Lindegren reference-assessment proposal | Source-backed documentation assessment and concrete comparison proposal only, in existing roadmap/audit owners. No runtime, catalogue acquisition, additional light-time physics, covariance implementation or K4b.06 adoption. |
 | Revision 84: add ESA constellation comparisons to K4b.05 | Fernando’s 2026-10-23 “Please add the ESA work comparison to the roadmap”; PR #328 merged and clean synchronized Mac/cleanup confirmed | Record Orion and Ursa Major reference discovery, input/method availability review, like-for-like numerical versus qualitative comparison criteria and uncertainty/independence limits. Documentation only; no runtime, acquisition or K4b.06 adoption selected. |
 | Revision 70: select K4a.03S1 | Fernando’s “Please proceed with Kervella's work” after the missing-association magnitude histogram | Source-bound published A.1 association supplement and report, preserving accepted links. Explicit bounded source acquisition only; no independent rematching, derived astrometry/model adoption, Gaia source enrichment or merging. |
 | Revision 69: retain published associations | Fernando’s “Just trust the 2007 paper work and keep those associations” | Trust the published DR3 Hipparcos-2 best-neighbour links via exact HIP key. No 2007 astrometry download or independent re-crossmatch; diagnostic/quality annotations never veto published associations. Alternatives remain evidence; propagated-solution admission stays separate. |
