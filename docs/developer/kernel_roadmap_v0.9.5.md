@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 83, 2026-10-23. **Status:** The bounded K4b.04 explicit long-term mean-frame slice passed complete Mac acceptance at 97921fe8 in PR #328, which remains unmerged. No next runtime item selected. K4b.05/K4b.06, physical/total accuracy and issue #326 remain separate.
+**Plan revision:** 84, 2026-10-23. **Status:** K4b.04 is merged through PR #328; clean synchronized Mac main `90e2d1e6d6c5114fa50b607ebcfa3099a8998636` and branch cleanup are confirmed. ESA constellation comparisons are added to the pending K4b.05 qualification plan below. No new runtime item is selected; K4b.06, physical/total accuracy and issue #326 remain separate.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -63,7 +63,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.04 explicit long-term mean axes passed Mac acceptance in PR #328 at 97921fe8: 311 focused, 125 audit, 36 documentation, eight tooling/81 subtests and 48 actual derived directions; accepted stellar digests unchanged |
-| Next bounded submilestone | Not selected. PR #328 is ready for review after receipt recording; merge/cleanup requires Fernando’s separate instruction. K4b.05/K4b.06 and issue #326 remain separate |
+| Next bounded submilestone | Runtime not selected. K4b.04 is merged and Mac cleanup confirmed at 90e2d1e6. ESA Orion/Ursa Major comparison work is recorded under pending K4b.05; this documentation change does not authorize implementation. K4b.06 and issue #326 remain separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -76,6 +76,65 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4b.05: ESA constellation comparison plan
+
+Fernando requested “Please add the ESA work comparison to the roadmap” on
+2026-10-23, after discussion of existing constellation reconstructions.
+This adds comparison criteria to pending K4b.05; it does not select runtime
+implementation, catalogue acquisition or K4b.06 chart adoption.
+
+Start with these published ESA products (reference discovery checked 2026-10-23):
+
+- [The future of the Orion constellation](https://www.esa.int/Science_Exploration/Space_Science/Gaia/The_future_of_the_Orion_constellation)
+  (2017): a 40 by 20 degree field evolved over 450,000 years, using Gaia
+  DR1/TGAS, Hipparcos for bright stars and additional ground-based information.
+  ESA explicitly excludes stellar birth and death from the animation.
+- [Hipparcos stereo images: Ursa Major](https://www.cosmos.esa.int/web/hipparcos/stereo-images):
+  three-dimensional views and a future extrapolation based on Hipparcos proper
+  motions. The indexed ESA description was available, but direct page retrieval
+  was blocked during discovery; exact epochs, inputs and algorithms are not yet
+  verified. Do not treat this description as a recovered numerical dataset.
+
+Before implementation, establish for each product the identifiable stars/HIP
+keys, catalogue editions and input values, epochs and time conventions,
+propagation assumptions (including distance, radial velocity and light time),
+frame/origin, projection/viewpoint and availability/licensing of numerical data
+or source code. Record unavailable details explicitly. Published future cases
+test the same propagation machinery, but are not ancient observational evidence;
+past-epoch comparisons require a documented past reconstruction or an explicitly
+labelled new calculation.
+
+Comparison acceptance, once a bounded implementation is separately selected:
+
+1. Reproduce documented ESA epochs and the same star identities and conventions
+   wherever recoverable. Separate reproduction with the original published inputs
+   from a calculation using Wenu's newer Gaia/Hip2 inputs; explain catalogue,
+   missing-input and model differences.
+2. Compare numerical directions when reference coordinates or a documented
+   reproducible algorithm are available. Use images/video only for qualitative
+   constellation-shape checks when their precision or projection is insufficient
+   for a numerical angular test. Do not invent reference coordinates, tolerances
+   or an executed comparison.
+3. Compare pairwise angular separations as well as directions when possible:
+   constellation deformation must be distinguished from common frame rotation
+   and projection changes. Keep native stellar motion separate from the accepted
+   long-term mean-frame orientation.
+4. Report implementation discrepancies, measurement uncertainty and physical-model
+   limitations separately. Agreement with an ESA extrapolation is external
+   comparison evidence, not an independent measurement of ancient positions or
+   a physical-accuracy certificate. Shared catalogue inputs/models limit
+   independence; binaries, missing RV/distance and unmodelled acceleration remain
+   explicit.
+5. Keep the mathematical propagation-reference review and uncertainty assessment
+   in K4b.05 alongside these constellation cases. The proposed Butkevich &
+   Lindegren (2014) reference still requires a convention/model review; this
+   roadmap addition does not adopt its full model or add light-time physics.
+
+This is documentation-only scope: no source capture, new numerical model,
+dependency, SDK, provider, renderer or default consumer changes. The acceptance
+gate for this plan change is documentation integrity; actual ESA reconstruction
+comparisons remain pending.
 
 ## K4b.04: long-term frame orientation
 
@@ -150,8 +209,10 @@ Decimal matrix-application check; maximum vector chord difference is
 backend versions are retained in the inventory; matrix-bound IDs need not be
 bit-identical across platforms with last-bit numerical differences. This is
 arithmetic/reference-library evidence, not a physical/total accuracy certificate.
-PR #328 remains unmerged; no next runtime item selected. K4b.05/K4b.06 and
-issue #326 remain separate.
+PR #328 is merged at `90e2d1e6d6c5114fa50b607ebcfa3099a8998636`; Fernando confirmed
+clean synchronized Mac main, deletion of the merged local/remote branch and
+36 documentation cases passing in 3.39 s. No next runtime item selected.
+K4b.05/K4b.06 and issue #326 remain separate.
 
 ## K4b.03: historical date and time semantics
 
@@ -657,6 +718,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 84: add ESA constellation comparisons to K4b.05 | Fernando’s 2026-10-23 “Please add the ESA work comparison to the roadmap”; PR #328 merged and clean synchronized Mac/cleanup confirmed | Record Orion and Ursa Major reference discovery, input/method availability review, like-for-like numerical versus qualitative comparison criteria and uncertainty/independence limits. Documentation only; no runtime, acquisition or K4b.06 adoption selected. |
 | Revision 70: select K4a.03S1 | Fernando’s “Please proceed with Kervella's work” after the missing-association magnitude histogram | Source-bound published A.1 association supplement and report, preserving accepted links. Explicit bounded source acquisition only; no independent rematching, derived astrometry/model adoption, Gaia source enrichment or merging. |
 | Revision 69: retain published associations | Fernando’s “Just trust the 2007 paper work and keep those associations” | Trust the published DR3 Hipparcos-2 best-neighbour links via exact HIP key. No 2007 astrometry download or independent re-crossmatch; diagnostic/quality annotations never veto published associations. Alternatives remain evidence; propagated-solution admission stays separate. |
 | Revision 68: select K4a.03 offline audit | Fernando’s “Proceed” after the successful downloader and offline integrity receipt | Offline report only, with cardinality/component/edition warnings and common-epoch diagnostics; zero automatic adoptions. K4a.02 terms review remains deferred, without permission claims; no acquisition/publication/production propagation. |
@@ -1385,7 +1447,7 @@ remain its separate responsibilities.
 | K4b.02 | Adopt admitted incomplete-input models and configured lookback/error/refusal policies for real stars | Measured-PM angular slice passed Mac acceptance in PR #323 at 41c47e16; nominal-TCB Hip2 fallback also passed Mac acceptance in PR #325 at d71ee8da; source time-scale qualification remains issue #326, and no-PM/other missing-input scopes remain pending. No invented measurements |
 | K4b.03 | Admit explicit historical time/calendar/year-zero/BCE and source/input-date uncertainty semantics | Bounded explicit input/receipt slice passed Mac acceptance in PR #327 at ceeb894b: 257 focused, 125 audit, 36 documentation, eight tooling/81 subtests and 24 actual historical states. No implicit civil-clock/TT-to-TCB/observer reconstruction or total uncertainty claim |
 | K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Bounded explicit long-term mean-axis slice passed Mac acceptance in PR #328 at 97921fe8; 48 actual derived directions, finite TT domain and unknown physical/total error. No observer/EOP reconstruction or chart/default adoption |
-| K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references | Pending; K4b.01–K4b.04; no universal DR4 improvement factor |
+| K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references; include ESA Orion and Ursa Major reconstruction comparisons with documented input/method and independence limits | Pending; K4b.01–K4b.04; see the ESA comparison plan above. No runtime selected or universal DR4 improvement factor |
 | K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | Pending K4b closure; K3 stellar/figure/label consumers and accepted science/visual criteria |
 
 ### K5–K9: freeze, extraction and release
