@@ -1,0 +1,89 @@
+{
+  "schema": "wenu-hipparcos2-covariance-reference/1",
+  "edition": "CDS-I/311-corrected-2008-09-16",
+  "source_readme_sha256": "6c017925d658447d40983da3b459ba16bf9789c8f7573e263952c75692622499",
+  "source_table_sha256": "c45d6325bd59dd691764af173a9702e543804a2b6c1d9fea59210e8332e50a4a",
+  "record_length": 276,
+  "fields": {
+    "Ntr": {
+      "first_byte": 105,
+      "last_byte": 107,
+      "kind": "integer",
+      "unit": "---"
+    },
+    "F2": {
+      "first_byte": 109,
+      "last_byte": 113,
+      "kind": "number",
+      "unit": "---"
+    }
+  },
+  "parameter_order": [
+    "alpha_star",
+    "delta",
+    "parallax",
+    "pmra",
+    "pmdec"
+  ],
+  "error_fields": [
+    "e_RArad",
+    "e_DErad",
+    "e_Plx",
+    "e_pmRA",
+    "e_pmDE"
+  ],
+  "error_units": [
+    "mas",
+    "mas",
+    "mas",
+    "mas/yr",
+    "mas/yr"
+  ],
+  "packed_upper_columns": [
+    [
+      1
+    ],
+    [
+      2,
+      3
+    ],
+    [
+      4,
+      5,
+      6
+    ],
+    [
+      7,
+      8,
+      9,
+      10
+    ],
+    [
+      11,
+      12,
+      13,
+      14,
+      15
+    ]
+  ],
+  "solution_suffix": 5,
+  "recipe": "Michalik-2014-Appendix-B-published-errors/1",
+  "convention": "C_published = u^2 inverse(U^T U), with only U diagonal multiplied by u/quoted_sigma; u=sqrt(Q/nu), nu=Ntr-5, Q from inverse Wilson-Hilferty transform of F2. Equivalently B=U/u; C_published=solve(B,I) solve(B,I)^T. No max(u,1) catalogue-combination policy.",
+  "rounding": "UW and formal errors are printed to 0.01 in source units; F2 to 0.01. Report diagonal differences; do not force exact agreement or invent a pass threshold.",
+  "scope": "Standard five-parameter source covariance qualification only. Nonstandard solutions, propagation, physical uncertainty and epoch-scale qualification not admitted.",
+  "references": [
+    {
+      "url": "https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/I/311?format=html&tex=true",
+      "scope": "corrected edition, original field layout, UW ordering and solution types"
+    },
+    {
+      "url": "https://arxiv.org/html/1407.4025v2#A2",
+      "scope": "Michalik et al. 2014 Appendix B: CDS scaling and published-error consistency, distinct from catalogue-combination policy"
+    },
+    {
+      "url": "https://gea.esac.esa.int/archive/documentation/GDR2/Gaia_archive/chap_datamodel/sec_dm_external_catalogues/ssec_dm_hipparcos_newreduction.html",
+      "scope": "primary indexed archive documentation directs covariance reconstruction to Michalik Appendix B; direct page access not claimed"
+    }
+  ],
+  "review_date": "2026-10-23"
+}

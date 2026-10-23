@@ -1,5 +1,47 @@
 # Wenu implementation reference
 
+## Hipparcos-2 covariance qualification report
+
+The existing audit maintenance tool accepts `--hip2-covariance-source`,
+`--expected-source-manifest` and a fresh `--output`. It reads the same
+immutable enrichment snapshot as the Gaia report. No elapsed years are accepted:
+this mode reconstructs source-epoch matrices without propagating positions.
+The existing Gaia uncertainty mode remains unchanged.
+
+The declarative
+[reference](data/hipparcos2_covariance_reference_v1.json) binds the corrected
+CDS table/ReadMe identities, additional Ntr/F2 byte slices, units and packing.
+It does not change the acquisition profile or invalidate existing captures.
+Only Sn modulo 10 = 5 is decoded; other solutions retain explicit gaps.
+Double/photocentre/secondary flags, association evidence and every HIP remain.
+
+The published-error reconstruction follows Michalik et al. (2014), Appendix B.
+With nu = Ntr - 5, recover u from F2. Scale only the packed upper matrix diagonal
+by u/quoted sigma; then use the published-error covariance u squared times
+the inverse normal matrix. The implementation solves B = U/u against identity
+and forms inverse(B) times its transpose. It does not apply the paper's
+separate capped-u catalogue-combination policy.
+
+Check finite positive errors, fit domain, nonzero diagonal, numerical spectrum
+and solve residual (maximum 1e-8 in this explicit diagnostic basis). The output
+includes the full covariance in the declared mas/mas-per-year basis, quoted
+and decoded sigmas, their ratios, numerical condition and fit/solution flags.
+These numerical checks are not physical/source-consistency admission.
+Diagonal differences are diagnostic; no threshold forces or approves agreement.
+
+Outputs are `hip2_covariance_qualification_v1.jsonl`,
+`hip2_covariance_summary_v1.json` and the manifest-last
+`hip2_covariance_manifest_v1.json`. Every HIP has a row; fallback applicability
+is reported separately from all-standard-source counts. Summary records source,
+reference and code hashes, discrepancy percentiles/counts and the ten largest
+discrepancies. Stored F2 exactly 99 is identified without assuming saturation.
+No overwrite/source-output overlap or source mutation is permitted.
+
+[Issue #333](https://github.com/fselman/wenu/issues/333) tracks unexplained
+diagonal outliers. This is a diagnostic reconstruction, not admission for
+uncertainty propagation. Hip2 epoch scale (#326), nonstandard marginals and
+physical accuracy remain unqualified.
+
 ## Offline Gaia conditional uncertainty report
 
 The existing `tools/gaia_crossmatch_audit.py` has a separate

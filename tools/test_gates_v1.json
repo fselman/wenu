@@ -3312,12 +3312,12 @@
       ]
     },
     "gaia-crossmatch-audit": {
-      "scope": "K4a offline published associations/source admission and K4b.05 conditional Gaia angular-error/RV-sensitivity report.",
-      "limits": "Constructed offline/transport and covariance/Jacobian/Monte Carlo checks; actual Mac source/report acceptance separate. No production propagation/uncertainty/provider change, full RV covariance, Hip2 decoding, physical accuracy certificate, external redistribution, SDK or renderer change.",
+      "scope": "K4a source admission and K4b.05 offline Gaia conditional errors/RV sensitivity plus standard Hip2 covariance qualification.",
+      "limits": "Constructed offline/transport and covariance/Jacobian/Monte Carlo checks; actual Mac source/report acceptance separate. No production propagation/uncertainty/provider change, full RV covariance, Hip2 propagated uncertainty/accuracy admission, physical accuracy certificate, external redistribution, SDK or renderer change. Hip2 diagonal outliers remain issue #333.",
       "selections": [
         {
           "node": "tests/test_gaia_crossmatch_audit.py",
-          "reason": "Cache/source identity, unit/mask/refusal and published-link preservation; exact-query capture/resume; Hip2 fallback; immutable source normalization/publication/reload; offline conditional covariance and RV derivative, independent numerical oracles, CLI lineage, per-HIP gaps and shared no-clobber publication."
+          "reason": "Cache/source identity, unit/mask/refusal and published-link preservation; exact-query capture/resume; Hip2 fallback; immutable source normalization/publication/reload; offline Gaia conditional covariance/RV derivative and corrected-CDS Hip2 published-error matrix qualification; independent numerical oracles, flags/gaps, CLI/source/reference lineage and shared no-clobber publication."
         }
       ]
     },

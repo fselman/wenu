@@ -1,5 +1,17 @@
 # Wenu developer documentation
 
+## Hipparcos-2 covariance qualification candidate
+
+PR #332 is merged; the Mac is clean/synchronized on `5971acb9` with branch
+cleanup and 36 documentation tests in 3.55 s. The selected next K4b.05 slice
+adds a maintenance-only standard Hip2 covariance qualification report.
+The published recipe reconstructs matrices, but source diagonal outliers are
+unresolved in [issue #333](https://github.com/fselman/wenu/issues/333).
+No Hip2 uncertainty propagation or production model change is admitted.
+See the [interface](implementation_reference.md#hipparcos-2-covariance-qualification-report)
+and [gate](testing_policy.md#hipparcos-2-covariance-qualification-gate).
+Complete Mac qualification report acceptance remains pending.
+
 ## Offline stellar uncertainty assessment and report
 
 PR #331's assessment is merged; Fernando's Mac is clean and synchronized at

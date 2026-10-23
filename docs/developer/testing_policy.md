@@ -1,5 +1,27 @@
 # Testing policy and module independence
 
+## Hipparcos-2 covariance qualification gate
+
+Extend the existing `gaia-crossmatch-audit` owner and test file. Synthetic
+non-unit correlated weights at both signs of F2 verify explicit column-wise
+packing and the published-error normalization against an independent normal
+matrix inversion. Invalid/zero/missing errors, weights, fit inputs, unsupported
+recipe, nonstandard solutions and unknown edition/units refuse. Secondary and
+photocentre flags are retained, not identity vetoes.
+
+A real synthetic snapshot/CLI seam verifies all HIPs, fallback counts, source
+immutability, reference/source/code identities, report product hashes and
+no-clobber; existing shared publisher cleanup and Gaia numerical/report cases
+remain intact. Separate deliberate diagonal and off-diagonal scaling faults
+must each fail the nearest independent reconstruction cases before restoration.
+Run the complete audit owner, documentation and tooling checks.
+
+The previously cached corrected real Hip2 file is checked separately, with its
+exact digest. This raw-catalogue evidence is not a fabricated provider fixture
+or the Mac combined-source/fallback report. Source diagonal outliers remain
+[issue #333](https://github.com/fselman/wenu/issues/333); numerical decode success
+does not close their qualification or admit positional-error propagation.
+
 ## Offline Gaia covariance and RV sensitivity gate
 
 K4b.05 extends the existing `gaia-crossmatch-audit` maintenance owner and test

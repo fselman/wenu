@@ -1104,6 +1104,132 @@ def test_uncertainty_invalid_matrix_is_a_per_hip_gap(enrichment_snapshot, tmp_pa
     assert rows[3]['evaluations'][0]['status'] == 'evaluated'
 
 
+def hip2_covariance_reference():
+    return json.loads((Path(__file__).parents[1]/'docs/developer/data/hipparcos2_covariance_reference_v1.json').read_bytes())
+
+
+def synthetic_hip2_weights(*, fit=2., transits=100, sigma=(.2, .3, .4, .5, .6), sn=5):
+    """Constructed packed CDS values, with non-unit weights and both fit signs."""
+    raw = list(' '*276)
+    raw[104:107] = f'{transits:3d}'
+    raw[108:113] = f'{fit:5.2f}'
+    row = dict(Sn=sn, So=0, Nc=1, original_record_ascii=''.join(raw),
+               UW=[1.2, -.7, 1.1, .2, -.4, 1.05, .3, .8, -.2, 1.3, -.6, .1, .5, -.9, 1.])
+    row.update(zip(hip2_covariance_reference()['error_fields'], sigma))
+    return row
+
+
+@pytest.mark.parametrize('fit', [-2., 0., 3.])
+def test_hip2_covariance_packing_and_published_error_scaling(fit):
+    row = synthetic_hip2_weights(fit=fit)
+    reference = hip2_covariance_reference()
+    actual, info = audit.hip2_covariance(row, reference)
+    nu = 95
+    # Independent reconstruction via normal-matrix inversion, explicit packing.
+    u = ((2/(9*nu))**.5*fit + 1 - 2/(9*nu))**1.5
+    w = row['UW']
+    upper = np.array([[w[0],w[1],w[3],w[6],w[10]], [0,w[2],w[4],w[7],w[11]],
+                      [0,0,w[5],w[8],w[12]], [0,0,0,w[9],w[13]], [0,0,0,0,w[14]]], dtype=float)
+    errors = np.array([row[k] for k in reference['error_fields']])
+    upper[np.diag_indices(5)] *= u/errors
+    expected = np.linalg.inv(upper.T @ upper) * u*u
+    np.testing.assert_allclose(actual, expected, rtol=2e-13, atol=1e-14)
+    assert info['unit_weight_error'] == pytest.approx(u)
+    assert info['degrees_of_freedom'] == 95
+    assert info['maximum_solve_identity_residual'] < 1e-12
+    assert np.linalg.eigvalsh(actual)[0] > 0
+    assert actual[0, 1] != 0
+    # A raw inversion, whole-row/column scaling, and capped-u combination
+    # convention all differ from this explicitly published-error covariance.
+    if fit < 0:
+        assert not np.allclose(actual, expected/u**2)
+
+
+@pytest.mark.parametrize('patch,reason', [
+    ({'Sn':7}, 'nonstandard'), ({'Sn':9}, 'nonstandard'), ({'Sn':1}, 'nonstandard'),
+    ({'Sn':3}, 'nonstandard'), ({'Sn':0}, 'nonstandard'),
+    ({'e_RArad':0.}, 'formal_errors'), ({'e_pmRA':None}, 'formal_errors'),
+    ({'UW':[0.]*15}, 'singular'), ({'UW':[float('nan')]*15}, 'weights')])
+def test_hip2_covariance_refuses_invalid_or_nonstandard_inputs(patch, reason):
+    row = synthetic_hip2_weights(); row.update(patch)
+    with pytest.raises(ValueError, match=reason):
+        audit.hip2_covariance(row, hip2_covariance_reference())
+
+
+def test_hip2_covariance_fit_input_refusal_and_flags():
+    reference = hip2_covariance_reference()
+    for row in (synthetic_hip2_weights(transits=5), synthetic_hip2_weights(transits=6, fit=-9.99)):
+        with pytest.raises(ValueError, match='hip2_'):
+            audit.hip2_covariance(row, reference)
+    row = synthetic_hip2_weights(sn=85)
+    _, info = audit.hip2_covariance(row, reference)
+    assert info['Sn'] == 85  # Secondary/photocentre flags never erase a link.
+    with pytest.raises(ValueError, match='Unsupported Hip2 covariance reference'):
+        audit.hip2_covariance(row, dict(reference, recipe='invented'))
+
+
+def test_hip2_covariance_diagonal_disagreement_is_exposed_not_rescaled():
+    row = synthetic_hip2_weights(fit=99., sigma=(10., 12., 14., 16., 18.))
+    matrix, info = audit.hip2_covariance(row, hip2_covariance_reference())
+    assert info['F2_exactly_99'] is True
+    assert info['max_absolute_relative_sigma_difference'] > .01
+    assert not np.allclose(np.sqrt(np.diag(matrix)), info['quoted_sigma'])
+
+
+def hip2_qualification_fixture(snapshot, tmp_path, monkeypatch):
+    def add_fit(rows):
+        for row in rows:
+            raw = row['original_record_ascii']
+            raw = raw[:104] + '100' + raw[107:108] + ' 0.00' + raw[113:]
+            row['original_record_ascii'] = raw
+            row['record_sha256'] = sha256(raw.encode('ascii')).hexdigest()
+    snapshot = snapshot_mutation(snapshot, 'hipparcos2_sources_v1.jsonl', add_fit)
+    policy = hip2_covariance_reference()
+    source_profile = snapshot.metadata['hipparcos2_profile']
+    policy['edition'] = 'explicitly-synthetic-not-provider-data'
+    policy['source_table_sha256'] = source_profile['expanded_table']['sha256']
+    policy['source_readme_sha256'] = next(r['sha256'] for r in source_profile['resources'] if r['filename']=='ReadMe')
+    data = tmp_path/'docs/developer/data'; data.mkdir(parents=True)
+    (data/'hipparcos2_covariance_reference_v1.json').write_text(json.dumps(policy))
+    monkeypatch.setattr(audit, 'ROOT', tmp_path)
+    return snapshot
+
+
+def test_hip2_covariance_report_cli_source_binding_and_gaps(enrichment_snapshot, tmp_path, monkeypatch):
+    snapshot = hip2_qualification_fixture(enrichment_snapshot, tmp_path, monkeypatch)
+    directory, output = tmp_path/'source', tmp_path/'qualification_v1'
+    audit.publish_enrichment(directory, snapshot)
+    before = snapshot.products
+    monkeypatch.setattr(socket, 'socket', lambda *a, **k: pytest.fail('qualification used network'))
+    args = ['--hip2-covariance-source', str(directory), '--expected-source-manifest', sha256(snapshot.manifest).hexdigest(), '--output', str(output)]
+    audit.main(args)
+    rows = [json.loads(s) for s in (output/'hip2_covariance_qualification_v1.jsonl').read_text().splitlines()]
+    summary = json.loads((output/'hip2_covariance_summary_v1.json').read_text())
+    assert [r['hip'] for r in rows] == ['1','2','3','4','5']
+    assert summary['statuses'] == {'decoded_standard':1, 'nonstandard_hip2_solution':1, 'no_hipparcos2_source':3}
+    assert summary['fallback_statuses'] == {'nonstandard_hip2_solution':1}
+    assert summary['source_manifest_sha256'] == sha256(snapshot.manifest).hexdigest()
+    assert rows[0]['diagnostics']['Ntr'] == 100
+    assert rows[0]['covariance'] is not None and rows[1]['covariance'] is None
+    manifest = json.loads((output/'hip2_covariance_manifest_v1.json').read_text())
+    assert manifest['complete'] is True
+    for name, identity in manifest['products'].items():
+        assert enrichment.identity((output/name).read_bytes()) == identity
+    assert snapshot.products == before and enrichment.load_stellar_enrichment(directory) == snapshot
+    with pytest.raises(ValueError, match='already exists'):
+        audit.main(args)
+    with pytest.raises(ValueError, match='does not propagate'):
+        audit.main(args+['--uncertainty-years','0'])
+    wrong = snapshot_mutation(snapshot, 'metadata_v1.json',
+        lambda meta: meta['hipparcos2_profile']['expanded_table'].update(sha256='f'*64))
+    with pytest.raises(ValueError, match='Unqualified Hip2 source edition'):
+        audit.hip2_covariance_report(wrong, tmp_path/'wrong')
+    wrong = snapshot_mutation(snapshot, 'metadata_v1.json',
+        lambda meta: meta['hipparcos2_profile']['columns']['e_RArad'].update(unit='rad'))
+    with pytest.raises(ValueError, match='Unsupported Hip2 covariance unit'):
+        audit.hip2_covariance_report(wrong, tmp_path/'wrong')
+
+
 def test_enrichment_round_trip_immutable_values_and_fallback(enrichment_snapshot,tmp_path):
     from dataclasses import FrozenInstanceError
     snapshot=enrichment_snapshot
