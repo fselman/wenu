@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 79, 2026-10-22. **Status:** The bounded K4b.02 Hipparcos-2 nominal-TCB fallback passed complete Mac acceptance at d71ee8da in PR #325, which remains unmerged. Source time-scale qualification stays open in issue #326. Parent milestones remain partial; no next runtime item is selected.
+**Plan revision:** 80, 2026-10-23. **Status:** K4b.03 historical date/time semantics selected by Fernando’s Proceed after the explicit proposal. PR #325 is merged; Mac main dc2035da is clean and synchronized, branch cleanup confirmed. Preserve accepted stellar models; time-scale qualification remains issue #326.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -63,7 +63,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.02 nominal-TCB Hip2 fallback passed Mac acceptance in PR #325 at d71ee8da: 2,850 Hip2 plus 115,105 Gaia angular models; 263 original lookup entries retained. Parent milestones remain partial |
-| Next bounded submilestone | Not selected. PR #325 is ready for review after receipt recording; merge/cleanup requires Fernando’s separate instruction. Source time-scale qualification remains issue #326 |
+| Next bounded submilestone | K4b.03 historical date/time semantics selected: explicit proleptic calendar/year/scale/date-uncertainty boundary and admitted conversion to TCB; no frame/precession/observer reconstruction |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -76,6 +76,47 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4b.03: historical date and time semantics
+
+Fernando selected this bounded step with “Proceed” on 2026-10-23 after the
+proposal covering BCE/year zero, Julian versus Gregorian input, conversion to
+the model TCB axis, date uncertainty, and ancient native stellar queries without
+modern Earth-orientation resources. Base: clean synchronized Mac main
+`dc2035daa256a55a566dbdf6949d0dc750bec030`; prior merged branch removed.
+
+As-is assessment: SDK TimePoint already preserves two-part continuous dates,
+and TimeService requires explicit directed conversion admissions. Existing
+`astrometric_coordinates.py` owns resource-free TDB/TCB convention conversion;
+native stellar queries use finite TCB coverage without an observer. There is
+no explicit historical calendar/year-numbering/date-uncertainty input record.
+Extend this existing time/convention owner and its existing
+`test_astrometric_state.py` owner. Do not add a parallel time service or alter
+SDK records, numerical propagation, source snapshot, model identities or pins.
+
+Scope: immutable calendar-date input requiring proleptic Gregorian or Julian,
+astronomical versus BCE/CE year numbering, declared continuous scale and
+explicit known nonnegative source-date uncertainty or unknown. Astronomical
+year 0 equals 1 BCE; BCE/CE labels require positive year numbers. Reject invalid
+dates, ambiguous labels, leap seconds and implicit local/civil time. Preserve
+original labels alongside a normalized two-part TimePoint, bounded calendar
+rounding and the exact admitted TimeService conversion receipt to TCB. No
+calendar choice guesses a physical time scale. Use existing TDB/TCB conversion
+or TCB identity; unsupported TT/TAI-to-TCB requires an independently admitted
+adapter and otherwise refuses. Do not invent a historical clock or Delta-T.
+Retain input-date uncertainty on its source time scale separately from numerical
+rounding/conversion; do not claim a total converted-time or angular uncertainty.
+
+Acceptance: independent published JD/calendar vectors, ERFA Gregorian oracle,
+BCE/year-zero and negative-year cycle checks, reform/leap boundaries, subsecond
+two-part precision, uncertainty preservation, typed invalid/admission/coverage
+refusals after success, and an actual native stellar SDK query at an ancient
+calendar epoch with observer/EOP/network/scientific-import access blocked.
+Existing focused stellar/shared-core/cluster plus source-audit and documentation/
+tooling gates protect unchanged Gaia/Hip2 bindings. No new acquisition,
+dependency, SDK/schema, CLI/product/calendar auto-switch, precession, observer,
+physical-accuracy claim, or issue #326 resolution. K4b.04–K4b.06 stay separate.
+Commit this plan before runtime changes; actual Mac acceptance remains separate.
 
 ## K4b.02: Hipparcos-2 fallback qualification
 
@@ -177,7 +218,7 @@ nominal source epoch and +/-50,000 Julian years) agree with the independent
 80-digit Decimal affine oracle within `1.594436429147036e-16` vector chord
 difference. This checks implementation arithmetic, not physical or time-scale
 accuracy over that domain. Original null source scale is retained; issue #326
-remains open. PR #325 is unmerged. This is not parent milestone closure.
+remains open. PR #325 is merged at dc2035da; Mac synchronization/branch cleanup and 36 documentation passes are confirmed. This is not parent milestone closure.
 
 ## K4b.02 / AX.13: measured-proper-motion angular model
 
