@@ -116,7 +116,7 @@ Existing focused stellar/shared-core/cluster plus source-audit and documentation
 tooling gates protect unchanged Gaia/Hip2 bindings. No new acquisition,
 dependency, SDK/schema, CLI/product/calendar auto-switch, precession, observer,
 physical-accuracy claim, or issue #326 resolution. K4b.04–K4b.06 stay separate.
-Commit this plan before runtime changes; actual Mac acceptance remains separate.
+The plan was committed at e0ce8c6f before runtime changes. Implementation now\nextends the existing convention owner with HistoricalDate, HistoricalEpoch and\nresolve_historical_date; the SDK/propagation/source owners remain unchanged.\nAll 54 new chronology cases pass locally; combined stellar/shared-core/cluster/\nsource-audit checks pass 379 cases and nine subtests, with three pre-existing\nfull-application cases unavailable in the partial checkout. No Mac exclusions\nare added. Complete Mac acceptance remains separate and pending in PR #327.
 
 ## K4b.02: Hipparcos-2 fallback qualification
 
@@ -1481,4 +1481,3 @@ new Moonlight execution, or broad feature additions during structural migration.
 Current science and appearance remain the baseline except for separately
 reviewed astrometric corrections and bug fixes. Deferred work is retained in
 the archived roadmap and [current scientific limits](scientific_contracts.md).
-

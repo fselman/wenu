@@ -162,8 +162,8 @@
     },
     {
       "path": "src/wenu/astrometric_coordinates.py",
-      "git_blob_sha": "6f7675ae253d567f673a91713e6a84e981596a64",
-      "description": "Object-independent explicit TCB/TDB time conversion and Cartesian coordinate scaling receipts.",
+      "git_blob_sha": "8de66a9d97e6b64e012515fd8669d066fe028ba1",
+      "description": "Explicit historical calendar/year/uncertainty input and admitted barycentric time/convention receipts.",
       "baseline_relation": "Additive convention boundary; no observer or product runtime adoption."
     },
     {
@@ -6461,7 +6461,7 @@
     },
     {
       "path": "tests/test_stellar_state.py",
-      "git_blob_sha": "4552f5434dcc624246fe5cb55f3d4e32f01bce17",
+      "git_blob_sha": "f4d3e0a643eebf1c39c6ad3488e5c35b1e2b7ca2",
       "test_functions": 35,
       "marks": {
         "parametrize": 18
@@ -7021,7 +7021,7 @@
     },
     {
       "path": "tests/test_astrometric_state.py",
-      "git_blob_sha": "d3b206392125afe8750820224cca30b14246d820",
+      "git_blob_sha": "1a49fb71706f953bd8b1834c47138e8a78f2c01d",
       "description": "Generic mixed-object engine, conformance, immutable-domain and isolated SDK evaluation.",
       "baseline_relation": "Added for enduring object-independent astrometric engine factoring.",
       "imports": [
@@ -7045,7 +7045,7 @@
         "wenu_kernel.records",
         "wenu_kernel.time"
       ],
-      "test_functions": 17,
+      "test_functions": 26,
       "parametrize_decorators": 5,
       "marks": {
         "parametrize": 5
@@ -14664,14 +14664,15 @@
         ]
       },
       "src/wenu/astrometric_coordinates.py": {
-        "git_blob_sha": "6f7675ae253d567f673a91713e6a84e981596a64",
+        "git_blob_sha": "8de66a9d97e6b64e012515fd8669d066fe028ba1",
         "group": "astrometry",
         "evidence_ids": [
           "AX.06",
           "AX.07",
           "AX.08",
           "AX.09",
-          "AX.10"
+          "AX.10",
+          "K4b.03"
         ],
         "purpose": "Explicit barycentric time and spatial scaling, independent of object type.\n\nThis boundary changes conventions, not a trajectory or an observer origin.\nIt admits no UTC/TT conversion, ephemeris, apparent place or light-time model.\nAuthorities reviewed 2026-10-19: IAU 2006 B3 and IERS Conventions (201",
         "imports": [
@@ -26931,5 +26932,57 @@
       "follow_up_issue_status": "#326 remains open; not closed by this PR",
       "acceptance_scope": "Bounded K4b.02 slice only; no parent closure or default/product adoption"
     }
+  },
+  "historical_time_semantics": {
+    "milestone": "K4b.03",
+    "date": "2026-10-23",
+    "base_commit": "dc2035daa256a55a566dbdf6949d0dc750bec030",
+    "plan_commit": "e0ce8c6fd2839a9540c6757bb8c8911527eb1508",
+    "pull_request": 327,
+    "status": "Implemented for Mac acceptance; no parent closure",
+    "authorization": "Fernando Proceed after explicit historical-date/time proposal; clean synchronized main and merged-branch cleanup receipt already supplied",
+    "owner": "src/wenu/astrometric_coordinates.py",
+    "api": [
+      "HistoricalDate",
+      "HistoricalEpoch",
+      "resolve_historical_date"
+    ],
+    "owners": {
+      "src/wenu/astrometric_coordinates.py": "8de66a9d97e6b64e012515fd8669d066fe028ba1",
+      "tests/test_astrometric_state.py": "1a49fb71706f953bd8b1834c47138e8a78f2c01d",
+      "tests/test_stellar_state.py": "f4d3e0a643eebf1c39c6ad3488e5c35b1e2b7ca2"
+    },
+    "policy": {
+      "calendars": [
+        "proleptic Gregorian",
+        "proleptic Julian"
+      ],
+      "year_numbering": "astronomical 0 = 1 BCE; BCE/CE require positive year labels",
+      "scales": "explicit tai/tt/tdb/tcb; resolve through admitted TimeService to tcb; missing direct conversion refuses",
+      "input_uncertainty": "required source-coordinate-second bound or explicit unknown; not converted or merged into angular/numerical evidence",
+      "rounding": "exact integer/Fraction calendar arithmetic to normalized two-part TimePoint; outward binary64 bound",
+      "conversion": "unchanged SDK TimeService; existing TDB/TCB or identity; no automatic chain or TT/UT/civil inference",
+      "native_ancient_queries": "Gaia/Hip2 angular SDK evaluation after source removal with science/observer/network blocked"
+    },
+    "sources_reviewed_2026_10_23": [
+      "https://aa.usno.navy.mil/downloads/c15_usb_online.pdf",
+      "https://aa.usno.navy.mil/data/JulianDate",
+      "https://www.iausofa.org/cookbooks",
+      "https://github.com/liberfa/erfa/blob/master/src/cal2jd.c"
+    ],
+    "local_acceptance": {
+      "new_calendar_cases": 54,
+      "combined_owner_source_cases": 379,
+      "subtests": 9,
+      "deselected_existing_application_cases": 3,
+      "reason": "Partial checkout lacks skyfield and open-cluster application owner; complete Mac selections unchanged",
+      "documentation_cases": 4,
+      "tooling_cases": 6,
+      "tooling_subtests": 9,
+      "tooling_deselected_full_tree_cases": 2
+    },
+    "Mac_acceptance": "pending",
+    "preservation": "Gaia/Hip2 source/model/numerical core/SDK/default routes unchanged; no extra acquisition",
+    "limits": "No automatic historical calendar reform, local/civil-clock/UTC/UT1/TT-to-TCB model, historical observer, precession, physical accuracy, source uncertainty propagation or issue #326 resolution"
   }
 }

@@ -195,6 +195,28 @@ physical/source error still unknown. No SDK, dependency/build,
 renderer/product or source-snapshot schema change is made; broader no-PM/Hip2
 qualification work is not closed by this measured-PM implementation.
 
+### Historical date/time semantics
+
+K4b.03 extends the existing `test_astrometric_state.py` calendar/convention owner
+and the existing isolated source-to-kernel test in `test_stellar_state.py`.
+It protects BCE/year zero, negative/proleptic calendar arithmetic, leap/reform
+boundaries, explicit source uncertainty versus numerical error, exact two-part
+subsecond resolution, and service/admission/scale/domain refusal after success.
+Independent references are published JD examples, ERFA Gregorian conversion,
+exact leap cycles and an independent Decimal seconds oracle. The isolated
+stellar case resolves an ancient BCE date through admitted TDB-to-TCB conversion
+and actually queries Gaia/Hip2 angular providers after source removal with
+network and science/observer imports blocked. It does not certify physical
+accuracy or reconstructed historical clocks.
+
+Local: 54 new chronology cases pass; the combined stellar/shared-core/cluster/
+source-audit run passes 379 cases and nine subtests. Three existing full-application
+cases require absent partial-checkout dependencies/files and are deselected
+locally, never excluded from the Mac gate. Use the existing
+`stellar-motion-provider`, `gaia-crossmatch-audit`, documentation and tooling
+gates unchanged in selection. Complete Mac acceptance remains pending.
+No shared numerical engine or SDK changes; their prior receipts remain applicable.
+
 ### Hipparcos-2 nominal-TCB fallback extension
 
 The existing `stellar-motion-provider` gate retains all stellar/shared-core/

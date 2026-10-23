@@ -1,5 +1,19 @@
 # Current scientific contracts and paused work
 
+## Historical date semantics (K4b.03)
+
+Explicit proleptic calendar and year-numbering labels are coordinate input,
+not a physical historical time realization. Astronomical year 0 is 1 BCE;
+BCE/CE labels require positive years. No calendar reform or civil time scale
+is inferred. Native TCB requests use a separately admitted conversion receipt;
+missing TT/TAI-to-TCB authority refuses rather than relabels. Unknown input-date
+uncertainty remains unknown, separately from source-coordinate calendar rounding
+and conversion numerical error. Converting the nominal event does not convert
+an uncertainty interval or certify angular/physical accuracy. Keep the historical
+receipt alongside native query results. No UTC/UT1/Delta-T, ancient observer,
+precession or issue #326 resolution is admitted by this input boundary.
+See the [API contract](implementation_reference.md#historical-calendar-input-and-nominal-tcb-epochs).
+
 **Baseline:** `6708f54a` (2026-10-17). These invariants survive documentation
 cleanup and the future kernel migration. Archived audits retain detailed
 proofs and source receipts; moving them does not revoke a compatibility promise.

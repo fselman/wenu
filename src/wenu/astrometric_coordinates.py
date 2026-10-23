@@ -12,6 +12,127 @@ from math import inf, isfinite, nextafter
 from wenu_kernel.errors import InvalidQuery, OutsideCoverage, ResourceMismatch, TimeConversionUnavailable
 from wenu_kernel.records import CartesianState, ModelAdmission, ModelRef, StateBatch, TimePoint, TimeSpan
 from wenu_kernel.time import TimeConversion, TimeConversionAdmission
+from wenu_kernel.time import TimeService
+
+
+CALENDAR_MODEL = ModelRef(
+    'wenu.astrometry:proleptic-calendar', '1',
+    sha256(b'proleptic-gregorian-or-julian;astronomical-or-bce-ce;'
+           b'midnight=JDN-1/2;86400-coordinate-seconds;no-reform;v1').hexdigest(), ())
+CALENDAR_PROVENANCE = (
+    'https://aa.usno.navy.mil/downloads/c15_usb_online.pdf',
+    'https://www.iausofa.org/cookbooks',
+    'Calendar arithmetic on an explicitly declared continuous time scale; no civil-clock reconstruction',
+    'Proleptic calendar, no automatic reform; astronomical year 0 = 1 BCE',
+    'Input uncertainty stays on the source scale; numerical bounds exclude historical dating and physical realization error',
+)
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class HistoricalDate:
+    """Explicit calendar labels on a continuous scale, not a local civil date.
+
+    uncertainty_s is a caller-supplied absolute bound in source coordinate
+    seconds, or None for unknown. It is mandatory; exact dating is never inferred
+    from the number of digits. Gregorian and Julian are both proleptic.
+    """
+    year: int
+    month: int
+    day: int
+    calendar: str
+    year_numbering: str
+    scale: str
+    uncertainty_s: float | None
+    hour: int = 0
+    minute: int = 0
+    second: float = 0.
+
+    def __post_init__(self):
+        if (any(type(v) is not int for v in
+                (self.year, self.month, self.day, self.hour, self.minute))
+                or any(type(v) is not str for v in
+                       (self.calendar, self.year_numbering, self.scale))
+                or self.calendar not in ('gregorian', 'julian')
+                or self.year_numbering not in ('astronomical', 'bce', 'ce')
+                or self.scale not in ('tai', 'tt', 'tdb', 'tcb')):
+            raise InvalidQuery('Explicit calendar, year numbering and continuous scale are required.')
+        if self.year_numbering != 'astronomical' and self.year < 1:
+            raise InvalidQuery('BCE/CE labels require a positive year; only astronomical numbering has year zero.')
+        if not 1 <= self.month <= 12 or not 0 <= self.hour < 24 or not 0 <= self.minute < 60:
+            raise InvalidQuery('Invalid calendar month/hour/minute.')
+        year = self.astronomical_year
+        leap = year % 4 == 0 and (self.calendar == 'julian' or year % 100 != 0 or year % 400 == 0)
+        days = (31, 29 if leap else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+        if not 1 <= self.day <= days[self.month-1]:
+            raise InvalidQuery('Invalid day in the declared proleptic calendar.')
+        for name, value in (('second', self.second), ('uncertainty_s', self.uncertainty_s)):
+            if name == 'uncertainty_s' and value is None:
+                continue
+            if type(value) not in (int, float):
+                raise InvalidQuery('Calendar seconds and uncertainty must be finite numbers.')
+            try:
+                value = float(value)
+            except OverflowError as exc:
+                raise InvalidQuery('Calendar seconds/uncertainty overflow.') from exc
+            if not isfinite(value) or value < 0 or (name == 'second' and value >= 60):
+                raise InvalidQuery('Invalid seconds/uncertainty; leap seconds are not continuous-scale input.')
+            if name == 'second':
+                object.__setattr__(self, name, value)
+
+    @property
+    def astronomical_year(self):
+        return 1-self.year if self.year_numbering == 'bce' else self.year
+
+
+@dataclass(frozen=True, slots=True)
+class HistoricalEpoch:
+    """Nominal TCB event plus retained calendar/source-uncertainty evidence.
+
+    Calendar rounding is in source-scale seconds; conversion rounding belongs
+    to the TimeService receipt. Neither is a total dating/physical error, nor
+    does converting the nominal epoch convert a source uncertainty interval.
+    Keep this receipt alongside queries made with .time.
+    """
+    source: HistoricalDate
+    calendar_time: TimePoint
+    calendar_rounding_error_s: float
+    conversion: TimeConversion
+    calendar_model: ModelRef = CALENDAR_MODEL
+    provenance: tuple[str, ...] = CALENDAR_PROVENANCE
+
+    @property
+    def time(self):
+        return self.conversion.target
+
+
+def resolve_historical_date(date, *, time_service, maximum_conversion_error_s=None):
+    """Resolve explicit calendar labels and use an admitted direct TCB mapping.
+
+    No implicit adapters, conversion chains, time-zone/EOP/Delta-T resources or
+    calendar reform. TT/TAI input without an admitted TCB adapter refuses.
+    Julian/Gregorian arithmetic is independent of the declared continuous scale.
+    """
+    if type(date) is not HistoricalDate or type(time_service) is not TimeService:
+        raise InvalidQuery('Typed historical date and explicit TimeService are required.')
+    a = (14-date.month)//12
+    y, m = date.astronomical_year+4800-a, date.month+12*a-3
+    jdn = date.day + (153*m+2)//5 + 365*y + y//4
+    jdn += -(y//100) + y//400 - 32045 if date.calendar == 'gregorian' else -32083
+    exact_day = (Fraction(jdn)-Fraction(1, 2)
+                 + (date.hour*3600 + date.minute*60 + Fraction(date.second))/86400)
+    whole = (exact_day+Fraction(1, 2)).__floor__()
+    small = float(exact_day-whole)
+    if small == .5:
+        whole, small = whole+1, -.5
+    try:
+        if not -(2**53) <= whole <= 2**53:
+            raise InvalidQuery('Calendar day exceeds exact binary64 integer range.')
+        source = TimePoint(whole, small, date.scale)
+    except (ValueError, OverflowError) as exc:
+        raise InvalidQuery('Calendar date cannot be represented by TimePoint.') from exc
+    error = _upper(abs(Fraction(source.jd1)+Fraction(source.jd2)-exact_day)*86400)
+    receipt = time_service.convert(source, 'tcb', maximum_error_s=maximum_conversion_error_s)
+    return HistoricalEpoch(date, source, error, receipt)
 
 
 # Exact defining decimal constants, not estimates or binary64 approximations.
