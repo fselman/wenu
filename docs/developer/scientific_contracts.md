@@ -1,5 +1,27 @@
 # Current scientific contracts and paused work
 
+## Hipparcos-2 covariance qualification limits
+
+The maintenance-only standard-solution reconstruction uses the corrected CDS
+encoding and a separately declared published-error normalization. Its matrix
+is not a production uncertainty record. Numerical positive definiteness and a
+small solve residual do not establish consistency with quoted formal errors.
+Printed precision is disclosed; discrepancies are neither removed by rescaling
+nor assigned a universal empirical acceptance threshold.
+
+The primary recipe's source-covariance normalization is kept separate from its
+catalogue-combination weighting choice. Nonstandard solutions need their own
+evidence and, where applicable, complete annex matrices; a leading normal block
+does not supply the full marginal covariance. No catalogue merge or new
+association policy is introduced.
+
+[Issue #333](https://github.com/fselman/wenu/issues/333) tracks large diagonal
+discrepancies, including but not limited to records with stored F2 exactly 99.
+Clipping/saturation remains a hypothesis. Hip2 covariance/position-error
+propagation, physical accuracy and epoch-scale qualification (#326) remain
+unadmitted. See the
+[qualification interface](implementation_reference.md#hipparcos-2-covariance-qualification-report).
+
 ## Offline angular measurement errors
 
 K4b.05's maintenance report validates Gaia error/correlation fields and the

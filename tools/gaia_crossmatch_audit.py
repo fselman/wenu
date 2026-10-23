@@ -856,12 +856,148 @@ def uncertainty_report(source, years, output):
     return summary
 
 
+def hip2_covariance(row, reference):
+    """Qualify corrected-CDS standard covariance in the published-error convention.
+
+    Michalik et al. (2014), Appendix B: UW diagonal alone needs u/sigma;
+    then C_published=u^2*(U.T U)^-1. B=U/u avoids a separate rescaling.
+    The paper's max(u,1) catalogue-combination choice is not applied here.
+    """
+    require(reference['schema'] == 'wenu-hipparcos2-covariance-reference/1'
+            and reference['recipe'] == 'Michalik-2014-Appendix-B-published-errors/1',
+            'Unsupported Hip2 covariance reference')
+    require(type(row.get('Sn')) is int and row['Sn'] % 10 == 5,
+            'nonstandard_hip2_solution')
+    raw = row['original_record_ascii']
+    require(len(raw) == reference['record_length'] and raw.isascii(), 'Invalid Hip2 original record')
+    def field(name):
+        spec = reference['fields'][name]
+        text = raw[spec['first_byte']-1:spec['last_byte']].strip()
+        return int(text) if spec['kind'] == 'integer' else float(text)
+    transits, fit = field('Ntr'), field('F2')
+    require(transits > 5 and finite_number(fit), 'invalid_hip2_fit_inputs')
+    nu = transits - 5  # Ntr is already the used transits; do not subtract F1.
+    qroot = math.sqrt(2/(9*nu))*fit + 1 - 2/(9*nu)
+    require(qroot > 0 and math.isfinite(qroot), 'invalid_hip2_unit_weight_error')
+    unit_weight = qroot**1.5
+    errors = np.array([row.get(k) for k in reference['error_fields']], dtype=object)
+    require(all(finite_number(v) and v > 0 for v in errors), 'invalid_hip2_formal_errors')
+    errors = errors.astype(float)
+    weights = row.get('UW')
+    require(type(weights) in (list, tuple) and len(weights) == 15
+            and all(finite_number(v) for v in weights), 'invalid_hip2_weights')
+    b = np.zeros((5, 5))
+    for j, column in enumerate(reference['packed_upper_columns']):
+        require(len(column) == j+1, 'Invalid Hip2 packed column metadata')
+        for i, number in enumerate(column):
+            b[i, j] = weights[number-1] / unit_weight
+        b[j, j] = weights[column[-1]-1] / errors[j]
+    require(np.all(np.isfinite(b)) and np.all(np.diag(b) != 0), 'singular_or_nonfinite_hip2_weights')
+    inverse = np.linalg.solve(b, np.eye(5))
+    covariance = inverse @ inverse.T
+    require(np.all(np.isfinite(covariance)) and np.all(np.diag(covariance) > 0),
+            'invalid_hip2_covariance')
+    sigma = np.sqrt(np.diag(covariance))
+    correlations = covariance / np.outer(sigma, sigma)
+    minimum = float(np.linalg.eigvalsh(correlations)[0])
+    require(minimum > 0, 'hip2_covariance_not_numerically_positive_definite')
+    residual = float(np.max(np.abs(b @ covariance @ b.T - np.eye(5))))
+    require(math.isfinite(residual) and residual <= 1e-8, 'hip2_numerical_solve_residual')
+    return covariance, {'status': 'decoded_standard', 'Sn': row['Sn'], 'So': row['So'], 'Nc': row['Nc'],
+        'Ntr': transits, 'F2': fit, 'degrees_of_freedom': nu, 'unit_weight_error': unit_weight,
+        'F2_exactly_99': fit == 99.,
+        'quoted_sigma': errors.tolist(), 'decoded_sigma': sigma.tolist(),
+        'decoded_to_quoted_sigma': (sigma/errors).tolist(),
+        'max_absolute_relative_sigma_difference': float(np.max(np.abs(sigma/errors-1))),
+        'minimum_correlation_eigenvalue': minimum,
+        'numerical_condition_on_mas_year_basis': float(np.linalg.cond(b)),
+        'maximum_solve_identity_residual': residual}
+
+
+def hip2_covariance_report(source, output):
+    """Report standard-source covariance qualification; no motion propagation."""
+    from wenu.stellar_enrichment import StellarEnrichmentSnapshot
+    require(type(source) is StellarEnrichmentSnapshot, 'A validated source snapshot is required')
+    policy_raw = (ROOT/'docs/developer/data/hipparcos2_covariance_reference_v1.json').read_bytes()
+    reference = json.loads(policy_raw)
+    profile = source.metadata['hipparcos2_profile']
+    require(profile['record_length'] == reference['record_length']
+            and profile.get('expanded_table', {}).get('sha256') == reference['source_table_sha256']
+            and any(r.get('filename') == 'ReadMe' and r.get('sha256') == reference['source_readme_sha256']
+                    for r in profile.get('resources', [])), 'Unqualified Hip2 source edition')
+    for field, unit in zip(reference['error_fields'], reference['error_units']):
+        require(profile['columns'].get(field, {}).get('unit') == unit, 'Unsupported Hip2 covariance unit: ' + field)
+    hip2 = {r['HIP']: r for r in source.records('hipparcos2_sources_v1.jsonl')}
+    gaia = {r['source_id']: r for r in source.records('gaia_sources_v1.jsonl')}
+    summary = {'schema': 'wenu-hipparcos2-covariance-qualification/1',
+        'source_manifest_sha256': sha256(source.manifest).hexdigest(),
+        'reference_sha256': sha256(policy_raw).hexdigest(), 'reference': reference,
+        'source_reference': profile['reference'], 'retained_hip_rows': 0,
+        'statuses': Counter(), 'fallback_statuses': Counter(),
+        'diagonal_agreement': 'Empirical diagnostic only; printed decimal quantization not repaired',
+        'qualification': 'Diagnostic reconstruction only; not admitted for error propagation',
+        'relative_sigma_difference_counts': {'above_0.01': 0, 'above_0.02': 0,
+                                              'above_0.1': 0, 'above_1': 0},
+        'stored_F2_exactly_99': 0, 'largest_diagonal_discrepancies': [],
+        'report_owner_sha256': sha256(Path(__file__).read_bytes()).hexdigest(),
+        'numpy_version': np.__version__}
+    differences = []
+    with report_directory(output, 'hip2_covariance_manifest_v1.json', summary['schema']) as temporary:
+        with (temporary/'hip2_covariance_qualification_v1.jsonl').open('w') as stream:
+            for star in source.records():
+                key = star['identity']['identifier']
+                row = hip2.get(key)
+                association = star['published_association']
+                grow = gaia[association['source_id']] if association else None
+                gaia_angular = grow is not None and grow.get('astrometric_params_solved') in (31, 95)
+                gaia_angular = gaia_angular and all(finite_number(grow.get(k)) for k in ('ra', 'dec', 'pmra', 'pmdec'))
+                fallback = (not gaia_angular and row is not None and
+                    all(finite_number(row.get(k)) for k in ('RArad', 'DErad', 'pmRA', 'pmDE')))
+                result = {'hip': key, 'angular_fallback_input': bool(fallback),
+                    'original_visual_magnitude': star['original']['magnitude'],
+                    'review_reasons': star['review_reasons'], 'covariance': None}
+                if row is None:
+                    result['diagnostics'] = {'status': 'no_hipparcos2_source'}
+                else:
+                    result['source_record_sha256'] = row['record_sha256']
+                    try:
+                        covariance, diagnostics = hip2_covariance(row, reference)
+                        result['diagnostics'], result['covariance'] = diagnostics, covariance.tolist()
+                        differences.append(diagnostics['max_absolute_relative_sigma_difference'])
+                        difference = differences[-1]
+                        for limit in (.01, .02, .1, 1):
+                            summary['relative_sigma_difference_counts']['above_'+str(limit)] += int(difference > limit)
+                        summary['stored_F2_exactly_99'] += int(diagnostics['F2_exactly_99'])
+                        worst = summary['largest_diagonal_discrepancies']
+                        if len(worst) < 10 or difference > worst[-1]['max_absolute_relative_sigma_difference']:
+                            worst.append(dict(diagnostics, hip=key))
+                            worst.sort(key=lambda r:r['max_absolute_relative_sigma_difference'], reverse=True)
+                            del worst[10:]
+                    except (ValueError, np.linalg.LinAlgError, OverflowError) as error:
+                        result['diagnostics'] = {'status': str(error), 'Sn': row['Sn'], 'So': row['So'], 'Nc': row['Nc']}
+                status = result['diagnostics']['status']
+                summary['statuses'][status] += 1
+                if fallback:
+                    summary['fallback_statuses'][status] += 1
+                summary['retained_hip_rows'] += 1
+                stream.write(json.dumps(result, allow_nan=False)+'\n')
+                if summary['retained_hip_rows'] % 5000 == 0:
+                    print('Hip2 covariance HIP entries checked:', summary['retained_hip_rows'], flush=True)
+        summary['max_relative_sigma_difference_percentiles'] = (
+            dict(zip(('50', '90', '95', '99', '100'), np.percentile(differences, [50, 90, 95, 99, 100]).tolist()))
+            if differences else None)
+        (temporary/'hip2_covariance_summary_v1.json').write_text(json.dumps(summary, indent=2, allow_nan=False)+'\n')
+    return summary
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument('--cache', type=Path)
     mode.add_argument('--uncertainty-source', type=Path,
                       help='Read-only angular uncertainty report from a verified enrichment snapshot')
+    mode.add_argument('--hip2-covariance-source', type=Path,
+                      help='Qualify standard Hip2 covariance only; no position-error propagation')
     parser.add_argument('--expected-source-manifest', help='Required SHA256 binding for uncertainty mode')
     parser.add_argument('--uncertainty-years', nargs='+', type=float,
                       help='Explicit elapsed Julian years on the native TCB axis')
@@ -875,20 +1011,28 @@ def main(argv=None):
     parser.add_argument('--source-output', type=Path,
                         help='Publish a separate immutable local enrichment input snapshot; no runtime adoption')
     args = parser.parse_args(argv)
-    if args.uncertainty_source is not None:
+    if args.uncertainty_source is not None or args.hip2_covariance_source is not None:
         require(not any((args.diagnostics, args.kervella_source, args.astrometry_source, args.source_output)),
                 'Uncertainty mode cannot acquire, republish sources or run association diagnostics')
         require(args.expected_source_manifest is not None and
                 re.fullmatch('[0-9a-f]{64}', args.expected_source_manifest) is not None,
                 'Uncertainty mode requires an exact source manifest SHA256')
-        require(args.uncertainty_years is not None, 'Uncertainty mode requires explicit elapsed years')
-        source_path = args.uncertainty_source.expanduser().resolve()
+        if args.hip2_covariance_source is not None:
+            require(args.uncertainty_years is None, 'Hip2 qualification does not propagate epochs')
+        else:
+            require(args.uncertainty_years is not None, 'Uncertainty mode requires explicit elapsed years')
+        source_path = (args.uncertainty_source or args.hip2_covariance_source).expanduser().resolve()
         report_path = args.output.expanduser().resolve()
         require(source_path != report_path and source_path not in report_path.parents
                 and report_path not in source_path.parents, 'Source and report outputs must be separate directories')
         from wenu.stellar_enrichment import load_stellar_enrichment
-        snapshot = load_stellar_enrichment(args.uncertainty_source.expanduser(),
+        snapshot = load_stellar_enrichment(source_path,
             expected_manifest_sha256=args.expected_source_manifest)
+        if args.hip2_covariance_source is not None:
+            summary = hip2_covariance_report(snapshot, args.output.expanduser())
+            print(json.dumps(summary, indent=2))
+            print('HIP2 COVARIANCE QUALIFICATION COMPLETE:', args.output.expanduser())
+            return
         summary = uncertainty_report(snapshot, args.uncertainty_years, args.output.expanduser())
         print(json.dumps(summary, indent=2))
         print('UNCERTAINTY REPORT COMPLETE:', args.output.expanduser())

@@ -1,5 +1,19 @@
 # Wenu coordinate systems, time and astronomical objects
 
+## Hipparcos-2 source covariance diagnostic
+
+The offline qualification mode reports a source-epoch covariance ordered
+alpha-star, delta, parallax, mu-alpha-star, mu-delta, with positions/parallax in
+mas and PM in mas per Julian year. Source coordinate values remain their
+original ICRS radians; covariance entries do not change those coordinate units.
+
+This mode evaluates no epoch offset and makes no TT/TCB conversion or native
+Hip2 epoch-scale decision. It preserves source/solution flags and original
+byte identity. Matrix reconstruction and diagonal comparisons are diagnostic,
+not a new physical or propagated uncertainty. See the
+[interface](implementation_reference.md#hipparcos-2-covariance-qualification-report)
+and unresolved [source-consistency issue](https://github.com/fselman/wenu/issues/333).
+
 ## Offline covariance tangent-plane convention
 
 The maintenance-only Gaia uncertainty report uses local alpha-star and delta
