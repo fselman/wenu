@@ -62,8 +62,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.04 explicit long-term mean axes passed Mac acceptance in PR #328 at 97921fe8: 311 focused, 125 audit, 36 documentation, eight tooling/81 subtests and 48 actual derived directions; accepted stellar digests unchanged |
-| Next bounded submilestone | K4b.05 bounded reference/method assessment selected by Fernando’s “Proceed”: ESA reconstruction evidence and mathematical-reference compatibility, documented in the existing audit. Assessment delivered with reference recommendation and ESA gaps; numerical implementation/acquisition not selected. K4b.06 and issue #326 remain separate |
+| Current bounded result | K4b.05 test-only no-light-time reference implementation: 23 new cases, 456 combined local passes/nine subtests; complete Mac gates and actual cached-star comparison pending |
+| Next bounded submilestone | Complete the selected K4b.05 numerical slice through Mac gates and bounded cached-star comparison. Physical/covariance/dynamical qualification, ESA numerical reproduction, K4b.06 and issue #326 remain separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -108,8 +108,13 @@ Acceptance: existing stellar-motion-provider gate (unchanged selections), source
 audit, documentation/tooling and bounded actual Mac cached-source evidence.
 Production code, dependency/SDK/source bytes/model identities, covariance and
 light-time policy, observer/precession/renderer/default consumers remain unchanged.
-Update existing roadmap/audit/testing-policy owners only as needed. Commit this
-plan before test implementation; K4b.05 parent/K4b.06/issue #326 remain open.
+Update existing roadmap/audit/testing-policy owners only as needed. The plan was committed at `932bab69` before test implementation. The
+[test/reference result](kernel_migration_audit_v1.md#k4b05-no-light-time-reference-implementation-2026-10-23)
+records 23 new cases (147 synthetic directions and two demonstrated faults)
+and 456 combined local passes/nine subtests, with three pre-existing
+full-application cases retained for complete Mac acceptance. Actual Mac gates
+and the cached-star sample remain pending. K4b.05 parent/K4b.06/issue #326
+remain open.
 
 ## K4b.05: reference assessment and ESA constellation comparison plan
 

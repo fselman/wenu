@@ -1,5 +1,64 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.05 no-light-time reference implementation, 2026-10-23
+
+Fernando selected the bounded numerical comparison with “Proceed” after PR #329
+merge, Mac synchronization and branch cleanup at `439b8a67`. Plan committed
+before implementation at `932bab6976aec7a761c1e9f2dd12529d49d9aeb6`.
+
+Only `tests/test_stellar_state.py` changes executable code. Its test-only
+`stellar_no_light_time_reference` follows the no-light-time reference assessed
+below, evaluating the great-circle angular departure and bearing with independent
+Astropy unit conversion. It does not read production SI/derivative rows, call
+the shared propagation engine or delegate to another library's motion routine.
+This is an independent numerical expression of the same adopted model, not
+independent dynamical physics.
+
+Seven explicitly synthetic input configurations cover oblique direction,
+longitude wrap, pole/near-pole, high PM, both RV signs, radial-only and zero
+motion. Each of full Gaia, Gaia angular and nominal-TCB Hip2 routes is queried
+through the actual SDK at seven epochs: source and elapsed +/-100, +/-1,000,
++/-10,000 Julian years. Hip2 comparisons use the actual rounded fixed-width
+synthetic capture coordinates, not pre-capture values. Twenty-one parameter
+cases cover 147 returned directions; measurement/model evidence remains unknown,
+and source bytes, model/reference and source/evaluation/anchor identities are
+checked. The vector-chord comparison threshold `5e-14` (about 0.01 microarcsec
+for these small residuals) is a test threshold for these conditioned inputs,
+not a source/physical/universal numerical bound.
+
+Two coherent fault injections change the shared engine's affine coefficients:
+drop radial velocity or exchange Cartesian x/y velocity. Baseline agreement
+passes; each fault produces a chord discrepancy above `1e-5` and breaks the
+reference assertion even though the engine's internal affine check sees the
+same erroneous coefficients. Existing exact arithmetic/domain/refusal and
+cold dependency-isolation tests remain the owners of their separate claims.
+
+Local validation: all 23 new cases passed. Combined stellar/shared-core/cluster
+and source-audit owners passed 456 cases and nine subtests in 14.94 s, with
+three pre-existing full-application cases deselected because this partial
+checkout lacks their dependencies/assets. No other cases were excluded.
+The complete unfiltered Mac gates remain mandatory for acceptance.
+
+Existing Wenu topology confirms these proposed cached-source comparison groups:
+
+| Group | HIP identifiers |
+|---|---|
+| Seven Big Dipper stars, subset of the UMa figure | 54061, 53910, 58001, 59774, 62956, 65378, 67301 |
+| Seven principal Orion figure stars | 27989, 24436, 25336, 26727, 26311, 25930, 27366 |
+| High-motion stress cases from the reference review | 87937, 57939 |
+
+Topology source:
+`src/wenu/data/constellations/western/constellationship.fab` at `439b8a67`.
+The sample is an identity selection, not a claim all have full Gaia inputs or
+that ESA used exactly these source solutions. The actual Mac cache comparison
+must disclose availability per model/HIP, preserve accepted full/angular/Hip2
+solution digests, compare the same seven native relative epochs and report
+residuals separately from physical uncertainty. Real-cache execution is still
+pending; no numerical ESA reproduction, source acquisition, covariance,
+light-time/dynamics implementation, consumer adoption or K4b.05 parent closure
+is claimed. Production code, source snapshot, SDK and dependencies are unchanged.
+
+
 ## K4b.05 reference and method assessment, 2026-10-23
 
 **Selected scope:** Fernando’s “Proceed” after the ESA reconstruction and
