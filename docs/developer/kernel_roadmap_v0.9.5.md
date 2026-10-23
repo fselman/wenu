@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 88, 2026-10-23. **Status:** The no-light-time numerical slice is merged through PR #330; clean synchronized Mac main `fde11d831e0a7c4b870eec8b7f7358c686e9bc60` and branch cleanup are confirmed. Fernando selected the bounded K4b.05 ancient-position uncertainty/missing-RV assessment with “Proceed”. This is source/method assessment and a concrete proposal; no production covariance, new physical model or consumer change selected.
+**Plan revision:** 89, 2026-10-23. **Status:** The bounded K4b.05 uncertainty/missing-RV assessment in PR #331 is accepted for merge after Fernando's Mac documentation gate (36 passed in 3.61 s) and actual read-only cached-field inventory at `82405290`. All 115,105 Gaia angular inputs pass the five-error/ten-correlation field checks; 2,682 of 2,850 Hip2 fallback inputs have standard five-parameter solutions and the required fields. Covariance validity remains unqualified. Offline uncertainty/sensitivity report implementation is proposed, not selected; no production model or consumer change.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -63,7 +63,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.05 no-light-time comparison passed full Mac gates at 5da8220f in PR #330: 334 focused/nine subtests, 125 audit, 36 documentation, eight tooling/81 subtests, and 133 actual cached directions across 16 HIPs; accepted solution digests unchanged |
-| Next bounded submilestone | K4b.05 uncertainty/missing-RV assessment delivered; complete Mac documentation/field-inventory receipt pending. Offline uncertainty/sensitivity report implementation is proposed, not selected; production uncertainty/model changes and K4b.06 remain separate |
+| Next bounded submilestone | K4b.05 uncertainty/missing-RV assessment accepted with complete Mac documentation and field-inventory receipts at 82405290. Offline uncertainty/sensitivity report implementation is proposed, not selected; production uncertainty/model changes and K4b.06 remain separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -99,8 +99,14 @@ Use the documentation gate; any actual cached-field inventory remains a
 separate Mac receipt. The plan was committed at `b4a24bb8` before assessment outputs. The
 [assessment](kernel_migration_audit_v1.md#k4b05-ancient-position-uncertainty-and-missing-rv-assessment-2026-10-23)
 now records existing-schema limits, conditional covariance/unknown-RV distinctions,
-synthetic analytic sensitivity examples and an offline-report proposal. No actual
-cached-field inventory or new covariance/sensitivity runtime is claimed. K4b.05 parent, ESA comparisons and issue #326 remain separate.
+synthetic analytic sensitivity examples and an offline-report proposal. Fernando's
+actual Mac receipt at `82405290` passed 36 documentation cases in 3.61 s;
+115,105 Gaia angular inputs pass error/correlation field checks and 2,682 of
+2,850 Hip2 fallback inputs have standard suffix-5 solutions and the required
+fields. The audit records the full inventory and limits: no PSD/inversion or
+propagated uncertainty has been verified. Assessment accepted for merge/cleanup;
+no new covariance/sensitivity runtime selected. K4b.05 parent, ESA comparisons
+and issue #326 remain separate.
 
 ## K4b.05: no-light-time numerical comparison
 

@@ -9,7 +9,33 @@ outputs at `b4a24bb8c235f0a24b582de33079102f05bad9c5`. Source/method review,
 explicitly synthetic analytic examples and a next-step proposal only:
 no production covariance propagation, catalogue acquisition, RV prior,
 new model/SDK/certificate, source mutation or consumer adoption is implemented.
-Actual cached uncertainty-field inventory remains a separate Mac receipt.
+**Mac acceptance:** Fernando ran the full documentation gate at
+`82405290cb040bd386e450e6cf75284736ec62d5`: 36 passed in 3.61 s,
+with a clean synchronized task branch. The read-only inventory loaded the
+existing source manifest `8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365`
+and reported the following actual cache results:
+
+| Population / field check | Entries |
+|---|---:|
+| Retained HIP population | 118,218 |
+| Associated Gaia sources | 117,211 |
+| Gaia solution 31 / solution 95 / position-only solution 3 | 108,652 / 6,453 / 2,106 |
+| Gaia angular inputs with all five finite nonnegative errors and ten finite correlations within [-1,1] | 115,105 |
+| Associated Gaia sources with finite RV and finite nonnegative RV error | 98,161 |
+| Hip2 rows with five finite nonnegative errors and 15 finite UW values with nonzero diagonal | 117,955 |
+| Hip2 standard solution suffix 5 | 115,112 |
+| Hip2 angular fallback inputs | 2,850 |
+| Hip2 fallback with standard suffix 5 and both field checks | 2,682 |
+| Hip2 fallback outside that standard subset | 168 |
+
+The Hip2 solution-suffix inventory is 5: 115,112; 7: 1,338; 1: 1,371;
+9: 104; 3: 25; 0: 5. These are field-level completeness/range checks only,
+not matrix positive-semidefiniteness, UW inversion, propagated uncertainties,
+RV/astrometry independence admission or physical-accuracy evidence. The RV
+count includes all associated Gaia sources and is not the full-model count.
+No source bytes or production model identities changed. Fernando accepted
+proceeding with assessment merge/cleanup; numerical report implementation
+remains a separate bounded selection.
 
 ### As-is data and capability assessment
 
