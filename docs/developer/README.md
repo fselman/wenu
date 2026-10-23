@@ -47,13 +47,17 @@ states passed the independent Decimal check; all Gaia/Hip2 digests are unchanged
 PR #327 is merged at `e2a231b5`; clean synchronized Mac main and branch
 cleanup are confirmed, with 36 documentation passes.
 
-**Current selected work:** K4b.04 long-term frame orientation, selected by
+**Current bounded result:** K4b.04 long-term frame orientation passed Mac
+acceptance at `97921fe8`, PR #328. The step was selected by
 Fernando on 2026-10-23. The existing convention owner admits separately explicit
 corrected Vondrak/Capitaine/Wallace mean equatorial/ecliptic axes through ERFA,
 with finite TT validity and an explicit TT frame equinox. Native stellar TCB
 times/source/model records are preserved in a derived view. No time-scale
-relabel, observer reconstruction or default chart change. Local focused checks
-pass; complete Mac acceptance remains pending in PR #328.
+relabel, observer reconstruction or default chart change. Complete Mac gates
+passed: 311 focused cases/nine subtests, 125 source-audit, 36 documentation and
+eight tooling cases/81 subtests. All 48 actual derived directions passed the
+Decimal arithmetic check; accepted stellar digests are unchanged. PR #328
+remains unmerged, with no next runtime item selected.
 See the
 [qualification review](kernel_roadmap_v0.9.5.md#k4b02-hipparcos-2-fallback-qualification).
 

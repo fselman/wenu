@@ -302,7 +302,11 @@ certificate is issued. Module import and native propagation remain ERFA-free;
 explicit orientation requires the existing ERFA dependency, no observer/EOP.
 CoordinateService's current Astropy/default/chart routes remain unchanged.
 Physical and total numerical orientation errors stay unqualified; published
-qualitative accuracy is not a certified bound. Complete Mac acceptance pending.
+qualitative accuracy is not a certified bound. Complete Mac acceptance at
+`97921fe8`, PR #328, passed 311 focused, 125 source-audit, 36 documentation and
+eight tooling cases, plus 48 actual derived directions. Accepted native stellar
+digests remain unchanged; Mac frame model IDs/backend/poles are recorded in the
+inventory without requiring cross-platform last-bit matrix identity.
 
 ## Historical calendar boundary
 

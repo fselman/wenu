@@ -218,7 +218,18 @@ Local result: 54 new cases; combined stellar/shared-core/cluster/source-audit
 owners pass 433 cases and nine subtests. Three existing application cases need
 missing partial-checkout dependencies/files; all remain in the complete Mac gate.
 Use existing stellar-motion-provider/source-audit/documentation/tooling selections.
-SDK/numerical core/source data are unchanged. Complete Mac acceptance pending.
+SDK/numerical core/source data are unchanged. Complete Mac acceptance at
+`97921fe83ca97fa6c8be932247a9eb93bf438975`, PR #328, passed 311 focused cases and
+nine subtests (10.02 s), 125 audit (2.23 s), 36 documentation (2.51 s) and
+eight tooling cases with 81 subtests (8.59 s), without exclusions. All 48
+actual derived directions passed the independent 80-digit Decimal matrix
+application; maximum vector chord difference `1.576213700060856e-16`.
+Accepted Gaia full/angular and Hip2 angular digests are unchanged. Modern
+comparison maxima are 0.646561/0.279190 mas (equatorial/ecliptic); these are
+inter-model diagnostics, not physical bounds. Exact receipt, backend versions,
+Mac matrix-bound model identities and poles are retained under
+`long_term_frame_orientation.mac_acceptance` in the inventory. Last-bit matrix
+differences across platforms may legitimately produce different bound IDs.
 
 ### Historical date/time semantics
 
