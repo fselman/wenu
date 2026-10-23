@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 89, 2026-10-23. **Status:** The bounded K4b.05 uncertainty/missing-RV assessment in PR #331 is accepted for merge after Fernando's Mac documentation gate (36 passed in 3.61 s) and actual read-only cached-field inventory at `82405290`. All 115,105 Gaia angular inputs pass the five-error/ten-correlation field checks; 2,682 of 2,850 Hip2 fallback inputs have standard five-parameter solutions and the required fields. Covariance validity remains unqualified. Offline uncertainty/sensitivity report implementation is proposed, not selected; no production model or consumer change.
+**Plan revision:** 91, 2026-10-23. **Status:** PR #332's bounded offline Gaia uncertainty report is accepted for merge at tested `652087cb`: 158 audit, 36 documentation and eight tooling cases/81 subtests passed on the Mac. The actual cache report and selected-star/percentile review are complete; all 115,105 Gaia matrices passed as positive definite. Fernando selected merge/cleanup, followed by bounded Hip2 covariance qualification. A clean synchronized merged Mac base and a committed bounded plan precede that implementation; production model/SDK/source uncertainties remain unchanged.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -63,7 +63,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.05 no-light-time comparison passed full Mac gates at 5da8220f in PR #330: 334 focused/nine subtests, 125 audit, 36 documentation, eight tooling/81 subtests, and 133 actual cached directions across 16 HIPs; accepted solution digests unchanged |
-| Next bounded submilestone | K4b.05 uncertainty/missing-RV assessment accepted with complete Mac documentation and field-inventory receipts at 82405290. Offline uncertainty/sensitivity report implementation is proposed, not selected; production uncertainty/model changes and K4b.06 remain separate |
+| Next bounded submilestone | K4b.05 conditional Gaia report accepted at 652087cb with complete Mac gates, cache report and percentile/star review. Merge/cleanup, then bounded Hip2 covariance qualification selected; exact plan before implementation. Production uncertainty admission and K4b.06 remain separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -76,6 +76,60 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4b.05: offline Gaia uncertainty and missing-RV sensitivity report
+
+Selected by Fernando's “Proceed” after PR #331 merge and confirmed clean
+synchronized Mac main `9395ad21`, branch cleanup and 36 documentation tests.
+The existing assessment and actual field inventory are prerequisites now met.
+
+Extend the existing `tools/gaia_crossmatch_audit.py` maintenance owner with an
+explicit report mode reading the validated immutable enrichment snapshot only.
+Bind the source manifest, Gaia reference/units, report policy and elapsed TCB
+Julian-year offsets. Preserve every HIP and explicit missing/invalid status.
+Reconstruct and check the full five-parameter Gaia covariance (31 and 95);
+the latter uses its marginal astrometric covariance, not fixed pseudocolour.
+Check finite nonnegative errors, correlation ranges and positive semidefiniteness
+with a stated floating-point tolerance; disclose singular/ill-conditioned input
+without clipping, jitter or invented covariance.
+
+First report the four-parameter marginal propagated through the existing
+normalized angular model, using the normal-triad differential convention and
+a target tangent plane. Give one-standard-deviation principal axes and matrix,
+conditional on this reduced model; no total-error or confidence bound.
+Report perspective sensitivity per km/s separately using positive source parallax
+and an explicitly labelled hypothetical zero-RV anchor. This is a derivative,
+not an assumed missing measurement, RV prior, finite interval bound or an adopted
+motion model. Unknown distance remains unknown. Full six-dimensional
+RV-independent covariance and Hip2 UW reconstruction are deferred; neither is
+needed to qualify this first angular measurement report.
+
+Keep all numerical report code outside production providers/SDK; no native
+solution/source mutation, acquisition, dependencies, renderer/default changes,
+ESA reproduction or physical accuracy/domain certificate. Output is a separate
+versioned no-clobber report with hashes and completion manifest, never another
+source snapshot. Reuse existing source verification and publication patterns.
+
+Acceptance: existing gaia-crossmatch-audit gate plus documentation/tooling;
+add tests in its current owner for diagonal/correlated/singular/indefinite/
+missing inputs, source/units/refusal, epoch zero and both signs, pole/wrap,
+analytic versus independently perturbed tangent-triad finite differences and
+seeded small-error Monte Carlo, RV derivative versus finite scenarios,
+publication/no-clobber/failure cleanup and unchanged source bytes. Existing
+source-admission tests remain intact. The closest existing tests are
+`test_enrichment_round_trip_immutable_values_and_fallback`,
+`test_main_real_ecsv_to_report_offline` and
+`test_publish_no_clobber_and_failure_cleanup`; the new checks protect
+covariance/RA-convention/Jacobian errors and false missing-RV certainty.
+The [candidate implementation](implementation_reference.md#offline-gaia-conditional-uncertainty-report)
+passed Mac acceptance at `652087cb`: 158 audit cases (4.57 s), 36 documentation
+(3.31 s), eight tooling/81 subtests (10.38 s). The actual cache report retains all
+118,218 HIPs and evaluates 115,105 positive-definite Gaia matrices at seven
+offsets. At +/-10,000 years the median formal major-axis sigma is 0.2573 arcsec,
+90th percentile 0.9872 arcsec and maximum 16.92 arcsec; these remain conditional
+measurement statistics. The audit records source/code hashes, selected-star
+results and gaps. Local fixtures remain explicitly synthetic. K4b.05 parent, Hip2 native
+epoch issue #326 and later consumer adoption remain open.
 
 ## K4b.05: ancient-position uncertainty and missing-RV assessment
 

@@ -1,5 +1,27 @@
 # Testing policy and module independence
 
+## Offline Gaia covariance and RV sensitivity gate
+
+K4b.05 extends the existing `gaia-crossmatch-audit` maintenance owner and test
+file. Retain all source acquisition/admission/publication cases; no provider
+is called by deterministic tests. New explicitly synthetic cases protect
+correlation/error/range/PSD refusal (without repair), singular and weak matrices,
+correlated analytic variances at epoch zero and both time signs, and marginal
+selection. Independent finite normal-coordinate perturbations and spherical
+departure check the Jacobian through wrap/poles and long elapsed epochs;
+a seeded small-error Monte Carlo checks the resulting tangent covariance.
+RV finite scenarios check the local derivative without assigning missing RV
+a variance. Actual cached-source coverage remains a separate Mac receipt.
+
+The real snapshot/CLI seam preserves all HIPs and immutable input bytes, checks
+manifest/unit/options/overlap refusal, per-HIP invalid-matrix gaps, report hashes,
+no-clobber and failure cleanup. Two deliberate faults, discarding correlations
+and dropping the normal PM differential, each fail the intended nearest cases
+before restoration. The existing report publisher is factored into one shared
+staging/manifest-last/no-clobber context; old report cases remain in the gate.
+Run `gaia-crossmatch-audit`, documentation and tooling checks. This is not a
+new runtime provider, physical accuracy bound, Hip2 decoder or SDK admission.
+
 **Current policy:** 2026-10-18. Select tests from the actual change and its
 contracts/consumers. A complete production run is a release/composition gate,
 not a prerequisite for every production edit. This supersedes the blanket

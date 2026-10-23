@@ -904,6 +904,206 @@ def snapshot_mutation(snapshot,product,mutate):
     return enrichment.StellarEnrichmentSnapshot(tuple((name,products[name])for name in enrichment.PRODUCTS),manifest)
 
 
+def uncertainty_row(**changes):
+    """Explicitly synthetic Gaia covariance specimen, not provider data."""
+    row = source(1, astrometric_params_solved=31, parallax=10., pmra=125., pmdec=-85.)
+    row.update(dict.fromkeys(audit.GAIA_ERRORS, 1.))
+    row.update(dict.fromkeys(audit.GAIA_CORRELATIONS, 0.))
+    row.update(changes)
+    return row
+
+
+@pytest.mark.parametrize('change,reason', [
+    ({'ra_error': None}, 'errors'), ({'pmra_error': -1.}, 'errors'),
+    ({'dec_error': float('nan')}, 'errors'), ({'ra_dec_corr': 1.01}, 'correlations'),
+    ({'ra_dec_corr': True}, 'correlations'),
+    ({'ra_dec_corr': .9, 'ra_parallax_corr': .9, 'dec_parallax_corr': -.9}, 'indefinite')])
+def test_uncertainty_invalid_covariance_not_repaired(change, reason):
+    with pytest.raises(ValueError, match=reason):
+        audit.gaia_covariance(uncertainty_row(**change))
+
+
+def test_uncertainty_covariance_marginal_singular_and_small_negative(monkeypatch):
+    row = uncertainty_row(ra_dec_corr=.25, ra_error=2., dec_error=3., parallax_error=0.)
+    c, info = audit.gaia_covariance(row)
+    assert c[0, 1] == 1.5 and c[2, 2] == 0 and info['status'] == 'singular'
+    _, singular = audit.gaia_covariance(uncertainty_row(ra_dec_corr=1.))
+    assert singular['status'] == 'singular'
+    _, weak = audit.gaia_covariance(uncertainty_row(ra_dec_corr=1.-1e-14))
+    assert weak['status'] == 'ill_conditioned'
+    # A tolerance is for classification only; even tiny negative values refuse.
+    monkeypatch.setattr(audit.np.linalg, 'eigvalsh', lambda m: np.array([-1e-16, 1., 1., 1., 1.]))
+    with pytest.raises(ValueError, match='within_roundoff'):
+        audit.gaia_covariance(row)
+
+
+@pytest.mark.parametrize('years', [0., -1000., 1000., -10000., 10000.])
+def test_uncertainty_zero_motion_correlated_analytic_variance(years):
+    row = uncertainty_row(pmra=0., pmdec=0., ra_error=2., pmra_error=3., ra_pmra_corr=.5)
+    c, _ = audit.gaia_covariance(row)
+    result = audit.angular_measurement_error(row, c, years)
+    expected = np.diag([4 + 6*years + 9*years**2, 1 + years**2]) / 1e6
+    np.testing.assert_allclose(result['covariance_arcsec2'], expected, rtol=1e-12, atol=1e-12)
+    np.testing.assert_allclose(np.square(result['principal_sigma_arcsec']),
+                               np.linalg.eigvalsh(expected)[::-1], rtol=1e-12)
+
+
+def perturbed_angular_reference(row, years, offsets):
+    """B&L Eq.61/62 finite normal coordinates plus spherical departure.
+
+    Independent of report Jacobian/normalization; supports a matrix of samples.
+    """
+    from astropy import units as units
+    a, d = np.deg2rad([row['ra'], row['dec']])
+    p = np.array([-np.sin(a), np.cos(a), 0.])
+    q = np.array([-np.sin(d)*np.cos(a), -np.sin(d)*np.sin(a), np.cos(d)])
+    r = np.array([np.cos(d)*np.cos(a), np.cos(d)*np.sin(a), np.sin(d)])
+    k = units.mas.to(units.rad)
+    z = np.asarray(offsets) * k
+    x, y, ma, md = z[..., 0], z[..., 1], row['pmra']*k + z[..., 2], row['pmdec']*k + z[..., 3]
+    radial = np.sqrt(1 - x*x - y*y)
+    initial = x[..., None]*p + y[..., None]*q + radial[..., None]*r
+    motion = ma[..., None]*p + md[..., None]*q - ((ma*x+md*y)/radial)[..., None]*r
+    rate = np.linalg.norm(motion, axis=-1)
+    phi = np.arctan(years*rate)
+    return np.cos(phi)[..., None]*initial + (np.sin(phi)/rate)[..., None]*motion
+
+
+@pytest.mark.parametrize('ra,dec', [(359.9999, 42.), (10., 90.), (140., -90.), (0., -89.99999)])
+@pytest.mark.parametrize('years', [-10000., 0., 10000.])
+def test_uncertainty_jacobian_against_independent_finite_perturbations(ra, dec, years):
+    row = uncertainty_row(ra=ra, dec=dec, pmra=20000., pmdec=-12000.)
+    direction, basis, jac = audit.angular_error_jacobian(row, years)
+    np.testing.assert_allclose(direction, perturbed_angular_reference(row, years, np.zeros(4)), atol=3e-16)
+    np.testing.assert_allclose(basis @ basis.T, np.eye(2), atol=5e-16)
+    np.testing.assert_allclose(basis @ direction, 0, atol=3e-16)
+    numerical = []
+    for i in range(4):
+        step = np.eye(4)[i] * (10. if i < 2 else .01)
+        plus = perturbed_angular_reference(row, years, step)
+        minus = perturbed_angular_reference(row, years, -step)
+        numerical.append(basis @ (plus-minus) / (2*np.max(step)) / audit.MAS_RAD / 1000)
+    np.testing.assert_allclose(jac, np.array(numerical).T, rtol=2e-6, atol=2e-9)
+
+
+def test_uncertainty_seeded_small_error_monte_carlo():
+    row = uncertainty_row(ra=145., dec=-65., pmra=500., pmdec=100.)
+    # Correlated positive-definite synthetic input, constructed independently.
+    factor = np.array([[.3, 0, 0, 0], [.1, .2, 0, 0], [.003, 0, .01, 0], [0, -.002, .004, .009]])
+    marginal = factor @ factor.T
+    covariance = np.eye(5)
+    covariance[np.ix_([0, 1, 3, 4], [0, 1, 3, 4])] = marginal
+    direction, basis, _ = audit.angular_error_jacobian(row, -10000.)
+    draws = np.random.default_rng(1031).normal(size=(80000, 4)) @ factor.T
+    points = perturbed_angular_reference(row, -10000., draws)
+    residuals = (points-direction) @ basis.T / audit.MAS_RAD / 1000
+    measured = np.cov(residuals.T)
+    expected = audit.angular_measurement_error(row, covariance, -10000.)['covariance_arcsec2']
+    np.testing.assert_allclose(measured, expected, rtol=.025, atol=1e-6)
+
+
+@pytest.mark.parametrize('years', [-10000., -1000., 0., 1000., 10000.])
+def test_uncertainty_rv_sensitivity_is_derivative_not_sigma(years):
+    from astropy import units as units
+    row = uncertainty_row(pmra=100., pmdec=0., parallax=10., radial_velocity=None)
+    delta = .001
+    mu = (100*units.mas).to_value(units.rad)
+    rate = (delta*units.km/units.s/(100*units.pc)).to_value(1/units.yr)
+    plus = np.arctan2(mu*years, 1+rate*years)
+    minus = np.arctan2(mu*years, 1-rate*years)
+    numerical = abs((plus-minus)/(2*delta))*units.rad.to(units.arcsec)
+    assert audit.rv_sensitivity(row, years) == pytest.approx(numerical, rel=2e-8, abs=1e-14)
+    if abs(years) == 10000:
+        assert numerical == pytest.approx(.1022688127343643, rel=1e-7)
+    with pytest.raises(ValueError, match='positive_parallax'):
+        audit.rv_sensitivity(dict(row, parallax=None), years)
+
+
+def complete_uncertainty_snapshot(snapshot):
+    """Add labelled synthetic errors to the existing synthetic source seam."""
+    products = dict(snapshot.products)
+    metadata = enrichment.decode(products['metadata_v1.json'])
+    rows = [enrichment.decode(line) for line in products['gaia_sources_v1.jsonl'].splitlines()]
+    for row in rows:
+        row.update(dict.fromkeys(audit.GAIA_ERRORS, .1))
+        row.update(dict.fromkeys(audit.GAIA_CORRELATIONS, 0.))
+    for name in (*audit.GAIA_ERRORS, *audit.GAIA_CORRELATIONS):
+        if name not in metadata['gaia_columns']:
+            metadata['gaia_columns'].append(name)
+        metadata['gaia_column_units'][name] = ('mas / yr' if name.startswith('pm') else 'mas') if name in audit.GAIA_ERRORS else None
+    products['metadata_v1.json'] = enrichment.encode(metadata)+b'\n'
+    products['gaia_sources_v1.jsonl'] = b''.join(enrichment.encode(r)+b'\n' for r in rows)
+    manifest = enrichment.encode(dict(schema='wenu-stellar-enrichment-snapshot/1', complete=True,
+        products={name:enrichment.identity(raw) for name,raw in products.items()}))
+    return enrichment.StellarEnrichmentSnapshot(tuple((name,products[name]) for name in enrichment.PRODUCTS), manifest)
+
+
+def test_uncertainty_snapshot_cli_offline_lineage_and_no_clobber(enrichment_snapshot, tmp_path, monkeypatch):
+    snapshot = complete_uncertainty_snapshot(enrichment_snapshot)
+    before = snapshot.products
+    source_path, output = tmp_path/'source', tmp_path/'report_v1'
+    audit.publish_enrichment(source_path, snapshot)
+    monkeypatch.setattr(socket, 'socket', lambda *a, **k: pytest.fail('offline report used network'))
+    digest = sha256(snapshot.manifest).hexdigest()
+    argv = ['--uncertainty-source', str(source_path), '--expected-source-manifest', digest,
+            '--uncertainty-years', '-10000', '0', '10000', '--output', str(output)]
+    audit.main(argv)
+    summary = json.loads((output/'uncertainty_summary_v1.json').read_text())
+    rows = [json.loads(s) for s in (output/'stellar_uncertainty_v1.jsonl').read_text().splitlines()]
+    assert [r['hip'] for r in rows] == ['1', '2', '3', '4', '5']
+    assert summary['retained_hip_rows'] == 5 and summary['source_manifest_sha256'] == digest
+    assert summary['covariance_statuses'] == {'positive_definite': 2, 'no_five_parameter_astrometry': 2, 'no_published_gaia_association': 1}
+    assert summary['angular_statuses'] == {'evaluated': 6, 'covariance_unavailable': 9}
+    assert rows[3]['astrometric_params_solved'] == 95
+    manifest = json.loads((output/'uncertainty_manifest_v1.json').read_text())
+    assert manifest['complete'] is True
+    for name, record in manifest['products'].items():
+        assert enrichment.identity((output/name).read_bytes()) == record
+    assert snapshot.products == before and enrichment.load_stellar_enrichment(source_path) == snapshot
+    with pytest.raises(ValueError, match='already exists'):
+        audit.main(argv)
+    with pytest.raises(ValueError, match='manifest identity'):
+        audit.main([s if s != digest else '0'*64 for s in argv])
+    with pytest.raises(ValueError, match='explicit elapsed'):
+        audit.main(argv[:4] + argv[-2:])
+    with pytest.raises(ValueError, match='separate directories'):
+        audit.main(argv[:-1] + [str(source_path/'nested_report')])
+    with pytest.raises(ValueError, match='cannot acquire'):
+        audit.main(argv + ['--diagnostics'])
+
+
+def test_uncertainty_report_cleanup_units_and_invalid_offsets(enrichment_snapshot, tmp_path, monkeypatch):
+    snapshot = complete_uncertainty_snapshot(enrichment_snapshot)
+    for years in ([], [0., 0.], [float('inf')]):
+        with pytest.raises(ValueError, match='finite, nonempty and unique'):
+            audit.uncertainty_report(snapshot, years, tmp_path/'bad')
+    wrong = snapshot_mutation(snapshot, 'metadata_v1.json', lambda m: m['gaia_column_units'].update(ra_dec_corr='mas'))
+    with pytest.raises(ValueError, match='correlation unit'):
+        audit.uncertainty_report(wrong, [0.], tmp_path/'bad')
+    output = tmp_path/'failed'
+    replace = Path.replace
+    def fail(self, target):
+        if self.name == 'uncertainty_manifest_v1.json':
+            raise OSError('synthetic publication failure')
+        return replace(self, target)
+    monkeypatch.setattr(Path, 'replace', fail)
+    with pytest.raises(OSError, match='synthetic publication'):
+        audit.uncertainty_report(snapshot, [0.], output)
+    assert not output.exists() and not list(tmp_path.glob('.failed-*'))
+
+
+def test_uncertainty_invalid_matrix_is_a_per_hip_gap(enrichment_snapshot, tmp_path):
+    snapshot = complete_uncertainty_snapshot(enrichment_snapshot)
+    invalid = snapshot_mutation(snapshot, 'gaia_sources_v1.jsonl',
+        lambda rows: rows[0].update(ra_dec_corr=.9, ra_parallax_corr=.9, dec_parallax_corr=-.9))
+    summary = audit.uncertainty_report(invalid, [0., -10000.], tmp_path/'report')
+    rows = [json.loads(line) for line in (tmp_path/'report/stellar_uncertainty_v1.jsonl').read_text().splitlines()]
+    assert summary['retained_hip_rows'] == 5
+    assert rows[0]['covariance']['status'] == 'indefinite_correlation_matrix'
+    assert rows[0]['evaluations'][0]['status'] == 'covariance_unavailable'
+    assert rows[3]['evaluations'][0]['status'] == 'evaluated'
+
+
 def test_enrichment_round_trip_immutable_values_and_fallback(enrichment_snapshot,tmp_path):
     from dataclasses import FrozenInstanceError
     snapshot=enrichment_snapshot
