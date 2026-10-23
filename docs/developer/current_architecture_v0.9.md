@@ -300,7 +300,11 @@ separate numerical calendar/conversion receipts. TCB identity and existing
 TDB/TCB admission require no observer or acquisition; unsupported conversion
 refuses. The isolated native stellar path accepts ancient dates without EOP,
 Earth ephemerides or scientific imports. This adds no historical observer,
-precession or physical/date-error propagation; full Mac acceptance is pending.
+precession or physical/date-error propagation. Complete Mac acceptance at
+`ceeb894b`, PR #327, passed all focused/audit/documentation/tooling gates and
+24 actual historical states. All accepted Gaia/Hip2 digests are unchanged;
+source-date uncertainty remains separately retained, not propagated into a
+total angular/physical accuracy claim.
 
 ## Explicit Hipparcos-2 angular fallback
 

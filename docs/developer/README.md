@@ -34,13 +34,17 @@ The 263 original lookup entries stay preserved; no ordinary chart changes.
 PR #325 is merged at `dc2035da`; clean synchronized Mac main and branch cleanup
 are confirmed, with 36 documentation passes.
 
-**Current selected work:** K4b.03 historical date/time semantics, selected by
+**Current bounded result:** K4b.03 historical date/time semantics passed Mac
+acceptance at `ceeb894b`, PR #327. The step was selected by
 Fernando on 2026-10-23. The existing convention boundary now accepts explicit
 proleptic Gregorian/Julian dates, astronomical/BCE/CE numbering and known or
 unknown source-date uncertainty. It preserves original labels, two-part time
 and an explicit TimeService conversion receipt to TCB. No civil-clock,
-Delta-T, historical observer or precession model is inferred. Local checks
-passed; complete Mac acceptance remains pending in PR #327.
+Delta-T, historical observer or precession model is inferred. Complete Mac gates
+passed: 257 stellar/shared-core/cluster cases (nine subtests), 125 source-audit,
+36 documentation and eight tooling cases (81 subtests). Twenty-four historical
+states passed the independent Decimal check; all Gaia/Hip2 digests are unchanged.
+PR #327 remains unmerged; no next runtime item is selected.
 See the
 [qualification review](kernel_roadmap_v0.9.5.md#k4b02-hipparcos-2-fallback-qualification).
 

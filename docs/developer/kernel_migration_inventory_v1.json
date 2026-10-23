@@ -26939,7 +26939,7 @@
     "base_commit": "dc2035daa256a55a566dbdf6949d0dc750bec030",
     "plan_commit": "e0ce8c6fd2839a9540c6757bb8c8911527eb1508",
     "pull_request": 327,
-    "status": "Implemented for Mac acceptance; no parent closure",
+    "status": "Bounded historical calendar/time input passed complete Mac acceptance at ceeb894b in PR #327; unmerged; no next runtime selection",
     "authorization": "Fernando Proceed after explicit historical-date/time proposal; clean synchronized main and merged-branch cleanup receipt already supplied",
     "owner": "src/wenu/astrometric_coordinates.py",
     "api": [
@@ -26981,8 +26981,104 @@
       "tooling_subtests": 9,
       "tooling_deselected_full_tree_cases": 2
     },
-    "Mac_acceptance": "pending",
+    "Mac_acceptance": "passed; see mac_acceptance",
     "preservation": "Gaia/Hip2 source/model/numerical core/SDK/default routes unchanged; no extra acquisition",
-    "limits": "No automatic historical calendar reform, local/civil-clock/UTC/UT1/TT-to-TCB model, historical observer, precession, physical accuracy, source uncertainty propagation or issue #326 resolution"
+    "limits": "No automatic historical calendar reform, local/civil-clock/UTC/UT1/TT-to-TCB model, historical observer, precession, physical accuracy, source uncertainty propagation or issue #326 resolution",
+    "mac_acceptance": {
+      "date": "2026-10-23",
+      "tested_commit": "ceeb894bc83302d40478540208e1abbc909ed805",
+      "pull_request": 327,
+      "receipt_sha256": "bca114d7a99c95b569deb4e0434cf319b0a70ebd52e213ba94003a3e44e4d3e7",
+      "gates": {
+        "stellar-motion-provider": {
+          "passed": 257,
+          "subtests": 9,
+          "seconds": 12.58
+        },
+        "gaia-crossmatch-audit": {
+          "passed": 125,
+          "seconds": 2.58
+        },
+        "documentation": {
+          "passed": 36,
+          "seconds": 2.73
+        },
+        "tools/tests/test_test_gates.py": {
+          "passed": 8,
+          "subtests": 81,
+          "seconds": 9.05
+        }
+      },
+      "source_manifest_sha256": "8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365",
+      "sampled_result": {
+        "models": {
+          "gaia": 115105,
+          "hipparcos2": 2850
+        },
+        "historical_states": 24,
+        "maximum_decimal_oracle_chord_difference": 2.486410087150353e-16,
+        "accepted_Gaia_and_Hip2_digests_unchanged": true,
+        "date_inputs": [
+          {
+            "year": 1000,
+            "numbering": "bce",
+            "calendar": "julian",
+            "source_scale": "tdb",
+            "source_uncertainty_s": null,
+            "tcb": [
+              1356174,
+              -0.0168536919838221
+            ],
+            "calendar_rounding_s": 0.0,
+            "conversion_rounding_s": 4.749541939202945e-14
+          },
+          {
+            "year": 0,
+            "numbering": "astronomical",
+            "calendar": "gregorian",
+            "source_scale": "tdb",
+            "source_uncertainty_s": 86400,
+            "tcb": [
+              1721060,
+              -0.011196062335434954
+            ],
+            "calendar_rounding_s": 0.0,
+            "conversion_rounding_s": 2.013278730642825e-14
+          },
+          {
+            "year": -10000,
+            "numbering": "astronomical",
+            "calendar": "gregorian",
+            "source_scale": "tcb",
+            "source_uncertainty_s": null,
+            "tcb": [
+              -1931365,
+              0.0
+            ],
+            "calendar_rounding_s": 0.0,
+            "conversion_rounding_s": 0.0
+          },
+          {
+            "year": 2000,
+            "numbering": "ce",
+            "calendar": "gregorian",
+            "source_scale": "tcb",
+            "source_uncertainty_s": 0,
+            "tcb": [
+              2451545,
+              0.0
+            ],
+            "calendar_rounding_s": 0.0,
+            "conversion_rounding_s": 0.0
+          }
+        ],
+        "limits": "Nominal native directions; historical dating, observer, precession and physical accuracy not certified"
+      },
+      "gaia_full_coefficient_sha256": "032f76e398eadf136fd9aa59a3c2b3a66d4dc25d9da74bc995b4bdb6088cfe8f",
+      "gaia_angular_coefficient_sha256": "6d3e46ff0aa8bd707ea4b8f169b55fdd41c3bc85d65250d7a801c541ebb38602",
+      "hipparcos2_angular_coefficient_sha256": "b5b6cfe20919eec5c815f50b348b55579e2b2631e8f0510be201d874e85875c1",
+      "numerical_oracle": "Independent 80-digit Decimal affine evaluation of admitted source coefficients",
+      "limits": "Bounded input/native-event receipt only; no physical/historical-date/observer/precession accuracy or parent K4b closure; issue #326 remains open"
+    }
   }
 }

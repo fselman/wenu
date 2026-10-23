@@ -214,8 +214,20 @@ source-audit run passes 379 cases and nine subtests. Three existing full-applica
 cases require absent partial-checkout dependencies/files and are deselected
 locally, never excluded from the Mac gate. Use the existing
 `stellar-motion-provider`, `gaia-crossmatch-audit`, documentation and tooling
-gates unchanged in selection. Complete Mac acceptance remains pending.
-No shared numerical engine or SDK changes; their prior receipts remain applicable.
+gates unchanged in selection. Complete Mac acceptance at
+`ceeb894bc83302d40478540208e1abbc909ed805`, PR #327, passed 257 focused cases and
+nine subtests (12.58 s), 125 source-audit (2.58 s), 36 documentation (2.73 s),
+and eight tooling cases with 81 subtests (9.05 s), without exclusions.
+The actual immutable source returned 24 sampled historical states at 1000 BCE
+Julian, astronomical year zero Gregorian, year -10000 Gregorian and 2000 CE
+Gregorian inputs. Maximum independent 80-digit Decimal affine-oracle vector
+chord difference: `2.486410087150353e-16`. All accepted Gaia full/angular and
+Hip2 angular digests are unchanged; 115,105 Gaia and 2,850 Hip2 angular models
+remain. Exact receipt, input dates and numerical bounds are recorded under
+`historical_time_semantics.mac_acceptance` in the migration inventory. These
+checks do not establish physical/historical dating, observer or precession
+accuracy. No shared numerical engine or SDK changes; their prior receipts
+remain applicable.
 
 ### Hipparcos-2 nominal-TCB fallback extension
 
