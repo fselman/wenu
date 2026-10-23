@@ -1,5 +1,142 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.05 Hipparcos-2 source precision investigation, 2026-10-23
+
+Fernando selected this assessment with “Proceed” after PR #334 merge and
+confirmed clean synchronized Mac main `ffa7d7a7`, branch cleanup and
+36 documentation tests in 3.11 s. The revision-93 plan was committed first at
+`9f806edc67a0130c61744e8695ee70471fe6f686`.
+This assessment changes documentation only. Architecture, source map, coordinate
+guide, diagnostic implementation, passive reference, all source bytes,
+production models and tests remain current and unchanged.
+
+### Primary-source findings
+
+The [corrected CDS I/311 ReadMe](https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/I/311?format=html&tex=true)
+specifies F2 as F5.2, the five formal errors as F6.2 and the fifteen UW fields
+as F7.2. It records replacement files on 16 September 2008 after earlier errors
+in goodness-of-fit values. It does not define 99 as a saturation flag.
+The format itself can represent 99.99; field width alone does not establish
+a cap at 99.00.
+
+[Michalik et al. (2014), Appendix B, equations 34–40](https://arxiv.org/html/1407.4025v2#A2)
+describes the CDS-specific diagonal scaling and correction to published
+standard errors. Reinspection agrees with the implemented published-error
+recipe. Its separate catalogue-combination policy is not a repair for these
+discrepancies. No replacement convention was found.
+
+[van Leeuwen (2007), sections 2.4–2.7](https://arxiv.org/html/0708.1752v1)
+discusses transit errors, calibration and special cases, but supplies no
+identified explanation of this exact stored-F2 pattern.
+[Brandt, Michalik & Brandt (2023)](https://doi.org/10.1093/rasti/rzad011)
+independently discusses Hip2 overfitting and recalibrated IAD/parameter errors.
+That is a separate physical/statistical limitation: it does not establish
+that our particular UW-diagonal mismatches are caused by overfitting, nor
+authorize replacement data or an empirical correction.
+The ESA overview returned HTTP 451; it was not directly read. Searches found
+no verified primary statement that F2=99 is clipping. Author clarification,
+if desired, would be a separate explicitly authorized contact.
+
+### Read-only precision experiment
+
+The already cached raw `hip2.dat` is 32,673,535 bytes, SHA256
+`c45d6325bd59dd691764af173a9702e543804a2b6c1d9fea59210e8332e50a4a`.
+No catalogue, annex or intermediate data were acquired. NumPy 2.3.5 was used.
+A scratch-only exploratory probe (SHA256
+`2085ced9b00c0413608db52cdea7a89bd6ba267404531f95ef1875b95b611096`)
+read all 115,112 Sn-suffix-5 rows. It independently reproduced the accepted
+all-standard-source discrepancy bins 537/153/51/6 above 1%/2%/10%/100%.
+These are not the Mac fallback-only bins 68/44/22/5.
+
+For reproducibility, let D contain the printed formal errors, B be the
+published-error triangular factor, and T=B D. Then
+T diagonal entries are the raw packed diagonal weights; off-diagonal entry
+(i,j) is raw UW(i,j) times sigma(j) divided by u. With X=inverse(T), each
+decoded-to-quoted sigma ratio is the Euclidean norm of row i of X.
+This equivalent dimensionless calculation preserves the dependence on printed
+errors without mistaking mixed mas/year conditioning for physical accuracy.
+
+For each printed UW, error and F2, assign an exploratory interval centred on
+the stored value, with common half-width h; keep Ntr and solution type exact.
+Calculate positive u endpoints from F2 endpoints using the existing
+Wilson–Hilferty inverse. Form T entry intervals using interval multiplication
+and positive division. Compute triangular inverse intervals by back substitution:
+X(ii)=1/T(ii), and X(ij)=-sum(T(ik) X(kj), k=i+1..j)/T(ii).
+Bound row norms using the smallest and largest absolute value in each inverse
+entry interval, squaring and summing. A zero-crossing entry has minimum zero.
+The probe pads arithmetic outward with nextafter and adds 1e-12 at the norm-square
+sum. This is exploratory floating-point interval arithmetic, not a formally
+certified interval implementation or a statistical confidence interval.
+
+At h=0.005, the cells correspond to a nearest-rounding hypothesis for
+two-decimal fields. At h=0.01 they are a deliberately broader symmetric
+sensitivity check, also encompassing an error of less than one printed unit.
+Neither is an assertion about the producer's actual rounding or clipped values.
+Dependency overestimation makes these enclosures permissive: enclosing unity
+is necessary for consistency under the assumed cells, not proof that a single
+set of inputs reproduces all five errors simultaneously.
+
+| Hypothetical half-width | Rows with some sigma-ratio enclosure excluding 1 | Of those, F2=99 | Of those, other F2 | Above-10% cases still excluding 1 |
+|---|---:|---:|---:|---:|
+| 0.005 | 238 | 68 | 170 | 51 |
+| 0.01 | 101 | 63 | 38 | 51 |
+
+Thus this experiment supplies strong evidence that ordinary decimal precision
+does not explain the large discrepancies. It does not claim that every
+other row is consistent, or that precision accounts for every small difference.
+
+Illustrative worst-component ratios using the broader h=0.01 cells:
+
+| HIP | Stored F2 | Midpoint ratio | Exploratory ratio enclosure |
+|---|---:|---:|---:|
+| 71502 | 99.00 | 54.0359 | 43.5143–65.9173 |
+| 71681 | 99.00 | 12.1504 | 11.1959–13.3743 |
+| 104214 | 19.44 | 1.84942 | 1.69917–2.01048 |
+| 26549 | 99.00 | 3.04121 | 2.84369–3.25273 |
+| 63081 | 99.00 | 3.03847 | 2.76142–3.34366 |
+| 63721 | 99.00 | 2.25163 | 1.98824–2.54330 |
+
+Independent inversion of B-transpose B agrees for these six examples with
+relative tolerance 2e-9 and absolute tolerance 1e-10; these are numerical
+cross-check tolerances, not source-admission thresholds.
+All midpoint ratios and three deterministic random full-catalogue perturbations
+per half-width (NumPy default_rng seed 333) stayed inside the enclosures.
+These checks test the exploratory calculation; they are not a proof of coverage
+or a distribution for physical errors. With UW/errors fixed, changing only F2
+by +/-0.005 changes any reconstructed sigma by at most 0.106% in this catalogue.
+
+### F2 pattern, inference and unresolved decision
+
+All-standard-source F2 ranges from -5.12 to 99.00, with 77 entries exactly
+99.00. Their descriptive discrepancy counts above 1%/2%/10%/100% are
+69/62/40/6. The other 115,035 rows have counts 468/91/11/0.
+The largest non-99 examples are HIP 104214 (84.9425%), 88802 (50.1629%),
+101453 (24.5227%), 112317 (23.1897%) and 36669 (14.5751%).
+These counts are source-wide, not fallback counts.
+
+The pile-up at 99.00, lack of larger stored values and concentration of
+extremes there are consistent with a cap or another exceptional encoding,
+but do not establish its meaning, the original uncapped values or a valid
+replacement u. Ordinary +/-0.005 F2 uncertainty cannot represent an unknown
+amount of clipping. Non-99 exceptions require a broader explanation.
+Do not fit an effective F2 or renormalize a covariance to force agreement.
+
+[Issue #333](https://github.com/fselman/wenu/issues/333) remains open. This
+assessment rules out no published association or Hip2 position/PM input.
+All reconstructed Hip2 covariances remain diagnostic-only; the 168 nonstandard
+fallback solutions remain separate. A source-level clarification or independently
+qualified replacement covariance would be needed before admitting affected
+errors. This assessment does not select annex/IAD reprocessing, new acquisition,
+physical uncertainty propagation, K4b.06 or a production fallback policy.
+Issue #326 and K4b.05 parent remain open.
+
+Verification: raw-source hash, independent six-case inversion, whole-catalogue
+baseline reproduction and interval sampling were executed locally. Three closest
+documentation checks passed by direct Python invocation; pytest is unavailable
+in this runtime. The complete documentation gate and Mac branch review remain
+separate acceptance.
+
+
 ## K4b.05 Hipparcos-2 covariance qualification, 2026-10-23
 
 Fernando selected this next slice with “Proceed”, then confirmed clean

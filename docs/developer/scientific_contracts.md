@@ -17,7 +17,11 @@ association policy is introduced.
 
 [Issue #333](https://github.com/fselman/wenu/issues/333) tracks large diagonal
 discrepancies, including but not limited to records with stored F2 exactly 99.
-Clipping/saturation remains a hypothesis. Hip2 covariance/position-error
+The follow-up [precision assessment](kernel_migration_audit_v1.md#k4b05-hipparcos-2-source-precision-investigation-2026-10-23)
+finds that ordinary two-decimal precision does not explain large mismatches in
+the tested exploratory enclosures. This does not validate the other rows or
+establish the meaning of F2=99. Clipping/saturation remains a hypothesis.
+Hip2 covariance/position-error
 propagation, physical accuracy and epoch-scale qualification (#326) remain
 unadmitted. See the
 [qualification interface](implementation_reference.md#hipparcos-2-covariance-qualification-report).

@@ -1,5 +1,16 @@
 # Wenu developer documentation
 
+## Hipparcos-2 source precision assessment
+
+PR #334 is merged; clean synchronized Mac main `ffa7d7a7` and branch cleanup
+are confirmed, with 36 documentation tests in 3.11 s. Fernando selected the
+bounded issue #333 investigation. The
+[assessment](kernel_migration_audit_v1.md#k4b05-hipparcos-2-source-precision-investigation-2026-10-23)
+finds that ordinary printed precision does not explain the large discrepancies
+in the tested numerical envelopes. F2=99 is a strong pattern, but its meaning
+is unverified and non-99 exceptions remain. No covariance correction or admission
+is established; complete Mac documentation acceptance remains pending.
+
 ## Hipparcos-2 covariance diagnostic report
 
 PR #332 is merged; the Mac is clean/synchronized on `5971acb9` with branch
@@ -17,7 +28,7 @@ Among standard fallbacks, 68 exceed a descriptive 1% sigma-discrepancy bin,
 22 exceed 10%, and five exceed 100%. All fifteen largest fallback discrepancies
 have F2 exactly 99, an observation rather than proof of saturation.
 Fernando accepted this diagnostic-only slice for merge; issue #333 remains open.
-Mac synchronization and merged-branch cleanup remain separate.
+PR #334 Mac synchronization and merged-branch cleanup are complete.
 
 ## Offline stellar uncertainty assessment and report
 
