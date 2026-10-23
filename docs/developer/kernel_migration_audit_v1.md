@@ -1,5 +1,103 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.05 no-light-time reference implementation, 2026-10-23
+
+Fernando selected the bounded numerical comparison with “Proceed” after PR #329
+merge, Mac synchronization and branch cleanup at `439b8a67`. Plan committed
+before implementation at `932bab6976aec7a761c1e9f2dd12529d49d9aeb6`.
+
+Only `tests/test_stellar_state.py` changes executable code. Its test-only
+`stellar_no_light_time_reference` follows the no-light-time reference assessed
+below, evaluating the great-circle angular departure and bearing with independent
+Astropy unit conversion. It does not read production SI/derivative rows, call
+the shared propagation engine or delegate to another library's motion routine.
+This is an independent numerical expression of the same adopted model, not
+independent dynamical physics.
+
+Seven explicitly synthetic input configurations cover oblique direction,
+longitude wrap, pole/near-pole, high PM, both RV signs, radial-only and zero
+motion. Each of full Gaia, Gaia angular and nominal-TCB Hip2 routes is queried
+through the actual SDK at seven epochs: source and elapsed +/-100, +/-1,000,
++/-10,000 Julian years. Hip2 comparisons use the actual rounded fixed-width
+synthetic capture coordinates, not pre-capture values. Twenty-one parameter
+cases cover 147 returned directions; measurement/model evidence remains unknown,
+and source bytes, model/reference and source/evaluation/anchor identities are
+checked. The vector-chord comparison threshold `5e-14` (about 0.01 microarcsec
+for these small residuals) is a test threshold for these conditioned inputs,
+not a source/physical/universal numerical bound.
+
+Two coherent fault injections change the shared engine's affine coefficients:
+drop radial velocity or exchange Cartesian x/y velocity. Baseline agreement
+passes; each fault produces a chord discrepancy above `1e-5` and breaks the
+reference assertion even though the engine's internal affine check sees the
+same erroneous coefficients. Existing exact arithmetic/domain/refusal and
+cold dependency-isolation tests remain the owners of their separate claims.
+
+Local validation: all 23 new cases passed. Combined stellar/shared-core/cluster
+and source-audit owners passed 456 cases and nine subtests in 14.94 s, with
+three pre-existing full-application cases deselected because this partial
+checkout lacks their dependencies/assets. No other cases were excluded.
+The complete unfiltered Mac gates subsequently passed; see the acceptance below.
+
+Existing Wenu topology confirms these cached-source comparison groups:
+
+| Group | HIP identifiers |
+|---|---|
+| Seven Big Dipper stars, subset of the UMa figure | 54061, 53910, 58001, 59774, 62956, 65378, 67301 |
+| Seven principal Orion figure stars | 27989, 24436, 25336, 26727, 26311, 25930, 27366 |
+| High-motion stress cases from the reference review | 87937, 57939 |
+
+Topology source:
+`src/wenu/data/constellations/western/constellationship.fab` at `439b8a67`.
+The sample is an identity selection, not a claim all have full Gaia inputs or
+that ESA used exactly these source solutions. The actual Mac cache comparison
+must disclose availability per model/HIP, preserve accepted full/angular/Hip2
+solution digests, compare the same seven native relative epochs and report
+residuals separately from physical uncertainty.
+
+**Complete Mac acceptance, 2026-10-23:** tested commit
+`5da8220ff821680f7c133acaa191f6aaffa9e82a`, PR #330. All 334 stellar/shared-core/
+cluster cases and nine subtests passed in 10.08 s; 125 source-audit cases in
+2.44 s; 36 documentation cases in 2.48 s; eight tooling cases and 81 subtests
+in 9.01 s. No exclusions. Fernando's gate receipt confirms the clean synchronized
+task branch.
+
+The actual cache manifest remained
+`8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365`.
+The 16 selected HIPs were evaluated at source and elapsed +/-100, +/-1,000,
++/-10,000 native Julian years. Full Gaia availability was three (HIP 59774,
+87937, 57939), Gaia angular availability five (HIP 53910, 59774, 65378, 87937,
+57939), and Hip2 fallback eleven (HIP 54061, 58001, 62956, 67301, 27989,
+24436, 25336, 26727, 26311, 25930, 27366). Thus all 16 have Gaia angular or
+Hip2 fallback inputs; the full-input subset overlaps angular availability.
+
+| Model | Available sample stars | Directions | Maximum vector-chord residual | Full retained-population models |
+|---|---:|---:|---:|---:|
+| Full Gaia | 3 | 21 | 8.959510885851885e-16 | 97,710 |
+| Gaia angular | 5 | 35 | 8.959779580913775e-16 | 115,105 |
+| Hip2 angular fallback | 11 | 77 | 3.188872858294072e-16 | 2,850 |
+
+All 133 directions passed the independent spherical reference threshold.
+Full-model gaps among the selected stars were six without a published Gaia
+association, two missing Gaia RV and five Gaia position-only solutions.
+Gaia angular had six unassociated and five position-only gaps. Hip2 correctly
+deferred five entries to their available Gaia angular model. These are input/
+selection disclosures, not inferred zero values or new identity decisions.
+All 118,218 original objects remain retained.
+
+Accepted solution digests checked unchanged by the actual Mac recipe:
+
+- Full Gaia SI: `032f76e398eadf136fd9aa59a3c2b3a66d4dc25d9da74bc995b4bdb6088cfe8f`.
+- Gaia angular: `6d3e46ff0aa8bd707ea4b8f169b55fdd41c3bc85d65250d7a801c541ebb38602`.
+- Hip2 angular: `b5b6cfe20919eec5c815f50b348b55579e2b2631e8f0510be201d874e85875c1`.
+
+The receipt ended `CACHED STELLAR REFERENCE CHECK COMPLETE`; measurement and
+physical-model evidence remained unqualified. No numerical ESA reproduction,
+source acquisition, covariance/light-time/dynamics implementation, consumer
+adoption or K4b.05 parent closure is claimed. Production code, source snapshot,
+SDK and dependencies are unchanged. PR #330 remains unmerged.
+
+
 ## K4b.05 reference and method assessment, 2026-10-23
 
 **Selected scope:** Fernando’s “Proceed” after the ESA reconstruction and

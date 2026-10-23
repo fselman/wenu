@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 85, 2026-10-23. **Status:** K4b.04 is merged through PR #328; clean synchronized Mac main `90e2d1e6d6c5114fa50b607ebcfa3099a8998636` and branch cleanup are confirmed. Fernando selected the bounded K4b.05 reference/method assessment with “Proceed”; ESA comparisons and propagation-reference review are documentation-only work; findings and the concrete next comparison proposal are recorded in the existing migration audit. No new runtime item is selected; K4b.06, physical/total accuracy and issue #326 remain separate.
+**Plan revision:** 87, 2026-10-23. **Status:** The bounded K4b.05 no-light-time numerical comparison passed complete Mac gates and actual cached-source acceptance at `5da8220f` in PR #330, which remains unmerged. Production models and their physical uncertainty are unchanged. No next runtime item selected; ESA numerical reproduction, covariance/dynamical qualification, K4b.06 and issue #326 remain separate.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -62,8 +62,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.04 explicit long-term mean axes passed Mac acceptance in PR #328 at 97921fe8: 311 focused, 125 audit, 36 documentation, eight tooling/81 subtests and 48 actual derived directions; accepted stellar digests unchanged |
-| Next bounded submilestone | K4b.05 bounded reference/method assessment selected by Fernando’s “Proceed”: ESA reconstruction evidence and mathematical-reference compatibility, documented in the existing audit. Assessment delivered with reference recommendation and ESA gaps; numerical implementation/acquisition not selected. K4b.06 and issue #326 remain separate |
+| Current bounded result | K4b.05 no-light-time comparison passed full Mac gates at 5da8220f in PR #330: 334 focused/nine subtests, 125 audit, 36 documentation, eight tooling/81 subtests, and 133 actual cached directions across 16 HIPs; accepted solution digests unchanged |
+| Next bounded submilestone | Not selected. PR #330 is ready for review after receipt recording; merge/cleanup requires Fernando's separate instruction. K4b.05 physical/covariance/dynamical qualification, ESA numerical reproduction, K4b.06 and issue #326 remain separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -76,6 +76,49 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4b.05: no-light-time numerical comparison
+
+Selected by Fernando's “Proceed” on 2026-10-23 after PR #329 Mac acceptance,
+merge and confirmed clean synchronized main/branch cleanup at `439b8a67`.
+The existing audit supplies the reference and as-is assessment.
+
+Bounded scope: extend the existing `tests/test_stellar_state.py` owner with a
+test-only spherical-form implementation of Butkevich & Lindegren (2014),
+Sect. 5.5, Eqs. (83)–(84), using angular departure/bearing rather than the
+production SI affine-vector construction. Check actual SDK returned directions
+from full Gaia, measured-PM Gaia angular and Hip2 fallback admissions at native
+source epoch and elapsed +/-100, +/-1,000 and +/-10,000 Julian years, including
+oblique/pole/wrap, high motion, both RV signs, radial-only and zero-PM cases.
+Matched native TCB inputs only; no relabelling of physical events.
+
+Protect adapter unit/PM convention and perspective-term errors with an external
+mathematical oracle, plus demonstrated fault injection. Reuse existing exact
+arithmetic/conformance/domain/refusal/cold tests; do not duplicate the core or
+add a production oracle/service. Verify uncertainty/source/model identities
+remain unchanged. A bounded Mac cached-source comparison should report actual
+sample input availability, residuals and unchanged solution digests; source gaps
+remain gaps. Select principal Orion and seven Big Dipper HIP identities from
+existing source/topology evidence, with high-motion stress cases, without new
+acquisition or invented missing RV/distance. This is mathematical validation,
+not a reproduction of ESA's unavailable numerical inputs or physical ancient
+accuracy. No enlarged production domain or new science is implied.
+
+Acceptance: existing stellar-motion-provider gate (unchanged selections), source
+audit, documentation/tooling and bounded actual Mac cached-source evidence.
+Production code, dependency/SDK/source bytes/model identities, covariance and
+light-time policy, observer/precession/renderer/default consumers remain unchanged.
+Update existing roadmap/audit/testing-policy owners only as needed. The plan was committed at `932bab69` before test implementation. The
+[test/reference result](kernel_migration_audit_v1.md#k4b05-no-light-time-reference-implementation-2026-10-23)
+records 23 new cases (147 synthetic directions and two demonstrated faults)
+and 456 combined local passes/nine subtests. Complete Mac acceptance at
+`5da8220ff821680f7c133acaa191f6aaffa9e82a` passed 334 focused cases/nine subtests,
+125 source-audit, 36 documentation and eight tooling cases/81 subtests without
+exclusions. The 16-HIP cache sample passed 133 directions at seven native relative
+epochs; maximum chord difference `8.959779580913775e-16`, with unchanged accepted
+solution digests. This closes the bounded mathematical-comparison slice only:
+physical/covariance/dynamical qualification, numerical ESA reproduction,
+K4b.05 parent/K4b.06/issue #326 remain open. PR #330 remains unmerged.
 
 ## K4b.05: reference assessment and ESA constellation comparison plan
 
@@ -726,6 +769,8 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 87: record bounded K4b.05 Mac acceptance | Fernando's complete Mac gate and cached-source receipts on 2026-10-23 at 5da8220f, PR #330 | Record 334 focused/nine subtests, 125 audit, 36 documentation, eight tooling/81 subtests and 133 actual native directions; all accepted solution digests unchanged. No physical/ESA numerical/parent closure, new runtime selection or merge authority. |
+| Revision 86: select no-light-time numerical comparison | Fernando’s 2026-10-23 “Proceed” after PR #329 Mac acceptance, merge and clean synchronized main/cleanup | Test-only independent spherical no-light-time oracle, fault injection and bounded cached-source checks in existing owners; preserve production models, sources, identities and unknown physical errors. No light-time/covariance/dynamics implementation or consumer adoption. |
 | Revision 85: select bounded K4b.05 assessment | Fernando’s 2026-10-23 “Proceed” after the ESA/Butkevich–Lindegren reference-assessment proposal | Source-backed documentation assessment and concrete comparison proposal only, in existing roadmap/audit owners. No runtime, catalogue acquisition, additional light-time physics, covariance implementation or K4b.06 adoption. |
 | Revision 84: add ESA constellation comparisons to K4b.05 | Fernando’s 2026-10-23 “Please add the ESA work comparison to the roadmap”; PR #328 merged and clean synchronized Mac/cleanup confirmed | Record Orion and Ursa Major reference discovery, input/method availability review, like-for-like numerical versus qualitative comparison criteria and uncertainty/independence limits. Documentation only; no runtime, acquisition or K4b.06 adoption selected. |
 | Revision 70: select K4a.03S1 | Fernando’s “Please proceed with Kervella's work” after the missing-association magnitude histogram | Source-bound published A.1 association supplement and report, preserving accepted links. Explicit bounded source acquisition only; no independent rematching, derived astrometry/model adoption, Gaia source enrichment or merging. |

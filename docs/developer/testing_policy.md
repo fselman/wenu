@@ -195,6 +195,43 @@ physical/source error still unknown. No SDK, dependency/build,
 renderer/product or source-snapshot schema change is made; broader no-PM/Hip2
 qualification work is not closed by this measured-PM implementation.
 
+### No-light-time stellar reference comparison
+
+K4b.05 adds 23 cases to the existing stellar test owner; gate selections are
+unchanged. An independent spherical angular-departure/bearing calculation,
+using independent unit conversion, compares the full Gaia, measured-PM Gaia
+and nominal-TCB Hip2 admissions against the published no-light-time model.
+Twenty-one synthetic model/input cases cover 147 actual SDK directions at
+source and +/-100, +/-1,000, +/-10,000 Julian years. Two fault cases drop radial
+motion or exchange x/y velocity in the engine and demonstrably fail the
+external reference while preserving the coherent internal affine check.
+Existing source/missing-input, numerical-bound, domain/refusal/conformance and
+cold-isolation tests remain applicable without reimplementation.
+
+The `5e-14` vector-chord threshold is conditioned numerical comparison only;
+physical/model/measurement errors remain unknown. No rigorous light-time
+calculation, covariance propagation or ESA numerical reconstruction is added.
+Production code, source data/model identities, SDK, renderer and defaults are
+unchanged. Coordinate-system guide and scientific contracts remain current.
+
+Local combined result: 456 passed, nine subtests, three existing full-application
+cases deselected for missing partial-checkout assets/dependencies. Complete Mac
+acceptance used unfiltered stellar-motion-provider, gaia-crossmatch-audit,
+documentation and tooling gates. The separately reported existing-cache sample
+covers seven Big Dipper and seven principal Orion HIPs plus two high-motion
+stress cases, with per-model availability and unchanged source-solution digests.
+Complete Mac receipt at `5da8220ff821680f7c133acaa191f6aaffa9e82a`, PR #330:
+334 focused cases/nine subtests (10.08 s), 125 audit (2.44 s), 36 documentation
+(2.48 s), eight tooling cases/81 subtests (9.01 s), without exclusions.
+The actual existing-cache sample passed 133 directions: 21 full Gaia, 35 Gaia
+angular and 77 Hip2 fallback. Maximum chord residuals were respectively
+8.959510885851885e-16, 8.959779580913775e-16 and 3.188872858294072e-16.
+All 16 selected HIPs had Gaia angular or Hip2 fallback availability; only three
+had full Gaia inputs. Accepted full/angular/Hip2 solution digests are unchanged.
+The complete sample IDs, gaps and immutable source digest are retained in the
+existing audit. This is numerical-model comparison only; physical/covariance/
+dynamical uncertainty and ESA numerical reproduction remain open.
+
 ### Long-term frame orientation
 
 K4b.04 extends the existing astrometric convention tests and stellar composition

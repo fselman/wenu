@@ -1,4 +1,4 @@
-"""Native lookup adapter contracts; constructed rows, not catalogue accuracy."""
+"""Native lookup and motion contracts; constructed rows, not catalogue accuracy."""
 from dataclasses import replace
 from math import sqrt
 import unittest
@@ -911,3 +911,131 @@ def test_stellar_long_term_frame_is_explicit_derived_view_with_native_time_and_s
         assert n.time==TimePoint(1356174,0,'tcb') and n.reference.frame_id=='icrs'
         assert n.evidence.physical_model.status=='not_evaluated'
     assert cat.source.products==before and cat.to_record()['angular_solutions_sha256']==native_digest
+ 
+
+
+# K4b.05: external mathematical reference, not a physical-accuracy oracle.
+# Butkevich & Lindegren 2014, A&A 570 A62, Sect. 5.5, Eqs. (83)-(84):
+# https://arxiv.org/pdf/1407.4664 (reviewed 2026-10-23).
+# This spherical departure/bearing implementation never reads admitted SI rows,
+# calls the production engine, or applies a library space-motion routine.
+def stellar_no_light_time_reference(source, elapsed_years, *, angular):
+    from math import atan2, cos, hypot, sin
+    from astropy import units as u
+    ra = (source['ra'] * u.deg).to_value(u.rad)
+    dec = (source['dec'] * u.deg).to_value(u.rad)
+    east = (source['pmra'] * u.mas).to_value(u.rad)
+    north = (source['pmdec'] * u.mas).to_value(u.rad)
+    speed = hypot(east, north)
+    radial_rate = 0.
+    if not angular:
+        # Independent unit algebra: RV * parallax / au, in reciprocal Julian yr.
+        # Spectroscopic RV remains the same nominal proxy used by admission.
+        radial_rate = (source['radial_velocity'] * u.km/u.s *
+                       source['parallax'] * u.mas/u.au).to_value(
+                           1/u.yr, equivalencies=u.dimensionless_angles())
+    departure = atan2(speed * elapsed_years, 1 + radial_rate * elapsed_years)
+    bearing = atan2(east, north) if speed else 0.
+    # Great-circle displacement in the source meridian, then longitude rotation.
+    # atan2 handles negative elapsed time and passage beyond a right angle.
+    local_x = cos(dec)*cos(departure) - sin(dec)*sin(departure)*cos(bearing)
+    local_y = sin(departure)*sin(bearing)
+    z = sin(dec)*cos(departure) + cos(dec)*sin(departure)*cos(bearing)
+    return (cos(ra)*local_x - sin(ra)*local_y,
+            sin(ra)*local_x + cos(ra)*local_y, z)
+
+
+_NO_LIGHT_TIME_CHORD_TOLERANCE = 5e-14
+# Comparison threshold for these conditioned synthetic/cache samples only,
+# roughly 0.01 microarcsec. Not a propagated measurement/model/error certificate.
+_NO_LIGHT_TIME_CASES = [
+    dict(ra=123., dec=-45., parallax=100., pmra=-111., pmdec=23., radial_velocity=44.),
+    dict(ra=359.999, dec=12., parallax=200., pmra=4000., pmdec=-2000., radial_velocity=-130.),
+    dict(ra=10., dec=90., parallax=30., pmra=1200., pmdec=300., radial_velocity=70.),
+    dict(ra=255., dec=-89.999999, parallax=100., pmra=-900., pmdec=1500., radial_velocity=-80.),
+    dict(ra=269., dec=4., parallax=550., pmra=-800., pmdec=10300., radial_velocity=-110.),
+    dict(ra=211., dec=32., parallax=50., pmra=0., pmdec=0., radial_velocity=60.),
+    dict(ra=72., dec=-9., parallax=10., pmra=0., pmdec=0., radial_velocity=0.),
+]
+
+
+@pytest.mark.parametrize('kind', ['full', 'angular', 'hip2'])
+@pytest.mark.parametrize('parameters', _NO_LIGHT_TIME_CASES)
+def test_stellar_no_light_time_spherical_reference(motion_source, kind, parameters):
+    """Protect source-to-query composition; existing affine/PV tests check the core."""
+    from fractions import Fraction
+    from math import degrees, dist, radians
+    from wenu_kernel.records import ObjectKey, TimeSpan
+    span = TimeSpan(TimePoint(-2000000, 0, 'tcb'), TimePoint(7000000, 0, 'tcb'))
+    if kind == 'hip2':
+        # Respect the synthetic fixed-width Hip2 record. Use its actual rounded
+        # source coordinates in the oracle; never compare to pre-capture values.
+        source = motion_source(hip2_change=dict(RArad=int(radians(parameters['ra'])*1e9)/1e9,
+            DErad=int(radians(parameters['dec'])*1e9)/1e9, pmRA=parameters['pmra'],
+            pmDE=parameters['pmdec']))
+        cat, provider, query = stellar_hip2_case(source, coverage=span)
+        native = next(source.records('hipparcos2_sources_v1.jsonl'))
+        parameters = dict(parameters, ra=degrees(native['RArad']), dec=degrees(native['DErad']))
+        target = '5'
+    else:
+        source = motion_source(parameters)
+        factory = stellar_motion_case if kind == 'full' else stellar_angular_case
+        cat, provider, query = factory(source, coverage=span)
+        target = '1'
+    original = source.products
+    record = cat.to_record()
+    epoch = next(r.source_epoch for r in cat.rows if r.identifier == target)
+    years = (0, -100, 100, -1000, 1000, -10000, 10000)
+    times = tuple(TimePoint(epoch.jd1 + int(Fraction(y)*1461//4),
+                           epoch.jd2 + float(Fraction(y)*1461/4 % 1), 'tcb')
+                  for y in years)
+    query = replace(query, objects=(ObjectKey('hipparcos:'+target),), times=times)
+    with Kernel(references=(query.reference,)) as kernel:
+        kernel.register(provider, ownership='owned')
+        with kernel.open_session(SessionPolicy((query.catalogue,))) as session:
+            batch = session.evaluate(query)
+    assert len(batch.states) == len(years)
+    for state, year, time in zip(batch.states, years, times):
+        expected = stellar_no_light_time_reference(parameters, year, angular=kind != 'full')
+        assert dist(state.vector, expected) <= _NO_LIGHT_TIME_CHORD_TOLERANCE
+        assert state.source_epoch == epoch and state.time == state.anchor_time == time
+        assert batch.query.model == query.model and state.reference == query.reference
+        assert state.evidence.measurement.status == state.evidence.physical_model.status == 'not_evaluated'
+    assert source.products == original and cat.to_record() == record
+    if kind != 'full':
+        assert record['policies']['distance'] == record['policies']['radial_velocity'] == 'not-used'
+
+
+@pytest.mark.parametrize('fault', ['drop_radial', 'exchange_xy_velocity'])
+def test_stellar_no_light_time_reference_detects_motion_fault(motion_source, monkeypatch, fault):
+    """A coherent wrong affine engine must fail the independent spherical oracle."""
+    from math import dist
+    from wenu import astrometric_state as engine
+    from wenu_kernel.records import ObjectKey, TimeSpan
+    src = _NO_LIGHT_TIME_CASES[1]
+    span = TimeSpan(TimePoint(-2000000, 0, 'tcb'), TimePoint(7000000, 0, 'tcb'))
+    cat, provider, query = stellar_motion_case(motion_source(src), coverage=span)
+    epoch = cat.rows[0].source_epoch
+    year = 10000
+    query = replace(query, objects=(ObjectKey('hipparcos:1'),),
+                    times=(TimePoint(epoch.jd1+3652500, epoch.jd2, 'tcb'),))
+    expected = stellar_no_light_time_reference(src, year, angular=False)
+    assert dist(provider.evaluate(query).states[0].vector, expected) < _NO_LIGHT_TIME_CHORD_TOLERANCE
+    coefficients = engine._motion_coefficients
+    def broken(row):
+        position, velocity = coefficients(row)
+        if row.identifier == '1':
+            if fault == 'drop_radial':
+                rate = sum(p*v for p,v in zip(position,velocity))/sum(p*p for p in position)
+                velocity = tuple(v-rate*p for p,v in zip(position,velocity))
+            else:
+                velocity = (velocity[1], velocity[0], velocity[2])
+        return position, velocity
+    monkeypatch.setattr(engine, '_motion_coefficients', broken)
+    # Both the engine's affine evaluation and its internal numerical check now
+    # see the same wrong coefficients; the external reference must expose it.
+    actual = provider.evaluate(query).states[0].vector
+    assert dist(actual, expected) > 1e-5
+    with pytest.raises(AssertionError):
+        assert dist(actual, expected) <= _NO_LIGHT_TIME_CHORD_TOLERANCE
+    provider.close()
