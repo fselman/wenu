@@ -1,5 +1,162 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.05 ancient-position uncertainty and missing-RV assessment, 2026-10-23
+
+**Authority and scope:** Fernando selected this bounded assessment with “Proceed”
+after PR #330 merge and confirmed clean synchronized Mac main/branch cleanup at
+`fde11d831e0a7c4b870eec8b7f7358c686e9bc60`. Plan committed before assessment
+outputs at `b4a24bb8c235f0a24b582de33079102f05bad9c5`. Source/method review,
+explicitly synthetic analytic examples and a next-step proposal only:
+no production covariance propagation, catalogue acquisition, RV prior,
+new model/SDK/certificate, source mutation or consumer adoption is implemented.
+Actual cached uncertainty-field inventory remains a separate Mac receipt.
+
+### As-is data and capability assessment
+
+Inspected existing owners: `stellar_enrichment.py`, `stellar_state.py`,
+`astrometric_state.py`, acquisition/profile JSON and
+`fetch_stellar_astrometry.py`; existing source/stellar/shared-core tests remain
+their acceptance owners. The prior PR #330 comparison establishes numerical
+agreement for the nominal motion model, not measurement/model accuracy.
+
+| Evidence in the current source design | What can be assessed next | Missing qualification |
+|---|---|---|
+| Gaia acquisition vocabulary includes five astrometric errors and ten correlations, RV/error, solution/quality flags and pseudocolour metadata | Reconstruct a per-source five-parameter covariance where actual fields are finite, correctly scaled and jointly consistent | Approved columns do not prove actual non-null row coverage. Snapshot validation checks schema/units and source lineage, but does not admit a positive-semidefinite covariance or validate every error/correlation semantically. |
+| Gaia angular models use only position and both PMs | Propagate the marginal four-parameter covariance through the actual normalized angular model | This is uncertainty conditional on the angular approximation; omitted perspective is a separate model effect. Dropping unused parallax dimensions means marginalization, not conditioning them to exact zero. |
+| Full Gaia model uses reciprocal positive parallax and a spectroscopic RV proxy | Conditional no-light-time measurement propagation with a six-dimensional input vector | RV correlations with astrometry are not supplied by the reviewed main-table error vocabulary. A block-diagonal extension is an explicit independence assumption, not measured zero covariance. RV errors omit unknown systemic/companion/convection corrections. |
+| Hip2 capture retains five formal errors, all 15 UW entries, Sn/So/Nc and the complete original row | Decode and validate covariance for suitably qualified solution types, using the corrected captured edition | Parser agreement with raw bytes is not covariance validation. Standard, extended/acceleration, stochastic, photocentre and VIM solutions must be distinguished. Extended solutions have separate annex parameters/weights not captured by this source profile. |
+| Original lookup retained for 263 entries absent from Hip2 | Preserve membership and disclose source gaps | No new PM, RV or uncertainty model is inferred for these lookup-only entries. |
+
+Primary-source review on 2026-10-23:
+
+- [Gaia DR3 main-table metadata](https://gaia.aip.de/metadata/gaiadr3/gaia_source/)
+  directly confirms error/correlation/RV vocabulary. The
+  [ESA DR3 data model](https://gea.esac.esa.int/archive/documentation/GDR3/Gaia_archive/chap_datamodel/sec_dm_main_source_catalogue/ssec_dm_gaia_source.html)
+  direct fetch returned 503; indexed primary text was available.
+  [Gaia EDR3 astrometric-solution paper](https://arxiv.org/abs/2012.03380)
+  confirms that solution code 95 adds pseudocolour: it is not an RV measurement
+  or six-dimensional space-motion solution. The five astrometric parameters'
+  covariance submatrix is a marginal covariance of that fitted solution; do not
+  condition on exact pseudocolour to claim smaller errors. Its angular RA error
+  convention is the local tangent increment `d(alpha*) = cos(delta)*d(alpha)`,
+  not the derivative of the product `alpha*cos(delta)`; no second cosine factor.
+- [CDS I/311 ReadMe](https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/I/311?format=html&tex=true)
+  was read directly. Note G1 gives `C^-1 = U^T U`, with packed columns
+  `(u1); (u2,u3); (u4,u5,u6); (u7,u8,u9,u10); (u11,...,u15)`.
+  Validate units/RA convention, invertibility, conditioning and diagonal
+  agreement with formal errors. Do not interpret weights as correlations,
+  automatically multiply by formal errors again, or assume a leading weight
+  block supplies the full marginal covariance of an extended solution.
+  Missing annexes/semantics require disclosure or refusal, not a fabricated
+  diagonal covariance. No annex acquisition is selected.
+- [Butkevich & Lindegren (2014)](https://arxiv.org/pdf/1407.4664), Sect. 5.5,
+  Appendix C and Appendix E, supplies the matched no-light-time Jacobian and
+  its model limitations. Covariance propagation is a local uncertainty
+  approximation, distinct from the rigorous finite-light-speed model and from
+  Galactic/companion dynamics. This assessment does not implement them.
+
+### Measurement propagation proposal
+
+Proposed first deliverable is an explicit offline report, retaining the current
+production models and their unknown error channels. Reconstruct `C0` with
+`Cij = rho_ij * sigma_i * sigma_j` for qualified Gaia rows, with declared order
+`(alpha*, delta, parallax, pmra*, pmdec)` and mixed units converted consistently.
+Check required fields, symmetry, finite/nonnegative variances, correlation range
+and positive semidefiniteness/conditioning; range checks alone are insufficient.
+Report numerical-rounding tolerances, and refuse invalid matrices instead of
+silently clipping correlations, adding jitter or zero-filling gaps. A singular
+positive-semidefinite covariance is not automatically invalid; distinguish it
+from an indefinite matrix and from singular propagation geometry.
+
+Propagate the admitted nominal mapping using `Ct = J C0 J^T`, expressed in the
+target tangent plane or as a constrained direction-vector covariance to avoid
+longitude/pole singularities. Independent finite differences and labelled Monte
+Carlo cases should verify the analytic Jacobian within a stated linear regime.
+Check source epoch, both elapsed-time signs and long intervals. Nonlinearity,
+low parallax S/N or close passages can invalidate Gaussian/first-order
+interpretation even when nominal propagation remains mathematically defined.
+
+A useful limiting check is one tangent coordinate:
+`variance(t) = variance(0) + 2*t*cov(position,PM) + t^2*variance(PM)`.
+For illustration only, neglecting the initial term/correlation, synthetic PM
+standard errors 0.03 and 1 mas/yr imply 0.03 and 1 arcsec after 1,000 years,
+or 0.3 and 10 arcsec after 10,000 years. These are not measurements of the
+selected Orion/Big Dipper stars. Covariance ellipse axes are statistical
+standard deviations, not a guaranteed angular radius; joint confidence also
+needs an explicit probability/distribution convention. Input-date uncertainty,
+frame/precession uncertainty and correlated systematics remain separate channels.
+
+### Missing-RV sensitivity: analytic assessment
+
+For the unchanged no-light-time model, define total angular PM `mu`, initial
+distance `D`, and radial rate `rho = vr/D`, in compatible units. Angular
+departure along the source great circle is
+`phi(t) = atan2(mu*t, 1 + rho*t)`. Direct differentiation gives
+
+`dphi/drho = -mu*t^2 / ((1+rho*t)^2 + (mu*t)^2)`.
+
+Multiplying by `drho/dvr = 1/D` gives local angular sensitivity per velocity
+unit. For a finite RV interval use exact endpoint/scenario calculations and
+check domain/closest-approach issues; do not extrapolate this derivative into
+a global bound. When both `abs(rho*t)` and `abs(mu*t)` are small,
+`abs(delta_phi) approximately mu*abs(delta_vr)*t^2/D`.
+The expression follows from the already adopted no-light-time equations;
+it is not an extra light-time or gravitational correction.
+
+Explicit synthetic examples, evaluated with Astropy unit conversion and the
+analytic derivative at the hypothetical scenario `vr=0`:
+
+| Initial PM (mas/yr) | Distance (pc) | Elapsed years | Local sensitivity (arcsec per km/s) |
+|---:|---:|---:|---:|
+| 100 | 100 | 1,000 | 0.0010227119 |
+| 100 | 100 | 10,000 | 0.10226881 |
+| 1,000 | 10 | 1,000 | 0.10226881 |
+| 1,000 | 10 | 10,000 | 10.203140 |
+
+Independent finite scenario differences between hypothetical RV 0 and +1 km/s
+were respectively 0.0010227015, 0.10225835, 0.10225835 and 10.192740 arcsec.
+The difference from the derivative is finite-step nonlinearity, not a production
+error. Scenario zero is not an adopted missing RV or a measured value.
+These illustrations show why no common lookback cutoff follows from PM
+availability alone. If distance is missing or unqualified, physical sensitivity
+per km/s cannot be inferred; report sensitivity to the unspecified radial rate
+and the unresolved distance/RV product instead. Even zero instantaneous PM
+does not establish absence of orbital acceleration.
+
+With measured RV/error, a conditional statistical contribution is possible
+subject to the documented proxy/independence assumptions. Without measured RV
+there is no measured RV variance: report sensitivity or caller-declared,
+explicitly hypothetical scenarios, not a Gaussian sigma or finite physical
+accuracy guarantee. No default velocity distribution/bound is selected here.
+
+### Limits and concrete next gate
+
+Formal catalogue covariance does not include all source/frame systematics,
+binary/photocentre versus systemic motion, long-term acceleration, uncertain
+time convention, or omitted dynamics/light time. Keep these visible even for
+a small formal ellipse; quality flags are diagnostics, not identity vetoes,
+and a universal RUWE threshold is not introduced. Do not blindly extrapolate
+Hip2 acceleration polynomials over millennia.
+
+The next proposed numerical slice is a read-only offline uncertainty/sensitivity
+report in the existing stellar audit owner, with no mutation of native models,
+SDK evidence or source snapshots. Start with qualified Gaia five-parameter
+measurement covariance and angular four-parameter marginals, then an explicitly
+declared RV-independence option for full-input models; defer Hip2 decoding until
+encoding/solution-type checks have independent evidence. A six-parameter Gaia
+fit can later use the qualified marginal five-parameter matrix without pretending
+its pseudocolour is an RV.
+
+Proposed acceptance: synthetic diagonal/correlated/PSD/indefinite/missing-input,
+pole/wrap, epoch-zero and both-time-sign cases; analytic versus independent
+finite-difference/Monte Carlo checks; RV derivative versus finite scenarios;
+clear matrix/order/unit/proxy/coverage identity, no implicit missing values or
+false confidence bounds; actual existing-cache counts and selected-star output
+verified separately on the Mac. The exact report format, owner edits and bounded
+implementation still need Fernando's selection and a committed plan.
+K4b.05 parent, ESA comparisons, issue #326 and K4b.06 remain open.
+
+
 ## K4b.05 no-light-time reference implementation, 2026-10-23
 
 Fernando selected the bounded numerical comparison with “Proceed” after PR #329

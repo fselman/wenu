@@ -63,7 +63,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.05 no-light-time comparison passed full Mac gates at 5da8220f in PR #330: 334 focused/nine subtests, 125 audit, 36 documentation, eight tooling/81 subtests, and 133 actual cached directions across 16 HIPs; accepted solution digests unchanged |
-| Next bounded submilestone | K4b.05 bounded ancient-position uncertainty/missing-RV assessment selected by Fernando's “Proceed”; production uncertainty/model implementation and K4b.06 remain separate |
+| Next bounded submilestone | K4b.05 uncertainty/missing-RV assessment delivered; complete Mac documentation/field-inventory receipt pending. Offline uncertainty/sensitivity report implementation is proposed, not selected; production uncertainty/model changes and K4b.06 remain separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -96,8 +96,11 @@ admission, model/SDK/source mutation, default switches or K4b.06 adoption.
 Unknown physical and total errors remain unknown. A numerical threshold or
 formal confidence ellipse cannot silently become a physical upper bound.
 Use the documentation gate; any actual cached-field inventory remains a
-separate Mac receipt. Commit this plan before implementation of assessment
-outputs. K4b.05 parent, ESA comparisons and issue #326 remain separate.
+separate Mac receipt. The plan was committed at `b4a24bb8` before assessment outputs. The
+[assessment](kernel_migration_audit_v1.md#k4b05-ancient-position-uncertainty-and-missing-rv-assessment-2026-10-23)
+now records existing-schema limits, conditional covariance/unknown-RV distinctions,
+synthetic analytic sensitivity examples and an offline-report proposal. No actual
+cached-field inventory or new covariance/sensitivity runtime is claimed. K4b.05 parent, ESA comparisons and issue #326 remain separate.
 
 ## K4b.05: no-light-time numerical comparison
 
