@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 91, 2026-10-23. **Status:** PR #332's bounded offline Gaia uncertainty report is accepted for merge at tested `652087cb`: 158 audit, 36 documentation and eight tooling cases/81 subtests passed on the Mac. The actual cache report and selected-star/percentile review are complete; all 115,105 Gaia matrices passed as positive definite. Fernando selected merge/cleanup, followed by bounded Hip2 covariance qualification. A clean synchronized merged Mac base and a committed bounded plan precede that implementation; production model/SDK/source uncertainties remain unchanged.
+**Plan revision:** 92, 2026-10-23. **Status:** PR #332 is merged; Fernando confirmed clean synchronized Mac main `5971acb9`, merged-branch cleanup and 36 documentation tests in 3.55 s. The previously selected next slice is bounded offline Hipparcos-2 standard five-parameter covariance qualification. Plan below precedes implementation. No propagation/provider uncertainty admission or source mutation is selected.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -76,6 +76,50 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4b.05: Hipparcos-2 standard covariance qualification
+
+Fernando selected this next qualification with “Proceed” after the Gaia
+report review, followed by confirmed clean synchronized Mac main `5971acb9`
+and PR #332 branch cleanup. As-is: complete 276-byte Hip2 records and UW/error
+fields are already preserved in the immutable source. The accepted offline
+audit owns source diagnostics; its test file and report staging owner remain
+the correct boundaries. The Gaia covariance/report implementations stay intact.
+
+Primary CDS layout and Michalik et al. (2014), Appendix B, clarify that CDS UW
+values require diagonal scaling using quoted formal errors and the unit-weight
+error recovered from Ntr/F2. Verify the published-error covariance convention
+separately from the paper's catalogue-combination weighting policy; do not
+blindly invert raw UW or apply Gaia error/correlation construction to Hip2.
+
+Add an explicit maintenance-only qualification mode reading the existing
+manifest-bound source, with a small declarative corrected-CDS layout/reference
+resource (not an acquisition-profile change). Qualify only Sn modulo 10 = 5;
+retain double/photocentre/secondary flags without identity veto. Decode Ntr/F2
+from preserved original bytes, validate units/edition, packing/scaling,
+invert via triangular solve, and report numerical residuals, conditioning and
+diagonal agreement with quoted errors. Decimal quantization is disclosed;
+diagonal ratios remain diagnostics, not a new empirical acceptance threshold
+or silently forced agreement. All retained HIPs and source gaps remain explicit.
+Report fallback applicability separately from all-standard-row qualification.
+
+No additional catalogue/annex acquisition, source/snapshot/provider/SDK mutation,
+Hip2 positional-error propagation, full RV covariance, physical lookback/domain
+certificate, epoch-scale resolution, renderer/default change or package.
+Issue #326, nonstandard solution marginalization and K4b.05 parent remain open.
+
+Acceptance: existing gaia-crossmatch-audit owner plus documentation/tooling;
+synthetic non-unit scaling, column-wise packed order, off-diagonal preservation,
+formal-versus-combination convention, invalid/singular/unknown-edition/unit and
+nonstandard-solution refusals, independent covariance reconstruction and
+shared report/CLI source-identity/no-clobber seams. Closest existing tests:
+`test_uncertainty_covariance_marginal_singular_and_small_negative`,
+`test_uncertainty_snapshot_cli_offline_lineage_and_no_clobber` and
+`test_enrichment_round_trip_immutable_values_and_fallback`.
+Deliberate packing/scaling faults must fail nearest tests before restoration.
+The existing corrected raw Hip2 bytes may be checked read-only locally with
+exact provenance; actual combined-source/fallback counts remain a separate
+Mac report. Commit this plan before adding the decoder.
 
 ## K4b.05: offline Gaia uncertainty and missing-RV sensitivity report
 
