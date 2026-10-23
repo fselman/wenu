@@ -195,6 +195,42 @@ physical/source error still unknown. No SDK, dependency/build,
 renderer/product or source-snapshot schema change is made; broader no-PM/Hip2
 qualification work is not closed by this measured-PM implementation.
 
+### Long-term frame orientation
+
+K4b.04 extends the existing astrometric convention tests and stellar composition
+owner. It checks published ERFA ltpb/ltecm regression matrices, independently
+reconstructed pole/equinox triads (shared coefficients, independent geometry),
+near-modern pmat06/ecm06 comparisons, remote endpoints and exact negative-year
+TT domains, norm/handedness/inverse checks and independent 80-digit Decimal
+matrix application. These are library/arithmetic/adapter checks, not an
+independent physical precession integration. Sampled 1900-2100 discrepancies
+reach about 0.647 mas equatorial and 0.280 mas ecliptic; tests retain a <1 mas
+diagnostic threshold rather than assert uniform 100-microarcsecond agreement.
+
+Explicit TT versus native TCB, exact-epoch/backend/domain identity, unknown
+accuracy refusal, invalid backend/cause preservation and dropped-bias fault
+injection are covered. Actual SDK derived views preserve original states and
+refuse mismatched/reordered/partial/velocity inputs after success. Both Gaia
+and Hip2 composition paths block observer/Astropy/network during orientation;
+existing cold native paths remain scientific-import-free.
+
+Local result: 54 new cases; combined stellar/shared-core/cluster/source-audit
+owners pass 433 cases and nine subtests. Three existing application cases need
+missing partial-checkout dependencies/files; all remain in the complete Mac gate.
+Use existing stellar-motion-provider/source-audit/documentation/tooling selections.
+SDK/numerical core/source data are unchanged. Complete Mac acceptance at
+`97921fe83ca97fa6c8be932247a9eb93bf438975`, PR #328, passed 311 focused cases and
+nine subtests (10.02 s), 125 audit (2.23 s), 36 documentation (2.51 s) and
+eight tooling cases with 81 subtests (8.59 s), without exclusions. All 48
+actual derived directions passed the independent 80-digit Decimal matrix
+application; maximum vector chord difference `1.576213700060856e-16`.
+Accepted Gaia full/angular and Hip2 angular digests are unchanged. Modern
+comparison maxima are 0.646561/0.279190 mas (equatorial/ecliptic); these are
+inter-model diagnostics, not physical bounds. Exact receipt, backend versions,
+Mac matrix-bound model identities and poles are retained under
+`long_term_frame_orientation.mac_acceptance` in the inventory. Last-bit matrix
+differences across platforms may legitimately produce different bound IDs.
+
 ### Historical date/time semantics
 
 K4b.03 extends the existing `test_astrometric_state.py` calendar/convention owner

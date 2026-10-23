@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 81, 2026-10-23. **Status:** The bounded K4b.03 historical date/time input passed complete Mac acceptance at ceeb894b in PR #327, which remains unmerged. No next runtime item is selected. K4b.04–K4b.06 and original Hipparcos time-scale qualification (issue #326) remain separate.
+**Plan revision:** 83, 2026-10-23. **Status:** The bounded K4b.04 explicit long-term mean-frame slice passed complete Mac acceptance at 97921fe8 in PR #328, which remains unmerged. No next runtime item selected. K4b.05/K4b.06, physical/total accuracy and issue #326 remain separate.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -62,8 +62,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.03 historical date/time input passed Mac acceptance in PR #327 at ceeb894b: explicit calendar/year/scale/date uncertainty and 24 actual native stellar historical states; all accepted Gaia/Hip2 digests unchanged |
-| Next bounded submilestone | Not selected. PR #327 is ready for review after receipt recording; merge/cleanup requires Fernando’s separate instruction. K4b.04–K4b.06 and issue #326 remain separate |
+| Current bounded result | K4b.04 explicit long-term mean axes passed Mac acceptance in PR #328 at 97921fe8: 311 focused, 125 audit, 36 documentation, eight tooling/81 subtests and 48 actual derived directions; accepted stellar digests unchanged |
+| Next bounded submilestone | Not selected. PR #328 is ready for review after receipt recording; merge/cleanup requires Fernando’s separate instruction. K4b.05/K4b.06 and issue #326 remain separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -76,6 +76,82 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4b.04: long-term frame orientation
+
+Fernando selected this step with “Proceed” on 2026-10-23 after the proposal
+covering existing precession implementations, model/domain/accuracy limits,
+independent ancient/future checks, and separation from stellar motion and
+historical horizon reconstruction. Base: clean synchronized Mac main
+`e2a231b5220c3df3670d383fa0e3ee66addbeeb4`; prior branch cleanup confirmed.
+
+As-is: CoordinateService delegates existing FK4/FK5/ecliptic/observer routes to
+Astropy and does not admit a separately named long-term frame model. Existing
+astrometric_coordinates owns explicit time/spatial convention receipts, while
+SDK state records preserve native ICRS directions. Extend that existing domain
+convention owner and test_astrometric_state, with a narrow composed stellar
+test in the existing stellar owner. Do not change CoordinateService defaults,
+SDK records/pins or propagation/source owners.
+
+Use the corrected Vondrak, Capitaine & Wallace 2011/2012 model via installed
+ERFA ltpb/ltecm, not a copied coefficient implementation. Admit a separately
+explicit mean equator/equinox or mean ecliptic/equinox orientation, including
+ICRS frame bias, with a caller-selected finite TT domain inside J2000 +/-
+200000 Julian years. The frame equinox must be an explicitly declared TT
+TimePoint; it is independent of each native state’s TCB evaluation epoch.
+No TCB-to-TT relabel/conversion or implicit observer epoch is permitted.
+Record exact input two-part equinox, rounded backend Julian epoch, backend/
+model identity, immutable matrix/pole, domain and convention limits.
+
+SOFA section 7 and ERFA function contracts describe historical accuracy of
+a few arcseconds, degrading to tenths of a degree at the remote endpoints.
+These qualitative descriptions are not a certified per-epoch upper bound.
+Keep physical/date/model and total direction uncertainty unqualified; a request
+for a numerical physical-accuracy guarantee must refuse. Retain first-order
+frame-bias approximation explicitly. No nutation, polar motion, Earth rotation,
+historical EOP/Delta-T, observer translation, aberration or light time.
+
+Expose immutable orientation receipts and an explicit derived direction-batch
+view that preserves the original SDK batch/source epoch/evaluation time and
+source uncertainty. This does not re-admit or overwrite a native model or
+create a Cartesian/velocity transform. Existing chart/geometry consumers remain
+on their accepted routes until K4b.06. No acquisition, source change, dependency,
+SDK change, new module or automatic model switch is selected.
+
+Acceptance: published ERFA regression matrices (reference-library conformity,
+not independent physical integration), independent pole/equinox triad geometry,
+near-modern IAU 2006 comparison, long-domain endpoints/negative years, matrix
+handedness/norm/round-trip and Decimal matrix-vector checks; identity/bias/
+equinox/domain/refusal and malformed backend checks after success; actual SDK
+batch composition preserving source/time/model identities and uncertainty;
+native cold paths remain scientific-import-free and orientation evaluation
+requires no EOP/network. Use existing stellar/shared-core/cluster and source-
+audit gates plus documentation/tooling; complete Mac acceptance separate.
+Model physical accuracy remains a qualified limitation, not a newly measured
+claim. K4b.05/K4b.06 and issue #326 remain open. This plan was committed at
+79ea2b9d before implementation. The explicit frame receipt and derived batch
+view are now present in the existing owner. Local checks pass 54 new cases;
+combined stellar/shared-core/cluster/source-audit owners pass 433 cases and
+nine subtests, with three existing full-application cases retained for the
+complete Mac gate. Independent geometry/Decimal/library checks do not certify
+physical dynamics. Measured ERFA pmat06/ecm06 comparisons over 1900-2100 reach
+about 0.647/0.280 mas; no uniform 100-microarcsecond agreement is promised.
+**Mac acceptance, 2026-10-23:** Fernando supplied the complete receipt for
+`97921fe83ca97fa6c8be932247a9eb93bf438975`, PR #328. All 311 focused cases and
+nine subtests (10.02 s), 125 source-audit (2.23 s), 36 documentation (2.51 s)
+and eight tooling cases/81 subtests (8.59 s) passed without exclusions.
+The actual immutable snapshot retains 115,105 Gaia and 2,850 Hip2 angular
+models; accepted Gaia full/angular and Hip2 angular digests are unchanged.
+Forty-eight derived directions over eight frame admissions (two mean axes at
+TT Julian epochs -10000, -1000, 2000 and 12000) passed an independent 80-digit
+Decimal matrix-application check; maximum vector chord difference is
+`1.576213700060856e-16`. Measured modern inter-model differences are about
+0.646561 mas equatorial and 0.279190 mas ecliptic. Exact Mac model IDs/poles and
+backend versions are retained in the inventory; matrix-bound IDs need not be
+bit-identical across platforms with last-bit numerical differences. This is
+arithmetic/reference-library evidence, not a physical/total accuracy certificate.
+PR #328 remains unmerged; no next runtime item selected. K4b.05/K4b.06 and
+issue #326 remain separate.
 
 ## K4b.03: historical date and time semantics
 
@@ -134,8 +210,7 @@ All accepted Gaia full/angular and Hip2 angular coefficient digests are unchange
 115,105 Gaia and 2,850 Hip2 angular models remain available. Maximum independent
 80-digit Decimal affine-oracle vector chord difference: `2.486410087150353e-16`.
 This checks arithmetic/native event semantics, not physical/historical dating,
-observer or precession accuracy. PR #327 remains unmerged; no next runtime
-item is selected. K4b.04–K4b.06 and issue #326 are not closed.
+observer or precession accuracy. PR #327 is merged at e2a231b5; Mac synchronization and branch cleanup are confirmed. K4b.04 is selected below; K4b.05–K4b.06 and issue #326 remain separate.
 
 ## K4b.02: Hipparcos-2 fallback qualification
 
@@ -1309,7 +1384,7 @@ remain its separate responsibilities.
 | K4b.01 | Real star adapter/full-input propagation through the shared core | Accepted Mac receipt at PR #321/ec6a35e2: 86 stellar/core cases + nine subtests, 125 source audit, 36 documentation, eight tooling + 81 subtests; 97,710 full-input models, all 118,218 HIP objects retained. Reduced models/product adoption separate |
 | K4b.02 | Adopt admitted incomplete-input models and configured lookback/error/refusal policies for real stars | Measured-PM angular slice passed Mac acceptance in PR #323 at 41c47e16; nominal-TCB Hip2 fallback also passed Mac acceptance in PR #325 at d71ee8da; source time-scale qualification remains issue #326, and no-PM/other missing-input scopes remain pending. No invented measurements |
 | K4b.03 | Admit explicit historical time/calendar/year-zero/BCE and source/input-date uncertainty semantics | Bounded explicit input/receipt slice passed Mac acceptance in PR #327 at ceeb894b: 257 focused, 125 audit, 36 documentation, eight tooling/81 subtests and 24 actual historical states. No implicit civil-clock/TT-to-TCB/observer reconstruction or total uncertainty claim |
-| K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Pending; independent model/domain/uncertainty admission, not extrapolated modern EOP |
+| K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Bounded explicit long-term mean-axis slice passed Mac acceptance in PR #328 at 97921fe8; 48 actual derived directions, finite TT domain and unknown physical/total error. No observer/EOP reconstruction or chart/default adoption |
 | K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references | Pending; K4b.01–K4b.04; no universal DR4 improvement factor |
 | K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | Pending K4b closure; K3 stellar/figure/label consumers and accepted science/visual criteria |
 

@@ -1,16 +1,20 @@
-"""Explicit barycentric time and spatial scaling, independent of object type.
+"""Explicit astrometric time, spatial and long-term frame conventions.
 
 This boundary changes conventions, not a trajectory or an observer origin.
 It admits no UTC/TT conversion, ephemeris, apparent place or light-time model.
 Authorities reviewed 2026-10-19: IAU 2006 B3 and IERS Conventions (2010) §1.2.
+Long-term axes reviewed 2026-10-23: corrected VCW 2011/2012 via ERFA/SOFA.
 """
 from dataclasses import dataclass
 from fractions import Fraction
 from hashlib import sha256
-from math import inf, isfinite, nextafter
+from math import fsum, hypot, inf, isfinite, nextafter
 
-from wenu_kernel.errors import InvalidQuery, OutsideCoverage, ResourceMismatch, TimeConversionUnavailable
-from wenu_kernel.records import CartesianState, ModelAdmission, ModelRef, StateBatch, TimePoint, TimeSpan
+from wenu_kernel.errors import (
+    AccuracyUnavailable, InvalidProviderResult, InvalidQuery, OutsideCoverage,
+    ProviderEvaluationError, ResourceMismatch, TimeConversionUnavailable,
+)
+from wenu_kernel.records import CartesianState, DirectionState, ModelAdmission, ModelRef, StateBatch, TimePoint, TimeSpan
 from wenu_kernel.time import TimeConversion, TimeConversionAdmission
 from wenu_kernel.time import TimeService
 
@@ -299,3 +303,200 @@ def convert_barycentric_batch(batch, *, admission, source_coordinate_scale, time
         errors = tuple(_upper(abs(Fraction(x) - y)) for x, y in zip(position, exact_position))
         result.append(BarycentricStateConversion(state, receipt, position, errors))
     return BarycentricBatchConversion(batch, admission, time_admission, tuple(result))
+
+
+LONG_TERM_FRAME_POLICY = 'vcw2011-2012-erfa'
+LONG_TERM_FRAME_PROVENANCE = (
+    'https://doi.org/10.1051/0004-6361/201117274',
+    'https://doi.org/10.1051/0004-6361/201117274e',
+    'https://www.iausofa.org/s/sofa_pn_c.pdf#page=35',
+    'ERFA derived from SOFA; corrected 2011/2012 long-term model, including first-order ICRS frame bias',
+    'TT frame equinox is independent of native state evaluation time; no implicit TCB/TT conversion',
+    'No nutation, Earth rotation, polar motion, observer translation, aberration or light time',
+    'Published qualitative accuracy is not a certified per-epoch physical/total error bound',
+)
+
+
+def _tt_jyear(time):
+    return Fraction(2000) + (Fraction(time.jd1-2451545)+Fraction(time.jd2))/Fraction(1461, 4)
+
+
+def _frame_vector(vector):
+    if type(vector) not in (tuple, list) or len(vector) != 3:
+        raise InvalidQuery('Expected a three-component unit direction.')
+    if any(type(x) not in (int, float) or isinstance(x, bool) for x in vector):
+        raise InvalidQuery('Direction components must be finite real numbers.')
+    try:
+        v = tuple(float(x) for x in vector)
+    except OverflowError as exc:
+        raise InvalidQuery('Direction component overflow.') from exc
+    if not all(isfinite(x) for x in v) or abs(hypot(*v)-1) > 2**-40:
+        raise InvalidQuery('Expected a finite unit direction, not a Cartesian position.')
+    return v
+
+
+@dataclass(frozen=True, slots=True, init=False)
+class LongTermFrame:
+    """Explicit, immutable mean axes at a TT equinox, with finite admission.
+
+    Existing ERFA supplies the corrected Vondrak/Capitaine/Wallace model.
+    This is an axis orientation only. Its epoch is not the source epoch or
+    native TCB state time. There is no observer model or total accuracy claim.
+    Importing this module/native propagation does not import ERFA or NumPy.
+    """
+    equinox: TimePoint
+    validity: TimeSpan
+    axes: str
+    backend_jyear_tt: float
+    epoch_rounding_s: float
+    backend_versions: tuple[str, str, str]
+    matrix: tuple[tuple[float, float, float], ...]
+    model: ModelRef
+    provenance: tuple[str, ...]
+    physical_error_rad: None = None
+    numerical_error_rad: None = None
+
+    def __init__(self, *, equinox, validity, axes, model_policy,
+                 maximum_physical_error_rad=None):
+        if type(equinox) is not TimePoint:
+            raise InvalidQuery('Frame equinox must be an explicit TT TimePoint.')
+        if equinox.scale != 'tt':
+            raise TimeConversionUnavailable('Long-term frame equinox requires TT; no scale relabelling.')
+        if type(validity) is not TimeSpan or validity.start.scale != 'tt':
+            raise InvalidQuery('Explicit finite TT frame validity is required.')
+        if (type(axes) is not str or axes not in ('mean-equator-equinox', 'mean-ecliptic-equinox')
+                or type(model_policy) is not str or model_policy != LONG_TERM_FRAME_POLICY):
+            raise InvalidQuery('Explicit supported long-term axes and model policy are required.')
+        lower, upper = Fraction(-198000), Fraction(202000)
+        if (_tt_jyear(validity.start) < lower or _tt_jyear(validity.stop) > upper
+                or not validity.contains(equinox)):
+            raise OutsideCoverage('Outside caller/model long-term TT frame domain.', time=equinox)
+        if maximum_physical_error_rad is not None:
+            try:
+                valid_error = (type(maximum_physical_error_rad) in (int, float)
+                               and isfinite(maximum_physical_error_rad)
+                               and maximum_physical_error_rad >= 0)
+            except OverflowError:
+                valid_error = False
+            if not valid_error:
+                raise InvalidQuery('Requested physical error must be finite and nonnegative.')
+            raise AccuracyUnavailable('No certified physical frame-error bound is admitted.', time=equinox)
+        exact_year = _tt_jyear(equinox)
+        epoch = float(exact_year)
+        error_s = _upper(abs(Fraction(epoch)-exact_year)*31557600)
+        try:
+            import erfa
+            versions = (str(erfa.__version__), str(erfa.version.erfa_version),
+                        str(erfa.version.sofa_version))
+            backend = erfa.ltpb if axes == 'mean-equator-equinox' else erfa.ltecm
+            raw = backend(epoch)
+        except Exception as exc:
+            raise ProviderEvaluationError('Long-term frame backend failed.', time=equinox) from exc
+        try:
+            matrix = tuple(tuple(float(v) for v in row) for row in raw)
+            if len(matrix) != 3 or any(len(row) != 3 for row in matrix):
+                raise ValueError('shape')
+            if not all(isfinite(x) for row in matrix for x in row):
+                raise ValueError('nonfinite')
+            # First-order frame bias is not an exact 3D rotation. Admit only
+            # the documented near-orthogonal right-handed matrix, not a scale,
+            # reflection or arbitrary backend payload.
+            for i in range(3):
+                for j in range(3):
+                    if abs(fsum(a*b for a,b in zip(matrix[i],matrix[j]))-(i == j)) > 2**-40:
+                        raise ValueError('not near orthogonal')
+            a,b,c = matrix
+            determinant = (a[0]*(b[1]*c[2]-b[2]*c[1])
+                           -a[1]*(b[0]*c[2]-b[2]*c[0])+a[2]*(b[0]*c[1]-b[1]*c[0]))
+            if abs(determinant-1) > 2**-39:
+                raise ValueError('handedness')
+        except Exception as exc:
+            raise InvalidProviderResult('Invalid long-term frame matrix.', time=equinox) from exc
+        # Identity includes domain, exact TT event, backend versions, actual
+        # matrix bytes (hex floats), and the epoch given to the backend.
+        import json
+        binding = dict(policy=model_policy, axes=axes,
+            equinox=(equinox.jd1, equinox.jd2.hex(), equinox.scale),
+            validity=((validity.start.jd1, validity.start.jd2.hex()),
+                      (validity.stop.jd1, validity.stop.jd2.hex())),
+            backend_versions=versions, backend_jyear_tt=epoch.hex(),
+            matrix=[[x.hex() for x in row] for row in matrix])
+        model = ModelRef('wenu.astrometry:long-term-frame', '1',
+            sha256(json.dumps(binding, sort_keys=True, separators=(',', ':')).encode()).hexdigest(), ())
+        values = dict(equinox=equinox, validity=validity, axes=axes,
+            backend_jyear_tt=epoch, epoch_rounding_s=error_s, backend_versions=versions,
+            matrix=matrix, model=model, provenance=LONG_TERM_FRAME_PROVENANCE,
+            physical_error_rad=None, numerical_error_rad=None)
+        for name,value in values.items():
+            object.__setattr__(self, name, value)
+
+    @property
+    def pole_icrs(self):
+        """Model's pole covector expressed on ICRS axes, normalized."""
+        row = self.matrix[2]
+        norm = hypot(*row)
+        return tuple(v/norm for v in row)
+
+    def rotate(self, vector):
+        """Express an ICRS unit direction on these mean axes, not propagate it.
+
+        Normalize after the first-order bias matrix application. No distance,
+        PV or uncertainty certificate is created by this derived view.
+        """
+        v = _frame_vector(vector)
+        raw = tuple(fsum(a*b for a,b in zip(row,v)) for row in self.matrix)
+        norm = hypot(*raw)
+        if not isfinite(norm) or norm == 0:
+            raise InvalidProviderResult('Invalid transformed direction.')
+        return tuple(x/norm for x in raw)
+
+
+@dataclass(frozen=True, slots=True)
+class OrientedDirection:
+    """Derived direction; original native state/evidence remain authoritative."""
+    original: DirectionState
+    vector: tuple[float, float, float]
+
+
+@dataclass(frozen=True, slots=True)
+class OrientedDirectionBatch:
+    original: StateBatch
+    admission: ModelAdmission
+    orientation: LongTermFrame
+    states: tuple[OrientedDirection, ...]
+
+
+def orient_direction_batch(batch, *, admission, orientation):
+    """Explicit full native ICRS batch view; never mutate/adopt native states.
+
+    The TT equinox is chosen independently and may differ from every state's
+    TCB time. No equality of physical events is inferred. This is not a new SDK
+    batch or reuse certificate, and cannot be fed back as a native query result.
+    """
+    if (type(batch) is not StateBatch or type(admission) is not ModelAdmission
+            or type(orientation) is not LongTermFrame):
+        raise InvalidQuery('Typed SDK batch/admission and explicit long-term frame required.')
+    q,ref = batch.query,admission.reference
+    if (q.catalogue != admission.catalogue or q.model != admission.model or q.reference != ref
+            or not set(q.objects).issubset(admission.objects)):
+        raise ResourceMismatch('Native direction batch does not match expected admission.')
+    if (ref.frame_id != 'icrs' or ref.origin_id != 'solar-system-barycenter'
+            or ref.status != 'nominal-astrometric' or ref.representation != 'direction'
+            or ref.units != 'rad' or 'epoch_direction' not in admission.capabilities
+            or q.evaluation_policy != 'full_model' or q.coverage is not None
+            or q.require_velocity or batch.reuse_certificates or batch.reuse_plan):
+        raise InvalidQuery('Only full native ICRS epoch-direction batches are admitted.')
+    expected = [(t,k) for t in q.times for k in q.objects]
+    if len(expected) != len(batch.states):
+        raise InvalidQuery('Incomplete native direction batch.')
+    result = []
+    for state,(time,key) in zip(batch.states,expected):
+        if (type(state) is not DirectionState or state.object_key != key or state.time != time
+                or state.anchor_time != time or state.reference != ref
+                or state.source_epoch is None or state.certificate_id is not None):
+            raise InvalidQuery('Native state identity/time/reference mismatch.')
+        if (not admission.coverage.contains(time) or any(not r.coverage.contains(time)
+                for r in (*admission.catalogue.resources,*admission.model.dependencies))):
+            raise OutsideCoverage('Outside native source/model coverage.', time=time)
+        result.append(OrientedDirection(state, orientation.rotate(state.vector)))
+    return OrientedDirectionBatch(batch, admission, orientation, tuple(result))

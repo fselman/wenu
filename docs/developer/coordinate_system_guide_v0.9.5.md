@@ -1,5 +1,21 @@
 # Wenu coordinate systems, time and astronomical objects
 
+## Separately admitted long-term mean axes
+
+LongTermFrame in the existing astrometric convention owner expresses ICRS unit
+directions on corrected Vondrak/Capitaine/Wallace mean equatorial/ecliptic axes.
+It requires a TT equinox and explicit finite TT validity within J2000 +/-200000
+Julian years. Frame bias is included; nutation and Earth/horizon/observer
+orientation are not. A native star can be evaluated at a TCB epoch while its
+view uses a separately chosen TT equinox. The API preserves both labels and
+does not infer a conversion or equality of physical events.
+
+Original source/state/model/time/uncertainty records remain authoritative;
+only a derived direction view changes components. No ordinary CoordinateService
+or chart route changes. Published model-domain descriptions and modern
+inter-model comparisons do not provide a per-epoch physical-error bound.
+See the [frame API](implementation_reference.md#explicit-long-term-frame-orientation).
+
 ## Explicit historical calendar dates
 
 `HistoricalDate` in the existing astrometric convention boundary accepts

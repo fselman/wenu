@@ -289,6 +289,25 @@ chart/saved consumers, full-input SI/model identities and cluster adapters are
 unchanged. The separately explicit Hip2 fallback is described below; no-PM,
 original Hip2 time-scale qualification and product adoption remain pending.
 
+## Explicit long-term frame orientation
+
+The existing `astrometric_coordinates.py` owner exposes LongTermFrame and
+`orient_direction_batch`, using corrected ERFA ltpb/ltecm only when explicitly
+requested. Finite caller TT validity is bounded to J2000 +/-200000 Julian years;
+the TT frame equinox remains independent of each native stellar TCB epoch.
+A derived direction-batch view retains the original SDK batch, native source/
+evaluation/anchor epochs and uncertainty. Model identity binds exact TT input,
+backend versions, actual matrix and domain. No converted SDK state or reuse
+certificate is issued. Module import and native propagation remain ERFA-free;
+explicit orientation requires the existing ERFA dependency, no observer/EOP.
+CoordinateService's current Astropy/default/chart routes remain unchanged.
+Physical and total numerical orientation errors stay unqualified; published
+qualitative accuracy is not a certified bound. Complete Mac acceptance at
+`97921fe8`, PR #328, passed 311 focused, 125 source-audit, 36 documentation and
+eight tooling cases, plus 48 actual derived directions. Accepted native stellar
+digests remain unchanged; Mac frame model IDs/backend/poles are recorded in the
+inventory without requiring cross-platform last-bit matrix identity.
+
 ## Historical calendar boundary
 
 The existing `astrometric_coordinates.py` owner provides immutable HistoricalDate

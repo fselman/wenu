@@ -3322,8 +3322,8 @@
       ]
     },
     "stellar-motion-provider": {
-      "scope": "K4b.01/K4b.02 stellar models plus K4b.03 explicit historical calendar/year/uncertainty and admitted TCB input; affected cluster regression.",
-      "limits": "Constructed offline/SDK/cluster/calendar-oracle checks; complete Mac acceptance separate. No inferred civil clock, TT-to-TCB, Delta-T, observer/precession, source/propagation/SDK changes or physical accuracy; issue #326 remains open.",
+      "scope": "K4b stellar models and historical input plus K4b.04 explicit long-term mean-frame orientation; affected cluster regression.",
+      "limits": "Constructed offline/SDK/calendar/frame-oracle checks; actual cached-source Mac acceptance separate. Frame equinox TT is separate from native TCB. No observer/precession-accuracy certificate, chart/source/propagation/SDK/dependency change; issue #326 stays open.",
       "selections": [
         {
           "node": "tests/test_stellar_state.py",

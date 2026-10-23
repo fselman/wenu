@@ -625,6 +625,73 @@ source-audit regression, documentation and tooling checks. Actual external-sourc
 Mac angular coverage/queries remain separate from constructed tests. This is
 the measured-PM part of K4b.02/AX.13, not closure of their no-PM/fallback scopes.
 
+## Explicit long-term frame orientation
+
+`wenu.astrometric_coordinates.LongTermFrame` requires keyword arguments
+`equinox` (TT TimePoint), `validity` (finite TT TimeSpan), `axes`
+(`mean-equator-equinox` or `mean-ecliptic-equinox`), and
+`model_policy="vcw2011-2012-erfa"`. It uses corrected Vondrak, Capitaine & Wallace
+2011/2012 precession with ICRS frame bias through ERFA ltpb/ltecm. It does not
+silently select a different model near J2000. Validity must contain the equinox
+and lie inside Julian epochs -198000 through 202000 TT (J2000 +/-200000 years).
+These are Julian epochs, not calendar-year labels.
+
+The frame equinox is distinct from a stellar source epoch and native TCB
+query time. Callers supply TT explicitly; TCB/TT equivalence is never inferred.
+Choosing separate numerical epoch labels does not establish their simultaneity.
+No TT/TCB conversion, observer, nutation, Earth rotation, polar motion,
+aberration or light-time calculation is performed here.
+
+The immutable receipt exposes `.equinox`, `.validity`, `.axes`,
+`.backend_jyear_tt`, `.epoch_rounding_s`, `.backend_versions`, `.matrix`,
+`.model`, `.provenance` and `.pole_icrs`. Exact two-part TT input is preserved;
+backend Julian-epoch rounding is reported separately. The model digest binds
+that exact event, domain, backend versions and actual hex matrix components.
+`.rotate(unit_vector)` applies the admitted matrix to an ICRS unit direction
+and normalizes the result. Cartesian positions/PV are not admitted by this API.
+ERFA uses first-order frame bias; the matrix is near orthogonal, not promised
+bit-exact orthogonal. No observer origin is moved.
+
+SOFA's section 7 describes useful long-domain performance qualitatively.
+The receipt's `.physical_error_rad` and `.numerical_error_rad` remain `None`:
+no total physical or implementation error certificate is admitted. Any supplied
+`maximum_physical_error_rad` request refuses with AccuracyUnavailable (invalid
+negative/nonfinite values refuse as InvalidQuery). Date uncertainty and ignored
+model effects stay unknown. Near-modern comparison here is diagnostic: sampled
+ERFA ltpb versus pmat06 differs by up to about 0.647 mas over 1900-2100, and
+ltecm versus ecm06 by about 0.280 mas. Do not promise uniform 100-microarcsecond
+agreement or confuse inter-model agreement with physical accuracy.
+
+`orient_direction_batch(batch, *, admission, orientation)` accepts an actual
+full-model SDK ICRS barycentric epoch-direction batch with its exact admission
+and explicit LongTermFrame. It returns OrientedDirectionBatch containing
+`.original`, `.admission`, `.orientation` and `.states`; each derived row has
+`.original` (the untouched DirectionState) and `.vector` in the declared mean
+axes. Native times, reference/model/IDs, evidence and source epochs are never
+rewritten. The frame equinox may differ from all native query times.
+Foreign/partial/reordered/mismatched, reused, Cartesian/velocity or unsupported
+reference batches refuse. The view is not an SDK StateBatch, native re-admission,
+Cartesian/velocity conversion, uncertainty propagation or reuse certificate.
+
+```python
+from wenu.astrometric_coordinates import LongTermFrame
+from wenu_kernel.records import TimePoint, TimeSpan
+
+frame = LongTermFrame(
+    equinox=TimePoint(2451545, 0, "tt"),
+    validity=TimeSpan(TimePoint(-70598455, 0, "tt"),
+                      TimePoint(75501545, 0, "tt")),
+    axes="mean-equator-equinox", model_policy="vcw2011-2012-erfa",
+)
+unit_direction_on_mean_axes = frame.rotate((1.0, 0.0, 0.0))
+assert frame.physical_error_rad is None
+```
+
+No ERFA/NumPy import occurs for module import or native propagation; ERFA is
+loaded only on explicit orientation admission. No copied precession series,
+SDK/dependency pin, chart default, CoordinateService or source/model change.
+K4b.05 physical uncertainty and K4b.06 product adoption remain separate.
+
 ## Historical calendar input and nominal TCB epochs
 
 `wenu.astrometric_coordinates.HistoricalDate` is an immutable keyword-only

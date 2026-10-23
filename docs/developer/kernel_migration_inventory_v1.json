@@ -162,8 +162,8 @@
     },
     {
       "path": "src/wenu/astrometric_coordinates.py",
-      "git_blob_sha": "8de66a9d97e6b64e012515fd8669d066fe028ba1",
-      "description": "Explicit historical calendar/year/uncertainty input and admitted barycentric time/convention receipts.",
+      "git_blob_sha": "db663076c23044592a704c3a554a9ab61dd25b21",
+      "description": "Explicit historical/time/spatial conventions and separately admitted long-term mean-axis orientation; no observer reconstruction.",
       "baseline_relation": "Additive convention boundary; no observer or product runtime adoption."
     },
     {
@@ -6461,12 +6461,12 @@
     },
     {
       "path": "tests/test_stellar_state.py",
-      "git_blob_sha": "f4d3e0a643eebf1c39c6ad3488e5c35b1e2b7ca2",
-      "test_functions": 35,
+      "git_blob_sha": "c0ac8f8fd7d765291d705a48ad1d10200c95df4f",
+      "test_functions": 36,
       "marks": {
-        "parametrize": 18
+        "parametrize": 19
       },
-      "parametrize_decorators": 18,
+      "parametrize_decorators": 19,
       "fixtures": [
         "motion_source"
       ],
@@ -7021,7 +7021,7 @@
     },
     {
       "path": "tests/test_astrometric_state.py",
-      "git_blob_sha": "1a49fb71706f953bd8b1834c47138e8a78f2c01d",
+      "git_blob_sha": "d1194418d76f2758d1e21c952dd1a683de47a273",
       "description": "Generic mixed-object engine, conformance, immutable-domain and isolated SDK evaluation.",
       "baseline_relation": "Added for enduring object-independent astrometric engine factoring.",
       "imports": [
@@ -7045,10 +7045,10 @@
         "wenu_kernel.records",
         "wenu_kernel.time"
       ],
-      "test_functions": 26,
-      "parametrize_decorators": 5,
+      "test_functions": 36,
+      "parametrize_decorators": 16,
       "marks": {
-        "parametrize": 5
+        "parametrize": 16
       },
       "fixtures": []
     },
@@ -14664,7 +14664,7 @@
         ]
       },
       "src/wenu/astrometric_coordinates.py": {
-        "git_blob_sha": "8de66a9d97e6b64e012515fd8669d066fe028ba1",
+        "git_blob_sha": "db663076c23044592a704c3a554a9ab61dd25b21",
         "group": "astrometry",
         "evidence_ids": [
           "AX.06",
@@ -14672,13 +14672,16 @@
           "AX.08",
           "AX.09",
           "AX.10",
-          "K4b.03"
+          "K4b.03",
+          "K4b.04"
         ],
-        "purpose": "Explicit barycentric time and spatial scaling, independent of object type.\n\nThis boundary changes conventions, not a trajectory or an observer origin.\nIt admits no UTC/TT conversion, ephemeris, apparent place or light-time model.\nAuthorities reviewed 2026-10-19: IAU 2006 B3 and IERS Conventions (201",
+        "purpose": "Explicit convention receipts including long-term mean-axis orientation; ERFA loaded only for explicit frame admission, no observer or default/chart adoption.",
         "imports": [
           "dataclasses",
+          "erfa",
           "fractions",
           "hashlib",
+          "json",
           "math",
           "wenu_kernel.errors",
           "wenu_kernel.records",
@@ -27079,6 +27082,214 @@
       "hipparcos2_angular_coefficient_sha256": "b5b6cfe20919eec5c815f50b348b55579e2b2631e8f0510be201d874e85875c1",
       "numerical_oracle": "Independent 80-digit Decimal affine evaluation of admitted source coefficients",
       "limits": "Bounded input/native-event receipt only; no physical/historical-date/observer/precession accuracy or parent K4b closure; issue #326 remains open"
+    }
+  },
+  "long_term_frame_orientation": {
+    "milestone": "K4b.04",
+    "date": "2026-10-23",
+    "base_commit": "e2a231b5220c3df3670d383fa0e3ee66addbeeb4",
+    "plan_commit": "79ea2b9d9311a517b544ad0a89d5eeb57e2cf208",
+    "pull_request": 328,
+    "status": "Bounded explicit long-term mean-frame slice passed complete Mac acceptance at 97921fe8 in PR #328; unmerged, no next runtime selection",
+    "authorization": "Fernando Proceed after explicit frame/precession proposal and clean synchronized main/cleanup receipt",
+    "owners": {
+      "src/wenu/astrometric_coordinates.py": "db663076c23044592a704c3a554a9ab61dd25b21",
+      "tests/test_astrometric_state.py": "d1194418d76f2758d1e21c952dd1a683de47a273",
+      "tests/test_stellar_state.py": "c0ac8f8fd7d765291d705a48ad1d10200c95df4f"
+    },
+    "api": [
+      "LongTermFrame",
+      "orient_direction_batch",
+      "OrientedDirection",
+      "OrientedDirectionBatch"
+    ],
+    "policy": {
+      "model": "Corrected Vondrak/Capitaine/Wallace 2011/2012 through ERFA ltpb/ltecm",
+      "epoch": "Explicit TT TimePoint, separate from source/native TCB; no relabel or conversion",
+      "domain": "Finite caller TT TimeSpan inside Julian epochs [-198000,202000]",
+      "axes": [
+        "mean-equator-equinox",
+        "mean-ecliptic-equinox"
+      ],
+      "bias": "ERFA first-order ICRS frame bias; near-orthogonal matrix, normalized application",
+      "identity": "Exact two-part equinox, caller validity, rounded backend year, backend version tuple and actual matrix hex floats",
+      "error": "physical_error_rad and numerical_error_rad unknown; requested guaranteed physical accuracy refuses",
+      "derived_view": "Original SDK state batch/admission/source/evaluation/anchor times and uncertainty preserved; no new SDK state or reuse certificate"
+    },
+    "source_review": {
+      "date": "2026-10-23",
+      "primary": [
+        "https://www.iausofa.org/s/sofa_pn_c.pdf#page=35",
+        "https://github.com/liberfa/erfa/blob/master/src/ltpb.c",
+        "https://github.com/liberfa/erfa/blob/master/src/ltecm.c",
+        "https://github.com/liberfa/erfa/blob/master/src/t_erfa_c.c"
+      ],
+      "papers": [
+        "https://doi.org/10.1051/0004-6361/201117274",
+        "https://doi.org/10.1051/0004-6361/201117274e"
+      ],
+      "access": "SOFA documentation and ERFA primary source read directly; publisher full paper/PDF access refused. Corrigendum author-uploaded full text independently read; ERFA corrected implementation used without copying source."
+    },
+    "local_acceptance": {
+      "new_cases": 54,
+      "combined_owner_source_cases": 433,
+      "subtests": 9,
+      "deselected_existing_application_cases": 3,
+      "reference_scope": "ERFA regression/reference conformity, independent geometry/Decimal application and model comparison; not independent dynamical integration",
+      "backend_versions": [
+        "2.0.1.5",
+        "2.0.1",
+        "20231011"
+      ],
+      "sampled_1900_2100_step_10_max_equator_difference_mas": 0.6465610759538054,
+      "sampled_1900_2100_step_10_max_ecliptic_difference_mas": 0.27919038136174085,
+      "diagnostic_tolerance_rad": 4.84813681109536e-09,
+      "limits": "Measured comparison is not a physical accuracy bound or uniformly 100 microarcseconds"
+    },
+    "Mac_acceptance": "passed; see mac_acceptance",
+    "preservation": "SDK/pins/numerical propagation/native source-model digests/CoordinateService/default/chart routes unchanged",
+    "limits": "No nutation/Earth rotation/polar motion/observer/Delta-T, automatic time conversion, source rewrite, physical certificate or issue #326 resolution; K4b.05/K4b.06 separate",
+    "mac_acceptance": {
+      "date": "2026-10-23",
+      "tested_commit": "97921fe83ca97fa6c8be932247a9eb93bf438975",
+      "pull_request": 328,
+      "receipt_sha256": "a6b969bad656c9c141398ad907e11c4f65197e2736fe04e9cf583d315e89712a",
+      "gates": {
+        "stellar-motion-provider": {
+          "passed": 311,
+          "subtests": 9,
+          "seconds": 10.02
+        },
+        "gaia-crossmatch-audit": {
+          "passed": 125,
+          "seconds": 2.23
+        },
+        "documentation": {
+          "passed": 36,
+          "seconds": 2.51
+        },
+        "tools/tests/test_test_gates.py": {
+          "passed": 8,
+          "subtests": 81,
+          "seconds": 8.59
+        }
+      },
+      "source_manifest_sha256": "8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365",
+      "sampled_result": {
+        "models": {
+          "gaia": 115105,
+          "hipparcos2": 2850
+        },
+        "derived_states": 48,
+        "maximum_decimal_oracle_chord_difference": 1.576213700060856e-16,
+        "accepted_Gaia_and_Hip2_digests_unchanged": true,
+        "backend_versions": [
+          "2.0.1.5",
+          "2.0.1",
+          "20231011"
+        ],
+        "sampled_1900_2100_model_differences_mas": {
+          "mean-equator-equinox": 0.6465610759541074,
+          "mean-ecliptic-equinox": 0.2791903813618713
+        },
+        "frames": [
+          {
+            "jyear_tt": -10000,
+            "axes": "mean-equator-equinox",
+            "model_digest": "00d37d70ef5c80c1fb59624d65050de47cb14507bf724c2d25ce932c66a45ee0",
+            "pole_icrs": [
+              -0.099038130885618,
+              -0.7425255505858193,
+              0.6624554742455596
+            ],
+            "epoch_rounding_s": 0.0
+          },
+          {
+            "jyear_tt": -10000,
+            "axes": "mean-ecliptic-equinox",
+            "model_digest": "a1fe935b007610d15d2f56534f98e30bd21a860d16c021809890d3d3b20fec18",
+            "pole_icrs": [
+              0.01174702247287807,
+              -0.4214759962052149,
+              0.9067634708598727
+            ],
+            "epoch_rounding_s": 0.0
+          },
+          {
+            "jyear_tt": -1000,
+            "axes": "mean-equator-equinox",
+            "model_digest": "d40d00d74baf72e430ab9981c9d1aa5795c2a5a8591c5a9f8ebd38894e0736ac",
+            "pole_icrs": [
+              -0.2680294857264395,
+              -0.09374372009232414,
+              0.9588390426575633
+            ],
+            "epoch_rounding_s": 0.0
+          },
+          {
+            "jyear_tt": -1000,
+            "axes": "mean-ecliptic-equinox",
+            "model_digest": "85f7aad0268aa26f7a2d7197d150dbc5b8528cb38170a1f8a83328a98c5d99ed",
+            "pole_icrs": [
+              0.00025981159288554636,
+              -0.4041533160606237,
+              0.9146912209129033
+            ],
+            "epoch_rounding_s": 0.0
+          },
+          {
+            "jyear_tt": 2000,
+            "axes": "mean-equator-equinox",
+            "model_digest": "b18c898fb2052d633ce1d32a150f79ac3580b26bb4f2374be8264d92eb73464c",
+            "pole_icrs": [
+              -8.056148939844682e-08,
+              -3.305556629794447e-08,
+              0.9999999999999962
+            ],
+            "epoch_rounding_s": 0.0
+          },
+          {
+            "jyear_tt": 2000,
+            "axes": "mean-ecliptic-equinox",
+            "model_digest": "99a5c9d6882ef4e7b4400cbd44cf52096f50cf8714f887324f77288045d2cf79",
+            "pole_icrs": [
+              -1.0206949457023484e-07,
+              -0.3977769994449437,
+              0.917482129914565
+            ],
+            "epoch_rounding_s": 0.0
+          },
+          {
+            "jyear_tt": 12000,
+            "axes": "mean-equator-equinox",
+            "model_digest": "ad81a1df025a7631ba79b9c836412b5c4160199ed2e94571d5845177ff9e8f61",
+            "pole_icrs": [
+              0.24502352302005925,
+              -0.6318052004942217,
+              0.7353813036753756
+            ],
+            "epoch_rounding_s": 0.0
+          },
+          {
+            "jyear_tt": 12000,
+            "axes": "mean-ecliptic-equinox",
+            "model_digest": "43d51698dabc65bd71b92ae6a6007f19e971a2eaf110d09e60a8736aeb8abf3a",
+            "pole_icrs": [
+              0.009972146530433768,
+              -0.38114555921622395,
+              0.9244612587790403
+            ],
+            "epoch_rounding_s": 0.0
+          }
+        ],
+        "limits": "Separate TT frame equinox and native TCB time; no inferred simultaneity, historical observer or certified physical/total frame accuracy"
+      },
+      "gaia_full_coefficient_sha256": "032f76e398eadf136fd9aa59a3c2b3a66d4dc25d9da74bc995b4bdb6088cfe8f",
+      "gaia_angular_coefficient_sha256": "6d3e46ff0aa8bd707ea4b8f169b55fdd41c3bc85d65250d7a801c541ebb38602",
+      "hipparcos2_angular_coefficient_sha256": "b5b6cfe20919eec5c815f50b348b55579e2b2631e8f0510be201d874e85875c1",
+      "numerical_oracle": "Independent 80-digit Decimal application/normalization of each admitted matrix to native binary64 direction",
+      "platform_identity": "Actual matrix hex components bind identity; cross-platform last-bit differences may legitimately produce different frame model IDs",
+      "limits": "No certified physical/total orientation accuracy, inferred TT/TCB simultaneity or historical observer; parent/K4b.05/K4b.06/issue #326 remain separate"
     }
   }
 }

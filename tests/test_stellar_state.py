@@ -873,3 +873,41 @@ def test_hip2_reads_source_epoch_and_accepts_pole_zero_pm_without_default_litera
 if __name__ == '__main__':
     unittest.main()
 
+
+
+@pytest.mark.parametrize('kind',['gaia','hipparcos2'])
+def test_stellar_long_term_frame_is_explicit_derived_view_with_native_time_and_source_intact(motion_source,monkeypatch,kind):
+    from wenu.astrometric_coordinates import LongTermFrame,orient_direction_batch
+    from wenu_kernel.records import TimeSpan
+    import builtins,socket,erfa
+    source=motion_source();before=source.products
+    domain=TimeSpan(TimePoint(-16000000,0,'tcb'),TimePoint(21000000,0,'tcb'))
+    if kind=='gaia':cat=bridge.admit_stellar_angular_motion(source,coverage=domain)
+    else:cat=bridge.admit_stellar_hipparcos2_motion(source,coverage=domain,epoch_policy='nominal-tcb-deferred-qualification')
+    native_digest=cat.to_record()['angular_solutions_sha256']
+    p=bridge.StellarMotionProvider(cat);a=p.describe().admissions[0]
+    q=StateQuery(a.catalogue,a.model,a.objects,(TimePoint(1356174,0,'tcb'),),a.reference,AccuracyRequest())
+    with Kernel(references=(a.reference,))as kernel:
+        kernel.register(p,ownership='owned')
+        with kernel.open_session(SessionPolicy((a.catalogue,)))as session:batch=session.evaluate(q)
+    def forbidden(*args,**kwargs):raise AssertionError('frame orientation must not fetch observer/EOP/network resources')
+    monkeypatch.setattr(socket,'socket',forbidden)
+    original_import=builtins.__import__
+    def guarded(name,*args,**kwargs):
+        if name.startswith(('astropy','wenu.observer','wenu.coordinate_service','skyfield')):forbidden()
+        return original_import(name,*args,**kwargs)
+    monkeypatch.setattr(builtins,'__import__',guarded)
+    validity=TimeSpan(TimePoint(-70598455,0,'tt'),TimePoint(75501545,0,'tt'))
+    first=LongTermFrame(equinox=TimePoint(1356174,0,'tt'),validity=validity,
+        axes='mean-equator-equinox',model_policy='vcw2011-2012-erfa')
+    second=LongTermFrame(equinox=TimePoint(2451545,0,'tt'),validity=validity,
+        axes='mean-ecliptic-equinox',model_policy='vcw2011-2012-erfa')
+    x=orient_direction_batch(batch,admission=a,orientation=first)
+    y=orient_direction_batch(batch,admission=a,orientation=second)
+    assert x.original is y.original is batch and x.orientation.model!=y.orientation.model
+    assert x.states[0].vector!=y.states[0].vector
+    for n,u,v in zip(batch.states,x.states,y.states):
+        assert u.original is v.original is n
+        assert n.time==TimePoint(1356174,0,'tcb') and n.reference.frame_id=='icrs'
+        assert n.evidence.physical_model.status=='not_evaluated'
+    assert cat.source.products==before and cat.to_record()['angular_solutions_sha256']==native_digest
