@@ -41,7 +41,40 @@ they are not claimed passing and remain in the complete Mac gate. All 220
 relative links and 128 active fragment links across 11 target documents in
 the changed documentation were checked against the actual Git tree/content.
 No archive or product-import check unavailable here is claimed passing.
-Actual Mac report and complete documentation/tooling acceptance remain pending.
+**Mac acceptance at `652087cb6243fcbb22ad01b475f2ec2238d040d5`:**
+158 audit cases passed in 4.57 s; 36 documentation cases in 3.31 s;
+eight tooling cases/81 subtests in 10.38 s. The actual read-only report
+`~/wenu-output/stellar_uncertainty_v1` completed using source manifest
+`8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365`
+and report-owner SHA256
+`555afe3fe3aaaadfde95e7d8317e37bc1bee1ad62256bf3ea0a1e1259fde8acb`.
+All 118,218 HIP entries are retained. All 115,105 Gaia covariance matrices
+passed as positive definite, yielding 805,735 angular evaluations across
+seven native offsets (0 and +/-100, +/-1,000, +/-10,000 Julian years).
+The 2,106 position-only and 1,007 unassociated entries retain explicit gaps.
+RV sensitivity evaluated 805,343 times for 115,049 stars; 56 further Gaia
+motion entries lack a positive-parallax proxy. No invalid-matrix or propagated
+variance failure was reported.
+
+Major-axis formal standard-deviation percentiles, arcsec:
+
+| Elapsed TCB Julian years | Median | 90th | 95th | 99th | Maximum |
+|---|---:|---:|---:|---:|---:|
+| -10,000 | 0.2573 | 0.9872 | 1.705 | 4.335 | 16.92 |
+| -1,000 | 0.02573 | 0.09872 | 0.1705 | 0.4334 | 1.692 |
+| 0 | 0.0000199 | 0.00007576 | 0.0001312 | 0.0003374 | 0.001367 |
+| +1,000 | 0.02573 | 0.09871 | 0.1705 | 0.4334 | 1.692 |
+| +10,000 | 0.2573 | 0.9872 | 1.705 | 4.334 | 16.92 |
+
+The selected 16-HIP review reports +/-10,000-year formal axes for Gaia entries
+53910 (9.7308/9.7306 arcsec), 59774 (2.1148/2.1148), 65378
+(7.5548/7.554), 87937 (0.29308/0.29306) and 57939 (0.15265/0.15265).
+The remaining selected Orion/Big Dipper entries retain association or
+five-parameter-input gaps; this report does not substitute Hip2 errors.
+Fernando accepted proceeding with merge/cleanup and subsequent bounded Hip2
+covariance qualification. Only this conditional Gaia-report slice is accepted:
+full RV covariance, physical ancient-position accuracy and K4b.05 parent
+remain open. Mac synchronization/cleanup of the merge remains separate.
 
 Primary references reviewed 2026-10-23:
 [Butkevich & Lindegren (2014), Sect. 5.4, Eqs. 61–65 and no-light-time Sect. 5.5](https://arxiv.org/abs/1407.4664)
