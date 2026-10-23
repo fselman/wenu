@@ -1,5 +1,51 @@
 # Wenu implementation reference
 
+## Offline Gaia conditional uncertainty report
+
+The existing `tools/gaia_crossmatch_audit.py` has a separate
+`--uncertainty-source` mode. Supply a verified local enrichment snapshot,
+`--expected-source-manifest` SHA256, explicit `--uncertainty-years` offsets
+and a fresh `--output` directory. Offsets are elapsed Julian years on the
+source TCB axis, not historical calendar dates or TT equinoxes. The original
+`--cache` association/source-publication modes remain separate and compatible.
+
+Every retained HIP has a row in `stellar_uncertainty_v1.jsonl`, including
+unassociated, position-only and invalid/missing-covariance entries. The report
+summary binds the source manifest, source reference, exact offsets, policy,
+NumPy/Astropy versions and report-owner hash. The completion manifest hashes
+the two output products and is published last; overwrite and overlapping
+source/report directories refuse. Input source products are never rewritten.
+
+Gaia errors/correlations reconstruct a five-parameter matrix ordered
+alpha-star, delta, parallax, mu-alpha-star, mu-delta in mas and mas/year.
+Solution 95 uses the marginal astrometric covariance. Check the dimensionless
+correlation eigenspectrum before scaling: values below minus 64*5 machine
+epsilon are indefinite; any remaining negative eigenvalue is explicitly
+unresolved and also refuses propagation. No clipping or jitter. Exact zeros
+are singular; positive eigenvalues at or below that tolerance are flagged
+ill-conditioned. Finite nonnegative errors, ranges, units and output variance
+are checked separately. Matrix symmetry is preserved to floating-point precision;
+singular inputs are not inverted.
+
+The angular report uses the position/PM four-parameter marginal, not a
+conditional covariance with parallax fixed. Differentiate normalized r+t*mu
+using the fixed source normal-triad differential convention. Project onto
+source east/north parallel transported along the nominal great circle;
+these are reported Cartesian basis vectors, not target RA/Dec labels.
+The output covariance is in arcsec squared with ordered major/minor local
+one-standard-deviation axes. Pole and longitude-wrap cases need no division
+by cos(delta). This remains conditional on the reduced angular model.
+
+RV output is a separate absolute departure sensitivity in arcsec per km/s
+at a clearly hypothetical zero-RV anchor. A positive source parallax supplies
+only a reciprocal-distance proxy; missing/nonpositive parallax remains
+unavailable. It is not an adopted zero RV, an RV variance/prior, a finite
+velocity-interval bound or a full-model uncertainty. Existing measured RVs
+are not used to change this explicitly declared anchor. No Hip2 covariance,
+production uncertainty evidence, validity domain, physical/systematic/binary/
+date/frame error or chart consumer is admitted. See the
+[scientific limits](scientific_contracts.md#offline-angular-measurement-errors).
+
 ## Finite constellation segments in regional products
 
 Product-review correction PR.03 marks constellation endpoint curves with

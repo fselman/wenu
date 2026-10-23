@@ -1,5 +1,30 @@
 # Current scientific contracts and paused work
 
+## Offline angular measurement errors
+
+K4b.05's maintenance report validates Gaia error/correlation fields and the
+correlation eigenspectrum, then propagates the position/PM marginal through
+the normalized angular model. Output formal axes are local linearized standard
+deviations conditional on that model, not total errors, hard confidence bounds
+or physical lookback certificates. Even a positive-semidefinite matrix does not
+establish that a long extrapolation remains in the linear regime.
+
+The source normal triad is held fixed for parameter differentials; the motion
+vector differential includes its normal component. Alpha-star errors are local
+tangent increments, never differentials of alpha*cos(delta). Parallax and
+pseudocolour are marginalized, not conditioned to exact nominal values.
+The target basis is a transported tangent plane; covariance axes are not a
+new celestial reference frame. Source/model/SDK uncertainty records remain unknown
+where previously unknown, with native TCB and separate TT frame labels intact.
+
+Missing-RV sensitivity is explicitly around a hypothetical zero-RV anchor,
+with reciprocal positive source parallax as a distance proxy only. It supplies
+neither a missing RV measurement nor its probability distribution. Full RV
+covariance independence, Hip2 weight reconstruction, binaries/systemic motion,
+nonlinear uncertainty coverage and ancient physical accuracy remain unqualified.
+The [report interface](implementation_reference.md#offline-gaia-conditional-uncertainty-report)
+preserves missing/invalid per-HIP statuses and immutable source identities.
+
 ## Long-term mean axes (K4b.04)
 
 Explicit long-term frame orientation uses corrected Vondrak/Capitaine/Wallace

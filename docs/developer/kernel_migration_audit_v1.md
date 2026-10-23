@@ -1,5 +1,57 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.05 offline Gaia uncertainty report implementation, 2026-10-23
+
+Fernando selected this bounded report with “Proceed” after PR #331 merge and
+confirmed clean synchronized Mac main `9395ad21`, branch cleanup and
+36 documentation tests in 3.47 s. Plan committed before implementation at
+`600a2b2b87de4b8f39a7ba4f44b10cb3ba665fbb`.
+
+As-is: the existing source codec preserves verified immutable bytes and units;
+the audit tool owns offline source diagnostics/publication, and its existing
+test file owns synthetic source and command seams. Production model errors are
+still unknown. Extend this maintenance boundary, not the provider or SDK.
+Reconstruct the Gaia five-parameter matrix, validate its correlation spectrum
+and propagate the four-parameter angular marginal with an analytic normal-triad
+Jacobian. Source 95 pseudocolour is marginalized. The target transported tangent
+basis and local one-standard-deviation axes are explicit. Negative eigenvalues,
+invalid or missing fields remain gaps; no matrix repair, hidden RV or distance.
+
+A separate local derivative at hypothetical zero RV is reported per km/s using
+a positive reciprocal-parallax proxy. It does not use a missing-RV prior or
+claim finite scenario/physical coverage. HIP membership/source identities,
+production states/model digests, SDK uncertainty fields, observer/frame routes,
+default charts and dependencies are unchanged. Hip2 decoding, full RV-dependent
+measurement propagation and physical/dynamical qualification remain deferred.
+
+The publisher now shares the existing staging/no-clobber/manifest-last boundary.
+The report reads only a manifest-bound source and refuses source/output overlap.
+Every HIP is retained with explicit source gaps and per-offset statuses.
+Its manifest binds output bytes; summary binds source/reference/offsets/policy,
+report code and numerical-library versions. Existing scientific/code owners
+remain unchanged outside the maintenance tool. The coordinate guide records
+the tangent-plane distinction; source map/architecture responsibilities remain
+current because no production module or service changes.
+
+Local verification after restoring both faults: all 158 source-audit cases
+passed in 6.06 s (33 new cases); three available documentation checks passed
+in 0.31 s; six standalone tooling cases/nine subtests passed. The full tooling
+repository-path checks cannot resolve missing owners in this partial checkout;
+they are not claimed passing and remain in the complete Mac gate. All 220
+relative links and 128 active fragment links across 11 target documents in
+the changed documentation were checked against the actual Git tree/content.
+No archive or product-import check unavailable here is claimed passing.
+Actual Mac report and complete documentation/tooling acceptance remain pending.
+
+Primary references reviewed 2026-10-23:
+[Butkevich & Lindegren (2014), Sect. 5.4, Eqs. 61–65 and no-light-time Sect. 5.5](https://arxiv.org/abs/1407.4664)
+for the fixed normal-triad convention and
+[Gaia DR3 source schema](https://gaia.aip.de/metadata/gaiadr3/gaia_source/)
+for units/errors/correlations. This implements a conditional angular diagnostic,
+not the paper's full light-time model. Numerical acceptance and actual Mac
+source report are separate; K4b.05 parent, ESA comparison, issue #326 and K4b.06
+remain open.
+
 ## K4b.05 ancient-position uncertainty and missing-RV assessment, 2026-10-23
 
 **Authority and scope:** Fernando selected this bounded assessment with “Proceed”

@@ -1,5 +1,22 @@
 # Wenu coordinate systems, time and astronomical objects
 
+## Offline covariance tangent-plane convention
+
+The maintenance-only Gaia uncertainty report uses local alpha-star and delta
+increments, with alpha-star meaning cos(delta) times the alpha increment.
+The source normal triad is fixed for uncertainty differentials, including
+the proper-motion vector's required normal differential. It does not divide
+longitude errors by cos(delta) at the poles. A transported east/north tangent
+basis at the nominal propagated direction defines the reported 2 by 2
+covariance in arcsec squared; its Cartesian basis vectors are included.
+
+Explicit offsets are elapsed native TCB Julian years. They do not select a
+historical calendar event, an observer or a TT equinox. The report changes no
+source/SDK coordinate or uncertainty record. Its formal axes are conditional
+on the angular model; separate hypothetical-RV sensitivity is not a physical
+confidence bound. See the
+[offline report](implementation_reference.md#offline-gaia-conditional-uncertainty-report).
+
 ## Separately admitted long-term mean axes
 
 LongTermFrame in the existing astrometric convention owner expresses ICRS unit

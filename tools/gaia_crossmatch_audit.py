@@ -17,6 +17,7 @@ import shutil
 import tempfile
 import re
 from copy import deepcopy
+from contextlib import contextmanager
 
 import numpy as np
 import astropy
@@ -622,14 +623,35 @@ def publish_enrichment(output, snapshot):
         shutil.rmtree(temporary)
 
 
-def publish(output, summary, hips, candidates, provenance, *, version=2):
-    """Refuse overwrite; publish the completion manifest last; clean up on failure."""
+@contextmanager
+def report_directory(output, manifest_name, schema):
+    """Reserve a separate report, publish its manifest last, never clobber."""
     output = Path(output)
-    require(version in (2, 3, 4), 'Unsupported audit report version')
     require(not output.exists(), 'Report output already exists; choose a new version')
     output.parent.mkdir(parents=True, exist_ok=True)
     temporary = Path(tempfile.mkdtemp(prefix='.' + output.name + '-', dir=output.parent))
     try:
+        yield temporary
+        products = {p.name: {'sha256': sha256(p.read_bytes()).hexdigest(), 'bytes': p.stat().st_size}
+                    for p in temporary.iterdir()}
+        (temporary / manifest_name).write_text(json.dumps(
+            {'schema': schema, 'complete': True, 'products': products}, indent=2) + '\n')
+        output.mkdir()
+        try:
+            for p in sorted(temporary.iterdir(), key=lambda p: p.name == manifest_name):
+                p.replace(output / p.name)
+        except BaseException:
+            shutil.rmtree(output)
+            raise
+    finally:
+        shutil.rmtree(temporary)
+
+
+def publish(output, summary, hips, candidates, provenance, *, version=2):
+    """Refuse overwrite; publish the completion manifest last; clean up on failure."""
+    require(version in (2, 3, 4), 'Unsupported audit report version')
+    with report_directory(output, f'audit_manifest_v{version}.json',
+                          f'wenu-gaia-candidate-audit/{version}') as temporary:
         for name, rows in ((f'hip_review_v{version}.jsonl', hips), (f'candidate_evidence_v{version}.jsonl', candidates)):
             with (temporary / name).open('w') as stream:
                 for row in rows:
@@ -646,25 +668,203 @@ def publish(output, summary, hips, candidates, provenance, *, version=2):
             for row in hips:
                 if row.get('published_association') is not None:
                     stream.write(json.dumps(row['published_association'], allow_nan=False) + '\n')
-        products = {p.name: {'sha256': sha256(p.read_bytes()).hexdigest(), 'bytes': p.stat().st_size}
-                    for p in temporary.iterdir()}
-        (temporary / f'audit_manifest_v{version}.json').write_text(json.dumps(
-            {'schema': f'wenu-gaia-candidate-audit/{version}', 'complete': True, 'products': products}, indent=2) + '\n')
-        # mkdir reserves the destination without clobbering another invocation.
-        output.mkdir()
-        try:
-            for p in sorted(temporary.iterdir(), key=lambda p: p.name == f'audit_manifest_v{version}.json'):
-                p.replace(output / p.name)
-        except BaseException:
-            shutil.rmtree(output)
-            raise
-    finally:
-        shutil.rmtree(temporary)
+
+
+GAIA_ERRORS = ('ra_error', 'dec_error', 'parallax_error', 'pmra_error', 'pmdec_error')
+GAIA_CORRELATIONS = ('ra_dec_corr', 'ra_parallax_corr', 'ra_pmra_corr', 'ra_pmdec_corr',
+    'dec_parallax_corr', 'dec_pmra_corr', 'dec_pmdec_corr',
+    'parallax_pmra_corr', 'parallax_pmdec_corr', 'pmra_pmdec_corr')
+COVARIANCE_TOLERANCE = 64 * 5 * np.finfo(float).eps
+
+
+def finite_number(value):
+    return type(value) in (int, float) and math.isfinite(value)
+
+
+def gaia_covariance(row):
+    """Five-parameter marginal in mas and mas/year; never repair a matrix.
+
+    Check correlation eigenvalues before error scaling (mixed numerical units).
+    Small negative eigenvalues are explicitly unresolved, not clipped to zero.
+    Solution 95 pseudocolour is marginalized, never fixed to its nominal value.
+    """
+    errors = [row.get(k) for k in GAIA_ERRORS]
+    correlations = [row.get(k) for k in GAIA_CORRELATIONS]
+    require(all(finite_number(v) and v >= 0 for v in errors), 'missing_or_invalid_errors')
+    require(all(finite_number(v) and abs(v) <= 1 for v in correlations),
+            'missing_or_invalid_correlations')
+    matrix = np.eye(5)
+    for (i, j), value in zip(zip(*np.triu_indices(5, 1)), correlations):
+        matrix[i, j] = matrix[j, i] = value
+    eigenvalues = np.linalg.eigvalsh(matrix)
+    minimum = float(eigenvalues[0])
+    require(minimum >= -COVARIANCE_TOLERANCE, 'indefinite_correlation_matrix')
+    require(minimum >= 0, 'negative_eigenvalue_within_roundoff_tolerance')
+    covariance = matrix * np.outer(errors, errors)
+    require(np.all(np.isfinite(covariance)), 'covariance_overflow')
+    status = ('singular' if minimum == 0 or 0 in errors else
+              'ill_conditioned' if minimum <= COVARIANCE_TOLERANCE else 'positive_definite')
+    return covariance, {'status': status, 'minimum_correlation_eigenvalue': minimum,
+                        'roundoff_tolerance': COVARIANCE_TOLERANCE}
+
+
+def angular_error_jacobian(row, years):
+    """Target transported tangent plane; columns alpha*, delta, mu_alpha*, mu_delta.
+
+    Differentiate normalized r+t*mu using B&L (2014), Eq. 63 normal-triad
+    differentials: dmu/dalpha*=-r*mu_alpha*, dmu/ddelta=-r*mu_delta.
+    No longitude division by cos(delta), even at a source pole. Output units
+    are arcsec per input mas or mas/year, for elapsed native Julian years.
+    """
+    require(finite_number(years), 'invalid_elapsed_years')
+    require(all(finite_number(row.get(k)) for k in ('ra', 'dec', 'pmra', 'pmdec')),
+            'missing_angular_inputs')
+    require(0 <= row['ra'] < 360 and abs(row['dec']) <= 90, 'invalid_angular_coordinates')
+    a, d = np.deg2rad([row['ra'], row['dec']])
+    r = np.array([np.cos(d)*np.cos(a), np.cos(d)*np.sin(a), np.sin(d)])
+    p = np.array([-np.sin(a), np.cos(a), 0.])
+    q = np.cross(r, p)
+    ma, md = row['pmra'] * MAS_RAD, row['pmdec'] * MAS_RAD
+    with np.errstate(over='ignore', invalid='ignore'):
+        x = r + years * (ma*p + md*q)
+        norm = float(np.linalg.norm(x))
+        require(math.isfinite(norm) and norm > 0, 'angular_diagnostic_overflow')
+        direction = x / norm
+        # Parallel transport p along the minor great circle r -> direction.
+        east = p - np.dot(p, direction) * (r + direction) / (1 + np.dot(r, direction))
+        east /= np.linalg.norm(east)
+        basis = np.array([east, np.cross(direction, east)])
+        dx = np.column_stack((p - years*ma*r, q - years*md*r, years*p, years*q))
+        jacobian = basis @ (dx - np.outer(direction, direction @ dx)) / norm / 1000
+    require(np.all(np.isfinite(jacobian)), 'angular_diagnostic_overflow')
+    return direction, basis, jacobian
+
+
+def angular_measurement_error(row, covariance, years):
+    direction, basis, jacobian = angular_error_jacobian(row, years)
+    marginal = covariance[np.ix_([0, 1, 3, 4], [0, 1, 3, 4])]
+    with np.errstate(over='ignore', invalid='ignore'):
+        target = jacobian @ marginal @ jacobian.T
+    require(np.all(np.isfinite(target)), 'propagated_covariance_overflow')
+    target = (target + target.T) / 2  # Roundoff symmetry only; no PSD repair.
+    variances = np.linalg.eigvalsh(target)
+    require(variances[0] >= 0, 'negative_propagated_variance')
+    return {'elapsed_julian_years_tcb': years, 'status': 'evaluated',
+        'direction_icrs': direction.tolist(), 'tangent_basis_icrs': basis.tolist(),
+        'covariance_arcsec2': target.tolist(),
+        'principal_sigma_arcsec': np.sqrt(variances[::-1]).tolist()}
+
+
+def rv_sensitivity(row, years):
+    """Magnitude of local departure derivative at hypothetical RV=0, per km/s.
+
+    Reciprocal positive source parallax is a distance proxy, not an inference.
+    dphi/drho=-mu*t^2/(1+(mu*t)^2); no missing-RV variance or prior.
+    """
+    require(finite_number(years), 'invalid_elapsed_years')
+    require(all(finite_number(row.get(k)) for k in ('parallax', 'pmra', 'pmdec'))
+            and row['parallax'] > 0, 'no_positive_parallax_and_pm_proxy')
+    mu = math.hypot(row['pmra'], row['pmdec']) * MAS_RAD
+    rate_per_kms = (u.km/u.s).to(u.pc/u.yr) * row['parallax'] / 1000
+    value = mu * years**2 / (1 + (mu*years)**2) * rate_per_kms / (1000*MAS_RAD)
+    require(math.isfinite(value), 'rv_sensitivity_overflow')
+    return value
+
+
+def uncertainty_report(source, years, output):
+    """Offline conditional angular-error report, preserving every retained HIP."""
+    from wenu.stellar_enrichment import StellarEnrichmentSnapshot
+    require(type(source) is StellarEnrichmentSnapshot, 'A validated source snapshot is required')
+    require(years and all(finite_number(t) for t in years) and len(set(years)) == len(years),
+            'Elapsed years must be finite, nonempty and unique')
+    metadata = source.metadata
+    units = metadata['gaia_column_units']
+    for name, expected in zip(GAIA_ERRORS, ('mas', 'mas', 'mas', 'mas/yr', 'mas/yr')):
+        require(name in units and units[name] is not None
+                and u.Unit(units[name]) == u.Unit(expected), 'Unsupported uncertainty unit: ' + name)
+    for name in GAIA_CORRELATIONS:
+        require(name in units and (units[name] is None or u.Unit(units[name]) == u.dimensionless_unscaled),
+                'Unsupported correlation unit: ' + name)
+    summary = {'schema': 'wenu-stellar-uncertainty/1',
+        'source_manifest_sha256': sha256(source.manifest).hexdigest(),
+        'gaia_reference': metadata['gaia_reference'],
+        'elapsed_julian_years_tcb': list(years), 'retained_hip_rows': 0,
+        'covariance_statuses': Counter(), 'angular_statuses': Counter(),
+        'rv_sensitivity_statuses': Counter(),
+        'policy': {'measurement_model': 'normalized-angular-tangent/1',
+            'input_order': ['alpha_star_mas', 'delta_mas', 'parallax_mas', 'pmra_mas_per_year', 'pmdec_mas_per_year'],
+            'differential': 'Butkevich-Lindegren-2014 Eq.63 fixed source normal triad',
+            'output_plane': 'source east/north parallel transported along nominal great circle',
+            'covariance_check': 'correlation eigenspectrum; no clipping/jitter; any negative eigenvalue refuses',
+            'correlation_roundoff_tolerance': COVARIANCE_TOLERANCE,
+            'sigma': 'local linearized one-standard-deviation principal axes; not a hard or total bound',
+            'rv_anchor': 'hypothetical zero km/s, not an adopted source measurement',
+            'rv_units': 'arcsec per km/s, absolute local derivative',
+            'distance_proxy': 'reciprocal positive source parallax only',
+            'limits': 'No perspective in angular covariance; no full RV covariance, Hip2 decoding, physical/systematic/binary/date/frame error or accuracy certificate'},
+        'software': {'numpy': np.__version__, 'astropy': astropy.__version__,
+                     'report_owner_sha256': sha256(Path(__file__).read_bytes()).hexdigest()}}
+    gaia = {r['source_id']: r for r in source.records('gaia_sources_v1.jsonl')}
+    with report_directory(output, 'uncertainty_manifest_v1.json',
+                          'wenu-stellar-uncertainty/1') as temporary:
+        with (temporary/'stellar_uncertainty_v1.jsonl').open('w') as stream:
+            for star in source.records():
+                association = star['published_association']
+                row = gaia[association['source_id']] if association else None
+                result = {'hip': star['identity']['identifier'],
+                    'source_id': row['source_id'] if row else None,
+                    'original_visual_magnitude': star['original']['magnitude'],
+                    'review_reasons': star['review_reasons'],
+                    'astrometric_params_solved': row.get('astrometric_params_solved') if row else None,
+                    'source_epoch': row['ref_epoch'] if row else None, 'evaluations': []}
+                covariance = None
+                if row is None:
+                    result['covariance'] = {'status': 'no_published_gaia_association'}
+                elif row.get('astrometric_params_solved') not in (31, 95):
+                    result['covariance'] = {'status': 'no_five_parameter_astrometry'}
+                else:
+                    try:
+                        covariance, result['covariance'] = gaia_covariance(row)
+                    except (ValueError, np.linalg.LinAlgError) as error:
+                        result['covariance'] = {'status': str(error)}
+                summary['covariance_statuses'][result['covariance']['status']] += 1
+                for t in years:
+                    entry = {'elapsed_julian_years_tcb': t, 'status': 'covariance_unavailable'}
+                    if covariance is not None:
+                        try:
+                            entry = angular_measurement_error(row, covariance, t)
+                        except (ValueError, np.linalg.LinAlgError) as error:
+                            entry['status'] = str(error)
+                    summary['angular_statuses'][entry['status']] += 1
+                    # This is independent of measurement-covariance availability.
+                    try:
+                        require(row is not None and row.get('astrometric_params_solved') in (31, 95),
+                                'no_gaia_motion_inputs')
+                        sensitivity = rv_sensitivity(row, t)
+                        entry['rv_sensitivity'] = {'status': 'evaluated',
+                            'absolute_arcsec_per_kms_at_hypothetical_zero_rv': sensitivity,
+                            'source_rv_present': finite_number(row.get('radial_velocity'))}
+                    except (ValueError, OverflowError) as error:
+                        entry['rv_sensitivity'] = {'status': str(error)}
+                    summary['rv_sensitivity_statuses'][entry['rv_sensitivity']['status']] += 1
+                    result['evaluations'].append(entry)
+                summary['retained_hip_rows'] += 1
+                stream.write(json.dumps(result, allow_nan=False) + '\n')
+                if summary['retained_hip_rows'] % 5000 == 0:
+                    print('Uncertainty HIP entries verified:', summary['retained_hip_rows'], flush=True)
+        (temporary/'uncertainty_summary_v1.json').write_text(json.dumps(summary, indent=2, allow_nan=False)+'\n')
+    return summary
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--cache', type=Path, required=True)
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--cache', type=Path)
+    mode.add_argument('--uncertainty-source', type=Path,
+                      help='Read-only angular uncertainty report from a verified enrichment snapshot')
+    parser.add_argument('--expected-source-manifest', help='Required SHA256 binding for uncertainty mode')
+    parser.add_argument('--uncertainty-years', nargs='+', type=float,
+                      help='Explicit elapsed Julian years on the native TCB axis')
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--diagnostics', action='store_true',
                         help='Optional 1997/Gaia motion diagnostics; never veto published associations')
@@ -675,6 +875,26 @@ def main(argv=None):
     parser.add_argument('--source-output', type=Path,
                         help='Publish a separate immutable local enrichment input snapshot; no runtime adoption')
     args = parser.parse_args(argv)
+    if args.uncertainty_source is not None:
+        require(not any((args.diagnostics, args.kervella_source, args.astrometry_source, args.source_output)),
+                'Uncertainty mode cannot acquire, republish sources or run association diagnostics')
+        require(args.expected_source_manifest is not None and
+                re.fullmatch('[0-9a-f]{64}', args.expected_source_manifest) is not None,
+                'Uncertainty mode requires an exact source manifest SHA256')
+        require(args.uncertainty_years is not None, 'Uncertainty mode requires explicit elapsed years')
+        source_path = args.uncertainty_source.expanduser().resolve()
+        report_path = args.output.expanduser().resolve()
+        require(source_path != report_path and source_path not in report_path.parents
+                and report_path not in source_path.parents, 'Source and report outputs must be separate directories')
+        from wenu.stellar_enrichment import load_stellar_enrichment
+        snapshot = load_stellar_enrichment(args.uncertainty_source.expanduser(),
+            expected_manifest_sha256=args.expected_source_manifest)
+        summary = uncertainty_report(snapshot, args.uncertainty_years, args.output.expanduser())
+        print(json.dumps(summary, indent=2))
+        print('UNCERTAINTY REPORT COMPLETE:', args.output.expanduser())
+        return
+    require(args.expected_source_manifest is None and args.uncertainty_years is None,
+            'Uncertainty options require --uncertainty-source')
     require(args.astrometry_source is None or args.kervella_source is not None,
             'Astrometry coverage requires the published Kervella associations')
     require(args.source_output is None or args.astrometry_source is not None,

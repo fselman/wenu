@@ -1,5 +1,18 @@
 # Wenu developer documentation
 
+## Offline stellar uncertainty assessment and report
+
+PR #331's assessment is merged; Fernando's Mac is clean and synchronized at
+`9395ad21` after 36 documentation tests in 3.47 s and branch cleanup.
+The bounded K4b.05 offline Gaia report is now implemented as a candidate in
+the existing audit tool. It reports conditional angular measurement errors
+and separate hypothetical missing-RV sensitivity; full covariance/physical
+provider admission and Hip2 reconstruction remain separate.
+See the [interface](implementation_reference.md#offline-gaia-conditional-uncertainty-report),
+[scientific limits](scientific_contracts.md#offline-angular-measurement-errors)
+and [acceptance gate](testing_policy.md#offline-gaia-covariance-and-rv-sensitivity-gate).
+Actual cache execution remains pending.
+
 **Current accepted slice:** K4b.02/AX.13 [explicit proper-motion angular model](implementation_reference.md#explicit-proper-motion-angular-model).
 Main `8167bb39` and PR #323 merged-branch cleanup were confirmed clean/synchronized on
 the Mac. K4b.01 remains accepted: 97,710 complete-input stellar models and all
