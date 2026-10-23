@@ -44,7 +44,16 @@ Delta-T, historical observer or precession model is inferred. Complete Mac gates
 passed: 257 stellar/shared-core/cluster cases (nine subtests), 125 source-audit,
 36 documentation and eight tooling cases (81 subtests). Twenty-four historical
 states passed the independent Decimal check; all Gaia/Hip2 digests are unchanged.
-PR #327 remains unmerged; no next runtime item is selected.
+PR #327 is merged at `e2a231b5`; clean synchronized Mac main and branch
+cleanup are confirmed, with 36 documentation passes.
+
+**Current selected work:** K4b.04 long-term frame orientation, selected by
+Fernando on 2026-10-23. The existing convention owner admits separately explicit
+corrected Vondrak/Capitaine/Wallace mean equatorial/ecliptic axes through ERFA,
+with finite TT validity and an explicit TT frame equinox. Native stellar TCB
+times/source/model records are preserved in a derived view. No time-scale
+relabel, observer reconstruction or default chart change. Local focused checks
+pass; complete Mac acceptance remains pending in PR #328.
 See the
 [qualification review](kernel_roadmap_v0.9.5.md#k4b02-hipparcos-2-fallback-qualification).
 

@@ -1,5 +1,24 @@
 # Current scientific contracts and paused work
 
+## Long-term mean axes (K4b.04)
+
+Explicit long-term frame orientation uses corrected Vondrak/Capitaine/Wallace
+2011/2012 through ERFA, with frame bias, a finite caller TT domain inside
+J2000 +/-200000 Julian years, and a separately explicit TT equinox. Native
+source/motion state epochs remain unchanged on their original axis (TCB for
+Gaia/Hip2 motion); frame orientation is not propagation or implicit TT/TCB
+conversion. Derived views retain original SDK batches and source uncertainty.
+The first-order-bias matrix is only near orthogonal; normalized direction
+application is not a new state/error/reuse admission. Model identity binds the
+actual matrix/backend and exact TT input/domain.
+
+Published qualitative historical/remote accuracy and measured modern inter-model
+differences are not certified physical bounds. Physical and total implementation
+orientation errors remain unknown; requested guaranteed physical accuracy refuses.
+No nutation/Earth rotation/polar motion/observer translation, ancient EOP/Delta-T,
+new light-time/aberration, source rewrite, chart default or issue #326 resolution.
+See the [API](implementation_reference.md#explicit-long-term-frame-orientation).
+
 ## Historical date semantics (K4b.03)
 
 Explicit proleptic calendar and year-numbering labels are coordinate input,

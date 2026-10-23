@@ -659,3 +659,192 @@ def test_historical_tdb_to_tcb_uses_admitted_receipt_not_scale_relabel():
             resolve_historical_date(replace(date,scale=scale),time_service=TimeService())
     with pytest.raises(OutsideCoverage): resolve_historical_date(replace(date,year=50000),time_service=service)
     assert resolve_historical_date(date,time_service=service)==r
+
+
+# K4b.04: existing convention-owner tests protect frame bias, handedness,
+# independent axes/date semantics and refusal without changing native states.
+def tt_year(year):
+    from fractions import Fraction
+    value=Fraction(2451545)+(Fraction(str(year))-2000)*Fraction(1461,4)
+    whole=(value+Fraction(1,2)).__floor__()
+    return TimePoint(whole,float(value-whole),'tt')
+
+
+def long_frame(year=2000, axes='mean-equator-equinox', **changes):
+    from wenu.astrometric_coordinates import LongTermFrame
+    from wenu_kernel.records import TimeSpan
+    return LongTermFrame(**dict(dict(equinox=tt_year(year),
+        validity=TimeSpan(tt_year(-198000),tt_year(202000)),axes=axes,
+        model_policy='vcw2011-2012-erfa'),**changes))
+
+
+@pytest.mark.parametrize('axes,year,reference',[
+    ('mean-equator-equinox',1666.666,(
+        (.9967044167723271851,.07437794731203340345,.03237632684841625547),
+        (-.07437795663437177152,.9972293947500013666,-.001205741865911243235),
+        (-.03237630543224664992,-.001206316791076485295,.9994750220222438819))),
+    ('mean-ecliptic-equinox',-3000,(
+        (.3564105644859788825,.8530575738617682284,.3811355207795060435),
+        (-.9343283469640709942,.3247830597681745976,.1467872751535940865),
+        (.001431636191201167793,-.4084222566960599342,.9127919865189030899))),
+])
+def test_long_frame_published_erfa_regression_matrix(axes,year,reference):
+    # Published t_erfa_c.c t_ltpb / t_ltecm numerical reference vectors.
+    # Conformity to the reference library, not an independent dynamics oracle.
+    import numpy as np
+    frame=long_frame(year,axes)
+    np.testing.assert_allclose(frame.matrix,reference,rtol=0,atol=1e-14)
+    assert frame.backend_jyear_tt==float(year)
+    assert frame.physical_error_rad is frame.numerical_error_rad is None
+
+
+@pytest.mark.parametrize('axes',['mean-equator-equinox','mean-ecliptic-equinox'])
+@pytest.mark.parametrize('year',[-198000,-50000,-10000,-1000,0,2000,10000,50000,202000])
+def test_long_frame_independent_pole_triad_and_matrix_application(axes,year):
+    import erfa,numpy as np
+    from decimal import Decimal,localcontext
+    f=long_frame(year,axes)
+    # Reconstruct axes geometrically from independently exposed pole functions;
+    # these share model coefficients, so this is independent geometry only.
+    pole=erfa.ltpequ(float(year));ecliptic=erfa.ltpecl(float(year))
+    x=np.cross(pole,ecliptic);x/=np.linalg.norm(x)
+    z=pole if axes=='mean-equator-equinox' else ecliptic
+    y=np.cross(z,x)
+    triad=np.array((x,y,z))
+    # Isolate bias from the two independently exposed J2000 matrices: the
+    # fitted long-term J2000 precession itself has tiny nonzero residuals.
+    # Do not conflate the fitted residual with the ICRS frame bias.
+    bias=np.linalg.solve(erfa.ltp(2000.),erfa.ltpb(2000.))
+    np.testing.assert_allclose(f.matrix,triad@bias,rtol=0,atol=2e-14)
+    np.testing.assert_allclose(np.array(f.matrix)@np.array(f.matrix).T,np.eye(3),rtol=0,atol=3e-14)
+    assert np.linalg.det(f.matrix)>0
+    v=(.36,.48,.8)
+    with localcontext() as c:
+        c.prec=80
+        r=[sum(Decimal(a)*Decimal(b)for a,b in zip(row,v))for row in f.matrix]
+        norm=sum(a*a for a in r).sqrt();oracle=tuple(float(a/norm)for a in r)
+    np.testing.assert_allclose(f.rotate(v),oracle,rtol=0,atol=3e-16)
+    back=np.linalg.solve(np.array(f.matrix),f.rotate(v));back/=np.linalg.norm(back)
+    np.testing.assert_allclose(back,v,rtol=0,atol=5e-16)
+    np.testing.assert_allclose(f.rotate(f.pole_icrs),(0,0,1),rtol=0,atol=2e-14)
+
+
+@pytest.mark.parametrize('axes',['mean-equator-equinox','mean-ecliptic-equinox'])
+def test_long_frame_near_modern_iau2006_agreement_without_switch(axes):
+    import erfa,numpy as np
+    from math import sqrt
+    for year in range(1900,2101,10):
+        f=long_frame(year,axes);t=tt_year(year)
+        r=(erfa.pmat06 if axes=='mean-equator-equinox' else erfa.ecm06)(t.jd1,t.jd2)
+        # Direct ERFA comparison is <1 mas here, not uniformly <100 uas.
+        # This diagnostic threshold is not a physical error guarantee.
+        assert np.linalg.norm(np.array(f.matrix)-r)/sqrt(2)<4.84813681109536e-9
+        assert f.model.model_id=='wenu.astrometry:long-term-frame'
+    assert abs(long_frame().matrix[0][1])>1e-8  # ICRS != mean J2000
+
+
+def test_long_frame_binding_is_immutable_and_separates_exact_epoch_domain_and_backend():
+    from dataclasses import FrozenInstanceError
+    from wenu_kernel.records import TimeSpan
+    a=long_frame();b=long_frame(equinox=replace(a.equinox,jd2=1e-12))
+    assert a.matrix==b.matrix and a.model!=b.model  # backend rounds year; identity must not
+    assert b.epoch_rounding_s>0 and a.epoch_rounding_s==0
+    assert a.model!=long_frame(validity=TimeSpan(tt_year(1900),tt_year(2100))).model
+    assert a.model!=long_frame(axes='mean-ecliptic-equinox').model
+    with pytest.raises(FrozenInstanceError):a.equinox=tt_year(2001)
+    with pytest.raises(TypeError):a.matrix[0][0]=0
+    assert all(a.backend_versions) and a.equinox.scale=='tt'
+
+
+@pytest.mark.parametrize('changes',[
+    {'equinox':TimePoint(2451545,0,'tcb')}, {'equinox':None},
+    {'equinox':tt_year(-198001)},{'equinox':tt_year(202001)},
+    {'equinox':replace(tt_year(-198000),jd2=-1e-12)},
+    {'equinox':replace(tt_year(202000),jd2=1e-12)},
+    {'validity':None},{'axes':'fk5'},{'axes':'cirs'},{'model_policy':'auto'},
+    {'maximum_physical_error_rad':0},{'maximum_physical_error_rad':1},
+    {'maximum_physical_error_rad':-1},{'maximum_physical_error_rad':True},
+    {'maximum_physical_error_rad':float('nan')},
+    {'maximum_physical_error_rad':10**400},
+])
+def test_long_frame_invalid_implicit_or_accuracy_request_refuses_after_success(changes):
+    from wenu_kernel.errors import KernelError
+    good=long_frame();good.rotate((1.,0.,0.))
+    with pytest.raises(KernelError):long_frame(**changes)
+    assert long_frame()==good
+
+
+@pytest.mark.parametrize('bad',[(0,0,0),(1,1,1),(float('nan'),0,1),(True,0,0),[1,0],None])
+def test_long_frame_refuses_non_direction_input(bad):
+    from wenu_kernel.errors import InvalidQuery
+    with pytest.raises(InvalidQuery):long_frame().rotate(bad)
+
+
+@pytest.mark.parametrize('bad',[[[1,0,0],[0,1,0],[0,0,-1]],[[2,0,0],[0,1,0],[0,0,1]],
+    [[float('nan'),0,0],[0,1,0],[0,0,1]],[[1,0],[0,1]]])
+def test_long_frame_malformed_backend_never_publishes_orientation(monkeypatch,bad):
+    import erfa
+    from wenu_kernel.errors import InvalidProviderResult
+    good=long_frame();monkeypatch.setattr(erfa,'ltpb',lambda ep:bad)
+    with pytest.raises(InvalidProviderResult):long_frame()
+    assert good.rotate((1.,0.,0.))  # admitted immutable matrix never consults warm backend
+
+
+def test_long_frame_dropped_bias_fault_breaks_reference_and_backend_cause_is_preserved(monkeypatch):
+    import erfa,numpy as np
+    from wenu_kernel.errors import ProviderEvaluationError
+    baseline=long_frame();monkeypatch.setattr(erfa,'ltpb',erfa.ltp)
+    with pytest.raises(AssertionError):
+        np.testing.assert_allclose(long_frame().matrix,baseline.matrix,rtol=0,atol=1e-14)
+    def fail(ep):raise RuntimeError('injected backend fault')
+    monkeypatch.setattr(erfa,'ltpb',fail)
+    with pytest.raises(ProviderEvaluationError)as caught:long_frame()
+    assert isinstance(caught.value.__cause__,RuntimeError)
+
+
+def test_long_frame_native_batch_view_preserves_sdk_states_and_refuses_foreign_binding():
+    from wenu.astrometric_state import AngularMotionRow
+    from wenu.astrometric_coordinates import orient_direction_batch
+    from wenu_kernel.errors import KernelError
+    p=mixed_provider(RectilinearAstrometricProvider,AngularMotionRow,angular=True)
+    a=p.describe().admissions[0];q=StateQuery(a.catalogue,a.model,a.objects,
+        (TimePoint(0,0,'tcb'),),a.reference,AccuracyRequest())
+    with Kernel(references=(a.reference,))as k:
+        k.register(p,ownership='owned')
+        with k.open_session(SessionPolicy((a.catalogue,)))as session:batch=session.evaluate(q)
+    frame=long_frame(-10000);out=orient_direction_batch(batch,admission=a,orientation=frame)
+    assert out.original is batch and out.orientation is frame
+    for native,derived in zip(batch.states,out.states):
+        assert derived.original is native
+        assert derived.vector==frame.rotate(native.vector)
+        assert native.time.scale=='tcb' and frame.equinox.scale=='tt'
+        assert native.evidence.physical_model.status=='not_evaluated'
+    bad=[dict(admission=replace(a,model=replace(a.model,version='foreign'))),dict(orientation=None)]
+    for changes in bad:
+        with pytest.raises(KernelError):orient_direction_batch(batch,**dict(dict(admission=a,orientation=frame),**changes))
+    with pytest.raises(KernelError):orient_direction_batch(replace(batch,states=batch.states[::-1]),admission=a,orientation=frame)
+    assert orient_direction_batch(batch,admission=a,orientation=frame)==out
+
+
+def test_long_frame_finite_domain_and_partial_warm_batches_refuse():
+    from wenu.astrometric_state import AngularMotionRow
+    from wenu.astrometric_coordinates import orient_direction_batch
+    from wenu_kernel.records import TimeSpan,UnboundedCoverage
+    from wenu_kernel.errors import KernelError
+    for validity in (UnboundedCoverage('tt'),TimeSpan(TimePoint(0,0,'tcb'),TimePoint(3000000,0,'tcb')),
+                     TimeSpan(tt_year(2001),tt_year(2100)),TimeSpan(tt_year(-198001),tt_year(2001))):
+        with pytest.raises(KernelError):long_frame(validity=validity)
+    p=mixed_provider(RectilinearAstrometricProvider,AngularMotionRow,angular=True)
+    a=p.describe().admissions[0];q=StateQuery(a.catalogue,a.model,a.objects,
+        (TimePoint(2451545,0,'tcb'),),a.reference,AccuracyRequest())
+    with Kernel(references=(a.reference,))as k:
+        k.register(p,ownership='owned')
+        with k.open_session(SessionPolicy((a.catalogue,)))as session:batch=session.evaluate(q)
+    frame=long_frame();baseline=orient_direction_batch(batch,admission=a,orientation=frame)
+    bad=(replace(batch,states=batch.states[:-1]),
+         replace(batch,states=(replace(batch.states[0],time=TimePoint(2451546,0,'tcb')),)+batch.states[1:]),
+         replace(batch,states=(replace(batch.states[0],source_epoch=None),)+batch.states[1:]),
+         replace(batch,query=replace(q,require_velocity=True)))
+    for value in bad:
+        with pytest.raises(KernelError):orient_direction_batch(value,admission=a,orientation=frame)
+    assert orient_direction_batch(batch,admission=a,orientation=frame)==baseline
