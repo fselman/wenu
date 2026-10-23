@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 85, 2026-10-23. **Status:** K4b.04 is merged through PR #328; clean synchronized Mac main `90e2d1e6d6c5114fa50b607ebcfa3099a8998636` and branch cleanup are confirmed. Fernando selected the bounded K4b.05 reference/method assessment with “Proceed”; ESA comparisons and propagation-reference review are documentation-only work. No new runtime item is selected; K4b.06, physical/total accuracy and issue #326 remain separate.
+**Plan revision:** 85, 2026-10-23. **Status:** K4b.04 is merged through PR #328; clean synchronized Mac main `90e2d1e6d6c5114fa50b607ebcfa3099a8998636` and branch cleanup are confirmed. Fernando selected the bounded K4b.05 reference/method assessment with “Proceed”; ESA comparisons and propagation-reference review are documentation-only work; findings and the concrete next comparison proposal are recorded in the existing migration audit. No new runtime item is selected; K4b.06, physical/total accuracy and issue #326 remain separate.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -63,7 +63,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.04 explicit long-term mean axes passed Mac acceptance in PR #328 at 97921fe8: 311 focused, 125 audit, 36 documentation, eight tooling/81 subtests and 48 actual derived directions; accepted stellar digests unchanged |
-| Next bounded submilestone | K4b.05 bounded reference/method assessment selected by Fernando’s “Proceed”: ESA reconstruction evidence and mathematical-reference compatibility, documented in the existing audit. Runtime/acquisition not selected; K4b.06 and issue #326 remain separate |
+| Next bounded submilestone | K4b.05 bounded reference/method assessment selected by Fernando’s “Proceed”: ESA reconstruction evidence and mathematical-reference compatibility, documented in the existing audit. Assessment delivered with reference recommendation and ESA gaps; numerical implementation/acquisition not selected. K4b.06 and issue #326 remain separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -88,7 +88,7 @@ record recoverable inputs and missing evidence, and propose the smallest numeric
 and qualitative comparison gate. Use the existing migration audit for findings.
 Acceptance is documentation integrity and source-backed assessment; no runtime
 implementation, catalogue acquisition, physical-model change or K4b.06 chart
-adoption is selected. This plan is committed before assessment findings.
+adoption is selected. The plan was committed at `80d4d423` before findings. The [reference assessment](kernel_migration_audit_v1.md#k4b05-reference-and-method-assessment-2026-10-23) now records the no-light-time mathematical-reference recommendation, ESA evidence/gaps and a proposed bounded comparison gate. No numerical comparison or implementation is claimed.
 
 Start with these published ESA products (reference discovery checked 2026-10-23):
 
@@ -99,8 +99,10 @@ Start with these published ESA products (reference discovery checked 2026-10-23)
 - [Hipparcos stereo images: Ursa Major](https://www.cosmos.esa.int/web/hipparcos/stereo-images):
   three-dimensional views and a future extrapolation based on Hipparcos proper
   motions. The indexed ESA description was available, but direct page retrieval
-  was blocked during discovery; exact epochs, inputs and algorithms are not yet
-  verified. Do not treat this description as a recovered numerical dataset.
+  was blocked during discovery; search retrieval subsequently recovered a +60,000-year Ursa Major description,
+  preliminary 30-month source provenance and enhanced stereo geometry. Exact
+  reference epoch, per-star values and algorithms remain unverified. See the
+  assessment; this is not a recovered numerical dataset.
 
 Before implementation, establish for each product the identifiable stars/HIP
 keys, catalogue editions and input values, epochs and time conventions,

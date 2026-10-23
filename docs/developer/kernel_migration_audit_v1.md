@@ -1,5 +1,108 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.05 reference and method assessment, 2026-10-23
+
+**Selected scope:** Fernando’s “Proceed” after the ESA reconstruction and
+Butkevich–Lindegren reference-assessment proposal. The documentation plan was
+committed at `80d4d4230d25d0c02c83c629b489aed5df28fc28` before these findings.
+Inspected production/test owners at `351e4ddf613feff2b13eb781445205e6103ef608`;
+the plan commit changes no runtime. This assessment does not close K4b.05,
+execute a reference comparison, select numerical implementation or authorize
+source acquisition. K4b.06 consumer adoption and Hip2 time-scale issue #326
+remain separate.
+
+### ESA comparison evidence
+
+| Product | Verified evidence and retrieval | Recoverability and comparison role |
+|---|---|---|
+| [Orion story](https://www.esa.int/Science_Exploration/Space_Science/Gaia/The_future_of_the_Orion_constellation) and [video](https://www.esa.int/ESA_Multimedia/Videos/2017/06/The_future_of_the_Orion_constellation), 2017-06-09 | Direct ESA text read: 450,000-year future sequence, 40 by 20 degree field, TGAS plus Hipparcos bright stars and ground-based information. Video credit ESA/Gaia/DPAC; its page offers CC BY-SA 3.0 IGO or ESA Standard Licence. | No machine-readable output positions, complete per-star input/edition list, RV policy, equations, exact starting epoch/time scale or projection specification found on these pages. Link/view evidence only: video frames were not measured. Suitable as a qualitative external target until those details are recovered. |
+| [Hipparcos stereo images, Ursa Major](https://www.cosmos.esa.int/web/hipparcos/stereo-images) | Direct fetch returned HTTP 451; search retrieval supplied the ESA page text. It describes present and +60,000-year views, centred near RA 12 h, Dec +60 degrees, field about 36 by 31 degrees. The images are credited to L. Lindegren and associated with ESA Bulletin 77. | The page describes preliminary 30-month Hipparcos results, nonlinear depth enhancement and about a two-light-year stereo eye baseline. It is not established as a final 1997/Hip2 input set or an ordinary barycentric chart. Exact epoch, per-star values/RVs, projection, numerical outputs and media rights remain unresolved. Use qualitatively; do not extract RA/Dec directly from the stereo images. |
+
+These sources are published extrapolations, not measurements of an ancient sky.
+The retrieved pages do not establish an independent ancient numerical catalogue.
+The absence of a table on the reviewed pages is not proof that none exists.
+No ESA media/data/code were acquired or redistributed; a video licence does not
+establish permission for an unidentified underlying dataset. No contact was sent.
+
+### Mathematical reference and actual Wenu model
+
+Primary reference: A. G. Butkevich & L. Lindegren (2014),
+[Rigorous treatment of barycentric stellar motion](https://doi.org/10.1051/0004-6361/201424483),
+A&A 570, A62; [author manuscript arXiv:1407.4664v2](https://arxiv.org/pdf/1407.4664).
+The 18-page manuscript was retrieved; the publisher HTML was blocked.
+Relevant reviewed material: Sect. 4 (TCB/parameter conventions), Sect. 5.5
+(no-light-time propagation), Sects. 5.3–5.4 and Appendix C (covariance),
+Sect. 6 and Appendices D–E (light-time/model limitations).
+Its rigorous finite-light-speed model and no-light-time limit are different
+comparison cases. Appendix E uses differential Galactic acceleration relative
+to the SSB; companion motion needs object-specific treatment. This is a
+mathematical/limitations reference, not observational ground truth.
+
+The following mapping is an assessment of Wenu's inspected implementation:
+
+| Owner | Actual current behaviour | Assessment consequence |
+|---|---|---|
+| `stellar_state.py:StellarMotionCatalogue` | Full-input admission constructs distance from positive reciprocal parallax, source direction/normal triad, tangential velocity from both measured PMs, and radial velocity from an explicit spectroscopic proxy. Gaia metadata supplies native ICRS/SSB/TCB conventions. | Compare the existing nominal model with the paper's no-light-time limit first; do not silently reinterpret spectroscopic RV as a measured astrometric/systemic velocity. |
+| `astrometric_state.py:RectilinearAstrometricProvider` | Evaluates affine SI position and constant velocity, normalizes for native direction, checks explicit finite domains and numerical cones; no catalogue-specific dynamics or observer resources. | An independent spherical-form direction calculation can test adapter conversion plus engine composition without changing the generic core. |
+| `AngularMotionRow` and Gaia/Hip2 angular admissions | Normalizes source direction plus elapsed-time transverse angular derivative; does not use distance or RV. Hip2 retains an explicit nominal-TCB policy. | A zero radial term is a mathematical comparison limit, not a measurement of zero RV or admission of a finite distance. Keep missing-input model discrepancy distinct from numerical error. |
+| Existing stellar/shared-core tests | Axis and spherical-differential source-conversion oracles, Decimal affine/PV/angular calculations, domain/refusal/conformance/cold isolation and long-frame composition already exist. | Extend these owners only for a demonstrated new external-reference fault; do not duplicate exact affine arithmetic tests or invent a separate motion engine. |
+| Source evidence and uncertainty records | Source errors/correlations retained; full covariance propagation, binary/systemic correction, source-conversion physical error and total physical accuracy remain unimplemented/unqualified. | Reference agreement cannot populate unknown error fields or certify a lookback domain. No uncertainty or accuracy policy changes in this assessment. |
+
+An algebraic check explains the intended comparison. Write Wenu's admitted
+position as `D*u0`, velocity as `D*mu0 + vr*u0`, and elapsed native time as
+`t`, in compatible units. Its direction is therefore proportional to
+`(1 + (vr/D)*t)*u0 + t*mu0`. Normalizing this vector gives the spherical
+no-light-time expression in Sect. 5.5, Eq. (84), with radial proper motion
+`vr/D`. This establishes an algebraic relationship under matched inputs;
+it is not an executed numerical comparison or justification of the RV proxy.
+The angular model has the same algebraic form with the radial term omitted;
+real missing RV/distance remains unknown.
+
+**Reference recommendation:** use the no-light-time equations for the first
+like-for-like implementation oracle. A rigorous light-time result may later
+measure omitted-model effects, but should not become a zero-residual oracle
+for the unchanged nominal model. Covariance and dynamical qualifications need
+their own evidence and explicit scope. Astropy/ERFA calls are useful secondary
+checks only after inspecting their time, RV and light-time conventions; a
+different library name alone does not establish independent physics.
+
+### Concrete next comparison proposal, not yet implemented
+
+The smallest numerical slice is a test-only independent spherical no-light-time
+oracle in the existing stellar/shared-core test owners, preserving production
+code, model identities, source snapshot and defaults. First cover synthetic
+labelled cases at source epoch and elapsed +/-100, +/-1,000 and +/-10,000 Julian
+years, including pole/wrap, high transverse motion, positive/negative RV,
+radial-only and missing-input angular cases. Compare returned directions using
+stable vector angular/chord metrics, with a justified numerical tolerance
+distinct from physical uncertainty. Match native TCB dates and PM convention,
+avoid inadmissible origin crossings, and retain refusal/isolation checks.
+
+Then inspect a bounded selection from Fernando's existing immutable cache:
+the seven Big Dipper stars, the principal Orion figure stars, and high-motion
+stress cases such as HIP 87937 and HIP 57939. Verify actual Wenu topology/HIP
+membership, inputs and availability before fixing this selection; do not acquire
+or invent missing measurements. Publish per-object input/model availability and
+separate full-input from angular/Hip2 fallback results. The sample and epoch
+list are proposed, not an accepted numerical/physical domain.
+
+For ESA reproduction, recover the original input set and exact epoch conventions
+before asserting numerical agreement. The Ursa Major relative +60,000-year and
+Orion +450,000-year products exceed the initial proposed numerical sample;
+neither authorizes enlarging an admitted Wenu domain, using a remote precession
+frame beyond its domain, or extrapolating stellar lifetimes. Native ICRS
+comparisons can be considered separately from date-oriented axes. If the ESA
+numerical information remains unavailable, report qualitative agreement only,
+with documented projection/viewpoint differences. Do not tune production values
+to match an image or claim pixel-level equality with newer source astrometry.
+
+**Assessment exit:** reference choice and missing evidence are documented;
+no comparison residuals, propagated covariance, ancient physical accuracy,
+performance results or new acceptance totals are claimed. Proposed numerical
+work needs Fernando's bounded selection and a committed plan before
+implementation. Complete Mac documentation acceptance remains separate.
+
+
 ## Catalogue metadata audit, 2026-10-18
 
 Inspected source: PR #248 head `90d51334`, based on accepted main `bf804cbb`;
