@@ -1,5 +1,19 @@
 # Wenu coordinate systems, time and astronomical objects
 
+## Explicit historical calendar dates
+
+`HistoricalDate` in the existing astrometric convention boundary accepts
+explicit proleptic Julian or Gregorian labels and astronomical/BCE/CE years.
+Calendar arithmetic produces a two-part date on the caller-declared continuous
+scale; it does not identify that scale from the calendar. `resolve_historical_date`
+uses an explicit SDK TimeService conversion to TCB. Its receipt keeps original
+labels, unknown or bounded source-date uncertainty, calendar rounding and time
+conversion provenance separate. TT/TAI without admitted TCB conversion refuses.
+UTC/UT1, reform selection, time zones, ancient observer orientation and long-term
+precession are outside this API. Native ICRS stellar directions remain independent
+of modern Earth-orientation resources. See the
+[historical input API](implementation_reference.md#historical-calendar-input-and-nominal-tcb-epochs).
+
 **Scientific reference, consolidated 2026-10-17.** The filename is retained for
 compatibility with existing links; it does not assert that the new kernel exists.
 

@@ -100,7 +100,7 @@ concrete Wenu classes.
 | [`__init__.py`](../../src/wenu/__init__.py) | Wenu: publication-quality astronomical chart generation. |
 | [`_satellite_tabular_reports.py`](../../src/wenu/_satellite_tabular_reports.py) | Lossless in-memory tabular interchange for exact crossing reports. |
 | [`antisolar.py`](../../src/wenu/antisolar.py) | Observer-relative apparent antisolar direction geometry. |
-| [`astrometric_coordinates.py`](../../src/wenu/astrometric_coordinates.py) | Object-independent explicit TCB/TDB time conversion and barycentric Cartesian scaling receipts; no propagation, observer backend or graphics. |
+| [`astrometric_coordinates.py`](../../src/wenu/astrometric_coordinates.py) | Explicit historical proleptic calendar/year/uncertainty input, admitted TCB/TDB time conversion and barycentric Cartesian scaling receipts; no observer reconstruction or graphics. |
 | [`astrometric_observation.py`](../../src/wenu/astrometric_observation.py) | Offline UTC/TT reception and integrity-bound ERFA context; explicit model/resource admission and object-independent finite-distance parallax/apparent vacuum Alt/Az realization from kernel batches. No source propagation or chart adoption. |
 | [`astrometric_state.py`](../../src/wenu/astrometric_state.py) | Object-independent separately typed SI/angular rows, shared affine direction/Cartesian evaluation, domain and numerical/reuse certification; angular rows cannot claim physical PV; no source/observer dependencies. |
 | [`atlas_design.py`](../../src/wenu/atlas_design.py) | Observer-independent atlas geometry specimens and strict versioned JSON. |

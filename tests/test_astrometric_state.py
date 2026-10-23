@@ -512,3 +512,150 @@ def test_angular_shared_core_numerical_fault_reuse_and_immutable_coefficients(mo
     monkeypatch.setattr(core,'_exact_position',original)
     assert p.evaluate(q)==baseline
     p.close()
+
+
+# Historical calendar boundary extends the existing time-convention/oracle owner.
+def historical_date(**changes):
+    from wenu.astrometric_coordinates import HistoricalDate
+    return HistoricalDate(**dict(dict(year=2000, month=1, day=1, hour=12,
+        calendar='gregorian', year_numbering='astronomical', scale='tcb',
+        uncertainty_s=None), **changes))
+
+
+def resolve_date(**changes):
+    from wenu.astrometric_coordinates import resolve_historical_date
+    from wenu_kernel.time import TimeService
+    return resolve_historical_date(historical_date(**changes),time_service=TimeService())
+
+
+@pytest.mark.parametrize('calendar,year,month,day,hour,jd', [
+    ('gregorian',2000,1,1,12,2451545),
+    ('julian',-4712,1,1,12,0),
+    ('gregorian',-4713,11,24,12,0),
+    ('julian',1582,10,4,0,2299159.5),
+    ('gregorian',1582,10,15,0,2299160.5),
+])
+def test_historical_published_calendar_vectors(calendar,year,month,day,hour,jd):
+    # USNO Julian Date converter/reform examples and SOFA J2000; these
+    # check labels/JD arithmetic, not a UT1-to-TCB physical conversion.
+    r=resolve_date(calendar=calendar,year=year,month=month,day=day,hour=hour)
+    assert r.time.jd1+r.time.jd2==jd and r.calendar_rounding_error_s==0
+    assert r.conversion.source is r.calendar_time
+    assert r.conversion.target is r.calendar_time
+    assert r.conversion.numerical_error_s==0
+
+
+@pytest.mark.parametrize('year',[-4799,-4000,-1000,-400,-100,-4,-1,0,1,4,100,400,1582,1900,2000,50000])
+def test_historical_gregorian_independent_erfa_calendar(year):
+    import erfa
+    from math import fsum
+    r=resolve_date(year=year,month=3,day=1,hour=0)
+    a,b=erfa.cal2jd(year,3,1)
+    assert fsum((r.time.jd1-a,r.time.jd2,-b))==0
+
+
+@pytest.mark.parametrize('calendar,cycle,days',[('gregorian',400,146097),('julian',4,1461)])
+def test_historical_ancient_negative_year_cycles(calendar,cycle,days):
+    # Exact leap-cycle identity independently exercises floor division before
+    # the shifted algorithm origin; ERFA's calendar API rejects these years.
+    for y in (-100000,-50000,-10000,-4801,-4800,-1,0,1,2000):
+        a=resolve_date(calendar=calendar,year=y,month=3,day=1)
+        b=resolve_date(calendar=calendar,year=y+cycle,month=3,day=1)
+        assert b.time.jd1-a.time.jd1==days and a.time.jd2==b.time.jd2
+
+
+def test_historical_bce_ce_year_zero_and_original_labels_are_preserved():
+    from dataclasses import FrozenInstanceError
+    for n in (1,2,400,1000,50000):
+        bce=resolve_date(year=n,year_numbering='bce',uncertainty_s=86400.)
+        astro=resolve_date(year=1-n)
+        assert bce.time==astro.time
+        assert bce.source.year==n and bce.source.year_numbering=='bce'
+        assert bce.source.uncertainty_s==86400. and astro.source.uncertainty_s is None
+    assert resolve_date(year=1,year_numbering='ce').time==resolve_date(year=1).time
+    with pytest.raises(FrozenInstanceError): bce.source.year=1
+    with pytest.raises(FrozenInstanceError): bce.calendar_time=bce.time
+
+
+def test_historical_proleptic_calendars_do_not_silently_switch_at_reform():
+    # Gregorian Oct 5 exists under the explicit proleptic policy. The same
+    # labels in different calendars are different instants, not auto-corrected.
+    a=resolve_date(year=1582,month=10,day=4)
+    b=resolve_date(year=1582,month=10,day=5)
+    c=resolve_date(calendar='julian',year=1582,month=10,day=5)
+    assert b.time.jd1-a.time.jd1==1 and c.time.jd1-b.time.jd1==10
+    resolve_date(calendar='julian',year=1900,month=2,day=29)
+    from wenu_kernel.errors import InvalidQuery
+    with pytest.raises(InvalidQuery): resolve_date(year=1900,month=2,day=29)
+    resolve_date(year=0,month=2,day=29)
+
+
+def test_historical_fractional_second_uses_two_parts_and_outward_decimal_bound():
+    from decimal import Decimal,localcontext
+    from math import nextafter
+    with localcontext() as ctx:
+        ctx.prec=100
+        for second in (0.,1e-10,.1,59.99,nextafter(60.,0)):
+            r=resolve_date(year=-50000,hour=23,minute=59,second=second)
+            base=resolve_date(year=-50000,hour=0)
+            # Compare in seconds: no rounded nonterminating Decimal /86400
+            # can perturb an exactly representable outward bound.
+            expected=Decimal(23*3600+59*60)+Decimal.from_float(second)
+            actual=(Decimal(r.time.jd1-base.time.jd1)+Decimal.from_float(r.time.jd2)
+                    -Decimal.from_float(base.time.jd2))*Decimal(86400)
+            assert abs(actual-expected)<=Decimal.from_float(r.calendar_rounding_error_s)
+        a=resolve_date(year=-50000,second=0)
+        b=resolve_date(year=-50000,second=1e-10)
+        assert a.time!=b.time and a.time.jd1+a.time.jd2==b.time.jd1+b.time.jd2
+
+
+@pytest.mark.parametrize('changes',[
+    {'year':True},{'year':1.0},{'month':0},{'month':13},{'day':0},{'day':32},
+    {'year':1,'month':2,'day':29},{'hour':24},{'minute':60},{'second':60},
+    {'second':True},{'second':float('nan')},{'second':-1},{'second':10**400},
+    {'uncertainty_s':-1},{'uncertainty_s':True},{'uncertainty_s':float('inf')},
+    {'uncertainty_s':'unknown'},{'calendar':'auto'},{'calendar':[]},
+    {'year_numbering':'BC'},{'year_numbering':'bce','year':0},
+    {'year_numbering':'ce','year':-1},{'scale':'utc'},{'scale':'ut1'},{'scale':None},
+])
+def test_historical_ambiguous_or_invalid_input_is_refused(changes):
+    from wenu_kernel.errors import InvalidQuery
+    resolve_date()  # success must not warm a fallback/default path
+    with pytest.raises(InvalidQuery): historical_date(**changes)
+
+
+def test_historical_requires_uncertainty_and_typed_explicit_service():
+    from wenu.astrometric_coordinates import HistoricalDate,resolve_historical_date
+    from wenu_kernel.errors import InvalidQuery
+    from wenu_kernel.time import TimeService
+    with pytest.raises(TypeError):
+        HistoricalDate(year=1,month=1,day=1,calendar='julian',year_numbering='ce',scale='tcb')
+    for date,service in (({},TimeService()),(historical_date(),None)):
+        with pytest.raises(InvalidQuery): resolve_historical_date(date,time_service=service)
+    with pytest.raises(InvalidQuery): resolve_date(year=10**15)
+    zero=resolve_date(uncertainty_s=0)
+    unknown=resolve_date(uncertainty_s=None)
+    assert zero.time==unknown.time and zero.source!=unknown.source
+    large=resolve_date(uncertainty_s=2**53+1)
+    assert large.source.uncertainty_s==2**53+1  # do not round a source bound down
+
+
+def test_historical_tdb_to_tcb_uses_admitted_receipt_not_scale_relabel():
+    from wenu.astrometric_coordinates import TcbTdbAdapter,resolve_historical_date
+    from wenu_kernel.records import TimeSpan
+    from wenu_kernel.time import TimeService
+    from wenu_kernel.errors import TimeConversionUnavailable,OutsideCoverage,AccuracyUnavailable
+    date=historical_date(year=1000,year_numbering='bce',calendar='julian',scale='tdb',uncertainty_s=43200)
+    adapter=TcbTdbAdapter(TimeSpan(TimePoint(1000000,0,'tdb'),TimePoint(3000000,0,'tdb')))
+    service=TimeService((adapter,),admissions=(adapter.describe(),))
+    r=resolve_historical_date(date,time_service=service)
+    assert r.source is date and r.source.uncertainty_s==43200 and r.calendar_time.scale=='tdb'
+    assert r.time.scale=='tcb' and r.time.jd2!=r.calendar_time.jd2
+    assert r.conversion==service.convert(r.calendar_time,'tcb')
+    assert r.conversion==_assert_barycentric_time_reference(adapter,r.calendar_time)
+    with pytest.raises(AccuracyUnavailable): resolve_historical_date(date,time_service=service,maximum_conversion_error_s=0)
+    for scale in ('tai','tt','tdb'):
+        with pytest.raises(TimeConversionUnavailable):
+            resolve_historical_date(replace(date,scale=scale),time_service=TimeService())
+    with pytest.raises(OutsideCoverage): resolve_historical_date(replace(date,year=50000),time_service=service)
+    assert resolve_historical_date(date,time_service=service)==r

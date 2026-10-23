@@ -543,21 +543,32 @@ def test_stellar_motion_cold_source_reload_and_query_without_science_stack(motio
     root=Path(__file__).parents[1]
     isolated=tmp_path/'isolated';isolated.mkdir()
     package=isolated/'wenu';package.mkdir();(package/'__init__.py').write_text('')
-    for name in ('stellar_state','catalogue_state','stellar_enrichment','astrometric_state'):
+    for name in ('stellar_state','catalogue_state','stellar_enrichment','astrometric_state','astrometric_coordinates'):
         shutil.copyfile(root/'src/wenu'/f'{name}.py',package/f'{name}.py')
     shutil.copytree(Path(wenu_kernel.__file__).parent,isolated/'wenu_kernel',ignore=shutil.ignore_patterns('__pycache__'))
     source=motion_source();snapshot=tmp_path/'snapshot_v1';snapshot.mkdir()
     for name,payload in source.products:(snapshot/name).write_bytes(payload)
     (snapshot/'source_manifest_v1.json').write_bytes(source.manifest)
     script='''
-import sys,socket,shutil
+import sys,socket,shutil,importlib.abc
 sys.path.insert(0,sys.argv[1])
 def forbidden(*a,**k):raise AssertionError('network forbidden')
 socket.socket=forbidden
+class BlockScience(importlib.abc.MetaPathFinder):
+ def find_spec(self,fullname,path=None,target=None):
+  if fullname.split('.')[0] in ('astropy','numpy','pandas','skyfield','matplotlib') or fullname.startswith(('wenu.observer','wenu.sky','wenu.objects','wenu.rendering')):
+   raise AssertionError('native ancient query must not import '+fullname)
+sys.meta_path.insert(0,BlockScience())
 from wenu.stellar_enrichment import load_stellar_enrichment
 from wenu.stellar_state import admit_stellar_motion,admit_stellar_angular_motion,admit_stellar_hipparcos2_motion,StellarMotionProvider
 from wenu_kernel import Kernel
 from wenu_kernel.records import TimePoint,TimeSpan,StateQuery,AccuracyRequest,SessionPolicy
+from wenu_kernel.time import TimeService
+from wenu.astrometric_coordinates import HistoricalDate,resolve_historical_date,TcbTdbAdapter
+date=HistoricalDate(year=1000,month=1,day=1,year_numbering='bce',calendar='julian',scale='tdb',uncertainty_s=None)
+adapter=TcbTdbAdapter(TimeSpan(TimePoint(1000000,0,'tdb'),TimePoint(3000000,0,'tdb')))
+historical=resolve_historical_date(date,time_service=TimeService((adapter,),admissions=(adapter.describe(),)))
+assert historical.source.uncertainty_s is None and historical.source.astronomical_year==-999
 source=load_stellar_enrichment(sys.argv[2])
 c=admit_stellar_motion(source,coverage=TimeSpan(TimePoint(2400000,0,'tcb'),TimePoint(2500000,0,'tcb')),
  distance_policy='positive-parallax-reciprocal',radial_velocity_policy='spectroscopic-proxy')
@@ -567,11 +578,14 @@ hip2=admit_stellar_hipparcos2_motion(source,coverage=TimeSpan(TimePoint(-1500000
 shutil.rmtree(sys.argv[2])
 for catalogue,representation,expected in ((c,'direction',2),(c,'cartesian',2),(angular,'direction',5),(hip2,'direction',1)):
  p=StellarMotionProvider(catalogue,representation=representation);a=p.describe().admissions[0]
- q=StateQuery(a.catalogue,a.model,a.objects,(TimePoint(2457389,0,'tcb'),),a.reference,
+ times=(TimePoint(2457389,0,'tcb'),) if catalogue is c else (historical.time,)
+ q=StateQuery(a.catalogue,a.model,a.objects,times,a.reference,
   AccuracyRequest(metric='euclidean_norm')if representation=='cartesian'else AccuracyRequest())
  with Kernel(references=(a.reference,))as k:
   k.register(p,ownership='owned')
-  with k.open_session(SessionPolicy((a.catalogue,)))as s:assert len(s.evaluate(q).states)==expected
+  with k.open_session(SessionPolicy((a.catalogue,)))as s:
+   states=s.evaluate(q).states
+   assert len(states)==expected and all(row.time==times[0] for row in states)
 assert not any(name.split('.')[0]in('astropy','numpy','pandas','skyfield','matplotlib')for name in sys.modules)
 assert not any(name.startswith(('wenu.objects','wenu.sky','wenu.rendering'))for name in sys.modules)
 print('cold source-to-kernel admission passed')

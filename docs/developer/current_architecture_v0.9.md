@@ -289,6 +289,23 @@ chart/saved consumers, full-input SI/model identities and cluster adapters are
 unchanged. The separately explicit Hip2 fallback is described below; no-PM,
 original Hip2 time-scale qualification and product adoption remain pending.
 
+## Historical calendar boundary
+
+The existing `astrometric_coordinates.py` owner provides immutable HistoricalDate
+and HistoricalEpoch records and `resolve_historical_date`. Explicit proleptic
+calendar/year/continuous-scale input is normalized without large summed-JD
+rounding, then passed to the unchanged SDK TimeService for an admitted TCB
+conversion. Original date labels and source-date uncertainty remain alongside
+separate numerical calendar/conversion receipts. TCB identity and existing
+TDB/TCB admission require no observer or acquisition; unsupported conversion
+refuses. The isolated native stellar path accepts ancient dates without EOP,
+Earth ephemerides or scientific imports. This adds no historical observer,
+precession or physical/date-error propagation. Complete Mac acceptance at
+`ceeb894b`, PR #327, passed all focused/audit/documentation/tooling gates and
+24 actual historical states. All accepted Gaia/Hip2 digests are unchanged;
+source-date uncertainty remains separately retained, not propagated into a
+total angular/physical accuracy claim.
+
 ## Explicit Hipparcos-2 angular fallback
 
 The same stellar owner now exposes `admit_stellar_hipparcos2_motion` with an

@@ -625,6 +625,55 @@ source-audit regression, documentation and tooling checks. Actual external-sourc
 Mac angular coverage/queries remain separate from constructed tests. This is
 the measured-PM part of K4b.02/AX.13, not closure of their no-PM/fallback scopes.
 
+## Historical calendar input and nominal TCB epochs
+
+`wenu.astrometric_coordinates.HistoricalDate` is an immutable keyword-only
+input record. `year`, `month`, `day`, `calendar`, `year_numbering`, `scale` and
+`uncertainty_s` are required. Calendar is `gregorian` or `julian`, both
+proleptic; numbering is `astronomical`, `bce` or `ce`. Astronomical 0 = 1 BCE,
+-1 = 2 BCE; BCE/CE year labels must be positive. Hour/minute/second default to
+00:00:00, a nominal coordinate midnight, not an inferred observing time.
+Seconds are finite and below 60; no leap seconds, time zone or automatic
+Gregorian reform. Valid continuous scales are TAI, TT, TDB and TCB (lowercase).
+
+`uncertainty_s` is a caller-supplied absolute source-date bound in source-scale
+coordinate seconds, or `None` for unknown; it is mandatory and never inferred
+from displayed precision. Zero is an explicit caller assertion. Calendar
+rounding and TimeService conversion rounding are separate numerical evidence.
+The nominal event conversion does not convert or certify the uncertainty
+interval, nor add a bound to the provider's angular uncertainty. Retain the
+returned receipt alongside queries. K4b.05 handles physical/date-error effects.
+
+`resolve_historical_date(date, *, time_service, maximum_conversion_error_s=None)`
+returns `HistoricalEpoch`: `.source`, `.calendar_time`,
+`.calendar_rounding_error_s`, `.conversion`, `.calendar_model`, `.provenance`,
+and `.time` (the TCB target of the conversion). The input record and the exact
+SDK TimeConversion are preserved. The optional tolerance constrains only the
+conversion numerical error, not calendar rounding or historical dating.
+An explicit concrete SDK TimeService is required; no adapters/chains are chosen.
+TCB input uses its exact identity; TDB input can use an explicitly admitted
+TcbTdbAdapter. TT/TAI input requires an independently admitted direct TCB
+conversion and otherwise raises TimeConversionUnavailable. UTC/UT1 are refused;
+no TT-to-TCB, Delta-T, local-clock or observer realization is fabricated.
+
+```python
+from wenu.astrometric_coordinates import HistoricalDate, resolve_historical_date
+from wenu_kernel.time import TimeService
+
+date = HistoricalDate(year=1000, month=1, day=1, calendar="julian",
+                      year_numbering="bce", scale="tcb", uncertainty_s=None)
+epoch = resolve_historical_date(date, time_service=TimeService())
+assert epoch.source.astronomical_year == -999
+assert epoch.source.uncertainty_s is None
+# epoch.time is the nominal event for an explicitly admitted TCB query.
+# Keep epoch with the result; it does not reconstruct an ancient civil clock.
+```
+
+The independent calendar model identifies arithmetic only. No SDK record,
+accepted Gaia/Hip2 propagation identity, source bytes, observer or chart default
+changes. Native angular queries need no EOP, modern clocks or Earth ephemeris;
+this does not provide historical horizon/AltAz or precessed-frame accuracy.
+
 ## Explicit Hipparcos-2 angular fallback
 
 `wenu.stellar_state.admit_stellar_hipparcos2_motion(source, *, coverage,
