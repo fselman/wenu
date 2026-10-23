@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 92, 2026-10-23. **Status:** PR #332 is merged; Fernando confirmed clean synchronized Mac main `5971acb9`, merged-branch cleanup and 36 documentation tests in 3.55 s. The previously selected next slice is bounded offline Hipparcos-2 standard five-parameter covariance qualification. The plan was committed at `33f158dc` before implementation. A candidate diagnostic reconstruction now exposes standard-source matrices and diagonal discrepancies. Issue #333 records unresolved outliers; no propagation/provider uncertainty admission or source mutation is selected.
+**Plan revision:** 92, 2026-10-23. **Status:** The bounded offline Hipparcos-2 covariance diagnostic in PR #334 passed complete Mac acceptance at `32c13c1a`: 173 audit, 36 documentation and eight tooling cases/81 subtests, plus the actual source/fallback report. Fernando accepted merge/cleanup. The plan preceded implementation at `33f158dc`. Issue #333 records unresolved diagonal outliers; covariance propagation/provider uncertainty admission and source mutation remain outside this accepted slice.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -62,8 +62,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.05 no-light-time comparison passed full Mac gates at 5da8220f in PR #330: 334 focused/nine subtests, 125 audit, 36 documentation, eight tooling/81 subtests, and 133 actual cached directions across 16 HIPs; accepted solution digests unchanged |
-| Next bounded submilestone | K4b.05 conditional Gaia report accepted at 652087cb with complete Mac gates, cache report and percentile/star review. Merge/cleanup, then bounded Hip2 covariance qualification selected; candidate diagnostic report implemented after plan 33f158dc. Source diagonal outliers (#333) and complete Mac report acceptance remain open. Production uncertainty admission and K4b.06 remain separate |
+| Current bounded result | K4b.05 Hipparcos-2 diagnostic report passed complete Mac gates and actual source/fallback review at 32c13c1a in PR #334; 2,682 standard fallback reconstructions and 168 nonstandard gaps. Source covariance admission remains unqualified |
+| Next bounded submilestone | Record accepted diagnostic receipts, merge PR #334, synchronize the Mac and clean the merged branch. Issue #333 source interpretation, issue #326 and K4b.05 parent remain open; no further implementation or K4b.06 adoption is selected |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -124,7 +124,14 @@ The [candidate interface](implementation_reference.md#hipparcos-2-covariance-qua
 and [raw-catalogue findings](kernel_migration_audit_v1.md#k4b05-hipparcos-2-covariance-qualification-2026-10-23)
 are now present. Large unexplained diagonal outliers remain issue #333;
 no covariance is admitted for positional-error propagation. Complete Mac
-source/report acceptance remains pending.
+acceptance at `32c13c1a` passed 173 audit, 36 documentation and eight tooling
+cases/81 subtests. The actual report retains every HIP and distinguishes 2,682
+standard from 168 nonstandard fallback entries. Standard-fallback discrepancy
+bins above 1%/2%/10%/100% contain 68/44/22/5 entries; these are descriptive,
+not acceptance thresholds. All fifteen largest fallback discrepancies have
+F2 exactly 99, without establishing saturation. Fernando accepted this bounded
+diagnostic work for merge/cleanup; issue #333 stays open. The audit records
+full provenance and percentiles. No next scientific implementation is selected.
 
 ## K4b.05: offline Gaia uncertainty and missing-RV sensitivity report
 

@@ -48,8 +48,8 @@ this is not proof of clipping/saturation, and there are non-99 outliers.
 Published decimal rounding is not assumed to explain the large discrepancies.
 [Issue #333](https://github.com/fselman/wenu/issues/333) tracks the unresolved
 source interpretation. Matrices remain diagnostic-only, unadmitted for
-propagated uncertainty. The actual Mac combined-source/fallback subset remains
-a separate receipt; the raw-catalogue count is not that subset.
+propagated uncertainty. The actual Mac combined-source/fallback receipt below is distinct from these
+all-standard-source statistics.
 
 ### Verification and remaining scope
 
@@ -64,8 +64,39 @@ partial checkout are not claimed passing. All 227 relative links and 134 active
 fragment links across 11 target documents were verified against the actual Git
 tree/content. Existing Gaia numerical/report and source admission definitions
 are AST-unchanged; only the existing CLI main function is extended.
-Complete Mac documentation/tooling and actual
-report acceptance remain pending. Unexplained diagonal outliers, Hip2 source
+### Mac acceptance and fallback review
+
+At tested commit `32c13c1a5b66c284f5cfed0181176c19ec966e64`, the complete
+Mac gates passed: 173 audit cases in 3.58 s, 36 documentation cases in 2.69 s,
+and eight tooling cases/81 subtests in 11.82 s. NumPy was 1.26.3.
+The actual report `~/wenu-output/hip2_covariance_qualification_v1` completed,
+retaining all 118,218 HIP entries. Provenance SHA256 values:
+
+- Source manifest: `8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365`.
+- Passive covariance reference: `b9c0a9109e5ef0ed4aec037f88c805b1c8dd1ee1265c2b5e884a33b1730c1f6e`.
+- Report owner: `6ea9bd105feed85cfa28d2b3c0de0e59d95c987e670c1c0587db6f89a74bf27e`.
+
+All-source statuses are 115,112 decoded standard, 2,843 nonstandard and 263
+without a Hip2 source. The 2,850 angular fallback entries split into 2,682
+decoded standard and 168 nonstandard solutions. For the standard fallback
+subset, the maximum per-star sigma discrepancy is the largest absolute
+relative decoded-versus-quoted difference across the five source components:
+
+| Percentile | 50 | 90 | 95 | 99 | 100 |
+|---|---:|---:|---:|---:|---:|
+| Discrepancy, percent | 0.423027262 | 0.597412854 | 0.743817673 | 6.22509563 | 5303.58618 |
+
+Fallback counts above descriptive 1%/2%/10%/100% bins are 68/44/22/5;
+2,614 of 2,682 (97.5%) are within 1%. These are not admission thresholds.
+The fifteen largest fallback discrepancies all have stored F2 exactly 99;
+the largest five are HIP 71502, 71681, 26549, 63081 and 63721.
+This strengthens the motivation to investigate source encoding/fit-statistic
+limits but does not prove clipping or explain non-99 outliers in the full
+catalogue. No quoted errors or source astrometry are altered.
+
+Fernando's “proceed” accepts recording these receipts and merging the diagnostic
+work. Mac synchronization and merged-branch cleanup remain separate.
+ Unexplained diagonal outliers, Hip2 source
 time scale (#326), nonstandard covariance, propagation, physical accuracy,
 K4b.05 parent and later consumer adoption remain open.
 
