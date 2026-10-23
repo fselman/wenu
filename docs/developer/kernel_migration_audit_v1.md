@@ -37,9 +37,9 @@ Local validation: all 23 new cases passed. Combined stellar/shared-core/cluster
 and source-audit owners passed 456 cases and nine subtests in 14.94 s, with
 three pre-existing full-application cases deselected because this partial
 checkout lacks their dependencies/assets. No other cases were excluded.
-The complete unfiltered Mac gates remain mandatory for acceptance.
+The complete unfiltered Mac gates subsequently passed; see the acceptance below.
 
-Existing Wenu topology confirms these proposed cached-source comparison groups:
+Existing Wenu topology confirms these cached-source comparison groups:
 
 | Group | HIP identifiers |
 |---|---|
@@ -53,10 +53,49 @@ The sample is an identity selection, not a claim all have full Gaia inputs or
 that ESA used exactly these source solutions. The actual Mac cache comparison
 must disclose availability per model/HIP, preserve accepted full/angular/Hip2
 solution digests, compare the same seven native relative epochs and report
-residuals separately from physical uncertainty. Real-cache execution is still
-pending; no numerical ESA reproduction, source acquisition, covariance,
-light-time/dynamics implementation, consumer adoption or K4b.05 parent closure
-is claimed. Production code, source snapshot, SDK and dependencies are unchanged.
+residuals separately from physical uncertainty.
+
+**Complete Mac acceptance, 2026-10-23:** tested commit
+`5da8220ff821680f7c133acaa191f6aaffa9e82a`, PR #330. All 334 stellar/shared-core/
+cluster cases and nine subtests passed in 10.08 s; 125 source-audit cases in
+2.44 s; 36 documentation cases in 2.48 s; eight tooling cases and 81 subtests
+in 9.01 s. No exclusions. Fernando's gate receipt confirms the clean synchronized
+task branch.
+
+The actual cache manifest remained
+`8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365`.
+The 16 selected HIPs were evaluated at source and elapsed +/-100, +/-1,000,
++/-10,000 native Julian years. Full Gaia availability was three (HIP 59774,
+87937, 57939), Gaia angular availability five (HIP 53910, 59774, 65378, 87937,
+57939), and Hip2 fallback eleven (HIP 54061, 58001, 62956, 67301, 27989,
+24436, 25336, 26727, 26311, 25930, 27366). Thus all 16 have Gaia angular or
+Hip2 fallback inputs; the full-input subset overlaps angular availability.
+
+| Model | Available sample stars | Directions | Maximum vector-chord residual | Full retained-population models |
+|---|---:|---:|---:|---:|
+| Full Gaia | 3 | 21 | 8.959510885851885e-16 | 97,710 |
+| Gaia angular | 5 | 35 | 8.959779580913775e-16 | 115,105 |
+| Hip2 angular fallback | 11 | 77 | 3.188872858294072e-16 | 2,850 |
+
+All 133 directions passed the independent spherical reference threshold.
+Full-model gaps among the selected stars were six without a published Gaia
+association, two missing Gaia RV and five Gaia position-only solutions.
+Gaia angular had six unassociated and five position-only gaps. Hip2 correctly
+deferred five entries to their available Gaia angular model. These are input/
+selection disclosures, not inferred zero values or new identity decisions.
+All 118,218 original objects remain retained.
+
+Accepted solution digests checked unchanged by the actual Mac recipe:
+
+- Full Gaia SI: `032f76e398eadf136fd9aa59a3c2b3a66d4dc25d9da74bc995b4bdb6088cfe8f`.
+- Gaia angular: `6d3e46ff0aa8bd707ea4b8f169b55fdd41c3bc85d65250d7a801c541ebb38602`.
+- Hip2 angular: `b5b6cfe20919eec5c815f50b348b55579e2b2631e8f0510be201d874e85875c1`.
+
+The receipt ended `CACHED STELLAR REFERENCE CHECK COMPLETE`; measurement and
+physical-model evidence remained unqualified. No numerical ESA reproduction,
+source acquisition, covariance/light-time/dynamics implementation, consumer
+adoption or K4b.05 parent closure is claimed. Production code, source snapshot,
+SDK and dependencies are unchanged. PR #330 remains unmerged.
 
 
 ## K4b.05 reference and method assessment, 2026-10-23
