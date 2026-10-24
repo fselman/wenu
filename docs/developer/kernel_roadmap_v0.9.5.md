@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 94, 2026-10-24. **Status:** PR #335 is merged; its task-branch Mac documentation gate passed 36 tests in 3.18 s. Fernando confirmed clean synchronized Mac main `bd7b9cb09539f3c9bed43bca40e53f66a8904e7f` and selected the bounded K4b.05 issue #326 time-convention assessment. Accessible sources do not establish both 2007 epoch/rate conventions; synthetic TDB/TCB sensitivities are documented separately. Complete Mac documentation acceptance for this assessment is pending; issues #326/#333 remain open and production models are unchanged.
+**Plan revision:** 94, 2026-10-24. **Status:** PR #335 is merged; its task-branch Mac documentation gate passed 36 tests in 3.18 s. Fernando confirmed clean synchronized Mac main `bd7b9cb09539f3c9bed43bca40e53f66a8904e7f` and selected the bounded K4b.05 issue #326 time-convention assessment. Accessible sources do not establish both 2007 epoch/rate conventions; synthetic TDB/TCB sensitivities are documented separately. Mac documentation acceptance at `bfa904a2` passed all 36 tests in 4.61 s, with a clean synchronized task branch; PR #336 awaits merge authorization; issues #326/#333 remain open and production models are unchanged.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -66,7 +66,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.05 issue #326 source review and separate synthetic epoch/rate sensitivity assessment documented; no verified 2007 time convention, production conversion or source change. PR #335 source-precision assessment is accepted/merged; issue #333 stays open |
-| Next bounded submilestone | Complete Mac documentation acceptance and review of this issue #326 assessment. Issues #326/#333 and K4b.05 parent remain open; no further science or K4b.06 adoption selected |
+| Next bounded submilestone | Review the accepted documentation/test receipt for PR #336 and obtain explicit merge authorization. Issues #326/#333 and K4b.05 parent remain open; no further science or K4b.06 adoption selected |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -104,8 +104,10 @@ The coordinate guide retains the distinction between source facts and
 nominal policy. The plan preceded assessment outputs at `46e47c8d`.
 The [assessment](kernel_migration_audit_v1.md#k4b05-hipparcos-2-time-convention-assessment-2026-10-24)
 records primary-source access limits, synthetic formulas and independent
-numerical checks. No real fallback-population calculation is claimed; complete
-Mac documentation acceptance remains pending.
+numerical checks. No real fallback-population calculation is claimed. Complete Mac documentation
+acceptance at `bfa904a2b7d2259bdd4cf32ac38e67f78e8fbb42` passed 36 tests
+in 4.61 s; the task branch is confirmed clean and synchronized. PR #336
+awaits merge authorization; no next scientific implementation is selected.
 
 ## K4b.05: Hipparcos-2 source precision investigation
 

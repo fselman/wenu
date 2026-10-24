@@ -10,7 +10,9 @@ on 2026-10-24. Accessible primary documentation does not establish both the
 roughly seven-second reference-event offset from the time-rate effect, using
 the exact TDB/TCB relation. Neither identifies Hip2's source convention.
 Issues #326/#333 remain open; production models and source metadata are
-unchanged. Complete Mac documentation acceptance for this assessment is pending.
+unchanged. Complete Mac documentation acceptance at `bfa904a2` passed all 36 tests
+in 4.61 s; the task branch is confirmed clean and synchronized. PR #336
+awaits merge authorization; issues #326/#333 remain open.
 
 
 ## Hipparcos-2 source precision assessment

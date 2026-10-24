@@ -156,9 +156,12 @@ current; the coordinate guide and scientific limits link this assessment.
 Four focused current-documentation checks passed in the partial assessment
 checkout: developer-root/index authority, documented-Python syntax, obsolete
 public-import recommendations and roadmap diagrams/ordered exit gates. All
-four new assessment links resolve to the actual audit heading. The complete
-Mac documentation gate, including installation/import and archive/inventory
-coverage, remains pending.
+four new assessment links resolve to the actual audit heading. Fernando's
+complete Mac documentation gate at `bfa904a2b7d2259bdd4cf32ac38e67f78e8fbb42`
+passed all 36 tests in 4.61 s, including installation/import and archive/inventory
+coverage. Clean synchronized task branch and diff checks are confirmed.
+This closes the bounded assessment's test gate, not issue #326 or the K4b.05
+parent. PR #336 awaits explicit merge authorization.
 
 ## K4b.05 Hipparcos-2 source precision investigation, 2026-10-23
 
