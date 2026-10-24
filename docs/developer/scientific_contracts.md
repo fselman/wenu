@@ -1,5 +1,17 @@
 # Current scientific contracts and paused work
 
+## K4b.05 qualification status
+
+The [closure review](kernel_migration_audit_v1.md#k4b05-bounded-closure-review-2026-10-24)
+separates accepted nominal numerical behavior and offline diagnostics from
+unresolved physical/source/ESA claims. It changes none of the scientific
+contracts below. Numerical reuse bounds, conditional formal covariance and
+hypothetical convention/RV sensitivities do not supply total physical error
+or a physical lookback interval. Source issues #326/#333 remain open for
+their respective claims; no conversion, covariance repair, prior, binary veto
+or new model is admitted. The finite perspective comparison is a proposal,
+not a selected task or a new implicit prerequisite. K4b.06 remains separate.
+
 ## Hipparcos-2 time-convention qualification
 
 The accepted nominal-TCB fallback retains the original null source epoch scale.
