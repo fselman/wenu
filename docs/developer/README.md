@@ -8,7 +8,9 @@ completed on the Mac at `940c4a9b`: all 118,218 HIP statuses retained, with
 combined hypothetical convention differences are 0.8344102459 mas at +10,000
 years and 1.590564415 mas at +50,000 years. These are TDB/TCB sensitivities,
 not inferred source conventions or physical-error bounds. Issues #326/#333
-remain open; PR #337 awaits complete Mac documentation acceptance.
+remain open. Complete Mac documentation acceptance at `0384833f` passed all
+36 tests in 3.58 s; the task branch is confirmed clean and synchronized.
+PR #337 awaits explicit merge authorization.
 
 ## Hipparcos-2 time-convention assessment
 

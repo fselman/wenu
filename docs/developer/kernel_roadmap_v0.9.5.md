@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 95, 2026-10-24. **Status:** PR #336 is merged at `69af07bc`; Fernando confirmed clean synchronized Mac main, local/remote branch cleanup and 36 documentation tests in 3.65 s. He selected the bounded K4b.05 real-cache Hip2 time-convention sensitivity assessment with “Proceed”. Actual Mac population results at `940c4a9b` retain all 118,218 statuses and 2,850 fallback models with unchanged source/model bytes. Maximum combined hypothetical effects are 0.8344102459 mas at +10,000 years and 1.590564415 mas at +50,000 years. Complete Mac documentation acceptance of the findings is pending; issues #326/#333 and K4b.05 parent remain open. No production conversion or consumer adoption.
+**Plan revision:** 95, 2026-10-24. **Status:** PR #336 is merged at `69af07bc`; Fernando confirmed clean synchronized Mac main, local/remote branch cleanup and 36 documentation tests in 3.65 s. He selected the bounded K4b.05 real-cache Hip2 time-convention sensitivity assessment with “Proceed”. Actual Mac population results at `940c4a9b` retain all 118,218 statuses and 2,850 fallback models with unchanged source/model bytes. Maximum combined hypothetical effects are 0.8344102459 mas at +10,000 years and 1.590564415 mas at +50,000 years. Complete Mac documentation acceptance at `0384833f` passed all 36 tests in 3.58 s with a clean synchronized task branch; PR #337 awaits explicit merge authorization; issues #326/#333 and K4b.05 parent remain open. No production conversion or consumer adoption.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -66,7 +66,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.05 real-cache hypothetical time-convention sensitivities completed at 940c4a9b for all 2,850 fallback models; all 118,218 statuses and source/model identity retained. Issues #326/#333 stay open |
-| Next bounded submilestone | Review the recorded actual population findings and run the complete Mac documentation gate for PR #337. No K4b.06 adoption or other science selected |
+| Next bounded submilestone | Review the completed PR #337 assessment and Mac acceptance receipt, then obtain explicit merge authorization. No K4b.06 adoption or other science selected |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -113,8 +113,10 @@ new documentation integrity and the complete Mac documentation gate. The plan
 was committed at `940c4a9b` before population calculations. Fernando's
 [actual Mac receipt](kernel_migration_audit_v1.md#k4b05-real-cache-hip2-time-convention-sensitivity-2026-10-24) now records complete counts,
 separate component/combined results, original flags, versioned report identity
-and unchanged source/model evidence. Actual calculation is complete; the Mac
-documentation gate and bounded assessment review remain pending.
+and unchanged source/model evidence. Actual calculation is complete. Mac documentation acceptance at
+`0384833f5bc37aaa62887b9a093d3ec63d33e645` passed 36 tests in 3.58 s;
+clean synchronized task branch and diff checks are confirmed. PR #337 awaits
+explicit merge authorization; no next scientific implementation is selected.
 
 ## K4b.05: Hipparcos-2 time-convention assessment (issue #326)
 

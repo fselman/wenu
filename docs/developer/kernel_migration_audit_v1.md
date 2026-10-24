@@ -141,8 +141,11 @@ time-convention clarification nor a remedy for covariance discrepancies.
 K4b.05 parent qualification, ESA comparisons and K4b.06 consumer adoption remain
 separate. No production files, tests, dependencies, sources or default models
 change. The coordinate guide, scientific limits and implementation reference
-remain current. Complete Mac documentation acceptance of these findings is
-pending.
+remain current. Complete Mac documentation acceptance at
+`0384833f5bc37aaa62887b9a093d3ec63d33e645` passed all 36 tests in 3.58 s;
+clean synchronized task branch and diff checks are confirmed. The bounded
+assessment's acceptance gate is complete. PR #337 awaits explicit merge
+authorization; issues #326/#333 and K4b.05 parent remain open.
 
 
 ## K4b.05 Hipparcos-2 time-convention assessment, 2026-10-24
