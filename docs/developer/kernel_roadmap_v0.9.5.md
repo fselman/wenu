@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 95, 2026-10-24. **Status:** PR #336 is merged at `69af07bc`; Fernando confirmed clean synchronized Mac main, local/remote branch cleanup and 36 documentation tests in 3.65 s. He selected the bounded K4b.05 real-cache Hip2 time-convention sensitivity assessment with “Proceed”. Actual Mac population results at `940c4a9b` retain all 118,218 statuses and 2,850 fallback models with unchanged source/model bytes. Maximum combined hypothetical effects are 0.8344102459 mas at +10,000 years and 1.590564415 mas at +50,000 years. Complete Mac documentation acceptance at `0384833f` passed all 36 tests in 3.58 s with a clean synchronized task branch; PR #337 awaits explicit merge authorization; issues #326/#333 and K4b.05 parent remain open. No production conversion or consumer adoption.
+**Plan revision:** 96, 2026-10-24. **Status:** PR #337 is merged at `3506bb23`; Fernando confirmed clean synchronized Mac main, local/remote branch cleanup and 36 documentation tests in 3.17 s. He selected the bounded K4b.05 closure review with “Proceed”: reconcile agreed requirements with accepted evidence and remaining gaps, and propose the next concrete gate. Review findings are pending. No parent closure, new science, consumer adoption or change of agreed order is authorized.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -79,6 +79,33 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4b.05: bounded closure review
+
+Fernando selected this documentation/assessment review with "Proceed" on
+2026-10-24 after PR #337 merge/cleanup and confirmed clean synchronized Mac
+main `3506bb2309d29ae3be6f443f9debeb4843e13cc5`, with 36 documentation
+tests in 3.17 s. Reconcile the existing K4b.05 ledger, scientific contracts,
+actual implementations/tests and accepted PR/Mac receipts. Publish one
+evidence table distinguishing completed bounded work, still-required
+comparisons/qualification and unresolved source or physical-model limits.
+Cover ESA Orion/Ursa Major, perspective, binaries, missing inputs and admitted
+epoch domains, including issues #326/#333.
+
+Use the existing migration audit for findings. Propose one concrete next
+bounded gate toward K4b.06, identifying prerequisites and alternatives. A
+proposal is not selected or a new prerequisite merely because this review
+records it. Do not infer that every unknown must become a new implementation;
+do not infer that a measured small convention effect resolves an unknown
+source fact or admits a physical-error bound. Preserve sibling K4b.02 and
+K4b.06 responsibilities and agreed dependencies.
+
+No runtime/test/source/dependency/default change, acquisition, author contact,
+new physical model or error policy, issue closure, K4b.05 parent closure,
+consumer adoption, release or change of agreed sequence is selected.
+Acceptance: inspect actual owners and accepted evidence, verify links and
+claim/status consistency, run the nearest documentation checks and complete
+Mac documentation gate. This plan must precede review findings.
 
 ## K4b.05: real-cache Hip2 time-convention sensitivity assessment
 
@@ -1012,6 +1039,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 96: select K4b.05 closure review | Fernando's 2026-10-24 “Proceed” after PR #337 merge/cleanup and confirmed clean synchronized main 3506bb23 | Reconcile existing requirements/evidence/gaps and propose one concrete next gate; assessment/documentation only. No parent closure, changed order, new science/error policy or K4b.06 adoption. |
 | Revision 95: real-cache Hip2 time sensitivity | Fernando's 2026-10-24 “Proceed” after clean synchronized main 69af07bc and PR #336 cleanup | Read-only manifest-bound fallback population assessment and documentation; explicit hypothetical TDB/TCB effects only. No production mode, conversion, source change, covariance or consumer adoption. |
 | Revision 94: select issue #326 time-convention assessment | Fernando's 2026-10-24 “Proceed” after clean synchronized Mac main bd7b9cb0 | Primary-source review and reproducible synthetic epoch/rate sensitivities; no source acquisition, production conversion/model, covariance admission or K4b.06 adoption. Plan committed first at 46e47c8d. |
 | Revision 88: select uncertainty/missing-RV assessment | Fernando's 2026-10-23 “Proceed” after PR #330 merge, Mac synchronization and branch cleanup | Inspect existing measurement/correlation/UW evidence and primary conventions, derive explicitly conditioned sensitivity and propose the next bounded gate. Documentation only; no covariance runtime, source acquisition, assumed missing RV/distance, accuracy certificate or consumer adoption. |
