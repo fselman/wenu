@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 93, 2026-10-23. **Status:** PR #334 is merged; Fernando confirmed clean synchronized Mac main `ffa7d7a7`, merged-branch cleanup and 36 documentation tests in 3.11 s. He selected the bounded K4b.05 issue #333 source-precision investigation with “Proceed”. The assessment now records primary-source review and read-only precision diagnostics: ordinary two-decimal rounding does not account for the large mismatches in the tested envelopes; F2=99 remains an unverified encoding hypothesis. Issue #333 stays open; no covariance admission or production changes.
+**Plan revision:** 94, 2026-10-24. **Status:** PR #334 is merged; Fernando confirmed clean synchronized Mac main `ffa7d7a7`, merged-branch cleanup and 36 documentation tests in 3.11 s. He selected the bounded K4b.05 issue #333 source-precision investigation with “Proceed”. The assessment now records primary-source review and read-only precision diagnostics: ordinary two-decimal rounding does not account for the large mismatches in the tested envelopes; F2=99 remains an unverified encoding hypothesis. Issue #333 stays open; no covariance admission or production changes.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -76,6 +76,29 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4b.05: Hipparcos-2 time-convention assessment (issue #326)
+
+Fernando selected this bounded assessment with "Proceed" on 2026-10-24,
+after confirming clean synchronized Mac main
+`bd7b9cb09539f3c9bed43bca40e53f66a8904e7f`. Review primary 2007 catalogue
+documentation for both the reference-epoch time scale and the time argument
+of proper-motion rates. Separate verified source declarations from Wenu's
+already accepted nominal TCB model convention. Quantify epoch-offset and
+TT/TCB rate effects separately with reproducible, explicitly hypothetical
+calculations; report actual fallback statistics only if existing
+manifest-bound cached inputs are available and verified.
+
+Use the existing migration audit for findings and retain original source
+metadata, accepted model identities and production behavior. No source
+acquisition, 1997-catalogue comparison without existing verified inputs,
+author contact, new conversion/model, covariance admission, physical accuracy
+certificate or K4b.06 adoption is selected. Issues #326/#333 remain open
+unless their documented evidence requirements are actually met.
+Acceptance: primary-source review, independently checked numerical examples,
+closest documentation integrity checks and the complete Mac documentation gate.
+The coordinate guide must retain the distinction between source facts and
+nominal policy. This plan must precede assessment outputs.
 
 ## K4b.05: Hipparcos-2 source precision investigation
 
