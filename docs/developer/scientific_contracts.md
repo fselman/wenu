@@ -1,5 +1,17 @@
 # Current scientific contracts and paused work
 
+## Hipparcos-2 time-convention qualification
+
+The accepted nominal-TCB fallback retains the original null source epoch scale.
+The [time-convention assessment](kernel_migration_audit_v1.md#k4b05-hipparcos-2-time-convention-assessment-2026-10-24)
+separates reference-epoch event assignment from proper-motion rate conversion.
+Its synthetic TDB/TCB calculations are sensitivity examples, not evidence of
+the 2007 catalogue's time scale, a TT conversion or physical uncertainty bounds.
+The accessible source review does not establish both native conventions.
+Issue #326 remains open; production inputs, model identities and unknown
+convention errors remain unchanged. No new conversion or consumer adoption
+is admitted.
+
 ## Hipparcos-2 covariance qualification limits
 
 The maintenance-only standard-solution reconstruction uses the corrected CDS

@@ -1333,7 +1333,12 @@ a nominal TCB model axis; the raw source epoch scale remains null. This is a
 model interpretation, not verified source metadata or a TT-to-TCB conversion.
 [Issue #326](https://github.com/fselman/wenu/issues/326) tracks epoch/rate
 qualification and any later conversion. Offset and rate effects must be assessed
-separately; neither is silently assigned a zero error. Source/physical and
+separately; neither is silently assigned a zero error. The 2026-10-24
+[assessment](kernel_migration_audit_v1.md#k4b05-hipparcos-2-time-convention-assessment-2026-10-24)
+quantifies synthetic TDB/TCB epoch and rate sensitivities without identifying
+the 2007 source convention. A Julian year specifies duration, not the time
+scale of the derivative; a TDB rate needs the corresponding (1-L_B) factor
+when expressed per TCB year. TT/TDB realization remains separate. Source/physical and
 convention errors remain unknown. The fallback cannot advertise physical PV,
 observer parallax or binary/acceleration corrections. Qualified Gaia angular
 inputs retain precedence and their accepted identities.

@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 93, 2026-10-23. **Status:** PR #334 is merged; Fernando confirmed clean synchronized Mac main `ffa7d7a7`, merged-branch cleanup and 36 documentation tests in 3.11 s. He selected the bounded K4b.05 issue #333 source-precision investigation with “Proceed”. The assessment now records primary-source review and read-only precision diagnostics: ordinary two-decimal rounding does not account for the large mismatches in the tested envelopes; F2=99 remains an unverified encoding hypothesis. Issue #333 stays open; no covariance admission or production changes.
+**Plan revision:** 94, 2026-10-24. **Status:** PR #335 is merged; its task-branch Mac documentation gate passed 36 tests in 3.18 s. Fernando confirmed clean synchronized Mac main `bd7b9cb09539f3c9bed43bca40e53f66a8904e7f` and selected the bounded K4b.05 issue #326 time-convention assessment. Accessible sources do not establish both 2007 epoch/rate conventions; synthetic TDB/TCB sensitivities are documented separately. Mac documentation acceptance at `bfa904a2` passed all 36 tests in 4.61 s, with a clean synchronized task branch; PR #336 awaits merge authorization; issues #326/#333 remain open and production models are unchanged.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,7 +46,10 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Accepted baseline:** main `d447565d12c3405eab462fac268c441f5a4b2bd4`.
+**Current accepted base:** main `bd7b9cb09539f3c9bed43bca40e53f66a8904e7f`,
+confirmed clean/synchronized on the Mac on 2026-10-24. PR #335 is merged after
+36 task-branch documentation tests in 3.18 s. The following K3/K4a receipts
+remain historical acceptance evidence rather than the current checkout.
 K4a.01 is accepted through PR #315 after 35 focused cases/nine subtests,
 36 documentation and eight tooling Mac cases. Clean synchronized main and
 branch cleanup are confirmed. Fernando selected K4a.02 with “Proceed”.
@@ -62,8 +65,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.05 Hipparcos-2 diagnostic report passed complete Mac gates and actual source/fallback review at 32c13c1a in PR #334; 2,682 standard fallback reconstructions and 168 nonstandard gaps. Source covariance admission remains unqualified |
-| Next bounded submilestone | K4b.05 issue #333 source-precision assessment is documented; complete Mac documentation acceptance remains pending. Source interpretation stays unresolved; no covariance correction, new acquisition, error propagation or K4b.06 adoption is selected |
+| Current bounded result | K4b.05 issue #326 source review and separate synthetic epoch/rate sensitivity assessment documented; no verified 2007 time convention, production conversion or source change. PR #335 source-precision assessment is accepted/merged; issue #333 stays open |
+| Next bounded submilestone | Review the accepted documentation/test receipt for PR #336 and obtain explicit merge authorization. Issues #326/#333 and K4b.05 parent remain open; no further science or K4b.06 adoption selected |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -76,6 +79,35 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4b.05: Hipparcos-2 time-convention assessment (issue #326)
+
+Fernando selected this bounded assessment with "Proceed" on 2026-10-24,
+after confirming clean synchronized Mac main
+`bd7b9cb09539f3c9bed43bca40e53f66a8904e7f`. Review primary 2007 catalogue
+documentation for both the reference-epoch time scale and the time argument
+of proper-motion rates. Separate verified source declarations from Wenu's
+already accepted nominal TCB model convention. Quantify epoch-offset and
+TT/TCB rate effects separately with reproducible, explicitly hypothetical
+calculations; report actual fallback statistics only if existing
+manifest-bound cached inputs are available and verified.
+
+Use the existing migration audit for findings and retain original source
+metadata, accepted model identities and production behavior. No source
+acquisition, 1997-catalogue comparison without existing verified inputs,
+author contact, new conversion/model, covariance admission, physical accuracy
+certificate or K4b.06 adoption is selected. Issues #326/#333 remain open
+unless their documented evidence requirements are actually met.
+Acceptance: primary-source review, independently checked numerical examples,
+closest documentation integrity checks and the complete Mac documentation gate.
+The coordinate guide retains the distinction between source facts and
+nominal policy. The plan preceded assessment outputs at `46e47c8d`.
+The [assessment](kernel_migration_audit_v1.md#k4b05-hipparcos-2-time-convention-assessment-2026-10-24)
+records primary-source access limits, synthetic formulas and independent
+numerical checks. No real fallback-population calculation is claimed. Complete Mac documentation
+acceptance at `bfa904a2b7d2259bdd4cf32ac38e67f78e8fbb42` passed 36 tests
+in 4.61 s; the task branch is confirmed clean and synchronized. PR #336
+awaits merge authorization; no next scientific implementation is selected.
 
 ## K4b.05: Hipparcos-2 source precision investigation
 
@@ -104,8 +136,9 @@ now records the method, primary sources, raw-source identity and numerical resul
 All 51 source-wide discrepancies above 10% remain outside tested precision
 envelopes at both half-widths; 40 have F2=99 and eleven do not. These are
 exploratory consistency checks, not an admission threshold or physical bound.
-Issue #333 remains open; no corrected convention was established. Complete
-Mac documentation acceptance remains pending.
+Issue #333 remains open; no corrected convention was established. Mac acceptance
+at `1c3d3b1c` passed 36 documentation tests in 3.18 s; PR #335 is merged,
+and clean synchronized Mac main `bd7b9cb0` is confirmed.
 
 ## K4b.05: Hipparcos-2 standard covariance qualification
 
@@ -940,6 +973,7 @@ remain part of that item; new deliverables or reordered work require change cont
 
 | Plan change | Authority and scope | Effect on runtime authority |
 |---|---|---|
+| Revision 94: select issue #326 time-convention assessment | Fernando's 2026-10-24 “Proceed” after clean synchronized Mac main bd7b9cb0 | Primary-source review and reproducible synthetic epoch/rate sensitivities; no source acquisition, production conversion/model, covariance admission or K4b.06 adoption. Plan committed first at 46e47c8d. |
 | Revision 88: select uncertainty/missing-RV assessment | Fernando's 2026-10-23 “Proceed” after PR #330 merge, Mac synchronization and branch cleanup | Inspect existing measurement/correlation/UW evidence and primary conventions, derive explicitly conditioned sensitivity and propose the next bounded gate. Documentation only; no covariance runtime, source acquisition, assumed missing RV/distance, accuracy certificate or consumer adoption. |
 | Revision 87: record bounded K4b.05 Mac acceptance | Fernando's complete Mac gate and cached-source receipts on 2026-10-23 at 5da8220f, PR #330 | Record 334 focused/nine subtests, 125 audit, 36 documentation, eight tooling/81 subtests and 133 actual native directions; all accepted solution digests unchanged. No physical/ESA numerical/parent closure, new runtime selection or merge authority. |
 | Revision 86: select no-light-time numerical comparison | Fernando’s 2026-10-23 “Proceed” after PR #329 Mac acceptance, merge and clean synchronized main/cleanup | Test-only independent spherical no-light-time oracle, fault injection and bounded cached-source checks in existing owners; preserve production models, sources, identities and unknown physical errors. No light-time/covariance/dynamics implementation or consumer adoption. |
