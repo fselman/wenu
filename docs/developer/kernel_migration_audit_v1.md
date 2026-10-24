@@ -1,5 +1,150 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.05 real-cache Hip2 time-convention sensitivity, 2026-10-24
+
+Fernando selected this bounded assessment with "Proceed" after PR #336
+merge/cleanup and confirmed clean synchronized Mac main
+`69af07bc01cd852d0674efcf6a29b20b5e0d50ee`, with 36 documentation tests
+in 3.65 s. The plan preceded population execution at
+`940c4a9b4e768d6c095f0fefd16af70843eff83a`. The actual Mac receipt below
+was supplied by Fernando at that commit. This is an offline assessment,
+not a production report mode or a catalogue/model correction.
+
+### Source and result identity
+
+The existing `load_stellar_enrichment` validator admitted source manifest SHA256
+`8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365`
+from `~/.cache/wenu/stellar/stellar_enrichment_source_v1`.
+The existing `admit_stellar_hipparcos2_motion` used the explicit
+`nominal-tcb-deferred-qualification` policy and a finite domain extending
+50,001 nominal Julian years either side of the native epoch. Its angular
+solution digest was
+`b5b6cfe20919eec5c815f50b348b55579e2b2631e8f0510be201d874e85875c1`.
+
+The actual run retained all 118,218 HIP statuses: 115,105
+`gaia_angular_model_available`, 2,850 `hip2_angular_fallback` and
+263 `no_hipparcos2_source`. It independently rechecked source-file hashes
+against the in-memory validated bytes and compared the unchanged admission
+record before publishing. The two imported implementation owners were
+byte-compared with the checkout and their paths/hashes recorded.
+The receipt reports `source_and_model_unchanged=true`.
+
+Outputs under `~/wenu-output/hip2_fallback_time_sensitivity_v2` are
+`hip2_time_rows_v2.jsonl`, `hip2_time_summary_v2.json` and
+`hip2_time_manifest_v2.json`. The last hashes the two products and was
+published last, after exclusive output-directory creation. Existing output
+refuses rather than being overwritten. Completion-manifest SHA256:
+`33ad58dd31db937af767ec664ab6be17a6e4137a9be9d2ba5bc77885c1c2d839`.
+Executed scratch assessment code SHA256:
+`204c154e116cef31559b49d8e85da12ceb5a7a82597eccbc0ffde71fb9c5be83`.
+The script and outputs are outside the repository; the report retains code,
+source, field-reference, implementation and admission provenance.
+
+### Method and checked representation
+
+Use the [previous assessment's hypothetical TDB/TCB convention](#k4b05-hipparcos-2-time-convention-assessment-2026-10-24),
+not a newly inferred Hip2 time scale. The native source epoch remains
+J1991.25 with null source scale. The defining TDB/TCB relation gives an
+epoch-label shift of approximately 6.972352471684277 seconds; the distinct
+rate factor is 1-L, L=1.550519768e-8. Neither supplies an ancient TT conversion.
+
+For each admitted direction u and native tangent v expressed per Julian
+year, nominal time coefficient T is compared with T+d, where Y=31557600:
+
+- Epoch only: d=-delta0/Y.
+- Rate only: d=-L*T.
+- Combined: d=-L*T-(1-L)*delta0/Y.
+
+Evaluate nominal-minus-scenario angle stably as
+
+`atan2(-d*norm(cross(u,v)), dot(u,u)+(2*T+d)*dot(u,v)+T*(T+d)*dot(v,v))`.
+
+This cross/dot factorization avoids subtracting nearly identical directions
+and preserves the actual admitted vector components. Signed results follow
+increasing native proper motion; report percentiles use absolute differences
+in mas with nearest rank ceil(p*N/100), N=2,850. The complete rows retain all
+statuses and each fallback's nine offsets/three signed scenarios; summary
+records absolute 50th/90th/95th/99th/100th percentiles and top-ten HIP identities
+with original source flags. Equal maxima use ascending numeric HIP as the
+deterministic tie-breaker. At T=0 every rate-only value is zero, so its printed
+HIP 25 is a tie-break result, not a distinguished physical outlier.
+
+F2 is not a parsed enrichment-snapshot column. Version 2 reads it from
+`original_record_ascii` using the existing
+[field reference](data/hipparcos2_covariance_reference_v1.json), after checking
+source edition, record length and original-row SHA256. Blank F2 is explicitly
+missing; it is not used in the angular sensitivity calculation. Sn/So/Nc
+and original-record identity are retained. The first scratch attempt stopped
+on that representation mismatch before publication; v2 corrects only the
+assessment extraction, not the source or production codec.
+
+The extraction was verified locally against all 117,955 records of the
+already cached raw table after its accepted
+`c45d6325bd59dd691764af173a9702e543804a2b6c1d9fea59210e8332e50a4a`
+SHA256 check, recovering 77 stored F2=99 rows. Missing-F2 status and corrupted
+record refusal checks passed. There was no new source acquisition.
+The v2 numerical formula passed 108 independent 80-digit Decimal cases with
+maximum difference 1.0765026228421702e-24 rad (check tolerance 1e-23), and
+2,700 rotated-vector checks with maximum difference
+2.2944893655590035e-16 rad (check tolerance 6e-16). These numerical thresholds
+check the scratch calculation, not physical catalogue accuracy.
+
+### Actual population results
+
+All offsets are elapsed nominal TCB Julian years from the source label.
+Offsets +25/+35 are representative modern labels, not exact civil instants.
+
+Combined hypothetical convention difference, absolute mas:
+
+| T (years) | Median | 90th percentile | 99th percentile | Maximum | Maximum HIP |
+|---|---:|---:|---:|---:|---:|
+| -50,000 | 0.02514847674 | 0.1435452893 | 0.6939088434 | 1.589658086 | 71683 |
+| -10,000 | 0.005024258509 | 0.02873203186 | 0.1455482105 | 0.8320356524 | 67593 |
+| -1,000 | 0.0004959745096 | 0.002836530514 | 0.01439756353 | 0.08855601333 | 67593 |
+| 0 | 0.000007169525125 | 0.00004100330230 | 0.0002081273169 | 0.001281126932 | 67593 |
+| +25 | 0.00001974812630 | 0.0001129417050 | 0.0005732770880 | 0.003528803306 | 67593 |
+| +35 | 0.00002477956677 | 0.0001417170661 | 0.0007193369886 | 0.004427872010 | 67593 |
+| +1,000 | 0.0005103135595 | 0.002918537052 | 0.01481380949 | 0.09111624388 | 67593 |
+| +10,000 | 0.005038597524 | 0.02881403182 | 0.1459635987 | 0.8344102459 | 67593 |
+| +50,000 | 0.02516281491 | 0.1436271302 | 0.6943044689 | 1.590564415 | 71683 |
+
+Separate component maxima, absolute mas:
+
+| Absolute T (years) | Epoch-only maximum | Rate-only maximum | Maximum HIP |
+|---|---:|---:|---:|
+| 0 | 0.001281126952 | 0 | 67593 (epoch only) |
+| 25 | 0.001281126319 | 0.002247677007 | 67593 |
+| 35 | 0.001281125712 | 0.003146746318 | 67593 |
+| 1,000 | 0.001280115297 | 0.08983612861 | 67593 |
+| 10,000 | 0.001187296757 | 0.8332229491 | 67593 |
+| 50,000 | 0.0004531641675 | 1.590111250 | 71683 |
+
+At matching positive/negative remote offsets the separately printed component
+maxima agree to the supplied receipt precision. Their combined effects are
+smaller in the past because signed epoch and rate contributions partly cancel;
+this is not a symmetry of every physical-motion uncertainty. In this tested
+grid the largest combined effect is 1.590564415 mas (0.001590564415 arcsec)
+at +50,000 years. The +35-year maximum is 0.004427872010 mas, or
+4.427872010 microarcsec. These numbers quantify the declared convention
+scenario only; they do not bound unknown source/model errors.
+
+Fallback solution suffixes remain explicit: 5:2,682; 1:87; 7:76; 3:3;
+0:1; 9:1. The 168 nonstandard solutions retain their accepted nominal angular
+inputs and original flags; this assessment admits no binary/acceleration/VIM
+model, covariance or physical long-term validity for them.
+
+### Disposition and acceptance
+
+The actual population calculation and unchanged-source/model checks are
+complete. Issues #326/#333 remain open: this supplies neither source-level
+time-convention clarification nor a remedy for covariance discrepancies.
+K4b.05 parent qualification, ESA comparisons and K4b.06 consumer adoption remain
+separate. No production files, tests, dependencies, sources or default models
+change. The coordinate guide, scientific limits and implementation reference
+remain current. Complete Mac documentation acceptance of these findings is
+pending.
+
+
 ## K4b.05 Hipparcos-2 time-convention assessment, 2026-10-24
 
 Fernando selected this issue #326 assessment with "Proceed" after confirming
