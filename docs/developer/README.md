@@ -1,5 +1,15 @@
 # Wenu developer documentation
 
+## K4b.05 closure review
+
+The [closure evidence matrix](kernel_migration_audit_v1.md#k4b05-bounded-closure-review-2026-10-24)
+reconciles current owners, tests, accepted receipts and remaining requirements
+at clean synchronized Mac main `3506bb23`. Numerical propagation and bounded
+diagnostic work are complete; ESA execution and physical-model/source
+qualification remain open. A finite full-versus-angular perspective comparison
+is proposed only. No new science/error policy, parent closure or K4b.06
+adoption is selected. Complete Mac documentation acceptance is pending.
+
 ## Real-cache Hipparcos-2 time sensitivity
 
 The selected K4b.05 [population assessment](kernel_migration_audit_v1.md#k4b05-real-cache-hip2-time-convention-sensitivity-2026-10-24)
@@ -9,8 +19,9 @@ combined hypothetical convention differences are 0.8344102459 mas at +10,000
 years and 1.590564415 mas at +50,000 years. These are TDB/TCB sensitivities,
 not inferred source conventions or physical-error bounds. Issues #326/#333
 remain open. Complete Mac documentation acceptance at `0384833f` passed all
-36 tests in 3.58 s; the task branch is confirmed clean and synchronized.
-PR #337 awaits explicit merge authorization.
+36 tests in 3.58 s. PR #337 is merged at `3506bb23`; clean synchronized
+Mac main, local/remote task-branch cleanup and 36 documentation tests in
+3.17 s are confirmed.
 
 ## Hipparcos-2 time-convention assessment
 

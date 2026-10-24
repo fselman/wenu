@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 96, 2026-10-24. **Status:** PR #337 is merged at `3506bb23`; Fernando confirmed clean synchronized Mac main, local/remote branch cleanup and 36 documentation tests in 3.17 s. He selected the bounded K4b.05 closure review with “Proceed”: reconcile agreed requirements with accepted evidence and remaining gaps, and propose the next concrete gate. Review findings are pending. No parent closure, new science, consumer adoption or change of agreed order is authorized.
+**Plan revision:** 96, 2026-10-24. **Status:** PR #337 is merged at `3506bb23`; Fernando confirmed clean synchronized Mac main, local/remote branch cleanup and 36 documentation tests in 3.17 s. He selected the bounded K4b.05 closure review with “Proceed”: reconcile agreed requirements with accepted evidence and remaining gaps, and propose the next concrete gate. The evidence review is documented: bounded numerical/diagnostic results are complete, while ESA execution and parent-level physical/model qualification remain open. A finite perspective-omission comparison is proposed only; complete Mac documentation acceptance of this review is pending. No parent closure, new science, consumer adoption or change of agreed order is authorized.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,9 +46,10 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `69af07bc01cd852d0674efcf6a29b20b5e0d50ee`,
-confirmed clean/synchronized on the Mac on 2026-10-24 after PR #336 merge,
-local/remote task-branch cleanup and 36 documentation tests in 3.65 s. The following K3/K4a receipts
+**Current accepted base:** main `3506bb2309d29ae3be6f443f9debeb4843e13cc5`,
+confirmed clean/synchronized on the Mac on 2026-10-24 after PR #337 merge,
+local/remote task-branch cleanup and 36 documentation tests in 3.17 s.
+The following K3/K4a receipts
 remain historical acceptance evidence rather than the current checkout.
 K4a.01 is accepted through PR #315 after 35 focused cases/nine subtests,
 36 documentation and eight tooling Mac cases. Clean synchronized main and
@@ -65,8 +66,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.05 real-cache hypothetical time-convention sensitivities completed at 940c4a9b for all 2,850 fallback models; all 118,218 statuses and source/model identity retained. Issues #326/#333 stay open |
-| Next bounded submilestone | Review the completed PR #337 assessment and Mac acceptance receipt, then obtain explicit merge authorization. No K4b.06 adoption or other science selected |
+| Current bounded result | K4b.05 closure review reconciles accepted evidence and remaining source/physical/ESA gaps; parent remains open and existing nominal capabilities are preserved |
+| Next bounded submilestone | Complete Mac documentation acceptance and review of this closure table. Finite perspective-omission comparison is a proposed candidate only; no runtime or K4b.06 adoption is selected |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -105,7 +106,10 @@ new physical model or error policy, issue closure, K4b.05 parent closure,
 consumer adoption, release or change of agreed sequence is selected.
 Acceptance: inspect actual owners and accepted evidence, verify links and
 claim/status consistency, run the nearest documentation checks and complete
-Mac documentation gate. This plan must precede review findings.
+Mac documentation gate. The plan preceded findings at `45ab8a8c`.
+The [evidence matrix and next-gate proposal](kernel_migration_audit_v1.md#k4b05-bounded-closure-review-2026-10-24)
+are now documented. No parent closure or further task selection is implied;
+complete Mac documentation acceptance remains pending.
 
 ## K4b.05: real-cache Hip2 time-convention sensitivity assessment
 
@@ -142,8 +146,9 @@ was committed at `940c4a9b` before population calculations. Fernando's
 separate component/combined results, original flags, versioned report identity
 and unchanged source/model evidence. Actual calculation is complete. Mac documentation acceptance at
 `0384833f5bc37aaa62887b9a093d3ec63d33e645` passed 36 tests in 3.58 s;
-clean synchronized task branch and diff checks are confirmed. PR #337 awaits
-explicit merge authorization; no next scientific implementation is selected.
+clean synchronized task branch and diff checks were confirmed. PR #337 is
+merged at `3506bb23`; clean synchronized Mac main and local/remote cleanup
+are confirmed, with 36 documentation tests in 3.17 s.
 
 ## K4b.05: Hipparcos-2 time-convention assessment (issue #326)
 
@@ -388,7 +393,8 @@ exclusions. The 16-HIP cache sample passed 133 directions at seven native relati
 epochs; maximum chord difference `8.959779580913775e-16`, with unchanged accepted
 solution digests. This closes the bounded mathematical-comparison slice only:
 physical/covariance/dynamical qualification, numerical ESA reproduction,
-K4b.05 parent/K4b.06/issue #326 remain open. PR #330 remains unmerged.
+K4b.05 parent/K4b.06/issue #326 remain open. PR #330 is merged at
+`fde11d83`; its bounded comparison is accepted without physical/ESA closure.
 
 ## K4b.05: reference assessment and ESA constellation comparison plan
 
@@ -1775,7 +1781,7 @@ remain its separate responsibilities.
 | K4b.02 | Adopt admitted incomplete-input models and configured lookback/error/refusal policies for real stars | Measured-PM angular slice passed Mac acceptance in PR #323 at 41c47e16; nominal-TCB Hip2 fallback also passed Mac acceptance in PR #325 at d71ee8da; source time-scale qualification remains issue #326, and no-PM/other missing-input scopes remain pending. No invented measurements |
 | K4b.03 | Admit explicit historical time/calendar/year-zero/BCE and source/input-date uncertainty semantics | Bounded explicit input/receipt slice passed Mac acceptance in PR #327 at ceeb894b: 257 focused, 125 audit, 36 documentation, eight tooling/81 subtests and 24 actual historical states. No implicit civil-clock/TT-to-TCB/observer reconstruction or total uncertainty claim |
 | K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Bounded explicit long-term mean-axis slice passed Mac acceptance in PR #328 at 97921fe8; 48 actual derived directions, finite TT domain and unknown physical/total error. No observer/EOP reconstruction or chart/default adoption |
-| K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references; include ESA Orion and Ursa Major reconstruction comparisons with documented input/method and independence limits | Pending; K4b.01–K4b.04; see the ESA comparison plan above. No runtime selected or universal DR4 improvement factor |
+| K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references; include ESA Orion and Ursa Major reconstruction comparisons with documented input/method and independence limits | Open; bounded closure review reconciles accepted diagnostics and outstanding ESA/physical qualifications. See the evidence matrix; no new runtime, physical-error policy or universal DR4 improvement factor selected |
 | K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | Pending K4b closure; K3 stellar/figure/label consumers and accepted science/visual criteria |
 
 ### K5–K9: freeze, extraction and release

@@ -1,5 +1,151 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.05 bounded closure review, 2026-10-24
+
+**Decision:** K4b.05 remains open. Its completed bounded numerical and diagnostic
+deliverables are accepted evidence; they do not collectively certify physical
+ancient positions or complete the separately requested ESA comparisons.
+
+Fernando selected this documentation/assessment review with "Proceed" after
+PR #337 merge/cleanup and clean synchronized Mac main
+`3506bb2309d29ae3be6f443f9debeb4843e13cc5`, with 36 documentation tests
+in 3.17 s. The review plan preceded these findings at
+`45ab8a8cd12dd2a6db8693b1dfab84a92252e883`. This review does not select a
+new implementation, error policy, physical model, catalogue acquisition,
+source/issue closure or K4b.06 adoption.
+
+### Basis and meaning of completion
+
+The [roadmap ledger](kernel_roadmap_v0.9.5.md)
+is reconciled against the [scientific contracts](scientific_contracts.md),
+current source/test owners and the dated receipts below. "Completed" describes
+a bounded accepted deliverable; "still required" describes an outstanding
+agreed comparison or parent-level qualification/disposition; "unresolved"
+describes evidence that the current work has not established. It does not
+silently require implementation of every omitted effect.
+
+The actual owners inspected at the pinned base are `stellar_state.py`,
+`astrometric_state.py`, their existing test owners, and the documented offline
+audit interfaces. The two production owners and stellar test owner have the
+same Git blobs as the accepted PR #330 tested commit `5da8220f`.
+Their accepted numerical evidence can therefore be cited for those same
+owners without pretending that this documentation review reran their science.
+The GitHub PR records for #325/#327/#328/#330/#331/#332/#334/#335/#336/#337
+confirm their merges. Issues #326 and #333 are still open. Dated assessment
+proposals below remain provenance, not an active implementation queue.
+
+### Requirement and evidence table
+
+| Existing obligation | Completed bounded evidence | What remains / classification |
+|---|---|---|
+| Matched nominal stellar propagation against an independent mathematical expression | [PR #330 receipt](#k4b05-no-light-time-reference-implementation-2026-10-23): 147 synthetic SDK directions plus 133 actual cached-source directions, independent spherical no-light-time expression, two detected coherent motion faults, unchanged identities | **Completed** for the adopted no-light-time arithmetic and tested samples. Independence is mathematical implementation, not a separate physical model or ESA reproduction |
+| Time/calendar and long-term axes as prerequisites | K4b.03 PR #327 and K4b.04 PR #328 retain source/input/evaluation/equinox labels; explicit calendar conversion receipts and separate mean-frame orientation | **Completed** bounded prerequisite slices. Ancient observer/time realization and physical frame error are not thereby qualified; those limits are not duplicate K4b.05 implementations |
+| Gaia conditional measurement uncertainty | [PR #332 receipt](#k4b05-offline-gaia-uncertainty-report-implementation-2026-10-23): 115,105 positive-definite Gaia covariances and 805,735 angular evaluations; independent finite differences/Monte Carlo; explicit marginalization and gap handling | **Completed** offline angular-model conditional report. Full-input RV-covariance independence and total/source/systematic uncertainty remain **unresolved**, not admitted into SDK evidence |
+| Missing-RV sensitivity | PR #332 evaluates an explicit derivative about a hypothetical zero-RV anchor; 115,049 rows have a positive-parallax proxy; rows without it retain gaps | **Completed** local sensitivity report. It is not a finite physical interval, an RV prior or a measurement of zero RV. Suitability of neglected perspective for a particular requested chart/error remains **unresolved** |
+| Perspective in complete versus angular models | Full SI normalization retains radial perspective with reciprocal-parallax distance and the spectroscopic RV proxy. Both models independently pass the matched oracle; angular motion deliberately omits the radial term | Nominal implementations are **completed**. A finite, matched real-source full-versus-angular omission comparison is not in the accepted population receipts; it is one proposed way to advance the still-required perspective qualification, not a newly imposed universal prerequisite |
+| Hip2 epoch and PM-rate convention | [PR #336 source review](#k4b05-hipparcos-2-time-convention-assessment-2026-10-24) and [PR #337 population receipt](#k4b05-real-cache-hip2-time-convention-sensitivity-2026-10-24): all 2,850 fallback models, separate epoch/rate/combined scenarios, source/model identity preserved | **Completed** assessments; the actual 2007 epoch/rate declaration remains **unresolved** in issue #326. A small hypothetical effect does not verify a source fact or mandate a production conversion |
+| Hip2 covariance | [PR #334 diagnostic receipt](#k4b05-hipparcos-2-covariance-qualification-2026-10-23): 2,682 standard fallback reconstructions and 168 nonstandard gaps; [PR #335 precision assessment](#k4b05-hipparcos-2-source-precision-investigation-2026-10-23) does not explain the large mismatches by ordinary printed precision | **Completed** diagnostic/precision work. Covariance admission remains **unresolved** in issue #333; raw matrix inversion and empirical agreement bins are not physical/source qualification |
+| Binaries, photocentres, acceleration and stochastic/VIM solutions | Original identities and flags remain; PR #337 explicitly counts nonstandard suffixes. Current full/angular providers contain no orbit, systemic-velocity correction or Galactic acceleration model | Preservation/disclosure is **completed**. Physical binary/acceleration errors and useful lookback domains remain **unresolved**; no default flag veto, long-term acceleration polynomial or new orbit model is selected |
+| Missing inputs and retained membership | 97,710 full Gaia models, 115,105 Gaia angular models, 2,850 Hip2 fallback models; all 118,218 HIPs retained. Missing PM or unsupported capability refuses rather than acquiring a zero measurement | **Completed** for the admitted model families and their refusals. The 263 original lookup-only entries remain unavailable for these motion admissions. No-PM approximation is pending K4b.02/AX.13 scope, not silently added as a new K4b.05 prerequisite |
+| Epoch domains, numerical error and reuse | Current core checks explicit finite same-scale coverage and singular trajectories; exact admitted-coefficient numerical/cone checks and SDK refusal/conformance evidence remain applicable | **Completed** computational guards for the declared nominal model. Measurement/model/date/frame error and a physical-validity interval remain **unresolved**. A finite domain or angular reuse tolerance is not a total physical accuracy guarantee |
+| ESA Orion and Ursa Major | [Existing reference assessment](#k4b05-reference-and-method-assessment-2026-10-23) identifies published products, source/projection/epoch gaps and qualitative versus numerical roles | Actual comparison is **still required** by the agreed roadmap. No numerical reconstruction, measured-frame comparison or qualitative agreement was executed in the accepted receipts. Original per-star inputs, exact conventions and Ursa Major stereo viewpoint remain **unresolved** |
+
+The numerical model counts above are overlapping capability populations, not
+numbers to add. Complete-input Gaia models also have angular inputs. Hip2
+fallback follows actual Gaia angular availability, not the older
+preferred-input inventory. Unknown uncertainty channels remain unknown even
+for stars that have a nominal state.
+
+### What currently prevents parent closure
+
+There is no accepted execution receipt for the requested ESA comparison.
+The reference assessment is complete but is not that comparison. Missing
+original inputs/conventions may prevent a numerical reproduction; the roadmap
+allows an explicitly qualitative comparison when reference precision does not
+support a numerical angular test. No comparison outcome may be invented from
+the existence of an ESA illustration.
+
+Perspective, binary/missing-input limitations and physical epoch domains
+also need an explicit parent-level disposition for the intended use. The
+existing contracts already permit nominal angular calculations with unknown
+physical error; they do not demand that every unknown be replaced with a new
+model. This review neither revokes that accepted capability nor approves
+a physical-accuracy claim. A future closure decision must say which claims
+are supported, which limitations Fernando accepts for a bounded use, and
+which requested capabilities remain unavailable.
+
+Issues #326/#333 block verification of their respective source-time and
+covariance claims. They are not an automatic veto of every already accepted
+nominal direction or published identity. Conversely, retaining those issues
+does not automatically close the broader physical qualification. A new
+conversion, corrected covariance, error prior, binary exclusion or physical
+lookback threshold would require separate explicit agreement.
+
+### Recommended next bounded gate — proposed, not selected
+
+**Candidate:** finite perspective-omission comparison on matched existing
+Gaia inputs, within K4b.05. This is a practical next qualification because the
+accepted RV report supplies a local derivative, whereas a finite full-versus-
+angular model difference can be strongly nonlinear at remote epochs.
+The comparison uses the two already accepted models; it introduces no physics
+or new source and does not claim that either model is physical ground truth.
+
+Proposed first scope: the existing sixteen-HIP review set in the PR #330
+receipt, retaining every member and actual availability. That receipt gives
+three common full/angle inputs (HIP 59774, 87937 and 57939); the remaining
+members must keep their explicit full-model gaps, not receive invented RV.
+Recheck availability from the same manifest-bound snapshot before running.
+Evaluate both models through the actual SDK at their matched native source
+epoch and elapsed +/-1,000 and +/-10,000 TCB Julian years, inside the
+intersection of their explicit domains. Compare finite native ICRS direction
+separations and an independently expressed no-light-time departure difference.
+Keep source, model/reference and all accepted solution digests intact.
+Report each star, sign, epoch and missing-input reason; no population-wide
+statistics or error prior follows from this small, RV-selected sample.
+
+Proposed acceptance uses the existing stellar/shared-core and source-audit
+owners only if executable checks change: source-epoch agreement, matched
+zero-RV mathematical limit (explicitly synthetic), finite nonzero-RV cases
+of both signs and near-pole/wrap cases, source/model identity, domain/refusal
+and actual SDK return paths. Preserve the existing Decimal, spherical oracle,
+cold-isolation and numerical cone tests; do not repeat them in a new owner.
+A failure of the independent finite-model comparison must not be hidden
+by tuning source parameters or by comparing a derivative as a global bound.
+The separate Mac cache receipt and documentation gate remain necessary.
+This review does not implement or authorize that candidate.
+
+**Alternative next selection:** execute the agreed ESA comparison track first.
+It needs original input/method recovery for a numerical reproduction, or a
+clearly labelled qualitative procedure that discloses unmatched newer sources,
+epochs and the enhanced-depth stereo view. Its published +60,000-year Ursa
+Major and +450,000-year Orion endpoints cannot silently enlarge existing
+admissions; Orion also exceeds the admitted +/-200,000-year mean-axis range.
+Any extended nominal coverage must be proposed and agreed for that comparison,
+not inferred from a future animation or from a passing short-domain test.
+No ESA download, contact, numerical run or visual agreement is claimed here.
+
+### Boundaries and exit from this review
+
+Measured workloads, propagated-ID chart/figure/label integration and ancient
+product specimens remain K4b.06. Observer/horizon reconstruction, new
+light-time or gravitational/binary models, and source acquisition are not
+selected by this review. K5 reconciliation/freeze and package extraction keep
+their existing dependencies. A proposal above is not a new hidden queue or
+permission to reorder those milestones.
+
+The source map, implementation reference, coordinate guide and existing
+test selections remain current: this review changes no runtime meaning.
+It records PR #337's completed merge/Mac cleanup receipt, corrects stale
+active PR #330 merge status, and supplies this evidence matrix plus the
+next-gate proposal. Four focused current-documentation checks passed locally:
+developer-root/index authority, documented Python syntax, absence of obsolete
+public-import recommendations, and roadmap diagrams/ordered gates. All 177
+relative link paths and 116 active fragments in the four changed documents
+resolve against the actual remote tree and loaded targets. No unavailable
+archive, source-inventory or installed-import gate is claimed passing here;
+the complete Mac documentation gate remains pending.
+
+
 ## K4b.05 real-cache Hip2 time-convention sensitivity, 2026-10-24
 
 Fernando selected this bounded assessment with "Proceed" after PR #336
@@ -144,8 +290,9 @@ change. The coordinate guide, scientific limits and implementation reference
 remain current. Complete Mac documentation acceptance at
 `0384833f5bc37aaa62887b9a093d3ec63d33e645` passed all 36 tests in 3.58 s;
 clean synchronized task branch and diff checks are confirmed. The bounded
-assessment's acceptance gate is complete. PR #337 awaits explicit merge
-authorization; issues #326/#333 and K4b.05 parent remain open.
+assessment's acceptance gate is complete. PR #337 is merged at `3506bb23`;
+clean synchronized Mac main, local/remote branch cleanup and 36 documentation
+tests in 3.17 s are confirmed. Issues #326/#333 and K4b.05 parent remain open.
 
 
 ## K4b.05 Hipparcos-2 time-convention assessment, 2026-10-24
@@ -911,7 +1058,8 @@ The receipt ended `CACHED STELLAR REFERENCE CHECK COMPLETE`; measurement and
 physical-model evidence remained unqualified. No numerical ESA reproduction,
 source acquisition, covariance/light-time/dynamics implementation, consumer
 adoption or K4b.05 parent closure is claimed. Production code, source snapshot,
-SDK and dependencies are unchanged. PR #330 remains unmerged.
+SDK and dependencies are unchanged. PR #330 is merged at `fde11d83`;
+its bounded comparison does not close physical/ESA numerical qualification.
 
 
 ## K4b.05 reference and method assessment, 2026-10-23
