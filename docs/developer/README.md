@@ -1,5 +1,17 @@
 # Wenu developer documentation
 
+## Real-cache Hipparcos-2 time sensitivity
+
+The selected K4b.05 [population assessment](kernel_migration_audit_v1.md#k4b05-real-cache-hip2-time-convention-sensitivity-2026-10-24)
+completed on the Mac at `940c4a9b`: all 118,218 HIP statuses retained, with
+2,850 Hip2 fallback models and unchanged source/model identity. The largest
+combined hypothetical convention differences are 0.8344102459 mas at +10,000
+years and 1.590564415 mas at +50,000 years. These are TDB/TCB sensitivities,
+not inferred source conventions or physical-error bounds. Issues #326/#333
+remain open. Complete Mac documentation acceptance at `0384833f` passed all
+36 tests in 3.58 s; the task branch is confirmed clean and synchronized.
+PR #337 awaits explicit merge authorization.
+
 ## Hipparcos-2 time-convention assessment
 
 Fernando confirmed clean synchronized Mac main `bd7b9cb0` after PR #335,
@@ -11,8 +23,9 @@ roughly seven-second reference-event offset from the time-rate effect, using
 the exact TDB/TCB relation. Neither identifies Hip2's source convention.
 Issues #326/#333 remain open; production models and source metadata are
 unchanged. Complete Mac documentation acceptance at `bfa904a2` passed all 36 tests
-in 4.61 s; the task branch is confirmed clean and synchronized. PR #336
-awaits merge authorization; issues #326/#333 remain open.
+in 4.61 s; PR #336 is now merged at `69af07bc`. Clean synchronized Mac main,
+local/remote branch cleanup and 36 documentation tests in 3.65 s are confirmed.
+Issues #326/#333 remain open.
 
 
 ## Hipparcos-2 source precision assessment
