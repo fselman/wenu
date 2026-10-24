@@ -143,7 +143,13 @@ public-import recommendations, and roadmap diagrams/ordered gates. All 177
 relative link paths and 116 active fragments in the four changed documents
 resolve against the actual remote tree and loaded targets. No unavailable
 archive, source-inventory or installed-import gate is claimed passing here;
-the complete Mac documentation gate remains pending.
+Fernando subsequently ran the complete Mac documentation gate at
+`c4f131a6c8d031dafbc0d508b1eaa96c0451ae10`: all 36 tests passed in
+3.56 s. The task working tree was clean and synchronized, and the diff check
+passed. Background Git auto-packing separately reported bad refs for
+conflict-named files under `.git/logs`; this receipt does not establish local
+Git metadata integrity or resolve those errors. PR #338 awaits a separate
+explicit merge request; K4b.05 remains open.
 
 
 ## K4b.05 real-cache Hip2 time-convention sensitivity, 2026-10-24

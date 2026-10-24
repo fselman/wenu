@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 96, 2026-10-24. **Status:** PR #337 is merged at `3506bb23`; Fernando confirmed clean synchronized Mac main, local/remote branch cleanup and 36 documentation tests in 3.17 s. He selected the bounded K4b.05 closure review with “Proceed”: reconcile agreed requirements with accepted evidence and remaining gaps, and propose the next concrete gate. The evidence review is documented: bounded numerical/diagnostic results are complete, while ESA execution and parent-level physical/model qualification remain open. A finite perspective-omission comparison is proposed only; complete Mac documentation acceptance of this review is pending. No parent closure, new science, consumer adoption or change of agreed order is authorized.
+**Plan revision:** 96, 2026-10-24. **Status:** PR #337 is merged at `3506bb23`; Fernando confirmed clean synchronized Mac main, local/remote branch cleanup and 36 documentation tests in 3.17 s. He selected the bounded K4b.05 closure review with “Proceed”: reconcile agreed requirements with accepted evidence and remaining gaps, and propose the next concrete gate. The evidence review is documented: bounded numerical/diagnostic results are complete, while ESA execution and parent-level physical/model qualification remain open. A finite perspective-omission comparison is proposed only; complete Mac documentation acceptance at `c4f131a6` passed 36 tests in 3.56 s, with a clean synchronized task working tree. PR #338 awaits a separate explicit merge request. No parent closure, new science, consumer adoption or change of agreed order is authorized.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -67,7 +67,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.05 closure review reconciles accepted evidence and remaining source/physical/ESA gaps; parent remains open and existing nominal capabilities are preserved |
-| Next bounded submilestone | Complete Mac documentation acceptance and review of this closure table. Finite perspective-omission comparison is a proposed candidate only; no runtime or K4b.06 adoption is selected |
+| Next bounded submilestone | PR #338 review and separately authorized merge/cleanup; Mac documentation acceptance passed 36 tests in 3.56 s at c4f131a6. Finite perspective-omission comparison is a proposed candidate only; no runtime or K4b.06 adoption is selected |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -109,7 +109,9 @@ claim/status consistency, run the nearest documentation checks and complete
 Mac documentation gate. The plan preceded findings at `45ab8a8c`.
 The [evidence matrix and next-gate proposal](kernel_migration_audit_v1.md#k4b05-bounded-closure-review-2026-10-24)
 are now documented. No parent closure or further task selection is implied;
-complete Mac documentation acceptance remains pending.
+complete Mac documentation acceptance at `c4f131a6c8d031dafbc0d508b1eaa96c0451ae10`
+passed 36 tests in 3.56 s, with clean synchronized task working tree and
+successful diff check. PR #338 awaits a separate explicit merge request.
 
 ## K4b.05: real-cache Hip2 time-convention sensitivity assessment
 

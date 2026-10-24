@@ -8,7 +8,9 @@ at clean synchronized Mac main `3506bb23`. Numerical propagation and bounded
 diagnostic work are complete; ESA execution and physical-model/source
 qualification remain open. A finite full-versus-angular perspective comparison
 is proposed only. No new science/error policy, parent closure or K4b.06
-adoption is selected. Complete Mac documentation acceptance is pending.
+adoption is selected. Complete Mac documentation acceptance at `c4f131a6`
+passed all 36 tests in 3.56 s; the task working tree is clean and synchronized.
+PR #338 awaits a separate explicit merge request.
 
 ## Real-cache Hipparcos-2 time sensitivity
 
