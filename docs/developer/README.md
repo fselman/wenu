@@ -1,5 +1,18 @@
 # Wenu developer documentation
 
+## Hipparcos-2 time-convention assessment
+
+Fernando confirmed clean synchronized Mac main `bd7b9cb0` after PR #335,
+whose task-branch documentation gate passed 36 tests. He selected the bounded
+K4b.05 [issue #326 assessment](kernel_migration_audit_v1.md#k4b05-hipparcos-2-time-convention-assessment-2026-10-24)
+on 2026-10-24. Accessible primary documentation does not establish both the
+2007 epoch and proper-motion rate scales. Synthetic examples separate the
+roughly seven-second reference-event offset from the time-rate effect, using
+the exact TDB/TCB relation. Neither identifies Hip2's source convention.
+Issues #326/#333 remain open; production models and source metadata are
+unchanged. Complete Mac documentation acceptance for this assessment is pending.
+
+
 ## Hipparcos-2 source precision assessment
 
 PR #334 is merged; clean synchronized Mac main `ffa7d7a7` and branch cleanup
@@ -9,7 +22,9 @@ bounded issue #333 investigation. The
 finds that ordinary printed precision does not explain the large discrepancies
 in the tested numerical envelopes. F2=99 is a strong pattern, but its meaning
 is unverified and non-99 exceptions remain. No covariance correction or admission
-is established; complete Mac documentation acceptance remains pending.
+is established. Mac acceptance at `1c3d3b1c` passed 36 documentation tests
+in 3.18 s; PR #335 is merged and clean synchronized Mac main `bd7b9cb0`
+is confirmed.
 
 ## Hipparcos-2 covariance diagnostic report
 

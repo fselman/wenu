@@ -1,5 +1,165 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.05 Hipparcos-2 time-convention assessment, 2026-10-24
+
+Fernando selected this issue #326 assessment with "Proceed" after confirming
+clean synchronized Mac main `bd7b9cb09539f3c9bed43bca40e53f66a8904e7f`.
+The bounded plan was committed first at
+`46e47c8d3e436f7fd05ec509dd67e63007f23b71`.
+This is documentation and synthetic sensitivity analysis. It changes no
+source bytes, model identities, production provider, SDK, dependency, default
+or uncertainty admission.
+
+### As-is ownership and source evidence
+
+`src/wenu/stellar_state.py::_admit_hipparcos2_fallback` reads the source's
+J1991.25 value while requiring its epoch scale to remain null. The separately
+explicit `nominal-tcb-deferred-qualification` policy assigns the numerical
+epoch and proper-motion rates to the nominal TCB axis. The same owner converts
+mas per Julian year using 365.25 times 86400 coordinate seconds, then delegates
+to the normalized-tangent engine. No physical TT-to-TCB conversion is performed.
+The record retains the null source scale and unknown time-convention error.
+Gaia angular inputs take precedence. These implementation facts are unchanged.
+
+Primary-source review on 2026-10-24:
+
+- [Corrected CDS I/311 ReadMe](https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/I/311?format=html&tex=true):
+  RArad/DErad specify ICRS and Ep=1991.25; pmRA/pmDE specify mas/yr.
+  Neither field layout explicitly names the epoch scale or the differentiation
+  time scale. The 2008 correction history does not supply that declaration.
+- [HEASARC Hipparcos new catalogue](https://heasarc.gsfc.nasa.gov/w3browse/all/hipnewcat.html):
+  specifies epoch 1991.25 and proper motions per Julian year, without naming
+  TT/TCB/TDB for those quantities. A Julian year's duration alone does not
+  select a coordinate time scale.
+- [van Leeuwen (2007), validation paper](https://arxiv.org/html/0708.1752v1):
+  explains the re-reduction and refers detailed methods to the book; no explicit
+  epoch/rate scale declaration was identified in the inspected article.
+- [Book chapter 2, Hipparcos Astrometry](https://doi.org/10.1007/978-1-4020-6342-8_2):
+  the publisher provides a subscription preview, and its accessible
+  [two-page excerpt](https://page-one.springer.com/pdf/preview/10.1007/978-1-4020-6342-8_2)
+  contains no identified time-scale declaration. The full chapter was not read.
+  The [ESA DR1 external-catalogue page](https://gea.esac.esa.int/archive/documentation/GDR1/datamodel/Ch4/hipparcos_newreduction.html)
+  returned HTTP 503; the original ESA volume-1 PDF returned HTTP 451.
+- [HEASARC original 1997 catalogue](https://heasarc.gsfc.nasa.gov/W3Browse/catalog/hipparcos.html),
+  RA_Deg/Dec_Deg, explicitly gives JD 2448349.0625 TT. This establishes the
+  original edition's epoch statement, not the new reduction's rate convention.
+  Reprocessing the same observations is not proof that every convention remained
+  identical. No 1997/2007 numerical comparison was executed.
+- [IAU 2006 Resolution B3](https://doi.org/10.1017/S1743921308023648),
+  English resolution on printed pp. 41-42, defines the exact linear TDB/TCB
+  relation. The [IAU NSFA defining-constants table](https://iau-a3.gitlab.io/NSFA/NSFA_fixed)
+  independently transcribes the constants. These define time-scale conversion;
+  they do not establish Hip2's published choice.
+
+The accessible evidence therefore does not resolve issue #326. Neither the
+word ICRS nor a barycentric origin determines the catalogue's time convention.
+The accepted nominal policy must not be relabelled verified metadata.
+
+### Separate epoch and rate sensitivities
+
+Use an explicitly hypothetical TDB source convention to obtain an exact,
+reproducible comparison with TCB; TDB's close modern relationship to TT motivates
+this sensitivity example but does not make TT and TDB identical. This is not
+an adopted interpretation of Hip2.
+
+Let Y=31557600 seconds per Julian year, L=1.550519768e-8,
+T0=2443144.5003725 and TDB0=-0.0000655 seconds. IAU B3 gives
+
+`TDB = TCB - L*(JD_TCB-T0)*86400 + TDB0`.
+
+The numerical Julian-epoch label J1991.25 is JD 2448349.0625. If that label
+denotes a TDB event, its TCB label is later by
+
+`delta0 = (L*(2448349.0625-T0)*86400 - TDB0)/(1-L)`
+
+= 6.972352471684277 seconds. This is an epoch-label offset. The exact rate
+relation is `dTDB/dTCB=1-L`, corresponding to 0.489306826306368 seconds
+of elapsed-label difference per TCB Julian year. A proper motion expressed
+per TDB Julian year becomes `mu_TCB=(1-L)*mu_TDB`. Keeping the original
+number while changing the rate axis would be a distinct convention error.
+
+TT/TCB conversion additionally requires the TT/TDB relation and its realization.
+B3's modern millisecond-scale TT/TDB statement is not a validated
++/-50,000-year TT conversion. No ancient TT-to-TCB ephemeris calculation or
+physical-error bound is inferred from this linear TDB example.
+
+For the existing angular model choose synthetic orthogonal unit vectors u,e
+and mu in radians per source Julian year. With T elapsed TCB Julian years
+from the numerical nominal epoch, the nominal direction is
+`normalize(u + mu*T*e)`. Compare the following tangent coefficients separately:
+
+- Epoch-only: `mu*(T-delta0/Y)`; hold the rate number unchanged.
+- Rate-only: `mu*(1-L)*T`; hold the epoch event unchanged.
+- Combined hypothetical TDB interpretation: `mu*(1-L)*(T-delta0/Y)`.
+
+For coefficients x,y, signed angular difference is
+`atan(x)-atan(y)`. The local rate sensitivity is approximately
+`mu*L*T/(1+(mu*T)^2)`; the epoch effect is approximately
+`mu*delta0/Y/(1+(mu*T)^2)`. Thus linear `mu*L*T` alone overstates
+the angular difference when the accumulated tangent displacement is large.
+Opposite-time signs can cancel the two effects; unsigned columns cannot be
+added as a general rule.
+
+Executed synthetic positive-time examples, absolute differences in mas:
+
+| PM (arcsec/year) | T (TCB Julian years) | Epoch only | Rate only | Combined |
+|---|---:|---:|---:|---:|
+| 1 | 0 | 0.000220941 | 0 | 0.000220941 |
+| 1 | 35 | 0.000220941 | 0.000542682 | 0.000763622 |
+| 1 | 1,000 | 0.000220935 | 0.0155048 | 0.0157258 |
+| 1 | 10,000 | 0.000220422 | 0.154688 | 0.154909 |
+| 1 | 50,000 | 0.000208678 | 0.732233 | 0.732442 |
+| 10 | 0 | 0.00220941 | 0 | 0.00220941 |
+| 10 | 35 | 0.00220940 | 0.00542680 | 0.00763620 |
+| 10 | 1,000 | 0.00220422 | 0.154688 | 0.156893 |
+| 10 | 10,000 | 0.00178893 | 1.25544 | 1.25723 |
+| 10 | 50,000 | 0.000321316 | 1.12747 | 1.12779 |
+
+These are parameter sensitivities within the unchanged angular approximation,
+not total physical errors, source uncertainties, universal upper bounds or a
+precision certificate. Perspective, binary/accelerated motion and uncertain
+source parameters retain their previous limits.
+
+### Reproducibility, verification and disposition
+
+A scratch-only probe used Python 3.12.14, 80-digit Decimal arithmetic and
+an independent binary64 normalized-vector cross/dot angle. It evaluated all
+three cases for PM=0,0.1,1,10 arcsec/year at
+T=-50000,-10000,-1000,-100,0,35,100,1000,10000,50000 years (120 comparisons).
+Decimal atan used the half-angle identity
+`atan(x)=2*atan(x/(1+sqrt(1+x*x)))` and an alternating Taylor series
+terminated below 1e-85 in the reduced argument. Fraction arithmetic independently
+checked delta0. The maximum Decimal/vector difference was
+4.356127989456561e-17 rad, below the declared 5e-16 numerical check tolerance.
+This tolerance checks calculation agreement, not source/physical accuracy.
+
+Installed ERFA 2.0.1.5 `tdbtcb(2448349,0.0625)` gives
+6.972352471683951 seconds, agreeing with the defining-constant calculation
+within 1e-10 seconds. This is a reference-library check of the TDB conversion,
+not an independent physical time realization. Probe SHA256:
+`2d9787096cd17a18aa7499ea40abc9a6fa5a93b813ee3060d39bb5cd1b94688c`.
+The equations, grid and algorithms above specify the reproducible experiment;
+the scratch probe is not a new production tool or a catalogue fixture.
+
+No complete manifest-bound Gaia/Hip2 enrichment snapshot was available in this
+assessment checkout. No fallback-population percentiles or individual fallback
+corrections are claimed. Previously accepted 2,850 fallback entries are not
+silently substituted with the full raw Hip2 population. No catalogue acquisition,
+annex capture, source mutation or author contact occurred.
+
+Issue #326 stays open: explicit source-level evidence for both epoch and rate
+conventions is still needed. A later conversion would require its own agreed
+model/resource identity and independent acceptance. Issue #333, K4b.05 parent
+qualification and K4b.06 consumer adoption remain open. The source map,
+implementation reference, architecture and existing test selection remain
+current; the coordinate guide and scientific limits link this assessment.
+Four focused current-documentation checks passed in the partial assessment
+checkout: developer-root/index authority, documented-Python syntax, obsolete
+public-import recommendations and roadmap diagrams/ordered exit gates. All
+four new assessment links resolve to the actual audit heading. The complete
+Mac documentation gate, including installation/import and archive/inventory
+coverage, remains pending.
+
 ## K4b.05 Hipparcos-2 source precision investigation, 2026-10-23
 
 Fernando selected this assessment with “Proceed” after PR #334 merge and
