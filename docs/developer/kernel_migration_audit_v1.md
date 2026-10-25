@@ -38,7 +38,7 @@ model/reference identity and unknown measurement/physical errors are explicit.
 One additional SDK seam verifies retained gaps, common-object selection and
 unavailable/domain refusal after success.
 
-### Verification and remaining real-source gate
+### Verification and actual Mac cache receipt
 
 All eleven new cases pass locally. Replacing the finite effect with a local
 zero-RV derivative and independently dropping full radial motion each caused
@@ -50,23 +50,87 @@ composition cases deselected because this partial checkout lacks those owners:
 `test_catalogue_metadata_controls_kernel_and_all_native_outputs`,
 `test_catalogue_source_identity_checked_before_publication` and
 `test_cluster_admission_preserves_all_source_rows_masks_and_immutable_metadata`.
-The complete unfiltered Mac gates remain required. Four closest documentation
-checks and six available tooling cases pass; the two repository-wide tooling
-selections require the complete test tree and remain for the Mac. No full SDK,
+The complete Mac receipt below subsequently covers the three unavailable
+application-composition cases without exclusions. Four closest documentation
+checks and six available tooling cases passed locally; the two repository-wide
+tooling selections were subsequently included in the complete Mac tooling run. No full SDK,
 installation, catalogue acquisition or product run is repeated for this test-only
 change. All 681 relative links and 186 fragments across 38 active documents
 resolve against the full GitHub tree and actual Markdown targets.
 
-The pending Mac receipt must reload the existing manifest-bound snapshot, retain
-the original sixteen-HIP identity set and report all 80 HIP/epoch rows. Recheck
-the prior three common full/angular stars (59774, 87937, 57939), retain actual
-unavailable reasons for every other member, and do not fill RV or substitute
-Hip2 inputs into a Gaia full/angular pair. Hip2 fallback availability can be
-reported separately with its accepted unchanged solution digest. Use original
-source epochs and the intersection of explicit domains. Verify all accepted
-solution digests and source bytes, compare SDK vectors and the independent
-scalar/spherical references, and publish a versioned no-clobber report with
-source/code/model provenance. No actual cache calculation is claimed here.
+**Actual Mac verification at `04e27e77a513b95c7ebd54e5a2eef1e66de75499`,
+PR #339:** the first focused run passed 344 cases and nine subtests in
+12.98 s, failing only the existing `inspect.getsource(mixed_provider)`
+cold-isolation check. Its cached code referenced the retired Dropbox checkout,
+although the current checkout was `/Users/fselman/Developer/wenu`.
+The same unchanged failed case passed alone in 5.22 s using a fresh temporary
+`PYTHONPYCACHEPREFIX`. Together these cover all 345 focused cases and nine
+subtests, with no exclusions; no single fully passing 345-case run is claimed.
+Subsequent complete gates passed 173 source-audit cases in 5.17 s,
+36 documentation in 4.24 s and eight tooling cases in 7.910 s.
+The task branch was clean and synchronized after the checks and actual report.
+
+**Actual immutable-cache run:** the validated source manifest remained
+`8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365`.
+All sixteen original sample HIPs remain across 80 HIP/epoch rows at source
+and +/-1,000 and +/-10,000 TCB Julian years. Common full/angular availability
+is exactly HIP 59774, 87937 and 57939: 15 paired rows, evaluated as 30 SDK
+directions. The other 65 rows retain explicit pair gaps. Full availability
+is three, with six missing associations, five Gaia position-only solutions
+and two missing Gaia RVs. Gaia angular availability is five, with six missing
+associations and five position-only solutions; Hip2 fallback availability is
+eleven, deferring five entries to available Gaia angular models. Hip2 is not
+substituted into any full/angular comparison, and no missing RV is assigned.
+
+Unsigned model separations below are arcseconds. The signed full-minus-angular
+departures are positive for every nonzero entry in this actual sample; this is
+an observed sample result, not a sign convention imposed on all stars.
+
+| HIP | -1,000 yr | +1,000 yr | -10,000 yr | +10,000 yr |
+|---|---:|---:|---:|---:|
+| 59774 | 0.0532424820 | 0.0532969137 | 5.2997575499 | 5.3541878164 |
+| 87937 | 603.4412779736 | 682.7187802435 | 34000.3377578619 | 93916.8041368476 |
+| 57939 | 76.2868680167 | 77.9714977967 | 6292.9785700039 | 7657.1856328879 |
+
+Source-epoch differences round to zero at the displayed precision.
+At +10,000 years, the latter two separations are about 26.0880 and 2.1270
+degrees. Thus a small local hypothetical-RV derivative is not a substitute for
+a finite remote-epoch model comparison. These are differences of two nominal
+models with the same captured inputs, not measured physical errors or an
+inferred universal angular-model lookback limit.
+
+Maximum unsigned separation and signed-departure residuals against the
+independent scalar expression are both `1.6653345369377348e-16` rad.
+The maximum separate spherical-reference vector-chord residual is
+`8.959779580913775e-16`. All are below the conditioned `5e-14`
+reference threshold; measurement and physical-model evidence remain unknown.
+
+The recipe verified unchanged on-disk source bytes, detached admission records,
+imported implementation/SDK identities against the tested checkout and all three
+accepted solution digests:
+
+- Full Gaia SI: `032f76e398eadf136fd9aa59a3c2b3a66d4dc25d9da74bc995b4bdb6088cfe8f`.
+- Gaia angular: `6d3e46ff0aa8bd707ea4b8f169b55fdd41c3bc85d65250d7a801c541ebb38602`.
+- Hip2 angular: `b5b6cfe20919eec5c815f50b348b55579e2b2631e8f0510be201d874e85875c1`.
+
+The no-clobber report is outside the repository at
+`~/wenu-output/stellar_perspective_comparison_v1`. Products are
+`perspective_rows_v1.jsonl`, `perspective_sources_v1.json`,
+`perspective_summary_v1.json` and `perspective_recipe_v1.py`;
+`perspective_manifest_v1.json` was written last. Completion-manifest SHA256:
+`f446893384eda80257fb77c54e0fb3e96b4a3be8044e83caad2b50f0540b8533`.
+Executed versioned recipe SHA256:
+`c1d254c68e6f6803ca332d912d217d99c4b37748ffe15e3e6449d8966146fbde`.
+The receipt ended `CACHED PERSPECTIVE COMPARISON COMPLETE` and
+`source_and_models_unchanged=true`.
+
+Before handoff, a separate explicitly synthetic recipe run verified 45
+constructed HIP/epoch rows (ten pairs, 35 gaps), product hashes and no-clobber;
+wrong source-manifest identity, changed solution identity and a deliberately
+wrong independent reference each refused before publication. Those synthetic
+publication checks are distinct from the actual 80-row Mac receipt.
+Only final documentation-receipt acceptance and PR review remain for this
+bounded comparison; no parent closure or subsequent runtime task is implied.
 
 Source and production model identities, coordinate guide, source map and API
 reference remain current and unchanged. The earlier closure matrix below remains

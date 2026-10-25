@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 97, 2026-10-25. **Status:** PR #338 is merged at `2d5e911f336caff7d960c19b2134b67786b0353d`. Fernando selected the bounded K4b.05 finite perspective-omission comparison with “Proceed” and confirmed clean synchronized Mac main at that exact base. Implement only the comparison and its focused verification/documentation; actual cache execution and Mac acceptance remain pending. K4b.05 parent qualification, ESA execution and K4b.06 adoption remain separate.
+**Plan revision:** 98, 2026-10-25. **Status:** PR #338 is merged at `2d5e911f336caff7d960c19b2134b67786b0353d`. Fernando selected the bounded K4b.05 finite perspective-omission comparison with “Proceed” and confirmed clean synchronized Mac main at that exact base. The bounded comparison now has actual Mac evidence at `04e27e77`: 345 focused cases/nine subtests across the original run and a fresh-cache retry, 173 source-audit, 36 documentation and eight tooling cases; the immutable-cache report retains 80 rows, 15 pairs and 65 gaps with unchanged source/model identities. Final documentation-receipt acceptance and PR #339 review remain pending. K4b.05 parent qualification, ESA execution and K4b.06 adoption remain separate.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -65,8 +65,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.05 finite comparison adds eleven passing synthetic/SDK seam cases and independently detected finite-derivative/radial-omission faults; actual cache receipt and complete Mac acceptance pending; parent remains open |
-| Next bounded submilestone | Selected K4b.05 finite perspective-omission comparison below; existing models and sixteen-HIP set only. Actual cache receipt and focused Mac acceptance pending; K4b.06 adoption remains separate |
+| Current bounded result | K4b.05 finite comparison has synthetic fault-detection evidence, 345 focused cases/nine subtests via split Mac receipt, complete audit/documentation/tooling gates and an actual 80-row cache report; source and models unchanged; parent remains open |
+| Next bounded submilestone | Final Mac documentation-receipt check and PR #339 review; no next runtime item or K4b.06 adoption selected |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -120,8 +120,15 @@ Local comparison/regression evidence: eleven new cases pass; two independent
 faults each fail seven finite-comparison cases and are restored. Combined existing
 owners pass 515 cases/nine subtests with three unchanged application-composition
 cases unavailable in the partial checkout. Four closest documentation and six
-available tooling checks pass; full Mac gates and actual sixteen-HIP cache
-execution remain pending. See the [bounded evidence](kernel_migration_audit_v1.md#k4b05-finite-perspective-comparison-2026-10-25).
+available tooling checks pass. Complete Mac evidence at `04e27e77` now covers
+345 focused cases/nine subtests (344 passed initially; the unchanged isolation
+case passed in a fresh-cache retry), 173 source-audit, 36 documentation and
+eight tooling cases. The actual manifest-bound cache report retains 80 rows,
+15 full/angular pairs and 65 explicit gaps, preserving all source/model digests.
+Maximum signed/separation residual is `1.6653345369377348e-16` rad and maximum
+spherical chord residual is `8.959779580913775e-16`; physical accuracy remains
+unknown. Final documentation-receipt acceptance and PR #339 review are pending;
+no subsequent runtime item is selected. See the [bounded evidence](kernel_migration_audit_v1.md#k4b05-finite-perspective-comparison-2026-10-25).
 
 ## K4b.05: bounded closure review
 

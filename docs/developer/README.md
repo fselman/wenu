@@ -7,7 +7,13 @@ on 2026-10-25 after PR #338 merge and confirmed clean synchronized Mac main
 `2d5e911f`. Eleven constructed comparison/SDK seam cases pass locally; a
 local derivative substitution and dropped radial motion each fail the new
 comparison. See the [method and bounded evidence](kernel_migration_audit_v1.md#k4b05-finite-perspective-comparison-2026-10-25).
-Actual sixteen-HIP cache execution and complete Mac acceptance remain pending.
+The actual sixteen-HIP cache comparison completed at `04e27e77`: all 80 rows
+were retained, with 15 matched pairs and 65 explicit gaps. The three common
+stars reproduce the independent reference; source and solution digests are
+unchanged. Mac verification covers 345 focused cases/nine subtests (one stale
+bytecode failure passed in a fresh-cache retry), 173 source-audit, 36
+documentation and eight tooling cases. Final documentation receipt acceptance
+and PR #339 review remain pending.
 K4b.05 parent physical/source/ESA qualification and K4b.06 adoption remain open.
 
 The previous [closure evidence matrix](kernel_migration_audit_v1.md#k4b05-bounded-closure-review-2026-10-24)

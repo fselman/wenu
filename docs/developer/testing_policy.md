@@ -299,9 +299,23 @@ passed after restoration. The numerical tolerance is the existing conditioned
 
 Use existing `stellar-motion-provider`, `gaia-crossmatch-audit`, documentation
 and tooling gates. Production/source/SDK bytes and gate selections are unchanged.
-Complete Mac gates and the separate immutable sixteen-HIP cache receipt remain
-required. No population-wide inference, physical-validity threshold or parent
-closure follows from these constructed tests. The coordinate guide and API/source
+Complete Mac checks at `04e27e77` covered 345 focused cases and nine subtests:
+the first run passed 344 and failed only the existing cold-isolation source
+inspection because stale bytecode referenced the retired Dropbox checkout.
+The unchanged failed case passed alone in 5.22 s with a fresh temporary bytecode
+cache; this is a split receipt, not a fabricated single clean full-gate run.
+The following gates passed 173 source-audit (5.17 s), 36 documentation (4.24 s)
+and eight tooling cases (7.910 s). No exclusions.
+
+The actual immutable-cache comparison retained 80 rows: 15 matched full/angular
+pairs (30 SDK directions) and 65 unavailable-pair rows. All accepted solution
+and source identities remained unchanged. Maximum signed/separation residual
+was `1.6653345369377348e-16` rad; maximum independent spherical chord residual
+was `8.959779580913775e-16`. The [audit receipt](kernel_migration_audit_v1.md#k4b05-finite-perspective-comparison-2026-10-25)
+retains sample gaps and the report identity. Final documentation-only changes
+need the Mac documentation gate; unchanged numerical/tooling gates need not
+repeat. No population-wide inference, physical-validity threshold or parent
+closure follows from these bounded checks. The coordinate guide and API/source
 map retain their current scientific meaning and ownership.
 
 ### Long-term frame orientation
