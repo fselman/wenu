@@ -276,6 +276,48 @@ The complete sample IDs, gaps and immutable source digest are retained in the
 existing audit. This is numerical-model comparison only; physical/covariance/
 dynamical uncertainty and ESA numerical reproduction remain open.
 
+### Finite full-versus-angular perspective comparison
+
+The existing stellar owner adds eleven cases: ten explicitly synthetic matched
+input pairs and one SDK gap/domain seam. Each pair evaluates both models at
+source and +/-1,000 and +/-10,000 TCB Julian years. Great-circle separations
+and their orientation are measured from the actual SDK returned vectors and
+compared with an independent scalar atan2 departure-difference identity.
+The accepted separate spherical reference remains a second check. Cases cover
+both RV/time signs, zero RV with nonzero PM, zero PM, exact/near poles, RA wrap
+and strongly nonlinear trajectories beyond a 90-degree departure. The seam
+retains angular-only HIPs, refuses unavailable full states and out-of-domain
+queries after success, and verifies successful queries still work afterward.
+Source/epoch/model/reference/external-ID and unknown-error meanings are checked.
+
+Two deliberate faults were independently applied and restored: replacing the
+finite expression with the local zero-RV derivative and dropping radial motion
+from the full affine coefficients. Each failed seven of the ten comparison
+cases (three zero-effect cases correctly stayed passing). All eleven new cases
+passed after restoration. The numerical tolerance is the existing conditioned
+`5e-14` reference threshold, not a physical-error certificate.
+
+Use existing `stellar-motion-provider`, `gaia-crossmatch-audit`, documentation
+and tooling gates. Production/source/SDK bytes and gate selections are unchanged.
+Complete Mac checks at `04e27e77` covered 345 focused cases and nine subtests:
+the first run passed 344 and failed only the existing cold-isolation source
+inspection because stale bytecode referenced the retired Dropbox checkout.
+The unchanged failed case passed alone in 5.22 s with a fresh temporary bytecode
+cache; this is a split receipt, not a fabricated single clean full-gate run.
+The following gates passed 173 source-audit (5.17 s), 36 documentation (4.24 s)
+and eight tooling cases (7.910 s). No exclusions.
+
+The actual immutable-cache comparison retained 80 rows: 15 matched full/angular
+pairs (30 SDK directions) and 65 unavailable-pair rows. All accepted solution
+and source identities remained unchanged. Maximum signed/separation residual
+was `1.6653345369377348e-16` rad; maximum independent spherical chord residual
+was `8.959779580913775e-16`. The [audit receipt](kernel_migration_audit_v1.md#k4b05-finite-perspective-comparison-2026-10-25)
+retains sample gaps and the report identity. Final documentation-only changes
+need the Mac documentation gate; unchanged numerical/tooling gates need not
+repeat. No population-wide inference, physical-validity threshold or parent
+closure follows from these bounded checks. The coordinate guide and API/source
+map retain their current scientific meaning and ownership.
+
 ### Long-term frame orientation
 
 K4b.04 extends the existing astrometric convention tests and stellar composition

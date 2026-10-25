@@ -1039,3 +1039,137 @@ def test_stellar_no_light_time_reference_detects_motion_fault(motion_source, mon
     with pytest.raises(AssertionError):
         assert dist(actual, expected) <= _NO_LIGHT_TIME_CHORD_TOLERANCE
     provider.close()
+
+
+def stellar_perspective_departure_reference(source, elapsed_years):
+    """Signed full-minus-angular departure; source scalars, no engine rows.
+
+    The two directions share one great circle. The atan2 difference identity
+    avoids subtracting nearby departures and stays finite beyond 90 degrees.
+    Positive is along the source's positive proper-motion bearing. This is a
+    matched nominal-model difference, never a physical error certificate.
+    """
+    from math import atan2, hypot
+    from astropy import units as u
+    speed = (hypot(source['pmra'], source['pmdec']) * u.mas).to_value(u.rad)
+    radial_rate = (source['radial_velocity'] * u.km/u.s *
+                   source['parallax'] * u.mas/u.au).to_value(
+                       1/u.yr, equivalencies=u.dimensionless_angles())
+    tangent = speed * elapsed_years
+    radial = radial_rate * elapsed_years
+    return atan2(-tangent * radial, 1 + radial + tangent*tangent)
+
+
+_PERSPECTIVE_CASES = _NO_LIGHT_TIME_CASES + [
+    dict(ra=359.999, dec=89.999999, parallax=600., pmra=4000.,
+         pmdec=-2000., radial_velocity=-600.),
+    dict(ra=12., dec=-90., parallax=600., pmra=-4000.,
+         pmdec=2000., radial_velocity=600.),
+    dict(ra=211., dec=32., parallax=50., pmra=3000.,
+         pmdec=-2000., radial_velocity=0.),
+]
+
+
+@pytest.mark.parametrize('parameters', _PERSPECTIVE_CASES)
+def test_stellar_finite_perspective_comparison(motion_source, parameters):
+    """Protect comparing a local RV derivative as a finite model difference.
+
+    The closest oracle test above checks each model independently. Here both
+    SDK batches must represent the same source/epoch/HIP; their measured
+    separation and orientation must match a scalar difference expression.
+    """
+    from contextlib import ExitStack
+    from math import atan2, cos, dist, fsum, hypot, radians, sin
+    from wenu_kernel.records import ObjectKey, TimeSpan
+    span = TimeSpan(TimePoint(-2000000, 0, 'tcb'), TimePoint(7000000, 0, 'tcb'))
+    source = motion_source(parameters)
+    original = (source.products, source.manifest)
+    full, fp, fq = stellar_motion_case(source, coverage=span)
+    angular, ap, aq = stellar_angular_case(source, coverage=span)
+    records = (full.to_record(), angular.to_record())
+    epoch = full.rows[0].source_epoch
+    assert epoch == angular.rows[0].source_epoch
+    years = (0, -1000, 1000, -10000, 10000)
+    times = tuple(TimePoint(epoch.jd1 + year*1461//4, epoch.jd2, 'tcb')
+                  for year in years)
+    target = (ObjectKey('hipparcos:1'),)
+    fq, aq = (replace(q, objects=target, times=times) for q in (fq, aq))
+    assert fq.model != aq.model and fq.reference != aq.reference
+    assert fp.catalogue(fq.catalogue).objects[0].external_ids == ap.catalogue(aq.catalogue).objects[0].external_ids
+    with ExitStack() as stack:
+        batches = []
+        for provider, query in ((fp, fq), (ap, aq)):
+            kernel = stack.enter_context(Kernel(references=(query.reference,)))
+            kernel.register(provider, ownership='owned')
+            session = stack.enter_context(kernel.open_session(SessionPolicy((query.catalogue,))))
+            batches.append(session.evaluate(query))
+    def cross(a, b):
+        return (a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0])
+    ra, dec = radians(parameters['ra']), radians(parameters['dec'])
+    east = (-sin(ra), cos(ra), 0.)
+    north = (-sin(dec)*cos(ra), -sin(dec)*sin(ra), cos(dec))
+    speed = hypot(parameters['pmra'], parameters['pmdec'])
+    tangent = tuple((parameters['pmra']*a + parameters['pmdec']*d)/speed
+                    for a, d in zip(east, north)) if speed else east
+    origin = (cos(dec)*cos(ra), cos(dec)*sin(ra), sin(dec))
+    normal = cross(origin, tangent)
+    for fs, angular_state, year, time in zip(*[b.states for b in batches], years, times, strict=True):
+        assert fs.object_key == angular_state.object_key == target[0]
+        for state, query in ((fs, fq), (angular_state, aq)):
+            assert state.source_epoch == epoch and state.time == state.anchor_time == time
+            assert state.reference == query.reference
+            assert state.evidence.measurement.status == state.evidence.physical_model.status == 'not_evaluated'
+        fv, av = fs.vector, angular_state.vector
+        dot = fsum(a*b for a, b in zip(fv, av))
+        separation = atan2(hypot(*cross(av, fv)), dot)
+        signed = atan2(fsum(a*b for a, b in zip(cross(av, fv), normal)), dot)
+        expected = stellar_perspective_departure_reference(parameters, year)
+        assert abs(separation - abs(expected)) <= _NO_LIGHT_TIME_CHORD_TOLERANCE
+        assert abs(signed - expected) <= _NO_LIGHT_TIME_CHORD_TOLERANCE
+        # Reuse the accepted separate spherical expression as a second check;
+        # it does not read SI rows or share the scalar difference identity.
+        for vector, angular_model in ((fv, False), (av, True)):
+            assert dist(vector, stellar_no_light_time_reference(parameters, year,
+                        angular=angular_model)) <= _NO_LIGHT_TIME_CHORD_TOLERANCE
+        if not year or not speed or not parameters['radial_velocity']:
+            assert separation <= _NO_LIGHT_TIME_CHORD_TOLERANCE
+        else:
+            assert signed * parameters['radial_velocity'] < 0
+        if abs(parameters['radial_velocity']) == 600 and abs(year) == 10000:
+            # These constructed cases pass the full trajectory's 90-degree
+            # departure on one time side. A local derivative cannot replace it.
+            assert separation > .1
+    assert (source.products, source.manifest) == original
+    assert (full.to_record(), angular.to_record()) == records
+
+
+def test_stellar_perspective_pair_preserves_gaps_and_domain_refusal(motion_source):
+    """A successful pair must not authorize full states for angular-only HIPs."""
+    from contextlib import ExitStack
+    from wenu_kernel.errors import OutsideCoverage
+    from wenu_kernel.records import ObjectKey
+    source = motion_source()
+    full, fp, fq = stellar_motion_case(source)
+    angular, ap, aq = stellar_angular_case(source, coverage=full.coverage)
+    assert len(full.rows) == len(angular.rows) == 9
+    common = tuple(key for key in fq.objects if key in aq.objects)
+    assert common == (ObjectKey('hipparcos:1'), ObjectKey('hipparcos:6'))
+    assert full.rows[1].unavailable_reason == 'missing_gaia_radial_velocity'
+    assert angular.rows[1].unavailable_reason is None
+    with ExitStack() as stack:
+        for provider, query in ((fp, fq), (ap, aq)):
+            kernel = stack.enter_context(Kernel(references=(query.reference,)))
+            kernel.register(provider, ownership='owned')
+            session = stack.enter_context(kernel.open_session(SessionPolicy((query.catalogue,))))
+            paired = replace(query, objects=common)
+            baseline = session.evaluate(paired)
+            gap = replace(query, objects=(ObjectKey('hipparcos:2'),))
+            if provider is fp:
+                with pytest.raises(UnsupportedCapability):
+                    session.evaluate(gap)
+            else:
+                assert session.evaluate(gap).states[0].object_key == gap.objects[0]
+            outside = replace(paired, times=(TimePoint(full.coverage.stop.jd1+1, 0, 'tcb'),))
+            with pytest.raises(OutsideCoverage):
+                session.evaluate(outside)
+            assert session.evaluate(paired) == baseline

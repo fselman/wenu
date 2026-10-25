@@ -1,5 +1,145 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.05 finite perspective comparison, 2026-10-25
+
+Fernando selected the previously proposed bounded comparison with "Proceed"
+and confirmed clean synchronized Mac main
+`2d5e911f336caff7d960c19b2134b67786b0353d`. Roadmap selection preceded
+executable work at `d0b805b1823e94b77e83f3dba7f030ff8c97f76b`.
+
+### As-is assessment and comparison method
+
+The existing `stellar_state.py` full and angular admissions share source Gaia
+position/PM/epoch facts and the shared affine engine. Full motion uses a positive
+reciprocal-parallax distance and spectroscopic-RV proxy; angular motion omits
+radial perspective. Existing tests independently verify each against the
+spherical no-light-time expression, but did not measure their finite paired
+omission effect. No production correction is needed for this comparison.
+
+Let `t` be elapsed TCB Julian years, `mu` the nonnegative total angular PM in
+radians per Julian year, and `k` the nominal radial rate `RV * parallax / au`
+in reciprocal Julian years with consistent units. Full departure along the
+positive PM bearing is `atan2(mu*t, 1+k*t)`; angular departure is
+`atan2(mu*t, 1)`. Their signed principal difference can independently be written
+`atan2(-mu*k*t*t, 1+k*t+(mu*t)**2)`. This avoids subtracting nearby angles and
+keeps the correct branch beyond 90 degrees. Its absolute value is the finite
+great-circle separation. The sign is full minus angular along the source's
+positive PM bearing, not an RA/Dec offset. No physical accuracy follows.
+
+The new test-only scalar helper lives with the existing spherical oracle in
+`tests/test_stellar_state.py`; no new runtime API/report mode or test owner is
+introduced. Ten constructed pairs exercise actual SDK sessions at source and
++/-1,000 and +/-10,000 years (100 directions total). They compare unsigned
+separation from cross/dot products and signed orientation about the source
+motion-plane normal with the scalar expression and retain the separate spherical
+vector check. Source-epoch/zero-RV/zero-PM limits, both signs, RA wrap and poles,
+strongly nonlinear approach/recession, immutable source/admission data, distinct
+model/reference identity and unknown measurement/physical errors are explicit.
+One additional SDK seam verifies retained gaps, common-object selection and
+unavailable/domain refusal after success.
+
+### Verification and actual Mac cache receipt
+
+All eleven new cases pass locally. Replacing the finite effect with a local
+zero-RV derivative and independently dropping full radial motion each caused
+seven comparison failures; both faults were restored. The three zero-effect
+cases stayed passing as expected. Existing Decimal, spherical, cone, source and
+cold-isolation tests are retained, not duplicated. The combined stellar/shared-core/cluster and source-audit run passed 515
+cases and nine subtests in 4.25 s, with three unchanged full-application
+composition cases deselected because this partial checkout lacks those owners:
+`test_catalogue_metadata_controls_kernel_and_all_native_outputs`,
+`test_catalogue_source_identity_checked_before_publication` and
+`test_cluster_admission_preserves_all_source_rows_masks_and_immutable_metadata`.
+The complete Mac receipt below subsequently covers the three unavailable
+application-composition cases without exclusions. Four closest documentation
+checks and six available tooling cases passed locally; the two repository-wide
+tooling selections were subsequently included in the complete Mac tooling run. No full SDK,
+installation, catalogue acquisition or product run is repeated for this test-only
+change. All 681 relative links and 186 fragments across 38 active documents
+resolve against the full GitHub tree and actual Markdown targets.
+
+**Actual Mac verification at `04e27e77a513b95c7ebd54e5a2eef1e66de75499`,
+PR #339:** the first focused run passed 344 cases and nine subtests in
+12.98 s, failing only the existing `inspect.getsource(mixed_provider)`
+cold-isolation check. Its cached code referenced the retired Dropbox checkout,
+although the current checkout was `/Users/fselman/Developer/wenu`.
+The same unchanged failed case passed alone in 5.22 s using a fresh temporary
+`PYTHONPYCACHEPREFIX`. Together these cover all 345 focused cases and nine
+subtests, with no exclusions; no single fully passing 345-case run is claimed.
+Subsequent complete gates passed 173 source-audit cases in 5.17 s,
+36 documentation in 4.24 s and eight tooling cases in 7.910 s.
+The task branch was clean and synchronized after the checks and actual report.
+
+**Actual immutable-cache run:** the validated source manifest remained
+`8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365`.
+All sixteen original sample HIPs remain across 80 HIP/epoch rows at source
+and +/-1,000 and +/-10,000 TCB Julian years. Common full/angular availability
+is exactly HIP 59774, 87937 and 57939: 15 paired rows, evaluated as 30 SDK
+directions. The other 65 rows retain explicit pair gaps. Full availability
+is three, with six missing associations, five Gaia position-only solutions
+and two missing Gaia RVs. Gaia angular availability is five, with six missing
+associations and five position-only solutions; Hip2 fallback availability is
+eleven, deferring five entries to available Gaia angular models. Hip2 is not
+substituted into any full/angular comparison, and no missing RV is assigned.
+
+Unsigned model separations below are arcseconds. The signed full-minus-angular
+departures are positive for every nonzero entry in this actual sample; this is
+an observed sample result, not a sign convention imposed on all stars.
+
+| HIP | -1,000 yr | +1,000 yr | -10,000 yr | +10,000 yr |
+|---|---:|---:|---:|---:|
+| 59774 | 0.0532424820 | 0.0532969137 | 5.2997575499 | 5.3541878164 |
+| 87937 | 603.4412779736 | 682.7187802435 | 34000.3377578619 | 93916.8041368476 |
+| 57939 | 76.2868680167 | 77.9714977967 | 6292.9785700039 | 7657.1856328879 |
+
+Source-epoch differences round to zero at the displayed precision.
+At +10,000 years, the latter two separations are about 26.0880 and 2.1270
+degrees. Thus a small local hypothetical-RV derivative is not a substitute for
+a finite remote-epoch model comparison. These are differences of two nominal
+models with the same captured inputs, not measured physical errors or an
+inferred universal angular-model lookback limit.
+
+Maximum unsigned separation and signed-departure residuals against the
+independent scalar expression are both `1.6653345369377348e-16` rad.
+The maximum separate spherical-reference vector-chord residual is
+`8.959779580913775e-16`. All are below the conditioned `5e-14`
+reference threshold; measurement and physical-model evidence remain unknown.
+
+The recipe verified unchanged on-disk source bytes, detached admission records,
+imported implementation/SDK identities against the tested checkout and all three
+accepted solution digests:
+
+- Full Gaia SI: `032f76e398eadf136fd9aa59a3c2b3a66d4dc25d9da74bc995b4bdb6088cfe8f`.
+- Gaia angular: `6d3e46ff0aa8bd707ea4b8f169b55fdd41c3bc85d65250d7a801c541ebb38602`.
+- Hip2 angular: `b5b6cfe20919eec5c815f50b348b55579e2b2631e8f0510be201d874e85875c1`.
+
+The no-clobber report is outside the repository at
+`~/wenu-output/stellar_perspective_comparison_v1`. Products are
+`perspective_rows_v1.jsonl`, `perspective_sources_v1.json`,
+`perspective_summary_v1.json` and `perspective_recipe_v1.py`;
+`perspective_manifest_v1.json` was written last. Completion-manifest SHA256:
+`f446893384eda80257fb77c54e0fb3e96b4a3be8044e83caad2b50f0540b8533`.
+Executed versioned recipe SHA256:
+`c1d254c68e6f6803ca332d912d217d99c4b37748ffe15e3e6449d8966146fbde`.
+The receipt ended `CACHED PERSPECTIVE COMPARISON COMPLETE` and
+`source_and_models_unchanged=true`.
+
+Before handoff, a separate explicitly synthetic recipe run verified 45
+constructed HIP/epoch rows (ten pairs, 35 gaps), product hashes and no-clobber;
+wrong source-manifest identity, changed solution identity and a deliberately
+wrong independent reference each refused before publication. Those synthetic
+publication checks are distinct from the actual 80-row Mac receipt.
+Only final documentation-receipt acceptance and PR review remain for this
+bounded comparison; no parent closure or subsequent runtime task is implied.
+
+Source and production model identities, coordinate guide, source map and API
+reference remain current and unchanged. The earlier closure matrix below remains
+historical evidence for the parent; its proposed finite comparison is now
+selected by the dated roadmap section. ESA execution, physical epoch/error
+qualification, binaries, issues #326/#333, K4b.05 parent closure and K4b.06
+adoption remain separate. No acquisition, new physical model, policy, dependency,
+package, default or consumer change is part of this slice.
+
 ## K4b.05 bounded closure review, 2026-10-24
 
 **Decision:** K4b.05 remains open. Its completed bounded numerical and diagnostic
@@ -148,8 +288,7 @@ Fernando subsequently ran the complete Mac documentation gate at
 3.56 s. The task working tree was clean and synchronized, and the diff check
 passed. Background Git auto-packing separately reported bad refs for
 conflict-named files under `.git/logs`; this receipt does not establish local
-Git metadata integrity or resolve those errors. PR #338 awaits a separate
-explicit merge request; K4b.05 remains open.
+Git metadata integrity or resolve those errors. PR #338 was subsequently merged at `2d5e911f`; K4b.05 remains open.
 
 
 ## K4b.05 real-cache Hip2 time-convention sensitivity, 2026-10-24

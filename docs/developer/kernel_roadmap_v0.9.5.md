@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 96, 2026-10-24. **Status:** PR #337 is merged at `3506bb23`; Fernando confirmed clean synchronized Mac main, local/remote branch cleanup and 36 documentation tests in 3.17 s. He selected the bounded K4b.05 closure review with “Proceed”: reconcile agreed requirements with accepted evidence and remaining gaps, and propose the next concrete gate. The evidence review is documented: bounded numerical/diagnostic results are complete, while ESA execution and parent-level physical/model qualification remain open. A finite perspective-omission comparison is proposed only; complete Mac documentation acceptance at `c4f131a6` passed 36 tests in 3.56 s, with a clean synchronized task working tree. PR #338 awaits a separate explicit merge request. No parent closure, new science, consumer adoption or change of agreed order is authorized.
+**Plan revision:** 98, 2026-10-25. **Status:** PR #338 is merged at `2d5e911f336caff7d960c19b2134b67786b0353d`. Fernando selected the bounded K4b.05 finite perspective-omission comparison with “Proceed” and confirmed clean synchronized Mac main at that exact base. The bounded comparison now has actual Mac evidence at `04e27e77`: 345 focused cases/nine subtests across the original run and a fresh-cache retry, 173 source-audit, 36 documentation and eight tooling cases; the immutable-cache report retains 80 rows, 15 pairs and 65 gaps with unchanged source/model identities. Final documentation-receipt acceptance and PR #339 review remain pending. K4b.05 parent qualification, ESA execution and K4b.06 adoption remain separate.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,9 +46,8 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `3506bb2309d29ae3be6f443f9debeb4843e13cc5`,
-confirmed clean/synchronized on the Mac on 2026-10-24 after PR #337 merge,
-local/remote task-branch cleanup and 36 documentation tests in 3.17 s.
+**Current accepted base:** main `2d5e911f336caff7d960c19b2134b67786b0353d`,
+confirmed clean/synchronized on the Mac on 2026-10-25 after PR #338 merge.
 The following K3/K4a receipts
 remain historical acceptance evidence rather than the current checkout.
 K4a.01 is accepted through PR #315 after 35 focused cases/nine subtests,
@@ -66,8 +65,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.05 closure review reconciles accepted evidence and remaining source/physical/ESA gaps; parent remains open and existing nominal capabilities are preserved |
-| Next bounded submilestone | PR #338 review and separately authorized merge/cleanup; Mac documentation acceptance passed 36 tests in 3.56 s at c4f131a6. Finite perspective-omission comparison is a proposed candidate only; no runtime or K4b.06 adoption is selected |
+| Current bounded result | K4b.05 finite comparison has synthetic fault-detection evidence, 345 focused cases/nine subtests via split Mac receipt, complete audit/documentation/tooling gates and an actual 80-row cache report; source and models unchanged; parent remains open |
+| Next bounded submilestone | Final Mac documentation-receipt check and PR #339 review; no next runtime item or K4b.06 adoption selected |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -80,6 +79,56 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4b.05: finite perspective-omission comparison
+
+Fernando selected the previously proposed bounded comparison with "Proceed"
+on 2026-10-25, then confirmed clean synchronized Mac main
+`2d5e911f336caff7d960c19b2134b67786b0353d`.
+Compare existing full and angular Gaia models on the retained sixteen-HIP
+PR #330 review set. Recheck availability against the same validated source
+manifest `8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365`;
+preserve all sample members, original identities, missing-input reasons and
+accepted full/angular/Hip2 solution digests. The previous common full/angular
+subset was HIP 59774, 87937 and 57939; it is evidence to recheck, not permission
+to invent RV or substitute a catalogue.
+
+Evaluate matched native ICRS directions through actual SDK sessions at source
+epoch and elapsed +/-1,000 and +/-10,000 TCB Julian years within both admitted
+domains. Independently express the signed no-light-time departure difference
+and finite separation. Report each HIP/epoch and actual gaps, source/code/model
+identities and numerical residuals in a versioned no-clobber report outside the
+repository. This RV-selected sample does not establish population statistics,
+physical ground truth, an RV prior or a physical-error/validity bound.
+
+Acceptance: extend the existing stellar test owner only for the new comparison
+faults: source-epoch and synthetic zero-RV limits, both RV signs, finite nonlinear
+differences, pole/wrap geometry, SDK returned states, identity preservation and
+domain/unavailable refusal. Retain existing independent spherical/Decimal/cone
+and cold-isolation coverage rather than duplicate it. Use the existing
+`stellar-motion-provider`, `gaia-crossmatch-audit`, documentation and tooling
+gates as applicable; actual manifest-bound Mac cache receipt and complete Mac
+documentation acceptance remain required. Document as-is findings and outcomes
+in the existing migration audit.
+
+No production model/API/default change, acquisition, new dependency/package/
+report mode/test owner, covariance or dynamics policy, ESA comparison, issue
+closure, parent closure or K4b.06 consumer adoption. This roadmap selection
+precedes executable comparison work at `d0b805b1`.
+
+Local comparison/regression evidence: eleven new cases pass; two independent
+faults each fail seven finite-comparison cases and are restored. Combined existing
+owners pass 515 cases/nine subtests with three unchanged application-composition
+cases unavailable in the partial checkout. Four closest documentation and six
+available tooling checks pass. Complete Mac evidence at `04e27e77` now covers
+345 focused cases/nine subtests (344 passed initially; the unchanged isolation
+case passed in a fresh-cache retry), 173 source-audit, 36 documentation and
+eight tooling cases. The actual manifest-bound cache report retains 80 rows,
+15 full/angular pairs and 65 explicit gaps, preserving all source/model digests.
+Maximum signed/separation residual is `1.6653345369377348e-16` rad and maximum
+spherical chord residual is `8.959779580913775e-16`; physical accuracy remains
+unknown. Final documentation-receipt acceptance and PR #339 review are pending;
+no subsequent runtime item is selected. See the [bounded evidence](kernel_migration_audit_v1.md#k4b05-finite-perspective-comparison-2026-10-25).
 
 ## K4b.05: bounded closure review
 
@@ -111,7 +160,8 @@ The [evidence matrix and next-gate proposal](kernel_migration_audit_v1.md#k4b05-
 are now documented. No parent closure or further task selection is implied;
 complete Mac documentation acceptance at `c4f131a6c8d031dafbc0d508b1eaa96c0451ae10`
 passed 36 tests in 3.56 s, with clean synchronized task working tree and
-successful diff check. PR #338 awaits a separate explicit merge request.
+successful diff check. PR #338 was subsequently merged at `2d5e911f`; clean synchronized Mac main
+was confirmed on 2026-10-25.
 
 ## K4b.05: real-cache Hip2 time-convention sensitivity assessment
 

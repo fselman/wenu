@@ -9,8 +9,13 @@ contracts below. Numerical reuse bounds, conditional formal covariance and
 hypothetical convention/RV sensitivities do not supply total physical error
 or a physical lookback interval. Source issues #326/#333 remain open for
 their respective claims; no conversion, covariance repair, prior, binary veto
-or new model is admitted. The finite perspective comparison is a proposal,
-not a selected task or a new implicit prerequisite. K4b.06 remains separate.
+or new model is admitted. The bounded finite perspective comparison was selected on 2026-10-25. It
+compares two existing nominal models with matched inputs, not a model against
+physical truth. The [actual sixteen-HIP receipt](kernel_migration_audit_v1.md#k4b05-finite-perspective-comparison-2026-10-25)
+now records 15 matched pairs, 65 explicit gaps and unchanged source/model
+identities. Large finite differences in some stars do not set a universal
+lookback cutoff, validate either model physically or admit an error bound.
+K4b.06 remains separate.
 
 ## Hipparcos-2 time-convention qualification
 
