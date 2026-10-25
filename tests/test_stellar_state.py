@@ -1173,4 +1173,3 @@ def test_stellar_perspective_pair_preserves_gaps_and_domain_refusal(motion_sourc
             with pytest.raises(OutsideCoverage):
                 session.evaluate(outside)
             assert session.evaluate(paired) == baseline
-
