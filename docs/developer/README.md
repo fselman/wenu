@@ -1,16 +1,18 @@
 # Wenu developer documentation
 
-## K4b.05 closure review
+## K4b.05 finite perspective comparison
 
-The [closure evidence matrix](kernel_migration_audit_v1.md#k4b05-bounded-closure-review-2026-10-24)
-reconciles current owners, tests, accepted receipts and remaining requirements
-at clean synchronized Mac main `3506bb23`. Numerical propagation and bounded
-diagnostic work are complete; ESA execution and physical-model/source
-qualification remain open. A finite full-versus-angular perspective comparison
-is proposed only. No new science/error policy, parent closure or K4b.06
-adoption is selected. Complete Mac documentation acceptance at `c4f131a6`
-passed all 36 tests in 3.56 s; the task working tree is clean and synchronized.
-PR #338 awaits a separate explicit merge request.
+Fernando selected the [finite full-versus-angular comparison](kernel_roadmap_v0.9.5.md#k4b05-finite-perspective-omission-comparison)
+on 2026-10-25 after PR #338 merge and confirmed clean synchronized Mac main
+`2d5e911f`. Eleven constructed comparison/SDK seam cases pass locally; a
+local derivative substitution and dropped radial motion each fail the new
+comparison. See the [method and bounded evidence](kernel_migration_audit_v1.md#k4b05-finite-perspective-comparison-2026-10-25).
+Actual sixteen-HIP cache execution and complete Mac acceptance remain pending.
+K4b.05 parent physical/source/ESA qualification and K4b.06 adoption remain open.
+
+The previous [closure evidence matrix](kernel_migration_audit_v1.md#k4b05-bounded-closure-review-2026-10-24)
+remains the parent requirement ledger. PR #338 is merged at `2d5e911f`;
+36 post-merge documentation tests and the editable installation were confirmed.
 
 ## Real-cache Hipparcos-2 time sensitivity
 

@@ -65,7 +65,7 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.05 closure review reconciles accepted evidence and remaining source/physical/ESA gaps; parent remains open and existing nominal capabilities are preserved |
+| Current bounded result | K4b.05 finite comparison adds eleven passing synthetic/SDK seam cases and independently detected finite-derivative/radial-omission faults; actual cache receipt and complete Mac acceptance pending; parent remains open |
 | Next bounded submilestone | Selected K4b.05 finite perspective-omission comparison below; existing models and sixteen-HIP set only. Actual cache receipt and focused Mac acceptance pending; K4b.06 adoption remains separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
@@ -114,7 +114,14 @@ in the existing migration audit.
 No production model/API/default change, acquisition, new dependency/package/
 report mode/test owner, covariance or dynamics policy, ESA comparison, issue
 closure, parent closure or K4b.06 consumer adoption. This roadmap selection
-precedes executable comparison work.
+precedes executable comparison work at `d0b805b1`.
+
+Local comparison/regression evidence: eleven new cases pass; two independent
+faults each fail seven finite-comparison cases and are restored. Combined existing
+owners pass 515 cases/nine subtests with three unchanged application-composition
+cases unavailable in the partial checkout. Four closest documentation and six
+available tooling checks pass; full Mac gates and actual sixteen-HIP cache
+execution remain pending. See the [bounded evidence](kernel_migration_audit_v1.md#k4b05-finite-perspective-comparison-2026-10-25).
 
 ## K4b.05: bounded closure review
 
@@ -146,7 +153,8 @@ The [evidence matrix and next-gate proposal](kernel_migration_audit_v1.md#k4b05-
 are now documented. No parent closure or further task selection is implied;
 complete Mac documentation acceptance at `c4f131a6c8d031dafbc0d508b1eaa96c0451ae10`
 passed 36 tests in 3.56 s, with clean synchronized task working tree and
-successful diff check. PR #338 awaits a separate explicit merge request.
+successful diff check. PR #338 was subsequently merged at `2d5e911f`; clean synchronized Mac main
+was confirmed on 2026-10-25.
 
 ## K4b.05: real-cache Hip2 time-convention sensitivity assessment
 

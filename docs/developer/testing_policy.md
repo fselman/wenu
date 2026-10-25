@@ -276,6 +276,34 @@ The complete sample IDs, gaps and immutable source digest are retained in the
 existing audit. This is numerical-model comparison only; physical/covariance/
 dynamical uncertainty and ESA numerical reproduction remain open.
 
+### Finite full-versus-angular perspective comparison
+
+The existing stellar owner adds eleven cases: ten explicitly synthetic matched
+input pairs and one SDK gap/domain seam. Each pair evaluates both models at
+source and +/-1,000 and +/-10,000 TCB Julian years. Great-circle separations
+and their orientation are measured from the actual SDK returned vectors and
+compared with an independent scalar atan2 departure-difference identity.
+The accepted separate spherical reference remains a second check. Cases cover
+both RV/time signs, zero RV with nonzero PM, zero PM, exact/near poles, RA wrap
+and strongly nonlinear trajectories beyond a 90-degree departure. The seam
+retains angular-only HIPs, refuses unavailable full states and out-of-domain
+queries after success, and verifies successful queries still work afterward.
+Source/epoch/model/reference/external-ID and unknown-error meanings are checked.
+
+Two deliberate faults were independently applied and restored: replacing the
+finite expression with the local zero-RV derivative and dropping radial motion
+from the full affine coefficients. Each failed seven of the ten comparison
+cases (three zero-effect cases correctly stayed passing). All eleven new cases
+passed after restoration. The numerical tolerance is the existing conditioned
+`5e-14` reference threshold, not a physical-error certificate.
+
+Use existing `stellar-motion-provider`, `gaia-crossmatch-audit`, documentation
+and tooling gates. Production/source/SDK bytes and gate selections are unchanged.
+Complete Mac gates and the separate immutable sixteen-HIP cache receipt remain
+required. No population-wide inference, physical-validity threshold or parent
+closure follows from these constructed tests. The coordinate guide and API/source
+map retain their current scientific meaning and ownership.
+
 ### Long-term frame orientation
 
 K4b.04 extends the existing astrometric convention tests and stellar composition
