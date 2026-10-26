@@ -1,5 +1,19 @@
 # Wenu developer documentation
 
+## K4b.05 literature-figure comparison
+
+After PR #341 merge/cleanup and confirmed clean synchronized Mac main
+`2d34779b`, Fernando selected the
+[bounded literature comparison](kernel_roadmap_v0.9.5.md#k4b05-literature-figure-visual-comparison)
+before closure review. The
+[source/figure preparation record](kernel_migration_audit_v1.md#k4b05-literature-figure-comparison-preparation-2026-10-26)
+identifies Antonello's ancient Orion/Bears figures and Kaler's 1998/page 68
+Lowell-credited +250,000-year Dipper illustration. Attributed source figures,
+extraction provenance and an offline nominal SDK recipe are delivered outside
+the repository. Constructed-input checks pass; actual Mac cache run and visual
+assessment remain pending. No production/default, physical bound, parent closure
+or K4b.06 adoption changes.
+
 ## K4b.05 native-ICRS qualitative diagnostic
 
 Fernando approved the [explicit diagnostic epochs](kernel_roadmap_v0.9.5.md#k4b05-native-icrs-qualitative-esa-diagnostic)
@@ -14,7 +28,8 @@ v2 replot corrects it and labels the combined seven-star figures explicitly.
 Both supplied v2 plots and ESA reference media were viewed. Broad pattern
 changes are visible, but detailed ESA trajectory agreement is inconclusive
 because source/epoch/viewpoint matching remains unresolved. Final documentation
-and v2 product-integrity acceptance remain pending. No production model/default,
+passed 36 Mac cases in 3.76 s; both reports/reviewed-image identities passed
+without repeated propagation. PR #341 merge and cleanup were confirmed. No production model/default,
 physical-accuracy claim, K4b.05 parent closure or K4b.06 adoption changes.
 
 ## K4b.05 ESA comparison assessment
@@ -523,3 +538,4 @@ and [focused audit gate](testing_policy.md#consumer-reconciliation-gate).
 K3.40 is accepted through PR #313 after 25 focused, 36 documentation and eight
 tooling Mac cases. Fernando completed the six-product review and selected K4a.01;
 SDK freeze and astronomical package extraction remain later.
+

@@ -122,7 +122,11 @@ No fabricated historical positions, new catalogue acquisition, RV prior, source
 repair, binary/lifetime model, Earth/observer reconstruction, public consumer
 adoption, K4b.05 closure or K4b.06 activation. Source lookup and preparation may
 proceed before Mac execution; actual-cache outputs are pending until observed.
-Commit this plan before executable recipe work.
+The [preparation record](kernel_migration_audit_v1.md#k4b05-literature-figure-comparison-preparation-2026-10-26)
+records source figures, identities, synthetic checks and remaining comparison
+limits. Actual immutable-cache execution and visual assessment remain pending.
+Plan committed before executable recipe work at
+`734aed0acb50a635f238a16fc490840d01f54510`.
 
 ## K4b.05: native-ICRS qualitative ESA diagnostic
 
@@ -174,7 +178,9 @@ corrects it without propagation and labels the complete diagnostic figures.
 Both supplied v2 images were inspected against the actually viewed reference
 products. Broad changing-pattern behaviour is present; detailed ESA trajectory
 agreement remains inconclusive because exact source/epoch/viewpoint matching is
-unresolved. Final documentation/v2 product-integrity acceptance is pending.
+unresolved. Final Mac documentation acceptance passed 36 cases in 3.76 s; both reports
+and reviewed-image identities passed without repeated propagation. PR #341
+merged at `2d34779b`; clean synchronized main and cleanup were confirmed.
 Source and production bytes are unchanged; no parent closure is implied.
 
 ## K4b.05: ESA constellation comparison assessment
@@ -2156,3 +2162,4 @@ new Moonlight execution, or broad feature additions during structural migration.
 Current science and appearance remain the baseline except for separately
 reviewed astrometric corrections and bug fixes. Deferred work is retained in
 the archived roadmap and [current scientific limits](scientific_contracts.md).
+
