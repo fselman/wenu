@@ -1,5 +1,18 @@
 # Wenu developer documentation
 
+## K4b.06 production consumer integration definition
+
+After PR #343 merge/cleanup and clean synchronized Mac main `4e78cb9e`,
+Fernando selected the [architecture-focused K4b.06 definition](kernel_roadmap_v0.9.5.md#k4b06-production-integration-scope-definition).
+The [actual-owner assessment and proposed first production slice](kernel_migration_audit_v1.md#k4b06-production-integration-assessment-2026-10-26)
+connect existing motion admissions to public stars/figure/label realization,
+native atlas-sheet requests and shared request lifetime. The proposal preserves
+source membership/names/V, explicit source/model/epoch/gap provenance and the
+canonical projection/preparation/rendering pipeline. Production changes remain
+proposed; only the integration definition is selected. Bright-star source audit
+is deferred to production adoption within K4b.06, not an earlier prerequisite.
+No new source, physical model, package extraction or alternate pipeline.
+
 ## K4b.05 current qualification review
 
 After PR #342 merge/cleanup and clean synchronized Mac main `df4eae36`,
@@ -12,7 +25,8 @@ reconstructions with these limitations** after 36 Mac documentation tests passed
 in 3.65 s at `a8c0dd08`. K4b.05 is closed for that bounded intended use;
 #326/#333 and pending sibling scope remain open. K4b.06 is not activated.
 His bright-star source question does not authorize acquisition or model changes.
-Only the acceptance-status documentation gate remains pending.
+Final acceptance-status Mac documentation passed 36 cases in 3.63 s at
+`2b6c8a6a`; PR #343 merged and clean-main cleanup were confirmed.
 
 ## K4b.05 literature-figure comparison
 

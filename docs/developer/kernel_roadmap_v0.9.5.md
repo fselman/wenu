@@ -115,7 +115,14 @@ replacement astrometry/RV inputs still require their explicit source/admission
 review. Do not make that audit an earlier prerequisite or silently begin it.
 Acceptance here: actual owner/test inspection, architecture/claim/link consistency,
 closest local documentation contracts and the complete Mac documentation gate.
-Record this definition before proposing the new production slice for selection.
+Definition plan committed at `41a85e77502a7118b6bef07d1211beb0fc27fb55`.
+The [as-is assessment and concrete first-slice proposal](kernel_migration_audit_v1.md#k4b06-production-integration-assessment-2026-10-26)
+now identify public stellar/figure/label lookup, native-sheet request and shared
+request-lifetime owners. Proposed: explicit supplied model order/common TCB
+epoch, shared realization, retained IDs/gaps and source membership, opt-in
+native Python sheet integration plus measured workload/ancient specimen checks.
+These production choices remain proposed, not selected; complete Mac documentation
+acceptance and Fernando's slice selection precede runtime work.
 
 ## K4b.05: qualification review after reference comparisons
 
@@ -151,7 +158,9 @@ were reviewed after the complete Mac gate passed 36 tests in 3.65 s at
 `a8c0dd08`. Fernando then said “Accepted as described.” K4b.05 closes for
 nominal reconstruction with those explicit limits; physical accuracy remains
 unqualified, #326/#333 and pending sibling scopes remain open. K4b.06 is not
-activated. The acceptance-status documentation gate remains pending. No repeat of accepted propagation or visual
+activated. The acceptance-status Mac gate at `2b6c8a6a` passed 36 tests in 3.63 s.
+PR #343 merged at `4e78cb9e`; clean synchronized Mac main and local/remote
+cleanup were confirmed. No repeat of accepted propagation or visual
 exports is needed for a documentation-only review.
 
 ## K4b.05: literature-figure visual comparison
@@ -2053,7 +2062,7 @@ remain its separate responsibilities.
 | K4b.03 | Admit explicit historical time/calendar/year-zero/BCE and source/input-date uncertainty semantics | Bounded explicit input/receipt slice passed Mac acceptance in PR #327 at ceeb894b: 257 focused, 125 audit, 36 documentation, eight tooling/81 subtests and 24 actual historical states. No implicit civil-clock/TT-to-TCB/observer reconstruction or total uncertainty claim |
 | K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Bounded explicit long-term mean-axis slice passed Mac acceptance in PR #328 at 97921fe8; 48 actual derived directions, finite TT domain and unknown physical/total error. No observer/EOP reconstruction or chart/default adoption |
 | K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references; include ESA Orion and Ursa Major reconstruction comparisons with documented input/method and independence limits | Accepted/closed for nominal reconstruction with explicit documented limits by Fernando on 2026-10-26, after 36 Mac documentation passes in 3.65 s at a8c0dd08. Numerical and bounded comparisons completed; detailed ESA agreement inconclusive, physical accuracy unknown. #326/#333 remain open; no source optimality or consumer adoption claim |
-| K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | Pending K4b closure; K3 stellar/figure/label consumers and accepted science/visual criteria |
+| K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | K4b.05 nominal-use qualification accepted. As-is integration definition selected; first opt-in native stellar/figure/label + atlas-sheet slice proposed, not runtime-authorized. Remaining sibling/product/worker/CLI gates stay explicit; bright-star audit deferred to production adoption within this stage |
 
 ### K5–K9: freeze, extraction and release
 

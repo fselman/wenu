@@ -1,5 +1,193 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.06 production integration assessment, 2026-10-26
+
+**Selected work:** define the first production consumer slice after K4b.05
+nominal-use acceptance, not another propagation-science investigation.
+Fernando confirmed clean synchronized Mac main
+`4e78cb9e76def88b069f837338d336ab7095253c`, PR #343 merge and local/remote
+cleanup, then said "Proceed." His instruction places the bright-star audit
+within production integration and keeps architecture migration central.
+The definition plan was committed at `41a85e77502a7118b6bef07d1211beb0fc27fb55`
+before this proposal. **Production implementation below is proposed, not selected.**
+
+### As-is assessment: existing owners and the missing connection
+
+All paths below were read from the current GitHub base. The existing source
+codec, motion admissions, SDK, spherical/projection services and renderer remain
+their respective owners; there is no reason for another astrometric engine or
+an alternate rendering pipeline.
+
+| Existing owner / public seam | Current implemented behavior | Missing connection for propagated stars |
+|---|---|---|
+| `stellar_state.py` | Immutable full Gaia, Gaia angular and nominal-TCB Hip2 admissions/providers over `astrometric_state.py`; finite domains, source identity, availability and SDK queries already tested | Production request-owned selection/lifetime over these already admitted models; no new propagation arithmetic |
+| `objects/stars.py::position` | Source-native selected positions; the compatibility `instant` argument is explicitly ignored | An explicitly opted-in propagated public path; passing an old compatibility date alone must not silently change behavior |
+| `objects/stars.py::native_positions` | Full-source or sparse HIP lookup, independent of marker magnitude selection; retains source order, IDs/metadata and NaNs through real kernel lookup | Same public source/selection semantics at a common requested epoch, using the motion request rather than source-epoch lookup |
+| `Stars.realize` | Native ICRS uses `_native_catalogue_coordinates`, whose `native_stellar_states` call still returns unpropagated source directions; observed route remains separate | Propagated values must enter this same spherical point geometry before existing projection/preparation/rendering |
+| `sky/constellation_lines.py` | Native figure geometry calls public `stars.native_positions(self.star_ids)`; faint vertices, curated HIP edges, warnings and order are independent of marker selection | Query the same request/model/time as markers; retain unavailable endpoint/edge behavior without invented connections |
+| `sky/constellation_labels.py` | Calls public full-source native positions, assigns IAU groups and Serpens parts, then computes existing spherical means; faint source stars contribute | Keep source grouping stable, but calculate anchors from available propagated member directions; do not accidentally regroup moving stars into different constellations |
+| `sky/realization.py` and `CelestialSphere.draw_chart` | Immutable layer context can carry an evaluation instant/scale; native guard checks returned geometry reference/time, allowing truthfully static layers with no evaluation instant | Bind participating stellar consumers to the same explicit resolved event. A context date by itself currently does not turn stellar lookup into motion |
+| `charts/atlas_sheet.py` | Public `AtlasSheetChartRequest`/`render_atlas_sheet` already support observer-free fixed-ICRS sheets through canonical chart owners; the render leaf creates a source-native context | A narrow opt-in native-sheet request can carry the motion binding into that existing route |
+| `charts/request_generation.py` | `open_chart_request_scope`/`ChartRequestBuild` own the lease, temporary resources, rollback and cleanup; atlas-sheet execution uses the same owner | Extend that lifetime for a shared stellar realization; do not attach reusable live kernel/session objects to source catalogues or saved skies |
+| Ordinary `ChartRequest`/`request_realization.py` | Current horizontal/Galactic/frozen-ecliptic routes and explicit cluster observer composition | These are broader observer/frame/CLI consumers. They are not an excuse to replace native-sheet rendering or run an unqualified ancient observer model |
+| `sky/native_snapshot.py` | Data-only source snapshots and reconstruction with existing source metadata; no Gaia motion-selection or evaluated-state persistence | Reuse source snapshots with an explicit separate motion request. Never reinterpret an old native snapshot as propagated, or serialize live sessions as catalogue data |
+
+Inspected Git blobs include Stars `a760d09c`, lines `ca97552d`, labels
+`61c4b61c`, layer context `78ba79ef`, sphere `f639334d`, native sheet
+`ec464408`, request lifecycle `109e4f20`, and snapshot `fcfd16bb`.
+The stellar admission blob remains `78e8ab33`, as accepted in K4b.05.
+This is source inspection, not a claimed end-to-end production motion run.
+
+The label distinction is material. Today both membership and anchors come from
+the same source positions. Simply replacing that array by propagated angles
+would change IAU membership/Serpens grouping as stars cross fixed boundaries.
+That would violate the retained membership/name contract. The source grouping
+and epoch-dependent anchor calculation therefore need separate explicit roles.
+
+### Proposed first production slice: shared native-ICRS stellar realization
+
+**Proposed result:** an opt-in Python native-ICRS atlas-sheet request whose
+stellar markers, finite figure endpoints and constellation label anchors
+consume one consistent request-owned realization at one common TCB epoch,
+using the existing motion admissions and canonical Wenu pipeline.
+
+The first slice would cover the following bounded responsibilities:
+
+1. **Explicit inputs and routing.** The caller supplies the validated immutable
+   enrichment source/binding, finite admitted model domains, one common resolved
+   TCB `TimePoint`, and an explicit ordered selection of already admitted
+   direction catalogues. Each HIP uses the first catalogue in that supplied
+   order declaring it available. Full Gaia / Gaia angular / Hip2 is a possible
+   explicit caller order, not a hidden default or a new best-data claim.
+   Validate consistent retained HIP/source/photometry identity across bindings.
+   A model's declared missing-input status may select the next supplied model;
+   an SDK, integrity, epoch/domain or numerical refusal must abort, not trigger
+   fallback to another model or old native coordinates.
+2. **Shared stellar realization and lifetime.** Wenu's stellar adapter owns
+   source/model routing and bridges into actual SDK sessions. The existing
+   request scope owns and closes providers/kernel/sessions on success and
+   failure, borrowing the supplied sky/source appropriately. All three consumers
+   share that realization and its query/reuse identity; no provider/session per
+   star, per line edge, per renderer or style. Generic kernel services gain no
+   Gaia/HIP, chart, catalogue-decoding or naming policy.
+3. **Public positions, identity and gaps.** Extend the public stellar lookup/
+   realization path by explicit opt-in, preserving existing no-motion methods.
+   Return results joined by original HIP identity and source order, never by
+   incidental batch order. Preserve original V photometry, names, components,
+   source records and selection/vertex metadata. Retain unavailable IDs with
+   explicit status/reason and unavailable coordinates; do not publish NaNs as
+   valid kernel states, invent PM/RV, silently paint an old static position or
+   drop objects from the retained source.
+4. **Figures and anchors.** Markers retain existing render-local selection.
+   Figures obtain all needed faint endpoints through the same public realization
+   and preserve curated topology, finite-segment handling and missing-endpoint
+   reporting. Label membership/Serpens partition comes from source-native public
+   identity/geometry; anchor means use available propagated directions of those
+   original groups, with the existing minimum-count/empty rules. Names and
+   membership do not change because an extrapolated star crossed an IAU boundary.
+5. **Canonical product integration.** Add the opt-in binding to the existing
+   native atlas-sheet request/lifecycle and feed its layer context/options through
+   `Stars.realize`, line/label realization and `CelestialSphere.draw_chart`.
+   Projection/domain clipping, preparation, renderer, furniture and export stay
+   in their current owners. Static grids/deep-sky/diffuse layers remain truthfully
+   static; a historical stellar specimen is not a physical evolution model for
+   every layer. Report common epoch, source/model choices, gap counts and unknown
+   physical accuracy without forging one physical model/error bound for mixed rows.
+6. **Isolation and source snapshots.** Preserve current no-motion defaults and
+   source-only snapshot semantics. A restored sky may use an explicitly supplied,
+   validated motion binding; it cannot acquire one implicitly. Initial unsupported
+   worker/transport combinations must refuse before output rather than silently
+   render native stars. Source snapshots do not become evaluated-state snapshots.
+
+This is an assembly/consumer change over admitted services, not a geometry
+protocol, new observer implementation, catalogue replacement, dependency/pin
+change or package extraction. Extend existing responsibility owners. New helpers
+are justified by shared lifecycle/source boundaries, not by “K4b.06” filenames.
+
+### Acceptance proposed for that slice
+
+The closest existing protections are
+`test_native_position_routes_use_returned_kernel_direction_and_propagate_failure`
+in `tests/test_position_providers.py`,
+`test_native_edges_follow_the_same_kernel_results_as_stellar_positions` and
+`test_native_line_geometry_uses_only_the_public_native_id_interface` in
+`tests/test_constellation_geometry.py`,
+`test_native_label_anchors_follow_kernel_results_and_propagate_refusal` in
+`tests/test_constellation_labels.py`, and
+`test_native_epoch_guard_rejects_mismatched_layer_time_before_projection` in
+`tests/test_layer_realization.py`. Existing stellar tests protect names/NaNs/
+selection and immutable source inputs. Request-generation and atlas CLI tests
+already protect supplied-sky leases, failure cleanup and public sheet execution.
+
+Extend those existing owners to detect: returned-state bypass; wrong epoch or
+per-HIP identity/model joins; differences between markers/endpoints/anchors;
+classification changing when a star crosses a boundary; missing faint vertices;
+silently static unavailable stars; fallback after a warm SDK refusal; mutable
+source/selection state; leaked resources; order-dependent repeated requests;
+and source-only saved reconstruction being misrepresented as propagated.
+
+Constructed cases should use distinct epochs, permuted batch order, real model
+availability gaps, failing providers after success and two otherwise identical
+requests sharing one sky. A deliberate bypass of the shared realization in any
+one of stars/lines/labels must fail the public seam test. Keep geometric mean,
+projection and numerical propagation proofs with their existing owners.
+
+Use the actual diff to choose a focused composition of existing
+`native-stellar-routing`, `native-label-routing`, request-lifecycle and
+`atlas-sheet-routing` protections; run independent motion-owner tests only if
+their implementation/contracts change. No wholesale SDK/other-family/full-suite
+rerun or new milestone-specific test file. If the reviewed gate manifest changes,
+include the existing tooling/inventory integrity checks and documentation gate.
+
+Real Mac acceptance should use the already accepted immutable source, a source-
+loaded and restored sky, explicit common J2000 and J-8000 TCB requests (10,000
+nominal Julian years apart, not a recovered civil “today”), and a native sheet
+through the public production request. Inspect geometry and PNG/PDF/SVG outputs
+for common star/edge/anchor epochs, preserved names/photometry, visible gap
+disclosure and unchanged default-page appearance. Keep physical print/classroom
+acceptance separate and avoid a future-date observer/EOP dependency.
+
+Measure admission time, first/second same-epoch query/render time, changed-epoch
+time, queried HIP counts, per-model SDK evaluation/reuse counters and output
+workload separately. Report hardware, source/model/coverage/accuracy identities
+and unavailable counts. Demonstrate reuse within the real request lifetime
+without inventing a speed target or treating a numerical cone as physical error.
+
+### Remaining K4b.06 scope and bright-star audit placement
+
+This first slice would not close K4b.06. Ordinary CLI/TOML historical requests,
+date-oriented mean-axis products, horizontal/observer products, batch/worker/
+saved request transport, broader workload and final ancient atlas specimens
+retain their applicable K4b.06 obligations and existing scientific boundaries.
+Do not promise a normal historical atlas command before its own request,
+consumer, worker and product paths are accepted.
+
+Fernando deferred the bright-star source audit **to production Wenu integration
+within K4b.06**, not to an earlier standalone prerequisite. Perform it when
+reviewing production adoption of the real stellar inputs; no separate audit
+runs in this definition task and no input replacement is implicit. Its eventual
+scope/outputs and any adoption decision must be explicit, with original evidence/
+identity retained. Keep the accepted current source for initial architecture
+wiring and preserve the future ability to supply improved admitted inputs.
+
+K5 still reconciles the complete consumer and science/capability inventory before
+contract freeze. Stellar extraction remains K6 after K5, followed by remaining
+families and release gates. This definition neither freezes the kernel nor
+moves astronomical source policy into generic geometry/services.
+
+### Definition-task verification and decision
+
+Inspected the actual source/test owners and existing gate selections above.
+Local documentation checks passed four cases (11 deselected); the three relative
+links/anchors in the new scope sections resolve. These focused checks do not
+replace complete Mac documentation/archive/public-import acceptance.
+No production/test/source/dependency/schema/default bytes were changed or
+consumer execution claimed. The coordinate guide/API/source map remain current.
+The concrete first-slice routing, gap and request choices above await Fernando's
+selection before production implementation; they are not a hidden approved
+submilestone or a new scientific prerequisite. Complete Mac documentation
+acceptance for this assessment/proposal remains pending.
+
 ## K4b.05 qualification review after reference comparisons, 2026-10-26
 
 **Accepted outcome, 2026-10-26:** Fernando said “Accepted as described” after
@@ -125,8 +313,10 @@ Python syntax, obsolete imports and roadmap diagrams/order. All fifteen local
 links/fragments in the new review/status sections resolve. Full inventory,
 archive and installed-public-import execution require the complete Mac checkout;
 they are not claimed rerun here. The complete Mac review gate at `a8c0dd08`
-subsequently passed 36 tests in 3.65 s. Only the acceptance-status documentation
-edit needs its final Mac documentation gate; no numerical or visual run is repeated.
+subsequently passed 36 tests in 3.65 s. The acceptance-status Mac documentation gate at `2b6c8a6a` passed all 36 cases
+in 3.63 s with clean synchronized task status. PR #343 merged at `4e78cb9e`;
+clean synchronized Mac main and local/remote cleanup were confirmed. No numerical
+or visual run was repeated.
 Prior literature execution and report-integrity receipts remain accepted.
 
 ## K4b.05 literature-figure comparison preparation, 2026-10-26
