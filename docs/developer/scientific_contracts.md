@@ -15,10 +15,13 @@ Source issues #326/#333 stay open; no conversion, covariance repair, prior,
 binary veto or new model is admitted. Full/angle model differences can be large
 for particular stars and epochs, so no universal angular-only accuracy follows.
 
-The review proposes accepting these limits for nominal historical illustrations;
-Fernando has not yet accepted that parent-level disposition. K4b.05 remains
-open and K4b.06 consumer/atlas adoption remains separate. This status update
-changes no existing capability, uncertainty, time/frame or refusal contract.
+Fernando accepted these limits for nominal historical reconstructions on
+2026-10-26 after 36 Mac documentation tests passed in 3.65 s at `a8c0dd08`.
+K4b.05 is closed for that bounded intended use. Physical-accuracy guarantees,
+verified Hip2 native time/covariance and optimal per-star source selection are
+not established. #326/#333 and pending sibling scope remain open; K4b.06
+consumer/atlas adoption remains separate. This status update changes no existing
+capability, uncertainty, time/frame or refusal contract.
 
 ## Hipparcos-2 time-convention qualification
 

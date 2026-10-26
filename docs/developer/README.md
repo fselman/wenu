@@ -7,11 +7,12 @@ Fernando selected the [post-comparison review](kernel_roadmap_v0.9.5.md#k4b05-qu
 The [current evidence matrix and proposed disposition](kernel_migration_audit_v1.md#k4b05-qualification-review-after-reference-comparisons-2026-10-26)
 reconcile completed numerical, finite perspective, ESA and literature work.
 Nominal motion is supported within its explicit contracts; total physical
-accuracy is unknown. Acceptance for nominal historical illustrations with
-disclosed limitations is **proposed for Fernando's decision**, not already
-agreed. K4b.05 stays open, #326/#333 remain open and K4b.06 is not activated.
-No new diagnostic or physical model is automatically required or authorized.
-The review's complete Mac documentation gate remains pending.
+accuracy is unknown. Fernando explicitly **accepted nominal historical
+reconstructions with these limitations** after 36 Mac documentation tests passed
+in 3.65 s at `a8c0dd08`. K4b.05 is closed for that bounded intended use;
+#326/#333 and pending sibling scope remain open. K4b.06 is not activated.
+His bright-star source question does not authorize acquisition or model changes.
+Only the acceptance-status documentation gate remains pending.
 
 ## K4b.05 literature-figure comparison
 

@@ -2,11 +2,14 @@
 
 ## K4b.05 qualification review after reference comparisons, 2026-10-26
 
-**Review outcome:** the accepted nominal numerical work and the requested
-comparison executions are complete within their recorded scopes. Physical
-ancient-position accuracy is not established. K4b.05 remains **open pending
-Fernando's intended-use/limitation disposition**; this review does not close it
-or activate K4b.06. Another numerical diagnostic is not an automatic next gate.
+**Accepted outcome, 2026-10-26:** Fernando said “Accepted as described” after
+all 36 Mac documentation tests passed in 3.65 s at `a8c0dd08`, with a clean
+synchronized task branch. K4b.05 is **closed for nominal stellar-motion
+reconstructions with the documented limitations below**. Physical ancient-position
+accuracy remains unestablished, #326/#333 remain open, and pending sibling
+K4b.02/AX.13 scope is unchanged. K4b.06 is not activated by this acceptance.
+Fernando's accompanying bright-star source question is a read-only research
+request, not a data-adoption or model-change decision.
 
 **Authority/base:** Fernando selected this review with "Proceed" after PR #342
 merge/cleanup and confirmed clean synchronized Mac main
@@ -68,16 +71,16 @@ finite model differences, numerical cones, hypothetical convention scenarios
 and visual resemblance are different evidence categories; none substitutes for
 the missing total physical uncertainty.
 
-### Concrete proposed decision for Fernando
+### Accepted intended-use decision
 
-**Recommendation — proposed, not yet accepted:** accept K4b.05's qualification
-work for *nominal stellar-motion reconstructions with disclosed limitations*.
+**Fernando accepted this disposition on 2026-10-26:** K4b.05 qualifies
+*nominal stellar-motion reconstructions with disclosed limitations*.
 This intended use can include an illustrative atlas for about 10,000 years ago
 after K4b.06 consumer integration. It makes no universal angular-accuracy
 promise, no claim that angular-only and full propagation are interchangeable,
 and no complete physical reconstruction of everything visible at that date.
 
-The proposed disposition is concrete:
+The accepted disposition is:
 
 1. Retain the accepted full, measured-PM angular and nominal-TCB Hip2 capabilities
    with their existing explicit admission/domain/refusal contracts. Do not turn
@@ -92,10 +95,9 @@ The proposed disposition is concrete:
 4. Keep #326/#333 open for source-time/covariance claims. They need not veto the
    already admitted nominal direction use, but their unresolved claims must not
    be presented as verified. No-PM and other pending sibling scope stays pending.
-5. With Fernando's explicit acceptance of this disposition, K4b.05 could close
-   for that bounded intended use. K4b.06 would still need its own selected
-   implementation slice and acceptance; K4b as a whole, K5 freeze, extraction
-   and release would not thereby close.
+5. K4b.05 closes for that bounded intended use. K4b.06 still needs its own
+   selected implementation slice and acceptance; K4b as a whole, K5 freeze,
+   extraction and release do not thereby close.
 
 **Alternative:** if the desired product instead needs a guaranteed physical
 angular error over a chosen historical interval or a reconstructed observer sky,
@@ -105,10 +107,9 @@ does not silently activate a list of new models or investigations.
 
 ### Next gate and review limits
 
-The next substantive gate is Fernando's decision on the proposed intended use
-and limitations above, after reviewing this matrix. It is not another default
-diagnostic and is not automatically K4b.06 implementation authority. If accepted,
-the first K4b.06 slice should explicitly select its consumer/API path, source/model
+The intended-use decision is accepted. A next K4b.06 slice remains to be
+separately selected; this is not automatic implementation authority. That slice
+should explicitly select its consumer/API path, source/model
 choice, retained-ID/gap behavior, date/frame request and benchmark/ancient
 specimens, using existing state and geometry services. Its public seam tests
 must detect stars/lines/labels using different epochs or bypassing the admitted
@@ -117,14 +118,16 @@ states; its numerical/visual/workload evidence remains separate from this review
 This branch changes documentation only. The architecture, source map, API,
 coordinate guide, test selections and scientific meanings stay current.
 No source acquisition, author contact, computation rerun, runtime change,
-uncertainty certificate, physical policy, issue closure or consumer adoption.
+uncertainty certificate, issue closure or consumer adoption. The accepted
+intended-use limitation disposition changes no computational scientific policy.
 Four closest local documentation contracts passed: developer-root/index authority,
 Python syntax, obsolete imports and roadmap diagrams/order. All fifteen local
 links/fragments in the new review/status sections resolve. Full inventory,
 archive and installed-public-import execution require the complete Mac checkout;
-they are not claimed rerun here. The final Mac review documentation gate is
-pending; prior literature execution and all report-integrity receipts are already
-accepted, not pending again.
+they are not claimed rerun here. The complete Mac review gate at `a8c0dd08`
+subsequently passed 36 tests in 3.65 s. Only the acceptance-status documentation
+edit needs its final Mac documentation gate; no numerical or visual run is repeated.
+Prior literature execution and report-integrity receipts remain accepted.
 
 ## K4b.05 literature-figure comparison preparation, 2026-10-26
 

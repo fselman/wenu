@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 102, 2026-10-26. **Status:** PR #342 is merged at `df4eae36fede007a2089f89cdcd436ad8e69a3a7`; final 36 Mac documentation cases passed in 4.02 s, complete report integrity and the reviewed upload matched, and clean synchronized main plus local/remote cleanup were confirmed. Fernando selected the K4b.05 qualification review with “Proceed” after the literature comparison. This is a documentation/evidence/disposition review; no runtime, scientific-policy change, parent closure or K4b.06 activation is authorized.
+**Plan revision:** 103, 2026-10-26. **Status:** Fernando accepted the K4b.05 nominal-reconstruction disposition with “Accepted as described” after all 36 Mac documentation tests passed in 3.65 s at `a8c0dd08` with clean synchronized task status. K4b.05 closes only for nominal stellar-motion reconstructions with disclosed limitations; physical accuracy remains unknown and #326/#333 remain open. Bright-star source optimality is a separate research question, with no source/model adoption authorized. K4b.06 remains unselected. PR #343 acceptance-status documentation gate is pending.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -67,8 +67,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | Numerical, finite perspective and bounded ESA/literature comparisons completed; current qualification matrix prepared. Nominal motion supported, physical/total accuracy unknown; intended-use acceptance proposed, parent open |
-| Next bounded submilestone | Selected K4b.05 qualification review: reconcile completed perspective/ESA/literature evidence and propose an explicit intended-use disposition; no parent closure or K4b.06 adoption |
+| Current bounded result | K4b.05 nominal-use qualification and documented limits explicitly accepted; independent numerical and bounded comparison receipts retained. Physical accuracy unknown, source issues and pending sibling scopes unchanged |
+| Next bounded submilestone | Final acceptance-status documentation gate for PR #343, then selection of a bounded K4b.06 slice. Bright-star source research does not activate new acquisition/model work |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -112,10 +112,11 @@ contracts, then complete Mac documentation gate. Commit this plan before
 writing the refreshed disposition. Plan committed at
 `f4ffdd160b8f7ee0bcaac4ad42fe7221fc80da4a`.
 The [updated evidence matrix and proposed intended-use decision](kernel_migration_audit_v1.md#k4b05-qualification-review-after-reference-comparisons-2026-10-26)
-are prepared for review. Comparison execution obligations are completed within
-their recorded scopes; physical accuracy remains unqualified. Acceptance of
-nominal reconstruction with explicit limits is proposed, not inferred. K4b.05
-remains open pending that decision; K4b.06 is not activated. No repeat of accepted propagation or visual
+were reviewed after the complete Mac gate passed 36 tests in 3.65 s at
+`a8c0dd08`. Fernando then said “Accepted as described.” K4b.05 closes for
+nominal reconstruction with those explicit limits; physical accuracy remains
+unqualified, #326/#333 and pending sibling scopes remain open. K4b.06 is not
+activated. The acceptance-status documentation gate remains pending. No repeat of accepted propagation or visual
 exports is needed for a documentation-only review.
 
 ## K4b.05: literature-figure visual comparison
@@ -2016,7 +2017,7 @@ remain its separate responsibilities.
 | K4b.02 | Adopt admitted incomplete-input models and configured lookback/error/refusal policies for real stars | Measured-PM angular slice passed Mac acceptance in PR #323 at 41c47e16; nominal-TCB Hip2 fallback also passed Mac acceptance in PR #325 at d71ee8da; source time-scale qualification remains issue #326, and no-PM/other missing-input scopes remain pending. No invented measurements |
 | K4b.03 | Admit explicit historical time/calendar/year-zero/BCE and source/input-date uncertainty semantics | Bounded explicit input/receipt slice passed Mac acceptance in PR #327 at ceeb894b: 257 focused, 125 audit, 36 documentation, eight tooling/81 subtests and 24 actual historical states. No implicit civil-clock/TT-to-TCB/observer reconstruction or total uncertainty claim |
 | K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Bounded explicit long-term mean-axis slice passed Mac acceptance in PR #328 at 97921fe8; 48 actual derived directions, finite TT domain and unknown physical/total error. No observer/EOP reconstruction or chart/default adoption |
-| K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references; include ESA Orion and Ursa Major reconstruction comparisons with documented input/method and independence limits | Open pending intended-use/limitation disposition. Numerical, finite perspective and bounded ESA/literature comparison executions completed; detailed ESA agreement inconclusive, physical accuracy unknown. Current qualification matrix proposes nominal-use acceptance only; no closure or runtime adoption inferred |
+| K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references; include ESA Orion and Ursa Major reconstruction comparisons with documented input/method and independence limits | Accepted/closed for nominal reconstruction with explicit documented limits by Fernando on 2026-10-26, after 36 Mac documentation passes in 3.65 s at a8c0dd08. Numerical and bounded comparisons completed; detailed ESA agreement inconclusive, physical accuracy unknown. #326/#333 remain open; no source optimality or consumer adoption claim |
 | K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | Pending K4b closure; K3 stellar/figure/label consumers and accepted science/visual criteria |
 
 ### K5–K9: freeze, extraction and release
