@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 104, 2026-10-26. **Status:** PR #343 merged at `4e78cb9e76def88b069f837338d336ab7095253c`; final 36 Mac documentation cases passed in 3.63 s, and clean synchronized Mac main plus local/remote cleanup were confirmed. Fernando selected definition of the bounded K4b.06 production integration scope, emphasizing architecture migration and deferring the bright-star audit to production integration rather than a preceding audit. This selection authorizes as-is assessment and a concrete integration proposal; runtime choices remain proposed until selected.
+**Plan revision:** 105, 2026-10-26. **Status:** Fernando accepted the bounded K4b.06 native atlas-sheet integration scope and requested PR #344 merge/cleanup after 36 Mac documentation tests passed in 4.12 s at `7edf0659`. PR #344 merged at `dc0d1d52fbd1db075202d8d1536c370555256d7e`; clean synchronized Mac main and local/remote cleanup were confirmed. He then clarified and selected the ownership boundary: stars own epoch-dependent realization; constellation lines and labels consume public stellar positions without epoch, astrometric-model or propagation-session knowledge. This revision records that correction before implementation; no runtime acceptance is claimed.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,8 +46,8 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `4e78cb9e76def88b069f837338d336ab7095253c`,
-confirmed clean/synchronized on the Mac on 2026-10-26 after PR #343 merge.
+**Current accepted base:** main `dc0d1d52fbd1db075202d8d1536c370555256d7e`,
+confirmed clean/synchronized on the Mac on 2026-10-26 after PR #344 merge.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -68,7 +68,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.05 nominal-use qualification and documented limits explicitly accepted; independent numerical and bounded comparison receipts retained. Physical accuracy unknown, source issues and pending sibling scopes unchanged |
-| Next bounded submilestone | Selected K4b.06 integration definition: inspect actual stellar/figure/label/request/atlas seams and propose the smallest production slice. Bright-star audit belongs to K4b.06 adoption, not a preceding prerequisite |
+| Next bounded submilestone | Selected first K4b.06 native atlas-sheet integration slice: stars own request-scoped realization; lines and labels consume stellar positions without propagation knowledge. Preserve source membership and canonical pipeline. Bright-star audit remains at production adoption |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -84,45 +84,52 @@ cleanup. This documentation merge adds no runtime acceptance.
 
 ## K4b.06: production integration scope definition
 
-**Selection:** Fernando said "Proceed" after confirmed clean synchronized Mac
-main `4e78cb9e` and PR #343 cleanup. He explicitly deferred the bright-star
-source audit until incorporation into production Wenu (K4b.06), and asked to
-retain focus on the architecture modification. This task defines a bounded
-production implementation; it does not run a separate bright-star audit or
-silently activate runtime/source-selection behavior.
+**Accepted definition:** PR #344 passed 36 Mac documentation cases in 4.12 s
+at `7edf0659`, was accepted by Fernando, and merged at `dc0d1d52`.
+He confirmed clean synchronized Mac main and local/remote cleanup.
+The [actual-owner assessment and bounded first slice](kernel_migration_audit_v1.md#k4b06-production-integration-assessment-2026-10-26)
+are selected, with his subsequent explicit ownership correction:
+"The realization should be on the stars, the lines follow the stars without
+a need to be aware of epochs, astrometry, etc. Same goes for the labels."
+After the assistant acknowledged the distinction, Fernando said "Indeed. Proceed."
 
-Inspect current `Stars` public lookup and realization, constellation endpoints
-and label anchors, layer context/coordinate guards, request lifetime/assembly,
-native atlas-sheet and saved-sky seams, actual adapter models and their tests.
-Use the existing architecture/canonical pipeline; identify what already works
-and the minimum missing connection. Keep star-specific source/model selection
-outside generic state/geometry services and keep projection/rendering out of
-astronomical providers. Package extraction remains after K5, not part of this
-consumer integration.
+**Required ownership:** the stellar owner and its adapter bind source, model
+selection, common epoch, SDK queries/reuse and unavailable statuses. The existing
+request scope owns resource lifetime and binds the stellar view once, with no
+cross-request mutation of a borrowed sky. Stars expose full-source and sparse
+public positions with original HIP identity/metadata and truthful coordinate
+provenance. Constellation lines ask that interface for endpoints and retain
+curated topology; labels consume positions for retained source-member IDs and
+compute anchors. Neither consumer accepts or interprets a target epoch, motion
+catalogue/model order, astrometric admission, provider or propagation session.
+They may preserve the returned coordinate specification as geometry provenance.
 
-Publish the as-is assessment and one concrete first-slice proposal in the
-existing migration audit. Make request-owned resource lifetime, original HIP/
-photometry identity, common epoch, explicit model selection, unavailable rows,
-source constellation membership, saved-source behavior and numerical/visual/
-workload acceptance reviewable before changing production. State what remains
-for broader K4b.06 rather than closing the parent on a first slice.
+Label membership/Serpens partition remains source-defined, independent of moving
+directions. A label consumer may retain/query source membership by public identity;
+it must not classify propagated directions anew or reconstruct stellar motion.
+Do not introduce label/line-specific propagation options, epoch caches, sessions
+or parallel fallback paths. Existing observer/native geometry behavior remains
+compatible; the new stellar motion boundary does not broaden observer science.
 
-No runtime/test/source/dependency/schema/default change, acquisition, optimal-source
-claim, new physical model/error policy, observer reconstruction, worker/CLI
-expansion or package extraction is selected by this definition task. The
-bright-star audit is deferred to the K4b.06 production-adoption stage; any
-replacement astrometry/RV inputs still require their explicit source/admission
-review. Do not make that audit an earlier prerequisite or silently begin it.
-Acceptance here: actual owner/test inspection, architecture/claim/link consistency,
-closest local documentation contracts and the complete Mac documentation gate.
-Definition plan committed at `41a85e77502a7118b6bef07d1211beb0fc27fb55`.
-The [as-is assessment and concrete first-slice proposal](kernel_migration_audit_v1.md#k4b06-production-integration-assessment-2026-10-26)
-now identify public stellar/figure/label lookup, native-sheet request and shared
-request-lifetime owners. Proposed: explicit supplied model order/common TCB
-epoch, shared realization, retained IDs/gaps and source membership, opt-in
-native Python sheet integration plus measured workload/ancient specimen checks.
-These production choices remain proposed, not selected; complete Mac documentation
-acceptance and Fernando's slice selection precede runtime work.
+**Selected implementation scope:** the first opt-in Python native-ICRS atlas-sheet
+slice in the linked assessment, using existing admitted stellar models and one
+common resolved TCB event. Keep explicit caller model order, retained HIP/V/names,
+gap/refusal handling, original constellation membership, source-only snapshots,
+request cleanup and canonical spherical/projection/preparation/rendering owners.
+Source/model selection remains outside generic kernel services. First-slice
+acceptance covers public stellar positions and dependent geometry, source order
+and faint endpoints, stable label groups, refusal propagation, lifetime/isolation,
+restored-source behavior, measured workload and real Mac ancient-sheet specimens.
+The parent K4b.06 remains open for its other applicable product/worker/CLI gates.
+
+The original definition plan was committed at
+`41a85e77502a7118b6bef07d1211beb0fc27fb55`; this ownership correction is recorded
+before runtime changes. It changes no production API, implementation or accepted
+default by itself. No new source, physical model/error policy, observer
+reconstruction, package extraction or standalone bright-star audit is selected.
+The bright-star source audit stays deferred to production adoption within K4b.06;
+improved input acquisition/adoption requires its own explicit review.
+
 
 ## K4b.05: qualification review after reference comparisons
 
@@ -2062,7 +2069,7 @@ remain its separate responsibilities.
 | K4b.03 | Admit explicit historical time/calendar/year-zero/BCE and source/input-date uncertainty semantics | Bounded explicit input/receipt slice passed Mac acceptance in PR #327 at ceeb894b: 257 focused, 125 audit, 36 documentation, eight tooling/81 subtests and 24 actual historical states. No implicit civil-clock/TT-to-TCB/observer reconstruction or total uncertainty claim |
 | K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Bounded explicit long-term mean-axis slice passed Mac acceptance in PR #328 at 97921fe8; 48 actual derived directions, finite TT domain and unknown physical/total error. No observer/EOP reconstruction or chart/default adoption |
 | K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references; include ESA Orion and Ursa Major reconstruction comparisons with documented input/method and independence limits | Accepted/closed for nominal reconstruction with explicit documented limits by Fernando on 2026-10-26, after 36 Mac documentation passes in 3.65 s at a8c0dd08. Numerical and bounded comparisons completed; detailed ESA agreement inconclusive, physical accuracy unknown. #326/#333 remain open; no source optimality or consumer adoption claim |
-| K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | K4b.05 nominal-use qualification accepted. As-is integration definition selected; first opt-in native stellar/figure/label + atlas-sheet slice proposed, not runtime-authorized. Remaining sibling/product/worker/CLI gates stay explicit; bright-star audit deferred to production adoption within this stage |
+| K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | K4b.05 nominal-use qualification accepted. First opt-in native atlas-sheet slice selected after PR #344 acceptance; stars own realization, lines/labels consume public positions without propagation knowledge. Implementation and runtime acceptance pending. Remaining sibling/product/worker/CLI gates stay explicit; bright-star audit deferred to production adoption within this stage |
 
 ### K5–K9: freeze, extraction and release
 

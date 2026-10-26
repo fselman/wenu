@@ -2,16 +2,16 @@
 
 ## K4b.06 production consumer integration definition
 
-After PR #343 merge/cleanup and clean synchronized Mac main `4e78cb9e`,
-Fernando selected the [architecture-focused K4b.06 definition](kernel_roadmap_v0.9.5.md#k4b06-production-integration-scope-definition).
-The [actual-owner assessment and proposed first production slice](kernel_migration_audit_v1.md#k4b06-production-integration-assessment-2026-10-26)
-connect existing motion admissions to public stars/figure/label realization,
-native atlas-sheet requests and shared request lifetime. The proposal preserves
-source membership/names/V, explicit source/model/epoch/gap provenance and the
-canonical projection/preparation/rendering pipeline. Production changes remain
-proposed; only the integration definition is selected. Bright-star source audit
-is deferred to production adoption within K4b.06, not an earlier prerequisite.
-No new source, physical model, package extraction or alternate pipeline.
+PR #344's [bounded K4b.06 definition](kernel_roadmap_v0.9.5.md#k4b06-production-integration-scope-definition)
+passed 36 Mac documentation cases in 4.12 s at `7edf0659`; Fernando accepted
+it, requested merge/cleanup and confirmed clean synchronized main `dc0d1d52`.
+He then explicitly corrected ownership: **stars own epoch-dependent realization;
+lines and labels consume public stellar positions without propagation knowledge.**
+The [first native atlas-sheet slice](kernel_migration_audit_v1.md#k4b06-production-integration-assessment-2026-10-26)
+is selected with that boundary. Request lifetime binds the stellar view once;
+source identity/names/V, fixed constellation membership, explicit gaps and the
+canonical pipeline are retained. Runtime implementation/acceptance remain pending.
+Bright-star source audit stays deferred to production adoption within K4b.06.
 
 ## K4b.05 current qualification review
 
@@ -23,7 +23,8 @@ Nominal motion is supported within its explicit contracts; total physical
 accuracy is unknown. Fernando explicitly **accepted nominal historical
 reconstructions with these limitations** after 36 Mac documentation tests passed
 in 3.65 s at `a8c0dd08`. K4b.05 is closed for that bounded intended use;
-#326/#333 and pending sibling scope remain open. K4b.06 is not activated.
+#326/#333 and pending sibling scope remain open. K4b.06's subsequent bounded
+selection is recorded above; it is not a consequence of qualification alone.
 His bright-star source question does not authorize acquisition or model changes.
 Final acceptance-status Mac documentation passed 36 cases in 3.63 s at
 `2b6c8a6a`; PR #343 merged and clean-main cleanup were confirmed.
