@@ -2,20 +2,26 @@
 
 ## K4b.05 qualification status
 
-The [closure review](kernel_migration_audit_v1.md#k4b05-bounded-closure-review-2026-10-24)
-separates accepted nominal numerical behavior and offline diagnostics from
-unresolved physical/source/ESA claims. It changes none of the scientific
-contracts below. Numerical reuse bounds, conditional formal covariance and
-hypothetical convention/RV sensitivities do not supply total physical error
-or a physical lookback interval. Source issues #326/#333 remain open for
-their respective claims; no conversion, covariance repair, prior, binary veto
-or new model is admitted. The bounded finite perspective comparison was selected on 2026-10-25. It
-compares two existing nominal models with matched inputs, not a model against
-physical truth. The [actual sixteen-HIP receipt](kernel_migration_audit_v1.md#k4b05-finite-perspective-comparison-2026-10-25)
-now records 15 matched pairs, 65 explicit gaps and unchanged source/model
-identities. Large finite differences in some stars do not set a universal
-lookback cutoff, validate either model physically or admit an error bound.
-K4b.06 remains separate.
+The [current post-comparison review](kernel_migration_audit_v1.md#k4b05-qualification-review-after-reference-comparisons-2026-10-26)
+supersedes the earlier comparison-pending matrix. Independent nominal numerical
+checks, the [finite perspective comparison](kernel_migration_audit_v1.md#k4b05-finite-perspective-comparison-2026-10-25),
+and the bounded ESA/literature assessment executions are complete. Detailed ESA
+agreement is inconclusive; Kaler's Dipper gives qualitative agreement only.
+
+These receipts do not establish physical ancient-position accuracy or a physical
+lookback interval. Numerical reuse bounds, conditional formal covariance,
+hypothetical convention/RV sensitivities and visual agreement remain separate.
+Source issues #326/#333 stay open; no conversion, covariance repair, prior,
+binary veto or new model is admitted. Full/angle model differences can be large
+for particular stars and epochs, so no universal angular-only accuracy follows.
+
+Fernando accepted these limits for nominal historical reconstructions on
+2026-10-26 after 36 Mac documentation tests passed in 3.65 s at `a8c0dd08`.
+K4b.05 is closed for that bounded intended use. Physical-accuracy guarantees,
+verified Hip2 native time/covariance and optimal per-star source selection are
+not established. #326/#333 and pending sibling scope remain open; K4b.06
+consumer/atlas adoption remains separate. This status update changes no existing
+capability, uncertainty, time/frame or refusal contract.
 
 ## Hipparcos-2 time-convention qualification
 
