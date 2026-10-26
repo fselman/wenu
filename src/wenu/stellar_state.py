@@ -12,8 +12,9 @@ from __future__ import annotations
 from collections import Counter
 from dataclasses import dataclass, field
 from fractions import Fraction
+from contextlib import ExitStack
 from hashlib import sha256
-from math import cos, sin, pi, isfinite
+from math import cos, sin, pi, isfinite, isnan
 
 from wenu_kernel.errors import InvalidQuery, UnsupportedCapability
 from wenu_kernel.records import ReferenceSpec, TimePoint, UnboundedCoverage
@@ -84,6 +85,172 @@ def _stellar_epoch(jyear, scale):
 
 def _stellar_digest(value):
     return sha256(encode(value)).hexdigest()
+
+
+@dataclass(frozen=True, slots=True)
+class StellarMotionRequest:
+    """Explicit ordered admitted models and one common nominal TCB event.
+
+    This is stellar input, not a line/label or generic layer option. Availability
+    selects models; a failed query never selects another model.
+    """
+
+    catalogues: tuple
+    instant: TimePoint
+
+    def __post_init__(self):
+        catalogues = tuple(self.catalogues)
+        if not catalogues or any(type(c) is not StellarMotionCatalogue for c in catalogues):
+            raise ValueError('Explicit admitted stellar catalogues are required.')
+        if len({c.motion_policy for c in catalogues}) != len(catalogues):
+            raise ValueError('Stellar model order must not contain duplicate models.')
+        if type(self.instant) is not TimePoint or self.instant.scale != 'tcb':
+            raise ValueError('A common resolved TCB event is required.')
+        source = catalogues[0].source
+        for catalogue in catalogues:
+            if catalogue.source.manifest != source.manifest:
+                raise ValueError('Stellar models must bind the same immutable source.')
+            if not catalogue.coverage.contains(self.instant):
+                raise ValueError('Stellar event lies outside a supplied model domain.')
+        object.__setattr__(self, 'catalogues', catalogues)
+
+    def __reduce__(self):
+        raise TypeError('Stellar motion request transport is not admitted; bind it in the rendering process.')
+
+
+class _StellarRealization:
+    """Request-local SDK bridge owned by a realized Stars view."""
+
+    def __init__(self, request, source_table, source_metadata):
+        from wenu_kernel import Kernel
+        from wenu_kernel.records import SessionPolicy
+        from wenu.coordinates import CoordinateSpec, PositionStatus
+        from wenu_kernel.errors import ClosedSession
+        self._closed_error = ClosedSession
+        self._scope = ExitStack()
+        self._closed = False
+        self.request = request
+        self.query_calls = 0
+        self._last_batches = {}
+        self.sdk_batches_evaluated = 0
+        self.exact_batch_reuses = 0
+        self._groups = []
+        self._ids = tuple(int(i) for i in source_table.index)
+        self._index = {i: n for n, i in enumerate(self._ids)}
+        self._models = [None] * len(self._ids)
+        self._reasons = [[] for _ in self._ids]
+        source = request.catalogues[0].source
+        baseline = source.metadata['baseline']
+        for field in ('catalogue', 'edition', 'source_sha256'):
+            if source_metadata[field] != baseline[field]:
+                raise ValueError('Stellar enrichment/source binding differs: ' + field)
+        original_metadata = source.metadata['original_metadata']
+        for field in ('frame', 'origin', 'epoch'):
+            if source_metadata[field] != original_metadata[field]:
+                raise ValueError('Stellar source reference differs: ' + field)
+        if any(source_metadata['units'].get(k) != v
+               for k, v in original_metadata['units'].items()):
+            raise ValueError('Stellar source units differ from enrichment.')
+        originals = {int(r['identity']['identifier']): r['original'] for r in source.records()}
+        if len(self._ids) != len(self._index) or not set(self._ids) <= originals.keys():
+            raise ValueError('Stellar source identities differ from enrichment.')
+        for identifier, magnitude in zip(self._ids, source_table['magnitude']):
+            value = originals[identifier]['magnitude']
+            if not ((value is None and isnan(float(magnitude)))
+                    or (value is not None and float(magnitude) == value)):
+                raise ValueError('Stellar source photometry differs from enrichment.')
+        instant = request.instant
+        self.coordinate_spec = CoordinateSpec(
+            frame='icrs', origin='solar-system-barycenter',
+            position_status=PositionStatus.ASTROMETRIC,
+            instant=f'JD({instant.jd1},{instant.jd2.hex()})', time_scale='tcb',
+            provider='wenu stellar realization', model='explicit ordered nominal stellar models',
+            provenance=('stellar-source-manifest-sha256:' + sha256(source.manifest).hexdigest(),
+                        'Physical accuracy unknown; no guaranteed ancient-position accuracy') + tuple(
+                            'stellar-model-sha256:' + _stellar_digest(c.to_record())
+                            for c in request.catalogues))
+        try:
+            for catalogue in request.catalogues:
+                rows = {int(row.identifier): row for row in catalogue.rows}
+                chosen = []
+                for n, identifier in enumerate(self._ids):
+                    if self._models[n] is not None:
+                        continue
+                    row = rows[identifier]
+                    if row.unavailable_reason is not None:
+                        self._reasons[n].append(catalogue.motion_policy + ':' + row.unavailable_reason)
+                    else:
+                        chosen.append(identifier)
+                        self._models[n] = catalogue.motion_policy
+                if not chosen:
+                    continue
+                provider = StellarMotionProvider(catalogue)
+                # Close even if registration or session creation fails.
+                self._scope.callback(provider.close)
+                admission = provider.describe().admissions[0]
+                kernel = self._scope.enter_context(Kernel(references=(admission.reference,)))
+                kernel.register(provider, ownership='borrowed')
+                session = self._scope.enter_context(kernel.open_session(SessionPolicy((admission.catalogue,))))
+                keys = {int(key.value.rsplit(':', 1)[1]): key for key in admission.objects}
+                self._groups.append((session, admission, tuple(keys[i] for i in chosen), tuple(chosen)))
+        except BaseException:
+            self.close()
+            raise
+
+    def close(self):
+        if not self._closed:
+            self._closed = True
+            try:
+                self._scope.close()
+            finally:
+                self._groups.clear()
+                self._last_batches.clear()
+
+    def positions(self, identifiers):
+        """Read actual SDK results, retaining source identity and explicit gaps."""
+        import numpy as np
+        from wenu_kernel.records import AccuracyRequest, StateQuery
+        if self._closed:
+            raise self._closed_error('stellar realization is closed')
+        self.query_calls += 1
+        ids = tuple(int(i) for i in identifiers)
+        if not ids:
+            return np.asarray([], dtype=float), np.asarray([], dtype=float)
+        values = {}
+        for session, admission, keys, hips in self._groups:
+            query = StateQuery(admission.catalogue, admission.model, keys,
+                (self.request.instant,), admission.reference, AccuracyRequest())
+            batch = session.evaluate(query)
+            if self._last_batches.get(admission.model) is batch:
+                self.exact_batch_reuses += 1
+            else:
+                self.sdk_batches_evaluated += 1
+                self._last_batches[admission.model] = batch
+            # Query validation/order and exact-result reuse belong to the SDK.
+            for state, hip in zip(batch.states, hips, strict=True):
+                x, y, z = state.vector
+                values[hip] = (np.degrees(np.arctan2(y, x)) % 360.,
+                               np.degrees(np.arctan2(z, np.hypot(x, y))))
+        angles = np.asarray([values.get(i, (np.nan, np.nan)) for i in ids], dtype=float).reshape(-1, 2)
+        return angles[:, 0], angles[:, 1]
+
+    def row_metadata(self, identifiers):
+        import numpy as np
+        indices = [self._index[int(i)] for i in identifiers]
+        return dict(stellar_motion_model=np.asarray([self._models[n] for n in indices], dtype=object),
+            stellar_motion_status=np.asarray(['evaluated' if self._models[n] else 'unavailable' for n in indices], dtype=object),
+            stellar_motion_reason=np.asarray(['' if self._models[n] else ';'.join(self._reasons[n]) for n in indices], dtype=object))
+
+    def report(self):
+        return dict(epoch=dict(jd1=self.request.instant.jd1, jd2=self.request.instant.jd2, scale='tcb'),
+            model_order=[c.motion_policy for c in self.request.catalogues],
+            models=[dict(policy=c.motion_policy, identity_sha256=_stellar_digest(c.to_record()),
+                         admission=c.to_record()) for c in self.request.catalogues],
+            source_manifest_sha256=sha256(self.request.catalogues[0].source.manifest).hexdigest(),
+            model_counts=dict(Counter(m or 'unavailable' for m in self._models)),
+            public_position_queries=self.query_calls,
+            sdk_batches_evaluated=self.sdk_batches_evaluated,
+            exact_batch_reuses=self.exact_batch_reuses, physical_accuracy='unknown')
 
 
 @dataclass(frozen=True, slots=True)

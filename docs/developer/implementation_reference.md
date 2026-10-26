@@ -1,5 +1,54 @@
 # Wenu implementation reference
 
+## Explicit stellar realization for native atlas sheets
+
+`wenu.stellar_state.StellarMotionRequest(catalogues, instant)` accepts a nonempty
+ordered tuple of existing `StellarMotionCatalogue` admissions and one resolved
+TCB `TimePoint`. Supplied models must bind the same immutable enrichment source
+and include that event in each finite domain. No default model order is chosen.
+
+`Stars.realized(motion)` is a context manager yielding an isolated stellar view.
+The view owns SDK query/reuse and source/model selection; public `position()` and
+`native_positions(identifiers=None)` expose its positions with original HIP/V/
+names, per-row model/status/reason and coordinate provenance. Unbound methods
+retain their source-native behavior, including the ignored compatibility date.
+Returned coordinates control geometry; unavailable coordinates remain NaN with
+explicit status. Declared model unavailability may select the next supplied
+model; SDK, source-integrity or domain refusal aborts. No static fallback.
+The view refuses lookup after closing. The supplied Stars/sky is not mutated.
+
+Lines consume endpoint positions without motion parameters. Labels use retained
+source directions in position metadata for IAU/Serpens membership, and current
+member directions for spherical means; they do not interpret epochs or models.
+
+`AtlasSheetChartRequest(..., stellar_motion=motion)` opts the existing Python
+native-ICRS sheet route into this binding. `render_atlas_sheet` and
+`generate_chart_request` use the same canonical rendering/export path. The
+assembly binds only a replacement stellar position source to dependent layers.
+Chart/report notes disclose nominal TCB epoch, unavailable source count and
+unknown physical accuracy; report JSON adds `stellar_realization` with source
+manifest identity, model order/counts and SDK exact-batch reuse counts.
+No-motion report schema/content and appearance remain unchanged.
+
+```python
+from wenu.stellar_state import StellarMotionRequest
+from wenu.charts.atlas_sheet import AtlasSheetChartRequest
+from wenu.charts.request_generation import generate_chart_request
+
+# full/angular/hip2, target_tcb and sky are separately validated supplied inputs.
+motion = StellarMotionRequest((full, angular, hip2), target_tcb)
+request = AtlasSheetChartRequest(sheet, page, presentation, output_dir,
+                                stellar_motion=motion)
+result = generate_chart_request(request, sky=sky)
+```
+
+Source-only saved skies retain their format/meaning and require a separate,
+explicit matching binding after restoration. Motion-request pickle/worker
+transport refuses; ordinary CLI/TOML, historical observers and batch request
+transport are not implemented by this Python sheet opt-in. No new top-level
+exports, catalogue acquisition, physical-accuracy guarantee or package extraction.
+Real-cache workload/ancient-sheet and complete saved-sky acceptance remain pending.
+
 ## Hipparcos-2 covariance qualification report
 
 The existing audit maintenance tool accepts `--hip2-covariance-source`,

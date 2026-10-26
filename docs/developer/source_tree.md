@@ -1,5 +1,13 @@
 # Wenu production source map
 
+K4b.06's selected native-sheet integration extends existing owners only:
+`stellar_state.py` owns explicit model/event inputs and the SDK bridge;
+`objects/stars.py` owns realized public positions; `sky/assembly.py` binds an
+isolated stellar view to dependent position consumers; `charts/atlas_sheet.py`
+uses it in the existing sheet route. Lines retain their public endpoint lookup;
+labels separate source membership from returned anchor directions. No new
+production module or package boundary is introduced. Mac acceptance is pending.
+
 K4a.01 adds no production module. Its [enrichment contract and census](data/stellar_enrichment_contract_v1.json)
 belong to documentation/data design; `stellar_catalogue.py` and `objects/stars.py`
 retain ingestion and membership ownership. The [scientific contract](scientific_contracts.md#stellar-membership-and-enrichment-contract)

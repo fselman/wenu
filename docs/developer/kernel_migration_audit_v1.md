@@ -2,6 +2,34 @@
 
 ## K4b.06 production integration assessment, 2026-10-26
 
+### Stellar-owned implementation candidate
+
+PR #345 passed 36 Mac documentation cases in 3.96 s, merged at `80fbe496`, and
+Fernando confirmed clean synchronized Mac main/cleanup and said "Proceed".
+The selected first slice now extends `stellar_state.py`, `objects/stars.py`,
+`sky/assembly.py` and `charts/atlas_sheet.py`. Stars own admitted source/model/
+event selection, SDK evaluation and exact-batch reuse through an isolated view;
+assembly only rebinds dependent position sources. Line code is unchanged. Labels
+read preserved source-direction metadata for membership and realized member
+positions for anchor means, without motion arguments or session ownership.
+Default stars/atlas requests remain source-native. Existing source snapshots
+are unchanged; restored source facades require explicit matching motion inputs,
+and unsupported motion-request pickle transport refuses.
+
+New tests extend the existing stellar adapter owner. Nine constructed cases
+pass, including source/model/identity gaps, nested isolation, warm SDK refusal,
+partial construction/cleanup failures, restored-source facade binding and public
+PNG/PDF/SVG sheet/report export. Twenty-five existing native consumer cases and
+five existing request-lifetime and 19 atlas sheet/report cases pass locally.
+Four focused documentation checks pass locally. A deliberate static-source
+substitution fails the new public stellar seam. Local SDK source matches all 22
+files in the pinned SDK revision. The asset-dependent loaded-designations case
+and complete real-source/saved-sky acceptance need the complete Mac checkout.
+No actual cached-source/ancient-sheet run or physical accuracy is claimed here.
+Mac documentation/runtime gates, J2000/J-8000 source/workload comparisons and
+visual review remain pending. Bright-star source audit remains deferred to
+production adoption within this K4b.06 slice; no improved input is adopted.
+
 **Selected work:** define the first production consumer slice after K4b.05
 nominal-use acceptance, not another propagation-science investigation.
 Fernando confirmed clean synchronized Mac main
@@ -15,7 +43,7 @@ It merged at `dc0d1d52`, with clean synchronized Mac main and local/remote
 cleanup confirmed. He then explicitly required realization to belong to stars,
 with lines/labels consuming their positions without epochs/astrometry knowledge,
 and said "Indeed. Proceed." **The first slice below is selected with that
-ownership correction; production implementation/acceptance remain pending.**
+ownership correction; the implementation candidate above awaits Mac acceptance.**
 
 ### As-is assessment: existing owners and the missing connection
 
