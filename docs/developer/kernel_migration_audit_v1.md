@@ -2,33 +2,35 @@
 
 ## K4b.06 production integration assessment, 2026-10-26
 
-### Stellar-owned implementation candidate
+### Accepted stellar-owned native-sheet result
 
-PR #345 passed 36 Mac documentation cases in 3.96 s, merged at `80fbe496`, and
-Fernando confirmed clean synchronized Mac main/cleanup and said "Proceed".
-The selected first slice now extends `stellar_state.py`, `objects/stars.py`,
-`sky/assembly.py` and `charts/atlas_sheet.py`. Stars own admitted source/model/
-event selection, SDK evaluation and exact-batch reuse through an isolated view;
-assembly only rebinds dependent position sources. Line code is unchanged. Labels
-read preserved source-direction metadata for membership and realized member
-positions for anchor means, without motion arguments or session ownership.
-Default stars/atlas requests remain source-native. Existing source snapshots
-are unchanged; restored source facades require explicit matching motion inputs,
-and unsupported motion-request pickle transport refuses.
+PR #346's bounded Python native atlas-sheet slice is accepted and merged at
+`ab8a7e9ab1374a20c0eed3064d7555ed0a3b789e`; Fernando confirmed clean
+synchronized Mac main and local/remote branch cleanup. At `0ec6515`, 59 selected
+Mac runtime cases passed. At `4bf3dc63`, all 36 documentation cases passed in
+3.04 s after the documentation-only correction. The actual immutable-cache run
+`stellar-native-acceptance-v1-jriu3wpd` passed for freshly loaded and restored
+source skies at J2000 and J-8000 TCB. Each case retained 117,955 available stars
+and 263 explicit gaps; warm full-source queries took 0.949–1.158 s versus
+18.279–22.325 s initially. The run resides under
+`~/Software/build/wenu/output/`; completion-manifest SHA256 is
+`313b02f098894bbfbc0144e2bafef5e9dc8665f2d2572092e4ae7466e480fd34`.
+Fernando reviewed the comparison page and confirmed “Everything is OK”, then
+requested merge/cleanup. These are user-reported Mac results and visual
+acceptance, not a claim that the assistant independently inspected the run files.
+Retain the run, source snapshot and provenance as acceptance evidence.
+The parent K4b.06 stays open for its remaining product/worker/CLI obligations.
 
-New tests extend the existing stellar adapter owner. Nine constructed cases
-pass, including source/model/identity gaps, nested isolation, warm SDK refusal,
-partial construction/cleanup failures, restored-source facade binding and public
-PNG/PDF/SVG sheet/report export. Twenty-five existing native consumer cases and
-five existing request-lifetime and 19 atlas sheet/report cases pass locally.
-Four focused documentation checks pass locally. A deliberate static-source
-substitution fails the new public stellar seam. Local SDK source matches all 22
-files in the pinned SDK revision. The asset-dependent loaded-designations case
-and complete real-source/saved-sky acceptance need the complete Mac checkout.
-No actual cached-source/ancient-sheet run or physical accuracy is claimed here.
-Mac documentation/runtime gates, J2000/J-8000 source/workload comparisons and
-visual review remain pending. Bright-star source audit remains deferred to
-production adoption within this K4b.06 slice; no improved input is adopted.
+### Native single-sheet CLI/TOML assessment
+
+The existing installed `wenu_chart atlas-sheet` file-input adapter does not
+supply stellar motion, although its prepared Python request now supports it.
+Its design/style/snapshot validation and canonical executor are reusable.
+Ordinary chart families involve observer construction; atlas publication also
+owns worker transport. The proposed smallest extension therefore targets this
+single-sheet command with a separate explicit scientific TOML input. See the
+[scope and acceptance gate](kernel_roadmap_v0.9.5.md#k4b06-proposed-native-single-sheet-clitoml-slice).
+Runtime remains unchanged and the concrete scope awaits acceptance.
 
 **Selected work:** define the first production consumer slice after K4b.05
 nominal-use acceptance, not another propagation-science investigation.
@@ -43,7 +45,7 @@ It merged at `dc0d1d52`, with clean synchronized Mac main and local/remote
 cleanup confirmed. He then explicitly required realization to belong to stars,
 with lines/labels consuming their positions without epochs/astrometry knowledge,
 and said "Indeed. Proceed." **The first slice below is selected with that
-ownership correction; the implementation candidate above awaits Mac acceptance.**
+ownership correction; the first native Python sheet slice is now accepted as recorded above.**
 
 ### As-is assessment: existing owners and the missing connection
 

@@ -1,17 +1,15 @@
 # Wenu developer documentation
 
-## K4b.06 stellar-owned integration candidate
+## K4b.06 accepted native-sheet slice and proposed CLI scope
 
-The accepted [bounded scope and ownership](kernel_roadmap_v0.9.5.md#k4b06-production-integration-scope-definition)
-now have a production candidate: stars own request-scoped realization; lines and
-labels consume public stellar positions without propagation settings. The opt-in
-Python native atlas-sheet route retains the canonical pipeline and source
-membership/names/V. See the [public API](implementation_reference.md#explicit-stellar-realization-for-native-atlas-sheets)
-and [verification scope](testing_policy.md#k4b06-stellar-owned-native-integration-candidate).
-Nine constructed integration/export cases, 25 existing native consumer cases and
-five request-lifetime and 19 atlas sheet/report cases pass locally. Complete Mac gates and real-source
-J2000/J-8000 workloads/specimens remain pending. No K4b.06 closure, default or
-source replacement; bright-star audit stays at production adoption.
+PR #346's native Python atlas-sheet slice is accepted and merged at `ab8a7e9a`;
+clean synchronized Mac main and branch cleanup are confirmed. Stars own realization;
+lines/labels consume public positions. The Mac passed 59 runtime and 36 documentation
+cases, actual cold/restored J2000/J-8000 cache workloads and Fernando's visual review.
+See the [acceptance record](kernel_migration_audit_v1.md#accepted-stellar-owned-native-sheet-result).
+The [next single-sheet CLI/TOML definition](kernel_roadmap_v0.9.5.md#k4b06-proposed-native-single-sheet-clitoml-slice)
+is proposed for scope review before runtime work. Parent K4b.06, other product/
+worker/observer gates and bright-star source review remain open.
 
 ## K4b.05 current qualification review
 
