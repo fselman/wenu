@@ -102,6 +102,15 @@ documentation checks and complete Mac acceptance are recorded separately; no
 ESA residual, visual agreement, numerical endpoint run or physical-error bound
 is claimed.
 
+Local verification: four unchanged existing functions in
+`tests/test_current_documentation.py` passed by direct stdlib execution:
+developer-root authority, documented Python syntax, obsolete-import exclusion
+and roadmap diagrams/exit ordering. New assessment/roadmap heading targets and
+changed-document whitespace checks passed. This is a partial-checkout receipt,
+not the complete 36-case Mac documentation gate; pytest and the full installed
+Wenu environment were not available here. No runtime tests were needed for this
+documentation-only change. Complete Mac documentation acceptance remains pending.
+
 
 ## K4b.05 finite perspective comparison, 2026-10-25
 
