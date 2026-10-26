@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 98, 2026-10-25. **Status:** PR #338 is merged at `2d5e911f336caff7d960c19b2134b67786b0353d`. Fernando selected the bounded K4b.05 finite perspective-omission comparison with “Proceed” and confirmed clean synchronized Mac main at that exact base. The bounded comparison now has actual Mac evidence at `04e27e77`: 345 focused cases/nine subtests across the original run and a fresh-cache retry, 173 source-audit, 36 documentation and eight tooling cases; the immutable-cache report retains 80 rows, 15 pairs and 65 gaps with unchanged source/model identities. Final documentation-receipt acceptance and PR #339 review remain pending. K4b.05 parent qualification, ESA execution and K4b.06 adoption remain separate.
+**Plan revision:** 99, 2026-10-26. **Status:** PR #339 is merged at `8a0e3e08437ccce2685ddd2e5c84e00f442d85ff`; its final documentation head passed all 36 Mac documentation cases, and merged-main synchronization and branch cleanup were confirmed. Fernando selected the bounded K4b.05 ESA comparison assessment with “Proceed” on 2026-10-26 and reconfirmed clean synchronized Mac main at that exact base. The assessment now records Orion/Ursa Major recoverability, linked all-sky RV/linear-motion evidence and explicit epoch/domain choices. No endpoint run or visual agreement is claimed; complete Mac documentation acceptance is pending. K4b.05 parent closure and K4b.06 adoption remain separate.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,8 +46,10 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `2d5e911f336caff7d960c19b2134b67786b0353d`,
-confirmed clean/synchronized on the Mac on 2026-10-25 after PR #338 merge.
+**Current accepted base:** main `8a0e3e08437ccce2685ddd2e5c84e00f442d85ff`,
+confirmed clean/synchronized on the Mac on 2026-10-26 after PR #339 merge.
+The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
+checkout is retired.
 The following K3/K4a receipts
 remain historical acceptance evidence rather than the current checkout.
 K4a.01 is accepted through PR #315 after 35 focused cases/nine subtests,
@@ -65,8 +67,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.05 finite comparison has synthetic fault-detection evidence, 345 focused cases/nine subtests via split Mac receipt, complete audit/documentation/tooling gates and an actual 80-row cache report; source and models unchanged; parent remains open |
-| Next bounded submilestone | Final Mac documentation-receipt check and PR #339 review; no next runtime item or K4b.06 adoption selected |
+| Current bounded result | K4b.05 ESA assessment delivered: source/method recovery, numerical reproduction gaps and proposed native-ICRS qualitative protocol; no actual ESA/Wenu comparison or domain change; prior finite-comparison receipts retained |
+| Next bounded submilestone | Complete Mac documentation acceptance and review of the selected ESA assessment; later qualitative execution protocol/domain selection remains proposed, not selected; no K4b.06 adoption |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -79,6 +81,39 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4b.05: ESA constellation comparison assessment
+
+Fernando selected this bounded assessment with “Proceed” on 2026-10-26,
+then confirmed clean synchronized Mac main
+`8a0e3e08437ccce2685ddd2e5c84e00f442d85ff`.
+Recover available primary ESA inputs, methods and epoch conventions for Orion
+first, then Ursa Major. Recheck referenced pages, linked method material and
+media rights. Record what enables a defensible numerical comparison and what
+supports only qualitative comparison; distinguish text, viewed media and
+executed Wenu results. Use the existing migration audit as the versioned
+repository assessment owner.
+
+As-is prerequisites: accepted finite full/angular comparison and immutable-source
+receipts, existing ESA assessment and current explicit stellar/frame domain
+contracts. ESA's +450,000-year Orion and +60,000-year Ursa Major endpoints exceed
+the latest comparison domains; Orion also exceeds the admitted +/-200,000-year
+mean-axis range. Assess a concrete domain disposition before any extension.
+No numerical endpoint run, domain extension, new physics, catalogue acquisition,
+author contact, media redistribution, production/model/default/API/dependency
+change, parent closure or K4b.06 adoption is selected by this assessment.
+
+Acceptance: source-linked recovery/availability table, explicit comparison and
+epoch-domain limits, closest documentation integrity checks and complete Mac
+documentation gate. Preserve accepted runtime receipts; no new numerical
+acceptance is inferred. Refresh the stale PR #339 current-position fields as
+part of this authorized documentation change. The committed selection must
+precede assessment findings. Plan commit: `5057fc426c49d2948803d716aa964155a6d128af`.
+The [feasibility assessment](kernel_migration_audit_v1.md#k4b05-esa-comparison-feasibility-assessment-2026-10-26)
+now records source evidence and unresolved comparisons. Four closest existing
+documentation functions passed locally via direct stdlib execution, plus new
+link-target and whitespace checks; the complete Mac documentation gate remains
+pending. No next runtime item, domain extension or parent closure is selected.
 
 ## K4b.05: finite perspective-omission comparison
 
@@ -127,8 +162,11 @@ eight tooling cases. The actual manifest-bound cache report retains 80 rows,
 15 full/angular pairs and 65 explicit gaps, preserving all source/model digests.
 Maximum signed/separation residual is `1.6653345369377348e-16` rad and maximum
 spherical chord residual is `8.959779580913775e-16`; physical accuracy remains
-unknown. Final documentation-receipt acceptance and PR #339 review are pending;
-no subsequent runtime item is selected. See the [bounded evidence](kernel_migration_audit_v1.md#k4b05-finite-perspective-comparison-2026-10-25).
+unknown. Final documentation-only head `af345e875750351c756b6abe4986561cab09654f`
+passed all 36 Mac documentation cases in 6.15 s with a clean synchronized task
+branch and diff check. PR #339 merged at `8a0e3e08`; clean synchronized Mac
+main and local/remote task-branch cleanup were confirmed. No subsequent runtime
+item is selected. See the [bounded evidence](kernel_migration_audit_v1.md#k4b05-finite-perspective-comparison-2026-10-25).
 
 ## K4b.05: bounded closure review
 
