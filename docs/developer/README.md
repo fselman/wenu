@@ -1,17 +1,17 @@
 # Wenu developer documentation
 
-## K4b.06 production consumer integration definition
+## K4b.06 stellar-owned integration candidate
 
-PR #344's [bounded K4b.06 definition](kernel_roadmap_v0.9.5.md#k4b06-production-integration-scope-definition)
-passed 36 Mac documentation cases in 4.12 s at `7edf0659`; Fernando accepted
-it, requested merge/cleanup and confirmed clean synchronized main `dc0d1d52`.
-He then explicitly corrected ownership: **stars own epoch-dependent realization;
-lines and labels consume public stellar positions without propagation knowledge.**
-The [first native atlas-sheet slice](kernel_migration_audit_v1.md#k4b06-production-integration-assessment-2026-10-26)
-is selected with that boundary. Request lifetime binds the stellar view once;
-source identity/names/V, fixed constellation membership, explicit gaps and the
-canonical pipeline are retained. Runtime implementation/acceptance remain pending.
-Bright-star source audit stays deferred to production adoption within K4b.06.
+The accepted [bounded scope and ownership](kernel_roadmap_v0.9.5.md#k4b06-production-integration-scope-definition)
+now have a production candidate: stars own request-scoped realization; lines and
+labels consume public stellar positions without propagation settings. The opt-in
+Python native atlas-sheet route retains the canonical pipeline and source
+membership/names/V. See the [public API](implementation_reference.md#explicit-stellar-realization-for-native-atlas-sheets)
+and [verification scope](testing_policy.md#k4b06-stellar-owned-native-integration-candidate).
+Nine constructed integration/export cases, 25 existing native consumer cases and
+five request-lifetime and 19 atlas sheet/report cases pass locally. Complete Mac gates and real-source
+J2000/J-8000 workloads/specimens remain pending. No K4b.06 closure, default or
+source replacement; bright-star audit stays at production adoption.
 
 ## K4b.05 current qualification review
 

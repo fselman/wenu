@@ -7,8 +7,11 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
+from contextlib import contextmanager
 
 from wenu.sky.celestial_sphere import CelestialSphere
+
+
 from wenu.sky.maximal_sphere import (CelestialSphereLoadProfile,
     CANONICAL_MAXIMAL_SPHERE_PROFILE, _require_native_profile)
 from wenu.sky.solar_system_bodies import SYMBOLIC_POINT
@@ -41,6 +44,41 @@ from wenu.sky.sky_layer import SkyLayer
 from wenu.sky.solar_system_bodies import SolarSystemBodyDescriptor
 from wenu.sky.solar_system_points import SolarSystemPointLayer
 from wenu.sky.venus import VENUS_POINT, VenusLayer
+
+@contextmanager
+def stellar_realization_sky(sky, motion):
+    """Assemble an isolated sky view over stellar-owned realized positions.
+
+    Dependent layers receive only the replacement stellar position source.
+    No epoch/model/session is installed on them or on the borrowed sky.
+    """
+    from copy import copy
+    if getattr(sky, 'observer', None) is not None or sky.stars is None:
+        raise ValueError('Stellar motion requires an observer-free sky with stars.')
+    with sky.stars.realized(motion) as stars:
+        replacements = {id(sky.stars): stars}
+        for name in ('constellation_lines', 'constellation_labels'):
+            layer = getattr(sky, name, None)
+            if layer is not None:
+                if layer.stars is not sky.stars:
+                    raise ValueError('Dependent geometry uses a different stellar source.')
+                dependent = copy(layer)
+                dependent.stars = stars
+                replacements[id(layer)] = dependent
+        view = copy(sky)
+        for name, value in vars(sky).items():
+            if id(value) in replacements:
+                setattr(view, name, replacements[id(value)])
+        view._layers = [replacements.get(id(layer), layer) for layer in sky.layers]
+        constellation = getattr(sky, 'constellations', None)
+        if constellation is not None:
+            if constellation.stars is not sky.stars:
+                raise ValueError('Constellation group uses a different stellar source.')
+            view.constellations = copy(constellation)
+            view.constellations.stars = stars
+            view.constellations.lines = replacements.get(id(constellation.lines), constellation.lines)
+        yield view
+
 
 class _NativeOnly:
     def load(self, *args, **kwargs):

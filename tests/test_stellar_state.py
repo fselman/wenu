@@ -368,6 +368,233 @@ def stellar_motion_case(source, *, representation='direction', coverage=None):
         AccuracyRequest(metric='euclidean_norm')if representation=='cartesian'else AccuracyRequest())
 
 
+def _production_stars(source):
+    """Constructed full source with original V and deliberately different axes."""
+    import numpy as np
+    from wenu.objects.stars import Stars
+    records = list(source.records())
+    table = pd.DataFrame(dict(magnitude=[r['original']['magnitude'] for r in records],
+        ra_degrees=[83.] * len(records), ra_hours=[83./15] * len(records),
+        dec_degrees=[0.] * len(records), epoch_year=[1991.25] * len(records)),
+        index=[int(r['identity']['identifier']) for r in records])
+    metadata = dict(source.metadata['original_metadata'], schema='wenu-stellar-catalogue/1',
+        provenance=['Constructed integration source'], source_metadata={})
+    metadata['units'] = dict(metadata['units'], ra_degrees='deg', dec_degrees='deg',
+                             ra_hours='hourangle', epoch_year='Julian year')
+    stars = Stars(None)
+    stars.source_catalog = ingest_stellar_catalogue(table, StellarCatalogueMetadata.from_record(metadata)).table
+    stars.catalog = stars.source_catalog.iloc[:1].copy()
+    return stars
+
+
+def _production_motion(source, instant=TimePoint(2457389, 0., 'tcb')):
+    from wenu_kernel.records import TimeSpan
+    domain = TimeSpan(TimePoint(-2000000, 0., 'tcb'), TimePoint(3000000, 0., 'tcb'))
+    return bridge.StellarMotionRequest((
+        bridge.admit_stellar_motion(source, coverage=domain,
+            distance_policy='positive-parallax-reciprocal', radial_velocity_policy='spectroscopic-proxy'),
+        bridge.admit_stellar_angular_motion(source, coverage=domain),
+        bridge.admit_stellar_hipparcos2_motion(source, coverage=domain,
+            epoch_policy='nominal-tcb-deferred-qualification')),
+        instant)
+
+
+def test_stellar_realized_view_identity_gaps_reuse_and_isolation(motion_source):
+    """Protect the production seam against static bypass and source mutation."""
+    import numpy as np
+    source = motion_source()
+    stars = _production_stars(source)
+    before = stars.native_positions()
+    request = _production_motion(source)
+    with stars.realized(request) as first:
+        with pytest.raises(ValueError, match='native ICRS only'):
+            first.observed_altaz()
+        with pytest.raises(ValueError, match='native ICRS only'):
+            first.spherical_geometry(None)
+        assert len(first.native_positions(()).ids) == 0
+        assert first._stellar_realization.report()['sdk_batches_evaluated'] == 0
+        positions = first.native_positions((8, 1, 4, 2, 5))
+        assert list(positions.ids) == [1, 2, 4, 5, 8]
+        assert list(positions.metadata['stellar_motion_status']) == ['evaluated', 'evaluated', 'unavailable', 'evaluated', 'evaluated']
+        assert np.isnan(positions.lon_deg[2])
+        assert positions.lon_deg[0] != before.lon_deg[0]
+        assert positions.metadata['magnitude'][0] == 2.
+        assert positions.coordinate_spec.time_scale == 'tcb'
+        np.testing.assert_array_equal(first.position().lon_deg, first.native_positions((1,)).lon_deg)
+        assert first._stellar_realization.report()['exact_batch_reuses'] > 0
+        with stars.realized(replace(request, instant=TimePoint(2467389, 0., 'tcb'))) as second:
+            assert second.native_positions((1,)).lon_deg[0] != positions.lon_deg[0]
+            np.testing.assert_array_equal(first.native_positions((1,)).lon_deg, positions.lon_deg[:1])
+        np.testing.assert_array_equal(stars.native_positions().lon_deg, before.lon_deg)
+    with pytest.raises(ClosedSession):
+        first.native_positions((1,))
+    assert not hasattr(stars, '_stellar_realization')
+
+
+def test_stellar_realization_dependents_are_position_consumers(motion_source, tmp_path):
+    """Lines/labels receive no motion options; source groups survive migration."""
+    import numpy as np
+    from wenu.sky.celestial_sphere import CelestialSphere
+    from wenu.sky.constellation_lines import ConstellationLines
+    from wenu.sky.constellation_labels import ConstellationLabels
+    from wenu.sky.assembly import stellar_realization_sky
+    from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    sky = CelestialSphere(None)
+    sky.stars = _production_stars(motion_source())
+    path = tmp_path / 'synthetic.fab'
+    path.write_text('Ori 3 1 2 5 4\n')
+    sky.constellation_lines = ConstellationLines(sky.stars, filename=path)
+    sky.constellation_labels = ConstellationLabels(sky.stars, min_stars=1)
+    from types import SimpleNamespace
+    sky.constellations = SimpleNamespace(stars=sky.stars, lines=sky.constellation_lines)
+    sky.extend((sky.stars, sky.constellation_lines, sky.constellation_labels))
+    with stellar_realization_sky(sky, _production_motion(motion_source())) as view:
+        assert view.stars is not sky.stars
+        assert view.constellation_lines.stars is view.constellation_labels.stars is view.stars
+        assert view.constellations.stars is view.stars
+        assert view.constellations.lines is view.constellation_lines
+        context = LayerRealizationContext(NATIVE_ICRS_SPEC)
+        points = view.stars.native_positions()
+        from wenu.sky.constellation_lines import UnresolvedConstellationStarWarning
+        with pytest.warns(UnresolvedConstellationStarWarning, match='4'):
+            curves = view.constellation_lines.realize(context, None)
+        anchors = view.constellation_labels.realize(context, None)
+        assert list(anchors.labels) == ['Ori']  # moved directions are not Orion
+        assert len(curves.lon_deg) == 2  # third edge has unavailable endpoint
+        np.testing.assert_allclose(np.column_stack((curves.lon_deg[0], curves.lat_deg[0])),
+                                   np.column_stack((points.lon_deg, points.lat_deg))[:2])
+        assert anchors.coordinate_spec == points.coordinate_spec
+        assert not hasattr(view.constellation_lines, '_stellar_realization')
+        assert not hasattr(view.constellation_labels, '_stellar_realization')
+    assert sky.constellation_lines.stars is sky.constellation_labels.stars is sky.stars
+    assert tuple(sky.layers) == (sky.stars, sky.constellation_lines, sky.constellation_labels)
+
+
+def test_stellar_realization_refuses_binding_domain_transport_and_warm_failure(motion_source, monkeypatch):
+    import pickle
+    from wenu_kernel import KernelSession
+    source = motion_source()
+    stars = _production_stars(source)
+    request = _production_motion(source)
+    with pytest.raises(TypeError, match='transport'):
+        pickle.dumps(request)
+    with pytest.raises(ValueError, match='domain'):
+        replace(request, instant=TimePoint(4000000, 0., 'tcb'))
+    wrong = stars.source_catalog.copy(deep=True)
+    wrong.loc[1, 'magnitude'] = 3.
+    stars.source_catalog = wrong
+    with pytest.raises(ValueError, match='photometry'):
+        with stars.realized(request):
+            pytest.fail('wrong source must refuse')
+    stars = _production_stars(source)
+    with stars.realized(request) as view:
+        view.native_positions((1,))
+        def refuse(*args):
+            raise UnsupportedCapability('synthetic warm SDK refusal')
+        monkeypatch.setattr(KernelSession, 'evaluate', refuse)
+        with pytest.raises(UnsupportedCapability, match='warm SDK refusal'):
+            view.native_positions((1,))
+
+
+def test_stellar_native_sheet_binds_view_and_closes_on_render_failure(motion_source, monkeypatch):
+    """Public sheet entry owns cleanup; no mutation of a supplied sky."""
+    from wenu.charts import atlas_sheet
+    from wenu.sky.celestial_sphere import CelestialSphere
+    from wenu_kernel.errors import ClosedSession
+    sky = CelestialSphere(None)
+    sky.stars = _production_stars(motion_source())
+    sky.add(sky.stars)
+    # Validation of sheet/page geometry has its existing independent owner.
+    request = object.__new__(atlas_sheet.AtlasSheetChartRequest)
+    object.__setattr__(request, 'stellar_motion', _production_motion(motion_source()))
+    seen = []
+    def render(request, bound):
+        seen.append(bound.stars)
+        assert bound.stars is not sky.stars
+        assert bound.stars.native_positions((1,)).coordinate_spec.time_scale == 'tcb'
+        raise RuntimeError('synthetic renderer failure')
+    monkeypatch.setattr(atlas_sheet, '_render_atlas_sheet', render)
+    with pytest.raises(RuntimeError, match='renderer failure'):
+        atlas_sheet.render_atlas_sheet(request, sky)
+    with pytest.raises(ClosedSession):
+        seen[0].native_positions((1,))
+    assert not hasattr(sky.stars, '_stellar_realization')
+
+
+@pytest.mark.integration
+def test_stellar_motion_public_native_sheet_export(motion_source, tmp_path):
+    """Constructed stellar data through real preparation/render/report/export."""
+    from wenu.atlas_design import AtlasSheetGeometry, AtlasPageGeometry
+    from wenu.charts.atlas_sheet import AtlasSheetChartRequest, AtlasChartPresentation
+    from wenu.charts.request_generation import generate_chart_request
+    from wenu.sky.celestial_sphere import CelestialSphere
+    from wenu.sky.constellation_lines import ConstellationLines
+    from wenu.sky.constellation_labels import ConstellationLabels
+    sky = CelestialSphere(None)
+    sky.stars = _production_stars(motion_source())
+    path = tmp_path / 'synthetic-export.fab'
+    path.write_text('Ori 1 1 2\n')
+    sky.constellation_lines = ConstellationLines(sky.stars, filename=path)
+    sky.constellation_labels = ConstellationLabels(sky.stars, min_stars=1)
+    sky.extend((sky.stars, sky.constellation_lines, sky.constellation_labels))
+    request = AtlasSheetChartRequest(
+        AtlasSheetGeometry('synthetic', 1, 0., 0., 40.),
+        AtlasPageGeometry(250., 353., 10., 10., 10., 10.),
+        AtlasChartPresentation(layers=('stars', 'constellation_lines', 'constellation_labels'),
+                               formats=('png', 'pdf', 'svg'), dpi=36,
+                               report_label_scale=1., legend_fontsize=6.),
+        tmp_path / 'sheet', stellar_motion=_production_motion(motion_source()))
+    result = generate_chart_request(request, sky=sky)
+    assert len(result.outputs) == 7
+    assert all(path.is_file() and path.stat().st_size > 0 for path in result.outputs)
+    report = json.loads((request.output_dir / 'chart-01_report_data.json').read_text())
+    assert report['stellar_realization']['epoch']['scale'] == 'tcb'
+    assert report['stellar_realization']['model_counts']['unavailable'] == 3
+    assert report['stellar_realization']['physical_accuracy'] == 'unknown'
+    assert not hasattr(sky.stars, '_stellar_realization')
+
+
+@pytest.mark.parametrize('failure', ['register', 'open_session', 'evaluate'])
+def test_stellar_realization_closes_partial_resources(motion_source, monkeypatch, failure):
+    """Provider ownership survives partial admission and first-query refusal."""
+    from wenu_kernel import KernelSession
+    created = []
+    factory = bridge.StellarMotionProvider
+    def capture(*args, **kwargs):
+        provider = factory(*args, **kwargs)
+        created.append(provider)
+        return provider
+    monkeypatch.setattr(bridge, 'StellarMotionProvider', capture)
+    def refuse(*args, **kwargs):
+        raise RuntimeError('synthetic partial resource failure')
+    monkeypatch.setattr(KernelSession if failure == 'evaluate' else Kernel, failure, refuse)
+    stars = _production_stars(motion_source())
+    with pytest.raises(RuntimeError, match='partial resource failure'):
+        with stars.realized(_production_motion(motion_source())) as view:
+            view.native_positions()
+    assert created
+    for provider in created:
+        with pytest.raises(ClosedSession):
+            provider.describe()
+    assert not hasattr(stars, '_stellar_realization')
+
+
+def test_stellar_realization_restored_facade_keeps_explicit_binding(motion_source):
+    """Restored source facade may bind motion; it does not infer one."""
+    import numpy as np
+    from wenu.sky.assembly import _SnapshotStars
+    source = motion_source()
+    cold = _production_stars(source)
+    restored = _SnapshotStars(None)
+    restored.source_catalog = cold.source_catalog.copy(deep=True)
+    restored.catalog = cold.catalog.copy(deep=True)
+    before = restored.native_positions()
+    with restored.realized(_production_motion(source)) as view:
+        assert type(view) is _SnapshotStars
+        assert view.native_positions((1,)).lon_deg[0] != before.lon_deg[0]
+    np.testing.assert_array_equal(restored.native_positions().lon_deg, before.lon_deg)
+
+
 def test_stellar_motion_admission_preserves_source_population_and_explicit_gaps(motion_source):
     """Protect source loss/zero filling; closest existing native input-copy test."""
     from dataclasses import FrozenInstanceError

@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 105, 2026-10-26. **Status:** Fernando accepted the bounded K4b.06 native atlas-sheet integration scope and requested PR #344 merge/cleanup after 36 Mac documentation tests passed in 4.12 s at `7edf0659`. PR #344 merged at `dc0d1d52fbd1db075202d8d1536c370555256d7e`; clean synchronized Mac main and local/remote cleanup were confirmed. He then clarified and selected the ownership boundary: stars own epoch-dependent realization; constellation lines and labels consume public stellar positions without epoch, astrometric-model or propagation-session knowledge. This revision records that correction before implementation; no runtime acceptance is claimed.
+**Plan revision:** 107, 2026-10-26. **Status:** PR #345's stellar-ownership correction passed 36 Mac documentation cases in 3.96 s at `f0ba23a5`, merged at `80fbe496a5c4a0342adcca288fd0f9e0919df2cf`, and clean synchronized Mac main plus cleanup were confirmed. Fernando selected implementation with "Proceed". The bounded native atlas-sheet candidate now binds realization to stars; lines/labels consume positions. Local seam/export evidence is recorded; Mac acceptance and real-source workloads/specimens remain pending. K4b.06 is not closed.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,8 +46,8 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `dc0d1d52fbd1db075202d8d1536c370555256d7e`,
-confirmed clean/synchronized on the Mac on 2026-10-26 after PR #344 merge.
+**Current accepted base:** main `80fbe496a5c4a0342adcca288fd0f9e0919df2cf`,
+confirmed clean/synchronized on the Mac on 2026-10-26 after PR #345 merge.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -83,6 +83,27 @@ cleanup. This documentation merge adds no runtime acceptance.
 
 
 ## K4b.06: production integration scope definition
+
+**Mac receipt and operational correction:** At `0ec6515`, Fernando passed
+9 new integration, 26 native consumer, five request-lifetime and 19 atlas/report
+cases (59 runtime checks). Documentation passed 35 cases and failed its executable
+canonical import example because a new illustrative block used undefined inputs.
+Remove that block from the executable-example sequence and rerun documentation
+only; retain the passing runtime receipt. Real-source workload/specimen acceptance
+remains pending. Fernando also requires all subsequent Wenu build/test/output
+runs under `~/Software/build/wenu/`, separate from wenu-imaging, with
+`run-provenance.json` and retention-aware cleanup as specified in the developer
+instructions. Existing home-directory results require inspection, not automatic
+deletion or invented provenance.
+
+**Implementation candidate:** Fernando's subsequent "Proceed" after PR #345
+merge/cleanup activates only the accepted first slice below. Existing stars,
+stellar adapter, source assembly and native-sheet owners now implement it;
+constellation-line code is unchanged. Labels read source membership separately
+from returned member positions. Nine new constructed cases, 25 existing native
+consumer cases and five request-lifetime cases pass locally, including real
+three-format sheet/report export. Mac/real-cache/saved-sky/workload/specimen gates
+remain pending. These changes do not close K4b.06 or start the bright-star audit.
 
 **Accepted definition:** PR #344 passed 36 Mac documentation cases in 4.12 s
 at `7edf0659`, was accepted by Fernando, and merged at `dc0d1d52`.
@@ -2069,7 +2090,7 @@ remain its separate responsibilities.
 | K4b.03 | Admit explicit historical time/calendar/year-zero/BCE and source/input-date uncertainty semantics | Bounded explicit input/receipt slice passed Mac acceptance in PR #327 at ceeb894b: 257 focused, 125 audit, 36 documentation, eight tooling/81 subtests and 24 actual historical states. No implicit civil-clock/TT-to-TCB/observer reconstruction or total uncertainty claim |
 | K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Bounded explicit long-term mean-axis slice passed Mac acceptance in PR #328 at 97921fe8; 48 actual derived directions, finite TT domain and unknown physical/total error. No observer/EOP reconstruction or chart/default adoption |
 | K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references; include ESA Orion and Ursa Major reconstruction comparisons with documented input/method and independence limits | Accepted/closed for nominal reconstruction with explicit documented limits by Fernando on 2026-10-26, after 36 Mac documentation passes in 3.65 s at a8c0dd08. Numerical and bounded comparisons completed; detailed ESA agreement inconclusive, physical accuracy unknown. #326/#333 remain open; no source optimality or consumer adoption claim |
-| K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | K4b.05 nominal-use qualification accepted. First opt-in native atlas-sheet slice selected after PR #344 acceptance; stars own realization, lines/labels consume public positions without propagation knowledge. Implementation and runtime acceptance pending. Remaining sibling/product/worker/CLI gates stay explicit; bright-star audit deferred to production adoption within this stage |
+| K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | K4b.05 nominal-use qualification accepted. First opt-in native atlas-sheet slice selected after PR #344 acceptance; stars own realization, lines/labels consume public positions without propagation knowledge. Implementation candidate; Mac runtime/source/workload acceptance pending. Remaining sibling/product/worker/CLI gates stay explicit; bright-star audit deferred to production adoption within this stage |
 
 ### K5–K9: freeze, extraction and release
 

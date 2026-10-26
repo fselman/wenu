@@ -77,12 +77,15 @@ class ConstellationLabels(GeometricalObject):
         coordinate_spec = positions.coordinate_spec
         ra_deg = np.asarray(positions.lon_deg, dtype=float)
         dec_deg = np.asarray(positions.lat_deg, dtype=float)
-        valid_coordinates = np.isfinite(ra_deg) & np.isfinite(dec_deg)
+        source_ra = np.asarray(positions.metadata.get('source_lon_deg', ra_deg), dtype=float)
+        source_dec = np.asarray(positions.metadata.get('source_lat_deg', dec_deg), dtype=float)
+        valid_coordinates = (np.isfinite(ra_deg) & np.isfinite(dec_deg)
+                             & np.isfinite(source_ra) & np.isfinite(source_dec))
         if not np.any(valid_coordinates):
             return self._empty(observer, coordinate_spec=coordinate_spec if native_icrs else None)
         coordinates = SkyCoord(
-            ra=ra_deg[valid_coordinates] * u.deg,
-            dec=dec_deg[valid_coordinates] * u.deg,
+            ra=source_ra[valid_coordinates] * u.deg,
+            dec=source_dec[valid_coordinates] * u.deg,
             frame="icrs",
         )
         abbreviations = np.asarray(
@@ -103,8 +106,8 @@ class ConstellationLabels(GeometricalObject):
             serpens = abbreviations == "Ser"
             if np.any(serpens):
                 identifiers = self.boundaries.regions_of(
-                    ra_deg[valid_coordinates][serpens],
-                    dec_deg[valid_coordinates][serpens],
+                    source_ra[valid_coordinates][serpens],
+                    source_dec[valid_coordinates][serpens],
                     candidates={"SER1", "SER2"},
                 )
                 group_labels[serpens] = [

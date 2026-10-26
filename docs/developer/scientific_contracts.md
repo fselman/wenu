@@ -1,5 +1,24 @@
 # Current scientific contracts and paused work
 
+## K4b.06 native stellar integration candidate
+
+The explicit Python native atlas-sheet opt-in uses only previously admitted
+full Gaia, angular Gaia and nominal-TCB Hip2 models. Source/model/event ownership
+belongs to stars and their adapter. Lines and labels consume stellar positions;
+they do not gain independent astrometry or epoch policy. Source identity,
+photometry, names and constellation membership remain fixed. Retained source
+membership and propagated label-anchor directions have separate meanings.
+
+Model order is caller-supplied. Only declared missing-input availability selects
+a later supplied model; an SDK/domain/integrity/numerical refusal aborts without
+substituting another model or original static coordinates. Available geometry
+carries its common TCB event; gaps carry explicit reasons. Physical accuracy and
+unresolved Hip2 conventions/covariance remain unknown. The implementation does
+not close #326/#333 or K4b.06, adopt improved sources, transform historical
+observers, change native defaults or qualify all other sky layers.
+Constructed seam/export checks pass; real Mac source/workload/specimen acceptance
+is still required.
+
 ## K4b.05 qualification status
 
 The [current post-comparison review](kernel_migration_audit_v1.md#k4b05-qualification-review-after-reference-comparisons-2026-10-26)

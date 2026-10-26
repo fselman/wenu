@@ -1,5 +1,33 @@
 # Testing policy and module independence
 
+## K4b.06 stellar-owned native integration candidate
+
+The selected slice extends existing stellar/consumer/request/atlas owners. New
+seam cases live in `tests/test_stellar_state.py` beside the existing native and
+motion adapter protections. They detect static-source bypass, wrong identity/
+model routing, explicit gaps, retained source label groups, dependent endpoint
+consistency, request isolation, warm SDK refusal, partial-resource cleanup,
+restored-source facade binding and the public native-sheet export/report route.
+A deliberate static-coordinate substitution fails the new stellar-view test.
+
+Focused Mac composition (plugin autoload disabled): the new `stellar_realiz`,
+`stellar_native_sheet` and `stellar_motion_public_native_sheet` cases; existing
+native protections in stellar/line/label/public-position/layer owners; native
+atlas/request cleanup cases; affected atlas sheet/report contracts; and the
+complete documentation gate. SDK/affine numerical implementations and pins are
+unchanged; do not run unrelated independent numerical/family gates. No gate
+manifest or test-collection configuration change is introduced.
+
+Local evidence: nine new constructed cases pass, including real PNG/PDF/SVG
+chart/report export; 25 existing native consumer cases pass (the asset-dependent
+loaded-designations case requires the complete checkout), five existing
+request scope/cleanup/native-atlas cases, and 19 existing atlas sheet/report cases
+pass. Four focused documentation checks pass locally. The local SDK source bytes match
+the project's pinned SDK revision. These are not actual cached-source or complete
+saved-sky/ancient-sheet acceptance. On the Mac measure admission, cold/warm/
+changed-epoch workloads and SDK reuse at explicit common J2000/J-8000 TCB epochs,
+with source-loaded and saved-source skies, retained gaps and output review.
+
 ## Hipparcos-2 covariance qualification gate
 
 Extend the existing `gaia-crossmatch-audit` owner and test file. Synthetic

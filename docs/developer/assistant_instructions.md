@@ -205,7 +205,7 @@ Python assert, which optimization can disable:
 
 ```bash
 python -c 'import platform,sys; sys.exit(0 if platform.system() == "Darwin" else "STOP: run this in your Mac terminal, not chapman3.")' &&
-cd /Users/fselman/odrive/Dropbox/software/wenu &&
+cd /Users/fselman/Developer/wenu &&
 git status -sb
 ```
 
@@ -226,3 +226,42 @@ review pairs and avoid overwrite. Temporary scripts, patch artifacts,
 generated charts and unrelated notebooks do not belong in the repository.
 Ordinary examples express requests; they do not implement catalogue joins,
 projection, renderer dispatch, legends or repeated saving.
+
+
+## Build, test and output locations and provenance
+
+Fernando established this convention on 2026-10-26, consistent with his parallel
+wenu-imaging work. Keep Wenu work separate from wenu-imaging. Use
+`~/Software/build/wenu/build/`, `~/Software/build/wenu/test/` and
+`~/Software/build/wenu/output/` for new build, test and generated-output runs;
+use a purpose-specific run directory within the appropriate location. Do not
+create output/build/test directories directly in the Mac home directory, use
+`~/wenu-output` for new work, or put generated artifacts in the repository.
+The active source checkout remains `/Users/fselman/Developer/wenu`.
+
+Every new build, test or generated-output run directory must contain a
+consistently named `run-provenance.json`, created before the run starts and
+updated on completion or failure. Record:
+
+- Repository identity, branch and exact source commit SHA.
+- Whether the source had uncommitted changes (and the observed status).
+- Purpose, creation time with time zone, host and exact commands.
+- Inputs, outputs and links to related run directories.
+- Status: `running`, `passed`, `failed` or `incomplete`.
+- Retention role: `disposable`, `acceptance evidence` or `active installation`.
+
+Use JSON null or an explicit unknown value for facts that cannot be recovered;
+never infer an exact branch, commit, clean state or input identity from a folder
+name. Preserve source identifiers/hashes and the provenance record with retained
+evidence. Failed or interrupted runs must not retain a misleading passed status.
+Apply this convention to subsequent assistant commands and delivered run recipes.
+It is an operational rule, not a new astronomical model or source-snapshot schema.
+
+A merged branch alone never makes a directory safe to delete. Before cleanup,
+check that it contains no unique input/data or required acceptance evidence,
+supplies no selected executable or active installation, and has no active
+consumers. Preserve dependencies referenced by retained runs. Existing directories
+receive records only where provenance can be recovered; unknown fields remain
+explicitly unknown. Inspect existing `~/wenu-output` content and retention needs
+before relocation/cleanup; do not delete, overwrite or relabel those results as
+a new run merely to tidy the home directory.

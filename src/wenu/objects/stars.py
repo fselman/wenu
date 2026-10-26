@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from importlib.resources import as_file
+from contextlib import contextmanager
 
 import astropy.units as u
 from astropy.coordinates import SkyCoord
@@ -200,10 +201,11 @@ class Stars(AstronomicalObject):
         return self.catalog
 
     def position(self, instant=None) -> SphericalPoints:
-        """Return the stable selection's source-native ICRS positions.
+        """Return stable selected positions from this stellar view.
 
         ``instant`` remains a compatibility argument, not a propagation request.
-        The returned epoch identifies the unpropagated Hipparcos solution.
+        Unbound views retain unpropagated Hipparcos coordinates; explicitly
+        realized views use their bound stellar request.
         """
         del instant
         if self.catalog is None:
@@ -212,6 +214,45 @@ class Stars(AstronomicalObject):
                 "Call stars.load() first."
             )
         return self._native_position_geometry(self.catalog)
+
+    @contextmanager
+    def realized(self, motion):
+        """Own an isolated stellar view; dependent geometry only asks positions.
+
+        The original sky/catalogue is never rebound or mutated. The yielded
+        view cannot evaluate after its request ends and is not a saved source.
+        """
+        from copy import copy
+        from wenu.stellar_state import StellarMotionRequest, _StellarRealization
+        if type(motion) is not StellarMotionRequest:
+            raise TypeError('motion must be StellarMotionRequest.')
+        if getattr(self, '_stellar_realization', None) is not None:
+            raise ValueError('A realized stellar view cannot be rebound.')
+        source = getattr(self, 'source_catalog', None)
+        if source is None:
+            raise RuntimeError('Stellar realization requires a loaded source.')
+        realization = _StellarRealization(motion, source, self.catalogue_metadata.to_record())
+        try:
+            view = copy(self)
+            view._stellar_realization = realization
+            yield view
+        finally:
+            realization.close()
+
+    def _position_spec(self, catalog):
+        realization = getattr(self, '_stellar_realization', None)
+        return (realization.coordinate_spec if realization is not None
+                else stellar_table_metadata(catalog).coordinate_spec())
+
+    def _position_metadata(self, catalog):
+        realization = getattr(self, '_stellar_realization', None)
+        if realization is None:
+            return {}
+        # Membership geometry remains source-native, independent of realization.
+        lon = (catalog['ra_degrees'].to_numpy(dtype=float, copy=True)
+               if 'ra_degrees' in catalog else catalog['ra_hours'].to_numpy(dtype=float, copy=True) * 15.)
+        return dict(realization.row_metadata(catalog.index),
+            source_lon_deg=lon, source_lat_deg=catalog['dec_degrees'].to_numpy(dtype=float, copy=True))
 
     @property
     def catalogue_metadata(self):
@@ -222,7 +263,7 @@ class Stars(AstronomicalObject):
         return stellar_table_metadata(source)
 
     def native_positions(self, identifiers=None) -> SphericalPoints:
-        """Query source-native positions independently of marker selection.
+        """Query native-ICRS positions independently of marker selection.
 
         ``None`` selects the complete source, including faint stars needed for
         constellation-label anchors. An explicit empty iterable selects no rows.
@@ -230,7 +271,8 @@ class Stars(AstronomicalObject):
         Return available rows in source order, including missing-coordinate
         rows with their original metadata/NaNs. Absent identities are omitted;
         callers such as constellation figures retain their missing-ID policy.
-        This source-native lookup does not propagate to an evaluation epoch.
+        An unbound lookup is source-native. A view from ``realized`` owns its
+        explicit epoch/model binding; callers supply only identities.
         """
         source = getattr(self, "source_catalog", None)
         if source is None:
@@ -250,6 +292,7 @@ class Stars(AstronomicalObject):
             "coordinate_system": "icrs",
             "catalogue_metadata": catalogue_metadata.to_record(),
         }
+        metadata.update(self._position_metadata(catalog))
         for name in ("magnitude", "star_designations", *_HIPPARCOS_SEMANTIC_DEFAULTS):
             if name in catalog.columns:
                 metadata[name] = catalog[name].to_numpy(copy=True)
@@ -264,7 +307,7 @@ class Stars(AstronomicalObject):
         return SphericalPoints(
             lon_deg=lon,
             lat_deg=lat,
-            coordinate_spec=catalogue_metadata.coordinate_spec(),
+            coordinate_spec=self._position_spec(catalog),
             ids=catalog.index.to_numpy(copy=True),
             metadata=metadata,
         )
@@ -340,6 +383,8 @@ class Stars(AstronomicalObject):
         """Reuse render-local selection for static native catalogue astrometry."""
         if context.is_native_icrs:
             return self._spherical_geometry(observer, native_icrs=True, **geometry_options)
+        if getattr(self, '_stellar_realization', None) is not None:
+            raise ValueError('Explicit stellar motion currently supports native ICRS only.')
         return self.spherical_geometry(observer, **geometry_options)
 
     def spherical_geometry(
@@ -364,6 +409,8 @@ class Stars(AstronomicalObject):
         native_icrs=False,
     ) -> SphericalPoints:
         """Return observer-dependent stellar positions as spherical points."""
+        if not native_icrs and getattr(self, '_stellar_realization', None) is not None:
+            raise ValueError('Explicit stellar motion currently supports native ICRS only.')
         resolved_observer = self.observer if observer is None else observer
         if resolved_observer is None and not native_icrs:
             raise RuntimeError("An Observer is required for stellar geometry.")
@@ -425,6 +472,7 @@ class Stars(AstronomicalObject):
         }
         if native_icrs:
             metadata['catalogue_metadata'] = stellar_table_metadata(selected).to_record()
+            metadata.update(self._position_metadata(selected))
         for name, default in _HIPPARCOS_SEMANTIC_DEFAULTS.items():
             if name in selected.columns:
                 values = selected[name].to_numpy(copy=True)
@@ -455,7 +503,7 @@ class Stars(AstronomicalObject):
         return SphericalPoints(
             lon_deg=az_deg,
             lat_deg=alt_deg,
-            coordinate_spec=stellar_table_metadata(selected).coordinate_spec() if native_icrs else observer_altaz_spec(
+            coordinate_spec=self._position_spec(selected) if native_icrs else observer_altaz_spec(
                 resolved_observer,
                 position_status=PositionStatus.APPARENT,
                 provider="skyfield Hipparcos",
@@ -467,6 +515,9 @@ class Stars(AstronomicalObject):
 
     def _native_catalogue_coordinates(self, catalog):
         """Realize the admitted native stellar rows through the kernel bridge."""
+        realization = getattr(self, '_stellar_realization', None)
+        if realization is not None:
+            return realization.positions(catalog.index)
         from wenu.stellar_state import (
             native_stellar_states, native_stellar_angles,
         )
@@ -581,6 +632,8 @@ class Stars(AstronomicalObject):
 
     def observed_altaz(self, observer=None):
         """Return cached maximal-catalogue Alt/Az for one observer instant."""
+        if getattr(self, '_stellar_realization', None) is not None:
+            raise ValueError('Explicit stellar motion currently supports native ICRS only.')
         resolved = self.observer if observer is None else observer
         if resolved is None:
             raise ValueError(

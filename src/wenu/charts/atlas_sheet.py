@@ -234,6 +234,7 @@ class AtlasSheetChartRequest:
     page: object
     presentation: object
     output_dir: object
+    stellar_motion: object | None = None
 
     def __post_init__(self):
         from pathlib import Path
@@ -243,6 +244,10 @@ class AtlasSheetChartRequest:
         if not isinstance(self.presentation, AtlasChartPresentation):
             raise TypeError("Atlas sheet requests require AtlasChartPresentation.")
         object.__setattr__(self, "output_dir", Path(self.output_dir))
+        if self.stellar_motion is not None:
+            from wenu.stellar_state import StellarMotionRequest
+            if type(self.stellar_motion) is not StellarMotionRequest:
+                raise TypeError('stellar_motion must be StellarMotionRequest.')
 
 
 
@@ -284,7 +289,7 @@ def _atlas_report_data(chart, sky, composition, rendering):
                                 effective_limit=composition.detail.star_magnitude_limit)
         budget = magnitude_area_budget(np.asarray(stars.spherical.metadata["magnitude"])[mask],
             sizing_record, sky_area_mm2)
-    return dict(schema_version=1, document_kind="wenu-atlas-chart-report",
+    data = dict(schema_version=1, document_kind="wenu-atlas-chart-report",
         stellar_sizing=sizing_record, stellar_area_budget=budget,
         chart_number=chart.sheet.number, sheet_id=chart.sheet.sheet_id,
         center=dict(coordinate_system="ICRS", ra_deg=chart.sheet.center_ra_deg,
@@ -307,6 +312,10 @@ def _atlas_report_data(chart, sky, composition, rendering):
         stars=dict(statistics=None if statistics is None else asdict(statistics),
                    reference_range=reference_range),
         report=dict(status="reserved", sections=[], inventory_status="not_generated"))
+    realization = getattr(sky.stars, '_stellar_realization', None)
+    if realization is not None:
+        data['stellar_realization'] = realization.report()
+    return data
 
 
 
@@ -340,6 +349,7 @@ def _render_atlas_report(chart, sky, composition, rendering, directory,
     # Measure physical layout without a GUI window rounding the paper to pixels.
     figure = Figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4))
     FigureCanvasAgg(figure)
+    _draw_stellar_realization_note(figure, sky)
     left = page.outer_mm / page.width_mm
     bottom = page.bottom_mm / page.height_mm
     width = page.useful_width_mm / page.width_mm
@@ -589,7 +599,31 @@ def _atlas_grid_layout(page, style, presentation, *, circular=False):
 
 
 
+def _draw_stellar_realization_note(figure, sky):
+    realization = getattr(sky.stars, '_stellar_realization', None)
+    if realization is None:
+        return
+    record = realization.report()
+    time = record['epoch']
+    year = 2000 + ((time['jd1'] - 2451545) + time['jd2']) / 365.25
+    missing = record['model_counts'].get('unavailable', 0)
+    figure.text(.5, .006,
+        f'Nominal stellar positions: J{year:g} TCB; {missing} source stars unavailable. '
+        'Physical accuracy unknown.', ha='center', va='bottom', fontsize=5)
+
+
 def render_atlas_sheet(request, sky):
+    """Bind stellar realization once around the existing native-sheet route."""
+    if not isinstance(request, AtlasSheetChartRequest):
+        raise TypeError('request must be AtlasSheetChartRequest.')
+    if request.stellar_motion is None:
+        return _render_atlas_sheet(request, sky)
+    from wenu.sky.assembly import stellar_realization_sky
+    with stellar_realization_sky(sky, request.stellar_motion) as view:
+        return _render_atlas_sheet(request, view)
+
+
+def _render_atlas_sheet(request, sky):
     """Render a validated native sheet and return one ChartExportResult.
 
     The result owns its first output plus all other format/report paths in
@@ -613,6 +647,11 @@ def render_atlas_sheet(request, sky):
     from .regional import ExportOptions
     from wenu.rendering.matplotlib import MatplotlibRenderer
     from wenu.sky.realization import LayerRealizationContext, NATIVE_ICRS_SPEC
+    realization = getattr(sky.stars, '_stellar_realization', None)
+    spec = None if realization is None else realization.coordinate_spec
+    context = (LayerRealizationContext(NATIVE_ICRS_SPEC) if spec is None else
+        LayerRealizationContext(NATIVE_ICRS_SPEC, evaluation_instant=spec.instant,
+                                evaluation_time_scale=spec.time_scale))
     sheet, page, presentation, directory = request.sheet, request.page, request.presentation, request.output_dir
     chart = AtlasSheetChart(sheet, page)
     composition = compose_chart(chart, style=presentation.style,
@@ -673,6 +712,7 @@ def render_atlas_sheet(request, sky):
     figure = Figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4), dpi=100)
     FigureCanvasAgg(figure)
     ax = figure.add_axes(axes_bounds)
+    _draw_stellar_realization_note(figure, sky)
     ax.set_xticks([])
     ax.set_yticks([])
     _draw_atlas_chart_number(ax, sheet.number, composition.style, presentation)
@@ -687,7 +727,7 @@ def render_atlas_sheet(request, sky):
             Path(directory) / f"chart-{sheet.number:02d}.{first}",
             composition=composition,
             layer_options=grid_options,
-            realization_context=LayerRealizationContext(NATIVE_ICRS_SPEC),
+            realization_context=context,
             export_options=ExportOptions(dpi=presentation.dpi, bbox_inches=None),
             additional_furniture=partial(_draw_atlas_magnitude_scale, presentation=presentation))
         for suffix in presentation.formats[1:]:

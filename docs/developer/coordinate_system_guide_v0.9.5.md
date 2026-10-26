@@ -1,5 +1,25 @@
 # Wenu coordinate systems, time and astronomical objects
 
+## Stellar-owned native realization in K4b.06
+
+An explicitly bound stellar view may expose nominal propagated ICRS directions
+at one common TCB event through the existing public stellar-position interface.
+Its coordinate specification carries that event/scale; the original source
+catalogue metadata/epoch is retained separately and is not relabelled. No frame
+orientation or observer transformation follows implicitly from stellar motion.
+
+Lines take endpoint directions from stars and preserve their returned coordinate
+specification; labels preserve source-defined IAU/Serpens membership and compute
+anchors from member directions. These geometry consumers neither select epochs
+or astrometric models nor own propagation sessions. Source-direction metadata
+used for membership is explicitly distinct from the realized direction arrays.
+
+This is the selected native Python atlas-sheet integration candidate, with real
+Mac acceptance pending. Missing directions stay unavailable, no failed query
+falls back to static coordinates, and physical ancient-position accuracy remains
+unknown. Other native layers remain truthfully static; the stellar specimen does
+not claim that deep-sky objects or the entire historical sky physically evolved.
+
 ## Hipparcos-2 source covariance diagnostic
 
 The offline qualification mode reports a source-epoch covariance ordered
