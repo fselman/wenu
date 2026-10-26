@@ -67,7 +67,7 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | Approved long-epoch diagnostic executed: 147 rows retained, 52 evaluated/95 gaps; actual v2 figures viewed after diagnostic orientation correction; detailed ESA agreement inconclusive, scientific parent open |
+| Current bounded result | Numerical, finite perspective and bounded ESA/literature comparisons completed; current qualification matrix prepared. Nominal motion supported, physical/total accuracy unknown; intended-use acceptance proposed, parent open |
 | Next bounded submilestone | Selected K4b.05 qualification review: reconcile completed perspective/ESA/literature evidence and propose an explicit intended-use disposition; no parent closure or K4b.06 adoption |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
@@ -109,7 +109,13 @@ K4b.05 parent closure or K4b.06 execution. Keep incomplete-input sibling scope
 and existing downstream dependencies explicit. Acceptance: current owner/blob
 inspection, claim/evidence/link consistency, closest local documentation
 contracts, then complete Mac documentation gate. Commit this plan before
-writing the refreshed disposition. No repeat of accepted propagation or visual
+writing the refreshed disposition. Plan committed at
+`f4ffdd160b8f7ee0bcaac4ad42fe7221fc80da4a`.
+The [updated evidence matrix and proposed intended-use decision](kernel_migration_audit_v1.md#k4b05-qualification-review-after-reference-comparisons-2026-10-26)
+are prepared for review. Comparison execution obligations are completed within
+their recorded scopes; physical accuracy remains unqualified. Acceptance of
+nominal reconstruction with explicit limits is proposed, not inferred. K4b.05
+remains open pending that decision; K4b.06 is not activated. No repeat of accepted propagation or visual
 exports is needed for a documentation-only review.
 
 ## K4b.05: literature-figure visual comparison
@@ -160,7 +166,9 @@ maximum independent chord residual 3.7238012298709097e-16. Uploaded source/Wenu
 images were inspected: Kaler's future Dipper gives clear qualitative agreement,
 Orion shows modest consistent subset change, and the dated Bears view remains
 limited by orientation/sample differences. Final documentation and report/image
-integrity acceptance remain pending; no new propagation is required.
+integrity acceptance passed at `4034e69b`: 36 cases in 4.02 s, complete report
+and reviewed-upload linkage verified without propagation. PR #342 merged at
+`df4eae36`; clean synchronized main and local/remote cleanup confirmed.
 Plan committed before executable recipe work at
 `734aed0acb50a635f238a16fc490840d01f54510`.
 
@@ -2008,7 +2016,7 @@ remain its separate responsibilities.
 | K4b.02 | Adopt admitted incomplete-input models and configured lookback/error/refusal policies for real stars | Measured-PM angular slice passed Mac acceptance in PR #323 at 41c47e16; nominal-TCB Hip2 fallback also passed Mac acceptance in PR #325 at d71ee8da; source time-scale qualification remains issue #326, and no-PM/other missing-input scopes remain pending. No invented measurements |
 | K4b.03 | Admit explicit historical time/calendar/year-zero/BCE and source/input-date uncertainty semantics | Bounded explicit input/receipt slice passed Mac acceptance in PR #327 at ceeb894b: 257 focused, 125 audit, 36 documentation, eight tooling/81 subtests and 24 actual historical states. No implicit civil-clock/TT-to-TCB/observer reconstruction or total uncertainty claim |
 | K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Bounded explicit long-term mean-axis slice passed Mac acceptance in PR #328 at 97921fe8; 48 actual derived directions, finite TT domain and unknown physical/total error. No observer/EOP reconstruction or chart/default adoption |
-| K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references; include ESA Orion and Ursa Major reconstruction comparisons with documented input/method and independence limits | Open; bounded closure review reconciles accepted diagnostics and outstanding ESA/physical qualifications. See the evidence matrix; no new runtime, physical-error policy or universal DR4 improvement factor selected |
+| K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references; include ESA Orion and Ursa Major reconstruction comparisons with documented input/method and independence limits | Open pending intended-use/limitation disposition. Numerical, finite perspective and bounded ESA/literature comparison executions completed; detailed ESA agreement inconclusive, physical accuracy unknown. Current qualification matrix proposes nominal-use acceptance only; no closure or runtime adoption inferred |
 | K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | Pending K4b closure; K3 stellar/figure/label consumers and accepted science/visual criteria |
 
 ### K5–K9: freeze, extraction and release

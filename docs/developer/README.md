@@ -1,5 +1,18 @@
 # Wenu developer documentation
 
+## K4b.05 current qualification review
+
+After PR #342 merge/cleanup and clean synchronized Mac main `df4eae36`,
+Fernando selected the [post-comparison review](kernel_roadmap_v0.9.5.md#k4b05-qualification-review-after-reference-comparisons).
+The [current evidence matrix and proposed disposition](kernel_migration_audit_v1.md#k4b05-qualification-review-after-reference-comparisons-2026-10-26)
+reconcile completed numerical, finite perspective, ESA and literature work.
+Nominal motion is supported within its explicit contracts; total physical
+accuracy is unknown. Acceptance for nominal historical illustrations with
+disclosed limitations is **proposed for Fernando's decision**, not already
+agreed. K4b.05 stays open, #326/#333 remain open and K4b.06 is not activated.
+No new diagnostic or physical model is automatically required or authorized.
+The review's complete Mac documentation gate remains pending.
+
 ## K4b.05 literature-figure comparison
 
 After PR #341 merge/cleanup and confirmed clean synchronized Mac main
@@ -14,7 +27,8 @@ the repository. The actual Mac run passed 36 documentation cases and retained
 126 rows (46 evaluated/80 gaps), with 63 refusal checks. Uploaded reference/Wenu
 images were inspected: Kaler shows clear qualitative agreement; Orion/Bears
 remain limited shape comparisons. Final documentation/report-integrity acceptance
-is pending. No production/default, physical bound, parent closure or K4b.06
+passed at `4034e69b`: 36 tests in 4.02 s, complete report and uploaded HTML
+verified without propagation; PR #342 merged and cleanup was confirmed. No production/default, physical bound, parent closure or K4b.06
 adoption changes.
 
 ## K4b.05 native-ICRS qualitative diagnostic

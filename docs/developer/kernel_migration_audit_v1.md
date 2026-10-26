@@ -1,5 +1,131 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.05 qualification review after reference comparisons, 2026-10-26
+
+**Review outcome:** the accepted nominal numerical work and the requested
+comparison executions are complete within their recorded scopes. Physical
+ancient-position accuracy is not established. K4b.05 remains **open pending
+Fernando's intended-use/limitation disposition**; this review does not close it
+or activate K4b.06. Another numerical diagnostic is not an automatic next gate.
+
+**Authority/base:** Fernando selected this review with "Proceed" after PR #342
+merge/cleanup and confirmed clean synchronized Mac main
+`df4eae36fede007a2089f89cdcd436ad8e69a3a7`. At `4034e69b`, its final
+Mac gate passed 36 documentation tests in 4.02 s and verified the complete
+literature report against the uploaded visual specimen without propagation.
+The selected review plan was committed first at
+`f4ffdd160b8f7ee0bcaac4ad42fe7221fc80da4a`.
+
+### As-is inspection and evidence continuity
+
+Re-read the active roadmap, scientific contracts, coordinate guide, current
+architecture, API/source map and testing policy. Inspected the actual
+`stellar_state.py`, `astrometric_state.py` and existing stellar test owner.
+The production owners are byte-identical to accepted PR #330/`5da8220f`:
+stellar blob `78e8ab33d804ddfd5be5f31d48be9d310bbad4a7` and shared-motion
+blob `77afec40b6c46f2096418cee14708104227eb929`. The current stellar test
+blob is `0441c2744dac8878217e13fbc04e4215e6dc1639`; later finite-comparison
+and explicit remote-epoch tests supplement the older receipt. This review
+does not claim to rerun those numerical suites.
+
+Full and angular admissions still require finite declared TCB coverage,
+source-bound inputs and explicit policies. The full model uses reciprocal
+positive parallax and the spectroscopic-RV proxy; the angular model omits
+radial perspective. Hip2 remains an explicit nominal-TCB interpretation with
+unverified native epoch/rate convention. Actual states retain measurement and
+physical-model uncertainty as not evaluated. The independent numerical evidence
+is about that admitted computation, not an empirical bound on the past sky.
+
+[Issue #326](https://github.com/fselman/wenu/issues/326) and
+[issue #333](https://github.com/fselman/wenu/issues/333) were read and are open.
+No new source clarification or covariance repair was established. Their
+resolution requirements remain attached to their respective source claims.
+
+### Updated obligation and intended-use matrix
+
+This is the current matrix. The
+[2026-10-24 review](#k4b05-bounded-closure-review-2026-10-24) remains dated
+provenance; its proposed finite comparison and unperformed-ESA status are
+superseded by the later accepted receipts.
+
+| Obligation / claim | Current accepted evidence | Disposition for the proposed nominal-atlas use |
+|---|---|---|
+| Numerical motion and finite coverage | PR #330 independent no-light-time spherical expression, fault detection and actual-cache directions; later test/domain/refusal receipts | Supported for the implemented nominal models and tested cases. Caller coverage is not a physical-validity interval; numerical reuse tolerance is not total position accuracy. |
+| Finite perspective omission | [PR #339](#k4b05-finite-perspective-comparison-2026-10-25): sixteen HIPs retained, 15 matched pairs/65 pair gaps at source and +/-1,000/+/-10,000 yr; independent scalar/vector checks | The previously proposed comparison is completed. Differences are star- and epoch-dependent: at +10,000 yr HIP 87937 differs by ~26.088 deg, HIP 57939 by ~2.127 deg, HIP 59774 by ~5.354 arcsec. Angular-only motion cannot be treated as a universally accurate substitute; neither model is thereby physically validated. |
+| Gaia formal angular measurement uncertainty | [PR #332](#k4b05-offline-gaia-uncertainty-report-implementation-2026-10-23): qualified five-parameter matrices and four-parameter angular marginals, independent derivative/Monte Carlo checks, 805,735 angular evaluations | Completed conditional offline diagnostic. It is not production SDK error evidence, a hard confidence radius, full-model RV covariance or a total error budget. No statistical prior or RV independence is silently adopted. |
+| Missing RV / distance | Same report's hypothetical-zero-RV derivative and explicit proxy/gap records; finite paired comparison above | Sensitivities and nominal models available where admitted; missing physical measurements remain missing. No zero RV measurement, RV distribution, distance prior or universal cutoff follows. |
+| Hip2 source time/rate | [PR #336 source review](#k4b05-hipparcos-2-time-convention-assessment-2026-10-24) plus [PR #337 population sensitivity](#k4b05-real-cache-hip2-time-convention-sensitivity-2026-10-24): all 2,850 fallback rows, unchanged source/model identity | Nominal angular directions remain admitted by the existing user-approved convention. Native source-scale/rate verification is unavailable pending #326. The tested hypothetical maximum ~1.591 mas at +50,000 yr does not resolve that fact or bound other errors. |
+| Hip2 covariance | [PR #334](#k4b05-hipparcos-2-covariance-qualification-2026-10-23) standard decoding plus [PR #335](#k4b05-hipparcos-2-source-precision-investigation-2026-10-23) precision/outlier investigation | Diagnostics complete; production/propagated Hip2 covariance remains unavailable pending #333 and nonstandard-solution evidence. No forced rescaling, diagonal substitute or F2 clipping assumption. |
+| Binaries, photocentres and acceleration | Source/component/solution flags preserved; existing providers contain no orbit/systemic-RV/Galactic-acceleration evolution | Known unmodelled physical limitations, not proven small errors. Acceptance would disclose them for nominal illustrations; no automatic quality veto, acceleration extrapolation or binary correction is authorized. |
+| Missing PM and retained membership | 118,218 retained HIPs: 115,105 Gaia angular, 2,850 Hip2 fallback, 263 unavailable to these motion admissions; 97,710 full Gaia models overlap the angular population | All identities/statuses retained. No fabricated PM and no silently static “historical” position. No-PM approximation remains pending sibling K4b.02/AX.13 work; closure here cannot accept that sibling on its behalf. |
+| Historical dates and mean axes | K4b.03 explicit chronology receipts and K4b.04 finite TT long-term mean-axis model; source/evaluation/equinox labels distinct | Accepted nominal composition capability. It does not reconstruct ancient clocks, observer/Earth rotation or horizon appearance. Native motion is TCB; a TT equinox is separate. The +/-200,000-year mean-axis domain cannot cover the +250,000/+450,000 native-shape specimens. |
+| ESA Orion / Ursa Major comparison | [PR #340 assessment](#k4b05-esa-comparison-feasibility-assessment-2026-10-26) and [PR #341 execution/viewing](#k4b05-native-icrs-qualitative-diagnostic-candidate-2026-10-26): 147 rows/52 evaluated/95 gaps, media viewed, corrected plots verified | Requested bounded qualitative assessment performed. Broad evolving-pattern agreement only; detailed trajectory agreement is inconclusive because original inputs/epochs and stereo/viewpoint differ. Inconclusive is a recorded result, not an unperformed experiment or a numerical reproduction. |
+| Literature comparison | [PR #342](#k4b05-literature-figure-comparison-preparation-2026-10-26): attributed source figures, 126 rows/46 evaluated/80 gaps, 63 refusal checks, uploaded report inspected and hash-linked | Clear qualitative agreement with Kaler/Lowell's future Dipper deformation; limited Orion/Bears subset consistency. No pixel residual, exact original-input reconstruction, ancient-pole test or physical certificate. Two Antonello papers are one research line. |
+| Ordinary historical atlas / workload / reuse adoption | No such consumer change is present in these diagnostics | Still unavailable through this work. K4b.06 must connect the selected admitted states to stars, finite figure endpoints and labels, measure workloads/reuse and accept ancient product specimens through the canonical pipeline. A diagnostic Python recipe is not the normal atlas command. |
+
+Model population counts overlap and must not be added. Formal uncertainties,
+finite model differences, numerical cones, hypothetical convention scenarios
+and visual resemblance are different evidence categories; none substitutes for
+the missing total physical uncertainty.
+
+### Concrete proposed decision for Fernando
+
+**Recommendation — proposed, not yet accepted:** accept K4b.05's qualification
+work for *nominal stellar-motion reconstructions with disclosed limitations*.
+This intended use can include an illustrative atlas for about 10,000 years ago
+after K4b.06 consumer integration. It makes no universal angular-accuracy
+promise, no claim that angular-only and full propagation are interchangeable,
+and no complete physical reconstruction of everything visible at that date.
+
+The proposed disposition is concrete:
+
+1. Retain the accepted full, measured-PM angular and nominal-TCB Hip2 capabilities
+   with their existing explicit admission/domain/refusal contracts. Do not turn
+   the diagnostic F/G/H display priority into a production selection policy.
+2. Accept the completed independent numerical and finite perspective comparisons
+   and the bounded ESA/literature visual assessments at their stated precision.
+   Keep detailed ESA agreement inconclusive rather than requiring inaccessible
+   original inputs to support a claim we would not make.
+3. Accept the documented omitted dynamics/source limitations for nominal
+   illustrations only. Keep physical/total accuracy and physical epoch validity
+   unknown; a request for a guaranteed physical tolerance remains unsupported.
+4. Keep #326/#333 open for source-time/covariance claims. They need not veto the
+   already admitted nominal direction use, but their unresolved claims must not
+   be presented as verified. No-PM and other pending sibling scope stays pending.
+5. With Fernando's explicit acceptance of this disposition, K4b.05 could close
+   for that bounded intended use. K4b.06 would still need its own selected
+   implementation slice and acceptance; K4b as a whole, K5 freeze, extraction
+   and release would not thereby close.
+
+**Alternative:** if the desired product instead needs a guaranteed physical
+angular error over a chosen historical interval or a reconstructed observer sky,
+K4b.05 cannot close for that claim from this evidence. Agree the specific
+claim/stars/domain and needed source/model qualification first. This alternative
+does not silently activate a list of new models or investigations.
+
+### Next gate and review limits
+
+The next substantive gate is Fernando's decision on the proposed intended use
+and limitations above, after reviewing this matrix. It is not another default
+diagnostic and is not automatically K4b.06 implementation authority. If accepted,
+the first K4b.06 slice should explicitly select its consumer/API path, source/model
+choice, retained-ID/gap behavior, date/frame request and benchmark/ancient
+specimens, using existing state and geometry services. Its public seam tests
+must detect stars/lines/labels using different epochs or bypassing the admitted
+states; its numerical/visual/workload evidence remains separate from this review.
+
+This branch changes documentation only. The architecture, source map, API,
+coordinate guide, test selections and scientific meanings stay current.
+No source acquisition, author contact, computation rerun, runtime change,
+uncertainty certificate, physical policy, issue closure or consumer adoption.
+Four closest local documentation contracts passed: developer-root/index authority,
+Python syntax, obsolete imports and roadmap diagrams/order. All fifteen local
+links/fragments in the new review/status sections resolve. Full inventory,
+archive and installed-public-import execution require the complete Mac checkout;
+they are not claimed rerun here. The final Mac review documentation gate is
+pending; prior literature execution and all report-integrity receipts are already
+accepted, not pending again.
+
 ## K4b.05 literature-figure comparison preparation, 2026-10-26
 
 **Authority/base:** Fernando requested literature before the closure review,
@@ -135,8 +261,10 @@ No reference pixels were measured, rotated, stretched or fitted. Diagram
 agreement cannot identify the missing original Lowell recipe or certify the
 mixed Wenu models. Physical uncertainties, binaries/lifetimes, Hip2 time/covariance
 issues #326/#333 and the K4b.05 parent remain open. This completes inspection of
-the supplied visual specimen; final documentation and local report-manifest/
-uploaded-image linkage acceptance remain pending. No propagation rerun is needed.
+the supplied visual specimen. Final Mac documentation at `4034e69b` passed
+36 tests in 4.02 s; the complete manifest/products and uploaded HTML linkage
+passed without propagation. PR #342 merged at `df4eae36`; clean synchronized
+main and local/remote branch cleanup were confirmed.
 
 
 
@@ -574,6 +702,11 @@ adoption remain separate. No acquisition, new physical model, policy, dependency
 package, default or consumer change is part of this slice.
 
 ## K4b.05 bounded closure review, 2026-10-24
+
+**Historical review:** subsequent PR #339/#341/#342 comparisons supersede this
+section's next-gate and comparison-pending statements. Use the
+[current qualification matrix](#k4b05-qualification-review-after-reference-comparisons-2026-10-26)
+for present decisions; the dated original evidence below is retained.
 
 **Decision:** K4b.05 remains open. Its completed bounded numerical and diagnostic
 deliverables are accepted evidence; they do not collectively certify physical
