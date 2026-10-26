@@ -9,7 +9,13 @@ Fernando confirmed clean synchronized Mac main
 cleanup, then said "Proceed." His instruction places the bright-star audit
 within production integration and keeps architecture migration central.
 The definition plan was committed at `41a85e77502a7118b6bef07d1211beb0fc27fb55`
-before this proposal. **Production implementation below is proposed, not selected.**
+before the definition. PR #344 passed all 36 Mac documentation cases in 4.12 s
+at `7edf0659`; Fernando accepted the scope and requested merge/cleanup.
+It merged at `dc0d1d52`, with clean synchronized Mac main and local/remote
+cleanup confirmed. He then explicitly required realization to belong to stars,
+with lines/labels consuming their positions without epochs/astrometry knowledge,
+and said "Indeed. Proceed." **The first slice below is selected with that
+ownership correction; production implementation/acceptance remain pending.**
 
 ### As-is assessment: existing owners and the missing connection
 
@@ -24,9 +30,9 @@ an alternate rendering pipeline.
 | `objects/stars.py::position` | Source-native selected positions; the compatibility `instant` argument is explicitly ignored | An explicitly opted-in propagated public path; passing an old compatibility date alone must not silently change behavior |
 | `objects/stars.py::native_positions` | Full-source or sparse HIP lookup, independent of marker magnitude selection; retains source order, IDs/metadata and NaNs through real kernel lookup | Same public source/selection semantics at a common requested epoch, using the motion request rather than source-epoch lookup |
 | `Stars.realize` | Native ICRS uses `_native_catalogue_coordinates`, whose `native_stellar_states` call still returns unpropagated source directions; observed route remains separate | Propagated values must enter this same spherical point geometry before existing projection/preparation/rendering |
-| `sky/constellation_lines.py` | Native figure geometry calls public `stars.native_positions(self.star_ids)`; faint vertices, curated HIP edges, warnings and order are independent of marker selection | Query the same request/model/time as markers; retain unavailable endpoint/edge behavior without invented connections |
+| `sky/constellation_lines.py` | Native figure geometry calls public `stars.native_positions(self.star_ids)`; faint vertices, curated HIP edges, warnings and order are independent of marker selection | Obtain endpoints from public stellar positions, without request epoch/model knowledge; retain unavailable endpoint/edge behavior without invented connections |
 | `sky/constellation_labels.py` | Calls public full-source native positions, assigns IAU groups and Serpens parts, then computes existing spherical means; faint source stars contribute | Keep source grouping stable, but calculate anchors from available propagated member directions; do not accidentally regroup moving stars into different constellations |
-| `sky/realization.py` and `CelestialSphere.draw_chart` | Immutable layer context can carry an evaluation instant/scale; native guard checks returned geometry reference/time, allowing truthfully static layers with no evaluation instant | Bind participating stellar consumers to the same explicit resolved event. A context date by itself currently does not turn stellar lookup into motion |
+| `sky/realization.py` and `CelestialSphere.draw_chart` | Immutable layer context can carry an evaluation instant/scale; native guard checks returned geometry reference/time, allowing truthfully static layers with no evaluation instant | Bind the stellar owner once to the resolved event; dependent geometry preserves returned coordinate provenance without interpreting epochs. A context date alone does not turn stellar lookup into motion |
 | `charts/atlas_sheet.py` | Public `AtlasSheetChartRequest`/`render_atlas_sheet` already support observer-free fixed-ICRS sheets through canonical chart owners; the render leaf creates a source-native context | A narrow opt-in native-sheet request can carry the motion binding into that existing route |
 | `charts/request_generation.py` | `open_chart_request_scope`/`ChartRequestBuild` own the lease, temporary resources, rollback and cleanup; atlas-sheet execution uses the same owner | Extend that lifetime for a shared stellar realization; do not attach reusable live kernel/session objects to source catalogues or saved skies |
 | Ordinary `ChartRequest`/`request_realization.py` | Current horizontal/Galactic/frozen-ecliptic routes and explicit cluster observer composition | These are broader observer/frame/CLI consumers. They are not an excuse to replace native-sheet rendering or run an unqualified ancient observer model |
@@ -44,14 +50,16 @@ would change IAU membership/Serpens grouping as stars cross fixed boundaries.
 That would violate the retained membership/name contract. The source grouping
 and epoch-dependent anchor calculation therefore need separate explicit roles.
 
-### Proposed first production slice: shared native-ICRS stellar realization
+### Selected first production slice: stellar-owned native-ICRS realization
 
-**Proposed result:** an opt-in Python native-ICRS atlas-sheet request whose
-stellar markers, finite figure endpoints and constellation label anchors
-consume one consistent request-owned realization at one common TCB epoch,
-using the existing motion admissions and canonical Wenu pipeline.
+**Selected result:** an opt-in Python native-ICRS atlas-sheet request that binds
+one epoch-dependent realization to the stellar owner. Stars expose its positions;
+figure endpoints and label anchors follow through the public stellar interface.
+Only stars/their adapter know the epoch, admitted astrometry, model order and
+SDK query/reuse policy. Lines and labels do not configure or perform propagation.
+They preserve returned geometry provenance without interpreting motion settings.
 
-The first slice would cover the following bounded responsibilities:
+The first slice covers the following bounded responsibilities:
 
 1. **Explicit inputs and routing.** The caller supplies the validated immutable
    enrichment source/binding, finite admitted model domains, one common resolved
@@ -63,13 +71,14 @@ The first slice would cover the following bounded responsibilities:
    A model's declared missing-input status may select the next supplied model;
    an SDK, integrity, epoch/domain or numerical refusal must abort, not trigger
    fallback to another model or old native coordinates.
-2. **Shared stellar realization and lifetime.** Wenu's stellar adapter owns
-   source/model routing and bridges into actual SDK sessions. The existing
-   request scope owns and closes providers/kernel/sessions on success and
-   failure, borrowing the supplied sky/source appropriately. All three consumers
-   share that realization and its query/reuse identity; no provider/session per
-   star, per line edge, per renderer or style. Generic kernel services gain no
-   Gaia/HIP, chart, catalogue-decoding or naming policy.
+2. **Stellar ownership and request lifetime.** Stars and their stellar adapter
+   own source/model/epoch routing and actual SDK queries/reuse. The existing
+   request scope binds that stellar view once and closes its owned resources on
+   success/failure, preserving the borrowed sky/source without shared mutation.
+   Lines/labels ask only for stellar positions; they receive no epoch, astrometric
+   admission, model-selection options, propagation provider or session. There is
+   no provider/session per line edge, label, renderer or style. Generic kernel
+   services gain no Gaia/HIP, chart, catalogue-decoding or naming policy.
 3. **Public positions, identity and gaps.** Extend the public stellar lookup/
    realization path by explicit opt-in, preserving existing no-motion methods.
    Return results joined by original HIP identity and source order, never by
@@ -79,15 +88,17 @@ The first slice would cover the following bounded responsibilities:
    valid kernel states, invent PM/RV, silently paint an old static position or
    drop objects from the retained source.
 4. **Figures and anchors.** Markers retain existing render-local selection.
-   Figures obtain all needed faint endpoints through the same public realization
+   Figures obtain all needed faint endpoints through public stellar positions
    and preserve curated topology, finite-segment handling and missing-endpoint
    reporting. Label membership/Serpens partition comes from source-native public
    identity/geometry; anchor means use available propagated directions of those
    original groups, with the existing minimum-count/empty rules. Names and
    membership do not change because an extrapolated star crossed an IAU boundary.
 5. **Canonical product integration.** Add the opt-in binding to the existing
-   native atlas-sheet request/lifecycle and feed its layer context/options through
-   `Stars.realize`, line/label realization and `CelestialSphere.draw_chart`.
+   native atlas-sheet request/lifecycle and bind it to the stellar owner. Feed
+   stars' returned positions into the existing `Stars.realize`, line/label
+   geometry and `CelestialSphere.draw_chart` routes. Do not pass motion settings
+   through line/label options; those consumers only preserve returned provenance.
    Projection/domain clipping, preparation, renderer, furniture and export stay
    in their current owners. Static grids/deep-sky/diffuse layers remain truthfully
    static; a historical stellar specimen is not a physical evolution model for
@@ -104,7 +115,7 @@ protocol, new observer implementation, catalogue replacement, dependency/pin
 change or package extraction. Extend existing responsibility owners. New helpers
 are justified by shared lifecycle/source boundaries, not by “K4b.06” filenames.
 
-### Acceptance proposed for that slice
+### Acceptance for the selected slice
 
 The closest existing protections are
 `test_native_position_routes_use_returned_kernel_direction_and_propagate_failure`
@@ -124,7 +135,8 @@ per-HIP identity/model joins; differences between markers/endpoints/anchors;
 classification changing when a star crosses a boundary; missing faint vertices;
 silently static unavailable stars; fallback after a warm SDK refusal; mutable
 source/selection state; leaked resources; order-dependent repeated requests;
-and source-only saved reconstruction being misrepresented as propagated.
+source-only saved reconstruction being misrepresented as propagated; and
+line/label code depending on epochs, motion admissions or SDK sessions.
 
 Constructed cases should use distinct epochs, permuted batch order, real model
 availability gaps, failing providers after success and two otherwise identical
@@ -155,7 +167,7 @@ without inventing a speed target or treating a numerical cone as physical error.
 
 ### Remaining K4b.06 scope and bright-star audit placement
 
-This first slice would not close K4b.06. Ordinary CLI/TOML historical requests,
+This first slice does not close K4b.06. Ordinary CLI/TOML historical requests,
 date-oriented mean-axis products, horizontal/observer products, batch/worker/
 saved request transport, broader workload and final ancient atlas specimens
 retain their applicable K4b.06 obligations and existing scientific boundaries.
@@ -183,10 +195,11 @@ links/anchors in the new scope sections resolve. These focused checks do not
 replace complete Mac documentation/archive/public-import acceptance.
 No production/test/source/dependency/schema/default bytes were changed or
 consumer execution claimed. The coordinate guide/API/source map remain current.
-The concrete first-slice routing, gap and request choices above await Fernando's
-selection before production implementation; they are not a hidden approved
-submilestone or a new scientific prerequisite. Complete Mac documentation
-acceptance for this assessment/proposal remains pending.
+Complete Mac definition acceptance subsequently passed 36 cases in 4.12 s at
+`7edf0659`; PR #344 was accepted, merged and cleaned up. The concrete first
+slice is selected with Fernando's explicit stellar-ownership correction above.
+This edit records the implementation boundary; it does not claim runtime changes
+or execution. Documentation acceptance for the correction remains pending.
 
 ## K4b.05 qualification review after reference comparisons, 2026-10-26
 
