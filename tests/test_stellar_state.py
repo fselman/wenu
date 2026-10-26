@@ -966,7 +966,7 @@ def test_stellar_no_light_time_spherical_reference(motion_source, kind, paramete
     from fractions import Fraction
     from math import degrees, dist, radians
     from wenu_kernel.records import ObjectKey, TimeSpan
-    span = TimeSpan(TimePoint(-2000000, 0, 'tcb'), TimePoint(7000000, 0, 'tcb'))
+    span = TimeSpan(TimePoint(-2000000, 0, 'tcb'), TimePoint(170000000, 0, 'tcb'))
     if kind == 'hip2':
         # Respect the synthetic fixed-width Hip2 record. Use its actual rounded
         # source coordinates in the oracle; never compare to pre-capture values.
@@ -985,7 +985,8 @@ def test_stellar_no_light_time_spherical_reference(motion_source, kind, paramete
     original = source.products
     record = cat.to_record()
     epoch = next(r.source_epoch for r in cat.rows if r.identifier == target)
-    years = (0, -100, 100, -1000, 1000, -10000, 10000)
+    years = (0, -100, 100, -1000, 1000, -10000, 10000,
+             60000, 100000, 450000)
     times = tuple(TimePoint(epoch.jd1 + int(Fraction(y)*1461//4),
                            epoch.jd2 + float(Fraction(y)*1461/4 % 1), 'tcb')
                   for y in years)
