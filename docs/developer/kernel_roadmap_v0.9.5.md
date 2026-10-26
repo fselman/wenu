@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 100, 2026-10-26. **Status:** PR #340 is merged at `c8544528ad51a28c344beb26adf27c925e7e346e`; 36 Mac documentation cases passed at `d29833c9` in 4.72 s, and clean synchronized Mac main plus local/remote task-branch cleanup were confirmed. Fernando approved the K4b.05 native-ICRS qualitative diagnostic epochs below. Only that bounded execution is selected; physical accuracy and K4b.06 adoption remain separate.
+**Plan revision:** 100, 2026-10-26. **Status:** PR #340 is merged at `c8544528ad51a28c344beb26adf27c925e7e346e`; 36 Mac documentation cases passed at `d29833c9` in 4.72 s, and clean synchronized Mac main plus local/remote task-branch cleanup were confirmed. Fernando approved the K4b.05 native-ICRS qualitative diagnostic epochs below. The actual Mac run passed 34 focused and 36 documentation cases and retained 147 rows (52 evaluated, 95 gaps). Supplied corrected plots were inspected; detailed ESA agreement is inconclusive. Final documentation/v2 product-integrity acceptance remains pending. Physical accuracy, parent closure and K4b.06 adoption remain separate.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -67,8 +67,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.05 ESA assessment delivered: source/method recovery, numerical reproduction gaps and proposed native-ICRS qualitative protocol; no actual ESA/Wenu comparison or domain change; prior finite-comparison receipts retained |
-| Next bounded submilestone | Selected K4b.05 native-ICRS qualitative diagnostic: Orion 0/+10000/+100000/+450000 TCB Julian years; Big Dipper 0/+10000/+60000; retained source/SDK, explicit gaps and no date-oriented axes or product adoption |
+| Current bounded result | Approved long-epoch diagnostic executed: 147 rows retained, 52 evaluated/95 gaps; actual v2 figures viewed after diagnostic orientation correction; detailed ESA agreement inconclusive, scientific parent open |
+| Next bounded submilestone | Final documentation and v2 report/image integrity acceptance for the selected diagnostic; no new runtime item or K4b.06 adoption selected |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -122,12 +122,18 @@ date-oriented Orion axes, physical-bound claim, parent closure or K4b.06
 activation is selected. Commit this plan before executable diagnostic work. Plan committed at
 `451a0845bf96aeca0d0f8af694d2c0a99886a6c4`.
 The [candidate and exact verification limits](kernel_migration_audit_v1.md#k4b05-native-icrs-qualitative-diagnostic-candidate-2026-10-26)
-now record 34 closest passing local cases and constructed 147-row recipe/plot
-checks, plus an explicit global singular-domain refusal. A broader partial-owner
-probe has one unchanged application case unavailable locally; no complete owner
-pass is claimed. ESA reference media was viewed, but actual manifest-bound Mac
-execution, complete focused/documentation acceptance and qualitative comparison
-remain pending. Source and production bytes are unchanged.
+record the local synthetic/fault-detection evidence and actual Mac run at
+`824f8520`: 34 focused cases in 9.00 s, 36 documentation cases in 5.01 s,
+147 retained report rows (52 evaluated, 95 gaps), 42 refusal checks and maximum
+independent spherical chord residual 3.188872858294072e-16. Source/solution
+identities are unchanged; domain bindings are explicitly reported. Actual v1
+plots exposed a diagnostic east/west caption/setting error; separate v2 replot
+corrects it without propagation and labels the complete diagnostic figures.
+Both supplied v2 images were inspected against the actually viewed reference
+products. Broad changing-pattern behaviour is present; detailed ESA trajectory
+agreement remains inconclusive because exact source/epoch/viewpoint matching is
+unresolved. Final documentation/v2 product-integrity acceptance is pending.
+Source and production bytes are unchanged; no parent closure is implied.
 
 ## K4b.05: ESA constellation comparison assessment
 
