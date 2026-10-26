@@ -1,5 +1,17 @@
 # Wenu developer documentation
 
+## K4b.05 native-ICRS qualitative diagnostic
+
+Fernando approved the [explicit diagnostic epochs](kernel_roadmap_v0.9.5.md#k4b05-native-icrs-qualitative-esa-diagnostic)
+after PR #340 merge/cleanup on 2026-10-26. The
+[candidate and verification record](kernel_migration_audit_v1.md#k4b05-native-icrs-qualitative-diagnostic-candidate-2026-10-26)
+extends the existing independent spherical test to +60,000/+100,000/+450,000
+years and prepares a separate source-bound Mac recipe. The closest 34 local
+cases and synthetic recipe/refusal/plot checks pass. Both ESA reference
+products were viewed; actual Wenu/ESA agreement has not yet been assessed.
+Complete Mac acceptance and the 147-row real-cache diagnostic remain pending.
+No production model/default, physical-accuracy claim or K4b.06 adoption changes.
+
 ## K4b.05 ESA comparison assessment
 
 The selected [ESA assessment](kernel_roadmap_v0.9.5.md#k4b05-esa-constellation-comparison-assessment)
