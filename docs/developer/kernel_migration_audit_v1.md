@@ -1,5 +1,108 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.05 ESA comparison feasibility assessment, 2026-10-26
+
+**Selected scope and base:** Fernando selected the bounded K4b.05 assessment
+with “Proceed” and confirmed clean synchronized Mac main
+`8a0e3e08437ccce2685ddd2e5c84e00f442d85ff` at
+`/Users/fselman/Developer/wenu`. Selection was committed at
+`5057fc426c49d2948803d716aa964155a6d128af` before these findings.
+This is the versioned repository assessment, not an executed ESA/Wenu comparison.
+Orion was assessed first, then Ursa Major. No source cache, runtime, model,
+domain, dependency, chart consumer or scientific error policy was changed.
+
+### Primary-source recovery
+
+Sources were checked on 2026-10-26. Directly retrieved ESA pages are distinguished
+from search-retrieved ESA text. No video was played, frame measured, stereo
+image interpreted, media downloaded/redistributed or author contacted.
+
+| Reference | Recovered evidence | Remaining obstacle |
+|---|---|---|
+| [Orion story](https://www.esa.int/Science_Exploration/Space_Science/Gaia/The_future_of_the_Orion_constellation), 2017-06-09, directly read | Future interval 450,000 years; field 40 by 20 degrees; TGAS, bright Hipparcos stars and ground observations. Narrative checkpoints include Betelgeuse leaving the field near +100,000 years, Aldebaran crossing its lower part and Hyades crossing diagonally. Stellar birth/death is omitted. | No complete per-star source list, input values, RV selection/default policy, executable recipe, exact starting event/scale or projection specification recovered. Checkpoints are published descriptions, not newly viewed or measured agreement. |
+| [Orion video page](https://www.esa.int/ESA_Multimedia/Videos/2017/06/The_future_of_the_Orion_constellation), directly read | Product ID 378614, duration 72 seconds, credit ESA/Gaia/DPAC; links the all-sky product and a speeded-up version. | Page/credits do not supply numerical stellar endpoints. The linked speeded-up page returned HTTP 451. No mapping from player seconds to individual scientific epochs was established. |
+| [Linked all-sky animation](https://www.esa.int/ESA_Multimedia/Videos/2017/04/The_motion_of_two_million_stars), directly read | Galactic coordinates, rectangular projection and 750-year frame spacing over five million years. | These are this product's conventions; a link from Orion does not establish identical axes, sampling or projection for Orion. |
+| [ESA ESAC method story](https://www.esa.int/About_Us/ESAC/Two_million_stars_on_the_move), 2017-04-21, directly read | All-sky population: 2,057,050 TGAS plus 24,320 bright Hipparcos stars, Tycho-2 appearance. Note 2 specifies 235,966 RV measurements from RAVE, GALAH and APOGEE and linear velocity extrapolation. Initial positions are described as measured during 2014–2015. | Useful new method evidence for the linked product, but no per-star RV assignment, missing-RV rule, exact epoch/scale, numerical outputs or Orion-specific identity equivalence. Do not transfer its population or RV recipe silently to Orion. |
+| [Hipparcos stereo page](https://www.cosmos.esa.int/web/hipparcos/stereo-images) | Direct retrieval returned HTTP 451; search retrieval returned ESA text. The Ursa Major section specifies present/+60,000-year illustrations near RA 12 h, Dec +60 degrees, field about 36 by 31 degrees. The associated preliminary 30-month imagery uses nonlinear displayed distances and an approximately two-light-year inter-eye baseline, credited to L. Lindegren and linked to ESA Bulletin 77. | Exact preliminary input solutions, starting epoch/scale, RV handling, projection and nonlinear depth mapping were not recovered. The same page also describes later catalogue-based stereo fields; those must not be substituted for the preliminary Ursa Major pair. Search text is not inspection of the GIFs or original Bulletin article. |
+
+The ESAC story supplies a more specific constant-space-velocity/RV provenance
+than the previous assessment. It does not establish which radial inputs were
+used for Orion's bright stars, nor that the missing RVs were zero. Its qualitative
+statement about useful extrapolation durations is not a per-star physical error
+bound for Wenu. The recovered descriptions are external illustrative targets,
+not observations of future stellar positions.
+
+### Media-use boundary
+
+The Orion video page offers either CC BY-SA 3.0 IGO or the ESA Standard Licence.
+The linked [CC deed](https://creativecommons.org/licenses/by-sa/3.0/igo/)
+requires attribution and the applicable ShareAlike conditions for adaptations.
+The directly read [ESA media terms](https://www.esa.int/ESA_Multimedia/Terms_and_conditions_of_use_of_images_and_videos_available_on_the_esa_website)
+distinguish educational/informational uses, item-specific credits and third-party
+rights. This assessment links the products only. It grants no underlying-data
+licence and makes no redistribution decision for the Ursa Major images.
+
+### Actual Wenu owners and domain distinction
+
+Inspected unchanged `src/wenu/stellar_state.py`,
+`src/wenu/astrometric_coordinates.py` and `tests/test_stellar_state.py` at the
+accepted base, together with the existing API/scientific/coordinate contracts.
+
+| Boundary | Actual implementation/evidence | Consequence |
+|---|---|---|
+| Stellar motion admission | Full and angular adapters require a finite caller-declared TCB TimeSpan, bind that coverage into identity and validate rows over it. Full inputs use the declared reciprocal-parallax and spectroscopic-RV proxy; angular inputs omit radial perspective. | The recent +/-10,000-year comparison is an evidence domain, not a hard-coded universal stellar cutoff. A longer explicit run needs a selected protocol, per-row domain admission and new evidence; silently widening it would change the run's model binding. |
+| Long-term mean axes | LongTermFrame enforces finite TT validity inside Julian epochs -198000 through 202000, with an independently explicit TT equinox. | Orion's remote endpoint cannot use this date-oriented mean-axis model. Native ICRS directions require no date-oriented precession; stellar propagation and frame orientation remain separate. |
+| Latest real sample | The retained sixteen-HIP receipt contains only three matched full/angular objects, and many bright figure stars lack full Gaia inputs. The accepted report does not contain ESA-matched source inputs. | Do not portray three common models as full Orion/Big Dipper coverage, invent RVs, or treat DR3/Hip2 results as a reconstruction of TGAS/preliminary Hipparcos. |
+| Products/graphics | Ordinary stellar chart consumers still use their accepted lookup routes; propagated stellar consumer adoption is K4b.06. | No ordinary wenu_chart request becomes an ESA propagated comparison through this documentation change. Keep a future diagnostic run separate from product adoption. |
+
+A published “years from now” label cannot be silently anchored to a precise
+TCB/TT event. Publication date, observing interval and catalogue reference epoch
+are different facts. Missing epoch information must stay explicit in any
+qualitative comparison. A future native-ICRS protocol could avoid the mean-axis
+limit, but would not solve unknown ESA conventions, physical errors or stellar
+lifetimes.
+
+### Feasibility and proposed disposition
+
+**Numerical reproduction:** currently blocked for both products by unmatched
+input/method/epoch information. No defensible zero-residual or pixel-parity
+oracle is available from the reviewed pages. Missing evidence on these pages
+does not prove that original numerical material does not exist.
+
+**Qualitative comparison:** feasible in principle, subject to a selected
+execution protocol and actual media inspection. For Orion, compare identified
+bright-star trajectory directions and relative figure changes with the published
+narrative, explicitly separating source-edition and projection differences.
+Wenu's HIP-retained sample cannot reproduce the complete TGAS background or
+Hyades population. For Ursa Major, compare the seven-star pattern only after
+resolving orientation and separating stereo/depth effects; do not infer
+barycentric RA/Dec by averaging colour channels with an unknown nonlinear
+distance transformation.
+
+**Recommended next bounded selection, proposed only:** a native-ICRS qualitative
+diagnostic protocol for the retained Orion and Big Dipper figure stars, preserving
+all missing-input statuses and existing source bytes. Agree exact elapsed TCB
+sample times and domains first; decide whether to inspect earlier frames within
+existing evidence or admit new nominal +60,000/+450,000-year runs. Explicitly
+exclude date-oriented Orion axes, physical accuracy claims, new source
+acquisition and ordinary chart adoption. Verify actual SDK-state directions,
+coverage refusals, immutable input identities and versioned external report
+products, then inspect and record real reference media before claiming agreement.
+
+Alternative: continue reference recovery until original inputs and epoch labels
+permit numerical reconstruction. No contact, catalogue capture or domain
+extension is activated by either proposal. The qualitative route may satisfy an
+explicitly agreed illustrative comparison disposition; it cannot silently close
+the roadmap's numerical/scientific qualification requirements.
+
+**Assessment exit:** source recoverability, comparison roles and domain choices
+are documented. Coordinate meaning is unchanged; the coordinate guide remains
+current. K4b.05 parent, issues #326/#333 and K4b.06 remain open. Closest local
+documentation checks and complete Mac acceptance are recorded separately; no
+ESA residual, visual agreement, numerical endpoint run or physical-error bound
+is claimed.
+
+
 ## K4b.05 finite perspective comparison, 2026-10-25
 
 Fernando selected the previously proposed bounded comparison with "Proceed"
