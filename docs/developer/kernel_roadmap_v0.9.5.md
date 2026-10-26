@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 100, 2026-10-26. **Status:** PR #340 is merged at `c8544528ad51a28c344beb26adf27c925e7e346e`; 36 Mac documentation cases passed at `d29833c9` in 4.72 s, and clean synchronized Mac main plus local/remote task-branch cleanup were confirmed. Fernando approved the K4b.05 native-ICRS qualitative diagnostic epochs below. The actual Mac run passed 34 focused and 36 documentation cases and retained 147 rows (52 evaluated, 95 gaps). Supplied corrected plots were inspected; detailed ESA agreement is inconclusive. Final documentation/v2 product-integrity acceptance remains pending. Physical accuracy, parent closure and K4b.06 adoption remain separate.
+**Plan revision:** 101, 2026-10-26. **Status:** PR #341 merged at `2d34779b143238f02c095fb6d127afaf5986a1cb`; final 36 Mac documentation cases passed in 3.76 s and v2 report/image integrity passed without repeated propagation. Clean synchronized Mac main and branch cleanup were confirmed. Fernando selected the bounded K4b.05 literature-figure comparison before closure review, including the Kaler/Lowell +250,000-year diagram. The actual Mac run passed 36 documentation cases, retained 126 rows (46 evaluated/80 gaps) and passed 63 refusal checks. Uploaded figures were inspected: Kaler gives clear qualitative agreement; ancient subset comparisons remain limited. Final documentation/report-integrity acceptance is pending. Physical qualification, parent closure and K4b.06 remain separate.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,8 +46,8 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `c8544528ad51a28c344beb26adf27c925e7e346e`,
-confirmed clean/synchronized on the Mac on 2026-10-26 after PR #340 merge.
+**Current accepted base:** main `2d34779b143238f02c095fb6d127afaf5986a1cb`,
+confirmed clean/synchronized on the Mac on 2026-10-26 after PR #341 merge.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -68,7 +68,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | Approved long-epoch diagnostic executed: 147 rows retained, 52 evaluated/95 gaps; actual v2 figures viewed after diagnostic orientation correction; detailed ESA agreement inconclusive, scientific parent open |
-| Next bounded submilestone | Final documentation and v2 report/image integrity acceptance for the selected diagnostic; no new runtime item or K4b.06 adoption selected |
+| Next bounded submilestone | Final documentation and report/uploaded-image integrity acceptance for the selected literature comparison; closure review remains subsequent, with no K4b.06 adoption |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -81,6 +81,58 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4b.05: literature-figure visual comparison
+
+**Agreement:** on 2026-10-26 Fernando requested documented ancient-constellation
+research before the closure review, asked to include published figures when
+positions are unavailable, supplied Kaler's Big Dipper diagram and its
+1998 Scientific American Library/page 68 citation, and said "OK. Proceed."
+The clean synchronized Mac base above is already confirmed.
+
+Bounded scope: preserve and cite Antonello's Orion/Sirius/Procyon Figure 27.1
+(2010, p. 356; 34,000 years ago), the Bears Figure 1 (2016, p. 331;
+28,000 BC), and Kaler/Lowell's present/+250,000-year Big Dipper illustration.
+Use source-linked, attributed figure extracts in an external review packet;
+keep third-party images, original publications and generated diagnostic
+artifacts outside the repository. Record byte identities, extraction changes,
+licensing/provenance, input/method/epoch gaps and author-line independence.
+Do not treat a publication's illustration as an observational coordinate oracle.
+
+Prepare an offline versioned no-clobber recipe against the existing immutable
+source and public SDK for the seven already retained Orion and seven Big Dipper
+HIPs. Orion uses source-relative offsets 0/-34,000 Julian years; Kaler uses
+0/+250,000. The 28,000 BC illustration uses a separately labelled nominal
+common TCB Julian epoch -27999 (astronomical year convention), compared with
+J2000 TCB. This is an explicit comparison convention, not a recovered paper
+timescale/calendar or physical historical date. Retain all model/gap/refusal
+rows and source-solution identities; bound admissions over both past and future
+queries. Use native ICRS shape comparisons only. Show the wider Orion field
+and Ursa Minor as context not reproduced by this fourteen-star sample.
+Keep source topology separate from the explicitly labelled Kaler open-chain
+display; no hidden production edge changes. Correct east-left plotting remains
+mandatory. Any projection/rotation chosen for presentation is disclosed and
+must not be described as an astronomical date-frame match.
+
+Acceptance: verify source figures and citations, existing independent numerical
+reference at the requested past/future spans, domain/unavailable refusal and
+identity preservation, inspected synthetic exports, closest documentation checks,
+then complete Mac documentation gate and actual-cache run/visual assessment.
+No fabricated historical positions, new catalogue acquisition, RV prior, source
+repair, binary/lifetime model, Earth/observer reconstruction, public consumer
+adoption, K4b.05 closure or K4b.06 activation. Source lookup and preparation may
+proceed before Mac execution; actual-cache outputs are pending until observed.
+The [preparation record](kernel_migration_audit_v1.md#k4b05-literature-figure-comparison-preparation-2026-10-26)
+records source figures, identities, synthetic checks and remaining comparison
+limits. The actual Mac run at `a2275f3e` passed 36 documentation cases in
+4.44 s and retained 126 rows (46 evaluated, 80 gaps), 63 refusal checks and
+maximum independent chord residual 3.7238012298709097e-16. Uploaded source/Wenu
+images were inspected: Kaler's future Dipper gives clear qualitative agreement,
+Orion shows modest consistent subset change, and the dated Bears view remains
+limited by orientation/sample differences. Final documentation and report/image
+integrity acceptance remain pending; no new propagation is required.
+Plan committed before executable recipe work at
+`734aed0acb50a635f238a16fc490840d01f54510`.
 
 ## K4b.05: native-ICRS qualitative ESA diagnostic
 
@@ -132,7 +184,9 @@ corrects it without propagation and labels the complete diagnostic figures.
 Both supplied v2 images were inspected against the actually viewed reference
 products. Broad changing-pattern behaviour is present; detailed ESA trajectory
 agreement remains inconclusive because exact source/epoch/viewpoint matching is
-unresolved. Final documentation/v2 product-integrity acceptance is pending.
+unresolved. Final Mac documentation acceptance passed 36 cases in 3.76 s; both reports
+and reviewed-image identities passed without repeated propagation. PR #341
+merged at `2d34779b`; clean synchronized main and cleanup were confirmed.
 Source and production bytes are unchanged; no parent closure is implied.
 
 ## K4b.05: ESA constellation comparison assessment
@@ -2114,3 +2168,4 @@ new Moonlight execution, or broad feature additions during structural migration.
 Current science and appearance remain the baseline except for separately
 reviewed astrometric corrections and bug fixes. Deferred work is retained in
 the archived roadmap and [current scientific limits](scientific_contracts.md).
+

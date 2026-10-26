@@ -1,5 +1,145 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.05 literature-figure comparison preparation, 2026-10-26
+
+**Authority/base:** Fernando requested literature before the closure review,
+selected published figures where coordinate tables are absent, supplied the
+Kaler photograph and 1998/page 68 citation, and said "OK. Proceed."
+PR #341/main `2d34779b143238f02c095fb6d127afaf5986a1cb`, clean synchronized
+Mac main and cleanup were already confirmed. Its final documentation gate passed
+36 cases in 3.76 s; both reports/reviewed-image identities passed without repeated
+propagation. The literature plan preceded executable work at
+`734aed0acb50a635f238a16fc490840d01f54510`.
+
+### Primary references and extracted figures
+
+The primary PDFs were downloaded and selected pages/figures actually inspected.
+The external versioned reference packet embeds selected figure extracts and
+Fernando's unchanged photograph. Third-party media, publications, generated
+plots and the temporary recipe remain outside the repository.
+
+| Reference | Recovered evidence | Comparison limits |
+|---|---|---|
+| [Antonello 2010](https://archeoastronomia.altervista.org/wp-content/uploads/2019/07/SIA8_29.pdf), “Analisi dei moti propri stellari e forma delle costellazioni,” in M. Incerti (ed.), Mensura Caeli, UnifePress, pp. 353–356; Fig. 27.1 p. 356/PDF page 8 | Present/34,000-years-ago Orion–Sirius–Procyon field; Hipparcos astrometry and Barbier-Brossat & Figon (2000) RV catalogue; uniform rectilinear motion; relative shape without precession; measurement/binary discussion. | No full plotted input/coordinate table or exact present event/scale recovered. Our seven-star Orion sample omits Sirius/Procyon, where much visible change occurs, and the Milky Way/background. Redistribution licence unverified. The printed W equation uses the RA-motion symbol where the normal-triad expression requires declination motion; do not implement it literally. Existing Wenu numerical reference remains the oracle. |
+| [Antonello 2016](https://doi.org/10.5281/zenodo.220954), “Sky Simulations for the Palaeolithic Epoch,” MAA 16(4), 329–334; Fig. 1 p. 331/PDF page 3 | Bears field labelled 28,000 BC; Berger long-term Earth geometry, with Laskar/Vondrák comparisons. DOI [archive 220954](https://zenodo.org/records/220954) supplied Full45.pdf and declares CC BY 4.0. | No full per-star inputs/coordinates or exact scale/calendar/projection recovered. Seven-star Dipper sample excludes Ursa Minor/Arcturus and dated pole/grid. Same author/research line as 2010; not independent validation. Myth/archaeology interpretation is separate. |
+| Kaler, James B. (1998), Stars, Scientific American Library, p. 68; Lowell Observatory credit | User-supplied edition/year/page and original photograph of present/+250,000-year seven-star diagrams; Bayer labels alpha through eta. | Original Lowell author, source table, method, projection and exact “now” event unrecovered. Book year is provenance, not an assigned stellar epoch. No general redistribution licence established. |
+| [De Lorenzis & Orofino 2018](https://doi.org/10.1016/j.ascom.2018.09.006), Astronomy and Computing 25, 118–132 | Accessible abstract/preview describes 24 bright-star software/precession comparisons, including Orion/Big Dipper members; independent methodological context. | Full text not obtained. No table/figure asserted inspected or reproduced; not an executed Wenu oracle. |
+
+Downloaded/source SHA256 identities:
+
+- Antonello 2010 PDF:
+  `4e0c51ca5a8f6ff7860e92b9111306dd62b21c0e20263e29d0053921a3aaa4c8`.
+- Antonello 2016 DOI-archive PDF:
+  `e5d06165d0956415e5124166eabb1e2e48fec2aeb6f8d215fbefede2ffa99b27`.
+- Original user photograph IMG_0257.jpg:
+  `c1216351a618ded711371972c43a249b4afe57c621247b19e7196af9b436766c`.
+
+External figure provenance records PDF page/crop rectangles, raster scale and
+output hashes. Crops are rasterized without mirroring, rotation, redrawing or
+geometric fitting. The photograph is unchanged. Attribution and licence limits
+travel with the packet; no general republication right is claimed.
+
+### External diagnostic, dates and scope
+
+The offline versioned recipe reuses the immutable source, actual SDK admissions/
+sessions, unchanged source-solution digests, independent spherical reference and
+canonical stereographic service. All fourteen prior HIPs remain; no acquisition
+or inferred RV. The three scenarios retain 126 HIP/model/epoch rows, including
+separate global admission refusal and per-HIP missing-input statuses.
+
+| Case | Explicit query convention | Display boundary |
+|---|---|---|
+| Orion | 0/-34,000 TCB Julian years from each retained solution epoch | Seven stars only; wider source field retained as context |
+| Bears | J2000 and nominal J-27999 TCB, common to all models | Astronomical-year interpretation of 28,000 BC is an explicit comparison convenience, not recovered paper chronology; native shape only, no dated pole/grid reproduction |
+| Kaler | 0/+250,000 TCB Julian years from each retained solution epoch | Published open chain alpha–beta–gamma–delta–epsilon–zeta–eta, explicitly separate from Wenu production topology |
+
+Domains cover both past/future query ends and all source epochs. Gaia full,
+Gaia angular and nominal-TCB Hip2 results/gaps remain separate. Combined panels
+choose F then G then H only if both epochs are available for that star; display
+priority is not production policy. Projection checks require RA left/native
+ICRS north up. No pixel fit or paper-frame equivalence is claimed.
+
+Output is no-clobber ~/wenu-output/stellar_literature_comparison_v1. The packet's
+reference hashes are checked and HTML assembles the source figures with generated
+model panels. A completion manifest binds rows, source/code/admission/SDK records,
+report and recipe. Actual-cache execution and visual agreement remain pending.
+
+### Local preparation checks
+
+The unchanged closest numerical set passed 34 cases (124 deselected). External
+AST-only reuse of the existing independent parameterized reference, with an
+explicitly larger past domain, passed 21 full/angular/Hip2 cases at
+0/-34,000/+250,000 years. Repository test collection is unchanged.
+A constructed nine-object source exercised all three report scenarios: 126
+rows, 42 evaluated directions, 84 gaps and 63 unavailable/outside-domain checks;
+maximum independent chord residual 2.3055512673781017e-16. A reversed-negative-time
+oracle fault failed as intended. Three synthetic plot exports were produced and
+inspected; they are not constellation reconstructions and are excluded from
+the reference packet. The reference-only HTML states execution is pending.
+
+Four locally available documentation contracts passed: developer-root authority,
+Python syntax, obsolete imports and roadmap diagrams/order. A broader partial
+checkout attempt had seven missing-file failures (links/assets, application
+sources, user guides and inventory inputs); it is not a passing full gate.
+New literature links/anchors resolve. The actual Mac and uploaded-image receipts
+below supersede the preparation-only pending status. Scientific contracts and
+coordinate guide remain current. K4b.05 parent and #326/#333 remain open;
+K4b.06 and normal atlas adoption are not activated.
+
+### Actual Mac run and uploaded visual assessment
+
+At `a2275f3e763995fdf691df6b1da81a9da28dd3f9`, the complete Mac
+documentation gate passed 36 cases in 4.44 s. The immutable-source recipe
+completed with 126 rows, 46 evaluated directions, 80 explicit gaps and 63
+unavailable/outside-domain refusal checks. No global admission refusal was
+reported. Maximum independent spherical chord residual:
+`3.7238012298709097e-16`. The terminal ended with clean synchronized task status.
+
+| Case, two epochs | Full evaluated/gaps | Gaia angular evaluated/gaps | Hip2 evaluated/gaps |
+|---|---|---|---|
+| Orion | 0 / 14 | 0 / 14 | 14 / 0 |
+| Bears | 2 / 12 | 6 / 8 | 8 / 6 |
+| Kaler | 2 / 12 | 6 / 8 | 8 / 6 |
+
+All Orion combined directions use Hip2 angular fallback. Both Dipper cases use
+full HIP 59774, Gaia angular 53910/65378 and Hip2 angular for the other four.
+Missing rows are preserved model alternatives, not missing stars in the combined
+seven-star figures. The console's Bears "2000 yr"/"-27999 yr" values are epoch
+keys J2000/J-27999 TCB, not elapsed offsets. JSON rows/plot titles retain the
+explicit common-epoch convention.
+
+Output: /Users/fselman/wenu-output/stellar_literature_comparison_v1.
+Reported completion-manifest SHA256:
+`5c9b5382250c3bff36ea7b12a16982f492d4de72edb10acf4e24c97374c075f7`.
+Recipe SHA256:
+`5e662c78ccc6042414e48e0975f4c2569786aa5c65256290b46fd24cd99d645a`.
+
+Fernando uploaded the generated HTML, which was parsed and its six embedded
+images decoded and actually inspected. The three references match their retained
+figure/photo hashes. Uploaded HTML SHA256:
+`56a58611e0a63ac16fbbbd48b25034838570bf4fc1205c0b1361d69852a4de95`.
+
+| Wenu image | Uploaded embedded-image SHA256 |
+|---|---|
+| Orion | `6da3402cc70e8dd48933afbcb0d79a26f138d98936b5bd4a53a678a8f5b6846b` |
+| Bears | `ee139f235883b975948db838e5517c61ab9053a44bcb91a67b55c63c5c6a7952` |
+| Kaler | `7d205f0bf5e0b3ab06262b87e3d2c96a78b172914696241b5e1a9cdd7d817f6d` |
+
+| Comparison | Actually observed outcome | Disposition |
+|---|---|---|
+| Antonello 2010 Orion, -34,000 yr | The seven principal stars retain their recognizable arrangement in both published panels. Wenu likewise shows modest change, largest here for HIP 27989 (~0.281 deg) and 25336 (~0.144 deg), much smaller for the remaining five. | Broad qualitative consistency for the selected Orion subset. Fine agreement is unresolved at the published figure's resolution; the conspicuous Sirius/Procyon changes and background are outside our sample. |
+| Antonello 2016 Bears, 28,000 BC | The seven-star Dipper remains recognizable in both views. Wenu displacements from J2000 are roughly 0.72–1.15 deg for the selected combined models. The source uses a pole-centred dated grid while Wenu is native-ICRS north-up; the figure/field cannot be directly overlaid. | Limited shape-level consistency; detailed agreement remains inconclusive. No ancient-pole, Ursa Minor/Arcturus or observer comparison was performed. |
+| Kaler/Lowell Dipper, +250,000 yr | Both show the handle opening sharply at zeta–eta, eta lying well below/right of zeta in the displayed figure, and the alpha–beta end becoming much flatter than today. Wenu's future combined seven-star pattern closely resembles the published qualitative pattern, with the same explicitly chosen open-chain connectivity. | Clear qualitative agreement in the principal deformation; strongest of the three illustrations. No pointwise residual, exact model/input reproduction or physical-accuracy validation follows. |
+
+No reference pixels were measured, rotated, stretched or fitted. Diagram
+agreement cannot identify the missing original Lowell recipe or certify the
+mixed Wenu models. Physical uncertainties, binaries/lifetimes, Hip2 time/covariance
+issues #326/#333 and the K4b.05 parent remain open. This completes inspection of
+the supplied visual specimen; final documentation and local report-manifest/
+uploaded-image linkage acceptance remain pending. No propagation rerun is needed.
+
+
+
 ## K4b.05 native-ICRS qualitative diagnostic candidate, 2026-10-26
 
 **Authority:** Fernando approved Orion offsets 0/+10,000/+100,000/+450,000
@@ -9,7 +149,8 @@ and PR #340 merge/cleanup were already confirmed. The explicit plan was committe
 at `451a0845bf96aeca0d0f8af694d2c0a99886a6c4` before executable work.
 The actual immutable-cache run and corrected-plot visual review are now complete.
 The bounded comparison outcome is qualitative and inconclusive for detailed ESA
-trajectory agreement; final documentation/report-integrity acceptance remains pending.
+trajectory agreement. Final Mac documentation passed 36 cases in 3.76 s and
+both reports/reviewed-image identities passed; PR #341 merge/cleanup is confirmed.
 
 ### As-is and bounded implementation
 
@@ -173,8 +314,10 @@ four exports. It does not repeat propagation or alter v1 source/results.
 
 The coordinate guide remains current: native ICRS motion is separate from
 date-oriented mean axes, observer reconstruction and physical validity.
-Final documentation acceptance and v2 report/image integrity check remain
-pending. Numerical execution and supplied-image inspection are complete.
+Final Mac documentation acceptance passed 36 cases in 3.76 s; the v2 manifest
+is `f71a0da16d2f0bb03551d505d999a7cd678a7ff8bf1ec4b8bf5ea6285f97bfe1`.
+Both reports and reviewed-image identities passed without repeated propagation.
+Numerical execution and supplied-image inspection are complete.
 K4b.05 parent, issues #326/#333 and K4b.06 remain open.
 
 
@@ -3542,3 +3685,4 @@ The consumer-reconciliation Mac gate also retains the original LMC boundary
 composition case that was locally blocked by missing DE440s in KG.07. It uses
 the already installed offline resource; no acquisition or full lower-level
 gate repeat is part of this reconciliation.
+
