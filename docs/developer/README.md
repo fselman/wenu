@@ -10,9 +10,12 @@ before closure review. The
 identifies Antonello's ancient Orion/Bears figures and Kaler's 1998/page 68
 Lowell-credited +250,000-year Dipper illustration. Attributed source figures,
 extraction provenance and an offline nominal SDK recipe are delivered outside
-the repository. Constructed-input checks pass; actual Mac cache run and visual
-assessment remain pending. No production/default, physical bound, parent closure
-or K4b.06 adoption changes.
+the repository. The actual Mac run passed 36 documentation cases and retained
+126 rows (46 evaluated/80 gaps), with 63 refusal checks. Uploaded reference/Wenu
+images were inspected: Kaler shows clear qualitative agreement; Orion/Bears
+remain limited shape comparisons. Final documentation/report-integrity acceptance
+is pending. No production/default, physical bound, parent closure or K4b.06
+adoption changes.
 
 ## K4b.05 native-ICRS qualitative diagnostic
 

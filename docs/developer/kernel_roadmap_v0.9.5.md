@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 101, 2026-10-26. **Status:** PR #341 merged at `2d34779b143238f02c095fb6d127afaf5986a1cb`; final 36 Mac documentation cases passed in 3.76 s and v2 report/image integrity passed without repeated propagation. Clean synchronized Mac main and branch cleanup were confirmed. Fernando selected the bounded K4b.05 literature-figure comparison before closure review, including the Kaler/Lowell +250,000-year diagram. Physical qualification, parent closure and K4b.06 remain separate.
+**Plan revision:** 101, 2026-10-26. **Status:** PR #341 merged at `2d34779b143238f02c095fb6d127afaf5986a1cb`; final 36 Mac documentation cases passed in 3.76 s and v2 report/image integrity passed without repeated propagation. Clean synchronized Mac main and branch cleanup were confirmed. Fernando selected the bounded K4b.05 literature-figure comparison before closure review, including the Kaler/Lowell +250,000-year diagram. The actual Mac run passed 36 documentation cases, retained 126 rows (46 evaluated/80 gaps) and passed 63 refusal checks. Uploaded figures were inspected: Kaler gives clear qualitative agreement; ancient subset comparisons remain limited. Final documentation/report-integrity acceptance is pending. Physical qualification, parent closure and K4b.06 remain separate.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -68,7 +68,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | Approved long-epoch diagnostic executed: 147 rows retained, 52 evaluated/95 gaps; actual v2 figures viewed after diagnostic orientation correction; detailed ESA agreement inconclusive, scientific parent open |
-| Next bounded submilestone | Selected K4b.05 literature-figure comparison before closure review: source figures/citations, explicit epoch conventions and external nominal SDK diagnostic; no production or K4b.06 adoption |
+| Next bounded submilestone | Final documentation and report/uploaded-image integrity acceptance for the selected literature comparison; closure review remains subsequent, with no K4b.06 adoption |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -124,7 +124,13 @@ adoption, K4b.05 closure or K4b.06 activation. Source lookup and preparation may
 proceed before Mac execution; actual-cache outputs are pending until observed.
 The [preparation record](kernel_migration_audit_v1.md#k4b05-literature-figure-comparison-preparation-2026-10-26)
 records source figures, identities, synthetic checks and remaining comparison
-limits. Actual immutable-cache execution and visual assessment remain pending.
+limits. The actual Mac run at `a2275f3e` passed 36 documentation cases in
+4.44 s and retained 126 rows (46 evaluated, 80 gaps), 63 refusal checks and
+maximum independent chord residual 3.7238012298709097e-16. Uploaded source/Wenu
+images were inspected: Kaler's future Dipper gives clear qualitative agreement,
+Orion shows modest consistent subset change, and the dated Bears view remains
+limited by orientation/sample differences. Final documentation and report/image
+integrity acceptance remain pending; no new propagation is required.
 Plan committed before executable recipe work at
 `734aed0acb50a635f238a16fc490840d01f54510`.
 

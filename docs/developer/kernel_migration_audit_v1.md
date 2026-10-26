@@ -81,11 +81,64 @@ Four locally available documentation contracts passed: developer-root authority,
 Python syntax, obsolete imports and roadmap diagrams/order. A broader partial
 checkout attempt had seven missing-file failures (links/assets, application
 sources, user guides and inventory inputs); it is not a passing full gate.
-New literature links/anchors resolve. Complete Mac documentation acceptance,
-actual immutable-cache report identity and visual assessment remain outstanding. Scientific contracts and coordinate
-guide remain current: nominal motion, orientation, observer reconstruction and
-physical accuracy stay separate. K4b.05 parent and #326/#333 remain open;
+New literature links/anchors resolve. The actual Mac and uploaded-image receipts
+below supersede the preparation-only pending status. Scientific contracts and
+coordinate guide remain current. K4b.05 parent and #326/#333 remain open;
 K4b.06 and normal atlas adoption are not activated.
+
+### Actual Mac run and uploaded visual assessment
+
+At `a2275f3e763995fdf691df6b1da81a9da28dd3f9`, the complete Mac
+documentation gate passed 36 cases in 4.44 s. The immutable-source recipe
+completed with 126 rows, 46 evaluated directions, 80 explicit gaps and 63
+unavailable/outside-domain refusal checks. No global admission refusal was
+reported. Maximum independent spherical chord residual:
+`3.7238012298709097e-16`. The terminal ended with clean synchronized task status.
+
+| Case, two epochs | Full evaluated/gaps | Gaia angular evaluated/gaps | Hip2 evaluated/gaps |
+|---|---|---|---|
+| Orion | 0 / 14 | 0 / 14 | 14 / 0 |
+| Bears | 2 / 12 | 6 / 8 | 8 / 6 |
+| Kaler | 2 / 12 | 6 / 8 | 8 / 6 |
+
+All Orion combined directions use Hip2 angular fallback. Both Dipper cases use
+full HIP 59774, Gaia angular 53910/65378 and Hip2 angular for the other four.
+Missing rows are preserved model alternatives, not missing stars in the combined
+seven-star figures. The console's Bears "2000 yr"/"-27999 yr" values are epoch
+keys J2000/J-27999 TCB, not elapsed offsets. JSON rows/plot titles retain the
+explicit common-epoch convention.
+
+Output: /Users/fselman/wenu-output/stellar_literature_comparison_v1.
+Reported completion-manifest SHA256:
+`5c9b5382250c3bff36ea7b12a16982f492d4de72edb10acf4e24c97374c075f7`.
+Recipe SHA256:
+`5e662c78ccc6042414e48e0975f4c2569786aa5c65256290b46fd24cd99d645a`.
+
+Fernando uploaded the generated HTML, which was parsed and its six embedded
+images decoded and actually inspected. The three references match their retained
+figure/photo hashes. Uploaded HTML SHA256:
+`56a58611e0a63ac16fbbbd48b25034838570bf4fc1205c0b1361d69852a4de95`.
+
+| Wenu image | Uploaded embedded-image SHA256 |
+|---|---|
+| Orion | `6da3402cc70e8dd48933afbcb0d79a26f138d98936b5bd4a53a678a8f5b6846b` |
+| Bears | `ee139f235883b975948db838e5517c61ab9053a44bcb91a67b55c63c5c6a7952` |
+| Kaler | `7d205f0bf5e0b3ab06262b87e3d2c96a78b172914696241b5e1a9cdd7d817f6d` |
+
+| Comparison | Actually observed outcome | Disposition |
+|---|---|---|
+| Antonello 2010 Orion, -34,000 yr | The seven principal stars retain their recognizable arrangement in both published panels. Wenu likewise shows modest change, largest here for HIP 27989 (~0.281 deg) and 25336 (~0.144 deg), much smaller for the remaining five. | Broad qualitative consistency for the selected Orion subset. Fine agreement is unresolved at the published figure's resolution; the conspicuous Sirius/Procyon changes and background are outside our sample. |
+| Antonello 2016 Bears, 28,000 BC | The seven-star Dipper remains recognizable in both views. Wenu displacements from J2000 are roughly 0.72–1.15 deg for the selected combined models. The source uses a pole-centred dated grid while Wenu is native-ICRS north-up; the figure/field cannot be directly overlaid. | Limited shape-level consistency; detailed agreement remains inconclusive. No ancient-pole, Ursa Minor/Arcturus or observer comparison was performed. |
+| Kaler/Lowell Dipper, +250,000 yr | Both show the handle opening sharply at zeta–eta, eta lying well below/right of zeta in the displayed figure, and the alpha–beta end becoming much flatter than today. Wenu's future combined seven-star pattern closely resembles the published qualitative pattern, with the same explicitly chosen open-chain connectivity. | Clear qualitative agreement in the principal deformation; strongest of the three illustrations. No pointwise residual, exact model/input reproduction or physical-accuracy validation follows. |
+
+No reference pixels were measured, rotated, stretched or fitted. Diagram
+agreement cannot identify the missing original Lowell recipe or certify the
+mixed Wenu models. Physical uncertainties, binaries/lifetimes, Hip2 time/covariance
+issues #326/#333 and the K4b.05 parent remain open. This completes inspection of
+the supplied visual specimen; final documentation and local report-manifest/
+uploaded-image linkage acceptance remain pending. No propagation rerun is needed.
+
+
 
 ## K4b.05 native-ICRS qualitative diagnostic candidate, 2026-10-26
 
