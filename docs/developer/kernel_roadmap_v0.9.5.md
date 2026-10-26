@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 103, 2026-10-26. **Status:** Fernando accepted the K4b.05 nominal-reconstruction disposition with “Accepted as described” after all 36 Mac documentation tests passed in 3.65 s at `a8c0dd08` with clean synchronized task status. K4b.05 closes only for nominal stellar-motion reconstructions with disclosed limitations; physical accuracy remains unknown and #326/#333 remain open. Bright-star source optimality is a separate research question, with no source/model adoption authorized. K4b.06 remains unselected. PR #343 acceptance-status documentation gate is pending.
+**Plan revision:** 104, 2026-10-26. **Status:** PR #343 merged at `4e78cb9e76def88b069f837338d336ab7095253c`; final 36 Mac documentation cases passed in 3.63 s, and clean synchronized Mac main plus local/remote cleanup were confirmed. Fernando selected definition of the bounded K4b.06 production integration scope, emphasizing architecture migration and deferring the bright-star audit to production integration rather than a preceding audit. This selection authorizes as-is assessment and a concrete integration proposal; runtime choices remain proposed until selected.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,8 +46,8 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `df4eae36fede007a2089f89cdcd436ad8e69a3a7`,
-confirmed clean/synchronized on the Mac on 2026-10-26 after PR #342 merge.
+**Current accepted base:** main `4e78cb9e76def88b069f837338d336ab7095253c`,
+confirmed clean/synchronized on the Mac on 2026-10-26 after PR #343 merge.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -68,7 +68,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | K4b.05 nominal-use qualification and documented limits explicitly accepted; independent numerical and bounded comparison receipts retained. Physical accuracy unknown, source issues and pending sibling scopes unchanged |
-| Next bounded submilestone | Final acceptance-status documentation gate for PR #343, then selection of a bounded K4b.06 slice. Bright-star source research does not activate new acquisition/model work |
+| Next bounded submilestone | Selected K4b.06 integration definition: inspect actual stellar/figure/label/request/atlas seams and propose the smallest production slice. Bright-star audit belongs to K4b.06 adoption, not a preceding prerequisite |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -81,6 +81,41 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4b.06: production integration scope definition
+
+**Selection:** Fernando said "Proceed" after confirmed clean synchronized Mac
+main `4e78cb9e` and PR #343 cleanup. He explicitly deferred the bright-star
+source audit until incorporation into production Wenu (K4b.06), and asked to
+retain focus on the architecture modification. This task defines a bounded
+production implementation; it does not run a separate bright-star audit or
+silently activate runtime/source-selection behavior.
+
+Inspect current `Stars` public lookup and realization, constellation endpoints
+and label anchors, layer context/coordinate guards, request lifetime/assembly,
+native atlas-sheet and saved-sky seams, actual adapter models and their tests.
+Use the existing architecture/canonical pipeline; identify what already works
+and the minimum missing connection. Keep star-specific source/model selection
+outside generic state/geometry services and keep projection/rendering out of
+astronomical providers. Package extraction remains after K5, not part of this
+consumer integration.
+
+Publish the as-is assessment and one concrete first-slice proposal in the
+existing migration audit. Make request-owned resource lifetime, original HIP/
+photometry identity, common epoch, explicit model selection, unavailable rows,
+source constellation membership, saved-source behavior and numerical/visual/
+workload acceptance reviewable before changing production. State what remains
+for broader K4b.06 rather than closing the parent on a first slice.
+
+No runtime/test/source/dependency/schema/default change, acquisition, optimal-source
+claim, new physical model/error policy, observer reconstruction, worker/CLI
+expansion or package extraction is selected by this definition task. The
+bright-star audit is deferred to the K4b.06 production-adoption stage; any
+replacement astrometry/RV inputs still require their explicit source/admission
+review. Do not make that audit an earlier prerequisite or silently begin it.
+Acceptance here: actual owner/test inspection, architecture/claim/link consistency,
+closest local documentation contracts and the complete Mac documentation gate.
+Record this definition before proposing the new production slice for selection.
 
 ## K4b.05: qualification review after reference comparisons
 
