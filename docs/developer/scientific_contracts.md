@@ -16,8 +16,9 @@ carries its common TCB event; gaps carry explicit reasons. Physical accuracy and
 unresolved Hip2 conventions/covariance remain unknown. The implementation does
 not close #326/#333 or K4b.06, adopt improved sources, transform historical
 observers, change native defaults or qualify all other sky layers.
-Constructed seam/export checks pass; real Mac source/workload/specimen acceptance
-is still required.
+The bounded native-sheet slice passed 59 Mac runtime and 36 documentation cases,
+actual cold/restored source workloads and Fernando's visual review in PR #346,
+merged at `ab8a7e9a`. These receipts preserve the physical-accuracy limits above.
 
 ## K4b.05 qualification status
 

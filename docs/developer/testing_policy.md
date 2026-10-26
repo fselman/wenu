@@ -18,15 +18,15 @@ complete documentation gate. SDK/affine numerical implementations and pins are
 unchanged; do not run unrelated independent numerical/family gates. No gate
 manifest or test-collection configuration change is introduced.
 
-Local evidence: nine new constructed cases pass, including real PNG/PDF/SVG
-chart/report export; 25 existing native consumer cases pass (the asset-dependent
-loaded-designations case requires the complete checkout), five existing
-request scope/cleanup/native-atlas cases, and 19 existing atlas sheet/report cases
-pass. Four focused documentation checks pass locally. The local SDK source bytes match
-the project's pinned SDK revision. These are not actual cached-source or complete
-saved-sky/ancient-sheet acceptance. On the Mac measure admission, cold/warm/
-changed-epoch workloads and SDK reuse at explicit common J2000/J-8000 TCB epochs,
-with source-loaded and saved-source skies, retained gaps and output review.
+Accepted Mac evidence: 59 selected runtime cases passed at `0ec6515`;
+36 documentation cases passed in 3.04 s at `4bf3dc63` after the documentation-only
+correction. The immutable-cache source-loaded/restored J2000/J-8000 run passed
+with 117,955 available stars and 263 explicit gaps in every case, measured warm
+reuse, three-format outputs and Fernando's subsequent visual acceptance.
+PR #346 merged at `ab8a7e9a`; source snapshot and run provenance remain retained.
+See the [receipt](kernel_migration_audit_v1.md#accepted-stellar-owned-native-sheet-result).
+These checks accept the bounded Python native-sheet slice only; parent K4b.06
+product/worker/CLI and physical-accuracy limitations remain explicit.
 
 ## Hipparcos-2 covariance qualification gate
 

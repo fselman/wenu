@@ -39,7 +39,9 @@ explicit matching binding after restoration. Motion-request pickle/worker
 transport refuses; ordinary CLI/TOML, historical observers and batch request
 transport are not implemented by this Python sheet opt-in. No new top-level
 exports, catalogue acquisition, physical-accuracy guarantee or package extraction.
-Real-cache workload/ancient-sheet and complete saved-sky acceptance remain pending.
+Real-cache cold/restored J2000/J-8000 workloads and native-sheet visual review
+passed Mac acceptance in PR #346, merged at `ab8a7e9a`; the remaining product
+and transport gates are separate.
 
 ## Hipparcos-2 covariance qualification report
 

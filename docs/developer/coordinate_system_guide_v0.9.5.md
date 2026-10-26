@@ -14,8 +14,8 @@ anchors from member directions. These geometry consumers neither select epochs
 or astrometric models nor own propagation sessions. Source-direction metadata
 used for membership is explicitly distinct from the realized direction arrays.
 
-This is the selected native Python atlas-sheet integration candidate, with real
-Mac acceptance pending. Missing directions stay unavailable, no failed query
+The bounded native Python atlas-sheet integration passed real Mac acceptance
+and Fernando's visual review in PR #346, merged at `ab8a7e9a`. Missing directions stay unavailable, no failed query
 falls back to static coordinates, and physical ancient-position accuracy remains
 unknown. Other native layers remain truthfully static; the stellar specimen does
 not claim that deep-sky objects or the entire historical sky physically evolved.

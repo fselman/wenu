@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 107, 2026-10-26. **Status:** PR #345's stellar-ownership correction passed 36 Mac documentation cases in 3.96 s at `f0ba23a5`, merged at `80fbe496a5c4a0342adcca288fd0f9e0919df2cf`, and clean synchronized Mac main plus cleanup were confirmed. Fernando selected implementation with "Proceed". The bounded native atlas-sheet candidate now binds realization to stars; lines/labels consume positions. Local seam/export evidence is recorded; Mac acceptance and real-source workloads/specimens remain pending. K4b.06 is not closed.
+**Plan revision:** 108, 2026-10-26. **Status:** PR #346's native Python atlas-sheet slice passed Mac runtime/documentation, real-cache cold/restored J2000/J-8000 workloads and Fernando's visual review, then merged at `ab8a7e9a`. Clean synchronized Mac main and cleanup are confirmed. The next CLI/TOML slice is defined below for scope review; no further runtime work or parent K4b.06 closure is claimed.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,8 +46,8 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `80fbe496a5c4a0342adcca288fd0f9e0919df2cf`,
-confirmed clean/synchronized on the Mac on 2026-10-26 after PR #345 merge.
+**Current accepted base:** main `ab8a7e9ab1374a20c0eed3064d7555ed0a3b789e`,
+confirmed clean/synchronized on the Mac on 2026-10-26 after PR #346 merge.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -67,8 +67,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.05 nominal-use qualification and documented limits explicitly accepted; independent numerical and bounded comparison receipts retained. Physical accuracy unknown, source issues and pending sibling scopes unchanged |
-| Next bounded submilestone | Selected first K4b.06 native atlas-sheet integration slice: stars own request-scoped realization; lines and labels consume stellar positions without propagation knowledge. Preserve source membership and canonical pipeline. Bright-star audit remains at production adoption |
+| Current bounded result | PR #346 native Python atlas-sheet slice accepted, merged and cleaned up; Mac cold/restored workloads and visual review complete. Physical accuracy unknown; parent K4b.06 remains open |
+| Next bounded submilestone | Proposed CLI/TOML extension of the existing native single-sheet path, defined below for scope acceptance; runtime not activated. Stars retain realization ownership; observer/frame/batch work stays separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -84,26 +84,22 @@ cleanup. This documentation merge adds no runtime acceptance.
 
 ## K4b.06: production integration scope definition
 
-**Mac receipt and operational correction:** At `0ec6515`, Fernando passed
-9 new integration, 26 native consumer, five request-lifetime and 19 atlas/report
-cases (59 runtime checks). Documentation passed 35 cases and failed its executable
-canonical import example because a new illustrative block used undefined inputs.
-Remove that block from the executable-example sequence and rerun documentation
-only; retain the passing runtime receipt. Real-source workload/specimen acceptance
-remains pending. Fernando also requires all subsequent Wenu build/test/output
-runs under `~/Software/build/wenu/`, separate from wenu-imaging, with
-`run-provenance.json` and retention-aware cleanup as specified in the developer
-instructions. Existing home-directory results require inspection, not automatic
-deletion or invented provenance.
-
-**Implementation candidate:** Fernando's subsequent "Proceed" after PR #345
-merge/cleanup activates only the accepted first slice below. Existing stars,
-stellar adapter, source assembly and native-sheet owners now implement it;
-constellation-line code is unchanged. Labels read source membership separately
-from returned member positions. Nine new constructed cases, 25 existing native
-consumer cases and five request-lifetime cases pass locally, including real
-three-format sheet/report export. Mac/real-cache/saved-sky/workload/specimen gates
-remain pending. These changes do not close K4b.06 or start the bright-star audit.
+**Accepted first slice:** PR #346's bounded Python native atlas-sheet slice is accepted and merged at
+`ab8a7e9ab1374a20c0eed3064d7555ed0a3b789e`; Fernando confirmed clean
+synchronized Mac main and local/remote branch cleanup. At `0ec6515`, 59 selected
+Mac runtime cases passed. At `4bf3dc63`, all 36 documentation cases passed in
+3.04 s after the documentation-only correction. The actual immutable-cache run
+`stellar-native-acceptance-v1-jriu3wpd` passed for freshly loaded and restored
+source skies at J2000 and J-8000 TCB. Each case retained 117,955 available stars
+and 263 explicit gaps; warm full-source queries took 0.949–1.158 s versus
+18.279–22.325 s initially. The run resides under
+`~/Software/build/wenu/output/`; completion-manifest SHA256 is
+`313b02f098894bbfbc0144e2bafef5e9dc8665f2d2572092e4ae7466e480fd34`.
+Fernando reviewed the comparison page and confirmed “Everything is OK”, then
+requested merge/cleanup. These are user-reported Mac results and visual
+acceptance, not a claim that the assistant independently inspected the run files.
+Retain the run, source snapshot and provenance as acceptance evidence.
+The parent K4b.06 stays open for its remaining product/worker/CLI obligations.
 
 **Accepted definition:** PR #344 passed 36 Mac documentation cases in 4.12 s
 at `7edf0659`, was accepted by Fernando, and merged at `dc0d1d52`.
@@ -151,6 +147,77 @@ reconstruction, package extraction or standalone bright-star audit is selected.
 The bright-star source audit stays deferred to production adoption within K4b.06;
 improved input acquisition/adoption requires its own explicit review.
 
+
+## K4b.06: proposed native single-sheet CLI/TOML slice
+
+**Selection and status:** after confirming PR #346 merge/cleanup, Fernando asked
+what remains and said “Proceed” to the proposal to record acceptance and define
+a bounded CLI/TOML historical-request slice. This authorizes this definition;
+the concrete boundary below is proposed for review before runtime changes.
+It is a subdivision of existing K4b.06 obligations, not a new scientific milestone.
+
+**As-is:** `cli/chart.py::_atlas_sheet` already validates design, atlas-style
+TOML and a source-only saved sky, constructs `AtlasSheetChartRequest`, and calls
+`generate_chart_request`. It currently supplies no stellar motion.
+The prepared Python request accepts it, while pickling that live request refuses.
+Ordinary regional/planisphere paths construct observers; `wenu_create_atlas`
+also has publication/worker responsibilities. Neither needs to be broadened to
+expose the accepted observer-free single-sheet route.
+
+**Proposed result:** let the installed `wenu_chart atlas-sheet` command opt in
+through a separate explicit stellar-motion TOML input, keeping scientific inputs
+outside style/presentation configuration. Preserve its existing design,
+presentation, chart-number, verified saved-source-sky and output arguments.
+Do not advertise these proposed options as available before implementation.
+
+The proposed motion input contract must identify its schema/document kind,
+the local immutable enrichment source and expected manifest digest, an explicit
+ordered list of already admitted models with their required existing policies,
+finite admission bounds, and one resolved target event expressed explicitly as a
+TCB Julian epoch. Decode that epoch with the existing time vocabulary; it is not
+an observer civil date, TT equinox, or inferred timescale. Resolve relative
+resource paths against the motion document, require finite values and exact
+supported keys/model names, and reject missing/ambiguous policies or mismatched
+source identities. Establish the precise field spelling and version during the
+bounded implementation; no hidden model priority or automatic cache discovery.
+
+Admission belongs to the stellar source/model owner. The CLI adapter translates
+validated inputs into the existing `StellarMotionRequest` and binds it through
+`AtlasSheetChartRequest.stellar_motion`. Stars still own selection, SDK queries
+and reuse; lines/labels receive only public positions. Reuse existing immutable
+source readers, admissions and resource scopes; no acquisition, second renderer,
+generic-kernel catalogue policy or line/label motion options.
+
+**Compatibility and refusal:** absent motion input preserves existing commands,
+schema/defaults, static output and source snapshots. Verify source/sky identity
+and finite coverage before publishing output. Unknown/corrupt/missing inputs,
+unsupported model/time policy and domain or SDK refusal must give a nonzero
+command status without a static fallback or partial published product. Preserve
+no-clobber staging and cleanup. Record the motion-document/source identities and
+resolved event/model policies with the existing report provenance.
+
+**Smallest acceptance gate:** existing CLI/atlas request tests plus focused
+stellar admission/lifetime seams and complete documentation. Test malformed TOML,
+unknown/duplicate keys, invalid/nonfinite epoch/domain/model policy, relative
+paths, source digest/sky mismatch, refusal after successful lookup, output
+cleanup and unchanged no-motion commands. A fresh offline command process must
+match the prepared Python request's stellar/line/anchor results and reports;
+a deliberate dropped motion binding must fail the closest test.
+Use synthetic byte-bound inputs for deterministic tests and the accepted Mac
+cache/saved sky for J2000/J-8000 public command PNG/PDF/SVG specimens. Compare
+against the accepted Python route and retain names/V/membership/gaps. Use
+`~/Software/build/wenu/` with `run-provenance.json`; retain existing evidence
+and avoid repeating unchanged propagation or SDK numerical qualification.
+
+**Explicit limits:** this proposal selects no ordinary regional/planisphere
+observer adoption, date-oriented mean axes, historical clock/EOP reconstruction,
+new chronology syntax, batch workers, evaluated-state persistence, saved motion
+request transport, multi-page atlas adoption, source/default replacement,
+bright-star audit execution, physical accuracy guarantee, dependency or package
+extraction. A source-only saved sky is an input, not serialized motion state.
+The remaining K4b.06 gates and bright-star audit retain their placement and need
+their own bounded selections. This definition introduces no runtime option,
+production schema or test collection change.
 
 ## K4b.05: qualification review after reference comparisons
 
@@ -2090,7 +2157,7 @@ remain its separate responsibilities.
 | K4b.03 | Admit explicit historical time/calendar/year-zero/BCE and source/input-date uncertainty semantics | Bounded explicit input/receipt slice passed Mac acceptance in PR #327 at ceeb894b: 257 focused, 125 audit, 36 documentation, eight tooling/81 subtests and 24 actual historical states. No implicit civil-clock/TT-to-TCB/observer reconstruction or total uncertainty claim |
 | K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Bounded explicit long-term mean-axis slice passed Mac acceptance in PR #328 at 97921fe8; 48 actual derived directions, finite TT domain and unknown physical/total error. No observer/EOP reconstruction or chart/default adoption |
 | K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references; include ESA Orion and Ursa Major reconstruction comparisons with documented input/method and independence limits | Accepted/closed for nominal reconstruction with explicit documented limits by Fernando on 2026-10-26, after 36 Mac documentation passes in 3.65 s at a8c0dd08. Numerical and bounded comparisons completed; detailed ESA agreement inconclusive, physical accuracy unknown. #326/#333 remain open; no source optimality or consumer adoption claim |
-| K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | K4b.05 nominal-use qualification accepted. First opt-in native atlas-sheet slice selected after PR #344 acceptance; stars own realization, lines/labels consume public positions without propagation knowledge. Implementation candidate; Mac runtime/source/workload acceptance pending. Remaining sibling/product/worker/CLI gates stay explicit; bright-star audit deferred to production adoption within this stage |
+| K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | K4b.05 nominal-use qualification accepted. First opt-in native atlas-sheet slice selected after PR #344 acceptance; stars own realization, lines/labels consume public positions without propagation knowledge. First native Python sheet slice accepted through PR #346 with Mac runtime/documentation, actual cold/restored workloads and visual review; merged at ab8a7e9a. Native single-sheet CLI/TOML definition proposed for review; remaining sibling/product/worker/CLI gates and bright-star audit stay explicit |
 
 ### K5–K9: freeze, extraction and release
 

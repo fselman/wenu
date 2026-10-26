@@ -6,7 +6,8 @@ K4b.06's selected native-sheet integration extends existing owners only:
 isolated stellar view to dependent position consumers; `charts/atlas_sheet.py`
 uses it in the existing sheet route. Lines retain their public endpoint lookup;
 labels separate source membership from returned anchor directions. No new
-production module or package boundary is introduced. Mac acceptance is pending.
+production module or package boundary is introduced. The bounded native-sheet
+slice passed Mac acceptance and visual review in PR #346, merged at `ab8a7e9a`.
 
 K4a.01 adds no production module. Its [enrichment contract and census](data/stellar_enrichment_contract_v1.json)
 belong to documentation/data design; `stellar_catalogue.py` and `objects/stars.py`
