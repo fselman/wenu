@@ -1,5 +1,17 @@
 # Wenu developer documentation
 
+## K4b.05 ESA comparison assessment
+
+The selected [ESA assessment](kernel_roadmap_v0.9.5.md#k4b05-esa-constellation-comparison-assessment)
+starts from accepted main `8a0e3e08`, reconfirmed clean/synchronized on the Mac
+on 2026-10-26. The [source recovery and feasibility report](kernel_migration_audit_v1.md#k4b05-esa-comparison-feasibility-assessment-2026-10-26)
+recovers linked all-sky RV/linear-motion evidence while preserving Orion-specific
+gaps and Ursa Major's preliminary stereo geometry. Numerical reproduction is
+not yet supported by matched inputs; no visual agreement or endpoint run is
+claimed. A native-ICRS qualitative protocol is proposed, not selected.
+No domain extension, source acquisition or K4b.06 adoption is activated.
+Complete Mac documentation acceptance remains pending.
+
 ## K4b.05 finite perspective comparison
 
 Fernando selected the [finite full-versus-angular comparison](kernel_roadmap_v0.9.5.md#k4b05-finite-perspective-omission-comparison)
@@ -12,8 +24,9 @@ were retained, with 15 matched pairs and 65 explicit gaps. The three common
 stars reproduce the independent reference; source and solution digests are
 unchanged. Mac verification covers 345 focused cases/nine subtests (one stale
 bytecode failure passed in a fresh-cache retry), 173 source-audit, 36
-documentation and eight tooling cases. Final documentation receipt acceptance
-and PR #339 review remain pending.
+documentation and eight tooling cases. The final documentation head
+`af345e87` passed 36 Mac documentation cases in 6.15 s. PR #339 merged at
+`8a0e3e08`; clean synchronized main and local/remote branch cleanup were confirmed.
 K4b.05 parent physical/source/ESA qualification and K4b.06 adoption remain open.
 
 The previous [closure evidence matrix](kernel_migration_audit_v1.md#k4b05-bounded-closure-review-2026-10-24)
