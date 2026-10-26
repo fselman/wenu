@@ -119,7 +119,15 @@ Reuse established tests when they already protect the same fault; avoid adding
 another provider, renderer, production report mode or milestone-specific owner.
 No source acquisition, new stellar physics/error policy, author contact,
 date-oriented Orion axes, physical-bound claim, parent closure or K4b.06
-activation is selected. Commit this plan before executable diagnostic work.
+activation is selected. Commit this plan before executable diagnostic work. Plan committed at
+`451a0845bf96aeca0d0f8af694d2c0a99886a6c4`.
+The [candidate and exact verification limits](kernel_migration_audit_v1.md#k4b05-native-icrs-qualitative-diagnostic-candidate-2026-10-26)
+now record 34 closest passing local cases and constructed 147-row recipe/plot
+checks, plus an explicit global singular-domain refusal. A broader partial-owner
+probe has one unchanged application case unavailable locally; no complete owner
+pass is claimed. ESA reference media was viewed, but actual manifest-bound Mac
+execution, complete focused/documentation acceptance and qualitative comparison
+remain pending. Source and production bytes are unchanged.
 
 ## K4b.05: ESA constellation comparison assessment
 
