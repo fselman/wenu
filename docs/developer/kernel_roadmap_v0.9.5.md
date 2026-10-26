@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 106, 2026-10-26. **Status:** PR #345's stellar-ownership correction passed 36 Mac documentation cases in 3.96 s at `f0ba23a5`, merged at `80fbe496a5c4a0342adcca288fd0f9e0919df2cf`, and clean synchronized Mac main plus cleanup were confirmed. Fernando selected implementation with "Proceed". The bounded native atlas-sheet candidate now binds realization to stars; lines/labels consume positions. Local seam/export evidence is recorded; Mac acceptance and real-source workloads/specimens remain pending. K4b.06 is not closed.
+**Plan revision:** 107, 2026-10-26. **Status:** PR #345's stellar-ownership correction passed 36 Mac documentation cases in 3.96 s at `f0ba23a5`, merged at `80fbe496a5c4a0342adcca288fd0f9e0919df2cf`, and clean synchronized Mac main plus cleanup were confirmed. Fernando selected implementation with "Proceed". The bounded native atlas-sheet candidate now binds realization to stars; lines/labels consume positions. Local seam/export evidence is recorded; Mac acceptance and real-source workloads/specimens remain pending. K4b.06 is not closed.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -83,6 +83,18 @@ cleanup. This documentation merge adds no runtime acceptance.
 
 
 ## K4b.06: production integration scope definition
+
+**Mac receipt and operational correction:** At `0ec6515`, Fernando passed
+9 new integration, 26 native consumer, five request-lifetime and 19 atlas/report
+cases (59 runtime checks). Documentation passed 35 cases and failed its executable
+canonical import example because a new illustrative block used undefined inputs.
+Remove that block from the executable-example sequence and rerun documentation
+only; retain the passing runtime receipt. Real-source workload/specimen acceptance
+remains pending. Fernando also requires all subsequent Wenu build/test/output
+runs under `~/Software/build/wenu/`, separate from wenu-imaging, with
+`run-provenance.json` and retention-aware cleanup as specified in the developer
+instructions. Existing home-directory results require inspection, not automatic
+deletion or invented provenance.
 
 **Implementation candidate:** Fernando's subsequent "Proceed" after PR #345
 merge/cleanup activates only the accepted first slice below. Existing stars,

@@ -30,17 +30,9 @@ unknown physical accuracy; report JSON adds `stellar_realization` with source
 manifest identity, model order/counts and SDK exact-batch reuse counts.
 No-motion report schema/content and appearance remain unchanged.
 
-```python
-from wenu.stellar_state import StellarMotionRequest
-from wenu.charts.atlas_sheet import AtlasSheetChartRequest
-from wenu.charts.request_generation import generate_chart_request
-
-# full/angular/hip2, target_tcb and sky are separately validated supplied inputs.
-motion = StellarMotionRequest((full, angular, hip2), target_tcb)
-request = AtlasSheetChartRequest(sheet, page, presentation, output_dir,
-                                stellar_motion=motion)
-result = generate_chart_request(request, sky=sky)
-```
+The admitted catalogues, resolved event and prepared sky are supplied inputs;
+this API description does not acquire or manufacture them. Use the request's
+`stellar_motion` field for the already validated stellar request.
 
 Source-only saved skies retain their format/meaning and require a separate,
 explicit matching binding after restoration. Motion-request pickle/worker
