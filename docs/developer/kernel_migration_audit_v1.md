@@ -1,5 +1,116 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.05 native-ICRS qualitative diagnostic candidate, 2026-10-26
+
+**Authority:** Fernando approved Orion offsets 0/+10,000/+100,000/+450,000
+and Big Dipper offsets 0/+10,000/+60,000 TCB Julian years on 2026-10-26.
+Clean synchronized Mac main `c8544528ad51a28c344beb26adf27c925e7e346e`
+and PR #340 merge/cleanup were already confirmed. The explicit plan was committed
+at `451a0845bf96aeca0d0f8af694d2c0a99886a6c4` before executable work.
+This candidate does not claim an actual cache run or ESA/Wenu agreement yet.
+
+### As-is and bounded implementation
+
+The retained principal Orion HIPs are 27989, 24436, 25336, 26727, 26311,
+25930 and 27366; Big Dipper HIPs are 54061, 53910, 58001, 59774, 62956,
+65378 and 67301. Membership and permitted finite figure edges are checked against
+the existing `src/wenu/data/constellations/western/constellationship.fab`.
+Only edges with both endpoints in the selected sample are plotted; absent
+intermediate vertices are not replaced with invented segments. This is a
+fourteen-star diagnostic, not a complete constellation or TGAS background.
+
+The existing spherical-reference test in `tests/test_stellar_state.py` now
+also evaluates +60,000/+100,000/+450,000 years with an explicit longer numerical
+coverage for all three full/angular/Hip2 cases. Existing short and negative
+offsets remain. No production numerical implementation, resource, test owner,
+dependency, interface, ordinary chart route or default changes.
+
+A versioned external recipe, `wenu_esa_qualitative_diagnostic_v1.py`, uses the
+existing immutable snapshot and actual KernelSession.evaluate calls. It retains
+all source objects in admissions, all fourteen selected HIPs and 147
+HIP/model/epoch report rows. Available full, Gaia-angular and Hip2 fallback
+directions remain separate. The recipe verifies retained solution digests,
+SDK identities/times/evidence, per-source-epoch offsets, independent spherical
+directions, unavailable-object and warm outside-domain refusals. Each group's
+coverage contains all retained input epochs and ends at its latest source
+epoch plus that group's largest approved offset. Source epoch labels are read
+from the validated source, not inferred from the constellation or filenames.
+
+A global catalogue/domain admission refusal is recorded as global
+`admission_refused` rows, not falsely attributed to missing per-star measurements.
+It does not drop those HIPs or silently retry a different full model.
+Successful remaining admissions can still be reported. Source byte/digest
+checks remain mandatory. Domain-dependent catalogue/model bindings are reported
+separately from unchanged source-solution digests.
+
+Plots use existing kernel spherical-frame and stereographic services, native
+ICRS north-up/east-left axes, separate model panels and shared axes per group.
+Projection centres are explicit diagnostic choices, not recovered ESA viewpoints.
+Only approved epoch endpoints are queried; dashed connectors join those samples
+and do not claim continuously sampled trajectories. Solid figure chords retain
+the selected source topology. Raw vectors, times and projected endpoints are
+saved for inspection. These diagnostic exports do not activate ordinary atlas
+or propagated stellar chart consumers.
+
+Output is outside the repository under
+`~/wenu-output/stellar_esa_qualitative_v1`, with JSONL state/gap rows, selected
+original source records, summary/admission/SDK/code identities, projection
+records, the exact recipe, and PNG/PDF for each group. It refuses to overwrite
+that directory; the product-hash completion manifest is written last. An
+interrupted/incomplete directory is evidence to inspect, not permission to
+overwrite it. The source manifest remains the accepted
+`8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365`.
+
+### Reference media actually inspected
+
+The [Orion video](https://www.esa.int/ESA_Multimedia/Videos/2017/06/The_future_of_the_Orion_constellation)
+was opened in the browser and played. The initial image and a later frame at
+player time about 1:02 of 1:12 were inspected; the bright-star pattern visibly
+changes. No exact mapping from those player times to scientific epochs was
+recovered, no per-star endpoint was measured and no Wenu result was compared.
+
+The [Hipparcos stereo page](https://www.cosmos.esa.int/web/hipparcos/stereo-images)
+was directly accessible in the browser on this occasion, despite the earlier
+HTTP-451 text-fetch route. Both linked present and +60,000-year colour GIFs were
+opened and visually inspected. Their red/green split and changed pattern are
+visible; no channel midpoint was interpreted as barycentric RA/Dec and no stereo
+depth was measured. This viewing supersedes the earlier unviewed-media status
+only; original inputs, exact epoch conventions and projection/depth recipe
+remain unresolved. No reference media was downloaded into the repository or
+redistributed as a deliverable. Actual Wenu/ESA agreement remains pending the
+manifest-bound Mac output and its visual review.
+
+### Verification and remaining acceptance
+
+The closest existing set passed locally: 34 cases, covering the extended
+spherical-reference cases and retained finite-perspective/refusal cases.
+A deliberately coherent +10,000-year time cap initially triggered the engine's
+exact numerical guard. With the same cap injected into that internal checker,
+the independent extended spherical oracle failed for full/angular/Hip2; the
+patches were restored and the 34-case set passed again.
+
+A broader available-owner probe returned 152 passes/nine subtests, five
+deselections and one unchanged application case blocked by missing
+`wenu.objects` in the partial checkout. It is not described as a complete
+passing owner run. No production defect or source change was inferred.
+
+The external recipe was exercised with the existing explicitly synthetic
+nine-row fixture: all 147 requested rows retained, 63 evaluated directions,
+84 explicit unavailable rows, 42 unavailable/outside-domain checks, and both
+PNG/PDF plot pairs. The full-model source-solution digest remained the same
+between group coverages while model bindings differed. The plot was visually
+inspected. A separate synthetic radial-only approaching trajectory retained
+28 global long-domain refusal rows while the shorter-domain and angular
+results survived. These are constructed workflow checks, not real catalogue
+availability, outputs or external scientific agreement.
+
+The coordinate guide remains current: native ICRS motion is separate from
+date-oriented mean axes, observer reconstruction and physical validity.
+Complete Mac focused/documentation acceptance, actual cached-source output and
+qualitative comparison remain pending. K4b.05 parent, issues #326/#333 and
+K4b.06 remain open.
+
+
 ## K4b.05 ESA comparison feasibility assessment, 2026-10-26
 
 **Selected scope and base:** Fernando selected the bounded K4b.05 assessment
