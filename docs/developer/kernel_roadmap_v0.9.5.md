@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 99, 2026-10-26. **Status:** PR #339 is merged at `8a0e3e08437ccce2685ddd2e5c84e00f442d85ff`; its final documentation head passed all 36 Mac documentation cases, and merged-main synchronization and branch cleanup were confirmed. Fernando selected the bounded K4b.05 ESA comparison assessment with “Proceed” on 2026-10-26 and reconfirmed clean synchronized Mac main at that exact base. The assessment now records Orion/Ursa Major recoverability, linked all-sky RV/linear-motion evidence and explicit epoch/domain choices. No endpoint run or visual agreement is claimed; complete Mac documentation acceptance is pending. K4b.05 parent closure and K4b.06 adoption remain separate.
+**Plan revision:** 100, 2026-10-26. **Status:** PR #340 is merged at `c8544528ad51a28c344beb26adf27c925e7e346e`; 36 Mac documentation cases passed at `d29833c9` in 4.72 s, and clean synchronized Mac main plus local/remote task-branch cleanup were confirmed. Fernando approved the K4b.05 native-ICRS qualitative diagnostic epochs below. The actual Mac run passed 34 focused and 36 documentation cases and retained 147 rows (52 evaluated, 95 gaps). Supplied corrected plots were inspected; detailed ESA agreement is inconclusive. Final documentation/v2 product-integrity acceptance remains pending. Physical accuracy, parent closure and K4b.06 adoption remain separate.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,8 +46,8 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `8a0e3e08437ccce2685ddd2e5c84e00f442d85ff`,
-confirmed clean/synchronized on the Mac on 2026-10-26 after PR #339 merge.
+**Current accepted base:** main `c8544528ad51a28c344beb26adf27c925e7e346e`,
+confirmed clean/synchronized on the Mac on 2026-10-26 after PR #340 merge.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -67,8 +67,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | K4b.05 ESA assessment delivered: source/method recovery, numerical reproduction gaps and proposed native-ICRS qualitative protocol; no actual ESA/Wenu comparison or domain change; prior finite-comparison receipts retained |
-| Next bounded submilestone | Complete Mac documentation acceptance and review of the selected ESA assessment; later qualitative execution protocol/domain selection remains proposed, not selected; no K4b.06 adoption |
+| Current bounded result | Approved long-epoch diagnostic executed: 147 rows retained, 52 evaluated/95 gaps; actual v2 figures viewed after diagnostic orientation correction; detailed ESA agreement inconclusive, scientific parent open |
+| Next bounded submilestone | Final documentation and v2 report/image integrity acceptance for the selected diagnostic; no new runtime item or K4b.06 adoption selected |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -81,6 +81,59 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4b.05: native-ICRS qualitative ESA diagnostic
+
+Fernando approved this explicit epoch/domain proposal with “Approved” on
+2026-10-26, following “Proceed” after PR #340 merge and confirmed clean
+synchronized Mac main `c8544528ad51a28c344beb26adf27c925e7e346e`.
+Use existing immutable stellar enrichment inputs and actual SDK sessions.
+For the seven retained principal Orion figure stars use elapsed TCB Julian years
+0, +10,000, +100,000 and +450,000; for the seven Big Dipper stars use
+0, +10,000 and +60,000, each relative to that solution's retained source epoch.
+These are deliberately nominal elapsed offsets, not a recovered ESA starting
+event or physically certified future dates.
+
+Retain all selected HIPs, original source facts, full/angular/Hip2 availability,
+explicit missing-input and domain refusals. Do not invent radial velocities or
+switch source editions silently. Use native ICRS directions and existing geometry/
+projection services for diagnostic trajectory plots; no remote-date mean-axis
+orientation or ordinary chart-consumer adoption. New caller-declared domains
+change admission/model bindings; preserve source/solution digests separately and
+report the changed domain identities honestly. The explicit domains are run
+coverage, not physical validity or a universal propagation limit.
+
+Deliver a versioned no-clobber recipe/report outside the repository, preserving
+SDK state/source/code identity, plotted vectors, per-HIP model status and
+trajectory metrics. Inspect available ESA media and document qualitative
+agreement/discrepancies only where actual viewing and usable reference geometry
+support them. Unviewed/inaccessible material remains an explicit comparison gap;
+published narrative checkpoints are not measured matches. Keep Orion's TGAS/
+bright-Hipparcos source differences and Ursa Major's preliminary stereo
+viewpoint/depth mapping separate.
+
+Acceptance: existing source/admission/SDK refusal and independent numerical
+oracles at the selected long offsets, relevant closest stellar-owner and
+documentation checks, actual manifest-bound Mac cache run and visual review.
+Reuse established tests when they already protect the same fault; avoid adding
+another provider, renderer, production report mode or milestone-specific owner.
+No source acquisition, new stellar physics/error policy, author contact,
+date-oriented Orion axes, physical-bound claim, parent closure or K4b.06
+activation is selected. Commit this plan before executable diagnostic work. Plan committed at
+`451a0845bf96aeca0d0f8af694d2c0a99886a6c4`.
+The [candidate and exact verification limits](kernel_migration_audit_v1.md#k4b05-native-icrs-qualitative-diagnostic-candidate-2026-10-26)
+record the local synthetic/fault-detection evidence and actual Mac run at
+`824f8520`: 34 focused cases in 9.00 s, 36 documentation cases in 5.01 s,
+147 retained report rows (52 evaluated, 95 gaps), 42 refusal checks and maximum
+independent spherical chord residual 3.188872858294072e-16. Source/solution
+identities are unchanged; domain bindings are explicitly reported. Actual v1
+plots exposed a diagnostic east/west caption/setting error; separate v2 replot
+corrects it without propagation and labels the complete diagnostic figures.
+Both supplied v2 images were inspected against the actually viewed reference
+products. Broad changing-pattern behaviour is present; detailed ESA trajectory
+agreement remains inconclusive because exact source/epoch/viewpoint matching is
+unresolved. Final documentation/v2 product-integrity acceptance is pending.
+Source and production bytes are unchanged; no parent closure is implied.
 
 ## K4b.05: ESA constellation comparison assessment
 

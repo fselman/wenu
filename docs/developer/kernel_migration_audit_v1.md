@@ -1,5 +1,183 @@
 # Kernel migration: as-is functionality and test audit
 
+## K4b.05 native-ICRS qualitative diagnostic candidate, 2026-10-26
+
+**Authority:** Fernando approved Orion offsets 0/+10,000/+100,000/+450,000
+and Big Dipper offsets 0/+10,000/+60,000 TCB Julian years on 2026-10-26.
+Clean synchronized Mac main `c8544528ad51a28c344beb26adf27c925e7e346e`
+and PR #340 merge/cleanup were already confirmed. The explicit plan was committed
+at `451a0845bf96aeca0d0f8af694d2c0a99886a6c4` before executable work.
+The actual immutable-cache run and corrected-plot visual review are now complete.
+The bounded comparison outcome is qualitative and inconclusive for detailed ESA
+trajectory agreement; final documentation/report-integrity acceptance remains pending.
+
+### As-is and bounded implementation
+
+The retained principal Orion HIPs are 27989, 24436, 25336, 26727, 26311,
+25930 and 27366; Big Dipper HIPs are 54061, 53910, 58001, 59774, 62956,
+65378 and 67301. Membership and permitted finite figure edges are checked against
+the existing `src/wenu/data/constellations/western/constellationship.fab`.
+Only edges with both endpoints in the selected sample are plotted; absent
+intermediate vertices are not replaced with invented segments. This is a
+fourteen-star diagnostic, not a complete constellation or TGAS background.
+
+The existing spherical-reference test in `tests/test_stellar_state.py` now
+also evaluates +60,000/+100,000/+450,000 years with an explicit longer numerical
+coverage for all three full/angular/Hip2 cases. Existing short and negative
+offsets remain. No production numerical implementation, resource, test owner,
+dependency, interface, ordinary chart route or default changes.
+
+A versioned external recipe, `wenu_esa_qualitative_diagnostic_v1.py`, uses the
+existing immutable snapshot and actual KernelSession.evaluate calls. It retains
+all source objects in admissions, all fourteen selected HIPs and 147
+HIP/model/epoch report rows. Available full, Gaia-angular and Hip2 fallback
+directions remain separate. The recipe verifies retained solution digests,
+SDK identities/times/evidence, per-source-epoch offsets, independent spherical
+directions, unavailable-object and warm outside-domain refusals. Each group's
+coverage contains all retained input epochs and ends at its latest source
+epoch plus that group's largest approved offset. Source epoch labels are read
+from the validated source, not inferred from the constellation or filenames.
+
+A global catalogue/domain admission refusal is recorded as global
+`admission_refused` rows, not falsely attributed to missing per-star measurements.
+It does not drop those HIPs or silently retry a different full model.
+Successful remaining admissions can still be reported. Source byte/digest
+checks remain mandatory. Domain-dependent catalogue/model bindings are reported
+separately from unchanged source-solution digests.
+
+Plots use existing kernel spherical-frame and stereographic services, native
+ICRS north-up/east-left axes, separate model panels and shared axes per group.
+Projection centres are explicit diagnostic choices, not recovered ESA viewpoints.
+Only approved epoch endpoints are queried; dashed connectors join those samples
+and do not claim continuously sampled trajectories. Solid figure chords retain
+the selected source topology. Raw vectors, times and projected endpoints are
+saved for inspection. These diagnostic exports do not activate ordinary atlas
+or propagated stellar chart consumers.
+
+Output is outside the repository under
+`~/wenu-output/stellar_esa_qualitative_v1`, with JSONL state/gap rows, selected
+original source records, summary/admission/SDK/code identities, projection
+records, the exact recipe, and PNG/PDF for each group. It refuses to overwrite
+that directory; the product-hash completion manifest is written last. An
+interrupted/incomplete directory is evidence to inspect, not permission to
+overwrite it. The source manifest remains the accepted
+`8747349e08f70a428b547f6d0131c47b6f935df73e6b7df9ef6b9d36aba4d365`.
+
+### Reference media and actual qualitative comparison
+
+The [Orion video](https://www.esa.int/ESA_Multimedia/Videos/2017/06/The_future_of_the_Orion_constellation)
+was opened in the browser and played. The initial image and a later frame at
+player time about 1:02 of 1:12 were inspected; the bright-star pattern visibly
+changes. No exact mapping from those player times to scientific epochs was
+recovered and no per-star endpoint was measured.
+
+The [Hipparcos stereo page](https://www.cosmos.esa.int/web/hipparcos/stereo-images)
+was directly accessible in the browser, despite the earlier HTTP-451 text-fetch
+route. Both linked present and +60,000-year colour GIFs were opened and viewed.
+Their red/green split and changed pattern are visible. No channel midpoint was
+interpreted as barycentric RA/Dec and no stereo depth was measured. Original
+inputs, exact epoch conventions and projection/depth recipe remain unresolved.
+No reference media was redistributed as a deliverable.
+
+Visual inspection of Fernando's actual v1 plots exposed a diagnostic presentation
+fault: with these configured SphericalFrames, `flip_ew=True` puts increasing RA
+on the right, despite the east-left caption. A direct RA-centre +/-0.1-degree
+check confirms `flip_ew=False` gives increasing RA left and increasing
+declination up for both centres. This is a recipe setting/caption error, not a
+change to projection semantics or evidence of a numerical propagation failure.
+V1 is preserved as the original run, not silently overwritten.
+
+The external `wenu_esa_qualitative_replot_v2.py` reads only manifest-verified
+v1 rows. It corrects orientation and assembles complete figures with explicitly
+labelled per-HIP diagnostic priority full Gaia, otherwise Gaia angular,
+otherwise Hip2 angular fallback. This display selection is not a new production
+adoption or a claim of matched source epochs. It selects 49 of the original
+147 rows without new propagation. V1 retains all models/gaps. The recipe
+checks both centre orientations, input identity and unchanged v1 products,
+and saves a separate no-clobber v2 report with completion manifest.
+Recipe SHA256:
+`1cba67139c46464f5ec0b09fc02ae2871b1c0ac5fcbf1c3ab7ef69047624185a`.
+
+Fernando supplied both corrected PNGs, which were actually inspected.
+The labels and geometry now place increasing RA left and native north up.
+All seven stars appear in each combined figure. Orion's isolated HIP 24436
+is a consequence of retaining only selected source-topology edges; it is not
+a missing evaluated star or a reason to invent a replacement connection.
+Big Dipper model tags show HIP 59774 full, HIPs 53910/65378 Gaia angular and
+the remaining four Hip2 angular. Orion uses Hip2 angular for all seven.
+
+| Comparison | Observed Wenu result | External comparison disposition |
+|---|---|---|
+| Orion | +10,000-year points nearly coincide at this display scale; +450,000-year endpoints visibly deform the upper figure while the belt/lower stars move less. The actual report gives HIP 27989 displacement 3.715798122 degrees and HIP 25336 1.901875496 degrees at +450,000 years. | Both the viewed ESA sequence and Wenu show an evolving pattern. That broad phenomenon alone does not establish trajectory agreement. ESA's narrative about leaving its field cannot be checked against this different sample/frame; the exact input/epoch/projection mapping is absent. Detailed agreement is **inconclusive**, not passed. |
+| Big Dipper | All seven-star figure endpoints are now visible together. At +60,000 years the bowl/handle geometry changes, with displacements about 1.44–2.31 degrees in the selected nominal models. | Consistent only with the broad changing-figure phenomenon visible in the ESA pair. Its nonlinear stereo display, preliminary inputs and unknown exact epoch/model recipe prevent defensible per-star or pixel residuals. Detailed agreement is **inconclusive**, not passed. |
+
+The apparent modest changes do not contradict a measured ESA coordinate table:
+no such table was recovered. Do not tune inputs to match the visual products
+or infer a universal validity/error bound. This is a completed bounded
+qualitative inspection with explicit unresolved comparability; it does not
+close K4b.05's source/model/physical qualification or authorize K4b.06.
+
+Uploaded corrected-image SHA256 identities:
+
+- `orion_trajectories_v2.png`:
+  `c91b0554e6b4667345c383146aa1c34bfcb092b528a65d84daf50df9f5367f08`.
+- `big_dipper_trajectories_v2.png`:
+  `175d911839999f8c3a77f8cbecc8ff63ac73d37f5162658524f7313113de9c40`.
+
+These uploaded bytes establish which pictures were reviewed. Their v2
+completion-manifest/product linkage is checked separately on the Mac.
+
+### Numerical and acceptance receipts
+
+The closest existing set passed locally: 34 cases, covering the extended
+spherical-reference cases and retained finite-perspective/refusal cases.
+A deliberately coherent +10,000-year time cap initially triggered the engine's
+exact numerical guard. With the same cap injected into that internal checker,
+the independent extended spherical oracle failed for full/angular/Hip2; patches
+were restored and the 34-case set passed again.
+
+A broader partial-owner probe returned 152 passes/nine subtests, five
+deselections and one unchanged application case blocked by missing
+`wenu.objects`. It is not a complete passing owner run. No production defect
+was inferred. The external recipe's constructed nine-row fixture retained 147
+rows, 63 evaluated directions and 84 gaps, exercised 42 refusal checks and
+produced four inspected plot exports. Source-solution digests stayed the same
+between coverages while model bindings differed. A separate approaching
+radial-only trajectory retained 28 explicit global long-domain refusal rows
+while shorter-domain/angular results survived. These remain synthetic receipts,
+not the actual population.
+
+**Actual Mac, `824f85207cc150ad1b62f6a8e2f995ac8e98d17b`:** 34 focused
+cases passed in 9.00 s; 36 documentation cases passed in 5.01 s. The recipe
+SHA256 `016bb73bb5eb149bc35fa3b53f6b42df40bd28def1573818e108038e1689aebd`
+completed against the accepted immutable source. All source/solution digests,
+imported Wenu/SDK identities and final clean synchronized task status passed.
+There were 42 unavailable/outside-domain checks and no global admission refusal.
+
+| Group | Full Gaia evaluated/gaps | Gaia angular evaluated/gaps | Hip2 angular evaluated/gaps |
+|---|---|---|---|
+| Orion, four epochs | 0 / 28 | 0 / 28 | 28 / 0 |
+| Big Dipper, three epochs | 3 / 18 | 9 / 12 | 12 / 9 |
+
+Total: 147 rows, 52 evaluated directions, 95 explicit unavailable rows.
+Maximum independent spherical chord residual:
+`3.188872858294072e-16`; this is a nominal numerical comparison, not
+observational accuracy. V1 completion-manifest SHA256:
+`0fc40aed93676b40ce55e549677d1635c4d44085ce5b39ab3b22c31e8013dcd4`.
+The output is `/Users/fselman/wenu-output/stellar_esa_qualitative_v1`.
+Corrected images are in the separate `stellar_esa_qualitative_v2` directory.
+
+The v2 replot's synthetic checks passed explicit F/G/H selection, 49 retained
+selected rows, both centre orientations, deliberate wrong-flip detection and
+four exports. It does not repeat propagation or alter v1 source/results.
+
+The coordinate guide remains current: native ICRS motion is separate from
+date-oriented mean axes, observer reconstruction and physical validity.
+Final documentation acceptance and v2 report/image integrity check remain
+pending. Numerical execution and supplied-image inspection are complete.
+K4b.05 parent, issues #326/#333 and K4b.06 remain open.
+
+
 ## K4b.05 ESA comparison feasibility assessment, 2026-10-26
 
 **Selected scope and base:** Fernando selected the bounded K4b.05 assessment
