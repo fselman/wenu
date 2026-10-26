@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 101, 2026-10-26. **Status:** PR #341 merged at `2d34779b143238f02c095fb6d127afaf5986a1cb`; final 36 Mac documentation cases passed in 3.76 s and v2 report/image integrity passed without repeated propagation. Clean synchronized Mac main and branch cleanup were confirmed. Fernando selected the bounded K4b.05 literature-figure comparison before closure review, including the Kaler/Lowell +250,000-year diagram. The actual Mac run passed 36 documentation cases, retained 126 rows (46 evaluated/80 gaps) and passed 63 refusal checks. Uploaded figures were inspected: Kaler gives clear qualitative agreement; ancient subset comparisons remain limited. Final documentation/report-integrity acceptance is pending. Physical qualification, parent closure and K4b.06 remain separate.
+**Plan revision:** 102, 2026-10-26. **Status:** PR #342 is merged at `df4eae36fede007a2089f89cdcd436ad8e69a3a7`; final 36 Mac documentation cases passed in 4.02 s, complete report integrity and the reviewed upload matched, and clean synchronized main plus local/remote cleanup were confirmed. Fernando selected the K4b.05 qualification review with “Proceed” after the literature comparison. This is a documentation/evidence/disposition review; no runtime, scientific-policy change, parent closure or K4b.06 activation is authorized.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,8 +46,8 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `2d34779b143238f02c095fb6d127afaf5986a1cb`,
-confirmed clean/synchronized on the Mac on 2026-10-26 after PR #341 merge.
+**Current accepted base:** main `df4eae36fede007a2089f89cdcd436ad8e69a3a7`,
+confirmed clean/synchronized on the Mac on 2026-10-26 after PR #342 merge.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -68,7 +68,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | Approved long-epoch diagnostic executed: 147 rows retained, 52 evaluated/95 gaps; actual v2 figures viewed after diagnostic orientation correction; detailed ESA agreement inconclusive, scientific parent open |
-| Next bounded submilestone | Final documentation and report/uploaded-image integrity acceptance for the selected literature comparison; closure review remains subsequent, with no K4b.06 adoption |
+| Next bounded submilestone | Selected K4b.05 qualification review: reconcile completed perspective/ESA/literature evidence and propose an explicit intended-use disposition; no parent closure or K4b.06 adoption |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -81,6 +81,36 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4b.05: qualification review after reference comparisons
+
+Fernando selected this bounded review with "Proceed" on 2026-10-26 after
+PR #342 merge/cleanup and confirmed clean synchronized Mac main
+`df4eae36fede007a2089f89cdcd436ad8e69a3a7`.
+Refresh the earlier bounded closure matrix against actual production/test
+owners, accepted receipts, source issues #326/#333 and the completed finite
+perspective, ESA and literature comparisons. Identify supported nominal
+calculations, completed comparisons, unresolved physical/source claims and
+capabilities outside the selected scope. Distinguish a completed qualitative
+assessment whose detailed result is inconclusive from an unperformed comparison.
+
+Use the existing migration audit for the review, scientific contracts for the
+current qualification boundary and the developer index/roadmap for status.
+State the intended historical-atlas use and propose a concrete parent-level
+disposition for Fernando's decision. A proposed acceptance of limitations is
+not already agreed, does not resolve source facts or close issues, and must
+not turn visual agreement into a physical error certificate. Do not silently
+require every omitted effect to be implemented, or declare every unresolved
+issue a veto of already admitted nominal directions.
+
+No runtime/source/test/dependency/default changes, acquisition, author contact,
+new physical model, numerical experiment, error-policy change, issue closure,
+K4b.05 parent closure or K4b.06 execution. Keep incomplete-input sibling scope
+and existing downstream dependencies explicit. Acceptance: current owner/blob
+inspection, claim/evidence/link consistency, closest local documentation
+contracts, then complete Mac documentation gate. Commit this plan before
+writing the refreshed disposition. No repeat of accepted propagation or visual
+exports is needed for a documentation-only review.
 
 ## K4b.05: literature-figure visual comparison
 
