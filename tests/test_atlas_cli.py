@@ -1063,7 +1063,7 @@ def test_automatic_request_retains_geometry_inputs_and_computed_layout(tmp_path,
 @pytest.mark.parametrize("orientation", ["landscape", "portrait"])
 @pytest.mark.parametrize("minute_labels_visible", [False, True])
 def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
-        request_data, polar, lines_visible, orientation, minute_labels_visible, tmp_path):
+        request_data, polar, lines_visible, orientation, minute_labels_visible, tmp_path, monkeypatch):
     import matplotlib.pyplot as plt
     import numpy as np
     from wenu import CelestialSphere
@@ -1102,7 +1102,17 @@ def test_atlas_coordinate_grid_uses_canonical_native_route_and_reserved_frame(
     horizontal, vertical = _atlas_frame_widths(style, presentation)
     assert horizontal == pytest.approx(baseline*1.5)
     composition = replace(composition,style=style)
-    fig = plt.figure()
+    from matplotlib.figure import Figure
+    from matplotlib.backends.backend_agg import FigureCanvasAgg
+    # Match production atlas-sheet physical geometry. A GUI manager can round
+    # set_size_inches() to device pixels (observed on Mac landscape pages).
+    # Keep every margin, attachment, collision and tick assertion strict.
+    def refuse_gui_figure(*args, **kwargs):
+        raise AssertionError("Physical atlas layout must not depend on pyplot GUI sizing.")
+    monkeypatch.setattr(plt, "figure", refuse_gui_figure)
+    fig = Figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4), dpi=100)
+    FigureCanvasAgg(fig)
+    assert fig.canvas.manager is None
     renderer = MatplotlibRenderer(fig.add_axes(bounds))
     renderer.configure_grid_label_frame(horizontal_points=horizontal,
         vertical_points=vertical, polar=bool(polar))

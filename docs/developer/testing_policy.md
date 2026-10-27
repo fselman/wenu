@@ -2,6 +2,21 @@
 
 ## Dated-axis atlas candidate gate
 
+Mac gate result at `f005740d`: 143 passed and 12 landscape physical-margin
+cases failed in 278.77 s. The excerpt stops at gate 1, so documentation/tooling
+were not run. Every failure measured the same 19.9799789829 mm inner edge
+against 20 mm. The legacy test fixture used `pyplot.figure()`; GUI resize
+quantization is consistent with this signature. Production atlas sheets
+already use an explicit `Figure`/`FigureCanvasAgg` at exact physical size.
+The correction makes this test use that same canvas, forbids GUI figure
+creation within the fixture, and preserves all existing strict margin,
+attachment, collision and tick assertions. No production code or tolerance
+changes. All 24 affected parameter cases passed locally in 50.65 s; a
+reintroduced pyplot-creation fault is detected. Mac confirmation is pending.
+Retain the 143 passing runtime cases, retry the 24-case owner and then run the
+previously unexecuted documentation and complete tooling gates. The coordinate
+guide/API contracts remain current; this is a test-fixture correction only.
+
 The reviewed selection is `python tools/run_test_gate.py atlas-mean-axis-views --run`.
 Run the existing complete documentation and eight tooling checks separately.
 
