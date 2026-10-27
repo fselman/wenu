@@ -1,5 +1,14 @@
 # Wenu developer documentation
 
+## Planned Earth-bound observers at ancient and future epochs
+
+The separately agreed [K4b.08 milestone](kernel_roadmap_v0.9.5.md#k4b08-earth-bound-observers-at-ancient-and-future-epochs)
+covers explicit terrestrial sites, historical/future time and Earth-rotation
+policies, compatible relative states and correction/uncertainty reporting through
+existing chart owners. Definition and implementation remain pending. It neither
+extends modern final-EOP reception coverage nor inserts a prerequisite before
+K4b.06 dated axes, K4b.07 native persistence or baseline K5 reconciliation.
+
 ## K4b.06 accepted native atlas publication
 
 PR #348's native single-sheet CLI/TOML slice is accepted and merged at `c319c88f`;
@@ -18,7 +27,8 @@ Mac main and branch cleanup are confirmed. See the
 for retained evidence, population/counts and workload timings. Serial was faster
 for this two-sheet workload. The next selected task is the
 [date-oriented atlas as-is review and scope definition](kernel_roadmap_v0.9.5.md#k4b06-proposed-date-oriented-atlas-view-scope).
-Its concrete integration boundary is proposed for review; runtime is not yet selected.
+Its concrete integration boundary was accepted with #352 after 36 Mac documentation
+passes in 4.16 s and merged at `8865ae05`; runtime implementation remains pending.
 Parent K4b.06, other product/observer gates and bright-star source review remain open.
 
 The separately agreed [K4b.07 epoch-catalogue milestone](kernel_roadmap_v0.9.5.md#k4b07-reusable-epoch-catalogues-and-solar-system-companion-states)

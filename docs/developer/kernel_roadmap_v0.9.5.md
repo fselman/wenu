@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 115, 2026-10-27. **Status:** PR #350's bounded native atlas publication/worker slice passed Mac runtime/documentation, actual-cache serial/spawn/single-sheet parity and visual acceptance, then merged at `9776052a`; clean synchronized Mac main and task-branch cleanup are confirmed. Parent K4b.06 remains open. K4b.07 remains separately agreed scope with implementation pending. A date-oriented atlas as-is review and concrete scope definition are selected; the proposed integration boundary awaits agreement.
+**Plan revision:** 116, 2026-10-27. **Status:** PR #350's bounded native atlas publication/worker slice passed Mac runtime/documentation, actual-cache serial/spawn/single-sheet parity and visual acceptance, then merged at `9776052a`; clean synchronized Mac main and task-branch cleanup are confirmed. Parent K4b.06 remains open. K4b.07 remains separately agreed scope with implementation pending. PR #352's date-oriented atlas scope is accepted and merged at `8865ae05` after 36 Mac documentation passes; implementation remains pending. K4b.08 now records separately agreed ancient/future Earth-bound observer capability; detailed model/product slices remain pending.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,8 +46,9 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `07a03aece766c86f316722200a03253550fbdfb7`,
-confirmed clean/synchronized on the Mac after PR #351 acceptance-receipt merge and branch cleanup.
+**Current accepted base:** main `8865ae053a60b9fd70a7739460a82e6b9615e55d`,
+confirmed clean/synchronized on the Mac after PR #352 merge. Task-branch cleanup
+has not been reported.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -68,7 +69,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | PR #350 native atlas publication/worker slice accepted, merged and cleaned up; all Mac gates, actual-cache serial/spawn/single-sheet parity and visual review complete. Physical accuracy unknown; parent K4b.06 remains open |
-| Next bounded submilestone | K4b.06 date-oriented atlas as-is review and scope definition selected; [concrete integration proposal](#k4b06-proposed-date-oriented-atlas-view-scope) awaits agreement before runtime. Other K4b.06 scopes and K4b.07 implementation remain separately bounded |
+| Next bounded submilestone | K4b.06 [date-oriented atlas scope](#k4b06-proposed-date-oriented-atlas-view-scope) accepted in #352; implementation pending a selection/receipt. Current task records [K4b.08 Earth-bound observers](#k4b08-earth-bound-observers-at-ancient-and-future-epochs) as separately agreed capability, not activated runtime. K4b.07 and other K4b.06 scopes remain separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -89,11 +90,15 @@ Mac main `07a03aece766c86f316722200a03253550fbdfb7`, Fernando requested:
 “Proceed after as-is review of current code, architecture, and roadmap.”
 This selects the read-only assessment and concrete scope definition here.
 The [as-is findings](kernel_migration_audit_v1.md#date-oriented-atlas-as-is-review-2026-10-27)
-identify missing product seams. The following integration boundary is **proposed
-for review**, not accepted runtime implementation or a new prerequisite for K5.
+identify missing product seams. Fernando accepted #352 and requested its merge;
+all 36 Mac documentation cases passed in 4.16 s at `7d79b5dea037748f21f8d61a9bffa8b6c138afc6`.
+Evidence: `~/Software/build/wenu/test/date-atlas-scope-docs-v1-486mfcjh`.
+Merged at `8865ae053a60b9fd70a7739460a82e6b9615e55d`; clean synchronized Mac main
+is confirmed. The following boundary is accepted scope, not implemented runtime
+or a new prerequisite for K5. The original heading/link is retained for continuity.
 Parent K4b.06 remains open. No runtime option or schema is introduced by this plan.
 
-**Result proposed:** opt-in observer-free single-sheet and multi-sheet atlas
+**Accepted scoped result:** opt-in observer-free single-sheet and multi-sheet atlas
 views in either qualified mean-equator/equinox or mean-ecliptic/equinox axes,
 through the existing canonical pipeline and serial/spawn publication owners.
 Use K4b.04's existing `LongTermFrame`, corrected VCW2011/2012 ERFA policy,
@@ -103,7 +108,7 @@ source/model/time provenance. An axes change neither advances stars nor converts
 TCB to TT. No inference that two equal Julian-year labels identify the same event.
 J-2000000 remains outside the admitted frame domain; no physical error guarantee.
 
-**Product/design decision proposed:** retain existing design JSON as the original
+**Accepted scoped product/design decision:** retain existing design JSON as the original
 ICRS design. For this opt-in route only, explicitly bind its numerical sheet
 layout to the requested target axes as a separately identified derived view.
 Record exact original design bytes/hash, derivation policy, TT frame identity
@@ -153,7 +158,7 @@ footprints; it does not provide the proposed target-coordinate atlas tiling.
   unless independently qualified for the requested view; disclose their actual
   frame/date rather than claiming that concatenation regenerates them.
 
-**Acceptance proposed:** extend closest existing coordinate, realization, atlas
+**Required runtime acceptance:** extend closest existing coordinate, realization, atlas
 design/request/publication and stellar owner tests. Protect against an omitted
 or doubled orientation, wrong TT scale/domain, mismatched worker frame, partially
 oriented layers, mislabeled centres/ticks and native-default regressions.
@@ -167,8 +172,8 @@ qualified-domain single-sheet/serial/spawn specimens for both axes, with report,
 PNG, PDF order/size and visual acceptance. Report TT frame and TCB stellar events
 separately, along with unchanged source/model limitations.
 
-**Limits and order:** scope agreement and a committed agreement receipt precede
-runtime changes. Other regional/planisphere/observer adoption, nutation, Earth
+**Limits and order:** scope agreement was given with #352; a committed
+implementation-selection receipt still precedes runtime changes. Other regional/planisphere/observer adoption, nutation, Earth
 orientation/EOP, historical clock reconstruction, new chronology syntax,
 Solar System translation, acquisition, physical-model accuracy, bright-star
 source audit, persistent evaluated catalogues and package extraction are excluded.
@@ -577,6 +582,104 @@ provider results and test independent body coverage. Use actual-cache Mac
 atlas/regional specimens only as each consumer becomes admitted, retain workload
 measurements and visual review, and use the established run/provenance locations.
 Persisting results does not certify physical accuracy or extend model validity.
+
+## K4b.08: Earth-bound observers at ancient and future epochs
+
+**Agreement and status:** on 2026-10-27, after accepting PR #352 and confirming
+clean synchronized Mac main `8865ae053a60b9fd70a7739460a82e6b9615e55d`,
+Fernando requested: “Integrate an earth bound observer to the roadmap, ancient
+or future.” This records the capability as agreed roadmap scope, with concrete
+scientific models, supported intervals, public input syntax and implementation
+slices pending assessment/agreement. It authorizes this plan update, not runtime
+implementation or unrestricted historical/future accuracy.
+
+**As-is:** ordinary `Observer` resolves civil datetimes and uses the established
+Skyfield/Astropy route. The separate `ErfaReceptionBackend` admits explicit
+offline leap/final-IERS-B resources and intersects their actual coverage with
+its conservative 1950--2050 model interval; its UTC adapter is post-1972 only.
+It refuses extrapolation. Neither that admission nor the barycentric native
+atlas route qualifies an ancient/future terrestrial observer. Preserve those
+limits rather than extending dates through a hidden fallback.
+
+**Intended result:** an explicitly located Earth-surface observer for ancient,
+present and future sky requests within separately qualified model/resource
+domains. Support horizon/AltAz and applicable regional/all-sky/planisphere
+products through the existing request/coordinate/realization pipeline; support
+observer-relative atlas products only under an explicit product/view contract.
+Retain observer-free barycentric atlases as an independent valid product.
+A mean-axis atlas is not a geocentric or topocentric observation merely because
+its axes have a TT equinox.
+
+**Required definition before implementation:**
+
+- Site: east-positive longitude, geodetic latitude, height and datum/reference
+  epoch, with explicit uncertainty and fixed-site assumption. Modern coordinates
+  supplied for an ancient/future site do not imply plate-motion, elevation,
+  sea-level or palaeogeographic reconstruction. Additional site evolution models
+  require separate qualification; do not infer ellipsoid height from an
+  unqualified legacy elevation or historical place name.
+- Time: preserve original historical/calendar input, BCE/year-zero convention,
+  date/clock uncertainty and explicit time scale. Separate stellar TCB, frame/
+  dynamical TT, ephemeris TDB and terrestrial rotation UT1. Admit conversions
+  with receipts; never relabel one JD as another scale or require modern UTC/
+  timezone/leap-second machinery for ancient dates. Future civil/UTC requests
+  must disclose or refuse unresolved leap/clock assumptions.
+- Earth rotation and orientation: distinguish measured EOP, bounded predictions,
+  caller-supplied rotation inputs and separately qualified ancient/future model
+  estimates. Define finite validity and uncertainty for TT-UT1 (Delta-T), polar
+  motion and the relevant pole/precession/nutation conventions. No fabricated
+  final IERS data, silent zero offsets or unbounded extrapolation. A deliberately
+  approximate nominal horizon is permitted only as an explicit policy with its
+  assumptions and known/unknown errors, not as an accurate reconstruction.
+- Relative states: compose compatible barycentric stellar and Earth-centre
+  states, then the terrestrial site position/velocity. Keep Earth centre distinct
+  from the Earth-Moon barycentre. Parallax requires admitted distance; angular-only
+  stars retain their capability limits. Qualify solar-system resources and
+  time/spatial conventions independently; stellar or frame coverage does not
+  extend an ephemeris. Required unsupported states refuse, while optional bodies
+  remain explicitly unavailable under the chosen product policy.
+- Observational corrections: declare which geometric, astrometric or apparent
+  quantity is returned, and give light-time, deflection, aberration, diurnal/
+  annual parallax and refraction their existing appropriate owners. Avoid
+  duplicate corrections. Vacuum and atmosphere-dependent products remain
+  distinct; refraction needs explicit atmospheric assumptions and validity.
+  Source-fixed contours/boundaries retain their semantics and do not acquire
+  invented distances or object states to pass through the observer service.
+- Uncertainty/reporting: retain separate source/motion, chronology, rotation,
+  site, ephemeris and correction error channels, including unknown values.
+  Report requested event, actual state event, Earth-rotation policy, site,
+  frame/origin/status, applied/omitted corrections, resource identities and
+  validity. Where admitted, propagate timing/rotation uncertainty into horizon/
+  direction uncertainty; quantify event-time uncertainty for rising/setting
+  claims rather than reporting false precision. Numerical agreement alone is
+  not evidence of historical clock or physical accuracy.
+
+**Dependencies and order:** retain the accepted #352 mean-axis scope within
+K4b.06 as the existing next integration candidate. K4b.08 is separately pending,
+not an inserted prerequisite for it, K4b.07 native catalogues or K5 baseline
+freeze. Reuse applicable K4b.03 chronology, K4b.04 frame and K4b.06 stellar/
+consumer seams, and existing observer services where their admissions apply.
+K4b.07 companion states may supply compatible verified inputs, but persistence
+is not required: a qualified live/offline provider route may also supply them.
+A saved Earth PV neither defines UT1 nor reconstructs a site/horizon. Before
+activating K4b.08, review the actual observer/time/coordinate/ephemeris owners,
+agree bounded model/date/product slices and commit their receipts. No changed
+implementation order or new resource acquisition is selected here.
+
+**Acceptance:** closest owner tests must cover scale/calendar ambiguity,
+time/rotation uncertainty, domain edges, resource/site/worker mismatches,
+distance-dependent capabilities, omitted/doubled corrections, refusal and
+request isolation. Compare independent admitted observer-direction references
+for modern and selected ancient/future cases, including polar/wrap/horizon
+geometry; compare measured modern results where available without treating
+them as proof outside measured coverage. Demonstrate explicit approximation
+labels and refusal beyond every required model domain. Retain modern behavior
+and barycentric chart parity, public CLI/Python and applicable serial/spawn
+consistency, source immutability, report provenance and visual horizon checks.
+Include a Nineveh-era example and a future example after their actual supported
+dates/models are agreed; these examples do not preselect an ephemeris or promise
+coverage at J-2000000. Existing lower-level receipts remain applicable only to
+unchanged owners.
 
 ## K4b.05: qualification review after reference comparisons
 
@@ -2518,6 +2621,7 @@ remain its separate responsibilities.
 | K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references; include ESA Orion and Ursa Major reconstruction comparisons with documented input/method and independence limits | Accepted/closed for nominal reconstruction with explicit documented limits by Fernando on 2026-10-26, after 36 Mac documentation passes in 3.65 s at a8c0dd08. Numerical and bounded comparisons completed; detailed ESA agreement inconclusive, physical accuracy unknown. #326/#333 remain open; no source optimality or consumer adoption claim |
 | K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | K4b.05 nominal-use qualification accepted. First opt-in native atlas-sheet slice selected after PR #344 acceptance; stars own realization, lines/labels consume public positions without propagation knowledge. First native Python sheet slice accepted through PR #346 with Mac runtime/documentation, actual cold/restored workloads and visual review; merged at ab8a7e9a. Native single-sheet CLI/TOML slice also accepted in PR #348 with actual-cache parity and visual review, merged at c319c88f. Native publication/worker implementation accepted in PR #350 after Mac runtime/documentation, actual-cache parity and visual review; merged at 9776052a with clean main/cleanup confirmed; remaining sibling/product/observer gates and bright-star audit stay explicit |
 | K4b.07 | Reusable immutable epoch catalogues, explicit preparation tool, configurable nearby-epoch policy, atlas/regional consumption and separately qualified Earth/Solar System companion states | Agreed capability scope on 2026-10-27; definition/implementation pending. Separate from K4b.06 publication/worker scope; see detailed dependencies and gates above. No persisted-state format or observer/ephemeris extension implemented |
+| K4b.08 | Earth-bound observers at ancient and future epochs; explicit site, chronology, Earth rotation/orientation, relative-state and correction/uncertainty policies | Agreed capability on 2026-10-27; detailed model/domain/product definitions and implementation pending. Separate from K4b.06 mean-axis views and K4b.07 persistence; no historical/future observer accuracy or unrestricted ephemeris coverage claim |
 
 
 ### K5–K9: freeze, extraction and release
