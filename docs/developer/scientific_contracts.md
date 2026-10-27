@@ -26,7 +26,9 @@ Julian target epoch. This input does not infer a civil date, historical observer
 or dated coordinate axes. The loader belongs to stars; style, line and label
 owners gain no propagation policy. Exact document identity is retained in motion
 reports. Source/model mathematics and the accepted nominal-use limits above are
-unchanged; full Mac command acceptance remains pending.
+unchanged. The bounded command slice passed complete Mac, real-cache parity and
+visual acceptance in PR #348, merged at `c319c88f`; this does not certify physical
+ancient-position accuracy or close the remaining K4b.06 obligations.
 
 ## K4b.05 qualification status
 

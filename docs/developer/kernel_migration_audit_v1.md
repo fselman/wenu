@@ -21,33 +21,44 @@ acceptance, not a claim that the assistant independently inspected the run files
 Retain the run, source snapshot and provenance as acceptance evidence.
 The parent K4b.06 stays open for its remaining product/worker/CLI obligations.
 
-### Native single-sheet CLI/TOML assessment
+### Accepted native single-sheet CLI/TOML result
 
-The existing installed `wenu_chart atlas-sheet` file-input adapter does not
-supply stellar motion, although its prepared Python request now supports it.
-Its design/style/snapshot validation and canonical executor are reusable.
-Ordinary chart families involve observer construction; atlas publication also
-owns worker transport. The proposed smallest extension therefore targets this
-single-sheet command with a separate explicit scientific TOML input. See the
-[scope and acceptance gate](kernel_roadmap_v0.9.5.md#k4b06-proposed-native-single-sheet-clitoml-slice).
-Fernando accepted PR #347 after all 36 Mac documentation cases passed in
-4.65 s at `95e3ed5a`; it merged at `acbdc3b8` and cleanup was confirmed.
-He selected implementation on 2026-10-27. The acceptance/selection receipt was
-committed before runtime edits at `0a852565`.
+PR #348's bounded single-sheet CLI/TOML slice is accepted and merged at
+`c319c88fc3dac04f8cedbef7ab443a8cd0cc1ace`. Fernando confirmed clean
+synchronized Mac main and deletion of the task branch locally and remotely.
+At `e0cfa8b8`, 49 stellar/configuration cases passed in 17.85 s, 27 atlas cases
+in 9.75 s, and all 36 documentation cases in 3.06 s. Logs and provenance are
+retained in `~/Software/build/wenu/test/stellar-motion-cli-v1-vxgntb1y`.
 
-The candidate now extends `stellar_state.py` with the strict local TOML/source
-loader and optional exact document digest on `StellarMotionRequest`/reports.
-`cli/chart.py` adds the explicit file option only to `atlas-sheet`, translates
-it into the existing request and formats kernel refusals as nonzero status.
-There are no line/label, observer, renderer, SDK, source or dependency changes.
-Forty new synthetic admission/command cases and nine retained realization/export
-cases pass locally. Fresh offline J2000/J-8000 processes match prepared Python
-reports and PNG bytes with three-format exports; their saved-sky reader is an
-explicitly synthetic seam. Invalid inputs, corrupted sources, source/sky mismatch,
-warm SDK refusal, existing outputs and staging cleanup are protected.
-Deliberately dropping the CLI motion binding fails the closest seam.
-Actual Mac saved-sky command acceptance and complete documentation remain pending;
-no parent K4b.06 closure or improved-source adoption is claimed.
+The actual installed-command run `stellar-cli-acceptance-v1-2uivsdha`, under
+`~/Software/build/wenu/output/`, passed for Orion (sheet 13) and the Big Dipper
+(sheet 28), at both J2000 and J-8000 TCB. All four reports matched independent
+prepared Python requests exactly; chart and report PNG pixels matched, and
+PNG/PDF/SVG checks passed. Every case retained 97,710 full-input Gaia, 17,395 Gaia
+angular and 2,850 Hip2 fallback models, with 263 explicit gaps (118,218 source
+objects). Retained source/saved-sky bytes and the checkout were unchanged.
+Completion-manifest SHA256:
+`5aeaf874684381ab337356aaf75bf4667df9ad7554adfdd6dbf644cfb58dd48c`.
+Fernando confirmed line/label placement on present and ancient charts, then
+requested merge/cleanup. These are reported Mac results and user visual
+acceptance, not independent assistant inspection of those output files.
+The parent K4b.06 and other product/worker/observer obligations remain open.
+
+### Native atlas publication and worker assessment
+
+At `c319c88f`, the existing publication dispatch and worker initializer contain
+no motion binding. Both invoke the canonical chart command with a prepared
+single-sheet request. Worker skies are source-only; the count appendix's parallel
+parent constructs another source-only sky. Sizing analysis consumes rendered
+products, and the optional index/selection pages are supplied static documents.
+No new numerical engine or renderer is needed. A process-local stellar view,
+integrity-bound data-only execution description, explicit worker finalization,
+consistent catalogue-count input and complete publication provenance are the
+concrete missing boundaries. See the
+[proposed scope and gate](kernel_roadmap_v0.9.5.md#k4b06-native-atlas-publication-and-worker-scope).
+Fernando selected this definition after roadmap-context review with “Proceed”;
+the concrete details await review before runtime implementation. No production
+or scientific contract changes are made by this documentation step.
 
 **Selected work:** define the first production consumer slice after K4b.05
 nominal-use acceptance, not another propagation-science investigation.

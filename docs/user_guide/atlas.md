@@ -223,5 +223,7 @@ follow their public positions while preserving source membership, names and V.
 Omitting `--stellar-motion-config` preserves the existing static command.
 Other chart families, `wenu_create_atlas` batch/worker transport, historical
 observers and date-oriented axes remain separate work. Physical ancient-position
-accuracy is unknown. Complete Mac acceptance of this command extension is pending.
+accuracy is unknown. This single-sheet command extension passed complete Mac,
+real-cache CLI/Python parity and present/ancient visual acceptance in PR #348,
+merged at `c319c88f`. Multi-sheet motion adoption remains separate planned work.
 
