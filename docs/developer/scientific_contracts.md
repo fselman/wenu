@@ -1,5 +1,17 @@
 # Current scientific contracts and paused work
 
+## Proposed date-oriented atlas boundary
+
+The [K4b.06 proposal](kernel_roadmap_v0.9.5.md#k4b06-proposed-date-oriented-atlas-view-scope)
+reuses qualified long-term mean-axis orientation; atlas integration is not yet
+implemented or accepted. TT equinox/domain and stellar TCB evaluation remain
+separate scientific inputs. A view transformation adds no physical evolution
+of boundaries/shapes, observer state, Earth orientation or accuracy guarantee.
+Dated grids/poles must use the admitted mean-axis policy, while fixed references
+retain their identity. Existing ICRS design semantics require an explicit
+derived-view contract before their numerical layout can denote target axes.
+K4b.07 persistence and companion states remain separate.
+
 ## Native atlas publication stellar realization
 
 The K4b.06 publication implementation extends the accepted single-sheet motion

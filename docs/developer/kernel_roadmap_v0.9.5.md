@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 114, 2026-10-27. **Status:** PR #350's bounded native atlas publication/worker slice passed Mac runtime/documentation, actual-cache serial/spawn/single-sheet parity and visual acceptance, then merged at `9776052a`; clean synchronized Mac main and task-branch cleanup are confirmed. Parent K4b.06 remains open. K4b.07 remains separately agreed scope with implementation pending. No next runtime slice is selected.
+**Plan revision:** 115, 2026-10-27. **Status:** PR #350's bounded native atlas publication/worker slice passed Mac runtime/documentation, actual-cache serial/spawn/single-sheet parity and visual acceptance, then merged at `9776052a`; clean synchronized Mac main and task-branch cleanup are confirmed. Parent K4b.06 remains open. K4b.07 remains separately agreed scope with implementation pending. A date-oriented atlas as-is review and concrete scope definition are selected; the proposed integration boundary awaits agreement.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,8 +46,8 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `9776052a9e7bc6a1786c0f6ccadd6e078eef74af`,
-confirmed clean/synchronized on the Mac after PR #350 merge and branch cleanup.
+**Current accepted base:** main `07a03aece766c86f316722200a03253550fbdfb7`,
+confirmed clean/synchronized on the Mac after PR #351 acceptance-receipt merge and branch cleanup.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -68,7 +68,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | PR #350 native atlas publication/worker slice accepted, merged and cleaned up; all Mac gates, actual-cache serial/spawn/single-sheet parity and visual review complete. Physical accuracy unknown; parent K4b.06 remains open |
-| Next bounded submilestone | Not selected. Remaining K4b.06 scopes and separate K4b.07 implementation require explicit bounded selection; this acceptance record activates no new work |
+| Next bounded submilestone | K4b.06 date-oriented atlas as-is review and scope definition selected; [concrete integration proposal](#k4b06-proposed-date-oriented-atlas-view-scope) awaits agreement before runtime. Other K4b.06 scopes and K4b.07 implementation remain separately bounded |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -81,6 +81,102 @@ The architecture documentation is accepted through PR #280, main
 passed at `a5f6c00f`. Fernando confirmed clean synchronized main and branch
 cleanup. This documentation merge adds no runtime acceptance.
 
+
+## K4b.06: proposed date-oriented atlas view scope
+
+**Selection:** after PR #351 acceptance-receipt merge/cleanup and clean synchronized
+Mac main `07a03aece766c86f316722200a03253550fbdfb7`, Fernando requested:
+“Proceed after as-is review of current code, architecture, and roadmap.”
+This selects the read-only assessment and concrete scope definition here.
+The [as-is findings](kernel_migration_audit_v1.md#date-oriented-atlas-as-is-review-2026-10-27)
+identify missing product seams. The following integration boundary is **proposed
+for review**, not accepted runtime implementation or a new prerequisite for K5.
+Parent K4b.06 remains open. No runtime option or schema is introduced by this plan.
+
+**Result proposed:** opt-in observer-free single-sheet and multi-sheet atlas
+views in either qualified mean-equator/equinox or mean-ecliptic/equinox axes,
+through the existing canonical pipeline and serial/spawn publication owners.
+Use K4b.04's existing `LongTermFrame`, corrected VCW2011/2012 ERFA policy,
+explicit two-part TT equinox and finite TT validity inside J-198000..J202000.
+The independent stellar evaluation event remains explicit TCB, with its admitted
+source/model/time provenance. An axes change neither advances stars nor converts
+TCB to TT. No inference that two equal Julian-year labels identify the same event.
+J-2000000 remains outside the admitted frame domain; no physical error guarantee.
+
+**Product/design decision proposed:** retain existing design JSON as the original
+ICRS design. For this opt-in route only, explicitly bind its numerical sheet
+layout to the requested target axes as a separately identified derived view.
+Record exact original design bytes/hash, derivation policy, TT frame identity
+and derived sheet identity/centre/meridian/position angle. Validate coverage and
+polar conventions in target axes. Do not silently reinterpret the existing
+`AtlasSheetGeometry` ICRS contract or overwrite a design. A new versioned framed
+design format is an alternative, deferred here to avoid replacing the accepted
+design format. Keeping original ICRS centres fixed would instead preserve sky
+footprints; it does not provide the proposed target-coordinate atlas tiling.
+
+**Ownership and coherence:**
+
+- The astronomical coordinate service owns geometry re-expression using the
+  qualified frame. Reuse current spherical points/curves/polygons/grid carriers;
+  introduce no artificial SDK object per vertex or new geometry-query protocol.
+  Generic kernel geometry/projection owners do not acquire ERFA/source policy.
+- Source layers produce native geometry first. Apply the common view orientation
+  before domain guarding/projection, so recorded spherical geometry, preparation,
+  clipping, rendering and reports all describe the same target coordinates.
+  A projection callback alone is insufficient. Keep `SphericalFrame` solely
+  responsible for sheet/projection alignment and prevent double orientation.
+- Stars retain source/model/evaluation ownership. Lines consume their public
+  endpoints; labels compute their existing anchors from public native positions,
+  then share the common orientation. No epoch/frame policy in line or label
+  consumers; retain HIP order, gaps, topology, source membership and Serpens groups.
+- Preserve source-fixed IAU boundary membership, deep-sky shapes and diffuse
+  content; express their geometry in the view without claiming physical evolution.
+  Preserve source provenance separately from derived coordinate provenance.
+- Construct explicitly dated mean-equatorial/ecliptic reference curves, poles and
+  equinox marks from the same qualified TT policy; retain Galactic and explicitly
+  fixed reference meanings. Rotating a J2000 grid does not make it a dated grid.
+  Validate any required inverse construction: the first-order-bias matrix is
+  near orthogonal, so its transpose must not be assumed to be an exact inverse.
+  Preserve curve segmentation, polygon rings, NaN gaps, IDs, labels and styles.
+- Sheet centres, boundary labels, pole/meridian conventions, graticule ticks and
+  report furniture must name the actual axes. Mean-ecliptic longitude is in
+  degrees, not RA hours; do not retain hard-coded ICRS centre captions. Refuse
+  an unsupported selected layer/reference policy before publishing outputs.
+- Single-sheet Python/installed-command requests and publication capture one
+  immutable scientific view input separate from style and stellar-motion TOML.
+  Retain the accepted motion schema. Parent and spawn workers bind and check
+  the same TT domain/policy/backend/matrix identity, separately from TCB motion
+  identity. Data-only transport, request isolation, cleanup, report validation
+  and completion-marker-last behavior remain mandatory.
+- Population/model availability counts retain source/star semantics. A pure axes
+  change cannot create/delete stars. Supplied index PDFs remain explicitly static
+  unless independently qualified for the requested view; disclose their actual
+  frame/date rather than claiming that concatenation regenerates them.
+
+**Acceptance proposed:** extend closest existing coordinate, realization, atlas
+design/request/publication and stellar owner tests. Protect against an omitted
+or doubled orientation, wrong TT scale/domain, mismatched worker frame, partially
+oriented layers, mislabeled centres/ticks and native-default regressions.
+Check independent matrix application through the geometry seam for both axes,
+reference grids/poles and polar/wrapped sheets; preserve metadata/topology/gaps,
+source immutability, counts, refusal/cleanup/no-clobber and serial/spawn parity.
+Exercise deliberate faults at those seams. Reuse existing K4b.04 numerical
+qualification; do not repeat unrelated propagation/SDK/model-oracle suites.
+After focused tests, use the retained Mac source/saved sky for modern and ancient
+qualified-domain single-sheet/serial/spawn specimens for both axes, with report,
+PNG, PDF order/size and visual acceptance. Report TT frame and TCB stellar events
+separately, along with unchanged source/model limitations.
+
+**Limits and order:** scope agreement and a committed agreement receipt precede
+runtime changes. Other regional/planisphere/observer adoption, nutation, Earth
+orientation/EOP, historical clock reconstruction, new chronology syntax,
+Solar System translation, acquisition, physical-model accuracy, bright-star
+source audit, persistent evaluated catalogues and package extraction are excluded.
+No frozen-Earth observer route substitutes for a barycentric mean-axis view.
+K4b.07 remains the separately agreed epoch-catalogue/companion-state milestone;
+its detailed implementation and reuse windows are not activated here.
+After this slice, remaining K4b.06 obligations and K5 reconciliation still need
+their own bounded selections.
 
 ## K4b.06: production integration scope definition
 

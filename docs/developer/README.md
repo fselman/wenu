@@ -16,7 +16,9 @@ single-sheet parity at J2000/J-8000 and visual review. Clean synchronized
 Mac main and branch cleanup are confirmed. See the
 [acceptance receipt](kernel_migration_audit_v1.md#accepted-native-atlas-stellar-publication-and-worker-result)
 for retained evidence, population/counts and workload timings. Serial was faster
-for this two-sheet workload. No next runtime slice is selected.
+for this two-sheet workload. The next selected task is the
+[date-oriented atlas as-is review and scope definition](kernel_roadmap_v0.9.5.md#k4b06-proposed-date-oriented-atlas-view-scope).
+Its concrete integration boundary is proposed for review; runtime is not yet selected.
 Parent K4b.06, other product/observer gates and bright-star source review remain open.
 
 The separately agreed [K4b.07 epoch-catalogue milestone](kernel_roadmap_v0.9.5.md#k4b07-reusable-epoch-catalogues-and-solar-system-companion-states)
