@@ -7,7 +7,10 @@ input as the single-sheet command. Python publication uses
 `create_atlas(..., stellar_motion_config=path)`. The existing source-sky,
 presentation, design, selection and canonical chart/executor/export owners stay
 in place. No-motion defaults and source-only saved-sky formats are unchanged.
-This implementation candidate awaits Mac runtime, actual-cache and visual gates.
+This bounded implementation passed Mac runtime/documentation, actual-cache
+serial/spawn/single-sheet parity and user visual acceptance in PR #350,
+merged at `9776052a`. Clean synchronized main and branch cleanup are confirmed.
+See the [acceptance receipt](kernel_migration_audit_v1.md#accepted-native-atlas-stellar-publication-and-worker-result).
 
 The stellar owner captures exact validated TOML bytes, a resolved source
 directory, expected source/model identity and verified design/snapshot digests

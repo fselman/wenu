@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 113, 2026-10-27. **Status:** PR #348's native single-sheet CLI/TOML slice passed all Mac gates, actual-cache CLI/Python parity and visual acceptance, then merged at `c319c88f`; clean synchronized Mac main and task-branch cleanup are confirmed. The native atlas publication/worker scope is accepted through PR #349/main 347cdb71; its selected implementation candidate awaits Mac runtime, actual-cache and visual acceptance. Parent K4b.06 remains open. Separately agreed K4b.07 records reusable epoch catalogues and Earth/Solar System companion states; runtime scope review remains pending.
+**Plan revision:** 114, 2026-10-27. **Status:** PR #350's bounded native atlas publication/worker slice passed Mac runtime/documentation, actual-cache serial/spawn/single-sheet parity and visual acceptance, then merged at `9776052a`; clean synchronized Mac main and task-branch cleanup are confirmed. Parent K4b.06 remains open. K4b.07 remains separately agreed scope with implementation pending. No next runtime slice is selected.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,8 +46,8 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `347cdb7178adce405209659ec3599aa04acc66af`,
-confirmed clean/synchronized on the Mac after PR #349 merge and branch cleanup.
+**Current accepted base:** main `9776052a9e7bc6a1786c0f6ccadd6e078eef74af`,
+confirmed clean/synchronized on the Mac after PR #350 merge and branch cleanup.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -67,8 +67,8 @@ clean synchronized main are confirmed.
 | Gaia | Published primary/supplemental identities, input capture, local source and coverage accepted; external redistribution review remains deferred |
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
-| Current bounded result | PR #348 native single-sheet CLI/TOML slice accepted, merged and cleaned up; all Mac gates, actual-cache CLI/Python parity and visual review complete. Physical accuracy unknown; parent K4b.06 remains open |
-| Next bounded submilestone | Implement the accepted native atlas publication/worker boundary below; local candidate verification followed by Mac runtime, actual-cache serial/spawn parity and visual acceptance |
+| Current bounded result | PR #350 native atlas publication/worker slice accepted, merged and cleaned up; all Mac gates, actual-cache serial/spawn/single-sheet parity and visual review complete. Physical accuracy unknown; parent K4b.06 remains open |
+| Next bounded submilestone | Not selected. Remaining K4b.06 scopes and separate K4b.07 implementation require explicit bounded selection; this acceptance record activates no new work |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -247,6 +247,16 @@ the accepted implementation covers only this boundary without changing
 test collection, dependencies or the ordinary chart configuration schema.
 
 ## K4b.06: native atlas publication and worker scope
+
+**Accepted implementation:** PR #350 merged at `9776052a` after 90 Mac runtime
+and 36 documentation passes at `f4820501`, actual-cache two-sheet serial/spawn/
+single-sheet parity at J2000/J-8000 and Fernando's visual acceptance. Clean
+synchronized Mac main and task-branch cleanup are confirmed. The
+[acceptance receipt](kernel_migration_audit_v1.md#accepted-native-atlas-stellar-publication-and-worker-result)
+retains run paths, completion identity, population/counts and measured timings.
+Serial execution was faster for this two-sheet workload; no parallel speedup
+is claimed. Parent K4b.06 stays open; no next runtime slice is selected.
+
 
 **Selection:** after PR #348 merge/cleanup, Fernando requested the next step and
 its placement in the roadmap. The proposal was multi-sheet `wenu_create_atlas`
@@ -1813,7 +1823,7 @@ flowchart TB
 | Physical state / observer realization | Legacy layer fallback discards context | Common realization service over state interfaces |
 | Kernel / domain packages | Application assembly now owns concrete construction; independent extraction remains pending | Preserve public contracts and extract only after K5 acceptance |
 | Immutable state / request | Mutable arrays, dictionaries, layers and resolver bindings | Immutable snapshots and request-owned sessions |
-| Chart / atlas | Public sheet leaf now shared by execution and batch publication; Mac acceptance pending | Retain legacy aliases, request scope and unchanged output |
+| Chart / atlas | Public sheet leaf shared by execution and batch publication; bounded native stellar extension accepted through PR #350 | Retain legacy aliases, request scope and unchanged output |
 | Package / independent test gate | Shared installation and historical documentation assertions | Isolated environments, provider conformance and owner suites |
 
 The source evidence is in `sky/celestial_sphere.py`, `sky/maximal_sphere.py`,
@@ -2410,7 +2420,7 @@ remain its separate responsibilities.
 | K4b.03 | Admit explicit historical time/calendar/year-zero/BCE and source/input-date uncertainty semantics | Bounded explicit input/receipt slice passed Mac acceptance in PR #327 at ceeb894b: 257 focused, 125 audit, 36 documentation, eight tooling/81 subtests and 24 actual historical states. No implicit civil-clock/TT-to-TCB/observer reconstruction or total uncertainty claim |
 | K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Bounded explicit long-term mean-axis slice passed Mac acceptance in PR #328 at 97921fe8; 48 actual derived directions, finite TT domain and unknown physical/total error. No observer/EOP reconstruction or chart/default adoption |
 | K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references; include ESA Orion and Ursa Major reconstruction comparisons with documented input/method and independence limits | Accepted/closed for nominal reconstruction with explicit documented limits by Fernando on 2026-10-26, after 36 Mac documentation passes in 3.65 s at a8c0dd08. Numerical and bounded comparisons completed; detailed ESA agreement inconclusive, physical accuracy unknown. #326/#333 remain open; no source optimality or consumer adoption claim |
-| K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | K4b.05 nominal-use qualification accepted. First opt-in native atlas-sheet slice selected after PR #344 acceptance; stars own realization, lines/labels consume public positions without propagation knowledge. First native Python sheet slice accepted through PR #346 with Mac runtime/documentation, actual cold/restored workloads and visual review; merged at ab8a7e9a. Native single-sheet CLI/TOML slice also accepted in PR #348 with actual-cache parity and visual review, merged at c319c88f. Publication/worker scope accepted in PR #349 and implementation selected; remaining sibling/product/observer gates and bright-star audit stay explicit |
+| K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | K4b.05 nominal-use qualification accepted. First opt-in native atlas-sheet slice selected after PR #344 acceptance; stars own realization, lines/labels consume public positions without propagation knowledge. First native Python sheet slice accepted through PR #346 with Mac runtime/documentation, actual cold/restored workloads and visual review; merged at ab8a7e9a. Native single-sheet CLI/TOML slice also accepted in PR #348 with actual-cache parity and visual review, merged at c319c88f. Native publication/worker implementation accepted in PR #350 after Mac runtime/documentation, actual-cache parity and visual review; merged at 9776052a with clean main/cleanup confirmed; remaining sibling/product/observer gates and bright-star audit stay explicit |
 | K4b.07 | Reusable immutable epoch catalogues, explicit preparation tool, configurable nearby-epoch policy, atlas/regional consumption and separately qualified Earth/Solar System companion states | Agreed capability scope on 2026-10-27; definition/implementation pending. Separate from K4b.06 publication/worker scope; see detailed dependencies and gates above. No persisted-state format or observer/ephemeris extension implemented |
 
 

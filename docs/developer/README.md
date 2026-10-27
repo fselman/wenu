@@ -1,18 +1,22 @@
 # Wenu developer documentation
 
-## K4b.06 accepted CLI slice and next publication scope
+## K4b.06 accepted native atlas publication
 
 PR #348's native single-sheet CLI/TOML slice is accepted and merged at `c319c88f`;
 clean synchronized Mac main and local/remote task-branch cleanup are confirmed.
 All 76 Mac runtime and 36 documentation cases passed, followed by actual-cache
 Orion/Dipper J2000/J-8000 CLI/Python report and PNG parity and visual acceptance.
 See the [receipt](kernel_migration_audit_v1.md#accepted-native-single-sheet-clitoml-result).
-The [next native atlas publication/worker scope](kernel_roadmap_v0.9.5.md#k4b06-native-atlas-publication-and-worker-scope)
+The [native atlas publication/worker scope](kernel_roadmap_v0.9.5.md#k4b06-native-atlas-publication-and-worker-scope)
 was accepted in PR #349 and merged at `347cdb71` after 36 Mac documentation
 passes at `3ebe8878`; clean synchronized main and branch cleanup were confirmed.
-The selected implementation candidate connects process-local stellar ownership,
-verified data-only input dispatch, count consistency, static-index disclosure
-and failure cleanup. Mac runtime, actual-cache and visual acceptance are pending.
+Its implementation is accepted through PR #350, merged at `9776052a` after
+90 Mac runtime and 36 documentation passes, actual-cache serial/spawn/
+single-sheet parity at J2000/J-8000 and visual review. Clean synchronized
+Mac main and branch cleanup are confirmed. See the
+[acceptance receipt](kernel_migration_audit_v1.md#accepted-native-atlas-stellar-publication-and-worker-result)
+for retained evidence, population/counts and workload timings. Serial was faster
+for this two-sheet workload. No next runtime slice is selected.
 Parent K4b.06, other product/observer gates and bright-star source review remain open.
 
 The separately agreed [K4b.07 epoch-catalogue milestone](kernel_roadmap_v0.9.5.md#k4b07-reusable-epoch-catalogues-and-solar-system-companion-states)

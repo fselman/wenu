@@ -10,8 +10,11 @@ owns and closes its realization. No source catalogue or saved source sky is
 relabelled as evaluated state. Full source population and unavailable motion
 positions remain distinct. A supplied static index is disclosed rather than
 claimed to match the historical stellar event. No observer/frame adoption,
-physical accuracy guarantee or K4b.07 persistence follows. Actual-cache Mac and
-visual acceptance for this publication extension remain pending.
+physical accuracy guarantee or K4b.07 persistence follows. This bounded
+publication extension passed Mac runtime/documentation, actual-cache parity
+and user visual acceptance in PR #350, merged at `9776052a`. Parent K4b.06
+remains open; the [acceptance receipt](kernel_migration_audit_v1.md#accepted-native-atlas-stellar-publication-and-worker-result)
+preserves evidence and its limits.
 
 ## Planned reusable epoch catalogues (K4b.07)
 
