@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 116, 2026-10-27. **Status:** PR #350's bounded native atlas publication/worker slice passed Mac runtime/documentation, actual-cache serial/spawn/single-sheet parity and visual acceptance, then merged at `9776052a`; clean synchronized Mac main and task-branch cleanup are confirmed. Parent K4b.06 remains open. K4b.07 remains separately agreed scope with implementation pending. PR #352's date-oriented atlas scope is accepted and merged at `8865ae05` after 36 Mac documentation passes; implementation remains pending. K4b.08 now records separately agreed ancient/future Earth-bound observer capability; detailed model/product slices remain pending.
+**Plan revision:** 117, 2026-10-27. **Status:** PR #350's bounded native atlas publication/worker slice passed Mac runtime/documentation, actual-cache serial/spawn/single-sheet parity and visual acceptance, then merged at `9776052a`; clean synchronized Mac main and task-branch cleanup are confirmed. Parent K4b.06 remains open. K4b.07 remains separately agreed scope with implementation pending. PR #352's date-oriented atlas scope is accepted and merged at `8865ae05` after 36 Mac documentation passes; implementation remains pending. K4b.08 now records separately agreed ancient/future Earth-bound observer capability; detailed model/product slices remain pending.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,9 +46,9 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `8865ae053a60b9fd70a7739460a82e6b9615e55d`,
-confirmed clean/synchronized on the Mac after PR #352 merge. Task-branch cleanup
-has not been reported.
+**Current accepted base:** main `7d0f7425dd9b129f466594fc9cde222545b3c598`,
+confirmed clean/synchronized on the Mac after PR #353 merge and cleanup of both
+#352/#353 task branches.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -69,7 +69,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | PR #350 native atlas publication/worker slice accepted, merged and cleaned up; all Mac gates, actual-cache serial/spawn/single-sheet parity and visual review complete. Physical accuracy unknown; parent K4b.06 remains open |
-| Next bounded submilestone | K4b.06 [date-oriented atlas scope](#k4b06-proposed-date-oriented-atlas-view-scope) accepted in #352; implementation pending a selection/receipt. Current task records [K4b.08 Earth-bound observers](#k4b08-earth-bound-observers-at-ancient-and-future-epochs) as separately agreed capability, not activated runtime. K4b.07 and other K4b.06 scopes remain separate |
+| Next bounded submilestone | K4b.06 [date-oriented atlas scope](#k4b06-proposed-date-oriented-atlas-view-scope) accepted in #352; implementation selected by Fernando's “Proceed” after #353 merge/cleanup. Current task records [K4b.08 Earth-bound observers](#k4b08-earth-bound-observers-at-ancient-and-future-epochs) as separately agreed capability, not activated runtime. K4b.07 and other K4b.06 scopes remain separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -84,6 +84,14 @@ cleanup. This documentation merge adds no runtime acceptance.
 
 
 ## K4b.06: proposed date-oriented atlas view scope
+
+**Implementation selection, 2026-10-27:** after PR #353 merge, Fernando
+confirmed clean synchronized main `7d0f7425dd9b129f466594fc9cde222545b3c598`
+and local/remote cleanup of both documentation branches, then said “Proceed”
+to the accepted #352 dated-axis atlas implementation. Implement only this
+K4b.06 boundary and its required runtime/Mac/visual gates below. K4b.07 and
+K4b.08 stay separately pending. This selection receipt is committed before
+runtime edits; actual implementation and acceptance are not claimed here.
 
 **Selection:** after PR #351 acceptance-receipt merge/cleanup and clean synchronized
 Mac main `07a03aece766c86f316722200a03253550fbdfb7`, Fernando requested:
