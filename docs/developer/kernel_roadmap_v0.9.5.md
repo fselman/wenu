@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 108, 2026-10-26. **Status:** PR #346's native Python atlas-sheet slice passed Mac runtime/documentation, real-cache cold/restored J2000/J-8000 workloads and Fernando's visual review, then merged at `ab8a7e9a`. Clean synchronized Mac main and cleanup are confirmed. The next CLI/TOML slice is defined below for scope review; no further runtime work or parent K4b.06 closure is claimed.
+**Plan revision:** 109, 2026-10-27. **Status:** PR #346's native Python atlas-sheet slice passed Mac runtime/documentation, real-cache cold/restored J2000/J-8000 workloads and Fernando's visual review, then merged at `ab8a7e9a`. Clean synchronized Mac main and cleanup are confirmed. PR #347's CLI/TOML scope was explicitly accepted after 36 Mac documentation passes in 4.65 s at `95e3ed5a`, merged at `acbdc3b8` and cleaned up. Fernando selected implementation on 2026-10-27 with “Let us proceed”. Only the bounded native single-sheet CLI/TOML slice below is active; no parent K4b.06 closure is claimed.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,8 +46,8 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `ab8a7e9ab1374a20c0eed3064d7555ed0a3b789e`,
-confirmed clean/synchronized on the Mac on 2026-10-26 after PR #346 merge.
+**Current accepted base:** main `acbdc3b8464edddde066ac6eee80d5b7f44bfe36`,
+confirmed clean/synchronized on the Mac after PR #347 merge and branch cleanup.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -68,7 +68,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | PR #346 native Python atlas-sheet slice accepted, merged and cleaned up; Mac cold/restored workloads and visual review complete. Physical accuracy unknown; parent K4b.06 remains open |
-| Next bounded submilestone | Proposed CLI/TOML extension of the existing native single-sheet path, defined below for scope acceptance; runtime not activated. Stars retain realization ownership; observer/frame/batch work stays separate |
+| Next bounded submilestone | Accepted CLI/TOML extension of the existing native single-sheet path; implementation selected on 2026-10-27. Stars retain realization ownership; observer/frame/batch work stays separate |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -152,8 +152,11 @@ improved input acquisition/adoption requires its own explicit review.
 
 **Selection and status:** after confirming PR #346 merge/cleanup, Fernando asked
 what remains and said “Proceed” to the proposal to record acceptance and define
-a bounded CLI/TOML historical-request slice. This authorizes this definition;
-the concrete boundary below is proposed for review before runtime changes.
+a bounded CLI/TOML historical-request slice. PR #347 passed all 36 Mac documentation cases in 4.65 s at `95e3ed5a`.
+Fernando explicitly said “accept and merge”; it merged at `acbdc3b8`, followed
+by confirmed clean synchronized Mac main and branch cleanup. On 2026-10-27
+he said “Let us proceed”. The concrete boundary below is accepted and selected
+for implementation; this receipt is committed before runtime changes.
 It is a subdivision of existing K4b.06 obligations, not a new scientific milestone.
 
 **As-is:** `cli/chart.py::_atlas_sheet` already validates design, atlas-style
