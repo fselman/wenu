@@ -1,5 +1,38 @@
 # Wenu implementation reference
 
+## Native stellar motion in atlas publications
+
+`wenu_create_atlas` accepts the same `--stellar-motion-config PATH` scientific
+input as the single-sheet command. Python publication uses
+`create_atlas(..., stellar_motion_config=path)`. The existing source-sky,
+presentation, design, selection and canonical chart/executor/export owners stay
+in place. No-motion defaults and source-only saved-sky formats are unchanged.
+This implementation candidate awaits Mac runtime, actual-cache and visual gates.
+
+The stellar owner captures exact validated TOML bytes, a resolved source
+directory, expected source/model identity and verified design/snapshot digests
+in `StellarMotionExecutionInput`. Its integrity digest binds those values.
+Workers admit those captured bytes through the same loader and verify local
+source bytes; they never reread the configuration path. This data-only input
+can cross spawn; live `StellarMotionRequest`/session/provider transport refuses.
+It is not a persisted evaluated catalogue or general serialization protocol.
+
+A serial publication and each worker own a stellar-realized sky for their
+execution lifetime. Sheet requests carry the matching process-local motion
+request and borrow its view; mismatched or dropped bindings refuse. Public
+stellar positions drive stars, lines and labels, with process-local SDK reuse.
+An ExitStack and explicit multiprocessing finalizer close resources, including
+partial initializer failure. The parallel parent's count appendix separately
+owns a view with the same admitted source/models/event; every sheet report is
+checked against the parent's science identity and availability before assembly.
+
+Reports, count provenance and the final manifest disclose motion input, source,
+models, domains, event and gaps. Diagnostic process/query/reuse counters can
+vary with task assignment. A supplied index remains byte-identical in its
+standalone files; its assembled page has a visible static-reference note and
+publication metadata identifies its status. Completion remains manifest-last;
+failures discard owned staging and preserve existing destinations and sources.
+
 ## Explicit stellar motion TOML for one native atlas sheet
 
 The installed `wenu_chart atlas-sheet` command accepts
@@ -45,8 +78,8 @@ shape; no-motion commands retain their existing output and schema.
 
 This bounded single-sheet CLI slice passed complete Mac and real-cache command
 acceptance with visual review in PR #348, merged at `c319c88f`.
-It adds no `wenu_create_atlas` worker transport or ordinary chart-family observer
-adoption. See the [atlas guide](../user_guide/atlas.md#nominal-stellar-motion-for-one-sheet)
+Its single-sheet acceptance does not cover the publication extension above or
+ordinary chart-family observer adoption. See the [atlas guide](../user_guide/atlas.md#nominal-stellar-motion-for-one-sheet)
 for input and command examples.
 
 ## Explicit stellar realization for native atlas sheets
@@ -84,9 +117,10 @@ this API description does not acquire or manufacture them. Use the request's
 `stellar_motion` field for the already validated stellar request.
 
 Source-only saved skies retain their format/meaning and require a separate,
-explicit matching binding after restoration. Motion-request pickle/worker
+explicit matching binding after restoration. Live motion-request pickle/worker
 transport refuses. The separate single-sheet CLI/TOML adapter is described
-above; historical observers and batch transport remain unimplemented. No new top-level
+above; historical observers remain unimplemented. Batch execution uses only the
+separate data-only input described above. No new top-level
 exports, catalogue acquisition, physical-accuracy guarantee or package extraction.
 Real-cache cold/restored J2000/J-8000 workloads and native-sheet visual review
 passed Mac acceptance in PR #346, merged at `ab8a7e9a`; the remaining product
@@ -2814,4 +2848,5 @@ The consumer-reconciliation Mac gate also retains the original LMC boundary
 composition case that was locally blocked by missing DE440s in KG.07. It uses
 the already installed offline resource; no acquisition or full lower-level
 gate repeat is part of this reconciliation.
+
 

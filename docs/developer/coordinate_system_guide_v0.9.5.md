@@ -27,6 +27,12 @@ calendar/observer clock, EOP reconstruction or time-scale conversion. Source
 epochs retain their own metadata; the motion document's digest is separate
 input provenance. No numerical transform or source interpretation changes.
 
+The publication extension preserves these meanings across processes: each sheet
+and the count appendix bind the same source/model identities and nominal TCB
+event. It makes no time-scale conversion or dated-axis/observer reconstruction.
+A supplied index remains explicitly static. Worker transport is captured input,
+not a saved epoch catalogue; K4b.07 persistence remains separate.
+
 ## Hipparcos-2 source covariance diagnostic
 
 The offline qualification mode reports a source-epoch covariance ordered
@@ -1684,3 +1690,4 @@ light time, aberration or frame qualification is introduced. Satellite TEME
 transport and observer/geocentric ITRS transforms retain their current meanings.
 Constructed custom-protocol sources remain compatible. Finite-Sun occultation,
 observer twilight and continuous contact search keep their existing mathematics.
+

@@ -79,6 +79,14 @@ def render_catalogue_star_counts(stars, output_prefix, *, magnitude_limit, page,
         figure.text(.15, .15, "Counts use actual catalogue photometry and finite sky positions.\n"
             "Overlapping chart appearances are not counted again.\n"
             "This curve covers the complete atlas design, even in a sample batch.", fontsize=12, va="top")
+        motion = provenance.get('stellar_realization')
+        if motion is not None:
+            epoch = motion['epoch']
+            year = 2000 + ((epoch['jd1'] - 2451545) + epoch['jd2']) / 365.25
+            missing = motion['model_counts'].get('unavailable', 0)
+            figure.text(.5, .025, f'Nominal stellar positions: J{year:g} TCB; '
+                f'{missing} source stars unavailable. Physical accuracy unknown.',
+                ha='center', fontsize=7)
         export = ExportOptions(dpi=dpi, bbox_inches=None)
         for suffix in ("png", "pdf", "svg"):
             export.save(figure, Path(str(prefix) + "." + suffix))

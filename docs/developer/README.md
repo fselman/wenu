@@ -8,9 +8,11 @@ All 76 Mac runtime and 36 documentation cases passed, followed by actual-cache
 Orion/Dipper J2000/J-8000 CLI/Python report and PNG parity and visual acceptance.
 See the [receipt](kernel_migration_audit_v1.md#accepted-native-single-sheet-clitoml-result).
 The [next native atlas publication/worker scope](kernel_roadmap_v0.9.5.md#k4b06-native-atlas-publication-and-worker-scope)
-is defined for concrete review: process-local stellar ownership, verified
-data-only execution description, count-appendix consistency, static-index
-disclosure, failure cleanup and serial/spawn acceptance. No runtime changes yet.
+was accepted in PR #349 and merged at `347cdb71` after 36 Mac documentation
+passes at `3ebe8878`; clean synchronized main and branch cleanup were confirmed.
+The selected implementation candidate connects process-local stellar ownership,
+verified data-only input dispatch, count consistency, static-index disclosure
+and failure cleanup. Mac runtime, actual-cache and visual acceptance are pending.
 Parent K4b.06, other product/observer gates and bright-star source review remain open.
 
 The separately agreed [K4b.07 epoch-catalogue milestone](kernel_roadmap_v0.9.5.md#k4b07-reusable-epoch-catalogues-and-solar-system-companion-states)
@@ -577,4 +579,5 @@ and [focused audit gate](testing_policy.md#consumer-reconciliation-gate).
 K3.40 is accepted through PR #313 after 25 focused, 36 documentation and eight
 tooling Mac cases. Fernando completed the six-product review and selected K4a.01;
 SDK freeze and astronomical package extraction remain later.
+
 

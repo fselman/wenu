@@ -1771,3 +1771,19 @@ def test_index_and_catalogue_appendix_use_real_kernel_results_and_refuse(request
         draw()
     with pytest.raises(RuntimeError, match='atlas kernel refusal'):
         catalogue_star_counts(stars,6)
+
+
+
+def test_atlas_motion_config_uses_existing_publication_execution_owner(tmp_path, monkeypatch):
+    from wenu.charts import atlas_publication
+    calls = []
+    def capture(design, output, **kwargs):
+        calls.append(kwargs)
+        return tmp_path/'manifest.json'
+    monkeypatch.setattr(atlas_publication, 'create_atlas', capture)
+    motion = tmp_path/'motion-v1.toml'
+    assert cli.create_main(['--layout','b4-portrait','--stellar-motion-config',str(motion),
+        '--jobs','2','--output-dir',str(tmp_path/'atlas')]) == 0
+    assert calls[0]['stellar_motion_config'] == motion
+    assert calls[0]['jobs'] == 2
+    assert callable(calls[0]['chart_command'])

@@ -130,24 +130,68 @@ class AtlasPublicationBatchPlan:
 
 _WORKER_SKY = None
 _WORKER_CHART_COMMAND = None
+_WORKER_MOTION = None
+_WORKER_SCOPE = None
+_WORKER_FINALIZER = None
 
 
-def _initialize_atlas_worker(directory, digest, chart_command=None):
+def _close_atlas_worker():
+    """Explicit spawn-process finalization, also safe after partial setup."""
+    global _WORKER_SKY, _WORKER_CHART_COMMAND, _WORKER_MOTION
+    global _WORKER_SCOPE, _WORKER_FINALIZER
+    scope, finalizer = _WORKER_SCOPE, _WORKER_FINALIZER
+    _WORKER_SKY = _WORKER_CHART_COMMAND = _WORKER_MOTION = None
+    _WORKER_SCOPE = _WORKER_FINALIZER = None
+    if finalizer is not None:
+        finalizer.cancel()
+    if scope is not None:
+        scope.close()
+
+
+def _initialize_atlas_worker(directory, digest, chart_command=None,
+                             motion_input=None, design_sha256=None):
     import matplotlib
     matplotlib.use("Agg", force=True)
+    from contextlib import ExitStack
+    from multiprocessing.util import Finalize
     from wenu.sky.native_snapshot import read_native_sky_snapshot
-    global _WORKER_SKY, _WORKER_CHART_COMMAND
-    _WORKER_CHART_COMMAND = chart_command
-    _WORKER_SKY = read_native_sky_snapshot(directory,
-        expected_manifest_sha256=digest).make_sky()
+    from wenu.sky.assembly import stellar_realization_sky
+    from wenu.stellar_state import StellarMotionExecutionInput
+    global _WORKER_SKY, _WORKER_CHART_COMMAND, _WORKER_MOTION
+    global _WORKER_SCOPE, _WORKER_FINALIZER
+    _close_atlas_worker()
+    scope = ExitStack()
+    try:
+        snapshot = read_native_sky_snapshot(directory, expected_manifest_sha256=digest)
+        motion = None
+        if motion_input is not None:
+            if type(motion_input) is not StellarMotionExecutionInput:
+                raise TypeError('Expected captured stellar execution input.')
+            snapshot.require(design_sha256=design_sha256)
+            motion = motion_input.admit(snapshot_sha256=snapshot.manifest_sha256,
+                                        design_sha256=design_sha256)
+        sky = snapshot.make_sky()
+        if motion is not None:
+            sky = scope.enter_context(stellar_realization_sky(sky, motion))
+        _WORKER_SCOPE = scope
+        _WORKER_FINALIZER = Finalize(None, _close_atlas_worker, exitpriority=10)
+        _WORKER_SKY, _WORKER_CHART_COMMAND, _WORKER_MOTION = sky, chart_command, motion
+    except BaseException:
+        try:
+            scope.close()
+        finally:
+            _close_atlas_worker()
+        raise
 
 
-def _render_atlas_sheet(task, sky=None, *, chart_command=None):
-    """Dispatch one immutable sheet through the shared chart-command entry."""
+def _render_atlas_sheet(task, sky=None, *, chart_command=None, stellar_motion=None):
+    """Dispatch through the canonical command, borrowing process-owned stars."""
     sheet, page, presentation, directory = task
     command = chart_command if chart_command is not None else (_WORKER_CHART_COMMAND if sky is None else None)
-    sky = _WORKER_SKY if sky is None else sky
-    request = AtlasSheetChartRequest(sheet, page, presentation, Path(directory))
+    if sky is None:
+        sky, stellar_motion = _WORKER_SKY, _WORKER_MOTION
+    request = AtlasSheetChartRequest(sheet, page, presentation, Path(directory),
+                                    stellar_motion=stellar_motion)
     if command is None:
         from wenu.cli.chart import main as command
     status = command(["atlas-sheet", "--chart-number", str(sheet.number),
@@ -158,7 +202,7 @@ def _render_atlas_sheet(task, sky=None, *, chart_command=None):
     return sheet.number
 
 
-def _append_atlas_index(writer, reader, page):
+def _append_atlas_index(writer, reader, page, *, static_note=False):
     """Fit one supplied vector index into the physical atlas paper margins."""
     from pypdf import PdfWriter, Transformation
     with PdfWriter() as source:
@@ -174,6 +218,17 @@ def _append_atlas_index(writer, reader, page):
         y = page.bottom_mm * 72 / 25.4 + (height - float(box.height) * scale) / 2
         transform = Transformation().translate(-float(box.left), -float(box.bottom)).scale(scale).translate(x, y)
         target.merge_transformed_page(index_page, transform)
+        if static_note:
+            import io
+            from matplotlib.figure import Figure
+            from pypdf import PdfReader
+            figure = Figure(figsize=(page.width_mm / 25.4, page.height_mm / 25.4))
+            figure.text(.5, .008, 'Supplied static reference index; stellar epoch not updated.',
+                        ha='center', va='bottom', fontsize=6)
+            buffer = io.BytesIO()
+            figure.savefig(buffer, format='pdf', transparent=True)
+            buffer.seek(0)
+            target.merge_page(PdfReader(buffer).pages[0])
 
 
 def _read_selection_criteria(paths, catalogues):
@@ -229,7 +284,7 @@ def _read_selection_criteria(paths, catalogues):
 def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                  save_sky=None, from_sky=None, index=None, chart_command=None,
                  open_cluster_catalogue=None, planetary_nebula_catalogue=None,
-                 selection_criteria=()):
+                 selection_criteria=(), stellar_motion_config=None):
     """Produce ordered chart pages with one preparation or explicit saved reuse.
 
     A manifest linked last commits the complete batch. Existing outputs and
@@ -329,6 +384,7 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
     started = time.perf_counter()
     worker_count = min(jobs, len(sheets))
     with ExitStack() as stack:
+        stellar_scope = stack.enter_context(ExitStack())
         cold_sky = None
         if from_sky is None:
             directory = save_sky or Path(stack.enter_context(tempfile.TemporaryDirectory(prefix="wenu-atlas-sky-"))) / "sky"
@@ -352,6 +408,12 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             star_magnitude_limit=presentation.star_magnitude_limit,
             design_sha256=hashlib.sha256(raw).hexdigest())
         digest = snapshot.manifest_sha256
+        motion_input = motion = science = None
+        if stellar_motion_config is not None:
+            from wenu.stellar_state import StellarMotionExecutionInput, stellar_motion_identity
+            motion_input, motion = StellarMotionExecutionInput.capture(stellar_motion_config,
+                snapshot_sha256=digest, design_sha256=hashlib.sha256(raw).hexdigest())
+            science = stellar_motion_identity(motion)
         staging = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix=".wenu-atlas-pages-", dir=output_dir.parent)))
         for record in criteria:
             (staging / record['file']).write_bytes(record['content'])
@@ -362,8 +424,15 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
         tasks = [(sheet, atlas.geometry.page, presentation, str(staging)) for sheet in sheets]
         if worker_count == 1:
             sky = cold_sky if cold_sky is not None else snapshot.make_sky()
-            completed = [(_render_atlas_sheet(task, sky) if chart_command is None else
-                          _render_atlas_sheet(task, sky, chart_command=chart_command)) for task in tasks]
+            if motion is not None:
+                from wenu.sky.assembly import stellar_realization_sky
+                sky = stellar_scope.enter_context(stellar_realization_sky(sky, motion))
+            completed = []
+            for task in tasks:
+                options = {} if motion is None else dict(stellar_motion=motion)
+                if chart_command is not None:
+                    options['chart_command'] = chart_command
+                completed.append(_render_atlas_sheet(task, sky, **options))
         else:
             variables = ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS")
             previous = {key: os.environ.get(key) for key in variables}
@@ -374,7 +443,8 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                 pool = ProcessPoolExecutor(max_workers=worker_count,
                     mp_context=multiprocessing.get_context("spawn"),
                     initializer=_initialize_atlas_worker,
-                    initargs=(str(directory), digest, chart_command))
+                    initargs=(str(directory), digest, chart_command, motion_input,
+                              hashlib.sha256(raw).hexdigest()))
                 pending = {}
                 remaining = iter(tasks)
                 done_numbers = set()
@@ -405,6 +475,17 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
                         os.environ[key] = value
         if completed != [sheet.number for sheet in sheets]:
             raise RuntimeError("Incomplete atlas batch.")
+        if science is not None:
+            # Validate every returned scientific binding before analysis/publication.
+            for sheet in sheets:
+                report = json.loads((staging / f"chart-{sheet.number:02d}_report_data.json").read_text())
+                realized = report.get('stellar_realization', {})
+                if any(realized.get(key) != value for key, value in science.items()):
+                    raise ValueError('Atlas sheet returned different stellar motion identity.')
+                counts = realized.get('model_counts')
+                if not isinstance(counts, dict) or (sheet != sheets[0] and counts != population):
+                    raise ValueError('Atlas sheets returned different stellar availability.')
+                population = counts
         # Publish an analysis input manifest inside staging, never a partial
         # public batch. Charts and report records contain all diagnostic inputs.
         policies = [json.loads((staging / f"chart-{sheet.number:02d}_report_data.json").read_text())
@@ -422,15 +503,26 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
         count_report = None
         if "stars" in presentation.layers:
             catalogue_sky = sky if worker_count == 1 else snapshot.make_sky()
+            if worker_count != 1 and motion is not None:
+                from wenu.sky.assembly import stellar_realization_sky
+                catalogue_sky = stellar_scope.enter_context(stellar_realization_sky(catalogue_sky, motion))
+            count_provenance = dict(design_sha256=hashlib.sha256(raw).hexdigest(), snapshot_sha256=digest)
+            if science is not None:
+                count_provenance['stellar_realization'] = dict(science, model_counts=population)
+                if getattr(catalogue_sky.stars, '_stellar_realization', None) is None:
+                    raise ValueError('Catalogue counts require the publication stellar view.')
             count_report = render_catalogue_star_counts(catalogue_sky.stars,
                 staging / "atlas-star-counts", magnitude_limit=presentation.star_magnitude_limit,
                 page=atlas.geometry.page, dpi=presentation.dpi,
-                provenance=dict(design_sha256=hashlib.sha256(raw).hexdigest(), snapshot_sha256=digest))
+                provenance=count_provenance)
         with PdfWriter() as writer:
             writer.page_layout = '/TwoPageLeft'
+            if motion is not None and index_bytes is not None:
+                writer.add_metadata({'/Subject': 'Supplied static reference index; stellar epoch not updated.'})
             page_order = []
             if index_bytes is not None:
-                _append_atlas_index(writer, index_reader, atlas.geometry.page)
+                _append_atlas_index(writer, index_reader, atlas.geometry.page,
+                                    static_note=motion is not None)
                 page_order.append(dict(page=1, kind="index"))
                 writer.add_outline_item("Atlas index", 0)
                 writer.add_blank_page(width=atlas.geometry.page.width_mm * 72 / 25.4,
@@ -481,7 +573,15 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             presentation=asdict(presentation), elapsed_seconds=time.perf_counter() - started,
             stellar_sizing=policies[0], page=asdict(atlas.geometry.page),
             products={p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in products})
+        if science is not None:
+            manifest['stellar_realization'] = dict(science, model_counts=population)
+            manifest['stellar_execution_input_sha256'] = motion_input.integrity_sha256
+            manifest['index_reference'] = (None if index_bytes is None else dict(
+                kind='supplied-static-reference', stellar_epoch_updated=False,
+                sha256=manifest['index_sha256']))
         (staging / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+        # Successful scientific cleanup precedes the public completion marker.
+        stellar_scope.close()
         output_dir.mkdir()
         try:
             for path in products:
@@ -491,3 +591,4 @@ def create_atlas(design_path, output_dir, *, presentation, charts="all", jobs=2,
             shutil.rmtree(output_dir)
             raise
     return output_dir / "manifest.json"
+

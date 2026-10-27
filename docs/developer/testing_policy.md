@@ -1,5 +1,31 @@
 # Testing policy and module independence
 
+## Native atlas stellar publication and worker gate
+
+Extend the existing stellar and atlas owner tests for captured-byte transport,
+config/source/descriptor corruption, snapshot/design/model mismatch, matching
+borrowed-view reuse, partial initializer/finalizer failure and warm SDK refusal.
+Synthetic two-sheet J2000/J-8000 serial/spawn books use the actual command, SDK,
+renderer and assembler, comparing chart/report PNG pixels with independent
+prepared single-sheet calls. Only source-sky decoding is a labelled synthetic
+seam. A photometric source star without a motion model distinguishes propagated
+counts from static counts; explicit worker-finalization receipts verify cleanup.
+Supplied static-index disclosure, original index bytes, PDF sizes/page order,
+failed-publication cleanup and thread environment restoration are included.
+The CLI option also has a seam test in the existing atlas owner.
+
+Run these cases with retained single-sheet motion/realization and nearest atlas
+publication/worker/default/count contracts, then the complete documentation gate.
+No SDK mathematics, source acquisition, collection or dependency changes.
+Local focused acceptance: 90 runtime cases passed in 39.80 s, five focused
+documentation cases in 1.32 s, and all 715 active Markdown links resolved.
+Deliberately dropped serial/worker bindings and a substituted static-count input
+each failed the matching successful baseline.
+Actual-cache Mac serial/spawn/two-sheet parity, workload and visual review remain
+pending; synthetic results do not qualify real snapshot decoding or physical
+ancient-position accuracy. Retain earlier evidence and use the established
+run-provenance convention.
+
 ## K4b.06 stellar-owned native integration candidate
 
 The selected slice extends existing stellar/consumer/request/atlas owners. New
@@ -2385,4 +2411,5 @@ The complete Mac gate collects 25 cases. Available documentation: 31 passed
 in 1.68 s, with five full-checkout archive/asset checks reserved for Mac; all
 38 active-document links/anchors pass against the full repository tree.
 Eight tooling tests passed in 7.247 s. No full production acceptance is claimed.
+
 

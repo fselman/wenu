@@ -1,6 +1,6 @@
 # Roadmap to v0.9.5: a frozen kernel and loadable astronomical packages
 
-**Plan revision:** 113, 2026-10-27. **Status:** PR #348's native single-sheet CLI/TOML slice passed all Mac gates, actual-cache CLI/Python parity and visual acceptance, then merged at `c319c88f`; clean synchronized Mac main and task-branch cleanup are confirmed. The next bounded native atlas publication/worker scope is defined below for review before runtime work. Parent K4b.06 remains open. Separately agreed K4b.07 records reusable epoch catalogues and Earth/Solar System companion states; runtime scope review remains pending.
+**Plan revision:** 113, 2026-10-27. **Status:** PR #348's native single-sheet CLI/TOML slice passed all Mac gates, actual-cache CLI/Python parity and visual acceptance, then merged at `c319c88f`; clean synchronized Mac main and task-branch cleanup are confirmed. The native atlas publication/worker scope is accepted through PR #349/main 347cdb71; its selected implementation candidate awaits Mac runtime, actual-cache and visual acceptance. Parent K4b.06 remains open. Separately agreed K4b.07 records reusable epoch catalogues and Earth/Solar System companion states; runtime scope review remains pending.
 **Frozen functional baseline:** main `6708f54a0d8984c0be348b2c8cb02b311646a02b`.
 Its Git tree is identical to `ea8dc505`, which passed 3,606 plugin-disabled Mac
 tests in 1,136.74 s and 16 configuration-overlay tests in 4.03 s.
@@ -46,8 +46,8 @@ new scientific features. As-built APIs remain in the
 
 ## Current position and next-item selection
 
-**Current accepted base:** main `c319c88fc3dac04f8cedbef7ab443a8cd0cc1ace`,
-confirmed clean/synchronized on the Mac after PR #348 merge and branch cleanup.
+**Current accepted base:** main `347cdb7178adce405209659ec3599aa04acc66af`,
+confirmed clean/synchronized on the Mac after PR #349 merge and branch cleanup.
 The active Mac checkout is `/Users/fselman/Developer/wenu`; the former Dropbox
 checkout is retired.
 The following K3/K4a receipts
@@ -68,7 +68,7 @@ clean synchronized main are confirmed.
 | Shared positional extension | AX.01–AX.12 accepted; AX.14 full-input stellar subset accepted through K4b.01; reduced/other pending scopes remain separate |
 | Freeze/extraction/release | K5–K9 pending |
 | Current bounded result | PR #348 native single-sheet CLI/TOML slice accepted, merged and cleaned up; all Mac gates, actual-cache CLI/Python parity and visual review complete. Physical accuracy unknown; parent K4b.06 remains open |
-| Next bounded submilestone | Define the native atlas publication/worker execution boundary below, including process-local stellar ownership, catalogue-count consistency and supplied static-index disclosure. Concrete scope proposed for review before runtime work |
+| Next bounded submilestone | Implement the accepted native atlas publication/worker boundary below; local candidate verification followed by Mac runtime, actual-cache serial/spawn parity and visual acceptance |
 
 Reduced-input models (AX.13) are agreed capability scope, but their placement as
 the immediate next task was an agent sequencing decision, not a separate user
@@ -256,8 +256,8 @@ concrete publication/transport/lifetime boundary below. The concrete boundary wa
 cases passed in 4.82 s at 3ebe8878; Fernando requested merge/cleanup, confirmed
 clean synchronized main 347cdb7178adce405209659ec3599aa04acc66af and task-branch
 deletion, then selected implementation with “Proceed”. This receipt is committed
-before runtime changes. It does not activate observers, frame science or the
-whole remaining K4b.06 backlog.
+before runtime changes at `5b0a2f588528796064a447b57e2e72aab5ecbab8`.
+It does not activate observers, frame science or the whole remaining K4b.06 backlog.
 
 **Result and compatibility:** expose the same explicit scientific motion TOML
 on the existing `wenu_create_atlas` publication path. One verified source, caller
@@ -2410,7 +2410,7 @@ remain its separate responsibilities.
 | K4b.03 | Admit explicit historical time/calendar/year-zero/BCE and source/input-date uncertainty semantics | Bounded explicit input/receipt slice passed Mac acceptance in PR #327 at ceeb894b: 257 focused, 125 audit, 36 documentation, eight tooling/81 subtests and 24 actual historical states. No implicit civil-clock/TT-to-TCB/observer reconstruction or total uncertainty claim |
 | K4b.04 | Qualify requested frame orientation/long-term precession separately from physical source motion and historical observer reconstruction | Bounded explicit long-term mean-axis slice passed Mac acceptance in PR #328 at 97921fe8; 48 actual derived directions, finite TT domain and unknown physical/total error. No observer/EOP reconstruction or chart/default adoption |
 | K4b.05 | Qualify epoch domains/measurement and model uncertainty, perspective, binaries and missing inputs against independent references; include ESA Orion and Ursa Major reconstruction comparisons with documented input/method and independence limits | Accepted/closed for nominal reconstruction with explicit documented limits by Fernando on 2026-10-26, after 36 Mac documentation passes in 3.65 s at a8c0dd08. Numerical and bounded comparisons completed; detailed ESA agreement inconclusive, physical accuracy unknown. #326/#333 remain open; no source optimality or consumer adoption claim |
-| K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | K4b.05 nominal-use qualification accepted. First opt-in native atlas-sheet slice selected after PR #344 acceptance; stars own realization, lines/labels consume public positions without propagation knowledge. First native Python sheet slice accepted through PR #346 with Mac runtime/documentation, actual cold/restored workloads and visual review; merged at ab8a7e9a. Native single-sheet CLI/TOML slice also accepted in PR #348 with actual-cache parity and visual review, merged at c319c88f. Publication/worker scope proposed for review; remaining sibling/product/observer gates and bright-star audit stay explicit |
+| K4b.06 | Accept propagation/reuse comparisons, measured workloads and ancient specimens; connect propagated IDs to applicable consumers | K4b.05 nominal-use qualification accepted. First opt-in native atlas-sheet slice selected after PR #344 acceptance; stars own realization, lines/labels consume public positions without propagation knowledge. First native Python sheet slice accepted through PR #346 with Mac runtime/documentation, actual cold/restored workloads and visual review; merged at ab8a7e9a. Native single-sheet CLI/TOML slice also accepted in PR #348 with actual-cache parity and visual review, merged at c319c88f. Publication/worker scope accepted in PR #349 and implementation selected; remaining sibling/product/observer gates and bright-star audit stay explicit |
 | K4b.07 | Reusable immutable epoch catalogues, explicit preparation tool, configurable nearby-epoch policy, atlas/regional consumption and separately qualified Earth/Solar System companion states | Agreed capability scope on 2026-10-27; definition/implementation pending. Separate from K4b.06 publication/worker scope; see detailed dependencies and gates above. No persisted-state format or observer/ephemeris extension implemented |
 
 
@@ -2602,4 +2602,5 @@ new Moonlight execution, or broad feature additions during structural migration.
 Current science and appearance remain the baseline except for separately
 reviewed astrometric corrections and bug fixes. Deferred work is retained in
 the archived roadmap and [current scientific limits](scientific_contracts.md).
+
 

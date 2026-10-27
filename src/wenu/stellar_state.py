@@ -131,14 +131,18 @@ def load_stellar_motion_request(path):
     Paths are relative to the document. Source bytes are verified, not acquired.
     """
     from pathlib import Path
+    document = Path(path).expanduser().resolve()
+    return _load_stellar_motion_bytes(document.read_bytes(), document.parent)
+
+
+def _load_stellar_motion_bytes(raw, base, *, source_directory=None):
+    """One validation/admission path for a file and captured execution input."""
+    from pathlib import Path
     try:
         import tomllib
     except ModuleNotFoundError:  # Python 3.10
         import tomli as tomllib
     from wenu.stellar_enrichment import load_stellar_enrichment
-
-    document = Path(path).expanduser().resolve()
-    raw = document.read_bytes()
     values = tomllib.loads(raw.decode('utf-8'))
     required = {'schema_version', 'document_kind', 'source_directory',
                 'source_manifest_sha256', 'target_jyear_tcb', 'models'}
@@ -203,12 +207,81 @@ def load_stellar_motion_request(path):
             raise ValueError('Stellar event lies outside a supplied model domain.')
         admissions.append((model, coverage))
 
-    source = load_stellar_enrichment(document.parent / Path(directory).expanduser(),
+    source = load_stellar_enrichment(
+        Path(base) / Path(directory).expanduser() if source_directory is None else source_directory,
                                     expected_manifest_sha256=digest)
     catalogues = tuple(StellarMotionCatalogue(source, coverage,
         model['distance_policy'], model['radial_velocity_policy'],
         model['motion_policy'], model.get('epoch_policy')) for model, coverage in admissions)
     return StellarMotionRequest(catalogues, instant, sha256(raw).hexdigest())
+
+
+def stellar_motion_identity(request):
+    """Science/input identity independent of process-local execution counters."""
+    return dict(epoch=dict(jd1=request.instant.jd1, jd2=request.instant.jd2,
+                           scale=request.instant.scale),
+        model_order=[c.motion_policy for c in request.catalogues],
+        models=[dict(policy=c.motion_policy, identity_sha256=_stellar_digest(c.to_record()),
+                     admission=c.to_record()) for c in request.catalogues],
+        source_manifest_sha256=sha256(request.catalogues[0].source.manifest).hexdigest(),
+        input_document_sha256=request.input_document_sha256)
+
+
+@dataclass(frozen=True, slots=True)
+class StellarMotionExecutionInput:
+    """Pinned data-only atlas transport; never an evaluated state or live session."""
+    document: bytes
+    source_directory: str
+    snapshot_sha256: str
+    design_sha256: str
+    motion_identity_sha256: str
+    integrity_sha256: str
+
+    def _digest(self):
+        return _stellar_digest([sha256(self.document).hexdigest(), self.source_directory,
+            self.snapshot_sha256, self.design_sha256, self.motion_identity_sha256])
+
+    @classmethod
+    def capture(cls, path, *, snapshot_sha256, design_sha256):
+        from pathlib import Path
+        path = Path(path).expanduser().resolve()
+        raw = path.read_bytes()
+        request = _load_stellar_motion_bytes(raw, path.parent)
+        try:
+            import tomllib
+        except ModuleNotFoundError:
+            import tomli as tomllib
+        directory = (path.parent / Path(tomllib.loads(raw.decode('utf-8'))[
+            'source_directory']).expanduser()).resolve()
+        value = cls(raw, str(directory), snapshot_sha256, design_sha256,
+                    _stellar_digest(stellar_motion_identity(request)), '')
+        value = cls(raw, value.source_directory, snapshot_sha256, design_sha256,
+                    value.motion_identity_sha256, value._digest())
+        value._validate(snapshot_sha256, design_sha256)
+        return value, request
+
+    def _validate(self, snapshot_sha256, design_sha256):
+        from pathlib import Path
+        if (type(self.document) is not bytes or type(self.source_directory) is not str
+                or not Path(self.source_directory).is_absolute()):
+            raise ValueError('Invalid stellar execution input.')
+        for digest in (self.snapshot_sha256, self.design_sha256,
+                       self.motion_identity_sha256, self.integrity_sha256):
+            if type(digest) is not str or len(digest) != 64 or any(
+                    c not in '0123456789abcdef' for c in digest):
+                raise ValueError('Invalid stellar execution digest.')
+        if (self._digest() != self.integrity_sha256
+                or self.snapshot_sha256 != snapshot_sha256
+                or self.design_sha256 != design_sha256):
+            raise ValueError('Stellar execution input identity mismatch.')
+
+    def admit(self, *, snapshot_sha256, design_sha256):
+        self._validate(snapshot_sha256, design_sha256)
+        request = _load_stellar_motion_bytes(self.document, '.',
+            source_directory=self.source_directory)
+        if _stellar_digest(stellar_motion_identity(request)) != self.motion_identity_sha256:
+            raise ValueError('Stellar execution model/source identity mismatch.')
+        return request
 
 
 class _StellarRealization:
@@ -669,3 +742,4 @@ class StellarMotionProvider(RectilinearAstrometricProvider):
         super().__init__(tuple(zip(keys, catalogue.rows)), descriptor=descriptor, catalogue=snapshot,
                          admission=admission, evidence=evidence, reuse_method=reuse,
                          velocity_evidence=velocity_evidence)
+

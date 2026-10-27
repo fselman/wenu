@@ -1,5 +1,23 @@
 # Kernel migration: as-is functionality and test audit
 
+## Native atlas stellar publication implementation candidate
+
+PR #349's concrete worker/publication scope was accepted after 36 Mac
+documentation cases passed at `3ebe8878`, merged at `347cdb71`, and confirmed
+clean/synchronized with branch cleanup. Fernando then selected implementation.
+Existing publication restores source skies but had no stellar binding; its
+parallel count appendix was source-native. The candidate now connects captured
+stellar input to the existing command/executor, borrows a matching process-owned
+view across sheets and uses the same scientific realization for counts. Explicit
+spawn finalization and parent validation of returned science prevent silent
+static/mismatched publication. Source-only snapshots and default rendering stay
+unchanged; an optional static index receives honest publication disclosure.
+
+Focused synthetic source/worker/command/export and failure checks are in the
+existing owner tests. Mac runtime, actual-cache serial/spawn/single-sheet parity,
+workload and visual gates remain pending. This is not accepted K4b.06 closure,
+physical qualification, observer/frame adoption or K4b.07 persistence.
+
 ## K4b.06 production integration assessment, 2026-10-26
 
 ### Accepted stellar-owned native-sheet result
@@ -4082,4 +4100,5 @@ The consumer-reconciliation Mac gate also retains the original LMC boundary
 composition case that was locally blocked by missing DE440s in KG.07. It uses
 the already installed offline resource; no acquisition or full lower-level
 gate repeat is part of this reconciliation.
+
 
