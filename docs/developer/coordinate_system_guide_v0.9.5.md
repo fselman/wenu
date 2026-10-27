@@ -1,5 +1,17 @@
 # Wenu coordinate systems, time and astronomical objects
 
+## Proposed date-oriented atlas integration
+
+The [K4b.06 as-is review and scope proposal](kernel_roadmap_v0.9.5.md#k4b06-proposed-date-oriented-atlas-view-scope)
+does not introduce a current atlas frame option. `LongTermFrame` already owns
+qualified TT mean-axis orientation; the atlas currently requires native ICRS,
+and its design sheet centres are ICRS. A derived target-axis layout, common
+pre-domain geometry orientation, dated reference grids and truthful furniture
+are proposed together. Projection alignment alone does not perform that change.
+Stellar TCB evaluation stays independent; no conversion follows from matching
+Julian-year labels. Explicitly fixed reference geometry retains its source
+meaning. Scope agreement precedes runtime integration.
+
 ## Stellar-owned native realization in K4b.06
 
 An explicitly bound stellar view may expose nominal propagated ICRS directions
