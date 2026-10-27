@@ -28,6 +28,35 @@ See the [receipt](kernel_migration_audit_v1.md#accepted-stellar-owned-native-she
 These checks accept the bounded Python native-sheet slice only; parent K4b.06
 product/worker/CLI and physical-accuracy limitations remain explicit.
 
+## Native single-sheet stellar motion CLI gate
+
+The accepted CLI/TOML scope extends the existing stellar adapter and command
+owners. Forty cases added to `tests/test_stellar_state.py` reuse its byte-bound
+synthetic enrichment fixture. They cover exact document/source identity,
+relative paths, explicit models/domains, unknown/missing/duplicate keys and models,
+nonfinite/Boolean epochs, unsupported policies, source corruption, source/sky
+mismatch, kernel refusal before/after successful use, no-clobber and staged cleanup.
+No-motion output matches the prepared static Python route. Invalid configuration
+must fail before source loading; real command failures must publish no new files.
+
+Two fresh offline processes at J2000/J-8000 exercise the command file adapter,
+stellar admission, canonical executor and PNG/PDF/SVG export, matching prepared
+Python reports and PNG bytes. Only their saved-sky reader is an explicitly
+synthetic seam; they do not qualify actual saved-sky decoding. The already
+accepted source-snapshot codecs and real Python slice receipts remain valid.
+A deliberate dropped command motion binding fails the nearest command seam.
+
+Run the `stellar_motion_document` cases plus retained `stellar_realiz`,
+`stellar_native_sheet` and `stellar_motion_public_native_sheet` protections;
+the closest atlas sheet adapter/report/executor/default/worker contracts; and
+the complete documentation gate. No SDK mathematics, model, dependency, collection
+or gate manifest changes warrant unrelated numerical/family suites.
+Local stellar selection: 49 passed. Complete Mac runtime/documentation and
+actual verified saved-sky public-command J2000/J-8000 parity remain pending.
+Use the retained accepted cache/snapshot, a new provenance-recorded directory
+under `~/Software/build/wenu/`, and compare the public command with the accepted
+Python route. Do not overwrite the earlier acceptance run or repeat acquisition.
+
 ## Hipparcos-2 covariance qualification gate
 
 Extend the existing `gaia-crossmatch-audit` owner and test file. Synthetic

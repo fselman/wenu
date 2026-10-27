@@ -1,5 +1,53 @@
 # Wenu implementation reference
 
+## Explicit stellar motion TOML for one native atlas sheet
+
+The installed `wenu_chart atlas-sheet` command accepts
+`--stellar-motion-config PATH`. The stellar owner
+`wenu.stellar_state.load_stellar_motion_request(path)` reads the exact local
+UTF-8 TOML bytes, verifies the explicit source manifest, admits caller-ordered
+existing models and returns `StellarMotionRequest`. Relative source paths
+resolve against the motion document; there is no cache discovery or acquisition.
+The separate atlas presentation TOML retains appearance responsibility.
+
+Schema 1 requires exactly `schema_version = 1`,
+`document_kind = "wenu-stellar-motion-request"`, `source_directory`,
+`source_manifest_sha256`, `target_jyear_tcb` and nonempty `[[models]]`.
+Each model requires `motion_policy`, `start_jyear_tcb`, `stop_jyear_tcb`,
+`distance_policy` and `radial_velocity_policy`. Only
+`hipparcos2-angular-fallback` also requires `epoch_policy`.
+Supported policies are:
+
+| Motion policy | Distance policy | Radial-velocity policy | Epoch policy |
+|---|---|---|---|
+| `full-input-rectilinear` | `positive-parallax-reciprocal` | `spectroscopic-proxy` | Absent |
+| `proper-motion-angular` | `not-used` | `not-used` | Absent |
+| `hipparcos2-angular-fallback` | `not-used` | `not-used` | `nominal-tcb-deferred-qualification` |
+
+Epoch numbers are explicit nominal TCB Julian epochs; finite model bounds must
+contain the target event. No civil-date, TT equinox or observer/EOP interpretation
+is inferred. Duplicate models/keys, missing/unknown keys, unsupported policies,
+nonfinite/Boolean epochs and failed source identity refuse. Source/sky binding
+and SDK refusal retain the existing stellar contract; no static fallback.
+
+The CLI translates this stellar-owned request into the existing
+`AtlasSheetChartRequest.stellar_motion` field. Its file inputs cannot be mixed
+with an injected prepared request. Stars select/evaluate/reuse positions;
+lines/labels receive no motion configuration. Existing staging, canonical export
+and no-clobber cleanup remain responsible for output. Kernel failures become a
+nonzero single-sheet command status; `--debug` preserves the underlying exception.
+
+`StellarMotionRequest.input_document_sha256` optionally records the exact
+motion-file digest; the loader sets it. Motion reports include it alongside
+the existing source/model admission identities, policies, finite coverage,
+resolved event and gaps. Python requests without that field retain their report
+shape; no-motion commands retain their existing output and schema.
+
+This is the bounded single-sheet CLI candidate, pending complete Mac acceptance.
+It adds no `wenu_create_atlas` worker transport or ordinary chart-family observer
+adoption. See the [atlas guide](../user_guide/atlas.md#nominal-stellar-motion-for-one-sheet)
+for input and command examples.
+
 ## Explicit stellar realization for native atlas sheets
 
 `wenu.stellar_state.StellarMotionRequest(catalogues, instant)` accepts a nonempty
@@ -36,8 +84,8 @@ this API description does not acquire or manufacture them. Use the request's
 
 Source-only saved skies retain their format/meaning and require a separate,
 explicit matching binding after restoration. Motion-request pickle/worker
-transport refuses; ordinary CLI/TOML, historical observers and batch request
-transport are not implemented by this Python sheet opt-in. No new top-level
+transport refuses. The separate single-sheet CLI/TOML adapter is described
+above; historical observers and batch transport remain unimplemented. No new top-level
 exports, catalogue acquisition, physical-accuracy guarantee or package extraction.
 Real-cache cold/restored J2000/J-8000 workloads and native-sheet visual review
 passed Mac acceptance in PR #346, merged at `ab8a7e9a`; the remaining product

@@ -158,8 +158,21 @@ by confirmed clean synchronized Mac main and branch cleanup. On 2026-10-27
 he said “Let us proceed”. The concrete boundary below is accepted and selected
 for implementation; this receipt is committed before runtime changes.
 It is a subdivision of existing K4b.06 obligations, not a new scientific milestone.
+The acceptance/selection receipt was committed before runtime edits at
+`0a8525651117007aa8c5e60ff1e851490892aae9`.
 
-**As-is:** `cli/chart.py::_atlas_sheet` already validates design, atlas-style
+**Implementation candidate:** `stellar_state.py::load_stellar_motion_request`
+now admits a separate strict schema-1 motion TOML; `cli/chart.py` exposes
+`--stellar-motion-config` only on `atlas-sheet` and passes the resulting request
+through the existing native sheet/executor. Source/model ownership, refusal and
+report provenance remain stellar-owned. Forty new synthetic admission/command
+cases and nine retained native realization/export cases pass locally, including
+fresh offline processes and unchanged no-motion parity. Dropping the command
+binding deliberately fails the closest seam. Complete Mac runtime/documentation
+and actual saved-sky public-command parity remain pending. This candidate closes
+no parent/sibling gate and activates no observer or worker adoption.
+
+**Pre-implementation assessment:** `cli/chart.py::_atlas_sheet` already validates design, atlas-style
 TOML and a source-only saved sky, constructs `AtlasSheetChartRequest`, and calls
 `generate_chart_request`. It currently supplies no stellar motion.
 The prepared Python request accepts it, while pickling that live request refuses.
@@ -167,7 +180,7 @@ Ordinary regional/planisphere paths construct observers; `wenu_create_atlas`
 also has publication/worker responsibilities. Neither needs to be broadened to
 expose the accepted observer-free single-sheet route.
 
-**Proposed result:** let the installed `wenu_chart atlas-sheet` command opt in
+**Accepted result:** let the installed `wenu_chart atlas-sheet` command opt in
 through a separate explicit stellar-motion TOML input, keeping scientific inputs
 outside style/presentation configuration. Preserve its existing design,
 presentation, chart-number, verified saved-source-sky and output arguments.
@@ -219,8 +232,9 @@ request transport, multi-page atlas adoption, source/default replacement,
 bright-star audit execution, physical accuracy guarantee, dependency or package
 extraction. A source-only saved sky is an input, not serialized motion state.
 The remaining K4b.06 gates and bright-star audit retain their placement and need
-their own bounded selections. This definition introduces no runtime option,
-production schema or test collection change.
+their own bounded selections. The accepted definition introduced no runtime option or schema by itself;
+the candidate above implements only this selected boundary without changing
+test collection, dependencies or the ordinary chart configuration schema.
 
 ## K4b.05: qualification review after reference comparisons
 

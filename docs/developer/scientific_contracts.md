@@ -20,6 +20,14 @@ The bounded native-sheet slice passed 59 Mac runtime and 36 documentation cases,
 actual cold/restored source workloads and Fernando's visual review in PR #346,
 merged at `ab8a7e9a`. These receipts preserve the physical-accuracy limits above.
 
+The single-sheet CLI candidate accepts only an explicit local motion TOML:
+caller model order/policies, verified source manifest, finite domains and a TCB
+Julian target epoch. This input does not infer a civil date, historical observer
+or dated coordinate axes. The loader belongs to stars; style, line and label
+owners gain no propagation policy. Exact document identity is retained in motion
+reports. Source/model mathematics and the accepted nominal-use limits above are
+unchanged; full Mac command acceptance remains pending.
+
 ## K4b.05 qualification status
 
 The [current post-comparison review](kernel_migration_audit_v1.md#k4b05-qualification-review-after-reference-comparisons-2026-10-26)

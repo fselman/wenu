@@ -30,7 +30,24 @@ Ordinary chart families involve observer construction; atlas publication also
 owns worker transport. The proposed smallest extension therefore targets this
 single-sheet command with a separate explicit scientific TOML input. See the
 [scope and acceptance gate](kernel_roadmap_v0.9.5.md#k4b06-proposed-native-single-sheet-clitoml-slice).
-Runtime remains unchanged and the concrete scope awaits acceptance.
+Fernando accepted PR #347 after all 36 Mac documentation cases passed in
+4.65 s at `95e3ed5a`; it merged at `acbdc3b8` and cleanup was confirmed.
+He selected implementation on 2026-10-27. The acceptance/selection receipt was
+committed before runtime edits at `0a852565`.
+
+The candidate now extends `stellar_state.py` with the strict local TOML/source
+loader and optional exact document digest on `StellarMotionRequest`/reports.
+`cli/chart.py` adds the explicit file option only to `atlas-sheet`, translates
+it into the existing request and formats kernel refusals as nonzero status.
+There are no line/label, observer, renderer, SDK, source or dependency changes.
+Forty new synthetic admission/command cases and nine retained realization/export
+cases pass locally. Fresh offline J2000/J-8000 processes match prepared Python
+reports and PNG bytes with three-format exports; their saved-sky reader is an
+explicitly synthetic seam. Invalid inputs, corrupted sources, source/sky mismatch,
+warm SDK refusal, existing outputs and staging cleanup are protected.
+Deliberately dropping the CLI motion binding fails the closest seam.
+Actual Mac saved-sky command acceptance and complete documentation remain pending;
+no parent K4b.06 closure or improved-source adoption is claimed.
 
 **Selected work:** define the first production consumer slice after K4b.05
 nominal-use acceptance, not another propagation-science investigation.

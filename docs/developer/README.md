@@ -1,6 +1,6 @@
 # Wenu developer documentation
 
-## K4b.06 accepted native-sheet slice and proposed CLI scope
+## K4b.06 accepted native-sheet slice and CLI candidate
 
 PR #346's native Python atlas-sheet slice is accepted and merged at `ab8a7e9a`;
 clean synchronized Mac main and branch cleanup are confirmed. Stars own realization;
@@ -8,8 +8,14 @@ lines/labels consume public positions. The Mac passed 59 runtime and 36 document
 cases, actual cold/restored J2000/J-8000 cache workloads and Fernando's visual review.
 See the [acceptance record](kernel_migration_audit_v1.md#accepted-stellar-owned-native-sheet-result).
 The [next single-sheet CLI/TOML definition](kernel_roadmap_v0.9.5.md#k4b06-proposed-native-single-sheet-clitoml-slice)
-is proposed for scope review before runtime work. Parent K4b.06, other product/
-worker/observer gates and bright-star source review remain open.
+was accepted through PR #347 after 36 Mac documentation cases passed in 4.65 s,
+merged at `acbdc3b8` and cleaned up. Fernando selected implementation on 2026-10-27.
+The candidate adds explicit scientific TOML through `wenu_chart atlas-sheet`,
+with stellar-owned admission and the same renderer; see the
+[input contract](implementation_reference.md#explicit-stellar-motion-toml-for-one-native-atlas-sheet).
+Forty new admission/command cases and nine retained realization/export cases pass
+locally. Mac real saved-sky command acceptance remains pending. Parent K4b.06,
+other product/worker/observer gates and bright-star source review remain open.
 
 ## K4b.05 current qualification review
 
