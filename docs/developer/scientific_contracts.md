@@ -1,5 +1,29 @@
 # Current scientific contracts and paused work
 
+## Planned reusable epoch catalogues (K4b.07)
+
+The separately agreed [K4b.07 milestone](kernel_roadmap_v0.9.5.md#k4b07-reusable-epoch-catalogues-and-solar-system-companion-states)
+plans persistent evaluated stellar products and optional Earth/Solar System
+companion states; no format, loader, preparation command or consumer adoption
+is implemented by this documentation. Existing source-only skies stay unchanged.
+Full-input Cartesian states and angular-only coefficients retain distinct
+capabilities; no physical distance/velocity is invented. Continuation must
+preserve the original model and reference event, not restart propagation from
+rounded directions or normalized angular coefficients at a new epoch.
+
+A configurable nearby-epoch window only determines eligibility. Exact-event
+evaluation and fixed-position approximation require distinct explicit policies,
+provenance and suitability checks; a 100-year window is not an error bound.
+Companion geometric states retain their own body/centre, origin/frame, epoch/
+scale, units, resource identity and coverage. Stellar TCB and ephemeris TDB
+composition needs admitted time and spatial/state-convention receipts. Earth
+centre and Earth-Moon barycentre are not interchangeable. A single body state
+does not provide an orbit, nearby-date validity or historical Earth orientation;
+the stellar reuse window cannot authorize stale Earth/planet positions.
+Required unsupported components refuse; optional ones remain explicitly missing.
+Unknown errors and remote-epoch ephemeris gaps stay unknown. Saving state does
+not extend physical/model validity or enable an unadmitted observer chart.
+
 ## K4b.06 native stellar integration candidate
 
 The explicit Python native atlas-sheet opt-in uses only previously admitted

@@ -13,6 +13,12 @@ data-only execution description, count-appendix consistency, static-index
 disclosure, failure cleanup and serial/spawn acceptance. No runtime changes yet.
 Parent K4b.06, other product/observer gates and bright-star source review remain open.
 
+The separately agreed [K4b.07 epoch-catalogue milestone](kernel_roadmap_v0.9.5.md#k4b07-reusable-epoch-catalogues-and-solar-system-companion-states)
+records a preparation tool, persistent epoch products, configurable nearby-epoch
+reuse and optional Earth/Solar System companion states. Detailed implementation
+scopes remain pending; this does not expand the publication/worker slice or
+claim new observer/ephemeris coverage.
+
 ## K4b.05 current qualification review
 
 After PR #342 merge/cleanup and clean synchronized Mac main `df4eae36`,
